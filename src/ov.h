@@ -222,6 +222,8 @@ public:
       return *this;
     }
 
+  int count (void) { return rep->count; }
+
   virtual type_conv_fcn numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }
 

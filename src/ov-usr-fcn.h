@@ -111,6 +111,9 @@ public:
   string function_name (void)
     { return fcn_name; }
 
+  void clear_args_passed (void)
+    { args_passed = octave_value_list (); }
+
   octave_value_list do_index_op (int nargout, const octave_value_list& args);
 
   void traceback_error (void);

@@ -1,3 +1,17 @@
+Sat Mar 27 11:07:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::count): New function.
+	* symtab.cc (symbol_record::dump_symbol_info): New function.
+	* symtab.cc (symbol_record::symbol_def::dump_symbol_info): Ditto.
+	* variables.cc (F__dump_symbol_info__): Ditto.
+
+	* pt-misc.cc (tree_parameter_list::clear): New function.
+	* ov-usr-fcn.h (octave_user_function::clear_args_passed): Ditto.
+	* ov-usr-fcn.cc (clear_param_list): New function.
+	(clear_args_passed): New function.
+	(octave_user_function::do_index_op): Use them to decrement
+	reference counts on local variables.
+
 Fri Mar 26 00:51:53 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (libraries): Use the libfoo.a(objects) method of

@@ -1148,6 +1148,36 @@ DEFUN (__dump_symtab_info__, args, ,
   return retval;
 }
 
+DEFUN (__dump_symbol_info__, args, ,
+  "__dump_symbol_info__ (NAME)")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      string symbol_name = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  symbol_record *sr = curr_sym_tab->lookup (symbol_name);
+
+	  if (sr)
+	    sr->dump_symbol_info ();
+	  else
+	    error ("__dymp_symbol_info__: symbol %s not found",
+		   symbol_name.c_str ());
+	}
+      else
+	print_usage ("__dump_symbol_info__");
+    }
+  else
+    print_usage ("__dump_symbol_info__");
+
+  return retval;
+}
+
 // XXX FIXME XXX -- some of these should do their own checking to be
 // able to provide more meaningful warning or error messages.
 

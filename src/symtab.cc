@@ -48,6 +48,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 octave_allocator
 symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
 
+void
+symbol_record::symbol_def::dump_symbol_info (void)
+{
+  octave_stdout << "symbol_def::count: " << count << "\n";
+  octave_stdout << "def.type_name():   " << definition.type_name () << "\n";
+  octave_stdout << "def.count():       " << definition.count () << "\n";
+}
+
 // Individual records in a symbol table.
 
 // XXX FIXME XXX -- there are lots of places below where we should
@@ -302,6 +310,15 @@ symbol_record::print_symbol_info_line (ostream& os)
   os << resetiosflags (ios::right);
 
   os << "  " << name () << "\n";
+}
+
+void
+symbol_record::dump_symbol_info (void)
+{
+  if (definition)
+    definition->dump_symbol_info ();
+  else
+    octave_stdout << "symbol " << name () << " is undefined\n";
 }
 
 bool

@@ -177,6 +177,8 @@ private:
     // Reference count.
     int count;
 
+    void dump_symbol_info (void);
+
     // No copying!
 
     symbol_def (const symbol_def& sd);
@@ -294,6 +296,8 @@ public:
   void pop_context (void);
 
   void print_symbol_info_line (ostream& os);
+
+  void dump_symbol_info (void);
 
 private:
 

@@ -226,6 +226,24 @@ clear_symbol_table (void *table)
 }
 
 static void
+clear_param_list (void *lst)
+{
+  tree_parameter_list *tmp = static_cast<tree_parameter_list *> (lst);
+
+  if (tmp)
+    tmp->clear ();
+}
+
+static void
+clear_args_passed (void *fcn)
+{
+  octave_user_function *tmp = static_cast<octave_user_function *> (fcn);
+
+  if (tmp)
+    tmp->clear_args_passed ();
+}
+
+static void
 unprotect_function (void *sr_arg)
 {
   symbol_record *sr = static_cast<symbol_record *> (sr_arg);
@@ -302,6 +320,12 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
 
   args_passed = args;
 
+  // Force cache of arguments to be undefined when this function exits.
+  // Doing so decrements the reference counts on the values of local
+  // variables that are also named function parameters.
+
+  unwind_protect::add (::clear_args_passed, this);
+
   string_vector arg_names = args.name_tags ();
 
   unwind_protect_int (num_args_passed);
@@ -317,6 +341,12 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
 	goto abort;
     }
 
+  // Force parameter list to be undefined when this function exits.
+  // Doing so decrements the reference counts on the values of local
+  // variables that are also named function parameters.
+
+  unwind_protect::add (clear_param_list, param_list);
+
   if (ret_list && Vdefine_all_return_values)
     {
       octave_value tmp = builtin_any_variable ("default_return_value");
@@ -324,6 +354,12 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
       if (tmp.is_defined ())
 	ret_list->initialize_undefined_elements (tmp);
     }
+
+  // Force return list to be undefined when this function exits.
+  // Doing so decrements the reference counts on the values of local
+  // variables that are also named values returned by this function.
+
+  unwind_protect::add (clear_param_list, ret_list);
 
   // The following code is in a separate scope to avoid warnings from
   // G++ about `goto abort' crossing the initialization of some

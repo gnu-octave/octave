@@ -73,6 +73,8 @@ public:
 
   void define_from_arg_vector (const octave_value_list& args);
 
+  void clear (void);
+
   bool is_defined (void);
 
   octave_value_list convert_to_const_vector (tree_va_return_list *vr_list);

@@ -110,6 +110,25 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
     }
 }
 
+void
+tree_parameter_list::clear (void)
+{
+  int len = length ();
+
+  Pix p = first ();
+
+  for (int i = 0; i < len; i++)
+    {
+      tree_identifier *elt = this->operator () (p);
+
+      octave_lvalue ref = elt->lvalue ();
+
+      ref.assign (octave_value::asn_eq, octave_value ());
+
+      next (p);
+    }
+}
+
 octave_value_list
 tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
 {

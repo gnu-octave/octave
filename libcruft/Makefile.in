@@ -24,9 +24,8 @@ INSTALL_DATA = @INSTALL_DATA@
 # generate a new configure script in the top-level directory (edit
 # configure.in and run autoconf).
 
-CRUFT_DIRS = balgen blas dassl eispack fftpack lapack linpack \
-	minpack misc odepack ordered-qz quadpack ranlib slatec-err \
-	slatec-fn specfun villad
+CRUFT_DIRS = blas dassl fftpack lapack linpack minpack misc odepack \
+	ordered-qz quadpack ranlib slatec-err slatec-fn specfun villad
 
 SUBDIRS = $(CRUFT_DIRS)
 

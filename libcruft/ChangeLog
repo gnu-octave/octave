@@ -1,5 +1,8 @@
 Thu Sep 24 11:59:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* balgen, eispack: Delete directories and unnecesary files.
+	* Makefile.in (CRUFT_DIRS): Delete eispack and balgen from the list.
+
 	* lapack/xdlamch.f: New file.
 
 	* ordered-qz: New directory.

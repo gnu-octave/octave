@@ -142,8 +142,7 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
   lambda.resize (nctotl);
   double *pclambda = lambda.fortran_vec ();
 
-  int tmp = n < nclin ? n : nclin;
-  int leniw = n + 2 + tmp;
+  int leniw = 2 * n;
 
   int lenw;
   int ncon = nclin > 1 ? nclin : 1;
@@ -155,8 +154,8 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
   int *iw = new int [leniw];
   double *w = new double [lenw];
 
-  F77_FCN (qpsol) (&itmax, &msglvl, &n, &nclin, &nctotl, &n, &n, &n,
-		   &bigbnd, pa, pbl, pbu, pc, featol, ph, qphess,
+  F77_FCN (qpsol) (&itmax, &msglvl, &n, &nclin, &nctotl, &ncon, &n,
+		   &n, &bigbnd, pa, pbl, pbu, pc, featol, ph, qphess,
 		   &cold, &lp, &orthog, istate, px, &inform, &iter,
 		   &objf, pclambda, iw, &leniw, w, &lenw);
 

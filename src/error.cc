@@ -47,7 +47,8 @@ verror (const char *name, const char *fmt, va_list args)
 
   ostrstream output_buf;
 
-  output_buf << name << ": ";
+  if (name)
+    output_buf << name << ": ";
   output_buf.vform (fmt, args);
   output_buf << endl;
 

@@ -370,43 +370,34 @@ string_vector
 get_fcn_file_names (int& num, int no_suffix)
 {
   static int num_max = 1024;
+
   string_vector retval (num_max);
-  int i = 0;
 
-  char *path_elt = kpse_path_element (user_pref.loadpath.c_str ());
+  dir_path p (user_pref.loadpath);
 
-  while (path_elt)
+  string_vector dirs = p.all_directories ();
+
+  int len = dirs.length ();
+
+  int k = 0;
+
+  for (int i = 0; i < len; i++)
     {
-      str_llist_type *elt_dirs = kpse_element_dirs (path_elt);
+      string_vector names = get_fcn_file_names (dirs[i], no_suffix);
 
-      str_llist_elt_type *dir;
-      for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
+      int tmp_num = names.length ();
+
+      if (k + tmp_num > num_max)
 	{
-	  char *elt_dir = STR_LLIST (*dir);
-
-	  if (elt_dir)
-	    {
-	      string_vector names = get_fcn_file_names (elt_dir, no_suffix);
-
-	      int tmp_num = names.length ();
-
-	      if (i + tmp_num > num_max)
-		{
-		  num_max += tmp_num;
-		  retval.resize (num_max);
-		}
-
-	      int k = 0;
-	      while (k < tmp_num)
-		retval[i++] = names[k++];
-	    }
+	  num_max += tmp_num;
+	  retval.resize (num_max);
 	}
 
-      path_elt = kpse_path_element (0);
+      for (int j = 0; j < tmp_num; j++)
+	retval[k++] = names[j++];
     }
 
-  num = i;
-  retval.resize (num);
+  retval.resize (k);
 
   return retval;
 }
@@ -567,18 +558,9 @@ list_in_columns (ostrstream& os, const string_vector& list)
 string
 search_path_for_file (const string& path, const string& name)
 {
-  string retval;
+  dir_path p (path);
 
-  char *tmp = kpse_path_search (path.c_str (), name.c_str (),
-				kpathsea_true);
-
-  if (tmp)
-    {
-      retval = make_absolute (tmp, the_current_working_directory);
-      free (tmp);
-    }
-
-  return retval;
+  return make_absolute (p.find (name), the_current_working_directory);
 }
 
 DEFUN ("file_in_path", Ffile_in_path, Sfile_in_path, 10,

@@ -481,31 +481,24 @@ simple_help (void)
 
   // Also need to search octave_path for script files.
 
-  char *path_elt = kpse_path_element (user_pref.loadpath.c_str ());
+  dir_path p (user_pref.loadpath);
 
-  while (path_elt)
+  string_vector dirs = p.all_directories ();
+
+  int len = dirs.length ();
+
+  for (int i = 0; i < len; i++)
     {
-      str_llist_type *elt_dirs = kpse_element_dirs (path_elt);
+      string_vector names = get_fcn_file_names (dirs[i]);
 
-      str_llist_elt_type *dir;
-      for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
+      if (! names.empty ())
 	{
-	  char *elt_dir = STR_LLIST (*dir);
+	  output_buf << "\n*** function files in "
+		     << make_absolute (dirs[i], the_current_working_directory)
+		     << ":\n\n";
 
-	  if (elt_dir)
-	    {
-	      string_vector names = get_fcn_file_names (elt_dir);
-
-	      output_buf << "\n*** function files in "
-		<< make_absolute (elt_dir, the_current_working_directory)
-		  << ":\n\n";
-
-	      if (names.length () > 0)
-		list_in_columns (output_buf, names);
-	    }
+	  list_in_columns (output_buf, names);
 	}
-
-      path_elt = kpse_path_element (0);
     }
 
   additional_help_message (output_buf);

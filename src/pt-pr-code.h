@@ -47,7 +47,8 @@ public:
 		   bool pr_orig_txt = true)
     : os (os_arg), prefix (pfx), nesting (),
       print_original_text (pr_orig_txt),
-      curr_print_indent_level (0), beginning_of_line (true)
+      curr_print_indent_level (0), beginning_of_line (true),
+      printing_newlines (true)
   {
     // For "none".
     nesting.push ('n');
@@ -149,6 +150,10 @@ public:
 
   void visit_do_until_command (tree_do_until_command&);
 
+  void suspend_newline (void) { printing_newlines = false; }
+
+  void resume_newline (void) { printing_newlines = true; }
+
 private:
 
   std::ostream& os;
@@ -165,13 +170,16 @@ private:
   // TRUE means we are at the beginning of a line.
   bool beginning_of_line;
 
+  // TRUE means we are printing newlines and indenting.
+  bool printing_newlines;
+
   void reset_indent_level (void) { curr_print_indent_level = 0; }
 
   void increment_indent_level (void) { curr_print_indent_level += 2; }
 
   void decrement_indent_level (void) { curr_print_indent_level -= 2; }
 
-  void newline (void);
+  void newline (const char *alt_txt = ", ");
 
   void indent (void);
 

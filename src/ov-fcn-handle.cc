@@ -36,7 +36,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-handle.h"
+#include "ov-usr-fcn.h"
 #include "pr-output.h"
+#include "pt-pr-code.h"
+#include "pt-misc.h"
+#include "pt-stmt.h"
+#include "pt-cmd.h"
+#include "pt-exp.h"
+#include "pt-assign.h"
 #include "variables.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
@@ -94,8 +101,81 @@ octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const
 void
 octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, nm, pr_as_read_syntax,
-			 current_print_indent_level ());
+  bool printed = false;
+
+  if (nm == "@<anonymous>")
+    {
+      tree_print_code tpc (os);
+
+      // FCN is const becuase this member function is, so we can't
+      // use it to call user_function_value, so we make a copy first.
+
+      octave_value ftmp = fcn;
+
+      octave_user_function *f = ftmp.user_function_value ();
+
+      if (f)
+	{
+	  tree_parameter_list *p = f->parameter_list ();
+
+	  os << "@(";
+
+	  if (p)
+	    p->accept (tpc);
+
+	  os << ") ";
+
+	  tree_statement_list *b = f->body ();
+
+	  if (b)
+	    {
+	      assert (b->length () == 1);
+
+	      tree_statement *s = b->front ();
+
+	      if (s)
+		{
+		  if (s->is_expression ())
+		    {
+		      tree_expression *e = s->expression ();
+
+		      if (e)
+			{
+			  if (e->is_assignment_expression ())
+			    {
+			      // The parser builds an assignment to
+			      // __retval__, and we don't want to
+			      // display that part.
+
+			      tree_simple_assignment *tsa
+				= reinterpret_cast <tree_simple_assignment *> (e);
+			      tree_expression *rhs = tsa->right_hand_side ();
+
+			      if (rhs)
+				rhs->accept (tpc);
+			    }
+			  else
+			    e->accept (tpc);
+			}
+		    }
+		  else
+		    {
+		      tree_command *c = s->command ();
+
+		      tpc.suspend_newline ();
+		      c->accept (tpc);
+		      tpc.resume_newline ();
+		    }
+		}
+	    }
+
+	  printed = true;
+	}
+    }
+
+  if (! printed)
+    octave_print_internal (os, nm, pr_as_read_syntax,
+			   current_print_indent_level ());
 }
 
 octave_value

@@ -1,3 +1,19 @@
+2004-09-09  John W. Eaton  <jwe@octave.org>
+
+	* pt-pr-code.h (tree_print_code::newline): New optional arg, alt_nl.
+	* pt-pr-code.cc (tree_print_code::newline): Use it if not printing
+	newlines.
+	(tree_print_code::visit_statement): If we printed ";", call
+	newline with optional arg set to "".
+	(tree_print_code::printing_newlines): New data member.
+	(tree_print_code::tree_print_code): Initialize it.
+	(tree_print_code::suspend_newline, tree_print_code::resume_newline):
+	New functions.
+	(tree_print_code::newline, tree_print_code::indent): Use it
+
+	* ov-fcn-handle.cc (octave_fcn_handle::print_raw):
+	Print code for anonymous function handles.
+
 2004-09-08  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-handle.cc (Ffunc2str, Ffunctions): Don't call substr(1)

@@ -883,9 +883,12 @@ tree_print_code::visit_statement (tree_statement& stmt)
       cmd->accept (*this);
 
       if (! stmt.print_result ())
-	os << ";";
-
-      newline ();
+	{
+	  os << ";";
+	  newline (" ");
+	}
+      else
+	newline ();
     }
   else
     {
@@ -896,9 +899,12 @@ tree_print_code::visit_statement (tree_statement& stmt)
 	  expr->accept (*this);
 
 	  if (! stmt.print_result ())
-	    os << ";";
-
-	  newline ();
+	    {
+	      os << ";";
+	      newline (" ");
+	    }
+	  else
+	    newline ();
 	}
     }
 }
@@ -1283,24 +1289,27 @@ void
 tree_print_code::indent (void)
 {
   assert (curr_print_indent_level >= 0);
- 
-  if (beginning_of_line)
+
+  if (printing_newlines)
     {
-      os << prefix;
+      if (beginning_of_line)
+	{
+	  os << prefix;
 
-      for (int i = 0; i < curr_print_indent_level; i++)
-	os << " ";
+	  for (int i = 0; i < curr_print_indent_level; i++)
+	    os << " ";
 
-      beginning_of_line = false;
+	  beginning_of_line = false;
+	}
     }
 }
 
 // All print_code() functions should use this to print new lines.
 
 void
-tree_print_code::newline (void)
+tree_print_code::newline (const char *alt_txt)
 {
-  os << "\n";
+  os << (printing_newlines ? "\n" : alt_txt);
 
   beginning_of_line = true;
 }

@@ -40,7 +40,7 @@ function q = polyderiv (p)
     error ("polyderiv: argument must be a vector");
   endif
 
-  lp = length (p);
+  lp = numel (p);
   if (lp == 1)
     q = 0;
     return;
@@ -49,6 +49,9 @@ function q = polyderiv (p)
     return;
   end
 
-  q = p (1:(lp-1)) .* [(lp-1):-1:1];
+  ## Force P to be a row vector.
+  p = p(:).';
+
+  q = p(1:(lp-1)) .* [(lp-1):-1:1];
 
 endfunction

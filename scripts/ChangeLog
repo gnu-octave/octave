@@ -1,3 +1,7 @@
+2005-02-09  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/polyderiv.m: Force P to be a row vector.
+
 2005-02-08  John W. Eaton  <jwe@octave.org>
 
 	* strings/dec2base.m: Don't delete leading zero if third arg is

@@ -1,3 +1,7 @@
+Thu Nov  7 12:43:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.91.
+
 Wed Nov  6 16:26:39 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Add checks for group stuff.
@@ -15,7 +19,6 @@ Tue Nov  5 12:32:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* acconfig.h: Add #undefs for HAVE_BSD_SIGNALS, HAVE_POSIX_SIGNALS,
 	HAVE_USG_SIGHOLD, and MUST_REINSTALL_SIGHANDLERS.
-
 
 Mon Nov  4 11:31:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

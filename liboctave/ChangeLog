@@ -1,5 +1,7 @@
 Thu Nov  7 10:45:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 1.91.
+
 	* Array3.cc (Array3<T>::resize): Make it work.
 
 Wed Nov  6 22:44:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

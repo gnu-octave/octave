@@ -1,5 +1,7 @@
 Thu Nov  7 07:59:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 1.91.
+
 	* pt-fvc.cc (tree_indirect_ref::reference): If the lhs object is
 	not a map, convert it to one.
 
@@ -15,7 +17,7 @@ Thu Nov  7 07:59:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Wed Nov  6 12:32:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* pager.cc (do_sync): Don't call clear_external_pager here.
+	* pager.cc (do_sync): Don't call clear_external_pager() here.
 
 	* pt-const.h (tree_constant::allocator) New static member.
 	(tree_constant::operator new, tree_constant::operator delete):

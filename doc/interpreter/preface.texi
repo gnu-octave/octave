@@ -104,8 +104,7 @@ Phil Johnson (johnsonp@@nicco.sscnet.ucla.edu) has helped to make Linux
 releases available.
 
 @item
-Michel Juillard <juillard@@msh-paris.fr> ported Octave to DOS and OS/2
-systems.
+Michel Juillard <juillard@@msh-paris.fr> ported Octave to DOS systems.
 
 @item
 Friedrich Leisch (leisch@@ci.tuwien.ac.at) provided the

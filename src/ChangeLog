@@ -1,3 +1,8 @@
+2000-07-05  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+
+	* Makefile.in (BLAS_LIBS): Substitute here.
+	(octave): Use $(BLAS_LIBS) in the final link command.
+
 2000-06-30  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
 
 	* Makefile.in (octave): Link $(FLIBS) last.

@@ -1,3 +1,8 @@
+2000-07-05  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+
+	* Use BLAS_LIBS to save the names of BLAS libraries instead of
+	adding them to LIBS, then substitute BLAS_LIBS.
+
 2000-06-30  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
 
 	* configure.in: Support for --with-fastblas (ATLAS).

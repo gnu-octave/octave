@@ -190,6 +190,7 @@ OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
 OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
   $(LIBPLPLOT) $(LIBREADLINE) $(LIBKPATHSEA) $(LIBGLOB) $(LIBDLFCN)
 
+BLAS_LIBS = @BLAS_LIBS@
 LIBS = @LIBS@
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
@@ -256,7 +257,7 @@ octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
 	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
-	$(LEXLIB) $(TERMLIBS) $(LIBS) $(FLIBS)
+	$(LEXLIB) $(TERMLIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

@@ -136,7 +136,7 @@ chmod 755 $DIRS_TO_MAKE
 if test "$prefix" = /usr/local
 then
   echo "installing ./octave as $bindir/octave"
-  cp ./octave $bindir/octave
+  cp octave $bindir/octave
   chmod 755 $bindir/octave
 else
   echo "installing octave.sh as $bindir/octave"
@@ -145,9 +145,13 @@ else
   chmod 755 $bindir/octave
 
   echo "installing ./octave as $bindir/octave.bin"
-  cp ./octave $bindir/octave.bin
+  cp octave $bindir/octave.bin
   chmod 755 $bindir/octave.bin
 fi
+
+echo "installing octave-bug as $bindir/octave-bug"
+cp octave-bug $bindir/octave-bug
+chmod 755 $bindir/octave-bug
 
 echo "installing function files in $fcnfiledir"
 ( cd scripts

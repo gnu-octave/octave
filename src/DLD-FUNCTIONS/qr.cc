@@ -72,7 +72,7 @@ that R = triu (qr (X))")
   else if (arg_is_empty > 0)
     return octave_value_list (3, Matrix ());
 
-  QR::type type = nargout == 1 ? QR::raw
+  QR::type type = (nargout == 0 || nargout == 1) ? QR::raw
     : (nargin == 2 ? QR::economy : QR::std);
 
   if (arg.is_real_type ())
@@ -81,18 +81,32 @@ that R = triu (qr (X))")
 
       if (! error_state)
 	{
-	  if (nargout < 3)
+	  switch (nargout)
 	    {
-	      QR fact (m, type);
-	      retval(1) = fact.R ();
-	      retval(0) = fact.Q ();
-	    }
-	  else
-	    {
-	      QRP fact (m, type);
-	      retval(2) = fact.P ();
-	      retval(1) = fact.R ();
-	      retval(0) = fact.Q ();
+	    case 0:
+	    case 1:
+	      {
+		QR fact (m, type);
+		retval(0) = fact.Q ();
+	      }
+	      break;
+
+	    case 2:
+	      {
+		QR fact (m, type);
+		retval(1) = fact.R ();
+		retval(0) = fact.Q ();
+	      }
+	      break;
+
+	    default:
+	      {
+		QRP fact (m, type);
+		retval(2) = fact.P ();
+		retval(1) = fact.R ();
+		retval(0) = fact.Q ();
+	      }
+	      break;
 	    }
 	}
     }
@@ -102,18 +116,32 @@ that R = triu (qr (X))")
 
       if (! error_state)
 	{
-	  if (nargout < 3)
+	  switch (nargout)
 	    {
-	      ComplexQR fact (m, type);
-	      retval(1) = fact.R ();
-	      retval(0) = fact.Q ();
-	    }
-	  else
-	    {
-	      ComplexQRP fact (m, type);
-	      retval(2) = fact.P ();
-	      retval(1) = fact.R ();
-	      retval(0) = fact.Q ();
+	    case 0:
+	    case 1:
+	      {
+		ComplexQR fact (m, type);
+		retval(0) = fact.Q ();
+	      }
+	      break;
+
+	    case 2:
+	      {
+		ComplexQR fact (m, type);
+		retval(1) = fact.R ();
+		retval(0) = fact.Q ();
+	      }
+	      break;
+
+	    default:
+	      {
+		ComplexQRP fact (m, type);
+		retval(2) = fact.P ();
+		retval(1) = fact.R ();
+		retval(0) = fact.Q ();
+	      }
+	      break;
 	    }
 	}
     }

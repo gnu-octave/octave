@@ -96,6 +96,8 @@ QR::init (const Matrix& a, QR::type qr_type)
 	      for (int i = limit + 1; i < m; i++)
 		A_fact.elem (i, j) *= tau.elem (j);
 	    }
+
+	  q = A_fact;
 	}
       else
 	{

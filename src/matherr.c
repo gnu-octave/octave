@@ -24,9 +24,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "oct-math.h"
-
 #if defined (EXCEPTION_IN_MATH)
+
+#include <math.h>
+
 int
 matherr (struct exception *x)
 {
@@ -49,8 +50,6 @@ matherr (struct exception *x)
 
   return 1;
 }
-#endif
-
 #endif
 
 /*

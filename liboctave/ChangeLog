@@ -1,3 +1,8 @@
+Mon Jul  7 21:14:41 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleQR.cc (QR::init): Don't forget to initialize Q when type is raw.
+	* CmplxQR.cc (ComplexQR::init): Ditto.
+
 Sun Jun 15 21:06:37 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-mappers.cc (acos (const Complex&)): Select branch that is

@@ -23,7 +23,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 /*
 
-The 11 functions listed below were adapted from a similar functions
+The 12 functions listed below were adapted from a similar functions
 from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
 Free Software Foundation, Inc.
 
@@ -101,7 +101,7 @@ extern "C"
 LOSE! LOSE!
 #endif
 
-extern int ioctl (int, int, ...);
+extern int ioctl ();
 char *tilde_expand (char *s); /* From readline's tilde.c */
 }
 

@@ -52,6 +52,14 @@ charMatrix::charMatrix (const char *s)
     elem (0, i) = s[i];
 }
 
+charMatrix::charMatrix (const string& s)
+  : MArray2<char> (1, s.length ())
+{
+  int nc = cols ();
+  for (int i = 0; i < nc; i++)
+    elem (0, i) = s[i];
+}
+
 int
 charMatrix::operator == (const charMatrix& a) const
 {

@@ -459,12 +459,19 @@ builtin_error (tree_constant *args, int nargin, int nargout)
 
   char *msg = "unspecified_error";
 
-  if (nargin == 2
-      && args != NULL_TREE_CONST
-      && args[1].is_defined ()
-      && args[1].is_string_type ())
+  if (nargin == 2 && args != NULL_TREE_CONST && args[1].is_defined ())
     {
-      msg = args[1].string_value ();
+      if (args[1].is_string_type ())
+	{
+	  msg = args[1].string_value ();
+
+	  if (msg == (char *) NULL || *msg == '\0')
+	    return retval;
+	}
+      else if (args[1].is_empty ())
+	{
+	  return retval;
+	}
     }
 
   error (msg);

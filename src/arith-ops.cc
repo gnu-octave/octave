@@ -2,7 +2,7 @@
 // Used by the tree class.                    
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -2097,7 +2097,7 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = quotient (a, b);
+	complex_result = quotient (b, a);
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);

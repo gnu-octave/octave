@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "missing-math.h"
 #include "variables.h"
 #include "mappers.h"
+#include "errors.h"
 #include "utils.h"
 #include "defun.h"
 

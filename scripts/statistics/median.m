@@ -28,7 +28,7 @@ function retval = median (a)
 # See also: std, mean
 
   if (nargin != 1)
-    usage ("medain (a)");
+    usage ("median (a)");
   endif
 
   [nr, nc] = size (a);

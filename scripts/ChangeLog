@@ -1,3 +1,8 @@
+2003-04-11  Doug Stewart <dastew@sympatico.ca>
+
+	* control/base/__stepimp__.m: If digital impulse, reduce gain of
+	the impulse by t_step.
+
 2003-04-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/base/__bodquist__.m: Don't convert pdbig and fdbig to

@@ -202,6 +202,9 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       y(:,i) = C * x;
       x = F * x;
     endfor
+    if (DIGITAL)
+      y *= t_step; 
+    endif 
   else
     x = zeros(NSTATES, 1);
     for i = 1:n

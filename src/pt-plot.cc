@@ -1068,6 +1068,7 @@ DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   send_to_plot_stream ("set xlabel\n");
   send_to_plot_stream ("set ylabel\n");
   send_to_plot_stream ("set nogrid\n");
+  send_to_plot_stream ("set nolabel\n");
 
 // This makes a simple `replot' not work after a `clearplot' command
 // has been issued.

@@ -2458,19 +2458,12 @@ mk_stat_map (struct stat& st)
 {
   Octave_map m;
 
-  unsigned mode = st.st_mode;
-  int mode_as_int = 1000 * ((mode & 7000) >> 9)
-    + 100 * ((mode & 0700) >> 6)
-      + 10 * ((mode & 0070) >> 3)
-	+ ((mode & 0007) >> 0);
-
   char mode_as_string[11];
-  mode_string (mode, mode_as_string);
+  mode_string (st.st_mode, mode_as_string);
   mode_as_string[10] = '\0';
 
   m["dev"] = (double) st.st_dev;
   m["ino"] = (double) st.st_ino;
-  m["mode"] = (double) mode_as_int;
   m["modestr"] = mode_as_string;
   m["nlink"] = (double) st.st_nlink;
   m["uid"] = (double) st.st_uid;
@@ -2500,7 +2493,7 @@ DEFUN ("stat", Fstat, Sstat, 1, 1,
 \n\
     dev     : id of device containing a directory entry for this file\n\
     ino     : file number of the file\n\
-    mode    : file mode, as an integer\n\
+    modestr : file mode, as a string of ten letters or dashes as in ls -l\n\
     nlink   : number of links\n\
     uid     : user id of file's owner\n\
     gid     : group id of file's group \n\

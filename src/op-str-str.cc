@@ -45,10 +45,32 @@ eq (const octave_value& a1, const octave_value& a2)
   return octave_value (v1.char_matrix_value () == v2.char_matrix_value ());
 }
 
+static octave_value
+ne (const octave_value& a1, const octave_value& a2)
+{
+  CAST_BINOP_ARGS (const octave_char_matrix_str&,
+		   const octave_char_matrix_str&);
+
+  return octave_value (v1.char_matrix_value () != v2.char_matrix_value ());
+}
+
+static octave_value
+assign (octave_value& a1, const octave_value_list& idx,
+	const octave_value& a2)
+{
+  CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_char_matrix_str&);
+
+  v1.assign (idx, v2.char_matrix_value ());
+  return octave_value ();
+}
+
 void
 install_str_str_ops (void)
 {
   INSTALL_BINOP (eq, octave_char_matrix_str, octave_char_matrix_str, eq);
+  INSTALL_BINOP (ne, octave_char_matrix_str, octave_char_matrix_str, ne);
+
+  INSTALL_ASSIGNOP (octave_char_matrix_str, octave_char_matrix_str, assign);
 }
 
 /*

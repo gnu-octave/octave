@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-ieee.h"
 #include "mx-base.h"
 
+#include "oct-obj.h"
 #include "ops.h"
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"
@@ -53,6 +54,79 @@ octave_value::numeric_conv_fcn
 octave_char_matrix_str::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;
+}
+
+octave_value
+octave_char_matrix_str::index (const octave_value_list& idx) const
+{
+  octave_value retval;
+
+  int len = idx.length ();
+
+  switch (len)
+    {
+    case 2:
+      {
+	idx_vector i = idx (0).index_vector ();
+	idx_vector j = idx (1).index_vector ();
+
+	retval = octave_value (charMatrix (matrix.index (i, j)), true);
+      }
+      break;
+
+    case 1:
+      {
+	idx_vector i = idx (0).index_vector ();
+
+	retval = octave_value (charMatrix (matrix.index (i)), true);
+      }
+      break;
+
+    default:
+      error ("invalid number of indices (%d) for matrix value", len);
+      break;
+    }
+
+  return retval;
+}
+
+extern void assign (Array2<char>&, const Array2<char>&);
+
+void
+octave_char_matrix_str::assign (const octave_value_list& idx,
+				const charMatrix& rhs)
+{
+  int len = idx.length ();
+
+  switch (len)
+    {
+    case 2:
+      {
+	idx_vector i = idx (0).index_vector ();
+	idx_vector j = idx (1).index_vector ();
+
+	matrix.set_index (i);
+	matrix.set_index (j);
+
+	::assign (matrix, rhs);
+      }
+      break;
+
+    case 1:
+      {
+	idx_vector i = idx (0).index_vector ();
+
+	matrix.set_index (i);
+
+	::assign (matrix, rhs);
+      }
+      break;
+
+    default:
+      error ("invalid number of indices (%d) for indexed matrix assignment",
+	     len);
+      break;
+    }
 }
 
 octave_value
@@ -118,9 +192,7 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
 charMatrix
 octave_char_matrix_str::all_strings (void) const
 {
-  charMatrix retval;
-  error ("octave_char_matrix_str::all_strings(): not implemented");
-  return retval;
+  return matrix;
 }
 
 string

@@ -424,7 +424,7 @@ tree_identifier::eval (bool print)
 	  else if (print)
 	    retval.print_with_name (name ());
 	}
-      else
+      else if (object_to_eval->is_constant ())
 	eval_undefined_error ();
     }
 

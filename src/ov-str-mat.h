@@ -84,6 +84,10 @@ public:
 
   numeric_conv_fcn numeric_conversion_function (void) const;
 
+  octave_value index (const octave_value_list& idx) const;
+
+  void assign (const octave_value_list& idx, const charMatrix& rhs);
+
   octave_value all (void) const;
   octave_value any (void) const;
 

@@ -67,6 +67,7 @@ octave_complex_matrix::index (const octave_value_list& idx) const
       {
 	idx_vector i = idx (0).index_vector ();
 	idx_vector j = idx (1).index_vector ();
+
 	retval = ComplexMatrix (matrix.index (i, j));
       }
       break;
@@ -74,6 +75,7 @@ octave_complex_matrix::index (const octave_value_list& idx) const
     case 1:
       {
 	idx_vector i = idx (0).index_vector ();
+
 	retval = ComplexMatrix (matrix.index (i));
       }
       break;

@@ -29,7 +29,7 @@ SUBDIRS = libcruft liboctave @DLD_DIR@ info readline src doc scripts
 DISTSUBDIRS = $(SUBDIRS) test
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
-	BUGS PLOTTING PROJECTS octave.sh octave-mode.el doinstall.sh \
+	BUGS PROJECTS octave.sh octave-mode.el doinstall.sh \
 	mkpath
 
 # Subdirectories to run `make dist' in

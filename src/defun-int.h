@@ -102,7 +102,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 #define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
 			is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+    XDEFUNX_INTERNAL (name, fname, args_name, nargout_name, is_text_fcn, doc) \
   END_INSTALL_BUILTIN
 
 // Generate code to install name in the symbol table.  The script

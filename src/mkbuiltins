@@ -44,6 +44,11 @@ cat << \EOF
   extern DECLARE_FUN (name, args_name, nargout_name); \
     install_builtin_function (F ## name, #name, doc, is_text_fcn); \
 
+#define XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
+			 is_text_fcn, doc) \
+  extern DECLARE_FUNX (fname, args_name, nargout_name); \
+    install_builtin_function (fname, name, doc, is_text_fcn); \
+
 #define XDEFALIAS_INTERNAL(alias, name) \
   alias_builtin (#alias, #name);
 

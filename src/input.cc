@@ -401,7 +401,16 @@ gnu_readline (const char *s)
 
   if (using_readline)
     {
-      retval = ::readline (s);
+      char *tmp = retval = ::readline (s);
+
+      if (tmp)
+	{
+	  int len = strlen (tmp);
+	  retval = (char *) malloc (len + 2);
+	  strcpy (retval, tmp);
+	  retval[len] = '\n';
+	  retval[len+1] = '\0';
+	}
     }
   else
     {

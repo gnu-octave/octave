@@ -690,7 +690,7 @@ octave_value::next_subsref (const std::string& type,
 			    const std::list<octave_value_list>& idx,
 			    size_t skip) 
 {
-  if (idx.size () > skip)
+  if (! error_state && idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
       for (size_t i = 0; i < skip; i++)

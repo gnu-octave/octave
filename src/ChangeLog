@@ -1,5 +1,11 @@
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-cell.cc (octave_cell::subsref): When indexing with '{', quit
+	early if an error occurs in do_index_op.
+
+	* ov.cc (octave_value::next_subsref): Don't do anything if
+	error_state is true.
+
 	* cutils.c (octave_usleep) [HAVE_SELECT]: Introduce new local
 	scope for declaration of delay.
 	[HAVE_POLL]: Likewise, for delay and pfd.

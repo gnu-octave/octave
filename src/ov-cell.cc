@@ -67,23 +67,26 @@ octave_cell::subsref (const std::string& type,
       {
 	octave_value tmp = do_index_op (idx.front ());
 
-	Cell tcell = tmp.cell_value ();
-
-	if (tcell.length () == 1)
-	  retval = tcell(0,0);
-	else
+	if (! error_state)
 	  {
-	    int nr = tcell.rows ();
-	    int nc = tcell.columns ();
-	    octave_value_list lst (nr * nc, octave_value ());
-	    int k = 0;
-	    for (int j = 0; j < nc; j++)
-	      for (int i = 0; i < nr; i++)
-		{
-		  OCTAVE_QUIT;
-		  lst(k++) = tcell(i,j);
-		}
-	    retval = octave_value (lst, true);
+	    Cell tcell = tmp.cell_value ();
+
+	    if (tcell.length () == 1)
+	      retval = tcell(0,0);
+	    else
+	      {
+		int nr = tcell.rows ();
+		int nc = tcell.columns ();
+		octave_value_list lst (nr * nc, octave_value ());
+		int k = 0;
+		for (int j = 0; j < nc; j++)
+		  for (int i = 0; i < nr; i++)
+		    {
+		      OCTAVE_QUIT;
+		      lst(k++) = tcell(i,j);
+		    }
+		retval = octave_value (lst, true);
+	      }
 	  }
       }
       break;

@@ -20,11 +20,23 @@ FLIBS="%FLIBS%"
 F2C="%F2C%"
 F2CFLAGS="%F2CFLAGS%"
 CC="%CC%"
+CC_VERSION="%CC_VERSION%"
 CFLAGS="%CFLAGS%"
 CXX="%CXX%"
+CXX_VERSION="%CXX_VERSION%"
 CXXFLAGS="%CXXFLAGS%"
 LDFLAGS="%LDFLAGS%"
 DEFS="%DEFS%"
+
+CC_AND_VERSION=
+if test -n "$CC_VERSION"; then
+  CC_AND_VERSION="$CC, version $CC_VERSION"
+fi
+
+CXX_AND_VERSION=
+if test -n "$CXX_VERSION"; then
+  CXX_AND_VERSION="$CXX, version $CXX_VERSION"
+fi
 
 PATH=/bin:/usr/bin:/usr/ucb:/usr/local/bin:$PATH
 export PATH
@@ -110,9 +122,9 @@ FFLAGS:           $FFLAGS
 F2C:              $F2C
 F2CFLAGS:         $F2CFLAGS
 FLIBS:            $FLIBS
-C compiler:       $CC
+C compiler:       $CC_AND_VERSION
 CFLAGS:           $CFLAGS
-C++ compiler:     $CXX
+C++ compiler:     $CXX_AND_VERSION
 CXXFLAGS:         $CXXFLAGS
 LDFLAGS:          $LDFLAGS
 DEFS:
@@ -150,6 +162,9 @@ then
   if cmp -s $TEMP $TEMP.x
   then
     echo "file not changed -- no bug report submitted"
+    status=1
+  elif test `wc $TEMP | awk '{print $1}'` -eq 0; then
+    echo "empty bug report file -- not submitted"
     status=1
   else
 

@@ -1530,7 +1530,15 @@ top level.  The default value is 0.\n\
 @end defvr");
 
   DEFVAR (ok_to_lose_imaginary_part, "warn", ok_to_lose_imaginary_part,
-    "silently convert from complex to real by dropping imaginary part");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} ok_to_lose_imaginary_part\n\
+If the value of @code{ok_to_lose_imaginary_part} is nonzero, implicit\n\
+conversions of complex numbers to real numbers are allowed (for example,\n\
+by fsolve).  If the value is @code{\"warn\"}, the conversion is allowed,\n\
+but a warning is printed.  Otherwise, an error message is printed and\n\
+control is returned to the top level.  The default value is\n\
+@code{\"warn\"}.\n\
+@end defvr");
 
   DEFVAR (prefer_column_vectors, 1.0, prefer_column_vectors,
     "prefer column/row vectors");

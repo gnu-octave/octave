@@ -6,6 +6,7 @@
 	* DLD-FUNCTIONS/sort.cc (Fsort): Ditto.
 	* mappers.cc (Fisinf, Fisnan, Ffinite): Ditto.
 	* data.cc (Fall, Fany, Fdiag, Fones, Fzeros, Feye, Flinspace): Ditto.
+	* ov.cc (Vok_to_lose_imaginary_part): Ditto.
 
 1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

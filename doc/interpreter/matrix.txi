@@ -167,13 +167,7 @@ Houston, TX 77030.
 
 @c XXX FIXME XXX -- is this really worth documenting?
 @c
-@c @defvr {Built-in Variable} ok_to_lose_imaginary_part
-@c If the value of @code{ok_to_lose_imaginary_part} is nonzero, implicit
-@c conversions of complex numbers to real numbers are allowed (for example,
-@c by fsolve).  If the value is @code{"warn"}, the conversion is allowed,
-@c but a warning is printed.  Otherwise, an error message is printed and
-@c control is returned to the top level.  The default value is
-@c @code{"warn"}.
+@c @DOCSTRING(ok_to_lose_imaginary_part)
 @c 
 @c XXX FIXME XXX -- this is here because it is used by @code{ones},
 @c @code{zeros}, @code{rand}, etc.

@@ -1,3 +1,13 @@
+2001-02-08  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* strings/dec2base.m: New file.
+	* strings/base2dec.m: New file.
+	* strings/strjust.m: New file.
+	* strings/dec2hex.m: Replace with version that just calls 2dec2base.
+	* strings/dec2bin.m: Likewise.
+	* strings/hex2dec.m: Replace with version that just calls base2dec.
+	* strings/bin2dec.m: Likewise.
+
 2001-02-07  David Livings <david.livings@asa.co.uk>
 
 	* statistics/base/ppplot.m: Use gset, not set.

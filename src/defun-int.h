@@ -25,9 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "version.h"
+
 class octave_value;
 
 extern void print_usage (const string& nm, bool just_usage = false);
+
+extern void check_version (const string& version, const string& fcn);
 
 // XXX FIXME XXX -- change to use actual pointer types instead of void*
 // when things are not changing as rapidly.
@@ -93,7 +97,10 @@ alias_builtin (const string& alias, const string& name);
   { \
     static bool installed = false; \
     if (! installed) \
-      install_builtin_function (F ## name, #name, doc); \
+      { \
+	check_version (OCTAVE_VERSION, #name); \
+	install_builtin_function (F ## name, #name, doc); \
+      } \
     return installed; \
   }
 

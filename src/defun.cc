@@ -58,6 +58,14 @@ print_usage (const string& nm, bool just_usage)
     warning ("no usage message found for `%s'", nm.c_str ());
 }
 
+void
+check_version (const string& version, const string& fcn)
+{
+  if (version != OCTAVE_VERSION)
+    warning ("incompatible version %s found in function `%s'",
+	     version.c_str (), fcn.c_str ());
+}
+
 // Install variables and functions in the symbol tables.
 
 void

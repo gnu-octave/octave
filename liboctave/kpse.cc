@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "kpse-xfns.h"
 #include "kpse.h"
 
+#include "lo-sstream.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
 
@@ -338,26 +339,27 @@ xstrdup (const char *s)
    routines and abort if an error happens.  */
 
 static FILE *
-xfopen (const char *filename, const char *mode)
+xfopen (const std::string& filename, const char *mode)
 {
   FILE *f;
 
-  assert (filename && mode);
+  assert (! filename.empty () && mode);
 
-  f = fopen (filename, mode);
-  if (f == NULL)
-    FATAL_PERROR (filename);
+  f = fopen (filename.c_str (), mode);
+
+  if (! f)
+    FATAL_PERROR (filename.c_str ());
 
   return f;
 }
 
 static void
-xfclose (FILE *f, const char *filename)
+xfclose (FILE *f, const std::string& filename)
 {
   assert (f);
 
-  if (fclose (f) == EOF)
-    FATAL_PERROR (filename);
+  if (! fclose (f))
+    FATAL_PERROR (filename.c_str ());
 }
 
 /* Return the concatenation of S1 and S2.  See `concatn.c' for a
@@ -484,7 +486,6 @@ hash_lookup (hash_table_type table, const std::string& key)
   /* Look at everything in this bucket.  */
   for (p = table.buckets[n]; p != NULL; p = p->next)
     if (FILESTRCASEEQ (key.c_str (), p->key.c_str ()))
-      /* Cast because the general string_vector shouldn't force const data.  */
       ret.append (p->value);
 
 #ifdef KPSE_DEBUG
@@ -583,18 +584,19 @@ kpse_var_value (const std::string& var)
 /* Truncate any too-long components in NAME, returning the result.  It's
    too bad this is necessary.  See comments in readable.c for why.  */
 
-static char *
-kpse_truncate_filename (const char *name)
+static std::string
+kpse_truncate_filename (const std::string& name)
 {
   unsigned c_len = 0;        /* Length of current component.  */
   unsigned ret_len = 0;      /* Length of constructed result.  */
 
-  /* Allocate enough space.  */
-  char *ret = (char *) xmalloc (strlen (name) + 1);
+  std::string ret = name;
 
-  for (; *name; name++)
+  size_t len = name.length ();
+
+  for (size_t i = 0; i < len; i++)
     {
-      if (IS_DIR_SEP (*name) || IS_DEVICE_SEP (*name))
+      if (IS_DIR_SEP (name[i]) || IS_DEVICE_SEP (name[i]))
         {
 	  /* At a directory delimiter, reset component length.  */
           c_len = 0;
@@ -606,11 +608,11 @@ kpse_truncate_filename (const char *name)
         }
 
       /* Copy this character.  */
-      ret[ret_len++] = *name;
+      ret[ret_len++] = name[i];
       c_len++;
     }
 
-  ret[ret_len] = 0;
+  ret.resize (ret_len);
 
   return ret;
 }
@@ -622,18 +624,19 @@ kpse_truncate_filename (const char *name)
 
 #ifdef WIN32
 static inline bool
-READABLE (const char *fn, struct stat&)
+READABLE (const std::string& fn, struct stat&)
 {
-  return (GetFileAttributes (fn) != 0xFFFFFFFF
-	  && ! (GetFileAttributes (fn) & FILE_ATTRIBUTE_DIRECTORY));
+  const char *t = fn.c_str ();
+  return (GetFileAttributes (t) != 0xFFFFFFFF
+	  && ! (GetFileAttributes (t) & FILE_ATTRIBUTE_DIRECTORY));
 }
 #else
 static inline bool
-READABLE (const char *fn, struct stat& st)
+READABLE (const std::string& fn, struct stat& st)
 {
-  return (access (fn, R_OK) == 0
-	  && stat (fn, &(st)) == 0
-	  && !S_ISDIR (st.st_mode));
+  const char *t = fn.c_str ();
+  return (access (t, R_OK) == 0
+	  && stat (t, &(st)) == 0 && ! S_ISDIR (st.st_mode));
 }
 #endif
 
@@ -643,15 +646,15 @@ READABLE (const char *fn, struct stat& st)
 
    Generic const return warning.  See extend-fname.c.  */
 
-static char *
-kpse_readable_file (const char *name)
+static std::string
+kpse_readable_file (const std::string& name)
 {
   struct stat st;
-  char *ret;
+  std::string ret;
 
   if (READABLE (name, st))
     {
-      ret = (char *) name;
+      ret = name;
 
 #ifdef ENAMETOOLONG
     }
@@ -665,10 +668,7 @@ kpse_readable_file (const char *name)
       if (! READABLE (ret, st))
 	{
 	  /* Failed.  */
-	  if (ret != name)
-	    free (ret);
-
-	  ret = NULL;
+	  ret = std::string ();
 	}
 #endif /* ENAMETOOLONG */
 
@@ -679,9 +679,10 @@ kpse_readable_file (const char *name)
       if (errno == EACCES)
 	{
 	  /* Maybe warn them if permissions are bad.  */
-	  perror (name);
+	  perror (name.c_str ());
 	}
-      ret = NULL;
+
+      ret = std::string ();
     }
 
   return ret;
@@ -780,54 +781,32 @@ log_search (const string_vector& filenames)
    does seem cleaner.  (We do waste a bit of space in the return
    value, though, since we don't shrink it to the final size returned.)  */
 
-#define INIT_ALLOC 75  /* Doesn't much matter what this number is.  */
-
 static string_vector
 dir_list_search (str_llist_type *dirs, const std::string& name,
 		 bool search_all)
 {
   str_llist_elt_type *elt;
   string_vector ret;
-  unsigned name_len = name.length ();
-  unsigned allocated = INIT_ALLOC;
-  char *potential = (char *) xmalloc (allocated);
 
   for (elt = *dirs; elt; elt = STR_LLIST_NEXT (*elt))
     {
       const std::string dir = STR_LLIST (*elt);
-      unsigned dir_len = dir.length ();
 
-      while (dir_len + name_len + 1 > allocated)
+      std::string potential = dir + name;
+
+      std::string tmp = kpse_readable_file (potential);
+
+      if (! tmp.empty ())
         {
-          allocated += allocated;
-          XRETALLOC (potential, allocated, char);
-        }
-
-      strcpy (potential, dir.c_str ());
-      strcat (potential, name.c_str ());
-
-      if (kpse_readable_file (potential))
-        {
-          ret.append (std::string (potential));
+          ret.append (potential);
 
           /* Move this element towards the top of the list.  */
           str_llist_float (dirs, elt);
 
-          /* If caller only wanted one file returned, no need to
-             terminate the list with NULL; the caller knows to only look
-             at the first element.  */
           if (! search_all)
             return ret;
-
-          /* Start new filename.  */
-          allocated = INIT_ALLOC;
-          potential = (char *) xmalloc (allocated);
         }
     }
-
-  /* If we get here, either we didn't find any files, or we were finding
-     all the files.  But we're done with the last filename, anyway.  */
-  free (potential);
 
   return ret;
 }
@@ -836,11 +815,10 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
    readable, return (a list containing) it; otherwise, return NULL.  */
 
 static string_vector
-absolute_search (const std::string& name_arg)
+absolute_search (const std::string& name)
 {
   string_vector ret_list;
-  const char *name = name_arg.c_str ();
-  char *found = kpse_readable_file (name);
+  std::string found = kpse_readable_file (name);
 
   /* Add `found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
@@ -1068,7 +1046,8 @@ path_find_first_of (const std::string& path_arg, const string_vector& names,
 	      /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
 		 (find_first_of), also tests first_search, and does the
 		 resetting.  */
-	      found = first_search ? string_vector () : kpse_db_search (name, dir.c_str (), all);
+	      found = first_search
+		? string_vector () : kpse_db_search (name, dir.c_str (), all);
 
 	      /* Search the filesystem if (1) the path spec allows it,
 		 and either
@@ -1520,7 +1499,6 @@ kpse_path_expand (const std::string& path_arg)
    MA 02111-1307, USA.  */
 
 #define brace_whitespace(c) (! (c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
-#define savestring xstrdup
 
 /* Basic idea:
 
@@ -1572,7 +1550,7 @@ copy_array (char **array)
 
   new_array = (char **)xmalloc ((len + 1) * sizeof (char *));
   for (i = 0; array[i]; i++)
-    new_array[i] = savestring (array[i]);
+    new_array[i] = xstrdup (array[i]);
   new_array[i] = (char *)NULL;
 
   return (new_array);
@@ -1614,7 +1592,7 @@ brace_expand (const char *text)
     {
       WARNING1 ("%s: Unmatched {", text);
       free (preamble);		/* Same as result[0]; see initialization. */
-      result[0] = savestring (text);
+      result[0] = xstrdup (text);
       return (result);
     }
 
@@ -1947,25 +1925,28 @@ add_suffixes (const char ***list, ...)
   (*list)[count] = NULL;
 }
 
-static char *
-remove_dbonly (const char *path)
+static std::string
+remove_dbonly (const std::string& path)
 {
-  char *ret = XTALLOC (strlen (path) + 1, char), *q=ret;
-  const char *p=path;
-  bool new_elt=true;
+  std::string ret = path;
+  size_t path_len = path.length ();
 
-  while (*p)
+  size_t i = 0, j = 0;
+
+  bool new_elt = true;
+
+  while (i < path_len)
     {
-      if (new_elt && *p && *p == '!' && *(p+1) == '!')
-	p += 2;
+      if (new_elt && i + 1 < path_len && path[i] == '!' && path[i+1] == '!')
+	i += 2;
       else
 	{
-	  new_elt = (*p == ENV_SEP);
-	  *q++ = *p++;
+	  new_elt = (path[i] == ENV_SEP);
+	  ret[j++] = path[i++];
 	}
     }
 
-  *q = '\0';
+  ret.resize (j);
 
   return ret;
 }
@@ -1982,10 +1963,12 @@ kpse_init_format (void)
   kpse_format_info.type = "ls-R";
   init_path (&kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
   add_suffixes (&kpse_format_info.suffix, "ls-R", NULL);
-  kpse_format_info.path = remove_dbonly (kpse_format_info.path.c_str ());
+  kpse_format_info.path = remove_dbonly (kpse_format_info.path);
 
 #ifdef KPSE_DEBUG
-#define MAYBE(member) (kpse_format_info.member.empty () ? "(none)" : kpse_format_info.member.c_str ())
+#define MAYBE(member) \
+  (kpse_format_info.member.empty () \
+    ? "(none)" : kpse_format_info.member.c_str ())
 
   /* Describe the monster we've created.  */
   if (KPSE_DEBUG_P (KPSE_DEBUG_PATHS))
@@ -2083,8 +2066,10 @@ static string_vector db_dir_list;
    directories -- ones that don't get searched.  */
 
 static bool
-ignore_dir_p (const char *dirname)
+ignore_dir_p (const std::string& dirname_arg)
 {
+  const char *dirname = dirname_arg.c_str ();
+
   const char *dot_pos = dirname;
 
   while ((dot_pos = strchr (dot_pos + 1, '.')))
@@ -2097,40 +2082,29 @@ ignore_dir_p (const char *dirname)
   return false;
 }
 
-/* Allocate in increments of this size.  */
-#define BLOCK_SIZE 75
-
-static char *
-read_line (FILE *f)
+static bool
+read_line (FILE *f, std::string& line)
 {
+  bool read_something = false;
+
   int c;
-  unsigned limit = BLOCK_SIZE;
-  unsigned loc = 0;
-  char *line = (char *) xmalloc (limit);
 
-  while ((c = getc (f)) != EOF && c != '\n' && c != '\r')
+  OSSTREAM buf;
+
+  while ((c = getc (f)) != EOF)
     {
-      line[loc] = c;
-      loc++;
+      read_something = true;
 
-      /* By testing after the assignment, we guarantee that we'll always
-         have space for the null we append below.  We know we always
-         have room for the first char, since we start with BLOCK_SIZE.  */
-      if (loc == limit)
-        {
-          limit += BLOCK_SIZE;
-          line = (char *) xrealloc (line, limit);
-        }
+      if (c == '\n' || c == '\r')
+	break;
+
+      buf << static_cast<char> (c);
     }
 
   /* If we read anything, return it.  This can't represent a last
      ``line'' which doesn't end in a newline, but so what.  */
-  if (c != EOF)
+  if (read_something)
     {
-      /* Terminate the string.  We can't represent nulls in the file,
-         either.  Again, it doesn't matter.  */
-      line[loc] = 0;
-
       /* Absorb LF of a CRLF pair. */
       if (c == '\r')
 	{
@@ -2138,14 +2112,13 @@ read_line (FILE *f)
           if (c != '\n')
 	    ungetc (c, f);
 	}
-    }
-  else /* At end of file.  */
-    {
-      free (line);
-      line = NULL;
+
+      buf << OSSTREAM_ENDS;
+      line = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
     }
 
-  return line;
+  return read_something;
 }
 
 /* If no DB_FILENAME, return false (maybe they aren't using this feature).
@@ -2154,21 +2127,22 @@ read_line (FILE *f)
 static bool
 db_build (hash_table_type *table, const std::string& db_filename)
 {
-  char *line;
-  unsigned dir_count = 0, file_count = 0, ignore_dir_count = 0;
-  unsigned len = db_filename.length () - sizeof (DB_NAME) + 1; /* Keep the /. */
-  char *top_dir = (char *) xmalloc (len + 1);
-  char *cur_dir = NULL; /* First thing in ls-R might be a filename.  */
-  FILE *db_file = xfopen (db_filename.c_str (), "r");
+  std::string line;
 
-  strncpy (top_dir, db_filename.c_str (), len);
-  top_dir[len] = 0;
+  unsigned dir_count = 0, file_count = 0, ignore_dir_count = 0;
+
+  unsigned len = db_filename.length () - sizeof (DB_NAME) + 1; /* Keep the /. */
+  std::string top_dir = db_filename.substr (0, len);
+
+  std::string cur_dir;
+
+  FILE *db_file = xfopen (db_filename, "r");
 
   if (db_file)
     {
-      while ((line = read_line (db_file)) != NULL)
+      while (read_line (db_file, line))
 	{
-	  len = strlen (line);
+	  len = line.length ();
 
 	  /* A line like `/foo:' = new dir foo.  Allow both absolute (/...)
 	     and explicitly relative (./...) names here.  It's a kludge to
@@ -2188,41 +2162,34 @@ db_build (hash_table_type *table, const std::string& db_filename)
 		     on `../', but `match' won't work there, either,
 		     so it doesn't matter.  */
 
-		  cur_dir = *line == '.'
-		    ? concat (top_dir, line + 2) : xstrdup (line);
+		  cur_dir = line[0] == '.' ? top_dir + line.substr (2) : line;
 
 		  dir_count++;
 		}
 	      else
 		{
-		  cur_dir = NULL;
+		  cur_dir = std::string ();
 		  ignore_dir_count++;
 		}
 
 	      /* Ignore blank, `.' and `..' lines.  */
 
 	    }
-	  else if (*line != 0 && cur_dir   /* a file line? */
-		   && !(*line == '.'
-			&& (line[1] == '0'
-			    || (line[1] == '.' && line[2] == 0))))
-
+	  else if (len > 0 && ! cur_dir.empty ()   /* a file line? */
+		   && ! (line[0] == '.'
+			 && (len == 1 || (len == 2 && line[1] == '.'))))
 	    {
 	      /* Make a new hash table entry with a key of `line' and
 		 a data of `cur_dir'.  An already-existing identical
 		 key is ok, since a file named `foo' can be in more
 		 than one directory.  Share `cur_dir' among all its
 		 files (and hence never free it). */
-	      hash_insert (table, xstrdup (line), cur_dir);
+	      hash_insert (table, line, cur_dir);
 	      file_count++;
 	    }
-	  /* else ignore blank lines or top-level files
-	     or files in ignored directories */
-
-	  free (line);
 	}
 
-      xfclose (db_file, db_filename.c_str ());
+      xfclose (db_file, db_filename);
 
       if (file_count == 0)
 	{
@@ -2252,8 +2219,6 @@ db_build (hash_table_type *table, const std::string& db_filename)
 	}
 #endif /* KPSE_DEBUG */
     }
-
-  free (top_dir);
 
   return db_file != NULL;
 }
@@ -2398,44 +2363,54 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
 static bool
 alias_build (hash_table_type *table, const std::string& alias_filename)
 {
-  char *line, *real, *alias;
   unsigned count = 0;
-  FILE *alias_file = xfopen (alias_filename.c_str (), "r");
+
+  FILE *alias_file = xfopen (alias_filename, "r");
 
   if (alias_file)
     {
-      while ((line = read_line (alias_file)) != NULL)
+      std::string line;
+
+      while (read_line (alias_file, line))
 	{
+	  size_t len = line.length ();
+
 	  /* comments or empty */
-	  if (*line == 0 || *line == '%' || *line == '#')
+	  if (len == 0 || line[0] == '%' || line[0] == '#')
 	    /* do nothing */ ;
 	  else
 	    {
-	      /* Each line should have two fields: realname aliasname.  */
-	      real = line;
+	      size_t i = 0;
 
-	      while (*real && isspace (*real))
-		real++;
+	      while (i < len && isspace (line[i]))
+		i++;
 
-	      alias = real;
+	      size_t real_beg = i;
 
-	      while (*alias && !isspace (*alias))
-		alias++;
+	      while (i < len && ! isspace (line[i]))
+		i++;
 
-	      *alias++ = 0;
+	      size_t real_len = i - real_beg;
 
-	      while (*alias && isspace (*alias))
-		alias++;
+	      while (i < len && isspace (line[i]))
+		i++;
+
+	      size_t alias_beg = i;
+
+	      while (i < len && ! isspace (line[i]))
+		i++;
+
+	      size_t alias_len = i - alias_beg;
 
 	      /* Is the check for errors strong enough?  Should we
 		 warn the user for potential errors?  */
-	      if (strlen (real) != 0 && strlen (alias) != 0)
+	      if (real_len > 0 && alias_len > 0)
 		{
-		  hash_insert (table, xstrdup (alias), xstrdup (real));
+		  hash_insert (table, line.substr (alias_beg, alias_len),
+			       line.substr (real_beg, real_len));
 		  count++;
 		}
 	    }
-	  free (line);
 	}
 
 #ifdef KPSE_DEBUG
@@ -2450,7 +2425,7 @@ alias_build (hash_table_type *table, const std::string& alias_filename)
 	}
 #endif /* KPSE_DEBUG */
 
-      xfclose (alias_file, alias_filename.c_str ());
+      xfclose (alias_file, alias_filename);
     }
 
   return alias_file != NULL;
@@ -2604,7 +2579,8 @@ kpse_db_search (const std::string& name_arg,
 	  if (matched)
 	    {
 	      std::string found;
-	      if (kpse_readable_file (db_file.c_str ()))
+	      std::string tmp = kpse_readable_file (db_file);
+	      if (! tmp.empty ())
 		found = db_file;
 	      else
 		{
@@ -2621,7 +2597,8 @@ kpse_db_search (const std::string& name_arg,
 		  for (int k = 1; k < aliases_len && found.empty (); k++)
 		    {
 		      std::string atry = db_dirs[j] + aliases[k];
-		      if (kpse_readable_file (atry.c_str ()))
+		      std::string tmp = kpse_readable_file (atry);
+		      if (! tmp.empty ())
 			found = atry;
 		    }
 		}

@@ -30,7 +30,7 @@ extern void raw_mode (int);
 extern int kbhit (void);
 
 extern char *octave_getcwd (char *, int);
-extern int octave_chdir (char *);
+extern int octave_chdir (const char *);
 
 extern "C"
 {

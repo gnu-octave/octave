@@ -374,7 +374,7 @@ octave_getcwd (char *buf, int len)
 }
 
 int
-octave_chdir (char *path)
+octave_chdir (const char *path)
 {
 #if defined (__EMX__)
   int retval = -1;

@@ -254,12 +254,6 @@ static std::string gnuplot_terminal_type;
 // Should the graph window be cleared before plotting the next line?
 static bool clear_before_plotting = true;
 
-// List of files to delete when we exit or crash.
-//
-// XXX FIXME XXX -- this should really be static, but that causes
-// problems on some systems.
-std::stack <std::string> tmp_files;
-
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
 

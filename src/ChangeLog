@@ -1,3 +1,8 @@
+2005-02-06  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (tmp_files): Delete.
+	From Todd Neal <tolchz@tolchz.net>.
+
 2005-02-04  John W. Eaton  <jwe@octave.org>
 
 	* sighandlers.cc (octave_child_list::~octave_child_list): Move here.

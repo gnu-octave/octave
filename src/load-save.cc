@@ -4316,7 +4316,7 @@ save_mat5_binary_element (std::ostream& os,
 	  const char *s = tstr.data ();
 
 	  for (int j = 0; j < nc; j++)
-	    buf[j*nr+i] = *s++;
+	    buf[j*nr+i] = *s++ & 0x00FF;
 	}
       os.write ((char *)buf, nr*nc*2);
       
@@ -4450,10 +4450,24 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   if (tc.is_string ())
     {
       unwind_protect::begin_frame ("save_mat_binary_data");
-      unwind_protect_int (Vimplicit_str_to_num_ok);
-      Vimplicit_str_to_num_ok = true;
-      Matrix m = tc.matrix_value ();
-      os.write (X_CAST (char *, m.data ()), 8 * len);
+
+      charMatrix chm = tc.char_matrix_value ();
+
+      int nr = chm.rows ();
+      int nc = chm.cols ();
+	
+      OCTAVE_LOCAL_BUFFER (double, buf, nc*nr);
+	
+      for (int i = 0; i < nr; i++)
+      	{
+	  std::string tstr = chm.row_as_string (i);
+	  const char *s = tstr.data ();
+	  
+	  for (int j = 0; j < nc; j++)
+	    buf[j*nr+i] = static_cast<double> (*s++ & 0x00FF);
+       	}
+      os.write ((char *)buf, nr*nc*sizeof(double));
+      
       unwind_protect::run_frame ("save_mat_binary_data");
     }
   else if (tc.is_range ())

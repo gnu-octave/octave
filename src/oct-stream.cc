@@ -1341,15 +1341,24 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 		    { \
 		      max_size *= 2; \
  \
-		      if (nr > 0) \
-			mval.resize (nr, max_size / nr, 0.0); \
-		      else \
+		      if (all_char_conv) \
 			{ \
-			  if (all_char_conv && one_elt_size_spec) \
+			  if (one_elt_size_spec) \
 			    mval.resize (1, max_size, 0.0); \
+			  else if (nr > 0) \
+			    mval.resize (nr, max_size / nr, 0.0); \
 			  else \
-			    mval.resize (max_size, 1, 0.0); \
+			    panic_impossible (); \
 			} \
+		      else if (nr > 0) \
+			{ \
+			  if (nc <= 0) \
+			    mval.resize (nr, max_size / nr, 0.0); \
+			  else \
+			    panic_impossible (); \
+			} \
+		      else \
+			mval.resize (max_size, 1, 0.0); \
  \
 		      data = mval.fortran_vec (); \
 		    } \
@@ -1396,45 +1405,58 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
   if (all_char_conv)
     {
+      // Any of these could be resized later (if we have %s
+      // conversions, we may read more than one element for each
+      // conversion).
+
       if (one_elt_size_spec)
 	{
 	  max_size = 512;
 	  mval.resize (1, max_size, 0.0);
-	  data = mval.fortran_vec ();
 
 	  if (nr > 0)
 	    max_conv = nr;
 	}
-      else if (nr > 0 && nc > 0)
+      else if (nr > 0)
 	{
-	  mval.resize (nr, nc, 0.0);
-	  data = mval.fortran_vec ();
-	  max_size = max_conv = nr * nc;
+	  if (nc > 0)
+	    {
+	      mval.resize (nr, nc, 0.0);
+	      max_size = max_conv = nr * nc;
+	    }
+	  else
+	    {
+	      mval.resize (nr, 32, 0.0);
+	      max_size = nr * 32;
+	    }
 	}
+      else
+	panic_impossible ();
     }
   else if (nr > 0)
     {
       if (nc > 0)
 	{
+	  // Will not resize later.
 	  mval.resize (nr, nc, 0.0);
-	  data = mval.fortran_vec ();
 	  max_size = nr * nc;
-
 	  max_conv = max_size;
 	}
       else
 	{
+	  // Maybe resize later.
 	  mval.resize (nr, 32, 0.0);
-	  data = mval.fortran_vec ();
 	  max_size = nr * 32;
 	}
     }
   else
     {
+      // Maybe resize later.
       mval.resize (32, 1, 0.0);
-      data = mval.fortran_vec ();
       max_size = 32;
     }
+
+  data = mval.fortran_vec ();
 
   if (isp)
     {
@@ -1469,15 +1491,24 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		{
 		  max_size *= 2;
 
-		  if (nr > 0)
-		    mval.resize (nr, max_size / nr, 0.0);
-		  else
+		  if (all_char_conv)
 		    {
-		      if (all_char_conv && one_elt_size_spec)
+		      if (one_elt_size_spec)
 			mval.resize (1, max_size, 0.0);
+		      else if (nr > 0)
+			mval.resize (nr, max_size / nr, 0.0);
 		      else
-			mval.resize (max_size, 1, 0.0);
+			panic_impossible ();
 		    }
+		  else if (nr > 0)
+		    {
+		      if (nc <= 0)
+			mval.resize (nr, max_size / nr, 0.0);
+		      else
+			panic_impossible ();
+		    }
+		  else
+		    mval.resize (max_size, 1, 0.0);
 
 		  data = mval.fortran_vec ();
 		}

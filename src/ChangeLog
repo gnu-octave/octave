@@ -1,3 +1,14 @@
+2003-05-28  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+
+	* load-save.cc (save_mat5_binary_element, save_mat_binary_data):
+	Allow saving of non-7-bit ASCII characters.
+
+2003-05-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (FINISH_CHARACTER_CONVERSION,
+	octave_base_stream::do_scanf): Do a better job of resizing for
+	charachter conversions.
+
 2003-05-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cx-mat.cc (octave_complex_matrix::assign): Move definition here.

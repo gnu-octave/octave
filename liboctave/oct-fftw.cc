@@ -154,7 +154,7 @@ octave_fftw::fft2d (Complex *inout, size_t nr, size_t nc)
 {
   fftwnd_one (fftw_planner.create_plan2d (FFTW_FORWARD, nr, nc),
               reinterpret_cast<fftw_complex *> (inout),
-              NULL);
+              0);
 
   return 0;
 }
@@ -164,7 +164,7 @@ octave_fftw::ifft2d (Complex *inout, size_t nr, size_t nc)
 {
   fftwnd_one (fftw_planner.create_plan2d (FFTW_BACKWARD, nr, nc),
               reinterpret_cast<fftw_complex *> (inout),
-              NULL);
+              0);
 
   const size_t npts = nr * nc;
   const Complex scale = npts;

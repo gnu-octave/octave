@@ -1,3 +1,9 @@
+2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-fftw.cc (octave_fftw::fft2d): Avoid having to find a
+	definition for NULL by passing 0 as the last arg to fftwnd_one.
+	(octave_fftw::ifft2d): Likewise.
+
 2002-02-22  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
 
 	* lo-mappers.cc (arg): Simply call atan2 (0.0, x).

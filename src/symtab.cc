@@ -973,12 +973,26 @@ symbol_record_info_cmp (symbol_record_info *a, symbol_record_info *b)
   return strcmp (a->name (), b->name ());
 }
 
+static int
+matches_patterns (const char *name, char **pats, int npats)
+{
+  while (npats-- > 0)
+    {
+      if (fnmatch (*pats, name, __FNM_FLAGS) == 0)
+	return 1;
+
+      pats++;
+    }
+
+  return 0;
+}
+
 // This function should probably share code with symbol_table::list.
 // XXX FIXME XXX
 
 symbol_record_info *
-symbol_table::long_list (int& count, int sort, unsigned type,
-			 unsigned scope) const 
+symbol_table::long_list (int& count, char **pats, int npats, int sort,
+			 unsigned type, unsigned scope) const 
 {
   count = 0;
   int n = size ();
@@ -992,12 +1006,17 @@ symbol_table::long_list (int& count, int sort, unsigned type,
       while (ptr)
 	{
 	  assert (count < n);
+
 	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+
 	  unsigned my_type = ptr->type ();
-	  if ((type & my_type) && (scope & my_scope))
-	    {
-	      symbols[count++] = symbol_record_info (*ptr);
-	    }
+
+	  char *my_name = ptr->name ();
+
+	  if ((type & my_type) && (scope & my_scope)
+	      && (npats == 0 || matches_patterns (my_name, pats, npats)))
+	    symbols[count++] = symbol_record_info (*ptr);
+
 	  ptr = ptr->next ();
 	}
     }
@@ -1011,8 +1030,8 @@ symbol_table::long_list (int& count, int sort, unsigned type,
 }
 
 char **
-symbol_table::list (int& count, int sort, unsigned type,
-		    unsigned scope) const
+symbol_table::list (int& count, char **pats, int npats, int sort,
+		    unsigned type, unsigned scope) const
 {
   count = 0;
   int n = size ();
@@ -1031,7 +1050,10 @@ symbol_table::list (int& count, int sort, unsigned type,
 
 	  unsigned my_type = ptr->type ();
 
-	  if ((type & my_type) && (scope & my_scope))
+	  char *my_name = ptr->name ();
+
+	  if ((type & my_type) && (scope & my_scope)
+	      && (npats == 0 || matches_patterns (my_name, pats, npats)))
 	    symbols[count++] = strsave (ptr->name ());
 
 	  ptr = ptr->next ();

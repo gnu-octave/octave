@@ -439,7 +439,7 @@ simple_help (void)
   do \
     { \
       int count; \
-      char **names = global_sym_tab->list (count, 1, type); \
+      char **names = global_sym_tab->list (count, 0, 0, 1, type); \
       display_symtab_names (output_buf, names, count, msg); \
       char **ptr = names; \
       while (*ptr) \

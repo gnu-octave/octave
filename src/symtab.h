@@ -297,12 +297,13 @@ public:
 
   int size (void) const;
 
-  symbol_record_info *long_list (int& count, int sort = 0,
+  symbol_record_info *long_list (int& count, char **pats = 0,
+				 int npats = 0, int sort = 0,
 				 unsigned type = SYMTAB_ALL_TYPES,
 				 unsigned scope = SYMTAB_ALL_SCOPES) const;
 
-  char **list (int& count, int sort = 0,
-	       unsigned type = SYMTAB_ALL_TYPES,
+  char **list (int& count, char **pats = 0, int npats = 0,
+	       int sort = 0, unsigned type = SYMTAB_ALL_TYPES,
 	       unsigned scope = SYMTAB_ALL_SCOPES) const;
 
   symbol_record **glob (int& count, char *pat = "*",

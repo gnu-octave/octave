@@ -967,16 +967,16 @@ print_long_listing (ostrstream& output_buf, symbol_record_info *s)
 }
 
 static int
-maybe_list (const char *header, ostrstream& output_buf,
-	    int show_verbose, symbol_table *sym_tab, unsigned type,
-	    unsigned scope)
+maybe_list (const char *header, char **argv, int argc,
+	    ostrstream& output_buf, int show_verbose, symbol_table
+	    *sym_tab, unsigned type, unsigned scope)
 {
   int count;
   int status = 0;
   if (show_verbose)
     {
       symbol_record_info *symbols;
-      symbols = sym_tab->long_list (count, 1, type, scope);
+      symbols = sym_tab->long_list (count, argv, argc, 1, type, scope);
       if (symbols && count > 0)
 	{
 	  output_buf << "\n" << header << "\n\n"
@@ -990,7 +990,7 @@ maybe_list (const char *header, ostrstream& output_buf,
     }
   else
     {
-      char **symbols = sym_tab->list (count, 1, type, scope);
+      char **symbols = sym_tab->list (count, argv, argc, 1, type, scope);
       if (symbols && count > 0)
 	{
 	  output_buf << "\n" << header << "\n\n";
@@ -1057,9 +1057,10 @@ do_who (int argc, char **argv, int nargout)
       show_variables = 0;
     }
 
-  for (int i = 1; i < argc; i++)
+  while (--argc > 0)
     {
       argv++;
+
       if (strcmp (*argv, "-all") == 0 || strcmp (*argv, "-a") == 0)
 	{
 	  show_builtins++;
@@ -1074,8 +1075,10 @@ do_who (int argc, char **argv, int nargout)
 	show_verbose++;
       else if (strcmp (*argv, "-variables") == 0 || strcmp (*argv, "-v") == 0)
 	show_variables++;
-      else
+      else if (*argv[0] == '-')
 	warning ("%s: unrecognized option `%s'", my_name, *argv);
+      else
+	break;
     }
 
 // If the user specified -l and nothing else, show variables.  If
@@ -1092,12 +1095,12 @@ do_who (int argc, char **argv, int nargout)
 
   if (show_builtins)
     {
-      pad_after += maybe_list ("*** built-in variables:",
+      pad_after += maybe_list ("*** built-in variables:", argv, argc,
 			       output_buf, show_verbose, global_sym_tab,
 			       symbol_def::BUILTIN_VARIABLE,
 			       SYMTAB_ALL_SCOPES);
 
-      pad_after += maybe_list ("*** built-in functions:",
+      pad_after += maybe_list ("*** built-in functions:", argv, argc,
 			       output_buf, show_verbose, global_sym_tab,
 			       symbol_def::BUILTIN_FUNCTION,
 			       SYMTAB_ALL_SCOPES);
@@ -1106,21 +1109,21 @@ do_who (int argc, char **argv, int nargout)
   if (show_functions)
     {
       pad_after += maybe_list ("*** currently compiled functions:",
-			       output_buf, show_verbose, global_sym_tab,
-			       symbol_def::USER_FUNCTION,
+			       argv, argc, output_buf, show_verbose,
+			       global_sym_tab, symbol_def::USER_FUNCTION,
 			       SYMTAB_ALL_SCOPES);
     }
 
   if (show_variables)
     {
-      pad_after += maybe_list ("*** local user variables:",
+      pad_after += maybe_list ("*** local user variables:", argv, argc,
 			       output_buf, show_verbose, curr_sym_tab,
 			       symbol_def::USER_VARIABLE,
 			       SYMTAB_LOCAL_SCOPE); 
 
       pad_after += maybe_list ("*** globally visible user variables:",
-			       output_buf, show_verbose, curr_sym_tab,
-			       symbol_def::USER_VARIABLE,
+			       argv, argc, output_buf, show_verbose,
+			       curr_sym_tab, symbol_def::USER_VARIABLE,
 			       SYMTAB_GLOBAL_SCOPE);
     }
 

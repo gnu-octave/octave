@@ -1356,47 +1356,59 @@ read_ascii_data (istream& is, const char *filename, int& global,
 //
 // The data is expected to be in the following format:
 //
-// object               type            bytes
-// ------               ----            -----
-// magic number         string             10
+// Header (one per file):
+// =====================
 //
-// float format         integer             1  
+//   object               type            bytes
+//   ------               ----            -----
+//   magic number         string             10
 //
-// name_length          integer             4
+//   float format         integer             1  
 //
-// name                 string    name_length
 //
-// doc_length           integer             4
+// Data (one set for each item):
+// ============================
 //
-// doc                  string     doc_length
+//   object               type            bytes
+//   ------               ----            -----
+//   name_length          integer             4
 //
-// global flag          integer             1
+//   name                 string    name_length
 //
-// data type            integer             1
+//   doc_length           integer             4
 //
-// data:
-//   scalar             real                8
+//   doc                  string     doc_length
 //
-//   complex scalar     complex            16
+//   global flag          integer             1
 //
-//   matrix:
-//     rows             integer             4
-//     columns          integer             4
-//     data             real            r*c*8
+//   data type            integer             1
 //
-//   complex matrix:
-//     rows             integer             4
-//     columns          integer             4
-//     data             complex        r*c*16
+//   data (one of):
 //
-//   string:
-//     length           int                 4
-//     data             string         length
+//     scalar:
+//       data             real                8
 //
-//   range:
-//     base             real                8
-//     limit            real                8
-//     increment        real                8
+//     complex scalar:
+//       data             complex            16
+//
+//     matrix:
+//       rows             integer             4
+//       columns          integer             4
+//       data             real            r*c*8
+//
+//     complex matrix:
+//       rows             integer             4
+//       columns          integer             4
+//       data             complex        r*c*16
+//
+//     string:
+//       length           int                 4
+//       data             string         length
+//
+//     range:
+//       base             real                8
+//       limit            real                8
+//       increment        real                8
 //
 // FILENAME is used for error messages.
 
@@ -1412,13 +1424,12 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
   doc = 0;
 
+// We expect to fail here, at the beginning of a record, so not being
+// able to read another name should not result in an error.
+
   is.read (&name_len, 4);
   if (! is)
-    {
-      if (! is.eof ())
-	goto data_read_error;
-      return 0;
-    }
+    return 0;
   if (swap)
     swap_4_bytes ((char *) &name_len);
 
@@ -1974,8 +1985,10 @@ do_load (istream& stream, const char *orig_fname, int force,
 	  break;
 	}
 
-      if (error_state || stream.eof ())
+      if (error_state || stream.eof () || ! name)
 	{
+	  delete [] name;
+	  delete [] doc;
 	  break;
 	}
       else if (! error_state && name)
@@ -2016,6 +2029,8 @@ do_load (istream& stream, const char *orig_fname, int force,
 	    error ("load: are you sure `%s' is an Octave data file?",
 		   orig_fname);
 
+	  delete [] name;
+	  delete [] doc;
 	  break;
 	}
 

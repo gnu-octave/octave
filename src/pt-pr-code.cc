@@ -1161,7 +1161,11 @@ tree_print_code::indent (void)
  
   if (beginning_of_line)
     {
-      os.form ("%s%*s", prefix.c_str (), curr_print_indent_level, "");
+      os << prefix;
+
+      for (int i = 0; i < curr_print_indent_level; i++)
+	os << " ";
+
       beginning_of_line = false;
     }
 }

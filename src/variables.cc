@@ -74,9 +74,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-builtin.h"
 #include "oct-mapper.h"
 #include "oct-usr-fcn.h"
-#include "pt-const.h"
 #include "oct-obj.h"
-#include "pt-exp.h"
 #include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-mat.h"
@@ -1007,14 +1005,14 @@ link_to_global_variable (symbol_record *sr)
 
   if (sr->is_variable ())
     {
-      // Would be nice not to have this cast.  XXX FIXME XXX
+      octave_symbol *tmp = sr->def ();
 
-      tree_constant *tmp = (tree_constant *) sr->def ();
+      octave_value vtmp;
+
       if (tmp)
-	tmp = new tree_constant (*tmp);
-      else
-	tmp = new tree_constant ();
-      gsr->define (tmp);
+	vtmp = tmp->eval ();
+
+      gsr->define (vtmp);
     }
   else
     sr->clear ();
@@ -1023,7 +1021,7 @@ link_to_global_variable (symbol_record *sr)
   // to hide it with a variable.
 
   if (gsr->is_function ())
-    gsr->define ((tree_constant *) 0);
+    gsr->define (octave_value ());
 
   sr->alias (gsr, 1);
   sr->mark_as_linked_to_global ();
@@ -1498,16 +1496,10 @@ bind_ans (const octave_value& val, bool print)
 {
   static symbol_record *sr = global_sym_tab->lookup ("ans", true);
 
-  tree_identifier *ans_id = new tree_identifier (sr);
-  tree_constant *tmp = new tree_constant (val);
+  sr->define (val);
 
-  // XXX FIXME XXX -- making ans_id static, passing its address to
-  // tree_simple_assignment_expression along with a flag to not delete
-  // it seems to create a memory leak.  Hmm.
-
-  tree_simple_assignment_expression tmp_ass (ans_id, tmp, false, true);
-
-  tmp_ass.eval (print);
+  if (print)
+    val.print_with_name (octave_stdout, "ans");
 }
 
 void

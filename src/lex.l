@@ -586,6 +586,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 "="	{ BIN_OP_RETURN ('=', true); }
 "&&"	{ BIN_OP_RETURN (EXPR_AND_AND, false); }
 "||"	{ BIN_OP_RETURN (EXPR_OR_OR, false); }
+"<<"	{ BIN_OP_RETURN (LSHIFT, false); }
+">>"	{ BIN_OP_RETURN (RSHIFT, false); }
 
 {NOT} {
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
@@ -638,6 +640,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 "./="	{ BIN_OP_RETURN (EDIV_EQ, false); }
 "&="	{ BIN_OP_RETURN (AND_EQ, false); }
 "|="	{ BIN_OP_RETURN (OR_EQ, false); }
+"<<="	{ BIN_OP_RETURN (LSHIFT_EQ, false); }
+">>="	{ BIN_OP_RETURN (RSHIFT_EQ, false); }
 
 %{
 // Unrecognized input is a lexical error.

@@ -1102,11 +1102,13 @@ get_user_input (const octave_value_list& args, int debug = 0)
       else
 	{
 	  int parse_status = 0;
+
 	  retval = eval_string (input_buf, true, parse_status);
+
 	  if (retval.is_defined ())
 	    {
 	      if (debug)
-		retval.print ();
+		retval.print (octave_stdout);
 	    }
 	  else
 	    retval = Matrix ();

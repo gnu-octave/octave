@@ -104,25 +104,26 @@ tree_prefix_expression::eval (bool print)
   return retval;
 }
 
-const char *
+string
 tree_prefix_expression::oper (void) const
 {
-  static const char *op;
+  string retval = "<unknown>";
+
   switch (etype)
     {
     case increment:
-      op = "++";
+      retval = "++";
       break;
 
     case decrement:
-      op = "--";
+      retval = "--";
       break;
 
     default:
-      op = "<unknown>";
       break;
     }
-  return op;
+
+  return retval;
 }
 
 void
@@ -130,7 +131,7 @@ tree_prefix_expression::eval_error (void)
 {
   if (error_state > 0)
     ::error ("evaluating prefix operator `%s' near line %d, column %d",
-	     oper (), line (), column ());
+	     oper () . c_str (), line (), column ());
 }
 
 void
@@ -183,25 +184,26 @@ tree_postfix_expression::eval (bool print)
   return retval;
 }
 
-const char *
+string
 tree_postfix_expression::oper (void) const
 {
-  static const char *op;
+  string retval = "<unknown>";
+
   switch (etype)
     {
     case increment:
-      op = "++";
+      retval = "++";
       break;
 
     case decrement:
-      op = "--";
+      retval = "--";
       break;
 
     default:
-      op = "<unknown>";
       break;
     }
-  return op;
+
+  return retval;
 }
 
 void
@@ -209,7 +211,7 @@ tree_postfix_expression::eval_error (void)
 {
   if (error_state > 0)
     ::error ("evaluating postfix operator `%s' near line %d, column %d",
-	     oper (), line (), column ());
+	     oper () . c_str (), line (), column ());
 }
 
 void
@@ -270,33 +272,34 @@ tree_unary_expression::eval (bool /* print */)
   return retval;
 }
 
-const char *
+string
 tree_unary_expression::oper (void) const
 {
-  static const char *op;
+  string retval = "<unknown>";
+
   switch (etype)
     {
     case unot:
-      op = "!";
+      retval = "!";
       break;
 
     case uminus:
-      op = "-";
+      retval = "-";
       break;
 
     case transpose:
-      op = ".'";
+      retval = ".'";
       break;
 
     case hermitian:
-      op = "'";
+      retval = "'";
       break;
 
     default:
-      op = "<unknown>";
       break;
     }
-  return op;
+
+  return retval;
 }
 
 void
@@ -304,7 +307,7 @@ tree_unary_expression::eval_error (void)
 {
   if (error_state > 0)
     ::error ("evaluating unary operator `%s' near line %d, column %d",
-	     oper (), line (), column ());
+	     oper () . c_str (), line (), column ());
 }
 
 void
@@ -357,11 +360,10 @@ tree_binary_expression::eval (bool /* print */)
   return retval;
 }
 
-const char *
+string
 tree_binary_expression::oper (void) const
 {
-  // XXX FIXME XXX
-  return octave_value::binary_op_as_string (etype) . c_str ();
+  return octave_value::binary_op_as_string (etype);
 }
 
 void
@@ -369,7 +371,7 @@ tree_binary_expression::eval_error (void)
 {
   if (error_state > 0)
     ::error ("evaluating binary operator `%s' near line %d, column %d",
-	     oper (), line (), column ());
+	     oper () . c_str (), line (), column ());
 }
 
 void
@@ -448,25 +450,26 @@ tree_boolean_expression::eval (bool /* print */)
   return retval;
 }
 
-const char *
+string
 tree_boolean_expression::oper (void) const
 {
-  static const char *op;
+  string retval = "<unknown>";
+
   switch (etype)
     {
     case bool_and:
-      op = "&&";
+      retval = "&&";
       break;
 
     case bool_or:
-      op = "||";
+      retval = "||";
       break;
 
     default:
-      op = "<unknown>";
       break;
     }
-  return op;
+
+  return retval;
 }
 
 // Simple assignment expressions.
@@ -590,7 +593,7 @@ tree_simple_assignment_expression::eval (bool print)
   // undefined) print b = [ 0; 2 ], which is more Matlab-like.
 
   if (! error_state && print && lhs_val.is_defined ())
-    lhs_val.print_with_name (lhs->name ());
+    lhs_val.print_with_name (octave_stdout, lhs->name ());
 
   return retval;
 }
@@ -609,10 +612,10 @@ tree_simple_assignment_expression::eval_error (void)
     }
 }
 
-const char *
+string
 tree_simple_assignment_expression::oper (void) const
 {
-  return octave_value::assign_op_as_string (etype) . c_str ();
+  return octave_value::assign_op_as_string (etype);
 }
 
 void

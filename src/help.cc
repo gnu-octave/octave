@@ -54,8 +54,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "pathsearch.h"
-#include "pt-const.h"
-#include "pt-exp.h"
 #include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
@@ -834,16 +832,14 @@ display the definition of each NAME that refers to a function")
 
 		  assert (defn && defn->is_constant ());
 
-		  tree_constant *tmp = static_cast<tree_constant *> (defn);
-
 		  int var_ok = 1;
 
 		  // XXX FIXME XXX -- need to handle structure
 		  // references correctly.
 
-		  if (tmp)
+		  if (defn)
 		    {
-		      octave_value vtmp = tmp->value ();
+		      octave_value vtmp = defn->eval ();
 
 		      if (vtmp.is_map ())
 			error ("type: operations on structs not implemented");
@@ -876,7 +872,7 @@ display the definition of each NAME that refers to a function")
 		      tree_print_code tpc (output_buf, "", pr_orig_txt);
 
 		      // XXX FIXME XXX
-		      // tmp->accept (tpc);
+		      // defn->accept (tpc);
 
 		      if (nargout == 0)
 			output_buf << "\n";

@@ -89,7 +89,7 @@ public:
 
   virtual octave_value eval (bool print = false) = 0;
 
-  virtual const char *oper (void) const { return "<unknown>"; }
+  virtual string oper (void) const { return "<unknown>"; }
 
   virtual string original_text (void) const;
 

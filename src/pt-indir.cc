@@ -34,11 +34,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "oct-sym.h"
 #include "pager.h"
-#include "symtab.h"
 #include "pt-const.h"
 #include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-walk.h"
+#include "symtab.h"
 #include "utils.h"
 
 // Indirect references to values (structure elements).
@@ -100,7 +100,7 @@ tree_indirect_ref::eval (bool print)
 	  if (maybe_do_ans_assign)
 	    bind_ans (retval, print);
 	  else if (print)
-	    retval.print_with_name (name ());
+	    retval.print_with_name (octave_stdout, name ());
 	}
     }
 

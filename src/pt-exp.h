@@ -72,7 +72,7 @@ public:
   bool is_prefix_expression (void) const
     { return true; }
 
-  const char *oper (void) const;
+  string oper (void) const;
 
   tree_identifier *ident (void) { return id; }
 
@@ -114,7 +114,7 @@ public:
 
   void eval_error (void);
 
-  const char *oper (void) const;
+  string oper (void) const;
 
   tree_identifier *ident (void) { return id; }
 
@@ -159,7 +159,7 @@ public:
 
   void eval_error (void);
 
-  const char *oper (void) const;
+  string oper (void) const;
 
   bool is_prefix_op (void) { return (etype == unot || etype == uminus); }
 
@@ -204,7 +204,7 @@ public:
 
   void eval_error (void);
 
-  const char *oper (void) const;
+  string oper (void) const;
 
   tree_expression *lhs (void) { return op_lhs; }
   tree_expression *rhs (void) { return op_rhs; }
@@ -248,7 +248,7 @@ public:
 
   octave_value eval (bool print = false);
 
-  const char *oper (void) const;
+  string oper (void) const;
 
 private:
 
@@ -302,7 +302,7 @@ public:
 
   void eval_error (void);
 
-  const char *oper (void) const;
+  string oper (void) const;
 
   tree_indirect_ref *left_hand_side (void) { return lhs; }
 

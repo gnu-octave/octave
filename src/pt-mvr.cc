@@ -335,7 +335,8 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 		octave_stdout << "\n";
 
 	      if (print)
-		results(i).print_with_name (lhs_expr->name (), 0);
+		results(i).print_with_name (octave_stdout,
+					    lhs_expr->name (), 0);
 
 	      pad_after = true;
 

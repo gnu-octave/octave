@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "oct-obj.h"
+#include "pager.h"
 #include "pt-const.h"
 #include "pt-walk.h"
 
@@ -52,7 +53,7 @@ octave_value
 tree_constant::eval (bool print_result)
 {
   if (print_result)
-    val.print ();
+    val.print (octave_stdout);
 
   return val;
 }

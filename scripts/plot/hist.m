@@ -49,7 +49,12 @@ function [nn, xx] = hist (y, x, norm)
     usage ("[nn, xx] = hist (y, x, norm)");
   endif
 
-  if (isvector (y))
+  transpose = rows (y) == 1;
+  if (transpose)
+    y = y(:);
+  endif
+
+  if (isreal (y))
     max_val = max (y);
     min_val = min (y);
   else
@@ -58,8 +63,8 @@ function [nn, xx] = hist (y, x, norm)
 
   if (nargin == 1)
     n = 10;
-    delta = (max_val - min_val) / (n-1) / 2;
-    cutoff = linspace (min_val+delta, max_val-delta, n-1);
+    x = [0.5:n]'/n;
+    x = x * (max_val - min_val) + ones(size(x)) * min_val;
   else
     ## nargin is either 2 or 3
     if (isscalar (x))
@@ -67,46 +72,59 @@ function [nn, xx] = hist (y, x, norm)
       if (n <= 0)
         error ("hist: number of bins must be positive");
       endif
-      delta = (max_val - min_val) / (n-1) / 2;
-      cutoff = linspace (min_val+delta, max_val-delta, n-1);
-    elseif (isvector (x))
+      x = [0.5:n]'/n;
+      x = x * (max_val - min_val) + ones(size(x)) * min_val;
+    elseif (isreal (x))
+      if (isvector (x))
+	x = x(:);
+      endif
       tmp = sort (x);
       if (any (tmp != x))
         warning ("hist: bin values not sorted on input");
         x = tmp;
       endif
-      cutoff = (x(1:end-1) + x(2:end)) / 2;
-      n = length (x);
     else
       error ("hist: second argument must be a scalar or a vector");
     endif
   endif
 
-  if (n < 30)
+  cutoff = (x(1:end-1,:) + x(2:end,:)) / 2;
+  n = rows (x);
+  if (n < 30 && columns (x) == 1)
     ## The following algorithm works fastest for n less than about 30.
-    chist = [zeros(n,1); length(y)];
+    chist = zeros (n+1, columns (y));
     for i = 1:n-1
-      chist(i+1) = sum (y < cutoff(i));
+      chist(i+1,:) = sum (y <= cutoff(i));
     endfor
+    chist(n+1,:) = rows (y);
   else
     ## The following algorithm works fastest for n greater than about 30.
     ## Put cutoff elements between boundaries, integrate over all
     ## elements, keep totals at boundaries.
-    [s, idx] = sort ([cutoff(:); y(:)]);
-    chist = cumsum(idx>=n);
-    chist = [0; chist(idx<n); chist(end)];
+    [s, idx] = sort ([y; cutoff]);
+    len = rows (y);
+    chist = cumsum (idx <= len);
+    t1 = zeros (1, columns (y));
+    t2 = reshape (chist(idx > len), size (cutoff));
+    t3 = chist(end,:);
+    chist = [t1; t2; t3];
   endif
 
-  freq= diff(chist)';
+  freq = diff (chist);
 
   if (nargin == 3)
     ## Normalise the histogram.
-    freq = freq / length (y) * norm;
+    freq = freq / rows (y) * norm;
   endif
 
   if (nargout > 0)
-    nn = freq;
-    xx = x;
+    if (transpose)
+      nn = freq';
+      xx = x';
+    else
+      nn = freq;
+      xx = x;
+    endif
   else
     bar (x, freq);
   endif
@@ -114,6 +132,23 @@ function [nn, xx] = hist (y, x, norm)
 endfunction
 
 %!test
-%!  for n = [1, 10, 30, 100, 1000]
-%!    assert( sum(hist([1:n], [1:n])) == n );
+%!  [nn,xx]=hist([1:4],3);
+%!  assert(xx, [1.5,2.5,3.5]);
+%!  assert(nn, [2,1,1]);
+%!test
+%!  [nn,xx]=hist([1:4]',3);
+%!  assert(xx, [1.5,2.5,3.5]');
+%!  assert(nn, [2,1,1]');
+%!test
+%!  [nn,xx]=hist([[1:4]',[1:4]'],3);
+%!  assert(xx, [[1.5,2.5,3.5]',[1.5,2.5,3.5]']);
+%!  assert(nn, [[2,1,1]',[2,1,1]']);
+%!assert(hist(1,1),1);
+%!test
+%!  for n = [10, 30, 100, 1000]
+%!    assert( sum(hist([1:n], n)), n );
+%!    assert( sum(hist([1:n], [2:n-1])), n);
+%!    assert( sum(hist([1:n], [1:n])), n );
+%!    assert( sum(hist([1:n], 29)), n);
+%!    assert( sum(hist([1:n], 30)), n);
 %!  endfor

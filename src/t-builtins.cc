@@ -171,11 +171,11 @@ builtin_casesen (int argc, char **argv)
   tree_constant retval;
 
   if (argc == 1 || (argc > 1 && strcmp (argv[1], "off") == 0))
-    message ("casesen", "sorry, octave is always case sensitive");
+    warning ("casesen: sorry, Octave is always case sensitive");
   else if (argc > 1 && strcmp (argv[1], "on") == 0)
     ; // ok.
   else
-    usage ("casesen [on|off]");
+    print_usage ("casesen");
 
   return retval;
 }
@@ -329,7 +329,7 @@ builtin_document (int argc, char **argv)
       sym_rec->document (argv[2]);
     }
   else
-    usage ("document symbol string ...");
+    print_usage ("document");
 
   return retval;
 }
@@ -413,12 +413,13 @@ simple_help (void)
 	}
     }
 
+  additional_help_message (output_buf);
   output_buf << ends;
   maybe_page_output (output_buf);
 }
 
 static int
-try_info (const char *string)
+try_info (const char *string, int force = 0)
 {
   int status = 0;
 
@@ -443,7 +444,7 @@ try_info (const char *string)
 
   initialize_info_session (initial_node, 0);
 
-  if (index_entry_exists (windows, string))
+  if (force || index_entry_exists (windows, string))
     {
       terminal_clear_screen ();
 
@@ -453,7 +454,8 @@ try_info (const char *string)
 
       info_last_executed_command = (VFunction *)NULL;
 
-      do_info_index_search (windows, 0, string);
+      if (! force)
+	do_info_index_search (windows, 0, string);
 
       char *format = replace_in_documentation
 	("Type \"\\[quit]\" to quit, \"\\[get-help-window]\" for help.");
@@ -476,23 +478,6 @@ try_info (const char *string)
   return status;
 }
 
-static int
-help_from_list (ostrstream& output_buf, const help_list *list,
-		const char *string)
-{
-  char *name;
-  while ((name = list->name) != (char *) NULL)
-    {
-      if (strcmp (name, string) == 0)
-	{
-	  output_buf << "\n" << list->help << "\n";
-	  return 1;
-	}
-      list++;
-    }
-  return 0;
-}
-
 /*
  * Print cryptic yet witty messages.
  */
@@ -507,84 +492,122 @@ builtin_help (int argc, char **argv)
     }
   else
     {
-      ostrstream output_buf;
-
-      char *m_file_name = (char *) NULL;
-      symbol_record *sym_rec;
-      help_list *op_help_list = operator_help ();
-      help_list *kw_help_list = keyword_help ();
-
-      for (int i = 1; i < argc; i++)
+      if (argv[1] != (char *) NULL && strcmp (argv[1], "-i") == 0)
 	{
-	  if (argv[i] == (char *) NULL || argv[i][0] == '\0')
-	    continue;
+	  argc--;
+	  argv++;
 
-	  volatile sig_handler *old_sigint_handler = signal (SIGINT, SIG_IGN);
-
-	  int help_found = try_info (argv[i]);
-
-	  signal (SIGINT, old_sigint_handler);
-
-	  if (help_found)
-	    continue;
-
-
-	  if (help_from_list (output_buf, op_help_list, argv[i]))
-	    continue;
-
-	  if (help_from_list (output_buf, kw_help_list, argv[i]))
-	    continue;
-
-	  sym_rec = curr_sym_tab->lookup (argv[i], 0, 0);
-	  if (sym_rec != (symbol_record *) NULL)
+	  if (argc == 1)
 	    {
-	      char *h = sym_rec->help ();
-	      if (h != (char *) NULL && *h != '\0')
+	      volatile sig_handler *old_sigint_handler;
+	      old_sigint_handler = signal (SIGINT, SIG_IGN);
+
+	      try_info ((char *) NULL, 1);
+
+	      signal (SIGINT, old_sigint_handler);
+	    }
+	  else
+	    {
+	      while (--argc > 0)
 		{
-		  output_buf << "\n" << h << "\n";
-		  continue;
+		  argv++;
+
+		  if (*argv == (char *) NULL || **argv == '\0')
+		    continue;
+
+		  volatile sig_handler *old_sigint_handler;
+		  old_sigint_handler = signal (SIGINT, SIG_IGN);
+
+		  if (! try_info (*argv))
+		    {
+		      message ("help",
+			       "sorry, `%s' is not indexed in the manual",
+			       *argv); 
+		      sleep (2);
+		    }
+
+		  signal (SIGINT, old_sigint_handler);
 		}
 	    }
+	}
+      else
+	{
+	  ostrstream output_buf;
 
-	  sym_rec = global_sym_tab->lookup (argv[i], 0, 0);
-	  if (sym_rec != (symbol_record *) NULL
-	      && ! symbol_out_of_date (sym_rec))
+	  char *m_file_name = (char *) NULL;
+	  symbol_record *sym_rec;
+	  help_list *op_help_list = operator_help ();
+	  help_list *kw_help_list = keyword_help ();
+
+	  while (--argc > 0)
 	    {
-	      char *h = sym_rec->help ();
-	      if (h != (char *) NULL && *h != '\0')
+	      argv++;
+
+	      if (*argv == (char *) NULL || **argv == '\0')
+		continue;
+
+	      if (help_from_list (output_buf, op_help_list, *argv, 0))
+		continue;
+
+	      if (help_from_list (output_buf, kw_help_list, *argv, 0))
+		continue;
+
+	      sym_rec = curr_sym_tab->lookup (*argv, 0, 0);
+	      if (sym_rec != (symbol_record *) NULL)
 		{
-		  output_buf << "\n" << h << "\n";
-		  continue;
+		  char *h = sym_rec->help ();
+		  if (h != (char *) NULL && *h != '\0')
+		    {
+		      output_buf << "\n*** " << *argv << ":\n\n"
+				 << h << "\n";
+		      continue;
+		    }
 		}
-	    }
+
+	      sym_rec = global_sym_tab->lookup (*argv, 0, 0);
+	      if (sym_rec != (symbol_record *) NULL
+		  && ! symbol_out_of_date (sym_rec))
+		{
+		  char *h = sym_rec->help ();
+		  if (h != (char *) NULL && *h != '\0')
+		    {
+		      output_buf << "\n*** " << *argv << ":\n\n"
+				 << h << "\n";
+		      continue;
+		    }
+		}
 
 // Try harder to find M-files that might not be defined yet, or that
 // appear to be out of date.  Don\'t execute commands from the file if
 // it turns out to be a script file.
 
-	  m_file_name = m_file_in_path (argv[i]);
-	  if (m_file_name != (char *) NULL)
-	    {
-	      sym_rec = global_sym_tab->lookup (argv[i], 1, 0);
-	      if (sym_rec != (symbol_record *) NULL)
+	      m_file_name = m_file_in_path (*argv);
+	      if (m_file_name != (char *) NULL)
 		{
-		  tree_identifier tmp (sym_rec);
-		  tmp.parse_m_file (0);
-		  char *h = sym_rec->help ();
-		  if (h != (char *) NULL && *h != '\0')
+		  sym_rec = global_sym_tab->lookup (*argv, 1, 0);
+		  if (sym_rec != (symbol_record *) NULL)
 		    {
-		      output_buf << "\n" << h << "\n";
-		      continue;
+		      tree_identifier tmp (sym_rec);
+		      tmp.parse_m_file (0);
+		      char *h = sym_rec->help ();
+		      if (h != (char *) NULL && *h != '\0')
+			{
+			  output_buf << "\n*** " << *argv << ":\n\n"
+				     << h << "\n"; 
+			  continue;
+			}
 		    }
 		}
+	      delete [] m_file_name;
+
+	      output_buf << "\nhelp: sorry, `" << *argv
+			 << "' is not documented\n"; 
 	    }
-	  delete [] m_file_name;
 
-	  output_buf << "Sorry, `" << argv[i] << "' is not documented\n";
+	  additional_help_message (output_buf);
+	  output_buf << ends;
+	  maybe_page_output (output_buf);
 	}
-
-      output_buf << ends;
-      maybe_page_output (output_buf);
     }
 
   return retval;
@@ -613,8 +636,8 @@ load_variable (char *nm, int force, istream& is)
       && ((gsr != (symbol_record *) NULL && gsr->is_variable ())
 	  || lsr != (symbol_record *) NULL))
     {
-      message ("load",
-        "variable name `%s' exists -- use `load -force' to overwrite", nm);
+      warning ("load: variable name `%s' exists.  Use `load -force'\
+ to overwrite", nm);
       return -1;
     }
 
@@ -685,7 +708,7 @@ builtin_load (int argc, char **argv)
 
   if (argc < 1)
     {
-      message ("load", "you must specify a single file to read");
+      error ("load: you must specify a single file to read");
       return retval;
     }
 
@@ -715,8 +738,8 @@ builtin_load (int argc, char **argv)
       if (extract_keyword (stream, "name", nm) == 0 || nm == (char *) NULL)
 	{
 	  if (count == 0)
-	    message ("load",
-         "no name keywords found.  Are you sure this is an octave data file?");
+	    error ("load: no name keywords found in file.\
+  Are you sure this is an octave data file?");
 	  break;
 	}
 
@@ -725,7 +748,7 @@ builtin_load (int argc, char **argv)
 
       if (! valid_identifier (nm))
 	{
-	  message ("load", "skipping bogus identifier `%s'", nm);
+	  warning ("load: skipping bogus identifier `%s'");
 	  continue;
 	}
 
@@ -794,8 +817,7 @@ builtin_save (int argc, char **argv)
 
   if (argc < 2)
     {
-      usage ("save file         -- save all variables in named file\n\
-       save file var ... -- saved named variables");
+      print_usage ("save");
       return retval;
     }
 
@@ -835,7 +857,7 @@ builtin_save (int argc, char **argv)
 	  if (! curr_sym_tab->save (stream, *argv))
 	    if (! global_sym_tab->save (stream, *argv, 1))
 	      {
-		message ("save", "no such variable `%s'", *argv);
+		warning ("save: no such variable `%s'", *argv);
 		continue;
 	      }
 	}
@@ -938,7 +960,7 @@ builtin_who (int argc, char **argv)
 	show_fcns++;
       else
 	{
-	  message ("who", "unrecognized option `%s'", *argv);
+	  warning ("who: unrecognized option `%s'", *argv);
 	  if (argc == 2)
 	    show_local = 1;
 	}

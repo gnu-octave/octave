@@ -47,6 +47,7 @@ Software Foundation, Inc.
 #include <math.h>
 
 #include "f-balance.h"
+#include "f-chol.h"
 #include "f-colloc.h"
 #include "f-dassl.h"
 #include "f-det.h"
@@ -130,8 +131,9 @@ tree_constant *
 builtin_all (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("all (M)");
+    print_usage ("all");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -140,6 +142,7 @@ builtin_all (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].all ();
 	}
     }
+
   return retval;
 }
 
@@ -150,8 +153,9 @@ tree_constant *
 builtin_any (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("any (M)");
+    print_usage ("any");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -160,6 +164,7 @@ builtin_any (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].any ();
 	}
     }
+
   return retval;
 }
 
@@ -170,14 +175,32 @@ tree_constant *
 builtin_balance (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin <= 1 || nargin > 4 || nargout < 1 || nargout > 4)
-    usage ("[{dd,} aa] = balance (a, {opt}) or \n\
-[{cc, dd,} aa, bb] = balance (a, b {,opt}), opt = 'P' or 'S'");
+    print_usage ("balance");
   else
     {
       DLD_BUILTIN (args, nargin, nargout, balance,
 		   retval = balance (args, nargin, nargout));
     }
+
+  return retval;
+}
+
+/*
+ * Cholesky factorization.
+ */
+tree_constant *
+builtin_chol (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin == 2 && nargout == 1)
+    DLD_BUILTIN (args, nargin, nargout, chol,
+                retval = chol (args, nargin, nargout);)
+  else
+    usage ("R = chol(A) \n");
+
   return retval;
 }
 
@@ -241,7 +264,7 @@ builtin_colloc (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   if (nargin < 2 || nargin > 4)
-    usage ("[r, A, B, q] = colloc (n [, \"left\"] [, \"right\"])");
+    print_usage ("colloc");
   else
     DLD_BUILTIN (args, nargin, nargout, colloc,
 		 retval = collocation_weights (args, nargin);)
@@ -256,8 +279,9 @@ tree_constant *
 builtin_cumprod (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("cumprod (M)");
+    print_usage ("cumprod");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -266,6 +290,7 @@ builtin_cumprod (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].cumprod ();
 	}
     }
+
   return retval;
 }
 
@@ -273,8 +298,9 @@ tree_constant *
 builtin_cumsum (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("cumsum (M)");
+    print_usage ("cumsum");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -283,26 +309,13 @@ builtin_cumsum (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].cumsum ();
 	}
     }
+
   return retval;
 }
 
 /*
  * DAEs.
  */
-static void
-dassl_usage (void)
-{
-  usage ("dassl (\"function_name\", x_0, xdot_0, t_out\n\
-       dassl (\"function_name\", x_0, xdot_0, t_out, t_crit)\n\
-\n\
-       The first argument is the name of the function to call to\n\
-       compute the vector of residuals.  It must have the form\n\
-\n\
-         res = f (x, xdot, t)\n\
-\n\
-       where x, xdot, and res are vectors, and t is a scalar.");
-}
-
 tree_constant *
 builtin_dassl (const tree_constant *args, int nargin, int nargout)
 {
@@ -312,7 +325,7 @@ builtin_dassl (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, dassl,
 		 retval = dassl (args, nargin, nargout);)
   else
-    dassl_usage ();
+    print_usage ("dassl");
 
   return retval;
 }
@@ -356,7 +369,7 @@ builtin_det (const tree_constant *args, int nargin, int nargout)
 		   retval[0] = determinant (args[1]);
 		 })
   else
-    usage ("det (a)");
+    print_usage ("det");
 
   return retval;
 }
@@ -380,7 +393,7 @@ builtin_diag (const tree_constant *args, int nargin, int nargout)
       retval[0] = args[1].diag (args[2]);
     }
   else
-    usage ("diag (X [, k])");
+    print_usage ("diag");
 
   return retval;
 }
@@ -396,7 +409,7 @@ builtin_disp (tree_constant *args, int nargin, int nargout)
   if (nargin == 2)
     args[1].eval (1);
   else
-    usage ("disp (X)");
+    print_usage ("disp");
 
   return retval;
 }
@@ -413,8 +426,7 @@ builtin_eig (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, eig,
 		 retval = eig (args, nargin, nargout);)
   else
-    usage ("lambda = eig (A)\n\
-       [v, d] = eig (A); d == diag (lambda)");
+    print_usage ("eig");
 
   return retval;
 }
@@ -444,6 +456,7 @@ tree_constant *
 builtin_eval (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin == 2)
     {
       int parse_status = 0;
@@ -451,7 +464,8 @@ builtin_eval (const tree_constant *args, int nargin, int nargout)
       retval[0] = eval_string (args[1], parse_status);
     }
   else
-    usage ("eval (\"string\")");
+    print_usage ("eval");
+
   return retval;
 }
 
@@ -462,6 +476,7 @@ tree_constant *
 builtin_exist (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin == 2 && args[1].is_string_type ())
     {
       int status = identifier_exists (args[1].string_value ());
@@ -469,7 +484,8 @@ builtin_exist (const tree_constant *args, int nargin, int nargout)
       retval[0] = tree_constant ((double) status);
     }
   else
-    usage ("exist (\"string\")");
+    print_usage ("exist");
+
   return retval;
 }
 
@@ -488,7 +504,7 @@ builtin_expm (const tree_constant *args, int nargin, int nargout)
 		   retval[0] = matrix_exp (args[1]);
 		 })
   else
-    usage ("expm (A)");
+    print_usage ("expm");
 
   return retval;
 }
@@ -512,12 +528,12 @@ builtin_eye (const tree_constant *args, int nargin, int nargout)
       retval[0] = identity_matrix (args[1], args[2]);
       break;
     default:
-      usage ("eye (n)\n       eye (A)\n       eye (n, m)");
+      print_usage ("eye");
       break;
     }
+
   return retval;
 }
-
 
 /*
  * Closing a file
@@ -526,10 +542,12 @@ tree_constant *
 builtin_fclose (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("success = fclose (\"filename\" or filenum)");
+    print_usage ("fclose");
   else
     retval = fclose_internal (args);
+
   return retval;
 }
 
@@ -540,10 +558,12 @@ tree_constant *
 builtin_feval (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin > 1)
     retval = feval (args, nargin, nargout);
   else
-    usage ("feval (\"function_name\" [, ...])");
+    print_usage ("feval");
+
   return retval;
 }
 
@@ -554,10 +574,12 @@ tree_constant *
 builtin_fflush (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("success = fflush (\"filename\" or filenum)");
+    print_usage ("fflush");
   else
     retval = fflush_internal (args);
+
   return retval;
 }
 
@@ -576,7 +598,7 @@ builtin_fft (const tree_constant *args, int nargin, int nargout)
 		   retval[0] = fft (args[1]);
 		 })
   else
-    usage ("fft (a)");
+    print_usage ("fft");
 
   return retval;
 }
@@ -588,10 +610,12 @@ tree_constant *
 builtin_fgets (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 3  && nargout < 3)
-    usage ("string = fgets (\"filename\" or filenum, length)");
+    print_usage ("fgets");
   else
     retval = fgets_internal (args, nargout);
+
   return retval;
 }
 
@@ -603,13 +627,15 @@ tree_constant *
 builtin_find (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin == 2)
     {
       retval = new tree_constant [2];
       retval[0] = find_nonzero_elem_idx (args[1]);
     }
   else
-    usage ("find (x)");
+    print_usage ("find");
+
   return retval;
 }
 
@@ -620,12 +646,15 @@ tree_constant *
 builtin_flops (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin > 2)
-    usage ("flops\n       flops (0)");
+    print_usage ("flops");
 
   warning ("flops always returns zero");
+
   retval = new tree_constant [2];
   retval[0] = tree_constant (0.0);
+
   return retval;
 }
 
@@ -636,20 +665,12 @@ tree_constant *
 builtin_fopen (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 3)
-    {
-      usage ("filenum = fopen (\"file\", \"mode\")\n\n\
- Legal values for mode include:\n\n\
-   r  : open text file for reading\n\
-   w  : open text file for writing; discard previous contents if any\n\
-   a  : append; open or create text file for writing at end of file\n\
-   r+ : open text file for update (i.e., reading and writing)\n\
-   w+ : create text file for update; discard previous contents if any\n\
-   a+ : append; open or create text file for update, writing at end\n\n\
- Update mode permits reading from and writing to the same file.\n");
-      }
+    print_usage ("fopen");
   else
     retval = fopen_internal (args);
+
   return retval;
 }
 
@@ -660,10 +681,12 @@ tree_constant *
 builtin_fprintf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin < 3)
-    usage ("fprintf (\"filename\" or filenum, \"fmt\" [, ...])");
+    print_usage ("fprintf");
   else
     retval = do_printf ("fprintf", args, nargin, nargout);
+
   return retval;
 }
 
@@ -674,10 +697,12 @@ tree_constant *
 builtin_frewind (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("success = frewind (\"filename\" or filenum)");
+    print_usage ("frewind");
   else
     retval = frewind_internal (args);
+
   return retval;
 }
 
@@ -688,9 +713,12 @@ tree_constant *
 builtin_freport (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin > 1)
-    warning ("replot: ignoring extra arguments");
+    warning ("freport: ignoring extra arguments");
+
   retval = freport_internal ();
+
   return retval;
 }
 
@@ -701,10 +729,12 @@ tree_constant *
 builtin_fscanf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2 && nargin != 3)
-    usage ("[...] = fscanf (\"file\", \"fmt\")");
+    print_usage ("fscanf");
   else
     retval = do_scanf ("fscanf", args, nargin, nargout);
+
   return retval;
 }
 
@@ -715,24 +745,18 @@ tree_constant *
 builtin_fseek (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 3 && nargin != 4)
-    usage ("success = fseek (\"filename\" or filenum, offset [,origin])");
+    print_usage ("fseek");
   else
     retval = fseek_internal (args, nargin);
+
   return retval;
 }
 
 /*
  * Nonlinear algebraic equations.
  */
-static void
-fsolve_usage (void)
-{
-//  usage ("[x, status, path] = fsolve (\"f\", x0 [, opts] [, par] [, \"jac\"] [, scale])");
-
-  usage ("[x, info] = fsolve (\"f\", x0)");
-}
-
 tree_constant *
 builtin_fsolve (const tree_constant *args, int nargin, int nargout)
 {
@@ -742,7 +766,7 @@ builtin_fsolve (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, fsolve,
 		 retval = fsolve (args, nargin, nargout);)
   else
-    fsolve_usage ();
+    print_usage ("fsolve");
 
   return retval;
 }
@@ -750,27 +774,13 @@ builtin_fsolve (const tree_constant *args, int nargin, int nargout)
 /*
  * NLPs.
  */
-static void
-fsqp_usage (void)
-{
-#if defined (FSQP_MISSING)
-  message ("fsqp", "this function requires FSQP, which is not freely\n\
-      redistributable.  For more information, read the file\n\
-      libcruft/fsqp/README.MISSING in the source distribution.");
-#else
-  usage ("[x, phi] = fsqp (x, \"phi\" [, lb, ub] [, lb, A, ub] [, lb, \"g\", ub])\n\n\
-  Groups of arguments surrounded in `[]' are optional, but\n\
-  must appear in the same relative order shown above.");
-#endif
-}
-
 tree_constant *
 builtin_fsqp (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
 #if defined (FSQP_MISSING)
-  fsqp_usage ();
+  print_usage ("fsolve");
 #else
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
@@ -778,7 +788,7 @@ builtin_fsqp (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, fsqp,
 		 retval = fsqp (args, nargin, nargout);)
   else
-    fsqp_usage ();
+    print_usage ("fsolve");
 #endif
 
   return retval;
@@ -791,10 +801,12 @@ tree_constant *
 builtin_ftell (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("position = ftell (\"filename\" or filenumber)");
+    print_usage ("ftell");
   else
     retval = ftell_internal (args);
+
   return retval;
 }
 
@@ -805,6 +817,7 @@ tree_constant *
 builtin_getenv (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin == 2 && args[1].is_string_type ())
     {
       retval = new tree_constant [2];
@@ -815,7 +828,8 @@ builtin_getenv (const tree_constant *args, int nargin, int nargout)
 	retval[0] = tree_constant ("");
     }
   else
-    usage ("getenv (\"string\")");
+    print_usage ("getenv");
+
   return retval;
 }
 
@@ -834,7 +848,7 @@ builtin_ifft (const tree_constant *args, int nargin, int nargout)
 		   retval[0] = ifft (args[1]);
 		 })
   else
-    usage ("ifft (a)");
+    print_usage ("ifft");
 
   return retval;
 }
@@ -854,7 +868,7 @@ builtin_inv (const tree_constant *args, int nargin, int nargout)
 		   retval[0] = inverse (args[1]);
 		 })
   else
-    usage ("inv (A)");
+    print_usage ("inv");
 
   return retval;
 }
@@ -873,7 +887,7 @@ builtin_input (const tree_constant *args, int nargin, int nargout)
       retval[0] = get_user_input (args, nargin, nargout);
     }
   else
-    usage ("input (\"prompt\" [, \"s\"])");
+    print_usage ("input");
 
   return retval;
 }
@@ -885,8 +899,9 @@ tree_constant *
 builtin_isstr (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("isstr (value)");
+    print_usage ("isstr");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -895,6 +910,7 @@ builtin_isstr (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].isstr ();
 	}
     }
+
   return retval;
 }
 
@@ -912,7 +928,7 @@ builtin_keyboard (const tree_constant *args, int nargin, int nargout)
       retval[0] = get_user_input (args, nargin, nargout, 1);
     }
   else
-    usage ("keyboard (\"prompt\")");
+    print_usage ("keyboard");
 
   return retval;
 }
@@ -928,7 +944,7 @@ builtin_logm (const tree_constant *args, int nargin, int nargout)
   if (nargin == 2)
     retval = matrix_log (args[1]);
   else
-    usage ("logm (A)");
+    print_usage ("logm");
 
   return retval;
 }
@@ -936,12 +952,6 @@ builtin_logm (const tree_constant *args, int nargin, int nargout)
 /*
  * LPs.
  */
-static void
-lpsolve_usage (void)
-{
-  usage ("[x, obj, info] = lpsolve (XXX FIXME XXX)");
-}
-
 tree_constant *
 builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
 {
@@ -958,7 +968,7 @@ builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, lpsolve,
 		 retval = lpsolve (args, nargin, nargout);)
   else
-    lpsolve_usage ();
+    print_usage ("lp_solve");
 
   return retval;
 }
@@ -966,20 +976,6 @@ builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
 /*
  * ODEs.
  */
-static void
-lsode_usage (void)
-{
-  usage ("lsode (\"function_name\", x0, t_out\n\
-       lsode (\"function_name\", x0, t_out, t_crit)\n\
-\n\
-       The first argument is the name of the function to call to\n\
-       compute the vector of right hand sides.  It must have the form\n\
-\n\
-         xdot = f (x, t)\n\
-\n\
-       where xdot and x are vectors and t is a scalar.");
-}
-
 tree_constant *
 builtin_lsode (const tree_constant *args, int nargin, int nargout)
 {
@@ -989,7 +985,7 @@ builtin_lsode (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, lsode,
 		 retval = lsode (args, nargin, nargout);)
   else
-    lsode_usage ();
+    print_usage ("lsode");
 
   return retval;
 }
@@ -1006,7 +1002,7 @@ builtin_lu (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, lu,
 		 retval = lu (args[1], nargout);)
   else
-    usage ("[L, U, P] = lu (A)");
+    print_usage ("lu");
 
   return retval;
 }
@@ -1023,7 +1019,7 @@ builtin_max (const tree_constant *args, int nargin, int nargout)
       || (nargin == 3 && nargout == 1))
     retval = column_max (args, nargin, nargout);
   else
-    usage ("[X, I] = max (A)\n        X = max (A)\n        X = max (A, B)");
+    print_usage ("max");
 
   return retval;
 }
@@ -1040,7 +1036,7 @@ builtin_min (const tree_constant *args, int nargin, int nargout)
       || (nargin == 3 && nargout == 1))
     retval = column_min (args, nargin, nargout);
   else
-    usage ("[X, I] = min (A)\n        X = min (A)\n        X = min (A, B)");
+    print_usage ("min");
 
   return retval;
 }
@@ -1048,28 +1044,6 @@ builtin_min (const tree_constant *args, int nargin, int nargout)
 /*
  * NLPs.
  */
-static void
-npsol_usage (void)
-{
-#if defined (NPSOL_MISSING)
-  message ("npsol", "this function requires NPSOL, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/npsol/README.MISSING in the source distribution.");
-#else
-  usage ("\n\n\
-  [x, obj, info, lambda] = npsol (x, \"phi\" [, lb, ub] [, lb, A, ub] [, lb, \"g\", ub])\n\n\
-  Groups of arguments surrounded in `[]' are optional, but\n\
-  must appear in the same relative order shown above.\n\
-\n\
-  The second argument is a string containing the name of the objective\n\
-  function to call.  The objective function must be of the form\n\
-\n\
-    y = phi (x)\n\
-\n\
-  where x is a vector and y is a scalar.");
-#endif
-}
-
 tree_constant *
 builtin_npsol (const tree_constant *args, int nargin, int nargout)
 {
@@ -1083,7 +1057,7 @@ builtin_npsol (const tree_constant *args, int nargin, int nargout)
   retval[1] = tree_constant (m);
   retval[2] = tree_constant (-1.0);
   retval[3] = tree_constant (m);
-  npsol_usage ();
+  print_usage ("npsol");
 #else
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
@@ -1091,7 +1065,7 @@ builtin_npsol (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, npsol,
 		 retval = npsol (args, nargin, nargout);)
   else
-    npsol_usage ();
+    print_usage ("npsol");
 #endif
 
   return retval;
@@ -1116,9 +1090,10 @@ builtin_ones (const tree_constant *args, int nargin, int nargout)
       retval[0] = fill_matrix (args[1], args[2], 1.0, "ones");
       break;
     default:
-      usage ("ones (n)\n       ones (A)\n       ones (n, m)");
+      print_usage ("ones");
       break;
     }
+
   return retval;
 }
 
@@ -1130,7 +1105,7 @@ builtin_pause (const tree_constant *args, int nargin, int nargout)
 {
   if (! (nargin == 1 || nargin == 2))
     {
-      usage ("pause ([delay])");
+      print_usage ("pause");
       return NULL_TREE_CONST;
     }
 
@@ -1141,6 +1116,7 @@ builtin_pause (const tree_constant *args, int nargin, int nargout)
       else if (kbhit () == EOF)
 	clean_up_and_exit (0);
     }
+
   return NULL_TREE_CONST;
 }
 
@@ -1161,10 +1137,12 @@ tree_constant *
 builtin_printf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin < 2)
-    usage ("printf (\"fmt\" [, ...])");
+    print_usage ("printf");
   else
     retval = do_printf ("printf", args, nargin, nargout);
+
   return retval;
 }
 
@@ -1175,8 +1153,9 @@ tree_constant *
 builtin_prod (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("prod (M)");
+    print_usage ("prod");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -1185,6 +1164,7 @@ builtin_prod (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].prod ();
 	}
     }
+
   return retval;
 }
 
@@ -1226,21 +1206,6 @@ builtin_pwd (const tree_constant *args, int nargin, int nargout)
 /*
  * QPs.
  */
-static void
-qpsol_usage (void)
-{
-#if defined (QPSOL_MISSING)
-  message ("qpsol", "this function requires QPSOL, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/qpsol/README.MISSING in the source distribution.");
-#else
-  usage ("[x, obj, info, lambda] = qpsol (x, H, c [, lb, ub] [, lb, A, ub])\n\
-\n\
-  Groups of arguments surrounded in `[]' are optional, but\n\
-  must appear in the same relative order shown above.");
-#endif
-}
-
 tree_constant *
 builtin_qpsol (const tree_constant *args, int nargin, int nargout)
 {
@@ -1254,14 +1219,14 @@ builtin_qpsol (const tree_constant *args, int nargin, int nargout)
   retval[1] = tree_constant (m);
   retval[2] = tree_constant (-1.0);
   retval[3] = tree_constant (m);
-  qpsol_usage ();
+  print_usage ("qpsol");
 #else
   if ((nargin == 4 || nargin == 6 || nargin == 7 || nargin == 9)
       && (nargout >= 1 && nargout <= 4))
     DLD_BUILTIN (args, nargin, nargout, qpsol,
 		 retval = qpsol (args, nargin, nargout);)
   else
-    qpsol_usage ();
+    print_usage ("qpsol");
 #endif
 
   return retval;
@@ -1279,7 +1244,7 @@ builtin_qr (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, qr,
 		 retval = qr (args[1], nargout);)
   else
-    usage ("[Q, R] = qr (A)");
+    print_usage ("qr");
 
   return retval;
 }
@@ -1296,8 +1261,7 @@ builtin_qzval (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, qzvalue,
 		 retval = qzvalue (args, nargin, nargout);)
   else
-    usage ("x = qzval (A,B): compute generalized eigenvalues of \n\
-  the matrix pencil (A - lambda B).  A and B must be real matrices.\n");
+    print_usage ("qzval");
 
   return retval;
 }
@@ -1314,9 +1278,7 @@ builtin_quad (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, quad,
 		 retval = do_quad (args, nargin, nargout);)
   else
-    usage ("[v, ier, nfun, err] = quad (\"f\", a, b)\n\
-                           = quad (\"f\", a, b, tol)\n\
-                           = quad (\"f\", a, b, tol, sing)");
+    print_usage ("quad");
 
   return retval;
 }
@@ -1344,14 +1306,7 @@ builtin_rand (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, rand,
 		 retval = rand_internal (args, nargin, nargout);)
   else
-    usage ("rand                  -- generate a random value\n\
-       rand (n)              -- generate N x N matrix\n\
-       rand (A)              -- generate matrix the size of A\n\
-       rand (n, m)           -- generate N x M matrix\n\
-       rand (\"dist\")         -- get current distribution\n\
-       rand (\"distribution\") -- set distribution\n\
-       rand (\"seed\")         -- get current seed\n\
-       rand (\"seed\", n)      -- set seed");
+    print_usage ("rand");
 
   return retval;
 }
@@ -1379,10 +1334,12 @@ tree_constant *
 builtin_scanf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("[...] = scanf (\"fmt\")");
+    print_usage ("scanf");
   else
     retval = do_scanf ("scanf", args, nargin, nargout);
+
   return retval;
 }
 
@@ -1400,7 +1357,7 @@ builtin_setstr (tree_constant *args, int nargin, int nargout)
       retval[0] = args[1].convert_to_str ();
     }
   else
-    usage ("setstr (v)");
+    print_usage ("setstr");
 
   return retval;
 }
@@ -1438,7 +1395,7 @@ builtin_shell_command (const tree_constant *args, int nargin, int nargout)
 	error ("shell_cmd: first argument must be a string");
     }
   else
-    usage ("shell_cmd (string [, return_output])");
+    print_usage ("shell_cmd");
 
   return retval;
 }
@@ -1452,7 +1409,7 @@ builtin_size (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   if (nargin != 2)
-    usage ("size (x)");
+    print_usage ("size");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -1474,9 +1431,10 @@ builtin_size (const tree_constant *args, int nargin, int nargout)
 	      retval[1] = tree_constant ((double) nc);
 	    }
 	  else
-	    usage ("[n, m] = size (A)\n                size (A)");
+	    print_usage ("size");
 	}
     }
+
   return retval;
 }
 
@@ -1491,7 +1449,7 @@ builtin_sort (const tree_constant *args, int nargin, int nargout)
   if (nargin == 2)
     retval = sort (args, nargin, nargout);
   else
-    usage ("[s, i] = sort (x)");
+    print_usage ("sort");
 
   return retval;
 }
@@ -1503,10 +1461,12 @@ tree_constant *
 builtin_sprintf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin < 2)
-    usage ("string = sprintf (\"fmt\" [, ...])");
+    print_usage ("sprintf");
   else
     retval = do_printf ("sprintf", args, nargin, nargout);
+
   return retval;
 }
 
@@ -1521,7 +1481,7 @@ builtin_sqrtm (const tree_constant *args, int nargin, int nargout)
   if (nargin == 2)
     retval = matrix_sqrt (args[1]);
   else
-    usage ("sqrtm (A)");
+    print_usage ("sqrtm");
 
   return retval;
 }
@@ -1533,10 +1493,12 @@ tree_constant *
 builtin_sscanf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 3)
-    usage ("[...] = sscanf (string, \"fmt\")");
+    print_usage ("sscanf");
   else
     retval = do_scanf ("sscanf", args, nargin, nargout);
+
   return retval;
 }
 
@@ -1547,8 +1509,9 @@ tree_constant *
 builtin_sum (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("sum (M)");
+    print_usage ("sum");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -1557,6 +1520,7 @@ builtin_sum (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].sum ();
 	}
     }
+
   return retval;
 }
 
@@ -1567,8 +1531,9 @@ tree_constant *
 builtin_sumsq (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
+
   if (nargin != 2)
-    usage ("sumsq (M)");
+    print_usage ("sumsq");
   else
     {
       if (args != NULL_TREE_CONST && args[1].is_defined ())
@@ -1577,6 +1542,7 @@ builtin_sumsq (const tree_constant *args, int nargin, int nargout)
 	  retval[0] = args[1].sumsq ();
 	}
     }
+
   return retval;
 }
 
@@ -1592,7 +1558,7 @@ builtin_svd (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, svd,
 		 retval = svd (args, nargin, nargout);)
   else
-    usage ("[U, S, V] = svd (A)\n               S = svd (A)");
+    print_usage ("svd");
 
   return retval;
 }
@@ -1609,7 +1575,7 @@ builtin_syl (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, syl,
 		 retval = syl (args, nargin, nargout);)
   else
-    usage ("X = syl (A,B,C)");
+    print_usage ("syl");
 
   return retval;
 }
@@ -1623,18 +1589,10 @@ builtin_schur (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   if ((nargin == 3 || nargin == 2) && (nargout == 1 || nargout == 2))
-    DLD_BUILTIN (args, nargin, nargout, hess,
+    DLD_BUILTIN (args, nargin, nargout, schur,
 		 retval = schur (args, nargin, nargout);)
   else
-    usage ("[U, S] = schur (A)\n\
-            S = schur (A)\n\n\
- or, for ordered Schur:\n\n\
-       [U, S] = schur (A, \"A, D, or U\")\n\
-            S = schur (A, \"A, D, or U\")\n\
- where:\n\n\
-   A = continuous time poles\n\
-   D = discrete time poles\n\
-   U = unordered schur (default)");
+    print_usage ("schur");
 
   return retval;
 }
@@ -1650,7 +1608,7 @@ builtin_givens (const tree_constant *args, int nargin, int nargout)
   if (nargin == 3 && (nargout == 1 || nargout == 2 ))
     retval = givens (args, nargin, nargout);
   else
-    usage ("[c, s] = givens (x,y)\n            G = givens (x,y)");
+    print_usage ("givens");
 
   return retval;
 }
@@ -1667,7 +1625,7 @@ builtin_hess (const tree_constant *args, int nargin, int nargout)
     DLD_BUILTIN (args, nargin, nargout, hess,
 		 retval = hess (args, nargin, nargout);)
   else
-    usage ("[P, H] = hess (A)\n            H = hess (A)");
+    print_usage ("hess");
 
   return retval;
 }
@@ -1719,9 +1677,10 @@ builtin_zeros (const tree_constant *args, int nargin, int nargout)
       retval[0] = fill_matrix (args[1], args[2], 0.0, "zeros");
       break;
     default:
-      usage ("zeros (n)\n       zeros (A)\n       zeros (n, m)");
+      print_usage ("zeros");
       break;
     }
+
   return retval;
 }
 

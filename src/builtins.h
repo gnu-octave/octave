@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+class ostrstream;
 class Complex;
 struct help_list;
 
@@ -82,6 +83,14 @@ extern help_list *builtin_mapper_functions_help (void);
 extern help_list *builtin_general_functions_help (void);
 extern help_list *builtin_text_functions_help (void);
 extern help_list *builtin_variables_help (void);
+
+extern int help_from_list (ostrstream& output_buf,
+			   const help_list *list, const char *string,
+			   int usage);
+
+extern void additional_help_message (ostrstream& output_buf);
+
+extern void print_usage (const char *s);
 
 #endif
 

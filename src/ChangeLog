@@ -1,3 +1,12 @@
+2003-02-22  Paul Kienzle <pkienzle@users.sf.net>
+
+	* toplev.cc: Put config info in array of strings, then convert to map.
+
+2003-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (symbol_exist): For names like foo.bar, don't omit
+	the part after the dot.
+
 2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (fun_to_call): New static variable.

@@ -559,10 +559,13 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (sr && sr->is_defined ())
     {
+      bool not_a_struct = struct_elts.empty ();
+      bool var_ok = not_a_struct || sr->is_map_element (struct_elts);
+
       if (! retval
+	  && var_ok
 	  && (type == "any" || type == "var")
-	  && sr->is_variable ()
-	  && (struct_elts.empty () || sr->is_map_element (struct_elts)))
+	  && sr->is_user_variable ())
 	{
 	  retval = 1;
 	}
@@ -570,21 +573,22 @@ symbol_exist (const std::string& name, const std::string& type)
       if (! retval
 	  && (type == "any" || type == "builtin"))
 	{
-	  if (sr->is_builtin_function ())
+	  if (not_a_struct && sr->is_builtin_function ())
 	    {
 	      retval = 5;
 	    }
-	  else if (sr->is_builtin_variable ())
+	  else if (var_ok && sr->is_builtin_variable ())
 	    {
 	      retval = 101;
 	    }
-	  else if (sr->is_builtin_constant ())
+	  else if (var_ok && sr->is_builtin_constant ())
 	    {
 	      retval = 102;
 	    }
 	}
 
       if (! retval
+	  && not_a_struct
 	  && (type == "any" || type == "file")
 	  && (sr->is_user_function () || sr->is_dld_function ()))
 	{

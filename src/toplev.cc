@@ -690,112 +690,138 @@ specified option.\n\
   bool octave_supports_dynamic_linking = false;
 #endif
 
-  Octave_map m;
+  // We do it this way instead of using a series of "m[KEY](0) = VAL"
+  // statements to avoid problems with gcc 2.96 (and possibly other
+  // compilers) that can't handle a long series of lines like that.
 
-  m ["ALL_CFLAGS"](0) = OCTAVE_CONF_ALL_CFLAGS;
-  m ["ALL_CXXFLAGS"](0) = OCTAVE_CONF_ALL_CXXFLAGS;
-  m ["ALL_FFLAGS"](0) = OCTAVE_CONF_ALL_FFLAGS;
-  m ["ALL_LDFLAGS"](0) = OCTAVE_CONF_ALL_LDFLAGS;
-  m ["AR"](0) = OCTAVE_CONF_AR;
-  m ["ARFLAGS"](0) = OCTAVE_CONF_ARFLAGS;
-  m ["BLAS_LIBS"](0) = OCTAVE_CONF_BLAS_LIBS;
-  m ["CC"](0) = OCTAVE_CONF_CC;
-  m ["CC_VERSION"](0) = OCTAVE_CONF_CC_VERSION;
-  m ["CFLAGS"](0) = OCTAVE_CONF_CFLAGS;
-  m ["CPICFLAG"](0) = OCTAVE_CONF_CPICFLAG;
-  m ["CPPFLAGS"](0) = OCTAVE_CONF_CPPFLAGS;
-  m ["CXX"](0) = OCTAVE_CONF_CXX;
-  m ["CXXCPP"](0) = OCTAVE_CONF_CXXCPP;
-  m ["CXXFLAGS"](0) = OCTAVE_CONF_CXXFLAGS;
-  m ["CXXPICFLAG"](0) = OCTAVE_CONF_CXXPICFLAG;
-  m ["CXX_VERSION"](0) = OCTAVE_CONF_CXX_VERSION;
-  m ["DEFAULT_PAGER"](0) = OCTAVE_DEFAULT_PAGER;
-  m ["DLFCN_INCFLAGS"](0) = OCTAVE_CONF_DLFCN_INCFLAGS;
-  m ["EXEEXT"](0) = OCTAVE_CONF_EXEEXT;
-  m ["F2C"](0) = OCTAVE_CONF_F2C;
-  m ["F2CFLAGS"](0) = OCTAVE_CONF_F2CFLAGS;
-  m ["F77"](0) = OCTAVE_CONF_F77;
-  m ["FC"](0) = OCTAVE_CONF_FC;
-  m ["FFLAGS"](0) = OCTAVE_CONF_FFLAGS;
-  m ["FFTW_LIBS"](0) = OCTAVE_CONF_FFTW_LIBS;
-  m ["FLIBS"](0) = OCTAVE_CONF_FLIBS;
-  m ["FPICFLAG"](0) = OCTAVE_CONF_FPICFLAG;
-  m ["GLOB_INCFLAGS"](0) = OCTAVE_CONF_GLOB_INCFLAGS;
-  m ["INCFLAGS"](0) = OCTAVE_CONF_INCFLAGS;
-  m ["LDFLAGS"](0) = OCTAVE_CONF_LDFLAGS;
-  m ["LD_CXX"](0) = OCTAVE_CONF_LD_CXX;
-  m ["LD_STATIC_FLAG"](0) = OCTAVE_CONF_LD_STATIC_FLAG;
-  m ["LEX"](0) = OCTAVE_CONF_LEX;
-  m ["LEXLIB"](0) = OCTAVE_CONF_LEXLIB;
-  m ["LFLAGS"](0) = OCTAVE_CONF_LFLAGS;
-  m ["LIBCRUFT"](0) = OCTAVE_CONF_LIBCRUFT;
-  m ["LIBDLFCN"](0) = OCTAVE_CONF_LIBDLFCN;
-  m ["LIBEXT"](0) = OCTAVE_CONF_LIBEXT;
-  m ["LIBFLAGS"](0) = OCTAVE_CONF_LIBFLAGS;
-  m ["LIBGLOB"](0) = OCTAVE_CONF_LIBGLOB;
-  m ["LIBKPATHSEA"](0) = OCTAVE_CONF_LIBKPATHSEA;
-  m ["LIBOCTAVE"](0) = OCTAVE_CONF_LIBOCTAVE;
-  m ["LIBOCTINTERP"](0) = OCTAVE_CONF_LIBOCTINTERP;
-  m ["LIBPLPLOT"](0) = OCTAVE_CONF_LIBPLPLOT;
-  m ["LIBREADLINE"](0) = OCTAVE_CONF_LIBREADLINE;
-  m ["LIBS"](0) = OCTAVE_CONF_LIBS;
-  m ["LN_S"](0) = OCTAVE_CONF_LN_S;
-  m ["MKOCTFILE_INCFLAGS"](0) = OCTAVE_CONF_MKOCTFILE_INCFLAGS;
-  m ["MKOCTFILE_LFLAGS"](0) = OCTAVE_CONF_MKOCTFILE_LFLAGS;
-  m ["MKOCTFILE_SH_LDFLAGS"](0) = OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS;
-  m ["RANLIB"](0) = OCTAVE_CONF_RANLIB;
-  m ["RDYNAMIC_FLAG"](0) = OCTAVE_CONF_RDYNAMIC_FLAG;
-  m ["RLD_FLAG"](0) = OCTAVE_CONF_RLD_FLAG;
-  m ["RUNTEST"](0) = OCTAVE_CONF_RUNTEST;
-  m ["SED"](0) = OCTAVE_CONF_SED;
-  m ["SHARED_LIBS"](0) = OCTAVE_CONF_SHARED_LIBS;
-  m ["SHLEXT"](0) = OCTAVE_CONF_SHLEXT;
-  m ["SHLEXT_VER"](0) = OCTAVE_CONF_SHLEXT_VER;
-  m ["SH_LD"](0) = OCTAVE_CONF_SH_LD;
-  m ["SH_LDFLAGS"](0) = OCTAVE_CONF_SH_LDFLAGS;
-  m ["SONAME_FLAGS"](0) = OCTAVE_CONF_SONAME_FLAGS;
-  m ["STATIC_LIBS"](0) = OCTAVE_CONF_STATIC_LIBS;
-  m ["UGLY_DEFS"](0) = OCTAVE_CONF_DEFS;
-  m ["UGLY_DEFS"](0) = OCTAVE_CONF_UGLY_DEFS;
-  m ["ENABLE_DYNAMIC_LINKING"](0) = OCTAVE_CONF_ENABLE_DYNAMIC_LINKING;
-  m ["XTRA_CFLAGS"](0) = OCTAVE_CONF_XTRA_CFLAGS;
-  m ["XTRA_CXXFLAGS"](0) = OCTAVE_CONF_XTRA_CXXFLAGS;
-  m ["YACC"](0) = OCTAVE_CONF_YACC;
-  m ["YFLAGS"](0) = OCTAVE_CONF_YFLAGS;
-  m ["archlibdir"](0) = OCTAVE_ARCHLIBDIR;
-  m ["bindir"](0) = OCTAVE_BINDIR;
-  m ["canonical_host_type"](0) = OCTAVE_CANONICAL_HOST_TYPE;
-  m ["config_opts"](0) = OCTAVE_CONF_config_opts;
-  m ["datadir"](0) = OCTAVE_DATADIR;
-  m ["dld"](0) = octave_supports_dynamic_linking;
-  m ["exec_prefix"](0) = OCTAVE_EXEC_PREFIX;
-  m ["fcnfiledir"](0) = OCTAVE_FCNFILEDIR;
-  m ["fcnfilepath"](0) = OCTAVE_FCNFILEPATH;
-  m ["imagedir"](0) = OCTAVE_IMAGEDIR;
-  m ["imagepath"](0) = OCTAVE_IMAGEPATH;
-  m ["includedir"](0) = OCTAVE_INCLUDEDIR;
-  m ["infodir"](0) = OCTAVE_INFODIR;
-  m ["infofile"](0) = OCTAVE_INFOFILE;
-  m ["libdir"](0) = OCTAVE_LIBDIR;
-  m ["libexecdir"](0) = OCTAVE_LIBEXECDIR;
-  m ["localarchlibdir"](0) = OCTAVE_LOCALARCHLIBDIR;
-  m ["localfcnfiledir"](0) = OCTAVE_LOCALFCNFILEDIR;
-  m ["localfcnfilepath"](0) = OCTAVE_LOCALFCNFILEPATH;
-  m ["localoctfiledir"](0) = OCTAVE_LOCALOCTFILEDIR;
-  m ["localoctfilepath"](0) = OCTAVE_LOCALOCTFILEPATH;
-  m ["localstartupfiledir"](0) = OCTAVE_LOCALSTARTUPFILEDIR;
-  m ["localverarchlibdir"](0) = OCTAVE_LOCALVERARCHLIBDIR;
-  m ["localverfcnfiledir"](0) = OCTAVE_LOCALVERFCNFILEDIR;
-  m ["localveroctfiledir"](0) = OCTAVE_LOCALVEROCTFILEDIR;
-  m ["man1dir"](0) = OCTAVE_MAN1DIR;
-  m ["man1ext"](0) = OCTAVE_MAN1EXT;
-  m ["mandir"](0) = OCTAVE_MANDIR;
-  m ["octfiledir"](0) = OCTAVE_OCTFILEDIR;
-  m ["octincludedir"](0) = OCTAVE_OCTINCLUDEDIR;
-  m ["octlibdir"](0) = OCTAVE_OCTLIBDIR;
-  m ["prefix"](0) = OCTAVE_PREFIX;
-  m ["startupfiledir"](0) = OCTAVE_STARTUPFILEDIR;
-  m ["version"](0) = OCTAVE_VERSION;
+  static bool initialized = false;
+  static Octave_map m;
+
+  static const char * const conf_info[] =
+    {
+      "ALL_CFLAGS", OCTAVE_CONF_ALL_CFLAGS,
+      "ALL_CXXFLAGS", OCTAVE_CONF_ALL_CXXFLAGS,
+      "ALL_FFLAGS", OCTAVE_CONF_ALL_FFLAGS,
+      "ALL_LDFLAGS", OCTAVE_CONF_ALL_LDFLAGS,
+      "AR", OCTAVE_CONF_AR,
+      "ARFLAGS", OCTAVE_CONF_ARFLAGS,
+      "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS,
+      "CC", OCTAVE_CONF_CC,
+      "CC_VERSION", OCTAVE_CONF_CC_VERSION,
+      "CFLAGS", OCTAVE_CONF_CFLAGS,
+      "CPICFLAG", OCTAVE_CONF_CPICFLAG,
+      "CPPFLAGS", OCTAVE_CONF_CPPFLAGS,
+      "CXX", OCTAVE_CONF_CXX,
+      "CXXCPP", OCTAVE_CONF_CXXCPP,
+      "CXXFLAGS", OCTAVE_CONF_CXXFLAGS,
+      "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG,
+      "CXX_VERSION", OCTAVE_CONF_CXX_VERSION,
+      "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER,
+      "DLFCN_INCFLAGS", OCTAVE_CONF_DLFCN_INCFLAGS,
+      "EXEEXT", OCTAVE_CONF_EXEEXT,
+      "F2C", OCTAVE_CONF_F2C,
+      "F2CFLAGS", OCTAVE_CONF_F2CFLAGS,
+      "F77", OCTAVE_CONF_F77,
+      "FC", OCTAVE_CONF_FC,
+      "FFLAGS", OCTAVE_CONF_FFLAGS,
+      "FFTW_LIBS", OCTAVE_CONF_FFTW_LIBS,
+      "FLIBS", OCTAVE_CONF_FLIBS,
+      "FPICFLAG", OCTAVE_CONF_FPICFLAG,
+      "GLOB_INCFLAGS", OCTAVE_CONF_GLOB_INCFLAGS,
+      "INCFLAGS", OCTAVE_CONF_INCFLAGS,
+      "LDFLAGS", OCTAVE_CONF_LDFLAGS,
+      "LD_CXX", OCTAVE_CONF_LD_CXX,
+      "LD_STATIC_FLAG", OCTAVE_CONF_LD_STATIC_FLAG,
+      "LEX", OCTAVE_CONF_LEX,
+      "LEXLIB", OCTAVE_CONF_LEXLIB,
+      "LFLAGS", OCTAVE_CONF_LFLAGS,
+      "LIBCRUFT", OCTAVE_CONF_LIBCRUFT,
+      "LIBDLFCN", OCTAVE_CONF_LIBDLFCN,
+      "LIBEXT", OCTAVE_CONF_LIBEXT,
+      "LIBFLAGS", OCTAVE_CONF_LIBFLAGS,
+      "LIBGLOB", OCTAVE_CONF_LIBGLOB,
+      "LIBKPATHSEA", OCTAVE_CONF_LIBKPATHSEA,
+      "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE,
+      "LIBOCTINTERP", OCTAVE_CONF_LIBOCTINTERP,
+      "LIBPLPLOT", OCTAVE_CONF_LIBPLPLOT,
+      "LIBREADLINE", OCTAVE_CONF_LIBREADLINE,
+      "LIBS", OCTAVE_CONF_LIBS,
+      "LN_S", OCTAVE_CONF_LN_S,
+      "MKOCTFILE_INCFLAGS", OCTAVE_CONF_MKOCTFILE_INCFLAGS,
+      "MKOCTFILE_LFLAGS", OCTAVE_CONF_MKOCTFILE_LFLAGS,
+      "MKOCTFILE_SH_LDFLAGS", OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS,
+      "RANLIB", OCTAVE_CONF_RANLIB,
+      "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG,
+      "RLD_FLAG", OCTAVE_CONF_RLD_FLAG,
+      "RUNTEST", OCTAVE_CONF_RUNTEST,
+      "SED", OCTAVE_CONF_SED,
+      "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS,
+      "SHLEXT", OCTAVE_CONF_SHLEXT,
+      "SHLEXT_VER", OCTAVE_CONF_SHLEXT_VER,
+      "SH_LD", OCTAVE_CONF_SH_LD,
+      "SH_LDFLAGS", OCTAVE_CONF_SH_LDFLAGS,
+      "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS,
+      "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS,
+      "UGLY_DEFS", OCTAVE_CONF_DEFS,
+      "UGLY_DEFS", OCTAVE_CONF_UGLY_DEFS,
+      "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING,
+      "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS,
+      "XTRA_CXXFLAGS", OCTAVE_CONF_XTRA_CXXFLAGS,
+      "YACC", OCTAVE_CONF_YACC,
+      "YFLAGS", OCTAVE_CONF_YFLAGS,
+      "archlibdir", OCTAVE_ARCHLIBDIR,
+      "bindir", OCTAVE_BINDIR,
+      "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE,
+      "config_opts", OCTAVE_CONF_config_opts,
+      "datadir", OCTAVE_DATADIR,
+      "exec_prefix", OCTAVE_EXEC_PREFIX,
+      "fcnfiledir", OCTAVE_FCNFILEDIR,
+      "fcnfilepath", OCTAVE_FCNFILEPATH,
+      "imagedir", OCTAVE_IMAGEDIR,
+      "imagepath", OCTAVE_IMAGEPATH,
+      "includedir", OCTAVE_INCLUDEDIR,
+      "infodir", OCTAVE_INFODIR,
+      "infofile", OCTAVE_INFOFILE,
+      "libdir", OCTAVE_LIBDIR,
+      "libexecdir", OCTAVE_LIBEXECDIR,
+      "localarchlibdir", OCTAVE_LOCALARCHLIBDIR,
+      "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR,
+      "localfcnfilepath", OCTAVE_LOCALFCNFILEPATH,
+      "localoctfiledir", OCTAVE_LOCALOCTFILEDIR,
+      "localoctfilepath", OCTAVE_LOCALOCTFILEPATH,
+      "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR,
+      "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR,
+      "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR,
+      "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR,
+      "man1dir", OCTAVE_MAN1DIR,
+      "man1ext", OCTAVE_MAN1EXT,
+      "mandir", OCTAVE_MANDIR,
+      "octfiledir", OCTAVE_OCTFILEDIR,
+      "octincludedir", OCTAVE_OCTINCLUDEDIR,
+      "octlibdir", OCTAVE_OCTLIBDIR,
+      "prefix", OCTAVE_PREFIX,
+      "startupfiledir", OCTAVE_STARTUPFILEDIR,
+      "version", OCTAVE_VERSION,
+      0, 0
+    };
+
+  if (! initialized)
+    {
+      m ["dld"](0) = octave_value (octave_supports_dynamic_linking);
+
+      int i = 0;
+      while (1)
+	{
+	  const char *key = conf_info[i++];
+
+	  if (key)
+	    m [key](0) = octave_value (conf_info[i++]);
+	  else
+	    break;
+	}
+
+      initialized = true;
+    }
 
   int nargin = args.length ();
 

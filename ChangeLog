@@ -3,12 +3,7 @@ Wed Nov 19 01:54:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* aclocal.m4 (OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL): Don't forget
 	to call AC_LANG_RESTORE.
 
-	* acconfig.h: Add undefs for NO_EXTERN_TEMPLATE_DECLS and
-	NEED_TEMPLATE_FCN_SPECS.
-
 	* configure.in (CXX_VERSION): Require 2.7.2 or later.
-	Define NO_EXTERN_TEMPLATE_DECLS and NEED_TEMPLATE_FCN_SPECS if
-	using egcs or 2.8.x or later.
 
 Wed Nov 19 01:38:58 1997  Mumit Khan  <khan@dhaka.xraylith.wisc.edu>
 

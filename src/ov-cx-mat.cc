@@ -122,7 +122,7 @@ octave_complex_matrix::do_index_op (const octave_value_list& idx)
   return retval;
 }
 
-#if !defined (NO_EXTERN_TEMPLATE_DECLS)
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void assign (Array2<Complex>&, const Array2<Complex>&);
 #endif
 
@@ -163,7 +163,7 @@ octave_complex_matrix::assign (const octave_value_list& idx,
     }
 }
 
-#if !defined (NO_EXTERN_TEMPLATE_DECLS)
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void assign (Array2<Complex>&, const Array2<double>&);
 #endif
 

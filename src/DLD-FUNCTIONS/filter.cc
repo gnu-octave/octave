@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-obj.h"
 
-#if !defined (NO_EXTERN_TEMPLATE_DECLS)
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArray<double>
 filter (MArray<double>&, MArray<double>&, MArray<double>&);
 
@@ -127,7 +127,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
   return y;
 }
 
-#if !defined (NO_EXTERN_TEMPLATE_DECLS)
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArray<double>
 filter (MArray<double>&, MArray<double>&, MArray<double>&,
 	MArray<double>&);

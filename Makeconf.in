@@ -481,12 +481,8 @@ echo $$src ; \
 if [ "$$src" = "octave" ] ; then \
   true ; \
 else \
-  if [ -d "$(libdir)/octave" ] ; then \
-    true ; \
-  else \
-    cd $(libdir) ; \
-    rm -f octave ; \
-    $(LN_S) $$src octave ; \
-  fi ; \
+  cd $(libdir) ; \
+  rm -f octave ; \
+  $(LN_S) $$src octave ; \
 fi
 endef

@@ -1,3 +1,18 @@
+2001-04-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (fold (tree_binary_expression *)):
+	Set discard_error_messages here instead of buffer_error_messages.
+	Don't add clear_global_error_variable to the unwind_protect stack.
+	(fold (tree_unary_expression *)): Likewise.
+	(finish_colon_expression): Likewise.
+	(finish_matrix): Likewise.
+
+	* error.cc (panic): Set discard_error_messages to false here.
+	(verror): Return immediately if discard_error_messages is true.
+
+	* error.cc (discard_error_messages): New global variable.
+	* error.h: Provide declaration.
+
 2001-04-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l: If unexpected character is EOF, report EOF error instead

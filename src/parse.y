@@ -1654,10 +1654,8 @@ fold (tree_binary_expression *e)
 
   unwind_protect_int (error_state);
 
-  unwind_protect_bool (buffer_error_messages);
-  buffer_error_messages = true;
-
-  unwind_protect::add (clear_global_error_variable, 0);
+  unwind_protect_bool (discard_error_messages);
+  discard_error_messages = true;
 
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
@@ -1704,10 +1702,8 @@ fold (tree_unary_expression *e)
 
   unwind_protect_int (error_state);
 
-  unwind_protect_bool (buffer_error_messages);
-  buffer_error_messages = true;
-
-  unwind_protect::add (clear_global_error_variable, 0);
+  unwind_protect_bool (discard_error_messages);
+  discard_error_messages = true;
 
   tree_expression *op = e->operand ();
 
@@ -1755,10 +1751,8 @@ finish_colon_expression (tree_colon_expression *e)
 
   unwind_protect_int (error_state);
 
-  unwind_protect_bool (buffer_error_messages);
-  buffer_error_messages = true;
-
-  unwind_protect::add (clear_global_error_variable, 0);
+  unwind_protect_bool (discard_error_messages);
+  discard_error_messages = true;
 
   tree_expression *base = e->base ();
   tree_expression *limit = e->limit ();
@@ -2633,10 +2627,8 @@ finish_matrix (tree_matrix *m)
 
   unwind_protect_int (error_state);
 
-  unwind_protect_bool (buffer_error_messages);
-  buffer_error_messages = true;
-
-  unwind_protect::add (clear_global_error_variable, 0);
+  unwind_protect_bool (discard_error_messages);
+  discard_error_messages = true;
 
   if (m->all_elements_are_constant ())
     {
@@ -3528,7 +3520,9 @@ variable @code{default_eval_print_flag}.\n\
 	  // errors that occurred in the first part of this eval().
 
 	  buffer_error_messages = false;
+
 	  bind_global_error_variable ();
+
 	  unwind_protect::add (clear_global_error_variable, 0);
 
 	  eval_string (args(1), 0, parse_status, nargout);

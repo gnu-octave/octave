@@ -68,6 +68,9 @@ int warning_state = 0;
 // the `unwind_protect' statement.
 bool buffer_error_messages = false;
 
+// TRUE means error messages are turned off.
+bool discard_error_messages = false;
+
 // The message buffer.
 static std::ostrstream *error_message_buffer = 0;
 
@@ -99,6 +102,9 @@ vwarning (const char *name, const char *fmt, va_list args)
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
+  if (discard_error_messages)
+    return;
+
   if (! buffer_error_messages)
     flush_octave_stdout ();
 
@@ -358,6 +364,7 @@ panic (const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   buffer_error_messages = false;
+  discard_error_messages = false;
   verror ("panic", fmt, args);
   va_end (args);
   abort ();

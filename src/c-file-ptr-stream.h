@@ -31,13 +31,37 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <cstdio>
 
+//
+// The c_file_ptr_buf requires a std::filebuf that accepts an open
+// file descriptor. This feature, while not part of the ISO C++
+// standard, is supported by a variety of C++ compiler runtimes,
+// albeit in slightly different ways.
+//
+// The C++ runtime libraries shipped with GCC versions < 3.0, Sun Pro,
+// Sun Workshop/Forte 5/6, Compaq C++ all support a non-standard filebuf
+// constructor that takes an open file descriptor. The almost ISO compliant
+// GNU C++ runtime shipped with GCC 3.0.x supports a different non-standard
+// filebuf constructor that takes a FILE* instead; starting from GCC 3.1,
+// the GNU C++ runtime removes all non-standard std::filebuf constructors
+// and provides an extension template class __gnu_cxx::stdio_filebuf
+// that supports the the 3.0.x behavior.
+//
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
+# include <ext/stdio_filebuf.h>
+# define OCTAVE_STD_FILEBUF __gnu_cxx::stdio_filebuf<char>
+#else
+# define OCTAVE_STD_FILEBUF std::filebuf
+#endif
+
 class
-c_file_ptr_buf : public std::filebuf
+c_file_ptr_buf : public OCTAVE_STD_FILEBUF
 {
 public:
 
 #if !defined (CXX_ISO_COMPLIANT_LIBRARY)
   typedef int int_type;
+#else
+  typedef std::filebuf::int_type int_type;
 #endif
 
   typedef int (*close_fcn) (FILE *);
@@ -47,9 +71,9 @@ public:
   c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = ::fclose)
     : 
 #if defined __GNUC__ && __GNUC__ >= 3
-    std::filebuf (f_arg, std::ios::in | std::ios::out),
+    OCTAVE_STD_FILEBUF (f_arg, std::ios::in | std::ios::out),
 #else
-    std::filebuf (f_arg ? fileno (f_arg) : -1),
+    OCTAVE_STD_FILEBUF (f_arg ? fileno (f_arg) : -1),
 #endif
     f (f_arg), cf (cf_arg),
     fd (f_arg ? fileno (f_arg) : -1)
@@ -93,6 +117,8 @@ private:
 
   int fd;
 };
+
+#undef OCTAVE_STD_FILEBUF
 
 class
 i_c_file_ptr_stream : public std::istream

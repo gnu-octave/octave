@@ -1,3 +1,8 @@
+2002-05-17  Mumit Khan <khan@nanotech.wisc.edu>
+
+	* Array.h (Array<T>::resize_fill_value): Return default initialized
+	object.
+
 2002-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rl-edit.c (OCTAVE_RL_SAVE_STRING): New macro.

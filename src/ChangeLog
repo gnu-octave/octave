@@ -1,3 +1,14 @@
+2002-05-17  Mumit Khan <khan@nanotech.wisc.edu>
+
+	* c-file-ptr-stream.h (OCTAVE_STD_FILEBUF): New macro to handle
+	various forms of extensions to std::filebuf.
+	(c_file_ptr_buf::c_file_ptr_buf): Use.
+	* pt-idx.cc (tree_index_expression::tree_index_expression): Remove
+	default arguments are from definition.
+	* symtab.cc (SYMBOL_DEF::print_info): Add std::.
+	(symbol_record::print_info): Likewise.
+	(symbol_table::print_info): Likewise.
+
 2002-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-map.cc (Octave_map::assign): Resize RHS if it is shorter

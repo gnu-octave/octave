@@ -178,7 +178,7 @@ SYMBOL_DEF::which (std::ostream& os, const std::string& name)
 }
 
 void
-SYMBOL_DEF::print_info (ostream& os, const std::string& prefix) const
+SYMBOL_DEF::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "symbol_def::count: " << count << "\n";
 
@@ -476,7 +476,7 @@ symbol_record::print_symbol_info_line (std::ostream& os) const
 }
 
 void
-symbol_record::print_info (ostream& os, const std::string& prefix) const
+symbol_record::print_info (std::ostream& os, const std::string& prefix) const
 {
   if (definition)
     definition->print_info (os, prefix);
@@ -874,7 +874,7 @@ symbol_table::pop_context (void)
 }
 
 void
-symbol_table::print_info (ostream& os) const
+symbol_table::print_info (std::ostream& os) const
 {
   int count = 0;
   int empty_chains = 0;

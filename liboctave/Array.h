@@ -254,7 +254,7 @@ public:
 
 #endif
 
-  static T resize_fill_value (void) { return static_cast<T> (0); }
+  static T resize_fill_value (void) { return T (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 };

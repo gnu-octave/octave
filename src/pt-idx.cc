@@ -59,7 +59,7 @@ tree_index_expression::tree_index_expression (tree_expression *e,
 
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      const std::string& n,
-					      int l = -1, int c = -1)
+					      int l, int c)
   : tree_expression (l, c), expr (e), args (), type (), arg_nm ()
 {
   append (n);

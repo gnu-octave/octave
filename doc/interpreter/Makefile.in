@@ -97,7 +97,7 @@ octave.ps: octave.dvi
 
 ../../BUGS: bugs.texi
 	-makeinfo -D BUGSONLY --no-headers --no-split --output BUGS \
-	  -I$(srcdir) $(srcdir)/bugs1.texi
+	  -I$(srcdir) $(srcdir)/bugs.texi
 	mv BUGS ../../BUGS
 
 check: all

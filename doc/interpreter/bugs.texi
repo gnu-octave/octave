@@ -479,7 +479,3 @@ help-octave-request@@bevo.che.wisc.edu
 
 @strong{Please do not} send requests to be added or removed from the the
 mailing list, or other administrative trivia to the list itself.
-
-@ifset BUGSONLY
-@bye
-@end ifset

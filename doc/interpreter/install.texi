@@ -472,7 +472,3 @@ be interested in debugging Octave.
 Type @samp{make binary-dist}.  This will build everything and then pack
 it up for distribution.
 @end itemize
-
-@ifset INSTALLONLY
-@bye
-@end ifset

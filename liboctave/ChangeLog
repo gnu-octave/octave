@@ -1,3 +1,10 @@
+2003-04-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleSVD.h (SVD::SVD, SVD::operator =): Also copy type_computed.
+	* CmplxSVD.h (ComplexSVD::ComplexSVD, ComplexSVD::operator =):
+	Likewise.
+	From Quentin H. Spencer <qspencer@ieee.org>.
+
 2003-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-getopt.c: Include <kpathsea/getopt.h>, not "getopt.h".

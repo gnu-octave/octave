@@ -54,12 +54,14 @@ public:
     }
 
   SVD (const SVD& a)
-    : sigma (a.sigma), left_sm (a.left_sm), right_sm (a.right_sm) { }
+    : type_computed (a.type_computed),
+      sigma (a.sigma), left_sm (a.left_sm), right_sm (a.right_sm) { }
 
   SVD& operator = (const SVD& a)
     {
       if (this != &a)
 	{
+	  type_computed = a.type_computed;
 	  sigma = a.sigma;
 	  left_sm = a.left_sm;
 	  right_sm = a.right_sm;

@@ -480,67 +480,174 @@ DEFUN ("pwd", Fpwd, Spwd, 1, 0,
   return retval;
 }
 
-
-
 DEFUN ("readdir", Freaddir, Sreaddir, 1, 0,
   "readdir (NAME)\n\
 \n\
 Return an array of strings containing the list of all files in the
-named directory, or one of the following error codes:\n\
-\n\
-  -1 : error opening the directory\n\
-  -2 : error reading the directory\n\
-  -3 : error closing the directory")
+named directory.  If sucessful, returns 0; otherwise an error message
+is printed.")
 {
   Octave_object retval;
   Octave_str_obj dirlist;
   int status = 0;
 
-  if (args.length () == 1 && args(0).is_string ())
+  if (args.length () == 1)
     {
       const char *dirname = args(0).string_value ();
 
-      DIR *dir = opendir (dirname);
-
-      if (dir)
+      if (error_state)
 	{
-	  int count = 0;
-	  while (readdir (dir))
-	    count++;
-
-	  rewinddir (dir);
-
-	  dirlist.resize (count);
-
-	  struct dirent *dir_entry;
-	  while ((dir_entry = readdir (dir)))
-	    {
-	      if (--count < 0)
-		break;
-
-	      dirlist (count) = dir_entry->d_name;
-	    }
-
-#if defined (CLOSEDIR_VOID)
-	  closedir (dir);
-#else
-	  if (closedir (dir) < 0)
-	    status = -3;
-#endif
-
-	  if (count != 0)
-	    status = -2;
+	  status = -1;
+	  error ("readdir: string argument expected");
 	}
       else
-	status = -1;
+	{
+	  DIR *dir = opendir (dirname);
+
+	  if (dir)
+	    {
+	      int count = 0;
+	      while (readdir (dir))
+		count++;
+
+	      rewinddir (dir);
+
+	      dirlist.resize (count);
+
+	      struct dirent *dir_entry;
+	      while ((dir_entry = readdir (dir)))
+		{
+		  if (--count < 0)
+		    break;
+
+		  dirlist (count) = dir_entry->d_name;
+		}
+
+#if defined (CLOSEDIR_VOID)
+	      closedir (dir);
+#else
+	      if (closedir (dir) < 0)
+		{
+		  status = -1;
+		  error ("%s", strerror (errno));
+		}
+#endif
+
+	      if (count != 0)
+		{
+		  status = -1;
+		  error ("readdir: failed reading directory");
+		}
+	    }
+	  else
+	    {
+	      status = -1;
+	      error ("%s", strerror (errno));
+	    }
+	}
     }
   else
     print_usage ("readdir");
 
-  if (status < 0)
-    retval (0) = (double) status;
-  else
+  if (status == 0)
     retval(0) = dirlist;
+
+  return retval;
+}
+
+// XXX FIXME XXX -- should probably also allow second arg to specify
+// mode.
+
+DEFUN ("mkdir", Fmkdir, Smkdir, 1, 0,
+  "mkdir (NAME)\n\
+\n\
+Create the directory named by NAME.  If successful, returns 0;\n\
+otherwise prints an error message.")
+{
+  Octave_object retval;
+
+  int status = 0;
+
+  if (args.length () == 1)
+    {
+      const char *dirname = args(0).string_value ();
+
+      if (error_state)
+	error ("mkdir: string argument expected");
+      else if (mkdir (dirname, 0777) < 0)
+	{
+	  status = -1;
+	  error ("%s", strerror (errno));
+	}
+    }
+  else
+    print_usage ("mkdir");
+
+  if (status == 0)
+    retval (0) = (double) status;
+
+  return retval;
+}
+
+DEFUN ("rmdir", Frmdir, Srmdir, 1, 0,
+  "rmdir (NAME)\n\
+\n\
+Remove the directory named by NAME.  If successful, returns 0;\n\
+otherwise prints an error message.")
+{
+  Octave_object retval;
+
+  int status = 0;
+
+  if (args.length () == 1)
+    {
+      const char *dirname = args(0).string_value ();
+
+      if (error_state)
+	error ("rmdir: string argument expected");
+      else if (rmdir (dirname) < 0)
+	{
+	  status = -1;
+	  error ("%s", strerror (errno));
+	}
+    }
+  else
+    print_usage ("rmdir");
+
+  if (status == 0)
+    retval (0) = (double) status;
+
+  return retval;
+}
+
+DEFUN ("rename", Frename, Srename, 1, 0,
+  "rename (FROM, TO)\n\
+\n\
+Rename a file.  If successful, returns 0;\n\
+otherwise prints an error message and returns -1.")
+{
+  Octave_object retval;
+
+  int status = 0;
+
+  if (args.length () == 2)
+    {
+      const char *from = args(0).string_value ();
+      const char *to = args(1).string_value ();
+
+      if (error_state)
+	error ("rename: string arguments expected");
+      else if (rename (from, to) < 0)
+	{
+	  status = -1;
+	  error ("%s", strerror (errno));
+	}
+    }
+  else
+    print_usage ("rename");
+
+  if (status == 0)
+    retval (0) = (double) status;
 
   return retval;
 }

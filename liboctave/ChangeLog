@@ -1,3 +1,8 @@
+2004-09-22  Federico Zenith  <zenith@chemeng.ntnu.no>
+
+	* DASPK-opts.in, DASRT-opts.in, ODESSA-opts.in:
+	Fix doc string layout to avoid overfull hbox in printed output.
+
 2004-09-21  John W. Eaton  <jwe@octave.org>
 
 	* mach-info.h (octave_mach_info::flt_fmt_native): Delete.

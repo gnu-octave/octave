@@ -1,3 +1,25 @@
+2004-09-22  Federico Zenith  <zenith@chemeng.ntnu.no>
+
+	* DLD-FUNCTIONS/qz.cc (Fqz): New @tex section(s) in doc string for
+	better formating of printed documentation.  Use @var in doc string.
+
+	* DLD-FUNCTIONS/time.cc (Fstrftime): Fix typo in doc string.
+	* error.cc (Flasterr, Flastwarn): Likewise.
+	* mappers.cc (Farg, Fasinh, Fatanh, Ffinite, Fsin, Fsinh, Ftan):
+	Likewise.
+	* file-io.cc (Fmktemp): Likewise.
+	* pt-plot.cc (symbols_of_pt_plot): Fix typos in doc string for
+	gnuplot_has_frames.
+
+	* input.cc (symbols_of_input): Replace --echo-input with new
+	--echo-commands in PS4 doc string.
+
+	* pt-assign.cc (symbols_of_pt_assign): Mark print_rhs_assign_val
+	as built-in in doc string.
+
+	* symtab.cc (symbols_of_symtab): Mark variables_can_hide_functions
+	as built-in in doc string.
+
 2004-09-21  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.59.

@@ -1,3 +1,120 @@
+2004-09-22  Federico Zenith  <zenith@chemeng.ntnu.no>
+
+	* control/base/analdemo.m, control/base/are.m, control/base/bddemo.m,
+	control/base/controldemo.m, control/base/damp.m, control/base/dare.m, 
+	control/base/dcgain.m, control/base/dgram.m, control/base/dlyap.m,
+	control/base/dre.m, control/base/frdemo.m, control/base/gram.m,
+	control/base/impulse.m, control/base/lqp.m, control/base/obsv.m,
+	control/base/pzmap.m, control/base/rldemo.m, control/hinf/h2norm.m,
+	control/hinf/hinfsyn.m, control/hinf/hinfsyn_ric.m,
+	control/hinf/is_dgkf.m, control/system/c2d.m, 
+	control/system/is_detectable.m, control/system/is_sample.m,
+	control/system/is_siso.m, control/system/is_stable.m,
+	control/system/ss2sys.m, control/system/ss.m, control/system/sys2ss.m,
+	control/system/sys2tf.m, control/system/sys2zp.m, 
+	control/system/sysappend.m, control/system/sysconnect.m,
+	control/system/sysdisc.m, control/system/sysdup.m,
+	control/system/sysgetsignals.m, control/system/sysmult.m,
+	control/system/syssetsignals.m, control/system/syssub.m,
+	control/system/tf2sys.m, control/system/ugain.m,
+	control/system/zp2ss.m, control/system/zp2sys.m, 
+	control/system/zp2tf.m, control/util/axis2dlim.m, polynomial/roots.m,
+	special-matrix/toeplitz.m: Fix typos in doc strings.
+
+	* control/base/are.m, control/base/dare.m, control/base/lsim.m,
+	control/base/ltifr.m, control/base/place.m,control/base/tzero2.m,
+	control/base/tzero.m, control/hinf/hinf_ctr.m, control/hinf/wgt1o.m,
+	ontrol/system/is_abcd.m, control/system/parallel.m,
+	control/system/ss2tf.m, control/system/ss2zp.m, control/system/ss.m,
+	control/system/sysappend.m, control/system/sysconnect.m,
+	control/system/sysdup.m, control/system/sysgroup.m,
+	control/system/sysprune.m, control/system/sysreorder.m,
+	control/system/sysscale.m, control/system/syssub.m,
+	control/system/tf2ss.m, control/system/tf2zp.m, control/util/zgfmul.m,
+	control/util/zginit.m, control/util/zgscal.m, elfun/acoth.m,
+	polynomial/polyout.m, specfun/log2.m:
+	Add output arguments in doc strings.
+
+	* control/base/are.m, control/base/bode_bounds, control/base/bode.m,
+	control/base/__bodquist__.m, control/base/ctrb.m, control/base/dare.m,
+	control/base/DEMOcontrol.m, control/base/dlyap.m, control/base/dre.m,
+	control/base/freqchkw.m, control/base/__freqresp__.m,
+	control/base/__freqresp__.m, control/base/lqp.m, control/base/lqr.m,
+	contol/base/lsim.m, control/base/lyap.m, control/base/nyquist.m,
+	control/base/obsv.m, control/base/place.m, control/base/pzmap.m,
+	control/base/__stepimp__.m, control/base/step.m, control/base/tzero2.m
+	control/base/tzero.m, control/hinf/dhinfdemo.m, control/hinf/h2norm.m,
+	control/hinf/h2syn.m, control/hinf/hinfdemo.m, 
+	control/hinf/hinfnorm.m, control/hinf/hinfsyn_chk.m, 
+	control/hinf/hinfsyn.m, control/hinf/is_dgkf.m, 
+	control/obsolete/syschnames.m, control/obsolete/syschnames.m,
+	control/system/c2d.m, control/system/is_abcd.m, 
+	control/system/is_controllable.m, control/system/is_detectable.m,
+	control/system/is_observable.m, control/system/is_stable.m,
+	control/system/jet707.m, control/system/ord2.m, 
+	control/system/starp.m, control/system/sys2fir.m, 
+	control/system/sys2ss.m, control/system/sys2tf.m, 
+	control/system/sys2zp.m, control/system/syscont.m, 
+	control/system/sysdisc.m, control/system/sysdup.m,
+	control/system/sysgettype.m, control/system/sysgroup.m,
+	control/system/sysmult.m, control/system/sysprune.m,
+	control/system/sysreorder.m, control/system/sysscale.m,
+	control/system/syssetsignals.m, control/system/sysupdate.m,
+	control/system/tf2ss.m, control/system/tf2sys.m, 
+	control/system/zp2ss.m, control/system/zp2sys.m, 
+	control/util/axis2dlim.m, control/util/prompt.m,
+	control/util/zgfmul.m, control/util/zginit.m, 
+	control/util/__zgpbal__.m, control/util/zgscal.m: 
+	Use @var, @strong, @command, @math, @acronym, @table and @cite 
+	in doc strings.
+
+	* control/base/bode_bounds.m, control/base/ctrb.m, control/base/dre.m, 
+	control/base/dgram.m, control/base/dlyap.m, control/base/ltifr.m,
+	control/base/nyquist.m, control/base/obsv.m, control/base/tzero.m,
+	control/hinf/dgkfdemo.m, control/hinf/dhinfdemo.m,
+	control/hinf/h2norm.m, control/hinf/h2syn.m, control/hinf/hinf_ctr.m,
+	control/hinf/hinfdemo.m, control/hinf/hinfnorm.m, 
+	control/hinf/hinfsyn_chk.m, control/hinf/hinfsyn.m,
+	control/hinf/wgt1o.m, control/obsolete/syschnames.m,
+	control/system/c2d.m, control/system/fir2sys.m,
+	control/system/is_stabilizable.m, control/system/jet707.m,
+	control/system/ord2.m, control/system/ss2tf.m, control/system/tf2ss.m,
+	control/util/zgshsr.m, polynomial/polyout.m:
+	New @tex section(s) in doc strings for better formating of printed
+	output.
+
+	* control/base/__freqresp__.m, control/base/nyquist.m, 
+	control/base/__stepimp__.m, control/hinf/hinfdemo.m,
+	control/obsolete/syschnames.m, control/system/sysprune.m:
+ 	Use proper double quote marks for TeX.
+
+	* control/base/DEMOcontrol.m: Add missing ;
+
+	* control/base/nichols.m, control/base/rlocus.m, 
+	control/obsolete/minfo.m, control/system/is_digital.m,
+	control/system/ss2zp.m, control/system/sysmin.m, 
+	control/system/tf2zp.m, control/util/sortcom.m: 
+	Convert documentation to use or more completely use Texinfo.
+
+	* control/base/rlocus.m, control/hinf/dhinfdemo.m, 
+	control/hinf/hinfdemo.m, control/system/ord2.m, 
+	control/system/parallel.m, control/system/ss2tf.m,
+	control/system/starp.m: Use "@group ... @end group" to avoid ascii
+	art splitting over a page boundary.
+	
+	* control/hinf/dgkfdemo.m, control/hinf/dhinfdemo.m, 
+	control/hinf/h2norm.m, control/hinf/h2syn.m, control/hinf/hinf_ctr.m, 
+	control/hinf/hinfdemo.m, control/hinf/hinfnorm.m, 
+	control/hinf/hinfsyn_chk.m, control/hinf/hinfsyn.m,
+	control/hinf/wgt1o.m, control/system/buildssic.m:
+	Use {\cal H}_\infty for H-infinity and likewise for H-2 to
+	the TeX documentation.
+	
+	* control/system/is_stabilizable.m:
+	Add Copyright so that help is displayed correctly.
+
+	* special-matrix/vander.m: Octave indexes start at 1.
+
 2004-09-21  David Bateman  <dbateman@free.fr>
 
 	* general/rotdim.m: New function for rotation of an N-d array in an

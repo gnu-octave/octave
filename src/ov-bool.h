@@ -38,7 +38,6 @@ class ostream;
 #include "oct-alloc.h"
 #include "str-vec.h"
 
-#include "mappers.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 

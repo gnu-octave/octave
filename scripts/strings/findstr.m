@@ -32,6 +32,9 @@
 ## @end example
 ## @end deftypefn
 
+## Note that this implementation swaps the strings if second one is longer
+## than the first, so try to put the longer one first.
+##
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe
 
@@ -41,54 +44,83 @@ function v = findstr (s, t, overlap)
     usage ("findstr (s, t, overlap)");
   endif
 
+  if (! isstr (s) || ! isstr (t) || all (size (s) > 1) || all (size (t) > 1))
+    error ("findstr: expecting first two arguments to be strings");
+  endif
+
   if (nargin == 2)
     overlap = 1;
   endif
 
-  if (isstr (s) && isstr (t))
-
-    ## Make S be the longer string.
-
-    if (length (s) < length (t))
-      tmp = s;
-      s = t;
-      t = tmp;
-    endif
-
-    s = toascii (s);
-    t = toascii (t);
-
-    l_t = length (t);
-
-    if (l_t < 1)
-      v = [];
-      return;
-    endif
-
-    ind = 1 : l_t;
-    limit = length (s) - l_t + 1;
-    v  = zeros (1, limit);
-    i = 0;
-
-    k = 1;
-    while (k <= limit)
-      if (s (ind + k - 1) == t)
-        v (++i) = k;
-        if (! overlap)
-          k = k + l_t - 1;
-        endif
-      endif
-      k++;
-    endwhile
-
-    if (i > 0)
-      v = v (1:i);
-    else
-      v = [];
-    endif
-
+  ## Make S be the longer string.
+  if (length (s) < length (t))
+    tmp = s;
+    s = t;
+    t = tmp;
+  endif
+  
+  l_s = length (s);
+  l_t = length (t);
+  
+  if (l_t == 0)
+    ## zero length target: return all indices
+    v = 1:l_s;
+    
+  elseif (l_t == 1)
+    ## length one target: simple find
+    v = find (s == t);
+    
+  elseif (l_t == 2)
+    ## length two target: find first at i and second at i+1
+    v = find (s(1:l_s-1) == t(1) & s(2:l_s) == t(2));
+    
   else
-    error ("findstr: expecting first two arguments to be strings");
+    ## length three or more: match the first three by find then go through
+    ## the much smaller list to determine which of them are real matches
+    limit = l_s - l_t + 1;
+    v = find (s(1:limit) == t(1)
+	      & s(2:limit+1) == t(2)
+	      & s (3:limit+2) == t(3));
+  endif
+
+  ## Need to search the index vector if our find was too short
+  ## (target length > 3), or if we don't allow overlaps.  Note though
+  ## that there cannot be any overlaps if the first character in the
+  ## target is different from the remaining characters in the target,
+  ## so a single character, two different characters, or first character
+  ## different from the second two don't need to be searched.
+  if (l_t >= 3 || (! overlap && l_t > 1 && any (t(1) == t(2:l_t))))
+    ## force strings to be both row vectors or both column vectors
+    if (all (size (s) != size (t)))
+      t = t.';
+    endif
+    
+    ## determine which ones to keep
+    keep = zeros (size (v));
+    ind = 0:l_t-1;
+    if (overlap)
+      for idx = 1:length (v)
+	keep(idx) = all (s(v(idx) + ind) == t);
+      endfor
+    else
+      next = 1; # first possible position for next non-overlapping match
+      for idx = 1:length (v)
+	if (v(idx) >= next && s(v(idx) + ind) == t)
+	  keep(idx) = 1;
+	  next = v(idx) + l_t; # skip to the next possible match position
+	else
+	  keep(idx) = 0;
+	endif
+      endfor
+    endif
+    if (! isempty (v))
+      v = v(find (keep));
+    endif
+  endif
+  
+  ## Always return a column vector, because that's what the old one did
+  if (rows (v) > 1) 
+    v = v.';
   endif
 
 endfunction

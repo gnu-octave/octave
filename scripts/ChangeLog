@@ -2,6 +2,8 @@
 
 	* signal/fftfilt.m: Filter columns if called with a matrix.
 
+	* strings/findstr.m: Vectorize as much as possible.
+
 2002-04-04  Dirk Laurie <dirk@calvyn.puk.ac.za>
 
 	* special-matrix/invhilb.m: New version that is faster and more

@@ -40,6 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "idx-vector.h"
 #include "lo-error.h"
 
+#include "ArrayN-inline.h"
+
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
 
@@ -1935,8 +1937,6 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 
   return retval;
 }
-
-#include "ArrayN-inline.h"
 
 template <class T>
 Array<T>

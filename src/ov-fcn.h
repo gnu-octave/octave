@@ -79,7 +79,7 @@ public:
 
   virtual void octave_va_start (void) { }
 
-  virtual octave_value octave_va_arg (void) const { return octave_value (); }
+  virtual octave_value octave_va_arg (void) { return octave_value (); }
 
   virtual octave_value_list octave_all_va_args (void)
     { return octave_value_list (); }

@@ -35,6 +35,8 @@ Software Foundation, Inc.
 
 #include <string>
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -758,31 +760,7 @@ Return a list of the names of the elements of the structure S.")
       if (args (0).is_map ())
 	{
 	  Octave_map m = args(0).map_value ();
-	  char **names = m.make_name_list ();
-
-	  char **ptr = names;
-	  int max_len = 0;
-	  while (*ptr)
-	    {
-	      int len = strlen (*ptr);
-	      if (len > max_len)
-		max_len = len;
-	      ptr++;
-	    }
-
-	  charMatrix list (m.length (), max_len);
-
-	  ptr = names;
-	  int i = 0;
-	  while (*ptr)
-	    {
-	      list.insert (*ptr, i++, 0);
-	      delete [] *ptr++;
-	    }
-
-	  delete [] names;
-
-	  retval(0) = list;
+	  retval(0) = m.make_name_list ();
 	}
       else
 	gripe_wrong_type_arg ("struct_elements", args (0));
@@ -807,8 +785,7 @@ return nonzero if S is a structure with element NAME")
       retval = 0.0;
       if (args(0).is_map () && args(1).is_string ())
 	{
-	  string tstr = args(1).string_value ();
-	  const char *s = tstr.c_str ();
+	  string s = args(1).string_value ();
 	  tree_constant tmp = args(0).lookup_map_element (s, 0, 1);
 	  retval = (double) tmp.is_defined ();
 	}

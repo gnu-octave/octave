@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <string>
+
 class symbol_record;
 
 class
@@ -63,24 +65,24 @@ public:
     };
 
   token (int l = -1, int c = -1);
-  token (char *s, int l = -1, int c = -1);
-  token (double d, char *s = 0, int l = -1, int c = -1);
+  token (const string& s, int l = -1, int c = -1);
+  token (double d, const string& s = string (), int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_record *s, int l = -1, int c = -1);
 
- ~token (void);
+  ~token (void);
 
-  int line (void);
-  int column (void);
+  int line (void) { return line_num; }
+  int column (void) { return column_num; }
 
-  char *string (void);
+  string text (void);
   double number (void);
   end_tok_type ettype (void);
   plot_tok_type pttype (void);
   symbol_record *sym_rec (void);
 
-  char *text_rep (void);
+  string text_rep (void);
 
 private:
   token (const token& tok);
@@ -91,13 +93,13 @@ private:
   token_type type_tag;
   union
     {
-      char *str;
+      string *str;
       double num;
       end_tok_type et;
       plot_tok_type pt;
       symbol_record *sr;
     };
-  char *orig_text;
+  string orig_text;
 };
 
 #endif

@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include <SLList.h>
 
 class tree_constant;
@@ -52,15 +54,15 @@ public:
   virtual tree_constant assign (tree_constant& t,
 				const Octave_object& args);
 
-  virtual char *name (void) const;
+  virtual string name (void) const;
 
   virtual void bump_value (tree_expression::type);
 
-  virtual tree_constant lookup_map_element (SLList<char*>& list,
+  virtual tree_constant lookup_map_element (SLList<string>& list,
 					    int insert = 0, int silent = 0);
 
-  virtual char *fcn_file_name (void)
-    { return 0; }
+  virtual string fcn_file_name (void)
+    { return string (); }
 
   virtual time_t time_parsed (void);
 

@@ -63,17 +63,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 		   sv_fcn, doc) \
   do \
     { \
-      builtin_variable sname = \
-	{ \
-	  name, \
-	  new tree_constant (defn), \
-	  inst_as_fcn, \
-	  protect, \
-	  (sv_fcn ? 1 : 0), \
-	  sv_fcn, \
-	  doc, \
-	}; \
-      install_builtin_variable (&sname); \
+      builtin_variable sname (name, new tree_constant (defn), \
+			      inst_as_fcn, protect, (sv_fcn ? 1 : 0), \
+			      sv_fcn, doc); \
+      install_builtin_variable (sname); \
     } \
   while (0)
 
@@ -160,18 +153,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 		     d_d_map, d_c_map, c_c_map, doc) \
   do \
     { \
-      builtin_mapper_function sname = \
-	{ \
-	  name, \
-	  can_ret_cmplx_for_real, \
-	  lo, \
-	  hi, \
-	  d_d_map, \
-	  d_c_map, \
-	  c_c_map, \
-	  doc, \
-	}; \
-      install_builtin_mapper (&sname); \
+      builtin_mapper_function sname (name, can_ret_cmplx_for_real, \
+				     lo, hi, d_d_map, d_c_map, \
+				     c_c_map, doc); \
+      install_builtin_mapper (sname); \
     } \
   while (0)
 

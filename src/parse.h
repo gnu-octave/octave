@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_parse_h)
 #define octave_parse_h 1
 
+#include <string>
+
 #include "SLStack.h"
 
 extern void discard_until (char c);
@@ -74,7 +76,7 @@ extern int input_line_number;
 extern int current_input_column;
 
 // Buffer for help text snagged from function files.
-extern char *help_buf;
+extern string help_buf;
 
 // Nonzero means we're working on a plot command.
 extern int plotting;

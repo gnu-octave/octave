@@ -53,39 +53,6 @@ extern int returning;
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;
 
-// But first, some extra functions used by the tree classes.
-
-static void
-print_constant (tree_constant& tc, char *name, int print_padding = 1)
-{
-  int pad_after = 0;
-  if (user_pref.print_answer_id_name)
-    {
-      if (print_as_scalar (tc) || print_as_structure (tc))
-	{
-	  ostrstream output_buf;
-	  output_buf << name << " = " << ends;
-	  maybe_page_output (output_buf);
-	}
-      else
-	{
-	  pad_after = 1;
-	  ostrstream output_buf;
-	  output_buf << name << " =\n\n" << ends;
-	  maybe_page_output (output_buf);
-	}
-    }
-
-  tc.eval (1);
-
-  if (print_padding && pad_after)
-    {
-      ostrstream output_buf;
-      output_buf << "\n" << ends;
-      maybe_page_output (output_buf);
-    }
-}
-
 // Prefix expressions.
 
 tree_prefix_expression::~tree_prefix_expression (void)
@@ -715,7 +682,7 @@ tree_simple_assignment_expression::eval (int print)
     }
 
   if (! error_state && print && retval.is_defined ())
-    print_constant (retval, lhs->name ());
+    retval.print_with_name (lhs->name ());
 
   return retval;
 }

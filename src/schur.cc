@@ -63,13 +63,11 @@ characters:\n\
 
   tree_constant arg = args(0);
 
-  const char *ord = "U";
-  string tstr;
+  string ord;
 
   if (nargin == 2)
     {
-      tstr = args(1).string_value (); 
-      ord = tstr.c_str ();
+      ord = args(1).string_value (); 
 
       if (error_state)
 	{
@@ -78,10 +76,13 @@ characters:\n\
 	}
     }
 
-  if (*ord != 'U' && *ord != 'A' && *ord != 'D'
-      && *ord != 'u' && *ord != 'a' && *ord != 'd')
+  char ord_char = ord.empty () ? 'U' : ord[0];
+
+  if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
+      && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
     {
-      warning ("schur: incorrect ordered schur argument `%c'", *ord);
+      warning ("schur: incorrect ordered schur argument `%c'",
+	       ord.c_str ());
       return retval;
     }
 
@@ -107,7 +108,7 @@ characters:\n\
 
       if (! error_state)
 	{
-	  SCHUR result (tmp,ord);
+	  SCHUR result (tmp, ord);
 
 	  if (nargout == 0 || nargout == 1)
 	    {
@@ -126,7 +127,7 @@ characters:\n\
 
       if (! error_state)
 	{
-	  ComplexSCHUR result (ctmp,ord);
+	  ComplexSCHUR result (ctmp, ord);
  
 	  if (nargout == 0 || nargout == 1)
 	    {

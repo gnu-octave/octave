@@ -71,37 +71,6 @@ any_element_greater_than (const Matrix& a, double val)
   return 0;
 }
 
-static void
-print_constant (tree_constant& tc, char *name, int print_padding = 1)
-{
-  int pad_after = 0;
-  if (user_pref.print_answer_id_name)
-    {
-      if (print_as_scalar (tc) || print_as_structure (tc))
-	{
-	  ostrstream output_buf;
-	  output_buf << name << " = " << ends;
-	  maybe_page_output (output_buf);
-	}
-      else
-	{
-	  pad_after = 1;
-	  ostrstream output_buf;
-	  output_buf << name << " =\n\n" << ends;
-	  maybe_page_output (output_buf);
-	}
-    }
-
-  tc.eval (1);
-
-  if (print_padding && pad_after)
-    {
-      ostrstream output_buf;
-      output_buf << "\n" << ends;
-      maybe_page_output (output_buf);
-    }
-}
-
 // Make sure that all arguments have values.
 
 // Are any of the arguments `:'?
@@ -120,10 +89,13 @@ any_arg_is_magic_colon (const Octave_object& args)
 
 // Symbols from the symbol table.
 
-char *
+string
 tree_identifier::name (void) const
 {
-  return sym ? sym->name () : 0;
+  string retval;
+  if (sym)
+    retval = sym->name ();
+  return retval;
 }
 
 tree_identifier *
@@ -141,10 +113,10 @@ tree_identifier::define (tree_function *t)
 }
 
 void
-tree_identifier::document (char *s)
+tree_identifier::document (const string& s)
 {
-  if (sym && s)
-    sym->document (strsave (s));
+  if (sym)
+    sym->document (s);
 }
 
 tree_constant
@@ -226,7 +198,7 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
 }
 
 tree_constant
-tree_identifier::assign (SLList<char*> list, tree_constant& rhs)
+tree_identifier::assign (SLList<string> list, tree_constant& rhs)
 {
   tree_constant retval;
 
@@ -258,7 +230,7 @@ tree_identifier::assign (SLList<char*> list, tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (SLList<char*> list, tree_constant& rhs,
+tree_identifier::assign (SLList<string> list, tree_constant& rhs,
 			 const Octave_object& args)
 {
   tree_constant retval;
@@ -317,7 +289,8 @@ tree_identifier::bump_value (tree_expression::type etype)
     {
       if (sym->is_read_only ())
 	{
-	  ::error ("can't redefined read-only variable `%s'", name ());
+	  ::error ("can't redefined read-only variable `%s'",
+		   name ().c_str ());
 	}
       else
 	{
@@ -331,13 +304,13 @@ tree_identifier::bump_value (tree_expression::type etype)
 void
 tree_identifier::eval_undefined_error (void)
 {
-  char *nm = name ();
   int l = line ();
   int c = column ();
   if (l == -1 && c == -1)
-    ::error ("`%s' undefined", nm);
+    ::error ("`%s' undefined", name ().c_str ());
   else
-    ::error ("`%s' undefined near line %d column %d", nm, l, c);
+    ::error ("`%s' undefined near line %d column %d",
+	     name ().c_str (), l, c);
 }
 
 // Try to find a definition for an identifier.  Here's how:
@@ -420,7 +393,7 @@ tree_identifier::eval (int print)
       if (maybe_do_ans_assign && ! object_to_eval->is_constant ())
 	bind_ans (retval, print);
       else if (print)
-	print_constant (retval, name ());
+	retval.print_with_name (name ());
     }
 
   return retval;
@@ -473,8 +446,8 @@ tree_identifier::print_code (ostream& os)
   if (in_parens)
     os << "(";
 
-  char *nm = name ();
-  os << (nm) ? nm : "(null)";
+  string nm = name ();
+  os << (nm.empty () ? string ("(empty)") : nm);
 
   if (in_parens)
     os << ")";
@@ -484,49 +457,33 @@ tree_identifier::print_code (ostream& os)
 
 tree_indirect_ref::~tree_indirect_ref (void)
 {
-  while (! refs.empty ())
-    {
-      char *t = refs.remove_front ();
-      delete [] t;
-    }
-
   if (! preserve_ident)
     delete id;
 }
 
 tree_indirect_ref *
-tree_indirect_ref::chain (const char *elt)
+tree_indirect_ref::chain (const string& elt)
 {
-  refs.append (strsave (elt));
+  refs.append (elt);
   return this;
 }
 
-char *
-tree_indirect_ref::name (void)
+string
+tree_indirect_ref::name (void) const
 {
-  char *id_nm = id->name ();
+  string id_nm = id->name ();
+
   if (refs.empty ())
     return id_nm;
   else
     {
-      static char *nm = 0;
-      delete [] nm;
-
-      ostrstream tmp;
-
-      tmp << id_nm;
-
       for (Pix p = refs.first (); p != 0; refs.next (p))
 	{
-	  char *elt = refs (p);
-
-	  if (elt)
-	    tmp << "." << elt;
+	  id_nm.append (".");
+	  id_nm.append (refs (p));
 	}
 
-      tmp << ends;
-      nm = tmp.str ();
-      return nm;
+      return id_nm;
     }
 }
 
@@ -579,7 +536,7 @@ tree_indirect_ref::eval (int print)
 	  retval = object_to_eval->lookup_map_element (refs);
 
 	  if (! error_state && print)
-	    print_constant (retval, name ());
+	    retval.print_with_name (name ());
 	}
       else
 	id->eval_undefined_error ();
@@ -618,7 +575,7 @@ tree_indirect_ref::eval (int print, int nargout, const Octave_object& args)
 		{
 		  tmp = retval (0);
 		  if (tmp.is_defined ())
-		    print_constant (tmp, name ());
+		    tmp.print_with_name (name ());
 		}
 	    }
 	}
@@ -637,16 +594,11 @@ tree_indirect_ref::print_code (ostream& os)
   if (in_parens)
     os << "(";
 
-  char *nm = id ? id->name () : "(null)";
-  os << (nm) ? nm : "(null)";
+  string nm = id ? id->name () : string ("(null)");
+  os << (nm.empty () ? string ("(empty)") : nm);
 
   for (Pix p = refs.first (); p != 0; refs.next (p))
-    {
-      char *elt = refs (p);
-
-      if (elt)
-	os << "." << elt;
-    }
+    os << "." << refs (p);
 
   if (in_parens)
     os << ")";
@@ -654,27 +606,26 @@ tree_indirect_ref::print_code (ostream& os)
 
 // Builtin functions.
 
-tree_builtin::tree_builtin (const char *nm)
+tree_builtin::tree_builtin (const string& nm)
 {
   is_mapper = 0;
   fcn = 0;
-  if (nm)
-    my_name = strsave (nm);
+  my_name = nm;
 }
 
-tree_builtin::tree_builtin (Mapper_fcn& m_fcn, const char *nm)
+tree_builtin::tree_builtin (Mapper_fcn& m_fcn, const string &nm)
 {
   mapper_fcn = m_fcn;
   is_mapper = 1;
   fcn = 0;
-  my_name = nm ? strsave (nm) : 0;
+  my_name = nm;
 }
 
-tree_builtin::tree_builtin (Octave_builtin_fcn g_fcn, const char *nm)
+tree_builtin::tree_builtin (Octave_builtin_fcn g_fcn, const string& nm)
 {
   is_mapper = 0;
   fcn = g_fcn;
-  my_name = nm ? strsave (nm) : 0;
+  my_name = nm;
 }
 
 tree_constant
@@ -696,7 +647,7 @@ tree_builtin::eval (int /* print */)
     }
   else if (is_mapper)
     {
-      ::error ("%s: too few arguments", my_name);
+      ::error ("%s: too few arguments", my_name.c_str ());
     }
   else
     {
@@ -705,7 +656,7 @@ tree_builtin::eval (int /* print */)
       if (fcn)
 	goto eval_fcn;
       else
-	::error ("unable to load builtin function %s", my_name);
+	::error ("unable to load builtin function %s", my_name.c_str ());
     }
 
   return retval;
@@ -729,12 +680,14 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
 	      if (m_fcn.c_c_mapper)
 		retval = m_fcn.c_c_mapper (Complex (d));
 	      else
-		error ("%s: unable to handle real arguments", m_fcn.name);
+		error ("%s: unable to handle real arguments",
+		       m_fcn.name.c_str ());
 	    }
 	  else if (m_fcn.d_d_mapper)
 	    retval = m_fcn.d_d_mapper (d);
 	  else
-	    error ("%s: unable to handle real arguments", m_fcn.name);
+	    error ("%s: unable to handle real arguments",
+		   m_fcn.name.c_str ());
 	}
       else
 	{
@@ -750,12 +703,14 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
 	      if (m_fcn.c_c_mapper)
 		retval = map (m_fcn.c_c_mapper, ComplexMatrix (m));
 	      else
-		error ("%s: unable to handle real arguments", m_fcn.name);
+		error ("%s: unable to handle real arguments",
+		       m_fcn.name.c_str ());
 	    }
 	  else if (m_fcn.d_d_mapper)
 	    retval = map (m_fcn.d_d_mapper, m);
 	  else
-	    error ("%s: unable to handle real arguments", m_fcn.name);
+	    error ("%s: unable to handle real arguments",
+		   m_fcn.name.c_str ());
 	}
     }
   else if (arg.is_complex_type ())
@@ -769,7 +724,8 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
 	  else if (m_fcn.c_c_mapper)
 	    retval = m_fcn.c_c_mapper (c);
 	  else
-	    error ("%s: unable to handle complex arguments", m_fcn.name);
+	    error ("%s: unable to handle complex arguments",
+		   m_fcn.name.c_str ());
 	}
       else
 	{
@@ -783,7 +739,8 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
 	  else if (m_fcn.c_c_mapper)
 	    retval = map (m_fcn.c_c_mapper, cm);
 	  else
-	    error ("%s: unable to handle complex arguments", m_fcn.name);
+	    error ("%s: unable to handle complex arguments",
+		   m_fcn.name.c_str ());
 	}
     }
   else
@@ -816,7 +773,7 @@ tree_builtin::eval (int /* print */, int nargout, const Octave_object& args)
 // XXX FIXME XXX -- should we just assume nargin_max == 1?
 //
 //      if (nargin > nargin_max)
-//	::error ("%s: too many arguments", my_name);
+//	::error ("%s: too many arguments", my_name.c_str ());
 //      else
       if (nargin > 0 && args(0).is_defined ())
 	{
@@ -825,7 +782,7 @@ tree_builtin::eval (int /* print */, int nargout, const Octave_object& args)
 	}
       else
 	{
-	  ::error ("%s: too few arguments", my_name);
+	  ::error ("%s: too few arguments", my_name.c_str ());
 	}
     }
   else
@@ -835,7 +792,7 @@ tree_builtin::eval (int /* print */, int nargout, const Octave_object& args)
       if (fcn)
 	goto eval_fcn;
       else
-	::error ("unable to load builtin function %s", my_name);
+	::error ("unable to load builtin function %s", my_name.c_str ());
     }
 
   return retval;

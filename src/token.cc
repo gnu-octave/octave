@@ -41,25 +41,22 @@ token::token (int l, int c)
   line_num = l;
   column_num = c;
   type_tag = generic_token;
-  orig_text = 0;
 }
 
-token::token (char *s, int l, int c)
+token::token (const string& s, int l, int c)
 {
   line_num = l;
   column_num = c;
   type_tag = string_token;
-  str = strsave (s);
-  orig_text = 0;
+  str = new string (s);
 }
 
-token::token (double d, char * /* s */, int l, int c)
+token::token (double d, const string& /* s */, int l, int c)
 {
   line_num = l;
   column_num = c;
   type_tag = double_token;
   num = d;
-  orig_text = 0; // strsave (s);
 }
 
 token::token (end_tok_type t, int l, int c)
@@ -68,7 +65,6 @@ token::token (end_tok_type t, int l, int c)
   column_num = c;
   type_tag = ettype_token;
   et = t;
-  orig_text = 0;
 }
 
 token::token (plot_tok_type t, int l, int c)
@@ -77,7 +73,6 @@ token::token (plot_tok_type t, int l, int c)
   column_num = c;
   type_tag = pttype_token;
   pt = t;
-  orig_text = 0;
 }
 
 token::token (symbol_record *s, int l, int c)
@@ -86,33 +81,19 @@ token::token (symbol_record *s, int l, int c)
   column_num = c;
   type_tag = sym_rec_token;
   sr = s;
-  orig_text = 0;
 }
 
 token::~token (void)
 {
   if (type_tag == string_token)
-    delete [] str;
-  delete [] orig_text;
+    delete str;
 }
 
-int
-token::line (void)
-{
-  return line_num;
-}
-
-int
-token::column (void)
-{
-  return column_num;
-}
-
-char *
-token::string (void)
+string
+token::text (void)
 {
   assert (type_tag == string_token);
-  return str;
+  return *str;
 }
 
 double
@@ -143,7 +124,7 @@ token::sym_rec (void)
   return sr;
 }
 
-char *
+string
 token::text_rep (void)
 {
   return orig_text;

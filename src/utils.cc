@@ -57,6 +57,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "SLStack.h"
 
 #include "oct-cmplx.h"
+#include "str-vec.h"
 
 #include "defun.h"
 #include "dirfns.h"
@@ -94,6 +95,8 @@ strsave (const char *s)
   return tmp;
 }
 
+#if 0
+
 // Concatenate two strings.
 
 char *
@@ -105,6 +108,7 @@ strconcat (const char *s, const char *t)
   strcat (tmp, t);
   return tmp;
 }
+#endif
 
 // Throw away input until a given character is read.
 
@@ -164,17 +168,20 @@ read_until (istream& stream, char character)
 
 // Get a temporary file name.
 
-char *
+string
 octave_tmp_file_name (void)
 {
-  static char *retval = 0;
+  string retval;
 
-  if (retval)
-    free (retval);
+  char *tmp = tempnam (0, "oct-");
 
-  retval = tempnam (0, "oct-");
+  if (tmp)
+    {
+      retval = tmp;
 
-  if (! retval)
+      free (tmp);
+    }
+  else
     error ("can't open temporary file!");
 
   return retval;
@@ -194,54 +201,6 @@ DEFUN ("octave_tmp_file_name", Foctave_tmp_file_name,
   return retval;
 }
 
-char **
-pathstring_to_vector (char *pathstring)
-{
-  static char **path = 0;
-
-  if (pathstring)
-    {
-      int nelem = 0;
-      char *tmp_path = strsave (pathstring);
-      if (*tmp_path != '\0')
-	{
-	  nelem++;
-	  char *ptr = tmp_path;
-	  while (*ptr != '\0')
-	    {
-	      if (*ptr == SEPCHAR)
-		nelem++;
-	      ptr++;
-	    }
-	}
-
-      char **foo = path;
-      while (foo && *foo)
-	delete [] *foo++;
-      delete [] path;
-
-      path = new char * [nelem+1];
-      path[nelem] = 0;
-
-      int i = 0;
-      char *ptr = tmp_path;
-      while (i < nelem)
-	{
-	  char *end = strchr (ptr, SEPCHAR);
-	  if (end)
-	    *end = '\0';
-	  string result = oct_tilde_expand (ptr);
-	  path[i] = strsave (result.c_str ());
-	  ptr = end + 1;
-	  i++;
-	}
-
-      delete [] tmp_path;
-    }
-
-  return path;
-}
-
 // Return to the main command loop in octave.cc.
 
 extern "C" void
@@ -253,33 +212,33 @@ jump_to_top_level (void)
 }
 
 int
-almost_match (const char *std, const char *s, int min_match_len,
+almost_match (const string& std, const string& s, int min_match_len,
 	      int case_sens)
 {
-  int stdlen = strlen (std);
-  int slen = strlen (s);
+  int stdlen = std.length ();
+  int slen = s.length ();
 
   return (slen <= stdlen
 	  && slen >= min_match_len
 	  && (case_sens
-	      ? (strncmp (std, s, slen) == 0)
-	      : (strncasecmp (std, s, slen) == 0)));
+	      ? (strncmp (std.c_str (), s.c_str (), slen) == 0)
+	      : (strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
 }
 
 // Ugh.
 
 int
-keyword_almost_match (const char **std, int *min_len, const char *s,
+keyword_almost_match (const char **std, int *min_len, const string& s,
 		      int min_toks_to_match, int max_toks)
 {
   int status = 0;
   int tok_count = 0;
   int toks_matched = 0;
 
-  if (! s || *s == '\0' || max_toks < 1)
+  if (s.empty () || max_toks < 1)
     return status;
 
-  char *kw = strsave (s);
+  char *kw = strsave (s.c_str ());
 
   char *t = kw;
   while (*t != '\0')
@@ -355,11 +314,11 @@ keyword_almost_match (const char **std, int *min_len, const char *s,
   return status;
 }
 
-char **
+string_vector
 get_fcn_file_names (int& num, const char *dir, int no_suffix)
 {
   static int num_max = 256;
-  char **retval = new char * [num_max];
+  string_vector retval (num_max);
   int i = 0;
 
   DIR *dirp = opendir (dir);
@@ -384,7 +343,7 @@ get_fcn_file_names (int& num, const char *dir, int no_suffix)
 	      && entry->d_name[len-1] == 'm')
 #endif
 	    {
-	      retval[i] = strsave (entry->d_name);
+	      retval[i] = entry->d_name;
 	      if (no_suffix)
 		{
 		  if (retval[i][len-1] == 'm')
@@ -397,39 +356,28 @@ get_fcn_file_names (int& num, const char *dir, int no_suffix)
 
 	      if (i == num_max - 1)
 		{
-		  // Reallocate the array.  Only copy pointers, not
-		  // the strings they point to, then only delete the
-		  // original array of pointers, and not the strings
-		  // they point to.
-
 		  num_max += 256;
-		  char **tmp = new char * [num_max];
-		  for (int j = 0; j < i; j++)
-		    tmp[j] = retval[j];
-
-		  delete [] retval;
-
-		  retval = tmp;
+		  retval.resize (num_max);
 		}
 	    }
 	}
       closedir (dirp);
     }
 
-  retval[i] = 0;
   num = i;
+  retval.resize (num);
 
   return retval;
 }
 
-char **
+string_vector
 get_fcn_file_names (int& num, int no_suffix)
 {
   static int num_max = 1024;
-  char **retval = new char * [num_max];
+  string_vector retval (num_max);
   int i = 0;
 
-  char *path_elt = kpse_path_element (user_pref.loadpath);
+  char *path_elt = kpse_path_element (user_pref.loadpath.c_str ());
 
   while (path_elt)
     {
@@ -443,23 +391,13 @@ get_fcn_file_names (int& num, int no_suffix)
 	  if (elt_dir)
 	    {
 	      int tmp_num;
-	      char **names = get_fcn_file_names (tmp_num, elt_dir, no_suffix);
+	      string_vector names
+		= get_fcn_file_names (tmp_num, elt_dir, no_suffix);
 
 	      if (i + tmp_num >= num_max - 1)
 		{
-		  // Reallocate the array.  Only copy pointers, not
-		  // the strings they point to, then only delete the
-		  // original array of pointers, and not the strings
-		  // they point to.
-
 		  num_max += 1024;
-		  char **tmp = new char * [num_max];
-		  for (int j = 0; j < i; j++)
-		    tmp[j] = retval[j];
-
-		  delete [] retval;
-
-		  retval = tmp;
+		  retval.resize (num_max);
 		}
 
 	      int k = 0;
@@ -471,8 +409,8 @@ get_fcn_file_names (int& num, int no_suffix)
       path_elt = kpse_path_element (0);
     }
 
-  retval[i] = 0;
   num = i;
+  retval.resize (num);
 
   return retval;
 }
@@ -512,23 +450,22 @@ all_strings (const Octave_object& args)
   return 1;
 }
 
-char **
-make_argv (const Octave_object& args, const char *fcn_name)
+string_vector
+make_argv (const Octave_object& args, const string& fcn_name)
 {
-  char **argv = 0;
+  string_vector argv;
+
   if (all_strings (args))
     {
       int n = args.length ();
-      argv = new char * [n + 1];
-      argv[0] = strsave (fcn_name);
+      argv.resize (n+1);
+      argv[0] = fcn_name;
+
       for (int i = 0; i < n; i++)
-	{
-	  string tstr = args(i).string_value ();
-	  argv[i+1] = strsave (tstr.c_str ());
-	}
+	argv[i+1] = args(i).string_value ();
     }
   else
-    error ("%s: expecting all arguments to be strings", fcn_name);
+    error ("%s: expecting all arguments to be strings", fcn_name.c_str ());
 
   return argv;
 }
@@ -562,21 +499,19 @@ empty_arg (const char *name, int nr, int nc)
   return is_empty;
 }
 
-// Format a list in neat columns.  Mostly stolen from GNU ls.  This
-// should maybe be in utils.cc.
+// Format a list in neat columns.  Mostly stolen from GNU ls.
 
 ostrstream&
-list_in_columns (ostrstream& os, char **list)
+list_in_columns (ostrstream& os, const string_vector& list)
 {
   // Compute the maximum name length.
 
   int max_name_length = 0;
-  int total_names = 0;
-  char **names = 0;
-  for (names = list; *names; names++)
+  int total_names = list.length ();
+
+  for (int i = 0; i < total_names; i++)
     {
-      total_names++;
-      int name_length = strlen (*names);
+      int name_length = list[i].length ();
       if (name_length > max_name_length)
 	max_name_length = name_length;
     }
@@ -601,7 +536,6 @@ list_in_columns (ostrstream& os, char **list)
 
   cols = total_names / rows + (total_names % rows != 0);
 
-  names = list;
   int count;
   for (int row = 0; row < rows; row++)
     {
@@ -612,8 +546,10 @@ list_in_columns (ostrstream& os, char **list)
 
       while (1)
 	{
-	  os << *(names + count);
-	  int name_length = strlen (*(names + count));
+	  string nm = list[count];
+
+	  os << nm;
+	  int name_length = nm.length ();
 
 	  count += rows;
 	  if (count >= total_names)
@@ -632,12 +568,13 @@ list_in_columns (ostrstream& os, char **list)
 
 // See if the given file is in the path.
 
-char *
-search_path_for_file (const char *path, const char *name)
+string
+search_path_for_file (const string& path, const string& name)
 {
-  char *retval = 0;
+  string retval;
 
-  char *tmp = kpse_path_search (path, name, kpathsea_true);
+  char *tmp = kpse_path_search (path.c_str (), name.c_str (),
+				kpathsea_true);
 
   if (tmp)
     {
@@ -653,95 +590,90 @@ DEFUN ("file_in_path", Ffile_in_path, Sfile_in_path, 10,
 {
   Octave_object retval;
 
-  DEFINE_ARGV("file_in_path");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "file_in_path");
+
+  if (error_state)
+    return retval;
 
   if (argc == 3)
     {
-      char *fname = search_path_for_file (argv[1], argv[2]);
+      string fname = search_path_for_file (argv[1], argv[2]);
 
-      if (fname)
-	retval = fname;
-      else
+      if (fname.empty ())
 	retval = Matrix ();
+      else
+	retval = fname;
     }
   else
     print_usage ("file_in_path");
 
-  DELETE_ARGV;
-
   return retval;
 }
 
-
-char *
-file_in_path (const char *name, const char *suffix)
+string
+file_in_path (const string& name, const string& suffix)
 {
-  char *retval = 0;
+  string nm = name;
 
-  char *nm = 0;
+  if (! suffix.empty ())
+    nm.append (suffix);
 
-  if (suffix)
-    nm = strconcat (name, suffix);
-  else
-    nm = strsave (name);
-
-  if (! the_current_working_directory)
+  if (the_current_working_directory.empty ())
     get_working_directory ("file_in_path");
 
-  retval = search_path_for_file (user_pref.loadpath, nm);
-
-  delete [] nm;
-
-  return retval;
+  return search_path_for_file (user_pref.loadpath, nm);
 }
 
 // See if there is an function file in the path.  If so, return the
 // full path to the file.
 
-char *
-fcn_file_in_path (const char *name)
+string
+fcn_file_in_path (const string& name)
 {
-  if (name)
-    {
-      int len = strlen (name);
+  string retval;
 
-      if (name [len - 2] == '.' && name [len - 1] == 'm')
-	return file_in_path (name, "");
+  int len = name.length ();
+  
+  if (len > 0)
+    {
+      if (len > 2 && name [len - 2] == '.' && name [len - 1] == 'm')
+	retval = file_in_path (name, "");
       else
-	return file_in_path (name, ".m");
+	retval = file_in_path (name, ".m");
     }
-  else
-    return 0;
+
+  return retval;
 }
 
 // See if there is an octave file in the path.  If so, return the
 // full path to the file.
 
-char *
-oct_file_in_path (const char *name)
+string
+oct_file_in_path (const string& name)
 {
-  if (name)
-    {
-      int len = strlen (name);
+  string retval;
 
-      if (name [len - 4] == '.' && name [len - 3] == 'o'
+  int len = name.length ();
+  
+  if (len > 0)
+    {
+      if (len > 2 && name [len - 4] == '.' && name [len - 3] == 'o'
 	  && name [len - 2] == 'c' && name [len - 1] == 't')
-	return file_in_path (name, "");
+	retval = file_in_path (name, "");
       else
-	return file_in_path (name, ".oct");
+	retval = file_in_path (name, ".oct");
     }
-  else
-    return 0;
+
+  return retval;
 }
 
-char *
+const char *
 undo_string_escape (char c)
 {
-  static char retval[2];
-  retval[1] = '\0';
-
   if (! c)
-    return 0;
+    return "";
 
   switch (c)
     {
@@ -773,22 +705,24 @@ undo_string_escape (char c)
       return "\\\"";
 
     default:
-      retval[0] = c;
-      return retval;
+      {
+	static char retval[2];
+	retval[0] = c;
+	retval[1] = '\0';
+	return retval;
+      }
     }
 }
 
-char *
-undo_string_escapes (const char *s)
+string
+undo_string_escapes (const string& s)
 {
-  ostrstream buf;
+  string retval;
 
-  char *t;
-  while ((t = undo_string_escape (*s++)))
-    buf << t;
-  buf << ends;
+  for (size_t i = 0; i < s.length (); i++)
+    retval.append (undo_string_escape (s[i]));
 
-  return buf.str ();
+  return retval;
 }
 
 DEFUN ("undo_string_escapes", Fundo_string_escapes,
@@ -800,12 +734,7 @@ DEFUN ("undo_string_escapes", Fundo_string_escapes,
   int nargin = args.length ();
 
   if (nargin == 1 && args(0).is_string ())
-    {
-      string tstr = args(0).string_value ();
-      char *str = undo_string_escapes (tstr.c_str ());
-      retval = str;
-      delete [] str;
-    }
+    retval = undo_string_escapes (args(0).string_value ());
   else
     print_usage ("undo_string_escapes");
 

@@ -31,8 +31,8 @@ extern void sysdep_init (void);
 extern void raw_mode (int);
 extern int kbhit (void);
 
-extern char *octave_getcwd (char *, int);
-extern int octave_chdir (const char *);
+extern string octave_getcwd (void);
+extern int octave_chdir (const string&);
 
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 extern int gethostname (char *, int);

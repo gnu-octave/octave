@@ -94,9 +94,10 @@ INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	variables.h version.h xdiv.h xpow.h Map.h SLStack.h Stack.h
 
 TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
-	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
-	SLStack-i.cc SLStack-pc.cc SLStack-str.cc SLStack-sym.cc \
-	SLStack-tok.cc SLStack-tm.cc SLStack-ue.cc SLStack-ui.cc
+	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
+	SLList-tc.cc SLStack-i.cc SLStack-pc.cc SLStack-str.cc \
+	SLStack-sym.cc SLStack-tok.cc SLStack-tm.cc SLStack-ue.cc \
+	SLStack-ui.cc
 
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 

@@ -257,7 +257,7 @@ print_lsode_option_list (void)
 }
 
 static void
-set_lsode_option (const char *keyword, double val)
+set_lsode_option (const string& keyword, double val)
 {
   ODE_OPTIONS *list = lsode_option_table;
 
@@ -273,11 +273,11 @@ set_lsode_option (const char *keyword, double val)
       list++;
     }
 
-  warning ("lsode_options: no match for `%s'", keyword);
+  warning ("lsode_options: no match for `%s'", keyword.c_str ());
 }
 
 static Octave_object
-show_lsode_option (const char *keyword)
+show_lsode_option (const string& keyword)
 {
   Octave_object retval;
 
@@ -293,7 +293,7 @@ show_lsode_option (const char *keyword)
       list++;
     }
 
-  warning ("lsode_options: no match for `%s'", keyword);
+  warning ("lsode_options: no match for `%s'", keyword.c_str ());
 
   return retval;
 }
@@ -316,8 +316,7 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      string tstr = args(0).string_value ();
-      const char *keyword = tstr.c_str ();
+      string keyword = args(0).string_value ();
 
       if (! error_state)
 	{

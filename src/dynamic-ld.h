@@ -28,9 +28,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef Octave_object (*Octave_builtin_fcn)(const Octave_object&, int);
 
-extern Octave_builtin_fcn load_octave_builtin (const char *name);
+extern Octave_builtin_fcn load_octave_builtin (const string& name);
 
-extern int load_octave_oct_file (const char *name);
+extern int load_octave_oct_file (const string& name);
 
 extern void init_dynamic_linker (void);
 

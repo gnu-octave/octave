@@ -30,13 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-extern int octave_read (char *buf, int max_size);
+extern int octave_read (char *buf, unsigned max_size);
 extern FILE *get_input_from_file (const string& name, int warn = 1);
 extern FILE *get_input_from_stdin (void);
 extern void initialize_readline (void);
 
 // Global pointer for eval().
-extern const char *current_eval_string;
+extern string current_eval_string;
 
 // Nonzero means get input from current_eval_string.
 extern int get_input_from_eval_string;
@@ -45,10 +45,10 @@ extern int get_input_from_eval_string;
 extern int reading_fcn_file;
 
 // Simple name of function file we are reading.
-extern const char *curr_fcn_file_name;
+extern string curr_fcn_file_name;
 
 // Full name of file we are reading.
-extern const char *curr_fcn_file_full_name;
+extern string curr_fcn_file_full_name;
 
 // Nonzero means we're parsing a script file.
 extern int reading_script_file;
@@ -69,7 +69,7 @@ extern int forced_interactive;
 extern int promptflag;
 
 // A line of input.
-extern char *current_input_line;
+extern string current_input_line;
 
 char *gnu_readline (const char *s);
 

@@ -36,6 +36,7 @@ class ostream;
 
 #include "Range.h"
 #include "mx-base.h"
+#include "str-vec.h"
 
 #include "pt-fvc.h"
 
@@ -96,6 +97,7 @@ private:
 
 	tree_constant_rep (const char *s);
 	tree_constant_rep (const string& s);
+	tree_constant_rep (const string_vector& s);
 	tree_constant_rep (const charMatrix& chm, int is_string);
 
 	tree_constant_rep (double base, double limit, double inc);
@@ -218,7 +220,8 @@ private:
 	Range range_value (void) const;
 	Octave_map map_value (void) const;
 
-	tree_constant& lookup_map_element (const char *name, int insert = 0,
+	tree_constant& lookup_map_element (const string& name,
+					   int insert = 0,
 					   int silent = 0);
 
 	ColumnVector vector_value (int frc_str_conv = 0,
@@ -236,7 +239,7 @@ private:
 	void resize (int i, int j);
 	void resize (int i, int j, double val);
 
-	void stash_original_text (char *s);
+	void stash_original_text (const string& s);
 
 	void maybe_mutate (void);
 
@@ -289,6 +292,10 @@ private:
 
 	void assign (tree_constant& rhs, const Octave_object& args);
 
+	int print_as_scalar (void);
+
+	int print_as_structure (void);
+
 	// Data.
 
 	union
@@ -308,7 +315,7 @@ private:
 
 	int count;
 
-	char *orig_text;
+	string orig_text;
     };
 
   union
@@ -387,6 +394,10 @@ public:
   tree_constant (const string& s, int l = -1, int c = -1) : tree_fvc (l, c)
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
+  tree_constant (const string_vector& s, int l = -1, int c = -1)
+    : tree_fvc (l, c)
+    { rep = new tree_constant_rep (s); rep->count = 1; }
+
   tree_constant (const charMatrix& chm, int is_string = 0) : tree_fvc ()
     { rep = new tree_constant_rep (chm, is_string); rep->count = 1; }
 
@@ -450,12 +461,12 @@ public:
 
   // Simple structure assignment.
 
-  tree_constant assign_map_element (SLList<char*>& list,
+  tree_constant assign_map_element (SLList<string>& list,
 				    tree_constant& rhs);
 
   // Indexed structure assignment.
 
-  tree_constant assign_map_element (SLList<char*>& list,
+  tree_constant assign_map_element (SLList<string>& list,
 				    tree_constant& rhs,
 				    const Octave_object& args);
 
@@ -557,10 +568,10 @@ public:
 
   Octave_map map_value (void) const;
 
-  tree_constant lookup_map_element (const char *ref, int insert = 0,
+  tree_constant lookup_map_element (const string& ref, int insert = 0,
 				    int silent = 0);
 
-  tree_constant lookup_map_element (SLList<char*>& list,
+  tree_constant lookup_map_element (SLList<string>& list,
 				    int insert = 0, int silent = 0);
 
   ColumnVector vector_value (int /* frc_str_conv */ = 0,
@@ -606,6 +617,10 @@ public:
   void print (void);
   void print (ostream& os) { rep->print (os); }
 
+  void print_with_name (const string& name, int print_padding = 1);
+  void print_with_name (ostream& os, const string& name,
+			int print_padding = 1);
+
   // Evaluate this constant, possibly converting complex to real, or
   // matrix to scalar, etc.
 
@@ -625,7 +640,7 @@ public:
   // Store the original text corresponding to this constant for later
   // pretty printing.
 
-  void stash_original_text (char *s)
+  void stash_original_text (const string& s)
     { rep->stash_original_text (s); }
 
   // Pretty print this constant.
@@ -665,11 +680,11 @@ private:
       else
 	return rep->make_numeric (frc_str_conv);
     }
+
+  int print_as_scalar (void) { return rep->print_as_scalar (); }
+
+  int print_as_structure (void) { return rep->print_as_structure (); }
 };
-
-extern int print_as_scalar (const tree_constant& val);
-
-extern int print_as_structure (const tree_constant& val);
 
 #endif
 

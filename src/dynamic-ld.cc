@@ -36,10 +36,11 @@ extern "C"
 {
 #if defined (WITH_DL)
 #include <dlfcn.h>
+#ifndef RTLD_LAZY
+#define RTLD_LAZY 1
+#endif
 #elif defined (WITH_SHL)
 #include <dl.h>
-#elif defined (WITH_DLD)
-#include <dld/dld.h>
 #endif
 }
 
@@ -64,28 +65,28 @@ typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
 // current DEFUN_DLD() macro, which assumes you know how to name the
 // function, the struct, and the helper function.
 
-static char *
-mangle_octave_builtin_name (const char *name)
+static string
+mangle_octave_builtin_name (const string& name)
 {
-  char *tmp = strconcat (name, "__FRC13Octave_objecti");
-  char *retval = strconcat ("F", tmp);
-  delete [] tmp;
+  string retval ("F");
+  retval.append (name);
+  retval.append ("__FRC13Octave_objecti");
   return retval;
 }
 
-static char *
-mangle_octave_oct_file_name (const char *name)
+static string
+mangle_octave_oct_file_name (const string& name)
 {
-  char *tmp = strconcat (name, "__Fv");
-  char *retval = strconcat ("FS", tmp);
-  delete [] tmp;
+  string retval ("FS");
+  retval.append (name);
+  retval.append ("__Fv");
   return retval;
 }
 
 #if defined (WITH_DL)
 
 static void *
-dl_resolve_octave_reference (const char *name, const char *file)
+dl_resolve_octave_reference (const string& name, const string& file)
 {
   void *retval = 0;
 
@@ -93,26 +94,26 @@ dl_resolve_octave_reference (const char *name, const char *file)
   // of the libraries at runtime.  Instead, they are specified when
   // the .oct file is created.
 
-  void *handle = dlopen (file, RTLD_LAZY);
+  void *handle = dlopen (file.c_str (), RTLD_LAZY);
 
   if (handle)
     {
-      retval = dlsym (handle, name);
+      retval = dlsym (handle, name.c_str ());
 
       if (! retval)
 	{
 	  const char *errmsg = dlerror ();
 
 	  if (errmsg)
-	    error("%s: `%s'", name, errmsg);
+	    error("%s: `%s'", name.c_str (), errmsg);
 	  else
-	    error("unable to link function `%s'", name);
+	    error("unable to link function `%s'", name.c_str ());
 
 	  dlclose (handle);
 	}
     }
   else
-    error ("%s: %s `%s'", dlerror (), file, name);
+    error ("%s: %s `%s'", dlerror (), file.c_str (), name.c_str ());
 
   return retval;
 }
@@ -120,7 +121,7 @@ dl_resolve_octave_reference (const char *name, const char *file)
 #elif defined (WITH_SHL)
 
 static void *
-shl_resolve_octave_reference (const char *name, const char *file)
+shl_resolve_octave_reference (const string& name, const string& file)
 {
   void *retval = 0;
 
@@ -128,11 +129,11 @@ shl_resolve_octave_reference (const char *name, const char *file)
   // specification of the libraries at runtime.  Instead, they are
   // specified when the .oct file is created.
 
-  void *handle = shl_load (file, BIND_DEFERRED, 0L);
+  void *handle = shl_load (file.c_str (), BIND_DEFERRED, 0L);
 
   if (handle)
     {
-      int status = shl_findsym ((shl_t *) &handle, name,
+      int status = shl_findsym ((shl_t *) &handle, name.c_str (),
 				TYPE_UNDEFINED, retval);
 
       if (status < 0)
@@ -140,151 +141,17 @@ shl_resolve_octave_reference (const char *name, const char *file)
 	  const char *errmsg = strerror (errno);
 
 	  if (errmsg)
-	    error("%s: `%s'", name, errmsg);
+	    error("%s: `%s'", name.c_str (), errmsg);
 	  else
-	    error("unable to link function `%s'", name);
+	    error("unable to link function `%s'", name.c_str ());
 
 	  retval = 0;
 	}
     }
   else
-    error ("%s: %s `%s'", strerror (errno), file, name);
+    error ("%s: %s `%s'", strerror (errno), file.c_str (), name.c_str ());
 
   return retval;
-}
-
-#elif defined (WITH_DLD)
-
-// Now that we have the code above to do dynamic linking with the
-// dlopen/dlsym interface and Linux uses elf, I doubt that this code
-// will be used very much.  Maybe it will be able to go away
-// eventually.  Consider it unsupported...
-
-// XXX FIXME XXX -- should this list be in a user-level variable,
-// with default taken from the environment?
-
-#ifndef STD_LIB_PATH
-#define STD_LIB_PATH "/lib:/usr/lib:/usr/local/lib"
-#endif
-
-#ifndef OCTAVE_LIB_PATH
-#define OCTAVE_LIB_PATH OCTAVE_LIBDIR ":" FLIB_PATH ":" CXXLIB_PATH 
-#endif
-
-static char *lib_dir_path = OCTAVE_LIB_PATH ":" STD_LIB_PATH;
-
-// This is the list of interesting libraries that Octave is linked
-// with.  Maybe it should include the readline, info, and kpathsea
-// libraries.  Would there ever be a time that they would really be
-// needed?
-
-#ifndef SYSTEM_LIB_LIST
-#define SYSTEM_LIB_LIST "libtermcap.a:libm.a" ":" CXXLIB_LIST
-#endif
-
-#ifndef OCTAVE_LIB_LIST
-#define OCTAVE_LIB_LIST "liboctdld.a:liboctave.a:libcruft.a:libdld.a"
-#endif
-
-static char *lib_list = OCTAVE_LIB_LIST ":" FLIB_LIST ":" SYSTEM_LIB_LIST;
-
-static void
-octave_dld_init (void)
-{
-  static int initialized = 0;
-
-  if (! initialized)
-    {
-      char *full_path = 0;
-
-      char *tmp = dld_find_executable (raw_prog_name);
-      if (tmp)
-	{
-	  full_path = make_absolute (tmp, the_current_working_directory);
-	  free (tmp);
-	}
-
-      if (full_path)
-	{
-	  int status = dld_init (full_path);
-
-	  if (status != 0)
-	    error ("failed to load symbols from `%s'", full_path);
-	  else
-	    initialized = 1;
-	}
-      else
-	{
-	  error ("octave_dld_init: can't find full path to `%s'",
-		 raw_prog_name);
-	}
-    }
-}
-
-static void
-octave_list_undefined_symbols (ostream& os)
-{
-  char **list = dld_list_undefined_sym ();
-
-  if (list)
-    {
-      os << "undefined symbols:\n\n";
-      for (int i = 0; i < dld_undefined_sym_count; i++)
-	os << list[i] << "\n";
-      os << "\n";
-    }
-}
-
-static void *
-dld_resolve_octave_reference (const char *name, const char *file)
-{
-  dld_create_reference (name);
-
-  if (file)
-    {
-      if (dld_link (file) != 0)
-	{
-	  error ("failed to link file `%s'", file);
-	  return 0;
-	}
-
-      if (dld_function_executable_p (name))
-	return (void *) dld_get_func (name);
-    }
-
-  // For each library, try to find it in a list of directories, then
-  // link to it.  It would have been nice to use the kpathsea
-  // functions here too, but calls to them can't be nested as they
-  // would need to be here...
-
-  char **libs = pathstring_to_vector (lib_list);
-  char **ptr = libs;
-  char *lib_list_elt;
-
-  while ((lib_list_elt = *ptr++))
-    {
-      char *lib = kpse_path_search (lib_dir_path, lib_list_elt,
-				    kpathsea_true);
-
-      if (lib && dld_link (lib) != 0)
-	{
-	  error ("failed to link library %s", lib);
-	  return 0;
-	}
-
-      if (dld_function_executable_p (name))
-	return (void *) dld_get_func (name);
-    }
-
-  // If we get here, there was a problem.
-
-  ostrstream output_buf;
-  octave_list_undefined_symbols (output_buf);
-  char *msg = output_buf.str ();
-  error (msg);
-  delete [] msg;
-
-  return 0;
 }
 
 #endif
@@ -292,7 +159,7 @@ dld_resolve_octave_reference (const char *name, const char *file)
 
 #if defined (WITH_DYNAMIC_LINKING)
 static void *
-resolve_octave_reference (const char *name, const char *file)
+resolve_octave_reference (const string& name, const string& file)
 {
 #if defined (WITH_DL)
 
@@ -302,26 +169,22 @@ resolve_octave_reference (const char *name, const char *file)
 
   return shl_resolve_octave_reference (name, file);
 
-#elif defined (WITH_DLD)
-
-  return dld_resolve_octave_reference (name, file);
-
 #endif
 }
 #endif
 
 Octave_builtin_fcn
 #if defined (WITH_DYNAMIC_LINKING)
-load_octave_builtin (const char *name)
+load_octave_builtin (const string& name)
 #else
-load_octave_builtin (const char *)
+load_octave_builtin (const string&)
 #endif
 {
   Octave_builtin_fcn retval = 0;
 
 #if defined (WITH_DYNAMIC_LINKING)
 
-  char *mangled_name = mangle_octave_builtin_name (name);
+  string mangled_name = mangle_octave_builtin_name (name);
 
   retval = (Octave_builtin_fcn) resolve_octave_reference (mangled_name);
 
@@ -333,17 +196,17 @@ load_octave_builtin (const char *)
 }
 
 int
-load_octave_oct_file (const char *name)
+load_octave_oct_file (const string& name)
 {
   int retval = 0;
 
 #if defined (WITH_DYNAMIC_LINKING)
 
-  char *oct_file = oct_file_in_path (name);
+  string oct_file = oct_file_in_path (name);
 
   if (oct_file)
     {
-      char *mangled_name = mangle_octave_oct_file_name (name);
+      string mangled_name = mangle_octave_oct_file_name (name);
 
       Octave_builtin_fcn_struct_fcn f =
 	(Octave_builtin_fcn_struct_fcn) resolve_octave_reference
@@ -375,11 +238,7 @@ load_octave_oct_file (const char *name)
 void
 init_dynamic_linker (void)
 {
-#if defined (WITH_DLD)
-
-  octave_dld_init ();
-
-#endif
+  // Nothing to do anymore...
 }
 
 /*

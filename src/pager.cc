@@ -28,20 +28,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <csignal>
 #include <cstdlib>
 
+#include <string>
+
 #include <iostream.h>
 #include <strstream.h>
 #include <fstream.h>
 
 #include "procstream.h"
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "error.h"
 #include "help.h"
 #include "input.h"
-#include "pager.h"
-#include "sighandlers.h"
-#include "pt-const.h"
 #include "oct-obj.h"
+#include "pager.h"
+#include "pt-const.h"
+#include "sighandlers.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -54,7 +58,7 @@ static ostrstream *pager_buf = 0;
 static int write_to_diary_file = 0;
 
 // The name of the current diary file.
-static char *diary_file = 0;
+static string diary_file;
 
 // The diary file.
 static ofstream diary_stream;
@@ -113,7 +117,7 @@ maybe_page_output (ostrstream& msg_buf)
 
       if (interactive
 	  && user_pref.page_screen_output
-	  && user_pref.pager_binary)
+	  && ! user_pref.pager_binary.empty ())
 	{
 	  *pager_buf << message;
 	}
@@ -147,13 +151,14 @@ flush_output_to_pager (void)
 
   if (nlines > terminal_rows () - 2)
     {
-      char *pgr = user_pref.pager_binary;
-      if (pgr)
+      string pgr = user_pref.pager_binary;
+
+      if (! pgr.empty ())
 	{
 	  volatile sig_handler *old_sigint_handler;
 	  old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
 
-	  oprocstream *pager_stream = new oprocstream (pgr);
+	  oprocstream *pager_stream = new oprocstream (pgr.c_str ());
 
 	  add_unwind_protect (cleanup_oprocstream, pager_stream);
 
@@ -187,10 +192,10 @@ open_diary_file (void)
   if (diary_stream.is_open ())
     diary_stream.close ();
 
-  diary_stream.open (diary_file, ios::app);
+  diary_stream.open (diary_file.c_str (), ios::app);
 
   if (! diary_stream)
-    error ("diary: can't open diary file `%s'", diary_file);
+    error ("diary: can't open diary file `%s'", diary_file.c_str ());
 }
 
 void
@@ -215,10 +220,15 @@ redirect all input and screen output to a file.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV ("diary");
+  int argc = args.length () + 1;
 
-  if (! diary_file)
-    diary_file = strsave ("diary");
+  string_vector argv = make_argv (args, "diary");
+
+  if (error_state)
+    return retval;
+
+  if (diary_file.empty ())
+    diary_file = "diary";
 
   switch (argc)
     {
@@ -229,18 +239,18 @@ redirect all input and screen output to a file.")
 
     case 2:
       {
-	char *arg = argv[1];
-	if (strcmp (arg, "on") == 0)
+	string arg = argv[1];
+
+	if (arg == "on")
 	  {
 	    write_to_diary_file = 1;
 	    open_diary_file ();
 	  }	
-	else if (strcmp (arg, "off") == 0)
+	else if (arg == "off")
 	  write_to_diary_file = 0;
 	else
 	  {
-	    delete [] diary_file;
-	    diary_file = strsave (arg);
+	    diary_file = arg;
 	    open_diary_file ();
 	  }
       }
@@ -250,8 +260,6 @@ redirect all input and screen output to a file.")
       print_usage ("diary");
       break;
     }
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -264,23 +272,26 @@ Turn output pagination on or off.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV ("more");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "more");
+
+  if (error_state)
+    return retval;
 
   if (argc == 2)
     {
-      char *arg = argv[1];
+      string arg = argv[1];
 
-      if (strcmp (arg, "on") == 0)
+      if (arg == "on")
 	bind_builtin_variable ("page_screen_output", "true");
-      else if (strcmp (arg, "off") == 0)
+      else if (arg == "off")
 	bind_builtin_variable ("page_screen_output", "false");
       else
-	error ("more: unrecognized argument `%s'", arg);
+	error ("more: unrecognized argument `%s'", arg.c_str ());
     }
   else
     print_usage ("more");
-
-  DELETE_ARGV;
 
   return retval;
 }

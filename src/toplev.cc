@@ -44,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lo-error.h"
+#include "str-vec.h"
 
 #include "builtins.h"
 #include "defaults.h"
@@ -73,41 +74,41 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 
 // argv[0] for this program.
-char *raw_prog_name = 0;
+string raw_prog_name;
 
 // Cleaned-up name of this program, not including path information.
-char *prog_name = 0;
+string prog_name;
 
 // Login name for user running this program.
-char *user_name = 0;
+string user_name;
 
 // Name of the host we are running on.
-char *host_name = 0;
+string host_name;
 
 // User's home directory.
-char *home_directory = 0;
+string home_directory;
 
 // Guess what?
-char *the_current_working_directory = 0;
+string the_current_working_directory;
 
 // The path that will be searched for programs that we execute.
 // (--exec-path path)
-char *exec_path = 0;
+string exec_path;
 
 // Load path specified on command line.
 // (--path path; -p path)
-char *load_path = 0;
+string load_path;
 
 // Name of the info file specified on command line.
 // (--info-file file)
-char *info_file = 0;
+string info_file;
 
 // Name of the info reader we'd like to use.
 // (--info-program program)
-char *info_prog = 0;
+string info_prog;
 
 // Name of the editor to be invoked by the edit_history command.
-char *editor = 0;
+string editor;
 
 // If nonzero, don't do fancy line editing.
 int no_line_editing = 0;
@@ -187,10 +188,10 @@ parse_and_execute (const string& s, int print, int verbose,
   begin_unwind_frame ("parse_and_execute_2");
 
   unwind_protect_int (reading_script_file);
-  unwind_protect_ptr (curr_fcn_file_full_name);
+  unwind_protect_str (curr_fcn_file_full_name);
 
   reading_script_file = 1;
-  curr_fcn_file_full_name = s.c_str ();
+  curr_fcn_file_full_name = s;
 
   FILE *f = get_input_from_file (s, 0);
 
@@ -290,16 +291,19 @@ DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 10,
 {
   Octave_object retval;
 
-  DEFINE_ARGV("casesen");
+  int argc = args.length () + 1;
 
-  if (argc == 1 || (argc > 1 && strcmp (argv[1], "off") == 0))
+  string_vector argv = make_argv (args, "casesen");
+
+  if (error_state)
+    return retval;
+
+  if (argc == 1 || (argc > 1 && argv[1] == "off"))
     warning ("casesen: sorry, Octave is always case sensitive");
-  else if (argc > 1 && strcmp (argv[1], "on") == 0)
+  else if (argc > 1 && argv[1] == "on")
     ; // ok.
   else
     print_usage ("casesen");
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -430,7 +434,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
 }
 
 static Octave_object
-eval_string (const char *string, int print, int& parse_status,
+eval_string (const string& s, int print, int& parse_status,
 	     int nargout) 
 {
   begin_unwind_frame ("eval_string");
@@ -438,11 +442,11 @@ eval_string (const char *string, int print, int& parse_status,
   unwind_protect_int (get_input_from_eval_string);
   unwind_protect_int (input_from_command_line_file);
   unwind_protect_ptr (global_command);
-  unwind_protect_ptr (current_eval_string);
+  unwind_protect_str (current_eval_string);
 
   get_input_from_eval_string = 1;
   input_from_command_line_file = 0;
-  current_eval_string = string;
+  current_eval_string = s;
 
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (0);
@@ -478,11 +482,11 @@ eval_string (const char *string, int print, int& parse_status,
 }
 
 tree_constant
-eval_string (const char *string, int print, int& parse_status)
+eval_string (const string& s, int print, int& parse_status)
 {
   tree_constant retval;
 
-  Octave_object tmp = eval_string (string, print, parse_status, 1);
+  Octave_object tmp = eval_string (s, print, parse_status, 1);
 
   retval = tmp(0);
 
@@ -492,8 +496,7 @@ eval_string (const char *string, int print, int& parse_status)
 static Octave_object
 eval_string (const tree_constant& arg, int& parse_status, int nargout)
 {
-  string tstr = arg.string_value ();
-  const char *string = tstr.c_str ();
+  string s = arg.string_value ();
 
   if (error_state)
     {
@@ -503,7 +506,7 @@ eval_string (const tree_constant& arg, int& parse_status, int nargout)
 
   // Yes Virginia, we always print here...
 
-  return eval_string (string, 1, parse_status, nargout);
+  return eval_string (s, 1, parse_status, nargout);
 }
 
 DEFUN ("eval", Feval, Seval, 11,
@@ -571,8 +574,7 @@ DEFUN ("system", Fsystem, Ssystem, 11,
 
   tree_constant tc_command = args(0);
 
-  string tstr = tc_command.string_value ();
-  const char *tmp_str = tstr.c_str ();
+  string tmp = tc_command.string_value ();
 
   if (error_state)
     {
@@ -580,7 +582,7 @@ DEFUN ("system", Fsystem, Ssystem, 11,
     }
   else
     {
-      iprocstream *cmd = new iprocstream (tmp_str);
+      iprocstream *cmd = new iprocstream (tmp.c_str ());
 
       add_unwind_protect (cleanup_iprocstream, cmd);
 
@@ -618,7 +620,7 @@ DEFUN ("system", Fsystem, Ssystem, 11,
 	    maybe_page_output (output_buf);
 	}
       else
-	error ("unable to start subprocess for `%s'", tmp_str);
+	error ("unable to start subprocess for `%s'", tmp.c_str ());
 
       run_unwind_protect ();
     }

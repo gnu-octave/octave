@@ -37,7 +37,7 @@ License as published by the Free Software Foundation.
 #if ! defined (octave_Map_h)
 #define octave_Map_h 1
 
-#include <cstring>
+#include <string>
 
 #include <Pix.h>
 
@@ -56,25 +56,25 @@ public:
   int length (void) const { return count; }	// current number of items
   int empty (void) const { return count == 0; }
 
-  virtual int contains (const char *key) const;	// is key mapped?
+  virtual int contains (const string& key) const;  // is key mapped?
 
   virtual void clear (void);			// delete all items
 	      
-  virtual C& operator [] (const char *key) = 0;	// access contents by key
+  virtual C& operator [] (const string& key) = 0;  // access contents by key
 	      
-  virtual void del (const char *key) = 0;	// delete entry
+  virtual void del (const string& key) = 0;	// delete entry
 	      
   virtual Pix first (void) const = 0;		// Pix of first item or 0
   virtual void next (Pix& i) const = 0;		// advance to next or 0
-  virtual const char *key (Pix i) const = 0;	// access key at i
+  virtual string key (Pix i) const = 0;		// access key at i
   virtual C& contents (Pix i) const = 0;	// access contents at i
 
   virtual int owns (Pix i) const;		// is i a valid Pix  ?
-  virtual Pix seek (const char *key) const;	// Pix of key
+  virtual Pix seek (const string& key) const;	// Pix of key
 
   C& dflt (void) { return def; }		// access default val
 
-  void  error (const char* msg) const;
+  void error (const string& msg) const;
 
   virtual int OK (void) const = 0;		// rep invariant
 };
@@ -83,19 +83,15 @@ template <class C>
 struct CHNode
 {
   CHNode *tl;
-  char *hd;
+  string hd;
   C cont;
 
-  CHNode (void) : tl (0), hd (0) { }
+  CHNode (void) : tl (0), hd (), cont () { }
 
-  CHNode (const char *h, const C& c, CHNode *t = 0) : tl (t), cont (c)
-    {
-      hd = h ? strcpy (new char [strlen (h) + 1], h) : 0;
-    }
+  CHNode (const string& h, const C& c, CHNode *t = 0)
+    : tl (t), hd (h), cont (c) { }
 
-
-  ~CHNode (void)
-    { delete [] hd; }
+  ~CHNode (void) { }
 };
 
 #ifndef DEFAULT_INITIAL_CAPACITY
@@ -120,14 +116,14 @@ public:
       delete tab;
     }
 
-  C& operator [] (const char *key);
+  C& operator [] (const string& key);
 
-  void del (const char *key);
+  void del (const string& key);
 
   Pix first (void) const;
   void next (Pix& i) const;
 
-  const char *key (Pix p) const
+  string key (Pix p) const
     {
       if (p == 0)
 	error ("null Pix");
@@ -143,9 +139,9 @@ public:
      return ((CHNode<C> *) p)->cont;
    }
 
-  Pix seek (const char *key) const;
+  Pix seek (const string& key) const;
 
-  int contains (const char *key) const
+  int contains (const string& key) const
     {
       return seek (key) != 0;
     }

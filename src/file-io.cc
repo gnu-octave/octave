@@ -117,8 +117,7 @@ return_valid_file (const tree_constant& arg)
       int file_count = file_list.length ();
       for (int i = 0; i < file_count; i++)
 	{
-	  string tstr = arg.string_value ();
-	  const char *file_name = tstr.c_str ();
+	  string file_name = arg.string_value ();
 	  file = file_list (p);
 	  if (file.name () == file_name)
 	    return p;
@@ -156,10 +155,10 @@ return_valid_file (const tree_constant& arg)
 }
 
 static Pix 
-fopen_file_for_user (const char *name, const char *mode,
+fopen_file_for_user (const string& name, const char *mode,
 		     const char *warn_for)
 {
-  FILE *file_ptr = fopen (name, mode);
+  FILE *file_ptr = fopen (name.c_str (), mode);
   if (file_ptr)
     { 
       int file_number = get_next_avail_file_num ();
@@ -179,7 +178,7 @@ fopen_file_for_user (const char *name, const char *mode,
 	}
     }
 
-  error ("%s: unable to open file `%s'", warn_for, name);
+  error ("%s: unable to open file `%s'", warn_for, name.c_str ());
 
   return 0;
 }
@@ -194,11 +193,10 @@ file_io_get_file (const tree_constant& arg, const char *mode,
     {
       if (arg.is_string ())
 	{
-	  string tstr = arg.string_value ();
-	  const char *name = tstr.c_str ();
+	  string name = arg.string_value ();
 
 	  struct stat buffer;
-	  int status = stat (name, &buffer);
+	  int status = stat (name.c_str (), &buffer);
 
 	  if (status == 0)
 	    {
@@ -210,7 +208,7 @@ file_io_get_file (const tree_constant& arg, const char *mode,
 	  else if (status < 0 && *mode != 'r')
 	    p = fopen_file_for_user (name, mode, warn_for);
 	  else
-	    error ("%s: can't stat file `%s'", warn_for, name);
+	    error ("%s: can't stat file `%s'", warn_for, name.c_str ());
 	}
       else
 	error ("%s: invalid file specifier", warn_for);
@@ -319,16 +317,13 @@ DEFUN ("fflush", Ffflush, Sfflush, 10,
 }
 
 static int
-valid_mode (const char *mode)
+valid_mode (const string& mode)
 {
-  if (mode)
+  if (! mode.empty ())
     {
       char m = mode[0];
       if (m == 'r' || m == 'w' || m == 'a')
-	{
-	  m = mode[1];
-	  return (m == '\0' || (m == '+' && mode[2] == '\0'));
-	}
+	return (mode.length () == 2) ? mode[1] == '+' : 1;
     }
   return 0;
 }
@@ -485,10 +480,8 @@ fopen_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr1 = args(0).string_value ();
-  const char *name = tstr1.c_str ();
-  string tstr2 = args(1).string_value ();
-  const char *mode = tstr2.c_str ();
+  string name = args(0).string_value ();
+  string mode = args(1).string_value ();
 
   if (! valid_mode (mode))
     {
@@ -497,17 +490,18 @@ fopen_internal (const Octave_object& args)
     }
 
   struct stat buffer;
-  if (stat (name, &buffer) == 0 && (buffer.st_mode & S_IFDIR) == S_IFDIR)
+  if (stat (name.c_str (), &buffer) == 0
+      && (buffer.st_mode & S_IFDIR) == S_IFDIR)
     {
       error ("fopen: can't open directory");
       return retval;
     }
 
-  FILE *file_ptr = fopen (name, mode);
+  FILE *file_ptr = fopen (name.c_str (), mode.c_str ());
 
   if (! file_ptr)
     {
-      error ("fopen: unable to open file `%s'", name);
+      error ("fopen: unable to open file `%s'", name.c_str ());
       return retval;
     }
 
@@ -941,8 +935,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 's':
       {
-	string tstr = args(fmt_arg_count++).string_value ();
-	const char *val = tstr.c_str ();
+	string val = args(fmt_arg_count++).string_value ();
 
 	if (error_state)
 	  goto invalid_conversion;
@@ -951,7 +944,7 @@ process_printf_format (const char *s, const Octave_object& args,
 	    chars_from_fmt_str++;
 	    fmt << *s << ends;
 	    char *tmp_fmt = fmt.str ();
-	    sb.form (tmp_fmt, val);
+	    sb.form (tmp_fmt, val.c_str ());
 	    delete [] tmp_fmt;
 	    return chars_from_fmt_str;
 	  }
@@ -959,17 +952,16 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 'c':
       {
-	string tstr = args(fmt_arg_count++).string_value ();
-	const char *val = tstr.c_str ();
+	string val = args(fmt_arg_count++).string_value ();
 
-	if (error_state || strlen (val) != 1)
+	if (error_state || val.length () != 1)
 	  goto invalid_conversion;
 	else
 	  {
 	    chars_from_fmt_str++;
 	    fmt << *s << ends;
 	    char *tmp_fmt = fmt.str ();
-	    sb.form (tmp_fmt, *val);
+	    sb.form (tmp_fmt, val[0]);
 	    delete [] tmp_fmt;
 	    return chars_from_fmt_str;
 	  }
@@ -1320,7 +1312,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
   Octave_object retval;
   const char *scanf_fmt = 0;
   string scanf_fmt_str;
-  char *tmp_file = 0;
+  string tmp_file;
   int tmp_file_open = 0;
   FILE *fptr = 0;
   file_info file;
@@ -1394,14 +1386,14 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 
       tmp_file = octave_tmp_file_name ();
 
-      fptr = fopen (tmp_file, "w+");
+      fptr = fopen (tmp_file.c_str (), "w+");
       if (! fptr)
 	{
 	  error ("%s: error opening temporary file", type);
 	  return retval;
 	}
       tmp_file_open = 1;
-      unlink (tmp_file);
+      unlink (tmp_file.c_str ());
 
       if (! xstring)
 	{
@@ -1908,7 +1900,7 @@ ferror_internal (const Octave_object& args, int nargout)
   if (nargout > 1)
     retval(1) = (double) ierr;
 
-  retval(0) = strsave (strerror (ierr));
+  retval(0) = strerror (ierr);
 
   return retval;
 }
@@ -1959,29 +1951,28 @@ popen_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr1 = args(0).string_value ();
-  const char *name = tstr1.c_str ();
-  string tstr2 = args(1).string_value ();
-  const char *mode = tstr2.c_str ();
+  string name = args(0).string_value ();
+  string mode = args(1).string_value ();
 
-  if (mode[1] || (mode[0] != 'w' && mode[0] != 'r'))
+  if (mode.length () > 1 || (mode[0] != 'w' && mode[0] != 'r'))
     {
       error ("popen: invalid mode, must be either \"r\" or \"w\".");
       return retval;
     }
 
   struct stat buffer;
-  if (stat (name, &buffer) == 0 && (buffer.st_mode & S_IFDIR) == S_IFDIR)
+  if (stat (name.c_str (), &buffer) == 0
+      && (buffer.st_mode & S_IFDIR) == S_IFDIR)
     {
       error ("popen: can't open directory");
       return retval;
     }
 
-  FILE *file_ptr = popen (name, mode);
+  FILE *file_ptr = popen (name.c_str (), mode.c_str ());
 
   if (! file_ptr)
     {
-      error ("popen: unable to start process `%s'", name);
+      error ("popen: unable to start process `%s'", name.c_str ());
       return retval;
     }
 
@@ -2084,8 +2075,7 @@ execute_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  const char *name = tstr.c_str ();
+  string name = args(0).string_value ();
 
   if (pipe (stdin_pipe) || pipe (stdout_pipe)) 
     {
@@ -2112,8 +2102,8 @@ execute_internal (const Octave_object& args)
       dup2 (stdout_pipe[1], STDOUT_FILENO);
       close (stdout_pipe[1]);
 
-      if (execlp (name, name, 0) == -1)
-	error ("execute: unable to start process `%s'", name);
+      if (execlp (name.c_str (), name.c_str (), 0) == -1)
+	error ("execute: unable to start process `%s'", name.c_str ());
 
       exit (0);
       return 0.0;
@@ -2177,10 +2167,9 @@ sync_system_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  const char *name = tstr.c_str ();
+  string name = args(0).string_value ();
 
-  retval (0) = (double) system (name);
+  retval (0) = (double) system (name.c_str ());
   return retval;
 }
 
@@ -2213,8 +2202,7 @@ async_system_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  const char *name = tstr.c_str ();
+  string name = args(0).string_value ();
 
   pid = fork ();
 
@@ -2226,7 +2214,7 @@ async_system_internal (const Octave_object& args)
 
   if (pid == 0) 
     {
-      system (name);
+      system (name.c_str ());
       exit (0);
       retval (0) = 0.0;
       return retval;
@@ -2347,8 +2335,7 @@ mkfifo_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  const char *name = tstr.c_str ();
+  string name = args(0).string_value ();
 
   if (! args(1).is_scalar_type ())
     {
@@ -2358,7 +2345,7 @@ mkfifo_internal (const Octave_object& args)
 
   long mode = (long) args(1).double_value ();
 
-  retval (0) = (double) mkfifo (name, mode);
+  retval (0) = (double) mkfifo (name.c_str (), mode);
 
   return retval;
 }
@@ -2397,10 +2384,9 @@ unlink_internal (const Octave_object& args)
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  const char *name = tstr.c_str ();
+  string name = args(0).string_value ();
 
-  retval (0) = (double) unlink (name);
+  retval (0) = (double) unlink (name.c_str ());
 
   return retval;
 }

@@ -48,6 +48,8 @@ Free Software Foundation, Inc.
 
 #include <strstream.h>
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -66,9 +68,6 @@ Free Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
-// Temp storage for a path.
-static char tdir[MAXPATHLEN];
-
 // Non-zero means follow symbolic links that point to directories just
 // as if they are real directories.
 static int follow_symbolic_links = 1;
@@ -80,67 +79,71 @@ static int verbatim_pwd = 1;
 // Remove the last N directories from PATH.  Do not PATH blank.
 // PATH must contain enough space for MAXPATHLEN characters.
 
-void
-pathname_backup (char *path, int n)
+static void
+pathname_backup (string& path, int n)
 {
-  register char *p;
-
-  if (! *path)
+  if (path.empty ())
     return;
 
-  p = path + (strlen (path) - 1);
+  size_t i = path.length () - 1;
 
   while (n--)
     {
-      while (*p == '/' && p != path)
-	p--;
+      while (path[i] == '/' && i > 0)
+	i--;
 
-      while (*p != '/' && p != path)
-	p--;
+      while (path[i] != '/' && i > 0)
+	i--;
 
-      *++p = '\0';
+      i++;
     }
+
+  path.resize (i);
 }
 
 // Return a pretty pathname.  If the first part of the pathname is the
 // same as $HOME, then replace that with `~'.
 
-char *
-polite_directory_format (char *name)
+string
+polite_directory_format (const string& name)
 {
-  int l = home_directory ? strlen (home_directory) : 0;
+  string retval;
 
-  if (l > 1 && strncmp (home_directory, name, l) == 0
-      && (! name[l] || name[l] == '/'))
+  size_t len = home_directory.length ();
+
+  if (len > 1 && home_directory.compare (name, 0, len) == 0
+      && (name.length () == len || name[len] == '/'))
     {
-      strcpy (tdir + 1, name + l);
-      tdir[0] = '~';
-      return (tdir);
+      retval = "~";
+      retval.append (name.substr (len));
     }
   else
-    return name;
+    retval = name;
+
+  return retval;
 }
 
 // Return 1 if STRING contains an absolute pathname, else 0.
 
 int
-absolute_pathname (const char *string)
+absolute_pathname (const string& s)
 {
-  if (! string || ! *string)
+  if (s.empty ())
     return 0;
 
-  if (*string == '/')
+  if (s[0] == '/')
     return 1;
 
-  if (*string++ == '.')
+  if (s[0] == '.')
     {
-      if ((! *string) || *string == '/')
+      if (s[1] == '\0' || s[1] == '/')
 	return 1;
 
-      if (*string++ == '.')
-	if (! *string || *string == '/')
+      if (s[1] == '.')
+	if (s[2] == '\0' || s[2] == '/')
 	  return 1;
     }
+
   return 0;
 }
 
@@ -149,89 +152,91 @@ absolute_pathname (const char *string)
 // look up through $PATH.
 
 int
-absolute_program (const char *string)
+absolute_program (const string& s)
 {
-  return (strchr (string, '/') != 0);
+  return (s.find ('/') != NPOS);
 }
 
 // Return the `basename' of the pathname in STRING (the stuff after
 // the last '/').  If STRING is not a full pathname, simply return it.
 
-char *
-base_pathname (char *string)
+string
+base_pathname (const string& s)
 {
-  char *p = strrchr (string, '/');
+  if (! absolute_pathname (s))
+    return s;
 
-  if (! absolute_pathname (string))
-    return (string);
+  size_t pos = s.rfind ('/');
 
-  if (p)
-    return (++p);
+  if (pos == NPOS)
+    return s;
   else
-    return (string);
+    return s.substr (pos+1);
 }
 
 // Turn STRING (a pathname) into an absolute pathname, assuming that
-// DOT_PATH contains the symbolic location of '.'.  This always
-// returns a new string, even if STRING was an absolute pathname to
-// begin with.
+// DOT_PATH contains the symbolic location of '.'.
 
-char *
-make_absolute (const char *string, const char *dot_path)
+string
+make_absolute (const string& s, const string& dot_path)
 {
-  static char current_path[MAXPATHLEN];
-  register char *cp;
+  if (dot_path.empty () || s[0] == '/')
+    return s;
 
-  if (! dot_path || *string == '/')
-    return strsave (string);
+  string current_path = dot_path;
 
-  strcpy (current_path, dot_path);
+  if (current_path.empty ())
+    current_path = "./";
 
-  if (! current_path[0])
-    strcpy (current_path, "./");
+  size_t pos = current_path.length () - 1;
 
-  cp = current_path + (strlen (current_path) - 1);
+  if (current_path[pos] != '/')
+    current_path.append ("/");
 
-  if (*cp++ != '/')
-    *cp++ = '/';
+  size_t i = 0;
+  size_t slen = s.length ();
 
-  *cp = '\0';
-
-  while (*string)
+  while (i < slen)
     {
-      if (*string == '.')
+      if (s[i] == '.')
 	{
-	  if (! string[1])
-	    return strsave (current_path);
+	  if (i + 1 == slen)
+	    return current_path;
 
-	  if (string[1] == '/')
+	  if (s[i+1] == '/')
 	    {
-	      string += 2;
+	      i += 2;
 	      continue;
 	    }
 
-	  if (string[1] == '.' && (string[2] == '/' || ! string[2]))
+	  if (s[i+1] == '.' && (i + 2 == slen || s[i+2] == '/'))
 	    {
-	      string += 2;
+	      i += 2;
 
-	      if (*string)
-		string++;
+	      if (i != slen)
+		i++;
 
 	      pathname_backup (current_path, 1);
-	      cp = current_path + strlen (current_path);
+
 	      continue;
 	    }
 	}
 
-      while (*string && *string != '/')
-	*cp++ = *string++;
+      size_t tmp = s.find ('/', i);
 
-      if (*string)
-	*cp++ = *string++;
-
-      *cp = '\0';
+      if (tmp == NPOS)
+	{
+	  current_path.append (s, i, tmp-i);
+	  break;
+	}
+      else
+	{
+	  current_path.append (s, i, tmp-i+1);
+	  i = tmp + 1;
+	}
     }
-  return strsave (current_path);
+
+  return current_path;
 }
 
 // Has file `A' been modified after time `T'?
@@ -243,13 +248,13 @@ make_absolute (const char *string, const char *dot_path)
 //   stat on a fails        returns   -1
 
 int
-is_newer (const char *fa, time_t t)
+is_newer (const string& fa, time_t t)
 {
   struct stat fa_sb;
   register int fa_stat;
   register int status = 0;
 
-  fa_stat = stat (fa, &fa_sb);
+  fa_stat = stat (fa.c_str (), &fa_sb);
   if (fa_stat != 0)
     status = -1;
 
@@ -262,30 +267,18 @@ is_newer (const char *fa, time_t t)
 // Return a consed string which is the current working directory.
 // FOR_WHOM is the name of the caller for error printing.
 
-char *
-get_working_directory (const char *for_whom)
+string
+get_working_directory (const string& for_whom)
 {
   if (! follow_symbolic_links)
+    the_current_working_directory = "";
+
+  if (the_current_working_directory.empty ())
     {
-      if (the_current_working_directory)
-	delete [] the_current_working_directory;
+      the_current_working_directory = octave_getcwd ();
 
-      the_current_working_directory = 0;
-    }
-
-  if (! the_current_working_directory)
-    {
-      char *directory;
-
-      the_current_working_directory = new char [MAXPATHLEN];
-      directory = octave_getcwd (the_current_working_directory, MAXPATHLEN);
-      if (! directory)
-	{
-	  message (for_whom, the_current_working_directory);
-	  delete [] the_current_working_directory;
-	  the_current_working_directory = 0;
-	  return 0;
-	}
+      if (the_current_working_directory.empty ())
+	warning ("%s: can't find current directory!", for_whom.c_str ());
     }
 
   return the_current_working_directory;
@@ -295,62 +288,51 @@ get_working_directory (const char *for_whom)
 // link following, etc.
 
 static int
-change_to_directory (const char *newdir)
+change_to_directory (const string& newdir)
 {
-  char *t;
+  string tmp;
 
   if (follow_symbolic_links)
     {
-      if (! the_current_working_directory)
+      if (the_current_working_directory.empty ())
 	get_working_directory ("cd_links");
 
-      if (the_current_working_directory)
-	t = make_absolute (newdir, the_current_working_directory);
+      if (the_current_working_directory.empty ())
+	tmp = newdir;
       else
-	t = strsave (newdir);
+	tmp = make_absolute (newdir, the_current_working_directory);
 
       // Get rid of trailing `/'.
 
-      {
-	register int len_t = strlen (t);
-	if (len_t > 1)
-	  {
-	    --len_t;
-	    if (t[len_t] == '/')
-	      t[len_t] = '\0';
-	  }
-      }
+      size_t len = tmp.length ();
 
-      if (octave_chdir (t) < 0)
+      if (len > 1)
 	{
-	  delete [] t;
-	  return 0;
+	  if (tmp[--len] == '/')
+	    tmp.resize (len);
 	}
 
-      if (the_current_working_directory)
-	strcpy (the_current_working_directory, t);
-
-      delete [] t;
-      return 1;
-    }
-  else
-    {
-      if (octave_chdir (newdir) < 0)
+      if (octave_chdir (tmp) < 0)
 	return 0;
       else
-	return 1;
+	{
+	  the_current_working_directory = tmp;
+	  return 1;
+	}
     }
+  else
+    return (octave_chdir (newdir) < 0) ? 0 : 1;
 }
 
 static int
-octave_change_to_directory (const char *newdir)
+octave_change_to_directory (const string& newdir)
 {
   int cd_ok = change_to_directory (newdir);
 
   if (cd_ok)
     do_external_plotter_cd (newdir);
   else
-    error ("%s: %s", newdir, strerror (errno));
+    error ("%s: %s", newdir.c_str (), strerror (errno));
 
   return cd_ok;
 }
@@ -364,33 +346,35 @@ users home directory")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("cd");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "cd");
+
+  if (error_state)
+    return retval;
 
   if (argc > 1)
     {
       string dirname = oct_tilde_expand (argv[1]);
 
       if (dirname.length () > 0
-	  && ! octave_change_to_directory (dirname.c_str ()))
+	  && ! octave_change_to_directory (dirname))
 	{
-	  DELETE_ARGV;
 	  return retval;
 	}
     }
   else
     {
-      if (! home_directory || ! octave_change_to_directory (home_directory))
+      if (home_directory.empty ()
+	  || ! octave_change_to_directory (home_directory))
 	{
-	  DELETE_ARGV;
 	  return retval;
 	}
     }
 
-  char *directory = get_working_directory ("cd");
+  string directory = get_working_directory ("cd");
   tree_constant *dir = new tree_constant (directory);
   bind_builtin_variable ("PWD", dir, 1);
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -406,7 +390,12 @@ print a directory listing")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("ls");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "ls");
+
+  if (error_state)
+    return retval;
 
   ostrstream ls_buf;
 
@@ -438,8 +427,6 @@ print a directory listing")
 
   run_unwind_protect ();
 
-  DELETE_ARGV;
-
   return retval;
 }
 
@@ -449,25 +436,19 @@ DEFUN ("pwd", Fpwd, Spwd, 01,
   "pwd (): print current working directory")
 {
   Octave_object retval;
-  char *directory;
+  string directory;
 
   if (verbatim_pwd)
     {
-      char *buffer = new char [MAXPATHLEN];
-      directory = octave_getcwd (buffer, MAXPATHLEN);
+      directory = octave_getcwd ();
 
-      if (!directory)
-	{
-	  warning ("pwd: can't find working directory!");
-	  delete buffer;
-	}
+      if (directory.empty ())
+	warning ("pwd: can't find working directory!");
     }
   else
-    {
-      directory = get_working_directory ("pwd");
-    }
+    directory = get_working_directory ("pwd");
 
-  if (directory)
+  if (! directory.empty ())
     {
       if (nargout == 0)
 	{
@@ -495,8 +476,7 @@ is printed.")
 
   if (args.length () == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *dirname = tstr.c_str ();
+      string dirname = args(0).string_value ();
 
       if (error_state)
 	{
@@ -583,8 +563,7 @@ otherwise prints an error message.")
 
   if (args.length () == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *dirname = tstr.c_str ();
+      string dirname = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("mkdir", args(0));
@@ -622,8 +601,7 @@ otherwise prints an error message.")
 
   if (args.length () == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *dirname = tstr.c_str ();
+      string dirname = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("rmdir", args(0));
@@ -661,19 +639,17 @@ otherwise prints an error message and returns -1.")
 
   if (args.length () == 2)
     {
-      string tstr1 = args(0).string_value ();
-      const char *from = tstr1.c_str ();
+      string from = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("rename", args(0));
       else
 	{
-	  string tstr2 = args(1).string_value ();
-	  const char *to = tstr2.c_str ();
+	  string to = args(1).string_value ();
 
 	  if (error_state)
 	    gripe_wrong_type_arg ("rename", args(1));
-	  else if (rename (from, to) < 0)
+	  else if (rename (from.c_str (), to.c_str ()) < 0)
 	    {
 	      status = -1;
 	      error ("%s", strerror (errno));

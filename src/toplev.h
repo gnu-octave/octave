@@ -41,41 +41,41 @@ extern void parse_and_execute (const string& s, int print = 0,
 			       int verbose = 0,
 			       const char *warn_for = 0);
 
-extern tree_constant eval_string (const char *string, int print,
+extern tree_constant eval_string (const string&, int print,
 				  int& parse_status);
 
 // argv[0] for this program.
-extern char *raw_prog_name;
+extern string raw_prog_name;
 
 // Cleaned-up name of this program, not including path information.
-extern char *prog_name;
+extern string prog_name;
 
 // Login name for user running this program.
-extern char *user_name;
+extern string user_name;
 
 // Name of the host we are running on.
-extern char *host_name;
+extern string host_name;
 
 // User's home directory.
-extern char *home_directory;
+extern string home_directory;
 
 // Guess what?
-extern char *the_current_working_directory;
+extern string the_current_working_directory;
 
 // The path that will be searched for programs that we execute.
-extern char *exec_path;
+extern string exec_path;
 
 // Load path specified on command line.
-extern char *load_path;
+extern string load_path;
 
 // Name of the info file specified on command line.
-extern char *info_file;
+extern string info_file;
 
 // Name of the info reader we'd like to use.
-extern char *info_prog;
+extern string info_prog;
 
 // Name of the editor to be invoked by the edit_history command.
-extern char *editor;
+extern string editor;
 
 // If nonzero, don't do fancy line editing.
 extern int no_line_editing;

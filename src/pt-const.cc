@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-base.h"
 #include "Range.h"
+#include "str-vec.h"
 
 #include "arith-ops.h"
 #include "error.h"
@@ -187,39 +188,37 @@ tree_constant::operator = (const tree_constant& a)
 }
 
 tree_constant
-tree_constant::lookup_map_element (const char *ref, int insert,
+tree_constant::lookup_map_element (const string& ref, int insert,
 				   int silent)
 {
   tree_constant retval;
 
-  if (ref)
+  if (! ref.empty ())
     {
-      char *tmp = strsave (ref);
+      SLList<string> list;
 
-      SLList<char *> list;
+      size_t beg = 0;
+      size_t end;
 
-      char *beg = tmp;
-      char *end = 0;
       do
 	{
-	  end = strchr (beg, '.');
-	  if (end)
-	    *end = '\0';
+	  end = ref.find ('.', beg);
 
-	  list.append (strsave (beg));
+	  string tmp = (end == NPOS)
+	    ? ref.substr (beg) : ref.substr (beg, end - 1);
+
+	  list.append (tmp);
 	}
-      while (end && (beg = end + 1));
+      while (end != NPOS && (beg = end + 1));
 
       retval = lookup_map_element (list, insert, silent);
-
-      delete [] tmp;
     }
 
   return retval;
 }
 
 tree_constant
-tree_constant::lookup_map_element (SLList<char*>& list, int insert,
+tree_constant::lookup_map_element (SLList<string>& list, int insert,
 				   int silent)
 {
   tree_constant retval;
@@ -229,7 +228,7 @@ tree_constant::lookup_map_element (SLList<char*>& list, int insert,
   Pix p = list.first ();
   while (p)
     {
-      char *elt = list (p);
+      string elt = list (p);
 
       list.next (p);
 
@@ -256,6 +255,38 @@ tree_constant::print (void)
   print (output_buf);
   output_buf << ends;
   maybe_page_output (output_buf);
+}
+
+void
+tree_constant::print_with_name (const string& name, int print_padding)
+{
+  ostrstream output_buf;
+  print_with_name (output_buf, name, print_padding);
+  output_buf << ends;
+  maybe_page_output (output_buf);
+}
+
+void
+tree_constant::print_with_name (ostream& output_buf, const string& name,
+				int print_padding) 
+{
+  int pad_after = 0;
+
+  if (user_pref.print_answer_id_name)
+    {
+      if (print_as_scalar () || print_as_structure ())
+	output_buf << name << " = ";
+      else
+	{
+	  pad_after = 1;
+	  output_buf << name << " =\n\n";
+	}
+    }
+
+  print (output_buf);
+
+  if (print_padding && pad_after)
+    output_buf << "\n";
 }
 
 // Simple structure assignment.
@@ -298,7 +329,7 @@ tree_constant::make_unique_map (void)
 }
 
 tree_constant
-tree_constant::assign_map_element (SLList<char*>& list,
+tree_constant::assign_map_element (SLList<string>& list,
 				   tree_constant& rhs)
 {
   tree_constant_rep *tmp_rep = make_unique_map ();
@@ -309,7 +340,7 @@ tree_constant::assign_map_element (SLList<char*>& list,
   Pix p = list.first ();
   while (p)
     {
-      char *elt = list (p);
+      string elt = list (p);
 
       list.next (p);
 
@@ -330,7 +361,7 @@ tree_constant::assign_map_element (SLList<char*>& list,
 // Indexed structure assignment.
 
 tree_constant
-tree_constant::assign_map_element (SLList<char*>& list,
+tree_constant::assign_map_element (SLList<string>& list,
 				   tree_constant& rhs,
 				   const Octave_object& args)
 {
@@ -342,7 +373,7 @@ tree_constant::assign_map_element (SLList<char*>& list,
   Pix p = list.first ();
   while (p)
     {
-      char *elt = list (p);
+      string elt = list (p);
 
       list.next (p);
 
@@ -391,38 +422,17 @@ tree_constant::print_code (ostream& os)
     os << ")";
 }
 
-int
-print_as_scalar (const tree_constant& val)
-{
-  int nr = val.rows ();
-  int nc = val.columns ();
-  return (val.is_scalar_type ()
-	  || (val.is_string () && nr <= 1)
-	  || (val.is_matrix_type ()
-	      && ((nr == 1 && nc == 1)
-		  || nr == 0
-		  || nc == 0)));
-}
-
-int
-print_as_structure (const tree_constant& val)
-{
-  return val.is_map ();
-}
-
 // The real representation of constants.
 
 TC_REP::tree_constant_rep (void)
 {
   type_tag = unknown_constant;
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (double d)
 {
   scalar = d;
   type_tag = scalar_constant;
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const Matrix& m)
@@ -437,7 +447,6 @@ TC_REP::tree_constant_rep (const Matrix& m)
       matrix = new Matrix (m);
       type_tag = matrix_constant;
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const DiagMatrix& d)
@@ -452,7 +461,6 @@ TC_REP::tree_constant_rep (const DiagMatrix& d)
       matrix = new Matrix (d);
       type_tag = matrix_constant;
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const RowVector& v, int prefer_column_vector)
@@ -486,7 +494,6 @@ TC_REP::tree_constant_rep (const RowVector& v, int prefer_column_vector)
 	  type_tag = matrix_constant;
 	}
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const ColumnVector& v, int prefer_column_vector)
@@ -520,7 +527,6 @@ TC_REP::tree_constant_rep (const ColumnVector& v, int prefer_column_vector)
 	  type_tag = matrix_constant;
 	}
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const Complex& c)
@@ -535,7 +541,6 @@ TC_REP::tree_constant_rep (const Complex& c)
       complex_scalar = new Complex (c);
       type_tag = complex_scalar_constant;
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const ComplexMatrix& m)
@@ -560,7 +565,6 @@ TC_REP::tree_constant_rep (const ComplexMatrix& m)
       complex_matrix = new ComplexMatrix (m);
       type_tag = complex_matrix_constant;
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const ComplexDiagMatrix& d)
@@ -585,7 +589,6 @@ TC_REP::tree_constant_rep (const ComplexDiagMatrix& d)
       complex_matrix = new ComplexMatrix (d);
       type_tag = complex_matrix_constant;
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const ComplexRowVector& v,
@@ -630,7 +633,6 @@ TC_REP::tree_constant_rep (const ComplexRowVector& v,
 	  type_tag = complex_matrix_constant;
 	}
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const ComplexColumnVector& v, int
@@ -675,28 +677,38 @@ TC_REP::tree_constant_rep (const ComplexColumnVector& v, int
 	  type_tag = complex_matrix_constant;
 	}
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const char *s)
 {
   char_matrix = new charMatrix (s);
   type_tag = char_matrix_constant_str;
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const string& s)
 {
   char_matrix = new charMatrix (s);
   type_tag = char_matrix_constant_str;
-  orig_text = 0;
+}
+
+TC_REP::tree_constant_rep (const string_vector& s)
+{
+  int nr = s.length ();
+  int nc = s.max_length ();
+  char_matrix = new charMatrix (nr, nc, 0);
+  for (int i = 0; i < nr; i++)
+    {
+      nc = s[i].length ();
+      for (int j = 0; j < nc; j++)
+	char_matrix->elem (i, j) = s[i][j];
+    }
+  type_tag = char_matrix_constant_str;
 }
 
 TC_REP::tree_constant_rep (const charMatrix& chm, int is_str)
 {
   char_matrix = new charMatrix (chm);
   type_tag = is_str ? char_matrix_constant_str : char_matrix_constant;
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (double b, double l, double i)
@@ -727,7 +739,6 @@ TC_REP::tree_constant_rep (double b, double l, double i)
 	    ::error ("invalid range");
 	}
     }
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const Range& r)
@@ -756,22 +767,18 @@ TC_REP::tree_constant_rep (const Range& r)
       else
 	::error ("invalid range");
     }
-
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const Octave_map& m)
 {
   a_map = new Octave_map (m);
   type_tag = map_constant;
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (TC_REP::constant_type t)
 {
   assert (t == magic_colon || t == all_va_args);
   type_tag = t;
-  orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const tree_constant_rep& t)
@@ -820,7 +827,7 @@ TC_REP::tree_constant_rep (const tree_constant_rep& t)
       break;
     }
 
-  orig_text = strsave (t.orig_text);
+  orig_text = t.orig_text;
 }
 
 TC_REP::~tree_constant_rep (void)
@@ -858,8 +865,6 @@ TC_REP::~tree_constant_rep (void)
     case all_va_args:
       break;
     }
-
-  delete [] orig_text;
 }
 
 void *
@@ -1505,7 +1510,7 @@ TC_REP::map_value (void) const
 }
 
 tree_constant&
-TC_REP::lookup_map_element (const char *name, int insert, int silent)
+TC_REP::lookup_map_element (const string& name, int insert, int silent)
 {
   static tree_constant retval;
 
@@ -1518,7 +1523,7 @@ TC_REP::lookup_map_element (const char *name, int insert, int silent)
       else if (insert)
 	return (*a_map) [name];
       else if (! silent)
-	error ("structure has no member `%s'", name);
+	error ("structure has no member `%s'", name.c_str ());
     }
   else if (! silent)
     error ("invalid structure access attempted");
@@ -2119,9 +2124,9 @@ TC_REP::resize (int i, int j, double val)
 }
 
 void
-TC_REP::stash_original_text (char *s)
+TC_REP::stash_original_text (const string &s)
 {
-  orig_text = strsave (s);
+  orig_text = s;
 }
 
 void
@@ -2257,13 +2262,13 @@ TC_REP::print (ostream& output_buf)
 
 	    for (Pix p = a_map->first (); p != 0; a_map->next (p))
 	      {
-		const char *key = a_map->key (p);
+		string key = a_map->key (p);
 		tree_constant val = a_map->contents (p);
 
 		output_buf.form ("%*s%s = ", structure_indent_level,
-				 "", key);
+				 "", key.c_str ());
 
-		if (! (print_as_scalar (val) || print_as_structure (val))) 
+		if (! (print_as_scalar () || print_as_structure ())) 
 		  output_buf << "\n";
 
 		val.print (output_buf);
@@ -2294,10 +2299,10 @@ TC_REP::print_code (ostream& os)
   switch (type_tag)
     {
     case scalar_constant:
-      if (orig_text)
-	os << orig_text;
-      else
+      if (orig_text.empty ())
 	octave_print_internal (os, scalar, 1);
+      else
+	os << orig_text;
       break;
 
     case matrix_constant:
@@ -2313,7 +2318,7 @@ TC_REP::print_code (ostream& os)
 	// print the original text, because this must be a constant
 	// that was parsed as part of a function.
 
-	if (orig_text && re == 0.0 && im > 0.0)
+	if (! orig_text.empty () && re == 0.0 && im > 0.0)
 	  os << orig_text;
 	else
 	  octave_print_internal (os, *complex_scalar, 1);
@@ -3106,6 +3111,25 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 
   if (is_matrix_type () || is_range ())
     maybe_mutate ();
+}
+
+int
+TC_REP::print_as_scalar (void)
+{
+  int nr = rows ();
+  int nc = columns ();
+  return (is_scalar_type ()
+	  || (is_string () && nr <= 1)
+	  || (is_matrix_type ()
+	      && ((nr == 1 && nc == 1)
+		  || nr == 0
+		  || nc == 0)));
+}
+
+int
+TC_REP::print_as_structure (void)
+{
+  return is_map ();
 }
 
 /*

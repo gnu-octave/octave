@@ -32,13 +32,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pt-const.h"
 
+class string_vector;
+
 class
 Octave_map : public CHMap<tree_constant>
 {
  public:
   Octave_map (void) : CHMap<tree_constant> (tree_constant ()) { }
 
-  Octave_map (const char *key, const tree_constant& value)
+  Octave_map (const string& key, const tree_constant& value)
     : CHMap<tree_constant> (tree_constant ())
       {
 	CHMap<tree_constant>::operator [] (key) = value;
@@ -48,7 +50,7 @@ Octave_map : public CHMap<tree_constant>
 
   ~Octave_map (void) { }
 
-  char **make_name_list (void);
+  string_vector make_name_list (void);
 };
 
 #endif

@@ -91,6 +91,8 @@ gnu_readline (const char *s)
     return readline (s);
 }
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -99,14 +101,14 @@ gnu_readline (const char *s)
 #include "oct-map.h"
 #include "oct-hist.h"
 #include "toplev.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathlen.h"
+#include "pt-const.h"
 #include "sighandlers.h"
 #include "symtab.h"
 #include "sysdep.h"
-#include "pt-const.h"
-#include "oct-obj.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -122,7 +124,7 @@ gnu_readline (const char *s)
 #endif
 
 // Global pointer for eval().
-const char *current_eval_string = 0;
+string current_eval_string;
 
 // Nonzero means get input from current_eval_string.
 int get_input_from_eval_string = 0;
@@ -131,10 +133,10 @@ int get_input_from_eval_string = 0;
 int reading_fcn_file = 0;
 
 // Simple name of function file we are reading.
-const char *curr_fcn_file_name = 0;
+string curr_fcn_file_name;
 
 // Full name of file we are reading.
-const char *curr_fcn_file_full_name = 0;
+string curr_fcn_file_full_name;
 
 // Nonzero means we're parsing a script file.
 int reading_script_file = 0;
@@ -155,53 +157,31 @@ int forced_interactive = 0;
 int promptflag = 1;
 
 // The current line of input, from wherever.
-char *current_input_line = 0;
+string current_input_line;
 
 // A line of input from readline.
 static char *octave_gets_line = 0;
-
-// Append SOURCE to TARGET at INDEX.  SIZE is the current amount of
-// space allocated to TARGET.  SOURCE can be NULL, in which case
-// nothing happens.  Gets rid of SOURCE by free ()ing it.  Returns
-// TARGET in case the location has changed.
-
-static char *
-sub_append_string (char *source, char *target, int *index, int *size)
-{
-  if (source)
-    {
-      while ((int)strlen (source) >= (int)(*size - *index))
-	{
-	  char *tmp = new char [*size += DEFAULT_ARRAY_SIZE];
-	  strcpy (tmp, target);
-	  delete [] target;
-	  target = tmp;
-	}
-
-      strcat (target, source);
-      *index += strlen (source);
-
-      delete [] source;
-    }
-  return target;
-}
 
 // Return the octal number parsed from STRING, or -1 to indicate that
 // the string contained a bad number.
 
 int
-read_octal (const char *string)
+read_octal (const string& s)
 {
   int result = 0;
   int digits = 0;
 
-  while (*string && *string >= '0' && *string < '8')
+  size_t i = 0;
+  size_t slen = s.length ();
+
+  while (i < slen && s[i] >= '0' && s[i] < '8')
     {
       digits++;
-      result = (result * 8) + *string++ - '0';
+      result = (result * 8) + s[i] - '0';
+      i++;
     }
 
-  if (! digits || result > 0777 || *string)
+  if (! digits || result > 0777 || i < slen)
     result = -1;
 
   return result;
@@ -224,21 +204,24 @@ read_octal (const char *string)
 //	\<octal> character code in octal
 //	\\	a backslash
 
-static char *
-decode_prompt_string (const char *string)
+static string
+decode_prompt_string (const string& s)
 {
-  int result_size = PROMPT_GROWTH;
-  int result_index = 0;
-  char *result = new char [PROMPT_GROWTH];
+  string result;
+  string temp;
+  size_t i = 0;
+  size_t slen = s.length ();
   int c;
-  char *temp = 0;
 
-  result[0] = 0;
-  while ((c = *string++))
+  while (i < slen)
     {
+      c = s[i];
+
+      i++;
+
       if (c == '\\')
 	{
-	  c = *string;
+	  c = s[i];
 
 	  switch (c)
 	    {
@@ -250,19 +233,15 @@ decode_prompt_string (const char *string)
 	    case '5':
 	    case '6':
 	    case '7':
+	      // Maybe convert an octal number.
 	      {
-		char octal_string[4];
-		int n;
+		int n = read_octal (s.substr (i, 3));
 
-		strncpy (octal_string, string, 3);
-		octal_string[3] = '\0';
+		temp = "\\";
 
-		n = read_octal (octal_string);
-
-		temp = strsave ("\\");
 		if (n != -1)
 		  {
-		    string += 3;
+		    i += 3;
 		    temp[0] = n;
 		  }
 
@@ -272,84 +251,84 @@ decode_prompt_string (const char *string)
 	  
 	    case 't':
 	    case 'd':
-	      /* Make the current time/date into a string. */
+	      // Make the current time/date into a string.
 	      {
-		time_t the_time = time (0);
-		char *ttemp = ctime (&the_time);
-		temp = strsave (ttemp);
+		time_t now = time (0);
+
+		temp = ctime (&now);
 
 		if (c == 't')
 		  {
-		    strcpy (temp, temp + 11);
-		    temp[8] = '\0';
+		    temp = temp.substr (11);
+		    temp.resize (8);
 		  }
 		else
-		  temp[10] = '\0';
+		  temp.resize (10);
 
 		goto add_string;
 	      }
 
 	    case 'n':
-	      if (! no_line_editing)
-		temp = strsave ("\r\n");
-	      else
-		temp = strsave ("\n");
-	      goto add_string;
+	      {
+		if (! no_line_editing)
+		  temp = "\r\n";
+		else
+		  temp = "\n";
+
+		goto add_string;
+	      }
 
 	    case 's':
 	      {
 		temp = base_pathname (prog_name);
-		temp = strsave (temp);
+
 		goto add_string;
 	      }
 	
 	    case 'w':
 	    case 'W':
 	      {
-		char t_string[MAXPATHLEN];
 #define EFFICIENT
 #ifdef EFFICIENT
-
 		// Use the value of PWD because it is much more
 		// effecient.
 
 		temp = user_pref.pwd;
 
-		if (! temp)
-		  octave_getcwd (t_string, MAXPATHLEN);
-		else
-		  strcpy (t_string, temp);
+		if (temp.empty ())
+		  temp = octave_getcwd ();
 #else
-		octave_getcwd (t_string, MAXPATHLEN);
+		temp = octave_getcwd ();
 #endif	/* EFFICIENT */
 
 		if (c == 'W')
 		  {
-		    char *dir = strrchr (t_string, '/');
-		    if (dir && dir != t_string)
-		      strcpy (t_string, dir + 1);
-		    temp = strsave (t_string);
+		    size_t pos = temp.rfind ('/');
+
+		    if (pos != NPOS && pos != 0)
+		      temp = temp.substr (pos + 1);
 		  }
 		else
-		  temp = strsave (polite_directory_format (t_string));
+		  temp = polite_directory_format (temp);
+
 		goto add_string;
 	      }
       
 	    case 'u':
 	      {
-		temp = strsave (user_name);
+		temp = user_name;
 
 		goto add_string;
 	      }
 
 	    case 'h':
 	      {
-		char *t_string;
+		temp = host_name;
 
-		temp = strsave (host_name);
-		t_string = strchr (temp, '.');
-		if (t_string);
-		  *t_string = '\0';
+		size_t pos = temp.find ('.');
+
+		if (pos != NPOS)
+		  temp.resize (pos);
 		
 		goto add_string;
 	      }
@@ -358,7 +337,8 @@ decode_prompt_string (const char *string)
 	      {
 		char number_buffer[128];
 		sprintf (number_buffer, "%d", current_command_number);
-		temp = strsave (number_buffer);
+		temp = number_buffer;
+
 		goto add_string;
 	      }
 
@@ -370,77 +350,66 @@ decode_prompt_string (const char *string)
                   sprintf (number_buffer, "%d", num);
 		else
 		  strcpy (number_buffer, "!");
-		temp = strsave (number_buffer);
+		temp = number_buffer;
+
 		goto add_string;
 	      }
 
 	    case '$':
-	      temp = strsave (geteuid () == 0 ? "#" : "$");
-	      goto add_string;
+	      {
+		temp = (geteuid () == 0 ? "#" : "$");
+
+		goto add_string;
+	      }
 
 	    case '[':
 	    case ']':
-	      temp = new char[3];
-              temp[0] = '\001';
-              temp[1] = ((c == '[')
-			 ? RL_PROMPT_START_IGNORE
-			 : RL_PROMPT_END_IGNORE);
-              temp[2] = '\0';
-	      goto add_string;
+	      {
+		temp.resize (2);
+
+		temp[0] = '\001';
+		temp[1] = ((c == '[')
+			   ? RL_PROMPT_START_IGNORE
+			   : RL_PROMPT_END_IGNORE);
+
+		goto add_string;
+	      }
 
 	    case '\\':
-	      temp = strsave ("\\");
-	      goto add_string;
+	      {
+		temp = "\\";
+
+		goto add_string;
+	      }
 
 	    default:
-	      temp = strsave ("\\ ");
-	      temp[1] = c;
+	      {
+		temp = "\\ ";
+		temp[1] = c;
+
+		goto add_string;
+	      }
 
 	    add_string:
-	      if (c)
-		string++;
-	      result =
-		(char *)sub_append_string (temp, result,
-					   &result_index, &result_size);
-	      temp = 0; // Free ()'ed in sub_append_string ().
-	      result[result_index] = '\0';
-	      break;
+	      {
+		if (c)
+		  i++;
+
+		result.append (temp);
+
+		break;
+	      }
 	    }
 	}
       else
-	{
-	  while (3 + result_index > result_size)
-	    {
-	      char *tmp = new char [result_size += PROMPT_GROWTH];
-	      strcpy (tmp, result);
-	      delete [] result;
-	      result = tmp;
-	    }
-	  result[result_index++] = c;
-	  result[result_index] = '\0';
-	}
+	result += c;
     }
-
-#if 0
-  // I don't really think that this is a good idea.  Do you?
-
-  if (! find_variable ("NO_PROMPT_VARS"))
-    {
-      WORD_LIST *expand_string (), *list;
-      char *string_list ();
-
-      list = expand_string (result, 1);
-      free (result);
-      result = string_list (list);
-      dispose_words (list);
-    }
-#endif
 
   return result;
 }
 
 static void
-do_input_echo (const char *input_string)
+do_input_echo (const string& input_string)
 {
   int do_echo = reading_script_file ?
     (user_pref.echo_executing_commands & ECHO_SCRIPTS)
@@ -452,23 +421,19 @@ do_input_echo (const char *input_string)
 
       if (forced_interactive)
 	{
-	  char *ps = (promptflag > 0) ? user_pref.ps1 : user_pref.ps2;
-	  char *prefix = decode_prompt_string (ps);
-	  buf << prefix;
-	  delete [] prefix;
+	  if (promptflag > 0)
+	    buf << decode_prompt_string (user_pref.ps1);
+	  else
+	    buf << decode_prompt_string (user_pref.ps2);
 	}
       else
-	{
-	  char *prefix = decode_prompt_string (user_pref.ps4);
-	  buf << prefix;
-	  delete [] prefix;
-	}
+	buf << decode_prompt_string (user_pref.ps4);
 
-      if (input_string)
+      if (! input_string.empty ())
 	{
 	  buf << input_string;
-	  int len = strlen (input_string);
-	  if (input_string[len-1] != '\n')
+
+	  if (input_string[input_string.length () - 1] != '\n')
 	    buf << "\n";
 	}
 
@@ -490,8 +455,10 @@ octave_gets (void)
 
   if (interactive || forced_interactive)
     {
-      char *ps = (promptflag > 0) ? user_pref.ps1 : user_pref.ps2;
-      char *prompt = decode_prompt_string (ps);
+      const char *ps = (promptflag > 0) ? user_pref.ps1.c_str () :
+	user_pref.ps2.c_str ();
+
+      const char *prompt = decode_prompt_string (ps).c_str ();
 
       if (interactive)
 	{
@@ -527,18 +494,17 @@ octave_gets (void)
 // Read a line from the input stream.
 
 int
-octave_read (char *buf, int max_size)
+octave_read (char *buf, unsigned max_size)
 {
   int status = 0;
 
-  static char *stashed_line = 0;
-
   if (get_input_from_eval_string)
     {
-      int len = strlen (current_eval_string);
+      size_t len = current_eval_string.length ();
+
       if (len < max_size - 1)
 	{
-	  strcpy (buf, current_eval_string);
+	  strcpy (buf, current_eval_string.c_str ());
 	  buf[len++] = '\n';
 	  buf[len] = '\0';    // Paranoia.
 	  status = len;
@@ -546,18 +512,15 @@ octave_read (char *buf, int max_size)
       else
 	status = -1;
 
-      if (stashed_line)
-	delete [] stashed_line;
-
-      stashed_line = strsave (buf);
-      current_input_line = stashed_line;
+      current_input_line = buf;
     }
   else if (using_readline)
     {
       char *cp = octave_gets ();
       if (cp)
 	{
-	  int len = strlen (cp);
+	  size_t len = strlen (cp);
+
 	  if (len >= max_size)
 	    status = -1;
 	  else
@@ -583,7 +546,8 @@ octave_read (char *buf, int max_size)
 
       if (fgets (buf, max_size, curr_stream))
 	{
-	  int len = strlen (buf);
+	  size_t len = strlen (buf);
+
 	  if (len > max_size - 2)
 	    status = -1;
 	  else
@@ -599,12 +563,7 @@ octave_read (char *buf, int max_size)
       else
 	status = 0; // Tell yylex that we found EOF.
 
-      if (stashed_line)
-	delete [] stashed_line;
-
-      stashed_line = strsave (buf);
-
-      current_input_line = stashed_line;
+      current_input_line = buf;
 
       do_input_echo (current_input_line);
     }
@@ -647,11 +606,11 @@ get_input_from_stdin (void)
   return rl_instream;
 }
 
-static char **
+static const char **
 generate_struct_completions (const char *text, char *& prefix,
 			     char *& hint)
 {
-  char **names = 0;
+  const char **names = 0;
 
   assert (text);
 
@@ -687,6 +646,8 @@ generate_struct_completions (const char *text, char *& prefix,
 
       if (def && def->is_map ())
 	{
+	  string_vector tmp_names;
+
 	  if (elts && *elts)
 	    {
 	      tree_constant ult = def->lookup_map_element (elts, 0, 1);
@@ -694,13 +655,23 @@ generate_struct_completions (const char *text, char *& prefix,
 	      if (ult.is_map ())
 		{
 		  Octave_map m = ult.map_value ();
-		  names = m.make_name_list ();
+		  tmp_names = m.make_name_list ();
 		}
 	    }
 	  else
 	    {
 	      Octave_map m = def->map_value ();
-	      names = m.make_name_list ();
+	      tmp_names = m.make_name_list ();
+	    }
+
+	  int n = tmp_names.length ();
+
+	  if (n > 0)
+	    {
+	      names = new const char * [n+1];
+	      for (int i = 0; i < n; i++)
+		names[i] = strsave (tmp_names[i].c_str ());
+	      names[n] = 0;
 	    }
 	}
     }
@@ -712,18 +683,30 @@ generate_struct_completions (const char *text, char *& prefix,
 
 // XXX FIXME XXX -- make this generate file names when appropriate.
 
-static char **
+static const char **
 generate_possible_completions (const char *text, char *& prefix,
 			       char *& hint)
 {
-  char **names = 0;
+  const char **names = 0;
 
   prefix = 0;
 
   if (text && *text && *text != '.' && strrchr (text, '.'))
     names = generate_struct_completions (text, prefix, hint);
   else
-    names = make_name_list ();
+    {
+      string_vector tmp_names = make_name_list ();
+
+      int n = tmp_names.length ();
+
+      if (n > 0)
+	{
+	  names = new const char * [n+1];
+	  for (int i = 0; i < n; i++)
+	    names[i] = strsave (tmp_names[i].c_str ());
+	  names[n] = 0;
+	}
+    }
 
   return names;
 }
@@ -785,7 +768,7 @@ command_generator (const char *text, int state)
   static int hint_len = 0;
 
   static int list_index = 0;
-  static char **name_list = 0;
+  static const char **name_list = 0;
 
   static int matches = 0;
 
@@ -795,7 +778,8 @@ command_generator (const char *text, int state)
 
       if (name_list)
 	{
-	  char **ptr = name_list;
+	  const char **ptr = name_list;
+
 	  while (ptr && *ptr)
 	    delete [] *ptr++;
 
@@ -831,7 +815,8 @@ command_generator (const char *text, int state)
 
   if (name_list && matches)
     {
-      char *name;
+      const char *name;
+
       while ((name = name_list[list_index]) != 0)
 	{
 	  list_index++;
@@ -1128,7 +1113,12 @@ Without any arguments, toggle the current echo state.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV ("echo");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "echo");
+
+  if (error_state)
+    return retval;
 
   switch (argc)
     {
@@ -1144,10 +1134,11 @@ Without any arguments, toggle the current echo state.")
 
     case 2:
       {
-	char *arg = argv[1];
-	if (strcmp (arg, "on") == 0)
+	string arg = argv[1];
+
+	if (arg == "on")
 	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
-	else if (strcmp (arg, "off") == 0)
+	else if (arg == "off")
 	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
 	  print_usage ("echo");
@@ -1156,11 +1147,12 @@ Without any arguments, toggle the current echo state.")
 
     case 3:
       {
-	char *arg = argv[1];
-	if (strcmp (arg, "on") == 0 && strcmp (argv[2], "all") == 0)
+	string arg = argv[1];
+
+	if (arg == "on" && argv[2] == "all")
 	  bind_builtin_variable ("echo_executing_commands",
 				 (ECHO_SCRIPTS | ECHO_FUNCTIONS));
-	else if (strcmp (arg, "off") == 0 && strcmp (argv[2], "all") == 0)
+	else if (arg == "off" && argv[2] == "all")
 	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
 	  print_usage ("echo");
@@ -1171,8 +1163,6 @@ Without any arguments, toggle the current echo state.")
       print_usage ("echo");
       break;
     }
-
-  DELETE_ARGV;
 
   return retval;
 }

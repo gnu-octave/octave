@@ -26,21 +26,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostrstream;
 
-typedef struct help_list
+#include <string>
+
+class string_vector;
+
+// XXX FIXME XXX -- should probably use string, not char*.
+
+struct help_list
 {
   char *name;
   char *help;
 };
 
-extern char **names (help_list *l, int& count);
+extern string_vector names (help_list *l, int& count);
 extern help_list *operator_help (void);
 extern help_list *keyword_help (void);
 
-extern int help_from_list (ostrstream& output_buf,
-			   const help_list *list, const char *string,
-			   int usage);
+extern void print_usage (const string& nm, int just_usage = 0);
 
-extern void print_usage (const char *s, int just_usage = 0);
+extern int help_from_list (ostrstream& output_buf,
+			   const help_list *list, const string& nm,
+			   int usage);
 
 #endif
 

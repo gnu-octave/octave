@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 class tree_parameter_list;
 class tree_statement_list;
 class tree_va_return_list;
@@ -57,8 +59,6 @@ private:
       ret_list = 0;
       sym_tab = 0;
       cmd_list = 0;
-      file_name = 0;
-      fcn_name = 0;
       t_parsed = 0;
       system_fcn_file = 0;
       num_named_args = 0;
@@ -92,7 +92,7 @@ public:
   void stash_fcn_file_time (time_t t)
     { t_parsed = t; }
 
-  char *fcn_file_name (void)
+  string fcn_file_name (void)
     { return file_name; }
 
   time_t time_parsed (void)
@@ -116,9 +116,9 @@ public:
 
   void octave_vr_val (const tree_constant& val);
 
-  void stash_function_name (char *s);
+  void stash_function_name (const string& s);
 
-  char *function_name (void)
+  string function_name (void)
     { return fcn_name; }
 
   tree_constant eval (int print);
@@ -135,8 +135,8 @@ private:
   tree_parameter_list *ret_list;
   symbol_table *sym_tab;
   tree_statement_list *cmd_list;
-  char *file_name;
-  char *fcn_name;
+  string file_name;
+  string fcn_name;
   time_t t_parsed;
   int system_fcn_file;
   int num_named_args;

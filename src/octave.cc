@@ -164,30 +164,30 @@ intern_argv (int argc, char **argv)
 // Initialize some global variables for later use.
 
 static void
-initialize_globals (char *name)
+initialize_globals (const string& name)
 {
-  raw_prog_name = strsave (name);
-  char *tmp = strrchr (raw_prog_name, '/');
-  prog_name = tmp ? strsave (tmp+1) : strsave (raw_prog_name);
+  raw_prog_name = name;
+  size_t pos = raw_prog_name.rfind ('/');
+  if (pos == NPOS)
+    prog_name = raw_prog_name;
+  else
+    prog_name = raw_prog_name.substr (pos+1);
 
   struct passwd *entry = getpwuid (getuid ());
   if (entry)
-    user_name = strsave (entry->pw_name);
+    user_name = entry->pw_name;
   else
-    user_name = strsave ("I have no name!");
+    user_name = "I have no name!";
   endpwent ();
 
   char hostname[256];
   if (gethostname (hostname, 255) < 0)
-    host_name = strsave ("I have no host!");
+    host_name = "I have no host!";
   else
-    host_name = strsave (hostname);
+    host_name = hostname;
 
   char *hd = getenv ("HOME");
-  if (hd)
-    home_directory = strsave (hd);
-  else
-    home_directory = strsave ("I have no home!");
+  home_directory = hd ? hd : "I have no home!";
 
   exec_path = default_exec_path ();
 
@@ -223,31 +223,35 @@ execute_startup_files (void)
   // then from the file $(prefix)/lib/octave/$(version)/m/octaverc (if
   // it exists).
 
-  char *lsd = get_local_site_defaults ();
+  string lsd = get_local_site_defaults ();
   parse_and_execute (lsd, 0, verbose);
 
-  char *sd = get_site_defaults ();
+  string sd = get_site_defaults ();
   parse_and_execute (sd, 0, verbose);
 
   // Try to execute commands from $HOME/.octaverc and ./.octaverc.
 
-  char *home_rc = 0;
-  if (home_directory)
+  int home_rc_already_executed = 0;
+  string home_rc;
+  if (! home_directory.empty ())
     {
-      home_rc = strconcat (home_directory, "/.octaverc");
+      home_rc = home_directory;
+      home_rc.append ("/.octaverc");
       parse_and_execute (home_rc, 0, verbose);
+
+      // Names alone are not enough.
+
+      struct stat home_rc_statbuf;
+      stat (home_rc.c_str (), &home_rc_statbuf);
+
+      struct stat dot_rc_statbuf;
+      stat ("./.octaverc", &dot_rc_statbuf);
+
+      if (home_rc_statbuf.st_ino == dot_rc_statbuf.st_ino)
+	home_rc_already_executed = 1;
     }
 
-  // Names alone are not enough.
-
-  struct stat home_rc_statbuf;
-  stat (home_rc, &home_rc_statbuf);
-  delete [] home_rc;
-
-  struct stat dot_rc_statbuf;
-  stat ("./.octaverc", &dot_rc_statbuf);
-
-  if (home_rc_statbuf.st_ino != dot_rc_statbuf.st_ino)
+  if (! home_rc_already_executed)
     parse_and_execute ("./.octaverc", 0, verbose);
 
   run_unwind_frame ("execute_startup_files");
@@ -380,7 +384,7 @@ main (int argc, char **argv)
 
 	case 'p':
 	  if (optarg)
-	    load_path = strsave (optarg);
+	    load_path = string (optarg);
 	  break;
 
 	case 'q':
@@ -397,17 +401,17 @@ main (int argc, char **argv)
 
 	case EXEC_PATH_OPTION:
 	  if (optarg)
-	    exec_path = strsave (optarg);
+	    exec_path = string (optarg);
 	  break;
 
 	case INFO_FILE_OPTION:
 	  if (optarg)
-	    info_file = strsave (optarg);
+	    info_file = string (optarg);
 	  break;
 
 	case INFO_PROG_OPTION:
 	  if (optarg)
-	    info_prog = strsave (optarg);
+	    info_prog = string (optarg);
 	  break;
 
 	case TRADITIONAL_OPTION:
@@ -483,8 +487,10 @@ main (int argc, char **argv)
 	  bind_builtin_variable ("program_invocation_name",
 				 curr_fcn_file_name);
 
-	  const char *tmp = strrchr (curr_fcn_file_name, '/');
-	  tmp = tmp ? tmp+1 : curr_fcn_file_name;
+	  size_t pos = curr_fcn_file_name.rfind ('/');
+
+	  string tmp = (pos != NPOS)
+	    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
 
 	  bind_builtin_variable ("program_name", tmp);
 

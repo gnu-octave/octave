@@ -24,14 +24,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_hist_h)
 #define octave_octave_hist_h 1
 
+#include <string>
+
 extern int default_history_size (void);
-extern char *default_history_file (void);
+extern string default_history_file (void);
 extern void initialize_history (void);
 extern void clean_up_history (void);
-extern void maybe_save_history (const char*);
-extern void do_history (int, char**);
-extern void do_edit_history (int, char**);
-extern void do_run_history (int, char**);
+extern void maybe_save_history (const string& s);
 extern int current_history_number (void);
 
 // Nonzero means input is coming from temporary history file.

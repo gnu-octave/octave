@@ -60,6 +60,7 @@ public:
 
   Octave_object (const char *s);
   Octave_object (const string& s);
+  Octave_object (const string_vector& s);
 
   Octave_object (double base, double limit, double inc);
   Octave_object (const Range& r);

@@ -37,7 +37,7 @@ file_info
 {
 public:
   file_info (void);
-  file_info (int num, const char *nm, FILE *t, const char *md);
+  file_info (int num, const string& nm, FILE *t, const string& md);
   file_info (const file_info& f);
 
   file_info& operator = (const file_info& f);

@@ -28,7 +28,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <string>
+
 #include "SLStack.h"
+
+#include "str-vec.h"
 
 #include "variables.h"
 
@@ -41,6 +45,8 @@ class tree_fvc;
 class tree_builtin;
 class tree_constant;
 class tree_function;
+
+class string_vector;
 
 class symbol_def;
 class symbol_record;
@@ -81,8 +87,8 @@ public:
   void make_eternal (void);
 
   tree_fvc *def (void) const;
-  char *help (void) const;
-  void document (const char *h);
+  string help (void) const;
+  void document (const string& h);
 
   enum TYPE
     {
@@ -103,7 +109,7 @@ private:
   unsigned eternal : 1;
   unsigned read_only : 1;
 
-  char *help_string;
+  string help_string;
   tree_fvc *definition;
   symbol_def *next_elem;
   int count;
@@ -123,15 +129,15 @@ symbol_record
 
 public:
   symbol_record (void);
-  symbol_record (const char *n, symbol_record *nxt = 0);
+  symbol_record (const string& n, symbol_record *nxt = 0);
 
- ~symbol_record (void);
+  ~symbol_record (void) { }
 
-  char *name (void) const;
-  char *help (void) const; 
+  string name (void) const;
+  string help (void) const; 
   tree_fvc *def (void) const;
 
-  void rename (const char *new_name);
+  void rename (const string& new_name);
 
   int is_function (void) const;
   int is_user_function (void) const;
@@ -160,7 +166,7 @@ public:
   int define_as_fcn (tree_constant *t);
   int define_builtin_var (tree_constant *t);
 
-  void document (const char *h);
+  void document (const string& h);
 
   int clear (void);
 
@@ -184,7 +190,7 @@ private:
   unsigned formal_param : 1;
   unsigned linked_to_global : 1;
 
-  char *nm;
+  string nm;
   sv_Function sv_fcn;
   symbol_def *definition;
   symbol_record *next_elem;
@@ -216,7 +222,7 @@ public:
 
   symbol_record_info (const symbol_record_info& s);
 
-  ~symbol_record_info (void);
+  ~symbol_record_info (void) { }
 
   symbol_record_info& operator = (const symbol_record_info& s);
 
@@ -225,11 +231,11 @@ public:
   int is_eternal (void) const;
   int hides_fcn (void) const;
   int hides_builtin (void) const;
-  char *type_as_string (void) const;
+  string type_as_string (void) const;
   int is_function (void) const;
   int rows (void) const;
   int columns (void) const;
-  char *name (void) const;
+  string name (void) const;
 
   enum HIDES
     {
@@ -260,7 +266,7 @@ private:
   unsigned read_only : 1;
   int nr;
   int nc;
-  char *nm;
+  string nm;
   
   int initialized;
 };
@@ -289,25 +295,26 @@ public:
 
   symbol_table (void);
 
-  symbol_record *lookup (const char *nm, int insert = 0, int warn = 0);
+  symbol_record *lookup (const string& nm, int insert = 0, int warn = 0);
 
-  void rename (const char *old_name, const char *new_name);
+  void rename (const string& old_name, const string& new_name);
 
   void clear (int clear_user_functions = 1);
-  int clear (const char *nm, int clear_user_functions = 1);
+  int clear (const string& nm, int clear_user_functions = 1);
 
   int size (void) const;
 
-  symbol_record_info *long_list (int& count, char **pats = 0,
-				 int npats = 0, int sort = 0,
-				 unsigned type = SYMTAB_ALL_TYPES,
-				 unsigned scope = SYMTAB_ALL_SCOPES) const;
+  symbol_record_info *
+  long_list (int& count, const string_vector& pats = string_vector (),
+	     int npats = 0, int sort = 0, unsigned type = SYMTAB_ALL_TYPES,
+	     unsigned scope = SYMTAB_ALL_SCOPES) const;
 
-  char **list (int& count, char **pats = 0, int npats = 0,
-	       int sort = 0, unsigned type = SYMTAB_ALL_TYPES,
-	       unsigned scope = SYMTAB_ALL_SCOPES) const;
+  string_vector
+  list (int& count, const string_vector& pats = string_vector (),
+	int npats = 0, int sort = 0, unsigned type = SYMTAB_ALL_TYPES,
+	unsigned scope = SYMTAB_ALL_SCOPES) const;
 
-  symbol_record **glob (int& count, char *pat = "*",
+  symbol_record **glob (int& count, const string& pat = string ("*"),
 			unsigned type = SYMTAB_ALL_TYPES,
 			unsigned scope = SYMTAB_ALL_SCOPES) const;
 
@@ -316,7 +323,7 @@ public:
 
 private:
 
-  unsigned int hash (const char *s);
+  unsigned int hash (const string& s);
 
   symbol_record table[HASH_TABLE_SIZE];
 };

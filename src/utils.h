@@ -27,10 +27,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class istream;
 class ostrstream;
 
+#include <string>
+
 class Octave_object;
+class string_vector;
 
 extern char *strsave (const char *);
+
+#if 0
 extern char *strconcat (const char *, const char *);
+#endif
 
 extern void discard_until (istream&, char);
 
@@ -38,40 +44,40 @@ extern void discard_until (istream&, char);
 extern char *read_until (istream&, char);
 #endif
 
-extern char *search_path_for_file (const char *, const char *);
-extern char *file_in_path (const char *, const char *);
-extern char *fcn_file_in_path (const char *);
-extern char *oct_file_in_path (const char *);
+extern string search_path_for_file (const string&, const string&);
+extern string file_in_path (const string&, const string&);
+extern string fcn_file_in_path (const string&);
+extern string oct_file_in_path (const string&);
 
-extern char *octave_tmp_file_name (void);
-
-extern char **pathstring_to_vector (char *pathstring);
+extern string octave_tmp_file_name (void);
 
 extern "C" void jump_to_top_level (void) NORETURN;
 
-extern int almost_match (const char *std, const char *s,
+extern int almost_match (const string& std, const string& s,
 			 int min_match_len = 1, int case_sens = 1);
-extern int keyword_almost_match (const char **std, int *min_len,
-				 const char *s, int min_toks_to_match,
-				 int max_toks);
 
-extern char **get_fcn_file_names (int& ffl_len, const char *dir,
-				  int no_suffix); 
-extern char **get_fcn_file_names (int& ffl_len, int no_suffix);
+extern int
+keyword_almost_match (const char **std, int *min_len,
+		      const string& s, int min_toks_to_match,
+		      int max_toks);
+
+extern string_vector get_fcn_file_names (int& ffl_len, const char *dir,
+					 int no_suffix); 
+
+extern string_vector get_fcn_file_names (int& ffl_len, int no_suffix);
 
 extern int NINT (double x);
 extern double D_NINT (double x);
 
-extern char **make_argv (const Octave_object& args, const char *fcn_name);
+extern string_vector make_argv (const Octave_object&, const string&);
 
 extern int empty_arg (const char *name, int nr, int nc);
 
-extern ostrstream& list_in_columns (ostrstream& os, char **list);
+extern ostrstream& list_in_columns (ostrstream& os, const string_vector& list);
 
-extern char *undo_string_escape (char c);
-extern char *undo_string_escapes (const char *s);
+extern string undo_string_escapes (const string& s);
 
-extern void oct_putenv (const char *,  const char *);
+extern void oct_putenv (const char *, const char *);
 
 #endif
 

@@ -276,8 +276,8 @@ DEFUN ("strftime", Fstrftime, Sstrftime, 10,
 
   if (args.length () == 2 && args(0).is_string () && args(1).is_map ()) 
     {
-      string tstr = args(0).string_value ();
-      const char *fmt = tstr.c_str ();
+      string fmt = args(0).string_value ();
+
       Octave_map map = args(1).map_value ();
 
       double fraction;
@@ -289,7 +289,7 @@ DEFUN ("strftime", Fstrftime, Sstrftime, 10,
 	  int bufsize = 128;
 	  char *buf = new char [bufsize];
 
-	  while (! strftime (buf, bufsize, fmt, tm))
+	  while (! strftime (buf, bufsize, fmt.c_str (), tm))
 	    {
 	      delete [] buf;
 	      bufsize *= 2;

@@ -79,10 +79,11 @@ extern "C" void _rl_output_character_function ();
 #include "help.h"
 #include "input.h"
 #include "mappers.h"
-#include "toplev.h"
-#include "sysdep.h"
-#include "pt-const.h"
 #include "oct-obj.h"
+#include "pathlen.h"
+#include "pt-const.h"
+#include "sysdep.h"
+#include "toplev.h"
 #include "utils.h"
 
 extern "C" double F77_FCN (d1mach, D1MACH) (const int&);
@@ -482,35 +483,43 @@ kbhit (void)
   return c;
 }
 
-char *
-octave_getcwd (char *buf, int len)
+string
+octave_getcwd (void)
 {
+  string retval;
+  char buf[MAXPATHLEN];
+
 #if defined (__EMX__)
-  return _getcwd2 (buf, len);
+  char *tmp = _getcwd2 (buf, MAXPATHLEN);
 #else
-  return getcwd (buf, len);
+  char *tmp = getcwd (buf, MAXPATHLEN);
 #endif
+
+  if (tmp)
+    retval = tmp;
+
+  return retval;
 }
 
 int
-octave_chdir (const char *path)
+octave_chdir (const string& path)
 {
 #if defined (__EMX__)
   int retval = -1;
 
-  if (strlen (path) == 2 && path[1] == ':')
+  if (path.length () == 2 && path[1] == ':')
     {
-      char *upper_case_dir_name = strupr (path);
+      char *upper_case_dir_name = strupr (path.c_str ());
       _chdrive (upper_case_dir_name[0]);
       if (_getdrive () == upper_case_dir_name[0])
 	retval = _chdir2 ("/");
     }
   else
-    retval = _chdir2 (path);
+    retval = _chdir2 (path.c_str ());
 
   return retval;
 #else
-  return chdir (path);
+  return chdir (path.c_str ());
 #endif
 }
 
@@ -574,16 +583,14 @@ DEFUN ("putenv", Fputenv, Sputenv, 10,
 
   if (nargin == 2)
     {
-      string tstr1 = args(0).string_value (); 
-      const char *var = tstr1.c_str ();
+      string var = args(0).string_value (); 
 
       if (! error_state)
 	{
-	  string tstr2 = args(1).string_value (); 
-	  const char *val = tstr2.c_str ();
+	  string val = args(1).string_value (); 
 
 	  if (! error_state)
-	    oct_putenv (var, val);
+	    oct_putenv (var.c_str (), val.c_str ());
 	  else
 	    error ("putenv: second argument should be a string");
 	}

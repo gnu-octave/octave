@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_user_prefs_h)
 #define octave_user_prefs_h 1
 
+#include <string>
+
 struct user_preferences
 {
   int automatic_replot;
@@ -64,20 +66,20 @@ struct user_preferences
 
   char completion_append_char;
 
-  char *default_save_format;
-  char *editor;
-  char *exec_path;
-  char *gnuplot_binary;
-  char *history_file;
-  char *imagepath;
-  char *info_file;
-  char *info_prog;
-  char *loadpath;
-  char *pager_binary;
-  char *ps1;
-  char *ps2;
-  char *ps4;
-  char *pwd;
+  string default_save_format;
+  string editor;
+  string exec_path;
+  string gnuplot_binary;
+  string history_file;
+  string imagepath;
+  string info_file;
+  string info_prog;
+  string loadpath;
+  string pager_binary;
+  string ps1;
+  string ps2;
+  string ps4;
+  string pwd;
 };
 
 extern user_preferences user_pref;

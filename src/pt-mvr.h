@@ -38,6 +38,8 @@ class tree_index_expression;
 class tree_indirect_ref;
 class tree_return_list;
 
+#include <string>
+
 #include "pt-const.h"
 #include "pt-mvr-base.h"
 #include "oct-obj.h"
@@ -94,7 +96,7 @@ public:
   tree_indirect_ref *ident (void)
     { return id; }
 
-  char *name (void);
+  string name (void);
 
   tree_argument_list *arg_list (void)
     { return list; }

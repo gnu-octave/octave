@@ -26,14 +26,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ctime>
 
-extern char *polite_directory_format (char *);
-extern int absolute_pathname (const char *);
-extern int absolute_program (const char *);
-extern char *base_pathname (char *);
-extern void pathname_backup (char *, int);
-extern char *make_absolute (const char *, const char *);
-extern int is_newer (const char *, time_t);
-extern char *get_working_directory (const char *);
+#include <string>
+
+extern string polite_directory_format (const string&);
+extern int absolute_pathname (const string&);
+extern int absolute_program (const string&);
+extern string base_pathname (const string&);
+extern string make_absolute (const string&, const string&);
+extern int is_newer (const string&, time_t);
+extern string get_working_directory (const string&);
 
 #endif
 

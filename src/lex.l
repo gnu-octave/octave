@@ -476,7 +476,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %} 
 
 {CCHAR} {
-    if (! help_buf && beginning_of_function && nesting_level.empty ())
+    if (help_buf.empty () && beginning_of_function && nesting_level.empty ())
       {
 	grab_help_text ();
 	beginning_of_function = 0;
@@ -681,9 +681,9 @@ reset_parser (void)
   if (interactive && ! (reading_fcn_file || get_input_from_eval_string))
     yyrestart (stdin);
 
-// Delete the buffer for help text.
-  delete [] help_buf;
-  help_buf = 0;
+// Clear the buffer for help text.
+
+  help_buf.resize (0);
 }
 
 // Replace backslash escapes in a string with the real values.
@@ -1026,11 +1026,12 @@ is_keyword (char *s)
 	      error ("function keyword invalid within a function body");
 
 	      if ((reading_fcn_file || reading_script_file)
-		  && curr_fcn_file_name)
+		  && ! curr_fcn_file_name.empty ())
 		error ("defining new function near line %d of file `%s.m'",
-		       input_line_number, curr_fcn_file_name);
+		       input_line_number, curr_fcn_file_name.c_str ());
 	      else
-		error ("defining new function near line %d", input_line_number);
+		error ("defining new function near line %d",
+		       input_line_number);
 
 	      return LEXICAL_ERROR;
 	    }
@@ -1076,10 +1077,7 @@ lookup_identifier (char *name)
 static void
 grab_help_text (void)
 {
-  delete [] help_buf;
-  help_buf = 0;
-
-  ostrstream buf;
+  help_buf.resize (0);
 
   int in_comment = 1;
   int c = 0;
@@ -1088,7 +1086,8 @@ grab_help_text (void)
     {
       if (in_comment)
 	{
-	  buf << (char) c;
+	  help_buf += (char) c;
+
 	  if (c == '\n')
 	    in_comment = 0;
 	}
@@ -1115,16 +1114,6 @@ grab_help_text (void)
 
   if (c)
     yyunput (c, yytext);
-
-  buf << ends;
-
-  help_buf = buf.str ();
-
-  if (! help_buf || ! *help_buf)
-    {
-      delete [] help_buf;
-      help_buf = 0;
-    }
 }
 
 // Return 1 if the given character matches any character in the given
@@ -1834,7 +1823,7 @@ check_for_garbage_after_fcn_def (void)
 	  else
 	    {
 	      warning ("ignoring trailing garbage after end of function\n\
-         near line %d of file `%s.m'", lineno, curr_fcn_file_name);
+         near line %d of file `%s.m'", lineno, curr_fcn_file_name.c_str ());
 	      
 	      yyunput ('\n', yytext);
 	      return;

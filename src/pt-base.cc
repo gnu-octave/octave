@@ -64,7 +64,7 @@ tree_print_code::print_code_indent (ostream& os)
  
   if (beginning_of_line)
     {
-      os.form ("%s%*s", user_pref.ps4, curr_print_indent_level, "");
+      os.form ("%s%*s", user_pref.ps4.c_str (), curr_print_indent_level, "");
       beginning_of_line = 0;
     }
 }

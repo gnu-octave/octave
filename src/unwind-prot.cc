@@ -31,6 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstddef>
 
+#include <string>
+
 #include "SLStack.h"
 
 #include "CMatrix.h"
@@ -38,67 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "unwind-prot.h"
 #include "utils.h"
-
-unwind_elem::unwind_elem (void)
-{
-  unwind_elem_tag = 0;
-  unwind_elem_fptr = 0;
-  unwind_elem_ptr = 0;
-}
-
-unwind_elem::unwind_elem (char *t)
-{
-  unwind_elem_tag = strsave (t);
-  unwind_elem_fptr = 0;
-  unwind_elem_ptr = 0;
-}
-
-unwind_elem::unwind_elem (cleanup_func f, void *p)
-{
-  unwind_elem_tag = 0;
-  unwind_elem_fptr = f;
-  unwind_elem_ptr = p;
-}
-
-unwind_elem::unwind_elem (const unwind_elem& el)
-{
-  unwind_elem_tag = strsave (el.unwind_elem_tag);
-  unwind_elem_fptr = el.unwind_elem_fptr;
-  unwind_elem_ptr = el.unwind_elem_ptr;
-}
-
-unwind_elem::~unwind_elem (void)
-{
-  delete [] unwind_elem_tag;
-}
-
-unwind_elem&
-unwind_elem::operator = (const unwind_elem& el)
-{
-  unwind_elem_tag = strsave (el.unwind_elem_tag);
-  unwind_elem_fptr = el.unwind_elem_fptr;
-  unwind_elem_ptr = el.unwind_elem_ptr;
-
-  return *this;
-}
-
-char *
-unwind_elem::tag (void)
-{
-  return unwind_elem_tag;
-}
-
-cleanup_func
-unwind_elem::fptr (void)
-{
-  return unwind_elem_fptr;
-}
-
-void *
-unwind_elem::ptr (void)
-{
-  return unwind_elem_ptr;
-}
 
 static SLStack <unwind_elem> unwind_protect_list;
 
@@ -115,6 +56,7 @@ run_unwind_protect (void)
   unwind_elem el = unwind_protect_list.pop ();
 
   cleanup_func f = el.fptr ();
+
   if (f)
     f (el.ptr ());
 }
@@ -126,37 +68,37 @@ discard_unwind_protect (void)
 }
 
 void
-begin_unwind_frame (char *tag)
+begin_unwind_frame (const string& tag)
 {
   unwind_elem elem (tag);
   unwind_protect_list.push (elem);
 }
 
 void
-run_unwind_frame (char *tag)
+run_unwind_frame (const string& tag)
 {
   while (! unwind_protect_list.empty ())
     {
       unwind_elem el = unwind_protect_list.pop ();
 
       cleanup_func f = el.fptr ();
+
       if (f)
 	f (el.ptr ());
 
-      char *t = el.tag ();
-      if (t && strcmp (t, tag) == 0)
+      if (tag == el.tag ())
 	break;
     }
 }
 
 void
-discard_unwind_frame (char *tag)
+discard_unwind_frame (const string& tag)
 {
   while (! unwind_protect_list.empty ())
     {
       unwind_elem el = unwind_protect_list.pop ();
-      char *t = el.tag ();
-      if (t && strcmp (t, tag) == 0)
+
+      if (tag == el.tag ())
 	break;
     }
 }
@@ -169,6 +111,7 @@ run_all_unwind_protects (void)
       unwind_elem el = unwind_protect_list.pop ();
 
       cleanup_func f = el.fptr ();
+
       if (f)
 	f (el.ptr ());
     }
@@ -195,10 +138,11 @@ complex_matrix_cleanup (void *cm)
 class saved_variable
 {
  public:
-  enum var_type { integer, generic_ptr, generic };
+  enum var_type { integer, string_type, generic_ptr, generic };
 
   saved_variable (void);
   saved_variable (int *p, int v);
+  saved_variable (string *p, const string& v);
   saved_variable (void **p, void *v);
   ~saved_variable (void);
 
@@ -215,6 +159,7 @@ class saved_variable
   union
     {
       int int_value;
+      const string *str_value;
       void *gen_ptr_value;
     };
 
@@ -235,7 +180,15 @@ saved_variable::saved_variable (int *p, int v)
   type_tag = integer;
   ptr_to_int = p;
   int_value = v;
-  size = sizeof (int);
+  size = sizeof (int);  // Is this necessary?
+}
+
+saved_variable::saved_variable (string *p, const string& v)
+{
+  type_tag = string_type;
+  gen_ptr = p;
+  str_value = new string (v);
+  size = sizeof (string);  // Is this necessary?
 }
 
 saved_variable::saved_variable (void **p, void *v)
@@ -248,8 +201,19 @@ saved_variable::saved_variable (void **p, void *v)
 
 saved_variable::~saved_variable (void)
 {
-  if (type_tag == generic)
-    delete [] gen_ptr_value;
+  switch (type_tag)
+    {
+    case string_type:
+      delete str_value;
+      break;
+
+    case generic:
+      delete [] gen_ptr_value;  // Can this be right?
+      break;
+
+    default:
+      break;
+    }
 }
 
 void
@@ -259,6 +223,10 @@ saved_variable::restore_value (void)
     {
     case integer:
       *ptr_to_int = int_value;
+      break;
+
+    case string_type:
+      ((string *) gen_ptr) -> assign (*str_value);
       break;
 
     case generic_ptr:
@@ -285,6 +253,13 @@ restore_saved_variable (void *s)
 
 void
 unwind_protect_int_internal (int *ptr, int value)
+{
+  saved_variable *s = new saved_variable (ptr, value);
+  add_unwind_protect (restore_saved_variable, (void *) s);
+}
+
+void
+unwind_protect_str_internal (string *ptr, const string& value)
 {
   saved_variable *s = new saved_variable (ptr, value);
   add_unwind_protect (restore_saved_variable, (void *) s);

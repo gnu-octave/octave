@@ -45,6 +45,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SLStack.h"
 #include "procstream.h"
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -121,10 +123,11 @@ open_plot_stream (void)
 
       plot_line_count = 0;
 
-      char *plot_prog = user_pref.gnuplot_binary;
-      if (plot_prog)
+      string plot_prog = user_pref.gnuplot_binary;
+
+      if (! plot_prog.empty ())
 	{
-	  plot_stream = new oprocstream (plot_prog);
+	  plot_stream = new oprocstream (plot_prog.c_str ());
 
 	  if (plot_stream && ! *plot_stream)
 	    {
@@ -135,9 +138,9 @@ open_plot_stream (void)
 	  if (! plot_stream)
 	    {
 	      warning ("plot: unable to open pipe to `%s'",
-		       plot_prog);
+		       plot_prog.c_str ());
 
-	      if (strcmp (plot_prog, "gnuplot") != 0)
+	      if (plot_prog == "gnuplot")
 		{
 		  warning ("having trouble finding plotting program.");
 		  warning ("trying again with `gnuplot'");
@@ -158,7 +161,8 @@ open_plot_stream (void)
 	    }
 
 	  if (! plot_stream)
-	    error ("plot: unable to open pipe to `%s'", plot_prog);
+	    error ("plot: unable to open pipe to `%s'",
+		   plot_prog.c_str ());
 	}
     }
 
@@ -558,31 +562,30 @@ subplot_using::print_code (ostream& os)
     }
 }
 
-subplot_style::subplot_style (char *s)
+subplot_style::subplot_style (const string& s)
 {
-  style = strsave (s);
+  style = s;
   linetype = 0;
   pointtype = 0;
 }
 
-subplot_style::subplot_style (char *s, tree_expression *lt)
+subplot_style::subplot_style (const string& s, tree_expression *lt)
 {
-  style = strsave (s);
+  style = s;
   linetype = lt;
   pointtype = 0;
 }
 
-subplot_style::subplot_style (char *s, tree_expression *lt,
+subplot_style::subplot_style (const string& s, tree_expression *lt,
 			      tree_expression *pt)
 {
-  style = strsave (s);
+  style = s;
   linetype = lt;
   pointtype = pt;
 }
 
 subplot_style::~subplot_style (void)
 {
-  delete [] style;
   delete linetype;
   delete pointtype;
 }
@@ -590,7 +593,7 @@ subplot_style::~subplot_style (void)
 int
 subplot_style::print (ostrstream& plot_buf)
 {
-  if (style)
+  if (! style.empty ())
     {
       plot_buf << " " << GNUPLOT_COMMAND_WITH << " " << style;
 
@@ -645,9 +648,8 @@ subplot_style::print (ostrstream& plot_buf)
 int
 subplot_style::errorbars (void)
 {
-  return (style
-	  && (almost_match ("errorbars", style, 1, 0)
-	      || almost_match ("boxerrorbars", style, 5, 0)));
+  return (almost_match ("errorbars", style, 1, 0)
+	  || almost_match ("boxerrorbars", style, 5, 0));
 }
 
 void
@@ -909,19 +911,21 @@ subplot_list::print_code (ostream& os)
     }
 }
 
-char *
+string
 save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 {
-  char *name = octave_tmp_file_name ();
-  if (name)
+  string name = octave_tmp_file_name ();
+
+  if (! name.empty ())
     {
-      ofstream file (name);
+      ofstream file (name.c_str ());
+
       if (file)
 	{
 	  switch (ndim)
 	    {
 	    case 2:
-	      save_ascii_data (file, t, 0, 1);
+	      save_ascii_data (file, t, name, 1);
 	      break;
 
 	    case 3:
@@ -935,10 +939,11 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 	}
       else
 	{
-	  error ("couldn't open temporary output file `%s'", name);
-	  name = 0;
+	  error ("couldn't open temporary output file `%s'", name.c_str ());
+	  name.resize (0);
 	}
     }
+
   return name;
 }
 
@@ -971,7 +976,7 @@ close_plot_stream (void)
 }
 
 void
-do_external_plotter_cd (const char *newdir)
+do_external_plotter_cd (const string& newdir)
 {
   if (plot_stream && *plot_stream)
     {
@@ -1025,7 +1030,12 @@ drawn.  With no argument, toggle the current state.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("hold");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "hold");
+
+  if (error_state)
+    return retval;
 
   switch (argc)
     {
@@ -1034,9 +1044,9 @@ drawn.  With no argument, toggle the current state.")
       break;
 
     case 2:
-      if (strcasecmp (argv[1], "on") == 0)
+      if (argv[1] == "on")
 	clear_before_plotting = 0;
-      else if (strcasecmp (argv[1], "off") == 0)
+      else if (argv[1] == "off")
 	clear_before_plotting = 1;
       else
 	print_usage ("hold");
@@ -1046,8 +1056,6 @@ drawn.  With no argument, toggle the current state.")
       print_usage ("hold");
       break;
     }
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -1075,7 +1083,12 @@ set plotting options")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("set");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "set");
+
+  if (error_state)
+    return retval;
 
   ostrstream plot_buf;
 
@@ -1106,8 +1119,6 @@ set plotting options")
 
   delete [] plot_command;
 
-  DELETE_ARGV;
-
   return retval;
 }
 
@@ -1118,7 +1129,12 @@ show plotting options")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("show");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "show");
+
+  if (error_state)
+    return retval;
 
   ostrstream plot_buf;
 
@@ -1131,8 +1147,6 @@ show plotting options")
   send_to_plot_stream (plot_command);
 
   delete [] plot_command;
-
-  DELETE_ARGV;
 
   return retval;
 }

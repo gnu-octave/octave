@@ -52,8 +52,6 @@ extern void octave_print_internal (ostream& os, const charMatrix& chm,
 				   int pr_as_read_syntax = 0,
 				   int pr_as_string = 0);
 
-extern void set_format_style (int argc, char **argv);
-
 // XXX FIXME XXX -- these should probably be somewhere else.
 
 extern int any_element_is_inf_or_nan (const Matrix& a);

@@ -31,11 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "fnmatch.h"
 
+#include "str-vec.h"
+
 #include "error.h"
-#include "symtab.h"
 #include "pt-const.h"
 #include "pt-fcn.h"
 #include "pt-fvc.h"
+#include "symtab.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -75,7 +77,6 @@ symbol_def::init_state (void)
   eternal = 0;
   read_only = 0;
 
-  help_string = 0;
   definition = 0;
   next_elem = 0;
   count = 0;
@@ -83,7 +84,6 @@ symbol_def::init_state (void)
 
 symbol_def::~symbol_def (void)
 {
-  delete [] help_string;
   delete definition;
 }
 
@@ -182,17 +182,16 @@ symbol_def::def (void) const
   return definition;
 }
 
-char *
+string
 symbol_def::help (void) const
 {
   return help_string;
 }
 
 void
-symbol_def::document (const char *h)
+symbol_def::document (const string& h)
 {
-  delete [] help_string;
-  help_string = strsave (h);
+  help_string = h;
 }
 
 int
@@ -216,10 +215,10 @@ symbol_record::symbol_record (void)
   init_state ();
 }
 
-symbol_record::symbol_record (const char *n, symbol_record *nxt)
+symbol_record::symbol_record (const string& n, symbol_record *nxt)
 {
   init_state ();
-  nm = strsave (n);
+  nm = n;
   next_elem = nxt;
 }
 
@@ -228,27 +227,24 @@ symbol_record::init_state (void)
 {
   formal_param = 0;
   linked_to_global = 0;
-  nm = 0;
   sv_fcn = 0;
   definition = 0;
   next_elem = 0;
 }
 
-symbol_record::~symbol_record (void)
-{
-  delete [] nm;
-}
-
-char *
+string
 symbol_record::name (void) const
 {
   return nm;
 }
 
-char *
+string
 symbol_record::help (void) const
 {
-  return definition ? definition->help () : 0;
+  string retval;
+  if (definition)
+    retval = definition->help ();
+  return retval;
 }
 
 tree_fvc *
@@ -258,10 +254,9 @@ symbol_record::def (void) const
 }
 
 void
-symbol_record::rename (const char *new_name)
+symbol_record::rename (const string& new_name)
 {
-  delete [] nm;
-  nm = strsave (new_name);
+  nm = new_name;
 }
 
 int
@@ -344,7 +339,7 @@ symbol_record::protect (void)
       definition->protect ();
 
       if (! is_defined ())
-	warning ("protecting undefined variable `%s'", nm);
+	warning ("protecting undefined variable `%s'", nm.c_str ());
     }
 }
 
@@ -363,7 +358,8 @@ symbol_record::make_eternal (void)
       definition->make_eternal ();
 
       if (! is_defined ())
-	warning ("giving eternal life to undefined variable `%s'", nm);
+	warning ("giving eternal life to undefined variable `%s'",
+		 nm.c_str ());
     }
 }
 
@@ -504,14 +500,14 @@ symbol_record::define_builtin_var (tree_constant *t)
 }
 
 void
-symbol_record::document (const char *h)
+symbol_record::document (const string& h)
 {
   if (definition)
     {
       definition->document (h);
 
       if (! is_defined ())
-	warning ("documenting undefined variable `%s'", nm);
+	warning ("documenting undefined variable `%s'", nm.c_str ());
     }
 }
 
@@ -634,20 +630,22 @@ symbol_record::read_only_error (void)
 	    {
 	      if (user_pref.read_only_constants < 0)
 		{
-		  ::warning ("redefinition of constant `%s'", nm);
+		  ::warning ("redefinition of constant `%s'",
+			     nm.c_str ());
 		  return 0;
 		}
 	      else
-		::error ("can't redefine read-only constant `%s'", nm);
+		::error ("can't redefine read-only constant `%s'",
+			 nm.c_str ());
 	    }
 	}
       else if (is_function ())
 	{
-	  ::error ("can't redefine read-only function `%s'", nm);
+	  ::error ("can't redefine read-only function `%s'", nm.c_str ());
 	}
       else
 	{
-	  ::error ("can't redefine read-only symbol `%s'", nm);
+	  ::error ("can't redefine read-only symbol `%s'", nm.c_str ());
 	}
 
       return 1;
@@ -723,7 +721,7 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
   eternal = sr.is_eternal ();
   read_only = sr.is_read_only ();
 
-  nm = strsave (sr.name ());
+  nm = sr.name ();
 
   initialized = 1;
 }
@@ -737,13 +735,8 @@ symbol_record_info::symbol_record_info (const symbol_record_info& s)
   read_only = s.read_only;
   nr = s.nr;
   nc = s.nc;
-  nm = strsave (s.nm);
+  nm = s.nm;
   initialized = s.initialized;
-}
-
-symbol_record_info::~symbol_record_info (void)
-{
-  delete nm;
 }
 
 symbol_record_info&
@@ -751,7 +744,6 @@ symbol_record_info::operator = (const symbol_record_info& s)
 {
   if (this != &s)
     {
-      delete nm;
       type = s.type;
       const_type = s.const_type;
       hides = s.hides;
@@ -759,7 +751,7 @@ symbol_record_info::operator = (const symbol_record_info& s)
       read_only = s.read_only;
       nr = s.nr;
       nc = s.nc;
-      nm = strsave (s.nm);
+      nm = s.nm;
       initialized = s.initialized;
     }
   return *this;
@@ -795,7 +787,7 @@ symbol_record_info::hides_builtin (void) const
   return (hides & SR_INFO_BUILTIN_FUNCTION);
 }
 
-char *
+string
 symbol_record_info::type_as_string (void) const
 {
   if (type == symbol_def::USER_FUNCTION)
@@ -840,7 +832,7 @@ symbol_record_info::columns (void) const
   return nc;
 }
 
-char *
+string
 symbol_record_info::name (void) const
 {
   return nm;
@@ -857,7 +849,6 @@ symbol_record_info::init_state (void)
   read_only = 0;
   nr = -1;
   nc = -1;
-  nm = 0;
 }
 
 // A symbol table.
@@ -867,7 +858,7 @@ symbol_table::symbol_table (void)
 }
 
 symbol_record *
-symbol_table::lookup (const char *nm, int insert, int warn)
+symbol_table::lookup (const string& nm, int insert, int warn)
 {
   int index = hash (nm) & HASH_MASK;
 
@@ -875,7 +866,7 @@ symbol_table::lookup (const char *nm, int insert, int warn)
 
   while (ptr)
     {
-      if (strcmp (ptr->name (), nm) == 0)
+      if (ptr->name () == nm)
 	return ptr;
       ptr = ptr->next ();
     }
@@ -888,13 +879,13 @@ symbol_table::lookup (const char *nm, int insert, int warn)
       return new_sym;
     }
   else if (warn)
-    warning ("lookup: symbol`%s' not found", nm);
+    warning ("lookup: symbol`%s' not found", nm.c_str ());
 
   return 0;
 }
 
 void
-symbol_table::rename (const char *old_name, const char *new_name)
+symbol_table::rename (const string& old_name, const string& new_name)
 {
   int index = hash (old_name) & HASH_MASK;
 
@@ -903,7 +894,7 @@ symbol_table::rename (const char *old_name, const char *new_name)
 
   while (ptr)
     {
-      if (strcmp (ptr->name (), old_name) == 0)
+      if (ptr->name () == old_name)
 	{
 	  prev->chain (ptr->next ());
 
@@ -918,7 +909,8 @@ symbol_table::rename (const char *old_name, const char *new_name)
       ptr = ptr->next ();
     }
 
-  error ("unable to rename `%s' to `%s', old_name, new_name");
+  error ("unable to rename `%s' to `%s'", old_name.c_str (),
+	 new_name.c_str ());
 }
 
 void
@@ -942,7 +934,7 @@ symbol_table::clear (int clear_user_functions)
 }
 
 int
-symbol_table::clear (const char *nm, int clear_user_functions)
+symbol_table::clear (const string& nm, int clear_user_functions)
 {
   int index = hash (nm) & HASH_MASK;
 
@@ -950,7 +942,7 @@ symbol_table::clear (const char *nm, int clear_user_functions)
 
   while (ptr)
     {
-      if (strcmp (ptr->name (), nm) == 0
+      if (ptr->name () == nm
 	  && (ptr->is_user_variable ()
 	      || (clear_user_functions && ptr->is_user_function ())))
 	{
@@ -988,18 +980,16 @@ pstrcmp (char **a, char **b)
 static inline int
 symbol_record_info_cmp (symbol_record_info *a, symbol_record_info *b)
 {
-  return strcmp (a->name (), b->name ());
+  return (a->name () == b->name ());
 }
 
 static int
-matches_patterns (const char *name, char **pats, int npats)
+matches_patterns (const string& name, const string_vector& pats, int npats)
 {
-  while (npats-- > 0)
+  for (int i = 0; i < npats; i++)
     {
-      if (fnmatch (*pats, name, __FNM_FLAGS) == 0)
+      if (fnmatch (pats[i].c_str (), name.c_str (), __FNM_FLAGS) == 0)
 	return 1;
-
-      pats++;
     }
 
   return 0;
@@ -1009,8 +999,9 @@ matches_patterns (const char *name, char **pats, int npats)
 // XXX FIXME XXX
 
 symbol_record_info *
-symbol_table::long_list (int& count, char **pats, int npats, int sort,
-			 unsigned type, unsigned scope) const 
+symbol_table::long_list (int& count, const string_vector& pats,
+			 int npats, int sort, unsigned type,
+			 unsigned scope) const 
 {
   count = 0;
   int n = size ();
@@ -1029,7 +1020,7 @@ symbol_table::long_list (int& count, char **pats, int npats, int sort,
 
 	  unsigned my_type = ptr->type ();
 
-	  char *my_name = ptr->name ();
+	  string my_name = ptr->name ();
 
 	  if ((type & my_type) && (scope & my_scope)
 	      && (npats == 0 || matches_patterns (my_name, pats, npats)))
@@ -1047,16 +1038,17 @@ symbol_table::long_list (int& count, char **pats, int npats, int sort,
   return symbols;
 }
 
-char **
-symbol_table::list (int& count, char **pats, int npats, int sort,
-		    unsigned type, unsigned scope) const
+string_vector
+symbol_table::list (int& count, const string_vector& pats, int npats,
+		    int sort, unsigned type, unsigned scope) const
 {
   count = 0;
   int n = size ();
   if (n == 0)
     return 0;
 
-  char **symbols = new char * [n+1];
+  string_vector symbols (n);
+
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
@@ -1068,26 +1060,26 @@ symbol_table::list (int& count, char **pats, int npats, int sort,
 
 	  unsigned my_type = ptr->type ();
 
-	  char *my_name = ptr->name ();
+	  string my_name = ptr->name ();
 
 	  if ((type & my_type) && (scope & my_scope)
 	      && (npats == 0 || matches_patterns (my_name, pats, npats)))
-	    symbols[count++] = strsave (ptr->name ());
+	    symbols[count++] = ptr->name ();
 
 	  ptr = ptr->next ();
 	}
     }
-  symbols[count] = 0;
 
-  if (sort && symbols)
-    qsort ((void **) symbols, count, sizeof (char *),
-	   (int (*)(const void*, const void*)) pstrcmp);
+  symbols.resize (count);
+
+  if (sort && ! symbols.empty ())
+    symbols.qsort ();
 
   return symbols;
 }
 
 symbol_record **
-symbol_table::glob (int& count, char *pat, unsigned type,
+symbol_table::glob (int& count, const string& pat, unsigned type,
 		    unsigned scope) const
 {
   count = 0;
@@ -1107,8 +1099,10 @@ symbol_table::glob (int& count, char *pat, unsigned type,
 
 	  unsigned my_type = ptr->type ();
 
+	  string tmp = ptr->name ();
+
 	  if ((type & my_type) && (scope & my_scope)
-	      && fnmatch (pat, ptr->name (), __FNM_FLAGS) == 0)
+	      && fnmatch (pat.c_str (), tmp.c_str (), __FNM_FLAGS) == 0)
 	    {
 	      symbols[count++] = ptr;
 	    }
@@ -1154,11 +1148,11 @@ symbol_table::pop_context (void)
 // Chris Torek's fave hash function.
 
 unsigned int
-symbol_table::hash (const char *str)
+symbol_table::hash (const string& str)
 {
   unsigned h = 0;
-  while (*str)
-    h = h * 33 + *str++;
+  for (unsigned i = 0; i < str.length (); i++)
+    h = h * 33 + str[i];
   return h;
 }
 

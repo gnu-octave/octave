@@ -38,16 +38,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Range.h"
 #include "dMatrix.h"
 #include "oct-cmplx.h"
+#include "str-vec.h"
 
 #include "defun.h"
 #include "error.h"
 #include "help.h"
 #include "mappers.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "pr-output.h"
-#include "sysdep.h"
 #include "pt-const.h"
-#include "oct-obj.h"
+#include "sysdep.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -1518,24 +1519,17 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 
       for (int i = 0; i < nstr; i++)
 	{
-	  string tstr = chm.row_as_string (i);
-	  const char *row = tstr.c_str ();
+	  string row = chm.row_as_string (i);
 
 	  if (pr_as_read_syntax)
 	    {
-	      char *tmp = undo_string_escapes (row);
-
-	      os << "\"" << tmp << "\"";
-
-	      delete [] tmp;
+	      os << "\"" << undo_string_escapes (row) << "\"";
 
 	      if (i < nstr - 1)
 		os << "; ";
 	    }
 	  else
 	    os << row << "\n";
-
-	  delete [] row;
 	}
 
       if (pr_as_read_syntax && nstr > 1)
@@ -1586,121 +1580,122 @@ set_output_prec_and_fw (int prec, int fw)
   bind_builtin_variable ("output_max_field_width", tmp);
 }
 
-void
-set_format_style (int argc, char **argv)
+static void
+set_format_style (int argc, const string_vector& argv)
 {
-  if (--argc > 0)
+  int idx = 1;
+  string arg = argv[idx++];
+
+  if (argc > 1)
     {
-      argv++;
-      if (*argv[0])
+      if (arg == "short")
 	{
-	  if (strcmp (*argv, "short") == 0)
+	  if (--argc > 0)
 	    {
-	      if (--argc > 0)
+	      arg = argv[idx++];
+
+	      if (arg == "e")
 		{
-		  argv++;
-		  if (strcmp (*argv, "e") == 0)
-		    {
-		      init_format_state ();
-		      print_e = 1;
-		    }
-		  else if (strcmp (*argv, "E") == 0)
-		    {
-		      init_format_state ();
-		      print_e = 1;
-		      print_big_e = 1;
-		    }
-		  else
-		    {
-		      error ("format: unrecognized option `short %s'", *argv);
-		      return;
-		    }
+		  init_format_state ();
+		  print_e = 1;
+		}
+	      else if (arg == "E")
+		{
+		  init_format_state ();
+		  print_e = 1;
+		  print_big_e = 1;
 		}
 	      else
-		init_format_state ();
-
-	      set_output_prec_and_fw (3, 8);
-	    }
-	  else if (strcmp (*argv, "long") == 0)
-	    {
-	      if (--argc > 0)
 		{
-		  argv++;
-		  if (strcmp (*argv, "e") == 0)
-		    {
-		      init_format_state ();
-		      print_e = 1;
-		    }
-		  else if (strcmp (*argv, "E") == 0)
-		    {
-		      init_format_state ();
-		      print_e = 1;
-		      print_big_e = 1;
-		    }
-		  else
-		    {
-		      error ("format: unrecognized option `long %s'", *argv);
-		      return;
-		    }
+		  error ("format: unrecognized option `short %s'",
+			 arg.c_str ());
+		  return;
 		}
-	      else
-		init_format_state ();
-
-	      set_output_prec_and_fw (15, 24);
-	    }
-	  else if (strcmp (*argv, "hex") == 0)
-	    {
-	      init_format_state ();
-	      hex_format = 1;
-	    }
-	  else if (strcmp (*argv, "native-hex") == 0)
-	    {
-	      init_format_state ();
-	      hex_format = 2;
-	    }
-	  else if (strcmp (*argv, "bit") == 0)
-	    {
-	      init_format_state ();
-	      bit_format = 1;
-	    }
-	  else if (strcmp (*argv, "native-bit") == 0)
-	    {
-	      init_format_state ();
-	      bit_format = 2;
-	    }
-	  else if (strcmp (*argv, "+") == 0 || strcmp (*argv, "plus") == 0)
-	    {
-	      init_format_state ();
-	      plus_format = 1;
-	    }
-	  else if (strcmp (*argv, "bank") == 0)
-	    {
-	      init_format_state ();
-	      bank_format = 1;
-	    }
-	  else if (strcmp (*argv, "free") == 0)
-	    {
-	      init_format_state ();
-	      free_format = 1;
-	    }
-	  else if (strcmp (*argv, "none") == 0)
-	    {
-	      init_format_state ();
-	      free_format = 1;
-	    }
-	  else if (strcmp (*argv, "compact") == 0)
-	    {
-	      compact_format = 1;
-	    }
-	  else if (strcmp (*argv, "loose") == 0)
-	    {
-	      compact_format = 0;
 	    }
 	  else
-	    error ("format: unrecognized format state `%s'", *argv);
+	    init_format_state ();
+
+	  set_output_prec_and_fw (3, 8);
+	}
+      else if (arg == "long")
+	{
+	  if (--argc > 0)
+	    {
+	      arg = argv[idx++];
+
+	      if (arg == "e")
+		{
+		  init_format_state ();
+		  print_e = 1;
+		}
+	      else if (arg == "E")
+		{
+		  init_format_state ();
+		  print_e = 1;
+		  print_big_e = 1;
+		}
+	      else
+		{
+		  error ("format: unrecognized option `long %s'",
+			 arg.c_str ());
+		  return;
+		}
+	    }
+	  else
+	    init_format_state ();
+
+	  set_output_prec_and_fw (15, 24);
+	}
+      else if (arg == "hex")
+	{
+	  init_format_state ();
+	  hex_format = 1;
+	}
+      else if (arg == "native-hex")
+	{
+	  init_format_state ();
+	  hex_format = 2;
+	}
+      else if (arg == "bit")
+	{
+	  init_format_state ();
+	  bit_format = 1;
+	}
+      else if (arg == "native-bit")
+	{
+	  init_format_state ();
+	  bit_format = 2;
+	}
+      else if (arg == "+" || arg == "plus")
+	{
+	  init_format_state ();
+	  plus_format = 1;
+	}
+      else if (arg == "bank")
+	{
+	  init_format_state ();
+	  bank_format = 1;
+	}
+      else if (arg == "free")
+	{
+	  init_format_state ();
+	  free_format = 1;
+	}
+      else if (arg == "none")
+	{
+	  init_format_state ();
+	  free_format = 1;
+	}
+      else if (arg == "compact")
+	{
+	  compact_format = 1;
+	}
+      else if (arg == "loose")
+	{
+	  compact_format = 0;
 	}
       else
-	usage ("format [format_state]");
+	error ("format: unrecognized format state `%s'", arg.c_str ());
     }
   else
     {
@@ -1716,11 +1711,14 @@ set output formatting style")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("format");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "format");
+
+  if (error_state)
+    return retval;
 
   set_format_style (argc, argv);
-
-  DELETE_ARGV;
 
   return retval;
 }

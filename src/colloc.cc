@@ -87,16 +87,15 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, FScolloc, 10,
 	      return retval;
 	    }
 
-	  string tstr = args(i).string_value ();
-	  const char *s = tstr.c_str ();
+	  string s = args(i).string_value ();
 
-	  if (s && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
-		    || strcmp (s, "right") == 0))
+	  if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
+	      || s == "right")
 	    {
 	      right = 1;
 	    }
-	  else if (s && (((*s == 'L' || *s == 'l') && strlen (s) == 1)
-			 || strcmp (s, "left") == 0))
+	  else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
+		   || s == "left")
 	    {
 	      left = 1;
 	    }
@@ -108,7 +107,7 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, FScolloc, 10,
 	}
       else
 	{
-	  error ("colloc: unexpected NULL argument");
+	  error ("colloc: unexpected empty argument");
 	  return retval;
 	}
     }

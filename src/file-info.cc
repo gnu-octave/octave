@@ -43,7 +43,7 @@ file_info::file_info (void)
   file_fptr = 0;
 }
 
-file_info::file_info (int n, const char *nm, FILE *t, const char *md)
+file_info::file_info (int n, const string& nm, FILE *t, const string& md)
 {
   file_number = n;
   file_name = nm;

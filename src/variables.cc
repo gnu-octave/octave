@@ -42,6 +42,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "fnmatch.h"
 
+#include "str-vec.h"
+
 #include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -99,7 +101,7 @@ initialize_symbol_tables (void)
 // Is this variable a builtin?
 
 int
-is_builtin_variable (const char *name)
+is_builtin_variable (const string& name)
 {
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
   return (sr && sr->is_builtin_variable ());
@@ -108,7 +110,7 @@ is_builtin_variable (const char *name)
 // Is this a text-style function?
 
 int
-is_text_function_name (const char *s)
+is_text_function_name (const string& s)
 {
   symbol_record *sr = global_sym_tab->lookup (s);
   return (sr && sr->is_text_function ());
@@ -117,7 +119,7 @@ is_text_function_name (const char *s)
 // Is this function globally in this scope?
 
 int
-is_globally_visible (const char *name)
+is_globally_visible (const string& name)
 {
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
   return (sr && sr->is_linked_to_global ());
@@ -126,29 +128,26 @@ is_globally_visible (const char *name)
 // Is this tree_constant a valid function?
 
 tree_fvc *
-is_valid_function (const tree_constant& arg, char *warn_for, int warn)
+is_valid_function (const tree_constant& arg, const string& warn_for, int warn)
 {
   tree_fvc *ans = 0;
 
-  const char *fcn_name = 0;
-
-  string tstr;
+  string fcn_name;
 
   if (arg.is_string ())
-    {
-      tstr = arg.string_value ();
-      fcn_name = tstr.c_str ();
-    }
+    fcn_name = arg.string_value ();
 
-  if (! fcn_name || error_state)
+  if (fcn_name.empty () || error_state)
     {
       if (warn)
-	error ("%s: expecting function name as argument", warn_for);
+	error ("%s: expecting function name as argument",
+	       warn_for.c_str ());
       return ans;
     }
 
   symbol_record *sr = 0;
-  if (fcn_name)
+
+  if (! fcn_name.empty ())
     sr = lookup_by_name (fcn_name);
 
   if (sr)
@@ -158,7 +157,7 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
     {
       if (warn)
 	error ("%s: the symbol `%s' is not valid as a function",
-	       warn_for, fcn_name);
+	       warn_for.c_str (), fcn_name.c_str ());
       ans = 0;
     }
 
@@ -179,8 +178,7 @@ otherwise, return 0.")
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  const char *name = tstr.c_str ();
+  string name = args(0).string_value ();
 
   if (error_state)
     {
@@ -216,21 +214,22 @@ returns:\n\
       return retval;
     }
 
-  string tstr = args(0).string_value ();
-  char *name = strsave (tstr.c_str ());
+  string name = args(0).string_value ();
 
   if (error_state)
     {
       error ("exist: expecting string argument");
-      delete [] name;
       return retval;
     }
 
-  char *struct_elts = strchr (name, '.');
-  if (struct_elts)
+  string struct_elts;
+
+  size_t pos = name.find ('.');
+
+  if (pos != NPOS)
     {
-      *struct_elts = '\0';
-      struct_elts++;
+      struct_elts = name.substr (pos+1);
+      name = name.substr (0, pos);
     }
 
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
@@ -243,14 +242,16 @@ returns:\n\
     {
       retval = 1.0;
       tree_fvc *def = sr->def ();
-      if (struct_elts)
+
+      if (! struct_elts.empty ())
 	{
 	  retval = 0.0;
 	  if (def->is_constant ())
 	    {
 	      tree_constant *tmp = (tree_constant *) def;
-	      tree_constant ult;
-	      ult = tmp->lookup_map_element (struct_elts, 0, 1);
+
+	      tree_constant ult	= tmp->lookup_map_element (struct_elts, 0, 1);
+
 	      if (ult.is_defined ())
 		retval = 1.0;
 	    }
@@ -266,208 +267,157 @@ returns:\n\
     }
   else
     {
-      char *path = fcn_file_in_path (name);
-      if (path)
+      string path = fcn_file_in_path (name);
+
+      if (path.length () > 0)
 	{
-	  delete [] path;
 	  retval = 2.0;
 	}
       else
 	{
 	  path = oct_file_in_path (name);
-	  if (path)
+
+	  if (path.length () > 0)
 	    {
-	      delete [] path;
 	      retval = 3.0;
 	    }
 	  else
 	    {
 	      struct stat buf;
-	      if (stat (name, &buf) == 0 && S_ISREG (buf.st_mode))
+	      if (stat (name.c_str (), &buf) == 0 && S_ISREG (buf.st_mode))
 		retval = 2.0;
 	    }
 	}
     }
-
-  delete [] name;
 
   return retval;
 }
 
 // XXX FIXME XXX -- should these really be here?
 
-static char *
+static string
 octave_home (void)
 {
   char *oh = getenv ("OCTAVE_HOME");
 
-  return (oh ? oh : OCTAVE_PREFIX);
+  return oh ? string (oh) : string (OCTAVE_PREFIX);
 }
 
-static char *
-subst_octave_home (char *s)
+static string
+subst_octave_home (const string& s)
 {
-  char *home = octave_home ();
-  char *prefix = OCTAVE_PREFIX;
+  string retval;
 
-  char *retval;
+  string home = octave_home ();
+  string prefix = OCTAVE_PREFIX;
 
-  if (strcmp (home, prefix) == 0)
-    retval = strsave (s);
-  else
+  retval = s;
+
+  if (home != prefix)
     {
-      int len_home = strlen (home);
-      int len_prefix = strlen (prefix);
-
-      int count = 0;
-      char *ptr = s;
-      char *next = 0;
-      while ((next = strstr (ptr, prefix)))
+      int len = prefix.length ();
+      size_t start = 0;
+      while ((start = s.find (prefix)) != NPOS)
 	{
-	  ptr = next + len_prefix;
-	  count++;
-	}
-
-      int grow_size = count * (len_home - len_prefix);
-
-      int len_s = strlen (s);
-
-      int len_retval = len_s + count * grow_size;
-
-      retval = new char [len_retval+1];
-
-      char *p1 = s;
-      char *p2 = p1;
-      char *pdest = retval;
-
-      // Is this really a good way to do this?
-
-      while (count >= 0)
-	{
-	  p2 = strstr (p1, prefix);
-
-	  if (! p2)
-	    {
-	      memcpy (pdest, p1, strlen (p1)+1);
-	      break;
-	    }
-	  else if (p1 == p2)
-	    {
-	      memcpy (pdest, home, len_home);
-	      pdest += len_home;
-	      p1 += len_prefix;
-	      count--;
-	    }
-	  else
-	    {
-	      int len = (int) (p2 - p1);
-	      memcpy (pdest, p1, len);
-	      pdest += len;
-	      p1 += len;
-	    }
-
+	  retval.replace (start, len, home);
+	  start++;
 	}
     }
 
   return retval;
 }
 
-static char *
+static string
 octave_info_dir (void)
 {
-  static char *retval = subst_octave_home (OCTAVE_INFODIR);
-  return retval;
+  return subst_octave_home (OCTAVE_INFODIR);
 }
 
-char *
+string
 octave_arch_lib_dir (void)
 {
-  static char *retval = subst_octave_home (OCTAVE_ARCHLIBDIR);
-  return retval;
+  return subst_octave_home (OCTAVE_ARCHLIBDIR);
 }
 
-char *
+string
 octave_fcn_file_dir (void)
 {
-  static char *retval = subst_octave_home (OCTAVE_FCNFILEDIR);
-  return retval;
+  return subst_octave_home (OCTAVE_FCNFILEDIR);
 }
 
-char *
+string
 octave_bin_dir (void)
 {
-  static char *retval = subst_octave_home (OCTAVE_BINDIR);
-  return retval;
+  return subst_octave_home (OCTAVE_BINDIR);
 }
 
-static char *
+string
 default_pager (void)
 {
-  static char *pager_binary = 0;
-  delete [] pager_binary;
+  string pager_binary;
+
   char *pgr = getenv ("PAGER");
+
   if (pgr)
-    pager_binary = strsave (pgr);
-  else
+    pager_binary = string (pgr);
 #ifdef DEFAULT_PAGER
-    pager_binary = strsave (DEFAULT_PAGER);
-#else
-    pager_binary = strsave ("");
+  else
+    pager_binary = string (DEFAULT_PAGER);
 #endif
 
   return pager_binary;
 }
 
-// Always returns a new string.
-
-char *
-maybe_add_default_load_path (const char *p)
+string
+maybe_add_default_load_path (const string& pathstring)
 {
-  static char *std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
+  string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
 
-  char *pathstring = strsave (p);
+  string retval;
 
-  if (pathstring[0] == SEPCHAR)
+  if (! pathstring.empty ())
     {
-      char *tmp = pathstring;
-      pathstring = strconcat (std_path, pathstring);
-      delete [] tmp;
+      if (pathstring[0] == SEPCHAR)
+	{
+	  retval = std_path;
+	  retval.append (pathstring);
+	}
+      else
+	retval = pathstring;
+
+      if (pathstring[pathstring.length () - 1] == SEPCHAR)
+	retval.append (std_path);
     }
 
-  int tmp_len = strlen (pathstring);
-  if (pathstring[tmp_len-1] == SEPCHAR)
-    {
-      char *tmp = pathstring;
-      pathstring = strconcat (pathstring, std_path);
-      delete [] tmp;
-    }
-
-  return pathstring;
-}
-
-char *
-octave_lib_dir (void)
-{
-  static char *retval = subst_octave_home (OCTAVE_LIBDIR);
   return retval;
 }
 
-char *
+string
+octave_lib_dir (void)
+{
+  return subst_octave_home (OCTAVE_LIBDIR);
+}
+
+string
 default_exec_path (void)
 {
-  static char *exec_path_string = 0;
-  delete [] exec_path_string;
+  string exec_path_string;
+
   char *octave_exec_path = getenv ("OCTAVE_EXEC_PATH");
+
   if (octave_exec_path)
-    exec_path_string = strsave (octave_exec_path);
+    exec_path_string = string (octave_exec_path);
   else
     {
       char *shell_path = getenv ("PATH");
+
       if (shell_path)
-	exec_path_string = strconcat (":", shell_path);
-      else
-	exec_path_string = strsave ("");
+	{
+	  exec_path_string = string (":");
+	  exec_path_string.append (shell_path);
+	}
     }
+
   return exec_path_string;
 }
 
@@ -475,82 +425,78 @@ default_exec_path (void)
 // If the path starts with `:', prepend the standard path.  If it ends
 // with `:' append the standard path.  If it begins and ends with
 // `:', do both (which is useless, but the luser asked for it...).
-//
-// This function may eventually be called more than once, so be
-// careful not to create memory leaks.
 
-char *
+string
 default_path (void)
 {
-  static char *std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
+  string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
 
-  static char *oct_path = getenv ("OCTAVE_PATH");
+  char *oct_path = getenv ("OCTAVE_PATH");
 
-  static char *pathstring = 0;
-  delete [] pathstring;
-
-  return oct_path ? strsave (oct_path) : strsave (std_path);
+  return oct_path ? string (oct_path) : std_path;
 }
 
-char *
+string
 default_info_file (void)
 {
-  static char *info_file_string = 0;
-  delete [] info_file_string;
+  string info_file_string;
+
   char *oct_info_file = getenv ("OCTAVE_INFO_FILE");
+
   if (oct_info_file)
-    info_file_string = strsave (oct_info_file);
+    info_file_string = string (oct_info_file);
   else
     {
-      char *infodir = octave_info_dir ();
-      info_file_string = strconcat (infodir, "/octave.info");
+      string infodir = octave_info_dir ();
+      info_file_string = infodir.append ("/octave.info");
     }
+
   return info_file_string;
 }
 
-char *
+string
 default_info_prog (void)
 {
-  static char *info_prog_string = 0;
-  delete [] info_prog_string;
+  string info_prog_string;
+
   char *oct_info_prog = getenv ("OCTAVE_INFO_PROGRAM");
+
   if (oct_info_prog)
-    info_prog_string = strsave (oct_info_prog);
+    info_prog_string = string (oct_info_prog);
   else
     {
-      char *archdir = octave_arch_lib_dir ();
-      info_prog_string = strconcat (archdir, "/info");
+      string archdir = octave_arch_lib_dir ();
+      info_prog_string = archdir.append ("/info");
     }
+
   return info_prog_string;
 }
 
-char *
+string
 default_editor (void)
 {
-  static char *editor_string = 0;
-  delete [] editor_string;
+  string editor_string = "vi";
+
   char *env_editor = getenv ("EDITOR");
+
   if (env_editor && *env_editor)
-    editor_string = strsave (env_editor);
-  else
-    editor_string = strsave ("vi");
+    editor_string = string (env_editor);
+
   return editor_string;
 }
 
-char *
+string
 get_local_site_defaults (void)
 {
-  static char *startupdir = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
-  static char *sd = strconcat (startupdir, "/octaverc");
-  return sd;
+  string startupdir = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+  return startupdir.append ("/octaverc");
 }
 
-char *
+string
 get_site_defaults (void)
 {
-  static char *startupdir = subst_octave_home (OCTAVE_STARTUPFILEDIR);
-  static char *sd = strconcat (startupdir, "/octaverc");
-  return sd;
+  string startupdir = subst_octave_home (OCTAVE_STARTUPFILEDIR);
+  return startupdir.append ("/octaverc");
 }
 
 // Functions for looking up variables and functions.
@@ -571,13 +517,15 @@ symbol_out_of_date (symbol_record *sr)
       tree_fvc *ans = sr->def ();
       if (ans)
 	{
-	  char *ff = ans->fcn_file_name ();
-	  if (ff && ! (ignore && ans->is_system_fcn_file ()))
+	  string ff = ans->fcn_file_name ();
+	  if (! ff.empty () && ! (ignore && ans->is_system_fcn_file ()))
 	    {
 	      time_t tp = ans->time_parsed ();
-	      char *fname = fcn_file_in_path (ff);
+
+	      string fname = fcn_file_in_path (ff);
+
 	      int status = is_newer (fname, tp);
-	      delete [] fname;
+
 	      if (status > 0)
 		return 1;
 	    }
@@ -587,20 +535,26 @@ symbol_out_of_date (symbol_record *sr)
 }
 
 static int
-looks_like_octave_copyright (char *s)
+looks_like_octave_copyright (const string& s)
 {
-  if (s && strncmp (s, " Copyright (C) ", 15) == 0)
+  string t = s.substr (0, 15);
+
+  if (t == " Copyright (C) ")
     {
-      s = strchr (s, '\n');
-      if (s)
+      size_t pos = s.find ('\n');
+
+      if (pos != NPOS)
 	{
-	  s++;
-	  s = strchr (s, '\n');
-	  if (s)
+	  pos = s.find ('\n', pos + 1);
+
+	  if (pos != NPOS)
 	    {
-	      s++;
-	      if (strncmp (s, " This file is part of Octave.", 29) == 0
-		  || strncmp (s, " This program is free software", 30) == 0)
+	      pos++;
+
+	      t = s.substr (pos, 29);
+
+	      if (t == " This file is part of Octave."
+		  || t == " This program is free software")
 		return 1;
 	    }
 	}
@@ -613,24 +567,26 @@ looks_like_octave_copyright (char *s)
 // IN_PARTS, consider each block of comments separately; otherwise,
 // grab them all at once.
 
-static char *
+static string
 gobble_leading_white_space (FILE *ffile, int in_parts)
 {
-  ostrstream buf;
+  string help_txt;
 
   int first_comments_seen = 0;
   int have_help_text = 0;
   int in_comment = 0;
   int c;
+
   while ((c = getc (ffile)) != EOF)
     {
       current_input_column++;
+
       if (in_comment)
 	{
 	  if (! have_help_text)
 	    {
 	      first_comments_seen = 1;
-	      buf << (char) c;
+	      help_txt += (char) c;
 	    }
 
 	  if (c == '\n')
@@ -638,6 +594,7 @@ gobble_leading_white_space (FILE *ffile, int in_parts)
 	      input_line_number++;
 	      current_input_column = 0;
 	      in_comment = 0;
+
 	      if (in_parts)
 		{
 		  if ((c = getc (ffile)) != EOF)
@@ -684,25 +641,13 @@ gobble_leading_white_space (FILE *ffile, int in_parts)
 
  done:
 
-  buf << ends;
-  char *help_txt = buf.str ();
-
-  if (help_txt)
+  if (! help_txt.empty ())
     {
       if (looks_like_octave_copyright (help_txt)) 
-	{
-	  delete [] help_txt;
-	  help_txt = 0;
-	}
+	help_txt.resize (0);
 
-      if (in_parts && ! help_txt)
+      if (in_parts && help_txt.empty ())
 	help_txt = gobble_leading_white_space (ffile, in_parts);
-    }
-
-  if (help_txt && ! *help_txt)
-    {
-      delete [] help_txt;
-      help_txt = 0;
     }
 
   return help_txt;
@@ -728,13 +673,11 @@ is_function_file (FILE *ffile)
 }
 
 static int
-parse_fcn_file (int exec_script, char *ff)
+parse_fcn_file (int exec_script, const string& ff)
 {
   begin_unwind_frame ("parse_fcn_file");
 
   int script_file_executed = 0;
-
-  assert (ff);
 
   // Open function file and parse.
 
@@ -760,7 +703,7 @@ parse_fcn_file (int exec_script, char *ff)
       // Check to see if this file defines a function or is just a
       // list of commands.
 
-      char *tmp_help_txt = gobble_leading_white_space (ffile, 0);
+      string tmp_help_txt = gobble_leading_white_space (ffile, 0);
 
       if (is_function_file (ffile))
 	{
@@ -786,23 +729,19 @@ parse_fcn_file (int exec_script, char *ff)
 
 	  reset_parser ();
 
-	  delete [] help_buf;
 	  help_buf = tmp_help_txt;
 
 	  int status = yyparse ();
 
 	  if (status != 0)
 	    {
-	      error ("parse error while reading function file %s", ff);
+	      error ("parse error while reading function file %s",
+		     ff.c_str ());
 	      global_sym_tab->clear (curr_fcn_file_name);
 	    }
 	}
       else if (exec_script)
 	{
-	  // We don't need this now.
-
-	  delete [] tmp_help_txt;
-
 	  // The value of `reading_fcn_file' will be restored to the
 	  // proper value when we unwind from this frame.
 
@@ -828,7 +767,7 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 {
   int script_file_executed = 0;
 
-  char *nm = sym_rec->name ();
+  string nm = sym_rec->name ();
 
   if (load_octave_oct_file (nm))
     {
@@ -836,21 +775,25 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
     }
   else
     {
-      char *ff = fcn_file_in_path (nm);
+      string ff = fcn_file_in_path (nm);
 
       // These are needed by yyparse.
+
+      begin_unwind_frame ("load_fcn_from_file");
+
+      unwind_protect_str (curr_fcn_file_name);
+      unwind_protect_str (curr_fcn_file_full_name);
 
       curr_fcn_file_name = nm;
       curr_fcn_file_full_name = ff;
 
-      if (ff)
-	{
-	  script_file_executed = parse_fcn_file (exec_script, ff);
-	  delete [] ff;
-	}
+      if (ff.length () > 0)
+	script_file_executed = parse_fcn_file (exec_script, ff);
 
       if (! (error_state || script_file_executed))
 	force_link_to_function (nm);
+
+      run_unwind_frame ("load_fcn_from_file");
     }
 
   return script_file_executed;
@@ -889,7 +832,7 @@ lookup (symbol_record *sym_rec, int exec_script)
 // current symbol table.
 
 symbol_record *
-lookup_by_name (const char *nm, int exec_script)
+lookup_by_name (const string& nm, int exec_script)
 {
   symbol_record *sym_rec = curr_sym_tab->lookup (nm, 1, 0);
 
@@ -898,20 +841,23 @@ lookup_by_name (const char *nm, int exec_script)
   return sym_rec;
 }
 
-char *
-get_help_from_file (const char *path)
+string
+get_help_from_file (const string& path)
 {
-  if (path && *path)
+  string retval;
+
+  if (! path.empty ())
     {
-      FILE *fptr = fopen (path, "r");
+      FILE *fptr = fopen (path.c_str (), "r");
+
       if (fptr)
 	{
-	  char *help_txt = gobble_leading_white_space (fptr, 1);
+	  retval = gobble_leading_white_space (fptr, 1);
 	  fclose (fptr);
-	  return help_txt;
 	}
     }
-  return 0;
+
+  return retval;
 }
 
 // Variable values.
@@ -919,8 +865,8 @@ get_help_from_file (const char *path)
 // Look for the given name in the global symbol table.  If it refers
 // to a string, return a new copy.  If not, return 0;
 
-char *
-builtin_string_variable (const char *name)
+string
+builtin_string_variable (const string& name)
 {
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
 
@@ -928,7 +874,7 @@ builtin_string_variable (const char *name)
 
   assert (sr);
 
-  char *retval = 0;
+  string retval;
 
   tree_fvc *defn = sr->def ();
 
@@ -937,13 +883,7 @@ builtin_string_variable (const char *name)
       tree_constant val = defn->eval (0);
 
       if (! error_state && val.is_string ())
-	{
-	  string tstr = val.string_value ();
-	  const char *s = tstr.c_str ();
-
-	  if (s)
-	    retval = strsave (s);
-	}
+	retval = val.string_value ();
     }
 
   return retval;
@@ -954,7 +894,7 @@ builtin_string_variable (const char *name)
 // return 0.
 
 int
-builtin_real_scalar_variable (const char *name, double& d)
+builtin_real_scalar_variable (const string& name, double& d)
 {
   int status = 0;
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
@@ -982,7 +922,7 @@ builtin_real_scalar_variable (const char *name, double& d)
 // Look for the given name in the global symbol table.
 
 tree_constant
-builtin_any_variable (const char *name)
+builtin_any_variable (const string& name)
 {
   tree_constant retval;
 
@@ -1012,11 +952,13 @@ link_to_global_variable (symbol_record *sr)
   if (sr->is_linked_to_global ())
     return;
 
-  symbol_record *gsr = global_sym_tab->lookup (sr->name (), 1, 0);
+  string nm = sr->name ();
+
+  symbol_record *gsr = global_sym_tab->lookup (nm, 1, 0);
 
   if (sr->is_formal_parameter ())
     {
-      error ("can't make function parameter `%s' global", sr->name ());
+      error ("can't make function parameter `%s' global", nm.c_str ());
       return;
     }
 
@@ -1083,7 +1025,7 @@ link_to_builtin_or_function (symbol_record *sr)
 // given name defined in the global symbol table.
 
 void
-force_link_to_function (const char *id_name)
+force_link_to_function (const string& id_name)
 {
   symbol_record *gsr = global_sym_tab->lookup (id_name, 1, 0);
   if (gsr->is_function ())
@@ -1098,7 +1040,7 @@ force_link_to_function (const char *id_name)
 
 // It's not likely that this does the right thing now.  XXX FIXME XXX
 
-char **
+string_vector
 make_name_list (void)
 {
   int key_len = 0;
@@ -1107,11 +1049,11 @@ make_name_list (void)
   int lcl_len = 0;
   int ffl_len = 0;
 
-  char **key = 0;
-  char **glb = 0;
-  char **top = 0;
-  char **lcl = 0;
-  char **ffl = 0;
+  string_vector key;
+  string_vector glb;
+  string_vector top;
+  string_vector lcl;
+  string_vector ffl;
 
   // Each of these functions returns a new vector of pointers to new
   // strings.
@@ -1125,7 +1067,7 @@ make_name_list (void)
 
   int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
 
-  char **list = new char * [total_len+1];
+  string_vector list (total_len);
 
   // Put all the symbols in one big list.  Only copy pointers, not the
   // strings they point to, then only delete the original array of
@@ -1148,14 +1090,6 @@ make_name_list (void)
   for (i = 0; i < ffl_len; i++)
     list[j++] = ffl[i];
 
-  list[j] = 0;
-
-  delete [] key;
-  delete [] glb;
-  delete [] top;
-  delete [] lcl;
-  delete [] ffl;
-
   return list;
 }
 
@@ -1169,7 +1103,7 @@ print_symbol_info_line (ostrstream& output_buf, const symbol_record_info& s)
 #if 0
   output_buf << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
 #endif
-  output_buf.form ("  %-16s", s.type_as_string ());
+  output_buf.form ("  %-16s", s.type_as_string ().c_str ());
   if (s.is_function ())
     output_buf << "      -      -";
   else
@@ -1195,7 +1129,7 @@ print_long_listing (ostrstream& output_buf, symbol_record_info *s)
 }
 
 static int
-maybe_list (const char *header, char **argv, int argc,
+maybe_list (const char *header, const string_vector& argv, int argc,
 	    ostrstream& output_buf, int show_verbose, symbol_table
 	    *sym_tab, unsigned type, unsigned scope)
 {
@@ -1218,14 +1152,14 @@ maybe_list (const char *header, char **argv, int argc,
     }
   else
     {
-      char **symbols = sym_tab->list (count, argv, argc, 1, type, scope);
-      if (symbols && count > 0)
+      string_vector symbols = sym_tab->list (count, argv, argc, 1,
+					     type, scope);
+      if (symbols.length () > 0 && count > 0)
 	{
 	  output_buf << "\n" << header << "\n\n";
 	  list_in_columns (output_buf, symbols);
 	  status = 1;
 	}
-      delete [] symbols;
     }
   return status;
 }
@@ -1237,12 +1171,17 @@ Associate a cryptic message with a variable name.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("document");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "document");
+
+  if (error_state)
+    return retval;
 
   if (argc == 3)
     {
-      char *name = argv[1];
-      char *help = argv[2];
+      string name = argv[1];
+      string help = argv[2];
 
       if (is_builtin_variable (name))
 	error ("sorry, can't redefine help for builtin variables");
@@ -1253,13 +1192,11 @@ Associate a cryptic message with a variable name.")
 	  if (sym_rec)
 	    sym_rec->document (help);
 	  else
-	    error ("document: no such symbol `%s'", name);
+	    error ("document: no such symbol `%s'", name.c_str ());
 	}
     }
   else
     print_usage ("document");
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -1268,7 +1205,7 @@ Associate a cryptic message with a variable name.")
 // naming the variables to look for.
 
 static Octave_object
-do_who (int argc, char **argv)
+do_who (int argc, const string_vector& argv)
 {
   Octave_object retval;
 
@@ -1277,7 +1214,7 @@ do_who (int argc, char **argv)
   int show_variables = 1;
   int show_verbose = 0;
 
-  char *my_name = argv[0];
+  string my_name = argv[0];
 
   if (argc > 1)
     {
@@ -1285,26 +1222,25 @@ do_who (int argc, char **argv)
       show_variables = 0;
     }
 
-  while (--argc > 0)
+  for (int i = 1; i < argc; i++)
     {
-      argv++;
-
-      if (strcmp (*argv, "-all") == 0 || strcmp (*argv, "-a") == 0)
+      if (argv[i] == "-all" || argv[i] == "-a")
 	{
 	  show_builtins++;
 	  show_functions++;
 	  show_variables++;
 	}
-      else if (strcmp (*argv, "-builtins") == 0 || strcmp (*argv, "-b") == 0)
+      else if (argv[i] == "-builtins" || argv[i] == "-b")
 	show_builtins++;
-      else if (strcmp (*argv, "-functions") == 0 || strcmp (*argv, "-f") == 0)
+      else if (argv[i] == "-functions" || argv[i] == "-f")
 	show_functions++;
-      else if (strcmp (*argv, "-long") == 0 || strcmp (*argv, "-l") == 0)
+      else if (argv[i] == "-long" || argv[i] == "-l")
 	show_verbose++;
-      else if (strcmp (*argv, "-variables") == 0 || strcmp (*argv, "-v") == 0)
+      else if (argv[i] == "-variables" || argv[i] == "-v")
 	show_variables++;
-      else if (*argv[0] == '-')
-	warning ("%s: unrecognized option `%s'", my_name, *argv);
+      else if (argv[i][0] == '-')
+	warning ("%s: unrecognized option `%s'", my_name.c_str (),
+		 argv[i].c_str ());
       else
 	break;
     }
@@ -1372,11 +1308,14 @@ character, but may not be combined.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("who");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "who");
+
+  if (error_state)
+    return retval;
 
   retval = do_who (argc, argv);
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -1397,16 +1336,13 @@ character, but may not be combined.")
   tmp_args(0) = "-long";
 
   int argc = tmp_args.length () + 1;
-  char **argv = make_argv (tmp_args, "whos");
+
+  string_vector argv = make_argv (tmp_args, "whos");
 
   if (error_state)
     return retval;
 
   retval = do_who (argc, argv);
-
-  while (--argc >= 0)
-    delete [] argv[argc];
-  delete [] argv;
 
   return retval;
 }
@@ -1414,66 +1350,65 @@ character, but may not be combined.")
 // Install variables and functions in the symbol tables.
 
 void
-install_builtin_mapper (builtin_mapper_function *mf)
+install_builtin_mapper (const builtin_mapper_function& mf)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (mf->name, 1);
+  symbol_record *sym_rec = global_sym_tab->lookup (mf.name, 1);
   sym_rec->unprotect ();
 
   Mapper_fcn mfcn;
-  mfcn.name = strsave (mf->name);
-  mfcn.can_return_complex_for_real_arg = mf->can_return_complex_for_real_arg;
-  mfcn.lower_limit = mf->lower_limit;
-  mfcn.upper_limit = mf->upper_limit;
-  mfcn.d_d_mapper = mf->d_d_mapper;
-  mfcn.d_c_mapper = mf->d_c_mapper;
-  mfcn.c_c_mapper = mf->c_c_mapper;
 
-  tree_builtin *def = new tree_builtin (mfcn, mf->name);
+  mfcn.name = mf.name;
+  mfcn.can_return_complex_for_real_arg = mf.can_return_complex_for_real_arg;
+  mfcn.lower_limit = mf.lower_limit;
+  mfcn.upper_limit = mf.upper_limit;
+  mfcn.d_d_mapper = mf.d_d_mapper;
+  mfcn.d_c_mapper = mf.d_c_mapper;
+  mfcn.c_c_mapper = mf.c_c_mapper;
+
+  tree_builtin *def = new tree_builtin (mfcn, mf.name);
 
   sym_rec->define (def);
 
-  sym_rec->document (mf->help_string);
+  sym_rec->document (mf.help_string);
   sym_rec->make_eternal ();
   sym_rec->protect ();
 }
 
 void
-install_builtin_function (builtin_function *f)
+install_builtin_function (const builtin_function& f)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (f->name, 1);
+  symbol_record *sym_rec = global_sym_tab->lookup (f.name, 1);
   sym_rec->unprotect ();
 
-  tree_builtin *def = new tree_builtin (f->fcn, f->name);
+  tree_builtin *def = new tree_builtin (f.fcn, f.name);
 
-  sym_rec->define (def, f->is_text_fcn);
+  sym_rec->define (def, f.is_text_fcn);
 
-  sym_rec->document (f->help_string);
+  sym_rec->document (f.help_string);
   sym_rec->make_eternal ();
   sym_rec->protect ();
 }
 
 void
-install_builtin_variable (builtin_variable *v)
+install_builtin_variable (const builtin_variable& v)
 {
-  if (v->install_as_function)
-    install_builtin_variable_as_function (v->name, v->value, v->protect,
-					  v->eternal, v->help_string);
+  if (v.install_as_function)
+    install_builtin_variable_as_function (v.name, v.value, v.protect,
+					  v.eternal, v.help_string);
   else
-    bind_builtin_variable (v->name, v->value, v->protect, v->eternal,
-			   v->sv_function, v->help_string);
+    bind_builtin_variable (v.name, v.value, v.protect, v.eternal,
+			   v.sv_function, v.help_string);
 }
 
 void
-install_builtin_variable_as_function (const char *name, tree_constant *val,
+install_builtin_variable_as_function (const string& name, tree_constant *val,
 				      int protect, int eternal,
-				      const char *help)
+				      const string& help)
 {
   symbol_record *sym_rec = global_sym_tab->lookup (name, 1);
   sym_rec->unprotect ();
 
-  const char *tmp_help = help;
-  if (! help)
-    tmp_help = sym_rec->help ();
+  string tmp_help = help.empty () ? sym_rec->help () : help;
 
   sym_rec->define_as_fcn (val);
 
@@ -1487,9 +1422,10 @@ install_builtin_variable_as_function (const char *name, tree_constant *val,
 }
 
 void
-alias_builtin (const char *alias, const char *name)
+alias_builtin (const string& alias, const string& name)
 {
   symbol_record *sr_name = global_sym_tab->lookup (name, 0, 0);
+
   if (! sr_name)
     panic ("can't alias to undefined name!");
 
@@ -1498,7 +1434,8 @@ alias_builtin (const char *alias, const char *name)
   if (sr_alias)
     sr_alias->alias (sr_name);
   else
-    panic ("can't find symbol record for builtin function `%s'", alias);
+    panic ("can't find symbol record for builtin function `%s'",
+	   alias.c_str ());
 }
 
 // Defining variables.
@@ -1571,9 +1508,9 @@ clear_global_error_variable (void *)
 // functions needed?
 
 void
-bind_builtin_variable (const char *varname, tree_constant *val,
+bind_builtin_variable (const string& varname, tree_constant *val,
 		       int protect, int eternal, sv_Function sv_fcn,
-		       const char *help)
+		       const string& help)
 {
   symbol_record *sr = global_sym_tab->lookup (varname, 1, 0);
 
@@ -1599,14 +1536,13 @@ bind_builtin_variable (const char *varname, tree_constant *val,
   if (eternal)
     sr->make_eternal ();
 
-  if (help)
-    sr->document (help);
+  sr->document (help);
 }
 
 void
-bind_builtin_variable (const char *varname, const tree_constant& val,
+bind_builtin_variable (const string& varname, const tree_constant& val,
 		       int protect, int eternal, sv_Function sv_fcn,
-		       const char *help)
+		       const string& help)
 {
   tree_constant *tc = new tree_constant (val);
   bind_builtin_variable (varname, tc, protect, eternal, sv_fcn, help);
@@ -1929,10 +1865,12 @@ With -x, exclude the named variables")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("clear");
+  int argc = args.length () + 1;
 
-  argc--;
-  argv++;
+  string_vector argv = make_argv (args, "clear");
+
+  if (error_state)
+    return retval;
 
   // Always clear the local table, but don't clear currently compiled
   // functions unless we are at the top level.  (Allowing that to
@@ -1940,7 +1878,7 @@ With -x, exclude the named variables")
 
   int clear_user_functions = (curr_sym_tab == top_level_sym_tab);
 
-  if (argc == 0)
+  if (argc == 1)
     {
       curr_sym_tab->clear ();
       global_sym_tab->clear (clear_user_functions);
@@ -1949,23 +1887,21 @@ With -x, exclude the named variables")
     {
       int exclusive = 0;
 
-      if (argc > 0)
+      int idx = 1;
+
+      if (argc > 1)
 	{
-	  if (strcmp (*argv, "-x") == 0)
-	    {
-	      exclusive = 1;
-	      argv++;
-	      argc--;
-	    }
+	  if (argv[idx] == "-x")
+	    exclusive = 1;
 	}
 
       int lcount = 0;
       int gcount = 0;
       int fcount = 0;
 
-      char **lvars = 0;
-      char **gvars = 0;
-      char **fcns = 0;
+      string_vector lvars;
+      string_vector gvars;
+      string_vector fcns;
 
       if (argc > 0)
 	{
@@ -1982,17 +1918,19 @@ With -x, exclude the named variables")
 				       SYMTAB_ALL_SCOPES);
 	}
 
-      while (argc > 0)
+      for (int k = idx + 1; k < argc; k++)
 	{
-	  char *pat = *argv;
+	  string patstr = argv[k];
 
-	  if (pat)
+	  if (! patstr.empty ())
 	    {
+	      const char *pat = patstr.c_str ();
+
 	      int i;
 	      for (i = 0; i < lcount; i++)
 		{
-		  char *nm = lvars[i];
-		  int match = (fnmatch (pat, nm, __FNM_FLAGS) == 0);
+		  string nm = lvars[i];
+		  int match = (fnmatch (pat, nm.c_str (), __FNM_FLAGS) == 0);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    curr_sym_tab->clear (nm);
 		}
@@ -2000,8 +1938,8 @@ With -x, exclude the named variables")
 	      int count;
 	      for (i = 0; i < gcount; i++)
 		{
-		  char *nm = gvars[i];
-		  int match = (fnmatch (pat, nm, __FNM_FLAGS) == 0);
+		  string nm = gvars[i];
+		  int match = (fnmatch (pat, nm.c_str (), __FNM_FLAGS) == 0);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
 		      count = curr_sym_tab->clear (nm);
@@ -2012,8 +1950,8 @@ With -x, exclude the named variables")
 
 	      for (i = 0; i < fcount; i++)
 		{
-		  char *nm = fcns[i];
-		  int match = (fnmatch (pat, nm, __FNM_FLAGS) == 0);
+		  string nm = fcns[i];
+		  int match = (fnmatch (pat, nm.c_str (), __FNM_FLAGS) == 0);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
 		      count = curr_sym_tab->clear (nm);
@@ -2021,18 +1959,8 @@ With -x, exclude the named variables")
 		    }
 		}
 	    }
-
-	  argc--;
-	  argv++;
 	}
-
-      delete [] lvars;
-      delete [] gvars;
-      delete [] fcns;
-
     }
-
-  DELETE_ARGV;
 
   return retval;
 }

@@ -30,14 +30,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstddef>
 
+#include <string>
+
 typedef void (*cleanup_func)(void *ptr);
 
 void add_unwind_protect (cleanup_func fptr, void *ptr);
 void run_unwind_protect (void);
 void discard_unwind_protect (void);
-void begin_unwind_frame (char *tag);
-void run_unwind_frame (char *tag);
-void discard_unwind_frame (char *tag);
+void begin_unwind_frame (const string& tag);
+void run_unwind_frame (const string& tag);
+void discard_unwind_frame (const string& tag);
 void run_all_unwind_protects (void);
 void discard_all_unwind_protects (void);
 
@@ -45,11 +47,15 @@ void matrix_cleanup (void *m);
 void complex_matrix_cleanup (void *cm);
 
 void unwind_protect_int_internal (int *ptr, int value);
+void unwind_protect_str_internal (string *ptr, const string& value);
 void unwind_protect_ptr_internal (void **ptr, void *value);
 void unwind_protect_var_internal (void *ptr, void *value, size_t size);
 
 #define unwind_protect_int(i) \
   unwind_protect_int_internal (&(i), (i))
+
+#define unwind_protect_str(s) \
+  unwind_protect_str_internal (&(s), (s))
 
 #define unwind_protect_ptr(p) \
   unwind_protect_ptr_internal ((void **) &(p), (void *) (p))
@@ -58,22 +64,39 @@ class
 unwind_elem
 {
  public:
-  unwind_elem (void);
-  unwind_elem (char *t);
-  unwind_elem (cleanup_func f, void *p);
-  unwind_elem (const unwind_elem& el);
-  ~unwind_elem (void);
+  unwind_elem (void)
+    : ue_tag (), ue_fptr (0), ue_ptr (0) { }
 
-  unwind_elem& operator = (const unwind_elem& el);
+  unwind_elem (const string &t)
+    : ue_tag (t), ue_fptr (0), ue_ptr (0) { }
 
-  char *tag (void);
-  cleanup_func fptr (void);
-  void *ptr (void);
+  unwind_elem (cleanup_func f, void *p)
+    : ue_tag (), ue_fptr (f), ue_ptr (p) { }
+
+  unwind_elem (const unwind_elem& el)
+    : ue_tag (el.ue_tag), ue_fptr (el.ue_fptr), ue_ptr (el.ue_ptr) { }
+
+  ~unwind_elem (void) { }
+
+  unwind_elem& operator = (const unwind_elem& el)
+    {
+      ue_tag = el.ue_tag;
+      ue_fptr = el.ue_fptr;
+      ue_ptr = el.ue_ptr;
+
+      return *this;
+    }
+
+  string tag (void) { return ue_tag; }
+
+  cleanup_func fptr (void) { return ue_fptr; }
+
+  void *ptr (void) { return ue_ptr; }
 
  private:
-  char *unwind_elem_tag;
-  cleanup_func unwind_elem_fptr;
-  void *unwind_elem_ptr;
+  string ue_tag;
+  cleanup_func ue_fptr;
+  void *ue_ptr;
 };
 
 #endif

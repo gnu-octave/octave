@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   BEGIN_INSTALL_BUILTIN \
     extern DECLARE_FUN_ ## unused_arg_flags (fname); \
     DEFINE_FUN_STRUCT (name, fname, sname, is_text_fcn, doc); \
-    install_builtin_function (&sname); \
+    install_builtin_function (sname); \
   END_INSTALL_BUILTIN
 
 // Generate code for making another name for an existing function.
@@ -68,14 +68,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // the symbol table.
 
 #define DEFINE_FUN_STRUCT(name, fname, sname, is_text_fcn, doc) \
-  static builtin_function sname = \
-    { name, is_text_fcn, fname, doc }
+  static builtin_function sname (name, is_text_fcn, fname, doc)
 
 #define DEFINE_FUN_STRUCT_FUN(sname, fsname) \
-  builtin_function * \
+  builtin_function& \
   fsname (void) \
   { \
-    return &sname; \
+    return sname; \
   }
 
 // Declare an internal function named fname.  This is the interface
@@ -96,26 +95,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   Octave_object fname (const Octave_object& args, int nargout)
 
 #define DECLARE_FUN_(fname) DECLARE_FUN_11 (fname)
-
-// XXX FIXME XXX -- eliminate the need for these in the functions that
-// use them?
-
-#define DEFINE_ARGV(fcn_name) \
-  int argc = args.length () + 1; \
-  int save_argc = argc; \
-  char **argv = make_argv (args, fcn_name); \
-  char **save_argv = argv; \
-  if (error_state) \
-    return retval
-
-#define DELETE_ARGV \
-  do \
-    { \
-      while (--save_argc >= 0) \
-	delete [] save_argv[save_argc]; \
-      delete [] save_argv; \
-    } \
-  while (0)
 
 #endif
 

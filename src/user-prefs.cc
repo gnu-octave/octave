@@ -82,20 +82,20 @@ init_user_prefs (void)
 
   user_pref.completion_append_char = '\0';
 
-  user_pref.default_save_format = 0;
-  user_pref.editor = 0;
-  user_pref.exec_path = 0;
-  user_pref.gnuplot_binary = 0;
-  user_pref.history_file = 0;
-  user_pref.imagepath = 0;
-  user_pref.info_file = 0;
-  user_pref.info_prog = 0;
-  user_pref.loadpath = 0;
-  user_pref.pager_binary = 0;
-  user_pref.ps1 = 0;
-  user_pref.ps2 = 0;
-  user_pref.ps4 = 0;
-  user_pref.pwd = 0;
+  user_pref.default_save_format = string ();
+  user_pref.editor = string ();
+  user_pref.exec_path = string ();
+  user_pref.gnuplot_binary = string ();
+  user_pref.history_file = string ();
+  user_pref.imagepath = string ();
+  user_pref.info_file = string ();
+  user_pref.info_prog = string ();
+  user_pref.loadpath = string ();
+  user_pref.pager_binary = string ();
+  user_pref.ps1 = string ();
+  user_pref.ps2 = string ();
+  user_pref.ps4 = string ();
+  user_pref.pwd = string ();
 }
 
 // Check the value of a string variable to see if it it's ok to do
@@ -109,29 +109,27 @@ init_user_prefs (void)
 // to mean "true".
 
 static int
-check_preference (char *var)
+check_preference (const string& var)
 {
   int pref = -1;
 
-  char *val = builtin_string_variable (var);
+  string val = builtin_string_variable (var);
 
-  if (val)
-    {
-      if (strncmp (val, "yes", 3) == 0
-	  || strncmp (val, "true", 4) == 0)
-	pref = 1;
-      else if (strncmp (val, "never", 5) == 0
-	       || strncmp (val, "no", 2) == 0
-	       || strncmp (val, "false", 5) == 0)
-	pref = 0;
-
-      delete [] val;
-    }
-  else
+  if (val.empty ())
     {
       double dval = 0;
       if (builtin_real_scalar_variable (var, dval))
 	pref = NINT (dval);
+    }
+  else
+    {
+      if (val.compare ("yes", 0, 3) == 0
+	  || val.compare ("true", 0, 4) == 0)
+	pref = 1;
+      else if (val.compare ("never", 0, 5) == 0
+	       || val.compare ("no", 0, 2) == 0
+	       || val.compare ("false", 0, 5) == 0)
+	pref = 0;
     }
 
   return pref;
@@ -264,13 +262,13 @@ ignore_function_time_stamp (void)
 {
   int pref = 0;
 
-  char *val = builtin_string_variable ("ignore_function_time_stamp");
+  string val = builtin_string_variable ("ignore_function_time_stamp");
 
-  if (val)
+  if (! val.empty ())
     {
-      if (strncmp (val, "all", 3) == 0)
+      if (val.compare ("all", 0, 3) == 0)
 	pref = 2;
-      if (strncmp (val, "system", 6) == 0)
+      if (val.compare ("system", 0, 6) == 0)
 	pref = 1;
     }
 
@@ -630,12 +628,12 @@ int
 whitespace_in_literal_matrix (void)
 {
   int pref = 0;
-  char *val = builtin_string_variable ("whitespace_in_literal_matrix");
-  if (val)
+  string val = builtin_string_variable ("whitespace_in_literal_matrix");
+  if (! val.empty ())
     {
-      if (strncmp (val, "ignore", 6) == 0)
+      if (val.compare ("ignore", 0, 6) == 0)
 	pref = 2;
-      else if (strncmp (val, "traditional", 11) == 0)
+      else if (val.compare ("traditional", 0, 11) == 0)
 	pref = 1;
     }
   user_pref.whitespace_in_literal_matrix = pref;
@@ -702,21 +700,22 @@ sv_completion_append_char (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("completion_append_char");
-  if (s)
+  string s = builtin_string_variable ("completion_append_char");
+
+  switch (s.length ())
     {
-      if (s[0] == '\0' || (s[0] && s[1] == '\0'))
-	user_pref.completion_append_char = s[0];
-      else
-	{
-	  warning ("completion_append_char must be a single character");
-	  status = -1;
-	}
-    }
-  else
-    {
-      gripe_invalid_value_specified ("completion_append_char");
+    case 1:
+      user_pref.completion_append_char = s[0];
+      break;
+
+    case 0:
+      user_pref.completion_append_char = '\0';
+      break;
+
+    default:
+      warning ("completion_append_char must be a single character");
       status = -1;
+      break;
     }
 
   return status;
@@ -727,17 +726,15 @@ sv_default_save_format (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("default_save_format");
-  if (s)
-    {
-      delete [] user_pref.default_save_format;
-      user_pref.default_save_format = s;
-    }
-  else
+  string s = builtin_string_variable ("default_save_format");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("default_save_format");
       status = -1;
     }
+  else
+    user_pref.default_save_format = s;
 
   return status;
 }
@@ -747,17 +744,15 @@ sv_editor (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("EDITOR");
-  if (s)
-    {
-      delete [] user_pref.editor;
-      user_pref.editor = s;
-    }
-  else
+  string s = builtin_string_variable ("EDITOR");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("EDITOR");
       status = -1;
     }
+  else
+    user_pref.editor = s;
 
   return status;
 }
@@ -767,13 +762,19 @@ sv_exec_path (void)
 {
   int status = 0;
 
-  char *exec_path = builtin_string_variable ("EXEC_PATH");
-  if (exec_path)
-    {
-      char *arch_dir = octave_arch_lib_dir ();
-      char *bin_dir = octave_bin_dir ();
+  string exec_path = builtin_string_variable ("EXEC_PATH");
 
-      int len = strlen (arch_dir) + strlen (bin_dir) + strlen (SEPCHAR_STR);
+  if (exec_path.empty ())
+    {
+      gripe_invalid_value_specified ("EXEC_PATH");
+      status = -1;
+    }
+  else
+    {
+      string arch_dir = octave_arch_lib_dir ();
+      string bin_dir = octave_bin_dir ();
+
+      int len = arch_dir.length () + bin_dir.length () + strlen (SEPCHAR_STR);
 
       static char *putenv_cmd = 0;
 
@@ -781,7 +782,7 @@ sv_exec_path (void)
 
       putenv_cmd = 0;
 
-      int eplen = strlen (exec_path);
+      int eplen = exec_path.length ();
 
       if (eplen > 0)
 	{
@@ -795,14 +796,17 @@ sv_exec_path (void)
 		  putenv_cmd = new char [2 * len + eplen + 6];
 		  sprintf (putenv_cmd,
 			   "PATH=%s" SEPCHAR_STR "%s%s%s" SEPCHAR_STR "%s",
-			   arch_dir, bin_dir, exec_path, arch_dir, bin_dir);
+			   arch_dir.c_str (), bin_dir.c_str (),
+			   exec_path.c_str (), arch_dir.c_str (),
+			   bin_dir.c_str ());
 		}
 	      else
 		{
 		  putenv_cmd = new char [len + eplen + 6];
 		  sprintf (putenv_cmd,
 			   "PATH=%s" SEPCHAR_STR "%s%s",
-			   arch_dir, bin_dir, exec_path);
+			   arch_dir.c_str (), bin_dir.c_str (),
+			   exec_path.c_str ());
 		}
 	    }
 	  else
@@ -812,27 +816,24 @@ sv_exec_path (void)
 		  putenv_cmd = new char [len + eplen + 6];
 		  sprintf (putenv_cmd,
 			   "PATH=%s%s" SEPCHAR_STR "%s",
-			   exec_path, arch_dir, bin_dir);
+			   exec_path.c_str (), arch_dir.c_str (),
+			   bin_dir.c_str ());
 		}
 	      else
 		{
 		  putenv_cmd = new char [len + eplen + 6];
-		  sprintf (putenv_cmd, "PATH=%s", exec_path);
+		  sprintf (putenv_cmd, "PATH=%s", exec_path.c_str ());
 		}
 	    }
 	}
       else
 	{
 	  putenv_cmd = new char [len+6];
-	  sprintf (putenv_cmd, "PATH=%s" SEPCHAR_STR "%s", arch_dir, bin_dir);
+	  sprintf (putenv_cmd, "PATH=%s" SEPCHAR_STR "%s",
+		   arch_dir.c_str (), bin_dir.c_str ());
 	}
 
       putenv (putenv_cmd);
-    }
-  else
-    {
-      gripe_invalid_value_specified ("EXEC_PATH");
-      status = -1;
     }
 
   return status;
@@ -843,17 +844,15 @@ sv_gnuplot_binary (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("gnuplot_binary");
-  if (s)
-    {
-      delete [] user_pref.gnuplot_binary;
-      user_pref.gnuplot_binary = s;
-    }
-  else
+  string s = builtin_string_variable ("gnuplot_binary");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("gnuplot_binary");
       status = -1;
     }
+  else
+    user_pref.gnuplot_binary = s;
 
   return status;
 }
@@ -863,17 +862,15 @@ sv_history_file (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("history_file");
-  if (s)
-    {
-      delete [] user_pref.history_file;
-      user_pref.history_file = s;
-    }
-  else
+  string s = builtin_string_variable ("history_file");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("history_file");
       status = -1;
     }
+  else
+    user_pref.history_file = s;
 
   return status;
 }
@@ -883,17 +880,15 @@ sv_imagepath (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("IMAGEPATH");
-  if (s)
-    {
-      delete [] user_pref.imagepath;
-      user_pref.imagepath = s;
-    }
-  else
+  string s = builtin_string_variable ("IMAGEPATH");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("IMAGEPATH");
       status = -1;
     }
+  else
+    user_pref.imagepath = s;
 
   return status;
 }
@@ -903,17 +898,15 @@ sv_info_file (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("INFO_FILE");
-  if (s)
-    {
-      delete [] user_pref.info_file;
-      user_pref.info_file = s;
-    }
-  else
+  string s = builtin_string_variable ("INFO_FILE");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("INFO_FILE");
       status = -1;
     }
+  else
+    user_pref.info_file = s;
 
   return status;
 }
@@ -923,17 +916,15 @@ sv_info_prog (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("INFO_PROGRAM");
-  if (s)
-    {
-      delete [] user_pref.info_prog;
-      user_pref.info_prog = s;
-    }
-  else
+  string s = builtin_string_variable ("INFO_PROGRAM");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("INFO_PROGRAM");
       status = -1;
     }
+  else
+    user_pref.info_prog = s;
 
   return status;
 }
@@ -943,17 +934,15 @@ sv_loadpath (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("LOADPATH");
-  if (s)
-    {
-      delete [] user_pref.loadpath;
-      user_pref.loadpath = maybe_add_default_load_path (s);
-    }
-  else
+  string s = builtin_string_variable ("LOADPATH");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("LOADPATH");
       status = -1;
     }
+  else
+    user_pref.loadpath = maybe_add_default_load_path (s);
 
   return status;
 }
@@ -963,17 +952,15 @@ sv_pager_binary (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("PAGER");
-  if (s)
-    {
-      delete [] user_pref.pager_binary;
-      user_pref.pager_binary = s;
-    }
-  else
+  string s = builtin_string_variable ("PAGER");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("PAGER");
       status = -1;
     }
+  else
+    user_pref.pager_binary = s;
 
   return status;
 }
@@ -983,17 +970,15 @@ sv_ps1 (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("PS1");
-  if (s)
-    {
-      delete [] user_pref.ps1;
-      user_pref.ps1 = s;
-    }
-  else
+  string s = builtin_string_variable ("PS1");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("PS1");
       status = -1;
     }
+  else
+    user_pref.ps1 = s;
 
   return status;
 }
@@ -1003,17 +988,15 @@ sv_ps2 (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("PS2");
-  if (s)
-    {
-      delete [] user_pref.ps2;
-      user_pref.ps2 = s;
-    }
-  else
+  string s = builtin_string_variable ("PS2");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("PS2");
       status = -1;
     }
+  else
+    user_pref.ps2 = s;
 
   return status;
 }
@@ -1023,17 +1006,15 @@ sv_ps4 (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("PS4");
-  if (s)
-    {
-      delete [] user_pref.ps4;
-      user_pref.ps4 = s;
-    }
-  else
+  string s = builtin_string_variable ("PS4");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("PS4");
       status = -1;
     }
+  else
+    user_pref.ps4 = s;
 
   return status;
 }
@@ -1043,17 +1024,15 @@ sv_pwd (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("PWD");
-  if (s)
-    {
-      delete [] user_pref.pwd;
-      user_pref.pwd = s;
-    }
-  else
+  string s = builtin_string_variable ("PWD");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("PWD");
       status = -1;
     }
+  else
+    user_pref.pwd = s;
 
   return status;
 }

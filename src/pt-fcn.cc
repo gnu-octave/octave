@@ -81,8 +81,6 @@ tree_function::~tree_function (void)
   delete ret_list;
   delete sym_tab;
   delete cmd_list;
-  delete [] file_name;
-  delete [] fcn_name;
   delete vr_list;
 }
 
@@ -123,14 +121,16 @@ tree_function::define_ret_list (tree_parameter_list *t)
 void
 tree_function::stash_fcn_file_name (void)
 {
-  delete [] file_name;
-  file_name = fcn_name ? fcn_file_in_path (fcn_name) : 0;
+  if (fcn_name.empty ())
+    file_name = "";
+  else
+    file_name = fcn_file_in_path (fcn_name);
 }
 
 void
 tree_function::mark_as_system_fcn_file (void)
 {
-  if (file_name)
+  if (! file_name.empty ())
     {
       // We really should stash the whole path to the file we found,
       // when we looked it up, to avoid possible race conditions...
@@ -141,15 +141,12 @@ tree_function::mark_as_system_fcn_file (void)
       // function file is parsed, it probably doesn't matter that
       // much.
 
-      char *ff_name = fcn_file_in_path (file_name);
+      string ff_name = fcn_file_in_path (file_name);
 
-      char *system_dir = octave_fcn_file_dir ();
-      int len = strlen (system_dir);
+      string system_dir = octave_fcn_file_dir ();
 
-      if (strncmp (system_dir, ff_name, len) == 0)
+      if (system_dir.compare (ff_name, 0, system_dir.length ()) == 0)
 	system_fcn_file = 1;
-
-      delete [] ff_name;
     }
   else
     system_fcn_file = 0;
@@ -204,10 +201,9 @@ tree_function::octave_vr_val (const tree_constant& val)
 }
 
 void
-tree_function::stash_function_name (char *s)
+tree_function::stash_function_name (const string& s)
 {
-  delete [] fcn_name;
-  fcn_name = strsave (s);
+  fcn_name = s;
 }
 
 tree_constant
@@ -304,7 +300,8 @@ tree_function::eval (int /* print */, int nargout, const Octave_object& args)
   unwind_protect_ptr (curr_function);
   curr_function = this;
 
-  //  unwind_protect_ptr (args_passed);
+  // XXX FIXME XXX -- ???
+  // unwind_protect_ptr (args_passed);
 
   args_passed = args;
 
@@ -383,19 +380,20 @@ tree_function::traceback_error (void)
   if (error_state >= 0)
     error_state = -1;
 
-  if (fcn_name)
+  if (fcn_name.empty ())
     {
-      if (file_name)
-	::error ("called from `%s' in file `%s'", fcn_name, file_name);
-      else 
-	::error ("called from `%s'", fcn_name);
+      if (file_name.empty ())
+	::error ("called from `?unknown?'");
+      else
+	::error ("called from file `%s'", file_name.c_str ());
     }
   else
     {
-      if (file_name)
-	::error ("called from file `%s'", file_name);
-      else
-	::error ("called from `?unknown?'");
+      if (file_name.empty ())
+	::error ("called from `%s'", fcn_name.c_str ());
+      else 
+	::error ("called from `%s' in file `%s'",
+		 fcn_name.c_str (), file_name.c_str ());
     }
 }
 
@@ -447,7 +445,7 @@ tree_function::print_code_function_header (ostream& os)
       os << " = ";
     }
 
-  os << (fcn_name ? fcn_name : "(null)") << " ";
+  os << (fcn_name.empty () ? string ("(empty)") : fcn_name) << " ";
 
   if (param_list)
     {

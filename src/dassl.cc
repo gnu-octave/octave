@@ -276,7 +276,7 @@ print_dassl_option_list (void)
 }
 
 static void
-set_dassl_option (const char *keyword, double val)
+set_dassl_option (const string& keyword, double val)
 {
   DAE_OPTIONS *list = dassl_option_table;
 
@@ -292,11 +292,11 @@ set_dassl_option (const char *keyword, double val)
       list++;
     }
 
-  warning ("dassl_options: no match for `%s'", keyword);
+  warning ("dassl_options: no match for `%s'", keyword.c_str ());
 }
 
 static Octave_object
-show_dassl_option (const char *keyword)
+show_dassl_option (const string& keyword)
 {
   Octave_object retval;
 
@@ -312,7 +312,7 @@ show_dassl_option (const char *keyword)
       list++;
     }
 
-  warning ("dassl_options: no match for `%s'", keyword);
+  warning ("dassl_options: no match for `%s'", keyword.c_str ());
 
   return retval;
 }
@@ -335,8 +335,7 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      string tstr = args(0).string_value ();
-      const char *keyword = tstr.c_str ();
+      string keyword = args(0).string_value ();
 
       if (! error_state)
 	{

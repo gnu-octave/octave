@@ -29,22 +29,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "str-vec.h"
+
 #include "pt-const.h"
 #include "oct-map.h"
 #include "utils.h"
 
-char **
+string_vector
 Octave_map::make_name_list (void)
 {
   int len = length ();
 
-  char **names = new char * [len + 1];
+  string_vector names (len);
 
   int i = 0;
   for (Pix p = first (); p != 0; next (p))
-    names[i++] = strsave (key (p));
-
-  names[i] = 0;
+    names[i++] = key (p);
 
   return names;
 }

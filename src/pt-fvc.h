@@ -58,18 +58,18 @@ public:
   int is_identifier (void) const
     { return 1; }
 
-  char *name (void) const;
+  string name (void) const;
 
   tree_identifier *define (tree_constant *t);
   tree_identifier *define (tree_function *t);
 
-  void document (char *s);
+  void document (const string& s);
 
   tree_constant assign (tree_constant& t);
   tree_constant assign (tree_constant& t, const Octave_object& args);
 
-  tree_constant assign (SLList<char*> list, tree_constant& t);
-  tree_constant assign (SLList<char*> list, tree_constant& t,
+  tree_constant assign (SLList<string> list, tree_constant& t);
+  tree_constant assign (SLList<string> list, tree_constant& t,
 			const Octave_object& args); 
 
   int is_defined (void);
@@ -112,7 +112,7 @@ public:
 
   ~tree_indirect_ref (void);
 
-  tree_indirect_ref *chain (const char *s);
+  tree_indirect_ref *chain (const string& s);
 
   int is_indirect_ref (void) const
     { return 1; }
@@ -126,7 +126,7 @@ public:
   void preserve_identifier (void)
     { preserve_ident = 1; }
 
-  char *name (void);
+  string name (void) const;
 
   tree_constant assign (tree_constant& t);
   tree_constant assign (tree_constant& t, const Octave_object& args);
@@ -142,7 +142,7 @@ public:
 
 private:
   tree_identifier *id;
-  SLList<char*> refs;
+  SLList<string> refs;
   int preserve_ident;
 };
 
@@ -152,11 +152,11 @@ class
 tree_builtin : public tree_fvc
 {
 public:
-  tree_builtin (const char *nm = 0);
+  tree_builtin (const string& nm = string ());
 
-  tree_builtin (Mapper_fcn& m_fcn, const char *nm = 0);
+  tree_builtin (Mapper_fcn& m_fcn, const string& nm = string ());
 
-  tree_builtin (Octave_builtin_fcn f, const char *nm = 0);
+  tree_builtin (Octave_builtin_fcn f, const string& nm = string ());
 
   ~tree_builtin (void) { }  // XXX ?? XXX
 
@@ -169,7 +169,7 @@ public:
 
   Octave_object eval (int print, int nargout, const Octave_object& args);
 
-  char *name (void) const
+  string name (void) const
     { return my_name; }
 
   void print_code (ostream& os);
@@ -178,7 +178,7 @@ private:
   int is_mapper;
   Mapper_fcn mapper_fcn;
   Octave_builtin_fcn fcn;
-  char *my_name;
+  string my_name;
 };
 
 #endif

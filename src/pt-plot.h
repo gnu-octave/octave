@@ -165,9 +165,9 @@ public:
   subplot_style (void)
     : tree_print_code (), style (0), linetype (0), pointtype (0) { }
 
-  subplot_style (char *s);
-  subplot_style (char *s, tree_expression *lt);
-  subplot_style (char *s, tree_expression *lt, tree_expression *pt);
+  subplot_style (const string& s);
+  subplot_style (const string& s, tree_expression *lt);
+  subplot_style (const string& s, tree_expression *lt, tree_expression *pt);
 
   ~subplot_style (void);
 
@@ -178,7 +178,7 @@ public:
   void print_code (ostream& os);
 
 private:
-  char *style;
+  string style;
   tree_expression *linetype;
   tree_expression *pointtype;
 };
@@ -234,8 +234,8 @@ public:
   void print_code (ostream& os);
 };
 
-extern char *save_in_tmp_file (tree_constant& t, int ndim = 2,
-			       int parametric = 0);
+extern string save_in_tmp_file (tree_constant& t, int ndim = 2,
+				int parametric = 0);
 
 extern void mark_for_deletion (const string&);
 
@@ -243,7 +243,7 @@ extern void cleanup_tmp_files (void);
 
 extern void close_plot_stream (void);
 
-extern void do_external_plotter_cd (const char *newdir);
+extern void do_external_plotter_cd (const string& newdir);
 
 #endif
 

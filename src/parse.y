@@ -94,7 +94,7 @@ int input_line_number = 0;
 int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
-char *help_buf = 0;
+string help_buf;
 
 // Nonzero means we're working on a plot command.
 int plotting = 0;
@@ -625,11 +625,11 @@ title		: TITLE expression
 		;
 
 style		: WITH STYLE
-		  { $$ = new subplot_style ($2->string ()); }
+		  { $$ = new subplot_style ($2->text ()); }
 		| WITH STYLE expression
-		  { $$ = new subplot_style ($2->string (), $3); }
+		  { $$ = new subplot_style ($2->text (), $3); }
 		| WITH STYLE expression bogus_syntax expression
-		  { $$ = new subplot_style ($2->string (), $3, $5); }
+		  { $$ = new subplot_style ($2->text (), $3, $5); }
 		;
 
 bogus_syntax	: // empty
@@ -1028,7 +1028,7 @@ indirect_ref1	: identifier
 						$1->column ());
 		  }
 		| indirect_ref1 '.' { looking_at_indirect_ref = 1; } TEXT_ID
-		  { $$ = $1->chain ($4->string ()); }
+		  { $$ = $1->chain ($4->text ()); }
 		;
 
 variable	: indirect_ref
@@ -1161,7 +1161,6 @@ matrix_row1	: expression		// First element on row.
 static void
 yyerror (char *s)
 {
-  char *line = current_input_line;
   int err_col = current_input_column - 1;
 
   ostrstream output_buf;
@@ -1177,19 +1176,16 @@ yyerror (char *s)
 
   output_buf << "\n\n";
 
-  if (line)
+  if (! current_input_line.empty ())
     {
-      int len = strlen (line);
+      size_t len = current_input_line.length ();
 
-      if (line[len-1] == '\n')
-        {
-          len--;
-          line[len] = '\0';
-        }
+      if (current_input_line[len-1] == '\n')
+        current_input_line.resize (len-1);
 
 // Print the line, maybe with a pointer near the error token.
 
-      output_buf << ">>> " << line << "\n";
+      output_buf << ">>> " << current_input_line << "\n";
 
       if (err_col == 0)
 	err_col = len;
@@ -1426,7 +1422,7 @@ make_constant (int op, token *tok_val)
       break;
 
     case TEXT:
-      retval = new tree_constant (tok_val->string (), l, c);
+      retval = new tree_constant (tok_val->text (), l, c);
       break;
 
     default:
@@ -1957,7 +1953,7 @@ start_function_def (tree_parameter_list *param_list,
 static tree_function *
 frob_function_def (tree_identifier *id, tree_function *fcn)
 {
-  char *id_name = id->name ();
+  string id_name = id->name ();
 
   // If input is coming from a file, issue a warning if the name of
   // the file does not match the name of the function stated in the
@@ -1968,11 +1964,11 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
 
   if (reading_fcn_file)
     {
-      if (strcmp (curr_fcn_file_name, id_name) != 0)
+      if (curr_fcn_file_name != id_name)
 	{
 	  if (user_pref.warn_function_name_clash)
 	    warning ("function name `%s' does not agree with function\
- file name `%s'", id_name, curr_fcn_file_full_name);
+ file name `%s'", id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
 	  global_sym_tab->rename (id_name, curr_fcn_file_name);
 
@@ -1989,16 +1985,16 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
     }
   else if (! (input_from_tmp_history_file || input_from_startup_file)
 	   && reading_script_file
-	   && curr_fcn_file_name
-	   && strcmp (curr_fcn_file_name, id_name) == 0)
+	   && curr_fcn_file_name == id_name)
     {
       warning ("function `%s' defined within script file `%s'",
-	       id_name, curr_fcn_file_full_name);
+	       id_name.c_str (), curr_fcn_file_full_name.c_str ());
     }
 
   top_level_sym_tab->clear (id_name);
 
   id->define (fcn);
+
   id->document (help_buf);
 
   return fcn;
@@ -2112,6 +2108,7 @@ maybe_warn_missing_semi (tree_statement_list *t)
 
       if (tmp->is_expression ())
 	warning ("missing semicolon near line %d, column %d in file `%s'",
-		 tmp->line (), tmp->column (), curr_fcn_file_full_name);
+		 tmp->line (), tmp->column (),
+		 curr_fcn_file_full_name.c_str ());
     }
 }

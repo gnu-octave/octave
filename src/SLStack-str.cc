@@ -28,8 +28,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-template class SLNode<string>;
-template class SLList<string>;
+// We already have SLList<string>, so we don't need to make them here.
+
+// template class SLNode<string>;
+// template class SLList<string>;
 template class Stack<string>;
 template class SLStack<string>;
 

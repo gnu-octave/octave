@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_mappers_h)
 #define octave_mappers_h 1
 
+#include <string>
+
 #include "oct-cmplx.h"
 
 typedef double (*d_d_Mapper)(double);
@@ -40,7 +42,7 @@ typedef Complex (*c_c_Mapper)(const Complex&);
 
 struct Mapper_fcn
 {
-  char *name;
+  string name;
   int can_return_complex_for_real_arg;
   double lower_limit;
   double upper_limit;
@@ -51,14 +53,21 @@ struct Mapper_fcn
 
 struct builtin_mapper_function
 {
-  char *name;
+  builtin_mapper_function (const string n, int cfr, double l, double u,
+			   d_d_Mapper dd, d_c_Mapper dc, c_c_Mapper cc,
+			   const string& h)
+    : name (n), can_return_complex_for_real_arg (cfr),
+      lower_limit (l), upper_limit (u), d_d_mapper (dd),
+      d_c_mapper (dc), c_c_mapper (cc), help_string (h) { }
+
+  string name;
   int can_return_complex_for_real_arg;
   double lower_limit;
   double upper_limit;
   d_d_Mapper d_d_mapper;
   d_c_Mapper d_c_mapper;
   c_c_Mapper c_c_mapper;
-  char *help_string;
+  string help_string;
 };
 
 extern double arg (double x);

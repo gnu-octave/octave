@@ -47,11 +47,12 @@ tree_fvc::assign (tree_constant&, const Octave_object&)
   return tree_constant ();
 }
 
-char *
+string
 tree_fvc::name (void) const
 {
+  string retval;
   panic_impossible ();
-  return 0;
+  return retval;
 }
 
 void
@@ -61,7 +62,7 @@ tree_fvc::bump_value (tree_expression::type)
 }
 
 tree_constant
-tree_fvc::lookup_map_element (SLList<char*>&, int, int)
+tree_fvc::lookup_map_element (SLList<string>&, int, int)
 {
   static tree_constant retval;
 

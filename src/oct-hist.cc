@@ -50,6 +50,8 @@ Software Foundation, Inc.
 
 #include <readline/history.h>
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -90,24 +92,31 @@ default_history_size (void)
   return size;
 }
 
-char *
+string
 default_history_file (void)
 {
-  char *file = 0;
+  string file;
 
   char *env_file = getenv ("OCTAVE_HISTFILE");
+
   if (env_file)
     {
       fstream f (env_file, (ios::in | ios::out));
+
       if (f)
 	{
-	  file = strsave (env_file);
+	  file = env_file;
 	  f.close ();
 	}
     }
 
-  if (! file && home_directory)
-    file = strconcat (home_directory, "/.octave_hist");
+  if (file.empty ())
+    {
+      if (! home_directory.empty ())
+	file = home_directory.append ("/.octave_hist");
+      else
+	file = ".octave_hist";
+    }
 
   return file;
 }
@@ -138,11 +147,11 @@ clean_up_history (void)
 }
 
 void
-maybe_save_history (const char *s)
+maybe_save_history (const string& s)
 {
   if (user_pref.saving_history && ! input_from_startup_file)
     {
-      add_history (s);
+      add_history (s.c_str ());
       history_lines_this_session++;
     }
 }
@@ -153,31 +162,30 @@ maybe_save_history (const char *s)
 // means read file, arg of -q means don't number lines.  Arg of N
 // means only display that many items. 
 
-void
-do_history (int argc, char **argv)
+static void
+do_history (int argc, const string_vector& argv)
 {
   HIST_ENTRY **hlist;
 
   int numbered_output = 1;
 
-  while (--argc > 0)
+  int i;
+  for (i = 1; i < argc; i++)
     {
-      argv++;
-
-      if (*argv[0] == '-' && strlen (*argv) == 2
-	  && ((*argv)[1] == 'r' || (*argv)[1] == 'w'
-	      || (*argv)[1] == 'a' || (*argv)[1] == 'n'))
+      if (argv[i][0] == '-' && argv[i].length () == 2
+	  && (argv[i][1] == 'r' || argv[i][1] == 'w'
+	      || argv[i][1] == 'a' || argv[i][1] == 'n'))
 	{
 	  int result = 0;
 
 	  string file;
 
-	  if (argc > 1)
-	    file = oct_tilde_expand (*(argv+1));
+	  if (i < argc - 1)
+	    file = oct_tilde_expand (argv[i+1]);
 	  else
 	    file = oct_tilde_expand (user_pref.history_file);
 
-	  switch ((*argv)[1])
+	  switch (argv[i][1])
 	    {
 	    case 'a':		// Append `new' lines to file.
 	      {
@@ -230,12 +238,11 @@ do_history (int argc, char **argv)
 	    }
 	  return;
 	}
-      else if (strcmp (*argv, "-q") == 0)
+      else if (argv[i] == "-q")
 	numbered_output = 0;
-      else if (strcmp (*argv, "--") == 0)
+      else if (argv[i] == "--")
 	{
-	  argc--;
-	  argv++;
+	  i++;
 	  break;
 	}
       else
@@ -245,15 +252,15 @@ do_history (int argc, char **argv)
   int limited = 0;
   int limit = 0;
 
-  if (argc > 0)
+  if (i < argc)
     {
       limited = 1;
-      if (sscanf (*argv, "%d", &limit) != 1)
+      if (sscanf (argv[i].c_str (), "%d", &limit) != 1)
         {
-	  if (*argv[0] == '-')
-	    error ("history: unrecognized option `%s'", *argv);
+	  if (argv[i][0] == '-')
+	    error ("history: unrecognized option `%s'", argv[i].c_str ());
 	  else
-	    error ("history: bad non-numeric arg `%s'", *argv);
+	    error ("history: bad non-numeric arg `%s'", argv[i].c_str ());
 	  return;
         }
     }
@@ -420,8 +427,9 @@ edit_history_add_hist (char *line)
 
 #define histline(i) (hlist[(i)]->line)
 
-static char *
-mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
+static string
+mk_tmp_hist_file (int argc, const string_vector& argv,
+		  int insert_curr, char *warn_for) 
 {
   HIST_ENTRY **hlist;
 
@@ -452,9 +460,8 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
   int usage_error = 0;
   if (argc == 3)
     {
-      argv++;
-      if (sscanf (*argv++, "%d", &hist_beg) != 1
-	  || sscanf (*argv, "%d", &hist_end) != 1)
+      if (sscanf (argv[1].c_str (), "%d", &hist_beg) != 1
+	  || sscanf (argv[2].c_str (), "%d", &hist_end) != 1)
 	usage_error = 1;
       else
 	{
@@ -464,8 +471,7 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
     }
   else if (argc == 2)
     {
-      argv++;
-      if (sscanf (*argv++, "%d", &hist_beg) != 1)
+      if (sscanf (argv[1].c_str (), "%d", &hist_beg) != 1)
 	usage_error = 1;
       else
 	{
@@ -495,13 +501,14 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
       reverse = 1;
     }
 
-  char *name = octave_tmp_file_name ();
+  string name = octave_tmp_file_name ();
 
-  fstream file (name, ios::out);
+  fstream file (name.c_str (), ios::out);
 
   if (! file)
     {
-      error ("%s: couldn't open temporary file `%s'", warn_for, name);
+      error ("%s: couldn't open temporary file `%s'", warn_for,
+	     name.c_str ());
       return 0;
     }
 
@@ -518,15 +525,15 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
 
   file.close ();
 
-  return strsave (name);
+  return name;
 }
 
-void
-do_edit_history (int argc, char **argv)
+static void
+do_edit_history (int argc, const string_vector& argv)
 {
-  char *name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
+  string name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
 
-  if (! name)
+  if (name.empty ())
     return;
 
   // Call up our favorite editor on the file of commands.
@@ -548,7 +555,7 @@ do_edit_history (int argc, char **argv)
   // Write the commands to the history file since parse_and_execute
   // disables command line history while it executes.
 
-  fstream file (name, ios::in);
+  fstream file (name.c_str (), ios::in);
 
   char *line;
   int first = 1;
@@ -589,17 +596,15 @@ do_edit_history (int argc, char **argv)
   // Delete the temporary file.  Should probably be done with an
   // unwind_protect.
 
-  unlink (name);
-
-  delete [] name;
+  unlink (name.c_str ());
 }
 
-void
-do_run_history (int argc, char **argv)
+static void
+do_run_history (int argc, const string_vector& argv)
 {
-  char *name = mk_tmp_hist_file (argc, argv, 1, "run_history");
+  string name = mk_tmp_hist_file (argc, argv, 1, "run_history");
 
-  if (! name)
+  if (name.empty ())
     return;
 
   // Turn on command echo, so the output from this will make better
@@ -618,9 +623,7 @@ do_run_history (int argc, char **argv)
   // Delete the temporary file.  Should probably be done with an
   // unwind_protect.
 
-  unlink (name);
-
-  delete [] name;
+  unlink (name.c_str ());
 }
 
 int
@@ -642,11 +645,14 @@ edit commands from the history list")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("edit_history");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "edit_history");
+
+  if (error_state)
+    return retval;
 
   do_edit_history (argc, argv);
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -658,11 +664,14 @@ display, save, or load command history")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("history");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "history");
+
+  if (error_state)
+    return retval;
 
   do_history (argc, argv);
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -674,11 +683,14 @@ run commands from the history list")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("run_history");
+  int argc = args.length () + 1;
+
+  string_vector argv = make_argv (args, "run_history");
+
+  if (error_state)
+    return retval;
 
   do_run_history (argc, argv);
-
-  DELETE_ARGV;
 
   return retval;
 }

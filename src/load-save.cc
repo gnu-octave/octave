@@ -38,6 +38,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "fnmatch.h"
 
+#include "str-vec.h"
+
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -1256,7 +1258,7 @@ extract_keyword (istream& is, char *keyword, int& value)
 // arbitrary comments, etc.  Someone should fix that.
 
 static char *
-read_ascii_data (istream& is, const char *filename, int& global,
+read_ascii_data (istream& is, const string& filename, int& global,
 		 tree_constant& tc)
 {
   // Read name for this entry or break on EOF.
@@ -1268,7 +1270,8 @@ read_ascii_data (istream& is, const char *filename, int& global,
 
   if (! *name)
     {
-      error ("load: empty name keyword found in file `%s'", filename);
+      error ("load: empty name keyword found in file `%s'",
+	     filename.c_str ());
       delete [] name;
       return 0;
     }
@@ -1276,7 +1279,8 @@ read_ascii_data (istream& is, const char *filename, int& global,
 
   if (! valid_identifier (name))
     {
-      error ("load: bogus identifier `%s' found in file `%s'", name, filename);
+      error ("load: bogus identifier `%s' found in file `%s'", name,
+	     filename.c_str ());
       delete [] name;
       return 0;
     }
@@ -1439,7 +1443,7 @@ read_ascii_data (istream& is, const char *filename, int& global,
 
   if (error_state)
     {
-      error ("load: reading file %s", filename);
+      error ("load: reading file %s", filename.c_str ());
       return 0;
     }
 
@@ -1518,7 +1522,7 @@ read_ascii_data (istream& is, const char *filename, int& global,
 
 static char *
 read_binary_data (istream& is, int swap, floating_point_format fmt,
-		  const char *filename, int& global,
+		  const string& filename, int& global,
 		  tree_constant& tc, char *&doc)
 {
   char tmp = 0;
@@ -1710,7 +1714,7 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
     default:
     data_read_error:
-      error ("load: trouble reading binary file `%s'", filename);
+      error ("load: trouble reading binary file `%s'", filename.c_str ());
       delete [] name;
       name = 0;
       break;
@@ -1876,7 +1880,7 @@ get_floating_point_format (int mach)
 // This format provides no way to tag the data as global.
 
 static char *
-read_mat_binary_data (istream& is, const char *filename,
+read_mat_binary_data (istream& is, const string& filename,
 		      tree_constant& tc)
 {
   // These are initialized here instead of closer to where they are
@@ -1971,7 +1975,7 @@ read_mat_binary_data (istream& is, const char *filename,
   return name;
 
  data_read_error:
-  error ("load: trouble reading binary file `%s'", filename);
+  error ("load: trouble reading binary file `%s'", filename.c_str ());
   delete [] name;
   return 0;
 }
@@ -1979,11 +1983,12 @@ read_mat_binary_data (istream& is, const char *filename,
 // Return nonzero if NAME matches one of the given globbing PATTERNS.
 
 static int
-matches_patterns (char **patterns, int num_pat, char *name)
+matches_patterns (const string_vector& patterns, int pat_idx,
+		  int num_pat, char *name)
 {
-  while (num_pat-- > 0)
+  for (int i = pat_idx; i < num_pat; i++)
     {
-      if (fnmatch (*patterns++, name, __FNM_FLAGS) == 0)
+      if (fnmatch (patterns[i].c_str (), name, __FNM_FLAGS) == 0)
 	return 1;
     }
   return 0;
@@ -2074,10 +2079,10 @@ get_file_format (const string& fname, const string& orig_fname)
 }
 
 static Octave_object
-do_load (istream& stream, const char *orig_fname, int force,
+do_load (istream& stream, const string& orig_fname, int force,
 	 load_save_format format, floating_point_format flt_fmt,
-	 int list_only, int swap, int verbose, char **argv,
-	 int argc, int nargout)
+	 int list_only, int swap, int verbose, const string_vector& argv,
+	 int argv_idx, int argc, int nargout)
 {
   Octave_object retval;
 
@@ -2121,7 +2126,8 @@ do_load (istream& stream, const char *orig_fname, int force,
 	{
 	  if (tc.is_defined ())
 	    {
-	      if (argc == 0 || matches_patterns (argv, argc, name))
+	      if (argv_idx == argc
+		  || matches_patterns (argv, argv_idx, argc, name))
 		{
 		  count++;
 		  if (list_only)
@@ -2153,7 +2159,7 @@ do_load (istream& stream, const char *orig_fname, int force,
 	{
 	  if (count == 0)
 	    error ("load: are you sure `%s' is an Octave data file?",
-		   orig_fname);
+		   orig_fname.c_str ());
 
 	  delete [] name;
 	  delete [] doc;
@@ -2194,10 +2200,12 @@ found in the file will be replaced with the values read from the file.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV ("load");
+  int argc = args.length () + 1;
 
-  argc--;
-  argv++;
+  string_vector argv = make_argv (args, "load");
+
+  if (error_state)
+    return retval;
 
   int force = 0;
 
@@ -2210,65 +2218,52 @@ found in the file will be replaced with the values read from the file.")
   int list_only = 0;
   int verbose = 0;
 
-  while (argc > 0)
+  int i;
+  for (i = 1; i < argc; i++)
     {
-      if (strcmp (*argv, "-force") == 0 || strcmp (*argv, "-f") == 0)
+      if (argv[i] == "-force" || argv[i] == "-f")
 	{
 	  force++;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-list") == 0 || strcmp (*argv, "-l") == 0)
+      else if (argv[i] == "-list" || argv[i] == "-l")
 	{
 	  list_only = 1;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-verbose") == 0 || strcmp (*argv, "-v") == 0)
+      else if (argv[i] == "-verbose" || argv[i] == "-v")
 	{
 	  verbose = 1;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-ascii") == 0 || strcmp (*argv, "-a") == 0)
+      else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  format = LS_ASCII;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-binary") == 0 || strcmp (*argv, "-b") == 0)
+      else if (argv[i] == "-binary" || argv[i] == "-b")
 	{
 	  format = LS_BINARY;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-mat-binary") == 0 || strcmp (*argv, "-m") == 0)
+      else if (argv[i] == "-mat-binary" || argv[i] == "-m")
 	{
 	  format = LS_MAT_BINARY;
-	  argc--;
-	  argv++;
 	}
       else
 	break;
     }
 
-  if (argc < 1)
+  if (i == argc)
     {
       error ("load: you must specify a single file to read");
-      DELETE_ARGV;
       return retval;
     }
 
-  char *orig_fname = *argv;
+  string orig_fname = argv[i];
 
   floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
 
   int swap = 0;
 
-  if (strcmp (*argv, "-") == 0)
+  if (argv[i] == "-")
     {
-      argc--;
-      argv++;
+      i++;
 
       if (format != LS_UNKNOWN)
 	{
@@ -2278,7 +2273,7 @@ found in the file will be replaced with the values read from the file.")
 	  // fix this using cin only.
 
 	  retval = do_load (cin, orig_fname, force, format, flt_fmt,
-			    list_only, swap, verbose, argv, argc,
+			    list_only, swap, verbose, argv, i, argc,
 			    nargout);
 	}
       else
@@ -2286,15 +2281,14 @@ found in the file will be replaced with the values read from the file.")
     }
   else
     {
-      string fname = oct_tilde_expand (*argv);
+      string fname = oct_tilde_expand (argv[i]);
 
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
 
       if (format != LS_UNKNOWN)
 	{
-	  argv++;
-	  argc--;
+	  i++;
 
 	  unsigned mode = ios::in;
 	  if (format == LS_BINARY || format == LS_MAT_BINARY)
@@ -2309,23 +2303,21 @@ found in the file will be replaced with the values read from the file.")
 		  if (read_binary_file_header (file, swap, flt_fmt) < 0)
 		    {
 		      file.close ();
-		      DELETE_ARGV;
 		      return retval;
 		    }
 		}
 
 	      retval = do_load (file, orig_fname, force, format,
 				flt_fmt, list_only, swap, verbose,
-				argv, argc, nargout);
+				argv, i, argc, nargout);
 
 	      file.close ();
 	    }
 	  else
-	    error ("load: couldn't open input file `%s'", orig_fname);
+	    error ("load: couldn't open input file `%s'",
+		   orig_fname.c_str ());
 	}
     }
-
-  DELETE_ARGV;
 
   return retval;
 }
@@ -2333,14 +2325,16 @@ found in the file will be replaced with the values read from the file.")
 // Return nonzero if PATTERN has any special globbing chars in it.
 
 static int
-glob_pattern_p (char *pattern)
+glob_pattern_p (const string& pattern)
 {
-  char *p = pattern;
-  char c;
   int open = 0;
 
-  while ((c = *p++) != '\0')
+  int len = pattern.length ();
+
+  for (int i = 0; i < len; i++)
     {
+      char c = pattern[i];
+
       switch (c)
 	{
 	case '?':
@@ -2357,7 +2351,7 @@ glob_pattern_p (char *pattern)
 	  continue;
 	  
 	case '\\':
-	  if (*p++ == '\0')
+	  if (i == len - 1)
 	    return 0;
 
 	default:
@@ -2397,24 +2391,21 @@ get_save_type (double max_val, double min_val)
 // binary format described above for read_binary_data.
 
 static int
-save_binary_data (ostream& os, const tree_constant& tc, char *name,
-		  char *doc, int mark_as_global, int save_as_floats) 
+save_binary_data (ostream& os, const tree_constant& tc,
+		  const string& name, const string& doc,
+		  int mark_as_global, int save_as_floats) 
 {
   int fail = 0;
 
-  FOUR_BYTE_INT name_len = 0;
-  if (name)
-    name_len = strlen (name);
+  FOUR_BYTE_INT name_len = name.length ();
 
   os.write (&name_len, 4);
-  os.write (name, name_len);
+  os << name;
 
-  FOUR_BYTE_INT doc_len = 0;
-  if (doc)
-    doc_len = strlen (doc);
+  FOUR_BYTE_INT doc_len = doc.length ();
 
   os.write (&doc_len, 4);
-  os.write (doc, doc_len);
+  os << doc;
 
   char tmp;
 
@@ -2542,7 +2533,8 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
 // in the MatLab binary format.
 
 static int
-save_mat_binary_data (ostream& os, const tree_constant& tc, char *name) 
+save_mat_binary_data (ostream& os, const tree_constant& tc,
+		      const string& name) 
 {
   int fail = 0;
 
@@ -2564,10 +2556,10 @@ save_mat_binary_data (ostream& os, const tree_constant& tc, char *name)
   FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
   os.write (&imag, 4);
 
-  FOUR_BYTE_INT name_len = name ? strlen (name) + 1 : 0;
+  FOUR_BYTE_INT name_len = name.length ();
 
   os.write (&name_len, 4);
-  os.write (name, name_len);
+  os << name;
 
   if (tc.is_real_scalar ())
     {
@@ -2705,7 +2697,7 @@ strip_infnan (const ComplexMatrix& m)
 
 // Save the data from TC along with the corresponding NAME, and global
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
-// above for load_ascii_data.  If NAME is null, the name: line is not
+// above for load_ascii_data.  If NAME is empty, the name: line is not
 // generated.  PRECISION specifies the number of decimal digits to print. 
 // If STRIP_NAN_AND_INF is nonzero, rows containing NaNs are deleted,
 // and Infinite values are converted to +/-OCT_RBV (A Real Big Value,
@@ -2720,7 +2712,7 @@ strip_infnan (const ComplexMatrix& m)
 
 int
 save_ascii_data (ostream& os, const tree_constant& tc,
-		 char *name, int strip_nan_and_inf,
+		 const string& name, int strip_nan_and_inf,
 		 int mark_as_global, int precision) 
 {
   int success = 1;
@@ -2728,7 +2720,7 @@ save_ascii_data (ostream& os, const tree_constant& tc,
   if (! precision)
     precision = user_pref.save_precision;
 
-  if (name)
+  if (! name.empty ())
     os << "# name: " << name << "\n";
 
   long old_precision = os.precision ();
@@ -2855,12 +2847,12 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
       return;
     }
 
-  char *name = sr->name ();
-  char *help = sr->help ();
+  string name = sr->name ();
+  string help = sr->help ();
   int global = sr->is_linked_to_global ();
   tree_constant tc = *((tree_constant *) sr->def ());
 
-  if (! name || ! tc.is_defined ())
+  if (tc.is_undefined ())
     return;
 
   switch (fmt)
@@ -2888,7 +2880,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
 // builtin variables with names that match PATTERN.
 
 static int
-save_vars (ostream& os, char *pattern, int save_builtins,
+save_vars (ostream& os, const string& pattern, int save_builtins,
 	   load_save_format fmt, int save_as_floats)
 {
   int count;
@@ -2936,12 +2928,11 @@ get_default_save_format (void)
 {
   load_save_format retval = LS_ASCII;
 
-  char *fmt = user_pref.default_save_format;
+  string fmt = user_pref.default_save_format;
 
-  if (strcasecmp (fmt, "binary") == 0)
+  if (fmt == "binary")
     retval = LS_BINARY;
-  else if (strcasecmp (fmt, "mat-binary") == 0
-	   || strcasecmp (fmt, "mat_binary") == 0)
+  else if (fmt == "mat-binary" || fmt =="mat_binary")
     retval = LS_MAT_BINARY;
       
   return retval;
@@ -2960,25 +2951,24 @@ write_binary_header (ostream& stream, load_save_format format)
 }
 
 static void
-save_vars (char **argv, int argc, ostream& os, int save_builtins,
-	   load_save_format fmt, int save_as_floats)
+save_vars (const string_vector& argv, int argv_idx, int argc,
+	   ostream& os, int save_builtins, load_save_format fmt,
+	   int save_as_floats) 
 {
   write_binary_header (os, fmt);
 
-  if (argc == 0)
+  if (argv_idx == argc)
     {
       save_vars (os, "*", save_builtins, fmt, save_as_floats);
     }
   else
     {
-      while (argc-- > 0)
+      for (int i = argv_idx; i < argc; i++)
 	{
-	  if (! save_vars (os, *argv, save_builtins, fmt, save_as_floats))
+	  if (! save_vars (os, argv[i], save_builtins, fmt, save_as_floats))
 	    {
-	      warning ("save: no such variable `%s'", *argv);
+	      warning ("save: no such variable `%s'", argv[i].c_str ());
 	    }
-
-	  argv++;
 	}
     }
 }
@@ -3002,7 +2992,7 @@ save_user_variables (void)
 
   if (file)
     {
-      save_vars (0, 0, file, 0, format, 0);
+      save_vars (string_vector (), 0, 0, file, 0, format, 0);
       message (0, "save to `%s' complete", fname);
     }
   else
@@ -3017,10 +3007,12 @@ save variables in a file")
 {
   Octave_object retval;
 
-  DEFINE_ARGV ("save");
+  int argc = args.length () + 1;
 
-  argc--;
-  argv++;
+  string_vector argv = make_argv (args, "save");
+
+  if (error_state)
+    return retval;
 
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
@@ -3031,39 +3023,29 @@ save variables in a file")
 
   load_save_format format = get_default_save_format ();
 
-  while (argc > 0)
+  int i;
+  for (i = 1; i < argc; i++)
     {
-      if (strcmp (*argv, "-ascii") == 0 || strcmp (*argv, "-a") == 0)
+      if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  format = LS_ASCII;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-binary") == 0 || strcmp (*argv, "-b") == 0)
+      else if (argv[i] == "-binary" || argv[i] == "-b")
 	{
 	  format = LS_BINARY;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-mat-binary") == 0 || strcmp (*argv, "-m") == 0)
+      else if (argv[i] == "-mat-binary" || argv[i] == "-m")
 	{
 	  format = LS_MAT_BINARY;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-float-binary") == 0
-	       || strcmp (*argv, "-f") == 0)
+      else if (argv[i] == "-float-binary" || argv[i] == "-f")
 	{
 	  format = LS_BINARY;
 	  save_as_floats = 1;
-	  argc--;
-	  argv++;
 	}
-      else if (strcmp (*argv, "-save-builtins") == 0)
+      else if (argv[i] == "-save-builtins")
 	{
 	  save_builtins = 1;
-	  argc--;
-	  argv++;
 	}
       else
 	break;
@@ -3072,44 +3054,42 @@ save variables in a file")
   if (argc < 1)
     {
       print_usage ("save");
-      DELETE_ARGV;
       return retval;
     }
 
   if (save_as_floats && format == LS_ASCII)
     {
       error ("save: cannot specify both -ascii and -float-binary");
-      DELETE_ARGV;
       return retval;
     }
 
-  if (strcmp (*argv, "-") == 0)
+  if (argv[i] == "-")
     {
-      argc--;
-      argv++;
+      i++;
 
       // XXX FIXME XXX -- should things intended for the screen end up
       // in a tree_constant (string)?
 
       ostrstream buf;
 
-      save_vars (argv, argc, buf, save_builtins, format,
+      save_vars (argv, i, argc, buf, save_builtins, format,
 		 save_as_floats);
 
       maybe_page_output (buf);
     }
-  else if (argc == 1 && glob_pattern_p (*argv)) // Guard against things
-    {						// like `save a*',
-      print_usage ("save");			// which are probably
-      DELETE_ARGV;				// mistakes...
+
+  // Guard against things like `save a*', which are probably mistakes...
+
+  else if (i == argc - 1 && glob_pattern_p (argv[i]))
+    {
+      print_usage ("save");
       return retval;
     }
   else
     {
-      string fname = oct_tilde_expand (*argv);
+      string fname = oct_tilde_expand (argv[i]);
 
-      argc--;
-      argv++;
+      i++;
 
       unsigned mode = ios::out|ios::trunc;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
@@ -3119,18 +3099,15 @@ save variables in a file")
 
       if (file)
 	{
-	  save_vars (argv, argc, file, save_builtins, format,
+	  save_vars (argv, i, argc, file, save_builtins, format,
 		     save_as_floats);
 	}
       else
 	{
-	  error ("save: couldn't open output file `%s'", *argv);
-	  DELETE_ARGV;
+	  error ("save: couldn't open output file `%s'", fname.c_str ());
 	  return retval;
 	}
     }
-
-  DELETE_ARGV;
 
   return retval;
 }

@@ -48,6 +48,8 @@ each element of the matrix.
 
 @DOCSTRING(min)
 
+@DOCSTRING(mod)
+
 @DOCSTRING(nextpow2)
 
 @DOCSTRING(pow2)

@@ -38,7 +38,7 @@ ComplexQR
 {
 public:
 
-  ComplexQR (void) : q (), r () { }
+  ComplexQR (void) : q (), r (), tau (0), work (0), tmp_data (0) { }
 
   ComplexQR (const ComplexMatrix& A, QR::type qr_type = QR::std);
 
@@ -54,6 +54,13 @@ public:
       return *this;
     }
 
+  ~ComplexQR (void)
+    {
+      delete [] tau;
+      delete [] work;
+      delete [] tmp_data;
+    }
+
   ComplexMatrix Q (void) const { return q; }
   ComplexMatrix R (void) const { return r; }
 
@@ -63,6 +70,10 @@ protected:
 
   ComplexMatrix q;
   ComplexMatrix r;
+
+  Complex *tau;
+  Complex *work;
+  Complex *tmp_data;
 };
 
 #endif

@@ -44,7 +44,7 @@ public:
       economy,
     };
 
-  QR (void) : q (), r () { }
+  QR (void) : q (), r (), tau (0), work (0), tmp_data (0) { }
 
   QR (const Matrix& A, type qr_type = QR::std);
 
@@ -60,6 +60,13 @@ public:
       return *this;
     }
 
+  ~QR (void)
+    {
+      delete [] tau;
+      delete [] work;
+      delete [] tmp_data;
+    }
+
   Matrix Q (void) const { return q; }
 
   Matrix R (void) const { return r; }
@@ -70,6 +77,10 @@ protected:
 
   Matrix q;
   Matrix r;
+
+  double *tau;
+  double *work;
+  double *tmp_data;
 };
 
 #endif

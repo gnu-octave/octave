@@ -48,6 +48,12 @@ extern void octave_print_internal (ostream& os, const Range& r,
 
 extern void set_format_style (int argc, char **argv);
 
+// XXX FIXME XXX -- these should probably be somewhere else.
+
+extern int any_element_is_inf_or_nan (const Matrix& a);
+
+extern int any_element_is_inf_or_nan (const ComplexMatrix& a);
+
 #endif
 
 /*

@@ -67,6 +67,9 @@ static int bank_format = 0;
 // Nonzero means print data in hexadecimal format.
 static int hex_format = 0;
 
+// Nonzero means print data in binary-bit-pattern format.
+static int bit_format = 0;
+
 // Nonzero means don't put newlines around the column number headers.
 static int compact_format = 0;
 
@@ -88,7 +91,9 @@ any_element_is_negative (const Matrix& a)
   return 0;
 }
 
-static int
+// XXX FIXME XXX -- these should probably be somewhere else.
+
+int
 any_element_is_inf_or_nan (const Matrix& a)
 {
   int nr = a.rows ();
@@ -103,7 +108,7 @@ any_element_is_inf_or_nan (const Matrix& a)
   return 0;
 }
 
-static int
+int
 any_element_is_inf_or_nan (const ComplexMatrix& a)
 {
   int nr = a.rows ();
@@ -226,6 +231,11 @@ set_format (double d, int& fw)
       fw = 2 * sizeof (double);
       rd = 0;
     }
+  else if (bit_format)
+    {
+      fw = 8 * sizeof (double);
+      rd = 0;
+    }
   else if (xisnan (d) || D_NINT (d) == d)
     {
       fw = digits;
@@ -255,7 +265,7 @@ set_format (double d, int& fw)
       fw += sign;
     }
 
-  if (! (bank_format || hex_format)
+  if (! (bank_format || hex_format || bit_format)
       && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
@@ -327,6 +337,11 @@ set_format (const Matrix& m, int& fw)
       fw = 2 * sizeof (double);
       rd = 0;
     }
+  else if (bit_format)
+    {
+      fw = 8 * sizeof (double);
+      rd = 0;
+    }
   else if (all_elements_are_int_or_inf_or_nan (m))
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -375,7 +390,7 @@ set_format (const Matrix& m, int& fw)
       fw += sign;
     }
 
-  if (! (bank_format ||hex_format)
+  if (! (bank_format ||hex_format || bit_format)
       && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
@@ -465,6 +480,12 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       i_fw = 2 * sizeof (double);
       rd = 0;
     }
+  else if (bit_format)
+    {
+      r_fw = 8 * sizeof (double);
+      i_fw = 8 * sizeof (double);
+      rd = 0;
+    }
   else if (inf_or_nan || (D_NINT (rp) == rp && D_NINT (ip) == ip))
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -513,7 +534,7 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       r_fw += sign;
     }
 
-  if (! (bank_format || hex_format)
+  if (! (bank_format || hex_format || bit_format)
       && (r_fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
@@ -609,6 +630,12 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       i_fw = 2 * sizeof (double);
       rd = 0;
     }
+  else if (bit_format)
+    {
+      r_fw = 8 * sizeof (double);
+      i_fw = 8 * sizeof (double);
+      rd = 0;
+    }
   else if (all_elements_are_int_or_inf_or_nan (rp)
 	   && all_elements_are_int_or_inf_or_nan (ip))
     {
@@ -658,7 +685,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       r_fw += sign;
     }
 
-  if (! (bank_format || hex_format)
+  if (! (bank_format || hex_format || bit_format)
       && (r_fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
@@ -755,6 +782,11 @@ set_format (const Range& r, int& fw)
       fw = 2 * sizeof (double);
       rd = 0;
     }
+  else if (bit_format)
+    {
+      fw = 8 * sizeof (double);
+      rd = 0;
+    }
   else if (all_elements_are_ints (r))
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -797,7 +829,7 @@ set_format (const Range& r, int& fw)
       fw = sign + ld + 1 + rd;
     }
 
-  if (! (bank_format || hex_format)
+  if (! (bank_format || hex_format || bit_format)
       && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
@@ -832,6 +864,42 @@ union equiv
   unsigned char i[sizeof (double)];
 };
 
+#define PRINT_CHAR_BITS(os, c) \
+  do \
+    { \
+      unsigned char ctmp = c; \
+      char stmp[9]; \
+      stmp[0] = (c & 0x80) ? '1' : '0'; \
+      stmp[1] = (c & 0x40) ? '1' : '0'; \
+      stmp[2] = (c & 0x20) ? '1' : '0'; \
+      stmp[3] = (c & 0x10) ? '1' : '0'; \
+      stmp[4] = (c & 0x08) ? '1' : '0'; \
+      stmp[5] = (c & 0x04) ? '1' : '0'; \
+      stmp[6] = (c & 0x02) ? '1' : '0'; \
+      stmp[7] = (c & 0x01) ? '1' : '0'; \
+      stmp[8] = '\0'; \
+      os.form ("%s", stmp); \
+    } \
+  while (0)
+
+#define PRINT_CHAR_BITS_SWAPPED(os, c) \
+  do \
+    { \
+      unsigned char ctmp = c; \
+      char stmp[9]; \
+      stmp[0] = (c & 0x01) ? '1' : '0'; \
+      stmp[1] = (c & 0x02) ? '1' : '0'; \
+      stmp[2] = (c & 0x04) ? '1' : '0'; \
+      stmp[3] = (c & 0x08) ? '1' : '0'; \
+      stmp[4] = (c & 0x10) ? '1' : '0'; \
+      stmp[5] = (c & 0x20) ? '1' : '0'; \
+      stmp[6] = (c & 0x40) ? '1' : '0'; \
+      stmp[7] = (c & 0x80) ? '1' : '0'; \
+      stmp[8] = '\0'; \
+      os.form ("%s", stmp); \
+    } \
+  while (0)
+
 static inline void
 pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 {
@@ -863,6 +931,38 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	    {
 	      for (int i = sizeof (double) - 1; i >= 0; i--)
 		os.form ("%02x", (int) tmp.i[i]);
+	    }
+	}
+      else if (bit_format)
+	{
+	  equiv tmp;
+	  tmp.d = d;
+
+	  // Unless explicitly asked for, always print in big-endian
+	  // format.
+
+	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
+	  // formats and not for Cray?
+
+	  if (native_float_format == OCTAVE_IEEE_BIG
+	      || native_float_format == OCTAVE_CRAY
+	      || native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
+	    {
+	      for (int i = 0; i < sizeof (double); i++)
+		PRINT_CHAR_BITS (os, tmp.i[i]);
+	    }
+	  else
+	    {
+	      if (bit_format > 1)
+		{
+		  for (int i = 0; i < sizeof (double); i++)
+		    PRINT_CHAR_BITS_SWAPPED (os, tmp.i[i]);
+		}
+	      else
+		{
+		  for (int i = sizeof (double) - 1; i >= 0; i--)
+		    PRINT_CHAR_BITS (os, tmp.i[i]);
+		}
 	    }
 	}
       else if (xisinf (d))
@@ -912,7 +1012,7 @@ pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
   if (! bank_format)
     {
       double i = c.imag ();
-      if (! hex_format && i < 0)
+      if (! (hex_format || bit_format) && i < 0)
 	{
 	  os << " - ";
 	  i = -i;
@@ -920,7 +1020,7 @@ pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 	}
       else
 	{
-	  if (hex_format)
+	  if (hex_format || bit_format)
 	    os << "  ";
 	  else
 	    os << " + ";
@@ -1172,7 +1272,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
       int r_fw, i_fw;
       set_format (cm, r_fw, i_fw);
       int column_width = i_fw + r_fw;
-      column_width += (bank_format || hex_format) ? 2 : 7;
+      column_width += (bank_format || hex_format|| bit_format) ? 2 : 7;
       int total_width = nc * column_width;
       int max_width = terminal_columns ();
 
@@ -1373,6 +1473,7 @@ init_format_state (void)
   plus_format = 0;
   bank_format = 0;
   hex_format = 0;
+  bit_format = 0;
   print_e = 0;
   print_big_e = 0;
 }
@@ -1460,6 +1561,16 @@ set_format_style (int argc, char **argv)
 	    {
 	      init_format_state ();
 	      hex_format = 2;
+	    }
+	  else if (strcmp (*argv, "bit") == 0)
+	    {
+	      init_format_state ();
+	      bit_format = 1;
+	    }
+	  else if (strcmp (*argv, "native-bit") == 0)
+	    {
+	      init_format_state ();
+	      bit_format = 2;
 	    }
 	  else if (strcmp (*argv, "+") == 0 || strcmp (*argv, "plus") == 0)
 	    {

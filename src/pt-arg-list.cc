@@ -174,7 +174,9 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
   // way of asking an octave_value object this question?
 
   bool stash_object = (list_includes_magic_end
-		       && object && object->is_constant ());
+		       && object
+		       && ! (object->is_function ()
+			     || object->is_function_handle ()));
 
   if (stash_object)
     {

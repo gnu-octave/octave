@@ -1,3 +1,9 @@
+2004-11-22  John W. Eaton  <jwe@octave.org>
+
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector):
+	Check to see whether object is a function or function handle
+	instead of constant.
+
 2004-11-19  John W. Eaton  <jwe@octave.org>
 
 	* ov-str-mat.cc (octave_char_matrix_str::do_index_op):

@@ -135,7 +135,7 @@ time steps. The default is @code{EPINIT} = 0.01.
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
-    $OPTVAR.resize (6, 0.0);
+    $OPTVAR.resize (6);
     $OPTVAR(0) = 5.0;
     $OPTVAR(1) = 6.0;
     $OPTVAR(2) = 5.0;

@@ -66,6 +66,10 @@ public:
       return *this;
     }
 
+  void resize (int n) { Array<T>::resize_no_fill (n); }
+
+  void resize (int n, const T& val) { Array<T>::resize_and_fill (n, val); }
+
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 

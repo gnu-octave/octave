@@ -137,7 +137,7 @@ make_subs_cell (tree_argument_list *args, const string_vector& arg_nm)
 	{
 	  arg_values.stash_name_tags (arg_nm);
 
-	  retval.resize (1, n);
+	  retval.resize (dim_vector (1, n));
 
 	  for (int i = 0; i < n; i++)
 	    retval(0,i) = arg_values(i);

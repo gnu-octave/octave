@@ -41,7 +41,7 @@ Cell : public ArrayN<octave_value>
 public:
 
   Cell (void)
-    : ArrayN<octave_value> () { }
+    : ArrayN<octave_value> (dim_vector (0, 0)) { }
 
   Cell (const octave_value& val)
     : ArrayN<octave_value> (dim_vector (1, 1), val) { }

@@ -387,18 +387,25 @@ Array<T>::resize_no_fill (const dim_vector& dims)
 	}
     }
 
-  bool no_change = true;
+  bool same_size = true;
 
-  for (int i = 0; i < n; i++)
+  if (dimensions.length () != n)
     {
-      if (dims(i) != dimensions(i))
+      same_size = false;
+    }
+  else
+    {
+      for (int i = 0; i < n; i++)
 	{
-	  no_change = false;
-	  break;
+	  if (dims(i) != dimensions(i))
+	    {
+	      same_size = false;
+	      break;
+	    }
 	}
     }
 
-  if (no_change)
+  if (same_size)
     return;
 
   int old_len = length ();
@@ -434,6 +441,13 @@ Array<T>::resize_no_fill (int r, int c)
 	("can't resize to negative dimension");
       return;
     }
+
+  int n = ndims ();
+
+  if (n == 0)
+    dimensions = dim_vector (0, 0);
+
+  assert (ndims () == 2);
 
   if (r == dim1 () && c == dim2 ())
     return;
@@ -473,6 +487,13 @@ Array<T>::resize_no_fill (int r, int c, int p)
 	("can't resize to negative dimension");
       return;
     }
+
+  int n = ndims ();
+
+  if (n == 0)
+    dimensions = dim_vector (0, 0, 0);
+
+  assert (ndims () == 3);
 
   if (r == dim1 () && c == dim2 () && p == dim3 ())
     return;
@@ -555,6 +576,11 @@ Array<T>::resize_and_fill (int r, int c, const T& val)
       return;
     }
 
+  if (ndims () == 0)
+    dimensions = dim_vector (0, 0);
+
+  assert (ndims () == 2);
+
   if (r == dim1 () && c == dim2 ())
     return;
 
@@ -601,6 +627,11 @@ Array<T>::resize_and_fill (int r, int c, int p, const T& val)
 	("can't resize to negative dimension");
       return;
     }
+
+  if (ndims () == 0)
+    dimensions = dim_vector (0, 0, 0);
+
+  assert (ndims () == 3);
 
   if (r == dim1 () && c == dim2 () && p == dim3 ())
     return;
@@ -777,6 +808,8 @@ template <class T>
 Array<T>
 Array<T>::transpose (void) const
 {
+  assert (ndims () == 2);
+
   int nr = dim1 ();
   int nc = dim2 ();
 
@@ -963,6 +996,8 @@ template <class T>
 void
 Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
 {
+  assert (ndims () == 2);
+
   int nr = dim1 ();
   int nc = dim2 ();
 
@@ -1062,6 +1097,8 @@ template <class T>
 void
 Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 {
+  assert (ndims () == 2);
+
   int nr = dim1 ();
   int nc = dim2 ();
 
@@ -1517,7 +1554,7 @@ Array<T>::index1 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	       && idx_arg.one_zero_only ()
 	       && idx_arg.ones_count () == n)
 	{
-	  retval.resize (n, elem (0));
+	  retval.resize_and_fill (n, elem (0));
 	}
       else
 	{
@@ -1544,6 +1581,8 @@ Array<T>
 Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
+
+  assert (ndims () == 2);
 
   int nr = dim1 ();
   int nc = dim2 ();
@@ -1666,18 +1705,16 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
   dim_vector idx_orig_dims;
 
-  idx_orig_dims.resize(idx_orig_dimsXXX.length());
+  idx_orig_dims.resize (idx_orig_dimsXXX.length ());
 
-  for (int i = 0; i < idx_orig_dimsXXX.length(); i++)
+  for (int i = 0; i < idx_orig_dimsXXX.length (); i++)
     idx_orig_dims(i) = idx_orig_dimsXXX(i);
-
 
   if (ra_idx.is_colon ())
     {
-      dim_vector idx(orig_len);
+      dim_vector idx (orig_len);
 
       retval = Array<T> (*this, idx);
-
     }
   else if (length () == 1)
     {
@@ -1688,10 +1725,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
       if (tmp.length () != 0)
 	retval = Array<T> (tmp, idx_orig_dims);
       else
-	{
-	  dim_vector d;
-	  retval = Array<T> (tmp, d);
-	}
+	retval = Array<T> (tmp, dim_vector (0));
     }
   else if (vector_equivalent (dims ()))
     { 
@@ -1808,7 +1842,6 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
           Array<int> idx = get_ra_idx (r_idx, dims ());
 
           dim_vector new_dims (1);
-	  new_dims(0)=1;
 
 	  // This shouldn't be needed.
 
@@ -1836,6 +1869,8 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 		 const T& rfv) const
 {
   Array<T> retval;
+
+  assert (ndims () == 2);
 
   int nr = dim1 ();
   int nc = dim2 ();
@@ -1910,10 +1945,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
 	    }
 	  else if (any_zero_len (frozen_lengths))
 	    {
-	      dim_vector new_size = 
-		get_zero_len_size (frozen_lengths, dimensions);
-
-	      retval.resize (new_size);
+	      retval.resize (get_zero_len_size (frozen_lengths, dimensions));
 	    }
 	  else if (all_colon_equiv (ra_idx, dimensions) 
 		    && frozen_lengths.length () == n_dims)
@@ -2029,7 +2061,7 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  int max_idx = lhs_idx.max () + 1;
 	  if (max_idx > lhs_len)
-	    lhs.resize (max_idx, rfv);
+	    lhs.resize_and_fill (max_idx, rfv);
 	}
 
       if (rhs_len == n)
@@ -2383,13 +2415,13 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       if (n_idx >= lhs_dims.length () && ! rhs_is_empty) \
 	{ \
 	  Array<int> max_idx (n_idx); \
-	  dim_vector new_idx; \
-          new_idx.resize (n_idx); \
+	  dim_vector new_dims; \
+          new_dims.resize (n_idx); \
  \
 	  for (int i = 0; i < n_idx; i++) \
 	    { \
 	      if (lhs_dims.length () == 0 || i >= lhs_dims.length ()) \
-		new_idx(i) = idx(i).max () + 1; \
+		new_dims(i) = idx(i).max () + 1; \
 	      else \
 		{ \
 		  if (i < rhs_dims.length ()) \
@@ -2397,11 +2429,11 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		  else \
 		    max_idx(i) = idx(i).max () + 1; \
  \
-		  new_idx(i) = max_idx(i) > lhs_dims(i) ? max_idx(i) : lhs_dims(i); \
+		  new_dims(i) = max_idx(i) > lhs_dims(i) ? max_idx(i) : lhs_dims(i); \
 		} \
             } \
  \
-	  lhs.resize (new_idx, rfv); \
+	  lhs.resize_and_fill (new_dims, rfv); \
 	  lhs_dims = lhs.dims ();  \
         } \
     } \
@@ -2661,7 +2693,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      Array<int> result_rhs_idx (rhs_dims.length (), 0);
 
 	      dim_vector frozen_rhs;
-	      frozen_rhs.resize (rhs_dims.length());
+	      frozen_rhs.resize (rhs_dims.length ());
 
 	      for (int i = 0; i < rhs_dims.length (); i++)
 		frozen_rhs(i) = rhs_dims(i);

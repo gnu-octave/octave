@@ -99,7 +99,7 @@ public:
 
   void resize (int n) { data.resize (n); }
 
-  void resize (int n, const octave_value& val) { data.resize (n, val); }
+  void resize (int n, const octave_value& val) { data.resize_and_fill (n, val); }
 
   octave_value_list& prepend (const octave_value& val);
 
@@ -158,7 +158,7 @@ private:
   void maybe_resize (int n)
     {
       if (n >= length ())
-	data.resize (n + 1, Matrix ());
+	data.resize_and_fill (n + 1, Matrix ());
     }
 
   octave_value& elem (int n)

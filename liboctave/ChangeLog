@@ -1,3 +1,35 @@
+2003-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::resize_no_fill (const dim_vector&)):
+	Allow number of dimensions to change.
+	(Array<T>::resize_no_fill (int, int)): Require ndims to be 0 or 2.
+	(Array<T>::resize_and_fill (int, int, const T&)): Likewise.
+	(Array<T>::resize_no_fill (int, int, int)): Require ndims to be 0 or 3.
+	(Array<T>::resize_and_fill (int, int, int, const T&)): Likewise.
+	(Array<T>::transpose): Require ndims to be 2.
+	(Array<T>::index2): Likewise.
+	(Array<T>::index (idx_vector&, idx_vector&, int, const T&)): Likewise.
+	(Array<T>::maybe_delete_elements_2): Likewise.
+	(Array<T>::maybe_delete_elements (idx_vector&, idx_vector&)): Likewise.
+	(Array<T>::index1): Use resize_and_fill.
+	(MAYBE_RESIZE_ND_DIMS): Likewise.
+
+	* ODESSA.cc (ODESSA::integrate): Use resize_and_fill for x_s_out.
+
+	* MArray2.h (MArray2<T>::resize (int, int)): New function.
+	(MArray2<T>::resize (int, int, const T&)): New function.
+
+	* MArray.h (MArray<T>::resize (int)): New function.
+	(MArray<T>::resize (int, const T&)): New function.
+
+	* DASRT.cc (DASRT::integrate): Use resize_and_fill for jroot.
+
+	* DASPK-opts.in: Use single-arg resize for initial condition
+	heuristics.
+
+	* dim-vector.h (class dim_vector): Now reference counted.
+	(dim_vector_rep::elem): Use assert to check that index is in bounds.
+
 2003-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::squeeze): Delete redundant retval decl.

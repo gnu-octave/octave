@@ -404,6 +404,9 @@ public:
   T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
+  void resize_no_fill (int n);
+  void resize_and_fill (int n, const T& val);
+
   // !!! WARNING !!! -- the following resize_no_fill and
   // resize_and_fill functions are public because template friends
   // don't work properly with versions of gcc earlier than 3.3.  You
@@ -412,20 +415,13 @@ public:
 
   // protected:
 
-  void resize_no_fill (int n);
-
   void resize_no_fill (int r, int c);
-
-  void resize_no_fill (int r, int c, int p);
-
-  void resize_no_fill (const dim_vector& dims);
-
-  void resize_and_fill (int n, const T& val);
-
   void resize_and_fill (int r, int c, const T& val);
 
+  void resize_no_fill (int r, int c, int p);
   void resize_and_fill (int r, int c, int p, const T& val);
 
+  void resize_no_fill (const dim_vector& dims);
   void resize_and_fill (const dim_vector& dims, const T& val);
 
 public:

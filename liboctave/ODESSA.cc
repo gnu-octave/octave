@@ -578,7 +578,7 @@ ODESSA::integrate (const ColumnVector& tout)
     {
       x_out.resize (n_out, n);
 
-      x_s_out.resize (npar, Matrix (n_out, n, 0.0));
+      x_s_out.resize_and_fill (npar, Matrix (n_out, n, 0.0));
 
       for (int j = 0; j < n_out; j++)
 	{
@@ -622,7 +622,7 @@ ODESSA::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
     {
       x_out.resize (n_out, n);
 
-      x_s_out.resize (npar, Matrix (n_out, n, 0.0));
+      x_s_out.resize_and_fill (npar, Matrix (n_out, n, 0.0));
 
       int n_crit = tcrit.capacity ();
 

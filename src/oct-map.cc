@@ -138,12 +138,12 @@ Octave_map::assign (const octave_value_list& idx, const std::string& key,
 
       if (rhs_len < len)
 	{
-	  tmp.resize (len, fill_value);
+	  tmp.resize_and_fill (len, fill_value);
 	}
       else if (rhs_len > len)
 	{
 	  for (iterator p = begin (); p != end (); p++)
-	    contents(p).resize (rhs_len, fill_value);
+	    contents(p).resize_and_fill (rhs_len, fill_value);
 
 	  array_len = rhs_len;
 	}

@@ -253,7 +253,7 @@ DASRT::integrate (double tout)
 
       DAEFunc::reset = false;
 
-      jroot.resize (ng, 1);
+      jroot.resize_and_fill (ng, 1);
 
       pjroot = jroot.fortran_vec ();
 

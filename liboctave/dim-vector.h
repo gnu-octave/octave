@@ -35,131 +35,206 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class
 dim_vector
 {
-public:
+protected:
 
-  dim_vector (void) : ndims (0), dims (0) { }
+  class dim_vector_rep
+  {
+  public:
 
-  dim_vector (int n) : ndims (1), dims (new int [1]) { dims[0] = n; }
+    int *dims;
+    int ndims;
+    int count;
 
-  dim_vector (int r, int c)
-    : ndims (2), dims (new int [2]) { dims[0] = r; dims[1] = c; }
+    dim_vector_rep (void) : dims (0), ndims (0), count (1) { }
 
-  dim_vector (int r, int c, int p)
-    : ndims (3), dims (new int [3]) { dims[0] = r; dims[1] = c; dims[2] = p; }
-
-  dim_vector (const dim_vector& dv)
-    : ndims (dv.ndims)
+    dim_vector_rep (int n) : dims (new int [1]), ndims (1), count (1)
     {
-      if (dv.dims)
-	{
-	  dims = new int [ndims];
+      dims[0] = n;
+    }
 
+    dim_vector_rep (int r, int c) : dims (new int [2]), ndims (2), count (1)
+    {
+      dims[0] = r;
+      dims[1] = c;
+    }
+
+    dim_vector_rep (int r, int c, int p)
+      : dims (new int [3]), ndims (3), count (1)
+    {
+      dims[0] = r;
+      dims[1] = c;
+      dims[2] = p;
+    }
+
+    dim_vector_rep (const dim_vector_rep& dv)
+      : dims (dv.ndims > 0 ? new int [dv.ndims] : 0),
+	ndims (dv.ndims > 0 ? dv.ndims : 0), count (1)
+    {
+      if (dims)
+	{
 	  for (int i = 0; i < ndims; i++)
 	    dims[i] = dv.dims[i];
 	}
-      else
-	dims = 0;
     }
 
-  dim_vector& operator = (const dim_vector& dv)
+    dim_vector_rep (int n, const dim_vector_rep *dv)
+      : dims ((dv && n > 0) ? new int [n] : 0),
+	ndims (n > 0 ? n : 0), count (1)
     {
-      if (&dv != this)
+      if (dims)
 	{
-	  ndims = dv.ndims;
+	  int dv_ndims = dv ? dv->ndims : 0;
 
-	  if (dv.dims)
-	    {
-	      dims = new int [ndims];
+	  for (int i = 0; i < dv_ndims; i++)
+	    dims[i] = dv->dims[i];
 
-	      for (int i = 0; i < ndims; i++)
-		dims[i] = dv.dims[i];
-	    }
+	  for (int i = dv_ndims; i < n; i++)
+	    dims[i] = 0;
 	}
-
-      return *this;
     }
 
-  ~dim_vector (void) { delete [] dims; }
+    ~dim_vector_rep (void) { delete [] dims; }
 
-  int length (void) const { return ndims; }
+    int length (void) const { return ndims; }
 
-  int& elem (int i)
+    int& elem (int i)
     {
-      if (i >= ndims)
-	resize (i+1);
-
+      assert (i >= 0 && i < ndims);
       return dims[i];
     }
 
-  int elem (int i) const { return i < ndims ? dims[i] : -1; }
+    int elem (int i) const
+    {
+      assert (i >= 0 && i < ndims);
+      return dims[i];
+    }
+
+  private:
+
+    // No assignment!
+
+    dim_vector_rep& operator = (const dim_vector_rep& dv);
+  };
+
+  dim_vector_rep *rep;
+
+  void make_unique (void)
+  {
+    if (rep->count > 1)
+      {
+	--rep->count;
+	rep = new dim_vector_rep (*rep);
+      }
+  }
+
+private:
+
+  dim_vector_rep *nil_rep (void) const
+  {
+    static dim_vector_rep *nr = new dim_vector_rep ();
+
+    return nr;
+  }
+
+public:
+
+  explicit dim_vector (void)
+    : rep (nil_rep ()) { rep->count++; }
+
+  explicit dim_vector (int n)
+    : rep (new dim_vector_rep (n)) { }
+
+  explicit dim_vector (int r, int c)
+    : rep (new dim_vector_rep (r, c)) { }
+
+  explicit dim_vector (int r, int c, int p)
+    : rep (new dim_vector_rep (r, c, p)) { }
+
+  dim_vector (const dim_vector& dv)
+    : rep (dv.rep) { rep->count++; }
+
+  dim_vector& operator = (const dim_vector& dv)
+  {
+    if (&dv != this)
+      {
+	if (--rep->count <= 0)
+	  delete rep;
+
+	rep = dv.rep;
+	rep->count++;
+      }
+
+    return *this;
+  }
+
+  ~dim_vector (void)
+  {
+    if (--rep->count <= 0)
+      delete rep;
+  }
+
+  int length (void) const { return rep->length (); }
+
+  int& elem (int i) { make_unique (); return rep->elem (i); }
+
+  int elem (int i) const { return rep->elem (i); }
 
   int& operator () (int i) { return elem (i); }
 
   int operator () (int i) const { return elem (i); }
 
   void resize (int n)
-    {
-      if (n > ndims)
-	{
-	  int *new_dims = new int [n];
+  {
+    int len = length ();
 
-	  for (int i = 0; i < ndims; i++)
-	    new_dims[i] = dims[i];
+    if (n != len)
+      {
+	dim_vector_rep *old_rep = rep;
 
-	  for (int i = ndims; i < n; i++)
-	    new_dims[i] = 0;
+	rep = new dim_vector_rep (n, old_rep);
 
-	  delete [] dims;
+	if (--old_rep->count <= 0)
+	  delete old_rep;
+      }
+  }
 
-	  dims = new_dims;
-
-	  ndims = n;
-	}
-      else
-	ndims = n;
-    }
 
   std::string str (void) const
-    {
-      OSSTREAM buf;
+  {
+    OSSTREAM buf;
 
-      for (int i = 0; i < ndims; i++)
-	{
-	  buf << dims[i];
+    for (int i = 0; i < length (); i++)
+      {
+	buf << elem (i);
 
-	  if (i < ndims - 1)
-	    buf << "x";
-	}
+	if (i < length () - 1)
+	  buf << "x";
+      }
 
-      buf << OSSTREAM_ENDS;
+    buf << OSSTREAM_ENDS;
 
-      std::string retval = OSSTREAM_STR (buf);
+    std::string retval = OSSTREAM_STR (buf);
 
-      OSSTREAM_FREEZE (buf);
+    OSSTREAM_FREEZE (buf);
 
-      return retval;
-    }
+    return retval;
+  }
 
   bool all_zero (void) const
-    {
-      bool retval = true;
+  {
+    bool retval = true;
 
-      for (int i = 0; i < ndims; i++)
-	{
-	  if (dims[i] != 0)
-	    {
-	      retval = false;
-	      break;
-	    }
-	}
+    for (int i = 0; i < length (); i++)
+      {
+	if (elem (i) != 0)
+	  {
+	    retval = false;
+	    break;
+	  }
+      }
 
-      return retval;
-    }
-
-private:
-
-  int ndims;
-  int *dims;
+    return retval;
+  }
 };
 
 static inline bool

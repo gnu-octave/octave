@@ -161,7 +161,7 @@ octave_value_typeinfo::do_register_type (const std::string& name)
     {
       len *= 2;
 
-      types.resize (len, std::string ());
+      types.resize_and_fill (len, std::string ());
 
       unary_ops.resize (static_cast<int> (octave_value::num_unary_ops),
 			len, static_cast<unary_op_fcn> (0));

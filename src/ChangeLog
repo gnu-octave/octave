@@ -1,5 +1,8 @@
 2005-03-15  John W. Eaton  <jwe@octave.org>
 
+	* lex.l (<COMMAND_START>{NL}): Reset lexer_flags.doing_rawcommand
+	state here.
+
 	* version.h (OCTAVE_API_VERSION): Now 2.9.0.
 	(OCTAVE_API_VERSION): Now api-v14.
 

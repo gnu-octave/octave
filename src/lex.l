@@ -309,6 +309,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.doing_rawcommand = false;
     COUNT_TOK_AND_RETURN ('\n');
   }
 
@@ -588,7 +589,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
-
     if (nesting_level.none ())
       COUNT_TOK_AND_RETURN ('\n');
     else if (nesting_level.is_paren ())

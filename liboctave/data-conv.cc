@@ -24,11 +24,82 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cctype>
+
 #include <iostream.h>
 
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "lo-error.h"
+
+oct_data_conv::data_type
+oct_data_conv::string_to_data_type (const string& str)
+{
+  data_type retval = dt_unknown;
+
+    // XXX FIXME XXX -- finish implementing this.
+
+  // XXX FIXME XXX -- before checking s, need to strip spaces and downcase.
+
+  int n = str.length ();
+
+  int k = 0;
+
+  string s (n, ' ');
+
+  for (int i = 0; i < n; i++)
+    if (! isspace (str[i]))
+      s[k++] = tolower (str[i]);
+
+  s.resize (k);
+
+  if (s == "char" || s == "char*1" || s == "integer*1" || s == "int8")
+    retval = dt_char;
+  else if (s == "schar" || s == "signedchar")
+    retval = dt_schar;
+  else if (s == "uchar" || s == "unsignedchar")
+    retval = dt_uchar;
+  else if (s == "short")
+    retval = dt_short;
+  else if (s == "ushort" || s == "unsignedshort")
+    retval = dt_ushort;
+  else if (s == "int")
+    retval = dt_int;
+  else if (s == "uint" || s == "unsignedint")
+    retval = dt_uint;
+  else if (s == "long")
+    retval = dt_long;
+  else if (s == "ulong" || s == "unsignedlong")
+    retval = dt_ulong;
+  else if (s == "float" || s == "float32" || s == "real*4")
+    retval = dt_float;
+  else if (s == "double" || s == "float64" || s == "real*8")
+    retval = dt_double;
+  else if (s == "int16" || s == "integer*2")
+    {
+      if (sizeof (short) == 2)
+	retval = dt_short;
+      else if (sizeof (int) == 2)
+	retval = dt_int;
+      else
+	(*current_liboctave_error_handler)
+	  ("unable to find matching native data type for %s", s.c_str ());
+    }
+  else if (s == "int32" || s == "integer*4")
+    {
+      if (sizeof (int) == 4)
+	retval = dt_int;
+      else if (sizeof (long) == 4)
+	retval = dt_long;
+      else
+	(*current_liboctave_error_handler)
+	  ("unable to find matching native data type for %s", s.c_str ());
+    }
+  else
+    (*current_liboctave_error_handler) ("invalid data type specified");
+
+  return retval;
+}
 
 #define swap_1_bytes(x, y)
 
@@ -281,29 +352,29 @@ Cray_to_VAX_G_float (float * /* d */, int /* len */)
 
 void
 do_double_format_conversion (double *data, int len,
-			     floating_point_format fmt)
+			     oct_mach_info::float_format fmt)
 {
-  switch (native_float_format)
+  switch (oct_mach_info::native_float_format ())
     {
-    case OCTAVE_IEEE_LITTLE:
+    case oct_mach_info::ieee_little_endian:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  IEEE_big_double_to_IEEE_little_double (data, len);
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  VAX_D_double_to_IEEE_little_double (data, len);
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  VAX_G_double_to_IEEE_little_double (data, len);
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_IEEE_little_double (data, len);
 	  break;
 
@@ -313,25 +384,25 @@ do_double_format_conversion (double *data, int len,
 	}
       break;
 
-    case OCTAVE_IEEE_BIG:
+    case oct_mach_info::ieee_big_endian:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  IEEE_little_double_to_IEEE_big_double (data, len);
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  VAX_D_double_to_IEEE_big_double (data, len);
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  VAX_G_double_to_IEEE_big_double (data, len);
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_IEEE_big_double (data, len);
 	  break;
 
@@ -341,25 +412,25 @@ do_double_format_conversion (double *data, int len,
 	}
       break;
 
-    case OCTAVE_VAX_D:
+    case oct_mach_info::vax_d:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  IEEE_little_double_to_VAX_D_double (data, len);
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  IEEE_big_double_to_VAX_D_double (data, len);
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  VAX_G_double_to_VAX_D_double (data, len);
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_VAX_D_double (data, len);
 	  break;
 
@@ -369,25 +440,25 @@ do_double_format_conversion (double *data, int len,
 	}
       break;
 
-    case OCTAVE_VAX_G:
+    case oct_mach_info::vax_g:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  IEEE_little_double_to_VAX_G_double (data, len);
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  IEEE_big_double_to_VAX_G_double (data, len);
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  VAX_D_double_to_VAX_G_double (data, len);
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_VAX_G_double (data, len);
 	  break;
 
@@ -407,29 +478,29 @@ do_double_format_conversion (double *data, int len,
 
 void
 do_float_format_conversion (float *data, int len,
-			    floating_point_format fmt)
+			    oct_mach_info::float_format fmt)
 {
-  switch (native_float_format)
+  switch (oct_mach_info::native_float_format ())
     {
-    case OCTAVE_IEEE_LITTLE:
+    case oct_mach_info::ieee_little_endian:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  IEEE_big_float_to_IEEE_little_float (data, len);
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  VAX_D_float_to_IEEE_little_float (data, len);
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  VAX_G_float_to_IEEE_little_float (data, len);
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_IEEE_little_float (data, len);
 	  break;
 
@@ -439,25 +510,25 @@ do_float_format_conversion (float *data, int len,
 	}
       break;
 
-    case OCTAVE_IEEE_BIG:
+    case oct_mach_info::ieee_big_endian:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  IEEE_little_float_to_IEEE_big_float (data, len);
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  VAX_D_float_to_IEEE_big_float (data, len);
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  VAX_G_float_to_IEEE_big_float (data, len);
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_IEEE_big_float (data, len);
 	  break;
 
@@ -467,25 +538,25 @@ do_float_format_conversion (float *data, int len,
 	}
       break;
 
-    case OCTAVE_VAX_D:
+    case oct_mach_info::vax_d:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  IEEE_little_float_to_VAX_D_float (data, len);
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  IEEE_big_float_to_VAX_D_float (data, len);
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  VAX_G_float_to_VAX_D_float (data, len);
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_VAX_D_float (data, len);
 	  break;
 
@@ -495,25 +566,25 @@ do_float_format_conversion (float *data, int len,
 	}
       break;
 
-    case OCTAVE_VAX_G:
+    case oct_mach_info::vax_g:
       switch (fmt)
 	{
-	case OCTAVE_IEEE_LITTLE:
+	case oct_mach_info::ieee_little_endian:
 	  IEEE_little_float_to_VAX_G_float (data, len);
 	  break;
 
-	case OCTAVE_IEEE_BIG:
+	case oct_mach_info::ieee_big_endian:
 	  IEEE_big_float_to_VAX_G_float (data, len);
 	  break;
 
-	case OCTAVE_VAX_D:
+	case oct_mach_info::vax_d:
 	  VAX_D_float_to_VAX_G_float (data, len);
 	  break;
 
-	case OCTAVE_VAX_G:
+	case oct_mach_info::vax_g:
 	  break;
 
-	case OCTAVE_CRAY:
+	case oct_mach_info::cray:
 	  Cray_to_VAX_G_float (data, len);
 	  break;
 
@@ -533,7 +604,7 @@ do_float_format_conversion (float *data, int len,
 
 void
 read_doubles (istream& is, double *data, save_type type, int len,
-	      int swap, floating_point_format fmt)
+	      int swap, oct_mach_info::float_format fmt)
 {
   switch (type)
     {

@@ -71,7 +71,7 @@ LOSE! LOSE!
 extern char *term_clrpag;
 extern "C" void _rl_output_character_function ();
 
-#include "float-fmt.h"
+#include "mach-info.h"
 #include "oct-math.h"
 
 #include "defun.h"
@@ -89,9 +89,6 @@ extern "C" void _rl_output_character_function ();
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 1
 #endif
-
-// Nonzero if the machine we are running on is big-endian.
-int octave_words_big_endian;
 
 #ifdef NeXT
 extern "C"
@@ -117,22 +114,6 @@ NeXT_init (void)
   malloc_error (malloc_handler);
 }
 #endif
-
-static void
-ten_little_endians (void)
-{
-  // Are we little or big endian?  From Harbison & Steele.
-
-  union
-  {
-    long l;
-    char c[sizeof (long)];
-  } u;
-
-  u.l = 1;
-
-  octave_words_big_endian = (u.c[sizeof (long) - 1] == 1);
-}
 
 #if defined (EXCEPTION_IN_MATH)
 extern "C"
@@ -175,13 +156,6 @@ sysdep_init (void)
 #endif
 
   octave_ieee_init ();
-
-  int status = float_format_init ();
-
-  if (status < 0)
-    panic ("unrecognized floating point format!");
-
-  ten_little_endians ();
 }
 
 // Set terminal in raw mode.  From less-177.
@@ -529,8 +503,11 @@ DEFUN (pause, args, ,
 DEFUN (isieee, , ,
   "isieee (): return 1 if host uses IEEE floating point")
 {
-  return (double) (native_float_format == OCTAVE_IEEE_LITTLE
-		   || native_float_format == OCTAVE_IEEE_BIG);
+  oct_mach_info::float_format flt_fmt =
+    oct_mach_info::native_float_format ();
+
+  return (double) (flt_fmt == oct_mach_info::ieee_little_endian
+		   || flt_fmt == oct_mach_info::ieee_big_endian);
 }
 
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)

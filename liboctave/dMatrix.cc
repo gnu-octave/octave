@@ -30,13 +30,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cfloat>
-#include <cstdio>
-#include <cstring>
 
 #include <iostream.h>
 
-#include <sys/types.h>  // XXX FIXME XXX
-
+#include "byte-swap.h"
 #include "dbleAEPBAL.h"
 #include "dbleDET.h"
 #include "dbleSCHUR.h"
@@ -2521,163 +2518,496 @@ operator >> (istream& is, Matrix& a)
   return is;
 }
 
-// Read an array of data from a file in binary format.
-
-int
-Matrix::read (FILE *fptr, const char *type)
+template <class T>
+static void
+read_int (istream& is, bool swap_bytes, T& val)
 {
-  // Allocate buffer pointers.
+  is.read ((char *) &val, sizeof (T));
 
-  union
+  if (swap_bytes)
     {
-      void *vd;
-      char *ch;
-      u_char *uc;
-      short *sh;
-      u_short *us;
-      int *in;
-      u_int *ui;
-      long *ln;
-      u_long *ul;
-      float *fl;
-      double *db;
+      switch (sizeof (T))
+	{
+	case 1:
+	  break;
+
+	case 2:
+	  swap_2_bytes ((char *) &val);
+	  break;
+
+	case 4:
+	  swap_4_bytes ((char *) &val);
+	  break;
+
+	case 8:
+	  swap_8_bytes ((char *) &val);
+	  break;
+
+	default:
+	  (*current_liboctave_error_handler)
+	    ("read_int: unrecognized data format!");
+	}
     }
-  buf;
-
-  // Convert data to double.
-
-  if (! type)
-    {
-      (*current_liboctave_error_handler)
-	("fread: invalid NULL type parameter");
-      return 0;
-    }    
-
-  int count;
-  int nitems = length ();
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-#define DO_FREAD(TYPE,ELEM) \
-  do \
-    { \
-      size_t size = sizeof (TYPE); \
-      buf.ch = new char [size * nitems]; \
-      count = fread (buf.ch, size, nitems, fptr); \
-      for (int k = 0; k < count; k++) \
-	d[k] = buf.ELEM[k]; \
-      delete [] buf.ch; \
-    } \
-  while (0)
-
-  if (strcasecmp (type, "double") == 0)
-    DO_FREAD (double, db);
-  else if (strcasecmp (type, "char") == 0)
-    DO_FREAD (char, ch);
-  else if (strcasecmp (type, "uchar") == 0)
-    DO_FREAD (u_char, uc);
-  else if (strcasecmp (type, "short") == 0)
-    DO_FREAD (short, sh);
-  else if (strcasecmp (type, "ushort") == 0)
-    DO_FREAD (u_short, us);
-  else if (strcasecmp (type, "int") == 0)
-    DO_FREAD (int, in);
-  else if (strcasecmp (type, "uint") == 0)
-    DO_FREAD (u_int, ui);
-  else if (strcasecmp (type, "long") == 0)
-    DO_FREAD (long, ul);
-  else if (strcasecmp (type, "float") == 0)
-    DO_FREAD (float, fl);
-  else
-    {
-      (*current_liboctave_error_handler)
-	("fread: invalid NULL type parameter");
-      return 0;
-    }
-
-  return count;
 }
 
-// Write the data array to a file in binary format.
+template void read_int (istream&, bool, char&);
+template void read_int (istream&, bool, signed char&);
+template void read_int (istream&, bool, unsigned char&);
+template void read_int (istream&, bool, short&);
+template void read_int (istream&, bool, unsigned short&);
+template void read_int (istream&, bool, int&);
+template void read_int (istream&, bool, unsigned int&);
+template void read_int (istream&, bool, long&);
+template void read_int (istream&, bool, unsigned long&);
+
+static inline bool
+do_read (istream& is, oct_data_conv::data_type dt, 
+	 oct_mach_info::float_format flt_fmt, bool swap_bytes,
+	 bool do_float_conversion, double& val)
+{
+  bool retval = true;
+
+  switch (dt)
+    {
+    case oct_data_conv::dt_char:
+      {
+	char tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_schar:
+      {
+	signed char tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_uchar:
+      {
+	unsigned char tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_short:
+      {
+	short tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_ushort:
+      {
+	unsigned short tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_int:
+      {
+	int tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_uint:
+      {
+	unsigned int tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_long:
+      {
+	long tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_ulong:
+      {
+	unsigned long tmp;
+	read_int (is, swap_bytes, tmp);
+	val = tmp;
+      }
+      break;
+
+    case oct_data_conv::dt_float:
+      {
+	float f;
+
+	is.read ((char *) &f, sizeof (float));
+
+	if (do_float_conversion)
+	  do_float_format_conversion (&f, 1, flt_fmt);
+
+	val = f;
+      }
+      break;
+
+    case oct_data_conv::dt_double:
+      {
+	is.read ((char *) &val, sizeof (double));
+
+	if (do_float_conversion)
+	  do_double_format_conversion (&val, 1, flt_fmt);
+      }
+      break;
+
+    default:
+      retval = false;
+      (*current_liboctave_error_handler)
+	("read: invalid type specification");
+      break;
+    }
+
+  return retval;
+}
 
 int
-Matrix::write (FILE *fptr, const char *type)
+Matrix::read (istream& is, int nr, int nc,
+	      oct_data_conv::data_type dt, int skip,
+	      oct_mach_info::float_format flt_fmt)
 {
-  // Allocate buffer pointers.
+  int retval = -1;
 
-  union
+  bool ok = true;
+
+  int count = 0;
+
+  double *data = 0;
+  int max_size = 0;
+
+  int final_nr = 0;
+  int final_nc = 0;
+
+  if (nr > 0)
     {
-      void *vd;
-      char *ch;
-      u_char *uc;
-      short *sh;
-      u_short *us;
-      int *in;
-      u_int *ui;
-      long *ln;
-      u_long *ul;
-      float *fl;
-      double *db;
+      if (nc > 0)
+	{
+	  resize (nr, nc, 0.0);
+	  data = fortran_vec ();
+	  max_size = nr * nc;
+	}
+      else
+	{
+	  resize (nr, 32, 0.0);
+	  data = fortran_vec ();
+	  max_size = nr * 32;
+	}
     }
-  buf;
-
-  int nitems = length ();
-
-  double *d = fortran_vec ();
-
-  // Convert from double to correct size.
-
-  if (! type)
-    {
-      (*current_liboctave_error_handler)
-	("fwrite: invalid NULL type parameter");
-      return 0;
-    }    
-
-  size_t size;
-  int count;
-
-#define DO_FWRITE(TYPE,ELEM) \
-  do \
-    { \
-      size = sizeof (TYPE); \
-      buf.ELEM = new TYPE [nitems]; \
-      for (int k = 0; k < nitems; k++) \
-	buf.ELEM[k] = (TYPE) d[k]; \
-      count = fwrite (buf.ELEM, size, nitems, fptr); \
-      delete [] buf.ELEM; \
-    } \
-  while (0)
-
-  if (strcasecmp (type, "double") == 0)
-    DO_FWRITE (double, db);
-  else if (strcasecmp (type, "char") == 0)
-    DO_FWRITE (char, ch);
-  else if (strcasecmp (type, "uchar") == 0)
-    DO_FWRITE (u_char, uc);
-  else if (strcasecmp (type, "short") == 0)
-    DO_FWRITE (short, sh);
-  else if (strcasecmp (type, "ushort") == 0)
-    DO_FWRITE (u_short, us);
-  else if (strcasecmp (type, "int") == 0)
-    DO_FWRITE (int, in);
-  else if (strcasecmp (type, "uint") == 0)
-    DO_FWRITE (u_int, ui);
-  else if (strcasecmp (type, "long") == 0)
-    DO_FWRITE (long, ln);
-  else if (strcasecmp (type, "ulong") == 0)
-    DO_FWRITE (u_long, ul);
-  else if (strcasecmp (type, "float") == 0)
-    DO_FWRITE (float, fl);
   else
     {
-      (*current_liboctave_error_handler)
-	("fwrite: unrecognized type parameter %s", type);
-      return 0;
+      resize (32, 1, 0.0);
+      data = fortran_vec ();
+      max_size = 32;
     }
 
-  return count;
+  oct_mach_info::float_format native_flt_fmt
+    = oct_mach_info::float_format ();
+
+  bool do_float_conversion = (flt_fmt != native_flt_fmt);
+
+  // XXX FIXME XXX -- byte order for Cray?
+
+  bool swap_bytes = false;
+
+  if (oct_mach_info::words_big_endian ())
+    swap_bytes = (flt_fmt == oct_mach_info::ieee_little_endian
+		 || flt_fmt == oct_mach_info::vax_g
+		 || flt_fmt == oct_mach_info::vax_g);
+  else
+    swap_bytes = (flt_fmt == oct_mach_info::ieee_big_endian);
+
+  for (;;)
+    {
+      // XXX FIXME XXX -- maybe there should be a special case for
+      // skip == 0.
+
+      if (is)
+	{
+	  if (nr > 0 && nc > 0 && count == max_size)
+	    {
+	      final_nr = nr;
+	      final_nc = nc;
+
+	      break;
+	    }
+
+	  if (skip != 0)
+	    is.seekg (skip, ios::cur);
+
+	  if (is)
+	    {
+	      double tmp = 0.0;
+
+	      ok = do_read (is, dt, flt_fmt, swap_bytes,
+			    do_float_conversion, tmp);
+
+	      if (ok)
+		{
+		  if (is)
+		    {
+		      if (count == max_size)
+			{
+			  max_size *= 2;
+
+			  if (nr > 0)
+			    resize (nr, max_size / 2, 0.0);
+			  else
+			    resize (max_size, 1, 0.0);
+
+			  data = fortran_vec ();
+			}
+
+		      data[count++] = tmp;
+		    }
+		  else
+		    {
+		      if (is.eof ())
+			{
+			  if (nr > 0)
+			    {
+			      if (count > nr)
+				{
+				  final_nr = nr;
+				  final_nc = (count - 1) / nr + 1;
+				}
+			      else
+				{
+				  final_nr = count;
+				  final_nc = 1;
+				}
+			    }
+			  else
+			    {
+			      final_nr = count;
+			      final_nc = 1;
+			    }
+			}
+
+		      break;
+		    }
+		}
+	      else
+		break;
+	    }
+	  else
+	    {
+	      ok = false;
+	      break;
+	    }
+	}
+      else
+	{
+	  ok = false;
+	  break;
+	}
+    }
+
+  if (ok)
+    {
+      resize (final_nr, final_nc, 0.0);
+
+      retval = count;
+    }
+
+  return retval;
 }
+
+template <class T>
+static void
+write_int (ostream& os, bool swap_bytes, T val)
+{
+  if (swap_bytes)
+    {
+      switch (sizeof (T))
+	{
+	case 1:
+	  break;
+
+	case 2:
+	  swap_2_bytes ((char *) &val);
+	  break;
+
+	case 4:
+	  swap_4_bytes ((char *) &val);
+	  break;
+
+	case 8:
+	  swap_8_bytes ((char *) &val);
+	  break;
+
+	default:
+	  (*current_liboctave_error_handler)
+	    ("write_int: unrecognized data format!");
+	}
+    }
+
+  os.write ((char *) &val, sizeof (T));
+}
+
+template void write_int (ostream&, bool, char);
+template void write_int (ostream&, bool, signed char);
+template void write_int (ostream&, bool, unsigned char);
+template void write_int (ostream&, bool, short);
+template void write_int (ostream&, bool, unsigned short);
+template void write_int (ostream&, bool, int);
+template void write_int (ostream&, bool, unsigned int);
+template void write_int (ostream&, bool, long);
+template void write_int (ostream&, bool, unsigned long);
+
+static inline bool
+do_write (ostream& os, double d, oct_data_conv::data_type dt,
+	  oct_mach_info::float_format flt_fmt, bool swap_bytes,
+	  bool do_float_conversion)
+{
+  bool retval = true;
+
+  switch (dt)
+    {
+    case oct_data_conv::dt_char:
+      write_int (os, swap_bytes, (char) d);
+      break;
+
+    case oct_data_conv::dt_schar:
+      write_int (os, swap_bytes, (signed char) d);
+      break;
+
+    case oct_data_conv::dt_uchar:
+      write_int (os, swap_bytes, (unsigned char) d);
+      break;
+
+    case oct_data_conv::dt_short:
+      write_int (os, swap_bytes, (short) d);
+      break;
+
+    case oct_data_conv::dt_ushort:
+      write_int (os, swap_bytes, (unsigned short) d);
+      break;
+
+    case oct_data_conv::dt_int:
+      write_int (os, swap_bytes, (int) d);
+      break;
+
+    case oct_data_conv::dt_uint:
+      write_int (os, swap_bytes, (unsigned int) d);
+      break;
+
+    case oct_data_conv::dt_long:
+      write_int (os, swap_bytes, (long) d);
+      break;
+
+    case oct_data_conv::dt_ulong:
+      write_int (os, swap_bytes, (unsigned long) d);
+      break;
+
+    case oct_data_conv::dt_float:
+      {
+	float f = (float) d;
+
+	if (do_float_conversion)
+	  do_float_format_conversion (&f, 1, flt_fmt);
+
+	os.write ((char *) &f, sizeof (float));
+      }
+      break;
+
+    case oct_data_conv::dt_double:
+      {
+	if (do_float_conversion)
+	  do_double_format_conversion (&d, 1, flt_fmt);
+
+	os.write ((char *) &d, sizeof (double));
+      }
+      break;
+
+    default:
+      retval = false;
+      (*current_liboctave_error_handler)
+	("write: invalid type specification");
+      break;
+    }
+
+  return retval;
+}
+
+int
+Matrix::write (ostream& os, oct_data_conv::data_type dt, int skip,
+	       oct_mach_info::float_format flt_fmt)
+{
+  int retval = -1;
+
+  bool ok = true;
+
+  int count = 0;
+
+  const double *d = data ();
+
+  int n = length ();
+
+  oct_mach_info::float_format native_flt_fmt
+    = oct_mach_info::float_format ();
+
+  bool do_float_conversion = (flt_fmt != native_flt_fmt);
+
+  // XXX FIXME XXX -- byte order for Cray?
+
+  bool swap_bytes = false;
+
+  if (oct_mach_info::words_big_endian ())
+    swap_bytes = (flt_fmt == oct_mach_info::ieee_little_endian
+		 || flt_fmt == oct_mach_info::vax_g
+		 || flt_fmt == oct_mach_info::vax_g);
+  else
+    swap_bytes = (flt_fmt == oct_mach_info::ieee_big_endian);
+
+  for (int i = 0; i < n; i++)
+    {
+      if (os)
+	{
+	  if (skip != 0)
+	    os.seekp (skip, ios::cur);
+
+	  if (os)
+	    {
+	      ok = do_write (os, d[i], dt, flt_fmt, swap_bytes,
+			     do_float_conversion);
+
+	      if (os && ok)
+		count++;
+	      else
+		break;
+	    }
+	  else
+	    {
+	      ok = false;
+	      break;
+	    }
+	}
+      else
+	{
+	  ok = false;
+	  break;
+	}
+    }
+
+  if (ok)
+    retval = count;
+
+  return retval;
+}
+
+
 
 Matrix
 Givens (double x, double y)

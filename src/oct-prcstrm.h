@@ -32,7 +32,8 @@ public:
 
   octave_iprocstream (const string& n,
 		      ios::openmode arg_md = ios::in,
-		      arch_type arg_at = at_native);
+		      oct_mach_info::float_format flt_fmt =
+		      oct_mach_info::native);
 
   ~octave_iprocstream (void);
 
@@ -51,8 +52,9 @@ octave_oprocstream : public octave_ostdiostream
 public:
 
   octave_oprocstream (const string& n,
-		       ios::openmode arg_md = ios::out,
-		       arch_type arg_at = at_native);
+		      ios::openmode arg_md = ios::out,
+		      oct_mach_info::float_format flt_fmt =
+		      oct_mach_info::native);
 
   ~octave_oprocstream (void);
 

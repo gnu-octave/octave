@@ -25,7 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <climits>
 
-#include "float-fmt.h"
+#include "mach-info.h"
 
 // Not all of the following are currently used.
 
@@ -49,6 +49,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #error "No 4 byte integer type found!"
 #endif
 
+class
+oct_data_conv
+{
+public:
+
+  enum data_type
+    {
+      dt_unknown,
+      dt_char,
+      dt_schar,
+      dt_uchar,
+      dt_short,
+      dt_ushort,
+      dt_int,
+      dt_uint,
+      dt_long,
+      dt_ulong,
+      dt_float,
+      dt_double,
+      dt_float_complex,
+      dt_double_complex
+    };
+
+  static data_type string_to_data_type (const string& s);
+};
+
 enum save_type
   {
     LS_U_CHAR,
@@ -62,14 +88,16 @@ enum save_type
   };
 
 extern void
-do_double_format_conversion (double *data, int len, floating_point_format fmt);
+do_double_format_conversion (double *data, int len,
+			     oct_mach_info::float_format fmt);
 
 extern void
-do_float_format_conversion (float *data, int len, floating_point_format fmt);
+do_float_format_conversion (float *data, int len,
+			    oct_mach_info::float_format fmt);
 
 extern void
 read_doubles (istream& is, double *data, save_type type, int len,
-	      int swap, floating_point_format fmt);
+	      int swap, oct_mach_info::float_format fmt);
 extern void
 write_doubles (ostream& os, const double *data, save_type type, int len);
 

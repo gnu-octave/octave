@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <strstream.h>
 
 #include "Array.h"
+#include "data-conv.h"
+#include "mach-info.h"
 
 #include "oct-obj.h"
 #include "str-vec.h"
@@ -215,33 +217,9 @@ friend class octave_stream;
 
 public:
 
-  enum arch_type
-    {
-      at_unknown,
-      at_native
-    };
-
-  enum data_type
-    {
-      dt_unknown,
-      dt_char,
-      dt_schar,
-      dt_uchar,
-      dt_short,
-      dt_ushort,
-      dt_int,
-      dt_uint,
-      dt_long,
-      dt_ulong,
-      dt_float,
-      dt_double,
-      dt_float_complex,
-      dt_double_complex
-    };
-
   octave_base_stream (ios::openmode arg_md = ios::in|ios::out,
-		      arch_type arg_at = at_native)
-    : md (arg_md), at (arg_at), fail (false) { }
+		      oct_mach_info::float_format ff = oct_mach_info::native)
+    : md (arg_md), flt_fmt (ff), fail (false) { }
 
   virtual ~octave_base_stream (void) { }
 
@@ -286,7 +264,7 @@ protected:
 
   int mode (void) { return md; }
 
-  arch_type architecture (void) { return at; }
+  oct_mach_info::float_format float_format (void) { return flt_fmt; }
 
   // Set current error state and set fail to TRUE.
 
@@ -303,7 +281,7 @@ private:
   int md;
 
   // Data format.
-  arch_type at;
+  oct_mach_info::float_format flt_fmt;
 
   // TRUE if an error has occurred.
   bool fail;
@@ -314,16 +292,19 @@ private:
   // Functions that are defined for all input streams (input streams
   // are those that define is).
 
-  string do_gets (int max_len, bool& err, bool strip_newline, const char *fcn);
+  string do_gets (int max_len, bool& err, bool strip_newline,
+		  const char *fcn);
 
   string getl (int max_len, bool& err);
   string gets (int max_len, bool& err);
 
-  octave_value do_read (int nr, int nc, data_type dt, int skip,
-			arch_type at, int& count);
+  octave_value do_read (int nr, int nc, oct_data_conv::data_type dt,
+			int skip, oct_mach_info::float_format flt_fmt,
+			int& count);
 
-  octave_value read (const Matrix& size, data_type dt, int skip,
-		     arch_type at, int& count);
+  octave_value read (const Matrix& size, oct_data_conv::data_type dt,
+		     int skip, oct_mach_info::float_format flt_fmt,
+		     int& count);
 
   octave_value do_char_scanf (scanf_format_list& fmt_list,
 			      int nr, int nc, int& count);
@@ -345,11 +326,11 @@ private:
 
   int flush (void);
 
-  int do_write (const double *d, int n, data_type dt, int skip,
-		arch_type at);
+  int do_write (const Matrix& m, oct_data_conv::data_type dt, int skip,
+		oct_mach_info::float_format flt_fmt);
 
-  int write (const octave_value& data, data_type dt, int skip,
-	     arch_type at);
+  int write (const octave_value& data, oct_data_conv::data_type dt,
+	     int skip, oct_mach_info::float_format flt_fmt);
 
   int do_printf (printf_format_list& fmt_list, const octave_value_list& args);
 
@@ -400,14 +381,12 @@ public:
 
   int rewind (void);
 
-  octave_value read (const Matrix& size,
-		     octave_base_stream::data_type dt,
-		     int skip, octave_base_stream::arch_type at,
+  octave_value read (const Matrix& size, oct_data_conv::data_type dt,
+		     int skip, oct_mach_info::float_format flt_fmt,
 		     int& count);
 
-  int write (const octave_value& data,
-	     octave_base_stream::data_type dt, int skip,
-	     octave_base_stream::arch_type at);
+  int write (const octave_value& data, oct_data_conv::data_type dt,
+	     int skip, oct_mach_info::float_format flt_fmt);
 
   octave_value scanf (const string& fmt, const Matrix& size, int& count);
 
@@ -436,14 +415,9 @@ public:
 
   int mode (void);
 
-  octave_base_stream::arch_type architecture (void);
+  oct_mach_info::float_format float_format (void);
 
   static string mode_as_string (int mode);
-
-  static string arch_as_string (octave_base_stream::arch_type at);
-
-  static octave_base_stream::data_type string_to_data_type (const string& s);
-  static octave_base_stream::arch_type string_to_arch_type (const string& s);
 
 private:
 

@@ -34,8 +34,9 @@ octave_base_strstream : public octave_base_stream
 public:
 
   octave_base_strstream (ios::openmode arg_md = ios::out,
-			 arch_type arg_at = at_native)
-    : octave_base_stream (arg_md, arg_at) { }
+			 oct_mach_info::float_format flt_fmt =
+			 oct_mach_info::native)
+    : octave_base_stream (arg_md, flt_fmt) { }
 
   ~octave_base_strstream (void) { }
 
@@ -73,13 +74,15 @@ public:
 
   octave_istrstream (const char *data,
 		     ios::openmode arg_md = ios::out,
-		     arch_type arg_at = at_native)
-    : octave_base_strstream (arg_md, arg_at), is (data) { }
+		     oct_mach_info::float_format flt_fmt =
+		     oct_mach_info::native)
+    : octave_base_strstream (arg_md, flt_fmt), is (data) { }
 
   octave_istrstream (const string& data,
 		     ios::openmode arg_md = ios::out,
-		     arch_type arg_at = at_native)
-    : octave_base_strstream (arg_md, arg_at), is (data.c_str ()) { }
+		     oct_mach_info::float_format flt_fmt =
+		     oct_mach_info::native)
+    : octave_base_strstream (arg_md, flt_fmt), is (data.c_str ()) { }
 
   ~octave_istrstream (void) { }
 
@@ -114,8 +117,9 @@ octave_ostrstream : public octave_base_strstream
 public:
 
   octave_ostrstream (ios::openmode arg_md = ios::out,
-		     arch_type arg_at = at_native)
-    : octave_base_strstream (arg_md, arg_at) { }
+		     oct_mach_info::float_format flt_fmt =
+		     oct_mach_info::native)
+    : octave_base_strstream (arg_md, flt_fmt) { }
 
   ~octave_ostrstream (void) { }
 

@@ -30,8 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 octave_iprocstream::octave_iprocstream (const string& n,
 					ios::openmode arg_md,
-					arch_type arg_at)
-  : octave_istdiostream (n, 0, arg_md, arg_at)
+					oct_mach_info::float_format flt_fmt)
+  : octave_istdiostream (n, 0, arg_md, flt_fmt)
 {
   fp = popen (n.c_str (), "r");
 
@@ -53,8 +53,8 @@ octave_iprocstream::~octave_iprocstream (void)
 
 octave_oprocstream::octave_oprocstream (const string& n,
 					ios::openmode arg_md,
-					arch_type arg_at)
-  : octave_ostdiostream (n, 0, arg_md, arg_at)
+					oct_mach_info::float_format flt_fmt)
+  : octave_ostdiostream (n, 0, arg_md, flt_fmt)
 {
   fp = popen (n.c_str (), "w");
 

@@ -817,218 +817,38 @@ octave_base_stream::gets (int max_len, bool& err)
   return do_gets (max_len, err, false, "fgets");
 }
 
-// XXX FIXME XXX -- need to handle architecture type conversions.
-
-#define do_read_elem(is, type, val) \
-  do \
-    { \
-      type tmp_val; \
-      is.read ((char *) &tmp_val, sizeof (type)); \
-      val = tmp_val; \
-    } \
-  while (0)
-
 octave_value
-octave_base_stream::do_read (int nr, int nc, data_type dt, int skip,
-			     arch_type at, int& count)
+octave_base_stream::read (const Matrix& size,
+			  oct_data_conv::data_type dt, int skip,
+			  oct_mach_info::float_format flt_fmt, int& count)
 {
+  Matrix retval;
+
   count = 0;
 
-  octave_value retval = Matrix ();
-
   istream *isp = input_stream ();
-
-  Matrix mval;
-  double *data = 0;
-  int max_size = 0;
-
-  int final_nr = 0;
-  int final_nc = 0;
-
-  if (nr > 0)
-    {
-      if (nc > 0)
-	{
-	  mval.resize (nr, nc, 0.0);
-	  data = mval.fortran_vec ();
-	  max_size = nr * nc;
-	}
-      else
-	{
-	  mval.resize (nr, 32, 0.0);
-	  data = mval.fortran_vec ();
-	  max_size = nr * 32;
-	}
-    }
-  else
-    {
-      mval.resize (32, 1, 0.0);
-      data = mval.fortran_vec ();
-      max_size = 32;
-    }
 
   if (isp)
     {
       istream& is = *isp;
 
-      for (;;)
-	{
-	  // XXX FIXME XXX -- maybe there should be a special case for
-	  // skip == 0.
-
-	  if (is)
-	    {
-	      if (nr > 0 && nc > 0 && count == max_size)
-		{
-		  final_nr = nr;
-		  final_nc = nc;
-
-		  break;
-		}
-
-	      if (skip != 0)
-		seek (skip, ios::cur);
-
-	      if (is)
-		{
-		  double tmp = 0.0;
-
-		  switch (dt)
-		    {
-		    case dt_char:
-		      do_read_elem (is, char, tmp);
-		      break;
-
-		    case dt_schar:
-		      do_read_elem (is, signed char, tmp);
-		      break;
-
-		    case dt_uchar:
-		      do_read_elem (is, unsigned char, tmp);
-		      break;
-
-		    case dt_short:
-		      do_read_elem (is, short, tmp);
-		      break;
-
-		    case dt_ushort:
-		      do_read_elem (is, unsigned short, tmp);
-		      break;
-
-		    case dt_int:
-		      do_read_elem (is, int, tmp);
-		      break;
-
-		    case dt_uint:
-		      do_read_elem (is, unsigned int, tmp);
-		      break;
-
-		    case dt_long:
-		      do_read_elem (is, long, tmp);
-		      break;
-
-		    case dt_ulong:
-		      do_read_elem (is, unsigned long, tmp);
-		      break;
-
-		    case dt_float:
-		      do_read_elem (is, float, tmp);
-		      break;
-
-		    case dt_double:
-		      do_read_elem (is, double, tmp);
-		      break;
-
-		    default:
-		      error ("fread: invalid type specification");
-		    }
-
-		  if (is && ok ())
-		    {
-		      if (count == max_size)
-			{
-			  max_size *= 2;
-
-			  if (nr > 0)
-			    mval.resize (nr, max_size / 2, 0.0);
-			  else
-			    mval.resize (max_size, 1, 0.0);
-
-			  data = mval.fortran_vec ();
-			}
-
-		      data[count++] = tmp;
-		    }
-		  else
-		    {
-		      if (is.eof ())
-			{
-			  if (nr > 0)
-			    {
-			      if (count > nr)
-				{
-				  final_nr = nr;
-				  final_nc = (count - 1) / nr + 1;
-				}
-			      else
-				{
-				  final_nr = count;
-				  final_nc = 1;
-				}
-			    }
-			  else
-			    {
-			      final_nr = count;
-			      final_nc = 1;
-			    }
-			}
-
-		      break;
-		    }
-		}
-	      else
-		{
-		  error ("fread: read error");
-		  break;
-		}
-	    }
-	  else
-	    {
-	      error ("fread: read error");
-	      break;
-	    }
-	}
-    }
-
-  if (ok ())
-    {
-      mval.resize (final_nr, final_nc, 0.0);
-
-      retval = mval;
-    }
-
-  return retval;
-}
-
-octave_value
-octave_base_stream::read (const Matrix& size, data_type dt, int skip,
-			  arch_type at, int& count)
-{
-  octave_value retval;
-
-  count = 0;
-
-  istream *is = input_stream ();
-
-  if (is)
-    {
       int nr = -1;
       int nc = -1;
 
       get_size (size, nr, nc, "fread");
 
       if (! error_state)
-	retval = do_read (nr, nc, dt, skip, at, count);
+	{
+	  if (flt_fmt == oct_mach_info::unknown)
+	    flt_fmt = float_format ();
+
+	  int tmp = retval.read (is, nr, nc, dt, skip, flt_fmt);
+
+	  if (tmp < 0)
+	    error ("fread: read error");
+	  else
+	    count = tmp;
+	}
     }
   else
     invalid_operation ("fread", "reading");
@@ -1628,23 +1448,12 @@ octave_base_stream::flush (void)
   return retval;
 }
 
-// XXX FIXME XXX -- need to handle architecture type conversions.
-
-#define do_write_elem(os, type, val) \
-  do \
-    { \
-      type tmp_val = (type) val; \
-      os.write ((char *) &tmp_val, sizeof (type)); \
-    } \
-  while (0)
-
 int
-octave_base_stream::do_write (const double *data, int n, data_type dt,
-			      int skip, arch_type at)
+octave_base_stream::write (const octave_value& data,
+			   oct_data_conv::data_type dt, int skip,
+			   oct_mach_info::float_format flt_fmt)
 {
   int retval = -1;
-
-  int count = 0;
 
   ostream *osp = output_stream ();
 
@@ -1652,114 +1461,19 @@ octave_base_stream::do_write (const double *data, int n, data_type dt,
     {
       ostream& os = *osp;
 
-      // XXX FIXME XXX -- maybe there should be a special case for
-      // skip == 0.
-
-      for (int i = 0; i < n; i++)
-	{
-	  if (os)
-	    {
-	      if (skip != 0)
-		seek (skip, ios::cur);
-
-	      if (os)
-		{
-		  double tmp = data[i];
-
-		  switch (dt)
-		    {
-		    case dt_char:
-		      do_write_elem (os, char, tmp);
-		      break;
-
-		    case dt_schar:
-		      do_write_elem (os, signed char, tmp);
-		      break;
-
-		    case dt_uchar:
-		      do_write_elem (os, unsigned char, tmp);
-		      break;
-
-		    case dt_short:
-		      do_write_elem (os, short, tmp);
-		      break;
-
-		    case dt_ushort:
-		      do_write_elem (os, unsigned short, tmp);
-		      break;
-
-		    case dt_int:
-		      do_write_elem (os, int, tmp);
-		      break;
-
-		    case dt_uint:
-		      do_write_elem (os, unsigned int, tmp);
-		      break;
-
-		    case dt_long:
-		      do_write_elem (os, long, tmp);
-		      break;
-
-		    case dt_ulong:
-		      do_write_elem (os, unsigned long, tmp);
-		      break;
-
-		    case dt_float:
-		      do_write_elem (os, float, tmp);
-		      break;
-
-		    case dt_double:
-		      do_write_elem (os, double, tmp);
-		      break;
-
-		    default:
-		      error ("fwrite: invalid type specification");
-		    }
-
-		  if (os && ok ())
-		    count++;
-		  else
-		    break;
-		}
-	      else
-		{
-		  error ("fwrite: write error");
-		  break;
-		}
-	    }
-	  else
-	    {
-	      error ("fwrite: write error");
-	      break;
-	    }
-	}
-    }
-
-  if (ok ())
-    retval = count;
-
-  return retval;
-}
-
-int
-octave_base_stream::write (const octave_value& data, data_type dt,
-			   int skip, arch_type at)
-{
-  int retval = -1;
-
-  ostream *os = output_stream ();
-
-  if (os)
-    {
       Matrix mval = data.matrix_value ();
 
       if (! error_state)
 	{
-	  int n = mval.length ();
+	  if (flt_fmt == oct_mach_info::unknown)
+	    flt_fmt = float_format ();
 
-	  const double *d = mval.data ();
+	  int tmp = mval.write (os, dt, skip, flt_fmt);
 
-	  retval = octave_base_stream::do_write (d, n, dt, skip, at);
+	  if (tmp < 0)
+	    error ("fwrite: write error");
+	  else
+	    retval = tmp;
 	}
     }
   else
@@ -2368,26 +2082,26 @@ octave_stream::rewind (void)
 
 octave_value
 octave_stream::read (const Matrix& size,
-		     octave_base_stream::data_type dt, int skip,
-		     octave_base_stream::arch_type at, int& count)
+		     oct_data_conv::data_type dt, int skip,
+		     oct_mach_info::float_format flt_fmt, int& count)
 {
   octave_value retval;
 
   if (stream_ok ("fread"))
-    retval = rep->read (size, dt, skip, at, count);
+    retval = rep->read (size, dt, skip, flt_fmt, count);
 
   return retval;
 }
 
 int
 octave_stream::write (const octave_value& data,
-		      octave_base_stream::data_type dt, int skip,
-		      octave_base_stream::arch_type at)
+		      oct_data_conv::data_type dt, int skip,
+		      oct_mach_info::float_format flt_fmt)
 {
   int retval = -1;
 
   if (stream_ok ("fwrite"))
-    retval = rep->write (data, dt, skip, at);
+    retval = rep->write (data, dt, skip, flt_fmt);
 
   return retval;
 }
@@ -2498,13 +2212,13 @@ octave_stream::mode (void)
   return retval;
 }
 
-octave_base_stream::arch_type
-octave_stream::architecture (void)
+oct_mach_info::float_format
+octave_stream::float_format (void)
 {
-  octave_base_stream::arch_type retval = octave_base_stream::at_unknown;
+  oct_mach_info::float_format retval = oct_mach_info::unknown;
 
-  if (stream_ok ("architecture"))
-    retval = rep->architecture ();
+  if (stream_ok ("float_format"))
+    retval = rep->float_format ();
 
   return retval;
 }
@@ -2569,80 +2283,6 @@ octave_stream::mode_as_string (int mode)
     default:
       break;
     }
-
-  return retval;
-}
-
-string
-octave_stream::arch_as_string (octave_base_stream::arch_type at)
-{
-  string retval = "unknown";
-
-  switch (at)
-    {
-    case octave_base_stream::at_native:
-      retval = "native";
-      break;
-
-    default:
-      break;
-    }
-
-  return retval;
-}
-
-octave_base_stream::data_type
-octave_stream::string_to_data_type (const string& s)
-{
-  octave_base_stream::data_type retval = octave_base_stream::dt_unknown;
-
-  // XXX FINISHME XXX
-
-  /*
-    int16
-    integer*2
-    int32
-    integer*4 */
-
-  // XXX FIXME XXX -- before checking s, need to strip spaces and downcase.
-
-  if (s == "char" || s == "char*1" || s == "integer*1" || s == "int8")
-    retval = octave_base_stream::dt_char;
-  else if (s == "schar" || s == "signedchar")
-    retval = octave_base_stream::dt_schar;
-  else if (s == "uchar" || s == "unsignedchar")
-    retval = octave_base_stream::dt_uchar;
-  else if (s == "short")
-    retval = octave_base_stream::dt_short;
-  else if (s == "ushort" || s == "unsignedshort")
-    retval = octave_base_stream::dt_ushort;
-  else if (s == "int")
-    retval = octave_base_stream::dt_int;
-  else if (s == "uint" || s == "unsignedint")
-    retval = octave_base_stream::dt_uint;
-  else if (s == "long")
-    retval = octave_base_stream::dt_long;
-  else if (s == "ulong" || s == "unsignedlong")
-    retval = octave_base_stream::dt_ulong;
-  else if (s == "float" || s == "float32" || s == "real*4")
-    retval = octave_base_stream::dt_float;
-  else if (s == "double" || s == "float64" || s == "real**")
-    retval = octave_base_stream::dt_double;
-  else
-    ::error ("invalid data type specified");
-
-  return retval;
-}
-
-octave_base_stream::arch_type
-octave_stream::string_to_arch_type (const string& s)
-{
-  octave_base_stream::arch_type retval = octave_base_stream::at_unknown;
-
-  if (s == "native")
-    retval = octave_base_stream::at_native;
-  else
-    ::error ("invalid architecture type specified");
 
   return retval;
 }
@@ -2856,7 +2496,7 @@ octave_stream_list::do_get_info (int fid) const
 
       retval(0) = os->name ();
       retval(1) = octave_stream::mode_as_string (os->mode ());
-      retval(2) = octave_stream::arch_as_string (os->architecture ());
+      retval(2) = oct_mach_info::float_format_as_string (os->float_format ());
     }
   else
     ::error ("invalid file id");
@@ -2923,7 +2563,10 @@ octave_stream_list::do_list_open_files (void) const
       if (os)
 	{
 	  string mode = octave_stream::mode_as_string (os->mode ());
-	  string arch = octave_stream::arch_as_string (os->architecture ());
+
+	  string arch =
+	    oct_mach_info::float_format_as_string (os->float_format ());
+
 	  string name = os->name ();
 
 	  buf.form ("  %4d     %-3s  %-9s  %s\n",

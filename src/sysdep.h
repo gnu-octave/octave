@@ -39,9 +39,6 @@ extern int octave_chdir (const string&);
 extern int gethostname (char *, int);
 #endif
 
-// Nonzero if the machine we are running on is big-endian.
-extern int octave_words_big_endian;
-
 extern string oct_tilde_expand (const string&);
 
 #endif

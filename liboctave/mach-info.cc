@@ -25,15 +25,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "f77-fcn.h"
-#include "float-fmt.h"
+#include "lo-error.h"
+#include "mach-info.h"
 
 extern "C"
 {
   double F77_FCN (d1mach, D1MACH) (const int&);
 }
 
-// The floating point format on this system.
-floating_point_format native_float_format = OCTAVE_UNKNOWN_FLT_FMT;
+oct_mach_info *oct_mach_info::instance = 0;
 
 union equiv
 {
@@ -44,7 +44,7 @@ union equiv
 struct
 float_params
 {
-  floating_point_format fp_fmt;
+  oct_mach_info::float_format fp_fmt;
   equiv fp_par[4];
 };
 
@@ -69,36 +69,36 @@ equiv_compare (const equiv *std, const equiv *v, int len)
   return 1;
 }
 
-int
-float_format_init (void)
+void
+oct_mach_info::init_float_format (void)
 {
   float_params fp[5];
 
-  INIT_FLT_PAR (fp[0], OCTAVE_IEEE_BIG,
+  INIT_FLT_PAR (fp[0], oct_mach_info::ieee_big_endian,
 		   1048576,  0,
 		2146435071, -1,
 		1017118720,  0,
 		1018167296,  0);
 
-  INIT_FLT_PAR (fp[1], OCTAVE_IEEE_LITTLE,
+  INIT_FLT_PAR (fp[1], oct_mach_info::ieee_little_endian,
 		 0,    1048576,
 		-1, 2146435071,
 		 0, 1017118720,
 		 0, 1018167296);
 
-  INIT_FLT_PAR (fp[2], OCTAVE_VAX_D,
+  INIT_FLT_PAR (fp[2], oct_mach_info::vax_d,
 		   128,  0,
 		-32769, -1,
 		  9344,  0,
 		  9344,  0);
 
-  INIT_FLT_PAR (fp[3], OCTAVE_VAX_G,
+  INIT_FLT_PAR (fp[3], oct_mach_info::vax_g,
 		    16,  0,
 		-32769, -1,
 		 15552,  0,
 		 15552,  0);
 
-  INIT_FLT_PAR (fp[4], OCTAVE_UNKNOWN_FLT_FMT,
+  INIT_FLT_PAR (fp[4], oct_mach_info::unknown,
 		0, 0,
 		0, 0,
 		0, 0,
@@ -116,13 +116,124 @@ float_format_init (void)
     {
       if (equiv_compare (fp[i].fp_par, mach_fp_par, 4))
 	{
-	  native_float_format = fp[i].fp_fmt;
+	  native_float_fmt = fp[i].fp_fmt;
 	  break;
 	}
     }
-  while (fp[++i].fp_fmt != OCTAVE_UNKNOWN_FLT_FMT);
+  while (fp[++i].fp_fmt != oct_mach_info::unknown);
+}
 
-  return (native_float_format != OCTAVE_UNKNOWN_FLT_FMT);
+void
+oct_mach_info::ten_little_endians (void)
+{
+  // Are we little or big endian?  From Harbison & Steele.
+
+  union
+  {
+    long l;
+    char c[sizeof (long)];
+  } u;
+
+  u.l = 1;
+
+  big_chief = (u.c[sizeof (long) - 1] == 1);
+}
+
+oct_mach_info::oct_mach_info (void)
+{
+  init_float_format ();
+  ten_little_endians ();
+}
+
+oct_mach_info::float_format
+oct_mach_info::native_float_format (void)
+{
+  if (! instance)
+    instance = new oct_mach_info ();
+
+  return instance->native_float_fmt;
+}
+
+bool
+oct_mach_info::words_big_endian (void)
+{
+  if (! instance)
+    instance = new oct_mach_info ();
+
+  return instance->big_chief;
+}
+
+bool
+oct_mach_info::words_little_endian (void)
+{
+  if (! instance)
+    instance = new oct_mach_info ();
+
+  return ! instance->big_chief;
+}
+
+oct_mach_info::float_format
+oct_mach_info::string_to_float_format (const string& s)
+{
+  oct_mach_info::float_format retval = oct_mach_info::unknown;
+
+  if (s == "native" || s == "n")
+    retval = oct_mach_info::native;
+  else if (s == "ieee-be" || s == "b")
+    retval = oct_mach_info::ieee_big_endian;
+  else if (s == "ieee-le" || s == "l")
+    retval = oct_mach_info::ieee_little_endian;
+  else if (s == "vaxd" || s == "d")
+    retval = oct_mach_info::vax_d;
+  else if (s == "vax_g" || s == "g")
+    retval = oct_mach_info::vax_g;
+  else if (s == "cray" || s == "c")
+    retval = oct_mach_info::cray;
+  else if (s == "unknown")
+    retval = oct_mach_info::unknown;
+  else
+    (*current_liboctave_error_handler)
+      ("invalid architecture type specified");
+
+  return retval;
+}
+
+string
+oct_mach_info::float_format_as_string (float_format flt_fmt)
+{
+  string retval = "unknown";
+
+  switch (flt_fmt)
+    {
+    case native:
+      retval = "native";
+      break;
+
+    case ieee_big_endian:
+      retval = "ieee_big_endian";
+      break;
+
+    case ieee_little_endian:
+      retval = "ieee_little_endian";
+      break;
+
+    case vax_d:
+      retval = "vax_d_float";
+      break;
+
+    case vax_g:
+      retval = "vax_g_float";
+      break;
+
+    case cray:
+      retval = "cray";
+      break;
+
+    default:
+      break;
+    }
+
+  return retval;
 }
 
 /*

@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CMatrix.h"
 #include "Range.h"
 #include "dMatrix.h"
-#include "float-fmt.h"
+#include "mach-info.h"
 #include "oct-cmplx.h"
 #include "oct-math.h"
 #include "oct-term.h"
@@ -992,10 +992,13 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
 	  // formats and not for Cray?
 
+	  oct_mach_info::float_format flt_fmt =
+	    oct_mach_info::native_float_format ();
+
 	  if (hex_format > 1
-	      || native_float_format == OCTAVE_IEEE_BIG
-	      || native_float_format == OCTAVE_CRAY
-	      || native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
+	      || flt_fmt == oct_mach_info::ieee_big_endian
+	      || flt_fmt == oct_mach_info::cray
+	      || flt_fmt == oct_mach_info::unknown)
 	    {
 	      for (size_t i = 0; i < sizeof (double); i++)
 		os.form ("%02x", (int) tmp.i[i]);
@@ -1017,9 +1020,12 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
 	  // formats and not for Cray?
 
-	  if (native_float_format == OCTAVE_IEEE_BIG
-	      || native_float_format == OCTAVE_CRAY
-	      || native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
+	  oct_mach_info::float_format flt_fmt =
+	    oct_mach_info::native_float_format ();
+
+	  if (flt_fmt == oct_mach_info::ieee_big_endian
+	      || flt_fmt == oct_mach_info::cray
+	      || flt_fmt == oct_mach_info::unknown)
 	    {
 	      for (size_t i = 0; i < sizeof (double); i++)
 		PRINT_CHAR_BITS (os, tmp.i[i]);

@@ -27,13 +27,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-// For FILE...
-#include <cstdio>
-
 #include "MArray2.h"
 #include "MDiagArray2.h"
 
 #include "mx-defs.h"
+
+#include "data-conv.h"
+#include "mach-info.h"
 
 class Matrix : public MArray2<double>
 {
@@ -237,8 +237,11 @@ public:
   friend ostream& operator << (ostream& os, const Matrix& a);
   friend istream& operator >> (istream& is, Matrix& a);
 
-  int read (FILE *fptr, const char *type);
-  int write (FILE *fptr, const char *type);
+  int read (istream& is, int nr, int nc, oct_data_conv::data_type dt,
+	    int skip, oct_mach_info::float_format flt_fmt);
+
+  int write (ostream& os, oct_data_conv::data_type dt, int skip,
+	     oct_mach_info::float_format flt_fmt);
 
 private:
 

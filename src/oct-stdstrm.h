@@ -34,8 +34,9 @@ public:
 
   octave_base_stdiostream (const string& n, FILE *f,
 			   ios::openmode arg_md = ios::in|ios::out,
-			   arch_type arg_at = at_native)
-    : octave_base_stream (arg_md, arg_at), nm (n), fp (f) { }
+			   oct_mach_info::float_format flt_fmt =
+			   oct_mach_info::native)
+    : octave_base_stream (arg_md, flt_fmt), nm (n), fp (f) { }
 
   ~octave_base_stdiostream (void);
 
@@ -77,7 +78,8 @@ public:
 
   octave_istdiostream (const string& n, FILE *f = 0,
 		       ios::openmode arg_md = ios::in,
-		       arch_type arg_at = at_native);
+		       oct_mach_info::float_format flt_fmt =
+		       oct_mach_info::native);
 
   ~octave_istdiostream (void);
 
@@ -121,7 +123,8 @@ public:
 
   octave_ostdiostream (const string& n, FILE *f = 0,
 		       ios::openmode arg_md = ios::out,
-		       arch_type arg_at = at_native);
+		       oct_mach_info::float_format flt_fmt =
+		       oct_mach_info::native);
 
   ~octave_ostdiostream (void);
 

@@ -85,8 +85,8 @@ octave_base_stdiostream::tell (void) const
 
 octave_istdiostream::octave_istdiostream (const string& n, FILE *f,
 					  ios::openmode arg_md,
-					  arch_type arg_at)
-  : octave_base_stdiostream (n, f, arg_md, arg_at), is (0)
+					  oct_mach_info::float_format flt_fmt)
+  : octave_base_stdiostream (n, f, arg_md, flt_fmt), is (0)
 {
   if (f)
     is = new istdiostream (f);
@@ -99,8 +99,8 @@ octave_istdiostream::~octave_istdiostream (void)
 
 octave_ostdiostream::octave_ostdiostream (const string& n, FILE *f,
 					  ios::openmode arg_md,
-					  arch_type arg_at)
-  : octave_base_stdiostream (n, f, arg_md, arg_at), os (0)
+					  oct_mach_info::float_format flt_fmt)
+  : octave_base_stdiostream (n, f, arg_md, flt_fmt), os (0)
 {
   if (f)
     os = new ostdiostream (f);

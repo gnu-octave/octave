@@ -33,153 +33,173 @@ Array2<T>::value (void)
 
   int n_idx = index_count ();
 
-  int nr = d1;
-  int nc = d2;
-
   if (n_idx == 2)
     {
       idx_vector *tmp = get_idx ();
       idx_vector idx_i = tmp[0];
       idx_vector idx_j = tmp[1];
 
-      int n = idx_i.freeze (nr, "row", liboctave_pzo_flag);
-      int m = idx_j.freeze (nc, "column", liboctave_pzo_flag);
-
-      if (idx_i && idx_j)
-	{
-	  if (n == 0)
-	    {
-	      if (m == 0 || idx_j.is_colon_equiv (nc, 1))
-		retval.resize (0, 0);
-	      else
-		(*current_liboctave_error_handler)
-		  ("invalid row index = 0");
-	    }
-	  else if (m == 0)
-	    {
-	      if (n == 0 || idx_i.is_colon_equiv (nr, 1))
-		retval.resize (0, 0);
-	      else
-		(*current_liboctave_error_handler)
-		  ("invalid column index = 0");
-	    }
-	  else if (idx_i.is_colon_equiv (nr) && idx_j.is_colon_equiv (nc))
-	    {
-	      retval = *this;
-	    }
-	  else
-	    {
-	      retval.resize (n, m);
-
-	      for (int j = 0; j < m; j++)
-		{
-		  int jj = idx_j.elem (j);
-		  for (int i = 0; i < n; i++)
-		    {
-		      int ii = idx_i.elem (i);
-		      retval.elem (i, j) = elem (ii, jj);
-		    }
-		}
-	    }
-	}
-      // idx_vector::freeze() printed an error message for us.
+      return index (idx_i, idx_j);
     }
   else if (n_idx == 1)
     {
-      if (nr == 1 && nc == 1)
-	{
-	  Array<T> tmp = Array<T>::value ();
+      idx_vector *tmp = get_idx ();
+      idx_vector idx = tmp[0];
 
-	  int len = tmp.length ();
-
-	  if (len == 0)
-	    retval = Array2<T> (0, 0);
-	  else
-	    {
-	      if (liboctave_pcv_flag)
-		retval = Array2<T> (tmp, len, 1);
-	      else
-		retval = Array2<T> (tmp, 1, len);
-	    }
-	}
-      else if (nr == 1 || nc == 1)
-	{
-	  int result_is_column_vector = (nc == 1);
-
-	  if (liboctave_dfi_flag)
-	    {
-	      idx_vector *tmp = get_idx ();
-	      idx_vector idx = tmp[0];
-
-	      if (idx.is_colon ())
-		result_is_column_vector = 1;
-	    }
-
-	  Array<T> tmp = Array<T>::value ();
-
-	  int len = tmp.length ();
-
-	  if (len == 0)
-	    retval = Array2<T> (0, 0);
-	  else
-	    {
-	      if (result_is_column_vector)
-		retval = Array2<T> (tmp, len, 1);
-	      else
-		retval = Array2<T> (tmp, 1, len);
-	    }
-	}
-      else if (liboctave_dfi_flag)
-	{
-	  // This code is only for indexing matrices.  The vector
-	  // cases are handled above.
-
-	  idx_vector *tmp = get_idx ();
-	  idx_vector idx = tmp[0];
-
-	  idx.freeze (nr * nc, "matrix", liboctave_pzo_flag);
-
-	  if (idx)
-	    {
-	      int result_nr = idx.orig_rows ();
-	      int result_nc = idx.orig_columns ();
-
-	      if (idx.is_colon ())
-		{
-		  result_nr = nr * nc;
-		  result_nc = 1;
-		}
-	      else if (idx.one_zero_only ())
-		{
-		  result_nr = idx.ones_count ();
-		  result_nc = (result_nr > 0 ? 1 : 0);
-		}
-
-	      retval.resize (result_nr, result_nc);
-
-	      int k = 0;
-	      for (int j = 0; j < result_nc; j++)
-		{
-		  for (int i = 0; i < result_nr; i++)
-		    {
-		      int ii = idx.elem (k++);
-		      int fr = ii % nr;
-		      int fc = (ii - fr) / nr;
-		      retval.elem (i, j) = elem (fr, fc);
-		    }
-		}
-	    }
-	  // idx_vector::freeze() printed an error message for us.
-	}
-      else
-	(*current_liboctave_error_handler)
-	  ("single index only valid for row or column vector");
+      return index (idx);
     }
   else
     (*current_liboctave_error_handler)
       ("invalid number of indices for matrix expression");
 
   clear_index ();
+
+  return retval;
+}
+
+template <class T>
+Array2<T>
+Array2<T>::index (idx_vector& idx) const
+{
+  Array2<T> retval;
+
+  int nr = d1;
+  int nc = d2;
+
+  if (nr == 1 && nc == 1)
+    {
+      Array<T> tmp = Array<T>::index (idx);
+
+      int len = tmp.length ();
+
+      if (len == 0)
+	retval = Array2<T> (0, 0);
+      else
+	{
+	  if (liboctave_pcv_flag)
+	    retval = Array2<T> (tmp, len, 1);
+	  else
+	    retval = Array2<T> (tmp, 1, len);
+	}
+    }
+  else if (nr == 1 || nc == 1)
+    {
+      int result_is_column_vector = (nc == 1);
+
+      if (liboctave_dfi_flag && idx.is_colon ())
+	    result_is_column_vector = 1;
+
+      Array<T> tmp = Array<T>::index (idx);
+
+      int len = tmp.length ();
+
+      if (len == 0)
+	retval = Array2<T> (0, 0);
+      else
+	{
+	  if (result_is_column_vector)
+	    retval = Array2<T> (tmp, len, 1);
+	  else
+	    retval = Array2<T> (tmp, 1, len);
+	}
+    }
+  else if (liboctave_dfi_flag)
+    {
+      // This code is only for indexing matrices.  The vector
+      // cases are handled above.
+
+      idx.freeze (nr * nc, "matrix", liboctave_pzo_flag);
+
+      if (idx)
+	{
+	  int result_nr = idx.orig_rows ();
+	  int result_nc = idx.orig_columns ();
+
+	  if (idx.is_colon ())
+	    {
+	      result_nr = nr * nc;
+	      result_nc = 1;
+	    }
+	  else if (idx.one_zero_only ())
+	    {
+	      result_nr = idx.ones_count ();
+	      result_nc = (result_nr > 0 ? 1 : 0);
+	    }
+
+	  retval.resize (result_nr, result_nc);
+
+	  int k = 0;
+	  for (int j = 0; j < result_nc; j++)
+	    {
+	      for (int i = 0; i < result_nr; i++)
+		{
+		  int ii = idx.elem (k++);
+		  int fr = ii % nr;
+		  int fc = (ii - fr) / nr;
+		  retval.elem (i, j) = elem (fr, fc);
+		}
+	    }
+	}
+      // idx_vector::freeze() printed an error message for us.
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("single index only valid for row or column vector");
+
+  return retval;
+}
+
+template <class T>
+Array2<T>
+Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
+{
+  Array2<T> retval;
+
+  int nr = d1;
+  int nc = d2;
+
+  int n = idx_i.freeze (nr, "row", liboctave_pzo_flag);
+  int m = idx_j.freeze (nc, "column", liboctave_pzo_flag);
+
+  if (idx_i && idx_j)
+    {
+      if (n == 0)
+	{
+	  if (m == 0 || idx_j.is_colon_equiv (nc, 1))
+	    retval.resize (0, 0);
+	  else
+	    (*current_liboctave_error_handler)
+	      ("invalid row index = 0");
+	}
+      else if (m == 0)
+	{
+	  if (n == 0 || idx_i.is_colon_equiv (nr, 1))
+	    retval.resize (0, 0);
+	  else
+	    (*current_liboctave_error_handler)
+	      ("invalid column index = 0");
+	}
+      else if (idx_i.is_colon_equiv (nr) && idx_j.is_colon_equiv (nc))
+	{
+	  retval = *this;
+	}
+      else
+	{
+	  retval.resize (n, m);
+
+	  for (int j = 0; j < m; j++)
+	    {
+	      int jj = idx_j.elem (j);
+	      for (int i = 0; i < n; i++)
+		{
+		  int ii = idx_i.elem (i);
+		  retval.elem (i, j) = elem (ii, jj);
+		}
+	    }
+	}
+    }
+
+  // idx_vector::freeze() printed an error message for us.
 
   return retval;
 }

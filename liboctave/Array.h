@@ -243,6 +243,8 @@ public:
   void maybe_delete_elements (idx_vector& i);
 
   Array<T> value (void);
+
+  Array<T> index (idx_vector& i) const;
 #endif
 };
 

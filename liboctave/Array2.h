@@ -179,6 +179,10 @@ public:
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
 
   Array2<T> value (void);
+
+  Array2<T> index (idx_vector& i) const;
+
+  Array2<T> index (idx_vector& i, idx_vector& j) const;
 #endif
 };
 

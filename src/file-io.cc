@@ -2571,6 +2571,86 @@ DEFUN ("lstat", Flstat, Slstat, 1, 1,
   return retval;
 }
 
+static int
+convert (int x, int ibase, int obase)
+{
+  int retval = 0;
+
+  int tmp = x % obase;
+
+  if (tmp > ibase - 1)
+    error ("umask: invalid digit");
+  else
+    {
+      retval = tmp;
+      int mult = ibase;
+      while ((x = (x - tmp) / obase))
+	{
+	  tmp = x % obase;
+	  if (tmp > ibase - 1)
+	    {
+	      error ("umask: invalid digit");
+	      break;
+	    }
+	  retval += mult * tmp;
+	  mult *= ibase;
+	}
+    }
+
+  return retval;
+}
+
+DEFUN ("umask", Fumask, Sumask, 2, 1,
+  "umask (MASK)\n\
+\n\
+Change the file permission mask for file creation for the current
+process.  MASK is an integer, interpreted as an octal number.  If
+successful, returns the previous value of the mask (as an integer to
+be interpreted as an octal number); otherwise an error message is
+printed.")
+{
+  Octave_object retval;
+
+  int status = 0;
+
+  if (args.length () == 1)
+    {
+      double dmask = args(0).double_value ();
+
+      if (error_state)
+	{
+	  status = -1;
+	  error ("umask: expecting integer argument");
+	}
+      else
+	{
+	  int mask = NINT (dmask);
+
+	  if ((double) mask != dmask || mask < 0)
+	    {
+	      status = -1;
+	      error ("umask: MASK must be a positive integer value");
+	    }
+	  else
+	    {
+	      int oct_mask = convert (mask, 8, 10);
+
+	      if (! error_state)
+#if defined (HAVE_UMASK)
+		status = convert (umask (oct_mask), 10, 8);
+#endif
+	    }
+	}
+    }
+  else
+    print_usage ("umask");
+
+  if (status >= 0)
+    retval(0) = (double) status;
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

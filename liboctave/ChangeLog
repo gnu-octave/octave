@@ -1,5 +1,9 @@
 Thu Feb  5 02:12:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lo-specfun.cc: Don't include dbleBessel.h.
+
+	* Makefile.in (INCLUDES): Delete oct-math.h from the list.
+
 	* dir-ops.h (dir_entry::operator bool ()): Return bool, not void*.
 	* file-stat.h (file_stat::operator bool ()): Likewise.
 	* idx-vector.h (idx_vector::operator bool ()): Likewise.

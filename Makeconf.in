@@ -252,10 +252,10 @@ pic/%.o : %.cc
 	@rm -f $@
 	@-if test "$(srcdir)" = "." ; then \
 	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp ; \
+	    sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp ; \
 	else \
 	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
+	    sed -e 's,$*\.o,pic/& & $@,g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
 	fi
 	@mv $@.tmp $@
 
@@ -266,10 +266,10 @@ pic/%.o : %.cc
 	@rm -f $@
 	@-if test "$(srcdir)" = "." ; then \
 	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp ; \
+	    sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp ; \
 	else \
 	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
+	    sed -e 's,$*\.o,pic/& & $@,g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
 	fi
 	@mv $@.tmp $@
 

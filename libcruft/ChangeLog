@@ -1,3 +1,7 @@
+2005-02-08  John W. Eaton  <jwe@octave.org>
+
+	* misc/quit.h: Use C-style comments.
+
 2004-09-08  John W. Eaton  <jwe@octave.org>
 
 	* misc/machar.c (rmachar): Use modern C declaration.

@@ -89,8 +89,13 @@ function retval = dec2base (n, base, len)
   ## convert digits to symbols
   retval = reshape (symbols (digits+1), size (digits));
 
-  ## Check if the first element is the zero symbol
-  if (all (retval(:,1) == symbols(1)))
+  ## Check if the first element is the zero symbol. It seems possible
+  ## that LEN is provided, and is less than the computed MAX_LEN and
+  ## MAX_LEN is computed to be one larger than necessary, so we would
+  ## have a leading zero to remove.  But if LEN >= MAX_LEN, we should
+  ## not remove any leading zeros.
+  if ((nargin == 2 || (nargin == 3 && max_len > len))
+      && all (retval(:,1) == symbols(1)))
     retval = retval(:,2:end);
   endif
 

@@ -68,10 +68,11 @@ octave_interrupt_exception
 
 extern sig_atomic_t octave_interrupt_immediately;
 
-// > 0: interrupt pending
-//   0: no interrupt pending
-// < 0: handling interrupt
-//
+/*
+  > 0: interrupt pending
+    0: no interrupt pending
+  < 0: handling interrupt
+*/
 extern sig_atomic_t octave_interrupt_state;
 
 extern sig_atomic_t octave_allocation_error;

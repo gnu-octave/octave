@@ -1,3 +1,8 @@
+2005-02-08  John W. Eaton  <jwe@octave.org>
+
+	* strings/dec2base.m: Don't delete leading zero if third arg is
+	provided and len <= computed max_len.
+
 2005-01-27  David Bateman  <dbateman@free.fr>
 
 	* strings/dec2base.m: Be even more careful about handling all digits.

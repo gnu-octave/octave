@@ -17,8 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## isequal(x1, x2, ...)
-##    true if all parts of x1, x2, ... are equal
+## -*- texinfo -*-
+## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, @dots{}, @var{xN})
+## Return true if all parts of @var{x1}, @var{x2}, @dots{}, @var{xN} are
+## equal.
+## @end deftypefn
 
 ## Author: Paul Kienzle
 ## Adapted-by: jwe

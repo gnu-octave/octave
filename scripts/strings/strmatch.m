@@ -18,11 +18,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: strmatch(s, A [, 'exact'])
-## Determines which entries of A match string s. A can be a string matrix
-## or a cell array of strings. If 'exact' is not given, then s only needs 
-## to match A up to the length of s. Null characters match blanks.
-## Results are returned as a column vector.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} strmatch (@var{s}, @var{a}, "exact")
+## Return true for entries of @var{a} that match the string @var{s}.
+## The second argument @var{a} may be a string matrix or a cell array of
+## strings.  If the third argument @code{"exact"} is not given, then
+## @var{s} only needs to match @var{a} up to the length of @var{s}.  Nul
+## characters match blanks.  Results are returned as a column vector.
+## @end deftypefn
 
 ## Author: Paul Kienzle, Alois Schloegl
 ## Adapted-by: jwe
@@ -40,12 +43,12 @@ function idx = strmatch (s, A, exact)
     if (nargin > 2)
       for k = 1:nel
 	match(k) = strcmp (s, A{k}); 
-      end
+      endfor
     else
       for k = 1:nel
 	match(k) = strncmp (s, A{k}, length (s));
-      end
-    end
+      endfor
+    endif
     idx = find (match);
   elseif (length (s) > nc)
     idx = [];

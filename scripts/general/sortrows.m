@@ -17,15 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## B = sortrows (A)
-##     returns matrix with rows sorted "lexicographically" 
-##
-## B = sortrows(A, c)
-##     returns matrix with rows sorted according to the order of the
-##     columns specified in c.
-##
-## Set implicit_str_to_num_ok and implicit_num_to_str_ok to 1 if you 
-## use this for string sorting and octave 2.1.50 or earlier.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sortrows (@var{a}, @var{c})
+## Sort the rows of the matrix @var{a} according to the order of the
+## columns specified in @var{c}.  If @var{c} is omitted, a
+## lexicographical sort is used.
+## @end deftypefn
 
 ## Author: Daniel Calvelo, Paul Kienzle
 ## Adapted-by: jwe

@@ -268,6 +268,17 @@ private:
 /*
  * A symbol table.
  */
+
+#define SYMTAB_LOCAL_SCOPE 1
+#define SYMTAB_GLOBAL_SCOPE 2
+
+#define SYMTAB_ALL_SCOPES (SYMTAB_LOCAL_SCOPE | SYMTAB_GLOBAL_SCOPE)
+
+#define SYMTAB_ALL_TYPES (symbol_def::USER_FUNCTION \
+			  | symbol_def::USER_VARIABLE \
+			  | symbol_def::BUILTIN_FUNCTION \
+			  | symbol_def::BUILTIN_VARIABLE)
+
 class
 symbol_table
 {
@@ -284,16 +295,6 @@ public:
   int save (ostream& os, const char *name, int mark_as_global = 0);
 
   int size (void) const;
-
-#define SYMTAB_LOCAL_SCOPE 1
-#define SYMTAB_GLOBAL_SCOPE 2
-
-#define SYMTAB_ALL_SCOPES (SYMTAB_LOCAL_SCOPE | SYMTAB_GLOBAL_SCOPE)
-
-#define SYMTAB_ALL_TYPES (symbol_def::USER_FUNCTION \
-			  | symbol_def::USER_VARIABLE \
-			  | symbol_def::BUILTIN_FUNCTION \
-			  | symbol_def::BUILTIN_VARIABLE)
 
   symbol_record_info *long_list (int& count, int sort = 0,
 				 unsigned type = SYMTAB_ALL_TYPES,

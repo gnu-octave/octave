@@ -114,7 +114,7 @@ public:
   virtual int is_prefix_expression (void) const
     { return 0; }
 
-  virtual char *name (void)
+  virtual char *name (void) const
     { assert (0); return (char *) NULL; }
 
   virtual int max_expected_args (void)

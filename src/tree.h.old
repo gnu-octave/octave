@@ -158,7 +158,7 @@ public:
   tree_constant *eval (const tree_constant *args, int n_in, int n_out,
 		       int print);
 
-  char *name (void);
+  char *name (void) const;
 
   int max_expected_args (void);
 
@@ -187,7 +187,7 @@ public:
 
   int is_identifier (void) const;
 
-  char *name (void);
+  char *name (void) const;
   void rename (const char *n);
 
   tree_identifier *define (tree_constant *t);
@@ -552,7 +552,7 @@ tree_parameter_list : public tree
   tree_parameter_list *reverse (void);
   int length (void);
 
-  char *name (void);
+  char *name (void) const;
 
   void mark_as_formal_parameters (void);
 
@@ -613,7 +613,7 @@ tree_word_list : public tree
   tree_word_list *reverse (void);
   int length (void);
 
-  char *name (void);
+  char *name (void) const;
 
   tree_word_list *next_elem (void);
 

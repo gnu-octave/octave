@@ -946,15 +946,17 @@ symbol_table::save (ostream& os, int mark_as_global = 0)
   int status = 0;
   int count;
   char **names = list (count, 1, symbol_def::USER_VARIABLE);
-  if (names != (char **) NULL)
+  char **ptr = names;
+  if (ptr != (char **) NULL)
     {
-      while (*names != (char *) NULL)
+      while (*ptr != (char *) NULL)
 	{
-	  if (save (os, *names, mark_as_global))
+	  if (save (os, *ptr, mark_as_global))
 	    status++;
 
-	  names++;
+	  ptr++;
 	}
+      delete [] names;
     }
   return status;
 }

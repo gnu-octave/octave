@@ -32,8 +32,8 @@ function oneplot ()
   global multiplot_mode
 
   set nomultiplot;
-  set size 1, 1
-  set origin 0, 0
+  set size 1, 1;
+  set origin 0, 0;
   multiplot_mode = 0;
 
 endfunction

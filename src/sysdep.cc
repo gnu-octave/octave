@@ -40,6 +40,8 @@ Software Foundation, Inc.
 #include <cstdlib>
 #include <cstring>
 
+#include <string>
+
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <unistd.h>
@@ -541,7 +543,8 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 10,
 
   if (nargin == 1)
     {
-      const char *name = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *name = tstr.c_str ();
 
       if (! error_state)
 	{
@@ -567,11 +570,13 @@ DEFUN ("putenv", Fputenv, Sputenv, 10,
 
   if (nargin == 2)
     {
-      const char *var = args(0).string_value (); 
+      string tstr1 = args(0).string_value (); 
+      const char *var = tstr1.c_str ();
 
       if (! error_state)
 	{
-	  const char *val = args(1).string_value (); 
+	  string tstr2 = args(1).string_value (); 
+	  const char *val = tstr2.c_str ();
 
 	  if (! error_state)
 	    oct_putenv (var, val);

@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "CMatrix.h"
 #include "CmplxAEPBAL.h"
 #include "CmplxAEPBAL.h"
@@ -73,6 +75,7 @@ where OPT is an optional single character argument as follows: \n\
     }
 
   const char *bal_job;
+  string tstr;
   int my_nargin;		// # args w/o optional string arg
 
   // Determine if balancing option is listed.  Set my_nargin to the
@@ -80,7 +83,8 @@ where OPT is an optional single character argument as follows: \n\
 
   if (args(nargin-1).is_string ())
     {
-      bal_job = args(nargin-1).string_value ();
+      tstr = args(nargin-1).string_value ();
+      bal_job = tstr.c_str ();
       my_nargin = nargin-1;
     }
   else

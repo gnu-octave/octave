@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdarg>
 #include <cstring>
 
+#include <string>
+
 #include <strstream.h>
 
 #include "defun.h"
@@ -202,6 +204,8 @@ handle_message (error_fun f, const char *msg, const Octave_object& args)
 {
   Octave_object retval;
 
+  string tstr;
+
   int nargin = args.length ();
 
   tree_constant arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
@@ -210,7 +214,8 @@ handle_message (error_fun f, const char *msg, const Octave_object& args)
     {
       if (arg.is_string ())
 	{
-	  msg = arg.string_value ();
+	  tstr = arg.string_value ();
+	  msg = tstr.c_str ();
 
 	  if (! msg)
 	    return retval;

@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <csetjmp>
 #include <cstring>
 
+#include <string>
+
 #include <fstream.h>
 #include <iostream.h>
 #include <strstream.h>
@@ -522,7 +524,10 @@ make_argv (const Octave_object& args, const char *fcn_name)
       argv = new char * [n + 1];
       argv[0] = strsave (fcn_name);
       for (int i = 0; i < n; i++)
-	argv[i+1] = strsave (args(i).string_value ());
+	{
+	  string tstr = args(i).string_value ();
+	  argv[i+1] = strsave (tstr.c_str ());
+	}
     }
   else
     error ("%s: expecting all arguments to be strings", fcn_name);
@@ -798,7 +803,8 @@ DEFUN ("undo_string_escapes", Fundo_string_escapes,
 
   if (nargin == 1 && args(0).is_string ())
     {
-      char *str = undo_string_escapes (args(0).string_value ());
+      string tstr = args(0).string_value ();
+      char *str = undo_string_escapes (tstr.c_str ());
       retval = str;
       delete [] str;
     }

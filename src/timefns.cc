@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "defun.h"
 #include "help.h"
 #include "oct-map.h"
@@ -80,7 +82,8 @@ extract_tm (Octave_map &m, double& fraction)
   tm.tm_yday = NINT (m ["yday"] . double_value ());
   tm.tm_isdst = NINT (m ["isdst"] . double_value ());
 #ifdef HAVE_TMZONE
-  tm.tm_zone = (m ["zone"] . string_value ());
+  string tstr = m ["zone"] . string_value ();
+  tm.tm_zone = tstr.c_str ();
 #endif
 
   return &tm;
@@ -272,7 +275,8 @@ DEFUN ("strftime", Fstrftime, Sstrftime, 10,
 
   if (args.length () == 2 && args(0).is_string () && args(1).is_map ()) 
     {
-      const char *fmt = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *fmt = tstr.c_str ();
       Octave_map map = args(1).map_value ();
 
       double fraction;

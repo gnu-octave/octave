@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cmath>
 #include <cstring>
 
+#include <string>
+
 #include <iostream.h>
 #include <strstream.h>
 
@@ -1515,7 +1517,8 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 
       for (int i = 0; i < nstr; i++)
 	{
-	  char *row = chm.row_as_string (i);
+	  string tstr = chm.row_as_string (i);
+	  const char *row = tstr.c_str ();
 
 	  if (pr_as_read_syntax)
 	    {

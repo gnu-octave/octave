@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdlib>
 
+#include <string>
+
 #include <iostream.h>
 
 #include "Range.h"
@@ -215,7 +217,7 @@ private:
 	ComplexMatrix complex_matrix_value (int frc_str_conv = 0) const;
 	charMatrix char_matrix_value (int frc_str_conv = 0) const;
 	charMatrix all_strings (void) const;
-	const char *string_value (void) const;
+        string string_value (void) const;
 	Range range_value (void) const;
 	Octave_map map_value (void) const;
 
@@ -546,7 +548,7 @@ public:
   charMatrix all_strings (void) const
     { return rep->all_strings (); }
 
-  const char *string_value (void) const
+  string string_value (void) const
     { return rep->string_value (); }
 
   Range range_value (void) const

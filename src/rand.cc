@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ctime>
 
+#include <string>
+
 #include "f77-uscore.h"
 
 #include "defun-dld.h"
@@ -169,7 +171,8 @@ do_rand (const Octave_object& args, int nargin)
 
       if (tmp.is_string ())
 	{
-	  const char *s_arg = tmp.string_value ();
+	  string tstr = tmp.string_value ();
+	  const char *s_arg = tstr.c_str ();
 
 	  if (strcmp (s_arg, "dist") == 0)
 	    {
@@ -255,13 +258,17 @@ do_rand (const Octave_object& args, int nargin)
     }
   else if (nargin == 2)
     {
-      if (args(0).is_string ()
-	  && strcmp (args(0).string_value (), "seed") == 0)
+      if (args(0).is_string ())
 	{
-	  double d = args(1).double_value ();
+	  string tstr = args(0).string_value ();
 
-	  if (! error_state)
-	    set_rand_seed (d);
+	  if (strcmp (tstr.c_str (), "seed") == 0)
+	    {
+	      double d = args(1).double_value ();
+
+	      if (! error_state)
+		set_rand_seed (d);
+	    }
 	}
       else
 	{

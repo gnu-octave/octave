@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include <strstream.h>
 
 #include "ODE.h"
@@ -314,7 +316,8 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      const char *keyword = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *keyword = tstr.c_str ();
 
       if (! error_state)
 	{

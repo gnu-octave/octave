@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cctype>
 #include <cstring>
 
+#include <string>
+
 #include <fstream.h>
 #include <iostream.h>
 #include <strstream.h>
@@ -1448,16 +1450,17 @@ TC_REP::all_strings (void) const
     }
 }
 
-const char *
+string
 TC_REP::string_value (void) const
 {
+  string retval;
+
   if (type_tag == char_matrix_constant_str)
-    return char_matrix->row_as_string (0);  // XXX FIXME??? XXX
+    retval = char_matrix->row_as_string (0);  // XXX FIXME??? XXX
   else
-    {
-      gripe_invalid_conversion (type_as_string (), "string");
-      return 0;
-    }
+    gripe_invalid_conversion (type_as_string (), "string");
+
+  return retval;
 }
 
 Range

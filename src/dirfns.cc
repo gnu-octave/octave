@@ -44,6 +44,8 @@ Free Software Foundation, Inc.
 #include <cstdlib>
 #include <cstring>
 
+#include <string>
+
 #include <strstream.h>
 
 #include "defun.h"
@@ -501,7 +503,8 @@ is printed.")
 
   if (args.length () == 1)
     {
-      const char *dirname = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *dirname = tstr.c_str ();
 
       if (error_state)
 	{
@@ -590,7 +593,8 @@ otherwise prints an error message.")
 
   if (args.length () == 1)
     {
-      const char *dirname = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *dirname = tstr.c_str ();
 
       if (error_state)
 	gripe_wrong_type_arg ("mkdir", args(0));
@@ -630,7 +634,8 @@ otherwise prints an error message.")
 
   if (args.length () == 1)
     {
-      const char *dirname = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *dirname = tstr.c_str ();
 
       if (error_state)
 	gripe_wrong_type_arg ("rmdir", args(0));
@@ -670,12 +675,16 @@ otherwise prints an error message and returns -1.")
 
   if (args.length () == 2)
     {
-      const char *from = args(0).string_value ();
+      string tstr1 = args(0).string_value ();
+      const char *from = tstr1.c_str ();
+
       if (error_state)
 	gripe_wrong_type_arg ("rename", args(0));
       else
 	{
-	  const char *to = args(1).string_value ();
+	  string tstr2 = args(1).string_value ();
+	  const char *to = tstr2.c_str ();
+
 	  if (error_state)
 	    gripe_wrong_type_arg ("rename", args(1));
 	  else if (rename (from, to) < 0)

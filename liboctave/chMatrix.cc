@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <cstring>
 
+#include <string>
+
 #include <iostream.h>
 
 // #include <sys/types.h>  // XXX FIXME XXX
@@ -91,7 +93,7 @@ charMatrix::insert (const charMatrix& a, int r, int c)
   return *this;
 }
 
-char *
+string
 charMatrix::row_as_string (int r) const
 {
   if (r < 0 || r >= rows ())
@@ -102,9 +104,7 @@ charMatrix::row_as_string (int r) const
 
   int nc = cols ();
 
-  char *retval = new char [nc + 1];
-
-  retval[nc] = '\0';
+  string retval (nc, '\0');
 
   for (int i = 0; i < nc; i++)
     retval[i] = elem (r, i);

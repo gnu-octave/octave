@@ -31,11 +31,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // For FILE...
 #include <cstdio>
 
+#include <string>
+
 #include "MArray.h"
 
 #include "mx-defs.h"
 
-class charMatrix : public MArray2<char>
+class
+charMatrix : public MArray2<char>
 {
 friend class ComplexMatrix;
 
@@ -62,7 +65,7 @@ public:
   charMatrix& insert (const char *s, int r, int c);
   charMatrix& insert (const charMatrix& a, int r, int c);
 
-  char *row_as_string (int r) const;
+  string row_as_string (int r) const;
 
 #if 0
   Matrix& insert (const RowVector& a, int r, int c);

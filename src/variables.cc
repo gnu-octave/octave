@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <cstring>
 
+#include <string>
+
 #include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
@@ -129,8 +131,13 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
 
   const char *fcn_name = 0;
 
+  string tstr;
+
   if (arg.is_string ())
-    fcn_name = arg.string_value ();
+    {
+      tstr = arg.string_value ();
+      fcn_name = tstr.c_str ();
+    }
 
   if (! fcn_name || error_state)
     {
@@ -171,7 +178,8 @@ otherwise, return 0.")
       return retval;
     }
 
-  const char *name = args(0).string_value ();
+  string tstr = args(0).string_value ();
+  const char *name = tstr.c_str ();
 
   if (error_state)
     {
@@ -207,7 +215,8 @@ returns:\n\
       return retval;
     }
 
-  char *name = strsave (args(0).string_value ());
+  string tstr = args(0).string_value ();
+  char *name = strsave (tstr.c_str ());
 
   if (error_state)
     {
@@ -928,7 +937,8 @@ builtin_string_variable (const char *name)
 
       if (! error_state && val.is_string ())
 	{
-	  const char *s = val.string_value ();
+	  string tstr = val.string_value ();
+	  const char *s = tstr.c_str ();
 
 	  if (s)
 	    retval = strsave (s);

@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "CollocWt.h"
 
 #include "defun-dld.h"
@@ -84,7 +86,8 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, FScolloc, 10,
 	      return retval;
 	    }
 
-	  const char *s = args(i).string_value ();
+	  string tstr = args(i).string_value ();
+	  const char *s = tstr.c_str ();
 
 	  if (s && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
 		    || strcmp (s, "right") == 0))

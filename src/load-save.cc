@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <cctype>
 
+#include <string>
+
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
@@ -2512,9 +2514,9 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
 	{
 	  FOUR_BYTE_INT len = chm.cols ();
 	  os.write (&len, 4);
-	  const char *tmp = chm.row_as_string (i);
+	  string tstr = chm.row_as_string (i);
+	  const char *tmp = tstr.data ();
 	  os.write (tmp, len);
-	  delete [] tmp;
 	}
     }
   else if (tc.is_range ())
@@ -2819,9 +2821,9 @@ save_ascii_data (ostream& os, const tree_constant& tc,
 	{
 	  int len = chm.cols ();
 	  os << "# length: " << len << "\n";
-	  char *tmp = chm.row_as_string (i);
+	  string tstr = chm.row_as_string (i);
+	  char *tmp = tstr.data ();
 	  os.write (tmp, len);
-	  delete [] tmp;
 	  os << "\n";
 	}
     }

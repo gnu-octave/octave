@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "CmplxSCHUR.h"
 #include "dbleSCHUR.h"
 
@@ -62,9 +64,12 @@ characters:\n\
   tree_constant arg = args(0);
 
   const char *ord = "U";
+  string tstr;
+
   if (nargin == 2)
     {
-      ord = args(1).string_value ();
+      tstr = args(1).string_value (); 
+      ord = tstr.c_str ();
 
       if (error_state)
 	{

@@ -44,6 +44,8 @@ Free Software Foundation, Inc.
 #include <cassert>
 #include <csignal>
 
+#include <string>
+
 #include <iostream.h>
 #include <strstream.h>
 
@@ -1008,9 +1010,11 @@ get_user_input (const Octave_object& args, int debug = 0)
     read_as_string++;
 
   const char *prompt = "debug> ";
+  string tstr;
   if (nargin > 0)
    {
-     prompt = args(0).string_value ();
+     tstr = args(0).string_value ();
+     prompt = tstr.c_str ();
 
      if (error_state)
        {

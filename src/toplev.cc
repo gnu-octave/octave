@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <ctime>
 
+#include <string>
+
 #include <fstream.h>
 #include <iostream.h>
 #include <strstream.h>
@@ -231,7 +233,8 @@ script file but without requiring the file to be named `FILE.m'.")
 
   if (nargin == 1)
     {
-      const char *file = args(0).string_value ();
+      string tstr = args(0).string_value ();
+      const char *file = tstr.c_str ();
 
       if (! error_state)
 	{
@@ -491,7 +494,8 @@ eval_string (const char *string, int print, int& parse_status)
 static Octave_object
 eval_string (const tree_constant& arg, int& parse_status, int nargout)
 {
-  const char *string = arg.string_value ();
+  string tstr = arg.string_value ();
+  const char *string = tstr.c_str ();
 
   if (error_state)
     {
@@ -569,7 +573,8 @@ DEFUN ("system", Fsystem, Ssystem, 11,
 
   tree_constant tc_command = args(0);
 
-  const char *tmp_str = tc_command.string_value ();
+  string tstr = tc_command.string_value ();
+  const char *tmp_str = tstr.c_str ();
 
   if (error_state)
     {

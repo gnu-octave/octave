@@ -31,6 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 
+#include <string>
+
 #include <fstream.h>
 #include <iostream.h>
 #include <strstream.h>
@@ -731,7 +733,9 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 
 	      int n_max = 0;
 
-	      file = tilde_expand (data.string_value ());
+	      string tstr = data.string_value ();
+
+	      file = tilde_expand (tstr.c_str ());
 	      ifstream ftmp (file);
 	      if (ftmp)
 		{

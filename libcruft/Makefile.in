@@ -107,7 +107,7 @@ clean mostlyclean::
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 distclean::
-	rm -f *.a *.o Makefile Makerules so_locations
+	rm -f *.a *.o Makefile Makerules so_locations stamp-shared
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 maintainer-clean::

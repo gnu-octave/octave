@@ -1,3 +1,9 @@
+Mon Oct 14 11:05:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile (distclean): Remove *.oct too.
+
+	* defun-int.h: Include variables.h here.
+
 Sun Oct 13 10:52:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (print_symbol_info_line): Never print negative

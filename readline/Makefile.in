@@ -210,6 +210,7 @@ readline: $(OBJECTS)
 
 clean maintainer-clean realclean distclean mostlyclean::
 	$(RM) -f $(OBJECTS) libreadline.a libhistory.a pic/*.o
+	$(RM) -f stamp-history stamp-readline
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)
 	(if [ -d examples ]; then cd examples; $(MAKE) $(MFLAGS) $@; fi)
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi

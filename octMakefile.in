@@ -75,6 +75,10 @@ check:
 	cd test; $(MAKE) check
 .PHONY: check
 
+kpathsea.info:
+	cd kpathsea ; $(MAKE) kpathsea.info
+.PHONY: kpathsea.info
+
 octave.info:
 	cd doc/interpreter ; $(MAKE) octave.info
 .PHONY: octave.info
@@ -112,8 +116,9 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile octave-bug Makefile Makeconf config.cache \
-	config.h config.log config.status Makerules.f77 mk-oct-links
+	rm -f octMakefile octave-bug Makefile Makeconf config.cache
+	rm -f config.h config.log config.status Makerules.f77
+	rm -f mk-oct-links mkoctfile
 
 # Now that things are under RCS control, we need to do the recursive
 # chmod so that the distributed files end up with reasonable modes.
@@ -145,7 +150,10 @@ dist-z:
 
 # Rules for making a source distribution.
 
-links-for-dist: octave.info INSTALL.OCTAVE BUGS
+dist-info-files: octave.info INSTALL.OCTAVE BUGS kpathsea.info
+.PHONY: dist-info-files
+
+links-for-dist: dist-info-files
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
@@ -168,7 +176,7 @@ dist: clean-dist-tar
 
 # Rules for making a binary distribution.
 
-links-for-bin-dist: octave.info INSTALL.OCTAVE BUGS
+links-for-bin-dist: dist-info-files
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
@@ -211,7 +219,7 @@ doc-dist: doc-dist-tar
 
 # Rules for making a distribution for local use.
 
-local-dist-tar: octave.info INSTALL.OCTAVE BUGS
+local-dist-tar: dist-info-files
 	echo octave-local-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`

@@ -1,3 +1,11 @@
+Mon Oct 14 11:09:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (maintainer-clean distclean): Remove mkoctfile too.
+	(kpathsea.info): New target.
+	(dist-info-files): New target.
+	(links-for-dist, links-for-bin-dist, local-dist-tar):
+	Depend on dist-info-files instead of individual files.
+
 Sat Oct 12 00:17:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* examples/Makefile.in (clean, mostlyclean): New targets.

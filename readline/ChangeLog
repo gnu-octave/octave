@@ -1,3 +1,8 @@
+Mon Oct 14 11:08:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (clean targets): Remove stamp-history and
+	stamp-readline too.
+
 Sat Oct 12 18:36:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (clean targets): Don't depend on clean.

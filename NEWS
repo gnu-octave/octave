@@ -1,6 +1,15 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * When `format +' is in effect, Octave uses the following symbols to
+    provide more information about the values in a matrix:
+
+      +      postive real
+      -      negative real
+      i      pure imaginary
+      c      complex
+      blank  zero
+
   * The ++ and -- operators now work for indexed matrices, and the
     following operators now work:
 

@@ -472,6 +472,8 @@ Interpreter:
       ====  ====               ====   ====  ====
       wd   matrix                m      n  struct.x
 
+  * Allow who to return information as a list of strings.
+
   * On systems that support matherr(), make it possible for users to
     enable the printing of warning messages.
 

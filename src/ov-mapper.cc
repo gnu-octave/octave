@@ -91,14 +91,15 @@ octave_mapper::apply (const octave_value& arg) const
 		{
 		case 0:
 		  {
-		    Matrix result (nr, nc);
+		    boolMatrix result (nr, nc);
 
 		    // islapha and friends can return any nonzero value
-		    // to mean true, but we want to return 1 or 0 only.
+		    // to mean true, but we want to return true or
+		    // false only.
 
 		    for (int j = 0; j < nc; j++)
 		      for (int i = 0; i < nr; i++)
-			result (i, j) = ch_map_fcn (chm (i, j)) ? 1 : 0;
+			result (i, j) = ch_map_fcn (chm (i, j)) ? true : false;
 
 		    retval = result;
 		  }
@@ -153,6 +154,8 @@ octave_mapper::apply (const octave_value& arg) const
 		}
 	      else if (d_d_map_fcn)
 		retval = d_d_map_fcn (d);
+	      else if (d_b_map_fcn)
+		retval = d_b_map_fcn (d);
 	      else
 		error ("%s: unable to handle real arguments",
 		       name().c_str ());
@@ -179,6 +182,8 @@ octave_mapper::apply (const octave_value& arg) const
 		}
 	      else if (d_d_map_fcn)
 		retval = m.map (d_d_map_fcn);
+	      else if (d_b_map_fcn)
+		retval = m.map (d_b_map_fcn);
 	      else
 		error ("%s: unable to handle real arguments",
 		       name().c_str ());
@@ -194,6 +199,8 @@ octave_mapper::apply (const octave_value& arg) const
 		retval = d_c_map_fcn (c);
 	      else if (c_c_map_fcn)
 		retval = c_c_map_fcn (c);
+	      else if (c_b_map_fcn)
+		retval = c_b_map_fcn (c);
 	      else
 		error ("%s: unable to handle complex arguments",
 		       name().c_str ());
@@ -209,6 +216,8 @@ octave_mapper::apply (const octave_value& arg) const
 		retval = cm.map (d_c_map_fcn);
 	      else if (c_c_map_fcn)
 		retval = cm.map (c_c_map_fcn);
+	      else if (c_b_map_fcn)
+		retval = cm.map (c_b_map_fcn);
 	      else
 		error ("%s: unable to handle complex arguments",
 		       name().c_str ());

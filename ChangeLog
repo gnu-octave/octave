@@ -1,3 +1,20 @@
+Fri Jul  9 09:15:24 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Try to handle IEEE FP flags for g77 on Alphas.
+
+Thu Jul  8 19:56:37 1999  Stephen Eglen  <stephen@gnu.org>
+
+	* emacs/octave-inf.el (inferior-octave-directory-tracker):
+	Change regexp so that it doesn't match commands beginning with `cd'.
+
+Wed Jun 23 13:20:11 1999  Mumit Khan  <khan@xraylith.wisc.edu>
+
+	* configure.in (HAVE_TERMIOS_H): Avoid autoheader lossage.
+
+Sun Jun 20 23:05:18 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for sys/ioctl.h.
+
 Mon May 10 09:06:47 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_PROG_G77): Also match "FSF-g77", for egcs.

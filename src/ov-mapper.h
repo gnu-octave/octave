@@ -43,16 +43,20 @@ octave_mapper : public octave_function
 public:
 
   typedef int (*ch_mapper) (int);
+  typedef bool (*d_b_mapper) (double);
+  typedef bool (*c_b_mapper) (const Complex&);
   typedef double (*d_d_mapper) (double);
   typedef double (*d_c_mapper) (const Complex&);
   typedef Complex (*c_c_mapper) (const Complex&);
 
-  octave_mapper (ch_mapper ch, d_d_mapper dd, d_c_mapper dc,
+  octave_mapper (ch_mapper ch, d_b_mapper db, c_b_mapper cb,
+		 d_d_mapper dd, d_c_mapper dc,
 		 c_c_mapper cc, double ll, double ul, int f,
 		 const string& nm = string (),
 		 const string& ds = string ())
-    : octave_function (nm, ds), ch_map_fcn (ch), d_d_map_fcn (dd),
-      d_c_map_fcn (dc), c_c_map_fcn (cc),
+    : octave_function (nm, ds), ch_map_fcn (ch),
+      d_b_map_fcn (db), c_b_map_fcn (cb),
+      d_d_map_fcn (dd), d_c_map_fcn (dc), c_c_map_fcn (cc),
       lower_limit (ll), upper_limit (ul), flag (f) { }
 
   ~octave_mapper (void) { }
@@ -72,6 +76,8 @@ private:
   // ch_map_fcn is a kluge.
 
   ch_mapper ch_map_fcn;
+  d_b_mapper d_b_map_fcn;
+  c_b_mapper c_b_map_fcn;
   d_d_mapper d_d_map_fcn;
   d_c_mapper d_c_map_fcn;
   c_c_mapper c_c_map_fcn;

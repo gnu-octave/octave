@@ -119,10 +119,12 @@ alias_builtin (const string& alias, const string& name);
 
 // How mapper functions are actually installed.
 
-#define DEFUN_MAPPER_INTERNAL(name, ch_map, d_d_map, d_c_map, c_c_map, \
-			      lo, hi, can_ret_cmplx_for_real, doc) \
+#define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
+			      d_c_map, c_c_map, lo, hi, \
+			      can_ret_cmplx_for_real, doc) \
   install_builtin_mapper \
-    (new octave_mapper (ch_map, d_d_map, d_c_map, c_c_map, lo, hi, \
+    (new octave_mapper (ch_map, d_b_map, c_b_map, d_d_map, d_c_map, \
+			c_c_map, lo, hi, \
 			can_ret_cmplx_for_real, #name))
 
 #endif

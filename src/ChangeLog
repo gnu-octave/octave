@@ -1,3 +1,38 @@
+Mon Jul 12 22:38:50 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun.h (DEFUN_MAPPER): Handle new args, d_b_map and c_b_map.
+	* defun-int.h (DEFUN_MAPPER_INTERNAL): Likewise.
+	* mappers.cc (install_mapper_functions): Supply new args to
+	all uses of DEFUN_MAPPER.
+	* ov-mapper.cc (octave_mapper::apply): Handle mapper functions
+	that return bool objects.
+	* ov-mapper.h (octave_mapper::d_b_mapper, octave_mapper::c_b_mapper):
+	New typedefs.
+	(octave_mapper::octave_mapper): Handle new mapper function types.
+
+	* DLD-FUNCTIONS/minmax.cc: Do a better job of handling NaNs.
+
+Sun Jul 11 13:15:17 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (do_plus_format (ostream&, double)): New function.
+	(octave_print_internal (ostream&, double, bool)): Use it.
+	(octave_print_internal (ostream&, const Matrix&, bool, int)): Ditto.
+
+	* pr-output.cc (do_plus_format (ostream&, const Complex&)):
+	New function.
+	(octave_print_internal (ostream&, const Complex&, bool)): Use it.
+	(octave_print_internal (ostream&, const ComplexMatrix&, bool, int)):
+	Ditto. 
+
+Sun Jun 20 23:04:00 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc: Include sys/ioctl.h if available.
+
+Sat Jun 19 12:07:16 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (do_who): Make pattern and multiple non-option
+	arguments work.
+
 Mon Jun  7 09:54:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (next_token_is_bin_op, next_token_is_postfix_unary_op,

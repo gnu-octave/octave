@@ -68,8 +68,8 @@ octave_complex_matrix::try_narrowing_conversion (void)
       else
 	retval = new octave_complex (c);
     }
-  else if (nr == 0 && nc == 0)
-    retval = new octave_matrix (Matrix ());
+  else if (nr == 0 || nc == 0)
+    retval = new octave_matrix (Matrix (nr, nc));
   else if (matrix.all_elements_are_real ())
     retval = new octave_matrix (::real (matrix));
 

@@ -1,3 +1,8 @@
+2001-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cx-mat.cc (octave_complex_matrix::try_narrowing_conversion): 
+	Handle empty matrix dimensions correctly.
+
 2000-12-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pager.h (octave_pager_buf::diary_skip): New data member.

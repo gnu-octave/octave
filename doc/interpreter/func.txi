@@ -709,7 +709,7 @@ DEFUN_DLD (oregonator, args, ,
 @{
   ColumnVector dx (3);
 
-  ColumnVector x = args(0).vector_value ();
+  ColumnVector x (args(0).vector_value ());
 
   dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0)
                    - 8.375e-06*pow (x(0), 2));
@@ -763,14 +763,18 @@ simply declares an object to store the right hand sides of the
 differential equation, and the statement
 
 @example
-ColumnVector x = args(0).vector_value ();
+ColumnVector x (args(0).vector_value ());
 @end example
 
 @noindent
-extracts a column vector from the input arguments.  The variable
-@code{args} is passed to functions defined with @code{DEFUN_DLD} as an
-@code{octave_value_list} object, which includes methods for getting the
-length of the list and extracting individual elements.
+extracts a vector from the first input argument.  The
+@code{vector_value} method is used so that the user of the function
+can pass either a row or column vector.  The @code{ColumnVector}
+constructor is needed because the ODE class requires a column
+vector.  The variable @code{args} is passed to functions defined with
+@code{DEFUN_DLD} as an @code{octave_value_list} object, which includes
+methods for getting the length of the list and extracting individual
+elements.
 
 In this example, we don't check for errors, but that is not difficult.
 All of the Octave's built-in functions do some form of checking on their

@@ -3008,7 +3008,7 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
   else
     {
       if (nr == 0 || nc == 0 || a_nc == 0)
-	retval.resize (nr, nc, 0.0);
+	retval.resize (nr, a_nc, 0.0);
       else
 	{
 	  int ld  = nr;

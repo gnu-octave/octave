@@ -72,10 +72,6 @@ public:
   // MARRAY_OPS_FRIEND_DECLS (MArray)
 };
 
-// XXX FIXME XXX -- there must be a better place for this...
-extern void
-gripe_nonconformant (const char *op, int op1_len, int op2_len);
-
 #endif
 
 /*

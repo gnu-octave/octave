@@ -77,11 +77,11 @@ MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
 	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc \
 	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \
-	EIG.cc MArray-misc.cc boolMatrix.cc \
-	boolNDArray.cc chMatrix.cc chNDArray.cc dColVector.cc \
-	dDiagMatrix.cc dMatrix.cc dNDArray.cc dRowVector.cc \
-	dbleAEPBAL.cc dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \
-	dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
+	EIG.cc boolMatrix.cc boolNDArray.cc chMatrix.cc \
+	chNDArray.cc dColVector.cc  dDiagMatrix.cc dMatrix.cc \
+	dNDArray.cc dRowVector.cc dbleAEPBAL.cc dbleCHOL.cc \
+	dbleDET.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
+	dbleSCHUR.cc dbleSVD.cc
 
 MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_cc_files=1 $(srcdir)/mx-ops)
 

@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 #include <climits>
 
+#include "Array-util.h"
 #include "CColVector.h"
 #include "CDiagMatrix.h"
 #include "CMatrix.h"

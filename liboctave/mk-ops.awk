@@ -151,6 +151,8 @@ BEGIN {
 	  print "#include <config.h>" >> cc_file;
 	  print "#endif" >> cc_file;
 
+	  print "#include \"Array-util.h\"" >> cc_file;
+
 	  printf ("#include \"%s\"\n", h_file) >> cc_file;
 
 	  for (i in bool_headers)

@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Array-util.h"
+#include "dim-vector.h"
+#include "lo-error.h"
 
 bool
 index_in_bounds (const Array<int>& ra_idx, const dim_vector& dimensions)
@@ -529,6 +531,35 @@ calc_permutated_idx (const Array<int>& old_idx,
     }
 
   return retval;
+}
+
+void
+gripe_nonconformant (const char *op, int op1_len, int op2_len)
+{
+  (*current_liboctave_error_handler)
+    ("%s: nonconformant arguments (op1 len: %d, op2 len: %d)",
+     op, op1_len, op2_len);
+}
+
+void
+gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
+		     int op2_nr, int op2_nc)
+{
+  (*current_liboctave_error_handler)
+    ("%s: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
+     op, op1_nr, op1_nc, op2_nr, op2_nc);
+}
+
+void
+gripe_nonconformant (const char *op, dim_vector& op1_dims,
+		     dim_vector& op2_dims)
+{
+  std::string op1_dims_str = op1_dims.str ();
+  std::string op2_dims_str = op2_dims.str ();
+
+  (*current_liboctave_error_handler)
+    ("%s: nonconformant arguments (op1 is %s, op2 is %s)",
+     op, op1_dims_str.c_str (), op2_dims_str.c_str ());
 }
 
 /*

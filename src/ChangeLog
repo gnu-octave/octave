@@ -1,5 +1,10 @@
 2003-11-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* OPERATORS/op-b-bm.cc: New file.
+
+	* OPERATORS/op-bm-b.cc (op_el_and, op_el_or): Define and install.
+	* OPERATORS/op-bm-bm.cc (op_el_and, op_el_or, assign): Likewise.
+
 	* ov-str-mat.cc (CHAR_MATRIX_CONV): New macro.
 	* ov-str-mat.h (octave_char_matrix_str::double_value,
 	octave_char_matrix_str::matrix_value,

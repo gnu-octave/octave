@@ -89,6 +89,16 @@ extern dim_vector short_freeze (Array<idx_vector>& ra_idx,
 
 extern Array<int> calc_permutated_idx (const Array<int>& old_idx, 
 				       const Array<int>& perm_vec, bool inv);
+
+extern void gripe_nonconformant (const char *op, int op1_len, int op2_len);
+
+extern void gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
+				 int op2_nr, int op2_nc);
+
+
+extern void gripe_nonconformant (const char *op, dim_vector& op1_dims,
+				 dim_vector& op2_dims);
+
 #endif
 
 /*

@@ -1,4 +1,7 @@
 # types
+b bool S NONE NO
+bm boolMatrix ND boolMatrix.h YES
+bnda boolNDArray ND boolNDArray.h YES
 cdm ComplexDiagMatrix DM CDiagMatrix.h YES
 cm ComplexMatrix M CMatrix.h YES
 cnda ComplexNDArray ND CNDArray.h YES
@@ -8,6 +11,9 @@ m Matrix M dMatrix.h YES
 nda NDArray ND dNDArray.h YES
 s double S NONE NO
 # ops
+bnda bnda bnda L false
+bnda b bnda L false
+bnda bnda b L false
 cdm cdm dm B
 cdm dm cdm B
 cm cs cdm B

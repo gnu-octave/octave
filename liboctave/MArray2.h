@@ -80,10 +80,6 @@ public:
   // MARRAY_OPS_FRIEND_DECLS (MArray2)
 };
 
-extern void
-gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
-		     int op2_nr, int op2_nc);
-
 #endif
 
 /*

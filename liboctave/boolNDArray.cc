@@ -103,7 +103,14 @@ boolNDArray::compute_index (Array<int>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
+NDND_BOOL_OPS (boolNDArray, boolNDArray, false)
 NDND_CMP_OPS (boolNDArray, , boolNDArray, )
+
+NDS_BOOL_OPS (boolNDArray, bool, false)
+NDS_CMP_OPS (boolNDArray, , bool, )
+
+SND_BOOL_OPS (bool, boolNDArray, false)
+SND_CMP_OPS (bool, , boolNDArray, )
 
 /*
 ;;; Local Variables: ***

@@ -71,9 +71,6 @@ public:
     }
 };
 
-extern void
-gripe_nonconformant (const char *op, dim_vector& op1_dims, dim_vector& op2_dims);
-
 #endif
 
 /*

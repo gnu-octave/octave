@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "MDiagArray2.h"
+#include "Array-util.h"
 #include "lo-error.h"
 
 #include "MArray-defs.h"

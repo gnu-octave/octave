@@ -1,3 +1,21 @@
+2003-11-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* boolNDArray.cc: Define BOOL ops.  Define mixed CMP ops.
+	* boolNDArray.h: Declare BOOL ops.  Declare mixed CMP ops.
+
+2003-11-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-ops.awk: Also emit #include "Array-util.h".
+
+	* mx-ops: Add bool, boolMatrix, and boolNDarray types.
+	Add bnda x bnda, b x bnda, and bnda x b ops.
+
+	* MArray-misc.cc: Delete.
+	* Makefile.in (MATRIX_SRC): Remove it from the list.
+
+	* Array-util.h, Array-util.cc (gripe_nonconformant): Move here from
+	MArray.h, MArray2.h, MArrayN.h, and MArray-misc.cc.
+
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dbleQR.cc (QR::init): Use separate pwork pointers.

@@ -99,7 +99,14 @@ private:
   boolNDArray (bool *d, dim_vector& dv) : ArrayN<bool> (d, dv) { }
 };
 
+NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray)
 NDND_CMP_OP_DECLS (boolNDArray, boolNDArray)
+
+NDS_BOOL_OP_DECLS (boolNDArray, bool)
+NDS_CMP_OP_DECLS (boolNDArray, bool)
+
+SND_BOOL_OP_DECLS (bool, boolNDArray)
+SND_CMP_OP_DECLS (bool, boolNDArray)
 
 #endif
 

@@ -53,6 +53,14 @@ DEFUNOP (transpose, bool_matrix)
 DEFNDBINOP_FN (eq, bool_matrix, bool_matrix, bool_array, bool_array, mx_el_eq)
 DEFNDBINOP_FN (ne, bool_matrix, bool_matrix, bool_array, bool_array, mx_el_ne)
 
+DEFNDBINOP_FN (el_and, bool_matrix, bool_matrix, bool_array, bool_array,
+	       mx_el_and)
+
+DEFNDBINOP_FN (el_or,  bool_matrix, bool_matrix, bool_array, bool_array,
+	       mx_el_or)
+
+DEFASSIGNOP_FN (assign, bool_matrix, bool_matrix, assign)
+
 void
 install_bm_bm_ops (void)
 {
@@ -62,6 +70,11 @@ install_bm_bm_ops (void)
 
   INSTALL_BINOP (op_eq, octave_bool_matrix, octave_bool_matrix, eq);
   INSTALL_BINOP (op_ne, octave_bool_matrix, octave_bool_matrix, ne);
+
+  INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_bool_matrix, el_and);
+  INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_bool_matrix, el_or);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool_matrix, assign);
 }
 
 /*

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001 Cai Jianming
+Copyright (C) 2003 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,18 +40,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // bool matrix by bool ops.
 
-DEFNDBINOP_FN (el_and, bool_matrix, bool, bool_array, bool, mx_el_and)
-DEFNDBINOP_FN (el_or, bool_matrix, bool, bool_array, bool, mx_el_or)
-
-DEFASSIGNOP_FN (assign, bool_matrix, bool, assign)
+DEFNDBINOP_FN (el_and, bool, bool_matrix, bool, bool_array, mx_el_and)
+DEFNDBINOP_FN (el_or, bool, bool_matrix, bool, bool_array, mx_el_or)
 
 void
-install_bm_b_ops (void)
+install_b_bm_ops (void)
 {
-  INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_bool, el_and);
-  INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_bool, el_or);
-
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool, assign);
+  INSTALL_BINOP (op_el_and, octave_bool, octave_bool_matrix, el_and);
+  INSTALL_BINOP (op_el_or, octave_bool, octave_bool_matrix, el_or);
 }
 
 /*

@@ -119,6 +119,9 @@ CXXLIBS = @CXXLIBS@
 CXXLIB_LIST = @CXXLIB_LIST@
 CXXLIB_PATH = @CXXLIB_PATH@
 
+TERMLIBS = @TERMLIBS@
+LIBPLPLOT = @LIBPLPLOT@
+LIBDLFCN = @LIBDLFCN@
 
 # A shell command to extract the version number from version.h.
 getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q

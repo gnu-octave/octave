@@ -157,12 +157,10 @@ OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
 	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
 
 OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
-	@LIBPLPLOT@ -lreadline -lkpathsea -lglob @LIBDLFCN@
+	$(LIBPLPLOT) -lreadline -lkpathsea -lglob $(LIBDLFCN)
 
 LIBS_TO_INSTALL = liboctinterp.a libtinst.a \
 	liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
-
-TERMLIBS = @TERMLIBS@
 
 LIBS = @LIBS@
 

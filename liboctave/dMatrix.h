@@ -46,6 +46,7 @@ friend class GEPBAL;
 friend class HESS;
 friend class LU;
 friend class QR;
+friend class QRP;
 friend class SCHUR;
 friend class SVD;
 friend class ComplexMatrix;

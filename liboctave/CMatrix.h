@@ -42,6 +42,7 @@ friend class ComplexCHOL;
 friend class ComplexHESS;
 friend class ComplexLU;
 friend class ComplexQR;
+friend class ComplexQRP;
 friend class ComplexSCHUR;
 friend class ComplexSVD;
 friend class ComplexColumnVector;

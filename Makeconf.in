@@ -38,6 +38,8 @@ F2CFLAGS = @F2CFLAGS@
 FC = @FC@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FUGLY = @FUGLY@
+ALL_FFLAGS = $(FUGLY) $(FFLAGS)
 
 # cc and associated flags.
 
@@ -208,6 +210,7 @@ target_host_type = @target_host_type@
 @DOT_C_FROM_DOT_F_CMD@
 
 @DOT_O_FROM_DOT_F_PAT@
+@DOT_O_FROM_DOT_F_CMD@
 
 # How to make .o files from .c files:
 

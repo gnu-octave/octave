@@ -1,4 +1,4 @@
-/* lex.l                                                -*- C -*-
+/* lex.l                                                -*- C++ -*-
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
 
@@ -136,7 +136,15 @@ QSTR	([^\n\'\\]*({QQ}|{ECHAR})*)
 DQSTR	([^\n\"\\]*{ECHAR}*)
 IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
+NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %%
+
+%{
+// XXX FIXME XXX -- this probably doesn't need to be an exclusive
+// start state since it always matches.  Also, we can probably
+// eliminate it by doing the check below using yyinput() in the only
+// place where we actually set this start state.
+%}
 
 <NEW_MATRIX>[^ \t\n#%] {
     yyless (0);
@@ -147,6 +155,12 @@ EXPON	([DdEe][+-]?{D}+)
     fixup_column_count (yytext);
     BEGIN MATRIX;
   }
+
+%{
+// Help and other text-style functions are a pain in the ass.  This
+// stuff needs to be simplified.  May require some changes in the
+// parser too.
+%}
 
 <HELP_FCN>{NL} |
 <TEXT_FCN>{NL} {
@@ -173,10 +187,6 @@ EXPON	([DdEe][+-]?{D}+)
 	else
 	  TOK_RETURN (';');
       }
-  }
-
-<TEXT_FCN>{S}* {
-    current_input_column += yyleng;
   }
 
 <HELP_FCN>[^ \t\n]*{S}*	|
@@ -234,6 +244,10 @@ EXPON	([DdEe][+-]?{D}+)
       }
     return TEXT;
   }
+
+%{
+// XXX FIXME XXX -- these need to be merged into a single function.
+%}
 
 <STRING>{QSTR}*[\n\'] {
     if (braceflag)
@@ -293,8 +307,10 @@ EXPON	([DdEe][+-]?{D}+)
     return TEXT;
   }
 
-<MATRIX>{SNL}*\]{S}*/== {
-
+%{
+// It's a pain in the ass to decide whether to insert a comma after
+// seeing a ']' character...
+//
 // For this and the next two rules, we're looking at ']', and we
 // need to know if the next token is '='.
 //
@@ -307,6 +323,13 @@ EXPON	([DdEe][+-]?{D}+)
 // It would have been so much easier if the delimiters were simply
 // different for the expression on the left hand side of the equals
 // operator.
+//
+// XXX FIXME XXX -- these could probably be combined, since we have to
+// look ahead anyway, we could just as easily check for the next token
+// being `=' or `=='. 
+%}
+
+<MATRIX>{SNL}*\]{S}*/== {
 
     if (! in_brace_or_paren.empty ())
       {
@@ -353,9 +376,6 @@ EXPON	([DdEe][+-]?{D}+)
 <MATRIX>{SNL}*\]{S}* {
     fixup_column_count (yytext);
 
-// It's a pain in the ass to decide whether to insert a comma after
-// seeing a ']' character...
-
     if (! in_brace_or_paren.empty ())
       {
 	in_brace_or_paren.pop ();
@@ -395,14 +415,21 @@ EXPON	([DdEe][+-]?{D}+)
     return ']';
   }
 
+%{
+// Commas are element separators in matrix constants.
+%}
+
 <MATRIX>{S}*\,{S}* {
     TOK_RETURN (',');
   }
 
+%{
+// In some cases, spaces in matrix constants can turn into commas.
+// If commas are required, spaces are not important in matrix
+// constants so we just eat them.
+%}
+
 <MATRIX>{S}+ {
-
-// If commas are required, just eat the spaces.
-
     if (user_pref.commas_in_literal_matrix != 2)
       {
 	int bin_op = next_token_is_bin_op (1, yytext);
@@ -415,6 +442,11 @@ EXPON	([DdEe][+-]?{D}+)
       }
   }
 
+%{
+// New lines and semicolons are both handled as row seprators in
+// matrix constants.
+%}
+
 <MATRIX>{SNLCMT}*[\n;]{SNLCMT}* {
     fixup_column_count (yytext);
     quote_is_transpose = 0;
@@ -423,55 +455,10 @@ EXPON	([DdEe][+-]?{D}+)
     return ';';
   }
 
-\] {
-    if (! in_brace_or_paren.empty ())
-      in_brace_or_paren.pop ();
-
-    if (plotting && ! past_plot_range)
-      {
-	in_plot_range = 0;
-	TOK_RETURN (CLOSE_BRACE);
-      }
-    else
-      TOK_RETURN (']');
-  }
-
-{D}+\.?{D}*{EXPON}?{Im} |
-\.{D}+{EXPON}?{Im} {
-    double value;
-    int nread = sscanf (yytext, "%lf", &value);
-    assert (nread == 1);
-    quote_is_transpose = 1;
-    cant_be_identifier = 1;
-    convert_spaces_to_comma = 1;
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
-    yylval.tok_val = new token (value, yytext, input_line_number,
-				current_input_column);
-    token_stack.push (yylval.tok_val);
-    current_input_column += yyleng;
-    do_comma_insert_check ();
-    return IMAG_NUM;
-  }
-
-{D}+/\.[\*/\\^'] |
-{D}+\.?{D}*{EXPON}? |
-\.{D}+{EXPON}? {
-    double value;
-    int nread = sscanf (yytext, "%lf", &value);
-    assert (nread == 1);
-    quote_is_transpose = 1;
-    cant_be_identifier = 1;
-    convert_spaces_to_comma = 1;
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
-    yylval.tok_val = new token (value, yytext, input_line_number,
-				current_input_column);
-    token_stack.push (yylval.tok_val);
-    current_input_column += yyleng;
-    do_comma_insert_check ();
-    return NUM;
-  }
+%{
+// Open and close brace are handled differently if we are in the range
+// part of a plot command.
+%}
 
 \[{S}* {
     in_brace_or_paren.push (1);
@@ -490,9 +477,75 @@ EXPON	([DdEe][+-]?{D}+)
       }
   }
 
+\] {
+    if (! in_brace_or_paren.empty ())
+      in_brace_or_paren.pop ();
+
+    if (plotting && ! past_plot_range)
+      {
+	in_plot_range = 0;
+	TOK_RETURN (CLOSE_BRACE);
+      }
+    else
+      TOK_RETURN (']');
+  }
+
+%{
+// Imaginary numbers.
+%}
+
+{NUMBER}{Im} {
+    double value;
+    int nread = sscanf (yytext, "%lf", &value);
+    assert (nread == 1);
+    quote_is_transpose = 1;
+    cant_be_identifier = 1;
+    convert_spaces_to_comma = 1;
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    yylval.tok_val = new token (value, yytext, input_line_number,
+				current_input_column);
+    token_stack.push (yylval.tok_val);
+    current_input_column += yyleng;
+    do_comma_insert_check ();
+    return IMAG_NUM;
+  }
+
+%{
+// Real numbers.  Don't grab the `.' part of a dot operator as part of
+// the constant.
+%}
+
+{D}+/\.[\*/\\^'] |
+{NUMBER} {
+    double value;
+    int nread = sscanf (yytext, "%lf", &value);
+    assert (nread == 1);
+    quote_is_transpose = 1;
+    cant_be_identifier = 1;
+    convert_spaces_to_comma = 1;
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    yylval.tok_val = new token (value, yytext, input_line_number,
+				current_input_column);
+    token_stack.push (yylval.tok_val);
+    current_input_column += yyleng;
+    do_comma_insert_check ();
+    return NUM;
+  }
+
+%{
+// Eat whitespace.  Whitespace inside matrix constants is handled by
+// the <MATRIX> start state code above.
+%}
+
 {S}* {
     current_input_column += yyleng;
   }
+
+%{
+// Continuation lines.  Allow comments after continuations.
+%}
 
 {CONT}{S}*{NL} |
 {CONT}{S}*{COMMENT} {
@@ -500,13 +553,27 @@ EXPON	([DdEe][+-]?{D}+)
     current_input_column = 1;
   }
 
+%{
+// An ellipsis not at the end of a line is not a continuation, but
+// does have another meaning.
+%}
+
 {EL} {
     return ELLIPSIS;
   }
 
+%{
+// End of file.
+%}
+
 <<EOF>> {
     TOK_RETURN (END_OF_INPUT);
   }
+
+%{
+// Identifiers.  It matters if the next non-whitespace token is `=',
+// so match that here.
+%}
 
 {IDENT}{S}* {
 
@@ -523,6 +590,11 @@ EXPON	([DdEe][+-]?{D}+)
     return handle_identifier (yytext, 1);
   }
 
+%{
+// A new line character.  New line characters inside matrix constants
+// are handled by the <MATRIX> start state code above.
+%}
+
 {NL} {
     quote_is_transpose = 0;
     cant_be_identifier = 0;
@@ -530,6 +602,11 @@ EXPON	([DdEe][+-]?{D}+)
     convert_spaces_to_comma = 1;
     return '\n';
   }
+
+%{
+// Single quote can either be the beginning of a string or a transpose
+// operator. 
+%}
 
 "'" {
     current_input_column++;
@@ -544,12 +621,21 @@ EXPON	([DdEe][+-]?{D}+)
       BEGIN STRING;
   }
 
+%{
+// Colon operator is handled differently if we are in the range part
+// of a plot command.
+%}
+
 ":" {
     if (plotting && (in_plot_range || in_plot_using))
       BIN_OP_RETURN (COLON, 1);
     else
       BIN_OP_RETURN (':', 0);
   }
+
+%{
+// Gobble comments.
+%}
 
 {CCHAR} {
     if (in_brace_or_paren.empty () && beginning_of_function)
@@ -570,6 +656,10 @@ EXPON	([DdEe][+-]?{D}+)
     convert_spaces_to_comma = 1;
     return '\n';
   }
+
+%{
+// Other operators.
+%}
 
 \"		{ BEGIN DQSTRING; }
 ".*"		{ BIN_OP_RETURN (EMUL, 0); }
@@ -648,13 +738,12 @@ EXPON	([DdEe][+-]?{D}+)
     return ')';
   }
 
-. {
-
+%{
 // We return everything else as single character tokens, which should
 // eventually result in a parse error.
+%}
 
-    TOK_RETURN (yytext[0]);
-  }
+.		{ TOK_RETURN (yytext[0]); }
 
 %%
 

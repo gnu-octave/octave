@@ -1,3 +1,8 @@
+2002-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASSL.h (DASSL_options::init): Undo previous change.
+	(DASSL_options::set_absolute_tolerance): Likewise.
+
 2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DASPK.h, DASPK.cc: New files.

@@ -44,19 +44,6 @@ extern double octave_Inf;
 // Octave's idea of not a number.
 extern double octave_NaN;
 
-enum floating_point_format
-  {
-    OCTAVE_IEEE_LITTLE,
-    OCTAVE_IEEE_BIG,
-    OCTAVE_VAX_D,
-    OCTAVE_VAX_G,
-    OCTAVE_CRAY,
-    OCTAVE_UNKNOWN_FLT_FMT,
-  };
-
-// The floating point format on this system.
-extern floating_point_format native_float_format;
-
 // Nonzero if the machine we are running on is big-endian.
 extern int octave_words_big_endian;
 

@@ -35,11 +35,11 @@ MATRIX_INC := Array.h Array-flags.h Array-idx.h MArray.h Matrix.h \
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
 	NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
-	Range.h base-de.h base-min.h cmd-hist.h dir-ops.h file-ops.h \
-	f77-fcn.h getopt.h idx-vector.h lo-error.h oct-cmplx.h \
-	oct-glob.h oct-math.h oct-term.h pathsearch.h prog-args.h \
-	statdefs.h str-vec.h sun-utils.h sysdir.h \
-	$(MATRIX_INC)
+	Range.h base-de.h base-min.h byte-swap.h cmd-hist.h data-conv.h \
+	dir-ops.h file-ops.h float-fmt.h f77-fcn.h getopt.h idx-vector.h \
+	lo-error.h oct-cmplx.h oct-glob.h oct-math.h oct-term.h \
+	pathsearch.h prog-args.h statdefs.h str-vec.h sun-utils.h \
+	sysdir.h $(MATRIX_INC)
 
 TEMPLATE_SRC := Array.cc MArray.cc
 
@@ -58,10 +58,11 @@ MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc NPSOL.cc QPSOL.cc \
 	Quad.cc Range.cc acosh.c asinh.c atanh.c cmd-hist.cc \
-	dir-ops.cc erf.c erfc.c f77-fcn.c file-ops.cc filemode.c \
-	gamma.c getopt.c getopt1.c idx-vector.cc lgamma.c \
-	mkdir.c oct-glob.cc oct-term.cc pathsearch.cc prog-args.cc \
-	rename.c rmdir.c str-vec.cc sun-utils.cc tempname.c tempnam.c \
+	data-conv.cc dir-ops.cc erf.c erfc.c f77-fcn.c file-ops.cc \
+	filemode.c float-fmt.cc gamma.c getopt.c getopt1.c \
+	idx-vector.cc lgamma.c mkdir.c oct-glob.cc oct-term.cc \
+	pathsearch.cc prog-args.cc rename.c rmdir.c str-vec.cc \
+	sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CMatrix.h"
 #include "Range.h"
 #include "dMatrix.h"
+#include "float-fmt.h"
 #include "oct-cmplx.h"
 #include "oct-math.h"
 #include "oct-term.h"

@@ -891,11 +891,13 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 
   dim_vector dv_old = dimensions;
 
-  if (n > dv_old.length ())
+  int dv_old_orig_len = dv_old.length ();
+
+  if (n > dv_old_orig_len)
     {
       dv_old.resize (n);
 
-      for (int i = dv_old.length (); i < n; i++)
+      for (int i = dv_old_orig_len; i < n; i++)
 	dv_old.elem (i) = 1;
     }
 
@@ -2967,7 +2969,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		final_lhs_dims = new_dims;
 
 	      lhs.resize_and_fill (new_dims, rfv);
+
 	      lhs_dims = lhs.dims ();
+
 	      lhs_dims_len = lhs_dims.length ();
 
 	      frozen_len = freeze (idx, lhs_dims, true);

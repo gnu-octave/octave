@@ -31,109 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 template class MArray<int>;
 template class MArray2<int>;
 
+INSTANTIATE_MARRAY_FRIENDS (int)
+INSTANTIATE_MARRAY2_FRIENDS (int)
+
 #ifndef NO_DIAG_ARRAY
 template class MDiagArray<int>;
-#endif
 
-template MArray<int>
-operator + (const MArray<int>& a, const int& s);
-
-template MArray<int>
-operator - (const MArray<int>& a, const int& s);
-
-template MArray<int>
-operator * (const MArray<int>& a, const int& s);
-
-template MArray<int>
-operator / (const MArray<int>& a, const int& s);
-
-template MArray<int>
-operator + (const int& s, const MArray<int>& a);
-
-template MArray<int>
-operator - (const int& s, const MArray<int>& a);
-
-template MArray<int>
-operator * (const int& s, const MArray<int>& a);
-
-template MArray<int>
-operator / (const int& s, const MArray<int>& a);
-
-template MArray<int>
-operator + (const MArray<int>& a, const MArray<int>& b);
-
-template MArray<int>
-operator - (const MArray<int>& a, const MArray<int>& b);
-
-template MArray<int>
-product (const MArray<int>& a, const MArray<int>& b); 
-
-template MArray<int>
-quotient (const MArray<int>& a, const MArray<int>& b);
-
-template MArray<int>
-operator - (const MArray<int>& a);
-
-template MArray2<int>
-operator + (const MArray2<int>& a, const int& s);
-
-template MArray2<int>
-operator - (const MArray2<int>& a, const int& s);
-
-template MArray2<int>
-operator * (const MArray2<int>& a, const int& s);
-
-template MArray2<int>
-operator / (const MArray2<int>& a, const int& s);
-
-template MArray2<int>
-operator + (const int& s, const MArray2<int>& a);
-
-template MArray2<int>
-operator - (const int& s, const MArray2<int>& a);
-
-template MArray2<int>
-operator * (const int& s, const MArray2<int>& a);
-
-template MArray2<int>
-operator / (const int& s, const MArray2<int>& a);
-
-template MArray2<int>
-operator + (const MArray2<int>& a, const MArray2<int>& b);
-
-template MArray2<int>
-operator - (const MArray2<int>& a, const MArray2<int>& b);
-
-template MArray2<int>
-product (const MArray2<int>& a, const MArray2<int>& b);
-
-template MArray2<int>
-quotient (const MArray2<int>& a, const MArray2<int>& b);
-
-template MArray2<int>
-operator - (const MArray2<int>& a);
-
-#ifndef NO_DIAG_ARRAY
-template MDiagArray<int>
-operator * (const MDiagArray<int>& a, const int& s);
-
-template MDiagArray<int>
-operator / (const MDiagArray<int>& a, const int& s);
-
-template MDiagArray<int>
-operator * (const int& s, const MDiagArray<int>& a);
-
-template MDiagArray<int>
-operator + (const MDiagArray<int>& a, const MDiagArray<int>& b);
-
-template MDiagArray<int>
-operator - (const MDiagArray<int>& a, const MDiagArray<int>& b);
-
-template MDiagArray<int>
-product (const MDiagArray<int>& a, const MDiagArray<int>& b);
-
-template MDiagArray<int>
-operator - (const MDiagArray<int>& a);
+INSTANTIATE_MDIAGARRAY_FRIENDS (int)
 #endif
 
 /*

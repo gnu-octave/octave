@@ -1,0 +1,30 @@
+#!/bin/sh
+
+SRC="
+ Make_IMAGE_toolbox
+ README
+ ToDo
+ colormap.m
+ default.img
+ gray.m
+ gray2ind.m
+ image.m
+ imagesc.m
+ imshow.m
+ ind2gray.m
+ ind2rgb.m
+ loadimage.m
+ ntsc2rgb.m
+ ocean.m
+ octtopnm.c
+ rgb2ind.m
+ rgb2ntsc.m
+ saveimage.m
+"
+
+command="shar $SRC > image_toolbox.shar"
+
+echo $command
+eval $command
+
+exit 0

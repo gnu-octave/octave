@@ -1637,6 +1637,9 @@ default_return_value");
 	  do_fortran_indexing,
     "allow single indices for matrices");
 
+  DEFCONST ("e", SBV_e, exp (1.0), 0, 0,
+    "exp (1)");
+
   DEFVAR ("empty_list_elements_ok", SBV_empty_list_elements_ok,
 	  "warn", 0, empty_list_elements_ok,
     "ignore the empty element in expressions like `a = [[], 1]'");

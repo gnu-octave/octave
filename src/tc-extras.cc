@@ -748,7 +748,7 @@ column_max (const tree_constant *args, int nargin, int nargout)
 		double result;
 		double a_elem = arg1.double_value ();
 		double b_elem = arg2.double_value ();
-		result = MIN (a_elem, b_elem);
+		result = MAX (a_elem, b_elem);
 		retval[0] = tree_constant (result);
 	      }
               break;
@@ -757,7 +757,7 @@ column_max (const tree_constant *args, int nargin, int nargout)
 		Complex result;
 		Complex a_elem = arg1.complex_value ();
 		Complex b_elem = arg2.complex_value ();
-		if (abs(a_elem) < abs(b_elem))
+		if (abs (a_elem) > abs (b_elem))
 		  result = a_elem;
 		else
 		  result = b_elem;
@@ -928,7 +928,7 @@ column_min (const tree_constant *args, int nargin, int nargout)
 		Complex result;
 		Complex a_elem = arg1.complex_value ();
 		Complex b_elem = arg2.complex_value ();
-		if (abs(a_elem) < abs(b_elem))
+		if (abs (a_elem) < abs (b_elem))
 		  result = a_elem;
 		else
 		  result = b_elem;

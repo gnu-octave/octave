@@ -1,0 +1,17 @@
+The files in this directory have been modified from those found on
+netlib by changing the following subroutine names
+
+  zabs --> xzabs
+  zexp --> xzexp
+  zlog --> xzlog
+  zsqrt --> xzsqrt
+
+to avoid conflicts with non-standard but commonly used Fortran
+intrinsic function names.
+
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering
+
+Wed Nov 11 17:29:50 1998

@@ -74,6 +74,29 @@ DEFUN ("any", Fany, Sany, 2, 1,
   return retval;
 }
 
+DEFUN ("atan2", Fatan2, Satan2, 3, 1,
+  "atan2 (Y, X): atan (Y / X) in range -pi to pi")
+{
+  Octave_object retval;
+
+  if (args.length () != 3)
+    print_usage ("atan2");
+  else
+    {
+      double y = args(1).double_value ();
+
+      if (! error_state)
+	{
+	  double x = args(2).double_value ();
+
+	  if (! error_state)
+	    retval = atan2 (y, x);
+	}
+    }
+
+  return retval;
+}
+
 DEFUN ("cumprod", Fcumprod, Scumprod, 2, 1,
   "cumprod (X): cumulative products")
 {
@@ -257,7 +280,7 @@ static void
 get_dimensions (const tree_constant& a, const char *warn_for,
 		int& nr, int& nc)
 {
-  tree_constant tmpa = a.make_numeric ();
+  tree_constant tmpa = a;
 
   if (tmpa.is_scalar_type ())
     {
@@ -273,6 +296,9 @@ get_dimensions (const tree_constant& a, const char *warn_for,
 	{
 	  ColumnVector v = tmpa.vector_value ();
 
+	  if (error_state)
+	    return;
+
 	  nr = NINT (v.elem (0));
 	  nc = NINT (v.elem (1));
 	}
@@ -287,8 +313,8 @@ static void
 get_dimensions (const tree_constant& a, const tree_constant& b,
 		const char *warn_for, int& nr, int& nc)
 {
-  tree_constant tmpa = a.make_numeric ();
-  tree_constant tmpb = b.make_numeric ();
+  tree_constant tmpa = a;
+  tree_constant tmpb = b;
 
   if (tmpa.is_scalar_type () && tmpb.is_scalar_type ())
     {

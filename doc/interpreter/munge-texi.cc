@@ -36,8 +36,7 @@ static const char doc_delim = '';
 
 #include <map>
 
-static map<std::string, std::string> help_text
-  = map<std::string, std::string> ();
+static std::map<std::string, std::string> help_text;
 
 #else
 

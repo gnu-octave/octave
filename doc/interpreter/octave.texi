@@ -131,6 +131,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Statements::                  Looping and program flow control.
 * Functions and Scripts::       
 * Error Handling::              
+* Debugging::
 * Input and Output::            
 * Plotting::                    
 * Matrix Manipulation::         
@@ -307,6 +308,10 @@ Functions and Script Files
 * Script Files::                
 * Dynamically Linked Functions::  
 * Organization of Functions::   
+
+Error Handling
+
+Debugging
 
 Input and Output
 

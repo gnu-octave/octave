@@ -70,8 +70,6 @@ extern string_vector make_argv (const Octave_object&, const string&);
 
 extern int empty_arg (const char *name, int nr, int nc);
 
-extern ostrstream& list_in_columns (ostrstream& os, const string_vector& list);
-
 extern string undo_string_escapes (const string& s);
 
 extern void oct_putenv (const char *, const char *);

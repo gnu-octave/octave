@@ -603,21 +603,24 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (! retval)
     {
-      std::string file_name = fcn_file_in_path (name);
+      string_vector names (2);
 
-      if ((type == "any" || type == "file") && ! file_name.empty ())
+      names(0) = name + ".oct";
+      names(1) = name + ".m";
+
+      std::string file_name = Vload_path_dir_path.find_first_of (names);
+
+      size_t len = file_name.length ();
+
+      if (! file_name.empty ())
 	{
-	  retval = 2;
-	}
-    }
-
-  if (! retval)
-    {
-      std::string file_name = oct_file_in_path (name);
-
-      if ((type == "any" || type == "file") && ! file_name.empty ())
-	{
-	  retval = 3;
+	  if (type == "any" || type == "file")
+	    {
+	      if (file_name.substr (len-4) == ".oct")
+		retval = 3;
+	      else
+		retval = 2;
+	    }
 	}
     }
 

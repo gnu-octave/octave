@@ -1,5 +1,11 @@
 2003-06-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-mat.cc (tm_row_const::init, tm_const::init): Don't ignore
+	empty matrices that have one non-zero dimension.
+
+	* variables.cc (symbol_exist): Use dir_path::find_first_of to
+	search for .oct and .m files.
+
 	* ov-base.cc (octave_base_value::subsasgn): Also allow type
 	conversion for empty numeric objects with more than one index.
 	* ov-base-mat.cc (octave_base_matrix<T>::subsasgn): Likewise.

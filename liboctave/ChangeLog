@@ -1,3 +1,8 @@
+2003-06-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>::index (idx_vector&, int, const T&)):
+	Magic colon indexing always produces an object with one column.
+
 2003-06-21  Paul Kienzle <pkienzle@users.sf.net>
 
 	* kpse-xfns.h (NAME_BEGINS_WITH_DEVICE): Arg is std::string, not char*.

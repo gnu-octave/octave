@@ -189,7 +189,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	  int this_elt_nr = tmp.rows ();
 	  int this_elt_nc = tmp.columns ();
 
-	  if (this_elt_nr == 0 || this_elt_nc == 0)
+	  if (this_elt_nr == 0 && this_elt_nc == 0)
 	    {
 	      if (Vempty_list_elements_ok < 0)
 		eval_warning ("empty matrix found in matrix list",
@@ -358,7 +358,7 @@ tm_const::init (const tree_matrix& tm)
 	  int this_elt_nr = elt.rows ();
 	  int this_elt_nc = elt.cols ();
 
-	  if (this_elt_nr == 0 || this_elt_nc == 0)
+	  if (this_elt_nr == 0 && this_elt_nc == 0)
 	    {
 	      if (Vempty_list_elements_ok < 0)
 		warning ("empty matrix found in matrix list");

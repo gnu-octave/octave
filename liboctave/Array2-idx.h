@@ -74,7 +74,7 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
       // Fast magic colon processing.
 
       int result_nr = nr * nc;
-      int result_nc = result_nr ? 1 : 0;
+      int result_nc = 1;
 
       retval = Array2<T> (*this, result_nr, result_nc);
     }

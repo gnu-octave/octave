@@ -312,7 +312,7 @@ set_format (double d)
 
 static void
 set_real_matrix_format (int sign, int x_max, int x_min,
-			int inf_or_nan, int all_inf_or_nan, int& fw)
+			int inf_or_nan, int int_or_inf_or_nan, int& fw)
 {
   static char fmt_buf[128];
 
@@ -339,7 +339,7 @@ set_real_matrix_format (int sign, int x_max, int x_min,
       fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (all_inf_or_nan)
+  else if (int_or_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = digits <= 0 ? 1 : digits;
@@ -425,8 +425,7 @@ set_format (const Matrix& m, int& fw)
 
   int inf_or_nan = any_element_is_inf_or_nan (m);
 
-  int all_inf_or_nan
-    = inf_or_nan ? all_elements_are_int_or_inf_or_nan (m) : 0;
+  int int_or_inf_or_nan = all_elements_are_int_or_inf_or_nan (m);
 
   Matrix m_abs = abs (m);
   double max_abs = pr_max_internal (m_abs);
@@ -436,7 +435,7 @@ set_format (const Matrix& m, int& fw)
   int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
 
   set_real_matrix_format (sign, x_max, x_min, inf_or_nan,
-			  all_inf_or_nan, fw);
+			  int_or_inf_or_nan, fw);
 }
 
 static inline void
@@ -611,7 +610,7 @@ set_format (const Complex& c)
 static void
 set_complex_matrix_format (int sign, int x_max, int x_min,
 			   int r_x_max, int r_x_min, int inf_or_nan,
-			   int all_inf_or_nan, int& r_fw, int& i_fw)
+			   int int_or_inf_or_nan, int& r_fw, int& i_fw)
 {
   static char r_fmt_buf[128];
   static char i_fmt_buf[128];
@@ -642,7 +641,7 @@ set_complex_matrix_format (int sign, int x_max, int x_min,
       i_fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (all_inf_or_nan)
+  else if (int_or_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
       i_fw = r_fw = digits <= 0 ? 1 : digits;
@@ -739,9 +738,9 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
 
   int inf_or_nan = any_element_is_inf_or_nan (cm);
 
-  int all_inf_or_nan
-    = inf_or_nan ? (all_elements_are_int_or_inf_or_nan (rp)
-		    && all_elements_are_int_or_inf_or_nan (ip)) : 0;
+  int int_or_inf_or_nan
+    = (all_elements_are_int_or_inf_or_nan (rp)
+       && all_elements_are_int_or_inf_or_nan (ip)) : 0;
 
   Matrix r_m_abs = abs (rp);
   double r_max_abs = pr_max_internal (r_m_abs);
@@ -761,7 +760,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
   set_complex_matrix_format (sign, x_max, x_min, r_x_max, r_x_min,
-			     inf_or_nan, all_inf_or_nan, r_fw, i_fw);
+			     inf_or_nan, int_or_inf_or_nan, r_fw, i_fw);
 }
 
 static int

@@ -1,3 +1,18 @@
+Sun May  4 22:40:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	*  input.cc (initialize_command_input): Rename from
+	initialize_readline.
+	(gnu_readline, octave_gets, get_user_input): Simplify, return
+	string, not char *.
+
+	* Many of other files: Miscellaneous changes to go along with the
+	changes described in the liboctave/ChangeLog for May 4.  More code
+	moved from here to liboctave.
+	
+Fri May  2 19:50:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathlen.h: Move to ../liboctave.
+
 Thu May  1 21:50:44 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (get_struct_elts): New fucntion.

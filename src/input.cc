@@ -54,11 +54,7 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-#if defined (USE_READLINE)
-#include <readline/readline.h>
-#include <readline/history.h>
-#endif
-
+#include "cmd-edit.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -129,259 +125,6 @@ string current_input_line;
 // TRUE after a call to completion_matches().
 bool octave_completion_matches_called = false;
 
-// Return the octal number parsed from STRING, or -1 to indicate that
-// the string contained a bad number.
-
-static int
-read_octal (const string& s)
-{
-  int result = 0;
-  int digits = 0;
-
-  size_t i = 0;
-  size_t slen = s.length ();
-
-  while (i < slen && s[i] >= '0' && s[i] < '8')
-    {
-      digits++;
-      result = (result * 8) + s[i] - '0';
-      i++;
-    }
-
-  if (! digits || result > 0777 || i < slen)
-    result = -1;
-
-  return result;
-}
-
-// Return a string which will be printed as a prompt.  The string may
-// contain special characters which are decoded as follows: 
-//   
-//	\t	the time
-//	\d	the date
-//	\n	CRLF
-//	\s	the name of the shell (program)
-//	\w	the current working directory
-//	\W	the last element of PWD
-//	\u	your username
-//	\h	the hostname
-//	\#	the command number of this command
-//	\!	the history number of this command
-//	\$	a $ or a # if you are root
-//	\<octal> character code in octal
-//	\\	a backslash
-
-static string
-decode_prompt_string (const string& s)
-{
-  string result;
-  string temp;
-  size_t i = 0;
-  size_t slen = s.length ();
-  int c;
-
-  while (i < slen)
-    {
-      c = s[i];
-
-      i++;
-
-      if (c == '\\')
-	{
-	  c = s[i];
-
-	  switch (c)
-	    {
-	    case '0':
-	    case '1':
-	    case '2':
-	    case '3':
-	    case '4':
-	    case '5':
-	    case '6':
-	    case '7':
-	      // Maybe convert an octal number.
-	      {
-		int n = read_octal (s.substr (i, 3));
-
-		temp = "\\";
-
-		if (n != -1)
-		  {
-		    i += 3;
-		    temp[0] = n;
-		  }
-
-		c = 0;
-		goto add_string;
-	      }
-	  
-	    case 't':
-	    case 'd':
-	      // Make the current time/date into a string.
-	      {
-		time_t now = time (0);
-
-		temp = ctime (&now);
-
-		if (c == 't')
-		  {
-		    temp = temp.substr (11);
-		    temp.resize (8);
-		  }
-		else
-		  temp.resize (10);
-
-		goto add_string;
-	      }
-
-	    case 'n':
-	      {
-		if (using_readline)
-		  temp = "\r\n";
-		else
-		  temp = "\n";
-
-		goto add_string;
-	      }
-
-	    case 's':
-	      {
-		temp = base_pathname (Vprogram_name);
-
-		goto add_string;
-	      }
-	
-	    case 'w':
-	    case 'W':
-	      {
-#define EFFICIENT
-#ifdef EFFICIENT
-		// Use the value of PWD because it is much more
-		// effecient.
-
-		temp = Vcurrent_directory;
-
-		if (temp.empty ())
-		  temp = octave_getcwd ();
-#else
-		temp = octave_getcwd ();
-#endif	/* EFFICIENT */
-
-		if (c == 'W')
-		  {
-		    size_t pos = temp.rfind ('/');
-
-		    if (pos != NPOS && pos != 0)
-		      temp = temp.substr (pos + 1);
-		  }
-		else
-		  temp = polite_directory_format (temp);
-
-		goto add_string;
-	      }
-      
-	    case 'u':
-	      {
-		temp = Vuser_name;
-
-		goto add_string;
-	      }
-
-	    case 'H':
-	      {
-		temp = Vhost_name;
-
-		goto add_string;
-	      }
-
-	    case 'h':
-	      {
-		temp = Vhost_name;
-
-		size_t pos = temp.find ('.');
-
-		if (pos != NPOS)
-		  temp.resize (pos);
-		
-		goto add_string;
-	      }
-
-	    case '#':
-	      {
-		char number_buffer[128];
-		sprintf (number_buffer, "%d", current_command_number);
-		temp = number_buffer;
-
-		goto add_string;
-	      }
-
-	    case '!':
-	      {
-		char number_buffer[128];
-		int num = octave_command_history.current_number ();
-		if (num > 0)
-                  sprintf (number_buffer, "%d", num);
-		else
-		  strcpy (number_buffer, "!");
-		temp = number_buffer;
-
-		goto add_string;
-	      }
-
-	    case '$':
-	      {
-		temp = (geteuid () == 0 ? "#" : "$");
-
-		goto add_string;
-	      }
-
-	    case '[':
-	    case ']':
-	      {
-		temp.resize (2);
-
-		temp[0] = '\001';
-		temp[1] = ((c == '[')
-			   ? RL_PROMPT_START_IGNORE
-			   : RL_PROMPT_END_IGNORE);
-
-		goto add_string;
-	      }
-
-	    case '\\':
-	      {
-		temp = "\\";
-
-		goto add_string;
-	      }
-
-	    default:
-	      {
-		temp = "\\ ";
-		temp[1] = c;
-
-		goto add_string;
-	      }
-
-	    add_string:
-	      {
-		if (c)
-		  i++;
-
-		result.append (temp);
-
-		break;
-	      }
-	    }
-	}
-      else
-	result += c;
-    }
-
-  return result;
-}
-
 static void
 do_input_echo (const string& input_string)
 {
@@ -394,12 +137,12 @@ do_input_echo (const string& input_string)
       if (forced_interactive)
 	{
 	  if (promptflag > 0)
-	    octave_stdout << decode_prompt_string (Vps1);
+	    octave_stdout << command_editor::decode_prompt_string (Vps1);
 	  else
-	    octave_stdout << decode_prompt_string (Vps2);
+	    octave_stdout << command_editor::decode_prompt_string (Vps2);
 	}
       else
-	octave_stdout << decode_prompt_string (Vps4);
+	octave_stdout << command_editor::decode_prompt_string (Vps4);
 
       if (! input_string.empty ())
 	{
@@ -411,96 +154,50 @@ do_input_echo (const string& input_string)
     }
 }
 
-char *
-gnu_readline (const char *s, bool force_readline)
+string
+gnu_readline (const string& s, bool force_readline)
 {
-  char *retval = 0;
+  string retval;
 
-  if (using_readline || force_readline)
+  if (line_editing || force_readline)
     {
-      char *tmp = retval = ::readline (s);
+      retval = command_editor::readline (s);
 
-      if (tmp && strlen (tmp) == 0)
-	{
-	  retval = static_cast<char *> (malloc (2));
-	  retval[0] = '\n';
-	  retval[1] = '\0';
-	}
+      if (retval.empty ())
+	retval = "\n";
     }
   else
     {
-      if (s && *s && (interactive || forced_interactive))
+      if (! s.empty () && (interactive || forced_interactive))
 	{
-	  fprintf (rl_outstream, s);
-	  fflush (rl_outstream);
+	  FILE *stream = command_editor::get_output_stream ();
+
+	  fprintf (stream, s.c_str ());
+	  fflush (stream);
 	}
 
-      FILE *curr_stream = rl_instream;
+      FILE *curr_stream = command_editor::get_input_stream ();
+
       if (reading_fcn_file || reading_script_file)
 	curr_stream = ff_instream;
 
-      int grow_size = 1024;
-      int max_size = grow_size;
-
-      char *buf = static_cast<char *> (malloc (max_size));
-      char *bufptr = buf;
-      int len = 0;
-
-      do
-	{
-	  if (fgets (bufptr, grow_size, curr_stream))
-	    {
-	      len = strlen (bufptr);
-
-	      if (len == grow_size - 1)
-		{
-		  int tmp = bufptr - buf + grow_size - 1;
-		  grow_size *= 2;
-		  max_size += grow_size;
-		  buf = static_cast<char *> (realloc (buf, max_size));
-		  bufptr = buf + tmp;
-
-		  if (*(bufptr-1) == '\n')
-		    {
-		      *bufptr = '\0';
-		      retval = buf;
-		    }
-		}
-	      else if (bufptr[len-1] != '\n')
-		{
-		  bufptr[len++] = '\n';
-		  bufptr[len] = '\0';
-		  retval = buf;
-		}
-	      else
-		retval = buf;
-	    }
-	  else
-	    {
-	      if (len == 0)
-		free (buf);
-
-	      break;
-	    }
-	}
-      while (! retval);
+      retval = octave_fgets (curr_stream);
     }
 
   return retval;
 }
 
-static char *
+static string
 octave_gets (void)
 {
-  char *retval = 0;
+  string retval;
 
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file || reading_script_file)))
     {
-      const char *ps = (promptflag > 0) ? Vps1.c_str () :
-	Vps2.c_str ();
+      string ps = (promptflag > 0) ? Vps1 : Vps2;
 
-      string prompt = decode_prompt_string (ps);
+      string prompt = command_editor::decode_prompt_string (ps);
 
       pipe_handler_error_count = 0;
 
@@ -508,20 +205,17 @@ octave_gets (void)
 
       octave_diary << prompt;
 
-      retval = gnu_readline (prompt.c_str ());
+      retval = gnu_readline (prompt);
     }
   else
     retval = gnu_readline ("");
 
-  if (retval)
-    current_input_line = retval;
-  else
-    current_input_line = "";
+  current_input_line = retval;
 
   if (! current_input_line.empty ())
     {
       if (! input_from_startup_file)
-	octave_command_history.add (current_input_line);
+	command_history::add (current_input_line);
 
       octave_diary << current_input_line;
 
@@ -535,27 +229,24 @@ octave_gets (void)
 
 // Read a line from the input stream.
 
-static char *
+static string
 get_user_input (void)
 {
-  char *retval = 0;
+  string retval;
 
   if (get_input_from_eval_string)
     {
-      size_t len = current_eval_string.length ();
+      retval = current_eval_string;
 
-      retval = static_cast<char *> (malloc (len + 2));
+      size_t len = retval.length ();
 
-      strcpy (retval, current_eval_string.c_str ());
-
-      retval[len++] = '\n';
-      retval[len] = '\0';    // Paranoia.
+      if (retval[len-1] != '\n')
+	retval.append ("\n");
     }
   else
     retval = octave_gets ();
 
-  if (retval)
-    current_input_line = retval;
+  current_input_line = retval;
 
   if (! get_input_from_eval_string)
     input_line_number++;
@@ -566,32 +257,40 @@ get_user_input (void)
 int
 octave_read (char *buf, unsigned max_size)
 {
-  static char *input_buf = 0;
-  static char *cur_pos = 0;
-  static int chars_left = 0;
+  // XXX FIXME XXX -- is this a safe way to buffer the input?
+
+  static string input_buf;
+  static const char *pos = 0;
+  static size_t chars_left = 0;
 
   int status = 0;
 
-  if (! input_buf)
+  if (input_buf.empty ())
     {
-      cur_pos = input_buf = get_user_input ();
+      pos = 0;
 
-      chars_left = input_buf ? strlen (input_buf) : 0;
+      input_buf = get_user_input ();
+
+      chars_left = input_buf.length ();
+
+      pos = input_buf.c_str ();
     }
 
   if (chars_left > 0)
     {
       buf[0] = '\0';
 
-      int len = max_size - 2;
+      size_t len = max_size > 2 ? max_size - 2 : 0;
 
-      strncpy (buf, cur_pos, len);
+      assert (len > 0);
+
+      strncpy (buf, pos, len);
 
       if (chars_left > len)
 	{
 	  chars_left -= len;
 
-	  cur_pos += len;
+	  pos += len;
 
 	  buf[len] = '\0';
 
@@ -599,8 +298,7 @@ octave_read (char *buf, unsigned max_size)
 	}
       else
 	{
-	  free (input_buf);
-	  input_buf = 0;
+	  input_buf = "";
 
 	  len = chars_left;
 
@@ -614,11 +312,7 @@ octave_read (char *buf, unsigned max_size)
     }
   else if (chars_left == 0)
     {
-      if (input_buf)
-	{
-	  free (input_buf);
-	  input_buf = 0;
-	}
+      input_buf = "";
 
       status = 0;
     }
@@ -645,7 +339,7 @@ get_input_from_file (const string& name, int warn)
   if (reading_fcn_file || reading_script_file)
     ff_instream = instream;
   else
-    rl_instream = instream;
+    command_editor::set_input_stream (instream);
 
   return instream;
 }
@@ -657,8 +351,8 @@ get_input_from_file (const string& name, int warn)
 FILE *
 get_input_from_stdin (void)
 {
-  rl_instream = stdin;
-  return rl_instream;
+  command_editor::set_input_stream (stdin);
+  return command_editor::get_input_stream ();
 }
 
 // XXX FIXME XXX -- make this generate file names when appropriate.
@@ -764,9 +458,10 @@ command_generator (const char *text, int state)
 		strcpy (buf, name.c_str ());
 
 	      if (matches == 1 && looks_like_struct (buf))
-		rl_completion_append_character = '.';
+		command_editor::set_completion_append_character ('.');
 	      else
-		rl_completion_append_character = Vcompletion_append_char;
+		command_editor::set_completion_append_character
+		  (Vcompletion_append_char);
 
 	      return buf;
 	    }
@@ -776,6 +471,7 @@ command_generator (const char *text, int state)
   return 0;
 }
 
+#if 0
 static char **
 command_completer (char *text, int /* start */, int /* end */)
 {
@@ -783,129 +479,29 @@ command_completer (char *text, int /* start */, int /* end */)
   matches = completion_matches (text, command_generator);
   return matches;
 }
-
-// The next two functions implement the equivalent of the K*rn shell
-// C-o operate-and-get-next-history-line editing command.  Stolen from
-// the GNU Bourne Again SHell.
-
-// ??
-static int saved_history_line_to_use = 0;
-
-// ??
-static Function *old_rl_startup_hook = 0;
-
-static void
-set_saved_history (void)
-{
-  HIST_ENTRY *h;
-
-  if (saved_history_line_to_use)
-    {
-      if (history_set_pos (saved_history_line_to_use))
-	{
-	  h = current_history ();
-	  if (h)
-	    {
-	      rl_insert_text (h->line);
-
-	      // Get rid of any undo list created by the previous
-	      // insert, so the line won't totally be erased when the
-	      // edits are undone (they will be normally, because this
-	      // is a history  line -- cf. readline.c: line 380 or
-	      // so).
-
-	      if (rl_undo_list)
-		{
-		  free_undo_list ();
-		  rl_undo_list = 0;
-		}
-	    }
-	}
-    }
-  saved_history_line_to_use = 0;
-  rl_startup_hook = old_rl_startup_hook;
-}
-
-static void
-operate_and_get_next (int /* count */, int /* c */)
-{
-  int where;
-
-  // Accept the current line.
-
-  rl_newline ();
-
-  // Find the current line, and find the next line to use.
-
-  where = where_history ();
-
-  if ((history_is_stifled () && (history_length >= max_input_history))
-      || (where >= history_length - 1))
-    saved_history_line_to_use = where;
-  else
-    saved_history_line_to_use = where + 1;
-
-  old_rl_startup_hook = rl_startup_hook;
-  rl_startup_hook = static_cast<Function *> (set_saved_history);
-}
+#endif
 
 void
-initialize_readline (void)
+initialize_command_input (void)
 {
-  // Set things up internally in case some function that uses readline
-  // (currently Fclc(), maybe others) is called before readline().
+  // If we are using readline, this allows conditional parsing of the
+  // .inputrc file.
 
-  rl_initialize ();
+  command_editor::set_name ("Octave");
 
-  // Allow conditional parsing of the ~/.inputrc file
-
-  rl_readline_name = "Octave";
-
-  // Tell the completer that we want to try first.
-
-  rl_attempted_completion_function
-    = static_cast<CPPFunction *> (command_completer);
-
-  // Bind operate-and-get-next.
-
-  rl_add_defun ("operate-and-get-next", operate_and_get_next, CTRL ('O'));
-
-
-  // And the history search functions.
-
-  rl_add_defun ("history-search-backward", rl_history_search_backward,
-		META ('p'));
-
-  rl_add_defun ("history-search-forward", rl_history_search_forward,
-		META ('n'));
-
-  // Don't treat single quotes as string delimiters when doing paren
-  // matching.
-
-  rl_paren_string_delimiters = "\"";
+  command_editor::set_paren_string_delimiters ("\"");
 }
 
-static int
-match_sans_spaces (const char *standard, const char *test)
+static bool
+match_sans_spaces (const string& standard, const string& test)
 {
-  char *tmp = strsave (test);
+  string tmp = test;
 
-  char *tp = tmp;
-  while (*tp == ' ' || *tp == '\t')
-    tp++;
+  size_t beg = test.find_first_not_of (" \t");
+  size_t end = test.find_last_not_of (" \t");
+  size_t len = beg - end + 1;
 
-  char *ep = tmp + strlen (tmp) - 1;
-  while (*ep == ' ' || *ep == '\t')
-    ep--;
-
-  *(ep+1) = '\0';
-
-  int retval = strcmp (standard, tp) == 0;
-
-  delete [] tmp;
-
-  return retval;
-
+  return test.compare (standard, beg, len) == 0;
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -939,14 +535,14 @@ get_user_input (const octave_value_list& args, int debug = 0)
 
   flush_octave_stdout ();
 
-  char *input_buf = gnu_readline (prompt.c_str (), true);
+  string input_buf = gnu_readline (prompt.c_str (), true);
 
-  if (input_buf)
+  if (! input_buf.empty ())
     {
       if (! input_from_startup_file)
-	octave_command_history.add (input_buf);
+	command_history::add (input_buf);
 
-      int len = strlen (input_buf);
+      size_t len = input_buf.length ();
 
       if (len < 1)
 	{

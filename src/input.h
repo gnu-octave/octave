@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern int octave_read (char *buf, unsigned max_size);
 extern FILE *get_input_from_file (const string& name, int warn = 1);
 extern FILE *get_input_from_stdin (void);
-extern void initialize_readline (void);
 
 // Global pointer for eval().
 extern string current_eval_string;
@@ -70,7 +69,9 @@ extern string current_input_line;
 // TRUE after a call to completion_matches().
 extern bool octave_completion_matches_called;
 
-char *gnu_readline (const char *s, bool force_readline = false);
+extern string gnu_readline (const string& s, bool force_readline = false);
+
+extern void initialize_command_input (void);
 
 extern string Vps4;
 

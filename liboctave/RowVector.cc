@@ -241,25 +241,25 @@ RowVector::operator / (double s) const
 }
 
 ComplexRowVector
-RowVector::operator + (Complex s) const
+RowVector::operator + (const Complex& s) const
 {
   return ComplexRowVector (add (data, len, s), len);
 }
 
 ComplexRowVector
-RowVector::operator - (Complex s) const
+RowVector::operator - (const Complex& s) const
 {
   return ComplexRowVector (subtract (data, len, s), len);
 }
 
 ComplexRowVector
-RowVector::operator * (Complex s) const
+RowVector::operator * (const Complex& s) const
 {
   return ComplexRowVector (multiply (data, len, s), len);
 }
 
 ComplexRowVector
-RowVector::operator / (Complex s) const
+RowVector::operator / (const Complex& s) const
 {
   return ComplexRowVector (divide (data, len, s), len);
 }
@@ -566,7 +566,7 @@ ComplexRowVector::ComplexRowVector (int n, double val)
     data = (Complex *) NULL;
 }
 
-ComplexRowVector::ComplexRowVector (int n, Complex val)
+ComplexRowVector::ComplexRowVector (int n, const Complex& val)
 {
   if (n < 0)
     FAIL;
@@ -612,7 +612,7 @@ ComplexRowVector::ComplexRowVector (double a)
   data[0] = a;
 }
 
-ComplexRowVector::ComplexRowVector (Complex a)
+ComplexRowVector::ComplexRowVector (const Complex& a)
 {
   len = 1;
   data = new Complex [1];
@@ -688,7 +688,7 @@ ComplexRowVector::resize (int n, double val)
 }
 
 ComplexRowVector&
-ComplexRowVector::resize (int n, Complex val)
+ComplexRowVector::resize (int n, const Complex& val)
 {
   int old_len = len;
   resize (n);
@@ -749,7 +749,7 @@ ComplexRowVector::fill (double val)
 }
 
 ComplexRowVector&
-ComplexRowVector::fill (Complex val)
+ComplexRowVector::fill (const Complex& val)
 {
   if (len > 0)
     copy (data, len, val);
@@ -771,7 +771,7 @@ ComplexRowVector::fill (double val, int c1, int c2)
 }
 
 ComplexRowVector&
-ComplexRowVector::fill (Complex val, int c1, int c2)
+ComplexRowVector::fill (const Complex& val, int c1, int c2)
 {
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     FAIL;
@@ -887,25 +887,25 @@ ComplexRowVector::operator / (double s) const
 }
 
 ComplexRowVector
-ComplexRowVector::operator + (Complex s) const
+ComplexRowVector::operator + (const Complex& s) const
 {
   return ComplexRowVector (add (data, len, s), len);
 }
 
 ComplexRowVector
-ComplexRowVector::operator - (Complex s) const
+ComplexRowVector::operator - (const Complex& s) const
 {
   return ComplexRowVector (subtract (data, len, s), len);
 }
 
 ComplexRowVector
-ComplexRowVector::operator * (Complex s) const
+ComplexRowVector::operator * (const Complex& s) const
 {
   return ComplexRowVector (multiply (data, len, s), len);
 }
 
 ComplexRowVector
-ComplexRowVector::operator / (Complex s) const
+ComplexRowVector::operator / (const Complex& s) const
 {
   return ComplexRowVector (divide (data, len, s), len);
 }
@@ -937,25 +937,25 @@ operator / (double s, const ComplexRowVector& a)
 }
 
 ComplexRowVector
-operator + (Complex s, const ComplexRowVector& a)
+operator + (const Complex& s, const ComplexRowVector& a)
 {
   return ComplexRowVector (add (a.data, a.len, s), a.len);
 }
 
 ComplexRowVector
-operator - (Complex s, const ComplexRowVector& a)
+operator - (const Complex& s, const ComplexRowVector& a)
 {
   return ComplexRowVector (subtract (s, a.data, a.len), a.len);
 }
 
 ComplexRowVector
-operator * (Complex s, const ComplexRowVector& a)
+operator * (const Complex& s, const ComplexRowVector& a)
 {
   return ComplexRowVector (multiply (a.data, a.len, s), a.len);
 }
 
 ComplexRowVector
-operator / (Complex s, const ComplexRowVector& a)
+operator / (const Complex& s, const ComplexRowVector& a)
 {
   return ComplexRowVector (divide (s, a.data, a.len), a.len);
 }

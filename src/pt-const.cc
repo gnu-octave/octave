@@ -84,7 +84,7 @@ tree_constant_rep::tree_constant_rep (double d)
   type_tag = scalar_constant;
 }
 
-tree_constant_rep::tree_constant_rep (Matrix& m)
+tree_constant_rep::tree_constant_rep (const Matrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
@@ -98,7 +98,7 @@ tree_constant_rep::tree_constant_rep (Matrix& m)
     }
 }
 
-tree_constant_rep::tree_constant_rep (DiagMatrix& d)
+tree_constant_rep::tree_constant_rep (const DiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
@@ -112,7 +112,7 @@ tree_constant_rep::tree_constant_rep (DiagMatrix& d)
     }
 }
 
-tree_constant_rep::tree_constant_rep (RowVector& v)
+tree_constant_rep::tree_constant_rep (const RowVector& v)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -141,7 +141,7 @@ tree_constant_rep::tree_constant_rep (RowVector& v)
     }
 }
 
-tree_constant_rep::tree_constant_rep (RowVector& v, int prefer_column_vector)
+tree_constant_rep::tree_constant_rep (const RowVector& v, int prefer_column_vector)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -170,7 +170,7 @@ tree_constant_rep::tree_constant_rep (RowVector& v, int prefer_column_vector)
     }
 }
 
-tree_constant_rep::tree_constant_rep (ColumnVector& v)
+tree_constant_rep::tree_constant_rep (const ColumnVector& v)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -199,7 +199,7 @@ tree_constant_rep::tree_constant_rep (ColumnVector& v)
     }
 }
 
-tree_constant_rep::tree_constant_rep (ColumnVector& v,
+tree_constant_rep::tree_constant_rep (const ColumnVector& v,
 				      int prefer_column_vector) 
 {
   int len = v.capacity ();
@@ -229,13 +229,13 @@ tree_constant_rep::tree_constant_rep (ColumnVector& v,
     }
 }
 
-tree_constant_rep::tree_constant_rep (Complex c)
+tree_constant_rep::tree_constant_rep (const Complex& c)
 {
   complex_scalar = new Complex (c);
   type_tag = complex_scalar_constant;
 }
 
-tree_constant_rep::tree_constant_rep (ComplexRowVector& v)
+tree_constant_rep::tree_constant_rep (const ComplexRowVector& v)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -264,7 +264,7 @@ tree_constant_rep::tree_constant_rep (ComplexRowVector& v)
     }
 }
 
-tree_constant_rep::tree_constant_rep (ComplexMatrix& m)
+tree_constant_rep::tree_constant_rep (const ComplexMatrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
@@ -278,7 +278,7 @@ tree_constant_rep::tree_constant_rep (ComplexMatrix& m)
     }
 }
 
-tree_constant_rep::tree_constant_rep (ComplexDiagMatrix& d)
+tree_constant_rep::tree_constant_rep (const ComplexDiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
@@ -292,7 +292,7 @@ tree_constant_rep::tree_constant_rep (ComplexDiagMatrix& d)
     }
 }
 
-tree_constant_rep::tree_constant_rep (ComplexRowVector& v,
+tree_constant_rep::tree_constant_rep (const ComplexRowVector& v,
 				      int prefer_column_vector)
 {
   int len = v.capacity ();
@@ -322,7 +322,7 @@ tree_constant_rep::tree_constant_rep (ComplexRowVector& v,
     }
 }
 
-tree_constant_rep::tree_constant_rep (ComplexColumnVector& v)
+tree_constant_rep::tree_constant_rep (const ComplexColumnVector& v)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -351,7 +351,7 @@ tree_constant_rep::tree_constant_rep (ComplexColumnVector& v)
     }
 }
 
-tree_constant_rep::tree_constant_rep (ComplexColumnVector& v,
+tree_constant_rep::tree_constant_rep (const ComplexColumnVector& v,
 				      int prefer_column_vector) 
 {
   int len = v.capacity ();
@@ -387,7 +387,7 @@ tree_constant_rep::tree_constant_rep (const char *s)
   type_tag = string_constant;
 }
 
-tree_constant_rep::tree_constant_rep (String& s)
+tree_constant_rep::tree_constant_rep (const String& s)
 {
   string = strsave (s);
   type_tag = string_constant;
@@ -426,7 +426,7 @@ tree_constant_rep::tree_constant_rep (double b, double l, double i)
     }
 }
 
-tree_constant_rep::tree_constant_rep (Range& r)
+tree_constant_rep::tree_constant_rep (const Range& r)
 {
   if (r.nelem () > 1)
     {
@@ -454,7 +454,7 @@ tree_constant_rep::tree_constant_rep (tree_constant_rep::constant_type t)
   type_tag = magic_colon;
 }
 
-tree_constant_rep::tree_constant_rep (tree_constant_rep& t)
+tree_constant_rep::tree_constant_rep (const tree_constant_rep& t)
 {
   type_tag = t.type_tag;
 

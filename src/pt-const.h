@@ -235,30 +235,30 @@ public:
   tree_constant_rep (void);
 
   tree_constant_rep (double d);
-  tree_constant_rep (Matrix& m);
-  tree_constant_rep (DiagMatrix& d);
-  tree_constant_rep (RowVector& v);
-  tree_constant_rep (RowVector& v, int pcv);
-  tree_constant_rep (ColumnVector& v);
-  tree_constant_rep (ColumnVector& v, int pcv);
+  tree_constant_rep (const Matrix& m);
+  tree_constant_rep (const DiagMatrix& d);
+  tree_constant_rep (const RowVector& v);
+  tree_constant_rep (const RowVector& v, int pcv);
+  tree_constant_rep (const ColumnVector& v);
+  tree_constant_rep (const ColumnVector& v, int pcv);
 
-  tree_constant_rep (Complex c);
-  tree_constant_rep (ComplexMatrix& m);
-  tree_constant_rep (ComplexDiagMatrix& d);
-  tree_constant_rep (ComplexRowVector& v);
-  tree_constant_rep (ComplexRowVector& v, int pcv);
-  tree_constant_rep (ComplexColumnVector& v);
-  tree_constant_rep (ComplexColumnVector& v, int pcv);
+  tree_constant_rep (const Complex& c);
+  tree_constant_rep (const ComplexMatrix& m);
+  tree_constant_rep (const ComplexDiagMatrix& d);
+  tree_constant_rep (const ComplexRowVector& v);
+  tree_constant_rep (const ComplexRowVector& v, int pcv);
+  tree_constant_rep (const ComplexColumnVector& v);
+  tree_constant_rep (const ComplexColumnVector& v, int pcv);
 
   tree_constant_rep (const char *s);
-  tree_constant_rep (String& s);
+  tree_constant_rep (const String& s);
 
   tree_constant_rep (double base, double limit, double inc);
-  tree_constant_rep (Range& r);
+  tree_constant_rep (const Range& r);
 
   tree_constant_rep (tree_constant_rep::constant_type t);
 
-  tree_constant_rep (tree_constant_rep& t);
+  tree_constant_rep (const tree_constant_rep& t);
 
   ~tree_constant_rep (void);
 
@@ -529,48 +529,48 @@ public:
 
   tree_constant (double d)
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (Matrix& m)
+  tree_constant (const Matrix& m)
     { rep = new tree_constant_rep (m); rep->count = 1; }
-  tree_constant (DiagMatrix& d)
+  tree_constant (const DiagMatrix& d)
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (RowVector& v)
+  tree_constant (const RowVector& v)
     { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (RowVector& v, int pcv)
+  tree_constant (const RowVector& v, int pcv)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
-  tree_constant (ColumnVector& v)
+  tree_constant (const ColumnVector& v)
     { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (ColumnVector& v, int pcv)
+  tree_constant (const ColumnVector& v, int pcv)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (Complex c)
+  tree_constant (const Complex& c)
     { rep = new tree_constant_rep (c); rep->count = 1; }
-  tree_constant (ComplexMatrix& m)
+  tree_constant (const ComplexMatrix& m)
     { rep = new tree_constant_rep (m); rep->count = 1; }
-  tree_constant (ComplexDiagMatrix& d)
+  tree_constant (const ComplexDiagMatrix& d)
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (ComplexRowVector& v)
+  tree_constant (const ComplexRowVector& v)
     { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (ComplexRowVector& v, int pcv)
+  tree_constant (const ComplexRowVector& v, int pcv)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
-  tree_constant (ComplexColumnVector& v)
+  tree_constant (const ComplexColumnVector& v)
     { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (ComplexColumnVector& v, int pcv)
+  tree_constant (const ComplexColumnVector& v, int pcv)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const char *s)
     { rep = new tree_constant_rep (s); rep->count = 1; }
-  tree_constant (String& s)
+  tree_constant (const String& s)
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
   tree_constant (double base, double limit, double inc)
     { rep = new tree_constant_rep (base, limit, inc); rep->count = 1; }
-  tree_constant (Range& r)
+  tree_constant (const Range& r)
     { rep = new tree_constant_rep (r); rep->count = 1; }
 
   tree_constant (tree_constant_rep::constant_type t)
     { rep = new tree_constant_rep (t); rep->count = 1; }
 
-  tree_constant (tree_constant& a)
+  tree_constant (const tree_constant& a)
     { rep = a.rep; rep->count++; }
   tree_constant (tree_constant_rep& r)
     { rep = &r; rep->count++; }

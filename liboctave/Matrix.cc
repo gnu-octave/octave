@@ -978,25 +978,25 @@ Matrix::operator / (double s) const
 }
 
 ComplexMatrix
-Matrix::operator + (Complex s) const
+Matrix::operator + (const Complex& s) const
 {
   return ComplexMatrix (add (data, len, s), nr, nc);
 }
 
 ComplexMatrix
-Matrix::operator - (Complex s) const
+Matrix::operator - (const Complex& s) const
 {
   return ComplexMatrix (subtract (data, len, s), nr, nc);
 }
 
 ComplexMatrix
-Matrix::operator * (Complex s) const
+Matrix::operator * (const Complex& s) const
 {
   return ComplexMatrix (multiply (data, len, s), nr, nc);
 }
 
 ComplexMatrix
-Matrix::operator / (Complex s) const
+Matrix::operator / (const Complex& s) const
 {
   return ComplexMatrix (divide (data, len, s), nr, nc);
 }
@@ -1960,7 +1960,7 @@ ComplexMatrix::ComplexMatrix (int r, int c, double val)
     data = (Complex *) NULL;
 }
 
-ComplexMatrix::ComplexMatrix (int r, int c, Complex val)
+ComplexMatrix::ComplexMatrix (int r, int c, const Complex& val)
 {
   if (r < 0 || c < 0)
     FAIL;
@@ -2046,7 +2046,7 @@ ComplexMatrix::ComplexMatrix (double a)
   data[0] = a;
 }
 
-ComplexMatrix::ComplexMatrix (Complex a)
+ComplexMatrix::ComplexMatrix (const Complex& a)
 {
   nr = 1;
   nc = 1;
@@ -2156,7 +2156,7 @@ ComplexMatrix::resize (int r, int c, double val)
 }
 
 ComplexMatrix&
-ComplexMatrix::resize (int r, int c, Complex val)
+ComplexMatrix::resize (int r, int c, const Complex& val)
 {
   if (r < 0 || c < 0)
     FAIL;
@@ -2313,7 +2313,7 @@ ComplexMatrix::fill (double val)
 }
 
 ComplexMatrix&
-ComplexMatrix::fill (Complex val)
+ComplexMatrix::fill (const Complex& val)
 {
   if (nr > 0 && nc > 0)
     copy (data, len, val);
@@ -2338,7 +2338,7 @@ ComplexMatrix::fill (double val, int r1, int c1, int r2, int c2)
 }
 
 ComplexMatrix&
-ComplexMatrix::fill (Complex val, int r1, int c1, int r2, int c2)
+ComplexMatrix::fill (const Complex& val, int r1, int c1, int r2, int c2)
 {
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
@@ -3218,25 +3218,25 @@ ComplexMatrix::operator / (double s) const
 }
 
 ComplexMatrix
-ComplexMatrix::operator + (Complex s) const
+ComplexMatrix::operator + (const Complex& s) const
 {
   return ComplexMatrix (add (data, len, s), nr, nc);
 }
 
 ComplexMatrix
-ComplexMatrix::operator - (Complex s) const
+ComplexMatrix::operator - (const Complex& s) const
 {
   return ComplexMatrix (subtract (data, len, s), nr, nc);
 }
 
 ComplexMatrix
-ComplexMatrix::operator * (Complex s) const
+ComplexMatrix::operator * (const Complex& s) const
 {
   return ComplexMatrix (multiply (data, len, s), nr, nc);
 }
 
 ComplexMatrix
-ComplexMatrix::operator / (Complex s) const
+ComplexMatrix::operator / (const Complex& s) const
 {
   return ComplexMatrix (divide (data, len, s), nr, nc);
 }
@@ -3268,25 +3268,25 @@ operator / (double s, const ComplexMatrix& a)
 }
 
 ComplexMatrix
-operator + (Complex s, const ComplexMatrix& a)
+operator + (const Complex& s, const ComplexMatrix& a)
 {
   return ComplexMatrix (add (s, a.data, a.len), a.nr, a.nc);
 }
 
 ComplexMatrix
-operator - (Complex s, const ComplexMatrix& a)
+operator - (const Complex& s, const ComplexMatrix& a)
 {
   return ComplexMatrix (subtract (s, a.data, a.len), a.nr, a.nc);
 }
 
 ComplexMatrix
-operator * (Complex s, const ComplexMatrix& a)
+operator * (const Complex& s, const ComplexMatrix& a)
 {
   return ComplexMatrix (multiply (s, a.data, a.len), a.nr, a.nc);
 }
 
 ComplexMatrix
-operator / (Complex s, const ComplexMatrix& a)
+operator / (const Complex& s, const ComplexMatrix& a)
 {
   return ComplexMatrix (divide (s, a.data, a.len), a.nr, a.nc);
 }

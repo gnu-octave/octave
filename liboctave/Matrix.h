@@ -429,10 +429,10 @@ public:
   Matrix operator * (double s) const;
   Matrix operator / (double s) const;
 
-  ComplexMatrix operator + (Complex s) const;
-  ComplexMatrix operator - (Complex s) const;
-  ComplexMatrix operator * (Complex s) const;
-  ComplexMatrix operator / (Complex s) const;
+  ComplexMatrix operator + (const Complex& s) const;
+  ComplexMatrix operator - (const Complex& s) const;
+  ComplexMatrix operator * (const Complex& s) const;
+  ComplexMatrix operator / (const Complex& s) const;
 
 // scalar by matrix -> matrix operations
 
@@ -630,10 +630,10 @@ public:
   ColumnVector operator * (double s) const;
   ColumnVector operator / (double s) const;
 
-  ComplexColumnVector operator + (Complex s) const;
-  ComplexColumnVector operator - (Complex s) const;
-  ComplexColumnVector operator * (Complex s) const;
-  ComplexColumnVector operator / (Complex s) const;
+  ComplexColumnVector operator + (const Complex& s) const;
+  ComplexColumnVector operator - (const Complex& s) const;
+  ComplexColumnVector operator * (const Complex& s) const;
+  ComplexColumnVector operator / (const Complex& s) const;
 
 // scalar by column vector -> column vector operations
 
@@ -791,10 +791,10 @@ public:
   RowVector operator * (double s) const;
   RowVector operator / (double s) const;
 
-  ComplexRowVector operator + (Complex s) const;
-  ComplexRowVector operator - (Complex s) const;
-  ComplexRowVector operator * (Complex s) const;
-  ComplexRowVector operator / (Complex s) const;
+  ComplexRowVector operator + (const Complex& s) const;
+  ComplexRowVector operator - (const Complex& s) const;
+  ComplexRowVector operator * (const Complex& s) const;
+  ComplexRowVector operator / (const Complex& s) const;
 
 // scalar by row vector -> row vector operations
 
@@ -967,16 +967,16 @@ public:
   Matrix operator + (double s) const;
   Matrix operator - (double s) const;
 
-  ComplexMatrix operator + (Complex s) const;
-  ComplexMatrix operator - (Complex s) const;
+  ComplexMatrix operator + (const Complex& s) const;
+  ComplexMatrix operator - (const Complex& s) const;
 
 // diagonal matrix by scalar -> diagonal matrix operations
 
   DiagMatrix operator * (double s) const;
   DiagMatrix operator / (double s) const;
 
-  ComplexDiagMatrix operator * (Complex s) const;
-  ComplexDiagMatrix operator / (Complex s) const;
+  ComplexDiagMatrix operator * (const Complex& s) const;
+  ComplexDiagMatrix operator / (const Complex& s) const;
 
 // scalar by diagonal matrix -> matrix operations
 
@@ -1111,13 +1111,13 @@ public:
   ComplexMatrix (void);
   ComplexMatrix (int r, int c);
   ComplexMatrix (int r, int c, double val);
-  ComplexMatrix (int r, int c, Complex val);
+  ComplexMatrix (int r, int c, const Complex& val);
   ComplexMatrix (const Matrix& a);
   ComplexMatrix (const ComplexMatrix& a);
   ComplexMatrix (const DiagMatrix& a);
   ComplexMatrix (const ComplexDiagMatrix& a);
   ComplexMatrix (double a);
-  ComplexMatrix (Complex a);
+  ComplexMatrix (const Complex& a);
  ~ComplexMatrix (void);
 
   ComplexMatrix& operator = (const Matrix& a);
@@ -1137,7 +1137,7 @@ public:
 
   ComplexMatrix& resize (int r, int c);
   ComplexMatrix& resize (int r, int c, double val);
-  ComplexMatrix& resize (int r, int c, Complex val);
+  ComplexMatrix& resize (int r, int c, const Complex& val);
 
   int operator == (const ComplexMatrix& a) const;
   int operator != (const ComplexMatrix& a) const;
@@ -1155,9 +1155,9 @@ public:
   ComplexMatrix& insert (const ComplexDiagMatrix& a, int r, int c);
 
   ComplexMatrix& fill (double val);
-  ComplexMatrix& fill (Complex val);
+  ComplexMatrix& fill (const Complex& val);
   ComplexMatrix& fill (double val, int r1, int c1, int r2, int c2);
-  ComplexMatrix& fill (Complex val, int r1, int c1, int r2, int c2);
+  ComplexMatrix& fill (const Complex& val, int r1, int c1, int r2, int c2);
 
   ComplexMatrix append (const Matrix& a) const;
   ComplexMatrix append (const RowVector& a) const;
@@ -1253,10 +1253,10 @@ public:
   ComplexMatrix operator * (double s) const;
   ComplexMatrix operator / (double s) const;
 
-  ComplexMatrix operator + (Complex s) const;
-  ComplexMatrix operator - (Complex s) const;
-  ComplexMatrix operator * (Complex s) const;
-  ComplexMatrix operator / (Complex s) const;
+  ComplexMatrix operator + (const Complex& s) const;
+  ComplexMatrix operator - (const Complex& s) const;
+  ComplexMatrix operator * (const Complex& s) const;
+  ComplexMatrix operator / (const Complex& s) const;
 
 // scalar by matrix -> matrix operations
 
@@ -1265,10 +1265,10 @@ public:
   friend ComplexMatrix operator * (double s, const ComplexMatrix& a);
   friend ComplexMatrix operator / (double s, const ComplexMatrix& a);
 
-  friend ComplexMatrix operator + (Complex s, const ComplexMatrix& a);
-  friend ComplexMatrix operator - (Complex s, const ComplexMatrix& a);
-  friend ComplexMatrix operator * (Complex s, const ComplexMatrix& a);
-  friend ComplexMatrix operator / (Complex s, const ComplexMatrix& a);
+  friend ComplexMatrix operator + (const Complex& s, const ComplexMatrix& a);
+  friend ComplexMatrix operator - (const Complex& s, const ComplexMatrix& a);
+  friend ComplexMatrix operator * (const Complex& s, const ComplexMatrix& a);
+  friend ComplexMatrix operator / (const Complex& s, const ComplexMatrix& a);
 
 // matrix by column vector -> column vector operations
 
@@ -1421,11 +1421,11 @@ public:
   ComplexColumnVector (void);
   ComplexColumnVector (int n);
   ComplexColumnVector (int n, double val);
-  ComplexColumnVector (int n, Complex val);
+  ComplexColumnVector (int n, const Complex& val);
   ComplexColumnVector (const ColumnVector& a);
   ComplexColumnVector (const ComplexColumnVector& a);
   ComplexColumnVector (double a);
-  ComplexColumnVector (Complex a);
+  ComplexColumnVector (const Complex& a);
  ~ComplexColumnVector (void);
 
   ComplexColumnVector& operator = (const ColumnVector& a);
@@ -1444,7 +1444,7 @@ public:
 
   ComplexColumnVector& resize (int n);
   ComplexColumnVector& resize (int n, double val);
-  ComplexColumnVector& resize (int n, Complex val);
+  ComplexColumnVector& resize (int n, const Complex& val);
 
   int operator == (const ComplexColumnVector& a) const;
   int operator != (const ComplexColumnVector& a) const;
@@ -1455,9 +1455,9 @@ public:
   ComplexColumnVector& insert (const ComplexColumnVector& a, int r);
 
   ComplexColumnVector& fill (double val);
-  ComplexColumnVector& fill (Complex val);
+  ComplexColumnVector& fill (const Complex& val);
   ComplexColumnVector& fill (double val, int r1, int r2);
-  ComplexColumnVector& fill (Complex val, int r1, int r2);
+  ComplexColumnVector& fill (const Complex& val, int r1, int r2);
 
   ComplexColumnVector stack (const ColumnVector& a) const;
   ComplexColumnVector stack (const ComplexColumnVector& a) const;
@@ -1480,10 +1480,10 @@ public:
   ComplexColumnVector operator * (double s) const;
   ComplexColumnVector operator / (double s) const;
 
-  ComplexColumnVector operator + (Complex s) const;
-  ComplexColumnVector operator - (Complex s) const;
-  ComplexColumnVector operator * (Complex s) const;
-  ComplexColumnVector operator / (Complex s) const;
+  ComplexColumnVector operator + (const Complex& s) const;
+  ComplexColumnVector operator - (const Complex& s) const;
+  ComplexColumnVector operator * (const Complex& s) const;
+  ComplexColumnVector operator / (const Complex& s) const;
 
 // scalar by column vector -> column vector operations
 
@@ -1496,13 +1496,13 @@ public:
   friend ComplexColumnVector operator / (double s,
 					 const ComplexColumnVector& a);
 
-  friend ComplexColumnVector operator + (Complex s,
+  friend ComplexColumnVector operator + (const Complex& s,
 					 const ComplexColumnVector& a);
-  friend ComplexColumnVector operator - (Complex s,
+  friend ComplexColumnVector operator - (const Complex& s,
 					 const ComplexColumnVector& a);
-  friend ComplexColumnVector operator * (Complex s,
+  friend ComplexColumnVector operator * (const Complex& s,
 					 const ComplexColumnVector& a);
-  friend ComplexColumnVector operator / (Complex s,
+  friend ComplexColumnVector operator / (const Complex& s,
 					 const ComplexColumnVector& a);
 
 // column vector by row vector -> matrix operations
@@ -1615,11 +1615,11 @@ public:
   ComplexRowVector (void);
   ComplexRowVector (int n);
   ComplexRowVector (int n, double val);
-  ComplexRowVector (int n, Complex val);
+  ComplexRowVector (int n, const Complex& val);
   ComplexRowVector (const RowVector& a);
   ComplexRowVector (const ComplexRowVector& a);
   ComplexRowVector (double a);
-  ComplexRowVector (Complex a);
+  ComplexRowVector (const Complex& a);
  ~ComplexRowVector (void);
 
   ComplexRowVector& operator = (const RowVector& a);
@@ -1638,7 +1638,7 @@ public:
 
   ComplexRowVector& resize (int n);
   ComplexRowVector& resize (int n, double val);
-  ComplexRowVector& resize (int n, Complex val);
+  ComplexRowVector& resize (int n, const Complex& val);
 
   int operator == (const ComplexRowVector& a) const;
   int operator != (const ComplexRowVector& a) const;
@@ -1649,9 +1649,9 @@ public:
   ComplexRowVector& insert (const ComplexRowVector& a, int c);
 
   ComplexRowVector& fill (double val);
-  ComplexRowVector& fill (Complex val);
+  ComplexRowVector& fill (const Complex& val);
   ComplexRowVector& fill (double val, int c1, int c2);
-  ComplexRowVector& fill (Complex val, int c1, int c2);
+  ComplexRowVector& fill (const Complex& val, int c1, int c2);
 
   ComplexRowVector append (const RowVector& a) const;
   ComplexRowVector append (const ComplexRowVector& a) const;
@@ -1674,10 +1674,10 @@ public:
   ComplexRowVector operator * (double s) const;
   ComplexRowVector operator / (double s) const;
 
-  ComplexRowVector operator + (Complex s) const;
-  ComplexRowVector operator - (Complex s) const;
-  ComplexRowVector operator * (Complex s) const;
-  ComplexRowVector operator / (Complex s) const;
+  ComplexRowVector operator + (const Complex& s) const;
+  ComplexRowVector operator - (const Complex& s) const;
+  ComplexRowVector operator * (const Complex& s) const;
+  ComplexRowVector operator / (const Complex& s) const;
 
 // scalar by row vector -> row vector operations
 
@@ -1686,10 +1686,14 @@ public:
   friend ComplexRowVector operator * (double s, const ComplexRowVector& a);
   friend ComplexRowVector operator / (double s, const ComplexRowVector& a);
 
-  friend ComplexRowVector operator + (Complex s, const ComplexRowVector& a);
-  friend ComplexRowVector operator - (Complex s, const ComplexRowVector& a);
-  friend ComplexRowVector operator * (Complex s, const ComplexRowVector& a);
-  friend ComplexRowVector operator / (Complex s, const ComplexRowVector& a);
+  friend ComplexRowVector operator + (const Complex& s, const
+				      ComplexRowVector& a);
+  friend ComplexRowVector operator - (const Complex& s, const
+				      ComplexRowVector& a);
+  friend ComplexRowVector operator * (const Complex& s, const
+				      ComplexRowVector& a);
+  friend ComplexRowVector operator / (const Complex& s, const
+				      ComplexRowVector& a);
 
 // row vector by column vector -> scalar
 
@@ -1804,10 +1808,10 @@ public:
   ComplexDiagMatrix (void);
   ComplexDiagMatrix (int n);
   ComplexDiagMatrix (int n, double val);
-  ComplexDiagMatrix (int n, Complex val);
+  ComplexDiagMatrix (int n, const Complex& val);
   ComplexDiagMatrix (int r, int c);
   ComplexDiagMatrix (int r, int c, double val);
-  ComplexDiagMatrix (int r, int c, Complex val);
+  ComplexDiagMatrix (int r, int c, const Complex& val);
   ComplexDiagMatrix (const RowVector& a);
   ComplexDiagMatrix (const ComplexRowVector& a);
   ComplexDiagMatrix (const ColumnVector& a);
@@ -1815,7 +1819,7 @@ public:
   ComplexDiagMatrix (const DiagMatrix& a);
   ComplexDiagMatrix (const ComplexDiagMatrix& a);
   ComplexDiagMatrix (double a);
-  ComplexDiagMatrix (Complex a);
+  ComplexDiagMatrix (const Complex& a);
  ~ComplexDiagMatrix (void);
 
   ComplexDiagMatrix& operator = (const DiagMatrix& a);
@@ -1835,15 +1839,15 @@ public:
 
   ComplexDiagMatrix& resize (int r, int c);
   ComplexDiagMatrix& resize (int r, int c, double val);
-  ComplexDiagMatrix& resize (int r, int c, Complex val);
+  ComplexDiagMatrix& resize (int r, int c, const Complex& val);
 
   int operator == (const ComplexDiagMatrix& a) const;
   int operator != (const ComplexDiagMatrix& a) const;
 
   ComplexDiagMatrix& fill (double val);
-  ComplexDiagMatrix& fill (Complex val);
+  ComplexDiagMatrix& fill (const Complex& val);
   ComplexDiagMatrix& fill (double val, int beg, int end);
-  ComplexDiagMatrix& fill (Complex val, int beg, int end);
+  ComplexDiagMatrix& fill (const Complex& val, int beg, int end);
   ComplexDiagMatrix& fill (const ColumnVector& a);
   ComplexDiagMatrix& fill (const ComplexColumnVector& a);
   ComplexDiagMatrix& fill (const RowVector& a);
@@ -1880,32 +1884,36 @@ public:
   ComplexMatrix operator + (double s) const;
   ComplexMatrix operator - (double s) const;
 
-  ComplexMatrix operator + (Complex s) const;
-  ComplexMatrix operator - (Complex s) const;
+  ComplexMatrix operator + (const Complex& s) const;
+  ComplexMatrix operator - (const Complex& s) const;
 
 // diagonal matrix by scalar -> diagonal matrix operations
 
   ComplexDiagMatrix operator * (double s) const;
   ComplexDiagMatrix operator / (double s) const;
 
-  ComplexDiagMatrix operator * (Complex s) const;
-  ComplexDiagMatrix operator / (Complex s) const;
+  ComplexDiagMatrix operator * (const Complex& s) const;
+  ComplexDiagMatrix operator / (const Complex& s) const;
 
 // scalar by diagonal matrix -> matrix operations
 
   friend ComplexMatrix operator + (double s, const ComplexDiagMatrix& a);
   friend ComplexMatrix operator - (double s, const ComplexDiagMatrix& a);
 
-  friend ComplexMatrix operator + (Complex s, const ComplexDiagMatrix& a);
-  friend ComplexMatrix operator - (Complex s, const ComplexDiagMatrix& a);
+  friend ComplexMatrix operator + (const Complex& s, const
+				   ComplexDiagMatrix& a);
+  friend ComplexMatrix operator - (const Complex& s, const
+				   ComplexDiagMatrix& a);
 
 // scalar by diagonal matrix -> diagonal matrix operations
 
   friend ComplexDiagMatrix operator * (double s, const ComplexDiagMatrix& a);
   friend ComplexDiagMatrix operator / (double s, const ComplexDiagMatrix& a);
 
-  friend ComplexDiagMatrix operator * (Complex s, const ComplexDiagMatrix& a);
-  friend ComplexDiagMatrix operator / (Complex s, const ComplexDiagMatrix& a);
+  friend ComplexDiagMatrix operator * (const Complex& s, const
+				       ComplexDiagMatrix& a);
+  friend ComplexDiagMatrix operator / (const Complex& s, const
+				       ComplexDiagMatrix& a);
 
 // diagonal matrix by column vector -> column vector operations
 
@@ -2089,7 +2097,8 @@ private:
   ComplexMatrix balancing_mat;
 };
 
-inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a, const char * balance_job) 
+inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a,
+					     const char * balance_job)
 {
   init(a,balance_job); 
 }

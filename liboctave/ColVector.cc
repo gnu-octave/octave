@@ -269,25 +269,25 @@ operator / (double s, const ColumnVector& a)
 }
 
 ComplexColumnVector
-ColumnVector::operator + (Complex s) const
+ColumnVector::operator + (const Complex& s) const
 {
   return ComplexColumnVector (add (data, len, s), len);
 }
 
 ComplexColumnVector
-ColumnVector::operator - (Complex s) const
+ColumnVector::operator - (const Complex& s) const
 {
   return ComplexColumnVector (subtract (data, len, s), len);
 }
 
 ComplexColumnVector
-ColumnVector::operator * (Complex s) const
+ColumnVector::operator * (const Complex& s) const
 {
   return ComplexColumnVector (multiply (data, len, s), len);
 }
 
 ComplexColumnVector
-ColumnVector::operator / (Complex s) const
+ColumnVector::operator / (const Complex& s) const
 {
   return ComplexColumnVector (divide (data, len, s), len);
 }
@@ -545,7 +545,7 @@ ComplexColumnVector::ComplexColumnVector (int n, double val)
     data = (Complex *) NULL;
 }
 
-ComplexColumnVector::ComplexColumnVector (int n, Complex val)
+ComplexColumnVector::ComplexColumnVector (int n, const Complex& val)
 {
   if (n < 0)
     FAIL;
@@ -591,7 +591,7 @@ ComplexColumnVector::ComplexColumnVector (double a)
   data[0] = a;
 }
 
-ComplexColumnVector::ComplexColumnVector (Complex a)
+ComplexColumnVector::ComplexColumnVector (const Complex& a)
 {
   len = 1;
   data = new Complex [1];
@@ -667,7 +667,7 @@ ComplexColumnVector::resize (int n, double val)
 }
 
 ComplexColumnVector&
-ComplexColumnVector::resize (int n, Complex val)
+ComplexColumnVector::resize (int n, const Complex& val)
 {
   int old_len = len;
   resize (n);
@@ -728,7 +728,7 @@ ComplexColumnVector::fill (double val)
 }
 
 ComplexColumnVector&
-ComplexColumnVector::fill (Complex val)
+ComplexColumnVector::fill (const Complex& val)
 {
   if (len > 0)
     copy (data, len, val);
@@ -750,7 +750,7 @@ ComplexColumnVector::fill (double val, int r1, int r2)
 }
 
 ComplexColumnVector&
-ComplexColumnVector::fill (Complex val, int r1, int r2)
+ComplexColumnVector::fill (const Complex& val, int r1, int r2)
 {
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
     FAIL;
@@ -866,25 +866,25 @@ ComplexColumnVector::operator / (double s) const
 }
 
 ComplexColumnVector
-ComplexColumnVector::operator + (Complex s) const
+ComplexColumnVector::operator + (const Complex& s) const
 {
   return ComplexColumnVector (add (data, len, s), len);
 }
 
 ComplexColumnVector
-ComplexColumnVector::operator - (Complex s) const
+ComplexColumnVector::operator - (const Complex& s) const
 {
   return ComplexColumnVector (subtract (data, len, s), len);
 }
 
 ComplexColumnVector
-ComplexColumnVector::operator * (Complex s) const
+ComplexColumnVector::operator * (const Complex& s) const
 {
   return ComplexColumnVector (multiply (data, len, s), len);
 }
 
 ComplexColumnVector
-ComplexColumnVector::operator / (Complex s) const
+ComplexColumnVector::operator / (const Complex& s) const
 {
   return ComplexColumnVector (divide (data, len, s), len);
 }
@@ -916,25 +916,25 @@ operator / (double s, const ComplexColumnVector& a)
 }
 
 ComplexColumnVector
-operator + (Complex s, const ComplexColumnVector& a)
+operator + (const Complex& s, const ComplexColumnVector& a)
 {
   return ComplexColumnVector (add (a.data, a.len, s), a.len);
 }
 
 ComplexColumnVector
-operator - (Complex s, const ComplexColumnVector& a)
+operator - (const Complex& s, const ComplexColumnVector& a)
 {
   return ComplexColumnVector (subtract (s, a.data, a.len), a.len);
 }
 
 ComplexColumnVector
-operator * (Complex s, const ComplexColumnVector& a)
+operator * (const Complex& s, const ComplexColumnVector& a)
 {
   return ComplexColumnVector (multiply (a.data, a.len, s), a.len);
 }
 
 ComplexColumnVector
-operator / (Complex s, const ComplexColumnVector& a)
+operator / (const Complex& s, const ComplexColumnVector& a)
 {
   return ComplexColumnVector (divide (s, a.data, a.len), a.len);
 }

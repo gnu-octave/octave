@@ -1,3 +1,8 @@
+2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/popen2.m: Deal with the fact that pipe now returns
+	a list of file structures, not a vector of numeric file ids.
+
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__axis_label__.m: New function.

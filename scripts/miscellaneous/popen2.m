@@ -71,14 +71,14 @@ function [in, out, pid] = popen2 (command, args)
 
         if (pid == 0)
 
-          fclose (stdin_pipe (2));
-          fclose (stdout_pipe (1));
+          fclose (nth (stdin_pipe, 2));
+          fclose (nth (stdout_pipe, 1));
 
-          dup2 (stdin_pipe (1), stdin);
-          fclose (stdin_pipe (1));
+          dup2 (nth (stdin_pipe, 1), stdin);
+          fclose (nth (stdin_pipe, 1));
 
-          dup2 (stdout_pipe (2), stdout);
-          fclose (stdout_pipe (2));
+          dup2 (nth (stdout_pipe, 2), stdout);
+          fclose (nth (stdout_pipe, 2));
 
           if (exec (command, args) < 0)
             error ("popen2: unable to start process `%s'", command);
@@ -87,14 +87,14 @@ function [in, out, pid] = popen2 (command, args)
 
         elseif (pid)
 
-          fclose (stdin_pipe (1));
-          fclose (stdout_pipe (2));
+          fclose (nth (stdin_pipe, 1));
+          fclose (nth (stdout_pipe, 2));
 
-          if (fcntl (stdout_pipe (1), __F_SETFL__, __O_NONBLOCK__) < 0)
+          if (fcntl (nth (stdout_pipe, 1), __F_SETFL__, __O_NONBLOCK__) < 0)
             error ("popen2: error setting file mode");
           else
-            in = stdin_pipe (2);
-            out = stdout_pipe (1);
+            in = nth (stdin_pipe, 2);
+            out = nth (stdout_pipe, 1);
           endif
 
         elseif (pid < 0)

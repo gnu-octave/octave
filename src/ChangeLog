@@ -1,3 +1,29 @@
+2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.h (scanf_format_elt::char_class): New struct elt.
+	Add arg to constructor.
+	(scanf_format_elt::special_conversion): New enum.
+	* oct-stream.cc (scanf_format_list::add_elt_to_list): New arg,
+	char_class.  Pass it to scanf_format_elt constructor.
+	(scanf_format_list::scanf_format_list): Create separate list
+	elements for whitespace and literal conversions.
+	(expand_char_class): New function.
+	(scanf_format_list::finish_conversion): Extract character class
+	(not including the delimiting brackets) and expand the list of
+	characters.  Pass the result to add_elt_to_list.
+	(scanf_format_list::all_character_conversions): Also accept '^',
+	scanf_format_elt::literal_conversion, and
+	scanf_format_elt::whitespace_conversion types too.
+	(DO_WHITESPACE_CONVERSION, BEGIN_CHAR_CLASS_CONVERSION,
+	BEGIN_C_CONVERSION, BEGIN_S_CONVERSION, DO_LITERAL_CONVERSION):
+	New macros.
+	(octave_base_stream::do_scanf, octave_base_stream::do_oscanf):
+	Use them to avoid code duplication.
+	Handle whitespace, literal text, and character class conversions.
+	(octave_base_stream::oscanf): Loop over all format list elements,
+	not just the first nconv elements.  Clear status flags on is for
+	all streams.
+
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* xdiv.cc (result_ok): Just check value of info.

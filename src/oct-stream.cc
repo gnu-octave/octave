@@ -177,17 +177,42 @@ scanf_format_list::scanf_format_list (const string& s)
 
       if (s[i] == '%')
 	{
+	  // Process percent-escape conversion type.
+
 	  process_conversion (s, i, n, width, discard, type, modifier,
 			      num_elts);
 	  have_more = (buf != 0);
 	}
-      else
+      else if (isspace (s[i]))
 	{
+	  type = scanf_format_elt::whitespace_conversion;
+
 	  width = 0;
 	  discard = false;
 	  modifier = '\0';
-	  type = '\0';
-	  *buf << s[i++];
+	  *buf << " ";
+
+	  while (++i < n && isspace (s[i]))
+	    /* skip whitespace */;
+
+	  add_elt_to_list (width, discard, type, modifier, num_elts);
+
+	  have_more = false;
+	}
+      else
+	{
+	  type = scanf_format_elt::literal_conversion;
+
+	  width = 0;
+	  discard = false;
+	  modifier = '\0';
+
+	  while (i < n && ! isspace (s[i]) && s[i] != '%')
+	    *buf << s[i++];
+
+	  add_elt_to_list (width, discard, type, modifier, num_elts);
+
+	  have_more = false;
 	}
 
       if (nconv < 0)
@@ -218,7 +243,8 @@ scanf_format_list::~scanf_format_list (void)
 
 void
 scanf_format_list::add_elt_to_list (int width, bool discard, char type,
-				    char modifier, int& num_elts)
+				    char modifier, int& num_elts,
+				    const string& char_class)
 {
   if (buf)
     {
@@ -231,7 +257,8 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 	  if (*text)
 	    {
 	      scanf_format_elt *elt
-		= new scanf_format_elt (text, width, discard, type, modifier);
+		= new scanf_format_elt (text, width, discard, type,
+					modifier, char_class);
 
 	      if (num_elts == list.length ())
 		list.resize (2 * num_elts);
@@ -247,11 +274,45 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
     }
 }
 
+static string
+expand_char_class (const string& s)
+{
+  string retval;
+
+  size_t len = s.length ();
+
+  size_t i = 0;
+
+  while (i < len)
+    {
+      unsigned char c = s[i++];
+
+      if (c == '-' && i > 1 && i < len
+	  && (unsigned char) s[i-2] <= (unsigned char) s[i])
+	{
+	  // Add all characters from the range except the first (we
+	  // already added it below).
+
+	  for (c = s[i-2]+1; c < s[i]; c++)
+	    retval += c;
+	}
+      else
+	{
+	  // Add the character to the class.  Only add '-' if it is
+	  // the last character in the class.
+
+	  if (c != '-' || i == len)
+	    retval += c;
+	}
+    }
+
+  return retval;
+}
+
 void
 scanf_format_list::process_conversion (const string& s, int& i, int n,
 				       int& width, bool& discard, char& type,
 				       char& modifier, int& num_elts)
-
 {
   width = 0;
   discard = false;
@@ -357,10 +418,15 @@ scanf_format_list::finish_conversion (const string& s, int& i, int n,
 {
   int retval = 0;
 
+  string char_class;
+
   if (s[i] == '%')
     *buf << s[i++];
   else
     {
+      int beg_idx = -1;
+      int end_idx = -1;
+
       type = s[i];
 
       if (s[i] == '[')
@@ -369,10 +435,20 @@ scanf_format_list::finish_conversion (const string& s, int& i, int n,
 
 	  if (i < n)
 	    {
+	      beg_idx = i;
+
 	      if (s[i] == '^')
 		{
 		  type = '^';
 		  *buf << s[i++];
+
+		  if (i < n)
+		    {
+		      beg_idx = i;
+
+		      if (s[i] == ']')
+			*buf << s[i++];
+		    }
 		}
 	      else if (s[i] == ']')
 		*buf << s[i++];
@@ -382,7 +458,10 @@ scanf_format_list::finish_conversion (const string& s, int& i, int n,
 	    *buf << s[i++];
 
 	  if (i < n && s[i] == ']')
-	    *buf << s[i++];
+	    {
+	      end_idx = i-1;
+	      *buf << s[i++];
+	    }
 
 	  if (s[i-1] != ']')
 	    retval = nconv = -1;
@@ -393,7 +472,14 @@ scanf_format_list::finish_conversion (const string& s, int& i, int n,
       nconv++;
 
       if (nconv > 0)
-	add_elt_to_list (width, discard, type, modifier, num_elts);
+	{
+	  if (beg_idx >= 0 && end_idx >= 0)
+	    char_class = expand_char_class (s.substr (beg_idx,
+						      end_idx - beg_idx +1));
+
+	  add_elt_to_list (width, discard, type, modifier, num_elts,
+			   char_class);
+	}
     }
 
   return retval;
@@ -408,11 +494,20 @@ scanf_format_list::printme (void) const
     {
       scanf_format_elt *elt = list(i);
 
-      cerr << elt->width << "\t"
-	   << elt->discard << "\t"
-	   << elt->type << "\t"
-	   << elt->modifier << "\t"
-	   << undo_string_escapes (elt->text) << "\n";
+      cerr << "width:      " << elt->width << "\n"
+	   << "discard:    " << elt->discard << "\n"
+	   << "type:       ";
+
+      if (elt->type == scanf_format_elt::literal_conversion)
+	cerr << "literal text\n";
+      else if (elt->type == scanf_format_elt::whitespace_conversion)
+	cerr << "whitespace\n";
+      else
+	cerr << elt->type << "\n";
+
+      cerr << "modifier:   " << elt->modifier << "\n"
+	   << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
+	   << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -429,7 +524,9 @@ scanf_format_list::all_character_conversions (void)
 
 	  switch (elt->type)
 	    {
-	    case 'c': case 's': case '%': case '[':
+	    case 'c': case 's': case '%': case '[': case '^':
+	    case scanf_format_elt::literal_conversion:
+	    case scanf_format_elt::whitespace_conversion:
 	      break;
 
 	    default:
@@ -956,6 +1053,153 @@ template void
 do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 
+#define DO_WHITESPACE_CONVERSION() \
+  do \
+    { \
+      int c = EOF; \
+ \
+      while (is && (c = is.get ()) != EOF && isspace (c)) \
+	/* skip whitespace */; \
+ \
+      if (c != EOF) \
+	is.putback (c); \
+    } \
+  while (0)
+
+#define DO_LITERAL_CONVERSION() \
+  do \
+    { \
+      int c = EOF; \
+ \
+      int n = strlen (fmt); \
+      int i = 0; \
+ \
+      while (i < n && is && (c = is.get ()) != EOF) \
+	{ \
+	  if (c == fmt[i]) \
+	    { \
+	      i++; \
+	      continue; \
+	    } \
+	  else \
+	    { \
+	      is.putback (c); \
+	      break; \
+	    } \
+	} \
+ \
+      if (i != n) \
+	is.setstate (ios::failbit); \
+    } \
+  while (0)
+
+#define BEGIN_C_CONVERSION() \
+  is.unsetf (ios::skipws); \
+ \
+  int width = elt->width ? elt->width : 1; \
+ \
+  char *tmp = new char[width + 1]; \
+ \
+  int c = EOF; \
+  int n = 0; \
+ \
+  while (is && n < width && (c = is.get ()) != EOF) \
+    tmp[n++] = (char) c; \
+ \
+  tmp[n] = '\0'
+
+// For a `%s' format, skip initial whitespace and then read until the
+// next whitespace character.
+#define BEGIN_S_CONVERSION() \
+  int width = elt->width; \
+ \
+  char *tmp = 0; \
+ \
+  do \
+    { \
+      if (width) \
+	{ \
+	  tmp = new char [width+1]; \
+ \
+	  is.scan (fmt, tmp); \
+ \
+	  tmp[width] = '\0'; \
+	} \
+      else \
+	{ \
+	  ostrstream buf; \
+ \
+	  int c = EOF; \
+ \
+	  while (is && (c = is.get ()) != EOF && isspace (c)) \
+	    /* skip leading whitespace */; \
+ \
+	  if (is && c != EOF) \
+	    buf << (char) c; \
+ \
+	  while (is && (c = is.get ()) != EOF && ! isspace (c)) \
+	    buf << (char) c; \
+ \
+	  if (isspace (c)) \
+	    is.putback (c); \
+ \
+	  buf << ends; \
+ \
+	  tmp = buf.str (); \
+	} \
+    } \
+  while (0)
+
+// This format must match a nonempty sequence of characters.
+#define BEGIN_CHAR_CLASS_CONVERSION() \
+  int width = elt->width; \
+ \
+  char *tmp = 0; \
+ \
+  do \
+    { \
+      if (width) \
+	{ \
+	  tmp = new char[width+1]; \
+ \
+	  is.scan (fmt, tmp); \
+ \
+	  tmp[width] = '\0'; \
+	} \
+      else \
+	{ \
+	  ostrstream buf; \
+ \
+	  string char_class = elt->char_class; \
+ \
+	  int c = EOF; \
+ \
+	  if (elt->type == '[') \
+	    { \
+	      while (is && (c = is.get ()) != EOF \
+		     && char_class.find (c) != NPOS) \
+		buf << (char) c; \
+	    } \
+	  else \
+	    { \
+	      while (is && (c = is.get ()) != EOF \
+		     && char_class.find (c) == NPOS) \
+		buf << (char) c; \
+	    } \
+ \
+	  if (c != EOF) \
+	    is.putback (c); \
+ \
+	  buf << ends; \
+ \
+	  tmp = buf.str (); \
+ \
+	  if (strlen (tmp) == 0) \
+	    is.setstate (ios::failbit); \
+	} \
+    } \
+  while (0)
+
 #define FINISH_CHARACTER_CONVERSION() \
   do \
     { \
@@ -1120,13 +1364,21 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 	      switch (elt->type)
 		{
+		case scanf_format_elt::whitespace_conversion:
+		  DO_WHITESPACE_CONVERSION ();
+		  break;
+
+		case scanf_format_elt::literal_conversion:
+		  DO_LITERAL_CONVERSION ();
+		  break;
+
 		case '%':
 		  {
 		    int dummy;
 
 		    is.scan (fmt, &dummy);
 		  }
-		break;
+		  break;
 
 		case 'd': case 'i': case 'o': case 'u': case 'x':
 		  {
@@ -1139,7 +1391,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
-		      break;
+			break;
 
 		      case 'l':
 			{
@@ -1148,7 +1400,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
-		      break;
+			break;
 
 		      default:
 			{
@@ -1157,10 +1409,10 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
-		      break;
+			break;
 		      }
 		  }
-		break;
+		  break;
 
 		case 'e': case 'f': case 'g':
 		  {
@@ -1170,76 +1422,35 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 				   data_index, conversion_count,
 				   nr, max_size, discard);
 		  }
-		break;
+		  break;
 
 		case 'c':
 		  {
-		    is.unsetf (ios::skipws);
-
-		    int width = elt->width;
-
-		    if (width == 0)
-		      width = 1;
-
-		    char *tmp = new char[width+1];
-
-		    int c = EOF;
-		    int n = 0;
-
-		    while (is && n < width && (c = is.get ()) != EOF)
-		      tmp[n++] = (char) c;
-
-		    tmp[n] = '\0';
-
-		    FINISH_CHARACTER_CONVERSION ();
-		  }
-		  break;
-
-		case 's':
-		  {
-		    int width = elt->width;
-
-		    char *tmp = 0;
-
-		    if (width)
-		      {
-			tmp = new char [width+1];
-
-			is.scan (fmt, tmp);
-
-			tmp[width] = '\0';
-		      }
-		    else
-		      {
-			// We're looking at a `%s' format.  We have to
-			// skip initial whitespace and then read until
-			// the next whitespace character.
-
-			ostrstream buf;
-
-			int c = EOF;
-
-			while (is && (c = is.get ()) != EOF && isspace (c))
-			  /* skip leading whitespace */;
-
-			if (is && c != EOF)
-			  buf << (char) c;
-			  
-			while (is && (c = is.get ()) != EOF && ! isspace (c))
-			  buf << (char) c;
-
-			buf << ends;
-
-			tmp = buf.str ();
-		      }
+		    BEGIN_C_CONVERSION ();
 
 		    FINISH_CHARACTER_CONVERSION ();
 
 		    is.setf (flags);
 		  }
-		break;
+		  break;
 
-		case 'p': case '[':
+		case 's':
+		  {
+		    BEGIN_S_CONVERSION ();
+
+		    FINISH_CHARACTER_CONVERSION ();
+		  }
+		  break;
+
+		case '[': case '^':
+		  {
+		    BEGIN_CHAR_CLASS_CONVERSION ();
+
+		    FINISH_CHARACTER_CONVERSION ();
+		  }
+		  break;
+
+		case 'p':
 		  error ("fscanf: unsupported format specifier");
 		  break;
 
@@ -1436,6 +1647,14 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 
 	  switch (elt->type)
 	    {
+	    case scanf_format_elt::whitespace_conversion:
+	      DO_WHITESPACE_CONVERSION ();
+	      break;
+
+	    case scanf_format_elt::literal_conversion:
+	      DO_LITERAL_CONVERSION ();
+	      break;
+
 	    case '%':
 	      {
 		int dummy;
@@ -1475,69 +1694,26 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 
 	    case 'c':
 	      {
-		is.unsetf (ios::skipws);
+		BEGIN_C_CONVERSION ();
 
-		int width = elt->width ? elt->width : 1;
+		if (! discard)
+		  retval = tmp;
 
-		char *tmp = new char[width + 1];
+		delete [] tmp;
 
-		if (is.scan (fmt, tmp))
-		  {
-		    if (! discard)
-		      {
-			tmp[width] = '\0';
-			retval = tmp;
-		      }
-		  }
-		else
+		if (! is)
 		  quit = true;
 
 		is.setf (flags);
-
-		delete [] tmp;
 	      }
 	      break;
 
 	    case 's':
 	      {
-		int width = elt->width;
+		BEGIN_S_CONVERSION ();
 
-		char *tmp = 0;
-
-		if (width)
-		  {
-		    tmp = new char [width+1];
-
-		    is.scan (fmt, tmp);
-
-		    tmp[width] = '\0';
-		  }
-		else
-		  {
-		    // We're looking at a `%s' format.  We have to
-		    // skip initial whitespace and then read until
-		    // the next whitespace character.
-
-		    ostrstream buf;
-
-		    int c = EOF;
-
-		    while (is && (c = is.get ()) != EOF && isspace (c))
-		      /* skip leading whitespace */;
-
-		    if (is && c != EOF)
-		      buf << (char) c;
-			  
-		    while (is && (c = is.get ()) != EOF && ! isspace (c))
-		      buf << (char) c;
-
-		    buf << ends;
-
-		    tmp = buf.str ();
-
-		    if (! discard)
-		      retval = tmp;
-		  }
+		if (! discard)
+		  retval = tmp;
 
 		delete [] tmp;
 
@@ -1546,7 +1722,21 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      }
 	      break;
 
-	    case 'p': case '[':
+	    case '[': case '^':
+	      {
+		BEGIN_CHAR_CLASS_CONVERSION ();
+
+		if (! discard)
+		  retval = tmp;
+
+		delete [] tmp;
+
+		if (! is)
+		  quit = true;
+	      }
+	      break;
+
+	    case 'p':
 	      error ("fscanf: unsupported format specifier");
 	      break;
 
@@ -1559,13 +1749,11 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
       if (ok () && is.fail ())
 	{
 	  error ("fscanf: read error");
-      
+
 	  // XXX FIXME XXX -- is this the right thing to do?
 
 	  if (interactive && name () == "stdin")
 	    {
-	      is.clear ();
-
 	      // Skip to end of line.
 
 	      bool err;
@@ -1630,6 +1818,8 @@ octave_base_stream::oscanf (const string& fmt)
 
 	default:
 	  {
+	    is.clear ();
+
 	    int len = fmt_list.length ();
 
 	    retval.resize (nconv, Matrix ());
@@ -1640,7 +1830,7 @@ octave_base_stream::oscanf (const string& fmt)
 
 	    bool quit = false;
 
-	    for (int i = 0; i < nconv; i++)
+	    for (int i = 0; i < len; i++)
 	      {
 		octave_value tmp;
 

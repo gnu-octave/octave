@@ -41,9 +41,17 @@ class ostrstream;
 struct
 scanf_format_elt
 {
+  enum special_conversion
+    {
+      whitespace_conversion = 1,
+      literal_conversion = 2
+    };
+
   scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
-		    char typ = '\0', char mod = '\0')
-    : text (txt), width (w), discard (d), type (typ), modifier (mod) { }
+		    char typ = '\0', char mod = '\0',
+		    const string& ch_class = string ())
+    : text (txt), width (w), discard (d), type (typ), modifier (mod),
+      char_class (ch_class) { }
 
   ~scanf_format_elt (void) { delete text; }
 
@@ -52,6 +60,7 @@ scanf_format_elt
   bool discard;
   char type;
   char modifier;
+  string char_class;
 };
 
 class
@@ -115,7 +124,7 @@ private:
   ostrstream *buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
-			int& num_elts);
+			int& num_elts, const string& char_class = string ());
 
   void process_conversion (const string& s, int& i, int n, int& width,
 			   bool& discard, char& type, char& modifier,

@@ -1214,14 +1214,19 @@ extract_keyword (istream& is, char *keyword, int& value)
 //             | complex matrix
 //             | string
 //             | range
+//             | string array
 //
 //  <info> : <matrix info>
 //         | <string info>
+//         | <string array info>
 //
 //  <matrix info> : # rows: <integer>
-//                | # columns: <integer>
+//                : # columns: <integer>
 //
-//  <string info> : # len: <integer>
+//  <string info> : # length: <integer>
+//
+//  <string array info> : # elements: <integer>
+//                      : # length: <integer> (once before each string)
 //
 // Formatted ASCII data follows the header.
 //
@@ -1233,6 +1238,22 @@ extract_keyword (istream& is, char *keyword, int& value)
 //  # columns: 2
 //    2  4
 //    1  3
+//
+// Example:
+//
+//  # name: foo
+//  # type: string array
+//  # elements: 5
+//  # length: 4
+//  this
+//  # length: 2
+//  is
+//  # length: 1
+//  a
+//  # length: 6
+//  string
+//  # length: 5
+//  array
 //
 // XXX FIXME XXX -- this format is fairly rigid, and doesn't allow for
 // arbitrary comments, etc.  Someone should fix that.
@@ -1342,6 +1363,37 @@ read_ascii_data (istream& is, const char *filename, int& global,
 	  else
 	    error ("load: failed to extract number of rows and columns");
 	}
+      else if (strncmp (ptr, "string array", 12) == 0)
+	{
+	  int elements;
+	  if (extract_keyword (is, "elements", elements) && elements > 0)
+	    {
+	      Octave_str_obj s (elements);
+	      for (int i = 0; i < elements; i++)
+		{
+		  int len;
+		  if (extract_keyword (is, "length", len) && len > 0)
+		    {
+		      char *tmp = new char [len];
+		      if (! is.read (tmp, len))
+			{
+			  error ("load: failed to load string constant");
+			  break;
+			}
+		      else
+			s.elem (i).assign (tmp, len);
+		      delete [] tmp;
+		    }
+		  else
+		    error ("load: failed to extract string length for element %d", i+1);
+		}
+
+	      if (! error_state)
+		tc = s;
+	    }
+	  else
+	    error ("load: failed to extract number of string elements");
+	}
       else if (strncmp (ptr, "string", 6) == 0)
 	{
 	  int len;
@@ -1446,6 +1498,13 @@ read_ascii_data (istream& is, const char *filename, int& global,
 //       base             real                8
 //       limit            real                8
 //       increment        real                8
+//
+//     string array
+//       elements         int                 4
+//
+//       for each element:
+//         length         int                 4
+//         data           string         length
 //
 // FILENAME is used for error messages.
 
@@ -1569,9 +1628,7 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
     case 5:
       {
-	int nr = tc.rows ();
-	int nc = tc.columns ();
-	FOUR_BYTE_INT len = nr * nc;
+	FOUR_BYTE_INT len;
 	if (! is.read (&len, 4))
 	  goto data_read_error;
 	if (swap)
@@ -1606,6 +1663,34 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	  swap_8_bytes ((char *) &inc);
 	Range r (bas, lim, inc);
 	tc = r;
+      }
+      break;
+
+    case 7:
+      {
+	FOUR_BYTE_INT elements;
+	if (! is.read (&elements, 4))
+	  goto data_read_error;
+	if (swap)
+	  swap_4_bytes ((char *) &elements);
+	Octave_str_obj s (elements);
+	for (int i = 0; i < elements; i++)
+	  {
+	    FOUR_BYTE_INT len;
+	    if (! is.read (&len, 4))
+	      goto data_read_error;
+	    if (swap)
+	      swap_4_bytes ((char *) &len);
+	    char *tmp = new char [len];
+	    if (! is.read (tmp, len))
+	      {
+		delete [] tmp;
+		goto data_read_error;
+	      }
+	    s.elem (i).assign (tmp, len);
+	    delete [] tmp;
+	  }
+	tc = s;
       }
       break;
 
@@ -1866,9 +1951,7 @@ read_mat_binary_data (istream& is, const char *filename,
   else
     tc = re;
 
-  // XXX FIXME XXX -- this needs to change once strings really work.
-
-  if (type == 1 && nr == 1)
+  if (type == 1)
     tc = tc.convert_to_str ();
 
   return name;
@@ -2301,7 +2384,7 @@ get_save_type (double max_val, double min_val)
 
 // Save the data from TC along with the corresponding NAME, help
 // string DOC, and global flag MARK_AS_GLOBAL on stream OS in the
-// binary format described above for load_binary_data.
+// binary format described above for read_binary_data.
 
 static int
 save_binary_data (ostream& os, const tree_constant& tc, char *name,
@@ -2408,14 +2491,18 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
     }
   else if (tc.is_string ())
     {
-      tmp = 5;
+      tmp = 7;
       os.write (&tmp, 1);
-      int nr = tc.rows ();
-      int nc = tc.columns ();
-      FOUR_BYTE_INT len = nr * nc;
-      os.write (&len, 4);
-      const char *s = tc.string_value ();
-      os.write (s, len);
+      FOUR_BYTE_INT nr = tc.rows ();
+      os.write (&nr, 4);
+      Octave_str_obj s = tc.all_strings ();
+      for (int i = 0; i < nr; i++)
+	{
+	  FOUR_BYTE_INT len = s.elem (i).length ();
+	  os.write (&len, 4);
+	  const char *tmp = s.elem (i).data ();
+	  os.write (tmp, len);
+	}
     }
   else if (tc.is_range ())
     {
@@ -2711,10 +2798,17 @@ save_ascii_data (ostream& os, const tree_constant& tc,
     }
   else if (tc.is_string ())
     {
-      ascii_save_type (os, "string", mark_as_global);
-      const char *tmp = tc.string_value ();
-      os << "# length: " << strlen (tmp) << "\n"
-	 << tmp << "\n";
+      ascii_save_type (os, "string array", mark_as_global);
+      Octave_str_obj tmp = tc.all_strings ();
+      int elements = tmp.length ();
+      os << "# elements: " << elements << "\n";
+      for (int i = 0; i < elements; i++)
+	{
+	  int len = tmp.elem (i).length ();
+	  os << "# length: " << len << "\n";
+	  os.write (tmp.elem (i).data (), len);
+	  os << "\n";
+	}
     }
   else if (tc.is_range ())
     {

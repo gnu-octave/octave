@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.51 $)dnl
+AC_REVISION($Revision: 1.52 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -552,12 +552,17 @@ AC_HAVE_LIBRARY(-lm)dnl
 dnl
 XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
-for func in finite isnan isinf
-do
-  trfunc=`echo $func | tr '[a-z]' '[A-Z]'`
-  AC_FUNC_CHECK([$func],
-  AC_DEFINE(HAVE_[$trfunc], 1),
-    AC_COMPILE_CHECK([$func], [#include <math.h>], [
+dnl
+case "$canonical_host_type" in
+  alpha-dec-osf*)
+  ;;
+  *)
+    for func in finite isnan isinf
+    do
+      trfunc=`echo $func | tr '[a-z]' '[A-Z]'`
+      AC_FUNC_CHECK([$func],
+      AC_DEFINE(HAVE_[$trfunc], 1),
+	AC_COMPILE_CHECK([$func], [#include <math.h>], [
 /* The GNU C library defines this for functions which it implements
     to always fail with ENOSYS.  Some functions are actually named
     something starting with __ and the normal name is an alias.  */
@@ -567,9 +572,10 @@ choke me
 /* Override any gcc2 internal prototype to avoid an error.  */
 $func (1.0);
 #endif
-],
-      AC_DEFINE(HAVE_[$trfunc], 1), []))dnl
-done
+], AC_DEFINE(HAVE_[$trfunc], 1), []))dnl
+    done
+  ;;
+esac
 dnl
 AC_HAVE_FUNCS(infinity quiet_nan)dnl
 AC_HAVE_FUNCS(erf erfc lgamma)dnl

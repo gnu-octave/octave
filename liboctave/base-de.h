@@ -35,15 +35,15 @@ public:
 
   base_diff_eqn (void)
     : x (), t (0.0), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false) { } 
+      restart (true), integration_error (false), istate (0) { } 
 
   base_diff_eqn (const ColumnVector& xx, double tt)
     : x (xx), t (tt), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false) { }
+      restart (true), integration_error (false), istate (0) { }
 
   base_diff_eqn (const base_diff_eqn& a)
     : x (a.x), t (a.t), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false) { }
+      restart (true), integration_error (false), istate (0) { }
 
   virtual ~base_diff_eqn (void) { }
 
@@ -57,6 +57,7 @@ public:
 	  stop_time_set = a.stop_time_set;
 	  restart = a.restart;
 	  integration_error = a.integration_error;
+	  istate = a.istate;
 	}
 
       return *this;
@@ -67,6 +68,7 @@ public:
       x = x0;
       t = t0;
       integration_error = false;
+      istate = 0;
       force_restart ();
     }
 
@@ -88,6 +90,8 @@ public:
 
   bool integration_ok (void) const { return ! integration_error; }
 
+  int integration_state (void) const { return istate; }
+
   virtual std::string error_message (void) const = 0;
 
 protected:
@@ -103,6 +107,8 @@ protected:
   bool restart;
 
   bool integration_error;
+
+  int istate;
 };
 
 #endif

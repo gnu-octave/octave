@@ -1,3 +1,12 @@
+2002-07-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/daspk.cc (Fdaspk): Also return istate and error
+	message.  Only generate error if user is not at least requesting
+	the istate output.
+	* DLD-FUNCTIONS/dasrt.cc (Fdasrt): Likewise.
+	* DLD-FUNCTIONS/dassl.cc (Fdassl): Likewise.
+	* DLD-FUNCTIONS/lsode.cc (Fodessa): Likewise.
+
 2002-07-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/dasrt.cc (Fdasrt): No need to find ng here.

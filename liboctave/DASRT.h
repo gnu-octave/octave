@@ -180,7 +180,6 @@ private:
 
   int liw;  
   int lrw;
-  int idid;
 
   int n;
   int ng;

@@ -70,7 +70,6 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
 {
   n = size ();
 
-  istate = 1;
   itask = 1;
   iopt = 0;
 
@@ -82,7 +81,6 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
 {
   n = size ();
 
-  istate = 1;
   itask = 1;
   iopt = 0;
 

@@ -138,7 +138,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
     } \
   while (0)
 
-DEFUN_DLD (daspk, args, ,
+DEFUN_DLD (daspk, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} daspk (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})\n\
 Return a matrix of states and their first derivatives with respect to\n\
@@ -247,10 +247,24 @@ parameters for @code{daspk}.\n\
 
       if (! error_state)
 	{
-	  retval.resize (2);
+	  std::string msg = dae.error_message ();
 
-	  retval(0) = output;
-	  retval(1) = deriv_output;
+	  retval(3) = msg;
+	  retval(2) = static_cast<double> (dae.integration_state ());
+
+	  if (dae.integration_ok ())
+	    {
+	      retval(1) = deriv_output;
+	      retval(0) = output;
+	    }
+	  else
+	    {
+	      retval(1) = Matrix ();
+	      retval(0) = Matrix ();
+
+	      if (nargout < 3)
+		error ("daspk: %s", msg.c_str ());
+	    }
 	}
     }
   else

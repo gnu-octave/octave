@@ -234,7 +234,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
     } \
   while (0)
 
-DEFUN_DLD (dasrt, args, ,
+DEFUN_DLD (dasrt, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{t}] =} dasrt (@var{fj} [, @var{g}], @var{x_0}, @var{xdot_0}, @var{t_out} [, @var{t_crit}])\n\
 Solve a system of differential/algebraic equations with functional\n\
@@ -442,9 +442,6 @@ parameters for @code{dasrt}.\n\
 
   dae.copy (dasrt_opts);
 
-  if (error_state)
-    DASRT_ABORT1 ("something is wrong");
-
   if (crit_times_set)
     output = dae.integrate (out_times, crit_times);
   else
@@ -452,14 +449,26 @@ parameters for @code{dasrt}.\n\
 
   if (! error_state)
     {
-      retval(2) = output.times ();
-      retval(1) = output.deriv ();
-      retval(0) = output.state ();
-    }
-  else
-    {
-      DASRT_ABORT1("something wicked has occurred!");
-      // print_usage ("dasrt");
+      std::string msg = dae.error_message ();
+
+      retval(4) = msg;
+      retval(3) = static_cast<double> (dae.integration_state ());
+
+      if (dae.integration_ok ())
+	{
+	  retval(2) = output.times ();
+	  retval(1) = output.deriv ();
+	  retval(0) = output.state ();
+	}
+      else
+	{
+	  retval(2) = Matrix ();
+	  retval(1) = Matrix ();
+	  retval(0) = Matrix ();
+
+	  if (nargout < 4)
+	    error ("dasrt: %s", msg.c_str ());
+	}
     }
 
   unwind_protect::run_frame ("Fdasrt");

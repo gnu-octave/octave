@@ -138,7 +138,6 @@ private:
   int n;
   int liw;  
   int lrw;
-  int idid;
   bool sanity_checked;
   Array<int> info;
   Array<int> iwork;

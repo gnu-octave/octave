@@ -197,8 +197,6 @@ public:
   ODESSA_result integrate (const ColumnVector& tout,
 			   const ColumnVector& tcrit); 
 
-  int integration_state (void) const { return istate; }
-
   std::string error_message (void) const;
 
 private:
@@ -212,7 +210,6 @@ private:
   int method_flag;
   Array<int> iwork;
   Array<double> rwork;
-  int istate;
   int itask;
   Array<int> iopt;
   int isopt;

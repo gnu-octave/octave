@@ -257,7 +257,7 @@ make_list (const Array<Matrix>& m_array)
 // Everthing is so great above here
 // --------------------------------
 
-DEFUN_DLD (odessa, args, ,
+DEFUN_DLD (odessa, args, nargout,
   "odessa (\"f\", x_0, theta, sx_0, t_out, t_crit)\n\
 \n\
 The string \"f\" may be substituted for the vector of strings\n\
@@ -406,47 +406,49 @@ parameters for @code{odessa}.")
 
       ODESSA_result output;
 
-      if (have_parameters)
-	{
-	  ODESSA dae = ODESSA (state, theta, sensitivity_guess, tzero, func);
+      ODESSA ode = have_parameters
+	? ODESSA (state, theta, sensitivity_guess, tzero, func)
+	: ODESSA (state, tzero, func);
 	  
-	  dae.copy (odessa_opts);
+      ode.copy (odessa_opts);
 
-	  if (crit_times_set)
-	    output = dae.integrate (out_times, crit_times);
-	  else
-	    output = dae.integrate (out_times);
-	}
+      if (crit_times_set)
+	output = ode.integrate (out_times, crit_times);
       else
-	{
-	  ODESSA dae = ODESSA (state, tzero, func);
-	  
-	  dae.copy (odessa_opts);
-	  
-	  if (crit_times_set)
-	    output = dae.integrate (out_times, crit_times);
-	  else
-	    output = dae.integrate (out_times);
-	}
+	output = ode.integrate (out_times);
 
       if (! error_state)
 	{
-	  if (have_parameters)
+	  int k = have_parameters ? 3 : 2;
+
+	  std::string msg = ode.error_message ();
+
+	  retval(k--) = msg;
+	  retval(k--) = static_cast<double> (ode.integration_state ());
+
+	  if (ode.integration_ok ())
 	    {
-	      retval(1) = make_list (output.state_sensitivity ());
+	      if (have_parameters)
+		retval(1) = make_list (output.state_sensitivity ());
+
+	      retval(0) = output.state ();
 	    }
-	  
-	  retval(0) = output.state ();
+	  else
+	    {
+	      if (have_parameters)
+		retval(1) = Matrix ();
+
+	      retval(0) = Matrix ();
+
+	      if ((have_parameters && nargout < 3) || nargout < 2)
+		error ("odessa: %s", msg.c_str ());
+	    }
 	}
 
   unwind_protect::run_frame ("Fodessa");
 
   return retval;
 }
-// -----------------------------
-// EVERYTHING SWELL BELOW HERE
-// -----------------------------
-
 
 typedef void (ODESSA_options::*da_set_opt_mf) (const Array<double>&);
 typedef void (ODESSA_options::*d_set_opt_mf) (double);

@@ -1,3 +1,12 @@
+2002-07-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* base-de.h (base_diff_eqn::istate): New data member.
+	(base_diff_eqn::integration_state): New member function.
+	* LSODE.h, LSODE.cc, ODESSA.h, ODESSA.cc: Delete corresponding
+	data members and functions.
+	* DASPK.h, DASRT.h, DASSL.h: Delete idid data member.
+	* DASPK.cc, DASRT.cc, DASSL.cc: Use istate instead of idid.
+
 2002-07-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* base-de.h (base_diff_eqn::stop_time,

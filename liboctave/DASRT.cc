@@ -316,7 +316,7 @@ DASRT::integrate (double tout)
   int *idummy = 0;
 
   F77_XFCN (ddasrt, DASRT, (ddasrt_f, n, t, px, pxdot, tout, pinfo,
-			    &rel_tol, &abs_tol, idid, prwork, lrw,
+			    &rel_tol, &abs_tol, istate, prwork, lrw,
 			    piwork, liw, dummy, idummy, ddasrt_j,
 			    ddasrt_g, ng, pjroot));
 
@@ -327,7 +327,7 @@ DASRT::integrate (double tout)
     }
   else
     {
-      switch (idid)
+      switch (istate)
 	{
 	case 1: // A step was successfully taken in intermediate-output
 	        // mode. The code has not yet reached TOUT.
@@ -371,7 +371,8 @@ DASRT::integrate (double tout)
 	default:
 	  integration_error = true;
 	  (*current_liboctave_error_handler)
-	    ("unrecognized value of idid (= %d) returned from ddasrt", idid);
+	    ("unrecognized value of istate (= %d) returned from ddasrt",
+	     istate);
 	  break;
 	}
     }
@@ -409,7 +410,7 @@ DASRT::integrate (const ColumnVector& tout)
 	      return retval;
 	    }
 
-          if (idid == 4)
+          if (istate == 4)
             t_out(j) = t;
           else
             t_out(j) = tout(j);
@@ -420,7 +421,7 @@ DASRT::integrate (const ColumnVector& tout)
 	      xdot_out(j,i) = xdot(i);
 	    }
 
-          if (idid == 4)
+          if (istate == 4)
 	    {
 	      x_out.resize (j+1, n);
 	      xdot_out.resize (j+1, n);
@@ -513,7 +514,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 		  return retval;
 		}
 
-              if (idid == 4)
+              if (istate == 4)
                 t_out = t;
 
 	      if (save_output)
@@ -526,7 +527,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
                   t_outs(i_out-1) = t_out;
 
-                  if (idid == 4)
+                  if (istate == 4)
                     {
                       x_out.resize (i_out, n);
                       xdot_out.resize (i_out, n);
@@ -558,7 +559,7 @@ DASRT::error_message (void) const
 {
   std::string retval;
 
-  switch (idid)
+  switch (istate)
     {
     case 1:
       retval = "a step was successfully taken in intermediate-output mode.";

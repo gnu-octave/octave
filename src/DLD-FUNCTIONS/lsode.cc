@@ -289,7 +289,9 @@ parameters for @code{lsode}.\n\
 
       if (! error_state)
 	{
-	  retval(2) = ode.error_message ();
+	  std::string msg = ode.error_message ();
+
+	  retval(2) = msg;
 	  retval(1) = static_cast<double> (ode.integration_state ());
 
 	  if (ode.integration_ok ())
@@ -299,10 +301,7 @@ parameters for @code{lsode}.\n\
 	      retval(0) = Matrix ();
 
 	      if (nargout < 2)
-		{
-		  std::string msg = ode.error_message ();
-		  error ("lsode: %s", msg.c_str ());
-		}
+		error ("lsode: %s", msg.c_str ());
 	    }
 	}
     }

@@ -243,7 +243,7 @@ DASSL::do_integrate (double tout)
 // again:
 
   F77_XFCN (ddassl, DDASSL, (ddassl_f, n, t, px, pxdot, tout, pinfo,
-			     rel_tol, abs_tol, idid, prwork, lrw,
+			     rel_tol, abs_tol, istate, prwork, lrw,
 			     piwork, liw, dummy, idummy, ddassl_j));
 
   if (f77_exception_encountered)
@@ -253,7 +253,7 @@ DASSL::do_integrate (double tout)
     }
   else
     {
-      switch (idid)
+      switch (istate)
 	{
 	case 1: // A step was successfully taken in intermediate-output
 	        // mode. The code has not yet reached TOUT.
@@ -294,7 +294,8 @@ DASSL::do_integrate (double tout)
 	default:
 	  integration_error = true;
 	  (*current_liboctave_error_handler)
-	    ("unrecognized value of idid (= %d) returned from ddassl", idid);
+	    ("unrecognized value of istate (= %d) returned from ddassl",
+	     istate);
 	  break;
 	}
     }
@@ -458,7 +459,7 @@ DASSL::error_message (void) const
 {
   std::string retval;
 
-  switch (idid)
+  switch (istate)
     {
     case 1:
       retval = "a step was successfully taken in intermediate-output mode.";

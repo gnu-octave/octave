@@ -352,8 +352,24 @@ parameters for @code{dassl}.\n\
 
       if (! error_state)
 	{
-	  retval(1) = deriv_output;
-	  retval(0) = output;
+	  std::string msg = dae.error_message ();
+
+	  retval(3) = msg;
+	  retval(2) = static_cast<double> (dae.integration_state ());
+
+	  if (dae.integration_ok ())
+	    {
+	      retval(1) = deriv_output;
+	      retval(0) = output;
+	    }
+	  else
+	    {
+	      retval(1) = Matrix ();
+	      retval(0) = Matrix ();
+
+	      if (nargout < 3)
+		error ("dassl: %s", msg.c_str ());
+	    }
 	}
     }
   else

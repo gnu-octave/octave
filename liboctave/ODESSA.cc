@@ -178,7 +178,6 @@ ODESSA::ODESSA (void) : ODES (), ODESSA_options ()
 
   iopt.resize(4);
 
-  istate = 1;
   itask = 1;
   iopt(0) = 0;
   isopt = 0;
@@ -197,7 +196,6 @@ ODESSA::ODESSA (const ColumnVector& state, double time, ODESFunc& f)
   n = size ();
 
   iopt.resize(4);
-  istate = 1;
   itask = 1;
   iopt(0) = 0;
   isopt = 0;
@@ -238,7 +236,6 @@ ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& theta,
   npar = theta.length ();
 
   iopt.resize(4);
-  istate = 1;
   itask = 1;
   iopt(0) = 0;
   isopt = 1;
@@ -429,10 +426,10 @@ ODESSA::integrate (double tout)
 
   const double *pabs_tol = abs_tol.fortran_vec ();
 
-   F77_XFCN (odessa, ODESSA, (odessa_f,odessa_b,pneq,py,ppar,t, tout,
-			      itol,rel_tol,pabs_tol,itask,istate,
-			      piopt,prwork,lrw,piwork,liw,odessa_j,
-			      method_flag));
+   F77_XFCN (odessa, ODESSA, (odessa_f, odessa_b, pneq, py, ppar, t,
+			      tout, itol, rel_tol, pabs_tol, itask,
+			      istate, piopt, prwork, lrw, piwork, liw,
+			      odessa_j, method_flag));
 
   if (f77_exception_encountered)
     {

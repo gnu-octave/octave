@@ -32,7 +32,7 @@ SUBDIRS = $(CRUFT_DIRS)
 
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
-all: $(SUBDIRS) libcruft.a stamp-shared
+all: $(SUBDIRS) stamp-shared
 .PHONY: all
 
 $(SUBDIRS):
@@ -40,10 +40,13 @@ $(SUBDIRS):
 	cd $@; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
+# XXX FIXME XXX -- this should build the shared library directly from
+# a normal archive file (created from PIC code, though).
+
 MISC_OBJ := misc/machar.o misc/dostop.o misc/f77-extern.o misc/lo-error.o
 
 CRUFT_FSRC := $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))
-CRUFT_OBJ2 := $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
+gCRUFT_OBJ2 := $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
 CRUFT_OBJ1 := $(patsubst %.f, %.o, $(CRUFT_OBJ2))
 CRUFT_OBJ := $(CRUFT_OBJ1) $(MISC_OBJ)
 
@@ -57,11 +60,6 @@ ifeq ($(SHARED_LIBS), true)
     CRUFT_PICOBJ := $(CRUFT_OBJ)
   endif
 endif
-
-libcruft.a: $(CRUFT_OBJ)
-	rm -f libcruft.a
-	$(AR) $(ARFLAGS) libcruft.a $(CRUFT_OBJ)
-	$(RANLIB) libcruft.a
 
 stamp-shared: $(CRUFT_PICOBJ)
 	if $(SHARED_LIBS); then \

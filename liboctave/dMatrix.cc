@@ -40,6 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dbleSVD.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
@@ -2296,30 +2298,12 @@ Matrix::diag (int k) const
 ColumnVector
 Matrix::row_min (void) const
 {
-  ColumnVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nr);
-
-      for (int i = 0; i < nr; i++)
-	{
-	  double res = elem (i, 0);
-	  for (int j = 1; j < nc; j++)
-	    if (elem (i, j) < res)
-	      res = elem (i, j);
-	  result.elem (i) = res;
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return row_min (index);
 }
 
 ColumnVector
-Matrix::row_min_loc (void) const
+Matrix::row_min (Array<int>& index) const
 {
   ColumnVector result;
 
@@ -2329,14 +2313,37 @@ Matrix::row_min_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
+      index.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
-          int res = 0;
-          for (int j = 0; j < nc; j++)
-            if (elem (i, j) < elem (i, res))
-              res = j;
-          result.elem (i) = (double) (res + 1);
+	  int idx = 0;
+
+	  double tmp_min = elem (i, idx);
+
+	  if (xisnan (tmp_min))
+	    idx = -1;
+	  else
+	    {
+	      for (int j = 1; j < nc; j++)
+		{
+		  double tmp = elem (i, j);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (tmp < tmp_min)
+		    {
+		      idx = j;
+		      tmp_min = tmp;
+		    }
+		}
+	    }
+
+	  result.elem (i) = (idx < 0) ? octave_NaN : tmp_min;
+	  index.elem (i) = idx;
         }
     }
 
@@ -2346,30 +2353,12 @@ Matrix::row_min_loc (void) const
 ColumnVector
 Matrix::row_max (void) const
 {
-  ColumnVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nr);
-
-      for (int i = 0; i < nr; i++)
-	{
-	  double res = elem (i, 0);
-	  for (int j = 1; j < nc; j++)
-	    if (elem (i, j) > res)
-	      res = elem (i, j);
-	  result.elem (i) = res;
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return row_max (index);
 }
 
 ColumnVector
-Matrix::row_max_loc (void) const
+Matrix::row_max (Array<int>& index) const
 {
   ColumnVector result;
 
@@ -2379,14 +2368,37 @@ Matrix::row_max_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
+      index.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
-          int res = 0;
-          for (int j = 0; j < nc; j++)
-            if (elem (i, j) > elem (i, res))
-              res = j;
-          result.elem (i) = (double) (res + 1);
+	  int idx = 0;
+
+	  double tmp_max = elem (i, idx);
+
+	  if (xisnan (tmp_max))
+	    idx = -1;
+	  else
+	    {
+	      for (int j = 1; j < nc; j++)
+		{
+		  double tmp = elem (i, j);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (tmp > tmp_max)
+		    {
+		      idx = j;
+		      tmp_max = tmp;
+		    }
+		}
+	    }
+
+	  result.elem (i) = (idx < 0) ? octave_NaN : tmp_max;
+	  index.elem (i) = idx;
         }
     }
 
@@ -2396,29 +2408,12 @@ Matrix::row_max_loc (void) const
 RowVector
 Matrix::column_min (void) const
 {
-  RowVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nc);
-
-      for (int j = 0; j < nc; j++)
-	{
-	  double res = elem (0, j);
-	  for (int i = 1; i < nr; i++)
-	    if (elem (i, j) < res)
-	      res = elem (i, j);
-	  result.elem (j) = res;
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return column_min (index);
 }
+
 RowVector
-Matrix::column_min_loc (void) const
+Matrix::column_min (Array<int>& index) const
 {
   RowVector result;
 
@@ -2428,48 +2423,52 @@ Matrix::column_min_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
+      index.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
-          int res = 0;
-          for (int i = 0; i < nr; i++)
-            if (elem (i, j) < elem (res, j))
-              res = i;
-          result.elem (j) = (double) (res + 1);
+	  int idx = 0;
+
+	  double tmp_min = elem (idx, j);
+
+	  if (xisnan (tmp_min))
+	    idx = -1;
+	  else
+	    {
+	      for (int i = 1; i < nr; i++)
+		{
+		  double tmp = elem (i, j);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (tmp < tmp_min)
+		    {
+		      idx = i;
+		      tmp_min = tmp;
+		    }
+		}
+	    }
+
+	  result.elem (j) = (idx < 0) ? octave_NaN : tmp_min;
+	  index.elem (j) = idx;
         }
     }
 
   return result;
 }
 
-
 RowVector
 Matrix::column_max (void) const
 {
-  RowVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nc);
-
-      for (int j = 0; j < nc; j++)
-	{
-	  double res = elem (0, j);
-	  for (int i = 1; i < nr; i++)
-	    if (elem (i, j) > res)
-	      res = elem (i, j);
-	  result.elem (j) = res;
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return column_max (index);
 }
 
 RowVector
-Matrix::column_max_loc (void) const
+Matrix::column_max (Array<int>& index) const
 {
   RowVector result;
 
@@ -2479,14 +2478,37 @@ Matrix::column_max_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
+      index.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
-          int res = 0;
-          for (int i = 0; i < nr; i++)
-            if (elem (i, j) > elem (res, j))
-              res = i;
-          result.elem (j) = (double) (res + 1);
+	  int idx = 0;
+
+	  double tmp_max = elem (idx, j);
+
+	  if (xisnan (tmp_max))
+	    idx = -1;
+	  else
+	    {
+	      for (int i = 1; i < nr; i++)
+		{
+		  double tmp = elem (i, j);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (tmp > tmp_max)
+		    {
+		      idx = i;
+		      tmp_max = tmp;
+		    }
+		}
+	    }
+
+	  result.elem (j) = (idx < 0) ? octave_NaN : tmp_max;
+	  index.elem (j) = idx;
         }
     }
 

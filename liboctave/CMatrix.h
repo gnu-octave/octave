@@ -335,17 +335,20 @@ public:
   ComplexColumnVector diag (void) const;
   ComplexColumnVector diag (int k) const;
 
-  ComplexColumnVector row_min (void) const;
-  ComplexColumnVector row_min_loc (void) const;
+  bool row_is_real_only (int) const;
+  bool column_is_real_only (int) const;
 
+  ComplexColumnVector row_min (void) const;
   ComplexColumnVector row_max (void) const;
-  ComplexColumnVector row_max_loc (void) const;
+
+  ComplexColumnVector row_min (Array<int>& index) const;
+  ComplexColumnVector row_max (Array<int>& index) const;
 
   ComplexRowVector column_min (void) const;
-  ComplexRowVector column_min_loc (void) const;
-
   ComplexRowVector column_max (void) const;
-  ComplexRowVector column_max_loc (void) const;
+
+  ComplexRowVector column_min (Array<int>& index) const;
+  ComplexRowVector column_max (Array<int>& index) const;
 
   // i/o
 

@@ -41,6 +41,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CmplxSVD.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
@@ -96,6 +98,8 @@ extern "C"
 				   const int&, const Complex*,
 				   const int&, double*); 
 }
+
+static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 
 // Complex Matrix class
 
@@ -3296,62 +3300,53 @@ ComplexMatrix::diag (int k) const
   return d;
 }
 
-// XXX FIXME XXX -- it would be nice to share some code among all the
-// min/max functions below.  It would also be nice to combine the
-// min/max and min_loc/max_loc functions.
+bool
+ComplexMatrix::row_is_real_only (int i) const
+{
+  bool retval = true;
+
+  int nc = columns ();
+
+  for (int j = 0; j < nc; j++)
+    {
+      if (imag (elem (i, j)) != 0.0)
+	{
+	  retval = false;
+	  break;
+	}
+    }
+
+  return retval;	      
+}
+
+bool
+ComplexMatrix::column_is_real_only (int j) const
+{
+  bool retval = true;
+
+  int nr = rows ();
+
+  for (int i = 0; i < nr; i++)
+    {
+      if (imag (elem (i, j)) != 0.0)
+	{
+	  retval = false;
+	  break;
+	}
+    }
+
+  return retval;	      
+}
 
 ComplexColumnVector
 ComplexMatrix::row_min (void) const
 {
-  ComplexColumnVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nr);
-
-      for (int i = 0; i < nr; i++)
-	{
-	  int row_is_real_only = 1;
-	  for (int j = 0; j < nc; j++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		row_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (row_is_real_only)
-	    {
-	      double res = real (elem (i, 0));
-	      for (int j = 1; j < nc; j++)
-		{
-		  double tmp = real (elem (i, j));
-		  if (tmp < res)
-		    res = tmp;
-		}
-	      result.elem (i) = res;
-	    }
-	  else
-	    {
-	      Complex res = elem (i, 0);
-	      double absres = abs (res);
-	      for (int j = 1; j < nc; j++)
-		if (abs (elem (i, j)) < absres)
-		  {
-		    res = elem (i, j);
-		    absres = abs (res);
-		  }
-	      result.elem (i) = res;
-	    }
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return row_min (index);
 }
 
 ComplexColumnVector
-ComplexMatrix::row_min_loc (void) const
+ComplexMatrix::row_min (Array<int>& index) const
 {
   ComplexColumnVector result;
 
@@ -3361,38 +3356,43 @@ ComplexMatrix::row_min_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
+      index.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
-	  int column_is_real_only = 1;
-	  for (int j = 0; j < nc; j++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		column_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (column_is_real_only)
-	    {
-	      double res = 0;
-	      double tmp = real (elem (i, 0));
-	      for (int j = 1; j < nc; j++)
-		if (real (elem (i, j)) < tmp)
-		  res = j;
+	  int idx = 0;
 
-	      result.elem (i) = res + 1;
-	    }
+	  Complex tmp_min = elem (i, idx);
+
+	  bool real_only = row_is_real_only (i);
+
+	  double abs_min = real_only ? real (tmp_min) : abs (tmp_min);
+
+	  if (xisnan (tmp_min))
+	    idx = -1;
 	  else
 	    {
-	      Complex res = 0;
-	      double absres = abs (elem (i, 0));
 	      for (int j = 1; j < nc; j++)
-		if (abs (elem (i, j)) < absres)
-		  {
-		    res = j;
-		    absres = abs (elem (i, j));
-		  }
-	      result.elem (i) = res + 1;
+		{
+		  Complex tmp = elem (i, j);
+
+		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (abs_tmp < abs_min)
+		    {
+		      idx = j;
+		      tmp_min = tmp;
+		      abs_min = abs_tmp;
+		    }
+		}
+
+	      result.elem (i) = (idx < 0) ? Complex_NaN_result : tmp_min;
+	      index.elem (i) = idx;
 	    }
         }
     }
@@ -3403,56 +3403,12 @@ ComplexMatrix::row_min_loc (void) const
 ComplexColumnVector
 ComplexMatrix::row_max (void) const
 {
-  ComplexColumnVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nr);
-
-      for (int i = 0; i < nr; i++)
-	{
-	  int row_is_real_only = 1;
-	  for (int j = 0; j < nc; j++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		row_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (row_is_real_only)
-	    {
-	      double res = real (elem (i, 0));
-	      for (int j = 1; j < nc; j++)
-		{
-		  double tmp = real (elem (i, j));
-		  if (tmp > res)
-		    res = tmp;
-		}
-	      result.elem (i) = res;
-	    }
-	  else
-	    {
-	      Complex res = elem (i, 0);
-	      double absres = abs (res);
-	      for (int j = 1; j < nc; j++)
-		if (abs (elem (i, j)) > absres)
-		  {
-		    res = elem (i, j);
-		    absres = abs (res);
-		  }
-	      result.elem (i) = res;
-	    }
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return row_max (index);
 }
 
 ComplexColumnVector
-ComplexMatrix::row_max_loc (void) const
+ComplexMatrix::row_max (Array<int>& index) const
 {
   ComplexColumnVector result;
 
@@ -3462,38 +3418,43 @@ ComplexMatrix::row_max_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
+      index.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
-	  int column_is_real_only = 1;
-	  for (int j = 0; j < nc; j++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		column_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (column_is_real_only)
-	    {
-	      double res = 0;
-	      double tmp = real (elem (i, 0));
-	      for (int j = 1; j < nc; j++)
-		if (real (elem (i, j)) > tmp)
-		  res = j;
+	  int idx = 0;
 
-	      result.elem (i) = res + 1;
-	    }
+	  Complex tmp_max = elem (i, idx);
+
+	  bool real_only = row_is_real_only (i);
+
+	  double abs_max = real_only ? real (tmp_max) : abs (tmp_max);
+
+	  if (xisnan (tmp_max))
+	    idx = -1;
 	  else
 	    {
-	      Complex res = 0;
-	      double absres = abs (elem (i, 0));
 	      for (int j = 1; j < nc; j++)
-		if (abs (elem (i, j)) > absres)
-		  {
-		    res = j;
-		    absres = abs (elem (i, j));
-		  }
-	      result.elem (i) = res + 1;
+		{
+		  Complex tmp = elem (i, j);
+
+		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (abs_tmp > abs_max)
+		    {
+		      idx = j;
+		      tmp_max = tmp;
+		      abs_max = abs_tmp;
+		    }
+		}
+
+	      result.elem (i) = (idx < 0) ? Complex_NaN_result : tmp_max;
+	      index.elem (i) = idx;
 	    }
         }
     }
@@ -3504,56 +3465,12 @@ ComplexMatrix::row_max_loc (void) const
 ComplexRowVector
 ComplexMatrix::column_min (void) const
 {
-  ComplexRowVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nc);
-
-      for (int j = 0; j < nc; j++)
-	{
-	  int column_is_real_only = 1;
-	  for (int i = 0; i < nr; i++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		column_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (column_is_real_only)
-	    {
-	      double res = real (elem (0, j));
-	      for (int i = 1; i < nr; i++)
-		{
-		  double tmp = real (elem (i, j));
-		  if (tmp < res)
-		    res = tmp;
-		}
-	      result.elem (j) = res;
-	    }
-	  else
-	    {
-	      Complex res = elem (0, j);
-	      double absres = abs (res);
-	      for (int i = 1; i < nr; i++)
-		if (abs (elem (i, j)) < absres)
-		  {
-		    res = elem (i, j);
-		    absres = abs (res);
-		  }
-	      result.elem (j) = res;
-	    }
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return column_min (index);
 }
 
 ComplexRowVector
-ComplexMatrix::column_min_loc (void) const
+ComplexMatrix::column_min (Array<int>& index) const
 {
   ComplexRowVector result;
 
@@ -3563,38 +3480,43 @@ ComplexMatrix::column_min_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
+      index.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
-	  int column_is_real_only = 1;
-	  for (int i = 0; i < nr; i++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		column_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (column_is_real_only)
-	    {
-	      double res = 0;
-	      double tmp = real (elem (0, j));
-	      for (int i = 1; i < nr; i++)
-		if (real (elem (i, j)) < tmp)
-		  res = i;
+	  int idx = 0;
 
-	      result.elem (j) = res + 1;
-	    }
+	  Complex tmp_min = elem (idx, j);
+
+	  bool real_only = column_is_real_only (j);
+
+	  double abs_min = real_only ? real (tmp_min) : abs (tmp_min);
+
+	  if (xisnan (tmp_min))
+	    idx = -1;
 	  else
 	    {
-	      Complex res = 0;
-	      double absres = abs (elem (0, j));
 	      for (int i = 1; i < nr; i++)
-		if (abs (elem (i, j)) < absres)
-		  {
-		    res = i;
-		    absres = abs (elem (i, j));
-		  }
-	      result.elem (j) = res + 1;
+		{
+		  Complex tmp = elem (i, j);
+
+		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (abs_tmp < abs_min)
+		    {
+		      idx = i;
+		      tmp_min = tmp;
+		      abs_min = abs_tmp;
+		    }
+		}
+
+	      result.elem (j) = (idx < 0) ? Complex_NaN_result : tmp_min;
+	      index.elem (j) = idx;
 	    }
         }
     }
@@ -3605,56 +3527,12 @@ ComplexMatrix::column_min_loc (void) const
 ComplexRowVector
 ComplexMatrix::column_max (void) const
 {
-  ComplexRowVector result;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      result.resize (nc);
-
-      for (int j = 0; j < nc; j++)
-	{
-	  int column_is_real_only = 1;
-	  for (int i = 0; i < nr; i++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		column_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (column_is_real_only)
-	    {
-	      double res = real (elem (0, j));
-	      for (int i = 1; i < nr; i++)
-		{
-		  double tmp = real (elem (i, j));
-		  if (tmp > res)
-		    res = tmp;
-		}
-	      result.elem (j) = res;
-	    }
-	  else
-	    {
-	      Complex res = elem (0, j);
-	      double absres = abs (res);
-	      for (int i = 1; i < nr; i++)
-		if (abs (elem (i, j)) > absres)
-		  {
-		    res = elem (i, j);
-		    absres = abs (res);
-		  }
-	      result.elem (j) = res;
-	    }
-	}
-    }
-
-  return result;
+  Array<int> index;
+  return column_max (index);
 }
 
 ComplexRowVector
-ComplexMatrix::column_max_loc (void) const
+ComplexMatrix::column_max (Array<int>& index) const
 {
   ComplexRowVector result;
 
@@ -3664,38 +3542,43 @@ ComplexMatrix::column_max_loc (void) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
+      index.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
-	  int column_is_real_only = 1;
-	  for (int i = 0; i < nr; i++)
-	    if (imag (elem (i, j)) != 0.0)
-	      {
-		column_is_real_only = 0;
-		break;
-	      }
-	      
-	  if (column_is_real_only)
-	    {
-	      double res = 0;
-	      double tmp = real (elem (0, j));
-	      for (int i = 1; i < nr; i++)
-		if (real (elem (i, j)) > tmp)
-		  res = i;
+	  int idx = 0;
 
-	      result.elem (j) = res + 1;
-	    }
+	  Complex tmp_max = elem (idx, j);
+
+	  bool real_only = column_is_real_only (j);
+
+	  double abs_max = real_only ? real (tmp_max) : abs (tmp_max);
+
+	  if (xisnan (tmp_max))
+	    idx = -1;
 	  else
 	    {
-	      Complex res = 0;
-	      double absres = abs (elem (0, j));
 	      for (int i = 1; i < nr; i++)
-		if (abs (elem (i, j)) > absres)
-		  {
-		    res = i;
-		    absres = abs (elem (i, j));
-		  }
-	      result.elem (j) = res + 1;
+		{
+		  Complex tmp = elem (i, j);
+
+		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+
+		  if (xisnan (tmp))
+		    {
+		      idx = -1;
+		      break;
+		    }
+		  else if (abs_tmp > abs_max)
+		    {
+		      idx = i;
+		      tmp_max = tmp;
+		      abs_max = abs_tmp;
+		    }
+		}
+
+	      result.elem (j) = (idx < 0) ? Complex_NaN_result : tmp_max;
+	      index.elem (j) = idx;
 	    }
         }
     }

@@ -223,16 +223,16 @@ public:
   ColumnVector diag (int k) const;
 
   ColumnVector row_min (void) const;
-  ColumnVector row_min_loc (void) const;
-
   ColumnVector row_max (void) const;
-  ColumnVector row_max_loc (void) const;
+
+  ColumnVector row_min (Array<int>& index) const;
+  ColumnVector row_max (Array<int>& index) const;
 
   RowVector column_min (void) const;
-  RowVector column_min_loc (void) const;
-
   RowVector column_max (void) const;
-  RowVector column_max_loc (void) const;
+
+  RowVector column_min (Array<int>& index) const;
+  RowVector column_max (Array<int>& index) const;
 
   // i/o
 

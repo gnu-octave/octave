@@ -1,3 +1,30 @@
+Tue Aug 20 17:38:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::row_max, ComplexMatrix::row_min,
+	ComplexMatrix::column_max, ComplexMatrix::column_min):
+	Rewrite.  Also return index as a reference arg.
+	(ComplexMatrix::row_max_loc, ComplexMatrix::row_min_loc,
+	ComplexMatrix::column_max_loc, ComplexMatrix::column_min_loc):
+	Delete.
+
+	* dMatrix.cc (Matrix::row_max, Matrix::row_min,
+	Matrix::column_max, Matrix::column_min):
+	Rewrite.  Also return index as a reference arg.
+	(Matrix::row_max_loc, Matrix::row_min_loc,
+	Matrix::column_max_loc, Matrix::column_min_loc): Delete.
+
+Fri Aug  9 05:01:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::row_min, Matrix::row_min_loc,
+	Matrix::row_max, Matrix::row_max_loc, Matrix::column_min,
+	Matrix::column_min_loc, Matrix::column_max,
+	Matrix::column_max_loc): Ignore leading NaNs.
+	* CMatrix.cc (ComplexMatrix::row_min, ComplexMatrix::row_min_loc,
+	ComplexMatrix::row_max, ComplexMatrix::row_max_loc,
+	ComplexMatrix::column_min, ComplexMatrix::column_min_loc,
+	ComplexMatrix::column_max, ComplexMatrix::column_max_loc): Ignore
+	leading NaNs.
+
 Thu Aug  8 16:04:17 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* QPSOL.cc (QPSOL::do_minimize): Insert linear constraint bounds

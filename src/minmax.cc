@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "lo-ieee.h"
 #include "oct-math.h"
 
 #include "defun-dld.h"
@@ -394,15 +395,7 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 
   if (nargin == 1 && (nargout == 1 || nargout == 0))
     {
-      if (arg1.is_real_scalar ())
-	{
-	  retval(0) = arg1.double_value ();
-	}
-      else if (arg1.is_complex_scalar ())
-	{
-	  retval(0) = arg1.complex_value ();
-	}
-      else if (arg1.is_real_type ())
+      if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
 
@@ -427,39 +420,24 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 	    }
 	}
       else
-	{
-	  gripe_wrong_type_arg ("min", arg1);
-	  return retval;
-	}
+	gripe_wrong_type_arg ("min", arg1);
     }
   else if (nargin == 1 && nargout == 2)
     {
-      if (arg1.is_real_scalar ())
-	{
-	  retval(1) = 1;
-	  retval(0) = arg1.double_value ();
-	}
-      else if (arg1.is_complex_scalar ())
-	{
-	  retval(1) = 1;
-	  retval(0) = arg1.complex_value ();
-	}
-      else if (arg1.is_real_type ())
+      Array<int> index;
+
+      if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
 
 	  if (! error_state)
 	    {
+	      retval.resize (2);
+
 	      if (m.rows () == 1)
-		{
-		  retval(1) = m.row_min_loc ();
-		  retval(0) = m.row_min ();
-		}
+		retval(0) = m.row_min (index);
 	      else
-		{
-		  retval(1) = octave_value (m.column_min_loc (), 0);
-		  retval(0) = octave_value (m.column_min (), 0);
-		}
+		retval(0) = octave_value (m.column_min (index), 0);
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -468,22 +446,30 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 
 	  if (! error_state)
 	    {
+	      retval.resize (2);
+
 	      if (m.rows () == 1)
-		{
-		  retval(1) = m.row_min_loc ();
-		  retval(0) = m.row_min ();
-		}
+		retval(0) = m.row_min (index);
 	      else
-		{
-		  retval(1) = octave_value (m.column_min_loc (), 0);
-		  retval(0) = octave_value (m.column_min (), 0);
-		}
+		retval(0) = octave_value (m.column_min (index), 0);
 	    }
 	}
       else
+	gripe_wrong_type_arg ("min", arg1);
+
+      int len = index.length ();
+
+      if (len > 0)
 	{
-	  gripe_wrong_type_arg ("min", arg1);
-	  return retval;
+	  RowVector idx (len);
+
+	  for (int i = 0; i < len; i++)
+	    {
+	      int tmp = index.elem (i) + 1;
+	      idx.elem (i) = (tmp <= 0) ? octave_NaN : (double) tmp;
+	    }
+
+	  retval(1) = octave_value (idx, 0);
 	}
     }
   else if (nargin == 2)
@@ -622,15 +608,7 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 
   if (nargin == 1 && (nargout == 1 || nargout == 0))
     {
-      if (arg1.is_real_scalar ())
-	{
-	  retval(0) = arg1.double_value ();
-	}
-      else if (arg1.is_complex_scalar ())
-	{
-	  retval(0) = arg1.complex_value ();
-	}
-      else if (arg1.is_real_type ())
+      if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
 
@@ -655,39 +633,24 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 	    }
 	}
       else
-	{
-	  gripe_wrong_type_arg ("max", arg1);
-	  return retval;
-	}
+	gripe_wrong_type_arg ("max", arg1);
     }
   else if (nargin == 1 && nargout == 2)
     {
-      if (arg1.is_real_scalar ())
-	{
-	  retval(1) = 1;
-	  retval(0) = arg1.double_value ();
-	}
-      else if (arg1.is_complex_scalar ())
-	{
-	  retval(1) = 1;
-	  retval(0) = arg1.complex_value ();
-	}
-      else if (arg1.is_real_type ())
+      Array<int> index;
+
+      if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
 
 	  if (! error_state)
 	    {
+	      retval.resize (2);
+
 	      if (m.rows () == 1)
-		{
-		  retval(1) = m.row_max_loc ();
-		  retval(0) = m.row_max ();
-		}
+		retval(0) = m.row_max (index);
 	      else
-		{
-		  retval(1) = octave_value (m.column_max_loc (), 0);
-		  retval(0) = octave_value (m.column_max (), 0);
-		}
+		retval(0) = octave_value (m.column_max (index), 0);
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -696,22 +659,30 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 
 	  if (! error_state)
 	    {
+	      retval.resize (2);
+
 	      if (m.rows () == 1)
-		{
-		  retval(1) = m.row_max_loc ();
-		  retval(0) = m.row_max ();
-		}
+		retval(0) = m.row_max (index);
 	      else
-		{
-		  retval(1) = octave_value (m.column_max_loc (), 0);
-		  retval(0) = octave_value (m.column_max (), 0);
-		}
+		retval(0) = octave_value (m.column_max (index), 0);
 	    }
 	}
       else
+	gripe_wrong_type_arg ("max", arg1);
+
+      int len = index.length ();
+
+      if (len > 0)
 	{
-	  gripe_wrong_type_arg ("max", arg1);
-	  return retval;
+	  RowVector idx (len);
+
+	  for (int i = 0; i < len; i++)
+	    {
+	      int tmp = index.elem (i) + 1;
+	      idx.elem (i) = (tmp <= 0) ? octave_NaN : (double) tmp;
+	    }
+
+	  retval(1) = octave_value (idx, 0);
 	}
     }
   else if (nargin == 2)

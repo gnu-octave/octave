@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <math.h>
 #include <float.h>
 #include <Complex.h>
 

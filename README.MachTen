@@ -1,6 +1,11 @@
 The information in this file is from A. Scottedward Hodel
 <A.S.Hodel@Eng.Auburn.EDU>.
 
+* 11/15/2002: Power MachTen is no longer supported by Tenon Intersystems
+*   since Mac OS X permits running Octave directly on its BSD-based OS.
+*   See http://fink.sourceforge.net for directions on installation of Octave
+*   on Macintosh.
+
 I've installed and run Octave 2.0.12 on Power MachTen 4.1.  I've
 also installed Octave-2.1.14 on Power MachTen 4.1.1 (the process is slightly 
 different).  This note contains instructions on how to port octave to MachTen

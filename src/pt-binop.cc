@@ -191,7 +191,7 @@ tree_boolean_expression::rvalue (void)
 	    done:
 
 	      if (! error_state)
-		retval = octave_value (static_cast<double> (result));
+		retval = octave_value (result);
 	    }
 	}
     }

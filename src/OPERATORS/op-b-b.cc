@@ -48,18 +48,8 @@ DEFUNOP_OP (hermitian, bool, /* no-op */)
 
 DEFBINOP_OP (eq, bool, bool, ==)
 DEFBINOP_OP (ne, bool, bool, !=)
-
-BINOPDECL (el_and, a1, a2)
-{
-  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
-  return octave_value (v1.bool_value () && v2.bool_value ());
-}
-
-BINOPDECL (el_or, a1, a2)
-{
-  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
-  return octave_value (v1.bool_value () || v2.bool_value ());
-}
+DEFBINOP_OP (el_and, bool, bool, &&)
+DEFBINOP_OP (el_or, bool, bool, ||)
 
 void
 install_b_b_ops (void)

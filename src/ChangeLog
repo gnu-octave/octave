@@ -1,4 +1,11 @@
-2001-02-09  Cai Jianming  <caijianming@yahoo.co.uk>
+2001-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-binop.cc (tree_boolean_expression::rvalue):
+	Don't cast result to double.
+
+	* OPERATORS/op-b-b.cc: Allow & and | operators to return bool values.
+
+2001-02-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (DATA_REDUCTION): Undo previous change.
 

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.392 $)
+AC_REVISION($Revision: 1.393 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -170,12 +170,11 @@ AC_PROG_CXXCPP
 gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
   sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
 
-# 
-# Auto instantiate all templates, other than those that are explicitly
-# instantiated in Octave. Octave currently instantiates all needed
-# templates for GCC-2.8.x and EGCS-1.1.x, but not for newer GNU releases
-# nor for other supported compilers.
-#
+### Auto instantiate all templates, other than those that are explicitly
+### instantiated in Octave. Octave currently instantiates all needed
+### templates for GCC-2.8.x and EGCS-1.1.x, but not for newer GNU releases
+### nor for other supported compilers.
+
 cxx_auto_instantiate_templates=yes
 case "$gxx_version" in
   1.* | 2.[[0123456]].* | 2.7.[01]*)

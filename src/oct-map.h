@@ -101,7 +101,7 @@ Octave_map
 
   const_iterator seek (const std::string& k) const { return map.find (k); }
 
-  int contains (const std::string& k) const
+  bool contains (const std::string& k) const
     { return (seek (k) != map.end ()); }
 
   void clear (void) { map.clear (); }

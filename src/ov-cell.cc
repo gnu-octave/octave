@@ -942,30 +942,6 @@ rows and columns, respectively.\n\
   return retval;
 }
 
-DEFUN (cellstr, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cellstr (@var{string})\n\
-Create a new cell array object from the elements of the string\n\
-array @var{string}.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      string_vector s = args(0).all_strings ();
-
-      if (! error_state)
-	retval = Cell (s);
-      else
-	error ("cellstr: expecting argument to be a string");
-    }
-  else
-    print_usage ("cellstr");
-
-  return retval;
-}
-
 DEFUN (iscellstr, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscellstr (@var{cell})\n\
@@ -997,13 +973,49 @@ character string\n\
 		}
 	    }
 	  else
-	    error ("iscellstr: expecting argument to be a cell");
+	    retval = false;
 	}
       else
 	retval = false;
     }
   else
     print_usage ("iscellstr");
+
+  return retval;
+}
+
+// Note that since Fcellstr calls Fiscellstr, we need to have
+// Fiscellstr defined first (to provide a declaration) and also we
+// should keep it in the same file (so we don't have to provide a
+// declaration) and so we don't have to use feval to call it.
+
+DEFUN (cellstr, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cellstr (@var{string})\n\
+Create a new cell array object from the elements of the string\n\
+array @var{string}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      octave_value_list tmp = Fiscellstr (args, 1);
+
+      if (tmp(0).is_true ())
+	retval = args(0);
+      else
+	{
+	  string_vector s = args(0).all_strings ();
+
+	  if (! error_state)
+	    retval = Cell (s);
+	  else
+	    error ("cellstr: expecting argument to be a 2-d character array");
+	}
+    }
+  else
+    print_usage ("cellstr");
 
   return retval;
 }

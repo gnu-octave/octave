@@ -1,3 +1,13 @@
+2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-struct.cc (Frmfield): New function
+
+	* oct-map.h (Octave_map::contains): Return bool, not int.
+
+	* ov-cell.cc (Fiscellstr): No error if arg is not a cell array.
+	(Fcellstr): Return arg if it is already a cell array of character
+	strings.
+
 2004-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-bool.cc (octave_bool::load_hdf5, octave_bool::save_hdf5):

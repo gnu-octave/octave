@@ -70,7 +70,7 @@ maintainer-clean::
 	rm -f tags TAGS Makefile config.log config.status
 
 dist:
-	$(LN_S) $(DISTFILES) ../`cat ../.fname`/scripts
+	ln $(DISTFILES) ../`cat ../.fname`/scripts
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: dist
 

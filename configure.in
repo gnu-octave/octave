@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.251 $)
+AC_REVISION($Revision: 1.252 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -1041,6 +1041,8 @@ fi
 AC_SUBST(RUNTEST)
 
 AC_PROG_INSTALL
+INSTALL_SCRIPT='${INSTALL}'
+AC_SUBST(INSTALL_SCRIPT)
 
 EXE=
 case "$canonical_host_type" in

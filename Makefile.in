@@ -21,6 +21,9 @@ $(TARGETS): FORCE
 $(NO_DEP_TARGETS): FORCE
 	$(MAKE) -f octMakefile omit_deps=true $@
 
+install-strip:
+	$(MAKE) -f octMakefile INSTALL_PROGRAM='${INSTALL} -s' install
+
 binary-dist: FORCE
 	@echo "***"
 	@echo "*** you must specify either static or dynamic:"
@@ -76,6 +79,7 @@ help: header-msg
 	@echo "  all                  build everything"
 	@echo "  check                run self tests"
 	@echo "  install              install files"
+	@echo "  install-strip        same as install but strip binaries"
 	@echo "  uninstall            delete installed files"
 	@echo ""
 	@echo "  dist                 create a source distribution"
@@ -103,6 +107,8 @@ help: header-msg
 	@echo "  liboctave            make all in subdirectory liboctave"
 	@echo "  scripts              make all in subdirectory scripts"
 	@echo "  src                  make all in subdirectory src"
+	@echo ""
+	@echo "  help                 print this message"
 	@echo ""
 
 FORCE:

@@ -16,6 +16,7 @@ include $(TOPDIR)/Makeconf
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
 CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
@@ -101,8 +102,8 @@ BUGS:
 
 install::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
-	$(INSTALL_PROGRAM) octave-bug $(bindir)/octave-bug
-	$(INSTALL_PROGRAM) mkoctfile $(bindir)/mkoctfile
+	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug
+	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile
 	$(INSTALL_DATA) config.h $(octincludedir)/config.h
 
 maintainer-clean::

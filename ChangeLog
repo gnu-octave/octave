@@ -1,4 +1,15 @@
+Wed Jan 29 00:18:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (INSTALL_SCRIPT): Substitute this in Makefiles.
+	* octMakefile.in (INSTALL_SCRIPT): New macro.
+	(install): Use it.
+	* Makefile.in (install-strip): New target.
+
 Tue Jan 28 09:48:32 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Don't look for values-X*.o.  This is
+	apparently added automatically now by gcc.  Don't put space
+	between -L and directory name.
 
 	* Makefile.in (help): New target.
 	(header-msg): extract from all.

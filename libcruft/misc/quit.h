@@ -161,8 +161,8 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 #ifdef __cplusplus
 }
 
-// These should only be declared for C++ code, and should also be
-// outside of any extern "C" block.
+/* These should only be declared for C++ code, and should also be
+   outside of any extern "C" block.  */
 
 extern void (*octave_interrupt_hook) (void);
 extern void (*octave_bad_alloc_hook) (void);

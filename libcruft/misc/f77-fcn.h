@@ -98,8 +98,8 @@ extern int f77_exception_encountered;
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;
 
-// XXX FIXME XXX -- these should work for SV1 or Y-MP systems but will
-// need to be changed for others.
+/* XXX FIXME XXX -- these should work for SV1 or Y-MP systems but will
+   need to be changed for others.  */
 
 typedef union
 {
@@ -159,7 +159,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #else
 
-// Assume f2c-compatible calling convention
+/* Assume f2c-compatible calling convention.  */
 
 #define F77_CHAR_ARG(x) x
 #define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)

@@ -1,3 +1,9 @@
+2002-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_AIX): Move before AC_MINIX and AC_ISC_POSIX.
+	(AH_BOTTOM): Move contents of acconfig.h here.
+	* acconfig.h: Delete.
+
 2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_CONFIG_FILES): Add libcruft/daspk/Makefile to

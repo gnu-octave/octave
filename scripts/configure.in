@@ -26,7 +26,9 @@ AC_INIT(startup/octaverc)
 
 AC_PROG_INSTALL
 
-AC_OUTPUT(Makefile audio/Makefile control/Makefile elfun/Makefile \
+AC_OUTPUT(Makefile audio/Makefile control/Makefile control/base/Makefile \
+	  control/hinf/Makefile control/obsolete/Makefile \
+	  control/system/Makefile control/util/Makefile elfun/Makefile \
 	  finance/Makefile general/Makefile image/Makefile io/Makefile \
 	  linear-algebra/Makefile miscellaneous/Makefile plot/Makefile \
 	  polynomial/Makefile quaternion/Makefile set/Makefile \

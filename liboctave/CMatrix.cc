@@ -817,6 +817,8 @@ ComplexMatrix::inverse (int& info, double& rcond) const
 ComplexMatrix
 ComplexMatrix::pseudo_inverse (double tol)
 {
+  ComplexMatrix retval;
+
   ComplexSVD result (*this);
 
   DiagMatrix S = result.singular_values ();
@@ -841,14 +843,16 @@ ComplexMatrix::pseudo_inverse (double tol)
     r--;
 
   if (r < 0)
-    return ComplexMatrix (nc, nr, 0.0);
+    retval = ComplexMatrix (nc, nr, 0.0);
   else
     {
       ComplexMatrix Ur = U.extract (0, 0, nr-1, r);
       DiagMatrix D = DiagMatrix (sigma.extract (0, r)) . inverse ();
       ComplexMatrix Vr = V.extract (0, 0, nc-1, r);
-      return Vr * D * Ur.hermitian ();
+      retval = Vr * D * Ur.hermitian ();
     }
+
+  return retval;
 }
 
 ComplexMatrix

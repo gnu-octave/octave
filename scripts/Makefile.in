@@ -18,6 +18,8 @@ SOURCES = computer.in *.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
+DISTDIRS = amr-image
+
 MFILES = $(wildcard $(srcdir)/*.m)
 MFILES_NO_DIR = $(notdir $(MFILES))
 
@@ -76,8 +78,10 @@ realclean: distclean
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
+	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
 .PHONY: local-dist
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
+	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
 .PHONY: dist

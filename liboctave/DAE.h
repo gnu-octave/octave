@@ -53,8 +53,8 @@ public:
 
   Vector integrate (double t);
 
-  Matrix integrate (const Vector& tout, const Matrix& xdot_out);
-  Matrix integrate (const Vector& tout, const Matrix& xdot_out,
+  Matrix integrate (const Vector& tout, Matrix& xdot_out);
+  Matrix integrate (const Vector& tout, Matrix& xdot_out,
 		    const Vector& tcrit); 
 
 protected:

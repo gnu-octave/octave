@@ -112,7 +112,7 @@ infodir = $(prefix)/info
 datadir = $(prefix)/lib/octave
 
 # Where to put installed include files.
-includedir = $(prefix)/include
+includedir = $(prefix)/include/octave
 
 # The type of computer we are running on.
 target_host_type = @target_host_type@
@@ -131,3 +131,31 @@ target_host_type = @target_host_type@
 
 .cc.o:
 	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $<
+
+# Here is a rule for generating dependencies for .cc files:
+
+%.d: %.cc
+	rm -f $@
+	-if test "$(srcdir)" = "." ; then \
+	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
+	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
+	    mv $@.tmp $@ ; \
+	else \
+	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
+	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
+	    mv $@.tmp $@ ; \
+	fi
+
+# And one for .c files.too:
+
+%.d: %.c
+	rm -f $@
+	-if test "$(srcdir)" = "." ; then \
+	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
+	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
+	    mv $@.tmp $@ ; \
+	else \
+	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
+	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
+	    mv $@.tmp $@ ; \
+	fi

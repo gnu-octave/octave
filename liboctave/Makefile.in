@@ -19,7 +19,9 @@ INCLUDES = Array.h Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h \
 	QLD.h QP.h QPSOL.h Quad.h Range.h mx-kludge.h lo-error.h \
 	f77-uscore.h sun-utils.h
 
-SOURCES = Array.cc Bounds.cc ColVector.cc CollocWt.cc DAE.cc \
+TEMPLATE_SRC = Array.cc
+
+SOURCES = $(TEMPLATE_SRC) Bounds.cc ColVector.cc CollocWt.cc DAE.cc \
 	DAEFunc.cc DiagMatrix.cc FEGrid.cc FSQP.cc LinConst.cc LP.cc \
 	LPsolve.cc Matrix-ext.cc Matrix.cc NLConst.cc NLEqn.cc \
 	NLFunc.cc NPSOL.cc Objective.cc ODE.cc ODEFunc.cc QLD.cc \
@@ -53,7 +55,7 @@ install: all
 	$(RANLIB) $(libdir)/liboctave.a
 	if test -d $(includedir) ; then true ; \
 	else $(TOPDIR)/mkpath $(includedir) ; fi
-	for f in $(INCLUDES) ; do \
+	for f in $(INCLUDES) $(TEMPLATE_SRC) ; do \
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
 	done

@@ -56,8 +56,8 @@ function sys = sysmult (...)
   [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,1));
   for kk=2:nargin
     [n,nz,mh,ph,Hyd] = sysdimensions(nth(arglist,kk));
-    if(mh != pg)
-      error("arg %d has %d outputs; arg %d has vs %d inputs",kk,ph,kk-1,mg);
+    if(ph != mg)
+      error("arg %d has %d outputs; arg %d has %d inputs",kk,ph,kk-1,mg);
     endif
     [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,kk));   # for next iteration
   endfor

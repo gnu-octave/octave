@@ -1,54 +1,23 @@
-Subject: ANNOUNCE: Octave Version 2.0 released
+Subject: ANNOUNCE: Octave Version 2.0.1 released
 
-Octave version 2.0 is now available for ftp from ftp.che.wisc.edu
-in the directory /pub/octave.  Diffs from the previous release are not
-available because they would be quite large.
+Octave version 2.0.1 is now available for ftp from ftp.che.wisc.edu
+in the directory /pub/octave.  Diffs from the previous release are
+also available in the same directory.
 
-This is a major new release and includes many new features.
-User-visible changes since the last release are listed in the file
-NEWS, which is included in the distribution and available from
-ftp.che.wisc.edu in the file /pub/octave/NEWS.  The ChangeLog files in
-the source distribution contain a more detailed record of changes
-made since the last release.
+  -rw-r--r--   1 jwe  3269864 Jan  7 03:02 octave-2.0.1.tar.gz
+  -rw-r--r--   1 jwe    33695 Jan  7 03:10 octave-2.0-2.0.1.patch.gz
 
-Most bugs reported since the release of version 1.1.1 have been fixed.
-You can help make Octave more reliable by reporting any bugs you find
-to bug-octave@bevo.che.wisc.edu.
+This is a bug-fixing release.  Most bugs reported since the release of
+version 2.0 have been fixed.  There are no new features.  You can help
+make Octave more reliable by reporting any bugs you find to
+bug-octave@bevo.che.wisc.edu.
 
-What is Octave?
----------------
+Octave is a high-level interactive language primarily intended for
+numerical computations.  It is mostly compatible with Matlab.
 
-Octave is a high-level interactive language, primarily intended for
-numerical computations that is mostly compatible with Matlab.
+Additional information is available on the WWW at
 
-Octave can do arithmetic for real and complex scalars and matrices,
-solve sets of nonlinear algebraic equations, integrate functions over
-finite and infinite intervals, and integrate systems of ordinary
-differential and differential-algebraic equations.
-
-Octave uses the GNU readline library to handle reading and editing
-input.  By default, the line editing commands are similar to the
-cursor movement commands used by GNU Emacs, and a vi-style line
-editing interface is also available.  At the end of each session, the
-command history is saved, so that commands entered during previous
-sessions are not lost.
-
-The Octave distribution includes a 200+ page Texinfo manual.  Access
-to the complete text of the manual is available via the help command
-at the Octave prompt.
-
-Two and three dimensional plotting is fully supported using gnuplot.
-
-The underlying numerical solvers are currently standard Fortran ones
-like Lapack, Odepack, Dassl, the Blas, etc., packaged in a library
-of C++ classes.  If possible, the Fortran subroutines are compiled
-with the system's Fortran compiler, and called directly from the C++
-functions.  If that's not possible, you can still compile Octave if
-you have the free Fortran to C translator f2c.
-
-Octave is also free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation.
+  http://www.che.wisc.edu/octave
 
 -- 
 John W. Eaton

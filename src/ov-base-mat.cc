@@ -93,7 +93,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
 	else
 	  {
 	    std::string nm = type_name ();
-	    error ("in indexed assignment of %s, last rhs index must be ()",
+	    error ("in indexed assignment of %s, last lhs index must be ()",
 		   nm.c_str ());
 	  }
       }

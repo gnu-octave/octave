@@ -1,3 +1,9 @@
+2003-09-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (octave_cell::subsasgn): Also attempt empty
+	conversion after extracting single element from cell array to
+	allow things like x{i}.elt = rhs to work.
+
 2003-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h (octave_value::dim_vector): New function.

@@ -158,7 +158,11 @@ octave_cell::subsasgn (const std::string& type,
 
 		    tmp.make_unique ();
 
-		    t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+		    if (! tmp.is_defined () || tmp.is_empty ())
+		      tmp = octave_value::empty_conv (type.substr (1), rhs);
+
+		    if (! error_state)
+		      t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
 		  }
 	      }
 	  }

@@ -121,19 +121,19 @@ static int verbatim_pwd = 1;
 /*
  * Are all elements of a constant nonzero?
  */
-tree_constant *
-builtin_all (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_all (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("all");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].all ();
+	  retval.resize (1);
+	  retval(0) = args(1).all ();
 	}
     }
 
@@ -143,19 +143,19 @@ builtin_all (const tree_constant *args, int nargin, int nargout)
 /*
  * Are any elements of a constant nonzero?
  */
-tree_constant *
-builtin_any (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_any (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("any");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].any ();
+	  retval.resize (1);
+	  retval(0) = args(1).any ();
 	}
     }
 
@@ -165,12 +165,12 @@ builtin_any (const tree_constant *args, int nargin, int nargout)
 /*
  * Balancing for eigenvalue problems
  */
-tree_constant *
-builtin_balance (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_balance (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin <= 1 || nargin > 4 || nargout < 1 || nargout > 4)
+  if (nargin <= 1 || nargin > 4 || nargout < 0 || nargout > 4)
     print_usage ("balance");
   else
     {
@@ -184,14 +184,17 @@ builtin_balance (const tree_constant *args, int nargin, int nargout)
 /*
  * Cholesky factorization.
  */
-tree_constant *
-builtin_chol (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_chol (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && nargout == 1)
+  if (nargin == 2 && (nargout == 0 || nargout == 1))
     DLD_BUILTIN (args, nargin, nargout, chol,
-                retval = chol (args, nargin, nargout);)
+		 {
+		   retval.resize (1);
+		   retval(0) = chol (args(1));
+		 })
   else
     usage ("R = chol(A) \n");
 
@@ -201,9 +204,11 @@ builtin_chol (const tree_constant *args, int nargin, int nargout)
 /*
  * Clear the screen?
  */
-tree_constant *
-builtin_clc (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_clc (const Octave_object& args, int nargin, int nargout)
 {
+  Octave_object retval;
+
   rl_beg_of_line ();
   rl_kill_line (1);
 
@@ -218,16 +223,16 @@ builtin_clc (const tree_constant *args, int nargin, int nargout)
 
   fflush (rl_outstream);
 
-  return NULL_TREE_CONST;
+  return retval;
 }
 
 /*
  * Time in a vector.
  */
-tree_constant *
-builtin_clock (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_clock (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   time_t now;
   struct tm *tm;
@@ -243,8 +248,8 @@ builtin_clock (const tree_constant *args, int nargin, int nargout)
   m.elem (0, 4) = tm->tm_min;
   m.elem (0, 5) = tm->tm_sec;
 
-  retval = new tree_constant [2];
-  retval[0] = tree_constant (m);
+  retval.resize (1);
+  retval(0) = tree_constant (m);
 
   return retval;
 }
@@ -252,10 +257,10 @@ builtin_clock (const tree_constant *args, int nargin, int nargout)
 /*
  * Close the stream to the plotter.
  */
-tree_constant *
-builtin_closeplot (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_closeplot (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   close_plot_stream ();
   return retval;
 }
@@ -263,10 +268,10 @@ builtin_closeplot (const tree_constant *args, int nargin, int nargout)
 /*
  * Collocation roots and weights.
  */
-tree_constant *
-builtin_colloc (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_colloc (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin < 2 || nargin > 4)
     print_usage ("colloc");
@@ -280,38 +285,38 @@ builtin_colloc (const tree_constant *args, int nargin, int nargout)
 /*
  * Cumulative sums and products.
  */
-tree_constant *
-builtin_cumprod (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_cumprod (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("cumprod");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].cumprod ();
+	  retval.resize (1);
+	  retval(0) = args(1).cumprod ();
 	}
     }
 
   return retval;
 }
 
-tree_constant *
-builtin_cumsum (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_cumsum (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("cumsum");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].cumsum ();
+	  retval.resize (1);
+	  retval(0) = args(1).cumsum ();
 	}
     }
 
@@ -321,12 +326,12 @@ builtin_cumsum (const tree_constant *args, int nargin, int nargout)
 /*
  * DAEs.
  */
-tree_constant *
-builtin_dassl (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_dassl (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = new tree_constant [2];
+  Octave_object retval;
 
-  if ((nargin == 5 || nargin == 6) && nargout > 0)
+  if ((nargin == 5 || nargin == 6) && nargout >= 0)
     DLD_BUILTIN (args, nargin, nargout, dassl,
 		 retval = dassl (args, nargin, nargout);)
   else
@@ -335,10 +340,10 @@ builtin_dassl (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_dassl_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_dassl_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   DLD_BUILTIN (args, nargin, nargout, dassl_options,
 	       retval = dassl_options (args, nargin, nargout);)
@@ -349,10 +354,10 @@ builtin_dassl_options (const tree_constant *args, int nargin, int nargout)
 /*
  * Time in a string.
  */
-tree_constant *
-builtin_date (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_date (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   time_t now;
   struct tm *tm;
@@ -363,8 +368,8 @@ builtin_date (const tree_constant *args, int nargin, int nargout)
   int len = strftime (date, 31, "%d-%b-%y", tm);
   if (len > 0)
     {
-      retval = new tree_constant [2];
-      retval[0] = tree_constant (date);
+      retval.resize (1);
+      retval(0) = tree_constant (date);
     }
 
   return retval;
@@ -373,16 +378,16 @@ builtin_date (const tree_constant *args, int nargin, int nargout)
 /*
  * Determinant of a matrix.
  */
-tree_constant *
-builtin_det (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_det (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     DLD_BUILTIN (args, nargin, nargout, det,
 		 {
-		   retval = new tree_constant [2];
-		   retval[0] = determinant (args[1]);
+		   retval.resize (1);
+		   retval(0) = determinant (args(1));
 		 })
   else
     print_usage ("det");
@@ -393,20 +398,20 @@ builtin_det (const tree_constant *args, int nargin, int nargout)
 /*
  * Diagonal elements of a matrix.
  */
-tree_constant *
-builtin_diag (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_diag (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     {
-      retval = new tree_constant [2];
-      retval[0] = args[1].diag ();
+      retval.resize (1);
+      retval(0) = args(1).diag ();
     }
   else if (nargin == 3)
     {
-      retval = new tree_constant [2];
-      retval[0] = args[1].diag (args[2]);
+      retval.resize (1);
+      retval(0) = args(1).diag (args(2));
     }
   else
     print_usage ("diag");
@@ -417,13 +422,13 @@ builtin_diag (const tree_constant *args, int nargin, int nargout)
 /*
  * Display value without trimmings.
  */
-tree_constant *
-builtin_disp (tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_disp (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
-    args[1].eval (1);
+    args(1).eval (1);
   else
     print_usage ("disp");
 
@@ -433,12 +438,12 @@ builtin_disp (tree_constant *args, int nargin, int nargout)
 /*
  * Compute eigenvalues and eigenvectors.
  */
-tree_constant *
-builtin_eig (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_eig (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && (nargout == 1 || nargout == 2))
+  if (nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
     DLD_BUILTIN (args, nargin, nargout, eig,
 		 retval = eig (args, nargin, nargout);)
   else
@@ -452,23 +457,23 @@ builtin_eig (const tree_constant *args, int nargin, int nargout)
  * eventually take us up to the top level, possibly printing traceback
  * messages as we go.
  */
-tree_constant *
-builtin_error (tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_error (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   char *msg = "unspecified_error";
 
-  if (nargin == 2 && args != NULL_TREE_CONST && args[1].is_defined ())
+  if (nargin == 2 && args.length () > 0 && args(1).is_defined ())
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  msg = args[1].string_value ();
+	  msg = args(1).string_value ();
 
 	  if (msg == (char *) NULL || *msg == '\0')
 	    return retval;
 	}
-      else if (args[1].is_empty ())
+      else if (args(1).is_empty ())
 	{
 	  return retval;
 	}
@@ -482,16 +487,16 @@ builtin_error (tree_constant *args, int nargin, int nargout)
 /*
  * Evaluate text argument as octave source.
  */
-tree_constant *
-builtin_eval (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_eval (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     {
       int parse_status = 0;
-      retval = new tree_constant [2];
-      retval[0] = eval_string (args[1], parse_status);
+      retval.resize (1);
+      retval(0) = eval_string (args(1), parse_status);
     }
   else
     print_usage ("eval");
@@ -502,16 +507,16 @@ builtin_eval (const tree_constant *args, int nargin, int nargout)
 /*
  * Check if variable or file exists.
  */
-tree_constant *
-builtin_exist (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_exist (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && args[1].is_string_type ())
+  if (nargin == 2 && args(1).is_string_type ())
     {
-      int status = identifier_exists (args[1].string_value ());
-      retval = new tree_constant [2];
-      retval[0] = tree_constant ((double) status);
+      int status = identifier_exists (args(1).string_value ());
+      retval.resize (1);
+      retval(0) = tree_constant ((double) status);
     }
   else
     print_usage ("exist");
@@ -522,16 +527,16 @@ builtin_exist (const tree_constant *args, int nargin, int nargout)
 /*
  * Matrix exponential.
  */
-tree_constant *
-builtin_expm (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_expm (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     DLD_BUILTIN (args, nargin, nargout, matrix_exp,
 		 {
-		   retval = new tree_constant [2];
-		   retval[0] = matrix_exp (args[1]);
+		   retval.resize (1);
+		   retval(0) = matrix_exp (args(1));
 		 })
   else
     print_usage ("expm");
@@ -542,20 +547,20 @@ builtin_expm (const tree_constant *args, int nargin, int nargout)
 /*
  * Identity matrix.
  */
-tree_constant *
-builtin_eye (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_eye (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   switch (nargin)
     {
     case 2:
-      retval = new tree_constant [2];
-      retval[0] = identity_matrix (args[1]);
+      retval.resize (1);
+      retval(0) = identity_matrix (args(1));
       break;
     case 3:
-      retval = new tree_constant [2];
-      retval[0] = identity_matrix (args[1], args[2]);
+      retval.resize (1);
+      retval(0) = identity_matrix (args(1), args(2));
       break;
     default:
       print_usage ("eye");
@@ -568,10 +573,10 @@ builtin_eye (const tree_constant *args, int nargin, int nargout)
 /*
  * Closing a file
  */
-tree_constant *
-builtin_fclose (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fclose (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("fclose");
@@ -584,10 +589,10 @@ builtin_fclose (const tree_constant *args, int nargin, int nargout)
 /*
  * Check file for EOF condition.
  */
-tree_constant *
-builtin_feof (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_feof (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("feof");
@@ -600,10 +605,10 @@ builtin_feof (const tree_constant *args, int nargin, int nargout)
 /*
  * Check file for error condition.
  */
-tree_constant *
-builtin_ferror (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_ferror (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("ferror");
@@ -616,10 +621,10 @@ builtin_ferror (const tree_constant *args, int nargin, int nargout)
 /*
  * Evaluate first argument as a function.
  */
-tree_constant *
-builtin_feval (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_feval (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin > 1)
     retval = feval (args, nargin, nargout);
@@ -632,10 +637,10 @@ builtin_feval (const tree_constant *args, int nargin, int nargout)
 /*
  * Flushing output to a file.
  */
-tree_constant *
-builtin_fflush (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fflush (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("fflush");
@@ -648,16 +653,16 @@ builtin_fflush (const tree_constant *args, int nargin, int nargout)
 /*
  * Fast Fourier Transform.
  */
-tree_constant *
-builtin_fft (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fft (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     DLD_BUILTIN (args, nargin, nargout, fft,
 		 {
-		   retval = new tree_constant [2];
-		   retval[0] = fft (args[1]);
+		   retval.resize (1);
+		   retval(0) = fft (args(1));
 		 })
   else
     print_usage ("fft");
@@ -668,12 +673,12 @@ builtin_fft (const tree_constant *args, int nargin, int nargout)
 /*
  * Get a string from a file.
  */
-tree_constant *
-builtin_fgets (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fgets (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin != 3  && nargout < 3)
+  if (nargin != 3)
     print_usage ("fgets");
   else
     retval = fgets_internal (args, nargout);
@@ -685,15 +690,15 @@ builtin_fgets (const tree_constant *args, int nargin, int nargout)
  * Find nonzero elements.  This should probably only work if
  * do_fortran_indexing is true...
  */
-tree_constant *
-builtin_find (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_find (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     {
-      retval = new tree_constant [2];
-      retval[0] = find_nonzero_elem_idx (args[1]);
+      retval.resize (1);
+      retval(0) = find_nonzero_elem_idx (args(1));
     }
   else
     print_usage ("find");
@@ -704,18 +709,18 @@ builtin_find (const tree_constant *args, int nargin, int nargout)
 /*
  * Don\'t really count floating point operations.
  */
-tree_constant *
-builtin_flops (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_flops (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin > 2)
     print_usage ("flops");
 
   warning ("flops always returns zero");
 
-  retval = new tree_constant [2];
-  retval[0] = tree_constant (0.0);
+  retval.resize (1);
+  retval(0) = tree_constant (0.0);
 
   return retval;
 }
@@ -723,10 +728,10 @@ builtin_flops (const tree_constant *args, int nargin, int nargout)
 /*
  * Opening a file.
  */
-tree_constant *
-builtin_fopen (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fopen (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 3)
     print_usage ("fopen");
@@ -739,10 +744,10 @@ builtin_fopen (const tree_constant *args, int nargin, int nargout)
 /*
  * Formatted printing to a file.
  */
-tree_constant *
-builtin_fprintf (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fprintf (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin < 3)
     print_usage ("fprintf");
@@ -755,10 +760,10 @@ builtin_fprintf (const tree_constant *args, int nargin, int nargout)
 /*
  * Read binary data from a file.
  */
-tree_constant *
-builtin_fread (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fread (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin < 2 || nargin > 4)
     print_usage ("fread");
@@ -771,10 +776,10 @@ builtin_fread (const tree_constant *args, int nargin, int nargout)
 /*
  * Rewind a file.
  */
-tree_constant *
-builtin_frewind (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_frewind (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("frewind");
@@ -787,10 +792,10 @@ builtin_frewind (const tree_constant *args, int nargin, int nargout)
 /*
  * Report on open files.
  */
-tree_constant *
-builtin_freport (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_freport (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin > 1)
     warning ("freport: ignoring extra arguments");
@@ -803,10 +808,10 @@ builtin_freport (const tree_constant *args, int nargin, int nargout)
 /*
  * Formatted reading from a file.
  */
-tree_constant *
-builtin_fscanf (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fscanf (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2 && nargin != 3)
     print_usage ("fscanf");
@@ -819,10 +824,10 @@ builtin_fscanf (const tree_constant *args, int nargin, int nargout)
 /*
  * Seek a point in a file for reading and/or writing.
  */
-tree_constant *
-builtin_fseek (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fseek (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 3 && nargin != 4)
     print_usage ("fseek");
@@ -835,12 +840,12 @@ builtin_fseek (const tree_constant *args, int nargin, int nargout)
 /*
  * Nonlinear algebraic equations.
  */
-tree_constant *
-builtin_fsolve (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsolve (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+  if (nargin >= 3 && nargin <= 7 && nargout >= 0 && nargout <= 3)
     DLD_BUILTIN (args, nargin, nargout, fsolve,
 		 retval = fsolve (args, nargin, nargout);)
   else
@@ -849,10 +854,10 @@ builtin_fsolve (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_fsolve_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsolve_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   DLD_BUILTIN (args, nargin, nargout, fsolve_options,
 	       retval = fsolve_options (args, nargin, nargout);)
@@ -863,17 +868,17 @@ builtin_fsolve_options (const tree_constant *args, int nargin, int nargout)
 /*
  * NLPs.
  */
-tree_constant *
-builtin_fsqp (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsqp (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 #if defined (FSQP_MISSING)
   print_usage ("fsqp");
 #else
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
-      && (nargout >= 1 && nargout <= 3))
+      && (nargout >= 0 && nargout <= 3))
     DLD_BUILTIN (args, nargin, nargout, fsqp,
 		 retval = fsqp (args, nargin, nargout);)
   else
@@ -883,10 +888,10 @@ builtin_fsqp (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_fsqp_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsqp_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 #if defined (FSQP_MISSING)
   print_usage ("fsqp_options");
@@ -901,10 +906,10 @@ builtin_fsqp_options (const tree_constant *args, int nargin, int nargout)
 /*
  * Tell current position of file.
  */
-tree_constant *
-builtin_ftell (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_ftell (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("ftell");
@@ -917,10 +922,10 @@ builtin_ftell (const tree_constant *args, int nargin, int nargout)
 /*
  * Write binary data to a file.
  */
-tree_constant *
-builtin_fwrite (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fwrite (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin < 3 || nargin > 4)
     print_usage ("fwrite");
@@ -933,19 +938,19 @@ builtin_fwrite (const tree_constant *args, int nargin, int nargout)
 /*
  * Get the value of an environment variable.
  */
-tree_constant *
-builtin_getenv (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_getenv (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && args[1].is_string_type ())
+  if (nargin == 2 && args(1).is_string_type ())
     {
-      retval = new tree_constant [2];
-      char *value = getenv (args[1].string_value ());
+      retval.resize (1);
+      char *value = getenv (args(1).string_value ());
       if (value != (char *) NULL)
-	retval[0] = tree_constant (value);
+	retval(0) = tree_constant (value);
       else
-	retval[0] = tree_constant ("");
+	retval(0) = tree_constant ("");
     }
   else
     print_usage ("getenv");
@@ -956,16 +961,16 @@ builtin_getenv (const tree_constant *args, int nargin, int nargout)
 /*
  * Inverse Fast Fourier Transform.
  */
-tree_constant *
-builtin_ifft (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_ifft (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     DLD_BUILTIN (args, nargin, nargout, ifft,
 		 {
-		   retval = new tree_constant [2];
-		   retval[0] = ifft (args[1]);
+		   retval.resize (1);
+		   retval(0) = ifft (args(1));
 		 })
   else
     print_usage ("ifft");
@@ -976,16 +981,16 @@ builtin_ifft (const tree_constant *args, int nargin, int nargout)
 /*
  * Inverse of a square matrix.
  */
-tree_constant *
-builtin_inv (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_inv (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     DLD_BUILTIN (args, nargin, nargout, inv,
 		 {
-		   retval = new tree_constant [2];
-		   retval[0] = inverse (args[1]);
+		   retval.resize (1);
+		   retval(0) = inverse (args(1));
 		 })
   else
     print_usage ("inv");
@@ -996,15 +1001,15 @@ builtin_inv (const tree_constant *args, int nargin, int nargout)
 /*
  * Prompt user for input.
  */
-tree_constant *
-builtin_input (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_input (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2 || nargin == 3)
     {
-      retval = new tree_constant [2];
-      retval[0] = get_user_input (args, nargin, nargout);
+      retval.resize (1);
+      retval(0) = get_user_input (args, nargin, nargout);
     }
   else
     print_usage ("input");
@@ -1015,17 +1020,17 @@ builtin_input (const tree_constant *args, int nargin, int nargout)
 /*
  * Does the given string name a global variable?
  */
-tree_constant *
-builtin_is_global (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_is_global (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = new tree_constant [2];
-  retval[0] = tree_constant (0.0);
+  Octave_object retval(1);
+  retval(0) = tree_constant (0.0);
 
-  if (nargin == 2 && args[1].is_string_type ())
+  if (nargin == 2 && args(1).is_string_type ())
     {
-      char *name = args[1].string_value ();
+      char *name = args(1).string_value ();
       if (is_globally_visible (name))
-	retval[0] = tree_constant (1.0);
+	retval(0) = tree_constant (1.0);
     }
   else
     print_usage ("is_global");
@@ -1036,29 +1041,29 @@ builtin_is_global (const tree_constant *args, int nargin, int nargout)
 /*
  * Is the argument a string?
  */
-tree_constant *
-builtin_isstr (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_isstr (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("isstr");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].isstr ();
+	  retval.resize (1);
+	  retval(0) = args(1).isstr ();
 	}
     }
 
   return retval;
 }
 
-tree_constant *
-builtin_kbhit (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_kbhit (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 // XXX FIXME XXX -- add timeout and default value args?
 
@@ -1068,8 +1073,8 @@ builtin_kbhit (const tree_constant *args, int nargin, int nargout)
       char *s = new char [2];
       s[0] = c;
       s[1] = '\0';
-      retval = new tree_constant [2];
-      retval [0] = tree_constant (s);
+      retval.resize (1);
+      retval(0) = tree_constant (s);
     }
 
   return retval;
@@ -1078,15 +1083,15 @@ builtin_kbhit (const tree_constant *args, int nargin, int nargout)
 /*
  * Maybe help in debugging.
  */
-tree_constant *
-builtin_keyboard (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_keyboard (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1 || nargin == 2)
     {
-      retval = new tree_constant [2];
-      retval[0] = get_user_input (args, nargin, nargout, 1);
+      retval.resize (1);
+      retval(0) = get_user_input (args, nargin, nargout, 1);
     }
   else
     print_usage ("keyboard");
@@ -1097,13 +1102,13 @@ builtin_keyboard (const tree_constant *args, int nargin, int nargout)
 /*
  * Matrix logarithm.
  */
-tree_constant *
-builtin_logm (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_logm (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
-    retval = matrix_log (args[1]);
+    retval = matrix_log (args(1));
   else
     print_usage ("logm");
 
@@ -1113,17 +1118,17 @@ builtin_logm (const tree_constant *args, int nargin, int nargout)
 /*
  * LPs.
  */
-tree_constant *
-builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lpsolve (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 // Force a bad value of inform, and empty matrices for x and phi.
-  retval = new tree_constant [4];
+  retval.resize (3);
   Matrix m;
-  retval[0] = tree_constant (m);
-  retval[1] = tree_constant (m);
-  retval[2] = tree_constant (-1.0);
+  retval(0) = tree_constant (m);
+  retval(1) = tree_constant (m);
+  retval(2) = tree_constant (-1.0);
 
   if (nargin == 0)
     DLD_BUILTIN (args, nargin, nargout, lpsolve,
@@ -1134,10 +1139,10 @@ builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_lpsolve_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lpsolve_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   DLD_BUILTIN (args, nargin, nargout, lpsolve_options,
 	       retval = lpsolve_options (args, nargin, nargout);)
@@ -1148,12 +1153,12 @@ builtin_lpsolve_options (const tree_constant *args, int nargin, int nargout)
 /*
  * ODEs.
  */
-tree_constant *
-builtin_lsode (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lsode (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin == 4 || nargin == 5) && nargout == 1)
+  if ((nargin == 4 || nargin == 5) && (nargout == 0 || nargout == 1))
     DLD_BUILTIN (args, nargin, nargout, lsode,
 		 retval = lsode (args, nargin, nargout);)
   else
@@ -1162,10 +1167,10 @@ builtin_lsode (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_lsode_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lsode_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   DLD_BUILTIN (args, nargin, nargout, lsode_options,
 	       retval = lsode_options (args, nargin, nargout);)
@@ -1176,14 +1181,14 @@ builtin_lsode_options (const tree_constant *args, int nargin, int nargout)
 /*
  * LU factorization.
  */
-tree_constant *
-builtin_lu (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lu (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2 && nargout < 4)
     DLD_BUILTIN (args, nargin, nargout, lu,
-		 retval = lu (args[1], nargout);)
+		 retval = lu (args(1), nargout);)
   else
     print_usage ("lu");
 
@@ -1193,13 +1198,13 @@ builtin_lu (const tree_constant *args, int nargin, int nargout)
 /*
  * Max values.
  */
-tree_constant *
-builtin_max (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_max (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin == 2 && (nargout == 1 || nargout == 2))
-      || (nargin == 3 && nargout == 1))
+  if ((nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
+      || (nargin == 3 && (nargout == 0 || nargout == 1)))
     retval = column_max (args, nargin, nargout);
   else
     print_usage ("max");
@@ -1210,13 +1215,13 @@ builtin_max (const tree_constant *args, int nargin, int nargout)
 /*
  * Min values.
  */
-tree_constant *
-builtin_min (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_min (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin == 2 && (nargout == 1 || nargout == 2))
-      || (nargin == 3 && nargout == 1))
+  if ((nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
+      || (nargin == 3 && (nargout == 0 || nargout == 1)))
     retval = column_min (args, nargin, nargout);
   else
     print_usage ("min");
@@ -1227,24 +1232,24 @@ builtin_min (const tree_constant *args, int nargin, int nargout)
 /*
  * NLPs.
  */
-tree_constant *
-builtin_npsol (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_npsol (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 #if defined (NPSOL_MISSING)
 // Force a bad value of inform, and empty matrices for x, phi, and lambda.
-  retval = new tree_constant [4];
+  retval.resize (3);
   Matrix m;
-  retval[0] = tree_constant (m);
-  retval[1] = tree_constant (m);
-  retval[2] = tree_constant (-1.0);
-  retval[3] = tree_constant (m);
+  retval(0) = tree_constant (m);
+  retval(1) = tree_constant (m);
+  retval(2) = tree_constant (-1.0);
+  retval(3) = tree_constant (m);
   print_usage ("npsol");
 #else
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
-      && (nargout >= 1 && nargout <= 4))
+      && (nargout >= 0 && nargout <= 4))
     DLD_BUILTIN (args, nargin, nargout, npsol,
 		 retval = npsol (args, nargin, nargout);)
   else
@@ -1254,10 +1259,10 @@ builtin_npsol (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_npsol_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_npsol_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 #if defined (NPSOL_MISSING)
   print_usage ("npsol_options");
@@ -1272,20 +1277,20 @@ builtin_npsol_options (const tree_constant *args, int nargin, int nargout)
 /*
  * A matrix of ones.
  */
-tree_constant *
-builtin_ones (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_ones (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   switch (nargin)
     {
     case 2:
-      retval = new tree_constant [2];
-      retval[0] = fill_matrix (args[1], 1.0, "ones");
+      retval.resize (1);
+      retval(0) = fill_matrix (args(1), 1.0, "ones");
       break;
     case 3:
-      retval = new tree_constant [2];
-      retval[0] = fill_matrix (args[1], args[2], 1.0, "ones");
+      retval.resize (1);
+      retval(0) = fill_matrix (args(1), args(2), 1.0, "ones");
       break;
     default:
       print_usage ("ones");
@@ -1298,15 +1303,15 @@ builtin_ones (const tree_constant *args, int nargin, int nargout)
 /*
  * You guessed it.
  */
-tree_constant *
-builtin_pause (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_pause (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (! (nargin == 1 || nargin == 2))
     {
       print_usage ("pause");
-      return NULL_TREE_CONST;
+      return retval;
     }
 
   if (interactive)
@@ -1315,7 +1320,7 @@ builtin_pause (const tree_constant *args, int nargin, int nargout)
 	{
 	case 2:
 	  {
-	    int delay = NINT (args[1].double_value ());
+	    int delay = NINT (args(1).double_value ());
 	    if (delay > 0)
 	      {
 		sleep (delay);
@@ -1335,20 +1340,21 @@ builtin_pause (const tree_constant *args, int nargin, int nargout)
 /*
  * Delete turds from /tmp.
  */
-tree_constant *
-builtin_purge_tmp_files (const tree_constant *, int, int)
+Octave_object
+builtin_purge_tmp_files (const Octave_object& , int, int)
 {
+  Octave_object retval;
   cleanup_tmp_files ();
-  return NULL_TREE_CONST;
+  return retval;
 }
 
 /*
  * Formatted printing.
  */
-tree_constant *
-builtin_printf (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_printf (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin < 2)
     print_usage ("printf");
@@ -1361,19 +1367,19 @@ builtin_printf (const tree_constant *args, int nargin, int nargout)
 /*
  * Product.
  */
-tree_constant *
-builtin_prod (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_prod (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("prod");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].prod ();
+	  retval.resize (1);
+	  retval(0) = args(1).prod ();
 	}
     }
 
@@ -1383,10 +1389,10 @@ builtin_prod (const tree_constant *args, int nargin, int nargout)
 /*
  * Print name of current working directory.
  */
-tree_constant *
-builtin_pwd (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_pwd (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   char *directory;
 
   if (verbatim_pwd)
@@ -1408,8 +1414,8 @@ builtin_pwd (const tree_constant *args, int nargin, int nargout)
   if (directory)
     {
       char *s = strconcat (directory, "\n");
-      retval = new tree_constant [2];
-      retval[0] = tree_constant (s);
+      retval.resize (1);
+      retval(0) = tree_constant (s);
       delete [] s;
     }
   return retval;
@@ -1418,23 +1424,23 @@ builtin_pwd (const tree_constant *args, int nargin, int nargout)
 /*
  * QPs.
  */
-tree_constant *
-builtin_qpsol (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qpsol (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 #if defined (QPSOL_MISSING)
 // Force a bad value of inform, and empty matrices for x, phi, and lambda.
-  retval = new tree_constant [5];
+  retval.resize (4);
   Matrix m;
-  retval[0] = tree_constant (m);
-  retval[1] = tree_constant (m);
-  retval[2] = tree_constant (-1.0);
-  retval[3] = tree_constant (m);
+  retval(0) = tree_constant (m);
+  retval(1) = tree_constant (m);
+  retval(2) = tree_constant (-1.0);
+  retval(3) = tree_constant (m);
   print_usage ("qpsol");
 #else
   if ((nargin == 4 || nargin == 6 || nargin == 7 || nargin == 9)
-      && (nargout >= 1 && nargout <= 4))
+      && (nargout >= 0 && nargout <= 4))
     DLD_BUILTIN (args, nargin, nargout, qpsol,
 		 retval = qpsol (args, nargin, nargout);)
   else
@@ -1444,10 +1450,10 @@ builtin_qpsol (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_qpsol_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qpsol_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 #if defined (QPSOL_MISSING)
   print_usage ("qpsol");
@@ -1462,14 +1468,14 @@ builtin_qpsol_options (const tree_constant *args, int nargin, int nargout)
 /*
  * QR factorization.
  */
-tree_constant *
-builtin_qr (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qr (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2 && nargout < 3)
     DLD_BUILTIN (args, nargin, nargout, qr,
-		 retval = qr (args[1], nargout);)
+		 retval = qr (args(1), nargout);)
   else
     print_usage ("qr");
 
@@ -1479,10 +1485,10 @@ builtin_qr (const tree_constant *args, int nargin, int nargout)
 /*
  * generalized eigenvalues via qz
  */
-tree_constant *
-builtin_qzval (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qzval (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 3 && nargout < 2)
     DLD_BUILTIN (args, nargin, nargout, qzvalue,
@@ -1496,12 +1502,12 @@ builtin_qzval (const tree_constant *args, int nargin, int nargout)
 /*
  * Random numbers.
  */
-tree_constant *
-builtin_quad (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_quad (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin > 3 && nargin < 7) && (nargout > 0 && nargout < 5))
+  if ((nargin > 3 && nargin < 7) && (nargout >= 0 && nargout < 5))
     DLD_BUILTIN (args, nargin, nargout, quad,
 		 retval = do_quad (args, nargin, nargout);)
   else
@@ -1510,10 +1516,10 @@ builtin_quad (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_quad_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_quad_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   DLD_BUILTIN (args, nargin, nargout, quad_options,
 	       retval = quad_options (args, nargin, nargout);)
@@ -1524,23 +1530,24 @@ builtin_quad_options (const tree_constant *args, int nargin, int nargout)
 /*
  * I'm outta here.
  */
-tree_constant *
-builtin_quit (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_quit (const Octave_object& args, int nargin, int nargout)
 {
+  Octave_object retval;
   quitting_gracefully = 1;
   clean_up_and_exit (0);
-  return NULL_TREE_CONST;
+  return retval;
 }
 
 /*
  * Random numbers.
  */
-tree_constant *
-builtin_rand (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_rand (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin > 0 && nargin < 4) && nargout == 1)
+  if ((nargin > 0 && nargin < 4) && (nargout == 0 || nargout == 1))
     DLD_BUILTIN (args, nargin, nargout, rand,
 		 retval = rand_internal (args, nargin, nargout);)
   else
@@ -1552,10 +1559,10 @@ builtin_rand (const tree_constant *args, int nargin, int nargout)
 /*
  * Formatted reading.
  */
-tree_constant *
-builtin_scanf (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_scanf (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("scanf");
@@ -1568,15 +1575,15 @@ builtin_scanf (const tree_constant *args, int nargin, int nargout)
 /*
  * Convert a vector to a string.
  */
-tree_constant *
-builtin_setstr (tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_setstr (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     {
-      retval = new tree_constant [2];
-      retval[0] = args[1].convert_to_str ();
+      retval.resize (1);
+      retval(0) = args(1).convert_to_str ();
     }
   else
     print_usage ("setstr");
@@ -1587,14 +1594,14 @@ builtin_setstr (tree_constant *args, int nargin, int nargout)
 /*
  * Execute a shell command.
  */
-tree_constant *
-builtin_shell_command (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_shell_command (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && args[1].is_string_type ())
+  if (nargin == 2 && args(1).is_string_type ())
     {
-      iprocstream cmd (args[1].string_value ());
+      iprocstream cmd (args(1).string_value ());
       char ch;
       ostrstream output_buf;
       while (cmd.get (ch))
@@ -1605,13 +1612,13 @@ builtin_shell_command (const tree_constant *args, int nargin, int nargout)
 	{
 	case 1:
 	  maybe_page_output (output_buf);
-	  retval = new tree_constant[1];
-	  retval[0] = tree_constant ((double) status);
+	  retval.resize (1);
+	  retval(0) = tree_constant ((double) status);
 	  break;
 	case 2:
-	  retval = new tree_constant[3];
-	  retval[0] = tree_constant ((double) status);
-	  retval[1] = tree_constant (output_buf.str ());
+	  retval.resize (2);
+	  retval(0) = tree_constant ((double) status);
+	  retval(1) = tree_constant (output_buf.str ());
 	  break;
 	  break;
 	}
@@ -1625,32 +1632,32 @@ builtin_shell_command (const tree_constant *args, int nargin, int nargout)
 /*
  * Report rows and columns.
  */
-tree_constant *
-builtin_size (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_size (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("size");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  int nr = args[1].rows ();
-	  int nc = args[1].columns ();
-	  if (nargout == 1)
+	  int nr = args(1).rows ();
+	  int nc = args(1).columns ();
+	  if (nargout == 0 || nargout == 1)
 	    {
 	      Matrix m (1, 2);
 	      m.elem (0, 0) = nr;
 	      m.elem (0, 1) = nc;
-	      retval = new tree_constant [2];
-	      retval[0] = tree_constant (m);
+	      retval.resize (1);
+	      retval(0) = tree_constant (m);
 	    }
 	  else if (nargout == 2)
 	    {
-	      retval = new tree_constant [3];
-	      retval[0] = tree_constant ((double) nr);
-	      retval[1] = tree_constant ((double) nc);
+	      retval.resize (2);
+	      retval(0) = tree_constant ((double) nr);
+	      retval(1) = tree_constant ((double) nc);
 	    }
 	  else
 	    print_usage ("size");
@@ -1663,10 +1670,10 @@ builtin_size (const tree_constant *args, int nargin, int nargout)
 /*
  * Sort columns.
  */
-tree_constant *
-builtin_sort (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_sort (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
     retval = sort (args, nargin, nargout);
@@ -1679,10 +1686,10 @@ builtin_sort (const tree_constant *args, int nargin, int nargout)
 /*
  * Formatted printing to a string.
  */
-tree_constant *
-builtin_sprintf (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_sprintf (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin < 2)
     print_usage ("sprintf");
@@ -1695,13 +1702,13 @@ builtin_sprintf (const tree_constant *args, int nargin, int nargout)
 /*
  * Matrix sqrt.
  */
-tree_constant *
-builtin_sqrtm (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_sqrtm (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 2)
-    retval = matrix_sqrt (args[1]);
+    retval = matrix_sqrt (args(1));
   else
     print_usage ("sqrtm");
 
@@ -1711,10 +1718,10 @@ builtin_sqrtm (const tree_constant *args, int nargin, int nargout)
 /*
  * Formatted reading from a string.
  */
-tree_constant *
-builtin_sscanf (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_sscanf (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 3)
     print_usage ("sscanf");
@@ -1727,19 +1734,19 @@ builtin_sscanf (const tree_constant *args, int nargin, int nargout)
 /*
  * Sum.
  */
-tree_constant *
-builtin_sum (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_sum (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("sum");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].sum ();
+	  retval.resize (1);
+	  retval(0) = args(1).sum ();
 	}
     }
 
@@ -1749,19 +1756,19 @@ builtin_sum (const tree_constant *args, int nargin, int nargout)
 /*
  * Sum of squares.
  */
-tree_constant *
-builtin_sumsq (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_sumsq (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin != 2)
     print_usage ("sumsq");
   else
     {
-      if (args != NULL_TREE_CONST && args[1].is_defined ())
+      if (args.length () > 0 && args(1).is_defined ())
 	{
-	  retval = new tree_constant [2];
-	  retval[0] = args[1].sumsq ();
+	  retval.resize (1);
+	  retval(0) = args(1).sumsq ();
 	}
     }
 
@@ -1771,12 +1778,12 @@ builtin_sumsq (const tree_constant *args, int nargin, int nargout)
 /*
  * Singluar value decomposition.
  */
-tree_constant *
-builtin_svd (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_svd (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && (nargout == 1 || nargout == 3))
+  if (nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 3))
     DLD_BUILTIN (args, nargin, nargout, svd,
 		 retval = svd (args, nargin, nargout);)
   else
@@ -1788,12 +1795,12 @@ builtin_svd (const tree_constant *args, int nargin, int nargout)
 /*
  * Sylvester equation solver.
  */
-tree_constant *
-builtin_syl (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_syl (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin == 4) && (nargout == 1))
+  if ((nargin == 4) && (nargout == 0 || nargout == 1))
     DLD_BUILTIN (args, nargin, nargout, syl,
 		 retval = syl (args, nargin, nargout);)
   else
@@ -1805,12 +1812,13 @@ builtin_syl (const tree_constant *args, int nargin, int nargout)
 /*
  * Schur Decomposition.
  */
-tree_constant *
-builtin_schur (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_schur (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if ((nargin == 3 || nargin == 2) && (nargout == 1 || nargout == 2))
+  if ((nargin == 3 || nargin == 2)
+      && (nargout == 0 || nargout == 1 || nargout == 2))
     DLD_BUILTIN (args, nargin, nargout, schur,
 		 retval = schur (args, nargin, nargout);)
   else
@@ -1822,12 +1830,12 @@ builtin_schur (const tree_constant *args, int nargin, int nargout)
 /*
  * Givens rotation.
  */
-tree_constant *
-builtin_givens (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_givens (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 3 && (nargout == 1 || nargout == 2 ))
+  if (nargin == 3 && (nargout == 0 || nargout == 1 || nargout == 2 ))
     retval = givens (args, nargin, nargout);
   else
     print_usage ("givens");
@@ -1838,12 +1846,12 @@ builtin_givens (const tree_constant *args, int nargin, int nargout)
 /*
  * Hessenberg Decomposition.
  */
-tree_constant *
-builtin_hess (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_hess (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (nargin == 2 && (nargout == 1 || nargout == 2))
+  if (nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
     DLD_BUILTIN (args, nargin, nargout, hess,
 		 retval = hess (args, nargin, nargout);)
   else
@@ -1855,18 +1863,18 @@ builtin_hess (const tree_constant *args, int nargin, int nargout)
 /*
  * Variable argument lists.
  */
-tree_constant *
-builtin_va_arg (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_va_arg (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   if (nargin == 1)
     {
       if (curr_function != (tree_function *) NULL)
 	{
 	  if (curr_function->takes_varargs ())
 	    {
-	      retval = new tree_constant [2];
-	      retval[0] = curr_function->octave_va_arg ();
+	      retval.resize (1);
+	      retval(0) = curr_function->octave_va_arg ();
 	    }
 	  else
 	    {
@@ -1883,10 +1891,10 @@ builtin_va_arg (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-builtin_va_start (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_va_start (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   if (nargin == 1)
     {
       if (curr_function != (tree_function *) NULL)
@@ -1911,9 +1919,11 @@ builtin_va_start (const tree_constant *args, int nargin, int nargout)
 /*
  * Copying information.
  */
-tree_constant *
-builtin_warranty (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_warranty (const Octave_object& args, int nargin, int nargout)
 {
+  Octave_object retval;
+
   ostrstream output_buf;
   output_buf << "\n    Octave, version " << version_string
 	     << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton\n"
@@ -1933,26 +1943,26 @@ builtin_warranty (const tree_constant *args, int nargin, int nargout)
   output_buf << ends;
   maybe_page_output (output_buf);
 
-  return NULL_TREE_CONST;
+  return retval;
 }
 
 /*
  * A matrix of zeros.
  */
-tree_constant *
-builtin_zeros (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_zeros (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   switch (nargin)
     {
     case 2:
-      retval = new tree_constant [2];
-      retval[0] = fill_matrix (args[1], 0.0, "zeros");
+      retval.resize (1);
+      retval(0) = fill_matrix (args(1), 0.0, "zeros");
       break;
     case 3:
-      retval = new tree_constant [2];
-      retval[0] = fill_matrix (args[1], args[2], 0.0, "zeros");
+      retval.resize (1);
+      retval(0) = fill_matrix (args(1), args(2), 0.0, "zeros");
       break;
     default:
       print_usage ("zeros");

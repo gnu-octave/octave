@@ -86,6 +86,9 @@ public:
 
   tree_expression *increment (void) { return op_increment; }
 
+  int line (void) const;
+  int column (void) const;
+
   void accept (tree_walker& tw);
 
 private:

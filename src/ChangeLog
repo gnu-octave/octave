@@ -1,5 +1,8 @@
 2004-11-04  John W. Eaton  <jwe@octave.org>
 
+	* pt-colon.cc (tree_colon_expression::line,
+	tree_colon_expression::column): New functions.
+
 	* oct-stream.cc (octave_stream::seek (long, int)): Return error
 	(but leave file position unchanged) for attempt to seek beyond end
 	of file.

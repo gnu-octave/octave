@@ -42,6 +42,7 @@ struct user_preferences
   int resize_on_range_error;
   int return_last_computed_value;
   int silent_functions;
+  int ignore_function_time_stamp;
   int split_long_rows;
   int treat_neg_dim_as_zero;
   int warn_comma_in_global_decl;
@@ -53,6 +54,7 @@ struct user_preferences
 
   char *loadpath;
   char *info_file;
+  char *editor;
   char *ps1;
   char *ps2;
   char *pwd;
@@ -74,6 +76,7 @@ extern int print_empty_dimensions (void);
 extern int resize_on_range_error (void);
 extern int return_last_computed_value (void);
 extern int silent_functions (void);
+extern int ignore_function_time_stamp (void);
 extern int split_long_rows (void);
 extern int treat_neg_dim_as_zero (void);
 extern int warn_comma_in_global_decl (void);
@@ -86,6 +89,7 @@ extern int set_output_precision (void);
 
 extern int sv_loadpath (void);
 extern int sv_info_file (void);
+extern int sv_editor (void);
 extern int sv_pager_binary (void);
 extern int sv_ps1 (void);
 extern int sv_ps2 (void);

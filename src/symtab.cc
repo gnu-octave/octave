@@ -39,38 +39,41 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 symbol_def::symbol_def (void)
 {
-  help_string = (char *) NULL;
-  type = unknown_type;
-  lifespan = temporary;
-  sym_class = read_write;
-  definition = (tree *) NULL;
+  init_state ();
 }
 
 symbol_def::symbol_def (tree_constant *t)
 {
-  help_string = (char *) NULL;
-  type = variable;
-  lifespan = temporary;
-  sym_class = read_write;
+  init_state ();
   definition = t;
+  type = USER_VARIABLE;
 }
 
 symbol_def::symbol_def (tree_builtin *t)
 {
-  help_string = (char *) NULL;
-  type = builtin_function;
-  lifespan = temporary;
-  sym_class = read_write;
+  init_state ();
   definition = t;
+  type = BUILTIN_FUNCTION;
 }
 
 symbol_def::symbol_def (tree_function *t)
 {
-  help_string = (char *) NULL;
-  type = user_function;
-  lifespan = temporary;
-  sym_class = read_write;
+  init_state ();
   definition = t;
+  type = USER_FUNCTION;
+}
+
+void
+symbol_def::init_state (void)
+{
+  type = UNKNOWN;
+  eternal = 0;
+  read_only = 0;
+
+  help_string = (char *) NULL;
+  definition = NULL_TREE;
+  next_elem = (symbol_def *) NULL;
+  count = 0;
 }
 
 symbol_def::~symbol_def (void)
@@ -79,25 +82,81 @@ symbol_def::~symbol_def (void)
   delete definition;
 }
 
+int
+symbol_def::is_variable (void) const
+{
+  return (type == USER_VARIABLE || type == BUILTIN_VARIABLE);
+}
+
+int
+symbol_def::is_function (void) const
+{
+  return (type == USER_FUNCTION || type == BUILTIN_FUNCTION);
+}
+
+int
+symbol_def::is_user_variable (void) const
+{
+  return (type == USER_VARIABLE);
+}
+
+int
+symbol_def::is_user_function (void) const
+{
+  return (type == USER_FUNCTION);
+}
+
+int
+symbol_def::is_builtin_variable (void) const
+{
+  return (type == BUILTIN_VARIABLE);
+}
+
+int
+symbol_def::is_builtin_function (void) const
+{
+  return (type == BUILTIN_FUNCTION);
+}
+
 void
 symbol_def::define (tree_constant *t)
 {
   definition = t;
-  type = variable;
+  if (! is_builtin_variable ())
+    type = USER_VARIABLE;
 }
 
 void
 symbol_def::define (tree_builtin *t)
 {
   definition = t;
-  type = builtin_function;
+  type = BUILTIN_FUNCTION;
 }
 
 void
 symbol_def::define (tree_function *t)
 {
   definition = t;
-  type = user_function;
+  type = USER_FUNCTION;
+}
+
+void
+symbol_def::protect (void)
+{
+  read_only = 1;
+}
+
+void
+symbol_def::unprotect (void)
+{
+  read_only = 0;
+
+}
+
+void
+symbol_def::make_eternal (void)
+{
+  eternal = 1;
 }
 
 tree *
@@ -125,51 +184,53 @@ symbol_def::save (ostream& os, int mark_as_global)
   return definition->save (os, mark_as_global);
 }
 
+int
+maybe_delete (symbol_def *def)
+{
+  int count = 0;
+  if (def != (symbol_def *) NULL)
+    {
+      if (def->count > 0)
+	{
+	  def->count--;
+	  count = def->count;
+	  if (def->count == 0)
+	    delete def;
+	}
+    }
+  return count;
+}
+
 /*
  * Individual records in a symbol table.
  */
 symbol_record::symbol_record (void)
 {
-  nm = (char *) NULL;
-  formal_param = 0;
-  forced_global = 0;
-  var = (symbol_def *) NULL;
-  fcn = (symbol_def *) NULL;
-  sv_fcn = (sv_Function) NULL;
-  next_elem = (symbol_record *) NULL;
+  init_state ();
 }
 
-symbol_record::symbol_record (const char *n)
+symbol_record::symbol_record (const char *n,
+			      symbol_record *nxt = (symbol_record *) NULL)
 {
+  init_state ();
   nm = strsave (n);
-  formal_param = 0;
-  forced_global = 0;
-  var = (symbol_def *) NULL;
-  fcn = (symbol_def *) NULL;
-  sv_fcn = (sv_Function) NULL;
-  next_elem = (symbol_record *) NULL;
-}
-
-symbol_record::symbol_record (const char *n, symbol_record *nxt)
-{
-  nm = strsave (n);
-  formal_param = 0;
-  forced_global = 0;
-  var = (symbol_def *) NULL;
-  fcn = (symbol_def *) NULL;
-  sv_fcn = (sv_Function) NULL;
   next_elem = nxt;
+}
+
+void
+symbol_record::init_state (void)
+{
+  formal_param = 0;
+  linked_to_global = 0;
+  nm = (char *) NULL;
+  sv_fcn = (sv_Function) NULL;
+  definition = (symbol_def *) NULL;
+  next_elem = (symbol_record *) NULL;
 }
 
 symbol_record::~symbol_record (void)
 {
   delete [] nm;
-
-  if (var != (symbol_def *) NULL && --var->count <= 0)
-    delete var;
-
-  if (fcn != (symbol_def *) NULL && --fcn->count <= 0)
-    delete fcn;
 }
 
 char *
@@ -181,41 +242,147 @@ symbol_record::name (void) const
 char *
 symbol_record::help (void) const
 {
-  if (var != (symbol_def *) NULL)
-    return var->help ();
-  else if (fcn != (symbol_def *) NULL)
-    return fcn->help ();
+  if (definition != (symbol_def *) NULL)
+    return definition->help ();
   else
     return (char *) NULL;
+}
+
+void
+symbol_record::rename (const char *n)
+{
+  delete [] nm;
+  nm = strsave (n);
 }
 
 tree *
 symbol_record::def (void) const
 {
-  if (var != (symbol_def *) NULL)
-    return var->def ();
-  else if (fcn != (symbol_def *) NULL)
-    return fcn->def ();
+  if (definition != (symbol_def *) NULL)
+    return definition->def ();
   else
-    return (tree *) NULL;
+    return NULL_TREE;
 }
 
 int
 symbol_record::is_function (void) const
 {
-  return (var == (symbol_def *) NULL && fcn != (symbol_def *) NULL);
+  if (definition != (symbol_def *) NULL)
+    return definition->is_function ();
+  else
+    return 0;
+}
+
+int
+symbol_record::is_user_function (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->is_user_function ();
+  else
+    return 0;
+}
+
+int
+symbol_record::is_builtin_function (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->is_builtin_function ();
+  else
+    return 0;
 }
 
 int
 symbol_record::is_variable (void) const
 {
-  return (var != (symbol_def *) NULL);
+  if (definition != (symbol_def *) NULL)
+    return definition->is_variable ();
+  else
+    return 0;
+}
+
+int
+symbol_record::is_user_variable (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->is_user_variable ();
+  else
+    return 0;
+}
+
+int
+symbol_record::is_builtin_variable (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->is_builtin_variable ();
+  else
+    return 0;
+}
+
+unsigned
+symbol_record::type (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->type;
+  else
+    return 0;
 }
 
 int
 symbol_record::is_defined (void) const
 {
-  return (var != (symbol_def *) NULL || fcn != (symbol_def *) NULL);
+  if (definition != (symbol_def *) NULL)
+    return (definition->def () != NULL_TREE);
+  else
+    return 0;
+}
+
+int
+symbol_record::is_read_only (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->read_only;
+  else
+    return 0;
+}
+
+int
+symbol_record::is_eternal (void) const
+{
+  if (definition != (symbol_def *) NULL)
+    return definition->eternal;
+  else
+    return 0;
+}
+
+void
+symbol_record::protect (void)
+{
+  if (definition != (symbol_def *) NULL)
+    {
+      definition->protect ();
+
+      if (! is_defined ())
+	warning ("protecting undefined variable `%s'", nm);
+    }
+}
+
+void
+symbol_record::unprotect (void)
+{
+  if (definition != (symbol_def *) NULL)
+    definition->unprotect ();
+}
+
+void
+symbol_record::make_eternal (void)
+{
+  if (definition != (symbol_def *) NULL)
+    {
+      definition->make_eternal ();
+
+      if (! is_defined ())
+	warning ("giving eternal life to undefined variable `%s'", nm);
+    }
 }
 
 void
@@ -225,55 +392,34 @@ symbol_record::set_sv_function (sv_Function f)
 }
 
 int
-symbol_record::var_read_only (void)
-{
-  if (var != (symbol_def *) NULL
-       && var->sym_class == symbol_def::read_only)
-    {
-      error ("can't assign to read only symbol `%s'", nm);
-      return 1;
-    }
-  else
-    return 0;
-}
-
-int
-symbol_record::read_only (void)
-{
-  if ((var != (symbol_def *) NULL
-       && var->sym_class == symbol_def::read_only)
-      || (fcn != (symbol_def *) NULL
-	  && fcn->sym_class == symbol_def::read_only))
-    {
-      error ("can't assign to read only symbol `%s'", nm);
-      return 1;
-    }
-  else
-    return 0;
-}
-
-int
 symbol_record::define (tree_constant *t)
 {
-  if (var_read_only ())
+  if (is_variable () && read_only_error ())
     return 0;
 
-  tree_constant *saved_def = NULL_TREE_CONST;
+  tree *saved_def = NULL_TREE;
+  if (definition == (symbol_def *) NULL)
+    {
+      definition = new symbol_def ();
+      definition->count = 1;
+    }
+  else if (is_function ())
+    {
+      symbol_def *new_def = new symbol_def ();
+      push_def (new_def);
+      definition->count = 1;
+    }
+  else if (is_variable ())
+    {
+      saved_def = definition->def ();
+    }
 
-  if (var != (symbol_def *) NULL)
-    {
-      saved_def = (tree_constant *) var->def ();  // XXX FIXME XXX
-      var->define (t);
-    }
-  else
-    {
-      var = new symbol_def (t);
-      var->count = 1;
-    }
+  definition->define (t);
 
   if (sv_fcn != (sv_Function) NULL && sv_fcn () < 0)
     {
-      var->define (saved_def);
+// Would be nice to be able to avoid this cast.  XXX FIXME XXX
+      definition->define ((tree_constant *) saved_def);
       delete t;
       return 0;
     }
@@ -286,23 +432,24 @@ symbol_record::define (tree_constant *t)
 int
 symbol_record::define (tree_builtin *t)
 {
-  if (read_only ())
+  if (read_only_error ())
     return 0;
 
-  if (var != (symbol_def *) NULL)
+  if (is_variable ())
     {
-      if (--var->count <= 0)
-	delete var;
-      var = (symbol_def *) NULL;
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
     }
 
-  if (fcn != (symbol_def *) NULL)
-    fcn->define (t);
-  else
+  if (is_function ())
     {
-      fcn = new symbol_def (t);
-      fcn->count = 1;
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
     }
+
+  symbol_def *new_def = new symbol_def (t);
+  push_def (new_def);
+  definition->count = 1;
 
   return 1;
 }
@@ -310,23 +457,24 @@ symbol_record::define (tree_builtin *t)
 int
 symbol_record::define (tree_function *t)
 {
-  if (read_only ())
+  if (read_only_error ())
     return 0;
 
-  if (var != (symbol_def *) NULL)
+  if (is_variable ())
     {
-      if (--var->count <= 0)
-	delete var;
-      var = (symbol_def *) NULL;
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
     }
 
-  if (fcn != (symbol_def *) NULL)
-    fcn->define (t);
-  else
+  if (is_function ())
     {
-      fcn = new symbol_def (t);
-      fcn->count = 1;
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
     }
+
+  symbol_def *new_def = new symbol_def (t);
+  push_def (new_def);
+  definition->count = 1;
 
   return 1;
 }
@@ -334,67 +482,47 @@ symbol_record::define (tree_function *t)
 int
 symbol_record::define_as_fcn (tree_constant *t)
 {
-  if (read_only ())
+  if (is_variable () && read_only_error ())
     return 0;
 
-  if (var != (symbol_def *) NULL)
+  if (is_variable ())
     {
-      if (--var->count <= 0)
-	delete var;
-      var = (symbol_def *) NULL;
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
     }
 
-  if (fcn != (symbol_def *) NULL)
-    fcn->define (t);
-  else
+  if (is_function ())
     {
-      fcn = new symbol_def (t);
-      fcn->count = 1;
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
     }
+
+  symbol_def *new_def = new symbol_def (t);
+  push_def (new_def);
+  definition->count = 1;
+  definition->type = symbol_def::BUILTIN_FUNCTION;
 
   return 1;
+}
+
+int
+symbol_record::define_builtin_var (tree_constant *t)
+{
+  define (t);
+  if (is_variable ())
+    definition->type = symbol_def::BUILTIN_VARIABLE;
 }
 
 void
 symbol_record::document (const char *h)
 {
-  if (var != (symbol_def *) NULL)
-    var->document (h);
-  else if (fcn != (symbol_def *) NULL)
-    fcn->document (h);
-  else
-    warning ("couldn't document undefined variable `%s'", nm);
-}
+  if (definition != (symbol_def *) NULL)
+    {
+      definition->document (h);
 
-void
-symbol_record::protect (void)
-{
-  if (var != (symbol_def *) NULL)
-    var->sym_class = symbol_def::read_only;
-  else if (fcn != (symbol_def *) NULL)
-    fcn->sym_class = symbol_def::read_only;
-  else
-    warning ("couldn't protect undefined variable `%s'", nm);
-}
-
-void
-symbol_record::unprotect (void)
-{
-  if (var != (symbol_def *) NULL)
-    var->sym_class = symbol_def::read_write;
-  else if (fcn != (symbol_def *) NULL)
-    fcn->sym_class = symbol_def::read_write;
-}
-
-void
-symbol_record::make_eternal (void)
-{
-  if (var != (symbol_def *) NULL)
-    var->lifespan = symbol_def::eternal;
-  else if (fcn != (symbol_def *) NULL)
-    fcn->lifespan = symbol_def::eternal;
-  else
-    warning ("couldn't give eternal life to the variable `%s'", nm);
+      if (! is_defined ())
+	warning ("documenting undefined variable `%s'", nm);
+    }
 }
 
 int
@@ -402,74 +530,65 @@ symbol_record::save (ostream& os, int mark_as_global = 0)
 {
   int status = 0;
 
-  if (var != (symbol_def *) NULL && var->def () != (tree *) NULL)
+// This is a kludge, but hey, it doesn't make sense to save them
+// anyway, does it?  Even if it did, we would just have trouble trying
+// to read NaN and Inf on lots of systems anyway...
+
+  if (is_read_only ())
     {
-// For now, eternal implies builtin.
-      if (var->lifespan != symbol_def::eternal)
-	{
-// Should we also save the help string?  Maybe someday.
-	 os << "# name: " << nm << "\n";
-	 status = var->save (os, mark_as_global);
-       }
+      warning ("save: sorry, can't save read-only variable `%s'", nm);
+      status = -1;
     }
-  else if (fcn != (symbol_def *) NULL)
-    message ("save", "sorry, can't save functions yet");
+  else if (is_function ())
+    {
+      warning ("save: sorry, can't save function `%s'", nm);
+      status = -1;
+    }
   else
     {
-// Kludge!  We probably don't want to print warnings for ans, but it
-// does seem reasonable to print them for other undefined variables.
-      if (strcmp (nm, "ans") != 0)
-	warning ("not saving undefined symbol `%s'", nm);
+// Should we also save the help string?  Maybe someday.
+
+      os << "# name: " << nm << "\n";
+
+      status = definition->save (os, mark_as_global);
     }
 
   return status;
 }
 
 int
-symbol_record::clear_visible (void)
+symbol_record::clear (void)
 {
-  int status = 0;
-
-  if (is_defined ())
+  int count = 0;
+  if (linked_to_global)
     {
-      if (var != (symbol_def *) NULL
-	  && var->lifespan != symbol_def::eternal)
-	{
-	  if (--var->count <= 0)
-	    delete var;
-	  var = (symbol_def *) NULL;
-	  forced_global = 0;
-	  status = 1;
-	}
-      else if (fcn != (symbol_def *) NULL
-	       && fcn->lifespan != symbol_def::eternal)
-	{
-	  if (--fcn->count <= 0)
-	    delete fcn;
-	  fcn = (symbol_def *) NULL;
-	  status = 1;
-	}
+      count = maybe_delete (definition);
+      definition = (symbol_def *) NULL;
+      linked_to_global = 0;
     }
-
-  return status;
+  else
+    {
+      symbol_def *old_def = pop_def ();
+      count = maybe_delete (old_def);
+    }
+  return count;
 }
 
 void
-symbol_record::clear_all (void)
+symbol_record::alias (symbol_record *s, int force = 0)
 {
-  if (var != (symbol_def *) NULL && var->lifespan != symbol_def::eternal)
-    {
-      if (--var->count <= 0)
-	delete var;
-      var = (symbol_def *) NULL;
-      forced_global = 0;
-    }
+  sv_fcn = s->sv_fcn;
 
-  if (fcn != (symbol_def *) NULL && fcn->lifespan != symbol_def::eternal)
+  if (force && s->definition == (symbol_def *) NULL)
     {
-      if (--fcn->count <= 0)
-	delete fcn;
-      fcn = (symbol_def *) NULL;
+      s->definition = new symbol_def ();
+      definition = s->definition;
+      definition->count = 2; // Yes, this is correct.
+    }
+  else if (s->definition != (symbol_def *) NULL)
+    {
+      definition = s->definition;
+      definition->count++;
     }
 }
 
@@ -486,50 +605,262 @@ symbol_record::is_formal_parameter (void) const
 }
 
 void
-symbol_record::mark_as_forced_global (void)
+symbol_record::mark_as_linked_to_global (void)
 {
-  forced_global = 1;
+  linked_to_global = 1;
 }
 
 int
-symbol_record::is_forced_global (void) const
+symbol_record::is_linked_to_global (void) const
 {
-  return forced_global;
-}
-
-void
-symbol_record::alias (symbol_record *s, int force = 0)
-{
-  sv_fcn = s->sv_fcn; // Maybe this should go in the var symbol_def?
-
-//  formal_param = s->formal_param; // Hmm.
-//  forced_global = s->forced_global; // Hmm.
-
-  if (force && s->var == (symbol_def *) NULL
-      && s->fcn == (symbol_def *) NULL)
-    {
-      s->var = new symbol_def ();
-      var = s->var;
-      var->count = 2; // Yes, this is correct.
-      return;
-    }
-
-  if (s->var != (symbol_def *) NULL)
-    {
-      var = s->var;
-      var->count++;
-    }
-  else if (s->fcn != (symbol_def *) NULL)
-    {
-      fcn = s->fcn;
-      fcn->count++;
-    }
+  return linked_to_global;
 }
 
 symbol_record *
 symbol_record::next (void) const
 {
   return next_elem;
+}
+
+void
+symbol_record::chain (symbol_record *s)
+{
+  next_elem = s;
+}
+
+int
+symbol_record::read_only_error (void)
+{
+  if (is_read_only ())
+    {
+      char *tag = "symbol";
+      if (is_variable ())
+	tag = "variable";
+      else if (is_function ())
+	tag = "function";
+	
+      error ("can't redefined read-only %s `%s'", tag, nm);
+
+      return 1;
+    }
+  else
+    return 0;
+}
+
+void
+symbol_record::push_def (symbol_def *sd)
+{
+  if (sd == (symbol_def *) NULL)
+    return;
+
+  sd->next_elem = definition;
+  definition = sd;
+}
+
+symbol_def *
+symbol_record::pop_def (void)
+{
+  symbol_def *top = definition;
+  if (definition != (symbol_def *) NULL)
+    definition = definition->next_elem;
+  return top;
+}
+
+/*
+ * A structure for handling verbose information about a symbol_record.
+ */
+
+symbol_record_info::symbol_record_info (void)
+{
+  init_state ();
+}
+
+symbol_record_info::symbol_record_info (const symbol_record& sr)
+{
+  init_state ();
+
+  type = sr.type ();
+
+  if (sr.is_variable () && sr.is_defined ())
+    {
+// Would be nice to avoid this cast.  XXX FIXME XXX
+      tree_constant *tmp = (tree_constant *) sr.def ();
+      switch (tmp->const_type ())
+	{
+	case tree_constant_rep::scalar_constant:
+	  const_type = SR_INFO_SCALAR;
+	  break;
+	case tree_constant_rep::complex_scalar_constant:
+	  const_type = SR_INFO_COMPLEX_SCALAR;
+	  break;
+	case tree_constant_rep::matrix_constant:
+	  const_type = SR_INFO_MATRIX;
+	  break;
+	case tree_constant_rep::complex_matrix_constant:
+	  const_type = SR_INFO_COMPLEX_MATRIX;
+	  break;
+	case tree_constant_rep::range_constant:
+	  const_type = SR_INFO_RANGE;
+	  break;
+	case tree_constant_rep::string_constant:
+	  const_type = SR_INFO_STRING;
+	  break;
+	default:
+	  break;
+	}
+
+      nr = tmp->rows ();
+      nc = tmp->columns ();
+
+      symbol_def *sr_def = sr.definition;
+      symbol_def *hidden_def = sr_def->next_elem;
+      if (hidden_def != (symbol_def *) NULL)
+	{
+	  if (hidden_def->is_user_function ())
+	    hides = SR_INFO_USER_FUNCTION;
+	  else if (hidden_def->is_builtin_function ())
+	    hides = SR_INFO_BUILTIN_FUNCTION;
+	}
+    }
+
+  eternal = sr.is_eternal ();
+  read_only = sr.is_read_only ();
+
+  nm = strsave (sr.name ());
+
+  initialized = 1;
+}
+
+symbol_record_info::symbol_record_info (const symbol_record_info& s)
+{
+  type = s.type;
+  const_type = s.const_type;
+  hides = s.hides;
+  eternal = s.eternal;
+  read_only = s.read_only;
+  nr = s.nr;
+  nc = s.nc;
+  nm = strsave (s.nm);
+  initialized = s.initialized;
+}
+
+symbol_record_info::~symbol_record_info (void)
+{
+  delete nm;
+}
+
+symbol_record_info&
+symbol_record_info::operator = (const symbol_record_info& s)
+{
+  if (this != &s)
+    {
+      delete nm;
+      type = s.type;
+      const_type = s.const_type;
+      hides = s.hides;
+      eternal = s.eternal;
+      read_only = s.read_only;
+      nr = s.nr;
+      nc = s.nc;
+      nm = strsave (s.nm);
+      initialized = s.initialized;
+    }
+  return *this;
+}
+
+int
+symbol_record_info::is_defined (void) const
+{
+  return initialized;
+}
+
+int
+symbol_record_info::is_read_only (void) const
+{
+  return read_only;
+}
+
+int
+symbol_record_info::is_eternal (void) const
+{
+  return eternal;
+}
+
+int
+symbol_record_info::hides_fcn (void) const
+{
+  return (hides & SR_INFO_USER_FUNCTION);
+}
+
+int
+symbol_record_info::hides_builtin (void) const
+{
+  return (hides & SR_INFO_BUILTIN_FUNCTION);
+}
+
+char *
+symbol_record_info::type_as_string (void) const
+{
+  if (type == symbol_def::USER_FUNCTION)
+    return "user function";
+  else if (type == symbol_def::BUILTIN_FUNCTION)
+    return "builtin function";
+  else
+    {
+      if (const_type == SR_INFO_SCALAR)
+	return "real scalar";
+      else if (const_type == SR_INFO_COMPLEX_SCALAR)
+	return "complex scalar";
+      else if (const_type == SR_INFO_MATRIX)
+	return "real matrix";
+      else if (const_type == SR_INFO_COMPLEX_MATRIX)
+	return "complex matrix";
+      else if (const_type == SR_INFO_RANGE)
+	return "range";
+      else if (const_type == SR_INFO_STRING)
+	return "string";
+      else
+	return "";
+    }
+}
+
+int
+symbol_record_info::is_function (void) const
+{
+  return (type == symbol_def::USER_FUNCTION
+	  || type == symbol_def::BUILTIN_FUNCTION);
+}
+
+int
+symbol_record_info::rows (void) const
+{
+  return nr;
+}
+
+int
+symbol_record_info::columns (void) const
+{
+  return nc;
+}
+
+char *
+symbol_record_info::name (void) const
+{
+  return nm;
+}
+
+void
+symbol_record_info::init_state (void)
+{
+  initialized = 0;
+  type = symbol_def::UNKNOWN;
+  const_type = SR_INFO_UNKNOWN;
+  hides = SR_INFO_NONE;
+  eternal = 0;
+  read_only = 0;
+  nr = -1;
+  nc = -1;
+  nm = (char *) NULL;
 }
 
 /*
@@ -558,7 +889,7 @@ symbol_table::lookup (const char *nm, int insert = 0, int warn = 0)
     {
       symbol_record *new_sym;
       new_sym = new symbol_record (nm, table[index].next ());
-      table[index].next_elem = new_sym;
+      table[index].chain (new_sym);
       return new_sym;
     }
   else if (warn)
@@ -568,7 +899,7 @@ symbol_table::lookup (const char *nm, int insert = 0, int warn = 0)
 }
 
 void
-symbol_table::clear (void)
+symbol_table::clear (int clear_user_functions = 1)
 {
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
@@ -576,61 +907,45 @@ symbol_table::clear (void)
 
       while (ptr != (symbol_record *) NULL)
 	{
-	  ptr->clear_all ();
+	  if (ptr->is_user_variable ()
+	      || (clear_user_functions && ptr->is_user_function ()))
+	    {
+	      ptr->clear ();
+	    }
+
 	  ptr = ptr->next ();
 	}
     }
 }
 
 int
-symbol_table::clear (const char *nm)
+symbol_table::clear (const char *nm, int clear_user_functions = 1)
 {
   int index = hash (nm) & HASH_MASK;
 
-  symbol_record *prev = &table[index];
-  symbol_record *curr = prev->next ();
+  symbol_record *ptr = table[index].next ();
 
-  while (curr != (symbol_record *) NULL)
+  while (ptr != (symbol_record *) NULL)
     {
-      if (strcmp (curr->name (), nm) == 0)
+      if (strcmp (ptr->name (), nm) == 0
+	  && (ptr->is_user_variable ()
+	      || (clear_user_functions && ptr->is_user_function ())))
 	{
-	  if (curr->clear_visible ())
-	    return 1;
+	  ptr->clear ();
+	  return 1;
 	}
-      prev = curr;
-      curr = curr->next ();
+      ptr = ptr->next ();
     }
 
   return 0;
-}
-
-// Ugh.
-
-void
-symbol_table::bind_globals (void)
-{
-  assert (this != global_sym_tab);
-
-  for (int i = 0; i < HASH_TABLE_SIZE; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr != (symbol_record *) NULL && ! ptr->formal_param)
-	{
-	  char *nm = ptr->name ();
-	  symbol_record *sr = global_sym_tab->lookup (nm, 0, 0);
-	  if (sr != (symbol_record *) NULL && sr->is_forced_global ())
-	    ptr->alias (sr, 1);
-	  ptr = ptr->next ();
-	}
-    }
 }
 
 int
 symbol_table::save (ostream& os, int mark_as_global = 0)
 {
   int status = 0;
-  char **names = sorted_var_list ();
+  int count;
+  char **names = list (count, 1, symbol_def::USER_VARIABLE);
   if (names != (char **) NULL)
     {
       while (*names != (char *) NULL)
@@ -670,152 +985,86 @@ symbol_table::size (void) const
   return count;
 }
 
-char **
-symbol_table::list (void) const
-{
-  int count;
-  return list (count);
-}
-
-char **
-symbol_table::var_list (void) const
-{
-  int count;
-  return var_list (count);
-}
-
-char **
-symbol_table::fcn_list (void) const
-{
-  int count;
-  return fcn_list (count);
-}
-
-char **
-symbol_table::list (int& count) const
-{
-  count = 0;
-  int n = size ();
-  if (n == 0)
-    return (char **) NULL;
-
-  char **symbols = new char * [n+1];
-  for (int i = 0; i < HASH_TABLE_SIZE; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-      while (ptr != (symbol_record *) NULL)
-	{
-	  assert (count < n);
-	  symbols[count++] = strsave (ptr->name ());
-	  ptr = ptr->next ();
-	}
-    }
-  symbols[count] = (char *) NULL;
-  return symbols;
-}
-
-char **
-symbol_table::var_list (int& count) const
-{
-  count = 0;
-  int n = size ();
-  if (n == 0)
-    return (char **) NULL;
-
-  char **symbols = new char * [n+1];
-  for (int i = 0; i < HASH_TABLE_SIZE; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-      while (ptr != (symbol_record *) NULL)
-	{
-	  assert (count < n);
-	  if (ptr->is_variable ())
-	    symbols[count++] = strsave (ptr->name ());
-	  ptr = ptr->next ();
-	}
-    }
-  symbols[count] = (char *) NULL;
-  return symbols;
-}
-
-char **
-symbol_table::fcn_list (int& count) const
-{
-  count = 0;
-  int n = size ();
-  if (n == 0)
-    return (char **) NULL;
-
-  char **symbols = new char * [n+1];
-  for (int i = 0; i < HASH_TABLE_SIZE; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-      while (ptr != (symbol_record *) NULL)
-	{
-	  assert (count < n);
-	  if (ptr->is_function ())
-	    symbols[count++] = strsave (ptr->name ());
-	  ptr = ptr->next ();
-	}
-    }
-  symbols[count] = (char *) NULL;
-  return symbols;
-}
-
 static inline int
 pstrcmp (char **a, char **b)
 {
   return strcmp (*a, *b);
 }
 
-char **
-symbol_table::sorted_list (void) const
+static inline int
+symbol_record_info_cmp (symbol_record_info *a, symbol_record_info *b)
 {
-  int count = 0;
-  return sorted_list (count);
+  return strcmp (a->name (), b->name ());
 }
 
-char **
-symbol_table::sorted_var_list (void) const
-{
-  int count = 0;
-  return sorted_var_list (count);
-}
+// This function should probably share code with symbol_table::list.
+// XXX FIXME XXX
 
-char **
-symbol_table::sorted_fcn_list (void) const
+symbol_record_info *
+symbol_table::long_list (int& count, int sort = 0,
+			 unsigned type = SYMTAB_ALL_TYPES,
+			 unsigned scope = SYMTAB_ALL_SCOPES) const
 {
-  int count = 0;
-  return sorted_fcn_list (count);
-}
+  count = 0;
+  int n = size ();
+  if (n == 0)
+    return (symbol_record_info *) NULL;
 
-char **
-symbol_table::sorted_list (int& count) const
-{
-  char **symbols = list (count);
-  if (symbols != (char **) NULL)
-    qsort ((void **) symbols, count, sizeof (char *),
-	   (int (*)(void*, void*)) pstrcmp);
+  symbol_record_info *symbols = new symbol_record_info [n+1];
+  for (int i = 0; i < HASH_TABLE_SIZE; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+      while (ptr != (symbol_record *) NULL)
+	{
+	  assert (count < n);
+	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	  unsigned my_type = ptr->type ();
+	  if ((type & my_type) && (scope & my_scope))
+	    {
+	      symbols[count++] = symbol_record_info (*ptr);
+	    }
+	  ptr = ptr->next ();
+	}
+    }
+  symbols[count] = symbol_record_info ();
+
+  if (sort && symbols != (symbol_record_info *) NULL)
+    qsort ((void *) symbols, count, sizeof (symbol_record_info),
+	   (int (*)(void*, void*)) symbol_record_info_cmp);
+
   return symbols;
 }
 
 char **
-symbol_table::sorted_var_list (int& count) const
+symbol_table::list (int& count, int sort = 0,
+		    unsigned type = SYMTAB_ALL_TYPES,
+		    unsigned scope = SYMTAB_ALL_SCOPES) const
 {
-  char **symbols = var_list (count);
-  if (symbols != (char **) NULL)
-    qsort ((void **) symbols, count, sizeof (char *),
-	   (int (*)(void*, void*)) pstrcmp);
-  return symbols;
-}
+  count = 0;
+  int n = size ();
+  if (n == 0)
+    return (char **) NULL;
 
-char **
-symbol_table::sorted_fcn_list (int& count) const
-{
-  char **symbols = fcn_list (count);
-  if (symbols != (char **) NULL)
+  char **symbols = new char * [n+1];
+  for (int i = 0; i < HASH_TABLE_SIZE; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+      while (ptr != (symbol_record *) NULL)
+	{
+	  assert (count < n);
+	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	  unsigned my_type = ptr->type ();
+	  if ((type & my_type) && (scope & my_scope))
+	    symbols[count++] = strsave (ptr->name ());
+	  ptr = ptr->next ();
+	}
+    }
+  symbols[count] = (char *) NULL;
+
+  if (sort && symbols != (char **) NULL)
     qsort ((void **) symbols, count, sizeof (char *),
 	   (int (*)(void*, void*)) pstrcmp);
+
   return symbols;
 }
 

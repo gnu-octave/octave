@@ -48,7 +48,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "variables.h"
 #include "error.h"
 #include "tree-const.h"
-#include "symtab.h"
 #include "utils.h"
 #include "builtins.h"
 #include "input.h"
@@ -101,6 +100,9 @@ char *load_path = (char *) NULL;
 // Name of the info file specified on command line.
 char *info_file = (char *) NULL;
 
+// Name of the editor to be invoked by the edit_history command.
+char *editor = (char *) NULL;
+
 // If nonzero, don't do fancy line editing.
 int no_line_editing = 0;
 
@@ -115,6 +117,17 @@ tree *global_command = (tree *) NULL;
 
 // Top level context (?)
 jmp_buf toplevel;
+
+// This is not really the right place to do this...
+typedef void (*one_arg_error_handler_t) (const char*);
+extern one_arg_error_handler_t set_Complex_error_handler
+  (one_arg_error_handler_t f);
+
+static void
+octave_Complex_error_handler (const char* msg)
+{
+  warning (msg);
+}
 
 // Nonzero means we read ~/.octaverc and ./.octaverc.
 static int read_init_files = 1;
@@ -179,6 +192,8 @@ initialize_globals (char *name)
   load_path = default_path ();
 
   info_file = default_info_file ();
+
+  editor = default_editor ();
 }
 
 void
@@ -320,7 +335,7 @@ usage (void)
 /*
  * Fix up things before exiting.
  */
-volatile void
+void
 clean_up_and_exit (int retval)
 {
   raw_mode (0);
@@ -338,6 +353,11 @@ clean_up_and_exit (int retval)
     retval = 0;
 
   exit (retval);
+
+// This is bogus but should prevent g++ from giving a warning saying
+// that this volatile function does return.
+
+  panic_impossible ();
 }
 
 static void
@@ -356,6 +376,9 @@ main (int argc, char **argv)
 // Allow for system dependent initialization.  See sysdep.cc for more
 // details.
   sysdep_init ();
+
+// This is not really the right place to do this...
+  set_Complex_error_handler (octave_Complex_error_handler);
 
 // Do this first, since some command line arguments may override the
 // defaults.
@@ -409,13 +432,9 @@ main (int argc, char **argv)
 
   initialize_file_io ();
 
-  global_sym_tab = new symbol_table ();
-  curr_sym_tab = global_sym_tab;
+  initialize_symbol_tables ();
 
   install_builtins ();
-
-  top_level_sym_tab = new symbol_table ();
-  curr_sym_tab = top_level_sym_tab;
 
   if (read_init_files)
     {

@@ -28,7 +28,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class tree;
 
-extern volatile void clean_up_and_exit (int);
+// Tell g++ that clean_up_and_exit doesn't return;
+
+#ifdef __GNUG__
+typedef void v_fcn_i (int);
+volatile v_fcn_i clean_up_and_exit;
+#endif
+
+extern void clean_up_and_exit (int);
 extern void parse_and_execute (char*, int);
 extern void parse_and_execute (FILE*, int);
 
@@ -55,6 +62,9 @@ extern char *load_path;
 
 // Name of the info file specified on command line.
 extern char *info_file;
+
+// Name of the editor to be invoked by the edit_history command.
+extern char *editor;
 
 // If nonzero, don't do fancy line editing.
 extern int no_line_editing;

@@ -1037,24 +1037,12 @@ is_keyword (char *s)
 }
 
 /*
- * Try to find an identifier in one symbol table or another.
+ * Try to find an identifier.  All binding to global or builtin
+ * variables occurs when expressions are evaluated.
  */
 static symbol_record *
 lookup_identifier (char *name)
 {
-  if (curr_sym_tab == top_level_sym_tab)
-    {
-      symbol_record *lsr = curr_sym_tab->lookup (name, 0, 0);
-      if (lsr != (symbol_record *) NULL && lsr->is_defined ())
-	return lsr;
-
-      symbol_record *gsr = global_sym_tab->lookup (name, 0, 0);
-      if (gsr != (symbol_record *) NULL
-	  && ! (looping || iffing)
-	  && (gsr->is_defined () || gsr->is_forced_global ()))
-	return gsr;
-    }
-
   return curr_sym_tab->lookup (name, 1, 0);
 }
 

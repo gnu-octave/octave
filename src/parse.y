@@ -46,9 +46,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "lex.h"
 #include "token.h"
 
-// Identifier to define if we are reading an M-fie.
-tree_identifier *id_to_define;
-
 // Nonzero means we're in the middle of defining a function.
 int defining_func = 0;
 
@@ -151,6 +148,7 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
   tree_word_list *tree_word_list_type;
   tree_command *tree_command_type;
   tree_if_command *tree_if_command_type;
+  tree_global_command *tree_global_command_type;
   tree_command_list *tree_command_list_type;
   tree_word_list_command *tree_word_list_command_type;
   tree_plot_command *tree_plot_command_type;
@@ -193,8 +191,8 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 %type <tree_word_list_type> word_list word_list1
 %type <tree_command_type> statement
 %type <tree_if_command_type> elseif
+%type <tree_global_command_type> global_decl global_decl1
 %type <tree_command_list_type> simple_list simple_list1 list list1 opt_list
-%type <tree_command_list_type> global_decl global_decl1
 %type <tree_word_list_command_type> word_list_cmd
 %type <tree_plot_command_type> plot_command 
 %type <tree_subplot_list_type> plot_command1 plot_command2 plot_options
@@ -478,37 +476,29 @@ ans_expression	: expression
 
 global_decl	: GLOBAL global_decl1
 		  { $$ = $2->reverse (); }
+		| GLOBAL global_decl1 ','
+		  { $$ = $2->reverse (); }
 		;
 
 global_decl1	: NAME
 		  {
-		    force_global ($1->sym_rec()->name ());
-		    $$ = new tree_command_list ();
+		    $$ = new tree_global_command
+			   ($1->sym_rec (), $1->line (), $1->column ());
 		  }
 		| NAME '=' expression
 		  {
-		    symbol_record *sr = force_global ($1->sym_rec()->name ());
-		    tree_identifier *id = new tree_identifier
-		      (sr, $1->line (), $1->column ());
-		    tree_simple_assignment_expression *expr =
-		      new tree_simple_assignment_expression
-			(id, $3, $2->line (), $2->column ());
-		    $$ = new tree_command_list (expr);
+		    $$ = new tree_global_command
+			   ($1->sym_rec (), $3, $1->line (), $1->column ());
 		  }
 		| global_decl1 optcomma NAME
 		  {
-		    force_global ($3->sym_rec()->name ());
-		    $$ = $1;
+		    $$ = $1->chain ($3->sym_rec (), $3->line (),
+				    $3->column ());
 		  }
 		| global_decl1 optcomma NAME '=' expression
 		  {
-		    symbol_record *sr = force_global ($3->sym_rec()->name ());
-		    tree_identifier *id = new tree_identifier
-		      (sr, $3->line (), $3->column ());
-		    tree_simple_assignment_expression *expr =
-		      new tree_simple_assignment_expression
-			(id, $5, $4->line (), $4->column ());
-		    $$ = $1->chain (expr);
+		    $$ = $1->chain ($3->sym_rec (), $5, $3->line (),
+				    $3->column ());
 		  }
 		;
 
@@ -891,26 +881,30 @@ func_def2	: identifier safe local_symtab func_def3
 		    if (reading_m_file)
 		      {
 			if (strcmp (curr_m_file_name, id_name) != 0)
-			  warning ("function name `%s' does not agree\
+			  {
+			    warning ("function name `%s' does not agree\
  with M-file name `%s.m'", id_name, curr_m_file_name);
 
-			id_to_define->define ($4);
-			id_to_define->document (help_buf);
-		      }
-		    else
-		      {
-			if (! input_from_tmp_history_file
-			    && reading_script_file
-			    && strcmp (curr_m_file_name, id_name) == 0)
-			  warning ("function `%s' defined within\
- script file `%s.m'", id_name, curr_m_file_name);
+			    $1->rename (curr_m_file_name);
+			  }
 
-			$1->define ($4);
-			$1->document (help_buf);
-			top_level_sym_tab->clear (id_name);
+			$4->stash_m_file_name (curr_m_file_name);
+			$4->stash_m_file_time (time ((time_t *) NULL));
+			$4->mark_as_system_m_file ();
+		      }
+		    else if (! input_from_tmp_history_file
+			     && reading_script_file
+			     && strcmp (curr_m_file_name, id_name) == 0)
+		      {
+			warning ("function `%s' defined within\
+ script file `%s.m'", id_name, curr_m_file_name);
 		      }
 
 		    $4->stash_function_name (id_name);
+
+		    $1->define ($4);
+		    $1->document (help_buf);
+
 		    $$ = $4;
 		  }
 		;
@@ -1182,40 +1176,32 @@ end_error (char *type, token::end_tok_type ettype, int l, int c)
  *
  * XXX FIXME XXX.  This isn't quite sufficient.  For example, try the
  * command `x = 4, x' for `x' previously undefined.
+ *
+ * XXX FIXME XXX -- we should probably delay doing this until eval-time.
  */
 tree *
 maybe_convert_to_ans_assign (tree *expr)
 {
-  tree *retval = expr;
-
-  symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
-
-  assert (sr != (symbol_record *) NULL);
-
   if (expr->is_index_expression ())
     {
-      tree_index_expression *idx_expr = (tree_index_expression *) expr;
-      tree_argument_list *args = idx_expr->arg_list ();
-
-      if (args == (tree_argument_list *) NULL)
-	{
-	  tree_identifier *tmp = idx_expr->ident ();
-	  tree *defn = tmp->def ();
-	  if (defn != NULL_TREE && ! defn->is_builtin ())
-	    {
-	      return retval;
-	    }
-	}
+      expr->mark_for_possible_ans_assign ();
+      return expr;
     }
-  else if (expr->is_assignment_expression ())
+  else if (expr->is_assignment_expression ()
+	   || expr->is_prefix_expression ())
     {
-      return retval;
+      return expr;
     }
+  else
+    {
+      symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
-  tree_identifier *ans = new tree_identifier (sr);
-  retval = new tree_simple_assignment_expression (ans, expr);
+      assert (sr != (symbol_record *) NULL);
+      
+      tree_identifier *ans = new tree_identifier (sr);
 
-  return retval;
+      return new tree_simple_assignment_expression (ans, expr);
+    }
 }
 
 void

@@ -111,9 +111,9 @@ public:
   virtual int is_assignment_expression (void) const
     { return 0; }
 
-  virtual tree *def (void)
-    { assert (0); return (tree *) NULL; }
-  
+  virtual int is_prefix_expression (void) const
+    { return 0; }
+
   virtual char *name (void)
     { assert (0); return (char *) NULL; }
 
@@ -123,16 +123,13 @@ public:
   virtual void set_print_flag (int print)
     { assert (0); }
 
+  virtual void mark_for_possible_ans_assign (void)
+    { assert (0); }
+
   virtual tree_constant assign (tree_constant& t, tree_constant *args,
 				int nargs);
 
   virtual void bump_value (tree::expression_type)
-    { assert (0); }
-
-  virtual void stash_m_file_name (char *s)
-    { assert (0); }
-
-  virtual void stash_m_file_time (time_t t)
     { assert (0); }
 
   virtual char *m_file_name (void)
@@ -140,6 +137,9 @@ public:
 
   virtual time_t time_parsed (void)
     { assert (0); return 0; }
+
+  virtual int is_system_m_file (void) const
+    { return 0; }
 
   virtual tree_constant eval (int print) = 0;
 

@@ -84,6 +84,7 @@ class tree_return_list;
 class tree_word_list;
 class tree_command;
 class tree_command_list;
+class tree_global_command;
 class tree_while_command;
 class tree_for_command;
 class tree_if_command;
@@ -133,10 +134,16 @@ class
 tree_builtin : public tree
 {
 public:
-  tree_builtin (void);
-  tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn, symbol_record *s);
-  tree_builtin (int i_max, int o_max, Text_fcn t_fcn, symbol_record *s);
-  tree_builtin (int i_max, int o_max, General_fcn t_fcn, symbol_record *s);
+  tree_builtin (const char *nm = (char *) NULL);
+
+  tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
+		const char *nm = (char *) NULL);
+
+  tree_builtin (int i_max, int o_max, Text_fcn t_fcn,
+		const char *nm = (char *) NULL);
+
+  tree_builtin (int i_max, int o_max, General_fcn t_fcn,
+		const char *nm = (char *) NULL);
 
   ~tree_builtin (void);
 
@@ -151,7 +158,6 @@ public:
   tree_constant *eval (const tree_constant *args, int n_in, int n_out,
 		       int print);
 
-  tree *def (void);
   char *name (void);
 
   int max_expected_args (void);
@@ -162,9 +168,7 @@ private:
   Mapper_fcn mapper_fcn;
   Text_fcn text_fcn;
   General_fcn general_fcn;
-  symbol_record *sym;       // Is this really needed?  It points back
-			    // to the symbol record that contains this
-			    // builtin function...
+  char *my_name;
 };
 
 /*
@@ -183,9 +187,8 @@ public:
 
   int is_identifier (void) const;
 
-  tree *def (void);
   char *name (void);
-  symbol_record *symrec (void);
+  void rename (const char *n);
 
   tree_identifier *define (tree_constant *t);
   tree_identifier *define (tree_function *t);
@@ -205,6 +208,8 @@ public:
 
   void mark_as_formal_parameter (void);
 
+  void mark_for_possible_ans_assign (void);
+
   tree_constant eval (int print);
 
   tree_constant *eval (int print, int nargout);
@@ -218,6 +223,7 @@ public:
 
 private:
   symbol_record *sym;
+  int maybe_do_ans_assign;
 };
 
 /*
@@ -241,6 +247,9 @@ public:
 
   char *m_file_name (void);
   time_t time_parsed (void);
+
+  void mark_as_system_m_file (void);
+  int is_system_m_file (void) const;
 
   void stash_function_name (char *s);
   char *function_name (void);
@@ -267,6 +276,7 @@ private:
   char *file_name;
   char *fcn_name;
   time_t t_parsed;
+  int system_m_file;
 };
 
 /*
@@ -302,6 +312,8 @@ tree_prefix_expression : public tree_expression
   tree_constant eval (int print);
 
   void eval_error (void);
+
+  int is_prefix_expression (void) const;
 
  private:
   tree_identifier *id;
@@ -482,6 +494,8 @@ tree_index_expression : public tree_expression
 
   tree_argument_list *arg_list (void);
 
+  void mark_for_possible_ans_assign (void);
+
   tree_constant eval (int print);
 
   tree_constant *eval (int print, int nargout);
@@ -641,6 +655,33 @@ tree_command_list : public tree_command
   tree *command;		// Command to execute.
   int print_flag;		// Print result of eval for this command?
   tree_command_list *next;	// Next command in list.
+};
+
+/*
+ * Global.
+ */
+class
+tree_global_command : public tree_command
+{
+ public:
+  tree_global_command (int l = -1, int c = -1);
+  tree_global_command (symbol_record *s, int l = -1, int c = -1);
+  tree_global_command (symbol_record *s, tree *e, int l = -1, int c = -1);
+
+  ~tree_global_command (void);
+
+  tree_global_command *chain (symbol_record *s, int l = -1, int c = -1);
+  tree_global_command *chain (symbol_record *s, tree *e, int l = -1, int c = -1);
+  tree_global_command *reverse (void);
+
+  tree_constant eval (int print);
+
+  void eval_error (void);
+
+ private:
+  symbol_record *sr;		// Symbol record from local symbol table.
+  tree *rhs;			// RHS of assignment.
+  tree_global_command *next;	// Next global command.
 };
 
 /*

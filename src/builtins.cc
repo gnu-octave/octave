@@ -31,7 +31,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <float.h>
 
 #include "tree-const.h"
-#include "symtab.h"
 #include "t-builtins.h"
 #include "g-builtins.h"
 #include "builtins.h"
@@ -396,6 +395,9 @@ where y and x are vectors.", },
   { "inverse", 2, 1, builtin_inv,
     "inverse (X): inverse of a square matrix", },
 
+  { "is_global", 2, 1, builtin_is_global,
+    "is_global (X): return 1 if the string X names a global variable", },
+
   { "isstr", 2, 1, builtin_isstr,
     "isstr (X): return 1 if X is a string", },
 
@@ -573,6 +575,9 @@ at which the integrand is singular.\n", },
 
 static builtin_string_variables string_variables[] =
 {
+  { "EDITOR", "??", sv_editor,
+    "name of the editor to be invoked by the edit_history command", },
+
   { "I", "??", NULL,
     "sqrt (-1)", },
 
@@ -628,6 +633,10 @@ static builtin_string_variables string_variables[] =
 
   { "i", "??", NULL,
     "sqrt (-1)", },
+
+  { "ignore_function_time_stamp", "system", ignore_function_time_stamp,
+    "don't check to see if M-files have changed since they were last\n\
+compiled.  Possible values are \"system\" and \"all\"", },
 
   { "implicit_str_to_num_ok", "false", implicit_str_to_num_ok,
     "allow implicit string to number conversion", },
@@ -710,75 +719,30 @@ last computed value", },
   { NULL, NULL, NULL, NULL, },
 };
 
-static void
-make_eternal (const char *s)
-{
-  symbol_record *sym_rec = curr_sym_tab->lookup (s, 0, 0);
-  if (sym_rec != (symbol_record *) NULL)
-    sym_rec->make_eternal ();
-}
-
 void
 install_builtins (void)
 {
-  symbol_record *sym_rec;
-
-  tree_builtin *tb_tmp;
-
 // So that the clear function can't delete other builtin variables and
 // functions, they are given eternal life.
 
   builtin_mapper_functions *mfptr = mapper_functions;
   while (mfptr->name != (char *) NULL)
     {
-      sym_rec = curr_sym_tab->lookup (mfptr->name, 1);
-      sym_rec->unprotect ();
-
-      Mapper_fcn mfcn;
-      mfcn.neg_arg_complex = mfptr->neg_arg_complex;
-      mfcn.d_d_mapper = mfptr->d_d_mapper;
-      mfcn.d_c_mapper = mfptr->d_c_mapper;
-      mfcn.c_c_mapper = mfptr->c_c_mapper;
-
-      tb_tmp = new tree_builtin (mfptr->nargin_max, mfptr->nargout_max,
-				 mfcn, sym_rec);
-
-      sym_rec->define (tb_tmp);
-      sym_rec->document (mfptr->help_string);
-      sym_rec->make_eternal ();
-      sym_rec->protect ();
+      install_builtin_mapper_function (mfptr);
       mfptr++;
     }
 
   builtin_text_functions *tfptr = text_functions;
   while (tfptr->name != (char *) NULL)
     {
-      sym_rec = curr_sym_tab->lookup (tfptr->name, 1);
-      sym_rec->unprotect ();
-
-      tb_tmp = new tree_builtin (tfptr->nargin_max, 1,
-				 tfptr->text_fcn, sym_rec);
-
-      sym_rec->define (tb_tmp);
-      sym_rec->document (tfptr->help_string);
-      sym_rec->make_eternal ();
-      sym_rec->protect ();
+      install_builtin_text_function (tfptr);
       tfptr++;
     }
 
   builtin_general_functions *gfptr = general_functions;
   while (gfptr->name != (char *) NULL)
     {
-      sym_rec = curr_sym_tab->lookup (gfptr->name, 1);
-      sym_rec->unprotect ();
-
-      tb_tmp = new tree_builtin (gfptr->nargin_max, gfptr->nargout_max,
-				 gfptr->general_fcn, sym_rec);
-
-      sym_rec->define (tb_tmp);
-      sym_rec->document (gfptr->help_string);
-      sym_rec->make_eternal ();
-      sym_rec->protect ();
+      install_builtin_general_function (gfptr);
       gfptr++;
     }
 
@@ -788,110 +752,75 @@ install_builtins (void)
   builtin_string_variables *svptr = string_variables;
   while (svptr->name != (char *) NULL)
     {
-      sym_rec = curr_sym_tab->lookup (svptr->name, 1);
-      sym_rec->unprotect ();
-
-      tree_constant *tmp = new tree_constant (svptr->value);
-
-      sym_rec->set_sv_function (svptr->sv_function);
-      sym_rec->define (tmp);
-      sym_rec->document (svptr->help_string);
-      sym_rec->make_eternal ();
+      install_builtin_variable (svptr);
       svptr++;
     }
-
-// XXX FIXME XXX -- Need a convenient way to document these variables.
 
 // IMPORTANT: Always create a new tree_constant for each variable.
 
   tree_constant *tmp = NULL_TREE_CONST;
-  bind_variable ("ans", tmp);
+  bind_builtin_variable ("ans", tmp);
 
   Complex ctmp (0.0, 1.0);
   tmp = new tree_constant (ctmp);
-  bind_protected_variable ("I", tmp);
-  make_eternal ("I");
+  bind_builtin_variable ("I", tmp, 1, 1);
 
   tmp = new tree_constant (ctmp);
-  bind_protected_variable ("J", tmp);
-  make_eternal ("J");
+  bind_builtin_variable ("J", tmp, 1, 1);
 
 // Let i and j be functions so they can be redefined without being
 // wiped out.
 
-  char *tmp_help;
+  tmp = new tree_constant (ctmp);
+  install_builtin_variable_as_function ("i", tmp, 1, 1);
 
   tmp = new tree_constant (ctmp);
-  sym_rec = curr_sym_tab->lookup ("i", 1);
-  tmp_help = sym_rec->help ();
-  sym_rec->define_as_fcn (tmp);
-  sym_rec->document (tmp_help);
-  sym_rec->protect ();
-  sym_rec->make_eternal ();
-
-  tmp = new tree_constant (ctmp);
-  sym_rec = curr_sym_tab->lookup ("j", 1);
-  tmp_help = sym_rec->help ();
-  sym_rec->define_as_fcn (tmp);
-  sym_rec->document (tmp_help);
-  sym_rec->protect ();
-  sym_rec->make_eternal ();
+  install_builtin_variable_as_function ("j", tmp, 1, 1);
 
   tmp = new tree_constant (get_working_directory ("initialize_globals"));
-  bind_protected_variable ("PWD", tmp);
-  make_eternal ("PWD");
+  bind_builtin_variable ("PWD", tmp, 1, 1);
 
   tmp = new tree_constant (load_path);
-  bind_variable ("LOADPATH", tmp);
-  make_eternal ("LOADPATH");
+  bind_builtin_variable ("LOADPATH", tmp, 0, 1);
 
   tmp = new tree_constant (info_file);
-  bind_variable ("INFO_FILE", tmp);
-  make_eternal ("INFO_FILE");
+  bind_builtin_variable ("INFO_FILE", tmp, 0, 1);
+
+  tmp = new tree_constant (editor);
+  bind_builtin_variable ("EDITOR", tmp, 0, 1);
 
   tmp = new tree_constant (default_pager ());
-  bind_variable ("PAGER", tmp);
-  make_eternal ("PAGER");
+  bind_builtin_variable ("PAGER", tmp, 0, 1);
 
   tmp = new tree_constant (0.0);
-  bind_variable ("SEEK_SET", tmp);
-  make_eternal ("SEEK_SET");
+  bind_builtin_variable ("SEEK_SET", tmp, 0, 1);
 
   tmp = new tree_constant (1.0);
-  bind_variable ("SEEK_CUR", tmp);
-  make_eternal ("SEEK_CUR");
+  bind_builtin_variable ("SEEK_CUR", tmp, 0, 1);
 
   tmp = new tree_constant (2.0);
-  bind_variable ("SEEK_END", tmp);
-  make_eternal ("SEEK_END");
+  bind_builtin_variable ("SEEK_END", tmp, 0, 1);
 
   tmp = new tree_constant (DBL_EPSILON);
-  bind_protected_variable ("eps", tmp);
-  make_eternal ("eps");
+  bind_builtin_variable ("eps", tmp, 1, 1);
 
   tmp =  new tree_constant (10.0);
-  bind_variable ("output_max_field_width", tmp);
-  make_eternal ("output_max_field_width");
+  bind_builtin_variable ("output_max_field_width", tmp, 0, 1);
 
   tmp =  new tree_constant (5.0);
-  bind_variable ("output_precision", tmp);
-  make_eternal ("output_precision");
+  bind_builtin_variable ("output_precision", tmp, 0, 1);
 
   tmp =  new tree_constant (4.0 * atan (1.0));
-  bind_protected_variable ("pi", tmp);
-  make_eternal ("pi");
+  bind_builtin_variable ("pi", tmp, 1, 1);
 
   tmp =  new tree_constant (0.0);
-  bind_protected_variable ("stdin", tmp);
-  make_eternal ("stdin");
+  bind_builtin_variable ("stdin", tmp, 1, 1);
 
   tmp =  new tree_constant (1.0);
-  bind_protected_variable ("stdout", tmp);
-  make_eternal ("stdout");
+  bind_builtin_variable ("stdout", tmp, 1, 1);
 
   tmp =  new tree_constant (2.0);
-  bind_protected_variable ("stderr", tmp);
-  make_eternal ("stderr");
+  bind_builtin_variable ("stderr", tmp, 1, 1);
 
 // If using 1.0 / 0.0 doesn't work, you might also try using a very
 // large constant like 1.0e100000.
@@ -904,12 +833,10 @@ install_builtins (void)
 #endif
 
   tmp = new tree_constant (tmp_inf);
-  bind_protected_variable ("Inf", tmp);
-  make_eternal ("Inf");
+  bind_builtin_variable ("Inf", tmp, 1, 1);
 
   tmp = new tree_constant (tmp_inf);
-  bind_protected_variable ("inf", tmp);
-  make_eternal ("inf");
+  bind_builtin_variable ("inf", tmp, 1, 1);
 
 #else
 
@@ -917,31 +844,27 @@ install_builtins (void)
 // off completely, or writing an entire IEEE emulation package?
 
   tmp = new tree_constant (DBL_MAX);
-  bind_protected_variable ("Inf", tmp);
-  make_eternal ("Inf");
+  bind_builtin_variable ("Inf", tmp, 1, 1);
 
   tmp = new tree_constant (DBL_MAX);
-  bind_protected_variable ("inf", tmp);
-  make_eternal ("inf");
+  bind_builtin_variable ("inf", tmp, 1, 1);
 #endif
 
-// If tmp_inf / tmp_inf fails to produce a NaN, you might also try
-// something like 0.0 / 0.0.
+// If 0.0 / 0.0 fails to produce a NaN, you might also try
+// something like Inf / Inf.
 
 #if defined (HAVE_ISNAN)
 #ifdef linux
   double tmp_nan = NAN;
 #else
-  double tmp_nan = tmp_inf / tmp_inf;
+  double tmp_nan = 0.0 / 0.0;
 #endif
 
   tmp = new tree_constant (tmp_nan);
-  bind_protected_variable ("NaN", tmp);
-  make_eternal ("NaN");
+  bind_builtin_variable ("NaN", tmp, 1, 1);
 
   tmp = new tree_constant (tmp_nan);
-  bind_protected_variable ("nan", tmp);
-  make_eternal ("nan");
+  bind_builtin_variable ("nan", tmp, 1, 1);
 #endif
 }
 

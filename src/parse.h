@@ -36,9 +36,6 @@ class tree_matrix;
 class tree_identifier;
 class symbol_table;
 
-// Identifier to define if we are reading an M-fie.
-extern tree_identifier *id_to_define;
-
 // Nonzero means we're in the middle of defining a function.
 extern int defining_func;
 

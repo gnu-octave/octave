@@ -900,6 +900,27 @@ builtin_input (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
+ * Does the given string name a global variable?
+ */
+tree_constant *
+builtin_is_global (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = new tree_constant [2];
+  retval[0] = tree_constant (0.0);
+
+  if (nargin == 2 && args[1].is_string_type ())
+    {
+      char *name = args[1].string_value ();
+      if (is_globally_visible (name))
+	retval[0] = tree_constant (1.0);
+    }
+  else
+    print_usage ("is_global");
+
+  return retval;
+}
+
+/*
  * Is the argument a string?
  */
 tree_constant *

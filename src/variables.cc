@@ -35,7 +35,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "statdefs.h"
 #include "tree-const.h"
 #include "variables.h"
+#include "user-prefs.h"
 #include "symtab.h"
+#include "builtins.h"
+#include "g-builtins.h"
+#include "t-builtins.h"
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
@@ -50,6 +54,16 @@ symbol_table *curr_sym_tab;
 // Symbol table for global symbols.
 symbol_table *global_sym_tab;
 
+void
+initialize_symbol_tables (void)
+{
+  global_sym_tab = new symbol_table ();
+
+  top_level_sym_tab = new symbol_table ();
+
+  curr_sym_tab = top_level_sym_tab;
+}
+
 /*
  * Is there a corresponding M-file that is newer than the symbol
  * definition?
@@ -57,141 +71,218 @@ symbol_table *global_sym_tab;
 int
 symbol_out_of_date (symbol_record *sr)
 {
-  int status = 0;
+  int ignore = user_pref.ignore_function_time_stamp;
+
+  if (ignore == 2)
+    return 0;
+
   if (sr != (symbol_record *) NULL)
     {
       tree *ans = sr->def ();
       if (ans != NULL_TREE)
 	{
 	  char *mf = ans->m_file_name ();
-	  if (mf != (char *) NULL)
+	  if (! (mf == (char *) NULL
+		 || (ignore && ans->is_system_m_file ())))
 	    {
 	      time_t tp = ans->time_parsed ();
-	      status = is_newer (mf, tp);
+	      char *fname = m_file_in_path (mf);
+	      int status = is_newer (fname, tp);
+	      delete [] fname;
+	      if (status > 0)
+		return 1;
 	    }
 	}
     }
-  return status;
+  return 0;
 }
 
-/*
- * Force a symbol into the global symbol table.
- */
-symbol_record *
-force_global (char *name)
+void
+document_symbol (const char *name, const char *help)
 {
-  symbol_record *retval = (symbol_record *) NULL;
-
-  if (valid_identifier (name))
+  if (is_builtin_variable (name))
     {
-      symbol_record *sr;
-      sr = curr_sym_tab->lookup (name, 0, 0);
-      if (sr == (symbol_record *) NULL)
+      error ("sorry, can't redefine help for builtin variables");
+    }
+  else
+    {
+      symbol_record *sym_rec = curr_sym_tab->lookup (name, 0);
+      if (sym_rec == (symbol_record *) NULL)
 	{
-	  retval = global_sym_tab->lookup (name, 1, 0);
-	  retval->mark_as_forced_global ();
-	}
-      else if (sr->is_formal_parameter ())
-	{
-	  error ("formal parameter `%s' can't be made global", name);
+	  error ("document: no such symbol `%s'", name);
 	}
       else
 	{
-	  retval = global_sym_tab->lookup (name, 1, 0);
-	  retval->mark_as_forced_global ();
-	  retval->alias (sr, 1);
-	  curr_sym_tab->clear (name);
+	  sym_rec->document (help);
 	}
     }
-  else
-    warning ("`%s' is invalid as an identifier", name);
-
-  return retval;
 }
 
-int
-bind_variable (char *varname, tree_constant *val)
+void
+install_builtin_mapper_function (builtin_mapper_functions *mf)
 {
-// Look for the symbol in the current symbol table.  If it's there,
-// great.  If not, don't insert it, but look for it in the global
-// symbol table.  If it's there, great.  If not, insert it in the
-// original current symbol table.
+  symbol_record *sym_rec = global_sym_tab->lookup (mf->name, 1);
+  sym_rec->unprotect ();
 
-  symbol_record *sr;
-  sr = curr_sym_tab->lookup (varname, 0, 0);
-  if (sr == (symbol_record *) NULL)
-    {
-      sr = global_sym_tab->lookup (varname, 0, 0);
-      if (sr == (symbol_record *) NULL)
-	{
-	  sr = curr_sym_tab->lookup (varname, 1);
-	}
-    }
+  Mapper_fcn mfcn;
+  mfcn.neg_arg_complex = mf->neg_arg_complex;
+  mfcn.d_d_mapper = mf->d_d_mapper;
+  mfcn.d_c_mapper = mf->d_c_mapper;
+  mfcn.c_c_mapper = mf->c_c_mapper;
 
-  if (sr != (symbol_record *) NULL)
-    {
-      sr->define (val);
-      return 0;
-    }
-  else
-    return 1;
+  tree_builtin *def = new tree_builtin (mf->nargin_max,
+					mf->nargout_max, mfcn,
+					mf->name);
+
+  sym_rec->define (def);
+
+  sym_rec->document (mf->help_string);
+  sym_rec->make_eternal ();
+  sym_rec->protect ();
 }
 
-int
-bind_protected_variable (char *varname, tree_constant *val)
+void
+install_builtin_text_function (builtin_text_functions *tf)
 {
-// Look for the symbol in the current symbol table.  If it's there,
-// great.  If not, don't insert it, but look for it in the global
-// symbol table.  If it's there, great.  If not, insert it in the
-// original current symbol table.
+  symbol_record *sym_rec = global_sym_tab->lookup (tf->name, 1);
+  sym_rec->unprotect ();
 
+  tree_builtin *def = new tree_builtin (tf->nargin_max, 1,
+					tf->text_fcn, tf->name);
+
+  sym_rec->define (def);
+
+  sym_rec->document (tf->help_string);
+  sym_rec->make_eternal ();
+  sym_rec->protect ();
+
+}
+
+void
+install_builtin_general_function (builtin_general_functions *gf)
+{
+  symbol_record *sym_rec = global_sym_tab->lookup (gf->name, 1);
+  sym_rec->unprotect ();
+
+  tree_builtin *def = new tree_builtin (gf->nargin_max,
+					gf->nargout_max,
+					gf->general_fcn, gf->name);
+
+  sym_rec->define (def);
+
+  sym_rec->document (gf->help_string);
+  sym_rec->make_eternal ();
+  sym_rec->protect ();
+}
+
+void
+install_builtin_variable (builtin_string_variables *sv)
+{
+  tree_constant *val = new tree_constant (sv->value);
+
+  bind_builtin_variable (sv->name, val, 0, 1, sv->sv_function,
+			 sv->help_string);
+}
+
+void
+install_builtin_variable_as_function (const char *name, tree_constant *val,
+				      int protect = 0, int eternal = 0)
+{
+  symbol_record *sym_rec = global_sym_tab->lookup (name, 1);
+  sym_rec->unprotect ();
+
+  char *tmp_help = sym_rec->help ();
+
+  sym_rec->define_as_fcn (val);
+
+  sym_rec->document (tmp_help);
+
+  if (protect)
+    sym_rec->protect ();
+
+  if (eternal)
+    sym_rec->make_eternal ();
+}
+
+void
+bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
+{
+  tree_constant *tmp;
   symbol_record *sr;
-  sr = curr_sym_tab->lookup (varname, 0, 0);
-  if (sr == (symbol_record *) NULL)
-    {
-      sr = global_sym_tab->lookup (varname, 0, 0);
-      if (sr == (symbol_record *) NULL)
-	{
-	  sr = curr_sym_tab->lookup (varname, 1);
-	}
-    }
 
-  if (sr != (symbol_record *) NULL)
-    {
-      sr->unprotect ();
-      sr->define (val);
-      sr->protect ();
-      return 0;
-    }
-  else
-    return 1;
+  sr = sym_tab->lookup ("nargin", 1, 0);
+  sr->unprotect ();
+  tmp = new tree_constant (nargin-1);
+  sr->define (tmp);
+  sr->protect ();
+
+  sr = sym_tab->lookup ("nargout", 1, 0);
+  sr->unprotect ();
+  tmp = new tree_constant (nargout);
+  sr->define (tmp);
+  sr->protect ();
 }
 
 /*
- * Look for name first in current then in global symbol tables.  If
- * name is found and it refers to a string, return a new string
- * containing its value.  Otherwise, return NULL.
+ * Give a global variable a definition.  This will insert the symbol
+ * in the global table if necessary.
+ */
+void
+bind_builtin_variable (const char *varname, tree_constant *val,
+		       int protect = 0, int eternal = 0,
+		       sv_Function sv_fcn = (sv_Function) 0,
+		       const char *help = (char *) 0)
+{
+  symbol_record *sr = global_sym_tab->lookup (varname, 1, 0);
+
+// It is a programming error for a builtin symbol to be missing.
+// Besides, we just inserted it, so it must be there.
+
+  assert (sr != (symbol_record *) NULL);
+
+  sr->unprotect ();
+
+// Must do this before define, since define will call the special
+// variable function only if it knows about it, and it needs to, so
+// that user prefs can be properly initialized.
+
+  if (sv_fcn)
+    sr->set_sv_function (sv_fcn);
+
+  sr->define_builtin_var (val);
+
+  if (protect)
+    sr->protect ();
+
+  if (eternal)
+    sr->make_eternal ();
+
+  if (help)
+    sr->document (help);    
+}
+
+/*
+ * Look for the given name in the global symbol table.  If it refers
+ * to a string, return a new copy.  If not, return NULL.
  */
 char *
-octave_string_variable (char *name)
+builtin_string_variable (const char *name)
 {
+  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+
+// It is a prorgramming error to look for builtins that aren't.
+
+  assert (sr != (symbol_record *) NULL);
+
   char *retval = (char *) NULL;
-  symbol_record *sr;
-  sr = curr_sym_tab->lookup (name, 0, 0);
-  if (sr == (symbol_record *) NULL)
-    {
-      sr = global_sym_tab->lookup (name, 0, 0);
-      if (sr == (symbol_record *) NULL)
-	return retval;
-    }
 
   tree *defn = sr->def ();
+
   if (defn != NULL_TREE)
     {
       tree_constant val = defn->eval (0);
-      if (error_state)
-	return retval;
-      else if (val.is_string_type ())
+
+      if (! error_state && val.is_string_type ())
 	{
 	  char *s = val.string_value ();
 	  if (s != (char *) NULL)
@@ -203,30 +294,28 @@ octave_string_variable (char *name)
 }
 
 /*
- * Look for name first in current then in global symbol tables.  If
- * name is found and it refers to a real scalar, place the value in d
- * and return 0.  Otherwise, return -1.
+ * Look for the given name in the global symbol table.  If it refers
+ * to a real scalar, place the value in d and return 0.  Otherwise,
+ * return -1. 
  */
 int
-octave_real_scalar_variable (char *name, double& d)
+builtin_real_scalar_variable (const char *name, double& d)
 {
   int status = -1;
-  symbol_record *sr;
-  sr = curr_sym_tab->lookup (name, 0, 0);
-  if (sr == (symbol_record *) NULL)
-    {
-      sr = global_sym_tab->lookup (name, 0, 0);
-      if (sr == (symbol_record *) NULL)
-	return status;
-    }
+  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+
+// It is a prorgramming error to look for builtins that aren't.
+
+  assert (sr != (symbol_record *) NULL);
 
   tree *defn = sr->def ();
+
   if (defn != NULL_TREE)
     {
       tree_constant val = defn->eval (0);
-      if (error_state)
-	return status;
-      else if (val.const_type () == tree_constant_rep::scalar_constant)
+
+      if (! error_state
+	  && val.const_type () == tree_constant_rep::scalar_constant)
 	{
 	  d = val.double_value ();
 	  status = 0;
@@ -234,6 +323,120 @@ octave_real_scalar_variable (char *name, double& d)
     }
 
   return status;
+}
+
+/*
+ * Make the definition of the symbol record sr be the same as the
+ * definition of the global variable of the same name, creating it if
+ * it doesn't already exist. 
+ */
+void
+link_to_global_variable (symbol_record *sr)
+{
+  if (sr->is_linked_to_global ())
+    return;
+
+  symbol_record *gsr = global_sym_tab->lookup (sr->name (), 1, 0);
+
+  if (sr->is_formal_parameter ())
+    {
+      error ("can't make function parameter `%s' global", sr->name ());
+      return;
+    }
+
+// There must be a better way to do this.   XXX FIXME XXX
+
+  if (sr->is_variable ())
+    {
+// Would be nice not to have this cast.  XXX FIXME XXX
+      tree_constant *tmp = (tree_constant *) sr->def ();
+      tmp = new tree_constant (*tmp);
+      gsr->define (tmp);
+    }
+  else
+    {
+      sr->clear ();
+    }
+
+// If the global symbol is currently defined as a function, we need to
+// hide it with a variable.
+
+  if (gsr->is_function ())
+    gsr->define (NULL_TREE_CONST);
+
+  sr->alias (gsr, 1);
+  sr->mark_as_linked_to_global ();
+}
+
+/*
+ * Make the definition of the symbol record sr be the same as the
+ * definition of the builtin variable of the same name.
+ */
+void
+link_to_builtin_variable (symbol_record *sr)
+{
+  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name (), 0, 0);
+
+  if (tmp_sym != (symbol_record *) NULL)
+    {
+      if (tmp_sym->is_builtin_variable ())
+	{
+	  sr->alias (tmp_sym);
+	}
+    }
+}
+
+/*
+ * Make the definition of the symbol record sr be the same as the
+ * definition of the builtin variable or function, or user function of
+ * the same name, provided that the name has not been used as a formal
+ * parameter.
+ */
+void
+link_to_builtin_or_function (symbol_record *sr)
+{
+  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name (), 0, 0);
+
+  if (tmp_sym != (symbol_record *) NULL)
+    {
+      if ((tmp_sym->is_builtin_variable () || tmp_sym->is_function ())
+	  && ! tmp_sym->is_formal_parameter ())
+	{
+	  sr->alias (tmp_sym);
+	}
+    }
+}
+
+/*
+ * Force a link to a function in the current symbol table.  This is
+ * used just after defining a function to avoid different behavior
+ * depending on whether or not the function has been evaluated after
+ * being defined.
+ *
+ * Return without doing anything if there isn't a function with the
+ * given name defined in the global symbol table.
+ */
+void
+force_link_to_function (const char *id_name)
+{
+  symbol_record *gsr = global_sym_tab->lookup (id_name, 1, 0);
+  if (gsr->is_function ())
+    {
+      curr_sym_tab->clear (id_name);
+      symbol_record *csr = curr_sym_tab->lookup (id_name, 1, 0);
+      csr->alias (gsr);
+    }
+}
+
+/*
+ * Return 1 if the argument names a globally visible variable.
+ * Otherwise, return 0.
+ */
+int
+is_globally_visible (const char *name)
+{
+  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  return (sr != (symbol_record *) NULL && sr->is_linked_to_global ());
 }
 
 /*
@@ -396,9 +599,18 @@ identifier_exists (char *name)
 	  if (stat (name, &buf) == 0 && S_ISREG (buf.st_mode))
 	    return 2;
 	}
-	
     }
   return 0;
+}
+
+/*
+ * Is this variable a builtin?
+ */
+int
+is_builtin_variable (const char *name)
+{
+  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+  return (sr != (symbol_record *) NULL && sr->is_builtin_variable ());
 }
 
 /*
@@ -461,6 +673,8 @@ takes_correct_nargs (tree *fcn, int expected_nargin, char *warn_for,
     }
   return 1;
 }
+
+// It's not likely that this does the right thing now.  XXX FIXME XXX
 
 char **
 make_name_list (void)

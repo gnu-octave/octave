@@ -82,6 +82,7 @@ extern tree_constant *builtin_hess (const tree_constant *, int, int);
 extern tree_constant *builtin_input (const tree_constant *, int, int);
 extern tree_constant *builtin_ifft (const tree_constant *, int, int);
 extern tree_constant *builtin_inv (const tree_constant *, int, int);
+extern tree_constant *builtin_is_global (const tree_constant *, int, int);
 extern tree_constant *builtin_isstr (const tree_constant *, int, int);
 extern tree_constant *builtin_keyboard (const tree_constant *, int, int);
 extern tree_constant *builtin_logm (const tree_constant *, int, int);

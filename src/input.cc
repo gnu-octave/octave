@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream.h>
 #include <string.h>
 #include <assert.h>
 
@@ -75,7 +76,6 @@ gnu_readline (char *s)
 #include "input.h"
 #include "pager.h"
 #include "help.h"
-#include "symtab.h"
 #include "octave-hist.h"
 #include "sighandlers.h"
 #include "parse.h"

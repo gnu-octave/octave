@@ -28,14 +28,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DEFAULT_PAGER %DEFAULT_PAGER%
 #endif
 
-#ifndef DEFAULT_INFO_PROG
-#define DEFAULT_INFO_PROG %DEFAULT_INFO_PROG%
-#endif
-
-#ifndef DEFAULT_INFO_FILE
-#define DEFAULT_INFO_FILE %DEFAULT_INFO_FILE%
-#endif
-
 #ifndef OCTAVE_HOME
 #define OCTAVE_HOME %OCTAVE_HOME%
 #endif

@@ -386,7 +386,7 @@ pathstring_to_vector (char *pathstring)
   return path;
 }
 
-static char *
+char *
 octave_home (void)
 {
   static char *home =  (char *) NULL;
@@ -399,7 +399,7 @@ octave_home (void)
   return home;
 }
 
-static char *
+char *
 octave_lib_dir (void)
 {
   static char *ol = (char *) NULL;
@@ -410,7 +410,7 @@ octave_lib_dir (void)
   return ol;
 }
 
-static char *
+char *
 octave_info_dir (void)
 {
   static char *oi = (char *) NULL;
@@ -450,6 +450,19 @@ default_info_file (void)
       info_file_string = strconcat (infodir, "octave.info");
     }
   return info_file_string;
+}
+
+char *
+default_editor (void)
+{
+  static char *editor_string = (char *) NULL;
+  delete [] editor_string;
+  char *env_editor = getenv ("EDITOR");
+  if (env_editor == (char *) NULL || *env_editor == '\0')
+    editor_string = strsave ("vi");
+  else
+    editor_string = strsave (env_editor);
+  return editor_string;
 }
 
 char *

@@ -1145,10 +1145,10 @@ set_output_prec_and_fw (int prec, int fw)
   tree_constant *tmp = NULL_TREE_CONST;
 
   tmp = new tree_constant ((double) prec);
-  bind_variable ("output_precision", tmp);
+  bind_builtin_variable ("output_precision", tmp);
 
   tmp = new tree_constant ((double) fw);
-  bind_variable ("output_max_field_width", tmp);
+  bind_builtin_variable ("output_max_field_width", tmp);
 }
 
 void

@@ -48,7 +48,7 @@ user_preferences user_pref;
 static int
 check_str_pref (char *var)
 {
-  char *val = octave_string_variable (var);
+  char *val = builtin_string_variable (var);
   int pref = -1;
   if (val != (char *) NULL)
     {
@@ -237,6 +237,30 @@ silent_functions (void)
 }
 
 /*
+ * Should Octave always check to see if M-files have changed since
+ * they were last compiled?
+ */
+int
+ignore_function_time_stamp (void)
+{
+  int pref = 0;
+
+  char *val = builtin_string_variable ("ignore_function_time_stamp");
+
+  if (val != (char *) NULL)
+    {
+      if (strncmp (val, "all", 3) == 0)
+	pref = 2;
+      if (strncmp (val, "system", 6) == 0)
+	pref = 1;
+    }
+
+  user_pref.ignore_function_time_stamp = pref;
+
+  return 0;
+}
+
+/*
  * Should should big matrices be split into smaller slices for output?
  */
 int
@@ -301,7 +325,7 @@ int
 warn_assign_as_truth_value (void)
 {
   user_pref.warn_assign_as_truth_value =
-    check_str_pref ("user_pref.warn_assign_as_truth_value");
+    check_str_pref ("warn_assign_as_truth_value");
 
   return 0;
 }
@@ -326,7 +350,7 @@ set_output_max_field_width (void)
   static int kludge = 0;
 
   double val;
-  if (octave_real_scalar_variable ("output_max_field_width", val) == 0)
+  if (builtin_real_scalar_variable ("output_max_field_width", val) == 0)
     {
       int ival = NINT (val);
       if (ival > 0 && (double) ival == val)
@@ -355,7 +379,7 @@ set_output_precision (void)
   static int kludge = 0;
 
   double val;
-  if (octave_real_scalar_variable ("output_precision", val) == 0)
+  if (builtin_real_scalar_variable ("output_precision", val) == 0)
     {
       int ival = NINT (val);
       if (ival >= 0 && (double) ival == val)
@@ -381,7 +405,7 @@ sv_loadpath (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("LOADPATH");
+  char *s = builtin_string_variable ("LOADPATH");
   if (s != (char *) NULL)
     {
       delete [] user_pref.loadpath;
@@ -401,7 +425,7 @@ sv_info_file (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("INFO_FILE");
+  char *s = builtin_string_variable ("INFO_FILE");
   if (s != (char *) NULL)
     {
       delete [] user_pref.info_file;
@@ -417,11 +441,31 @@ sv_info_file (void)
 }
 
 int
+sv_editor (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("EDITOR");
+  if (s != (char *) NULL)
+    {
+      delete [] user_pref.editor;
+      user_pref.editor = s;
+    }
+  else
+    {
+      warning ("invalid value specified for EDITOR");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
 sv_ps1 (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("PS1");
+  char *s = builtin_string_variable ("PS1");
   if (s != (char *) NULL)
     {
       delete [] user_pref.ps1;
@@ -441,7 +485,7 @@ sv_ps2 (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("PS2");
+  char *s = builtin_string_variable ("PS2");
   if (s != (char *) NULL)
     {
       delete [] user_pref.ps2;
@@ -461,7 +505,7 @@ sv_pwd (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("PWD");
+  char *s = builtin_string_variable ("PWD");
   if (s != (char *) NULL)
     {
       delete [] user_pref.pwd;
@@ -481,7 +525,7 @@ sv_gnuplot_binary (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("gnuplot_binary");
+  char *s = builtin_string_variable ("gnuplot_binary");
   if (s != (char *) NULL)
     {
       delete [] user_pref.gnuplot_binary;
@@ -501,7 +545,7 @@ sv_pager_binary (void)
 {
   int status = 0;
 
-  char *s = octave_string_variable ("PAGER");
+  char *s = builtin_string_variable ("PAGER");
   if (s != (char *) NULL)
     {
       delete [] user_pref.pager_binary;

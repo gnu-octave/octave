@@ -92,8 +92,6 @@ extern "C"
   extern char *replace_in_documentation ();
 }
 
-extern int symbol_out_of_date (symbol_record *s);
-
 // Is this a parametric plot?  Makes a difference for 3D plotting.
 extern int parametric_plot;
 
@@ -218,11 +216,12 @@ builtin_cd (int argc, char **argv)
 
   char *directory = get_working_directory ("cd");
   tree_constant *dir = new tree_constant (directory);
-  bind_protected_variable ("PWD", dir);
+  bind_builtin_variable ("PWD", dir, 1);
 
   return retval;
 }
 
+#if 0
 static int
 in_list (char *s, char **list)
 {
@@ -235,32 +234,44 @@ in_list (char *s, char **list)
 
   return 0;
 }
+#endif
 
 /*
  * Wipe out user-defined variables and functions given a list of
- * regular expressions. 
+ * regular expressions.
+ *
+ * It's not likely that this works correctly now.  XXX FIXME XXX
  */
 tree_constant
 builtin_clear (int argc, char **argv)
 {
   tree_constant retval;
+
+// Always clear the local table, but don't clear currently compiled
+// functions unless we are at the top level.  (Allowing that to happen
+// inside functions would result in pretty odd behavior...)
+
+  int clear_user_functions = (curr_sym_tab == top_level_sym_tab);
+
   if (argc == 1)
     {
       curr_sym_tab->clear ();
-      if (curr_sym_tab == top_level_sym_tab)
-	global_sym_tab->clear ();
+      global_sym_tab->clear (clear_user_functions);
     }
   else
     {
-      int count;
-      char **names = curr_sym_tab->list (count);
-
-      int g_count;
-      char **g_names = global_sym_tab->list (g_count);
-
-      int num_cleared = 0;
-      char **locals_cleared = new char * [count+1];
-      locals_cleared[num_cleared] = (char *) NULL;
+      int lcount;
+      char **lvars = curr_sym_tab->list (lcount, 0,
+					 symbol_def::USER_VARIABLE,
+					 SYMTAB_LOCAL_SCOPE);
+      int gcount;
+      char **gvars = curr_sym_tab->list (gcount, 0,
+					 symbol_def::USER_VARIABLE,
+					 SYMTAB_GLOBAL_SCOPE);
+      int fcount;
+      char **fcns = curr_sym_tab->list (fcount, 0,
+					symbol_def::USER_FUNCTION,
+					SYMTAB_ALL_SCOPES);
 
       while (--argc > 0)
 	{
@@ -270,38 +281,41 @@ builtin_clear (int argc, char **argv)
 	      Regex rx (*argv);
 
 	      int i;
-	      for (i = 0; i < count; i++)
+	      for (i = 0; i < lcount; i++)
 		{
-		  String nm (names[i]);
-		  if (nm.matches (rx) && curr_sym_tab->clear (names[i]))
+		  String nm (lvars[i]);
+		  if (nm.matches (rx))
+		    curr_sym_tab->clear (lvars[i]);
+		}
+
+	      int count;
+	      for (i = 0; i < gcount; i++)
+		{
+		  String nm (gvars[i]);
+		  if (nm.matches (rx))
 		    {
-		      locals_cleared[num_cleared++] = strsave (names[i]);
-		      locals_cleared[num_cleared] = (char *) NULL;
+		      count = curr_sym_tab->clear (gvars[i]);
+		      if (count > 0)
+			global_sym_tab->clear (gvars[i], clear_user_functions);
 		    }
 		}
 
-	      if (curr_sym_tab == top_level_sym_tab)
+	      for (i = 0; i < fcount; i++)
 		{
-		  for (i = 0; i < g_count; i++)
+		  String nm (fcns[i]);
+		  if (nm.matches (rx))
 		    {
-		      String nm (g_names[i]);
-		      if (nm.matches (rx)
-			  && ! in_list (g_names[i], locals_cleared))
-			{
-			  global_sym_tab->clear (g_names[i]);
-			}
+		      count = curr_sym_tab->clear (fcns[i]);
+		      if (count > 0)
+			global_sym_tab->clear (fcns[i], clear_user_functions);
 		    }
 		}
 	    }
 	}
 
-      int i = 0;
-      while (locals_cleared[i] != (char *) NULL)
-	delete [] locals_cleared[i++];
-      delete [] locals_cleared;
-
-      delete [] names;
-      delete [] g_names;
+      delete [] lvars;
+      delete [] gvars;
+      delete [] fcns;
 
     }
   return retval;
@@ -315,22 +329,9 @@ builtin_document (int argc, char **argv)
 {
   tree_constant retval;
   if (argc == 3)
-    {
-      symbol_record *sym_rec = curr_sym_tab->lookup (argv[1], 0);
-      if (sym_rec == (symbol_record *) NULL)
-	{
-	  sym_rec = global_sym_tab->lookup (argv[1], 0);
-	  if (sym_rec == (symbol_record *) NULL)
-	    {
-	      error ("document: no such symbol `%s'", argv[1]);
-	      return retval;
-	    }
-	}
-      sym_rec->document (argv[2]);
-    }
+    document_symbol (argv[1], argv[2]);
   else
     print_usage ("document");
-
   return retval;
 }
 
@@ -848,20 +849,54 @@ builtin_save (int argc, char **argv)
 
   if (argc == 1)
     {
-      curr_sym_tab->save (stream);
-      global_sym_tab->save (stream, 1);
+      int count;
+      char **vars = curr_sym_tab->list (count, 0,
+					symbol_def::USER_VARIABLE,
+					SYMTAB_ALL_SCOPES);
+
+      for (int i = 0; i < count; i++)
+	curr_sym_tab->save (stream, vars[i],
+			    is_globally_visible (vars[i]));
+
+      delete [] vars;
     }
   else
     {
       while (--argc > 0)
 	{
 	  argv++;
-	  if (! curr_sym_tab->save (stream, *argv))
-	    if (! global_sym_tab->save (stream, *argv, 1))
-	      {
-		warning ("save: no such variable `%s'", *argv);
-		continue;
-	      }
+
+	  int count;
+	  char **lvars = curr_sym_tab->list (count, 0,
+					     symbol_def::USER_VARIABLE);
+	  Regex rx (*argv);
+
+	  int saved_or_error = 0;
+	  int i;
+	  for (i = 0; i < count; i++)
+	    {
+	      String nm (lvars[i]);
+	      if (nm.matches (rx)
+		  && curr_sym_tab->save (stream, lvars[i]) != 0)
+		saved_or_error++;
+	    }
+
+	  char **bvars = global_sym_tab->list (count, 0,
+					       symbol_def::BUILTIN_VARIABLE);
+
+	  for (i = 0; i < count; i++)
+	    {
+	      String nm (bvars[i]);
+	      if (nm.matches (rx)
+		  && global_sym_tab->save (stream, bvars[i]) != 0)
+		saved_or_error++;
+	    }
+
+	  delete [] lvars;
+	  delete [] bvars;
+
+	  if (! saved_or_error)
+	    warning ("save: no such variable `%s'", *argv);
 	}
     }
 
@@ -928,104 +963,160 @@ builtin_show (int argc, char **argv)
 /*
  * List variable names.
  */
+static void
+print_symbol_info_line (ostrstream& output_buf, const symbol_record_info& s)
+{
+  output_buf << (s.is_read_only () ? " -" : " w");
+  output_buf << (s.is_eternal () ? "- " : "d ");
+#if 0
+  output_buf << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
+#endif
+  output_buf.form ("  %-16s", s.type_as_string ());
+  if (s.is_function ())
+    output_buf << "      -      -";
+  else
+    {
+      output_buf.form ("%7d", s.rows ());
+      output_buf.form ("%7d", s.columns ());
+    }
+  output_buf << "  " << s.name () << "\n";
+}
+
+static void
+print_long_listing (ostrstream& output_buf, symbol_record_info *s)
+{
+  if (s == (symbol_record_info *) NULL)
+    return;
+
+  symbol_record_info *ptr = s;
+  while (ptr->is_defined ())
+    {
+      print_symbol_info_line (output_buf, *ptr);
+      ptr++;
+    }
+}
+
+static int
+maybe_list (const char *header, ostrstream& output_buf,
+	    int show_verbose, symbol_table *sym_tab, unsigned type,
+	    unsigned scope)
+{
+  int count;
+  int status = 0;
+  if (show_verbose)
+    {
+      symbol_record_info *symbols;
+      symbols = sym_tab->long_list (count, 1, type, scope);
+      if (symbols != (symbol_record_info *) NULL && count > 0)
+	{
+	  output_buf << "\n" << header << "\n\n"
+		     << "prot  type               rows   cols  name\n"
+		     << "====  ====               ====   ====  ====\n";
+
+	  print_long_listing (output_buf, symbols);
+	  status = 1;
+	}
+      delete [] symbols;
+    }
+  else
+    {
+      char **symbols = sym_tab->list (count, 1, type, scope);
+      if (symbols != (char **) NULL && count > 0)
+	{
+	  output_buf << "\n" << header << "\n\n";
+	  list_in_columns (output_buf, symbols);
+	  status = 1;
+	}
+      delete [] symbols;
+    }
+  return status;
+}
+
 tree_constant
 builtin_who (int argc, char **argv)
 {
   tree_constant retval;
-  int show_global = 0;
-  int show_local = 1;
-  int show_top = 0;
-  int show_fcns = 0;
+
+  int show_builtins = 0;
+  int show_functions = (curr_sym_tab == top_level_sym_tab);
+  int show_variables = 1;
+  int show_verbose = 0;
 
   if (argc > 1)
-    show_local = 0;
+    {
+      show_functions = 0;
+      show_variables = 0;
+    }
 
   for (int i = 1; i < argc; i++)
     {
       argv++;
-      if (strcmp (*argv, "-all") == 0)
+      if (strcmp (*argv, "-all") == 0 || strcmp (*argv, "-a") == 0)
 	{
-	  show_global++;	  
-	  show_local++;
-	  show_top++;
-	  show_fcns++;
+	  show_builtins++;
+	  show_functions++;
+	  show_variables++;	  
 	}
-      else if (strcmp (*argv, "-global") == 0)
-	show_global++;
-      else if (strcmp (*argv, "-local") == 0)
-	show_local++;
-      else if (strcmp (*argv, "-top") == 0)
-	show_top++;
-      else if (strcmp (*argv, "-fcn") == 0
-	       || strcmp (*argv, "-fcns") == 0
-	       || strcmp (*argv, "-functions") == 0)
-	show_fcns++;
+      else if (strcmp (*argv, "-builtins") == 0
+	       || strcmp (*argv, "-b") == 0)
+	show_builtins++;
+      else if (strcmp (*argv, "-functions") == 0
+	       || strcmp (*argv, "-f") == 0)
+	show_functions++;
+      else if (strcmp (*argv, "-long") == 0 
+	       || strcmp (*argv, "-l") == 0)
+	  show_verbose++;
+      else if (strcmp (*argv, "-variables") == 0
+	       || strcmp (*argv, "-v") == 0)
+	show_variables++;
       else
-	{
-	  warning ("who: unrecognized option `%s'", *argv);
-	  if (argc == 2)
-	    show_local = 1;
-	}
+	warning ("who: unrecognized option `%s'", *argv);
+    }
+
+// If the user specified -l and nothing else, show variables.  If
+// evaluating this at the top level, also show functions.
+
+  if (show_verbose && ! (show_builtins || show_functions || show_variables))
+    {
+      show_functions = (curr_sym_tab == top_level_sym_tab);
+      show_variables = 1;
     }
 
   ostrstream output_buf;
   int pad_after = 0;
-  if (show_global)
+
+  if (show_builtins)
     {
-      int count = 0;
-      char **symbols = global_sym_tab->sorted_var_list (count);
-      if (symbols != (char **) NULL && count > 0)
-	{
-	  output_buf << "\n*** global symbols:\n\n";
-	  list_in_columns (output_buf, symbols);
-	  delete [] symbols;
-	  pad_after++;
-	}
+      pad_after += maybe_list ("*** built-in variables:",
+			       output_buf, show_verbose, global_sym_tab,
+			       symbol_def::BUILTIN_VARIABLE,
+			       SYMTAB_ALL_SCOPES);
+
+      pad_after += maybe_list ("*** built-in functions:",
+			       output_buf, show_verbose, global_sym_tab,
+			       symbol_def::BUILTIN_FUNCTION,
+			       SYMTAB_ALL_SCOPES);
     }
 
-  if (show_top)
+  if (show_functions)
     {
-      int count = 0;
-      char **symbols = top_level_sym_tab->sorted_var_list (count);
-      if (symbols != (char **) NULL && count > 0)
-	{
-	  output_buf << "\n*** top level symbols:\n\n";
-	  list_in_columns (output_buf, symbols);
-	  delete [] symbols;
-	  pad_after++;
-	}
+      pad_after += maybe_list ("*** currently compiled functions:",
+			       output_buf, show_verbose, global_sym_tab,
+			       symbol_def::USER_FUNCTION,
+			       SYMTAB_ALL_SCOPES);
     }
 
-  if (show_local)
+  if (show_variables)
     {
-      if (show_top && curr_sym_tab == top_level_sym_tab)
-	output_buf <<
-	  "\ncurrent (local) symbol table == top level symbol table\n";
-      else
-	{
-	  int count = 0;
-	  char **symbols = curr_sym_tab->sorted_var_list (count);
-	  if (symbols != (char **) NULL && count > 0)
-	    {
-	      output_buf << "\n*** local symbols:\n\n";
-	      list_in_columns (output_buf, symbols);
-	      delete [] symbols;
-	      pad_after++;
-	    }
-	}
-    }
+      pad_after += maybe_list ("*** local user variables:",
+			       output_buf, show_verbose, curr_sym_tab,
+			       symbol_def::USER_VARIABLE,
+			       SYMTAB_LOCAL_SCOPE); 
 
-  if (show_fcns)
-    {
-      int count = 0;
-      char **symbols = global_sym_tab->sorted_fcn_list (count);
-      if (symbols != (char **) NULL && count > 0)
-	{
-	  output_buf << "\n*** functions builtin or currently compiled:\n\n";
-	  list_in_columns (output_buf, symbols);
-	  delete [] symbols;
-	  pad_after++;
-	}
+      pad_after += maybe_list ("*** globally visible user variables:",
+			       output_buf, show_verbose, curr_sym_tab,
+			       symbol_def::USER_VARIABLE,
+			       SYMTAB_GLOBAL_SCOPE);
     }
 
   if (pad_after)

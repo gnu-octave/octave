@@ -49,6 +49,7 @@ Software Foundation, Inc.
 #include "error.h"
 #include "input.h"
 #include "octave.h"
+#include "user-prefs.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
 #include "sighandlers.h"
@@ -415,8 +416,6 @@ edit_history_add_hist (char *line)
 
 #define histline(i) (hlist[(i)]->line)
 
-#define EDIT_COMMAND "${EDITOR:-vi}"
-
 static char *
 mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
 {
@@ -529,7 +528,7 @@ do_edit_history (int argc, char **argv)
 // Call up our favorite editor on the file of commands.
 
   ostrstream buf;
-  buf << EDIT_COMMAND << " " << name << ends;
+  buf << user_pref.editor << " " << name << ends;
   char *cmd = buf.str ();
 
 // Ignore interrupts while we are off editing commands.  Should we

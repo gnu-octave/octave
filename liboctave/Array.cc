@@ -3124,7 +3124,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		      if  (! final_lhs_dims.any_zero ())
 			{
-			  int n = Array<LT>::get_size (frozen_len);
+			  n = Array<LT>::get_size (frozen_len);
 
 			  Array<int> result_idx (lhs_dims_len, 0);
 

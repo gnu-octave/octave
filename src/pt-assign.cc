@@ -224,6 +224,18 @@ tree_multi_assignment::rvalue (int)
 
 	  int n = rhs_val.length ();
 
+	  if (n == 1)
+	    {
+	      octave_value tmp = rhs_val(0);
+
+	      if (tmp.is_cs_list ())
+		{
+		  rhs_val = tmp.list_value ();
+
+		  n = rhs_val.length ();
+		}
+	    }
+
 	  retval.resize (n, octave_value ());
 
 	  for (tree_argument_list::iterator p = lhs->begin ();

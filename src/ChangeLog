@@ -1,3 +1,8 @@
+2005-04-05  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (tree_multi_assignment::rvalue):
+	Allow assignments of the form [a,b,c] = x{:}.
+
 2005-03-30  John W. Eaton  <jwe@octave.org>
 
 	* mappers.cc (install_mapper_functions): Use std:: as needed.

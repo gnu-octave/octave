@@ -19,11 +19,12 @@
    is generally kept in a file called COPYING or LICENSE.  If you do not
    have a copy of the license, write to the Free Software Foundation,
    675 Mass Ave, Cambridge, MA 02139, USA. */
-#define READLINE_LIBRARY
 
-#if defined (HAVE_CONFIG_H)
-#  include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#define READLINE_LIBRARY
 
 #include <stdio.h>
 #include <sys/types.h>

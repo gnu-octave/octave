@@ -19,6 +19,10 @@
    along with Readline; see the file COPYING.  If not, write to the Free
    Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #if defined (HAVE_STRING_H)
 #  include <string.h>
 #else /* !HAVE_STRING_H */

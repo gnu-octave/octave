@@ -42,7 +42,7 @@ CSOURCES = readline.c funmap.c keymaps.c vi_mode.c parens.c rltty.c \
 
 # The header files for this library.
 HSOURCES = readline.h rldefs.h chardefs.h keymaps.h history.h \
-	   posixstat.h tilde.h rlconf.h config.h.in acconfig.h
+	   posixstat.h tilde.h rlconf.h config.h.in
 
 OBJECTS = readline.o vi_mode.o funmap.o keymaps.o parens.o search.o \
 	  rltty.o complete.o bind.o isearch.o display.o signals.o \

@@ -80,13 +80,13 @@ struct vec_index
 bool
 double_compare (double a, double b)
 {
-  return (xisnan (b) || (a < b));
+  return (xisnan(b) || (a < b));
 }
 
 bool
 double_compare (vec_index *a, vec_index *b)
 {
-  return (xisnan (b->vec) || (a->vec < b->vec));
+  return (xisnan(b->vec) || (a->vec < b->vec));
 }
 
 template class octave_sort<double>;
@@ -102,7 +102,7 @@ struct complex_vec_index
 bool
 complex_compare (complex_vec_index *a, complex_vec_index *b)
 {
-  return (xisnan (b->vec) || (abs (a->vec) < abs (b->vec)));
+  return (xisnan(b->vec) || (abs(a->vec) < abs(b->vec)));
 }
 
 template class octave_sort<complex_vec_index *>;
@@ -194,7 +194,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	    }
 	}
 
-      retval(1) = idx;
+      retval (1) = idx;
     }
   else
     {
@@ -348,7 +348,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 		}
 	    }
 	}
-      retval(1) = idx;
+      retval (1) = idx;
     }
   else
     {
@@ -485,7 +485,7 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
     }
 
   if (return_idx)
-    retval(1) = idx;
+    retval (1) = idx;
   
   retval(0) = m;
 
@@ -519,7 +519,7 @@ mx_sort (charNDArray &m, bool return_idx, int dim)
   unsigned int ns = dv (dim);
   unsigned int iter = dv.numel () / ns;
   unsigned int stride = 1;
-  for (unsigned int i = 0; i < static_cast <unsigned int> (dim); i++)
+  for (unsigned int i = 0; i < (unsigned int)dim; i++)
     stride *= dv(i);
 
   if (return_idx)
@@ -585,7 +585,7 @@ mx_sort (charNDArray &m, bool return_idx, int dim)
 		}
 	    }
 	}
-      retval(1) = idx;
+      retval (1) = idx;
     }
   else
     {

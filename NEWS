@@ -329,6 +329,14 @@ Summary of changes for version 2.0:
       setpwent  -- rewind the password-file stream
       endpwent  -- close the password-file stream
 
+  * Functions for getting info from the group database on Unix systems:
+
+      getgrent  -- read entry from group-file stream, opening if necessary
+      getgrgid  -- search for group entry with matching group ID
+      getgrnam  -- search for group entry with matching group name
+      setgrent  -- rewind the pgroup-file stream
+      endgrent  -- close the group-file stream
+
   * The New function octave_config_info returns a structure containing
     information about how Octave was configured and compiled.
 

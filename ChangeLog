@@ -1,5 +1,7 @@
 Thu Nov  7 12:43:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (RLD_FLAG): Define if x86-linux.
+
 	* Version 1.91.
 
 Wed Nov  6 16:26:39 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -2,7 +2,7 @@ Octave -- a high-level language for numerical computations.
 
 Copyright (C) 1996 John W. Eaton
 
-Last updated: Mon Feb  5 13:27:40 1996
+Last updated: Thu Nov  7 17:17:25 1996
 
 Overview
 --------
@@ -32,18 +32,20 @@ available.
 Installation and Bugs
 ---------------------
 
-Octave requires approximately 50MB of disk storage to unpack and
-install (significantly 	less if you don't compile with debugging
-symbols).  In order to build Octave, you will need a current version
-of g++, libg++, and GNU make.
+Octave requires approximately 125MB of disk storage to unpack and
+compile from source (significantly less if you don't compile with
+debugging symbols or create shared libraries).  Once installed, Octave
+requires approximately 65MB of disk space (again, considerably less if
+the binaries and libraries do not include debugging symbols).
+
+In order to build Octave, you will need a current version of g++,
+libg++, and GNU make.
 
 YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
-features of GNU Make that are not present in other versions of Make.
+features of GNU Make that are not present in other versions of make.
 GNU Make is very portable and easy to install.
 
-As of version 1.1.x, you must have G++ 2.6.2 or later to compile
-Octave.  In some cases, you may also need to install a patch for g++
-that is distributed with Octave in order to successfully compile
+As of version 2.0, you must have G++ 2.7.2 or later to compile
 Octave.
 
 See the notes in the files INSTALL and INSTALL.OCTAVE for more
@@ -70,13 +72,13 @@ Implemenation
 
 Octave is being developed with the Free Software Foundation's make,
 bison (a replacement for YACC), flex (a replacement for lex), gcc/g++,
-and libg++ on a SPARCstation II and a DECstation 5000/240.  It should
-be possible to install it on any machine that runs GCC/G++.  It may
-also be possible to install it using other implementations of these
-tools, but it will most certainly require much more work.  Do yourself
-a favor and get the GNU development tools, either via anonymous ftp
-from prep.ai.mit.edu or by writing the Free Software Foundation,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+and libg++ on an Intel Pentium 133 system running Debian Linux/GNU.
+It should be possible to install it on any machine that runs GCC/G++.
+It may also be possible to install it using other implementations of
+these tools, but it will most certainly require much more work.  Do
+yourself a favor and get the GNU development tools, either via
+anonymous ftp from prep.ai.mit.edu or by writing the Free Software
+Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 The underlying numerical solvers are currently standard Fortran ones
 like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library

@@ -5,14 +5,13 @@ Octave's source files.
 
   emacs         -- Emacs lisp stuff
 
+  examples      -- some example files
+
   glob          -- filename globbing functions
 
   info          -- a modified version of the GNU Info reader
 
   kpathsea      -- Karl Berry's path searching library
-
-  liboctave     -- the C++ interfaces to the numerical libraries and
-                   various OS facilities.
 
   libcruft      -- various numerical libraries (mostly Fortran)
     balgen         * balancing subroutines for eigenvalue computations
@@ -30,27 +29,30 @@ Octave's source files.
     slatec-fn      * various special function subroutines
     villad         * subroutines for orthogonal collocation weights
 
-  make          -- make stuff used by kpathsea
+  liboctave     -- the C++ interfaces to the numerical libraries and
+                   various OS facilities.
 
-  plplot        -- the plplot plotting package
+  make          -- configuration and makefile stuff for kpathsea
 
   readline      -- GNU readline library (from bash), slightly modified
 
   scripts       -- functions written in the Octave language
-    image          * image processing
+    audio          * play and record sound files (system dependent)
     control        * control theory
-    set            * set manipulation
+    elfun          * elementary mathematical functions
     general        * utility functions
-    statistics     * statistical stuff
-    plot           * plotting
-    polynomial     * polynomial manipulation
+    image          * image processing
+    io             * input/output functions
     linear-algebra * linear algebra stuff
     miscellaneous  * stuff that doesn't fit anywhere else
+    plot           * plotting
+    polynomial     * polynomial manipulation
+    set            * set manipulation
     signal         * signal processing
     specfun        * special mathematical functions
     special-matrix * functions for generating special types of matrices
-    elfun          * elementary mathematical functions
     startup        * initialization functions
+    statistics     * statistical stuff
     strings        * character string manipulation
     time           * time and date functions
 

@@ -1,5 +1,7 @@
 Thu Nov  7 12:43:17 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in: Add -lm when building shared library.
+
 	* Version 1.91.
 
 Mon Nov  4 10:09:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

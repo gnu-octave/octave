@@ -702,12 +702,23 @@ do_unwind_protect_cleanup_code (void *ptr)
 void
 tree_unwind_protect_command::eval (void)
 {
+  begin_unwind_frame ("tree_unwind_protect::eval");
+
   add_unwind_protect (do_unwind_protect_cleanup_code, cleanup_code);
+
+  if (cleanup_code)
+    {
+      unwind_protect_int (suppress_octave_error_messages);
+      suppress_octave_error_messages = 1;
+    }
 
   if (unwind_protect_code)
     unwind_protect_code->eval (1);
 
-  run_unwind_protect ();
+  if (cleanup_code && error_state)
+    error_state = 0;
+
+  run_unwind_frame ("tree_unwind_protect::eval");
 }
 
 void

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Array_h)
 #define octave_Array_h 1
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma interface
-#endif
-
 #include <assert.h>
 
 #include "lo-error.h"
@@ -357,10 +353,6 @@ public:
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
 };
-
-#if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)
-#include "Array.cc"
-#endif
 
 } // extern "C++"
 

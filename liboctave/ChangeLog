@@ -1,3 +1,8 @@
+2000-11-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-idx.h (assign): When resizing, cast fill value to LT.
+	* Array2-idx.h (MAYBE_RESIZE_LHS): Likewise.
+
 2000-11-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* MArray-defs.h: Protect against multiple inclusion.

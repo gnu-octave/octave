@@ -1,5 +1,8 @@
 2000-11-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mkdefs: Read and print one line at a time, so we can force
+	patterns to match only at the beginning of a line.
+
 	* defun-int.h (UNDERSCORIFY): Omit `##' in macro definition since
 	they are not needed to paste strings together and picky compilers
 	choke on them.

@@ -493,7 +493,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	  int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
 	  int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
  \
-	  lhs.resize (new_nr, new_nc, 0.0); \
+	  lhs.resize (new_nr, new_nc, static_cast<LT> (0)); \
 	} \
     } \
   while (0)

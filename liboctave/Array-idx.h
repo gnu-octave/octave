@@ -196,7 +196,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 	{
 	  int max_idx = lhs_idx.max () + 1;
 	  if (max_idx > lhs_len)
-	    lhs.resize (max_idx, 0.0);
+	    lhs.resize (max_idx, static_cast<LT> (0));
 	}
 
       if (rhs_len == n)

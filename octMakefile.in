@@ -46,7 +46,8 @@ INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = $(sort $(ALL_SUBDIRS) dlfcn glob kpathsea test emacs)
+DISTSUBDIRS_1 = $(sort $(ALL_SUBDIRS) dlfcn test emacs)
+DISTSUBDIRS = $(filter-out $(DISTDIRS), $(DISTSUBDIRS_1))
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	PROJECTS README README.Linux README.Windows README.MachTen \

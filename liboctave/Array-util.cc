@@ -39,7 +39,7 @@ index_in_bounds (const Array<int>& ra_idx, const dim_vector& dimensions)
     {
       for (int i = 0; i < n; i++)
 	{
-	  if (ra_idx(i) < 0 || ra_idx(i) > dimensions (i))
+	  if (ra_idx(i) < 0 || ra_idx(i) > dimensions(i))
 	    {
 	      retval = false;
 	      break;

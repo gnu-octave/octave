@@ -81,16 +81,16 @@ octave_cell::subsref (const std::string& type,
 	      retval = tcell(0,0);
 	    else
 	      {
-		int nr = tcell.rows ();
-		int nc = tcell.columns ();
-		octave_value_list lst (nr * nc, octave_value ());
-		int k = 0;
-		for (int j = 0; j < nc; j++)
-		  for (int i = 0; i < nr; i++)
-		    {
-		      OCTAVE_QUIT;
-		      lst(k++) = tcell(i,j);
-		    }
+		int n = tcell.numel ();
+
+		octave_value_list lst (n, octave_value ());
+
+		for (int i = 0; i < n; i++)
+		  {
+		    OCTAVE_QUIT;
+		    lst(i) = tcell(i);
+		  }
+
 		retval = octave_value (lst, true);
 	      }
 	  }

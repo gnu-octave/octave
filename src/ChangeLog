@@ -1,5 +1,7 @@
 2004-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-cell.cc (octave_cell::subsref): Make '{' case N-d aware.
+
 	* ov-scalar.cc (streamoff_array_value): New function.
 	* ov-scalar.h: Provide decl.
 

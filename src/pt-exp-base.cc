@@ -103,6 +103,37 @@ print_as_scalar (const tree_constant& val)
 		  || nc == 0)));
 }
 
+static void
+print_constant (tree_constant& tc, char *name)
+{
+  int pad_after = 0;
+  if (user_pref.print_answer_id_name)
+    {
+      if (print_as_scalar (tc))
+	{
+	  ostrstream output_buf;
+	  output_buf << name << " = " << ends;
+	  maybe_page_output (output_buf);
+	}
+      else
+	{
+	  pad_after = 1;
+	  ostrstream output_buf;
+	  output_buf << name << " =\n\n" << ends;
+	  maybe_page_output (output_buf);
+	}
+    }
+
+  tc.eval (1);
+
+  if (pad_after)
+    {
+      ostrstream output_buf;
+      output_buf << "\n" << ends;
+      maybe_page_output (output_buf);
+    }
+}
+
 // Make sure that all arguments have values.
 
 static int
@@ -595,6 +626,13 @@ tree_fvc::assign (tree_constant& t, const Octave_object& args)
   return tree_constant ();
 }
 
+tree_constant
+tree_fvc::lookup_map_element (SLList<char*>& list)
+{
+  static tree_constant retval;
+  return retval;
+}
+
 // Symbols from the symbol table.
 
 char *
@@ -621,16 +659,13 @@ void
 tree_identifier::document (char *s)
 {
   if (sym && s)
-    {
-      char *tmp = strsave (s);
-      sym->document (tmp);
-    }
+    sym->document (strsave (s));
 }
 
 tree_constant
 tree_identifier::assign (tree_constant& rhs)
 {
-  int status = 0;
+  tree_constant retval;
 
   if (rhs.is_defined ())
     {
@@ -648,13 +683,14 @@ tree_identifier::assign (tree_constant& rhs)
 	}
 
       tree_constant *tmp = new tree_constant (rhs);
-      status = sym->define (tmp);
+
+      if (sym->define (tmp))
+	retval = rhs;
+      else
+	delete tmp;
     }
 
-  if (status)
-    return rhs;
-  else
-    return tree_constant ();
+  return retval;
 }
 
 tree_constant
@@ -690,13 +726,93 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
 	    {
 	      ::error ("indexed assignment to previously undefined variables");
 	      ::error ("is only possible when resize_on_range_error is true");
-	      return retval;
 	    }
+	  else
+	    {
+	      tree_constant *tmp = new tree_constant ();
+	      retval = tmp->assign (rhs, args);
+	      if (retval.is_defined ())
+		sym->define (tmp);
+	    }
+	}
+    }
 
-	  tree_constant *tmp = new tree_constant ();
-	  retval = tmp->assign (rhs, args);
-	  if (retval.is_defined ())
-	    sym->define (tmp);
+  return retval;
+}
+
+tree_constant
+tree_identifier::assign (SLList<char*> list, tree_constant& rhs)
+{
+  tree_constant retval;
+
+  if (rhs.is_defined ())
+    {
+      if (sym->is_function ())
+	sym->clear ();
+
+      tree_fvc *curr_val = sym->def ();
+
+      tree_constant *tmp = 0;
+      if (curr_val && curr_val->is_constant ())
+	tmp = (tree_constant *) curr_val;
+      else
+	{
+	  tmp = new tree_constant ();
+	  if (! sym->define (tmp))
+	    {
+	      delete tmp;
+	      tmp = 0;
+	    }
+	}
+
+      if (tmp)
+	retval = tmp->assign_map_element (list, rhs);
+    }
+
+  return retval;
+}
+
+tree_constant
+tree_identifier::assign (SLList<char*> list, tree_constant& rhs,
+			 const Octave_object& args)
+{
+  tree_constant retval;
+
+  if (rhs.is_defined ())
+    {
+      if (sym->is_function ())
+	sym->clear ();
+
+      if (sym->is_variable () && sym->is_defined ())
+	{
+	  tree_fvc *curr_val = sym->def ();
+
+	  tree_constant *tmp;
+	  if (curr_val && curr_val->is_constant ())
+	    tmp = (tree_constant *) curr_val;
+	  else
+	    panic_impossible ();
+
+	  retval = tmp->assign_map_element (list, rhs, args);
+	}
+      else
+	{
+	  assert (! sym->is_defined ());
+
+	  if (! user_pref.resize_on_range_error)
+	    {
+	      ::error ("indexed assignment to previously undefined variables");
+	      ::error ("is only possible when resize_on_range_error is true");
+	    }
+	  else
+	    {
+	      tree_constant *tmp = new tree_constant ();
+
+	      retval = tmp->assign_map_element (list, rhs, args);
+
+	      if (retval.is_defined ())
+		sym->define (tmp);
+	    }
 	}
     }
 
@@ -723,7 +839,7 @@ tree_identifier::bump_value (tree_expression::type etype)
 void
 tree_identifier::eval_undefined_error (void)
 {
-  char *nm = sym->name ();
+  char *nm = name ();
   int l = line ();
   int c = column ();
   if (l == -1 && c == -1)
@@ -748,9 +864,9 @@ tree_identifier::eval_undefined_error (void)
 //     over .m files.
 
 tree_fvc *
-tree_identifier::do_lookup (int& script_file_executed)
+tree_identifier::do_lookup (int& script_file_executed, int exec_script)
 {
-  script_file_executed = lookup (sym);
+  script_file_executed = lookup (sym, exec_script);
 
   tree_fvc *retval = 0;
 
@@ -758,6 +874,13 @@ tree_identifier::do_lookup (int& script_file_executed)
     retval = sym->def ();
 
   return retval;
+}
+
+void
+tree_identifier::link_to_global (void)
+{
+  if (sym)
+    link_to_global_variable (sym);
 }
 
 void
@@ -818,36 +941,7 @@ tree_identifier::eval (int print)
       else
 	{
 	  if (print)
-	    {
-	      int pad_after = 0;
-	      if (user_pref.print_answer_id_name)
-		{
-		  char *result_tag = name ();
-    
-		  if (print_as_scalar (retval))
-		    {
-		      ostrstream output_buf;
-		      output_buf << result_tag << " = " << ends;
-		      maybe_page_output (output_buf);
-		    }
-		  else
-		    {
-		      pad_after = 1;
-		      ostrstream output_buf;
-		      output_buf << result_tag << " =\n\n" << ends;
-		      maybe_page_output (output_buf);
-		    }
-		}
-
-	      retval.eval (print);
-
-	      if (pad_after)
-		{
-		  ostrstream output_buf;
-		  output_buf << "\n" << ends;
-		  maybe_page_output (output_buf);
-		}
-	    }
+	    print_constant (retval, name ());
 	}
     }
   return retval;
@@ -923,6 +1017,177 @@ tree_identifier::print_code (ostream& os)
     os << ")";
 }
 
+// Indirect references to values (structure elements).
+
+tree_indirect_ref::~tree_indirect_ref (void)
+{
+  while (! refs.empty ())
+    {
+      char *t = refs.remove_front ();
+      delete [] t;
+    }
+
+  delete id;
+}
+
+tree_indirect_ref *
+tree_indirect_ref::chain (const char *elt)
+{
+  refs.append (strsave (elt));
+  return this;
+}
+
+char *
+tree_indirect_ref::name (void)
+{
+  char *id_nm = id->name ();
+  if (refs.empty ())
+    return id_nm;
+  else
+    {
+      static char *nm = 0;
+      delete [] nm;
+
+      ostrstream tmp;
+
+      tmp << id_nm;
+
+      for (Pix p = refs.first (); p != 0; refs.next (p))
+	{
+	  char *elt = refs (p);
+
+	  if (elt)
+	    tmp << "." << elt;
+	}
+
+      tmp << ends;
+      nm = tmp.str ();
+      return nm;
+    }
+}
+
+tree_constant
+tree_indirect_ref::assign (tree_constant& t)
+{
+  tree_constant retval;
+
+  if (refs.empty ())
+    retval = id->assign (t);
+  else
+    retval = id->assign (refs, t);
+
+  return retval;
+}
+
+tree_constant
+tree_indirect_ref::assign (tree_constant& t, const Octave_object& args)
+{
+  tree_constant retval;
+
+  if (refs.empty ())
+    retval = id->assign (t, args);
+  else
+    retval = id->assign (refs, t, args);
+
+  return retval;
+}
+
+tree_constant
+tree_indirect_ref::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (refs.empty ())
+    {
+      retval = id->eval (print);
+    }
+  else
+    {
+      int script_file_executed;
+
+      tree_fvc *object_to_eval = id->do_lookup (script_file_executed, 0);
+
+      if (object_to_eval)
+	{
+	  retval = object_to_eval->lookup_map_element (refs);
+
+	  if (! error_state && print)
+	    print_constant (retval, name ());
+	}
+      else
+	id->eval_undefined_error ();
+    }
+
+  return retval;
+}
+
+Octave_object
+tree_indirect_ref::eval (int print, int nargout, const Octave_object& args)
+{
+  Octave_object retval;
+
+  if (error_state)
+    return retval;
+
+  if (refs.empty ())
+    {
+      retval = id->eval (print, nargout, args);
+    }
+  else
+    {
+      int script_file_executed;
+
+      tree_fvc *object_to_eval = id->do_lookup (script_file_executed, 0);
+
+      if (object_to_eval)
+	{
+	  tree_constant tmp = object_to_eval->lookup_map_element (refs);
+
+	  if (! error_state)
+	    {
+	      retval = tmp.eval (0, nargout, args);
+
+	      if (! error_state && print)
+		{
+		  tmp = retval (0);
+		  if (tmp.is_defined ())
+		    print_constant (tmp, name ());
+		}
+	    }
+	}
+      else
+	id->eval_undefined_error ();
+    }
+
+  return retval;
+}
+
+void
+tree_indirect_ref::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  char *nm = id ? id->name () : "(null)";
+  os << (nm) ? nm : "(null)";
+
+  for (Pix p = refs.first (); p != 0; refs.next (p))
+    {
+      char *elt = refs (p);
+
+      if (elt)
+	os << "." << elt;
+    }
+
+  if (in_parens)
+    os << ")";
+}
+
 // Index expressions.
 
 tree_index_expression::~tree_index_expression (void)
@@ -963,6 +1228,7 @@ tree_index_expression::eval (int print)
   else
     {
       retval = id->eval (print);
+
       if (error_state)
 	eval_error ();
     }
@@ -991,6 +1257,7 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
       else if (nargin > 0 && all_args_defined (args))
 	{
 	  retval = id->eval (print, nargout, args);
+
 	  if (error_state)
 	    eval_error ();
 	}
@@ -998,7 +1265,9 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
   else
     {
       Octave_object tmp_args;
+
       retval = id->eval (print, nargout, tmp_args);
+
       if (error_state)
 	eval_error ();
     }
@@ -1567,7 +1836,7 @@ tree_simple_assignment_expression::eval_error (void)
 	::error ("evaluating assignment expression near line %d, column %d",
 		 l, c);
 //      else
-//	error ("evaluating assignment expression");
+//	::error ("evaluating assignment expression");
     }
 }
 
@@ -1685,8 +1954,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 
 	      if (print && user_pref.print_answer_id_name)
 		{
-		  tree_identifier *tmp_id = lhs_expr->ident ();
-		  char *tmp_nm = tmp_id->name ();
+		  char *tmp_nm = lhs_expr->name ();
 		  
 		  if (print_as_scalar (results(i)))
 		    {
@@ -1958,7 +2226,7 @@ tree_builtin::eval (int print)
       if (fcn)
 	goto eval_fcn;
       else
-	error ("unable to load builtin function %s", my_name);
+	::error ("unable to load builtin function %s", my_name);
     }
 
   return retval;
@@ -2000,7 +2268,7 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
       if (fcn)
 	goto eval_fcn;
       else
-	error ("unable to load builtin function %s", my_name);
+	::error ("unable to load builtin function %s", my_name);
     }
 
   return retval;
@@ -2382,12 +2650,12 @@ variable number of parameters")
 	    retval = curr_function->octave_va_arg ();
 	  else
 	    {
-	      error ("va_arg only valid within function taking variable");
-	      error ("number of arguments");
+	      ::error ("va_arg only valid within function taking variable");
+	      ::error ("number of arguments");
 	    }
 	}
       else
-	error ("va_arg only valid within function body");
+	::error ("va_arg only valid within function body");
     }
   else
     print_usage ("va_arg");
@@ -2411,12 +2679,12 @@ to the beginning")
 	    curr_function->octave_va_start ();
 	  else
 	    {
-	      error ("va_start only valid within function taking variable");
-	      error ("number of arguments");
+	      ::error ("va_start only valid within function taking variable");
+	      ::error ("number of arguments");
 	    }
 	}
       else
-	error ("va_start only valid within function body");
+	::error ("va_start only valid within function body");
     }
   else
     print_usage ("va_start");
@@ -2440,12 +2708,12 @@ function that allows a variable number of return values")
 	    curr_function->octave_vr_val (args(0));
 	  else
 	    {
-	      error ("vr_val only valid within function declared to produce");
-	      error ("a variable number of values");
+	      ::error ("vr_val only valid within function declared to");
+	      ::error ("produce a variable number of values");
 	    }
 	}
       else
-	error ("vr_val only valid within function body");
+	::error ("vr_val only valid within function body");
     }
   else
     print_usage ("vr_val");

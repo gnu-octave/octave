@@ -84,7 +84,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 extern octave_value_list
 feval (const octave_value_list& args, int nargout);
 
-extern octave_value
+extern octave_value_list
 eval_string (const string&, bool silent, int& parse_status, int hargout);
 
 extern octave_value

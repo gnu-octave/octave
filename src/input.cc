@@ -474,9 +474,9 @@ match_sans_spaces (const string& standard, const string& test)
 // If the user simply hits return, this will produce an empty matrix.
 
 static octave_value_list
-get_user_input (const octave_value_list& args, bool debug = false)
+get_user_input (const octave_value_list& args, bool debug, int nargout)
 {
-  octave_value retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -534,18 +534,20 @@ get_user_input (const octave_value_list& args, bool debug = false)
 	{
 	  // XXX FIXME XXX -- fix gnu_readline and octave_gets instead!
 	  if (input_buf.length () == 1 && input_buf[0] == '\n')
-	    retval = "";
+	    retval(0) = "";
 	  else
-	    retval = input_buf;
+	    retval(0) = input_buf;
 	}
       else
 	{
 	  int parse_status = 0;
 
-	  retval = eval_string (input_buf, (! debug), parse_status);
+	  bool silent = ! debug;
 
-	  if (retval.is_undefined ())
-	    retval = Matrix ();
+	  retval = eval_string (input_buf, silent, parse_status, nargout);
+
+	  if (! debug && retval.length == 0)
+	    retval(0) = Matrix ();
 	}
     }
   else
@@ -559,7 +561,7 @@ get_user_input (const octave_value_list& args, bool debug = false)
 
       error_state = 0;
 
-      retval = octave_value ();
+      retval = octave_value_list ();
 
       goto again;
     }
@@ -567,7 +569,7 @@ get_user_input (const octave_value_list& args, bool debug = false)
   return retval;
 }
 
-DEFUN (input, args, ,
+DEFUN (input, args, nargout,
   "input (PROMPT [, S])\n\
 \n\
 Prompt user for input.  If the second argument is present, return\n\
@@ -578,7 +580,7 @@ value as a string.")
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = get_user_input (args);
+    retval = get_user_input (args, false, nargout);
   else
     print_usage ("input");
 
@@ -615,7 +617,7 @@ maybe help in debugging function files")
 
       Vsaving_history = true;
 
-      retval = get_user_input (args, true);
+      retval = get_user_input (args, true, 0);
 
       unwind_protect::run_frame ("keyboard");
     }

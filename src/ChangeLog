@@ -1,7 +1,15 @@
 Fri Nov 14 01:53:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (eval_string (const string&, bool, int&, int)): No
+	longer static.
+	* parse.h: Provide declaration.
+	* input.cc (get_user_input (const octave_value_list&, bool, int)):
+	New arg, nargout.  Pass it to eval_string.
+	(keyboard): Pass nargout = 0 to get_user_input.
+	(input): Pass nargout to get_user_input.
+
 	* input.cc (get_user_input (const octave_value_list&, bool)):
-	Return octave_value() if user enters `quit', `exit', or `return'.
+	Return octave_value_list() if user enters `quit', `exit', or `return'.
 	If debugging, let eval_string handle the printing chores and
 	reset error_state before asking for more input.
 

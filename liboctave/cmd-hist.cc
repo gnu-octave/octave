@@ -185,13 +185,8 @@ command_history::read (bool must_exist)
 }
 
 void
-command_history::read (const string& f_arg, bool must_exist)
+command_history::read (const string& f, bool must_exist)
 {
-  string f = f_arg;
-
-  if (f.empty ())
-    f = xfile;
-
   if (! f.empty ())
     {
       int status = ::read_history (f.c_str ());
@@ -209,22 +204,18 @@ command_history::read (const string& f_arg, bool must_exist)
     error ("command_history::read: missing file name");
 }
 
+void
 command_history::read_range (int from, int to, bool must_exist)
 {
   read_range (xfile, from, to, must_exist);
 }
 
 void
-command_history::read_range (const string& f_arg, int from, int to,
+command_history::read_range (const string& f, int from, int to,
 			     bool must_exist)
 {
   if (from < 0)
     from = lines_in_file;
-
-  string f = f_arg;
-
-  if (f.empty ())
-    f = xfile;
 
   if (! f.empty ())
     {

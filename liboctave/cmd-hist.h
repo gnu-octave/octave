@@ -32,9 +32,7 @@ command_history
 {
 public:
 
-  command_history (const string& = string (), int = -1, bool = false)
-
-  command_history (const string& = string (), int = -1)
+  command_history (const string& = string (), int = -1);
 
   ~command_history (void) { initialized = false; }
 
@@ -68,12 +66,12 @@ public:
 
   void read (bool = true);
 
-  void read (const string& = string (), bool = true)
+  void read (const string&, bool = true);
 
-  void read_range (int = -1, int = -1, bool = true)
+  void read_range (int = -1, int = -1, bool = true);
 
-  void read_range (const string& = string (), int = -1, int = -1,
-		   bool = true)
+  void read_range (const string&, int = -1, int = -1,
+		   bool = true);
 
   void write (const string& = string ());
 

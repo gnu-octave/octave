@@ -206,7 +206,7 @@ while(opt != quitopt)
       [jvy,th] = quaternion(qtrans(jf,qyaw));
       qpitch = quaternion(jvy(1:3),thp*pi/180);
       qb = qmult(qpitch, qyaw);
-      qi = quaternion([1 0 0],180*degrees);
+      qi = quaternion([1, 0, 0],180*degrees);
     
       printf("yaw=%8.4f, pitch=%8.4f, \n    qbi = (%8.4f)i + (%8.4e)j + (%8.4f)k + (%8.4f)\n",thy,thp, ...
     	qb(1), qb(2), qb(3), qb(4));

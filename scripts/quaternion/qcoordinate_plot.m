@@ -29,7 +29,7 @@ qbf = qinv(qmult(qb,qinv(qf)));
 
 # draw 1/3 circle in x-y plane around a unit z axis
 th = (0:-12:-120)*degrees*sign(th_eig);    lth = length(th);
-cpts = [0 0 0.1*cos(th) ; 0 0 0.1*sin(th); 0 1 1*ones(1,lth)];
+cpts = [0, 0, 0.1*cos(th) ; 0, 0, 0.1*sin(th); 0, 1, 1*ones(1,lth)];
 
 # rotate the 1/3 circle around eigenaxis of inertial to body rotation
 # qez = qe/qz = rotation to get from z axis to eigenaxis.

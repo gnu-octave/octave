@@ -30,12 +30,12 @@ case(1),					# extract information
     if(abs(theta) > pi)
       theta = theta - sign(theta)*pi;
     endif
-    sin_th_2 = norm([a b c]);
+    sin_th_2 = norm([a, b, c]);
 
     if(sin_th_2 != 0)
       vv = [a,b,c]/sin_th_2;
     else
-      vv = [a b c];
+      vv = [a, b, c];
     endif
     a = vv;
     b = theta;
@@ -76,7 +76,7 @@ case(4),
   if ( !(is_scalar(w) & is_scalar(x) & is_scalar(y) & is_scalar(z)) )
     error("input values must be scalars.")
   endif
-  a = [w x y z];
+  a = [w, x, y, z];
 
 otherwise,
   error("usage: [a,b,c,d] = quaternion(w), a = quaternion(w,x,y,z)")

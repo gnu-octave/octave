@@ -1,5 +1,8 @@
 2004-09-16  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (frob_function): Clear id_name from curr_sym_tab, not
+	top_level_sym_tab.
+
 	* symtab.cc (maybe_list): Count sizes using size_t, not int.
 
 	* variables.cc (symbol_out_of_date): Always look in LOADPATH.

@@ -1554,9 +1554,9 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 	    }
 
 	  os << "\nTotal is "
-	     << elements << (elements > 1 ? " elements" : "element")
+	     << elements << (elements == 1 ? " element" : " elements")
 	     << " using "
-	     << bytes << (bytes > 1 ? " bytes" : "byte")
+	     << bytes << (bytes == 1 ? " byte" : " bytes")
 	     << "\n";
 
 	  status = 1;

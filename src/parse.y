@@ -2715,7 +2715,21 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
   fcn->stash_function_name (id_name);
 
-  top_level_sym_tab->clear (id_name);
+  // Enter the new function in fbi_sym_tab.  If there is already a
+  // variable of the same name in the current symbol table, we won't
+  // find the new function when we try to call it, so we need to clear
+  // the old symbol from the current symbol table.  Note that this
+  // means that for things like
+  //
+  //   function f () eval ("function g () 1, end"); end
+  //   g = 13;
+  //   f ();
+  //   g
+  //
+  // G will still refer to the variable G (with value 13) rather
+  // than the function G, until the variable G is cleared.
+
+  curr_sym_tab->clear (id_name);
 
   symbol_record *sr = fbi_sym_tab->lookup (id_name, true);
 

@@ -266,21 +266,21 @@ set test logspace-4
 set prog_output "usage:.*"
 do_test logspace-4.m
 
-set test hadamard-1
+set test sylvester_matrix-1
 set prog_output "ans = 1"
-do_test hadamard-1.m
+do_test sylvester_matrix-1.m
 
-set test hadamard-2
+set test sylvester_matrix-2
 set prog_output "error:.*"
-do_test hadamard-2.m
+do_test sylvester_matrix-2.m
 
-set test hadamard-3
+set test sylvester_matrix-3
 set prog_output "usage:.*"
-do_test hadamard-3.m
+do_test sylvester_matrix-3.m
 
-set test hadamard-4
+set test sylvester_matrix-4
 set prog_output "usage:.*"
-do_test hadamard-4.m
+do_test sylvester_matrix-4.m
 
 set test hankel-1
 set prog_output "ans = 1"

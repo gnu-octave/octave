@@ -33,6 +33,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cmath>
 
+#include <string>
+
 #include "dColVector.h"
 #include "NLP.h"
 
@@ -199,8 +201,8 @@ protected:
 
   void pass_options_to_npsol (void);
 
-  void set_option (const char *key, int opt);
-  void set_option (const char *key, double opt);
+  void set_option (const string& key, int opt);
+  void set_option (const string& key, double opt);
 
 private:
 

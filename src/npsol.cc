@@ -234,7 +234,8 @@ redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
 DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, FSnpsol, 11,
-  "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
+  "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, A_LB, A, A_UB]\n\
+                                [, G_LB, G, G_UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
 must appear in the same relative order shown above.\n\

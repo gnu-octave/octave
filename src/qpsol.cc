@@ -58,7 +58,7 @@ redistributable.  For more information, read the file\n\
 libcruft/qpsol/README.MISSING in the source distribution.")
 #else
 DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, FSqpsol, 11,
-  "[X, OBJ, INFO, LAMBDA] = qpsol (X, H, C [, LB, UB] [, LB, A, UB])\n\
+  "[X, OBJ, INFO, LAMBDA] = qpsol (X, H, C [, LB, UB] [, A_LB, A, A_UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
 must appear in the same relative order shown above.")

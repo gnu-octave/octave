@@ -32,11 +32,14 @@ TEXINFO = amuse.texi arith.texi bugs.texi bugs1.texi control.texi \
 
 LIB_TEXINFO = liboctave.texi
 
-ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO)
+FAQ_TEXINFO = FAQ.texi
+
+ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO) $(FAQ_TEXINFO)
 
 REFCARD = refcard.tex.in refcard.tex refcard.dvi refcard.ps
 
-FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
+FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
+	FAQ.info FAQ.dvi FAQ.ps
 #	liboctave.info liboctave.info-[0-9]*
 
 DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex \
@@ -61,6 +64,15 @@ octave.dvi: $(TEXINFO) conf.texi
 
 octave.ps: octave.dvi
 	dvips -o octave.ps octave.dvi
+
+FAQ.info: $(TEXINFO) conf.texi
+	-makeinfo -I$(srcdir) FAQ.texi
+
+FAQ.dvi: $(TEXINFO) conf.texi
+	texi2dvi $(srcdir)/FAQ.texi
+
+FAQ.ps: FAQ.dvi
+	dvips -o FAQ.ps FAQ.dvi
 
 liboctave.info: $(LIB_TEXINFO) conf.texi
 	-makeinfo -I$(srcdir) liboctave.texi

@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_value_list;
 
-typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
-
 extern int load_octave_oct_file (const string& name);
 
 #endif

@@ -273,6 +273,12 @@ Interpreter:
   * Consider making x(:) work no matter what the value of
     do_fortran_indexing.
 
+  * For indexing operations, allow `$' to indicate the last element.
+    For example, b = a (3:$, 1:$-1).  This means b is a, except for
+    its first 2 rows and last column.  Note that `$' must be able to
+    appear in arbitrarily complex expressions, so copying the the
+    current implementation of `:' won't work. 
+
   * If foo.oct and foo.m both exist in the LOADPATH, Octave will
     always find foo.oct, even if foo.m appears earlier in the list of
     directories.  This should be fixed (in the kpathsearch library) to

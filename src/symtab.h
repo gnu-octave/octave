@@ -39,11 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define HASH_TABLE_SIZE 1024
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
 
-class tree;
-class tree_fvc;
-class tree_builtin;
-class tree_constant;
-class tree_function;
+class octave_symbol;
+class octave_function;
 
 class string_vector;
 
@@ -61,10 +58,7 @@ class symbol_def
 
 public:
 
-  symbol_def (void);
-  symbol_def (tree_constant *t);
-  symbol_def (tree_builtin *t, unsigned fcn_type = 0);
-  symbol_def (tree_function *t, unsigned fcn_type = 0);
+  symbol_def (octave_symbol *sym = 0, unsigned int sym_type = 0);
 
   ~symbol_def (void);
 
@@ -78,15 +72,13 @@ public:
   bool is_builtin_function (void) const;
   bool is_map_element (const string& elts) const;
 
-  void define (tree_constant *t);
-  void define (tree_builtin *t, unsigned fcn_type = 0);
-  void define (tree_function *t, unsigned fcn_type = 0);
+  void define (octave_symbol *sym, unsigned int sym_type);
 
   void protect (void);
   void unprotect (void);
   void make_eternal (void);
 
-  tree_fvc *def (void) const;
+  octave_symbol *def (void) const;
   string help (void) const;
   void document (const string& h);
 
@@ -101,16 +93,18 @@ public:
       BUILTIN_VARIABLE = 32
     };
 
+  unsigned int symbol_type (void) { return type; }
+
   friend maybe_delete (symbol_def *def);
 
 private:
 
-  unsigned type : 6;
-  unsigned eternal : 1;
-  unsigned read_only : 1;
+  unsigned int type : 6;
+  unsigned int eternal : 1;
+  unsigned int read_only : 1;
 
   string help_string;
-  tree_fvc *definition;
+  octave_symbol *definition;
   symbol_def *next_elem;
   int count;
 
@@ -135,7 +129,7 @@ public:
 
   string name (void) const;
   string help (void) const; 
-  tree_fvc *def (void) const;
+  octave_symbol *def (void) const;
 
   void rename (const string& new_name);
 
@@ -149,7 +143,7 @@ public:
   bool is_builtin_variable (void) const;
   bool is_map_element (const string& elts) const;
 
-  unsigned type (void) const;
+  unsigned int type (void) const;
 
   bool is_defined (void) const;
   bool is_read_only (void) const;
@@ -161,12 +155,14 @@ public:
 
   void set_sv_function (sv_Function f);
 
-  int define (tree_constant *t);
-  int define (const octave_value& v);
-  int define (tree_builtin *t, bool text_fcn = false);
-  int define (tree_function *t, bool text_fcn = false);
+  int define (const octave_value& v,
+	      unsigned int sym_type = symbol_def::USER_VARIABLE);
+
   int define_as_fcn (const octave_value& v);
+
   int define_builtin_var (const octave_value& v);
+
+  int define (octave_function *f, unsigned int sym_type);
 
   void document (const string& h);
 
@@ -195,9 +191,9 @@ public:
 
 private:
 
-  unsigned formal_param : 1;
-  unsigned linked_to_global : 1;
-  unsigned tagged_static : 1;
+  unsigned int formal_param : 1;
+  unsigned int linked_to_global : 1;
+  unsigned int tagged_static : 1;
 
   string nm;
   sv_Function sv_fcn;
@@ -207,7 +203,7 @@ private:
 // This should maybe be one stack with a structure containing all the
 // items we need to save for recursive calls...
   SLStack <symbol_def *> context;
-  SLStack <unsigned> global_link_context;
+  SLStack <unsigned int> global_link_context;
 
   void init_state (void);
 
@@ -258,10 +254,10 @@ private:
   bool initialized;
   int nr;
   int nc;
-  unsigned type : 6;
-  unsigned hides : 2;
-  unsigned eternal : 1;
-  unsigned read_only : 1;
+  unsigned int type : 6;
+  unsigned int hides : 2;
+  unsigned int eternal : 1;
+  unsigned int read_only : 1;
   string nm;
   string const_type;
 };
@@ -303,17 +299,18 @@ public:
   symbol_record_info *
   long_list (int& count, const string_vector& pats = string_vector (),
 	     int npats = 0, bool sort = false,
-	     unsigned type = SYMTAB_ALL_TYPES,
-	     unsigned scope = SYMTAB_ALL_SCOPES) const;
+	     unsigned int type = SYMTAB_ALL_TYPES,
+	     unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
   string_vector
   list (int& count, const string_vector& pats = string_vector (),
-	int npats = 0, bool sort = false, unsigned type = SYMTAB_ALL_TYPES,
-	unsigned scope = SYMTAB_ALL_SCOPES) const;
+	int npats = 0, bool sort = false,
+	unsigned int type = SYMTAB_ALL_TYPES,
+	unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
   symbol_record **glob (int& count, const string& pat = string ("*"),
-			unsigned type = SYMTAB_ALL_TYPES,
-			unsigned scope = SYMTAB_ALL_SCOPES) const;
+			unsigned int type = SYMTAB_ALL_TYPES,
+			unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
   void push_context (void);
   void pop_context (void);

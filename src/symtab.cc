@@ -34,39 +34,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
+#include "oct-sym.h"
+#include "oct-fcn.h"
 #include "pt-const.h"
-#include "pt-fcn.h"
-#include "pt-fvc.h"
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
 
 // Variables and functions.
 
-symbol_def::symbol_def (void)
+symbol_def::symbol_def (octave_symbol *sym, unsigned int sym_type)
 {
   init_state ();
-}
-
-symbol_def::symbol_def (tree_constant *t)
-{
-  init_state ();
-  definition = t;
-  type = USER_VARIABLE;
-}
-
-symbol_def::symbol_def (tree_builtin *t, unsigned fcn_type)
-{
-  init_state ();
-  definition = t;
-  type = BUILTIN_FUNCTION | fcn_type;
-}
-
-symbol_def::symbol_def (tree_function *t, unsigned fcn_type)
-{
-  init_state ();
-  definition = t;
-  type = USER_FUNCTION | fcn_type;
+  definition = sym;
+  type = sym_type;
 }
 
 void
@@ -138,33 +119,15 @@ symbol_def::is_builtin_function (void) const
 bool
 symbol_def::is_map_element (const string& /* elts */) const
 {
-  return 0;
+  return false;
 }
 
 void
-symbol_def::define (tree_constant *t)
+symbol_def::define (octave_symbol *s, unsigned int sym_type)
 {
-  if (t)
-    t->maybe_mutate ();
+  definition = s;
 
-  definition = t;
-
-  if (! is_builtin_variable ())
-    type = USER_VARIABLE;
-}
-
-void
-symbol_def::define (tree_builtin *t, unsigned fcn_type)
-{
-  definition = t;
-  type = BUILTIN_FUNCTION | fcn_type;
-}
-
-void
-symbol_def::define (tree_function *t, unsigned fcn_type)
-{
-  definition = t;
-  type = USER_FUNCTION | fcn_type;
+  type = sym_type;
 }
 
 void
@@ -186,7 +149,7 @@ symbol_def::make_eternal (void)
   eternal = 1;
 }
 
-tree_fvc *
+octave_symbol *
 symbol_def::def (void) const
 {
   return definition;
@@ -258,7 +221,7 @@ symbol_record::help (void) const
   return retval;
 }
 
-tree_fvc *
+octave_symbol *
 symbol_record::def (void) const
 {
   return definition ? definition->def () : false;
@@ -325,7 +288,7 @@ symbol_record::is_map_element (const string& elts) const
   return definition ? definition->is_map_element (elts) : false;
 }
 
-unsigned
+unsigned int
 symbol_record::type (void) const
 {
   return definition ? definition->type : false;
@@ -388,105 +351,53 @@ symbol_record::set_sv_function (sv_Function f)
 }
 
 int
-symbol_record::define (tree_constant *t)
+symbol_record::define (const octave_value& v, unsigned int sym_type)
 {
-  if (is_variable () && read_only_error ("redefine"))
-    return 0;
+  int retval = 0;
 
-  tree_fvc *saved_def = 0;
-  if (! definition)
+  if (! (is_variable () && read_only_error ("redefine")))
     {
-      definition = new symbol_def ();
-      definition->count = 1;
+      octave_symbol *saved_def = 0;
+      unsigned int saved_type = symbol_def::UNKNOWN;
+
+      if (! definition)
+	{
+	  definition = new symbol_def ();
+	  definition->count = 1;
+	}
+      else if (is_function ())
+	{
+	  push_def (new symbol_def ());
+	  definition->count = 1;
+	}
+      else if (is_variable ())
+	{
+	  saved_def = definition->def ();
+	  saved_type = definition->symbol_type ();
+	}
+
+      if (saved_type == symbol_def::BUILTIN_VARIABLE)
+	sym_type = saved_type;
+
+      definition->define (new octave_value (v), sym_type);
+
+      if (sv_fcn && sv_fcn () < 0)
+	definition->define (saved_def, saved_type);
+      else
+	{
+	  retval = 1;
+
+	  delete saved_def;
+	}
     }
-  else if (is_function ())
-    {
-      symbol_def *new_def = new symbol_def ();
-      push_def (new_def);
-      definition->count = 1;
-    }
-  else if (is_variable ())
-    {
-      saved_def = definition->def ();
-    }
 
-  definition->define (t);
-
-  if (sv_fcn && sv_fcn () < 0)
-    {
-      // Would be nice to be able to avoid this cast.  XXX FIXME XXX
-
-      definition->define (static_cast<tree_constant *> (saved_def));
-      return 0;
-    }
-
-  delete saved_def;
-
-  return 1;
+  return retval;
 }
 
 int
-symbol_record::define (const octave_value& v)
+symbol_record::define_builtin_var (const octave_value& v)
 {
-  tree_constant *t = new tree_constant (v);
-  return define (t);
-}
-
-int
-symbol_record::define (tree_builtin *t, bool text_fcn)
-{
-  if (read_only_error ("redefine"))
-    return 0;
-
-  if (is_variable ())
-    {
-      symbol_def *old_def = pop_def ();
-      maybe_delete (old_def);
-    }
-
-  if (is_function ())
-    {
-      symbol_def *old_def = pop_def ();
-      maybe_delete (old_def);
-    }
-
-  unsigned fcn_type = text_fcn ? symbol_def::TEXT_FUNCTION
-    : ((t && t->is_mapper_function ()) ? symbol_def::MAPPER_FUNCTION
-       : symbol_def::UNKNOWN);
-
-  symbol_def *new_def = new symbol_def (t, fcn_type);
-  push_def (new_def);
-  definition->count = 1;
-
-  return 1;
-}
-
-int
-symbol_record::define (tree_function *t, bool text_fcn)
-{
-  if (read_only_error ("redefine"))
-    return 0;
-
-  if (is_variable ())
-    {
-      symbol_def *old_def = pop_def ();
-      maybe_delete (old_def);
-    }
-
-  if (is_function ())
-    {
-      symbol_def *old_def = pop_def ();
-      maybe_delete (old_def);
-    }
-
-  unsigned fcn_type = text_fcn ? symbol_def::TEXT_FUNCTION
-    : symbol_def::UNKNOWN;
-
-  symbol_def *new_def = new symbol_def (t, fcn_type);
-  push_def (new_def);
-  definition->count = 1;
-
-  return 1;
+  return define (v, symbol_def::BUILTIN_VARIABLE);
 }
 
 int
@@ -507,22 +418,36 @@ symbol_record::define_as_fcn (const octave_value& v)
       maybe_delete (old_def);
     }
 
-  tree_constant *t = new tree_constant (v);
-  symbol_def *new_def = new symbol_def (t);
-  push_def (new_def);
+  push_def (new symbol_def (new octave_value (v),
+			    symbol_def::BUILTIN_FUNCTION));
+
   definition->count = 1;
-  definition->type = symbol_def::BUILTIN_FUNCTION;
 
   return 1;
 }
 
 int
-symbol_record::define_builtin_var (const octave_value& v)
+symbol_record::define (octave_function *f, unsigned int sym_type)
 {
-  tree_constant *t = new tree_constant (v);
-  define (t);
+  if (read_only_error ("redefine"))
+    return 0;
+
   if (is_variable ())
-    definition->type = symbol_def::BUILTIN_VARIABLE;
+    {
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
+    }
+
+  if (is_function ())
+    {
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
+    }
+
+  push_def (new symbol_def (f, sym_type));
+
+  definition->count = 1;
+
   return 1;
 }
 
@@ -622,8 +547,8 @@ symbol_record::variable_value (void) const
 
   if (is_variable ())
     {
-      tree_constant *tmp = static_cast<tree_constant *> (def ());
-      retval = tmp->value ();
+      octave_symbol *tmp = def ();
+      retval = tmp->eval ();
     }
 
   return retval;
@@ -641,15 +566,14 @@ symbol_record::variable_reference (void)
 	link_to_builtin_variable (this);
 
       if (! is_defined ())
-	{
-	  tree_constant *tmp = new tree_constant ();
-	  define (tmp);
-	}
+	define (octave_value ());
     }
 
-  tree_constant *tmp = static_cast<tree_constant *> (def ());
+  octave_value *tmp = static_cast<octave_value *> (def ());
 
-  return tmp->reference ();
+  tmp->make_unique ();
+
+  return *tmp;
 }
 
 symbol_record *
@@ -672,7 +596,7 @@ symbol_record::push_context (void)
       context.push (definition);
       definition = 0;
 
-      global_link_context.push (static_cast<unsigned> (linked_to_global));
+      global_link_context.push (static_cast<unsigned int> (linked_to_global));
       linked_to_global = 0;
     }
 }
@@ -762,9 +686,9 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
     {
       // Would be nice to avoid this cast.  XXX FIXME XXX
 
-      tree_constant *tmp = static_cast<tree_constant *> (sr.def ());
+      octave_symbol *tmp = sr.def ();
 
-      octave_value vtmp = tmp->value ();
+      octave_value vtmp = tmp->eval ();
 
       const_type = vtmp.type_name ();
 
@@ -1049,8 +973,8 @@ matches_patterns (const string& name, const string_vector& pats, int npats)
 
 symbol_record_info *
 symbol_table::long_list (int& count, const string_vector& pats,
-			 int npats, bool sort, unsigned type,
-			 unsigned scope) const 
+			 int npats, bool sort, unsigned int type,
+			 unsigned int scope) const 
 {
   count = 0;
   int n = size ();
@@ -1065,9 +989,9 @@ symbol_table::long_list (int& count, const string_vector& pats,
 	{
 	  assert (count < n);
 
-	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	  unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
 
-	  unsigned my_type = ptr->type ();
+	  unsigned int my_type = ptr->type ();
 
 	  string my_name = ptr->name ();
 
@@ -1089,7 +1013,7 @@ symbol_table::long_list (int& count, const string_vector& pats,
 
 string_vector
 symbol_table::list (int& count, const string_vector& pats, int npats,
-		    bool sort, unsigned type, unsigned scope) const
+		    bool sort, unsigned int type, unsigned int scope) const
 {
   count = 0;
   int n = size ();
@@ -1105,9 +1029,9 @@ symbol_table::list (int& count, const string_vector& pats, int npats,
 	{
 	  assert (count < n);
 
-	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	  unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
 
-	  unsigned my_type = ptr->type ();
+	  unsigned int my_type = ptr->type ();
 
 	  string my_name = ptr->name ();
 
@@ -1128,8 +1052,8 @@ symbol_table::list (int& count, const string_vector& pats, int npats,
 }
 
 symbol_record **
-symbol_table::glob (int& count, const string& pat, unsigned type,
-		    unsigned scope) const
+symbol_table::glob (int& count, const string& pat, unsigned int type,
+		    unsigned int scope) const
 {
   count = 0;
   int n = size ();
@@ -1144,9 +1068,9 @@ symbol_table::glob (int& count, const string& pat, unsigned type,
 	{
 	  assert (count < n);
 
-	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	  unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
 
-	  unsigned my_type = ptr->type ();
+	  unsigned int my_type = ptr->type ();
 
 	  glob_match pattern (pat);
 
@@ -1199,8 +1123,8 @@ symbol_table::pop_context (void)
 unsigned int
 symbol_table::hash (const string& str)
 {
-  unsigned h = 0;
-  for (unsigned i = 0; i < str.length (); i++)
+  unsigned int h = 0;
+  for (unsigned int i = 0; i < str.length (); i++)
     h = h * 33 + str[i];
   return h;
 }

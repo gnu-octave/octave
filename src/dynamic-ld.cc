@@ -50,13 +50,14 @@ extern "C"
 #include "toplev.h"
 #include "pathsearch.h"
 #include "oct-obj.h"
+#include "oct-builtin.h"
 #include "ov.h"
 #include "utils.h"
 #include "variables.h"
 
-typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
-
 #if defined (WITH_DYNAMIC_LINKING)
+
+typedef void * (*resolver_fcn) (const string& name, const string& file);
 
 static string
 mangle_octave_oct_file_name (const string& name)
@@ -102,6 +103,8 @@ dl_resolve_octave_reference (const string& name, const string& file)
   return retval;
 }
 
+static resolver_fcn resolve_octave_reference = dl_resolve_octave_reference;
+
 #elif defined (WITH_SHL)
 
 static void *
@@ -138,31 +141,16 @@ shl_resolve_octave_reference (const string& name, const string& file)
   return retval;
 }
 
-#endif
-#endif
-
-#if defined (WITH_DYNAMIC_LINKING)
-static void *
-resolve_octave_reference (const string& name, const string& file)
-{
-#if defined (WITH_DL)
-
-  return dl_resolve_octave_reference (name, file);
-
-#elif defined (WITH_SHL)
-
-  return shl_resolve_octave_reference (name, file);
+static resolver_fcn resolve_octave_reference = shl_resolve_octave_reference;
 
 #endif
-}
-#endif
+
+typedef octave_builtin * (*builtin_obj_fcn) (void);
 
 int
 load_octave_oct_file (const string& name)
 {
   int retval = 0;
-
-#if defined (WITH_DYNAMIC_LINKING)
 
   string oct_file = oct_file_in_path (name);
 
@@ -170,30 +158,33 @@ load_octave_oct_file (const string& name)
     {
       string mangled_name = mangle_octave_oct_file_name (name);
 
-      Octave_builtin_fcn_struct_fcn f =
-	(Octave_builtin_fcn_struct_fcn) resolve_octave_reference
-	  (mangled_name, oct_file);
+      builtin_obj_fcn f
+	= (builtin_obj_fcn) resolve_octave_reference (mangled_name, oct_file);
 
       if (f)
 	{
-	  builtin_function *s = f ();
+	  octave_builtin *obj = f ();
 
-	  if (s)
+	  if (obj)
 	    {
-	      install_builtin_function (*s);
+	      install_builtin_function (obj);
 	      retval = 1;
 	    }
 	}
     }
 
-#else
-
-  (void) name;
-
-#endif
-
   return retval;
 }
+
+#else
+
+int
+load_octave_oct_file (const string&)
+{
+  return 0;
+}
+
+#endif
 
 /*
 ;;; Local Variables: ***

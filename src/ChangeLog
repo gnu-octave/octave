@@ -1,3 +1,59 @@
+Sun Apr 27 20:17:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.h (Octave_builtin_fcn): Delete typedef.
+	* dynamic-ld.cc: Simplify via the magic of function pointers.
+
+	* pt-fcn.h pt-fcn.cc pt-fvc.h pt-fvc.cc pt-fvc-base.h pt-fvc-base.cc:
+	Delete obsolete files.
+	* Makefile.in: Remove them from various lists.
+
+	* pt-walk.h (visit_octave_user_function): Rename from visit_function.
+	(visit_builtin): Delete.
+	* pt-pr-code.h, pt-pr-code.cc (visit_octave_user_function):
+	Rename from visit_function.
+	(visit_octave_user_function_header): Rename from visit_function_header.
+	(visit_octave_user_function_trailer): Rename from
+	visit_function_trailer.
+
+	* ov.h, ov.cc (eval): New functions.
+
+	* dassl.cc, fsolve.cc, lsode.cc, npsol.cc, qpsol.cc, quad.cc:
+	Declare user-defined functions as a pointer to an octave_symbol
+	object, not as a pointer to a tree_fvc object.
+
+	* symtab.h, symtab.cc: Use new octave_symbol class.
+	* variables.cc (install_builtin_function, install_builtin_mapper,
+	install_builtin_variable, install_builtin_variable_as_function):
+	Make work with new octave_symbol class and symbol table structure.
+
+	* variables.h: Delete declaration of builtin_function struct.
+	* defun-dld.h (DEFUN_DLD): Simplify.
+	* defun-int.h (DEFINE_FUN_STRUCT): Delete.
+	(DEFINE_FUN_STRUCT_FUN): Rewrite to not use static builtin_function
+	object.
+
+	* mappers.h: Delete declaration of builtin_mapper_function struct.
+	* mappers.cc: Declare wrapper functions static.
+	* defun.h (DEFUN_MAPPER): Simplify.
+
+	* oct-sym.h: New file.  Declare base class for Octave symbols.
+	* ov.h: Derive octave_value class from octave_symbol.
+	* oct-fcn.h, oct-fcn.cc: New files to declare and define
+	base class for functions.
+	* oct-builtin.h, oct-builtin.cc: New files to declare and define
+	class for built-in functions.
+	* oct-mapper.h, oct-mapper.cc: New files to declare and define
+	class for mapper functions.
+	* oct-usr-fcn.h, oct-usr-fcn.cc: New files to declare and define
+	base class for user-defined functions.
+	* Makefile.in: Add new files to appropriate lists.
+
+	* pt-id.h, pt-id.cc: Move tree_identifier class here.
+	* pt-fvc.h, pt-fvc.cc: From here.
+
+	* pt-indir.h, pt-indir.cc: Move tree_indirect_ref class here.
+	* pt-fvc.h, pt-fvc.cc: From here.
+
 Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (magic_colon): New nonterminal.

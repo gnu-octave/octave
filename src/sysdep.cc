@@ -79,6 +79,7 @@ LOSE! LOSE!
 extern char *term_clrpag;
 extern "C" void _rl_output_character_function ();
 
+#include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-math.h"
 
@@ -86,7 +87,6 @@ extern "C" void _rl_output_character_function ();
 #include "error.h"
 #include "help.h"
 #include "input.h"
-#include "mappers.h"
 #include "oct-obj.h"
 #include "pathlen.h"
 #include "ov.h"

@@ -88,7 +88,11 @@ Returns all arguments in reverse order.")
   // octave_stdout, so it will also end up going through the pager.
 
   for (int i = 0; i < nargin; i++)
-    retval (nargin-i-1) = args(i).print ();
+    {
+      octave_value tmp = args (i);
+      tmp.print ();
+      retval (nargin-i-1) = tmp;
+    }
 
   return retval;
 }

@@ -1283,29 +1283,29 @@ operator / (const Matrix& a, const Complex& s)
 ComplexMatrix
 operator + (const Complex& s, const Matrix& a)
 {
-  assert (0);
-  return ComplexMatrix ();
+  return ComplexMatrix (add (s, a.data (), a.length ()),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
 operator - (const Complex& s, const Matrix& a)
 {
-  assert (0);
-  return ComplexMatrix ();
+  return ComplexMatrix (subtract (s, a.data (), a.length ()),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
 operator * (const Complex& s, const Matrix& a)
 {
-  assert (0);
-  return ComplexMatrix ();
+  return ComplexMatrix (multiply (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
 operator / (const Complex& s, const Matrix& a)
 {
-  assert (0);
-  return ComplexMatrix ();
+  return ComplexMatrix (divide (s, a.data (), a.length ()),
+			a.rows (), a.cols ());
 }
 
 // matrix by column vector -> column vector operations

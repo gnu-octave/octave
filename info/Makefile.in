@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.28 1996-11-13 03:41:37 jwe Exp $
+# $Id: Makefile.in,v 1.29 1996-11-13 03:50:37 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -19,10 +19,13 @@
 
 #### Start of system configuration section. ####
 
-srcdir = @srcdir@
-VPATH  = $(srcdir)
+TOPDIR = ..
 
-util   = $(srcdir)/../util
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH  = @srcdir@
+
+include $(TOPDIR)/Makeconf
 
 CC = @CC@
 
@@ -94,26 +97,21 @@ MAKEDOC_SOURCE = makedoc.c clib.c xmalloc.c
 
 infofiles = info.info info-stnd.info
 
+DISTFILES = Makefile.in ChangeLog README NEWS info.1 configure.in \
+	configure mkinstalldirs $(SOURCES) $(INCLUDES) $(TEXINFO)
+
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(LDEFS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
 
 all: info $(infofiles)
 sub-all: all
 
-install: all
-	$(INSTALL_PROGRAM) info $(bindir)/$(binprefix)info
-	-d=$(srcdir); test -f ./info.info && d=.; $(INSTALL_DATA) $$d/info.info $(infodir)/info.info
-	-d=$(srcdir); test -f ./info-stnd.info && d=.; $(INSTALL_DATA) $$d/info-stnd.info $(infodir)/info-stnd.info
-	-$(INSTALL_DATA) $(srcdir)/info.1 $(mandir)/$(manprefix)info.$(manext)
-	$(POST_INSTALL)
-	../util/install-info --info-dir=$(infodir) $(infodir)/info.info
-	../util/install-info --info-dir=$(infodir) $(infodir)/info-stnd.info
+install:
+	$(top_srcdir)/mkinstalldirs $(archlibdir)
+	$(INSTALL_PROGRAM) info $(archlibdir)/info
 
 uninstall:
-	$(RM) $(bindir)/info
-	$(RM) $(infodir)/info.info
-	$(RM) $(infodir)/info-stnd.info
-	$(RM) $(mandir)/$(manprefix)info.$(manext)
+	rm -f $(archlibdir)/info
 
 info: $(OBJS)
 	$(CC) $(LDFLAGS) -o info $(OBJS) $(LOADLIBES)

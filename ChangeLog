@@ -1,3 +1,7 @@
+Tue Nov 12 21:50:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* info: Update to current release from texinfo-3.9.
+
 Mon Nov 11 23:56:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.h.bot: Only check value of __GNUC__ and __GNUC_MINOR__ if

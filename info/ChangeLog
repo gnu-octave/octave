@@ -7,6 +7,9 @@ Tue Nov 12 14:44:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	(info): Don't depend on ../libtxi.a.
 	(info.o): Depend on getopt.h, not $(common)/getopt.h.
 	(.c.o): Don't add -I$(common).
+	(install, uninstall): Customize for Octave.
+	(TOPDIR, top_srcdir): For Octave.
+	Include $(TOPDIR)/Makeconf, for Octave.
 	Don't add $(common) for dvi or info targets.
 
 	* configure.in: Copy here from (in texinfo distribution).

@@ -51,7 +51,7 @@ function retval = unwrap (a, tol, dim)
   endif
 
   ## If TOL is not provided but dim is, handle it.
-  if (tol == [])
+  if (isempty (tol))
     tol = pi;
   endif
 

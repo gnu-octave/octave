@@ -43,10 +43,6 @@ class boolNDArray;
 #define NDBOOL_OP_DECL(OP, X, Y) \
   extern boolNDArray OP (const X&, const Y&)
 
-#define TBM boolMatrix (1, 1, true)
-#define FBM boolMatrix (1, 1, false)
-#define NBM boolMatrix ()
-
 // vector by scalar operations.
 
 #define VS_BIN_OP_DECLS(R, V, S) \
@@ -185,7 +181,7 @@ class boolNDArray;
   CMP_OP_DECL (mx_el_eq, M, S); \
   CMP_OP_DECL (mx_el_ne, M, S);
 
-#define MS_CMP_OP(F, OP, M, MC, S, SC, EMPTY_RESULT) \
+#define MS_CMP_OP(F, OP, M, MC, S, SC) \
   boolMatrix \
   F (const M& m, const S& s) \
   { \
@@ -194,12 +190,10 @@ class boolNDArray;
     int nr = m.rows (); \
     int nc = m.cols (); \
  \
-    if (nr == 0 || nc == 0) \
-      r = EMPTY_RESULT; \
-    else \
-      { \
-        r.resize (nr, nc); \
+    r.resize (nr, nc); \
  \
+    if (nr > 0 && nc > 0) \
+      { \
         for (int j = 0; j < nc; j++) \
           for (int i = 0; i < nr; i++) \
 	    r.elem(i, j) = MC (m.elem(i, j)) OP SC (s); \
@@ -209,12 +203,12 @@ class boolNDArray;
   }
 
 #define MS_CMP_OPS(M, CM, S, CS) \
-  MS_CMP_OP (mx_el_lt, <,  M, CM, S, CS, NBM) \
-  MS_CMP_OP (mx_el_le, <=, M, CM, S, CS, NBM) \
-  MS_CMP_OP (mx_el_ge, >=, M, CM, S, CS, NBM) \
-  MS_CMP_OP (mx_el_gt, >,  M, CM, S, CS, NBM) \
-  MS_CMP_OP (mx_el_eq, ==, M,   , S,   , FBM) \
-  MS_CMP_OP (mx_el_ne, !=, M,   , S,   , TBM)
+  MS_CMP_OP (mx_el_lt, <,  M, CM, S, CS) \
+  MS_CMP_OP (mx_el_le, <=, M, CM, S, CS) \
+  MS_CMP_OP (mx_el_ge, >=, M, CM, S, CS) \
+  MS_CMP_OP (mx_el_gt, >,  M, CM, S, CS) \
+  MS_CMP_OP (mx_el_eq, ==, M,   , S,   ) \
+  MS_CMP_OP (mx_el_ne, !=, M,   , S,   )
 
 #define MS_BOOL_OP_DECLS(M, S) \
   BOOL_OP_DECL (mx_el_and, M, S); \
@@ -287,7 +281,7 @@ class boolNDArray;
   CMP_OP_DECL (mx_el_eq, S, M); \
   CMP_OP_DECL (mx_el_ne, S, M);
 
-#define SM_CMP_OP(F, OP, S, SC, M, MC, EMPTY_RESULT) \
+#define SM_CMP_OP(F, OP, S, SC, M, MC) \
   boolMatrix \
   F (const S& s, const M& m) \
   { \
@@ -296,12 +290,10 @@ class boolNDArray;
     int nr = m.rows (); \
     int nc = m.cols (); \
  \
-    if (nr == 0 || nc == 0) \
-      r = EMPTY_RESULT; \
-    else \
-      { \
-        r.resize (nr, nc); \
+    r.resize (nr, nc); \
  \
+    if (nr > 0 && nc > 0) \
+      { \
         for (int j = 0; j < nc; j++) \
           for (int i = 0; i < nr; i++) \
 	    r.elem(i, j) = SC (s) OP MC (m.elem(i, j)); \
@@ -311,12 +303,12 @@ class boolNDArray;
   }
 
 #define SM_CMP_OPS(S, CS, M, CM) \
-  SM_CMP_OP (mx_el_lt, <,  S, CS, M, CM, NBM) \
-  SM_CMP_OP (mx_el_le, <=, S, CS, M, CM, NBM) \
-  SM_CMP_OP (mx_el_ge, >=, S, CS, M, CM, NBM) \
-  SM_CMP_OP (mx_el_gt, >,  S, CS, M, CM, NBM) \
-  SM_CMP_OP (mx_el_eq, ==, S,   , M,   , FBM) \
-  SM_CMP_OP (mx_el_ne, !=, S,   , M,   , TBM)
+  SM_CMP_OP (mx_el_lt, <,  S, CS, M, CM) \
+  SM_CMP_OP (mx_el_le, <=, S, CS, M, CM) \
+  SM_CMP_OP (mx_el_ge, >=, S, CS, M, CM) \
+  SM_CMP_OP (mx_el_gt, >,  S, CS, M, CM) \
+  SM_CMP_OP (mx_el_eq, ==, S,   , M,   ) \
+  SM_CMP_OP (mx_el_ne, !=, S,   , M,   )
 
 #define SM_BOOL_OP_DECLS(S, M) \
   BOOL_OP_DECL (mx_el_and, S, M); \
@@ -399,7 +391,7 @@ class boolNDArray;
   CMP_OP_DECL (mx_el_eq, M1, M2); \
   CMP_OP_DECL (mx_el_ne, M1, M2);
 
-#define MM_CMP_OP(F, OP, M1, C1, M2, C2, ONE_MT_RESULT, TWO_MT_RESULT) \
+#define MM_CMP_OP(F, OP, M1, C1, M2, C2) \
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
@@ -413,35 +405,25 @@ class boolNDArray;
  \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
-	if (m1_nr == 0 && m1_nc == 0) \
-	  r = TWO_MT_RESULT; \
-	else \
-	  { \
-	    r.resize (m1_nr, m1_nc); \
+	r.resize (m1_nr, m1_nc); \
  \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
-		r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
-	  } \
+	for (int j = 0; j < m1_nc; j++) \
+	  for (int i = 0; i < m1_nr; i++) \
+	    r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
       } \
     else \
-      { \
-	if ((m1_nr == 0 && m1_nc == 0) || (m2_nr == 0 && m2_nc == 0)) \
-	  r = ONE_MT_RESULT; \
-	else \
-	  gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
-      } \
+      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
  \
     return r; \
   }
 
 #define MM_CMP_OPS(M1, C1, M2, C2) \
-  MM_CMP_OP (mx_el_lt, <,  M1, C1, M2, C2, NBM, NBM) \
-  MM_CMP_OP (mx_el_le, <=, M1, C1, M2, C2, NBM, NBM) \
-  MM_CMP_OP (mx_el_ge, >=, M1, C1, M2, C2, NBM, NBM) \
-  MM_CMP_OP (mx_el_gt, >,  M1, C1, M2, C2, NBM, NBM) \
-  MM_CMP_OP (mx_el_eq, ==, M1,   , M2,   , FBM, TBM) \
-  MM_CMP_OP (mx_el_ne, !=, M1,   , M2,   , TBM, FBM)
+  MM_CMP_OP (mx_el_lt, <,  M1, C1, M2, C2) \
+  MM_CMP_OP (mx_el_le, <=, M1, C1, M2, C2) \
+  MM_CMP_OP (mx_el_ge, >=, M1, C1, M2, C2) \
+  MM_CMP_OP (mx_el_gt, >,  M1, C1, M2, C2) \
+  MM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
+  MM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 
 #define MM_BOOL_OP_DECLS(M1, M2) \
   BOOL_OP_DECL (mx_el_and, M1, M2); \
@@ -525,7 +507,7 @@ class boolNDArray;
   NDCMP_OP_DECL (mx_el_eq, ND, S); \
   NDCMP_OP_DECL (mx_el_ne, ND, S);
 
-#define NDS_CMP_OP(F, OP, ND, NDC, S, SC, EMPTY_RESULT) \
+#define NDS_CMP_OP(F, OP, ND, NDC, S, SC) \
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
@@ -533,26 +515,21 @@ class boolNDArray;
  \
     int len = m.length (); \
  \
-    if (len == 0) \
-      r = EMPTY_RESULT; \
-    else \
-      { \
-	r.resize (m.dims ()); \
+    r.resize (m.dims ()); \
  \
-	for (int i = 0; i < len; i++) \
-	  r.elem(i) = NDC (m.elem(i)) OP SC (s); \
-      } \
+    for (int i = 0; i < len; i++) \
+      r.elem(i) = NDC (m.elem(i)) OP SC (s); \
  \
     return r; \
   }
 
 #define NDS_CMP_OPS(ND, NDC, S, SC) \
-  NDS_CMP_OP (mx_el_lt, <,  ND, NDC, S, SC, NBM) \
-  NDS_CMP_OP (mx_el_le, <=, ND, NDC, S, SC, NBM) \
-  NDS_CMP_OP (mx_el_ge, >=, ND, NDC, S, SC, NBM) \
-  NDS_CMP_OP (mx_el_gt, >,  ND, NDC, S, SC, NBM) \
-  NDS_CMP_OP (mx_el_eq, ==, ND,    , S,   , FBM) \
-  NDS_CMP_OP (mx_el_ne, !=, ND,    , S,   , TBM)
+  NDS_CMP_OP (mx_el_lt, <,  ND, NDC, S, SC) \
+  NDS_CMP_OP (mx_el_le, <=, ND, NDC, S, SC) \
+  NDS_CMP_OP (mx_el_ge, >=, ND, NDC, S, SC) \
+  NDS_CMP_OP (mx_el_gt, >,  ND, NDC, S, SC) \
+  NDS_CMP_OP (mx_el_eq, ==, ND,    , S,   ) \
+  NDS_CMP_OP (mx_el_ne, !=, ND,    , S,   )
 
 #define NDS_BOOL_OP_DECLS(ND, S) \
   NDBOOL_OP_DECL (mx_el_and, ND, S); \
@@ -622,7 +599,7 @@ class boolNDArray;
   NDCMP_OP_DECL (mx_el_eq, S, ND); \
   NDCMP_OP_DECL (mx_el_ne, S, ND);
 
-#define SND_CMP_OP(F, OP, S, SC, ND, NDC, EMPTY_RESULT) \
+#define SND_CMP_OP(F, OP, S, SC, ND, NDC) \
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
@@ -630,26 +607,21 @@ class boolNDArray;
  \
     int len = m.length (); \
  \
-    if (len == 0) \
-      r = EMPTY_RESULT; \
-    else \
-      { \
-        r.resize (m.dims ()); \
+    r.resize (m.dims ()); \
  \
-        for (int i = 0; i < len; i++) \
-	    r.elem(i) = SC (s) OP NDC (m.elem(i)); \
-      } \
+    for (int i = 0; i < len; i++) \
+      r.elem(i) = SC (s) OP NDC (m.elem(i)); \
  \
     return r; \
   }
 
 #define SND_CMP_OPS(S, CS, ND, CND) \
-  SND_CMP_OP (mx_el_lt, <,  S, CS, ND, CND, NBM) \
-  SND_CMP_OP (mx_el_le, <=, S, CS, ND, CND, NBM) \
-  SND_CMP_OP (mx_el_ge, >=, S, CS, ND, CND, NBM) \
-  SND_CMP_OP (mx_el_gt, >,  S, CS, ND, CND, NBM) \
-  SND_CMP_OP (mx_el_eq, ==, S,   , ND,    , FBM) \
-  SND_CMP_OP (mx_el_ne, !=, S,   , ND,    , TBM)
+  SND_CMP_OP (mx_el_lt, <,  S, CS, ND, CND) \
+  SND_CMP_OP (mx_el_le, <=, S, CS, ND, CND) \
+  SND_CMP_OP (mx_el_ge, >=, S, CS, ND, CND) \
+  SND_CMP_OP (mx_el_gt, >,  S, CS, ND, CND) \
+  SND_CMP_OP (mx_el_eq, ==, S,   , ND,    ) \
+  SND_CMP_OP (mx_el_ne, !=, S,   , ND,    )
 
 #define SND_BOOL_OP_DECLS(S, ND) \
   NDBOOL_OP_DECL (mx_el_and, S, ND); \
@@ -729,7 +701,7 @@ class boolNDArray;
   NDCMP_OP_DECL (mx_el_eq, ND1, ND2); \
   NDCMP_OP_DECL (mx_el_ne, ND1, ND2);
 
-#define NDND_CMP_OP(F, OP, ND1, C1, ND2, C2, ONE_MT_RESULT, TWO_MT_RESULT) \
+#define NDND_CMP_OP(F, OP, ND1, C1, ND2, C2) \
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
@@ -740,34 +712,24 @@ class boolNDArray;
  \
     if (m1_dims == m2_dims) \
       { \
-	if (m1_dims.all_zero ()) \
-	  r = TWO_MT_RESULT; \
-	else \
-	  { \
-	    r.resize (m1_dims); \
+	r.resize (m1_dims); \
  \
-	    for (int i = 0; i < m1.length (); i++) \
-	      r.elem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
-	  } \
+	for (int i = 0; i < m1.length (); i++) \
+	  r.elem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
       } \
     else \
-      { \
-	if (m1_dims.all_zero () || m2_dims.all_zero ()) \
-	  r = ONE_MT_RESULT; \
-	else \
-	  gripe_nonconformant (#F, m1_dims, m2_dims); \
-      } \
+      gripe_nonconformant (#F, m1_dims, m2_dims); \
  \
     return r; \
   }
 
 #define NDND_CMP_OPS(ND1, C1, ND2, C2) \
-  NDND_CMP_OP (mx_el_lt, <,  ND1, C1, ND2, C2, NBM, NBM) \
-  NDND_CMP_OP (mx_el_le, <=, ND1, C1, ND2, C2, NBM, NBM) \
-  NDND_CMP_OP (mx_el_ge, >=, ND1, C1, ND2, C2, NBM, NBM) \
-  NDND_CMP_OP (mx_el_gt, >,  ND1, C1, ND2, C2, NBM, NBM) \
-  NDND_CMP_OP (mx_el_eq, ==, ND1,   , ND2,   , FBM, TBM) \
-  NDND_CMP_OP (mx_el_ne, !=, ND1,   , ND2,   , TBM, FBM)
+  NDND_CMP_OP (mx_el_lt, <,  ND1, C1, ND2, C2) \
+  NDND_CMP_OP (mx_el_le, <=, ND1, C1, ND2, C2) \
+  NDND_CMP_OP (mx_el_ge, >=, ND1, C1, ND2, C2) \
+  NDND_CMP_OP (mx_el_gt, >,  ND1, C1, ND2, C2) \
+  NDND_CMP_OP (mx_el_eq, ==, ND1,   , ND2,   ) \
+  NDND_CMP_OP (mx_el_ne, !=, ND1,   , ND2,   )
 
 #define NDND_BOOL_OP_DECLS(ND1, ND2) \
   NDBOOL_OP_DECL (mx_el_and, ND1, ND2); \

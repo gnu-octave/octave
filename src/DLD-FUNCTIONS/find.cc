@@ -51,46 +51,58 @@ find_nonzero_elem_idx (const T& nda, int nargout)
 	count++;
     }
 
-  if (count == 0)
-    return retval;
+  // If the original argument was a row vector, force a row vector of
+  // the overall indices to be returned. 
 
-  ColumnVector idx (count);
+  int result_nr = count;
+  int result_nc = 1;
 
-  ColumnVector i_idx (count);
-  ColumnVector j_idx (count);
-
-  T val (dim_vector (count, 1));
-
-  count = 0;
-
-  int nr = nda.rows ();
-
-  int i = 0;
-  int j = 0;
-
-  for (int k = 0; k < nel; k++)
+  if (nda.ndims () == 2 && nda.rows () == 1)
     {
-      OCTAVE_QUIT;
+      result_nr = 1;
+      result_nc = count;
+    }
 
-      if (nda(k) != 0.0)
+  Matrix idx (result_nr, result_nc);
+
+  Matrix i_idx (result_nr, result_nc);
+  Matrix j_idx (result_nr, result_nc);
+
+  T val (dim_vector (result_nr, result_nc));
+
+  if (count > 0)
+    {
+      count = 0;
+
+      int nr = nda.rows ();
+
+      int i = 0;
+      int j = 0;
+
+      for (int k = 0; k < nel; k++)
 	{
-	  idx(count) = k + 1;
+	  OCTAVE_QUIT;
 
-	  i_idx(count) = i + 1;
-	  j_idx(count) = j + 1;
+	  if (nda(k) != 0.0)
+	    {
+	      idx(count) = k + 1;
 
-	  val(count) = nda(k);
+	      i_idx(count) = i + 1;
+	      j_idx(count) = j + 1;
 
-	  count++;
-	}
+	      val(count) = nda(k);
 
-      i++;
+	      count++;
+	    }
 
-      if (i == nr)
-	{
-	  i = 0;
+	  i++;
 
-	  j++;
+	  if (i == nr)
+	    {
+	      i = 0;
+
+	      j++;
+	    }
 	}
     }
 
@@ -98,15 +110,7 @@ find_nonzero_elem_idx (const T& nda, int nargout)
     {
     case 0:
     case 1:
-      {
-	// If the original argument was a row vector, force a row vector of
-	// the overall indices to be returned. 
-
-	if (nda.ndims () == 2 && nda.rows () == 1)
-	  retval(0) = idx.transpose ();
-	else
-	  retval(0) = idx;
-      }
+      retval(0) = idx;
       break;
 
     case 3:

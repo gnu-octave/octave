@@ -1,3 +1,7 @@
+2004-03-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* signal/unwrap.m: Use "isempty (tol)" instead of "tol == []".
+
 2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/deal.m: New function.

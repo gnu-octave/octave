@@ -1,3 +1,9 @@
+2004-03-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): If there are no
+	nonzero elements, return [](0x1) or [](1x0), not [](0x0).
+	Correctly preserve orientation for row vectors.
+
 2004-03-08  Petter Risholm  <risholm@idi.ntnu.no>
 
 	* data.cc (do_cat): Check for length of args before getting dimension.

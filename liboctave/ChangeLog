@@ -1,3 +1,12 @@
+2004-03-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-op-defs.h (NDND_CMP_OP, MM_CMP_OP): Require dimensions to agree.
+	Eliminate MT_RESULT args.  Return value is always size of args.
+	(MS_CMP_OP, SM_CMP_OP, NDS_CMP_OP, SND_CMP_OP):
+	Eliminate EMPTY_RESULT arg.
+	Return value is always size of matrix or N-d array arg.
+	(TBM, FBM, NBM): Delete unused macros.
+
 2004-03-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::maybe_delete_elements): Return immediately

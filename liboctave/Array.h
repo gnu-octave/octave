@@ -438,8 +438,6 @@ private:
   T get (int i) { return Array<T>::elem (i); }
   void set (const T& val, int i) { Array<T>::elem (i) = val; }
 
-#if 0
-#if ! (defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6)
   class Proxy
   {
   public:
@@ -487,8 +485,6 @@ private:
   };
 
 friend class Proxy;
-#endif
-#endif
 
 protected:
 

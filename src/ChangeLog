@@ -1,3 +1,7 @@
+2004-10-19  John W. Eaton  <jwe@octave.org>
+
+	* ov-range.h (octave_range::write): New function.
+
 2004-10-18  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_record::dimensions_string_req_first_space,

@@ -197,8 +197,23 @@ tree_statement_list::set_breakpoint (int line)
 void
 tree_statement_list::delete_breakpoint (int line)
 {
-  tree_breakpoint tbp (line, tree_breakpoint::clear); 
-  accept(tbp);
+  if (line < 0)
+    {
+      octave_value_list lst = list_breakpoints ();
+
+      int len = lst.length ();
+
+      for (int line = 0; line < len; line++)
+	{
+	  tree_breakpoint tbp (line, tree_breakpoint::clear);
+	  accept (tbp);
+	}
+    }
+  else
+    {
+      tree_breakpoint tbp (line, tree_breakpoint::clear); 
+      accept (tbp);
+    }
 }
 
 octave_value_list

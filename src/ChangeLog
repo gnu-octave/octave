@@ -1,3 +1,18 @@
+2002-04-10  Ben Sapp <bsapp@lanl.gov>
+
+	* pt-stmt.cc (delete_breakpoint): List breakpoints if line < 0.
+	* debug.cc (get_user_function): Check symbol by name first.
+	(Fdbstop): Rename from Fdbg_set.
+	(Fdbclear): Rename from Fdbg_delete.
+	(Fdbstatus): Rename from Fdbg_list.
+	(Fdbg_where): Rename from Fdbwhere.
+	(do_dbtype, Fdbtype): New functions.
+
+2002-04-10  Peter Van Wieren <peter.vanwiere@avlna.com>
+
+	* load-save.cc (save_mat5_binary_element): Save elements of 2d
+	character matrices in proper order.
+
 2002-04-09  Paul Kienzle <pkienzle@users.sf.net>
 
 	* utils.cc (do_string_escapes): Handle \0 too.

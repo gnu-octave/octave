@@ -4157,7 +4157,7 @@ save_mat5_binary_element (std::ostream& os,
       int len = nr*nc*2;
       int paddedlength = PAD (nr*nc*2);
 
-      TWO_BYTE_INT *buf = new TWO_BYTE_INT[nc+3];
+      TWO_BYTE_INT *buf = new TWO_BYTE_INT[nc*nr+3];
       write_mat5_tag (os, miUINT16, len);
 
       for (int i = 0; i < nr; i++)
@@ -4166,10 +4166,9 @@ save_mat5_binary_element (std::ostream& os,
 	  const char *s = tstr.data ();
 
 	  for (int j = 0; j < nc; j++)
-	    buf[j] = *s++;
-
-	  os.write ((char *)buf, nc*2);
+	    buf[j*nr+i] = *s++;
 	}
+      os.write ((char *)buf, nr*nc*2);
       
       if (paddedlength > len)
 	os.write ((char *)buf, paddedlength - len);

@@ -127,7 +127,7 @@ number of lines in a single call.  He also continues to track down odd
 incompatibilities and bugs.
 
 @item
-Mark Odegard @email{meo@@sugarland.unocal.com} provided the initial
+Mark Odegard @email{meo@@getech.com} provided the initial
 implementation of @code{fread}, @code{fwrite}, @code{feof}, and
 @code{ferror}.
 

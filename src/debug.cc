@@ -24,6 +24,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <iostream>
+#include <fstream>
+#include <strstream>
+#include <string>
+#include <stdlib.h> 
+
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -49,11 +55,7 @@ get_user_function (std::string str = "")
 {
   octave_user_function *dbg_fcn = NULL;
 
-  if (curr_function)
-    {
-      dbg_fcn = curr_function;
-    }
-  else if (str.compare (""))
+  if (str.compare (""))
     {
       symbol_record *ptr = curr_sym_tab->lookup (str);
       
@@ -73,13 +75,18 @@ get_user_function (std::string str = "")
 	    }
 	}
     }
+  else if (curr_function)
+    {
+      dbg_fcn = curr_function;
+    }
 
   return dbg_fcn;
 }
 
-DEFUN_TEXT (dbg_set, args, ,
+
+DEFUN_TEXT (dbstop, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {rline =} dbg_set (func, line)\n\
+@deftypefn {Loadable Function} {rline =} dbstop (func, line)\n\
 Set a breakpoint in a function\n\
 @table @code\n\
 @item func\n\
@@ -92,14 +99,14 @@ Line you would like the breakpoint to be set on\n\
 The rline returned is the real line that the breakpoint was set at.\n\
 \n\
 @end deftypefn\n\
-@seealso{dbg_delete, dbg_list, dbg_where}")
+@seealso{dbclear, dbtatus, dbnext}")
 {
   octave_value retval;
 
   int result = -1;
   int nargin = args.length ();
   
-  string_vector argv = args.make_argv ("dbg_set");
+  string_vector argv = args.make_argv ("dbstop");
 
   if (error_state)
     return retval;
@@ -146,9 +153,9 @@ The rline returned is the real line that the breakpoint was set at.\n\
   return retval;
 }
 
-DEFUN_TEXT (dbg_delete, args, ,
+DEFUN_TEXT (dbclear, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbg_delete (func, line)\n\
+@deftypefn {Loadable Function} {} dbclear (func, line)\n\
 Delete a breakpoint in a function\n\
 @table @code\n\
 @item func\n\
@@ -160,12 +167,12 @@ Line where you would like to remove the the breakpoint\n\
 No checking is done to make sure that the line you requested is really\n\
 a breakpoint.   If you get the wrong line nothing will happen.\n\
 @end deftypefn\n\
-@seealso{dbg_set, dbg_list, dbg_where}")
+@seealso{dbstop, dbstatus, dbwhere}")
 {
   octave_value retval;
 
   std::string symbol_name = "";
-
+  std::string line_number;
   int line = -1;
   int nargin = args.length ();
   
@@ -175,7 +182,7 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
       return retval;
     }
   
-  string_vector argv = args.make_argv ("dbg_delete");
+  string_vector argv = args.make_argv ("dbclear");
 
   if (error_state)
     return retval;
@@ -186,22 +193,25 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
       symbol_name = argv[1];
  
       octave_stdout << argv[1] << std::endl;
-      std::string line_number = argv[2];
+      line_number = argv[2];
 
-      line = atoi (line_number.c_str ());     
     }
   else if (nargin == 1)
     {
       octave_stdout << "1 input argument\n";
-      std::string line_number = argv[1];
-
-      line = atoi (line_number.c_str ());     
+      line_number = argv[1];
     }
   else
     {
       error ("need one or two arguements\n");
       return retval;
     }
+
+
+  if (line_number.compare("all") && line_number.compare("ALL"))
+    line = atoi (line_number.c_str ());
+  else 
+    line = -1;
 
   octave_stdout << "symbol_name = " << symbol_name << std::endl;
   octave_user_function *dbg_fcn = get_user_function (symbol_name);
@@ -217,9 +227,9 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
   return retval;
 }
 
-DEFUN_TEXT (dbg_list, args, ,
+DEFUN_TEXT (dbstatus, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {lst =} dbg_list ([func])\n\
+@deftypefn {Loadable Function} {lst =} dbstatus ([func])\n\
 Return a vector containing the lines on which a function has \n\
 breakpoints set.\n\
 @table @code\n\
@@ -228,7 +238,7 @@ String representing the function name.  When already in debug\n\
 mode this should be left out.\n\
 @end table\n\
 @end deftypefn\n\
-@seealso{dbg_delete, dbg_set, dbg_where}")
+@seealso{dbclear, dbwhere}")
 {
   octave_value retval;
 
@@ -247,7 +257,7 @@ mode this should be left out.\n\
       if (args(0).is_string ())
 	symbol_name = args(0).string_value ();
       else
-	gripe_wrong_type_arg ("dbg_list", args(0));
+	gripe_wrong_type_arg ("dbstatus", args(0));
     }
 
   octave_user_function *dbg_fcn = get_user_function (symbol_name);
@@ -276,13 +286,12 @@ mode this should be left out.\n\
   return retval;
 }
 
-
-DEFUN_TEXT (dbg_where, , ,
+DEFUN_TEXT (dbwhere, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbg_where ()\n\
+@deftypefn {Loadable Function} {} dbwhere ()\n\
 Show where we are in the code\n\
 @end deftypefn\n\
-@seealso{dbg_delete, dbg_list, dbg_set}")
+@seealso{dbclear, dbstatus, dbstop}")
 {
   octave_value retval;
   
@@ -305,7 +314,169 @@ Show where we are in the code\n\
 	octave_stdout << "-1\n";
     }
   else
-    error ("must be inside of a user function to use dbg_where\n");
+    error ("must be inside of a user function to use dbwhere\n");
+
+  return retval;
+}
+
+// Copied and modified from the do_type command in help.cc
+// Maybe we could share some code?  
+void 
+do_dbtype(std::ostream& os, const std::string& name, int start, int end)
+{
+  std::string ff = fcn_file_in_path (name);
+
+  if (! ff.empty ())
+    {
+      std::ifstream fs (ff.c_str (), std::ios::in);
+      
+      if (fs)
+	{  
+	  char ch;
+	  int line = 1;
+	  
+	  if (line >= start && line <= end)
+	    os << line << "\t";
+ 	  
+	  while (fs.get (ch))
+	    {
+	      if (line >= start && line <= end)
+		{
+		  os << ch;
+		}
+
+	      if (ch == '\n')
+		{
+		  line++;
+		  if (line >= start && line <= end)
+		    os << line << "\t"; 
+		}
+	    }
+	}
+      else 
+	os << "unable to open `" << ff << "' for reading!\n";
+    }
+  else
+    os << "unkown function";
+
+}
+
+DEFUN_TEXT (dbtype, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} dbtype ()\n\
+List script file with line numbers.\n\
+@end deftypefn\n\
+@seealso{dbclear, dbstatus, dbstop}")
+{
+  octave_value retval;
+  octave_user_function *dbg_fcn;
+  
+  int nargin = args.length ();
+  string_vector argv = args.make_argv ("dbtype");
+    
+  if (! error_state)
+    {
+      switch (nargin)
+	{
+	case 0: // dbtype
+	  dbg_fcn = get_user_function ();
+
+	  if (dbg_fcn)
+	    do_dbtype(octave_stdout,dbg_fcn->function_name (), 0, INT_MAX);
+	  else
+	    error("must be in a user function to give no arguments to dbtype\n");
+
+	  break;
+	case 1: // (dbtype func) || (dbtype start:end) 
+	  dbg_fcn = get_user_function (argv[1].c_str ());
+
+	  if (dbg_fcn)
+	    do_dbtype(octave_stdout,dbg_fcn->function_name (), 0, INT_MAX);
+	  else
+	    {
+	      dbg_fcn = get_user_function ("");
+
+	      if (dbg_fcn)
+		{
+		  char *str = (char *)malloc(strlen(argv[1].c_str ()) + 1);
+
+		  if (str)
+		    memcpy(str, argv[1].c_str (), strlen(argv[1].c_str ()) + 1);
+		  else 
+		    error("croaked\n");
+		  
+		  char *ind = index(str,':');
+		  
+		  if (ind)
+		    *ind = '\0';
+		  else
+		    {
+		      free(str);
+		      error("if you specify lines it must be like `start:end`");
+		    }
+		  ind++;
+		  
+		  int start = atoi(str);
+		  int end   = atoi(ind);
+		  
+		  free(str);
+		  str = NULL;
+		  ind = NULL;
+		  
+		  octave_stdout << "got start and end\n";
+		  
+		  if (start > end)
+		    error("the start line must be less than the end line\n");
+		  
+		  octave_stdout << "doing dbtype\n";
+		  do_dbtype(octave_stdout, dbg_fcn->function_name (), start, end);
+		  octave_stdout << "did dbtype\n";
+		}
+	    }
+	  break;
+	case 2: // (dbtype func start:end) 
+	  dbg_fcn = get_user_function (argv[1].c_str ());
+
+	  if (dbg_fcn)
+	    {
+	      
+	      char *str = (char *)malloc(strlen(argv[2].c_str ()) + 1);
+
+	      if (str)
+		memcpy(str, argv[2].c_str (), strlen(argv[2].c_str ()) + 1);
+	      else
+		error("not enough memory\n");
+
+	      
+	      char *ind = index(str,':');
+
+	      if (ind)
+		*ind = '\0';
+	      else
+		{
+		  free(str);
+		  error("if you specify lines it must be like `start:end`");
+		}
+	      ind++;
+
+	      int start = atoi(str);
+	      int end   = atoi(ind);
+
+	      free(str);
+	      ind = NULL; 
+	      str = NULL; 
+
+	      if (start > end)
+		error("the start line must be less than the end line\n");
+
+	      do_dbtype(octave_stdout, dbg_fcn->function_name (), start, end);	      
+	    }
+
+	  break;
+	default:
+	  error("unacceptable number of arguments\n"); 
+	}
+    }
 
   return retval;
 }

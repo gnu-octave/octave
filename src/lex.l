@@ -1203,6 +1203,8 @@ next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 // is an acceptable change.  It would be quite a bit harder to `fix'
 // this.  (Well, maybe not.  the best fix would be to do away with the
 // specialness of whitespace inside of `[ ... ]').
+//
+// However, we still do check for `.+', `.*', etc.
 
 static int
 next_token_is_bin_op (int spc_prev, char *yytext)
@@ -1220,6 +1222,14 @@ next_token_is_bin_op (int spc_prev, char *yytext)
 	yyunput (c1, yytext);
 	int spc_next = (c1 == ' ' || c1 == '\t');
 	bin_op = looks_like_bin_op (spc_prev, spc_next);
+      }
+      break;
+
+    case '.':
+      {
+	int c1 = yyinput ();
+	yyunput (c1, yytext);
+	bin_op = match_any (c1, "+-*/\\^");
       }
       break;
 

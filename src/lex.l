@@ -82,9 +82,12 @@ static int cant_be_identifier = 0;
 //
 static SLStack <int> in_brace_or_paren;
 
+// Forward declarations for functions defined at the bottom of this
+// file.
+
 static void do_string_escapes (char *s);
 static void fixup_column_count (char *s);
-static int do_comma_insert_check (void);
+static void do_comma_insert_check (void);
 static int is_plot_keyword (char *s);
 static int is_keyword (char *s);
 static char *plot_style_token (char *s);
@@ -94,6 +97,7 @@ static int match_any (char c, char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
+static int handle_identifier (char *s, int next_tok_is_eq);
 
 %}
 
@@ -427,7 +431,7 @@ EXPON	([DdEe][+-]?{D}+)
 						      current_input_column);
 			  token_stack.push (yylval.tok_val);
 			  current_input_column += yyleng;
-			  DO_COMMA_INSERT_CHECK;
+			  do_comma_insert_check ();
 			  return IMAG_NUM;
 			}
 
@@ -448,7 +452,7 @@ EXPON	([DdEe][+-]?{D}+)
 						      current_input_column);
 			  token_stack.push (yylval.tok_val);
 			  current_input_column += yyleng;
-			  DO_COMMA_INSERT_CHECK;
+			  do_comma_insert_check ();
 			  return NUM;
 			}
 
@@ -499,181 +503,10 @@ EXPON	([DdEe][+-]?{D}+)
 		  static char *tok = (char *) NULL;
 		  delete [] tok;
 		  tok = strip_trailing_whitespace (yytext);
-
-		  int kw_token = is_keyword (tok);
-		  if (kw_token)
-		    TOK_RETURN (kw_token);
-
-		  if (plotting && cant_be_identifier)
-		    {
-		      int plot_option_kw = is_plot_keyword (tok);
-		      if (plot_option_kw)
-			{
-			  quote_is_transpose = 0;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  current_input_column += yyleng;
-			  return plot_option_kw;
-			}
-		    }
-
-		  if (plotting && ! in_plot_range)
-		    past_plot_range = 1;
-
-		  if (plotting && in_plot_style)
-		    {
-		      char *sty = plot_style_token (&tok[1]);
-		      if (sty != (char *) NULL)
-			{
-			  yylval.tok_val = new token (sty);
-			  token_stack.push (yylval.tok_val);
-			  if (in_plot_style)
-			    {
-			      in_plot_style = 0;
-			      TOK_RETURN (STYLE);
-			    }
-			}
-		    }
-
-		  cant_be_identifier = 1;
-
-// If we are looking at a text style function, set up to gobble its
-// arguments.  These are also reserved words, but only because it
-// would be very difficult to do anything intelligent with them if
-// they were not reserved.
-
-		  if (is_text_function_name (tok))
-		    {
-		      BEGIN TEXT_FCN;
-
-		      if (strcmp (tok, "clear") == 0)
-			{
-			  symbol_record *sr =
-			    global_sym_tab->lookup ("clear", 1, 0);
-			  assert (sr != (symbol_record *) NULL);
-			  yylval.tok_val = new token (sr, input_line_number,
-						      current_input_column);
-			  token_stack.push (yylval.tok_val);
-			  return CLEAR;
-			}
-		      else if (strcmp (tok, "help") == 0)
-			BEGIN HELP_FCN;
-		      else if (strcmp (tok, "set") == 0)
-			doing_set = 1;
-		    }
-
-		  yylval.tok_val = new token (lookup_identifier (tok),
-					      input_line_number,
-					      current_input_column);
-		  token_stack.push (yylval.tok_val);
-
-		  quote_is_transpose = 1;
-		  current_input_column += yyleng;
-		  DO_COMMA_INSERT_CHECK;
-
-		  if (! in_brace_or_paren.empty ()
-		      && in_brace_or_paren.top ())
-		    {
-		      int c0 = yytext[yyleng-1];
-		      int spc_prev = (c0 == ' ' || c0 == '\t');
-		      int bin_op = next_token_is_bin_op (spc_prev, yytext);
-
-		      int postfix_un_op
-			= next_token_is_postfix_unary_op (spc_prev, yytext);
-
-		      int c1 = yyinput ();
-		      unput (c1);
-		      int other_op = match_any (c1, ",;\n](");
-
-		      if (! (postfix_un_op || bin_op || other_op))
-			unput (',');
-		    }
-
-		  convert_spaces_to_comma = 1;
-		  return NAME;
+		  return handle_identifier (tok, 0);
 		}
 
-{IDENT}/{S}*=	{
-
-// We've found an identifier followed by some space and an equals
-// sign.  If we are working on a function definition and the previous
-// token was `function', we have something like this
-//
-//    function x = y <list> end
-//
-// which is a function named y returning a variable named x.  The
-// symbol y belongs in the global symbol table (nested function
-// definitions are illegal) and the symbol x belongs in the 
-// symbol table local to the function. 
-//
-// If we're not defining a function, this should function exactly like
-// the case above.  I suppose it would be nice to avoid duplicating
-// all the code, eh?
-
-		  int kw_token = is_keyword (yytext);
-		  if (kw_token)
-		    TOK_RETURN (kw_token);
-
-		  if (plotting && cant_be_identifier)
-		    {
-		      int plot_option_kw = is_plot_keyword (yytext);
-		      if (plot_option_kw)
-			{
-			  quote_is_transpose = 0;
-		  	  convert_spaces_to_comma = 1;
-			  current_input_column += yyleng;
-			  return plot_option_kw;
-			}
-		    }
-		
-		  cant_be_identifier = 1;
-
-// If we are looking at a text style function, set up to gobble its
-// arguments.  These are also reserved words, but only because it
-// would be very difficult to do anything intelligent with them if
-// they were not reserved.
-
-		  if (is_text_function_name (yytext))
-		    {
-		      BEGIN TEXT_FCN;
-
-		      if (strcmp (yytext, "clear") == 0)
-			{
-			  symbol_record *sr =
-			    global_sym_tab->lookup ("clear", 1, 0);
-			  assert (sr != (symbol_record *) NULL);
-			  yylval.tok_val = new token (sr, input_line_number,
-						      current_input_column);
-			  token_stack.push (yylval.tok_val);
-			  return CLEAR;
-			}
-		      else if (strcmp (yytext, "help") == 0)
-			BEGIN HELP_FCN;
-		      else if (strcmp (yytext, "set") == 0)
-			doing_set = 1;
-		    }
-
-		  if (defining_func && maybe_screwed)
-		    curr_sym_tab = tmp_local_sym_tab;
-
-		  yylval.tok_val = new token (lookup_identifier (yytext),
-					      input_line_number,
-					      current_input_column);
-		  token_stack.push (yylval.tok_val);
-
-		  convert_spaces_to_comma = 1;
-		  current_input_column += yyleng;
-		  if (defining_func && maybe_screwed)
-		    {
-		      return SCREW;
-		    }
-		  else
-		    {
-		      quote_is_transpose = 1;
-		      DO_COMMA_INSERT_CHECK;
-		      return NAME;
-		    }
-		}
+{IDENT}/{S}*=	{ return handle_identifier (yytext, 1); }
 
 "\n"		{
 		  quote_is_transpose = 0;
@@ -689,7 +522,7 @@ EXPON	([DdEe][+-]?{D}+)
 
 		  if (quote_is_transpose)
 		    {
-		      DO_COMMA_INSERT_CHECK;
+		      do_comma_insert_check ();
 		      return QUOTE;
 		    }
 		  else
@@ -709,9 +542,9 @@ EXPON	([DdEe][+-]?{D}+)
 "./"		{ BIN_OP_RETURN (EDIV, 0); }
 ".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
 ".^"		{ BIN_OP_RETURN (EPOW, 0); }
-".'"		{ DO_COMMA_INSERT_CHECK; BIN_OP_RETURN (TRANSPOSE, 1); }
-"++"		{ DO_COMMA_INSERT_CHECK; BIN_OP_RETURN (PLUS_PLUS, 1); }
-"--"		{ DO_COMMA_INSERT_CHECK; BIN_OP_RETURN (MINUS_MINUS, 1); }
+".'"		{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, 1); }
+"++"		{ do_comma_insert_check (); BIN_OP_RETURN (PLUS_PLUS, 1); }
+"--"		{ do_comma_insert_check (); BIN_OP_RETURN (MINUS_MINUS, 1); }
 "<="		{ BIN_OP_RETURN (EXPR_LE, 0); }
 "=="		{ BIN_OP_RETURN (EXPR_EQ, 0); }
 "~="		{ BIN_OP_RETURN (EXPR_NE, 0); }
@@ -761,7 +594,7 @@ EXPON	([DdEe][+-]?{D}+)
 ")"		{
 		  if (! in_brace_or_paren.empty ())
 		    in_brace_or_paren.pop ();
-		  DO_COMMA_INSERT_CHECK;
+		  do_comma_insert_check ();
 		  current_input_column++;
 		  quote_is_transpose = 1;
 		  return ')';
@@ -783,13 +616,12 @@ EXPON	([DdEe][+-]?{D}+)
  * If we're reading a matrix and the next character is '[', make sure
  * that we insert a comma ahead of it.
  */
-int
+void
 do_comma_insert_check (void)
 {
-  int tmp_len = yyleng;
   int c = yyinput ();
+  yyunput (c, yytext);
   do_comma_insert = (braceflag && c == '[');
-  return tmp_len;
 }
 
 /*
@@ -831,6 +663,9 @@ reset_parser (void)
   yyrestart (stdin);
 }
 
+/*
+ * Replace backslash escapes in a string with the real values.
+ */
 static void
 do_string_escapes (char *s)
 {
@@ -896,6 +731,10 @@ do_string_escapes (char *s)
   *p1 = '\0';
 }
 
+/*
+ * If we read some newlines, we need figure out what column we're
+ * really looking at.
+ */
 static void
 fixup_column_count (char *s)
 {
@@ -972,21 +811,24 @@ delete_input_buffer (void *buf)
   delete_buffer ((YY_BUFFER_STATE) buf);
 }
 
-static char *plot_styles[] = 
-  {
-    "dots",
-    "dots",
-    "errorbars",
-    "impulses",
-    "lines",
-    "linespoints",
-    "points",
-    (char *) NULL,
-  };
-
+/*
+ * Check to see if a character string matches any of the possible line
+ * styles for plots.
+ */
 static char *
 plot_style_token (char *s)
 {
+  static char *plot_styles[] = 
+    {
+      "dots",
+      "errorbars",
+      "impulses",
+      "lines",
+      "linespoints",
+      "points",
+      (char *) NULL,
+    };
+
   char **tmp = plot_styles;
   while (*tmp != (char *) NULL)
     {
@@ -999,17 +841,33 @@ plot_style_token (char *s)
   return (char *) NULL;
 }
 
+/*
+ * Check to see if a character string matches any one of the plot
+ * option keywords. 
+ */
 static int
 is_plot_keyword (char *s)
 {
   if (almost_match ("title", s))
-    return TITLE;
+    {
+      return TITLE;
+    }
   else if (almost_match ("using", s))
-    { in_plot_using = 1; past_plot_range = 1; return USING; }
+    {
+      in_plot_using = 1;
+      past_plot_range = 1;
+      return USING;
+    }
   else if (almost_match ("with", s))
-    { in_plot_style = 1; past_plot_range = 1; return WITH; }
+    {
+      in_plot_style = 1;
+      past_plot_range = 1;
+      return WITH;
+    }
   else
-    return 0;
+    {
+      return 0;
+    }
 }
 
 /*
@@ -1149,6 +1007,11 @@ is_keyword (char *s)
   return 0;
 }
 
+/*
+ * Try to find an identifier in one symbol table or another.  Insert
+ * it in the local symbol table it is is not already there and it does
+ * not already have global scope.
+ */
 static symbol_record *
 lookup_identifier (char *name)
 {
@@ -1163,6 +1026,9 @@ lookup_identifier (char *name)
   return curr_sym_tab->lookup (name, 1, 0);
 }
 
+/*
+ * Grab the help text from an M-file.
+ */
 static void
 grab_help_text (void)
 {
@@ -1217,6 +1083,10 @@ grab_help_text (void)
   help_buf[len] =  '\0';
 }
 
+/*
+ * Return 1 if the given character matches any character in the given
+ * string.
+ */
 static int
 match_any (char c, char *s)
 {
@@ -1229,12 +1099,25 @@ match_any (char c, char *s)
   return 0;
 }
 
+/*
+ * Given information about the spacing surrounding an operator,
+ * return 1 if it looks like it should be treated as a binary
+ * operator.  For example,
+ *
+ *   [ 1 + 2 ]  or  [ 1+2 ]  ==> binary
+ *
+ * The case of [ 1+ 2 ] should also be treated as a binary operator,
+ * but it is handled by the caller.
+ */
 static int
 looks_like_bin_op (int spc_prev, int spc_next)
 {
   return ((spc_prev && spc_next) || ! (spc_prev || spc_next));
 }
 
+/*
+ * Duh.
+ */
 static int
 next_char_is_space (void)
 {
@@ -1243,6 +1126,10 @@ next_char_is_space (void)
   return (c == ' ' || c == '\t');
 }
 
+/*
+ * Try to determine if the next token should be treated as a postfix
+ * unary operator.  This is ugly, but it seems to do the right thing.
+ */
 static int
 next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 {
@@ -1262,6 +1149,11 @@ next_token_is_postfix_unary_op (int spc_prev, char *yytext)
   return un_op;
 }
 
+/*
+ * Try to determine if the next token should be treated as a binary
+ * operator.  This is even uglier, but it also seems to do the right
+ * thing.
+ */
 static int
 next_token_is_bin_op (int spc_prev, char *yytext)
 {
@@ -1349,7 +1241,10 @@ next_token_is_bin_op (int spc_prev, char *yytext)
   return bin_op;
 }
 
-char *
+/*
+ * Used to delete trailing white space from tokens.
+ */
+static char *
 strip_trailing_whitespace (char *s)
 {
   char *retval = strsave (s);
@@ -1365,6 +1260,149 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
+/*
+ * Figure out exactly what kind of token to return when we have seen
+ * an identifier.  Handles keywords.
+ */
+static int
+handle_identifier (char *tok, int next_tok_is_eq)
+{
+// If we have a regular keyword, or a plot STYLE, return it.  STYLE is
+// special only because it can't be followed by an identifier.
+
+  int kw_token = is_keyword (tok);
+  if (kw_token)
+    {
+      if (kw_token == STYLE)
+	{
+	  current_input_column += yyleng;
+	  quote_is_transpose = 0;
+	  cant_be_identifier = 1;
+	  convert_spaces_to_comma = 1;
+	  return kw_token;
+	}
+      else
+	TOK_RETURN (kw_token);
+    }
+
+// See if we have a plot keyword (title, using, or with).
+
+  if (plotting && cant_be_identifier && is_plot_keyword (tok);
+    TOK_RETURN (plot_option_kw);
+
+// Yes, we really do need both of these plot_range variables.  One
+// is used to mark when we are past all possiblity of a plot range,
+// the other is used to mark when we are actually between the square
+// brackets that surround the range.
+
+  if (plotting && ! in_plot_range)
+    past_plot_range = 1;
+
+// It is always an error for an identifier to be followed directly by
+// another identifier.
+
+  cant_be_identifier = 1;
+
+// If we are looking at a text style function, set up to gobble its
+// arguments.  These are also reserved words, but only because it
+// would be very difficult to do anything intelligent with them if
+// they were not reserved.
+
+  if (is_text_function_name (tok))
+    {
+      BEGIN TEXT_FCN;
+
+      if (strcmp (tok, "clear") == 0)
+	{
+	  symbol_record *sr = global_sym_tab->lookup ("clear", 1, 0);
+
+	  assert (sr != (symbol_record *) NULL);
+
+	  yylval.tok_val = new token (sr, input_line_number,
+				      current_input_column);
+
+	  token_stack.push (yylval.tok_val);
+
+	  return CLEAR;
+	}
+      else if (strcmp (tok, "help") == 0)
+	BEGIN HELP_FCN;
+      else if (strcmp (tok, "set") == 0)
+	doing_set = 1;
+    }
+
+// Make sure we put the return values of a function in the symbol
+// table that is local to the function.
+
+  if (next_tok_is_eq && defining_func && maybe_screwed)
+    curr_sym_tab = tmp_local_sym_tab;
+
+// Find the token in the symbol table.
+
+  yylval.tok_val = new token (lookup_identifier (tok),
+			      input_line_number,
+			      current_input_column);
+
+  token_stack.push (yylval.tok_val);
+
+// After seeing an identifer, it is ok to convert spaces to a comma
+// (if needed).
+
+  convert_spaces_to_comma = 1;
+  current_input_column += yyleng;
+
+// If we are defining a function and we have not seen the parameter
+// list yet and the next token is `=', return a token that represents
+// the only return value for the function.  For example,
+//
+//   function SCREW = f (args);
+//
+// The variable maybe_screwed is reset in parse.y.
+
+  if (next_tok_is_eq)
+    {
+      if (defining_func && maybe_screwed)
+	return SCREW;
+      else
+	return NAME;
+    }
+
+// At this point, we are only dealing with identifiers that are not
+// followed by `=' (if the next token is `=', there is no need to
+// check to see if we should insert a comma (invalid syntax), or allow
+// a following `'' to be treated as a transpose (the next token is
+// `=', so it can't be `''.
+
+  quote_is_transpose = 1;
+  do_comma_insert_check ();
+
+// Check to see if we should insert a comma.
+
+  if (! in_brace_or_paren.empty () && in_brace_or_paren.top ()) 
+    {
+      int c0 = yytext[yyleng-1];
+      int spc_prev = (c0 == ' ' || c0 == '\t');
+      int bin_op = next_token_is_bin_op (spc_prev, yytext);
+
+      int postfix_un_op = next_token_is_postfix_unary_op (spc_prev,
+							  yytext);
+
+      int c1 = yyinput ();
+      unput (c1);
+      int other_op = match_any (c1, ",;\n](");
+
+      if (! (postfix_un_op || bin_op || other_op))
+	unput (',');
+    }
+
+  return NAME;
+}
+
+/*
+ * Print a warning if an M-file that defines a function has anything
+ * other than comments and whitespace following the END token that
+ * matches the FUNCTION statement.
+ */
 void
 check_for_garbage_after_fcn_def (void)
 {

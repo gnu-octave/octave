@@ -27,11 +27,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-class string_vector;
-
 #include <string>
 
 #include "Array.h"
+#include "str-vec.h"
 
 #include "ov.h"
 
@@ -129,9 +128,17 @@ public:
 
   string_vector make_argv (const string&) const;
 
+  void stash_name_tags (const string_vector& nm) { names = nm; }
+
+  string_vector name_tags (void) const { return names; }
+
 private:
 
   Array<octave_value> data;
+
+  // This list of strings can be used to tag each element of data with
+  // a name.  By default, it is empty.
+  string_vector names;
 
   // This constructor is private with no definition to keep statements
   // like

@@ -31,6 +31,8 @@ class ostream;
 
 #include <string>
 
+class octave_value;
+class octave_value_list;
 class octave_symbol;
 class octave_function;
 class symbol_record;
@@ -96,8 +98,8 @@ public:
 
   octave_value eval (bool print = false);
 
-  octave_value_list eval (bool print, int nargout,
-			  const octave_value_list& args); 
+  octave_value_list
+  eval (bool print, int nargout, const octave_value_list& args);
 
   void eval_undefined_error (void);
 

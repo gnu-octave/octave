@@ -34,6 +34,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-fcn.h"
 #include "oct-obj.h"
 
+class string_vector;
+
 class octave_value;
 class tree_parameter_list;
 class tree_statement_list;
@@ -111,7 +113,6 @@ public:
 
   void accept (tree_walker& tw);
 
-
 private:
 
   octave_user_function (void);
@@ -167,6 +168,9 @@ private:
   // The symbol record for this function.
   symbol_record *symtab_entry;
 
+  // The symbol record for argn in the local symbol table.
+  symbol_record *argn_sr;
+
   // The symbol record for nargin in the local symbol table.
   symbol_record *nargin_sr;
 
@@ -177,9 +181,10 @@ private:
 
   void print_code_function_trailer (void);
 
-  void install_nargin_and_nargout (void);
+  void install_automatic_vars (void);
 
-  void bind_nargin_and_nargout (int nargin, int nargout);
+  void bind_automatic_vars (const string_vector& arg_names, int nargin,
+			    int nargout);
 };
 
 #endif

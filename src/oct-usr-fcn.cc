@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "str-vec.h"
+
 #include <defaults.h>
 #include "defun.h"
 #include "error.h"
@@ -73,9 +75,10 @@ octave_user_function::octave_user_function
     sym_tab (st), file_name (), fcn_name (), t_parsed (0),
     system_fcn_file (false), call_depth (0), num_named_args (0),
     args_passed (), num_args_passed (0), curr_va_arg_number (0),
-    vr_list (0), symtab_entry (0), nargin_sr (0), nargout_sr (0)
+    vr_list (0), symtab_entry (0), argn_sr (0), nargin_sr (0),
+    nargout_sr (0)
 {
-  install_nargin_and_nargout ();
+  install_automatic_vars ();
 
   if (param_list)
     {
@@ -302,6 +305,8 @@ octave_user_function::eval (int nargout, const octave_value_list& args)
 
   args_passed = args;
 
+  string_vector arg_names = args.name_tags ();
+
   unwind_protect_int (num_args_passed);
   num_args_passed = nargin;
 
@@ -328,7 +333,7 @@ octave_user_function::eval (int nargout, const octave_value_list& args)
   // variables.
 
   {
-    bind_nargin_and_nargout (nargin, nargout);
+    bind_automatic_vars (arg_names, nargin, nargout);
 
     bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
@@ -414,15 +419,20 @@ octave_user_function::print_code_function_trailer (void)
 }
 
 void
-octave_user_function::install_nargin_and_nargout (void)
+octave_user_function::install_automatic_vars (void)
 {
+  argn_sr = sym_tab->lookup ("argn", true);
   nargin_sr = sym_tab->lookup ("nargin", true);
   nargout_sr = sym_tab->lookup ("nargout", true);
 }
 
 void
-octave_user_function::bind_nargin_and_nargout (int nargin, int nargout)
+octave_user_function::bind_automatic_vars
+  (const string_vector& arg_names, int nargin, int nargout)
 {
+  if (! arg_names.empty ())
+    argn_sr->define (arg_names);
+
   nargin_sr->define (static_cast<double> (nargin));
   nargout_sr->define (static_cast<double> (nargout));
 }

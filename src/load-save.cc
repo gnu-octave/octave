@@ -946,6 +946,46 @@ read_binary_data (istream& is, bool swap,
   return name;
 }
 
+static string
+get_mat_data_input_line (istream& is)
+{
+  string retval;
+
+  bool have_data = false;
+
+  do
+    {
+      retval = "";
+
+      char c;
+      while (is.get (c))
+	{
+	  if (c == '\n')
+	    break;
+
+	  if (c == '%' || c == '#')
+	    {
+	      // skip to end of line
+	      while (is.get (c) && c != '\n')
+		;
+
+	      break;
+	    }
+
+	  if (! is.eof ())
+	    {
+	      if (! have_data && c != ' ' && c != '\t')
+		have_data = true;
+
+	      retval += c;
+	    }
+	}
+    }
+  while (! (have_data || is.eof ()));
+
+  return retval;
+}
+
 static void
 get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
 {
@@ -958,16 +998,7 @@ get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
 
   while (is && ! error_state)
     {
-      string buf;
-
-      char c;
-      while (is.get (c))
-	{
-	  if (c == '\n')
-	    break;
-
-	  buf += c;
-	}
+      string buf = get_mat_data_input_line (is);
 
       file_line_number++;
 
@@ -1051,7 +1082,29 @@ read_mat_ascii_data (istream& is, const string& filename,
 	{
 	  Matrix tmp (nr, nc);
 
-	  is >> tmp;
+	  if (nr < 1 || nc < 1)
+	    is.clear (ios::badbit);
+	  else
+	    {
+	      double d;
+	      for (int i = 0; i < nr; i++)
+		{
+		  string buf = get_mat_data_input_line (is);
+
+		  istrstream tmp_stream (buf.c_str ());
+
+		  for (int j = 0; j < nc; j++)
+		    {
+		      tmp_stream >> d;
+		      if (is)
+			tmp.elem (i, j) = d;
+		      else
+			goto done;
+		    }
+		}
+	    }
+
+	done:
 
 	  if (is)
 	    {

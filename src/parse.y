@@ -1674,7 +1674,7 @@ make_constant (int op, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  tree_constant *retval;
+  tree_constant *retval = 0;
 
   switch (op)
     {

@@ -167,31 +167,9 @@ main_loop (void)
 // Fix up things before exiting.
 
 void
-clean_up_for_exit (void)
-{
-  command_editor::restore_terminal_state ();
-
-  // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
-  raw_mode (0);
-
-  command_history::clean_up_and_save ();
-
-  close_plot_stream ();
-
-  close_files ();
-
-  cleanup_tmp_files ();
-
-  flush_octave_stdout ();
-
-  if (!quitting_gracefully && (interactive || forced_interactive))
-    cout << "\n";
-}
-
-void
 clean_up_and_exit (int retval)
 {
-  clean_up_for_exit ();
+  do_octave_atexit ();
 
   exit (retval == EOF ? 0 : retval);
 }
@@ -509,6 +487,8 @@ SLStack<string> octave_atexit_functions;
 void
 do_octave_atexit (void)
 {
+  static bool deja_vu = false;
+
   while (! octave_atexit_functions.empty ())
     {
       octave_value_list fcn = octave_atexit_functions.pop ();
@@ -516,6 +496,29 @@ do_octave_atexit (void)
       feval (fcn, 0);
 
       flush_octave_stdout ();
+    }
+
+  if (! deja_vu)
+    {
+      deja_vu = true;
+
+      command_editor::restore_terminal_state ();
+
+      // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
+      raw_mode (0);
+
+      command_history::clean_up_and_save ();
+
+      close_plot_stream ();
+
+      close_files ();
+
+      cleanup_tmp_files ();
+
+      flush_octave_stdout ();
+
+      if (!quitting_gracefully && (interactive || forced_interactive))
+	cout << "\n";
     }
 }
 

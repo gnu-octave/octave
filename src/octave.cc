@@ -480,8 +480,6 @@ main (int argc, char **argv)
   // leave some junk files around if we exit abnormally.
 
   atexit (do_octave_atexit);
-
-  atexit (cleanup_tmp_files);
 #endif
 
   // These can come after command line args since none of them set any

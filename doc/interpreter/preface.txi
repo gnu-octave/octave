@@ -71,6 +71,12 @@ of @code{popen}, @code{pclose}, @code{execute}, @code{sync_system}, and
 @code{async_system}.
 
 @item
+David Bateman @email{dbateman@@free.fr} converted several built-in
+functions to use Lapack instead of Linpack, and split the
+functionality of @file{load-save.cc} out into the @code{octave_value}
+classes.
+
+@item
 Karl Berry @email{karl@@cs.umb.edu} wrote the @code{kpathsea} library
 that allows Octave to recursively search directory paths for function
 and script files.
@@ -85,7 +91,7 @@ John Campbell @email{jcc@@bevo.che.wisc.edu} wrote most of the file and
 C-style input and output functions.
 
 @item
-Dirk Eddelbuettel @email{edd@@debian.org} makes Octave easy to install
+Dirk Eddelbuettel @email{edd@@debian.org} made Octave easy to install
 for users of Debian GNU/Linux.
 
 @item

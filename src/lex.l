@@ -142,48 +142,6 @@ private:
 
 static bracket_brace_paren_nesting_level nesting_level;
 
-// Should whitespace in a literal matrix list be automatically
-// converted to commas and semicolons?
-//
-//   user specifies   value of var
-//   --------------   ------------
-//   "ignore"              2
-//   "traditional"         1
-//   anything else         0
-//
-// Octave will never insert a comma in a literal matrix list if the
-// user specifies "ignore".  For example, the statement [1 2] will
-// result in an error instead of being treated the same as [1, 2], and
-// the statement
-//
-//   [ 1, 2,
-//     3, 4 ]
-//
-// will result in the vector [1 2 3 4] instead of a matrix.
-//
-// Traditional behavior makes Octave convert spaces to a comma between
-// identifiers and `('.  For example, the statement
-//
-//   [eye (2)]
-//
-// will be parsed as
-//
-//   [eye, (2)]
-//
-// and will result in an error since the `eye' function will be
-// called with no arguments.  To get around this, you would have to
-// omit the space between `eye' and the `('.
-//
-// The default value is 0, which results in behavior that is the same
-// as traditional, except that Octave does not convert spaces to a
-// comma between identifiers and `('.  For example, the statement
-//
-//   [eye (2)]
-//
-// will result in a call to `eye' with the argument `2'.
-
-static int Vwhitespace_in_literal_matrix;
-
 static bool Vwarn_matlab_incompatible = false;
 
 static bool Vwarn_separator_insert = false;
@@ -337,8 +295,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
 	maybe_warn_separator_insert (';');
 
-	if (Vwhitespace_in_literal_matrix != 2)
-	  yyunput (';', yytext);
+	yyunput (';', yytext);
       }
 
     return (',');
@@ -366,20 +323,16 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	  {
 	    maybe_warn_separator_insert (';');
 
-	    if (Vwhitespace_in_literal_matrix != 2)
-	      yyunput (';', yytext);
+	    yyunput (';', yytext);
 	  }
 
-	if (Vwhitespace_in_literal_matrix != 2)
-	  {
-	    lexer_flags.quote_is_transpose = false;
-	    lexer_flags.cant_be_identifier = false;
-	    lexer_flags.convert_spaces_to_comma = true;
+	lexer_flags.quote_is_transpose = false;
+	lexer_flags.cant_be_identifier = false;
+	lexer_flags.convert_spaces_to_comma = true;
 
-	    maybe_warn_separator_insert (',');
+	maybe_warn_separator_insert (',');
 
-	    return (',');
-	  }
+	return (',');
       }
   }
 
@@ -411,22 +364,18 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     fixup_column_count (yytext);
     eat_whitespace ();
 
-    if (Vwhitespace_in_literal_matrix != 2)
-      {
-	lexer_flags.quote_is_transpose = false;
-	lexer_flags.cant_be_identifier = false;
-	lexer_flags.convert_spaces_to_comma = true;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
 
-	if (nesting_level.none ())
-	  return LEXICAL_ERROR;
-      }
+    if (nesting_level.none ())
+      return LEXICAL_ERROR;
 
     if (nesting_level.is_bracket ())
       {
 	maybe_warn_separator_insert (';');
 
-	if (Vwhitespace_in_literal_matrix != 2)
-	  return ';';
+	return ';';
       }
   }
 
@@ -2297,11 +2246,8 @@ handle_close_bracket (int spc_gobbled)
 	    {
 	      maybe_warn_separator_insert (',');
 
-	      if (Vwhitespace_in_literal_matrix != 2)
-		{
-		  yyunput (',', yytext);
-		  return ']';
-		}
+	      yyunput (',', yytext);
+	      return ']';
 	    }
 	}
     }
@@ -2338,27 +2284,15 @@ maybe_unput_comma (int spc_gobbled)
 
       int index_op = (c1 == '(' || c1 == '{');
 
-      if (index_op)
-	{
-	  // If there is no space before the indexing op, we don't
-	  // insert a comma.
-	  if (! spc_gobbled)
-	    return;
+      // If there is no space before the indexing op, we don't insert
+      // a comma.
 
-	  maybe_warn_separator_insert (',');
+      if (index_op && ! spc_gobbled)
+	return;
 
-	  // If there is a space, we only insert a comma if we are
-	  // trying to be Matlab-like.
-	  if (Vwhitespace_in_literal_matrix == 1)
-	    yyunput (',', yytext);
-	}
-      else
-	{
-	  maybe_warn_separator_insert (',');
+      maybe_warn_separator_insert (',');
 
-	  if (Vwhitespace_in_literal_matrix != 2)
-	    yyunput (',', yytext);
-	}
+      yyunput (',', yytext);
     }
 }
 
@@ -2714,26 +2648,6 @@ warn_single_quote_string (void)
   return 0;
 }
 
-static int
-whitespace_in_literal_matrix (void)
-{
-  int pref = 0;
-
-  std::string val = builtin_string_variable ("whitespace_in_literal_matrix");
-
-  if (! val.empty ())
-    {
-      if (val == "ignore")
-	pref = 2;
-      else if (val == "traditional")
-	pref = 1;
-    }
-
-  Vwhitespace_in_literal_matrix = pref;
-
-  return 0;
-}
-
 void
 symbols_of_lex (void)
 {
@@ -2757,13 +2671,6 @@ automatically in literal matrices.\n\
 Print warning if a signle quote character is used to introduce a\n\
 string constant.\n\
 @end defvr");
-
-  DEFVAR (whitespace_in_literal_matrix, "", whitespace_in_literal_matrix,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} whitespace_in_literal_matrix\n\
-Control auto-insertion of commas and semicolons in literal matrices.\n\
-@end defvr");
-
 }
 
 /*

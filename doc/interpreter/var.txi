@@ -407,7 +407,12 @@ Default value: 1.
 
 Default value: 0.
 
-@item warn_single_quote_string)
+@item warn_separator_insert
+@xref{Matrices}.
+
+Default value: 0.
+
+@item warn_single_quote_string
 @xref{String Conversions}.
 
 Default value: 0.
@@ -426,11 +431,6 @@ Default value: 0.
 @xref{The switch Statement}.
 
 Default value: 0.
-
-@item whitespace_in_literal_matrix
-@xref{Matrices}.
-
-Default value: @code{""}.
 @end vtable
 
 

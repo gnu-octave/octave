@@ -1,7 +1,7 @@
 ## whitespace_in_literal_matrix
 
 set test whitespace-in-literal-matrix-1
-set prog_output "parse error.*"
+set prog_output "^ans = 1"
 do_test prefer-1.m
 
 set test whitespace-in-literal-matrix-2
@@ -9,11 +9,11 @@ set prog_output "^ans = 1"
 do_test prefer-2.m
 
 set test whitespace-in-literal-matrix-3
-set prog_output "^ans = 3"
+set prog_output "^ans = 1"
 do_test prefer-3.m
 
 set test whitespace-in-literal-matrix-4
-set prog_output "^ans = 3"
+set prog_output "^error:.*"
 do_test prefer-4.m
 
 set test whitespace-in-literal-matrix-5
@@ -33,11 +33,11 @@ set prog_output "^ans = 3"
 do_test prefer-8.m
 
 set test whitespace-in-literal-matrix-9
-set prog_output "^ans = 3"
+set prog_output "^ans = 1"
 do_test prefer-9.m
 
 set test whitespace-in-literal-matrix-10
-set prog_output "^ans = 3"
+set prog_output "^ans = 1"
 do_test prefer-10.m
 
 set test whitespace-in-literal-matrix-11

@@ -408,7 +408,7 @@ operator << (std::ostream& os, const ArrayN<T>& a)
 		}
 	      break;
 
-	    case 1:
+	    default:
 	      rows = a_dims(0);
 
 	      for (int k = 0; k < rows; k++)
@@ -417,10 +417,6 @@ operator << (std::ostream& os, const ArrayN<T>& a)
 		  os << " " << a.elem(ra_idx);
 		}
 	      break;
-
-	    default:
-	      (*current_liboctave_error_handler)
-		("std::operator <<: problems with dimensions (= 0)!");
 	    }
 
           os << "\n";

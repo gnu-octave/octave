@@ -152,14 +152,7 @@ error: number of rows must match near line 13, column 6
 Inside the square brackets that delimit a matrix expression, Octave
 looks at the surrounding context to determine whether spaces and newline
 characters should be converted into element and row separators, or
-simply ignored, so commands like
-
-@example
-[ linspace (1, 2) ]
-@end example
-
-@noindent
-and
+simply ignored, so an expression like
 
 @example
 @group
@@ -186,16 +179,39 @@ scalar 0, but in the expression
 
 @noindent
 the @samp{-} is treated as a unary operator and the result is the
-vector @code{[ 1, -1 ]}.
+vector @code{[ 1, -1 ]}.  Similarly, the expression
 
-Given @code{a = 1}, the expression
+@example
+[ sin (pi) ]
+@end example
+
+@noindent
+will be parsed as
+
+@example
+[ sin, (pi) ]
+@end example
+
+@noindent
+and will result in an error since the @code{sin} function will be
+called with no arguments.  To get around this, you must omit the space
+between @code{sin} and the opening parenthesis, or enclose the
+expression in a set of parentheses:
+
+@example
+[ (sin (pi)) ]
+@end example
+
+Whitespace surrounding the single quote character (@samp{'}, used as a
+transpose operator and for delimiting character strings) can also cause
+confusion.  Given @code{a = 1}, the expression
 
 @example
 [ 1 a' ]
 @end example
 
 @noindent
-results in the single quote character @samp{'} being treated as a
+results in the single quote character being treated as a
 transpose operator and the result is the vector @code{[ 1, 1 ]}, but the
 expression
 
@@ -211,19 +227,14 @@ error: unterminated string constant
 @end example
 
 @noindent
-because to not do so would make it impossible to correctly parse the
-valid expression
+because to not do so would cause trouble when parsing the valid expression
 
 @example
 [ a 'foo' ]
 @end example
 
 For clarity, it is probably best to always use commas and semicolons to
-separate matrix elements and rows.  It is possible to enforce this style
-by setting the built-in variable @code{whitespace_in_literal_matrix} to
-@code{"ignore"}.
-
-@DOCSTRING(whitespace_in_literal_matrix)
+separate matrix elements and rows.
 
 @DOCSTRING(warn_separator_insert)
 

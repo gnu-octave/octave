@@ -1,3 +1,7 @@
+2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ck-oct-fcns.m: Delete.
+
 2003-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Warn if --enable-dl but not --enable-shared.

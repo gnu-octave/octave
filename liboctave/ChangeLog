@@ -1,3 +1,7 @@
+2003-30-07  Heine Kolltveit  <kolltvei@idi.ntnu.no>
+
+        * ArrayN.cc (operator <<): Corrected output.
+
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ArrayN.cc (increment_index): New arg, start_dimension.

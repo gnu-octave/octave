@@ -98,10 +98,11 @@ function dump_prefs (file)
               "warn_neg_dim_as_zero";
               "warn_num_to_str";
               "warn_resize_on_range_error";
+              "warn_separator_insert";
+              "warn_single_quote_string";
               "warn_str_to_num";
               "warn_undefined_return_values";
-              "warn_variable_switch_label";
-              "whitespace_in_literal_matrix"];
+              "warn_variable_switch_label"];
 
   for i = 1:rows(var_list)
     var = deblank (var_list(i,:));

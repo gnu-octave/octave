@@ -1,3 +1,2 @@
-whitespace_in_literal_matrix = 0;
-m = [3,2];
-all ([m,(1)] == [3,2,1])
+a = 1;
+all ([a -1] == (1:-2:-1))

@@ -24,7 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_octave_stdiostream_h 1
 
 #include "oct-stream.h"
-#include "c_file_ptr_stream.h"
+#include "c-file-ptr-stream.h"
 
 class
 octave_base_stdiostream : public octave_base_stream

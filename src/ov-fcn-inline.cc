@@ -612,15 +612,13 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
 	      for (int i = 0; i < fun_len; i++)
 		{
-		  if (islower (fun[i])
+		  char new_c = fun[i];
+
+		  if (new_c != 'i' && new_c != 'j'
+		      && islower (new_c)
 		      && (i == 0 || ! islower (fun[i-1]))
 		      && (i == fun_len || ! islower (fun[i+1])))
 		    {
-		      char new_c = fun[i];
-
-		      if (new_c == 'i' || new_c == 'j') 
-			continue;
-
 		      int new_dist = std::abs (new_c - 'x');
 
 		      if (dist == -1 || new_dist < dist

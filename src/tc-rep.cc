@@ -1667,63 +1667,60 @@ TC_REP::print (void)
   if (error_state)
     return;
 
-  if (print)
+  ostrstream output_buf;
+
+  switch (type_tag)
     {
-      ostrstream output_buf;
+    case scalar_constant:
+      octave_print_internal (output_buf, scalar);
+      break;
 
-      switch (type_tag)
-	{
-	case scalar_constant:
-	  octave_print_internal (output_buf, scalar);
-	  break;
+    case matrix_constant:
+      octave_print_internal (output_buf, *matrix);
+      break;
 
-	case matrix_constant:
-	  octave_print_internal (output_buf, *matrix);
-	  break;
+    case complex_scalar_constant:
+      octave_print_internal (output_buf, *complex_scalar);
+      break;
 
-	case complex_scalar_constant:
-	  octave_print_internal (output_buf, *complex_scalar);
-	  break;
+    case complex_matrix_constant:
+      octave_print_internal (output_buf, *complex_matrix);
+      break;
 
-	case complex_matrix_constant:
-	  octave_print_internal (output_buf, *complex_matrix);
-	  break;
+    case string_constant:
+      output_buf << string << "\n";
+      break;
 
-	case string_constant:
-	  output_buf << string << "\n";
-	  break;
+    case range_constant:
+      octave_print_internal (output_buf, *range);
+      break;
 
-	case range_constant:
-	  octave_print_internal (output_buf, *range);
-	  break;
-
-	case map_constant:
+    case map_constant:
+      {
+	output_buf << "<structure";
+	int first = 1;
+	for (Pix p = a_map->first (); p != 0; a_map->next (p))
 	  {
-	    output_buf << "<structure";
-	    int first = 1;
-	    for (Pix p = a_map->first (); p != 0; a_map->next (p))
+	    if (first)
 	      {
-		if (first)
-		  {
-		    output_buf << ":";
-		    first = 0;
-		  }
-		output_buf << " " << a_map->key (p);
+		output_buf << ":";
+		first = 0;
 	      }
-	    output_buf << ">\n";
+	    output_buf << " " << a_map->key (p);
 	  }
-	  break;
+	output_buf << ">\n";
+      }
+      break;
 
-	case unknown_constant:
-	case magic_colon:
-	case all_va_args:
-	  panic_impossible ();
-	  break;
-	}
-
-      output_buf << ends;
-      maybe_page_output (output_buf);
+    case unknown_constant:
+    case magic_colon:
+    case all_va_args:
+      panic_impossible ();
+      break;
     }
+
+  output_buf << ends;
+  maybe_page_output (output_buf);
 }
 
 void

@@ -383,10 +383,10 @@ derivatives.\n\
   3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
 @end example\n\
 \n\
-The function call @code{airy (@var{z})} is equivalent to
+The function call @code{airy (@var{z})} is equivalent to\n\
 @code{airy (0, @var{z})}.\n\
 \n\
-The result is the same size as @var{z}.
+The result is the same size as @var{z}.\n\
 \n\
 If requested, @var{ierr} contains the following status information and\n\
 is the same size as the result.\n\

@@ -124,7 +124,7 @@ saved_variable::saved_variable (std::string *p, const std::string& v)
   type_tag = string_type;
   gen_ptr = p;
   str_value = new std::string (v);
-  size = sizeof (string);  // Is this necessary?
+  size = sizeof (std::string);  // Is this necessary?
 }
 
 saved_variable::saved_variable (void **p, void *v)

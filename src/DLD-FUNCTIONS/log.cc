@@ -153,7 +153,7 @@ needs to be improved to be more robust.\n\
 }
 
 DEFUN_DLD (sqrtm, args, ,
- "-*- texinfo -*-
+ "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} sqrtm (@var{a})\n\
 Compute the matrix square root of the square matrix @var{a}.  Note that\n\
 this is currently implemented in terms of an eigenvalue expansion and\n\

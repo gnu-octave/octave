@@ -1,3 +1,7 @@
+Tue Mar 11 10:14:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* elfun/coth.m: Write as cosh(x) ./ sinh(x) instead of 1 ./ tanh(x).
+
 Fri Mar  7 23:06:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/corrcoef.m: Make it actually work.

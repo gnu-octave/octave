@@ -56,10 +56,10 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
 all: octave-bug $(SUBDIRS)
 .PHONY: all
 
-octave-bug: Makeconf octMakefile
+octave-bug: octave-bug.in Makeconf octMakefile
 	@$(do-subst-config-vals)
 
-mkoctfile: Makeconf octMakefile
+mkoctfile: mkoctfile.in Makeconf octMakefile
 	@$(do-subst-config-vals)
 
 $(SUBDIRS):

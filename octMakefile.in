@@ -35,8 +35,9 @@ DISTDIRS = glob kpathsea readline # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ @GLOB_DIR@ \
-	kpathsea libcruft liboctave src scripts doc examples
+	kpathsea libcruft liboctave scripts doc examples
 
+ALL_SUBDIRS = $(SUBDIRS) src
 
 # Subdirectories in which to run `make all'.
 INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
@@ -67,8 +68,13 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
 
-all: octave-bug mkoctfile $(SUBDIRS)
+all: octave-bug mkoctfile src
 .PHONY: all
+
+src: $(SUBDIRS)
+	echo making all in $@
+	$(MAKE) -C $@ all
+.PHONY: src
 
 octave-bug: octave-bug.in Makeconf octMakefile
 	@$(do-subst-config-vals)

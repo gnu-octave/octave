@@ -1,3 +1,10 @@
+2000-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (SUBDIRS): Omit src.
+	(ALL_SUBDIRS): New variable.  Include src here.
+	(all): Depend on src instead of $(SUBDIRS).
+	(src): New target.  Depend on $(SUBDIRS).
+
 2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for vsnprintf.

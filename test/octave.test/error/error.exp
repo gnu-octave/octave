@@ -19,7 +19,7 @@ set prog_output "warning: foo"
 do_test warning-1.m
 
 set test warning-2
-set prog_output "warning: unspecified warning"
+set prog_output "ans = backtrace"
 do_test warning-2.m
 
 set test warning-3

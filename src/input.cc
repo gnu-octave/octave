@@ -455,7 +455,11 @@ generate_completion (const std::string& text, int state)
 		retval = name;
 
 	      if (matches == 1 && looks_like_struct (retval))
-		command_editor::set_completion_append_character ('.');
+		{
+		  // Don't append anything, since we don't know
+		  // whether it should be '(' or '.'.
+		  command_editor::set_completion_append_character ('\0');
+		}
 	      else
 		command_editor::set_completion_append_character
 		  (Vcompletion_append_char);

@@ -23,6 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_error_h)
 #define octave_error_h 1
 
+#include <string>
 #include <strstream>
 
 #define panic_impossible() \
@@ -49,6 +50,10 @@ extern bool buffer_error_messages;
 
 // TRUE means error messages are turned off.
 extern bool discard_error_messages;
+
+// The current warning state.  Valid values are "on", "off",
+// "backtrace", or "debug".
+extern std::string Vwarning_option;
 
 #endif
 

@@ -57,6 +57,9 @@ static bool Vdebug_on_error;
 // is encountered.
 static bool Vdebug_on_warning;
 
+// The text of the last error message.
+static std::string Vlast_error_message;
+
 // The text of the last warning message.
 static std::string Vlast_warning_message;
 
@@ -66,12 +69,26 @@ static std::string Vwarning_frequency = "once";
 
 // The current warning state.  Valid values are "on", "off",
 // "backtrace", or "debug".
-static std::string Vwarning_option = "backtrace";
+std::string Vwarning_option = "backtrace";
 
 // Current error state.
+//
+// Valid values:
+//
+//   -2: an error has occurred, but don't print any messages.
+//   -1: an error has occurred, we are printing a traceback
+//    0: no error
+//    1: an error has occurred
+//
 int error_state = 0;
 
 // Current warning state.
+//
+//  Valid values:
+//
+//    0: no warning
+//    1: a warning has occurred
+//
 int warning_state = 0;
 
 // Tell the error handler whether to print messages, or just store
@@ -86,7 +103,6 @@ bool discard_error_messages = false;
 static std::ostrstream *error_message_buffer = 0;
 
 // Warning messages are never buffered.
-// XXX FIXME XXX -- we should provide another way to turn them off...
 
 static void
 vwarning (const char *name, const char *fmt, va_list args)
@@ -104,13 +120,23 @@ vwarning (const char *name, const char *fmt, va_list args)
 
   char *msg = output_buf.str ();
 
-  Vlast_warning_message = msg;
+  // XXX FIXME XXX -- we really want to capture the message before it
+  // has all the formatting goop attached to it.  We probably also
+  // want just the message, not the traceback information.
+
+  std::string msg_string = msg;
 
   delete [] msg;
 
-  octave_diary << Vlast_warning_message;
+  if (! warning_state)
+    {
+      // This is the first warning in a possible series.
+      Vlast_warning_message = msg_string;
+    }
 
-  std::cerr << Vlast_warning_message;
+  octave_diary << msg_string;
+
+  std::cerr << msg_string;
 }
 
 static void
@@ -138,9 +164,23 @@ verror (const char *name, const char *fmt, va_list args)
 
   char *msg = output_buf.str ();
 
+  // XXX FIXME XXX -- we really want to capture the message before it
+  // has all the formatting goop attached to it.  We probably also
+  // want just the message, not the traceback information.
+
+  std::string msg_string = msg;
+
+  delete [] msg;
+
+  if (! error_state && name && ! strcmp (name, "error"))
+    {
+      // This is the first error in a possible series.
+      Vlast_error_message = msg_string;
+    }
+
   if (buffer_error_messages)
     {
-      char *ptr = msg;
+      string tmp = msg_string;
 
       if (! error_message_buffer)
 	{
@@ -153,26 +193,19 @@ verror (const char *name, const char *fmt, va_list args)
 	  // from printing `error: ' twice.  Assumes that the NAME we
 	  // have been given doesn't contain `:'.
 
-	  ptr = strchr (msg, ':');
+	  size_t pos = msg_string.find (':');
 
-	  if (ptr)
-	    {
-	      if (*++ptr != '\0')
-		++ptr;
-	    }
-	  else
-	    ptr = msg;
+	  if (pos != NPOS && pos < Vlast_error_message.length () - 2)
+	    tmp = msg_string.substr (pos+2);
 	}
 
-      *error_message_buffer << ptr;
+      *error_message_buffer << tmp;
     }
   else
     {
-      octave_diary << msg;
-      std::cerr << msg;
+      octave_diary << msg_string;
+      std::cerr << msg_string;
     }
-
-  delete [] msg;
 }
 
 // Note that we don't actually print any message if the error string
@@ -321,9 +354,10 @@ warning (const char *fmt, ...)
     {
       va_list args;
       va_start (args, fmt);
-      warning_state = 1;
       vwarning ("warning", fmt, args);
       va_end (args);
+
+      warning_state = 1;
 
       if (Vwarning_option == "backtrace")
 	pr_where ("warning");
@@ -514,14 +548,14 @@ error: nargin != 1\n\
 
 static inline octave_value_list
 set_warning_option (const std::string& state,
-		   const std::string& frequency, int nargout)
+		    const std::string& frequency, int nargout)
 {
   octave_value_list retval;
 
   if (nargout > 1)
     retval(1) = Vwarning_frequency;
 
-  if (nargout > 0)
+  if (nargout >= 0)
     retval(0) = Vwarning_option;
 
   if (! state.empty ())
@@ -533,7 +567,7 @@ set_warning_option (const std::string& state,
   return retval;
 }
 
-DEFUN_TEXT (warning, args, nargout,
+DEFUN (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warning (@var{msg})\n\
 Print a warning message @var{msg} prefixed by the string @samp{warning: }.  \n\
@@ -547,60 +581,87 @@ to go on.\n\
 
   int argc = args.length () + 1;
 
-  string_vector argv = args.make_argv ("warning");
+  bool done = false;
 
-  if (! error_state)
+  if (args.all_strings_p ())
     {
-      bool done = false;
+      string_vector argv = args.make_argv ("warning");
 
-      if (argc == 1)
+      if (! error_state)
 	{
-	  retval = set_warning_option ("", "", nargout);
-	  done = true;
-	}
-      else if (argc == 2)
-	{
-	  std::string arg = argv(1);
-
-	  if (arg == "on" || arg == "off" || arg == "backtrace")
+	  if (argc == 1)
 	    {
-	      retval = set_warning_option (arg, "", nargout);
-	      done = true;
-	    }
-	  else if (arg == "once" || arg == "always")
-	    {
-	      retval = set_warning_option ("", arg, nargout);
-	      done = true;
-	    }
-	  else if (arg == "debug")
-	    {
-	      bind_builtin_variable ("debug_on_warning", 1.0);
 	      retval = set_warning_option ("", "", nargout);
 	      done = true;
 	    }
-	}
+	  else if (argc == 2)
+	    {
+	      std::string arg = argv(1);
 
-      if (! done)
-	{
-	  std::string curr_msg
-	    = handle_message (warning, "unspecified warning", args);
-
-	  if (nargout > 0)
-	    retval(0) = Vlast_warning_message;
-
-	  Vlast_warning_message = curr_msg;
+	      if (arg == "on" || arg == "off" || arg == "backtrace")
+		{
+		  retval = set_warning_option (arg, "", nargout);
+		  done = true;
+		}
+	      else if (arg == "once" || arg == "always")
+		{
+		  retval = set_warning_option ("", arg, nargout);
+		  done = true;
+		}
+	      else if (arg == "debug")
+		{
+		  bind_builtin_variable ("debug_on_warning", 1.0);
+		  retval = set_warning_option ("", "", nargout);
+		  done = true;
+		}
+	    }
 	}
     }
 
+  if (! done)
+    {
+      std::string prev_msg = Vlast_warning_message;
+
+      std::string curr_msg
+	= handle_message (warning, "unspecified warning", args);
+
+      if (nargout > 0)
+	retval(0) = Vlast_warning_message;
+    }
+
   return retval;
+}
+
+DEFUN (lasterr, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} lasterr ()\n\
+@deftypefnx {Built-in Function} {} lasterr (@var{msg})\n\
+Without any arguments, return the last error message.  With one\n\
+argument, set the last warning message to @var{msg}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("lasterr");
+
+  if (argc == 1)
+    retval(0) = Vlast_error_message;
+  else if (argc == 2)
+    Vlast_error_message = argv(1);
+  else
+    print_usage ("lasterr");
+
+  return retval;  
 }
 
 DEFUN (lastwarn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} lastwarn ()\n\
 @deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
-Without any arguments, return the last error message.  With one\n\
-argument, set the last warning message to @var{msg}.\n\
+Without any arguments, return the last warning message.  With one\n\
+argument, set the last error message to @var{msg}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -285,7 +285,13 @@ generate_struct_completions (const std::string& text,
 
   int parse_status;
 
+  unwind_protect_str (Vwarning_option);
+
+  Vwarning_option = "off";
+
   octave_value tmp = eval_string (prefix, true, parse_status);
+
+  unwind_protect::run ();
 
   if (tmp.is_defined () && tmp.is_map ())
     names = tmp.map_keys ();

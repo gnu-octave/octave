@@ -23,13 +23,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_sun_utils_h)
 #define octave_sun_utils_h 1
 
-#if defined (sun)
-
 // I think that this is really only needed if linking to Fortran
-// compiled libraries on a Sun.  It should never be called.
-// There should probably be a sysdep.cc file, eh?
+// compiled libraries on a Sun.  It also seems to be needed on
+// Linux/ELF systems with g77.  It should never be called.
 
-extern "C" int MAIN_ (void);
+#if defined (sun)
+extern "C" int MAIN_ ();
+#elif defined (linux) && defined (__ELF__)
+extern "C" int MAIN__ ();
+#endif
 
 // This is only needed to dereference pointers to doubles if mixing
 // GCC and Sun f77/cc compiled code.  See the GCC manual (where the
@@ -37,7 +39,7 @@ extern "C" int MAIN_ (void);
 // which explains that doubles are not always aligned on 8 byte
 // boundaries.
 
-#if defined (__GNUC__)
+#if defined (sun) && defined (__GNUC__)
 
 inline double
 access_double (double *unaligned_ptr)
@@ -66,7 +68,6 @@ assign_double (double *unaligned_ptr, double value)
   p->i[1] = v->i[1];
 }
 
-#endif
 #endif
 #endif
 

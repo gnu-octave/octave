@@ -22,26 +22,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cassert>
 
+#include "sun-utils.h"
+
 // I think that this is really only needed if linking to Fortran
 // compiled libraries on a Sun.  It also seems to be needed on
 // Linux/ELF systems with g77.  It should never be called.
 
-extern "C"
-{
 #if defined (sun)
-  int MAIN_ (void)
-    {
-      assert (0);
-      return 0;
-    }
-#elif defined (linux) && defined (__ELF__)
-  int MAIN__ (void)
-    {
-      assert (0);
-      return 0;
-    }
-#endif
+int
+MAIN_ ()
+{
+  assert (0);
+  return 0;
 }
+#elif defined (linux) && defined (__ELF__)
+int
+MAIN__ ()
+{
+  assert (0);
+  return 0;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

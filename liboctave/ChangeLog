@@ -1,3 +1,9 @@
+Sun Oct 13 11:19:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sun-utils.h: Conditionally declare MAIN__ too.  Declare MAIN_
+	and MAIN__ extern "C".
+	* sun-utils.cc: Include sun-utils.h here.  Delete extern "C" stuff.
+
 Sat Oct 12 12:40:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* MArray-misc.cc: New file.

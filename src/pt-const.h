@@ -691,6 +691,10 @@ private:
   bool print_as_structure (void) { return rep->print_as_structure (); }
 };
 
+extern int Vresize_on_range_error;
+
+void symbols_of_pt_const (void);
+
 #endif
 
 /*

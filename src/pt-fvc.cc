@@ -183,7 +183,7 @@ tree_identifier::assign (octave_value& rhs, const octave_value_list& args)
 	{
 	  assert (! sym->is_defined ());
 
-	  if (! user_pref.resize_on_range_error)
+	  if (! Vresize_on_range_error)
 	    {
 	      ::error ("indexed assignment to previously undefined variables");
 	      ::error ("is only possible when resize_on_range_error is true");
@@ -260,7 +260,7 @@ tree_identifier::assign (SLList<string> list, octave_value& rhs,
 	{
 	  assert (! sym->is_defined ());
 
-	  if (! user_pref.resize_on_range_error)
+	  if (! Vresize_on_range_error)
 	    {
 	      ::error ("indexed assignment to previously undefined variables");
 	      ::error ("is only possible when resize_on_range_error is true");

@@ -2,6 +2,7 @@
 
 	* ov-cs-list.cc (octave_cs_list::print_raw): New function.
 	* ov-cs-list.h (octave_cs_list::print_raw): Provide decl.
+	* ov-list.h (octave_list::lst): Now protected instead of private.
 
 2003-09-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

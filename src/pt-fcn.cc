@@ -48,6 +48,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+// If TRUE, variables returned from functions have default values even
+// if they are not explicitly initialized.
+static bool Vdefine_all_return_values;
+
+// If TRUE, the last computed value is returned from functions that
+// don't actually define any return variables.
+static bool Vreturn_last_computed_value;
+
+// If TRUE, turn off printing of results in functions (as if a
+// semicolon has been appended to each statement).
+static bool Vsilent_functions;
+
 // Nonzero means we're returning from a function.
 extern int returning;
 
@@ -333,7 +345,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 
     // Evaluate the commands that make up the function.
 
-    bool pf = ! user_pref.silent_functions;
+    bool pf = ! Vsilent_functions;
     octave_value last_computed_value = cmd_list->eval (pf);
 
     if (echo_commands)
@@ -355,7 +367,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 
     if (ret_list)
       {
-	if (nargout > 0 && user_pref.define_all_return_values)
+	if (nargout > 0 && Vdefine_all_return_values)
 	  {
 	    octave_value tmp = builtin_any_variable ("default_return_value");
 	    if (tmp.is_defined ())
@@ -364,7 +376,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 
 	retval = ret_list->convert_to_const_vector (vr_list);
       }
-    else if (user_pref.return_last_computed_value)
+    else if (Vreturn_last_computed_value)
       retval(0) = last_computed_value;
   }
 
@@ -504,6 +516,47 @@ function that allows a variable number of return values")
     print_usage ("vr_val");
 
   return retval;
+}
+
+static int
+define_all_return_values (void)
+{
+  Vdefine_all_return_values = check_preference ("define_all_return_values");
+
+  return 0;
+}
+
+static int
+return_last_computed_value (void)
+{
+  Vreturn_last_computed_value
+    = check_preference ("return_last_computed_value");
+
+  return 0;
+}
+
+static int
+silent_functions (void)
+{
+  Vsilent_functions = check_preference ("silent_functions");
+
+  return 0;
+}
+
+void
+symbols_of_pt_fcn (void)
+{
+  DEFVAR (define_all_return_values, 0.0, 0, define_all_return_values,
+    "control whether values returned from functions should have a\n\
+value even if one has not been explicitly assigned.  See also\n\
+default_return_value");
+
+  DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
+    "if a function does not return any values explicitly, return the\n\
+  last computed value");
+
+  DEFVAR (silent_functions, 0.0, 0, silent_functions,
+    "suppress printing results in called functions");
 }
 
 /*

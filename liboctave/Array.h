@@ -72,21 +72,11 @@ private:
 
 protected:
 
-  ArrayRep (T *d, int l)
-    {
-      data = d;
-      len = l;
-      count = 1;
-    }
+  ArrayRep (T *d, int l) : data (d), len (l), count (1) { }
 
 public:
 
-  ArrayRep (void)
-    {
-      data = 0;
-      len = 0;
-      count = 1;
-    }
+  ArrayRep (void) : data (0), len (0), count (1) { }
 
   ArrayRep (int n);
 
@@ -295,7 +285,7 @@ public:
 
   Array2<T>& operator = (const Array2<T>& a)
     {
-      if (this != &a)
+      if (this != &a && rep != a.rep)
 	{
 	  Array<T>::operator = (a);
 	  d1 = a.d1;
@@ -389,7 +379,7 @@ public:
 
   Array3<T>& operator = (const Array3<T>& a)
     {
-      if (this != &a)
+      if (this != &a && rep != a.rep)
 	{
 	  Array<T>::operator = (a);
 	  d1 = a.d1;

@@ -1,5 +1,17 @@
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* utils.cc: Don't include SLStack.h.
+
+	* pt-stmt.h (tree_statement_list): Make list member data instead
+	of deriving from SLList object.
+	* pt-select.h (tree_switch_case_list): Likewise.
+	(tree_if_command_list): Likewise.
+	* pt-plot.h (subplot_list): Likewise.
+	* pt-mat.h (tree_matrix): Likewise.
+	* pt-decl.h (tree_decl_init_list): Likewise.
+	* pt-arg-list.h (tree_argument_list): Likewise.
+	* comment-list.h (octave_comment_list): Likewise.
+
 	* defun.h (DEFCMD): Rename from DEFUN_TEXT.  Provide DEFUN_TEXT as
 	an alias for DEFCMD.  Change all uses.
 

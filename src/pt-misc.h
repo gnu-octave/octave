@@ -43,17 +43,30 @@ class tree_walker;
 // only.
 
 class
-tree_parameter_list : public SLList<tree_identifier *>
+tree_parameter_list
 {
 public:
 
   tree_parameter_list (void)
-    : SLList<tree_identifier *> (), marked_for_varargs (0) { }
+    : lst (), marked_for_varargs (0) { }
 
   tree_parameter_list (tree_identifier *t)
-    : SLList<tree_identifier *> (), marked_for_varargs (0) { append (t); }
+    : lst (), marked_for_varargs (0) { lst.append (t); }
 
   ~tree_parameter_list (void);
+
+  int length (void) const { return lst.length (); }
+
+  void append (tree_identifier *&s) { lst.append (s); }
+  void append (tree_identifier * const &s) { lst.append (s); }
+
+  tree_identifier *&operator () (Pix p) { return lst (p); }
+
+  tree_identifier * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
 
   void mark_as_formal_parameters (void);
 
@@ -79,6 +92,9 @@ public:
 
 private:
 
+  // The list of identifiers in the parameter list.
+  SLList<tree_identifier *> lst;
+
   int marked_for_varargs;
 
   // No copying!
@@ -92,21 +108,35 @@ private:
 // assignment expressions.
 
 class
-tree_return_list : public SLList<tree_index_expression *>
+tree_return_list
 {
 public:
 
   tree_return_list (void)
-    : SLList<tree_index_expression *> () { }
+    : lst () { }
 
   tree_return_list (tree_index_expression *t)
-    : SLList<tree_index_expression *> () { append (t); }
+    : lst () { lst.append (t); }
 
   ~tree_return_list (void);
+
+  void append (tree_index_expression *&s) { lst.append (s); }
+  void append (tree_index_expression * const &s) { lst.append (s); }
+
+  tree_index_expression *&operator () (Pix p) { return lst (p); }
+
+  tree_index_expression * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
 
   void accept (tree_walker& tw);
 
 private:
+
+  // The list of expressions in the return list.
+  SLList<tree_index_expression *> lst;
 
   // No copying!
 
@@ -116,15 +146,35 @@ private:
 };
 
 class
-tree_va_return_list : public SLList<octave_value>
+tree_va_return_list
 {
 public:
 
-  tree_va_return_list (void) : SLList<octave_value> () { }
+  tree_va_return_list (void) : lst () { }
 
   ~tree_va_return_list (void) { }
 
+  int length (void) const { return lst.length (); }
+
+  void clear (void) { lst.clear (); }
+
+  int empty (void) const { return lst.empty (); }
+
+  void append (octave_value& s) { lst.append (s); }
+  void append (const octave_value& s) { lst.append (s); }
+
+  octave_value& operator () (Pix p) { return lst (p); }
+
+  const octave_value& operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
+
 private:
+
+  // The list of values in the va return list.
+  SLList<octave_value> lst;
 
   // No copying!
 

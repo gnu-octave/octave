@@ -88,30 +88,44 @@ private:
 };
 
 class
-tree_if_command_list : public SLList<tree_if_clause *>
+tree_if_command_list
 {
 public:
 
   tree_if_command_list (void)
-    : SLList<tree_if_clause *> () { }
+    : lst () { }
 
   tree_if_command_list (tree_if_clause *t)
-    : SLList<tree_if_clause *> () { append (t); }
+    : lst () { lst.append (t); }
 
   ~tree_if_command_list (void)
     {
-      while (! empty ())
+      while (! lst.empty ())
 	{
-	  tree_if_clause *t = remove_front ();
+	  tree_if_clause *t = lst.remove_front ();
 	  delete t;
 	}
     }
+
+  void append (tree_if_clause *&s) { lst.append (s); }
+  void append (tree_if_clause * const &s) { lst.append (s); }
+
+  tree_if_clause *&operator () (Pix p) { return lst (p); }
+
+  tree_if_clause * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
 
   void eval (void);
 
   void accept (tree_walker& tw);
 
 private:
+
+  // The list of if/elseif clauses.
+  SLList<tree_if_clause *> lst;
 
   // No copying!
 
@@ -216,30 +230,44 @@ private:
 };
 
 class
-tree_switch_case_list : public SLList<tree_switch_case *>
+tree_switch_case_list
 {
 public:
 
   tree_switch_case_list (void)
-    : SLList<tree_switch_case *> () { }
+    : lst () { }
 
   tree_switch_case_list (tree_switch_case *t)
-    : SLList<tree_switch_case *> () { append (t); }
+    : lst () { lst.append (t); }
 
   ~tree_switch_case_list (void)
     {
-      while (! empty ())
+      while (! lst.empty ())
 	{
-	  tree_switch_case *t = remove_front ();
+	  tree_switch_case *t = lst.remove_front ();
 	  delete t;
 	}
     }
+
+  void append (tree_switch_case *&s) { lst.append (s); }
+  void append (tree_switch_case * const &s) { lst.append (s); }
+
+  tree_switch_case *&operator () (Pix p) { return lst (p); }
+
+  tree_switch_case * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
 
   void eval (const octave_value& val);
 
   void accept (tree_walker& tw);
 
 private:
+
+  // The list of switch cases.
+  SLList<tree_switch_case *> lst;
 
   // No copying!
 

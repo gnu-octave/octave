@@ -396,23 +396,37 @@ private:
 };
 
 class
-subplot_list : public SLList<subplot *>
+subplot_list
 {
 public:
 
   subplot_list (void)
-    : SLList<subplot *> () { }
+    : lst () { }
 
   subplot_list (subplot *t)
-    : SLList<subplot *> () { append (t); }
+    : lst () { lst.append (t); }
 
   ~subplot_list (void);
+
+  void append (subplot *&s) { lst.append (s); }
+  void append (subplot * const &s) { lst.append (s); }
+
+  subplot *&operator () (Pix p) { return lst (p); }
+
+  subplot * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
 
   int print (int ndim, OSSTREAM& plot_buf);
 
   void accept (tree_walker& tw);
 
 private:
+
+  // The list of subplot commands.
+  SLList<subplot *> lst;
 
   // No copying!
 

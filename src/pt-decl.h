@@ -76,30 +76,44 @@ private:
 };
 
 class
-tree_decl_init_list : public SLList<tree_decl_elt *>
+tree_decl_init_list
 {
 public:
 
   tree_decl_init_list (void)
-    : SLList<tree_decl_elt *> () { }
+    : lst () { }
 
   tree_decl_init_list (tree_decl_elt *t)
-    : SLList<tree_decl_elt *> () { append (t); }
+    : lst () { lst.append (t); }
 
   ~tree_decl_init_list (void)
     {
-      while (! empty ())
+      while (! lst.empty ())
 	{
-	  tree_decl_elt *t = remove_front ();
+	  tree_decl_elt *t = lst.remove_front ();
 	  delete t;
 	}
     }
+
+  void append (tree_decl_elt *&s) { lst.append (s); }
+  void append (tree_decl_elt * const &s) { lst.append (s); }
+
+  tree_decl_elt *&operator () (Pix p) { return lst (p); }
+
+  tree_decl_elt * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
 
   void eval (tree_decl_elt::eval_fcn);
 
   void accept (tree_walker& tw);
 
 private:
+
+  // The list of variables/initializers.
+  SLList<tree_decl_elt *> lst;
 
   // No copying!
 

@@ -817,9 +817,9 @@ subplot::accept (tree_walker& tw)
 
 subplot_list::~subplot_list (void)
 {
-  while (! empty ())
+  while (! lst.empty ())
     {
-      subplot *t = remove_front ();
+      subplot *t = lst.remove_front ();
       delete t;
     }
 }
@@ -829,9 +829,9 @@ subplot_list::print (int ndim, OSSTREAM& plot_buf)
 {
   int status = 0;
 
-  for (Pix p = first (); p != 0; next (p))
+  for (Pix p = lst.first (); p != 0; lst.next (p))
     {
-      subplot *elt = this->operator () (p);
+      subplot *elt = lst (p);
 
       plot_line_count++;
 

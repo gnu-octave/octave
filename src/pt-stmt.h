@@ -105,24 +105,41 @@ private:
 // A list of statements to evaluate.
 
 class
-tree_statement_list : public SLList<tree_statement *>
+tree_statement_list
 {
 public:
 
   tree_statement_list (void)
-    : SLList<tree_statement *> (), function_body (false) { }
+    : lst (), function_body (false) { }
 
   tree_statement_list (tree_statement *s)
-    : SLList<tree_statement *> (), function_body (false) { append (s); }
+    : lst (), function_body (false) { lst.append (s); }
 
   ~tree_statement_list (void)
     {
-      while (! empty ())
+      while (! lst.empty ())
 	{
-	  tree_statement *t = remove_front ();
+	  tree_statement *t = lst.remove_front ();
 	  delete t;
 	}
     }
+
+  void append (tree_statement *&s) { lst.append (s); }
+  void append (tree_statement * const &s) { lst.append (s); }
+
+  tree_statement *&operator () (Pix p) { return lst (p); }
+
+  tree_statement * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
+
+  tree_statement *front (void) { return lst.front (); }
+  tree_statement *rear (void) { return lst.rear (); }
+
+  const tree_statement *front (void) const { return lst.front (); }
+  const tree_statement *rear (void) const { return lst.rear (); }
 
   void mark_as_function_body (void) { function_body = true; }
 
@@ -137,6 +154,9 @@ public:
   void accept (tree_walker& tw);
 
 private:
+
+  // List of statements to evaluate.
+  SLList<tree_statement *> lst;
 
   // Does this list of statements make up the body of a function?
   bool function_body;

@@ -159,9 +159,9 @@ tree_statement_list::eval (bool silent, int nargout)
   if (error_state)
     return retval;
 
-  for (Pix p = first (); p != 0; next (p))
+  for (Pix p = lst.first (); p != 0; lst.next (p))
     {
-      tree_statement *elt = this->operator () (p);
+      tree_statement *elt = lst (p);
 
       if (elt)
 	{
@@ -202,9 +202,9 @@ tree_statement_list::delete_breakpoint (int line)
 {
   if (line < 0)
     {
-      octave_value_list lst = list_breakpoints ();
+      octave_value_list bp_lst = list_breakpoints ();
 
-      int len = lst.length ();
+      int len = bp_lst.length ();
 
       for (int line = 0; line < len; line++)
 	{

@@ -406,9 +406,9 @@ tm_const::init (const tree_matrix& tm)
 
 tree_matrix::~tree_matrix (void)
 {
-  while (! empty ())
+  while (! lst.empty ())
     {
-      tree_argument_list *t = remove_front ();
+      tree_argument_list *t = lst.remove_front ();
       delete t;
     }
 }
@@ -416,9 +416,9 @@ tree_matrix::~tree_matrix (void)
 bool
 tree_matrix::all_elements_are_constant (void) const
 {
-  for (Pix p = first (); p != 0; next (p))
+  for (Pix p = lst.first (); p != 0; lst.next (p))
     {
-      tree_argument_list *elt = this->operator () (p);
+      tree_argument_list *elt = lst (p);
 
       if (! elt->all_elements_are_constant ())
 	return false;

@@ -377,7 +377,7 @@ tree_breakpoint::visit_matrix (tree_matrix& mat)
 
   while (p)
     {
-      tree_argument_list *elt = mat (p);
+      tree_argument_list *elt = mat(p);
       mat.next (p);
 
       if (elt)

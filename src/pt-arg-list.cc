@@ -47,9 +47,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 tree_argument_list::~tree_argument_list (void)
 {
-  while (! empty ())
+  while (! lst.empty ())
     {
-      tree_expression *t = remove_front ();
+      tree_expression *t = lst.remove_front ();
       delete t;
     }
 }
@@ -59,9 +59,9 @@ tree_argument_list::nargout_count (void) const
 {
   int retval = 0;
 
-  for (Pix p = first (); p != 0; next (p))
+  for (Pix p = lst.first (); p != 0; lst.next (p))
     {
-      tree_expression *elt = this->operator () (p);
+      tree_expression *elt = lst (p);
 
       // XXX FIXME XXX -- need to be able to determine whether elt is
       // an expression that could evaluate to a cs-list object, and if
@@ -76,9 +76,9 @@ tree_argument_list::nargout_count (void) const
 bool
 tree_argument_list::all_elements_are_constant (void) const
 {
-  for (Pix p = first (); p != 0; next (p))
+  for (Pix p = lst.first (); p != 0; lst.next (p))
     {
-      tree_expression *elt = this->operator () (p);
+      tree_expression *elt = lst (p);
 
       if (! elt->is_constant ())
 	return false;
@@ -100,11 +100,11 @@ tree_argument_list::convert_to_const_vector (void)
   int args_len = len;
   args.resize (args_len);
 
-  Pix p = first ();
+  Pix p = lst.first ();
   int j = 0;
   for (int k = 0; k < len; k++)
     {
-      tree_expression *elt = this->operator () (p);
+      tree_expression *elt = lst (p);
 
       if (elt)
 	{
@@ -172,9 +172,9 @@ tree_argument_list::get_arg_names (void) const
 
   int k = 0;
 
-  for (Pix p = first (); p; next (p))
+  for (Pix p = lst.first (); p; lst.next (p))
     {
-      tree_expression *elt = this->operator () (p);
+      tree_expression *elt = lst (p);
 
       retval(k++) = elt->str_print_code ();
     }

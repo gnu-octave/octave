@@ -41,17 +41,34 @@ class tree_walker;
 // arguments in a function call or index expression.
 
 class
-tree_argument_list : public SLList<tree_expression *>
+tree_argument_list
 {
 public:
 
   tree_argument_list (void)
-    : SLList<tree_expression *> () { }
+    : lst () { }
 
   tree_argument_list (tree_expression *t)
-    : SLList<tree_expression *> () { append (t); }
+    : lst () { lst.append (t); }
 
   ~tree_argument_list (void);
+
+  int length (void) const { return lst.length (); }
+
+  void append (tree_expression *&s) { lst.append (s); }
+  void append (tree_expression * const &s) { lst.append (s); }
+
+  tree_expression *&operator () (Pix p) { return lst (p); }
+
+  tree_expression * const &operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
+
+  int remove_front (tree_expression *x) { return lst.remove_front (x); }
+
+  tree_expression *remove_front (void) { return lst.remove_front (); }
 
   int nargout_count (void) const;
 
@@ -64,6 +81,9 @@ public:
   void accept (tree_walker& tw);
 
 private:
+
+  // The list of argument list elements.
+  SLList<tree_expression *> lst;
 
   // No copying!
 

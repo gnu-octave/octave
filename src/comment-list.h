@@ -85,31 +85,43 @@ private:
 };
 
 class
-octave_comment_list : public SLList<octave_comment_elt>
+octave_comment_list
 {
 public:
 
-  octave_comment_list (void) { }
+  octave_comment_list (void) : lst () { }
 
   ~octave_comment_list (void) { }
 
-  void append
-    (const std::string& s,
-     octave_comment_elt::comment_type t = octave_comment_elt::unknown)
-    {
-      SLList<octave_comment_elt>::append (octave_comment_elt (s, t));
-    }
+  void append (const std::string& s,
+	       octave_comment_elt::comment_type t = octave_comment_elt::unknown)
+    { lst.append (octave_comment_elt (s, t)); }
 
   octave_comment_list (const octave_comment_list& ocb)
-    : SLList<octave_comment_elt> (ocb) { }
+    : lst (ocb.lst) { }
 
   octave_comment_list& operator = (const octave_comment_list& ocb)
     {
       if (this != &ocb)
-	SLList<octave_comment_elt>::operator = (ocb);
+	lst = ocb.lst;
 
       return *this;
     }
+
+  int length (void) const { return lst.length (); }
+
+  octave_comment_elt& operator () (Pix p) { return lst (p); }
+
+  const octave_comment_elt& operator () (Pix p) const { return lst (p); }
+
+  Pix first (void) const { return lst.first (); }
+
+  void next (Pix& p) const { return lst.next (p); }
+
+private:
+
+  // The list of comments.
+  SLList<octave_comment_elt> lst;
 };
 
 class

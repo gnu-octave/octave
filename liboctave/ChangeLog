@@ -1,3 +1,10 @@
+Thu Oct  2 17:13:02 1997  Mumit Khan  <khan@dhaka.xraylith.wisc.edu>
+
+	* CRowVector.cc (linspace): Removed attempt for implicit conversion 
+	to complex<double>(int) instead of complex<double>(double).
+
+	* lo-mappers.cc (atanh): Ditto.
+
 Thu Jul 31 22:13:54 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.cc (IDX_VEC_REP::sort): New function.

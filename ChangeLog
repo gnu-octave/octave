@@ -1,3 +1,9 @@
+Tue Oct 14 10:48:28 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* emacs/octave-mod.el (octave-block-match-alist):  Move
+	`otherwise' to right after `case' to have octave-close-block()
+	correctly close a `switch' block by `endswitch'.
+
 Thu Oct  2 01:37:15 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_FLIBS): Ignore -lc and -lgcc.

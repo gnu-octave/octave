@@ -75,8 +75,10 @@ function y = gammai (a, x)
   k = find ((x >= a + 1) & (x < Inf) & (a > 0));
   if any (k)
     len = length (k);
-    u   = [zeros (1, len); ones (1, len)];
-    v   = [ones (1, len); x(k)];
+    t0  = zeros (1, len);
+    t1  = ones (1, len);
+    u   = [t0; t1];
+    v   = [t1; x(k)];
     c_old = 0;
     c_new = v(1, :) ./ v(2, :);
     n   = 1;

@@ -328,7 +328,7 @@ newline or semicolon after an else or end keyword.")
   '(("for" . ("end" "endfor"))
     ("function" . ("end" "endfunction"))
     ("if" . ("else" "elseif" "end" "endif"))
-    ("switch" . ("case" "end" "endswitch" "otherwise"))
+    ("switch" . ("case" "otherwise" "end" "endswitch"))
     ("try" . ("catch" "end" "end_try_catch"))
     ("unwind_protect" . ("unwind_protect_cleanup" "end"
 			 "end_unwind_protect"))

@@ -785,10 +785,10 @@ linspace (const Complex& x1, const Complex& x2, int n)
   if (n > 0)
     {
       retval.resize (n);
-      Complex delta = (x2 - x1) / (n - 1);
+      Complex delta = (x2 - x1) / (n - 1.0);
       retval.elem (0) = x1;
       for (int i = 1; i < n-1; i++)
-	retval.elem (i) = x1 + i * delta;
+	retval.elem (i) = x1 + 1.0 * i * delta;
       retval.elem (n-1) = x2;
     }
 

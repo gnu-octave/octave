@@ -466,12 +466,19 @@ Interpreter:
     write it in terms of the existing vector/matrix operators as much
     as possible.
 
+  * Make it possible to write a function that gets a reference to a
+    matrix in memory and change one or more elements without
+    generating a second copy of the data.
+
 -------
 History:
 -------
 
   * Add an option to allow saving input from script files in the
     history list.
+
+  * The history command should accept two numeric arguments to
+    indicate a range of history entries to display, save or read.
 
   * Add an option to include information about the Octave session in
     the history list.  Possibly a time/date stamp and the current

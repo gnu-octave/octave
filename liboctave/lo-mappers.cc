@@ -266,7 +266,7 @@ atan (const Complex& x)
 Complex
 atanh (const Complex& x)
 {
-  return log ((1 + x) / (1 - x)) / 2.0;
+  return log ((1.0 + x) / (1.0 - x)) / 2.0;
 }
 
 Complex

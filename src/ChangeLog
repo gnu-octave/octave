@@ -1,3 +1,8 @@
+Tue Oct  7 16:51:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun-int.h (DEFINE_FUN_INSTALLER_FUN): Set installed to true
+	after installing the function.
+
 Thu Sep 25 10:17:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/filter.cc (Ffilter): Return second output value

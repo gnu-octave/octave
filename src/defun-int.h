@@ -88,7 +88,7 @@ alias_builtin (const string& alias, const string& name);
 
 #endif /* ! MAKE_BUILTINS */
 
-// Define the structure that will be used to insert this function into
+// Define the code that will be used to insert the new function into
 // the symbol table.
 
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
@@ -100,6 +100,7 @@ alias_builtin (const string& alias, const string& name);
       { \
 	check_version (OCTAVE_VERSION, #name); \
 	install_builtin_function (F ## name, #name, doc); \
+	installed = true;
       } \
     return installed; \
   }

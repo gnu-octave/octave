@@ -1,5 +1,8 @@
 Fri Oct 10 11:18:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* specfun/gammai.m: Avoid problems with whitespace when
+	constructing matrices.
+
 	* polynomial/polyfit.m: Compute yf correctly.  From Seung Lee
 	<SJL@nrc.gov>.  Also return yf in the same orientation as the
 	original y vector.

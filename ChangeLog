@@ -1,3 +1,8 @@
+2003-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AH_BOTTOM): Don't assume that __WIN32__ will be
+	defined when __CYGWIN__ is defined.
+
 2003-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Only complain for g++ earlier than 2.95.

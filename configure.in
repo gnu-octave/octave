@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.422 $)
+AC_REVISION($Revision: 1.423 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1375,11 +1375,14 @@ typedef int sig_atomic_t;
 
 #define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 
-#if defined (__WIN32__)
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
 #define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#if ! defined (__CYGWIN__)
 #undef OCTAVE_HAVE_POSIX_FILESYSTEM
 #endif
+
+#if defined (__CYGWIN__)
+#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
+#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 #endif
 
 /* Define if we expect to have <windows.h>, Sleep, etc. */

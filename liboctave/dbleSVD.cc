@@ -45,7 +45,7 @@ extern "C"
 Matrix
 left_singular_matrix (void) const
 {
-  if (type == SVD::sigma_only)
+  if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
 	("ComplexSVD: U not computed because type == SVD::sigma_only");
@@ -58,7 +58,7 @@ left_singular_matrix (void) const
 Matrix
 right_singular_matrix (void) const
 {
-  if (type == SVD::sigma_only)
+  if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
 	("ComplexSVD: V not computed because type == SVD::sigma_only");
@@ -104,6 +104,8 @@ SVD::init (const Matrix& a, SVD::type svd_type)
     default:
       break;
     }
+
+  type_computed = svd_type;
 
   double *u = (ncol_u > 0 ? new double[m * ncol_u] : 0);
   double *s_vec  = new double[min_mn];

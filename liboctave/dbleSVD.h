@@ -74,15 +74,17 @@ public:
 
   DiagMatrix singular_values (void) const { return sigma; }
 
-  Matrix left_singular_matrix (void);
+  Matrix left_singular_matrix (void) const;
 
-  Matrix right_singular_matrix (void);
+  Matrix right_singular_matrix (void) const;
 
   friend ostream&  operator << (ostream& os, const SVD& a);
 
 private:
 
   int init (const Matrix& a, type svd_type = std);
+
+  SVD::type type_computed;
 
   DiagMatrix sigma;
   Matrix left_sm;

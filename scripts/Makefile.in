@@ -65,9 +65,9 @@ distclean: clean
 	rm -f Makefile
 .PHONY: distclean
 
-realclean: distclean
+realclean:
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	rm -f tags TAGS
+	rm -f tags TAGS Makefile
 .PHONY: realclean
 
 local-dist:

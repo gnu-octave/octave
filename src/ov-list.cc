@@ -712,7 +712,9 @@ octave_list::load_hdf5 (hid_t loc_id,  const char *name,
   int current_item = 0;
 #ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;
-  H5Gget_num_objs (loc_id, &num_obj);
+  hid_t group_id = H5Gopen (loc_id, name); 
+  H5Gget_num_objs (group_id, &num_obj);
+  H5Gclose (group_id);
 
   while (current_item < static_cast<int> (num_obj)
 	 && (retval2 = H5Giterate (loc_id, name, &current_item,

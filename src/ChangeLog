@@ -1,3 +1,10 @@
+2004-11-01  Claude Lacoursiere  <claude@hpc2n.umu.se>a
+
+	* ls-hdf5.cc (read_hdf5_data): Expect num_obj to be in distinct group.
+	* ov-cell.cc (octave_cell::load_hdf5): Likewise.
+	* ov-list.cc (octave_list::load_hdf5): Likewise.
+	* ov-struct.cc (octave_struct::load_hdf5): Likewise.
+
 2004-11-01  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/filter.cc (filter (MArray<T>&, MArray<T>&,

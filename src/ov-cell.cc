@@ -840,7 +840,9 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
 
 #ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;
-  H5Gget_num_objs (loc_id, &num_obj);
+  group_id = H5Gopen (loc_id, name); 
+  H5Gget_num_objs (group_id, &num_obj);
+  H5Gclose (group_id);
 #endif
 
   for (int i = 0; i < dv.numel (); i++)

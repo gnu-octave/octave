@@ -2,6 +2,7 @@
 
 	* pt-colon.cc (tree_colon_expression::line,
 	tree_colon_expression::column): New functions.
+	* pt-colon.h: Provide decls.
 
 	* oct-stream.cc (octave_stream::seek (long, int)): Return error
 	(but leave file position unchanged) for attempt to seek beyond end

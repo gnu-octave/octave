@@ -234,7 +234,11 @@ clean maintainer-clean realclean distclean mostlyclean::
 	(if [ -d examples ]; then cd examples; $(MAKE) $(MFLAGS) $@; fi)
 	if $(SHARED_LIBS); then $(RM) -f *.$(SHLEXT); fi
 
-maintainer-clean realclean distclean::
+realclean distclean::
+	$(RM) -f Makefile config.log config.status stamp-picdir config.h
+	-rmdir pic
+
+maintainer-clean::
 	$(RM) -f Makefile config.log config.status stamp-picdir \
 	configure config.h config.h.in
 	-rmdir pic

@@ -69,7 +69,7 @@ function contour (x, y, z, n)
     if (isvector (x) && isvector (y) && ismatrix (z))
       xlen = length (x);
       ylen = length (y);
-      if (xlen == rows (z) && ylen == columns (z))
+      if (xlen == columns (z) && ylen == rows (z))
         if (rows (x) == 1)
           x = x';
         endif
@@ -79,7 +79,7 @@ function contour (x, y, z, n)
         for i = 1:3:len
           zz(:,i)   = x;
           zz(:,i+1) = y(k) * ones (xlen, 1);
-          zz(:,i+2) = z(:,k);
+          zz(:,i+2) = z(k,:)';
           k++;
         endfor
         gset nosurface;

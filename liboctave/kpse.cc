@@ -2588,8 +2588,10 @@ static void
 dir_list_add (str_llist_type *l, const std::string& dir)
 {
   char last_char = dir[dir.length () - 1];
+
   std::string saved_dir = dir;
-  if (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char))
+
+  if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
     saved_dir += DIR_SEP_STRING;
 
   str_llist_add (l, saved_dir);

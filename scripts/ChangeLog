@@ -1,3 +1,8 @@
+2003-05-05  Andy Adler <adler@site.uottawa.ca>
+
+	* plot/hist.m: Improve performance by using different algorithms
+	depending on number of bins.
+
 2003-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/system/sysadd.m: If systems are not "tf", convert before

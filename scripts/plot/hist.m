@@ -77,26 +77,32 @@ function [nn, xx] = hist (y, x, norm)
         warning ("hist: bin values not sorted on input");
         x = tmp;
       endif
-      n = length (x);
-      cutoff = zeros (1, n-1);
-      for i = 1:n-1
-        cutoff (i) = (x (i) + x (i+1)) / 2;
-      endfor
+      cutoff = (x(1:end-1) + x(2:end)) / 2;
     else
       error ("hist: second argument must be a scalar or a vector");
     endif
   endif
 
-  freq = zeros (1, n);
-  freq (1) = sum (y < cutoff (1));
-  for i = 2:n-1
-    freq (i) = sum (y >= cutoff (i-1) & y < cutoff (i));
-  endfor
-  freq (n) = sum (y >= cutoff (n-1));
+  if (n < 30)
+    ## The following algorithm works fastest for n less than about 30.
+    chist = [zeros(n,1); length(y)];
+    for i = 1:n-1
+      chist(i+1) = sum (y < cutoff(i));
+    endfor
+  else
+    ## The following algorithm works fastest for n greater than about 30.
+    ## Put cutoff elements between boundaries, integrate over all
+    ## elements, keep totals at boundaries.
+    [s, idx] = sort ([cutoff(:); y(:)]);
+    chist = cumsum(idx>n);
+    chist = [0; chist(idx<n); chist(end)];
+  endif
+
+  freq= diff(chist)';
 
   if (nargin == 3)
     ## Normalise the histogram.
-    freq = freq / length(y) * norm;
+    freq = freq / length (y) * norm;
   endif
 
   if (nargout > 0)

@@ -1,3 +1,8 @@
+2003-05-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* kpse.cc (dir_list_add): Ensure that directory ends with a
+	directory separator.
+
 2003-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pathsearch.cc: Include kpse.cc here.

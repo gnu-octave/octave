@@ -1,3 +1,7 @@
+2005-03-03  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (looks_like_copyright): Check first 9 characters, not 14.
+
 2005-03-02  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_scan (std::istream&, const

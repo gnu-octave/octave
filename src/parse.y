@@ -2974,7 +2974,7 @@ looks_like_copyright (const std::string& s)
   // Perhaps someday we will want to do more here, so leave this as a
   // separate function.
 
-  return (s.substr (0, 14) == "Copyright");
+  return (s.substr (0, 9) == "Copyright");
 }
 
 static int

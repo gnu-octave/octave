@@ -36,7 +36,7 @@ procstreambase::procstreambase (void)
   init (new procbuf ());
 }
 
-procstreambase::procstreambase (const char *command, int mode = ios::out)
+procstreambase::procstreambase (const char *command, int mode)
 {
   init (new procbuf ());
   if (! rdbuf()->open (command, mode))
@@ -44,7 +44,7 @@ procstreambase::procstreambase (const char *command, int mode = ios::out)
 }
 
 void
-procstreambase::open (const char *command, int mode = ios::out)
+procstreambase::open (const char *command, int mode)
 {
   clear ();
   if (! rdbuf()->open (command, mode))

@@ -25,15 +25,28 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
+#include <sys/types.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
 
+#include "SLStack.h"
+#include "procstream.h"
+
+#include "user-prefs.h"
+#include "tree-const.h"
+#include "tree-plot.h"
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
-#include "tree-const.h"
-#include "tree-plot.h"
+#include "defun.h"
 
 extern "C"
 {
@@ -49,20 +62,26 @@ int parametric_plot = 0;
 // Should the graph window be cleared before plotting the next line?
 int clear_before_plotting = 1;
 
+// List of files to delete when we exit or crash.
+static SLStack <char *> tmp_files;
+
+// Pipe to gnuplot.
+static oprocstream plot_stream;
+
 /*
  * Plotting, eh?
  */
 
 tree_plot_command::tree_plot_command (void)
 {
-  range = (tree_plot_limits *) NULL;
-  plot_list = (tree_subplot_list *) NULL;
+  range = 0;
+  plot_list = 0;
   ndim = 0;
 }
 
 tree_plot_command::tree_plot_command (tree_subplot_list *plt, int nd)
 {
-  range = (tree_plot_limits *) NULL;
+  range = 0;
   plot_list = plt;
   ndim = nd;
 }
@@ -127,7 +146,7 @@ tree_plot_command::eval (int print)
       break;
     }
 
-  if (range != (tree_plot_limits *) NULL)
+  if (range)
     {
       if (plot_line_count == 0)
 	range->print (ndim, plot_buf);
@@ -139,8 +158,7 @@ tree_plot_command::eval (int print)
   if (error_state)
     return retval;
 
-  tree_subplot_list *ptr = plot_list;
-  for ( ; ptr != (tree_subplot_list *) NULL; ptr = ptr->next_elem ())
+  for (tree_subplot_list *ptr = plot_list; ptr; ptr = ptr->next_elem ())
     {
       plot_line_count++;
 
@@ -179,20 +197,20 @@ tree_plot_command::eval (int print)
 
 tree_subplot_list::tree_subplot_list (void)
 {
-  plot_data = (tree_expression *) NULL;
-  using = (tree_subplot_using *) NULL;
-  title = (tree_expression *) NULL;
-  style = (tree_subplot_style *) NULL;
-  next = (tree_subplot_list *) NULL;
+  plot_data = 0;
+  using = 0;
+  title = 0;
+  style = 0;
+  next = 0;
 }
 
 tree_subplot_list::tree_subplot_list (tree_expression *data)
 {
   plot_data = data;
-  using = (tree_subplot_using *) NULL;
-  title = (tree_expression *) NULL;
-  style = (tree_subplot_style *) NULL;
-  next = (tree_subplot_list *) NULL;
+  using = 0;
+  title = 0;
+  style = 0;
+  next = 0;
 }
 
 tree_subplot_list::tree_subplot_list (tree_subplot_list *t)
@@ -208,11 +226,11 @@ tree_subplot_list::tree_subplot_list (tree_subplot_using *u,
 				      tree_expression *t,
 				      tree_subplot_style *s)
 {
-  plot_data = (tree_expression *) NULL;
+  plot_data = 0;
   using = u;
   title = t;
   style = s;
-  next = (tree_subplot_list *) NULL;
+  next = 0;
 }
 
 tree_subplot_list::~tree_subplot_list (void)
@@ -244,9 +262,9 @@ tree_subplot_list::reverse (void)
 {
   tree_subplot_list *list = this;
   tree_subplot_list *next;
-  tree_subplot_list *prev = (tree_subplot_list *) NULL;
+  tree_subplot_list *prev = 0;
 
-  while (list != (tree_subplot_list *) NULL)
+  while (list)
     {
       next = list->next;
       list->next = prev;
@@ -272,12 +290,12 @@ int
 tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 {
   int nc = 0;
-  if (plot_data != (tree_expression *) NULL)
+  if (plot_data)
     {
       tree_constant data = plot_data->eval (0);
       if (! error_state && data.is_defined ())
 	{
-	  char *file = (char *) NULL;
+	  char *file = 0;
 	  if (data.is_string_type ())
 	    {
 	      file = tilde_expand (data.string_value ());
@@ -291,7 +309,7 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 	      else
 		{
 		  free (file);
-		  file = (char *) NULL;
+		  file = 0;
 
 // Opening as a file failed.  Let's try passing it along as a plot
 // command.
@@ -328,14 +346,14 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 
  have_existing_file_or_command:
 
-  if (using != (tree_subplot_using *) NULL)
+  if (using)
     {
       int status = using->print (ndim, nc, plot_buf);
       if (status < 0)
 	return -1;
     }
 
-  if (title != (tree_expression *) NULL)
+  if (title)
     {
       tree_constant tmp = title->eval (0);
       if (! error_state && tmp.is_string_type ())
@@ -349,7 +367,7 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
   else
     plot_buf << " title " << '"' << "line " << plot_line_count << '"';
 
-  if (style != (tree_subplot_style *) NULL)
+  if (style)
     {
       int status = style->print (plot_buf);
       if (status < 0)
@@ -361,16 +379,16 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 
 tree_plot_limits::tree_plot_limits (void)
 {
-  x_range = (tree_plot_range *) NULL;
-  y_range = (tree_plot_range *) NULL;
-  z_range = (tree_plot_range *) NULL;
+  x_range = 0;
+  y_range = 0;
+  z_range = 0;
 }
 
 tree_plot_limits::tree_plot_limits (tree_plot_range *xlim)
 {
   x_range = xlim;
-  y_range = (tree_plot_range *) NULL;
-  z_range = (tree_plot_range *) NULL;
+  y_range = 0;
+  z_range = 0;
 }
 
 tree_plot_limits::tree_plot_limits (tree_plot_range *xlim,
@@ -378,7 +396,7 @@ tree_plot_limits::tree_plot_limits (tree_plot_range *xlim,
 {
   x_range = xlim;
   y_range = ylim;
-  z_range = (tree_plot_range *) NULL;
+  z_range = 0;
 }
 
 tree_plot_limits::tree_plot_limits (tree_plot_range *xlim,
@@ -409,25 +427,25 @@ tree_plot_limits::print (int ndim, ostrstream& plot_buf)
 {
   if (ndim  == 2 || ndim == 3)
     {
-      if (x_range != (tree_plot_range *) NULL)
+      if (x_range)
 	x_range->print (plot_buf);
       else
 	return;
 
-      if (y_range != (tree_plot_range *) NULL)
+      if (y_range)
 	y_range->print (plot_buf);
       else
 	return;
     }
 
-  if (ndim == 3 && z_range != (tree_plot_range *) NULL)
+  if (ndim == 3 && z_range)
     z_range->print (plot_buf);
 }
 
 tree_plot_range::tree_plot_range (void)
 {
-  lower = (tree_expression *) NULL;
-  upper = (tree_expression *) NULL;
+  lower = 0;
+  upper = 0;
 }
 
 tree_plot_range::tree_plot_range (tree_expression *l, tree_expression *u)
@@ -454,7 +472,7 @@ tree_plot_range::print (ostrstream& plot_buf)
 {
   plot_buf << " [";
 
-  if (lower != (tree_expression *) NULL)
+  if (lower)
     {
       tree_constant lower_val = lower->eval (0);
       if (error_state)
@@ -471,7 +489,7 @@ tree_plot_range::print (ostrstream& plot_buf)
 
   plot_buf << ":";
 
-  if (upper != (tree_expression *) NULL)
+  if (upper)
     {
       tree_constant upper_val = upper->eval (0);
       if (error_state)
@@ -492,20 +510,20 @@ tree_plot_range::print (ostrstream& plot_buf)
 tree_subplot_using::tree_subplot_using (void)
 {
   qualifier_count = 0;
-  x[0] = (tree_expression *) NULL;
-  x[1] = (tree_expression *) NULL;
-  x[2] = (tree_expression *) NULL;
-  x[3] = (tree_expression *) NULL;
-  scanf_fmt = (tree_expression *) NULL;
+  x[0] = 0;
+  x[1] = 0;
+  x[2] = 0;
+  x[3] = 0;
+  scanf_fmt = 0;
 }
 
 tree_subplot_using::tree_subplot_using (tree_expression *fmt)
 {
   qualifier_count = 0;
-  x[0] = (tree_expression *) NULL;
-  x[1] = (tree_expression *) NULL;
-  x[2] = (tree_expression *) NULL;
-  x[3] = (tree_expression *) NULL;
+  x[0] = 0;
+  x[1] = 0;
+  x[2] = 0;
+  x[3] = 0;
   scanf_fmt = fmt;
 }
 
@@ -548,7 +566,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 
   for (int i = 0; i < qualifier_count; i++)
     {
-      if (x[i] != (tree_expression *) NULL)
+      if (x[i])
 	{
 	  tree_constant tmp = x[i]->eval (0);
 	  if (error_state)
@@ -583,7 +601,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 	return -1;
     }
 
-  if (scanf_fmt != (tree_expression *) NULL)
+  if (scanf_fmt)
     warning ("ignoring scanf format in plot command");
 
   return 0;
@@ -591,23 +609,23 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 
 tree_subplot_style::tree_subplot_style (void)
 {
-  style = (char *) NULL;
-  linetype = (tree_expression *) NULL;
-  pointtype = (tree_expression *) NULL;
+  style = 0;
+  linetype = 0;
+  pointtype = 0;
 }
 
 tree_subplot_style::tree_subplot_style (char *s)
 {
   style = strsave (s);
-  linetype = (tree_expression *) NULL;
-  pointtype = (tree_expression *) NULL;
+  linetype = 0;
+  pointtype = 0;
 }
 
 tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt)
 {
   style = strsave (s);
   linetype = lt;
-  pointtype = (tree_expression *) NULL;
+  pointtype = 0;
 }
 
 tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt,
@@ -635,11 +653,11 @@ tree_subplot_style::eval (int print)
 int
 tree_subplot_style::print (ostrstream& plot_buf)
 {
-  if (style != (char *) NULL)
+  if (style)
     {
       plot_buf << " with " << style;
 
-      if (linetype != (tree_expression *) NULL)
+      if (linetype)
 	{
 	  tree_constant tmp = linetype->eval (0);
 	  if (! error_state && tmp.is_defined ())
@@ -654,7 +672,7 @@ tree_subplot_style::print (ostrstream& plot_buf)
 	    }
 	}
 
-      if (pointtype != (tree_expression *) NULL)
+      if (pointtype)
 	{
 	  tree_constant tmp = pointtype->eval (0);
 	  if (! error_state && tmp.is_defined ())
@@ -673,6 +691,233 @@ tree_subplot_style::print (ostrstream& plot_buf)
     return -1;
 
   return 0;
+}
+
+char *
+save_in_tmp_file (tree_constant& t, int ndim, int parametric)
+{
+  char *name = strsave (tmpnam (0));
+  if (name)
+    {
+      ofstream file (name);
+      if (file)
+	{
+	  switch (ndim)
+	    {
+	    case 2:
+	      t.save (file);
+	      break;
+	    case 3:
+	      t.save_three_d (file, parametric);
+	      break;
+	    default:
+	      panic_impossible ();
+	      break;
+	    }
+	}
+      else
+	{
+	  error ("couldn't open temporary output file `%s'", name);
+	  delete [] name;
+	  name = 0;
+	}
+    }
+  return name;
+}
+
+void
+mark_for_deletion (const char *filename)
+{
+  char *tmp = strsave (filename);
+  tmp_files.push (tmp);
+}
+
+void
+cleanup_tmp_files (void)
+{
+  while (! tmp_files.empty ())
+    {
+      char *filename = tmp_files.pop ();
+      unlink (filename);
+      delete [] filename;
+    }
+}
+
+int
+send_to_plot_stream (const char *cmd)
+{
+// From sighandlers.cc:
+  extern int pipe_handler_error_count;
+
+  static int initialized = 0;
+
+  if (! plot_stream.is_open ())
+    {
+      plot_line_count = 0;
+
+      char *plot_prog = user_pref.gnuplot_binary;
+      if (plot_prog)
+	{
+	  plot_stream.open (plot_prog);
+	  if (! plot_stream.is_open ())
+	    {
+	      warning ("plot: unable to open pipe to `%s'",
+		       plot_prog);
+
+	      if (strcmp (plot_prog, "gnuplot") != 0)
+		{
+		  warning ("having trouble finding plotting program.");
+		  warning ("trying again with `gnuplot'");
+		  goto last_chance;
+		}
+	    }
+	}
+      else
+	{
+	last_chance:
+
+	  plot_stream.open ("gnuplot");
+
+	  if (! plot_stream.is_open ())
+	    {
+	      error ("plot: unable to open pipe to `%s'", plot_prog);
+	      return -1;
+	    }
+	}
+    }
+
+  if (! initialized)
+    {
+      initialized = 1;
+      plot_stream << "set data style lines\n";
+    }
+
+  plot_stream << cmd;
+  plot_stream.flush ();
+  pipe_handler_error_count = 0;
+
+  return 0;
+}
+
+void
+close_plot_stream (void)
+{
+  if (plot_stream.is_open ())
+    plot_stream.close ();
+
+  plot_line_count = 0;
+}
+
+DEFUN ("closeplot", Fcloseplot, Scloseplot, 1, 0,
+  "closeplot (): close the stream to plotter")
+{
+  Octave_object retval;
+  close_plot_stream ();
+  return retval;
+}
+
+DEFUN_TEXT ("hold", Fhold, Shold, -1, 1,
+  "hold [on|off]\n\
+\n\
+determine whether the plot window is cleared before the next line is\n\
+drawn.  With no argument, toggle the current state.") 
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("hold");
+
+  switch (argc)
+    {
+    case 1:
+      clear_before_plotting = ! clear_before_plotting;
+      break;
+    case 2:
+      if (strcasecmp (argv[1], "on") == 0)
+	clear_before_plotting = 0;
+      else if (strcasecmp (argv[1], "off") == 0)
+	clear_before_plotting = 1;
+      else
+	print_usage ("hold");
+      break;
+    default:
+      print_usage ("hold");
+      break;
+    }
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 5, 1,
+  "delete temporary data files used for plotting")
+{
+  Octave_object retval;
+  cleanup_tmp_files ();
+  return retval;
+}
+
+DEFUN_TEXT ("set", Fset, Sset, -1, 1,
+  "set [options]\n\
+\n\
+set plotting options")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("set");
+
+  ostrstream plot_buf;
+
+  if (argc > 1)
+    {
+      if (almost_match ("parametric", argv[1], 3))
+	parametric_plot = 1;
+      else if (almost_match ("noparametric", argv[1], 5))
+	parametric_plot = 0;
+    }
+
+  for (int i = 0; i < argc; i++)
+    plot_buf << argv[i] << " ";
+
+  plot_buf << "\n" << ends;
+
+  char *plot_command = plot_buf.str ();
+  send_to_plot_stream (plot_command);
+
+  delete [] plot_command;
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+/*
+ * Set plotting options.
+ */
+DEFUN_TEXT ("show", Fshow, Sshow, -1, 1,
+  "show [options]\n\
+\n\
+show plotting options")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("show");
+
+  ostrstream plot_buf;
+
+  for (int i = 0; i < argc; i++)
+    plot_buf << argv[i] << " ";
+
+  plot_buf << "\n" << ends;
+
+  char *plot_command = plot_buf.str ();
+  send_to_plot_stream (plot_command);
+
+  delete [] plot_command;
+
+  DELETE_ARGV;
+
+  return retval;
 }
 
 /*

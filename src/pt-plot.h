@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+class tree_command;
 class tree_plot_limits;
 class tree_plot_range;
 class tree_subplot;
@@ -38,7 +39,7 @@ class tree_plot_command;
 
 class ostream;
 
-#include "tree-base.h"
+#include "tree.h"
 
 class
 tree_plot_command : public tree_command
@@ -173,6 +174,17 @@ tree_subplot_style : public tree
   tree_expression *linetype;
   tree_expression *pointtype;
 };
+
+extern char *save_in_tmp_file (tree_constant& t, int ndim = 2,
+			       int parametric = 0);
+
+extern void mark_for_deletion (const char *filename);
+
+extern void cleanup_tmp_files (void);
+
+extern int send_to_plot_stream (const char *cmd);
+
+extern void close_plot_stream (void);
 
 #endif
 

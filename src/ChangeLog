@@ -1,3 +1,8 @@
+Wed Dec 11 12:33:16 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-plot.cc (GPLOT_CMD_END): Don't put semicolons at the end of
+	each plot command; it causes trouble with gnuplot 3.5.
+
 Tue Dec 10 00:31:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0 released.

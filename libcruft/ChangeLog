@@ -1,3 +1,7 @@
+Wed Dec 11 01:50:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (SPECIAL_DEPEND): Delete d1mach.o from the list.
+
 Tue Dec 10 01:43:10 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0 released.

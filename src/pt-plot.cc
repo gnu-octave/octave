@@ -127,7 +127,7 @@ static pid_t plot_stream_pid = 0;
 #endif
 
 #ifndef GPLOT_CMD_END
-#define GPLOT_CMD_END ";\n"
+#define GPLOT_CMD_END "\n"
 #endif
 
 static void

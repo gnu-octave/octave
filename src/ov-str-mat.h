@@ -91,6 +91,9 @@ public:
 
   void assign (const octave_value_list& idx, const charMatrix& rhs);
 
+  octave_value reshape (const dim_vector& new_dims) const
+    { return octave_value (charNDArray (matrix.reshape (new_dims)), true); }
+
   bool is_string (void) const { return true; }
 
   bool is_real_type (void) const { return false; }

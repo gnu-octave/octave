@@ -53,13 +53,13 @@ boolNDArray::operator ! (void) const
 boolNDArray
 boolNDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
 }
 
 boolNDArray
 boolNDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
 }
 
 boolMatrix

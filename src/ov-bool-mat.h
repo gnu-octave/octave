@@ -96,10 +96,16 @@ public:
   Matrix matrix_value (bool = false) const
     { return Matrix (matrix.matrix_value ()); }
 
+  NDArray array_value (bool = false) const
+    { return NDArray (matrix.matrix_value ()); }
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (matrix.matrix_value ( )); }
+
+  ComplexNDArray complex_array_value (bool = false) const
+    { return ComplexNDArray (matrix.matrix_value ()); }
 
   boolMatrix bool_matrix_value (void) const
     { return matrix.matrix_value (); }

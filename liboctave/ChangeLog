@@ -1,3 +1,18 @@
+2003-10-29  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* dNDArray.cc (NDArray::cumprod, NDArray::cumsum, NDArray::prod,
+	NDArray::sum, NDArray::sumsq, NDArray::abs): New functions.
+	* dNDArray.h: Provide decls.
+	* CNDArray.cc (ComplexNDArray::cumprod, ComplexNDArray::cumsum,
+	ComplexNDArray::prod, ComplexNDArray::sum, ComplexNDArray::sumsq,
+	ComplexNDArray::abs): New functions.
+	* CNDArray.h: Provide decls.
+
+	* mx-inlines.cc (MX_ND_REDUCTION): Rename from MX_ND_ANY_ALL.
+	Generalize to handle other reduction operations.
+	(MX_ND_REAL_OP_REDUCTION, MX_ND_COMPLEX_OP_REDUCTION,
+	MX_ND_ALL_ANY_REDUCTION): New macros.
+
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::reshape): New function.

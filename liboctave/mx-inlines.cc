@@ -377,10 +377,10 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
      retval (iter_idx) = 1; \
      break; \
    } 
-
-#define MX_ND_ANY_ALL(EVAL_EXPR, VAL) \
+ 
+#define MX_ND_REDUCTION(EVAL_EXPR, END_EXPR, VAL, ACC_DECL, RET_TYPE) \
  \
-  boolNDArray retval; \
+  RET_TYPE retval; \
  \
   dim_vector dv = dims (); \
  \
@@ -474,6 +474,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   for (int j = 0; j < num_iter; j++) \
     { \
+      ACC_DECL;\
       for (int i = 0; i < dim_length; i++) \
 	{ \
 	  if (dim > -1) \
@@ -485,11 +486,23 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
       if (dim > -1) \
         iter_idx (dim) = 0; \
  \
+      END_EXPR;\
+ \
       increment_index (iter_idx, dv); \
     } \
  \
   return retval
- 
+
+#define MX_ND_REAL_OP_REDUCTION(ASN_EXPR, INIT_VAL) \
+  MX_ND_REDUCTION (acc ASN_EXPR, retval.elem (iter_idx) = acc, \
+                   INIT_VAL, double acc = INIT_VAL, NDArray)
+
+#define MX_ND_COMPLEX_OP_REDUCTION(ASN_EXPR, INIT_VAL) \
+  MX_ND_REDUCTION (acc ASN_EXPR, retval.elem (iter_idx) = acc, \
+                   INIT_VAL, Complex acc = INIT_VAL, ComplexNDArray)
+
+#define MX_ND_ANY_ALL_REDUCTION(EVAL_EXPR, VAL) \
+  MX_ND_REDUCTION (EVAL_EXPR, , VAL, , boolNDArray)
 
 #endif
 

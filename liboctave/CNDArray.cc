@@ -77,15 +77,91 @@ ComplexNDArray::operator ! (void) const
 boolNDArray
 ComplexNDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL (MX_ND_ALL_EVAL (real (elem (iter_idx)) == 0
-				 && imag (elem (iter_idx)) == 0), true);
+  MX_ND_ANY_ALL_REDUCTION
+    (MX_ND_ALL_EVAL (elem (iter_idx) == Complex (0, 0)), true);
 }
 
 boolNDArray
 ComplexNDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL (MX_ND_ANY_EVAL (real (elem (iter_idx)) != 0
-				 || imag (elem (iter_idx)) != 0), false);
+  MX_ND_ANY_ALL_REDUCTION
+    (MX_ND_ANY_EVAL (elem (iter_idx) != Complex (0, 0)), false);
+}
+
+ComplexMatrix
+ComplexNDArray::cumprod (int dim) const
+{
+  if (dims () . length () == 2)
+    {
+      MX_CUMULATIVE_OP (ComplexMatrix, Complex, *=);
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+	("cumsum is not yet implemented for N-d arrays");
+
+      return ComplexMatrix ();
+    }
+}
+
+ComplexMatrix
+ComplexNDArray::cumsum (int dim) const
+{
+  if (dims () . length () == 2)
+    {
+      MX_CUMULATIVE_OP (ComplexMatrix, Complex, +=);
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+	("cumsum is not yet implemented for N-d arrays");
+
+      return ComplexMatrix ();
+    }
+}
+
+ComplexNDArray
+ComplexNDArray::prod (int dim) const
+{
+  MX_ND_COMPLEX_OP_REDUCTION (*= elem (iter_idx), Complex (1, 0));
+}
+
+ComplexNDArray
+ComplexNDArray::sumsq (int dim) const
+{
+  MX_ND_COMPLEX_OP_REDUCTION
+    (+= imag (elem (iter_idx))
+     ? elem (iter_idx) * conj (elem (iter_idx))
+     : std::pow (elem (iter_idx), 2), Complex (0, 0));
+}
+
+ComplexNDArray 
+ComplexNDArray::sum (int dim) const
+{
+  MX_ND_COMPLEX_OP_REDUCTION (+= elem (iter_idx), Complex (0, 0));
+}
+
+Matrix 
+ComplexNDArray::abs (void) const
+{
+  Matrix retval;
+
+  if (dims () . length () == 2)
+    {
+      int nr = rows ();
+      int nc = cols ();
+
+      retval.resize (nr, nc);
+      
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  retval (i, j) = ::abs (elem (i, j));
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("abs is not yet implemented for N-d arrays");
+      
+  return retval;
 }
 
 ComplexMatrix

@@ -370,14 +370,14 @@ If @var{y} is zero, the result implementation-defined.\n\
 	    { \
 	      if (arg.is_real_type ()) \
 		{ \
-		  Matrix tmp = arg.matrix_value (); \
+		  NDArray tmp = arg.array_value (); \
  \
 		  if (! error_state) \
 		    retval = tmp.FCN (dim); \
 		} \
 	      else if (arg.is_complex_type ()) \
 		{ \
-		  ComplexMatrix tmp = arg.complex_matrix_value (); \
+		  ComplexNDArray tmp = arg.complex_array_value (); \
  \
 		  if (! error_state) \
 		    retval = tmp.FCN (dim); \

@@ -86,9 +86,13 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
+  NDArray array_value (bool = false) const;
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const;
+
+  ComplexNDArray complex_array_value (bool = false) const;
 
   void increment (void) { scalar += 1.0; }
 

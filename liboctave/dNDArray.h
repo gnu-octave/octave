@@ -75,6 +75,14 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+  Matrix cumprod (int dim = -1) const;
+  Matrix cumsum (int dim = -1) const;
+  NDArray prod (int dim = -1) const;
+  NDArray sum (int dim = -1) const;  
+  NDArray sumsq (int dim = -1) const;
+ 
+  Matrix abs (void) const;
+
   Matrix matrix_value (void) const;
 
   NDArray squeeze (void) const { return ArrayN<double>::squeeze (); }

@@ -89,16 +89,16 @@ public:
   Matrix matrix_value (bool = false) const
     { return Matrix (1, 1, scalar); }
 
-  NDArray double_nd_array_value (bool = false) const
-    {
-      dim_vector temp (1, 1);
-      return NDArray (temp, double_value ());
-    }
+  NDArray array_value (bool = false) const
+    { return NDArray (dim_vector (1, 1), double_value ()); }
 
   Complex complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
+
+  ComplexNDArray complex_array_value (bool = false) const
+    { return ComplexNDArray (dim_vector (1, 1), double_value ()); }
 
   octave_value convert_to_str_internal (bool pad, bool force) const;
 

@@ -113,6 +113,19 @@ octave_complex::matrix_value (bool force_conversion) const
   return retval;
 }
 
+NDArray
+octave_complex::array_value (bool force_conversion) const
+{
+  NDArray retval;
+
+  if (! force_conversion && Vwarn_imag_to_real)
+    gripe_implicit_conversion ("complex scalar", "real matrix");
+
+  retval = NDArray (dim_vector (1, 1), std::real (scalar));
+
+  return retval;
+}
+
 Complex
 octave_complex::complex_value (bool) const
 {
@@ -124,6 +137,12 @@ ComplexMatrix
 octave_complex::complex_matrix_value (bool) const
 {
   return ComplexMatrix (1, 1, scalar);
+}
+
+ComplexNDArray
+octave_complex::complex_array_value (bool force_conversion) const
+{
+  return ComplexNDArray (dim_vector (1, 1), scalar);
 }
 
 /*

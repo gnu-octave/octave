@@ -1,5 +1,26 @@
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-str-mat.h (octave_char_matrix_str::reshape): New function.
+	Force result to be a string.
+
+2003-10-29  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* data.cc (DATA_REDUCTION): Work on NDArray and ComplexNDArray
+	objects instead of Matrix and ComplexMatrix objects.
+
+2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-bool-mat.h (octave_bool_matrix::NDArray,
+	octave_bool_matrix::ComplexNDArray): New functions.
+
+	* ov-complex.cc (octave_complex::array_value,
+	octave_complex::complex_array_value): New functions.
+	* ov-complex.h: Provide decls.
+
+	* ov-scalar.cc (octave_scalar::array_value,
+	octave_scalar::complex_array_value): New functions.
+	* ov-scalar.h: Provide decls.
+
 	* oct-map.cc (Octave_map::reshape): New function.
 	* oct-map.h: Provide decl.
 

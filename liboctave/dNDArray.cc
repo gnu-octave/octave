@@ -68,14 +68,88 @@ NDArray::operator ! (void) const
 boolNDArray
 NDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
 }
 
 boolNDArray
 NDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
 }
+
+Matrix
+NDArray::cumprod (int dim) const
+{
+ if (dims () . length () == 2)
+   {
+     MX_CUMULATIVE_OP (Matrix, double, *=);
+   }
+ else
+   {
+     (*current_liboctave_error_handler)
+       ("cumprod is not yet implemented for N-d arrays");
+
+     return Matrix ();
+   }
+}
+
+Matrix
+NDArray::cumsum (int dim) const
+{
+  if (dims () . length () == 2)
+    {
+      MX_CUMULATIVE_OP (Matrix, double, +=);
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+	("cumprod is not yet implemented for N-d arrays");
+
+      return Matrix ();
+    }
+}
+
+NDArray
+NDArray::prod (int dim) const
+{
+  MX_ND_REAL_OP_REDUCTION (*= elem (iter_idx), 1);
+}
+
+NDArray
+NDArray::sumsq (int dim) const
+{
+  MX_ND_REAL_OP_REDUCTION (+= std::pow (elem (iter_idx), 2), 0);
+}
+
+NDArray 
+NDArray::sum (int dim) const
+{
+  MX_ND_REAL_OP_REDUCTION (+= elem (iter_idx), 0);
+}
+
+Matrix
+NDArray::abs (void) const
+{
+  Matrix retval;
+
+  if (dims () . length () == 2)
+    {
+      int nr = rows ();
+      int nc = cols ();
+
+      retval.resize (nr, nc);
+      
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  retval(i,j) = fabs (elem (i, j));
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("abs is not yet implemented for N-d arrays");
+
+  return retval;
+}
+
 
 Matrix
 NDArray::matrix_value (void) const

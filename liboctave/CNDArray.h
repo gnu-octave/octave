@@ -77,6 +77,14 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+  ComplexMatrix cumprod (int dim = -1) const;
+  ComplexMatrix cumsum (int dim = -1) const;
+  ComplexNDArray prod (int dim = -1) const;
+  ComplexNDArray sum (int dim = -1) const;
+  ComplexNDArray sumsq (int dim = -1) const;
+
+  Matrix abs (void) const;
+
   ComplexMatrix matrix_value (void) const;
 
   ComplexNDArray squeeze (void) const { return ArrayN<Complex>::squeeze (); }

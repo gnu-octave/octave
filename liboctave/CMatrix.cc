@@ -240,9 +240,14 @@ ComplexMatrix::insert (const Matrix& a, int r, int c)
       return *this;
     }
 
-  for (int j = 0; j < a_nc; j++)
-    for (int i = 0; i < a_nr; i++)
-      elem (r+i, c+j) = a.elem (i, j);
+  if (a_nr >0 && a_nc > 0)
+    {
+      make_unique ();
+
+      for (int j = 0; j < a_nc; j++)
+	for (int i = 0; i < a_nr; i++)
+	  xelem (r+i, c+j) = a.elem (i, j);
+    }
 
   return *this;
 }
@@ -251,14 +256,20 @@ ComplexMatrix&
 ComplexMatrix::insert (const RowVector& a, int r, int c)
 {
   int a_len = a.length ();
+
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
-    elem (r, c+i) = a.elem (i);
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (r, c+i) = a.elem (i);
+    }
 
   return *this;
 }
@@ -267,14 +278,20 @@ ComplexMatrix&
 ComplexMatrix::insert (const ColumnVector& a, int r, int c)
 {
   int a_len = a.length ();
+
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
-    elem (r+i, c) = a.elem (i);
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (r+i, c) = a.elem (i);
+    }
 
   return *this;
 }
@@ -293,8 +310,15 @@ ComplexMatrix::insert (const DiagMatrix& a, int r, int c)
 
   fill (0.0, r, c, r + a_nr - 1, c + a_nc - 1);
 
-  for (int i = 0; i < a.length (); i++)
-    elem (r+i, c+i) = a.elem (i, i);
+  int a_len = a.length ();
+
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (r+i, c+i) = a.elem (i, i);
+    }
 
   return *this;
 }
@@ -326,14 +350,20 @@ ComplexMatrix&
 ComplexMatrix::insert (const ComplexColumnVector& a, int r, int c)
 {
   int a_len = a.length ();
+
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
-    elem (r+i, c) = a.elem (i);
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (r+i, c) = a.elem (i);
+    }
 
   return *this;
 }
@@ -352,8 +382,15 @@ ComplexMatrix::insert (const ComplexDiagMatrix& a, int r, int c)
 
   fill (0.0, r, c, r + a_nr - 1, c + a_nc - 1);
 
-  for (int i = 0; i < a.length (); i++)
-    elem (r+i, c+i) = a.elem (i, i);
+  int a_len = a.length ();
+
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (r+i, c+i) = a.elem (i, i);
+    }
 
   return *this;
 }
@@ -363,10 +400,15 @@ ComplexMatrix::fill (double val)
 {
   int nr = rows ();
   int nc = cols ();
+
   if (nr > 0 && nc > 0)
-    for (int j = 0; j < nc; j++)
-      for (int i = 0; i < nr; i++)
-	elem (i, j) = val;
+    {
+      make_unique ();
+
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  xelem (i, j) = val;
+    }
 
   return *this;
 }
@@ -376,10 +418,15 @@ ComplexMatrix::fill (const Complex& val)
 {
   int nr = rows ();
   int nc = cols ();
+
   if (nr > 0 && nc > 0)
-    for (int j = 0; j < nc; j++)
-      for (int i = 0; i < nr; i++)
-	elem (i, j) = val;
+    {
+      make_unique ();
+
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  xelem (i, j) = val;
+    }
 
   return *this;
 }
@@ -389,6 +436,7 @@ ComplexMatrix::fill (double val, int r1, int c1, int r2, int c2)
 {
   int nr = rows ();
   int nc = cols ();
+
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -399,9 +447,14 @@ ComplexMatrix::fill (double val, int r1, int c1, int r2, int c2)
   if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
   if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
 
-  for (int j = c1; j <= c2; j++)
-    for (int i = r1; i <= r2; i++)
-      elem (i, j) = val;
+  if (r2 >= r1 && c2 >= c1)
+    {
+      make_unique ();
+
+      for (int j = c1; j <= c2; j++)
+	for (int i = r1; i <= r2; i++)
+	  xelem (i, j) = val;
+    }
 
   return *this;
 }
@@ -411,6 +464,7 @@ ComplexMatrix::fill (const Complex& val, int r1, int c1, int r2, int c2)
 {
   int nr = rows ();
   int nc = cols ();
+
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -421,9 +475,14 @@ ComplexMatrix::fill (const Complex& val, int r1, int c1, int r2, int c2)
   if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
   if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
 
-  for (int j = c1; j <= c2; j++)
-    for (int i = r1; i <= r2; i++)
-      elem (i, j) = val;
+  if (r2 >= r1 && c2 >=c1)
+    {
+      make_unique ();
+
+      for (int j = c1; j <= c2; j++)
+	for (int i = r1; i <= r2; i++)
+	  xelem (i, j) = val;
+    }
 
   return *this;
 }
@@ -766,7 +825,19 @@ ComplexMatrix::extract (int r1, int c1, int r2, int c2) const
 
   for (int j = 0; j < new_c; j++)
     for (int i = 0; i < new_r; i++)
-      result.elem (i, j) = elem (r1+i, c1+j);
+      result.xelem (i, j) = elem (r1+i, c1+j);
+
+  return result;
+}
+
+ComplexMatrix
+ComplexMatrix::extract_n (int r1, int c1, int nr, int nc) const
+{
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      result.xelem (i, j) = elem (r1+i, c1+j);
 
   return result;
 }
@@ -785,7 +856,7 @@ ComplexMatrix::row (int i) const
 
   ComplexRowVector retval (nc);
   for (int j = 0; j < cols (); j++)
-    retval.elem (j) = elem (i, j);
+    retval.xelem (j) = elem (i, j);
 
   return retval;
 }
@@ -823,7 +894,7 @@ ComplexMatrix::column (int i) const
 
   ComplexColumnVector retval (nr);
   for (int j = 0; j < nr; j++)
-    retval.elem (j) = elem (j, i);
+    retval.xelem (j) = elem (j, i);
 
   return retval;
 }

@@ -128,6 +128,8 @@ public:
 
   ComplexMatrix extract (int r1, int c1, int r2, int c2) const;
 
+  ComplexMatrix extract_n (int r1, int c1, int nr, int nc) const;
+
   // extract row or column i.
 
   ComplexRowVector row (int i) const;

@@ -73,6 +73,8 @@ public:
 
   RowVector extract (int c1, int c2) const;
 
+  RowVector extract_n (int c1, int n) const;
+
   // row vector by matrix -> row vector
 
   friend RowVector operator * (const RowVector& a, const Matrix& b);

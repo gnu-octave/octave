@@ -103,6 +103,8 @@ public:
 
   Matrix extract (int r1, int c1, int r2, int c2) const;
 
+  Matrix extract_n (int r1, int c1, int nr, int nc) const;
+
   // extract row or column i.
 
   RowVector row (int i) const;

@@ -1,3 +1,23 @@
+2003-02-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CColVector.cc (ComplexColumnVector::extract_n): New function.
+	* CRowVector.cc (ComplexRowVector::extract_n): Likewise.
+	* CMatrix.cc (ComplexMatrix::extract_n): Likewise.
+	* dColVector.cc (ColumnVector::extract_n): Likewise.
+	* dRowVector.cc (RowVector::extract_n): Likewise.
+	* dMatrix.cc (Matrix::extract_n): Likewise.
+
+	* CColVector.cc (ComplexColumnVector::insert): Improve efficiency
+	with make_unique and xelem.
+	* CRowVector.cc (ComplexRowVector::insert): Likewise.
+	* CMatrix.cc (ComplexMatrix::insert, ComplexMatrix::fill,
+	ComplexMatrix::extract, ComplexMatrix::row,
+	ComplexMatrix::column): Likewise.
+	* dColVector.cc (ColumnVector::insert): Likewise.
+	* dRowVector.cc (RowVector::insert): Likewise.
+	* dMatrix.cc (Matrix::insert, Matrix::fill, Matrix::extract,
+	Matrix::row, Matrix::column): Likewise.
+
 2003-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-mappers.cc (imag (double)): Return 0.0 for all args, even NaN.

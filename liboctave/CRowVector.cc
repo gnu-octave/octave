@@ -78,14 +78,20 @@ ComplexRowVector&
 ComplexRowVector::insert (const RowVector& a, int c)
 {
   int a_len = a.length ();
+
   if (c < 0 || c + a_len > length ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
-    elem (c+i) = a.elem (i);
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (c+i) = a.elem (i);
+    }
 
   return *this;
 }
@@ -94,14 +100,20 @@ ComplexRowVector&
 ComplexRowVector::insert (const ComplexRowVector& a, int c)
 {
   int a_len = a.length ();
+
   if (c < 0 || c + a_len > length ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
-    elem (c+i) = a.elem (i);
+  if (a_len > 0)
+    {
+      make_unique ();
+
+      for (int i = 0; i < a_len; i++)
+	xelem (c+i) = a.elem (i);
+    }
 
   return *this;
 }
@@ -110,9 +122,15 @@ ComplexRowVector&
 ComplexRowVector::fill (double val)
 {
   int len = length ();
+
   if (len > 0)
-    for (int i = 0; i < len; i++)
-      elem (i) = val;
+    {
+      make_unique ();
+
+      for (int i = 0; i < len; i++)
+	xelem (i) = val;
+    }
+
   return *this;
 }
 
@@ -120,9 +138,15 @@ ComplexRowVector&
 ComplexRowVector::fill (const Complex& val)
 {
   int len = length ();
+
   if (len > 0)
-    for (int i = 0; i < len; i++)
-      elem (i) = val;
+    {
+      make_unique ();
+
+      for (int i = 0; i < len; i++)
+	xelem (i) = val;
+    }
+
   return *this;
 }
 
@@ -130,6 +154,7 @@ ComplexRowVector&
 ComplexRowVector::fill (double val, int c1, int c2)
 {
   int len = length ();
+
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -138,8 +163,13 @@ ComplexRowVector::fill (double val, int c1, int c2)
 
   if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
 
-  for (int i = c1; i <= c2; i++)
-    elem (i) = val;
+  if (c2 >= c1)
+    {
+      make_unique ();
+
+      for (int i = c1; i <= c2; i++)
+	xelem (i) = val;
+    }
 
   return *this;
 }
@@ -148,6 +178,7 @@ ComplexRowVector&
 ComplexRowVector::fill (const Complex& val, int c1, int c2)
 {
   int len = length ();
+
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -156,8 +187,13 @@ ComplexRowVector::fill (const Complex& val, int c1, int c2)
 
   if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
 
-  for (int i = c1; i <= c2; i++)
-    elem (i) = val;
+  if (c2 >= c1)
+    {
+      make_unique ();
+
+      for (int i = c1; i <= c2; i++)
+	xelem (i) = val;
+    }
 
   return *this;
 }
@@ -220,6 +256,17 @@ ComplexRowVector::extract (int c1, int c2) const
 
   for (int i = 0; i < new_c; i++)
     result.elem (i) = elem (c1+i);
+
+  return result;
+}
+
+ComplexRowVector
+ComplexRowVector::extract_n (int r1, int n) const
+{
+  ComplexRowVector result (n);
+
+  for (int i = 0; i < n; i++)
+    result.elem (i) = elem (r1+i);
 
   return result;
 }

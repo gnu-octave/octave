@@ -81,6 +81,8 @@ public:
 
   ComplexRowVector extract (int c1, int c2) const;
 
+  ComplexRowVector extract_n (int c1, int n) const;
+
   // row vector by row vector -> row vector operations
 
   ComplexRowVector& operator += (const RowVector& a);

@@ -83,6 +83,8 @@ public:
 
   ComplexColumnVector extract (int r1, int r2) const;
 
+  ComplexColumnVector extract_n (int r1, int n) const;
+
   // column vector by column vector -> column vector operations
 
   ComplexColumnVector& operator += (const ColumnVector& a);

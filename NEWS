@@ -1,6 +1,18 @@
 Summary of changes since version 2.0.5:
 --------------------------------------
 
+  * Octave's expression parser is more general and consistent.  It is
+    now possible to access structure elements and index arbitrary
+    values.  For example, expressions like
+
+      my_home_dir = getpwuid (getuid ()) . dir;
+
+    and
+
+      svd (x) (1:5)
+
+    now work.
+
   * New built-in variable `print_rhs_assign_val' controls what is
     printed when an assignment expression is evaluated.  If it is
     zero, the value of the variable on the left hand side (after the

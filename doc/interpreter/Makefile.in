@@ -37,7 +37,9 @@ SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 
 TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO)
 
-FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
+FORMATTED = octave.dvi octave.ps \
+	octave.info octave.info-[0-9]* \
+	octave.html octave_*.html
 
 MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
@@ -188,8 +190,7 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: distclean clean-texi
-	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps
-	rm -f octave_*.html
+	rm -f tags TAGS $(FORMATTED)
 .PHONY: maintainer-clean
 
 clean-texi:

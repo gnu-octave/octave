@@ -8,6 +8,9 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	* control/obsolete/packsys.m: Likewise.
 	* control/obsolete/qzval.m: Likewise.
 	* control/obsolete/unpacksys.m: Likewise.
+	* control/obsolete/series.m: Likewise.
+	* control/obsolete/syschnames.m: Likewise.
+	* polynomial/polyout.m: Likewise.
 
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

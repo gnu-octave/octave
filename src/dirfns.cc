@@ -28,7 +28,7 @@ from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
 Free Software Foundation, Inc.
 
   polite_directory_format  absolute_pathname
-  absolute_program         base_pathname
+  base_pathname
   make_absolute            pathname_backup
   change_to_directory      get_working_directory
 
@@ -145,16 +145,6 @@ absolute_pathname (const string& s)
     }
 
   return 0;
-}
-
-// Return 1 if STRING is an absolute program name; it is absolute if
-// it contains any slashes.  This is used to decide whether or not to
-// look up through $PATH.
-
-static int
-absolute_program (const string& s)
-{
-  return (s.find ('/') != NPOS);
 }
 
 // Return the `basename' of the pathname in STRING (the stuff after

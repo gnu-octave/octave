@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __axis_label__ (@var{caller}, @var{args})
+## @deftypefn {Function File} {} __axis_label__ (@var{caller}, @var{text})
 ## Utility function for @code{xlabel}, @code{ylabel}, and @code{zlabel}.
 ## @end deftypefn
 

@@ -71,7 +71,7 @@ extern ostrstream& list_in_columns (ostrstream& os, char **list);
 extern char *undo_string_escape (char c);
 extern char *undo_string_escapes (const char *s);
 
-extern void xputenv (const char *,  const char *);
+extern void oct_putenv (const char *,  const char *);
 
 #endif
 

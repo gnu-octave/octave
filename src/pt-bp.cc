@@ -442,6 +442,16 @@ tree_breakpoint::visit_constant (tree_constant& cmd)
 }
 
 void 
+tree_breakpoint::visit_fcn_handle (tree_fcn_handle& fh)
+{
+  if (found)
+    return;
+
+  if (fh.line () >= line)
+    take_action (fh);
+}
+
+void 
 tree_breakpoint::visit_parameter_list (tree_parameter_list& lst)
 {
   if (found)

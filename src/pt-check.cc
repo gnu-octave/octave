@@ -314,6 +314,11 @@ tree_checker::visit_constant (tree_constant& /* val */)
 }
 
 void
+tree_checker::visit_fcn_handle (tree_fcn_handle& /* fh */)
+{
+}
+
+void
 tree_checker::visit_parameter_list (tree_parameter_list& lst)
 {
   tree_parameter_list::iterator p = lst.begin ();

@@ -1,4 +1,28 @@
+2003-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.cc (octave_value (const octave_fcn_handle&)): New constructor.
+	* parse.y (get_feval_args): New function.
+	(feval (octave_function *, const octave_value_list&, int)): Likewise.
+	(feval (const octave_value_list&, int)): Allow the first arg to be
+	a function handle as well as a string.
+	* variables.cc (load_function): New function.
+	* pt-walk.h, pt-pr-code.h, pt-pr-code.cc, pt-check.h, pt-check.cc,
+	pt-bp.h, pt-bp.cc: Handle new tree_fcn_handle class.
+	* pt-all.h: Include pt-fcn-handle.h.
+	* pt-fcn-handle.h, pt-fcn-handle.cc, ov-fcn-handle.h,
+	ov-fcn-handle.cc: New files.
+
 2003-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (FCN_HANDLE): New token type.
+	(fcn_handle): New non-terminal.
+	(primary_expr): Also accept fcn_handle.
+	(tree_fcn_handle_type): New %type.
+	(union): New field, tree_fcn_handle_type.
+	(make_fcn_handle): New function.
+
+	* lex.l (@{IDENT}): Recognize function handle syntax.
+	(@): Don't recognize "@" as a single token.
 
 	* load-save.cc (struct hdf5_callback_data): Provide constructor.
 	(hdf5_callback_data::name, hdf5_callback_data::doc): Now

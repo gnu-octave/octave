@@ -54,6 +54,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-builtin.h"
 #include "ov-mapper.h"
 #include "ov-usr-fcn.h"
+#include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
 
 #include "defun.h"
@@ -545,6 +546,12 @@ octave_value::octave_value (const octave_stream& s, int n)
 
 octave_value::octave_value (octave_function *f)
   : rep (f)
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (const octave_fcn_handle& fh)
+  : rep (new octave_fcn_handle (fh))
 {
   rep->count = 1;
 }

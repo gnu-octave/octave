@@ -34,6 +34,7 @@ extern int yyparse (void);
 class tree;
 class tree_matrix;
 class tree_identifier;
+class octaev_function;
 class symbol_record;
 class symbol_table;
 
@@ -99,6 +100,11 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
 extern octave_value_list
 feval (const std::string& name,
+       const octave_value_list& args = octave_value_list (),
+       int nargout = 0);
+
+extern octave_value_list
+feval (octave_function *fcn,
        const octave_value_list& args = octave_value_list (),
        int nargout = 0);
 

@@ -80,6 +80,9 @@ extern bool lookup (symbol_record *s, bool exec_script = true);
 extern symbol_record *
 lookup_by_name (const std::string& nm, bool exec_script = true);
 
+extern octave_function *
+lookup_function (const std::string& nm);
+
 extern octave_value get_global_value (const std::string& nm);
 
 extern void set_global_value (const std::string& nm, const octave_value& val);

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-decl.h"
 #include "pt-except.h"
 #include "pt-exp.h"
+#include "pt-fcn-handle.h"
 #include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-jump.h"

@@ -71,11 +71,11 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov-cell.h ov.h \
 	ov-fcn.h ov-builtin.h ov-dld-fcn.h ov-mapper.h ov-usr-fcn.h \
-	ov-base-nd-array.h ov-re-nd-array.h ov-typeinfo.h
+	ov-base-nd-array.h ov-re-nd-array.h ov-fcn-handle.h ov-typeinfo.h
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
-	pt-decl.h pt-except.h pt-exp.h pt-id.h pt-idx.h \
+	pt-decl.h pt-except.h pt-exp.h pt-fcn-handle.h pt-id.h pt-idx.h \
 	pt-jump.h pt-loop.h pt-mat.h pt-misc.h pt-plot.h \
 	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h \
 
@@ -111,13 +111,13 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
 	ov-usr-fcn.cc ov-base-nd-array.cc ov-re-nd-array.cc \
-	ov-typeinfo.cc
+	ov-fcn-handle.cc ov-typeinfo.cc
 
-PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc pt-cell.cc \
-	pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc pt-decl.cc \
-	pt-except.cc pt-exp.cc pt-id.cc pt-idx.cc pt-jump.cc \
-	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
-	pt-select.cc pt-stmt.cc pt-unop.cc
+PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
+	pt-cell.cc pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc \
+	pt-decl.cc pt-except.cc pt-exp.cc pt-fcn-handle.cc pt-id.cc \
+	pt-idx.cc pt-jump.cc pt-loop.cc pt-mat.cc pt-misc.cc \
+	pt-plot.cc pt-pr-code.cc pt-select.cc pt-stmt.cc pt-unop.cc
 
 DIST_SRC := Cell.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \

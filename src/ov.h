@@ -44,6 +44,7 @@ class Cell;
 class Octave_map;
 class octave_stream;
 class octave_function;
+class octave_fcn_handle;
 class octave_value_list;
 class octave_lvalue;
 
@@ -188,6 +189,7 @@ public:
   octave_value (const Octave_map& m);
   octave_value (const octave_stream& s, int n);
   octave_value (octave_function *f);
+  octave_value (const octave_fcn_handle& fh);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);

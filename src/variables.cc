@@ -790,6 +790,39 @@ lookup_by_name (const std::string& nm, bool exec_script)
   return sym_rec;
 }
 
+octave_function *
+lookup_function (const std::string& nm)
+{
+  octave_function *retval = 0;
+
+  symbol_record *sr = 0;
+
+  if (curr_parent_function)
+    {
+      std::string parent = curr_parent_function->function_name ();
+
+      sr = fbi_sym_tab->lookup (parent + ":" + nm);
+    }
+
+  if (! sr || ! sr->is_function ())
+    {
+      sr = fbi_sym_tab->lookup (nm, true);
+
+      if (sr && ! sr->is_function ())
+	load_fcn_from_file (sr, false);
+    }
+
+  if (sr)
+    {
+      octave_value v = sr->def ();
+
+      if (v.is_function ())
+	retval = v.function_value ();
+    }
+
+  return retval;
+}
+
 octave_value
 get_global_value (const std::string& nm)
 {

@@ -83,6 +83,8 @@ public:
 
   void visit_constant (tree_constant&);
 
+  void visit_fcn_handle (tree_fcn_handle&);
+
   void visit_parameter_list (tree_parameter_list&);
 
   void visit_plot_command (tree_plot_command&);

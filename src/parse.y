@@ -182,6 +182,10 @@ finish_colon_expression (tree_colon_expression *e);
 static tree_constant *
 make_constant (int op, token *tok_val);
 
+// Build a function handle.
+static tree_fcn_handle *
+make_fcn_handle (token *tok_val);
+
 // Build a binary expression.
 static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
@@ -362,6 +366,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
   tree_cell *tree_cell_type;
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
+  tree_fcn_handle *tree_fcn_handle_type;
   tree_identifier *tree_identifier_type;
   tree_index_expression *tree_index_expression_type;
   tree_colon_expression *tree_colon_expression_type;
@@ -414,6 +419,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL STATIC
+%token <tok_val> FCN_HANDLE
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
@@ -425,6 +431,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> constant magic_colon
+%type <tree_fcn_handle_type> fcn_handle
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
 %type <tree_expression_type> title matrix cell
@@ -663,9 +670,15 @@ cell_or_matrix_row
 		  { $$ = $1; }
 		;
 
+fcn_handle	: FCN_HANDLE
+		  { $$ = make_fcn_handle ($1); }
+		;
+
 primary_expr	: identifier
 		  { $$ = $1; }
 		| constant
+		  { $$ = $1; }
+		| fcn_handle
 		  { $$ = $1; }
 		| matrix
 		  { $$ = $1; }
@@ -1908,6 +1921,19 @@ make_constant (int op, token *tok_val)
       panic_impossible ();
       break;
     }
+
+  return retval;
+}
+
+// Make a function handle.
+
+static tree_fcn_handle *
+make_fcn_handle (token *tok_val)
+{
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  tree_fcn_handle *retval = new tree_fcn_handle (tok_val->text (), l, c);
 
   return retval;
 }
@@ -3478,6 +3504,50 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
   return retval;
 }
 
+octave_value_list
+feval (octave_function *fcn, const octave_value_list& args, int nargout)
+{
+  octave_value_list retval;
+
+  if (fcn)
+    retval = fcn->do_multi_index_op (nargout, args);
+
+  return retval;
+}
+
+static octave_value_list
+get_feval_args (const octave_value_list& args)
+{
+  int tmp_nargin = args.length () - 1;
+
+  octave_value_list retval (tmp_nargin, octave_value ());
+
+  for (int i = 0; i < tmp_nargin; i++)
+    retval(i) = args(i+1);
+
+  string_vector arg_names = args.name_tags ();
+
+  if (! arg_names.empty ())
+    {
+      // tmp_nargin and arg_names.length () - 1 may differ if
+      // we are passed all_va_args.
+
+      int n = arg_names.length () - 1;
+
+      int len = n > tmp_nargin ? tmp_nargin : n;
+
+      string_vector tmp_arg_names (len);
+
+      for (int i = 0; i < len; i++)
+	tmp_arg_names(i) = arg_names(i+1);
+
+      retval.stash_name_tags (tmp_arg_names);
+    }
+
+  return retval;
+}
+
+
 // Evaluate an Octave function (built-in or interpreted) and return
 // the list of result values.  The first element of ARGS should be a
 // string containing the name of the function to call, then the rest
@@ -3489,39 +3559,33 @@ feval (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  if (args.length () > 0)
+  int nargin = args.length ();
+
+  if (nargin > 0)
     {
-      std::string name = args(0).string_value ();
+      octave_value f_arg = args(0);
 
-      if (! error_state)
-	{
-	  int tmp_nargin = args.length () - 1;
+      if (f_arg.is_string ())
+        {
+	  std::string name = f_arg.string_value ();
 
-	  octave_value_list tmp_args (tmp_nargin, octave_value ());
-
-	  for (int i = 0; i < tmp_nargin; i++)
-	    tmp_args(i) = args(i+1);
-
-	  string_vector arg_names = args.name_tags ();
-
-	  if (! arg_names.empty ())
+	  if (! error_state)
 	    {
-	      // tmp_nargin and arg_names.length () - 1 may differ if
-	      // we are passed all_va_args.
+	      octave_value_list tmp_args = get_feval_args (args);
 
-	      int n = arg_names.length () - 1;
-
-	      int len = n > tmp_nargin ? tmp_nargin : n;
-
-	      string_vector tmp_arg_names (len);
-
-	      for (int i = 0; i < len; i++)
-		tmp_arg_names(i) = arg_names(i+1);
-
-	      tmp_args.stash_name_tags (tmp_arg_names);
+	      retval = feval (name, tmp_args, nargout);
 	    }
+	}
+      else
+	{
+	  octave_function *fcn = f_arg.function_value ();
 
-	  retval = feval (name, tmp_args, nargout);
+	  if (fcn)
+	    {
+	      octave_value_list tmp_args = get_feval_args (args);
+
+	      retval = feval (fcn, tmp_args, nargout);
+	    }
 	}
     }
 

@@ -555,6 +555,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 %{
+// Function handles.
+%}
+
+@{IDENT} {
+    TOK_PUSH_AND_RETURN (&yytext[1], FCN_HANDLE);
+  }
+
+%{
 // A new line character.  New line characters inside matrix constants
 // are handled by the <MATRIX_START> start state code above.  If closest
 // nesting is inside parentheses, don't return a row separator.
@@ -744,14 +752,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 "." {
     TOK_RETURN ('.');
-  }
-
-"@" {
-    current_input_column++;
-    lexer_flags.cant_be_identifier = false;
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = false;
-    return '@';
   }
 
 "+="	{ XBIN_OP_RETURN (ADD_EQ, false); }

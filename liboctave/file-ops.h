@@ -189,11 +189,11 @@ private:
 
 extern int is_newer (const string&, time_t);
 
-extern int xmkdir (const string&, mode_t);
-extern int xrmdir (const string&);
-extern int xrename (const string&, const string&);
-extern int xmkfifo (const string&, mode_t);
-extern int xumask (mode_t);
+extern int oct_mkdir (const string&, mode_t);
+extern int oct_rmdir (const string&);
+extern int oct_rename (const string&, const string&);
+extern int oct_mkfifo (const string&, mode_t);
+extern int oct_umask (mode_t);
 
 #endif
 

@@ -161,31 +161,31 @@ is_newer (const string& file, time_t time)
 }
 
 int
-xmkdir (const string& name, mode_t mode)
+oct_mkdir (const string& name, mode_t mode)
 {
   return mkdir (name.c_str (), mode);
 }
 
 int
-xrmdir (const string& name)
+oct_rmdir (const string& name)
 {
   return rmdir (name.c_str ());
 }
 
 int
-xrename (const string& from, const string& to)
+oct_rename (const string& from, const string& to)
 {
   return rename (from.c_str (), to.c_str ());
 }
 
 int
-xmkfifo (const string& name, mode_t mode)
+oct_mkfifo (const string& name, mode_t mode)
 {
   return mkfifo (name.c_str (), mode);
 }
 
 int
-xumask (mode_t mode)
+oct_umask (mode_t mode)
 {
 #if defined (HAVE_UMASK)
   return umask (mode);

@@ -32,8 +32,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
 	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
 	Range.h base-min.h cmd-hist.h dir-ops.h file-ops.h \
 	f77-uscore.h getopt.h idx-vector.h lo-error.h oct-cmplx.h \
-	oct-glob.h oct-math.h oct-term.h pathsearch.h statdefs.h \
-	str-vec.h sun-utils.h sysdir.h \
+	oct-glob.h oct-math.h oct-term.h pathsearch.h prog-args.h \
+	statdefs.h str-vec.h sun-utils.h sysdir.h \
 	$(MATRIX_INC)
 
 TEMPLATE_SRC := Array.cc MArray.cc
@@ -55,8 +55,8 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
 	acosh.c asinh.c atanh.c cmd-hist.cc dir-ops.cc erf.c erfc.c \
 	file-ops.cc filemode.c gamma.c getopt.c getopt1.c idx-vector.cc \
 	lo-error.cc lgamma.c mkdir.c oct-glob.cc oct-term.cc \
-	pathsearch.cc rename.c rmdir.c str-vec.cc sun-utils.cc \
-	tempname.c tempnam.c \
+	pathsearch.cc prog-args.cc rename.c rmdir.c str-vec.cc \
+	sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

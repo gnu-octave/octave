@@ -171,7 +171,7 @@ Gabriele Pannocchia  @email{pannocchia@@ing.unipi.it} provided the
 to @code{dlqe} and @code{dlqr}.
 
 @item
-Tony Richardson @email{arichard@@stark.cc.oh.us} wrote Octave's
+Tony Richardson @email{richardson@@evansville.edu?} wrote Octave's
 image processing functions as well as most of the original polynomial
 functions.
 

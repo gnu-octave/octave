@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cctype>
 #include <cfloat>
 
+#include "lo-ieee.h"
 #include "lo-specfun.h"
 #include "lo-mappers.h"
 
@@ -134,6 +135,12 @@ xtoupper (int c)
   return toupper (c);
 }
 
+static double
+xabs (const Complex& x)
+{
+  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+}
+
 static Complex
 xconj (const Complex& x)
 {
@@ -161,7 +168,7 @@ xreal (const Complex& x)
 void
 install_mapper_functions (void)
 {
-  DEFUN_MAPPER (abs, xabs, 0, 0, fabs, abs, 0, 0.0, 0.0, 1, 0,
+  DEFUN_MAPPER (abs, xabs, 0, 0, fabs, xabs, 0, 0.0, 0.0, 1, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} abs (@var{z})\n\
 Compute the magnitude of @var{z}, defined as\n\

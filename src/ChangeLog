@@ -1,3 +1,9 @@
+2003-10-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mappers.cc (xabs): New function.
+	(install_mapper_functions): Use it instead of abs for complex args
+	in Octave's abs mapper function.
+
 2003-09-27  Joseph P. Skudlarek  <Jskud@Jskud.com>
  
  	* DLD-FUNCTIONS/minmax.cc (min, max): Use @deftypefn machinery,

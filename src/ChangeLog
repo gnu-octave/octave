@@ -1,3 +1,12 @@
+2000-02-18  James R. Van Zandt <jrv@vanzandt.mv.com>
+
+	* load-save.cc (Vcrash_dumps_octave_core): Fix comment for this var.
+
+2000-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (handle_number): Don't transorm `[Dd]' to `e' if reading
+	hex.
+
 2000-02-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-inc): Install files in

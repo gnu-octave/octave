@@ -177,11 +177,8 @@ octave_history_list (int limit, int number_lines)
     {
       char **p = retval;
 
-      while (p)
-	{
-	  if (*p)
-	    free (*p++);
-	}
+      while (*p)
+	free (*p++);
 
       free (retval);
 
@@ -213,6 +210,9 @@ octave_history_list (int limit, int number_lines)
 	  if (number_lines)
 	    sprintf (tmp, "%5d%c%s", i + history_base,
 		     hlist[i]->data ? '*' : ' ',
+		     line ? line : "");
+	  else
+	    sprintf (tmp, "%c%s", hlist[i]->data ? '*' : ' ',
 		     line ? line : "");
 
 	  retval[k++] = tmp;

@@ -58,7 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include "version.h"
 
-// The number of decimal digits to use when writing ascii data.
+// Write octave-core file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core;
 
 // The default output format.  May be one of "binary", "text", or

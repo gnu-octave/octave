@@ -1,3 +1,8 @@
+2000-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-rl-hist.c (octave_history_list): Do something when not
+	printing line numbers.  Fix reallocation of retval.
+
 2000-02-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-inc): Install files in

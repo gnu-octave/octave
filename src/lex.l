@@ -1540,26 +1540,30 @@ looks_like_hex (const char *s, int len)
 static void
 handle_number (void)
 {
-  char *tmp = strsave (yytext);
-
-  char *idx = strpbrk (tmp, "Dd");
-
-  if (idx)
-    *idx = 'e';
-
   double value = 0.0;
   int nread = 0;
 
-  if (looks_like_hex (tmp, strlen (tmp)))
+  if (looks_like_hex (yytext, strlen (yytext)))
     {
       unsigned long ival;
-      nread = sscanf (tmp, "%lx", &ival);
+
+      nread = sscanf (yytext, "%lx", &ival);
+
       value = static_cast<double> (ival);
     }
   else
-    nread = sscanf (tmp, "%lf", &value);
+    {
+      char *tmp = strsave (yytext);
 
-  delete [] tmp;
+      char *idx = strpbrk (tmp, "Dd");
+
+      if (idx)
+	*idx = 'e';
+
+      nread = sscanf (tmp, "%lf", &value);
+
+      delete [] tmp;
+    }
 
   // If yytext doesn't contain a valid number, we are in deep doo doo.
 

@@ -1,6 +1,8 @@
 2004-04-30  John W. Eaton  <jwe@octave.org>
 
-	* oct-stream.cc (octave_base_stream::clear): Also clear stream state.
+	* oct-stream.cc (octave_base_stream::clearerr): New function.
+	(octave_stream::clearerr): New function.
+	(seek (long, int)): Call clearerr here.
 	* oct-stdstrm.h (octave_stdiostream::clear): New function.
 	* c-file-ptr-stream.h (c_file_ptr_buf::clear,
 	i_c_file_ptr_stream::clear, o_c_file_ptr_stream::clear,

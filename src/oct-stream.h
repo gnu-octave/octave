@@ -398,6 +398,10 @@ protected:
 
   void clear (void);
 
+  // Clear stream state.
+
+  void clearerr (void);
+
 private:
 
   // A reference count.
@@ -571,6 +575,8 @@ public:
   std::istream *input_stream (void) { return rep ? rep->input_stream () : 0; }
 
   std::ostream *output_stream (void) { return rep ? rep->output_stream () : 0; }
+
+  void clearerr (void) { if (rep) rep->clearerr (); }
 
 private:
 

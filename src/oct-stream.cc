@@ -935,6 +935,13 @@ octave_base_stream::error (const std::string& who, const std::string& msg)
 void
 octave_base_stream::clear (void)
 {
+  fail = false;
+  errmsg = "";
+}
+
+void
+octave_base_stream::clearerr (void)
+{
   std::istream *is = input_stream ();
   std::ostream *os = output_stream ();
 
@@ -943,9 +950,6 @@ octave_base_stream::clear (void)
 
   if (os)
     os->clear ();
-
-  fail = false;
-  errmsg = "";
 }
 
 // Functions that are defined for all input streams (input streams
@@ -2706,7 +2710,11 @@ octave_stream::seek (long offset, int origin)
   int retval = -1;
 
   if (stream_ok ("fseek"))
-    retval = rep->seek (offset, origin);
+    {
+      clearerr ();
+
+      retval = rep->seek (offset, origin);
+    }
 
   return retval;
 }

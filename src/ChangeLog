@@ -1,5 +1,8 @@
 2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ls-mat5.cc (read_mat5_binary_element, save_mat5_binary_element):
+	Handle N-d arrays.
+
 	* lex.l (next_token_is_index_op): New function.
 	(handle_close_bracket): Use it.
 

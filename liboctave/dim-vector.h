@@ -254,6 +254,18 @@ public:
     return retval;
   }
 
+  int
+  num_ones (void) const
+  {
+    int retval = 0;
+
+    for (int i = 0; i < length (); i++)
+      if (elem (i) == 1)
+	retval++;
+
+    return retval;
+  }
+
   // This is the number of elements that a matrix with this dimension
   // vector would have, NOT the number of dimensions (elements in the
   // dimension vector).

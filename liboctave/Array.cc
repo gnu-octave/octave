@@ -1447,7 +1447,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
       if (num_to_delete > 0)
 	{
-	  int temp = num_ones (lhs_dims);
+	  int temp = lhs_dims.num_ones ();
 
 	  if (non_col_dim == 1)
 	    temp--;
@@ -2688,130 +2688,122 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       // RHS is matrix or higher dimension.
 
-      // Subtracting number of dimensions of length 1 will catch
-      // cases where: A(2,1,2)=3  A(:,1,:)=[2,3;4,5]
+      bool dim_ok = true;
 
-      if (rhs_dims.length ()
-	  != num_ones (idx_is_colon_equiv) - num_ones (lhs_dims))
+      int jj = 0;
+
+      // Check that RHS dimensions are the same length as the
+      // corresponding LHS dimensions.
+
+      int rhs_dims_len = rhs_dims.length ();
+
+      for (int j = 0; j < idx_is_colon.length (); j++)
 	{
-	  (*current_liboctave_error_handler)
-	    ("dimensions do not match in matrix assignment");
+	  if (idx_is_colon(j))
+	    {
+	      if (jj > rhs_dims_len || rhs_dims(jj) < lhs_dims(j))
+		{
+		  dim_ok = false;
+
+		  break;
+		}
+
+	      jj++;
+	    }
 	}
+
+      if (! dim_ok)
+	(*current_liboctave_error_handler)
+	  ("subscripted assignment dimension mismatch");
       else
 	{
-	  bool dim_ok = true;
+	  dim_vector new_dims;
+	  new_dims.resize (n_idx);
 
-	  int jj = 0;
+	  bool resize = false;
 
-	  // Check that RHS dimensions are the same length as the
-	  // corresponding LHS dimensions.
+	  int ii = 0;
 
-	  for (int j = 0; j < idx_is_colon.length (); j++)
+	  // Update idx vectors.
+
+	  for (int i = 0; i < n_idx; i++)
 	    {
-	      if (idx_is_colon(j) || idx_is_colon_equiv(j))
+	      if (idx(i).is_colon ())
 		{
-		  if (rhs_dims(jj) < lhs_dims(j))
-		    {
-		      dim_ok = false;
+		  // Add appropriate idx_vector to idx(i) since
+		  // index with : contains no indexes.
 
-		      break;
-		    }
+		  frozen_len(i)
+		    = lhs_dims(i) > rhs_dims(ii) ? lhs_dims(i) : rhs_dims(ii);
 
-		  jj++;
+		  new_dims(i)
+		    = lhs_dims(i) > rhs_dims(ii) ? lhs_dims(i) : rhs_dims(ii);
+
+		  ii++;
+
+		  Range idxrange (1, frozen_len(i), 1);
+
+		  idx_vector idxv (idxrange);
+
+		  idx(i) = idxv;
 		}
+	      else
+		{
+		  new_dims(i) = lhs_dims(i) > idx(i).max () + 1 ? lhs_dims(i) : idx(i).max () + 1;
+
+		  if (frozen_len(i) > 1)
+		    ii++;
+		}
+	      if (new_dims(i) != lhs_dims(i))
+		resize = true;
 	    }
 
-	  if (! dim_ok)
-	    (*current_liboctave_error_handler)
-	      ("subscripted assignment dimension mismatch");
-	  else
+	  // Resize LHS if dimensions have changed.
+
+	  if (resize)
 	    {
-	      dim_vector new_dims;
-	      new_dims.resize (n_idx);
+	      lhs.resize (new_dims, rfv);
 
-	      bool resize = false;
+	      lhs_dims = lhs.dims ();
+	    }
 
-	      int ii = 0;
+	  // Number of elements which need to be set.
 
-	      // Update idx vectors.
+	  int n = Array<LT>::get_size (frozen_len);
 
-	      for (int i = 0; i < n_idx; i++)
+	  Array<int> result_idx (lhs_dims.length (), 0);
+	  Array<int> elt_idx;
+
+	  Array<int> result_rhs_idx (rhs_dims.length (), 0);
+
+	  dim_vector frozen_rhs;
+	  frozen_rhs.resize (rhs_dims.length ());
+
+	  for (int i = 0; i < rhs_dims.length (); i++)
+	    frozen_rhs(i) = rhs_dims(i);
+
+	  dim_vector lhs_inc;
+	  lhs_inc.resize (lhs_dims.length ());
+
+	  for (int i = 0; i < lhs_dims.length (); i++)
+	    lhs_inc(i) = lhs_dims(i) + 1;
+
+	  for (int i = 0; i < n; i++)
+	    {
+	      elt_idx = get_elt_idx (idx, result_idx);
+
+	      if (index_in_bounds (elt_idx, lhs_inc))
 		{
-		  if (idx(i).is_colon ())
-		    {
-		      // Add appropriate idx_vector to idx(i) since
-		      // index with : contains no indexes.
+		  int s = compute_index (result_rhs_idx,rhs_dims);
 
-		      frozen_len(i) = lhs_dims(i) > rhs_dims(ii) ? lhs_dims(i) : rhs_dims(ii);
+		  lhs.checkelem (elt_idx) = rhs.elem (s);
 
-		      new_dims(i) = lhs_dims(i) > rhs_dims(ii) ? lhs_dims(i) : rhs_dims(ii);
-
-		      ii++;
-
-		      Range idxrange (1, frozen_len(i), 1);
-
-		      idx_vector idxv (idxrange);
-
-		      idx(i) = idxv;
-		    }
-		  else
-		    {
-		      new_dims(i) = lhs_dims(i) > idx(i).max () + 1 ? lhs_dims(i) : idx(i).max () + 1;
-
-		      if (frozen_len(i) > 1)
-			ii++;
-		    }
-		  if (new_dims(i) != lhs_dims(i))
-		    resize = true;
+		  increment_index (result_rhs_idx, frozen_rhs);
 		}
+	      else
+		lhs.checkelem (elt_idx) = rfv;
 
-	      // Resize LHS if dimensions have changed.
-
-	      if (resize)
-		{
-		  lhs.resize (new_dims, rfv);
-
-		  lhs_dims = lhs.dims ();
-		}
-
-	      // Number of elements which need to be set.
-
-	      int n = Array<LT>::get_size (frozen_len);
-
-	      Array<int> result_idx (lhs_dims.length (), 0);
-	      Array<int> elt_idx;
-
-	      Array<int> result_rhs_idx (rhs_dims.length (), 0);
-
-	      dim_vector frozen_rhs;
-	      frozen_rhs.resize (rhs_dims.length ());
-
-	      for (int i = 0; i < rhs_dims.length (); i++)
-		frozen_rhs(i) = rhs_dims(i);
-
-	      dim_vector lhs_inc;
-	      lhs_inc.resize (lhs_dims.length ());
-
-	      for (int i = 0; i < lhs_dims.length (); i++)
-		lhs_inc(i) = lhs_dims(i) + 1;
-
-	      for (int i = 0; i < n; i++)
-		{
-		  elt_idx = get_elt_idx (idx, result_idx);
-
-		  if (index_in_bounds (elt_idx, lhs_inc))
-		    {
-		      int s = compute_index (result_rhs_idx,rhs_dims);
-
-		      lhs.checkelem (elt_idx) = rhs.elem (s);
-
-		      increment_index (result_rhs_idx, frozen_rhs);
-		    }
-		  else
-		    lhs.checkelem (elt_idx) = rfv;
-
-		  increment_index (result_idx, frozen_len);
-		}
+	      increment_index (result_idx, frozen_len);
 	    }
 	}
     }

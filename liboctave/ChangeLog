@@ -1,5 +1,11 @@
 2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dim-vector.h (dim_vector::num_ones): New function.
+	* Array.cc (maybe_delete_elements): Use it instead of
+	num_ones (const Array<int>&).
+
+	* Array.cc (assignN): Omit dubious check of singleton dimensions.
+
 	* dNDArray.cc (NDArray::all_elements_are_int_or_inf_or_nan,
 	NDArray::any_element_is_inf_or_nan, NDArray::too_large_for_float):
 	New functions.

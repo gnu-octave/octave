@@ -94,12 +94,14 @@ get_scalar_idx (Array<int>& idx, dim_vector& dims)
 int
 num_ones (const Array<int>& ra_idx)
 {
-  int retval (0);
+  int retval = 0;
+
   for (int i = 0; i < ra_idx.length (); i++)
     {
       if (ra_idx (i) == 1)
 	retval++;
     }
+
   return retval;
 }
 

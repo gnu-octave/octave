@@ -1412,7 +1412,7 @@ tree_function::octave_va_arg (void)
 
   if (curr_arg_number < num_args_passed)
     {
-      retval = args_passed(curr_arg_number);
+      retval = args_passed (curr_arg_number);
       curr_arg_number++;
     }
   else

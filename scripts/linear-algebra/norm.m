@@ -26,14 +26,14 @@
 ##
 ## @table @asis
 ## @item @var{p} = @code{1}
-## 1-norm, the largest column sum of @var{a}.
+## 1-norm, the largest column sum of the absolute values of @var{a}.
 ##
 ## @item @var{p} = @code{2}
 ## Largest singular value of @var{a}.
 ##
 ## @item @var{p} = @code{Inf}
 ## @cindex infinity norm
-## Infinity norm, the largest row sum of @var{a}.
+## Infinity norm, the largest row sum of the absolute values of @var{a}.
 ##
 ## @item @var{p} = @code{"fro"}
 ## @cindex Frobenius norm

@@ -3070,6 +3070,12 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
       panic_impossible ();
       break;
     }
+
+  // Do the right thing for assignments like `x(1) = pi' when x is
+  // undefined before the assignment.
+
+  if (is_matrix_type () || is_range ())
+    maybe_mutate ();
 }
 
 /*

@@ -114,7 +114,7 @@ TILDEOBJ = tilde.o
 OBJECTS = readline.o vi_mode.o funmap.o keymaps.o parens.o search.o \
 	  rltty.o complete.o bind.o isearch.o display.o signals.o \
 	  util.o kill.o undo.o macro.o input.o callback.o terminal.o \
-	  nls.o xmalloc.o $(HISTOBJ) $(TILDEOBJ) shell.o
+	  nls.o xmalloc.o $(HISTOBJ) $(TILDEOBJ)
 
 SHARED_HISTOBJ = history.so histexpand.so histfile.so histsearch.so shell.so
 SHARED_TILDEOBJ = tilde.so

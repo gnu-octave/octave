@@ -1,3 +1,7 @@
+Fri Jun  6 15:20:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* readline: Update to new version (2.1).
+
 Thu Jun  5 01:38:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (SONAME_FLAGS): Define for some systems.

@@ -7,7 +7,8 @@
 
 # The first non-option arg is taken as the directory where the .oct
 # files are installed.  The remaining arguments should be the list of
-# source files that were used to create the .oct files.
+# .df files corresponding to the source files that were used to
+# create the .oct files.
 
 print_only=false
 if [ $1 = "-p" ]; then
@@ -19,9 +20,9 @@ links_dir=$1
 shift
 
 for f in "$@"; do
-  base=`basename $f | sed 's/\.cc$//'`
-  fcns=`grep '^ *DEFUN_DLD' $f |\
-        sed -e 's/DEFUN_DLD *( *//' -e 's/ *,.*$//' |\
+  base=`basename $f | sed 's/\.df$//'`
+  fcns=`grep '^ *XDEFUN_DLD_INTERNAL' $f |\
+        sed -e 's/XDEFUN_DLD_INTERNAL *( *//' -e 's/ *,.*$//' |\
         sort -u`
   if [ -n "$fcns" ]; then
     for n in $fcns; do

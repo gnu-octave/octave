@@ -1454,6 +1454,8 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
       else
 	lwork = 2*n + (nrhs > m ? nrhs : m);
 
+      lwork *= 16;
+
       Array<Complex> work (lwork);
       Complex *pwork = work.fortran_vec ();
 
@@ -1533,6 +1535,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
 	lwork = 2*m + (nrhs > n ? nrhs : n);
       else
 	lwork = 2*n + (nrhs > m ? nrhs : m);
+
+      lwork *= 16;
 
       Array<Complex> work (lwork);
       Complex *pwork = work.fortran_vec ();

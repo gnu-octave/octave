@@ -1,3 +1,8 @@
+Fri Jul 25 17:31:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::lssolve): Increase lwork by factor of 16.
+	* CMatrix.cc (ComplexMatrix::lssolve): Ditto.
+
 Thu Jul 24 14:32:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc (tilde_expand_word): Fix off-by-one error.

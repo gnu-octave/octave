@@ -1166,6 +1166,8 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 		       ? (2*n > m ? 2*n : m)
 		       : (nrhs > m ? nrhs : m));
 
+      lwork *= 16;
+
       Array<double> work (lwork);
       double *pwork = work.fortran_vec ();
 
@@ -1266,6 +1268,8 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 	lwork = 3*n + (2*n > nrhs
 		       ? (2*n > m ? 2*n : m)
 		       : (nrhs > m ? nrhs : m));
+
+      lwork *= 16;
 
       Array<double> work (lwork);
       double *pwork = work.fortran_vec ();

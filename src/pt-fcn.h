@@ -194,6 +194,8 @@ private:
     }
 };
 
+extern void symbols_of_pt_fcn (void);
+
 #endif
 
 /*

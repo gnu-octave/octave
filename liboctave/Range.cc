@@ -212,20 +212,6 @@ round (double x, double ct)
   return tfloor (x+0.5, ct);
 }
 
-
-// Find an approximate number of intervals, then do the best we can to
-// find the number of intervals that we would get if we had done
-// something like
-//
-//   nelem = 0;
-//   while (base + nelem * inc <= limit)
-//     nelem++;
-//
-// (for limit > base && inc > 0)
-//
-// The number of elements in the range is one greater than the number
-// of intervals.
-
 int
 Range::nelem_internal (void) const
 {

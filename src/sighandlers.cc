@@ -157,15 +157,11 @@ sigchld_handler (int /* sig */)
 	    {
 	      octave_pager_pid = -1;
 
-	      // XXX FIXME XXX -- I'm not sure that this is the right
-	      // thing to do here, but it seems to work.
+	      // Don't call error() here because we don't want to set
+	      // the error state.
 
-	      // Don't call error() here because that tries to flush
-	      // pending output, which isn't going to do anything
-	      // anyway.
-
-	      cerr << "error: connection to external pager lost --\n";
-	      cerr << "error: pending computations and output have been discarded\n";
+	      warning ("connection to external pager lost --");
+	      warning ("pending computations and output have been discarded");
 	    }
 	}
     }
@@ -228,7 +224,7 @@ sigpipe_handler (int /* sig */)
   octave_set_signal_handler (SIGPIPE, sigpipe_handler);
 
   if (pipe_handler_error_count++ == 0)
-    message (0, "broken pipe");
+    warning ("broken pipe");
 
   // Don't loop forever on account of this.
 

@@ -75,6 +75,8 @@ static sig_handler *saved_sigint_handler = 0;
 
 static int really_flush_to_pager = 0;
 
+static int flushing_output_to_pager = 0;
+
 static void
 clear_external_pager (void)
 {
@@ -93,50 +95,47 @@ clear_external_pager (void)
 static void
 do_sync (const char *msg, bool bypass_pager)
 {
-  if (! error_state)
+  if (msg && *msg)
     {
-      if (msg && *msg)
+      if (bypass_pager)
+	cout << msg;
+      else
 	{
-	  if (bypass_pager)
-	    cout << msg;
-	  else
+	  if (! external_pager)
 	    {
-	      if (! external_pager)
+	      string pgr = Vpager_binary;
+
+	      if (! pgr.empty ())
 		{
-		  string pgr = Vpager_binary;
+		  saved_sigint_handler
+		    = octave_set_signal_handler (SIGINT, SIG_IGN);
 
-		  if (! pgr.empty ())
-		    {
-		      saved_sigint_handler
-			= octave_set_signal_handler (SIGINT, SIG_IGN);
+		  external_pager = new oprocstream (pgr.c_str ());
 
-		      external_pager = new oprocstream (pgr.c_str ());
-
-		      if (external_pager)
-			octave_pager_pid = external_pager->pid ();
-		    }
+		  if (external_pager)
+		    octave_pager_pid = external_pager->pid ();
 		}
-
-	      if (external_pager)
-		{
-		  if (octave_pager_pid > 0 && external_pager->good ())
-		    {
-		      *external_pager << msg;
-
-		      // These checks are needed if a signal handler
-		      // invoked since the last set of checks attempts
-		      // to flush output and then returns
-
-		      if (octave_pager_pid > 0
-			  && external_pager
-			  && external_pager->good ())
-			external_pager->flush ();
-		    }
-		  clear_external_pager ();
-		}
-	      else
-		cout << msg;
 	    }
+
+	  if (external_pager)
+	    {
+	      if (octave_pager_pid > 0 && external_pager->good ())
+		{
+		  *external_pager << msg;
+
+		  // These checks are needed if a signal handler
+		  // invoked since the last set of checks attempts
+		  // to flush output and then returns
+
+		  if (octave_pager_pid > 0
+		      && external_pager
+		      && external_pager->good ())
+		    external_pager->flush ();
+		}
+	      clear_external_pager ();
+	    }
+	  else
+	    cout << msg;
 	}
     }
 }
@@ -258,18 +257,23 @@ octave_diary_stream::stream (void)
 void
 flush_octave_stdout (void)
 {
-  begin_unwind_frame ("flush_octave_stdout");
+  if (! flushing_output_to_pager)
+    {
+      begin_unwind_frame ("flush_octave_stdout");
 
-  unwind_protect_int (really_flush_to_pager);
-  
-  really_flush_to_pager = 1;
+      unwind_protect_int (really_flush_to_pager);
+      unwind_protect_int (flushing_output_to_pager);
 
-  octave_stdout.flush ();
+      really_flush_to_pager = 1;
+      flushing_output_to_pager = 1;
 
-  if (external_pager)
-    clear_external_pager ();
+      octave_stdout.flush ();
 
-  run_unwind_frame ("flush_octave_stdout");
+      if (external_pager)
+	clear_external_pager ();
+
+      run_unwind_frame ("flush_octave_stdout");
+    }
 }
 
 static void

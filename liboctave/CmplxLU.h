@@ -38,7 +38,7 @@ ComplexLU
 {
 public:
 
-  ComplexLU (void) : l (), u (), p (), ipvt (0), pvt (0) { }
+  ComplexLU (void) : l (), u (), p () { }
 
   ComplexLU (const ComplexMatrix& a);
 
@@ -55,11 +55,7 @@ public:
       return *this;
     }
 
-  ~ComplexLU (void)
-    {
-      delete [] ipvt;
-      delete [] pvt;
-    }
+  ~ComplexLU (void) { }
 
   ComplexMatrix L (void) const { return l; }
   ComplexMatrix U (void) const { return u; }
@@ -73,9 +69,6 @@ private:
   ComplexMatrix l;
   ComplexMatrix u;
   Matrix p;
-
-  int *ipvt;
-  int *pvt;
 };
 
 #endif

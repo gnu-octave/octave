@@ -36,7 +36,7 @@ class LU
 {
 public:
 
-  LU (void) : l (), u (), p (), ipvt (0), pvt (0) { }
+  LU (void) : l (), u (), p () { }
 
   LU (const Matrix& a);
 
@@ -53,11 +53,7 @@ public:
       return *this;
     }
 
-  ~LU (void)
-    {
-      delete [] ipvt;
-      delete [] pvt;
-    }
+  ~LU (void) { }
 
   Matrix L (void) const { return l; }
 
@@ -72,9 +68,6 @@ private:
   Matrix l;
   Matrix u;
   Matrix p;
-
-  int *ipvt;
-  int *pvt;
 };
 
 #endif

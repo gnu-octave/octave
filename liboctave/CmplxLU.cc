@@ -43,9 +43,6 @@ extern "C"
 
 ComplexLU::ComplexLU (const ComplexMatrix& a)
 {
-  ipvt = 0;
-  pvt = 0;
-
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
@@ -57,8 +54,9 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
   int n = a_nr;
 
-  ipvt = new int [n];
-  pvt = new int [n];
+  Array<int> ipvt (n);
+
+  int *pipvt = ipvt.fortran_vec ();
 
   ComplexMatrix A_fact = a;
   Complex *tmp_data = A_fact.fortran_vec ();
@@ -66,26 +64,29 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   int info = 0;
   Complex *dummy = 0;
 
-  F77_XFCN (zgesv, ZGESV, (n, 0, tmp_data, n, ipvt, dummy, n, info));
+  F77_XFCN (zgesv, ZGESV, (n, 0, tmp_data, n, pipvt, dummy, n, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesv");
   else
     {
+      Array<int> pvt (n);
+
       for (int i = 0; i < n; i++)
 	{
-	  ipvt[i] -= 1;
-	  pvt[i] = i;
+	  ipvt.elem (i) -= 1;
+	  pvt.elem (i) = i;
 	}
 
       for (int i = 0; i < n - 1; i++)
 	{
-	  int k = ipvt[i];
+	  int k = ipvt.elem (i);
+
 	  if (k != i)
 	    {
-	      int tmp = pvt[k];
-	      pvt[k] = pvt[i];
-	      pvt[i] = tmp;
+	      int tmp = pvt.elem (k);
+	      pvt.elem (k) = pvt.elem (i);
+	      pvt.elem (i)= tmp;
 	    }
 	}
 
@@ -95,7 +96,7 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
       for (int i = 0; i < n; i++)
 	{
-	  p.elem (i, pvt[i]) = 1.0;
+	  p.elem (i, pvt.elem (i)) = 1.0;
 
 	  l.elem (i, i) = 1.0;
 	  for (int j = 0; j < i; j++)
@@ -105,12 +106,6 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 	    u.elem (i, j) = A_fact.elem (i, j);
 	}
     }
-
-  delete [] ipvt;
-  ipvt = 0;
-
-  delete [] pvt;
-  pvt = 0;
 }
 
 /*

@@ -512,9 +512,11 @@ frewind_internal (const Octave_object& args)
 }
 
 Octave_object
-fseek_internal (const Octave_object& args, int nargin)
+fseek_internal (const Octave_object& args)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   Pix p = file_io_get_file (args(1), "a+", "fseek");
 
@@ -606,9 +608,11 @@ close_files (void)
 
 static int
 process_printf_format (const char *s, const Octave_object& args,
-		       ostrstream& sb, const char *type, int nargin)
+		       ostrstream& sb, const char *type)
 {
   ostrstream fmt;
+
+  int nargin = args.length ();
 
   fmt << "%";  // do_printf() already blew past this one...
 
@@ -804,8 +808,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
 
 Octave_object
-do_printf (const char *type, const Octave_object& args, int nargin,
-	   int nargout)
+do_printf (const char *type, const Octave_object& args, int nargout)
 {
   Octave_object retval;
   fmt_arg_count = 1;
@@ -878,8 +881,7 @@ do_printf (const char *type, const Octave_object& args, int nargin,
 // We must be looking at a format specifier.  Extract it or fail.
 
 
-      int status = process_printf_format (ptr, args, output_buf, type,
-					  nargin);
+      int status = process_printf_format (ptr, args, output_buf, type);
 
       if (status < 0)
 	return retval;
@@ -1069,7 +1071,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 }
 
 Octave_object
-do_scanf (const char *type, const Octave_object& args, int nargin, int nargout)
+do_scanf (const char *type, const Octave_object& args, int nargout)
 {
   Octave_object retval;
   char *scanf_fmt = (char *) NULL;
@@ -1271,9 +1273,11 @@ num_items_remaining (FILE *fptr, char *type)
  *     count	 : number of elements read
  */
 Octave_object
-fread_internal (const Octave_object& args, int nargin, int nargout)
+fread_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   Pix p = file_io_get_file (args(1), "r", "fread");
 
@@ -1405,9 +1409,11 @@ fread_internal (const Octave_object& args, int nargin, int nargout)
  *    count     : the number of elements written
  */
 Octave_object
-fwrite_internal (const Octave_object& args, int nargin, int nargout)
+fwrite_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   Pix p = file_io_get_file (args(1), "a+", "fwrite");
 
@@ -1448,7 +1454,7 @@ fwrite_internal (const Octave_object& args, int nargin, int nargout)
  *     eof : non zero for an end of file condition
  */
 Octave_object
-feof_internal (const Octave_object& args, int nargin, int nargout)
+feof_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -1476,7 +1482,7 @@ feof_internal (const Octave_object& args, int nargin, int nargout)
  *     errnum  : error number
  */
 Octave_object
-ferror_internal (const Octave_object& args, int nargin, int nargout)
+ferror_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 

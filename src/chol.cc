@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object*
-builtin_chol_2 (const Octave_object& args, int nargin, int nargout)
+builtin_chol_2 (const Octave_object& args, int nargout)
 {
   Octave_object retval (1);
   retval(0) = chol (args(1));

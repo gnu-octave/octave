@@ -42,15 +42,15 @@ static tree_fvc *lsode_fcn;
 
 #ifdef WITH_DLD
 Octave_object
-builtin_lsode_2 (const Octave_object& args, int nargin, int nargout)
+builtin_lsode_2 (const Octave_object& args int nargout)
 {
-  return lsode (args, nargin, nargout);
+  return lsode (args, nargout);
 }
 
 Octave_object
-builtin_lsode_options_2 (const Octave_object& args, int nargin, int nargout)
+builtin_lsode_options_2 (const Octave_object& args, int nargout)
 {
-  return lsode_options (args, nargin, nargout);
+  return lsode_options (args, nargout);
 }
 #endif
 
@@ -85,7 +85,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   if (lsode_fcn != (tree_fvc *) NULL)
     {
-      Octave_object tmp = lsode_fcn->eval (0, 1, args, 3);
+      Octave_object tmp = lsode_fcn->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -108,11 +108,13 @@ lsode_user_function (const ColumnVector& x, double t)
 }
 
 Octave_object
-lsode (const Octave_object& args, int nargin, int nargout)
+lsode (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   lsode_fcn = is_valid_function (args(1), "lsode", 1);
   if (lsode_fcn == (tree_fvc *) NULL
@@ -256,9 +258,11 @@ do_lsode_option (char *keyword, double val)
 }
 
 Octave_object
-lsode_options (const Octave_object& args, int nargin, int nargout)
+lsode_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1)
     print_lsode_option_list ();

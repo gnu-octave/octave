@@ -35,7 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_qr_2 (const Octave_object& args, int nargin, int nargout)
+builtin_qr_2 (const Octave_object& args, int nargout)
 {
   return qr (args(1), nargout);
 }

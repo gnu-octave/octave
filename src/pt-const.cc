@@ -703,7 +703,7 @@ matrix_sqrt (const tree_constant& a)
 }
 
 Octave_object
-column_max (const Octave_object& args, int nargin, int nargout)
+column_max (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -713,6 +713,8 @@ column_max (const Octave_object& args, int nargin, int nargout)
     tree_constant_rep::unknown_constant;
   tree_constant_rep::constant_type arg2_type =
     tree_constant_rep::unknown_constant;
+
+  int nargin = args.length ();
 
   switch (nargin)
     {
@@ -874,7 +876,7 @@ column_max (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-column_min (const Octave_object& args, int nargin, int nargout)
+column_min (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -884,6 +886,8 @@ column_min (const Octave_object& args, int nargin, int nargout)
     tree_constant_rep::unknown_constant;
   tree_constant_rep::constant_type arg2_type =
     tree_constant_rep::unknown_constant;
+
+  int nargin = args.length ();
 
   switch (nargin)
     {
@@ -1179,7 +1183,7 @@ mx_sort (ComplexRowVector& cv, RowVector& idx, int return_idx)
 }
 
 Octave_object
-sort (const Octave_object& args, int nargin, int nargout)
+sort (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
@@ -1274,7 +1278,7 @@ sort (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-feval (const Octave_object& args, int nargin, int nargout)
+feval (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
@@ -1283,10 +1287,11 @@ feval (const Octave_object& args, int nargin, int nargout)
   tree_fvc *fcn = is_valid_function (args(1), "feval", 1);
   if (fcn != (tree_fvc *) NULL)
     {
-      Octave_object tmp_args (--nargin);
+      int nargin = args.length () - 1;
+      Octave_object tmp_args (nargin);
       for (int i = 0; i < nargin; i++)
 	tmp_args(i) = args(i+1);
-      retval = fcn->eval (0, nargout, tmp_args, nargin);
+      retval = fcn->eval (0, nargout, tmp_args);
     }
 
   return retval;
@@ -1371,12 +1376,14 @@ match_sans_spaces (const char *standard, const char *test)
 }
 
 tree_constant
-get_user_input (const Octave_object& args, int nargin, int nargout,
-		int debug = 0)
+get_user_input (const Octave_object& args, int nargout, int debug = 0)
 {
   tree_constant retval;
 
+  int nargin = args.length ();
+
   int read_as_string = 0;
+
   if (nargin == 3)
     {
       if (args(2).is_string_type ()

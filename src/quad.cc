@@ -43,15 +43,15 @@ static tree_fvc *quad_fcn;
 
 #ifdef WITH_DLD
 Octave_object
-builtin_quad_2 (const Octave_object& args, int nargin, int nargout)
+builtin_quad_2 (const Octave_object& args, int nargout)
 {
-  return do_quad (args, nargin, nargout);
+  return do_quad (args, nargout);
 }
 
 Octave_object
-builtin_quad_options_2 (const Octave_object& args, int nargin, int nargout)
+builtin_quad_options_2 (const Octave_object& args, int nargout)
 {
-  return quad_options (args, nargin, nargout);
+  return quad_options (args, nargout);
 }
 #endif
 
@@ -69,7 +69,7 @@ quad_user_function (double x)
 
   if (quad_fcn != (tree_fvc *) NULL)
     {
-      Octave_object tmp = quad_fcn->eval (0, 1, args, 2);
+      Octave_object tmp = quad_fcn->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -91,11 +91,13 @@ quad_user_function (double x)
 }
 
 Octave_object
-do_quad (const Octave_object& args, int nargin, int nargout)
+do_quad (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   quad_fcn = is_valid_function (args(1), "fsolve", 1);
   if (quad_fcn == (tree_fvc *) NULL
@@ -285,9 +287,11 @@ do_quad_option (char *keyword, double val)
 }
 
 Octave_object
-quad_options (const Octave_object& args, int nargin, int nargout)
+quad_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1)
     print_quad_option_list ();

@@ -46,15 +46,15 @@ static tree_fvc *npsol_constraints;
 
 #ifdef WITH_DLD
 Octave_object
-builtin_npsol_2 (const Octave_object& args, int nargin, int nargout)
+builtin_npsol_2 (const Octave_object& args, int nargout)
 {
-  return npsol (args, nargin, nargout);
+  return npsol (args, nargout);
 }
 
 Octave_object
-builtin_npsol_options_2 (const Octave_object& args, int nargin, int nargout)
+builtin_npsol_options_2 (const Octave_object& args, int nargout)
 {
-  return npsol_options (args, nargin, nargout);
+  return npsol_options (args, nargout);
 }
 #endif
 
@@ -90,7 +90,7 @@ npsol_objective_function (const ColumnVector& x)
   tree_constant objective_value;
   if (npsol_objective != (tree_fvc *) NULL)
     {
-      Octave_object tmp = npsol_objective->eval (0, 1, args, 2);
+      Octave_object tmp = npsol_objective->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -163,7 +163,7 @@ npsol_constraint_function (const ColumnVector& x)
 
   if (npsol_constraints != (tree_fvc *)NULL)
     {
-      Octave_object tmp = npsol_constraints->eval (0, 1, args, 2);
+      Octave_object tmp = npsol_constraints->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -246,7 +246,7 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 }
 
 Octave_object
-npsol (const Octave_object& args, int nargin, int nargout)
+npsol (const Octave_object& args, int nargout)
 {
 /*
 
@@ -266,6 +266,8 @@ Handle all of the following:
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   ColumnVector x = args(1).to_vector ();
 
@@ -696,9 +698,11 @@ do_npsol_option (char *keyword, double val)
 }
 
 Octave_object
-npsol_options (const Octave_object& args, int nargin, int nargout)
+npsol_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1)
     {

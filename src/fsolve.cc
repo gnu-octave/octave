@@ -42,15 +42,15 @@ static tree_fvc *fsolve_fcn;
 
 #ifdef WITH_DLD
 Octave_object
-builtin_fsolve_2 (const Octave_object& args, int nargin, int nargout)
+builtin_fsolve_2 (const Octave_object& args, int nargout)
 {
-  return fsolve (args, nargin, nargout);
+  return fsolve (args, nargout);
 }
 
 Octave_object
-builtin_fsolve_options (const Octave_object& args, int nargin, int nargout)
+builtin_fsolve_options (const Octave_object& args, int nargout)
 {
-  return fsolve_options (args, nargin, nargout);
+  return fsolve_options (args, nargout);
 }
 #endif
 
@@ -112,7 +112,7 @@ fsolve_user_function (const ColumnVector& x)
 
   if (fsolve_fcn != (tree_fvc *) NULL)
     {
-      Octave_object tmp = fsolve_fcn->eval (0, 1, args, 2);
+      Octave_object tmp = fsolve_fcn->eval (0, 1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
 	  retval = tmp(0).to_vector ();
@@ -128,11 +128,13 @@ fsolve_user_function (const ColumnVector& x)
 }
 
 Octave_object
-fsolve (const Octave_object& args, int nargin, int nargout)
+fsolve (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   fsolve_fcn = is_valid_function (args(1), "fsolve", 1);
   if (fsolve_fcn == (tree_fvc *) NULL
@@ -251,9 +253,11 @@ do_fsolve_option (char *keyword, double val)
 }
 
 Octave_object
-fsolve_options (const Octave_object& args, int nargin, int nargout)
+fsolve_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1)
     print_fsolve_option_list ();

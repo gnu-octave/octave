@@ -37,7 +37,7 @@ extern builtin_fcn_ptr octave_dld_tc2 (const char *name,
 				       const char *object);
 
 extern Octave_object octave_dld_tc2_and_go (const Octave_object&,
-					    int nargin, int nargout,
+					    int nargout,
 					    const char *name,
 					    const char *fcn,
 					    const char *object);

@@ -677,13 +677,13 @@ int
 takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
 		     int warn = 0) 
 {
-  int nargs = fcn->max_expected_args () - 1;
-  int e_nargs = expected_nargin - 1;
-  if (nargs != e_nargs)
+  int nargin = fcn->max_expected_args () - 1;
+  int e_nargin = expected_nargin - 1;
+  if (nargin != e_nargin)
     {
       if (warn)
 	error ("%s: expecting function to take %d argument%c", 
-	       warn_for, e_nargs, s_plural (e_nargs));
+	       warn_for, e_nargin, s_plural (e_nargin));
       return 0;
     }
   return 1;

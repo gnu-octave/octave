@@ -34,16 +34,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_colloc_2 (const Octave_object& args, int nargin, int nargout)
+builtin_colloc_2 (const Octave_object& args, int nargout)
 {
-  return collocation_weights (args, nargin);
+  return collocation_weights (args);
 }
 #endif
 
 Octave_object
-collocation_weights (const Octave_object& args, int nargin)
+collocation_weights (const Octave_object& args)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (args(1).const_type () != tree_constant_rep::complex_scalar_constant
       && args(1).const_type () != tree_constant_rep::scalar_constant)

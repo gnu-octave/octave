@@ -36,16 +36,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_schur_2 (const Octave_object& args, int nargin, int nargout)
+builtin_schur_2 (const Octave_object& args, int nargout)
 {
-  return schur (args, nargin, nargout);
+  return schur (args, nargout);
 }
 #endif
 
 Octave_object
-schur (const Octave_object& args, int nargin, int nargout)
+schur (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   tree_constant arg = args(1).make_numeric ();
 

@@ -47,9 +47,9 @@ extern "C"
 
 #ifdef WITH_DLD
 Octave_object
-builtin_rand_2 (const Octave_object& args, int nargin, int nargout)
+builtin_rand_2 (const Octave_object& args, int nargout)
 {
-  return rand_internal (args, nargin, nargout);
+  return rand_internal (args, nargout);
 }
 #endif
 
@@ -103,11 +103,13 @@ curr_rand_dist (void)
 }
 
 Octave_object
-rand_internal (const Octave_object& args, int nargin, int nargout)
+rand_internal (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   static int initialized = 0;
   if (! initialized)

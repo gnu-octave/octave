@@ -172,8 +172,7 @@ public:
 	return rep->make_numeric ();
     }
 
-  tree_constant assign (tree_constant& rhs, const Octave_object& args,
-			int nargs)
+  tree_constant assign (tree_constant& rhs, const Octave_object& args)
     {
       if (rep->count > 1)
 	{
@@ -181,7 +180,7 @@ public:
 	  rep = new tree_constant_rep (*rep);
 	  rep->count = 1;
 	}
-      rep->assign (rhs, args, nargs);
+      rep->assign (rhs, args);
       return *this;
     }
 
@@ -267,13 +266,14 @@ public:
       return *this;
     }
 
-  Octave_object eval (int print, int nargout, const Octave_object& args,
-		      int nargin)
+  Octave_object eval (int print, int nargout, const Octave_object& args)
     {
       Octave_object retval (1);
 
-      if (args.length () > 0 && nargin > 0)
-	retval(0) = rep->do_index (args, nargin);
+// XXX FIXME XXX -- make it safe to call do_index() with
+// args.length () == 0
+      if (args.length () > 0)
+	retval(0) = rep->do_index (args);
       else
 	retval(0) = *this;
 
@@ -308,24 +308,18 @@ extern tree_constant find_nonzero_elem_idx (const tree_constant& a);
 extern Octave_object matrix_log (const tree_constant& a);
 extern Octave_object matrix_sqrt (const tree_constant& a);
 
-extern Octave_object column_max (const Octave_object& args, int nargin,
-				 int nargout);
-
-extern Octave_object column_min (const Octave_object& args, int nargin,
-				 int nargout);
+extern Octave_object column_max (const Octave_object& args, int nargout);
+extern Octave_object column_min (const Octave_object& args, int nargout);
   
-extern Octave_object sort (const Octave_object& args, int nargin,
-			   int nargout);
+extern Octave_object sort (const Octave_object& args, int nargout);
  
-extern Octave_object feval (const Octave_object& args, int nargin,
-			    int nargout);
+extern Octave_object feval (const Octave_object& args, int nargout);
 
 extern tree_constant eval_string (const tree_constant& arg, int&
 				  parse_status);
 
 extern tree_constant get_user_input (const Octave_object& args,
-				     int nargin, int nargout,
-				     int debug = 0);
+				     int nargout, int debug = 0);
 
 #endif
 

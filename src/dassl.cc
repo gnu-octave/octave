@@ -42,15 +42,15 @@ static tree_fvc *dassl_fcn;
 
 #ifdef WITH_DLD
 Octave_object
-builtin_dassl_2 (const Octave_object& args, int nargin, int nargout)
+builtin_dassl_2 (const Octave_object& args, int nargout)
 {
-  return dassl (args, nargin, nargout);
+  return dassl (args, nargout);
 }
 
 Octave_object
-builtin_dassl_options_2 (const Octave_object& args, int nargin, int nargout)
+builtin_dassl_options_2 (const Octave_object& args, int nargout)
 {
-  return dassl_options (args, nargin, nargout);
+  return dassl_options (args, nargout);
 }
 #endif
 
@@ -96,7 +96,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
   if (dassl_fcn != (tree_fvc *) NULL)
     {
-      Octave_object tmp = dassl_fcn->eval (0, 1, args, 4);
+      Octave_object tmp = dassl_fcn->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -119,11 +119,13 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 }
 
 Octave_object
-dassl (const Octave_object& args, int nargin, int nargout)
+dassl (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   dassl_fcn = is_valid_function (args(1), "dassl", 1);
   if (dassl_fcn == (tree_fvc *) NULL
@@ -268,9 +270,11 @@ do_dassl_option (char *keyword, double val)
 }
 
 Octave_object
-dassl_options (const Octave_object& args, int nargin, int nargout)
+dassl_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1)
     print_dassl_option_list ();

@@ -44,7 +44,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_matrix_exp_2 (const Octave_object& args, int nargin, int nargout)
+builtin_matrix_exp_2 (const Octave_object& args, int nargout)
 {
   Octave_object retval (1);
   retval(0) = matrix_exp (args(1));

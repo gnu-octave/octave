@@ -58,14 +58,14 @@ int F77_FCN (zunghr) (const int*, const int*, const int*, Complex*,
 
 #ifdef WITH_DLD
 Octave_object
-builtin_givens_2 (const Octave_object& args, int nargin, int nargout)
+builtin_givens_2 (const Octave_object& args int nargout)
 {
-  return givens (args, nargin, nargout);
+  return givens (args, nargout);
 }
 #endif
 
 Octave_object
-givens (const Octave_object& args, int nargin, int nargout)
+givens (const Octave_object& args, int nargout)
 {
 
   Octave_object retval;

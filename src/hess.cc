@@ -36,14 +36,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_hess_2 (const Octave_object& args, int nargin, int nargout)
+builtin_hess_2 (const Octave_object& args, int nargout)
 {
-  return hess (args, nargin, nargout);
+  return hess (args, nargout);
 }
 #endif
 
 Octave_object
-hess (const Octave_object& args, int nargin, int nargout)
+hess (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 

@@ -56,14 +56,14 @@ extern "C"
 
 #ifdef WITH_DLD
 Octave_object
-builtin_syl_2 (const Octave_object& args, int nargin, int nargout)
+builtin_syl_2 (const Octave_object& args, int nargout)
 {
-  return syl (args, nargin, nargout);
+  return syl (args, nargout);
 }
 #endif
 
 Octave_object
-syl (const Octave_object& args, int nargin, int nargout)
+syl (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 

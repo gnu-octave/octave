@@ -108,11 +108,13 @@ print_as_scalar (const tree_constant& val)
  * Make sure that all arguments have values.
  */
 static int
-all_args_defined (const Octave_object& args, int nargs)
+all_args_defined (const Octave_object& args)
 {
-  while (--nargs > 0)
+  int nargin = args.length ();
+
+  while (--nargin > 0)
     {
-      if (args(nargs).is_undefined ())
+      if (args(nargin).is_undefined ())
 	return 0;
     }
   return 1;
@@ -122,11 +124,13 @@ all_args_defined (const Octave_object& args, int nargs)
  * Are any of the arguments `:'?
  */
 static int
-any_arg_is_magic_colon (const Octave_object& args, int nargs)
+any_arg_is_magic_colon (const Octave_object& args)
 {
-  while (--nargs > 0)
+  int nargin = args.length ();
+
+  while (--nargin > 0)
     {
-      if (args(nargs).const_type () == tree_constant_rep::magic_colon)
+      if (args(nargin).const_type () == tree_constant_rep::magic_colon)
 	return 1;
     }
   return 0;
@@ -573,7 +577,7 @@ tree_matrix::eval (int print)
 }
 
 tree_constant
-tree_fvc::assign (tree_constant& t, const Octave_object& args, int nargs)
+tree_fvc::assign (tree_constant& t, const Octave_object& args)
 {
   panic_impossible ();
   return tree_constant ();
@@ -659,7 +663,7 @@ tree_builtin::eval (int print)
     {
       Octave_object args (1);
       args(0) = tree_constant (my_name);
-      Octave_object tmp = (*general_fcn) (args, 1, 1);
+      Octave_object tmp = (*general_fcn) (args, 1);
       if (tmp.length () > 0)
 	retval = tmp(0);
     }
@@ -670,13 +674,14 @@ tree_builtin::eval (int print)
 }
 
 Octave_object
-tree_builtin::eval (int print, int nargout, const Octave_object& args,
-		    int nargin)
+tree_builtin::eval (int print, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
   if (error_state)
     return retval;
+
+  int nargin = args.length ();
 
   if (text_fcn != (Text_fcn) NULL)
     {
@@ -697,10 +702,10 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args,
     }
   else if (general_fcn != (General_fcn) NULL)
     {
-      if (any_arg_is_magic_colon (args, nargin))
+      if (any_arg_is_magic_colon (args))
 	::error ("invalid use of colon in function argument list");
       else
-	retval = (*general_fcn) (args, nargin, nargout);
+	retval = (*general_fcn) (args, nargout);
     }
   else
     {
@@ -836,8 +841,7 @@ tree_identifier::assign (tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (tree_constant& rhs, const Octave_object& args,
-			 int nargs)
+tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
 {
   tree_constant retval;
 
@@ -859,7 +863,7 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args,
       if (sym->is_variable () && sym->is_defined ())
 	{
 	  tree_fvc *tmp = sym->def ();
-	  retval = tmp->assign (rhs, args, nargs);
+	  retval = tmp->assign (rhs, args);
 	}
       else
 	{
@@ -873,7 +877,7 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args,
 	    }
 
 	  tree_constant *tmp = new tree_constant ();
-	  retval = tmp->assign (rhs, args, nargs);
+	  retval = tmp->assign (rhs, args);
 	  if (retval.is_defined ())
 	    sym->define (tmp);
 	}
@@ -1153,7 +1157,7 @@ tree_identifier::eval (int print)
 
 //	  int nargin = (ans->is_constant ()) ? 0 : 1;
 	  Octave_object tmp_args;
-	  Octave_object tmp = ans->eval (0, nargout, tmp_args, 0);
+	  Octave_object tmp = ans->eval (0, nargout, tmp_args);
 
 	  if (tmp.length () > 0)
 	    retval = tmp(0);
@@ -1217,8 +1221,7 @@ tree_identifier::eval (int print)
 }
 
 Octave_object
-tree_identifier::eval (int print, int nargout, const Octave_object& args,
-		       int nargin)
+tree_identifier::eval (int print, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -1242,7 +1245,7 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args,
 
 	      nargout = 0;
 
-	      retval = ans->eval (0, nargout, args, nargin);
+	      retval = ans->eval (0, nargout, args);
 
 	      if (retval.length () > 0 && retval(0).is_defined ())
 		{
@@ -1262,7 +1265,7 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args,
 		}
 	    }
 	  else
-	    retval = ans->eval (print, nargout, args, nargin);
+	    retval = ans->eval (print, nargout, args);
 	}
     }
 
@@ -1445,7 +1448,7 @@ tree_function::eval (int print)
     return retval;
 
   Octave_object tmp_args;
-  Octave_object tmp = eval (print, 1, tmp_args, 0);
+  Octave_object tmp = eval (print, 1, tmp_args);
 
   if (! error_state && tmp.length () > 0)
     retval = tmp(0);
@@ -1470,8 +1473,7 @@ clear_symbol_table (void *table)
 }
 
 Octave_object
-tree_function::eval (int print, int nargout, const Octave_object& args,
-		     int nargin)
+tree_function::eval (int print, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -1480,6 +1482,8 @@ tree_function::eval (int print, int nargout, const Octave_object& args,
 
   if (cmd_list == NULL_TREE)
     return retval;
+
+  int nargin = args.length ();
 
   begin_unwind_frame ("func_eval");
 
@@ -1516,7 +1520,7 @@ tree_function::eval (int print, int nargout, const Octave_object& args,
   if (param_list != (tree_parameter_list *) NULL
       && ! param_list->varargs_only ())
     {
-      param_list->define_from_arg_vector (args, nargin);
+      param_list->define_from_arg_vector (args);
       if (error_state)
 	goto abort;
     }
@@ -1619,8 +1623,7 @@ tree_expression::eval (int print)
 }
 
 Octave_object
-tree_expression::eval (int print, int nargout, const Octave_object& args,
-		       int nargin)
+tree_expression::eval (int print, int nargout, const Octave_object& args)
 {
   panic_impossible ();
   return Octave_object ();
@@ -2128,14 +2131,15 @@ tree_simple_assignment_expression::eval (int print)
       else
 	{
 // Extract the arguments into a simple vector.
-	  int nargs = 0;
-	  Octave_object args = index->convert_to_const_vector (nargs);
+	  Octave_object args = index->convert_to_const_vector ();
+
+	  int nargin = args.length ();
 
 	  if (error_state)
 	    eval_error ();
-	  else if (nargs > 1)
+	  else if (nargin > 1)
 	    {
-	      ans = lhs->assign (rhs_val, args, nargs);
+	      ans = lhs->assign (rhs_val, args);
 	      if (error_state)
 		eval_error ();
 	    }
@@ -2228,7 +2232,7 @@ tree_multi_assignment_expression::eval (int print)
     return retval;
 
   Octave_object tmp_args;
-  Octave_object result = eval (print, 1, tmp_args, 0);
+  Octave_object result = eval (print, 1, tmp_args);
 
   if (result.length () > 0)
     retval = result(0);
@@ -2238,8 +2242,7 @@ tree_multi_assignment_expression::eval (int print)
 
 Octave_object
 tree_multi_assignment_expression::eval (int print, int nargout,
-					const Octave_object& args,
-					int nargin)
+					const Octave_object& args)
 {
   assert (etype == tree::multi_assignment);
 
@@ -2248,7 +2251,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 
   nargout = lhs->length ();
   Octave_object tmp_args;
-  Octave_object results = rhs->eval (0, nargout, tmp_args, 0);
+  Octave_object results = rhs->eval (0, nargout, tmp_args);
 
   if (error_state)
     eval_error ();
@@ -2567,14 +2570,14 @@ tree_index_expression::eval (int print)
   else
     {
 // Extract the arguments into a simple vector.
-      int nargin = 0;
-      Octave_object args = list->convert_to_const_vector (nargin);
+      Octave_object args = list->convert_to_const_vector ();
 // Don't pass null arguments.
+      int nargin = args.length ();
       if (error_state)
 	eval_error ();
-      else if (nargin > 1 && all_args_defined (args, nargin))
+      else if (nargin > 1 && all_args_defined (args))
 	{
-	  Octave_object tmp = id->eval (print, 1, args, nargin);
+	  Octave_object tmp = id->eval (print, 1, args);
 
 	  if (error_state)
 	    eval_error ();
@@ -2587,8 +2590,7 @@ tree_index_expression::eval (int print)
 }
 
 Octave_object
-tree_index_expression::eval (int print, int nargout,
-			     const Octave_object& args, int nargin)
+tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -2598,21 +2600,20 @@ tree_index_expression::eval (int print, int nargout,
   if (list == (tree_argument_list *) NULL)
     {
       Octave_object tmp_args;
-      retval = id->eval (print, nargout, tmp_args, 0);
+      retval = id->eval (print, nargout, tmp_args);
       if (error_state)
 	eval_error ();
     }
   else
     {
 // Extract the arguments into a simple vector.
-      int nargin = 0;
-      Octave_object args = list->convert_to_const_vector (nargin);
+      Octave_object args = list->convert_to_const_vector ();
 // Don't pass null arguments.
       if (error_state)
 	eval_error ();
-      else if (nargin > 1 && all_args_defined (args, nargin))
+      else if (args.length () > 1 && all_args_defined (args))
 	{
-	  retval = id->eval (print, nargout, args, nargin);
+	  retval = id->eval (print, nargout, args);
 	  if (error_state)
 	    eval_error ();
 	}
@@ -2717,9 +2718,9 @@ tree_argument_list::next_elem (void)
  * evaluating them along the way.
  */
 Octave_object
-tree_argument_list::convert_to_const_vector (int& len)
+tree_argument_list::convert_to_const_vector (void)
 {
-  len = length () + 1;
+  int len = length () + 1;
 
   Octave_object args (len);
 
@@ -2862,11 +2863,12 @@ tree_parameter_list::define (tree_constant *t)
 }
 
 void
-tree_parameter_list::define_from_arg_vector (const Octave_object& args,
-					     int nargin)
+tree_parameter_list::define_from_arg_vector (const Octave_object& args)
 {
   if (args.length () <= 0)
     return;
+
+  int nargin = args.length ();
 
   int expected_nargin = length () + 1;
 

@@ -40,7 +40,7 @@ extern "C"
 void
 octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1)
 {
-  char *mangled_fcn_name = strconcat (name, "__FP13tree_constantii");
+  char *mangled_fcn_name = strconcat (name, "__FP13tree_constanti");
   int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
   if (status != 0)
     dld_perror ("octave_dld_tc2_unlink_by_symbol");
@@ -117,7 +117,7 @@ octave_dld_tc2 (const char *name, const char *fcn, const char *object)
 
   octave_dld_init ();
 
-  char *mangled_fcn_name = strconcat (fcn, "__FP13tree_constantii");
+  char *mangled_fcn_name = strconcat (fcn, "__FP13tree_constanti");
 
 // See if the function has already been loaded.  If not, mark it as
 // undefined.
@@ -141,7 +141,7 @@ octave_dld_tc2 (const char *name, const char *fcn, const char *object)
 }
 
 Octave_object
-octave_dld_tc2_and_go (const Octave_object& args, int nargin, int nargout,
+octave_dld_tc2_and_go (const Octave_object& args, int nargout,
 		       const char *name, const char *fcn, const char *object)
 {
   Octave_object retval;
@@ -149,7 +149,7 @@ octave_dld_tc2_and_go (const Octave_object& args, int nargin, int nargout,
   builtin_fcn_ptr fcn_to_call = octave_dld_tc2 (name, fcn, object);
 
   if (fcn_to_call != (builtin_fcn_ptr) NULL)
-    retval = (*fcn_to_call) (args, nargin, nargout);
+    retval = (*fcn_to_call) (args, nargout);
   else
     error ("octave_dld_tc2_and_go: failed to load `%s'", name);
 

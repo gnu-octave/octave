@@ -1316,7 +1316,7 @@ tree_constant_rep::print (void)
 }
 
 tree_constant
-tree_constant_rep::do_index (const Octave_object& args, int nargin)
+tree_constant_rep::do_index (const Octave_object& args)
 {
   tree_constant retval;
 
@@ -1333,15 +1333,15 @@ tree_constant_rep::do_index (const Octave_object& args, int nargin)
     {
     case complex_scalar_constant:
     case scalar_constant:
-      retval = do_scalar_index (args, nargin);
+      retval = do_scalar_index (args);
       break;
     case complex_matrix_constant:
     case matrix_constant:
-      retval = do_matrix_index (args, nargin);
+      retval = do_matrix_index (args);
       break;
     case string_constant:
       gripe_string_invalid ();
-//      retval = do_string_index (args, nargin);
+//      retval = do_string_index (args);
       break;
     case magic_colon:
     case range_constant:
@@ -1349,7 +1349,7 @@ tree_constant_rep::do_index (const Octave_object& args, int nargin)
 // range indexing functions.
       force_numeric ();
       assert (type_tag != magic_colon && type_tag != range_constant);
-      retval = do_index (args, nargin);
+      retval = do_index (args);
       break;
     default:
       panic_impossible ();
@@ -2656,8 +2656,7 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
  * hand off to other functions to do the real work.
  */
 void
-tree_constant_rep::assign (tree_constant& rhs,
-			   const Octave_object& args, int nargs)
+tree_constant_rep::assign (tree_constant& rhs, const Octave_object& args)
 {
   tree_constant rhs_tmp = rhs.make_numeric ();
 
@@ -2674,11 +2673,11 @@ tree_constant_rep::assign (tree_constant& rhs,
     case complex_scalar_constant:
     case scalar_constant:
     case unknown_constant:
-      do_scalar_assignment (rhs_tmp, args, nargs);
+      do_scalar_assignment (rhs_tmp, args);
       break;
     case complex_matrix_constant:
     case matrix_constant:
-      do_matrix_assignment (rhs_tmp, args, nargs);
+      do_matrix_assignment (rhs_tmp, args);
       break;
     case string_constant:
       ::error ("invalid assignment to string type");
@@ -2697,14 +2696,16 @@ tree_constant_rep::assign (tree_constant& rhs,
  */
 void
 tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
-					 const Octave_object& args, int nargs)
+					 const Octave_object& args)
 {
   assert (type_tag == unknown_constant
 	  || type_tag == scalar_constant
 	  || type_tag == complex_scalar_constant);
 
+  int nargin = args.length ();
+
   if ((rhs.is_scalar_type () || rhs.is_zero_by_zero ())
-      && valid_scalar_indices (args, nargs))
+      && valid_scalar_indices (args))
     {
       if (rhs.is_zero_by_zero ())
 	{
@@ -2773,7 +2774,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 // destroy the current value.  tree_constant_rep::eval(int) will take
 // care of converting single element matrices back to scalars.
 
-      do_matrix_assignment (rhs, args, nargs);
+      do_matrix_assignment (rhs, args);
 
 // I don't think there's any other way to revert back to unknown
 // constant types, so here it is.
@@ -2788,7 +2789,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 	  type_tag = unknown_constant;
 	}
     }
-  else if (nargs > 3 || nargs < 2)
+  else if (nargin > 3 || nargin < 2)
     ::error ("invalid index expression for scalar type");
   else
     ::error ("index invalid or out of range for scalar type");
@@ -2802,7 +2803,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
  */
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 const Octave_object& args, int nargs)
+					 const Octave_object& args)
 {
   assert (type_tag == unknown_constant
 	  || type_tag == matrix_constant
@@ -2829,9 +2830,11 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	}
     }
 
+  int nargin = args.length ();
+
 // The do_matrix_assignment functions can't handle empty matrices, so
 // don't let any pass through here.
-  switch (nargs)
+  switch (nargin)
     {
     case 2:
       if (args.length () <= 0)
@@ -5001,10 +5004,9 @@ tree_constant_rep::valid_as_scalar_index (void) const
 }
 
 tree_constant
-tree_constant_rep::do_scalar_index (const Octave_object& args,
-				    int nargs) const
+tree_constant_rep::do_scalar_index (const Octave_object& args) const
 {
-  if (valid_scalar_indices (args, nargs))
+  if (valid_scalar_indices (args))
     {
       if (type_tag == scalar_constant)
 	return tree_constant (scalar);
@@ -5018,7 +5020,9 @@ tree_constant_rep::do_scalar_index (const Octave_object& args,
       int rows = 0;
       int cols = 0;
 
-      switch (nargs)
+      int nargin = args.length ();
+
+      switch (nargin)
 	{
 	case 3:
 	  {
@@ -5110,10 +5114,11 @@ tree_constant_rep::do_scalar_index (const Octave_object& args,
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (const Octave_object& args,
-				    int nargin) const
+tree_constant_rep::do_matrix_index (const Octave_object& args) const
 {
   tree_constant retval;
+
+  int nargin = args.length ();
 
   switch (nargin)
     {

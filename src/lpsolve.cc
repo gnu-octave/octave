@@ -33,20 +33,20 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_lpsolve_2 (const Octave_object& args, int nargin, int nargout)
+builtin_lpsolve_2 (const Octave_object& args, int nargout)
 {
-  return lpsolve (args, nargin, nargout);
+  return lpsolve (args, nargout);
 }
 
 Octave_object
-builtin_lpsolve_options_2 (const Octave_object& args, int nargin, int nargout) 
+builtin_lpsolve_options_2 (const Octave_object& args, int nargout) 
 {
-  return lpsolve_options (args, nargin, nargout);
+  return lpsolve_options (args, nargout);
 }
 #endif
 
 Octave_object
-lpsolve (const Octave_object& args, int nargin, int nargout)
+lpsolve (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
@@ -56,7 +56,7 @@ lpsolve (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-lpsolve_options (const Octave_object& args, int nargin, int nargout)
+lpsolve_options (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

@@ -43,18 +43,20 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_balance_2 (const Octave_object& args, int nargin, int nargout)
+builtin_balance_2 (const Octave_object& args, int nargout)
 {
-  return balance (args, nargin, nargout);
+  return balance (args, nargout);
 }
 #endif
 
 Octave_object
-balance (const Octave_object& args, int nargin, int nargout)
+balance (const Octave_object& args, int nargout)
 {
   char *bal_job;
   int my_nargin;		// # args w/o optional string arg
   Octave_object retval;
+
+  int nargin = args.length ();
 
   // determine if balancing option is listed
   // set my_nargin to the number of matrix inputs

@@ -140,12 +140,13 @@ fortran_column (int i, int nr)
 }
 
 static inline int
-valid_scalar_indices (const Octave_object& args, int nargs)
+valid_scalar_indices (const Octave_object& args)
 {
-  int valid = (args.length () > 0)
-    && ((nargs == 3 && args(2).valid_as_scalar_index ()
-	 && args(1).valid_as_scalar_index ())
-	|| (nargs == 2 && args(1).valid_as_scalar_index ()));
+  int nargin = args.length ();
+  int valid = ((nargin == 3
+		&& args(2).valid_as_scalar_index ()
+		&& args(1).valid_as_scalar_index ())
+	       || (nargin == 2 && args(1).valid_as_scalar_index ()));
 
   return valid;
 }

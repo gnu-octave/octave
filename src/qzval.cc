@@ -54,14 +54,14 @@ extern "C"
 
 #ifdef WITH_DLD
 Octave_object
-builtin_qzvalue_2 (const Octave_object& args, int nargin, int nargout)
+builtin_qzvalue_2 (const Octave_object& args, int nargout)
 {
-  return qzvalue (args, nargin, nargout);
+  return qzvalue (args, nargout);
 }
 #endif
 
 Octave_object
-qzvalue (const Octave_object& args, int nargin, int nargout)
+qzvalue (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 

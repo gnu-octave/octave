@@ -36,14 +36,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_svd_2 (const Octave_object& args, int nargin, int nargout)
+builtin_svd_2 (const Octave_object& args, int nargout)
 {
-  return svd (args, nargin, nargout);
+  return svd (args, nargout);
 }
 #endif
 
 Octave_object
-svd (const Octave_object& args, int nargin, int nargout)
+svd (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 

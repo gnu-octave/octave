@@ -105,13 +105,13 @@ extern void _rl_output_character_function ();
 #include "dynamic-ld.h"
 #define Q_STR(name) #name
 #define DLD_FCN(name) Q_STR (builtin_##name##_2)
-#define DLD_OBJ(name) Q_STR (tc-##name##.o)
-#define DLD_BUILTIN(args,n_in,n_out,name,code) \
-return octave_dld_tc2_and_go (args, n_in, n_out, Q_STR (name), \
+#define DLD_OBJ(name) Q_STR (f-##name##.o)
+#define DLD_BUILTIN(args,n_out,name,code) \
+return octave_dld_tc2_and_go (args, n_out, Q_STR (name), \
 			      DLD_FCN (name), DLD_OBJ (name));
 
 #else
-#define DLD_BUILTIN(name,args,n_in,n_out,code) code
+#define DLD_BUILTIN(name,args,n_out,code) code
 #endif
 
 // Non-zero means that pwd always give verbatim directory, regardless
@@ -122,15 +122,17 @@ static int verbatim_pwd = 1;
  * Are all elements of a constant nonzero?
  */
 Octave_object
-builtin_all (const Octave_object& args, int nargin, int nargout)
+builtin_all (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("all");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).all ();
@@ -144,15 +146,17 @@ builtin_all (const Octave_object& args, int nargin, int nargout)
  * Are any elements of a constant nonzero?
  */
 Octave_object
-builtin_any (const Octave_object& args, int nargin, int nargout)
+builtin_any (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("any");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).any ();
@@ -166,16 +170,18 @@ builtin_any (const Octave_object& args, int nargin, int nargout)
  * Balancing for eigenvalue problems
  */
 Octave_object
-builtin_balance (const Octave_object& args, int nargin, int nargout)
+builtin_balance (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin <= 1 || nargin > 4 || nargout < 0 || nargout > 4)
     print_usage ("balance");
   else
     {
-      DLD_BUILTIN (args, nargin, nargout, balance,
-		   retval = balance (args, nargin, nargout));
+      DLD_BUILTIN (args, nargout, balance,
+		   retval = balance (args, nargout));
     }
 
   return retval;
@@ -185,12 +191,14 @@ builtin_balance (const Octave_object& args, int nargin, int nargout)
  * Cholesky factorization.
  */
 Octave_object
-builtin_chol (const Octave_object& args, int nargin, int nargout)
+builtin_chol (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2 && (nargout == 0 || nargout == 1))
-    DLD_BUILTIN (args, nargin, nargout, chol,
+    DLD_BUILTIN (args, nargout, chol,
 		 {
 		   retval.resize (1);
 		   retval(0) = chol (args(1));
@@ -205,7 +213,7 @@ builtin_chol (const Octave_object& args, int nargin, int nargout)
  * Clear the screen?
  */
 Octave_object
-builtin_clc (const Octave_object& args, int nargin, int nargout)
+builtin_clc (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -230,7 +238,7 @@ builtin_clc (const Octave_object& args, int nargin, int nargout)
  * Time in a vector.
  */
 Octave_object
-builtin_clock (const Octave_object& args, int nargin, int nargout)
+builtin_clock (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -258,7 +266,7 @@ builtin_clock (const Octave_object& args, int nargin, int nargout)
  * Close the stream to the plotter.
  */
 Octave_object
-builtin_closeplot (const Octave_object& args, int nargin, int nargout)
+builtin_closeplot (const Octave_object& args, int nargout)
 {
   Octave_object retval;
   close_plot_stream ();
@@ -269,15 +277,17 @@ builtin_closeplot (const Octave_object& args, int nargin, int nargout)
  * Collocation roots and weights.
  */
 Octave_object
-builtin_colloc (const Octave_object& args, int nargin, int nargout)
+builtin_colloc (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin < 2 || nargin > 4)
     print_usage ("colloc");
   else
-    DLD_BUILTIN (args, nargin, nargout, colloc,
-		 retval = collocation_weights (args, nargin);)
+    DLD_BUILTIN (args, nargout, colloc,
+		 retval = collocation_weights (args);)
 
   return retval;
 }
@@ -286,15 +296,17 @@ builtin_colloc (const Octave_object& args, int nargin, int nargout)
  * Cumulative sums and products.
  */
 Octave_object
-builtin_cumprod (const Octave_object& args, int nargin, int nargout)
+builtin_cumprod (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("cumprod");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).cumprod ();
@@ -305,15 +317,17 @@ builtin_cumprod (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_cumsum (const Octave_object& args, int nargin, int nargout)
+builtin_cumsum (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("cumsum");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).cumsum ();
@@ -327,13 +341,15 @@ builtin_cumsum (const Octave_object& args, int nargin, int nargout)
  * DAEs.
  */
 Octave_object
-builtin_dassl (const Octave_object& args, int nargin, int nargout)
+builtin_dassl (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin == 5 || nargin == 6) && nargout >= 0)
-    DLD_BUILTIN (args, nargin, nargout, dassl,
-		 retval = dassl (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, dassl,
+		 retval = dassl (args, nargout);)
   else
     print_usage ("dassl");
 
@@ -341,12 +357,12 @@ builtin_dassl (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_dassl_options (const Octave_object& args, int nargin, int nargout)
+builtin_dassl_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-  DLD_BUILTIN (args, nargin, nargout, dassl_options,
-	       retval = dassl_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, dassl_options,
+	       retval = dassl_options (args, nargout);)
 
   return retval;
 }
@@ -355,7 +371,7 @@ builtin_dassl_options (const Octave_object& args, int nargin, int nargout)
  * Time in a string.
  */
 Octave_object
-builtin_date (const Octave_object& args, int nargin, int nargout)
+builtin_date (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -379,12 +395,14 @@ builtin_date (const Octave_object& args, int nargin, int nargout)
  * Determinant of a matrix.
  */
 Octave_object
-builtin_det (const Octave_object& args, int nargin, int nargout)
+builtin_det (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2)
-    DLD_BUILTIN (args, nargin, nargout, det,
+    DLD_BUILTIN (args, nargout, det,
 		 {
 		   retval.resize (1);
 		   retval(0) = determinant (args(1));
@@ -399,9 +417,11 @@ builtin_det (const Octave_object& args, int nargin, int nargout)
  * Diagonal elements of a matrix.
  */
 Octave_object
-builtin_diag (const Octave_object& args, int nargin, int nargout)
+builtin_diag (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     {
@@ -423,9 +443,11 @@ builtin_diag (const Octave_object& args, int nargin, int nargout)
  * Display value without trimmings.
  */
 Octave_object
-builtin_disp (const Octave_object& args, int nargin, int nargout)
+builtin_disp (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     args(1).eval (1);
@@ -439,13 +461,15 @@ builtin_disp (const Octave_object& args, int nargin, int nargout)
  * Compute eigenvalues and eigenvectors.
  */
 Octave_object
-builtin_eig (const Octave_object& args, int nargin, int nargout)
+builtin_eig (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
-    DLD_BUILTIN (args, nargin, nargout, eig,
-		 retval = eig (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, eig,
+		 retval = eig (args, nargout);)
   else
     print_usage ("eig");
 
@@ -458,13 +482,15 @@ builtin_eig (const Octave_object& args, int nargin, int nargout)
  * messages as we go.
  */
 Octave_object
-builtin_error (const Octave_object& args, int nargin, int nargout)
+builtin_error (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
   char *msg = "unspecified_error";
 
-  if (nargin == 2 && args.length () > 0 && args(1).is_defined ())
+  int nargin = args.length ();
+
+  if (nargin == 2 && args(1).is_defined ())
     {
       if (args(1).is_string_type ())
 	{
@@ -488,9 +514,11 @@ builtin_error (const Octave_object& args, int nargin, int nargout)
  * Evaluate text argument as octave source.
  */
 Octave_object
-builtin_eval (const Octave_object& args, int nargin, int nargout)
+builtin_eval (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     {
@@ -508,9 +536,11 @@ builtin_eval (const Octave_object& args, int nargin, int nargout)
  * Check if variable or file exists.
  */
 Octave_object
-builtin_exist (const Octave_object& args, int nargin, int nargout)
+builtin_exist (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2 && args(1).is_string_type ())
     {
@@ -528,12 +558,14 @@ builtin_exist (const Octave_object& args, int nargin, int nargout)
  * Matrix exponential.
  */
 Octave_object
-builtin_expm (const Octave_object& args, int nargin, int nargout)
+builtin_expm (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2)
-    DLD_BUILTIN (args, nargin, nargout, matrix_exp,
+    DLD_BUILTIN (args, nargout, matrix_exp,
 		 {
 		   retval.resize (1);
 		   retval(0) = matrix_exp (args(1));
@@ -548,9 +580,11 @@ builtin_expm (const Octave_object& args, int nargin, int nargout)
  * Identity matrix.
  */
 Octave_object
-builtin_eye (const Octave_object& args, int nargin, int nargout)
+builtin_eye (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   switch (nargin)
     {
@@ -574,9 +608,11 @@ builtin_eye (const Octave_object& args, int nargin, int nargout)
  * Closing a file
  */
 Octave_object
-builtin_fclose (const Octave_object& args, int nargin, int nargout)
+builtin_fclose (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("fclose");
@@ -590,14 +626,16 @@ builtin_fclose (const Octave_object& args, int nargin, int nargout)
  * Check file for EOF condition.
  */
 Octave_object
-builtin_feof (const Octave_object& args, int nargin, int nargout)
+builtin_feof (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("feof");
   else
-    retval = feof_internal (args, nargin, nargout);
+    retval = feof_internal (args, nargout);
 
   return retval;
 }
@@ -606,14 +644,16 @@ builtin_feof (const Octave_object& args, int nargin, int nargout)
  * Check file for error condition.
  */
 Octave_object
-builtin_ferror (const Octave_object& args, int nargin, int nargout)
+builtin_ferror (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("ferror");
   else
-    retval = ferror_internal (args, nargin, nargout);
+    retval = ferror_internal (args, nargout);
 
   return retval;
 }
@@ -622,12 +662,14 @@ builtin_ferror (const Octave_object& args, int nargin, int nargout)
  * Evaluate first argument as a function.
  */
 Octave_object
-builtin_feval (const Octave_object& args, int nargin, int nargout)
+builtin_feval (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin > 1)
-    retval = feval (args, nargin, nargout);
+    retval = feval (args, nargout);
   else
     print_usage ("feval");
 
@@ -638,9 +680,11 @@ builtin_feval (const Octave_object& args, int nargin, int nargout)
  * Flushing output to a file.
  */
 Octave_object
-builtin_fflush (const Octave_object& args, int nargin, int nargout)
+builtin_fflush (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("fflush");
@@ -654,12 +698,14 @@ builtin_fflush (const Octave_object& args, int nargin, int nargout)
  * Fast Fourier Transform.
  */
 Octave_object
-builtin_fft (const Octave_object& args, int nargin, int nargout)
+builtin_fft (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2)
-    DLD_BUILTIN (args, nargin, nargout, fft,
+    DLD_BUILTIN (args, nargout, fft,
 		 {
 		   retval.resize (1);
 		   retval(0) = fft (args(1));
@@ -674,9 +720,11 @@ builtin_fft (const Octave_object& args, int nargin, int nargout)
  * Get a string from a file.
  */
 Octave_object
-builtin_fgets (const Octave_object& args, int nargin, int nargout)
+builtin_fgets (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 3)
     print_usage ("fgets");
@@ -691,9 +739,11 @@ builtin_fgets (const Octave_object& args, int nargin, int nargout)
  * do_fortran_indexing is true...
  */
 Octave_object
-builtin_find (const Octave_object& args, int nargin, int nargout)
+builtin_find (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     {
@@ -710,9 +760,11 @@ builtin_find (const Octave_object& args, int nargin, int nargout)
  * Don\'t really count floating point operations.
  */
 Octave_object
-builtin_flops (const Octave_object& args, int nargin, int nargout)
+builtin_flops (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin > 2)
     print_usage ("flops");
@@ -729,9 +781,11 @@ builtin_flops (const Octave_object& args, int nargin, int nargout)
  * Opening a file.
  */
 Octave_object
-builtin_fopen (const Octave_object& args, int nargin, int nargout)
+builtin_fopen (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 3)
     print_usage ("fopen");
@@ -745,14 +799,16 @@ builtin_fopen (const Octave_object& args, int nargin, int nargout)
  * Formatted printing to a file.
  */
 Octave_object
-builtin_fprintf (const Octave_object& args, int nargin, int nargout)
+builtin_fprintf (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin < 3)
     print_usage ("fprintf");
   else
-    retval = do_printf ("fprintf", args, nargin, nargout);
+    retval = do_printf ("fprintf", args, nargout);
 
   return retval;
 }
@@ -761,14 +817,16 @@ builtin_fprintf (const Octave_object& args, int nargin, int nargout)
  * Read binary data from a file.
  */
 Octave_object
-builtin_fread (const Octave_object& args, int nargin, int nargout)
+builtin_fread (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin < 2 || nargin > 4)
     print_usage ("fread");
   else
-    retval = fread_internal (args, nargin, nargout);
+    retval = fread_internal (args, nargout);
 
   return retval;
 }
@@ -777,9 +835,11 @@ builtin_fread (const Octave_object& args, int nargin, int nargout)
  * Rewind a file.
  */
 Octave_object
-builtin_frewind (const Octave_object& args, int nargin, int nargout)
+builtin_frewind (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("frewind");
@@ -793,9 +853,11 @@ builtin_frewind (const Octave_object& args, int nargin, int nargout)
  * Report on open files.
  */
 Octave_object
-builtin_freport (const Octave_object& args, int nargin, int nargout)
+builtin_freport (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin > 1)
     warning ("freport: ignoring extra arguments");
@@ -809,14 +871,16 @@ builtin_freport (const Octave_object& args, int nargin, int nargout)
  * Formatted reading from a file.
  */
 Octave_object
-builtin_fscanf (const Octave_object& args, int nargin, int nargout)
+builtin_fscanf (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2 && nargin != 3)
     print_usage ("fscanf");
   else
-    retval = do_scanf ("fscanf", args, nargin, nargout);
+    retval = do_scanf ("fscanf", args, nargout);
 
   return retval;
 }
@@ -825,14 +889,16 @@ builtin_fscanf (const Octave_object& args, int nargin, int nargout)
  * Seek a point in a file for reading and/or writing.
  */
 Octave_object
-builtin_fseek (const Octave_object& args, int nargin, int nargout)
+builtin_fseek (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 3 && nargin != 4)
     print_usage ("fseek");
   else
-    retval = fseek_internal (args, nargin);
+    retval = fseek_internal (args);
 
   return retval;
 }
@@ -841,13 +907,15 @@ builtin_fseek (const Octave_object& args, int nargin, int nargout)
  * Nonlinear algebraic equations.
  */
 Octave_object
-builtin_fsolve (const Octave_object& args, int nargin, int nargout)
+builtin_fsolve (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin >= 3 && nargin <= 7 && nargout >= 0 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, fsolve,
-		 retval = fsolve (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, fsolve,
+		 retval = fsolve (args, nargout);)
   else
     print_usage ("fsolve");
 
@@ -855,12 +923,12 @@ builtin_fsolve (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_fsolve_options (const Octave_object& args, int nargin, int nargout)
+builtin_fsolve_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-  DLD_BUILTIN (args, nargin, nargout, fsolve_options,
-	       retval = fsolve_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, fsolve_options,
+	       retval = fsolve_options (args, nargout);)
 
   return retval;
 }
@@ -869,18 +937,20 @@ builtin_fsolve_options (const Octave_object& args, int nargin, int nargout)
  * NLPs.
  */
 Octave_object
-builtin_fsqp (const Octave_object& args, int nargin, int nargout)
+builtin_fsqp (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
 #if defined (FSQP_MISSING)
   print_usage ("fsqp");
 #else
+  int nargin = args.length ();
+
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
       && (nargout >= 0 && nargout <= 3))
-    DLD_BUILTIN (args, nargin, nargout, fsqp,
-		 retval = fsqp (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, fsqp,
+		 retval = fsqp (args, nargout);)
   else
     print_usage ("fsolve");
 #endif
@@ -889,15 +959,15 @@ builtin_fsqp (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_fsqp_options (const Octave_object& args, int nargin, int nargout)
+builtin_fsqp_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
 #if defined (FSQP_MISSING)
   print_usage ("fsqp_options");
 #else
-  DLD_BUILTIN (args, nargin, nargout, fsqp_options,
-	       retval = fsqp_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, fsqp_options,
+	       retval = fsqp_options (args, nargout);)
 #endif
 
   return retval;
@@ -907,9 +977,11 @@ builtin_fsqp_options (const Octave_object& args, int nargin, int nargout)
  * Tell current position of file.
  */
 Octave_object
-builtin_ftell (const Octave_object& args, int nargin, int nargout)
+builtin_ftell (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("ftell");
@@ -923,14 +995,16 @@ builtin_ftell (const Octave_object& args, int nargin, int nargout)
  * Write binary data to a file.
  */
 Octave_object
-builtin_fwrite (const Octave_object& args, int nargin, int nargout)
+builtin_fwrite (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin < 3 || nargin > 4)
     print_usage ("fwrite");
   else
-    retval = fwrite_internal (args, nargin, nargout);
+    retval = fwrite_internal (args, nargout);
 
   return retval;
 }
@@ -939,9 +1013,11 @@ builtin_fwrite (const Octave_object& args, int nargin, int nargout)
  * Get the value of an environment variable.
  */
 Octave_object
-builtin_getenv (const Octave_object& args, int nargin, int nargout)
+builtin_getenv (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2 && args(1).is_string_type ())
     {
@@ -962,12 +1038,14 @@ builtin_getenv (const Octave_object& args, int nargin, int nargout)
  * Inverse Fast Fourier Transform.
  */
 Octave_object
-builtin_ifft (const Octave_object& args, int nargin, int nargout)
+builtin_ifft (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2)
-    DLD_BUILTIN (args, nargin, nargout, ifft,
+    DLD_BUILTIN (args, nargout, ifft,
 		 {
 		   retval.resize (1);
 		   retval(0) = ifft (args(1));
@@ -982,12 +1060,14 @@ builtin_ifft (const Octave_object& args, int nargin, int nargout)
  * Inverse of a square matrix.
  */
 Octave_object
-builtin_inv (const Octave_object& args, int nargin, int nargout)
+builtin_inv (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2)
-    DLD_BUILTIN (args, nargin, nargout, inv,
+    DLD_BUILTIN (args, nargout, inv,
 		 {
 		   retval.resize (1);
 		   retval(0) = inverse (args(1));
@@ -1002,14 +1082,16 @@ builtin_inv (const Octave_object& args, int nargin, int nargout)
  * Prompt user for input.
  */
 Octave_object
-builtin_input (const Octave_object& args, int nargin, int nargout)
+builtin_input (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2 || nargin == 3)
     {
       retval.resize (1);
-      retval(0) = get_user_input (args, nargin, nargout);
+      retval(0) = get_user_input (args, nargout);
     }
   else
     print_usage ("input");
@@ -1021,10 +1103,12 @@ builtin_input (const Octave_object& args, int nargin, int nargout)
  * Does the given string name a global variable?
  */
 Octave_object
-builtin_is_global (const Octave_object& args, int nargin, int nargout)
+builtin_is_global (const Octave_object& args, int nargout)
 {
   Octave_object retval(1);
   retval(0) = tree_constant (0.0);
+
+  int nargin = args.length ();
 
   if (nargin == 2 && args(1).is_string_type ())
     {
@@ -1042,15 +1126,17 @@ builtin_is_global (const Octave_object& args, int nargin, int nargout)
  * Is the argument a string?
  */
 Octave_object
-builtin_isstr (const Octave_object& args, int nargin, int nargout)
+builtin_isstr (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("isstr");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).isstr ();
@@ -1061,7 +1147,7 @@ builtin_isstr (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_kbhit (const Octave_object& args, int nargin, int nargout)
+builtin_kbhit (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -1084,14 +1170,16 @@ builtin_kbhit (const Octave_object& args, int nargin, int nargout)
  * Maybe help in debugging.
  */
 Octave_object
-builtin_keyboard (const Octave_object& args, int nargin, int nargout)
+builtin_keyboard (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
     {
       retval.resize (1);
-      retval(0) = get_user_input (args, nargin, nargout, 1);
+      retval(0) = get_user_input (args, nargout, 1);
     }
   else
     print_usage ("keyboard");
@@ -1103,9 +1191,11 @@ builtin_keyboard (const Octave_object& args, int nargin, int nargout)
  * Matrix logarithm.
  */
 Octave_object
-builtin_logm (const Octave_object& args, int nargin, int nargout)
+builtin_logm (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     retval = matrix_log (args(1));
@@ -1119,7 +1209,7 @@ builtin_logm (const Octave_object& args, int nargin, int nargout)
  * LPs.
  */
 Octave_object
-builtin_lpsolve (const Octave_object& args, int nargin, int nargout)
+builtin_lpsolve (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -1130,9 +1220,11 @@ builtin_lpsolve (const Octave_object& args, int nargin, int nargout)
   retval(1) = tree_constant (m);
   retval(2) = tree_constant (-1.0);
 
+  int nargin = args.length ();
+
   if (nargin == 0)
-    DLD_BUILTIN (args, nargin, nargout, lpsolve,
-		 retval = lpsolve (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, lpsolve,
+		 retval = lpsolve (args, nargout);)
   else
     print_usage ("lp_solve");
 
@@ -1140,12 +1232,12 @@ builtin_lpsolve (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_lpsolve_options (const Octave_object& args, int nargin, int nargout)
+builtin_lpsolve_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-  DLD_BUILTIN (args, nargin, nargout, lpsolve_options,
-	       retval = lpsolve_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, lpsolve_options,
+	       retval = lpsolve_options (args, nargout);)
 
   return retval;
 }
@@ -1154,13 +1246,15 @@ builtin_lpsolve_options (const Octave_object& args, int nargin, int nargout)
  * ODEs.
  */
 Octave_object
-builtin_lsode (const Octave_object& args, int nargin, int nargout)
+builtin_lsode (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin == 4 || nargin == 5) && (nargout == 0 || nargout == 1))
-    DLD_BUILTIN (args, nargin, nargout, lsode,
-		 retval = lsode (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, lsode,
+		 retval = lsode (args, nargout);)
   else
     print_usage ("lsode");
 
@@ -1168,12 +1262,12 @@ builtin_lsode (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_lsode_options (const Octave_object& args, int nargin, int nargout)
+builtin_lsode_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-  DLD_BUILTIN (args, nargin, nargout, lsode_options,
-	       retval = lsode_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, lsode_options,
+	       retval = lsode_options (args, nargout);)
 
   return retval;
 }
@@ -1182,12 +1276,14 @@ builtin_lsode_options (const Octave_object& args, int nargin, int nargout)
  * LU factorization.
  */
 Octave_object
-builtin_lu (const Octave_object& args, int nargin, int nargout)
+builtin_lu (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2 && nargout < 4)
-    DLD_BUILTIN (args, nargin, nargout, lu,
+    DLD_BUILTIN (args, nargout, lu,
 		 retval = lu (args(1), nargout);)
   else
     print_usage ("lu");
@@ -1199,13 +1295,15 @@ builtin_lu (const Octave_object& args, int nargin, int nargout)
  * Max values.
  */
 Octave_object
-builtin_max (const Octave_object& args, int nargin, int nargout)
+builtin_max (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
       || (nargin == 3 && (nargout == 0 || nargout == 1)))
-    retval = column_max (args, nargin, nargout);
+    retval = column_max (args, nargout);
   else
     print_usage ("max");
 
@@ -1216,13 +1314,15 @@ builtin_max (const Octave_object& args, int nargin, int nargout)
  * Min values.
  */
 Octave_object
-builtin_min (const Octave_object& args, int nargin, int nargout)
+builtin_min (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
       || (nargin == 3 && (nargout == 0 || nargout == 1)))
-    retval = column_min (args, nargin, nargout);
+    retval = column_min (args, nargout);
   else
     print_usage ("min");
 
@@ -1233,7 +1333,7 @@ builtin_min (const Octave_object& args, int nargin, int nargout)
  * NLPs.
  */
 Octave_object
-builtin_npsol (const Octave_object& args, int nargin, int nargout)
+builtin_npsol (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -1247,11 +1347,13 @@ builtin_npsol (const Octave_object& args, int nargin, int nargout)
   retval(3) = tree_constant (m);
   print_usage ("npsol");
 #else
+  int nargin = args.length ();
+
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
       && (nargout >= 0 && nargout <= 4))
-    DLD_BUILTIN (args, nargin, nargout, npsol,
-		 retval = npsol (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, npsol,
+		 retval = npsol (args, nargout);)
   else
     print_usage ("npsol");
 #endif
@@ -1260,15 +1362,15 @@ builtin_npsol (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_npsol_options (const Octave_object& args, int nargin, int nargout)
+builtin_npsol_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
 #if defined (NPSOL_MISSING)
   print_usage ("npsol_options");
 #else
-  DLD_BUILTIN (args, nargin, nargout, npsol_options,
-	       retval = npsol_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, npsol_options,
+	       retval = npsol_options (args, nargout);)
 #endif
 
   return retval;
@@ -1278,9 +1380,11 @@ builtin_npsol_options (const Octave_object& args, int nargin, int nargout)
  * A matrix of ones.
  */
 Octave_object
-builtin_ones (const Octave_object& args, int nargin, int nargout)
+builtin_ones (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   switch (nargin)
     {
@@ -1304,9 +1408,11 @@ builtin_ones (const Octave_object& args, int nargin, int nargout)
  * You guessed it.
  */
 Octave_object
-builtin_pause (const Octave_object& args, int nargin, int nargout)
+builtin_pause (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (! (nargin == 1 || nargin == 2))
     {
@@ -1341,7 +1447,7 @@ builtin_pause (const Octave_object& args, int nargin, int nargout)
  * Delete turds from /tmp.
  */
 Octave_object
-builtin_purge_tmp_files (const Octave_object& , int, int)
+builtin_purge_tmp_files (const Octave_object& args, int nargout)
 {
   Octave_object retval;
   cleanup_tmp_files ();
@@ -1352,14 +1458,16 @@ builtin_purge_tmp_files (const Octave_object& , int, int)
  * Formatted printing.
  */
 Octave_object
-builtin_printf (const Octave_object& args, int nargin, int nargout)
+builtin_printf (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ("printf");
   else
-    retval = do_printf ("printf", args, nargin, nargout);
+    retval = do_printf ("printf", args, nargout);
 
   return retval;
 }
@@ -1368,15 +1476,17 @@ builtin_printf (const Octave_object& args, int nargin, int nargout)
  * Product.
  */
 Octave_object
-builtin_prod (const Octave_object& args, int nargin, int nargout)
+builtin_prod (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("prod");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).prod ();
@@ -1390,7 +1500,7 @@ builtin_prod (const Octave_object& args, int nargin, int nargout)
  * Print name of current working directory.
  */
 Octave_object
-builtin_pwd (const Octave_object& args, int nargin, int nargout)
+builtin_pwd (const Octave_object& args, int nargout)
 {
   Octave_object retval;
   char *directory;
@@ -1425,7 +1535,7 @@ builtin_pwd (const Octave_object& args, int nargin, int nargout)
  * QPs.
  */
 Octave_object
-builtin_qpsol (const Octave_object& args, int nargin, int nargout)
+builtin_qpsol (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -1439,10 +1549,12 @@ builtin_qpsol (const Octave_object& args, int nargin, int nargout)
   retval(3) = tree_constant (m);
   print_usage ("qpsol");
 #else
+  int nargin = args.length ();
+
   if ((nargin == 4 || nargin == 6 || nargin == 7 || nargin == 9)
       && (nargout >= 0 && nargout <= 4))
-    DLD_BUILTIN (args, nargin, nargout, qpsol,
-		 retval = qpsol (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, qpsol,
+		 retval = qpsol (args, nargout);)
   else
     print_usage ("qpsol");
 #endif
@@ -1451,15 +1563,15 @@ builtin_qpsol (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_qpsol_options (const Octave_object& args, int nargin, int nargout)
+builtin_qpsol_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
 #if defined (QPSOL_MISSING)
   print_usage ("qpsol");
 #else
-  DLD_BUILTIN (args, nargin, nargout, qpsol_options,
-	       retval = qpsol_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, qpsol_options,
+	       retval = qpsol_options (args, nargout);)
 #endif
 
   return retval;
@@ -1469,12 +1581,14 @@ builtin_qpsol_options (const Octave_object& args, int nargin, int nargout)
  * QR factorization.
  */
 Octave_object
-builtin_qr (const Octave_object& args, int nargin, int nargout)
+builtin_qr (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2 && nargout < 3)
-    DLD_BUILTIN (args, nargin, nargout, qr,
+    DLD_BUILTIN (args, nargout, qr,
 		 retval = qr (args(1), nargout);)
   else
     print_usage ("qr");
@@ -1486,13 +1600,15 @@ builtin_qr (const Octave_object& args, int nargin, int nargout)
  * generalized eigenvalues via qz
  */
 Octave_object
-builtin_qzval (const Octave_object& args, int nargin, int nargout)
+builtin_qzval (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 3 && nargout < 2)
-    DLD_BUILTIN (args, nargin, nargout, qzvalue,
-		 retval = qzvalue (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, qzvalue,
+		 retval = qzvalue (args, nargout);)
   else
     print_usage ("qzval");
 
@@ -1503,13 +1619,15 @@ builtin_qzval (const Octave_object& args, int nargin, int nargout)
  * Random numbers.
  */
 Octave_object
-builtin_quad (const Octave_object& args, int nargin, int nargout)
+builtin_quad (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin > 3 && nargin < 7) && (nargout >= 0 && nargout < 5))
-    DLD_BUILTIN (args, nargin, nargout, quad,
-		 retval = do_quad (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, quad,
+		 retval = do_quad (args, nargout);)
   else
     print_usage ("quad");
 
@@ -1517,12 +1635,12 @@ builtin_quad (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_quad_options (const Octave_object& args, int nargin, int nargout)
+builtin_quad_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-  DLD_BUILTIN (args, nargin, nargout, quad_options,
-	       retval = quad_options (args, nargin, nargout);)
+  DLD_BUILTIN (args, nargout, quad_options,
+	       retval = quad_options (args, nargout);)
 
   return retval;
 }
@@ -1531,7 +1649,7 @@ builtin_quad_options (const Octave_object& args, int nargin, int nargout)
  * I'm outta here.
  */
 Octave_object
-builtin_quit (const Octave_object& args, int nargin, int nargout)
+builtin_quit (const Octave_object& args, int nargout)
 {
   Octave_object retval;
   quitting_gracefully = 1;
@@ -1543,13 +1661,15 @@ builtin_quit (const Octave_object& args, int nargin, int nargout)
  * Random numbers.
  */
 Octave_object
-builtin_rand (const Octave_object& args, int nargin, int nargout)
+builtin_rand (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin > 0 && nargin < 4) && (nargout == 0 || nargout == 1))
-    DLD_BUILTIN (args, nargin, nargout, rand,
-		 retval = rand_internal (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, rand,
+		 retval = rand_internal (args, nargout);)
   else
     print_usage ("rand");
 
@@ -1560,14 +1680,16 @@ builtin_rand (const Octave_object& args, int nargin, int nargout)
  * Formatted reading.
  */
 Octave_object
-builtin_scanf (const Octave_object& args, int nargin, int nargout)
+builtin_scanf (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("scanf");
   else
-    retval = do_scanf ("scanf", args, nargin, nargout);
+    retval = do_scanf ("scanf", args, nargout);
 
   return retval;
 }
@@ -1576,9 +1698,11 @@ builtin_scanf (const Octave_object& args, int nargin, int nargout)
  * Convert a vector to a string.
  */
 Octave_object
-builtin_setstr (const Octave_object& args, int nargin, int nargout)
+builtin_setstr (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     {
@@ -1595,9 +1719,11 @@ builtin_setstr (const Octave_object& args, int nargin, int nargout)
  * Execute a shell command.
  */
 Octave_object
-builtin_shell_command (const Octave_object& args, int nargin, int nargout)
+builtin_shell_command (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2 && args(1).is_string_type ())
     {
@@ -1633,15 +1759,17 @@ builtin_shell_command (const Octave_object& args, int nargin, int nargout)
  * Report rows and columns.
  */
 Octave_object
-builtin_size (const Octave_object& args, int nargin, int nargout)
+builtin_size (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("size");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  int nr = args(1).rows ();
 	  int nc = args(1).columns ();
@@ -1671,12 +1799,14 @@ builtin_size (const Octave_object& args, int nargin, int nargout)
  * Sort columns.
  */
 Octave_object
-builtin_sort (const Octave_object& args, int nargin, int nargout)
+builtin_sort (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2)
-    retval = sort (args, nargin, nargout);
+    retval = sort (args, nargout);
   else
     print_usage ("sort");
 
@@ -1687,14 +1817,16 @@ builtin_sort (const Octave_object& args, int nargin, int nargout)
  * Formatted printing to a string.
  */
 Octave_object
-builtin_sprintf (const Octave_object& args, int nargin, int nargout)
+builtin_sprintf (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ("sprintf");
   else
-    retval = do_printf ("sprintf", args, nargin, nargout);
+    retval = do_printf ("sprintf", args, nargout);
 
   return retval;
 }
@@ -1703,9 +1835,11 @@ builtin_sprintf (const Octave_object& args, int nargin, int nargout)
  * Matrix sqrt.
  */
 Octave_object
-builtin_sqrtm (const Octave_object& args, int nargin, int nargout)
+builtin_sqrtm (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 2)
     retval = matrix_sqrt (args(1));
@@ -1719,14 +1853,16 @@ builtin_sqrtm (const Octave_object& args, int nargin, int nargout)
  * Formatted reading from a string.
  */
 Octave_object
-builtin_sscanf (const Octave_object& args, int nargin, int nargout)
+builtin_sscanf (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 3)
     print_usage ("sscanf");
   else
-    retval = do_scanf ("sscanf", args, nargin, nargout);
+    retval = do_scanf ("sscanf", args, nargout);
 
   return retval;
 }
@@ -1735,15 +1871,17 @@ builtin_sscanf (const Octave_object& args, int nargin, int nargout)
  * Sum.
  */
 Octave_object
-builtin_sum (const Octave_object& args, int nargin, int nargout)
+builtin_sum (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("sum");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).sum ();
@@ -1757,15 +1895,17 @@ builtin_sum (const Octave_object& args, int nargin, int nargout)
  * Sum of squares.
  */
 Octave_object
-builtin_sumsq (const Octave_object& args, int nargin, int nargout)
+builtin_sumsq (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ("sumsq");
   else
     {
-      if (args.length () > 0 && args(1).is_defined ())
+      if (nargin > 0 && args(1).is_defined ())
 	{
 	  retval.resize (1);
 	  retval(0) = args(1).sumsq ();
@@ -1779,13 +1919,15 @@ builtin_sumsq (const Octave_object& args, int nargin, int nargout)
  * Singluar value decomposition.
  */
 Octave_object
-builtin_svd (const Octave_object& args, int nargin, int nargout)
+builtin_svd (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 3))
-    DLD_BUILTIN (args, nargin, nargout, svd,
-		 retval = svd (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, svd,
+		 retval = svd (args, nargout);)
   else
     print_usage ("svd");
 
@@ -1796,13 +1938,15 @@ builtin_svd (const Octave_object& args, int nargin, int nargout)
  * Sylvester equation solver.
  */
 Octave_object
-builtin_syl (const Octave_object& args, int nargin, int nargout)
+builtin_syl (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin == 4) && (nargout == 0 || nargout == 1))
-    DLD_BUILTIN (args, nargin, nargout, syl,
-		 retval = syl (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, syl,
+		 retval = syl (args, nargout);)
   else
     print_usage ("syl");
 
@@ -1813,14 +1957,16 @@ builtin_syl (const Octave_object& args, int nargin, int nargout)
  * Schur Decomposition.
  */
 Octave_object
-builtin_schur (const Octave_object& args, int nargin, int nargout)
+builtin_schur (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if ((nargin == 3 || nargin == 2)
       && (nargout == 0 || nargout == 1 || nargout == 2))
-    DLD_BUILTIN (args, nargin, nargout, schur,
-		 retval = schur (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, schur,
+		 retval = schur (args, nargout);)
   else
     print_usage ("schur");
 
@@ -1831,12 +1977,14 @@ builtin_schur (const Octave_object& args, int nargin, int nargout)
  * Givens rotation.
  */
 Octave_object
-builtin_givens (const Octave_object& args, int nargin, int nargout)
+builtin_givens (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 3 && (nargout == 0 || nargout == 1 || nargout == 2 ))
-    retval = givens (args, nargin, nargout);
+    retval = givens (args, nargout);
   else
     print_usage ("givens");
 
@@ -1847,13 +1995,15 @@ builtin_givens (const Octave_object& args, int nargin, int nargout)
  * Hessenberg Decomposition.
  */
 Octave_object
-builtin_hess (const Octave_object& args, int nargin, int nargout)
+builtin_hess (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
+  int nargin = args.length ();
+
   if (nargin == 2 && (nargout == 0 || nargout == 1 || nargout == 2))
-    DLD_BUILTIN (args, nargin, nargout, hess,
-		 retval = hess (args, nargin, nargout);)
+    DLD_BUILTIN (args, nargout, hess,
+		 retval = hess (args, nargout);)
   else
     print_usage ("hess");
 
@@ -1864,9 +2014,12 @@ builtin_hess (const Octave_object& args, int nargin, int nargout)
  * Variable argument lists.
  */
 Octave_object
-builtin_va_arg (const Octave_object& args, int nargin, int nargout)
+builtin_va_arg (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
   if (nargin == 1)
     {
       if (curr_function != (tree_function *) NULL)
@@ -1892,9 +2045,12 @@ builtin_va_arg (const Octave_object& args, int nargin, int nargout)
 }
 
 Octave_object
-builtin_va_start (const Octave_object& args, int nargin, int nargout)
+builtin_va_start (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
   if (nargin == 1)
     {
       if (curr_function != (tree_function *) NULL)
@@ -1920,7 +2076,7 @@ builtin_va_start (const Octave_object& args, int nargin, int nargout)
  * Copying information.
  */
 Octave_object
-builtin_warranty (const Octave_object& args, int nargin, int nargout)
+builtin_warranty (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
@@ -1950,9 +2106,11 @@ builtin_warranty (const Octave_object& args, int nargin, int nargout)
  * A matrix of zeros.
  */
 Octave_object
-builtin_zeros (const Octave_object& args, int nargin, int nargout)
+builtin_zeros (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   switch (nargin)
     {

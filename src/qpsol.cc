@@ -48,22 +48,22 @@ extern int linear_constraints_ok (const ColumnVector& x,
 
 #ifdef WITH_DLD
 Octave_object
-builtin_qpsol_2 (const Octave_object& args, int nargin, int nargout)
+builtin_qpsol_2 (const Octave_object& args, int nargout)
 {
-  return qpsol (args, nargin, nargout);
+  return qpsol (args, nargout);
 }
 
 Octave_object
-builtin_qpsol_options_2 (const Octave_object& args, int nargin, int nargout)
+builtin_qpsol_options_2 (const Octave_object& args, int nargout)
 {
-  return qpsol_options (args, nargin, nargout);
+  return qpsol_options (args, nargout);
 }
 #endif
 
 static QPSOL_options qpsol_opts;
 
 Octave_object
-qpsol (const Octave_object& args, int nargin, int nargout)
+qpsol (const Octave_object& args, int nargout)
 {
 /*
 
@@ -79,6 +79,8 @@ Handle all of the following:
 // Assumes that we have been given the correct number of arguments.
 
   Octave_object retval;
+
+  int nargin = args.length ();
 
   ColumnVector x = args(1).to_vector ();
   if (x.capacity () == 0)
@@ -317,9 +319,11 @@ do_qpsol_option (char *keyword, double val)
 }
 
 Octave_object
-qpsol_options (const Octave_object& args, int nargin, int nargout)
+qpsol_options (const Octave_object& args, int nargout)
 {
   Octave_object retval;
+
+  int nargin = args.length ();
 
   if (nargin == 1)
     {

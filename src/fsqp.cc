@@ -39,15 +39,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 Octave_object
-builtin_fsqp_2 (const Octave_object& args, int nargin, int nargout)
+builtin_fsqp_2 (const Octave_object& args, int nargout)
 {
-  return fsqp (args, nargin, nargout);
+  return fsqp (args nargout);
 }
 
 Octave_object
-builtin_fsqp_options_2 (const Octave_object& args, int nargin, int nargout)
+builtin_fsqp_options_2 (const Octave_object& args, int nargout)
 {
-  return fsqp_options (args, nargin, nargout);
+  return fsqp_options (args, nargout);
 }
 #endif
 
@@ -65,7 +65,7 @@ fsqp_constraint_function (const ColumnVector& x)
 }
 
 Octave_object
-fsqp (const Octave_object& args, int nargin, int nargout)
+fsqp (const Octave_object& args, int nargout)
 {
 /*
 
@@ -90,7 +90,7 @@ Handle all of the following:
 }
 
 Octave_object
-fsqp_options (const Octave_object& args, int nargin, int nargout)
+fsqp_options (const Octave_object& args, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

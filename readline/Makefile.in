@@ -142,13 +142,13 @@ libhistory.a: history.o
 	$(AR) cq $@ history.o
 	-[ -n "$(RANLIB)" ] && $(RANLIB) $@
 
-stamp-readline:
+stamp-readline: $(PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) -ltermcap; \
 	fi
 	touch stamp-readline
 
-stamp-history:
+stamp-history: $(HIST_PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CC) -shared -o libhistory.$(SHLEXT) $(HIST_PICOBJ); \
 	fi

@@ -117,7 +117,7 @@ OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
 
-OV_INTTYPE_SRC := ov-base-int.cc \
+OV_INTTYPE_SRC := \
 	ov-int8.cc ov-int16.cc ov-int32.cc ov-int64.cc \
 	ov-uint8.cc ov-uint16.cc ov-uint32.cc ov-uint64.cc
 
@@ -153,6 +153,10 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	$(PT_SRC)
 
 SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
+
+EXTRAS := ov-base-int.cc
+
+INCLUDES_FOR_INSTALL := $(INCLUDES) $(EXTRAS)
 
 OBJECTS_4 := $(notdir $(SOURCES))
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
@@ -401,7 +405,7 @@ install-lib:
 
 install-inc:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octincludedir)/octave
-	for f in $(INCLUDES); do \
+	for f in $(INCLUDES_FOR_INSTALL); do \
 	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	done
@@ -424,7 +428,7 @@ uninstall:
 	  rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN_VER); \
 	fi
-	for f in $(INCLUDES) defaults.h oct-conf.h; do \
+	for f in $(INCLUDES_FOR_INSTALL) defaults.h oct-conf.h; do \
 	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	done
 .PHONY: uninstall

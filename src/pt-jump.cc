@@ -28,21 +28,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-// Nonzero means we're breaking out of a loop or function body.
-int breaking = 0;
-
-// Nonzero means we're jumping to the end of a loop.
-int continuing = 0;
-
-// Nonzero means we're returning from a function.  Global because it
-// is also needed in tree-expr.cc.
-int returning = 0;
-
 #include "error.h"
 #include "pt-jump.h"
 #include "pt-walk.h"
 
 // Break.
+
+// Nonzero means we're breaking out of a loop or function body.
+int tree_break_command::breaking = 0;
 
 void
 tree_break_command::eval (void)
@@ -59,6 +52,9 @@ tree_break_command::accept (tree_walker& tw)
 
 // Continue.
 
+// Nonzero means we're jumping to the end of a loop.
+int tree_continue_command::continuing = 0;
+
 void
 tree_continue_command::eval (void)
 {
@@ -73,6 +69,10 @@ tree_continue_command::accept (tree_walker& tw)
 }
 
 // Return.
+
+// Nonzero means we're returning from a function.  Global because it
+// is also needed in tree-expr.cc.
+int tree_return_command::returning = 0;
 
 void
 tree_return_command::eval (void)

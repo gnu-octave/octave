@@ -31,36 +31,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-typedef void (*cleanup_func)(void *ptr);
-
-void add_unwind_protect (cleanup_func fptr, void *ptr);
-void run_unwind_protect (void);
-void discard_unwind_protect (void);
-void begin_unwind_frame (const string& tag);
-void run_unwind_frame (const string& tag);
-void discard_unwind_frame (const string& tag);
-void run_all_unwind_protects (void);
-void discard_all_unwind_protects (void);
-
-void unwind_protect_int_internal (int *ptr, int value);
-void unwind_protect_str_internal (string *ptr, const string& value);
-void unwind_protect_ptr_internal (void **ptr, void *value);
-void unwind_protect_var_internal (void *ptr, void *value, size_t size);
-
-#define unwind_protect_int(i) \
-  unwind_protect_int_internal (&(i), (i))
-
-#define unwind_protect_str(s) \
-  unwind_protect_str_internal (&(s), (s))
-
-#define unwind_protect_ptr(p) \
-  unwind_protect_ptr_internal (static_cast<void **> (&(p)), \
-			       static_cast<void *> (p))
+#include <SLStack.h>
 
 class
 unwind_elem
 {
- public:
+public:
+
+  typedef void (*cleanup_func) (void *ptr);
+
   unwind_elem (void)
     : ue_tag (), ue_fptr (0), ue_ptr (0) { }
 
@@ -90,11 +69,65 @@ unwind_elem
 
   void *ptr (void) { return ue_ptr; }
 
- private:
+private:
+
   string ue_tag;
+
   cleanup_func ue_fptr;
+
   void *ue_ptr;
 };
+
+class
+unwind_protect
+{
+public:
+
+  static void add (unwind_elem::cleanup_func fptr, void *ptr);
+
+  static void run (void);
+
+  static void discard (void);
+
+  static void begin_frame (const string& tag);
+
+  static void run_frame (const string& tag);
+
+  static void discard_frame (const string& tag);
+
+  static void run_all (void);
+
+  static void discard_all (void);
+
+  // Ways to save variables.
+
+  static void save_bool (bool *ptr, bool value);
+
+  static void save_int (int *ptr, int value);
+
+  static void save_str (string *ptr, const string& value);
+
+  static void save_ptr (void **ptr, void *value);
+
+  static void save_var (void *ptr, void *value, size_t size);
+
+  static SLStack<unwind_elem> list;
+};
+
+// We could get by without these macros, but they are nice to have...
+
+#define unwind_protect_bool(b) \
+  unwind_protect::save_bool (&(b), (b))
+
+#define unwind_protect_int(i) \
+  unwind_protect::save_int (&(i), (i))
+
+#define unwind_protect_str(s) \
+  unwind_protect::save_str (&(s), (s))
+
+#define unwind_protect_ptr(p) \
+  unwind_protect::save_ptr (static_cast<void **> (&(p)), \
+			    static_cast<void *> (p))
 
 #endif
 

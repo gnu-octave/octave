@@ -39,20 +39,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-cmd.h"
 #include "pt-id.h"
 #include "pt-idx.h"
+#include "pt-jump.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "utils.h"
 #include "variables.h"
-
-// Nonzero means we're breaking out of a loop or function body.
-extern int breaking;
-
-// Nonzero means we're jumping to the end of a loop.
-extern int continuing;
-
-// Nonzero means we're returning from a function.
-extern int returning;
 
 // If TRUE, turn off printing of results in functions (as if a
 // semicolon has been appended to each statement).
@@ -166,10 +158,11 @@ tree_statement_list::eval (bool silent, int nargout)
 	  if (error_state)
 	    break;
 
-	  if (breaking || continuing)
+	  if (tree_break_command::breaking
+	      || tree_continue_command::continuing)
 	    break;
 
-	  if (returning)
+	  if (tree_return_command::returning)
 	    break;
 	}
       else

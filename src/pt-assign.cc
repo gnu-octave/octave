@@ -44,12 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-walk.h"
 #include "utils.h"
 
-// Nonzero means we're returning from a function.
-extern int returning;
-
-// Nonzero means we're breaking out of a loop or function body.
-extern int breaking;
-
 // TRUE means print the right hand side of an assignment instead of
 // the left.
 static bool Vprint_rhs_assign_val;

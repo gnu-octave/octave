@@ -746,7 +746,7 @@ restore_input_stream (void *f)
 static int
 parse_fcn_file (bool exec_script, const string& ff)
 {
-  begin_unwind_frame ("parse_fcn_file");
+  unwind_protect::begin_frame ("parse_fcn_file");
 
   int script_file_executed = 0;
 
@@ -756,7 +756,7 @@ parse_fcn_file (bool exec_script, const string& ff)
 
   FILE *in_stream = command_editor::get_input_stream ();
 
-  add_unwind_protect (restore_input_stream, in_stream);
+  unwind_protect::add (restore_input_stream, in_stream);
 
   unwind_protect_ptr (ff_instream);
 
@@ -772,7 +772,7 @@ parse_fcn_file (bool exec_script, const string& ff)
 
   FILE *ffile = get_input_from_file (ff, 0);
 
-  add_unwind_protect (safe_fclose, ffile);
+  unwind_protect::add (safe_fclose, ffile);
 
   if (ffile)
     {
@@ -786,7 +786,7 @@ parse_fcn_file (bool exec_script, const string& ff)
 	  // Vsaving_history variable...
 	  command_history::ignore_entries ();
 
-	  add_unwind_protect (restore_command_history, 0);
+	  unwind_protect::add (restore_command_history, 0);
 
 	  unwind_protect_int (Vecho_executing_commands);
 	  unwind_protect_int (Vsaving_history);
@@ -801,8 +801,8 @@ parse_fcn_file (bool exec_script, const string& ff)
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
 
-	  add_unwind_protect (restore_input_buffer, (void *) old_buf);
-	  add_unwind_protect (delete_input_buffer, (void *) new_buf);
+	  unwind_protect::add (restore_input_buffer, (void *) old_buf);
+	  unwind_protect::add (delete_input_buffer, (void *) new_buf);
 
 	  switch_to_buffer (new_buf);
 
@@ -835,7 +835,7 @@ parse_fcn_file (bool exec_script, const string& ff)
 	  // Vsaving_history variable...
 	  command_history::ignore_entries ();
 
-	  add_unwind_protect (restore_command_history, 0);
+	  unwind_protect::add (restore_command_history, 0);
 
 	  unwind_protect_int (Vsaving_history);
 	  unwind_protect_int (reading_script_file);
@@ -849,7 +849,7 @@ parse_fcn_file (bool exec_script, const string& ff)
 	}
     }
 
-  run_unwind_frame ("parse_fcn_file");
+  unwind_protect::run_frame ("parse_fcn_file");
 
   return script_file_executed;
 }
@@ -871,7 +871,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 
       // These are needed by yyparse.
 
-      begin_unwind_frame ("load_fcn_from_file");
+      unwind_protect::begin_frame ("load_fcn_from_file");
 
       unwind_protect_str (curr_fcn_file_name);
       unwind_protect_str (curr_fcn_file_full_name);
@@ -885,7 +885,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
       if (! (error_state || script_file_executed))
 	force_link_to_function (nm);
 
-      run_unwind_frame ("load_fcn_from_file");
+      unwind_protect::run_frame ("load_fcn_from_file");
     }
 
   return script_file_executed;
@@ -975,11 +975,11 @@ get_help_from_file (const string& path)
 
       if (fptr)
 	{
-	  add_unwind_protect (safe_fclose, (void *) fptr);
+	  unwind_protect::add (safe_fclose, (void *) fptr);
 
 	  retval = gobble_leading_white_space (fptr, true, true);
 
-	  run_unwind_protect ();
+	  unwind_protect::run ();
 	}
     }
 

@@ -1967,12 +1967,12 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
     }
   else if (tc.is_string ())
     {
-      begin_unwind_frame ("save_mat_binary_data");
+      unwind_protect::begin_frame ("save_mat_binary_data");
       unwind_protect_int (Vimplicit_str_to_num_ok);
       Vimplicit_str_to_num_ok = 1;
       Matrix m = tc.matrix_value ();
       os.write (m.data (), 8 * len);
-      run_unwind_frame ("save_mat_binary_data");
+      unwind_protect::run_frame ("save_mat_binary_data");
     }
   else if (tc.is_range ())
     {

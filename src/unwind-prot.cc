@@ -40,106 +40,43 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 
-// XXX FIXME XXX -- this should really be static, but that causes
-// problems on some systems.
-SLStack <unwind_elem> unwind_protect_list;
+SLStack<unwind_elem> unwind_protect::list;
 
-void
-add_unwind_protect (cleanup_func fptr, void *ptr)
+class
+saved_variable
 {
-  unwind_elem el (fptr, ptr);
-  unwind_protect_list.push (el);
-}
+public:
 
-void
-run_unwind_protect (void)
-{
-  unwind_elem el = unwind_protect_list.pop ();
-
-  cleanup_func f = el.fptr ();
-
-  if (f)
-    f (el.ptr ());
-}
-
-void
-discard_unwind_protect (void)
-{
-  unwind_protect_list.pop ();
-}
-
-void
-begin_unwind_frame (const string& tag)
-{
-  unwind_elem elem (tag);
-  unwind_protect_list.push (elem);
-}
-
-void
-run_unwind_frame (const string& tag)
-{
-  while (! unwind_protect_list.empty ())
-    {
-      unwind_elem el = unwind_protect_list.pop ();
-
-      cleanup_func f = el.fptr ();
-
-      if (f)
-	f (el.ptr ());
-
-      if (tag == el.tag ())
-	break;
-    }
-}
-
-void
-discard_unwind_frame (const string& tag)
-{
-  while (! unwind_protect_list.empty ())
-    {
-      unwind_elem el = unwind_protect_list.pop ();
-
-      if (tag == el.tag ())
-	break;
-    }
-}
-
-void
-run_all_unwind_protects (void)
-{
-  while (! unwind_protect_list.empty ())
-    {
-      unwind_elem el = unwind_protect_list.pop ();
-
-      cleanup_func f = el.fptr ();
-
-      if (f)
-	f (el.ptr ());
-    }
-}
-
-void
-discard_all_unwind_protects (void)
-{
-  unwind_protect_list.clear ();
-}
-
-class saved_variable
-{
- public:
-  enum var_type { integer, string_type, generic_ptr, generic };
+  enum var_type
+  {
+    boolean,
+    integer,
+    string_type,
+    generic_ptr,
+    generic
+  };
 
   saved_variable (void);
+
+  saved_variable (bool *p, bool v);
+
   saved_variable (int *p, int v);
+
   saved_variable (string *p, const string& v);
+
   saved_variable (void **p, void *v);
+
   ~saved_variable (void);
 
   void restore_value (void);
 
- private:
+  static void restore (void *s);
+
+private:
+
   union
     {
+      bool *ptr_to_bool;
       int *ptr_to_int;
       void *gen_ptr;
       void **ptr_to_gen_ptr;
@@ -147,12 +84,14 @@ class saved_variable
 
   union
     {
+      bool bool_value;
       int int_value;
       const string *str_value;
       void *gen_ptr_value;
     };
 
   var_type type_tag;
+
   size_t size;
 };
 
@@ -162,6 +101,14 @@ saved_variable::saved_variable (void)
   gen_ptr_value = 0;
   type_tag = generic;
   size = 0;
+}
+
+saved_variable::saved_variable (bool *p, bool v)
+{
+  type_tag = integer;
+  ptr_to_bool = p;
+  bool_value = v;
+  size = sizeof (bool);  // Is this necessary?
 }
 
 saved_variable::saved_variable (int *p, int v)
@@ -210,6 +157,10 @@ saved_variable::restore_value (void)
 {
   switch (type_tag)
     {
+    case boolean:
+      *ptr_to_bool = bool_value;
+      break;
+
     case integer:
       *ptr_to_int = int_value;
       break;
@@ -232,8 +183,8 @@ saved_variable::restore_value (void)
     }
 }
 
-static void
-restore_saved_variable (void *s)
+void
+saved_variable::restore (void *s)
 {
   saved_variable *sv = static_cast<saved_variable *> (s);
   sv->restore_value ();
@@ -241,24 +192,111 @@ restore_saved_variable (void *s)
 }
 
 void
-unwind_protect_int_internal (int *ptr, int value)
+unwind_protect::add (unwind_elem::cleanup_func fptr, void *ptr)
 {
-  saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, s);
+  unwind_elem el (fptr, ptr);
+  list.push (el);
 }
 
 void
-unwind_protect_str_internal (string *ptr, const string& value)
+unwind_protect::run (void)
 {
-  saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, s);
+  unwind_elem el = list.pop ();
+
+  unwind_elem::cleanup_func f = el.fptr ();
+
+  if (f)
+    f (el.ptr ());
 }
 
 void
-unwind_protect_ptr_internal (void **ptr, void *value)
+unwind_protect::discard (void)
+{
+  list.pop ();
+}
+
+void
+unwind_protect::begin_frame (const string& tag)
+{
+  unwind_elem elem (tag);
+  list.push (elem);
+}
+
+void
+unwind_protect::run_frame (const string& tag)
+{
+  while (! list.empty ())
+    {
+      unwind_elem el = list.pop ();
+
+      unwind_elem::cleanup_func f = el.fptr ();
+
+      if (f)
+	f (el.ptr ());
+
+      if (tag == el.tag ())
+	break;
+    }
+}
+
+void
+unwind_protect::discard_frame (const string& tag)
+{
+  while (! list.empty ())
+    {
+      unwind_elem el = list.pop ();
+
+      if (tag == el.tag ())
+	break;
+    }
+}
+
+void
+unwind_protect::run_all (void)
+{
+  while (! list.empty ())
+    {
+      unwind_elem el = list.pop ();
+
+      unwind_elem::cleanup_func f = el.fptr ();
+
+      if (f)
+	f (el.ptr ());
+    }
+}
+
+void
+unwind_protect::discard_all (void)
+{
+  list.clear ();
+}
+
+void
+unwind_protect::save_bool (bool *ptr, bool value)
 {
   saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, s);
+  add (saved_variable::restore, s);
+}
+
+void
+unwind_protect::save_int (int *ptr, int value)
+{
+  saved_variable *s = new saved_variable (ptr, value);
+  add (saved_variable::restore, s);
+}
+
+void
+unwind_protect::save_str (string *ptr, const string& value)
+{
+  saved_variable *s = new saved_variable (ptr, value);
+  add (saved_variable::restore, s);
+}
+
+void
+unwind_protect::save_ptr (void **ptr, void *value)
+{
+  saved_variable *s = new saved_variable (ptr, value);
+  add (saved_variable::restore, s);
 }
 
 /*

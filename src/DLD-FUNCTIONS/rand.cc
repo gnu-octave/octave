@@ -381,14 +381,14 @@ See also: rand")
       if (! initialized)
 	do_initialization ();
 
-      begin_unwind_frame ("randn");
+      unwind_protect::begin_frame ("randn");
 
       // This relies on the fact that elements are popped from the
       // unwind stack in the reverse of the order they are pushed
       // (i.e. current_distribution will be reset before calling
       // reset_rand_generator()).
 
-      add_unwind_protect (reset_rand_generator, 0);
+      unwind_protect::add (reset_rand_generator, 0);
       unwind_protect_int (current_distribution);
 
       current_distribution = normal_dist;
@@ -397,7 +397,7 @@ See also: rand")
 
       retval = do_rand (args, nargin);
 
-      run_unwind_frame ("randn");
+      unwind_protect::run_frame ("randn");
     }
 
   return retval;

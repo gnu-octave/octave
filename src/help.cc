@@ -730,7 +730,7 @@ display the definition of each NAME that refers to a function")
 {
   octave_value_list retval;
 
-  begin_unwind_frame ("Ftype");
+  unwind_protect::begin_frame ("Ftype");
 
   int argc = args.length () + 1;
 

@@ -154,7 +154,7 @@ print a directory listing")
 
   delete [] ls_command;
 
-  add_unwind_protect (cleanup_iprocstream, cmd);
+  unwind_protect::add (cleanup_iprocstream, cmd);
 
   if (cmd && *cmd)
     {
@@ -165,7 +165,7 @@ print a directory listing")
   else
     error ("couldn't start process for ls!");
 
-  run_unwind_protect ();
+  unwind_protect::run ();
 
   return retval;
 }

@@ -89,7 +89,7 @@ octave_list::print (ostream& os, bool) const
 void
 octave_list::print_raw (ostream& os, bool) const
 {
-  begin_unwind_frame ("octave_list_print");
+  unwind_protect::begin_frame ("octave_list_print");
 
   indent (os);
   os << "(";
@@ -118,7 +118,7 @@ octave_list::print_raw (ostream& os, bool) const
   os << ")";
   newline (os);
 
-  run_unwind_frame ("octave_list_print");
+  unwind_protect::run_frame ("octave_list_print");
 }
 
 bool

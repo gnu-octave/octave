@@ -67,6 +67,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pathsearch.h"
 #include "procstream.h"
 #include "ov.h"
+#include "pt-jump.h"
 #include "pt-plot.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
@@ -80,12 +81,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Nonzero means we print 
 static bool Vdefault_eval_print_flag = true;
-
-// Nonzero means we're breaking out of a loop or function body.
-extern int breaking;
-
-// Nonzero means we're returning from a function.
-extern int returning;
 
 // Nonzero means we are using readline.
 // (--no-line-editing)
@@ -116,13 +111,13 @@ jmp_buf toplevel;
 void
 parse_and_execute (FILE *f)
 {
-  begin_unwind_frame ("parse_and_execute");
+  unwind_protect::begin_frame ("parse_and_execute");
   
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (f);
 
-  add_unwind_protect (restore_input_buffer, old_buf);
-  add_unwind_protect (delete_input_buffer, new_buf);
+  unwind_protect::add (restore_input_buffer, old_buf);
+  unwind_protect::add (delete_input_buffer, new_buf);
 
   switch_to_buffer (new_buf);
 
@@ -149,13 +144,14 @@ parse_and_execute (FILE *f)
 
 	  global_command = 0;
 
-	  bool quit = (returning || breaking);
+	  bool quit = (tree_return_command::returning
+		       || tree_break_command::breaking);
 
-	  if (returning)
-	    returning = 0;
+	  if (tree_return_command::returning)
+	    tree_return_command::returning = 0;
 
-	  if (breaking)
-	    breaking--;
+	  if (tree_break_command::breaking)
+	    tree_break_command::breaking--;
 
 	  if (error_state)
 	    {
@@ -171,7 +167,7 @@ parse_and_execute (FILE *f)
     }
   while (retval == 0);
 
-  run_unwind_frame ("parse_and_execute");
+  unwind_protect::run_frame ("parse_and_execute");
 }
 
 static void
@@ -184,7 +180,7 @@ safe_fclose (void *f)
 void
 parse_and_execute (const string& s, bool verbose, const char *warn_for)
 {
-  begin_unwind_frame ("parse_and_execute_2");
+  unwind_protect::begin_frame ("parse_and_execute_2");
 
   unwind_protect_int (reading_script_file);
   unwind_protect_str (curr_fcn_file_full_name);
@@ -196,7 +192,7 @@ parse_and_execute (const string& s, bool verbose, const char *warn_for)
 
   if (f)
     {
-      add_unwind_protect (safe_fclose, f);
+      unwind_protect::add (safe_fclose, f);
 
       unwind_protect_int (input_line_number);
       unwind_protect_int (current_input_column);
@@ -219,7 +215,7 @@ parse_and_execute (const string& s, bool verbose, const char *warn_for)
   else if (warn_for)
     error ("%s: unable to open file `%s'", warn_for, s.c_str ());
 
-  run_unwind_frame ("parse_and_execute_2");
+  unwind_protect::run_frame ("parse_and_execute_2");
 }
 
 int
@@ -263,13 +259,14 @@ main_loop (void)
 
 	  if (! (interactive || forced_interactive))
 	    {
-	      bool quit = (returning || breaking);
+	      bool quit = (tree_return_command::returning
+			   || tree_break_command::breaking);
 
-	      if (returning)
-		returning = 0;
+	      if (tree_return_command::returning)
+		tree_return_command::returning = 0;
 
-	      if (breaking)
-		breaking--;
+	      if (tree_break_command::breaking)
+		tree_break_command::breaking--;
 
 	      if (quit)
 		break;
@@ -514,7 +511,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
 static octave_value_list
 eval_string (const string& s, bool silent, int& parse_status, int nargout)
 {
-  begin_unwind_frame ("eval_string");
+  unwind_protect::begin_frame ("eval_string");
 
   unwind_protect_int (get_input_from_eval_string);
   unwind_protect_int (input_from_command_line_file);
@@ -528,8 +525,8 @@ eval_string (const string& s, bool silent, int& parse_status, int nargout)
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (0);
 
-  add_unwind_protect (restore_input_buffer, old_buf);
-  add_unwind_protect (delete_input_buffer, new_buf);
+  unwind_protect::add (restore_input_buffer, old_buf);
+  unwind_protect::add (delete_input_buffer, new_buf);
 
   switch_to_buffer (new_buf);
 
@@ -545,7 +542,7 @@ eval_string (const string& s, bool silent, int& parse_status, int nargout)
 
   tree_statement_list *command = global_command;
 
-  run_unwind_frame ("eval_string");
+  unwind_protect::run_frame ("eval_string");
 
   octave_value_list retval;
 
@@ -597,7 +594,7 @@ string CATCH.")
 
   if (nargin > 0)
     {
-      begin_unwind_frame ("Feval");
+      unwind_protect::begin_frame ("Feval");
 
       if (nargin > 1)
 	{
@@ -619,14 +616,14 @@ string CATCH.")
 
 	  buffer_error_messages = 0;
 	  bind_global_error_variable ();
-	  add_unwind_protect (clear_global_error_variable, 0);
+	  unwind_protect::add (clear_global_error_variable, 0);
 
 	  eval_string (args(1), 0, parse_status, nargout);
 
 	  retval = octave_value_list ();
 	}
 
-      run_unwind_frame ("Feval");
+      unwind_protect::run_frame ("Feval");
     }
   else
     print_usage ("eval");
@@ -649,7 +646,7 @@ run_command_and_return_output (const string& cmd_str)
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
-  add_unwind_protect (cleanup_iprocstream, cmd);
+  unwind_protect::add (cleanup_iprocstream, cmd);
 
   int status = 127;
 
@@ -682,7 +679,7 @@ run_command_and_return_output (const string& cmd_str)
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());
 
-  run_unwind_protect ();
+  unwind_protect::run ();
 
   return retval;
 }

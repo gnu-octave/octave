@@ -87,7 +87,7 @@ octave_struct::print_raw (ostream& os, bool) const
   // standard order.  Maybe all substructures first, maybe
   // alphabetize entries, etc.
 
-  begin_unwind_frame ("octave_struct_print");
+  unwind_protect::begin_frame ("octave_struct_print");
 
   unwind_protect_int (Vstruct_levels_to_print);
 
@@ -119,7 +119,7 @@ octave_struct::print_raw (ostream& os, bool) const
       newline (os);
     }
 
-  run_unwind_frame ("octave_struct_print");
+  unwind_protect::run_frame ("octave_struct_print");
 }
 
 bool

@@ -28,22 +28,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-// Nonzero means we're breaking out of a loop or function body.
-extern int breaking;
-
-// Nonzero means we're jumping to the end of a loop.
-extern int continuing;
-
-// Nonzero means we're returning from a function.  Global because it
-// is also needed in tree-expr.cc.
-extern int returning;
-
 #include "error.h"
 #include "oct-lvalue.h"
 #include "ov.h"
 #include "pt-cmd.h"
 #include "pt-except.h"
 #include "pt-exp.h"
+#include "pt-jump.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "unwind-prot.h"
@@ -67,18 +58,18 @@ do_catch_code (void *ptr)
 
   buffer_error_messages = 0;
   bind_global_error_variable ();
-  add_unwind_protect (clear_global_error_variable, 0);
+  unwind_protect::add (clear_global_error_variable, 0);
 
   // Similarly, if we have seen a return or break statement, allow all
   // the catch code to run before returning or handling the break.
   // We don't have to worry about continue statements because they can
   // only occur in loops.
 
-  unwind_protect_int (returning);
-  returning = 0;
+  unwind_protect_int (tree_return_command::returning);
+  tree_return_command::returning = 0;
 
-  unwind_protect_int (breaking);
-  breaking = 0;
+  unwind_protect_int (tree_break_command::breaking);
+  tree_break_command::breaking = 0;
 
   if (list)
     list->eval ();
@@ -90,26 +81,26 @@ do_catch_code (void *ptr)
   // a return, or just jump to the end of the try_catch block?
   // The following code makes it just jump to the end of the block.
 
-  run_unwind_protect ();
-  if (breaking)
-    breaking--;
+  unwind_protect::run ();
+  if (tree_break_command::breaking)
+    tree_break_command::breaking--;
 
   // This is the one for returning.
 
-  if (returning)
-    discard_unwind_protect ();
+  if (tree_return_command::returning)
+    unwind_protect::discard ();
   else
-    run_unwind_protect ();
+    unwind_protect::run ();
 
-  run_unwind_protect ();
+  unwind_protect::run ();
 }
 
 void
 tree_try_catch_command::eval (void)
 {
-  begin_unwind_frame ("tree_try_catch::eval");
+  unwind_protect::begin_frame ("tree_try_catch::eval");
 
-  add_unwind_protect (do_catch_code, catch_code);
+  unwind_protect::add (do_catch_code, catch_code);
 
   if (catch_code)
     {
@@ -123,12 +114,12 @@ tree_try_catch_command::eval (void)
   if (catch_code && error_state)
     {
       error_state = 0;
-      run_unwind_frame ("tree_try_catch::eval");
+      unwind_protect::run_frame ("tree_try_catch::eval");
     }
   else
     {
       error_state = 0;
-      discard_unwind_frame ("tree_try_catch::eval");
+      unwind_protect::discard_frame ("tree_try_catch::eval");
     }
 }
 
@@ -164,11 +155,11 @@ do_unwind_protect_cleanup_code (void *ptr)
   // We don't have to worry about continue statements because they can
   // only occur in loops.
 
-  unwind_protect_int (returning);
-  returning = 0;
+  unwind_protect_int (tree_return_command::returning);
+  tree_return_command::returning = 0;
 
-  unwind_protect_int (breaking);
-  breaking = 0;
+  unwind_protect_int (tree_break_command::breaking);
+  tree_break_command::breaking = 0;
 
   if (list)
     list->eval ();
@@ -180,36 +171,36 @@ do_unwind_protect_cleanup_code (void *ptr)
   // a return, or just jump to the end of the unwind_protect block?
   // The following code makes it just jump to the end of the block.
 
-  run_unwind_protect ();
-  if (breaking)
-    breaking--;
+  unwind_protect::run ();
+  if (tree_break_command::breaking)
+    tree_break_command::breaking--;
 
   // This is the one for returning.
 
-  if (returning)
-    discard_unwind_protect ();
+  if (tree_return_command::returning)
+    unwind_protect::discard ();
   else
-    run_unwind_protect ();
+    unwind_protect::run ();
 
   // We don't want to ignore errors that occur in the cleanup code, so
   // if an error is encountered there, leave error_state alone.
   // Otherwise, set it back to what it was before.
 
   if (error_state)
-    discard_unwind_protect ();
+    unwind_protect::discard ();
   else
-    run_unwind_protect ();
+    unwind_protect::run ();
 }
 
 void
 tree_unwind_protect_command::eval (void)
 {
-  add_unwind_protect (do_unwind_protect_cleanup_code, cleanup_code);
+  unwind_protect::add (do_unwind_protect_cleanup_code, cleanup_code);
 
   if (unwind_protect_code)
     unwind_protect_code->eval ();
 
-  run_unwind_protect ();
+  unwind_protect::run ();
 }
 
 void

@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
+#include "pt-jump.h"
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
@@ -56,12 +57,6 @@ static bool Vdefine_all_return_values;
 // If TRUE, the last computed value is returned from functions that
 // don't actually define any return variables.
 static bool Vreturn_last_computed_value;
-
-// Nonzero means we're breaking out of a loop or function body.
-extern int breaking;
-
-// Nonzero means we're returning from a function.
-extern int returning;
 
 // User defined functions.
 
@@ -247,7 +242,7 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
 
   int nargin = args.length ();
 
-  begin_unwind_frame ("func_eval");
+  unwind_protect::begin_frame ("func_eval");
 
   unwind_protect_int (call_depth);
   call_depth++;
@@ -255,13 +250,13 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
   if (symtab_entry && ! symtab_entry->is_read_only ())
     {
       symtab_entry->protect ();
-      add_unwind_protect (unprotect_function, symtab_entry);
+      unwind_protect::add (unprotect_function, symtab_entry);
     }
 
   if (call_depth > 1)
     {
       sym_tab->push_context ();
-      add_unwind_protect (pop_symbol_table_context, sym_tab);
+      unwind_protect::add (pop_symbol_table_context, sym_tab);
 
       if (vr_list)
 	{
@@ -273,7 +268,7 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
 	  // Clear and delete the new one before restoring the old
 	  // one.
 
-	  add_unwind_protect (delete_vr_list, vr_list);
+	  unwind_protect::add (delete_vr_list, vr_list);
 	}
     }
 
@@ -282,7 +277,7 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
 
   // Force symbols to be undefined again when this function exits.
 
-  add_unwind_protect (clear_symbol_table, sym_tab);
+  unwind_protect::add (clear_symbol_table, sym_tab);
 
   // Save old and set current symbol table context, for
   // eval_undefined_error().
@@ -345,11 +340,11 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
     if (echo_commands)
       print_code_function_trailer ();
 
-    if (returning)
-      returning = 0;
+    if (tree_return_command::returning)
+      tree_return_command::returning = 0;
 
-    if (breaking)
-      breaking--;
+    if (tree_break_command::breaking)
+      tree_break_command::breaking--;
 
     if (error_state)
       {
@@ -366,7 +361,7 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
   }
 
  abort:
-  run_unwind_frame ("func_eval");
+  unwind_protect::run_frame ("func_eval");
 
   return retval;
 }

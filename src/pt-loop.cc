@@ -28,16 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-// Nonzero means we're breaking out of a loop or function body.
-extern int breaking;
-
-// Nonzero means we're jumping to the end of a loop.
-extern int continuing;
-
-// Nonzero means we're returning from a function.  Global because it
-// is also needed in tree-expr.cc.
-extern int returning;
-
 #include "error.h"
 #include "gripes.h"
 #include "oct-map.h"
@@ -46,6 +36,7 @@ extern int returning;
 #include "pt-arg-list.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"
+#include "pt-jump.h"
 #include "pt-loop.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
@@ -56,13 +47,16 @@ quit_loop_now (void)
 {
   // Maybe handle `continue N' someday...
 
-  if (continuing)
-    continuing--;
+  if (tree_continue_command::continuing)
+    tree_continue_command::continuing--;
 
-  bool quit = (error_state || returning || breaking || continuing);
+  bool quit = (error_state
+	       || tree_return_command::returning
+	       || tree_break_command::breaking
+	       || tree_continue_command::continuing);
 
-  if (breaking)
-    breaking--;
+  if (tree_break_command::breaking)
+    tree_break_command::breaking--;
 
   return quit;
 }

@@ -46,6 +46,8 @@ public:
   void eval (void);
 
   void accept (tree_walker& tw);
+
+  static int breaking;
 };
 
 // Continue.
@@ -63,6 +65,8 @@ public:
   void eval (void);
 
   void accept (tree_walker& tw);
+
+  static int continuing;
 };
 
 // Return.
@@ -80,6 +84,8 @@ public:
   void eval (void);
 
   void accept (tree_walker& tw);
+
+  static int returning;
 };
 
 #endif

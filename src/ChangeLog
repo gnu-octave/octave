@@ -1,5 +1,12 @@
 Fri May 16 00:07:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* unwind-prot.h, unwind-prot.cc: Make a bit more object-oriented.
+	Change all uses of unwind_protect stuff to match.
+
+	* pt-jump.h, pt-jump.cc (breaking, continuing, returning):
+	Make these flags static members of the corresponding class.
+	Change all uses.
+
 	* pt-assign.cc (tree_simple_assignment_expression::eval,
 	tree_multi_assignment_expression::eval): Clear lvalue index here.
 

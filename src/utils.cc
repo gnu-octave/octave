@@ -88,7 +88,7 @@ extern jmp_buf toplevel;
 extern "C" void
 jump_to_top_level (void)
 {
-  run_all_unwind_protects ();
+  unwind_protect::run_all ();
 
   longjmp (toplevel, 1);
 }

@@ -305,7 +305,7 @@ flush_octave_stdout (void)
 {
   if (! flushing_output_to_pager)
     {
-      begin_unwind_frame ("flush_octave_stdout");
+      unwind_protect::begin_frame ("flush_octave_stdout");
 
       unwind_protect_int (really_flush_to_pager);
       unwind_protect_int (flushing_output_to_pager);
@@ -318,7 +318,7 @@ flush_octave_stdout (void)
       if (external_pager)
 	clear_external_pager ();
 
-      run_unwind_frame ("flush_octave_stdout");
+      unwind_protect::run_frame ("flush_octave_stdout");
     }
 }
 

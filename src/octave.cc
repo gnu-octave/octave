@@ -215,7 +215,7 @@ initialize_pathsearch (void)
 static void
 execute_startup_files (void)
 {
-  begin_unwind_frame ("execute_startup_files");
+  unwind_protect::begin_frame ("execute_startup_files");
 
   // XXX FIXME XXX -- need to make it possible to set this in startup
   // files.
@@ -277,7 +277,7 @@ execute_startup_files (void)
 	parse_and_execute (local_rc, verbose);
     }
 
-  run_unwind_frame ("execute_startup_files");
+  unwind_protect::run_frame ("execute_startup_files");
 }
 
 // Usage message with extra help.

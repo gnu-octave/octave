@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 #include <climits>
+#include <csetjmp>
 
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
@@ -41,8 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-#include <setjmp.h>
-
 #ifndef HAVE_STRNCASECMP
 extern int strncasecmp (const char*, const char*, size_t);
 #endif

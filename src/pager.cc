@@ -152,6 +152,7 @@ flush_output_to_pager (void)
 	      pager_stream << message;
 	      delete [] message;
 	      pager_stream.flush ();
+	      pager_stream.close ();
 
 	      signal (SIGINT, old_sigint_handler);
 

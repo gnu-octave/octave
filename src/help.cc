@@ -682,13 +682,17 @@ print cryptic yet witty messages")
 		    }
 		}
 
-	      char *h = get_help_from_file (*argv);
+	      char *path = fcn_file_in_path (*argv);
+	      char *h = get_help_from_file (path);
 	      if (h && *h)
 		{
-		  output_buf << "\n" << h << "\n";
+		  output_buf << *argv << " is the file:\n"
+		    << path << "\n\n" << h << "\n";
 		  delete [] h;
+		  delete [] path;
 		  continue;
 		}
+	      delete [] path;
 
 	      output_buf << "\nhelp: sorry, `" << *argv
 		<< "' is not documented\n"; 

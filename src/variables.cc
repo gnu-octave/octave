@@ -557,6 +557,8 @@ gobble_leading_white_space (FILE *ffile)
 	      break;
 
 	    case '\n':
+	      if (first_comments_seen)
+		have_help_text = 1;
 	      input_line_number++;
 	      current_input_column = 0;
 	      continue;
@@ -776,9 +778,8 @@ lookup_by_name (const char *nm, int exec_script)
 }
 
 char *
-get_help_from_file (const char *f)
+get_help_from_file (const char *path)
 {
-  char *path = fcn_file_in_path (f);
   if (path && *path)
     {
       FILE *fptr = fopen (path, "r");

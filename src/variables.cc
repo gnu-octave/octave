@@ -1488,6 +1488,15 @@ bind_builtin_variable (const char *varname, tree_constant *val,
 }
 
 void
+bind_builtin_variable (const char *varname, const tree_constant& val,
+		       int protect, int eternal, sv_Function sv_fcn,
+		       const char *help)
+{
+  tree_constant *tc = new tree_constant (val);
+  bind_builtin_variable (varname, tc, protect, eternal, sv_fcn, help);
+}
+
+void
 install_builtin_variables (void)
 {
   // XXX FIXME XX -- these should probably be moved to where they

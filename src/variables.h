@@ -116,6 +116,11 @@ extern void bind_builtin_variable (const char *, tree_constant *,
 				   sv_Function f = (sv_Function) 0,
 				   const char *help = 0);
 
+extern void bind_builtin_variable (const char *, const tree_constant&,
+				   int protect = 0, int eternal = 0,
+				   sv_Function f = (sv_Function) 0,
+				   const char *help = 0);
+
 extern void install_builtin_variables (void);
 
 extern char *maybe_add_default_load_path (const char *p);

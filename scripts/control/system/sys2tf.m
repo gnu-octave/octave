@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname}] =} sys2tf (@var{sys})
 ## Extract transfer function data from a system data structure
 ##
-## See @ref{tf2sys} for parameter descriptions.
+## See tf2sys for parameter descriptions.
 ##
 ## @strong{Example}
 ## @example

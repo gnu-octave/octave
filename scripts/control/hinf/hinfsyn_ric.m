@@ -18,22 +18,29 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{Xinf},@var{x_ha_err}] =} hinfsyn_ric(@var{A},@var{BB}.@var{C1},@var{d1dot},@var{R},@var{ptol})
-## @table
-## @item forms
-##        xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
-##        Ha = [A 0*A; -C1'*C1 -A'] - xx;
-## @end table
-## and solves associated Riccati equation
-## returns error code
-## @table
-## @item x_ha_err
-##    0: successful
-##    1: Xinf has imaginary eigenvalues
-##    2: Hx not Hamiltonian
-##    3: Xinf has inf. eigenvalues (numerical overflow)
-##    4: Xinf not symmetric
-##    5: Xinf not positive definite
-##    6: R is singular
+## Forms
+## @example
+## xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
+## Ha = [A 0*A; -C1'*C1 -A'] - xx;
+## @end example
+## and solves associated Riccati equation.
+## The error code @var{x_ha_err} indicates one of the following
+## conditions:
+## @table @asis
+## @item 0
+## successful
+## @item 1
+## Xinf has imaginary eigenvalues
+## @item 2
+## Hx not Hamiltonian
+## @item 3
+## Xinf has inf. eigenvalues (numerical overflow)
+## @item 4
+## Xinf not symmetric
+## @item 5
+## Xinf not positive definite
+## @item 6
+## R is singular
 ## @end table
 ## @end deftypefn
 

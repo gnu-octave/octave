@@ -17,26 +17,45 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{tvals},@var{Plist}] =} dre(@var{sys},@var{Q},@var{R},@var{Qf},@var{t0},@var{tf}[,@var{Ptol},@var{maxits}]);
+## @deftypefn {Function File} {[@var{tvals},@var{Plist}] =} dre (@var{sys},@var{Q},@var{R},@var{Qf},@var{t0},@var{tf}[,@var{Ptol},@var{maxits}]);
 ## Solve the differential Riccati equation
 ## @ifinfo
 ## @example
 ##   -d P/dt = A'P + P A - P B inv(R) B' P + Q
 ##   P(tf) = Qf
-## @example
+## @end example
 ## @end ifinfo
 ## @iftex
 ## @tex
-## \(-\frac{dP}{dt} = A^{T}P+PA-PBR^{-1}B^{T}P+Q\)
+## $$ -{dP \over dt} = A^T P+PA-PBR^{-1}B^T P+Q $$
+## $$ P(t_f) = Qf $$
 ## @end tex
 ## @end iftex
 ## for the LTI system sys.  Solution of standard LTI
 ## state feedback optimization
-##   min \int_{t_0}^{t_f} x' Q x + u' R u dt + x(t_f)' Qf x(t_f)
+## @ifinfo
+## @example
+##   min \int_@{t_0@}^@{t_f@} x' Q x + u' R u dt + x(t_f)' Qf x(t_f)
+## @end example
+## @end ifinfo
+## @iftex
+## @tex
+## $$ \min \int_{t_0}^{t_f} x^T Q x + u^T R u dt + x(t_f)^T Qf x(t_f) $$
+## @end tex
+## @end iftex
 ## optimal input is
+## @ifinfo
+## @example
 ##   u = - inv(R) B' P(t) x
+## @end example
+## @end ifinfo
+## @iftex
+## @tex
+## $$ u = - R^{-1} B^T P(t) x $$
+## @end tex
+## @end iftex
 ## @strong{Inputs}
-## @table
+## @table @var
 ## @item sys
 ## continuous time system data structure
 ## @item Q
@@ -54,7 +73,7 @@
 ## number of refinement iterations (default=10)
 ## @end table
 ## @strong{Outputs}
-## @table
+## @table @var
 ## @item tvals
 ## time values at which @var{P}(@var{t}) is computed
 ## @item Plist

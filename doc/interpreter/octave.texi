@@ -121,6 +121,8 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Numeric Data Types::          
 * Strings::                     
 * Data Structures::             
+* Containers::                  
+* I/O Streams::                 
 * Variables::                   
 * Expressions::                 Expressions.
 * Evaluation::                  
@@ -137,6 +139,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Differential Equations::      
 * Optimization::                
 * Statistics::                  
+* Financial Functions::         
 * Sets::                        
 * Polynomial Manipulations::    
 * Control Theory::              
@@ -207,6 +210,7 @@ Command Line Editing
 * Commands For Text::           
 * Commands For Completion::     
 * Commands For History::        
+* Customizing readline::        
 * Customizing the Prompt::      
 * Diary and Echo Commands::     
 
@@ -226,6 +230,7 @@ Numeric Data Types
 
 * Matrices::                    
 * Ranges::                      
+* Logical Values::              
 * Predicates for Numeric Objects::  
 
 Matrices
@@ -238,6 +243,11 @@ Strings
 * Searching and Replacing::     
 * String Conversions::          
 * Character Class Functions::   
+
+Containers
+
+* Lists::                       
+* Cell Arrays::                 
 
 Variables
 
@@ -335,6 +345,8 @@ Plotting
 * Three-Dimensional Plotting::  
 * Plot Annotations::            
 * Multiple Plots on One Page::  
+* Multiple Plot Windows::       
+* Interaction with gnuplot::    
 
 Matrix Manipulation
 
@@ -471,6 +483,8 @@ Grammar
 @include numbers.texi
 @include strings.texi
 @include struct.texi
+@include container.texi
+@include stream.texi
 @include var.texi
 @include expr.texi
 @include eval.texi
@@ -487,6 +501,7 @@ Grammar
 @include diffeq.texi
 @include optim.texi
 @include stats.texi
+@include finance.texi
 @include set.texi
 @include poly.texi
 @include control.texi

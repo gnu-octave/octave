@@ -14,14 +14,16 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  vol (X, m [, n])
-##
-## vol returns the volatility of each column of the input matrix X. m is
-## the number of data sets per period (e.g. the number of data per year
-## if you want to compute the volatility per year). The optional
-## parameter n gives the number of past periods used for computation, if
-## n is omitted, n=1 is used. If T is the number of rows of X, vol
-## returns the volatility from n*m to T.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} vol (@var{x}, @var{m}, @var{n})
+## Return the volatility of each column of the input matrix @var{x}.
+## The number of data sets per period is given by @var{m} (e.g. the
+## number of data per year if you want to compute the volatility per
+## year).  The optional parameter @var{n} gives the number of past
+## periods used for computation, if it is omitted, a value of 1 is used.
+## If @var{t} is the number of rows of @var{x}, @code{vol} returns the
+## volatility from @code{n*m} to @var{t}.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Volatility of financial time series data

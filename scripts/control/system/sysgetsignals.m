@@ -83,7 +83,7 @@
 ## stage signals
 ## @item sigid="yd"
 ## @var{siglist} is set to logical vector indicating discrete outputs;
-## @var{siglist(ii) = 0} indicates that output @var{ii} is continuous
+## @var{siglist}(@var{ii}) = 0 indicates that output @var{ii} is continuous
 ## (unsampled), otherwise it is discrete.
 ##
 ## @end table

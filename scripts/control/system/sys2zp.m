@@ -21,7 +21,7 @@
 ## Extract zero/pole/leading coefficient information from a system data
 ## structure
 ##
-## See @ref{zp2sys} for parameter descriptions.
+## See zp2sys for parameter descriptions.
 ##
 ## @strong{Example}
 ## @example

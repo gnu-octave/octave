@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
-## @deftypefnx {Function File {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
+## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
 ## Given vectors of @var{x} and @var{y} coordinates, return two matrices corresponding
 ## to the @var{x} and @var{y} coordinates of a mesh.  The rows of @var{xx} are copies of @var{x},
 ## and the columns of @var{yy} are copies of @var{y}.

@@ -15,18 +15,18 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} npv (@var{r}, @var{p} [, @var{i}])
+## @deftypefn {Function File} {} npv (@var{r}, @var{p}, @var{i})
 ## Returns the net present value of a series of irregular (i.e., not
 ## necessarily identical) payments @var{p} which occur at the ends of @var{n}
 ## consecutive periods.  @var{r} specifies the one-period interest rates and
 ## can either be a scalar (constant rates) or a vector of the same
 ## length as @var{p}.
 ##
-## With the optional scalar argument @var{i}, one can specify an initial
+## The optional argument @var{i} may be used to specify an initial
 ## investment.
 ##
-## Note that rates are not specified in percent, i.e., one has to write
-## 0.05 rather than 5 %.
+## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+## not 5 percent).
 ## @end deftypefn
 ## @seealso{irr and pv}
 

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Statistics, Sets, Optimization, Top
+@node Statistics, Financial Functions, Optimization, Top
 @chapter Statistics
 
 I hope that someday Octave will include more statistics functions.  If

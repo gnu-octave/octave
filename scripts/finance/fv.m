@@ -14,19 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  fv (r, n, p [, l] [, method])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fv (@var{r}, @var{n}, @var{p}, @var{l}, @var{method})
+## Return the future value at the end of period @var{n} of an investment
+## which consists of @var{n} payments of @var{p} in each period,
+## assuming an interest rate @var{r}.
 ##
-## Returns the future value at the end of period n of an investment
-## which consisting of n payments of p in each period, assuming an
-## interest rate r.
+## The optional argument @var{l} may be used to specify an
+## additional lump-sum payment.
 ##
-## With the optional scalar argument l, one can specify an additional
-## lump-sum payment. With the optional argument `method', one can
-## specify whether the payments are made at the end ("e", default) or at
-## the beginning ("b") of each period.
+## The optional argument @var{method} may be used ot specify whether the
+## payments are made at the end (@code{"e"}, default) or at the
+## beginning (@code{"b"}) of each period.
 ##
-## Note that the rate r is not specified in percent, i.e., one has to
-## write 0.05 rather than 5 %.
+## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+## not 5 percent).
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Future value of an investment

@@ -26,7 +26,7 @@
 ## Display option
 ## @table @code
 ## @item []
-## primary system form (default); see @ref{sysgettype}.
+## primary system form (default)
 ## @item      "ss"
 ## state space form
 ## @item      "tf"

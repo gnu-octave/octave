@@ -21,9 +21,12 @@
 ## Creates a continuous 2nd order system with parameters:
 ## @strong{Inputs}
 ## @table @var
-## @item  nfreq:   natural frequency [Hz]. (not in rad/s)
-## @item      damp:    damping coefficient
-## @item      gain:    dc-gain
+## @item nfreq
+## natural frequency [Hz]. (not in rad/s)
+## @item damp
+## damping coefficient
+## @item gain
+## dc-gain
 ## This is steady state value only for damp > 0.
 ## gain is assumed to be 1.0 if ommitted.
 ## @end table

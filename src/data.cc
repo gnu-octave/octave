@@ -165,7 +165,7 @@ DEFUN (atan2, args, ,
 @deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
 Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
 and @var{x}.  The result is in range -pi to pi.\n\
-@deftypefn")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -794,7 +794,7 @@ DEFUN (is_bool, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Functio} {} is_bool (@var{x})\n\
 Return true if @var{x} is a boolean object.\n\
-@deftypefn")
+@end deftypefn")
 {
   octave_value retval;
 

@@ -21,7 +21,7 @@
 ## Extract state space representation from system data structure.
 ##
 ## @strong{Inputs}
-## @var{sys} system data structure (@pxref{sysstruct})
+## @var{sys} system data structure
 ##
 ## @strong{Outputs}
 ## @table @var

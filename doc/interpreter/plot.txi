@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Plotting
+@node Plotting, Matrix Manipulation, Input and Output, Top
 @chapter Plotting
 
 All of Octave's plotting functions use @code{gnuplot} to handle the
@@ -21,7 +21,7 @@ low-level plotting functions.
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
-* Interaction with @code{gnuplot}::  
+* Interaction with gnuplot::    
 @end menu
 
 @node Two-Dimensional Plotting, Specialized Two-Dimensional Plots, Plotting, Plotting
@@ -329,12 +329,12 @@ supports the multiplot feature.
 
 @DOCSTRING(top_title)
 
-@node Multiple Plot Windows, Interaction with @code{gnuplot}, Multiple Plots on One Page, Plotting
+@node Multiple Plot Windows, Interaction with gnuplot, Multiple Plots on One Page, Plotting
 @section Multiple Plot Windows
 
 @DOCSTRING(figure)
 
-@node Interaction with @code{gnuplot},  , Multiple Plot Windows, Plotting
+@node Interaction with gnuplot,  , Multiple Plot Windows, Plotting
 @section Interaction with @code{gnuplot}
 
 @DOCSTRING(gnuplot_binary)

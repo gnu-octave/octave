@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Data Structures, Variables, Strings, Top
+@node Data Structures, Containers, Strings, Top
 @chapter Data Structures
 @cindex structures
 @cindex data structures

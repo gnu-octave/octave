@@ -16,8 +16,9 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## function [housv,beta,zer] = housh(x,j,z)
-## computes householder reflection vector housv to reflect x to be
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{housv}, @var{beta}, @var{zer}] =} housh (@var{x}, @var{j}, @var{z})
+## Computes householder reflection vector housv to reflect x to be
 ## jth column of identity, i.e., (I - beta*housv*housv')x =e(j)
 ## inputs
 ##   x: vector
@@ -26,11 +27,10 @@
 ## outputs: (see Golub and Van Loan)
 ##   beta: If beta = 0, then no reflection need be applied (zer set to 0)
 ##   housv: householder vector
-## mar 6,1987 : rev dec 17,1988
-##             rev sep 19,1991 (blas)
-## translated from FORTRAN Aug 1995
+## @end deftypefn
 
 ## Author: A. S. Hodel
+## Created: August 1995
 
 function [housv, beta, zer] = housh (x, j, z)
 

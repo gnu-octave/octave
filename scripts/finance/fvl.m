@@ -14,10 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  fvl (r, n, l)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fvl (@var{r}, @var{n}, @var{l})
+## Return the future value at the end of @var{n} periods of an initial
+## lump sum investment @var{l}, given a per-period interest rate
+## @var{r}.
 ##
-## Returns the future value at the end of n periods of an initial lump
-## sum investment l, given a per-period interest rate r.
+## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+## not 5 percent).
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Future value of an initial lump sum investment

@@ -15,14 +15,16 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pmt (@var{r}, @var{n}, @var{a} [, @var{l}] [, @var{method}])
-## Compute the amount of periodic payment necessary to amortize a loan
+## @deftypefn {Function File} {} pmt (@var{r}, @var{n}, @var{a}, @var{l}, @var{method})
+## Return the amount of periodic payment necessary to amortize a loan
 ## of amount a with interest rate @var{r} in @var{n} periods.
 ##
-## With the optional scalar argument l, one can specify an initial
-## lump-sum payment. With the optional string argument `method', one can
-## specify whether payments are made at the end ("e", default) or at the
-## beginning ("b") of each period.
+## The optional argument @var{l} may be used to specify an initial
+## lump-sum payment.
+##
+## The optional argument @var{method} may be used to specify whether
+## payments are made at the end (@var{"e"}, default) or at the beginning
+## (@var{"b"}) of each period.
 ## @end deftypefn
 ## @seealso{pv, nper, and rate}
 

@@ -16,7 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## function sysp = parallel(Asys,Bsys)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{sysp} =} parallel (@var{Asys}, @var{Bsys})
 ## Forms the parallel connection of two systems.
 ##
 ##              ____________________
@@ -28,6 +29,7 @@
 ##              |      --------    |
 ##              --------------------
 ##                   Ksys
+## @end deftypefn
 
 ## Author: David Clem
 ## Created: August 15, 1994

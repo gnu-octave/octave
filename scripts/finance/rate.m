@@ -15,14 +15,16 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rate (@var{n}, @var{p}, @var{v} [, @var{l}] [,@var{method}])
-## Computes the rate of return on an investment of present value @var{v} which
+## @deftypefn {Function File} {} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
+## Return the rate of return on an investment of present value @var{v} which
 ## pays @var{p} in @var{n} consecutive periods.
 ##
-## With the optional scalar argument @var{l}, one can specify an additional
-## lump-sum payment made at the end of @var{n} periods. With the optional
-## string argument @var{`method'}, one can specify whether payments are made
-## at the end ("e", default) or at the beginning ("b") of each period.
+## The optional argument @var{l} may be used to specify an additional
+## lump-sum payment made at the end of @var{n} periods.
+##
+## The optional string argument @var{method} may be used to specify
+## whether payments are made at the end (@code{"e"}, default) or at the
+## beginning (@code{"b"}) of each period.
 ## @end deftypefn
 ## @seealso{pv, pmt, nper, and npv}
 

@@ -1,0 +1,36 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Containers, I/O Streams, Data Structures, Top
+@chapter Containers
+@cindex containers
+
+@menu
+* Lists::                       
+* Cell Arrays::                 
+@end menu
+
+@node Lists, Cell Arrays, Containers, Containers
+@section Lists
+@cindex lists
+
+@DOCSTRING(list)
+
+@DOCSTRING(nth)
+
+@DOCSTRING(append)
+
+@DOCSTRING(reverse)
+
+@DOCSTRING(splice)
+
+@DOCSTRING(is_list)
+
+@node Cell Arrays,  , Lists, Containers
+@section Cell Arrays
+@cindex cell arrays
+
+@DOCSTRING(cell)
+
+@DOCSTRING(iscell)

@@ -23,7 +23,7 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item Asys
-## system data structure (@pxref{ss2sys})
+## system data structure
 ## @item out_idx
 ## @itemx in_idx
 ## list of connections indices;

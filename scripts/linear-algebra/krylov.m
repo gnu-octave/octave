@@ -16,7 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## function [U,H,nu] = krylov(A,V,k{,eps1,pflg});
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{U}, @var{H}, @var{nu}] =} krylov (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg});
 ## construct orthogonal basis U of block Krylov subspace;
 ##  [V AV A^2*V ... A^(k+1)*V];
 ## method used: householder reflections to guard against loss of
@@ -38,7 +39,9 @@
 ## Reference: Hodel and Misra, "Partial Pivoting in the Computation of
 ##     Krylov Subspaces", to be submitted to Linear Algebra and its
 ##     Applications
-## written by A. Scottedward Hodel a.s.hodel@eng.auburn.edu
+## @end deftypefn
+
+## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
 function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
 

@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  irr (p [, i])
-##
-## Computes the internal rate of return of a series of payments p from
-## an initial investment i, i.e., the solution of npv (r, p) = i. If the
-## second argument is omitted, i = 0 is used.
-##
-## See also:  npv;  pv, rate.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} irr (@var{p}, @var{i})
+## Return the internal rate of return of a series of payments @var{p}
+## from an initial investment @var{i} (i.e., the solution of
+## @code{npv (r, p) = i}.  If the second argument is omitted, a value of
+## 0 is used.
+## @end deftypefn
+## @seealso{npv, pv, and rate}
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Internal rate of return of an investment

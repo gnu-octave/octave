@@ -16,7 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## [retsys,nc,no] = sysmin(sys{,flg});
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{retsys}, @var{nc}, @var{no}] =} sysmin (@var{sys}, @var{flg})
 ## return a minimal (or reduced order) system
 ## inputs:
 ##   sys: system data structure
@@ -31,10 +32,11 @@
 ##   no: number of observable states in the returned system
 ##   cflg: is_controllable(retsys)
 ##   oflg: is_observable(retsys)
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
-function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
+function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg)
 
   switch(nargin)
   case(1), flg = 0;

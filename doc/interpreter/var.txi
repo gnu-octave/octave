@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Variables, Expressions, Data Structures, Top
+@node Variables, Expressions, I/O Streams, Top
 @chapter Variables
 @cindex variables, user-defined
 @cindex user-defined variables

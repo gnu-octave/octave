@@ -14,10 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  pvl (r, n, p)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} pvl (@var{r}, @var{n}, @var{p})
+## Return the present value of an investment that will pay off @var{p}
+## in one lump sum at the end of @var{n} periods, given the interest
+## rate @var{r}.
 ##
-## Returns the present value of an investment that will pay off p in one
-## lump sum at the end of n periods, given the interest rate r.
+## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+## not 5 percent).
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Present value of an investment that pays off at the end

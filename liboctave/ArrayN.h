@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 
 #include "Array.h"
+#include "dMatrix.h"
 #include "lo-error.h"
 
 class idx_vector;
@@ -90,6 +91,22 @@ public:
     {
       dimensions = dims;
       set_max_indices (dimensions.length ());
+    }
+
+  // New constructor which takes a Matrix as an argument.  This should
+  // be moved to a subclass of ArrayN (NDArray) once we add a double
+  // instantiation of ArrayN.
+
+  ArrayN (const Matrix& m) : Array<T> (m)
+    {
+      set_max_indices (2);
+
+      Array<int> dim (2);
+
+      dim(0) = m.dim1 ();
+      dim(1) = m.dim2 ();
+
+      dimensions = dim;
     }
 
   ~ArrayN (void) { }
@@ -185,7 +202,8 @@ public:
 
   ArrayN<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
 		   const T& rfv = resize_fill_value (T ())) const;
-
+  
+  void maybe_delete_dims (void);
 #endif
 };
 

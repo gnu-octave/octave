@@ -286,6 +286,46 @@ freeze (Array<idx_vector>& ra_idx, const Array<int>& dimensions, int resize_ok)
 }
 
 static inline bool
+vector_equivalent (const Array<int>& ra_idx)
+{
+  int n = ra_idx.length ();
+
+  bool found_first = false;
+
+  for (int i = 0; i < n; i++)
+    {
+      if (ra_idx(i) != 1)
+        {
+	  if (! found_first)
+	    found_first = true;
+	  else
+	    return false;
+	}
+    }
+
+  return true;
+}
+
+static inline bool
+equal_arrays (const Array<int> a, const Array<int> b)
+{
+  bool retval = true;
+
+  if (a.length () != b.length ())
+    retval = false;
+  else
+    {
+      for (int i = 0; i < a.length (); i++)
+	{
+	  if (a(i) != b(i))
+	    retval = false;
+	}
+    }
+
+  return retval;
+}
+
+static inline bool
 all_ok (const Array<idx_vector>& ra_idx)
 {
   bool retval = true;
@@ -426,7 +466,7 @@ get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
   Array<int> retval (n);
 
   for (int i = 0; i < n; i++)
-    retval(i) = ra_idx(result_idx(i));
+    retval(i) = ra_idx(i).elem (result_idx(i));
 
   return retval;
 }

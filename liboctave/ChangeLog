@@ -1,3 +1,20 @@
+2003-09-09  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* ArrayN-idx.h (vector_equivalent, equal_arrays): New functions.
+	(get_elt_idx): Index ra_idx correctly.
+
+	* ArrayN-inline.h (index_in_bounds): Index is also condidered in
+	bounds if it is exactly on the bound.
+
+	* ArrayN.cc (ArrayN<T>::maybe_delete_dims): New function.
+	* ArrayN.h: Provide decl.
+
+	* ArrayN.h (ArrayN<T>::ArrayN<T> (const Matrix&)): New constructor.
+
+	* idx-vector.h (idx_vector::orig_dims): New member variable.
+	(idx_vector::idx_vector_rep::orig_dimensions): New function.
+	(idx_vector::orig_dimensions): New function.
+
 2003-09-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-specfun.cc (xlgamma): Require nonnegative argument.

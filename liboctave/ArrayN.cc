@@ -310,6 +310,34 @@ ArrayN<T>::insert (const ArrayN<T>& a, const Array<int>& ra_idx)
 }
 
 template <class T>
+void
+ArrayN<T>::maybe_delete_dims (void)
+{
+  int ndims = dimensions.length ();
+  Array<int> new_dims (1,1);
+  bool delete_dims = true;
+
+  for (int i = ndims - 1; i >= 0; i--)
+    {
+      if (delete_dims)
+        {
+          if (dimensions(i) != 1)
+	    {
+	      delete_dims = false;
+	      new_dims = Array<int> (i + 1, dimensions(i));
+	    }
+        }
+      else
+        {
+	  new_dims(i) = dimensions(i);
+	}
+    }
+    
+  if (ndims != new_dims.length ())
+    dimensions = new_dims;
+}
+
+template <class T>
 std::ostream&
 operator << (std::ostream& os, const ArrayN<T>& a)
 {

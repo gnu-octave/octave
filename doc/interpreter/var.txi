@@ -75,10 +75,24 @@ statement.  The following statements are all global declarations.
 @example
 @group
 global a
-global b = 2
-global c = 3, d, e = 5
+global a b
+global c = 2
+global d = 3 e f = 5
 @end group
 @end example
+
+A global variable may only be initialized once in a @code{global}
+statement.  For example, after executing the following code
+
+@example
+@group
+global gvar = 1
+global gvar = 2
+@end group
+@end example
+
+@noindent
+the value of the global variable @code{gvar} is 1, not 2.
 
 It is necessary declare a variable as global within a function body in
 order to access it.  For example,

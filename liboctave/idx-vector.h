@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "Array.h"
+
 class ColumnVector;
 class boolMatrix;
 class Matrix;
@@ -107,6 +109,8 @@ private:
     int orig_rows (void) const { return orig_nr; }
     int orig_columns (void) const { return orig_nc; }
 
+    Array<int> orig_dimensions (void) const { return orig_dims; }
+
     // other stuff
 
     void shorten (int n); // Unsafe.  Avoid at all cost.
@@ -123,8 +127,16 @@ private:
     int num_ones;
     int max_val;
     int min_val;
+
+    // XXX FIXME XXX -- with the introduction of orig_dims, these two
+    // variables are not neccessary.  orig_dims(0) and orig_dims(1)
+    // should replace them in the code.
+
     int orig_nr;
     int orig_nc;
+
+    Array<int> orig_dims;
+ 
     int count;
     int frozen_at_z_len;
     int frozen_len;
@@ -245,6 +257,8 @@ public:
 
   int orig_rows (void) const { return rep->orig_rows (); }
   int orig_columns (void) const { return rep->orig_columns (); }
+
+  Array<int> orig_dimensions (void) const { return rep->orig_dimensions (); }
 
   int orig_empty (void) const
     {

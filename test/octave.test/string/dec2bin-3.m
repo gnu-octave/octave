@@ -1,1 +1,2 @@
-dec2bin (1, 2)
+strcmp (dec2bin (14, 6), "001110")
+

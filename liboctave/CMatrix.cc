@@ -2487,9 +2487,15 @@ ComplexMatrix::all_elements_are_real (void) const
   int nc = cols ();
 
   for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      if (imag (elem (i, j)) != 0.0)
-	return false;
+    {
+      for (int i = 0; i < nr; i++)
+	{
+	  double ip = imag (elem (i, j));
+
+	  if (ip != 0.0 || lo_ieee_signbit (ip))
+	    return false;
+	}
+    }
 
   return true;
 }

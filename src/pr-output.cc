@@ -1188,7 +1188,7 @@ pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
   if (! bank_format)
     {
       double i = tmp.imag ();
-      if (! (hex_format || bit_format) && i < 0)
+      if (! (hex_format || bit_format) && lo_ieee_signbit (i))
 	{
 	  os << " - ";
 	  i = -i;

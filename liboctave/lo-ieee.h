@@ -66,6 +66,22 @@ extern double lo_ieee_inf_value (void);
 extern double lo_ieee_na_value (void);
 extern double lo_ieee_nan_value (void);
 
+// In the following definitions, only check x < 0 explicitly to avoid
+// a function call when it looks like signbit or copysign are actually
+// functions.
+
+#if defined (signbit)
+#define lo_ieee_signbit(x) signbit (x)
+#elif defined (HAVE_SIGNBIT)
+#define lo_ieee_signbit(x) (x < 0 || signbit (x))
+#elif defined (copysign)
+#define lo_ieee_signbit(x) (copysign (1.0, x) < 0)
+#elif defined (HAVE_COPYSIGN)
+#define lo_ieee_signbit(x) (x < 0 || copysign (1.0, x) < 0)
+#else
+#define lo_ieee_signbit(x) 0
+#endif
+
 #ifdef	__cplusplus
 }
 #endif

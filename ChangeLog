@@ -1,3 +1,7 @@
+2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for copysign and signbit.
+
 2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/Makefile.in (DISTFILES): Add otags.1 to the list.

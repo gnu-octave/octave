@@ -1,3 +1,10 @@
+2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::all_elements_are_real): Don't lose -0
+	imaginary parts.
+
+	* lo-ieee.h (lo_ieee_signbit): New macro.
+
 2003-02-18  David Bateman <dbateman@free.fr>
 
 	* dMatrix.cc (Matrix::inverse, Matrix::determinant, Matrix::solve):

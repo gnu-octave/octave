@@ -41,6 +41,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+#if defined (quad)
+#undef quad
+#endif
+
 // Global pointer for user defined function required by quadrature functions.
 static tree_fvc *quad_fcn;
 

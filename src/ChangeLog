@@ -2,6 +2,8 @@ Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.5 released.
 
+	* quad.cc: If quad is defined, undefine it.
+
 	* octave.cc: If WITH_KPATHSEARCH is defined, don't define
 	program_invocation_name or program_invocation_short_name.
 

@@ -69,12 +69,16 @@ Numerical:
   * Optional inputs for fsqp.
 
   * Allow parameters to be passed through the call to fsolve() to the
-   user-supplied function for Matlab compatibility.  Don't place an
+    user-supplied function for Matlab compatibility.  Don't place an
     upper limit on the number of arguments.
 
   * If possible, make economy QR factorization actually take advantage
     of the form of the result instead of just dropping columns.
     Lapack doesn't appear to do this yet.
+
+  * Check matrices for symmetry before computing eigenvalues, etc.,
+    and then use the routines for symmetric matrices for improved
+    performance.
 
   * Check matrix classes for proper handling of empty matrices.
 

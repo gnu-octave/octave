@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <math.h>
 #include <stdlib.h>
 
 #include "error.h"
@@ -74,7 +75,7 @@ octave_ieee_init (void)
 // trying to make Inf and NaN.
 
 #if defined (HAVE_INFINITY)
-  octave_Inf = infinity ();
+  octave_Inf = (double) infinity ();
 #else
 #ifdef linux
   octave_Inf = HUGE_VAL;
@@ -92,7 +93,7 @@ octave_ieee_init (void)
 #endif
 
 #if defined (HAVE_QUIET_NAN)
-  octave_NaN = quiet_nan ();
+  octave_NaN = (double) quiet_nan ();
 #else
 #ifdef linux
   octave_NaN = NAN;

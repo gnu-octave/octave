@@ -18,14 +18,6 @@ END-INFO-DIR-ENTRY
 
 @c @ignore
 @setchapternewpage odd
-@iftex
-@tex
-\global\chapheadingskip = 15pt plus 4pt minus 2pt 
-\global\secheadingskip = 12pt plus 3pt minus 2pt
-\global\subsecheadingskip = 9pt plus 2pt minus 2pt
-\global\parskip 5pt plus 1pt
-@end tex
-@end iftex
 @c @end ignore
 
 @c Settings for small book format:
@@ -46,7 +38,7 @@ END-INFO-DIR-ENTRY
 @c This file doesn't include a chapter, so it must not be included
 @c if you want to run the Emacs function texinfo-multiple-files-update.
 
-@c @include conf.texi
+@include conf.texi
 
 @settitle Octave
 
@@ -154,6 +146,7 @@ It corresponds to Octave version @value{VERSION}.
 * Readline Index::              An index for readline commands.
 * Info Index::                  An index for info commands.
 
+
  --- The Detailed Node Listing ---
 
 A Brief Introduction to Octave
@@ -235,7 +228,7 @@ Functions and Script Files
 
 Built-in Variables
 
-* Miscellaneous Built-in Variables
+* Miscellaneous Built-in Variables::  
 * Summary of Preference Variables::  
 
 Arithmetic
@@ -318,6 +311,8 @@ System Utilities
 * Timing Utilities::            
 * Filesystem Utilities::        
 * Interacting with the OS::     
+* Password Database Functions::  
+* Group Database Functions::    
 * System Information::          
 * Other Functions::             
 

@@ -1,0 +1,80 @@
+.\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
+.\" and released under the GNU GPL
+.TH MKOCTFILE 1 "1 November 2002" "GNU Octave"
+.SH NAME
+mkoctfile - Compile dynamic-load modules for GNU Octave
+.SH SYNOPSIS
+.BR mkoctfile\  [-IDIR]\ [-DDEF]\ [-lLIB]\ [-LDIR]\ [-M|--depend]\ 
+[-c]\ [-o FILE|--output FILE]\ [-p VAR|--print VAR]\ [-s|\--strip]\ 
+[-v|--verbose]\ [-h|-?|--help]\ \fIfile\fP .\|.\|.  
+.SH DESCRIPTION
+.PP
+\fImkoctfile\fP is used to compile source C, C++ or Fortran source code in
+dynamically loadble 
+.f .oct
+file for 
+.BR octave (1).
+.SH OPTIONS
+.l
+\fImkoctfile\fP accepts the following options:
+.TP 8
+.B \-IDIR
+Add include directory DIR to compile commands.
+.TP 8
+.B \-DDEF
+Add definition DEF to compiler call.
+.TP 8
+.B \-lLIB
+Add library LIB to link command.
+.TP 8
+.B \-LDIR
+Add library directory DIR to link command.
+.TP 8
+.B \-M|\-\-depend
+Generate dependency files (.d) for C and C++ source files.
+.TP 8
+.B \-c
+Compile but do not link.
+.TP 8
+.B \-o FILE|\-\-output FILE
+Output file name; default extension is .oct.
+.TP
+.B \-p VAR|\-\-print VAR
+Print configuration variable VAR.  Recognized variables are:
+.RS
+    CPPFLAGS    CPICFLAG
+    INCFLAGS    CXX
+    F2C         CXXFLAGS
+    F2CFLAGS    CXXPICFLAG
+    F77         XTRA_CFLAGS
+    FFLAGS      XTRA_CXXFLAGS
+    FPICFLAG    SHLEXT
+    CC          SH_LD
+    CFLAGS      SH_LDFLAGS
+.RE
+.TP 8
+.B \-s|--strip
+Strip the output file.
+.TP 8
+.B \-v|--verbose
+Echo commands as they are executed.
+.TP 8
+.B file
+Compile or linke file. Recognised file types are 
+.RS
+    .c    C source
+    .cc   C++ source
+    .C    C++ source
+    .cpp  C++ source
+    .f    Fortran source
+    .F    Fortran source
+    .o    object file
+    .SH SEE ALSO
+    .BR octave (1).
+.RE
+.SH AUTHOR
+John W. Eaton <jwe@bevo.che.wisc.edu>
+
+This manual page was contributed by Dirk Eddelbuettel
+<edd@debian.org> for the Debian GNU/Linux distribution but 
+may be used by others.

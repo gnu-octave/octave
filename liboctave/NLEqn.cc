@@ -261,6 +261,9 @@ NLEqn::solve (int& info)
 	retval.elem (i) = px[i];
     }
 
+  delete [] fvec;
+  delete [] px;
+
   return retval;
 }
 

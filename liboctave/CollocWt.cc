@@ -316,10 +316,10 @@ CollocWt::init (void)
   F77_FCN (dfopr) (&nt, &n, &inc_left, &inc_right, &i, &id, dif1,
 		   dif2, dif3, pr, pq);
 
-  delete dif1;
-  delete dif2;
-  delete dif3;
-  delete vect;
+  delete [] dif1;
+  delete [] dif2;
+  delete [] dif3;
+  delete [] vect;
 
   initialized = 1;
 }

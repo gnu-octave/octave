@@ -62,7 +62,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
 
   n = length (x);
   s = sort (x);
-  f = sprintf ("%s_cdf", dist);
+  f = str2func (sprintf ("%s_cdf", dist));
 
   alt  = "!=";
 

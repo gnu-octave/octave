@@ -59,20 +59,20 @@ function [q, s] = qqplot (x, dist, varargin)
   n = length (x);
   t = ((1 : n)' - .5) / n;
   if (nargin == 1)
-    f = "stdnormal_inv";
+    f = @stdnormal_inv;
   else
-    f = sprintf ("%s_inv", dist);
+    f = str2func (sprintf ("%s_inv", dist));
   endif;
   if (nargin <= 2)
     q = feval (f, t);
-    q_label = f;
+    q_label = func2str (f);
   else
     param_string = sprintf ("%g", varargin{1});
     for k = 2 : (nargin - 2);
       param_string = sprintf ("%s, %g", param_string, varargin{k})
     endfor
     q = eval (sprintf ("%s (t, %s);", f, param_string));
-    q_label = sprintf ("%s with parameter(s) %s", f, param_string);
+    q_label = sprintf ("%s with parameter(s) %s", func2str (f), param_string);
   endif
 
   if (nargout == 0)

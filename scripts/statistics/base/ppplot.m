@@ -57,9 +57,9 @@ function [p, y] = ppplot (x, dist, varargin)
   n = length (x);
   p = ((1 : n)' - 0.5) / n;
   if (nargin == 1)
-    F = "stdnormal_cdf";
+    F = @stdnormal_cdf;
   else
-    F = sprintf ("%s_cdf", dist);
+    F = str2func (sprintf ("%s_cdf", dist));
   endif;
   if (nargin <= 2)
     y = feval (F, s);

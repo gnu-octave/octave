@@ -1,3 +1,12 @@
+2003-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/tests/kolmogorov_smirnov_test.m: Use str2func to make
+	function handle to pass to feval.
+	* statistics/base/qqplot.m: Likewise.
+	* statistics/base/ppplot.m: Likewise.
+	* signal/spectral_xdf.m: Likewise.
+	* signal/spectral_adf.m: Likewise.
+
 2003-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/axis.m: Avoid whitespace in literal matrix problem.

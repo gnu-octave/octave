@@ -436,7 +436,7 @@ clean_up_and_exit (int retval)
 static void
 print_version_and_exit (void)
 {
-  cout << "octave, version " << version_string << "\n";
+  cout << OCTAVE_NAME_AND_VERSION << "\n";
   exit (0);
 }
 
@@ -728,8 +728,7 @@ DEFUN ("warranty", Fwarranty, Swarranty, 0, 0,
   Octave_object retval;
 
   ostrstream output_buf;
-  output_buf << "\n    Octave, version " << version_string
-	     << ".  " OCTAVE_COPYRIGHT "\n\n\
+  output_buf << "\n    " OCTAVE_VERSION_AND_COPYRIGHT "\n\n\
     This program is free software; you can redistribute it and/or modify\n\
     it under the terms of the GNU General Public License as published by\n\
     the Free Software Foundation; either version 2 of the License, or\n\

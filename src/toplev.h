@@ -36,7 +36,8 @@ extern void clean_up_and_exit (int) NORETURN;
 extern void parse_and_execute (FILE *f, int print = 0);
 
 extern void parse_and_execute (const char *s, int print = 0,
-			       int verbose = 0);
+			       int verbose = 0,
+			       const char *warn_for = 0);
 
 extern tree_constant eval_string (const char *string, int print,
 				  int& parse_status);

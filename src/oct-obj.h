@@ -66,7 +66,7 @@ public:
     { return ::operator new (size, p); }
 
   void operator delete (void *p, void *)
-    { return ::operator delete (p, static_cast<void *> (0)); }
+    { ::operator delete (p, static_cast<void *> (0)); }
 
   octave_value_list& operator = (const octave_value_list& obj)
     {

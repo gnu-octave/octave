@@ -192,28 +192,26 @@ TAGS: $(SOURCES)
 spell: $(SPELL)
 .PHONY: spell
 
-clean:
-	rm -f *.info *.info-* octave.cp octave.fn octave.in \
+mostlyclean clean:
+	rm -f octave.cp octave.fn octave.in \
 	octave.ky octave.op octave.pg octave.rd octave.tp octave.vr \
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
-	octave.log octave.toc octave.dvi octave.ps liboctave.cp \
+	octave.log octave.toc liboctave.cp \
 	liboctave.fn liboctave.pg liboctave.tp liboctave.cps \
 	liboctave.fns liboctave.pgs liboctave.tps liboctave.aux \
-	liboctave.log liboctave.toc liboctave.dvi liboctave.ps \
-	refcard-*.dvi refcard-*.ps
-.PHONY: clean
-
-mostlyclean:
-	rm -f *.info *.info-*
-.PHONY: mostlyclean
+	liboctave.log liboctave.toc
+.PHONY: mostlyclean clean
 
 distclean: clean
 	rm -f Makefile
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS
+	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps \
+	liboctave.info liboctave.info-* liboctave.dvi liboctave.ps \
+	FAQ.info FAQ.info-* FAQ.dvi FAQ.ps \
+	refcard-*.dvi refcard-*.ps
 .PHONY: maintainer-clean
 
 local-dist: all

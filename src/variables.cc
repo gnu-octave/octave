@@ -708,19 +708,19 @@ make_name_list (void)
   int j = 0;
   int i = 0;
   for (i = 0; i < key_len; i++)
-    list[j++] = key[i];
+    list[j++] = strsave (key[i]);
 
   for (i = 0; i < glb_len; i++)
-    list[j++] = glb[i];
+    list[j++] = strsave (glb[i]);
 
   for (i = 0; i < top_len; i++)
-    list[j++] = top[i];
+    list[j++] = strsave (top[i]);
 
   for (i = 0; i < lcl_len; i++)
-    list[j++] = lcl[i];
+    list[j++] = strsave (lcl[i]);
 
   for (i = 0; i < mfl_len; i++)
-    list[j++] = mfl[i];
+    list[j++] = strsave (mfl[i]);
 
   list[j] = (char *) NULL;
 

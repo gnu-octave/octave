@@ -31,32 +31,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "DAE.h"
 #include "lo-error.h"
 
-DAE::DAE (const ColumnVector& x, const ColumnVector& xxdot,
-	  double t, DAEFunc& f)
-  : base_diff_eqn (x, t), DAEFunc (f), xdot (xxdot)
+DAE::DAE (const ColumnVector& xx, const ColumnVector& xxdot,
+	  double tt, DAEFunc& f)
+  : base_diff_eqn (xx, tt), DAEFunc (f), xdot (xxdot)
 {
   if (x.length () != xdot.length ())
     ; // XXX FIXME XXX -- exception!
 }
 
 void
-DAE::initialize (const ColumnVector& xx, double t)
+DAE::initialize (const ColumnVector& xx, double tt)
 {
   if (xx.length () != xdot.length ())
     ; // XXX FIXME XXX -- exception!
   else
-    base_diff_eqn::initialize (xx, t);
+    base_diff_eqn::initialize (xx, tt);
 }
 
 void
 DAE::initialize (const ColumnVector& xx, const ColumnVector& xxdot,
-		 double t)
+		 double tt)
 {
   if (xx.length () != xxdot.length ())
     ; // XXX FIXME XXX -- exception!
   else
     {
-      base_diff_eqn::initialize (xx, t);
+      base_diff_eqn::initialize (xx, tt);
       xdot = xxdot;
     }
 }

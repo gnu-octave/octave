@@ -1,6 +1,7 @@
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* base-de.h: Use tt instead of t as arg names.
+	* DAE.h, DAE.cc: Likewise, also xx for x.
 
 	* DASSL.cc (dassl_fcn_ptr, dassl_jac_ptr): New typedefs.
 	* LSODE.cc: lsode_fcn_ptr, lsode_jac_ptr): Ditto.

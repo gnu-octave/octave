@@ -38,11 +38,11 @@ public:
   DAE (void)
     : base_diff_eqn (), DAEFunc (), xdot () { }
 
-  DAE (const ColumnVector& x, double t, DAEFunc& f)
-    : base_diff_eqn (x, t), DAEFunc (f), xdot (x.capacity (), 0.0) { }
+  DAE (const ColumnVector& xx, double tt, DAEFunc& f)
+    : base_diff_eqn (xx, tt), DAEFunc (f), xdot (x.capacity (), 0.0) { }
 
-  DAE (const ColumnVector& x, const ColumnVector& xxdot,
-       double t, DAEFunc& f);
+  DAE (const ColumnVector& xx, const ColumnVector& xxdot,
+       double tt, DAEFunc& f);
 
   DAE (const DAE& a)
     : base_diff_eqn (a), DAEFunc (a), xdot (a.xdot) { }
@@ -63,10 +63,10 @@ public:
 
   ColumnVector state_derivative (void) { return xdot; }
 
-  void initialize (const ColumnVector& x, double t);
+  void initialize (const ColumnVector& xx, double tt);
 
-  void initialize (const ColumnVector& x, const ColumnVector& xxdot,
-		   double t);
+  void initialize (const ColumnVector& xx, const ColumnVector& xxdot,
+		   double tt);
 
 protected:
 

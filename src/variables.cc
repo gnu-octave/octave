@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 #include <ctype.h>
 #include <iostream.h>
+#include <strstream.h>
 
 #include "statdefs.h"
 #include "tree-const.h"
@@ -447,13 +448,19 @@ is_globally_visible (const char *name)
  * something like:
  *
  *  #[ \t]*keyword[ \t]*:[ \t]*string-value\n
+ *
+ * Returns a pointer to a static variable which is only valid until
+ * the next time this function is called.
  */
-int
-extract_keyword (istream& is, char *keyword, char *value)
+char *
+extract_keyword (istream& is, char *keyword)
 {
-  char *ptr = value;
+  ostrstream buf;
 
-  int status = 0;
+  static char *retval = (char *) NULL;
+
+  delete [] retval;
+  retval = (char *) NULL;
 
   char c;
   while (is.get (c))
@@ -464,37 +471,41 @@ extract_keyword (istream& is, char *keyword, char *value)
 	    ; // Skip whitespace and comment characters.
 
 	  if (isalpha (c))
-	    *ptr++ = c;
+	    buf << c;
 
 	  while (is.get (c) && isalpha (c))
-	    *ptr++ = c;
+	    buf << c;
 
-	  if (strncmp (value, keyword, strlen (keyword)) == 0)
+	  buf << ends;
+	  char *tmp = buf.str ();
+	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
+	  delete [] tmp;
+
+	  if (match)
 	    {
-	      ptr = value;
+	      ostrstream value;
 	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
 		; // Skip whitespace and the colon.
 
 	      if (c != '\n')
 		{
-		  *ptr++ = c;
+		  value << c;
 		  while (is.get (c) && c != '\n')
-		    *ptr++ = c;
+		    value << c;
 		}
-	      *ptr = '\0';
-	      status = 1;
+	      value << ends;
+	      retval = value.str ();
 	      break;
 	    }
 	}
     }
-  return status;
+  return retval;
 }
 
 int
 extract_keyword (istream& is, char *keyword, int& value)
 {
-  char buf [128];
-  char *ptr = buf;
+  ostrstream buf;
 
   int status = 0;
   value = 0;
@@ -508,14 +519,18 @@ extract_keyword (istream& is, char *keyword, int& value)
 	    ; // Skip whitespace and comment characters.
 
 	  if (isalpha (c))
-	    *ptr++ = c;
+	    buf << c;
 
 	  while (is.get (c) && isalpha (c))
-	    *ptr++ = c;
+	    buf << c;
 
-	  if (strncmp (buf, keyword, strlen (keyword)) == 0)
+	  buf << ends;
+	  char *tmp = buf.str ();
+	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
+	  delete [] tmp;
+
+	  if (match)
 	    {
-	      ptr = buf;
 	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
 		; // Skip whitespace and the colon.
 

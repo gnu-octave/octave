@@ -1399,40 +1399,39 @@ tree_constant_rep::load (istream& is)
   type_tag = unknown_constant;
 
 // Look for type keyword
-  char tag [128];
-  if (extract_keyword (is, "type", tag))
-    {
-      if (tag != (char *) NULL && *tag != '\0')
-	{
-	  char *ptr = strchr (tag, ' ');
-	  if (ptr != (char *) NULL)
-	    {
-	      *ptr = '\0';
-	      is_global = (strncmp (tag, "global", 6) == 0);
-	      *ptr = ' ';
-	      ptr++;
-	    }
-	  else
-	    ptr = &tag[0];
 
-	  if (strncmp (ptr, "scalar", 6) == 0)
-	    type_tag = load (is, scalar_constant);
-	  else if (strncmp (ptr, "matrix", 6) == 0)
-	    type_tag = load (is, matrix_constant);
-	  else if (strncmp (ptr, "complex scalar", 14) == 0)
-	    type_tag = load (is, complex_scalar_constant);
-	  else if (strncmp (ptr, "complex matrix", 14) == 0)
-	    type_tag = load (is, complex_matrix_constant);
-	  else if (strncmp (ptr, "string", 6) == 0)
-	    type_tag = load (is, string_constant);
-	  else if (strncmp (ptr, "range", 5) == 0)
-	    type_tag = load (is, range_constant);
-	  else
-	    ::error ("unknown constant type `%s'", tag);
+  char *tag = extract_keyword (is, "type");
+
+  if (tag != (char *) NULL && *tag != '\0')
+    {
+      char *ptr = strchr (tag, ' ');
+      if (ptr != (char *) NULL)
+	{
+	  *ptr = '\0';
+	  is_global = (strncmp (tag, "global", 6) == 0);
+	  *ptr = ' ';
+	  ptr++;
 	}
       else
-	::error ("failed to extract keyword specifying value type");
+	ptr = &tag[0];
+
+      if (strncmp (ptr, "scalar", 6) == 0)
+	type_tag = load (is, scalar_constant);
+      else if (strncmp (ptr, "matrix", 6) == 0)
+	type_tag = load (is, matrix_constant);
+      else if (strncmp (ptr, "complex scalar", 14) == 0)
+	type_tag = load (is, complex_scalar_constant);
+      else if (strncmp (ptr, "complex matrix", 14) == 0)
+	type_tag = load (is, complex_matrix_constant);
+      else if (strncmp (ptr, "string", 6) == 0)
+	type_tag = load (is, string_constant);
+      else if (strncmp (ptr, "range", 5) == 0)
+	type_tag = load (is, range_constant);
+      else
+	::error ("unknown constant type `%s'", tag);
     }
+  else
+    ::error ("failed to extract keyword specifying value type");
 
   return is_global;
 }

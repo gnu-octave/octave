@@ -246,9 +246,7 @@ in_list (char *s, char **list)
 
 /*
  * Wipe out user-defined variables and functions given a list of
- * regular expressions.
- *
- * It's not likely that this works correctly now.  XXX FIXME XXX
+ * globbing patterns.
  */
 tree_constant
 builtin_clear (int argc, char **argv)
@@ -736,12 +734,12 @@ builtin_load (int argc, char **argv)
       stream = file;
     }
 
-  char nm [128]; // XXX FIXME XXX
   int count = 0;
   for (;;)
     {
 // Read name for this entry or break on EOF.
-      if (extract_keyword (stream, "name", nm) == 0 || nm == (char *) NULL)
+      char *nm = extract_keyword (stream, "name");
+      if (nm == (char *) NULL)
 	{
 	  if (count == 0)
 	    {
@@ -750,6 +748,8 @@ builtin_load (int argc, char **argv)
 	    }
 	  break;
 	}
+      else
+	count++;
 
       if (*nm == '\0')
 	continue;
@@ -760,8 +760,13 @@ builtin_load (int argc, char **argv)
 	  continue;
 	}
 
-      if (load_variable (nm, force, stream))
-	count++;
+      load_variable (nm, force, stream);
+
+      if (error_state)
+	{
+	  error ("reading file %s", *argv);
+	  break;
+	}
     }
 
   if (file);
@@ -875,7 +880,7 @@ builtin_save (int argc, char **argv)
   static ofstream file;
   if (strcmp (*argv, "-") == 0)
     {
-// XXX FIXME XXX -- things intended for the screen should end up in a
+// XXX FIXME XXX -- should things intended for the screen end up in a 
 // tree_constant (string)?
       stream = cout;
     }

@@ -80,7 +80,7 @@ extern void force_link_to_function (const char *s);
 
 extern int is_globally_visible (const char *nm);
 
-extern int extract_keyword (istream&, char *, char *);
+extern char *extract_keyword (istream&, char *);
 extern int extract_keyword (istream&, char *, int&);
 
 extern void skip_comments (istream&);

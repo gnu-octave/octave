@@ -41,7 +41,7 @@ function pdf = stdnormal_pdf (x)
 
   k = find (!isinf (x));
   if (any (k))
-    pdf (k) = (2 * pi)^(- 1/2) * exp( - x(k) .^ 2 / 2);
+    pdf (k) = (2 * pi)^(- 1/2) * exp (- x(k) .^ 2 / 2);
   endif
 
   pdf = reshape (pdf, r, c);

@@ -27,7 +27,9 @@
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## @code{mean (@var{x}) != mean (@var{y})}.  If @var{alt} is @code{">"},
 ## the one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is
-## used.  Similarly for @code{"<"}.  The default is the two-sided case.
+## used.  Similarly for @code{"<"}, the one-sided alternative @code{mean
+## (@var{x}) < mean (@var{y})} is used.  The default is the two-sided
+## case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
@@ -53,7 +55,7 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   mu_x = sum (x) / n_x;
   mu_y = sum (y) / n_y;
   v    = sumsq (x - mu_x) + sumsq (y - mu_y);
-  t    = (mu_x - mu_y) * sqrt ( (n_x * n_y * df) / (v * (n_x + n_y)) );
+  t    = (mu_x - mu_y) * sqrt ((n_x * n_y * df) / (v * (n_x + n_y)));
   cdf  = t_cdf (t, df);
 
   if (nargin == 2)

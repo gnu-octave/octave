@@ -66,7 +66,7 @@ function y = fftfilt (b, x, N)
     y    = ifft (fft (x, N) .* fft(b, N));
   else
     ## Use overlap-add method ...
-    if !(is_scalar (N))
+    if (! (is_scalar (N)))
       error ("fftfilt: N has to be a scalar");
     endif
     N = 2^(ceil (log (max ([N, l_b])) / log(2)));
@@ -85,7 +85,7 @@ function y = fftfilt (b, x, N)
 
   y = reshape (y(1:l_x), r_x, c_x);
 
-  ## Final cleanups:  if both x and b are real respectively integer, y
+  ## Final cleanups: if both x and b are real respectively integer, y
   ## should also be
 
   if (! (any (imag (x)) || any (imag (b))))

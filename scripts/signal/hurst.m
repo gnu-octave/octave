@@ -21,8 +21,8 @@
 ## every single column.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Estimate the Hurst parameter
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Estimate the Hurst parameter
 
 function H = hurst (x)
 
@@ -31,8 +31,8 @@ function H = hurst (x)
   endif
 
   if (is_scalar (x))
-    error ("hurst:  x must not be a scalar")
-  elseif is_vector (x)
+    error ("hurst: x must not be a scalar")
+  elseif (is_vector (x))
     x = reshape (x, length (x), 1);
   end
 

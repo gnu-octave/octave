@@ -21,8 +21,7 @@
 ## @deftypefn {Function File} {} puts (@var{string})
 ## Write a string to the standard output with no formatting.
 ## @end deftypefn
-
-## See also: fputs, printf, fprintf
+## @seealso{fputs, printf and fprintf}
 
 ## Author: jwe
 

@@ -25,8 +25,9 @@
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## PROB (@var{x} > @var{y}) != 1/2.  If alt is @code{">"}, the one-sided
-## alternative PROB (@var{x} > @var{y}) > 1/2 is considered, similarly
-## for @code{"<"}.  The default is the two-sided case.
+## alternative PROB (@var{x} > @var{y}) > 1/2 is considered.  Similarly
+## for @code{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) <
+## 1/2 is considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

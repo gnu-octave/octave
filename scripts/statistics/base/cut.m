@@ -38,7 +38,7 @@ function group = cut (X, BREAKS)
     usage ("cut (X, BREAKS)");
   endif
 
-  if !is_vector (X)
+  if (! is_vector (X))
     error ("cut: X must be a vector");
   endif
   if is_scalar (BREAKS)

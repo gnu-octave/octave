@@ -28,7 +28,8 @@
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## @code{@var{R} * @var{b} != @var{r}}.  If @var{alt} is @code{">"}, the
 ## one-sided alternative @code{@var{R} * @var{b} > @var{r}} is used.
-## Similarly for @var{"<"}.  The default is the two-sided case.
+## Similarly for @var{"<"}, the one-sided alternative @code{@var{R} *
+## @var{b} < @var{r}} is used.  The default is the two-sided case. 
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
@@ -50,7 +51,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
     else
       alt = "!=";
     endif
-  elseif !(nargin == 5)
+  elseif (! (nargin == 5))
     usage ("[pval, t, df] = t_test_regression (y, X, R, r, alt)");
   endif
 
@@ -61,11 +62,11 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
   endif
 
   [T, k] = size (X);
-  if !(is_vector (y) && (length (y) == T))
+  if (! (is_vector (y) && (length (y) == T)))
     error ("t_test_regression: y must be a vector of length rows (X)");
   endif
   s      = size (R);
-  if !((max (s) == k) && (min (s) == 1))
+  if (! ((max (s) == k) && (min (s) == 1)))
     error ("t_test_regression: R must be a vector of length columns (X)");
   endif
 

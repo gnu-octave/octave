@@ -44,7 +44,7 @@ function y = ranks (x)
     o = ones (1, r);
     for i = 1 : c;
       p = x (:, i) * o;
-      y = [y, ( sum (p < p') + (sum (p == p') + 1) / 2 )'];
+      y = [y, (sum (p < p') + (sum (p == p') + 1) / 2)'];
     endfor
   endif
 

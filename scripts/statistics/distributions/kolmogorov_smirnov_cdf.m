@@ -49,12 +49,12 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
   if (nargin == 1)
     tol = eps;
   else
-    if (!is_scalar (tol) || !(tol > 0))
+    if (! is_scalar (tol) || ! (tol > 0))
       error ("kolmogorov_smirnov_cdf: tol has to be a positive scalar");
     endif
   endif
 
-  [nr, nc] = size(x);
+  [nr, nc] = size (x);
   if (min (nr, nc) == 0)
     error ("kolmogorov_smirnov_cdf: x must not be empty");
   endif
@@ -65,11 +65,11 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
   ind = find (x > 0);
   if (length (ind) > 0)
     y   = x(ind);
-    K   = ceil( sqrt( - log (tol) / 2 ) / min (y) );
+    K   = ceil (sqrt (- log (tol) / 2) / min (y));
     k   = (1:K)';
-    A   = exp( - 2 * k.^2 * y.^2 );
+    A   = exp (- 2 * k.^2 * y.^2);
     odd = find (rem (k, 2) == 1);
-    A(odd, :) = -A(odd, :);
+    A(odd,:) = -A(odd,:);
     cdf(ind) = 1 + 2 * sum (A);
   endif
 

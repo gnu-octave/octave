@@ -34,7 +34,7 @@ function cdf = stdnormal_cdf (x)
     error ("stdnormal_cdf: x must not be empty.");
   endif
 
-  cdf = ( ones (r_x, c_x) + erf (x / sqrt(2)) ) / 2;
+  cdf = (ones (r_x, c_x) + erf (x / sqrt (2))) / 2;
 
 endfunction
 

@@ -30,10 +30,10 @@
 function rnd = binomial_rnd (n, p, r, c)
 
   if (nargin == 4)
-    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))))
       error ("binomial_rnd: r must be a positive integer");
     endif
-    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))))
       error ("binomial_rnd: c must be a positive integer");
     endif
     [retval, n, p] = common_size (n, p, zeros (r, c));

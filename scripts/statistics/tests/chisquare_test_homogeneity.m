@@ -45,7 +45,7 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
   endif
   ## Now test c for strictly increasing entries
   df = length (c);
-  if (any ( (c(2 : df) - c(1 : (df - 1))) <= 0))
+  if (any ((c(2 : df) - c(1 : (df - 1))) <= 0))
     error ("chisquare_test_homogeneity: c must be increasing");
   endif
 

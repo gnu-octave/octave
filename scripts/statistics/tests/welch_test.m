@@ -26,8 +26,9 @@
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @code{">"}, the
-## one-sided alternative mean(x) > m is considered, similarly for
-## @code{"<"}.  The default is the two-sided case.
+## one-sided alternative mean(x) > @var{m} is considered.  Similarly for
+## @code{"<"}, the one-sided alternative mean(x) < @var{m} is
+## considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
@@ -54,7 +55,7 @@ function [pval, t, df] = welch_test (x, y, alt)
   v_x  = sumsq (x - mu_x) / (n_x * (n_x - 1));
   v_y  = sumsq (x - mu_y) / (n_y * (n_y - 1));
   c    = v_x / (v_x + v_y);
-  df   = 1 / ( c^2 / (n_x - 1) + (1 - c)^2 / (n_y - 1));
+  df   = 1 / (c^2 / (n_x - 1) + (1 - c)^2 / (n_y - 1));
   t    = (mu_x - mu_y) / sqrt (v_x + v_y);
   cdf  = t_cdf (t, df);
 

@@ -23,8 +23,8 @@
 ## noise, @var{v}.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Fit AR model by Yule-Walker method
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Fit AR model by Yule-Walker method
 
 function [a, v] = yulewalker (c)
 

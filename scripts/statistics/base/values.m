@@ -29,7 +29,7 @@ function v = values (x)
     usage ("values (x)");
   endif
 
-  if !(is_vector (x))
+  if (! (is_vector (x)))
     error ("values: x must be a vector");
   endif
 

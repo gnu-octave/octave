@@ -20,8 +20,8 @@
 ## estimation.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Triangular spectral window
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Triangular spectral window
 
 function retval = triangle_sw (n, b)
 
@@ -31,7 +31,7 @@ function retval = triangle_sw (n, b)
   l = (2:n)' - 1;
   l = 2 * pi * l / n;
 
-  retval(2:n) = b * (sin (l / (2*b)) ./ sin (l / 2) ).^2;
+  retval(2:n) = b * (sin (l / (2*b)) ./ sin (l / 2)).^2;
 
 endfunction
 

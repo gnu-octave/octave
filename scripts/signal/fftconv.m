@@ -39,7 +39,7 @@ function c = fftconv (a, b, N)
   endif
 
   if (! (is_vector (a) && is_vector (b)))
-    error ("fftconv:  both a and b should be vectors");
+    error ("fftconv: both a and b should be vectors");
   endif
   la = length (a);
   lb = length (b);
@@ -52,7 +52,7 @@ function c = fftconv (a, b, N)
     if (nargin == 2)
       c = fftfilt (a, b);
     else
-      if !(is_scalar (N))
+      if (! (is_scalar (N)))
         error ("fftconv: N has to be a scalar");
       endif
       c = fftfilt (a, b, N);

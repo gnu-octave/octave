@@ -29,10 +29,10 @@ function rnd = stdnormal_rnd (r, c)
     usage ("stdnormal_rnd (r, c)");
   endif
 
-  if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+  if (! (is_scalar (r) && (r > 0) && (r == round (r))))
     error ("stdnormal_rnd: r must be a positive integer");
   endif
-  if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+  if (! (is_scalar (c) && (c > 0) && (c == round (c))))
     error ("stdnormal_rnd: c must be a positive integer");
   endif
 

@@ -43,8 +43,8 @@
 ## for the scoring algorithm.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Fit an ARCH regression model
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Fit an ARCH regression model
 
 function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
 
@@ -52,8 +52,8 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
     usage ("arch_fit (y, X, p, ITER, gamma, a0, b0)");
   endif
 
-  if !(is_vector (y))
-    error ("arch_test:  y must be a vector");
+  if (! (is_vector (y)))
+    error ("arch_test: y must be a vector");
   endif
 
   T   = length (y);
@@ -61,9 +61,8 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
   [rx, cx] = size (X);
   if ((rx == 1) && (cx == 1))
     X = autoreg_matrix (y, X);
-  elseif !(rx == T)
-    error (["arch_test:  ", ...
-            "either rows (X) == length (y), or X is a scalar"]);
+  elseif (! (rx == T))
+    error ("arch_test: either rows (X) == length (y), or X is a scalar");
   endif
 
   [T, k] = size (X);

@@ -27,8 +27,8 @@
 ## omitted, @code{1 / sqrt (length (@var{x}))} is used.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Spectral density estimation
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Spectral density estimation
 
 function retval = spectral_adf (c, win, b)
 

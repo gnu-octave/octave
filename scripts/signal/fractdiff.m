@@ -20,19 +20,19 @@
 ## where @var{L} denotes the lag-operator and @var{d} is greater than -1.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Compute fractional differences
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Compute fractional differences
 
 function retval = fractdiff (x, d)
 
   N = 100;
 
-  if !is_vector (x)
-    error ("fractdiff:  x must be a vector")
+  if (! is_vector (x))
+    error ("fractdiff: x must be a vector")
   endif
 
-  if !is_scalar (d)
-    error ("fractdiff:  d must be a scalar")
+  if (! is_scalar (d))
+    error ("fractdiff: d must be a scalar")
   endif
 
 
@@ -56,7 +56,7 @@ function retval = fractdiff (x, d)
     endif
 
   else
-    error ("fractdiff:  d must be > -1");
+    error ("fractdiff: d must be > -1");
 
   endif
 

@@ -24,8 +24,8 @@
 ## in autoregressions.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Design matrix for autoregressions
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Design matrix for autoregressions
 
 function X = autoreg_matrix (y, k)
 
@@ -33,8 +33,8 @@ function X = autoreg_matrix (y, k)
     usage ("autoreg_matrix (y, k)");
   endif
 
-  if !(is_vector (y))
-    error ("autoreg_matrix:  y must be a vector");
+  if (! (is_vector (y)))
+    error ("autoreg_matrix: y must be a vector");
   endif
 
   T = length (y);

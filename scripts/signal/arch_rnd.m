@@ -33,8 +33,8 @@
 ## @end example
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Simulate an ARCH process
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Simulate an ARCH process
 
 function y = arch_rnd (a, b, T)
 
@@ -42,15 +42,15 @@ function y = arch_rnd (a, b, T)
     usage ("arch_rnd (a, b, T)");
   endif
 
-  if !( (min (size (a)) == 1) && (min (size (b)) == 1) )
-    error ("arch_rnd:  a and b must both be scalars or vectors");
+  if (! ((min (size (a)) == 1) && (min (size (b)) == 1)))
+    error ("arch_rnd: a and b must both be scalars or vectors");
   endif
-  if !( is_scalar (T) && (T > 0) && (rem (T, 1) == 0) )
-    error ("arch_rnd:  T must be a positive integer");
+  if (! (is_scalar (T) && (T > 0) && (rem (T, 1) == 0)))
+    error ("arch_rnd: T must be a positive integer");
   endif
 
-  if !(a(1) > 0)
-    error ("arch_rnd:  a(1) must be positive");
+  if (! (a(1) > 0))
+    error ("arch_rnd: a(1) must be positive");
   endif
   ## perhaps add a test for the roots of a(z) here ...
 

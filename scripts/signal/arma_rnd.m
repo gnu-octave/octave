@@ -34,8 +34,8 @@
 ## is returned.  If @var{n} is omitted, @var{n} = 100 is used. 
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Simulate an ARMA process
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Simulate an ARMA process
 
 function x = arma_rnd (a, b, v, t, n)
 
@@ -53,12 +53,12 @@ function x = arma_rnd (a, b, v, t, n)
       usage ("arma_rnd (a, b, v, t, n)");
     endif
 
-    if ( (min (size (a)) > 1) || (min (size (b)) > 1) )
-      error ("arma_rnd:  a and b must not be matrices");
+    if ((min (size (a)) > 1) || (min (size (b)) > 1))
+      error ("arma_rnd: a and b must not be matrices");
     endif
 
     if (!is_scalar (t))
-      error ("arma_rnd:  t must be a scalar");
+      error ("arma_rnd: t must be a scalar");
     endif
 
     ar = length (a);

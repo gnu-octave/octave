@@ -86,7 +86,7 @@ function [h, w] = freqz(b,...)
 
   k = max([la, lb]);
 
-  if( n >= k)
+  if (n >= k)
     if (strcmp(region,"whole"))
       h = fft(postpad(b,n)) ./ fft(postpad(a,n));
       w = 2*pi*[0:(n-1)]/n;

@@ -22,8 +22,8 @@
 ## The default value for @var{d} is 0.
 ## @end deftypefn
 
-## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description:  Compute a sine wave
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Description: Compute a sine wave
 
 function x = sinewave (m, n, d)
 
@@ -33,6 +33,6 @@ function x = sinewave (m, n, d)
     usage ("sinewave (m, n, d)");
   endif
 
-  x = sin ( ((1 : m) + d - 1) * 2 * pi / n);
+  x = sin (((1 : m) + d - 1) * 2 * pi / n);
 
 endfunction

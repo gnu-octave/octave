@@ -27,8 +27,8 @@
 ## @end example
 ## @end deftypefn
 
-## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description:  Recover a signal from its short-term Fourier transform
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Description: Recover a signal from its short-term Fourier transform
 
 function X = synthesis (Y, c)
 
@@ -38,7 +38,7 @@ function X = synthesis (Y, c)
 
   [nr, nc] = size (c);
   if (nr * nc != 3)
-    error ("synthesis:  c must contain exactly 3 elements");
+    error ("synthesis: c must contain exactly 3 elements");
   endif
 
   ## not necessary, enables better reading
@@ -53,7 +53,7 @@ function X = synthesis (Y, c)
   elseif (w_type == 3)
     H = ones (win, 1);
   else
-    error ("synthesis:  window_type must be 1, 2, or 3");
+    error ("synthesis: window_type must be 1, 2, or 3");
   endif
 
   Z = real (ifft (Y));

@@ -29,7 +29,7 @@
 function y = shift (x, b)
 
   if (nargin != 2)
-    error ("usage: shift (X, b)");
+    usage ("shift (X, b)");
   endif
 
   [nr, nc] = size (x);

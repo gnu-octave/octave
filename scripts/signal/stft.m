@@ -48,8 +48,8 @@
 ## synthesis function.
 ## @end deftypefn
 
-## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description:  Short-term Fourier transform
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Description: Short-term Fourier transform
 
 function [Y, c] = stft(X, win, inc, coef, w_type)
 
@@ -74,7 +74,7 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
       elseif (strcmp (w_type, "rectangle"))
         w_type = 3;
       else
-        error (["stft:  unknown window type `", w_type, "'"])
+        error ("stft: unknown window type `%s'", w_type);
       endif
     endif
   else
@@ -88,14 +88,14 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
       X = X';
       nr = nc;
     else
-      error ("stft:  X must be a vector");
+      error ("stft: X must be a vector");
     endif
   endif
 
   num_coef = 2 * coef;
   if (win > num_coef)
     win = num_coef;
-    printf ("stft:  window size adjusted to %f\n", win);
+    printf ("stft: window size adjusted to %f\n", win);
   endif
   num_win = fix ((nr - win) / inc);
 

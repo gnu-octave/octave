@@ -24,9 +24,8 @@
 ##
 ## The constant of integration is set to zero.
 ## @end deftypefn
-
-## SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
-##           filter, polyval, polyvalm
+## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
+## filter, polyval, and polyvalm}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994

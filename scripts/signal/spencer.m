@@ -20,8 +20,8 @@
 ## @var{x}.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Apply Spencer's 15-point MA filter
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Apply Spencer's 15-point MA filter
 
 function retval = spencer (X)
 

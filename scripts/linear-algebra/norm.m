@@ -60,7 +60,7 @@
 function retval = norm (x, p)
 
   if (nargin < 1 || nargin > 2)
-    error ("usage: norm (x, p)");
+    usage ("norm (x, p)");
   endif
 
   if (isempty (x))

@@ -34,8 +34,7 @@
 ##
 ## @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
 ## @end deftypefn
-
-## SEE ALSO: image, imagesc, colormap, gray2ind, rgb2ind.
+## @seealso{image, imagesc, colormap, gray2ind, and rgb2ind}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

@@ -30,6 +30,8 @@
 
 function grid (x)
 
+  usage_msg = "grid (\"on\" | \"off\")";
+
   if (nargin == 0)
     gset grid;
   elseif (nargin == 1)
@@ -39,13 +41,13 @@ function grid (x)
       elseif (strcmp ("on", x))
         gset grid;
       else
-    usage ("grid (\"on\" | \"off\")");
+    usage (usage_msg);
       endif
     else
       error ("grid: argument must be a string");
     endif
   else
-    error ("usage: grid (\"on\" | \"off\")");
+    usage (usage_msg);
   endif
 
 endfunction

@@ -109,7 +109,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
     a = [w, x, y, z];
 
   otherwise
-    error ("usage: [a, b, c, d] = quaternion (w), a = quaternion (w, x, y, z)");
+    usage ("[a, b, c, d] = quaternion (w) or a = quaternion (w, x, y, z)");
 
   endswitch
 

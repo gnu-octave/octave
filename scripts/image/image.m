@@ -24,8 +24,7 @@
 ## length of the colormap.  If @var{zoom} is omitted, a value of 4 is
 ## assumed.
 ## @end deftypefn
-
-## SEE ALSO: imshow, imagesc, colormap.
+## @seealso{imshow, imagesc, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

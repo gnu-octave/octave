@@ -22,8 +22,8 @@
 ## R. W. Schafer, "Discrete-Time Signal Processing".
 ## @end deftypefn
 
-## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description:  Coefficients of the Hamming window
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Description: Coefficients of the Hamming window
 
 function c = hamming (m)
 
@@ -31,8 +31,8 @@ function c = hamming (m)
     usage ("hamming (m)");
   endif
 
-  if !(is_scalar (m) && (m == round (m)) && (m > 0))
-    error ("hamming:  m has to be an integer > 0");
+  if (! (is_scalar (m) && (m == round (m)) && (m > 0)))
+    error ("hamming: m has to be an integer > 0");
   endif
 
   if (m == 1)

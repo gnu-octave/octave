@@ -20,8 +20,8 @@
 ## estimation.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Rectangular spectral window
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Rectangular spectral window
 
 function retval = rectangle_sw (n, b)
 
@@ -31,7 +31,7 @@ function retval = rectangle_sw (n, b)
   l = (2:n)' - 1;
   l = 2 * pi * l / n;
 
-  retval(2:n) = sin( (2/b + 1) * l / 2 ) ./ sin (l / 2);
+  retval(2:n) = sin ((2/b + 1) * l / 2) ./ sin (l / 2);
 
 endfunction
 

@@ -30,10 +30,10 @@
 function rnd = beta_rnd (a, b, r, c)
 
   if (nargin == 4)
-    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))))
       error ("beta_rnd: r must be a positive integer");
     endif
-    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))))
       error ("beta_rnd: c must be a positive integer");
     endif
     [retval, a, b] = common_size (a, b, zeros (r, c));

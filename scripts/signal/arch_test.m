@@ -60,8 +60,8 @@
 ## If no output argument is given, the @var{p}-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Test for conditional heteroscedascity
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Test for conditional heteroscedascity
 
 function [pval, lm] = arch_test (y, X, p)
 
@@ -69,20 +69,19 @@ function [pval, lm] = arch_test (y, X, p)
     error ("arch_test needs 3 input arguments");
   endif
 
-  if !(is_vector (y))
-    error ("arch_test:  y must be a vector");
+  if (! (is_vector (y)))
+    error ("arch_test: y must be a vector");
   endif
   T   = length (y);
   y   = reshape (y, T, 1);
   [rx, cx] = size (X);
   if ((rx == 1) && (cx == 1))
     X = autoreg_matrix (y, X);
-  elseif !(rx == T)
-    error (["arch_test:  ", ...
-            "either rows(X) == length(y), or X is a scalar"]);
+  elseif (! (rx == T))
+    error ("arch_test: either rows(X) == length(y), or X is a scalar");
   endif
-  if !(is_scalar(p) && (rem(p, 1) == 0) && (p > 0))
-    error ("arch_test:  p must be a positive integer.");
+  if (! (is_scalar(p) && (rem(p, 1) == 0) && (p > 0)))
+    error ("arch_test: p must be a positive integer.");
   endif
 
   [b, v_b, e] = ols (y, X);

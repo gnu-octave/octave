@@ -35,8 +35,10 @@
 
 function retval = rem (x, y)
 
+  usage_msg = "rem (x, y)";
+
   if (nargin != 2)
-    usage ("rem (x, y)");
+    usage (usage_msg);
   endif
 
   if (any (size (x) != size (y)) && ! (is_scalar (x) || is_scalar (y)))
@@ -53,7 +55,7 @@ function retval = rem (x, y)
   if (nargin == 2)
     retval = x - y .* fix (x ./ y);
   else
-    error ("usage: rem (x, y)");
+    error (usage_msg);
   endif
 
 endfunction

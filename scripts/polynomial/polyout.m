@@ -17,12 +17,13 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} polyout (@var{c}@{, @var{x}@})
-## write formatted polynomial
+## @deftypefn {Function File} polyout (@var{c}, @var{x})
+## Write formatted polynomial
 ## @example
 ##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
 ## @end example
-##  to string @var{y} or to the screen (if @var{y} is omitted)
+##  and return it as a string or write it to the screen (if
+##  @var{nargout} is zero).
 ##  @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
@@ -34,17 +35,17 @@
 
 function y = polyout (c, x)
 
-  if (nargin < 1 ) || (nargin > 2) || (nargout < 0 ) || (nargout > 1)
-    usage("[y = ] polyout(c,[x])");
+  if (nargin < 1) || (nargin > 2) || (nargout < 0) || (nargout > 1)
+    usage("polyout (c, x)");
   endif
 
-  if (!is_vector(c))
+  if (! is_vector (c))
     error("polyout: first argument must be a vector");
   endif
 
   if (nargin == 1)
     x = "s";
-  elseif( ! isstr(x) )
+  elseif (! isstr(x))
     error("polyout: second argument must be a string");
   endif
 
@@ -52,17 +53,27 @@ function y = polyout (c, x)
   if(n > 0)
     n1 = n+1;
 
-    if( imag(c(1)) )     tmp = com2str(c(1))
-    else                 tmp = num2str(c(1));       endif
+    if (imag (c(1)))
+      tmp = com2str(c(1))
+    else
+      tmp = num2str(c(1));
+    endif
 
-    for ii=2:n
-      if(real(c(ii)) < 0)     ns = " - ";    c(ii) = -c(ii);
-      else                    ns = " + ";                      endif
+    for ii = 2:n
+      if (real (c(ii)) < 0)
+	ns = " - ";
+	c(ii) = -c(ii);
+      else
+        ns = " + ";
+      endif
 
-      if( imag(c(ii)) )       nstr = sprintf("(%s)",com2str(c(ii)) );
-      else                    nstr = num2str(c(ii));           endif
+      if (imag (c(ii)))
+	nstr = sprintf ("(%s)", com2str (c(ii)));
+      else
+        nstr = num2str (c(ii));
+      endif
 
-      tmp = sprintf("%s*%s^%d%s%s",tmp,x,n1-ii,ns,nstr);
+      tmp = sprintf ("%s*%s^%d%s%s", tmp, x, n1-ii, ns, nstr);
 
     endfor
   else

@@ -48,7 +48,7 @@ function [q, s] = qqplot (x, dist, ...)
     usage ("qqplot (x, dist, params)");
   endif
 
-  if !(is_vector(x))
+  if (! (is_vector(x)))
     error ("qqplot: x must be a vector.");
   endif
 

@@ -22,9 +22,8 @@
 ## Reduces a polynomial coefficient vector to a minimum number of terms by
 ## stripping off any leading zeros.
 ## @end deftypefn
-
-## SEE ALSO: poly, roots, conv, deconv, residue, filter, polyval, polyvalm,
-##           polyderiv, polyinteg
+## @seealso{poly, roots, conv, deconv, residue, filter, polyval,
+## polyvalm, polyderiv, and polyinteg}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994

@@ -22,8 +22,8 @@
 ## computed.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Compute autocovariances
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Compute autocovariances
 
 function retval = autocov (X, h)
 

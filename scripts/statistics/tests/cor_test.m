@@ -70,13 +70,13 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
 
   if (nargin < 3)
     ALTERNATIVE = "!=";
-  elseif !isstr (ALTERNATIVE)
+  elseif (! isstr (ALTERNATIVE))
     error ("cor_test: ALTERNATIVE must be a string");
   endif
 
   if (nargin < 4)
     METHOD = "pearson";
-  elseif !isstr (METHOD)
+  elseif (! isstr (METHOD))
     error ("cor_test: METHOD must be a string");
   endif
 

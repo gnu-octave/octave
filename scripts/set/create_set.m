@@ -35,7 +35,7 @@
 
 function y = create_set(x)
 
-  if ( nargin != 1)
+  if (nargin != 1)
     usage ("create_set(x)");
   endif
 

@@ -34,9 +34,10 @@
 ## @code{"<>"}, the null is tested against the two-sided alternative F
 ## != G.  In this case, the test statistic @var{ks} follows a two-sided
 ## Kolmogorov-Smirnov distribution.  If @var{alt} is @code{">"}, the
-## one-sided alternative F > G is considered, similarly for @code{"<"}.
-## In this case, the test statistic @var{ks} has a one-sided
-## Kolmogorov-Smirnov distribution.  The default is the two-sided case.
+## one-sided alternative F > G is considered.  Similarly for @code{"<"},
+## the one-sided alternative F > G is considered.  In this case, the
+## test statistic @var{ks} has a one-sided Kolmogorov-Smirnov
+## distribution.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

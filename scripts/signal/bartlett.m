@@ -23,8 +23,8 @@
 ## R. W. Schafer, "Discrete-Time Signal Processing".
 ## @end deftypefn
 
-## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description:  Coefficients of the Bartlett (triangular) window
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Description: Coefficients of the Bartlett (triangular) window
 
 function c = bartlett (m)
 
@@ -32,8 +32,8 @@ function c = bartlett (m)
     usage ("bartlett (m)");
   endif
 
-  if !(is_scalar (m) && (m == round (m)) && (m > 0))
-    error ("bartlett:  m has to be an integer > 0");
+  if (! (is_scalar (m) && (m == round (m)) && (m > 0)))
+    error ("bartlett: m has to be an integer > 0");
   endif
 
   if (m == 1)

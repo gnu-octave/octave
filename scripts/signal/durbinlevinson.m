@@ -27,16 +27,16 @@
 ## @var{t} of the algorithm are performed.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Perform one step of the Durbin-Levinson algorithm
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Perform one step of the Durbin-Levinson algorithm
 
 function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
 
-  if( !((nargin == 1) || (nargin == 3)) )
+  if (! ((nargin == 1) || (nargin == 3)))
     usage ("durbinlevinson (c, oldphi, oldv)");
   endif
 
-  if( columns (c) > 1 )
+  if (columns (c) > 1)
     c=c';
   endif
 
@@ -48,38 +48,38 @@ function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
     t = length (oldphi) + 1;
 
     if (length (c) < t+1)
-      error ("durbilevinson:  c too small");
+      error ("durbilevinson: c too small");
     endif
 
     if (oldv == 0)
       error ("durbinlevinson: oldv = 0");
     endif
 
-    if (rows (oldphi) > 1 )
+    if (rows (oldphi) > 1)
       oldphi = oldphi';
     endif
 
     newphi = zeros (1, t);
-    newphi(1) = ( c(t+1) - oldphi * c(2:t) ) / oldv;
+    newphi(1) = (c(t+1) - oldphi * c(2:t)) / oldv;
     for i = 2 : t
       newphi(i) = oldphi(i-1) - newphi(1) * oldphi(t-i+1);
     endfor
-    newv = ( 1 - newphi(1)^2 ) * oldv;
+    newv = (1 - newphi(1)^2) * oldv;
 
   elseif(nargin == 1)
 
     tt = length (c)-1;
     oldphi = c(2) / c(1);
-    oldv = ( 1 - oldphi^2 ) * c(1);
+    oldv = (1 - oldphi^2) * c(1);
 
     for t = 2 : tt
 
       newphi = zeros (1, t);
-      newphi(1) = ( c(t+1) - oldphi * c(2:t) ) / oldv;
+      newphi(1) = (c(t+1) - oldphi * c(2:t)) / oldv;
       for i = 2 : t
         newphi(i) = oldphi(i-1) - newphi(1) * oldphi(t-i+1);
       endfor
-      newv = ( 1 - newphi(1)^2 ) * oldv;
+      newv = (1 - newphi(1)^2) * oldv;
 
       oldv = newv;
       oldphi = newphi;

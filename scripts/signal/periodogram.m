@@ -21,7 +21,7 @@
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Compute the periodogram
+## Description: Compute the periodogram
 
 function retval = periodogram (x)
 

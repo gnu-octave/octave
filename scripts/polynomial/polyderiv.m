@@ -22,9 +22,8 @@
 ## Return the coefficients of the derivative of the polynomial whose
 ## coefficients are given by vector @var{c}.
 ## @end deftypefn
-
-## SEE ALSO: poly, polyinteg, polyreduce, roots, conv, deconv, residue,
-##           filter, polyval, polyvalm
+## @seealso{poly, polyinteg, polyreduce, roots, conv, deconv, residue,
+## filter, polyval, and polyvalm}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994

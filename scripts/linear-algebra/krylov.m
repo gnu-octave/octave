@@ -46,38 +46,49 @@
 function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
 
   defeps = 1e-12;
-  if(nargin < 3 | nargin > 5)
-    usage("[U,nu] = krylov(A,V,k{,eps1,pflg})")
-  elseif(nargin < 5)
+
+  if (nargin < 3 || nargin > 5)
+    usage ("[U, nu] = krylov (A, V, k, eps1, pflg)")
+  elseif (nargin < 5)
     pflg = 0;        # default permutation flag
   endif
+
   if(nargin < 4)
     eps1 = defeps;    # default tolerance parameter
   endif
-  if(isempty(eps1)) eps1 = defeps; endif
 
-  na = is_square(A);
-  if( !na ) error("A(%d x %d) must be square",rows(A),columns(A)); endif
-
-  [m,kb] = size(V);
-  if(m != na);
-    error("A(%d x %d), V(%d x %d): argument dimensions do not match", ...
-      na,na,m,kb)
+  if (isempty (eps1))
+    eps1 = defeps;
   endif
 
-  if( !is_scalar(k) )
-    error("krylov: third argument must be a scalar integer")
+  na = is_square (A);
+  if (! na)
+    error ("A(%d x %d) must be square", rows (A), columns (A));
   endif
 
-  Vnrm = norm(V,Inf);
+  [m, kb] = size(V);
+  if (m != na)
+    error("A(%d x %d), V(%d x %d): argument dimensions do not match",
+	  na, na, m, kb)
+  endif
 
-  # check for trivial solution
-  if(Vnrm == 0)
-    Uret = []; nu = 0;  return;
+  if (! is_scalar (k))
+    error ("krylov: third argument must be a scalar integer");
+  endif
+
+  Vnrm = norm (V, Inf);
+
+  ## check for trivial solution
+  if (Vnrm == 0)
+    Uret = [];
+    nu = 0;
+    return;
   endif
 
   # identify trivial null space
-  abm = max(abs([A,V]'));  nzidx = find(abm != 0);  zidx = find(abm == 0);
+  abm = max (abs ([A, V]'));
+  nzidx = find (abm != 0);
+  zidx = find (abm == 0);
 
   # set up vector of pivot points
   pivot_vec = 1:na;
@@ -85,85 +96,86 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
   iter = 0;
   alpha = [];
   nh = 0;
-  while (length(alpha) < na) & (columns(V) > 0) & (iter < k)
+  while (length(alpha) < na) && (columns(V) > 0) && (iter < k)
     iter++;
 
-    # get orthogonal basis of V
+    ## get orthogonal basis of V
     jj = 1;
-    while(jj <= columns(V) & length(alpha) < na)
-      nu = length(alpha)+1;   # index of next Householder reflection
+    while (jj <= columns (V) && length (alpha) < na)
+      ## index of next Householder reflection
+      nu = length(alpha)+1;
 
       short_pv = pivot_vec(nu:na);
       q = V(:,jj);
       short_q = q(short_pv);
 
-      if(norm(short_q) < eps1)
-        # insignificant column; delete
-        nv = columns(V);
-        if(jj != nv)
-          [V(:,jj),V(:,nv)] = swap(V(:,jj),V(:,nv));
-          # FIX ME: H columns should be swapped too.  Not done since
-          # Block Hessenberg structure is lost anyway.
+      if (norm (short_q) < eps1)
+	## insignificant column; delete
+        nv = columns (V);
+        if (jj != nv)
+          [V(:,jj), V(:,nv)] = swap (V(:,jj), V(:,nv));
+	  ## XXX FIXME XXX -- H columns should be swapped too.  Not done
+	  ## since Block Hessenberg structure is lost anyway.
         endif
         V = V(:,1:(nv-1));
-        nu = nu - 1;    # one less reflection
-
+	## one less reflection
+        nu--;
       else
-        # new householder reflection
-        if(pflg)
-          # locate max magnitude element in short_q
-          asq = abs(short_q);
-          maxv = max(asq);
-          maxidx = find(asq == maxv);
+	## new householder reflection
+        if (pflg)
+          ## locate max magnitude element in short_q
+          asq = abs (short_q);
+          maxv = max (asq);
+          maxidx = find (asq == maxv);
           pivot_idx = short_pv(maxidx(1));
 
-          # see if need to change the pivot list
-          if(pivot_idx != pivot_vec(nu))
+	  ## see if need to change the pivot list
+          if (pivot_idx != pivot_vec(nu))
             swapidx = maxidx(1) + (nu-1);
-            [pivot_vec(nu),pivot_vec(swapidx)] = ...
-              swap(pivot_vec(nu),pivot_vec(swapidx));
+            [pivot_vec(nu), pivot_vec(swapidx)] = ...
+		swap (pivot_vec(nu), pivot_vec(swapidx));
           endif
         endif
 
-        # isolate portion of vector for reflection
+	## isolate portion of vector for reflection
         idx = pivot_vec(nu:na);
         jdx = pivot_vec(1:nu);
 
-        [hv,av,z] = housh(q(idx),1,0);
+        [hv, av, z] = housh (q(idx), 1, 0);
         alpha(nu) = av;
         U(idx,nu) = hv;
 
         # reduce V per the reflection
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
         if(iter > 1)
-          # FIX ME: not done correctly for block case
+	  ## XXX FIXME XXX -- not done correctly for block case
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif
 
-        # advance to next column of V
-        jj=jj+1;
+        ## advance to next column of V
+        jj++;
       endif
     endwhile
 
-    # check for oversize V (due to full rank)
-    if( ( columns(V) > na ) & ( length(alpha) == na ) )
-      # trim to size
+    ## check for oversize V (due to full rank)
+    if ((columns (V) > na) && (length (alpha) == na))
+      ## trim to size
       V = V(:,1:na);
-    elseif( columns(V) > na )
+    elseif (columns(V) > na)
       krylov_V = V
       krylov_na = na
-      krylov_length_alpha = length(alpha)
-      error("This case should never happen; submit bug report.");
+      krylov_length_alpha = length (alpha)
+      error ("This case should never happen; submit a bug report");
     endif
 
-    if(columns(V) > 0)
-      # construct next Q and multiply
-      Q = zeros(size(V));
-      for kk=1:columns(Q)
+    if (columns (V) > 0)
+      ## construct next Q and multiply
+      Q = zeros (size (V));
+      for kk = 1:columns (Q)
         Q(pivot_vec(nu-columns(Q)+kk),kk) = 1;
       endfor
 
-      # apply Householder reflections
+      ## apply Householder reflections
       for ii = nu:-1:1
         idx = pivot_vec(ii:na);
         hv = U(idx,ii);
@@ -172,34 +184,36 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
       endfor
     endif
 
-    # multiply to get new vector;
+    ## multiply to get new vector;
     V = A*Q;
-    # project off of previous vectors
-    nu = length(alpha);
-    for i=1:nu
-      hv = U(:,i);  av = alpha(i);
+    ## project off of previous vectors
+    nu = length (alpha);
+    for i = 1:nu
+      hv = U(:,i);
+      av = alpha(i);
       V = V - av*hv*(hv'*V);
       H(i,nu-columns(V)+(1:columns(V))) = V(pivot_vec(i),:);
     end
 
   endwhile
 
-  # Back out complete U matrix
-  # back out U matrix ;
-  j1 = columns(U);
-  for i=j1:-1:1;
+  ## Back out complete U matrix
+  ## back out U matrix ;
+  j1 = columns (U);
+  for i = j1:-1:1;
     idx = pivot_vec(i:na);
     hv = U(idx,i);
     av = alpha(i);
-    U(:,i) = zeros(na,1);
+    U(:,i) = zeros (na, 1);
     U(idx(1),i) = 1;
     U(idx,i:j1) = U(idx,i:j1)-av*hv*(hv'*U(idx,i:j1));
   endfor
 
-  nu = length(alpha);
+  nu = length (alpha);
   Uret = U;
-  if( max(max( abs(Uret(zidx,:)) )) > 0)
-    warning("krylov: trivial null space corrupted; set pflg=1 or eps1>%e",eps1);
+  if (max (max (abs (Uret(zidx,:)))) > 0)
+    warning ("krylov: trivial null space corrupted; set pflg = 1 or eps1 > %e",
+	     eps1);
   endif
 
 endfunction

@@ -22,8 +22,8 @@
 ## R. W. Schafer, "Discrete-Time Signal Processing".
 ## @end deftypefn
 
-## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description:  Coefficients of the Blackman window
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Description: Coefficients of the Blackman window
 
 function c = blackman (m)
 
@@ -31,8 +31,8 @@ function c = blackman (m)
     usage ("blackman (m)");
   endif
 
-  if !(is_scalar (m) && (m == round (m)) && (m > 0))
-    error ("blackman:  m has to be an integer > 0");
+  if (! (is_scalar (m) && (m == round (m)) && (m > 0)))
+    error ("blackman: m has to be an integer > 0");
   endif
 
   if (m == 1)

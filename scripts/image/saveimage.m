@@ -52,8 +52,7 @@
 ##   University of British Columbia
 ##
 ## and is part of the portable bitmap utilities,
-
-## SEE ALSO: loadimage, save, load, colormap
+## @seealso{loadimage, save, load, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
@@ -270,7 +269,7 @@ function saveimage (filename, img, img_form, map)
     fprintf (fid, "%%%%Pages: 1\n");
     fprintf (fid, "%%%%BoundingBox: %d %d %d %d\n",
              fix (llx), fix (lly), fix (urx), fix (ury));
-    fprintf (fid, "%%%%EndComments\n" );
+    fprintf (fid, "%%%%EndComments\n");
     fprintf (fid, "/readstring {\n");
     fprintf (fid, "  currentfile exch readhexstring pop\n");
     fprintf (fid, "} bind def\n");
@@ -283,8 +282,8 @@ function saveimage (filename, img, img_form, map)
     fprintf (fid, "%g %g scale\n", scols, srows);
     fprintf (fid, "%d %d %d\n", img_nr, img_nc, bps);
     fprintf (fid, "[ %d 0 0 -%d 0 %d ]\n", img_nr, img_nc, img_nc);
-    fprintf (fid, "{ picstr readstring }\n" );
-    fprintf (fid, "image\n" );
+    fprintf (fid, "{ picstr readstring }\n");
+    fprintf (fid, "image\n");
 
     img = map(img);
 
@@ -292,12 +291,12 @@ function saveimage (filename, img, img_form, map)
     fprintf (fid, fmt, img);
 
     if (rem (img_sz, 30) != 0)
-      fprintf (fid, "\n" );
+      fprintf (fid, "\n");
     endif
 
-    fprintf (fid, "grestore\n" );
-    fprintf (fid, "showpage\n" );
-    fprintf (fid, "%%%%Trailer\n" );
+    fprintf (fid, "grestore\n");
+    fprintf (fid, "showpage\n");
+    fprintf (fid, "%%%%Trailer\n");
     fclose (fid);
 
   else

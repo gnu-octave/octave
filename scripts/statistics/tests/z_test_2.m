@@ -25,8 +25,10 @@
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## @code{mean (@var{x}) != mean (@var{y})}.  If alt is @code{">"}, the
-## one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is used,
-## similarly for @code{"<"}.  The default is the two-sided case.
+## one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is used.
+## Similarly for @code{"<"}, the one-sided alternative @code{mean
+## (@var{x}) < mean (@var{y})} is used.  The default is the two-sided
+## case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

@@ -22,8 +22,8 @@
 ## computed.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Compute autocorrelations
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Compute autocorrelations
 
 function retval = autocor (X, h)
 
@@ -36,7 +36,7 @@ function retval = autocor (X, h)
   endif
 
   if (min (retval (1,:)) != 0)
-    retval = retval ./ ( ones (rows (retval), 1) * retval(1, :) );
+    retval = retval ./ (ones (rows (retval), 1) * retval(1,:));
   endif
 
 endfunction

@@ -26,7 +26,8 @@
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## @var{p1} != @var{p2}.  If @var{alt} is @code{">"}, the one-sided
-## alternative @var{p1} > @var{p2} is used, similarly for @code{"<"}.
+## alternative @var{p1} > @var{p2} is used.  Similarly for @code{"<"},
+## the one-sided alternative @var{p1} < @var{p2} is used.
 ## The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
@@ -57,7 +58,7 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
     alt  = "!=";
   endif
 
-  if !isstr (alt)
+  if (! isstr (alt))
     error ("prop_test_2: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

@@ -24,8 +24,7 @@
 ## colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
 ## value of 4 is assumed.
 ## @end deftypefn
-
-## SEE ALSO: image, imshow
+## @seealso{image and imshow}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

@@ -23,8 +23,8 @@
 ## Defaults are @var{rate} = 8000, @var{sec} = 1 and @var{ampl} = 64.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Compute a sine tone
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Compute a sine tone
 
 function retval = sinetone (f, r, s, a)
 
@@ -43,11 +43,11 @@ function retval = sinetone (f, r, s, a)
 
   [err, f, a] = common_size (f, a);
   if (err || ! is_vector (f))
-    error ("sinetone:  freq and ampl must be vectors of common size");
+    error ("sinetone: freq and ampl must be vectors of common size");
   endif
 
-  if !(is_scalar (r) && is_scalar (s))
-    error ("sinetone:  rate and sec must be scalars");
+  if (! (is_scalar (r) && is_scalar (s)))
+    error ("sinetone: rate and sec must be scalars");
   endif
 
   n = length (f);

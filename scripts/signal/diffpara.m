@@ -35,15 +35,15 @@
 ## Theory and Methods Springer 1987.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Estimate the fractional differencing parameter
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Estimate the fractional differencing parameter
 
 function [d, D] = diffpara (X, a, b)
 
   if ((nargin < 1) || (nargin > 3))
     usage ("[d, D] = diffpara (X, a, b)");
   else
-    if is_vector (X)
+    if (is_vector (X))
       n = length (X);
       k = 1;
       X = reshape (X, n, 1);
@@ -59,8 +59,8 @@ function [d, D] = diffpara (X, a, b)
     endif
   endif
 
-  if !(is_scalar (a) && is_scalar (b))
-    error ("diffpara:  a and b must be scalars");
+  if (! (is_scalar (a) && is_scalar (b)))
+    error ("diffpara: a and b must be scalars");
   endif
 
   D = zeros (b - a + 1, k);
@@ -69,7 +69,7 @@ function [d, D] = diffpara (X, a, b)
 
     w = 2 * pi * (1 : n-1) / n;
 
-    x = 2 * log (abs( 1 - exp (-i*w)));
+    x = 2 * log (abs (1 - exp (-i*w)));
     y = log (periodogram (X(2:n,l)));
 
     x = center (x);

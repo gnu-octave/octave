@@ -29,7 +29,7 @@
 function [t, v, w] = table (x, y)
 
   if (nargin == 1)
-    if !(is_vector (x))
+    if (! (is_vector (x)))
       error ("table: x must be a vector");
     endif
     v = values (x);
@@ -37,7 +37,7 @@ function [t, v, w] = table (x, y)
       t(i) = sum (x == v(i) | isnan (v(i)) * isnan (x));
     endfor
   elseif (nargin == 2)
-    if !(is_vector (x) && is_vector (y) && (length (x) == length (y)))
+    if (! (is_vector (x) && is_vector (y) && (length (x) == length (y))))
       error ("table: x and y must be vectors of the same length");
     endif
     v = values (x);

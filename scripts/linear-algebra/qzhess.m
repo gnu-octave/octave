@@ -49,7 +49,7 @@
 function [aa, bb, q, z] = qzhess (a, b)
 
   if (nargin != 2)
-    error ("usage: [aa, bb, q, z] = qzhess (a, b)");
+    usage ("[aa, bb, q, z] = qzhess (a, b)");
   endif
 
   [na, ma] = size (a);

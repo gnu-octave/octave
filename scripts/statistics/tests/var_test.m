@@ -26,7 +26,9 @@
 ## @code{"<>"}, the null is tested against the two-sided alternative
 ## @code{var (@var{x}) != var (@var{y})}.  If @var{alt} is @code{">"},
 ## the one-sided alternative @code{var (@var{x}) > var (@var{y})} is
-## used, similarly for "<".  The default is the two-sided case.
+## used.  Similarly for "<", the one-sided alternative @code{var
+## (@var{x}) > var (@var{y})} is used.  The default is the two-sided
+## case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

@@ -57,7 +57,7 @@ do
   if test -z "$want_arg"
   then
     case $arg in
-      /*.a)
+      /*.a | /*values-*.o)
         exists=false
         for f in $lflags
         do

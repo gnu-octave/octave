@@ -281,23 +281,29 @@ system-dependent error message.\n\
 
   if (nargin == 3)
     {
-      int fid = args(0).int_value (true);
-      int req = args(1).int_value (true);
-      int arg = args(2).int_value (true);
+      octave_stream strm = octave_stream_list::lookup (args (0), "fcntl");
 
       if (! error_state)
 	{
-	  // XXX FIXME XXX -- Need better checking here?
-	  if (fid < 0)
-	    error ("fcntl: invalid file id");
-	  else
+	  int fid = strm.file_number ();
+
+	  int req = args(1).int_value (true);
+	  int arg = args(2).int_value (true);
+
+	  if (! error_state)
 	    {
-	      std::string msg;
+	      // XXX FIXME XXX -- Need better checking here?
+	      if (fid < 0)
+		error ("fcntl: invalid file id");
+	      else
+		{
+		  std::string msg;
 
-	      int status = octave_syscalls::fcntl (fid, req, arg, msg);
+		  int status = octave_syscalls::fcntl (fid, req, arg, msg);
 
-	      retval(0) = static_cast<double> (status);
-	      retval(1) = msg;
+		  retval(0) = static_cast<double> (status);
+		  retval(1) = msg;
+		}
 	    }
 	}
       else

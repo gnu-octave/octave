@@ -1,3 +1,8 @@
+2000-09-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* syscalls.cc (Ffcntl): Don't assume that the file id passed in is
+	the same as the underlying system file id.
+
 2000-08-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y: Use octave_time, not time.

@@ -171,6 +171,8 @@ public:
 
   bool is_function_handle (void) const { return false; }
 
+  bool is_inline_function (void) const { return false; }
+
   bool is_function (void) const { return false; }
 
   bool is_builtin_function (void) const { return false; }

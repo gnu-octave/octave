@@ -195,7 +195,7 @@ octave_dynamic_loader::instance_ok (void)
 }
 
 static
-void clear_function (const std::string& fcn_name)
+void do_clear_function (const std::string& fcn_name)
 {
   if (Vwarn_reload_forces_clear)
     warning ("  %s", fcn_name.c_str ());
@@ -235,7 +235,7 @@ octave_dynamic_loader::do_load (const std::string& fcn_name,
 	    warning ("reloading %s clears the following functions:",
 		     oct_file.file_name().c_str ());
 
-	  oct_file.close (clear_function);
+	  oct_file.close (do_clear_function);
 
 	  function = 0;
 	}

@@ -1,3 +1,22 @@
+2004-09-01  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTION/quad.cc: Allow function handle and inline functions.
+	Use a unique function name and delete it on exit.
+
+	* ov.h (is_inline_function): New virtual function.
+	* ov-fcn-inline.h (is_inline_function): New function.
+	* ov-base.h (is_inline_function): New function.
+
+	* ov-fcn-inline.cc (octave_fcn_handle::octave_fcn_handle):
+	Use unique_symbol_name and clear_function instead of manipulating
+	symbol table directly.
+
+	* variables.cc (unique_symbol_name): New function.
+	(clear_function): New function.
+	* variables.h: Provide decls.
+
+	* dynamic-ld.cc (do_clear_function): Rename from clear_function.
+
 2004-09-01  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-i8-i8.cc, OPERATORS/op-i16-i16.cc,

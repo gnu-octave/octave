@@ -105,6 +105,8 @@ quad_user_function (double x)
 #define QUAD_ABORT() \
   do \
     { \
+      if (fcn_name.length()) \
+	clear_function (fcn_name); \
       unwind_protect::run_frame ("Fquad"); \
       return retval; \
     } \
@@ -130,8 +132,9 @@ DEFUN_DLD (quad, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 Integrate a nonlinear function of one variable using Quadpack.\n\
-The first argument is the name of the  function to call to compute the\n\
-value of the integrand.  It must have the form\n\
+The first argument is the name of the  function, the function handle or\n\
+the inline function to call to compute the value of the integrand.  It\n\
+must have the form\n\
 \n\
 @example\n\
 y = f (x)\n\
@@ -165,6 +168,8 @@ parameters for @code{quad}.\n\
 {
   octave_value_list retval;
 
+  std::string fcn_name;
+
   warned_imaginary = false;
 
   unwind_protect::begin_frame ("Fquad");
@@ -179,9 +184,18 @@ parameters for @code{quad}.\n\
 
   if (nargin > 2 && nargin < 6 && nargout < 5)
     {
-      quad_fcn = extract_function (args(0), "quad", "__quad_fcn__",
-				   "function y = __quad_fcn__ (x) y = ",
-				   "; endfunction");
+      if (args(0).is_function_handle () || args(0).is_inline_function ())
+	quad_fcn = args(0).function_value ();
+      else
+	{
+	  fcn_name = unique_symbol_name ("__quad__fcn__");
+	  std::string fname = "function y = ";
+	  fname.append (fcn_name);
+	  fname.append ("(x) y = ");
+	  quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
+				       "; endfunction");
+	}
+
       if (! quad_fcn)
 	QUAD_ABORT ();
 
@@ -289,6 +303,9 @@ parameters for @code{quad}.\n\
       retval(2) = static_cast<double> (nfun);
       retval(1) = static_cast<double> (ier);
       retval(0) = val;
+
+      if (fcn_name.length())
+	clear_function (fcn_name);
     }
   else
     print_usage ("quad");

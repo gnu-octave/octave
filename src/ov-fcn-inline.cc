@@ -55,11 +55,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
   : octave_fcn_handle (0, n), iftext (f), ifargs (a) 
 {
   // Find a function name that isn't already in the symbol table.
-
-  std::string fname = "__inline__";
-
-  while (symbol_exist (fname))
-    fname.append ("X");
+  std::string fname = unique_symbol_name ("__inline__");
 
   // Form a string representing the function. 
 
@@ -91,10 +87,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
     {
       fcn = tmp;
 
-      // XXX FIXME XXX -- probably shouldn't be directly altering the
-      // symbol table here.
-
-      fbi_sym_tab->clear_function (fname);
+      clear_function (fname);
     }
   else
     error ("inline: unable to define function");

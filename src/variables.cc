@@ -662,6 +662,16 @@ symbol_exist (const std::string& name, const std::string& type)
   return retval;
 }
 
+std::string
+unique_symbol_name (const std::string& basename)
+{
+  // XXX FIXME XXX Can we be smarter than just adding characters?
+  std::string name = basename;
+  while (symbol_exist (name, "any"))
+    name.append ("X");
+  return name;
+}
+
 DEFUN (exist, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
@@ -1896,6 +1906,13 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
         } \
     } \
   while (0)
+
+
+bool
+clear_function (const std::string& nm)
+{
+  return do_clear_function (nm);
+}
 
 DEFCMD (clear, args, ,
   "-*- texinfo -*-\n\

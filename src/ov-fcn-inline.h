@@ -57,6 +57,8 @@ public:
 
   ~octave_fcn_inline (void) { }
 
+  bool is_inline_function (void) const { return true; }
+
   octave_fcn_inline *fcn_inline_value (bool = false) { return this; }
 
   std::string fcn_text (void) const { return iftext; }

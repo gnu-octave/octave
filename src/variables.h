@@ -77,6 +77,9 @@ looks_like_struct (const std::string& text);
 extern int
 symbol_exist (const std::string& name, const std::string& type = "any");
 
+extern std::string
+unique_symbol_name (const std::string& basename);
+
 extern bool lookup (symbol_record *s, bool exec_script = true);
 
 extern symbol_record *
@@ -115,6 +118,8 @@ bind_builtin_variable (const std::string&, const octave_value&,
 extern void mlock (const std::string&);
 extern void munlock (const std::string&);
 extern bool mislocked (const std::string&);
+
+extern bool clear_function (const std::string& nm);
 
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;

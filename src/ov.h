@@ -484,6 +484,9 @@ public:
   virtual bool is_function_handle (void) const
     { return rep->is_function_handle (); }
 
+  virtual bool is_inline_function (void) const
+    { return rep->is_inline_function (); }
+
   virtual bool is_function (void) const
     { return rep->is_function (); }
 

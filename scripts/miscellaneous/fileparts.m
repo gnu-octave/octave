@@ -31,13 +31,13 @@ function [directory, name, extension, version] = fileparts (filename)
       es = rindex (filename, ".");
       directory = filename(1:ds-1);
       name = filename(ds+1:es-1);
-      extension = filename(es+1:end);
+      extension = filename(es:end);
       version = "";
     else
-      error ("filesep: expecting filename argument to be a string");
+      error ("fileparts: expecting filename argument to be a string");
     endif
   else
-    usage ("filesep (filename)");
+    usage ("fileparts (filename)");
   endif
 
 endfunction

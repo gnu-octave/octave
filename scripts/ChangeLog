@@ -1,3 +1,8 @@
+2003-06-13  Alois Schloegl <alois.schloegl@tugraz.at>
+
+	* miscellaneous/fileparts.m: For compatibility with Matlab,
+	return "." with extension.
+
 2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/base/__stepimp__.m, control/base/nichols.m,
@@ -69,7 +74,7 @@
 
  	* mkpkgadd: Scan C++ files as well
 
-2003-02-13  Schloegl Alois <alois.schloegl@tugraz.at>
+2003-02-13  Alois Schloegl <alois.schloegl@tugraz.at>
 
 	* strings/findstr.m: Return empty set for zero-length target.
 

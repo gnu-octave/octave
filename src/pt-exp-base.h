@@ -42,6 +42,7 @@ class tree_statement_list;
 class tree_argument_list;
 class tree_parameter_list;
 class tree_return_list;
+class tree_va_return_list;
 class symbol_record;
 class symbol_table;
 
@@ -729,6 +730,7 @@ public:
       num_named_args = 0;
       num_args_passed = 0;
       curr_va_arg_number = 0;
+      vr_list = 0;
     }
 
   tree_function (int l = -1, int c = -1) : tree_fvc (l, c)
@@ -772,6 +774,10 @@ public:
 
   tree_constant octave_va_arg (void);
 
+  int takes_var_return (void) const;
+
+  void octave_vr_val (const tree_constant& val);
+
   void stash_function_name (char *s);
 
   char *function_name (void)
@@ -801,6 +807,7 @@ private:
   Octave_object args_passed;
   int num_args_passed;
   int curr_va_arg_number;
+  tree_va_return_list *vr_list;
 };
 
 #endif

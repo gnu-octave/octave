@@ -43,6 +43,7 @@ class tree_statement_list;
 class tree_argument_list;
 class tree_parameter_list;
 class tree_return_list;
+class tree_va_return_list;
 class tree_global;
 class tree_global_init_list;
 
@@ -50,6 +51,7 @@ class tree_global_init_list;
 
 #include "tree-base.h"
 #include "tree-expr.h"
+#include "tree-const.h"
 #include "tree-cmd.h"
 
 // A list of expressions and commands to be executed.
@@ -189,7 +191,7 @@ public:
 
   int is_defined (void);
 
-  Octave_object convert_to_const_vector (void);
+  Octave_object convert_to_const_vector (tree_va_return_list *vr_list);
 
   void print_code (ostream& os);
 
@@ -220,6 +222,15 @@ public:
     }
 
   void print_code (ostream& os);
+};
+
+class
+tree_va_return_list : public SLList<tree_constant>
+{
+public:
+  tree_va_return_list (void) : SLList<tree_constant> () { }
+
+  ~tree_va_return_list (void) { }
 };
 
 // List of expressions that make up a global statement.

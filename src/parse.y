@@ -235,7 +235,8 @@ static tree_expression *make_multi_val_ret (tree_expression *rhs,
 %type <tree_index_expression_type> variable word_list_cmd
 %type <tree_colon_expression_type> colon_expr
 %type <tree_argument_list_type> arg_list word_list
-%type <tree_parameter_list_type> param_list param_list1 func_def1a 
+%type <tree_parameter_list_type> param_list param_list1
+%type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command func_def
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
@@ -884,16 +885,42 @@ func_def1	: SCREW safe g_symtab '=' func_def2
 		    tpl->mark_as_formal_parameters ();
 		    $$ = $5->define_ret_list (tpl);
 		  }
-		| func_def1a ']' g_symtab '=' func_def2
+		| return_list g_symtab '=' func_def2
 		  {
 		    $1->mark_as_formal_parameters ();
-		    $$ = $5->define_ret_list ($1);
+		    $$ = $4->define_ret_list ($1);
 		  }
 		;
 
-func_def1a	: '[' safe local_symtab identifier
-		  { $$ = new tree_parameter_list ($4); }
-		| func_def1a ',' identifier
+return_list_x	: '[' safe local_symtab
+		;
+
+return_list	: return_list_x ']'
+		  { $$ = new tree_parameter_list (); }
+		| return_list_x ELLIPSIS ']'
+		  {
+		    tree_parameter_list *tmp = new tree_parameter_list ();
+		    tmp->mark_varargs_only ();
+		    $$ = tmp;
+		  }
+		| return_list1 ']'
+		  { $$ = $1; }
+		| return_list1 ',' ELLIPSIS ']'
+		  {
+		    $1->mark_varargs ();
+		    $$ = $1;
+		  }
+		;
+
+return_list1	: return_list_x identifier
+		  { $$ = new tree_parameter_list ($2); }
+		| return_list_x error
+		  {
+		    yyerror ("parse error");
+		    error ("invalid function return list");
+		    ABORT_PARSE;
+		  }
+		| return_list1 ',' identifier
 		  { $1->append ($3); }
 		;
 

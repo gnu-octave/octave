@@ -302,9 +302,12 @@ tree_parameter_list::define_from_arg_vector (const Octave_object& args)
 }
 
 Octave_object
-tree_parameter_list::convert_to_const_vector (void)
+tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
 {
   int nout = length ();
+
+  if (vr_list)
+    nout += vr_list->length ();
 
   Octave_object retval;
   retval.resize (nout);
@@ -319,6 +322,15 @@ tree_parameter_list::convert_to_const_vector (void)
 	retval(i) = elt->eval (0);
 
       i++;
+    }
+
+  if (vr_list)
+    {
+      for (p = vr_list->first (); p != 0; vr_list->next (p))
+	{
+	  retval(i) = vr_list->operator () (p);
+	  i++;
+	}
     }
 
   return retval;

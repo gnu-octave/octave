@@ -480,11 +480,6 @@ tree_matrix::eval (int print)
 	    {
 	      cm (put_row, put_col) = tmp.double_value ();
 	    }
-	  else if (tmp.is_string () && all_strings && str_ptr)
-	    {
-	      memcpy (str_ptr, tmp.string_value (), nc);
-	      str_ptr += nc;
-	    }
 	  else if (tmp.is_real_matrix () || tmp.is_range ())
 	    {
 	      cm.insert (tmp.matrix_value (), put_row, put_col);
@@ -2053,6 +2048,10 @@ tree_function *
 tree_function::define_ret_list (tree_parameter_list *t)
 {
   ret_list = t;
+
+  if (ret_list && ret_list->takes_varargs ())
+    vr_list = new tree_va_return_list;
+ 
   return this;
 }
 
@@ -2109,6 +2108,20 @@ tree_function::octave_va_arg (void)
   return retval;
 }
 
+int
+tree_function::takes_var_return (void) const
+{
+  return (ret_list && ret_list->takes_varargs ());
+}
+
+void
+tree_function::octave_vr_val (const tree_constant& val)
+{
+  assert (vr_list);
+
+  vr_list->append (val);
+}
+
 void
 tree_function::stash_function_name (char *s)
 {
@@ -2144,6 +2157,14 @@ pop_symbol_table_context (void *table)
 }
 
 static void
+delete_vr_list (void *list)
+{
+  tree_va_return_list *tmp = (tree_va_return_list *) list;
+  tmp->clear ();
+  delete tmp;
+}
+
+static void
 clear_symbol_table (void *table)
 {
   symbol_table *tmp = (symbol_table *) table;
@@ -2172,7 +2193,20 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
     {
       sym_tab->push_context ();
       add_unwind_protect (pop_symbol_table_context, (void *) sym_tab);
+
+      if (vr_list)
+	{
+// Push new vr_list.
+	  unwind_protect_ptr (vr_list);
+	  vr_list = new tree_va_return_list;
+
+// Clear and delete the new one before restoring the old one.
+	  add_unwind_protect (delete_vr_list, (void *) vr_list);
+	}
     }
+
+  if (vr_list)
+    vr_list->clear ();
 
 // Force symbols to be undefined again when this function exits.
 
@@ -2228,7 +2262,7 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 // Copy return values out.
 
     if (ret_list)
-      retval = ret_list->convert_to_const_vector ();
+      retval = ret_list->convert_to_const_vector (vr_list);
     else if (user_pref.return_last_computed_value)
       retval(0) = last_computed_value;
   }
@@ -2247,7 +2281,7 @@ tree_function::max_expected_args (void)
       if (param_list->takes_varargs ())
 	return -1;
       else
-	return param_list->length () + 1;
+	return param_list->length ();
     }
   else
     return 1;
@@ -2386,6 +2420,35 @@ to the beginning")
     }
   else
     print_usage ("va_start");
+
+  return retval;
+}
+
+DEFUN ("vr_val", Fvr_val, Svr_val, 1, 0,
+  "vr_val (X): append X to the list of optional return values for a
+function that allows a variable number of return values")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      if (curr_function)
+	{
+	  if (curr_function->takes_var_return ())
+	    curr_function->octave_vr_val (args(0));
+	  else
+	    {
+	      error ("vr_val only valid within function declared to produce");
+	      error ("a variable number of values");
+	    }
+	}
+      else
+	error ("vr_val only valid within function body");
+    }
+  else
+    print_usage ("vr_val");
 
   return retval;
 }

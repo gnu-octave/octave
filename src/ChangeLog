@@ -1,3 +1,8 @@
+2004-03-03 David Bateman <dbateman@free.fr>
+
+	* ov-cell.cc (octave_cell::save_hdf5, octave_cell::load_hdf5):
+	Make N-d aware.
+
 2004-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y: Delete spaces surrounding = in %name-prefix directive.

@@ -4448,10 +4448,11 @@ strip_infnan (const ComplexMatrix& m)
 
 // XXX FIXME XXX -- should probably write the help string here too.
 
-bool
+static bool
 save_ascii_data (std::ostream& os, const octave_value& tc,
-		 const std::string& name, bool strip_nan_and_inf,
-		 bool mark_as_global, int precision) 
+		 const std::string& name, bool& infnan_warned,
+		 bool strip_nan_and_inf, bool mark_as_global,
+		 int precision)
 {
   bool success = true;
 
@@ -4494,6 +4495,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
       ascii_save_type (os, "scalar", mark_as_global);
 
       double d = tc.double_value ();
+
       if (strip_nan_and_inf)
 	{
 	  if (xisnan (d))
@@ -4508,17 +4510,32 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	    }
 	}
       else
-	os << d << "\n";
+	{
+	  if (! infnan_warned && (xisnan (d) || xisinf (d)))
+	    {
+	      warning ("save: Inf or NaN values may not be reloadable");
+	      infnan_warned = true;
+	    }
+
+	  os << d << "\n";
+	}
     }
   else if (tc.is_real_matrix ())
     {
       ascii_save_type (os, "matrix", mark_as_global);
+
       os << "# rows: " << tc.rows () << "\n"
 	 << "# columns: " << tc.columns () << "\n";
 
       Matrix tmp = tc.matrix_value ();
+
       if (strip_nan_and_inf)
 	tmp = strip_infnan (tmp);
+      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
+	{
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
 
       os << tmp;
     }
@@ -4527,6 +4544,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
       ascii_save_type (os, "complex scalar", mark_as_global);
 
       Complex c = tc.complex_value ();
+
       if (strip_nan_and_inf)
 	{
 	  if (xisnan (c))
@@ -4548,17 +4566,32 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	    }
 	}
       else
-	os << c << "\n";
+	{
+	  if (! infnan_warned && (xisnan (c) || xisinf (c)))
+	    {
+	      warning ("save: Inf or NaN values may not be reloadable");
+	      infnan_warned = true;
+	    }
+
+	  os << c << "\n";
+	}
     }
   else if (tc.is_complex_matrix ())
     {
       ascii_save_type (os, "complex matrix", mark_as_global);
+
       os << "# rows: " << tc.rows () << "\n"
 	 << "# columns: " << tc.columns () << "\n";
 
       ComplexMatrix tmp = tc.complex_matrix_value ();
+
       if (strip_nan_and_inf)
 	tmp = strip_infnan (tmp);
+      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
+	{
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
 
       os << tmp;
     }
@@ -4570,11 +4603,20 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
   return (os && success);
 }
 
+bool
+save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
+			      const std::string& name)
+{
+  bool infnan_warned = true;
+
+  save_ascii_data (os, t, name, infnan_warned, true, false, 0);
+}
+
 // Save the info from sr on stream os in the format specified by fmt.
 
 static void
 do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
-	 int save_as_floats)
+	 int save_as_floats, bool& infnan_warned)
 {
   if (! sr->is_variable ())
     {
@@ -4594,7 +4636,7 @@ do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
   switch (fmt)
     {
     case LS_ASCII:
-      save_ascii_data (os, tc, name, false, global);
+      save_ascii_data (os, tc, name, infnan_warned, false, global, 0);
       break;
 
     case LS_BINARY:
@@ -4634,9 +4676,11 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
   int saved = vars.length ();
 
+  bool infnan_warned = false;
+
   for (int i = 0; i < saved; i++)
     {
-      do_save (os, vars (i), fmt, save_as_floats);
+      do_save (os, vars (i), fmt, save_as_floats, infnan_warned);
 
       if (error_state)
 	break;
@@ -4653,7 +4697,7 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
       for (int i = 0; i < count; i++)
 	{
-	  do_save (os, vars (i), fmt, save_as_floats);
+	  do_save (os, vars (i), fmt, save_as_floats, infnan_warned);
 
 	  if (error_state)
 	    break;

@@ -872,7 +872,7 @@ save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 	  switch (ndim)
 	    {
 	    case 2:
-	      save_ascii_data (file, t, name, true);
+	      save_ascii_data_for_plotting (file, t, name);
 	      break;
 
 	    case 3:

@@ -29,11 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_value;
 
-extern bool save_ascii_data (std::ostream& os, const octave_value& t,
-			     const std::string& name = std::string (),
-			     bool strip_nan_and_inf = false,
-			     bool mark_as_global = false,
-			     int precision = 0);
+extern bool
+save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
+			      const std::string& name = std::string ());
 
 extern bool save_three_d (std::ostream& os, const octave_value& t,
 			  bool parametric = false);

@@ -1,3 +1,14 @@
+2000-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_ascii_data_for_plotting): New function.
+	* pt-plot.cc (save_in_tmp_file): Use it instead of save_ascii_data.
+
+	* load-save.cc (save_ascii_data): Warn if saving Inf or NaN values.
+	New arg, infnan_warned.  Use it to warn just once per set.
+	Now static.
+	(do_save): New arg, infnan_warned.  Pass to save_ascii_data.
+	(save_vars): Initialize infnan_warned here, pass to do_save.
+
 2000-11-16  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* file-io.cc (Ffprintf): If no file id parameter, don't return

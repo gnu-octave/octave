@@ -178,16 +178,16 @@ then
 
 # Now try to mail it.
 
-    ( /bin/mail $BUGADDR < $TEMP ) > /dev/null 2>&1
+    ( /bin/mail $BUGADDR < $TEMP.x ) > /dev/null 2>&1
     status=$?
     if test $status -ne 0; then
-      ( Mail -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1
+      ( Mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
       status=$?
       if test $status -ne 0; then
-        ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1
+        ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
         status=$?
         if test $status -ne 0; then
-          ( mailx -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1
+          ( mailx -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
           status=$?
         fi
       fi

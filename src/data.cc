@@ -928,35 +928,86 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   int nargin = args.length ();
 
+  int ndim = 0;
+  int type = 0;
+
+  Array<int> dims;
+  
+  // Check for type information.
+
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      nargin--;
+
+      // XXX FIXME XXX -- allow type of the resulting matrix to be
+      // specified, e.g.
+      //
+      //   zeros(n1, n2, ..., 'real')
+      //   zeros(n1, n2, ..., 'complex')
+      //
+      // type = get_type (args(nargin).string_value ());
+    }
+
+  // determine matrix dimension
+
   switch (nargin)
     {
     case 0:
-      retval = val;
+      ndim = 0;
+      type = 0;
       break;
 
     case 1:
-      {
-	int nr, nc;
-	get_dimensions (args(0), fcn, nr, nc);
-
-	if (! error_state)
-	  retval = Matrix (nr, nc, val);
-      }
+      get_dimensions (args(0), fcn, dims);
       break;
 
-    case 2:
-      {
-	int nr, nc;
-	get_dimensions (args(0), args(1), fcn, nr, nc);
+      default:
+	{
+	  dims.resize (nargin);
 
-	if (! error_state)
-	  retval = Matrix (nr, nc, val);
-      }
-      break;
+	  for (int i = 0; i < nargin; i++)
+	    {
+	      dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
 
-    default:
-      print_usage (fcn);
-      break;
+	      if (error_state)
+		{
+		  error ("%s: expecting scalar arguments", fcn);
+		  break;
+		}
+	    }
+	}
+	break;
+    }
+
+  if (! error_state)
+    {
+      ndim = dims.length ();
+
+      check_dimensions (dims, fcn);
+
+      if (! error_state)
+	{
+	  // Construct either scalar, matrix or N-d array.
+
+	  switch (ndim)
+	    {
+	    case 0:
+	      retval = val;
+	      break;
+
+	    case 1:
+	      retval = Matrix (dims(0), dims(0), val);
+	      break;
+
+	    case 2:
+	      retval = Matrix (dims(0), dims(1), val);
+	      break;
+
+	    default:
+	      retval =  ArrayN<double> (dims, val);
+	      break;
+	    }
+	}
     }
 
   return retval;
@@ -966,8 +1017,9 @@ DEFUN (ones, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ones (@var{x})\n\
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
-Return a matrix whose elements are all 1.  The arguments are handled\n\
-the same as the arguments for @code{eye}.\n\
+@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k},...)\n\
+Return a matrix or N-dimensional array whose elements are all 1.\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
 \n\
 If you need to create a matrix whose values are all the same, you should\n\
 use an expression like\n\
@@ -984,8 +1036,9 @@ DEFUN (zeros, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} zeros (@var{x})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
-Return a matrix whose elements are all 0.  The arguments are handled\n\
-the same as the arguments for @code{eye}.\n\
+@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k},...)\n\
+Return a matrix or N-dimensional array whose elements are all 0.\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
 @end deftypefn")
 {
   return fill_matrix (args, 0.0, "zeros");

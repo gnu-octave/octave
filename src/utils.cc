@@ -766,6 +766,63 @@ check_dimensions (int& nr, int& nc, const char *warnfor)
 }
 
 void
+check_dimensions (Array<int>& dim, const char *warnfor)
+{
+  bool neg = false;
+
+  int n = dim.length ();
+  for (int i = 0; i < dim.length (); i++)
+    {
+      if (dim(i) < 0)
+        {
+          dim(i) = 0;
+          neg = true;
+        }
+    }
+
+  if (neg && Vwarn_neg_dim_as_zero)
+    {
+      warning ("%s: converting negative dimension to zero", warnfor);
+    }
+}
+
+
+void
+get_dimensions (const octave_value& a, const char *warn_for,
+                Array<int>& dim)
+{
+  if (a.is_scalar_type ())
+    {
+      dim.resize (2);
+      dim(0) = a.nint_value ();
+      dim(1) = dim(0);
+    }
+  else
+    {
+      int nr = a.rows ();
+      int nc = a.columns ();
+
+      if (nr == 1 || nc == 1)
+        {
+          Array<double> v = a.vector_value ();
+
+          if (error_state)
+            return;
+
+          int n = v.length ();
+          dim.resize (n);
+          for (int i = 0; i < n; i++)
+            dim(i) = NINT (v(i));
+        }
+      else
+        warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+    }
+
+  check_dimensions (dim, warn_for); // May set error_state.
+}
+
+
+void
 get_dimensions (const octave_value& a, const char *warn_for,
 		int& nr, int& nc)
 {

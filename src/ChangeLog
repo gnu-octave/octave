@@ -1,3 +1,13 @@
+2003-08-06  Heine Kolltveit  <kolltvei@idi.ntnu.no>
+
+	* utils.cc (check_dimensions(Array<int>&, char),
+	get_dimensions(octave_value&, char, Array<int>&): New functions.
+	* utils.h (check_dimensions (Array<int>&, char), 
+	get_dimensions (octave_value&, char, Array<int>&)): Provide decl.
+
+	* data.cc (fill_matrix): Also create N-d arrays.
+ 	(Fones, Fzeros): Handle more than 2 args to create N-d arrays.
+
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (make_diag): Use std::abs instead of our own ABS macro.

@@ -58,7 +58,7 @@ operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   else
     {
       int l = a.length ();
-      DO_VV_OP2 (+=);
+      DO_VV_OP2 (T, a, +=, b);
     }
   return a;
 }
@@ -81,7 +81,7 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   else
     {
       int l = a.length ();
-      DO_VV_OP2 (-=);
+      DO_VV_OP2 (T, a, -=, b);
     }
   return a;
 }

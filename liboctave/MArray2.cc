@@ -41,7 +41,7 @@ template <class T>
 MArray2<T>&
 operator += (MArray2<T>& a, const T& s)
 {
-  DO_VS_OP2 (+=)
+  DO_VS_OP2 (T, a, +=, s)
   return a;
 }
 
@@ -49,7 +49,7 @@ template <class T>
 MArray2<T>&
 operator -= (MArray2<T>& a, const T& s)
 {
-  DO_VS_OP2 (-=)
+  DO_VS_OP2 (T, a, -=, s)
   return a;
 }
 
@@ -70,7 +70,7 @@ operator += (MArray2<T>& a, const MArray2<T>& b)
       if (r > 0 && c > 0)
 	{
 	  int l = a.length ();
-	  DO_VV_OP2 (+=);
+	  DO_VV_OP2 (T, a, +=, b);
 	}
     }
   return a;
@@ -91,7 +91,7 @@ operator -= (MArray2<T>& a, const MArray2<T>& b)
       if (r > 0 && c > 0)
 	{
 	  int l = a.length ();
-	  DO_VV_OP2 (-=);
+	  DO_VV_OP2 (T, a, -=, b);
 	}
     }
   return a;

@@ -42,7 +42,7 @@ template <class T>
 MArrayN<T>&
 operator += (MArrayN<T>& a, const T& s)
 {
-  DO_VS_OP2 (+=)
+  DO_VS_OP2 (T, a, +=, s)
   return a;
 }
 
@@ -50,7 +50,7 @@ template <class T>
 MArrayN<T>&
 operator -= (MArrayN<T>& a, const T& s)
 {
-  DO_VS_OP2 (-=)
+  DO_VS_OP2 (T, a, -=, s)
   return a;
 }
 
@@ -70,7 +70,7 @@ operator += (MArrayN<T>& a, const MArrayN<T>& b)
       if (a_dims != b_dims)
 	gripe_nonconformant ("operator +=", a_dims, b_dims);
       else
-	DO_VV_OP2 (+=);
+	DO_VV_OP2 (T, a, +=, b);
     }
 
   return a;
@@ -90,7 +90,7 @@ operator -= (MArrayN<T>& a, const MArrayN<T>& b)
       if (a_dims != b_dims)
 	gripe_nonconformant ("operator -=", a_dims, b_dims);
       else
-	DO_VV_OP2 (-=);
+	DO_VV_OP2 (T, a, -=, b);
     }
   return a;
 }

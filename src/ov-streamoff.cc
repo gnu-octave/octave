@@ -30,24 +30,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
-#include "Array.h"
-#include "Array.cc"
-#include "ArrayN.h"
-#include "ArrayN.cc"
+#include "so-array.h"
 
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
 #include "ov-streamoff.h"
 #include "oct-obj.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "ov-base-mat.h"
 #include "ov-base-mat.cc"
-
-INSTANTIATE_ARRAY_AND_ASSIGN (std::streamoff);
-
-template class ArrayN<std::streamoff>;
 
 template class octave_base_matrix<streamoff_array>;
 
@@ -55,58 +47,6 @@ DEFINE_OCTAVE_ALLOCATOR (octave_streamoff);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_streamoff,
 				     "streamoff", "streamoff");
-boolNDArray
-streamoff_array::all (int dim) const
-{
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
-}
-
-boolNDArray
-streamoff_array::any (int dim) const
-{
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
-}
-
-#if 0
-streamoff_array&
-streamoff_array::operator += (const streamoff_array& a)
-{
-  // XXX FIXME XXX 
-  return *this;
-}
-
-streamoff_array&
-streamoff_array::operator -= (const streamoff_array& a)
-{
-  // XXX FIXME XXX 
-  return *this;
-}
-#endif
-
-int
-streamoff_array::compute_index (Array<int>& ra_idx,
-				const dim_vector& dimensions)
-{
-  return ::compute_index (ra_idx, dimensions);
-}
-
-SND_CMP_OP (mx_el_eq, ==, std::streamoff, , streamoff_array, , FBM)
-SND_CMP_OP (mx_el_ne, !=, std::streamoff, , streamoff_array, , TBM)
-
-NDS_CMP_OP (mx_el_eq, ==, streamoff_array, , std::streamoff, , FBM)
-NDS_CMP_OP (mx_el_ne, !=, streamoff_array, , std::streamoff, , TBM)
-
-NDND_CMP_OP (mx_el_eq, ==, streamoff_array, , streamoff_array, , FBM, TBM)
-NDND_CMP_OP (mx_el_ne, !=, streamoff_array, , streamoff_array, , TBM, FBM)
-
-NDND_BIN_OP (streamoff_array, operator +, streamoff_array, streamoff_array, mx_inline_add)
-NDND_BIN_OP (streamoff_array, operator -, streamoff_array, streamoff_array, mx_inline_subtract)
-
-NDS_BIN_OP (streamoff_array, operator +, streamoff_array, std::streamoff, mx_inline_add)
-NDS_BIN_OP (streamoff_array, operator -, streamoff_array, std::streamoff, mx_inline_subtract)
-
-SND_BIN_OP (streamoff_array, operator +, std::streamoff, streamoff_array, mx_inline_add)
-SND_BIN_OP (streamoff_array, operator -, std::streamoff, streamoff_array, mx_inline_subtract)
 
 std::streamoff
 octave_streamoff::streamoff_value (void) const

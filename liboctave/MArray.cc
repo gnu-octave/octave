@@ -41,7 +41,7 @@ template <class T>
 MArray<T>&
 operator += (MArray<T>& a, const T& s)
 {
-  DO_VS_OP2 (+=)
+  DO_VS_OP2 (T, a, +=, s)
   return a;
 }
 
@@ -49,7 +49,7 @@ template <class T>
 MArray<T>&
 operator -= (MArray<T>& a, const T& s)
 {
-  DO_VS_OP2 (-=)
+  DO_VS_OP2 (T, a, -=, s)
   return a;
 }
 
@@ -66,7 +66,7 @@ operator += (MArray<T>& a, const MArray<T>& b)
       if (l != bl)
 	gripe_nonconformant ("operator +=", l, bl);
       else
-	DO_VV_OP2 (+=);
+	DO_VV_OP2 (T, a, +=, b);
     }
   return a;
 }
@@ -82,7 +82,7 @@ operator -= (MArray<T>& a, const MArray<T>& b)
       if (l != bl)
 	gripe_nonconformant ("operator -=", l, bl);
       else
-	DO_VV_OP2 (-=);
+	DO_VV_OP2 (T, a, -=, b);
     }
   return a;
 }

@@ -28,80 +28,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
-#include <string>
 
-#include "mx-base.h"
-#include "mx-op-defs.h"
+#include "so-array.h"
 #include "oct-alloc.h"
-#include "str-vec.h"
 
-#include "error.h"
-#include "oct-obj.h"
+#include "ov.h"
 #include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
 class tree_walker;
 
 // Stream offsets.
-
-class streamoff_array : public ArrayN<std::streamoff>
-{
-public:
-
-  streamoff_array (void) : ArrayN<std::streamoff> () { }
-
-  streamoff_array (const dim_vector& dv,
-		   const std::streamoff& val = resize_fill_value ())
-    : ArrayN<std::streamoff> (dv, val) { }
-
-  streamoff_array (const ArrayN<std::streamoff>& sa)
-    : ArrayN<std::streamoff> (sa) { }
-
-  streamoff_array (const streamoff_array& sa)
-    : ArrayN<std::streamoff> (sa) { }
-
-  ~streamoff_array (void) { }
-
-  streamoff_array& operator = (const streamoff_array& a)
-    {
-      if (this != &a)
-	ArrayN<std::streamoff>::operator = (a);
-
-      return *this;
-    }
-
-  streamoff_array squeeze (void) const
-    { return ArrayN<std::streamoff>::squeeze (); }
-
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
-
-  // streamoff_array& operator += (const streamoff_array& a);
-  // streamoff_array& operator -= (const streamoff_array& a);
-
-  static int compute_index (Array<int>& ra_idx,
-			    const dim_vector& dimensions);
-
-  static std::streamoff resize_fill_value (void) { return 0; }
-};
-
-NDCMP_OP_DECL (mx_el_eq, std::streamoff, streamoff_array);
-NDCMP_OP_DECL (mx_el_ne, std::streamoff, streamoff_array);
-
-NDCMP_OP_DECL (mx_el_eq, streamoff_array, std::streamoff);
-NDCMP_OP_DECL (mx_el_ne, streamoff_array, std::streamoff);
-
-NDCMP_OP_DECL (mx_el_eq, streamoff_array, streamoff_array);
-NDCMP_OP_DECL (mx_el_ne, streamoff_array, streamoff_array);
-
-BIN_OP_DECL (streamoff_array, operator +, streamoff_array, streamoff_array);
-BIN_OP_DECL (streamoff_array, operator -, streamoff_array, streamoff_array);
-
-BIN_OP_DECL (streamoff_array, operator +, streamoff_array, std::streamoff);
-BIN_OP_DECL (streamoff_array, operator -, streamoff_array, std::streamoff);
-
-BIN_OP_DECL (streamoff_array, operator +, std::streamoff, streamoff_array);
-BIN_OP_DECL (streamoff_array, operator -, std::streamoff, streamoff_array);
 
 class
 octave_streamoff : public octave_base_matrix<streamoff_array>
@@ -134,9 +71,9 @@ public:
 
   streamoff_array streamoff_array_value (void) const { return matrix; }
 
-  //  void increment (void) { matrix += 1; }
+  void increment (void) { matrix += std::streamoff (1); }
 
-  //  void decrement (void) { matrix -= 1; }
+  void decrement (void) { matrix -= std::streamoff (1); }
 
   bool print_as_scalar (void) const { return true; }
 

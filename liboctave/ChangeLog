@@ -1,3 +1,11 @@
+2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray-defs.h (DO_VS_OP2, DO_VV_OP2): Accept args for element
+	type and the names of the left and right operands.  Change all uses.
+
+	* so-array.cc, so-array.h: New files.  Move streamoff_array here
+	from src/ov-streamoff.h and src/ov-streamoff.cc.
+
 2003-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* MArrayN.cc (operator -=, operator +=): Check dimensions, not

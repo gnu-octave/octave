@@ -1,5 +1,9 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* OPERATORS/op-streamoff.cc: Install increment and decrement operators.
+	* ov-streamoff.h (octave_streamoff::increment,
+	octave_streamoff::decrement): New functions.
+
 	* oct-stream.cc (octave_stream::seek): Extract std::streamoff from
 	tc_offset instead of int.
 

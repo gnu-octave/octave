@@ -41,8 +41,8 @@ DEFUNOP (transpose, streamoff)
   return octave_value (streamoff_array (v.streamoff_array_value().transpose ()));
 }
 
-// DEFNCUNOP_METHOD (incr, streamoff, increment)
-// DEFNCUNOP_METHOD (decr, streamoff, decrement)
+DEFNCUNOP_METHOD (incr, streamoff, increment)
+DEFNCUNOP_METHOD (decr, streamoff, decrement)
 
 // streamoff by streamoff ops.
 
@@ -130,6 +130,9 @@ install_streamoff_ops (void)
 {
   INSTALL_UNOP (op_transpose, octave_streamoff, transpose);
   INSTALL_UNOP (op_hermitian, octave_streamoff, transpose);
+
+  INSTALL_NCUNOP (op_incr, octave_streamoff, incr);
+  INSTALL_NCUNOP (op_decr, octave_streamoff, decr);
 
   INSTALL_BINOP (op_eq, octave_streamoff, octave_streamoff, eq);
   INSTALL_BINOP (op_ne, octave_streamoff, octave_streamoff, ne);

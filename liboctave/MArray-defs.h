@@ -31,7 +31,7 @@
 	r[i] = -x[i]; \
     }
 
-#define DO_VS_OP2(OP) \
+#define DO_VS_OP2(T, a, OP, s) \
   int l = a.length (); \
   if (l > 0) \
     { \
@@ -40,7 +40,7 @@
 	tmp[i] OP s; \
     }
 
-#define DO_VV_OP2(OP) \
+#define DO_VV_OP2(T, a, OP, b) \
   do \
     { \
       T *a_tmp = a.fortran_vec (); \

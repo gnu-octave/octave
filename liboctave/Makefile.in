@@ -59,7 +59,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-passwd.h \
 	oct-rand.h oct-rl-edit.h oct-rl-hist.h oct-shlib.h \
 	oct-syscalls.h oct-time.h pathlen.h pathsearch.h \
-	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \
+	prog-args.h so-array.h statdefs.h str-vec.h sun-utils.h sysdir.h \
 	systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
@@ -95,7 +95,7 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	lo-ieee.cc lo-mappers.cc lo-specfun.cc lo-sysdep.cc \
 	lo-utils.cc mach-info.cc oct-alloc.cc oct-env.cc \
 	oct-fftw.cc oct-group.cc oct-passwd.cc oct-rand.cc oct-shlib.cc \
-	oct-syscalls.cc oct-time.cc prog-args.cc str-vec.cc \
+	oct-syscalls.cc oct-time.cc prog-args.cc so-array.cc str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \

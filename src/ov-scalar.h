@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "ov-base.h"
+#include "ov-re-mat.h"
 #include "ov-base-scalar.h"
 #include "ov-typeinfo.h"
 
@@ -66,7 +67,11 @@ public:
   ~octave_scalar (void) { }
 
   octave_value *clone (void) const { return new octave_scalar (*this); }
-  octave_value *empty_clone (void) const { return new octave_scalar (); }
+
+  // We return an octave_matrix here instead of an octave_scalar so
+  // that in expressions like A(2,2,2) = 2 (for A previously
+  // undefined), A will be empty instead of a 1x1 object.
+  octave_value *empty_clone (void) const { return new octave_matrix (); }
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 

@@ -2711,102 +2711,62 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      // We didn't start out with all zero dimensions, so if
 	      // index is a colon, it refers to the current LHS
 	      // dimension.  Otherwise, it is OK to enlarge to a
-	      // dimension given by the largest index.
+	      // dimension given by the largest index (but that index
+	      // needs to be a number, not a colon).
 
-	      new_dims(i)
-		= (idx(i).is_colon () || idx(i).max () < lhs_dims(i))
-		? lhs_dims(i) : idx(i).max () + 1;
-	    }
-	}
-
-      if (! orig_empty
-	  && n_idx < orig_lhs_dims_len
-	  && new_dims(n_idx-1) != lhs_dims(n_idx-1))
-	{
-	  // We reshaped and the last dimension changed.  This has to
-	  // be an error, because we don't know how to undo that
-	  // later...
-
-	  (*current_liboctave_error_handler)
-	    ("array index %d (= %d) for assignment requires invalid resizing operation",
-	     n_idx, new_dims(n_idx-1));
-
-	  retval = 0;
-	}
-      else
-	{
-	  if (n_idx < orig_lhs_dims_len)
-	    {
-	      for (int i = 0; i < n_idx-1; i++)
-		final_lhs_dims(i) = new_dims(i);
-	    }
-	  else
-	    final_lhs_dims = new_dims;
-
-	  lhs.resize_and_fill (new_dims, rfv);
-	  lhs_dims = lhs.dims ();
-	  lhs_dims_len = lhs_dims.length ();
-
-	  frozen_len = freeze (idx, lhs_dims, true);
-
-	  if (rhs_is_scalar)
-	    {
-	      if  (! final_lhs_dims.any_zero ())
+	      if (i < lhs_dims_len
+		  && (idx(i).is_colon () || idx(i).max () < lhs_dims(i)))
+		new_dims(i) = lhs_dims(i);
+	      else if (! idx(i).is_colon ())
+		new_dims(i) = idx(i).max () + 1;
+	      else
 		{
-		  int n = Array<LT>::get_size (frozen_len);
+		  // XXX FIXME XXX -- can we provide a more
+		  // informative message here?
 
-		  Array<int> result_idx (lhs_dims_len, 0);
-
-		  RT scalar = rhs.elem (0);
-
-		  for (int i = 0; i < n; i++)
-		    {
-		      Array<int> elt_idx = get_elt_idx (idx, result_idx);
-
-		      lhs.elem (elt_idx) = scalar;
-
-		      increment_index (result_idx, frozen_len);
-		    }
-		}
-	    }
-	  else
-	    {
-	      // RHS is matrix or higher dimension.
-
-	      // Check that non-singleton RHS dimensions conform to
-	      // non-singleton LHS index dimensions.
-
-	      dim_vector t_rhs_dims = rhs_dims.squeeze ();
-	      dim_vector t_frozen_len = frozen_len.squeeze ();
-
-	      // If after sqeezing out singleton dimensions, RHS is
-	      // vector and LHS is vector, force them to have the same
-	      // orientation so that operations like
-	      //
-	      //   a = zeros (3, 3, 3);
-	      //   a(1:3,1,1) = [1,2,3];
-	      //
-	      // will work.
-
-	      if (t_rhs_dims.length () == 2 && t_frozen_len.length () == 2
-		  && ((t_rhs_dims.elem(1) == 1
-		       && t_frozen_len.elem(0) == 1)
-		      || (t_rhs_dims.elem(0) == 1
-			  && t_frozen_len.elem(1) == 1)))
-		{
-		  int t0 = t_rhs_dims.elem(0);
-		  t_rhs_dims.elem(0) = t_rhs_dims.elem(1);
-		  t_rhs_dims.elem(1) = t0;
-		}
-
-	      if (t_rhs_dims != t_frozen_len)
-		{
 		  (*current_liboctave_error_handler)
-		    ("A(IDX-LIST) = X: X must be a scalar or size of X must equal number of elements indexed by IDX-LIST");
+		    ("invalid array index for assignment");
 
-		      retval = 0;
+		  retval = 0;
+
+		  break;
+		}
+	    }
+	}
+
+      if (retval != 0)
+	{
+	  if (! orig_empty
+	      && n_idx < orig_lhs_dims_len
+	      && new_dims(n_idx-1) != lhs_dims(n_idx-1))
+	    {
+	      // We reshaped and the last dimension changed.  This has to
+	      // be an error, because we don't know how to undo that
+	      // later...
+
+	      (*current_liboctave_error_handler)
+		("array index %d (= %d) for assignment requires invalid resizing operation",
+		 n_idx, new_dims(n_idx-1));
+
+	      retval = 0;
+	    }
+	  else
+	    {
+	      if (n_idx < orig_lhs_dims_len)
+		{
+		  for (int i = 0; i < n_idx-1; i++)
+		    final_lhs_dims(i) = new_dims(i);
 		}
 	      else
+		final_lhs_dims = new_dims;
+
+	      lhs.resize_and_fill (new_dims, rfv);
+	      lhs_dims = lhs.dims ();
+	      lhs_dims_len = lhs_dims.length ();
+
+	      frozen_len = freeze (idx, lhs_dims, true);
+
+	      if (rhs_is_scalar)
 		{
 		  if  (! final_lhs_dims.any_zero ())
 		    {
@@ -2814,13 +2774,71 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		      Array<int> result_idx (lhs_dims_len, 0);
 
+		      RT scalar = rhs.elem (0);
+
 		      for (int i = 0; i < n; i++)
 			{
 			  Array<int> elt_idx = get_elt_idx (idx, result_idx);
 
-			  lhs.elem (elt_idx) = rhs.elem (i);
+			  lhs.elem (elt_idx) = scalar;
 
 			  increment_index (result_idx, frozen_len);
+			}
+		    }
+		}
+	      else
+		{
+		  // RHS is matrix or higher dimension.
+
+		  // Check that non-singleton RHS dimensions conform to
+		  // non-singleton LHS index dimensions.
+
+		  dim_vector t_rhs_dims = rhs_dims.squeeze ();
+		  dim_vector t_frozen_len = frozen_len.squeeze ();
+
+		  // If after sqeezing out singleton dimensions, RHS is
+		  // vector and LHS is vector, force them to have the same
+		  // orientation so that operations like
+		  //
+		  //   a = zeros (3, 3, 3);
+		  //   a(1:3,1,1) = [1,2,3];
+		  //
+		  // will work.
+
+		  if (t_rhs_dims.length () == 2 && t_frozen_len.length () == 2
+		      && ((t_rhs_dims.elem(1) == 1
+			   && t_frozen_len.elem(0) == 1)
+			  || (t_rhs_dims.elem(0) == 1
+			      && t_frozen_len.elem(1) == 1)))
+		    {
+		      int t0 = t_rhs_dims.elem(0);
+		      t_rhs_dims.elem(0) = t_rhs_dims.elem(1);
+		      t_rhs_dims.elem(1) = t0;
+		    }
+
+		  if (t_rhs_dims != t_frozen_len)
+		    {
+		      (*current_liboctave_error_handler)
+			("A(IDX-LIST) = X: X must be a scalar or size of X must equal number of elements indexed by IDX-LIST");
+
+			  retval = 0;
+		    }
+		  else
+		    {
+		      if  (! final_lhs_dims.any_zero ())
+			{
+			  int n = Array<LT>::get_size (frozen_len);
+
+			  Array<int> result_idx (lhs_dims_len, 0);
+
+			  for (int i = 0; i < n; i++)
+			    {
+			      Array<int> elt_idx = get_elt_idx (idx, result_idx);
+
+			      lhs.elem (elt_idx) = rhs.elem (i);
+
+			      increment_index (result_idx, frozen_len);
+			    }
 			}
 		    }
 		}

@@ -1,3 +1,10 @@
+2004-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-scalar.h (octave_scalar::empty_clone):
+	Return empty octave_matrix, not an octave_scalar object.
+	* ov-complex.h (octave_complex::empty_clone):
+	Return empty octave_complex_matrix, not an octave_complex object.
+
 2004-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-usr-fcn.h (octave_user_function::function_name): Delete.

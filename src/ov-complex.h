@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "ov-base.h"
+#include "ov-cx-mat.h"
 #include "ov-base-scalar.h"
 #include "ov-typeinfo.h"
 
@@ -65,7 +66,13 @@ public:
   ~octave_complex (void) { }
 
   octave_value *clone (void) const { return new octave_complex (*this); }
-  octave_value *empty_clone (void) const { return new octave_complex (); }
+
+  // We return an octave_complex_matrix object here instead of an
+  // octave_complex object so that in expressions like A(2,2,2) = 2
+  // (for A previously undefined), A will be empty instead of a 1x1
+  // object.
+  octave_value *empty_clone (void) const
+    { return new octave_complex_matrix (); }
 
   octave_value *try_narrowing_conversion (void);
 

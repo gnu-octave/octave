@@ -1,3 +1,10 @@
+2004-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::assignN): Don't crash if trying to resize a
+	non-empty LHS when the number of lhs dimensions is less than the
+	number of indices.  Detect error if attempting to resize non-empty
+	LHS with colon indices.
+
 2004-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::resize_and_fill): Don't bother to assign any

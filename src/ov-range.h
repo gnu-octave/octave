@@ -119,6 +119,8 @@ public:
 	      && NINT (range.base ()) == 0);
     }
 
+  bool is_numeric_type (void) const { return true; }
+
   // XXX DO ME XXX
   bool is_true (void) const;
 

@@ -1,5 +1,7 @@
 2000-06-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-range.h (octave_range::is_numeric_type): New function.
+
 	* sysdep.cc (Fkbhit): Also ask for input if forced_interactive.
 
 2000-06-07  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -2620,7 +2620,8 @@ do_unary_op (octave_value& a, tree_expression::type t)
   // place for this special case...
 
   if (a.const_type () == OCT_VAL_REP::char_matrix_constant_str
-      && t == tree_expression::transpose)
+      && (t == tree_expression::transpose
+	  || t == tree_expression::hermitian))
     {
       charMatrix chm = a.all_strings ();
 

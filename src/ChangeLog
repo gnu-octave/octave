@@ -1,3 +1,7 @@
+2002-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (pr_any_float): Don't convert -0 to 0.
+
 2002-05-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (generate_completion): If it looks like we are

@@ -1048,15 +1048,6 @@ union equiv
 static void
 pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 {
-#if defined (SCO)
-  // Apparently on some SCO systems NaN == -0.0 is true.  Compiler bug?
-  if (d == -0.0 && ! xisnan (d))
-    d = 0.0;
-#else
-  if (d == -0.0)
-    d = 0.0;
-#endif
-
   if (fmt)
     {
       if (hex_format)

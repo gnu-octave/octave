@@ -542,6 +542,7 @@ tree_simple_assignment_expression : public tree_assignment_expression
       {
 	init (plhs, ans_assign);
 	lhs = i;
+	index = 0;
 	rhs = r;
       }
 

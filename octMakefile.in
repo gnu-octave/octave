@@ -20,14 +20,14 @@ INSTALL_DATA = @INSTALL_DATA@
 
 DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	octMakefile.in Makeconf.in NEWS PROJECTS README README.NLP \
-	SENDING-PATCHES THANKS configure configure.in config.guess \
-	config.sub move-if-change octave.sh octave-bug.in \
-	octave-mode.el aclocal.m4 install-sh doinstall.sh \
+	ROADMAP SENDING-PATCHES THANKS configure configure.in \
+	config.guess config.sub move-if-change octave.sh \
+	octave-bug.in aclocal.m4 install-sh doinstall.sh \
 	mkinstalldirs config.h.in acconfig.h config.h.bot \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
-DISTDIRS = kpathsea make plplot
+DISTDIRS = emacs kpathsea make plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @DLD_DIR@ @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ kpathsea \
@@ -37,11 +37,11 @@ SUBDIRS = @DLD_DIR@ @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ kpathsea \
 DISTSUBDIRS = libcruft liboctave info readline src scripts dld test doc 
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
-	BUGS PROJECTS octave-bug octave.sh octave-mode.el doinstall.sh \
+	BUGS PROJECTS octave-bug octave.sh doinstall.sh \
 	mkinstalldirs
 
 # Subdirectories in which to run `make dist'.
-BINDISTSUBDIRS = scripts doc
+BINDISTSUBDIRS = emacs scripts doc
 
 DIRS_TO_MAKE = $(bindir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \

@@ -46,7 +46,8 @@ file_ops
   static int rmdir (const string&);
   static int rmdir (const string&, string&);
 
-  static string tempnam (void);
+  static string tempnam (const string&, const string&);
+  static string tempnam (const string&, const string&, string&);
 
   static string tilde_expand (const string&);
   static string_vector tilde_expand (const string_vector&);

@@ -46,21 +46,21 @@ public:
   { }
 
   octave_passwd& operator = (const octave_passwd& pw)
-    {
-      if (this != &pw)
-	{
-	  pw_name = pw.pw_name;
-	  pw_passwd = pw.pw_passwd;
-	  pw_uid = pw.pw_uid;
-	  pw_gid = pw.pw_gid;
-	  pw_gecos = pw.pw_gecos;
-	  pw_dir = pw.pw_dir;
-	  pw_shell = pw.pw_shell;
-	  valid = pw.valid;
-	}
+  {
+    if (this != &pw)
+      {
+	pw_name = pw.pw_name;
+	pw_passwd = pw.pw_passwd;
+	pw_uid = pw.pw_uid;
+	pw_gid = pw.pw_gid;
+	pw_gecos = pw.pw_gecos;
+	pw_dir = pw.pw_dir;
+	pw_shell = pw.pw_shell;
+	valid = pw.valid;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~octave_passwd (void) { }
 
@@ -85,14 +85,19 @@ public:
 	? static_cast<void *> (-1) : static_cast<void *> (0); }
 
   static octave_passwd getpwent (void);
+  static octave_passwd getpwent (string& msg);
 
   static octave_passwd getpwuid (uid_t uid);
+  static octave_passwd getpwuid (uid_t uid, string& msg);
 
   static octave_passwd getpwnam (const string& nm);
+  static octave_passwd getpwnam (const string& nm, string& msg);
 
-  static void setpwent (void);
+  static int setpwent (void);
+  static int setpwent (string& msg);
 
-  static void endpwent (void);
+  static int endpwent (void);
+  static int endpwent (string& msg);
 
 private:
 
@@ -122,11 +127,9 @@ private:
 
   // This is how we will create an octave_passwd object from a pointer
   // to a struct passwd.
-  octave_passwd (void *);
+  octave_passwd (void *p, string& msg);
 
   void gripe_invalid (void) const;
-
-  void gripe_not_supported (const string& fcn) const;
 };
 
 #endif

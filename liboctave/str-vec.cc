@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "cmd-edit.h"
+#include "lo-utils.h"
 #include "str-vec.h"
 
 // Create a string vector from a NULL terminated list of C strings.
@@ -55,6 +56,30 @@ string_vector::string_vector (const char * const *s, int n)
 {
   for (int i = 0; i < n; i++)
     elem (i) = s[i];
+}
+
+char **
+string_vector::c_str_vec (void) const
+{
+  int len = length ();
+
+  char **retval = new char * [len + 1];
+
+  retval [len] = 0;
+
+  for (int i = 0; i < len; i++)
+    retval[i] = strsave (elem(i).c_str ());
+
+  return retval;
+}
+
+void
+string_vector::delete_c_str_vec (const char * const *v)
+{
+  while (*v)
+    delete [] *v;
+
+  delete [] v;
 }
 
 // Format a list in neat columns.  Mostly stolen from GNU ls.

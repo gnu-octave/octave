@@ -29,8 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #include <cstring>
 
-#include <iostream.h>
-
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -40,18 +38,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "file-ops.h"
-#include "lo-error.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
 #include "statdefs.h"
 #include "str-vec.h"
+
+#define NOT_SUPPORTED(nm) \
+  nm ## ": not supported on this system"
 
 // We provide a replacement for mkdir().
 
 int
 file_ops::mkdir (const string& name, mode_t mode)
 {
-  return ::mkdir (name.c_str (), mode);
+  string msg;
+  return mkdir (name, mode, msg);
 }
 
 int
@@ -59,10 +60,16 @@ file_ops::mkdir (const string& name, mode_t mode, string& msg)
 {
   msg = string ();
 
-  int status = ::mkdir (name.c_str (), mode);
+  int status = -1;
+
+#if defined (HAVE_MKDIR)
+  status = ::mkdir (name.c_str (), mode);
 
   if (status < 0)
     msg = ::strerror (errno);
+#else
+  msg = NOT_SUPPORTED ("mkdir");
+#endif
 
   return status;
 }
@@ -72,13 +79,8 @@ file_ops::mkdir (const string& name, mode_t mode, string& msg)
 int
 file_ops::mkfifo (const string& name, mode_t mode)
 {
-#if defined (HAVE_MKFIFO)
-  return ::mkfifo (name.c_str (), mode);
-#else
-  (*current_liboctave_error_handler)
-    ("mkfifo: not implemented on this system");
-  return -1;
-#endif
+  string msg;
+  return mkfifo (name, mode, msg);
 }
 
 int
@@ -86,18 +88,18 @@ file_ops::mkfifo (const string& name, mode_t mode, string& msg)
 {
   msg = string ();
 
+  int status = -1;
+
 #if defined (HAVE_MKFIFO)
-  int status = ::mkfifo (name.c_str (), mode);
+  status = ::mkfifo (name.c_str (), mode);
 
   if (status < 0)
     msg = ::strerror (errno);
+#else
+  msg = NOT_SUPPORTED ("mkfifo");
+#endif
 
   return status;
-#else
-  (*current_liboctave_error_handler)
-    ("mkfifo: not implemented on this system");
-  return -1;
-#endif
 }
 
 // We provide a replacement for rename().
@@ -105,18 +107,25 @@ file_ops::mkfifo (const string& name, mode_t mode, string& msg)
 int
 file_ops::rename (const string& from, const string& to)
 {
-  return ::rename (from.c_str (), to.c_str ());
+  string msg;
+  return rename (from, to, msg);
 }
 
 int
 file_ops::rename (const string& from, const string& to, string& msg)
 {
+  int status = -1;
+
   msg = string ();
 
-  int status = ::rename (from.c_str (), to.c_str ());
+#if defined (HAVE_RENAME)
+  status = ::rename (from.c_str (), to.c_str ());
 
   if (status < 0)
     msg = ::strerror (errno);
+#else
+  msg = NOT_SUPPORTED ("rename");
+#endif
 
   return status;
 }
@@ -126,7 +135,8 @@ file_ops::rename (const string& from, const string& to, string& msg)
 int
 file_ops::rmdir (const string& name)
 {
-  return ::rmdir (name.c_str ());
+  string msg;
+  return rmdir (name, msg);
 }
 
 int
@@ -134,10 +144,16 @@ file_ops::rmdir (const string& name, string& msg)
 {
   msg = string ();
 
-  int status = ::rmdir (name.c_str ());
+  int status = -1;
+
+#if defined (HAVE_RMDIR)
+  status = ::rmdir (name.c_str ());
 
   if (status < 0)
     msg = ::strerror (errno);
+#else
+  msg = NOT_SUPPORTED ("rmdir");
+#endif
 
   return status;
 }
@@ -145,20 +161,33 @@ file_ops::rmdir (const string& name, string& msg)
 // We provide a replacement for tempnam().
 
 string
-file_ops::tempnam (void)
+file_ops::tempnam (const string& dir, const string& pfx)
 {
-  string retval;
+  string msg;
+  return tempnam (dir, pfx, msg);
+}
 
-  char *tmp = ::tempnam (0, "oct-");
+string
+file_ops::tempnam (const string& dir, const string& pfx, string& msg)
+{
+  msg = string ();
+
+  string retval;
+  
+  const char *pdir = dir.empty () ? 0 : dir.c_str ();
+
+  const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();
+
+  char *tmp = ::tempnam (pdir, ppfx);
 
   if (tmp)
     {
       retval = tmp;
 
-      free (tmp);
+      ::free (tmp);
     }
   else
-    (*current_liboctave_error_handler) ("can't open temporary file!");
+    msg = ::strerror (errno);
 
   return retval;
 }
@@ -217,7 +246,7 @@ file_ops::tilde_expand (const string& name)
 
 	  // If no such user, just use `.'.
 
-	  string home = pw.empty () ? : string (".") : pw.dir ();
+	  string home = pw ? string (".") : pw.dir ();
       
 	  expansion = string (" ", beg) + home;
 
@@ -259,18 +288,25 @@ file_ops::umask (mode_t mode)
 int
 file_ops::unlink (const string& name)
 {
-  return ::unlink (name.c_str ());
+  string msg;
+  return unlink (name, msg);
 }
 
 int
-file_ops::unlink (const string& name, string& errmsg)
+file_ops::unlink (const string& name, string& msg)
 {
-  errmsg = string ();
+  msg = string ();
 
-  int status = ::unlink (name.c_str ());
+  int status = -1;
+
+#if defined (HAVE_UNLINK)
+  status = ::unlink (name.c_str ());
 
   if (status < 0)
-    errmsg = ::strerror (errno);
+    msg = ::strerror (errno);
+#else
+  msg = NOT_SUPPORTED ("unlink");
+#endif
 
   return status;
 }

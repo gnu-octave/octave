@@ -24,12 +24,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
 
 #include "lo-error.h"
 #include "oct-passwd.h"
+
+#define NOT_SUPPORTED(nm) \
+  nm ## ": not supported on this system"
 
 string
 octave_passwd::name (void) const
@@ -97,11 +104,18 @@ octave_passwd::shell (void) const
 octave_passwd
 octave_passwd::getpwent (void)
 {
-#ifdef HAVE_GETPWENT
-  return octave_passwd (::getpwent ());
-#else
-  gripe_not_implemented ("getpwent");
+  string msg;
+  return getpwent (msg);
+}
 
+octave_passwd
+octave_passwd::getpwent (string& msg)
+{
+#if defined HAVE_GETPWENT
+  msg = string ();
+  return octave_passwd (::getpwent (), msg);
+#else
+  msg = NOT_SUPPORTED ("getpwent");
   return octave_passwd ();
 #endif
 }
@@ -109,11 +123,18 @@ octave_passwd::getpwent (void)
 octave_passwd
 octave_passwd::getpwuid (uid_t uid)
 {
-#ifdef HAVE_GETPWUID
-  return octave_passwd (::getpwuid (uid));
-#else
-  gripe_not_implemented ("getpwuid");
+  string msg;
+  return getpwuid (uid, msg);
+}
 
+octave_passwd
+octave_passwd::getpwuid (uid_t uid, string& msg)
+{
+#if defined (HAVE_GETPWUID)
+  msg = string ();
+  return octave_passwd (::getpwuid (uid), msg);
+#else
+  msg = NOT_SUPPORTED ("getpwuid");
   return octave_passwd ();
 #endif
 }
@@ -121,40 +142,69 @@ octave_passwd::getpwuid (uid_t uid)
 octave_passwd
 octave_passwd::getpwnam (const string& nm)
 {
-#ifdef HAVE_GETPWNAM
-  return octave_passwd (::getpwnam (nm.c_str ()));
-#else
-  gripe_not_implemented ("getpwnam");
+  string msg;
+  return getpwnam (nm, msg);
+}
 
+octave_passwd
+octave_passwd::getpwnam (const string& nm, string& msg)
+{
+#if defined (HAVE_GETPWNAM)
+  msg = string ();
+  return octave_passwd (::getpwnam (nm.c_str ()), msg);
+#else
+  msg = NOT_SUPPORTED ("getpwnam");
   return octave_passwd ();
 #endif
 }
 
-void
+int
 octave_passwd::setpwent (void)
 {
-#ifdef HAVE_SETPWENT
+  string msg;
+  return setpwent (msg);
+}
+
+int
+octave_passwd::setpwent (string& msg)
+{
+#if defined (HAVE_SETPWENT)
+  msg = string ();
   ::setpwent ();
+  return 0;
 #else
-  gripe_not_implemented ("setpwent");
+  msg = NOT_SUPPORTED ("setpwent");
+  return -1;
 #endif
 }
 
-void
+int
 octave_passwd::endpwent (void)
 {
-#ifdef HAVE_ENDPWENT
+  string msg;
+  return endpwent (msg);
+}
+
+int
+octave_passwd::endpwent (string& msg)
+{
+#if defined (HAVE_ENDPWENT)
+  msg = string ();
   ::endpwent ();
+  return 0;
 #else
-  gripe_not_implemented ("endpwent");
+  msg = NOT_SUPPORTED ("endpwent");
+  return -1;
 #endif
 }
 
-octave_passwd::octave_passwd (void *p)
+octave_passwd::octave_passwd (void *p, string& msg)
   : pw_name (), pw_passwd (), pw_uid (0), pw_gid (0), pw_gecos (),
     pw_dir (), pw_shell (), valid (false)
 {
-#ifdef HAVE_PWD_H
+#if defined (HAVE_PWD_H)
+  msg = string ();
+
   if (p)
     {
       struct passwd *pw = static_cast<struct passwd *> (p);
@@ -169,6 +219,8 @@ octave_passwd::octave_passwd (void *p)
 
       valid = true;
     }
+#else
+  msg = NOT_SUPPORTED ("password functions");
 #endif
 }
 
@@ -176,13 +228,6 @@ void
 octave_passwd::gripe_invalid (void) const
 {
   (*current_liboctave_error_handler) ("invalid password object");
-}
-
-void
-octave_passwd::gripe_not_supported (const string& fcn) const
-{
-  (*current_liboctave_error_handler)
-    ("%s: not supported on this system", fcn.c_str ());
 }
 
 /*

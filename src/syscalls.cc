@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-syscalls.h"
 
 #include "defun.h"
 #include "error.h"
@@ -106,7 +107,6 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 
   if (nargin == 2)
     {
-#if defined (HAVE_DUP2)
       double d_old = args(0).double_value ();
       double d_new = args(1).double_value ();
 
@@ -120,12 +120,12 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 	      // XXX FIXME XXX -- are these checks sufficient?
 	      if (i_old >= 0 && i_new >= 0)
 		{
-		  int status = dup2 (i_old, i_new);
+		  string msg;
+
+		  int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
 		  retval(0) = static_cast<double> (status);
-
-		  if (status < 0)
-		    retval(1) = strerror (errno);
+		  retval(1) = msg;
 		}
 	      else
 		error ("dup2: invalid file id");
@@ -133,9 +133,6 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 	  else
 	    error ("dup2: arguments must be integer values");
 	}
-#else
-      gripe_not_supported ("dup2");
-#endif
     }
   else
     print_usage ("dup2");
@@ -160,65 +157,49 @@ be nonzero, and MSG will contain a system-dependent error message.")
 
   if (nargin == 1 || nargin == 2)
     {
-#if defined (HAVE_EXECVP)
       string exec_file = args(0).string_value ();
 
       if (! error_state)
 	{
-	  char **exec_args = 0;
+	  string_vector exec_args;
 
 	  if (nargin == 2)
 	    {
-	      charMatrix chm = args(1).all_strings ();
+	      string_vector tmp = args(1).all_strings ();
 
 	      if (! error_state)
 		{
-		  int nr = chm.rows ();
-		  int nc = chm.cols ();
+		  int len = tmp.length ();
 
-		  exec_args = new char * [nr+2];
+		  exec_args.resize (len + 1);
 
-		  // XXX FIXME XXX -- potential leak?
+		  exec_args[0] = exec_file;
 
-		  exec_args[0] = strsave (exec_file.c_str ());
-		  exec_args[nr+1] = 0;
-
-		  for (int i = 0; i < nr; i++)
-		    {
-		      exec_args[i+1] = new char [nc+1];
-
-		      for (int j = 0; j < nc; j++)
-			exec_args[i+1][j] = chm (i, j);
-
-		      exec_args[i+1][nc] = '\0';
-		    }
+		  for (int i = 0; i < len; i++)
+		    exec_args[i+1] = tmp[i];
 		}
 	      else
 		error ("exec: arguments must be strings");
 	    }
 	  else
 	    {
-	      exec_args = new char * [2];
+	      exec_args.resize (1);
 
-	      exec_args[0] = strsave (exec_file.c_str ());
-	      exec_args[1] = 0;
+	      exec_args[0] = exec_file;
 	    }
 
 	  if (! error_state)
 	    {
-	      int status = execvp (exec_file.c_str (), exec_args);
+	      string msg;
+
+	      int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
 	      retval(0) = static_cast<double> (status);
-
-	      if (status < 0)
-		retval(1) = strerror (errno);
+	      retval(1) = msg;
 	    }
 	}
       else
 	error ("exec: first argument must be a string");
-#else
-      gripe_not_supported ("exec");
-#endif
     }
   else
     print_usage ("exec");
@@ -243,7 +224,6 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
   if (nargin == 3)
     {
-#if defined (HAVE_FCNTL)
       double d_fid = args(0).double_value ();
       double d_req = args(1).double_value ();
       double d_arg = args(2).double_value ();
@@ -262,19 +242,16 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	    error ("fcntl: invalid file id");
 	  else
 	    {
-	      int status = fcntl (fid, req, arg);
+	      string msg;
+
+	      int status = octave_syscalls::fcntl (fid, req, arg, msg);
 
 	      retval(0) = static_cast<double> (status);
-
-	      if (status < 0)
-		retval(1) = strerror (errno);
+	      retval(1) = msg;
 	    }
 	}
       else
 	error ("fcntl: file id must be an integer");
-#else
-      gripe_not_supported ("fcntl");
-#endif
     }
   else
     print_usage ("fcntl");
@@ -300,16 +277,12 @@ has occured, and MSG contains a system-dependent error message.")
 
   if (nargin == 0)
     {
-#if defined (HAVE_FORK)
-      pid_t pid = fork ();
+      string msg;
+
+      pid_t pid = octave_syscalls::fork (msg);
 
       retval(0) = static_cast<double> (pid);
-
-      if (pid < 0)
-	retval(1) = strerror (errno);
-#else
-      gripe_not_supported ("fork");
-#endif
+      retval(1) = msg;
     }
   else
     print_usage ("fork");
@@ -320,17 +293,19 @@ has occured, and MSG contains a system-dependent error message.")
 DEFUN (getpgrp, args, ,
   "pgid = getpgrp (): return the process group id of the current process")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-#if defined (HAVE_GETPGRP)
-      retval = getpgrp ();
-#else
-      gripe_not_supported ("getpgrp");
-#endif
+      string msg;
+
+      retval(0) = static_cast<double> (octave_syscalls::getpgrp (msg));
+      retval(1) = msg;
     }
   else
     print_usage ("getpgrp");
@@ -346,13 +321,7 @@ DEFUN (getpid, args, ,
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#if defined (HAVE_GETPID)
-      retval = getpid ();
-#else
-      gripe_not_supported ("getpid");
-#endif
-    }
+    retval = octave_syscalls::getpid ();
   else
     print_usage ("getpid");
 
@@ -367,13 +336,7 @@ DEFUN (getppid, args, ,
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#if defined (HAVE_GETPPID)
-      retval = getppid ();
-#else
-      gripe_not_supported ("getppid");
-#endif
-    }
+    retval = octave_syscalls::getppid ();
   else
     print_usage ("getppid");
 
@@ -388,13 +351,7 @@ DEFUN (getegid, args, ,
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#if defined (HAVE_GETEGID)
-      retval = getegid ();
-#else
-      gripe_not_supported ("getegid");
-#endif
-    }
+    retval = octave_syscalls::getegid ();
   else
     print_usage ("getegid");
 
@@ -409,13 +366,7 @@ DEFUN (getgid, args, ,
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#if defined (HAVE_GETGID)
-      retval = getgid ();
-#else
-      gripe_not_supported ("getgid");
-#endif
-    }
+    retval = octave_syscalls::getgid ();
   else
     print_usage ("getgid");
 
@@ -430,13 +381,7 @@ DEFUN (geteuid, args, ,
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#if defined (HAVE_GETEUID)
-      retval = geteuid ();
-#else
-      gripe_not_supported ("geteuid");
-#endif
-    }
+    retval = octave_syscalls::geteuid ();
   else
     print_usage ("geteuid");
 
@@ -451,13 +396,7 @@ DEFUN (getuid, args, ,
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#if defined (HAVE_GETUID)
-      retval = getuid ();
-#else
-      gripe_not_supported ("getuid");
-#endif
-    }
+    retval = octave_syscalls::getuid ();
   else
     print_usage ("getuid");
 
@@ -540,7 +479,6 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	}
       else
 	error ("mkfifo: file name must be a string");
-
     }
   else
     print_usage ("mkfifo");
@@ -567,15 +505,14 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
   if (nargin == 0)
     {
-#if defined (HAVE_PIPE)
       int fid[2];
 
-      int status = pipe (fid);
+      string msg;
+
+      int status = octave_syscalls::pipe (fid, msg);
 
       if (status < 0)
-	{
-	  retval(2) = strerror (errno);
-	}
+	retval(2) = msg;
       else
 	{
 	  FILE *in_file = fdopen (fid[0], "r");
@@ -595,9 +532,6 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	  retval(1) = static_cast<double> (status);
           retval(0) = octave_value (file_ids);
 	}
-#else
-      gripe_not_supported ("pipe");
-#endif
     }
   else
     print_usage ("pipe");
@@ -687,9 +621,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	  int status = file_ops::unlink (name, msg);
 
 	  retval(0) = static_cast<double> (status);
-
-	  if (status < 0)
-	    retval(1) = msg;	    
+	  retval(1) = msg;	    
 	}
       else
 	error ("unlink: file name must be a string");
@@ -736,7 +668,6 @@ error message.")
 
   if (nargin == 1 || nargin == 2)
     {
-#if defined (HAVE_WAITPID)
       double pid_num = args(0).double_value ();
   
       if (! error_state)
@@ -768,18 +699,16 @@ error message.")
 
 	      if (! error_state)
 		{
-		  pid_t status = waitpid (pid, 0, options);
+		  string msg;
+
+		  pid_t status
+		    = octave_syscalls::waitpid (pid, options, msg);
 
 		  retval(0) = static_cast<double> (status);
-
-		  if (status < 0)
-		    retval(1) = strerror (errno);
+		  retval(1) = msg;
 		}
 	    }
 	}
-#else
-      gripe_not_supported ("waitpid");
-#endif
     }
   else
     print_usage ("waitpid");

@@ -95,6 +95,10 @@ public:
       return *this;
     }
 
+  char **c_str_vec (void) const;
+
+  static void delete_c_str_vec (const char * const*);
+
   ostream& list_in_columns (ostream&) const;
 };
 

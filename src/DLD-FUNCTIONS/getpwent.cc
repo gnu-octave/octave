@@ -73,12 +73,20 @@ DEFUN_DLD (getpwent, args, ,
 \n\
 Read an entry from the password-file stream, opening it if necessary.")
 {
-  octave_value retval;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = 0.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = mk_pw_map (octave_passwd::getpwent ());
+    {
+      string msg;
+
+      retval(0) = mk_pw_map (octave_passwd::getpwent (msg));
+      retval(1) = msg;
+    }
   else
     print_usage ("getpwent");
 
@@ -90,7 +98,10 @@ DEFUN_DLD (getpwuid, args, ,
 \n\
 Search for a password entry with a matching user ID.")
 {
-  octave_value retval;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = 0.0;
 
   int nargin = args.length ();
 
@@ -104,7 +115,10 @@ Search for a password entry with a matching user ID.")
 	    {
 	      uid_t uid = static_cast<uid_t> (dval);
 
-	      retval = mk_pw_map (octave_passwd::getpwuid (uid));
+	      string msg;
+
+	      retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
+	      retval(1) = msg;
 	    }
 	  else
 	    error ("getpwuid: argument must be an integer");
@@ -121,7 +135,10 @@ DEFUN_DLD (getpwnam, args, ,
 \n\
 Search for password entry with a matching username.")
 {
-  octave_value retval;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = 0.0;
 
   int nargin = args.length ();
 
@@ -130,7 +147,12 @@ Search for password entry with a matching username.")
       string s = args(0).string_value ();
 
       if (! error_state)
-	retval = mk_pw_map (octave_passwd::getpwnam (s.c_str ()));
+	{
+	  string msg;
+
+	  retval(0) = mk_pw_map (octave_passwd::getpwnam (s.c_str (), msg));
+	  retval(1) = msg;
+	}
     }
   else
     print_usage ("getpwnam");
@@ -143,12 +165,20 @@ DEFUN_DLD (setpwent, args, ,
 \n\
 Rewind the password-file stream.")
 {
-  octave_value retval;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    octave_passwd::setpwent ();
+    {
+      string msg;
+
+      retval(0) = static_cast<double> (octave_passwd::setpwent (msg));
+      retval(1) = msg;
+    }
   else
     print_usage ("setpwent");
 
@@ -160,12 +190,20 @@ DEFUN_DLD (endpwent, args, ,
 \n\
 Close the password-file stream.")
 {
-  octave_value retval;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    octave_passwd::endpwent ();
+    {
+      string msg;
+
+      retval(0) = static_cast<double> (octave_passwd::endpwent (msg));
+      retval(1) = msg;
+    }
   else
     print_usage ("endpwent");
 

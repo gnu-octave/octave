@@ -1,6 +1,14 @@
-Mon May  5 00:54:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Tue May  6 00:48:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/getgrent.cc: Use new octave_group class.
 	* DLD-FUNCTIONS/getpwent.cc: Use new octave_passwd class.
+
+	* syscalls.cc: Simplify by using new functions defined in
+	liboctave/oct-syscalls.cc.
+
+	* file-io.cc (Ftmpnam): Accept DIR and PREFIX args.
+
+Mon May  5 00:54:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-str-mat.cc (octave_char_matrix_str::print_name_tag): Print
 	empty strings on one line.

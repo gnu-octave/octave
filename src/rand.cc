@@ -171,26 +171,23 @@ do_rand (const Octave_object& args, int nargin)
 
       if (tmp.is_string ())
 	{
-	  string tstr = tmp.string_value ();
-	  const char *s_arg = tstr.c_str ();
+	  string s_arg = tmp.string_value ();
 
-	  if (strcmp (s_arg, "dist") == 0)
+	  if (s_arg == "dist")
 	    {
-	      char *s = curr_rand_dist ();
-	      retval(0) = s;
+	      retval(0) = curr_rand_dist ();
 	    }
-	  else if (strcmp (s_arg, "seed") == 0)
+	  else if (s_arg == "seed")
 	    {
-	      double d = curr_rand_seed ();
-	      retval(0) = d;
+	      retval(0) = curr_rand_seed ();
 	    }
-	  else if (strcmp (s_arg, "uniform") == 0)
+	  else if (s_arg == "uniform")
 	    {
 	      current_distribution = uniform_dist;
 
 	      F77_FCN (setcgn, SETCGN) (uniform_dist);
 	    }
-	  else if (strcmp (s_arg, "normal") == 0)
+	  else if (s_arg == "normal")
 	    {
 	      current_distribution = normal_dist;
 
@@ -260,9 +257,7 @@ do_rand (const Octave_object& args, int nargin)
     {
       if (args(0).is_string ())
 	{
-	  string tstr = args(0).string_value ();
-
-	  if (strcmp (tstr.c_str (), "seed") == 0)
+	  if (args(0).string_value () == "seed")
 	    {
 	      double d = args(1).double_value ();
 

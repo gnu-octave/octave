@@ -41,7 +41,7 @@ LIBOBJS = @LIBOBJS@
 
 %.d: %.cc
 	rm -f $@
-	if test "$(srcdir)" = "." ; then \
+	-if test "$(srcdir)" = "." ; then \
 	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
 	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
 	    mv $@.tmp $@ ; \

@@ -1,6 +1,6 @@
-Octave has been ported to Windows NT and Windows 95 using the beta 18
-release of the Cygnus gnu-win32 tools.  If you would like to volunteer
-to work on improving this port, please contact bug-octave@bevo.che.wisc.edu.
+Octave has been ported to Windows NT and Windows 95 using the gnu-win32
+tools from Cygnus Support.  If you would like to volunteer to work on
+improving this port, please contact bug-octave@bevo.che.wisc.edu.
 
 The directory ftp://ftp.che.wisc.edu/pub/octave/BINARIES/gnu-win32
 contains a binary distribution of Octave for Windows NT/95 along with
@@ -10,14 +10,8 @@ hacking, you should use the binary releases.
 Here is a list of current problems (and workarounds, where available).
 
 * To compile and install Octave on a Windows NT/95 system,
-  you will need to get the beta 18 release of the gnu-win32 tools.
+  you will need to get the beta 19 release of the gnu-win32 tools.
   They are available from ftp://ftp.cygnus.com/pub/gnu-win32.
-
-* There is a conflict between /gnu-win32/b18/include/g++/String.h
-  and /gnu-win32/b18/H-i386-cygwin32/i386-cygwin32/include/string.h.
-  You should rename or remove /gnu-win32/b18/include/g++/String.h.
-  (These file names assume that you have installed the gnu-win32 tools
-  in /gnu-win32/b18).
 
 * You will need to have f2c and libf2c.a or g77 installed.  I would
   recommend using g77.  Mumit Khan has directions for building g77 at
@@ -28,6 +22,79 @@ Here is a list of current problems (and workarounds, where available).
 * You will also need a termcap library.  The GNU termcap library seems
   to work.  You can get it from any GNU archive site, including 
   ftp://ftp.gnu.org/pub/gnu/termcap-1.3.tar.gz.
+
+* It is possible to cross-compile Octave for Windows NT/95 systems.
+  On the same hardware, it's generally much faster to use gcc as a
+  cross compiler under Linux than as a native compiler under Windows.
+
+  Here are some instructions for building a cross version of gcc and
+  then using it to compile Octave.  I've done this using a Linux
+  system as the host, but it should work equally well on other systems
+  that can run gcc).
+
+    + install cdk on your Windows system
+
+    + build a cross version of binutils:
+
+      tar zxf binutils-2.9.tar.gz
+      cd binutils-2.9
+      ./configure --target=i386-pc-cygwin32 --prefix=/usr/local/cross-gcc
+      make
+      make install
+
+      (You can choose whatever value for prefix that you prefer, of
+      course, just remember to also make the corresponding changes in the
+      following steps as well.)
+
+    + copy libraries and include files from cdk.  You'll need the
+      library files from the following directory trees:
+
+	b19/H-i386-pc-cygwin32/lib
+	b19/H-i386-pc-cygwin32/i386-cygwin32/lib
+
+      Copy them to /usr/local/cross-gcc/i386-pc-cygwin32/lib.
+
+      You'll also need the include files from the following directory
+      trees:
+
+	b19/include
+	b19/H-i386-pc-cygwin32/include
+
+      Copy them to /usr/local/cross-gcc/i386-pc-cygwin32/include.
+
+    + build cross version of egcs:
+
+      tar zxf egcs-1.0.2.tar.gz
+      cd egcs-1.0.2
+      export PATH=/usr/local/cross-gcc/bin:$PATH
+      ./configure --target=i386-pc-cygwin32 --prefix=/usr/local/cross-gcc
+      make
+      make install
+
+    + cross-compile libtermcap:
+
+      export PATH=/usr/local/cross-gcc/i386-pc-cygwin32/bin:$PATH
+      tar zxf termcap-1.3.tar.gz
+      cd termcap-1.3
+      ./configure --host=i386-pc-cygwin3
+      make
+      cp termcap.h /usr/local/cross-gcc/i386-pc-cygwin32/include
+      cp libtermcap.a /usr/local/cross-gcc/i386-pc-cygwin32/lib
+
+    + cross-compile Octave using the compiler you just built:
+
+      export PATH=/usr/local/cross-gcc/i386-pc-cygwin32/bin:$PATH
+      tar zxf octave-2.0.12.tar.gz
+      cd octave-2.0.10
+      ./configure --host=i386-pc-cygwin3
+      make
+
+    + make a binary distribution to copy to your Windows system:
+
+      make -f octMakefile binary-dist
+
+    + copy the binary distribution to your Windows system and install
+      using the intall-octave shell script
 
 * Octave requires gnuplot for plotting, but the normal Windows version
   of gnuplot will not work because it only reads from the GUI and refuses
@@ -59,4 +126,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Sat Feb 14 13:12:19 1998
+Thu Apr 16 23:39:13 1998

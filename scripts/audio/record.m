@@ -47,7 +47,7 @@ function X = record (sec, sampling_rate)
 
     system (cmd);
 
-    num = fopen (file, "r");
+    num = fopen (file, "rb");
 
     [Y, c] = fread (num, sampling_rate * sec, "uchar");
 

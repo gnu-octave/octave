@@ -59,7 +59,7 @@ function saveaudio (name, X, ext, bit)
     endif
   endif
 
-  num = fopen ([name, ".", ext], "w");
+  num = fopen ([name, ".", ext], "wb");
 
   if (strcmp (ext, "lin") || strcmp (ext, "raw"))
     if (bit == 8)

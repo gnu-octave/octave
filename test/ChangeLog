@@ -1,3 +1,8 @@
+Wed Apr 15 15:23:43 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/index/dfi-f/m-2.m, octave.test/index/dfi-f/index.exp:
+	Expect this test to succed now.
+
 Thu Mar  5 20:35:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/system/gmtime-1.m, octave.test/system/localtime-1.m:

@@ -151,7 +151,7 @@ set prog_output "ans = 1"
 do_test m-1.m
 
 set test index-m-2
-set prog_output "error:.*"
+set prog_output "ans = 1"
 do_test m-2.m
 
 set test index-m-3

@@ -23,8 +23,8 @@
 ## Default value for the "ext" argument, which has to be written
 ## without the initial ".", is "lin".
 ## Currently, the following audio formats are supported:
-## *) mu-law encoding with extension "mu", "au" or "snd"
-## *) linear encoding with extension "lin" or "raw"
+## *) mu-law encoding with extension "mu", "au", or "snd"
+## *) linear encoding with extension "lin", "pcm", or "raw"
 ##
 ## The `bit' argument can be either 8 (default) or 16.
 ## Depending on the value of bit, linearly encoded files are
@@ -53,9 +53,9 @@ function X = loadaudio (name, ext, bit)
   endif
 
   name = [name, ".", ext];
-  num = fopen (name, "r");
+  num = fopen (name, "rb");
 
-  if (strcmp (ext, "lin") || strcmp (ext, "raw"))
+  if (strcmp (ext, "lin") || strcmp (ext, "raw") || strcmp (ext, "pcm"))
     if (bit == 8)
       [Y, c] = fread (num, inf, "uchar");
       X = Y - 127;

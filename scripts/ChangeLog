@@ -1,3 +1,11 @@
+Wed Apr 15 11:16:01 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* audio/loadaudio.m: Accept "pcm" as another file extension for
+	linear encoding.
+
+	* audio/saveaudio.m, audio/loadaudio.m, audio/playaudio.m,
+	audio/record.m: Open files in binary mode.
+
 Fri Apr 10 10:46:21 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/dump_prefs.m: Use string array for list of values.

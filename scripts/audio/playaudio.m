@@ -53,7 +53,7 @@ function playaudio (name, ext)
     X = name + 127;
     unwind_protect
       file = tmpnam ();
-      num = fopen (file, "w");
+      num = fopen (file, "wb");
       c = fwrite (num, X, "uchar");
       fclose (num);
       system (sprintf ("cat %s > /dev/dsp", file));

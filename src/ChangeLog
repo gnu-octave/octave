@@ -1,3 +1,7 @@
+Thu Apr 16 01:00:12 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc: Only include dlfcn.h if HAVE_DLFCN_H.
+
 Wed Apr 15 01:03:05 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (Vlast_prompt_time): New global variable.

@@ -260,8 +260,6 @@ Interpreter:
 
     will work as expected.
 
-  * Warn about M-files with timestamps in the future.
-
   * Fix the parser so that
 
       function foo ()
@@ -350,9 +348,7 @@ Interpreter:
   * Recursive problems.
 
   * Improve the way ignore_function_time_stamp works to allow
-    selecting by individual directories or functions.  Also,
-    optionally allow checking only once between each prompt instead of
-    every time the function is called.
+    selecting by individual directories or functions.
 
   * Make it possible to ask exist() to only look for certain classes
    of variables, functions, files, etc. rather than always looking for

@@ -76,11 +76,11 @@ endif
 .PHONY: shared-lib
 
 libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
-	rm -f libcruft.$(SHLEXT)
-	$(LN_S) libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT)
+	rm -f $!
+	$(LN_S) $< $@
 
 libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) -o $@ $(CRUFT_PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $*
 
 $(CRUFT_OBJ):
 

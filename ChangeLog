@@ -1,5 +1,8 @@
 Thu Jun  5 01:38:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (SONAME_FLAGS): Define for some systems.
+	* Makeconf.in: Substitute value here.
+
 	* Makeconf.in (STATIC_LIBS): New variable.
 	* configure.in: Handle --enable-static.
 

@@ -187,7 +187,7 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: libraries stamp-oct-links octave
+all: stamp-prereq libraries stamp-oct-links octave
 .PHONY: all
 
 stamp-oct-links: $(OCT_FILES)
@@ -229,16 +229,16 @@ else
 endif
 .PHONY: libraries
 
-liboctinterp.$(LIBEXT): stamp-prereq $(OBJECTS)
-	$(AR) $(ARFLAGS) liboctinterp.$(LIBEXT) $(OBJECTS)
-	$(RANLIB) liboctinterp.$(LIBEXT)
+liboctinterp.$(LIBEXT): $(OBJECTS)
+	$(AR) $(ARFLAGS) $@ $*
+	$(RANLIB) $@
 
 liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
-	rm -f liboctinterp.$(SHLEXT)
-	$(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
+	rm -f $@
+	$(LN_S) $< $@
 
-liboctinterp.$(SHLEXT_VER): stamp-prereq $(PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) -o $@ $(PICOBJ)
+liboctinterp.$(SHLEXT_VER): $(PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $*
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@

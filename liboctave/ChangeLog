@@ -1,6 +1,7 @@
 Thu Jun  5 01:44:43 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Make building of static library optional.
+	(liboctave.$(SHLEXT_VER)): Add $(SONAME_FLAGS) to command.
 
 	* Makefile.in (stamp-picdir): Delete.
 	(pic): New target.  Don't worry so much about creating pic

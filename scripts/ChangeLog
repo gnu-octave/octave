@@ -1,5 +1,12 @@
 Thu Nov  7 12:43:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* image/saveimage.m: When writing PostScript, name Octave as the
+	almighty Creator.  Use single call to fprintf instead of looping.
+
+	* image/Makefile.in: Delete references to octtopnm.
+
+	* general/logspace.m: Doc fix.
+
 	* Version 1.91.
 
 Sat Nov  2 21:06:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

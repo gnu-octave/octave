@@ -20,7 +20,7 @@ Cambridge, MA 02139, USA.  */
 #include "config.h"
 #endif
 
-#ifndef HAVE_TEMPNAM
+#ifndef HAVE_TMPNAM
 
 #include <stddef.h>
 #include <stdio.h>

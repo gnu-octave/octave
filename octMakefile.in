@@ -97,7 +97,8 @@ BUGS:
 
 install::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
-	$(INSTALL) octave-bug $(bindir)/octave-bug
+	$(INSTALL_PROGRAM) octave-bug $(bindir)/octave-bug
+	$(INSTALL_DATA) config.h $(includedir)/config.h
 
 maintainer-clean::
 	@echo ""

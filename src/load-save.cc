@@ -1989,6 +1989,17 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   if (pos != NPOS)
     varname = varname.substr (0, pos);
 
+  size_t len = varname.length ();
+  for (size_t i = 0; i < len; i++)
+    {
+      char c = varname[i];
+      if (! (::isalnum (c) || c == '_'))
+	varname[i] = '_';
+    }
+
+  if (! ::isalpha (varname[0]))
+    varname.insert (0, "X");
+
   if (valid_identifier (varname))
     {
       int nr = 0;
@@ -2012,7 +2023,6 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	      for (int i = 0; i < nr; i++)
 		{
 		  std::string buf = get_mat_data_input_line (is);
-		  std::cerr << buf<< std::endl;
 
 #ifdef HAVE_SSTREAM
 		  std::istringstream tmp_stream (buf);

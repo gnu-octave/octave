@@ -1,6 +1,8 @@
 2002-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (read_mat_ascii_data): Allow commas to separate values.
+	Try harder to convert filenames to valid identifiers in a
+	Matlab-compatible way.
 
 2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

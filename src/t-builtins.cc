@@ -633,56 +633,138 @@ builtin_history (int argc, char **argv)
 static int
 load_variable (char *nm, int force, istream& is)
 {
-  symbol_record *gsr = global_sym_tab->lookup (nm, 0, 0);
+// Is there already a symbol by this name?  If so, what is it?
+
   symbol_record *lsr = curr_sym_tab->lookup (nm, 0, 0);
 
-  if (! force
-      && ((gsr != (symbol_record *) NULL && gsr->is_variable ())
-	  || lsr != (symbol_record *) NULL))
+  int is_undefined = 1;
+  int is_variable = 0;
+  int is_function = 0;
+  int is_global = 0;
+
+  if (lsr != (symbol_record *) NULL)
     {
-      warning ("load: variable name `%s' exists.", nm);
-      warning ("Use `load -force' to overwrite");
-      return -1;
+      is_undefined = ! lsr->is_defined ();
+      is_variable = lsr->is_variable ();
+      is_function = lsr->is_function ();
+      is_global = lsr->is_linked_to_global ();
     }
 
-// We found it.  Read data for this entry, and if that succeeds,
-// insert it into symbol table.
+// Try to read data for this name.
 
   tree_constant tc;
   int global = tc.load (is);
-  if (tc.const_type () != tree_constant_rep::unknown_constant)
+
+  if (tc.const_type () == tree_constant_rep::unknown_constant)
     {
-      symbol_record *sr;
-      if (global)
+      error ("load: unable to load variable `%s'", nm);
+      return 0;
+    }
+
+  symbol_record *sr = (symbol_record *) NULL;
+
+  if (global)
+    {
+      if (is_global || is_undefined)
 	{
-	  if (lsr != (symbol_record *) NULL)
+	  if (force || is_undefined)
 	    {
-	      warning ("load: replacing local symbol `%s' with", nm);
-	      warning ("global value from file");
-	      curr_sym_tab->clear (nm);
-	    }
-	  sr = global_sym_tab->lookup (nm, 1, 0);
-	}
-      else
-	{
-	  if (gsr != (symbol_record *) NULL)
-	    {
-	      warning ("loading `%s' as a global variable", nm);
-	      sr = gsr;
+	      lsr = curr_sym_tab->lookup (nm, 1, 0);
+	      link_to_global_variable (lsr);
+	      sr = lsr;
 	    }
 	  else
-	    sr = curr_sym_tab->lookup (nm, 1, 0);
+	    {
+	      warning ("load: global variable name `%s' exists.", nm);
+	      warning ("use `load -force' to overwrite");
+	    }
 	}
-
-      if (sr != (symbol_record *) NULL)
+      else if (is_function)
 	{
-	  tree_constant *tmp_tc = new tree_constant (tc);
-	  sr->define (tmp_tc);
-	  return 1;
+	  if (force)
+	    {
+	      lsr = curr_sym_tab->lookup (nm, 1, 0);
+	      link_to_global_variable (lsr);
+	      sr = lsr;
+	    }
+	  else
+	    {
+	      warning ("load: `%s' is currently a function in this scope", nm);
+	      warning ("`load -force' will load variable and hide function");
+	    }
+	}
+      else if (is_variable)
+	{
+	  if (force)
+	    {
+	      lsr = curr_sym_tab->lookup (nm, 1, 0);
+	      link_to_global_variable (lsr);
+	      sr = lsr;
+	    }
+	  else
+	    {
+	      warning ("load: local variable name `%s' exists.", nm);
+	      warning ("use `load -force' to overwrite");
+	    }
 	}
       else
-	error ("load: unable to load variable `%s'", nm);
+	panic_impossible ();
     }
+  else
+    {
+      if (is_global)
+	{
+	  if (force || is_undefined)
+	    {
+	      lsr = curr_sym_tab->lookup (nm, 1, 0);
+	      link_to_global_variable (lsr);
+	      sr = lsr;
+	    }
+	  else
+	    {
+	      warning ("load: global variable name `%s' exists.", nm);
+	      warning ("use `load -force' to overwrite");
+	    }
+	}
+      else if (is_function)
+	{
+	  if (force)
+	    {
+	      lsr = curr_sym_tab->lookup (nm, 1, 0);
+	      link_to_global_variable (lsr);
+	      sr = lsr;
+	    }
+	  else
+	    {
+	      warning ("load: `%s' is currently a function in this scope", nm);
+	      warning ("`load -force' will load variable and hide function");
+	    }
+	}
+      else if (is_variable || is_undefined)
+	{
+	  if (force || is_undefined)
+	    {
+	      lsr = curr_sym_tab->lookup (nm, 1, 0);
+	      sr = lsr;
+	    }
+	  else
+	    {
+	      warning ("load: local variable name `%s' exists.", nm);
+	      warning ("use `load -force' to overwrite");
+	    }
+	}
+      else
+	panic_impossible ();
+    }
+
+  if (sr != (symbol_record *) NULL)
+    {
+      tree_constant *tmp_tc = new tree_constant (tc);
+      sr->define (tmp_tc);
+      return 1;
+    }
+  else
+    error ("load: unable to load variable `%s'", nm);
 
   return 0;
 }

@@ -127,7 +127,7 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-streamoff.cc ov-struct.cc ov-va-args.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
-	ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-handle.cc ov-typeinfo.cc \
+	ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc ov-typeinfo.cc \
 	$(OV_INTTYPE_SRC)
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \

@@ -341,6 +341,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 // Nonterminals we construct.
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
+%type <tree_constant_type> magic_colon
 %type <tree_matrix_type> rows rows1
 %type <tree_matrix_row_type> matrix_row matrix_row1
 %type <tree_expression_type> expression simple_expr simple_expr1
@@ -1122,12 +1123,15 @@ identifier	: NAME
 		  }
 		;
 
-arg_list	: ':'
+magic_colon	: ':'
 		  {
 		    octave_value tmp (octave_value::magic_colon_t);
-		    tree_constant *colon = new tree_constant (tmp);
-		    $$ = new tree_argument_list (colon);
+		    $$ = new tree_constant (tmp);
 		  }
+		;
+
+arg_list	: magic_colon
+		  { $$ = new tree_argument_list (colon); }
 		| expression
 		  { $$ = new tree_argument_list ($1); }
 		| ALL_VA_ARGS
@@ -1136,11 +1140,9 @@ arg_list	: ':'
 		    tree_constant *all_va_args = new tree_constant (tmp);
 		    $$ = new tree_argument_list (all_va_args);
 		  }
-		| arg_list ',' ':'
+		| arg_list ',' magic_colon
 		  {
-		    octave_value tmp (octave_value::magic_colon_t);
-		    tree_constant *colon = new tree_constant (tmp);
-		    $1->append (colon);
+		    $1->append ($3);
 		    $$ = $1;
 		  }
 		| arg_list ',' expression

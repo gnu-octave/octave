@@ -1,5 +1,8 @@
 Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (magic_colon): New nonterminal.
+	(arg_list): Simplify using magic_colon.
+
 	* lex.h (class lexical_feedback): Delete maybe_screwed field.
 	New field, parsed_function name.
 	* lex.l (lexical_feedback::init): Initialize it.

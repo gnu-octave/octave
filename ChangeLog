@@ -1,5 +1,8 @@
 2001-04-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* aclocal.m4 (OCTAVE_ENABLE_READLINE): Require readline unless
+	--disable-readline is specified.
+
 	* configure.in: Don't define TERMLIBS.  Do add terminal lib(s) to LIBS.
 	* octave-bug.in: Delete references to TERMLIBS.
 	* Makeconf.in: Likewise.

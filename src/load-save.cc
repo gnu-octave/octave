@@ -2894,6 +2894,32 @@ save_vars (char **argv, int argc, ostream& os, int save_builtins,
     }
 }
 
+void
+save_user_variables (void)
+{
+  // XXX FIXME XXX -- should choose better file name?
+
+  const char *fname = "octave-core";
+
+  message (0, "attempting to save variables to `%s'...", fname);
+
+  load_save_format format = get_default_save_format ();
+
+  unsigned mode = ios::out|ios::trunc;
+  if (format == LS_BINARY || format == LS_MAT_BINARY)
+    mode |= ios::bin;
+
+  ofstream file (fname, mode);
+
+  if (file)
+    {
+      save_vars (0, 0, file, 0, format, 0);
+      message (0, "save to `%s' complete", fname);
+    }
+  else
+    warning ("unable to open `%s' for writing...", fname);
+}
+
 DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
   "save [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
      [-save-builtins] file [pattern ...]\n\

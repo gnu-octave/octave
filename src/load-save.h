@@ -34,6 +34,8 @@ extern int save_ascii_data (ostream& os, const tree_constant& t,
 extern int save_three_d (ostream& os, const tree_constant& t,
 			 int parametric = 0);
 
+extern void save_user_variables (void);
+
 #endif
 
 /*

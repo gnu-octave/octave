@@ -437,7 +437,7 @@ print a directory listing")
   output_buf << ends;
 
   maybe_page_output (output_buf);
-  
+
   delete [] ls_command;
 
   DELETE_ARGV;

@@ -29,34 +29,121 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <fstream.h>
+#include <procbuf.h>
+
 #include "procstream.h"
 
-procstreambase::procstreambase (void)
+iprocstream::iprocstream (void)
 {
-  init (new procbuf ());
+  pbuf = new procbuf ();
+
+  init (pbuf);
 }
 
-procstreambase::procstreambase (const char *command, int mode)
+iprocstream::iprocstream (const char *command, int mode)
 {
-  init (new procbuf ());
-  if (! rdbuf()->open (command, mode))
+  pbuf = new procbuf ();
+
+  init (pbuf);
+
+  if (! pbuf->open (command, mode))
     set (ios::badbit);
 }
 
+iprocstream::~iprocstream (void)
+{
+  close ();
+}
+
 void
-procstreambase::open (const char *command, int mode)
+iprocstream::open (const char *command, int mode)
 {
   clear ();
-  if (! rdbuf()->open (command, mode))
+
+  if (! pbuf)
+    pbuf = new procbuf ();
+
+  if (! pbuf->open (command, mode))
     set (ios::badbit);
 }
 
 int
-procstreambase::close (void)
+iprocstream::is_open (void)
 {
-  int status = rdbuf()->sys_close ();
-  if (! rdbuf()->close ())
-    set (ios::failbit);
+  return pbuf && pbuf->is_open ();
+}
+
+int
+iprocstream::close (void)
+{
+  int status = 0;
+
+  if (is_open ())
+    {
+
+      status = pbuf->sys_close ();
+
+      if (! pbuf->close ())
+	set (ios::failbit);
+    }
+
+  return status;
+}
+
+oprocstream::oprocstream (void)
+{
+  pbuf = new procbuf ();
+
+  init (pbuf);
+}
+
+oprocstream::oprocstream (const char *command, int mode)
+{
+  pbuf = new procbuf ();
+
+  init (pbuf);
+
+  if (! pbuf->open (command, mode))
+    set (ios::badbit);
+}
+
+oprocstream::~oprocstream (void)
+{
+  close ();
+}
+
+void
+oprocstream::open (const char *command, int mode)
+{
+  clear ();
+
+  if (! pbuf)
+    pbuf = new procbuf ();
+
+  if (! pbuf->open (command, mode))
+    set (ios::badbit);
+}
+
+int
+oprocstream::is_open (void)
+{
+  return pbuf && pbuf->is_open ();
+}
+
+int
+oprocstream::close (void)
+{
+  int status = 0;
+
+  if (is_open ())
+    {
+      status = pbuf->sys_close ();
+
+      if (! pbuf->close ())
+	set (ios::failbit);
+    }
+
   return status;
 }
 

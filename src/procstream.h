@@ -28,41 +28,46 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <iostream.h>
-#include <procbuf.h>
+#include <fstream.h>
+
+class procbuf;
 
 class
-procstreambase : virtual public ios
+iprocstream : public ifstream
 {
- public:
-  procstreambase (void);
-  procstreambase (const char *command, int mode = ios::out);
+public:
+  iprocstream (void);
+  iprocstream (const char *command, int mode=ios::in);
 
-  procbuf *rdbuf (void) const { return (procbuf *) _strbuf; }
+  ~iprocstream (void);
 
-  void open (const char *command, int mode = ios::out);
-  int is_open (void) { return rdbuf()->is_open (); }
+  void open (const char *command, int mode=ios::in);
+
+  int is_open (void);
+
   int close (void);
+
+private:
+  procbuf *pbuf;
 };
 
 class
-iprocstream : public procstreambase, public istream
+oprocstream : public ofstream
 {
- public:
-  iprocstream (void) : procstreambase () {}
-  iprocstream (const char *command) : procstreambase (command, ios::in) {}
+public:
+  oprocstream (void);
+  oprocstream (const char *command, int mode=ios::out);
 
-  void open (const char *command) { procstreambase::open (command, ios::in); }
-};
+  ~oprocstream (void);
 
-class
-oprocstream : public procstreambase, public ostream
-{
- public:
-  oprocstream (void) : procstreambase () {}
-  oprocstream (const char *command) : procstreambase (command, ios::out) {}
+  void open (const char *command, int mode=ios::out);
 
-  void open (const char *command) { procstreambase::open (command, ios::out); }
+  int is_open (void);
+
+  int close (void);
+
+private:
+  procbuf *pbuf;
 };
 
 #endif
@@ -73,6 +78,3 @@ oprocstream : public procstreambase, public ostream
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */
-
-
-

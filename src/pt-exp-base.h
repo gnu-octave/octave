@@ -90,6 +90,8 @@ public:
 
   virtual octave_value eval (bool print) = 0;
 
+  virtual char *oper (void) const { return "<unknown>"; }
+
 protected:
 
   // Nonzero if this expression appears inside parentheses.

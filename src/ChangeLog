@@ -1,5 +1,11 @@
 Sun Nov  3 00:45:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* syswait.h: Use #ifdef HAVE_SYS_WAIT_H, not #if HAVE_SYS_WAIT_H
+	to decide whether to include sys/wait.h.
+
+	* pt-exp-base.h (tree_expression): Declare oper() here as a
+	virtual member function.
+
 	* pt-pr-code.cc (tree_print_code::visit_constant): Check for
 	string before checking for char_matrix.
 

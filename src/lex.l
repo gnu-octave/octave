@@ -850,7 +850,7 @@ delete_input_buffer (void *buf)
 // Check to see if a character string matches any of the possible line
 // styles for plots.
 
-static string
+static std::string
 plot_style_token (const std::string& s)
 {
   std::string retval;
@@ -896,7 +896,7 @@ plot_style_token (const std::string& s)
 // Check to see if a character string matches any of the possible axes
 // tags for plots.
 
-static string
+static std::string
 plot_axes_token (const std::string& s)
 {
   std::string retval;
@@ -1444,7 +1444,7 @@ next_token_is_bin_op (bool spc_prev)
 
 // Used to delete trailing white space from tokens.
 
-static string
+static std::string
 strip_trailing_whitespace (char *s)
 {
   std::string retval = s;

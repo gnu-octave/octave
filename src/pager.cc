@@ -493,7 +493,7 @@ toggles the current state.\n\
   return retval;
 }
 
-static string
+static std::string
 default_pager (void)
 {
   std::string pager_binary = octave_env::getenv ("PAGER");

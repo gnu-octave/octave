@@ -247,7 +247,7 @@ octave_base_value::all_strings (void) const
   return retval;
 }
 
-std:string
+std::string
 octave_base_value::string_value (void) const
 {
   std::string retval;

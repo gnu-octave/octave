@@ -62,7 +62,7 @@ octave_dld_function::~octave_dld_function (void)
   octave_dynamic_loader::remove (my_name, sh_lib);
 }
 
-std:string
+std::string
 octave_dld_function::fcn_file_name (void) const
 {
   return sh_lib.file_name ();

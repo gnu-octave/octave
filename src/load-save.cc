@@ -945,7 +945,7 @@ read_binary_data (std::istream& is, bool swap,
   return name;
 }
 
-static string
+static std::string
 get_mat_data_input_line (std::istream& is)
 {
   std::string retval;

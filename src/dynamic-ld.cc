@@ -308,7 +308,7 @@ octave_dynamic_loader::remove (const std::string& fcn_name, octave_shlib& shl)
   return (instance_ok ()) ? instance->do_remove (fcn_name, shl) : false;
 }
 
-std:string
+std::string
 octave_dynamic_loader::mangle_name (const std::string& name)
 {
 #if defined (CXX_PREPENDS_UNDERSCORE)

@@ -2790,7 +2790,7 @@ looks_like_octave_copyright (const std::string& s)
 // XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
 // code!
 
-static string
+static std::string
 gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
 {
   std::string help_txt;
@@ -2903,7 +2903,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
   return help_txt;
 }
 
-std:string
+std::string
 get_help_from_file (const std::string& path)
 {
   std::string retval;

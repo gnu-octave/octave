@@ -37,7 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Unary expressions.
 
-std:string
+std::string
 tree_unary_expression::oper (void) const
 {
   return octave_value::unary_op_as_string (etype);

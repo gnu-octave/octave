@@ -228,7 +228,7 @@ empty_arg (const char *name, int nr, int nc)
 
 // See if the given file is in the path.
 
-std:string
+std::string
 search_path_for_file (const std::string& path, const std::string& name)
 {
   dir_path p (path);
@@ -303,7 +303,7 @@ file_in_path (LOADPATH, \"nargchk.m\")\n\
   return retval;
 }
 
-std:string
+std::string
 file_in_path (const std::string& name, const std::string& suffix)
 {
   std::string nm = name;
@@ -318,7 +318,7 @@ file_in_path (const std::string& name, const std::string& suffix)
 // See if there is an function file in the path.  If so, return the
 // full path to the file.
 
-std:string
+std::string
 fcn_file_in_path (const std::string& name)
 {
   std::string retval;
@@ -339,7 +339,7 @@ fcn_file_in_path (const std::string& name)
 // See if there is an octave file in the path.  If so, return the
 // full path to the file.
 
-std:string
+std::string
 oct_file_in_path (const std::string& name)
 {
   std::string retval;
@@ -360,7 +360,7 @@ oct_file_in_path (const std::string& name)
 
 // Replace backslash escapes in a string with the real values.
 
-std:string
+std::string
 do_string_escapes (const std::string& s)
 {
   std::string retval;
@@ -506,7 +506,7 @@ undo_string_escape (char c)
     }
 }
 
-std:string
+std::string
 undo_string_escapes (const std::string& s)
 {
   std::string retval;

@@ -105,7 +105,7 @@ default_history_size (void)
   return size;
 }
 
-std:string
+std::string
 default_history_file (void)
 {
   std::string file;
@@ -330,7 +330,7 @@ edit_history_add_hist (const std::string& line)
     }
 }
 
-static string
+static std::string
 mk_tmp_hist_file (int argc, const string_vector& argv,
 		  int insert_curr, const char *warn_for) 
 {

@@ -156,7 +156,7 @@ do_input_echo (const std::string& input_string)
     }
 }
 
-std:string
+std::string
 gnu_readline (const std::string& s, bool force_readline)
 {
   std::string retval;
@@ -191,7 +191,7 @@ gnu_readline (const std::string& s, bool force_readline)
   return retval;
 }
 
-static string
+static std::string
 octave_gets (void)
 {
   std::string retval;
@@ -241,7 +241,7 @@ octave_gets (void)
 
 // Read a line from the input stream.
 
-static string
+static std::string
 get_user_input (void)
 {
   std::string retval;
@@ -389,7 +389,7 @@ generate_possible_completions (const std::string& text, std::string& prefix,
   return names;
 }
 
-static string
+static std::string
 generate_completion (const std::string& text, int state)
 {
   std::string retval;

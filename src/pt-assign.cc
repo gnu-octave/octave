@@ -160,7 +160,7 @@ tree_simple_assignment::eval_error (void)
     }
 }
 
-std:string
+std::string
 tree_simple_assignment::oper (void) const
 {
   return octave_value::assign_op_as_string (etype);
@@ -309,7 +309,7 @@ tree_multi_assignment::eval_error (void)
     }
 }
 
-std:string
+std::string
 tree_multi_assignment::oper (void) const
 {
   return octave_value::assign_op_as_string (etype);

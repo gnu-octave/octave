@@ -90,7 +90,7 @@ token::~token (void)
     delete str;
 }
 
-std:string
+std::string
 token::text (void)
 {
   assert (type_tag == string_token);
@@ -125,7 +125,7 @@ token::sym_rec (void)
   return sr;
 }
 
-std:string
+std::string
 token::text_rep (void)
 {
   return orig_text;

@@ -878,7 +878,7 @@ octave_base_stream::clear (void)
 // Functions that are defined for all input streams (input streams
 // are those that define is).
 
-std:string
+std::string
 octave_base_stream::do_gets (int max_len, bool& err,
 			     bool strip_newline, const char *fcn)
 {
@@ -951,13 +951,13 @@ octave_base_stream::do_gets (int max_len, bool& err,
   return retval;
 }
 
-std:string
+std::string
 octave_base_stream::getl (int max_len, bool& err)
 {
   return do_gets (max_len, err, true, "fgetl");
 }
 
-std:string
+std::string
 octave_base_stream::gets (int max_len, bool& err)
 {
   return do_gets (max_len, err, false, "fgets");
@@ -2072,7 +2072,7 @@ printf_value_cache::int_value (void)
   return retval;
 }
 
-std:string
+std::string
 printf_value_cache::string_value (void)
 {
   std::string retval;
@@ -2372,7 +2372,7 @@ octave_base_stream::rewind (void)
 
 // Return current error message for this stream.
 
-std:string
+std::string
 octave_base_stream::error (bool clear_err, int& err_num)
 {
   err_num = fail ? -1 : 0;
@@ -2442,7 +2442,7 @@ octave_stream::flush (void)
   return retval;
 }
 
-std:string
+std::string
 octave_stream::getl (int max_len, bool& err)
 {
   std::string retval;
@@ -2453,7 +2453,7 @@ octave_stream::getl (int max_len, bool& err)
   return retval;
 }
 
-std:string
+std::string
 octave_stream::getl (const octave_value& tc_max_len, bool& err)
 {
   std::string retval;
@@ -2475,7 +2475,7 @@ octave_stream::getl (const octave_value& tc_max_len, bool& err)
   return retval;
 }
 
-std:string
+std::string
 octave_stream::gets (int max_len, bool& err)
 {
   std::string retval;
@@ -2486,7 +2486,7 @@ octave_stream::gets (int max_len, bool& err)
   return retval;
 }
 
-std:string
+std::string
 octave_stream::gets (const octave_value& tc_max_len, bool& err)
 {
   std::string retval;
@@ -2713,7 +2713,7 @@ octave_stream::eof (void) const
   return retval;
 }
 
-std:string
+std::string
 octave_stream::error (bool clear, int& err_num)
 {
   std::string retval;
@@ -2724,7 +2724,7 @@ octave_stream::error (bool clear, int& err_num)
   return retval;
 }
 
-std:string
+std::string
 octave_stream::name (void) const
 {
   std::string retval;
@@ -2757,7 +2757,7 @@ octave_stream::float_format (void) const
   return retval;
 }
 
-std:string
+std::string
 octave_stream::mode_as_string (int mode)
 {
   std::string retval = "???";
@@ -2896,7 +2896,7 @@ octave_stream_list::get_info (const octave_value& fid)
   return (instance_ok ()) ? instance->do_get_info (fid) : string_vector ();
 }
 
-std:string
+std::string
 octave_stream_list::list_open_files (void)
 {
   return (instance_ok ()) ? instance->do_list_open_files () : std::string ();
@@ -3080,7 +3080,7 @@ octave_stream_list::do_get_info (const octave_value& fid) const
   return retval;
 }
 
-std:string
+std::string
 octave_stream_list::do_list_open_files (void) const
 {
   std::string retval;

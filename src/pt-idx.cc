@@ -53,7 +53,7 @@ tree_index_expression::~tree_index_expression (void)
 // This is useful for printing the name of the variable in an indexed
 // assignment.
 
-std:string
+std::string
 tree_index_expression::name (void) const
 {
   return expr->name ();

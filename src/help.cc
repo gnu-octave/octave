@@ -920,7 +920,7 @@ representation.  This problem may be fixed in a future release.\n\
   return retval;
 }
 
-static string
+static std::string
 do_which (const std::string& name)
 {
   std::string retval;

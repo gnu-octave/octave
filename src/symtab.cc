@@ -58,7 +58,7 @@ symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
 
 #define SYMBOL_DEF symbol_record::symbol_def
 
-std:string
+std::string
 SYMBOL_DEF::type_as_string (void) const
 {
   std::string retval = "<unknown type>";
@@ -137,7 +137,7 @@ SYMBOL_DEF::type (std::ostream& os, const std::string& name, bool pr_type_info,
     os << name << " is a " << type_as_string () << "\n";
 }
 
-std:string
+std::string
 SYMBOL_DEF::which (const std::string& name)
 {
   std::string retval;

@@ -1,3 +1,12 @@
+2003-02-13  Paul Kienzle <pkienzle@users.sf.net>
+
+	* variables.cc (Fmlock, Fmunlock, Fmislocked): New functions.
+
+	* variables.cc (mlock, munlock, mislocked): New functions.
+	* variables.h: Provide decls.
+
+	* symtab.h (symbol_record::unmark_static): New function.
+
 2003-02-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* error.cc (reset_error_handler): New function.

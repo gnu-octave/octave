@@ -323,6 +323,7 @@ public:
 
   void mark_as_static (void);
   bool is_static (void) const { return tagged_static; }
+  void unmark_static (void) { tagged_static = false; }
 
   int rows (void) const { return definition->rows (); }
   int columns (void) const { return definition->columns (); }

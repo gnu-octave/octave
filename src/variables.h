@@ -71,6 +71,10 @@ generate_struct_completions (const std::string& text, std::string& prefix,
 extern bool
 looks_like_struct (const std::string& text);
 
+extern int
+symbol_exist (const std::string& name,
+	      const std::string& type = std::string ());
+
 extern bool lookup (symbol_record *s, bool exec_script = true);
 
 extern symbol_record *
@@ -106,9 +110,9 @@ bind_builtin_variable (const std::string&, const octave_value&,
 		       symbol_record::change_function f = 0,
 		       const std::string& help = std::string ());
 
-extern int
-symbol_exist (const std::string& name,
-	      const std::string& type = std::string ());
+extern void mlock (const std::string&);
+extern void munlock (const std::string&);
+extern bool mislocked (const std::string&);
 
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;

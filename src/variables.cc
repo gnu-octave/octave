@@ -1290,6 +1290,131 @@ bind_builtin_variable (const std::string& varname, const octave_value& val,
   sr->document (help);
 }
 
+void 
+mlock (const std::string& nm)
+{
+  symbol_record *sr = fbi_sym_tab->lookup (nm, true);
+
+  if (sr)
+    sr->mark_as_static ();
+}
+
+void 
+munlock (const std::string& nm)
+{
+  symbol_record *sr = fbi_sym_tab->lookup (nm);
+
+  if (sr && sr->is_static ())
+    sr->unmark_static ();
+  else
+    error ("munlock: %s is not locked", nm.c_str ());
+}
+
+bool
+mislocked (const std::string& nm)
+{
+  symbol_record *sr = fbi_sym_tab->lookup (nm);
+
+  return (sr && sr->is_static ());
+}
+
+DEFCMD (mlock, args, ,
+  "-*- texinfo -*-\n\
+@deftypefnx {Built-in Function} {} mlock (@var{name})\n\
+Lock the named function into memory.  If no function is named\n\
+then lock in the current function.\n\
+@end deftypefn\n\
+@seealso{munlock, mislocked, and persistent}")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+	mlock (name);
+      else
+	error ("mlock: expecting argument to be a function name");
+    }
+  else if (args.length () == 0)
+    {
+      if (curr_function)
+        mlock (curr_function->function_name ());
+      else
+        error ("mlock: invalid use outside a function");
+    }
+  else
+    print_usage ("mlock");
+
+  return retval;
+}
+
+DEFCMD (munlock, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} munlock (@var{fcn})\n\
+Unlock the named function.  If no function is named\n\
+then unlock the current function.\n\
+@end deftypefn\n\
+@seealso{mlock, mislocked, and persistent}")
+{
+  octave_value_list retval;
+
+  if (args.length() == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+        munlock (name);
+      else
+	error ("munlock: expecting argument to be a function name");
+    }
+  else if (args.length () == 0)
+    {
+      if (curr_function)
+        mlock (curr_function->function_name ());
+      else
+        error ("munlock: invalid use outside a function");
+    }
+  else
+    print_usage ("munlock");
+
+  return retval;
+}
+
+
+DEFCMD (mislocked, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mislocked (@var{fcn})\n\
+Return true if the named function is locked.  If no function is named\n\
+then return true if the current function is locked.\n\
+@end deftypefn\n\
+@seealso{mlock, munlock, and persistent}")
+{
+  octave_value retval;
+
+  if (args.length() == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+        retval = mislocked (name);
+      else
+	error ("mislocked: expecting argument to be a function name");
+    }
+  else if (args.length () == 0)
+    {
+      if (curr_function)
+        retval = mislocked (curr_function->function_name ());
+      else
+        error ("mislocked: invalid use outside a function");
+    }
+  else
+    print_usage ("mislocked");
+
+  return retval;
+}
+
 // Deleting names from the symbol tables.
 
 static inline bool

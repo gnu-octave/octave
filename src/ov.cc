@@ -1075,7 +1075,7 @@ symbols_of_ov (void)
     "number of levels of structure elements to print");
 
   DEFVAR (warn_divide_by_zero, 1.0, 0, warn_divide_by_zero,
-    "If TRUE, warn about division by zero");
+    "if TRUE, warn about division by zero");
 }
 
 /*

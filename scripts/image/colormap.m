@@ -34,7 +34,9 @@ function cmap = colormap (map)
 
   global CURRENT_COLOR_MAP
 
-  cmap_name = "CURRENT_COLOR_MAP";
+  if (nargin > 1)
+    usage ("colormap (map)");
+  endif
 
   if (nargin == 1)
     if (isstr (map))
@@ -47,11 +49,9 @@ function cmap = colormap (map)
 # Set the new color map
       CURRENT_COLOR_MAP = map;
     endif
-  elseif (nargin == 0 && exist (cmap_name) == 0)
+  elseif (! exist ("CURRENT_COLOR_MAP"))
 # If global color map doesn't exist, create the default map.
     CURRENT_COLOR_MAP = gray;
-  else
-    usage ("colormap (map)");
   endif
 
 # Return current color map.

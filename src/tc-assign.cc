@@ -1,7 +1,7 @@
 // tc-assign.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -284,20 +284,36 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 
 	if (nr <= 1 || nc <= 1)
 	  {
-	    maybe_resize (ii.max () - 1);
+	    maybe_resize (ii.max ());
 	    if (error_state)
 	      return;
 	  }
-	else if (range_max_check (ii.max () - 1, len) < 0)
+	else if (range_max_check (ii.max (), len) < 0)
 	  return;
 
-	if (ii.capacity () != rhs_nr * rhs_nc)
+	int ilen = ii.capacity ();
+
+	if (ilen != rhs_nr * rhs_nc)
 	  {
 	    ::error ("A(matrix) = X: X and matrix must have the same number");
 	    ::error ("of elements"); 
-	    return;
 	  }
-	fortran_style_matrix_assignment (rhs, ii);
+	else if (ilen == 1 && rhs.is_scalar_type ())
+	  {
+	    int nr = rows ();
+	    int idx = ii.elem (0);
+	    int ii = fortran_row (idx + 1, nr) - 1;
+	    int jj = fortran_column (idx + 1, nr) - 1;
+
+	    if (rhs.const_type () == scalar_constant)
+	      matrix->elem (ii, jj) = rhs.double_value ();
+	    else if (rhs.const_type () == complex_scalar_constant)
+	      complex_matrix->elem (ii, jj) = rhs.complex_value ();
+	    else
+	      panic_impossible ();
+	  }
+	else
+	  fortran_style_matrix_assignment (rhs, ii);
       }
       break;
     case string_constant:
@@ -506,7 +522,45 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
       else
 	panic_impossible ();
     }
-  else
+  else if (rhs.is_scalar_type ())
+    {
+      int nr = rows ();
+      int nc = columns ();
+
+      if (iv.capacity () == 1)
+	{
+	  int idx = iv.elem (0);
+
+	  if (nr == 1)
+	    {
+	      REP_ELEM_ASSIGN (0, idx, rhs.double_value (),
+			       rhs.complex_value (), rhs.is_real_type ());
+	    }
+	  else if (nc == 1)
+	    {
+	      REP_ELEM_ASSIGN (idx, 0, rhs.double_value (),
+			       rhs.complex_value (), rhs.is_real_type ());
+	    }
+	  else
+	    panic_impossible ();
+	}
+      else
+	{
+	  if (nr == 1)
+	    {
+	      ::error ("A(matrix) = X: where A is a row vector, X must also be a");
+	      ::error ("row vector with the same number of elements as matrix");
+	    }
+	  else if (nc == 1)
+	    {
+	      ::error ("A(matrix) = X: where A is a column vector, X must also be a");
+	      ::error ("column vector with the same number of elements as matrix");
+	    }
+	  else
+	    panic_impossible ();
+	}
+    }
+  else if (rhs.is_matrix_type ())
     {
       REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -543,6 +597,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
       else
 	panic_impossible ();
     }
+  else
+    panic_impossible ();
 }
 
 void
@@ -570,7 +626,25 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
       else
 	panic_impossible ();
     }
-  else
+  else if (rhs.is_scalar_type ())
+    {
+      int nr = rows ();
+      int nc = columns ();
+
+      if (nr == 1)
+	{
+	  ::error ("A(range) = X: where A is a row vector, X must also be a");
+	  ::error ("row vector with the same number of elements as range");
+	}
+      else if (nc == 1)
+	{
+	  ::error ("A(range) = X: where A is a column vector, X must also be a");
+	  ::error ("column vector with the same number of elements as range");
+	}
+      else
+	panic_impossible ();
+    }
+  else if (rhs.is_matrix_type ())
     {
       REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -618,14 +692,15 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
       else
 	panic_impossible ();
     }
+  else
+    panic_impossible ();
 }
 
 void
 tree_constant_rep::fortran_style_matrix_assignment
   (tree_constant& rhs, tree_constant_rep::constant_type mci)
 {
-  assert (rhs.is_matrix_type ());
-  assert (mci == tree_constant_rep::magic_colon);
+  assert (rhs.is_matrix_type () && mci == tree_constant_rep::magic_colon);
 
   int nr = rows ();
   int nc = columns ();
@@ -1351,6 +1426,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 					 idx_vector& jv)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
   for (int j = 0; j < jv.capacity (); j++)
     REP_ELEM_ASSIGN (i, jv.elem (j), rhs_m.elem (0, j),
 		     rhs_cm.elem (0, j), rhs.is_real_type ());
@@ -1393,7 +1469,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	REP_ELEM_ASSIGN (i, j, rhs_m.elem (0, j), rhs_cm.elem (0, j),
 			 rhs.is_real_type ());
     }
-  else if (rhs.const_type () == scalar_constant && nc == 1)
+  else if (rhs.is_scalar_type () && nc == 1)
     {
       REP_ELEM_ASSIGN (i, 0, rhs.double_value (),
 		       rhs.complex_value (), rhs.is_real_type ()); 
@@ -1599,7 +1675,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	REP_ELEM_ASSIGN (i, j, rhs_m.elem (i, 0),
 			 rhs_cm.elem (i, 0), rhs.is_real_type ());
     }
-  else if (rhs.const_type () == scalar_constant && nr == 1)
+  else if (rhs.is_scalar_type () && nr == 1)
     {
       REP_ELEM_ASSIGN (0, j, rhs.double_value (),
 		       rhs.complex_value (), rhs.is_real_type ());

@@ -77,7 +77,8 @@ class idx_vector;
 // the tree_constant_rep class
 
 #define REP_RHS_MATRIX(tc,m,cm,nr,nc) \
-  int nr, nc; \
+  int nr = 0; \
+  int nc = 0; \
   Matrix m; \
   ComplexMatrix cm; \
   if ((tc).const_type () == tree_constant_rep::complex_matrix_constant) \
@@ -86,12 +87,14 @@ class idx_vector;
       nr = (cm).rows (); \
       nc = (cm).columns (); \
     } \
-  else \
+  else if ((tc).const_type () == tree_constant_rep::matrix_constant) \
     { \
       m = (tc).matrix_value (); \
       nr = (m).rows (); \
       nc = (m).columns (); \
-    }
+    } \
+  else \
+    abort ();
 
 // Assign a real or complex value to a tree_constant.
 //
@@ -129,17 +132,11 @@ class idx_vector;
   Matrix m; \
   ComplexMatrix cm; \
   if (type_tag == tree_constant_rep::matrix_constant) \
-    { \
-      (m).resize ((nr), (nc)); \
-    } \
+    (m).resize ((nr), (nc)); \
   else if (type_tag == complex_matrix_constant) \
-    { \
-      (cm).resize ((nr), (nc)); \
-    } \
+    (cm).resize ((nr), (nc)); \
   else \
-    { \
-      abort (); \
-    }
+    abort (); \
 
 // Assign a real or complex matrix to a tree constant.
 

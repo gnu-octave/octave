@@ -1,3 +1,8 @@
+2000-05-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-rl-edit.c (octave_rl_clear_screen): Call _rl_clear_screen
+	instead of rl_clear_screen.
+
 2000-05-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array-d.cc: Instantiate ArrayN<double> here too.

@@ -74,7 +74,7 @@ function t = strrep (s, x, y)
     ## target positions to account for any expansion or contraction
     ## of s that may have occurred.
     ind = ind + jump * [0:length(ind)-1];
-    repeat = [1:length(y))]' * ones (1, length (ind));
+    repeat = [1:length(y)]' * ones (1, length (ind));
     dest = ones (length (y), 1) * ind + repeat - 1;
     t (dest) = y (repeat);
   else                        # deletion

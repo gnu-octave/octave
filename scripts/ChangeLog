@@ -1,3 +1,7 @@
+2000-05-24  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* strings/strrep.m: Fix typo.
+
 2000-05-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/strrep.m: Don't transpose result for case of jump > 0.

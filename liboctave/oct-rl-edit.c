@@ -68,7 +68,9 @@ octave_get_rl_blink_matching_paren_flag (void)
 void
 octave_rl_clear_screen (void)
 {
-  rl_clear_screen ();
+  extern void _rl_clear_screen ();
+
+  _rl_clear_screen ();
 }
 
 void

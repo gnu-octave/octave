@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -76,7 +76,7 @@ function x = are (a, b, c, opt)
 #                     n-1
 # rank ([ B A*B ... A^   *B]) method 
 
-    [d, h] = balance ([a, -b; -c, -a'], opt), "A"
+    [d, h] = balance ([a, -b; -c, -a'], opt);
     [u, s] = schur (h, "A");
     u = d * u;
     n1 = n + 1;

@@ -1986,6 +1986,9 @@ tree_constant_rep::convert_to_row_or_column_vector (void)
   int nr = rows ();
   int nc = columns ();
 
+  if (nr == 1 || nc == 1)
+    return;
+
   int len = nr * nc;
 
   assert (len > 0);

@@ -76,6 +76,15 @@ tree_constant::print (void)
 {
 }
 
+void
+tree_constant::print (ostream& os, bool pr_as_read_syntax, bool pr_orig_text)
+{
+  if (pr_orig_text && ! orig_text.empty ())
+    os << orig_text;
+  else
+    val.print (os, pr_as_read_syntax);
+}
+
 octave_value
 tree_constant::eval (bool print_result)
 {
@@ -112,6 +121,18 @@ tree_constant::lookup_map_element (SLList<string>&, bool, bool)
   octave_value retval;
   error ("tree_constant::lookup_map_element() not implemented");
   return retval;
+}
+
+void
+tree_constant::stash_original_text (const string& s)
+{
+  orig_text = s;
+}
+
+string
+tree_constant::original_text (void) const
+{
+  return orig_text;
 }
 
 void

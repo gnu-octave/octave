@@ -391,8 +391,6 @@ public:
       delete op_increment;
     }
 
-  bool is_range_constant (void) const;
-
   tree_colon_expression *chain (tree_expression *t);
 
   octave_value eval (bool print);

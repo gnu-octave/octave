@@ -281,12 +281,12 @@ public:
   Octave_map map_value (void) const;
 
   octave_value lookup_map_element (const string& ref,
-				    bool insert = false,
-				    bool silent = false);
+				   bool insert = false,
+				   bool silent = false);
 
   octave_value lookup_map_element (SLList<string>& list,
-				    bool insert = false,
-				    bool silent = false);
+				   bool insert = false,
+				   bool silent = false);
 
   ColumnVector vector_value (bool /* frc_str_conv */ = false,
 			     bool /* frc_vec_conv */ = false) const 
@@ -325,8 +325,8 @@ public:
   void decrement (void) { val.decrement (); }
 
   void print (void);
-  void print (ostream& os, bool pr_as_read_syntax = false)
-    { val.print (os, pr_as_read_syntax); }
+  void print (ostream& os, bool pr_as_read_syntax = false,
+	      bool pr_orig_txt = true);
 
   void print_with_name (const string& name, bool print_padding = true);
   void print_with_name (ostream& os, const string& name,
@@ -339,9 +339,9 @@ public:
   // Store the original text corresponding to this constant for later
   // pretty printing.
 
-  void stash_original_text (const string& s) { orig_text = s; }
+  void stash_original_text (const string& s);
 
-  string original_text (void) { return orig_text; }
+  string original_text (void) const;
 
   void accept (tree_walker& tw);
 

@@ -724,9 +724,6 @@ display the definition of each NAME that refers to a function")
 
   begin_unwind_frame ("Ftype");
 
-  unwind_protect_str (Vps4);
-  Vps4 = "";
-
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("type");
@@ -738,12 +735,25 @@ display the definition of each NAME that refers to a function")
     {
       // XXX FIXME XXX -- we should really use getopt ()
 
-      int quiet = 0;
-      int idx = 1;
-      if (argv[idx] == "-q")
+      bool quiet = false;
+      bool pr_orig_txt = true;
+
+      int idx;
+
+      for (idx = 1; idx < argc; idx++)
 	{
-	  quiet = 1;
-	  idx++;
+	  if (argv[idx] == "-q" || argv[idx] == "-quiet")
+	    quiet = true;
+	  else if (argv[idx] == "-t" || argv[idx] == "-transformed")
+	    pr_orig_txt = false;
+	  else
+	    break;
+	}
+
+      if (idx == argc)
+	{
+	  print_usage ("type");
+	  return retval;
 	}
 
       ostrstream output_buf;
@@ -775,7 +785,7 @@ display the definition of each NAME that refers to a function")
 		  if (nargout == 0 && ! quiet)
 		    output_buf << argv[i] << " is a user-defined function\n";
 
-		  tree_print_code tpc (output_buf);
+		  tree_print_code tpc (output_buf, "", pr_orig_txt);
 
 		  defn->accept (tpc);
 		}
@@ -831,7 +841,7 @@ display the definition of each NAME that refers to a function")
 		    }
 		  if (! tmp->is_map ())
 		    {
-		      tree_print_code tpc (output_buf);
+		      tree_print_code tpc (output_buf, "", pr_orig_txt);
 
 		      tmp->accept (tpc);
 
@@ -859,8 +869,6 @@ display the definition of each NAME that refers to a function")
     }
   else
     print_usage ("type");
-
-  run_unwind_frame ("Ftype");
 
   return retval;
 }

@@ -22,8 +22,8 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.432 $)
-AC_PREREQ(2.52)
+AC_REVISION($Revision: 1.433 $)
+AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
 

@@ -40,7 +40,7 @@ function mesh (x, y, z)
     if (is_vector (x) && is_vector (y) && is_matrix (z))
       xlen = length (x);
       ylen = length (y);
-      if (xlen == rows (z) && ylen == columns (z))
+      if (ylen == rows (z) && xlen == columns (z))
         if (rows (x) == 1)
           x = x';
         endif
@@ -61,8 +61,8 @@ function mesh (x, y, z)
         set view 60, 30, 1, 1;
 	gsplot (zz);
       else
-        msg = "mesh: rows (z) must be the same as length (x) and";
-        msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);
+        msg = "mesh: rows (z) must be the same as length (y) and";
+        msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
         error (msg);
       endif
     else

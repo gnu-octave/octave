@@ -1,5 +1,7 @@
 Fri Jun  6 16:49:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* slatec-fn/xdgamma.f: New file.
+
 	* fsqp, npsol, qpsol: Delete directories.
 	* Makefile.in (CRUFT_DIRS): Delete fsqp, npsol, and qpsol from list.
 

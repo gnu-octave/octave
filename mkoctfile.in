@@ -35,8 +35,8 @@ ALL_CXXFLAGS="$INCFLAGS $HOST_CXXFLAGS $NO_IMPLICIT_TEMPLATES \
 
 echo "making $objfile from $srcfile"
 
-$CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $srcfile -o $objfile
+eval $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $srcfile -o $objfile
 
 echo "making $octfile from $objfile"
 
-$SH_LD $SH_LDFLAGS -o $octfile $objfile
+eval $SH_LD $SH_LDFLAGS -o $octfile $objfile

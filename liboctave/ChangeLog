@@ -1,5 +1,8 @@
 Fri Jun  6 04:27:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lo-mappers.cc (xlgamma): Use F77_XFCN function to call dlgams.
+	(xgamma): Likewise, for calling xdgamma.
+
 	* FSQP.h, NPSOL.h, QPSOL.h, FSQP.cc, NPSOL.cc, QPSOL.cc: Delete
 	* Makefile.in (INCLUDES, SOURCES): Remove them from the lists.
 

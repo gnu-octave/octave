@@ -1,5 +1,8 @@
 Fri Jun  6 15:20:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mkoctfile.in: Use eval to invoke compilation and linking
+	commands.
+
 	* octMakefile.in (dist, binary-dist): Don't worry about npsol or qpsol.
 	* configure.in: Don't create libcruft/fsqp/Makefile,
 	libcruft/npsol/Makefile, or libcruft/qpsol/Makefile.

@@ -42,7 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  double F77_FCN (dgamma, DGAMMA) (const double&);
+  int F77_FCN (xdgamma, XDGAMMA) (const double&, double&);
 
   int F77_FCN (dlgams, DLGAMS) (const double&, double&, double&);
 }
@@ -171,7 +171,11 @@ xfinite (double x)
 double
 xgamma (double x)
 {
-  return F77_FCN (dgamma, DGAMMA) (x);
+  double result;
+
+  F77_XFCN (xdgamma, XDGAMMA, (x, result));
+
+  return result;
 }
 
 double
@@ -192,7 +196,7 @@ xlgamma (double x)
   double result;
   double sgngam;
 
-  F77_FCN (dlgams, DLGAMS) (x, result, sgngam);
+  F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 
   return result;
 }

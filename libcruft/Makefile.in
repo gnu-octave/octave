@@ -76,7 +76,7 @@ endif
 .PHONY: shared-lib
 
 libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
-	rm -f $!
+	rm -f $@
 	$(LN_S) $< $@
 
 libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)

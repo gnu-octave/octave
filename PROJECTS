@@ -412,6 +412,12 @@ History:
     Octave line number, appended as a comment (users should probably
     be able to control the format).
 
+  * Avoid writing the history file if the history list has not
+    changed.
+
+  * Avoid permission errors if the history file cannot be opened for
+    writing.
+
   * Fix history problems -- core dump if multiple processes are
     writing to the same history file?
 

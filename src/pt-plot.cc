@@ -217,7 +217,11 @@ send_to_plot_stream (const std::string& cmd)
     {
       *plot_stream << cmd;
 
-      if (! (is_replot || is_splot || is_plot)
+      octave_value mm = get_global_value ("__multiplot_mode__");
+
+      bool is_multiplot_mode = mm.is_true ();
+
+      if (! (is_replot || is_splot || is_plot || is_multiplot_mode)
 	  && plot_line_count > 0
 	  && Vautomatic_replot)
 	*plot_stream << Vgnuplot_command_replot << Vgnuplot_command_end;

@@ -220,8 +220,8 @@ rand (SEED, N)        -- set seed")
 	  if (error_state)
 	    return retval;
 
-	  n = args(0).rows ();
-	  m = args(0).columns ();
+	  n = a.rows ();
+	  m = a.columns ();
 
 	  if (n == 1 && m == 2)
 	    {

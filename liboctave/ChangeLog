@@ -1,5 +1,16 @@
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-rl-edit.c (octave_rl_set_startup_hook,
+	octave_rl_get_startup_hook, octave_rl_set_event_hook,
+	octave_rl_get_event_hook): Omit casts.
+	* oct-rl-edit.h (rl_startup_hook_fcn_ptr, rl_event_hook_fcn_ptr):
+	Return value for function pointer typedef is now int.
+	* cmd-edit.h (command_editor::startup_hook_fcn,
+	command_editor::event_hook_fcn): Likewise.
+	* cmd-hist.cc, cmd-hist.h (command_history::goto_mark,
+	command_history::do_goto_mark, gnu_history::do_goto_mark):
+	Return type is now int.  Return 0.
+
 	* EIG.cc (EIG::init, EIG::symmetric_init):
 	Query Lapack for workspace size.
 

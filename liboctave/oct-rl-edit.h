@@ -23,9 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_rl_edit_h)
 #define octave_rl_edit_h 1
 
-typedef void (*rl_startup_hook_fcn_ptr) (void);
+typedef int (*rl_startup_hook_fcn_ptr) (void);
 
-typedef void (*rl_event_hook_fcn_ptr) (void);
+typedef int (*rl_event_hook_fcn_ptr) (void);
 
 typedef int (*rl_fcn_ptr) (int, int);
 

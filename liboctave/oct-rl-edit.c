@@ -239,27 +239,25 @@ octave_rl_set_completion_function (rl_attempted_completion_fcn_ptr f)
 void
 octave_rl_set_startup_hook (rl_startup_hook_fcn_ptr f)
 {
-  void **fp = (void **) (&rl_startup_hook);
-  *fp = (void *) f;
+  rl_startup_hook = f;
 }
 
 rl_startup_hook_fcn_ptr
 octave_rl_get_startup_hook (void)
 {
-  return (rl_startup_hook_fcn_ptr) rl_startup_hook;
+  return rl_startup_hook;
 }
 
 void
 octave_rl_set_event_hook (rl_event_hook_fcn_ptr f)
 {
-  void **fp = (void **) (&rl_event_hook);
-  *fp = (void *) f;
+  rl_event_hook = f;
 }
 
 rl_event_hook_fcn_ptr
 octave_rl_get_event_hook (void)
 {
-  return (rl_event_hook_fcn_ptr) rl_event_hook;
+  return rl_event_hook;
 }
 
 char **

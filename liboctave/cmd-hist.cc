@@ -87,7 +87,7 @@ public:
 
   void do_set_mark (int);
 
-  void do_goto_mark (void);
+  int do_goto_mark (void);
 
   void do_read (const std::string&, bool);
 
@@ -187,7 +187,7 @@ gnu_history::do_set_mark (int n)
   mark = n;
 }
 
-void
+int
 gnu_history::do_goto_mark (void)
 {
   if (mark)
@@ -206,6 +206,8 @@ gnu_history::do_goto_mark (void)
 
   // XXX FIXME XXX -- for operate_and_get_next.
   command_editor::restore_startup_hook ();
+
+  return 0;
 }
 
 void
@@ -528,11 +530,11 @@ command_history::set_mark (int n)
     instance->do_set_mark (n);
 }
 
-void
+int
 command_history::goto_mark (void)
 {
-  if (instance_ok ())
-    instance->do_goto_mark ();
+  return (instance_ok ())
+    ? instance->do_goto_mark () : 0;
 }
 
 void
@@ -709,9 +711,10 @@ command_history::do_set_mark (int)
 {
 }
 
-void
+int
 command_history::do_goto_mark (void)
 {
+  return 0;
 }
 
 void

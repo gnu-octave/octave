@@ -39,9 +39,9 @@ protected:
 
 public:
 
-  typedef void (*startup_hook_fcn) (void);
+  typedef int (*startup_hook_fcn) (void);
 
-  typedef void (*event_hook_fcn) (void);
+  typedef int (*event_hook_fcn) (void);
 
   typedef std::string (*completion_fcn) (const std::string&, int);
 

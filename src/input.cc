@@ -949,7 +949,7 @@ Read the readline library initialiazation file @var{file}.  If\n\
 static std::string hook_fcn;
 static octave_value user_data;
 
-static void
+static int
 input_event_hook (void)
 {
   if (is_valid_function (hook_fcn))
@@ -965,7 +965,9 @@ input_event_hook (void)
       user_data = octave_value ();
 
       command_editor::set_event_hook (0);
-    }      
+    }
+
+  return 0;
 }
 
 DEFUN (input_event_hook, args, ,

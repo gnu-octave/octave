@@ -1,5 +1,7 @@
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* input.cc (input_event_hook): Return type is now int.  Return 0.
+
 	* file-io.cc (do_stream_open): Don't call ::error if stream can't
 	be created.  Don't call ::fopen if arch is invalid.  Set error
 	state for stream if fopen fails.

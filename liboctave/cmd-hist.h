@@ -77,7 +77,7 @@ public:
   // Gag.  This declaration has to match the Function typedef in
   // readline.h.
 
-  static void goto_mark (void);
+  static int goto_mark (void);
 
   static void read (bool = true);
 
@@ -157,7 +157,7 @@ protected:
 
   virtual void do_set_mark (int);
 
-  virtual void do_goto_mark (void);
+  virtual int do_goto_mark (void);
 
   virtual void do_read (const std::string&, bool);
 

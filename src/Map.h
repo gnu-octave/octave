@@ -37,10 +37,6 @@ License as published by the Free Software Foundation.
 #if ! defined (octave_Map_h)
 #define octave_Map_h 1
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma interface
-#endif
-
 #include <Pix.h>
 
 #include "utils.h"
@@ -155,10 +151,6 @@ public:
   void clear (void);
   int  OK (void) const;
 };
-
-#if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)
-#include "Map.cc"
-#endif
 
 #endif
 

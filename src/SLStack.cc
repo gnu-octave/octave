@@ -25,10 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma implementation
-#endif
-
 #include "SLStack.h"
 
 template <class T>
@@ -115,28 +111,6 @@ SLStack<T>::clear (void)
 {
   p.clear ();
 }
-
-#ifdef __GNUG__
-#if defined (OCTAVE_SOURCE) && defined (USE_EXTERNAL_TEMPLATES)
-
-typedef SLStack<int> slstack_type_int;
-typedef SLStack<char *> slstack_type_p_char;
-
-#include "symtab.h"
-typedef SLStack<symbol_def *> slstack_type_p_symbol_def;
-
-#include "token.h"
-typedef SLStack<token *> slstack_type_p_token;
-
-#include "tree-base.h"
-#include "tree-expr.h"
-typedef SLStack<tree_matrix *> slstack_type_p_tree_matrix;
-
-#include "unwind-prot.h"
-typedef SLStack<unwind_elem> slstack_type_unwind_elem;
-
-#endif
-#endif
 
 /*
 ;;; Local Variables: ***

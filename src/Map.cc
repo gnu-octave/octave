@@ -38,10 +38,6 @@ License as published by the Free Software Foundation.
 #include "config.h"
 #endif
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma implementation
-#endif
-
 #include <iostream.h>
 
 #include "Map.h"
@@ -112,8 +108,7 @@ Map<C>::error (const char* msg) const
 // table entry.  Not terrible, but not wonderful either.
 
 template <class C>
-static inline
-int
+static int
 goodCHptr (CHNode<C> *t)
 {
   return ((((unsigned) t) & 1) == 0);
@@ -121,15 +116,14 @@ goodCHptr (CHNode<C> *t)
 
 // This sucks, but avoids g++ 2.6.0 `type unification failed' errors.
 
-void *
+static void *
 index_to_CHptr (int i)
 {
   return (void *) ((i << 1) + 1);
 }
 
 template <class C>
-static inline
-int
+static int
 CHptr_to_index (CHNode<C> *t)
 {
   return ((unsigned) t) >> 1;
@@ -281,27 +275,9 @@ CHMap<C>::OK (void) const
   return v;
 }
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#if defined (OCTAVE_SOURCE)
-
-#include "tree-const.h"
-typedef Map<tree_constant> map_type_tree_constant;
-typedef CHNode<tree_constant> chnode_type_tree_constant;
-typedef CHMap<tree_constant> chmap_type_tree_constant;
-
-#elif defined (USER_TYPEDEFS)
-
-// Users can generate their own .o files with their own types, as many
-// times as they like.  USER_TYPEDEFS should be defined to be the name
-// of an include file that contains typdefs for the desired types.
-//
-// For example, if my-types.h contains typedefs for the Map types
-// you are interested in, you might compile this file with the command
-//
-//   g++ -fexternal-templates -DUSE_EXTERNAL_TEMPLATES \
-//       -DUSER_TYPEDEFS=\"my-types.h\"
-
-#include USER_TYPEDEFS
-
-#endif
-#endif
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

@@ -27,10 +27,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma implementation
-#endif
-
 #include <iostream.h>
 
 #include "Stack.h"
@@ -41,28 +37,6 @@ Stack<T>::error (const char *msg)
 {
   cerr << msg;
 }
-
-#ifdef __GNUG__
-#if defined (OCTAVE_SOURCE) && defined (USE_EXTERNAL_TEMPLATES)
-
-typedef Stack<int> stack_type_int;
-typedef Stack<char *> stack_type_p_char;
-
-#include "symtab.h"
-typedef Stack<symbol_def *> stack_type_p_symbol_def;
-
-#include "token.h"
-typedef Stack<token *> stack_type_p_token;
-
-#include "tree-base.h"
-#include "tree-expr.h"
-typedef Stack<tree_matrix *> stack_type_p_tree_matrix;
-
-#include "unwind-prot.h"
-typedef Stack<unwind_elem> stack_type_unwind_elem;
-
-#endif
-#endif
 
 /*
 ;;; Local Variables: ***

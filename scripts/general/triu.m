@@ -40,7 +40,7 @@ function retval = triu (x, k)
     usage ("triu (x [, k])");
   endif
 
-  for j = max (1, k) : nc
+  for j = max (1, k+1) : nc
     nr_limit = min (nr, j-k);
     retval (1:nr_limit, j) = x (1:nr_limit, j);
   endfor

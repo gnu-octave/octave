@@ -40,7 +40,7 @@ function retval = tril (x, k)
     usage ("tril (x [, k])");
   endif
 
-  for j = 1 : min (nc, nc + abs (k))
+  for j = 1 : min (nc, nr+k)
     nr_limit = max (1, j-k);
     retval (nr_limit:nr, j) = x (nr_limit:nr, j);
   endfor

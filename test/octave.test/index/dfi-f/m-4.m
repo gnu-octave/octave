@@ -1,4 +1,4 @@
-do_fortran_indexing = "false";
+do_fortran_indexing = 0;
 a = [1,2;3,4];
 a_fvec = [1;3;2;4];
 a_col_1 = [1;3];

@@ -1,2 +1,2 @@
-propagate_empty_matrices = "false";
+propagate_empty_matrices = 0;
 inv ([]) == []

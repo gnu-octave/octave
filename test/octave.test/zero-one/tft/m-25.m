@@ -1,5 +1,5 @@
-prefer_zero_one_indexing = "true";
-prefer_column_vectors = "false";
-do_fortran_indexing = "true";
+prefer_zero_one_indexing = 1;
+prefer_column_vectors = 0;
+do_fortran_indexing = 1;
 a = [9,8;7,6];
 all (a(:,[0,1]) == [8;6])

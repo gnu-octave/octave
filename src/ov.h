@@ -336,6 +336,9 @@ public:
 
   // Other type stuff.
 
+  virtual bool is_bool_type (void) const
+    { return rep->is_bool_type (); }
+
   virtual bool is_real_type (void) const
     { return rep->is_real_type (); }
 

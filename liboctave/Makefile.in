@@ -96,7 +96,7 @@ DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = liboctave/liboctave
-  BINDISTFILES = $(addsuffix $(BINDISTLIBS), $(SHLEXT_VER))
+  BINDISTFILES = liboctave.$(SHLEXT_VER)
 endif
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))

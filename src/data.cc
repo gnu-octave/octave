@@ -753,6 +753,21 @@ but it uses less memory and avoids calling conj if X is real.")
   return retval;
 }
 
+DEFUN (is_bool, args, ,
+  "is_bool (x): return nonzero if x is a boolean object")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_bool_type () ? 1.0 : 0.0;
+  else
+    print_usage ("is_bool");
+
+  return retval;
+}
+
+DEFALIAS (islogical, is_bool);
+
 DEFUN (is_complex, args, ,
   "is_complex (x): return nonzero if x is a complex numeric object")
 {

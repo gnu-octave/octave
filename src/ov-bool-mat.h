@@ -101,6 +101,8 @@ public:
   octave_value all (void) const { return matrix.all (); }
   octave_value any (void) const { return matrix.any (); }
 
+  bool is_bool_type (void) const { return true; }
+
   bool is_real_type (void) const { return true; }
 
   bool is_matrix_type (void) const { return true; }

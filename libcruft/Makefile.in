@@ -32,8 +32,8 @@ SUBDIRS = $(CRUFT_DIRS)
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
 ifeq ($(SHARED_LIBS), true)
+  BINDISTLIBS = libcruft/libcruft
   BINDISTFILES = libcruft.$(SHLEXT_VER)
-  BINDISTLIBS = libcruft/libcruft.$(SHLEXT_VER)
 endif
 
 all: $(SUBDIRS) shared-lib

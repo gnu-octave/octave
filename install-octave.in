@@ -234,7 +234,7 @@ if test -f LIBRARIES; then
   for f in `cat LIBRARIES`
   do
     file=`basename $f`
-    cp $f $octlibdir/$file.$SHLEXT_VER
+    cp $f.$SHLEXT_VER $octlibdir/$file.$SHLEXT_VER
     chmod 644 $octlibdir/$file.$SHLEXT_VER
     ( cd $octlibdir
       ln -s $file.$SHLEXT_VER $file.$SHLEXT )

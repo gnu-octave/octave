@@ -92,8 +92,12 @@ public:
   octave_value all (void) const { return scalar; }
   octave_value any (void) const { return scalar; }
 
+  bool is_bool_type (void) const { return true; }
+
   bool is_real_type (void) const { return true; }
+
   bool is_scalar_type (void) const { return true; }
+
   bool is_numeric_type (void) const { return true; }
 
   bool valid_as_scalar_index (void) const { return scalar; }

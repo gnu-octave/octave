@@ -119,6 +119,8 @@ public:
 
   octave_value any (void) const { return 0.0; }
 
+  bool is_bool_type (void) const { return false; }
+
   bool is_real_type (void) const { return false; }
 
   bool is_complex_type (void) const { return false; }

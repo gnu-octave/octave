@@ -35,7 +35,8 @@ AC_C_CONST
 # This is a GNU libc invention.
 AC_MSG_CHECKING(whether program_invocation_name is predefined)
 AC_CACHE_VAL(kb_cv_var_program_inv_name,
-[AC_TRY_LINK(, [main() { program_invocation_name = "love"; }],
+[AC_TRY_LINK(,
+  [extern char *program_invocation_name; program_invocation_name = "love";],
   kb_cv_var_program_inv_name=yes, kb_cv_var_program_inv_name=no)])dnl
 AC_MSG_RESULT($kb_cv_var_program_inv_name)
 if test "$kb_cv_var_program_inv_name" = yes; then

@@ -1,3 +1,9 @@
+Tue Jun  3 23:48:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* common.ac: (program_invocation_name): AC_TRY_LINK only requires
+	function body.  Add declaration for program_invocation_name so gcc
+	won't complain about undeclared variable.
+
 Thu May 22 22:04:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Look in make instead of ../make for files to include.

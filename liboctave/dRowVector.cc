@@ -220,8 +220,8 @@ operator * (const RowVector& v, const Matrix& a)
       return RowVector ();
     }
 
-  if (len == 0 || a.cols () == 0)
-    return RowVector (0);
+  if (len == 0)
+    return RowVector (a.cols (), 0.0);
 
   // Transpose A to form A'*x == (x'*A)'
 
@@ -230,12 +230,12 @@ operator * (const RowVector& v, const Matrix& a)
 
   int ld = a_nr;
 
-  double *y = new double [len];
+  double *y = new double [a_nc];
 
   F77_FCN (dgemv, DGEMV) ("T", a_nc, a_nr, 1.0, a.data (), ld,
 			  v.data (), 1, 0.0, y, 1, 1L);
 
-  return RowVector (y, len);
+  return RowVector (y, a_nc);
 }
 
 // other operations

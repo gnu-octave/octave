@@ -436,8 +436,8 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
       return ComplexRowVector ();
     }
 
-  if (len == 0 || a.cols () == 0)
-    return ComplexRowVector (0);
+  if (len == 0)
+    return ComplexRowVector (a.cols (), 0.0);
 
   // Transpose A to form A'*x == (x'*A)'
 
@@ -446,12 +446,12 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
 
   int ld = a_nr;
 
-  Complex *y = new Complex [len];
+  Complex *y = new Complex [a_nc];
 
   F77_FCN (zgemv, ZGEMV) ("T", a_nc, a_nr, 1.0, a.data (), ld,
 			  v.data (), 1, 0.0, y, 1, 1L); 
 
-  return ComplexRowVector (y, len);
+  return ComplexRowVector (y, a_nc);
 }
 
 ComplexRowVector

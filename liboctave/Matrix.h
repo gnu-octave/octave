@@ -1061,9 +1061,9 @@ inline DiagMatrix::DiagMatrix (double *d, int r, int c)
 
 inline DiagMatrix::~DiagMatrix (void) { delete [] data; data = 0; }
 
-inline int DiagMatrix::rows (void) const { return len; }
-inline int DiagMatrix::cols (void) const { return len; }
-inline int DiagMatrix::columns (void) const { return len; } 
+inline int DiagMatrix::rows (void) const { return nr; }
+inline int DiagMatrix::cols (void) const { return nc; }
+inline int DiagMatrix::columns (void) const { return nc; } 
 
 // Would be nice to be able to avoid compiler warning and make this
 // fail on assignment.
@@ -1993,9 +1993,9 @@ inline ComplexDiagMatrix::ComplexDiagMatrix (Complex *d, int r, int c)
 inline ComplexDiagMatrix::~ComplexDiagMatrix (void)
   { delete [] data; data = 0; }
 
-inline int ComplexDiagMatrix::rows (void) const { return len; }
-inline int ComplexDiagMatrix::cols (void) const { return len; }
-inline int ComplexDiagMatrix::columns (void) const { return len; } 
+inline int ComplexDiagMatrix::rows (void) const { return nr; }
+inline int ComplexDiagMatrix::cols (void) const { return nc; }
+inline int ComplexDiagMatrix::columns (void) const { return nc; } 
 
 // Would be nice to be able to avoid compiler warning and make this
 // fail on assignment.

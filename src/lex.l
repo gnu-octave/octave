@@ -111,6 +111,49 @@ private:
 
 static brace_paren_nesting_level nesting_level;
 
+// Should whitespace in a literal matrix list be automatically
+// converted to commas and semicolons?
+//
+//   user specifies   value of var
+//   --------------   ------------
+//   "ignore"              2
+//   "traditional"         1
+//   anything else         0
+//
+// Octave will never insert a comma in a literal matrix list if the
+// user specifies "ignore".  For example, the statement [1 2] will
+// result in an error instead of being treated the same as [1, 2], and
+// the statement
+//
+//   [ 1, 2,
+//     3, 4 ]
+//
+// will result in the vector [1 2 3 4] instead of a matrix.
+//
+// Traditional behavior makes Octave convert spaces to a comma between
+// identifiers and `('.  For example, the statement
+//
+//   [eye (2)]
+//
+// will be parsed as
+//
+//   [eye, (2)]
+//
+// and will result in an error since the `eye' function will be
+// called with no arguments.  To get around this, you would have to
+// omit the space between `eye' and the `('.
+//
+// The default value is 0, which results in behavior that is the same
+// as traditional, except that Octave does not convert spaces to a
+// comma between identifiers and `('.  For example, the statement
+//
+//   [eye (2)]
+//
+// will result in a call to `eye' with the argument `2'.
+
+static int Vwhitespace_in_literal_matrix;
+
+
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -229,7 +272,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     lexer_flags.quote_is_transpose = 0;
     lexer_flags.cant_be_identifier = 0;
     lexer_flags.convert_spaces_to_comma = 1;
-    if (user_pref.whitespace_in_literal_matrix != 2
+    if (Vwhitespace_in_literal_matrix != 2
 	&& (tmp & ATE_NEWLINE) == ATE_NEWLINE)
       unput (';');
     return (',');
@@ -244,7 +287,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 <MATRIX>{S}+ {
     current_input_column += yyleng;
-    if (user_pref.whitespace_in_literal_matrix != 2)
+    if (Vwhitespace_in_literal_matrix != 2)
       {
 	int tmp = eat_continuation ();
 	int bin_op = next_token_is_bin_op (1, yytext);
@@ -288,7 +331,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <MATRIX>{SNLCMT}*\n{SNLCMT}* {
     fixup_column_count (yytext);
     eat_whitespace ();
-    if (user_pref.whitespace_in_literal_matrix != 2)
+    if (Vwhitespace_in_literal_matrix != 2)
       {
 	lexer_flags.quote_is_transpose = 0;
 	lexer_flags.cant_be_identifier = 0;
@@ -1531,7 +1574,7 @@ handle_close_brace (int spc_gobbled)
     {
       unput (c1);
 
-      if (lexer_flags.braceflag && user_pref.whitespace_in_literal_matrix != 2)
+      if (lexer_flags.braceflag && Vwhitespace_in_literal_matrix != 2)
 	{
 	  int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
 	  int postfix_un_op = next_token_is_postfix_unary_op
@@ -1558,7 +1601,7 @@ handle_close_brace (int spc_gobbled)
 static void
 maybe_unput_comma (int spc_gobbled)
 {
-  if (user_pref.whitespace_in_literal_matrix != 2
+  if (Vwhitespace_in_literal_matrix != 2
       && nesting_level.is_brace ())
     {
       int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
@@ -1574,7 +1617,7 @@ maybe_unput_comma (int spc_gobbled)
       int dot_op = (c1 == '.'
 		    && (isalpha (c2) || isspace (c2) || c2 == '_'));
       int index_op = (c1 == '('
-		      && (user_pref.whitespace_in_literal_matrix == 0
+		      && (Vwhitespace_in_literal_matrix == 0
 			  || ! spc_gobbled));
 
       if (! (postfix_un_op || bin_op || sep_op || dot_op || index_op))
@@ -1802,6 +1845,29 @@ lexical_feedback::init (void)
 
   // Quote marks strings intially.
   quote_is_transpose = 0;
+}
+
+int
+whitespace_in_literal_matrix (void)
+{
+  int pref = 0;
+  string val = builtin_string_variable ("whitespace_in_literal_matrix");
+  if (! val.empty ())
+    {
+      if (val.compare ("ignore", 0, 6) == 0)
+	pref = 2;
+      else if (val.compare ("traditional", 0, 11) == 0)
+	pref = 1;
+    }
+  Vwhitespace_in_literal_matrix = pref;
+  return 0;
+}
+
+void
+symbols_of_lex (void)
+{
+  DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
+    "control auto-insertion of commas and semicolons in literal matrices");
 }
 
 // Maybe someday...

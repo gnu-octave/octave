@@ -2,7 +2,8 @@
 
 ;;; Copyright (c) 1986, 1993, 1994, 1995 Free Software Foundation, Inc.
 
-;; Author: John W. Eaton <jwe@bevo.che.wisc.edu>
+;; Author: John Eaton <jwe@bevo.che.wisc.edu>
+;; Author: Kurt Hornik <hornik@ci.tuwien.ac.at>
 ;; Maintainer: bug-octave@bevo.che.wisc.edu
 ;; Version 0.0 (Sept 29 1995)
 ;; Keywords: languages
@@ -31,7 +32,7 @@
 
 ;;; Bugs to bug-octave@bevo.che.wisc.edu
 
-(defconst octave-mode-version "version 0.2")
+(defconst octave-mode-version "version 0.5")
 
 ;;; Code:
 

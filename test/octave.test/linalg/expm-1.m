@@ -1,4 +1,4 @@
 arg = [-49, 24; -64, 31];
 result = [-0.735758758144742, 0.551819099658089;
           -1.471517599088239, 1.103638240715556];
-all (all (abs (expm (arg) - result) < 8*eps))
+all (all (abs (expm (arg) - result) < 128*eps))

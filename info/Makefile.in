@@ -27,13 +27,16 @@ VPATH  = @srcdir@:@srcdir@/../src
 
 include $(TOPDIR)/Makeconf
 
+CC = @CC@
+CFLAGS = @CFLAGS@
+
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 common = @srcdir@/../src
 
-MAKEINFO= makeinfo
+MAKEINFO = makeinfo
 
 LDEFS = -DNAMED_FUNCTIONS=1 -DDEFAULT_INFOPATH='"$(DEFAULT_INFOPATH)"'
 

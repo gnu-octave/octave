@@ -39,13 +39,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // static tree *fsqp_constraints;
 
 double
-fsqp_objective_function (const ColumnVector& x)
+fsqp_objective_function (const ColumnVector&)
 {
   return 0.0;
 }
 
 ColumnVector
-fsqp_constraint_function (const ColumnVector& x)
+fsqp_constraint_function (const ColumnVector&)
 {
   ColumnVector retval;
   return retval;

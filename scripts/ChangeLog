@@ -1,3 +1,15 @@
+Wed Nov  4 21:51:13 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/housh.m: New file from the OCST.
+	* linear-algebra/krygetq.m: Ditto.
+	* linear-algebra/krylov.m: Ditto.
+	* linear-algebra/krylovb.m: Ditto.
+	* linear-algebra/qrhouse.m: Ditto.
+	* general/is_duplicate_entry.m: Ditto.
+
+	* general/is_symmetric.m: Call is_square instead of doing that
+	check in line.
+
 Wed Oct 28 11:51:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/is_square.m: 

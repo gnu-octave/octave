@@ -186,6 +186,14 @@ octave_rl_read_init_file (const char *f)
     rl_re_read_init_file (0, 0);
 }
 
+int
+octave_rl_filename_completion_desired (int arg)
+{
+  int retval = rl_filename_completion_desired;
+  rl_filename_completion_desired = arg;
+  return retval;
+}
+
 void
 octave_rl_set_basic_word_break_characters (const char *s)
 {

@@ -291,13 +291,18 @@ generate_struct_completions (const std::string& text,
 
   int parse_status;
 
+  unwind_protect::begin_frame ("generate_struct_completions");
+
   unwind_protect_str (Vwarning_option);
+  unwind_protect_bool (discard_error_messages);
+  unwind_protect_int (error_state);
 
   Vwarning_option = "off";
+  discard_error_messages = true;
 
   octave_value tmp = eval_string (prefix, true, parse_status);
 
-  unwind_protect::run ();
+  unwind_protect::run_frame ("generate_struct_completions");
 
   if (tmp.is_defined () && tmp.is_map ())
     names = tmp.map_keys ();
@@ -316,7 +321,18 @@ looks_like_struct (const std::string& text)
     {
       int parse_status;
 
+      unwind_protect::begin_frame ("looks_like_struct");
+
+      unwind_protect_str (Vwarning_option);
+      unwind_protect_bool (discard_error_messages);
+      unwind_protect_int (error_state);
+
+      Vwarning_option = "off";
+      discard_error_messages = true;
+
       octave_value tmp = eval_string (text, true, parse_status);
+
+      unwind_protect::run_frame ("looks_like_struct");
 
       retval = (tmp.is_defined () && tmp.is_map ());
     }

@@ -101,6 +101,8 @@ public:
 
   static void read_init_file (const std::string& file = std::string ());
 
+  static bool filename_completion_desired (bool);
+
   static int current_command_number (void);
 
   static void reset_current_command_number (int n);
@@ -190,6 +192,8 @@ protected:
   virtual void do_restore_event_hook (void) { }
 
   virtual void do_read_init_file (const std::string&) { }
+
+  virtual bool do_filename_completion_desired (bool) { return false; }
 
   int read_octal (const std::string& s);
 

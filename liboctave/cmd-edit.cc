@@ -121,6 +121,8 @@ public:
 
   void do_read_init_file (const std::string& file);
 
+  bool do_filename_completion_desired (bool);
+
   static int operate_and_get_next (int, int);
 
   static int history_search_backward (int, int);
@@ -368,6 +370,12 @@ void
 gnu_readline::do_read_init_file (const std::string& file)
 {
   ::octave_rl_read_init_file (file.c_str ());
+}
+
+bool
+gnu_readline::do_filename_completion_desired (bool arg)
+{
+  return ::octave_rl_filename_completion_desired (arg);
 }
 
 int
@@ -762,6 +770,13 @@ command_editor::read_init_file (const std::string& file)
 {
   if (instance_ok ())
     instance->do_read_init_file (file);
+}
+
+bool
+command_editor::filename_completion_desired (bool arg)
+{
+  return (instance_ok ())
+    ? instance->do_filename_completion_desired (arg) : false;
 }
 
 // Return a string which will be printed as a prompt.  The string may

@@ -381,9 +381,13 @@ generate_possible_completions (const std::string& text, std::string& prefix,
 {
   string_vector names;
 
+  command_editor::filename_completion_desired (true);
+
   prefix = "";
 
-  if (! text.empty () && text != "." && text.rfind ('.') != NPOS)
+  if (! text.empty () && text != "." && text != ".."
+      && text.find_first_of (file_ops::dir_sep_chars) == NPOS
+      && text.rfind ('.') != NPOS)
     names = generate_struct_completions (text, prefix, hint);
   else
     names = make_name_list ();

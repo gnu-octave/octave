@@ -72,6 +72,8 @@ extern FILE *octave_rl_get_output_stream (void);
 
 extern void octave_rl_read_init_file (const char *);
 
+extern int octave_rl_filename_completion_desired (int);
+
 extern void octave_rl_set_basic_word_break_characters (const char *);
 
 extern void octave_rl_set_completer_word_break_characters (const char *);

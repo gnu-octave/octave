@@ -1,3 +1,24 @@
+2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (generate_struct_completions): Temporarily reset
+	discard_error_messages and error_state
+	(looks_like_struct): Temporarily reset Vwarning option,
+	error_state, and discard_error_messages.
+
+	* pt-idx.cc (tree_index_expression::eval_error): Now const.
+	(tree_index_expression::get_struct_index): Require valid identifier.
+	(tree_index_expression::make_arg_struct,
+	tree_index_expression::rvalue, tree_index_expression::lvalue):
+	Handle possible error from get_struct_index.
+
+	* utils.cc (valid_identifier): Move here from load-save.cc.
+	* utils.h: Provide decl.
+
+	* input.cc (generate_possible_completions): Call
+	command_editor::filename_completion_desired here.
+	(generate_possible_completions): Don't generate struct completions
+	if text contains directory separator or "..".
+
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/odessa.cc (odessa_user_f, odessa_user_j,

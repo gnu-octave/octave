@@ -184,7 +184,12 @@ tree_index_expression::get_struct_index (Pix p_arg_nm, Pix p_dyn_field) const
 	  octave_value t = df->rvalue ();
 
 	  if (! error_state)
-	    fn = t.string_value ();
+	    {
+	      fn = t.string_value ();
+
+	      if (! valid_identifier (fn))
+		::error ("invalid structure field name");
+	    }
 	}
       else
 	panic_impossible ();
@@ -220,7 +225,12 @@ tree_index_expression::make_arg_struct (void) const
 	  break;
 
 	case '.':
-	  subs_list(i) = get_struct_index (p_arg_nm, p_dyn_field);
+	  {
+	    subs_list(i) = get_struct_index (p_arg_nm, p_dyn_field);
+
+	    if (error_state)
+	      eval_error ();
+	  }
 	  break;
 
 	default:
@@ -274,7 +284,12 @@ tree_index_expression::rvalue (int nargout)
 	      break;
 
 	    case '.':
-	      idx.append (get_struct_index (p_arg_nm, p_dyn_field));
+	      {
+		idx.append (get_struct_index (p_arg_nm, p_dyn_field));
+
+		if (error_state)
+		  eval_error ();
+	      }
 	      break;
 
 	    default:
@@ -335,7 +350,12 @@ tree_index_expression::lvalue (void)
 	  break;
 
 	case '.':
-	  idx.append (get_struct_index (p_arg_nm, p_dyn_field));
+	  {
+	    idx.append (get_struct_index (p_arg_nm, p_dyn_field));
+
+	    if (error_state)
+	      eval_error ();
+	  }
 	  break;
 
 	default:
@@ -362,7 +382,7 @@ tree_index_expression::lvalue (void)
 }
 
 void
-tree_index_expression::eval_error (void)
+tree_index_expression::eval_error (void) const
 {
   int l = line ();
   int c = column ();

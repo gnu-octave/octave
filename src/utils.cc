@@ -79,6 +79,27 @@ static int Vtreat_neg_dim_as_zero;
 // Top level context (?)
 extern jmp_buf toplevel;
 
+// Return TRUE if S is a valid identifier.
+
+bool
+valid_identifier (const char *s)
+{
+  if (! s || ! (isalnum (*s) || *s == '_'))
+     return false;
+
+  while (*++s != '\0')
+    if (! (isalnum (*s) || *s == '_'))
+      return false;
+
+  return true;
+}
+
+bool
+valid_identifier (const std::string& s)
+{
+  return valid_identifier (s.c_str ());
+}
+
 // Return to the main command loop in octave.cc.
 
 void

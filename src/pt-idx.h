@@ -87,7 +87,7 @@ public:
 
   octave_lvalue lvalue (void);
 
-  void eval_error (void);
+  void eval_error (void) const;
 
   void accept (tree_walker& tw);
 

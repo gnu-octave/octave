@@ -34,10 +34,8 @@ class octave_value;
 class octave_value_list;
 class string_vector;
 
-extern std::string search_path_for_file (const std::string&, const std::string&);
-extern std::string file_in_path (const std::string&, const std::string&);
-extern std::string fcn_file_in_path (const std::string&);
-extern std::string oct_file_in_path (const std::string&);
+extern bool valid_identifier (const char *s);
+extern bool valid_identifier (const std::string& s);
 
 extern void jump_to_top_level (void) GCC_ATTR_NORETURN;
 
@@ -51,9 +49,14 @@ keyword_almost_match (const char * const *std, int *min_len,
 
 extern int empty_arg (const char *name, int nr, int nc);
 
-extern const char *undo_string_escape (char c);
+extern std::string search_path_for_file (const std::string&, const std::string&);
+extern std::string file_in_path (const std::string&, const std::string&);
+extern std::string fcn_file_in_path (const std::string&);
+extern std::string oct_file_in_path (const std::string&);
 
 extern std::string do_string_escapes (const std::string& s);
+
+extern const char *undo_string_escape (char c);
 
 extern std::string undo_string_escapes (const std::string& s);
 

@@ -1,5 +1,11 @@
 2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* cmd-edit.h (command_editor::filename_completion_desired): New
+	static function.
+	(command_editor::do_filename_completion_desired): New virtual function.
+	* oct-rl-edit.c (octave_rl_filename_completion_desired): New function.
+	* oct-rl-edit.h: Provide decl.
+
 	* Array2.cc (Array2<T>::get_size): #define MALLOC_OVERHEAD to
 	avoid OS X linker bug.
 	* ArrayN.cc (ArrayN<T>::get_size): Likewise.

@@ -45,6 +45,7 @@ static void
 solve_singularity_warning (double rcond)
 {
   warning ("matrix singular to machine precision, rcond = %g", rcond);
+  warning ("attempting to find minimum norm solution");
 }
 
 template <class T1, class T2>

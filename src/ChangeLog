@@ -1,3 +1,12 @@
+2000-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc (pr_where_2): New function.
+	(pr_where_1): Use it instead of error_1 to avoid setting error_state.
+
+2000-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xdiv.cc (xdiv): Warn if execution falls through to lssolve.
+
 2000-09-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (FERRNO): New function (currently commented out).

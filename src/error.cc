@@ -211,11 +211,37 @@ usage (const char *fmt, ...)
 }
 
 static void
+pr_where_2 (const char *fmt, va_list args)
+{
+  if (fmt)
+    {
+      if (*fmt)
+	{
+	  int len = strlen (fmt);
+	  if (fmt[len - 1] == '\n')
+	    {
+	      if (len > 1)
+		{
+		  char *tmp_fmt = strsave (fmt);
+		  tmp_fmt[len - 1] = '\0';
+		  verror (0, tmp_fmt, args);
+		  delete [] tmp_fmt;
+		}
+	    }
+	  else
+	    verror (0, fmt, args);
+	}
+    }
+  else
+    panic ("pr_where_2: invalid format");
+}
+
+static void
 pr_where_1 (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (0, fmt, args);
+  pr_where_2 (fmt, args);
   va_end (args);
 }
 

@@ -1,3 +1,45 @@
+Tue Mar 25 17:37:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-op-defs.h: New file for operator definitions.
+	* mx-cdm-cm.h, mx-cdm-cs.h, mx-cdm-dm.h, mx-cdm-m.h, mx-cdm-s.h,
+	mx-cm-cdm.h, mx-cm-dm.h, mx-cm-m.h, mx-cm-s.h, mx-cs-cdm.h,
+	mx-cs-dm.h, mx-cs-m.h, mx-dm-cdm.h, mx-dm-cm.h, mx-dm-cs.h,
+	mx-dm-m.h, mx-dm-s.h, mx-m-cdm.h, mx-m-cm.h, mx-m-cs.h, mx-m-dm.h,
+	mx-s-cdm.h, mx-s-cm.h, mx-s-dm.h, mx-cdm-cm.cc, mx-cdm-cs.cc,
+	mx-cdm-dm.cc, mx-cdm-m.cc, mx-cdm-s.cc, mx-cm-cdm.cc, mx-cm-dm.cc,
+	mx-cm-m.cc, mx-cm-s.cc, mx-cs-cdm.cc, mx-cs-dm.cc, mx-cs-m.cc,
+	mx-dm-cdm.cc, mx-dm-cm.cc, mx-dm-cs.cc, mx-dm-m.cc, mx-dm-s.cc,
+	mx-m-cdm.cc, mx-m-cm.cc, mx-m-cs.cc, mx-m-dm.cc, mx-s-cdm.cc,
+	mx-s-cm.cc, mx-s-dm.cc:
+	New files for mixed-type operations.
+	* Makefiles.in: Add them to the appropriate lists.
+
+	* mx-inlines.cc: Add bool by bool EQ ops.
+
+	* idx-vector.h, idx-vector.cc: Add constructors for bool and
+	boolMatrix types.
+	(idx_vector::maybe_convert_one_zero_to_idx,
+	idx_vector::idx_vector_rep::maybe_convert_one_zero_to_idx):
+	Delete second arg, prefer_zero_one.  Change all callers.
+
+	* boolMatrix.h, boolMatrix.cc: New files.
+	* mx-base.h: Include boolMatrix.h here.
+	* mx-defs.h: Provide forward declaration for boolMatrix here.
+
+	* chMatrix.h, chMatrix.cc: Delete unused junk.
+
+	* dMatrix.h, CMatrix.h: Delete friend declarations for operator+,
+	operator-, operator*, product, and quotient functions.
+	Add constructor for boolMatrix type.
+	* dMatrix.cc, CMatrix.cc: Delete operator+, operator-, operator*,
+	product, and quotient functions.
+
+	* CDiagMatrix.h: Delete friend declarations for operator+,
+	operator-, and product functions.
+	* CDiagMatrix.h: Delete operator+, operator-, and product functions.
+
+	* Array-b.cc: Also instantiate 2d and 2d diagonal arrays.
+
 Fri Mar 14 00:29:46 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* EIG.cc (EIG::hermitian_init (const ComplexMatrix&)): New function.

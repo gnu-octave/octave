@@ -1,3 +1,11 @@
+2004-03-08  Petter Risholm  <risholm@idi.ntnu.no>
+
+	* data.cc (do_cat): Check for length of args before getting dimension.
+	New arg, fname.  Print usage message corresponding to fname.
+	(Fcat): Pass "cat" as fname arg to do_cat.
+	(Fhorzcat): Pass "horzcat" as fname arg to do_cat.
+	(Fvertcat): Pass "vertcat" as fname arg to do_cat.
+
 2004-03-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.56.

@@ -167,13 +167,18 @@ implementation of @code{fread}, @code{fwrite}, @code{feof}, and
 
 @item
 Gabriele Pannocchia  @email{pannocchia@@ing.unipi.it} provided the
-@code{dkalman.m} function and added support for singular system matrices
-to @code{dlqe} and @code{dlqr}.
+@code{dkalman.m} function, added support for singular system matrices
+to @code{dlqe} and @code{dlqr}, and has made various other
+improvements to the control system functions.
 
 @item
-Tony Richardson @email{richardson@@evansville.edu?} wrote Octave's
+Tony Richardson @email{richardson@@evansville.edu} wrote Octave's
 image processing functions as well as most of the original polynomial
 functions.
+
+@item
+Petter Risholm @email{Petter.Risholm@@idi.ntnu.no} helped to implement
+much of Octave's N-d array functionality.
 
 @item
 Ben Sapp @email{bsapp@@lanl.gov} implemented the debugger functions and

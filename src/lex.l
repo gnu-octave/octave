@@ -754,7 +754,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     promptflag--;
     eat_whitespace ();
 
-    lexer_flags.bracketflag++;
+    lexer_flags.braceflag++;
     BEGIN (MATRIX_START);
     return '{';
   }
@@ -1508,6 +1508,18 @@ next_token_is_postfix_unary_op (bool spc_prev)
       un_op = (c1 == '\'');
       yyunput (c1, yytext);
     }
+  else if (c0 == '+')
+    {
+      int c1 = yyinput ();
+      un_op = (c1 == '+');
+      yyunput (c1, yytext);
+    }
+  else if (c0 == '-')
+    {
+      int c1 = yyinput ();
+      un_op = (c1 == '-');
+      yyunput (c1, yytext);
+    }
 
   yyunput (c0, yytext);
 
@@ -2234,10 +2246,16 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
   if (! nesting_level.none ())
     {
       nesting_level.remove ();
-      lexer_flags.bracketflag--;
+
+      if (bracket_type == ']')
+	lexer_flags.bracketflag--;
+      else if (bracket_type == '}')
+	lexer_flags.braceflag--;
+      else
+	panic_impossible ();
     }
 
-  if (lexer_flags.bracketflag == 0)
+  if (lexer_flags.bracketflag == 0 && lexer_flags.braceflag == 0)
     BEGIN (INITIAL);
 
   if (bracket_type == ']'
@@ -2246,28 +2264,24 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
     {
       retval = CLOSE_BRACE;
     }
-  else
+  else if ((lexer_flags.bracketflag || lexer_flags.braceflag)
+	   && lexer_flags.convert_spaces_to_comma
+	   && (nesting_level.is_bracket ()
+	       || (nesting_level.is_brace ()
+		   && ! lexer_flags.looking_at_object_index)))
     {
-      int c1 = yyinput ();
-      yyunput (c1, yytext);
+      int bin_op = next_token_is_bin_op (spc_gobbled);
 
-      if (lexer_flags.bracketflag)
+      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
+
+      int sep_op = next_token_is_sep_op ();
+
+      if (! (postfix_un_op || bin_op || sep_op))
 	{
-	  int bin_op = next_token_is_bin_op (spc_gobbled);
+	  maybe_warn_separator_insert (',');
 
-	  int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
-
-	  int sep_op = next_token_is_sep_op ();
-
-	  if (! (postfix_un_op || bin_op || sep_op)
-	      && nesting_level.is_bracket_or_brace ()
-	      && lexer_flags.convert_spaces_to_comma)
-	    {
-	      maybe_warn_separator_insert (',');
-
-	      yyunput (',', yytext);
-	      return retval;
-	    }
+	  yyunput (',', yytext);
+	  return retval;
 	}
     }
 
@@ -2281,7 +2295,9 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
 static void
 maybe_unput_comma (int spc_gobbled)
 {
-  if (nesting_level.is_bracket_or_brace ())
+  if (nesting_level.is_bracket ()
+      || (nesting_level.is_brace ()
+	  && ! lexer_flags.looking_at_object_index))
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -2498,6 +2514,9 @@ lexical_feedback::init (void)
 {
   // Not initially defining a matrix list.
   bracketflag = 0;
+
+  // Not initially defining a cell array list.
+  braceflag = 0;
 
   // Not initially inside a loop or if statement.
   looping = 0;

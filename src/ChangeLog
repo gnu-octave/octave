@@ -1,5 +1,22 @@
 2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (maybe_unput_comma, handle_close_bracket):
+	Don't insert comma if we are looking at an object index and the
+	closest nesting level is a brace.
+
+	* parse.y (postfix_expr): Use begin_obj_idx between postfix_expr
+	and the indexing delimiter rather than after it.
+
+	* lex.h (lexical_feedback::braceflag): New member variable.
+	* lex.l	(lexical_feedback::init): Initialize braceflag.
+	(\{{S}*): Increment lexer_flags.braceflag, not
+	lexer_flags.bracketflag.
+	(handle_close_bracket): Handle lexer_flags.braceflag and
+	lexer_flags.bracketflag separately based on bracket_type.
+	Delete unnecesary yyinput/yyunput.
+
+	* lex.l (next_token_is_postfix_unary_op): Also recognize ++ and --.
+
 	* ov-typeinfo.cc (octave_value_typeinfo::register_type,
 	octave_value_typeinfo::do_register_type):
 	New arg, c_name for class name.

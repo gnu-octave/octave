@@ -129,6 +129,9 @@ public:
   // Square bracket level count.
   int bracketflag;
 
+  // Curly brace level count.
+  int braceflag;
+
   // TRUE means we're in the middle of defining a loop.
   int looping;
 

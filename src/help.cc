@@ -267,6 +267,9 @@ body of the loop is executed at least once.",},
   { "endif",
     "Mark the end of an if block.", },
 
+  { "endswitch",
+    "Mark the end of a switch block.", },
+
   { "endwhile",
     "Mark the end of a while loop.", },
 

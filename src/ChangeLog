@@ -1,3 +1,7 @@
+2005-01-26  Joel Andersson  <snprintf@gmail.com>
+
+	* help.cc (keywords): Document endswitch.
+
 2005-01-21  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/filter.cc (filter): Avoid slow Marray indexing ops.

@@ -684,6 +684,48 @@ DEFUN (system, args, nargout,
 
 DEFALIAS (shell_cmd, system);
 
+static SLStack<string> octave_atexit_functions;
+
+void
+do_octave_atexit (void)
+{
+  while (! octave_atexit_functions.empty ())
+    {
+      Octave_object fcn = octave_atexit_functions.pop ();
+
+      feval (fcn, 0);
+    }
+}
+
+DEFUN(atexit, args, ,
+  "atexit (NAME): register NAME as a function to call when Octave exits\n\
+\n\
+Functions are called with no arguments in the reverse of the order in
+which they were registered with atexit()")
+{
+  Octave_object retval;
+
+#if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      string arg = args(0).string_value ();
+
+      if (! error_state)
+	octave_atexit_functions.push (arg);
+      else
+	error ("atexit: argument must be a string");
+    }
+  else
+    print_usage ("atexit");
+#else
+  error ("atexit: not supported on this system");
+#endif
+
+  return retval;
+}
+
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
 int debug_new_delete = 0;
 

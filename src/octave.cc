@@ -483,9 +483,12 @@ main (int argc, char **argv)
     }
 
 #if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
-  // Make sure we clean up when we exit.  If we don't have atexit or
-  // on_exit, we're going to leave some junk files around if we exit
-  // abnormally.
+  // Make sure we clean up when we exit.  Also allow users to register
+  // functions.  If we don't have atexit or on_exit, we're going to
+  // leave some junk files around if we exit abnormally.
+
+  atexit (do_octave_atexit);
+
   atexit (cleanup_tmp_files);
 #endif
 

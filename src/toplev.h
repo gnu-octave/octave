@@ -45,6 +45,8 @@ extern tree_constant eval_string (const string&, int print,
 
 extern int main_loop (void);
 
+extern void do_octave_atexit (void);
+
 // argv[0] for this program.
 extern string raw_prog_name;
 

@@ -54,6 +54,7 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
+#include "oct-glob.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -580,6 +581,40 @@ otherwise prints an error message and returns -1.")
 
   if (status == 0)
     retval (0) = (double) status;
+
+  return retval;
+}
+
+DEFUN (glob, args, ,
+  "glob (PATTERN)\n\
+\n\
+Given an array of strings in PATTERN, return the list of file names
+that any of them, or an empty string if no patterns match.  Tilde
+expansion is performed on each of the patterns before looking for
+matching file names.")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      string_vector pat = args(0).all_strings ();
+
+      if (error_state)
+	gripe_wrong_type_arg ("glob", args(0));
+      else
+	{
+	  glob_match pattern (oct_tilde_expand (pat));
+
+	  string_vector list = pattern.glob ();
+
+	  if (list.empty ())
+	    retval = "";
+	  else
+	    retval = list;
+	}
+    }
+  else
+    print_usage ("glob");
 
   return retval;
 }

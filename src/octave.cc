@@ -171,18 +171,9 @@ intern_argv (int argc, char **argv)
 {
   if (argc > 1)
     {
-      int max_len = 0;
-      for (int i = 1; i < argc; i++)
-	{
-	  int tmp_len = strlen (argv[i]);
-	  if (tmp_len > max_len)
-	    max_len = tmp_len;
-	}
+      // Skip program name in argv.
 
-      octave_argv.resize (argc-1);
-
-      for (int i = 1; i < argc; i++)
-	octave_argv[i-1] = argv[i];
+      octave_argv = string_vector (argv+1, argc-1);
 
       bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
       bind_builtin_variable ("__argv__", octave_argv, 1, 1, 0);

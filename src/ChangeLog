@@ -1,3 +1,27 @@
+Sun Nov 10 16:58:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (intern_argv): Use new string_vector constructor.
+
+	* ov-str-mat.cc (octave_char_matrix_str::all_strings): Have
+	charMatrix::row_as_string() strip trailing whitespace.
+
+	* dirfns.cc (Fglob): new function.
+
+	* sysdep.cc (oct_tilde_expand): Provide version that works on
+	string vectors too.
+	(Ftilde_expand): Work on string vector args.
+
+	* load-save.cc (save_binary_data): Call char_matrix_value() to
+	extract charMatrix from octave_value object, not all_strings().
+	(save_ascii_data): Likewise.
+	* pt-mat.cc (tree_matrix::eval): Likewise.
+
+	* ov.h (octave_value::all_strings): Return string_vector, not
+	charMatrix.
+	* ov-base.cc (octave_base_value::all_strings): Likewise.
+	* ov-str-mat.h, ov-str-mat.cc (octave_char_matrix_str::all_strings): 
+	Likewise.
+
 Fri Nov  8 09:54:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.cc, dynamic-ld.cc, fn-cache.cc, help.cc, oct-hist.cc,

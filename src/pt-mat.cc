@@ -517,7 +517,7 @@ tree_matrix::eval (bool /* print */)
 		    m (put_row, put_col) = elt.double_value ();
 		  else if (elt.is_string () && all_strings)
 		    {
-		      charMatrix chm_elt = elt.all_strings ();
+		      charMatrix chm_elt = elt.char_matrix_value ();
 
 		      if (error_state)
 			goto done;

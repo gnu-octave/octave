@@ -32,28 +32,34 @@ class Matrix;
 class Range;
 class charMatrix;
 
-extern void octave_print_internal (ostream& os, double d,
-				   bool pr_as_read_syntax = false);
+extern void
+octave_print_internal (ostream& os, double d,
+		       bool pr_as_read_syntax = false);
 
-extern void octave_print_internal (ostream& os, const Matrix& m,
-				   bool pr_as_read_syntax = false,
-				   int extra_indent = 0);
+extern void
+octave_print_internal (ostream& os, const Matrix& m,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
 
-extern void octave_print_internal (ostream& os, const Complex& c,
-				   bool pr_as_read_syntax = false);
+extern void
+octave_print_internal (ostream& os, const Complex& c,
+		       bool pr_as_read_syntax = false);
 
-extern void octave_print_internal (ostream& os, const ComplexMatrix& cm,
-				   bool pr_as_read_syntax = false,
-				   int extra_indent = 0);
+extern void
+octave_print_internal (ostream& os, const ComplexMatrix& cm,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
 
-extern void octave_print_internal (ostream& os, const Range& r,
-				   bool pr_as_read_syntax = false,
-				   int extra_indent = 0);
+extern void
+octave_print_internal (ostream& os, const Range& r,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
 
-extern void octave_print_internal (ostream& os, const charMatrix& chm,
-				   bool pr_as_read_syntax = false,
-				   bool pr_as_string = false,
-				   int extra_indent = 0);
+extern void
+octave_print_internal (ostream& os, const charMatrix& chm,
+		       bool pr_as_read_syntax = false,
+		       bool pr_as_string = false,
+		       int extra_indent = 0);
 
 #endif
 

@@ -59,8 +59,8 @@ qr (const tree_constant& a, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("qr", 0);
 	  Matrix m;
-	  retval(0) = tree_constant (m);
-	  retval(1) = tree_constant (m);
+	  retval(0) = m;
+	  retval(1) = m;
 	}
       else
 	gripe_empty_arg ("qr", 1);
@@ -74,30 +74,30 @@ qr (const tree_constant& a, int nargout)
       {
 	Matrix m = tmp.matrix_value ();
 	QR fact (m);
-	retval(0) = tree_constant (fact.Q ());
-	retval(1) = tree_constant (fact.R ());
+	retval(0) = fact.Q ();
+	retval(1) = fact.R ();
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp.complex_matrix_value ();
 	ComplexQR fact (m);
-	retval(0) = tree_constant (fact.Q ());
-	retval(1) = tree_constant (fact.R ());
+	retval(0) = fact.Q ();
+	retval(1) = fact.R ();
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval(0) = tree_constant (1.0);
-	retval(1) = tree_constant (d);
+	retval(0) = 1.0;
+	retval(1) = d;
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval(0) = tree_constant (1.0);
-	retval(1) = tree_constant (c);
+	retval(0) = 1.0;
+	retval(1) = c;
       }
       break;
     default:

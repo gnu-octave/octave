@@ -64,7 +64,7 @@ inverse (const tree_constant& a)
 
   Matrix mtmp;
   if (nr == 0 && nc == 0)
-    return tree_constant (mtmp);
+    return mtmp;
 
   switch (tmp.const_type ())
     {
@@ -80,7 +80,7 @@ inverse (const tree_constant& a)
 	      warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	    else
-	      retval = tree_constant (minv);
+	      retval = minv;
 	  }
 	else
 	  gripe_square_matrix_required ("inverse");
@@ -89,7 +89,7 @@ inverse (const tree_constant& a)
     case tree_constant_rep::scalar_constant:
       {
 	double d = 1.0 / tmp.double_value ();
-	retval = tree_constant (d);
+	retval = d;
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
@@ -104,7 +104,7 @@ inverse (const tree_constant& a)
 	      warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	    else
-	      retval = tree_constant (minv);
+	      retval = minv;
 	  }
 	else
 	  gripe_square_matrix_required ("inverse");
@@ -113,7 +113,7 @@ inverse (const tree_constant& a)
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = 1.0 / tmp.complex_value ();
-	retval = tree_constant (c);
+	retval = c;
       }
       break;
     default:

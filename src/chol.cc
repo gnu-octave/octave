@@ -62,7 +62,7 @@ chol (const tree_constant& a)
 	  if (flag < 0)
 	    gripe_empty_arg ("chol", 0);
 	  Matrix m;
-	  retval = tree_constant (m);
+	  retval = m;
 	}
       else
 	gripe_empty_arg ("chol", 1);
@@ -80,7 +80,7 @@ chol (const tree_constant& a)
         if (info != 0)
           error ("chol: matrix not positive definite");
         else
-  	  retval = tree_constant (fact.chol_matrix ());
+  	  retval = fact.chol_matrix ();
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
@@ -91,19 +91,19 @@ chol (const tree_constant& a)
         if (info != 0)
           error ("chol: matrix not positive definite");
         else
-	  retval = tree_constant (fact.chol_matrix ());
+	  retval = fact.chol_matrix ();
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval = tree_constant (d);
+	retval = d;
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval = tree_constant (c);
+	retval = c;
       }
       break;
     default:

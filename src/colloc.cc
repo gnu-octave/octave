@@ -117,10 +117,10 @@ collocation_weights (const Octave_object& args)
 
   retval.resize (4);
 
-  retval(0) = tree_constant (r);
-  retval(1) = tree_constant (A);
-  retval(2) = tree_constant (B);
-  retval(3) = tree_constant (q);
+  retval(0) = r;
+  retval(1) = A;
+  retval(2) = B;
+  retval(3) = q;
 
   return retval;
 }

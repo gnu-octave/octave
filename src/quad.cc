@@ -62,10 +62,10 @@ quad_user_function (double x)
 {
   double retval = 0.0;
 
-//  tree_constant name = tree_constant (quad_fcn->name ());
+//  tree_constant name = quad_fcn->name ();
   Octave_object args (2);
 //  args(0) = name;
-  args(1) = tree_constant (x);
+  args(1) = x;
 
   if (quad_fcn != (tree_fvc *) NULL)
     {
@@ -190,10 +190,10 @@ do_quad (const Octave_object& args, int nargout)
 
   retval.resize (4);
 
-  retval(0) = tree_constant (val);
-  retval(1) = tree_constant ((double) ier);
-  retval(2) = tree_constant ((double) nfun);
-  retval(3) = tree_constant (abserr);
+  retval(0) = val;
+  retval(1) = ier;
+  retval(2) = nfun;
+  retval(3) = abserr;
 
   return retval;
 }

@@ -63,7 +63,7 @@ determinant (const tree_constant& a)
     }
 
   if (nr == 0 && nc == 0)
-    return tree_constant (1.0);
+    return 1.0;
 
   switch (tmp.const_type ())
     {
@@ -82,7 +82,7 @@ determinant (const tree_constant& a)
 	    else
 	      d = det.value ();
 
-	    retval = tree_constant (d);
+	    retval = d;
 	  }
 	else
 	  gripe_square_matrix_required ("det");
@@ -103,7 +103,7 @@ determinant (const tree_constant& a)
 	    else
 	      c = det.value ();
 
-	    retval = tree_constant (c);
+	    retval = c;
 	  }
 	else
 	  gripe_square_matrix_required ("det");
@@ -112,13 +112,13 @@ determinant (const tree_constant& a)
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval = tree_constant (d);
+	retval = d;
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval = tree_constant (c);
+	retval = c;
       }
       break;
     default:

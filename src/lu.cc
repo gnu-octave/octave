@@ -55,10 +55,11 @@ lu (const tree_constant& a, int nargout)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("lu", 0);
+
 	  Matrix m;
-	  retval(0) = tree_constant (m);
-	  retval(1) = tree_constant (m);
-	  retval(2) = tree_constant (m);
+	  retval(0) = m;
+	  retval(1) = m;
+	  retval(2) = m;
 	  return retval;
 	}
       else
@@ -80,15 +81,15 @@ lu (const tree_constant& a, int nargout)
 		{
 		  Matrix P = fact.P ();
 		  Matrix L = P.transpose () * fact.L ();
-		  retval(0) = tree_constant (L);
-		  retval(1) = tree_constant (fact.U ());
+		  retval(0) = L;
+		  retval(1) = fact.U ();
 		}
 		break;
 	      case 3:
 	      default:
-		retval(0) = tree_constant (fact.L ());
-		retval(1) = tree_constant (fact.U ());
-		retval(2) = tree_constant (fact.P ());
+		retval(0) = fact.L ();
+		retval(1) = fact.U ();
+		retval(2) = fact.P ();
 		break;
 	      }
 	  }
@@ -109,15 +110,15 @@ lu (const tree_constant& a, int nargout)
 		{
 		  ComplexMatrix P = fact.P ();
 		  ComplexMatrix L = P.transpose () * fact.L ();
-		  retval(0) = tree_constant (L);
-		  retval(1) = tree_constant (fact.U ());
+		  retval(0) = L;
+		  retval(1) = fact.U ();
 		}
 		break;
 	      case 3:
 	      default:
-		retval(0) = tree_constant (fact.L ());
-		retval(1) = tree_constant (fact.U ());
-		retval(2) = tree_constant (fact.P ());
+		retval(0) = fact.L ();
+		retval(1) = fact.U ();
+		retval(2) = fact.P ();
 		break;
 	      }
 	  }
@@ -128,17 +129,17 @@ lu (const tree_constant& a, int nargout)
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval(0) = tree_constant (1.0);
-	retval(1) = tree_constant (d);
-	retval(2) = tree_constant (1.0);
+	retval(0) = 1.0;
+	retval(1) = d;
+	retval(2) = 1.0;
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval(0) = tree_constant (1.0);
-	retval(1) = tree_constant (c);
-	retval(2) = tree_constant (1.0);
+	retval(0) = 1.0;
+	retval(1) = c;
+	retval(2) = 1.0;
       }
       break;
     default:

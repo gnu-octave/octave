@@ -138,7 +138,7 @@ syl (const Octave_object& args, int nargout)
 
 	cx = -ua * cx * ub.hermitian ();
   
-	retval(0) = tree_constant (cx);
+	retval(0) = cx;
       }
     else
       {
@@ -180,7 +180,7 @@ syl (const Octave_object& args, int nargout)
   
 	cx = -ua*cx*ub.transpose ();
   
-	retval(0) = tree_constant (cx);
+	retval(0) = cx;
       }
     }
   return retval;

@@ -120,7 +120,7 @@ givens (const Octave_object& args, int nargout)
 		g.elem (0, 1) = cs;
 		g.elem (1, 0) = -conj (cs);
 
-		retval(0) = tree_constant (g);
+		retval(0) = g;
 	      }
 	      break;
    
@@ -151,13 +151,13 @@ givens (const Octave_object& args, int nargout)
 		g.elem (0, 1) = s;
 		g.elem (1, 0) = -s;
 
-		retval(0) = tree_constant (g);
+		retval(0) = g;
 	      }
 	      break;
    
 	    case 2:		// output scalar values
-	      retval(0) = tree_constant (cc);
-	      retval(1) = tree_constant (s);
+	      retval(0) = cc;
+	      retval(1) = s;
 	      break;
    
 	    default:

@@ -61,8 +61,8 @@ hess (const Octave_object& args, int nargout)
 	    warning ("hess: argument is empty matrix");
 	  Matrix m;
 	  retval.resize (2);
-	  retval(0) = tree_constant (m);
-	  retval(1) = tree_constant (m);
+	  retval(0) = m;
+	  retval(1) = m;
         }
       else
 	error ("hess: empty matrix is invalid as argument");
@@ -90,13 +90,13 @@ hess (const Octave_object& args, int nargout)
 	if (nargout == 0 || nargout == 1)
 	  {
 	    retval.resize (1);
-	    retval(0) = tree_constant (result.hess_matrix ());
+	    retval(0) = result.hess_matrix ();
 	  }
         else
 	  {
 	    retval.resize (2);
-	    retval(0) = tree_constant (result.unitary_hess_matrix ());
-	    retval(1) = tree_constant (result.hess_matrix ());
+	    retval(0) = result.unitary_hess_matrix ();
+	    retval(1) = result.hess_matrix ();
           }
       }
       break;
@@ -109,13 +109,13 @@ hess (const Octave_object& args, int nargout)
 	if (nargout == 0 || nargout == 1)
 	  {
 	    retval.resize (1);
-	    retval(0) = tree_constant (result.hess_matrix ());
+	    retval(0) = result.hess_matrix ();
 	  }
   	else
 	  {
 	    retval.resize (2);
-	    retval(0) = tree_constant (result.unitary_hess_matrix ());
-	    retval(1) = tree_constant (result.hess_matrix ());
+	    retval(0) = result.unitary_hess_matrix ();
+	    retval(1) = result.hess_matrix ();
 	  }
       }
       break;
@@ -125,13 +125,13 @@ hess (const Octave_object& args, int nargout)
 	if (nargout == 0 || nargout == 1)
 	  {
 	    retval.resize (1);
-	    retval(0) = tree_constant (d);
+	    retval(0) = d;
 	  }
 	else
 	  {
 	    retval.resize (2);
-	    retval(0) = tree_constant (1);
-	    retval(1) = tree_constant (d);
+	    retval(0) = 1;
+	    retval(1) = d;
 	  }
       }
       break;
@@ -141,13 +141,13 @@ hess (const Octave_object& args, int nargout)
 	if (nargout == 0 || nargout == 1)
  	  {
 	    retval.resize (1);
-	    retval(0) = tree_constant (c);
+	    retval(0) = c;
 	  }
 	else
 	  {
 	    retval.resize (2);
-	    retval(0) = tree_constant (1);
-	    retval(1) = tree_constant (c);
+	    retval(0) = 1;
+	    retval(1) = c;
 	  }
       }
       break;

@@ -89,7 +89,7 @@ matrix_exp (const tree_constant& a)
 	  if (flag < 0)
 	    gripe_empty_arg ("expm", 0);
 	  Matrix m;
-	  retval = tree_constant (m);
+	  retval = m;
 	}
       else gripe_empty_arg ("expm", 1);
     }
@@ -198,13 +198,13 @@ matrix_exp (const tree_constant& a)
 
 	    result = result * exp (trshift);
 
-	    retval = tree_constant (result);
+	    retval = result;
 	  }
 	  break;
 	case tree_constant_rep::complex_scalar_constant:
 	  {
 	    Complex c = tmp.complex_value ();
-	    retval = tree_constant (exp (c));
+	    retval = exp (c);
 	  }
 	  break;
 	case tree_constant_rep::matrix_constant:
@@ -298,13 +298,13 @@ matrix_exp (const tree_constant& a)
 
 	    result = result * exp (trshift);
 
-	    retval = tree_constant (result);
+	    retval = result;
 	  }
 	  break;
 	case tree_constant_rep::scalar_constant:
 	  {
 	    double d = tmp.double_value ();
-	    retval = tree_constant (exp (d));
+	    retval = exp (d);
 	  }
 	  break;
 	default:

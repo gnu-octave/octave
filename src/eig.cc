@@ -60,8 +60,8 @@ eig (const Octave_object& args, int nargout)
 	    gripe_empty_arg ("eig", 0);
 	  Matrix m;
 	  retval.resize (2);
-	  retval(0) = tree_constant (m);
-	  retval(1) = tree_constant (m);
+	  retval(0) = m;
+	  retval(1) = m;
 	}
       else
 	gripe_empty_arg ("eig", 1);
@@ -106,7 +106,7 @@ eig (const Octave_object& args, int nargout)
   if (nargout == 0 || nargout == 1)
     {
       retval.resize (1);
-      retval(0) = tree_constant (result.eigenvalues (), 1);
+      retval(0) = result.eigenvalues (), 1;
     }
   else
     {
@@ -115,8 +115,8 @@ eig (const Octave_object& args, int nargout)
       ComplexDiagMatrix d (result.eigenvalues ());
 
       retval.resize (2);
-      retval(0) = tree_constant (result.eigenvectors ());
-      retval(1) = tree_constant (d);
+      retval(0) = result.eigenvectors ();
+      retval(1) = d;
     }
 
   return retval;

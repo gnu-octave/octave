@@ -154,13 +154,13 @@ rand_internal (const Octave_object& args, int nargout)
 	    {
 	      retval.resize (1);
 	      char *s = curr_rand_dist ();
-	      retval(0) = tree_constant (s);
+	      retval(0) = s;
 	    }
 	  else if (strcmp (s_arg, "seed") == 0)
 	    {
 	      retval.resize (1);
 	      double d = curr_rand_seed ();
-	      retval(0) = tree_constant (d);
+	      retval(0) = d;
 	    }
 	  else if (strcmp (s_arg, "uniform") == 0)
 	    current_distribution = uniform;
@@ -215,7 +215,7 @@ rand_internal (const Octave_object& args, int nargout)
     {
       retval.resize (1);
       Matrix m (0, 0);
-      retval(0) = tree_constant (m);
+      retval(0) = m;
     }
   else if (n > 0 && m > 0)
     {
@@ -243,7 +243,7 @@ rand_internal (const Octave_object& args, int nargout)
 	      }
 	  }
 
-      retval(0)   = tree_constant (rand_mat);
+      retval(0) = rand_mat;
     }
   else
     error ("rand: invalid negative argument");

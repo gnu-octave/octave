@@ -63,8 +63,8 @@ schur (const Octave_object& args, int nargout)
       warning ("schur: incorrect ordered schur argument `%c'", *ord);
       Matrix m;
       retval.resize (2);
-      retval(0) = tree_constant (m);
-      retval(1) = tree_constant (m);
+      retval(0) = m;
+      retval(1) = m;
       return retval;
     }
   int a_nr = arg.rows ();
@@ -79,8 +79,8 @@ schur (const Octave_object& args, int nargout)
             warning ("schur: argument is empty matrix");
           Matrix m;
           retval.resize (2);
-          retval(0) = tree_constant (m);
-          retval(1) = tree_constant (m);
+          retval(0) = m;
+          retval(1) = m;
         }
       else
         error ("schur: empty matrix is invalid as argument");
@@ -107,13 +107,13 @@ schur (const Octave_object& args, int nargout)
         if (nargout == 0 || nargout == 1)
           {
             retval.resize (1);
-            retval(0) = tree_constant (result.schur_matrix ());
+            retval(0) = result.schur_matrix ();
           }
         else
           {
             retval.resize (2);
-            retval(0) = tree_constant (result.unitary_matrix ());
-            retval(1) = tree_constant (result.schur_matrix ());
+            retval(0) = result.unitary_matrix ();
+            retval(1) = result.schur_matrix ();
           }
       }
       break;
@@ -126,13 +126,13 @@ schur (const Octave_object& args, int nargout)
         if (nargout == 0 || nargout == 1)
           {
             retval.resize (1);
-            retval(0) = tree_constant (result.schur_matrix ());
+            retval(0) = result.schur_matrix ();
           }
         else
           {
             retval.resize (2);
-            retval(0) = tree_constant (result.unitary_matrix ());
-            retval(1) = tree_constant (result.schur_matrix ());
+            retval(0) = result.unitary_matrix ();
+            retval(1) = result.schur_matrix ();
           }
       }    
       break;
@@ -142,13 +142,13 @@ schur (const Octave_object& args, int nargout)
         if (nargout == 0 || nargout == 1)
   	  {
 	    retval.resize (1);
-            retval(0) = tree_constant (d);
+            retval(0) = d;
           }
         else
 	  {
 	    retval.resize (2);
-	    retval(0) = tree_constant (1);
-	    retval(1) = tree_constant (d);
+	    retval(0) = 1.0;
+	    retval(1) = d;
   	  }
       }
       break;
@@ -158,13 +158,13 @@ schur (const Octave_object& args, int nargout)
 	if (nargout == 0 || nargout == 1)
 	  {
 	    retval.resize (1);
-	    retval(0) = tree_constant (c);
+	    retval(0) = c;
 	  }
 	else
 	  {
 	    retval.resize (2);
-	    retval(0) = tree_constant (1);
-	    retval(1) = tree_constant (c);
+	    retval(0) = 1.0;
+	    retval(1) = c;
 	  }
       }
       break;

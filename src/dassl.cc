@@ -68,7 +68,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 //  tree_constant name (dassl_fcn->name ());
   Octave_object args (4);
 //  args(0) = name;
-  args(3) = tree_constant (t);
+  args(3) = t;
 
   if (nstates > 1)
     {
@@ -164,8 +164,8 @@ dassl (const Octave_object& args, int nargout)
     output = dae.integrate (out_times, deriv_output);
 
   retval.resize (2);
-  retval(0) = tree_constant (output);
-  retval(1) = tree_constant (deriv_output);
+  retval(0) = output;
+  retval(1) = deriv_output;
   return retval;
 }
 

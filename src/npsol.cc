@@ -71,15 +71,15 @@ npsol_objective_function (const ColumnVector& x)
       Matrix m (n, 1);
       for (int i = 0; i < n; i++)
 	m (i, 0) = x.elem (i);
-      decision_vars = tree_constant (m);
+      decision_vars = m;
     }
   else
     {
       double d = x.elem (0);
-      decision_vars = tree_constant (d);
+      decision_vars = d;
     }
 
-//  tree_constant name = tree_constant (npsol_objective->name ());
+//  tree_constant name = npsol_objective->name ();
   Octave_object args (2);
 //  args(0) = name;
   args(1) = decision_vars;
@@ -148,15 +148,15 @@ npsol_constraint_function (const ColumnVector& x)
       Matrix m (n, 1);
       for (int i = 0; i < n; i++)
 	m (i, 0) = x.elem (i);
-      decision_vars = tree_constant (m);
+      decision_vars = m;
     }
   else
     {
       double d = x.elem (0);
-      decision_vars = tree_constant (d);
+      decision_vars = d;
     }
 
-//  tree_constant name = tree_constant (npsol_constraints->name ());
+//  tree_constant name = npsol_constraints->name ();
   Octave_object args (2);
 //  args(0) = name;
   args(1) = decision_vars;
@@ -474,13 +474,13 @@ Handle all of the following:
  solved:
 
   retval.resize (nargout ? nargout : 1);
-  retval(0) = tree_constant (soln, 1);
+  retval(0) = soln, 1;
   if (nargout > 1)
-    retval(1) = tree_constant (objf);
+    retval(1) = objf;
   if (nargout > 2)
-    retval(2) = tree_constant ((double) inform);
+    retval(2) = (double) inform;
   if (nargout > 3)
-    retval(3) = tree_constant (lambda);
+    retval(3) = lambda;
 
   return retval;
 }

@@ -91,7 +91,7 @@ fsolve_user_function (const ColumnVector& x)
 
   int n = x.capacity ();
 
-//  tree_constant name = tree_constant (fsolve_fcn->name ());
+//  tree_constant name = fsolve_fcn->name ();
   Octave_object args (2);
 //  args(0) = name;
 
@@ -159,13 +159,10 @@ fsolve (const Octave_object& args, int nargout)
   info = hybrd_info_to_fsolve_info (info);
 
   retval.resize (nargout ? nargout : 1);
-  retval(0) = tree_constant (soln, 1);
+  retval(0) = soln, 1;
 
   if (nargout > 1)
-    retval(1) = tree_constant ((double) info);
-
-  if (nargout > 2)
-    retval(2) = tree_constant ();
+    retval(1) = (double) info;
 
   return retval;
 }

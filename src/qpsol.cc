@@ -191,13 +191,13 @@ Handle all of the following:
  solved:
 
   retval.resize (nargout ? nargout : 1);
-  retval(0) = tree_constant (soln, 1);
+  retval(0) = soln, 1;
   if (nargout > 1)
-    retval(1) = tree_constant (objf);
+    retval(1) = objf;
   if (nargout > 2)
-    retval(2) = tree_constant ((double) inform);
+    retval(2) = (double) inform;
   if (nargout > 3)
-    retval(3) = tree_constant (lambda);
+    retval(3) = lambda;
 
   return retval;
 }

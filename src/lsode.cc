@@ -66,7 +66,7 @@ lsode_user_function (const ColumnVector& x, double t)
 //  tree_constant name (lsode_fcn->name ());
   Octave_object args (3);
 //  args(0) = name;
-  args(2) = tree_constant (t);
+  args(2) = t;
 
   if (nstates > 1)
     {
@@ -147,7 +147,7 @@ lsode (const Octave_object& args, int nargout)
     output = ode.integrate (out_times);
 
   retval.resize (1);
-  retval(0) = tree_constant (output);
+  retval(0) = output;
   return retval;
 }
 

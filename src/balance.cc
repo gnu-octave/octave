@@ -60,15 +60,16 @@ balance (const Octave_object& args, int nargout)
 
   // determine if balancing option is listed
   // set my_nargin to the number of matrix inputs
-  if (args(nargin-1).const_type () == tree_constant_rep::string_constant ){
-    bal_job = args(nargin-1).string_value ();
-    my_nargin = nargin-2;
-  }
+  if (args(nargin-1).const_type () == tree_constant_rep::string_constant)
+    {
+      bal_job = args(nargin-1).string_value ();
+      my_nargin = nargin-2;
+    }
   else
-  {
-    bal_job = "B";
-    my_nargin = nargin-1;
-  }
+    {
+      bal_job = "B";
+      my_nargin = nargin-1;
+    }
 
   tree_constant arg = args(1).make_numeric ();
   int a_nr = arg.rows ();
@@ -81,11 +82,13 @@ balance (const Octave_object& args, int nargout)
       int flag = user_pref.propagate_empty_matrices;
       if (flag != 0)
 	{
-	  if (flag < 0) warning ("balance: argument is empty matrix");
+	  if (flag < 0)
+	    warning ("balance: argument is empty matrix");
+
 	  Matrix m;
 	  retval.resize (2);
-	  retval(0) = tree_constant (m);
-	  retval(1) = tree_constant (m);
+	  retval(0) = m;
+	  retval(1) = m;
 	}
       else
 	error ("balance: empty matrix is invalid as argument");
@@ -139,11 +142,11 @@ balance (const Octave_object& args, int nargout)
 	  ComplexAEPBALANCE result (caa, bal_job);
 
 	  if (nargout == 0 || nargout == 1)
-	    retval(0) = tree_constant(result.balanced_matrix ());
+	    retval(0) = result.balanced_matrix ();
 	  else
 	    {
-	      retval(0) = tree_constant (result.balancing_matrix ());
-	      retval(1) = tree_constant (result.balanced_matrix ());
+	      retval(0) = result.balancing_matrix ();
+	      retval(1) = result.balanced_matrix ();
 	    }
 	}
       else
@@ -151,11 +154,11 @@ balance (const Octave_object& args, int nargout)
 	  AEPBALANCE result (aa, bal_job);
 
 	  if (nargout == 0 || nargout == 1)
-	    retval(0) = tree_constant (result.balanced_matrix ());
+	    retval(0) = result.balanced_matrix ();
 	  else
 	    {
-	      retval(0) = tree_constant (result.balancing_matrix ());
-	      retval(1) = tree_constant (result.balanced_matrix ());
+	      retval(0) = result.balancing_matrix ();
+	      retval(1) = result.balanced_matrix ();
 	    }
 	}
       break;
@@ -197,7 +200,8 @@ balance (const Octave_object& args, int nargout)
 	  }
 	else
 	  {
-	    if (brg.is_matrix_type ()) bb = brg.matrix_value ();
+	    if (brg.is_matrix_type ())
+	      bb = brg.matrix_value ();
 	    else
 	      {
 		double d = brg.double_value ();
@@ -241,17 +245,17 @@ balance (const Octave_object& args, int nargout)
 	      case 0:
 	      case 1:
 		warning ("balance: should use two output arguments");
-		retval(0) = tree_constant (caa);
+		retval(0) = caa;
 		break;
 	      case 2:
-		retval(0) = tree_constant (caa);
-		retval(1) = tree_constant (cbb);
+		retval(0) = caa;
+		retval(1) = cbb;
 		break;
 	      case 4:
-		retval(0) = tree_constant (result.left_balancing_matrix ());
-		retval(1) = tree_constant (result.right_balancing_matrix ());
-		retval(2) = tree_constant (caa);
-		retval(3) = tree_constant (cbb);
+		retval(0) = result.left_balancing_matrix ();
+		retval(1) = result.right_balancing_matrix ();
+		retval(2) = caa;
+		retval(3) = cbb;
 		break;
 	      default:
 		error ("balance: invalid number of output arguments");
@@ -265,17 +269,17 @@ balance (const Octave_object& args, int nargout)
 	      case 0:
 	      case 1:
 		warning ("balance: should use two output arguments");
-		retval(0) = tree_constant (result.balanced_a_matrix ());
+		retval(0) = result.balanced_a_matrix ();
 		break;
 	      case 2:
-		retval(0) = tree_constant (result.balanced_a_matrix ());
-		retval(1) = tree_constant (result.balanced_b_matrix ());
+		retval(0) = result.balanced_a_matrix ();
+		retval(1) = result.balanced_b_matrix ();
 		break;
 	      case 4:
-		retval(0) = tree_constant (result.left_balancing_matrix ());
-		retval(1) = tree_constant (result.right_balancing_matrix ());
-		retval(2) = tree_constant (result.balanced_a_matrix ());
-		retval(3) = tree_constant (result.balanced_b_matrix ());
+		retval(0) = result.left_balancing_matrix ();
+		retval(1) = result.right_balancing_matrix ();
+		retval(2) = result.balanced_a_matrix ();
+		retval(3) = result.balanced_b_matrix ();
 		break;
 	      default:
 		error ("balance: invalid number of output arguments");

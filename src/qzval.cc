@@ -155,7 +155,7 @@ qzvalue (const Octave_object& args, int nargout)
 		  cx (cnt) = (alfr (i) + Im * alfi (i)) / beta (i);
 		}
 	    }
-	  retval(0)                          = tree_constant (cx);
+	  retval(0) = cx;
 	}
     }
   return retval;

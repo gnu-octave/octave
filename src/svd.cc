@@ -56,11 +56,12 @@ svd (const Octave_object& args, int nargout)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("svd", 0);
+
 	  Matrix m;
 	  retval.resize (3);
-	  retval(0) = tree_constant (m);
-	  retval(1) = tree_constant (m);
-	  retval(2) = tree_constant (m);
+	  retval(0) = m;
+	  retval(1) = m;
+	  retval(2) = m;
 	}
       else
 	gripe_empty_arg ("svd", 1);
@@ -108,9 +109,9 @@ svd (const Octave_object& args, int nargout)
 	else
 	  {
 	    retval.resize (3);
-	    retval(0) = tree_constant (result.left_singular_matrix ());
-	    retval(1) = tree_constant (sigma);
-	    retval(2) = tree_constant (result.right_singular_matrix ());
+	    retval(0) = result.left_singular_matrix ();
+	    retval(1) = sigma;
+	    retval(2) = result.right_singular_matrix ();
 	  }
       }
       break;
@@ -129,9 +130,9 @@ svd (const Octave_object& args, int nargout)
 	else
 	  {
 	    retval.resize (3);
-	    retval(0) = tree_constant (result.left_singular_matrix ());
-	    retval(1) = tree_constant (sigma);
-	    retval(2) = tree_constant (result.right_singular_matrix ());
+	    retval(0) = result.left_singular_matrix ();
+	    retval(1) = sigma;
+	    retval(2) = result.right_singular_matrix ();
 	  }
       }
       break;

@@ -59,7 +59,7 @@ ifft (const tree_constant& a)
 	  if (flag < 0)
 	    gripe_empty_arg ("ifft", 0);
 	  Matrix m;
-	  retval = tree_constant (m);
+	  retval = m;
 	}
       else
 	gripe_empty_arg ("ifft", 1);
@@ -73,14 +73,14 @@ ifft (const tree_constant& a)
       {
 	Matrix m = tmp.matrix_value ();
 	ComplexMatrix mifft = m.ifourier ();
-	retval = tree_constant (mifft);
+	retval = mifft;
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp.complex_matrix_value ();
 	ComplexMatrix mifft = m.ifourier ();
-	retval = tree_constant (mifft);
+	retval = mifft;
       }
       break;
     case tree_constant_rep::scalar_constant:

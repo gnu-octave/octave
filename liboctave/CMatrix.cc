@@ -2726,11 +2726,13 @@ ComplexMatrix::column_max (Array<int>& index) const
 std::ostream&
 operator << (std::ostream& os, const ComplexMatrix& a)
 {
-//  int field_width = os.precision () + 7;
   for (int i = 0; i < a.rows (); i++)
     {
       for (int j = 0; j < a.cols (); j++)
-	os << " " /* setw (field_width) */ << a.elem (i, j);
+	{
+	  os << " ";
+	  octave_write_complex (os, a.elem (i, j));
+	}
       os << "\n";
     }
   return os;
@@ -2750,7 +2752,7 @@ operator >> (std::istream& is, ComplexMatrix& a)
       for (int i = 0; i < nr; i++)
 	for (int j = 0; j < nc; j++)
 	  {
-	    is >> tmp;
+	    tmp = octave_read_complex (is);
 	    if (is)
 	      a.elem (i, j) = tmp;
 	    else

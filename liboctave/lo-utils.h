@@ -25,7 +25,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 
+#include <iostream>
 #include <string>
+
+#include "oct-cmplx.h"
 
 extern int NINT (double x);
 extern double D_NINT (double x);
@@ -45,6 +48,12 @@ extern "C" void octave_qsort (void *base, size_t n, size_t size,
 
 extern "C" char *oct_strptime (const char *buf, const char *format,
 			       struct tm *tm);
+
+extern double octave_read_double (std::istream& is);
+extern Complex octave_read_complex (std::istream& is);
+
+extern void octave_write_double (std::ostream& os, double d);
+extern void octave_write_complex (std::ostream& os, const Complex& c);
 
 #endif
 

@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lo-error.h"
+#include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 
@@ -173,6 +174,142 @@ octave_fgetl (FILE *f)
     retval.resize (len-1);
 
   return retval;
+}
+
+static inline double
+read_inf_nan_na (std::istream& is, char c)
+{
+  double d = 0.0;
+
+  switch (c)
+    {
+    case 'i': case 'I':
+      {
+	is >> c;
+	if (c == 'n' || c == 'N')
+	  {
+	    is >> c;
+	    if (c == 'f' || c == 'F')
+	      d = octave_Inf;
+	    else
+	      is.putback (c);
+	  }
+	else
+	  is.putback (c);
+      }
+      break;
+
+    case 'n': case 'N':
+      {
+	is >> c;
+	if (c == 'a' || c == 'A')
+	  {
+	    is >> c;
+	    if (c == 'n' || c == 'N')
+	      d = octave_NaN;
+	    else
+	      {
+		is.putback (c);
+		d = octave_NA;
+	      }
+	  }
+	else
+	  is.putback (c);
+      }
+      break;
+
+    default:
+      abort ();
+    }
+
+  return d;
+}
+
+double
+octave_read_double (std::istream& is)
+{
+  double d = 0.0;
+
+  char c = 0;
+
+  is >> c;
+  switch (c)
+    {
+    case 'i': case 'I':
+    case 'n': case 'N':
+      d = read_inf_nan_na (is, c);
+      break;
+
+    default:
+      is.putback (c);
+      is >> d;
+    }
+
+  return d;
+}
+
+Complex
+octave_read_complex (std::istream& is)
+{
+  double re = 0.0, im = 0.0;
+
+  Complex cx = 0.0;
+
+  char ch = 0;
+
+  is >> ch;
+
+  if (ch == '(')
+    {
+      re = octave_read_double (is);
+      is >> ch;
+
+      if (ch == ',')
+	{
+	  im = octave_read_double (is);
+	  is >> ch;
+
+	  if (ch == ')')
+	    cx = Complex (re, im);
+	  else
+	    is.setstate (std::ios::failbit);
+	}
+      else if (ch == ')')
+	cx = re;
+      else
+	is.setstate (std::ios::failbit);
+    }
+  else
+    {
+      is.putback (ch);
+      cx = octave_read_double (is);
+    }
+
+  return cx;
+
+}
+
+void
+octave_write_double (std::ostream& os, double d)
+{
+  if (lo_ieee_is_NA (d))
+    os << "NA";
+  else if (lo_ieee_isnan (d))
+    os << "NaN";
+  else if (lo_ieee_isinf (d))
+    os << (d < 0 ? "-Inf" : "Inf");
+  else
+    os << d;
+}
+
+void
+octave_write_complex (std::ostream& os, const Complex& c)
+{
+  os << "(";
+  octave_write_double (os, real (c));
+  os << ",";
+  octave_write_double (os, imag (c));
+  os << ")";
 }
 
 /*

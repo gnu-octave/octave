@@ -1,3 +1,16 @@
+2002-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-utils.cc (read_inf_nan_na, octave_read_double,
+	octave_read_complex, octave_write_double, octave_write_complex):
+	New functions.
+	* CMatrix.cc (operator << (std::ostream&, const ComplexMatrix&)):
+	Use octave_write_complex.
+	(operator >> (std::istream&, const ComplexMatrix&)):
+	Use octave_read_complex.
+	* dMatrix.cc (operator << (std::ostream&, double)):
+	Use octave_write_double.
+	(operator >> (std::istream&, double)): Use octave_read_double.
+
 2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-kpse.c (octave_kpse_clear_dir_cache): Delete.

@@ -1,3 +1,15 @@
+2002-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-conf.h.in (OCTAVE_CONF_HAVE_DLOPEN_API,
+	OCTAVE_CONF_HAVE_LOADLIBRARY_API, OCTAVE_CONF_HAVE_SHL_LOAD_API):
+	Delete.
+	* toplev.cc (octave_config_info): Delete them from the struct
+
+	* load-save.cc (read_ascii_data): Use octave_read_double and
+	octave_read_complex so that we handle Inf, NaN, and NA.
+	(read_mat_ascii_data): Likewise.
+	(save_ascii_data): Use octave_write_double andoctave_write_complex.
+
 2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (octave_config_info): Rename WITH_DYNAMIC_LINKING to

@@ -595,8 +595,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 
       if (strncmp (ptr, "scalar", 6) == 0)
 	{
-	  double tmp;
-	  is >> tmp;
+	  double tmp = octave_read_double (is);
 	  if (is)
 	    tc = tmp;
 	  else
@@ -629,8 +628,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	}
       else if (strncmp (ptr, "complex scalar", 14) == 0)
 	{
-	  Complex tmp;
-	  is >> tmp;
+	  Complex tmp = octave_read_complex (is);
 	  if (is)
 	    tc = tmp;
 	  else
@@ -2032,7 +2030,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 		  for (int j = 0; j < nc; j++)
 		    {
-		      tmp_stream >> d;
+		      d = octave_read_double (tmp_stream);
 
 		      if (tmp_stream)
 			tmp.elem (i, j) = d;
@@ -4498,10 +4496,13 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
     {
       ascii_save_type (os, "range", mark_as_global);
       Range tmp = tc.range_value ();
-      os << "# base, limit, increment\n"
-	 << tmp.base () << " "
-	 << tmp.limit () << " "
-	 << tmp.inc () << "\n";
+      os << "# base, limit, increment\n";
+      octave_write_double (os, tmp.base ());
+      os << " ";
+      octave_write_double (os, tmp.limit ());
+      os << " ";
+      octave_write_double (os, tmp.inc ());
+      os << "\n";
     }
   else if (tc.is_real_scalar ())
     {
@@ -4519,7 +4520,8 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	  else
 	    {
 	      d = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
-	      os << d << "\n";
+	      octave_write_double (os, d);
+	      os << "\n";
 	    }
 	}
       else
@@ -4530,7 +4532,8 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	      infnan_warned = true;
 	    }
 
-	  os << d << "\n";
+	  octave_write_double (os, d);
+	  os << "\n";
 	}
     }
   else if (tc.is_real_matrix ())
@@ -4575,7 +4578,8 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 
 	      c = Complex (re, im);
 
-	      os << c << "\n";
+	      octave_write_complex (os, c);
+	      os << "\n";
 	    }
 	}
       else
@@ -4586,7 +4590,8 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	      infnan_warned = true;
 	    }
 
-	  os << c << "\n";
+	  octave_write_complex (os, c);
+	  os << "\n";
 	}
     }
   else if (tc.is_complex_matrix ())

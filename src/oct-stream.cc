@@ -2663,16 +2663,48 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err,
 int
 octave_stream::seek (long offset, int origin)
 {
-  int retval = -1;
+  int status = -1;
 
   if (stream_ok ("fseek"))
     {
       clearerr ();
 
-      retval = rep->seek (offset, origin);
+      long orig_pos = rep->tell ();
+
+      status = rep->seek (offset, origin);
+
+      if (status == 0)
+	{
+	  long save_pos = rep->tell ();
+
+	  rep->seek (0, SEEK_END);
+
+	  long pos_eof = rep->tell ();
+
+	  // I don't think save_pos can be less than zero, but we'll
+	  // check anyway...
+
+	  if (save_pos > pos_eof || save_pos < 0)
+	    {
+	      // Seek outside bounds of file.  Failure should leave
+	      // position unchanged.
+
+	      rep->seek (orig_pos, SEEK_SET);
+
+	      status = -1;
+	    }
+	  else
+	    {
+	      // Is it possible for this to fail?  We are just
+	      // returning to a position after the first successful
+	      // seek.
+
+	      rep->seek (save_pos, SEEK_SET);
+	    }
+	}
     }
 
-  return retval;
+  return status;
 }
 
 int
@@ -2720,7 +2752,12 @@ octave_stream::seek (const octave_value& tc_offset,
 	}
 
       if (! conv_err)
-	retval = seek (xoffset, origin);
+	{
+	  retval = seek (xoffset, origin);
+
+	  if (retval != 0)
+	    error ("fseek: failed to seek to requested position");
+	}
       else
 	error ("fseek: invalid value for origin");
     }

@@ -1,5 +1,9 @@
 2004-11-04  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_stream::seek (long, int)): Return error
+	(but leave file position unchanged) for attempt to seek beyond end
+	of file.
+
 	* DLD-FUNCTIONS/inv.cc (Finv): Check rcond value returned from
 	LAPACK routines, and be careful to avoid optimizing away the
 	1+rcond == 1.0 check.

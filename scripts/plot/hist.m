@@ -50,8 +50,9 @@ function [nn, xx] = hist (y, x, norm)
     usage ("[nn, xx] = hist (y, x, norm)");
   endif
 
-  transpose = rows (y) == 1;
-  if (transpose)
+  arg_is_vector = is_vector (y);
+
+  if (rows (y) == 1)
     y = y(:);
   endif
 
@@ -119,7 +120,7 @@ function [nn, xx] = hist (y, x, norm)
   endif
 
   if (nargout > 0)
-    if (transpose)
+    if (arg_is_vector)
       nn = freq';
       xx = x';
     else

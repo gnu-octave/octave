@@ -1,3 +1,7 @@
+2004-11-04  John W. Eaton  <jwe@octave.org>
+
+	* plot/hist.m: Always return row vectors for vector args.
+
 2004-09-23  John W. Eaton  <jwe@octave.org>
 
 	* strings/strcmp.m: If args are not strings or cell arrays of

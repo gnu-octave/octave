@@ -118,7 +118,11 @@ union octave_cray_descriptor
 
 typedef void *octave_cray_ftn_ch_dsc;
 
-static inline octave_cray_ftn_ch_dsc
+#ifdef __cplusplus
+#define OCTAVE_F77_FCN_INLINE inline
+#endif
+
+static OCTAVE_F77_FCN_INLINE octave_cray_ftn_ch_dsc
 octave_make_cray_ftn_ch_dsc (char *ptr_arg, unsigned long len_arg)
 {
   octave_cray_descriptor desc;
@@ -127,7 +131,7 @@ octave_make_cray_ftn_ch_dsc (char *ptr_arg, unsigned long len_arg)
   return *((octave_cray_fortran_character_descriptor *) &f);
 }
 
-static inline octave_cray_ftn_ch_dsc
+static OCTAVE_F77_FCN_INLINE octave_cray_ftn_ch_dsc
 octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 {
   octave_cray_descriptor desc;
@@ -135,6 +139,10 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
   desc.mask.len = len_arg << 3;
   return *((octave_cray_fcd *) &f);
 }
+
+#ifdef __cplusplus
+#undef OCTAVE_F77_FCN_INLINE
+#endif
 
 #elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
 

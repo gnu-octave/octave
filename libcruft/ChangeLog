@@ -1,5 +1,7 @@
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* misc/f77-fcn.h: Only use inline if this is C++.
+
 	* misc/f77-fcn.c (xstopx): Return type is now F77_RET_T.
 	Use F77_RETURN.
 	* misc/machar.c (machar): Likewise.

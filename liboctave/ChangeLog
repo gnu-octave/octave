@@ -1,5 +1,8 @@
 2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): Handle systems with or
+	without placement delete.
+
 	* CMatrix.cc (ComplexMatrix::all_elements_are_real): Don't lose -0
 	imaginary parts.
 

@@ -59,12 +59,21 @@ private:
   bool grow (void);
 };
 
+#if defined (HAVE_PLACEMENT_DELETE)
+#define DECLARE_OCTAVE_ALLOCATOR_PLACEMENT_DELETE \
+    void operator delete (void *p, void *) \
+      { ::operator delete (p, static_cast<void*> (0)); }
+#else
+#define DECLARE_OCTAVE_ALLOCATOR_PLACEMENT_DELETE \
+    void operator delete (void *p, void *) \
+      { ::operator delete (p); }
+#endif
+
 #define DECLARE_OCTAVE_ALLOCATOR \
   public: \
     void *operator new (size_t size, void *p) \
       { return ::operator new (size, p); } \
-    void operator delete (void *p, void *) \
-      { ::operator delete (p); } \
+    DECLARE_OCTAVE_ALLOCATOR_PLACEMENT_DELETE \
     void *operator new (size_t size) { return allocator.alloc (size); } \
     void operator delete (void *p, size_t size) { allocator.free (p, size); } \
   private: \

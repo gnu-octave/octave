@@ -66,7 +66,13 @@ public:
     { return ::operator new (size, p); }
 
   void operator delete (void *p, void *)
-    { ::operator delete (p, static_cast<void *> (0)); }
+    {
+#if defined (HAVE_PLACEMENT_DELETE)
+      ::operator delete (p, static_cast<void *> (0));
+#else
+      ::operator delete (p);
+#endif
+    }
 
   octave_value_list& operator = (const octave_value_list& obj)
     {

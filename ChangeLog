@@ -1,5 +1,8 @@
 2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (AH_BOTTOM): Define HAVE_PLACEMENT_DELETE for gcc
+	3.2 and later.
+
 	* configure.in: Check for copysign and signbit.
 
 2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.414 $)
+AC_REVISION($Revision: 1.415 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1387,6 +1387,10 @@ typedef int sig_atomic_t;
 
 #if defined (__DECCXX)
 #define __USE_STD_IOSTREAM
+#endif
+
+#if defined (__GNUG__) && __GNUC__ >= 3 && __GNUC_MINOR__ >= 2
+#define HAVE_PLACEMENT_DELETE 1
 #endif
 ])
 

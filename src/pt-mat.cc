@@ -89,6 +89,8 @@ private:
 
     bool ok;
 
+    bool do_init_element (tree_expression *, const octave_value&, bool&);
+
     void init (const tree_argument_list&);
 
   private:
@@ -164,6 +166,51 @@ private:
   tm_row_const_rep *rep;
 };
 
+bool
+tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
+						 const octave_value& val,
+						 bool& first_elem)
+{
+  int this_elt_nr = val.rows ();
+  int this_elt_nc = val.columns ();
+
+  if (this_elt_nr > 0 || this_elt_nc > 0)
+    {
+      all_mt = false;
+
+      if (first_elem)
+	{
+	  first_elem = false;
+
+	  nr = this_elt_nr;
+	}
+      else if (this_elt_nr != nr)
+	{
+	  eval_error ("number of rows must match",
+		      elt->line (), elt->column (), this_elt_nr, nr);
+	  return false;
+	}
+
+      nc += this_elt_nc;
+
+      append (val);
+    }
+  else if (Vwarn_empty_list_elements)
+    eval_warning ("empty matrix found in matrix list",
+		  elt->line (), elt->column ());
+
+  if (all_str && ! val.is_string ())
+    all_str = false;
+
+  if (! some_str && val.is_string ())
+    some_str = true;
+
+  if (! is_cmplx && val.is_complex_type ())
+    is_cmplx = true;
+
+  return true;
+}
+
 void
 tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 {
@@ -183,44 +230,25 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	break;
       else
 	{
-	  int this_elt_nr = tmp.rows ();
-	  int this_elt_nc = tmp.columns ();
-
-	  if (this_elt_nr > 0 || this_elt_nc > 0)
+	  if (tmp.is_cs_list ())
 	    {
-	      all_mt = false;
+	      octave_value_list lst = tmp.list_value ();
 
-	      if (first_elem)
+	      for (int i = 0; i < lst.length (); i++)
 		{
-		  first_elem = false;
-
-		  nr = this_elt_nr;
+		  if (! do_init_element (elt, lst(i), first_elem))
+		    goto done;
 		}
-	      else if (this_elt_nr != nr)
-		{
-		  eval_error ("number of rows must match",
-			      elt->line (), elt->column (), this_elt_nr, nr);
-		  break;
-		}
-
-	      nc += this_elt_nc;
-
-	      append (tmp);
 	    }
-	  else if (Vwarn_empty_list_elements)
-	    eval_warning ("empty matrix found in matrix list",
-			  elt->line (), elt->column ());
-
-	  if (all_str && ! tmp.is_string ())
-	    all_str = false;
-
-	  if (! some_str && tmp.is_string ())
-	    some_str = true;
-
-	  if (! is_cmplx && tmp.is_complex_type ())
-	    is_cmplx = true;
+	  else
+	    {
+	      if (! do_init_element (elt, tmp, first_elem))
+		goto done;
+	    }
 	}
     }
+
+ done:
 
   ok = ! error_state;
 }

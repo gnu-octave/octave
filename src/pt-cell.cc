@@ -53,20 +53,7 @@ tree_cell::rvalue (void)
   int nr = length ();
   int nc = -1;
 
-  for (iterator p = begin (); p != end (); p++)
-    {
-      tree_argument_list *elt = *p;
-
-      if (nc < 0)
-	nc = elt->length ();
-      else if (nc != static_cast<int> (elt->length ()))
-	{
-	  ::error ("number of columns must match");
-	  return retval;
-	}
-    }
-
-  Cell val (nr, nc);
+  Cell val;
 
   int i = 0;
 
@@ -76,6 +63,23 @@ tree_cell::rvalue (void)
 
       octave_value_list row = elt->convert_to_const_vector ();
       
+      if (nc < 0)
+	{
+	  nc = row.length ();
+
+	  val = Cell (nr, nc);
+	}
+      else
+	{
+	  int this_nc = row.length ();
+
+	  if (nc != this_nc)
+	    {
+	      ::error ("number of columns must match");
+	      return retval;
+	    }
+	}
+
       for (int j = 0; j < nc; j++)
 	val(i,j) = row(j);
 

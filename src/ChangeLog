@@ -1,5 +1,14 @@
 2003-09-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-cell.cc (tree_cell::rvalue): Don't assume that the number of
+	elements in a tree_argument_list is the same as the number of
+	objects it contains (cs-list objects expand to more than one).
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::do_init_element):
+	New function, extracted from tm_row_const::tm_row_const_rep::init.
+	(tm_row_const::tm_row_const_rep::init): Use it.
+	Also handle cs-list objects.
+
 	* ov-cs-list.cc (octave_cs_list::print_raw): New function.
 	* ov-cs-list.h (octave_cs_list::print_raw): Provide decl.
 	* ov-list.h (octave_list::lst): Now protected instead of private.

@@ -751,13 +751,35 @@ fixup_column_count (char *s)
     }
 }
 
+/*
+ * Include these so that we don't have to link to libfl.a.
+ */
+
 #ifdef yywrap
 #undef yywrap
 #endif
-int
+static int
 yywrap (void)
 {
   return 0;
+}
+
+static void *
+yy_flex_alloc (int size)
+{
+  return (void *) malloc ((unsigned) size);
+}
+
+static void *
+yy_flex_realloc (void *ptr, int size)
+{
+  return (void *) realloc (ptr, (unsigned) size);
+}
+
+static void
+yy_flex_free (void *ptr)
+{
+  free (ptr);
 }
 
 /*

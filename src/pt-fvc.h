@@ -153,7 +153,8 @@ tree_builtin : public tree_fvc
 public:
   tree_builtin (const string& nm = string ());
 
-  tree_builtin (builtin_mapper_function& m_fcn, const string& nm = string ());
+  tree_builtin (const builtin_mapper_function& m_fcn,
+		const string& nm = string ());
 
   tree_builtin (Octave_builtin_fcn f, const string& nm = string ());
 

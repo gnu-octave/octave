@@ -1387,17 +1387,7 @@ install_builtin_mapper (const builtin_mapper_function& mf)
   symbol_record *sym_rec = global_sym_tab->lookup (mf.name, 1);
   sym_rec->unprotect ();
 
-  Mapper_fcn mfcn;
-
-  mfcn.name = mf.name;
-  mfcn.can_return_complex_for_real_arg = mf.can_return_complex_for_real_arg;
-  mfcn.lower_limit = mf.lower_limit;
-  mfcn.upper_limit = mf.upper_limit;
-  mfcn.d_d_mapper = mf.d_d_mapper;
-  mfcn.d_c_mapper = mf.d_c_mapper;
-  mfcn.c_c_mapper = mf.c_c_mapper;
-
-  tree_builtin *def = new tree_builtin (mfcn, mf.name);
+  tree_builtin *def = new tree_builtin (mf, mf.name);
 
   sym_rec->define (def);
 

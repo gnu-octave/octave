@@ -617,7 +617,8 @@ tree_builtin::tree_builtin (const string& nm)
   my_name = nm;
 }
 
-tree_builtin::tree_builtin (builtin_mapper_function& m_fcn, const string &nm)
+tree_builtin::tree_builtin (const builtin_mapper_function& m_fcn,
+			    const string &nm)
 {
   mapper_fcn = m_fcn;
   is_mapper = 1;
@@ -663,83 +664,115 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 {
   octave_value retval;
 
-  if (arg.is_real_type ())
+  if (m_fcn.ch_mapper)
     {
-      if (arg.is_scalar_type ())
-	{
-	  double d = arg.double_value ();
+      // XXX FIXME XXX -- this could be done in a better way...
 
-	  if (m_fcn.can_return_complex_for_real_arg
-	      && (d < m_fcn.lower_limit || d > m_fcn.upper_limit))
+      octave_value tmp = arg.convert_to_str ();
+
+      if (! error_state)
+	{
+	  charMatrix chm = tmp.char_matrix_value ();
+
+	  if (! error_state)
 	    {
-	      if (m_fcn.c_c_mapper)
-		retval = m_fcn.c_c_mapper (Complex (d));
-	      else
-		error ("%s: unable to handle real arguments",
-		       m_fcn.name.c_str ());
+	      int nr = chm.rows ();
+	      int nc = chm.cols ();
+
+	      Matrix result (nr, nc);
+
+	      // islapha and friends can return any nonzero value to
+	      // mean true.
+
+	      for (int j = 0; j < nc; j++)
+		for (int i = 0; i < nr; i++)
+		  result.elem (i, j)
+		    = (*m_fcn.ch_mapper) (chm.elem (i, j)) ? 1 : 0;
+
+	      retval = result;
 	    }
-	  else if (m_fcn.d_d_mapper)
-	    retval = m_fcn.d_d_mapper (d);
-	  else
-	    error ("%s: unable to handle real arguments",
-		   m_fcn.name.c_str ());
-	}
-      else
-	{
-	  Matrix m = arg.matrix_value ();
-
-	  if (error_state)
-	    return retval;
-
-	  if (m_fcn.can_return_complex_for_real_arg
-	      && (any_element_less_than (m, m_fcn.lower_limit)
-		  || any_element_greater_than (m, m_fcn.upper_limit)))
-	    {
-	      if (m_fcn.c_c_mapper)
-		retval = map (m_fcn.c_c_mapper, ComplexMatrix (m));
-	      else
-		error ("%s: unable to handle real arguments",
-		       m_fcn.name.c_str ());
-	    }
-	  else if (m_fcn.d_d_mapper)
-	    retval = map (m_fcn.d_d_mapper, m);
-	  else
-	    error ("%s: unable to handle real arguments",
-		   m_fcn.name.c_str ());
-	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      if (arg.is_scalar_type ())
-	{
-	  Complex c = arg.complex_value ();
-
-	  if (m_fcn.d_c_mapper)
-	    retval = m_fcn.d_c_mapper (c);
-	  else if (m_fcn.c_c_mapper)
-	    retval = m_fcn.c_c_mapper (c);
-	  else
-	    error ("%s: unable to handle complex arguments",
-		   m_fcn.name.c_str ());
-	}
-      else
-	{
-	  ComplexMatrix cm = arg.complex_matrix_value ();
-
-	  if (error_state)
-	    return retval;
-
-	  if (m_fcn.d_c_mapper)
-	    retval = map (m_fcn.d_c_mapper, cm);
-	  else if (m_fcn.c_c_mapper)
-	    retval = map (m_fcn.c_c_mapper, cm);
-	  else
-	    error ("%s: unable to handle complex arguments",
-		   m_fcn.name.c_str ());
 	}
     }
   else
-    gripe_wrong_type_arg ("mapper", arg);
+    {
+      if (arg.is_real_type ())
+	{
+	  if (arg.is_scalar_type ())
+	    {
+	      double d = arg.double_value ();
+
+	      if (m_fcn.can_return_complex_for_real_arg
+		  && (d < m_fcn.lower_limit || d > m_fcn.upper_limit))
+		{
+		  if (m_fcn.c_c_mapper)
+		    retval = m_fcn.c_c_mapper (Complex (d));
+		  else
+		    error ("%s: unable to handle real arguments",
+			   m_fcn.name.c_str ());
+		}
+	      else if (m_fcn.d_d_mapper)
+		retval = m_fcn.d_d_mapper (d);
+	      else
+		error ("%s: unable to handle real arguments",
+		       m_fcn.name.c_str ());
+	    }
+	  else
+	    {
+	      Matrix m = arg.matrix_value ();
+
+	      if (error_state)
+		return retval;
+
+	      if (m_fcn.can_return_complex_for_real_arg
+		  && (any_element_less_than (m, m_fcn.lower_limit)
+		      || any_element_greater_than (m, m_fcn.upper_limit)))
+		{
+		  if (m_fcn.c_c_mapper)
+		    retval = map (m_fcn.c_c_mapper, ComplexMatrix (m));
+		  else
+		    error ("%s: unable to handle real arguments",
+			   m_fcn.name.c_str ());
+		}
+	      else if (m_fcn.d_d_mapper)
+		retval = map (m_fcn.d_d_mapper, m);
+	      else
+		error ("%s: unable to handle real arguments",
+		       m_fcn.name.c_str ());
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  if (arg.is_scalar_type ())
+	    {
+	      Complex c = arg.complex_value ();
+
+	      if (m_fcn.d_c_mapper)
+		retval = m_fcn.d_c_mapper (c);
+	      else if (m_fcn.c_c_mapper)
+		retval = m_fcn.c_c_mapper (c);
+	      else
+		error ("%s: unable to handle complex arguments",
+		       m_fcn.name.c_str ());
+	    }
+	  else
+	    {
+	      ComplexMatrix cm = arg.complex_matrix_value ();
+
+	      if (error_state)
+		return retval;
+
+	      if (m_fcn.d_c_mapper)
+		retval = map (m_fcn.d_c_mapper, cm);
+	      else if (m_fcn.c_c_mapper)
+		retval = map (m_fcn.c_c_mapper, cm);
+	      else
+		error ("%s: unable to handle complex arguments",
+		       m_fcn.name.c_str ());
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("mapper", arg);
+    }
 
   return retval;
 }

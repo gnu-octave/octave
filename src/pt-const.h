@@ -596,7 +596,7 @@ public:
   // class wants a certain kind of constant, he should simply ask for
   // it, and we should convert it if possible.
 
-  octave_value convert_to_str (void)
+  octave_value convert_to_str (void) const
     { return rep->convert_to_str (); }
 
   void convert_to_row_or_column_vector (void)

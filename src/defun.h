@@ -112,15 +112,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   name is the name of the function, unquoqted.
 //
-//   can_ret_cmplx_for_real is a flag that says whether this function
-//     can create a complex number given a real-valued  argument
-//     (e.g., sqrt (-1)).
-//
-//   lo is the lower bound of the range for which real arguments can
-//     become complex.  (e.g., lo == -Inf for sqrt).
-//
-//   hi is the upper bound of the range for which real arguments can
-//     become complex.  (e.g., hi == 0 for sqrt).
+//   ch_map is a pointer to a function that should be called for
+//     integer arguments that are expected to creat integer results.
+//     (It's a kluge to handle character mappers like isalpha.)
 //
 //   d_d_map is a pointer to a function that should be called for real
 //     arguments that are expected to create real results.
@@ -131,15 +125,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //   c_c_map is a pointer to a function that should be called for
 //     complex arguments that are expected to create complex results.
 //
+//   lo is the lower bound of the range for which real arguments can
+//     become complex.  (e.g., lo == -Inf for sqrt).
+//
+//   hi is the upper bound of the range for which real arguments can
+//     become complex.  (e.g., hi == 0 for sqrt).
+//
+//   can_ret_cmplx_for_real is a flag that says whether this function
+//     can create a complex number given a real-valued  argument
+//     (e.g., sqrt (-1)).
+//
 //   doc is the simple help text for the function.
 
-#define DEFUN_MAPPER(name, can_ret_cmplx_for_real, lo, hi, \
-		     d_d_map, d_c_map, c_c_map, doc) \
+#define DEFUN_MAPPER(name, ch_map, d_d_map, d_c_map, c_c_map, \
+		     lo, hi, can_ret_cmplx_for_real, doc) \
   do \
     { \
-      builtin_mapper_function S ## name (#name, can_ret_cmplx_for_real, \
-				     lo, hi, d_d_map, d_c_map, \
-				     c_c_map, doc); \
+      builtin_mapper_function S ## name (ch_map, d_d_map, \
+					 d_c_map, c_c_map, lo, hi, \
+					 can_ret_cmplx_for_real, \
+					 #name, doc); \
       install_builtin_mapper (S ## name); \
     } \
   while (0)

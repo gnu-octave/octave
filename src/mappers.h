@@ -43,26 +43,42 @@ typedef Complex (*c_c_Mapper)(const Complex&);
 // If can_return_complex_for_real_arg is 0, lower_limit and
 // upper_limit are ignored.
 
-struct Mapper_fcn
-{
-  ch_Mapper ch_mapper;
-  d_d_Mapper d_d_mapper;
-  d_c_Mapper d_c_mapper;
-  c_c_Mapper c_c_mapper;
-  double lower_limit;
-  double upper_limit;
-  int can_return_complex_for_real_arg;
-  string name;
-};
-
 struct builtin_mapper_function
 {
-  builtin_mapper_function (ch_Mapper ch, d_d_Mapper dd, d_c_Mapper dc,
-			   c_c_Mapper cc, double l, double u,
-			   int cfr, const string n, const string& h)
+  builtin_mapper_function (ch_Mapper ch = 0, d_d_Mapper dd = 0,
+			   d_c_Mapper dc = 0, c_c_Mapper cc = 0,
+			   double l = 0.0, double u = 0.0, int cfr = 0,
+			   const string n = string (),
+			   const string& h = string ())
     : ch_mapper (ch), d_d_mapper (dd), d_c_mapper (dc), c_c_mapper (cc),
       lower_limit (l), upper_limit (u), can_return_complex_for_real_arg (cfr),
       name (n), help_string (h) { }
+
+  builtin_mapper_function (const builtin_mapper_function& mf)
+    : ch_mapper (mf.ch_mapper), d_d_mapper (mf.d_d_mapper),
+      d_c_mapper (mf.d_c_mapper), c_c_mapper (mf.c_c_mapper),
+      lower_limit (mf.lower_limit), upper_limit (mf.upper_limit),
+      can_return_complex_for_real_arg (mf.can_return_complex_for_real_arg),
+      name (mf.name), help_string (mf.help_string) { }
+
+  builtin_mapper_function& operator = (const builtin_mapper_function& mf)
+    {
+      if (&mf != this)
+	{
+	  ch_mapper = mf.ch_mapper;
+	  d_d_mapper = mf.d_d_mapper;
+	  d_c_mapper = mf.d_c_mapper;
+	  c_c_mapper = mf.c_c_mapper;
+	  lower_limit = mf.lower_limit;
+	  upper_limit = mf.upper_limit;
+	  can_return_complex_for_real_arg = mf.can_return_complex_for_real_arg;
+	  name = mf.name;
+	  help_string = mf.help_string;
+	}
+      return *this;
+    }
+
+  ~builtin_mapper_function (void) { }
 
   ch_Mapper ch_mapper;
   d_d_Mapper d_d_mapper;

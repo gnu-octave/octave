@@ -157,7 +157,7 @@ printed.")
 	  if (! msg || ! *msg)
 	    return retval;
 	}
-      else if (args(1).is_empty ())
+      else if (args(0).is_empty ())
 	return retval;
     }
 

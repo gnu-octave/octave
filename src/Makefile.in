@@ -30,34 +30,6 @@ LIBOBJS = @LIBOBJS@
 %.cc : %.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
-# Here is a rule for generating dependencies for .cc files:
-
-%.d: %.cc
-	rm -f $@
-	-if test "$(srcdir)" = "." ; then \
-	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
-	else \
-	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
-	fi
-
-# And one for .c files.too:
-
-%.d: %.c
-	rm -f $@
-	-if test "$(srcdir)" = "." ; then \
-	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
-	else \
-	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
-	fi
-
 INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in \
 	defaults.h error.h f-balance.h f-chol.h f-colloc.h f-dassl.h \
 	f-det.h f-eig.h f-expm.h f-fft.h f-fsolve.h f-fsqp.h f-givens.h \

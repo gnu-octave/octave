@@ -13,20 +13,6 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
-# Here is a rule for generating dependencies for .cc files:
-
-%.d: %.cc
-	rm -f $@
-	if test "$(srcdir)" = "." ; then \
-	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
-	else \
-	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
-	fi
-
 INCLUDES = Array.h Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h \
 	FSQP.h LinConst.h LP.h LPsolve.h MArray.h Matrix.h NLConst.h \
 	NLEqn.h NLFunc.h NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h \

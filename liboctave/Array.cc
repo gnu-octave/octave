@@ -2060,8 +2060,8 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 
 	      retval.resize (frozen_lengths);
 	    }
-	  else if (all_colon_equiv (ra_idx, dimensions) 
-		    && frozen_lengths.length () == n_dims)
+	  else if (frozen_lengths.length () == n_dims
+		   && all_colon_equiv (ra_idx, dimensions))
 	    {
 	      retval = *this;
 	    }

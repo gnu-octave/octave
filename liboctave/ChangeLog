@@ -1,3 +1,8 @@
+2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::index): Check for frozen_lengths.length ()
+	== n_dims before checking to see if all indices are colon_equiv.
+
 2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::assignN): Require RHS == 0x0 matrix for

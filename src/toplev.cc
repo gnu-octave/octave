@@ -235,7 +235,7 @@ main_loop (void)
 
   can_interrupt = 1;
 
-  catch_interrupts ();
+  octave_catch_interrupts ();
 
   // The big loop.
 

@@ -1,5 +1,7 @@
 Wed Nov 20 00:33:03 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 1.93.
+
 	* aclocal.m4 (OCTAVE_STRUCT_GR_PASSWD): New macro.
 	* configure.in: Use it.
 	* acconfig.h (HAVE_GR_PASSWD): Add undef.

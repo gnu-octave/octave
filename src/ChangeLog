@@ -1,5 +1,26 @@
 Wed Nov 20 00:35:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sighandlers.h (struct octave_interrupt_handler): Provide
+	forward declaration here.
+	* sighandlers.cc (octave_interrupt_handler): New struct.
+	(octave_catch_interrupts): Rename from catch_interrupts.
+	(octave_ignore_interrupts, octave_set_interrupt_handler):
+	New functions.
+	* help.cc, oct-hist.cc, pager.cc, toplev.cc: Use new functions for
+	handling interrupts so that we can hide the details of whether or
+	not we have to deal with SIGBREAK.
+
+	* pt-plot.cc [! HAVE_POSIX_SIGNALS] (open_plot_stream):
+	Simply ignore and restore the interrupt handler here.
+
+	* sighandlers.cc (MAYBE_REINSTALL_SIGHANDLER): New macro.  Use it
+	instead of always checking MUST_REINSTALL_SIGHANDLERS everywhere.
+	(sigchld_handler): If octave_child_list is empty, wait for any
+	child, but don't hang, and don't collect status info.
+	[__EMX__] (sigchld_handler): Save and restore handlers for SIGINT,
+	SIGBREAK, and SIGCHLD.  Ignore them while waiting on children.
+	(install_signal_handlers): If SIGBREAK exists, handle it like SIGINT.
+
 	* toplev.cc [USE_READLINE] (clean_up_and_exit):
 	Call rl_deprep_terminal() to restore terminal settings.
 

@@ -71,6 +71,22 @@ static sigset_t octave_signal_mask;
 #define SIGHANDLER_RETURN(status) return status
 #endif
 
+#if defined (MUST_REINSTALL_SIGHANDLERS)
+#define MAYBE_REINSTALL_SIGHANDLER(sig, handler) \
+  octave_set_signal_handler (sig, handler)
+#else
+#define MAYBE_REINSTALL_SIGHANDLER(sig, handler) \
+  do { } while (0)
+#endif
+
+#if defined (__EMX__)
+#define MAYBE_UNBLOCK_SIGNAL(sig) \
+  octave_set_signal_handler (sig, SIG_ACK)
+#else
+#define MAYBE_UNBLOCK_SIGNAL(sig) \
+  do { } while (0)
+#endif
+
 void
 octave_save_signal_mask (void)
 {
@@ -87,6 +103,20 @@ octave_restore_signal_mask (void)
 #endif
 }
 
+struct
+octave_interrupt_handler
+{
+#ifdef SIGINT
+  sig_handler *int_handler;
+#endif
+
+#ifdef SIGBREAK
+  sig_handler *brk_handler;
+#endif
+};
+
+static octave_interrupt_handler the_interrupt_handler;
+
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {
@@ -94,7 +124,7 @@ my_friendly_exit (const char *sig_name, int sig_number)
 
   if (been_there_done_that)
     {
-#ifdef SIGABRT
+#if defined (SIGABRT)
       octave_set_signal_handler (SIGABRT, SIG_DFL);
 #endif
 
@@ -159,35 +189,56 @@ generic_sig_handler (int sig)
 static RETSIGTYPE
 sigchld_handler (int /* sig */)
 {
+#if defined (__EMX__)
+  volatile octave_interrupt_handler *saved_interrupt_handler
+     = octave_ignore_interrupts ();
+
+  volatile sig_handler *saved_sigchld_handler
+    = octave_set_sighanlder (SIGCHLD, SIG_IGN);
+#endif
+
   int n = octave_child_list::length ();
 
-  for (int i = 0; i < n; i++)
+  if (n == 0)
     {
-      octave_child& elt = octave_child_list::elem (i);
-
-      pid_t pid = elt.pid;
-
-      if (pid > 0)
+      waitpid (-1, 0, WNOHANG);
+    }
+  else
+    {
+      for (int i = 0; i < n; i++)
 	{
-	  int status;
+	  octave_child& elt = octave_child_list::elem (i);
 
-	  if (waitpid (pid, &status, WNOHANG) > 0)
+	  pid_t pid = elt.pid;
+
+	  if (pid > 0)
 	    {
-	      elt.pid = -1;
+	      int status;
 
-	      octave_child::dead_child_handler f = elt.handler;
+	      if (waitpid (pid, &status, WNOHANG) > 0)
+		{
+		  elt.pid = -1;
 
-	      if (f)
-		f (pid, status);
+		  octave_child::dead_child_handler f = elt.handler;
 
-	      break;
+		  if (f)
+		    f (pid, status);
+
+		  break;
+		}
 	    }
 	}
     }
 
-#ifdef MUST_REINSTALL_SIGHANDLERS
-  octave_set_signal_handler (SIGCHLD, sigchld_handler);
+#if defined (__EMX__)
+  octave_set_inerrupt_handler (saved_interrupt_handler);
+
+  octave_set_signal_handler (SIGCHLD, saved_sigchld_handler);
 #endif
+
+  MAYBE_UNBLOCK_SIGNAL (SIGCHLD);
+
+  MAYBE_REINSTALL_SIGHANDLER (SIGCHLD, sigchld_handler);
 
   SIGHANDLER_RETURN (0);
 }
@@ -196,9 +247,9 @@ sigchld_handler (int /* sig */)
 static RETSIGTYPE
 sigfpe_handler (int /* sig */)
 {
-#ifdef MUST_REINSTALL_SIGHANDLERS
-  octave_set_signal_handler (SIGFPE, sigfpe_handler);
-#endif
+  MAYBE_UNBLOCK_SIGNAL (SIGFPE);
+
+  MAYBE_REINSTALL_SIGHANDLER (SIGFPE, sigfpe_handler);
 
   error ("floating point exception -- trying to return to prompt");
 
@@ -213,13 +264,17 @@ sigfpe_handler (int /* sig */)
 #endif
 
 // Handle SIGINT by restarting the parser (see octave.cc).
+//
+// This also has to work for SIGBREAK (on systems that have it), so we
+// use the value of sig, instead of just assuming that it is called
+// for SIGINT only.
 
 static RETSIGTYPE
-sigint_handler (int /* sig */)
+sigint_handler (int sig)
 {
-#ifdef MUST_REINSTALL_SIGHANDLERS
-  octave_set_signal_handler (SIGINT, sigint_handler);
-#endif
+  MAYBE_UNBLOCK_SIGNAL (sig);
+
+  MAYBE_REINSTALL_SIGHANDLER (sig, sigint_handler);
 
   if (can_interrupt)
     {
@@ -233,9 +288,9 @@ sigint_handler (int /* sig */)
 static RETSIGTYPE
 sigpipe_handler (int /* sig */)
 {
-#ifdef MUST_REINSTALL_SIGHANDLERS
-  octave_set_signal_handler (SIGPIPE, sigpipe_handler);
-#endif
+  MAYBE_UNBLOCK_SIGNAL (SIGPIPE);
+
+  MAYBE_REINSTALL_SIGHANDLER (SIGPIPE, sigpipe_handler);
 
   if (pipe_handler_error_count++ == 0)
     warning ("broken pipe");
@@ -249,9 +304,54 @@ sigpipe_handler (int /* sig */)
 }
 
 void
-catch_interrupts (void)
+octave_catch_interrupts (void)
 {
+#ifdef SIGINT
   octave_set_signal_handler (SIGINT, sigint_handler);
+
+  the_interrupt_handler.int_handler = sigint_handler;
+#endif
+
+#ifdef SIGBREAK
+  octave_set_signal_handler (SIGBREAK, sigint_handler);
+
+  the_interrupt_handler.brk_handler = sigint_handler;
+#endif
+}
+
+octave_interrupt_handler *
+octave_ignore_interrupts (void)
+{
+#ifdef SIGINT
+  the_interrupt_handler.int_handler
+    = octave_set_signal_handler (SIGINT, SIG_IGN);
+#endif
+
+#ifdef SIGBREAK
+  the_interrupt_handler.int_handler
+    = octave_set_signal_handler (SIGBREAK, SIG_IGN);
+#endif
+  
+  return &the_interrupt_handler;
+}
+
+octave_interrupt_handler *
+octave_set_interrupt_handler (const volatile octave_interrupt_handler *h)
+{
+  if (h)
+    {
+#ifdef SIGINT
+      the_interrupt_handler.int_handler
+	= octave_set_signal_handler (SIGINT, h->int_handler);
+#endif
+
+#ifdef SIGBREAK
+      the_interrupt_handler.int_handler
+	= octave_set_signal_handler (SIGBREAK, h->brk_handler);
+#endif
+    }
+  
+  return &the_interrupt_handler;
 }
 
 // Install all the handlers for the signals we might care about.
@@ -260,6 +360,8 @@ void
 install_signal_handlers (void)
 {
   set_new_handler (octave_new_handler);
+
+  octave_catch_interrupts ();
 
 #ifdef SIGABRT
   octave_set_signal_handler (SIGABRT, generic_sig_handler);
@@ -295,10 +397,6 @@ install_signal_handlers (void)
 
 #ifdef SIGILL
   octave_set_signal_handler (SIGILL, generic_sig_handler);
-#endif
-
-#ifdef SIGINT
-  octave_set_signal_handler (SIGINT, sigint_handler);
 #endif
 
 #ifdef SIGIOT

@@ -552,12 +552,12 @@ try_info (const string& nm)
 
   cmd_str = cmd_buf.str ();
 
-  volatile sig_handler *old_sigint_handler;
-  old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
+  volatile octave_interrupt_handler *old_interrupt_handler
+    = octave_ignore_interrupts ();
 
   status = system (cmd_str);
 
-  octave_set_signal_handler (SIGINT, old_sigint_handler);
+  octave_set_interrupt_handler (old_interrupt_handler);
 
   if ((status & 0xff) == 0)
     status = (signed char) ((status & 0xff00) >> 8);

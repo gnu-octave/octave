@@ -167,6 +167,10 @@ Summary of changes for version 2.0:
     to ring your terminal's bell before printing an error message.
     The default value is 0.
 
+  * For functions defined from files, the type command now prints the
+    text of the file.  You can still get the text reconstructed from
+    the parse tree by using the new option -t (-transformed).
+
   * New command-line argument --traditional sets the following
     preference variables for compatibility with Matlab:
 
@@ -329,12 +333,27 @@ Summary of changes for version 2.0:
 
   * Other new functions:
 
-      tmpnam              -- replaces octave_tmp_file_name
-      atexit              -- register functions to be called when Octave exits
-      putenv              -- define an environment variable
-      meshgrid            -- compatible with Matlab's meshgrid function
-      tilde_expand        -- perform tilde expansion on string
+      commutation_matrix  -- compute special matrix form
+      duplication_matrix  -- compute special matrix form
+      common_size.m       -- bring arguments to a common size
       completion_matches  -- perform command completion on string
+      tilde_expand        -- perform tilde expansion on string
+
+      meshgrid  -- compatible with Matlab's meshgrid function
+      tmpnam    -- replaces octave_tmp_file_name
+      atexit    -- register functions to be called when Octave exits
+      putenv    -- define an environment variable
+      bincoeff  -- compute binomial coefficients
+      nextpow2  -- compute the next power of 2 greater than a number
+      detrend   -- remove a best fit polynomial from data
+      erfinv    -- inverse error function
+      shift     -- perform a circular shift on the elements of a matrix
+      pow2      -- compute 2 .^ x
+      log2      -- compute base 2 logarithms
+      diff      -- compute differences of matrix elements
+      vech      -- stack columns of a matrix below the diagonal
+      vec       -- stack columns of a matrix to form a vector
+      xor       -- compute exclusive or
 
   * Functions for getting info from the password database on Unix systems:
 

@@ -72,7 +72,7 @@ static bool Vpage_output_immediately;
 // through the pager.
 static bool Vpage_screen_output;
 
-static sig_handler *saved_sigint_handler = 0;
+static octave_interrupt_handler *saved_interrupt_handler = 0;
 
 static int really_flush_to_pager = 0;
 
@@ -88,10 +88,10 @@ clear_external_pager (void)
   delete external_pager;
   external_pager = 0;
 
-  if (saved_sigint_handler)
+  if (saved_interrupt_handler)
     {
-      octave_set_signal_handler (SIGINT, saved_sigint_handler);
-      saved_sigint_handler = 0;
+      octave_set_interrupt_handler (saved_interrupt_handler);
+      saved_interrupt_handler = 0;
     }
 }
 
@@ -136,8 +136,7 @@ do_sync (const char *msg, bool bypass_pager)
 
 	      if (! pgr.empty ())
 		{
-		  saved_sigint_handler
-		    = octave_set_signal_handler (SIGINT, SIG_IGN);
+		  saved_interrupt_handler = octave_ignore_interrupts ();
 
 		  external_pager = new oprocstream (pgr.c_str ());
 

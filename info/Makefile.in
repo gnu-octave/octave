@@ -54,7 +54,7 @@ SOURCES = dir.c display.c echo_area.c filesys.c info-utils.c info.c \
 INCLUDES = display.h doc.h echo_area.h filesys.h general.h \
 	info-utils.h info.h infomap.h nodes.h search.h session.h \
 	signals.h termdep.h terminal.h tilde.h indices.h window.h \
-	footnotes.h dribble.h variables.h gc.h
+	footnotes.h dribble.h variables.h gc.h getopt.h
 
 TEXI = info-stnd.texi info.texi userdoc.texi
 

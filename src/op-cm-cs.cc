@@ -92,17 +92,12 @@ ldiv (const octave_value& v1, const octave_value&)
   return octave_value ();
 }
 
-#define BOOL_OP(OP, EMPTY_RESULT) \
-  MX_SC_BOOL_OP (ComplexMatrix, m, v1.complex_matrix_value (), \
-		 Complex, s, v2.complex_value (), \
-		 real (m (i, j)) OP real (s), EMPTY_RESULT)
-
 static octave_value
 lt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  BOOL_OP (<, boolMatrix ());
+  return mx_el_lt (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -110,7 +105,7 @@ le (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  BOOL_OP (<=, boolMatrix ());
+  return mx_el_le (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -118,9 +113,7 @@ eq (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  MX_SC_BOOL_OP (ComplexMatrix, m, v1.complex_matrix_value (),
-		 Complex, s, v2.complex_value (),
-		 m (i, j) == s, 0.0);
+  return mx_el_eq (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -128,7 +121,7 @@ ge (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  BOOL_OP (>=, boolMatrix ());
+  return mx_el_ge (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -136,7 +129,7 @@ gt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  BOOL_OP (>, boolMatrix ());
+  return mx_el_gt (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -144,9 +137,7 @@ ne (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  MX_SC_BOOL_OP (ComplexMatrix, m, v1.complex_matrix_value (),
-		 Complex, s, v2.complex_value (),
-		 m (i, j) != s, 1.0);
+  return mx_el_ne (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -191,9 +182,7 @@ el_and (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  MX_SC_BOOL_OP (ComplexMatrix, m, v1.complex_matrix_value (),
-		 Complex, s, v2.complex_value (),
-		 m (i, j) != 0.0 && s != 0.0, boolMatrix ());
+  return mx_el_and (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value
@@ -201,9 +190,7 @@ el_or (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex&);
 
-  MX_SC_BOOL_OP (ComplexMatrix, m, v1.complex_matrix_value (),
-		 Complex, s, v2.complex_value (),
-		 m (i, j) != 0.0 || s != 0.0, boolMatrix ());
+  return mx_el_or (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 static octave_value

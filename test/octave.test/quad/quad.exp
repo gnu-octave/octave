@@ -1,3 +1,7 @@
+## The following functions need to have tests written for them:
+
+# colloc
+
 set test quad-1
 set prog_output "ans = 1"
 do_test quad-1.m
@@ -25,5 +29,3 @@ do_test quad_options-2.m
 set test quad_options-3
 set prog_output "\n... quad_options:.*"
 do_test quad_options-3.m
-
-# colloc

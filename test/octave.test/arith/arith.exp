@@ -1,3 +1,19 @@
+## The following functions need to have tests written for them:
+
+# nexpow2
+# pow2
+# beta
+# betai
+# erf
+# erfc
+# erfinv
+# gamma
+# gammai
+# lgamma
+# cross
+# commutation_matrix
+# duplication_matrix
+
 set test ceil-1
 set prog_output "ans = 1"
 do_test ceil-1.m
@@ -71,7 +87,7 @@ set prog_output "usage:.*"
 do_test gcd-2.m
 
 set test gcd-3
-set prog_output "usage:.*"
+set prog_output "error:.*"
 do_test gcd-3.m
 
 set test lcm-1
@@ -83,7 +99,7 @@ set prog_output "usage:.*"
 do_test lcm-2.m
 
 set test lcm-3
-set prog_output "usage:.*"
+set prog_output "error:.*"
 do_test lcm-3.m
 
 set test max-1
@@ -117,9 +133,6 @@ do_test min-3.m
 set test min-4
 set prog_output "\n... min:.*"
 do_test min-4.m
-
-# nexpow2
-# pow2
 
 set test rem-1
 set prog_output "ans = 1"
@@ -705,9 +718,6 @@ set test sumsq-4
 set prog_output "\n... sumsq:.*"
 do_test sumsq-4.m
 
-# beta
-# betai
-
 set test bincoeff-1
 set prog_output "ans = 1"
 do_test bincoeff-1.m
@@ -719,13 +729,3 @@ do_test bincoeff-2.m
 set test bincoeff-3
 set prog_output "usage.*"
 do_test bincoeff-3.m
-
-# erf
-# erfc
-# erfinv
-# gamma
-# gammai
-# lgamma
-# cross
-# commutation_matrix
-# duplication_matrix

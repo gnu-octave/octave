@@ -1,4 +1,29 @@
+## The following functions need to have tests written for them:
+
 # lsode
-# lsode_options
+
+set test lsode_options-1
+set prog_output "ans = 1"
+do_test lsode_options-1.m
+
+set test lsode_options-2
+set prog_output "\n... lsode_options:.*"
+do_test lsode_options-2.m
+
+set test lsode_options-3
+set prog_output "\n... lsode_options:.*"
+do_test lsode_options-3.m
+
 # dassl
-# dassl_options
+
+set test dassl_options-1
+set prog_output "ans = 1"
+do_test dassl_options-1.m
+
+set test dassl_options-2
+set prog_output "\n... dassl_options:.*"
+do_test dassl_options-2.m
+
+set test dassl_options-3
+set prog_output "\n... dassl_options:.*"
+do_test dassl_options-3.m

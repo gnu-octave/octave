@@ -1,3 +1,16 @@
+## The following functions need to have tests written for them:
+
+# mkfifo
+# system
+# popen
+# pclose
+# fork
+# exec
+# pipe
+# dup2
+# waitpid
+# fcntl
+
 set test time-1
 set prog_output "ans = 1"
 do_test time-1.m
@@ -198,8 +211,6 @@ set test rmdir-2
 set prog_output "\n... rmdir:.*"
 do_test rmdir-2.m
 
-# mkfifo
-
 set test umask-1
 set prog_output "ans = 1"
 do_test umask-1.m
@@ -287,16 +298,6 @@ do_test tilde_expand-2.m
 set test tilde_expand-3
 set prog_output "\n... tilde_expand:.*"
 do_test tilde_expand-3.m
-
-# system
-# popen
-# pclose
-# fork
-# exec
-# pipe
-# dup2
-# waitpid
-# fcntl
 
 set test getpgrp-1
 set prog_output "ans = 1"

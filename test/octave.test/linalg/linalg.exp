@@ -1,4 +1,18 @@
+## The following functions need to have tests written for them:
+
 # balance
+# givens
+# norm
+# null
+# orth
+# pinv
+# rank
+# expm
+# logm
+# sqrtm
+# kron
+# qzhess
+# qzval
 
 set test cond-1
 set prog_output "ans = 1"
@@ -52,8 +66,6 @@ set test eig-5
 set prog_output "error:.*"
 do_test eig-5.m
 
-# givens
-
 set test inv-1
 set prog_output "ans = 1"
 do_test inv-1.m
@@ -69,12 +81,6 @@ do_test inv-3.m
 set test inv-4
 set prog_output "error:.*"
 do_test inv-4.m
-
-# norm
-# null
-# orth
-# pinv
-# rank
 
 set test trace-1
 set prog_output "ans = 1"
@@ -231,13 +237,6 @@ do_test svd-8.m
 set test svd-9
 set prog_output "\n... svd:.*"
 do_test svd-9.m
-
-# expm
-# logm
-# sqrtm
-# kron
-# qzhess
-# qzval
 
 set test syl-1
 set prog_output "ans = 1"

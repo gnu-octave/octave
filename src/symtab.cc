@@ -425,23 +425,14 @@ symbol_record::pop_context (void)
 int
 symbol_record::dimensions_string_req_first_space (int print_dims) const
 {
-  long dim = 0;
   int first_param_space = 0;
 
   // Calculating dimensions.
 
   std::string dim_str = "";
   std::stringstream ss;
-  dim_vector dimensions;
-
-  if (is_variable ())
-    {
-      if (is_matrix_type ())
-        {
-	  dimensions = dims ();
-	  dim = dimensions.length ();
-	}
-    }
+  dim_vector dimensions = dims ();
+  long dim = dimensions.length ();
 
   first_param_space = (first_param_space >= 1 ? first_param_space : 1);
 
@@ -479,6 +470,8 @@ symbol_record::dimensions_string_req_first_space (int print_dims) const
 //
 //   mat is a 12x3 matrix
 //            ^^^^ => 4 columns
+//
+// XXX FIXME XXX -- why not just use the dim_vector::str () method?
 
 int
 symbol_record::dimensions_string_req_total_space (int print_dims) const
@@ -494,26 +487,18 @@ symbol_record::dimensions_string_req_total_space (int print_dims) const
 
 // Make the dimensions-string.  For example: mat is a 2x3 matrix.
 //                                                    ^^^
+//
+// XXX FIXME XXX -- why not just use the dim_vector::str () method?
 
 std::string
 symbol_record::make_dimensions_string (int print_dims) const
 {
-  long dim = 0;
-
   // Calculating dimensions.
 
   std::string dim_str = "";
   std::stringstream ss;
-  dim_vector dimensions;
-
-  if (is_variable ())
-    {
-      if (is_matrix_type ())
-        {
-	  dimensions = dims ();
-	  dim = dimensions.length ();
-	}
-    }
+  dim_vector dimensions = dims ();
+  long dim = dimensions.length ();
 
   // Preparing dimension string.
 
@@ -1456,14 +1441,14 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	      total = param.parameter_length;
 	     
 	      for (j = 0; j < len; j++)
-	      {
-		int first1 = symbols(j)->dimensions_string_req_first_space (param.dimensions);
-		int total1 = symbols(j)->dimensions_string_req_total_space (param.dimensions);
-		int rest1 = total1 - first1;
-		rest = (rest1 > rest ? rest1 : rest);
-		first = (first1 > first ? first1 : first);
-		total = (total1 > total ? total1 : total);
-	      }
+		{
+		  int first1 = symbols(j)->dimensions_string_req_first_space (param.dimensions);
+		  int total1 = symbols(j)->dimensions_string_req_total_space (param.dimensions);
+		  int rest1 = total1 - first1;
+		  rest = (rest1 > rest ? rest1 : rest);
+		  first = (first1 > first ? first1 : first);
+		  total = (total1 > total ? total1 : total);
+		}
 
 	      if (param.modifier == 'c')
 	        {

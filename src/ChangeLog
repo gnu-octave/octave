@@ -1,3 +1,8 @@
+2004-10-18  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_record::dimensions_string_req_first_space,
+	symbol_record::make_dimensions_string): Use dims() for all objects.
+
 2004-10-18  Oyvind Kristiansen  <oyvinkri@stud.ntnu.no>
 
 	* symtab.cc (symbol_table::parse_whos_line_format): Handle

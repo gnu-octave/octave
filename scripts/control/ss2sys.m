@@ -72,7 +72,7 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   #
 
   #  Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
-  # $Revision: 2.0.0.1 $
+  # $Revision: 1.6 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -155,7 +155,7 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
 
   #check for input names
   if(nargin >= 9)
-    if(!isempty(inname)) restys = syssetsignals(retsys,"in",inname); endif
+    if(!isempty(inname)) retsys = syssetsignals(retsys,"in",inname); endif
   endif
 
   #check for output names

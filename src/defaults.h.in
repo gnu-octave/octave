@@ -72,6 +72,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define OCTAVE_FCNFILEPATH %OCTAVE_FCNFILEPATH%
 #endif
 
+#ifndef OCTAVE_IMAGEPATH
+#define OCTAVE_IMAGEPATH %OCTAVE_IMAGEPATH%
+#endif
+
 #ifndef TARGET_HOST_TYPE
 #define TARGET_HOST_TYPE %TARGET_HOST_TYPE%
 #endif

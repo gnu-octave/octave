@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.42 $)dnl
+AC_REVISION($Revision: 1.44 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -82,12 +82,13 @@ libdir='$(exec_prefix)/lib'
 includedir='$(prefix)/include'
 mandir='$(prefix)/man/man1'
 infodir='$(prefix)/info'
-fcnfiledir='$(datadir)/octave/$(version)/m//'
+fcnfiledir='$(datadir)/octave/$(version)/m'
 localfcnfilepath='$(datadir)/octave/site-m'
 archlibdir='$(libdir)/octave/$(version)/$(target_host_type)/exec'
 octfiledir='$(archlibdir)/oct'
 localoctfilepath='$(datadir)/octave/$(target_host_type)/site-oct'
-fcnfilepath='.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir):$(fcnfiledir)'
+fcnfilepath='.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir):$(fcnfiledir)//'
+imagepath='.:$(fcnfiledir)/imagelib//'
 dnl
 dnl Handle --enable-run-in-place.  This option makes Octave look for
 dnl info and function files in the same directory tree as the sources.
@@ -124,9 +125,10 @@ if $run_in_place; then
   absolute_builddir=$absolute_builddir
   prefix=$absolute_srcdir
   infodir=$absolute_srcdir/info
-  fcnfiledir=$absolute_srcdir/scripts//
+  fcnfiledir=$absolute_srcdir/scripts
   archlibdir=$absolute_builddir
-  fcnfilepath='.:$(fcnfiledir)'
+  fcnfilepath='.:$(fcnfiledir)//'
+  imagepath='.:$(fcnfiledir)/imagelib//'
 fi
 AC_VERBOSE([setting prefix to $prefix])
 AC_VERBOSE([setting exec_prefix to $exec_prefix])
@@ -142,6 +144,7 @@ AC_VERBOSE([setting archlibdir to $archlibdir])
 AC_VERBOSE([setting octfiledir to $octfiledir])
 AC_VERBOSE([setting localoctfilepath to $localoctfilepath])
 AC_VERBOSE([setting fcnfilepath to $fcnfilepath])
+AC_VERBOSE([setting imagepath to $imagepath])
 AC_SUBST(exec_prefix)
 AC_SUBST(bindir)
 AC_SUBST(datadir)
@@ -155,6 +158,7 @@ AC_SUBST(archlibdir)
 AC_SUBST(octfiledir)
 AC_SUBST(localoctfilepath)
 AC_SUBST(fcnfilepath)
+AC_SUBST(imagepath)
 dnl
 DYNAMIC_LD_OBJ=
 DLD_DIR=
@@ -710,6 +714,13 @@ fi
 dnl
 dnl Do the substitutions in all the Makefiles.
 dnl
+define([tmpA], [Makefile Makeconf libcruft/Makefile libcruft/Makerules])dnl
+define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
+define([tmpC], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
+define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
+define([tmpE], [test/Makefile kpathsea/Makefile])dnl
+define([srcdirs], [tmpA tmpB tmpC tmpD tmpE])dnl
+dnl
 define([tmpa], [libcruft/blas/Makefile libcruft/balgen/Makefile])dnl
 define([tmpb], [libcruft/dassl/Makefile libcruft/eispack/Makefile])dnl
 define([tmpc], [libcruft/fftpack/Makefile libcruft/fsqp/Makefile])dnl
@@ -718,11 +729,15 @@ define([tmpe], [libcruft/minpack/Makefile libcruft/misc/Makefile])dnl
 define([tmpf], [libcruft/npsol/Makefile libcruft/odepack/Makefile])dnl
 define([tmpg], [libcruft/qpsol/Makefile libcruft/quadpack/Makefile])dnl
 define([tmph], [libcruft/ranlib/Makefile libcruft/villad/Makefile])dnl 
+dnl
 define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph])dnl
-define([tmpA], [Makefile Makeconf libcruft/Makefile libcruft/Makerules])dnl
-define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
-define([tmpC], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
-define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
-define([tmpE], [scripts/Makefile test/Makefile kpathsea/Makefile])dnl
-define([srcdirs], [tmpA tmpB tmpC tmpD tmpE])dnl
-AC_OUTPUT([srcdirs cruftdirs])dnl
+define([tmpSA], [scripts/Makefile scripts/control/Makefile])dnl
+define([tmpSB], [scripts/general/Makefile scripts/image/Makefile])dnl
+define([tmpSC], [scripts/linear-algebra/Makefile])dnl
+define([tmpSD], [scripts/miscellaneous/Makefile scripts/plot/Makefile])dnl
+define([tmpSE], [scripts/polynomial/Makefile scripts/set/Makefile])dnl
+define([tmpSF], [scripts/signal/Makefile scripts/special-matrix/Makefile])dnl
+define([tmpSG], [scripts/statistics/Makefile])dnl
+define([scriptdirs], [tmpSA tmpSB tmpSC tmpSD tmpSE tmpSF tmpSG])dnl
+dnl
+AC_OUTPUT([srcdirs cruftdirs scriptdirs])dnl

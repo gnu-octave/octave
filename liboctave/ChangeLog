@@ -1,3 +1,8 @@
+2004-07-28  John W. Eaton  <jwe@octave.org>
+
+	* oct-cmplx.h (pow (const Complex&, const double&):
+	Convert second arg to complex to avoid libstdc++ bug.
+
 2004-07-27  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (bitshift): New arg, MASK.

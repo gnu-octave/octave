@@ -112,7 +112,10 @@ pow (const Complex& z, int n)
 inline Complex
 pow (const Complex& z, const double& x)
 {
-  return std::pow (z, x);
+  // XXX FIXME XXX -- this should not be needed, but it avoids a bug
+  // in some versions of libstdc++ (3.3.x and possibly others).
+
+  return std::pow (z, Complex (x));
 }
 
 inline Complex

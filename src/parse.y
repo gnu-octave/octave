@@ -706,7 +706,7 @@ indirect_ref_op	: '.'
 		;
 
 begin_obj_idx	: // empty
-		  { lexer_flags.looking_at_object_index = true; }
+		  { lexer_flags.looking_at_object_index++; }
 		;
 
 postfix_expr	: primary_expr
@@ -714,22 +714,22 @@ postfix_expr	: primary_expr
 		| postfix_expr '(' begin_obj_idx ')'
 		  {
 		    $$ = make_index_expression ($1, 0, '(');
-		    lexer_flags.looking_at_object_index = false;
+		    lexer_flags.looking_at_object_index--;
 		  }
 		| postfix_expr '(' begin_obj_idx arg_list ')'
 		  {
 		    $$ = make_index_expression ($1, $4, '(');
-		    lexer_flags.looking_at_object_index = false;
+		    lexer_flags.looking_at_object_index--;
 		  }
 		| postfix_expr '{' begin_obj_idx '}'
 		  {
 		    $$ = make_index_expression ($1, 0, '{');
-		    lexer_flags.looking_at_object_index = false;
+		    lexer_flags.looking_at_object_index--;
 		  }
 		| postfix_expr '{' begin_obj_idx arg_list '}'
 		  {
 		    $$ = make_index_expression ($1, $4, '{');
-		    lexer_flags.looking_at_object_index = false;
+		    lexer_flags.looking_at_object_index--;
 		  }
 		| postfix_expr PLUS_PLUS
 		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }

@@ -2546,7 +2546,7 @@ lexical_feedback::init (void)
   looking_at_matrix_or_assign_lhs = false;
 
   // Not parsing an object index.
-  looking_at_object_index = false;
+  looking_at_object_index = 0;
 
   // Next token can be identifier.
   cant_be_identifier = false;

@@ -1,5 +1,10 @@
 2002-12-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (begin_obj_idx): Increment
+	lexer_flags.looking_at_object_index.
+	(postfix_expr): Decrement it as appropriate here.
+	* lex.h (lexical_feedback::looking_at_object_index): Now int.
+
 	* parse.y (postfix_expr): Reset	lexer_flags.looking_at_object_index
 	in () and {} cases too.
 

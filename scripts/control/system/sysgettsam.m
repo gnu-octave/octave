@@ -23,8 +23,8 @@
 
 function T = sysgettsam (sys)
 
-  if(!isstruct(sys))
-    usage("T = sysgettsam(sys)");
+  if (! isstruct (sys))
+    usage ("T = sysgettsam (sys)");
   endif
 
   T = sys.tsam;

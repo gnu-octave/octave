@@ -28,15 +28,23 @@
 
 function [zer, pol, k] = tf2zp (num, den)
 
-  if(nargin == 2)
-    if(length(den) > 1)          pol = roots(den);
-    else                         pol=[];                   endif
-    if(length(num) > 1)         zer = roots(num);
-    else                        zer=[];                    endif
-  else                    error("Incorrect number of input arguments");
+  if (nargin == 2)
+    if (length (den) > 1)
+      pol = roots (den);
+    else
+      pol = [];
+    endif
+
+    if (length (num) > 1)
+      zer = roots (num);
+    else
+      zer = [];
+    endif
+  else
+    error ("Incorrect number of input arguments");
   endif
 
-  [a,b,c,d] = tf2ss(num,den);
-  [dum,k] = tzero(a,b,c,d);
+  [a, b, c, d] = tf2ss (num, den);
+  [dum, k] = tzero (a, b, c, d);
 
 endfunction

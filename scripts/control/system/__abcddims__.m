@@ -30,9 +30,9 @@
 function [y, my, ny] = __abcddims__ (x)
 
   y = x;
-  if(isempty(y))
+  if (isempty (y))
     y = [];
   endif
-  [my,ny] = size(y);
+  [my, ny] = size (y);
 
 endfunction

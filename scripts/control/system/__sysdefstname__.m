@@ -25,17 +25,17 @@
 
 function stname = __sysdefstname__ (n, nz)
 
-  stname = list();
-  if(n > 0)
+  stname = list ();
+  if (n > 0)
     for ii = 1:n
-      stname(ii) = sprintf("x_%d",ii);
+      stname(ii) = sprintf ("x_%d", ii);
     endfor
   endif
 
   ## Set default names for discrete states
-  if(nz > 0)
+  if (nz > 0)
     for ii = (n+1):(n+nz)
-      stname(ii) = sprintf("xd_%d",ii);
+      stname(ii) = sprintf ("xd_%d", ii);
     endfor
   endif
 

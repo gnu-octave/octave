@@ -44,6 +44,7 @@
 function m = dgram (a, b)
 
   ## let dlyap do the error checking...
-  m = dlyap(a,b*b');
+
+  m = dlyap (a, b*b');
 
 endfunction

@@ -33,10 +33,11 @@
 
 function systype = sysgettype (sys)
 
-  if(!isstruct(sys))
-    error("sysgettype: input sys is not a structure");
+  if (! isstruct (sys))
+    error ("sysgettype: input sys is not a structure");
   endif
 
-  typestr = list("tf","zp","ss");
-  systype = nth(typestr,sys.sys(1) + 1);
+  typestr = list ("tf", "zp", "ss");
+  systype = nth (typestr, sys.sys(1) + 1);
+
 endfunction

@@ -28,16 +28,16 @@
 
 function USEW = freqchkw (w)
 
-  if(isempty(w))
+  if (isempty (w))
     USEW = 0;
-  elseif(!isvector(w))
-    error(["w (",num2str(rows(w)),"x",num2str(columns(w)), ...
-      "): must be [], a vector or a scalar"]);
-  elseif( (max(abs(imag(w))) != 0) && (min(real(w)) <= 0) )
-    error("w must have real positive entries");
+  elseif (! isvector (w))
+    error ("w (%dx%d): must be [], a vector or a scalar",
+	   rows (w), columns (w));
+  elseif (max (abs (imag(w))) != 0 && min (real (w)) <= 0)
+    error ("w must have real positive entries");
   else
-    w = sort(w);
-    USEW = 1;   # vector provided (check values later)
+    w = sort (w);
+    USEW = 1;   ## vector provided (check values later)
   endif
 
 endfunction

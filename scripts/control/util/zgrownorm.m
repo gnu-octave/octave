@@ -26,11 +26,11 @@
 function [sig, tau] = zgrownorm (mat, meps)
 
   rownorm = [];
-  for ii=1:rows(mat)
-    rownorm(ii) = norm(mat(ii,:));
+  for ii = 1:rows (mat)
+    rownorm(ii) = norm (mat(ii,:));
   endfor
-  sig = sum(rownorm > meps);
-  tau = sum(rownorm <= meps);
+  sig = sum (rownorm > meps);
+  tau = sum (rownorm <= meps);
 
 endfunction
 

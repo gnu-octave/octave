@@ -29,17 +29,18 @@
 
 function x = zgshsr (y)
 
-  if(!isvector(y))
-    error(sprintf("y(%dx%d) must be a vector",rows(y),columns(y)));
+  if (! isvector (y))
+    error (sprintf ("y(%dx%d) must be a vector", rows (y), columns (y)));
   endif
-  x = vec(y);
-  m = length(x);
-  if (m>1)
-    beta = (1 + sqrt(m))*x(1) + sum(x(2:m));
-    beta = beta/(m+sqrt(m));
-    x(1) = x(1) - beta*(1.0d0+sqrt(m));
-    x(2:m) = x(2:m) - beta*ones(m-1,1);
+  x = vec (y);
+  m = length (x);
+  if (m > 1)
+    beta = (1 + sqrt (m)) * x(1) + sum (x(2:m));
+    beta /= (m + sqrt (m));
+    x(1) -= (beta * (1 + sqrt (m)));
+    x(2:m) -= (beta * ones (m-1,1));
   else
     x = -x;
   endif
+
 endfunction

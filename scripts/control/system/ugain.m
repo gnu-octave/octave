@@ -31,9 +31,9 @@
 
 function outsys = ugain (n)
 
-  if((nargin != 1) || (nargout > 1))
-    usage("outsys = ugain(n)")
+  if (nargin != 1 || nargout > 1)
+    usage ("outsys = ugain(n)");
   endif
-  outsys = ss2sys([],[],[],eye(n));
+  outsys = ss2sys ([], [], [], eye (n));
 
 endfunction

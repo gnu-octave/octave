@@ -31,16 +31,16 @@
 
 function prompt (str)
 
-  if(nargin > 1)
-    usage("prompt([str])");
-  elseif(nargin == 0)
+  if (nargin > 1)
+    usage ("prompt ([str])");
+  elseif (nargin == 0)
     str = "\n ---- Press a key to continue ---";
-  elseif ( !isstr(str) )
-    error("prompt: input must be a string");
+  elseif (! isstr (str) )
+    error ("prompt: input must be a string");
   endif
 
-  disp(str);
-  fflush(stdout);
-  kbhit;
+  disp (str);
+  fflush (stdout);
+  kbhit ();
 
 endfunction

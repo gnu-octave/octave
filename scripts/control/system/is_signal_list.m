@@ -21,13 +21,13 @@
 ## Return true if @var{mylist} is a list of individual strings.
 ## @end deftypefn
 
-function flg = is_signal_list(mylist)
+function flg = is_signal_list (mylist)
 
-  flg = islist(mylist);
+  flg = islist (mylist);
 
   if (flg)
     for ii = 1:length (mylist)
-      if (! (isstr (nth (mylist,ii)) & rows (nth (mylist,ii)) == 1))
+      if (! (isstr (nth (mylist, ii)) && rows (nth (mylist,ii)) == 1))
 	flg = 0;
       endif
     endfor

@@ -28,20 +28,20 @@
 function retsys = syschtsam (sys, tsam)
 
   if (nargin != 2)
-    usage("retsys = syschtsam(sys,tsam)");
-  elseif (!isstruct(sys))
-    error("sys must be in system data structure form");
-  elseif(!isscalar(tsam))
-    disp("syschtsam:")
+    usage ("retsys = syschtsam (sys, tsam)");
+  elseif (! isstruct (sys))
+    error ("sys must be in system data structure form");
+  elseif (! isscalar (tsam))
+    disp ("syschtsam:")
     tsam
-    error("tsam must be a scalar")
-  elseif ( ! (is_sample(tsam) | (tsam == 0) ) )
-    error("tsam must be real, scalar, and greater than zero");
-  elseif (sysgettsam(sys) == 0)
-    [nc,nz,mm,pp] = sysdimensions(sys);
-    warning("syschtsam: continuous system (nc=%d, nz=%d, mm=%d, pp=%d)", ...
-      nc,nz,mm,pp);
-    warning("syschtsam: The system is continuous, use c2d to make the system discrete");
+    error ("tsam must be a scalar")
+  elseif (! (is_sample (tsam) || tsam <= 0))
+    error ("tsam must be real, scalar, and greater than zero");
+  elseif (sysgettsam (sys) == 0)
+    [nc, nz, mm, pp] = sysdimensions (sys);
+    warning ("syschtsam: continuous system (nc=%d, nz=%d, mm=%d, pp=%d)",
+	     nc, nz, mm, pp);
+    warning ("syschtsam: The system is continuous, use c2d to make the system discrete");
   endif
 
   retsys = sys;

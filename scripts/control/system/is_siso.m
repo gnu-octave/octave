@@ -27,14 +27,14 @@
 
 function  SISO = is_siso (sys)
 
-  if(nargin != 1)
-    usage("SISO = is_siso(sys)");
-  elseif( !isstruct(sys))
-    error("input must be a system structure (see ss2sys, tf2sys, zp2sys)");
+  if (nargin != 1)
+    usage ("SISO = is_siso (sys)");
+  elseif (! isstruct (sys))
+    error ("input must be a system structure (see ss2sys, tf2sys, zp2sys)");
   endif
 
-  [n,nz,m,p] = sysdimensions(sys);
+  [n, nz, m, p] = sysdimensions (sys);
 
-  SISO = (m == 1 & p == 1);
+  SISO = (m == 1 && p == 1);
 
 endfunction

@@ -31,22 +31,23 @@ function [c, tsam, inname, outname] = sys2fir (sys)
 
   ## let sys2tf do most of the work
 
-  [num,den,tsam,inname,outname] = sys2tf(sys);
+  [num, den, tsam, inname, outname] = sys2tf (sys);
 
   alph = den(1);                        # scale to get monic denominator
-  den = den/alph;
-  num = num/alph;
-  l = length(den);
-  m = length(num);
-  if( norm(den(2:l)) )
-    sysout(sys,"tf");
-    error("denominator has poles away from origin");
-  elseif( !is_digital(sys) )
-    error("system must be discrete-time to be FIR");
-  elseif(m != l)
-    warning(["sys2fir: deg(num) - deg(den) = ",num2str(m-l), ...
-        "; coefficients must be shifted"]);
+  den /= alph;
+  num /= alph;
+  l = length (den);
+  m = length (num);
+  if (norm (den(2:l)))
+    sysout (sys, "tf");
+    error ("denominator has poles away from origin");
+  elseif (! is_digital (sys))
+    error ("system must be discrete-time to be FIR");
+  elseif (m != l)
+    warning ("sys2fir: deg(num) - deg(den) = %d; coefficients must be shifted",
+	     m-l);
   endif
   c = num;
+
 endfunction
 

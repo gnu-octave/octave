@@ -28,7 +28,8 @@
 
 function m = gram (a, b)
 
-  ## let lyap do the error checking...
-  m = lyap(a,b*b');
+  ## Let lyap do the error checking...
+
+  m = lyap (a, b*b');
 
 endfunction

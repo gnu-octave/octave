@@ -29,7 +29,198 @@ template <class T>
 void
 ArrayN<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 {
-  assert (0);
+  int n_idx = idx.length ();
+
+  Array<int> lhs_dims = dims ();
+
+  Array<int> idx_is_colon (n_idx, 0);
+  Array<int> idx_is_colon_equiv (n_idx, 0);
+
+  // Initialization of colon arrays.
+
+  for (int i = 0; i < n_idx; i++)
+    {
+      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
+
+      idx_is_colon(i) = idx(i).is_colon ();
+    }
+
+  if (all_ones (idx_is_colon) || all_ones (idx_is_colon_equiv))
+    {
+      // A(:,:,:) -- we are deleting elements in all dimensions, so
+      // the result is [](0x0x0).
+
+      Array<int> zeros (n_idx, 0);
+
+      resize (zeros, rfv);
+    }
+
+  else if (num_ones (idx_is_colon) == n_idx - 1
+	   && num_ones (idx_is_colon_equiv) == n_idx)
+    {
+      // A(:,:,j) -- we are deleting elements in one dimension by
+      // enumerating them.
+      //
+      // If we enumerate all of the elements, we should have zero
+      // elements in that dimension with the same number of elements
+      // in the other dimensions that we started with.
+
+      Array<int> temp_dims (n_idx,0);
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  if (idx_is_colon (i))
+	    temp_dims (i) =  lhs_dims (i);
+	
+	  else
+	    temp_dims (i) = 0;
+	}
+      resize (temp_dims);
+    }
+  else if (num_ones (idx_is_colon) == n_idx - 1)
+    {
+      // We have colons in all indices except for one.
+      // This index tells us which slice to delete
+
+      int non_col = 0;
+
+      // Find the non-colon column.
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  if (! idx_is_colon (i))
+	    non_col = i;
+	}
+
+      // The length of the non-colon dimension.
+
+      int non_col_dim = lhs_dims (non_col);
+
+      idx(non_col).sort (true);
+
+      int num_to_delete = idx(non_col).length (lhs_dims (non_col));
+
+      if (num_to_delete > 0)
+	{
+	  int temp = num_ones(lhs_dims);
+	
+	  if (non_col_dim == 1)
+	    temp--;
+	
+	  if (temp == n_idx - 1 && num_to_delete == non_col_dim)
+	    {
+	      // We have A with (1x1x4), where A(1,:,1:4)
+	      // Delete all (0x0x0)
+
+	      Array<int> zero_dims (n_idx, 0);
+	
+	      resize (zero_dims, rfv);	
+	    }
+	  else
+	    {
+	      // New length of non-colon dimension
+	      // (calculated in the next for loop)
+
+	      int new_dim = non_col_dim;
+	
+	      int iidx = 0;
+	
+	      for (int j = 0; j < non_col_dim; j++)
+		if (j == idx(non_col).elem (iidx))
+		  {
+		    iidx++;
+		
+		    new_dim--;
+		
+		    if (iidx == num_to_delete)
+		      break;
+		  }	
+
+	      // Creating the new nd array after deletions.
+
+	      if (new_dim > 0)
+		{
+		  // Calculate number of elements in new array.
+
+		  int num_new_elem=1;
+		
+		  for (int i = 0; i < n_idx; i++)
+		    {
+		      if (i == non_col)
+			num_new_elem *= new_dim;
+		
+		      else
+			num_new_elem *= lhs_dims(i);
+		    }
+		
+		  T *new_data = new T [num_new_elem];
+		  	
+		  Array<int> result_idx (lhs_dims.length (), 0);
+		  Array<int> elt_idx;
+		
+		  Array<int> lhs_inc (lhs_dims.length ());
+		
+		  for (int i = 0; i < lhs_dims.length (); i++)
+		    lhs_inc(i) = lhs_dims(i) + 1;
+		
+		  Array<int> new_lhs_dim = lhs_dims;
+		
+		  new_lhs_dim(non_col) = new_dim;	
+		
+		  int num_elem = 1;
+		
+		  int numidx = 0;
+		
+		  int n = length ();
+		
+		  for (int i =0; i < lhs_dims.length (); i++)
+		    if (i != non_col)
+		      num_elem *= lhs_dims (i);
+		
+		  num_elem *= idx(non_col).capacity ();
+		
+		  for (int i = 0; i < n; i++)
+		    {	
+		      if (numidx < num_elem
+			  && is_in (result_idx(non_col), idx(non_col)))
+			numidx++;
+		
+		      else
+			{
+			  Array<int> temp_result_idx = result_idx;
+			
+			  int num_lgt
+			    = how_many_lgt (result_idx(non_col), idx(non_col));
+			
+			  temp_result_idx(non_col) -= num_lgt;
+				
+			  int kidx
+			    = ::compute_index (temp_result_idx, new_lhs_dim);
+			
+			  new_data[kidx] = elem (result_idx);
+			}
+
+		      increment_index (result_idx, lhs_dims);
+		    }
+		
+		  if (--(Array<T>::rep)->count <= 0)
+		    delete Array<T>::rep;
+		
+		  Array<T>::rep =
+		    new typename Array<T>::ArrayRep (new_data, num_new_elem);
+		
+		  dimensions = new_lhs_dim;
+
+		  set_max_indices (new_lhs_dim.length ());
+	    	}
+	    }
+	}
+    }
+  else if (num_ones(idx_is_colon) < n_idx)
+    {
+      (*current_liboctave_error_handler)
+	("A null assignment can have only one non-colon index.");
+    }
 }
 
 template <class T>
@@ -175,6 +366,49 @@ all_colon_equiv (const Array<idx_vector>& ra_idx,
   for (int i = 0; i < n; i++)
     {
       if (! ra_idx(i).is_colon_equiv (frozen_lengths(i)))
+	{
+	  retval = false;
+	  break;
+	}
+    }
+
+  return retval;
+}
+
+static inline bool
+is_in (int num, const idx_vector& idx)
+{
+  int n = idx.capacity ();
+
+  for (int i = 0; i < n; i++)
+    if (idx.elem (i) == num)
+      return true;
+
+  return false;
+}
+
+static inline int
+how_many_lgt (const int num, idx_vector& idxv)
+{
+  int retval = 0;
+
+  int n = idxv.capacity ();
+
+  for (int i = 0; i < n; i++)
+    if (num > idxv.elem (i))
+      retval++;
+
+  return retval;
+}
+
+static inline bool
+all_ones (const Array<int> arr)
+{
+  bool retval = true;
+
+  for (int i = 0; i < arr.length (); i++)
+    {
+      if (arr(i) != 1)
 	{
 	  retval = false;
 	  break;

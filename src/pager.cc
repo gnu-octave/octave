@@ -398,9 +398,9 @@ Turn output pagination on or off.")
       string arg = argv[1];
 
       if (arg == "on")
-	bind_builtin_variable ("page_screen_output", "true");
+	bind_builtin_variable ("page_screen_output", 1.0);
       else if (arg == "off")
-	bind_builtin_variable ("page_screen_output", "false");
+	bind_builtin_variable ("page_screen_output", 0.0);
       else
 	error ("more: unrecognized argument `%s'", arg.c_str ());
     }

@@ -68,7 +68,7 @@ extern symbol_record *lookup_by_name (const char *nm, int exec_script = 1);
 
 extern char *get_help_from_file (const char *f);
 
-extern char *builtin_string_variable (const char *);
+extern const char *builtin_string_variable (const char *);
 extern int builtin_real_scalar_variable (const char *, double&);
 extern tree_constant builtin_any_variable (const char *);
 

@@ -1,3 +1,15 @@
+2000-12-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.h (octave_pager_buf::diary_skip): New data member.
+	(octave_pager_buf::octave_pager_buf): Initialize it.
+	* pager.cc (octave_pager_buf::set_diary_skip): New function.
+	(octave_pager_stream::set_diary_skip): New function.
+	(octave_pager_buf::sync): Call flush_current_contents_to_diary
+	instead of octave_diary.write.
+	(octave_pager_buf::flush_current_contents_to_diary): Use
+	diary_skip, reset when done.
+	(open_diary_file): Call octave_stdout.set_diary_skip here.
+
 2000-12-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/minmax.cc (EMPTY_RETURN_CHECK): New macro.

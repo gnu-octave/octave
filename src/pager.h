@@ -36,13 +36,20 @@ octave_pager_buf : public std::strstreambuf
 {
 public:
 
-  octave_pager_buf (int size = 0) : std::strstreambuf (size) { }
+  octave_pager_buf (int size = 0)
+    : std::strstreambuf (size), diary_skip (0) { }
 
   void flush_current_contents_to_diary (void);
+
+  void set_diary_skip (void);
 
 protected:
 
   int sync (void);
+
+private:
+
+  size_t diary_skip;
 };
 
 class
@@ -57,6 +64,8 @@ public:
   ~octave_pager_stream (void);
 
   void flush_current_contents_to_diary (void);
+
+  void set_diary_skip (void);
 
   static octave_pager_stream& stream (void);
 

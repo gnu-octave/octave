@@ -241,7 +241,7 @@ octave_pager_buf::sync (void)
 
 	  seekoff (0, std::ios::beg);
 
-	  octave_diary.write (buf, len);
+	  flush_current_contents_to_diary ();
 	}
     }
 
@@ -251,11 +251,19 @@ octave_pager_buf::sync (void)
 void
 octave_pager_buf::flush_current_contents_to_diary (void)
 {
-  char *buf = eback ();
+  char *buf = eback () + diary_skip;
 
-  int len = pptr () - buf;
+  size_t len = pptr () - buf;
 
   octave_diary.write (buf, len);
+
+  diary_skip = 0;  
+}
+
+void
+octave_pager_buf::set_diary_skip (void)
+{
+  diary_skip = pptr () - eback ();
 }
 
 int
@@ -303,6 +311,13 @@ octave_pager_stream::flush_current_contents_to_diary (void)
 {
   if (pb)
     pb->flush_current_contents_to_diary ();
+}
+
+void
+octave_pager_stream::set_diary_skip (void)
+{
+  if (pb)
+    pb->set_diary_skip ();
 }
 
 octave_diary_stream *octave_diary_stream::instance = 0;
@@ -378,6 +393,11 @@ static void
 open_diary_file (void)
 {
   close_diary_file ();
+
+  // If there is pending output in the pager buf, it should not go
+  // into the diary file.
+ 
+  octave_stdout.set_diary_skip ();
 
   external_diary_file.open (diary_file.c_str (), std::ios::app);
 

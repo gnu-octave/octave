@@ -412,7 +412,6 @@ generate_completion (const std::string& text, int state)
   static std::string prefix;
   static std::string hint;
 
-  static size_t prefix_len = 0;
   static size_t hint_len = 0;
 
   static int list_index = 0;
@@ -433,8 +432,6 @@ generate_completion (const std::string& text, int state)
 
       name_list_len = name_list.length ();
 
-      prefix_len = prefix.length ();
-	
       hint_len = hint.length ();
 
       matches = 0;

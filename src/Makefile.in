@@ -57,8 +57,8 @@ DLD_SRC = f-balance.cc f-chol.cc f-colloc.cc f-dassl.cc f-det.cc \
 	f-rand.cc f-schur.cc f-sort.cc f-svd.cc f-syl.cc
 
 DLD_OBJ = f-balance.o f-chol.o f-colloc.o f-dassl.o f-det.o f-eig.o \
-	f-expm.o f-fft.o f-find.o f-fsolve.o \
-	f-fsqp.o f-givens.o f-hess.o f-ifft.o f-inv.o \
+	f-expm.o f-fft.o f-fft2.o f-find.o f-fsolve.o \
+	f-fsqp.o f-givens.o f-hess.o f-ifft.o f-ifft2.o f-inv.o \
 	f-log.o f-lpsolve.o f-lsode.o f-lu.o f-minmax.o f-npsol.o \
 	f-qpsol.o f-qr.o f-quad.o f-qzval.o f-rand.o f-schur.o \
 	f-sort.o f-svd.o f-syl.o

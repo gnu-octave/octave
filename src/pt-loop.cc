@@ -241,6 +241,41 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
     } \
   while (0)
 
+#define DO_ND_LOOP(arg) \
+  do \
+    { \
+      int ndims = dv.length (); \
+      Array<idx_vector> idx; \
+      int steps = dv.numel () / dv (0);	\
+      idx.resize (ndims, idx_vector (1)); \
+      idx (0) = idx_vector (':'); \
+ \
+      for (int i = 0; i < steps; i++) \
+	{ \
+	  MAYBE_DO_BREAKPOINT; \
+ \
+	  octave_value val (arg.index(idx));	\
+ \
+	  bool quit = false; \
+ \
+	  do_for_loop_once (ult, val, quit); \
+	  quit = (i == steps - 1 ? true : quit); \
+ \
+	  if (quit) \
+	    break; \
+ \
+	  for (int j = 1; j < ndims; j++) \
+	    { \
+	      idx(j) = idx_vector (idx(j)(0) + 2);	\
+	      if (idx(j)(0) < dv(j))			\
+		break; \
+	      else \
+		idx(j) = idx_vector (1);	\
+	    } \
+	} \
+    } \
+  while (0)
+
 void
 tree_simple_for_command::eval (void)
 {
@@ -332,42 +367,28 @@ tree_simple_for_command::eval (void)
       }
     else if (rhs.is_matrix_type ())
       {
-	Matrix m_tmp;
-	ComplexMatrix cm_tmp;
-
-	int nr;
-	int steps;
+	NDArray m_tmp;
+	ComplexNDArray cm_tmp;
+	dim_vector dv;
 
 	if (rhs.is_real_type ())
 	  {
-	    m_tmp = rhs.matrix_value ();
-	    nr = m_tmp.rows ();
-	    steps = m_tmp.columns ();
+	    m_tmp = rhs.array_value ();
+	    dv = m_tmp.dims ();
 	  }
 	else
 	  {
-	    cm_tmp = rhs.complex_matrix_value ();
-	    nr = cm_tmp.rows ();
-	    steps = cm_tmp.columns ();
+	    cm_tmp = rhs.complex_array_value ();
+	    dv = cm_tmp.dims ();
 	  }
 
 	if (error_state)
 	  goto cleanup;
 
 	if (rhs.is_real_type ())
-	  {
-	    if (nr == 1)
-	      DO_LOOP (m_tmp (0, i));
-	    else
-	      DO_LOOP (m_tmp.extract (0, i, nr-1, i));
-	  }
+	  DO_ND_LOOP(m_tmp);
 	else
-	  {
-	    if (nr == 1)
-	      DO_LOOP (cm_tmp (0, i));
-	    else
-	      DO_LOOP (cm_tmp.extract (0, i, nr-1, i));
-	  }
+	  DO_ND_LOOP(cm_tmp);
       }
     else if (rhs.is_map ())
       {
@@ -391,6 +412,12 @@ tree_simple_for_command::eval (void)
 	    if (quit)
 	      break;
 	  }
+      }
+    else if (rhs.is_cell ())
+      {
+	Cell c_tmp = rhs.cell_value ();
+	dim_vector dv = c_tmp.dims ();
+	DO_ND_LOOP(c_tmp);
       }
     else
       {

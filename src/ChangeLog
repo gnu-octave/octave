@@ -1,3 +1,26 @@
+2004-07-22  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* DLD-FUNCTIONS/dassl.cc (Fdassl): Fix doc string.
+	* ov-struct.cc (Fstruct): Likewise.
+	* symtab.cc (Fdebug_symtab_lookups): Likewise.
+
+2004-07-22  David Bateman  <dbateman@free.fr>
+
+	* data.cc (Fsize): Return 1 for dimensions exceeding ndim.
+
+	* ov.cc (octave_value::octave_value (const ArrayN<double>)):
+	New constructor.
+	* ov.h: Provide decl.
+	* ov-cx-mat.h (octave_complex_matrix (const ArrayN<Complex>&)):
+	New constructor.
+	* ov-re-mat.h (octave_complex_matrix (const ArrayN<double>&)):
+	New constructor.
+
+	* ov-re-mat.h (octave_matrix(const ArrayN<double>&)): New constructor
+	* pt-loop.cc (DO_ND_LOOP): New macro for use of NDArray in for loop.
+	(tree_simple_for_command::eval): Use it, and allow iteration over
+	cell arrays.
+
 2004-07-12  John W. Eaton  <jwe@octave.org>
 
 	* ov-intx.h: N-d array and scalar extractor functions take no args.

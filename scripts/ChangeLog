@@ -1,3 +1,22 @@
+2004-07-22  Etienne Grossmann  <etienne@cs.uky.edu>
+
+	* general/sub2ind.m: Make reshaping index list unnecessary.
+
+2004-07-22  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* miscellaneous/unix.m: Fix doc string.
+
+2004-07-22  Stefan van der Walt  <stefan@sun.ac.za>
+
+	* plot/figure.m: Clarification of documentation.
+
+	* image/imshow.m: Warn for complex images.
+	Only estimate colourmap for images in [0, 65536].
+
+2004-07-22  David Bateman  <dbateman@free.fr>
+
+	* general/num2str.m: Fix the case of an all zero input.
+
 2004-06-22  Etienne Grossmann  <etienne@cs.uky.edu>
 
 	* general/ind2sub.m: Doc fix.

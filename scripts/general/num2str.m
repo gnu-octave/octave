@@ -107,7 +107,11 @@ function retval = num2str (x, arg)
       endif
     else
       if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
-	dgt = ceil(log10(max(abs(x(:)))))+ (min (real (x(:))) < 0);
+	if (max(abs(x(:))) == 0)
+	  dgt = 1;
+	else
+	  dgt = floor(log10(max(abs(x(:))))) + (min (real (x(:))) < 0) + 1;
+	endif
 	fmt = sprintf("%%%dd  ",dgt);
       elseif (isscalar (x))
 	fmt = "%.4g";

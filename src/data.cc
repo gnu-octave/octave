@@ -1236,8 +1236,13 @@ returns the number of columns in the given matrix.\n\
 	{
 	  dim_vector dv = args(0).dims ();
 
-	  if (nd > 0 && nd <= dv.length ())
-	    retval(0) = dv(nd-1);
+	  if (nd > 0)
+	    {
+	      if (nd <= dv.length ())
+		retval(0) = dv(nd-1);
+	      else 
+		retval(0) = 1;
+	    }
 	  else
 	    error ("size: requested dimension (= %d) out of range", nd);
 	}

@@ -63,6 +63,9 @@ public:
   octave_matrix (const NDArray& nda)
     : octave_base_matrix<NDArray> (nda) { }
 
+  octave_matrix (const ArrayN<double>& m)
+    : octave_base_matrix<NDArray> (NDArray (m)) { }
+
   octave_matrix (const DiagMatrix& d)
     : octave_base_matrix<NDArray> (Matrix (d)) { }
 

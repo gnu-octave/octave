@@ -86,7 +86,6 @@ The Python license is
 #include <config.h>
 #endif
 
-#include "oct-obj.h"
 #include "lo-mappers.h"
 #include "quit.h"
 

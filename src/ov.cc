@@ -447,6 +447,13 @@ octave_value::octave_value (const NDArray& a)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<double>& a)
+  : rep (new octave_matrix (a))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const DiagMatrix& d)
   : rep (new octave_matrix (d))
 {
@@ -483,6 +490,13 @@ octave_value::octave_value (const ComplexMatrix& m)
 }
 
 octave_value::octave_value (const ComplexNDArray& a)
+  : rep (new octave_complex_matrix (a))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const ArrayN<Complex>& a)
   : rep (new octave_complex_matrix (a))
 {
   rep->count = 1;

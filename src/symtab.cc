@@ -1122,7 +1122,8 @@ will cause Octave to print a warning, but allow the operation.\n\
     "-*- texinfo -*-\n\
 @defvr debug_symtab_lookups\n\
 If the value of htis variable is nonzero, print debugging info when\n\
-searching for symbols in the symbol tables");
+searching for symbols in the symbol tables.\n\
+@end defvr");
 }
 
 

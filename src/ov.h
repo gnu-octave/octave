@@ -193,6 +193,7 @@ public:
   octave_value (const Cell& c, bool is_cs_list = false);
   octave_value (const Matrix& m);
   octave_value (const NDArray& nda);
+  octave_value (const ArrayN<double>& m);
   octave_value (const DiagMatrix& d);
   octave_value (const RowVector& v);
   octave_value (const ColumnVector& v);

@@ -1,3 +1,11 @@
+2004-07-22  David Bateman  <dbateman@free.fr>
+
+	* oct-sort.h: Don't include oct-obj.h.
+
+	* lo-specfun.cc (is_integer_value): New function.
+	(zbesj, zbesi, zbesy): Special case negative integer or half
+	integer orders that cause overflow for small arguments.
+
 2004-07-12  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (octave_int<T>::nbits): New function.

@@ -223,6 +223,12 @@ bessel_return_value (const Complex& val, int ierr)
   return retval;
 }
 
+static inline bool
+is_integer_value (double x)
+{
+  return x == static_cast<double> (static_cast<long> (x));
+}
+
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, int& ierr)
 {
@@ -251,6 +257,15 @@ zbesj (const Complex& z, double alpha, int kode, int& ierr)
 	yi = 0.0;
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else if (is_integer_value (alpha))
+    {
+      // zbesy can overflow as z->0, and cause troubles for generic case below
+      alpha = -alpha;
+      Complex tmp = zbesj (z, alpha, kode, ierr);
+      if ((static_cast <long> (alpha)) & 1) 
+	tmp = - tmp;
+      retval = bessel_return_value (tmp, ierr);
     }
   else
     {
@@ -313,6 +328,15 @@ zbesy (const Complex& z, double alpha, int kode, int& ierr)
 
       return bessel_return_value (Complex (yr, yi), ierr);
     }
+  else if (is_integer_value (alpha - 0.5))
+    {
+      // zbesy can overflow as z->0, and cause troubles for generic case below
+      alpha = -alpha;
+      Complex tmp = zbesj (z, alpha, kode, ierr);
+      if ((static_cast <long> (alpha - 0.5)) & 1) 
+	tmp = - tmp;
+      retval = bessel_return_value (tmp, ierr);
+    }
   else
     {
       alpha = -alpha;
@@ -369,8 +393,9 @@ zbesi (const Complex& z, double alpha, int kode, int& ierr)
 
       if (ierr == 0 || ierr == 3)
 	{
-	  tmp += (2.0 / M_PI) * sin (M_PI * alpha)
-	    * zbesk (z, alpha, kode, ierr);
+	  if (! is_integer_value (alpha - 0.5))
+	    tmp += (2.0 / M_PI) * sin (M_PI * alpha)
+	      * zbesk (z, alpha, kode, ierr);
 
 	  retval = bessel_return_value (tmp, ierr);
 	}

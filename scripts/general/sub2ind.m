@@ -46,9 +46,9 @@ function ind = sub2ind (dims, varargin)
 	      error ("sub2ind: index out of range");
 	    endif
 	  else
-	    if (all (size (first_arg) == size (arg)))
+            if (prod (size (first_arg)) == prod (size (arg)))
 	      if ((i > nd && arg == 1) || (arg > 0 & arg <= dims(i)))
-		ind += scale(i-1) * (arg - 1);
+		ind(:) += scale(i-1) * (arg(:) - 1);
 	      else
 		error ("sub2ind: index out of range");
 	      endif

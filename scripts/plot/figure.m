@@ -21,7 +21,8 @@
 ## @deftypefn {Function File} {} figure (@var{n})
 ## Set the current plot window to plot window @var{n}.  This function
 ## currently requires X11 and a version of gnuplot that supports multiple
-## frames.
+## frames. If N is not specified, the next available window number is
+## chosen.
 ## @end deftypefn
 
 ## Author: jwe

@@ -510,7 +510,8 @@ If the values are cell arrays, create a structure array and initialize\n\
 its values.  The dimensions of each cell array of values must match.\n\
 Singleton cells and non-cell values are repeated so that they fill\n\
 the entire array.  If the cells are empty, create an empty structure\n\
-array with the specified field names.")
+array with the specified field names.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

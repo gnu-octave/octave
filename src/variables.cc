@@ -1579,12 +1579,15 @@ bind_builtin_variable (const string& varname, const tree_constant& val,
   bind_builtin_variable (varname, tc, protect, eternal, sv_fcn, help);
 }
 
-void
-install_builtin_variables (void)
-{
-  // XXX FIXME XX -- these should probably be moved to where they
-  // logically belong instead of being all grouped here.
+// XXX FIXME XX -- these should probably be moved to where they
+// logically belong instead of being all grouped here.
 
+// This is split up to try to make compiling with gcc consume less
+// memory and go a little faster.
+
+static void
+install_builtin_variables_1 (void)
+{
   DEFVAR (EDITOR, editor, 0, sv_editor,
     "name of the editor to be invoked by the edit_history command");
 
@@ -1615,7 +1618,11 @@ install_builtin_variables (void)
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0,
 	  sv_imagepath,
     "colon separated list of directories to search for image files");
+}
 
+static void
+install_builtin_variables_2 (void)
+{
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
     "Octave version");
 
@@ -1645,7 +1652,11 @@ install_builtin_variables (void)
 
   DEFVAR (ans, , 0, 0,
     "");
+}
 
+static void
+install_builtin_variables_3 (void)
+{
   DEFCONST (argv, , 0, 0,
     "the command line arguments this program was invoked with");
 
@@ -1685,7 +1696,11 @@ default_return_value");
 
   DEFVAR (echo_executing_commands, 0.0, 0, echo_executing_commands,
     "echo commands as they are executed");
+}
 
+static void
+install_builtin_variables_4 (void)
+{
   DEFCONST (e, exp (1.0), 0, 0,
     "exp (1)");
 
@@ -1722,7 +1737,11 @@ default_return_value");
 
   DEFVAR (implicit_str_to_num_ok, 0.0, 0, implicit_str_to_num_ok,
     "allow implicit string to number conversion");
+}
 
+static void
+install_builtin_variables_5 (void)
+{
   DEFCONST (inf, octave_Inf, 0, 0,
     "infinity");
 
@@ -1752,7 +1771,11 @@ default_return_value");
 
   DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
     "when there is a conflict, prefer zero-one style indexing");
+}
 
+static void
+install_builtin_variables_6 (void)
+{
   DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
     "set output style to print `var_name = ...'");
 
@@ -1786,7 +1809,11 @@ directory specification");
   DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\
   last computed value");
+}
 
+static void
+install_builtin_variables_7 (void)
+{
   DEFVAR (save_precision, 15.0, 0, set_save_precision,
     "number of significant figures kept by the ASCII save command");
 
@@ -1819,7 +1846,11 @@ help and usage functions");
 
   DEFVAR (treat_neg_dim_as_zero, 0.0, 0, treat_neg_dim_as_zero,
     "convert negative dimensions to zero");
+}
 
+static void
+install_builtin_variables_8 (void)
+{
   DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 
@@ -1838,6 +1869,19 @@ terminated with a semicolon");
 
   DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
+}
+
+void
+install_builtin_variables (void)
+{
+  install_builtin_variables_1 ();
+  install_builtin_variables_2 ();
+  install_builtin_variables_3 ();
+  install_builtin_variables_4 ();
+  install_builtin_variables_5 ();
+  install_builtin_variables_6 ();
+  install_builtin_variables_7 ();
+  install_builtin_variables_8 ();
 }
 
 // Deleting names from the symbol tables.

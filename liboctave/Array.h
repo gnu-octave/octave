@@ -47,12 +47,6 @@ template <class T> class Array3;
 template <class T> class DiagArray;
 #endif
 
-#ifdef HEAVYWEIGHT_INDEXING
-#define SET_MAX_INDICES(n) set_max_indices (n)
-#else
-#define SET_MAX_INDICES(n)
-#endif
-
 // The real representation of all arrays.
 
 template <class T>
@@ -74,24 +68,12 @@ private:
   int count;
   int len;
 
-#ifdef HEAVYWEIGHT_INDEXING
-  idx_vector *idx;
-  int max_indices;
-  int idx_count;
-#endif
-
 protected:
 
   ArrayRep (T *d, int l)
     {
       data = d;
       len = l;
-
-#ifdef HEAVYWEIGHT_INDEXING
-      idx = 0;
-      max_indices = 0;
-      idx_count = 0;
-#endif
     }
 
 public:
@@ -100,12 +82,6 @@ public:
     {
       data = 0;
       len = 0;
-
-#ifdef HEAVYWEIGHT_INDEXING
-      idx = 0;
-      max_indices = 0;
-      idx_count = 0;
-#endif
     }
 
   ArrayRep (int n);
@@ -119,18 +95,6 @@ public:
   T& elem (int n);
 
   T elem (int n) const;
-
-#ifdef HEAVYWEIGHT_INDEXING
-  void set_max_indices (int mi) { max_indices = mi; }
-
-  void clear_index (void);
-
-  void set_index (const idx_vector& i);
-
-  int index_count (void) const { return idx_count; }
-
-  idx_vector *get_idx (void) const { return idx; }
-#endif
 };
 
 // One dimensional array class.  Handles the reference counting for
@@ -139,6 +103,14 @@ public:
 template <class T>
 class Array
 {
+private:
+
+#ifdef HEAVYWEIGHT_INDEXING
+  idx_vector *idx;
+  int max_indices;
+  int idx_count;
+#endif
+
 protected:
 
   ArrayRep<T> *rep;
@@ -147,7 +119,12 @@ protected:
     {
       rep = new ArrayRep<T> (d, l);
       rep->count = 1;
-      set_max_indices (1);
+
+#ifdef HEAVYWEIGHT_INDEXING
+      idx = 0;
+      max_indices = 1;
+      idx_count = 0;
+#endif
     }
 
 public:
@@ -156,14 +133,24 @@ public:
     {
       rep = new ArrayRep<T> ();
       rep->count = 1;
-      set_max_indices (1);
+
+#ifdef HEAVYWEIGHT_INDEXING
+      idx = 0;
+      max_indices = 1;
+      idx_count = 0;
+#endif
     }
 
   Array (int n)
     {
       rep = new ArrayRep<T> (n);
       rep->count = 1;
-      set_max_indices (1);
+
+#ifdef HEAVYWEIGHT_INDEXING
+      idx = 0;
+      max_indices = 1;
+      idx_count = 0;
+#endif
     }
 
   Array (int n, const T& val);
@@ -172,13 +159,15 @@ public:
     {
       rep = a.rep;
       rep->count++;
+
+#ifdef HEAVYWEIGHT_INDEXING
+      max_indices = a.max_indices;
+      idx_count = 0;
+      idx = 0;
+#endif
     }
 
-  ~Array (void)
-    {
-      if (--rep->count <= 0)
-	delete rep;
-    }
+  ~Array (void);
 
   Array<T>& operator = (const Array<T>& a);
 
@@ -215,15 +204,15 @@ public:
   T *fortran_vec (void);
 
 #ifdef HEAVYWEIGHT_INDEXING
-  void set_max_indices (int mi) { rep->set_max_indices (mi); }
+  void set_max_indices (int mi) { max_indices = mi; }
 
-  void clear_index (void) { rep->clear_index (); }
+  void clear_index (void);
 
-  void set_index (const idx_vector& i) { rep->set_index (i); }
+  void set_index (const idx_vector& i);
 
-  int index_count (void) const { return rep->index_count (); }
+  int index_count (void) const { return idx_count; }
 
-  idx_vector *get_idx (void) const { return rep->get_idx (); }
+  idx_vector *get_idx (void) const { return idx; }
 
   void maybe_delete_elements (idx_vector& i);
 

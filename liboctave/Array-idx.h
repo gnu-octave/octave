@@ -21,6 +21,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include "error.h"
 #include "idx-vector.h"
 #include "lo-error.h"
 
@@ -38,8 +39,10 @@ extern int rre_flag;
 
 template <class T>
 void
-ArrayRep<T>::clear_index (void)
+Array<T>::clear_index (void)
 {
+  cerr << "clearing index for " << this << "\n";
+
   delete [] idx;
   idx = 0;
   idx_count = 0;
@@ -47,8 +50,10 @@ ArrayRep<T>::clear_index (void)
 
 template <class T>
 void
-ArrayRep<T>::set_index (const idx_vector& i)
+Array<T>::set_index (const idx_vector& i)
 {
+  cerr << "setting index for " << this << "\n";
+
   if (! idx)
     idx = new idx_vector [max_indices];
 
@@ -60,6 +65,7 @@ ArrayRep<T>::set_index (const idx_vector& i)
     {
       (*current_liboctave_error_handler)
 	("invalid number of indices specified");
+
       clear_index ();
     }
 }

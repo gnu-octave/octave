@@ -49,12 +49,6 @@ ArrayRep<T>::ArrayRep (int n)
 {
   len = n;
   data = new T [len];
-
-#ifdef HEAVYWEIGHT_INDEXING
-  idx = 0;
-  max_indices = 0;
-  idx_count = 0;
-#endif
 }
 
 template <class T>
@@ -66,26 +60,12 @@ ArrayRep<T>::ArrayRep (const ArrayRep<T>& a)
   data = new T [len];
   for (int i = 0; i < len; i++)
     data[i] = a.data[i];
-
-#ifdef HEAVYWEIGHT_INDEXING
-  max_indices = a.max_indices;
-  idx_count = a.idx_count;
-  if (a.idx)
-    {
-      idx_vector *idx = new idx_vector [max_indices];
-      for (int i = 0; i < max_indices; i++)
-	idx[i] = a.idx[i];
-    }
-  else
-    idx = 0;
-#endif
 }
 
 template <class T>
 ArrayRep<T>::~ArrayRep (void)
 {
   delete [] data;
-  delete [] idx;
 }
 
 template <class T>
@@ -109,9 +89,28 @@ template <class T>
 Array<T>::Array (int n, const T& val)
 {
   rep = new ArrayRep<T> (n);
+
   rep->count = 1;
+
   for (int i = 0; i < n; i++)
     rep->data[i] = val;
+
+#ifdef HEAVYWEIGHT_INDEXING
+  max_indices = 1;
+  idx_count = 0;
+  idx = 0;
+#endif
+}
+
+template <class T>
+Array<T>::~Array (void)
+{
+  if (--rep->count <= 0)
+    delete rep;
+
+#ifdef HEAVYWEIGHT_INDEXING
+  delete [] idx;
+#endif
 }
 
 template <class T>
@@ -126,6 +125,13 @@ Array<T>::operator = (const Array<T>& a)
       rep = a.rep;
       rep->count++;
     }
+
+#ifdef HEAVYWEIGHT_INDEXING
+  max_indices = 1;
+  idx_count = 0;
+  idx = 0;
+#endif
+
   return *this;
 }
 
@@ -190,8 +196,6 @@ Array<T>::resize (int n)
   rep = new ArrayRep<T> (n);
   rep->count = 1;
 
-  SET_MAX_INDICES (1);
-
   if (old_data && old_len > 0)
     {
       int min_len = old_len < n ? old_len : n;
@@ -223,8 +227,6 @@ Array<T>::resize (int n, const T& val)
 
   rep = new ArrayRep<T> (n);
   rep->count = 1;
-
-  SET_MAX_INDICES (1);
 
   int min_len = old_len < n ? old_len : n;
 
@@ -327,8 +329,6 @@ Array2<T>::resize (int r, int c)
   rep = new ArrayRep<T> (r*c);
   rep->count = 1;
 
-  SET_MAX_INDICES (2);
-
   d1 = r;
   d2 = c;
 
@@ -367,8 +367,6 @@ Array2<T>::resize (int r, int c, const T& val)
 
   rep = new ArrayRep<T> (r*c);
   rep->count = 1;
-
-  SET_MAX_INDICES (2);
 
   d1 = r;
   d2 = c;
@@ -583,8 +581,6 @@ DiagArray<T>::resize (int r, int c)
   rep = new ArrayRep<T> (new_len);
   rep->count = 1;
 
-  SET_MAX_INDICES (2);
-
   nr = r;
   nc = c;
 
@@ -621,8 +617,6 @@ DiagArray<T>::resize (int r, int c, const T& val)
 
   rep = new ArrayRep<T> (new_len);
   rep->count = 1;
-
-  SET_MAX_INDICES (2);
 
   nr = r;
   nc = c;

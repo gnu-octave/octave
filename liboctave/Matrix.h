@@ -474,7 +474,7 @@ public:
 
 // row vector by column vector -> scalar
 
-  friend double operator * (const RowVector& a, ColumnVector& b);
+  friend double operator * (const RowVector& a, const ColumnVector& b);
 
   friend Complex operator * (const RowVector& a, const ComplexColumnVector& b);
 
@@ -613,8 +613,8 @@ public:
 
   friend ColumnVector operator * (const DiagMatrix& a, const ColumnVector& b);
 
-  friend ComplexColumnVector operator * (const DiagMatrix& a, const
-					 ComplexColumnVector& b);
+  friend ComplexColumnVector operator * (const DiagMatrix& a,
+					 const ComplexColumnVector& b);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 

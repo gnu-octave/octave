@@ -364,7 +364,7 @@ Matrix&
 Matrix::fill (double val, int r1, int c1, int r2, int c2)
 {
   int nr = rows ();
-  int nc = rows ();
+  int nc = cols ();
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -2622,7 +2622,7 @@ ComplexMatrix&
 ComplexMatrix::fill (double val, int r1, int c1, int r2, int c2)
 {
   int nr = rows ();
-  int nc = rows ();
+  int nc = cols ();
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -2644,7 +2644,7 @@ ComplexMatrix&
 ComplexMatrix::fill (const Complex& val, int r1, int c1, int r2, int c2)
 {
   int nr = rows ();
-  int nc = rows ();
+  int nc = cols ();
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {

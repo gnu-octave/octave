@@ -1222,7 +1222,6 @@ next_token_is_bin_op (int spc_prev, char *yytext)
     case '~':
     case '!':
     case '=':
-    case '.':
       bin_op = 1;
       break;
 

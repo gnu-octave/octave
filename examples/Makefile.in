@@ -1,0 +1,50 @@
+#
+# Makefile for octave's examples directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+SOURCES = hello.cc
+
+DISTFILES = Makefile.in $(SOURCES)
+
+SUBDIRS = 
+
+DISTSUBDIRS = 
+
+all:
+.PHONY: all
+
+tags:
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+distclean:
+	rm -f Makefile
+
+maintainer-clean: distclean
+	rm -f tags TAGS
+
+local-dist:
+	ln $(DISTFILES) ../`cat ../.fname`/examples
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/examples
+.PHONY: dist

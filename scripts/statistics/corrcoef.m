@@ -42,7 +42,7 @@ function retval = corrcoef (x, y)
   elseif (nargin == 1)
     c = cov (x);
     s = reshape (sqrt (diag (c)), 1, columns (c));
-    retval = c ./ sqrt (s * s');
+    retval = c ./ (s' * s);
   endif
 
 endfunction

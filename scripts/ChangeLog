@@ -1,6 +1,10 @@
+Fri Mar  7 23:06:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/corrcoef.m: Make it actually work.
+
 Thu Mar  6 12:36:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* statistics/corrcoef.m: Don't fail if single argument is a vector.
+	* statistics/corrcoef.m: Don't fail if single argument is a matrix.
 
 Sat Mar  1 15:23:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -3760,7 +3760,7 @@ operator >> (istream& is, ComplexMatrix& a)
 	    if (is)
 	      a.elem (i, j) = tmp;
 	    else
-	      return;
+	      return is;
 	  }
     }
 

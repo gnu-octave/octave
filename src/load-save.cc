@@ -1915,6 +1915,17 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 
       size_t beg = buf.find_first_not_of (" \t");
 
+      // If we see a CR as the last character in the buffer, we had a
+      // CRLF pair as the line separator.  Any other CR in the text
+      // will not be considered as whitespace.
+
+      if (beg != NPOS && buf[beg] == '\r' && beg == buf.length () - 1)
+	{
+	  // We had a blank line ending with a CRLF.  Handle it the
+	  // same as an empty line.
+	  beg = NPOS;
+	}
+
       int tmp_nc = 0;
 
       while (beg != NPOS)
@@ -1924,7 +1935,17 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 	  size_t end = buf.find_first_of (" \t", beg);
 
 	  if (end != NPOS)
-	    beg = buf.find_first_not_of (" \t", end);
+	    {
+	      beg = buf.find_first_not_of (" \t", end);
+
+	      if (buf[beg] == '\r' && beg == buf.length () - 1)
+		{
+		  // We had a line with trailing spaces and
+		  // ending with a CRLF, so this should look like EOL,
+		  // not a new colum.
+		  break;
+		}
+	    }
 	  else
 	    break;
 	}

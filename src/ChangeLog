@@ -1,3 +1,8 @@
+2002-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (get_lines_and_columns): Handle CRLF as line
+	separator in addition to LF.
+
 2002-04-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (hdf5_ofstream::hdf5_ofstream):

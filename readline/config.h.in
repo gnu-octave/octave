@@ -1,9 +1,4 @@
-/* config.h.in.  */
-
-/* This file was created by hand, NOT autoheader.  There is no
-   config.h.bot file or acconfig.h file in the readline sources.  If
-   you run autoheader in this directory, you will end up with a
-   broken config.h.in file.  */
+/* config.h.in.  Maintained by hand. */
 
 /* Define if on MINIX.  */
 #undef _MINIX
@@ -129,7 +124,6 @@
 
 #undef HAVE_POSIX_SIGSETJMP
 
-/* config.h.bot */
 /* modify settings or make new ones based on what autoconf tells us. */
 
 /* Ultrix botches type-ahead when switching from canonical to

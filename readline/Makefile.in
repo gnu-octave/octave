@@ -193,8 +193,6 @@ uninstall-headers:
 
 maybe-uninstall-headers: uninstall-headers
 
-# For Octave, do nothing for these.
-
 install uninstall:
 
 #install: installdirs $(STATIC_LIBS) install-headers

@@ -6,9 +6,9 @@
 .\"	Case Western Reserve University
 .\"	chet@ins.CWRU.Edu
 .\"
-.\"	Last Change: Mon Feb  5 08:51:52 EST 2001
+.\"	Last Change: Mon Mar  5 09:58:38 EST 2001
 .\"
-.TH READLINE 3 "2001 Feb 5" "GNU Readline 4.2"
+.TH READLINE 3 "2001 Mar 5" "GNU Readline 4.2"
 .\"
 .\" File Name macro.  This used to be `.PN', for Path Name,
 .\" but Sun doesn't seem to like that very much.
@@ -168,6 +168,7 @@ command or the text of a macro and a key sequence to which
 it should be bound. The name may be specified in one of two ways:
 as a symbolic key name, possibly with \fIMeta\-\fP or \fIControl\-\fP
 prefixes, or as a key sequence.
+.PP
 When using the form \fBkeyname\fP:\^\fIfunction-name\fP or \fImacro\fP,
 .I keyname
 is the name of a key spelled out in English.  For example:
@@ -202,7 +203,8 @@ differs from
 above in that strings denoting
 an entire key sequence may be specified by placing the sequence
 within double quotes.  Some GNU Emacs style key escapes can be
-used, as in the following example.
+used, as in the following example, but the symbolic character names
+are not recognized.
 .sp
 .RS
 "\eC\-u": universal\-argument
@@ -224,7 +226,9 @@ and
 is bound to insert the text
 .if t \f(CWFunction Key 1\fP.
 .if n ``Function Key 1''.
-The full set of GNU Emacs style escape sequences is
+.PP
+The full set of GNU Emacs style escape sequences available when specifying
+key sequences is
 .RS
 .PD 0
 .TP
@@ -651,8 +655,8 @@ This is a non-incremental search.
 .TP
 .B yank\-nth\-arg (M\-C\-y)
 Insert the first argument to the previous command (usually
-the second word on the previous line) at point (the current
-cursor position).  With an argument
+the second word on the previous line) at point.
+With an argument
 .IR n ,
 insert the \fIn\fPth word from the previous command (the words
 in the previous command begin with word 0).  A negative argument
@@ -671,7 +675,7 @@ list, inserting the last argument of each line in turn.
 .PD 0
 .TP
 .B delete\-char (C\-d)
-Delete the character under the cursor.  If point is at the
+Delete the character at point.  If point is at the
 beginning of the line, there are no characters in the line, and
 the last character typed was not bound to \fBdelete\-char\fP, then return
 .SM
@@ -698,12 +702,14 @@ Insert the character typed.
 .TP
 .B transpose\-chars (C\-t)
 Drag the character before point forward over the character at point,
-moving point forward as well.  If point is at the end of the line, then
-transpose the two characters before point.  Negative arguments don't work.
+moving point forward as well.
+If point is at the end of the line, then this transposes
+the two characters before point.
+Negative arguments have no effect.
 .TP
 .B transpose\-words (M\-t)
-Drag the word behind the cursor past the word in front of the cursor,
-moving the cursor over that word as well.
+Drag the word before point past the word after point,
+moving point over that word as well.
 .TP
 .B upcase\-word (M\-u)
 Uppercase the current (or following) word.  With a negative argument,
@@ -722,7 +728,7 @@ capitalize the previous word, but do not move point.
 .PD 0
 .TP
 .B kill\-line (C\-k)
-Kill the text from the current cursor position to the end of the line.
+Kill the text from point to the end of the line.
 .TP
 .B backward\-kill\-line (C\-x Rubout)
 Kill backward to the beginning of the line.
@@ -733,22 +739,20 @@ The killed text is saved on the kill-ring.
 .\" There is no real difference between this and backward-kill-line
 .TP
 .B kill\-whole\-line
-Kill all characters on the current line, no matter where the
-cursor is.
+Kill all characters on the current line, no matter where point is.
 .TP
 .B kill\-word  (M\-d)
-Kill from the cursor to the end of the current word, or if between
+Kill from point the end of the current word, or if between
 words, to the end of the next word.  Word boundaries are the same as
 those used by \fBforward\-word\fP.
 .TP
 .B backward\-kill\-word (M\-Rubout)
-Kill the word behind the cursor.  Word boundaries are the same as
-those used by \fBbackward\-word\fP.
+Kill the word behind point.
+Word boundaries are the same as those used by \fBbackward\-word\fP.
 .TP
 .B unix\-word\-rubout (C\-w)
-Kill the word behind the cursor, using white space as a word boundary.
-The word boundaries are different from
-.BR backward\-kill\-word .
+Kill the word behind point, using white space as a word boundary.
+The killed text is saved on the kill-ring.
 .TP
 .B delete\-horizontal\-space (M\-\e)
 Delete all spaces and tabs around point.
@@ -769,7 +773,7 @@ Copy the word following point to the kill buffer.
 The word boundaries are the same as \fBforward\-word\fP.
 .TP
 .B yank (C\-y)
-Yank the top of the kill ring into the buffer at the cursor.
+Yank the top of the kill ring into the buffer at point.
 .TP
 .B yank\-pop (M\-y)
 Rotate the kill ring, and yank the new top.  Only works following
@@ -830,8 +834,9 @@ Similar to \fBcomplete\fP, but replaces the word to be completed
 with a single match from the list of possible completions.
 Repeated execution of \fBmenu\-complete\fP steps through the list
 of possible completions, inserting each match in turn.
-At the end of the list of completions, the bell is rung and the
-original text is restored.
+At the end of the list of completions, the bell is rung
+(subject to the setting of \Bbell\-style\fP)
+and the original text is restored.
 An argument of \fIn\fP moves \fIn\fP positions forward in the list
 of matches; a negative argument may be used to move backward 
 through the list.
@@ -896,7 +901,7 @@ command enough times to return the line to its initial state.
 Perform tilde expansion on the current word.
 .TP
 .B set\-mark (C\-@, M\-<space>)
-Set the mark to the current point.  If a
+Set the mark to the point.  If a
 numeric argument is supplied, the mark is set to that position.
 .TP
 .B exchange\-point\-and\-mark (C\-x C\-x)
@@ -1056,7 +1061,7 @@ Emacs Meta bindings
 "M-Y"  yank-pop
 "M-\e"  delete-horizontal-space
 "M-~"  tilde-expand
-"M-C-?"  backward-delete-word
+"M-C-?"  backward-kill-word
 "M-_"  yank-last-arg
 .PP
 Emacs Control-X bindings
@@ -1116,6 +1121,7 @@ VI Command Mode functions
 "C-V"  quoted-insert
 "C-W"  unix-word-rubout
 "C-Y"  yank
+"C-_"  vi-undo
 "\^ "  forward-char
 "#"  insert-comment
 "$"  end-of-line
@@ -1170,7 +1176,7 @@ VI Command Mode functions
 "r"  vi-change-char
 "s"  vi-subst
 "t"  vi-char-search
-"u"  undo
+"u"  vi-undo
 "w"  vi-next-word
 "x"  vi-delete
 "y"  vi-yank-to

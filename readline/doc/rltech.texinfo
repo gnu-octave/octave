@@ -35,9 +35,9 @@ by the Foundation.
 @node Programming with GNU Readline
 @chapter Programming with GNU Readline
 
-This chapter describes the interface between the GNU Readline Library and
+This chapter describes the interface between the @sc{gnu} Readline Library and
 other programs.  If you are a programmer, and you wish to include the
-features found in GNU Readline
+features found in @sc{gnu} Readline
 such as completion, line editing, and interactive history manipulation
 in your own programs, this section is for you.
 
@@ -66,16 +66,16 @@ the simplest way possible, perhaps to replace calls in your code to
 @findex readline
 @cindex readline, function
 
-@example
-@code{char *readline (const char *@var{prompt});}
-@end example
-
 The function @code{readline()} prints a prompt @var{prompt}
 and then reads and returns a single line of text from the user.
 If @var{prompt} is @code{NULL} or the empty string, no prompt is displayed.
 The line @code{readline} returns is allocated with @code{malloc()};
 the caller should @code{free()} the line when it has finished with it.
 The declaration for @code{readline} in ANSI C is
+
+@example
+@code{char *readline (const char *@var{prompt});}
+@end example
 
 @noindent
 So, one might say
@@ -330,6 +330,8 @@ the beginning of the newly-blank line.
 @deftypevar {char *} rl_prompt
 The prompt Readline uses.  This is set from the argument to
 @code{readline()}, and should not be assigned to directly.
+The @code{rl_set_prompt()} function (@pxref{Redisplay}) may
+be used to modify the prompt string after calling @code{readline()}.
 @end deftypevar
 
 @deftypevar int rl_already_prompted
@@ -390,25 +392,27 @@ starts reading input characters.
 
 @deftypevar {rl_hook_func_t *} rl_event_hook
 If non-zero, this is the address of a function to call periodically
-when readline is waiting for terminal input.
+when Readline is waiting for terminal input.
+By default, this will be called at most ten times a second if there
+is no keyboard input.
 @end deftypevar
 
 @deftypevar {rl_getc_func_t *} rl_getc_function
-If non-zero, @code{readline} will call indirectly through this pointer
+If non-zero, Readline will call indirectly through this pointer
 to get a character from the input stream.  By default, it is set to
-@code{rl_getc}, the default @code{readline} character input function
+@code{rl_getc}, the default Readline character input function
 (@pxref{Character Input}).
 @end deftypevar
 
 @deftypevar {rl_voidfunc_t *} rl_redisplay_function
-If non-zero, @code{readline} will call indirectly through this pointer
+If non-zero, Readline will call indirectly through this pointer
 to update the display with the current contents of the editing buffer.
-By default, it is set to @code{rl_redisplay}, the default @code{readline}
+By default, it is set to @code{rl_redisplay}, the default Readline
 redisplay function (@pxref{Redisplay}).
 @end deftypevar
 
 @deftypevar {rl_vintfunc_t *} rl_prep_term_function
-If non-zero, @code{readline} will call indirectly through this pointer
+If non-zero, Readline will call indirectly through this pointer
 to initialize the terminal.  The function takes a single argument, an
 @code{int} flag that says whether or not to use eight-bit characters.
 By default, this is set to @code{rl_prep_terminal}
@@ -416,7 +420,7 @@ By default, this is set to @code{rl_prep_terminal}
 @end deftypevar
 
 @deftypevar {rl_voidfunc_t *} rl_deprep_term_function
-If non-zero, @code{readline} will call indirectly through this pointer
+If non-zero, Readline will call indirectly through this pointer
 to reset the terminal.  This function should undo the effects of
 @code{rl_prep_term_function}.
 By default, this is set to @code{rl_deprep_terminal}
@@ -521,6 +525,7 @@ means that vi mode is active.
 * Character Input::	Functions to read keyboard input.
 * Terminal Management::	Functions to manage terminal settings.
 * Utility Functions::	Generally useful functions and hooks.
+* Miscellaneous Functions::	Functions that don't fall into any category.
 * Alternate Interface::	Using Readline in a `callback' fashion.
 @end menu
 
@@ -826,6 +831,14 @@ starting on a new line.
 Move the cursor to the start of the next screen line.
 @end deftypefun
 
+@deftypefun int rl_show_char (int c)
+Display character @var{c} on @code{rl_outstream}.
+If Readline has not been set to display meta characters directly, this
+will convert meta characters to a meta-prefixed key sequence.
+This is intended for use by applications which wish to do their own
+redisplay.
+@end deftypefun
+
 @deftypefun int rl_message (const char *, @dots{})
 The arguments are a format string as would be supplied to @code{printf},
 possibly containing conversion specifications such as @samp{%d}, and
@@ -857,6 +870,13 @@ function or @code{rl_already_prompted} variable is used.
 It returns the number of visible characters on the last line of the
 (possibly multi-line) prompt.
 @end deftypefun
+
+@deftypefun int rl_set_prompt (const char *prompt)
+Make Readline use @var{prompt} for subsequent redisplay.  This calls
+@code{rl_expand_prompt()} to expand the prompt and sets @code{rl_prompt}
+to the result.
+@end deftypefun
+
 @node Modifying Text
 @subsection Modifying Text
 
@@ -880,6 +900,12 @@ last command was a kill command.  The text is deleted.
 If @var{start} is less than @var{end},
 the text is appended, otherwise prepended.  If the last command was
 not a kill, a new kill ring slot is used.
+@end deftypefun
+
+@deftypefun int rl_push_macro_input (char *macro)
+Cause @var{macro} to be inserted into the line, as if it had been invoked
+by a key bound to a macro.  Not especially useful; use
+@code{rl_insert_text()} instead.
 @end deftypefun
 
 @node Character Input
@@ -909,7 +935,7 @@ is called.  This sets @var{rl_pending_input}.
 @end deftypefun
 
 @deftypefun int rl_clear_pending_input (void)
-Unet @var{rl_pending_input}, effectively negating the effect of any
+Unset @var{rl_pending_input}, effectively negating the effect of any
 previous call to @code{rl_execute_next()}.  This works only if the
 pending input has not already been read with @code{rl_read_key()}.
 @end deftypefun
@@ -917,14 +943,14 @@ pending input has not already been read with @code{rl_read_key()}.
 @node Terminal Management
 @subsection Terminal Management
 
-@deftypefun int rl_prep_terminal (int meta_flag)
+@deftypefun void rl_prep_terminal (int meta_flag)
 Modify the terminal settings for Readline's use, so @code{readline()}
 can read a single character at a time from the keyboard.
 The @var{meta_flag} argument should be non-zero if Readline should
 read eight-bit input.
 @end deftypefun
 
-@deftypefun in rl_deprep_terminal (void)
+@deftypefun void rl_deprep_terminal (void)
 Undo the effects of @code{rl_prep_terminal()}, leaving the terminal in
 the state in which it was before the most recent call to
 @code{rl_prep_terminal()}.
@@ -932,14 +958,14 @@ the state in which it was before the most recent call to
 
 @deftypefun void rl_tty_set_default_bindings (Keymap kmap)
 Read the operating system's terminal editing characters (as would be displayed
-by @code{stty} to their readline equivalents.  The bindings are performed
+by @code{stty}) to their Readline equivalents.  The bindings are performed
 in @var{kmap}.
 @end deftypefun
 
 @deftypefun int rl_reset_terminal (const char *terminal_name)
 Reinitialize Readline's idea of the terminal settings using
 @var{terminal_name} as the terminal type (e.g., @code{vt100}).
-If @var{terminal_name} is NULL, the value of the @code{TERM}
+If @var{terminal_name} is @code{NULL}, the value of the @code{TERM}
 environment variable is used.
 @end deftypefun
 
@@ -1002,6 +1028,37 @@ lowercase character.
 
 @deftypefun int _rl_digit_value (int c)
 If @var{c} is a number, return the value it represents.
+@end deftypefun
+
+@node Miscellaneous Functions
+@subsection Miscellaneous Functions
+
+@deftypefun int rl_macro_bind (const char *keyseq, const char *macro, Keymap map)
+Bind the key sequence @var{keyseq} to invoke the macro @var{macro}.
+The binding is performed in @var{map}.  When @var{keyseq} is invoked, the
+@var{macro} will be inserted into the line.  This function is deprecated;
+use @code{rl_generic_bind()} instead.
+@end deftypefun
+
+@deftypefun void rl_macro_dumper (int readable)
+Print the key sequences bound to macros and their values, using
+the current keymap, to @code{rl_outstream}.
+If @var{readable} is non-zero, the list is formatted in such a way
+that it can be made part of an @code{inputrc} file and re-read.
+@end deftypefun
+
+@deftypefun int rl_variable_bind (const char *variable, const char *value)
+Make the Readline variable @var{variable} have @var{value}.
+This behaves as if the readline command
+@samp{set @var{variable} @var{value}} had been executed in an @code{inputrc}
+file (@pxref{Readline Init File Syntax}).
+@end deftypefun
+
+@deftypefun void rl_variable_dumper (int readable)
+Print the readline variable names and their current values
+to @code{rl_outstream}.
+If @var{readable} is non-zero, the list is formatted in such a way
+that it can be made part of an @code{inputrc} file and re-read.
 @end deftypefun
 
 @node Alternate Interface
@@ -1107,13 +1164,13 @@ invert_case_line (count, key)
 
 Signals are asynchronous events sent to a process by the Unix kernel,
 sometimes on behalf of another process.  They are intended to indicate
-exceptional events, like a user pressing the interrupt key on his
-terminal, or a network connection being broken.  There is a class of
-signals that can be sent to the process currently reading input from
-the keyboard.  Since Readline changes the terminal attributes when it
-is called, it needs to perform special processing when a signal is
-received to restore the terminal to a sane state, or provide application
-writers with functions to do so manually.
+exceptional events, like a user pressing the interrupt key on his terminal,
+or a network connection being broken.  There is a class of signals that can
+be sent to the process currently reading input from the keyboard.  Since
+Readline changes the terminal attributes when it is called, it needs to
+perform special processing when such a signal is received in order to
+restore the terminal to a sane state, or provide application writers with
+functions to do so manually. 
 
 Readline contains an internal signal handler that is installed for a
 number of signals (@code{SIGINT}, @code{SIGQUIT}, @code{SIGTERM},
@@ -1202,6 +1259,15 @@ Update Readline's internal screen size by reading values from the kernel.
 @deftypefun void rl_set_screen_size (int rows, int cols)
 Set Readline's idea of the terminal size to @var{rows} rows and
 @var{cols} columns.
+@end deftypefun
+
+If an application does not want to install a @code{SIGWINCH} handler, but
+is still interested in the screen dimensions, Readline's idea of the screen
+size may be queried.
+
+@deftypefun void rl_get_screen_size (int *rows, int *cols)
+Return Readline's idea of the terminal's size in the
+variables pointed to by the arguments.
 @end deftypefun
 
 The following functions install and remove Readline's signal handlers.
@@ -1334,25 +1400,25 @@ This calls @code{rl_complete_internal()} with an argument of @samp{*}.
 @end deftypefun
 
 @deftypefun {char **} rl_completion_matches (const char *text, rl_compentry_func_t *entry_func)
-Returns an array of @code{(char *)} which is a list of completions for
+Returns an array of strings which is a list of completions for
 @var{text}.  If there are no completions, returns @code{NULL}.
 The first entry in the returned array is the substitution for @var{text}.
 The remaining entries are the possible completions.  The array is
 terminated with a @code{NULL} pointer.
 
 @var{entry_func} is a function of two args, and returns a
-@code{(char *)}.  The first argument is @var{text}.  The second is a
+@code{char *}.  The first argument is @var{text}.  The second is a
 state argument; it is zero on the first call, and non-zero on subsequent
 calls.  @var{entry_func} returns a @code{NULL}  pointer to the caller
 when there are no more matches.
 @end deftypefun
 
 @deftypefun {char *} rl_filename_completion_function (const char *text, int state)
-A generator function for filename completion in the general case.  Note
-that completion in Bash is a little different because of all
-the pathnames that must be followed when looking up completions for a
-command.  The Bash source is a useful reference for writing custom
-completion functions.
+A generator function for filename completion in the general case.
+@var{text} is a partial filename.
+The Bash source is a useful reference for writing custom
+completion functions (the Bash completion functions call this and other
+Readline functions).
 @end deftypefun
 
 @deftypefun {char *} rl_username_completion_function (const char *text, int state)
@@ -1382,7 +1448,7 @@ set to @code{NULL}, then @code{rl_complete()} will call the value of
 array of strings returned will be used.
 If this function sets the @code{rl_attempted_completion_over}
 variable to a non-zero value, Readline will not perform its default
-completion if this function returns no matches.
+completion even if this function returns no matches.
 @end deftypevar
 
 @deftypevar {rl_quote_func_t *} rl_filename_quoting_function
@@ -1412,7 +1478,7 @@ that delimits the filename (usually @samp{'} or @samp{"}).  If
 @deftypevar {rl_linebuf_func_t *} rl_char_is_quoted_p
 A pointer to a function to call that determines whether or not a specific
 character in the line buffer is quoted, according to whatever quoting
-mechanism the program calling readline uses.  The function is called with
+mechanism the program calling Readline uses.  The function is called with
 two arguments: @var{text}, the text of the line, and @var{index}, the
 index of the character in the line.  It is used to decide whether a
 character found in @code{rl_completer_word_break_characters} should be
@@ -1428,12 +1494,12 @@ she wants to see them all.  The default value is 100.
 @deftypevar {const char *} rl_basic_word_break_characters
 The basic list of characters that signal a break between words for the
 completer routine.  The default value of this variable is the characters
-which break words for completion in Bash, i.e.,
+which break words for completion in Bash:
 @code{" \t\n\"\\'`@@$><=;|&@{("}.
 @end deftypevar
 
 @deftypevar {const char *} rl_basic_quote_characters
-List of quote characters which can cause a word break.
+A list of quote characters which can cause a word break.
 @end deftypevar
 
 @deftypevar {const char *} rl_completer_word_break_characters
@@ -1443,7 +1509,7 @@ The list of characters that signal a break between words for
 @end deftypevar
 
 @deftypevar {const char *} rl_completer_quote_characters
-List of characters which can be used to quote a substring of the line.
+A list of characters which can be used to quote a substring of the line.
 Completion occurs on the entire substring, and within the substring
 @code{rl_completer_word_break_characters} are treated as any other character,
 unless they also appear within this list.
@@ -1473,7 +1539,8 @@ an application-specific command line syntax specification.
 @end deftypevar
 
 @deftypevar int rl_ignore_completion_duplicates
-If non-zero, then disallow duplicates in the matches.  Default is 1.
+If non-zero, then duplicates in the matches are removed.
+The default is 1.
 @end deftypevar
 
 @deftypevar int rl_filename_completion_desired
@@ -1499,8 +1566,8 @@ by @code{rl_filename_quoting_function}.
 @deftypevar int rl_attempted_completion_over
 If an application-specific completion function assigned to
 @code{rl_attempted_completion_function} sets this variable to a non-zero
-value, Readline will not perform its default filename completion if the
-application's completion function returns no matches.
+value, Readline will not perform its default filename completion even
+if the application's completion function returns no matches.
 It should be set only by an application's completion function.
 @end deftypevar
 

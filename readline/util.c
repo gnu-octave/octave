@@ -225,6 +225,25 @@ _rl_strindex (s1, s2)
   return ((char *)NULL);
 }
 
+/* Find the first occurrence in STRING1 of any character from STRING2.
+   Return a pointer to the character in STRING1. */
+char *
+_rl_strpbrk (string1, string2)
+     const char *string1, *string2;
+{
+  register const char *scan;
+
+  for (; *string1; string1++)
+    {
+      for (scan = string2; *scan; scan++)
+	{
+	  if (*string1 == *scan)
+	    return ((char *)string1);
+	}
+    }
+  return ((char *)NULL);
+}
+
 #if !defined (HAVE_STRCASECMP)
 /* Compare at most COUNT characters from string1 to string2.  Case
    doesn't matter. */

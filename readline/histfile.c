@@ -222,14 +222,15 @@ read_history_range (filename, from, to)
 }
 
 /* Truncate the history file FNAME, leaving only LINES trailing lines.
-   If FNAME is NULL, then use ~/.history. */
+   If FNAME is NULL, then use ~/.history.  Returns 0 on success, errno
+   on failure. */
 int
 history_truncate_file (fname, lines)
      const char *fname;
      int lines;
 {
   register int i;
-  int file, chars_read;
+  int file, chars_read, rv;
   char *buffer, *filename;
   struct stat finfo;
   size_t file_size;
@@ -237,12 +238,25 @@ history_truncate_file (fname, lines)
   buffer = (char *)NULL;
   filename = history_filename (fname);
   file = open (filename, O_RDONLY|O_BINARY, 0666);
+  rv = 0;
 
   /* Don't try to truncate non-regular files. */
-  if (file == -1 || fstat (file, &finfo) == -1 || S_ISREG (finfo.st_mode) == 0)
+  if (file == -1 || fstat (file, &finfo) == -1)
     {
+      rv = errno;
       if (file != -1)
 	close (file);
+      goto truncate_exit;
+    }
+
+  if (S_ISREG (finfo.st_mode) == 0)
+    {
+      close (file);
+#ifdef EFTYPE
+      rv = EFTYPE;
+#else
+      rv = EINVAL;
+#endif
       goto truncate_exit;
     }
 
@@ -253,7 +267,11 @@ history_truncate_file (fname, lines)
     {
       close (file);
 #if defined (EFBIG)
-      errno = EFBIG;
+      rv = errno = EFBIG;
+#elif defined (EOVERFLOW)
+      rv = errno = EOVERFLOW;
+#else
+      rv = errno = EINVAL;
 #endif
       goto truncate_exit;
     }
@@ -263,7 +281,10 @@ history_truncate_file (fname, lines)
   close (file);
 
   if (chars_read <= 0)
-    goto truncate_exit;
+    {
+      rv = (chars_read < 0) ? errno : 0;
+      goto truncate_exit;
+    }
 
   /* Count backwards from the end of buffer until we have passed
      LINES lines. */
@@ -304,7 +325,7 @@ history_truncate_file (fname, lines)
   FREE (buffer);
 
   free (filename);
-  return 0;
+  return rv;
 }
 
 /* Workhorse function for writing history.  Writes NELEMENT entries
@@ -317,10 +338,11 @@ history_do_write (filename, nelements, overwrite)
 {
   register int i;
   char *output;
-  int file, mode;
+  int file, mode, rv;
 
   mode = overwrite ? O_WRONLY|O_CREAT|O_TRUNC|O_BINARY : O_WRONLY|O_APPEND|O_BINARY;
   output = history_filename (filename);
+  rv = 0;
 
   if ((file = open (output, mode, 0600)) == -1)
     {
@@ -354,7 +376,8 @@ history_do_write (filename, nelements, overwrite)
 	buffer[j++] = '\n';
       }
 
-    write (file, buffer, buffer_size);
+    if (write (file, buffer, buffer_size) < 0)
+      rv = errno;
     free (buffer);
   }
 
@@ -362,7 +385,7 @@ history_do_write (filename, nelements, overwrite)
 
   FREE (output);
 
-  return (0);
+  return (rv);
 }
 
 /* Append NELEMENT entries to FILENAME.  The entries appended are from

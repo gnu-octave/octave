@@ -130,7 +130,7 @@ extern void _rl_update_final __P((void));
 extern void _rl_redisplay_after_sigwinch __P((void));
 extern void _rl_clean_up_for_exit __P((void));
 extern void _rl_erase_entire_line __P((void));
-extern int _rl_currentb_display_line __P((void));
+extern int _rl_current_display_line __P((void));
 
 /* input.c */
 extern int _rl_any_typein __P((void));
@@ -160,6 +160,7 @@ extern void _rl_fix_point __P((int));
 extern void _rl_replace_text __P((const char *, int, int));
 extern int _rl_char_search_internal __P((int, int, int));
 extern int _rl_set_mark_at_pos __P((int));
+extern int _rl_free_saved_history_line __P((void));
 
 /* rltty.c */
 extern int _rl_disable_tty_signals __P((void));
@@ -182,6 +183,7 @@ extern void _rl_control_keypad __P((int));
 extern int rl_alphabetic __P((int));
 extern int _rl_abort_internal __P((void));
 extern char *_rl_strindex __P((const char *, const char *));
+extern char *_rl_strpbrk __P((const char *, const char *));
 extern int _rl_qsort_string_compare __P((char **, char **));
 extern int (_rl_uppercase_p) __P((int));
 extern int (_rl_lowercase_p) __P((int));

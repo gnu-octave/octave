@@ -263,9 +263,11 @@ extern int rl_vi_eword __P((int, int));
 extern char *readline __P((const char *));
 
 extern int rl_set_prompt __P((const char *));
+extern int rl_expand_prompt __P((char *));
 
 extern int rl_initialize __P((void));
 
+/* Undocumented; unused by readline */
 extern int rl_discard_argument __P((void));
 
 /* Utility functions to bind keys to readline commands. */
@@ -311,13 +313,16 @@ extern Keymap rl_get_keymap_by_name __P((const char *));
 extern char *rl_get_keymap_name __P((Keymap));
 extern void rl_set_keymap __P((Keymap));
 extern Keymap rl_get_keymap __P((void));
+/* Undocumented; used internally only. */
 extern void rl_set_keymap_from_edit_mode __P((void));
 extern char *rl_get_keymap_name_from_edit_mode __P((void));
 
 /* Functions for manipulating the funmap, which maps command names to functions. */
 extern int rl_add_funmap_entry __P((const char *, rl_command_func_t *));
-extern void rl_initialize_funmap __P((void));
 extern const char **rl_funmap_names __P((void));
+/* Undocumented, only used internally -- there is only one funmap, and this
+   function may be called only once. */
+extern void rl_initialize_funmap __P((void));
 
 /* Utility functions for managing keyboard macros. */
 extern void rl_push_macro_input __P((char *));
@@ -367,7 +372,7 @@ extern void rl_tty_set_default_bindings __P((Keymap));
 extern int rl_reset_terminal __P((const char *));
 extern void rl_resize_terminal __P((void));
 extern void rl_set_screen_size __P((int, int));
-extern void rl_get_screen_size __P((int*, int*));
+extern void rl_get_screen_size __P((int *, int *));
 
 /* Functions for character input. */
 extern int rl_stuff_char __P((int));
@@ -375,6 +380,7 @@ extern int rl_execute_next __P((int));
 extern int rl_clear_pending_input __P((void));
 extern int rl_read_key __P((void));
 extern int rl_getc __P((FILE *));
+extern int rl_set_keyboard_input_timeout __P((int));
 
 /* `Public' utility functions . */
 extern void rl_extend_line_buffer __P((int));
@@ -389,10 +395,9 @@ extern void rl_reset_after_signal __P((void));
 extern void rl_free_line_state __P((void));
  
 /* Undocumented. */
-extern int rl_expand_prompt __P((char *));
-
 extern int rl_set_paren_blink_timeout __P((int));
 
+/* Undocumented. */
 extern int rl_maybe_save_line __P((void));
 extern int rl_maybe_unsave_line __P((void));
 extern int rl_maybe_replace_line __P((void));
@@ -605,7 +610,8 @@ extern rl_icppfunc_t *rl_directory_completion_hook;
    to be modified as an argument.  Unlike rl_directory_completion_hook, it
    only modifies the directory name used in opendir(2), not what is displayed
    when the possible completions are printed or inserted.  It is called
-   before rl_directory_completion_hook. */
+   before rl_directory_completion_hook.  I'm not happy with how this works
+   yet, so it's undocumented. */
 extern rl_icppfunc_t *rl_directory_rewrite_hook;
 
 /* Backwards compatibility with previous versions of readline. */

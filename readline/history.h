@@ -222,13 +222,17 @@ extern char **history_tokenize __P((const char *));
 /* Exported history variables. */
 extern int history_base;
 extern int history_length;
-extern int max_input_history;
+extern int history_max_entries;
 extern char history_expansion_char;
 extern char history_subst_char;
+extern char *history_word_delimiters;
 extern char history_comment_char;
 extern char *history_no_expand_chars;
 extern char *history_search_delimiter_chars;
 extern int history_quotes_inhibit_expansion;
+
+/* Backwards compatibility */
+extern int max_input_history;
 
 /* If set, this function is called to decide whether or not a particular
    history expansion should be treated as a special case for the calling

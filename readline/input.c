@@ -82,6 +82,8 @@ rl_hook_func_t *rl_event_hook = (rl_hook_func_t *)NULL;
 
 rl_getc_func_t *rl_getc_function = rl_getc;
 
+static int _keyboard_input_timeout = 100000;		/* 0.1 seconds; it's in usec */
+
 /* **************************************************************** */
 /*								    */
 /*			Character Input Buffering       	    */
@@ -169,7 +171,7 @@ rl_gather_tyi ()
   FD_SET (tty, &readfds);
   FD_SET (tty, &exceptfds);
   timeout.tv_sec = 0;
-  timeout.tv_usec = 100000;	/* 0.1 seconds */
+  timeout.tv_usec = _keyboard_input_timeout;
   if (select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout) <= 0)
     return;	/* Nothing to read. */
 #endif
@@ -222,6 +224,18 @@ rl_gather_tyi ()
     }
 }
 
+int
+rl_set_keyboard_input_timeout (u)
+     int u;
+{
+  int o;
+
+  o = _keyboard_input_timeout;
+  if (u > 0)
+    _keyboard_input_timeout = u;
+  return (o);
+}
+
 /* Is there input available to be read on the readline input file
    descriptor?  Only works if the system has select(2) or FIONREAD. */
 int
@@ -244,7 +258,7 @@ _rl_input_available ()
   FD_SET (tty, &readfds);
   FD_SET (tty, &exceptfds);
   timeout.tv_sec = 0;
-  timeout.tv_usec = 100000;	/* 0.1 seconds */
+  timeout.tv_usec = _keyboard_input_timeout;
   return (select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout) > 0);
 #endif
 

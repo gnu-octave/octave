@@ -35,6 +35,7 @@ extern int rl_maybe_save_line __P((void));
 extern int rl_maybe_unsave_line __P((void));
 extern int rl_maybe_replace_line __P((void));
 
+extern int rl_crlf __P((void));
 extern int rl_ding __P((void));
 extern int rl_alphabetic __P((int));
 

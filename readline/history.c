@@ -73,7 +73,8 @@ static int history_stifled;
 
 /* If HISTORY_STIFLED is non-zero, then this is the maximum number of
    entries to remember. */
-int max_input_history;
+int history_max_entries;
+int max_input_history;	/* backwards compatibility */
 
 /* The current location of the interactive history pointer.  Just makes
    life easier for outside callers. */
@@ -219,12 +220,12 @@ add_history (string)
 {
   HIST_ENTRY *temp;
 
-  if (history_stifled && (history_length == max_input_history))
+  if (history_stifled && (history_length == history_max_entries))
     {
       register int i;
 
       /* If the history is stifled, and history_length is zero,
-	 and it equals max_input_history, we don't save items. */
+	 and it equals history_max_entries, we don't save items. */
       if (history_length == 0)
 	return;
 
@@ -345,7 +346,7 @@ stifle_history (max)
     }
 
   history_stifled = 1;
-  max_input_history = max;
+  max_input_history = history_max_entries = max;
 }
 
 /* Stop stifling the history.  This returns the previous amount the 
@@ -357,10 +358,10 @@ unstifle_history ()
   if (history_stifled)
     {
       history_stifled = 0;
-      return (-max_input_history);
+      return (-history_max_entries);
     }
 
-  return (max_input_history);
+  return (history_max_entries);
 }
 
 int

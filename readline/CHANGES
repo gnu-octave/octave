@@ -84,6 +84,17 @@ y.  Changes to make all of the exported readline functions declared in
 z.  The formatted documentation included in the base readline distribution
     is no longer removed on a `make distclean'.
 
+aa. Some changes were made to avoid gcc warnings with -Wall.
+
+bb. rl_get_keymap_by_name now finds keymaps case-insensitively, so
+    `set keymap EMACS' works.
+
+cc. The history file writing and truncation functions now return a useful
+    status on error.
+
+dd. Fixed a bug that could cause applications to dereference a NULL pointer
+    if a NULL second argument was passed to history_expand().
+
 2.  New Features in Readline
 
 a.  The blink timeout for paren matching is now settable by applications.
@@ -118,6 +129,21 @@ i.  The history example program (examples/histexamp.c) is now built as one
 
 j.  The documentation has been updated to cover nearly all of the public
     functions and variables declared in readline.h.
+
+k.  New function, rl_get_screen_size (int *rows, int *columns), returns
+    readline's idea of the screen dimensions.
+
+l.  The timeout in rl_gather_tyi (readline keyboard input polling function)
+    is now settable via a function (rl_set_keyboard_input_timeout()).
+
+m.  Renamed the max_input_history variable to history_max_entries; the old
+    variable is maintained for backwards compatibility.
+
+n.  The list of characters that separate words for the history tokenizer is
+    now settable with a variable:  history_word_delimiters.  The default
+    value is as before.
+
+o.  There is a new history.3 manual page documenting the history library.
 
 -------------------------------------------------------------------------------
 This document details the changes between this version, readline-4.1,

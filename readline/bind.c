@@ -1562,7 +1562,7 @@ rl_get_keymap_by_name (name)
   register int i;
 
   for (i = 0; keymap_names[i].name; i++)
-    if (strcmp (name, keymap_names[i].name) == 0)
+    if (_rl_stricmp (name, keymap_names[i].name) == 0)
       return (keymap_names[i].map);
   return ((Keymap) NULL);
 }

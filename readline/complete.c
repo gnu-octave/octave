@@ -90,7 +90,6 @@ static int stat_char __P((char *));
 #endif
 
 static char *rl_quote_filename __P((char *, int, char *));
-static char *rl_strpbrk __P((const char *, const char *));
 
 static char **remove_duplicate_matches __P((char **));
 static void insert_match __P((char *, int, int, char *));
@@ -296,25 +295,6 @@ rl_insert_completions (ignore, invoking_key)
 /*    Completion utility functions  */
 /*				    */
 /************************************/
-
-/* Find the first occurrence in STRING1 of any character from STRING2.
-   Return a pointer to the character in STRING1. */
-static char *
-rl_strpbrk (string1, string2)
-     const char *string1, *string2;
-{
-  register const char *scan;
-
-  for (; *string1; string1++)
-    {
-      for (scan = string2; *scan; scan++)
-	{
-	  if (*string1 == *scan)
-	    return ((char *)string1);
-	}
-    }
-  return ((char *)NULL);
-}
 
 /* The user must press "y" or "n". Non-zero return means "y" pressed. */
 static int
@@ -1076,7 +1056,7 @@ make_quoted_replacement (match, mtype, qc)
          This also checks whether the common prefix of several
 	 matches needs to be quoted. */
       should_quote = rl_filename_quote_characters
-			? (rl_strpbrk (match, rl_filename_quote_characters) != 0)
+			? (_rl_strpbrk (match, rl_filename_quote_characters) != 0)
 			: 0;
 
       do_replace = should_quote ? mtype : NO_MATCH;

@@ -238,6 +238,9 @@ void
 _rl_set_screen_size (rows, cols)
      int rows, cols;
 {
+  if (rows == 0 || cols == 0)
+    return;
+
   _rl_screenheight = rows;
   _rl_screenwidth = cols;
 
@@ -255,15 +258,15 @@ rl_set_screen_size (rows, cols)
 }
 
 void
-rl_get_screen_size (rows, cols)   
-     int *rows, *cols; 
+rl_get_screen_size (rows, cols)
+     int *rows, *cols;
 {
-  if (rows) 
+  if (rows)
     *rows = _rl_screenheight;
-  if (cols)  
-    *cols = _rl_screenwidth;   
+  if (cols)
+    *cols = _rl_screenwidth;
 }
-
+     
 void
 rl_resize_terminal ()
 {

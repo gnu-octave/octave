@@ -445,3 +445,12 @@ examples/Makefile.in
 doc/Makefile.in
 	- don't remove the dvi, postscript, html, info, and text `objects'
 	  on a `make distclean', only on a `make maintainer-clean'
+
+				    3/6
+				    ---
+doc/history.{0,3}, doc/history_3.ps
+	- new manual page for history library
+
+doc/Makefile.in
+	- rules to install and uninstall history.3 in ${man3dir}
+	- rules to build history.0 and history_3.ps

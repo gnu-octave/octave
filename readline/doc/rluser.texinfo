@@ -362,13 +362,24 @@ denote variable settings and key bindings.
 @item Variable Settings
 You can modify the run-time behavior of Readline by
 altering the values of variables in Readline
-using the @code{set} command within the init file.  Here is how to
+using the @code{set} command within the init file.
+The syntax is simple:
+
+@example
+set @var{variable} @var{value}
+@end example
+
+@noindent
+Here, for example, is how to
 change from the default Emacs-like key binding to use
 @code{vi} line editing commands:
 
 @example
 set editing-mode vi
 @end example
+
+Variable names and values, where appropriate, are recognized without regard
+to case. 
 
 @ifset BashFeatures
 The @w{@code{bind -V}} command lists the current Readline variable names
@@ -378,6 +389,7 @@ and values.  @xref{Bash Builtins}.
 A great deal of run-time behavior is changeable with the following
 variables.
 
+@cindex variables, readline
 @table @code
 
 @item bell-style
@@ -531,6 +543,9 @@ you wish to bind the command to, a colon, and then the name of the
 command.  The name of the key
 can be expressed in different ways, depending on what you find most
 comfortable.
+
+In addition to command names, readline allows keys to be bound
+to a string that is inserted when the key is pressed (a @var{macro}).
 
 @ifset BashFeatures
 The @w{@code{bind -p}} command displays Readline function names and
@@ -686,7 +701,8 @@ for instance.
 @item application
 The @var{application} construct is used to include
 application-specific settings.  Each program using the Readline
-library sets the @var{application name}, and you can test for it. 
+library sets the @var{application name}, and you can test for
+a particular value. 
 This could be used to bind key sequences to functions useful for
 a specific program.  For instance, the following command adds a
 key sequence that quotes the current or previous word in Bash:
@@ -709,6 +725,7 @@ the test fails.
 @item $include
 This directive takes a single filename as an argument and reads commands
 and bindings from that file.
+For example, the following directive reads from @file{/etc/inputrc}:
 @example
 $include /etc/inputrc
 @end example
@@ -842,8 +859,8 @@ You can list your key bindings by executing
 @w{@code{bind -P}} or, for a more terse format, suitable for an
 @var{inputrc} file, @w{@code{bind -p}}.  (@xref{Bash Builtins}.)
 @end ifset
-
 Command names without an accompanying key sequence are unbound by default.
+
 In the following descriptions, @dfn{point} refers to the current cursor
 position, and @dfn{mark} refers to a cursor position saved by the
 @code{set-mark} command.
@@ -899,15 +916,15 @@ Accept the line regardless of where the cursor is.
 If this line is
 non-empty, it may be added to the history list for future recall with
 @code{add_history()}.
-If this line is a modified history line, then restore the history line
+If this line is a modified history line, the history line is restored
 to its original state.
 @end ifclear
 
 @item previous-history (C-p)
-Move `up' through the history list.
+Move `back' through the history list, fetching the previous command.
 
 @item next-history (C-n)
-Move `down' through the history list.
+Move `forward' through the history list, fetching the next command.
 
 @item beginning-of-history (M-<)
 Move to the first line in the history.
@@ -947,7 +964,8 @@ is a non-incremental search.  By default, this command is unbound.
 
 @item yank-nth-arg (M-C-y)
 Insert the first argument to the previous command (usually
-the second word on the previous line).  With an argument @var{n},
+the second word on the previous line) at point.
+With an argument @var{n},
 insert the @var{n}th word from the previous command (the words
 in the previous command begin with word 0).  A negative argument
 inserts the @var{n}th word from the end of the previous command.
@@ -966,7 +984,7 @@ list, inserting the last argument of each line in turn.
 
 @ftable @code
 @item delete-char (C-d)
-Delete the character under the cursor.  If the cursor is at the
+Delete the character at point.  If point is at the
 beginning of the line, there are no characters in the line, and
 the last character typed was not bound to @code{delete-char}, then
 return @sc{eof}.
@@ -1033,7 +1051,7 @@ Kill backward to the beginning of the line.
 Kill backward from the cursor to the beginning of the current line.
 
 @item kill-whole-line ()
-Kill all characters on the current line, no matter point is.
+Kill all characters on the current line, no matter where point is.
 By default, this is unbound.
 
 @item kill-word (M-d)
@@ -1071,8 +1089,7 @@ The word boundaries are the same as @code{forward-word}.
 By default, this command is unbound.
 
 @item yank (C-y)
-Yank the top of the kill ring into the buffer at the current
-cursor position.
+Yank the top of the kill ring into the buffer at point.
 
 @item yank-pop (M-y)
 Rotate the kill-ring, and yank the new top.  You can only do this if
@@ -1121,7 +1138,7 @@ The default is filename completion.
 @end ifclear
 
 @item possible-completions (M-?)
-List the possible completions of the text before the cursor.
+List the possible completions of the text before point.
 
 @item insert-completions (M-*)
 Insert all completions of the text before point that would have
@@ -1132,8 +1149,9 @@ Similar to @code{complete}, but replaces the word to be completed
 with a single match from the list of possible completions.
 Repeated execution of @code{menu-complete} steps through the list
 of possible completions, inserting each match in turn.
-At the end of the list of completions, the bell is rung and the
-original text is restored.
+At the end of the list of completions, the bell is rung
+(subject to the setting of @code{bell-style})
+and the original text is restored.
 An argument of @var{n} moves @var{n} positions forward in the list
 of matches; a negative argument may be used to move backward
 through the list.
@@ -1238,7 +1256,7 @@ If the metafied character @var{x} is lowercase, run the command
 that is bound to the corresponding uppercase character.
 
 @item prefix-meta (@key{ESC})
-Make the next character typed be metafied.  This is for keyboards
+Metafy the next character typed.  This is for keyboards
 without a meta key.  Typing @samp{@key{ESC} f} is equivalent to typing
 @kbd{M-f}.
 
@@ -1258,7 +1276,7 @@ command enough times to get back to the beginning.
 Perform tilde expansion on the current word.
 
 @item set-mark (C-@@)
-Set the mark to the current point.  If a
+Set the mark to the point.  If a
 numeric argument is supplied, the mark is set to that position.
 
 @item exchange-point-and-mark (C-x C-x)
@@ -1363,7 +1381,8 @@ commands (@pxref{The Set Builtin}).
 @end ifset
 @ifclear BashFeatures
 In order to switch interactively between @code{emacs} and @code{vi}
-editing modes, use the command @kbd{M-C-j} (toggle-editing-mode).
+editing modes, use the command @kbd{M-C-j} (bound to emacs-editing-mode
+when in @code{vi} mode and to vi-editing-mode in @code{emacs} mode).
 @end ifclear
 The Readline default is @code{emacs} mode.
 

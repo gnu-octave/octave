@@ -64,6 +64,8 @@ static int rl_search_history __P((int, int));
    identical lines many times in a row. */
 static char *prev_line_found;
 
+static unsigned char *default_isearch_terminators = "\033\012";
+
 /* Search backwards through the history looking for a string which is typed
    interactively.  Start with the current line. */
 int
@@ -184,7 +186,7 @@ rl_search_history (direction, invoking_key)
   allocated_line = (char *)NULL;
 
   isearch_terminators = _rl_isearch_terminators ? _rl_isearch_terminators
-						: (unsigned char *)"\033\012";
+						: default_isearch_terminators;
 
   /* Create an arrary of pointers to the lines that we want to search. */
   rl_maybe_replace_line ();

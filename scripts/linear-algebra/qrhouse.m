@@ -36,44 +36,42 @@ function [hv,alph,kb] = qrhouse(VV,eps1)
 # Reference: Golub and Van Loan, MATRIX COMPUTATIONS, 2nd ed.
 
 # Written by A. S. Hodel, 1992
-# $Revision: 1.2 $
-# $Log: qrhouse.m,v $
-# Revision 1.2  1998/08/26 21:08:29  hodelas
-# Fixed bug in controllability analysis; code isolates zero rows of
-# input matrices; correctly checks zero threshhold
-#
 
 if(nargin < 2)
   usage("[hv,alph,kb] = qrhouse(VV,eps1)");
 endif
 
+
 # extract only those rows of VV that are nonzero
 if(is_vector(VV))	nzidx = find(abs(VV') > 0);
-else			nzidx = find(max(abs(VV')) > 0);
-endif
-
+else			nzidx = find(max(abs(VV')) > 0);    endif
 VVlen = rows(VV);	# remember original size
 
 if(is_vector(VV))	VV = VV(nzidx);
-else			VV = VV(nzidx,:);
-endif
+else			VV = VV(nzidx,:);                   endif
 
 [Vr,Vc] = size(VV);	nits   = min(Vr,Vc);
-kb      = 0;		kbnext = kb+1;
 for ii = 1:nits;
-  kb = kbnext;		# select column number of hv to build
-  hh = VV(:,ii);	# extract next column of VV; ignore items 1:(ii-1).
-  idx = kb-1;		# for zeroing
-  if(max(abs(hh(kb:Vr))) > eps1)
+  # permute maximum row entry to (ii,ii) position
+  Vrowi = VV(ii,1:Vc);      # pivot maximum entry in this row to lead position
+  Vrm = max(abs(Vrowi));
+  Vmidx = min(find(abs(Vrowi) == Vrm));
+  if(Vmidx > eps1)
+    kb = ii;		# update computed rank
+    idx = kb-1;
+    if(Vmidx != ii)
+      [VV(:,kb),VV(:,Vmidx)] = swap(VV(:,kb),VV(:,Vmidx));
+    endif
+    hh = VV(:,ii);	# extract next column of VV; ignore items 1:(ii-1).
     [hv(kb:Vr,kb),alph(kb),z] = housh(hh(kb:Vr),1,0);
     if(kb>1)
-      hv(1:idx,kb) = 0;			# zero top of hv for safety
+      hv(1:idx,kb) = 0;                 # zero top of hv for safety
     endif
+    # project off of current Householder vector
     VV = VV - alph(kb)*hv(:,kb)*(hv(:,kb)'*VV);
-    kbnext = kb+1;
   else
-    kb = kb-1;
-  end
+    break;
+  endif
 endfor
 if(kb <=0)
   hv = [];

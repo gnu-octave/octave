@@ -863,13 +863,13 @@ install_builtins (void)
   bind_builtin_variable ("PAGER", tmp, 0, 1);
 
   tmp = new tree_constant (0.0);
-  bind_builtin_variable ("SEEK_SET", tmp, 0, 1);
+  bind_builtin_variable ("SEEK_SET", tmp, 1, 1);
 
   tmp = new tree_constant (1.0);
-  bind_builtin_variable ("SEEK_CUR", tmp, 0, 1);
+  bind_builtin_variable ("SEEK_CUR", tmp, 1, 1);
 
   tmp = new tree_constant (2.0);
-  bind_builtin_variable ("SEEK_END", tmp, 0, 1);
+  bind_builtin_variable ("SEEK_END", tmp, 1, 1);
 
   tmp = new tree_constant (DBL_EPSILON);
   bind_builtin_variable ("eps", tmp, 1, 1);

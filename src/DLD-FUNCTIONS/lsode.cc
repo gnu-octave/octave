@@ -160,7 +160,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
 DEFUN_DLD (lsode, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{istate}, @var{msg}]} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})\n\
 Return a matrix of @var{x} as a function of @var{t}, given the initial\n\
 state of the system @var{x0}.  Each row in the result matrix corresponds\n\
 to one of the elements in the vector @var{t}.  The first element of\n\
@@ -196,7 +196,7 @@ discontinuity in the derivative.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 2 && nargin < 5 && nargout < 2)
+  if (nargin > 2 && nargin < 5 && nargout < 4)
     {
       octave_value f_arg = args(0);
 
@@ -283,8 +283,21 @@ discontinuity in the derivative.\n\
 
       if (! error_state)
 	{
-	  retval.resize (1);
-	  retval(0) = output;
+	  retval(2) = ode.error_message ();
+	  retval(1) = static_cast<double> (ode.integration_state ());
+
+	  if (ode.integration_ok ())
+	    retval = output;
+	  else
+	    {
+	      output = Matrix ();
+
+	      if (nargout < 2)
+		{
+		  std::string msg = ode.error_message ();
+		  error ("lsode: %s", msg.c_str ());
+		}
+	    }
 	}
     }
   else

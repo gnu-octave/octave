@@ -1,3 +1,10 @@
+2002-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* LSODE.cc (LSODE::error_message): New function.
+	* LSODE.h: Provide decl.
+	(LSODE::integration_state): New function.
+	(LSODE::integration_ok): New function.
+
 2002-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.cc (LSODE_options::x_integration_method): New data member.

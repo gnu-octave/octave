@@ -1,5 +1,9 @@
 2002-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Also return istate and error
+	message.  Only generate error if user is not at least requesting
+	the istate output.
+
 	* load-save.cc (hdf5_import_multidim, hdf5_check_attr,
 	hdf5_callback_data, hdf5_read_next_data, read_hdf5_data,
 	add_hdf5_data): Use 0, not NULL in calls to HDF routines.

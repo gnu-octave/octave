@@ -316,13 +316,7 @@ LSODE::do_integrate (double tout)
 	case -4:  // repeated error test failures (check all inputs).
 	case -3:  // illegal input detected (see printed message).
 	case -2:  // excess accuracy requested (tolerances too small).
-	  integration_error = 1;
-	  break;
-
 	case -1:  // excess work done on this call (perhaps wrong mf).
-	  (*current_liboctave_error_handler)
-	    ("giving up after more than %d steps attempted in lsode",
-	     step_limit ());
 	  integration_error = 1;
 	  break;
 
@@ -336,6 +330,63 @@ LSODE::do_integrate (double tout)
 	    ("unrecognized value of istate returned from lsode");
 	  break;
 	}
+    }
+
+  return retval;
+}
+
+std::string
+LSODE::error_message (void) const
+{
+  std::string retval;
+
+  switch (istate)
+    {
+    case -13:
+      retval = "return requested in user-supplied function";
+      break;
+
+    case -6:
+      retval = "Error weight became zero during problem.\
+  (solution component i vanished, and atol or atol(i) == 0)";
+      break;
+
+    case -5:
+      retval = "repeated convergence failures (perhaps bad jacobian\
+ supplied or wrong choice of integration method or tolerances)";
+      break;
+
+    case -4:
+      retval = "repeated error test failures (check all inputs)";
+      break;
+
+    case -3:
+      retval = "invalid input detected (see printed message)";
+      break;
+
+    case -2:
+      retval = "excess accuracy requested (tolerances too small)";
+      break;
+
+    case -1:
+      retval = "excess work on this call (perhaps wrong integration method)";
+      break;
+
+    case 1:
+      retval = "prior to initial call";
+      break;
+
+    case 2:
+      retval = "successful exit";
+      break;
+	  
+    case 3:
+      retval = "prior to continuation call with modified parameters";
+      break;
+	  
+    default:
+      retval = "unknown error state";
+      break;
     }
 
   return retval;

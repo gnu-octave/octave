@@ -164,6 +164,12 @@ public:
 
   Matrix do_integrate (const ColumnVector& tout, const ColumnVector& tcrit);
 
+  int integration_state (void) const { return istate; }
+
+  bool integration_ok (void) const { return ! integration_error; }
+
+  std::string error_message (void) const;
+
 private:
 
   double stop_time;

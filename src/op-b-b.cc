@@ -32,28 +32,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "ov-bool.h"
 #include "ov-typeinfo.h"
-#include "op-b-b.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
 
 // bool by bool ops.
 
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
-
-  return octave_value (v1.bool_value () == v2.bool_value ());
-}
-
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
-
-  return octave_value (v1.bool_value () != v2.bool_value ());
-}
+DEFBINOP_OP (eq, bool, bool, ==)
+DEFBINOP_OP (ne, bool, bool, !=)
 
 void
 install_b_b_ops (void)

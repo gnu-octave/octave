@@ -32,165 +32,53 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
-#include "op-m-m.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
 
 // matrix by matrix ops.
 
-static octave_value
-add (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+DEFBINOP_OP (add, matrix, matrix, +)
+DEFBINOP_OP (sub, matrix, matrix, -)
+DEFBINOP_OP (mul, matrix, matrix, *)
 
-  return octave_value (v1.matrix_value () + v2.matrix_value ());
-}
-
-static octave_value
-sub (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return octave_value (v1.matrix_value () - v2.matrix_value ());
-}
-
-static octave_value
-mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return octave_value (v1.matrix_value () * v2.matrix_value ());
-}
-
-static octave_value
-div (const octave_value& a1, const octave_value& a2)
+DEFBINOP (div, matrix, matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
   return xdiv (v1.matrix_value (), v2.matrix_value ());
 }
 
-static octave_value
-pow (const octave_value&, const octave_value&)
+DEFBINOPX (pow, matrix, matrix)
 {
   error ("can't do A ^ B for A and B both matrices");
   return octave_value ();
 }
 
-static octave_value
-ldiv (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+DEFBINOP_FN (ldiv, matrix, matrix, xleftdiv)
 
-  return xleftdiv (v1.matrix_value (), v2.matrix_value ());
-}
+DEFBINOP_FN (lt, matrix, matrix, mx_el_lt)
+DEFBINOP_FN (le, matrix, matrix, mx_el_le)
+DEFBINOP_FN (eq, matrix, matrix, mx_el_eq)
+DEFBINOP_FN (ge, matrix, matrix, mx_el_ge)
+DEFBINOP_FN (gt, matrix, matrix, mx_el_gt)
+DEFBINOP_FN (ne, matrix, matrix, mx_el_ne)
 
-static octave_value
-lt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+DEFBINOP_FN (el_mul, matrix, matrix, product)
+DEFBINOP_FN (el_div, matrix, matrix, quotient)
+DEFBINOP_FN (el_pow, matrix, matrix, elem_xpow)
 
-  return mx_el_lt (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-le (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return mx_el_le (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return mx_el_eq (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-ge (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return mx_el_ge (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-gt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return mx_el_gt (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return mx_el_ne (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-el_mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return octave_value (product (v1.matrix_value (), v2.matrix_value ()));
-}
-
-static octave_value
-el_div (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return octave_value (quotient (v1.matrix_value (), v2.matrix_value ()));
-}
-
-static octave_value
-el_pow (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return elem_xpow (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-el_ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_ldiv, matrix, matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
   return octave_value (quotient (v2.matrix_value (), v1.matrix_value ()));
 }
 
-static octave_value
-el_and (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+DEFBINOP_FN (el_and, matrix, matrix, mx_el_and)
+DEFBINOP_FN (el_or, matrix, matrix, mx_el_or)
 
-  return mx_el_and (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-el_or (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return mx_el_or (v1.matrix_value (), v2.matrix_value ());
-}
-
-static octave_value
-assign (octave_value& a1, const octave_value_list& idx,
-	const octave_value& a2)
-{
-  CAST_BINOP_ARGS (octave_matrix&, const octave_matrix&);
-
-  v1.assign (idx, v2.matrix_value ());
-  return octave_value ();
-}
+DEFASSIGNOP_FN (assign, matrix, matrix, assign)
 
 void
 install_m_m_ops (void)

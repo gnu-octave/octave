@@ -32,28 +32,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "ov-bool-mat.h"
 #include "ov-typeinfo.h"
-#include "op-b-b.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
 
 // bool matrix by bool matrix ops.
 
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_bool_matrix&, const octave_bool_matrix&);
-
-  return octave_value (v1.bool_matrix_value () == v2.bool_matrix_value ());
-}
-
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_bool_matrix&, const octave_bool_matrix&);
-
-  return octave_value (v1.bool_matrix_value () != v2.bool_matrix_value ());
-}
+DEFBINOP_OP (eq, bool_matrix, bool_matrix, ==)
+DEFBINOP_OP (ne, bool_matrix, bool_matrix, !=)
 
 void
 install_bm_bm_ops (void)

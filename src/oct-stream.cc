@@ -2589,7 +2589,7 @@ octave_stream_list::do_get_info (const octave_value& fid) const
   if (! conv_err)
     retval = do_get_info (int_fid);
   else
-    ::error ("file id must be valid integer");
+    ::error ("file id must be a file object or integer value");
 
   return retval;
 }
@@ -2729,7 +2729,7 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
       int int_fid = convert_to_valid_int (fid, conv_err);
 
       if (conv_err)
-	::error ("file id must be a string or integer value");
+	::error ("file id must be a file object, string, or integer value");
       else
 	retval = int_fid;
     }

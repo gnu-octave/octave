@@ -36,8 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // string by string ops.
 
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
+DEFBINOP (eq, char_matrix_str, char_matrix_str)
 {
   CAST_BINOP_ARGS (const octave_char_matrix_str&,
 		   const octave_char_matrix_str&);
@@ -67,8 +66,7 @@ eq (const octave_value& a1, const octave_value& a2)
     }
 }
 
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
+DEFBINOP (ne, char_matrix_str, char_matrix_str)
 {
   CAST_BINOP_ARGS (const octave_char_matrix_str&,
 		   const octave_char_matrix_str&);
@@ -95,9 +93,7 @@ ne (const octave_value& a1, const octave_value& a2)
     }
 }
 
-static octave_value
-assign (octave_value& a1, const octave_value_list& idx,
-	const octave_value& a2)
+DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 {
   CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_char_matrix_str&);
 

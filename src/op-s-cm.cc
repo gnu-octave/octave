@@ -35,54 +35,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "ov-cx-mat.h"
 #include "ov-typeinfo.h"
-#include "op-s-cm.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
 
 // scalar by complex matrix ops.
 
-static octave_value
-add (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+DEFBINOP_OP (add, scalar, complex_matrix, +)
+DEFBINOP_OP (sub, scalar, complex_matrix, -)
+DEFBINOP_OP (mul, scalar, complex_matrix, *)
 
-  return octave_value (v1.double_value () + v2.complex_matrix_value ());
+DEFBINOP (div, scalar, complex_matrix)
+{
+  BINOP_NONCONFORMANT ("operator /");
 }
 
-static octave_value
-sub (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+DEFBINOP_FN (pow, scalar, complex_matrix, xpow)
 
-  return octave_value (v1.double_value () - v2.complex_matrix_value ());
-}
-
-static octave_value
-mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return octave_value (v1.double_value () * v2.complex_matrix_value ());
-}
-
-static octave_value
-div (const octave_value&, const octave_value& v2)
-{
-  gripe_nonconformant ("operator /", 1, 1, v2.rows (), v2.columns ());
-  return octave_value ();
-}
-
-static octave_value
-pow (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return xpow (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (ldiv, scalar, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
@@ -94,80 +64,18 @@ ldiv (const octave_value& a1, const octave_value& a2)
   return octave_value (v2.complex_matrix_value () / d);
 }
 
-static octave_value
-lt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+DEFBINOP_FN (lt, scalar, complex_matrix, mx_el_lt)
+DEFBINOP_FN (le, scalar, complex_matrix, mx_el_le)
+DEFBINOP_FN (eq, scalar, complex_matrix, mx_el_eq)
+DEFBINOP_FN (ge, scalar, complex_matrix, mx_el_ge)
+DEFBINOP_FN (gt, scalar, complex_matrix, mx_el_gt)
+DEFBINOP_FN (ne, scalar, complex_matrix, mx_el_ne)
 
-  return mx_el_lt (v1.double_value (), v2.complex_matrix_value ());
-}
+DEFBINOP_OP (el_mul, scalar, complex_matrix, *)
+DEFBINOP_FN (el_div, scalar, complex_matrix, x_el_div)
+DEFBINOP_FN (el_pow, scalar, complex_matrix, elem_xpow)
 
-static octave_value
-le (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_le (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_eq (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-ge (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_ge (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-gt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_gt (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_ne (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-el_mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return octave_value (v1.double_value () * v2.complex_matrix_value ());
-}
-
-static octave_value
-el_div (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return x_el_div (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-el_pow (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return elem_xpow (v1.double_value (), v2.complex_matrix_value ());
-}
-
-static octave_value
-el_ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_ldiv, scalar, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
@@ -179,28 +87,25 @@ el_ldiv (const octave_value& a1, const octave_value& a2)
   return octave_value (v2.complex_matrix_value () / d);
 }
 
-static octave_value
-el_and (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_and, scalar, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
   return mx_el_and (v1.double_value (), v2.complex_matrix_value ());
 }
 
-static octave_value
-el_or (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_or, scalar, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
   return mx_el_or (v1.double_value (), v2.complex_matrix_value ());
 }
 
-static octave_value *
-complex_matrix_conv (const octave_value& a)
+DEFCONV (complex_matrix_conv, scalar, complex_matrix)
 {
   CAST_CONV_ARG (const octave_scalar&);
 
-  return new octave_complex_matrix (v.complex_matrix_value ());
+  return new octave_complex_matrix (ComplexMatrix (v.matrix_value ()));
 }
 
 void

@@ -1074,7 +1074,7 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
   if (total_width > max_width && Vsplit_long_rows)
     {
       if (col != 0 && ! compact_format)
-	os << "\n";
+	os << "\n\n";
 
       int num_cols = lim - col;
 
@@ -1086,6 +1086,9 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
 	os << " Columns " << col + 1 << " and " << lim << ":\n";
       else
 	os << " Columns " << col + 1 << " through " << lim << ":\n";
+
+      if (! compact_format)
+	os << "\n";
     }
 }
 

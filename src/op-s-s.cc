@@ -33,39 +33,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
-#include "op-s-s.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
 
 // scalar by scalar ops.
 
-static octave_value
-add (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+DEFBINOP_OP (add, scalar, scalar, +)
+DEFBINOP_OP (sub, scalar, scalar, -)
+DEFBINOP_OP (mul, scalar, scalar, *)
 
-  return octave_value (v1.double_value () + v2.double_value ());
-}
-
-static octave_value
-sub (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () - v2.double_value ());
-}
-
-static octave_value
-mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () * v2.double_value ());
-}
-
-static octave_value
-div (const octave_value& a1, const octave_value& a2)
+DEFBINOP (div, scalar, scalar)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
@@ -77,16 +55,9 @@ div (const octave_value& a1, const octave_value& a2)
   return octave_value (v1.double_value () / d);
 }
 
-static octave_value
-pow (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+DEFBINOP_FN (pow, scalar, scalar, xpow)
 
-  return xpow (v1.double_value (), v2.double_value ());
-}
-
-static octave_value
-ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (ldiv, scalar, scalar)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
@@ -98,64 +69,16 @@ ldiv (const octave_value& a1, const octave_value& a2)
   return octave_value (v2.double_value () / d);
 }
 
-static octave_value
-lt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+DEFBINOP_OP (lt, scalar, scalar, <)
+DEFBINOP_OP (le, scalar, scalar, <=)
+DEFBINOP_OP (eq, scalar, scalar, ==)
+DEFBINOP_OP (ge, scalar, scalar, >=)
+DEFBINOP_OP (gt, scalar, scalar, >)
+DEFBINOP_OP (ne, scalar, scalar, !=)
 
-  return octave_value (v1.double_value () < v2.double_value ());
-}
+DEFBINOP_OP (el_mul, scalar, scalar, *)
 
-static octave_value
-le (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () <= v2.double_value ());
-}
-
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () == v2.double_value ());
-}
-
-static octave_value
-ge (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () >= v2.double_value ());
-}
-
-static octave_value
-gt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () > v2.double_value ());
-}
-
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () != v2.double_value ());
-}
-
-static octave_value
-el_mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  return octave_value (v1.double_value () * v2.double_value ());
-}
-
-static octave_value
-el_div (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_div, scalar, scalar)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
@@ -167,16 +90,9 @@ el_div (const octave_value& a1, const octave_value& a2)
   return octave_value (v1.double_value () / d);
 }
 
-static octave_value
-el_pow (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+DEFBINOP_FN (el_pow, scalar, scalar, xpow)
 
-  return xpow (v1.double_value (), v2.double_value ());
-}
-
-static octave_value
-el_ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_ldiv, scalar, scalar)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
@@ -188,8 +104,7 @@ el_ldiv (const octave_value& a1, const octave_value& a2)
   return octave_value (v2.double_value () / d);
 }
 
-static octave_value
-el_and (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_and, scalar, scalar)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
@@ -198,8 +113,7 @@ el_and (const octave_value& a1, const octave_value& a2)
   return octave_value (result);
 }
 
-static octave_value
-el_or (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_or, scalar, scalar)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
@@ -208,8 +122,7 @@ el_or (const octave_value& a1, const octave_value& a2)
   return octave_value (result);
 }
 
-static octave_value *
-matrix_conv (const octave_value& a)
+DEFCONV (matrix_conv, scalar, matrix)
 {
   CAST_CONV_ARG (const octave_scalar&);
 

@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/systypes.h>
 #include <sys/stat.h>
 
-#ifdef WIN32
+#if defined (WIN32) && !defined (__MINGW32__)
 #include <kpathsea/win32lib.h>
 #endif /* WIN32 */
 

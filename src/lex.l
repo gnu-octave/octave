@@ -242,7 +242,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <TEXT_FCN>[\;\,] {
     if (lexer_flags.doing_set && strcmp (yytext, ",") == 0)
       {
-	TOK_PUSH_AND_RETURN (yytext, TEXT);
+	TOK_PUSH_AND_RETURN (yytext, STRING);
       }
     else
       {
@@ -261,7 +261,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <TEXT_FCN>[^ \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
     std::string tok = strip_trailing_whitespace (yytext);
-    TOK_PUSH_AND_RETURN (tok, TEXT);
+    TOK_PUSH_AND_RETURN (tok, STRING);
   }
 
 %{
@@ -2016,7 +2016,7 @@ handle_string (char delim, int text_style)
 		  else if (delim == '\'')
 		    gripe_single_quote_string ();
 
-		  return TEXT;
+		  return STRING;
 		}
 	    }
 	}

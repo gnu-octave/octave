@@ -1,3 +1,8 @@
+2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+
+	* lo-mappers.cc: Remove unused #define M_PI.
+	* lo-specfun.cc: Add #define M_PI if needed.
+
 2002-09-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.cc (do_decode_prompt_string): Cope with possibility

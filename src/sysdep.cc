@@ -47,8 +47,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <termio.h>
 #elif defined (HAVE_SGTTY_H)
 #include <sgtty.h>
-#else
-LOSE! LOSE!
 #endif
 
 #if defined (HAVE_SYS_IOCTL_H)
@@ -302,7 +300,10 @@ raw_mode (bool on, bool wait)
     ioctl (tty_fd, TIOCSETN, &s);
   }
 #else
-LOSE! LOSE!
+  warning ("no support for raw mode console I/O on this system");
+
+  // Make sure the current mode doesn't toggle.
+  on = curr_on;
 #endif
 
   curr_on = on;

@@ -391,7 +391,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> PLOT
-%token <tok_val> TEXT STYLE AXES_TAG
+%token <tok_val> STRING STYLE AXES_TAG
 %token <tok_val> FOR WHILE DO UNTIL
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
@@ -583,8 +583,8 @@ constant	: NUM
 		  { $$ = make_constant (NUM, $1); }
 		| IMAG_NUM
 		  { $$ = make_constant (IMAG_NUM, $1); }
-		| TEXT
-		  { $$ = make_constant (TEXT, $1); }
+		| STRING
+		  { $$ = make_constant (STRING, $1); }
 		;
 
 in_matrix_or_assign_lhs
@@ -853,14 +853,14 @@ word_list_cmd	: identifier word_list
 		  { $$ = make_index_expression ($1, $2, '('); }
 		;
 
-word_list	: TEXT
+word_list	: STRING 
 		  {
-		    tree_constant *tmp = make_constant (TEXT, $1);
+		    tree_constant *tmp = make_constant (STRING, $1);
 		    $$ = new tree_argument_list (tmp);
 		  }
-		| word_list TEXT
+		| word_list STRING
 		  {
-		    tree_constant *tmp = make_constant (TEXT, $2);
+		    tree_constant *tmp = make_constant (STRING, $2);
 		    $1->append (tmp);
 		    $$ = $1;
 		  }
@@ -1860,7 +1860,7 @@ make_constant (int op, token *tok_val)
       }
       break;
 
-    case TEXT:
+    case STRING:
       {
 	octave_value tmp (tok_val->text ());
 	retval = new tree_constant (tmp, l, c);

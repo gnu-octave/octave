@@ -34,7 +34,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define MONOCASE_FILENAMES	/* case-insensitive filename comparisons */
 #endif
 
-#ifdef WIN32
+#if defined(__MINGW32__)
+#include <windows.h>
+#include <fcntl.h>
+#include <dirent.h>
+#elif defined(WIN32)
 #define __STDC__ 1
 #include <kpathsea/win32lib.h>
 #endif /* not WIN32 */

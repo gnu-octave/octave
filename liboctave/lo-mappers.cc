@@ -53,10 +53,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define M_LOG10E 0.43429448190325182765
 #endif
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 // double -> double mappers.
 
 double

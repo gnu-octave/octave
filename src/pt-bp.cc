@@ -692,15 +692,15 @@ tree_breakpoint::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
   if (cmd.line () >= line)
     take_action (cmd);
 
-  tree_statement_list *lst1 = cmd.body ();
+  tree_statement_list *lstA = cmd.body ();
 
-  if (lst1)
-    lst1->accept (*this);
+  if (lstA)
+    lstA->accept (*this);
 
-  tree_statement_list *lst2 = cmd.cleanup ();
+  tree_statement_list *lstB = cmd.cleanup ();
 
-  if (lst2)
-    lst2->accept (*this);
+  if (lstB)
+    lstB->accept (*this);
 }
 
 /*

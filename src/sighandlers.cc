@@ -186,6 +186,7 @@ generic_sig_handler (int sig)
 
 // Handle SIGCHLD.
 
+#ifdef SIGCHLD
 static RETSIGTYPE
 sigchld_handler (int /* sig */)
 {
@@ -245,7 +246,9 @@ sigchld_handler (int /* sig */)
 
   SIGHANDLER_RETURN (0);
 }
+#endif /* defined(SIGCHLD) */
 
+#ifdef SIGFPE
 #if defined (__alpha__)
 static RETSIGTYPE
 sigfpe_handler (int /* sig */)
@@ -264,7 +267,8 @@ sigfpe_handler (int /* sig */)
 
   SIGHANDLER_RETURN (0);
 }
-#endif
+#endif /* defined(__alpha__) */
+#endif /* defined(SIGFPE) */
 
 #if 0
 #if defined (SIGWINCH)
@@ -308,6 +312,7 @@ sigint_handler (int)
   SIGHANDLER_RETURN (0);
 }
 
+#ifdef SIGPIPE
 static RETSIGTYPE
 sigpipe_handler (int /* sig */)
 {
@@ -325,6 +330,7 @@ sigpipe_handler (int /* sig */)
 
   SIGHANDLER_RETURN (0);
 }
+#endif /* defined(SIGPIPE) */
 
 octave_interrupt_handler
 octave_catch_interrupts (void)

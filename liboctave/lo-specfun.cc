@@ -35,6 +35,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-specfun.h"
 #include "mx-inlines.cc"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 extern "C"
 {
   int F77_FUNC (zbesj, ZBESJ) (const double&, const double&,

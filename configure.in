@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.366 $)
+AC_REVISION($Revision: 1.367 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -828,7 +828,7 @@ if test "$have_termios_h" = yes \
     || test "$have_sgtty_h" = yes; then
   true
 else
-  AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
+  AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
 
 ## I'm told that setting LIBGLOB to be $(TOPDIR)/glob/libglob.a causes
@@ -1246,19 +1246,19 @@ AH_BOTTOM([
 #endif
 
 #if !defined(HAVE_DEV_T)
-typedef short dev_t
+typedef short dev_t;
 #endif
 
 #if !defined(HAVE_INO_T)
-typedef unsigned long ino_t
+typedef unsigned long ino_t;
 #endif
 
 #if !defined(HAVE_NLINK_T)
-typedef short nlink_t
+typedef short nlink_t;
 #endif
 
 #if !defined(HAVE_SIGSET_T)
-typedef int sigset_t
+typedef int sigset_t;
 #endif
 ])
 

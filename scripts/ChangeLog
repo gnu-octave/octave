@@ -1,3 +1,7 @@
+2004-04-06  David Bateman  <dbateman@free.fr>
+
+	* statistics/base/var.m: Update for NDArrays.  Allow dimension arg.
+
 2004-04-02  David Bateman  <dbateman@free.fr>
 
 	* statistics/base/std.m: Allow optional args for type and dim.

@@ -22,27 +22,54 @@
 ## For vector arguments, return the (real) variance of the values.
 ## For matrix arguments, return a row vector contaning the variance for
 ## each column.
+##
+## The argument @var{opt} determines the type of normalization to use. Valid 
+## values are
+##
+## @table @asis 
+## @item 0:
+##   normalizes with N-1, provides the square root of best unbiased estimator
+##   of the variance [default]
+## @item 1:
+##   normalizes with N, this provides the square root of the second moment
+##   around the mean
+## @end table
+##
+## The third argument @var{dim} determines the dimension along which the 
+## variance is calculated.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Compute variance
 
-function y = var(x)
+function y = var (x, opt, dim)
 
-  if (nargin != 1)
-    usage ("var (x)");
+  if (nargin < 1 || nargin > 3)
+    usage ("var (x, opt, sim)");
+  endif
+  if (nargin < 3)
+    dim = min (find (size (x) > 1));
+    if (isempty (dim))
+      dim = 1;
+    endif
+  endif
+  if (nargin < 2 || isempty (opt))
+    opt = 0;
   endif
 
-  [nr, nc] = size (x);
-  if (nr == 0 || nc == 0)
+  sz = size (x);
+  if (prod (sz) < 1)
     error ("var: x must not be empty");
-  elseif ((nr == 1) && (nc == 1))
+  elseif (sz(dim) == 1)
     y = 0;
-  elseif ((nr == 1) || (nc == 1))
-    n = length (x);
-    y = sumsq (x - sum (x) / n) / (n - 1);
   else
-    y = sumsq (x - ones (nr, 1) * (sum (x) / nr) ) / (nr - 1);
+    rng = ones (1, length (sz));
+    rng (dim) = sz (dim);
+    if (opt == 0)
+      y = sumsq (x - repmat(mean (x, dim), rng), dim) / (sz(dim) - 1);
+    else
+      y = sumsq (x - repmat(mean (x, dim), rng), dim) / sz(dim);
+    endif
   endif
 
 endfunction

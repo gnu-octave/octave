@@ -64,9 +64,9 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
     {
       Matrix val = args(1).matrix_value ();
       if (val.rows () > val.columns ())
-	val.transpose ();
+	val = val.transpose ();
 
-      if (val.columns () != dims.length () || val.rows () != 1)
+      if (error_state || val.columns () != dims.length () || val.rows () != 1)
 	error ("%s: second argument must be a vector of length dim", fcn);
       else
 	{

@@ -1,3 +1,8 @@
+2001-11-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Range.cc (Range::nelem_internal): Special case ranges that must
+	have zero elements.
+
 2001-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Split out readline and pathsearch functionality

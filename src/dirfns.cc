@@ -49,7 +49,9 @@ Free Software Foundation, Inc.
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
+#include "help.h"
 #include "oct-obj.h"
+#include "oct-str.h"
 #include "octave.h"
 #include "pager.h"
 #include "pathlen.h"
@@ -475,6 +477,71 @@ DEFUN ("pwd", Fpwd, Spwd, 1, 0,
       retval = s;
       delete [] s;
     }
+  return retval;
+}
+
+
+
+DEFUN ("readdir", Freaddir, Sreaddir, 1, 0,
+  "readdir (NAME)\n\
+\n\
+Return an array of strings containing the list of all files in the
+named directory, or one of the following error codes:\n\
+\n\
+  -1 : error opening the directory\n\
+  -2 : error reading the directory\n\
+  -3 : error closing the directory")
+{
+  Octave_object retval;
+  Octave_str_obj dirlist;
+  int status = 0;
+
+  if (args.length () == 1 && args(0).is_string ())
+    {
+      const char *dirname = args(0).string_value ();
+
+      DIR *dir = opendir (dirname);
+
+      if (dir)
+	{
+	  int count = 0;
+	  while (readdir (dir))
+	    count++;
+
+	  rewinddir (dir);
+
+	  dirlist.resize (count);
+
+	  struct dirent *dir_entry;
+	  while ((dir_entry = readdir (dir)))
+	    {
+	      if (--count < 0)
+		break;
+
+	      dirlist (count) = dir_entry->d_name;
+	    }
+
+#if defined (CLOSEDIR_VOID)
+	  closedir (dir);
+#else
+	  if (closedir (dir) < 0)
+	    status = -3;
+#endif
+
+	  if (count != 0)
+	    status = -2;
+	}
+      else
+	status = -1;
+    }
+  else
+    print_usage ("readdir");
+
+  if (status < 0)
+    retval (0) = (double) status;
+  else
+    retval(0) = dirlist;
+
   return retval;
 }
 

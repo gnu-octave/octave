@@ -49,7 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-glob.h"
 #include "str-vec.h"
 
-#include "defaults.h"
+#include <defaults.h>
 #include "data.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -82,7 +82,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include "version.h"
+#include <version.h>
 
 // Echo commands as they are executed?
 //

@@ -50,7 +50,7 @@ Software Foundation, Inc.
 #include "file-ops.h"
 #include "str-vec.h"
 
-#include "defaults.h"
+#include <defaults.h>
 #include "defun.h"
 #include "error.h"
 #include "input.h"

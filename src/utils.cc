@@ -61,7 +61,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "oct-cmplx.h"
 #include "str-vec.h"
 
-#include "defaults.h"
+#include <defaults.h>
 #include "defun.h"
 #include "dir-ops.h"
 #include "dirfns.h"

@@ -49,7 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "builtins.h"
-#include "defaults.h"
+#include <defaults.h>
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"
@@ -57,7 +57,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "lex.h"
-#include "oct-conf.h"
+#include <oct-conf.h>
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "pager.h"
@@ -74,7 +74,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include "version.h"
+#include <version.h>
 
 // argv[0] for this program.
 string Vprogram_invocation_name;

@@ -60,8 +60,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-plot.h"
 #include "utils.h"
 #include "variables.h"
-#include "y.tab.h"
-#include "oct-gperf.h"
+#include <y.tab.h>
+#include <oct-gperf.h>
 
 // Flags that need to be shared between the lexer and parser.
 lexical_feedback lexer_flags;

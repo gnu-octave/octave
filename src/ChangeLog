@@ -1,5 +1,13 @@
 Fri Nov  8 09:54:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defaults.cc, dynamic-ld.cc, fn-cache.cc, help.cc, oct-hist.cc,
+	octave.cc, pager.cc, pt-fcn.cc, toplev.cc, utils.cc, variables.cc,
+	lex.l: Change #include "" to #include <> for defaults.h,
+	oct-conf.h, oct-gperf.h, y.tab.h, and version.h, to avoid getting
+	them from $srcdir when we really want the version from the build
+	directory.  (Maybe this should be done for all the include files,
+	not just those that are auto-generated?  Hmm.)
+
 	* defaults.h.in (CXXLIB_LIST, CXXLIB_PATH, FLIB_LIST, FLIB_PATH):
 	Delete.
 

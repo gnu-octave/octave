@@ -45,7 +45,7 @@ Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-#include "defaults.h"
+#include <defaults.h>
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -53,7 +53,7 @@ Software Foundation, Inc.
 #include "ov.h"
 #include "toplev.h"
 #include "variables.h"
-#include "version.h"
+#include <version.h>
 
 string Voctave_home;
 

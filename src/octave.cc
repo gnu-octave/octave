@@ -52,7 +52,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sun-utils.h"
 
 #include "builtins.h"
-#include "defaults.h"
+#include <defaults.h>
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"
@@ -76,7 +76,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include "version.h"
+#include <version.h>
 
 #if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
 extern "C" int on_exit ();

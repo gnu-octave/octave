@@ -43,7 +43,7 @@ extern "C"
 #endif
 }
 
-#include "defaults.h"
+#include <defaults.h>
 #include "dirfns.h"
 #include "dynamic-ld.h"
 #include "error.h"

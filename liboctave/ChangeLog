@@ -1,3 +1,10 @@
+2002-04-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASSL.h (DASSL_options::init): Set absolute tolerance to eps ^ 2.
+	(DASSL_options::set_absolute_tolerance): Likewise.
+	* LSODE.h (LSODE_options::init): Likewise.
+	(LSODE_options::set_absolute_tolerance): Likewise.
+
 2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
 
 	* f2c-main.c (MAIN_, MAIN__): Delete.  Use F77_DUMMY_MAIN instead.

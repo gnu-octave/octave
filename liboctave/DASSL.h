@@ -53,12 +53,11 @@ public:
 
   void init (void)
     {
-      double sqrt_eps = sqrt (DBL_EPSILON);
-      x_absolute_tolerance = sqrt_eps;
+      x_absolute_tolerance = DBL_EPSILON * DBL_EPSILON;
       x_initial_step_size = -1.0;
       x_maximum_step_size = -1.0;
       x_minimum_step_size = 0.0;
-      x_relative_tolerance = sqrt_eps;
+      x_relative_tolerance = sqrt (DBL_EPSILON);
     }
 
   void copy (const DASSL_options& opt)
@@ -73,7 +72,7 @@ public:
   void set_default_options (void) { init (); }
 
   void set_absolute_tolerance (double val)
-    { x_absolute_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
+    { x_absolute_tolerance = (val > 0.0) ? val : DBL_EPSILON * DBL_EPSILON; }
 
   void set_initial_step_size (double val)
     { x_initial_step_size = (val >= 0.0) ? val : -1.0; }

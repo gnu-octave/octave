@@ -48,6 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -78,18 +79,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include <version.h>
 
-// Nonzero means we print 
-static bool Vdefault_eval_print_flag = true;
-
-// Nonzero means we are using readline.
-// (--no-line-editing)
-int line_editing = 1;
-
-// Nonzero means we printed messages about reading startup files.
-int reading_startup_message_printed = 0;
-
-// Nonzero means we are exiting via the builtin exit or quit functions.
-int quitting_gracefully = 0;
+// TRUE means we are exiting via the builtin exit or quit functions.
+static bool quitting_gracefully = false;
 
 // Current command to execute.
 tree_statement_list *global_command = 0;
@@ -97,125 +88,8 @@ tree_statement_list *global_command = 0;
 // Pointer to function that is currently being evaluated.
 octave_user_function *curr_function = 0;
 
-// Nonzero means input is coming from startup file.
-int input_from_startup_file = 0;
-
-// Nonzero means that input is coming from a file that was named on
-// the command line.
-int input_from_command_line_file = 1;
-
 // Top level context (?)
 jmp_buf toplevel;
-
-void
-parse_and_execute (FILE *f)
-{
-  unwind_protect::begin_frame ("parse_and_execute");
-  
-  YY_BUFFER_STATE old_buf = current_buffer ();
-  YY_BUFFER_STATE new_buf = create_buffer (f);
-
-  unwind_protect::add (restore_input_buffer, old_buf);
-  unwind_protect::add (delete_input_buffer, new_buf);
-
-  switch_to_buffer (new_buf);
-
-  unwind_protect_int (line_editing);
-  unwind_protect_int (input_from_command_line_file);
-
-  line_editing = 0;
-  input_from_command_line_file = 0;
-
-  unwind_protect_ptr (curr_sym_tab);
-
-  int retval;
-  do
-    {
-      reset_parser ();
-
-      retval = yyparse ();
-
-      if (retval == 0 && global_command)
-	{
-	  global_command->eval ();
-
-	  delete global_command;
-
-	  global_command = 0;
-
-	  bool quit = (tree_return_command::returning
-		       || tree_break_command::breaking);
-
-	  if (tree_return_command::returning)
-	    tree_return_command::returning = 0;
-
-	  if (tree_break_command::breaking)
-	    tree_break_command::breaking--;
-
-	  if (error_state)
-	    {
-	      error ("near line %d of file `%s'", input_line_number,
-		     curr_fcn_file_full_name.c_str ());
-
-	      break;
-	    }
-
-	  if (quit)
-	    break;
-	}
-    }
-  while (retval == 0);
-
-  unwind_protect::run_frame ("parse_and_execute");
-}
-
-static void
-safe_fclose (void *f)
-{
-  if (f)
-    fclose (static_cast<FILE *> (f));
-}
-
-void
-parse_and_execute (const string& s, bool verbose, const char *warn_for)
-{
-  unwind_protect::begin_frame ("parse_and_execute_2");
-
-  unwind_protect_int (reading_script_file);
-  unwind_protect_str (curr_fcn_file_full_name);
-
-  reading_script_file = 1;
-  curr_fcn_file_full_name = s;
-
-  FILE *f = get_input_from_file (s, 0);
-
-  if (f)
-    {
-      unwind_protect::add (safe_fclose, f);
-
-      unwind_protect_int (input_line_number);
-      unwind_protect_int (current_input_column);
-
-      input_line_number = 0;
-      current_input_column = 1;
-
-      if (verbose)
-	{
-	  cout << "reading commands from " << s << " ... ";
-	  reading_startup_message_printed = 1;
-	  cout.flush ();
-	}
-
-      parse_and_execute (f);
-
-      if (verbose)
-	cout << "done." << endl;
-    }
-  else if (warn_for)
-    error ("%s: unable to open file `%s'", warn_for, s.c_str ());
-
-  unwind_protect::run_frame ("parse_and_execute_2");
-}
 
 int
 main_loop (void)
@@ -233,7 +107,7 @@ main_loop (void)
       octave_restore_signal_mask ();
     }
 
-  can_interrupt = 1;
+  can_interrupt = true;
 
   octave_catch_interrupts ();
 
@@ -286,38 +160,6 @@ main_loop (void)
 	}
     }
   while (retval == 0);
-
-  return retval;
-}
-
-DEFUN (source, args, ,
-  "source (FILE)\n\
-\n\
-Parse and execute the contents of FILE.  Like executing commands in a\n\
-script file but without requiring the file to be named `FILE.m'.")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      string file = args(0).string_value ();
-
-      if (! error_state)
-	{
-	  file = file_ops::tilde_expand (file);
-
-	  parse_and_execute (file, false, "source");
-
-	  if (error_state)
-	    error ("source: error sourcing file `%s'", file.c_str ());
-	}
-      else
-	error ("source: expecting file name as argument");
-    }
-  else
-    print_usage ("source");
 
   return retval;
 }
@@ -412,7 +254,7 @@ STATUS should be an integer value.  If STATUS is missing, 0 is assumed.")
 
   int exit_status = 0;
 
-  quitting_gracefully = 1;
+  quitting_gracefully = true;
 
   int nargin = args.length ();
 
@@ -453,180 +295,6 @@ You should have received a copy of the GNU General Public License\n\
 along with this program. If not, write to the Free Software\n\
 Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n\
 \n";
-
-  return retval;
-}
-
-// XXX FIXME XXX -- this may not be the best place for these...
-
-static octave_value_list
-feval (const octave_value_list& args, int nargout)
-{
-  octave_value_list retval;
-
-  octave_function *fcn = is_valid_function (args(0), "feval", 1);
-
-  if (fcn)
-    {
-      string_vector arg_names = args.name_tags ();
-
-      int tmp_nargin = args.length () - 1;
-
-      octave_value_list tmp_args (tmp_nargin, octave_value ());
-
-      string_vector tmp_arg_names (tmp_nargin);
-
-      for (int i = 0; i < tmp_nargin; i++)
-	{
-	  tmp_args(i) = args(i+1);
-	  tmp_arg_names(i) = arg_names(i+1);
-	}
-
-      tmp_args.stash_name_tags (tmp_arg_names);
-
-      retval = fcn->do_index_op (nargout, tmp_args);
-    }
-
-  return retval;
-}
-
-DEFUN (feval, args, nargout,
-  "feval (NAME, ARGS, ...)\n\
-\n\
-evaluate NAME as a function, passing ARGS as its arguments")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin > 0)
-    retval = feval (args, nargout);
-  else
-    print_usage ("feval");
-
-  return retval;
-}
-
-static octave_value_list
-eval_string (const string& s, bool silent, int& parse_status, int nargout)
-{
-  unwind_protect::begin_frame ("eval_string");
-
-  unwind_protect_int (get_input_from_eval_string);
-  unwind_protect_int (input_from_command_line_file);
-  unwind_protect_ptr (global_command);
-  unwind_protect_str (current_eval_string);
-
-  get_input_from_eval_string = 1;
-  input_from_command_line_file = 0;
-  current_eval_string = s;
-
-  YY_BUFFER_STATE old_buf = current_buffer ();
-  YY_BUFFER_STATE new_buf = create_buffer (0);
-
-  unwind_protect::add (restore_input_buffer, old_buf);
-  unwind_protect::add (delete_input_buffer, new_buf);
-
-  switch_to_buffer (new_buf);
-
-  unwind_protect_ptr (curr_sym_tab);
-
-  reset_parser ();
-
-  parse_status = yyparse ();
-
-  // Important to reset the idea of where input is coming from before
-  // trying to eval the command we just parsed -- it might contain the
-  // name of an function file that still needs to be parsed!
-
-  tree_statement_list *command = global_command;
-
-  unwind_protect::run_frame ("eval_string");
-
-  octave_value_list retval;
-
-  if (parse_status == 0 && command)
-    {
-      retval = command->eval (silent, nargout);
-      delete command;
-    }
-
-  return retval;
-}
-
-octave_value
-eval_string (const string& s, bool silent, int& parse_status)
-{
-  octave_value retval;
-
-  octave_value_list tmp = eval_string (s, silent, parse_status, 1);
-
-  if (! tmp.empty ())
-    retval = tmp(0);
-
-  return retval;
-}
-
-static octave_value_list
-eval_string (const octave_value& arg, bool silent, int& parse_status,
-	     int nargout)
-{
-  string s = arg.string_value ();
-
-  if (error_state)
-    {
-      error ("eval: expecting string argument");
-      return -1.0;
-    }
-
-  return eval_string (s, silent, parse_status, nargout);
-}
-
-DEFUN (eval, args, nargout,
-  "eval (TRY, CATCH)\n\
-\n\
-Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
-string CATCH.")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin > 0)
-    {
-      unwind_protect::begin_frame ("Feval");
-
-      if (nargin > 1)
-	{
-	  unwind_protect_int (buffer_error_messages);
-	  buffer_error_messages = 1;
-	}
-
-      int parse_status = 0;
-
-      retval = eval_string (args(0), ! Vdefault_eval_print_flag,
-			    parse_status, nargout);
-
-      if (nargin > 1 && (parse_status != 0 || error_state))
-	{
-	  error_state = 0;
-
-	  // Set up for letting the user print any messages from
-	  // errors that occurred in the first part of this eval().
-
-	  buffer_error_messages = 0;
-	  bind_global_error_variable ();
-	  unwind_protect::add (clear_global_error_variable, 0);
-
-	  eval_string (args(1), 0, parse_status, nargout);
-
-	  retval = octave_value_list ();
-	}
-
-      unwind_protect::run_frame ("Feval");
-    }
-  else
-    print_usage ("eval");
 
   return retval;
 }
@@ -951,21 +619,19 @@ __builtin_delete (void *ptr)
 
 #endif
 
-static int
-default_eval_print_flag (void)
-{
-  Vdefault_eval_print_flag = check_preference ("default_eval_print_flag");
-
-  return 0;
-}
-
 void
 symbols_of_toplev (void)
 {
-  DEFVAR (default_eval_print_flag, 1.0, 0, default_eval_print_flag,
-    "If the value of this variable is nonzero, Octave will print the\n\
-results of commands executed by eval() that do not end with semicolons.");
+  DEFCONST (argv, , 0, 0,
+    "the command line arguments this program was invoked with");
 
+  DEFCONST (program_invocation_name,
+	    octave_env::get_program_invocation_name (), 0, 0,
+    "the full name of the current program or script, including the\n\
+directory specification");
+
+  DEFCONST (program_name, octave_env::get_program_name (), 0, 0,
+    "the name of the current program or script");
 }
 
 /*

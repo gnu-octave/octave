@@ -24,28 +24,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <cfloat>
-#include <cmath>
 #include <cstdio>
 #include <cstring>
 
 #include <string>
 
-#include <iostream.h>
-#include <strstream.h>
-
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#include <unistd.h>
-#endif
-
-#include "cmd-edit.h"
-#include "cmd-hist.h"
-#include "file-ops.h"
 #include "file-stat.h"
-#include "lo-mappers.h"
 #include "oct-env.h"
 #include "glob-match.h"
 #include "str-vec.h"
@@ -53,38 +37,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <defaults.h>
 #include "defun.h"
 #include "dirfns.h"
-#include "dynamic-ld.h"
 #include "error.h"
-#include "fn-cache.h"
 #include "gripes.h"
 #include "help.h"
-#include "input.h"
 #include "lex.h"
-#include "sysdep.h"
-#include "oct-hist.h"
 #include "oct-map.h"
-#include "ov-mapper.h"
 #include "oct-obj.h"
 #include "ov.h"
 #include "pager.h"
 #include "parse.h"
-#include "pt-id.h"
-#include "pt-indir.h"
 #include "symtab.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include <version.h>
-
-// Echo commands as they are executed?
-//
-//   1  ==>  echo commands read from script files
-//   2  ==>  echo commands from functions
-//   4  ==>  echo commands read from command line
-//
-// more than one state can be active at once.
-int Vecho_executing_commands;
 
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
@@ -549,339 +515,6 @@ symbol_out_of_date (symbol_record *sr)
   return retval;
 }
 
-static bool
-looks_like_octave_copyright (const string& s)
-{
-  bool retval = false;
-
-  string t = s.substr (0, 15);
-
-  if (t == " Copyright (C) ")
-    {
-      size_t pos = s.find ('\n');
-
-      if (pos != NPOS)
-	{
-	  pos = s.find ('\n', pos + 1);
-
-	  if (pos != NPOS)
-	    {
-	      pos++;
-
-	      t = s.substr (pos, 29);
-
-	      if (t == " This file is part of Octave."
-		  || t == " This program is free softwar")
-		retval = true;
-	    }
-	}
-    }
-
-  return retval;
-}
-
-// Eat whitespace and comments from FFILE, returning the text of the
-// comments read if it doesn't look like a copyright notice.  If
-// IN_PARTS, consider each block of comments separately; otherwise,
-// grab them all at once.  If UPDATE_POS is TRUE, line and column
-// number information is updated.
-
-// XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
-// code!
-
-static string
-gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
-{
-  string help_txt;
-
-  bool first_comments_seen = false;
-  bool begin_comment = false;
-  bool have_help_text = false;
-  bool in_comment = false;
-  int c;
-
-  while ((c = getc (ffile)) != EOF)
-    {
-      if (update_pos)
-	current_input_column++;
-
-      if (begin_comment)
-	{
-	  if (c == '%' || c == '#')
-	    continue;
-	  else
-	    begin_comment = false;
-	}
-
-      if (in_comment)
-	{
-	  if (! have_help_text)
-	    {
-	      first_comments_seen = true;
-	      help_txt += (char) c;
-	    }
-
-	  if (c == '\n')
-	    {
-	      if (update_pos)
-		{
-		  input_line_number++;
-		  current_input_column = 0;
-		}
-	      in_comment = false;
-
-	      if (in_parts)
-		{
-		  if ((c = getc (ffile)) != EOF)
-		    {
-		      if (update_pos)
-			current_input_column--;
-		      ungetc (c, ffile);
-		      if (c == '\n')
-			break;
-		    }
-		  else
-		    break;
-		}
-	    }
-	}
-      else
-	{
-	  switch (c)
-	    {
-	    case ' ':
-	    case '\t':
-	      if (first_comments_seen)
-		have_help_text = true;
-	      break;
-
-	    case '\n':
-	      if (first_comments_seen)
-		have_help_text = true;
-	      if (update_pos)
-		{
-		  input_line_number++;
-		  current_input_column = 0;
-		}
-	      continue;
-
-	    case '%':
-	    case '#':
-	      begin_comment = true;
-	      in_comment = true;
-	      break;
-
-	    default:
-	      if (update_pos)
-		current_input_column--;
-	      ungetc (c, ffile);
-	      goto done;
-	    }
-	}
-    }
-
- done:
-
-  if (! help_txt.empty ())
-    {
-      if (looks_like_octave_copyright (help_txt)) 
-	help_txt.resize (0);
-
-      if (in_parts && help_txt.empty ())
-	help_txt = gobble_leading_white_space (ffile, in_parts, update_pos);
-    }
-
-  return help_txt;
-}
-
-static int
-is_function_file (FILE *ffile)
-{
-  int status = 0;
-
-  long pos = ftell (ffile);
-
-  gobble_leading_white_space (ffile, false, false);
-
-  char buf [10];
-  fgets (buf, 10, ffile);
-  int len = strlen (buf);
-  if (len > 8 && strncmp (buf, "function", 8) == 0
-      && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = 1;
-
-  fseek (ffile, pos, SEEK_SET);
-
-  return status;
-}
-
-static void
-restore_command_history (void *)
-{
-  command_history::ignore_entries (! Vsaving_history);
-}
-
-static void
-safe_fclose (void *f)
-{
-  if (f)
-    fclose (static_cast<FILE *> (f));
-}
-
-static void
-restore_input_stream (void *f)
-{
-  command_editor::set_input_stream (static_cast<FILE *> (f));
-}
-
-static int
-parse_fcn_file (bool exec_script, const string& ff)
-{
-  unwind_protect::begin_frame ("parse_fcn_file");
-
-  int script_file_executed = 0;
-
-  // Open function file and parse.
-
-  int old_reading_fcn_file_state = reading_fcn_file;
-
-  FILE *in_stream = command_editor::get_input_stream ();
-
-  unwind_protect::add (restore_input_stream, in_stream);
-
-  unwind_protect_ptr (ff_instream);
-
-  unwind_protect_int (line_editing);
-  unwind_protect_int (input_line_number);
-  unwind_protect_int (current_input_column);
-  unwind_protect_int (reading_fcn_file);
-
-  line_editing = 0;
-  reading_fcn_file = 1;
-  input_line_number = 0;
-  current_input_column = 1;
-
-  FILE *ffile = get_input_from_file (ff, 0);
-
-  unwind_protect::add (safe_fclose, ffile);
-
-  if (ffile)
-    {
-      // Check to see if this file defines a function or is just a
-      // list of commands.
-
-      if (is_function_file (ffile))
-	{
-	  // XXX FIXME XXX -- we shouldn't need both the
-	  // command_history object and the
-	  // Vsaving_history variable...
-	  command_history::ignore_entries ();
-
-	  unwind_protect::add (restore_command_history, 0);
-
-	  unwind_protect_int (Vecho_executing_commands);
-	  unwind_protect_int (Vsaving_history);
-	  unwind_protect_int (reading_fcn_file);
-	  unwind_protect_int (input_from_command_line_file);
-
-	  Vecho_executing_commands = ECHO_OFF;
-	  Vsaving_history = 0;
-	  reading_fcn_file = 1;
-	  input_from_command_line_file = 0;
-
-	  YY_BUFFER_STATE old_buf = current_buffer ();
-	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
-
-	  unwind_protect::add (restore_input_buffer, (void *) old_buf);
-	  unwind_protect::add (delete_input_buffer, (void *) new_buf);
-
-	  switch_to_buffer (new_buf);
-
-	  unwind_protect_ptr (curr_sym_tab);
-
-	  reset_parser ();
-
-	  help_buf = gobble_leading_white_space (ffile, true, true);
-
-	  // XXX FIXME XXX -- this should not be necessary.
-	  gobble_leading_white_space (ffile, false, true);
-
-	  int status = yyparse ();
-
-	  if (status != 0)
-	    {
-	      error ("parse error while reading function file %s",
-		     ff.c_str ());
-	      global_sym_tab->clear (curr_fcn_file_name);
-	    }
-	}
-      else if (exec_script)
-	{
-	  // The value of `reading_fcn_file' will be restored to the
-	  // proper value when we unwind from this frame.
-	  reading_fcn_file = old_reading_fcn_file_state;
-
-	  // XXX FIXME XXX -- we shouldn't need both the
-	  // command_history object and the
-	  // Vsaving_history variable...
-	  command_history::ignore_entries ();
-
-	  unwind_protect::add (restore_command_history, 0);
-
-	  unwind_protect_int (Vsaving_history);
-	  unwind_protect_int (reading_script_file);
-
-	  Vsaving_history = 0;
-	  reading_script_file = 1;
-
-	  parse_and_execute (ffile);
-
-	  script_file_executed = 1;
-	}
-    }
-
-  unwind_protect::run_frame ("parse_fcn_file");
-
-  return script_file_executed;
-}
-
-static bool
-load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
-{
-  bool script_file_executed = false;
-
-  string nm = sym_rec->name ();
-
-  if (octave_dynamic_loader::load_fcn_from_dot_oct_file (nm))
-    {
-      force_link_to_function (nm);
-    }
-  else
-    {
-      string ff = fcn_file_in_path (nm);
-
-      // These are needed by yyparse.
-
-      unwind_protect::begin_frame ("load_fcn_from_file");
-
-      unwind_protect_str (curr_fcn_file_name);
-      unwind_protect_str (curr_fcn_file_full_name);
-
-      curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = ff;
-
-      if (ff.length () > 0)
-	script_file_executed = parse_fcn_file (exec_script, ff);
-
-      if (! (error_state || script_file_executed))
-	force_link_to_function (nm);
-
-      unwind_protect::run_frame ("load_fcn_from_file");
-    }
-
-  return script_file_executed;
-}
-
 bool
 lookup (symbol_record *sym_rec, bool exec_script)
 {
@@ -953,28 +586,6 @@ set_global_value (const string& nm, const octave_value& val)
     sr->define (val);
   else
     panic_impossible ();
-}
-
-string
-get_help_from_file (const string& path)
-{
-  string retval;
-
-  if (! path.empty ())
-    {
-      FILE *fptr = fopen (path.c_str (), "r");
-
-      if (fptr)
-	{
-	  unwind_protect::add (safe_fclose, (void *) fptr);
-
-	  retval = gobble_leading_white_space (fptr, true, true);
-
-	  unwind_protect::run ();
-	}
-    }
-
-  return retval;
 }
 
 // Variable values.
@@ -1327,31 +938,6 @@ bind_ans (const octave_value& val, bool print)
     }
 }
 
-void
-bind_global_error_variable (void)
-{
-  *error_message_buffer << ends;
-
-  char *error_text = error_message_buffer->str ();
-
-  bind_builtin_variable ("__error_text__", error_text, 1);
-
-  delete [] error_text;
-
-  delete error_message_buffer;
-
-  error_message_buffer = 0;
-}
-
-void
-clear_global_error_variable (void *)
-{
-  delete error_message_buffer;
-  error_message_buffer = 0;
-
-  bind_builtin_variable ("__error_text__", "", 1);
-}
-
 // Give a global variable a definition.  This will insert the symbol
 // in the global table if necessary.
 
@@ -1539,14 +1125,6 @@ DEFUN (__dump_symtab_info__, args, ,
 // able to provide more meaningful warning or error messages.
 
 static int
-echo_executing_commands (void)
-{
-  Vecho_executing_commands = check_preference ("echo_executing_commands"); 
-
-  return 0;
-}
-
-static int
 ignore_function_time_stamp (void)
 {
   int pref = 0;
@@ -1575,31 +1153,9 @@ symbols_of_variables (void)
   DEFVAR (ans, , 0, 0,
     "");
 
-  DEFCONST (argv, , 0, 0,
-    "the command line arguments this program was invoked with");
-
-  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF), 0,
-	  echo_executing_commands,
-    "echo commands as they are executed");
-
-  DEFCONST (error_text, "", 0, 0,
-    "the text of error messages that would have been printed in the\n\
-body of the most recent unwind_protect statement or the TRY part of\n\
-the most recent eval() command.  Outside of unwind_protect and\n\
-eval(), or if no error has ocurred within them, the value of\n\
-__error_text__ is guaranteed to be the empty string.");
-
   DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
     "don't check to see if function files have changed since they were\n\
-  last compiled.  Possible values are \"system\" and \"all\"");
-
-  DEFCONST (program_invocation_name,
-	    octave_env::get_program_invocation_name (), 0, 0,
-    "the full name of the current program or script, including the\n\
-directory specification");
-
-  DEFCONST (program_name, octave_env::get_program_name (), 0, 0,
-    "the name of the current program or script");
+last compiled.  Possible values are \"system\" and \"all\"");
 }
 
 /*

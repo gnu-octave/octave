@@ -43,27 +43,6 @@ class string_vector;
 
 extern void initialize_symbol_tables (void);
 
-extern bool lookup (symbol_record *s, bool exec_script = true);
-
-extern symbol_record *lookup_by_name (const string& nm,
-				      bool exec_script = true);
-
-extern octave_value get_global_value (const string& nm);
-
-extern void set_global_value (const string& nm, const octave_value& val);
-
-extern string get_help_from_file (const string& f);
-
-extern string builtin_string_variable (const string&);
-extern int builtin_real_scalar_variable (const string&, double&);
-extern octave_value builtin_any_variable (const string&);
-
-extern void link_to_global_variable (symbol_record *sr);
-extern void link_to_builtin_variable (symbol_record *sr);
-extern void link_to_builtin_or_function (symbol_record *sr);
-
-extern void force_link_to_function (const string&);
-
 extern bool is_builtin_variable (const string&);
 extern bool is_text_function_name (const string&);
 extern bool is_mapper_function_name (const string&);
@@ -81,12 +60,31 @@ extract_function (const octave_value& arg, const string& warn_for,
 extern string_vector
 get_struct_elts (const string& text);
 
-extern bool
-looks_like_struct (const string& text);
-
 extern string_vector
 generate_struct_completions (const string& text, string& prefix,
 			     string& hint);
+
+extern bool
+looks_like_struct (const string& text);
+
+extern bool lookup (symbol_record *s, bool exec_script = true);
+
+extern symbol_record *
+lookup_by_name (const string& nm, bool exec_script = true);
+
+extern octave_value get_global_value (const string& nm);
+
+extern void set_global_value (const string& nm, const octave_value& val);
+
+extern string builtin_string_variable (const string&);
+extern int builtin_real_scalar_variable (const string&, double&);
+extern octave_value builtin_any_variable (const string&);
+
+extern void link_to_global_variable (symbol_record *sr);
+extern void link_to_builtin_variable (symbol_record *sr);
+extern void link_to_builtin_or_function (symbol_record *sr);
+
+extern void force_link_to_function (const string&);
 
 extern void bind_ans (const octave_value& val, bool print);
 
@@ -108,16 +106,6 @@ extern symbol_table *curr_sym_tab;
 
 // Symbol table for global symbols.
 extern symbol_table *global_sym_tab;
-
-enum echo_state
-{
-  ECHO_OFF = 0,
-  ECHO_SCRIPTS = 1,
-  ECHO_FUNCTIONS = 2,
-  ECHO_CMD_LINE = 4
-};
-
-extern int Vecho_executing_commands;
 
 #endif
 

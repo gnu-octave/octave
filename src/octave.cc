@@ -63,16 +63,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "file-io.h"
 #include "sysdep.h"
 
-// Signal handler return type.
-#ifndef RETSIGTYPE
-#define RETSIGTYPE void
-#endif
-#if 0
-#ifndef BADSIG
-#define BADSIG (RETSIGTYPE (*)())-1
-#endif
-#endif
-
 #ifdef sun
 extern "C" { int on_exit (); }
 #define atexit on_exit

@@ -73,6 +73,7 @@ Software Foundation, Inc.
 #include "f-svd.h"
 #include "f-syl.h"
 
+#include "sighandlers.h"
 #include "procstream.h"
 #include "error.h"
 #include "variables.h"
@@ -113,16 +114,6 @@ return octave_dld_tc2_and_go (args, n_in, n_out, Q_STR (name), \
 // Non-zero means that pwd always give verbatim directory, regardless
 // of symbolic link following.
 static int verbatim_pwd = 1;
-
-// Signal handler return type.
-#ifndef RETSIGTYPE
-#define RETSIGTYPE void
-#endif
-#ifndef BADSIG
-#define BADSIG (RETSIGTYPE (*)())-1
-#endif
-
-typedef RETSIGTYPE sig_handler (...);
 
 /*
  * Are all elements of a constant nonzero?

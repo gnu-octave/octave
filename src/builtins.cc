@@ -40,8 +40,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "pager.h"
 #include "mappers.h"
-#include "user-prefs.h"
 #include "variables.h"
+#include "user-prefs.h"
+#include "missing-math.h"
 
 // NOTE: nargin == 1 means that the function takes no arguments (just
 // like C, the first argument is (or should be, anyway) the function

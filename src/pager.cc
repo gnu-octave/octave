@@ -113,11 +113,10 @@ pager_death_handler (pid_t pid, int status)
 	  // If this message is printed with warning(), we eventually
 	  // crash.
 
-	  cout
-	    << "warning: connection to external pager (pid = "
-	    << pid << ") lost --" << endl
-	    << "warning: pending computations and output have been discarded"
-	    << endl;
+	  cout << "warning: connection to external pager (pid = "
+	       << pid << ") lost --" << endl
+	       << "warning: pending computations and output may be lost"
+	       << endl;
 	}
     }
 }
@@ -167,7 +166,6 @@ do_sync (const char *msg, bool bypass_pager)
 		      && external_pager->good ())
 		    external_pager->flush ();
 		}
-	      clear_external_pager ();
 	    }
 	  else
 	    cout << msg;

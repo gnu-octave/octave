@@ -1,5 +1,7 @@
 Wed Nov  6 12:32:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pager.cc (do_sync): Don't call clear_external_pager here.
+
 	* pt-const.h (tree_constant::allocator) New static member.
 	(tree_constant::operator new, tree_constant::operator delete):
 	Implement with custom allocator.

@@ -83,6 +83,7 @@ char *tilde_expand (char *s); /* From readline's tilde.c */
 #include "variables.h"
 #include "error.h"
 #include "utils.h"
+#include "input.h"
 #include "octave.h"
 #include "mappers.h"
 #include "version.h"
@@ -214,7 +215,7 @@ raw_mode (int on)
   static int curr_on = 0;
 
   int tty_fd = STDIN_FILENO;
-  if (! isatty (tty_fd))
+  if ((interactive || forced_interactive) && ! isatty (tty_fd))
     {
       error ("stdin is not a tty!");
       return;

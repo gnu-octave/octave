@@ -70,11 +70,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include "version.h"
 
-#if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
-extern "C" int on_exit ();
-#define atexit on_exit
-#endif
-
 // argv[0] for this program.
 char *raw_prog_name = 0;
 

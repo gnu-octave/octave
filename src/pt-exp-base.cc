@@ -963,29 +963,11 @@ tree_identifier::eval (int print)
   if (! error_state && retval.is_defined ())
     {
       if (maybe_do_ans_assign && ! object_to_eval->is_constant ())
-	{
-
-// XXX FIXME XXX -- need a procedure to do this, probably in
-// variables.cc, to isolate the code that does lookups...
-
-	  symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
-
-	  assert (sr);
-
-	  tree_identifier *ans_id = new tree_identifier (sr);
-
-	  tree_constant *tmp = new tree_constant (retval);
-
-	  tree_simple_assignment_expression tmp_ass (ans_id, tmp, 0, 1);
-
-	  tmp_ass.eval (print);
-	}
-      else
-	{
-	  if (print)
-	    print_constant (retval, name ());
-	}
+	bind_ans (retval, print);
+      else if (print)
+	print_constant (retval, name ());
     }
+
   return retval;
 }
 
@@ -1015,24 +997,7 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 	      retval = object_to_eval->eval (0, nargout, args);
 
 	      if (retval.length () > 0 && retval(0).is_defined ())
-		{
-
-// XXX FIXME XXX -- need a procedure to do this, probably in
-// variables.cc, to isolate the code that does lookups...
-
-		  symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
-
-		  assert (sr);
-      
-		  tree_identifier *ans_id = new tree_identifier (sr);
-
-		  tree_constant *tmp = new tree_constant (retval(0));
-
-		  tree_simple_assignment_expression tmp_ass (ans_id,
-							     tmp, 0, 1);
-
-		  tmp_ass.eval (print);
-		}
+		bind_ans (retval(0), print);
 	    }
 	  else
 	    retval = object_to_eval->eval (print, nargout, args);

@@ -1339,13 +1339,10 @@ maybe_convert_to_ans_assign (tree_expression *expr)
     }
   else
     {
-      symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
+      static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
+      static tree_identifier ans_id (sr);
 
-      assert (sr);
-      
-      tree_identifier *ans = new tree_identifier (sr);
-
-      return new tree_simple_assignment_expression (ans, expr, 0, 1);
+      return new tree_simple_assignment_expression (&ans_id, expr, 1, 1);
     }
 }
 

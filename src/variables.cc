@@ -1405,6 +1405,19 @@ bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
 }
 #endif
 
+void
+bind_ans (const tree_constant& val, int print)
+{
+  static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
+  static tree_identifier ans_id (sr);
+
+  tree_constant *tmp = new tree_constant (val);
+
+  tree_simple_assignment_expression tmp_ass (&ans_id, tmp, 1, 1);
+
+  tmp_ass.eval (print);
+}
+
 // Give a global variable a definition.  This will insert the symbol
 // in the global table if necessary.
 

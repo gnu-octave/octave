@@ -69,6 +69,16 @@ extern "C"
 #include "fnmatch.h"
 }
 
+#if SIZEOF_SHORT == 4
+#define FOUR_BYTE_TYPE short
+#elif SIZEOF_INT == 4
+#define FOUR_BYTE_TYPE int
+#elif SIZEOF_LONG == 4
+#define FOUR_BYTE_TYPE long
+#else
+LOSE! LOSE!
+#endif
+
 // Symbol table for symbols at the top level.
 symbol_table *top_level_sym_tab = 0;
 
@@ -719,8 +729,7 @@ builtin_real_scalar_variable (const char *name, double& d)
     {
       tree_constant val = defn->eval (0);
 
-      if (! error_state
-	  && val.const_type () == tree_constant_rep::scalar_constant)
+      if (! error_state && val.is_scalar_type ())
 	{
 	  d = val.double_value ();
 	  status = 0;
@@ -926,7 +935,7 @@ extract_keyword (istream& is, char *keyword, int& value)
   return status;
 }
 
-// Skip trailing white space and
+// Skip white space and comments.
 
 static void
 skip_comments (istream& is)
@@ -948,104 +957,6 @@ skip_comments (istream& is)
       else
 	break;
     }
-}
-
-static tree_constant
-load_variable (istream& is, tree_constant_rep::constant_type t)
-{
-  tree_constant retval;
-
-  switch (t)
-    {
-    case tree_constant_rep::scalar_constant:
-      {
-	double tmp;
-	is >> tmp;
-	if (is)
-	  retval = tmp;
-	else
-	  error ("failed to load scalar constant");
-      }
-      break;
-    case tree_constant_rep::matrix_constant:
-      {
-	int nr = 0, nc = 0;
-
-	if (extract_keyword (is, "rows", nr) && nr > 0
-	    && extract_keyword (is, "columns", nc) && nc > 0)
-	  {
-	    Matrix tmp (nr, nc);
-	    is >> tmp;
-	    if (is)
-	      retval = tmp;
-	    else
-	      error ("failed to load matrix constant");
-	  }
-	else
-	  error ("failed to extract number of rows and columns");
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex tmp;
-	is >> tmp;
-	if (is)
-	  retval = tmp;
-	else
-	  error ("failed to load complex scalar constant");
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	int nr = 0, nc = 0;
-
-	if (extract_keyword (is, "rows", nr) && nr > 0
-	    && extract_keyword (is, "columns", nc) && nc > 0)
-	  {
-	    ComplexMatrix tmp (nr, nc);
-	    is >> tmp;
-	    if (is)
-	      retval = tmp;
-	    else
-	      error ("failed to load complex matrix constant");
-	  }
-	else
-	  error ("failed to extract number of rows and columns");
-      }
-      break;
-    case tree_constant_rep::string_constant:
-      {
-	int len;
-	if (extract_keyword (is, "length", len) && len > 0)
-	  {
-	    char *tmp = new char [len+1];
-	    is.get (tmp, len+1, EOF);
-	    if (is)
-	      retval = tmp;
-	    else
-	      error ("failed to load string constant");
-	  }
-	else
-	  error ("failed to extract string length");
-      }
-      break;
-    case tree_constant_rep::range_constant:
-      {
-	skip_comments (is); // # base, limit, range comment added by save().
-	Range tmp;
-	is >> tmp;
-	if (is)
-	  retval = tmp;
-	else
-	  error ("failed to load range constant");
-      }
-      break;
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  return retval;
 }
 
 static tree_constant
@@ -1076,17 +987,82 @@ load_variable (istream& is, int& is_global)
 	ptr = tag;
 
       if (strncmp (ptr, "scalar", 6) == 0)
-	retval = load_variable (is, tree_constant_rep::scalar_constant);
+	{
+	  double tmp;
+	  is >> tmp;
+	  if (is)
+	    retval = tmp;
+	  else
+	    error ("failed to load scalar constant");
+	}
       else if (strncmp (ptr, "matrix", 6) == 0)
-	retval = load_variable (is, tree_constant_rep::matrix_constant);
+	{
+	  int nr = 0, nc = 0;
+
+	  if (extract_keyword (is, "rows", nr) && nr > 0
+	      && extract_keyword (is, "columns", nc) && nc > 0)
+	    {
+	      Matrix tmp (nr, nc);
+	      is >> tmp;
+	      if (is)
+		retval = tmp;
+	      else
+		error ("failed to load matrix constant");
+	    }
+	  else
+	    error ("failed to extract number of rows and columns");
+	}
       else if (strncmp (ptr, "complex scalar", 14) == 0)
-	retval = load_variable (is, tree_constant_rep::complex_scalar_constant);
+	{
+	  Complex tmp;
+	  is >> tmp;
+	  if (is)
+	    retval = tmp;
+	  else
+	    error ("failed to load complex scalar constant");
+	}
       else if (strncmp (ptr, "complex matrix", 14) == 0)
-	retval = load_variable (is, tree_constant_rep::complex_matrix_constant);
+	{
+	  int nr = 0, nc = 0;
+
+	  if (extract_keyword (is, "rows", nr) && nr > 0
+	      && extract_keyword (is, "columns", nc) && nc > 0)
+	    {
+	      ComplexMatrix tmp (nr, nc);
+	      is >> tmp;
+	      if (is)
+		retval = tmp;
+	      else
+		error ("failed to load complex matrix constant");
+	    }
+	  else
+	    error ("failed to extract number of rows and columns");
+	}
       else if (strncmp (ptr, "string", 6) == 0)
-	retval = load_variable (is, tree_constant_rep::string_constant);
+	{
+	  int len;
+	  if (extract_keyword (is, "length", len) && len > 0)
+	    {
+	      char *tmp = new char [len+1];
+	      is.get (tmp, len+1, EOF);
+	      if (is)
+		retval = tmp;
+	      else
+		error ("failed to load string constant");
+	    }
+	  else
+	    error ("failed to extract string length");
+	}
       else if (strncmp (ptr, "range", 5) == 0)
-	retval = load_variable (is, tree_constant_rep::range_constant);
+	{
+	  skip_comments (is); // # base, limit, range comment added by save().
+	  Range tmp;
+	  is >> tmp;
+	  if (is)
+	    retval = tmp;
+	  else
+	    error ("failed to load range constant");
+	}
       else
 	error ("unknown constant type `%s'", tag);
     }
@@ -1098,8 +1074,9 @@ load_variable (istream& is, int& is_global)
   return retval;
 }
 
-static int
-load_variable (char *nm, int force, istream& is)
+static void
+install_loaded_variable (int force, char *nm, const tree_constant& tc,
+			 int global)
 {
 // Is there already a symbol by this name?  If so, what is it?
 
@@ -1120,13 +1097,10 @@ load_variable (char *nm, int force, istream& is)
 
 // Try to read data for this name.
 
-  int global;
-  tree_constant tc = load_variable (is, global);
-
-  if (tc.const_type () == tree_constant_rep::unknown_constant)
+  if (tc.is_undefined ())
     {
       error ("load: unable to load variable `%s'", nm);
-      return 0;
+      return;
     }
 
   symbol_record *sr = 0;
@@ -1229,16 +1203,246 @@ load_variable (char *nm, int force, istream& is)
     {
       tree_constant *tmp_tc = new tree_constant (tc);
       sr->define (tmp_tc);
-      return 1;
+      return;
     }
   else
     error ("load: unable to load variable `%s'", nm);
 
-  return 0;
+  return;
+}
+
+// XXX FIXME XXX -- need to check stream states in more places.
+
+static char *
+read_ascii_data (istream& stream, const char *filename, int& global,
+		 tree_constant& tc)
+{
+// Read name for this entry or break on EOF.
+
+  char *nm = extract_keyword (stream, "name");
+
+  if (! nm)
+    return 0;
+
+  if (! *nm)
+    {
+      error ("load: empty name keyword found in file `%s'", filename);
+      delete [] nm;
+      return 0;
+    }
+      
+
+  if (! valid_identifier (nm))
+    {
+      error ("load: bogus identifier `%s' found in file `%s'", nm, filename);
+      delete [] nm;
+      return 0;
+    }
+
+  tc = load_variable (stream, global);
+
+  if (error_state)
+    {
+      error ("reading file %s", filename);
+      return 0;
+    }
+
+  return nm;
+}
+
+static void
+swap_2_bytes (char *t)
+{
+  char tmp = t[0];
+  t[0] = t[1];
+  t[1] = tmp;
+}
+
+static void
+swap_4_bytes (char *t)
+{
+  char tmp = t[0];
+  t[0] = t[3];
+  t[3] = tmp;
+
+  tmp = t[1];
+  t[1] = t[2];
+  t[2] = tmp;
+}
+
+static void
+swap_8_bytes (char *t)
+{
+  char tmp = t[0];
+  t[0] = t[7];
+  t[7] = tmp;
+
+  tmp = t[1];
+  t[1] = t[6];
+  t[6] = tmp;
+
+  tmp = t[2];
+  t[2] = t[5];
+  t[5] = tmp;
+
+  tmp = t[3];
+  t[3] = t[4];
+  t[4] = tmp;
+}
+
+static char *floating_point_format[] =
+{
+  "IEEE little endian",
+  "IEEE big endian",
+  "VAX D floating",
+  "VAX G floating",
+  "Cray",
+  0,
+};
+
+static char *
+read_binary_data (istream& stream, const char *filename, int& global,
+		  tree_constant& tc)
+{
+  global = 0;
+
+  FOUR_BYTE_TYPE mopt, nr, nc, imag, len;
+
+  int swap = 0;
+
+  stream.read (&mopt, 4);
+
+  if (mopt > 9999)
+    {
+      swap = 1;
+      swap_4_bytes ((char *) &mopt);
+    }
+
+  if (mopt > 9999)
+    {
+      error ("load: can't read binary file");
+      return 0;
+    }
+
+  stream.read (&nr, 4);
+  stream.read (&nc, 4);
+  stream.read (&imag, 4);
+  stream.read (&len, 4);
+
+  if (swap)
+    {
+      swap_4_bytes ((char *) &nr);
+      swap_4_bytes ((char *) &nc);
+      swap_4_bytes ((char *) &imag);
+      swap_4_bytes ((char *) &len);
+    }
+
+  int type = mopt % 10; // Full, sparse, etc.
+  mopt /= 10;           // Eliminate first digit.
+  int prec = mopt % 10; // double, float, int, etc.
+  mopt /= 100;          // Skip unused third digit too.
+  int mach = mopt % 10; // IEEE, VAX, etc.
+
+  if (mach < 0 || mach > 4)
+    {
+      error ("load: unrecognized binary format!");
+      return 0;
+    }
+
+#if defined (IEEE_LITTLE_ENDIAN)
+  if (mach != 0)
+    {
+      error ("load: can't convert from %s to %s yet",
+	     floating_point_format [mach], floating_point_format [0]);
+      return 0;
+    }
+#elif defined (IEEE_BIG_ENDIAN)
+  if (mach != 1)
+    {
+      error ("load: can't convert from %s to %s yet",
+	     floating_point_format [mach], floating_point_format [1]);
+      return 0;
+    }
+#elif defined (VAX_D_FLOAT)
+  if (mach != 2)
+    {
+      error ("load: can't convert from %s to %s yet",
+	     floating_point_format [mach], floating_point_format [2]);
+      return 0;
+    }
+#elif defined (VAX_G_FLOAT)
+  if (mach != 3)
+    {
+      error ("load: can't convert from %s to %s yet",
+	     floating_point_format [mach], floating_point_format [3]);
+      return 0;
+    }
+#else
+LOSE! LOSE!
+#endif
+
+  if (prec != 0)
+    {
+      error ("load: can only read binary files with data stored as doubles");
+      return 0;
+    }
+
+  if (type != 0 && type != 1)
+    {
+      error ("load: can't read sparse matrices");
+      return 0;
+    }
+
+  if (imag && type == 1)
+    {
+      error ("load: encountered complex matrix with string flag set!");
+      return 0;
+    }
+
+  char *name = new char [len];
+  stream.read (name, len);
+
+  int dlen = nr * nc;
+  if (dlen < 0)
+    {
+      error ("load: matrix with negative size!");
+      return 0;
+    }
+
+// This could probably be faster...
+
+// XXX FIXME XXX -- 8 is magic here!
+
+  Matrix re (nr, nc);
+  stream.read (re.fortran_vec (), dlen * 8);
+
+  if (imag)
+    {
+      Matrix im (nr, nc);
+      stream.read (im.fortran_vec (), dlen * 8);
+
+      ComplexMatrix ctmp (nr, nc);
+
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  ctmp.elem (i, j) = Complex (re.elem (i, j), im.elem (i, j));
+
+      tc = ctmp;
+    }
+  else
+    tc = re;
+
+// If we were going to do it, this is probably where we would convert
+// the raw data to the proper floating point format.
+
+  if (type == 1)
+    tc = tc.convert_to_str ();
+
+  return name;
 }
 
 DEFUN_TEXT ("load", Fload, Sload, -1, 1,
-  "load [-force] file\n
+  "load [-force] [-binary] file\n
 \n\
 load variables from a file")
 {
@@ -1250,11 +1454,24 @@ load variables from a file")
   argv++;
 
   int force = 0;
-  if (argc > 0 && strcmp (*argv, "-force") == 0)
+  int binary = 0;
+
+  while (argc > 0)
     {
-      force++;
-      argc--;
-      argv++;
+      if (strcmp (*argv, "-force") == 0)
+	{
+	  force++;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-binary") == 0)
+	{
+	  binary++;
+	  argc--;
+	  argv++;
+	}
+      else
+	break;
     }
 
   if (argc < 1)
@@ -1273,7 +1490,13 @@ load variables from a file")
   else
     {
       char *fname = tilde_expand (*argv);
-      file.open (fname);
+
+      unsigned mode = ios::in;
+      if (binary)
+	mode |= ios::bin;
+
+      file.open (fname, mode);
+
       if (! file)
 	{
 	  error ("load: couldn't open input file `%s'", *argv);
@@ -1284,38 +1507,30 @@ load variables from a file")
     }
 
   int count = 0;
-  char *nm = 0;
   for (;;)
     {
-// Read name for this entry or break on EOF.
-      delete [] nm;
-      nm = extract_keyword (stream, "name");
-      if (nm)
-	count++;
+      int global = 0;
+      tree_constant tc;
+
+      char *name = 0;
+      delete [] name;
+
+
+      if (binary)
+	name = read_binary_data (stream, *argv, global, tc);
+      else
+        name = read_ascii_data (stream, *argv, global, tc);
+
+      if (! error_state && name && tc.is_defined ())
+	{
+	  count++;
+	  install_loaded_variable (force, name, tc, global);
+	}
       else
 	{
 	  if (count == 0)
-	    {
-	      error ("load: no name keywords found in file `%s'", *argv);
-	      error ("Are you sure this is an octave data file?");
-	    }
-	  break;
-	}
+	    error ("load: are you sure `%s' is an Octave data file?", *argv);
 
-      if (! *nm)
-	continue;
-
-      if (! valid_identifier (nm))
-	{
-	  warning ("load: skipping bogus identifier `%s'");
-	  continue;
-	}
-
-      load_variable (nm, force, stream);
-
-      if (error_state)
-	{
-	  error ("reading file %s", *argv);
 	  break;
 	}
     }

@@ -756,8 +756,6 @@ process_printf_format (const char *s, const Octave_object& args,
 
   fmt << "%";  // do_printf() already blew past this one...
 
-  tree_constant_rep::constant_type arg_type;
-
   int chars_from_fmt_str = 0;
 
  again:
@@ -783,8 +781,7 @@ process_printf_format (const char *s, const Octave_object& args,
 	  return -1;
 	}
 
-      if (args(fmt_arg_count).const_type ()
-	  != tree_constant_rep::scalar_constant)
+      if (! args(fmt_arg_count).is_scalar_type ())
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
@@ -823,8 +820,7 @@ process_printf_format (const char *s, const Octave_object& args,
 	  return -1;
 	}
 
-      if (args(fmt_arg_count).const_type ()
-	  != tree_constant_rep::scalar_constant)
+      if (! args(fmt_arg_count).is_scalar_type ())
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
@@ -861,13 +857,11 @@ process_printf_format (const char *s, const Octave_object& args,
       return -1;
     }
 
-  arg_type = args(fmt_arg_count).const_type ();
-
   switch (*s)
     {
     case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
 
-      if (arg_type != tree_constant_rep::scalar_constant)
+      if (! args(fmt_arg_count).is_scalar_type ())
 	goto invalid_conversion;
       else
 	{
@@ -887,7 +881,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 'e': case 'E': case 'f': case 'g': case 'G':
 
-      if (arg_type != tree_constant_rep::scalar_constant)
+      if (! args(fmt_arg_count).is_scalar_type ())
 	goto invalid_conversion;
       else
 	{
@@ -901,7 +895,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 's':
 
-      if (arg_type != tree_constant_rep::string_constant)
+      if (! args(fmt_arg_count).is_string_type ())
 	goto invalid_conversion;
       else
 	{
@@ -915,7 +909,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 'c':
 
-      if (arg_type != tree_constant_rep::string_constant)
+      if (! args(fmt_arg_count).is_string_type ())
 	goto invalid_conversion;
       else
 	{

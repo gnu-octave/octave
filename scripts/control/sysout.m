@@ -113,17 +113,17 @@ if( strcmp(opt,"ss") + strcmp(opt,"all") )
   # display matrix values?
   dmat = (max( [ (nn+nz), mm, pp ] ) <= 32);
 
-  printf("A matrix: %d x %d\n",nn,nn);
+  printf("A matrix: %d x %d\n",sysdimensions(sys,"st"),sysdimensions(sys,"st"));
   [aa,bb,cc,dd] = sys2ss(sys);
   if(dmat) 	disp(aa); 	endif
 
-  printf("B matrix: %d x %d\n",nn,mm);
+  printf("B matrix: %d x %d\n",sysdimensions(sys,"st"),sysdimensions(sys,"in"));
   if(dmat)     disp(bb);              endif
 
-  printf("C matrix: %d x %d\n",pp,nn);
+  printf("C matrix: %d x %d\n",sysdimensions(sys,"out"),sysdimensions(sys,"st"));
   if(dmat) disp(cc);		endif
 
-  printf("D matrix: %d x %d\n",pp,nn);
+  printf("D matrix: %d x %d\n",sysdimensions(sys,"out"),sysdimensions(sys,"in"));
   if(dmat)       disp(dd);         endif
 endif
 

@@ -31,7 +31,10 @@ syssiglist = sysgetsignals(sys,sigtype);
 for idx = 1:length(signamelist)
   signame = nth(signamelist,idx);
   idxvec(idx) = 0;
-  for jdx = 1:sysdimensions(sys,sigtype)
+  nsigs = sysdimensions(sys,sigtype);
+  for jdx = 1:nsigs
+    #printf("idx=%d jdx=%d signame=-%s- thissig=-%s-\n",idx,jdx,signame, ...
+    #  sysgetsignals(sys,sigtype,jdx,1));
     if(strcmp(signame,sysgetsignals(sys,sigtype,jdx,1)))
       if(idxvec(idx) != 0)
         warning("Duplicate system input %s (%d,%d)\n", ...

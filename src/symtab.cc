@@ -53,7 +53,7 @@ symbol_record::symbol_def::dump_symbol_info (void)
 {
   octave_stdout << "symbol_def::count: " << count << "\n";
   octave_stdout << "def.type_name():   " << definition.type_name () << "\n";
-  octave_stdout << "def.count():       " << definition.count () << "\n";
+  octave_stdout << "def.count():       " << definition.get_count () << "\n";
 }
 
 // Individual records in a symbol table.

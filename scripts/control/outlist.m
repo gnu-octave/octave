@@ -57,7 +57,7 @@ str_val = "";
 dstr = list(""," (discrete)");
 if((m >= 1) && (is_list(name_list)))
   for ii=1:m
-    str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ii, ...
+    str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ilist(ii), ...
 	nth(name_list,ii),nth(dstr,yd(ii)+1));
   endfor
 else

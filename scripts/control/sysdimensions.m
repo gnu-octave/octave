@@ -24,8 +24,9 @@ function [n,nz,m,p,yd] = sysdimensions(sys,opt)
 #              "all" (default): return all output arguments (see below)
 #              "cst": return n=number of continuous states
 #              "dst": return n=number of discrete states
+#              "st":  return n=number of states (continuous and discrete)
 #              "in":  return n=number of inputs
-#              "out": return n = number of outputs
+#              "out": return n=number of outputs
 # outputs:
 #  n: number of continuous states (or the specified dimension as shown above)
 #  nz: number of discrete states
@@ -49,16 +50,21 @@ nz = sys.nz;
 m = length(sysgetsignals(sys,"in"));
 p = length(sysgetsignals(sys,"out"));
 yd = sys.yd;
-legal_options = list("all","cst","dst","in","out");
-legal_values = list(n,n,nz,m,p);
+legal_options = list("all","cst","dst","st","in","out");
+legal_values = list(n,n,nz,n+nz,m,p);
 
+legal_opt = 0;
 for ii=1:length(legal_options)
   if(strcmp(nth(legal_options,ii),opt))
     n = nth(legal_values,ii);
+    legal_opt = 1;
     if(ii > 1 & nargout > 1)
       warning("opt=%s, %d output arguments requested",opt,nargout);
     endif
   endif
 endfor
+if(!legal_opt)
+  error("illegal option passed = %s",opt);
+endif
 
 endfunction

@@ -1,3 +1,21 @@
+Wed Apr  7 13:22:43 1999  A. S. Hodel <a.s.hodel@eng.auburn.edu>
+
+	* control/is_controllable.m, control/zgscal.m: Accomodate new
+	version of krylov and krylovb.
+
+	* control/outlist.m, control/sysout.m: Fix typos.
+
+	* control/sysdimensions.m: Add option for total number of states.
+
+	* linear-algebra/krylov.m: Improve robustness by row-pivoting.
+	* linear-algebra/krylovb.m: Just call krylov with appropriate
+	arguments.
+
+Tue Mar 30 00:43:09 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/index.m: Fail with meaningful error message if either
+	arg is a string array.
+
 Wed Mar 24 20:34:48 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/norm.m: Do the right thing for 1- and

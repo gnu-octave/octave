@@ -39,8 +39,12 @@ function n = index (s, t)
 
   if (isstr (s) && isstr (t))
 
-    l_s = length (s);
-    l_t = length (t);
+    [nr_s, l_s] = size (s);
+    [nr_t, l_t] = size (t);
+
+    if (nr_s != 1 || nr_t != 1)
+      error ("index: arguments cannot be string arrays");
+    endif
 
     if (l_t <= l_s)
       tmp = l_s - l_t + 1;

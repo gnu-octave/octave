@@ -83,14 +83,7 @@ function [retval,U] = is_controllable (a, b, tol)
   else
     # call block-krylov subspace routine to get an orthogonal basis
     # of the controllable subspace.
-    if(nc == 1)
-      [U,H,Ucols] = krylov(a,b,n,tol,1);
-      U = U(:,1:Ucols);
-    else
-      [U,Ucols] = krylovb(a,b,n,tol);
-      U = U(:,1:Ucols);
-    endif
-
+    [U,H,Ucols] = krylov(a,b,n,tol,1);
     retval = (Ucols == n);
   endif
 endfunction

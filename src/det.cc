@@ -75,9 +75,8 @@ determinant (const tree_constant& a)
 	    double rcond = 0.0;
 	    DET det = m.determinant (info, rcond);
 	    if (info == -1)
-	      message ("det",
-		       "matrix singular to machine precision, rcond = %g",
-		       rcond);
+	      error ("det: matrix singular to machine precision, rcond = %g",
+		     rcond);
 	    else
 	      {
 		double d = det.value ();
@@ -97,9 +96,8 @@ determinant (const tree_constant& a)
 	    double rcond = 0.0;
 	    ComplexDET det = m.determinant (info, rcond);
 	    if (info == -1)
-	      message ("det",
-		       "matrix singular to machine precision, rcond = %g",
-		       rcond);
+	      error ("det: matrix singular to machine precision, rcond = %g",
+		     rcond);
 	    else
 	      {
 		Complex c = det.value ();

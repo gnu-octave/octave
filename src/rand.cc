@@ -168,7 +168,7 @@ rand_internal (const tree_constant *args, int nargin, int nargout)
 	    {
 	      delete [] retval;
 	      retval = NULL_TREE_CONST;
-	      message ("rand", "unrecognized string argument");
+	      error ("rand: unrecognized string argument");
 	    }
 	  break;
 	case tree_constant_rep::scalar_constant:
@@ -248,7 +248,7 @@ rand_internal (const tree_constant *args, int nargin, int nargout)
       retval[0] = tree_constant (rand_mat);
     }
   else
-    message ("rand", "invalid negative argument");
+    error ("rand: invalid negative argument");
 
   return retval;
 }

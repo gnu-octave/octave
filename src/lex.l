@@ -1078,8 +1078,7 @@ grab_help_text (void)
 
       if (len > max_len)
 	{
-	  message ("grab_help_text",
-		   "buffer overflow after caching %d characters",
+	  warning ("grab_help_text: buffer overflow after caching %d chars",
 		   max_len);
 
 	  goto done;

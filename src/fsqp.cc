@@ -79,7 +79,7 @@ Handle all of the following:
 // Assumes that we have been given the correct number of arguments.
 
   tree_constant *retval = NULL_TREE_CONST;
-  message ("fsqp", "not implemented yet...");
+  error ("fsqp: not implemented yet");
   return retval;
 }
 

@@ -45,7 +45,7 @@ lpsolve (const tree_constant *args, int nargin, int nargout)
 // Assumes that we have been given the correct number of arguments.
 
   tree_constant *retval = NULL_TREE_CONST;
-  message ("lpsolve", "sorry, not implemented yet");
+  error ("lpsolve: not implemented yet");
   return retval;
 }
 

@@ -131,10 +131,10 @@ fsolve (const tree_constant *args, int nargin, int nargout)
   ColumnVector x = args[2].to_vector ();
 
   if (nargin > 3)
-    message ("fsolve", "ignoring optional arguments...");
+    warning ("fsolve: ignoring optional arguments");
 
   if (nargout > 2)
-    message ("fsolve", "can't compute path output yet...");
+    warning ("fsolve: can't compute path output yet");
 
   NLFunc foo_fcn (fsolve_user_function);
   NLEqn foo (x, foo_fcn);

@@ -48,14 +48,14 @@ collocation_weights (const tree_constant *args, int nargin)
   if (args[1].const_type () != tree_constant_rep::complex_scalar_constant
       && args[1].const_type () != tree_constant_rep::scalar_constant)
     {
-      message ("colloc", "first argument must be a scalar");
+      error ("colloc: first argument must be a scalar");
       return retval;
     }
 
   int ncol = NINT (args[1].double_value ());
   if (ncol < 0)
     {
-      message ("colloc", "first argument must be non-negative");
+      error ("colloc: first argument must be non-negative");
       return retval;
     }
 
@@ -69,7 +69,7 @@ collocation_weights (const tree_constant *args, int nargin)
 	{
 	  if (! args[i].is_string_type ())
 	    {
-	      message ("colloc", "expecting string argument");
+	      error ("colloc: expecting string argument");
 	      return retval;
 	    }
 
@@ -88,20 +88,23 @@ collocation_weights (const tree_constant *args, int nargin)
 	    }
 	  else
 	    {
-	      message ("colloc", "unrecognized argument");
+	      error ("colloc: unrecognized argument");
 	      return retval;
 	    }
 	}
       else
 	{
-	  message ("colloc", "unexpected NULL argument");
+	  error ("colloc: unexpected NULL argument");
 	  return retval;
 	}
     }
 
   ntot += left + right;
   if (ntot < 1)
-    message ("colloc", "the total number of roots must be positive");
+    {
+      error ("colloc: the total number of roots must be positive");
+      return retval;
+    }
   
   CollocWt wts (ncol, left, right);
 

@@ -126,7 +126,7 @@ do_quad (const tree_constant *args, int nargin, int nargout)
     case 6:
       if (indefinite)
 	{
-	  message ("quad", "sorry, singularities not allowed on infinite intervals");
+	  error("quad: singularities not allowed on infinite intervals");
 	  return retval;
 	}
       have_sing = 1;
@@ -141,7 +141,7 @@ do_quad (const tree_constant *args, int nargin, int nargout)
 	  abstol = tol.elem (0);
 	  break;
 	default:
-	  message ("quad", "expecting tol to contain no more than two values");
+	  error ("quad: expecting tol to contain no more than two values");
 	  return retval;
 	}
     case 4:

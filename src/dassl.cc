@@ -128,7 +128,7 @@ dassl (const tree_constant *args, int nargin, int nargout)
 
   if (state.capacity () != deriv.capacity ())
     {
-      message ("dassl", "x and xdot must have the same size");
+      error ("dassl: x and xdot must have the same size");
       return retval;
     }
 

@@ -271,7 +271,7 @@ private:
 
 	// But not this.
 
-	void convert_to_matrix_type (void);
+	void convert_to_matrix_type (int make_complex);
 
 	// Indexing and assignment.
 
@@ -283,7 +283,7 @@ private:
 	void set_index (const Matrix& m);
 	void set_index (char c);
 
-	void set_index (const Octave_object& args);
+	void set_index (const Octave_object& args, int rhs_is_complex = 0);
 
 	tree_constant do_index (const Octave_object& args);
 
@@ -659,7 +659,8 @@ private:
   tree_constant_rep::constant_type const_type (void) const
     { return rep->const_type (); }
 
-  void convert_to_matrix_type (void) { rep->convert_to_matrix_type (); }
+  void convert_to_matrix_type (int make_complex)
+    { rep->convert_to_matrix_type (make_complex); }
 
   // Can we make these go away?
 

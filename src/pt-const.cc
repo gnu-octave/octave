@@ -1734,7 +1734,7 @@ TC_REP::convert_to_row_or_column_vector (void)
 }
 
 void
-TC_REP::convert_to_matrix_type (void)
+TC_REP::convert_to_matrix_type (int make_complex)
 {
   switch (type_tag)
     {
@@ -1749,24 +1749,50 @@ TC_REP::convert_to_matrix_type (void)
 
     case scalar_constant:
       {
-	matrix = new Matrix (1, 1, scalar);
-	type_tag = matrix_constant;
+	if (make_complex)
+	  {
+	    complex_matrix = new ComplexMatrix (1, 1, scalar);
+	    type_tag = complex_matrix_constant;
+	  }
+	else
+	  {
+	    matrix = new Matrix (1, 1, scalar);
+	    type_tag = matrix_constant;
+	  }
       }
       break;
 
     case unknown_constant:
       {
-	matrix = new Matrix (0, 0);
-	type_tag = matrix_constant;
+	if (make_complex)
+	  {
+	    complex_matrix = new ComplexMatrix ();
+	    type_tag = complex_matrix_constant;
+	  }
+	else
+	  {
+	    matrix = new Matrix ();
+	    type_tag = matrix_constant;
+	  }
       }
       break;
 
     case range_constant:
       {
-	Matrix *tmp = new Matrix (range->matrix_value ());
-	delete range;
-	matrix = tmp;
-	type_tag = matrix_constant;
+	if (make_complex)
+	  {
+	    ComplexMatrix *tmp = new ComplexMatrix (range->matrix_value ());
+	    delete range;
+	    complex_matrix = tmp;
+	    type_tag = complex_matrix_constant;
+	  }
+	else
+	  {
+	    Matrix *tmp = new Matrix (range->matrix_value ());
+	    delete range;
+	    matrix = tmp;
+	    type_tag = matrix_constant;
+	  }
       }
       break;
 
@@ -2695,7 +2721,7 @@ TC_REP::set_index (char c)
 }
 
 void
-TC_REP::set_index (const Octave_object& args)
+TC_REP::set_index (const Octave_object& args, int rhs_is_complex)
 {
   switch (type_tag)
     {
@@ -2703,7 +2729,7 @@ TC_REP::set_index (const Octave_object& args)
     case scalar_constant:
     case complex_scalar_constant:
     case range_constant:
-      convert_to_matrix_type ();
+      convert_to_matrix_type (rhs_is_complex);
       break;
 
     default:
@@ -2919,7 +2945,7 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 
   maybe_widen (rhs.const_type ());
 
-  set_index (args);
+  set_index (args, rhs.is_complex_type ());
 
   if (! error_state)
     {
@@ -2970,7 +2996,7 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 	case char_matrix_constant:
 	case char_matrix_constant_str:
 	  ::assign (*char_matrix, rhs.char_matrix_value ());
-      break;
+	  break;
 
 	default:
 	  panic_impossible ();

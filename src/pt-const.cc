@@ -1535,15 +1535,53 @@ tree_constant_rep::matrix_value (void)
 Complex
 tree_constant_rep::complex_value (void)
 {
-  assert (type_tag == complex_scalar_constant);
-  return *complex_scalar;
+  Complex retval;
+  switch (type_tag)
+    {
+    case complex_scalar_constant:
+      retval = *complex_scalar;
+      break;
+    case scalar_constant:
+      retval = Complex (scalar);
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+  return retval;
 }
 
 ComplexMatrix
 tree_constant_rep::complex_matrix_value (void)
 {
-  assert (type_tag == complex_matrix_constant);
-  return *complex_matrix;
+  ComplexMatrix retval;
+  switch (arg.const_type ())
+    {
+    case scalar_constant:
+      {
+	retval.resize (1, 1);
+	double tmp =  arg.double_value ();
+        retval.elem (0, 0) = Complex (tmp);
+      }
+      break;
+    case complex_scalar_constant:
+      retval.resize (1, 1);
+      retval.elem (0, 0) = arg.complex_value ();
+      break;
+    case matrix_constant:
+      {
+        Matrix tmp = arg.matrix_value ();
+        retval = ComplexMatrix (tmp);
+      }
+      break;
+    case complex_matrix_constant:
+      retval = arg.complex_matrix_value ();
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+  return retval;
 }
 
 char *

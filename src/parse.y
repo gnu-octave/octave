@@ -34,6 +34,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "error.h"
 #include "variables.h"
+#include "octave-hist.h"
 #include "user-prefs.h"
 #include "input.h"
 #include "utils.h"
@@ -486,7 +487,7 @@ global_decl1	: NAME
 		      (sr, $1->line (), $1->column ());
 		    tree_simple_assignment_expression *expr =
 		      new tree_simple_assignment_expression
-			(id, $3, $2->line () , $2->column ());
+			(id, $3, $2->line (), $2->column ());
 		    expr->eval (0);
 		  }
 		| global_decl1 optcomma NAME
@@ -908,7 +909,8 @@ func_def2	: identifier safe local_symtab func_def3
 		      }
 		    else
 		      {
-			if (reading_script_file
+			if (! input_from_tmp_history_file
+			    && reading_script_file
 			    && strcmp (curr_m_file_name, id_name) == 0)
 			  warning ("function `%s' defined within\
  script file `%s.m'", id_name, curr_m_file_name);

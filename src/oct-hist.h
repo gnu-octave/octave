@@ -36,6 +36,9 @@ extern void do_edit_history (int, char**);
 extern void do_run_history (int, char**);
 extern int current_history_number (void);
 
+// Nonzero means input is coming from temporary history file.
+extern int input_from_tmp_history_file;
+
 // Nonzero means we are saving history lines.
 extern int saving_history;
 

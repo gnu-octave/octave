@@ -58,6 +58,9 @@ extern "C"
 #include <readline/history.h>
 }
 
+// Nonzero means input is coming from temporary history file.
+int input_from_tmp_history_file = 0;
+
 // Nonzero means we are saving history lines.
 int saving_history = 1;
 
@@ -512,7 +515,7 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
 
   file.close ();
 
-  return name;
+  return strsave (name);
 }
 
 void
@@ -569,7 +572,9 @@ do_edit_history (int argc, char **argv)
 
   begin_unwind_frame ("do_edit_history");
   unwind_protect_int (echo_input);
+  unwind_protect_int (input_from_tmp_history_file);
   echo_input = 1;
+  input_from_tmp_history_file = 1;
 
   parse_and_execute (name, 1);
 
@@ -579,6 +584,8 @@ do_edit_history (int argc, char **argv)
 // unwind_protect.
 
   unlink (name);
+
+  delete [] name;
 }
 
 void
@@ -593,7 +600,9 @@ do_run_history (int argc, char **argv)
 
   begin_unwind_frame ("do_run_history");
   unwind_protect_int (echo_input);
+  unwind_protect_int (input_from_tmp_history_file);
   echo_input = 1;
+  input_from_tmp_history_file = 1;
 
   parse_and_execute (name, 1);
 
@@ -603,6 +612,8 @@ do_run_history (int argc, char **argv)
 // unwind_protect.
 
   unlink (name);
+
+  delete [] name;
 }
 
 int

@@ -1,3 +1,9 @@
+Fri Oct 10 11:18:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Compute yf correctly.  From Seung Lee
+	<SJL@nrc.gov>.  Also return yf in the same orientation as the
+	original y vector.
+
 Fri Sep 19 17:04:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/cross.m: Use direct formula instead of calling

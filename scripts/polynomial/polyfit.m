@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 1996 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -45,6 +45,8 @@ function [p, yf] = polyfit (x, y, n)
     error ("polyfit: n must be a nonnegative integer");
   endif
 
+  y_is_row_vector = (rows (y) == 1);
+
   l = length (x);
   x = reshape (x, l, 1);
   y = reshape (y, l, 1);
@@ -61,14 +63,20 @@ function [p, yf] = polyfit (x, y, n)
 
   X = (x * ones (1, n+1)) .^ (ones (l, 1) * (0 : n));
 
-  p = flipud ((X' * X) \ (X' * y));
+  p = (X' * X) \ (X' * y);
+
+  if (nargout == 2)
+    yf = X * p;
+  endif
+
+  p = flipud (p);
 
   if (! prefer_column_vectors)
     p = p';
   endif
 
-  if (nargout == 2)
-    yf = X * p;
+  if (y_is_row_vector)
+    yf = yf';
   endif
 
 endfunction

@@ -888,11 +888,17 @@ union equiv
     } \
   while (0)
 
-static inline void
+static void
 pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 {
+#if defined (SCO)
+  // Apparently on some SCO systems NaN == -0.0 is true.  Compiler bug?
+  if (d == -0.0 && ! xisnan (d))
+    d = 0.0;
+#else
   if (d == -0.0)
     d = 0.0;
+#endif
 
   if (fmt)
     {
@@ -998,7 +1004,7 @@ pr_imag_float (ostream& os, double d, int fw = 0)
   pr_any_float (curr_imag_fmt, os, d, fw);
 }
 
-static inline void
+static void
 pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 {
   double r = c.real ();

@@ -1,3 +1,15 @@
+Fri Nov 15 13:48:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (subst_octave_home): Start subsequent searchs from
+	the end of the replaced text.
+
+	* pr-output.cc (pr_any_float): Kluge for SCO systems.
+
+	* pr-output.cc (pr_any_float, pr_complex): Don't declare inline.
+
+	* mappers.cc: Include lo-ieee.h, for isinf and isnan on SCO
+	systems.
+
 Thu Nov 14 00:06:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-plot.cc (Fgset, Fgshow): New commands.

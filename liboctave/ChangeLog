@@ -1,3 +1,7 @@
+Fri Nov 15 13:47:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.h: [SCO]: Declare isinf and isnan.
+
 Thu Nov 14 00:06:53 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 1.92.

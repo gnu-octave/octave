@@ -93,10 +93,10 @@ subst_octave_home (const string& s)
     {
       int len = prefix.length ();
       size_t start = 0;
-      while ((start = retval.find (prefix)) != NPOS)
+      while ((start = retval.find (prefix, start)) != NPOS)
 	{
 	  retval.replace (start, len, Voctave_home);
-	  start++;
+	  start += len;
 	}
     }
 

@@ -31,6 +31,11 @@ extern double octave_NaN;
 
 extern void octave_ieee_init (void);
 
+#if defined (SCO)
+extern "C" int isnan (double);
+extern "C" int isinf (double);
+#endif
+
 #endif
 
 /*

@@ -1274,13 +1274,21 @@ DEFUN (pclose, args, ,
 }
 
 DEFUN (tmpnam, args, ,
- "tmpnam ()\n\
+ "tmpnam (DIR, PREFIX)\n\
 Return unique temporary file name.")
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = file_ops::tempnam ();
+  int len = args.length ();
+
+  if (len < 3)
+    {
+      string dir = len > 0 ? args(0).string_value () : string ();
+      string pfx = len > 1 ? args(1).string_value () : string ("oct-");
+
+      if (! error_state)
+	retval = file_ops::tempnam (dir, pfx);
+    }
   else
     print_usage ("tmpnam");
 

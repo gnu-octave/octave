@@ -850,7 +850,7 @@ subplot_list::accept (tree_walker& tw)
 string
 save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 {
-  string name = file_ops::tempnam ();
+  string name = file_ops::tempnam ("", "oct-");
 
   if (! name.empty ())
     {

@@ -387,7 +387,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       reverse = 1;
     }
 
-  string name = file_ops::tempnam ();
+  string name = file_ops::tempnam ("", "oct-");
 
   fstream file (name.c_str (), ios::out);
 

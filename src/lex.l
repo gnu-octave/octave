@@ -1613,9 +1613,95 @@ handle_string (char delim, int text_style)
   return LEXICAL_ERROR;
 }
 
+static bool
+next_token_is_assign_op (void)
+{
+  bool retval = false;
+
+  int c0 = yyinput ();
+
+  switch (c0)
+    {
+    case '=':
+      {
+	int c1 = yyinput ();
+	unput (c1);
+	if (c1 != '=')
+	  retval = true;
+      }
+      break;
+
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '\\':
+    case '&':
+    case '|':
+      {
+	int c1 = yyinput ();
+	unput (c1);
+	if (c1 == '=')
+	  retval = true;
+      }
+      break;
+
+    case '.':
+      {
+	int c1 = yyinput ();
+	if (match_any (c1, "+-*/\\"))
+	  {
+	    int c2 = yyinput ();
+	    unput (c2);
+	    if (c2 == '=')
+	      retval = true;
+	  }
+	unput (c1);
+      }
+      break;
+
+    case '>':
+      {
+	int c1 = yyinput ();
+	if (c1 == '>')
+	  {
+	    int c2 = yyinput ();
+	    unput (c2);
+	    if (c2 == '=')
+	      retval = true;
+	  }
+	unput (c1);
+      }
+      break;
+
+    case '<':
+      {
+	int c1 = yyinput ();
+	if (c1 == '<')
+	  {
+	    int c2 = yyinput ();
+	    unput (c2);
+	    if (c2 == '=')
+	      retval = true;
+	  }
+	unput (c1);
+      }
+      break;
+
+    default:
+      break;
+    }
+
+  unput (c0);
+
+  return retval;
+}
+
 static int
 handle_close_brace (int spc_gobbled)
 {
+  int retval = ']';
+
   if (! nesting_level.none ())
     {
       nesting_level.remove ();
@@ -1625,26 +1711,13 @@ handle_close_brace (int spc_gobbled)
   if (lexer_flags.braceflag == 0)
     BEGIN 0;
 
-  // XXX FIXME XXX -- this needs to handle +=, -=, etc.
-
-  int c1 = yyinput ();
-  if (c1 == '=')
+  if (next_token_is_assign_op () && ! lexer_flags.looking_at_return_list)
     {
-      lexer_flags.quote_is_transpose = false;
-      lexer_flags.cant_be_identifier = false;
-      lexer_flags.convert_spaces_to_comma = true;
-
-      int c2 = yyinput ();
-      unput (c2);
-      unput (c1);
-
-      if (c2 == '=' || lexer_flags.looking_at_return_list)
-	return ']';
-      else
-	return CLOSE_BRACE;
+      retval = CLOSE_BRACE;
     }
   else
     {
+      int c1 = yyinput ();
       unput (c1);
 
       if (lexer_flags.braceflag && Vwhitespace_in_literal_matrix != 2)
@@ -1668,7 +1741,8 @@ handle_close_brace (int spc_gobbled)
   lexer_flags.quote_is_transpose = true;
   lexer_flags.cant_be_identifier = false;
   lexer_flags.convert_spaces_to_comma = true;
-  return ']';
+
+  return retval;
 }
 
 static void

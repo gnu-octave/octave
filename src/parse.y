@@ -2218,7 +2218,7 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
       delete lhs;
     }
   else
-    return new tree_multi_assignment (lhs, rhs, 0, l, c);
+    return new tree_multi_assignment (lhs, rhs, false, l, c, t);
 
   return retval;
 }

@@ -116,12 +116,15 @@ tree_multi_assignment : public tree_expression
 {
 public:
 
-  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
-    : tree_expression (l, c), preserve (plhs), lhs (0), rhs (0) { }
+  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1,
+			 octave_value::assign_op t = octave_value::asn_eq)
+    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), etype(t) { }
 
   tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
-			 bool plhs = false, int l = -1, int c = -1)
-    : tree_expression (l, c), preserve (plhs), lhs (lst), rhs (r) { }
+			 bool plhs = false, int l = -1, int c = -1,
+			  octave_value::assign_op t = octave_value::asn_eq)
+    : tree_expression (l, c), lhs (lst), rhs (r), preserve (plhs),
+      etype (t) { }
 
   ~tree_multi_assignment (void);
 
@@ -137,6 +140,8 @@ public:
 
   void eval_error (void);
 
+  string oper (void) const;
+
   tree_argument_list *left_hand_side (void) { return lhs; }
 
   tree_expression *right_hand_side (void) { return rhs; }
@@ -145,9 +150,17 @@ public:
 
 private:
 
-  bool preserve;
+  // The left hand side of the assignment.
   tree_argument_list *lhs;
+
+  // The right hand side of the assignment.
   tree_expression *rhs;
+
+  // True if we should not delete the lhs.
+  bool preserve;
+
+  // The type of the expression.
+  octave_value::assign_op etype;
 
   // No copying!
 

@@ -76,10 +76,10 @@ tree_simple_assignment::rvalue (int nargout)
 octave_value
 tree_simple_assignment::rvalue (void)
 {
-  octave_value rhs_val;
+  octave_value retval;
 
   if (error_state)
-    return rhs_val;
+    return retval;
 
   if (rhs)
     {
@@ -87,7 +87,7 @@ tree_simple_assignment::rvalue (void)
 
       if (! (error_state || tmp.empty ()))
 	{
-	  rhs_val = tmp(0);
+	  octave_value rhs_val = tmp(0);
 
 	  if (rhs_val.is_undefined ())
 	    {
@@ -104,25 +104,28 @@ tree_simple_assignment::rvalue (void)
 		{
 		  ult.assign (etype, rhs_val);
 
-		  // We clear any index here so that we can get the
-		  // new value of the referenced object below, instead
-		  // of the indexed value (which should be the same as
-		  // the right hand side value).
-
-		  ult.clear_index ();
+		  retval = ult.value ();
 
 		  if (error_state)
 		    eval_error ();
-		  else
+		  else if (print_result ())
 		    {
-		      octave_value lhs_val = ult.value ();
-
-		      if (! error_state && print_result ())
+		      if (Vprint_rhs_assign_val)
+			retval.print_with_name (octave_stdout,
+						lhs->str_print_code ());
+		      else
 			{
-			  if (Vprint_rhs_assign_val)
-			    rhs_val.print_with_name (octave_stdout,
-						     lhs->str_print_code ());
-			  else
+			  // We clear any index here so that we can
+			  // get the new value of the referenced
+			  // object below, instead of the indexed
+			  // value (which should be the same as the
+			  // right hand side value).
+
+			  ult.clear_index ();
+
+			  octave_value lhs_val = ult.value ();
+
+			  if (! error_state)
 			    lhs_val.print_with_name (octave_stdout,
 						     lhs->name ());
 			}
@@ -134,7 +137,7 @@ tree_simple_assignment::rvalue (void)
 	eval_error ();
     }
 
-  return rhs_val;
+  return retval;
 }
 
 void
@@ -192,18 +195,18 @@ tree_multi_assignment::rvalue (void)
 octave_value_list
 tree_multi_assignment::rvalue (int)
 {
-  octave_value_list rhs_val;
+  octave_value_list retval;
 
   if (error_state)
-    return rhs_val;
+    return retval;
 
   if (rhs)
     {
       int n_out = lhs->length ();
 
-      rhs_val = rhs->rvalue (n_out);
+      octave_value_list rhs_val = rhs->rvalue (n_out);
 
-      if (! (error_state || rhs_val.empty ()))
+      if (! error_state)
 	{
 	  if (rhs_val.empty ())
 	    {
@@ -216,6 +219,8 @@ tree_multi_assignment::rvalue (int)
 
 	      int n = rhs_val.length ();
 
+	      retval.resize (n, octave_value ());
+
 	      for (Pix p = lhs->first (); p != 0; lhs->next (p))
 		{
 		  tree_expression *lhs_elt = lhs->operator () (p);
@@ -226,57 +231,56 @@ tree_multi_assignment::rvalue (int)
 
 		      if (error_state)
 			eval_error ();
-		      else
+		      else if (k < n)
 			{
-			  octave_value tmp = k < n
-			    ? rhs_val(k++) : octave_value ();
+			  ult.assign (etype, rhs_val(k));
 
-			  if (tmp.is_defined ())
+			  retval(k) = ult.value ();
+			}
+		      else
+			error ("element number %d undefined in return list",
+			       k+1);
+
+		      if (error_state)
+			eval_error ();
+		      else if (print_result ())
+			{
+			  if (Vprint_rhs_assign_val)
+			    retval(k).print_with_name
+			      (octave_stdout, lhs_elt->str_print_code ());
+			  else
 			    {
-			      // XXX FIXME XXX -- handle other assignment ops.
-			      ult.assign (octave_value::asn_eq, tmp);
-
-			      // We clear any index here so that we
-			      // can get the new value of the
-			      // referenced object below, instead of
-			      // the indexed value (which should be
-			      // the same as the right hand side
-			      // value).
+			      // We clear any index here so that we can
+			      // get the new value of the referenced
+			      // object below, instead of the indexed
+			      // value (which should be the same as the
+			      // right hand side value).
 
 			      ult.clear_index ();
-			    }
-			  else
-			    error ("element number %d undefined in return list", k);
 
-			  if (error_state)
-			    eval_error ();
-			  else if (! Vprint_rhs_assign_val)
-			    {
 			      octave_value lhs_val = ult.value ();
 
-			      if (! error_state && print_result ())
-				{
-				  if (Vprint_rhs_assign_val)
-				    tmp.print_with_name (octave_stdout,
-							 lhs_elt->str_print_code ());
-				  else
-				    lhs_val.print_with_name (octave_stdout,
-							     lhs_elt->name ());
-				}
+			      if (! error_state)
+				lhs_val.print_with_name (octave_stdout,
+							 lhs_elt->name ());
 			    }
 			}
 		    }
+		  else
+		    eval_error ();
 
 		  if (error_state)
 		    break;
+
+		  k++;
 		}
 	    }
 	}
-      else
-	eval_error ();
     }
+  else
+    eval_error ();
 
-  return rhs_val;
+  return retval;
 }
 
 void
@@ -291,6 +295,12 @@ tree_multi_assignment::eval_error (void)
 	::error ("evaluating assignment expression near line %d, column %d",
 		 l, c);
     }
+}
+
+string
+tree_multi_assignment::oper (void) const
+{
+  return octave_value::assign_op_as_string (etype);
 }
 
 void

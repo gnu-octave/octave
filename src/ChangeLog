@@ -1,5 +1,21 @@
 Mon Nov  2 13:36:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (handle_close_brace): Also handle case of ']' followed by
+	other assignment ops (+=, -=, ...).
+
+	* pt-assign.cc (tree_simple_assignment::rvalue): Correctly handle
+	return value and printing for operators other than `='.
+	(tree_multi_assignment::rvalue): Likewise.
+
+	* pt-assign.h (tree_multi_assignment::etype): New data member.
+	* pt-assign.cc 	(tree_multi_assignment::rvalue): Use it instead of
+	assuming `='.
+	(tree_multi_assignment::oper): New function.
+	* pt-pr-code.cc (tree_print_code::visit_multi_assignment): Use
+	it instead of always printing `='. 
+	* parse.y (make_assign_op): Pass expression type to
+	tree_multi_assignment constructor.	
+
 	* Makefile.in (stmp-pic): New target.
 	($(PICOBJ)): Depend on stmp-pic, not pic.
 	(clean): Delete stmp-pic.

@@ -527,7 +527,7 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 	os << "]";
     }
 
-  os << " = ";
+  os << " " << expr.oper () << " ";
 
   tree_expression *rhs = expr.right_hand_side ();
 

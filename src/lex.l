@@ -2791,7 +2791,6 @@ gripe_matlab_incompatible_operator (const std::string& op)
 
 DEFUN (__token_count__, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} disp (@var{x})\n\
 @deftypefn {Built-in Function} {} __token_count__\n\
 Number of language tokens processed since Octave startup.\n\
 @end deftypefn")

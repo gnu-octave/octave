@@ -1,3 +1,14 @@
+2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DLD_XSRC): Delete log.cc from the list.
+	Add sqrtm.cc to the list.
+
+	* DLD-FUNCTIONS/log.cc: Delete.
+
+2003-02-18  Paul Kienzle <pkienzle@users.sf.net>
+
+	* DLD-FUNCTIONS/sqrtm.cc: New file.
+
 2003-02-18  David Bateman <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/lu.cc (Flu): Allow non-square matrices.

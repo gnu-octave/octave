@@ -16,7 +16,7 @@ dnl for more details.
 dnl 
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
-dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+dnl Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 dnl See what libraries are used by the C++ compiler.  Need this for
 dnl dynamic linking.

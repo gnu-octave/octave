@@ -14,7 +14,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 function shg ()
 

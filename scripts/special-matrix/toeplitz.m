@@ -54,6 +54,15 @@ function retval = toeplitz (c, r)
     warning ("toeplitz: column wins diagonal conflict");
   endif
 
+# If we have a single complex argument, we want to return a
+# Hermitian-symmetric matrix (actually, this will really only be
+# Hermitian-symmetric if the first element of the vector is real).
+
+  if (nargin == 1)
+    c = conj (c);
+    c(1) = conj (c(1));
+  endif
+
 # This should probably be done with the colon operator...
 
   nc = length (r);

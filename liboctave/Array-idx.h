@@ -157,7 +157,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 	    }
 	  else
 	    (*current_liboctave_error_handler)
-	      ("%s: %d: internal indexing error", __FILE__, __LINE__);
+	      ("A(idx) = []: index out of range");
 	}
     }
 }
@@ -440,7 +440,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		    }
 		  else
 		    (*current_liboctave_error_handler)
-		      ("%s: %d: internal indexing error", __FILE__, __LINE__);
+		      ("A(idx) = []: index out of range");
 		}
 	    }
 	}
@@ -488,7 +488,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		    }
 		  else
 		    (*current_liboctave_error_handler)
-		      ("%s: %d: internal indexing error", __FILE__, __LINE__);
+		      ("A(idx) = []: index out of range");
 		}
 	    }
 	}

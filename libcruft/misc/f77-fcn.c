@@ -43,7 +43,7 @@ copy_f77_context (void *from, void *to, unsigned int size)
    called us.  Then the calling function should do whatever cleanup
    is necessary.  */
 
-volatile void
+void
 F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
 {
   /* Skip printing message if it is just a single blank character.  */

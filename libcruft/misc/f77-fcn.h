@@ -75,6 +75,9 @@ extern jmp_buf f77_context;
 
 extern void copy_f77_context (void *, void *, unsigned int);
 
+extern void
+F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen) GCC_ATTR_NORETURN;
+
 #if !defined (F77_FCN)
 #define F77_FCN(f, F) F77_FUNC (f, F)
 #endif

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, FSinv, 10,
+DEFUN_DLD_BUILTIN (inv, args, ,
   "inv (X): inverse of a square matrix")
 {
   Octave_object retval;
@@ -108,7 +108,7 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, FSinv, 10,
 // alias_builtin() won't do the right thing if we are actually using
 // dynamic linking.
 
-DEFUN_DLD_BUILTIN ("inverse", Finverse, Sinverse, FSinverse, 11,
+DEFUN_DLD_BUILTIN (inverse, args, nargout,
   "inverse (X): inverse of a square matrix")
 {
   return Finv (args, nargout);

@@ -524,7 +524,7 @@ octave_chdir (const string& path)
 #endif
 }
 
-DEFUN ("clc", Fclc, Sclc, 00,
+DEFUN (clc, , ,
   "clc (): clear screen")
 {
   Octave_object retval;
@@ -548,7 +548,7 @@ DEFUN ("clc", Fclc, Sclc, 00,
 
 DEFALIAS (home, clc);
 
-DEFUN ("getenv", Fgetenv, Sgetenv, 10,
+DEFUN (getenv, args, ,
   "getenv (STRING): get environment variable values")
 {
   Octave_object retval;
@@ -575,7 +575,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 10,
   return retval;
 }
 
-DEFUN ("putenv", Fputenv, Sputenv, 10,
+DEFUN (putenv, args, ,
   "putenv (VAR, VALUE): define environment variable VAR=VALUE")
 {
   Octave_object retval;
@@ -604,7 +604,7 @@ DEFUN ("putenv", Fputenv, Sputenv, 10,
   return retval;
 }
 
-DEFUN ("kbhit", Fkbhit, Skbhit, 00,
+DEFUN (kbhit, , ,
   "kbhit: get a single character from the terminal")
 {
   Octave_object retval;
@@ -623,7 +623,7 @@ DEFUN ("kbhit", Fkbhit, Skbhit, 00,
   return retval;
 }
 
-DEFUN ("pause", Fpause, Spause, 10,
+DEFUN (pause, args, ,
   "pause (seconds): suspend program execution")
 {
   Octave_object retval;
@@ -664,7 +664,7 @@ DEFUN ("pause", Fpause, Spause, 10,
 // XXX FIXME XXX -- maybe this should only return 1 if IEEE floating
 // point functions really work.
 
-DEFUN ("isieee", Fisieee, Sisieee, 00,
+DEFUN (isieee, , ,
   "isieee (): return 1 if host uses IEEE floating point")
 {
   return (double) (native_float_format == OCTAVE_IEEE_LITTLE
@@ -711,7 +711,7 @@ oct_tilde_expand (const string& name)
   return retval;
 }
 
-DEFUN ("tilde_expand", Ftilde_expand, Stilde_expand, 10,
+DEFUN (tilde_expand, args, ,
   "tilde_expand (STRING): perform tilde expansion on STRING")
 {
   Octave_object retval;

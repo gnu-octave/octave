@@ -667,12 +667,12 @@ builtin_help (int argc, const string_vector& argv)
 }
 
 #ifdef USE_GNU_INFO
-DEFUN_TEXT ("help", Fhelp, Shelp, 10,
+DEFUN_TEXT (help, args, ,
   "help [-i] [topic ...]\n\
 \n\
 print cryptic yet witty messages")
 #else
-DEFUN_TEXT ("help", Fhelp, Shelp, 10,
+DEFUN_TEXT (help, args, ,
   "help [topic ...]\n\
 \n\
 print cryptic yet witty messages")
@@ -706,7 +706,7 @@ print cryptic yet witty messages")
   return retval;
 }
 
-DEFUN_TEXT ("type", Ftype, Stype, 11,
+DEFUN_TEXT (type, args, nargout,
   "type NAME ...]\n\
 \n\
 display the definition of each NAME that refers to a function")
@@ -852,7 +852,7 @@ display the definition of each NAME that refers to a function")
   return retval;
 }
 
-DEFUN_TEXT ("which", Fwhich, Swhich, 11,
+DEFUN_TEXT (which, args, nargout,
   "which NAME ...\n\
 \n\
 display the type of each NAME.  If NAME is defined from an function\n\

@@ -55,7 +55,7 @@ Software Foundation, Inc.
 #define ABS(x) (((x) < 0) ? (-x) : (x))
 #endif
 
-DEFUN ("all", Fall, Sall, 10,
+DEFUN (all, args, ,
   "all (X): are all elements of X nonzero?")
 {
   Octave_object retval;
@@ -70,7 +70,7 @@ DEFUN ("all", Fall, Sall, 10,
   return retval;
 }
 
-DEFUN ("any", Fany, Sany, 10,
+DEFUN (any, args, ,
   "any (X): are any elements of X nonzero?")
 {
   Octave_object retval;
@@ -139,7 +139,7 @@ map (d_dd_fcn f, const Matrix& x, const Matrix& y)
   return retval;
 }
 
-DEFUN ("atan2", Fatan2, Satan2, 10,
+DEFUN (atan2, args, ,
   "atan2 (Y, X): atan (Y / X) in range -pi to pi")
 {
   Octave_object retval;
@@ -225,7 +225,7 @@ DEFUN ("atan2", Fatan2, Satan2, 10,
   return retval;
 }
 
-DEFUN ("cumprod", Fcumprod, Scumprod, 10,
+DEFUN (cumprod, args, ,
   "cumprod (X): cumulative products")
 {
   Octave_object retval;
@@ -262,7 +262,7 @@ DEFUN ("cumprod", Fcumprod, Scumprod, 10,
   return retval;
 }
 
-DEFUN ("cumsum", Fcumsum, Scumsum, 10,
+DEFUN (cumsum, args, ,
   "cumsum (X): cumulative sums")
 {
   Octave_object retval;
@@ -544,7 +544,7 @@ make_diag (const tree_constant& a, const tree_constant& b)
   return retval;
 }
 
-DEFUN ("diag", Fdiag, Sdiag, 10,
+DEFUN (diag, args, ,
   "diag (X [,k]): form/extract diagonals")
 {
   Octave_object retval;
@@ -561,7 +561,7 @@ DEFUN ("diag", Fdiag, Sdiag, 10,
   return retval;
 }
 
-DEFUN ("prod", Fprod, Sprod, 10,
+DEFUN (prod, args, ,
   "prod (X): products")
 {
   Octave_object retval;
@@ -598,7 +598,7 @@ DEFUN ("prod", Fprod, Sprod, 10,
   return retval;
 }
 
-DEFUN ("size", Fsize, Ssize, 11,
+DEFUN (size, args, nargout,
   "[m, n] = size (x): return rows and columns of X\n\
 \n\
 d = size (x): return number of rows and columns of x as a row vector\n\
@@ -650,7 +650,7 @@ m = size (x, 2): return number of columns in x")
   return retval;
 }
 
-DEFUN ("sum", Fsum, Ssum, 10,
+DEFUN (sum, args, ,
   "sum (X): sum of elements")
 {
   Octave_object retval;
@@ -687,7 +687,7 @@ DEFUN ("sum", Fsum, Ssum, 10,
   return retval;
 }
 
-DEFUN ("sumsq", Fsumsq, Ssumsq, 10,
+DEFUN (sumsq, args, ,
   "sumsq (X): sum of squares of elements")
 {
   Octave_object retval;
@@ -724,7 +724,7 @@ DEFUN ("sumsq", Fsumsq, Ssumsq, 10,
   return retval;
 }
 
-DEFUN ("is_struct", Fis_struct, Sis_struct, 10,
+DEFUN (is_struct, args, ,
   "is_struct (x): return nonzero if x is a structure")
 {
   Octave_object retval;
@@ -746,7 +746,7 @@ DEFUN ("is_struct", Fis_struct, Sis_struct, 10,
   return retval;
 }
 
-DEFUN ("struct_elements", Fstruct_elements, Sstruct_elements, 10,
+DEFUN (struct_elements, args, ,
   "struct_elements (S)\n\
 \n\
 Return a list of the names of the elements of the structure S.")
@@ -771,7 +771,7 @@ Return a list of the names of the elements of the structure S.")
   return retval;
 }
 
-DEFUN ("struct_contains", Fstruct_contains, Sstruct_contains, 10,
+DEFUN (struct_contains, args, ,
   "struct_contains (S, NAME)\n\
 \n\
 return nonzero if S is a structure with element NAME")
@@ -889,7 +889,7 @@ fill_matrix (const tree_constant& a, const tree_constant& b,
   return m;
 }
 
-DEFUN ("ones", Fones, Sones, 10,
+DEFUN (ones, args, ,
   "ones (N), ones (N, M), ones (X): create a matrix of all ones")
 {
   Octave_object retval;
@@ -918,7 +918,7 @@ DEFUN ("ones", Fones, Sones, 10,
   return retval;
 }
 
-DEFUN ("zeros", Fzeros, Szeros, 10,
+DEFUN (zeros, args, ,
   "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
 {
   Octave_object retval;
@@ -989,7 +989,7 @@ identity_matrix (const tree_constant& a, const tree_constant& b)
   return m;
 }
 
-DEFUN ("eye", Feye, Seye, 10,
+DEFUN (eye, args, ,
   "eye (N), eye (N, M), eye (X): create an identity matrix")
 {
   Octave_object retval;
@@ -1018,7 +1018,7 @@ DEFUN ("eye", Feye, Seye, 10,
   return retval;
 }
 
-DEFUN ("linspace", Flinspace, Slinspace, 10,
+DEFUN (linspace, args, ,
   "usage: linspace (x1, x2, n)\n\
 \n\
 Return a vector of n equally spaced points between x1 and x2\n\

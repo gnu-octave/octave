@@ -262,7 +262,7 @@ main_loop (void)
   return retval;
 }
 
-DEFUN ("source", Fsource, Ssource, 10,
+DEFUN (source, args, ,
   "source (FILE)\n\
 \n\
 Parse and execute the contents of FILE.  Like executing commands in a\n\
@@ -325,7 +325,7 @@ clean_up_and_exit (int retval)
   panic_impossible ();
 }
 
-DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 10,
+DEFUN_TEXT (casesen, args, ,
   "casesen [on|off]")
 {
   Octave_object retval;
@@ -347,7 +347,7 @@ DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 10,
   return retval;
 }
 
-DEFUN ("computer", Fcomputer, Scomputer, 11,
+DEFUN (computer, args, nargout,
   "computer ():\n\
 \n\
 Have Octave ask the system, \"What kind of computer are you?\"")
@@ -382,7 +382,7 @@ Have Octave ask the system, \"What kind of computer are you?\"")
   return retval;
 }
 
-DEFUN ("flops", Fflops, Sflops, 10,
+DEFUN (flops, args, ,
   "flops (): count floating point operations")
 {
   int nargin = args.length ();
@@ -395,7 +395,7 @@ DEFUN ("flops", Fflops, Sflops, 10,
   return 0.0;
 }
 
-DEFUN ("quit", Fquit, Squit, 00,
+DEFUN (quit, , ,
   "quit (): exit Octave gracefully")
 {
   Octave_object retval;
@@ -406,7 +406,7 @@ DEFUN ("quit", Fquit, Squit, 00,
 
 DEFALIAS (exit, quit);
 
-DEFUN ("warranty", Fwarranty, Swarranty, 00,
+DEFUN (warranty, , ,
   "warranty (): describe copying conditions")
 {
   Octave_object retval;
@@ -455,7 +455,7 @@ feval (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("feval", Ffeval, Sfeval, 11,
+DEFUN (feval, args, nargout,
   "feval (NAME, ARGS, ...)\n\
 \n\
 evaluate NAME as a function, passing ARGS as its arguments")
@@ -548,7 +548,7 @@ eval_string (const tree_constant& arg, int& parse_status, int nargout)
   return eval_string (s, 1, parse_status, nargout);
 }
 
-DEFUN ("eval", Feval, Seval, 11,
+DEFUN (eval, args, nargout,
   "eval (TRY, CATCH)\n\
 \n\
 Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
@@ -598,7 +598,7 @@ string CATCH.")
 
 // Execute a shell command.
 
-DEFUN ("system", Fsystem, Ssystem, 11,
+DEFUN (system, args, nargout,
   "system (string [, return_output]): execute shell commands")
 {
   Octave_object retval;

@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("hess", Fhess, Shess, FShess, 11,
+DEFUN_DLD_BUILTIN (hess, args, nargout,
   "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition")
 {
   Octave_object retval;

@@ -163,7 +163,7 @@ is_valid_function (const tree_constant& arg, const string& warn_for, int warn)
   return ans;
 }
 
-DEFUN ("is_global", Fis_global, Sis_global, 10,
+DEFUN (is_global, args, ,
   "is_global (X): return 1 if the string X names a global variable\n\
 otherwise, return 0.")
 {
@@ -192,7 +192,7 @@ otherwise, return 0.")
   return retval;
 }
 
-DEFUN ("exist", Fexist, Sexist, 10,
+DEFUN (exist, args, ,
   "exist (NAME): check if variable or file exists\n\
 \n\
 returns:\n\
@@ -1190,7 +1190,7 @@ maybe_list (const char *header, const string_vector& argv, int argc,
   return status;
 }
 
-DEFUN_TEXT ("document", Fdocument, Sdocument, 10,
+DEFUN_TEXT (document, args, ,
   "document symbol string ...\n\
 \n\
 Associate a cryptic message with a variable name.")
@@ -1332,7 +1332,7 @@ do_who (int argc, const string_vector& argv)
   return retval;
 }
 
-DEFUN_TEXT ("who", Fwho, Swho, 10,
+DEFUN_TEXT (who, args, ,
   "who [-all] [-builtins] [-functions] [-long] [-variables]\n\
 \n\
 List currently defined symbol(s).  Options may be shortened to one\n\
@@ -1352,7 +1352,7 @@ character, but may not be combined.")
   return retval;
 }
 
-DEFUN_TEXT ("whos", Fwhos, Swhos, 10,
+DEFUN_TEXT (whos, args, ,
   "whos [-all] [-builtins] [-functions] [-long] [-variables]\n\
 \n\
 List currently defined symbol(s).  Options may be shortened to one\n\
@@ -1586,128 +1586,117 @@ install_builtin_variables (void)
   // XXX FIXME XX -- these should probably be moved to where they
   // logically belong instead of being all grouped here.
 
-  DEFVAR ("EDITOR", SBV_EDITOR, editor, 0, sv_editor,
+  DEFVAR (EDITOR, editor, 0, sv_editor,
     "name of the editor to be invoked by the edit_history command");
 
-  DEFVAR ("EXEC_PATH", SBV_EXEC_PATH, exec_path, 0, sv_exec_path,
+  DEFVAR (EXEC_PATH, exec_path, 0, sv_exec_path,
     "colon separated list of directories to search for programs to run");
 
-  DEFCONST ("I", SBV_I, Complex (0.0, 1.0), 0, 0,
+  DEFCONST (I, Complex (0.0, 1.0), 0, 0,
     "sqrt (-1)");
 
-  DEFCONST ("Inf", SBV_Inf, octave_Inf, 0, 0,
+  DEFCONST (Inf, octave_Inf, 0, 0,
     "infinity");
 
-  DEFVAR ("INFO_FILE", SBV_INFO_FILE, info_file, 0, sv_info_file,
+  DEFVAR (INFO_FILE, info_file, 0, sv_info_file,
     "name of the Octave info file");
 
-  DEFVAR ("INFO_PROGRAM", SBV_INFO_PROGRAM, info_prog, 0, sv_info_prog,
+  DEFVAR (INFO_PROGRAM, info_prog, 0, sv_info_prog,
     "name of the Octave info reader");
 
-  DEFCONST ("J", SBV_J, Complex (0.0, 1.0), 0, 0,
+  DEFCONST (J, Complex (0.0, 1.0), 0, 0,
     "sqrt (-1)");
 
-  DEFCONST ("NaN", SBV_NaN, octave_NaN, 0, 0,
+  DEFCONST (NaN, octave_NaN, 0, 0,
     "not a number");
 
-  DEFVAR ("LOADPATH", SBV_LOADPATH, load_path, 0, sv_loadpath,
+  DEFVAR (LOADPATH, load_path, 0, sv_loadpath,
     "colon separated list of directories to search for scripts");
 
-  DEFVAR ("IMAGEPATH", SBV_IMAGEPATH, OCTAVE_IMAGEPATH, 0,
+  DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0,
 	  sv_imagepath,
     "colon separated list of directories to search for image files");
 
-  DEFCONST ("OCTAVE_VERSION", SBV_version, OCTAVE_VERSION, 0, 0,
+  DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
     "Octave version");
 
-  DEFVAR ("PAGER", SBV_PAGER, default_pager (), 0, sv_pager_binary,
+  DEFVAR (PAGER, default_pager (), 0, sv_pager_binary,
     "path to pager binary");
 
-  DEFVAR ("PS1", SBV_PS1, "\\s:\\#> ", 0, sv_ps1,
+  DEFVAR (PS1, "\\s:\\#> ", 0, sv_ps1,
     "primary prompt string");
 
-  DEFVAR ("PS2", SBV_PS2, "> ", 0, sv_ps2,
+  DEFVAR (PS2, "> ", 0, sv_ps2,
     "secondary prompt string");
 
-  DEFVAR ("PS4", SBV_PS4, "+ ", 0, sv_ps4,
+  DEFVAR (PS4, "+ ", 0, sv_ps4,
     "string printed before echoed input (enabled by --echo-input)");
 
-  DEFCONST ("PWD", SBV_PWD,
-	    get_working_directory ("initialize_globals"), 0, sv_pwd,
+  DEFCONST (PWD, get_working_directory ("initialize_globals"), 0, sv_pwd,
     "current working directory");
 
-  DEFCONST ("SEEK_SET", SBV_SEEK_SET, 0.0, 0, 0,
+  DEFCONST (SEEK_SET, 0.0, 0, 0,
     "used with fseek to position file relative to the beginning");
 
-  DEFCONST ("SEEK_CUR", SBV_SEEK_CUR, 1.0, 0, 0,
+  DEFCONST (SEEK_CUR, 1.0, 0, 0,
     "used with fseek to position file relative to the current position");
 
-  DEFCONST ("SEEK_END", SBV_SEEK_END, 2.0, 0, 0,
+  DEFCONST (SEEK_END, 2.0, 0, 0,
     "used with fseek to position file relative to the end");
 
-  DEFVAR ("ans", SBV_ans, , 0, 0,
+  DEFVAR (ans, , 0, 0,
     "");
 
-  DEFCONST ("argv", SBV_argv, , 0, 0,
+  DEFCONST (argv, , 0, 0,
     "the command line arguments this program was invoked with");
 
-  DEFVAR ("automatic_replot", SBV_automatic_replot, 0.0,
-	  0, automatic_replot,
+  DEFVAR (automatic_replot, 0.0, 0, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
-  DEFVAR ("beep_on_error", SBV_beep_on_error, 0.0, 0,
-	  beep_on_error,
+  DEFVAR (beep_on_error, 0.0, 0, beep_on_error,
     "if true, beep before printing error messages");
 
-  DEFVAR ("completion_append_char", SBV_completion_append_char, " ",
-	  0, sv_completion_append_char,
+  DEFVAR (completion_append_char, " ", 0, sv_completion_append_char,
     "the string to append after successful command-line completion\n\
 attempts");
 
-  DEFCONST ("error_text", SBV_current_error_text, "", 0, 0,
+  DEFCONST (error_text, "", 0, 0,
     "the text of error messages that would have been printed in the
 body of the most recent unwind_protect statement or the TRY part of\n\
 the most recent eval() command.  Outside of unwind_protect and\n\
 eval(), or if no error has ocurred within them, the value of\n\
 __error_text__ is guaranteed to be the empty string.");
 
-  DEFVAR ("default_return_value", SBV_default_return_value, Matrix (),
-	  0, 0,
+  DEFVAR (default_return_value, Matrix (), 0, 0,
     "the default for value for unitialized variables returned from\n\
 functions.  Only used if the variable initialize_return_values is\n\
 set to \"true\".");
 
-  DEFVAR ("default_save_format", SBV_default_save_format, "ascii",
-	  0, sv_default_save_format,
+  DEFVAR (default_save_format, "ascii", 0, sv_default_save_format,
     "default format for files created with save, may be one of\n\
 \"binary\", \"text\", or \"mat-binary\"");
 
-  DEFVAR ("define_all_return_values", SBV_define_all_return_values,
-	  0.0, 0, define_all_return_values,
+  DEFVAR (define_all_return_values, 0.0, 0, define_all_return_values,
     "control whether values returned from functions should have a\n\
 value even if one has not been explicitly assigned.  See also\n\
 default_return_value");
 
-  DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, 0.0, 0,
-	  do_fortran_indexing,
+  DEFVAR (do_fortran_indexing, 0.0, 0, do_fortran_indexing,
     "allow single indices for matrices");
 
-  DEFVAR ("echo_executing_commands", SBV_echo_executing_commands, 0.0, 0, 
-	  echo_executing_commands,
+  DEFVAR (echo_executing_commands, 0.0, 0, echo_executing_commands,
     "echo commands as they are executed");
 
-  DEFCONST ("e", SBV_e, exp (1.0), 0, 0,
+  DEFCONST (e, exp (1.0), 0, 0,
     "exp (1)");
 
-  DEFVAR ("empty_list_elements_ok", SBV_empty_list_elements_ok,
-	  "warn", 0, empty_list_elements_ok,
+  DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
     "ignore the empty element in expressions like `a = [[], 1]'");
 
-  DEFCONST ("eps", SBV_eps, DBL_EPSILON, 0, 0,
+  DEFCONST (eps, DBL_EPSILON, 0, 0,
     "machine precision");
 
-  DEFVAR ("gnuplot_binary", SBV_gnuplot_binary, "gnuplot", 0,
-	  sv_gnuplot_binary,
+  DEFVAR (gnuplot_binary, "gnuplot", 0, sv_gnuplot_binary,
     "path to gnuplot binary");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
@@ -1716,180 +1705,145 @@ default_return_value");
   double with_multiplot = 0.0;
 #endif
 
-  DEFVAR ("gnuplot_has_multiplot", SBV_gnuplot_has_multiplot,
-	  with_multiplot, 0, gnuplot_has_multiplot,
+  DEFVAR (gnuplot_has_multiplot, with_multiplot, 0, gnuplot_has_multiplot,
     "true if gnuplot supports multiplot, false otherwise");
 
-  DEFVAR ("history_file", SBV_history_file,
-	  default_history_file (), 0, sv_history_file,
+  DEFVAR (history_file, default_history_file (), 0, sv_history_file,
     "name of command history file");
 
-  DEFVAR ("history_size", SBV_history_size,
-	  default_history_size (), 0, history_size,
+  DEFVAR (history_size, default_history_size (), 0, history_size,
     "number of commands to save in the history list");
 
-  DEFCONST ("i", SBV_i, Complex (0.0, 1.0), 1, 0,
+  DEFCONST (i, Complex (0.0, 1.0), 1, 0,
     "sqrt (-1)");
 
-  DEFVAR ("ignore_function_time_stamp",
-	  SBV_ignore_function_time_stamp, "system", 0,
-	  ignore_function_time_stamp,
+  DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
     "don't check to see if function files have changed since they were\n\
   last compiled.  Possible values are \"system\" and \"all\"");
 
-  DEFVAR ("implicit_str_to_num_ok", SBV_implicit_str_to_num_ok,
-	  0.0, 0, implicit_str_to_num_ok,
+  DEFVAR (implicit_str_to_num_ok, 0.0, 0, implicit_str_to_num_ok,
     "allow implicit string to number conversion");
 
-  DEFCONST ("inf", SBV_inf, octave_Inf, 0, 0,
+  DEFCONST (inf, octave_Inf, 0, 0,
     "infinity");
 
-  DEFCONST ("j", SBV_j, Complex (0.0, 1.0), 1, 0,
+  DEFCONST (j, Complex (0.0, 1.0), 1, 0,
     "sqrt (-1)");
 
-  DEFCONST ("nan", SBV_nan, octave_NaN, 0, 0,
+  DEFCONST (nan, octave_NaN, 0, 0,
     "not a number");
 
-  DEFVAR ("ok_to_lose_imaginary_part", SBV_ok_to_lose_imaginary_part,
-	  "warn", 0, ok_to_lose_imaginary_part,
+  DEFVAR (ok_to_lose_imaginary_part, "warn", 0, ok_to_lose_imaginary_part,
     "silently convert from complex to real by dropping imaginary part");
 
-  DEFVAR ("output_max_field_width", SBV_output_max_field_width, 10.0,
-	  0, set_output_max_field_width,
+  DEFVAR (output_max_field_width, 10.0, 0, set_output_max_field_width,
     "maximum width of an output field for numeric output");
 
-  DEFVAR ("output_precision", SBV_output_precision, 5.0, 0,
-	  set_output_precision,
+  DEFVAR (output_precision, 5.0, 0, set_output_precision,
     "number of significant figures to display for numeric output");
 
-  DEFVAR ("page_screen_output", SBV_page_screen_output, 1.0, 0,
-	  page_screen_output,
+  DEFVAR (page_screen_output, 1.0, 0, page_screen_output,
     "if possible, send output intended for the screen through the pager");
 
-  DEFCONST ("pi", SBV_pi, 4.0 * atan (1.0), 0, 0,
+  DEFCONST (pi, 4.0 * atan (1.0), 0, 0,
     "ratio of the circumference of a circle to its diameter");
 
-  DEFVAR ("prefer_column_vectors", SBV_prefer_column_vectors, 1.0,
-	  0, prefer_column_vectors,
+  DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,
     "prefer column/row vectors");
 
-  DEFVAR ("prefer_zero_one_indexing", SBV_prefer_zero_one_indexing,
-	  0.0, 0, prefer_zero_one_indexing,
+  DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
     "when there is a conflict, prefer zero-one style indexing");
 
-  DEFVAR ("print_answer_id_name", SBV_print_answer_id_name, 1.0, 0,
-	  print_answer_id_name,
+  DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
     "set output style to print `var_name = ...'");
 
-  DEFVAR ("print_empty_dimensions", SBV_print_empty_dimensions,
-	  1.0, 0, print_empty_dimensions,
+  DEFVAR (print_empty_dimensions, 1.0, 0, print_empty_dimensions,
     "also print dimensions of empty matrices");
 
-  DEFCONST ("program_invocation_name", SBV_program_invocation_name,
-	    raw_prog_name, 0, 0,
+  DEFCONST (program_invocation_name, raw_prog_name, 0, 0,
     "the full name of the current program or script, including the\n\
 directory specification");
 
-  DEFCONST ("program_name", SBV_program_name, prog_name, 0, 0,
+  DEFCONST (program_name, prog_name, 0, 0,
     "the name of the current program or script");
 
-  DEFVAR ("propagate_empty_matrices", SBV_propagate_empty_matrices,
-	  1.0, 0, propagate_empty_matrices,
+  DEFVAR (propagate_empty_matrices, 1.0, 0, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");
 
 #if 0
-  DEFVAR ("read_only_constants", SBV_read_only_constants, 1.0, 0,
-	  read_only_constants,
+  DEFVAR (read_only_constants, 1.0, 0, read_only_constants,
     "allow built-in constants to be modified");
 #endif
 
-  DEFCONST ("realmax", SBV_realmax, DBL_MAX, 0, 0,
+  DEFCONST (realmax, DBL_MAX, 0, 0,
     "realmax (): return largest representable floating point number");
 
-  DEFCONST ("realmin", SBV_realmin, DBL_MIN, 0, 0,
+  DEFCONST (realmin, DBL_MIN, 0, 0,
     "realmin (): return smallest representable floating point number");
 
-  DEFVAR ("resize_on_range_error", SBV_resize_on_range_error, 1.0,
-	  0, resize_on_range_error,
+  DEFVAR (resize_on_range_error, 1.0, 0, resize_on_range_error,
     "enlarge matrices on assignment");
 
-  DEFVAR ("return_last_computed_value",
-	  SBV_return_last_computed_value, 0.0, 0,
-	  return_last_computed_value,
+  DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\
   last computed value");
 
-  DEFVAR ("save_precision", SBV_save_precision, 15.0, 0,
-	  set_save_precision,
+  DEFVAR (save_precision, 15.0, 0, set_save_precision,
     "number of significant figures kept by the ASCII save command");
 
-  DEFVAR ("saving_history", SBV_saving_history, 1.0, 0, saving_history,
+  DEFVAR (saving_history, 1.0, 0, saving_history,
     "save command history");
 
-  DEFVAR ("silent_functions", SBV_silent_functions, 0.0, 0,
-	  silent_functions,
+  DEFVAR (silent_functions, 0.0, 0, silent_functions,
     "suppress printing results in called functions");
 
-  DEFVAR ("split_long_rows", SBV_split_long_rows, 1.0, 0,
-	  split_long_rows,
+  DEFVAR (split_long_rows, 1.0, 0, split_long_rows,
     "split long matrix rows instead of wrapping");
 
-  DEFVAR ("struct_levels_to_print", SBV_struct_levels_to_print, 2.0,
-	  0, struct_levels_to_print,
+  DEFVAR (struct_levels_to_print, 2.0, 0, struct_levels_to_print,
     "number of levels of structure elements to print");
 
 #ifdef USE_GNU_INFO
-  DEFVAR ("suppress_verbose_help_message",
-	  SBV_suppress_verbose_help_message, 0.0, 0,
-	  suppress_verbose_help_message,
+  DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\
 help and usage functions");
 #endif
 
-  DEFCONST ("stdin", SBV_stdin, 0.0, 0, 0,
+  DEFCONSTX ("stdin", SBV_stdin, 0.0, 0, 0,
     "file number of the standard input stream");
 
-  DEFCONST ("stdout", SBV_stdout, 1.0, 0, 0,
+  DEFCONSTX ("stdout", SBV_stderr, 1.0, 0, 0,
     "file number of the standard output stream");
 
-  DEFCONST ("stderr", SBV_stderr, 2.0, 0, 0,
+  DEFCONSTX ("stderr", SBV_stderr, 2.0, 0, 0,
     "file number of the standard error stream");
 
-  DEFVAR ("treat_neg_dim_as_zero", SBV_treat_neg_dim_as_zero, 0.0, 0,
-	  treat_neg_dim_as_zero,
+  DEFVAR (treat_neg_dim_as_zero, 0.0, 0, treat_neg_dim_as_zero,
     "convert negative dimensions to zero");
 
-  DEFVAR ("warn_assign_as_truth_value",
-	  SBV_warn_assign_as_truth_value, 1.0, 0,
-	  warn_assign_as_truth_value,
+  DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 
-  DEFVAR ("warn_comma_in_global_decl", SBV_warn_comma_in_global_decl,
-	  1.0, 0, warn_comma_in_global_decl,
+  DEFVAR (warn_comma_in_global_decl, 1.0, 0, warn_comma_in_global_decl,
     "produce warning for commas in global declarations");
 
-  DEFVAR ("warn_divide_by_zero", SBV_warn_divide_by_zero, 1.0, 0,
-	  warn_divide_by_zero,
+  DEFVAR (warn_divide_by_zero, 1.0, 0, warn_divide_by_zero,
     "on IEEE machines, allow divide by zero errors to be suppressed");
 
-  DEFVAR ("warn_function_name_clash", SBV_warn_function_name_clash,
-	  1.0, 0, warn_function_name_clash,
+  DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
 
-  DEFVAR ("warn_missing_semicolon", SBV_warn_missing_semicolon,
-	  0.0, 0, warn_missing_semicolon,
+  DEFVAR (warn_missing_semicolon, 0.0, 0, warn_missing_semicolon,
     "produce a warning if a statement in a function file is not
 terminated with a semicolon");
 
-  DEFVAR ("whitespace_in_literal_matrix",
-	  SBV_whitespace_in_literal_matrix, "", 0,
-	  whitespace_in_literal_matrix,
+  DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
 }
 
 // Deleting names from the symbol tables.
 
-DEFUN_TEXT ("clear", Fclear, Sclear, 10,
+DEFUN_TEXT (clear, args, ,
   "clear [-x] [name ...]\n\
 \n\
 Clear symbol(s) matching a list of globbing patterns.\n\

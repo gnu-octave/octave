@@ -487,7 +487,7 @@ tree_function::print_code_function_trailer (ostream& os)
   print_code_new_line (os);
 }
 
-DEFUN ("va_arg", Fva_arg, Sva_arg, 10,
+DEFUN (va_arg, args, ,
   "va_arg (): return next argument in a function that takes a\n\
 variable number of parameters")
 {
@@ -516,7 +516,7 @@ variable number of parameters")
   return retval;
 }
 
-DEFUN ("va_start", Fva_start, Sva_start, 10,
+DEFUN (va_start, args, ,
   "va_start (): reset the pointer to the list of optional arguments\n\
 to the beginning")
 {
@@ -545,7 +545,7 @@ to the beginning")
   return retval;
 }
 
-DEFUN ("vr_val", Fvr_val, Svr_val, 10,
+DEFUN (vr_val, args, ,
   "vr_val (X): append X to the list of optional return values for a
 function that allows a variable number of return values")
 {

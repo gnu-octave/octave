@@ -243,7 +243,7 @@ handle_message (error_fun f, const char *msg, const Octave_object& args)
   return retval;
 }
 
-DEFUN ("error", Ferror, Serror, 10,
+DEFUN (error, args, ,
   "error (FMT, ...): print message according to FMT and set error state.\n\
 \n\
 This should eventually take us up to the top level, possibly\n\
@@ -257,7 +257,7 @@ See also: printf")
   return handle_message (error, "unspecified error", args);
 }
 
-DEFUN ("warning", Fwarning, Swarning, 10,
+DEFUN (warning, args, ,
   "warning (FMT, ...): print a warning message according to FMT.\n\
 \n\
 See also: error, printf")
@@ -265,7 +265,7 @@ See also: error, printf")
   return handle_message (warning, "unspecified warning", args);
 }
 
-DEFUN ("usage", Fusage, Susage, 10,
+DEFUN (usage, args, ,
   "usage (FMT, ...): print a usage message according to FMT.\n\
 \n\
 See also: error, printf")

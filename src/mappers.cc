@@ -336,106 +336,106 @@ tanh (const Complex& x)
 void
 install_mapper_functions (void)
 {
-  DEFUN_MAPPER ("abs", Sabs, 0, 0.0, 0.0, fabs, abs, 0,
+  DEFUN_MAPPER (abs, 0, 0.0, 0.0, fabs, abs, 0,
     "abs (X): compute abs (X) for each element of X");
 
-  DEFUN_MAPPER ("acos", Sacos, 1, -1.0, 1.0, acos, 0, acos,
+  DEFUN_MAPPER (acos, 1, -1.0, 1.0, acos, 0, acos,
     "acos (X): compute acos (X) for each element of X");
 
-  DEFUN_MAPPER ("acosh", Sacosh, 1, 1.0, DBL_MAX, acosh, 0, acosh,
+  DEFUN_MAPPER (acosh, 1, 1.0, DBL_MAX, acosh, 0, acosh,
     "acosh (X): compute acosh (X) for each element of X");
 
-  DEFUN_MAPPER ("angle", Sangle, 0, 0.0, 0.0, arg, arg, 0,
+  DEFUN_MAPPER (angle, 0, 0.0, 0.0, arg, arg, 0,
     "angle (X): compute arg (X) for each element of X");
 
-  DEFUN_MAPPER ("arg", Sarg, 0, 0.0, 0.0, arg, arg, 0,
+  DEFUN_MAPPER (arg, 0, 0.0, 0.0, arg, arg, 0,
     "arg (X): compute arg (X) for each element of X");
 
-  DEFUN_MAPPER ("asin", Sasin, 1, -1.0, 1.0, asin, 0, asin,
+  DEFUN_MAPPER (asin, 1, -1.0, 1.0, asin, 0, asin,
     "asin (X): compute asin (X) for each element of X");
 
-  DEFUN_MAPPER ("asinh", Sasinh, 0, 0.0, 0.0, asinh, 0, asinh,
+  DEFUN_MAPPER (asinh, 0, 0.0, 0.0, asinh, 0, asinh,
     "asinh (X): compute asinh (X) for each element of X");
 
-  DEFUN_MAPPER ("atan", Satan, 0, 0.0, 0.0, atan, 0, atan,
+  DEFUN_MAPPER (atan, 0, 0.0, 0.0, atan, 0, atan,
     "atan (X): compute atan (X) for each element of X");
 
-  DEFUN_MAPPER ("atanh", Satanh, 1, -1.0, 1.0, atanh, 0, atanh,
+  DEFUN_MAPPER (atanh, 1, -1.0, 1.0, atanh, 0, atanh,
     "atanh (X): compute atanh (X) for each element of X");
 
-  DEFUN_MAPPER ("ceil", Sceil, 0, 0.0, 0.0, ceil, 0, ceil,
+  DEFUN_MAPPER (ceil, 0, 0.0, 0.0, ceil, 0, ceil,
     "ceil (X): round elements of X toward +Inf");
 
-  DEFUN_MAPPER ("conj", Sconj, 0, 0.0, 0.0, conj, 0, conj,
+  DEFUN_MAPPER (conj, 0, 0.0, 0.0, conj, 0, conj,
     "conj (X): compute complex conjugate for each element of X");
 
-  DEFUN_MAPPER ("cos", Scos, 0, 0.0, 0.0, cos, 0, cos,
+  DEFUN_MAPPER (cos, 0, 0.0, 0.0, cos, 0, cos,
     "cos (X): compute cos (X) for each element of X");
 
-  DEFUN_MAPPER ("cosh", Scosh, 0, 0.0, 0.0, cosh, 0, cosh,
+  DEFUN_MAPPER (cosh, 0, 0.0, 0.0, cosh, 0, cosh,
     "cosh (X): compute cosh (X) for each element of X");
 
-  DEFUN_MAPPER ("erf", Serf, 0, 0.0, 0.0, xerf, 0, 0,
+  DEFUN_MAPPER (erf, 0, 0.0, 0.0, xerf, 0, 0,
     "erf (X): compute erf (X) for each element of X");
 
-  DEFUN_MAPPER ("erfc", Serfc, 0, 0.0, 0.0, xerfc, 0, 0,
+  DEFUN_MAPPER (erfc, 0, 0.0, 0.0, xerfc, 0, 0,
     "erfc (X): compute erfc (X) for each element of X");
 
-  DEFUN_MAPPER ("exp", Sexp, 0, 0.0, 0.0, exp, 0, exp,
+  DEFUN_MAPPER (exp, 0, 0.0, 0.0, exp, 0, exp,
     "exp (X): compute exp (X) for each element of X");
 
-  DEFUN_MAPPER ("finite", Sfinite, 0, 0.0, 0.0, xfinite, xfinite, 0,
+  DEFUN_MAPPER (finite, 0, 0.0, 0.0, xfinite, xfinite, 0,
     "finite (X): return 1 for finite elements of X");
 
-  DEFUN_MAPPER ("fix", Sfix, 0, 0.0, 0.0, fix, 0, fix,
+  DEFUN_MAPPER (fix, 0, 0.0, 0.0, fix, 0, fix,
     "fix (X): round elements of X toward zero");
 
-  DEFUN_MAPPER ("floor", Sfloor, 0, 0.0, 0.0, floor, 0, floor,
+  DEFUN_MAPPER (floor, 0, 0.0, 0.0, floor, 0, floor,
     "floor (X): round elements of X toward -Inf");
 
-  DEFUN_MAPPER ("gamma", Sgamma, 0, 0.0, 0.0, xgamma, 0, 0,
+  DEFUN_MAPPER (gamma, 0, 0.0, 0.0, xgamma, 0, 0,
     "gamma (X): compute gamma (X) for each element of X");
 
-  DEFUN_MAPPER ("isinf", Sisinf, 0, 0.0, 0.0, xisinf, xisinf, 0,
+  DEFUN_MAPPER (isinf, 0, 0.0, 0.0, xisinf, xisinf, 0,
     "isinf (X): return 1 for elements of X infinite");
 
-  DEFUN_MAPPER ("imag", Simag, 0, 0.0, 0.0, imag, imag, 0,
+  DEFUN_MAPPER (imag, 0, 0.0, 0.0, imag, imag, 0,
     "imag (X): return imaginary part for each elements of X");
 
-  DEFUN_MAPPER ("isnan", Sisnan, 0, 0.0, 0.0, xisnan, xisnan, 0,
+  DEFUN_MAPPER (isnan, 0, 0.0, 0.0, xisnan, xisnan, 0,
     "isnan (X): return 1 where elements of X are NaNs");
 
-  DEFUN_MAPPER ("lgamma", Slgamma, 0, 0.0, 0.0, xlgamma, 0, 0,
+  DEFUN_MAPPER (lgamma, 0, 0.0, 0.0, xlgamma, 0, 0,
     "lgamma (X): compute log gamma (X) for each element of X");
 
-  DEFUN_MAPPER ("log", Slog, 1, 0.0, DBL_MAX, log, 0, log,
+  DEFUN_MAPPER (log, 1, 0.0, DBL_MAX, log, 0, log,
     "log (X): compute log (X) for each element of X");
 
-  DEFUN_MAPPER ("log10", Slog10, 1, 0.0, DBL_MAX, log10, 0, log10,
+  DEFUN_MAPPER (log10, 1, 0.0, DBL_MAX, log10, 0, log10,
     "log10 (X): compute log10 (X) for each element of X");
 
-  DEFUN_MAPPER ("real", Sreal, 0, 0.0, 0.0, real, real, 0,
+  DEFUN_MAPPER (real, 0, 0.0, 0.0, real, real, 0,
     "real (X): return real part for each element of X");
 
-  DEFUN_MAPPER ("round", Sround, 0, 0.0, 0.0, round, 0, round,
+  DEFUN_MAPPER (round, 0, 0.0, 0.0, round, 0, round,
     "round (X): round elements of X to nearest integer");
 
-  DEFUN_MAPPER ("sign", Ssign, 0, 0.0, 0.0, signum, 0, signum,
+  DEFUN_MAPPER (sign, 0, 0.0, 0.0, signum, 0, signum,
     "sign (X): apply signum function to elements of X");
 
-  DEFUN_MAPPER ("sin", Ssin, 0, 0.0, 0.0, sin, 0, sin,
+  DEFUN_MAPPER (sin, 0, 0.0, 0.0, sin, 0, sin,
     "sin (X): compute sin (X) for each element of X");
 
-  DEFUN_MAPPER ("sinh", Ssinh, 0, 0.0, 0.0, sinh, 0, sinh,
+  DEFUN_MAPPER (sinh, 0, 0.0, 0.0, sinh, 0, sinh,
     "sinh (X): compute sinh (X) for each element of X");
 
-  DEFUN_MAPPER ("sqrt", Ssqrt, 1, 0.0, DBL_MAX, sqrt, 0, sqrt,
+  DEFUN_MAPPER (sqrt, 1, 0.0, DBL_MAX, sqrt, 0, sqrt,
     "sqrt (X): compute sqrt (X) for each element of X");
 
-  DEFUN_MAPPER ("tan", Stan, 0, 0.0, 0.0, tan, 0, tan,
+  DEFUN_MAPPER (tan, 0, 0.0, 0.0, tan, 0, tan,
     "tan (X): compute tan (X) for each element of X");
 
-  DEFUN_MAPPER ("tanh", Stanh, 0, 0.0, 0.0, tanh, 0, tanh,
+  DEFUN_MAPPER (tanh, 0, 0.0, 0.0, tanh, 0, tanh,
     "tanh (X): compute tanh (X) for each element of X");
 
   DEFALIAS (gammaln, lgamma);

@@ -1542,7 +1542,7 @@ octave_print_internal (ostream& os, const charMatrix& chm,
     }
 }
 
-DEFUN ("disp", Fdisp, Sdisp, 10,
+DEFUN (disp, args, ,
   "disp (X): display value without name tag")
 {
   Octave_object retval;
@@ -1705,7 +1705,7 @@ set_format_style (int argc, const string_vector& argv)
     }
 }
 
-DEFUN_TEXT ("format", Fformat, Sformat, 10,
+DEFUN_TEXT (format, args, ,
   "format [style]\n\
 \n\
 set output formatting style")

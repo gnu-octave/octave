@@ -38,12 +38,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING)
 #if ! defined (MAKE_BUILTINS)
-#define DEFUN_DLD_BUILTIN(name, fname, sname, fsname, unused_arg_flags, doc) \
-  DEFUN_DLD(name, fname, sname, fsname, unused_arg_flags, doc)
+#define DEFUN_DLD_BUILTIN(name, args_name, nargout_name, doc) \
+  DEFUN_DLD (name, args_name, nargout_name, doc)
 #endif
 #else
-#define DEFUN_DLD_BUILTIN(name, fname, fsname, sname, unused_arg_flags, doc) \
-  DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 0, doc)
+#define DEFUN_DLD_BUILTIN(name, args_name, nargout_name, doc) \
+  DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
 #endif
 
 // Define a function that may be loaded dynamically at run time.
@@ -55,11 +55,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // definition of the function.
 
 #if ! defined (MAKE_BUILTINS)
-#define DEFUN_DLD(name, fname, sname, fsname, unused_arg_flags, doc) \
-  DECLARE_FUN_ ## unused_arg_flags(fname); \
-  DEFINE_FUN_STRUCT (name, fname, sname, 0, doc); \
-  DEFINE_FUN_STRUCT_FUN (sname, fsname) \
-  DECLARE_FUN_ ## unused_arg_flags (fname)
+#define DEFUN_DLD(name, args_name, nargout_name, doc) \
+  DECLARE_FUN (name, args_name, nargout_name); \
+  DEFINE_FUN_STRUCT (name, 0, doc); \
+  DEFINE_FUN_STRUCT_FUN (name) \
+  DECLARE_FUN (name, args_name, nargout_name)
 #endif
 
 #endif

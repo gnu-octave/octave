@@ -32,13 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Define a builtin variable.
 //
-//   name is the name of the variable, as a string.
-//
-//   sname is the name of the structure that is used to hold
-//     information about the variable, and that is passed to
-//     install_builtin_variable to register it in the symbol table.
-//     By convention, it is constructed by prefixing name with the
-//     character SBV.
+//   name is the name of the variable, unquoted.
 //
 //   defn is the initial value for the variable.
 //
@@ -59,8 +53,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   doc is the simple help text for this variable.
 
-#define DEFVAR_INT(name, sname, defn, inst_as_fcn, protect, \
-		   sv_fcn, doc) \
+#define DEFVAR(name, defn, inst_as_fcn, sv_fcn, doc) \
+  DEFVAR_INT (#name, SBV_ ## name, defn, inst_as_fcn, 0, sv_fcn, doc)
+
+// Define a builtin-constant, and a corresponding variable that can be
+// redefined.  This is just the same as DEFVAR, except that it defines
+// `name' as a variable, and `__name__' as a constant that cannot be
+// redefined.
+
+#define DEFCONST(name, defn, inst_as_fcn, sv_fcn, doc) \
+  DEFVAR_INT (#name, SBV_ ## name, defn, inst_as_fcn, 0, sv_fcn, doc); \
+  DEFVAR_INT ("__" ## #name ## "__", XSBV_ ## name, defn, 0, 1, sv_fcn, doc)
+
+// This one can be used when `name' cannot be used directly (if it is
+// already defined as a macro).  In that case, name is already a
+// quoted string, and the name of the structure has to be passed too.
+
+#define DEFCONSTX(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
+  DEFVAR_INT (#name, sname, defn, inst_as_fcn, 0, sv_fcn, doc); \
+  DEFVAR_INT ("__" ## name ## "__", X ## sname, defn, 0, 1, sv_fcn, doc)
+
+// How builtin variables are actually installed.
+
+#define DEFVAR_INT(name, sname, defn, inst_as_fcn, protect, sv_fcn, doc) \
   do \
     { \
       builtin_variable sname (name, new tree_constant (defn), \
@@ -70,44 +85,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   while (0)
 
-#define DEFVAR(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INT (name, sname, defn, inst_as_fcn, 0, sv_fcn, doc)
-
-// Define a builtin-constant, and a corresponding variable that can be
-// redefined.  This is just the same as DEFVAR, except that it defines
-// `name' as a variable, and `__name__' as a constant that cannot be
-// redefined.
-
-#define DEFCONST(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INT (name, sname, defn, inst_as_fcn, 0, sv_fcn, doc); \
-  DEFVAR_INT ("__" ## name ## "__", sname, defn, 0, 1, sv_fcn, doc)
-
 // Define a builtin function.
 //
-//   name is the name of the function, as a string.
+//   name is the name of the function, unqouted.
 //
-//   fname is the name of the C++ function.  By convention, it is
-//     constructed by prefixing name with the character F.
+//   args_name is the name of the Octave_object variable used to pass
+//     the argument list to this function.
 //
-//   sname is the name of the structure that is used to hold
-//     information about the function, and that is passed to
-//     install_builtin_function to register the function in the symbol
-//     table.  By convention, it is constructed by prefixing name with
-//     the character S.
-//
-//   unused_arg_flags is used to decide how to declare the function so
-//     that g++ doesn't complain about unused arguments.  It can be
-//     one of:
-//
-//     00:            Both of the arguments args and nargout are unused.
-//     10:            The argument args is unused.
-//     01:            The argument nargout is unused.
-//     11 or missing: Both of the arguments args and nargout are used.
+//   nargout_name is the name of the int variable used to pass the
+//     number of output arguments this function is expected to produce.
 //
 //   doc is the simple help text for the function.
 
-#define DEFUN(name, fname, sname, unused_arg_flags, doc) \
-  DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 0, doc)
+#define DEFUN(name, args_name, nargout_name, doc) \
+  DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
 
 // Define a builtin text-style function.
 //
@@ -115,18 +106,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // called from the Octave language without using parenthesis to
 // surround the arguments). 
 
-#define DEFUN_TEXT(name, fname, sname, unused_arg_flags, doc) \
-  DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 1, doc)
+#define DEFUN_TEXT(name, args_name, nargout_name, doc) \
+  DEFUN_INTERNAL (name, args_name, nargout_name, 1, doc)
 
 // Define a mapper function.
 //
-//   name is the name of the function as a string
-//
-//   sname is the name of the structure that is used to hold
-//     information about the function, and that is passed to
-//     install_builtin_mapper to register the function in the symbol
-//     table.  By convention, it is constructed by prefixing name with
-//     the character S.
+//   name is the name of the function, unquoqted.
 //
 //   can_ret_cmplx_for_real is a flag that says whether this function
 //     can create a complex number given a real-valued  argument
@@ -149,14 +134,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   doc is the simple help text for the function.
 
-#define DEFUN_MAPPER(name, sname, can_ret_cmplx_for_real, lo, hi, \
+#define DEFUN_MAPPER(name, can_ret_cmplx_for_real, lo, hi, \
 		     d_d_map, d_c_map, c_c_map, doc) \
   do \
     { \
-      builtin_mapper_function sname (name, can_ret_cmplx_for_real, \
+      builtin_mapper_function S ## name (#name, can_ret_cmplx_for_real, \
 				     lo, hi, d_d_map, d_c_map, \
 				     c_c_map, doc); \
-      install_builtin_mapper (sname); \
+      install_builtin_mapper (S ## name); \
     } \
   while (0)
 

@@ -309,7 +309,7 @@ mx_sort (ComplexRowVector& cv)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("sort", Fsort, Ssort, FSsort, 11,
+DEFUN_DLD_BUILTIN (sort, args, nargout,
   "[S, I] = sort (X)\n\
 \n\
 sort the columns of X, optionally return sort index")

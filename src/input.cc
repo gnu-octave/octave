@@ -1087,7 +1087,7 @@ get_user_input (const Octave_object& args, int debug = 0)
   return retval;
 }
 
-DEFUN ("input", Finput, Sinput, 10,
+DEFUN (input, args, ,
   "input (PROMPT [, S])\n\
 \n\
 Prompt user for input.  If the second argument is present, return
@@ -1105,7 +1105,7 @@ value as a string.")
   return retval;
 }
 
-DEFUN ("keyboard", Fkeyboard, Skeyboard, 10,
+DEFUN (keyboard, args, ,
   "keyboard (PROMPT)\n\
 \n\
 maybe help in debugging function files")
@@ -1122,7 +1122,7 @@ maybe help in debugging function files")
   return retval;
 }
 
-DEFUN_TEXT("echo", Fecho, Secho, 10,
+DEFUN_TEXT(echo, args, ,
   "echo [options]\n\
 \n\
   echo [on|off]         -- enable or disable echoing of commands as\n\

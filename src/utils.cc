@@ -390,7 +390,7 @@ search_path_for_file (const string& path, const string& name)
   return make_absolute (p.find (name), the_current_working_directory);
 }
 
-DEFUN ("file_in_path", Ffile_in_path, Sfile_in_path, 10,
+DEFUN (file_in_path, args, ,
   "file_in_path (PATH, NAME)")
 {
   Octave_object retval;
@@ -530,8 +530,7 @@ undo_string_escapes (const string& s)
   return retval;
 }
 
-DEFUN ("undo_string_escapes", Fundo_string_escapes,
-       Sundo_string_escapes, 10,
+DEFUN (undo_string_escapes, args, ,
   "undo_string_escapes (STRING)")
 {
   tree_constant retval;

@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("qr", Fqr, Sqr, FSqr, 11,
+DEFUN_DLD_BUILTIN (qr, args, nargout,
   "[Q, R] = qr (X):      form Q unitary and R upper triangular such\n\
                        that Q * R = X\n\
 \n\

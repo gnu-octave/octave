@@ -2186,7 +2186,7 @@ do_load (istream& stream, const string& orig_fname, int force,
   return retval;
 }
 
-DEFUN_TEXT ("load", Fload, Sload, 11,
+DEFUN_TEXT (load, args, nargout,
   "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n\
 \n\
 Load variables from a file.\n\
@@ -2999,7 +2999,7 @@ save_user_variables (void)
     warning ("unable to open `%s' for writing...", fname);
 }
 
-DEFUN_TEXT ("save", Fsave, Ssave, 10,
+DEFUN_TEXT (save, args, ,
   "save [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
      [-save-builtins] file [pattern ...]\n\
 \n\

@@ -35,6 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
+class tree_walker;
+
 // Functions.
 
 class
@@ -70,6 +72,8 @@ public:
   string name (void) const { return my_name; }
 
   string doc_string (void) const { return doc; }
+
+  virtual void accept (tree_walker&) { }
 
 protected:
 

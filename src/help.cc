@@ -53,7 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
-#include "oct-usr-fcn.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "pathsearch.h"
 #include "pt-pr-code.h"
@@ -366,6 +366,9 @@ print_usage (const string& nm, int just_usage)
     warning ("no usage message found for `%s'", nm.c_str ());
 }
 
+// XXX FIXME XXX -- this needs a major overhaul to cope with new
+// symbol table stuff.
+
 static void
 display_names_from_help_list (ostream& os, help_list *list,
 			      const char *desc)
@@ -387,9 +390,11 @@ print_symbol_type (ostream& os, symbol_record *sym_rec,
 
   if (sym_rec->is_user_function ())
     {
-      octave_symbol *defn = sym_rec->def ();
+      octave_value tmp = sym_rec->def ();
 
-      string fn = defn->fcn_file_name ();
+      octave_function *defn = tmp.function_value ();
+
+      string fn = defn ? defn->fcn_file_name () : string ();
 
       if (! fn.empty ())
 	{
@@ -783,13 +788,13 @@ display the definition of each NAME that refers to a function")
 	    {
 	      if (sym_rec->is_user_function ())
 		{
-		  octave_symbol *tmp = sym_rec->def ();
+		  octave_value tmp = sym_rec->def ();
+		  
+		  octave_function *defn = tmp.function_value ();
 
-		  octave_user_function *defn
-		    = static_cast<octave_user_function *> (tmp);
+		  string fn = defn ? defn->fcn_file_name () : string ();
 
-		  string fn = defn->fcn_file_name ();
-		  string ff = fcn_file_in_path (fn);
+		  string ff = fn.empty () ? string () : fcn_file_in_path (fn);
 
 		  if (pr_orig_txt && ! ff.empty ())
 		    {
@@ -833,22 +838,17 @@ display the definition of each NAME that refers to a function")
 	      else if (sym_rec->is_user_variable ()
 		       || sym_rec->is_builtin_variable ())
 		{
-		  octave_symbol *defn = sym_rec->def ();
+		  octave_value defn = sym_rec->def ();
 
-		  assert (defn && defn->is_constant ());
+		  assert (defn.is_constant ());
 
 		  int var_ok = 1;
 
 		  // XXX FIXME XXX -- need to handle structure
 		  // references correctly.
 
-		  if (defn)
-		    {
-		      octave_value vtmp = defn->eval ();
-
-		      if (vtmp.is_map ())
-			error ("type: operations on structs not implemented");
-		    }
+		  if (defn.is_map ())
+		    error ("type: operations on structs not implemented");
 
 		  if (! error_state)
 		    {
@@ -873,14 +873,6 @@ display the definition of each NAME that refers to a function")
 					   << "' has unknown type!\n";
 			    }
 			}
-
-		      tree_print_code tpc (output_buf, "", pr_orig_txt);
-
-		      // XXX FIXME XXX
-		      // defn->accept (tpc);
-
-		      if (nargout == 0)
-			output_buf << "\n";
 		    }
 		}
 	      else

@@ -1,3 +1,83 @@
+Thu May 15 11:48:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun.cc: New file.  Move functions for installing objects in
+	the symbol table here from variables.cc.
+
+	* oct-obj.h, oct-obj.cc: Add custom allocator, fwiw.
+
+	* toplev.cc (main_loop): Correctly increment command number.
+
+	* TEMPLATE-INST/SLList-tm.cc: Don't instantiate lists of pointers
+	to tree_matrix_row objects.
+	* TEMPLATE-INST/SLList-misc.cc: Do instantiate lists of pointers
+	to tree_argument_list objects.
+
+	* DLD-FUNCTIONS/dassl.cc: Update to use new octave_function
+	interface to user-supplied functions.
+	* DLD-FUNCTIONS/fsolve.cc: Likewise.
+	* DLD-FUNCTIONS/lsode.cc: Likewise.
+	* DLD-FUNCTIONS/npsol.cc: Likewise.
+	* DLD-FUNCTIONS/quad.cc: Likewise.
+
+	* dynamic-ld.h, dynamic-ld.cc (builtin_fcn_installer typedef):
+	Rename from builtin_fcn.
+	(octave_dynamic_loader::load_fcn_from_dot_oct_file):
+	Simplify by using new installer function defined by DEFUN_DLD.
+
+	* defun-dld.h (DEFUN_DLD): Use DEFINE_FUN_INSTALLER_FUN instead of
+	DEFINE_FUN_STRUCT_FUN.
+	* defun.h (DEFUN_MAPPER): Use DEFUN_MAPPER_INTERNAL.
+	* defun-int.h (DEFVAR_INTERNAL): Rename from DEFVAR_INT and move
+	here from defun.h.  Change all uses.
+	(DEFUN_MAPPER_INTERNAL): New macro.
+	(DEFINE_FUN_INSTALLER_FUN): New macro to define function that the
+	dynamic loader calls to do all the work of installing a new function.
+	(DEFINE_FUN_STRUCT_FUN): Delete.
+
+	* parse.y: Rewrite to handle more general expressions.
+	* lex.l: Corresponding changes.
+
+	* pt-walk.h, pt-pr-code.h, pt-pr-code.cc: Cope with new parse tree
+	object structure.
+
+	* pt-misc.cc (class tree_for_command): Split into
+	tree_simple_for_command and tree_complex_for_command classes.
+
+	* pt-misc.h, pt-misc.cc (tree_statement::eval): Handle identifier
+	lookup and printing and binding ans here.
+	(tree_statement_list::eval): Simplify.
+	(tree_argument_list::all_elements_are_constant): New function.
+	(class tree_decl_elt): Now contains id and expr, not an assignment
+	expression.
+
+	* pt-exp-base.h pt-exp.h pt-id.h pt-indir.h pt-mat.h pt-const.h,
+	pt-exp-base.cc pt-exp.cc pt-id.cc pt-indir.cc pt-mat.cc pt-const.cc:
+	Replace eval functions with rvalue and lvalue functions.
+	Change all uses.
+	(lvalue_ok, rvalue_ok): New functions, for future compile-time
+	semantic checks.
+
+	* oct-var-ref.h (is_defined, is_map): New functions.
+
+	* pt-exp.h (class tree_oct_obj): Delete.
+
+	* variables.cc (extract_function, is_valid_function): Return
+	pointer to octave_function, not octave_symbol.
+	(link_to_global_variable): Rewrite.  Handle errors in
+	symbol_record::mark_as_linked_to_global.
+
+	* symtab.h, symtab.cc (class symbol_def, class symbol_record):
+	Symbols are now stored as octave_value objects only.
+
+	* ov.cc (install_types): Register function types here.
+	* ov-fcn.h, ov-fcn.cc, ov-builtin.h, ov-builtin.cc, ov-mapper.h,
+	ov-mapper.cc, ov-usr-fcn.h, ov-usr-fcn.cc: New classes for
+	functions as values.
+	* ov.h (class octave_value): Don't derive from octave_symbol.
+	* oct-fcn.h, oct-fcn.cc, oct-builtin.h, oct-builtin.cc,
+	oct-mapper.h, oct-mapper.cc, oct-usr-fcn.h, oct-usr-fcn.cc,
+	oct-sym.h, oct-sym.cc: Delete.
+
 Sun May 11 17:51:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (Ftype): Make it work again for functions.
@@ -50,6 +130,9 @@ Sat May 10 23:32:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-var-ref.cc (octave_variable_ref::assign): Clear idx after
 	assignment.
+
+	* octave_value classes: Add is_constant, is_function, and
+	function_value functions.
 
 	* ov.h, ov.cc (assign): Return void, not reference to octave_value.
 	(do_index_op): Rename, from index.

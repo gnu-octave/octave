@@ -54,49 +54,49 @@ set test string_fill_char-2
 set prog_output "^ans = 1"
 do_test string_fill_char-2.m
 
-set test isstr-1
+set test ischar-1
 set prog_output "^ans = 0"
-do_test isstr-1.m
+do_test ischar-1.m
 
-set test isstr-2
+set test ischar-2
 set prog_output "^ans = 0"
-do_test isstr-2.m
+do_test ischar-2.m
 
-set test isstr-3
+set test ischar-3
 set prog_output "^ans = 0"
-do_test isstr-3.m
+do_test ischar-3.m
 
-set test isstr-4
+set test ischar-4
 set prog_output "^ans = 0"
-do_test isstr-4.m
+do_test ischar-4.m
 
-set test isstr-5
+set test ischar-5
 set prog_output "^ans = 1"
-do_test isstr-5.m
+do_test ischar-5.m
 
-set test isstr-6
+set test ischar-6
 set prog_output "^ans = 1"
-do_test isstr-6.m
+do_test ischar-6.m
 
-set test isstr-7
+set test ischar-7
 set prog_output "^ans = 1"
-do_test isstr-7.m
+do_test ischar-7.m
 
-set test isstr-8
+set test ischar-8
 set prog_output "^ans = 1"
-do_test isstr-8.m
+do_test ischar-8.m
 
-set test isstr-9
+set test ischar-9
 set prog_output "^ans = 0"
-do_test isstr-9.m
+do_test ischar-9.m
 
-set test isstr-10
-set prog_output "\n... isstr:.*"
-do_test isstr-10.m
+set test ischar-10
+set prog_output "\n... ischar:.*"
+do_test ischar-10.m
 
-set test isstr-11
-set prog_output "\n... isstr:.*"
-do_test isstr-11.m
+set test ischar-11
+set prog_output "\n... ischar:.*"
+do_test ischar-11.m
 
 set test blanks-1
 set prog_output "^ans = 1"

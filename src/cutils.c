@@ -75,7 +75,7 @@ octave_usleep (unsigned int useconds)
   if (sec > 0)
     sleep (sec);
 
-  do_usleep (usec);
+  do_octave_usleep (usec);
 }
 
 /*

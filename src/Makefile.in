@@ -117,7 +117,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-check.cc \
 	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
 	pt-select.cc pt-stmt.cc pt-unop.cc
 
-SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
+DIST_SRC := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	data.cc defaults.cc defun.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fn-cache.cc gripes.cc help.cc input.cc \
 	lex.l load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
@@ -127,8 +127,9 @@ SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc \
 	strftime.c symtab.cc syscalls.cc sysdep.cc token.cc \
 	toplev.cc unwind-prot.cc utils.cc variables.cc xdiv.cc \
-	xpow.cc \
-	$(OP_SRC) $(OV_SRC) $(PT_SRC) $(TI_SRC)
+	xpow.cc $(OV_SRC) $(PT_SRC)
+
+SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
 OBJECTS_4 := $(notdir $(SOURCES))
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
@@ -175,10 +176,10 @@ OCTAVE_LIBS = -loctinterp -loctave -lcruft $(LIBPLPLOT) \
 
 LIBS = @LIBS@
 
-DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links \
+DISTFILES = Makefile.in ChangeLog mkdefs mkops mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
-	$(INCLUDES) $(DLD_SRC) $(SOURCES)
+	$(INCLUDES) $(DIST_SRC)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = octave $(OCT_FILES) liboctinterp.$(SHLEXT_VER)
@@ -360,6 +361,16 @@ maintainer-clean: distclean
 
 dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
+	for f in DLD-FUNCTIONS OPERATORS TEMPLATE-INST; do \
+	  if [ -d ../`cat ../.fname`/src/$$f ]; then \
+	    true; \
+	  else \
+	    mkdir ../`cat ../.fname`/src/$$f; \
+	  fi; \
+	done
+	ln $(DLD_SRC) ../`cat ../.fname`/src/DLD-FUNCTIONS
+	ln $(OP_SRC) ../`cat ../.fname`/src/OPERATORS
+	ln $(OP_SRC) ../`cat ../.fname`/src/TEMPLATE-INST
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
 	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.df builtins.cc
 .PHONY: dist

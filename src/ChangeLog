@@ -1,3 +1,9 @@
+Sun Jun 15 16:11:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTFILES): Add mkops to the list.
+	(dist): Correctly link files in DLD-FUNCTIONS, OPERATORS, and
+	TEMPLATE-INST subdirectories.
+
 Fri Jun  6 04:30:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/npsol.cc, DLD-FUNCTIONS/qpsol.cc,

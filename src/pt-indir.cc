@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "pager.h"
 #include "pt-const.h"
 #include "pt-id.h"
@@ -95,10 +95,10 @@ tree_indirect_ref::rvalue (void)
   return retval;
 }
 
-octave_variable_reference
+octave_lvalue
 tree_indirect_ref::lvalue (void)
 {
-  octave_variable_reference tmp = expr->lvalue ();
+  octave_lvalue tmp = expr->lvalue ();
 
   if (tmp.is_undefined () || ! tmp.is_map ())
     tmp.define (Octave_map ());

@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "error.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
 #include "variables.h"
@@ -68,10 +68,10 @@ octave_struct::do_struct_elt_index_op (const string& nm, bool silent)
   return retval;
 }
 
-octave_variable_reference
+octave_lvalue
 octave_struct::struct_elt_ref (octave_value *, const string& nm)
 {
-  return octave_variable_reference (&map [nm]);
+  return octave_lvalue (&map [nm]);
 }
 
 void

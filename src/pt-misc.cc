@@ -44,7 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "input.h"
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
@@ -354,7 +354,7 @@ tree_parameter_list::initialize_undefined_elements (octave_value& val)
 
       if (! elt->is_defined ())
 	{
-	  octave_variable_reference tmp = elt->lvalue ();
+	  octave_lvalue tmp = elt->lvalue ();
 
 	  tmp.assign (octave_value::asn_eq, val);
 	}
@@ -377,7 +377,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
     {
       tree_identifier *elt = this->operator () (p);
 
-      octave_variable_reference ref = elt->lvalue ();
+      octave_lvalue ref = elt->lvalue ();
 
       if (i < nargin)
 	{

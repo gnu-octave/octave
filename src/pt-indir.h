@@ -65,7 +65,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  octave_variable_reference lvalue (void);
+  octave_lvalue lvalue (void);
 
   tree_expression *expression (void)
     { return expr; }

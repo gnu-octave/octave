@@ -1,5 +1,9 @@
 Thu May 15 11:48:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-lvalue.h: Rename from oct-var-ref.h.  Rename class from
+	octave_variable_reference to octave_lvalue.  Change all uses.
+	* oct-lvalue.cc: Rename from oct-var-ref.cc.
+
 	* variables.cc (bind_ans): Only bind ans and print result if value
 	is defined.
 

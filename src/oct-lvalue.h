@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_variable_reference_h)
-#define octave_variable_reference_h 1
+#if !defined (octave_lvalue_h)
+#define octave_lvalue_h 1
 
 class octave_value;
 class octave_value_list;
@@ -32,23 +32,22 @@ class octave_value_list;
 #include "symtab.h"
 
 class
-octave_variable_reference
+octave_lvalue
 {
 public:
 
-  octave_variable_reference (octave_value *v = 0,
-			     symbol_record::sv_function f = 0)
+  octave_lvalue (octave_value *v = 0, symbol_record::sv_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name () { }
 
-  octave_variable_reference (octave_value *v, const string& nm,
-			     symbol_record::sv_function f = 0)
+  octave_lvalue (octave_value *v, const string& nm,
+		 symbol_record::sv_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name (nm) { }
 
-  octave_variable_reference (const octave_variable_reference& vr)
+  octave_lvalue (const octave_lvalue& vr)
     : val (vr.val), idx (vr.idx), chg_fcn (vr.chg_fcn),
       struct_elt_name (vr.struct_elt_name) { }
 
-  octave_variable_reference& operator = (const octave_variable_reference& vr)
+  octave_lvalue& operator = (const octave_lvalue& vr)
     {
       if (this != &vr)
 	{
@@ -61,7 +60,7 @@ public:
       return *this;
     }
 
-  ~octave_variable_reference (void) { }
+  ~octave_lvalue (void) { }
 
   bool is_defined (void) { return val->is_defined (); }
 
@@ -73,7 +72,7 @@ public:
 
   void assign (octave_value::assign_op, const octave_value&);
 
-  octave_variable_reference struct_elt_ref (const string& nm)
+  octave_lvalue struct_elt_ref (const string& nm)
     { return val->struct_elt_ref (nm); }
 
   void index (const octave_value_list& i) { idx = i; }

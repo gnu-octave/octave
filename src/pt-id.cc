@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "pager.h"
 #include "pt-const.h"
 #include "pt-id.h"
@@ -196,7 +196,7 @@ tree_identifier::rvalue (void)
   return retval;
 }
 
-octave_variable_reference
+octave_lvalue
 tree_identifier::lvalue (void)
 {
   return sym->variable_reference ();

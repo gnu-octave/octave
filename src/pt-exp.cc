@@ -37,7 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "pager.h"
 #include "ov.h"
 #include "pt-exp.h"
@@ -105,7 +105,7 @@ tree_prefix_expression::rvalue (void)
 	}
       else if (etype == increment || etype == decrement)
 	{
-	  octave_variable_reference ref = op->lvalue ();
+	  octave_lvalue ref = op->lvalue ();
 
 	  if (! error_state)
 	    {
@@ -220,7 +220,7 @@ tree_postfix_expression::rvalue (void)
 	}
       else if (etype == increment || etype == decrement)
 	{
-	  octave_variable_reference ref = op->lvalue ();
+	  octave_lvalue ref = op->lvalue ();
 
 	  if (! error_state)
 	    {
@@ -519,7 +519,7 @@ tree_simple_assignment::rvalue (void)
 	    }
 	  else
 	    {
-	      octave_variable_reference ult = lhs->lvalue ();
+	      octave_lvalue ult = lhs->lvalue ();
 
 	      if (error_state)
 		eval_error ();
@@ -789,10 +789,10 @@ tree_index_expression::rvalue (void)
   return retval;
 }
 
-octave_variable_reference
+octave_lvalue
 tree_index_expression::lvalue (void)
 {
-  octave_variable_reference retval;
+  octave_lvalue retval;
 
   if (! error_state)
     {
@@ -898,7 +898,7 @@ tree_multi_assignment::rvalue (int nargout)
 
 		  if (lhs_elt)
 		    {
-		      octave_variable_reference ult = lhs_elt->lvalue ();
+		      octave_lvalue ult = lhs_elt->lvalue ();
 
 		      if (error_state)
 			eval_error ();

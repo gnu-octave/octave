@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ops.h"
 #include "ov-base.h"
 #include "ov-scalar.h"
@@ -96,13 +96,13 @@ octave_base_value::do_struct_elt_index_op (const string&, bool)
   return octave_value ();
 }
 
-octave_variable_reference
+octave_lvalue
 octave_base_value::struct_elt_ref (octave_value *, const string&)
 {
   string nm = type_name ();
   error ("can't perform structure reference operations for %s type",
 	 nm.c_str ());
-  return octave_variable_reference ();
+  return octave_lvalue ();
 }
 
 octave_value

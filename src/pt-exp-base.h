@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 class octave_value;
-class octave_variable_reference;
+class octave_lvalue;
 
 #include "pt-base.h"
 
@@ -80,7 +80,7 @@ public:
 
   virtual octave_value_list rvalue (int nargout);
 
-  virtual octave_variable_reference lvalue (void);
+  virtual octave_lvalue lvalue (void);
 
   int paren_count (void) const
     { return num_parens; }

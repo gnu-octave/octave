@@ -43,7 +43,7 @@ int returning = 0;
 #include "error.h"
 #include "gripes.h"
 #include "oct-map.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "pt-cmd.h"
 #include "symtab.h"
 #include "ov.h"
@@ -102,7 +102,7 @@ do_global_init (tree_decl_elt& elt, bool skip_initializer)
 	{
 	  octave_value init_val = expr->rvalue ();
 
-	  octave_variable_reference ult = id->lvalue ();
+	  octave_lvalue ult = id->lvalue ();
 
 	  ult.assign (octave_value::asn_eq, init_val);
 	}
@@ -141,7 +141,7 @@ do_static_init (tree_decl_elt& elt, bool)
 	{
 	  octave_value init_val = expr->rvalue ();
 
-	  octave_variable_reference ult = id->lvalue ();
+	  octave_lvalue ult = id->lvalue ();
 
 	  ult.assign (octave_value::asn_eq, init_val);
 	}
@@ -228,7 +228,7 @@ tree_simple_for_command::~tree_simple_for_command (void)
 }
 
 inline void
-tree_simple_for_command::do_for_loop_once (octave_variable_reference& ult,
+tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 					   const octave_value& rhs,
 					   bool& quit)
 {
@@ -283,7 +283,7 @@ tree_simple_for_command::eval (void)
       return;
     }
 
-  octave_variable_reference ult = lhs->lvalue ();
+  octave_lvalue ult = lhs->lvalue ();
 
   if (error_state)
     {
@@ -403,8 +403,8 @@ tree_complex_for_command::~tree_complex_for_command (void)
 }
 
 void
-tree_complex_for_command::do_for_loop_once (octave_variable_reference &val_ref,
-					    octave_variable_reference &key_ref,
+tree_complex_for_command::do_for_loop_once (octave_lvalue &val_ref,
+					    octave_lvalue &key_ref,
 					    const octave_value& val,
 					    const octave_value& key,
 					    bool& quit)
@@ -452,11 +452,11 @@ tree_complex_for_command::eval (void)
 
       Pix p = lhs->first ();
       tree_expression *elt = lhs->operator () (p);
-      octave_variable_reference val_ref = elt->lvalue ();
+      octave_lvalue val_ref = elt->lvalue ();
 
       lhs->next (p);
       elt = lhs->operator () (p);
-      octave_variable_reference key_ref = elt->lvalue ();
+      octave_lvalue key_ref = elt->lvalue ();
 
       Octave_map tmp_val (rhs.map_value ());
 

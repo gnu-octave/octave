@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gripes.h"
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ops.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
@@ -249,10 +249,10 @@ octave_matrix::do_struct_elt_index_op (const string& nm, bool silent)
   return retval;
 }
 
-octave_variable_reference
+octave_lvalue
 octave_matrix::struct_elt_ref (octave_value *parent, const string& nm)
 {
-  return octave_variable_reference (parent, nm);
+  return octave_lvalue (parent, nm);
 }
 
 bool

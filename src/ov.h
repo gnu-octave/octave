@@ -43,7 +43,7 @@ class Octave_map;
 class octave_stream;
 class octave_function;
 class octave_value_list;
-class octave_variable_reference;
+class octave_lvalue;
 
 // Constants.
 
@@ -244,9 +244,9 @@ public:
 			  bool silent = false)
     { return rep->do_struct_elt_index_op (nm, idx, silent); }
 
-  octave_variable_reference struct_elt_ref (const string& nm);
+  octave_lvalue struct_elt_ref (const string& nm);
 
-  virtual octave_variable_reference
+  virtual octave_lvalue
   struct_elt_ref (octave_value *parent, const string& nm);
 
   // Size.

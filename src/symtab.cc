@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ov.h"
 #include "symtab.h"
 #include "utils.h"
@@ -542,7 +542,7 @@ symbol_record::variable_value (void)
   return is_variable () ? def () : foo;
 }
 
-octave_variable_reference
+octave_lvalue
 symbol_record::variable_reference (void)
 {
   if (is_function ())
@@ -560,7 +560,7 @@ symbol_record::variable_reference (void)
 	}
     }
 
-  return octave_variable_reference (&(def ()), sv_fcn);
+  return octave_lvalue (&(def ()), sv_fcn);
 }
 
 symbol_record *

@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "pager.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ov.h"
 #include "pt-exp-base.h"
 
@@ -76,11 +76,11 @@ tree_expression::rvalue (int nargout)
   return octave_value_list ();
 }
 
-octave_variable_reference
+octave_lvalue
 tree_expression::lvalue (void)
 {
   ::error ("invalid lvalue function called in expression");
-  return octave_variable_reference ();
+  return octave_lvalue ();
 }
 
 string

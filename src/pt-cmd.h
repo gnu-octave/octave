@@ -225,8 +225,8 @@ private:
   // List of commands to execute.
   tree_statement_list *list;
 
-  void do_for_loop_once (octave_variable_reference &ult,
-			 const octave_value& rhs, bool& quit);
+  void do_for_loop_once (octave_lvalue &ult, const octave_value& rhs,
+			 bool& quit);
 };
 
 class
@@ -266,10 +266,8 @@ private:
   // List of commands to execute.
   tree_statement_list *list;
 
-  void do_for_loop_once (octave_variable_reference &val_ref,
-			 octave_variable_reference &key_ref,
-			 const octave_value& val,
-			 const octave_value& key,
+  void do_for_loop_once (octave_lvalue &val_ref, octave_lvalue &key_ref,
+			 const octave_value& val, const octave_value& key,
 			 bool& quit);
 };
 

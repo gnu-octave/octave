@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ov.h"
 #include "ov-base.h"
 #include "ov-bool.h"
@@ -559,18 +559,18 @@ octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
   rep->assign_struct_elt (op, elt_nm, idx, rhs);
 }
 
-octave_variable_reference
+octave_lvalue
 octave_value::struct_elt_ref (const string& nm)
 {
   return rep->struct_elt_ref (this, nm);
 }
 
-octave_variable_reference
+octave_lvalue
 octave_value::struct_elt_ref (octave_value *, const string&)
 {
   panic_impossible ();
 
-  return octave_variable_reference ();
+  return octave_lvalue ();
 }
 
 Octave_map

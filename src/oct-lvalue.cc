@@ -25,12 +25,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "oct-obj.h"
-#include "oct-var-ref.h"
+#include "oct-lvalue.h"
 #include "ov.h"
 
 void
-octave_variable_reference::assign (octave_value::assign_op op,
-				   const octave_value& rhs)
+octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 {
   octave_value saved_val;
 

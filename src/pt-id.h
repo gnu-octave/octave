@@ -83,7 +83,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  octave_variable_reference lvalue (void);
+  octave_lvalue lvalue (void);
 
   void eval_undefined_error (void);
 

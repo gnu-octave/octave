@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define HASH_TABLE_SIZE 1024
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
 
-class octave_variable_reference;
+class octave_lvalue;
 
 class string_vector;
 
@@ -185,7 +185,7 @@ public:
   bool is_static (void) const;
 
   octave_value& variable_value (void);
-  octave_variable_reference variable_reference (void);
+  octave_lvalue variable_reference (void);
 
   symbol_record *next (void) const;
 

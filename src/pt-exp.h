@@ -39,7 +39,7 @@ class tree_walker;
 
 class octave_value;
 class octave_value_list;
-class octave_variable_reference;
+class octave_lvalue;
 
 #include "oct-obj.h"
 #include "pt-exp-base.h"
@@ -286,12 +286,10 @@ public:
 
 private:
 
-  void do_assign (octave_variable_reference& ult,
-		  const octave_value_list& args,
+  void do_assign (octave_lvalue& ult, const octave_value_list& args,
 		  const octave_value& rhs_val);
 
-  void do_assign (octave_variable_reference& ult,
-		  const octave_value& rhs_val);
+  void do_assign (octave_lvalue& ult, const octave_value& rhs_val);
 
   // The left hand side of the assignment.
   tree_expression *lhs;
@@ -383,7 +381,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  octave_variable_reference lvalue (void);
+  octave_lvalue lvalue (void);
 
   void eval_error (void);
 

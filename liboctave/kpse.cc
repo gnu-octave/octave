@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #endif
 
 #include "kpse-config.h"
-#include "kpse-lib.h"
+#include "kpse-xfns.h"
 #include "kpse.h"
 
 #include <time.h> /* for `time' */

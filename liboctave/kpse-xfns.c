@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "kpse-lib.h"
+#include "kpse-xfns.h"
 
 /* xfopen.c: fopen and fclose with error checking.  */
 

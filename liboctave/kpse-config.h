@@ -64,7 +64,7 @@ extern "C" {
    from c-auto.in).  We use <...> instead of "..." so that the current
    cpp directory (i.e., kpathsea/) won't be searched. */
 
-#include "kpse-lib.h"      /* STREQ, etc. */
+#include "kpse-xfns.h"      /* STREQ, etc. */
 
 extern DIR *xopendir (char *dirname);
 

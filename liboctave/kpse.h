@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_PATHSEARCH_H
 #define KPATHSEA_PATHSEARCH_H
 
-#include "kpse-lib.h"
+#include "kpse-xfns.h"
 
 /* If PATH is non-null, return its first element (as defined by
    IS_ENV_SEP).  If it's NULL, return the next element in the previous

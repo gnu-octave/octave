@@ -332,15 +332,9 @@ simple_list	: semi_comma
 		| comma_semi
 		  { $$ = 0; }
 		| simple_list1
-		  {
-		    maybe_warn_missing_semi ($1);
-		    $$ = $1;
-		  }
+		  { $$ = $1; }
 		| simple_list1 comma_semi
-		  {
-		    maybe_warn_missing_semi ($1);
-		    $$ = $1;
-		  }
+		  { $$ = $1; }
 		| simple_list1 semi_comma
 		  {
 		    tree_statement *tmp = $1->rear ();
@@ -419,8 +413,8 @@ list1		: statement
 		  }
 		| list1 comma_nl_sep statement
 		  {
-		    $1->append ($3);
 		    maybe_warn_missing_semi ($1);
+		    $1->append ($3);
 		    $$ = $1;
 		  }
 		| list1 semi_sep statement
@@ -1695,8 +1689,15 @@ maybe_warn_missing_semi (tree_statement_list *t)
     {
       tree_statement *tmp = t->rear();
       if (tmp->is_expression ())
+	{
+	  char *fname = input_from_command_line_file
+	    ? curr_fcn_file_name : fcn_file_in_path (curr_fcn_file_name);
 
-	warning ("missing semicolon near line %d, column %d in file `%s.m'",
-		 tmp->line (), tmp->column (), curr_fcn_file_name);
+	  warning ("missing semicolon near line %d, column %d in file `%s'",
+		   tmp->line (), tmp->column (), fname);
+
+	  if (fname != curr_fcn_file_name)
+	    delete [] fname;
+	}
     }
 }

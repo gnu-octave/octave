@@ -165,6 +165,7 @@ dist: dist-info-files
 	tar xf `cat .fname`.tar
 	find `cat .fname` \( \( -name RCS -a -type d \) \
 	  -o \( -name CVS -a -type d \) -o \( -name OLD -a -type d \) \
+	  -o \( -name autom4te.cache -a -type d \) \
 	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name config.log \
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
 	  -o -name klibtool.config -o -name stamp-auto \

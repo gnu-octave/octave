@@ -1,4 +1,7 @@
-2003-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+2003-11-12  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mach-info.c (oct_mach_info::init_float_format) [CRAY]:
+	Kluge to make it work.
 
 	* lo-ieee.cc (octave_ieee_init): Set octave_Inf, octave_NaN, and
 	octave_NA to DBL_MAX if native float format is vaxd, vaxg, or cray.

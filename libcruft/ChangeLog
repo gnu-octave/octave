@@ -1,3 +1,7 @@
+2003-11-12  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/machar.c (machar) [CRAY]: Kluge to make it work.
+
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* odepack/dlsode.f: Rename from odepack/lsode.f.

@@ -72,6 +72,14 @@ equiv_compare (const equiv *std, const equiv *v, int len)
 void
 oct_mach_info::init_float_format (void) const
 {
+#if defined (CRAY)
+
+  // XXX FIXME XXX -- this should be determined automatically.
+
+  native_float_fmt = oct_mach_info::flt_fmt_cray;
+
+#else
+
   float_params fp[5];
 
   INIT_FLT_PAR (fp[0], oct_mach_info::flt_fmt_ieee_big_endian,
@@ -121,6 +129,8 @@ oct_mach_info::init_float_format (void) const
 	}
     }
   while (fp[++i].fp_fmt != oct_mach_info::flt_fmt_unknown);
+
+#endif
 }
 
 void

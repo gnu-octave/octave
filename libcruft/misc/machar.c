@@ -2,6 +2,8 @@
 #include <config.h>
 #endif
 
+#include <float.h>
+
 #include "f77-fcn.h"
 
 /*
@@ -368,10 +370,23 @@ F77_RET_T
 F77_FUNC (machar, MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
 			   REAL *eps, REAL *log10_ibeta)
 {
+#if defined (_CRAY)
+
+  // XXX FIXME XXX -- make machar work for the Cray too.
+
+  int ibeta = FLT_RADIX;
+  *xmin = DBL_MIN;
+  *xmax = DBL_MAX;
+  *epsneg = DBL_EPSILON;
+  *eps = DBL_EPSILON;
+
+#else
+
   int ibeta, iexp, irnd, it, machep, maxexp, minexp, negep, ngrd;
 
   rmachar (&ibeta, &it, &irnd, &ngrd, &machep, &negep, &iexp, &minexp,
 	   &maxexp, eps, epsneg, xmin, xmax);
+#endif
 
   *log10_ibeta = log10 ((REAL) ibeta);
 

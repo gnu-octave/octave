@@ -1,5 +1,8 @@
 Wed Jan 29 00:18:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in: Use -M instead of -MM to generate dependencies.
+	Don't strip $(srcdir) from output.
+
 	* examples/Makefile.in (install): Install info-emacs-info and
 	info-emacs-octave-help in $(archlibdir).
 

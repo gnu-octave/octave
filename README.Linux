@@ -41,7 +41,11 @@ That sort of information should be clearly stated in the release notes
 for the libraries.  If it is not, please ask the maintainers of the
 libraries to clarify the documentation.
 
-Please note that I am NOT
+Please note that I am NOT recommending that everyone running Linux and
+using Octave should install the same versions of the libraries and
+compilers that I have.  I am simply saying that the versions listed
+above work for me.  Other version combinations may also work, but I
+don't have time to map out all the possibilities...
 
 Octave won't even compile
 -------------------------
@@ -149,4 +153,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Wed Jan 15 20:04:54 1997
+Wed Jan 29 13:39:02 1997

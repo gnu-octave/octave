@@ -274,13 +274,8 @@ pic/%.o : %.cc
 %.d : %.cc
 	@echo making $@ from $<
 	@rm -f $@
-	@-if test "$(srcdir)" = "." ; then \
-	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp ; \
-	else \
-	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's,$*\.o,pic/& & $@,g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
-	fi
+	@$(CXX) -M $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
+	  sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp
 	@mv $@.tmp $@
 
 # And one for .c files.too:
@@ -288,13 +283,8 @@ pic/%.o : %.cc
 %.d : %.c
 	@echo making $@ from $<
 	@rm -f $@
-	@-if test "$(srcdir)" = "." ; then \
-	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp ; \
-	else \
-	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's,$*\.o,pic/& & $@,g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
-	fi
+	@$(CC) -M $(CPPFLAGS) $(ALL_CFLAGS) $< | \
+	  sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp
 	@mv $@.tmp $@
 
 define do-subdir-for-command

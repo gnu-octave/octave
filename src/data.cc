@@ -1318,8 +1318,8 @@ DEFUN (ones, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ones (@var{x})\n\
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k},...)\n\
-@deftypefnx {Built-in Function} {} ones (..., @var{class})\n\
+@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 1.\n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
 \n\
@@ -1345,8 +1345,8 @@ DEFUN (zeros, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} zeros (@var{x})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k},...)\n\
-@deftypefnx {Built-in Function} {} zeros (..., @var{class})\n\
+@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
 \n\
@@ -1394,11 +1394,9 @@ identity_matrix (int nr, int nc)
 }
 
 static octave_value
-identity_matrix (int nr, int nc, const std::string& nm)
+identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 {
   octave_value retval;
-
-  oct_data_conv::data_type dt = oct_data_conv::string_to_data_type (nm);
 
   // XXX FIXME XXX -- perhaps this should be made extensible by using
   // the class name to lookup a function to call to create the new
@@ -1460,7 +1458,7 @@ DEFUN (eye, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eye (@var{x})\n\
 @deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} eye (..., @var{class})\n\
+@deftypefnx {Built-in Function} {} eye (@dots{}, @var{class})\n\
 Return an identity matrix.  If invoked with a single scalar argument,\n\
 @code{eye} returns a square matrix with the dimension specified.  If you\n\
 supply two scalar arguments, @code{eye} takes them to be the number of\n\
@@ -1502,22 +1500,27 @@ is equivalent to calling it with an argument of 1.\n\
 {
   octave_value retval;
 
-  std::string nm = "double";
-
   int nargin = args.length ();
+
+  oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   // Check for type information.
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
-      nm = args(nargin-1).string_value ();
+      std::string nm = args(nargin-1).string_value ();
       nargin--;
+
+      dt = oct_data_conv::string_to_data_type (nm);
+
+      if (error_state)
+	return retval;
     }
 
   switch (nargin)
     {
     case 0:
-      retval = identity_matrix (1, 1, nm);
+      retval = identity_matrix (1, 1, dt);
       break;
 
     case 1:
@@ -1526,7 +1529,7 @@ is equivalent to calling it with an argument of 1.\n\
 	get_dimensions (args(0), "eye", nr, nc);
 
 	if (! error_state)
-	  retval = identity_matrix (nr, nc, nm);
+	  retval = identity_matrix (nr, nc, dt);
       }
       break;
 
@@ -1536,7 +1539,7 @@ is equivalent to calling it with an argument of 1.\n\
 	get_dimensions (args(0), args(1), "eye", nr, nc);
 
 	if (! error_state)
-	  retval = identity_matrix (nr, nc, nm);
+	  retval = identity_matrix (nr, nc, dt);
       }
       break;
 

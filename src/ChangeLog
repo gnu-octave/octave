@@ -1,3 +1,9 @@
+2004-08-31  David Bateman  <dbateman@free.fr>
+
+	* ls-hdf5.cc (hdf5_read_next_data): When importing hdf5 files,
+	allow structures and lists (for backward compatibility).  Also
+	allow importation of integer types into octave int and uint types.
+
 2004-08-31  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (fill_matrix, identity_matrix): Convert class name to

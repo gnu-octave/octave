@@ -290,7 +290,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  if (hdf5_check_attr (subgroup_id, "OCTAVE_LIST"))
 	    d->tc = octave_value_typeinfo::lookup_type ("list");
 	  else
-	    d->tc = octave_value_typeinfo::lookup_type ("cell");
+	    d->tc = octave_value_typeinfo::lookup_type ("struct");
 	  
 	  // check for OCTAVE_GLOBAL attribute:
 	  d->global = hdf5_check_attr (subgroup_id, "OCTAVE_GLOBAL");
@@ -317,12 +317,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       
       type_class_id = H5Tget_class (type_id);
 
-#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
-      if (type_class_id == H5T_INTEGER || type_class_id == H5T_FLOAT)
-#else
-      // hdf5 doesn't (yet) support automatic float/integer conversions
       if (type_class_id == H5T_FLOAT)
-#endif
 	{
 	  space_id = H5Dget_space (data_id);
 
@@ -334,6 +329,109 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	    d->tc = octave_value_typeinfo::lookup_type ("matrix");
 
 	  H5Sclose (space_id);
+	}
+      else if (type_class_id == H5T_INTEGER)
+	{
+	  // What integer type do we really have..
+	  std::string int_typ;
+#ifdef HAVE_H5T_GET_NATIVE_TYPE
+	  // XXX FIXME XX test this code and activated with an autoconf test!!
+	  switch (H5Tget_native_type (type_id, H5T_DIR_ASCEND))
+	    {
+	    case H5T_NATIVE_CHAR:
+	      int_typ = "int8 ";
+	      break;
+ 
+	    case H5T_NATIVE_SHORT:
+	      int_typ = "int16 ";
+	      break;
+
+	    case H5T_NATIVE_INT:
+	    case H5T_NATIVE_LONG:
+	      int_typ = "int32 ";
+	      break;
+
+	    case H5T_NATIVE_LLONG:
+	      int_typ = "int64 ";
+	      break;
+
+	    case H5T_NATIVE_UCHAR:
+	      int_typ = "uint8 ";
+	      break;
+
+	    case H5T_NATIVE_USHORT:
+	      int_typ = "uint16 ";
+	      break;
+
+	    case H5T_NATIVE_UINT:
+	    case H5T_NATIVE_ULONG:
+	      int_typ = "uint32 ";
+	      break;
+
+	    case H5T_NATIVE_ULLONG:
+	      int_typ = "uint64 ";
+	      break;
+	    }   
+#else
+	  hid_t int_sign = H5Tget_sign (type_id);
+
+	  if (int_sign == H5T_SGN_ERROR)
+	    warning ("load: can't read `%s' (unknown datatype)", name);
+	  else
+	    {
+	      if (int_sign == H5T_SGN_NONE)
+		int_typ.append ("u");
+	      int_typ.append ("int");
+
+	      int slen = H5Tget_size (type_id);
+	      if (slen < 0)
+		warning ("load: can't read `%s' (unknown datatype)", name);
+	      else
+		{
+		  switch (slen)
+		    {
+		    case 1:
+		      int_typ.append ("8 ");
+		      break;
+
+		    case 2:
+		      int_typ.append ("16 ");
+		      break;
+
+		    case 4:
+		      int_typ.append ("32 ");
+		      break;
+
+		    case 8:
+		      int_typ.append ("64 ");
+		      break;
+
+		    default:
+		      warning ("load: can't read `%s' (unknown datatype)", 
+			       name);
+		      int_typ = "";
+		      break;
+		    }
+		}
+	    }
+#endif
+	  if (int_typ == "")
+	    warning ("load: can't read `%s' (unknown datatype)", name);
+	  else
+	    {
+	      // Matrix or scalar?
+	      space_id = H5Dget_space (data_id);
+
+	      hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+	      
+	      if (rank == 0)
+		int_typ.append ("scalar");
+	      else
+		int_typ.append ("matrix");
+
+	      d->tc = octave_value_typeinfo::lookup_type (int_typ);
+	      H5Sclose (space_id);
+	    }
 	}
       else if (type_class_id == H5T_STRING)
 	d->tc = octave_value_typeinfo::lookup_type ("string");

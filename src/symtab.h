@@ -180,7 +180,7 @@ public:
   bool is_static (void) const;
 
   octave_value variable_value (void) const;
-  octave_value& variable_reference (void);
+  octave_variable_reference variable_reference (void);
 
   symbol_record *next (void) const;
 

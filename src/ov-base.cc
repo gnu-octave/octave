@@ -44,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-str-mat.h"
 #include "ov-range.h"
 #include "ov-list.h"
+#include "variables.h"
 
 int octave_base_value::t_id = -1;
 
@@ -74,14 +75,13 @@ octave_base_value::struct_elt_val (const string&, bool) const
   return octave_value ();
 }
 
-octave_value&
-octave_base_value::struct_elt_ref (const string&)
+octave_variable_reference
+octave_base_value::struct_elt_ref (octave_value *, const string&)
 {
-  static octave_value foo;
   string nm = type_name ();
   error ("can't perform structure reference operations for %s type",
 	 nm.c_str ());
-  return foo;
+  return octave_variable_reference ();
 }
 
 octave_value

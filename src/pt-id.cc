@@ -78,83 +78,6 @@ tree_identifier::document (const string& s)
     sym->document (s);
 }
 
-octave_value
-tree_identifier::assign (octave_value::assign_op op, const octave_value& rhs)
-{
-  octave_value retval;
-
-  if (rhs.is_defined ())
-    {
-      if (! sym->is_defined ())
-	{
-	  if (! (sym->is_formal_parameter ()
-		 || sym->is_linked_to_global ()))
-	    {
-	      link_to_builtin_variable (sym);
-	    }
-	}
-      else if (sym->is_function ())
-	{
-	  sym->clear ();
-	}
-
-      // XXX FIXME XXX -- make this work for ops other than `='.
-
-      if (sym->define (rhs))
-	retval = rhs;
-    }
-
-  return retval;
-}
-
-octave_value
-tree_identifier::assign (octave_value::assign_op op,
-			 const octave_value_list& args,
-			 const octave_value& rhs)
-{
-  octave_value retval;
-
-  if (rhs.is_defined ())
-    {
-      if (! sym->is_defined ())
-	{
-	  if (! (sym->is_formal_parameter ()
-		 || sym->is_linked_to_global ()))
-	    {
-	      link_to_builtin_variable (sym);
-	    }
-	}
-      else if (sym->is_function ())
-	{
-	  sym->clear ();
-	}
-
-      if (sym->is_variable () && sym->is_defined ())
-	{
-	  sym->variable_reference () . assign (op, args, rhs);
-	}
-      else
-	{
-	  assert (! sym->is_defined ());
-
-	  if (! Vresize_on_range_error)
-	    {
-	      ::error ("indexed assignment to previously undefined variables");
-	      ::error ("is only possible when resize_on_range_error is true");
-	    }
-	  else
-	    {
-	      retval.assign (op, args, rhs);
-
-	      if (retval.is_defined ())
-		sym->define (retval);
-	    }
-	}
-    }
-
-  return retval;
-}
-
 bool
 tree_identifier::is_defined (void)
 {
@@ -350,7 +273,7 @@ tree_identifier::value (void) const
   return sym->variable_value ();
 }
 
-octave_value&
+octave_variable_reference
 tree_identifier::reference (void)
 {
   return sym->variable_reference ();

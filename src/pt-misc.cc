@@ -365,11 +365,9 @@ tree_parameter_list::initialize_undefined_elements (octave_value& val)
   for (Pix p = first (); p != 0; next (p))
     {
       tree_identifier *elt = this->operator () (p);
+
       if (! elt->is_defined ())
-	{
-	  octave_variable_reference tmp (elt);
-	  tmp.assign (octave_value::asn_eq, val);
-	}
+	elt->reference () . assign (octave_value::asn_eq, val);
     }
 }
 

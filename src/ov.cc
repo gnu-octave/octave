@@ -102,15 +102,15 @@ bool Vprint_answer_id_name;
 // error.
 int Vpropagate_empty_matrices;
 
-// If TRUE, resize matrices when performing and indexed assignment and
-// the indices are outside the current bounds.
-bool Vresize_on_range_error;
-
 // How many levels of structure elements should we print?
 int Vstruct_levels_to_print;
 
 // Allow divide by zero errors to be suppressed.
 bool Vwarn_divide_by_zero;
+
+// If TRUE, resize matrices when performing and indexed assignment and
+// the indices are outside the current bounds.
+static bool Vresize_on_range_error;
 
 // XXX FIXME XXX
 
@@ -498,22 +498,64 @@ octave_value::assign (octave_value::assign_op op,
 		      const octave_value_list& idx,
 		      const octave_value& rhs)
 {
-  make_unique ();
-
-  bool assignment_ok = try_assignment (op, idx, rhs);
-
-  if (! (error_state || assignment_ok))
+  if (Vresize_on_range_error || is_defined ())
     {
-      assignment_ok = try_assignment_with_conversion (op,idx, rhs);
+      make_unique ();
+
+      bool assignment_ok = try_assignment (op, idx, rhs);
 
       if (! (error_state || assignment_ok))
-	gripe_no_conversion (type_name (), rhs.type_name ());
+	{
+	  assignment_ok = try_assignment_with_conversion (op,idx, rhs);
+
+	  if (! (error_state || assignment_ok))
+	    gripe_no_conversion (type_name (), rhs.type_name ());
+	}
+
+      if (! error_state)
+	maybe_mutate ();
+    }
+  else
+    {
+      error ("indexed assignment to previously undefined variables");
+      error ("is only possible when resize_on_range_error is true");
     }
 
-  if (! error_state)
-    maybe_mutate ();
-
   return *this;
+}
+
+void
+octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
+				 const octave_value& rhs)
+{
+  make_unique ();
+
+  rep->assign_struct_elt (op, elt_nm, rhs);
+}
+
+
+void
+octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
+				 const octave_value_list& idx,
+				 const octave_value& rhs)
+{
+  make_unique ();
+
+  rep->assign_struct_elt (op, elt_nm, idx, rhs);
+}
+
+octave_variable_reference
+octave_value::struct_elt_ref (const string& nm)
+{
+  return rep->struct_elt_ref (this, nm);
+}
+
+octave_variable_reference
+octave_value::struct_elt_ref (octave_value *, const string&)
+{
+  panic_impossible ();
+
+  return octave_variable_reference ();
 }
 
 octave_value_list

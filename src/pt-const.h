@@ -78,23 +78,6 @@ public:
   octave_value index (const octave_value_list& idx) const
     { return val.index (idx); }
 
-  octave_value& reference (void)
-    {
-      val.make_unique ();
-      return val;
-    }
-
-  octave_value value (void) const
-    { return val; }
-
-  octave_value assign (octave_value::assign_op op,
-		       const octave_value_list& idx,
-		       const octave_value& rhs)
-    {
-      val.assign (op, idx, rhs);
-      return val;
-    }
-
   // Type.  It would be nice to eliminate the need for this.
 
   bool is_constant (void) const { return true; }

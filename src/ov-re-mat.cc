@@ -40,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "pr-output.h"
+#include "variables.h"
 
 octave_allocator
 octave_matrix::allocator (sizeof (octave_matrix));
@@ -144,6 +145,105 @@ octave_matrix::assign (const octave_value_list& idx, const Matrix& rhs)
 	     len);
       break;
     }
+}
+
+void
+octave_matrix::assign_struct_elt (assign_op, const string& nm,
+				  const octave_value& rhs)
+{
+  octave_value retval;
+
+  Matrix m = rhs.matrix_value ();
+
+  if (! error_state)
+    {
+      int nr = -1;
+      int nc = -1;
+
+      int dim = -1;
+
+      if (m.rows () == 1 && m.cols () == 2)
+	{
+	  nr = NINT (m (0, 0));
+	  nc = NINT (m (0, 1));
+	}
+      else if (m.rows () == 2 && m.cols () == 1)
+	{
+	  nr = NINT (m (0, 0));
+	  nc = NINT (m (1, 0));
+	}
+      else if (m.rows () == 1 && m.cols () == 1)
+	{
+	  dim = NINT (m (0, 0));
+
+	  nr = matrix.rows ();
+	  nc = matrix.cols ();
+	}
+
+      if (nm == "size")
+	{
+	  if (nr >= 0 && nc >= 0)
+	    matrix.resize (nr, nc, 0.0);
+	  else
+	    error ("invalid size specification = [%d, %d] specified",
+		   nr, nc);
+	}
+      else if (nm == "rows")
+	{
+	  if (dim >= 0)
+	    matrix.resize (dim, nc, 0.0);
+	  else
+	    error ("invalid row dimension = %d specified", dim);
+	}
+      else if (nm == "cols" || nm == "columns")
+	{
+	  if (dim >= 0)
+	    matrix.resize (nr, dim, 0.0);
+	  else
+	    error ("invalid column dimension = %d specified", dim);
+	}
+    }
+}
+
+void
+octave_matrix::assign_struct_elt (assign_op, const string&,
+				  const octave_value_list&,
+				  const octave_value&)
+{
+  error ("indexed assignment for matrix properties is not implemented");
+}
+
+octave_value
+octave_matrix::struct_elt_val (const string& nm, bool silent) const
+{
+  octave_value retval;
+
+  double nr = static_cast<double> (matrix.rows ());
+  double nc = static_cast<double> (matrix.cols ());
+
+  if (nm == "rows")
+    retval = nr;
+  else if (nm == "cols" || nm == "columns")
+    retval = nc;
+  else if (nm == "size")
+    {
+      Matrix tmp (1, 2);
+
+      tmp.elem (0, 0) = nr;
+      tmp.elem (0, 1) = nc;
+
+      retval = tmp;
+    }
+  else if (! silent)
+    error ("structure has no member `%s'", nm.c_str ());
+
+  return retval;
+}
+
+octave_variable_reference
+octave_matrix::struct_elt_ref (octave_value *parent, const string& nm)
+{
+  return octave_variable_reference (parent, nm);
 }
 
 bool

@@ -307,29 +307,25 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 {
   quit = false;
 
-  octave_variable_reference tmp (ident);
+  ident->reference () . assign (octave_value::asn_eq, rhs);
 
-  if (error_state)
+  if (! error_state)
     {
-      eval_error ();
-      return;
-    }
-
-  tmp.assign (octave_value::asn_eq, rhs);
-
-  if (list)
-    {
-      list->eval ();
+      if (list)
+	list->eval ();
 
       if (error_state)
 	{
 	  eval_error ();
 	  quit = true;
-	  return;
 	}
+      else
+	quit = quit_loop_now ();
     }
+  else
+    eval_error ();
 
-  quit = quit_loop_now ();
+  return;
 }
 
 #define DO_LOOP(val) \

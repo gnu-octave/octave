@@ -71,13 +71,6 @@ public:
 
   void document (const string& s);
 
-  octave_value assign (octave_value::assign_op op,
-		       const octave_value& t);
-
-  octave_value assign (octave_value::assign_op op,
-		       const octave_value_list& args,
-		       const octave_value& t);
-
   bool is_defined (void);
 
   void increment (void);
@@ -107,7 +100,7 @@ public:
 
   octave_value value (void) const;
 
-  octave_value& reference (void);
+  octave_variable_reference reference (void);
 
 private:
 

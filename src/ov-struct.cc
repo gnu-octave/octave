@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
+#include "variables.h"
 
 octave_allocator
 octave_struct::allocator (sizeof (octave_struct));
@@ -58,10 +59,10 @@ octave_struct::struct_elt_val (const string& nm, bool silent) const
   return retval;
 }
 
-octave_value&
-octave_struct::struct_elt_ref (const string& nm)
+octave_variable_reference
+octave_struct::struct_elt_ref (octave_value *, const string& nm)
 {
-  return map [nm];
+  return octave_variable_reference (&map [nm]);
 }
 
 void

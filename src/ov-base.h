@@ -76,7 +76,8 @@ public:
 
   octave_value struct_elt_val (const string& nm, bool silent) const;
 
-  octave_value& struct_elt_ref (const string& nm);
+  octave_variable_reference
+  struct_elt_ref (octave_value *parent, const string& nm);
 
   int rows (void) const { return -1; }
 

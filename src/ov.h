@@ -44,6 +44,7 @@ class ostream;
 class Octave_map;
 class octave_stream;
 class octave_value_list;
+class octave_variable_reference;
 
 // Constants.
 
@@ -220,6 +221,14 @@ public:
   octave_value& assign (assign_op, const octave_value_list& idx,
 			const octave_value& rhs);
 
+  virtual void
+  assign_struct_elt (assign_op, const string& elt_nm,
+		     const octave_value& rhs);
+
+  virtual void
+  assign_struct_elt (assign_op, const string& elt_nm,
+		     const octave_value_list& idx, const octave_value& rhs);
+
   virtual idx_vector index_vector (void) const
     { return rep->index_vector (); }
 
@@ -227,8 +236,10 @@ public:
   struct_elt_val (const string& nm, bool silent = false) const
     { return rep->struct_elt_val (nm, silent); }
 
-  virtual octave_value& struct_elt_ref (const string& nm)
-    { return rep->struct_elt_ref (nm); }
+  octave_variable_reference struct_elt_ref (const string& nm);
+
+  virtual octave_variable_reference
+  struct_elt_ref (octave_value *parent, const string& nm);
 
   // Size.
 
@@ -523,10 +534,6 @@ extern bool Vprint_answer_id_name;
 // but print a warning message.  Zero means it should be considered an
 // error.
 extern int Vpropagate_empty_matrices;
-
-// If TRUE, resize matrices when performing and indexed assignment and
-// the indices are outside the current bounds.
-extern bool Vresize_on_range_error;
 
 // How many levels of structure elements should we print?
 extern int Vstruct_levels_to_print;

@@ -85,7 +85,19 @@ public:
 
   void assign (const octave_value_list& idx, const Matrix& rhs);
 
+  void assign_struct_elt (assign_op, const string& elt_nm,
+			  const octave_value& rhs);
+
+  void assign_struct_elt (assign_op, const string& elt_nm,
+			  const octave_value_list& idx,
+			  const octave_value& rhs);
+
   idx_vector index_vector (void) const { return idx_vector (matrix); }
+
+  octave_value struct_elt_val (const string& nm, bool silent) const;
+
+  octave_variable_reference
+  struct_elt_ref (octave_value *parent, const string& nm);
 
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }

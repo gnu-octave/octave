@@ -513,8 +513,8 @@ tree_simple_assignment_expression::left_hand_side_id (void)
   return lhs->ident ();
 }
 
-// ??? FIXME ??? -- should octave_variable_reference::assign return
-// the right thing for us to return?
+// ??? FIXME ??? -- should octave_value::assign return the right thing
+// for us to return?
 
 octave_value
 tree_simple_assignment_expression::eval (bool print)
@@ -541,7 +541,7 @@ tree_simple_assignment_expression::eval (bool print)
 	}
       else
 	{
-	  octave_variable_reference ult (lhs);
+	  octave_variable_reference ult = lhs->reference ();
 
 	  if (error_state)
 	    eval_error ();

@@ -164,33 +164,26 @@ tree_indirect_ref::value (void) const
   return retval;
 }
 
-octave_value&
+octave_variable_reference
 tree_indirect_ref::reference (void)
 {
   if (is_identifier_only ())
     return id->reference ();
   else
     {
+      octave_variable_reference tmp;
+
       if (id)
-	{
-	  octave_value& tmp = id->reference ();
-	  if (tmp.is_undefined () || ! tmp.is_map ())
-	    tmp = Octave_map ();
-	  return tmp.struct_elt_ref (nm);
-	}
+	tmp = id->reference ();
       else if (indir)
-	{
-	  octave_value& tmp = indir->reference ();
-	  if (tmp.is_undefined () || ! tmp.is_map ())
-	    tmp = Octave_map ();
-	  return tmp.struct_elt_ref (nm);
-	}
+	tmp = indir->reference ();
       else
-	{
-	  static octave_value foo;
-	  panic_impossible ();
-	  return foo;
-	}
+	panic_impossible ();
+
+      if (tmp.is_undefined ())
+	tmp.define (Octave_map ());
+
+      return tmp.struct_elt_ref (nm);
     }
 }
 

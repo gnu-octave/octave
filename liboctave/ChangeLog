@@ -1,3 +1,14 @@
+2003-09-09  David Bateman <dbateman@free.fr>
+
+	* lo-specfun.cc (zbesj, zbesy, zbesi, zbesk, zbesh1, zbesh2, airy,
+	biry): Always request scaled results from AMOS functions and
+	perform reverse scaling on results if scaled result not requested
+	by user.
+
+2003-09-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+ 
+ 	* lo-specfun.cc (xlgamma): Require nonnegative argument.
+
 2003-09-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array-d.cc: Instantiate assign functions.

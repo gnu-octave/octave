@@ -223,7 +223,14 @@ zbesj (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FUNC (zbesj, ZBESJ) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesj, ZBESJ) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+
+      if (kode != 2)
+	{
+	  double expz = exp (std::abs (zi)); 
+	  yr *= expz;
+	  yi *= expz;
+	}
 
       if (zi == 0.0 && zr >= 0.0)
 	yi = 0.0;
@@ -275,8 +282,15 @@ zbesy (const Complex& z, double alpha, int kode, int& ierr)
 	}
       else
 	{
-	  F77_FUNC (zbesy, ZBESY) (zr, zi, alpha, kode, 1, &yr, &yi, nz,
-				  &wr, &wi, ierr);
+	  F77_FUNC (zbesy, ZBESY) (zr, zi, alpha, 2, 1, &yr, &yi, nz,
+				   &wr, &wi, ierr);
+
+	  if (kode != 2)
+	    {
+	      double expz = exp (std::abs (zi));
+	      yr *= expz;
+	      yi *= expz;
+	    }
 
 	  if (zi == 0.0 && zr >= 0.0)
 	    yi = 0.0;
@@ -318,7 +332,14 @@ zbesi (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FUNC (zbesi, ZBESI) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesi, ZBESI) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+
+      if (kode != 2)
+	{
+	  double expz = exp (std::abs (zr));
+	  yr *= expz;
+	  yi *= expz;
+	}
 
       if (zi == 0.0 && zr >= 0.0)
 	yi = 0.0;
@@ -369,7 +390,20 @@ zbesk (const Complex& z, double alpha, int kode, int& ierr)
 	}
       else
 	{
-	  F77_FUNC (zbesk, ZBESK) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+	  F77_FUNC (zbesk, ZBESK) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+
+	  if (kode != 2)
+	    {
+	      Complex expz = exp (-z);
+
+	      double rexpz = real (expz);
+	      double iexpz = imag (expz);
+
+	      double tmp = yr*rexpz - yi*iexpz;
+
+	      yi = yr*iexpz + yi*rexpz;
+	      yr = tmp;
+	    }
 
 	  if (zi == 0.0 && zr >= 0.0)
 	    yi = 0.0;
@@ -402,7 +436,20 @@ zbesh1 (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, kode, 1, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, 2, 1, 1, &yr, &yi, nz, ierr);
+
+      if (kode != 2)
+	{
+	  Complex expz = exp (Complex (0.0, 1.0) * z);
+
+	  double rexpz = real (expz);
+	  double iexpz = imag (expz);
+
+	  double tmp = yr*rexpz - yi*iexpz;
+
+	  yi = yr*iexpz + yi*rexpz;
+	  yr = tmp;
+	}
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
@@ -435,7 +482,20 @@ zbesh2 (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, kode, 2, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, 2, 2, 1, &yr, &yi, nz, ierr);
+
+      if (kode != 2)
+	{
+	  Complex expz = exp (-Complex (0.0, 1.0) * z);
+
+	  double rexpz = real (expz);
+	  double iexpz = imag (expz);
+
+	  double tmp = yr*rexpz - yi*iexpz;
+
+	  yi = yr*iexpz + yi*rexpz;
+	  yr = tmp;
+	}
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
@@ -618,9 +678,20 @@ airy (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   int id = deriv ? 1 : 0;
 
-  int kode = scaled ? 2 : 1;
+  F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, ierr);
 
-  F77_FUNC (zairy, ZAIRY) (zr, zi, id, kode, ar, ai, nz, ierr);
+  if (! scaled)
+    {
+      Complex expz = exp (- 2.0 / 3.0 * z * sqrt(z));
+
+      double rexpz = real (expz);
+      double iexpz = imag (expz);
+
+      double tmp = ar*rexpz - ai*iexpz;
+
+      ai = ar*iexpz + ai*rexpz;
+      ar = tmp;
+    }
 
   if (zi == 0.0 && (! scaled || zr >= 0.0))
     ai = 0.0;
@@ -639,9 +710,20 @@ biry (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   int id = deriv ? 1 : 0;
 
-  int kode = scaled ? 2 : 1;
+  F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, ierr);
 
-  F77_FUNC (zbiry, ZBIRY) (zr, zi, id, kode, ar, ai, ierr);
+  if (! scaled)
+    {
+      Complex expz = exp (std::abs (real (2.0 / 3.0 * z * sqrt (z))));
+
+      double rexpz = real (expz);
+      double iexpz = imag (expz);
+
+      double tmp = ar*rexpz - ai*iexpz;
+
+      ai = ar*iexpz + ai*rexpz;
+      ar = tmp;
+    }
 
   if (zi == 0.0 && (! scaled || zr >= 0.0))
     ai = 0.0;

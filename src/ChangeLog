@@ -29,7 +29,7 @@
 	New files.
 	* Makefile.in (OP_XSRC): Add them to the list.
 
-2003-09-08  D.  <dbateman@free.fr>
+2003-09-09  David Bateman <dbateman@free.fr>
 
 	* OPERATORS/op-cs-s.cc (DEFBINOP): First arg is complex, second is
 	double.

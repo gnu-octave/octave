@@ -845,8 +845,8 @@ octave_base_stream::file_number (void)
   std::istream *is = input_stream ();
   std::ostream *os = output_stream ();
 
-  int i_fid = is ? ((filebuf *) (is->rdbuf ()))->fd () : -1;
-  int o_fid = os ? ((filebuf *) (os->rdbuf ()))->fd () : -1;
+  int i_fid = is ? ((std::filebuf *) (is->rdbuf ()))->fd () : -1;
+  int o_fid = os ? ((std::filebuf *) (os->rdbuf ()))->fd () : -1;
 
   if (i_fid >= 0)
     {
@@ -897,12 +897,12 @@ octave_base_stream::do_gets (int max_len, bool& err,
       std::ostrstream buf;
 
       int c = 0;
-      int count = 0;
+      int char_count = 0;
       int newline_stripped = 0;
 
       while (is && (c = is.get ()) != EOF)
 	{
-	  count++;
+	  char_count++;
 
 	  if (c == '\n')
 	    {
@@ -916,7 +916,7 @@ octave_base_stream::do_gets (int max_len, bool& err,
 	  else
 	    buf << (char) c;
 
-	  if (max_len > 0 && count == max_len)
+	  if (max_len > 0 && char_count == max_len)
 	    break;
 	}
 
@@ -927,7 +927,7 @@ octave_base_stream::do_gets (int max_len, bool& err,
 	  msg.append (": read error");
 	  error (msg);
 	}
-      else if (count == 0 && is.eof ())
+      else if (char_count == 0 && is.eof ())
 	{
 	  err = true;
 	  std::string msg = fcn;
@@ -966,11 +966,12 @@ octave_base_stream::gets (int max_len, bool& err)
 octave_value
 octave_base_stream::read (const Matrix& size,
 			  oct_data_conv::data_type dt, int skip,
-			  oct_mach_info::float_format flt_fmt, int& count)
+			  oct_mach_info::float_format ffmt,
+			  int& char_count)
 {
   Matrix retval;
 
-  count = 0;
+  char_count = 0;
 
   std::istream *isp = input_stream ();
 
@@ -987,15 +988,15 @@ octave_base_stream::read (const Matrix& size,
 
       if (! error_state)
 	{
-	  if (flt_fmt == oct_mach_info::unknown)
-	    flt_fmt = float_format ();
+	  if (ffmt == oct_mach_info::unknown)
+	    ffmt = float_format ();
 
-	  int tmp = retval.read (is, nr, nc, dt, skip, flt_fmt);
+	  int tmp = retval.read (is, nr, nc, dt, skip, ffmt);
 
 	  if (tmp < 0)
 	    error ("fread: read error");
 	  else
-	    count = tmp;
+	    char_count = tmp;
 	}
     }
   else
@@ -1550,7 +1551,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 }
 
 octave_value
-octave_base_stream::scanf (const string& fmt, const Matrix& size,
+octave_base_stream::scanf (const std::string& fmt, const Matrix& size,
 			   int& count)
 {
   octave_value retval = Matrix ();
@@ -1899,7 +1900,7 @@ octave_base_stream::flush (void)
 int
 octave_base_stream::write (const octave_value& data,
 			   oct_data_conv::data_type dt, int skip,
-			   oct_mach_info::float_format flt_fmt)
+			   oct_mach_info::float_format ffmt)
 {
   int retval = -1;
 
@@ -1913,10 +1914,10 @@ octave_base_stream::write (const octave_value& data,
 
       if (! error_state)
 	{
-	  if (flt_fmt == oct_mach_info::unknown)
-	    flt_fmt = float_format ();
+	  if (ffmt == oct_mach_info::unknown)
+	    ffmt = float_format ();
 
-	  int tmp = mval.write (os, dt, skip, flt_fmt);
+	  int tmp = mval.write (os, dt, skip, ffmt);
 
 	  if (tmp < 0)
 	    error ("fwrite: write error");

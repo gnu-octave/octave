@@ -40,16 +40,16 @@ cat << \EOF
 static void
 print_doc_string (const string& name, const std::string& doc)
 {
-  cout << "";
+  std::cout << "";
 
   size_t len = name.length ();
 
   if (name[0] == '"' && name[len-1] == '"')
-    cout << name.substr (1, len-2);
+    std::cout << name.substr (1, len-2);
   else
-    cout << name;
+    std::cout << name;
 
-  cout << "\n" << doc << "\n";
+  std::cout << "\n" << doc << "\n";
 }
 
 EOF

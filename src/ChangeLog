@@ -1,5 +1,11 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (octave_base_stream::read): Rename count to char_count.
+	(octave_base_stream::do_gets): Likewise.
+
+	* octave-stream.cc (octave_base_stream::write): Rename flt_fmt to ffmt.
+	(octave_base_stream::read): Likewise.
+
 	* TEMPLATE-INST/SLStack-sym.cc: Delete meaningless `extern
 	template' declarations.
 	* TEMPLATE-INST/Array-tc.cc: Ditto.

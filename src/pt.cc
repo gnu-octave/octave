@@ -45,7 +45,7 @@ int tree::last_line = 0;
 const octave_user_function *tree::break_function = 0;
 
 // The statement where the last breakpoint occurred.
-const tree *break_statement = 0;
+const tree *tree::break_statement = 0;
 
 // Hide the details of the string buffer so that we are less likely to
 // create a memory leak.

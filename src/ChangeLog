@@ -1,5 +1,9 @@
 2005-03-02  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_scan (std::istream&, const
+	scanf_format_elt&, double*)): New specialization to handle Inf,
+	NaN, and NA.
+
 	* parse.y (looks_like_copyright):
 	Rename from looks_like_octave_copyright.  Change all uses.
 	Simply match "Copyright".

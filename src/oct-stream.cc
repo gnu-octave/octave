@@ -1142,6 +1142,181 @@ template std::istream&
 octave_scan (std::istream&, const scanf_format_elt&, float*);
 #endif
 
+template <>
+std::istream&
+octave_scan (std::istream& is, const scanf_format_elt& fmt, double* valptr)
+{
+  double& ref = *valptr;
+
+  switch (fmt.type)
+    {
+    case 'e':
+    case 'f':
+    case 'g':
+      {
+	int c1;
+
+	while (is && (c1 = is.get ()) != EOF && isspace (c1))
+	  /* skip whitespace */;
+
+	if (c1 != EOF)
+	  {
+	    if (c1 == 'N')
+	      {
+		int c2 = is.get ();
+
+		if (c2 != EOF)
+		  {
+		    if (c2 == 'A')
+		      {
+			int c3 = is.get ();
+
+			if (c3 != EOF)
+			  {
+			    is.putback (c3);
+
+			    if (isspace (c3) || ispunct (c3))
+			      ref = octave_NA;
+			    else
+			      {
+				is.putback (c2);
+				is.putback (c1);
+
+				is >> ref;
+			      }
+			  }
+			else
+			  {
+			    is.clear ();
+
+			    ref = octave_NA;
+			  }
+		      }
+		    else if (c2 == 'a')
+		      {
+			int c3 = is.get ();
+
+			if (c3 != EOF)
+			  {
+			    if (c3 == 'N')
+			      {
+				int c4 = is.get ();
+
+				if (c4 != EOF)
+				  {
+				    is.putback (c4);
+
+				    if (isspace (c4) || ispunct (c4))
+				      ref = octave_NaN;
+				    else
+				      {
+					is.putback (c3);
+					is.putback (c2);
+					is.putback (c1);
+
+					is >> ref;
+				      }
+				  }
+				else
+				  {
+				    is.clear ();
+
+				    ref = octave_NaN;
+				  }
+			      }
+			    else
+			      {
+				is.putback (c3);
+				is.putback (c2);
+				is.putback (c1);
+
+				is >> ref;
+			      }
+			  }
+		      }
+		    else
+		      {
+			is.putback (c2);
+			is.putback (c1);
+
+			is >> ref;
+		      }
+		  }
+	      }
+	    else if (c1 == 'I')
+	      {
+		int c2 = is.get ();
+
+		if (c2 != EOF)
+		  {
+		    if (c2 == 'n')
+		      {
+			int c3 = is.get ();
+
+			if (c3 != EOF)
+
+			  if (c3 == 'f')
+			    {
+			      int c4 = is.get ();
+
+			      if (c4 != EOF)
+				{
+				  is.putback (c4);
+
+				  if (isspace (c4) || ispunct (c4))
+				    ref = octave_Inf;
+				  else
+				    {
+				      is.putback (c3);
+				      is.putback (c2);
+				      is.putback (c1);
+
+				      is >> ref;
+				    }
+				}
+			      else
+				{
+				  is.clear ();
+
+				  ref = octave_Inf;
+				}
+			    }
+			  else
+			    {
+			      is.putback (c3);
+			      is.putback (c2);
+			      is.putback (c1);
+
+			      is >> ref;
+			    }
+		      }
+		    else
+		      {
+			is.putback (c2);
+			is.putback (c1);
+
+			is >> ref;
+		      }
+		  }
+	      }
+	    else
+	      {
+		is.putback (c1);
+
+		is >> ref;
+	      }
+	  }
+      }
+      break;
+
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  return is;
+}
+
 template std::istream&
 octave_scan (std::istream&, const scanf_format_elt&, double*);
 

@@ -21,7 +21,8 @@ INSTALL_DATA = @INSTALL_DATA@
 # List of the directories that contain Fortran source.  Simply copying
 # a new .f file into one of these directories is sufficient to have it
 # added to libcruft.a.  If you add a new directory here, you also need
-# generate a new configure script (edit configure.in and run autoconf).
+# generate a new configure script in the top-level directory (edit
+# configure.in and run autoconf).
 
 CRUFT_DIRS = balgen blas dassl eispack fftpack fsqp lapack linpack \
 	minpack misc npsol odepack qpsol quadpack ranlib slatec-fn \
@@ -29,8 +30,7 @@ CRUFT_DIRS = balgen blas dassl eispack fftpack fsqp lapack linpack \
 
 SUBDIRS = $(CRUFT_DIRS)
 
-DISTFILES = Makefile.in Makerules.in $(SOURCES) STOP.patch \
-	configure.in configure mkinstalldirs
+DISTFILES = Makefile.in Makerules.in $(SOURCES) STOP.patch
 
 all: $(SUBDIRS) libcruft.a
 .PHONY: all
@@ -81,7 +81,7 @@ clean mostlyclean::
 	rm -f *.a *.o
 
 distclean:: clean
-	rm -f Makefile Makerules config.log config.status
+	rm -f Makefile Makerules
 
 maintainer-clean:: distclean
 	rm -f tags TAGS

@@ -211,18 +211,16 @@ target_host_type = @target_host_type@
 # rule for making object from Fortran source files, so there should be
 # no pattern or command for that.
 
-%.c : %.f
-@DOT_C_FROM_DOT_F_CMD@
+@fortran_rules_frag@
 
-@DOT_O_FROM_DOT_F_PAT@
-@DOT_O_FROM_DOT_F_CMD@
-
-# How to make .o files from .c files:
+# How to make .o files:
 
 .c.o:
+	test -z "$(CPICFLAG)" -a -f pic || $(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o pic/$@ \
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
 
 .cc.o:
+	test -z "$(CXXPICFLAG)" -a -f pic || $(CXX) -c $(CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o pic/$@ \
 	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $<
 
 # Here is a rule for generating dependencies for .cc files:

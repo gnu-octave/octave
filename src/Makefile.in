@@ -315,7 +315,7 @@ gendoc.cc: doc-files mkgendoc
 	@$(top_srcdir)/move-if-change $@-t $@
 
 gendoc$(BUILD_EXEEXT): gendoc.cc
-	$(BUILD_CXX) -o $@ $^
+	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 ops.cc: $(OP_SRC) mkops
 	@echo making $@ from $(OP_SRC)

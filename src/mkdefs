@@ -1,6 +1,8 @@
 #!/bin/sh
 
-sed -n -e '/^ *BEGIN_INSTALL_BUILTIN/{
+SED=${SED:-'sed'}
+
+$SED -n -e '/^ *BEGIN_INSTALL_BUILTIN/{
   : loop
   s/BEGIN_INSTALL_BUILTIN//
   s/^#[ \t][ \t]*[0-9][0-9]*.*$//

@@ -5,6 +5,8 @@ if test $# -ne 2; then
   exit 1
 fi
 
+SED=${SED:-'sed'}
+
 DEF_FILES=`cat $1`
 VAR_FILES=`cat $2`
 
@@ -68,7 +70,7 @@ cat << \EOF
 EOF
 
 for file in $DEF_FILES; do
-  fcn=`echo $file | sed 's,^\./,,; s/\.df//; s/-/_/g'`
+  fcn=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
   echo "static void"
   echo "install_${fcn}_fcns (void)"
   echo "{"
@@ -78,7 +80,7 @@ for file in $DEF_FILES; do
 done
 
 for file in $VAR_FILES; do
-  f=`echo $file | sed 's,^\./,,; s/-/_/g'`
+  f=`echo $file | $SED 's,^\./,,; s/-/_/g'`
   echo "extern void symbols_of_${f} (void);"
 done
 
@@ -90,7 +92,7 @@ install_builtin_variables (void)
 EOF
 
 for file in $VAR_FILES; do
-  f=`echo $file | sed 's,^\./,,; s/-/_/g'`
+  f=`echo $file | $SED 's,^\./,,; s/-/_/g'`
   echo "  symbols_of_${f} ();"
 done
 
@@ -103,7 +105,7 @@ install_builtin_functions (void)
 EOF
 
 for file in $DEF_FILES; do
-  fcn=`echo $file | sed 's,^\./,,; s/\.df//; s/-/_/g'`
+  fcn=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
   echo "  install_${fcn}_fcns ();"
 done
 

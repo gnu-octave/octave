@@ -1,3 +1,12 @@
+2003-01-16  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* mk-oct-links: Use $SED if set.
+	* mkbuiltins: Likewise.
+	* mkdefs: Likewise.
+	* mkdocs: Likewise.
+	* mkgendoc: Likewise.
+	* mkops: Likewise.
+
 2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
 
 	* Makefile.in (gendoc$(BUILD_EXEEXT)): Pass $(BUILD_CXXFLAGS) and

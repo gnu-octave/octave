@@ -10,6 +10,8 @@
 # .df files corresponding to the source files that were used to
 # create the .oct files.
 
+SED=${SED:-'sed'}
+
 print_only=false
 if [ $1 = "-p" ]; then
   print_only=true
@@ -20,9 +22,9 @@ links_dir=$1
 shift
 
 for f in "$@"; do
-  base=`basename $f | sed 's/\.df$//'`
+  base=`basename $f | $SED 's/\.df$//'`
   fcns=`grep '^ *XDEFUN_DLD_INTERNAL' $f |\
-        sed -e 's/XDEFUN_DLD_INTERNAL *( *//' -e 's/ *,.*$//' |\
+        $SED -e 's/XDEFUN_DLD_INTERNAL *( *//' -e 's/ *,.*$//' |\
         sort -u`
   if [ -n "$fcns" ]; then
     for n in $fcns; do

@@ -1,6 +1,8 @@
 #!/bin/sh
 
-sed -n -e '/^BEGIN_DOC_STRING/{
+SED=${SED:-'sed'}
+
+$SED -n -e '/^BEGIN_DOC_STRING/{
   : loop
   N
   /END_DOC_STRING/b done

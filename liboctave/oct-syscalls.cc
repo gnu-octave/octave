@@ -40,6 +40,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fcntl.h>
 #endif
 
+// We can't use csignal as kill is not in the std namespace, and picky
+// compiler runtimes will also exclude it from global scope as well.
+
+#include <signal.h>
+
 #include "oct-syscalls.h"
 #include "str-vec.h"
 #include "syswait.h"

@@ -1,3 +1,7 @@
+2003-01-16  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* Makeconf.in (SED): Export to subshells.
+
 2003-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't bother with compiler flags for

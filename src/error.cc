@@ -78,7 +78,7 @@ error (const char *fmt, ...)
   va_end (args);
 }
 
-void
+void volatile
 panic (const char *fmt, ...)
 {
   va_list args;

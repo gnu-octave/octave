@@ -61,6 +61,9 @@ clean glob-clean distclean glob-maintainer-clean::
 distclean glob-maintainer-clean::
 	-rm -f TAGS tags Makefile config.status config.h config.log
 
+maintainer-clean::
+	-rm -f TAGS tags Makefile config.status config.h config.log configure
+
 realclean: distclean
 
 # For inside the C library.

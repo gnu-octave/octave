@@ -25,10 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#if defined (__GNUG__)
-#pragma implementation
-#endif
-
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -725,6 +721,44 @@ subplot_style::print_code (ostream& os)
     }
 }
 
+subplot::subplot (void)
+{
+  plot_data = 0;
+  using = 0;
+  title = 0;
+  style = 0;
+}
+
+subplot::subplot (tree_expression *data)
+{
+  plot_data = data;
+  using = 0;
+  title = 0;
+  style = 0;
+}
+
+subplot::subplot (subplot_using *u, tree_expression *t, subplot_style *s)
+{
+  plot_data = 0;
+  using = u;
+  title = t;
+  style = s;
+}
+
+subplot::~subplot (void)
+{
+  delete plot_data;
+  delete using;
+  delete title;
+  delete style;
+}
+
+void
+subplot::set_data (tree_expression *data)
+{
+  plot_data = data;
+}
+
 tree_constant
 subplot::extract_plot_data (int ndim, tree_constant& data)
 {
@@ -900,7 +934,6 @@ subplot::print_code (ostream& os)
     style->print_code (os);
 }
 
-int
 subplot_list::print (int ndim, ostrstream& plot_buf)
 {
   int status = 0;

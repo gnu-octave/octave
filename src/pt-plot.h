@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_tree_plot_h)
 #define octave_tree_plot_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include <iostream.h>
 
 class tree_command;
@@ -163,47 +159,19 @@ class
 subplot : public tree_print_code
 {
 public:
-  subplot (void)
-    {
-      plot_data = 0;
-      using = 0;
-      title = 0;
-      style = 0;
-    }
+  subplot (void);
+  subplot (tree_expression *data);
+  subplot (subplot_using *u, tree_expression *t, subplot_style *s);
 
-  subplot (tree_expression *data)
-    {
-      plot_data = data;
-      using = 0;
-      title = 0;
-      style = 0;
-    }
+  ~subplot (void);
 
-  subplot (subplot_using *u, tree_expression *t,
-		subplot_style *s)
-    {
-      plot_data = 0;
-      using = u;
-      title = t;
-      style = s;
-    }
-
-  ~subplot (void)
-    {
-      delete plot_data;
-      delete using;
-      delete title;
-      delete style;
-    }
-
-  void set_data (tree_expression *data)
-    { plot_data = data; }
-
-  int print (int ndim, ostrstream& plot_buf);
+  void set_data (tree_expression *data);
 
   tree_constant extract_plot_data (int ndim, tree_constant& data);
 
   int handle_plot_data (int ndim, ostrstream& plot_buf);
+
+  int print (int ndim, ostrstream& plot_buf);
 
   void print_code (ostream& os);
 
@@ -219,6 +187,7 @@ subplot_list : public SLList<subplot *>, public tree_print_code
 {
  public:
   subplot_list (void) : SLList<subplot *> () { }
+
   subplot_list (subplot *t) : SLList<subplot *> ()
     { append (t); }
 

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_tree_expr_h)
 #define octave_tree_expr_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include <time.h>
 #include <stdio.h>
 #include <iostream.h>
@@ -117,7 +113,7 @@ public:
       etype = unknown;
     }
 
-  ~tree_expression (void) { }
+  virtual ~tree_expression (void) { }
 
   virtual int is_multi_val_ret_expression (void) const
     { return 0; }
@@ -267,8 +263,6 @@ public:
       sym = s;
       maybe_do_ans_assign = 0;
     }
-
-  ~tree_identifier (void) { }
 
   int is_identifier (void) const
     { return 1; }
@@ -777,8 +771,6 @@ public:
   tree_builtin (int i_max, int o_max, Octave_builtin_fcn f,
 		const char *nm = 0);
 
-  ~tree_builtin (void) { }
-
 //  int is_builtin (void) const;
 
   int is_mapper_function (void) const
@@ -842,8 +834,6 @@ public:
 	 sym_tab = st;
 	 cmd_list = cl;
        }
-
-  ~tree_function (void) { }
 
 //  tree_function *define (tree_statement_list *t);
   tree_function *define_param_list (tree_parameter_list *t);

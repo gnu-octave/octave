@@ -21,19 +21,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #ifndef HAVE_GAMMA
 
 #include "f77-uscore.h"
 
-extern double F77_FCN (dgamma) (double*);
+extern double F77_FCN (dgamma) (const double&);
 
 double
 gamma (double x)
 {
-  return F77_FCN (dgamma) (&x);
+  return F77_FCN (dgamma) (x);
 }
 
 #endif

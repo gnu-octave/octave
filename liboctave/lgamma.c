@@ -21,7 +21,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #ifndef HAVE_LGAMMA
@@ -33,7 +33,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 int signgam;
 
-extern int F77_FCN (dlgams) (double*, double*, double*);
+extern int F77_FCN (dlgams) (const double&, double&, double&);
 
 double
 lgamma (double x)
@@ -41,7 +41,7 @@ lgamma (double x)
   double result;
   double sgngam;
 
-  F77_FCN (dlgams) (&x, &result, &sgngam);
+  F77_FCN (dlgams) (x, result, sgngam);
 
   signgam = (int) sgngam;
 

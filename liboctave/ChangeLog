@@ -1,3 +1,8 @@
+2000-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* boolMatrix.h: Declare MM_CMP_OPS here.
+	* boolMatrix.cc: Define them here.
+
 2000-06-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (assign): Allow x(bool) = RHS to succeed if x is

@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array2.h"
 
 #include "mx-defs.h"
+#include "mx-op-defs.h"
 
 class
 boolMatrix : public Array2<bool>
@@ -77,6 +78,8 @@ private:
 
   boolMatrix (bool *b, int r, int c) : Array2<bool> (b, r, c) { }
 };
+
+MM_CMP_OP_DECLS (boolMatrix, boolMatrix)
 
 #endif
 

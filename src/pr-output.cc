@@ -47,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "oct-obj.h"
+#include "oct-stream.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "sysdep.h"
@@ -1749,6 +1750,96 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
     {
       os << "sorry, printing char matrices not implemented yet\n";
     }
+}
+
+DEFUN (disp, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} disp (@var{x})\n\
+Display the value of @var{x}.  For example,\n\
+\n\
+@example\n\
+disp (\"The value of pi is:\"), disp (pi)\n\
+\n\
+     @print{} the value of pi is:\n\
+     @print{} 3.1416\n\
+@end example\n\
+\n\
+@noindent\n\
+Note that the output from @code{disp} always ends with a newline.\n\
+\n\
+If an output value is requested, @code{disp} prints nothing and\n\
+returns the formatted output in a string.\n\
+@end deftypefn\n\
+@seealso{fdisp}")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 && nargout < 2)
+    {
+      if (nargout == 0)
+	args(0).print (octave_stdout);
+      else
+	{
+	  std::ostrstream buf;
+	  args(0).print (buf);
+	  buf << ends;
+	  char *tmp = buf.str ();
+	  retval = tmp;
+	  delete [] tmp;
+	}
+    }
+  else
+    print_usage ("disp");
+
+  return retval;
+}
+
+DEFUN (fdisp, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fdisp (@var{fid}, @var{x})\n\
+Display the value of @var{x} on the stream @var{fid}.  For example,\n\
+\n\
+@example\n\
+disp (stdout, \"The value of pi is:\"), disp (stdout, pi)\n\
+\n\
+     @print{} the value of pi is:\n\
+     @print{} 3.1416\n\
+@end example\n\
+\n\
+@noindent\n\
+Note that the output from @code{disp} always ends with a newline.\n\
+\n\
+If an output value is requested, @code{disp} prints nothing and\n\
+returns the formatted output in a string.\n\
+@end deftypefn\n\
+@seealso{disp}")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      int fid = octave_stream_list::get_file_number (args (0));
+
+      octave_stream os = octave_stream_list::lookup (fid, "fdisp");
+
+      if (! error_state)
+	{
+	  ostream *osp = os.output_stream ();
+
+	  if (osp)
+	    args(1).print (*osp);
+	  else
+	    error ("fdisp: stream not open for writing");
+	}
+    }
+  else
+    print_usage ("fdisp");
+
+  return retval;
 }
 
 static void

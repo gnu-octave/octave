@@ -49,8 +49,8 @@ DEFUNOP (transpose, bool_matrix)
 
 // bool matrix by bool matrix ops.
 
-DEFBINOP_OP (eq, bool_matrix, bool_matrix, ==)
-DEFBINOP_OP (ne, bool_matrix, bool_matrix, !=)
+DEFBINOP_FN (eq, bool_matrix, bool_matrix, mx_el_eq)
+DEFBINOP_FN (ne, bool_matrix, bool_matrix, mx_el_ne)
 
 void
 install_bm_bm_ops (void)

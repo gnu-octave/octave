@@ -1,5 +1,8 @@
 2000-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* OPERATORS/op-bm-bm.cc (eq): Define using mx_el_eq, not operator ==.
+	(ne): Likewise, use mx_el_ne, not operator !=.
+
 	* pr-output.cc (Fdisp): Delete.
 
 2000-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -187,6 +187,8 @@ boolMatrix::any (void) const
   return retval;
 }
 
+MM_CMP_OPS(boolMatrix, , boolMatrix, )
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -1,7 +1,3 @@
-2000-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
-
-	* io/fdisp.m, io/disp.m: New files.
-
 2000-06-27  Matthew W. Roberts <matt@lehi.tamu.edu>
 
 	* plot/plot.m: Add examples in doc string.

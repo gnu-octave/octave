@@ -1,7 +1,7 @@
 // LPsolve.h                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,26 +36,36 @@ class LPsolve : public LP
 {
  public:
 
-  LPsolve (void) : LP ()
-    { set_default_options (); }
+  LPsolve (void)
+    : LP () { }
 
-  LPsolve (const ColumnVector& c) : LP (c)
-    { set_default_options (); }
+  LPsolve (const ColumnVector& c)
+    : LP (c) { }
 
-  LPsolve (const ColumnVector& c, const Bounds& b) : LP (c, b)
-    { set_default_options (); }
+  LPsolve (const ColumnVector& c, const Bounds& b)
+    : LP (c, b) { }
 
   LPsolve (const ColumnVector& c, const Bounds& b, const LinConst& lc)
-    : LP (c, b, lc) { set_default_options (); }
+    : LP (c, b, lc) { }
 
-  LPsolve (const ColumnVector& c, const LinConst& lc) : LP (c, lc)
-    { set_default_options (); }
+  LPsolve (const ColumnVector& c, const LinConst& lc)
+    : LP (c, lc) { }
+
+  LPsolve (const LPsolve& a)
+    : LP (a) { }
+
+  LPsolve& operator = (const LPsolve& a)
+    {
+      if (this != &a)
+	{
+	  LP::operator = (a);
+	}
+      return *this;
+    }
+
+  ~LPsolve (void) { }
 
   ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
-
- private:
-
-  void set_default_options (void);
 };
 
 #endif

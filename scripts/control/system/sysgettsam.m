@@ -16,8 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## T = sysgettsam(sys)
-## return the sampling time of the system
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sysgettsam (@var{sys})
+## Return the sampling time of the system @var{sys}.
+## @end deftypefn
 
 function T = sysgettsam (sys)
 

@@ -16,26 +16,26 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## ------------------------------------------------------------
-## dhinfdemo   Design of a discrete H_infinity controller.
-##             This is not a true discrete design. The design
-##             is carried out in continuous time while the
-##             effect of sampling is described by a bilinear
-##             transformation of the sampled system.
-##             This method works quite well if the sampling
-##             period is "small" compared to the plant time
-##             constants.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dhinfdemo ()
+## Demonstrate the functions available for designining a discrete
+## H_infinity controller.  This is not a true discrete design. The
+## design is carried out in continuous time while the effect of sampling
+## is described by a bilinear transformation of the sampled system.
+## This method works quite well if the sampling period is "small"
+## compared to the plant time constants.
 ##
-## This is a script file for OCTAVE.
-## ------------------------------------------------------------
+## Continuous plant:
 ##
-## continuous plant:
+## @example
 ##                   1
 ##      G(s) = --------------
 ##             (s + 2)(s + 1)
+## @end example
 ##
-## discretised plant with ZOH (Sampling period = Ts = 1 second)
+## Discretised plant with ZOH (Sampling period = Ts = 1 second):
 ##
+## @example
 ##                 0.39958z + 0.14700
 ##      G(s) = --------------------------
 ##             (z - 0.36788)(z - 0.13533)
@@ -52,9 +52,11 @@
 ##          |    +---+       |
 ##          -----| K |<-------
 ##               +---+
+## @end example
 ##
-##      W1 and W2 are the robustness and performancs weighting
-##       functions
+## @noindent
+## W1 and W2 are the robustness and performancs weighting functions.
+## @end deftypefn
 
 ## K. Mueller, <mueller@ifr.ing.tu-bs.de>
 ## Technical University of Braunschweig, IfR

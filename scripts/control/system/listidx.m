@@ -16,25 +16,22 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## [idxvec, errmsg] = listidx(listvar, strlist)
-## return indices of string entries in listvar that match strings in strlist
-## Inputs:
-##   listvar: list of strings to be searched
-##   strlist: list of strings to be located in listvar.
-## Note: listvar, strlist may be passed as strings or string matrices;
-##    in this case, each entry is processed by deblank() prior to searching
-##    for the entries of strlist in listvar.
-## Outputs:
-## idxvec
-##    vector of indices in listvar;
-##    listvar(idxvec(k)) == strlist(kk).
-## errmsg
-##    if strlist contains a string not in listvar, then
-##    an error message is returned in errmsg.  If only one output
-##    argument is requested, e.g., idxvec = listidx(listvar, strlist),
-##    then listidx prints errmsg to the screen and exits with
-##    an error.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{idxvec}, @var{errmsg}] =} listidx (@var{listvar}, @var{strlist})
+## Return indices of string entries in @var{listvar} that match strings
+## in @var{strlist}.
 ##
+## Both @var{listvar} and @var{strlist} may be passed as strings or
+## string matrices.  If they are passed as string matrices, each entry
+## is processed by @code{deblank} prior to searching for the entries.
+##
+## The first output is the vector of indices in @var{listvar}.
+##
+## If @var{strlist} contains a string not in @var{listvar}, then
+## an error message is returned in @var{errmsg}.  If only one output
+## argument is requested, then @var{listidx} prints @var{errmsg} to the
+## screen and exits with an error.
+## @end deftypefn
 
 function [idxvec,errmsg]  = listidx(listvar,strlist)
 

@@ -61,6 +61,10 @@
 	* signal/yulewalker.m: Ditto.
 	* control/util/strappend.m: Ditto.
 	* control/base/nichols.m: Ditto.
+	* control/system/is_signal_list.m: Ditto.
+	* control/system/listidx.m: Ditto.
+	* control/system/sysgettsam.m: Ditto.
+	* control/system/sysidx.m: Ditto.
 
 2000-01-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -78,6 +82,17 @@
 	* control/system/__tf2sysl__.m: Likewise.
 	* control/util/__zgpbal__.m: Likewise.
 	* control/system/__zp2ssg2__.m: Likewise.
+	* quaternion/demoquat.m: Ditto.
+	* quaternion/qconj.m: Ditto.
+	* quaternion/qcoordinate_plot.m: Ditto.
+	* quaternion/qderiv.m: Ditto.
+	* quaternion/qderivmat.m: Ditto.
+	* quaternion/qinv.m: Ditto.
+	* quaternion/qmult.m: Ditto.
+	* quaternion/qtrans.m: Ditto.
+	* quaternion/qtransv.m: Ditto.
+	* quaternion/qtransvmat.m: Ditto.
+	* quaternion/quaternion.m: Ditto.
 
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

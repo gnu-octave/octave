@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node System Utilities, Tips, Audio Processing, Top
+@node System Utilities, Tips, Quaternions, Top
 @chapter System Utilities
 
 This chapter describes the functions that are available to allow you to

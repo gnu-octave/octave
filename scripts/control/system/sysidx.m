@@ -16,14 +16,13 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## idxvec = sysidx (sys, sigtype, signamelist)
-## return indices of signals with specified signal names
-## inputs:
-##   sys:         OCST system data structure
-##   sigtype:     signal type to be selected: "in", "out", "st"
-##   signamelist: list of desired signal names
-## outputs:
-##   idxvec: vector of signal indices (appropriate for use with sysprune)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sysidx (@var{sys}, @var{sigtype}, @var{signamelist})
+## Return indices of signals with specified signal names
+## inputs given a system data structure @var{sys}, a signal type to be
+## selected @var{sigtype} (@code{"in"}, @code{"out"}, @code{"st"}), and
+## a list of desired signal names @var{signamelist}.
+## @end deftypefn
 
 function idxvec = sysidx (sys, sigtype, signamelist)
 

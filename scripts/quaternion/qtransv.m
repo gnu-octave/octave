@@ -1,23 +1,52 @@
-function vi = qtransv(vb,qib)
-# function vi = qtransv(vb,q)
-# transform the 3-D vector v by the unit quaternion q;
-# v = [w x y z], q = transformation quaternion
-# returns vi = column vector
-#    vi = (2*real(q)^2 - 1)*vb + 2*imag(q)*(imag(q)'*vb) 
-#      + 2*real(q)*cross(imag(q),vb)
-#    where imag(q) is a column vector of length 3.
+## Copyright (C) 1998 Auburn University.  All rights reserved.
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
 
-if(!is_vector(vb) | length(vb) != 3)
-  error(sprintf("qtransv: v(%d,%d) must be a 3-D vector",rows(vb),columns(vb)))
-elseif(!is_vector(qib) | length(qib) != 4)
-  error(sprintf("qtransv: q(%d,%d) must be a quaternion",rows(qib),columns(qib)))
-elseif(max(abs(imag(vb))) + max(abs(imag(qib))) != 0)
-  vb
-  qib
-  error("qtransv: input values must be real.");
-endif
+## -*- texinfo -*-
+## @deftypefn {Function File} {} qtransv (@var{v}, @var{q})
+## Transform the 3-D vector @var{v} by the unit quaternion @var{q}.
+## Return a column vector.
+##
+## @example
+## vi = (2*real(q)^2 - 1)*vb + 2*imag(q)*(imag(q)'*vb) 
+##    + 2*real(q)*cross(imag(q),vb)
+## @end example
+##
+## @noindent
+## Where imag(q) is a column vector of length 3.
+## @end deftypefn
 
-qr = qib(4);  qimag = vec(qib(1:3));   vb = vec(vb);
-vi = (2*qr^2 - 1)*vb + 2*qimag*(qimag'*vb) + 2*qr*cross(qimag,vb);
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Adapted-By: jwe
+
+function vi = qtransv (vb, qib)
+
+  if (! is_vector (vb) || length (vb) != 3)
+    error ("qtransv: v(%d,%d) must be a 3-D vector", rows (vb), columns (vb));
+  elseif (! is_vector (qib) || length (qib) != 4)
+    error ("qtransv: q(%d,%d) must be a quaternion", rows (qib), columns (qib));
+  elseif (max (abs (imag (vb))) + max (abs (imag (qib))) != 0)
+    error ("qtransv: input values must be real.");
+  endif
+
+  qr = qib(4);
+  qimag = vec (qib(1:3));
+  vb = vec (vb);
+  vi = (2*qr^2 - 1)*vb + 2*qimag*(qimag'*vb) + 2*qr*cross (qimag, vb);
 
 endfunction

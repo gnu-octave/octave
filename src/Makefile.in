@@ -316,7 +316,11 @@ install-inc:
 	done
 	for f in defaults.h oct-conf.h oct-gperf.h; do \
 	  rm -f $(octincludedir)/$$f; \
-	  $(INSTALL_DATA) $$f $(octincludedir)/$$f; \
+	  if [ -f $$f ]; then \
+	    $(INSTALL_DATA) $$f $(octincludedir)/$$f ; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
+	  fi ; \
 	done
 	$(mk-includedir-link)
 .PHONY: install-inc

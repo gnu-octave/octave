@@ -44,7 +44,7 @@ extern int almost_match (const string& std, const string& s,
 			 int min_match_len = 1, int case_sens = 1);
 
 extern int
-keyword_almost_match (const char **std, int *min_len,
+keyword_almost_match (const char * const *std, int *min_len,
 		      const string& s, int min_toks_to_match,
 		      int max_toks);
 

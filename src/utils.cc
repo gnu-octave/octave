@@ -110,7 +110,7 @@ almost_match (const string& std, const string& s, int min_match_len,
 // Ugh.
 
 int
-keyword_almost_match (const char **std, int *min_len, const string& s,
+keyword_almost_match (const char * const *std, int *min_len, const string& s,
 		      int min_toks_to_match, int max_toks)
 {
   int status = 0;
@@ -138,9 +138,9 @@ keyword_almost_match (const char **std, int *min_len, const string& s,
     return status;
 
 
-  char **to_match = new char * [max_toks + 1];
-  const char **s1 = std;
-  char **s2 = to_match;
+  const char **to_match = new const char * [max_toks + 1];
+  const char * const *s1 = std;
+  const char **s2 = to_match;
 
   if (! s1 || ! s2)
     goto done;

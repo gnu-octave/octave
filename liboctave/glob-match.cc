@@ -104,7 +104,7 @@ glob_match::glob (void)
 	    {
 	      int n = glob_info.gl_pathc;
 
-	      char **matches = glob_info.gl_pathv;
+	      const char * const *matches = glob_info.gl_pathv;
 
 	      // XXX FIXME XXX -- we shouldn't have to check to see if
 	      // a single match exists, but it seems that glob() won't

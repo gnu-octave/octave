@@ -47,8 +47,9 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h \
 	data-conv.h dir-ops.h file-ops.h file-stat.h getopt.h \
 	glob-match.h idx-vector.h lo-ieee.h lo-mappers.h lo-sysdep.h \
 	lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h oct-env.h \
-	oct-math.h oct-group.h oct-passwd.h oct-syscalls.h pathsearch.h \
-	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h syswait.h \
+	oct-math.h oct-group.h oct-passwd.h oct-syscalls.h pathlen.h \
+	pathsearch.h prog-args.h statdefs.h str-vec.h sun-utils.h \
+	sysdir.h syswait.h \
 	$(MATRIX_INC) \
 	$(MX_OP_INC)
 

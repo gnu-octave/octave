@@ -233,6 +233,19 @@ octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
       builtin_fcn_installer f
 	= instance->resolve_reference (mangled_name, oct_file);
 
+
+      // XXX FIXME XXX -- this should probably be handled correctly by
+      // mangle_octave_oct_file_name using a configure test.
+
+      if (! f)
+	{
+	  string t = "_";
+
+	  mangled_name = t.append (mangled_name);
+
+	  f = instance->resolve_reference (mangled_name, oct_file);
+	}
+
       if (f)
 	retval = f ();
     }

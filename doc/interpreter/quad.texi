@@ -13,7 +13,7 @@
 @node Functions of one Variable, Orthogonal Collocation, Quadrature, Quadrature
 @section Functions of one Variable
 
-@deftypefn {Built-in Function} {[@var{v}, @var{ier}, @var{nfun}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
+@deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
 Integrate a nonlinear function of one variable using Quadpack.
 The first argument is the name of the  function to call to compute the
 value of the integrand.  It must have the form
@@ -39,7 +39,7 @@ The optional argument @var{sing} is a vector of values at which the
 integrand is known to be singular.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} quad_options (@var{opt}, @var{val})
+@deftypefn {Loadable Function} {} quad_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{quad}.  Given one argument,
 @code{quad_options} returns the value of the corresponding option.  If
@@ -50,7 +50,7 @@ their current values are displayed.
 @node Orthogonal Collocation,  , Functions of one Variable, Quadrature
 @section Orthogonal Collocation
 
-@deftypefn {Built-in Function} {[@var{r}, @var{A}, @var{B}, @var{q}] =} colloc (@var{n}, "left", "right")
+@deftypefn {Loadable Function} {[@var{r}, @var{A}, @var{B}, @var{q}] =} colloc (@var{n}, "left", "right")
 Compute derivative and integral weight matrices for orthogonal
 collocation using the subroutines given in J. Villadsen and
 M. L. Michelsen, @cite{Solution of Differential Equation Models by

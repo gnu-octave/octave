@@ -128,7 +128,7 @@ Compute the square root of @var{x}.  To compute the matrix square root,
 see @ref{Linear Algebra}.
 @end deftypefn
 
-@deftypefn {Mapping Function} {} max (@var{x})
+@deftypefn {Loadable Function} {} max (@var{x})
 For a vector argument, return the maximum value.  For a matrix argument,
 return the maximum value from each column, as a row vector.  Thus,
 
@@ -143,7 +143,7 @@ For complex arguments, the magnitude of the elements are used for
 comparison.
 @end deftypefn
 
-@deftypefn {Mapping Function} {} min (@var{x})
+@deftypefn {Loadable Function} {} min (@var{x})
 Like @code{max}, but return the minimum value.
 @end deftypefn
 

@@ -22,13 +22,13 @@
 @node Quadratic Programming, Nonlinear Programming, Optimization, Optimization
 @section Quadratic Programming
 
-@deftypefn {Built-in Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qpsol (@var{x}, @var{H}, @var{c}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub})
+@deftypefn {Loadable Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qpsol (@var{x}, @var{H}, @var{c}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub})
 Solve quadratic programs using Gill and Murray's QPSOL.  Because QPSOL
 is not freely redistributable, this function is only available if you
 have obtained your own copy of QPSOL.  @xref{Installation}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} qpsol_options (@var{opt}, @var{val})
+@deftypefn {Loadable Function} {} qpsol_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{qpsol}.  Given one argument,
 @code{qpsol_options} returns the value of the corresponding option.  If
@@ -40,10 +40,10 @@ their current values are displayed.
 @section Nonlinear Programming
 
 @ignore
-@deftypefn {Built-in Function} {} fsqp ()
+@deftypefn {Loadable Function} {} fsqp ()
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fsqp_options (@var{opt}, @var{val})
+@deftypefn {Loadable Function} {} fsqp_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{fsqp}.  Given one argument,
 @code{fsqp_options} returns the value of the corresponding option.  If
@@ -54,7 +54,7 @@ their current values are displayed.
 Sorry, this hasn't been implemented yet.
 @end ignore
 
-@deftypefn {Built-in Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} npsol (@var{x}, @var{phi}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub}, @var{lb}, @var{g}, @var{ub})
+@deftypefn {Loadable Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} npsol (@var{x}, @var{phi}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub}, @var{lb}, @var{g}, @var{ub})
 Solve nonlinear programs using Gill and Murray's NPSOL.  Because NPSOL
 is not freely redistributable, this function is only available if you
 have obtained your own copy of NPSOL.  @xref{Installation}.
@@ -70,7 +70,7 @@ y = phi (x)
 where x is a vector and y is a scalar.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} npsol_options (@var{opt}, @var{val})
+@deftypefn {Loadable Function} {} npsol_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{npsol}.  Given one argument,
 @code{npsol_options} returns the value of the corresponding option.  If

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN (expm, args, ,
+DEFUN_DLD (expm, args, ,
   "expm (X): matrix exponential, e^A")
 {
   octave_value_list retval;

@@ -231,12 +231,12 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN (npsol, , ,
+DEFUN_DLD (npsol, , ,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN (npsol, args, nargout,
+DEFUN_DLD (npsol, args, nargout,
   "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, A_LB, A, A_UB]\n\
                                 [, G_LB, G, G_UB])\n\
 \n\
@@ -770,12 +770,12 @@ show_npsol_option (const string& keyword)
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN (npsol_options, , ,
+DEFUN_DLD (npsol_options, , ,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN (npsol_options, args, ,
+DEFUN_DLD (npsol_options, args, ,
   "npsol_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for npsol.  Keywords may be abbreviated\n\

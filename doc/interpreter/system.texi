@@ -23,7 +23,7 @@ and even start other programs from the Octave prompt.
 @node Timing Utilities, Filesystem Utilities, System Utilities, System Utilities
 @section Timing Utilities
 
-@deftypefn {Built-in Function} {} time ()
+@deftypefn {Loadable Function} {} time ()
 Return the current time as the number of seconds since the epoch.  The
 epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
 1970.
@@ -68,16 +68,16 @@ Daylight Savings Time flag.
 Time zone.
 @end table
 
-@deftypefn {Built-in Function} {} mktime (@var{time_struct})
+@deftypefn {Loadable Function} {} mktime (@var{time_struct})
 Convert a time structure to the number of seconds since the epoch.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} localtime (@var{t})
+@deftypefn {Loadable Function} {} localtime (@var{t})
 Given a value returned from time (or any nonnegative integer),
 return a time structure corresponding to the local time zone.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} gmtime (@var{t})
+@deftypefn {Loadable Function} {} gmtime (@var{t})
 Given a value returned from time (or any nonnegative integer),
 return a time structure corresponding to CUT.
 @end deftypefn
@@ -88,7 +88,7 @@ format: Thu Mar 28 08:40:14 1996.  The function @code{ctime (time)} is
 equivalent to @code{asctime (localtime (time))}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} strftime (@var{time_struct})
+@deftypefn {Loadable Function} {} strftime (@var{time_struct})
 Format a time structure in a flexible way using @samp{%} substitutions
 similar to those in @code{printf}.  Except where noted, substituted
 fields have a fixed size; numeric fields are padded if necessary.
@@ -557,28 +557,28 @@ The home directory.
 The initial shell.
 @end table
 
-@deftypefn {Built-in Function} {passwd_struct =} getpwent ()
+@deftypefn {Loadable Function} {passwd_struct =} getpwent ()
 Return an entry from the password database, opening it if necessary.
 Once the end of the data has been reached, @code{getpwent} returns 0.
 @end deftypefn
 
-@deftypefn {Built-in Function} {passwd_struct =} getpwuid (@var{uid}).
+@deftypefn {Loadable Function} {passwd_struct =} getpwuid (@var{uid}).
 Return the first entry from the password database with the user ID
 @var{uid}.  If the user ID does not exist in the database,
 @code{getpwuid} returns 0.
 @end deftypefn
 
-@deftypefn {Built-in Function} {passwd_struct =} getpwnam (@var{name})
+@deftypefn {Loadable Function} {passwd_struct =} getpwnam (@var{name})
 Return the first entry from the password database with the user name
 @var{name}.  If the user name does not exist in the database,
 @code{getpwname} returns 0.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} setpwent ()
+@deftypefn {Loadable Function} {} setpwent ()
 Return the internal pointer to the beginning of the password database.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} endpwent ()
+@deftypefn {Loadable Function} {} endpwent ()
 Close the password database.
 @end deftypefn
 
@@ -605,7 +605,7 @@ Returns Octave's version number as a string.  This is also the value of
 the built-in variable @code{OCTAVE_VERSION}.  @xref{Built-in Variables}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} getrusage ()
+@deftypefn {Loadable Function} {} getrusage ()
 Return a structure containing a number of statistics about the current
 Octave process.  Not all fields are available on all systems.  If it is
 not possible to get CPU time statistics, the CPU time slots are set to

@@ -1,5 +1,18 @@
 Sun Nov  3 00:45:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mk-oct-links.in: In sed command, match "DEFUN_DLD *( *", not
+	"DEFUN_DLD_BUILTIN *( *".
+
+	* chol.cc, colloc.cc, dassl.cc, det.cc, eig.cc, expm.cc, fft.cc,
+	fft2.cc, filter.cc, find.cc, fsolve.cc, fsqp.cc, getpwent.cc,
+	getrusage.cc, givens.cc, hess.cc, ifft.cc, ifft2.cc, inv.cc,
+	log.cc, lpsolve.cc, lsode.cc, lu.cc, minmax.cc, npsol.cc, pinv.cc,
+	qpsol.cc, qr.cc, quad.cc, qzval.cc, rand.cc, schur.cc, sort.cc,
+	svd.cc, syl.cc, time.cc: Change all uses of DEFUN_DLD_BUILTIN to
+	be just DEFUN_DLD.
+
+	* defun-dld.h: Eliminate DEFUN_DLD_BUILTIN.
+
 	* syswait.h: Use #ifdef HAVE_SYS_WAIT_H, not #if HAVE_SYS_WAIT_H
 	to decide whether to include sys/wait.h.
 

@@ -325,7 +325,7 @@ do_rand (const octave_value_list& args, int nargin)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (rand, args, nargout,
+DEFUN_DLD (rand, args, nargout,
   "rand            -- generate a random value from a uniform distribution\n\
 \n\
 rand (N)        -- generate N x N matrix\n\
@@ -359,7 +359,7 @@ reset_rand_generator (void *)
   F77_FCN (setcgn, SETCGN) (current_distribution);
 }
 
-DEFUN_DLD_BUILTIN (randn, args, nargout,
+DEFUN_DLD (randn, args, nargout,
   "randn            -- generate a random value from a normal distribution\n\
 \n\
 randn (N)        -- generate N x N matrix\n\

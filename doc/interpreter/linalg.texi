@@ -19,9 +19,9 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 @node Basic Matrix Functions, Matrix Factorizations, Linear Algebra, Linear Algebra
 @section Basic Matrix Functions
 
-@deftypefn {Built-in Function} {@var{aa} =} balance (@var{a}, @var{opt})
-@deftypefnx {Built-in Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})
-@deftypefnx {Built-in Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb]} =} balance (@var{a}, @var{b}, @var{opt})
+@deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})
+@deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})
+@deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb]} =} balance (@var{a}, @var{b}, @var{opt})
 
 @code{[dd, aa] = balance (a)} returns @code{aa = dd \ a * dd}.
 @code{aa} is a matrix whose row/column norms are roughly equal in
@@ -66,12 +66,12 @@ defined as @code{norm (a) * norm (inv (a))}, and is computed via a
 singular value decomposition.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} det (@var{a})
+@deftypefn {Loadable Function} {} det (@var{a})
 Compute the determinant of @var{a} using LINPACK.
 @end deftypefn
 
-@deftypefn {Built-in Function} {@var{lambda} =} eig (@var{a})
-@deftypefnx {Built-in Function} {[@var{v}, @var{lambda}] =} eig (@var{a})
+@deftypefn {Loadable Function} {@var{lambda} =} eig (@var{a})
+@deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})
 The eigenvalues (and eigenvectors) of a matrix are computed in a several
 step process which begins with a Hessenberg decomposition (see
 @code{hess}), followed by a Schur decomposition (see @code{schur}), from
@@ -81,8 +81,8 @@ computed by further manipulations of the Schur decomposition.
 See also: @code{hess}, @code{schur}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {@var{G} =} givens (@var{x}, @var{y})
-@deftypefnx {Built-in Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})
+@deftypefn {Loadable Function} {@var{G} =} givens (@var{x}, @var{y})
+@deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})
 @code{G = givens(x, y)} returns a
 @iftex
 @tex
@@ -96,8 +96,8 @@ orthogonal matrix @code{G = [c s; -s' c]} such that
 @code{G [x; y] = [*; 0]}  (x, y scalars)
 @end deftypefn
 
-@deftypefn {Built-in Function} {} inv (@var{a})
-@deftypefnx {Built-in Function} {} inverse (@var{a})
+@deftypefn {Loadable Function} {} inv (@var{a})
+@deftypefnx {Loadable Function} {} inverse (@var{a})
 Compute the inverse of the square matrix @var{a}.
 @end deftypefn
 
@@ -195,7 +195,7 @@ Compute the trace of @var{a}, @code{sum (diag (a))}.
 @node Matrix Factorizations, Functions of a Matrix, Basic Matrix Functions, Linear Algebra
 @section Matrix Factorizations
 
-@deftypefn {Built-in Function} {} chol (@var{a})
+@deftypefn {Loadable Function} {} chol (@var{a})
 Compute the Cholesky factor, @var{r}, of the symmetric positive definite
 matrix @var{a}, where
 @iftex
@@ -211,8 +211,8 @@ r' * r = a.
 @end ifinfo
 @end deftypefn
 
-@deftypefn {Built-in Function} {@var{h} =} hess (@var{a})
-@deftypefnx {Built-in Function} {[@var{p}, @var{h}] =} hess (@var{a})
+@deftypefn {Loadable Function} {@var{h} =} hess (@var{a})
+@deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{a})
 Compute the Hessenberg decomposition of the matrix @var{a}.
 
 The Hessenberg decomposition is usually used as the first step in an
@@ -224,7 +224,7 @@ transposition) and @code{h} is upper Hessenberg
 (@code{i >= j+1 => h (i, j) = 0}).
 @end deftypefn
 
-@deftypefn {Built-in Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
+@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
 Compute the LU decomposition of @var{a}, using subroutines from
 LAPACK.  The result is returned in a permuted form, according to
 the optional return value @var{p}.  For example, given the matrix
@@ -255,7 +255,7 @@ p =
 @end example
 @end deftypefn
 
-@deftypefn {Built-in Function} {[@var{q}, @var{r}] =} qr (@var{a})
+@deftypefn {Loadable Function} {[@var{q}, @var{r}] =} qr (@var{a})
 Compute the QR factorization of @var{a}, using standard LAPACK
 subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},
 
@@ -340,8 +340,8 @@ factorization allows the construction of an orthogonal basis of
 @code{span (a)}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {@var{s}} schur (@var{a})
-@deftypefnx {Built-in Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})
+@deftypefn {Loadable Function} {@var{s}} schur (@var{a})
+@deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})
 The Schur decomposition is used to compute eigenvalues of a
 square matrix, and has applications in the solution of algebraic
 Riccati equations in control (see @code{are} and @code{dare}).
@@ -546,8 +546,8 @@ $S$.
 @end ifinfo
 @end deftypefn
 
-@deftypefn {Built-in Function} {@var{s} =} svd (@var{a})
-@deftypefnx {Built-in Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})
+@deftypefn {Loadable Function} {@var{s} =} svd (@var{a})
+@deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})
 Compute the singular value decomposition of @var{a}
 @iftex
 @tex
@@ -628,7 +628,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or
 @node Functions of a Matrix,  , Matrix Factorizations, Linear Algebra
 @section Functions of a Matrix
 
-@deftypefn {Built-in Function} {} expm (@var{a})
+@deftypefn {Loadable Function} {} expm (@var{a})
 Returns the exponential of a matrix, defined as the
 infinite Taylor series
 @iftex
@@ -714,13 +714,13 @@ $D_q(a)$
 is ill-conditioned.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} logm (@var{a})
+@deftypefn {Loadable Function} {} logm (@var{a})
 Compute the matrix logarithm of the square matrix @var{a}.  Note that
 this is currently implemented in terms of an eigenvalue expansion and
 needs to be improved to be more robust.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} sqrtm (@var{a})
+@deftypefn {Loadable Function} {} sqrtm (@var{a})
 Compute the matrix square root of the square matrix @var{a}.  Note that
 this is currently implemented in terms of an eigenvalue expansion and
 needs to be improved to be more robust.
@@ -751,11 +751,11 @@ Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
 edition}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} qzval (@var{a}, @var{b})
+@deftypefn {Loadable Function} {} qzval (@var{a}, @var{b})
 Compute generalized eigenvalues.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} syl (@var{a}, @var{b}, @var{c})
+@deftypefn {Loadable Function} {} syl (@var{a}, @var{b}, @var{c})
 Solve the Sylvester equation
 @iftex
 @tex

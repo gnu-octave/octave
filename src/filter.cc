@@ -148,7 +148,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x)
   return filter (b, a, x, si);
 }
 
-DEFUN_DLD_BUILTIN (filter, args, ,
+DEFUN_DLD (filter, args, ,
   "usage: [y [, sf]] = filter (b, a, x [, si])\n\
 \n\
 y = filter (b, a, x) returns the solution to the following linear,\n\

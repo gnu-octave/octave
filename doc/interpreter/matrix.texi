@@ -114,7 +114,7 @@ finite ([13, Inf, NaN])
 @end example
 @end deftypefn
 
-@deftypefn {Built-in Function} {} find (@var{x})
+@deftypefn {Loadable Function} {} find (@var{x})
 The function @code{find} returns a vector of indices of nonzero elements
 of a matrix.  To obtain a single index for each matrix element, Octave
 pretends that the columns of a matrix form one long vector (like Fortran
@@ -250,7 +250,7 @@ colon operator.  Note that the total number of elements in the original
 matrix must match the total number of elements in the new matrix.
 @end deftypefn
 
-@deftypefn {Built-in Function} {[s, i] =} sort (@var{x})
+@deftypefn {Loadable Function} {[s, i] =} sort (@var{x})
 Returns a copy of @var{x} with the elements elements arranged in
 increasing order.  For matrices, @code{sort} orders the elements in each
 column.

@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "oct-obj.h"
 
-DEFUN_DLD_BUILTIN (givens, args, nargout,
+DEFUN_DLD (givens, args, nargout,
   "G = givens (X, Y)\n\
 \n\
 compute orthogonal matrix G = [c s; -conj (s) c]\n\

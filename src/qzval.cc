@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "oct-obj.h"
 
-DEFUN_DLD_BUILTIN (qzval, args, ,
+DEFUN_DLD (qzval, args, ,
   "X = qzval (A, B)\n\
 \n\
 compute generalized eigenvalues of the matrix pencil (A - lambda B).\n\

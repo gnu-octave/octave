@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "oct-obj.h"
 
-DEFUN_DLD_BUILTIN (lp_solve, , ,
+DEFUN_DLD (lp_solve, , ,
   "lp_solve (): solve linear programs using lp_solve.")
 {
   octave_value_list retval;
@@ -48,7 +48,7 @@ DEFUN_DLD_BUILTIN (lp_solve, , ,
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (lp_solve_options, , ,
+DEFUN_DLD (lp_solve_options, , ,
   "lp_solve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for lp_solve.  Keywords may be abbreviated\n\

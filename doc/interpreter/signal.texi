@@ -20,7 +20,7 @@ matrix, @var{n} specifies the number of rows of @var{a} to use.  If
 padded with zeros.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} ifft (@var{a} [, @var{n}])
+@deftypefn {Loadable Function} {} ifft (@var{a} [, @var{n}])
 Compute the inverse FFT of @var{a} using subroutines from FFTPACK.  If
 @var{a} is a matrix, @code{fft} computes the inverse FFT for each column
 of @var{a}.
@@ -32,7 +32,7 @@ matrix, @var{n} specifies the number of rows of @var{a} to use.  If
 padded with zeros.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fft2 (@var{a} [, @var{n} [, @var{m}]])
+@deftypefn {Loadable Function} {} fft2 (@var{a} [, @var{n} [, @var{m}]])
 Compute the two dimensional FFT of @var{a}.
 
 The optional arguments @var{n} and @var{m} may be used specify the
@@ -41,7 +41,7 @@ larger than the size of @var{a}, @var{a} is resized and padded with
 zeros.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} ifft2 (@var{a} [, @var{n} [, @var{m}]])
+@deftypefn {Loadable Function} {} ifft2 (@var{a} [, @var{n} [, @var{m}]])
 Compute the two dimensional inverse FFT of @var{a}.
 
 The optional arguments @var{n} and @var{m} may be used specify the
@@ -70,7 +70,7 @@ Given the optional third argument, @var{N}, @code{fftfilt} uses the
 overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
 @end deftypefn
 
-@deftypefn {Built-in Function} {y =} filter (@var{b}, @var{a}, @var{x})
+@deftypefn {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})
 This function returns the solution to the following linear,
 time-invariant difference equation:
 @iftex
@@ -153,7 +153,7 @@ $$
 @end ifinfo
 @end deftypefn
 
-@deftypefn {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
+@deftypefn {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
 This is the same as the @code{filter} function described above, except
 that @var{si} is taken as the initial state of the system and the final
 state is returned as @var{sf}.  The state vector is a column vector

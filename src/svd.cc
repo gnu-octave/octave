@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr-output.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN (svd, args, nargout,
+DEFUN_DLD (svd, args, nargout,
   "S = svd (X) or [U, S, V] = svd (X [, 0])\n\
 \n\
 Compute the singular value decomposition of X.  Given a second input\n\

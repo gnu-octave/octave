@@ -33,27 +33,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // time.
 //
 // If Octave is not configured for dynamic linking of builtin
-// functions, this is exactly like DEFUN.
-
-#if defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING)
-#if ! defined (MAKE_BUILTINS)
-#define DEFUN_DLD_BUILTIN(name, args_name, nargout_name, doc) \
-  DEFUN_DLD (name, args_name, nargout_name, doc)
-#endif
-#else
-#define DEFUN_DLD_BUILTIN(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
-#endif
-
-// Define a function that may be loaded dynamically at run time.
+// functions, this is similar to DEFUN, except that it will generate
+// an extra static struct and an extra externally visible function.
 //
-// If Octave is not configured for dynamic linking of builtin
-// functions, this won't do anything useful.
-//
-// The forward declaration is for the struct, the second is for the
+// The first DECLARE_FUN is for the struct, the second is for the
 // definition of the function.
 
-#if ! defined (MAKE_BUILTINS)
+#if defined (MAKE_BUILTINS)
+#if ! (defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING))
+#define DEFUN_DLD(name, args_name, nargout_name, doc) \
+  DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
+#endif
+#else
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name); \
   DEFINE_FUN_STRUCT (name, 0, doc); \

@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // XXX FIXME XXX -- the next two functions should really be just
 // one...
 
-DEFUN_DLD_BUILTIN (logm, args, ,
+DEFUN_DLD (logm, args, ,
   "logm (X): matrix logarithm")
 {
   octave_value_list retval;
@@ -148,7 +148,7 @@ DEFUN_DLD_BUILTIN (logm, args, ,
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (sqrtm, args, ,
+DEFUN_DLD (sqrtm, args, ,
  "sqrtm (X): matrix sqrt")
 {
   octave_value_list retval;

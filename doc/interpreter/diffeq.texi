@@ -40,7 +40,7 @@ dt
 @noindent
 using Hindmarsh's ODE solver LSODE.
 
-@deftypefn {Built-in Function} {} lsode (@var{fcn}, @var{x0}, @var{t_out}, @var{t_crit})
+@deftypefn {Lodable Function} {} lsode (@var{fcn}, @var{x0}, @var{t_out}, @var{t_crit})
 The first argument is the name of the function to call to
 compute the vector of right hand sides.  It must have the form
 
@@ -98,7 +98,7 @@ plot (t, x)
 @end example
 @end deftypefn
 
-@deftypefn {Built-in Function} {} lsode_options (@var{opt}, @var{val})
+@deftypefn {Lodable Function} {} lsode_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{lsode}.  Given one argument,
 @code{lsode_options} returns the value of the corresponding option.  If
@@ -128,7 +128,7 @@ $$
 @end example
 @end ifinfo
 
-@deftypefn {Built-in Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t_out}, @var{t_crit})
+@deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t_out}, @var{t_crit})
 The first argument is the name of the function to call to
 compute the vector of residuals.  It must have the form
 
@@ -156,7 +156,7 @@ avoiding difficulties with singularities and points where there is a
 discontinuity in the derivative.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} dassl_options (@var{opt}, @var{val})
+@deftypefn {Loadable Function} {} dassl_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{lsode}.  Given one argument,
 @code{dassl_options} returns the value of the corresponding option.  If

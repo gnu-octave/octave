@@ -94,7 +94,7 @@ lsode_user_function (const ColumnVector& x, double t)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (lsode, args, nargout,
+DEFUN_DLD (lsode, args, nargout,
   "lsode (F, X0, T_OUT, T_CRIT)\n\
 \n\
 The first argument is the name of the function to call to\n\
@@ -299,7 +299,7 @@ show_lsode_option (const string& keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (lsode_options, args, ,
+DEFUN_DLD (lsode_options, args, ,
   "lsode_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for lsode.  Keywords may be abbreviated\n\

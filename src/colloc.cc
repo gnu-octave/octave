@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN (colloc, args, ,
+DEFUN_DLD (colloc, args, ,
   "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights")
 {
   octave_value_list retval;

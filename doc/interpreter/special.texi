@@ -69,9 +69,9 @@ Returns a matrix whose elements are all 0.  The arguments are handled
 the same as the arguments for @code{eye}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} rand (@var{x})
-@deftypefnx {Built-in Function} {} rand (@var{n}, @var{m})
-@deftypefnx {Built-in Function} {} rand (@code{"seed"}, @var{x})
+@deftypefn {Loadable Function} {} rand (@var{x})
+@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})
+@deftypefnx {Loadable Function} {} rand (@code{"seed"}, @var{x})
 Returns a matrix with random elements uniformly distributed on the
 interval (0, 1).  The arguments are handled the same as the arguments
 for @code{eye}.  In
@@ -93,9 +93,9 @@ rand ("seed")
 @code{rand} returns the current value of the seed.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} randn (@var{x})
-@deftypefnx {Built-in Function} {} randn (@var{n}, @var{m})
-@deftypefnx {Built-in Function} {} randn (@code{"seed"}, @var{x})
+@deftypefn {Loadable Function} {} randn (@var{x})
+@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})
+@deftypefnx {Loadable Function} {} randn (@code{"seed"}, @var{x})
 Returns a matrix with normally distributed random elements.  The
 arguments are handled the same as the arguments for @code{eye}.  In
 addition, you can set the seed for the random number generator using the

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN (syl, args, nargout,
+DEFUN_DLD (syl, args, nargout,
   "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0")
 {
   octave_value_list retval;

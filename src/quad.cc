@@ -85,7 +85,7 @@ quad_user_function (double x)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (quad, args, nargout,
+DEFUN_DLD (quad, args, nargout,
   "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
 \n\
 Where the first argument is the name of the  function to call to\n\
@@ -352,7 +352,7 @@ show_quad_option (const string& keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (quad_options, args, ,
+DEFUN_DLD (quad_options, args, ,
   "quad_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for quad.  Keywords may be abbreviated\n\

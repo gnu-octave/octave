@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN (schur, args, nargout,
+DEFUN_DLD (schur, args, nargout,
   "[U, S] = schur (A) or S = schur (A)\n\
 \n\
 or, for ordered Schur:\n\

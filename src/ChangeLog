@@ -1,5 +1,14 @@
 2003-06-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (frob_function, parse_fcn_file): Handle help_buf as
+	stack of strings.
+	* lex.l ({CCHAR}): Handle help_buf as stack of strings.
+	Store text returned from grab_help_text in help_buf here.
+	(reset_parser): Handle help_buf as stack of strings.
+	(prep_for_nested_function): Push empty string onto help_buf stack.
+	(grab_help_text): Return help text instead of storing it in help_buf.
+	* parse.h, parse.y (help_buf): Now a stack of strings.
+
 	* oct-stream.cc (printf_value_cache::string_value): Don't attempt
 	to extract values when none are available.
 

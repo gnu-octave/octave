@@ -201,7 +201,7 @@ static void prep_for_function (void);
 static void prep_for_nested_function (void);
 static std::string plot_style_token (const std::string& s);
 static symbol_record *lookup_identifier (const std::string& s);
-static void grab_help_text (void);
+static std::string grab_help_text (void);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
 static bool next_token_is_bin_op (bool spc_prev);
@@ -628,15 +628,25 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %} 
 
 {CCHAR} {
-    if (help_buf.empty ()
+    std::string help_txt;
+
+    if (! help_buf.empty ())
+      help_txt = help_buf.top ();
+
+    if (help_txt.empty ()
 	&& lexer_flags.beginning_of_function
 	&& nesting_level.none ())
       {
 	lexer_flags.beginning_of_function = false;
 
-	grab_help_text ();
+	std::string txt = grab_help_text ();
 
-	octave_comment_buffer::append (help_buf);
+	if (! help_buf.empty ())
+	  help_buf.pop ();
+
+	help_buf.push (txt);
+
+	octave_comment_buffer::append (txt);
       }
     else
       {
@@ -883,7 +893,8 @@ reset_parser (void)
     yyrestart (stdin);
 
   // Clear the buffer for help text.
-  help_buf.resize (0);
+  while (! help_buf.empty ())
+    help_buf.pop ();
 
   // Reset other flags.
   lexer_flags.init ();
@@ -1105,6 +1116,7 @@ static void
 prep_for_nested_function (void)
 {
   lexer_flags.parsing_nested_function = 1;
+  help_buf.push (std::string ());
   prep_for_function ();
   // We're still only expecting one end token for this set of functions.
   end_tokens_expected--;
@@ -1378,16 +1390,15 @@ force_local_variable (const std::string& name)
     sr->define (octave_value ());
 }
 
-// Grab the help text from an function file.  Always overwrites the
-// current contents of help_buf.
+// Grab the help text from an function file.
 
 // XXX FIXME XXX -- gobble_leading_white_space() in parse.y
 // duplicates some of this code!
 
-static void
+static std::string
 grab_help_text (void)
 {
-  help_buf.resize (0);
+  std::string buf;
 
   bool begin_comment = true;
   bool in_comment = true;
@@ -1412,7 +1423,7 @@ grab_help_text (void)
 
       if (in_comment)
 	{
-	  help_buf += static_cast<char> (c);
+	  buf += static_cast<char> (c);
 
 	  if (c == '\n')
 	    {
@@ -1445,6 +1456,8 @@ grab_help_text (void)
 
   if (c)
     yyunput (c, yytext);
+
+  return buf;
 }
 
 // Return 1 if the given character matches any character in the given

@@ -112,7 +112,7 @@ int input_line_number = 0;
 int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
-std::string help_buf;
+std::stack<std::string> help_buf;
 
 // Buffer for comments appearing before a function statement.
 static std::string fcn_comment_header;
@@ -2621,13 +2621,15 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 
   id->define (fcn, symbol_record::USER_FUNCTION);
 
-  id->document (help_buf);
-
-  help_buf.resize (0);
+  if (! help_buf.empty ())
+    {
+      id->document (help_buf.top ());
+      help_buf.pop ();
+    }
 
   if (lexer_flags.parsing_nested_function < 0)
     lexer_flags.parsing_nested_function = 0;
-  
+
   return fcn;
 }
 
@@ -3343,9 +3345,12 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
 	  reset_parser ();
 
-	  help_buf = gobble_leading_white_space (ffile, true, true, true);
+	  std::string txt
+	    = gobble_leading_white_space (ffile, true, true, true);
 
-	  octave_comment_buffer::append (help_buf);
+	  help_buf.push (txt);
+
+	  octave_comment_buffer::append (txt);
 
 	  // XXX FIXME XXX -- this should not be necessary.
 	  gobble_leading_white_space (ffile, false, true, false);

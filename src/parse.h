@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include <stack>
+
 extern void reset_parser (void);
 extern int yylex (void);
 extern int yyparse (void);
@@ -53,7 +55,7 @@ extern int input_line_number;
 extern int current_input_column;
 
 // Buffer for help text snagged from function files.
-extern std::string help_buf;
+extern std::stack<std::string> help_buf;
 
 // TRUE means we are using readline.
 extern bool line_editing;

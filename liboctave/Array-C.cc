@@ -35,9 +35,15 @@ template class DiagArray<Complex>;
 
 template void assign (Array<Complex>&, const Array<Complex>&);
 template void assign (Array<Complex>&, const Array<double>&);
+template void assign (Array<Complex>&, const Array<int>&);
+template void assign (Array<Complex>&, const Array<short>&);
+template void assign (Array<Complex>&, const Array<char>&);
 
 template void assign (Array2<Complex>&, const Array2<Complex>&);
 template void assign (Array2<Complex>&, const Array2<double>&);
+template void assign (Array2<Complex>&, const Array2<int>&);
+template void assign (Array2<Complex>&, const Array2<short>&);
+template void assign (Array2<Complex>&, const Array2<char>&);
 
 /*
 ;;; Local Variables: ***

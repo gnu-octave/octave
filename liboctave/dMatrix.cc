@@ -93,6 +93,17 @@ Matrix::Matrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+// XXX FIXME XXX -- could we use a templated mixed-type copy function
+// here?
+
+Matrix::Matrix (const charMatrix& a)
+  : MArray2<double> (a.rows (), a.cols ())
+{
+  for (int i = 0; i < a.rows (); i++)
+    for (int j = 0; j < a.cols (); j++)
+      elem (i, j) = a.elem (i, j);
+}
+
 int
 Matrix::operator == (const Matrix& a) const
 {

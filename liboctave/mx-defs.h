@@ -27,29 +27,43 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Classes we declare.
 
 class Matrix;
-class ColumnVector;
-class RowVector;
-class DiagMatrix;
 class ComplexMatrix;
+class charMatrix;
+
+class ColumnVector;
 class ComplexColumnVector;
+
+class RowVector;
 class ComplexRowVector;
+
+class DiagMatrix;
 class ComplexDiagMatrix;
+
 class AEPBALANCE;
 class ComplexAEPBALANCE;
+
 class GEPBALANCE;
+
 class CHOL;
 class ComplexCHOL;
+
 class DET;
 class ComplexDET;
+
 class EIG;
+
 class HESS;
 class ComplexHESS;
+
 class SCHUR;
 class ComplexSCHUR;
+
 class SVD;
 class ComplexSVD;
+
 class LU;
 class ComplexLU;
+
 class QR;
 class ComplexQR;
 

@@ -44,7 +44,7 @@ public:
   ComplexDiagMatrix (void) : MDiagArray<Complex> () { }
   ComplexDiagMatrix (int n) : MDiagArray<Complex> (n) { }
   ComplexDiagMatrix (int n, const Complex& val)
-    : MDiagArray<Complex> (n, val) { }
+    : MDiagArray<Complex> (n, n, val) { }
   ComplexDiagMatrix (int r, int c) : MDiagArray<Complex> (r, c) { }
   ComplexDiagMatrix (int r, int c, const Complex& val)
     : MDiagArray<Complex> (r, c, val) { }

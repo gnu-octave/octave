@@ -34,7 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template <class T> class MArray;
 template <class T> class MArray2;
+
+#ifndef NO_DIAG_ARRAY
 template <class T> class MDiagArray;
+#endif
 
 // One dimensional array with math ops.
 
@@ -113,7 +116,10 @@ public:
   MArray2 (int n, int m, const T& val) : Array2<T> (n, m, val) { }
   MArray2 (const Array2<T>& a) : Array2<T> (a) { }
   MArray2 (const MArray2<T>& a) : Array2<T> (a) { }
+
+#ifndef NO_DIAG_ARRAY
   MArray2 (const MDiagArray<T>& a);
+#endif
 
   ~MArray2 (void) { }
 
@@ -160,6 +166,7 @@ public:
 
 // Two dimensional diagonal array with math ops.
 
+#ifndef NO_DIAG_ARRAY
 template <class T>
 class MDiagArray : public DiagArray<T>
 {
@@ -171,7 +178,7 @@ public:
   
   MDiagArray (void) : DiagArray<T> () { }
   MDiagArray (int n) : DiagArray<T> (n) { }
-  MDiagArray (int n, const T& val) : DiagArray<T> (n, val) { }
+//  MDiagArray (int n, const T& val) : DiagArray<T> (n, val) { }
   MDiagArray (int r, int c) : DiagArray<T> (r, c) { }
   MDiagArray (int r, int c, const T& val) : DiagArray<T> (r, c, val) { }
   MDiagArray (const DiagArray<T>& a) : DiagArray<T> (a) { }
@@ -213,6 +220,7 @@ public:
 
   friend MDiagArray<T> operator - (const MDiagArray<T>& a);
 };
+#endif
 
 #endif
 

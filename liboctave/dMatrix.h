@@ -58,6 +58,8 @@ public:
   Matrix (const MDiagArray<double>& a) : MArray2<double> (a) { }
   Matrix (const DiagMatrix& a);
 
+  Matrix (const charMatrix& a);
+
   Matrix& operator = (const Matrix& a)
     {
       MArray2<double>::operator = (a);

@@ -293,10 +293,15 @@ Array2<T>::value (void)
 
 	  int len = tmp.length ();
 
-	  if (pcv_flag)
-	    retval = Array2<T> (tmp, len, 1);
+	  if (len == 0)
+	    retval = Array2<T> (0, 0);
 	  else
-	    retval = Array2<T> (tmp, 1, len);
+	    {
+	      if (pcv_flag)
+		retval = Array2<T> (tmp, len, 1);
+	      else
+		retval = Array2<T> (tmp, 1, len);
+	    }
 	}
       else if (nr == 1 || nc == 1)
 	{
@@ -307,20 +312,29 @@ Array2<T>::value (void)
 	      idx_vector *tmp = get_idx ();
 	      idx_vector idx = tmp[0];
 
-	      result_is_column_vector = idx.is_colon ();
+	      if (idx.is_colon ())
+		result_is_column_vector = 1;
 	    }
 
 	  Array<T> tmp = Array<T>::value ();
 
 	  int len = tmp.length ();
 
-	  if (result_is_column_vector)
-	    retval = Array2<T> (tmp, len, 1);
+	  if (len == 0)
+	    retval = Array2<T> (0, 0);
 	  else
-	    retval = Array2<T> (tmp, 1, len);
+	    {
+	      if (result_is_column_vector)
+		retval = Array2<T> (tmp, len, 1);
+	      else
+		retval = Array2<T> (tmp, 1, len);
+	    }
 	}
       else if (dfi_flag)
 	{
+	  // This code is only for indexing matrices.  The vector
+	  // cases are handled above.
+
 	  idx_vector *tmp = get_idx ();
 	  idx_vector idx = tmp[0];
 

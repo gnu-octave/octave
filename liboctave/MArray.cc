@@ -222,6 +222,7 @@ operator - (const MArray<T>& a)
 
 // Two dimensional array with math ops.
 
+#ifndef NO_DIAG_ARRAY
 template <class T>
 MArray2<T>::MArray2 (const MDiagArray<T>& a)
   : Array2<T> (a.rows (), a.cols (), T (0))
@@ -229,6 +230,7 @@ MArray2<T>::MArray2 (const MDiagArray<T>& a)
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
+#endif
 
 // Element by element MArray2 by scalar ops.
 
@@ -365,6 +367,8 @@ operator - (const MArray2<T>& a)
 
 // Two dimensional diagonal array with math ops.
 
+#ifndef NO_DIAG_ARRAY
+
 // Element by element MDiagArray by MDiagArray ops.
 
 template <class T>
@@ -472,6 +476,7 @@ operator - (const MDiagArray<T>& a)
   NEG_V;
   return MDiagArray<T> (result, a.rows (), a.cols ());
 }
+#endif
 
 /*
 ;;; Local Variables: ***

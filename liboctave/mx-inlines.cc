@@ -25,6 +25,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // But first, some helper functions...
 
+// XXX FIXME XXX -- these need to be done with templates...
+
+static inline int
+equal (const char *x, const char *y, int len)
+{
+  for (int i = 0; i < len; i++)
+    if (x[i] != y[i])
+      return 0;
+  return 1;
+}
+
 static inline double *
 add (const double *d, int len, double s)
 {

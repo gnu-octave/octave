@@ -105,6 +105,16 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+// XXX FIXME XXX -- could we use a templated mixed-type copy function
+// here?
+
+ComplexMatrix::ComplexMatrix (const charMatrix& a)
+{
+  for (int i = 0; i < a.cols (); i++)
+    for (int j = 0; j < a.rows (); j++)
+      elem (i, j) = a.elem (i, j);
+}
+
 int
 ComplexMatrix::operator == (const ComplexMatrix& a) const
 {

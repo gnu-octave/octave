@@ -42,7 +42,10 @@ template <class T> class ArrayRep;
 template <class T> class Array;
 template <class T> class Array2;
 template <class T> class Array3;
+
+#ifndef NO_DIAG_ARRAY
 template <class T> class DiagArray;
+#endif
 
 #ifdef HEAVYWEIGHT_INDEXING
 #define SET_MAX_INDICES(n) set_max_indices (n)
@@ -60,7 +63,10 @@ class ArrayRep
   friend class Array<T>;
   friend class Array2<T>;
   friend class Array3<T>;
+
+#ifndef NO_DIAG_ARRAY
   friend class DiagArray<T>;
+#endif
 
 private:
 
@@ -286,6 +292,7 @@ public:
       set_max_indices (2);
     }
 
+#ifndef NO_DIAG_ARRAY
   Array2 (const DiagArray<T>& a) : Array<T> (a.rows () * a.cols (), T (0))
     {
       for (int i = 0; i < a.length (); i++)
@@ -293,6 +300,7 @@ public:
 
       set_max_indices (2);
     }
+#endif
 
   ~Array2 (void) { }
 
@@ -443,6 +451,7 @@ int assign (Array3<LT>& lhs, const Array3<RT>& rhs);
 // James Kanze                             email: kanze@us-es.sel.de
 // GABI Software, Sarl., 8 rue du Faisan, F-67000 Strasbourg, France
 
+#ifndef NO_DIAG_ARRAY
 template <class T>
 class DiagArray : public Array<T>
 {
@@ -631,6 +640,7 @@ public:
 
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
 };
+#endif
 
 #endif
 

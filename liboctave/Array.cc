@@ -481,6 +481,7 @@ Array3<T>::resize (int n, int m, int k, const T& val)
 
 // A two-dimensional array with diagonal elements only.
 
+#ifndef NO_DIAG_ARRAY
 #if 1
 template <class T>
 T&
@@ -640,6 +641,7 @@ DiagArray<T>::resize (int r, int c, const T& val)
   if (--old_rep->count <= 0)
     delete old_rep;
 }
+#endif
 
 /*
 ;;; Local Variables: ***

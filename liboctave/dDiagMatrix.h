@@ -44,7 +44,7 @@ public:
 
   DiagMatrix (void) : MDiagArray<double> () { }
   DiagMatrix (int n) : MDiagArray<double> (n) { }
-  DiagMatrix (int n, double val) : MDiagArray<double> (n, val) { }
+  DiagMatrix (int n, double val) : MDiagArray<double> (n, n, val) { }
   DiagMatrix (int r, int c) : MDiagArray<double> (r, c) { }
   DiagMatrix (int r, int c, double val) : MDiagArray<double> (r, c, val) { }
   DiagMatrix (const RowVector& a) : MDiagArray<double> (a) { }

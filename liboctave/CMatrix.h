@@ -58,6 +58,8 @@ public:
   ComplexMatrix (const MDiagArray<Complex>& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const ComplexDiagMatrix& a);
 
+  ComplexMatrix (const charMatrix& a);
+
   ComplexMatrix& operator = (const ComplexMatrix& a)
     {
       MArray2<Complex>::operator = (a);

@@ -1,10 +1,8 @@
 Thu Nov 14 00:07:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* emacs/octave.el: Update to version 0.8.6, from Kurt Hornik.
+	* configure.in: Don't substitute values in src/mk-oct-links.in.
 
-	* Makeconf.in (do-subst-config-values, do-subst-default-values):
-	Stript directory part from $@.
-	* octMakefile.in (octave-bug, mkoctfile): Likewise.
+	* emacs/octave.el: Update to version 0.8.6, from Kurt Hornik.
 
 	* configure.in (RLD_FLAG): Surround case pattern in changequote.
 

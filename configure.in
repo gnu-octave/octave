@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.233 $)
+AC_REVISION($Revision: 1.234 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -1050,7 +1050,7 @@ AC_CONFIG_SUBDIRS(glob kpathsea scripts $INFO_DIR $PLPLOT_DIR $READLINE_DIR)
 AC_OUTPUT(Makefile octMakefile Makeconf test/Makefile dlfcn/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
   doc/liboctave/Makefile doc/refcard/Makefile examples/Makefile
-  liboctave/Makefile src/Makefile src/mk-oct-links libcruft/Makefile
+  liboctave/Makefile src/Makefile libcruft/Makefile
   libcruft/Makerules libcruft/blas/Makefile libcruft/balgen/Makefile
   libcruft/dassl/Makefile libcruft/eispack/Makefile
   libcruft/fftpack/Makefile libcruft/fsqp/Makefile

@@ -1,6 +1,6 @@
-;; octave-inf.el --- running Octave as an inferior Emacs process
+;;; octave-inf.el --- running Octave as an inferior Emacs process
 
-;;; Copyright (C) 1997 Free Software Foundation, Inc.
+;; Copyright (C) 1997 Free Software Foundation, Inc.
 
 ;; Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
@@ -29,22 +29,35 @@
 (require 'octave-mod)
 (require 'comint)
 
-(defvar inferior-octave-program "octave"
-  "*Program invoked by `inferior-octave'.")
+(defgroup octave-inferior nil
+  "Running Octave as an inferior Emacs process."
+  :group 'octave)
 
-(defvar inferior-octave-prompt
+(defcustom inferior-octave-program "octave"
+  "*Program invoked by `inferior-octave'."
+  :type 'string
+  :group 'octave-inferior)
+
+(defcustom inferior-octave-prompt
   "\\(^octave\\(\\|.bin\\)\\(:[0-9]+\\)?\\|^debug\\|^\\)>+ "
-  "*Regexp to match prompts for the inferior Octave process.")
+  "*Regexp to match prompts for the inferior Octave process."
+  :type 'regexp
+  :group 'octave-inferior)
 
-(defvar inferior-octave-startup-file nil
+(defcustom inferior-octave-startup-file nil
   "*Name of the inferior Octave startup file.
 The contents of this file are sent to the inferior Octave process on
-startup.")
+startup."
+  :type '(choice (const :tag "None" nil)
+		 file)
+  :group 'octave-inferior)
 
-(defvar inferior-octave-startup-args '("-i" "--no-line-editing")
+(defcustom inferior-octave-startup-args nil
   "*List of command line arguments for the inferior Octave process.
 For example, for suppressing the startup message and using `traditional'
-mode, set this to (\"-q\" \"--traditional\").")
+mode, set this to (\"-q\" \"--traditional\")."
+  :type '(repeat string)
+  :group 'octave-inferior)
 
 (defvar inferior-octave-mode-map nil
   "Keymap used in Inferior Octave mode.")
@@ -69,8 +82,10 @@ mode, set this to (\"-q\" \"--traditional\").")
     (modify-syntax-entry ?\n ">" table)
     (setq inferior-octave-mode-syntax-table table)))
 
-(defvar inferior-octave-mode-hook nil
-  "*Hook to be run when Inferior Octave mode is started.")
+(defcustom inferior-octave-mode-hook nil
+  "*Hook to be run when Inferior Octave mode is started."
+  :type 'hook
+  :group 'octave-inferior)
 
 (defvar inferior-octave-font-lock-keywords
   (list
@@ -167,7 +182,8 @@ startup file, `~/.emacs-octave'."
 	       (substring inferior-octave-buffer 1 -1)
 	       inferior-octave-buffer
 	       inferior-octave-program
-	       inferior-octave-startup-args)))
+	       (append (list "-i" "--no-line-editing")
+		       inferior-octave-startup-args))))
     (set-process-filter proc 'inferior-octave-output-digest)
     (setq comint-ptyp process-connection-type
 	  inferior-octave-process proc
@@ -355,3 +371,4 @@ directory and makes this the current buffer's default directory."
 (provide 'octave-inf)
 
 ;;; octave-inf.el ends here
+

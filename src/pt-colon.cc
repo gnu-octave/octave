@@ -96,9 +96,9 @@ tree_colon_expression::rvalue (void)
 
   octave_value tmp = op_base->rvalue ();
 
-  if (tmp.is_undefined ())
+  if (error_state || tmp.is_undefined ())
     {
-      eval_error ("invalid null value in colon expression");
+      eval_error ("invalid value in colon expression");
       return retval;
     }
 
@@ -112,9 +112,9 @@ tree_colon_expression::rvalue (void)
 
   tmp = op_limit->rvalue ();
 
-  if (tmp.is_undefined ())
+  if (error_state || tmp.is_undefined ())
     {
-      eval_error ("invalid null value in colon expression");
+      eval_error ("invalid value in colon expression");
       return retval;
     }
 
@@ -132,9 +132,9 @@ tree_colon_expression::rvalue (void)
     {
       tmp = op_increment->rvalue ();
 
-      if (tmp.is_undefined ())
+      if (error_state || tmp.is_undefined ())
 	{
-	  eval_error ("invalid null value in colon expression");
+	  eval_error ("invalid value in colon expression");
 	  return retval;
 	}
 

@@ -1,3 +1,8 @@
+2004-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::index2, Array<T>::indexN):
+	Don't set invalid dimensions on return value.
+
 2004-04-21  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (MX_ND_REDUCTION): Chop trailing singletons.

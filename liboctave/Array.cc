@@ -2004,7 +2004,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
       if (len == 0 && idx_arg.one_zero_only ())
 	retval = Array<T> (tmp, dim_vector (0, 0));
-      else
+      else if (len >= idx_orig_dims.numel ())
 	retval = Array<T> (tmp, idx_orig_dims);
     }
   else if (nr == 1 || nc == 1)
@@ -2025,7 +2025,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	  else
 	    retval = Array<T> (tmp, dim_vector (len, 1));
 	}
-      else
+      else if (len >= idx_orig_dims.numel ())
 	retval = Array<T> (tmp, idx_orig_dims);
     }
   else
@@ -2101,8 +2101,13 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
       Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
 
-      if (tmp.length () != 0)
-	retval = Array<T> (tmp, idx_orig_dims);
+      int len = tmp.length ();
+
+      if (len != 0)
+	{
+	  if (len >= idx_orig_dims.numel ())
+	    retval = Array<T> (tmp, idx_orig_dims);
+	}
       else
 	retval = Array<T> (tmp, dim_vector (0, 0));
     }
@@ -2154,7 +2159,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
 	      retval = Array<T> (tmp, new_dims);
 	    }
-	  else
+	  else if (tmp.length () >= idx_orig_dims.numel ())
 	    retval = Array<T> (tmp, idx_orig_dims);
 
 	  (*current_liboctave_error_handler)

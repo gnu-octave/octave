@@ -1,3 +1,8 @@
+2004-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-colon.cc (tree_colon_expression::rvalue): Also check for
+	error_state after evaluating each subexpression.
+
 2004-04-22  David Bateman  <dbateman@free.fr>
 
 	* ov-base-scalar.h (octave_base_scalar<ST>::permute): New function.

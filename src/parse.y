@@ -348,7 +348,10 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Bison declarations.
 
-%name-prefix = "octave_"
+// Don't add spaces around the = here; it causes some versions of
+// bison to fail to properly recognize the directive.
+
+%name-prefix="octave_"
 
 %union
 {

@@ -38,8 +38,10 @@ extern char *strsave (const char *);
 extern void octave_putenv (const std::string&, const std::string&);
 
 extern std::string octave_fgets (std::FILE *);
-
 extern std::string octave_fgetl (std::FILE *);
+
+extern std::string octave_fgets (std::FILE *, bool& eof);
+extern std::string octave_fgetl (std::FILE *, bool& eof);
 
 extern "C" int octave_gethostname (char *, int);
 

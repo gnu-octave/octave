@@ -1,3 +1,9 @@
+2003-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.cc (do_readline): Pass eof to octave_fgetl.
+	* lo-utils.cc (octave_fgets, octave_fgetl): New overloaded
+	versions with eof arg.
+
 2003-09-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.h (dimensions): Now public.

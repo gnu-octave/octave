@@ -105,6 +105,15 @@ octave_putenv (const std::string& name, const std::string& value)
 std::string
 octave_fgets (FILE *f)
 {
+  bool eof;
+  return octave_fgets (f, eof);
+}
+
+std::string
+octave_fgets (FILE *f, bool& eof)
+{
+  eof = false;
+
   std::string retval;
 
   int grow_size = 1024;
@@ -147,6 +156,8 @@ octave_fgets (FILE *f)
 	{
 	  if (len == 0)
 	    {
+	      eof = true;
+
 	      free (buf);
 
 	      buf = 0;
@@ -166,7 +177,14 @@ octave_fgets (FILE *f)
 std::string
 octave_fgetl (FILE *f)
 {
-  std::string retval = octave_fgets (f);
+  bool eof;
+  return octave_fgetl (f, eof);
+}
+
+std::string
+octave_fgetl (FILE *f, bool& eof)
+{
+  std::string retval = octave_fgets (f, eof);
 
   size_t len = retval.length ();
 

@@ -44,6 +44,7 @@ octave_syscalls
   static int fcntl (int, int, long, string&);
 
   static pid_t fork (string&);
+  static pid_t vfork (string&);
 
   static pid_t getpgrp (string&);
 

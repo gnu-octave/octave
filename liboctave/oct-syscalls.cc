@@ -148,6 +148,27 @@ octave_syscalls::fork (string& msg)
 }
 
 pid_t
+octave_syscalls::vfork (string& msg)
+{
+  pid_t status = -1;
+
+#if defined (HAVE_VFORK) || defined (HAVE_FORK)
+#if defined (HAVE_VFORK)
+  status = ::vfork ();
+#else
+  status = ::vfork ();
+#endif
+
+  if (status < 0)
+    msg = ::strerror (errno);
+#else
+  msg = NOT_SUPPORTED ("vfork");
+#endif
+
+  return status;
+}
+
+pid_t
 octave_syscalls::getpgrp (string& msg)
 {
   pid_t status = -1;

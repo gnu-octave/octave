@@ -1,5 +1,13 @@
 Thu Feb  5 02:27:18 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dirfns.cc (Fls): If first attempt at reading process output
+	fails, sleep once and try again.
+	* toplev.cc (run_command_and_return_output): Likewise.
+
+	* oct-procbuf.cc (octave_procbuf::open): Use vfork if it is available.
+
+	* syscalls.cc (Fvfork): New function.
+
 	* ov-bool-mat.cc: Only declare assign function if
 	CXX_NEW_FRIEND_TEMPLATE_DECL is not defined.
 

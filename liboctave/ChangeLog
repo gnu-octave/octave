@@ -1,5 +1,7 @@
 Thu Feb  5 02:12:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-syscalls.cc (octave_syscalls::vfork): New function.
+
 	* lo-specfun.cc: Don't include dbleBessel.h.
 
 	* Makefile.in (INCLUDES): Delete oct-math.h from the list.

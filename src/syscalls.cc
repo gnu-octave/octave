@@ -285,6 +285,37 @@ has occured, and MSG contains a system-dependent error message.")
   return retval;
 }
 
+DEFUN (vfork, args, ,
+ "[PID, MSG] = vfork ()\n\
+\n\
+Create a copy of the current process.\n\
+\n\
+If successful, PID is either the process ID and you are in the parent,\n\
+or 0, and you are in the child.  If PID is less than zero, an error\n\
+has occured, and MSG contains a system-dependent error message.")
+{
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+      string msg;
+
+      pid_t pid = octave_syscalls::vfork (msg);
+
+      retval(0) = static_cast<double> (pid);
+      retval(1) = msg;
+    }
+  else
+    print_usage ("vfork");
+
+  return retval;
+}
+
 DEFUN (getpgrp, args, ,
   "pgid = getpgrp (): return the process group id of the current process")
 {

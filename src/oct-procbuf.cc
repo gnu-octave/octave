@@ -55,7 +55,7 @@ octave_procbuf::open (const char *command, int mode)
 
   int pipe_fds[2];
 
-  int parent_end, child_end;
+  volatile int parent_end, child_end;
 
   if (is_open ())
     return 0;
@@ -74,7 +74,11 @@ octave_procbuf::open (const char *command, int mode)
       child_end = pipe_fds[0];
     }
 
+#if defined HAVE_VFORK
+  proc_pid = vfork ();
+#else
   proc_pid = fork ();
+#endif
 
   if (proc_pid == 0)
     {

@@ -1,3 +1,9 @@
+Thu Feb  5 03:04:09 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for vfork.
+
+	* config.h.bot (X_CAST): New macro.
+
 Wed Feb  4 01:42:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_FLIBS): If ld_run_path is not absolute, kill it.

@@ -338,7 +338,30 @@ run_command_and_return_output (const string& cmd_str)
 	{
 	  ostrstream output_buf;
 
+	  // XXX FIXME XXX -- sometimes, the subprocess hasn't written
+	  // anything before we try to read from the procstream.  The
+	  // kluge below (simply waiting and trying again) is ugly,
+	  // but it seems to work, at least most of the time.  It
+	  // could probably still fail if the subprocess hasn't
+	  // started writing after the snooze.  Isn't there a better
+	  // way?  If there is, you should also fix the code for the
+	  // ls function in dirfns.cc.
+
 	  char ch;
+
+	  if (cmd->get (ch))
+	    output_buf.put (ch);
+	  else
+	    {
+	      cmd->clear ();
+
+#if defined (HAVE_USLEEP)
+	      usleep (100);
+#else
+	      sleep (1);
+#endif
+	    }
+
 	  while (cmd->get (ch))
 	    output_buf.put (ch);
 

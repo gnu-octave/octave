@@ -155,11 +155,33 @@ print a directory listing")
 
   unwind_protect::add (cleanup_iprocstream, cmd);
 
+  // XXX FIXME XXX -- sometimes, the subprocess hasn't written
+  // anything before we try to read from the procstream.  The kluge
+  // below (simply waiting and trying again) is ugly, but it seems to
+  // work, at least most of the time.  It could probably still fail if
+  // the subprocess hasn't started writing after the snooze.  Isn't
+  // there a better way?  If there is, you should also fix the code
+  // for the system function in toplev.cc.
+
   if (cmd && *cmd)
     {
-      int ch;
-      while ((ch = cmd->get ()) != EOF)
-	octave_stdout << (char) ch;
+      char ch;
+
+      if (cmd->get (ch))
+        octave_stdout << ch;
+      else
+        {
+          cmd->clear ();
+
+#if defined (HAVE_USLEEP)
+          usleep (100);
+#else
+          sleep (1);
+#endif
+        }
+
+      while (cmd->get (ch))
+        octave_stdout << ch;
     }
   else
     error ("couldn't start process for ls!");

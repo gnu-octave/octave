@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-##  -*- texinfo -*-
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} tzero (@var{a}, @var{b}, @var{c}, @var{d}@{, @var{opt}@})
 ## @deftypefnx {Function File} {} tzero (@var{sys}@{,@var{opt}@})
 ## Compute transmission zeros of a continuous

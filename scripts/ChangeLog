@@ -60,6 +60,7 @@
 	* signal/triangle_sw.m: Ditto.
 	* signal/yulewalker.m: Ditto.
 	* control/util/strappend.m: Ditto.
+	* control/base/nichols.m: Ditto.
 
 2000-01-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

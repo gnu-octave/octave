@@ -16,10 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## [mag,phase,w] = nichols(sys[,w,outputs,inputs])
-## Produce Nichols plot of a system
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} nichols (@var{sys}, @var{w}, @var{outputs}, @var{inputs})
+## Produce Nichols plot of a system.
 ##
-## Compute the frequency response of a system.
 ## inputs:
 ##   sys: system data structure (must be either purely continuous or discrete;
 ##       see is_digital)
@@ -49,6 +49,7 @@
 ##
 ## Note: if the requested plot is for an MIMO system, mag is set to
 ## ||G(jw)|| or ||G(exp(jwT))|| and phase information is not computed.
+## @end deftypefn
 
 function [mag, phase, w] = nichols (sys, w, outputs, inputs)
 

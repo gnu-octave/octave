@@ -1618,6 +1618,8 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 		      FOUR_BYTE_INT& imag, FOUR_BYTE_INT& len,
 		      int quiet = 0)
 {
+  swap = 0;
+
   is.read (&mopt, 4);
   if (! is)
     {

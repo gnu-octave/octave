@@ -195,6 +195,7 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 
   retval(1) = idx;
   retval(0) = octave_value (m);
+
   return retval;
 }
 
@@ -204,16 +205,19 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 
 #if defined (HAVE_IEEE754_DATA_FORMAT) && defined (EIGHT_BYTE_INT)
 
-static inline unsigned EIGHT_BYTE_INT FloatFlip(unsigned EIGHT_BYTE_INT f)
+static inline unsigned EIGHT_BYTE_INT
+FloatFlip (unsigned EIGHT_BYTE_INT f)
 {
   unsigned EIGHT_BYTE_INT mask = -(EIGHT_BYTE_INT)(f >> 63) | 
     0x8000000000000000ULL;
+
   return f ^ mask;
 }
 
 inline unsigned EIGHT_BYTE_INT IFloatFlip(unsigned EIGHT_BYTE_INT f)
 {
   unsigned EIGHT_BYTE_INT mask = ((f >> 63) - 1) | 0x8000000000000000ULL;
+
   return f ^ mask;
 }
 
@@ -313,7 +317,6 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 
 	  p += ns;
 	}
-
     }
   else
     {

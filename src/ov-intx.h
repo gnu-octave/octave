@@ -72,7 +72,7 @@ public:
 	  if (Vwarn_fortran_indexing)
 	    gripe_implicit_conversion (type_name (), "real scalar");
 
-	  retval = double (matrix (0, 0));
+	  retval = double (matrix(0));
 	}
       else
 	gripe_invalid_conversion (type_name (), "real scalar");
@@ -99,7 +99,7 @@ public:
       ComplexNDArray retval (matrix.dims ()); 
       int nel = matrix.numel ();
       for (int i = 0; i < nel; i++)
-        retval(i) = Complex (matrix(i));
+        retval(i) = Complex (double (matrix(i)));
       return retval;
     }
 
@@ -197,7 +197,7 @@ public:
   complex_array_value (bool = false) const
     { 
       ComplexNDArray retval (dim_vector (1,1)); 
-      retval(0) = Complex (scalar);
+      retval(0) = Complex (double (scalar));
       return retval;
     }
 

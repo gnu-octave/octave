@@ -1,10 +1,10 @@
 # types
-ccv ComplexColumnVector V CColVector.h YES
-crv ComplexRowVector V CRowVector.h YES
-cs Complex S oct-cmplx.h NO
-cv ColumnVector V dColVector.h YES
-rv RowVector V dRowVector.h YES
-s double S NONE NO
+ccv ComplexColumnVector V CColVector.h YES 0.0
+crv ComplexRowVector V CRowVector.h YES 0.0
+cs Complex S oct-cmplx.h NO 0.0
+cv ColumnVector V dColVector.h YES 0.0
+rv RowVector V dRowVector.h YES 0.0
+s double S NONE NO 0.0
 # ops
 ccv ccv cv B
 ccv ccv s B

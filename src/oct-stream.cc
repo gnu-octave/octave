@@ -2780,8 +2780,6 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
 
   RET_T nda;
 
-  bool ok = true;
-
   count = 0;
 
   typename octave_array_type_traits<RET_T>::element_type elt_zero
@@ -2792,7 +2790,7 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
   int max_size = 0;
 
   int final_nr = 0;
-  int final_nc = 0;
+  int final_nc = 1;
 
   if (nr > 0)
     {
@@ -2873,78 +2871,64 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
 	      typename octave_array_type_traits<RET_T>::element_type tmp
 		= static_cast <typename octave_array_type_traits<RET_T>::element_type> (u.val);
 
-	      if (ok)
+	      if (is)
 		{
-		  if (is)
+		  if (count == max_size)
 		    {
-		      if (count == max_size)
-			{
-			  max_size *= 2;
+		      max_size *= 2;
 
-			  if (nr > 0)
-			    nda.resize (dim_vector (nr, max_size / nr),
-					elt_zero);
-			  else
-			    nda.resize (dim_vector (max_size, 1), elt_zero);
-
-			  dat = nda.fortran_vec ();
-			}
-
-		      dat[count++] = tmp;
-
-		      elts_read++;
-		    }
-
-		  if (skip != 0 && elts_read == block_size)
-		    {
-		      strm.seek (skip, SEEK_CUR);
-		      elts_read = 0;
-		    }
-
-		  if (is.eof ())
-		    {
 		      if (nr > 0)
+			nda.resize (dim_vector (nr, max_size / nr),
+				    elt_zero);
+		      else
+			nda.resize (dim_vector (max_size, 1), elt_zero);
+
+		      dat = nda.fortran_vec ();
+		    }
+
+		  dat[count++] = tmp;
+
+		  elts_read++;
+		}
+
+	      if (skip != 0 && elts_read == block_size)
+		{
+		  strm.seek (skip, SEEK_CUR);
+		  elts_read = 0;
+		}
+
+	      if (is.eof ())
+		{
+		  if (nr > 0)
+		    {
+		      if (count > nr)
 			{
-			  if (count > nr)
-			    {
-			      final_nr = nr;
-			      final_nc = (count - 1) / nr + 1;
-			    }
-			  else
-			    {
-			      final_nr = count;
-			      final_nc = 1;
-			    }
+			  final_nr = nr;
+			  final_nc = (count - 1) / nr + 1;
 			}
 		      else
 			{
 			  final_nr = count;
 			  final_nc = 1;
 			}
-
-		      break;
 		    }
-		}
-	      else
-		{
-		  ok = false;
+		  else
+		    {
+		      final_nr = count;
+		      final_nc = 1;
+		    }
+
 		  break;
 		}
 	    }
-	  else
-	    {
-	      ok = false;
-	      break;
-	    }
+	  else if (is.eof ())
+	    break;
 	}
     }
 
-  if (ok)
-    {
-      nda.resize (dim_vector (final_nr, final_nc), elt_zero);
+  nda.resize (dim_vector (final_nr, final_nc), elt_zero);
 
-      retval = nda;
-    }
+  retval = nda;
 
   return retval;
 }

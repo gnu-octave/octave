@@ -1,3 +1,26 @@
+2004-09-23  John W. Eaton  <jwe@octave.org>
+
+	* mx-ops: Include scalar zero value in type definitions.
+	Delete zero information from ops section.
+	* mk-ops.awk: Use type-specific zero info.
+
+	* mx-op-defs.h (MS_BOOL_OP, SM_BOOL_OP, MM_BOOL_OP, NDS_BOOL_OP,
+	SND_BOOL_OP, NDND_BOOL_OP): Args now include zero values for both
+	LHS and RHS.
+	(MS_BOOL_OPS2, SM_BOOL_OPS2, MM_BOOL_OPS2, NDS_BOOL_OPS2,
+	SND_BOOL_OPS2, NDND_BOOL_OPS2): New macros.
+	(MS_BOOL_OPS, SM_BOOL_OPS, MM_BOOL_OPS, NDS_BOOL_OPS,
+	SND_BOOL_OPS, NDND_BOOL_OPS): Define in terms of 2-zero versions.
+
+	* idx-vector.h (idx_vector::idx_vector_rep::idx_vector_rep (const
+	intNDArray<U>&)): Use explicit as_double () conversion in call to
+	tree_to_mat_idx.
+
+	* oct-inttypes.h (octave_int<T>::operator float): New conversion.
+	(pow): Instead of "if (b_val)", use "if (b_val != zero)".
+	Likewise for the "if (b_val & one)" test.
+	(operator <<, operator >>): Type of retval is octave_int<T1>, not T1.
+
 2004-09-23  David Bateman  <dbateman@free.fr>
 
 	* oct-inttypes.h (OCTAVE_INT_DOUBLE_CMP_OP, OCTAVE_DOUBLE_INT_CMP_OP):

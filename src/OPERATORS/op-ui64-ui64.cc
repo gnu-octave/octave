@@ -85,7 +85,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 OCTAVE_S_INT_UNOPS (uint64)
 OCTAVE_SS_INT_CMP_OPS (ss, uint64_, uint64_)
-OCTAVE_SS_INT_BOOL_OPS (ss, uint64_, uint64_)
+OCTAVE_SS_INT_BOOL_OPS (ss, uint64_, uint64_, octave_uint64 (0), octave_uint64 (0))
 
 OCTAVE_SM_INT_CMP_OPS (sm, uint64_, uint64_)
 OCTAVE_SM_INT_BOOL_OPS (sm, uint64_, uint64_)

@@ -26,8 +26,9 @@ BEGIN {
     {
       ntypes++;
 
-      if (NF == 5)
+      if (NF == 6)
         {
+          scalar_zero_val[ntypes] = $6;
           fwd_decl_ok[ntypes] = $5 == "YES";
           header[ntypes] = $4 == "NONE" ? "" : $4;
           class[ntypes] = $3;
@@ -61,8 +62,6 @@ BEGIN {
 
 	  if (rhs_conv == "NONE")
 	    rhs_conv = "";
-
-	  zero_val = (NF > n) ? $(++n) : "";
 
 	  k = 0
 	  while (NF > n)
@@ -98,6 +97,10 @@ BEGIN {
 	  result_type = type[result_num];
 	  lhs_type = type[lhs_num];
           rhs_type = type[rhs_num];
+
+	  result_scalar_zero_val = scalar_zero_val[result_num];
+          lhs_scalar_zero_val = scalar_zero_val[lhs_num];
+          rhs_scalar_zero_val = scalar_zero_val[rhs_num];
 
 	  result_header = header[result_num];
 	  lhs_header = header[lhs_num];
@@ -185,7 +188,7 @@ BEGIN {
               if ((lhs_class == "DM" && rhs_class == "M") || (lhs_class == "M" && rhs_class == "DM"))
                 printf ("%s%s_BIN_OPS (%s, %s, %s, %s)\n",
 		        lhs_class, rhs_class, result_type,
-			lhs_type, rhs_type, zero_val) >> cc_file
+		        lhs_type, rhs_type, result_scalar_zero_val) >> cc_file
               else
                 printf ("%s%s_BIN_OPS (%s, %s, %s)\n",
 		        lhs_class, rhs_class, result_type,
@@ -197,8 +200,9 @@ BEGIN {
 	            lhs_type, lhs_conv, rhs_type, rhs_conv) >> cc_file
 
           if (bool_ops)
-            printf ("%s%s_BOOL_OPS (%s, %s, %s)\n", lhs_class, rhs_class,
-	            lhs_type, rhs_type, zero_val) >> cc_file
+            printf ("%s%s_BOOL_OPS2 (%s, %s, %s, %s)\n", lhs_class, rhs_class,
+	            lhs_type, rhs_type, lhs_scalar_zero_val,
+	            rhs_scalar_zero_val) >> cc_file
 
 
           close (cc_file);

@@ -99,19 +99,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     return octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
   } \
 
-#define OCTAVE_SS_INT_BOOL_OPS(PFX, T1, T2) \
+#define OCTAVE_SS_INT_BOOL_OPS(PFX, T1, T2, Z1, Z2) \
   DEFBINOP (PFX ## _el_and, T2, T2) \
   { \
     CAST_BINOP_ARGS (const octave_ ## T1 ## scalar&, const octave_ ## T2 ## scalar&); \
  \
-    return v1.T1 ## scalar_value () != 0 && v2.T2 ## scalar_value () != 0; \
+    return v1.T1 ## scalar_value () != Z1 && v2.T2 ## scalar_value () != Z2; \
   } \
  \
   DEFBINOP (PFX ## _el_or, T1, T2) \
   { \
     CAST_BINOP_ARGS (const octave_ ## T1 ## scalar&, const octave_ ## T2 ## scalar&); \
  \
-    return v1.T1 ## scalar_value () != 0 || v2.T2 ## scalar_value () != 0; \
+    return v1.T1 ## scalar_value () != Z1 || v2.T2 ## scalar_value () != Z2; \
   }
 
 #define OCTAVE_SS_INT_CMP_OPS(PFX, T1, T2) \
@@ -150,14 +150,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   OCTAVE_SS_INT_CMP_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_SS_INT_CMP_OPS (sx, TYPE ## _, ) \
   OCTAVE_SS_INT_CMP_OPS (xs, , TYPE ## _) \
-  OCTAVE_SS_INT_BOOL_OPS (ss, TYPE ## _, TYPE ## _) \
-  OCTAVE_SS_INT_BOOL_OPS (sx, TYPE ## _, ) \
-  OCTAVE_SS_INT_BOOL_OPS (xs, , TYPE ## _)
-
-#define OCTAVE_SS_INT_OPS2(T1, T2) \
-  OCTAVE_SS_INT_ARITH_OPS (ss, T1, T2) \
-  OCTAVE_SS_INT_CMP_OPS (ss, T1, T2) \
-  OCTAVE_SS_INT_BOOL_OPS (ss, T1, T2)
+  OCTAVE_SS_INT_BOOL_OPS (ss, TYPE ## _, TYPE ## _, octave_ ## TYPE (0), octave_ ## TYPE (0)) \
+  OCTAVE_SS_INT_BOOL_OPS (sx, TYPE ## _, , octave_ ## TYPE (0), 0) \
+  OCTAVE_SS_INT_BOOL_OPS (xs, , TYPE ## _, 0, octave_ ## TYPE (0))
 
 #define OCTAVE_SM_INT_ARITH_OPS(PFX, TS, TM) \
   /* scalar by matrix ops. */ \
@@ -247,11 +242,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   OCTAVE_SM_INT_BOOL_OPS (smx, TYPE ## _, ) \
   OCTAVE_SM_CONV (TYPE ## _, TYPE ## _) \
   OCTAVE_SM_CONV (TYPE ## _, complex_)
-
-#define OCTAVE_SM_INT_OPS2(TS, TM) \
-  OCTAVE_SM_INT_ARITH_OPS (sm, TS, TM) \
-  OCTAVE_SM_INT_CMP_OPS (sm, TS, TM) \
-  OCTAVE_SM_INT_BOOL_OPS (sm, TS, TM)
 
 #define OCTAVE_MS_INT_ARITH_OPS(PFX, TM, TS) \
   /* matrix by scalar ops. */ \
@@ -451,11 +441,6 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   OCTAVE_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, , ) \
   OCTAVE_MM_CONV(TYPE ## _, complex_)
 
-#define OCTAVE_MM_INT_OPS2(T1, T2) \
-  OCTAVE_MM_INT_ARITH_OPS (mm, T1, T2) \
-  OCTAVE_MM_INT_CMP_OPS (mm, T1, T2) \
-  OCTAVE_MM_INT_BOOL_OPS (mm, T1, T2)
-
 #define OCTAVE_RE_INT_ASSIGN_OPS(TYPE) \
   DEFNDASSIGNOP_FN (TYPE ## ms_assign, matrix, TYPE ## _scalar, array, assign) \
   DEFNDASSIGNOP_FN (TYPE ## mm_assign, matrix, TYPE ## _matrix, array, assign)
@@ -522,11 +507,6 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_scalar, octave_ ## TYPE ## _matrix) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_scalar, octave_complex_matrix)
 
-#define OCTAVE_INSTALL_SS_INT_OPS2(T1, T2) \
-  OCTAVE_INSTALL_SS_INT_ARITH_OPS (ss, T1, T2) \
-  OCTAVE_INSTALL_SS_INT_CMP_OPS (ss, T1, T2) \
-  OCTAVE_INSTALL_SS_INT_BOOL_OPS (ss, T1, T2)
-
 #define OCTAVE_INSTALL_SM_INT_ARITH_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _add); \
   INSTALL_BINOP (op_sub, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _sub); \
@@ -565,11 +545,6 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_matrix, octave_ ## TYPE ## _matrix) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_matrix, octave_complex_matrix)
-
-#define OCTAVE_INSTALL_SM_INT_OPS2(T1, T2) \
-  OCTAVE_INSTALL_SM_INT_ARITH_OPS (sm, T1, T2) \
-  OCTAVE_INSTALL_SM_INT_CMP_OPS (sm, T1, T2) \
-  OCTAVE_INSTALL_SM_INT_BOOL_OPS (sm, T1, T2)
 
 #define OCTAVE_INSTALL_MS_INT_ARITH_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _add); \
@@ -611,11 +586,6 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mx, TYPE ## _, ) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_scalar, octave_complex_matrix)
-
-#define OCTAVE_INSTALL_MS_INT_OPS2(T1, T2) \
-  OCTAVE_INSTALL_MS_INT_ARITH_OPS (ms, T1, T2) \
-  OCTAVE_INSTALL_MS_INT_CMP_OPS (ms, T1, T2) \
-  OCTAVE_INSTALL_MS_INT_BOOL_OPS (ms, T1, T2)
 
 #define OCTAVE_INSTALL_M_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _matrix, m_not); \
@@ -665,11 +635,6 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, ) \
   INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_complex_matrix, TYPE ## _m_complex_m_conv) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_matrix, octave_complex_matrix)
-
-#define OCTAVE_INSTALL_MM_INT_OPS2(T1, T2) \
-  OCTAVE_INSTALL_MM_INT_ARITH_OPS (T1, T2) \
-  OCTAVE_INSTALL_MM_INT_CMP_OPS (T1, T2) \
-  OCTAVE_INSTALL_MM_INT_BOOL_OPS (T1, T2)
 
 #define OCTAVE_INSTALL_RE_INT_ASSIGN_OPS(TYPE) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_ ## TYPE ## _scalar, TYPE ## ms_assign) \

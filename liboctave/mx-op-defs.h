@@ -214,7 +214,7 @@ class boolNDArray;
   BOOL_OP_DECL (mx_el_and, M, S); \
   BOOL_OP_DECL (mx_el_or,  M, S); \
 
-#define MS_BOOL_OP(F, OP, M, S, ZERO) \
+#define MS_BOOL_OP(F, OP, M, S, LHS_ZERO, RHS_ZERO) \
   boolMatrix \
   F (const M& m, const S& s) \
   { \
@@ -229,15 +229,18 @@ class boolNDArray;
  \
         for (int j = 0; j < nc; j++) \
           for (int i = 0; i < nr; i++) \
-	    r.elem(i, j) = (m.elem(i, j) != ZERO) OP (s != ZERO); \
+	    r.elem(i, j) = (m.elem(i, j) != LHS_ZERO) OP (s != RHS_ZERO); \
       } \
  \
     return r; \
   }
 
+#define MS_BOOL_OPS2(M, S, LHS_ZERO, RHS_ZERO) \
+  MS_BOOL_OP (mx_el_and, &&, M, S, LHS_ZERO, RHS_ZERO) \
+  MS_BOOL_OP (mx_el_or,  ||, M, S, LHS_ZERO, RHS_ZERO)
+
 #define MS_BOOL_OPS(M, S, ZERO) \
-  MS_BOOL_OP (mx_el_and, &&, M, S, ZERO) \
-  MS_BOOL_OP (mx_el_or,  ||, M, S, ZERO)
+  MS_BOOL_OPS2(M, S, ZERO, ZERO)
 
 #define MS_OP_DECLS(R, M, S) \
   MS_BIN_OP_DECLS (R, M, S) \
@@ -314,7 +317,7 @@ class boolNDArray;
   BOOL_OP_DECL (mx_el_and, S, M); \
   BOOL_OP_DECL (mx_el_or,  S, M); \
 
-#define SM_BOOL_OP(F, OP, S, M, ZERO) \
+#define SM_BOOL_OP(F, OP, S, M, LHS_ZERO, RHS_ZERO) \
   boolMatrix \
   F (const S& s, const M& m) \
   { \
@@ -329,15 +332,18 @@ class boolNDArray;
  \
         for (int j = 0; j < nc; j++) \
           for (int i = 0; i < nr; i++) \
-	    r.elem(i, j) = (s != ZERO) OP (m.elem(i, j) != ZERO); \
+	    r.elem(i, j) = (s != LHS_ZERO) OP (m.elem(i, j) != RHS_ZERO); \
       } \
  \
     return r; \
   }
 
+#define SM_BOOL_OPS2(S, M, LHS_ZERO, RHS_ZERO) \
+  SM_BOOL_OP (mx_el_and, &&, S, M, LHS_ZERO, RHS_ZERO) \
+  SM_BOOL_OP (mx_el_or,  ||, S, M, LHS_ZERO, RHS_ZERO)
+
 #define SM_BOOL_OPS(S, M, ZERO) \
-  SM_BOOL_OP (mx_el_and, &&, S, M, ZERO) \
-  SM_BOOL_OP (mx_el_or,  ||, S, M, ZERO)
+  SM_BOOL_OPS2(S, M, ZERO, ZERO)
 
 #define SM_OP_DECLS(R, S, M) \
   SM_BIN_OP_DECLS (R, S, M) \
@@ -429,7 +435,7 @@ class boolNDArray;
   BOOL_OP_DECL (mx_el_and, M1, M2); \
   BOOL_OP_DECL (mx_el_or,  M1, M2);
 
-#define MM_BOOL_OP(F, OP, M1, M2, ZERO) \
+#define MM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
@@ -449,8 +455,8 @@ class boolNDArray;
  \
 	    for (int j = 0; j < m1_nc; j++) \
 	      for (int i = 0; i < m1_nr; i++) \
-		r.elem(i, j) = (m1.elem(i, j) != ZERO) \
-                                OP (m2.elem(i, j) != ZERO); \
+		r.elem(i, j) = (m1.elem(i, j) != LHS_ZERO) \
+                                OP (m2.elem(i, j) != RHS_ZERO); \
 	  } \
       } \
     else \
@@ -462,9 +468,12 @@ class boolNDArray;
     return r; \
   }
 
+#define MM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO) \
+  MM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO) \
+  MM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
+
 #define MM_BOOL_OPS(M1, M2, ZERO) \
-  MM_BOOL_OP (mx_el_and, &&, M1, M2, ZERO) \
-  MM_BOOL_OP (mx_el_or,  ||, M1, M2, ZERO)
+  MM_BOOL_OPS2(M1, M2, ZERO, ZERO)
 
 #define MM_OP_DECLS(R, M1, M2) \
   MM_BIN_OP_DECLS (R, M1, M2) \
@@ -535,7 +544,7 @@ class boolNDArray;
   NDBOOL_OP_DECL (mx_el_and, ND, S); \
   NDBOOL_OP_DECL (mx_el_or,  ND, S);
 
-#define NDS_BOOL_OP(F, OP, ND, S, ZERO) \
+#define NDS_BOOL_OP(F, OP, ND, S, LHS_ZERO, RHS_ZERO) \
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
@@ -548,15 +557,18 @@ class boolNDArray;
         r.resize (m.dims ()); \
  \
         for (int i = 0; i < len; i++) \
-	  r.elem(i) = (m.elem(i) != ZERO) OP (s != ZERO); \
+	  r.elem(i) = (m.elem(i) != LHS_ZERO) OP (s != RHS_ZERO); \
       } \
  \
     return r; \
   }
 
+#define NDS_BOOL_OPS2(ND, S, LHS_ZERO, RHS_ZERO) \
+  NDS_BOOL_OP (mx_el_and, &&, ND, S, LHS_ZERO, RHS_ZERO) \
+  NDS_BOOL_OP (mx_el_or,  ||, ND, S, LHS_ZERO, RHS_ZERO)
+
 #define NDS_BOOL_OPS(ND, S, ZERO) \
-  NDS_BOOL_OP (mx_el_and, &&, ND, S, ZERO) \
-  NDS_BOOL_OP (mx_el_or,  ||, ND, S, ZERO)
+  NDS_BOOL_OPS2(ND, S, ZERO, ZERO)
 
 #define NDS_OP_DECLS(R, ND, S) \
   NDS_BIN_OP_DECLS (R, ND, S) \
@@ -627,7 +639,7 @@ class boolNDArray;
   NDBOOL_OP_DECL (mx_el_and, S, ND); \
   NDBOOL_OP_DECL (mx_el_or,  S, ND);
 
-#define SND_BOOL_OP(F, OP, S, ND, ZERO) \
+#define SND_BOOL_OP(F, OP, S, ND, LHS_ZERO, RHS_ZERO) \
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
@@ -640,15 +652,18 @@ class boolNDArray;
         r.resize (m.dims ()); \
  \
         for (int i = 0; i < len; i++) \
-	    r.elem(i) = (s != ZERO) OP (m.elem(i) != ZERO); \
+	    r.elem(i) = (s != LHS_ZERO) OP (m.elem(i) != RHS_ZERO); \
       } \
  \
     return r; \
   }
 
+#define SND_BOOL_OPS2(S, ND, LHS_ZERO, RHS_ZERO) \
+  SND_BOOL_OP (mx_el_and, &&, S, ND, LHS_ZERO, RHS_ZERO) \
+  SND_BOOL_OP (mx_el_or,  ||, S, ND, LHS_ZERO, RHS_ZERO)
+
 #define SND_BOOL_OPS(S, ND, ZERO) \
-  SND_BOOL_OP (mx_el_and, &&, S, ND, ZERO) \
-  SND_BOOL_OP (mx_el_or,  ||, S, ND, ZERO)
+  SND_BOOL_OPS2(S, ND, ZERO, ZERO)
 
 #define SND_OP_DECLS(R, S, ND) \
   SND_BIN_OP_DECLS (R, S, ND) \
@@ -735,7 +750,7 @@ class boolNDArray;
   NDBOOL_OP_DECL (mx_el_and, ND1, ND2); \
   NDBOOL_OP_DECL (mx_el_or,  ND1, ND2);
 
-#define NDND_BOOL_OP(F, OP, ND1, ND2, ZERO) \
+#define NDND_BOOL_OP(F, OP, ND1, ND2, LHS_ZERO, RHS_ZERO) \
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
@@ -751,7 +766,7 @@ class boolNDArray;
 	    r.resize (m1_dims); \
  \
 	    for (int i = 0; i < m1.length (); i++) \
-	      r.elem(i) = (m1.elem(i) != ZERO) OP (m2.elem(i) != ZERO); \
+	      r.elem(i) = (m1.elem(i) != LHS_ZERO) OP (m2.elem(i) != RHS_ZERO); \
 	  } \
       } \
     else \
@@ -760,9 +775,12 @@ class boolNDArray;
     return r; \
   }
 
+#define NDND_BOOL_OPS2(ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_and, &&, ND1, ND2, LHS_ZERO, RHS_ZERO) \
+  NDND_BOOL_OP (mx_el_or,  ||, ND1, ND2, LHS_ZERO, RHS_ZERO)
+
 #define NDND_BOOL_OPS(ND1, ND2, ZERO) \
-  NDND_BOOL_OP (mx_el_and, &&, ND1, ND2, ZERO) \
-  NDND_BOOL_OP (mx_el_or,  ||, ND1, ND2, ZERO)
+  NDND_BOOL_OPS2(ND1, ND2, ZERO, ZERO)
 
 #define NDND_OP_DECLS(R, ND1, ND2) \
   NDND_BIN_OP_DECLS (R, ND1, ND2) \
@@ -864,7 +882,7 @@ OP (const M& m, const DM& dm) \
   return r; \
 }
 
-#define MDM_MULTIPLY_OP(R, M, DM, ZERO) \
+#define MDM_MULTIPLY_OP(R, M, DM, R_ZERO) \
 R \
 operator * (const M& m, const DM& dm) \
 { \
@@ -880,7 +898,7 @@ operator * (const M& m, const DM& dm) \
     gripe_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
   else \
     { \
-      r.resize (m_nr, dm_nc, ZERO); \
+      r.resize (m_nr, dm_nc, R_ZERO); \
  \
       if (m_nr > 0 && m_nc > 0 && dm_nc > 0) \
 	{ \
@@ -893,7 +911,7 @@ operator * (const M& m, const DM& dm) \
 		  for (int i = 0; i < m_nr; i++) \
 		    r.elem(i, j) = m.elem(i, j); \
 		} \
-	      else if (dm.elem(j, j) != ZERO) \
+	      else \
 		{ \
 		  for (int i = 0; i < m_nr; i++) \
 		    r.elem(i, j) = dm.elem(j, j) * m.elem(i, j); \
@@ -905,10 +923,10 @@ operator * (const M& m, const DM& dm) \
   return r; \
 }
 
-#define MDM_BIN_OPS(R, M, DM, ZERO) \
+#define MDM_BIN_OPS(R, M, DM, R_ZERO) \
   MDM_BIN_OP (R, operator +, M, DM, +=) \
   MDM_BIN_OP (R, operator -, M, DM, -=) \
-  MDM_MULTIPLY_OP (R, M, DM, ZERO)
+  MDM_MULTIPLY_OP (R, M, DM, R_ZERO)
 
 #define MDM_OP_DECLS(R, M, DM) \
   MDM_BIN_OP_DECLS(R, M, DM)
@@ -952,7 +970,7 @@ OP (const DM& dm, const M& m) \
   return r; \
 }
 
-#define DMM_MULTIPLY_OP(R, DM, M, ZERO) \
+#define DMM_MULTIPLY_OP(R, DM, M, R_ZERO) \
 R \
 operator * (const DM& dm, const M& m) \
 { \
@@ -968,7 +986,7 @@ operator * (const DM& dm, const M& m) \
     gripe_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
   else \
     { \
-      r.resize (dm_nr, m_nc, ZERO); \
+      r.resize (dm_nr, m_nc, R_ZERO); \
  \
       if (dm_nr > 0 && dm_nc > 0 && m_nc > 0) \
 	{ \
@@ -981,7 +999,7 @@ operator * (const DM& dm, const M& m) \
 		  for (int j = 0; j < m_nc; j++) \
 		    r.elem(i, j) = m.elem(i, j); \
 		} \
-	      else if (dm.elem(i, i) != ZERO) \
+	      else \
 		{ \
 		  for (int j = 0; j < m_nc; j++) \
 		    r.elem(i, j) = dm.elem(i, i) * m.elem(i, j); \
@@ -993,10 +1011,10 @@ operator * (const DM& dm, const M& m) \
   return r; \
 }
 
-#define DMM_BIN_OPS(R, DM, M, ZERO) \
+#define DMM_BIN_OPS(R, DM, M, R_ZERO) \
   DMM_BIN_OP (R, operator +, DM, M, +=, ) \
   DMM_BIN_OP (R, operator -, DM, M, +=, -) \
-  DMM_MULTIPLY_OP (R, DM, M, ZERO)
+  DMM_MULTIPLY_OP (R, DM, M, R_ZERO)
 
 #define DMM_OP_DECLS(R, DM, M) \
   DMM_BIN_OP_DECLS(R, DM, M)

@@ -258,6 +258,8 @@ public:
 
   operator double (void) const { return static_cast<double> (value ()); }
 
+  operator float (void) const { return static_cast<float> (value ()); }
+
   octave_int<T>& operator += (const octave_int<T>& x)
   {
     double t = static_cast<double> (value ());
@@ -339,9 +341,9 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
 
       b_val -= 1;
 
-      while (b_val)
+      while (b_val != zero)
 	{
-	  if (b_val & one)
+	  if ((b_val & one) != zero)
 	    retval = retval * a_val;
 
 	  b_val = b_val >> 1;
@@ -468,7 +470,7 @@ OCTAVE_DOUBLE_INT_BIN_OP(/)
   operator OP (const octave_int<T>& x, const double& y) \
   { \
     double tx = static_cast<double> (x.value ()); \
-    return tx OP y.value (); \
+    return tx OP y; \
   }
 
 OCTAVE_INT_DOUBLE_CMP_OP (<)
@@ -484,7 +486,7 @@ OCTAVE_INT_DOUBLE_CMP_OP (!=)
   operator OP (const double& x, const octave_int<T>& y) \
   { \
     double ty = static_cast<double> (y.value ()); \
-    return y.value () OP ty; \
+    return x OP ty; \
   }
 
 OCTAVE_DOUBLE_INT_CMP_OP (<)
@@ -511,7 +513,7 @@ template <class T1, class T2>
 octave_int<T1>
 operator << (const octave_int<T1>& x, const T2& y)
 {
-  T1 retval = x;
+  octave_int<T1> retval = x;
   return retval <<= y;
 }
 
@@ -519,7 +521,7 @@ template <class T1, class T2>
 octave_int<T1>
 operator >> (const octave_int<T1>& x, const T2& y)
 {
-  T1 retval = x;
+  octave_int<T1> retval = x;
   return retval >>= y;
 }
 

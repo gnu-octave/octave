@@ -1,6 +1,6 @@
 # types
 #
-# key typename object-type header fwd-decl-ok
+# key typename object-type header fwd-decl-ok scalar-zero
 #
 # object-type is one of
 #
@@ -9,36 +9,36 @@
 #   DM: diagonal matrix
 #   ND: N-d array
 #
-x NONE NONE NONE NO
-b bool S NONE NO
-bm boolMatrix ND boolMatrix.h YES
-bnda boolNDArray ND boolNDArray.h YES
-cdm ComplexDiagMatrix DM CDiagMatrix.h YES
-cm ComplexMatrix M CMatrix.h YES
-cnda ComplexNDArray ND CNDArray.h YES
-cs Complex S oct-cmplx.h NO
-dm DiagMatrix DM dDiagMatrix.h YES
-m Matrix M dMatrix.h YES
-nda NDArray ND dNDArray.h YES
-s double S NONE NO
-i8 octave_int8 S oct-inttypes.h YES
-ui8 octave_uint8 S oct-inttypes.h YES
-i16 octave_int16 S oct-inttypes.h YES
-ui16 octave_uint16 S oct-inttypes.h YES
-i32 octave_int32 S oct-inttypes.h YES
-ui32 octave_uint32 S oct-inttypes.h YES
-i64 octave_int64 S oct-inttypes.h YES
-ui64 octave_uint64 S oct-inttypes.h YES
-i8nda int8NDArray ND int8NDArray.h YES
-ui8nda uint8NDArray ND uint8NDArray.h YES
-i16nda int16NDArray ND int16NDArray.h YES
-ui16nda uint16NDArray ND uint16NDArray.h YES
-i32nda int32NDArray ND int32NDArray.h YES
-ui32nda uint32NDArray ND uint32NDArray.h YES
-i64nda int64NDArray ND int64NDArray.h YES
-ui64nda uint64NDArray ND uint64NDArray.h YES
+x NONE NONE NONE NO 0
+b bool S NONE NO false
+bm boolMatrix ND boolMatrix.h YES false
+bnda boolNDArray ND boolNDArray.h YES false
+cdm ComplexDiagMatrix DM CDiagMatrix.h YES 0.0
+cm ComplexMatrix M CMatrix.h YES 0.0
+cnda ComplexNDArray ND CNDArray.h YES 0.0
+cs Complex S oct-cmplx.h NO 0.0
+dm DiagMatrix DM dDiagMatrix.h YES 0.0
+m Matrix M dMatrix.h YES 0.0
+nda NDArray ND dNDArray.h YES 0.0
+s double S NONE NO 0.0
+i8 octave_int8 S oct-inttypes.h YES octave_int8(0)
+ui8 octave_uint8 S oct-inttypes.h YES octave_uint8(0)
+i16 octave_int16 S oct-inttypes.h YES octave_int16(0)
+ui16 octave_uint16 S oct-inttypes.h YES octave_uint16(0)
+i32 octave_int32 S oct-inttypes.h YES octave_int32(0)
+ui32 octave_uint32 S oct-inttypes.h YES octave_uint32(0)
+i64 octave_int64 S oct-inttypes.h YES octave_int64(0)
+ui64 octave_uint64 S oct-inttypes.h YES octave_uint64(0)
+i8nda int8NDArray ND int8NDArray.h YES octave_int8(0)
+ui8nda uint8NDArray ND uint8NDArray.h YES octave_uint8(0)
+i16nda int16NDArray ND int16NDArray.h YES octave_int16(0)
+ui16nda uint16NDArray ND uint16NDArray.h YES octave_uint16(0)
+i32nda int32NDArray ND int32NDArray.h YES octave_int32(0)
+ui32nda uint32NDArray ND uint32NDArray.h YES octave_uint32(0)
+i64nda int64NDArray ND int64NDArray.h YES octave_int64(0)
+ui64nda uint64NDArray ND uint64NDArray.h YES octave_uint64(0)
 # ops
-# result_t lhs_t rhs_t op-type lhs_conv rhs_conv zero_val headers ...
+# result_t lhs_t rhs_t op-type lhs_conv rhs_conv headers ...
 #
 # op-type is one of
 #
@@ -50,272 +50,272 @@ cdm cdm dm B
 cdm dm cdm B
 cm cs cdm B
 cm cs dm B
-cm cs m BCL real NONE 0.0 boolMatrix.h
-cnda cs nda BCL real NONE 0.0 boolMatrix.h boolNDArray.h
+cm cs m BCL real NONE boolMatrix.h
+cnda cs nda BCL real NONE boolMatrix.h boolNDArray.h
 cm cdm cs B
-cm cdm cm B 0.0
-cm cdm m B 0.0
+cm cdm cm B
+cm cdm m B
 cm cdm s B
-cm cm cdm B 0.0
-cm cm dm B 0.0
-cm cm m BCL real NONE 0.0 boolMatrix.h
-cnda cnda nda BCL real NONE 0.0 boolMatrix.h boolNDArray.h
-cm cm s BCL real NONE 0.0 boolMatrix.h
-cnda cnda s BCL real NONE 0.0 boolMatrix.h boolNDArray.h
+cm cm cdm B
+cm cm dm B
+cm cm m BCL real NONE boolMatrix.h
+cnda cnda nda BCL real NONE boolMatrix.h boolNDArray.h
+cm cm s BCL real NONE boolMatrix.h
+cnda cnda s BCL real NONE boolMatrix.h boolNDArray.h
 cm dm cs B
-cm dm cm B 0.0
-cm m cs BCL NONE real 0.0 boolMatrix.h
-cnda nda cs BCL NONE real 0.0 boolMatrix.h boolNDArray.h
-cm m cdm B 0.0
-cm m cm BCL NONE real 0.0 boolMatrix.h
-cnda nda cnda BCL NONE real 0.0 boolMatrix.h boolNDArray.h
+cm dm cm B
+cm m cs BCL NONE real boolMatrix.h
+cnda nda cs BCL NONE real boolMatrix.h boolNDArray.h
+cm m cdm B
+cm m cm BCL NONE real boolMatrix.h
+cnda nda cnda BCL NONE real boolMatrix.h boolNDArray.h
 cm s cdm B
-cm s cm BCL NONE real 0.0 boolMatrix.h
-cnda s cnda BCL NONE real 0.0 boolMatrix.h boolNDArray.h
-m dm m B 0.0
+cm s cm BCL NONE real boolMatrix.h
+cnda s cnda BCL NONE real boolMatrix.h boolNDArray.h
+m dm m B
 m dm s B
-m m dm B 0.0
+m m dm B
 m s dm B
 #
-i8nda s i8nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-i8nda i8nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui8nda s ui8nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui8nda ui8nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-i16nda s i16nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-i16nda i16nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui16nda s ui16nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui16nda ui16nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-i32nda s i32nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-i32nda i32nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui32nda s ui32nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui32nda ui32nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
-i64nda s i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-i64nda i64nda s CL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui64nda s ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-ui64nda ui64nda s CL NONE NONE 0 boolMatrix.h boolNDArray.h
+i8nda s i8nda BCL NONE NONE boolMatrix.h boolNDArray.h
+i8nda i8nda s BCL NONE NONE boolMatrix.h boolNDArray.h
+ui8nda s ui8nda BCL NONE NONE boolMatrix.h boolNDArray.h
+ui8nda ui8nda s BCL NONE NONE boolMatrix.h boolNDArray.h
+i16nda s i16nda BCL NONE NONE boolMatrix.h boolNDArray.h
+i16nda i16nda s BCL NONE NONE boolMatrix.h boolNDArray.h
+ui16nda s ui16nda BCL NONE NONE boolMatrix.h boolNDArray.h
+ui16nda ui16nda s BCL NONE NONE boolMatrix.h boolNDArray.h
+i32nda s i32nda BCL NONE NONE boolMatrix.h boolNDArray.h
+i32nda i32nda s BCL NONE NONE boolMatrix.h boolNDArray.h
+ui32nda s ui32nda BCL NONE NONE boolMatrix.h boolNDArray.h
+ui32nda ui32nda s BCL NONE NONE boolMatrix.h boolNDArray.h
+i64nda s i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+i64nda i64nda s CL NONE NONE boolMatrix.h boolNDArray.h
+ui64nda s ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
+ui64nda ui64nda s CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda nda CL NONE NONE boolMatrix.h boolNDArray.h
+x nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i8nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i8nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i16nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i16nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i32nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i32nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i64nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i64nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui8nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui8nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui16nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui16nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui32nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda ui64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui32nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda ui64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui64nda i8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda ui8 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda i16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda ui16 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda i32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda ui32 CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda i64 CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui64nda i8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda ui8 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda i16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda ui16 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda i32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda ui32 CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda i64 CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i8 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i8 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i16 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i16 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i32 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i32 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i64 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i64 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui8 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui8 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui16 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui16 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui32 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32 ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui32 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32 ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui64 i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64 i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui64 i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64 i64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i8nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i8nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i8nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i8nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i16nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i16nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i16nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i16nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i32nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i32nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i32nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i32nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x i64nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x i64nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x i64nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x i64nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui8nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui8nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui8nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui8nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui16nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui16nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui16nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui16nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui32nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui32nda ui64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui32nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui32nda ui64nda CL NONE NONE boolMatrix.h boolNDArray.h
 #
-x ui64nda i8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda ui8nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda i16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda ui16nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda i32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda ui32nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
-x ui64nda i64nda CL NONE NONE 0 boolMatrix.h boolNDArray.h
+x ui64nda i8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda ui8nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda i16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda ui16nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda i32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda ui32nda CL NONE NONE boolMatrix.h boolNDArray.h
+x ui64nda i64nda CL NONE NONE boolMatrix.h boolNDArray.h

@@ -1,6 +1,23 @@
 2004-09-23  John W. Eaton  <jwe@octave.org>
 
+	* (OCTAVE_SS_INT_OPS2, OCTAVE_SM_INT_OPS2, OCTAVE_MM_INT_OPS2,
+	OCTAVE_INSTALL_SS_INT_OPS2, OCTAVE_INSTALL_SM_INT_OPS2,
+	OCTAVE_INSTALL_MS_INT_OPS2, OCTAVE_INSTALL_MM_INT_OPS2):
+	Delete unused macros.
+
+	* OPERATORS/op-int.h (OCTAVE_SS_INT_BOOL_OPS): New args Z1 and Z2.
+	(OCTAVE_SS_INT_OPS): Pass appropriately typed zero values to
+	OCTAVE_SS_INT_BOOL_OPS.
+	* OPERATORS/op-i64-i64.cc, OPERATORS/op-ui64-ui64.cc: Likewise.
+
+	* pr-output.cc (pr_plus_format): Now template.
+	Specialize for Complex.
+	(octave_print_internal): Lookup print_conv_type using
+	octave_int<T>, not just T.
+
 	* ov-struct.cc (octave_struct::subsref): Pass skip to next_subsref.
+
+	* oct-stream.cc	(do_read): Hitting EOF should not be an error.
 
 2004-09-22  John W. Eaton  <jwe@octave.org>
 

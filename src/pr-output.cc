@@ -1347,12 +1347,13 @@ pr_col_num_header (std::ostream& os, int total_width, int max_width,
     }
 }
 
+template <class T>
 static inline void
-pr_plus_format (std::ostream& os, double d)
+pr_plus_format (std::ostream& os, const T& val)
 {
-  if (d > 0.0)
+  if (val > T (0))
     os << plus_format_chars[0];
-  else if (d < 0.0)
+  else if (val < T (0))
     os << plus_format_chars[1];
   else
     os << plus_format_chars[2];
@@ -1599,6 +1600,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
     }
 }
 
+template <>
 static inline void
 pr_plus_format (std::ostream& os, const Complex& c)
 {
@@ -2468,7 +2470,7 @@ octave_print_internal (std::ostream& os, const octave_int<T>& val, bool)
   else
     {
       if (free_format)
-	os << typename octave_print_conv<T>::print_conv_type (val);
+	os << typename octave_print_conv<octave_int<T> >::print_conv_type (val);
       else
 	pr_int (os, val);
     }

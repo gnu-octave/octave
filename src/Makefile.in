@@ -120,8 +120,8 @@ OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
 	../libcruft/libcruft.a @LIBREADLINE@ @LIBPLPLOT@ \
 	../kpathsea/kpathsea.a @LIBDLD@
 
-DISTFILES = Makefile.in mkdefs mkbuiltins parse.cc lex.cc y.tab.h \
-	safe-xstat.cin safe-xstat.hin \
+DISTFILES = Makefile.in mkdefs mkbuiltins octave.gperf parse.cc \
+	lex.cc y.tab.h safe-xstat.cin safe-xstat.hin \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
 all: defaults.h safe-stat.h safe-lstat.h octave

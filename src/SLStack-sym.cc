@@ -22,18 +22,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Stacks of symbol_def* values.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "SLList.h"
+
 #include "SLStack.h"
-#include "SLStack.cc"
 
 #include "symtab.h"
 
 extern template class SLNode<unsigned>;
 extern template class SLList<unsigned>;
+
 extern template class Stack<unsigned>;
 extern template class SLStack<unsigned>;
 
 template class SLNode<symbol_def *>;
 template class SLList<symbol_def *>;
+
 template class Stack<symbol_def *>;
 template class SLStack<symbol_def *>;
 

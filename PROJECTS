@@ -140,6 +140,9 @@ Strings:
   * Consider making size ("") ==> [0, 0] for compatibility with
     Matlab, at least when some preference variable is set.
 
+  * Consider making [] equivalent to "" for compatibility with
+    Matlab, at least when some preference variable is set.
+
   * Consider making ["test", []] ==> "test", for compatibility with
     Matlab, at least when some set of preferences are set.
 

@@ -33,8 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-#include <SLList.h>
-
 #include "Range.h"
 #include "idx-vector.h"
 #include "mx-base.h"

@@ -22,13 +22,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Stacks of token* values.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "SLList.h"
+
 #include "SLStack.h"
-#include "SLStack.cc"
 
 #include "token.h"
 
 template class SLNode<token *>;
 template class SLList<token *>;
+
 template class Stack<token *>;
 template class SLStack<token *>;
 

@@ -1,4 +1,3 @@
-// SLStack-tm.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994, 1995 John W. Eaton
@@ -23,13 +22,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Stacks of tree_matrix* values.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "SLList.h"
+
 #include "SLStack.h"
-#include "SLStack.cc"
 
 #include "pt-mat.h"
 
 template class SLNode<tree_matrix *>;
 template class SLList<tree_matrix *>;
+
 template class Stack<tree_matrix *>;
 template class SLStack<tree_matrix *>;
 

@@ -19,22 +19,8 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #ifndef _SLList_h
 #define _SLList_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
-#undef OK
-
 #include <Pix.h>
-
-struct BaseSLNode
-{
-   union {
-     struct BaseSLNode *tl;
-     double dummy;  /* To force correct alignment */
-   };
-   void *item() {return (void*)(this+1);} // Return ((SLNode<T>*)this)->hd
-};
+#include <BaseSLList.h>
 
 template<class T>
 class SLNode : public BaseSLNode
@@ -45,36 +31,6 @@ class SLNode : public BaseSLNode
                          SLNode(const T& h, SLNode* t = 0)
 			     : hd(h) { tl = t; }
                          ~SLNode() { }
-};
-
-extern int __SLListLength(BaseSLNode *ptr);
-
-class BaseSLList {
-  protected:
-    BaseSLNode *last;
-    virtual void delete_node(BaseSLNode*node) = 0;
-    virtual BaseSLNode* copy_node(const void* datum) = 0;
-    virtual void copy_item(void *dst, void *src) = 0;
-    virtual ~BaseSLList() { }
-    BaseSLList() { last = 0; }
-    void copy(const BaseSLList&);
-    BaseSLList& operator = (const BaseSLList& a);
-    Pix ins_after(Pix p, const void *datum);
-    Pix prepend(const void *datum);
-    Pix append(const void *datum);
-    int remove_front(void *dst, int signal_error = 0);
-    void join(BaseSLList&);
-  public:
-    int length() const;
-    int empty() const { return last == 0; }
-    void clear();
-    Pix                   prepend(BaseSLNode*);
-    Pix                   append(BaseSLNode*);
-    int                   OK() const;
-    void                  error(const char* msg) const;
-    void                  del_after(Pix p);
-    int                   owns(Pix p) const;
-    void                  del_front();
 };
 
 template <class T>
@@ -91,7 +47,7 @@ public:
     SLList(const SLList<T>& a) : BaseSLList() { copy(a); }
     SLList<T>&            operator = (const SLList<T>& a)
 	{ BaseSLList::operator=((const BaseSLList&) a); return *this; }
-    virtual ~SLList() { clear(); }
+  ~SLList (void) { clear (); }
 
     Pix prepend(const T& item) {return BaseSLList::prepend(&item);}
     Pix append(const T& item) {return BaseSLList::append(&item);}

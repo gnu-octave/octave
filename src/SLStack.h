@@ -36,10 +36,6 @@ License as published by the Free Software Foundation.
 #if !defined (_SLStack_h)
 #define _SLStack_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include "SLList.h"
 #include "Stack.h"
 
@@ -47,28 +43,41 @@ template <class T>
 class
 SLStack : public Stack<T>
 {
- private:
+private:
+
   SLList<T> p;
 
- public:
-  SLStack (void);
-  SLStack (const SLStack<T>& s);
-  ~SLStack (void);
+public:
 
-  SLStack<T>& operator = (const SLStack<T>&);
+  SLStack (void) : p () { }
 
-  void push (const T& item);
-  T pop (void);
-  T& top (void);
-  void del_top (void);
+  SLStack (const SLStack<T>& s) : p (s.p) { }
 
-  int empty (void);
-  int full (void);
-  int length (void);
+  ~SLStack (void) { }
 
-  void clear (void);
+  SLStack<T>& operator = (const SLStack<T>& s)
+  {
+    p = s.p;
+    return *this;
+  }
 
-  int OK (void);
+  void push (const T& item) { p.prepend (item); }
+
+  T pop (void) { return p.remove_front (); }
+
+  T& top (void) { return p.front (); }
+
+  void del_top (void) { p.del_front (); }
+
+  int empty (void) { return p.empty (); }
+
+  int full (void) { return 0; }
+
+  int length (void) { return p.length (); }
+
+  void clear (void) { p.clear (); }
+
+  int OK (void) { return p.OK (); }
 };
 
 #endif

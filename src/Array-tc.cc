@@ -20,11 +20,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+// Instantiate Arrays of octave_values.
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-// Instantiate Arrays of octave_values.
 
 #include "Array.h"
 #include "Array.cc"

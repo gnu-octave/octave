@@ -98,6 +98,11 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
 {
   int len = idx.length ();
 
+  // XXX FIXME XXX
+  charMatrix tmp = rhs;
+  if (tmp.rows () == 1 && tmp.columns () == 0)
+    tmp.resize (0, 0);    
+
   switch (len)
     {
     case 2:
@@ -108,7 +113,7 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
 	matrix.set_index (i);
 	matrix.set_index (j);
 
-	::assign (matrix, rhs);
+	::assign (matrix, tmp);
       }
       break;
 
@@ -118,7 +123,7 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
 
 	matrix.set_index (i);
 
-	::assign (matrix, rhs);
+	::assign (matrix, tmp);
       }
       break;
 

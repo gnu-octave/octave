@@ -22,13 +22,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Stacks of unwind_elem values.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "SLList.h"
+
 #include "SLStack.h"
-#include "SLStack.cc"
 
 #include "unwind-prot.h"
 
 template class SLNode<unwind_elem>;
 template class SLList<unwind_elem>;
+
 template class Stack<unwind_elem>;
 template class SLStack<unwind_elem>;
 

@@ -1,5 +1,14 @@
 Fri Dec  6 00:20:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Map-*.cc, SLList-*.cc, SLStack-*.cc: Include config.h.
+
+	* ov.h: Don't include SLList.h.
+
+	* SLStack.cc: Delete.  Move everything to SLStack.h.
+
+	* BaseSLList.h, BaseSLList.cc: New files.  Split out the
+	non-template base class parts of SLList.
+
 	* Makefile.in (TEMPLATE_SRC): Delete.  Move files to SOURCES.
 	* Map.h, Map.cc: Add #pragma interface/implementation.
 	* SLStack.h, SLStack.cc: Add #pragma interface/implementation.

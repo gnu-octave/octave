@@ -22,11 +22,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Stacks of char* values.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "SLList.h"
+
 #include "SLStack.h"
 #include "SLStack.cc"
 
 template class SLNode<char *>;
 template class SLList<char *>;
+
 template class Stack<char *>;
 template class SLStack<char *>;
 

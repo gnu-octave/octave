@@ -80,7 +80,7 @@ INCLUDES := builtins.h data.h defun.h defun-dld.h \
 	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
 	unwind-prot.h utils.h variables.h version.h \
-	xdiv.h xpow.h Map.h SLList.h SLStack.h Stack.h \
+	xdiv.h xpow.h BaseSLList.h Map.h SLList.h SLStack.h Stack.h \
 	ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-struct.h ov-scalar.h \
 	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
 	ov-str-mat.h ov.h ov-typeinfo.h ops.h \
@@ -104,8 +104,8 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-SOURCES := Map.cc SLList.cc SLStack.cc data.cc defaults.cc dirfns.cc \
-	dynamic-ld.cc error.cc file-io.cc fn-cache.cc gripes.cc \
+SOURCES := BaseSLList.cc Map.cc data.cc defaults.cc \
+	dirfns.cc dynamic-ld.cc error.cc file-io.cc fn-cache.cc gripes.cc \
 	help.cc input.cc lex.l load-save.cc mappers.cc oct-fstrm.cc \
 	oct-hist.cc oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \

@@ -65,7 +65,7 @@ extern void install_ops (void);
     { \
       BOOL_OP1 (st, sn, get_s, mt, mn, get_m) \
       BOOL_OP2 (mn) \
-      if (nr == 0|| nc == 0) \
+      if (nr == 0 || nc == 0) \
         return empty_result; \
       BOOL_OP3 (test) \
     } \
@@ -76,7 +76,7 @@ extern void install_ops (void);
     { \
       BOOL_OP1 (mt, mn, get_m, st, sn, get_s) \
       BOOL_OP2 (mn) \
-      if (nr == 0|| nc == 0) \
+      if (nr == 0 || nc == 0) \
         return empty_result; \
       BOOL_OP3 (test) \
     } \

@@ -50,21 +50,20 @@ eq (const octave_value& a1, const octave_value& a2)
       if (cm2.rows () == 1 && cm2.columns () == 1)
 	return octave_value (cm1 (0, 0) == cm2 (0, 0));
       else
-	SC_MX_BOOL_OP (char, c, cm1 (0, 0), \
-		       charMatrix, m, cm2, \
+	SC_MX_BOOL_OP (char, c, cm1 (0, 0), charMatrix, m, cm2,
 		       c == m (i, j), 0.0);
     }
   else
     {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	MX_SC_BOOL_OP (charMatrix, m, cm1, \
-		       char, c, cm2 (0, 0), \
+      int cm2_nr = cm2.rows ();
+      int cm2_nc = cm2.cols ();
+
+      if (cm2_nr == 1 && cm2_nc == 1)
+	MX_SC_BOOL_OP (charMatrix, m, cm1, char, c, cm2 (0, 0),
 		       c == m (i, j), 0.0);
       else
-	MX_MX_BOOL_OP (charMatrix, m1, cm1, \
-		       charMatrix, m2, cm2, \
-		       m1 (i, j) == m2 (i, j), \
-		       "==", 0.0);
+	MX_MX_BOOL_OP (charMatrix, m1, cm1, charMatrix, m2, cm2,
+		       m1 (i, j) == m2 (i, j), "==", 0.0);
     }
 }
 

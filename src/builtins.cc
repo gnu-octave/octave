@@ -180,6 +180,9 @@ static builtin_text_functions text_functions[] =
   { "ls", -1, builtin_ls,
     "print a directory listing\n", },
 
+  { "run_history", -1, builtin_run_history,
+    "usage: run_history [first] [last]\n", },
+
   { "save", -1, builtin_save,
     "save variables to a file\n", },
 

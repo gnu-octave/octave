@@ -209,7 +209,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // after seeing a ']' character...
 %}
 
-<MATRIX>{SNL}*\]{S}* {
+<MATRIX>{SNLCMT}*\]{S}* {
     fixup_column_count (yytext);
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();

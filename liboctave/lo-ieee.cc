@@ -51,24 +51,34 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 octave_ieee_init (void)
 {
+  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+
+  if (ff == octave_mach_info::flt_fmt_vax_d
+      || ff == octave_mach_info::flt_fmt_vax_g
+      || ff == octave_mach_info::flt_fmt_cray)
+    {
+      octave_Inf = octave_NaN = octaveNA = DBL_MAX;
+    }
+  else
+    {
 #if defined (HAVE_ISINF) || defined (HAVE_FINITE)
 
 #if defined (SCO)
-  double tmp = 1.0;
-  octave_Inf = 1.0 / (tmp - tmp);
+      double tmp = 1.0;
+      octave_Inf = 1.0 / (tmp - tmp);
 #elif defined (__alpha__) && defined (__osf__)
-  extern unsigned int DINFINITY[2];
-  octave_Inf =  (*(X_CAST(double *, DINFINITY)));
+      extern unsigned int DINFINITY[2];
+      octave_Inf =  (*(X_CAST(double *, DINFINITY)));
 #else
-  double tmp = 1e+10;
-  octave_Inf = tmp;
-  for (;;)
-    {
-      octave_Inf *= 1e+10;
-      if (octave_Inf == tmp)
-	break;
-      tmp = octave_Inf;
-    }
+      double tmp = 1e+10;
+      octave_Inf = tmp;
+      for (;;)
+	{
+	  octave_Inf *= 1e+10;
+	  if (octave_Inf == tmp)
+	    break;
+	  tmp = octave_Inf;
+	}
 #endif
 
 #endif
@@ -76,34 +86,33 @@ octave_ieee_init (void)
 #if defined (HAVE_ISNAN)
 
 #if defined (__alpha__) && defined (__osf__)
-  extern unsigned int DQNAN[2];
-  octave_NaN = (*(X_CAST(double *, DQNAN)));
+      extern unsigned int DQNAN[2];
+      octave_NaN = (*(X_CAST(double *, DQNAN)));
 #else
-  octave_NaN = octave_Inf / octave_Inf;
+      octave_NaN = octave_Inf / octave_Inf;
 #endif
 
-  // This is patterned after code in R.
+      // This is patterned after code in R.
 
-  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+      if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
+	{
+	  lo_ieee_hw = 0;
+	  lo_ieee_lw = 1;
+	}
+      else
+	{
+	  lo_ieee_hw = 1;
+	  lo_ieee_lw = 0;
+	}
 
-  if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
-    {
-      lo_ieee_hw = 0;
-      lo_ieee_lw = 1;
-    }
-  else
-    {
-      lo_ieee_hw = 1;
-      lo_ieee_lw = 0;
-    }
+      lo_ieee_double t;
+      t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
+      t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
 
-  lo_ieee_double t;
-  t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
-  t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
-
-  octave_NA = t.value;
+      octave_NA = t.value;
 
 #endif
+    }
 }
 
 /*

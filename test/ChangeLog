@@ -2,9 +2,6 @@ Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.5 released.
 
-	* Makefile.in (OCTAVE_SCRIPT_PATH): Try harder to find the right
-	directory for .oct files.
-
 Thu Feb 20 02:58:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.4 released.

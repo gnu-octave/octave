@@ -22,9 +22,7 @@ SUBDIRS =
 
 OCTAVE_BINARY = ../src/octave
 
-ABS_TOPDIR := $(shell cd $(TOPDIR); pwd)
-
-OCTAVE_SCRIPT_PATH = .:$(ABS_TOPDIR)/src//:$(srcdir)/../scripts//
+OCTAVE_SCRIPT_PATH = .:$(TOPDIR)/src//:$(srcdir)/../scripts//
 
 # Complete directory trees to distribute.
 DISTDIRS = config octave.test

@@ -1,8 +1,7 @@
 2005-02-16  John W. Eaton  <jwe@octave.org>
 
-	* ov.h, ov.cc
-	(octave_value::octave_value (const ArrayN<octave_value>&, bool)):
-	Delete.
+	* ov-base-mat.h (octave_base_matrix::squeeze): Explicitly convert
+	result of matrix.squeeze() to MT.
 
 2005-02-15  John W. Eaton  <jwe@octave.org>
 

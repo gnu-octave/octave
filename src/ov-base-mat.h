@@ -68,7 +68,7 @@ public:
 
   size_t byte_size (void) const { return matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return matrix.squeeze (); }
+  octave_value squeeze (void) const { return MT (matrix.squeeze ()); }
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);

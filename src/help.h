@@ -47,6 +47,14 @@ extern int help_from_list (ostrstream& output_buf,
 			   const help_list *list, const string& nm,
 			   int usage);
 
+// Name of the info file specified on command line.
+// (--info-file file)
+extern string Vinfo_file;
+
+// Name of the info reader we'd like to use.
+// (--info-program program)
+extern string Vinfo_prog;
+
 extern void symbols_of_help (void);
 
 #endif

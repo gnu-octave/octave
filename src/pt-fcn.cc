@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -44,7 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -155,9 +155,7 @@ tree_function::mark_as_system_fcn_file (void)
 
       string ff_name = fcn_file_in_path (file_name);
 
-      string system_dir = octave_fcn_file_dir ();
-
-      if (system_dir.compare (ff_name, 0, system_dir.length ()) == 0)
+      if (Vfcn_file_dir.compare (ff_name, 0, Vfcn_file_dir.length ()) == 0)
 	system_fcn_file = 1;
     }
   else
@@ -337,8 +335,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
   {
     bind_nargin_and_nargout (nargin, nargout);
 
-    bool echo_commands
-      = (user_pref.echo_executing_commands & ECHO_FUNCTIONS);
+    bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
     if (echo_commands)
       print_code_function_header ();

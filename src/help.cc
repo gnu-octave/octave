@@ -40,9 +40,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "str-vec.h"
 
+#include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
@@ -55,9 +57,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "symtab.h"
 #include "toplev.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
+
+// Name of the info file specified on command line.
+// (--info-file file)
+string Vinfo_file;
+
+// Name of the info reader we'd like to use.
+// (--info-program program)
+string Vinfo_prog;
 
 // If TRUE, don't print additional help message in help and usage
 // functions.
@@ -483,7 +492,7 @@ simple_help (void)
 
   // Also need to search octave_path for script files.
 
-  dir_path p (user_pref.loadpath);
+  dir_path p (Vload_path);
 
   string_vector dirs = p.all_directories ();
 
@@ -496,8 +505,7 @@ simple_help (void)
       if (! names.empty ())
 	{
 	  octave_stdout << "\n*** function files in "
-			<< make_absolute (dirs[i],
-					  the_current_working_directory)
+			<< make_absolute (dirs[i], Vcurrent_directory)
 			<< ":\n\n";
 
 	  names.list_in_columns (octave_stdout);
@@ -520,9 +528,9 @@ try_info (const string& nm)
 
   ostrstream cmd_buf;
 
-  cmd_buf << user_pref.info_prog << " --file " << user_pref.info_file;
+  cmd_buf << Vinfo_prog << " --file " << Vinfo_file;
 
-  string directory_name = user_pref.info_file;
+  string directory_name = Vinfo_file;
   size_t pos = directory_name.rfind ('/');
 
   if (pos != NPOS)
@@ -906,9 +914,51 @@ suppress_verbose_help_message (void)
   return 0;
 }
 
+static int
+info_file (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("INFO_FILE");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("INFO_FILE");
+      status = -1;
+    }
+  else
+    Vinfo_file = s;
+
+  return status;
+}
+
+static int
+info_prog (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("INFO_PROGRAM");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("INFO_PROGRAM");
+      status = -1;
+    }
+  else
+    Vinfo_prog = s;
+
+  return status;
+}
+
 void
 symbols_of_help (void)
 {
+  DEFVAR (INFO_FILE, Vinfo_file, 0, info_file,
+    "name of the Octave info file");
+
+  DEFVAR (INFO_PROGRAM, Vinfo_prog, 0, info_prog,
+    "name of the Octave info reader");
+
 #ifdef USE_GNU_INFO
   DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\

@@ -1,3 +1,9 @@
+2000-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-cutils.c (oct_strptime): New function.
+	* oct-time.cc (octave_strptime::init): Call it instead of strptime.
+	Don't declare strptime.  Don't define _XOPEN_SOURCE or _BSD_SOURCE.
+
 2000-07-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc: Comment out _BSD_SOURCE and _XOPEN_SOURCE definitions.

@@ -24,33 +24,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#if 0
-
-// The following definitions are commented out because they cause
-// trouble on some systems.  What is really needed is a feature test
-// in the configure script.
-
-// I am told that without _BSD_SOURCE, tm_zone won't be declared on
-// some systems.  Defining _XOPEN_SOURCE provides the declaration for
-// strptime on some others.
-//
-// These defines go here, before any system header files are included,
-// because the system header files may define other macros that are
-// actually used to determine the feature set.  If we wait until after
-// some system header file is included, it may be too late.
-
-#if !defined (_BSD_SOURCE)
-#define _BSD_SOURCE 1
-#define OCTAVE_UNDEFINE_BSD_SOURCE
-#endif
-
-#if !defined (_XOPEN_SOURCE)
-#define _XOPEN_SOURCE 1
-#define OCTAVE_UNDEFINE_XOPEN_SOURCE
-#endif
-
-#endif
-
 #include <climits>
 #include <cmath>
 
@@ -64,18 +37,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-time.h"
-
-#if defined (OCTAVE_UNDEFINE_BSD_SOURCE)
-#undef _BSD_SOURCE
-#endif
-
-#if defined (OCTAVE_UNDEFINE_XOPEN_SOURCE)
-#undef _XOPEN_SOURCE
-#endif
-
-#if !defined (HAVE_STRPTIME)
-extern "C" char *strptime (const char *buf, const char *format, struct tm *tm);
-#endif
 
 octave_time::octave_time (const octave_base_tm& tm)
 {
@@ -286,7 +247,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   char *p = strsave (str.c_str ());
 
-  char *q = strptime (p, fmt.c_str (), &t);
+  char *q = oct_strptime (p, fmt.c_str (), &t);
 
   nchars = p - q;
 

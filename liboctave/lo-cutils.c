@@ -25,12 +25,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <stdlib.h>
+#include <time.h>
 
 void
 octave_qsort (void *base, size_t n, size_t size,
 	      int (*cmp) (const void *, const void *))
 {
   qsort (base, n, size, cmp);
+}
+
+extern char *strptime ();
+
+char *
+oct_strptime (const char *buf, const char *format, struct tm *tm)
+{
+  return strptime (buf, format, tm);
 }
 
 /*

@@ -39,6 +39,9 @@ extern std::string octave_fgets (std::FILE *);
 extern "C" void octave_qsort (void *base, size_t n, size_t size,
 			      int (*cmp) (const void *, const void *));
 
+extern "C" char *oct_strptime (const char *buf, const char *format,
+			       struct tm *tm);
+
 #endif
 
 /*

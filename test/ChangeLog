@@ -1,3 +1,8 @@
+Fri Dec  4 20:55:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/system/clock-1.m: Use standard format specifiers %d
+	and %H instead of %e and %k.
+
 Fri Oct 23 15:53:01 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/arith/exp-5.m: New test.

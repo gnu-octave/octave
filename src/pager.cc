@@ -116,13 +116,13 @@ pager_death_handler (pid_t pid, int status)
 }
 
 static void
-do_sync (const char *msg, bool bypass_pager)
+do_sync (const char *msg, int len, bool bypass_pager)
 {
-  if (msg && *msg)
+  if (msg && len > 0)
     {
       if (bypass_pager)
 	{
-	  cout << msg;
+	  cout.write (msg, len);
 	  cout.flush ();
 	}
       else
@@ -152,7 +152,7 @@ do_sync (const char *msg, bool bypass_pager)
 	    {
 	      if (octave_pager_pid > 0 && external_pager->good ())
 		{
-		  *external_pager << msg;
+		  external_pager->write (msg, len);
 
 		  // These checks are needed if a signal handler
 		  // invoked since the last set of checks attempts
@@ -178,32 +178,41 @@ do_sync (const char *msg, bool bypass_pager)
 	    }
 	  else
 	    {
-	      cout << msg;
+	      cout.write (msg, len);
 	      cout.flush ();
 	    }
 	}
     }
 }
 
+// Assume our terminal wraps long lines.
+
 static bool
-more_than_a_screenful (const char *s)
+more_than_a_screenful (const char *s, int len)
 {
   if (s)
     {
       int available_rows = command_editor::terminal_rows () - 2;
 
+      int cols = command_editor::terminal_cols ();
+
       int count = 0;
 
-      char c;
+      int chars_this_line = 0;
 
-      while ((c = *s++) != '\0')
-	if (c == '\n')
-	  {
-	    count++;
+      for (int i = 0; i < len; i++)
+	{
+	  if (*s++ == '\n')
+	    {
+	      count += chars_this_line / cols + 1;
+	      chars_this_line = 0;
+	    }
+	  else
+	    chars_this_line++;
+	}
 
-	    if (count > available_rows)
-	      return true;
-	  }
+      if (count > available_rows)
+ 	return true;
     }
 
   return false;
@@ -217,22 +226,25 @@ octave_pager_buf::sync (void)
       || (Vpage_screen_output && Vpage_output_immediately)
       || ! Vpage_screen_output)
     {
-      sputc ('\0');
-
       char *buf = eback ();
+
+      int len = pptr () - buf;
 
       bool bypass_pager = (! interactive
 			   || ! Vpage_screen_output
 			   || (really_flush_to_pager
 			       && Vpage_screen_output
 			       && ! Vpage_output_immediately
-			       && ! more_than_a_screenful (buf)));
+			       && ! more_than_a_screenful (buf, len)));
 
-      seekoff (0, ios::beg);
+      if (len > 0)
+	{
+	  do_sync (buf, len, bypass_pager);
 
-      do_sync (buf, bypass_pager);
+	  seekoff (0, ios::beg);
 
-      octave_diary << buf;
+	  octave_diary.write (buf, len);
+	}
     }
 
   return 0;
@@ -241,10 +253,13 @@ octave_pager_buf::sync (void)
 int
 octave_diary_buf::sync (void)
 {
-  sputc ('\0');
-
   if (write_to_diary_file && external_diary_file)
-    external_diary_file << eback ();
+    {
+      int len = pptr () - eback ();
+
+      if (len > 0)
+	external_diary_file.write (eback (), len);
+    }
 
   seekoff (0, ios::beg);
 

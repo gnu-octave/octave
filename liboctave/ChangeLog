@@ -1,3 +1,10 @@
+Tue Jan 19 09:34:55 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (operator * (const ColumnVector& v, const RowVector& a)):
+	Don't require lengths to be equal.
+	* CMatrix.cc (operator * (const ComplexColumnVector& v, const
+	ComplexRowVector& a)): Likewise
+
 Tue Nov 24 23:38:19 1998  Eric Norum <eric@skatter.USask.Ca>
 
 	* statdefs.h: Only define mode_t if not already defined.

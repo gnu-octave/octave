@@ -1906,7 +1906,37 @@ save_binary_data (ostream& os, const octave_value& tc,
   tmp = mark_as_global;
   os.write (&tmp, 1);
 
-  if (tc.is_real_scalar ())
+  if (tc.is_string ())
+    {
+      tmp = 7;
+      os.write (&tmp, 1);
+      FOUR_BYTE_INT nr = tc.rows ();
+      os.write (&nr, 4);
+      charMatrix chm = tc.char_matrix_value ();
+      for (int i = 0; i < nr; i++)
+	{
+	  FOUR_BYTE_INT len = chm.cols ();
+	  os.write (&len, 4);
+	  string tstr = chm.row_as_string (i);
+	  const char *tmp = tstr.data ();
+	  os.write (tmp, len);
+	}
+    }
+  else if (tc.is_range ())
+    {
+      tmp = 6;
+      os.write (&tmp, 1);
+      tmp = (char) LS_DOUBLE;
+      os.write (&tmp, 1);
+      Range r = tc.range_value ();
+      double bas = r.base ();
+      double lim = r.limit ();
+      double inc = r.inc ();
+      os.write (&bas, 8);
+      os.write (&lim, 8);
+      os.write (&inc, 8);
+    }
+  else if (tc.is_real_scalar ())
     {
       tmp = 1;
       os.write (&tmp, 1);
@@ -1984,36 +2014,6 @@ save_binary_data (ostream& os, const octave_value& tc,
       const Complex *mtmp = m.data ();
       write_doubles (os, X_CAST (const double *, mtmp), st, 2*len);
     }
-  else if (tc.is_string ())
-    {
-      tmp = 7;
-      os.write (&tmp, 1);
-      FOUR_BYTE_INT nr = tc.rows ();
-      os.write (&nr, 4);
-      charMatrix chm = tc.char_matrix_value ();
-      for (int i = 0; i < nr; i++)
-	{
-	  FOUR_BYTE_INT len = chm.cols ();
-	  os.write (&len, 4);
-	  string tstr = chm.row_as_string (i);
-	  const char *tmp = tstr.data ();
-	  os.write (tmp, len);
-	}
-    }
-  else if (tc.is_range ())
-    {
-      tmp = 6;
-      os.write (&tmp, 1);
-      tmp = (char) LS_DOUBLE;
-      os.write (&tmp, 1);
-      Range r = tc.range_value ();
-      double bas = r.base ();
-      double lim = r.limit ();
-      double inc = r.inc ();
-      os.write (&bas, 8);
-      os.write (&lim, 8);
-      os.write (&inc, 8);
-    }
   else
     gripe_wrong_type_arg ("save", tc, false);
 
@@ -2057,7 +2057,28 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
   os.write (&name_len, 4);
   os << name << '\0';
 
-  if (tc.is_real_scalar ())
+  if (tc.is_string ())
+    {
+      unwind_protect::begin_frame ("save_mat_binary_data");
+      unwind_protect_int (Vimplicit_str_to_num_ok);
+      Vimplicit_str_to_num_ok = true;
+      Matrix m = tc.matrix_value ();
+      os.write (m.data (), 8 * len);
+      unwind_protect::run_frame ("save_mat_binary_data");
+    }
+  else if (tc.is_range ())
+    {
+      Range r = tc.range_value ();
+      double base = r.base ();
+      double inc = r.inc ();
+      int nel = r.nelem ();
+      for (int i = 0; i < nel; i++)
+	{
+	  double x = base + i * inc;
+	  os.write (&x, 8);
+	}
+    }
+  else if (tc.is_real_scalar ())
     {
       double tmp = tc.double_value ();
       os.write (&tmp, 8);
@@ -2079,27 +2100,6 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
       os.write (m.data (), 8 * len);
       m = ::imag(m_cmplx);
       os.write (m.data (), 8 * len);
-    }
-  else if (tc.is_string ())
-    {
-      unwind_protect::begin_frame ("save_mat_binary_data");
-      unwind_protect_int (Vimplicit_str_to_num_ok);
-      Vimplicit_str_to_num_ok = true;
-      Matrix m = tc.matrix_value ();
-      os.write (m.data (), 8 * len);
-      unwind_protect::run_frame ("save_mat_binary_data");
-    }
-  else if (tc.is_range ())
-    {
-      Range r = tc.range_value ();
-      double base = r.base ();
-      double inc = r.inc ();
-      int nel = r.nelem ();
-      for (int i = 0; i < nel; i++)
-	{
-	  double x = base + i * inc;
-	  os.write (&x, 8);
-	}
     }
   else
     gripe_wrong_type_arg ("save", tc, false);
@@ -2219,7 +2219,32 @@ save_ascii_data (ostream& os, const octave_value& tc,
   long old_precision = os.precision ();
   os.precision (precision);
 
-  if (tc.is_real_scalar ())
+  if (tc.is_string ())
+    {
+      ascii_save_type (os, "string array", mark_as_global);
+      charMatrix chm = tc.char_matrix_value ();
+      int elements = chm.rows ();
+      os << "# elements: " << elements << "\n";
+      for (int i = 0; i < elements; i++)
+	{
+	  int len = chm.cols ();
+	  os << "# length: " << len << "\n";
+	  string tstr = chm.row_as_string (i);
+	  const char *tmp = tstr.data ();
+	  os.write (tmp, len);
+	  os << "\n";
+	}
+    }
+  else if (tc.is_range ())
+    {
+      ascii_save_type (os, "range", mark_as_global);
+      Range tmp = tc.range_value ();
+      os << "# base, limit, increment\n"
+	 << tmp.base () << " "
+	 << tmp.limit () << " "
+	 << tmp.inc () << "\n";
+    }
+  else if (tc.is_real_scalar ())
     {
       ascii_save_type (os, "scalar", mark_as_global);
 
@@ -2291,31 +2316,6 @@ save_ascii_data (ostream& os, const octave_value& tc,
 	tmp = strip_infnan (tmp);
 
       os << tmp;
-    }
-  else if (tc.is_string ())
-    {
-      ascii_save_type (os, "string array", mark_as_global);
-      charMatrix chm = tc.char_matrix_value ();
-      int elements = chm.rows ();
-      os << "# elements: " << elements << "\n";
-      for (int i = 0; i < elements; i++)
-	{
-	  int len = chm.cols ();
-	  os << "# length: " << len << "\n";
-	  string tstr = chm.row_as_string (i);
-	  const char *tmp = tstr.data ();
-	  os.write (tmp, len);
-	  os << "\n";
-	}
-    }
-  else if (tc.is_range ())
-    {
-      ascii_save_type (os, "range", mark_as_global);
-      Range tmp = tc.range_value ();
-      os << "# base, limit, increment\n"
-	 << tmp.base () << " "
-	 << tmp.limit () << " "
-	 << tmp.inc () << "\n";
     }
   else
     gripe_wrong_type_arg ("save", tc, false);

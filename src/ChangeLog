@@ -1,3 +1,49 @@
+Wed Jan 27 14:18:29 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DEFFUN_PATTERN, DEFVAR_PATTERN): Use egrep again.
+	Make the patterns work with stupid egreps that don't like empty
+	elements in alternation patterns.
+
+Fri Jan 22 04:41:48 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_ascii_data): Check for string type first,
+	then range, then the rest.
+	(save_binary_data): Ditto.
+
+	* pager.cc (more_than_a_screenful): Accept length as second arg.
+	Handle long lines properly, assuming the terminal wraps long lines.
+	(octave_pager_buf::do_sync): Accept length of data as second arg.
+	Use write instead of << to put characters on output stream.
+	(octave_pager_buf::sync): Don't assume data ends at first NUL.
+	(octave_diary_buf::sync): Ditto.
+
+Thu Jan 21 22:15:23 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_mat_binary_data): Check for string type
+	first, then range, then the rest.
+
+Wed Jan 20 12:01:14 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_base_stream::do_scanf): Handle short and
+	long ints correctly.
+
+Fri Jan 15 13:04:58 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (end_error): Handle case of endswitch too.
+
+	* Makefile.in: Use basic regular expressions and grep instead of
+	egrep to find files that contain DEFVAR, DEFCONST, or DEFUN.
+
+Wed Dec  9 14:14:11 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (octave): Add $(RDYNAMIC_FLAG) to link command.
+
+Fri Dec  4 20:26:33 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/time.cc (Fstrftime): Make it work even when not
+	using the GNU version of strftime, which allows passing NULL for
+	the buffer to determine the required size of the buffer.
+
 Wed Dec  2 22:38:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (file_in_loadpath): Expect argc == 2, not 3.

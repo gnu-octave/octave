@@ -76,13 +76,13 @@ while [ $# -gt 0 ]; do
     -d | --debug | -v | --verbose)
       dbg=echo
     ;;
-    -h | -? | --help)
+    -h | -\? | --help)
       echo $usage_msg
       cat << EOF
 
 Options:
 
-  -h, -? --help           Print this message.
+  -h, -?, --help          Print this message.
   -IDIR                   Add -IDIR to compile commands.
   -DDEF                   Add -DDEF to compile commands.
   -lLIB                   Add library LIB to link command.

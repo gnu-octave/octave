@@ -118,7 +118,7 @@ function fmt = __pltopt1__ (caller, opt)
     elseif (strcmp (char, "c"))
       set_color = 1;
       color = "5";
-    elseif (strcmp (char, "w"))
+    elseif (strcmp (char, "w") || strcmp (char, "k"))
       set_color = 1;
       color = "6";
     elseif (strcmp (char, "*"))

@@ -1423,6 +1423,10 @@ end_error (const char *type, token::end_tok_type ettype, int l, int c)
       error (fmt, type, "endif", l, c);
       break;
 
+    case token::switch_end:
+      error (fmt, type, "endswitch", l, c); 
+      break;
+
     case token::while_end:
       error (fmt, type, "endwhile", l, c); 
       break;

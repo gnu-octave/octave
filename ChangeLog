@@ -1,3 +1,28 @@
+Wed Jan 20 12:56:02 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't put -O in FFLAGS for powerpc-apple-machten*.
+
+Wed Dec  9 14:02:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (RDYNAMIC_FLAG): Substitute RDYNAMIC_FLAG here.
+	* configure.in: Check for G++ compiler flag -rdynamic if setting
+	up to support dynamic linking, and substitute RDYNAMIC_FLAG if
+	-rdynamic is accepted.
+	* aclocal.m4 (OCTAVE_CC_FLAG, OCTAVE_CXX_FLAG): Clarify usage comment.
+
+Mon Dec  7 19:49:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for -lm just after compiler tests.
+	Remove -lm from other macro calls.  Don't check for -lm on NeXT
+	systems.  Eric Norum <eric@skatter.usask.ca> says /lib/libsys_s.a
+	has all the routines that are traditionally in libc.a and libm.a
+	on *NIX systems.  NeXT also supplies a libm.a, but it seems to be
+	horribly buggy.
+
+Sat Dec  5 10:48:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Correctly handle -?.
+
 Fri Dec  4 18:05:51 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* emacs/octave-mod.el (octave-abbrev-start): Use the correct name

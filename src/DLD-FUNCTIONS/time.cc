@@ -215,6 +215,10 @@ DEFUN_DLD (mktime, args, ,
   return retval;
 }
 
+#if !defined STRFTIME_BUF_INITIAL_SIZE
+#define STRFTIME_BUF_INITIAL_SIZE 128
+#endif
+
 DEFUN_DLD (strftime, args, ,
   "strftime (FMT, TMSTRUCT)\n\
 \n\
@@ -293,13 +297,20 @@ Date fields:\n\
 	{
 	  const char *fmt_str = fmt.c_str ();
 
-	  size_t bufsize = strftime (0, (size_t) UINT_MAX, fmt_str, tm);
+	  char *buf = 0;
+	  size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
+	  size_t chars_written = 0;
 
-	  char *buf = new char [++bufsize];
+	  while (chars_written == 0)
+	    {
+	      delete [] buf;
+	      buf = new char[bufsize];
+	      buf[0] = '\0';
 
-	  buf[0] = '\0';
+	      chars_written = strftime (buf, bufsize, fmt_str, tm);
 
-	  strftime (buf, bufsize, fmt_str, tm);
+	      bufsize *= 2;
+	    }
 
 	  retval = buf;
 

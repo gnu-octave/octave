@@ -675,8 +675,10 @@ EOB
   fi
 ])
 dnl
-dnl Check to see if C compiler handles FLAG command line option and
-dnl add it to CFLAGS if it does.
+dnl Check to see if C compiler handles FLAG command line option.  If
+dnl two arguments are specified, execute the second arg as shell
+dnl commands.  Otherwise, add FLAG to CFLAGS if the compiler accepts
+dnl the flag.
 dnl
 dnl OCTAVE_CC_FLAG
 AC_DEFUN(OCTAVE_CC_FLAG, [
@@ -704,8 +706,10 @@ AC_DEFUN(OCTAVE_CC_FLAG, [
   fi
 ])
 dnl
-dnl Check to see if C++ compiler handles FLAG command line option and
-dnl add it to CXXFLAGS if it does.
+dnl Check to see if C++ compiler handles FLAG command line option.  If
+dnl two arguments are specified, execute the second arg as shell
+dnl commands.  Otherwise, add FLAG to CXXFLAGS if the compiler accepts
+dnl the flag.
 dnl
 dnl OCTAVE_CXX_FLAG
 AC_DEFUN(OCTAVE_CXX_FLAG, [

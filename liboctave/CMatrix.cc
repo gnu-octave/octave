@@ -1695,25 +1695,21 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
   ComplexMatrix retval;
 
   int len = v.length ();
-  int a_len = a.length ();
 
-  if (len != a_len)
-    gripe_nonconformant ("operator *", len, 1, 1, a_len);
-  else
+  if (len != 0)
     {
-      if (len != 0)
-	{
-	  retval.resize (len, a_len);
-	  Complex *c = retval.fortran_vec ();
+      int a_len = a.length ();
 
-	  F77_XFCN (zgemm, ZGEMM, ("N", "N", len, a_len, 1, 1.0,
-				   v.data (), len, a.data (), 1, 0.0,
-				   c, len, 1L, 1L)); 
+      retval.resize (len, a_len);
+      Complex *c = retval.fortran_vec ();
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zgemm");
-	}
+      F77_XFCN (zgemm, ZGEMM, ("N", "N", len, a_len, 1, 1.0,
+			       v.data (), len, a.data (), 1, 0.0,
+			       c, len, 1L, 1L)); 
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler)
+	  ("unrecoverable error in zgemm");
     }
 
   return retval;

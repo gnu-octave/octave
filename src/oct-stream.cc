@@ -289,7 +289,6 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 	  break;
 
 	case 'h': case 'l': case 'L':
-	  // We accept these but we don't actually use them.
 	  if (modifier != '\0')
 	    nconv = -1;
 	  else
@@ -927,6 +926,14 @@ template void
 do_scanf_conv (istream&, const char*, int*, Matrix&, double*, int&,
 	       int, int, bool);
 
+template void
+do_scanf_conv (istream&, const char*, long int*, Matrix&, double*, int&,
+	       int, int, bool);
+
+template void
+do_scanf_conv (istream&, const char*, short int*, Matrix&, double*, int&,
+	       int, int, bool);
+
 #if 0
 template void
 do_scanf_conv (istream&, const char*, float*, Matrix&, double*, int&,
@@ -1033,10 +1040,32 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 		case 'd': case 'i': case 'o': case 'u': case 'x':
 		  {
-		    int tmp;
+		    switch (elt->modifier)
+		      {
+		      case 'h':
+			{
+			  short int tmp;
+			  do_scanf_conv (is, fmt, &tmp, mval, data, count,
+					 nr, max_size, discard);
+			}
+		      break;
 
-		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
-				   nr, max_size, discard);
+		      case 'l':
+			{
+			  long int tmp;
+			  do_scanf_conv (is, fmt, &tmp, mval, data, count,
+					 nr, max_size, discard);
+			}
+		      break;
+
+		      default:
+			{
+			  int tmp;
+			  do_scanf_conv (is, fmt, &tmp, mval, data, count,
+					 nr, max_size, discard);
+			}
+		      break;
+		      }
 		  }
 		break;
 

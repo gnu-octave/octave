@@ -145,8 +145,8 @@ table.
 
 @table @code
 @item short
-This is the default format.  Octave will try to print numbers with at
-least 5 significant figures within a field that is a maximum of 10
+Octave will try to print numbers with at
+least 3 significant figures within a field that is a maximum of 8
 characters wide.
 
 If Octave is unable to format a matrix so that columns line up on the
@@ -213,6 +213,16 @@ printed in bit format on a workstation which stores 8 byte real values
 in IEEE format with the least significant byte first.  This format only
 works for numeric types.
 @end table
+
+By default, Octave will try to print numbers with at least 5 significant
+figures within a field that is a maximum of 10 characters wide.
+
+If Octave is unable to format a matrix so that columns line up on the
+decimal point and all the numbers fit within the maximum field width,
+it switches to an @samp{e} format.
+
+If @code{format} is invoked without any options, the default format
+state is restored.
 @end deffn
 
 @defvr {Built-in Variable} print_answer_id_name

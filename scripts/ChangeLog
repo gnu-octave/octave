@@ -1,6 +1,26 @@
+Tue Jan 12 10:31:15 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__pltopt1__.m: Accept "k" to mean black.
+
+Fri Dec 11 10:43:19 1998  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+
+	* linear-algebra/krylov.m: Force empty_list_elements_ok for this
+	function.
+
+Thu Dec 10 11:07:00 1998  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+
+	* control/ss2sys.m: Fix typo.
+
+Wed Dec  9 12:42:19 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/subplot.m, plot/oneplot.m: Don't call clearplot.
+
+	* control: Update from A. S. Hodel <a.s.hodel@eng.auburn.edu> for
+	signal names as lists of strings instead of string arrays.
+
 Fri Dec  4 16:08:42 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* quaternion: New directory of functions from A. S. Hodel,
+	* quaternion: New directory of functions from A. S. Hodel
 	<a.s.hodel@eng.auburn.edu>.
 	* Makefile.in (SUBDIRS): Add it to the list.
 	* quaternion/Makefile.in: New file.

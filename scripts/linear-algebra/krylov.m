@@ -41,6 +41,9 @@ function [U,H,k1] = krylov(A,v,k,eps1,pflg);
   # $Revision: 1.2 $
   # $Log$
 
+  save_empty_list_elements_ok = empty_list_elements_ok;
+  empty_list_elements_ok = 1;
+
   if    (nargin > 5)   usage("[U,H,k1] = krylov(A,v,k{,eps1,pflg})");
   elseif(nargin < 5)   pflg = 0;
   elseif(nargin < 4)   eps1 = 1e-12; endif
@@ -153,5 +156,7 @@ function [U,H,k1] = krylov(A,v,k,eps1,pflg);
   if( max(max( abs(U(zidx,:)) )) > eps1 )
     warning("krylov: trivial null space corrupted; set pflg=1 or eps1>%e",eps1);
   endif
+
+  empty_list_elements_ok = save_empty_list_elements_ok;
 
 endfunction

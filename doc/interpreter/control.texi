@@ -6,7 +6,7 @@
 @chapter Control Theory
 
 The Octave Control Systems Toolbox (OCST) was initially developed
-by Dr.\ A.\ Scottedward Hodel 
+by Dr.@: A. Scottedward Hodel 
 @email{a.s.hodel@@eng.auburn.edu} with the assistance
 of his students
 @itemize @bullet
@@ -2031,7 +2031,7 @@ Actual system gain lies in the interval [@var{gmin}, @var{gmax}]
  Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
     Int. J. Control, vol 54, #5, 1991
  Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
- $Revision: 1.8 $
+ $Revision: 1.9 $
 @end deftypefn
 
 @deftypefn {Function File } { @var{Qb} =} obsv (@var{sys}@{, @var{c}@})
@@ -3336,7 +3336,7 @@ Written by: Jose Daniel Munoz Frias.
 
 @deftypefn {Function File } { outputs =} mb ( inputs ) 
 @format
- $Revision: 1.8 $
+ $Revision: 1.9 $
 
 
 @end format

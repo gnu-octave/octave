@@ -41,7 +41,6 @@ function oneplot ()
       gset origin 0, 0;
       __multiplot_mode__ = 0;
       gnuplot_command_replot = "rep";
-      clearplot;
     endif
 
   endif

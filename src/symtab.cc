@@ -540,9 +540,7 @@ symbol_record::save (ostream& os, int mark_as_global = 0)
     warning ("save: sorry, can't save read-only variable `%s'", nm);
   else if (is_function ())
     warning ("save: sorry, can't save function `%s'", nm);
-  else if (! is_defined ())
-    warning ("save: sorry, can't save undefined variable `%s'", nm);
-  else
+  else if (is_defined ())
     {
       os << "# name: " << nm << "\n";
       status = definition->save (os, mark_as_global);

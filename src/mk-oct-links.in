@@ -15,7 +15,7 @@ shift
 for f in "$@"; do
   base=`basename $f | sed 's/\.cc$//'`
   fcns=`grep -h '^ *DEFUN_DLD' $f |\
-        sed -e 's/DEFUN_DLD_BUILTIN *( *"//' -e 's/".*$//' |\
+        sed -e 's/DEFUN_DLD_BUILTIN *( *//' -e 's/ *,.*$//' |\
         sort -u`
   if [ -n "$fcns" ]; then
     for n in $fcns; do
@@ -23,7 +23,7 @@ for f in "$@"; do
         true
       else
 	echo "creating link $n.oct -> $base.oct"
-        ( cd $links_dir; $LN $base.oct $n.oct )
+        ( cd $links_dir; $LN_S $base.oct $n.oct )
       fi
     done
   fi

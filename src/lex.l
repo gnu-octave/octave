@@ -836,7 +836,7 @@ delete_buffer (YY_BUFFER_STATE buf)
 void
 restore_input_buffer (void *buf)
 {
-  switch_to_buffer ((YY_BUFFER_STATE) buf);
+  switch_to_buffer (static_cast<YY_BUFFER_STATE> (buf));
 }
 
 // Delete a buffer (for unwind-prot).
@@ -844,7 +844,7 @@ restore_input_buffer (void *buf)
 void
 delete_input_buffer (void *buf)
 {
-  delete_buffer ((YY_BUFFER_STATE) buf);
+  delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
 }
 
 // Check to see if a character string matches any of the possible line

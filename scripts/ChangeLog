@@ -21,7 +21,7 @@
 	returning them.
 	* signal/freqz_plot.m: New file.
 
-2002-04-24  Bill Lash  <lash@tellabs.com>
+2002-04-24  Bill Lash <lash@tellabs.com>
 
 	* scripts/signal/unwrap.m: New file.
 

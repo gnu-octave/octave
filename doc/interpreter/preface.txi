@@ -85,6 +85,10 @@ John Campbell @email{jcc@@bevo.che.wisc.edu} wrote most of the file and
 C-style input and output functions.
 
 @item
+Dirk Eddelbuettel @email{edd@@debian.org} makes Octave easy to install
+for users of Debian GNU/Linux.
+
+@item
 Brian Fox @email{bfox@@gnu.org} wrote the @code{readline} library
 used for command history editing, and the portion of this manual that
 documents it.
@@ -92,6 +96,10 @@ documents it.
 @item
 Klaus Gebhardt @email{gebhardt@@crunch.ikp.physik.th-darmstadt.de}
 ported Octave to OS/2.
+
+@item
+Kai Habel @email{kai.habel@@gmx.de} implemted functions for performing
+coordinate transformations.
 
 @item
 A. Scottedward Hodel @email{A.S.Hodel@@eng.auburn.edu} contributed a number
@@ -113,6 +121,28 @@ Phil Johnson @email{johnsonp@@nicco.sscnet.ucla.edu} has helped to make
 Linux releases available.
 
 @item
+Steven G. Johnson @email{stevenj@@alum.mit.edu} added support for ATLAS,
+saving data in HDF5 files, and ported Octave's configure script to
+Autoconf 2.50.
+
+@item
+Mumit Khan @email{khan@@nanotech.wisc.edu} helped make it possible for
+Octave to be compiled by ISO standard C++ compilers other than GCC.
+
+@item
+Paul Kienzle @email{pkienzle@@users.sf.net} has provided many
+enhancements to improve Octave's compatibility with @sc{Matlab}, and
+also maintains the collection of conributed code at
+@url{http://octave.sf.net}.
+
+@item
+Bill Lash @email{lash@@tellabs.com} provided the @code{unwrap} function.
+
+@item
+Dirk Laurie @email{dirk@@calvyn.puk.ac.za} rewrote @code{invhilb} to be
+faster and more accurate.
+
+@item
 Friedrich Leisch @email{leisch@@ci.tuwien.ac.at} provided the
 @code{mahalanobis} function.
 
@@ -132,9 +162,18 @@ implementation of @code{fread}, @code{fwrite}, @code{feof}, and
 @code{ferror}.
 
 @item
+Gabriele Pannocchia  @email{pannocchia@@ing.unipi.it} provided the
+@code{dkalman.m} function and added support for singular system matrices
+to @code{dlqe} and @code{dlqr}.
+
+@item
 Tony Richardson @email{arichard@@stark.cc.oh.us} wrote Octave's
 image processing functions as well as most of the original polynomial
 functions.
+
+@item
+Ben Sapp @email{bsapp@@lanl.gov} implemented the debugger functions and
+added Texinfo markup commands to the internal doc strings.
 
 @item
 R. Bruce Tenison @email{btenison@@dibbs.net} wrote the
@@ -143,6 +182,10 @@ R. Bruce Tenison @email{btenison@@dibbs.net} wrote the
 @item
 Teresa Twaroch @email{twaroch@@ci.tuwien.ac.at} provided the functions
 @code{gls} and @code{ols}.
+
+@item
+James R. Van Zandt @email{jrv@@vanzandt.mv.com} added support for
+reading and writing @sc{Matlab} version 5 binary data files.
 
 @item
 Andreas Weingessel @email{Andreas.Weingessel@@ci.tuwien.ac.at} wrote the

@@ -6,15 +6,6 @@
    Leave the following blank line there!!  Autoheader needs it.  */
 
 
-/* Define if you don't have acosh(). */
-#undef ACOSH_MISSING
-
-/* Define if you don't have asinh(). */
-#undef ASINH_MISSING
-
-/* Define if you don't have atanh(). */
-#undef ATANH_MISSING
-
 /* Define if your math.h declares struct exception for matherr() */
 #undef EXCEPTION_IN_MATH
 

@@ -279,9 +279,9 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	    }
 	}
     }
-  else if (idx_j.is_colon_equiv (nr, 1))
+  else if (idx_j.is_colon_equiv (nc, 1))
     {
-      if (idx_i.is_colon_equiv (nc, 1))
+      if (idx_i.is_colon_equiv (nr, 1))
 	resize (0, 0);
       else
 	{

@@ -1,5 +1,10 @@
 Fri Feb 21 16:07:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array2-idx.h (Array2<T>::maybe_delete_elements): Use correct
+	dimension in check for colon equivalent index.
+	* idx-vector.cc (IDX_VEC_REP::is_colon_equiv): A single-element
+	index whose value is 0 is also colon eqivalent for n == 1.
+
 	* lo-ieee.cc (octave_ieee_init): Reorder #ifdef stuff to put
 	system-specific tests first.
 

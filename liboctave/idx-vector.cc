@@ -470,7 +470,7 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort_uniq)
 	  delete [] tmp_data;
 	}
       else
-	colon_equiv = 0;
+	colon_equiv = (len == 1 && n == 1 && data[0] == 0);
 
       colon_equiv_checked = 1;
     }

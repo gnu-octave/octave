@@ -84,11 +84,12 @@ odessa_f (int* neq, const double& t, double *state,
 
   ColumnVector tmp_fval = user_fsub (tmp_state, t, tmp_param);
 
-  // Return the function value as a C array object
-
-  for (int i = 0; i < n; i++)
+  if (tmp_fval.length () == 0)
+    longjmp (f77_context, 1);
+  else
     {
-      fval[i] = tmp_fval(i);
+      for (int i = 0; i < n; i++)
+	fval[i] = tmp_fval(i);
     }
 
   return 0;
@@ -96,8 +97,8 @@ odessa_f (int* neq, const double& t, double *state,
 
 static int
 odessa_j (int* neq, const double& t, double *state,
-	  double *par, const int& ml, const int& mu, double *pd, const
-	  int& nrowpd)
+	  double *par, const int& ml, const int& mu, double *pd,
+	  const int& nrowpd)
 {
   int n = neq[0];
   int n_par = neq[1];
@@ -113,9 +114,14 @@ odessa_j (int* neq, const double& t, double *state,
 
   Matrix tmp_fval = user_jsub (tmp_state, t, tmp_param);
 
-  for (int j = 0; j < n; j++)
-    for (int i = 0; i < nrowpd; i++)
-      pd[nrowpd*j+i] = tmp_fval(i,j);
+  if (tmp_fval.length () == 0)
+    longjmp (f77_context, 1);
+  else
+    {
+      for (int j = 0; j < n; j++)
+	for (int i = 0; i < nrowpd; i++)
+	  pd[nrowpd*j+i] = tmp_fval(i,j);
+    }
 
   return 0;
 }
@@ -139,8 +145,13 @@ odessa_b (int* neq, const double& t, double *state,
 
   ColumnVector tmp_fval = user_bsub (tmp_state, t, tmp_param, jpar);
 
-  for (int i = 0; i < n; i++)
-    dfdp[i] = tmp_fval(i);
+  if (tmp_fval.length () == 0)
+    longjmp (f77_context, 1);
+  else
+    {
+      for (int i = 0; i < n; i++)
+	dfdp[i] = tmp_fval(i);
+    }
 
   return 0;
 }

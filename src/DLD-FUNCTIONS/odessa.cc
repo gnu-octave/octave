@@ -464,7 +464,7 @@ parameters for @code{lsode}.\n\
 	      if (odessa_j && nr == 3)
 		{
 		  odessa_b = extract_function
-		    (tmp(1), "odessa", "__odessa_b__",
+		    (tmp(2), "odessa", "__odessa_b__",
 		     "function dfdp = __odessa_b__ (x, t, p, c) dfdp = ",
 		     "; endfunction");
 

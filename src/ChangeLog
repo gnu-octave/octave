@@ -1,3 +1,8 @@
+2004-08-03  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_scan): Avoid need for pushing two
+	characters back on the input stream.
+
 2004-08-02  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_scan): For %i format, recognize numbers

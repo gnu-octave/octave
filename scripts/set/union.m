@@ -39,16 +39,17 @@ function y = union(a,b)
     usage ("union(a,b)");
   endif
 
-  if(isempty(a))
-    y = create_set(b);
-  elseif(isempty(b))
-    y = create_set(a);
+  if (isempty (a))
+    y = create_set (b);
+  elseif (isempty (b))
+    y = create_set (a);
   else
-    [nra, nca] = size(a);
-    a = reshape(a,1,nra*nca);
-    [nrb, ncb] = size(b);
-    b = reshape(b,1,nrb*ncb);
-    y = create_set([a, b]);
+    y = create_set ([a(:); b(:)]);
+    if (size (a, 1) == 1 || size (b, 1) == 1)
+      y = y(:).';
+    else
+      y = y(:);
+    endif
   endif
 
 endfunction

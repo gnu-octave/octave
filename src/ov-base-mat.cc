@@ -127,10 +127,18 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
     {
     case 2:
       {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
+	int nd = matrix.ndims ();
 
-	retval = MT (matrix.index (i, j, resize_ok, MT::resize_fill_value ()));
+	if (nd == 2)
+	  {
+	    idx_vector i = idx (0).index_vector ();
+	    idx_vector j = idx (1).index_vector ();
+
+	    retval = MT (matrix.index (i, j, resize_ok, MT::resize_fill_value ()));
+	  }
+	else
+	  error ("invalid number of indices (= 2) for %d-dimensional array",
+		 nd);
       }
       break;
 

@@ -1,3 +1,11 @@
+2003-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-bool.h (octave_bool::array_value,
+	octave_bool::complex_array_value): New functions.
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op):
+	Ensure correct number of indices for Array indexing code.
+
 2003-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/qz.cc (qz): Use x.data()+offset instead of &a(i,j).

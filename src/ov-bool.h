@@ -92,10 +92,16 @@ public:
   Matrix matrix_value (bool = false) const
     { return Matrix (1, 1, scalar); }
 
+  NDArray array_value (bool = false) const
+    { return NDArray (dim_vector (1, 1), scalar); }
+
   Complex complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
+
+  ComplexNDArray complex_array_value (bool = false) const
+    { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
   bool bool_value (void) const { return scalar; }
 

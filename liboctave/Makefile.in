@@ -67,7 +67,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	$(VX_OP_INC)
 
 TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
-	MArray.cc MArray2.cc MDiagArray2.cc base-lu.cc
+	MArray.cc MArray2.cc MArrayN.cc MDiagArray2.cc base-lu.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	Array-s.cc Array-str.cc Array-idx-vec.cc \
@@ -77,7 +77,7 @@ MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
 	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc \
 	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \
-	EIG.cc MArray-misc.cc MArrayN.cc boolMatrix.cc \
+	EIG.cc MArray-misc.cc boolMatrix.cc \
 	boolNDArray.cc chMatrix.cc chNDArray.cc dColVector.cc \
 	dDiagMatrix.cc dMatrix.cc dNDArray.cc dRowVector.cc \
 	dbleAEPBAL.cc dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \

@@ -1,3 +1,7 @@
+2003-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (TEMPLATE_SRC): Move MArrayN.cc here from MATRIX_SRC.
+
 2003-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.h (Array<T>::resize (int, const T&)): Reinstate.

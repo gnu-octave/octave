@@ -90,7 +90,7 @@ public:
     { return Matrix (1, 1, scalar); }
 
   NDArray array_value (bool = false) const
-    { return NDArray (dim_vector (1, 1), double_value ()); }
+    { return NDArray (dim_vector (1, 1), scalar); }
 
   Complex complex_value (bool = false) const { return scalar; }
 
@@ -98,7 +98,7 @@ public:
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
   ComplexNDArray complex_array_value (bool = false) const
-    { return ComplexNDArray (dim_vector (1, 1), double_value ()); }
+    { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
   octave_value convert_to_str_internal (bool pad, bool force) const;
 

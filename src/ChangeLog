@@ -1,3 +1,15 @@
+2004-09-07  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-inline.h (octave_fcn_inline::octave_fcn_inline): New copy
+	constructor.
+	(octave_fcn_inline::clone, octave_fcn_inline::empty_clone):
+	New functions.
+
+	* ov-fcn-handle.h (octave_fcn_handle::octave_fcn_handle): New copy
+	constructor.
+	(octave_fcn_handle::clone, octave_fcn_handle::empty_clone):
+	New functions.
+
 2004-09-06  John W. Eaton  <jwe@octave.org>
 
 	* ov.cc (install_types): Call octave_fcn_inline::register_type.

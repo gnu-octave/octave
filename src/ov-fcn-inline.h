@@ -50,12 +50,18 @@ octave_fcn_inline : public octave_fcn_handle
 public:
 
   octave_fcn_inline (void)
-    : octave_fcn_handle(), iftext (), ifargs () { }
+    : octave_fcn_handle (), iftext (), ifargs () { }
 
   octave_fcn_inline (const std::string& f, const string_vector& a, 
 		     const std::string& n = std::string ());
 
+  octave_fcn_inline (const octave_fcn_inline& fi)
+    : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }
+
   ~octave_fcn_inline (void) { }
+
+  octave_value *clone (void) const { return new octave_fcn_inline (*this); }
+  octave_value *empty_clone (void) const { return new octave_fcn_inline (); }
 
   bool is_inline_function (void) const { return true; }
 
@@ -72,12 +78,6 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
-
-  // No copying!
-
-  octave_fcn_inline (const octave_fcn_inline& fh);
-
-  octave_fcn_inline& operator = (const octave_fcn_inline& fh);
 
   DECLARE_OCTAVE_ALLOCATOR
 

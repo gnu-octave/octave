@@ -49,7 +49,13 @@ public:
   octave_fcn_handle (const octave_value& f,  const std::string& n)
     : fcn (f), nm (n) { }
 
+  octave_fcn_handle (const octave_fcn_handle& fh)
+    : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm) { }
+
   ~octave_fcn_handle (void) { }
+
+  octave_value *clone (void) const { return new octave_fcn_handle (*this); }
+  octave_value *empty_clone (void) const { return new octave_fcn_handle (); }
 
   octave_value subsref (const std::string&,
 			const std::list<octave_value_list>&)
@@ -78,12 +84,6 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
-
-  // No copying!
-
-  octave_fcn_handle (const octave_fcn_handle& fh);
-
-  octave_fcn_handle& operator = (const octave_fcn_handle& fh);
 
   DECLARE_OCTAVE_ALLOCATOR
 

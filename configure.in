@@ -131,7 +131,7 @@ warning: g++ version $gxx_version is likely to cause problems --
 EOF
       ;;
     2.5.*|2.6.*|2.7.*|2.8.*|2.9.*)
-      CXXFLAGS="$CXXFLAGS -fexternal-templates"
+      EXTERNAL_TEMPLATES="-fexternal-templates"
       AC_DEFINE(USE_EXTERNAL_TEMPLATES, 1)dnl
       ;;
     esac
@@ -142,6 +142,7 @@ warning: Octave has only been tested with g++, and I can't
 EOF
 fi
 AC_SUBST(CXXFLAGS)dnl
+AC_SUBST(EXTERNAL_TEMPLATES)dnl
 
 # If we haven't been forced to use f2c, try to find a Fortran compiler
 # under any one of several common Un*x Fortran compiler names. 

@@ -255,6 +255,9 @@ Madison, Wisconsin 53706  USA
 @appendixsec How to Report Bugs
 @cindex bugs, reporting
 
+Send bug reports for Octave to one of the addresses listed in
+@ref{Bug Lists}.
+
 The fundamental principle of reporting bugs usefully is this:
 @strong{report all the facts}.  If you are not sure whether to state a
 fact or leave it out, state it!

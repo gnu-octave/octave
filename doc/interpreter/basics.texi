@@ -773,10 +773,10 @@ The basename of the current working directory.
 The username of the current user.
 
 @item \h
-The hostname.
+The hostname, up to the first `.'.
 
 @item \H
-The hostname, up to the first `.'.
+The hostname.
 
 @item \#
 The command number of this command, counting from when Octave starts.

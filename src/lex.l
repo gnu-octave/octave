@@ -1526,7 +1526,7 @@ handle_string (char delim, int text_style)
   ostrstream buf;
 
   int c;
-  int prev = 0;
+  int escape_pending = 0;
 
   while ((c = yyinput ()) != EOF)
     {
@@ -1536,13 +1536,14 @@ handle_string (char delim, int text_style)
 	{
 	  if (! have_continuation ())
 	    buf << (char) c;
-	  goto next;
+
+	  escape_pending = ! escape_pending;
+	  continue;
 	}
       else if (c == '.')
 	{
 	  if (! have_ellipsis_continuation ())
 	    buf << (char) c;
-	  goto next;
 	}
       else if (c == '\n')
 	{
@@ -1550,7 +1551,7 @@ handle_string (char delim, int text_style)
 	}
       else if (c == delim)
 	{
-	  if (prev == '\\')
+	  if (escape_pending)
 	    buf << (char) c;
 	  else
 	    {
@@ -1597,8 +1598,7 @@ handle_string (char delim, int text_style)
 	  buf << (char) c;
 	}
 
-    next:
-      prev = c;
+      escape_pending = 0;
     }
 
   return LEXICAL_ERROR;

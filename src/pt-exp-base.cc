@@ -2656,8 +2656,7 @@ tree_function::eval (int print)
     return retval;
 
   Octave_object tmp_args;
-  tmp_args.resize (1);
-  Octave_object tmp = eval (print, 1, tmp_args);
+  Octave_object tmp = eval (print, 0, tmp_args);
 
   if (! error_state && tmp.length () > 0)
     retval = tmp(0);

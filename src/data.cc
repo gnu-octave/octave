@@ -592,17 +592,23 @@ DEFUN ("prod", Fprod, Sprod, 1, 1,
   return retval;
 }
 
-DEFUN ("size", Fsize, Ssize, 1, 1,
-  "[m, n] = size (x): return rows and columns of X")
+DEFUN ("size", Fsize, Ssize, 2, 1,
+[m, n] = size (x): return rows and columns of X\n\
+\n\
+d = size (x): return number of rows and columns of x as a row vector\n\
+\n\
+m = size (x, 1): return number of rows in x\n\
+m = size (x, 2): return number of columns in x")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
+  if (nargin == 1 && nargout < 3)
     {
       int nr = args(0).rows ();
       int nc = args(0).columns ();
+
       if (nargout == 0 || nargout == 1)
 	{
 	  Matrix m (1, 2);
@@ -615,8 +621,22 @@ DEFUN ("size", Fsize, Ssize, 1, 1,
 	  retval(1) = (double) nc;
 	  retval(0) = (double) nr;
 	}
+    }
+  else if (nargin == 2 && nargout < 2)
+    {
+      int nd = NINT (args(1).double_value ());
+
+      if (error_state)
+	error ("size: expecting scalar as second argument");
       else
-	print_usage ("size");
+	{
+	  if (nd == 1)
+	    retval(0) = (double) (args(0).rows ());
+	  else if (nd == 2)
+	    retval(0) = (double) (args(0).columns ());
+	  else
+	    error ("size: invalid second argument -- expecting 1 or 2");
+	}
     }
   else
     print_usage ("size");

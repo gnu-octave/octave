@@ -92,8 +92,11 @@ endif
 
 LIBOCTAVE_DEPEND := $(patsubst %, liboctave.a(%), $(OBJECTS))
 
-all: safe-stat.h safe-lstat.h stamp-picdir liboctave.a stamp-shared
+all: stamp-prereq stamp-picdir liboctave.a stamp-shared
 .PHONY: all
+
+stamp-prereq: safe-stat.h safe-lstat.h
+	touch stamp-prereq
 
 stamp-picdir:
 	if [ -n "$(CXXPICFLAG)" ]; then \
@@ -187,12 +190,12 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations stamp-picdir stamp-shared
+	rm -f Makefile so_locations stamp-picdir stamp-shared stamp-prereq
 	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS stamp-picdir stamp-shared
+	rm -f tags TAGS stamp-picdir stamp-shared stamp-prereq
 	-rmdir pic
 .PHONY: maintainer-clean
 
@@ -204,6 +207,11 @@ dist:
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 .PHONY: dist
 
+# If missing, GNU make attempts to create them in the reverse of the
+# order in which they are listed here.  We rely on that fact to ensure
+# that the safe-stat.h and safe-lstat.h files are created before trying
+# to create the .d files.  Hmm.  I wonder if we can count on that...
+
 ifndef omit_deps
--include $(MAKEDEPS)
+-include $(MAKEDEPS) stamp-prereq
 endif

@@ -166,9 +166,12 @@ DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links.in \
 	octave.gperf octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
-all: defaults.h stamp-picdir libraries \
+all: stamp-prereq stamp-picdir libraries \
 	$(OCT_FILES) octave
 .PHONY: all
+
+stamp-prereq: defaults.h
+	touch stamp-prereq
 
 octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
 	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_LDFLAGS) -o octave \
@@ -268,13 +271,13 @@ mostlyclean:
 
 distclean: clean
 	rm -f Makefile octave .fname so_locations
-	rm -f stamp-picdir stamp-tinst stamp-interp
+	rm -f stamp-picdir stamp-tinst stamp-interp stamp-prereq
 	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc \
-	rm -f parse.cc oct-gperf.h stamp-picdir stamp-tinst stamp-interp
+	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
+	rm -f oct-gperf.h stamp-picdir stamp-tinst stamp-interp stamp-prereq
 	-rmdir pic
 .PHONY: maintainer-clean
 
@@ -330,6 +333,11 @@ oct-gperf.h: octave.gperf
 check: all
 .PHONY: check
 
+# If missing, GNU make attempts to create them in the reverse of the
+# order in which they are listed here.  We rely on that fact to ensure
+# that defaults.h is created before trying to create the .d files.
+# Hmm.  I wonder if we can count on that...
+
 ifndef omit_deps
--include $(MAKEDEPS)
+-include $(MAKEDEPS) stamp-prereq
 endif

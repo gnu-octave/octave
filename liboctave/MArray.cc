@@ -62,9 +62,9 @@ operator += (MArray<T>& a, const MArray<T>& b)
   int l = a.length ();
   if (l > 0)
     {
-      if (l != b.length ())
-	(*current_liboctave_error_handler) \
-	  ("nonconformant += array operation attempted"); \
+      int bl = b.length ();
+      if (l != bl)
+	gripe_nonconformant ("operator +=", l, bl);
       else
 	DO_VV_OP2 (+=);
     }
@@ -78,9 +78,9 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   int l = a.length ();
   if (l > 0)
     {
-      if (l != b.length ())
-	(*current_liboctave_error_handler) \
-	  ("nonconformant -= array operation attempted"); \
+      int bl = b.length ();
+      if (l != bl)
+	gripe_nonconformant ("operator -=", l, bl);
       else
 	DO_VV_OP2 (-=);
     }
@@ -121,16 +121,16 @@ MARRAY_SA_OP(/)
 
 // Element by element MArray by MArray ops.
 
-#define MARRAY_AA_OP(FCN, OP, OP_STR) \
+#define MARRAY_AA_OP(FCN, OP) \
   template <class T> \
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
     int l = a.length (); \
-    if (l != b.length ()) \
+    int bl = b.length (); \
+    if (l != bl) \
       { \
-	(*current_liboctave_error_handler) \
-	  ("nonconformant array " OP_STR " attempted"); \
+	gripe_nonconformant (#FCN, l, bl); \
 	return MArray<T> (); \
       } \
     if (l == 0) \
@@ -139,10 +139,10 @@ MARRAY_SA_OP(/)
     return MArray<T> (result, l); \
   }
 
-MARRAY_AA_OP (operator +, +, "addition")
-MARRAY_AA_OP (operator -, -, "subtraction")
-MARRAY_AA_OP (product,    *, "multiplication")
-MARRAY_AA_OP (quotient,   /, "division")
+MARRAY_AA_OP (operator +, +)
+MARRAY_AA_OP (operator -, -)
+MARRAY_AA_OP (product,    *)
+MARRAY_AA_OP (quotient,   /)
 
 // Unary MArray ops.
 

@@ -61,11 +61,10 @@ operator += (MArray2<T>& a, const MArray2<T>& b)
 {
   int r = a.rows ();
   int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant += array operation attempted");
-    }
+  int br = b.rows ();
+  int bc = b.cols ();
+  if (r != br || c != bc)
+    gripe_nonconformant ("operator +=", r, c, br, bc);
   else
     {
       if (r > 0 && c > 0)
@@ -83,11 +82,10 @@ operator -= (MArray2<T>& a, const MArray2<T>& b)
 {
   int r = a.rows ();
   int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant -= array operation attempted");
-    }
+  int br = b.rows ();
+  int bc = b.cols ();
+  if (r != br || c != bc)
+    gripe_nonconformant ("operator -=", r, c, br, bc);
   else
     {
       if (r > 0 && c > 0)
@@ -133,17 +131,18 @@ MARRAY_SA2_OP (/)
 
 // Element by element MArray2 by MArray2 ops.
 
-#define MARRAY_A2A2_OP(FCN, OP, OP_STR) \
+#define MARRAY_A2A2_OP(FCN, OP) \
   template <class T> \
   MArray2<T> \
   FCN (const MArray2<T>& a, const MArray2<T>& b) \
   { \
     int r = a.rows (); \
     int c = a.cols (); \
-    if (r != b.rows () || c != b.cols ()) \
+    int br = b.rows (); \
+    int bc = b.cols (); \
+    if (r != br || c != bc) \
       { \
-	(*current_liboctave_error_handler) \
-	  ("nonconformant array " OP_STR " attempted"); \
+        gripe_nonconformant (#FCN, r, c, br, bc); \
 	return MArray2<T> (); \
       } \
     if (r == 0 || c == 0) \
@@ -153,10 +152,10 @@ MARRAY_SA2_OP (/)
     return MArray2<T> (result, r, c); \
   }
 
-MARRAY_A2A2_OP (operator +, +, "addition")
-MARRAY_A2A2_OP (operator -, -, "subtraction")
-MARRAY_A2A2_OP (product,    *, "product")
-MARRAY_A2A2_OP (quotient,   /, "quotient")
+MARRAY_A2A2_OP (operator +, +)
+MARRAY_A2A2_OP (operator -, -)
+MARRAY_A2A2_OP (product,    *)
+MARRAY_A2A2_OP (quotient,   /)
 
 // Unary MArray2 ops.
 

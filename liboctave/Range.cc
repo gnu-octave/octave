@@ -36,6 +36,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Range.h"
 #include "dMatrix.h"
+#include "lo-mappers.h"
+#include "lo-utils.h"
+
+bool
+Range::all_elements_are_ints (void) const
+{
+  // If the base and increment are ints, the final value in the range
+  // will also be an integer, even if the limit is not.
+
+  return (! (xisnan (rng_base) || xisnan (rng_inc))
+	  && (double) NINT (rng_base) == rng_base
+	  && (double) NINT (rng_inc) == rng_inc);
+}
 
 Matrix
 Range::matrix_value (void) const

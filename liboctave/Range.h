@@ -56,6 +56,8 @@ Range
   double inc (void) const { return rng_inc;   }
   int nelem (void) const { return rng_nelem; }
 
+  bool all_elements_are_ints (void) const;
+
   Matrix matrix_value (void) const;
 
   double min (void) const;
@@ -66,7 +68,6 @@ Range
   void set_base (double b) { rng_base = b;  }
   void set_limit (double l) { rng_limit = l; }
   void set_inc (double i) { rng_inc = i;   }
-
 
   friend ostream& operator << (ostream& os, const Range& r);
   friend istream& operator >> (istream& is, Range& r);

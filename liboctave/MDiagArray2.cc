@@ -43,10 +43,13 @@ operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
 {
   int r = a.rows ();
   int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
+
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+
+  if (r != b_nr || c != b_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant array operator += attempted");
+      gripe_nonconformant ("operator +=", r, c, b_nr, b_nc);
       static MDiagArray2<T> foo;
       return foo;
     }
@@ -64,10 +67,13 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
 {
   int r = a.rows ();
   int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
+
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+
+  if (r != b_nr || c != b_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant array operator -= attempted");
+      gripe_nonconformant ("operator -=", r, c, b_nr, b_nc);
       static MDiagArray2<T> foo;
       return foo;
     }
@@ -105,17 +111,18 @@ operator * (const T& s, const MDiagArray2<T>& a)
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
 
-#define MARRAY_DADA_OP(FCN, OP, OP_STR) \
+#define MARRAY_DADA_OP(FCN, OP) \
   template <class T> \
   MDiagArray2<T> \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
     int r = a.rows (); \
     int c = a.cols (); \
-    if (r != b.rows () || c != b.cols ()) \
+    int b_nr = b.rows (); \
+    int b_nc = b.cols (); \
+    if (r != b_nr || c != b_nc) \
       { \
-	(*current_liboctave_error_handler) \
-	  ("nonconformant diagonal array " OP_STR " attempted"); \
+        gripe_nonconformant (#FCN, r, c, b_nr, b_nc); \
 	return MDiagArray2<T> (); \
       } \
     if (c == 0 || r == 0) \
@@ -125,9 +132,9 @@ operator * (const T& s, const MDiagArray2<T>& a)
     return MDiagArray2<T> (result, r, c); \
   }
 
-MARRAY_DADA_OP (operator +, +, "addition")
-MARRAY_DADA_OP (operator -, -, "subtraction")
-MARRAY_DADA_OP (product,    *, "product")
+MARRAY_DADA_OP (operator +, +)
+MARRAY_DADA_OP (operator -, -)
+MARRAY_DADA_OP (product,    *)
 
 // Unary MDiagArray2 ops.
 

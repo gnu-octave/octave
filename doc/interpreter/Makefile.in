@@ -14,6 +14,10 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
 SOURCES =
 
 TEXINFO = ack.texi amuse.texi arith.texi bugs.texi bugs1.texi \

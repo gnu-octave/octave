@@ -20,7 +20,7 @@ Both are based on reliable ODE solvers written in Fortran.
 @node Ordinary Differential Equations, Differential-Algebraic Equations, Differential Equations, Differential Equations
 @section Ordinary Differential Equations
 
-The function @code{lsode} can be used Solve ODEs of the form
+The function @code{lsode} can be used to solve ODEs of the form
 @iftex
 @tex
 $$
@@ -122,7 +122,7 @@ more information about the inner workings of @code{lsode}.
 @node Differential-Algebraic Equations,  , Ordinary Differential Equations, Differential Equations
 @section Differential-Algebraic Equations
 
-The function @code{dassl} can be used Solve DAEs of the form
+The function @code{dassl} can be used to solve DAEs of the form
 @iftex
 @tex
 $$

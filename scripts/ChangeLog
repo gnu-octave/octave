@@ -1,3 +1,19 @@
+Mon Jul 12 22:48:34 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/cond.m: Avoid returning NaN for matrices that
+	contain only zeros.
+
+Sun Jun 20 22:24:27 1999  Eduardo Gallestey <eduardo@faceng.anu.edu.au>
+
+	* linear-algebra/kron.m: Create result matrix and insert blocks
+	instead of appending them.
+
+Sat Jun 19 01:52:18 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/bodquist.m, control/buildssic.m, control/is_digital.m,
+	control/stepimp.m, control/sysmin.m, control/syssetsignals.m:
+	Update from A. S. Hodel.
+
 Fri Jun 18 12:19:22 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* polynomial/polyfit.m: Correct previous change.

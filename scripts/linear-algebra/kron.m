@@ -35,25 +35,17 @@ function x = kron (a, b)
     [m, n] = size (b);
     [ma, na] = size (a);
 
-    ## Do 1st column.
+    x = zeros (ma*m, na*n);	
+    i_vec = 1:m;
+    j_vec = 1:n;
 
-    x = a (1, 1) * b;
-    for ii = 2:ma
-      tmp = a (ii, 1) * b;
-      x = [x; tmp];
-    endfor
-
-    ## Do remaining columns.
-
-    for jj = 2:na
-      tmp = a (1, jj) * b;
-      for ii = 2:ma
-        pmt = a (ii, jj) * b;
-	tmp = [tmp; pmt];
+    for jj = 1:na
+      for ii = 1:ma
+	x(i_vec+(ii-1)*m,j_vec) = a(ii,jj) * b;
       endfor
-      x = [x, tmp];
+      j_vec = jvec + n;
     endfor
-
+    
   else
     usage ("kron (a, b)");
   endif

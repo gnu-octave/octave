@@ -889,7 +889,7 @@ state.
 @end deffn
 
 @defvr {Built-in Variable} echo_executing_commands
-This variable is may also be used to control the echo state.  It may be
+This variable may also be used to control the echo state.  It may be
 the sum of the following values:
 
 @table @asis
@@ -940,7 +940,7 @@ on the line where it was unable to make sense of your input.  In this
 case, Octave generated an error message because the keyword
 @code{function} was misspelled.  Instead of seeing @samp{function f},
 Octave saw two consecutive variable names, which is invalid in this
-context.  It marked the error at the @code{y} because the first name by
+context.  It marked the error at @code{y} because the first name by
 itself was accepted as valid input.
 
 Another class of error message occurs at evaluation time.  These
@@ -973,9 +973,10 @@ traceback of enclosing expressions and function calls.
 In the example above, the first line indicates that a variable named
 @samp{x} was found to be undefined near line 1 and column 24 of some
 function or expression.  For errors occurring within functions, lines
-from the beginning of the file containing the function definition.  For
-errors occurring at the top level, the line number indicates the input
-line number, which is usually displayed in the prompt string.
+are counted from the beginning of the file containing the function
+definition.  For errors occurring at the top level, the line number
+indicates the input line number, which is usually displayed in the
+prompt string.
 
 The second and third lines in the example indicate that the error
 occurred within an assignment expression, and the last line of the error

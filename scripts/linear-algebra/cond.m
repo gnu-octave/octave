@@ -39,8 +39,18 @@ function retval = cond (a)
       endif
       retval = 0.0;
     endif
-    sigma = svd (a);
-    retval = sigma (1) / sigma (length (sigma));
+    if (any (any (isinf (a) | isnan (a))))
+      error ("cond: argument must not contain Inf or NaN values");
+    else
+      sigma = svd (a);
+      sigma_1 = sigma(1);
+      sigma_n = sigma(length (sigma));
+      if (sigma_1 == 0 || sigma_n == 0)
+	retval = Inf;
+      else
+	retval = sigma_1 / sigma_n;
+      endif
+    endif
   else
     usage ("cond (a)");
   endif

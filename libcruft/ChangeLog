@@ -1,3 +1,10 @@
+2000-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (LIBRARIES): Conditionally define. 	
+	(libraries): Depend on $(SUBDIRS) only.
+	Make $(LIBRARIES) using a recursive invocation of make once
+	$(SUBDIRS) are up to date.
+
 2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (libcruft.$(LIBEXT)): New target.

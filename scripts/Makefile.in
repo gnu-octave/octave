@@ -44,7 +44,6 @@ all: $(SUBDIRS) DOCSTRINGS
 .PHONY: all
 
 $(SUBDIRS):
-	echo making all in $@
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 

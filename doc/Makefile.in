@@ -36,7 +36,6 @@ all: $(SUBDIRS)
 .PHONY: ../BUGS ../INSTALL.OCTAVE
 
 $(SUBDIRS):
-	echo making all in $@
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 

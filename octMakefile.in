@@ -72,7 +72,6 @@ all: octave-bug mkoctfile src
 .PHONY: all
 
 src: $(SUBDIRS)
-	echo making all in $@
 	$(MAKE) -C $@ all
 .PHONY: src
 
@@ -85,7 +84,6 @@ mkoctfile: mkoctfile.in Makeconf octMakefile
 	chmod a+rx $@
 
 $(SUBDIRS):
-	echo making all in $@
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 

@@ -32,7 +32,6 @@ all: $(SUBDIRS)
 .PHONY: all
 
 $(SUBDIRS):
-	echo making all in $@
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 

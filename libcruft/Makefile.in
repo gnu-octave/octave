@@ -40,7 +40,6 @@ all: libraries
 .PHONY: all
 
 $(SUBDIRS):
-	echo making all in $@
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
@@ -68,17 +67,20 @@ endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: $(SUBDIRS) libcruft.$(LIBEXT) libcruft.$(SHLEXT)
+    LIBRARIES = libcruft.$(LIBEXT) libcruft.$(SHLEXT)
   else
-    libraries: $(SUBDIRS) libcruft.$(SHLEXT)
+    LIBRARIES = libcruft.$(SHLEXT)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: $(SUBDIRS) libcruft.$(LIBEXT)
+    LIBRARIES = libcruft.$(LIBEXT)
   else
-    libraries:
+    LIBRARIES =
   endif
 endif
+
+libraries: $(SUBDIRS)
+	$(MAKE) $(LIBRARIES)
 .PHONY: libraries
 
 libcruft.$(LIBEXT): $(CRUFT_OBJ)

@@ -41,6 +41,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "pr-output.h"
 #include "mappers.h"
+#include "sysdep.h"
 #include "pager.h"
 #include "help.h"
 #include "error.h"
@@ -60,11 +61,14 @@ static int free_format = 0;
 // Nonzero means print plus sign for nonzero, blank for zero.
 static int plus_format = 0;
 
-// Nonzero means don't put newlines around the column number headers.
-static int compact_format = 0;
-
 // Nonzero means always print like dollars and cents.
 static int bank_format = 0;
+
+// Nonzero means print data in hexadecimal format.
+static int hex_format = 0;
+
+// Nonzero means don't put newlines around the column number headers.
+static int compact_format = 0;
 
 // Nonzero means use an e format.
 static int print_e = 0;
@@ -217,6 +221,11 @@ set_format (double d, int& fw)
       fw += sign;
       rd = 2;
     }
+  else if (hex_format)
+    {
+      fw = 2 * sizeof (double);
+      rd = 0;
+    }
   else if (xisnan (d) || D_NINT (d) == d)
     {
       fw = digits;
@@ -246,7 +255,8 @@ set_format (double d, int& fw)
       fw += sign;
     }
 
-  if (! bank_format && (fw > user_pref.output_max_field_width || print_e))
+  if (! (bank_format || hex_format)
+      && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
       if (digits > 100)
@@ -312,6 +322,11 @@ set_format (const Matrix& m, int& fw)
       fw += sign;
       rd = 2;
     }
+  else if (hex_format)
+    {
+      fw = 2 * sizeof (double);
+      rd = 0;
+    }
   else if (all_elements_are_int_or_inf_or_nan (m))
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -360,7 +375,8 @@ set_format (const Matrix& m, int& fw)
       fw += sign;
     }
 
-  if (! bank_format && (fw > user_pref.output_max_field_width || print_e))
+  if (! (bank_format ||hex_format)
+      && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -443,6 +459,12 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       r_fw += sign;
       rd = 2;
     }
+  else if (hex_format)
+    {
+      r_fw = 2 * sizeof (double);
+      i_fw = 2 * sizeof (double);
+      rd = 0;
+    }
   else if (inf_or_nan || (D_NINT (rp) == rp && D_NINT (ip) == ip))
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -491,7 +513,8 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       r_fw += sign;
     }
 
-  if (! bank_format && (r_fw > user_pref.output_max_field_width || print_e))
+  if (! (bank_format || hex_format)
+      && (r_fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -580,6 +603,12 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       r_fw += sign;
       rd = 2;
     }
+  else if (hex_format)
+    {
+      r_fw = 2 * sizeof (double);
+      i_fw = 2 * sizeof (double);
+      rd = 0;
+    }
   else if (all_elements_are_int_or_inf_or_nan (rp)
 	   && all_elements_are_int_or_inf_or_nan (ip))
     {
@@ -629,7 +658,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       r_fw += sign;
     }
 
-  if (! bank_format && (r_fw > user_pref.output_max_field_width || print_e))
+  if (! (bank_format || hex_format)
+      && (r_fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -664,8 +694,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
 static int
 all_elements_are_ints (const Range& r)
 {
-// If the base and increment are ints, the final value in the range
-// will also be an integer, even if the limit is not.
+  // If the base and increment are ints, the final value in the range
+  // will also be an integer, even if the limit is not.
 
   double b = r.base ();
   double i = r.inc ();
@@ -720,6 +750,11 @@ set_format (const Range& r, int& fw)
       fw = sign + digits < 0 ? 4 : digits + 3;
       rd = 2;
     }
+  else if (hex_format)
+    {
+      fw = 2 * sizeof (double);
+      rd = 0;
+    }
   else if (all_elements_are_ints (r))
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -762,7 +797,8 @@ set_format (const Range& r, int& fw)
       fw = sign + ld + 1 + rd;
     }
 
-  if (! bank_format && (fw > user_pref.output_max_field_width || print_e))
+  if (! (bank_format || hex_format)
+      && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -790,6 +826,12 @@ set_format (const Range& r)
   set_format (r, fw);
 }
 
+union equiv
+{
+  double d;
+  unsigned char i[sizeof (double)];
+};
+
 static inline void
 pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 {
@@ -798,7 +840,32 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 
   if (fmt)
     {
-      if (xisinf (d))
+      if (hex_format)
+	{
+	  equiv tmp;
+	  tmp.d = d;
+
+	  // Unless explicitly asked for, always print in big-endian
+	  // format.
+
+	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
+	  // formats and not for Cray?
+
+	  if (hex_format > 1
+	      || native_float_format == OCTAVE_IEEE_BIG
+	      || native_float_format == OCTAVE_CRAY
+	      || native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
+	    {
+	      for (int i = 0; i < sizeof (double); i++)
+		os.form ("%02x", (int) tmp.i[i]);
+	    }
+	  else
+	    {
+	      for (int i = sizeof (double) - 1; i >= 0; i--)
+		os.form ("%02x", (int) tmp.i[i]);
+	    }
+	}
+      else if (xisinf (d))
 	{
 	  char *s;
 	  if (d < 0.0)
@@ -845,7 +912,7 @@ pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
   if (! bank_format)
     {
       double i = c.imag ();
-      if (i < 0)
+      if (! hex_format && i < 0)
 	{
 	  os << " - ";
 	  i = -i;
@@ -853,7 +920,11 @@ pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 	}
       else
 	{
-	  os << " + ";
+	  if (hex_format)
+	    os << "  ";
+	  else
+	    os << " + ";
+
 	  pr_imag_float (os, i, i_fw);
 	}
       os << "i";
@@ -1101,7 +1172,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
       int r_fw, i_fw;
       set_format (cm, r_fw, i_fw);
       int column_width = i_fw + r_fw;
-      column_width += bank_format ? 2 : 7;
+      column_width += (bank_format || hex_format) ? 2 : 7;
       int total_width = nc * column_width;
       int max_width = terminal_columns ();
 
@@ -1301,6 +1372,7 @@ init_format_state (void)
   free_format = 0;
   plus_format = 0;
   bank_format = 0;
+  hex_format = 0;
   print_e = 0;
   print_big_e = 0;
 }
@@ -1380,8 +1452,16 @@ set_format_style (int argc, char **argv)
 	      set_output_prec_and_fw (15, 24);
 	    }
 	  else if (strcmp (*argv, "hex") == 0)
-	    error ("format: format state `hex' not implemented yet");
-	  else if (strcmp (*argv, "+") == 0)
+	    {
+	      init_format_state ();
+	      hex_format = 1;
+	    }
+	  else if (strcmp (*argv, "native-hex") == 0)
+	    {
+	      init_format_state ();
+	      hex_format = 2;
+	    }
+	  else if (strcmp (*argv, "+") == 0 || strcmp (*argv, "plus") == 0)
 	    {
 	      init_format_state ();
 	      plus_format = 1;

@@ -3,12 +3,210 @@ version = 3.0
 
 # Add -DNO_DEBUG to disable debugging, for vanishingly better performance.
 
-ac_include make/paths.make
-ac_include make/makevars.make
-ac_include make/common.make
-ac_include make/library.make
-ac_include make/programs.make
-ac_include make/texi.make
+# paths.make -- installation directories.
+#
+# The compile-time paths are defined in kpathsea/paths.h, which is built
+# from kpathsea/paths.h.in and these definitions.  See kpathsea/INSTALL
+# for how the various path-related files are used and created.
+
+# Do not change prefix and exec_prefix in Makefile.in!
+# configure doesn't propagate the change to the other Makefiles.
+# Instead, give the -prefix/-exec-prefix options to configure.
+# (See kpathsea/INSTALL for more details.) This is arguably
+# a bug, but it's not likely to change soon.
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+# Architecture-dependent executables.
+bindir = @bindir@
+
+# Architecture-independent executables.
+scriptdir = $(bindir)
+
+# Architecture-dependent files, such as lib*.a files.
+libdir = @libdir@
+
+# Architecture-independent files.
+datadir = @datadir@
+
+# Header files.
+includedir = @includedir@
+
+# GNU .info* files.
+infodir = @infodir@
+
+# Unix man pages.
+manext = 1
+mandir = $(prefix)/man/man$(manext)
+
+# TeX system-specific directories. Not all of the following are relevant
+# for all programs, but it seems cleaner to collect everything in one place.
+
+# The default paths are now in kpathsea/paths.h.in. Passing all the
+# paths to sub-makes can make the arg list too long on system V.
+
+# The root of the main tree.
+texmf = $(datadir)/texmf
+
+# Regular input files.
+texinputdir = $(texmf)/tex
+mfinputdir = $(texmf)/metafont
+mpinputdir = $(texmf)/metapost
+mftinputdir = $(texmf)/mft
+
+# dvips's epsf.tex, rotate.tex, etc. get installed here;
+# ditto for dvilj's fonts support.
+dvips_plain_macrodir = $(texinputdir)/plain/dvips
+dvilj_latex2e_macrodir = $(texinputdir)/latex/dvilj
+
+# MakeTeXPK.site, texmf.cnf, etc.
+web2cdir = $(texmf)/web2c
+
+# The top-level font directory.
+fontdir = $(texmf)/fonts
+
+# Memory dumps (.fmt/.base/.mem).
+fmtdir = $(web2cdir)
+basedir = $(fmtdir)
+memdir = $(fmtdir)
+
+# Pool files.
+texpooldir = $(web2cdir)
+mfpooldir = $(texpooldir)
+mppooldir = $(texpooldir)
+
+# Where the .map files from fontname are installed.
+fontnamedir = $(texmf)/fontname
+
+# For dvips configuration files, psfonts.map, etc.
+dvipsdir = $(texmf)/dvips
+
+# For dvips .pro files, gsftopk's render.ps, etc.
+psheaderdir = $(dvipsdir)
+
+# If a font can't be found close enough to its stated size, we look for
+# each of these sizes in the order given.  This colon-separated list is
+# overridden by the envvar TEXSIZES, and by a program-specific variable
+# (e.g., XDVISIZES), and perhaps by a config file (e.g., in dvips).
+# This list must be sorted in ascending order.
+default_texsizes = 300:600
+
+# End of paths.make.
+
+# makevars.make -- the directory names we pass.
+# It's important that none of these values contain [ @%], for the sake
+# of kpathsea/texmf.sed.
+makevars = prefix=$(prefix) exec_prefix=$(exec_prefix) \
+  bindir=$(bindir) scriptdir=$(scriptdir) libdir=$(libdir) \
+  datadir=$(datadir) infodir=$(infodir) includedir=$(includedir) \
+  manext=$(manext) mandir=$(mandir) \
+  texmf=$(texmf) web2cdir=$(web2cdir) \
+  texinputdir=$(texinputdir) mfinputdir=$(mfinputdir) mpinputdir=$(mpinputdir)\
+  fontdir=$(fontdir) fmtdir=$(fmtdir) basedir=$(basedir) memdir=$(memdir) \
+  texpooldir=$(texpooldir) mfpooldir=$(mfpooldir) mppooldir=$(mppooldir) \
+  dvips_plain_macrodir=$(dvips_plain_macrodir) \
+  dvilj_latex2e_macrodir=$(dvilj_latex2e_macrodir) \
+  dvipsdir=$(dvipsdir) psheaderdir=$(psheaderdir) \
+  default_texsizes='$(default_texsizes)'
+# End of makevars.make.
+
+# common.make -- used by all Makefiles.
+SHELL = /bin/sh
+@SET_MAKE@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+CC = @CC@
+CFLAGS = @CFLAGS@ $(XCFLAGS)
+CPPFLAGS = @CPPFLAGS@ $(XCPPFLAGS)
+DEFS = @DEFS@ $(XDEFS)
+
+# Kpathsea needs this for compiling, programs need it for linking.
+LIBTOOL = $(kpathsea_srcdir)/klibtool
+
+# You can change [X]CPPFLAGS, [X]CFLAGS, or [X]DEFS, but
+# please don't change ALL_CPPFLAGS or ALL_CFLAGS.
+# prog_cflags is set by subdirectories of web2c.
+ALL_CPPFLAGS = $(DEFS) -I. -I$(srcdir) $(prog_cflags) \
+  -I$(kpathsea_parent) -I$(kpathsea_srcdir_parent) $(CPPFLAGS)
+ALL_CFLAGS = $(ALL_CPPFLAGS) $(CFLAGS) -c
+compile = $(CC) $(ALL_CFLAGS)
+
+.SUFFIXES: .c .o # in case the suffix list has been cleared, e.g., by web2c
+.c.o:
+	$(compile) $<
+
+# Installation.
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT = $(INSTALL_PROGRAM)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_LIBTOOL_LIBS = INSTALL_DATA='$(INSTALL_DATA)' $(LIBTOOL) install-lib
+INSTALL_LIBTOOL_PROG = INSTALL_PROGRAM='$(INSTALL_PROGRAM)' $(LIBTOOL) install-prog
+
+# We use these for many things.
+kpathsea_parent = ..
+kpathsea_dir = $(kpathsea_parent)/kpathsea
+kpathsea_srcdir_parent = $(top_srcdir)/..
+kpathsea_srcdir = $(kpathsea_srcdir_parent)/kpathsea
+kpathsea = $(kpathsea_dir)/libkpathsea.la
+
+##ifeq ($(CC), gcc)
+##XDEFS = -D__USE_FIXED_PROTOTYPES__ -Wall -Wpointer-arith $(warn_more)
+##CFLAGS = -g $(XCFLAGS)
+##endif
+# End of common.make.
+
+# library.make -- stuff only useful for libraries.
+AR = ar
+ARFLAGS = cq
+RANLIB = @RANLIB@
+# End of library.make.
+
+# programs.make -- used by Makefiles for executables only.
+
+# Don't include $(CFLAGS), since ld -g under Linux forces
+# static libraries, e.g., libc.a and libX*.a.
+LDFLAGS = @LDFLAGS@ $(XLDFLAGS)
+
+# proglib is for web2c; 
+# XLOADLIBES is for the installer.
+LIBS = @LIBS@
+LOADLIBES = $(proglib) $(kpathsea) $(LIBS) -lm $(XLOADLIBES)
+
+# May as well separate linking from compiling, just in case.
+CCLD = $(CC)
+link_command = $(CCLD) -o $@ $(LDFLAGS) 
+
+# When we link with Kpathsea, have to take account that it might be a
+# shared library, etc.
+kpathsea_link = $(LIBTOOL) link $(link_command)
+# End of programs.make.
+
+# texi.make -- making .dvi and .info from .texi.
+MAKEINFO = makeinfo
+MAKEINFO_FLAGS = --paragraph-indent=2 -I$(HOME)/gnu/gnuorg
+# That -I is purely for my own benefit in doing `make dist'.  It won't
+# hurt anything for you (I hope).
+TEXI2DVI = texi2dvi
+
+TEXI2HTML = texi2html
+TEXI2HTML_FLAGS = -split_node -menu
+# If you prefer one big .html file instead of several, remove
+# -split-node or replace it by -split_chapter.
+
+# For making normal text files out of Texinfo source.
+one_info = --no-headers --no-split --no-validate
+
+.SUFFIXES: .info .dvi .html .texi
+.texi.info:
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+.texi.dvi:
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+.texi.html:
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $< 
+# End of texi.make.
 
 ##ifdef HOSTNAME
 ##warn_more = -Wmissing-prototypes -Wwrite-strings -Wshadow
@@ -183,7 +381,52 @@ $(library).h: always
 always:
 .PHONY: always
 
-ac_include make/config.make
+# config.make -- autoconf rules to remake the Makefile, c-auto.h, etc.
+##ifdef HOSTNAME
+##ac_dir = $(gnu)/share/autoconf
+##autoconf = $(ac_dir)/acspecific.m4 $(ac_dir)/acgeneral.m4 $(ac_dir)/acsite.m4
+##autoheader = $(ac_dir)/acconfig.h $(ac_dir)/autoheader.m4
+##
+### I define $(autoconf) to acgeneral.m4 and the other Autoconf files, so
+### configure automatically gets remade in the sources with a new Autoconf
+### release.  But it would be bad for installers with Autoconf to remake
+### configure (not to mention require Autoconf), so I take out the variable
+### $(autoconf) definition before release.
+### 
+### BTW, xt.ac isn't really required for dvipsk or dviljk, but it doesn't
+### seem worth the trouble.
+### 
+##configure_in = $(srcdir)/configure.in $(kpathsea_srcdir)/common.ac \
+##  $(kpathsea_srcdir)/withenable.ac $(kpathsea_srcdir)/xt.ac \
+##  $(kpathsea_srcdir)/acklibtool.m4
+##$(srcdir)/configure: $(configure_in) $(autoconf)
+##	cd $(srcdir) && autoconf
+##endif
+
+config.status: $(srcdir)/configure
+	$(SHELL) $(srcdir)/configure --no-create
+
+Makefile: $(srcdir)/Makefile.in config.status $(SHELL) config.status
+
+# This rule isn't used for the top-level Makefile, but it doesn't hurt.
+# We don't depend on config.status because configure always rewrites
+# config.status, even when it doesn't change. Thus it might be newer
+# than c-auto.h when we don't need to remake the latter.
+c-auto.h: stamp-auto
+stamp-auto: $(srcdir)/c-auto.h.in
+	$(SHELL) config.status
+	date >$(srcdir)/stamp-auto
+
+##ifdef HOSTNAME
+### autoheader reads acconfig.h (and c-auto.h.top) automatically.
+##$(srcdir)/c-auto.h.in: $(srcdir)/stamp-auto.in
+##$(srcdir)/stamp-auto.in: $(configure_in) $(autoheader) \
+##  $(kpathsea_srcdir)/acconfig.h
+##	cd $(srcdir) && autoheader --localdir=$(kpathsea_srcdir)
+##	date >$(srcdir)/stamp-auto.in
+##endif
+
+# End of config.make.
 
 info: $(library).info
 dvi: $(library).dvi
@@ -204,7 +447,31 @@ $(library).info: bugs.texi hier.texi install.texi unixtex.texi
 ##doc: info HIER BUGS INSTALL unixtex.ftp
 ##endif
 
-ac_include make/clean.make
+# clean.make -- cleaning.
+mostlyclean::
+	rm -f *.o
+
+clean:: mostlyclean
+	rm -f $(program) $(programs) squeeze lib$(library).* $(library).a *.bad
+	rm -f *.dvi *.lj
+
+distclean:: clean
+	rm -f Makefile
+	rm -f config.status config.log config.cache c-auto.h 
+
+# Although we can remake configure and c-auto.h.in, we don't remove
+# them, since many people may lack Autoconf.  Use configclean for that.
+maintainer-clean:: distclean
+	rm -f *.info*
+
+extraclean::
+	rm -f *.aux *.bak *.bbl *.blg *.dvi *.log *.pl *.tfm *.vf *.vpl *gf *pk
+	rm -f *.mpx *.i *.s *~ *.orig  *.rej *\#*
+	rm -f CONTENTS.tex a.out core mfput.* texput.* mpout.*
+
+configclean:
+	rm -f configure c-auto.h.in c-auto.h
+# End of clean.make.
 
 mostlyclean::
 	rm -f kpsewhich *.lo
@@ -212,7 +479,48 @@ mostlyclean::
 distclean::
 	rm -f paths.h texmf.cnf texmf.sed
 
-ac_include make/rdepend.make
+# rdepend.make -- rules for remaking the dependencies.
+# 
+# Have to use -M, not -MM, since we use <kpathsea/...> instead of
+# "kpathsea/..." in the sources.  But that means we have to remove the
+# directory prefixes and all the system include files.
+# And <kpathsea/paths.h> is generated, not part of the distribution.
+# 
+# And, there's no need for any installer/user to ever run this, it can
+# only cause trouble. So comment it out in the distribution.
+# (It doesn't work when the source and build directories are different.)
+##ifndef c_auto_h_dir
+##c_auto_h_dir = .
+##endif
+##ifdef HOSTNAME
+##depend depend.make:: $(c_auto_h_dir)/c-auto.h \
+##  $(top_srcdir)/../make/rdepend.make 
+##	$(CC) -M $(ALL_CPPFLAGS) -I$(c_auto_h_dir) *.c \
+##	  | sed -e 's,\(\.\./\)\+kpathsea/,$$(kpathsea_srcdir)/,g' \
+##	        -e 's,$$(kpathsea_srcdir)/paths.h,$$(kpathsea_dir)/paths.h,g' \
+##	        -e 's,/usr[^ ]* ,,g' \
+##	        -e 's,/usr[^ ]*$$,,g' \
+##	        -e 's,dvi2xx.o,dvilj.o dvilj2p.o dvilj4.o dvilj4l.o,' \
+##	  | grep -v '^ *\\$$' \
+##	  >depend.make
+### If kpathsea, we're making .lo library objects instead of .o's.
+##	pwd | grep -v kpathsea >/dev/null \
+##	  || (sed -e 's/\.o:/.lo:/' -e 's/kpsewhich.lo:/kpsewhich.o:/' \
+##	      <depend.make >depend-tmp.make; mv depend-tmp.make depend.make)
+##.PHONY: depend
+##endif
+
+# Let's stick a rule for TAGS here, just in case someone wants them.
+# (We don't put them in the distributions, to keep them smaller.)
+TAGS: *.c *.h
+	pwd | grep kpathsea >/dev/null && append=../kpathsea/TAGS; \
+	  etags $$append *.[ch]
+
+# Prevent GNU make 3.[59,63) from overflowing arg limit on system V.
+.NOEXPORT:
+
+# End of rdepend.make.
+
 absolute.lo: absolute.c ../kpathsea/config.h c-auto.h \
  ../kpathsea/c-std.h \
  ../kpathsea/c-unistd.h ../kpathsea/systypes.h \

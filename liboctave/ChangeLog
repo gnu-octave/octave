@@ -1,8 +1,11 @@
 2005-03-30  John W. Eaton  <jwe@octave.org>
 
-	* liboctave/CColVector.cc, liboctave/CNDArray.cc,
-	liboctave/CRowVector.cc: Use std:: for Complex functions instead
-	of relying on wrappers from oct-cmplx.h.
+	* lo-mappers.cc (log10, tan, tanh): Delete functions.
+	* lo-mappers.h (log10, tan, tanh): Delete decls.
+
+	* CColVector.cc, CNDArray.cc, CRowVector.cc, CSparse.cc,
+	dSparse.cc: Use std:: for Complex functions instead of relying on
+	wrappers from oct-cmplx.h.
 
 	* oct-cmplx.h: Provide typedef only.
 
@@ -3309,7 +3312,7 @@
 
 2000-03-21  Ben Sapp  <bsapp@nua.lampf.lanl.gov>:
 
-	* liboctave/Makefile.in (liboctave.$(LIBEXT)): New target.
+	* Makefile.in (liboctave.$(LIBEXT)): New target.
 	(libraries): Depend only on library targets, not archive members.
 
 2000-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>

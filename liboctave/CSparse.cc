@@ -237,7 +237,7 @@ SparseComplexMatrix::max (Array2<int>& idx_arg, int dim) const
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
 
-	      double abs_tmp = ::abs (tmp);
+	      double abs_tmp = std::abs (tmp);
 
 	      if (octave_is_NaN_or_NA (abs_max) || abs_tmp > abs_max)
 		{
@@ -302,7 +302,7 @@ SparseComplexMatrix::max (Array2<int>& idx_arg, int dim) const
 
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
-	      else if (ix == -1 || ::abs(tmp) > ::abs(elem (ir, ix)))
+	      else if (ix == -1 || std::abs(tmp) > std::abs(elem (ir, ix)))
 		idx_arg.elem (ir) = j;
 	    }
 	}
@@ -389,7 +389,7 @@ SparseComplexMatrix::min (Array2<int>& idx_arg, int dim) const
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
 
-	      double abs_tmp = ::abs (tmp);
+	      double abs_tmp = std::abs (tmp);
 
 	      if (octave_is_NaN_or_NA (abs_min) || abs_tmp < abs_min)
 		{
@@ -454,7 +454,7 @@ SparseComplexMatrix::min (Array2<int>& idx_arg, int dim) const
 
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
-	      else if (ix == -1 || ::abs(tmp) < ::abs(elem (ir, ix)))
+	      else if (ix == -1 || std::abs(tmp) < std::abs(elem (ir, ix)))
 		idx_arg.elem (ir) = j;
 	    }
 	}
@@ -787,7 +787,7 @@ SparseComplexMatrix::dsolve (SparseType &mattype, const Matrix& b, int& err,
 	  double dmax = 0., dmin = octave_Inf; 
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double tmp = ::abs(data(i));
+	      double tmp = std::abs(data(i));
 	      if (tmp > dmax)
 		dmax = tmp;
 	      if (tmp < dmin)
@@ -866,7 +866,7 @@ SparseComplexMatrix::dsolve (SparseType &mattype, const SparseMatrix& b,
 	  double dmax = 0., dmin = octave_Inf; 
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double tmp = ::abs(data(i));
+	      double tmp = std::abs(data(i));
 	      if (tmp > dmax)
 		dmax = tmp;
 	      if (tmp < dmin)
@@ -916,7 +916,7 @@ SparseComplexMatrix::dsolve (SparseType &mattype, const ComplexMatrix& b,
 	  double dmax = 0., dmin = octave_Inf; 
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double tmp = ::abs(data(i));
+	      double tmp = std::abs(data(i));
 	      if (tmp > dmax)
 		dmax = tmp;
 	      if (tmp < dmin)
@@ -996,7 +996,7 @@ SparseComplexMatrix::dsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  double dmax = 0., dmin = octave_Inf; 
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double tmp = ::abs(data(i));
+	      double tmp = std::abs(data(i));
 	      if (tmp > dmax)
 		dmax = tmp;
 	      if (tmp < dmin)
@@ -1044,7 +1044,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const Matrix& b, int& err,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -1116,7 +1116,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const Matrix& b, int& err,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1179,7 +1179,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const Matrix& b, int& err,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1253,7 +1253,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -1356,7 +1356,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1444,7 +1444,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1518,7 +1518,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -1591,7 +1591,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1654,7 +1654,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1728,7 +1728,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -1831,7 +1831,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1919,7 +1919,7 @@ SparseComplexMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -1993,7 +1993,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const Matrix& b, int& err,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -2066,7 +2066,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const Matrix& b, int& err,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2130,7 +2130,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const Matrix& b, int& err,
 		  double atmp = 0;
 		  for (int i = j; i < nr; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2204,7 +2204,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -2307,7 +2307,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2396,7 +2396,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b,
 		  double atmp = 0;
 		  for (int i = j; i < nr; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2472,7 +2472,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -2545,7 +2545,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2609,7 +2609,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = j; i < nr; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2684,7 +2684,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	    {
 	      double atmp = 0.;
 	      for (int i = cidx(j); i < cidx(j+1); i++)
-		atmp += ::abs(data(i));
+		atmp += std::abs(data(i));
 	      if (atmp > anorm)
 		anorm = atmp;
 	    }
@@ -2787,7 +2787,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = 0; i < j+1; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -2876,7 +2876,7 @@ SparseComplexMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  double atmp = 0;
 		  for (int i = j; i < nr; i++)
 		    {
-		      atmp += ::abs(work[i]);
+		      atmp += std::abs(work[i]);
 		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
@@ -5959,7 +5959,7 @@ SparseComplexMatrix::all_elements_are_real (void) const
 
   for (int i = 0; i < nel; i++)
     {
-      double ip = imag (data (i));
+      double ip = std::imag (data (i));
       
       if (ip != 0.0 || lo_ieee_signbit (ip))
 	return false;
@@ -5980,15 +5980,15 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
   if (nel == 0)
     return false;
 
-  max_val = real(data (0));
-  min_val = real(data (0));
+  max_val = std::real(data (0));
+  min_val = std::real(data (0));
 
   for (int i = 0; i < nel; i++)
     {
 	Complex val = data (i);
 
-	double r_val = real (val);
-	double i_val = imag (val);
+	double r_val = std::real (val);
+	double i_val = std::imag (val);
 
 	if (r_val > max_val)
 	  max_val = r_val;
@@ -6018,8 +6018,8 @@ SparseComplexMatrix::too_large_for_float (void) const
     {
 	Complex val = data (i);
 
-	double r_val = real (val);
-	double i_val = imag (val);
+	double r_val = std::real (val);
+	double i_val = std::imag (val);
 
 	if (r_val > FLT_MAX
 	    || i_val > FLT_MAX
@@ -6100,7 +6100,7 @@ SparseMatrix SparseComplexMatrix::abs (void) const
 
   for (int i = 0; i < nz; i++)
     {
-      retval.data (i) = ::abs (data (i));
+      retval.data (i) = std::abs (data (i));
       retval.ridx (i) = ridx (i);
     }
 

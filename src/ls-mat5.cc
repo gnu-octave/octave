@@ -1268,12 +1268,12 @@ save_mat5_binary_element (std::ostream& os,
 	  NDArray buf (dim_vector (nnz, 1));
 
 	  for (int i = 0; i < nnz; i++)
-	    buf (i) = ::real (m.data (i));
+	    buf (i) = std::real (m.data (i));
 
 	  write_mat5_array (os, buf, save_as_floats);
 
 	  for (int i = 0; i < nnz; i++)
-	    buf (i) = ::imag (m.data (i));
+	    buf (i) = std::imag (m.data (i));
 
 	  write_mat5_array (os, buf, save_as_floats);
 	}

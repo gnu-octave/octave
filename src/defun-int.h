@@ -240,12 +240,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 			      ch_map_flag, can_ret_cmplx_for_real, doc) \
   install_builtin_mapper \
     (new octave_mapper \
-     (X_CAST (octave_mapper::ch_mapper, ch_map), \
-      X_CAST (octave_mapper::d_b_mapper, d_b_map), \
-      X_CAST (octave_mapper::c_b_mapper, c_b_map), \
-      X_CAST (octave_mapper::d_d_mapper, d_d_map), \
-      X_CAST (octave_mapper::d_c_mapper, d_c_map), \
-      X_CAST (octave_mapper::c_c_mapper, c_c_map), \
+     (ch_map, d_b_map, c_b_map, d_d_map, d_c_map, c_c_map, \
       lo, hi, ch_map_flag, can_ret_cmplx_for_real, #name, doc))
 
 #endif /* ! MAKE_BUILTINS */

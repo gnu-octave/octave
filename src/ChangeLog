@@ -1,6 +1,10 @@
 2005-03-30  John W. Eaton  <jwe@octave.org>
 
-	* src/ov-complex.cc, src/ov-cx-mat.cc, src/xpow.cc: Use std:: for
+	* mappers.cc (install_mapper_functions): Use std:: as needed.
+	* defun-int.h (DEFUN_MAPPER_INTERNAL): Don't use X_CAST on
+	function pointer args.
+
+	* ov-complex.cc, ov-cx-mat.cc, xpow.cc, ls-mat5.cc: Use std:: for
 	Complex functions instead of relying on wrappers from oct-cmplx.h.
 
 	* oct-stream.cc (octave_scan): Initialize c1 to EOF.
@@ -627,7 +631,7 @@
 	* sighandlers.h, sighandlers.cc
 	(octave_child_list::octave_child_list_rep): New class.
 
-	* src/input.cc (gnu_readline, octave_gets, get_user_input):
+	* input.cc (gnu_readline, octave_gets, get_user_input):
 	Call OCTAVE_QUIT before doing anything.
 
 	* base-list.h (octave_base_list<T>::remove_if): New function.
@@ -2225,7 +2229,7 @@
 
 2004-04-15  David Bateman  <dbateman@free.fr>
 
-	* src/ov-ch-mat.h: convert_to_str_interal returns charNDArray.
+	* ov-ch-mat.h: convert_to_str_interal returns charNDArray.
 
 2004-04-12  John W. Eaton  <jwe@octave.org>
 
@@ -3747,13 +3751,13 @@
 
 	* ops.h (DEFNDUNOP_OP, DEFNDUNOP_FN, DEFNDBINOP_OP,
 	DEFNDBINOP_FN): New N-dimensional macros.
-	* src/OPERATORS/op-bm-bm.cc, src/OPERATORS/op-cm-cm.cc,
-	src/OPERATORS/op-cm-cs.cc, src/OPERATORS/op-cm-m.cc,
-	src/OPERATORS/op-cm-s.cc, src/OPERATORS/op-cs-cm.cc,
-	src/OPERATORS/op-cs-m.cc, src/OPERATORS/op-m-cm.cc,
-	src/OPERATORS/op-m-cs.cc, src/OPERATORS/op-m-m.cc,
-	src/OPERATORS/op-m-s.cc, src/OPERATORS/op-s-cm.cc,
-	src/OPERATORS/op-s-m.cc: Use N-dimensional macros as appropriate.
+	* OPERATORS/op-bm-bm.cc, OPERATORS/op-cm-cm.cc,
+	OPERATORS/op-cm-cs.cc, OPERATORS/op-cm-m.cc,
+	OPERATORS/op-cm-s.cc, OPERATORS/op-cs-cm.cc,
+	OPERATORS/op-cs-m.cc, OPERATORS/op-m-cm.cc,
+	OPERATORS/op-m-cs.cc, OPERATORS/op-m-m.cc,
+	OPERATORS/op-m-s.cc, OPERATORS/op-s-cm.cc,
+	OPERATORS/op-s-m.cc: Use N-dimensional macros as appropriate.
 
 	* DLD-FUNCTIONS/rand.cc (do_rand, Frand, Frandn):
 	Handle N-dimensions.
@@ -7011,7 +7015,7 @@
 2002-05-03  Cai Jianming  <caijianming@yahoo.co.uk>
 
 	* OPERATORS/op-cell.cc: New file.
-	* src/Makefile.in (OP_XSRC): Include it in the list.
+	* Makefile.in (OP_XSRC): Include it in the list.
 
 	* parse.y (cell): Return a cell type instead of Matrix type.
 

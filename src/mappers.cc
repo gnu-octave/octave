@@ -203,13 +203,13 @@ Compute the inverse cosine of each element of @var{x}.\n\
 Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (angle, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (angle, 0, 0, 0, arg, std::arg, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} angle (@var{z})\n\
 See arg.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (arg, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (arg, 0, 0, 0, arg, std::arg, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
@@ -281,13 +281,13 @@ $\\bar{z} = x - iy$.\n\
 @end deftypefn\n\
 @seealso{real and imag}");
 
-  DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, cos, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, std::cos, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cos (@var{x})\n\
 Compute the cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (cosh, 0, 0, 0, cosh, 0, cosh, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (cosh, 0, 0, 0, cosh, 0, std::cosh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cosh (@var{x})\n\
 Compute the hyperbolic cosine of each element of @var{x}.\n\
@@ -333,7 +333,7 @@ $1 - {\\rm erf} (z)$.\n\
 \n\
 @seealso{erf and erfinv}");
 
-  DEFUN_MAPPER (exp, 0, 0, 0, exp, 0, exp, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (exp, 0, 0, 0, exp, 0, std::exp, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
 Compute the exponential of @var{x}.  To compute the matrix exponential,\n\
@@ -542,7 +542,7 @@ Return the natural logarithm of the gamma function.\n\
 @end deftypefn\n\
 @seealso{gamma and gammai}");
 
-  DEFUN_MAPPER (log, 0, 0, 0, log, 0, log, 0.0, octave_Inf, 0, 1,
+  DEFUN_MAPPER (log, 0, 0, 0, log, 0, std::log, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm for each element of @var{x}.  To compute the\n\
@@ -550,7 +550,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 @end deftypefn\n\
 @seealso{log2, log10, logspace, and exp}");
 
-  DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, log10, 0.0, octave_Inf, 0, 1,
+  DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, std::log10, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm for each element of @var{x}.\n\
@@ -595,19 +595,19 @@ sign (x) =  0, x = 0;\n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sin, 0, 0, 0, sin, 0, sin, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (sin, 0, 0, 0, sin, 0, std::sin, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
 Compute the sine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sinh, 0, 0, 0, sinh, 0, sinh, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (sinh, 0, 0, 0, sinh, 0, std::sinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
 Compute the inverse hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, sqrt, 0.0, octave_Inf, 0, 1,
+  DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, std::sqrt, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
 Compute the square root of @var{x}.  If @var{x} is negative, a complex\n\
@@ -615,13 +615,13 @@ result is returned.  To compute the matrix square root, see\n\
 @ref{Linear Algebra}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tan, 0, 0, 0, tan, 0, tan, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (tan, 0, 0, 0, tan, 0, std::tan, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
 Compute tangent of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tanh, 0, 0, 0, tanh, 0, tanh, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (tanh, 0, 0, 0, tanh, 0, std::tanh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tanh (@var{x})\n\
 Compute hyperbolic tangent of each element of @var{x}.\n\

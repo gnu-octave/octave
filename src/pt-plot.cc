@@ -33,6 +33,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "utils.h"
 #include "tree.h"
 
+extern "C"
+{
+  char *tilde_expand (char *s); /* From readline's tilde.c */
+}
+
 // The number of lines we\'ve plotted so far.
 static int plot_line_count;
 
@@ -239,15 +244,19 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 	  char *file = (char *) NULL;
 	  if (data.is_string_type ())
 	    {
-	      file = data.string_value ();
+	      file = tilde_expand (data.string_value ());
 	      ifstream ftmp (file);
 	      if (ftmp)
 		{
 		  plot_buf << " \"" << file << '"';
+		  free (file);
 		  goto have_existing_file;
 		}
 	      else
-		file = (char *) NULL;
+		{
+		  free (file);
+		  file = (char *) NULL;
+		}
 	    }
 
 	  nc = data.columns ();

@@ -22,7 +22,7 @@ SOURCES =
 
 TEXINFO = amuse.texi arith.texi bugs.texi bugs1.texi control.texi \
 	cp-idx.texi diffeq.texi expr.texi extend.texi fn-idx.texi \
-	func.texi gnuinfo.texi gpl.texi help.texi history.texi \
+	func.texi gnuinfo.texi help.texi history.texi \
 	hsuser.texi image.texi in-idx.texi install.texi install1.texi \
 	intro.texi invoke.texi io.texi linalg.texi matrix.texi \
 	nonlin.texi octave.texi op-idx.texi optim.texi plot.texi \

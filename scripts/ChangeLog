@@ -1,3 +1,10 @@
+2000-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* set/complement.m: Add @seealso{} stuff.
+	* set/create_set.m: Likewise.
+	* set/intersection.m: Likewise.
+	* set/union.m: Likewise.
+
 1999-12-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/d2c.m: Use double quotes instead of single quotes for

@@ -28,9 +28,9 @@
 ##      @result{} [ 2, 3 ]
 ## @end group
 ## @end example
+##
+## @seealso{create_set, union, and complement}
 ## @end deftypefn
-
-## See also: create_set, union, complement
 
 ## Author: jwe
 

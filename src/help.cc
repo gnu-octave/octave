@@ -632,6 +632,10 @@ display_help_text (ostream& os, const string& msg)
 
       if (filter)
 	{
+	  filter << "@macro seealso {args}\n"
+		 << "See also: \\args\\.\n"
+                 << "@end macro\n";
+
 	  filter << msg.substr (pos+1);
 
 	  filter.close ();

@@ -1,3 +1,8 @@
+2000-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (display_help_text): Pass a definition for @seealso
+	through the filter.
+
 1999-12-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (Vwarn_single_quote_string): New variable.

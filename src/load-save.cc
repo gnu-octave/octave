@@ -4367,9 +4367,9 @@ static void
 ascii_save_type (std::ostream& os, const char *type, bool mark_as_global)
 {
   if (mark_as_global)
-    os << "% type: global ";
+    os << "# type: global ";
   else
-    os << "% type: ";
+    os << "# type: ";
 
   os << type << "\n";
 }
@@ -4471,7 +4471,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
     precision = Vsave_precision;
 
   if (! name.empty ())
-    os << "% name: " << name << "\n";
+    os << "# name: " << name << "\n";
 
   long old_precision = os.precision ();
   os.precision (precision);
@@ -4481,11 +4481,11 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
       ascii_save_type (os, "string array", mark_as_global);
       charMatrix chm = tc.char_matrix_value ();
       int elements = chm.rows ();
-      os << "% elements: " << elements << "\n";
+      os << "# elements: " << elements << "\n";
       for (int i = 0; i < elements; i++)
 	{
 	  unsigned len = chm.cols ();
-	  os << "% length: " << len << "\n";
+	  os << "# length: " << len << "\n";
 	  std::string tstr = chm.row_as_string (i, false, true);
 	  const char *tmp = tstr.data ();
 	  if (tstr.length () > len)
@@ -4498,7 +4498,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
     {
       ascii_save_type (os, "range", mark_as_global);
       Range tmp = tc.range_value ();
-      os << "% base, limit, increment\n"
+      os << "# base, limit, increment\n"
 	 << tmp.base () << " "
 	 << tmp.limit () << " "
 	 << tmp.inc () << "\n";
@@ -4537,8 +4537,8 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
     {
       ascii_save_type (os, "matrix", mark_as_global);
 
-      os << "% rows: " << tc.rows () << "\n"
-	 << "% columns: " << tc.columns () << "\n";
+      os << "# rows: " << tc.rows () << "\n"
+	 << "# columns: " << tc.columns () << "\n";
 
       Matrix tmp = tc.matrix_value ();
 
@@ -4593,8 +4593,8 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
     {
       ascii_save_type (os, "complex matrix", mark_as_global);
 
-      os << "% rows: " << tc.rows () << "\n"
-	 << "% columns: " << tc.columns () << "\n";
+      os << "# rows: " << tc.rows () << "\n"
+	 << "# columns: " << tc.columns () << "\n";
 
       ComplexMatrix tmp = tc.complex_matrix_value ();
 
@@ -5169,10 +5169,10 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 
   if (tc.is_real_matrix ())
     {
-      os << "% 3D data...\n"
-	 << "% type: matrix\n"
-	 << "% total rows: " << nr << "\n"
-	 << "% total columns: " << nc << "\n";
+      os << "# 3D data...\n"
+	 << "# type: matrix\n"
+	 << "# total rows: " << nr << "\n"
+	 << "# total columns: " << nc << "\n";
 
       if (parametric)
 	{
@@ -5244,7 +5244,7 @@ static std::string
 default_save_header_format (void)
 {
   return
-    std::string ("% Created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
+    std::string ("# Created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
     + octave_env::get_user_name ()
     + std::string ("@")
     + octave_env::get_host_name ()
@@ -5320,7 +5320,7 @@ the header comment is omitted from text-format data files.  The\n\
 default value is\n\
 \n\
 @example\n\
-\"% Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
+\"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
 @seealso{strftime}\n\
 @end defvr");

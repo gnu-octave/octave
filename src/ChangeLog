@@ -1,5 +1,7 @@
 2002-09-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc: Undo previous change.
+
 	* ov-struct.cc (octave_struct::subsasgn): Ensure that indexed
 	object is not shared before calling subsasgn.
 

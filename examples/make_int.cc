@@ -294,9 +294,6 @@ DEFUN_DLD (doit, args, ,
   // In that case, at least some systems will create two static data
   // members for t_id.  To fix that problem, we need a different way
   // of loading multiple functions from a single shared library...
-  // (Actually, I think this will be fixed when .oct file reloading is
-  // implemented for 2.1.x.  It was done for 2.0.x, but the changes
-  // have not been carried over to the 2.1.x source tree yet.  --jwe)
 
   if (args(0).type_name () == "integer")
     {

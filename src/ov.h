@@ -184,15 +184,6 @@ public:
   virtual octave_value index (const octave_value_list& idx) const
     { return rep->index (idx); }
 
-  bool convert_and_assign (const octave_value_list& idx,
-			   const octave_value& rhs);
-
-  bool try_assignment_with_conversion (const octave_value_list& idx,
-				       const octave_value& rhs);
-
-  bool try_assignment (const octave_value_list& idx,
-		       const octave_value& rhs);
-
   octave_value& assign (const octave_value_list& idx, const octave_value& rhs);
 
   virtual idx_vector index_vector (void) const
@@ -203,19 +194,6 @@ public:
 
   virtual octave_value& struct_elt_ref (const string& nm)
     { return rep->struct_elt_ref (nm); }
-
-#if 0
-  // Simple structure assignment.
-
-  octave_value assign_map_element (SLList<string>& list,
-				    octave_value& rhs);
-
-  // Indexed structure assignment.
-
-  octave_value assign_map_element (SLList<string>& list,
-				    octave_value& rhs,
-				    const octave_value_list& args);
-#endif
 
   // Size.
 
@@ -361,18 +339,6 @@ public:
       rep->decrement ();
     }
 
-#if 0
-  virtual octave_value
-  lookup_map_element (const string& ref, bool insert = false,
-		      bool silent = false)
-    { return lookup_map_element (ref, insert, silent); }
-
-  virtual octave_value
-  lookup_map_element (SLList<string>& list, bool insert = false,
-		      bool silent = false)
-    { return rep->lookup_map_element (list, insert, silent); }
-#endif
-
   ColumnVector vector_value (bool frc_str_conv = false,
 			     bool frc_vec_conv = false) const;
 
@@ -403,15 +369,6 @@ public:
 
   virtual string type_name (void) const { return rep->type_name (); }
 
-#if 0
-  octave_value_rep *make_unique_map (void);
-
-  // We want to eliminate this, or at least make it private.
-
-  virtual octave_value_rep::constant_type const_type (void) const
-    { return rep->const_type (); }
-#endif
-
   virtual void convert_to_matrix_type (bool make_complex)
     { rep->convert_to_matrix_type (make_complex); }
 
@@ -427,15 +384,6 @@ public:
       warning ("octave_value::make_numeric() is a no-op");
       return *this;
     }
-
-#if 0
-    {
-      if (is_numeric_type ())
-	return *this;
-      else
-	return rep->make_numeric (frc_str_conv);
-    }
-#endif
 
   bool print_as_scalar (void);
 
@@ -458,6 +406,15 @@ private:
       octave_value *rep;      // The real representation.
       int count;              // A reference count.
     };
+
+  bool convert_and_assign (const octave_value_list& idx,
+			   const octave_value& rhs);
+
+  bool try_assignment_with_conversion (const octave_value_list& idx,
+				       const octave_value& rhs);
+
+  bool try_assignment (const octave_value_list& idx,
+		       const octave_value& rhs);
 };
 
 // If TRUE, allow assignments like

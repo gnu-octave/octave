@@ -316,145 +316,10 @@ octave_value::maybe_mutate (void)
 }
 
 static void
-gripe_indexed_assignment (const string& tn1, const string& tn2)
-{
-  error ("assignment of %s to indexed %s not implemented",
-	 tn2.c_str (), tn1.c_str ());
-}
-
-static void
 gripe_no_conversion (const string& tn1, const string& tn2)
 {
   error ("no suitable conversion found for assignment of %s to indexed %s",
 	 tn2.c_str (), tn1.c_str ());
-}
-
-static void
-gripe_conversion_failed (const string& tn1, const string& tn2)
-{
-  error ("type conversion for assignment of %s to indexed %s failed",
-	 tn2.c_str (), tn1.c_str ());
-}
-
-bool
-octave_value::convert_and_assign (const octave_value_list& idx,
-				  const octave_value& rhs)
-{
-  bool assignment_ok = false;
-
-  int t_lhs = type_id ();
-  int t_rhs = rhs.type_id ();
-
-  int t_result
-    = octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
-
-  if (t_result >= 0)
-    {
-      octave_value::type_conv_fcn cf
-	= octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
-
-      if (cf)
-	{
-	  octave_value *tmp = cf (*rep);
-
-	  if (tmp)
-	    {
-	      if (tmp != rep)
-		{
-		  if (--rep->count == 0)
-		    delete rep;
-
-		  rep = tmp;
-		  rep->count = 1;
-		}
-	      else
-		delete tmp;
-
-	      assignment_ok = try_assignment (idx, rhs);
-	    }
-	  else
-	    gripe_conversion_failed (type_name (), rhs.type_name ());
-	}
-      else
-	gripe_indexed_assignment (type_name (), rhs.type_name ());
-    }
-
-  return (assignment_ok && ! error_state);
-}
-
-bool
-octave_value::try_assignment_with_conversion (const octave_value_list& idx,
-					      const octave_value& rhs)
-{
-  bool assignment_ok = convert_and_assign (idx, rhs);
-
-  if (! (error_state || assignment_ok))
-    {
-      octave_value tmp_rhs;
-      octave_value::type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
-
-      if (cf_rhs)
-	tmp_rhs = octave_value (cf_rhs (*rhs.rep));
-      else
-	tmp_rhs = rhs;
-
-      octave_value *old_rep = 0;
-      octave_value::type_conv_fcn cf_this = numeric_conversion_function ();
-
-      if (cf_this)
-	{
-	  old_rep = rep;
-	  rep = cf_this (*rep);
-	  rep->count = 1;
-	}
-
-      cerr << type_name () << "\n";
-      cerr << tmp_rhs.type_name () << "\n";
-
-      if (cf_this || cf_rhs)
-	{
-	  assignment_ok = try_assignment (idx, tmp_rhs);
-
-	  if (! (error_state || assignment_ok))
-	    assignment_ok = convert_and_assign (idx, tmp_rhs);
-	}
-
-      if (! assignment_ok && old_rep)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
-
-	  rep = old_rep;
-	  old_rep = 0;
-	}
-
-      if (old_rep && --old_rep->count == 0)
-	delete old_rep;
-    }
-
-  return (assignment_ok && ! error_state);
-}
-
-bool
-octave_value::try_assignment (const octave_value_list& idx,
-			      const octave_value& rhs)
-{
-  bool retval = false;
-
-  int t_lhs = type_id ();
-  int t_rhs = rhs.type_id ();
-
-  octave_value::assign_op_fcn f
-    = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
-
-  if (f)
-    {
-      f (*rep, idx, *(rhs.rep));
-
-      retval = (! error_state);
-    }
-
-  return retval;
 }
 
 octave_value&
@@ -624,6 +489,141 @@ octave_value::print_as_scalar (void)
 	      && ((nr == 1 && nc == 1)
 		  || nr == 0
 		  || nc == 0)));
+}
+
+static void
+gripe_indexed_assignment (const string& tn1, const string& tn2)
+{
+  error ("assignment of %s to indexed %s not implemented",
+	 tn2.c_str (), tn1.c_str ());
+}
+
+static void
+gripe_conversion_failed (const string& tn1, const string& tn2)
+{
+  error ("type conversion for assignment of %s to indexed %s failed",
+	 tn2.c_str (), tn1.c_str ());
+}
+
+bool
+octave_value::convert_and_assign (const octave_value_list& idx,
+				  const octave_value& rhs)
+{
+  bool assignment_ok = false;
+
+  int t_lhs = type_id ();
+  int t_rhs = rhs.type_id ();
+
+  int t_result
+    = octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
+
+  if (t_result >= 0)
+    {
+      octave_value::type_conv_fcn cf
+	= octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
+
+      if (cf)
+	{
+	  octave_value *tmp = cf (*rep);
+
+	  if (tmp)
+	    {
+	      if (tmp != rep)
+		{
+		  if (--rep->count == 0)
+		    delete rep;
+
+		  rep = tmp;
+		  rep->count = 1;
+		}
+	      else
+		delete tmp;
+
+	      assignment_ok = try_assignment (idx, rhs);
+	    }
+	  else
+	    gripe_conversion_failed (type_name (), rhs.type_name ());
+	}
+      else
+	gripe_indexed_assignment (type_name (), rhs.type_name ());
+    }
+
+  return (assignment_ok && ! error_state);
+}
+
+bool
+octave_value::try_assignment_with_conversion (const octave_value_list& idx,
+					      const octave_value& rhs)
+{
+  bool assignment_ok = convert_and_assign (idx, rhs);
+
+  if (! (error_state || assignment_ok))
+    {
+      octave_value tmp_rhs;
+      octave_value::type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
+
+      if (cf_rhs)
+	tmp_rhs = octave_value (cf_rhs (*rhs.rep));
+      else
+	tmp_rhs = rhs;
+
+      octave_value *old_rep = 0;
+      octave_value::type_conv_fcn cf_this = numeric_conversion_function ();
+
+      if (cf_this)
+	{
+	  old_rep = rep;
+	  rep = cf_this (*rep);
+	  rep->count = 1;
+	}
+
+      cerr << type_name () << "\n";
+      cerr << tmp_rhs.type_name () << "\n";
+
+      if (cf_this || cf_rhs)
+	{
+	  assignment_ok = try_assignment (idx, tmp_rhs);
+
+	  if (! (error_state || assignment_ok))
+	    assignment_ok = convert_and_assign (idx, tmp_rhs);
+	}
+
+      if (! assignment_ok && old_rep)
+	{
+	  if (--rep->count == 0)
+	    delete rep;
+
+	  rep = old_rep;
+	  old_rep = 0;
+	}
+
+      if (old_rep && --old_rep->count == 0)
+	delete old_rep;
+    }
+
+  return (assignment_ok && ! error_state);
+}
+
+bool
+octave_value::try_assignment (const octave_value_list& idx,
+			      const octave_value& rhs)
+{
+  bool retval = false;
+
+  int t_lhs = type_id ();
+  int t_rhs = rhs.type_id ();
+
+  octave_value::assign_op_fcn f
+    = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
+
+  if (f)
+    {
+      f (*rep, idx, *(rhs.rep));
+
+      retval = (! error_state);
+    }
+
+  return retval;
 }
 
 static void

@@ -34,15 +34,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 
-int F77_FCN (dtrsyl) (const char*, const char*, const int*, const
-		      int*, const int*, const double*, const int*,
-		      const double*, const int*, const double*, const
-		      int*, double*, int*, long, long);
+int F77_FCN (dtrsyl) (const char*, const char*, const int*,
+		      const int*, const int*, const double*,
+		      const int*, const double*, const int*,
+		      const double*, const int*, double*, int*, long,
+		      long);
  
-int F77_FCN (ztrsyl) (const char*, const char*, const int*, const
-		      int*, const int*, const Complex*, const int*,
-		      const Complex*, const int*, const Complex*,
-		      const int*, double*, int*, long, long);
+int F77_FCN (ztrsyl) (const char*, const char*, const int*,
+		      const int*, const int*, const Complex*,
+		      const int*, const Complex*, const int*,
+		      const Complex*, const int*, double*, int*, long,
+		      long);
 
 // Local function: check for empty matrix arguments.  Probably should make 
 // this available elsewhere, since tc-xxx functions do this a lot.
@@ -188,7 +190,7 @@ syl (tree_constant *args, int nargin, int nargout)
 	ComplexMatrix ub = bs.unitary_matrix ();
 	ComplexMatrix sch_b = bs.schur_matrix ();
   
-	cx = ua.hermitian () * cc * ub;
+	ComplexMatrix cx = ua.hermitian () * cc * ub;
   
 // Solve the sylvester equation, back-transform, and return the solution.
   
@@ -227,7 +229,7 @@ syl (tree_constant *args, int nargin, int nargout)
 	Matrix ub = bs.unitary_matrix ();
 	Matrix sch_b = bs.schur_matrix ();
   
-	cx = ua.transpose () * cc * ub;
+	Matrix cx = ua.transpose () * cc * ub;
   
 // Solve the sylvester equation, back-transform, and return the solution.
   

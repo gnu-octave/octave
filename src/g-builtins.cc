@@ -65,6 +65,7 @@ Software Foundation, Inc.
 #include "f-qpsol.h"
 #include "f-qr.h"
 #include "f-quad.h"
+#include "f-qzval.h"
 #include "f-rand.h"
 #include "f-schur.h"
 #include "f-svd.h"

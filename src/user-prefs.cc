@@ -102,10 +102,12 @@ init_user_prefs (void)
 // to mean "true".
 
 static int
-check_str_pref (char *var)
+check_preference (char *var)
 {
-  char *val = builtin_string_variable (var);
   int pref = -1;
+
+  char *val = builtin_string_variable (var);
+
   if (val)
     {
       if (strncmp (val, "yes", 3) == 0
@@ -115,7 +117,16 @@ check_str_pref (char *var)
 	       || strncmp (val, "no", 2) == 0
 	       || strncmp (val, "false", 5) == 0)
 	pref = 0;
+
+      delete [] val;
     }
+  else
+    {
+      double dval = 0;
+      if (builtin_real_scalar_variable (var, dval))
+	pref = NINT (dval);
+    }
+
   return pref;
 }
 
@@ -128,7 +139,7 @@ check_str_pref (char *var)
 int
 automatic_replot (void)
 {
-  user_pref.automatic_replot = check_str_pref ("automatic_replot");
+  user_pref.automatic_replot = check_preference ("automatic_replot");
 
   return 0;
 }
@@ -139,7 +150,7 @@ automatic_replot (void)
 int
 beep_on_error (void)
 {
-  user_pref.beep_on_error = check_str_pref ("beep_on_error");
+  user_pref.beep_on_error = check_preference ("beep_on_error");
 
   return 0;
 }
@@ -152,7 +163,7 @@ int
 define_all_return_values (void)
 {
   user_pref.define_all_return_values =
-    check_str_pref ("define_all_return_values");
+    check_preference ("define_all_return_values");
 
   return 0;
 }
@@ -168,7 +179,7 @@ int
 do_fortran_indexing (void)
 {
   user_pref.do_fortran_indexing =
-    check_str_pref ("do_fortran_indexing"); 
+    check_preference ("do_fortran_indexing"); 
 
   return 0;
 }
@@ -181,7 +192,7 @@ int
 empty_list_elements_ok (void)
 {
   user_pref.empty_list_elements_ok =
-    check_str_pref ("empty_list_elements_ok");
+    check_preference ("empty_list_elements_ok");
 
   return 0;
 }
@@ -193,7 +204,7 @@ int
 gnuplot_has_multiplot (void)
 {
   user_pref.gnuplot_has_multiplot =
-    check_str_pref ("gnuplot_has_multiplot");
+    check_preference ("gnuplot_has_multiplot");
 
   return 0;
 }
@@ -234,7 +245,7 @@ int
 implicit_str_to_num_ok (void)
 {
   user_pref.implicit_str_to_num_ok =
-    check_str_pref ("implicit_str_to_num_ok");
+    check_preference ("implicit_str_to_num_ok");
 
   return 0;
 }
@@ -247,7 +258,7 @@ int
 ok_to_lose_imaginary_part (void)
 {
   user_pref.ok_to_lose_imaginary_part =
-    check_str_pref ("ok_to_lose_imaginary_part");
+    check_preference ("ok_to_lose_imaginary_part");
 
   return 0;
 }
@@ -259,7 +270,7 @@ ok_to_lose_imaginary_part (void)
 int
 page_screen_output (void)
 {
-  user_pref.page_screen_output = check_str_pref ("page_screen_output");
+  user_pref.page_screen_output = check_preference ("page_screen_output");
 
   return 0;
 }
@@ -276,7 +287,7 @@ int
 prefer_column_vectors (void)
 {
   user_pref.prefer_column_vectors =
-    check_str_pref ("prefer_column_vectors");
+    check_preference ("prefer_column_vectors");
 
   return 0;
 }
@@ -292,7 +303,7 @@ int
 prefer_zero_one_indexing (void)
 {
   user_pref.prefer_zero_one_indexing =
-    check_str_pref ("prefer_zero_one_indexing");
+    check_preference ("prefer_zero_one_indexing");
 
   return 0;
 }
@@ -310,7 +321,7 @@ int
 print_answer_id_name (void)
 {
   user_pref.print_answer_id_name =
-    check_str_pref ("print_answer_id_name");
+    check_preference ("print_answer_id_name");
 
   return 0;
 }
@@ -322,7 +333,7 @@ int
 print_empty_dimensions (void)
 {
   user_pref.print_empty_dimensions =
-    check_str_pref ("print_empty_dimensions");
+    check_preference ("print_empty_dimensions");
 
   return 0;
 }
@@ -335,7 +346,7 @@ int
 propagate_empty_matrices (void)
 {
   user_pref.propagate_empty_matrices =
-    check_str_pref ("propagate_empty_matrices");
+    check_preference ("propagate_empty_matrices");
 
   return 0;
 }
@@ -345,7 +356,7 @@ propagate_empty_matrices (void)
 int
 read_only_constants (void)
 {
-  user_pref.read_only_constants = check_str_pref ("read_only_constants");
+  user_pref.read_only_constants = check_preference ("read_only_constants");
 
   return 0;
 }
@@ -357,7 +368,7 @@ int
 resize_on_range_error (void)
 {
   user_pref.resize_on_range_error =
-    check_str_pref ("resize_on_range_error");
+    check_preference ("resize_on_range_error");
 
   return 0;
 }
@@ -370,7 +381,7 @@ int
 return_last_computed_value (void)
 {
   user_pref.return_last_computed_value =
-    check_str_pref ("return_last_computed_value");
+    check_preference ("return_last_computed_value");
 
   return 0;
 }
@@ -382,7 +393,7 @@ int
 silent_functions (void)
 {
   user_pref.silent_functions =
-    check_str_pref ("silent_functions");
+    check_preference ("silent_functions");
 
   return 0;
 }
@@ -393,7 +404,7 @@ silent_functions (void)
 int
 split_long_rows (void)
 {
-  user_pref.split_long_rows = check_str_pref ("split_long_rows");
+  user_pref.split_long_rows = check_preference ("split_long_rows");
 
   return 0;
 }
@@ -405,7 +416,7 @@ int
 struct_levels_to_print (void)
 {
   double val;
-  if (builtin_real_scalar_variable ("struct_levels_to_print", val) == 0
+  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
       && ! xisnan (val))
     {
       int ival = NINT (val);
@@ -427,7 +438,7 @@ int
 suppress_verbose_help_message (void)
 {
   user_pref.suppress_verbose_help_message =
-    check_str_pref ("suppress_verbose_help_message");
+    check_preference ("suppress_verbose_help_message");
 
   return 0;
 }
@@ -443,7 +454,7 @@ int
 treat_neg_dim_as_zero (void)
 {
   user_pref.treat_neg_dim_as_zero =
-    check_str_pref ("treat_neg_dim_as_zero");
+    check_preference ("treat_neg_dim_as_zero");
 
   return 0;
 }
@@ -461,7 +472,7 @@ int
 warn_assign_as_truth_value (void)
 {
   user_pref.warn_assign_as_truth_value =
-    check_str_pref ("warn_assign_as_truth_value");
+    check_preference ("warn_assign_as_truth_value");
 
   return 0;
 }
@@ -475,7 +486,7 @@ int
 warn_comma_in_global_decl (void)
 {
   user_pref.warn_comma_in_global_decl =
-    check_str_pref ("warn_comma_in_global_decl");
+    check_preference ("warn_comma_in_global_decl");
 
   return 0;
 }
@@ -486,7 +497,7 @@ warn_comma_in_global_decl (void)
 int
 warn_divide_by_zero (void)
 {
-  user_pref.warn_divide_by_zero = check_str_pref ("warn_divide_by_zero");
+  user_pref.warn_divide_by_zero = check_preference ("warn_divide_by_zero");
 
   return 0;
 }
@@ -498,7 +509,7 @@ int
 warn_function_name_clash (void)
 {
   user_pref.warn_function_name_clash =
-    check_str_pref ("warn_function_name_clash");
+    check_preference ("warn_function_name_clash");
 
   return 0;
 }
@@ -565,7 +576,7 @@ int
 set_output_max_field_width (void)
 {
   double val;
-  if (builtin_real_scalar_variable ("output_max_field_width", val) == 0
+  if (builtin_real_scalar_variable ("output_max_field_width", val)
       && ! xisnan (val))
     {
       int ival = NINT (val);
@@ -583,7 +594,7 @@ int
 set_output_precision (void)
 {
   double val;
-  if (builtin_real_scalar_variable ("output_precision", val) == 0
+  if (builtin_real_scalar_variable ("output_precision", val)
       && ! xisnan (val))
     {
       int ival = NINT (val);
@@ -601,7 +612,7 @@ int
 set_save_precision (void)
 {
   double val;
-  if (builtin_real_scalar_variable ("save_precision", val) == 0
+  if (builtin_real_scalar_variable ("save_precision", val)
       && ! xisnan (val))
     {
       int ival = NINT (val);

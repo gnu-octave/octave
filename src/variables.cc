@@ -1617,11 +1617,11 @@ install_builtin_variables (void)
   DEFCONST ("argv", SBV_argv, , 0, 0,
     "the command line arguments this program was invoked with");
 
-  DEFVAR ("automatic_replot", SBV_automatic_replot, "false",
+  DEFVAR ("automatic_replot", SBV_automatic_replot, 0.0,
 	  0, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
-  DEFVAR ("beep_on_error", SBV_beep_on_error, "false", 0,
+  DEFVAR ("beep_on_error", SBV_beep_on_error, 0.0, 0,
 	  beep_on_error,
     "if true, beep before printing error messages");
 
@@ -1649,12 +1649,12 @@ set to \"true\".");
 \"binary\", \"text\", or \"mat-binary\"");
 
   DEFVAR ("define_all_return_values", SBV_define_all_return_values,
-	  "false", 0, define_all_return_values,
+	  0.0, 0, define_all_return_values,
     "control whether values returned from functions should have a\n\
 value even if one has not been explicitly assigned.  See also\n\
 default_return_value");
 
-  DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, "false", 0,
+  DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, 0.0, 0,
 	  do_fortran_indexing,
     "allow single indices for matrices");
 
@@ -1673,9 +1673,9 @@ default_return_value");
     "path to gnuplot binary");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
-  char *with_multiplot = "true";
+  char *with_multiplot = 1.0;
 #else
-  char *with_multiplot = "false";
+  char *with_multiplot = 0.0;
 #endif
 
   DEFVAR ("gnuplot_has_multiplot", SBV_gnuplot_has_multiplot,
@@ -1692,7 +1692,7 @@ default_return_value");
   last compiled.  Possible values are \"system\" and \"all\"");
 
   DEFVAR ("implicit_str_to_num_ok", SBV_implicit_str_to_num_ok,
-	  "false", 0, implicit_str_to_num_ok,
+	  0.0, 0, implicit_str_to_num_ok,
     "allow implicit string to number conversion");
 
   DEFCONST ("inf", SBV_inf, octave_Inf, 0, 0,
@@ -1716,27 +1716,27 @@ default_return_value");
 	  set_output_precision,
     "number of significant figures to display for numeric output");
 
-  DEFVAR ("page_screen_output", SBV_page_screen_output, "true", 0,
+  DEFVAR ("page_screen_output", SBV_page_screen_output, 1.0, 0,
 	  page_screen_output,
     "if possible, send output intended for the screen through the pager");
 
   DEFCONST ("pi", SBV_pi, 4.0 * atan (1.0), 0, 0,
     "ratio of the circumference of a circle to its diameter");
 
-  DEFVAR ("prefer_column_vectors", SBV_prefer_column_vectors, "true",
+  DEFVAR ("prefer_column_vectors", SBV_prefer_column_vectors, 1.0,
 	  0, prefer_column_vectors,
     "prefer column/row vectors");
 
   DEFVAR ("prefer_zero_one_indexing", SBV_prefer_zero_one_indexing,
-	  "false", 0, prefer_zero_one_indexing,
+	  0.0, 0, prefer_zero_one_indexing,
     "when there is a conflict, prefer zero-one style indexing");
 
-  DEFVAR ("print_answer_id_name", SBV_print_answer_id_name, "true", 0,
+  DEFVAR ("print_answer_id_name", SBV_print_answer_id_name, 1.0, 0,
 	  print_answer_id_name,
     "set output style to print `var_name = ...'");
 
   DEFVAR ("print_empty_dimensions", SBV_print_empty_dimensions,
-	  "true", 0, print_empty_dimensions,
+	  1.0, 0, print_empty_dimensions,
     "also print dimensions of empty matrices");
 
   DEFCONST ("program_invocation_name", SBV_program_invocation_name,
@@ -1748,11 +1748,11 @@ directory specification");
     "the name of the current program or script");
 
   DEFVAR ("propagate_empty_matrices", SBV_propagate_empty_matrices,
-	  "true", 0, propagate_empty_matrices,
+	  1.0, 0, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");
 
 #if 0
-  DEFVAR ("read_only_constants", SBV_read_only_constants, "true", 0,
+  DEFVAR ("read_only_constants", SBV_read_only_constants, 1.0, 0,
 	  read_only_constants,
     "allow built-in constants to be modified");
 #endif
@@ -1763,25 +1763,25 @@ directory specification");
   DEFCONST ("realmin", SBV_realmin, DBL_MIN, 0, 0,
     "realmin (): return smallest representable floating point number");
 
-  DEFVAR ("resize_on_range_error", SBV_resize_on_range_error, "true",
+  DEFVAR ("resize_on_range_error", SBV_resize_on_range_error, 1.0,
 	  0, resize_on_range_error,
     "enlarge matrices on assignment");
 
   DEFVAR ("return_last_computed_value",
-	  SBV_return_last_computed_value, "false", 0,
+	  SBV_return_last_computed_value, 0.0, 0,
 	  return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\
   last computed value");
 
-  DEFVAR ("save_precision", SBV_save_precision, 17.0, 0,
+  DEFVAR ("save_precision", SBV_save_precision, 15.0, 0,
 	  set_save_precision,
     "number of significant figures kept by the ASCII save command");
 
-  DEFVAR ("silent_functions", SBV_silent_functions, "false", 0,
+  DEFVAR ("silent_functions", SBV_silent_functions, 0.0, 0,
 	  silent_functions,
     "suppress printing results in called functions");
 
-  DEFVAR ("split_long_rows", SBV_split_long_rows, "true", 0,
+  DEFVAR ("split_long_rows", SBV_split_long_rows, 1.0, 0,
 	  split_long_rows,
     "split long matrix rows instead of wrapping");
 
@@ -1791,7 +1791,7 @@ directory specification");
 
 #ifdef USE_GNU_INFO
   DEFVAR ("suppress_verbose_help_message",
-	  SBV_suppress_verbose_help_message, "false", 0,
+	  SBV_suppress_verbose_help_message, 0.0, 0,
 	  suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\
 help and usage functions");
@@ -1806,25 +1806,25 @@ help and usage functions");
   DEFCONST ("stderr", SBV_stderr, 2.0, 0, 0,
     "file number of the standard error stream");
 
-  DEFVAR ("treat_neg_dim_as_zero", SBV_treat_neg_dim_as_zero, "false",
-	  0, treat_neg_dim_as_zero,
+  DEFVAR ("treat_neg_dim_as_zero", SBV_treat_neg_dim_as_zero, 0.0, 0,
+	  treat_neg_dim_as_zero,
     "convert negative dimensions to zero");
 
   DEFVAR ("warn_assign_as_truth_value",
-	  SBV_warn_assign_as_truth_value, "true", 0,
+	  SBV_warn_assign_as_truth_value, 1.0, 0,
 	  warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 
   DEFVAR ("warn_comma_in_global_decl", SBV_warn_comma_in_global_decl,
-	  "true", 0, warn_comma_in_global_decl,
+	  1.0, 0, warn_comma_in_global_decl,
     "produce warning for commas in global declarations");
 
-  DEFVAR ("warn_divide_by_zero", SBV_warn_divide_by_zero, "true", 0,
+  DEFVAR ("warn_divide_by_zero", SBV_warn_divide_by_zero, 1.0, 0,
 	  warn_divide_by_zero,
     "on IEEE machines, allow divide by zero errors to be suppressed");
 
   DEFVAR ("warn_function_name_clash", SBV_warn_function_name_clash,
-	  "true", 0, warn_function_name_clash,
+	  1.0, 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
 
   DEFVAR ("whitespace_in_literal_matrix",

@@ -8,7 +8,7 @@
 
    The Library is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    The Library is distributed in the hope that it will be useful, but
@@ -22,7 +22,7 @@
    59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #if !defined (_RLTTY_H_)
-#define _RLTTY_H
+#define _RLTTY_H_
 
 /* Posix systems use termios and the Posix signal functions. */
 #if defined (TERMIOS_TTY_DRIVER)
@@ -42,17 +42,7 @@
 #  include <sgtty.h>
 #endif
 
-/* Stuff for `struct winsize' on various systems. */
-#if defined (HAVE_SYS_STREAM_H)
-#  include <sys/stream.h>
-#endif /* HAVE_SYS_STREAM_H */
-#if defined (HAVE_SYS_PTEM_H)
-#  include <sys/ptem.h>
-#  define _IO_PTEM_H		/* work around SVR4.2 1.1.4 bug */
-#endif /* HAVE_SYS_PTEM_H */
-#if defined (HAVE_SYS_PTE_H)
-#  include <sys/pte.h>
-#endif /* HAVE_SYS_PTE_H */
+#include "rlwinsize.h"
 
 /* Define _POSIX_VDISABLE if we are not using the `new' tty driver and
    it is not already defined.  It is used both to determine if a
@@ -69,5 +59,24 @@
 #    endif /* !_POSIX_VERSION */
 #  endif /* !_SVR4_DISABLE */
 #endif /* !NEW_TTY_DRIVER && !_POSIX_VDISABLE */
+
+typedef struct _rl_tty_chars {
+  char t_eof;
+  char t_eol;
+  char t_eol2;
+  char t_erase;
+  char t_werase;
+  char t_kill;
+  char t_reprint;
+  char t_intr;
+  char t_quit;
+  char t_susp;
+  char t_dsusp;
+  char t_start;
+  char t_stop;
+  char t_lnext;
+  char t_flush;
+  char t_status;
+} _RL_TTY_CHARS;
 
 #endif /* _RLTTY_H_ */

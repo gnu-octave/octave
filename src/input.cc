@@ -129,7 +129,10 @@ char *
 octave_gets (void)
 {
   if (octave_gets_line != NULL)
-    free (octave_gets_line);
+    {
+      free (octave_gets_line);
+      octave_gets_line = (char *) NULL;
+    }
 
   if (interactive || forced_interactive)
     {

@@ -73,6 +73,9 @@
 /* Define if using dld for dynamic linking of object files. */
 #undef WITH_SHL
 
+/* Define if using some method of dynamic linking. */
+#undef WITH_DYNAMIC_LINKING
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:

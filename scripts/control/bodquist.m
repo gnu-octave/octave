@@ -96,17 +96,19 @@ function [f,w] = bodquist(sys,w,outputs,inputs,rname)
         wnew = [];
         crossover_points = find ( phase(1:lp1).*phase(2:lp) < 0);
         pd(crossover_points) = abs(359.99+dphase - pd(crossover_points));
-        np_pts = ceil(pd/dphase)+2;		# phase points
-        nm_pts = ceil(log(fd./fm)/log(dmag))+2; 	# magnitude points
+        np_pts = max(3,ceil(pd/dphase)+2);		# phase points
+        nm_pts = max(3,ceil(log(fd./fm)/log(dmag))+2); 	# magnitude points
         npts = min(5,max(np_pts, nm_pts));
+
         w1 = log10(w(1:lp1));
         w2 = log10(w(2:lp));
         for ii=bigpts
           if(npts(ii))
-            wseg(ii,1:npts(ii)) = logspace(w1(ii),w2(ii),npts(ii));
+            wtmp = logspace(w1(ii),w2(ii),npts(ii));
+            wseg(ii,1:(npts(ii)-2)) = wtmp(2:(npts(ii)-1));
           endif
         endfor
-        wnew = reshape(wseg,1,rows(wseg)*columns(wseg)); # make a row vector
+        wnew = vec(wseg)'; # make a row vector
         wnew = wnew(find(wnew != 0));
         wnew = sort(wnew);
         wnew = create_set(wnew);
@@ -123,5 +125,15 @@ function [f,w] = bodquist(sys,w,outputs,inputs,rname)
       endif
     endwhile
   endif
+
+  # ensure unique frequency values
+  [w,idx] = sort(w);
+  f = f(idx);
+
+  w_diff = diff(w);
+  w_dup = find(w_diff == 0);
+  w_idx = complement(w_dup,1:length(w));
+  w = w(w_idx);
+  f = f(w_idx);
     
 endfunction

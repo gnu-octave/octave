@@ -109,47 +109,61 @@ function retsys = syssetsignals(sys,opt,names,sig_idx)
     endfor
 
   else
-    nsigs = length(sig_vals);
-    if(!is_vector(names))
-      error("syssetsignals: opt=yd, names(%dx%d) must be a vector", ...
-        rows(names), columns(names));
-    endif
-    if(nargin == 3)
-      if(length(names) != nsigs)
-        error("opt=yd, sig_idx omitted: names(%d) should be length(%d)", ...
-          length(names), nsigs);
+    # update yd
+    # 1st check pathological case: no outputs
+    nout = sysdimensions(sys,"out");
+    if(nout == 0)
+      if(nargin != 3)
+        error("opt=%s, %d outputs, sysgetsignals cannot take 4 arguments", ...
+          yd,nout);
       endif
-      sig_idx = 1:nsigs;
-    elseif(length(names) != length(sig_idx))
-      error("opt=yd: length(names)=%d, length(sig_idx)=%d",length(names), ...
-        length(sig_idx) );
-    endif
-
-    badidx = find(names != 0 & names != 1);
-    if(! isempty(badidx) )
-      for ii=1:length(badidx)
-        warning("syssetsignals: opt=yd: names(%d)=%e, must be 0 or 1", ...
-          badidx(ii), names(badidx(ii)) );
+      if(!isempty(names))
+        error("opt=%s, %d outputs, names is not empty");
+      endif
+      sigvals = [];
+    else
+      nsigs = length(sig_vals);
+      if(!is_vector(names))
+        error("syssetsignals: opt=yd, names(%dx%d) must be a vector", ...
+          rows(names), columns(names));
+      endif
+      if(nargin == 3)
+        if(length(names) != nsigs)
+          error("opt=yd, sig_idx omitted: names(%d) should be length(%d)", ...
+            length(names), nsigs);
+        endif
+        sig_idx = 1:nsigs;
+      elseif(length(names) != length(sig_idx))
+        error("opt=yd: length(names)=%d, length(sig_idx)=%d",length(names), ...
+          length(sig_idx) );
+      endif
+  
+      badidx = find(names != 0 & names != 1);
+      if(! isempty(badidx) )
+        for ii=1:length(badidx)
+          warning("syssetsignals: opt=yd: names(%d)=%e, must be 0 or 1", ...
+            badidx(ii), names(badidx(ii)) );
+        endfor
+        error("opt=yd: illegal values in names");
+      endif
+  
+      for ii=1:length(sig_idx)
+        jj = sig_idx(ii);
+        if(jj < 1 | jj > nsigs | jj != floor(jj))
+          error("sig_idx(%d)=%d, %e: must be an integer between 1 and %d", ...
+            ii,jj, jj, nsigs);
+        endif
+        sig_vals(jj) = names(ii);
       endfor
-      error("opt=yd: illegal values in names");
-    endif
-
-    for ii=1:length(sig_idx)
-      jj = sig_idx(ii);
-      if(jj < 1 | jj > nsigs | jj != floor(jj))
-        error("sig_idx(%d)=%d, %e: must be an integer between 1 and %d", ...
-          ii,jj, jj, nsigs);
+      if(any(sig_vals == 1) & sysgettsam(sys) == 0)
+        warning("Setting system sampling time to 1");
+        printf("syssetsignals: original system sampling time=0 but output(s)\n");
+        disp(find(sig_vals==1))
+        printf("are digital\n");
+        sys = syschtsam(sys,1);
       endif
-      sig_vals(jj) = names(ii);
-    endfor
-    if(any(sig_vals == 1) & sysgettsam(sys) == 0)
-      warning("Setting system sampling time to 1");
-      printf("syssetsignals: original system sampling time=0 but output(s)\n");
-      disp(find(sig_vals==1))
-      printf("are digital\n");
-      sys = syschtsam(sys,1);
+      
     endif
-    
   endif
 
   if(strcmp(opt,"st"))

@@ -225,7 +225,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
   # R = (I-D*K)   must exist.
   # 
   R = eye(p) - D*K;
-  if (rank(R) < m)
+  if (rank(R) < p)
     error("---> singularity in algebraic loop.");
   else
     R = inv(R);

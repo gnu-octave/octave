@@ -187,7 +187,7 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
       error("impulse: D matrix is nonzero, impulse response infinite.")
     endif
     if (DIGITAL)
-      y(:,1) = D;
+      y(:,1) = D / t_step;
       x = G / t_step;
     else
       x = B;

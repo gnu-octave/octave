@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996, 1999 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -16,13 +16,32 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function DIGITAL = is_digital(sys)
-# function DIGITAL = is_digital(sys)
-# retrurn nonzero if system is digital
+function DIGITAL = is_digital(sys,eflg)
+# function DIGITAL = is_digital(sys{,eflg})
+# return nonzero if system is digital
+# inputs:
+#   sys: system data structure
+#   eflg: 0 [default] exit with an error if system is mixed (continuous and
+#           discrete components)
+#       : 1 print a warning if system is mixed (continuous and discrete)
+#       : 2 silent operation
+# outputs:
+#   DIGITAL:  0: system is purely continuous
+#          :  1: system is purely discrete
+#          : -1: system is mixed continuous and discrete
 # exits with an error of sys is a mixed (continuous and discrete) system
 
 # a s hodel July 1996
-# SYS_INTERNAL accesses members of system structure
+
+  switch(nargin)
+  case(1),  eflg = 0;
+  case(2),  
+    if( isempty(find(eflg == [0 1 2])) )
+      error("Illegal value of eflg=%d (%e)",eflg,eflg);
+    endif
+  otherwise,
+    usage("DIGITAL = is_digital(sys{,eflg})");
+  endswitch
 
   # checked for sampled data system (mixed)
   # discrete system
@@ -31,11 +50,20 @@ function DIGITAL = is_digital(sys)
   cont = sum(sysyd == 0) + nn;
   tsam = sysgettsam(sys);
   dig = sum(sysyd != 0) + nz + tsam;
+
+  # check for mixed system
   if( cont*dig != 0)
-   sysout(sys);
-   error("continuous/discrete system; use syscont, sysdisc, or c2d first");
+   switch(eflg)
+   case(0),
+     error("continuous/discrete system; use syscont, sysdisc, or c2d first");
+   case(1),
+     warning("is_digital: mixed continuous/discrete system");
+   endswitch
+   dig_sign = -1;
   else
-    DIGITAL = (tsam > 0);
+   dig_sign = 1;
   endif
+
+  DIGITAL = dig_sign*(tsam > 0);
  
 endfunction

@@ -538,7 +538,12 @@ octave_main (int argc, char **argv, int embedded)
 
 	case EVAL_OPTION:
 	  if (args.optarg ())
-	    code_to_eval = args.optarg ();
+	    {
+	      if (code_to_eval.empty ())
+		code_to_eval = args.optarg ();
+	      else
+		code_to_eval += std::string (" ") + args.optarg ();
+	    }
 	  break;
 
 	case EXEC_PATH_OPTION:

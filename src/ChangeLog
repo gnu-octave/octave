@@ -1,3 +1,7 @@
+2005-03-04  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (octave_main): Concatenate all --eval arguments.
+
 2005-03-03  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (input_from_command_line_file): Move definition here.

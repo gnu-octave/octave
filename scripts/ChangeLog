@@ -2,6 +2,13 @@
 
 	* plot/clg.m: New file.
 
+2005-03-03  John W. Eaton  <jwe@octave.org>
+
+	* general/isequal.m, general/sortrows.m, set/ismember.m,
+	set/setdiff.m, strings/str2double.m, strings/strmatch.m,
+	strings/strcmpi.m:
+	New files from Octave-forge.  Adapt to Octave coding standards.
+
 2005-03-03  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* statistics/distributions/binomial_pdf.m: Extend the feasible

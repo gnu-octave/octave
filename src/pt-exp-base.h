@@ -255,7 +255,8 @@ public:
   virtual void bump_value (tree_expression::type)
     { panic_impossible (); }
 
-  virtual tree_constant lookup_map_element (SLList<char*>& list);
+  virtual tree_constant lookup_map_element (SLList<char*>& list,
+					    int insert = 0, int silent = 0);
 
   virtual int max_expected_args (void)
     { panic_impossible (); return 0; }

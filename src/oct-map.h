@@ -43,6 +43,8 @@ Octave_map : public CHMap<tree_constant>
   Octave_map (const Octave_map& m) : CHMap<tree_constant> (m) { }
 
   ~Octave_map (void) { }
+
+  char **make_name_list (void);
 };
 
 #endif

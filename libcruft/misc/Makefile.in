@@ -27,9 +27,9 @@ include ../Makerules
 d1mach.f: gen-d1mach
 	./gen-d1mach > d1mach.f
 
-# Don't optimize, to avoid gcc-2.3.3 problem.
+# Don't optimize.
 
-XCC = $(subst -O, , $(CC))
+XCC = $(patsubst -O%, , $(CC))
 
 gen-d1mach: $(srcdir)/gen-d1mach.c
 	$(XCC) -DDP -o gen-d1mach $(srcdir)/gen-d1mach.c -lm

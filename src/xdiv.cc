@@ -41,8 +41,16 @@ result_ok (int info, double rcond, int warn = 1)
 
   if (info == -2)
     {
-      error ("matrix singular to machine precision, rcond = %g", rcond);
-      return 0;
+      if (warn)
+	{
+	  warning ("matrix singular to machine precision, rcond = %g", rcond);
+	  return 1;
+	}
+      else
+	{
+	  error ("matrix singular to machine precision, rcond = %g", rcond);
+	  return 0;
+	}
     }
   else
     return 1;

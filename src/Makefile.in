@@ -108,11 +108,13 @@ DEF_FILES_2 := $(patsubst %.y, %.def, $(DEF_FILES_3))
 DEF_FILES_1 := $(patsubst %.l, %.def, $(DEF_FILES_2))
 DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 
+# Don't leave the LIBDLD thing on a line by itself.  It may expand to
+# nothing.
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
 	../libcruft/libcruft.a ../info/libinfo.a \
-	../readline/libreadline.a ../kpathsea/libkpathsea.a \
-	@LIBDLD@
+	../readline/libreadline.a \
+	../kpathsea/libkpathsea.a @LIBDLD@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins \
 	parse.cc lex.cc y.tab.h $(INCLUDES) $(DLD_SRC) $(SOURCES) \

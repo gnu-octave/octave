@@ -1,3 +1,30 @@
+2003-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (print_as_scalar): New function.
+	* ov-cell.h: Provide decl.
+
+	* ov-cell.cc (octave_cell::print_name_tag): Delete.
+	* ov-cell.h: Delete decl.
+
+	* ov-base-mat.cc (octave_base_matrix::print_name_tag): Delete.
+	* ov-base-mat.h: Delete decl.
+
+	* ov-base.cc (octave_base_value::print_name_tag):
+	Use print_as_scalar here. 
+	* ov.h (octave_base_value::print_as_scalar): New virtual function.
+	* ov-base.h (octave_base_value::print_as_scalar):
+	New default implementation.
+	* ov-base-mat.h (octave_base_matrix::pirnt_as_scalar):
+	Don't declare as virtual here.
+
+	* ov-struct.cc (octave_struct::print_raw): If only printing keys,
+	also print dimensions of fields and overall array.
+
+	* sysdep.cc (Fnative_float_format): New function.
+
+	* input.cc (generate_possible_completions): Also append all
+	possible filename completions here.
+
 2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc: Explicitly instantiate octave_scan functions.

@@ -325,6 +325,12 @@ octave_cell::all_strings (bool pad, bool) const
   return retval;
 }
 
+bool
+octave_cell::print_as_scalar (void) const
+{
+  return (ndims () > 2 || numel () == 0);
+}
+
 void
 octave_cell::print (std::ostream& os, bool) const
 {
@@ -387,25 +393,6 @@ octave_cell::print_raw (std::ostream& os, bool) const
       os << "{" << dv.str () << " Cell Array}";
       newline (os);
     }
-}
-
-bool
-octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
-{
-  indent (os);
-
-  int nr = rows ();
-  int nc = columns ();
-
-  if (nr > 0 && nc > 0)
-    {
-      os << name << " =";
-      newline (os);
-    }
-  else
-    os << name << " = ";
-
-  return false;
 }
 
 DEFUN (iscell, args, ,

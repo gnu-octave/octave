@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "file-stat.h"
 #include "oct-env.h"
+#include "file-ops.h"
 #include "glob-match.h"
 #include "str-vec.h"
 
@@ -466,7 +467,11 @@ generate_struct_completions (const std::string& text,
 bool
 looks_like_struct (const std::string& text)
 {
-  bool retval = false;
+  bool retval = (! text.empty ()
+		 && text != "."
+		 && text.find_first_of (file_ops::dir_sep_chars) == NPOS
+		 && text.find ("..") == NPOS
+		 && text.rfind ('.') != NPOS);
 
 #if 0
   symbol_record *sr = curr_sym_tab->lookup (text);

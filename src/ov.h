@@ -584,6 +584,9 @@ public:
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
 
+  virtual bool print_as_scalar (void) const
+    { return rep->print_as_scalar (); }
+
   virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const
     { rep->print (os, pr_as_read_syntax); }
 

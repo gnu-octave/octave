@@ -53,6 +53,12 @@ octave_cs_list::octave_cs_list (const Cell& c)
 }
 
 void
+octave_cs_list::print (std::ostream& os, bool) const
+{
+  print_raw (os);
+}
+
+void
 octave_cs_list::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_cs_list_print");

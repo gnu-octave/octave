@@ -194,6 +194,12 @@ octave_rl_filename_completion_desired (int arg)
   return retval;
 }
 
+char *
+octave_rl_filename_completion_function (const char *text, int state)
+{
+  return rl_filename_completion_function (text, state);
+}
+
 void
 octave_rl_set_basic_word_break_characters (const char *s)
 {

@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "str-vec.h"
+
 class
 command_editor
 {
@@ -84,6 +86,8 @@ public:
   static void set_completion_function (completion_fcn f);
 
   static completion_fcn get_completion_function (void);
+
+  static string_vector generate_filename_completions (const std::string& text);
 
   static void insert_text (const std::string& text);
 
@@ -176,6 +180,8 @@ protected:
   virtual void do_set_completion_function (completion_fcn) { }
 
   virtual completion_fcn do_get_completion_function (void) const { return 0; }
+
+  virtual string_vector do_generate_filename_completions (const std::string& text) = 0;
 
   virtual void do_insert_text (const std::string&) = 0;
 

@@ -105,6 +105,9 @@ public:
 
   completion_fcn do_get_completion_function (void) const;
 
+  string_vector
+  do_generate_filename_completions (const std::string& text);
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -320,6 +323,45 @@ gnu_readline::do_get_completion_function (void) const
   return completion_function;
 }
 
+string_vector
+gnu_readline::do_generate_filename_completions (const std::string& text)
+{
+  string_vector retval;
+
+  int n = 0;
+  int count = 0;
+
+  char *fn = 0;
+
+  while (1)
+    {
+      fn = ::octave_rl_filename_completion_function (text.c_str (), count);
+
+      if (fn)
+	{
+	  if (count == n)
+	    {
+	      // Famous last words:  Most large directories will not
+	      // have more than a few hundred files, so we should not
+	      // resize too many times even if the growth is linear...
+
+	      n += 100;
+	      retval.resize (n);
+	    }
+
+	  retval[count++] = fn;
+
+	  free (fn);
+	}
+      else
+	break;
+    }
+
+  retval.resize (count);
+
+  return retval;
+}
+
 void
 gnu_readline::do_insert_text (const std::string& text)
 {
@@ -467,6 +509,8 @@ public:
 
   FILE *do_get_output_stream (void);
 
+  string_vector do_generate_filename_completions (const std::string& text);
+
   void do_insert_text (const std::string&);
 
   void do_newline (void);
@@ -509,6 +553,13 @@ FILE *
 default_command_editor::do_get_output_stream (void)
 {
   return output_stream;
+}
+
+string_vector
+default_command_editor::do_generate_filename_completions (const std::string& text)
+{
+  // XXX FIXME XXX
+  return string_vector ();
 }
 
 void
@@ -712,6 +763,13 @@ command_editor::get_completion_function (void)
 {
   return (instance_ok ())
     ? instance->do_get_completion_function () : 0;
+}
+
+string_vector
+command_editor::generate_filename_completions (const std::string& text)
+{
+  return (instance_ok ())
+    ? instance->do_generate_filename_completions (text) : string_vector ();
 }
 
 void

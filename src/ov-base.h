@@ -234,6 +234,8 @@ public:
 
   void convert_to_row_or_column_vector (void);
 
+  bool print_as_scalar (void) const { return false; }
+
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

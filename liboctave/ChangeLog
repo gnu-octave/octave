@@ -1,3 +1,16 @@
+2003-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (octave_ieee_init): Set octave_Inf, octave_NaN, and
+	octave_NA to DBL_MAX if native float format is vaxd, vaxg, or cray.
+
+	* cmd-edit.cc (gnu_readline::do_generate_filename_completions,
+	default_command_editor::do_generate_filename_completions,
+	command_editor::generate_filename_completions): New functions.
+	* cmd-edit.h: Provide decls.
+	* oct-rl-edit.c (octave_rl_filename_completion_function): New
+	function.
+	* oct-rl-edit.h: Provide decl.
+
 2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.h (INSTANTIATE_ARRAY_ASSIGN, INSTANTIATE_ARRAY_AND_ASSIGN,

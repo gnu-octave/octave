@@ -218,11 +218,21 @@ octave_base_value::print_raw (std::ostream&, bool) const
 bool
 octave_base_value::print_name_tag (std::ostream& os, const std::string& name) const
 {
+  bool retval = false;
+
   indent (os);
-  os << name << " =";
-  newline (os);
-  newline (os);
-  return true;
+
+  if (print_as_scalar ())
+    os << name << " = ";
+  else
+    {
+      os << name << " =";
+      newline (os);
+      newline (os);
+      retval = true;
+    }
+
+  return retval;
 }
 
 void

@@ -111,13 +111,11 @@ public:
 
   bool is_true (void) const;
 
-  virtual bool print_as_scalar (void) const;
+  bool print_as_scalar (void) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 

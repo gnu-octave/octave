@@ -376,6 +376,17 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       int n = map.numel ();
 
+      if (n > 1 && print_keys_only)
+	{
+	  indent (os);
+	  dim_vector dv = dims ();
+	  os << dv.str () << " struct array containing the fields:";
+	  newline (os);
+	  newline (os);
+
+	  increment_indent_level ();
+	}
+
       for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
 	{
 	  std::string key = map.key (p);
@@ -386,12 +397,20 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	  if (print_keys_only)
 	    {
 	      indent (os);
-	      os << key << ": " << tmp.type_name ();
+	      os << key;
+	      if (n == 1)
+		{
+		  dim_vector dv = tmp.dims ();
+		  os << ": " << dv.str () << " " << tmp.type_name ();
+		}
 	      newline (os);
 	    }
 	  else
 	    tmp.print_with_name (os, key);
 	}
+
+      if (n > 1 && print_keys_only)
+	decrement_indent_level ();
 
       decrement_indent_level ();
 

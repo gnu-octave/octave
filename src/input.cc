@@ -386,13 +386,9 @@ generate_possible_completions (const std::string& text, std::string& prefix,
 {
   string_vector names;
 
-  command_editor::filename_completion_desired (true);
-
   prefix = "";
 
-  if (! text.empty () && text != "." && text != ".."
-      && text.find_first_of (file_ops::dir_sep_chars) == NPOS
-      && text.rfind ('.') != NPOS)
+  if (looks_like_struct (text))
     names = generate_struct_completions (text, prefix, hint);
   else
     names = make_name_list ();
@@ -416,7 +412,9 @@ generate_completion (const std::string& text, int state)
 
   static int list_index = 0;
   static int name_list_len = 0;
+  static int name_list_total_len = 0;
   static string_vector name_list;
+  static string_vector file_name_list;
 
   static int matches = 0;
 
@@ -432,6 +430,12 @@ generate_completion (const std::string& text, int state)
 
       name_list_len = name_list.length ();
 
+      file_name_list = command_editor::generate_filename_completions (text);
+
+      name_list.append (file_name_list);
+
+      name_list_total_len = name_list.length ();
+
       hint_len = hint.length ();
 
       matches = 0;
@@ -441,9 +445,9 @@ generate_completion (const std::string& text, int state)
 	  matches++;
     }
 
-  if (name_list_len > 0 && matches > 0)
+  if (name_list_total_len > 0 && matches > 0)
     {
-      while (list_index < name_list_len)
+      while (list_index < name_list_total_len)
 	{
 	  std::string name = name_list[list_index];
 
@@ -451,7 +455,7 @@ generate_completion (const std::string& text, int state)
 
 	  if (hint == name.substr (0, hint_len))
 	    {
-	      if (! prefix.empty ())
+	      if (list_index <= name_list_len && ! prefix.empty ())
 		retval = prefix + "." + name;
 	      else
 		retval = name;

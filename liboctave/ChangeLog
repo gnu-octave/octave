@@ -1,3 +1,11 @@
+2004-01-21  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::assignN(Array<LT>&, const Array<RT>&,
+	const LT&)): Fix incorrectly nested if statement.
+	Retrieve scalar element by passin 0 instead of an index array.
+	Check for singleton dimensions where RHS is matrix or higher
+	dimension.
+
 2004-01-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-ieee.cc (octave_ieee_init): Ensure that octave_Inf,

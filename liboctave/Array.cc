@@ -2059,7 +2059,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 	      for (int i = 0; i < n; i++)
 		{
 		  elt_idx = get_elt_idx (ra_idx, result_idx); 
-	
+
 		  int numelem_elt = get_scalar_idx (elt_idx, this_dims);
 
 		  if (numelem_elt > length () || numelem_elt < 0)
@@ -2067,9 +2067,9 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 		      ("invalid N-d array index");
 		  else
 		    retval.elem (i) = elem (numelem_elt);
-		
+
 		  increment_index (result_idx, frozen_lengths);
-	
+
 		}
 	    }
 	}
@@ -2623,104 +2623,103 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  else
 	    {
 	      (*current_liboctave_error_handler)
-	("A(I) = X: X must be a scalar or a matrix with the same size as I");
-	      
+		("A(I) = X: X must be a scalar or a matrix with the same size as I");
+
 	      retval = 0;
 	    }
 
 	  // idx_vector::freeze() printed an error message for us.
 	}
-      else if (n_idx < lhs_dims.length ())
+    }
+
+  else if (n_idx < lhs_dims.length ())
+    {
+      // Number of indices is less than dimensions.
+
+      if (any_ones (idx_is_colon)|| any_ones (idx_is_colon_equiv))
 	{
-	  // Number of indices is less than dimensions.
-
-	  if (any_ones (idx_is_colon)|| any_ones (idx_is_colon_equiv))
-	    {
-	      (*current_liboctave_error_handler)
-		("number of indices is less than number of dimensions, one or more indices are colons");
-	    }
-	  else
-	    {
-	      // Fewer indices than dimensions, no colons.
-
-	      bool resize = false;
-
-	      // Subtract one since the last idx do not tell us
-	      // anything about dimensionality.
-
-	      for (int i = 0; i < idx.length () - 1; i++)
-		{
-		  // Subtract one since idx counts from 0 while dims
-		  // count from 1.
-
-		  if (idx(i).elem (0) + 1 > lhs_dims(i))
-		    resize = true;
-		}
-
-	      if (resize)
-		{
-		  dim_vector new_dims;
-		  new_dims.resize (lhs_dims.length ());
-
-		  for (int i = 0; i < lhs_dims.length (); i++)
-		    {
-		      if (i < idx.length () - 1
-			  && idx(i).elem (0) + 1 > lhs_dims(i))
-			new_dims(i) = idx(i).elem (0)+1;
-		      else
-			new_dims(i) = lhs_dims(i);
-		    }
-
-		  lhs.resize (new_dims, rfv);
-
-		  lhs_dims = lhs.dims ();
-		}
-
-	      Array<int> one_arg_temp (1, 0);
-
-	      RT scalar = rhs.elem (one_arg_temp);
-
-	      Array<int> int_arr = conv_to_int_array (idx);
-
-	      int numelem = get_scalar_idx (int_arr, lhs_dims);
-
-	      if (numelem > lhs.length () || numelem < 0)
-		(*current_liboctave_error_handler)
-		  ("attempt to grow array along ambiguous dimension");
-	      else
-		lhs.checkelem (numelem) = scalar;
-	    }
+	  (*current_liboctave_error_handler)
+	    ("number of indices is less than number of dimensions, one or more indices are colons");
 	}
       else
 	{
-	  // Scalar to matrix assignment with as many indices as lhs
-	  // dimensions.
+	  // Fewer indices than dimensions, no colons.
 
-	  int n = Array<LT>::get_size (frozen_len);
+	  bool resize = false;
 
-	  Array<int> result_idx (lhs_dims.length (), 0);
+	  // Subtract one since the last idx do not tell us
+	  // anything about dimensionality.
 
-	  Array<int> elt_idx;
+	  for (int i = 0; i < idx.length () - 1; i++)
+	    {
+	      // Subtract one since idx counts from 0 while dims
+	      // count from 1.
+
+	      if (idx(i).elem (0) + 1 > lhs_dims(i))
+		resize = true;
+	    }
+
+	  if (resize)
+	    {
+	      dim_vector new_dims;
+	      new_dims.resize (lhs_dims.length ());
+
+	      for (int i = 0; i < lhs_dims.length (); i++)
+		{
+		  if (i < idx.length () - 1
+		      && idx(i).elem (0) + 1 > lhs_dims(i))
+		    new_dims(i) = idx(i).elem (0)+1;
+		  else
+		    new_dims(i) = lhs_dims(i);
+		}
+
+	      lhs.resize (new_dims, rfv);
+
+	      lhs_dims = lhs.dims ();
+	    }
 
 	  RT scalar = rhs.elem (0);
 
-	  for (int i = 0; i < n; i++)
-	    {
-	      elt_idx = get_elt_idx (idx, result_idx);
+	  Array<int> int_arr = conv_to_int_array (idx);
 
-	      dim_vector lhs_inc;
-	      lhs_inc.resize (lhs_dims.length ());
+	  int numelem = get_scalar_idx (int_arr, lhs_dims);
 
-	      for (int j = 0; j < lhs_dims.length (); j++)
-		lhs_inc(j) = lhs_dims(j) + 1;
+	  if (numelem > lhs.length () || numelem < 0)
+	    (*current_liboctave_error_handler)
+	      ("attempt to grow array along ambiguous dimension");
+	  else
+	    lhs.checkelem (numelem) = scalar;
+	}
+    }
+  else if (n_idx == lhs_dims.length () && rhs_is_scalar)
+    {
+      // Scalar to matrix assignment with as many indices as lhs
+      // dimensions.
 
-	      if (index_in_bounds(elt_idx, lhs_inc))
-		lhs.checkelem (elt_idx) = scalar;
-	      else
-		lhs.checkelem (elt_idx) = rfv;
+      int n = Array<LT>::get_size (frozen_len);
 
-	      increment_index (result_idx, frozen_len);
-	    }
+      Array<int> result_idx (lhs_dims.length (), 0);
+
+      Array<int> elt_idx;
+
+      RT scalar = rhs.elem (0);
+
+      for (int i = 0; i < n; i++)
+	{
+	  elt_idx = get_elt_idx (idx, result_idx);
+
+	  dim_vector lhs_inc;
+	  lhs_inc.resize (lhs_dims.length ());
+
+	  for (int j = 0; j < lhs_dims.length (); j++)
+	    lhs_inc(j) = lhs_dims(j) + 1;
+
+	  if (index_in_bounds(elt_idx, lhs_inc))
+	    lhs.checkelem (elt_idx) = scalar;
+	  else
+	    lhs.checkelem (elt_idx) = rfv;
+
+	  increment_index (result_idx, frozen_len);
 	}
     }
   else if (rhs_dims.length () > 1)
@@ -2738,7 +2737,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       for (int j = 0; j < idx_is_colon.length (); j++)
 	{
-	  if (idx_is_colon(j))
+	  if (rhs_dims(jj) == 1)
+	    jj++;
+	  else if (idx_is_colon(j))
 	    {
 	      if (jj > rhs_dims_len || rhs_dims(jj) < lhs_dims(j))
 		{
@@ -2750,6 +2751,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      jj++;
 	    }
 	}
+
+      if (jj != rhs_dims_len)
+	dim_ok = false;
 
       if (! dim_ok)
 	(*current_liboctave_error_handler)
@@ -2790,7 +2794,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		{
 		  new_dims(i) = lhs_dims(i) > idx(i).max () + 1 ? lhs_dims(i) : idx(i).max () + 1;
 
-		  if (frozen_len(i) > 1)
+		  if ((ii < rhs_dims.length () && rhs_dims (ii) == 1) || frozen_len(i) > 1) //Changed this from 1 to 0
 		    ii++;
 		}
 	      if (new_dims(i) != lhs_dims(i))

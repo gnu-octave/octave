@@ -2179,7 +2179,12 @@ found in the file will be replaced with the values read from the file.")
     }
   else
     {
-      char *fname = tilde_expand (*argv);
+      static char *fname = 0;
+
+      if (fname)
+	free (fname);
+
+      fname = tilde_expand (*argv);
 
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
@@ -2963,7 +2968,12 @@ save variables in a file")
     }
   else
     {
-      char *fname = tilde_expand (*argv);
+      stati cchar *fname = 0;
+
+      if (fname)
+	free (fname);
+
+      fname = tilde_expand (*argv);
 
       argc--;
       argv++;

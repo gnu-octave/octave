@@ -436,7 +436,11 @@ print a directory listing")
 
   ls_buf << "ls -C ";
   for (int i = 1; i < argc; i++)
-    ls_buf << tilde_expand (argv[i]) << " ";
+    {
+      char *tmp = tilde_expand (argv[i]);
+      ls_buf << tmp << " ";
+      free (tmp);
+    }
 
   ls_buf << ends;
 

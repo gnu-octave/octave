@@ -118,8 +118,3 @@ function y = betai(a, b, x)
   endif
 
 endfunction
-
-
-
-
-

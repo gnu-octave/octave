@@ -1,3 +1,10 @@
+2003-08-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Avoid calling flipud.
+	From Pascal A. Dupuis <Pascal.Dupuis@esat.kuleuven.ac.be>.
+	Return structure as second output value for improved Matlab
+	compatibility.
+
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/cond.m: Behave as though old built-in variable

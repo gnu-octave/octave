@@ -64,7 +64,7 @@ libcruft.a: $(CRUFT_OBJ)
 	$(AR) $(ARFLAGS) libcruft.a $(CRUFT_OBJ)
 	$(RANLIB) libcruft.a
 
-stamp-shared:
+stamp-shared: $(CRUFT_PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CXX) -shared -o libcruft.$(SHLEXT) $(CRUFT_PICOBJ) $(FLIBS); \
 	else true; fi

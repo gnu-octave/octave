@@ -16,10 +16,16 @@ CRUFT_BASE = $(notdir $(CRUFT_FSRC))
 CRUFT_CSRC = $(patsubst %.f, %.c, $(CRUFT_BASE))
 CRUFT_OBJ = $(patsubst %.f, %.o, $(CRUFT_BASE))
 
+ifeq ($(SHARED_LIBS), true)
+  ifdef FPICFLAG
+    CRUFT_PICOBJ := $(addprefix pic/, $(CRUFT_OBJ))
+  endif
+endif
+
 CWD = $(shell pwd)
 THISDIR = $(notdir $(CWD))
 
-all: stamp-picdir $(CRUFT_OBJ) $(SPECIAL_DEPEND)
+all: stamp-picdir $(CRUFT_OBJ) $(SPECIAL_DEPEND) $(CRUFT_PICOBJ)
 .PHONY: all
 
 stamp-picdir:

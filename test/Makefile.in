@@ -1,0 +1,81 @@
+#
+# Makefile for octave's test directory
+#
+# John W. Eaton
+# jwe@che.utexas.edu
+# Department of Chemical Engineering
+# The University of Texas at Austin
+
+TOPDIR = ..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+SOURCES =
+
+DISTFILES = Makefile.in $(SOURCES)
+
+SUBDIRS =
+
+OCTAVE_BINARY = ../src/octave
+
+OCTAVE_SCRIPT_PATH = "$(srcdir)/../scripts"
+
+# Complete directory trees to distribute.
+DISTDIRS = config octave.test
+
+all: check
+.PHONY: all
+
+check:
+	@if test -n "$(RUNTEST)" ; then \
+	  $(RUNTEST) \
+	    OCTAVE="$(OCTAVE_BINARY)" \
+	    OCTAVE_SCRIPT_PATH="$(OCTAVE_SCRIPT_PATH)" \
+	    --tool octave --srcdir $(srcdir) ; \
+	else \
+	  echo "***" ; \
+	  echo "*** Sorry, I can't run tests without DejaGnu" ; \
+	  echo "***" ; \
+	fi
+
+.PHONY: check
+
+install: all
+.PHONY: install
+
+uninstall:
+.PHONY: uninstall
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+clean:
+.PHONY: clean
+
+mostlyclean:
+.PHONY: mostlyclean
+
+distclean: clean
+	rm -f Makefile
+.PHONY: distclean
+
+realclean: distclean
+	rm -f tags TAGS
+.PHONY: realclean
+
+local-dist:
+	ln $(DISTFILES) ../`cat ../.fname`/test
+	for dir in $(DISTDIRS); do ln -s ../../test/$$dir ../`cat ../.fname`/test; done
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/test
+	for dir in $(DISTDIRS); do ln -s ../../test/$$dir ../`cat ../.fname`/test; done
+.PHONY: dist

@@ -129,8 +129,8 @@ lo_ieee_is_NA (double x)
 int
 lo_ieee_is_NaN_or_NA (double x)
 {
-  // Although NA really is an IEEE NaN value, lo_ieee_isnan pretends
-  // it is not, so we much check both...
+  /* Although NA really is an IEEE NaN value, lo_ieee_isnan pretends
+     it is not, so we much check both...  */
 
   return lo_ieee_isnan (x) || lo_ieee_is_NA (x);
 }

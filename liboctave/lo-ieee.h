@@ -66,9 +66,9 @@ extern double lo_ieee_inf_value (void);
 extern double lo_ieee_na_value (void);
 extern double lo_ieee_nan_value (void);
 
-// In the following definitions, only check x < 0 explicitly to avoid
-// a function call when it looks like signbit or copysign are actually
-// functions.
+/* In the following definitions, only check x < 0 explicitly to avoid
+   a function call when it looks like signbit or copysign are actually
+   functions.  */
 
 #if defined (signbit)
 #define lo_ieee_signbit(x) signbit (x)

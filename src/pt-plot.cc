@@ -592,7 +592,8 @@ subplot_style::columns_ok (int nc)
 {
   bool retval = true;
 
-  if ((almost_match ("boxes", sp_style, 5, 0) && nc != 3)
+  if ((almost_match ("boxes", sp_style, 5, 0)
+       && (! (nc == 2 || nc == 3)))
       || (almost_match ("boxerrorbars", sp_style, 5, 0)
 	  && (! (nc == 3 || nc == 4 || nc == 5)))
       || ((almost_match ("boxxyerrorbars", sp_style, 4, 0)

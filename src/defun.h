@@ -61,16 +61,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // redefined.
 
 #define DEFCONST(name, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INT (#name, SBV_ ## name, defn, inst_as_fcn, 0, sv_fcn, doc); \
-  DEFVAR_INT ("__" ## #name ## "__", XSBV_ ## name, defn, 0, 1, sv_fcn, doc)
+  DEFVAR_INT (#name, SBV_ ## name, defn, inst_as_fcn, false, sv_fcn, doc); \
+  DEFVAR_INT ("__" ## #name ## "__", XSBV_ ## name, defn, false, true, \
+	      sv_fcn, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the name of the structure has to be passed too.
 
 #define DEFCONSTX(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INT (name, sname, defn, inst_as_fcn, 0, sv_fcn, doc); \
-  DEFVAR_INT ("__" ## name ## "__", X ## sname, defn, 0, 1, sv_fcn, doc)
+  DEFVAR_INT (name, sname, defn, inst_as_fcn, false, sv_fcn, doc); \
+  DEFVAR_INT ("__" ## name ## "__", X ## sname, defn, false, true, sv_fcn, doc)
 
 // How builtin variables are actually installed.
 
@@ -96,7 +97,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //   doc is the simple help text for the function.
 
 #define DEFUN(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
+  DEFUN_INTERNAL (name, args_name, nargout_name, false, doc)
 
 // Define a builtin text-style function.
 //
@@ -105,7 +106,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // surround the arguments). 
 
 #define DEFUN_TEXT(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, 1, doc)
+  DEFUN_INTERNAL (name, args_name, nargout_name, true, doc)
 
 // Define a mapper function.
 //
@@ -138,15 +139,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define DEFUN_MAPPER(name, ch_map, d_d_map, d_c_map, c_c_map, \
 		     lo, hi, can_ret_cmplx_for_real, doc) \
-  do \
-    { \
-      builtin_mapper_function S ## name (ch_map, d_d_map, \
-					 d_c_map, c_c_map, lo, hi, \
-					 can_ret_cmplx_for_real, \
-					 #name, doc); \
-      install_builtin_mapper (S ## name); \
-    } \
-  while (0)
+  install_builtin_mapper \
+    (new octave_mapper (ch_map, d_d_map, d_c_map, c_c_map, lo, hi, \
+			can_ret_cmplx_for_real, #name))
 
 // Make alias another name for the existing function name.  This macro
 // must be used in the same file where name is defined, after the

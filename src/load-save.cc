@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "byte-swap.h"
 #include "data-conv.h"
+#include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-glob.h"
 #include "str-vec.h"
@@ -45,11 +46,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "load-save.h"
-#include "mappers.h"
 #include "oct-obj.h"
+#include "oct-sym.h"
 #include "pager.h"
 #include "pt-exp.h"
-#include "pt-fvc.h"
 #include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -2225,7 +2225,9 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   string name = sr->name ();
   string help = sr->help ();
   int global = sr->is_linked_to_global ();
-  tree_fvc *tmp = sr->def ();
+  octave_symbol *tmp = sr->def ();
+
+  // XXX FIXME XXX -- do we really want to do this?
   octave_value tc = tmp->eval ();
 
   if (tc.is_undefined ())

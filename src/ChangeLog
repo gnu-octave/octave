@@ -1,7 +1,8 @@
 2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Makefile.in (liboctave-prereq): New target.
-	($(DEF_FILES), $(MAKEDEPS)): Depend on it.
+	* Makefile.in (stamp-liboctave-prereq): New target.
+	($(DEF_FILES), $(MAKEDEPS)): Depend on it.	
+	(distclean): Remove it.
 
 	* version.h (OCTAVE_VERSION): Now 2.1.51.
 	(OCTAVE_API_VERSION): Now api-v2.

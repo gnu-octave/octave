@@ -322,11 +322,11 @@ ops.cc: $(OP_SRC) mkops
 	@$(srcdir)/mkops $(OP_SRC) > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
-liboctave-prereq:
+stamp-liboctave-prereq:
 	$(MAKE) -C ../liboctave stamp-prereq
-.PHONY: liboctave-prereq
+	touch stamp-liboctave-prereq
 
-$(DEF_FILES): liboctave-prereq mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
+$(DEF_FILES): stamp-liboctave-prereq mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
 
 $(MAKEDEPS): liboctave-prereq defaults.h oct-gperf.h oct-conf.h
 
@@ -430,7 +430,8 @@ mostlyclean: clean
 
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations
-	rm -f stamp-prereq stamp-oct-links doc-files gendoc.cc
+	rm -f stamp-prereq stamp-liboctave-prereq stamp-oct-links
+	rm -f doc-files gendoc.cc
 .PHONY: distclean
 
 maintainer-clean: distclean

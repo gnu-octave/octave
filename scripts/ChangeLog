@@ -1,3 +1,12 @@
+Wed Jan 28 22:44:59 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/contour.m: Handle discrete contour levels.
+
+Tue Jan 27 04:31:22 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/lyap.m: For compatibility with Matlab, solve
+ 	A*X + X*A' + C = 0 instead of A'*X + X*A + C = 0.
+
 Wed Dec 10 00:14:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/bessel.m: New file.

@@ -1,4 +1,18 @@
+Mon Jan 26 13:26:09 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-config-vals): Substitute XTRA_CFLAGS and
+	XTRA_CXXFLAGS.
+	* mkoctfile.in: Substitute XTRA_CFLAGS and XTRA_CXXFLAGS, not
+	GCC_IEEE_FP_FLAG, HOST_CXXFLAGS, and NO_IMPLICIT_TEMPLATES.
+	(ALL_CFLAGS): Use XTRA_CFLAGS, not GCC_IEEE_FP_FLAG here.
+	(ALL_CXXFLAGS): Use XTRA_CXXFLAGS, not GCC_IEEE_FP_FLAG,
+	HOST_CXXFLAGS, and NO_IMPLICIT_TEMPLATES here.
+
 Sun Jan 25 01:59:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: (GXX_PICKY_FLAGS): Add -Weffc++.
+	Use OCTAVE_CC_FLAG and OCTAVE_CXX_FLAG to add -Wall and for adding
+	picky flags in AC_ARG_ENABLE(picky-flags ...) macro.
 
 	* aclocal.m4 (OCTAVE_F2C_F77_COMPAT): Require OCTAVE_PROG_G77.
 	Handle cross compiling with g77.

@@ -170,6 +170,10 @@ Summary of changes for version 2.1.x:
 
   * The function sumsq now computes sum (x .* conj (x)) for complex values.
 
+  * The new built-in variable max_recursion_depth allows you to
+    prevent Octave from attempting infinite recursion.  The default
+    value is 256.
+
   * Octave now uses readline version 2.1 and kpathsea 3.0.
 
   * New configure option, --enable-readline.

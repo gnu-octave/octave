@@ -335,6 +335,8 @@ sed < $< \
   -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";" \
   -e "s;%TERMLIBS%;\"${TERMLIBS}\";" \
   -e "s;%VERSION%;\"${version}\";" \
+  -e "s;%XTRA_CFLAGS%;\"${XTRA_CFLAGS}\";" \
+  -e "s;%XTRA_CXXFLAGS%;\"${XTRA_CXXFLAGS}\";" \
   -e "s;%config_opts%;\"${config_opts}\";" | \
   sed  -e "s;%DEFS%;\"${UGLY_DEFS}\";" > $@.tmp
 $(top_srcdir)/move-if-change $@.tmp $@

@@ -351,6 +351,11 @@ could detect all constant integer labels and improve performance by
 using a jump table.
 @end itemize
 
+@defvr {Built-in Variable} warn_variable_switch_label
+If the value of this variable is nonzero, Octave will print a warning if
+a switch label is not a constant or constant expression
+@end defvr
+
 @node The while Statement, The for Statement, The switch Statement, Statements
 @section The @code{while} Statement
 @cindex @code{while} statement

@@ -682,7 +682,9 @@ AC_DEFUN(OCTAVE_CC_FLAG, [
   ])
   if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
     AC_MSG_RESULT(yes)
-    ifelse([$2], , [CFLAGS="$CFLAGS $1"], [$2])
+    ifelse([$2], , [
+      CFLAGS="$CFLAGS $1"
+      AC_MSG_RESULT([adding $1 to CFLAGS])], [$2])
   else
     AC_MSG_RESULT(no)
     ifelse([$3], , , [$3])
@@ -709,7 +711,9 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
   ])
   if eval "test \"`echo '$octave_cv_cxx_flag_'$ac_safe`\" = yes"; then
     AC_MSG_RESULT(yes)
-    ifelse([$2], , [CXXFLAGS="$CXXFLAGS $1"], [$2])
+    ifelse([$2], , [
+      CXXFLAGS="$CXXFLAGS $1"
+      AC_MSG_RESULT([adding $1 to CXXFLAGS])], [$2])
   else
     AC_MSG_RESULT(no)
     ifelse([$3], , , [$3])

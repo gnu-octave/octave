@@ -1494,10 +1494,14 @@ if eval "test \"`echo '$''{'bash_cv_must_reinstall_sighandlers'+set}'`\" = set";
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   if test "$cross_compiling" = yes; then
-  { echo "configure: error: cannot check signal handling if cross compiling" 1>&2; exit 1; }
+  if test "$bash_cv_signal_vintage" = svr3; then
+  bash_cv_must_reinstall_sighandlers=yes
+else
+  bash_cv_must_reinstall_sighandlers=no
+fi
 else
   cat > conftest.$ac_ext <<EOF
-#line 1501 "configure"
+#line 1505 "configure"
 #include "confdefs.h"
 
 #include <signal.h>
@@ -1544,7 +1548,7 @@ main()
 }
 
 EOF
-if { (eval echo configure:1548: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1552: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
   bash_cv_must_reinstall_sighandlers=no
 else
@@ -1558,7 +1562,11 @@ fi
 
 fi
 
-echo "$ac_t""$bash_cv_must_reinstall_sighandlers" 1>&6
+if test "$cross_compiling" = yes; then
+  echo "$ac_t""$bash_cv_must_reinstall_sighandlers assumed for cross compilation" 1>&6
+else
+  echo "$ac_t""$bash_cv_must_reinstall_sighandlers" 1>&6
+fi
 if test $bash_cv_must_reinstall_sighandlers = yes; then
 cat >> confdefs.h <<\EOF
 #define MUST_REINSTALL_SIGHANDLERS 1
@@ -1569,15 +1577,15 @@ fi
 
 
 echo $ac_n "checking for presence of POSIX-style sigsetjmp/siglongjmp""... $ac_c" 1>&6
-echo "configure:1573: checking for presence of POSIX-style sigsetjmp/siglongjmp" >&5
+echo "configure:1581: checking for presence of POSIX-style sigsetjmp/siglongjmp" >&5
 if eval "test \"`echo '$''{'bash_cv_func_sigsetjmp'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   if test "$cross_compiling" = yes; then
-  { echo "configure: error: cannot check for sigsetjmp/siglongjmp if cross-compiling" 1>&2; exit 1; }
+  bash_cv_func_sigsetjmp=present
 else
   cat > conftest.$ac_ext <<EOF
-#line 1581 "configure"
+#line 1589 "configure"
 #include "confdefs.h"
 
 #ifdef HAVE_UNISTD_H
@@ -1618,7 +1626,7 @@ exit(1);
 #endif
 }
 EOF
-if { (eval echo configure:1622: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1630: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
   bash_cv_func_sigsetjmp=present
 else
@@ -1633,7 +1641,11 @@ fi
 
 fi
 
-echo "$ac_t""$bash_cv_func_sigsetjmp" 1>&6
+if test "$cross_compiling" = yes; then
+  echo "$ac_t""$bash_cv_func_sigsetjmp=present assumed for cross compiling" 1>&6
+else
+  echo "$ac_t""$bash_cv_func_sigsetjmp" 1>&6
+fi
 if test $bash_cv_func_sigsetjmp = present; then
 cat >> confdefs.h <<\EOF
 #define HAVE_POSIX_SIGSETJMP 1
@@ -1642,12 +1654,12 @@ EOF
 fi
 
 echo $ac_n "checking for lstat""... $ac_c" 1>&6
-echo "configure:1646: checking for lstat" >&5
+echo "configure:1658: checking for lstat" >&5
 if eval "test \"`echo '$''{'bash_cv_func_lstat'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1651 "configure"
+#line 1663 "configure"
 #include "confdefs.h"
 
 #include <sys/types.h>
@@ -1657,7 +1669,7 @@ int main() {
  lstat("",(struct stat *)0); 
 ; return 0; }
 EOF
-if { (eval echo configure:1661: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1673: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   bash_cv_func_lstat=yes
 else
@@ -1678,12 +1690,12 @@ EOF
 fi
 
 echo $ac_n "checking whether programs are able to redeclare getpw functions""... $ac_c" 1>&6
-echo "configure:1682: checking whether programs are able to redeclare getpw functions" >&5
+echo "configure:1694: checking whether programs are able to redeclare getpw functions" >&5
 if eval "test \"`echo '$''{'bash_cv_can_redecl_getpw'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1687 "configure"
+#line 1699 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <pwd.h>
@@ -1692,7 +1704,7 @@ int main() {
 struct passwd *z; z = getpwent();
 ; return 0; }
 EOF
-if { (eval echo configure:1696: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1708: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_can_redecl_getpw=yes
 else
@@ -1714,15 +1726,15 @@ fi
 
 
 echo $ac_n "checking whether or not strcoll and strcmp differ""... $ac_c" 1>&6
-echo "configure:1718: checking whether or not strcoll and strcmp differ" >&5
+echo "configure:1730: checking whether or not strcoll and strcmp differ" >&5
 if eval "test \"`echo '$''{'bash_cv_func_strcoll_broken'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   if test "$cross_compiling" = yes; then
-  { echo "configure: error: cannot check strcoll if cross compiling" 1>&2; exit 1; }
+  bash_cv_func_strcoll_broken=no
 else
   cat > conftest.$ac_ext <<EOF
-#line 1726 "configure"
+#line 1738 "configure"
 #include "confdefs.h"
 
 #include <stdio.h>
@@ -1761,7 +1773,7 @@ char    *v[];
 }
 
 EOF
-if { (eval echo configure:1765: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1777: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
   bash_cv_func_strcoll_broken=yes
 else
@@ -1776,7 +1788,11 @@ fi
 
 fi
 
-echo "$ac_t""$bash_cv_func_strcoll_broken" 1>&6
+if test "$cross_compiling" = yes; then
+  echo "$ac_t""$bash_cv_func_strcoll_broken assumed for cross compiling" 1>&6
+else
+  echo "$ac_t""$bash_cv_func_strcoll_broken" 1>&6
+fi
 if test $bash_cv_func_strcoll_broken = yes; then
 cat >> confdefs.h <<\EOF
 #define STRCOLL_BROKEN 1
@@ -1786,12 +1802,12 @@ fi
 
 
 echo $ac_n "checking whether signal handlers are of type void""... $ac_c" 1>&6
-echo "configure:1790: checking whether signal handlers are of type void" >&5
+echo "configure:1806: checking whether signal handlers are of type void" >&5
 if eval "test \"`echo '$''{'bash_cv_void_sighandler'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1795 "configure"
+#line 1811 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <signal.h>
@@ -1806,7 +1822,7 @@ int main() {
 int i;
 ; return 0; }
 EOF
-if { (eval echo configure:1810: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1826: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_void_sighandler=yes
 else
@@ -1826,12 +1842,12 @@ EOF
 fi
 
 echo $ac_n "checking for TIOCGWINSZ in sys/ioctl.h""... $ac_c" 1>&6
-echo "configure:1830: checking for TIOCGWINSZ in sys/ioctl.h" >&5
+echo "configure:1846: checking for TIOCGWINSZ in sys/ioctl.h" >&5
 if eval "test \"`echo '$''{'bash_cv_tiocgwinsz_in_ioctl'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1835 "configure"
+#line 1851 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -1839,7 +1855,7 @@ int main() {
 int x = TIOCGWINSZ;
 ; return 0; }
 EOF
-if { (eval echo configure:1843: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1859: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_tiocgwinsz_in_ioctl=yes
 else
@@ -1860,12 +1876,12 @@ EOF
 fi
 
 echo $ac_n "checking for TIOCSTAT in sys/ioctl.h""... $ac_c" 1>&6
-echo "configure:1864: checking for TIOCSTAT in sys/ioctl.h" >&5
+echo "configure:1880: checking for TIOCSTAT in sys/ioctl.h" >&5
 if eval "test \"`echo '$''{'bash_cv_tiocstat_in_ioctl'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1869 "configure"
+#line 1885 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -1873,7 +1889,7 @@ int main() {
 int x = TIOCSTAT;
 ; return 0; }
 EOF
-if { (eval echo configure:1877: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1893: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_tiocstat_in_ioctl=yes
 else
@@ -1894,12 +1910,12 @@ EOF
 fi
 
 echo $ac_n "checking for FIONREAD in sys/ioctl.h""... $ac_c" 1>&6
-echo "configure:1898: checking for FIONREAD in sys/ioctl.h" >&5
+echo "configure:1914: checking for FIONREAD in sys/ioctl.h" >&5
 if eval "test \"`echo '$''{'bash_cv_fionread_in_ioctl'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1903 "configure"
+#line 1919 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -1907,7 +1923,7 @@ int main() {
 int x = FIONREAD;
 ; return 0; }
 EOF
-if { (eval echo configure:1911: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1927: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_fionread_in_ioctl=yes
 else
@@ -1928,19 +1944,19 @@ EOF
 fi
 
 echo $ac_n "checking for speed_t in sys/types.h""... $ac_c" 1>&6
-echo "configure:1932: checking for speed_t in sys/types.h" >&5
+echo "configure:1948: checking for speed_t in sys/types.h" >&5
 if eval "test \"`echo '$''{'bash_cv_speed_t_in_sys_types'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1937 "configure"
+#line 1953 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 int main() {
 speed_t x;
 ; return 0; }
 EOF
-if { (eval echo configure:1944: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1960: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_speed_t_in_sys_types=yes
 else
@@ -1962,12 +1978,12 @@ fi
 
 
 echo $ac_n "checking if struct dirent has a d_ino member""... $ac_c" 1>&6
-echo "configure:1966: checking if struct dirent has a d_ino member" >&5
+echo "configure:1982: checking if struct dirent has a d_ino member" >&5
 if eval "test \"`echo '$''{'bash_cv_dirent_has_dino'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1971 "configure"
+#line 1987 "configure"
 #include "confdefs.h"
 
 #include <stdio.h>
@@ -1996,7 +2012,7 @@ struct dirent d; int z; z = d.d_ino;
 
 ; return 0; }
 EOF
-if { (eval echo configure:2000: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2016: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_dirent_has_dino=yes
 else
@@ -2018,12 +2034,12 @@ fi
 
 
 echo $ac_n "checking if struct dirent has a d_fileno member""... $ac_c" 1>&6
-echo "configure:2022: checking if struct dirent has a d_fileno member" >&5
+echo "configure:2038: checking if struct dirent has a d_fileno member" >&5
 if eval "test \"`echo '$''{'bash_cv_dirent_has_d_fileno'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2027 "configure"
+#line 2043 "configure"
 #include "confdefs.h"
 
 #include <stdio.h>
@@ -2052,7 +2068,7 @@ struct dirent d; int z; z = d.d_fileno;
 
 ; return 0; }
 EOF
-if { (eval echo configure:2056: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2072: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   bash_cv_dirent_has_d_fileno=yes
 else

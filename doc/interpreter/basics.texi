@@ -204,11 +204,6 @@ If you write an executable Octave script, @code{argv} will contain the
 list of arguments passed to the script.  @pxref{Executable Octave Programs}.
 @end defvr
 
-@defvr {Built-in Variable} nargin
-At the top level, this variable is defined as the number of command line
-arguments that were passed to Octave.
-@end defvr
-
 @defvr {Built-in Variable} program_invocation_name
 @defvrx {Built-in Variable} program_name
 When Octave starts, the value of the built-in variable
@@ -240,7 +235,8 @@ printf ("\n");
 
 @noindent
 @xref{Index Expressions} for an explanation of how to properly index
-arrays of strings and substrings in Octave.
+arrays of strings and substrings in Octave, and @xref{Defining Functions} 
+for information about the variable @code{nargin}.
 
 @node Startup Files,  , Command Line Options, Invoking Octave
 @subsection Startup Files

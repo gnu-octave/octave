@@ -53,6 +53,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // if they are not explicitly initialized.
 static bool Vdefine_all_return_values;
 
+// Maximum nesting level for functions called recursively.
+static int Vmax_recursion_depth;
+
 // If TRUE, the last computed value is returned from functions that
 // don't actually define any return variables.
 static bool Vreturn_last_computed_value;
@@ -245,6 +248,12 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
 
   unwind_protect_int (call_depth);
   call_depth++;
+
+  if (call_depth > Vmax_recursion_depth)
+    {
+      ::error ("max_recursion_limit exceeded");
+      return retval;
+    }
 
   if (symtab_entry && ! symtab_entry->is_read_only ())
     {
@@ -525,6 +534,14 @@ define_all_return_values (void)
 }
 
 static int
+max_recursion_depth (void)
+{
+  Vmax_recursion_depth = check_preference ("max_recursion_depth");
+
+  return 0;
+}
+
+static int
 return_last_computed_value (void)
 {
   Vreturn_last_computed_value
@@ -545,6 +562,10 @@ set to \"true\".");
     "control whether values returned from functions should have a\n\
 value even if one has not been explicitly assigned.  See also\n\
 default_return_value");
+
+  DEFVAR (max_recursion_depth, 256.0, 0, max_recursion_depth,
+    "maximum nesting level for functions called recursively.\n\
+The default value is 256.");
 
   DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\

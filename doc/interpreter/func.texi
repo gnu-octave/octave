@@ -955,9 +955,28 @@ M-file.  Similar decreases in execution time can be expected for other
 functions, particularly those that rely on functions like @code{lsode}
 that require user-supplied functions.
 
-Additional examples are available in the files in the @file{src}
-directory of the Octave distribution.  Currently, this includes the
-files
+Just as for M-files, Octave will automatically reload dynamically linked
+functions when the files that define them are more recent than the last
+time that the function was loaded.  Two variables are available to
+control how Octave behaves when dynamically linked functions are cleared
+or reloaded.
+
+@defvr {Built-in Variable} auto_unload_dot_oct_files
+If the value of @code{auto_unload_dot_oct_files} is nonzero, Octave will
+automatically unload any @file{.oct} files when there are no longer any
+functions in the symbol table that reference them.
+@end defvr
+
+@defvr {Built-in Variable} warn_reload_forces_clear
+If several functions have been loaded from the same file, Octave must
+clear all the functions before any one of them can be reloaded.  If
+@code{warn_reload_forces_clear}, Octave will warn you when this happens,
+and print a list of the additional functions that it is forced to clear.
+@end defvr
+
+Additional examples for writing dynamically linked functions are
+available in the files in the @file{src} directory of the Octave
+distribution.  Currently, this includes the files
 
 @example
 @group

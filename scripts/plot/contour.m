@@ -39,7 +39,15 @@ function contour (z, n, x, y)
       gset nosurface;
       gset contour;
       gset cntrparam bspline;
-      command = sprintf ("gset cntrparam levels %d", n);
+      if (is_scalar (n))
+	command = sprintf ("gset cntrparam levels %d", n);
+      elseif (is_vector (n))
+	tmp = sprintf ("%f", n(1));
+	for i = 2:length (n)
+	  tmp = sprintf ("%s, %f", tmp, n(i));
+	endfor
+	command = sprintf ("gset cntrparam levels discrete %s", tmp);
+      endif
       eval (command);
       gset noparametric;
       gset view 0, 0, 1, 1;
@@ -67,7 +75,15 @@ function contour (z, n, x, y)
         gset nosurface;
         gset contour;
         gset cntrparam bspline;
-        command = sprintf ("gset cntrparam levels %d", n);
+	if (is_scalar (n))
+          command = sprintf ("gset cntrparam levels %d", n);
+	elseif (is_vector (n))
+	  tmp = sprintf ("%f", n(1));
+	  for i = 2:length (n)
+	    tmp = sprintf ("%s, %f", tmp, n(i));
+	  endfor
+	  command = sprintf ("gset cntrparam levels discrete %s", tmp);
+	endif
         eval (command);
 	gset parametric;
         gset view 0, 0, 1, 1;

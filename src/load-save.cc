@@ -1786,13 +1786,13 @@ get_save_type (double max_val, double min_val)
     st = LS_U_CHAR;
   else if (max_val < 65536 && min_val > -1)
     st = LS_U_SHORT;
-  else if (max_val < 4294967295 && min_val > -1)
+  else if (max_val < 4294967295UL && min_val > -1)
     st = LS_U_INT;
   else if (max_val < 128 && min_val >= -128)
     st = LS_CHAR;
   else if (max_val < 32768 && min_val >= -32768)
     st = LS_SHORT;
-  else if (max_val < 2147483648 && min_val > -2147483648)
+  else if (max_val <= 2147483647L && min_val >= -2147483647L)
     st = LS_INT;
 
   return st;

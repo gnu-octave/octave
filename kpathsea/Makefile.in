@@ -316,8 +316,10 @@ hash.lo:
 check: kpsewhich
 	./kpsewhich -expand-var '$$TEXMF'
 
-install: install-exec install-data
-uninstall: uninstall-exec uninstall-data
+install uninstall:
+
+#install: install-exec install-data
+#uninstall: uninstall-exec uninstall-data
 
 install-exec: kpsewhich
 	$(SHELL) $(top_srcdir)/../mkdirchain $(bindir) $(scriptdir) \

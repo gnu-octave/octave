@@ -414,13 +414,16 @@ argument that is one less than was used for the previous call.  Once the
 argument is no longer greater than zero, it does not call itself, and
 the recursion ends.
 
-There is currently no limit on the recursion depth, so infinite
-recursion is possible.  If this happens, Octave will consume more and
-more memory attempting to store intermediate values for each function
-call context until there are no more resources available.  This is
-obviously undesirable, and will probably be fixed in some future version
-of Octave by allowing users to specify a maximum allowable recursion
-depth.
+The built-in variable @code{max_recursion_depth} specifies a limit to
+the recursion depth and prevents Octave from recursing infinitely.
+
+@defvr max_recursion_depth
+Limit the number of times a function may be called recursively.
+If the limit is exceeded, an error message is printed and control
+returns to the top level.
+
+The default value is 256.
+@end defvr
 
 @node Arithmetic Ops, Comparison Ops, Calling Functions, Expressions
 @section Arithmetic Operators

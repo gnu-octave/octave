@@ -338,6 +338,11 @@ Default value: @code{"> "}.
 
 Default value: @code{"+ "}.
 
+@item auto_unload_dot_oct_files
+@xref{Dynamically Linked Functions}.
+
+Default value: 0.
+
 @item automatic_replot
 @xref{Two-Dimensional Plotting}.
 
@@ -383,6 +388,11 @@ Default value: 0.
 
 Default value: @code{"warn"}.
 
+@item fixed_point_format
+@xref{Matrices}.
+
+Default value: 0.
+
 @item gnuplot_binary
 @xref{Three-Dimensional Plotting}.
 
@@ -403,10 +413,20 @@ Default value: 1024.
 
 Default value: @code{"system"}.
 
+@item implicit_num_to_str_ok
+@xref{String Conversions}.
+
+Default value: 0.
+
 @item implicit_str_to_num_ok
 @xref{String Conversions}.
 
 Default value: 0.
+
+@item max_recursion_depth
+@xref{Recursion}.
+
+Default value: 256.
 
 @item ok_to_lose_imaginary_part
 @xref{Special Utility Matrices}.
@@ -507,6 +527,16 @@ Default value: 1.
 @xref{Function Files}.
 
 Default value: 1.
+
+@item warn_reload_forces_clear
+@xref{Dynamically Linked Functions}.
+
+Default value: 1.
+
+@item warn_variable_switch_label
+@xref{The switch Statement}.
+
+Default value: 0.
 
 @item whitespace_in_literal_matrix
 @xref{Matrices}.

@@ -1,3 +1,22 @@
+Wed Jan 28 00:18:17 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/dassl.cc (lsode_option_table):
+	Add missing & to function names.
+	* DLD-FUNCTIONS/lsode.cc (lsode_option_table): Likewise.
+	* DLD-FUNCTIONS/quad.cc (quad_option_table): Likewise.
+
+	* Makefile.in (oct-gperf.h): Add -G option to gperf.
+
+	* load-save.cc (get_save_type): Add `UL' and `L' suffixes to large
+	constant values.  For LS_INT, use <= and >= for comparison.
+
+Mon Jan 26 13:17:59 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-usr-fcn.cc (Vmax_recursion_depth): New static variable.
+	(max_recursion_depth): New fucnction
+	(symbols_of_ov_usr_fcn): DEFVAR max_recursion_depth.
+	(octave_user_function::do_index_op): Check Vmax_recursion_depth.
+
 Thu Jan 22 13:45:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.cc (make_dynamic_loader): Fix typo.

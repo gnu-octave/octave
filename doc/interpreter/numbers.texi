@@ -304,10 +304,8 @@ When you type a matrix or the name of a variable whose value is a
 matrix, Octave responds by printing the matrix in with neatly aligned
 rows and columns.  If the rows of the matrix are too large to fit on the
 screen, Octave splits the matrix and displays a header before each
-section to indicate which columns are being displayed.
-
-@noindent
-You can use the following variables to control the format of the output.
+section to indicate which columns are being displayed.  You can use the
+following variables to control the format of the output.
 
 @defvr {Built-in Variable} output_max_field_width
 This variable specifies the maximum width of a numeric output field.
@@ -355,6 +353,42 @@ ans =
 
 @noindent
 The default value of @code{split_long_rows} is nonzero.
+@end defvr
+
+Octave automatically switches to scientific notation when values become
+very large or very small.  This guarantees that you will see several
+significant figures for every value in a matrix.  If you would prefer to
+see all values in a matrix printed in a fixed point format, you can set
+the built-in variable @code{fixed_point_format} to a nonzero value.  But
+doing so is not recommended, because it can produce output that can
+easily be misinterpreted.
+
+@defvr {Built-in Variable} fixed_point_format
+If the value of this variable is nonzero, Octave will scale all values
+in a matrix so that the largest may be written with one leading digit.
+The scaling factor is printed on the first line of output.  For example,
+
+@example
+@group
+octave:1> logspace (1, 7, 5)'
+ans =
+
+  1.0e+07  *
+
+  0.00000
+  0.00003
+  0.00100
+  0.03162
+  1.00000
+@end group
+@end example
+
+@noindent
+Notice that first value appears to be zero when it is actually 1.  For
+this reason, you should be careful when setting
+@code{fixed_point_format} to a nonzero value.
+
+The default value of @code{fixed_point_format} is 0.
 @end defvr
 
 @menu

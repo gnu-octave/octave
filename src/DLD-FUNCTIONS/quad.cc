@@ -270,14 +270,14 @@ static QUAD_OPTIONS quad_option_table [] =
   { "absolute tolerance",
     { "absolute", "tolerance", 0, },
     { 1, 0, 0, }, 1,
-    Quad_options::set_absolute_tolerance,
-    Quad_options::absolute_tolerance, },
+    &Quad_options::set_absolute_tolerance,
+    &Quad_options::absolute_tolerance, },
 
   { "relative tolerance",
     { "relative", "tolerance", 0, },
     { 1, 0, 0, }, 1,
-    Quad_options::set_relative_tolerance,
-    Quad_options::relative_tolerance, },
+    &Quad_options::set_relative_tolerance,
+    &Quad_options::relative_tolerance, },
 
   { 0,
     { 0, 0, 0, },

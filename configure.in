@@ -156,10 +156,10 @@ AC_SUBST(GCC_IEEE_FP_FLAG)dnl
 # Put fc last to avoid confusion with some vendor's /bin/sh fc
 # builtin.
 #
-#    g77 : GNU Fortran (someday...)
 #    xlf : IBM / AIX
 #   cf77 : Cray / Unicos
 #     fc : Convex
+#    g77 : GNU Fortran (someday...)
 #
 # I don't think the Cray compiler will ever work like f2c...
 
@@ -167,7 +167,7 @@ if $use_f2c; then
   true
 else
   F77=
-  AC_PROGRAMS_CHECK(F77, g77 xlf cf77 f77 fc)dnl
+  AC_PROGRAMS_CHECK(F77, xlf cf77 f77 fc g77)dnl
 
   # If it looks like we have a Fortran compiler, try to determine
   # whether it might be compatible with f2c.

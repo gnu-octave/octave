@@ -257,7 +257,7 @@ Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
  = 2) kind.\n\
 @end table\n\
 \n\
-If thet argumemt @var{opt} is supplied, the result is scaled by the\n\
+If the argument @var{opt} is supplied, the result is scaled by the\n\
 @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
  @var{k} = 2.\n\
 \n\

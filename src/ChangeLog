@@ -1,5 +1,12 @@
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/dassl.cc (print_dassl_option_list): Use stream
+	manipulators instead of GNU iostream-specific form function.
+	* DLD-FUNCTIONS/fsolve.cc (print_fsolve_option_list): Ditto.
+	* DLD-FUNCTIONS/lsode.cc (print_lsode_option_list): Ditto.
+	* DLD-FUNCTIONS/quad.cc (print_quad_option_list): Ditto.
+	* pr-output.cc (pr_scale_header): Ditto.
+
 	* sighandlers.h: Include signal.h here.
 	* sighandlers.cc: Not here.
 

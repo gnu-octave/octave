@@ -315,11 +315,11 @@ print_dassl_option_list (std::ostream& os)
   const char *keyword;
   while ((keyword = list->keyword) != 0)
     {
-      os << std::setw (40)
-	 << std::setfill (' ')
-	 << std::setiosflags (std::ios::left)
-	 << "  " << keyword << " "
-	 << std::resetiosflags (std::ios::left);
+      os << "  "
+	 << std::setiosflags (std::ios::left) << std::setw (40)
+	 << keyword
+	 << std::resetiosflags (std::ios::left)
+	 << " ";
 
       double val = (dassl_opts.*list->d_get_fcn) ();
       if (val < 0.0)

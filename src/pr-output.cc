@@ -1121,7 +1121,12 @@ pr_scale_header (std::ostream& os, double scale)
 {
   if (Vfixed_point_format && scale != 1.0)
     {
-      os.form ("  %-8.1e *\n", scale);
+      os << "  "
+	 << std::setw (8) << std::setprecision (1)
+	 << std::setiosflags (std::ios::scientific|std::ios::left)
+	 << scale
+	 << std::resetiosflags (std::ios::scientific|std::ios::left)
+	 << " *\n";
 
       if (! compact_format)
 	os << "\n";

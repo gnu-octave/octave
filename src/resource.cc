@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "systime.h"
+
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
@@ -34,7 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "sysdep.h"
-#include "systime.h"
 #include "tree-const.h"
 #include "utils.h"
 

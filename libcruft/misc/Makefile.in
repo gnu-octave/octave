@@ -12,9 +12,11 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
-SPECIAL := machar.c d1mach-tst.for dostop.c f77-extern.cc lo-error.cc
+SPECIAL := machar.c d1mach-tst.for dostop.c f77-extern.cc \
+	f77-fcn.c f77-fcn.h lo-error.cc
 
-SPECIAL_DEPEND := d1mach.o machar.o dostop.o f77-extern.o lo-error.o
+SPECIAL_DEPEND := d1mach.o machar.o dostop.o f77-extern.o \
+	f77-fcn.o lo-error.o
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
@@ -22,7 +24,7 @@ include $(TOPDIR)/Makeconf
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
-    CPICDEP := pic/machar.o pic/dostop.o
+    CPICDEP := pic/machar.o pic/dostop.o pic/f77-fcn.o
   endif
   ifdef CXXPICFLAG
     CXXPICDEP := pic/f77-extern.o pic/lo-error.o
@@ -31,6 +33,13 @@ ifeq ($(SHARED_LIBS), true)
 endif
 
 include ../Makerules
+
+install::
+	$(top_srcdir)/mkinstalldirs $(octincludedir)
+	$(INSTALL_DATA) $(srcdir)/f77-fcn.h $(octincludedir)/f77-fcn.h
+
+uninstall::
+	rm -f $(octincludedir)/f77-fcn.h
 
 # Don't optimize.
 

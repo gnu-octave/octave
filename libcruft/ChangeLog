@@ -1,3 +1,17 @@
+Tue Nov 19 23:04:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in (install, uninstall): Make these double colon rules.
+
+	* f77-fcn.c, f77-fcn.h: New files, from liboctave.
+
+	* misc/Makefile.in (SPECIAL_DEPEND): Add f77-fcn.o.
+	(SPECIAL): Add f77-fcn.c and f77-fcn.h.
+	(CPICDEP): Add pic/f77-fcn.o.
+	(install): Install f77-fcn.h in $(octincludedir).
+	(uninstall): Delete f77-fcn.h from $(octincludedir).
+
+	* Makerules.in (CRUFT_CSRC): Delete unsed variable.
+
 Thu Nov 14 00:07:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 1.92.

@@ -16,7 +16,6 @@ DISTFILES = Makefile.in $(SOURCES) $(SPECIAL)
 
 CRUFT_FSRC = $(wildcard $(srcdir)/*.f)
 CRUFT_BASE = $(notdir $(CRUFT_FSRC))
-CRUFT_CSRC = $(patsubst %.f, %.c, $(CRUFT_BASE))
 CRUFT_OBJ = $(patsubst %.f, %.o, $(CRUFT_BASE))
 
 ifeq ($(SHARED_LIBS), true)
@@ -68,10 +67,10 @@ stamp-picdir:
 	fi
 	touch stamp-picdir
 
-install: all
+install:: all
 .PHONY: install
 
-uninstall:
+uninstall::
 .PHONY: uninstall
 
 tags: $(SOURCES)

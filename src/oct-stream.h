@@ -450,7 +450,7 @@ private:
   // The actual representation of this stream.
   octave_base_stream *rep;
 
-  // If true, don't delete rep.
+  // If true, do not delete rep.
   bool preserve;
 
   void invalid_stream_error (const char *op) const;

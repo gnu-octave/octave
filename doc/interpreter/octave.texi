@@ -146,7 +146,6 @@ It corresponds to Octave version @value{VERSION}.
 * Readline Index::              An index for readline commands.
 * Info Index::                  An index for info commands.
 
-
  --- The Detailed Node Listing ---
 
 A Brief Introduction to Octave
@@ -266,6 +265,7 @@ Plotting
 
 * Two-Dimensional Plotting::    
 * Three-Dimensional Plotting::  
+* Multiple Plots on One Page::  
 * Miscellaneous Plotting Functions::  
 
 Input and Output

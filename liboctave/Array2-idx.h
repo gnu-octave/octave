@@ -365,10 +365,10 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
       int idx_j_is_colon = idx_j.is_colon ();
 
       if (idx_i_is_colon)
-	n = rhs_nr;
+	n = lhs_nr;
 
       if (idx_j_is_colon)
-	m = rhs_nc;
+	m = lhs_nc;
 
       if (idx_i && idx_j)
 	{
@@ -389,19 +389,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 		  lhs.resize (new_nr, new_nc, 0.0);
 		}
 
-	      if (n == rhs_nr && m == rhs_nc)
-		{
-		  for (int j = 0; j < m; j++)
-		    {
-		      int jj = idx_j.elem (j);
-		      for (int i = 0; i < n; i++)
-			{
-			  int ii = idx_i.elem (i);
-			  lhs.elem (ii, jj) = rhs.elem (i, j);
-			}
-		    }
-		}
-	      else if (rhs_nr == 1 && rhs_nc == 1 && n > 0 && m > 0)
+	      if (rhs_nr == 1 && rhs_nc == 1 && n > 0 && m > 0)
 		{
 		  RT scalar = rhs.elem (0, 0);
 
@@ -412,6 +400,18 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			{
 			  int ii = idx_i.elem (i);
 			  lhs.elem (ii, jj) = scalar;
+			}
+		    }
+		}
+	      else if (n == rhs_nr && m == rhs_nc)
+		{
+		  for (int j = 0; j < m; j++)
+		    {
+		      int jj = idx_j.elem (j);
+		      for (int i = 0; i < n; i++)
+			{
+			  int ii = idx_i.elem (i);
+			  lhs.elem (ii, jj) = rhs.elem (i, j);
 			}
 		    }
 		}

@@ -35,6 +35,10 @@ manual.
 browser to read the on-line version of the manual.
 @end deffn
 
+The help command can give you information about operators, but not the
+comma and semicolons that are used as command separators.  To get help
+for those, you must type @code{help comma} or @code{help semicolon}.
+
 @defvr {Built-in Variable} INFO_FILE
 The variable @code{INFO_FILE} names the location of the Octave info file.
 The default value is @code{"@value{OCTAVEHOME}/info/octave.info"}.

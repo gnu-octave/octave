@@ -17,6 +17,7 @@ low-level plotting functions.
 @menu
 * Two-Dimensional Plotting::    
 * Three-Dimensional Plotting::  
+* Multiple Plots on One Page::  
 * Miscellaneous Plotting Functions::  
 @end menu
 
@@ -345,7 +346,7 @@ Make a two-dimensional plot given polar the coordinates @var{theta} and
 @var{rho}.
 @end deftypefn
 
-@node Three-Dimensional Plotting, Miscellaneous Plotting Functions, Two-Dimensional Plotting, Plotting
+@node Three-Dimensional Plotting, Multiple Plots on One Page, Two-Dimensional Plotting, Plotting
 @section Three-Dimensional Plotting
 
 @deffn {Command} gsplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
@@ -436,6 +437,16 @@ See the file @file{sombrero.m} for an example of using @code{mesh} and
 @code{meshdom}.
 @end deftypefn
 
+@deftypefn {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
+Given vectors of @var{x} and @var{y} coordinates, return two matrices
+corresponding to the @var{x} and @var{y} coordinates of a mesh.  The
+rows of @var{xx} are copies of @var{x}, and the columns of @var{yy} are
+copies of @var{y}. 
+
+@code{[@var{xx}, @var{yy}] = meshgrid (@var{x})} is an abbreviation for
+@code{[@var{xx}, @var{yy}] = meshgrid (@var{x}, @var{x})}.
+@end deftypefn
+
 @defvr {Built-in Variable} gnuplot_binary
 The name of the program invoked by the plot command.  The default value
 is @code{"gnuplot"}.  @xref{Installation}.
@@ -457,7 +468,112 @@ can be changed in your startup script or at the command line in case
 configure got it wrong, or if you upgrade your gnuplot installation.
 @end defvr
 
-@node Miscellaneous Plotting Functions,  , Three-Dimensional Plotting, Plotting
+@node Multiple Plots on One Page, Miscellaneous Plotting Functions, Three-Dimensional Plotting, Plotting
+@section Multiple Plots on One Page
+
+The following functions all require a version of @code{gnuplot} that
+supports the multiplot feature.
+
+@deftypefn {Function File} {} mplot (@var{x}, @var{y})
+@deftypefnx {Function File} {} mplot (@var{x}, @var{y}, @var{fmt})
+@deftypefnx {Function File} {} mplot (@var{x1}, @var{y1}, @var{x2}, @var{y2})
+This is a modified version of @code{plot()} to work with the multiplot
+version of @code{gnuplot} to plot multiple plots per page. 
+This plot version automatically advances to the next subplot position
+after each set of arguments are processed.
+
+See command @var{plot()} for the various options to this command
+as this is just mulitplot version of the same command.
+@end deftypefn
+
+@deftypefn {Function File} {} multiplot (@var{xn}, @var{yn})
+Sets and resets multiplot mode.
+
+If the arguments are non-zero, @code{multiplot} will set up multiplot
+mode with @var{xn}, @var{yn} subplots along the @var{x} and @var{y}
+axes.  If both arguments are zero, @code{multiplot} closes multiplot
+mode.
+@end deftypefn
+
+@deftypefn {Function File} {} oneplot ()
+If in multiplot mode, switches to single plot mode.
+@end deftypefn
+
+@deftypefn {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
+@deftypefnx {Function File} {} subplot (@var{rcn})
+Sets @code{gnuplot} in multiplot mode and plots in location
+given by index (there are @var{cols} by @var{rows} subwindows).
+
+Input:
+
+@table @var
+@item rows
+Number of rows in subplot grid.
+
+@item columns
+Number of columns in subplot grid.
+
+@item index
+Index of subplot where to make the next plot.
+@end table
+
+If only one argument is supplied, then it must be a three digit value
+specifying the location in digits 1 (rows) and 2 (columns) and the plot
+index in digit 3.
+
+The plot index runs row-wise.  First all the columns in a row are filled
+and then the next row is filled.
+
+For example, a plot with 4 by 2 grid will have plot indices running as
+follows:
+
+@example
+@group
+  +-------+-------+-------+-------+
+  |       |       |       |       |
+  |   1   |   2   |   3   |   4   |
+  |       |       |       |       |
+  +-------+-------+-------+-------+
+  |       |       |       |       |
+  |   5   |   6   |   7   |   8   |
+  |       |       |       |       |
+  +-------+-------+-------+-------+
+@end group
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} subwindow (@var{xn}, @var{yn})
+Sets the subwindow position in multiplot mode for the next plot.  The
+multiplot mode has to be previously initialized using the
+@code{multiplot()} command, otherwise this command just becomes an alias
+to @var{multiplot()}
+@end deftypefn
+
+@deftypefn {Function File} {} top_title (@var{string})
+@deftypefnx {Function File} {} bottom_title (@var{string})
+Makes a title with text @var{string} at the top (bottom) of the plot.
+@end deftypefn
+
+@deftypefn {Function File} {} plot_border (...)
+Multiple arguments allowed to specify the sides on which the border
+is shown.  Allowed arguments include:
+
+@example
+@group
+ "blank", "BLANK", "b", "B",  @result{}  No borders displayed
+   "all",   "ALL", "a", "A",  @result{}  All borders displayed
+ "north", "NORTH", "n", "N",  @result{}  North Border
+ "south", "SOUTH", "s", "S",  @result{}  South Border
+  "east",  "EAST", "e", "E",  @result{}  East Border
+  "west",  "WEST", "w", "W",  @result{}  West Border
+@end group
+@end example
+
+@noindent
+Without any arguments, turns borders off.
+@end deftypefn
+
+@node Miscellaneous Plotting Functions,  , Multiple Plots on One Page, Plotting
 @section Miscellaneous Plotting Functions
 
 @deftypefn {Function File} {} bar (@var{x}, @var{y})
@@ -521,7 +637,8 @@ the command @code{replot} to redisplay it with the new title.
 
 @deftypefn {Function File} {} xlabel (@var{string})
 @deftypefnx {Function File} {} ylabel (@var{string})
-Specify x and y axis labels for the plot.  If you already have a plot
+@deftypefnx {Function File} {} zlabel (@var{string})
+Specify x, y, and z axis labels for the plot.  If you already have a plot
 displayed, use the command @code{replot} to redisplay it with the new
 labels.
 @end deftypefn

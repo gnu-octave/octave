@@ -211,11 +211,12 @@ been done yet.
 
 @item
 There is a bug with the makeinfo program that is distributed with
-texinfo-3.1 that causes the indices in Octave's on-line manual to be
-generated incorrectly.  If you need to recreate the on-line
-documentation, you should get the makeinfo program that is distributed
-with texinfo-3.1 and apply the patch for makeinfo that is distributed
-with Octave.  See the file MAKEINFO.PATCH for more details.
+Texinfo (through version 3.9) that causes the indices in Octave's
+on-line manual to be generated incorrectly.  If you need to recreate the
+on-line documentation, you should get the makeinfo program that is
+distributed with texinfo-3.9 and apply the patch for makeinfo that is
+distributed with Octave.  See the file @file{MAKEINFO.PATCH} for more
+details.
 
 @item
 Some of the Fortran subroutines may fail to compile with older versions

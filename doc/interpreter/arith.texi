@@ -479,6 +479,7 @@ If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
 @end deftypefn
 
 @deftypefn {Mapping Function} {} lgamma (@var{a}, @var{x})
+@deftypefnx {Mapping Function} {} gammaln (@var{a}, @var{x})
 Returns the natural logarithm of the gamma function.
 @end deftypefn
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -27,7 +27,7 @@ function plot_int (x1, x2)
       nc = tmp;
     endif
     x1_i = imag (x1);
-    if (x1_i)
+    if (any (x1_i))
       x2 = x1_i;
       x1 = real (x1);
     else
@@ -37,10 +37,10 @@ function plot_int (x1, x2)
   endif
 
   if (nargin <= 2)
-    if (imag (x1))
+    if (any (imag (x1)))
       x1 = real (x1);
     endif
-    if (imag (x2))
+    if (any (imag (x2)))
       x2 = real (x2);
     endif
     if (is_scalar (x1))

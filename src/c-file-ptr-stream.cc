@@ -189,20 +189,6 @@ c_file_ptr_buf::close (void)
   return retval;
 }
 
-void
-i_c_file_ptr_stream::close (void)
-{
-  if (buf)
-    buf->close ();
-}
-
-void
-o_c_file_ptr_stream::close (void)
-{
-  if (buf)
-    buf->close ();
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -67,24 +67,30 @@ octave_file::print_raw (std::ostream& os, bool) const
 {
   indent (os); os << "{"; newline (os);
 
-  if (stream)
-    {
-      increment_indent_level ();
+  increment_indent_level ();
 
-      std::string name = stream.name ();
-      std::string mode = octave_stream::mode_as_string (stream.mode ());
-      std::string arch
-	= oct_mach_info::float_format_as_string (stream.float_format ());
-      std::string status = stream.is_open () ? "open" : "closed";
+  indent (os);
+  os << "id = " << number;
+  newline (os);
 
-      indent (os); os << "id = " << number; newline (os);
-      indent (os); os << "name = " << name; newline (os);
-      indent (os); os << "mode = " << mode; newline (os);
-      indent (os); os << "arch = " << arch; newline (os);
-      indent (os); os << "status = " << status; newline (os);
+  indent (os);
+  os << "name = " << stream.name ();
+  newline (os);
 
-      decrement_indent_level ();
-    }
+  indent (os);
+  os << "mode = " << octave_stream::mode_as_string (stream.mode ());
+  newline (os);
+
+  indent (os);
+  os << "arch = "
+     << oct_mach_info::float_format_as_string (stream.float_format ());
+  newline (os);
+
+  indent (os);
+  os << "status = " << stream.is_open () ? "open" : "closed";
+  newline (os);
+
+  decrement_indent_level ();
 
   indent (os); os << "}";
 }

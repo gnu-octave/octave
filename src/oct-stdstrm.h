@@ -74,16 +74,15 @@ octave_istdiostream : public octave_base_stdiostream
 public:
 
   octave_istdiostream (const std::string& n, FILE *f = 0,
-		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 		       std::ios::openmode arg_md = std::ios::in,
-		       oct_mach_info::float_format flt_fmt =
-		       oct_mach_info::native);
+		       oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose);
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
-	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 	  std::ios::openmode arg_md = std::ios::in,
-	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose);
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -128,16 +127,15 @@ octave_ostdiostream : public octave_base_stdiostream
 public:
 
   octave_ostdiostream (const std::string& n, FILE *f = 0,
-		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 		       std::ios::openmode arg_md = std::ios::out,
-		       oct_mach_info::float_format flt_fmt =
-		       oct_mach_info::native);
+		       oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose);
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
-	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 	  std::ios::openmode arg_md = std::ios::out,
-	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose);
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -174,6 +172,59 @@ private:
   octave_ostdiostream (const octave_ostdiostream&);
 
   octave_ostdiostream& operator = (const octave_ostdiostream&);
+};
+
+class
+octave_iostdiostream : public octave_base_stdiostream
+{
+public:
+
+  octave_iostdiostream (const std::string& n, FILE *f = 0,
+			std::ios::openmode arg_md = std::ios::in,
+			oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+			c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose);
+
+  static octave_stream
+  create (const std::string& n, FILE *f = 0,
+	  std::ios::openmode arg_md = std::ios::in|std::ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose);
+
+  // Return non-zero if EOF has been reached on this stream.
+
+  bool eof (void) const { return s ? s->eof () : true; }
+
+  std::istream *input_stream (void) { return s; }
+
+  std::ostream *output_stream (void) { return s; }
+
+  // XXX FIXME XXX -- should not have to cast away const here.
+  c_file_ptr_buf *rdbuf (void) const
+    { return s ? (const_cast<io_c_file_ptr_stream *> (s))->rdbuf () : 0; }
+
+  bool bad (void) const { return s ? s->bad () : true; }
+
+  void clear (void)
+    {
+      if (s)
+	s->clear ();
+    }
+
+  void do_close (void);
+
+protected:
+
+  io_c_file_ptr_stream *s;
+
+  ~octave_iostdiostream (void);
+
+private:
+
+  // No copying!
+
+  octave_iostdiostream (const octave_iostdiostream&);
+
+  octave_iostdiostream& operator = (const octave_iostdiostream&);
 };
 
 #endif

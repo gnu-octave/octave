@@ -3161,23 +3161,17 @@ octave_stream_list::do_list_open_files (void) const
     {
       octave_stream os = list(i);
 
-      if (os)
-	{
-	  std::string mode = octave_stream::mode_as_string (os.mode ());
-
-	  std::string arch =
-	    oct_mach_info::float_format_as_string (os.float_format ());
-
-	  std::string name = os.name ();
-
-	  buf << "  "
-	      << std::setiosflags (std::ios::right)
-	      << std::setw (4) << i << "     "
-	      << std::setiosflags (std::ios::left)
-	      << std::setw (3) << mode.c_str () << "  "
-	      << std::setw (9) << arch.c_str () << "  "
-	      << name << "\n";
-	}
+      buf << "  "
+	  << std::setiosflags (std::ios::right)
+	  << std::setw (4) << i << "     "
+	  << std::setiosflags (std::ios::left)
+	  << std::setw (3)
+	  << octave_stream::mode_as_string (os.mode ())
+	  << "  "
+	  << std::setw (9)
+	  << oct_mach_info::float_format_as_string (os.float_format ())
+	  << "  "
+	  << os.name () << "\n";
     }
 
   buf << "\n" << OSSTREAM_ENDS;

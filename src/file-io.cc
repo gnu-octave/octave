@@ -62,6 +62,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-stream.h"
 #include "oct-strstrm.h"
 #include "pager.h"
+#include "pt-plot.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
@@ -1384,7 +1385,7 @@ error condition.\n\
 
 DEFUN (popen, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {fid =} popen (@var{command}, @var{mode})\n\
+@deftypefn {Built-in Function} {@var{fid} =} popen (@var{command}, @var{mode})\n\
 Start a process and create a pipe.  The name of the command to run is\n\
 given by @var{command}.  The file identifier corresponding to the input\n\
 or output stream of the process is returned in @var{fid}.  The argument\n\
@@ -1486,7 +1487,8 @@ is used.  If @var{dir} is provided, it must exist, otherwise the default\n\
 directory for temporary files is used.  Since the named file is not\n\
 opened, by @code{tmpnam}, it is possible (though relatively unlikely)\n\
 that it will not be available by the time your program attempts to open it.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{tmpfile, mkstemp, and P_tmpdir}")
 {
   octave_value retval;
 
@@ -1516,6 +1518,156 @@ that it will not be available by the time your program attempts to open it.\n\
 }
 
 DEFALIAS (octave_tmp_file_name, tmpnam);
+
+DEFUN (tmpfile, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} tmpfile ()\n\
+Return the file ID corresponding to a new temporary file with a unique\n\
+name.  The file is opened in binary read/write (@code{\"w+b\"}) mode.\n\
+The file will be deleted automatically when it is closed or when Octave\n\
+exits.\n\
+\n\
+If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
+string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn\n\
+@seealso{tmpnam, mkstemp, and P_tmpdir}")
+{
+  octave_value_list retval;
+
+  retval(1) = std::string ();
+  retval(0) = -1;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+      FILE *fid = tmpfile ();
+
+      if (fid)
+	{
+	  std::string nm;
+
+	  std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
+
+	  octave_stream s = octave_iostdiostream::create (nm, fid, md);
+
+	  if (s)
+	    retval(0) = octave_stream_list::insert (s);
+	  else
+	    error ("tmpfile: failed to create octave_iostdiostream object");
+
+	}
+      else
+	{
+	  using namespace std;
+	  retval(1) = ::strerror (errno);
+	  retval(0) = -1;
+	}
+    }
+  else
+    print_usage ("tmpfile");
+
+  return retval;
+}
+
+#define HAVE_MKSTEMP 1
+
+
+DEFUN (mkstemp, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} tmpfile (@var{template}, @var{delete})\n\
+Return the file ID corresponding to a new temporary file with a unique\n\
+name created from @var{template}.  The last six characters of @var{template}\n\
+must be @code{XXXXXX} and tehse are replaced with a string that makes the\n\
+filename unique.  The file is then created with mode read/write and\n\
+permissions that are system dependent (on GNU/Linux systems, the permissions\n\
+will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
+with the @code{O_EXCL} flag.\n\
+\n\
+If the optional argument @var{delete} is supplied and is true,\n\
+the file will be deleted automatically when Octave exits, or when\n\
+the function @code{purge_tmp_files} is called.\n\
+\n\
+If successful, @var{fid} is a valid file ID, @var{name} is the name of\n\
+the file, and and @var{msg} is an empty string.  Otherwise, @var{fid}\n\
+is -1, @var{name} is empty, and @var{msg} contains a system-dependent\n\
+error message.\n\
+@end deftypefn\n\
+@seealso{tmpfile, tmpnam, and P_tmpdir}")
+{
+  octave_value_list retval;
+
+  retval(2) = std::string ();
+  retval(1) = std::string ();
+  retval(0) = -1;
+
+#if defined (HAVE_MKSTEMP)
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string tmpl8 = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  std::auto_ptr<char> tmp_auto_ptr (strsave (tmpl8.c_str ()));
+	  char *tmp = tmp_auto_ptr.get ();
+
+	  int fd = mkstemp (tmp);
+
+	  if (fd < 0)
+	    {
+	      using namespace std;
+	      retval(1) = ::strerror (errno);
+	      retval(0) = fd;
+	    }
+	  else
+	    {
+	      const char *fopen_mode = "w+";
+
+	      FILE *fid = fdopen (fd, fopen_mode);
+
+	      if (fid)
+		{
+		  std::string nm = tmp;
+
+		  std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
+
+		  octave_stream s = octave_iostdiostream::create (nm, fid, md);
+
+		  if (s)
+		    {
+		      retval(1) = nm;
+		      retval(0) = octave_stream_list::insert (s);
+
+		      if (nargin == 2)
+			mark_for_deletion (nm);
+		    }
+		  else
+		    error ("mkstemp: failed to create octave_iostdiostream object");
+		}
+	      else
+		{
+		  using namespace std;
+		  retval(1) = ::strerror (errno);
+		  retval(0) = -1;
+		}
+	    }
+	}
+      else
+	error ("mkstemp: expecting string as first argument");
+    }
+  else
+    print_usage ("mkstemp");
+
+#else
+  retval(2) = "mkstemp: not supported on this sytem";
+#endif
+
+  return retval;
+}
 
 static int
 convert (int x, int ibase, int obase)

@@ -103,7 +103,7 @@ public:
 
   c_file_ptr_buf *rdbuf (void) { return buf; }
 
-  void close (void);
+  void close (void) { if (buf) buf->close (); }
 
 private:
 
@@ -123,7 +123,27 @@ public:
 
   c_file_ptr_buf *rdbuf (void) { return buf; }
 
-  void close (void);
+  void close (void) { if (buf) buf->close (); }
+
+private:
+
+  c_file_ptr_buf *buf;
+};
+
+class
+io_c_file_ptr_stream : public std::iostream
+{
+public:
+
+  io_c_file_ptr_stream (FILE* f,
+			c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
+    : std::iostream (0), buf (new c_file_ptr_buf (f, cf)) { init (buf); }
+
+  ~io_c_file_ptr_stream (void) { delete buf; buf = 0; }
+
+  c_file_ptr_buf *rdbuf (void) { return buf; }
+
+  void close (void) { if (buf) buf->close (); }
 
 private:
 

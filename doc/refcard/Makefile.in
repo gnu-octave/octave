@@ -66,14 +66,6 @@ maintainer-clean: distclean
 	rm -f tags TAGS	refcard-*.dvi refcard-*.ps
 .PHONY: maintainer-clean
 
-local-dist: all
-	ln $(DISTFILES) ../../`cat ../../.fname`/doc/refcard
-.PHONY: local-dist
-
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/refcard
 .PHONY: dist
-
-doc-dist: all
-	ln $(FORMATTED) ../../`cat ../../.fname`/doc/refcard
-.PHONY: doc-dist

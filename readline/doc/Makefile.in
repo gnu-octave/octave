@@ -56,10 +56,6 @@ distclean mostlyclean clean:
 maintainer-clean realclean:	clean
 	rm -f *.dvi *.info *.info-* *.ps Makefile
 
-local-dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/readline/doc
-.PHONY: local-dist
-
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/readline/doc
 .PHONY: dist

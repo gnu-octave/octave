@@ -113,11 +113,6 @@ maintainer-clean::
 	rm -f *.a *.o Makefile Makerules so_locations tags TAGS
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
-local-dist:
-	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	ln $(DISTFILES) ../`cat ../.fname`/libcruft
-.PHONY: local-dist
-
 dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	ln $(DISTFILES) ../`cat ../.fname`/libcruft

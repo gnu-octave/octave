@@ -159,14 +159,6 @@ maintainer-clean: distclean
 	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps \
 .PHONY: maintainer-clean
 
-local-dist: all
-	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
-.PHONY: local-dist
-
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
 .PHONY: dist
-
-doc-dist: all
-	ln $(FORMATTED) ../../`cat ../../.fname`/doc/interpreter
-.PHONY: doc-dist

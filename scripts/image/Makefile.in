@@ -77,10 +77,6 @@ maintainer-clean: distclean
 	rm -f tags TAGS
 .PHONY: maintainer-clean
 
-local-dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/image
-.PHONY: local-dist
-
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/image
 .PHONY: dist

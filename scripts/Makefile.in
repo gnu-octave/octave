@@ -67,11 +67,6 @@ distclean::
 maintainer-clean::
 	rm -f tags TAGS Makefile config.log config.status
 
-local-dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
-.PHONY: local-dist
-
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done

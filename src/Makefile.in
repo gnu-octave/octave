@@ -332,12 +332,6 @@ maintainer-clean: distclean
 	-rmdir pic
 .PHONY: maintainer-clean
 
-local-dist: parse.cc lex.cc oct-gperf.h
-	ln $(DISTFILES) ../`cat ../.fname`/src
-	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.df
-.PHONY: local-dist
-
 dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c

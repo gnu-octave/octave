@@ -1,3 +1,11 @@
+Thu Dec 12 02:27:08 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in, octMakefile.in: Delete all doc-dist, local-dist,
+	and split-dist targets.  Likewise for all other Makefiles in the
+	subdirectories.
+
+	* README.Windows: Renamed from README.WINDOWS.
+
 Tue Dec 10 01:33:52 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0 released.

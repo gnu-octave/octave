@@ -218,10 +218,6 @@ maintainer-clean: distclean
 	-rmdir pic
 .PHONY: maintainer-clean
 
-local-dist:
-	ln $(DISTFILES) ../`cat ../.fname`/liboctave
-.PHONY: local-dist
-
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 .PHONY: dist

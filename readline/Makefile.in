@@ -219,11 +219,6 @@ maintainer-clean realclean distclean::
 	rm -f Makefile config.log config.status stamp-picdir
 	-rmdir pic
 
-local-dist:
-	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/readline/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	ln $(DISTFILES) ../`cat ../.fname`/readline
-.PHONY: local-dist
-
 dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/readline/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	ln $(DISTFILES) ../`cat ../.fname`/readline

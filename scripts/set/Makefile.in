@@ -64,10 +64,6 @@ maintainer-clean: distclean
 	rm -f tags TAGS
 .PHONY: maintainer-clean
 
-local-dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/set
-.PHONY: local-dist
-
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/set
 .PHONY: dist

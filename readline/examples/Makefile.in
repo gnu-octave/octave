@@ -12,10 +12,6 @@ fileman: fileman.o
 
 fileman.o: fileman.c
   
-local-dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/readline/examples
-.PHONY: local-dist
-
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/readline/examples
 .PHONY: dist

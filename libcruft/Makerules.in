@@ -97,10 +97,6 @@ maintainer-clean::
 	-rmdir pic
 .PHONY: maintainer-clean
 
-local-dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)
-.PHONY: local-dist
-
 dist:
 	ln $(EXTERNAL_DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)
 .PHONY: dist

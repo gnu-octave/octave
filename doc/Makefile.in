@@ -56,8 +56,8 @@ TAGS:: $(SOURCES)
 distclean::
 	rm -f Makefile
 
-maintainer-clean:: distclean
-	rm -f tags TAGS
+maintainer-clean::
+	rm -f tags TAGS Makefile
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/doc

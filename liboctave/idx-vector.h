@@ -64,6 +64,8 @@ private:
 
     idx_vector_rep (const Range& r);
 
+    idx_vector_rep (double d);
+
     idx_vector_rep (char c);
 
     idx_vector_rep (const idx_vector_rep& a);
@@ -152,6 +154,12 @@ public:
   idx_vector (const Range& r)
     {
       rep = new idx_vector_rep (r);
+      rep->count = 1;
+    }
+
+  idx_vector (double d)
+    {
+      rep = new idx_vector_rep (d);
       rep->count = 1;
     }
 

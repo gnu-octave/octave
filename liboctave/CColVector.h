@@ -51,8 +51,8 @@ public:
       return *this;
     }
 
-  int operator == (const ComplexColumnVector& a) const;
-  int operator != (const ComplexColumnVector& a) const;
+  bool operator == (const ComplexColumnVector& a) const;
+  bool operator != (const ComplexColumnVector& a) const;
 
   // destructive insert/delete/reorder operations
 

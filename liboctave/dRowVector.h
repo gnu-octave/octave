@@ -49,8 +49,8 @@ public:
       return *this;
     }
 
-  int operator == (const RowVector& a) const;
-  int operator != (const RowVector& a) const;
+  bool operator == (const RowVector& a) const;
+  bool operator != (const RowVector& a) const;
 
   // destructive insert/delete/reorder operations
 

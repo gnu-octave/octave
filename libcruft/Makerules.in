@@ -68,8 +68,8 @@ distclean:: clean
 	-rmdir pic
 .PHONY: distclean
 	
-maintainer-clean:: distclean
-	rm -f tags TAGS stamp-picdir
+maintainer-clean::
+	rm -f tags TAGS stamp-picdir Makefile
 	-rmdir pic
 .PHONY: maintainer-clean
 

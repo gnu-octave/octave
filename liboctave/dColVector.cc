@@ -50,7 +50,7 @@ extern "C"
 
 // Column Vector class.
 
-int
+bool
 ColumnVector::operator == (const ColumnVector& a) const
 {
   int len = length ();
@@ -59,7 +59,7 @@ ColumnVector::operator == (const ColumnVector& a) const
   return equal (data (), a.data (), len);
 }
 
-int
+bool
 ColumnVector::operator != (const ColumnVector& a) const
 {
   return !(*this == a);
@@ -169,10 +169,12 @@ ColumnVector&
 ColumnVector::operator += (const ColumnVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector += operation attempted");
+      gripe_nonconformant ("operator +=", len, a_len);
       return *this;
     }
 
@@ -189,10 +191,12 @@ ColumnVector&
 ColumnVector::operator -= (const ColumnVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector -= operation attempted");
+      gripe_nonconformant ("operator -=", len, a_len);
       return *this;
     }
 
@@ -215,9 +219,10 @@ operator * (const Matrix& m, const ColumnVector& a)
   int nr = m.rows ();
   int nc = m.cols ();
 
-  if (nc != a.length ())
-    (*current_liboctave_error_handler)
-      ("nonconformant matrix multiplication attempted");
+  int a_len = a.length ();
+
+  if (nc != a_len)
+    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
       if (nr == 0 || nc == 0)
@@ -254,8 +259,7 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
   int a_len = a.length ();
 
   if (nc != a_len)
-    (*current_liboctave_error_handler)
-      ("nonconformant matrix multiplication attempted");
+    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
       if (nr == 0 || nc == 0)

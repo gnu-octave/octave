@@ -27,13 +27,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // XXX FIXME XXX -- these need to be done with templates...
 
-static inline int
+static inline bool
 equal (const char *x, const char *y, int len)
 {
   for (int i = 0; i < len; i++)
     if (x[i] != y[i])
-      return 0;
-  return 1;
+      return false;
+
+  return true;
 }
 
 static inline double *

@@ -53,7 +53,7 @@ extern "C"
 
 // Row Vector class.
 
-int
+bool
 RowVector::operator == (const RowVector& a) const
 {
   int len = length ();
@@ -62,7 +62,7 @@ RowVector::operator == (const RowVector& a) const
   return equal (data (), a.data (), len);
 }
 
-int
+bool
 RowVector::operator != (const RowVector& a) const
 {
   return !(*this == a);
@@ -170,10 +170,12 @@ RowVector&
 RowVector::operator += (const RowVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector += operation attempted");
+      gripe_nonconformant ("operator +=", len, a_len);
       return *this;
     }
 
@@ -190,10 +192,12 @@ RowVector&
 RowVector::operator -= (const RowVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector -= operation attempted");
+      gripe_nonconformant ("operator -=", len, a_len);
       return *this;
     }
 
@@ -215,9 +219,11 @@ operator * (const RowVector& v, const Matrix& a)
 
   int len = v.length ();
 
-  if (a.rows () != len)
-    (*current_liboctave_error_handler)
-      ("nonconformant vector multiplication attempted");
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (a_nr != len)
+    gripe_nonconformant ("operator *", 1, len, a_nr, a_nc);
   else
     {
       int a_nr = a.rows ();
@@ -366,9 +372,10 @@ operator * (const RowVector& v, const ColumnVector& a)
 
   int len = v.length ();
 
-  if (len != a.length ())
-    (*current_liboctave_error_handler)
-      ("nonconformant vector multiplication attempted");
+  int a_len = a.length ();
+
+  if (len != a_len)
+    gripe_nonconformant ("operator *", len, a_len);
   else if (len != 0)
     retval = F77_FCN (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
 

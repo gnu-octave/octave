@@ -50,8 +50,8 @@ public:
       return *this;
     }
 
-  int operator == (const ComplexRowVector& a) const;
-  int operator != (const ComplexRowVector& a) const;
+  bool operator == (const ComplexRowVector& a) const;
+  bool operator != (const ComplexRowVector& a) const;
 
   // destructive insert/delete/reorder operations
 

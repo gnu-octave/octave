@@ -62,8 +62,8 @@ public:
       return *this;
     }
 
-  int operator == (const ComplexDiagMatrix& a) const;
-  int operator != (const ComplexDiagMatrix& a) const;
+  bool operator == (const ComplexDiagMatrix& a) const;
+  bool operator != (const ComplexDiagMatrix& a) const;
 
   ComplexDiagMatrix& fill (double val);
   ComplexDiagMatrix& fill (const Complex& val);

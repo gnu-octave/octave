@@ -50,8 +50,8 @@ public:
       return *this;
     }
 
-  int operator == (const ColumnVector& a) const;
-  int operator != (const ColumnVector& a) const;
+  bool operator == (const ColumnVector& a) const;
+  bool operator != (const ColumnVector& a) const;
 
   // destructive insert/delete/reorder operations
 

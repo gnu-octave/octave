@@ -54,10 +54,10 @@ TI_SRC := Array-C.cc Array-ch.cc Array-i.cc Array-d.cc Array-s.cc \
 MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc \
 	CmplxHESS.cc CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc \
-	CmplxSVD.cc EIG.cc chMatrix.cc dColVector.cc dDiagMatrix.cc \
-	dMatrix.cc dRowVector.cc dbleAEPBAL.cc dbleCHOL.cc \
-	dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc dbleQR.cc \
-	dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
+	CmplxSVD.cc EIG.cc MArray-misc.cc chMatrix.cc dColVector.cc \
+	dDiagMatrix.cc dMatrix.cc dRowVector.cc dbleAEPBAL.cc \
+	dbleCHOL.cc dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc \
+	dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
 SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc NPSOL.cc QPSOL.cc \

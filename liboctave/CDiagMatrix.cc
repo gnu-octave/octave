@@ -45,7 +45,7 @@ ComplexDiagMatrix::ComplexDiagMatrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
-int
+bool
 ComplexDiagMatrix::operator == (const ComplexDiagMatrix& a) const
 {
   if (rows () != a.rows () || cols () != a.cols ())
@@ -54,7 +54,7 @@ ComplexDiagMatrix::operator == (const ComplexDiagMatrix& a) const
   return equal (data (), a.data (), length ());
 }
 
-int
+bool
 ComplexDiagMatrix::operator != (const ComplexDiagMatrix& a) const
 {
   return !(*this == a);
@@ -399,10 +399,13 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
+      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -420,10 +423,13 @@ ComplexDiagMatrix::operator -= (const DiagMatrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
+      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -441,10 +447,13 @@ ComplexDiagMatrix::operator += (const ComplexDiagMatrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
+      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -462,10 +471,13 @@ ComplexDiagMatrix::operator -= (const ComplexDiagMatrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
+      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -531,12 +543,13 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 {
   int nr_a = a.rows ();
   int nc_a = a.cols ();
+
   int nr_b = b.rows ();
   int nc_b = b.cols ();
+
   if (nc_a != nr_b)
     {
-      (*current_liboctave_error_handler)
-        ("nonconformant matrix multiplication attempted");
+      gripe_nonconformant ("operator *", nr_a, nc_a, nr_b, nc_b);
       return ComplexDiagMatrix ();
     }
 
@@ -570,10 +583,13 @@ operator + (const ComplexDiagMatrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
+      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
       return ComplexDiagMatrix ();
     }
 
@@ -588,10 +604,13 @@ operator - (const ComplexDiagMatrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
+      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
       return ComplexDiagMatrix ();
     }
 
@@ -607,12 +626,13 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 {
   int nr_a = a.rows ();
   int nc_a = a.cols ();
+
   int nr_b = b.rows ();
   int nc_b = b.cols ();
+
   if (nc_a != nr_b)
     {
-      (*current_liboctave_error_handler)
-        ("nonconformant matrix multiplication attempted");
+      gripe_nonconformant ("operator *", nr_a, nc_a, nr_b, nc_b);
       return ComplexDiagMatrix ();
     }
 
@@ -646,10 +666,13 @@ operator + (const DiagMatrix& m, const ComplexDiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
+      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
       return ComplexDiagMatrix ();
     }
 
@@ -664,10 +687,13 @@ operator - (const DiagMatrix& m, const ComplexDiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
+      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
       return ComplexDiagMatrix ();
     }
 
@@ -683,12 +709,13 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 {
   int nr_a = a.rows ();
   int nc_a = a.cols ();
+
   int nr_b = b.rows ();
   int nc_b = b.cols ();
+
   if (nc_a != nr_b)
     {
-      (*current_liboctave_error_handler)
-        ("nonconformant matrix multiplication attempted");
+      gripe_nonconformant ("operator *", nr_a, nc_a, nr_b, nc_b);
       return ComplexDiagMatrix ();
     }
 
@@ -722,10 +749,13 @@ product (const ComplexDiagMatrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix product attempted");
+      gripe_nonconformant ("product", nr, nc, a_nr, a_nc);
       return ComplexDiagMatrix ();
     }
 
@@ -741,10 +771,13 @@ product (const DiagMatrix& m, const ComplexDiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix product attempted");
+      gripe_nonconformant ("product", nr, nc, a_nr, a_nc);
       return ComplexDiagMatrix ();
     }
 

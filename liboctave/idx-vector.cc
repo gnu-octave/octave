@@ -149,6 +149,27 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
   init_state ();
 }
 
+IDX_VEC_REP::idx_vector_rep (double d)
+{
+  data = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
+
+  len = 1;
+
+  orig_nr = 1;
+  orig_nc = 1;
+
+  data = new int [len];
+
+  data[0] = tree_to_mat_idx (d);
+
+  init_state ();
+}
+
 IDX_VEC_REP::idx_vector_rep (const Range& r)
 {
   data = 0;

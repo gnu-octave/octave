@@ -57,7 +57,7 @@ ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
     elem (i) = a.elem (i);
 }
 
-int
+bool
 ComplexColumnVector::operator == (const ComplexColumnVector& a) const
 {
   int len = length ();
@@ -66,7 +66,7 @@ ComplexColumnVector::operator == (const ComplexColumnVector& a) const
   return equal (data (), a.data (), len);
 }
 
-int
+bool
 ComplexColumnVector::operator != (const ComplexColumnVector& a) const
 {
   return !(*this == a);
@@ -230,10 +230,12 @@ ComplexColumnVector&
 ComplexColumnVector::operator += (const ColumnVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector += operation attempted");
+      gripe_nonconformant ("operator +=", len, a_len);
       return *this;
     }
 
@@ -250,10 +252,12 @@ ComplexColumnVector&
 ComplexColumnVector::operator -= (const ColumnVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector -= operation attempted");
+      gripe_nonconformant ("operator -=", len, a_len);
       return *this;
     }
 
@@ -271,10 +275,11 @@ ComplexColumnVector::operator += (const ComplexColumnVector& a)
 {
   int len = length ();
 
-  if (len != a.length ())
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector += operation attempted");
+      gripe_nonconformant ("operator +=", len, a_len);
       return *this;
     }
 
@@ -291,10 +296,12 @@ ComplexColumnVector&
 ComplexColumnVector::operator -= (const ComplexColumnVector& a)
 {
   int len = length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector -= operation attempted");
+      gripe_nonconformant ("operator -=", len, a_len);
       return *this;
     }
 
@@ -440,9 +447,10 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
   int nr = m.rows ();
   int nc = m.cols ();
 
-  if (nc != a.length ())
-    (*current_liboctave_error_handler)
-      ("nonconformant matrix multiplication attempted");
+  int a_len = a.length ();
+
+  if (nc != a_len)
+    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
       if (nc == 0 || nr == 0)
@@ -472,10 +480,12 @@ ComplexColumnVector
 operator + (const ComplexColumnVector& v, const ColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector addition attempted");
+      gripe_nonconformant ("operator +", len, a_len);
       return ComplexColumnVector ();
     }
 
@@ -489,10 +499,12 @@ ComplexColumnVector
 operator - (const ComplexColumnVector& v, const ColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector subtraction attempted");
+      gripe_nonconformant ("operator -", len, a_len);
       return ComplexColumnVector ();
     }
 
@@ -506,10 +518,12 @@ ComplexColumnVector
 operator + (const ColumnVector& v, const ComplexColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector subtraction attempted");
+      gripe_nonconformant ("operator +", len, a_len);
       return ComplexColumnVector ();
     }
 
@@ -523,10 +537,12 @@ ComplexColumnVector
 operator - (const ColumnVector& v, const ComplexColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector subtraction attempted");
+      gripe_nonconformant ("operator -", len, a_len);
       return ComplexColumnVector ();
     }
 
@@ -540,10 +556,12 @@ ComplexColumnVector
 product (const ComplexColumnVector& v, const ColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector product attempted");
+      gripe_nonconformant ("product", len, a_len);
       return ComplexColumnVector ();
     }
 
@@ -557,10 +575,12 @@ ComplexColumnVector
 quotient (const ComplexColumnVector& v, const ColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector quotient attempted");
+      gripe_nonconformant ("quotient", len, a_len);
       return ComplexColumnVector ();
     }
 
@@ -574,10 +594,12 @@ ComplexColumnVector
 product (const ColumnVector& v, const ComplexColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector product attempted");
+      gripe_nonconformant ("product", len, a_len);
       return ColumnVector ();
     }
 
@@ -591,10 +613,12 @@ ComplexColumnVector
 quotient (const ColumnVector& v, const ComplexColumnVector& a)
 {
   int len = v.length ();
-  if (len != a.length ())
+
+  int a_len = a.length ();
+
+  if (len != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector quotient attempted");
+      gripe_nonconformant ("quotient", len, a_len);
       return ColumnVector ();
     }
 
@@ -620,11 +644,12 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
+
   int a_len = a.length ();
+
   if (nc != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
+      gripe_nonconformant ("operator *", nr, nc, a_len, 1);
       return ColumnVector ();
     }
 
@@ -647,11 +672,12 @@ operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
+
   int a_len = a.length ();
+
   if (nc != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix muliplication attempted");
+      gripe_nonconformant ("operator *", nr, nc, a_len, 1);
       return ComplexColumnVector ();
     }
 
@@ -674,11 +700,12 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
+
   int a_len = a.length ();
+
   if (nc != a_len)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix muliplication attempted");
+      gripe_nonconformant ("operator *", nr, nc, a_len, 1);
       return ComplexColumnVector ();
     }
 

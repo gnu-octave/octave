@@ -95,7 +95,7 @@ recover_from_exception (void)
 {
   unwind_protect::run_all ();
   can_interrupt = true;
-  SET_OCTAVE_INTERRUPT_IMMEDIATELY (0);
+  octave_interrupt_immediately = 0;
   octave_interrupt_state = 0;
   octave_allocation_error = 0;
   octave_restore_signal_mask ();
@@ -186,7 +186,7 @@ main_loop (void)
 		break;
 	    }
 	}
-      OCTAVE_CATCH_INTERRUPTS
+      catch (octave_interrupt_exception)
 	{
 	  recover_from_exception ();
 	  std::cout << "\n";

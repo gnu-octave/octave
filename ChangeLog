@@ -1,3 +1,7 @@
+2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (USE_EXCEPTIONS_FOR_INTERRUPTS): No need to define.
+
 2002-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for sigsetjmp and siglongjmp.

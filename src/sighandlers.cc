@@ -217,14 +217,11 @@ sigfpe_handler (int /* sig */)
 
   std::cerr << "error: floating point exception -- trying to return to prompt\n";
 
-  if (can_interrupt)
-    {
-      // XXX FIXME XXX -- this may simply set the interrupt state.  We
-      // can only hope for the best after returning?  We probably need
-      // to throw an exception.
+  // XXX FIXME XXX -- will setting octave_interrupt_state really help
+  // here?
 
-      OCTAVE_OCTAVE_JUMP_TO_TOP_LEVEL;
-    }
+  if (can_interrupt)
+    octave_interrupt_state = 1;
 
   SIGHANDLER_RETURN (0);
 }
@@ -275,7 +272,7 @@ sigint_handler (int)
       if (octave_interrupt_immediately)
 	octave_jump_to_enclosing_context ();
 #else
-      OCTAVE_JUMP_TO_TOP_LEVEL;
+      octave_interrupt_state = 1;
       panic_impossible ();
 #endif
     }
@@ -296,8 +293,11 @@ sigpipe_handler (int /* sig */)
 
   // Don't loop forever on account of this.
 
+  // XXX FIXME XXX -- will setting octave_interrupt_state really help
+  // here?
+
   if (pipe_handler_error_count  > 100)
-    OCTAVE_JUMP_TO_TOP_LEVEL;
+    octave_interrupt_state = 1;
 
   SIGHANDLER_RETURN (0);
 }

@@ -87,8 +87,6 @@ octave_restore_signal_mask (void)
 #endif
 }
 
-#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
-
 sig_atomic_t octave_interrupt_immediately = 0;
 
 sig_atomic_t octave_interrupt_state = 0;
@@ -106,8 +104,6 @@ octave_throw_bad_alloc (void)
 {
   throw std::bad_alloc ();
 }
-
-#endif
 
 /*
 ;;; Local Variables: ***

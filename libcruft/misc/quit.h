@@ -58,8 +58,6 @@ extern void octave_save_signal_mask (void);
 
 extern void octave_restore_signal_mask (void);
 
-#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
-
 #ifdef __cplusplus
 class
 octave_interrupt_exception
@@ -88,106 +86,51 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
     } \
   while (0)
 
-#define OCTAVE_JUMP_TO_TOP_LEVEL \
-  do { octave_interrupt_state = 1; } while (0)
-
-#define OCTAVE_THROW_TO_TOP_LEVEL octave_throw_interrupt_exception ()
-
-#define OCTAVE_THROW_BAD_ALLOC octave_throw_bad_alloc ()
-
-#define OCTAVE_TRY_WITH_INTERRUPTS try
-
-#define OCTAVE_CATCH_INTERRUPTS catch (octave_interrupt_exception)
-
-#define SAVE_OCTAVE_INTERRUPT_IMMEDIATELY(var) \
-  sig_atomic_t var = octave_interrupt_immediately
-
-#define INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY \
-  do { octave_interrupt_immediately++; } while (0)
-
-#define DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY \
-  do { octave_interrupt_immediately--; } while (0)
-
-#define SET_OCTAVE_INTERRUPT_IMMEDIATELY(x) \
-  do { octave_interrupt_immediately = x; } while (0)
-
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
   do \
     { \
-      jmp_buf saved_context; \
+      octave_jmp_buf saved_context; \
  \
       octave_save_current_context ((char *) saved_context); \
  \
       if (octave_set_current_context) \
 	{ \
 	  octave_restore_current_context ((char *) saved_context); \
-	  OCTAVE_THROW_TO_TOP_LEVEL; \
+	  octave_throw_interrupt_exception (); \
 	} \
       else \
 	{ \
-	  INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY
+	  octave_interrupt_immediately++
 
 #define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
-	  DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY; \
+	  octave_interrupt_immediately--; \
           octave_restore_current_context ((char *) saved_context); \
         } \
     } \
   while (0)
 
 #define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
-  SAVE_OCTAVE_INTERRUPT_IMMEDIATELY (saved_octave_interrupt_immediately); \
+  sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
  \
-  OCTAVE_TRY_WITH_INTERRUPTS \
+  try \
     { \
-      SET_OCTAVE_INTERRUPT_IMMEDIATELY (0)
+      octave_interrupt_immediately = 0;
 
 #define END_INTERRUPT_WITH_EXCEPTIONS \
     } \
-  OCTAVE_CATCH_INTERRUPTS \
+  catch (octave_interrupt_exception) \
     { \
-      SET_OCTAVE_INTERRUPT_IMMEDIATELY (saved_octave_interrupt_immediately); \
+      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_jump_to_enclosing_context (); \
     } \
   catch (std::bad_alloc) \
     { \
-      SET_OCTAVE_INTERRUPT_IMMEDIATELY (saved_octave_interrupt_immediately); \
+      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_allocation_error = 1; \
       octave_jump_to_enclosing_context (); \
     } \
  \
-  SET_OCTAVE_INTERRUPT_IMMEDIATELY (saved_octave_interrupt_immediately)
-
-#else
-
-#define OCTAVE_QUIT do { } while (0)
-
-#define OCTAVE_JUMP_TO_TOP_LEVEL octave_jump_to_enclosing_context ()
-
-#define OCTAVE_THROW_TO_TOP_LEVEL OCTAVE_JUMP_TO_TOP_LEVEL
-
-#define OCTAVE_THROW_BAD_ALLOC OCTAVE_JUMP_TO_TOP_LEVEL
-
-#define OCTAVE_TRY_WITH_INTERRUPTS
-
-#define OCTAVE_CATCH_INTERRUPTS if (0)
-
-#define SAVE_OCTAVE_INTERRUPT_IMMEDIATELY(var) do { } while (0)
-
-#define SET_OCTAVE_INTERRUPT_IMMEDIATELY(x) do { } while (0)
-
-#define INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY do { } while (0)
-
-#define DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY do { } while (0)
-
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE do { } while (0)
-
-#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE do { } while (0)
-
-#define BEGIN_INTERRUPT_WITH_EXCEPTIONS do { } while (0)
-
-#define END_INTERRUPT_WITH_EXCEPTIONS do { } while (0)
-
-#endif
+  octave_interrupt_immediately = saved_octave_interrupt_immediately
 
 #ifdef __cplusplus
 }

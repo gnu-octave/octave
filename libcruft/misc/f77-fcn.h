@@ -51,7 +51,7 @@ extern "C" {
 #define F77_XFCN(f, F, args) \
   do \
     { \
-      jmp_buf saved_context; \
+      octave_jmp_buf saved_context; \
       f77_exception_encountered = 0; \
       octave_save_current_context ((char *) saved_context); \
       if (octave_set_current_context) \
@@ -60,15 +60,15 @@ extern "C" {
 	  if (f77_exception_encountered) \
 	    F77_XFCN_ERROR (f, F); \
           else if (octave_allocation_error) \
-            OCTAVE_THROW_BAD_ALLOC; \
+            octave_throw_bad_alloc (); \
           else \
-            OCTAVE_THROW_TO_TOP_LEVEL; \
+            octave_throw_interrupt_exception (); \
 	} \
       else \
         { \
-	  INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY; \
+	  octave_interrupt_immediately++; \
 	  F77_FUNC (f, F) args; \
-	  DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY; \
+	  octave_interrupt_immediately--; \
           octave_restore_current_context ((char *) saved_context); \
         } \
     } \

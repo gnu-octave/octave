@@ -1,3 +1,16 @@
+2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/quit.h, misc/quit.cc [! USE_EXCEPTIONS_FOR_INTERRUPTS]):
+	Always use exceptions for handling interrupts.
+	(BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE): 
+
+	* misc/quit.h (OCTAVE_TRY_WITH_INTERRUPTS, OCTAVE_THROW_BAD_ALLOC,
+	OCTAVE_CATCH_INTERRUPTS, SAVE_OCTAVE_INTERRUPT_IMMEDIATELY,
+	INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY, OCTAVE_THROW_TO_TOP_LEVEL,
+	DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY, OCTAVE_JUMP_TO_TOP_LEVEL,
+	SET_OCTAVE_INTERRUPT_IMMEDIATELY): Replace all uses with
+	definitions, delete macros.
+
 2002-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/quit.cc (octave_allocation_error): New variable.

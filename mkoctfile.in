@@ -12,6 +12,8 @@ set -e
 
 : ${CPPFLAGS=%OCTAVE_CONF_CPPFLAGS%}
 : ${INCFLAGS=%OCTAVE_CONF_MKOCTFILE_INCFLAGS%}
+: ${F2C=%OCTAVE_CONF_F2C%}
+: ${F2CFLAGS=%OCTAVE_CONF_F2CFLAGS%}
 : ${F77=%OCTAVE_CONF_F77%}
 : ${FFLAGS=%OCTAVE_CONF_FFLAGS%}
 : ${FPICFLAG=%OCTAVE_CONF_FPICFLAG%}
@@ -56,7 +58,7 @@ depend=false
 compile=true
 
 if [ $# -eq 0 ]; then
-  echo $usage_msg
+  echo $usage_msg 1>&2
   exit 1
 fi
 
@@ -83,7 +85,7 @@ while [ $# -gt 0 ]; do
       dbg=echo
     ;;
     -h | -\? | --help)
-      echo $usage_msg
+      echo $usage_msg 1>&2
       cat << EOF
 
 Options:
@@ -108,28 +110,29 @@ Options:
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-			    CPPFLAGS    CXX
-			    INCFLAGS	CXXFLAGS
-			    F77		CXXPICFLAG
-			    FFLAGS	XTRA_CFLAGS
-			    FPICFLAG	XTRA_CXXFLAGS
-			    CC		SHLEXT
-			    CFLAGS	SH_LD
-			    CPICFLAG	SH_LDFLAGS
-
+                            CPPFLAGS    CPICFLAG
+                            INCFLAGS    CXX
+                            F2C         CXXFLAGS
+                            F2CFLAGS    CXXPICFLAG
+                            F77         XTRA_CFLAGS
+                            FFLAGS      XTRA_CXXFLAGS
+                            FPICFLAG    SHLEXT
+                            CC          SH_LD
+                            CFLAGS      SH_LDFLAGS
+                            
   -s, --strip             Strip output file.
 
   -v, --verbose           Echo commands as they are executed.
 
   FILE                    Compile or link FILE.  Recognized file types are:
 
-			    .c    C source
-			    .cc   C++ source
-			    .C    C++ source
-			    .cpp  C++ source
-			    .f    Fortran source
-			    .F    Fortran source
-			    .o    object file
+                            .c    C source
+                            .cc   C++ source
+                            .C    C++ source
+                            .cpp  C++ source
+                            .f    Fortran source
+                            .F    Fortran source
+                            .o    object file
 
 EOF
       exit 0
@@ -152,7 +155,7 @@ EOF
       if [ $# -gt 0 ]; then
         octfile=`echo $1 | sed 's,\.[^.]*$,,'`.oct
       else
-        echo "mkoctfile: output file name missing"
+        echo "mkoctfile: output file name missing" 1>&2
       fi
     ;;
     -p | --print)
@@ -161,7 +164,7 @@ EOF
         eval echo \${$1}
         exit 0
       else
-        echo "mkprdmod: --print requires argument"
+        echo "mkoctfile: --print requires argument" 1>&2
         exit 1
       fi
     ;;
@@ -172,7 +175,7 @@ EOF
       link=false
     ;;
     *)
-      echo "mkoctfile: unrecognized argument $1"
+      echo "mkoctfile: unrecognized argument $1" 1>&2
       exit 1
     ;;
   esac
@@ -191,9 +194,9 @@ if $depend; then
     for f in $cfiles; do
       b=`echo $f | sed 's,\.c$,,'`
       d=$b.d
-
-      $dbg rm -f $d
-      eval rm -f $d
+      cmd="rm -f $d"
+      $dbg $cmd
+      eval $cmd
       cmd="$CC $DEPEND_FLAGS $CPPFLAGS $ALL_CFLAGS $f | sed $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
       $dbg $cmd
       eval $cmd
@@ -203,19 +206,20 @@ if $depend; then
   if [ -n "$ccfiles" ]; then
     for f in $ccfiles; do
       case $f in
-	*.cc)
-	  b=`echo $f | sed 's,\.cc$,,'`
-	;;
-	*.C)
-	  b=`echo $f | sed 's,\.C$,,'`
-	;;
-	*.cpp)
-	  b=`echo $f | sed 's,\.cpp$,,'`
-	;;
+        *.cc)
+          b=`echo $f | sed 's,\.cc$,,'`
+        ;;
+        *.C)
+          b=`echo $f | sed 's,\.C$,,'`
+        ;;
+        *.cpp)
+          b=`echo $f | sed 's,\.cpp$,,'`
+        ;;
       esac
       d=$b.d
-      $dbg rm -f $d
-      eval rm -f $d
+      cmd="rm -f $d"
+      $dbg $cmd
+      eval $cmd
       cmd="$CXX $DEPEND_FLAGS $CPPFLAGS $ALL_CXXFLAGS $f | sed $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
       $dbg $cmd
       eval $cmd
@@ -238,40 +242,61 @@ if [ -n "$f77files" ]; then
         b=`echo $f | sed 's,\.F$,,'`
       ;;
     esac
-    o=$b.o
-    objfiles="$objfiles $o"
-    $dbg $F77 -c $FPICFLAG $ALL_FFLAGS $f -o $o
-    eval $F77 -c $FPICFLAG $ALL_FFLAGS $f -o $o
+    if [ -n "$F77" ]; then
+      o=$b.o
+      objfiles="$objfiles $o"
+      cmd="$F77 -c $FPICFLAG $ALL_FFLAGS $f -o $o"
+      $dbg $cmd
+      eval $cmd
+    elif [ -n "$F2C" ]; then
+      c=$b.c
+      cfiles="$cfiles $c"
+      cmd="$F2C $F2CFLAGS < $f > $c"
+      $dbg $cmd
+      eval $cmd
+    else
+      echo "mkoctfile: no way to compile Fortran file $f" 1>&2
+    fi
   done
 fi
 
 if [ -n "$cfiles" ]; then
   for f in $cfiles; do
-    b=`echo $f | sed 's,\.c$,,'`
-    o=$b.o
-    objfiles="$objfiles $o"
-    $dbg $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $incflags $defs $f -o $o
-    eval $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $incflags $defs $f -o $o
+    if [ -n  "$CC" ]; then
+      b=`echo $f | sed 's,\.c$,,'`
+      o=$b.o
+      objfiles="$objfiles $o"
+      cmd="$CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $incflags $defs $f -o $o"
+      $dbg $cmd
+      eval $cmd
+    else
+      echo "mkoctfile: no way to compile C++ file $f" 1>&2
+    fi
   done
 fi
 
 if [ -n "$ccfiles" ]; then
   for f in $ccfiles; do
-    case $f in
-      *.cc)
-        b=`echo $f | sed 's,\.cc$,,'`
-      ;;
-      *.C)
-        b=`echo $f | sed 's,\.C$,,'`
-      ;;
-      *.cpp)
-        b=`echo $f | sed 's,\.cpp$,,'`
-      ;;
-    esac
-    o=$b.o
-    objfiles="$objfiles $o"
-    $dbg $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $incflags $defs $f -o $o
-    eval $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $incflags $defs $f -o $o
+    if [ -n "$CXX" ]; then
+      case $f in
+	*.cc)
+	  b=`echo $f | sed 's,\.cc$,,'`
+	;;
+	*.C)
+	  b=`echo $f | sed 's,\.C$,,'`
+	;;
+	*.cpp)
+	  b=`echo $f | sed 's,\.cpp$,,'`
+	;;
+      esac
+      o=$b.o
+      objfiles="$objfiles $o"
+      cmd="$CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $incflags $defs $f -o $o"
+      $dbg $cmd
+      eval $cmd
+    else
+      echo "mkoctfile: no way to compile C++ file $f" 1>&2
+    fi
   done
 fi
 
@@ -282,24 +307,28 @@ fi
 ## rename running programs but not remove them.
 
 ## if [ -f "$octfile" ]; then
-##   $dbg "mv $octfile $octfile.bak"
-##   mv $octfile $octfile.bak
-##   $dbg "rm -f $octfile.bak"
-##   rm -f $octfile.bak
+##   cmd="mv $octfile $octfile.bak"
+##   $dbg $cmd
+##   eval $cmd
+##   cmd="rm -f $octfile.bak"
+##   $dbg $cmd
+##   eval $cmd
 ## fi
 
 # Link all the object files.
 
 if $link; then
-  $dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
-  eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
+  cmd="$SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags"
+  $dbg $cmd
+  eval $cmd
 
 # Maybe strip it.
 
-if $strip; then
-  $dbg strip $octfile
-  eval strip $octfile
-fi
+  if $strip; then
+    cmd="strip $octfile"
+    $dbg $cmd
+    eval $cmd
+  fi
 fi
 
 exit 0

@@ -1,3 +1,12 @@
+2001-08-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Substitute F2C and F2CFLAGS. Make it possible to
+	use f2c and a C compile to compiling Fortran source files.  Print
+	warnings and error message on stderr, not stdout.  Issue warnings
+	if it is not possible to comiple Fortran, C, or C++ files.
+
+	* configure.in (%.c : %.f): Don't use cat in F2C rule.
+
 2001-07-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (do-subst-config-vals): Substitute DEPEND_FLAGS and

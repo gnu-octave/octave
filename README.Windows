@@ -1,3 +1,9 @@
+*** PLEASE NOTE: This information is mostly out of date.  It would be
+*** useful for someone who uses Octave on Windows to take over
+*** mainenance of this and other files related to running Octave on
+*** Windows systems.
+
+
 Octave has been ported to Windows NT and Windows 95 using the gnu-win32
 tools from Cygnus Support.  If you would like to volunteer to work on
 improving this port, please contact bug-octave@bevo.che.wisc.edu.

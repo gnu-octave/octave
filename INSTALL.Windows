@@ -1,3 +1,9 @@
+*** PLEASE NOTE: This information is mostly out of date.  It would be
+*** useful for someone who uses Octave on Windows to take over
+*** mainenance of this and other files related to running Octave on
+*** Windows systems.
+
+
 Instructions for installing Octave on Windows NT/95 systems using the
 beta 18 release of the gnu-win32 tools from Cygnus Support.
 

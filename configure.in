@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.462 $)
+AC_REVISION($Revision: 1.463 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1405,13 +1405,23 @@ typedef int sig_atomic_t;
    not delete[] and we need the latter to properly handle arrays
    allocated with new[size].
 
+   Use < T > instead of <T> to avoid problems if T is a template type
+   (say, foo<int>) and the preprocessor fails to insert a space and
+   generates <foo<int>>.
+
 #if defined (HAVE_DYNAMIC_AUTO_ARRAYS)
+
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   T buf[size]
-#else */
+
+#else
+
+*/
+
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::vector<T> buf ## _vector (size); \
+  std::vector< T > buf ## _vector (size); \
   T *buf = &(buf ## _vector[0])
+
 /* #endif */
 
 #if defined (__DECCXX)

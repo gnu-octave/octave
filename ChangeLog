@@ -1,3 +1,8 @@
+2005-03-02  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (OCTAVE_LOCAL_BUFFER): Use < T > instead of <T>.
+	From Clinton Chee <chee@parallel.hpc.unsw.edu.au>.
+
 2005-03-01  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_CONFIG_FILES): Remove libcruft/odessa/Makefile

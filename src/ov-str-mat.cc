@@ -50,9 +50,9 @@ default_numeric_conversion_function (const octave_value& a)
 {
   CAST_CONV_ARG (const octave_char_matrix_str&);
 
-  Matrix m = v.matrix_value (true);
+  NDArray nda = v.array_value (true);
 
-  return error_state ? 0 : new octave_matrix (m);
+  return error_state ? 0 : new octave_matrix (nda);
 }
 
 type_conv_fcn
@@ -131,40 +131,56 @@ octave_char_matrix_str::valid_as_scalar_index (void) const
   return retval;
 }
 
+#define CHAR_MATRIX_CONV(T, INIT, TNAME, FCN) \
+  T retval INIT; \
+ \
+  if (! force_string_conv) \
+    gripe_invalid_conversion ("string", TNAME); \
+  else \
+    { \
+      if (Vwarn_str_to_num) \
+	gripe_implicit_conversion ("string", TNAME); \
+ \
+      retval = octave_char_matrix::FCN (); \
+    } \
+ \
+  return retval
+
 double
 octave_char_matrix_str::double_value (bool force_string_conv) const
 {
-  double retval = 0;
+  CHAR_MATRIX_CONV (double, = 0, "real scalar", double_value);
+}
 
-  if (! force_string_conv)
-    gripe_invalid_conversion ("string", "real scalar");
-  else
-    {
-      if (Vwarn_str_to_num)
-	gripe_implicit_conversion ("string", "real scalar");
-
-      retval = octave_char_matrix::double_value ();
-    }
-
-  return retval;
+Complex
+octave_char_matrix_str::complex_value (bool force_string_conv) const
+{
+  CHAR_MATRIX_CONV (Complex, = 0, "complex scalar", complex_value);
 }
 
 Matrix
 octave_char_matrix_str::matrix_value (bool force_string_conv) const
 {
-  Matrix retval;
+  CHAR_MATRIX_CONV (Matrix, , "real matrix", matrix_value);
+}
 
-  if (! force_string_conv)
-    gripe_invalid_conversion ("string", "real matrix");
-  else
-    {
-      if (Vwarn_str_to_num)
-	gripe_implicit_conversion ("string", "real matrix");
+ComplexMatrix
+octave_char_matrix_str::complex_matrix_value (bool force_string_conv) const
+{
+  CHAR_MATRIX_CONV (ComplexMatrix, , "complex matrix", complex_matrix_value);
+}
 
-      retval = octave_char_matrix::matrix_value ();
-    }
+NDArray
+octave_char_matrix_str::array_value (bool force_string_conv) const
+{
+  CHAR_MATRIX_CONV (NDArray, , "real N-d array", array_value);
+}
 
-  return retval;
+ComplexNDArray
+octave_char_matrix_str::complex_array_value (bool force_string_conv) const
+{
+  CHAR_MATRIX_CONV (ComplexNDArray, , "complex N-d array",
+		    complex_array_value);
 }
 
 string_vector

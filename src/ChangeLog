@@ -1,3 +1,29 @@
+2003-11-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-str-mat.cc (CHAR_MATRIX_CONV): New macro.
+	* ov-str-mat.h (octave_char_matrix_str::double_value,
+	octave_char_matrix_str::matrix_value,
+	octave_char_matrix_str::array_value,
+	octave_char_matrix_str::complex_value,
+	octave_char_matrix_str::complex_matrix_value,
+	(octave_char_matrix_str::complex_array_value): Use it.
+
+	* ov-bool-mat.cc (default_numeric_conversion_function):
+	Convert to NDArray, not Matrix.
+	* ov-str-mat.cc (default_numeric_conversion_function): Likewise.
+
+	* ov-range.h (octave_range::array_value): New function.
+	(octave_range::complex_array_value): Likewise.
+	* ov-ch-mat.h (charNDArray::array_value): New function.
+	(charNDArray::complex_array_value): Likewise.
+	* ov-str-mat.h (octave_char_matrix_str::array_value): Likewise.
+	(octave_char_matrix_str::complex_value): Likewise.
+	(octave_char_matrix_str::complex_matrix_value): Likewise.
+	(octave_char_matrix_str::complex_array_value): Likewise.
+
+	* mappers.cc (acosh, log, log10, sqrt):
+	Use octave_Inf instead of DBL_MAX for range limit.
+
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.52.

@@ -98,10 +98,16 @@ public:
   Matrix matrix_value (bool = false) const
     { return Matrix (matrix.matrix_value ()); }
 
+  NDArray array_value (bool = false) const
+    { return NDArray (matrix); }
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (matrix.matrix_value ()); }
+
+  ComplexNDArray complex_array_value (bool = false) const
+    { return ComplexNDArray (matrix); }
 
   charMatrix char_matrix_value (bool = false) const
     { return matrix.matrix_value (); }

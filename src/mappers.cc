@@ -197,7 +197,7 @@ abs (3 + 4i)\n\
 Compute the inverse cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (acosh, 0, 0, 0, acosh, 0, acosh, 1.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (acosh, 0, 0, 0, acosh, 0, acosh, 1.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acosh (@var{x})\n\
 Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
@@ -543,7 +543,7 @@ Return the natural logarithm of the gamma function.\n\
 @end deftypefn\n\
 @seealso{gamma and gammai}");
 
-  DEFUN_MAPPER (log, 0, 0, 0, log, 0, log, 0.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (log, 0, 0, 0, log, 0, log, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm for each element of @var{x}.  To compute the\n\
@@ -551,7 +551,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 @end deftypefn\n\
 @seealso{log2, log10, logspace, and exp}");
 
-  DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, log10, 0.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, log10, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm for each element of @var{x}.\n\
@@ -608,7 +608,7 @@ Compute the sin of each element of @var{x}.\n\
 Compute the inverse hyperbolic sin of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, sqrt, 0.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, sqrt, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
 Compute the square root of @var{x}.  If @var{x} is negative, a complex\n\

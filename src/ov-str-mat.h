@@ -108,6 +108,14 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
+  NDArray array_value (bool = false) const;
+
+  Complex complex_value (bool = false) const;
+
+  ComplexMatrix complex_matrix_value (bool = false) const;
+
+  ComplexNDArray complex_array_value (bool = false) const;
+
   string_vector all_strings (bool pad = false, bool force = false) const;
 
   std::string string_value (bool force = false) const;

@@ -128,11 +128,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //   c_c_map is a pointer to a function that should be called for
 //     complex arguments that are expected to create complex results.
 //
-//   lo is the lower bound of the range for which real arguments can
-//     become complex.  (e.g., lo == -Inf for sqrt).
+//   lo is the lower bound of the range for which real arguments
+//     return real results (e.g., lo == 0 for sqrt).
 //
-//   hi is the upper bound of the range for which real arguments can
-//     become complex.  (e.g., hi == 0 for sqrt).
+//   hi is the upper bound of the range for which real arguments
+//     return real results (e.g., hi == Inf for sqrt).
 //
 //   ch_map_flag has the following meanings for the ch_map function:
 //

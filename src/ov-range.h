@@ -150,9 +150,15 @@ public:
   Matrix matrix_value (bool = false) const
     { return range.matrix_value (); }
 
+  NDArray array_value (bool = false) const
+    { return range.matrix_value (); }
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
+    { return ComplexMatrix (range.matrix_value ()); }
+
+  ComplexNDArray complex_array_value (bool = false) const
     { return ComplexMatrix (range.matrix_value ()); }
 
   Range range_value (void) const { return range; }

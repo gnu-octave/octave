@@ -56,7 +56,7 @@ default_numeric_conversion_function (const octave_value& a)
 {
   CAST_CONV_ARG (const octave_bool_matrix&);
 
-  return new octave_matrix (Matrix (v.bool_matrix_value ()));
+  return new octave_matrix (NDArray (v.bool_array_value ()));
 }
 
 type_conv_fcn

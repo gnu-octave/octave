@@ -1,5 +1,8 @@
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc (get_mat_data_input_line): Handle lines with CR
+	only as separator.
+
 	* oct-stream.cc (octave_base_stream::do_printf): Handle Inf and
 	NaN in int conversions for compatibility with Matlab.
 

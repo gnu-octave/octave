@@ -1842,14 +1842,15 @@ get_mat_data_input_line (std::istream& is)
       char c;
       while (is.get (c))
 	{
-	  if (c == '\n')
+	  if (c == '\n' || c == '\r')
 	    break;
 
 	  if (c == '%' || c == '#')
 	    {
 	      // skip to end of line
-	      while (is.get (c) && c != '\n')
-		;
+	      while (is.get (c))
+		if (c == '\n' || c == '\r')
+		  break;
 
 	      break;
 	    }

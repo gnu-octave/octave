@@ -1,3 +1,8 @@
+2003-01-22  Richard Stallman <rms@gnu.org>
+
+	* emacs/octave-mod.el (octave-mode-map): Avoid binding keys that
+	are reserved for users.
+
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in: Fix typo in previous change.

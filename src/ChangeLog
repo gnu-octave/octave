@@ -1,3 +1,11 @@
+2004-04-30  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_base_stream::clear): Also clear stream state.
+	* oct-stdstrm.h (octave_stdiostream::clear): New function.
+	* c-file-ptr-stream.h (c_file_ptr_buf::clear,
+	i_c_file_ptr_stream::clear, o_c_file_ptr_stream::clear,
+	io_c_file_ptr_stream::clear): New functions.
+
 2004-04-29  David Bateman  <dbateman@free.fr>
 
 	* load-save.cc (Fload, Fsave): Accept -mat as well as -mat-binary.

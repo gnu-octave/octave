@@ -82,6 +82,8 @@ public:
 
   long tell (void) { return f ? ftell (f) : -1; }
 
+  void clear (void) { if (f) clearerr (f); }
+
   static int fclose (FILE *f) { return ::fclose (f); }
 
 protected:
@@ -115,6 +117,8 @@ public:
 
   long tell (void) { return buf ? buf->tell () : -1; }
 
+  void clear (void) { if (buf) buf->clear (); std::istream::clear (); }
+
 private:
 
   c_file_ptr_buf *buf;
@@ -139,6 +143,8 @@ public:
     { return buf ? buf->seek (offset, origin) : -1; }
 
   long tell (void) { return buf ? buf->tell () : -1; }
+
+  void clear (void) { if (buf) buf->clear (); std::ostream::clear (); }
 
 private:
 
@@ -165,6 +171,8 @@ public:
 
   long tell (void) { return buf ? buf->tell () : -1; }
 
+  void clear (void) { if (buf) buf->clear (); std::iostream::clear (); }
+
 private:
 
   c_file_ptr_buf *buf;
@@ -177,4 +185,3 @@ private:
 ;;; mode: C++ ***
 ;;; End: ***
 */
-

@@ -400,8 +400,8 @@ After a successful computation, the value of @var{istate} will be 2\n\
 If the computation is not successful, @var{istate} will be something\n\
 other than 2 and @var{msg} will contain additional information.\n\
 \n\
-You can use the function @code{lsode_options} to set optional\n\
-parameters for @code{lsode}.\n\
+You can use the function @code{odessa_options} to set optional\n\
+parameters for @code{odessa}.\n\
 @end deftypefn\n\
 @seealso{daspk, dassl, dasrt, lsode}")
 {

@@ -226,13 +226,12 @@ J = {\\partial f \\over \\partial x}\n\
   + c {\\partial f \\over \\partial \\dot{x}}\n\
 $$\n\
 @end tex\n\
+@example\n\
 @ifinfo\n\
       df       df\n\
 jac = -- + c ------\n\
       dx     d xdot\n\
-@example\n\
 @end example\n\
-\n\
 @end ifinfo\n\
 \n\
 The modified Jacobian function must have the form\n\

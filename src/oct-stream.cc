@@ -935,6 +935,15 @@ octave_base_stream::error (const std::string& who, const std::string& msg)
 void
 octave_base_stream::clear (void)
 {
+  std::istream *is = input_stream ();
+  std::ostream *os = output_stream ();
+
+  if (is)
+    is->clear ();
+
+  if (os)
+    os->clear ();
+
   fail = false;
   errmsg = "";
 }

@@ -937,6 +937,11 @@ operate_and_get_next (int /* count */, int /* c */)
 void
 initialize_readline (void)
 {
+  // Set things up internally in case some function that uses readline
+  // (currently Fclc(), maybe others) is called before readline().
+
+  rl_initialize ();
+
   // Allow conditional parsing of the ~/.inputrc file
 
   rl_readline_name = "Octave";

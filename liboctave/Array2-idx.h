@@ -556,15 +556,18 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& resize_fill_value)
 		}
 	      else if (n == rhs_nr && m == rhs_nc)
 		{
-		  MAYBE_RESIZE_LHS;
-
-		  for (int j = 0; j < m; j++)
+		  if (n > 0 && m > 0)
 		    {
-		      int jj = idx_j.elem (j);
-		      for (int i = 0; i < n; i++)
+		      MAYBE_RESIZE_LHS;
+
+		      for (int j = 0; j < m; j++)
 			{
-			  int ii = idx_i.elem (i);
-			  lhs.elem (ii, jj) = rhs.elem (i, j);
+			  int jj = idx_j.elem (j);
+			  for (int i = 0; i < n; i++)
+			    {
+			      int ii = idx_i.elem (i);
+			      lhs.elem (ii, jj) = rhs.elem (i, j);
+			    }
 			}
 		    }
 		}

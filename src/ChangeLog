@@ -6,9 +6,6 @@
 
 	* mappers.cc: Remove std:: qualifiers from C library names.
 
-	* pr-output.cc: Replace std:: qualifiers on pow with STD_QUAL.
-	(STD_QUAL): New macro.
-
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-exp.h (tree_expression::has_magic_end): New pure virtual function.

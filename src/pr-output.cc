@@ -56,12 +56,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-#if defined (__GNUG__)
-#define STD_QUAL std::
-#else
-#define STD_QUAL
-#endif
-
 // TRUE means use a scaled fixed point format for `format long' and
 // `format short'.
 static bool Vfixed_point_format;
@@ -505,7 +499,7 @@ set_format (const Matrix& m, int& fw, double& scale)
   int x_min = min_abs == 0.0
     ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : STD_QUAL pow (10.0, x_max - 1);
+  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : std::pow (10.0, x_max - 1);
 
   set_real_matrix_format (sign, x_max, x_min, inf_or_nan,
 			  int_or_inf_or_nan, fw);
@@ -856,7 +850,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : STD_QUAL pow (10.0, x_max - 1);
+  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : std::pow (10.0, x_max - 1);
 
   set_complex_matrix_format (sign, x_max, x_min, r_x_max, r_x_min,
 			     inf_or_nan, int_or_inf_or_nan, r_fw, i_fw);
@@ -997,7 +991,7 @@ set_format (const Range& r, int& fw, double& scale)
   int x_min = min_abs == 0.0
     ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
 
-  scale = (x_max == 0 || all_ints) ? 1.0 : STD_QUAL pow (10.0, x_max - 1);
+  scale = (x_max == 0 || all_ints) ? 1.0 : std::pow (10.0, x_max - 1);
 
   set_range_format (sign, x_max, x_min, all_ints, fw);
 }

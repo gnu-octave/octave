@@ -1,3 +1,7 @@
+2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/quit.cc: Add std:: qualifiers to memcpy calls.
+
 2003-01-03  Paul Kienzle <pkienzle@users.sf.net>
 
 	* misc/quit.h: Move #include <new> outside extern "C" block.

@@ -40,13 +40,13 @@ octave_jmp_buf current_context;
 void
 octave_save_current_context (void *save_buf)
 {
-  memcpy (save_buf, current_context, sizeof (octave_jmp_buf));
+  std::memcpy (save_buf, current_context, sizeof (octave_jmp_buf));
 }
 
 void
 octave_restore_current_context (void *save_buf)
 {
-  memcpy (current_context, save_buf, sizeof (octave_jmp_buf));
+  std::memcpy (current_context, save_buf, sizeof (octave_jmp_buf));
 }
 
 void

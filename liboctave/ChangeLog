@@ -1,3 +1,8 @@
+2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (assign): If assignment conforms but the RHS and
+	index are empty matrices, don't do anything.
+
 2002-12-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pathsearch.cc (make_retval, free_c_array, make_c_names,

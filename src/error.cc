@@ -103,6 +103,15 @@ bool discard_error_messages = false;
 // The message buffer.
 static OSSTREAM *error_message_buffer = 0;
 
+void
+reset_error_handler (void)
+{
+  error_state = 0;
+  warning_state = 0;
+  buffer_error_messages = false;
+  discard_error_messages = false;
+}
+
 // Warning messages are never buffered.
 
 static void

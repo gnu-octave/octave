@@ -842,8 +842,7 @@ reset_parser (void)
 {
   // Start off on the right foot.
   BEGIN 0;
-  error_state = 0;
-  warning_state = 0;
+
   parser_end_of_input = false;
   end_tokens_expected = 0;
 

@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   panic ("impossible state reached in file `%s' at line %d", \
 	 __FILE__, __LINE__)
 
+extern void reset_error_handler (void);
+
 extern void message (const char *name, const char *fmt, ...);
 extern void usage (const char *fmt, ...);
 extern void warning (const char *fmt, ...);

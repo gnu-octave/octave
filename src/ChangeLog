@@ -1,3 +1,10 @@
+2003-02-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc (reset_error_handler): New function.
+	* toplev.cc (main_loop): Use it here.
+	* lex.l (reset_parser): Don't set error_state and warning_state here.
+	* parse.y (eval_string): Reset parser before calling yyparse.
+
 2003-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (Ffmod): New function.

@@ -3595,6 +3595,8 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   do
     {
+      reset_parser ();
+
       parse_status = yyparse ();
 
       tree_statement_list *command = global_command;

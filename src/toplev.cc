@@ -142,6 +142,8 @@ main_loop (void)
 	{
 	  curr_sym_tab = top_level_sym_tab;
 
+	  reset_error_handler ();
+
 	  reset_parser ();
 
 	  retval = yyparse ();

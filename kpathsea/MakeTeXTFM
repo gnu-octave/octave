@@ -1,0 +1,85 @@
+#!/bin/sh
+# original MakeTeXTFM -- make a new TFM file, because one wasn't found.
+# 
+# (If you change or delete the word `original' on the previous line,
+# installation won't write this script over yours.)
+# 
+# te@informatik.uni-hannover.de and kb@mail.tug.org. Public domain.
+
+version='$Id: MakeTeXTFM,v 1.1 1997-05-23 03:02:11 jwe Exp $'
+usage="Usage: $0 FONT.
+  Makes a TFM file for FONT, if possible."
+
+: ${TEXMFMAIN=`kpsewhich -expand-var='$TEXMFMAIN'`}
+if test -z "$TEXMFMAIN"; then
+  echo "$0: No \$TEXMFMAIN; set the environment variable or in texmf.cnf." >&2
+  exit 1
+fi
+: ${TEXMFCNF_DIR=`kpsewhich -expand-var='$TEXMFCNF_DIR'`}
+test -n "$TEXMFCNF_DIR" || TEXMFCNF_DIR=$TEXMFMAIN/web2c
+. $TEXMFCNF_DIR/MakeTeXcommon
+
+# See comments in MakeTeXPK.
+# start of redirection stdout -> stderr, stdin <- /dev/null
+(
+NAME=`basename $1 .tfm`
+MAG=1
+DEST=$2
+DPI=$BDPI
+
+set - `$TEXMFCNF_DIR/MakeTeXnames $NAME $DPI $MODE $DEST`
+PKDEST=$1
+TFMDEST=$2
+PKDESTDIR=`echo $PKDEST | sed 's%/[^/][^/]*$%%'` # can't rely on dirname
+TFMDESTDIR=`echo $TFMDEST | sed 's%/[^/][^/]*$%%'`
+PKNAME=`basename $PKDEST`
+TFMNAME=$NAME.tfm
+GFNAME=$NAME.$DPI'gf'
+
+if test -r $TFMDESTDIR/$TFMNAME; then
+  echo "$0: $TFMDESTDIR/$TFMNAME already exists." >&2
+  echo $TFMDESTDIR/$TFMNAME >$STDOUT
+  $TEXMFCNF_DIR/MakeTeXupdate $TFMDESTDIR $TFMNAME
+  exit
+fi
+
+# Try to create the destdir first. Do not create fonts, if this fails.
+$TEXMFCNF_DIR/MakeTeXmkdir "$TFMDESTDIR"
+if test ! -d "$TFMDESTDIR"; then
+  echo "$0: MakeTeXmkdir $TFMDESTDIR failed."
+  exit 1
+fi
+
+cmd="mf \mode:=$MODE; mag:=$MAG; scrollmode; input $NAME"
+echo "$0: Running $cmd"
+$cmd </dev/null
+test -r $TFMNAME || { echo "$0: \`$cmd' failed to make $TFMNAME."; exit 1; }
+
+# Install the TFM file carefully, since others may be working simultaneously.
+mv $TFMNAME $TFMDESTDIR/tfmtmp.$$ || exit 1
+cd $TFMDESTDIR || exit 1
+test -r $TFMNAME || mv tfmtmp.$$ $TFMNAME || exit 1
+chmod $MT_FILE_PERMS $TFMNAME
+
+# OK, success with the TFM.
+$TEXMFCNF_DIR/MakeTeXupdate $TFMDESTDIR $TFMNAME
+echo $TFMDESTDIR/$TFMNAME >$STDOUT
+
+# Since we probably made a GF(->PK) file, too, may as well install it if
+# it's needed.
+cd $TEMPDIR
+if test -r $GFNAME && test ! -f $PKDESTDIR/$PKNAME; then
+  gftopk ./$GFNAME $PKNAME || exit 1
+  $TEXMFCNF_DIR/MakeTeXmkdir "$PKDESTDIR"
+  mv $PKNAME $PKDESTDIR/pktmp.$$ || exit 1
+  cd $PKDESTDIR || exit 1
+  if test -f $PKNAME; then
+    rm -f pktmp.$$
+  else
+    mv pktmp.$$ $PKNAME
+    chmod $MT_FILE_PERMS $PKNAME
+    $TEXMFCNF_DIR/MakeTeXupdate $PKDESTDIR $PKNAME
+  fi
+fi
+) 1>&2 </dev/null
+# end of redirection stdout, stdin

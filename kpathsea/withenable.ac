@@ -1,0 +1,20 @@
+dnl withenable.ac: --with and --enable options.
+
+AC_ARG_WITH(maketexmf-default,
+[  --without-maketexmf-default  do not run MakeTeXMF if MF source missing],
+  , enableval=yes)
+if test $enableval = yes; then
+  AC_DEFINE(MAKE_TEX_MF_BY_DEFAULT)
+fi
+AC_ARG_WITH(maketexpk-default,
+[  --without-maketexpk-default  do not run MakeTeXPK if PK font missing],
+  , enableval=yes)
+if test $enableval = yes; then
+  AC_DEFINE(MAKE_TEX_PK_BY_DEFAULT)
+fi
+AC_ARG_WITH(maketextfm-default,
+[  --without-maketextfm-default do not run MakeTeXTFM if TFM file missing],
+   , enableval=yes)
+if test $enableval = yes; then
+  AC_DEFINE(MAKE_TEX_TFM_BY_DEFAULT)
+fi

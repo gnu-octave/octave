@@ -1,0 +1,46 @@
+#!/bin/sh
+# MakeTeXupdate -- update ls-R with a new entry.
+# 
+# te@informatik.uni-hannover.de and kb@mail.tug.org. Public domain.
+
+version='$Id: MakeTeXupdate,v 1.1 1997-05-23 03:02:11 jwe Exp $'
+usage="Usage: $0 DIR FILE.
+  Update the ls-R file with an entry for FILE in DIR."
+mt_min_args=2
+mt_max_args=2
+
+: ${TEXMFMAIN=`kpsewhich -expand-var='$TEXMFMAIN'`}
+if test -z "$TEXMFMAIN"; then
+  echo "$0: No \$TEXMFMAIN; set the environment variable or in texmf.cnf." >&2
+  exit 1
+fi
+: ${TEXMFLS_R=`kpsewhich -expand-var='$TEXMFLS_R'`}
+test -n "$TEXMFLS_R" || TEXMFLS_R=$TEXMFMAIN
+: ${TEXMFCNF_DIR=`kpsewhich -expand-var='$TEXMFCNF_DIR'`}
+test -n "$TEXMFCNF_DIR" || TEXMFCNF_DIR=$TEXMFMAIN/web2c
+. $TEXMFCNF_DIR/MakeTeXcommon
+
+test $# -eq 2 || { echo "$usage" >&2; exit 1; }
+dir=$1
+file=$2
+test -d "$dir" || { echo "$0: $dir not a directory." >&2; exit 1; }
+test -f "$dir/$file" || { echo "$0: $dir/$file not a file." >&2; exit 1; }
+
+db_file=$TEXMFLS_R/ls-R
+
+test -f $db_file || MakeTeXls-R
+test -f $db_file || { echo "$0: $db_file does not exist." >&2; exit 1; }
+test -w "$db_file" || { echo "$0: $db_file unwritable." >&2; exit 1; }
+
+test "`sed 1q $db_file`" = "$ls_R_magic" \
+  || { echo "$0: $db_file lacks magic string \`$ls_R_magic'." >&2; exit 1; }
+
+# Change `$TEXMFLS_R/' to `./'.
+dir=`echo $dir | sed "s@^$TEXMFLS_R/@./@g"`
+
+# May as well always put in a new directory entry; presumably cron will
+# come along soon enough and clean things up.
+echo "$dir:" >>$db_file
+echo "$file" >>$db_file
+
+exit 0

@@ -1,0 +1,45 @@
+#!/bin/sh
+# mkinstalldirs --- make directory hierarchy (now MakeTeXmkdir).
+# Author: Noah Friedman <friedman@prep.ai.mit.edu>, created: 1993-05-16.
+# Public domain.
+# 
+# Modified for sticky directory creation, --help, --version.
+# te@informatik.uni-hannover.de and kb@mail.tug.org.
+
+version='$Id: MakeTeXmkdir,v 1.1 1997-05-23 03:02:11 jwe Exp $'
+usage="Usage: $0 DIRS...
+  Create each DIR, including any missing leading directories."
+
+: ${TEXMFMAIN=`kpsewhich -expand-var='$TEXMFMAIN'`}
+if test -z "$TEXMFMAIN"; then
+  echo "$0: No \$TEXMFMAIN; set the environment variable or in texmf.cnf." >&2
+  exit 1
+fi
+: ${TEXMFCNF_DIR=`kpsewhich -expand-var='$TEXMFCNF_DIR'`}
+test -n "$TEXMFCNF_DIR" || TEXMFCNF_DIR=$TEXMFMAIN/web2c
+. $TEXMFCNF_DIR/MakeTeXcommon
+
+errstatus=0
+
+for file
+do
+   set fnord `echo ":$file" | sed -ne 's/^:\//#/;s/^://;s/\// /g;s/^#/\//;p'`
+   shift
+
+   pathcomp=
+   for d in ${1+"$@"} ; do
+     pathcomp="$pathcomp$d"
+     case "$pathcomp" in
+       -* ) pathcomp=./$pathcomp ;;
+     esac
+
+     if test ! -d "$pathcomp"; then
+        mkdir "$pathcomp" || errstatus=$?
+        chmod $MT_DIR_PERMS $pathcomp
+     fi
+
+     pathcomp="$pathcomp/"
+   done
+done
+
+exit $errstatus

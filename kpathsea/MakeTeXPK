@@ -1,0 +1,130 @@
+#!/bin/sh
+# original MakeTeXPK -- make a new PK font, because one wasn't found.
+# 
+# (If you change or delete the word `original' on the previous line,
+# installation won't write this script over yours.)
+# 
+# te@informatik.uni-hannover.de and kb@mail.tug.org. Public domain.
+
+version='$Id: MakeTeXPK,v 1.1 1997-05-23 03:02:10 jwe Exp $'
+usage="Usage: $0 NAME DPI BDPI MAG [MODE [DESTDIR]].
+  Try to create a PK file for NAME at resolution DPI,
+  with an assumed device base resolution of BDPI,
+  and a Metafont \`mag' of MAG.
+  Use MODE for the Metafont mode if supplied, unless MODE is \`default', in
+   which case guess as usual. (This is so you can specify DESTDIR without MODE.)
+  Use DESTDIR for the root of where to install into, either the absolute
+   directory name to use (if it starts with a /) or relative to the default
+   DESTDIR (if not)."
+mt_min_args=4
+mt_max_args=6
+
+: ${TEXMFMAIN=`kpsewhich -expand-var='$TEXMFMAIN'`}
+if test -z "$TEXMFMAIN"; then
+  echo "$0: No \$TEXMFMAIN; set the environment variable or in texmf.cnf." >&2
+  exit 1
+fi
+: ${TEXMFCNF_DIR=`kpsewhich -expand-var='$TEXMFCNF_DIR'`}
+test -n "$TEXMFCNF_DIR" || TEXMFCNF_DIR=$TEXMFMAIN/web2c
+. $TEXMFCNF_DIR/MakeTeXcommon
+
+# Since we want to pass the generated filename and only that filename
+# back to the caller on standard output, we do some redirections so
+# regular echo's will end up on stderr, and do an echo >$STDOUT at the end.
+# Then the contents of $STDOUT will be echoed to stdout by a trap.
+
+# start of redirection stdout -> stderr, stdin <- /dev/null
+(
+: ${PSMAPFILE=`kpsewhich psfonts.map`}
+
+NAME=$1
+DPI=$2
+BDPI=$3
+MAG=$4
+MODE=$5
+DEST=$6
+
+# grep for the font in $PSMAPFILE.  These are base font names, such as
+# rpplr (the original) or pplr0 (an interim step) or pplr8r (current).
+pattern="^r?$NAME"'(0|8r)?([ 	]|$)' 
+psline=`egrep "$pattern" $PSMAPFILE`
+if test -n "$psline"; then
+  MODE=modeless
+  # ps_to_pk set in MakeTeXcommon and/or MakeTeX.site.
+  cmd="$ps_to_pk $NAME $DPI" 
+else
+  # Check that $BDPI and $MODE are consistent; if not, ignore the mode and
+  # hope we can correctly guess it from bdpi.  (People like to specify the
+  # resolution on the command line, not the mode so much.)
+  if test -n "$MODE"; then
+    mf_bdpi=`mf \
+'\mode:='$MODE';mode_setup;message"BDPI= "&decimal round pixels_per_inch;end.'\
+             </dev/null \
+             | awk '/DPI=/ {print $2}'`
+    if test $mf_bdpi != $BDPI; then
+      echo "$0: Mismatched mode $MODE and resolution $BDPI; ignoring mode." >&2
+      MODE=
+    fi
+  fi
+
+  # If an explicit mode is not supplied, try to guess. You can get a
+  # list of extant modes from ftp://ftp.tug.org/tex/modes.mf.
+  if test -z "$MODE" || test "$MODE" = default; then
+    case "$BDPI" in
+     300) MODE=cx;;
+     600) MODE=ljfour;;
+       *) echo "$0: Can't guess mode for $BDPI dpi devices." >&2
+          echo "$0: Use a config file, or update me." >&2
+          exit 1
+    esac
+  fi
+
+  # Run Metafont. Always use plain Metafont, since reading cmbase.mf
+  # does not noticeably slow things down.
+  cmd="mf \mode:=$MODE; mag:=$MAG; scrollmode; input $NAME"
+fi
+
+set - `$TEXMFCNF_DIR/MakeTeXnames $NAME $DPI $MODE $DEST`
+PKDEST=$1
+PKDESTDIR=`echo $PKDEST | sed 's%/[^/][^/]*$%%'` # can't rely on dirname
+PKNAME=`basename $PKDEST`
+GFNAME=$NAME.${DPI}gf
+
+if test -r $PKDESTDIR/$PKNAME; then
+  echo "$0: $PKDESTDIR/$PKNAME already exists." >&2
+  echo $PKDESTDIR/$PKNAME >$STDOUT
+  $TEXMFCNF_DIR/MakeTeXupdate $PKDESTDIR $PKNAME
+  exit 0
+fi
+
+$TEXMFCNF_DIR/MakeTeXmkdir $PKDESTDIR
+if test ! -d $PKDESTDIR; then
+  echo "$0: MakeTeXmkdir $PKDESTDIR failed." >&2
+  exit 1
+fi
+
+echo "$0: Running $cmd"
+$cmd </dev/null || { echo "$0: \`$cmd' failed." >&2; exit 1; }
+
+test -r $GFNAME && { gftopk ./$GFNAME $PKNAME || exit 1; }
+test ! -f $PKNAME && test -f $NAME.${DPI}pk && mv $NAME.${DPI}pk $PKNAME
+if test ! -s $PKNAME; then
+  echo "$0: \`$cmd' failed to make $PKNAME." >&2
+  exit 1
+fi
+
+# Install the PK file carefully, since others may be working simultaneously.
+mv $PKNAME $PKDESTDIR/pktmp.$$ || exit 1
+cd $PKDESTDIR || exit 1
+test -r $PKNAME || mv pktmp.$$ $PKNAME || exit 1
+chmod $MT_FILE_PERMS $PKNAME
+
+# Update ls-R if necessary.
+$TEXMFCNF_DIR/MakeTeXupdate $PKDESTDIR $PKNAME
+
+# If this line (or an equivalent) is not present, dvipsk/xdvik/dviljk
+# will think MakeTeXPK failed.  Any other output to stdout will also lose.
+echo $PKDESTDIR/$PKNAME >$STDOUT
+
+) 1>&2 </dev/null
+# end of redirection stdout, stdin

@@ -1,0 +1,70 @@
+#!/bin/sh
+# MakeTeXcommon -- common MakeTeX* options, etc.
+# Meant to be sourced after $usage and $version and $TEXMF have been set.
+# 
+# te@informatik.uni-hannover.de and kb@mail.tug.org. Public domain.
+# $Id: MakeTeXcommon,v 1.1 1997-05-23 03:02:11 jwe Exp $
+ 
+if test x$1 = x--help -o x$1 = x-help; then
+  echo "$usage"
+  exit 0
+elif test x$1 = x--version -o x$1 = x-version; then
+  echo "`basename $0` $version"
+  kpsewhich --version
+  exit 0
+elif test $# -lt ${mt_min_args-1}; then
+  echo "$0: Missing argument(s)." >&2
+  echo "Try \``basename $0` --help' for more information." >&2
+  exit 1
+elif test $# -gt ${mt_max_args-1}; then
+  while test $# -gt ${mt_max_args-1}; do shift; done
+  echo "$0: Extra arguments $*." >&2
+  echo "Try \``basename $0` --help' for more information." >&2
+  exit 1
+fi
+
+# TEMPDIR needs to be unique to each process because of the possibility of two
+# people running dvips (or whatever) simultaneously.
+TEMPDIR=${TMPDIR-/tmp}/mt.$$
+
+# We want to output only filenames to standard output, but it's too
+# error-prone to write the scripts that way, so we direct stdout here.
+STDOUT=$TEMPDIR/stdout.$$
+
+# We will change search paths to include $KPSE_DOT. This is necessary
+# since we cd to $TEMPDIR.
+KPSE_DOT=`pwd`; export KPSE_DOT
+
+# Clean up on normal or abnormal exit.
+trap 'cd $KPSE_DOT; test -f $STDOUT && cat $STDOUT; rm -rf $TEMPDIR; exit 0' \
+  0 1 2 15
+
+
+mkdir $TEMPDIR
+cd $TEMPDIR || exit 1
+
+# Allow fonts to be read and written (especially in case we make
+# directories) by everyone.  
+umask 0
+
+: ${MODE=ljfour}
+: ${BDPI=600}
+: ${MT_DIR_PERMS=777} # keep to three digits or appendonlydir will fail
+: ${MT_FILE_PERMS=666}
+: ${ps_to_pk=gsftopk} # some prefer ps2pk
+
+# Fonts in these typefaces can be generated at arbitrary sizes, so
+# MakeTeXMF tries to take advantage of that.
+# These are the TDS-recommended directories.
+: ${dcfontdir="$TEXMFMAIN/fonts/source/jknappen/dc"}
+: ${ecfontdir="$TEXMFMAIN/fonts/source/jknappen/ec"}
+: ${fcfontdir="$TEXMFMAIN/fonts/source/jknappen/fc"}
+: ${tcfontdir="$TEXMFMAIN/fonts/source/jknappen/tc"}
+: ${tsfontdir="$TEXMFMAIN/fonts/source/jknappen/ts"}
+: ${sauterfontdir="$TEXMFMAIN/fonts/source/public/sauter"}
+
+# MakeTeXupdate and MakeTeXls-R make sure they're coordinated via this.
+ls_R_magic='% ls-R -- maintained by MakeTeXls-R; do not change this line.'
+
+# Source a site file, if it exists, to override any of the above.
+test -r $TEXMFCNF_DIR/MakeTeX.site && . $TEXMFCNF_DIR/MakeTeX.site

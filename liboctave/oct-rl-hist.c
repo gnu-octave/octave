@@ -206,16 +206,14 @@ octave_history_list (int limit, int number_lines)
       k = 0;
       for (i = beg; i < end; i++)
 	{
-	  char *tmp = 0;
-	  char buf[64];
+	  char *line = hlist[i]->line;
+	  int len = line ? strlen (line) : 0;
+	  char *tmp = malloc (len + 64);
 
 	  if (number_lines)
-	    sprintf (buf, "%5d%c", i + history_base,
-		     hlist[i]->data ? '*' : ' '); 
-
-	  tmp = malloc (strlen (buf) + 1);
-
-	  strcpy (tmp, buf);
+	    sprintf (tmp, "%5d%c%s", i + history_base,
+		     hlist[i]->data ? '*' : ' '
+		     line ? line : "");
 
 	  retval[k++] = tmp;
 	}

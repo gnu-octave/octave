@@ -1738,9 +1738,9 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
   if (ra_idx.is_colon ())
     {
-      dim_vector idx (orig_len);
+      dim_vector iidx (orig_len);
 
-      retval = Array<T> (*this, idx);
+      retval = Array<T> (*this, iidx);
     }
   else if (length () == 1)
     {
@@ -1865,18 +1865,18 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
         {
 	  int r_idx = ra_idx(0);
 
-          Array<int> idx = get_ra_idx (r_idx, dims ());
+          Array<int> iidx = get_ra_idx (r_idx, dims ());
 
           dim_vector new_dims (1);
 
 	  // This shouldn't be needed.
 
-	  Array<int> e (idx.length ());
+	  Array<int> e (iidx.length ());
 
-	  for (int i = 0; i < idx.length();i++)
-	    e(i) = idx(i);
+	  for (int i = 0; i < iidx.length();i++)
+	    e(i) = iidx(i);
 
-	  // Should be able to call elem (idx).
+	  // Should be able to call elem (iidx).
 
           retval = Array<T> (new_dims, elem (e));
 	}

@@ -442,13 +442,13 @@ C               calling program.
 C
 C  LRW -- Set it to the declared length of the RWORK array.
 C               You must have
-C                    LRW .GE. 50+(MAXORD+4)*NEQ+NEQ**2
+C                    LRW .GE. 50+(MAXORD+4)*NEQ+NEQ**2+3*NG
 C               for the full (dense) JACOBIAN case (when INFO(6)=0), or
-C                    LRW .GE. 50+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ
+C                    LRW .GE. 50+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+3*NG
 C               for the banded user-defined JACOBIAN case
 C               (when INFO(5)=1 and INFO(6)=1), or
 C                     LRW .GE. 50+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ
-C                           +2*(NEQ/(ML+MU+1)+1)
+C                           +2*(NEQ/(ML+MU+1)+1)+3*NG
 C               for the banded finite-difference-generated JACOBIAN case
 C               (when INFO(5)=0 and INFO(6)=1)
 C
@@ -916,7 +916,7 @@ C
 C     COMPUTE MTYPE,LENPD,LENRW.CHECK ML AND MU.
       IF(INFO(6).NE.0)GO TO 40
          LENPD=NEQ**2
-         LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD
+         LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD+3*NG
          IF(INFO(5).NE.0)GO TO 30
             IWORK(LMTYPE)=2
             GO TO 60
@@ -929,10 +929,10 @@ C     COMPUTE MTYPE,LENPD,LENRW.CHECK ML AND MU.
          IWORK(LMTYPE)=5
          MBAND=IWORK(LML)+IWORK(LMU)+1
          MSAVE=(NEQ/MBAND)+1
-         LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD+2*MSAVE
+         LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD+2*MSAVE+3*NG
          GO TO 60
 50       IWORK(LMTYPE)=4
-         LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD
+         LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD+3*NG
 C
 C     CHECK LENGTHS OF RWORK AND IWORK
 60    LENIW=20+NEQ

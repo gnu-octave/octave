@@ -1,3 +1,7 @@
+2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dasrt/ddasrt.f (DDASRT): Fix computation of LENRW.
+
 2002-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install): Don't bother with versions for $(SHLBIN)

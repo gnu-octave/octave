@@ -1,5 +1,8 @@
 2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DASRT.cc (DASRT::integrate): Fix computation of lrw
+	(ddasrt_f): Combine loops.
+
 	* NLEqn.cc (NLEqn::solve): Return current estimate of solution
 	instead of empty vector if user termninates iteration.
 

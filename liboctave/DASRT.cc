@@ -64,12 +64,13 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 	  double *delta, int& ires, double *rpar, int *ipar)
 {
   ColumnVector tmp_state (nn);
-  for (int i = 0; i < nn; i++)
-    tmp_state(i) = state[i];
-
   ColumnVector tmp_deriv (nn);
+
   for (int i = 0; i < nn; i++)
-    tmp_deriv(i) = deriv[i];
+    {
+      tmp_state(i) = state[i];
+      tmp_deriv(i) = deriv[i];
+    }
 
   ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, ires);
 
@@ -153,8 +154,37 @@ DASRT::integrate (double tout)
 
       nn = n;
 
+      // DAERTFunc
+
+      user_csub = DAERTFunc::constraint_function ();
+
+      if (user_csub)
+	{
+	  ColumnVector tmp = (*user_csub) (x, t);
+	  ng = tmp.length ();
+	}
+      else
+	ng = 0;
+
+      int maxord = maximum_order ();
+      if (maxord >= 0)
+	{
+	  if (maxord > 0 && maxord < 6)
+	    {
+	      info(8) = 1;
+	      iwork(2) = maxord;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("dassl: invalid value for maximum order");
+	      integration_error = true;
+	      return;
+	    }
+	}
+
       liw = 20 + n;
-      lrw = 50 + 9*n + n*n;
+      lrw = 50 + 9*n + n*n + 3*ng;
 
       iwork.resize (liw);
       rwork.resize (lrw);
@@ -210,18 +240,6 @@ DASRT::integrate (double tout)
 
       DAEFunc::reset = false;
 
-      // DAERTFunc
-
-      user_csub = DAERTFunc::constraint_function ();
-
-      if (user_csub)
-	{
-	  ColumnVector tmp = (*user_csub) (x, t);
-	  ng = tmp.length ();
-	}
-      else
-	ng = 0;
-
       jroot.resize (ng, 1);
 
       pjroot = jroot.fortran_vec ();
@@ -247,23 +265,6 @@ DASRT::integrate (double tout)
 	}
       else
 	info(7) = 0;
-
-      int maxord = maximum_order ();
-      if (maxord >= 0)
-	{
-	  if (maxord > 0 && maxord < 6)
-	    {
-	      info(8) = 1;
-	      iwork(2) = maxord;
-	    }
-	  else
-	    {
-	      (*current_liboctave_error_handler)
-		("dassl: invalid value for maximum order");
-	      integration_error = true;
-	      return;
-	    }
-	}
 
       if (step_limit () >= 0)
 	{

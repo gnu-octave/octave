@@ -30,13 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "base-lu.h"
 
-template <class lu_type, class p_type>
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type
-base_lu <lu_type, p_type> :: L (void) const
+base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: L (void) const
 {
   int n = ipvt.length ();
 
-  lu_type l (n, n, 0.0);
+  lu_type l (n, n, lu_elt_type (0.0));
 
   for (int i = 0; i < n; i++)
     {
@@ -48,13 +48,13 @@ base_lu <lu_type, p_type> :: L (void) const
   return l;
 }
 
-template <class lu_type, class p_type>
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type
-base_lu <lu_type, p_type> :: U (void) const
+base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: U (void) const
 {
   int n = ipvt.length ();
 
-  lu_type u (n, n, 0.0);
+  lu_type u (n, n, lu_elt_type (0.0));
 
   for (int i = 0; i < n; i++)
     {
@@ -65,9 +65,9 @@ base_lu <lu_type, p_type> :: U (void) const
   return u;
 }
 
-template <class lu_type, class p_type>
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 p_type
-base_lu <lu_type, p_type> :: P (void) const
+base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: P (void) const
 {
   int n = ipvt.length ();
 
@@ -88,7 +88,7 @@ base_lu <lu_type, p_type> :: P (void) const
 	}
     }
 
-  p_type p (n, n, 0.0);
+  p_type p (n, n, p_elt_type (0.0));
 
   for (int i = 0; i < n; i++)
     p.xelem (i, pvt.xelem (i)) = 1.0;

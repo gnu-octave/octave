@@ -31,20 +31,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dMatrix.h"
 
 class
-LU : public base_lu <Matrix, Matrix>
+LU : public base_lu <Matrix, double, Matrix, double>
 {
 public:
 
-  LU (void) : base_lu <Matrix, Matrix> () { }
+  LU (void) : base_lu <Matrix, double, Matrix, double> () { }
 
   LU (const Matrix& a);
 
-  LU (const LU& a) : base_lu <Matrix, Matrix> (a) { }
+  LU (const LU& a) : base_lu <Matrix, double, Matrix, double> (a) { }
 
   LU& operator = (const LU& a)
     {
       if (this != &a)
-	base_lu <Matrix, Matrix> :: operator = (a);
+	base_lu <Matrix, double, Matrix, double> :: operator = (a);
 
       return *this;
     }

@@ -170,6 +170,23 @@ Array<T>::fortran_vec (void)
   return rep->data;
 }
 
+template <class T>
+T
+Array<T>::range_error (void) const
+{
+  (*current_liboctave_error_handler) ("range error");
+  return T ();
+}
+
+template <class T>
+T&
+Array<T>::range_error (void)
+{
+  (*current_liboctave_error_handler) ("range error");
+  static T foo;
+  return foo;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

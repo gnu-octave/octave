@@ -197,13 +197,9 @@ public:
   T Array<T>::checkelem (int n) const
     {
       if (n < 0 || n >= rep->length ())
-	{
-	  (*current_liboctave_error_handler) ("range error");
-	  T foo;
-	  static T *bar = &foo;
-	  return foo;
-	}
-      return elem (n);
+	return range_error ();
+      else
+	return elem (n);
     }
 
 #if defined (NO_BOUNDS_CHECKING)
@@ -236,6 +232,9 @@ public:
 
       return *this;
     }
+
+  T range_error (void) const;
+  T& range_error (void);
 
 #ifdef HEAVYWEIGHT_INDEXING
   void set_max_indices (int mi) { max_indices = mi; }

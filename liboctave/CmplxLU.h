@@ -32,20 +32,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CMatrix.h"
 
 class
-ComplexLU : public base_lu <ComplexMatrix, Matrix>
+ComplexLU : public base_lu <ComplexMatrix, Complex, Matrix, double>
 {
 public:
 
-  ComplexLU (void) : base_lu <ComplexMatrix, Matrix> () { }
+  ComplexLU (void)
+    : base_lu <ComplexMatrix, Complex, Matrix, double> () { }
 
   ComplexLU (const ComplexMatrix& a);
 
-  ComplexLU (const ComplexLU& a) : base_lu <ComplexMatrix, Matrix> (a) { }
+  ComplexLU (const ComplexLU& a)
+    : base_lu <ComplexMatrix, Complex, Matrix, double> (a) { }
 
   ComplexLU& operator = (const ComplexLU& a)
     {
       if (this != &a)
-	base_lu <ComplexMatrix, Matrix> :: operator = (a);
+	base_lu <ComplexMatrix, Complex, Matrix, double> :: operator = (a);
 
       return *this;
     }

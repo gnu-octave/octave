@@ -203,6 +203,12 @@ protected:
   void set_option (const string& key, int opt);
   void set_option (const string& key, double opt);
 
+  void set_option (const char *key, int opt)
+    { set_option (string (key), opt); }
+
+  void set_option (const char *key, double opt)
+    { set_option (string (key), opt); }
+
 private:
 
   double x_central_difference_interval;

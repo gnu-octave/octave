@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <base-lu.h>
 #include <base-lu.cc>
 
-template class base_lu <ComplexMatrix, Matrix>;
+template class base_lu <ComplexMatrix, Complex, Matrix, double>;
 
 // Define the constructor for this particular derivation.
 

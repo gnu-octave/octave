@@ -17,19 +17,17 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## hinfdemo  H_infinity design demos for continuous SISO and MIMO
-##           systems and a discrete system.
-##           The SISO system is difficult to control because
-##           it is non minimum phase and unstable. The second
-##           design example controls the "jet707" plant, the
-##           linearized state space model of a Boeing 707-321
-##           aircraft at v=80m/s (M = 0.26, Ga0 = -3 deg,
-##           alpha0 = 4 deg, kappa = 50 deg).
-##           inputs:  (1) thrust   and (2) elevator angle
-##           outputs: (1) airspeed and (2) pitch angle.
-##           The discrete system is a stable and second order.
+## @deftypefn {Function File} {} hinfdemo ()
 ##
-## 
+## H_infinity design demos for continuous SISO and MIMO systems and a
+## discrete system.  The SISO system is difficult to control because it
+## is non minimum phase and unstable.  The second design example
+## controls the "jet707" plant, the linearized state space model of a
+## Boeing 707-321 aircraft at v=80m/s (M = 0.26, Ga0 = -3 deg, alpha0 =
+## 4 deg, kappa = 50 deg).  Inputs: (1) thrust and (2) elevator angle
+## outputs: (1) airspeed and (2) pitch angle. The discrete system is a
+## stable and second order.
+##
 ## @table @asis
 ## @item SISO plant
 ## @display

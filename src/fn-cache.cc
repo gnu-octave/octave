@@ -40,17 +40,15 @@ octave_fcn_file_name_cache *octave_fcn_file_name_cache::instance = 0;
 
 // Update the cache.  Returns TRUE if something needed to be updated.
 
-// XXX FIXME XXX -- I suppose we could also keep track of the load
-// path.  Then if a directory is deleted from the load path, we could
-// also delete it from the cache.  Currently, we just accumulate all
-// directories ever referenced in the cache.
+// We just accumulate all directories ever referenced in the cache and
+// we don't delete any old ones.
 
 bool
-octave_fcn_file_name_cache::update (void)
+octave_fcn_file_name_cache::update (const string& path)
 {
   bool retval = false;
 
-  dir_path p (Vload_path);
+  dir_path p = path.empty () ? dir_path (Vload_path) : dir_path (path);
 
   string_vector dirs = p.all_directories ();
 
@@ -79,11 +77,11 @@ octave_fcn_file_name_cache::update (void)
 // updated, then return the list of names in the cache.
 
 string_vector
-octave_fcn_file_name_cache::do_list (bool no_suffix)
+octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
 {
   // Only recompute the cache if something has changed.
 
-  if (update ())
+  if (update (path))
     {
       int total_len = 0;
 
@@ -130,7 +128,7 @@ octave_fcn_file_name_cache::do_list (bool no_suffix)
 }
 
 string_vector
-octave_fcn_file_name_cache::list (bool no_suffix = false)
+octave_fcn_file_name_cache::list (const string& path, bool no_suffix)
 {
   string_vector retval;
 
@@ -138,7 +136,7 @@ octave_fcn_file_name_cache::list (bool no_suffix = false)
     instance = new octave_fcn_file_name_cache ();
 
   if (instance)
-    retval = instance->do_list (no_suffix);
+    retval = instance->do_list (path, no_suffix);
   else
     panic_impossible ();
 

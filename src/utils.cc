@@ -55,6 +55,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 
 #include "SLStack.h"
 
+#include "file-ops.h"
 #include "oct-cmplx.h"
 #include "str-vec.h"
 
@@ -205,123 +206,6 @@ keyword_almost_match (const char **std, int *min_len, const string& s,
   delete [] to_match;
 
   return status;
-}
-
-string_vector
-get_fcn_file_names (const string& name, int no_suffix)
-{
-  string_vector retval;
-
-  dir_entry dir (name);
-
-  if (dir)
-    {
-      string_vector tmp = dir.read ();
-
-      int max_len = tmp.length ();
-
-      retval.resize (max_len);
-
-      int k = 0;
-      int i;
-      for (i = 0; i < max_len; i++)
-	{
-	  string entry = tmp[i];
-
-	  int len = entry.length ();
-
-#if defined (WITH_DYNAMIC_LINKING)
-	  if ((len > 2
-	       && entry[len-2] == '.' && entry[len-1] == 'm')
-	      || (len > 4
-		  && entry[len-4] == '.' && entry[len-3] == 'o'
-		  && entry[len-2] == 'c' && entry[len-1] == 't'))
-#else
-	  if (len > 2
-	      && entry[len-2] == '.' && entry[len-1] == 'm')
-#endif
-	    {
-	      if (no_suffix)
-		{
-		  if (entry[len-1] == 'm')
-		    entry.resize (len-2);
-		  else
-		    entry.resize (len-4);
-		}
-
-	      retval[k++] = entry;
-	    }
-	}
-
-      retval.resize (k);
-    }
-
-  return retval;
-}
-
-string_vector
-get_fcn_file_names (int no_suffix)
-{
-  static int num_max = 1024;
-
-  string_vector retval (num_max);
-
-  dir_path p (Vload_path);
-
-  string_vector dirs = p.all_directories ();
-
-  int len = dirs.length ();
-
-  int k = 0;
-
-  for (int i = 0; i < len; i++)
-    {
-      string_vector names = get_fcn_file_names (dirs[i], no_suffix);
-
-      int tmp_num = names.length ();
-
-      if (k + tmp_num > num_max)
-	{
-	  num_max += tmp_num;
-	  retval.resize (num_max);
-	}
-
-      for (int j = 0; j < tmp_num; j++)
-	retval[k++] = names[j];
-    }
-
-  retval.resize (k);
-
-  return retval;
-}
-
-// Return non-zero if either NR or NC is zero.  Return -1 if this
-// should be considered fatal; return 1 if this is ok.
-
-int
-empty_arg (const char *name, int nr, int nc)
-{
-  int is_empty = 0;
-
-  if (nr == 0 || nc == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	{
-	  gripe_empty_arg (name, 0);
-	  is_empty = 1;
-	}
-      else if (flag == 0)
-	{
-	  gripe_empty_arg (name, 1);
-	  is_empty = -1;
-	}
-      else
-	is_empty = 1;
-    }
-
-  return is_empty;
 }
 
 // See if the given file is in the path.

@@ -50,10 +50,6 @@ keyword_almost_match (const char **std, int *min_len,
 		      const string& s, int min_toks_to_match,
 		      int max_toks);
 
-extern string_vector get_fcn_file_names (const string&, int = 0);
-
-extern string_vector get_fcn_file_names (int = 0);
-
 extern int empty_arg (const char *name, int nr, int nc);
 
 extern const char *undo_string_escape (char c);

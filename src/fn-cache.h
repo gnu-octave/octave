@@ -89,11 +89,18 @@ public:
 
   ~octave_fcn_file_name_cache (void) { }
 
-  bool update (void);
+  bool update (const string& path = string ());
 
-  static string_vector list (bool no_suffix = false);
+  static string_vector list (bool no_suffix = false)
+    { return list (string (), no_suffix); }
 
-  static string_vector list_no_suffix (void) { return list (true); }
+  static string_vector list (const string& path, bool no_suffix = false);
+
+  static string_vector list_no_suffix (void)
+    { return list (true); }
+
+  static string_vector list_no_suffix (const string& path)
+    { return list (path, true); }
 
 private:
 
@@ -110,7 +117,7 @@ private:
   // .oct suffixes.
   string_vector fcn_file_names_no_suffix;
 
-  string_vector do_list (bool no_suffix);
+  string_vector do_list (const string& path, bool no_suffix);
 };
 
 #endif

@@ -53,6 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dynamic-ld.h"
 #include "error.h"
 #include "file-io.h"
+#include "fn-cache.h"
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
@@ -913,7 +914,7 @@ make_name_list (void)
   if (top_level_sym_tab != curr_sym_tab)
     lcl = curr_sym_tab->list (lcl_len);
 
-  ffl = get_fcn_file_names (1);
+  ffl = octave_fcn_file_name_cache::list_no_suffix ();
   int ffl_len = ffl.length ();
 
   int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;

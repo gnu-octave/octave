@@ -240,8 +240,8 @@ AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)dnl
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_STDC_HEADERS
-AC_HAVE_HEADERS(string.h varargs.h)
-AC_HAVE_HEADERS(sys/time.h sys/fcntl.h sys/ttold.h sys/ptem.h unistd.h)
+AC_HAVE_HEADERS(string.h varargs.h unistd.h)
+AC_HAVE_HEADERS(sys/time.h sys/fcntl.h sys/ttold.h sys/ptem.h sys/select.h)
 AC_DIR_HEADER
 AC_HAVE_FUNCS(setvbuf getcwd bzero rindex vfprintf vsprintf)
 AC_STRUCT_TM

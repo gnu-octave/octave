@@ -762,6 +762,8 @@ public:
       return retval;
     }
 
+  tree_constant eval (int argc, char **argv, int print);
+
   tree_constant *eval (const tree_constant *args, int n_in, int n_out,
 		       int print)
     { return rep->eval (args, n_in, n_out, print); }

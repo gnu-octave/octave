@@ -213,7 +213,15 @@ handle_message (error_fun f, const char *msg, const octave_value_list& args)
 
   if (nargin > 0)
     {
-      octave_value arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
+      octave_value arg;
+
+      if (nargin > 1)
+	{
+	  octave_value_list tmp = Fsprintf (args, 1);
+	  arg = tmp(0);
+	}
+      else
+	arg = args(0);
 
       if (arg.is_defined ())
 	{

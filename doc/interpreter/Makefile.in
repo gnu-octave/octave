@@ -181,7 +181,7 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 clean-texi:
-	rm -f $(TEXINFO)
+	rm -f $(SUB_TEXINFO)
 .PHONY: clean-texi
 
 dist: clean-texi all

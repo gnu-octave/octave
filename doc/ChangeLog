@@ -1,3 +1,7 @@
+2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (clean-texi): Avoid removing octave.texi.
+
 2000-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in: Don't generate octave.texi from octave.txi.

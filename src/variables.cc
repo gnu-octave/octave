@@ -1286,13 +1286,11 @@ bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
   sr->unprotect ();
   tmp = new tree_constant (nargin);
   sr->define (tmp);
-  sr->protect ();
 
   sr = sym_tab->lookup ("nargout", 1, 0);
   sr->unprotect ();
   tmp = new tree_constant (nargout);
   sr->define (tmp);
-  sr->protect ();
 }
 
 // Give a global variable a definition.  This will insert the symbol

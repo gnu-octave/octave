@@ -783,7 +783,9 @@ reset_parser (void)
   // Only ask for input from stdin if we are expecting interactive
   // input.
   if ((interactive || forced_interactive)
-      && ! (reading_fcn_file || get_input_from_eval_string
+      && ! (reading_fcn_file
+	    || reading_script_file
+	    || get_input_from_eval_string
 	    || input_from_startup_file))
     yyrestart (stdin);
 

@@ -1,3 +1,11 @@
+2002-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (parse_fcn_file): Call error if there is no input file.
+	(parse_and_execute (FILE *): Protect get_input_from_eval_string.
+	Set get_input_from_eval_string to false before calling yyparse.
+	* lex.l (reset_parser): Also skip yyrestart (stdin) if
+	reading_script_file is true.
+
 2002-03-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-loop.cc (evaluating_looping_command): New global.

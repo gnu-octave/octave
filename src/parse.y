@@ -2720,7 +2720,7 @@ void
 parse_and_execute (FILE *f)
 {
   unwind_protect::begin_frame ("parse_and_execute");
-  
+
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (f);
 
@@ -2731,9 +2731,11 @@ parse_and_execute (FILE *f)
 
   unwind_protect_bool (line_editing);
   unwind_protect_bool (input_from_command_line_file);
+  unwind_protect_bool (get_input_from_eval_string);
 
   line_editing = false;
   input_from_command_line_file = false;
+  get_input_from_eval_string = false;
 
   unwind_protect_ptr (curr_sym_tab);
 
@@ -3200,6 +3202,8 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  script_file_executed = true;
 	}
     }
+  else
+    error ("no such file, `%s'", ff.c_str ());
 
   unwind_protect::run_frame ("parse_fcn_file");
 

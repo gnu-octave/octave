@@ -45,10 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-// For instantiating the Array<Matrix> object.
-#include "Array.h"
-#include "Array.cc"
-
 #include "DASRT.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
@@ -57,23 +53,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define F77_FUNC(x, X) F77_FCN (x, X)
 #endif
 
-extern "C"
-{
-  int F77_FUNC (ddasrt, DASRT) (int (*)(const double&, double*, double*,
-					double*, int&, double*, int*),
-				const int&, const double&, double*, double*,
-				const double&, int*, double*, double*,
-				int&, double*, const int&, int*, 
-				const int&, double*, int*,
-				int (*)(const double&, double*,
-					double*, double*,
-					const double&, double*, int*),
-				int (*)(const int&, const double&, double*,
-					const int&, double*, double*, int*),
-				const int&, int*);
-}
+typedef int (*dasrt_fcn_ptr) (const double&, const double*, const double*,
+			      double*, int&, double*, int*);
 
-template class Array<Matrix>;
+typedef int (*dasrt_jac_ptr) (const double&, const double*, const double*,
+			      double*, const double&, double*, int*);
+
+typedef int (*dasrt_constr_ptr) (const int&, const double&, const double*,
+				 const int&, double*, double*, int*);
+
+extern "C"
+int F77_FUNC (ddasrt, DASRT) (dasrt_fcn_ptr, const int&, double&,
+			      double*, double*, const double&, int*,
+			      double*, double*, int&, double*,
+			      const int&, int*, const int&, double*,
+			      int*, dasrt_jac_ptr, dasrt_constr_ptr,
+			      const int&, int*);
 
 static DAEFunc::DAERHSFunc user_fsub;
 static DAEFunc::DAEJacFunc user_jsub;
@@ -81,8 +76,8 @@ static DAERTFunc::DAERTConstrFunc user_csub;
 static int nn;
 
 static int
-ddasrt_f (const double& t, double *state, double *deriv, double *delta,
-          int& ires, double *rpar, int *ipar)
+ddasrt_f (const double& t, const double *state, const double *deriv,
+	  double *delta, int& ires, double *rpar, int *ipar)
 {
   ColumnVector tmp_state (nn);
   for (int i = 0; i < nn; i++)
@@ -111,43 +106,33 @@ ddasrt_f (const double& t, double *state, double *deriv, double *delta,
 
 //static efptr e_fun;
 
-static int
-ddasrt_j (const double& t, double *state, double *deriv,
-	  double *pdwork, const double& cj, double *rpar, int *ipar) 
+int
+ddasrt_j (const double& time, const double *state, const double *deriv,
+	  double *pd, const double& cj, double *, int *)
 {
+  // XXX FIXME XXX -- would be nice to avoid copying the data.
+
   ColumnVector tmp_state (nn);
-  for (int i = 0; i < nn; i++)
-    tmp_state(i) = state[i];
-
   ColumnVector tmp_deriv (nn);
+
   for (int i = 0; i < nn; i++)
-    tmp_deriv(i) = deriv[i];
+    {
+      tmp_deriv.elem (i) = deriv [i];
+      tmp_state.elem (i) = state [i];
+    }
 
-  // XXX FIXME XXX
-
-  Matrix tmp_dfdxdot (nn, nn);
-  Matrix tmp_dfdx (nn, nn);
-
-  DAEFunc::DAEJac tmp_jac;
-  tmp_jac.dfdxdot = &tmp_dfdxdot;
-  tmp_jac.dfdx    = &tmp_dfdx;
-
-  tmp_jac = user_jsub (tmp_state, tmp_deriv, t);
-
-  // Fix up the matrix of partial derivatives for dasrt.
-
-  tmp_dfdx = tmp_dfdx + cj * tmp_dfdxdot;
+  Matrix tmp_pd = user_jsub (tmp_state, tmp_deriv, time, cj);
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
-      pdwork[j*nn+i] = tmp_dfdx.elem (i, j);
+      pd [nn * j + i] = tmp_pd.elem (i, j);
 
   return 0;
 }
 
 static int
-ddasrt_g (const int& neq, const double& t, double *state, const int& ng,
-	  double *gout, double *rpar, int *ipar) 
+ddasrt_g (const int& neq, const double& t, const double *state,
+	  const int& ng, double *gout, double *rpar, int *ipar) 
 {
   int n = neq;
 

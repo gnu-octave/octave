@@ -1,5 +1,8 @@
 2002-07-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/dassl.cc (dassl_user_jacobian): New function.
+	(Fdassl): Handle Jacobian function.
+
 	* DLD-FUNCTIONS/dasrt.cc: New file.
 	* Makefile.in (DLD_XSRC): Add it to the list.
 

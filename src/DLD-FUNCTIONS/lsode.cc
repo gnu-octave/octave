@@ -201,20 +201,23 @@ parameters for @code{lsode}.\n\
 
   if (nargin > 2 && nargin < 5 && nargout < 4)
     {
+      lsode_fcn = 0;
+      lsode_jac = 0;
+
       octave_value f_arg = args(0);
 
       switch (f_arg.rows ())
 	{
 	case 1:
 	  lsode_fcn = extract_function
-	    (args(0), "lsode", "__lsode_fcn__",
+	    (f_arg, "lsode", "__lsode_fcn__",
 	     "function xdot = __lsode_fcn__ (x, t) xdot = ",
 	     "; endfunction");
 	  break;
 
 	case 2:
 	  {
-	    string_vector tmp = args(0).all_strings ();
+	    string_vector tmp = f_arg.all_strings ();
 
 	    if (! error_state)
 	      {

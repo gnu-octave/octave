@@ -31,18 +31,17 @@ DAEFunc
 {
 public:
 
-  struct DAEJac
-    {
-      Matrix *dfdxdot;
-      Matrix *dfdx;
-    };
-
   typedef ColumnVector (*DAERHSFunc) (const ColumnVector& x,
 				      const ColumnVector& xdot,
 				      double t, int& ires);
 
-  typedef DAEJac (*DAEJacFunc) (const ColumnVector& x,
-				const ColumnVector& xdot, double t);
+  // This is really the form used by DASSL:
+  //
+  //   PD = DG/DY + CJ * DG/DYPRIME
+
+  typedef Matrix (*DAEJacFunc) (const ColumnVector& x,
+				const ColumnVector& xdot,
+				double t, double cj);
 
   DAEFunc (void)
     : fun (0), jac (0) { }

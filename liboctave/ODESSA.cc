@@ -67,14 +67,14 @@ ODESSA_options::set_integration_method (const std::string& val)
 }
 
 typedef int (*odessa_fcn_ptr) (int*, const double&, double*,
-                              double*, double*);
+			       double*, double*);
 
 typedef int (*odessa_jac_ptr) (int*, const double&, double*,
-                              double*, const int&, const int&,
-                              double*, const int&);
+			       double*, const int&, const int&,
+			       double*, const int&);
 
 typedef int (*odessa_dfdp_ptr) (int*, const double&, double*,
-                              double*, double*, const int&);
+				double*, double*, const int&);
 
 
 extern "C"

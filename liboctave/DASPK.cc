@@ -175,31 +175,27 @@ ddaspk_psol (const int& neq, const double& time, const double *state,
   return 0;
 }
 
+
 int
-ddaspk_j (const double& time, const double *, const double *, double *pd,
-	  const double& cj, double *, int *)
+ddaspk_j (const double& time, const double *state, const double *deriv,
+	  double *pd, const double& cj, double *, int *)
 {
+  // XXX FIXME XXX -- would be nice to avoid copying the data.
+
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  // XXX FIXME XXX
+  for (int i = 0; i < nn; i++)
+    {
+      tmp_deriv.elem (i) = deriv [i];
+      tmp_state.elem (i) = state [i];
+    }
 
-  Matrix tmp_dfdxdot (nn, nn);
-  Matrix tmp_dfdx (nn, nn);
-
-  DAEFunc::DAEJac tmp_jac;
-  tmp_jac.dfdxdot = &tmp_dfdxdot;
-  tmp_jac.dfdx    = &tmp_dfdx;
-
-  tmp_jac = user_jac (tmp_state, tmp_deriv, time);
-
-  // Fix up the matrix of partial derivatives for daspk.
-
-  tmp_dfdx = tmp_dfdx + cj * tmp_dfdxdot;
+  Matrix tmp_pd = user_jac (tmp_state, tmp_deriv, time, cj);
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
-      pd [nn * j + i] = tmp_dfdx.elem (i, j);
+      pd [nn * j + i] = tmp_pd.elem (i, j);
 
   return 0;
 }

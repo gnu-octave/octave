@@ -35,19 +35,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
-typedef int (*dassl_fcn_ptr) (const double&, double*, double*,
+typedef int (*dassl_fcn_ptr) (const double&, const double*, const double*,
 			      double*, int&, double*, int*);
 
-typedef int (*dassl_jac_ptr) (const double&, double*, double*,
+typedef int (*dassl_jac_ptr) (const double&, const double*, const double*,
 			      double*, const double&, double*, int*);
 
 extern "C"
 int F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
-			      double*, double*, double&, const int*,
-			      const double&, const double&, int&,
-			      double*, const int&, int*, const int&,
-			      const double*, const int*,
-			      dassl_jac_ptr);
+			       double*, double*, double&, const int*,
+			       const double&, const double&, int&,
+			       double*, const int&, int*, const int&,
+			       const double*, const int*,
+			       dassl_jac_ptr);
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
@@ -132,9 +132,11 @@ DASSL::clear_stop_time (void)
 }
 
 int
-ddassl_f (const double& time, double *state, double *deriv,
+ddassl_f (const double& time, const double *state, const double *deriv,
 	  double *delta, int& ires, double *, int *)
 {
+  // XXX FIXME XXX -- would be nice to avoid copying the data.
+
   ColumnVector tmp_deriv (nn);
   ColumnVector tmp_state (nn);
   ColumnVector tmp_delta (nn);
@@ -162,30 +164,25 @@ ddassl_f (const double& time, double *state, double *deriv,
 }
 
 int
-ddassl_j (const double& time, double *, double *, double *pd, const
-	  double& cj, double *, int *)
+ddassl_j (const double& time, const double *state, const double *deriv,
+	  double *pd, const double& cj, double *, int *)
 {
+  // XXX FIXME XXX -- would be nice to avoid copying the data.
+
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  // XXX FIXME XXX
+  for (int i = 0; i < nn; i++)
+    {
+      tmp_deriv.elem (i) = deriv [i];
+      tmp_state.elem (i) = state [i];
+    }
 
-  Matrix tmp_dfdxdot (nn, nn);
-  Matrix tmp_dfdx (nn, nn);
-
-  DAEFunc::DAEJac tmp_jac;
-  tmp_jac.dfdxdot = &tmp_dfdxdot;
-  tmp_jac.dfdx    = &tmp_dfdx;
-
-  tmp_jac = user_jac (tmp_state, tmp_deriv, time);
-
-  // Fix up the matrix of partial derivatives for dassl.
-
-  tmp_dfdx = tmp_dfdx + cj * tmp_dfdxdot;
+  Matrix tmp_pd = user_jac (tmp_state, tmp_deriv, time, cj);
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
-      pd [nn * j + i] = tmp_dfdx.elem (i, j);
+      pd [nn * j + i] = tmp_pd.elem (i, j);
 
   return 0;
 }

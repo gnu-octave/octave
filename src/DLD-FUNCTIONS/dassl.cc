@@ -44,6 +44,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by dassl.
 static octave_function *dassl_fcn;
 
+// Global pointer for optional user defined jacobian function.
+static octave_function *dassl_jac;
+
 static DASSL_options dassl_opts;
 
 // Is this a recursive call?
@@ -114,6 +117,70 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
+Matrix
+dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
+		     double t, double cj)
+{
+  Matrix retval;
+
+  int nstates = x.capacity ();
+
+  assert (nstates == xdot.capacity ());
+
+  octave_value_list args;
+
+  args(3) = cj;
+  args(2) = t;
+
+  if (nstates > 1)
+    {
+      Matrix m1 (nstates, 1);
+      Matrix m2 (nstates, 1);
+      for (int i = 0; i < nstates; i++)
+	{
+	  m1 (i, 0) = x (i);
+	  m2 (i, 0) = xdot (i);
+	}
+      octave_value state (m1);
+      octave_value deriv (m2);
+      args(1) = deriv;
+      args(0) = state;
+    }
+  else
+    {
+      double d1 = x (0);
+      double d2 = xdot (0);
+      octave_value state (d1);
+      octave_value deriv (d2);
+      args(1) = deriv;
+      args(0) = state;
+    }
+
+  if (dassl_jac)
+    {
+      octave_value_list tmp = dassl_jac->do_multi_index_op (1, args);
+
+      if (error_state)
+	{
+	  gripe_user_supplied_eval ("dassl");
+	  return retval;
+	}
+
+      int tlen = tmp.length ();
+      if (tlen > 0 && tmp(0).is_defined ())
+	{
+	  retval = tmp(0).matrix_value ();
+
+	  if (error_state || retval.length () == 0)
+	    gripe_user_supplied_eval ("dassl");
+	}
+      else
+	gripe_user_supplied_eval ("dassl");
+    }
+
+  return retval;
+}
+
 #define DASSL_ABORT() \
   do \
     { \
@@ -138,7 +205,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
     } \
   while (0)
 
-DEFUN_DLD (dassl, args, ,
+DEFUN_DLD (dassl, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})\n\
 Return a matrix of states and their first derivatives with respect to\n\
@@ -191,14 +258,48 @@ parameters for @code{dassl}.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 3 && nargin < 6)
+  if (nargin > 3 && nargin < 6 && nargout < 5)
     {
-      dassl_fcn = extract_function
-	(args(0), "dassl", "__dassl_fcn__",
-	 "function res = __dassl_fcn__ (x, xdot, t) res = ",
-	 "; endfunction");
+      dassl_fcn = 0;
+      dassl_jac = 0;
 
-      if (! dassl_fcn)
+      octave_value f_arg = args(0);
+
+      switch (f_arg.rows ())
+	{
+	case 1:
+	  dassl_fcn = extract_function
+	    (f_arg, "dassl", "__dassl_fcn__",
+	     "function res = __dassl_fcn__ (x, xdot, t) res = ",
+	     "; endfunction");
+	  break;
+
+	case 2:
+	  {
+	    string_vector tmp = f_arg.all_strings ();
+
+	    if (! error_state)
+	      {
+		dassl_fcn = extract_function
+		  (tmp(0), "dassl", "__dassl_fcn__",
+		   "function res = __dassl_fcn__ (x, xdot, t) res = ",
+		   "; endfunction");
+
+		if (dassl_fcn)
+		  {
+		    dassl_jac = extract_function
+		      (tmp(1), "dassl", "__dassl_jac__",
+		       "function jac = __dassl_jac__ (x, xdot, t, cj) jac = ",
+		       "; endfunction");
+
+		    if (! dassl_jac)
+		      dassl_fcn = 0;
+		  }
+	      }
+	  }
+	}
+
+      if (error_state || ! dassl_fcn)
 	DASSL_ABORT ();
 
       ColumnVector state = ColumnVector (args(1).vector_value ());
@@ -234,7 +335,11 @@ parameters for @code{dassl}.\n\
       double tzero = out_times (0);
 
       DAEFunc func (dassl_user_function);
+      if (dassl_jac)
+	func.set_jacobian_function (dassl_user_jacobian);
+
       DASSL dae (state, deriv, tzero, func);
+
       dae.copy (dassl_opts);
 
       Matrix output;
@@ -247,10 +352,8 @@ parameters for @code{dassl}.\n\
 
       if (! error_state)
 	{
-	  retval.resize (2);
-
-	  retval(0) = output;
 	  retval(1) = deriv_output;
+	  retval(0) = output;
 	}
     }
   else
@@ -394,7 +497,7 @@ DEFUN_DLD (dassl_options, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dassl_options (@var{opt}, @var{val})\n\
 When called with two arguments, this function allows you set options\n\
-parameters for the function @code{lsode}.  Given one argument,\n\
+parameters for the function @code{dassl}.  Given one argument,\n\
 @code{dassl_options} returns the value of the corresponding option.  If\n\
 no arguments are supplied, the names of all the available options and\n\
 their current values are displayed.\n\

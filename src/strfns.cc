@@ -77,7 +77,7 @@ DEFUN ("toascii", Ftoascii, Stoascii, 1, 1,
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0).is_string ();
+      tree_constant arg = args(0);
 
       if (arg.is_string ())
 	{

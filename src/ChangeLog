@@ -14,6 +14,7 @@
 	* ov.h (octave_value::string_value): Pass arg to rep function.
 
 	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_f): Delete unused arg names.
+	* DLD-FUNCTIONS/rand.cc (Frand, Frandn): Likewise.
 	* ls-hdf5.h (hdf5_streambase::hdf5_streambase): Likewise.
 	* ls-hdf5.cc (read_hdf5_data): Likewise.
 	* ls-utils.cc (get_save_type): Likewise.

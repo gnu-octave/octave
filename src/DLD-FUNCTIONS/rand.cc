@@ -219,7 +219,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
   return octave_rand::nd_array (dims);
 }
 
-DEFUN_DLD (rand, args, nargout,
+DEFUN_DLD (rand, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} rand (@var{x})\n\
 @deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
@@ -262,7 +262,7 @@ reset_rand_generator (void *)
   octave_rand::distribution (current_distribution);
 }
 
-DEFUN_DLD (randn, args, nargout,
+DEFUN_DLD (randn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} randn (@var{x})\n\
 @deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\

@@ -539,7 +539,7 @@ public:
     { return rep->all_strings (pad, force); }
 
   virtual std::string string_value (bool force = false) const
-    { return rep->string_value (); }
+    { return rep->string_value (force); }
 
   virtual Range range_value (void) const
     { return rep->range_value (); }

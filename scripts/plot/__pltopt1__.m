@@ -182,6 +182,7 @@ function fmt = __pltopt1__ (caller, opt)
           endif
         endif
       endwhile
+      key_title = undo_string_escapes (key_title);
     elseif (strcmp (char, " "))
     elseif (isempty(char))
       ## whitespace -- do nothing.

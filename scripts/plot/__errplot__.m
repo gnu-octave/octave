@@ -61,8 +61,7 @@ function __errplot__ (varargin)
   if (ndata == 2)
     for i = 1:nplots,
       tmp = [(1:len)', arg1(:,i), arg2(:,i)];
-      cmd = sprintf ("gplot tmp %s",
-		     undo_string_escapes (fmt(min(i, rows(fmt)), :)));
+      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
       eval (cmd);
     endfor
   elseif (ndata == 3)
@@ -73,8 +72,7 @@ function __errplot__ (varargin)
       endfor
       tstr = [tstr, "];"];
       eval (tstr);
-      cmd = sprintf ("gplot tmp %s",
-		     undo_string_escapes (fmt(min(i, rows(fmt)), :)));
+      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
       eval (cmd);
     endfor
   elseif (ndata == 4)
@@ -87,16 +85,14 @@ function __errplot__ (varargin)
        tstr = "tmp = [arg1(:,i), arg2(:,i), arg2(:,i)-arg3(:,i), arg2(:,i)+arg4(:,i)];";
       endif
       eval (tstr);
-      cmd = sprintf ("gplot tmp %s",
-		     undo_string_escapes (fmt(min(i, rows(fmt)), :)));
+      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
       eval (cmd);
     endfor
   elseif (ndata == 6)
     for i = 1:nplots,
       tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i), arg2(:,i)-arg5(:,i), arg2(:,i)+arg6(:,i)];";
       eval (tstr);
-      cmd = sprintf ("gplot tmp %s",
-		     undo_string_escapes (fmt(min(i, rows(fmt)), :)));
+      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
       eval (cmd);
     endfor
   else
@@ -107,8 +103,7 @@ function __errplot__ (varargin)
       endfor
       tstr = [tstr, "];"];
       eval (tstr);
-      cmd = sprintf ("gplot tmp %s",
-		     undo_string_escapes (fmt(min(i, rows(fmt)), :)));
+      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
       eval (cmd);
     endfor
   endif

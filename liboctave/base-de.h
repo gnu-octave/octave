@@ -53,12 +53,12 @@ public:
   // integration.
 
   // Return the vector of states at output time t.
-  virtual ColumnVector do_integrate (double t) = 0;
+  virtual ColumnVector do_integrate (double tt) = 0;
 
   // Return a matrix of states at each output time specified by t.
   // The rows of the result matrix should each correspond to a new
   // output time.
-  virtual Matrix do_integrate (const ColumnVector& t) = 0;
+  virtual Matrix do_integrate (const ColumnVector& tt) = 0;
 
   // There must also be a way for us to force the integration to
   // restart.
@@ -68,28 +68,28 @@ public:
   // get additional information.
 
   // Integrate to t from current point.
-  virtual ColumnVector integrate (double t)
-    { return do_integrate (t); }
+  virtual ColumnVector integrate (double tt)
+    { return do_integrate (tt); }
 
   // Set new x0, t0 and integrate to t.
-  virtual ColumnVector integrate (const ColumnVector& x0, double t0, double t)
+  virtual ColumnVector integrate (const ColumnVector& x0, double t0, double tt)
     {
       initialize (x0, t0);
-      return do_integrate (t);
+      return do_integrate (tt);
     }
 
   // Integrate from current point and return output at all points
   // specified by t.
-  virtual Matrix integrate (const ColumnVector t)
-    { return do_integrate (t); }
+  virtual Matrix integrate (const ColumnVector tt)
+    { return do_integrate (tt); }
 
   // Set new x0, t0 and integrate to return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& x0, double t0,
-			    const ColumnVector t)
+			    const ColumnVector tt)
     {
       initialize (x0, t0);
-      return do_integrate (t);
+      return do_integrate (tt);
     }
 
   virtual void initialize (const ColumnVector& x0, double t0)

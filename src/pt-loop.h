@@ -39,6 +39,9 @@ class tree_walker;
 #include "comment-list.h"
 #include "pt-cmd.h"
 
+// TRUE means we are evaluating some kind of looping construct.
+extern bool evaluating_looping_command;
+
 // While.
 
 class

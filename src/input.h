@@ -45,6 +45,10 @@ extern std::string current_eval_string;
 // TRUE means get input from current_eval_string.
 extern bool get_input_from_eval_string;
 
+// TRUE means we haven't been asked for the input from
+// current_eval_string yet.
+extern bool input_from_eval_string_pending;
+
 // TRUE means we're parsing a function file.
 extern bool reading_fcn_file;
 

@@ -1,3 +1,26 @@
+2002-03-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-loop.cc (evaluating_looping_command): New global.
+	(tree_while_command::eval): Protect evaluating_looping_command.
+	Set it to true while evaluating loop.
+	(tree_do_until_command::eval): Ditto.
+	(tree_simple_for_command::eval): Ditto.
+	(tree_complex_for_command::eval): Ditto.
+	* pt-loop.h (evaluating_looping_command): Provide decl.
+	* parse.y (parse_fcn_file): Protect get_input_from_eval_string.
+	Set get_input_from_eval_string to false before calling yyparse.
+	(make_break_command): Also check evaluating_looping_command.
+	(make_continue_command): Also check evaluating_looping_command.
+	(eval_string (const std::string&, bool, int&, int)): Loop over
+	yyparse to handle multi-line strings.
+	Move call to unwind_protect::run_frame to end of function.
+	Don't reset parser before calling yyparse.
+	Correctly handle return, break, and continue.
+
+	* input.cc (input_from_eval_string_pending): New global variable.
+	(get_usr_input): Use it.
+	* input.h (input_from_eval_string_pending): Provide decl.
+
 2002-03-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):

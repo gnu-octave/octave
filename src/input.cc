@@ -98,6 +98,10 @@ std::string current_eval_string;
 // TRUE means get input from current_eval_string.
 bool get_input_from_eval_string = false;
 
+// TRUE means we haven't been asked for the input from
+// current_eval_string yet.
+bool input_from_eval_string_pending = false;
+
 // TRUE means we're parsing a function file.
 bool reading_fcn_file = false;
 
@@ -249,12 +253,17 @@ get_user_input (void)
 
   if (get_input_from_eval_string)
     {
-      retval = current_eval_string;
+      if (input_from_eval_string_pending)
+	{
+	  input_from_eval_string_pending = false;
 
-      size_t len = retval.length ();
+	  retval = current_eval_string;
 
-      if (retval[len-1] != '\n')
-	retval.append ("\n");
+	  size_t len = retval.length ();
+
+	  if (retval[len-1] != '\n')
+	    retval.append ("\n");
+	}
     }
   else
     retval = octave_gets ();

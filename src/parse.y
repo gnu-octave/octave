@@ -2204,7 +2204,8 @@ make_break_command (token *break_tok)
   int c = break_tok->column ();
 
   if (lexer_flags.looping || lexer_flags.defining_func
-      || reading_script_file || evaluating_function_body)
+      || reading_script_file || evaluating_function_body
+      || evaluating_looping_command)
     retval = new tree_break_command (l, c);
   else
     retval = new tree_no_op_command ("break", l, c);
@@ -2222,7 +2223,7 @@ make_continue_command (token *continue_tok)
   int l = continue_tok->line ();
   int c = continue_tok->column ();
 
-  if (lexer_flags.looping)
+  if (lexer_flags.looping || evaluating_looping_command)
     retval = new tree_continue_command (l, c);
   else
     retval = new tree_no_op_command ("continue", l, c);
@@ -3135,11 +3136,13 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  unwind_protect_bool (Vsaving_history);
 	  unwind_protect_bool (reading_fcn_file);
 	  unwind_protect_bool (input_from_command_line_file);
+	  unwind_protect_bool (get_input_from_eval_string);
 
 	  Vecho_executing_commands = ECHO_OFF;
 	  Vsaving_history = false;
 	  reading_fcn_file = true;
 	  input_from_command_line_file = false;
+	  get_input_from_eval_string = false;
 
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
@@ -3390,16 +3393,21 @@ by name, and use @code{feval} to call them.\n\
 octave_value_list
 eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 {
+  octave_value_list retval;
+
   unwind_protect::begin_frame ("eval_string");
 
   unwind_protect_bool (get_input_from_eval_string);
+  unwind_protect_bool (input_from_eval_string_pending);
   unwind_protect_bool (input_from_command_line_file);
-  unwind_protect_ptr (global_command);
   unwind_protect_str (current_eval_string);
 
   get_input_from_eval_string = true;
+  input_from_eval_string_pending = true;
   input_from_command_line_file = false;
   current_eval_string = s;
+
+  unwind_protect_ptr (global_command);
 
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (0);
@@ -3411,25 +3419,32 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   unwind_protect_ptr (curr_sym_tab);
 
-  reset_parser ();
+  do
+    {
+      parse_status = yyparse ();
 
-  parse_status = yyparse ();
+      tree_statement_list *command = global_command;
 
-  // Important to reset the idea of where input is coming from before
-  // trying to eval the command we just parsed -- it might contain the
-  // name of an function file that still needs to be parsed!
+      if (parse_status == 0 && command)
+        {
+	  retval = command->eval (silent, nargout);
 
-  tree_statement_list *command = global_command;
+	  delete command;
+
+	  command = 0;
+
+	  if (error_state
+	      || tree_return_command::returning
+	      || tree_break_command::breaking
+	      || tree_continue_command::continuing)
+	    break;
+	}
+      else
+	break;
+    }
+  while (parse_status == 0);
 
   unwind_protect::run_frame ("eval_string");
-
-  octave_value_list retval;
-
-  if (parse_status == 0 && command)
-    {
-      retval = command->eval (silent, nargout);
-      delete command;
-    }
 
   return retval;
 }

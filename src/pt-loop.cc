@@ -41,6 +41,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-loop.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
+#include "unwind-prot.h"
+
+// TRUE means we are evaluating some kind of looping construct.
+bool evaluating_looping_command = false;
 
 // Decide if it's time to quit a for or while loop.
 static inline bool
@@ -78,6 +82,12 @@ tree_while_command::eval (void)
   if (error_state)
     return;
 
+  unwind_protect::begin_frame ("while_command::eval");
+
+  unwind_protect_bool (evaluating_looping_command);
+
+  evaluating_looping_command = true;
+
   if (! expr)
     panic_impossible ();
 
@@ -92,7 +102,7 @@ tree_while_command::eval (void)
 	      if (error_state)
 		{
 		  eval_error ();
-		  return;
+		  goto cleanup;
 		}
 	    }
 
@@ -102,6 +112,9 @@ tree_while_command::eval (void)
       else
 	break;
     }
+
+ cleanup:
+  unwind_protect::run_frame ("while_command::eval");
 }
 
 void
@@ -126,6 +139,12 @@ tree_do_until_command::eval (void)
   if (error_state)
     return;
 
+  unwind_protect::begin_frame ("do_until_command::eval");
+
+  unwind_protect_bool (evaluating_looping_command);
+
+  evaluating_looping_command = true;
+
   if (! expr)
     panic_impossible ();
 
@@ -140,13 +159,16 @@ tree_do_until_command::eval (void)
 	  if (error_state)
 	    {
 	      eval_error ();
-	      return;
+	      goto cleanup;
 	    }
 	}
 
       if (quit_loop_now () || expr->is_logically_true ("do-until"))
 	break;
     }
+
+ cleanup:
+  unwind_protect::run_frame ("do_until_command::eval");
 }
 
 void
@@ -223,144 +245,155 @@ tree_simple_for_command::eval (void)
   if (error_state)
     return;
 
+  unwind_protect::begin_frame ("simple_for_command::eval");
+
+  unwind_protect_bool (evaluating_looping_command);
+
+  evaluating_looping_command = true;
+
   octave_value rhs = expr->rvalue ();
 
   if (error_state || rhs.is_undefined ())
     {
       eval_error ();
-      return;
+      goto cleanup;
     }
 
-  octave_lvalue ult = lhs->lvalue ();
+  {
+    octave_lvalue ult = lhs->lvalue ();
 
-  if (error_state)
-    {
-      eval_error ();
-      return;
-    }
+    if (error_state)
+      {
+	eval_error ();
+	goto cleanup;
+      }
 
-  if (rhs.is_range ())
-    {
-      Range rng = rhs.range_value ();
+    if (rhs.is_range ())
+      {
+	Range rng = rhs.range_value ();
 
-      int steps = rng.nelem ();
-      double b = rng.base ();
-      double increment = rng.inc ();
+	int steps = rng.nelem ();
+	double b = rng.base ();
+	double increment = rng.inc ();
 
-      for (int i = 0; i < steps; i++)
-	{
-	  MAYBE_DO_BREAKPOINT;
+	for (int i = 0; i < steps; i++)
+	  {
+	    MAYBE_DO_BREAKPOINT;
 
-	  double tmp_val = b + i * increment;
+	    double tmp_val = b + i * increment;
 
-	  octave_value val (tmp_val);
+	    octave_value val (tmp_val);
 
-	  bool quit = false;
+	    bool quit = false;
 
-	  do_for_loop_once (ult, val, quit);
+	    do_for_loop_once (ult, val, quit);
 
-	  if (quit)
-	    break;
-	}
-    }
-  else if (rhs.is_scalar_type ())
-    {
-      bool quit = false;
-      
-      MAYBE_DO_BREAKPOINT;
+	    if (quit)
+	      break;
+	  }
+      }
+    else if (rhs.is_scalar_type ())
+      {
+	bool quit = false;
 
-      do_for_loop_once (ult, rhs, quit);
-    }
-  else if (rhs.is_string ())
-    {
-      charMatrix chm_tmp = rhs.char_matrix_value ();
-      int nr = chm_tmp.rows ();
-      int steps = chm_tmp.columns ();
+	MAYBE_DO_BREAKPOINT;
 
-      if (error_state)
-	return;
+	do_for_loop_once (ult, rhs, quit);
+      }
+    else if (rhs.is_string ())
+      {
+	charMatrix chm_tmp = rhs.char_matrix_value ();
+	int nr = chm_tmp.rows ();
+	int steps = chm_tmp.columns ();
 
-      if (nr == 1)
-	DO_LOOP (chm_tmp (0, i));
-      else
-	{
-	  for (int i = 0; i < steps; i++)
-	    {
-	      MAYBE_DO_BREAKPOINT;
+	if (error_state)
+	  goto cleanup;
 
-	      octave_value val (chm_tmp.extract (0, i, nr-1, i), true);
+	if (nr == 1)
+	  DO_LOOP (chm_tmp (0, i));
+	else
+	  {
+	    for (int i = 0; i < steps; i++)
+	      {
+		MAYBE_DO_BREAKPOINT;
 
-	      bool quit = false;
+		octave_value val (chm_tmp.extract (0, i, nr-1, i), true);
 
-	      do_for_loop_once (ult, val, quit);
+		bool quit = false;
 
-	      if (quit)
-		break;
-	    }
-	}
-    }
-  else if (rhs.is_matrix_type ())
-    {
-      Matrix m_tmp;
-      ComplexMatrix cm_tmp;
+		do_for_loop_once (ult, val, quit);
 
-      int nr;
-      int steps;
+		if (quit)
+		  break;
+	      }
+	  }
+      }
+    else if (rhs.is_matrix_type ())
+      {
+	Matrix m_tmp;
+	ComplexMatrix cm_tmp;
 
-      if (rhs.is_real_matrix ())
-	{
-	  m_tmp = rhs.matrix_value ();
-	  nr = m_tmp.rows ();
-	  steps = m_tmp.columns ();
-	}
-      else
-	{
-	  cm_tmp = rhs.complex_matrix_value ();
-	  nr = cm_tmp.rows ();
-	  steps = cm_tmp.columns ();
-	}
+	int nr;
+	int steps;
 
-      if (error_state)
-	return;
+	if (rhs.is_real_matrix ())
+	  {
+	    m_tmp = rhs.matrix_value ();
+	    nr = m_tmp.rows ();
+	    steps = m_tmp.columns ();
+	  }
+	else
+	  {
+	    cm_tmp = rhs.complex_matrix_value ();
+	    nr = cm_tmp.rows ();
+	    steps = cm_tmp.columns ();
+	  }
 
-      if (rhs.is_real_matrix ())
-	{
-	  if (nr == 1)
-	    DO_LOOP (m_tmp (0, i));
-	  else
-	    DO_LOOP (m_tmp.extract (0, i, nr-1, i));
-	}
-      else
-	{
-	  if (nr == 1)
-	    DO_LOOP (cm_tmp (0, i));
-	  else
-	    DO_LOOP (cm_tmp.extract (0, i, nr-1, i));
-	}
-    }
-  else if (rhs.is_map ())
-    {
-      Octave_map tmp_val (rhs.map_value ());
+	if (error_state)
+	  goto cleanup;
 
-      for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
-	{
-	  MAYBE_DO_BREAKPOINT;
+	if (rhs.is_real_matrix ())
+	  {
+	    if (nr == 1)
+	      DO_LOOP (m_tmp (0, i));
+	    else
+	      DO_LOOP (m_tmp.extract (0, i, nr-1, i));
+	  }
+	else
+	  {
+	    if (nr == 1)
+	      DO_LOOP (cm_tmp (0, i));
+	    else
+	      DO_LOOP (cm_tmp.extract (0, i, nr-1, i));
+	  }
+      }
+    else if (rhs.is_map ())
+      {
+	Octave_map tmp_val (rhs.map_value ());
 
-	  octave_value val = tmp_val.contents (p);
+	for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
+	  {
+	    MAYBE_DO_BREAKPOINT;
 
-	  bool quit = false;
+	    octave_value val = tmp_val.contents (p);
 
-	  do_for_loop_once (ult, val, quit);
+	    bool quit = false;
 
-	  if (quit)
-	    break;
-	}
-    }
-  else
-    {
-      ::error ("invalid type in for loop expression near line %d, column %d",
-	       line (), column ());
-    }
+	    do_for_loop_once (ult, val, quit);
+
+	    if (quit)
+	      break;
+	  }
+      }
+    else
+      {
+	::error ("invalid type in for loop expression near line %d, column %d",
+		 line (), column ());
+      }
+  }
+
+ cleanup:
+  unwind_protect::run_frame ("simple_for_command::eval");
 }
 
 void
@@ -419,12 +452,18 @@ tree_complex_for_command::eval (void)
   if (error_state)
     return;
 
+  unwind_protect::begin_frame ("complex_for_command::eval");
+
+  unwind_protect_bool (evaluating_looping_command);
+
+  evaluating_looping_command = true;
+
   octave_value rhs = expr->rvalue ();
 
   if (error_state || rhs.is_undefined ())
     {
       eval_error ();
-      return;
+      goto cleanup;
     }
 
   if (rhs.is_map ())
@@ -460,6 +499,9 @@ tree_complex_for_command::eval (void)
     }
   else
     error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+
+ cleanup:
+  unwind_protect::run_frame ("complex_for_command::eval");
 }
 
 void

@@ -77,6 +77,7 @@ static COMPRESSION_ALIST compress_suffixes[] = {
   { ".Z", "uncompress" },
   { ".Y", "unyabba" },
   { ".z", "gunzip" },
+  { ".gz", "gunzip" },
   { (char *)NULL, (char *)NULL }
 };
 

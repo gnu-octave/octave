@@ -35,6 +35,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class idx_vector;
 
+// For now, define this here if it is not already defined.  Not doing
+// this can result in bugs that are very hard to find.
+
+#ifndef HEAVYWEIGHT_INDEXING
+#define HEAVYWEIGHT_INDEXING 1
+#endif
+
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
 

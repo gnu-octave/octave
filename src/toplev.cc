@@ -650,13 +650,9 @@ string CATCH.")
 
 // Execute a shell command.
 
-static sigset_t signal_set, old_signal_set;
-
 static void
 cleanup_iprocstream (void *p)
 {
-  UNBLOCK_CHILD (old_signal_set);
-
   delete (iprocstream *) p;
 }
 
@@ -664,8 +660,6 @@ static octave_value_list
 run_command_and_return_output (const string& cmd_str)
 {
   octave_value_list retval;
-
-  BLOCK_CHILD (signal_set, old_signal_set);
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 

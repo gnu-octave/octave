@@ -8,6 +8,21 @@
 <h1> News for Octave Version 2 </h1>
 <hr>
 
+<h2>Summary of changes for version 2.0.4</h2>
+
+<ul>
+<li>It is now possible to use commands like ls, save, and cd as simple
+    variable names.  They still cannot be used as formal parameters
+    for functions, or as the names of structure variables.  Failed
+    assignments leave them undefined (you can recover the orginal
+    function definition using clear).
+<p>
+</li>
+<li>Is is now possible to invoke commands like ls, save, and cd as
+    normal functions (for example, load ("foo", "x", "y", "z")).
+</li>
+</ul>
+
 <h2>Summary of changes for version 2.0.3</h2>
 
 <ul>

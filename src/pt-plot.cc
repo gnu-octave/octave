@@ -173,7 +173,7 @@ open_plot_stream (void)
       sigaddset (&set, SIGINT);
       sigprocmask (SIG_BLOCK, &set, &oset);
 #else
-     volatile octave_interrupt_handler *old_interrupt_handler
+     volatile octave_interrupt_handler old_interrupt_handler
 	= octave_ignore_interrupts ();
 #endif
 

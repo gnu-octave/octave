@@ -72,7 +72,10 @@ static bool Vpage_output_immediately;
 // through the pager.
 static bool Vpage_screen_output;
 
-static octave_interrupt_handler *saved_interrupt_handler = 0;
+// Only one pager can be active at once, so having these at file
+// scope should be ok.
+static octave_interrupt_handler saved_interrupt_handler;
+static bool interrupt_handler_saved = false;
 
 static int really_flush_to_pager = 0;
 
@@ -88,10 +91,10 @@ clear_external_pager (void)
   delete external_pager;
   external_pager = 0;
 
-  if (saved_interrupt_handler)
+  if (interrupt_handler_saved)
     {
       octave_set_interrupt_handler (saved_interrupt_handler);
-      saved_interrupt_handler = 0;
+      interrupt_handler_saved = false;
     }
 }
 
@@ -140,6 +143,7 @@ do_sync (const char *msg, bool bypass_pager)
 	      if (! pgr.empty ())
 		{
 		  saved_interrupt_handler = octave_ignore_interrupts ();
+		  interrupt_handler_saved = true;
 
 		  external_pager = new oprocstream (pgr.c_str ());
 

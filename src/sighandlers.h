@@ -59,10 +59,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef RETSIGTYPE sig_handler (int);
 
-// All we need to do is declare pointers to this, so we don't need to
-// have the whole declaration here.
+// XXX FIXME XXX -- the data should probably be private...
 
-struct octave_interrupt_handler;
+struct
+octave_interrupt_handler
+{
+#ifdef SIGINT
+  sig_handler *int_handler;
+#endif
+
+#ifdef SIGBREAK
+  sig_handler *brk_handler;
+#endif
+};
 
 // Nonzero means we have already printed a message for this series of
 // SIGPIPES.  We assume that the writer will eventually give up.
@@ -75,12 +84,12 @@ extern sig_handler *octave_set_signal_handler (int, sig_handler *);
 
 extern void install_signal_handlers (void);
 
-extern void octave_catch_interrupts (void);
+extern octave_interrupt_handler octave_catch_interrupts (void);
 
-extern octave_interrupt_handler *octave_ignore_interrupts (void);
+extern octave_interrupt_handler octave_ignore_interrupts (void);
 
-extern octave_interrupt_handler *
-octave_set_interrupt_handler (const volatile octave_interrupt_handler *);
+extern octave_interrupt_handler
+octave_set_interrupt_handler (const volatile octave_interrupt_handler&);
 
 extern void octave_save_signal_mask (void);
 

@@ -1,49 +1,28 @@
-Subject: ANNOUNCE: Octave Version 2.0.2 released
+Subject: ANNOUNCE: Octave Version 2.0.4 released
 
-Octave version 2.0.3 is now available for ftp from ftp.che.wisc.edu
+Octave version 2.0.4 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
-  -rw-r--r--   1 jwe  3312470 Feb 18 13:08 octave-2.0.3.tar.gz
-  -rw-r--r--   1 jwe   217812 Feb 18 13:43 octave-2.0.2-2.0.3.patch.
+  -rw-r--r--   1 jwe  3314916 Feb 19 15:32 octave-2.0.4.tar.gz
+  -rw-r--r--   1 jwe     9795 Feb 19 15:55 octave-2.0.3-2.0.4.patch.gz
 
-In addition to the source distributions, there are binary
-distributions available for Linux running on Intel systems, OSF/1
-running on Alpha systems, and HA-UX 9.x running on HPPA systems.
-Binary distributions for other platforms will be available from
-ftp.che.wisc.edu when they are contributed by volunteers.  If you
-would like to help to make a binary distribution available, please
-contact bug-octave@bevo.che.wisc.edu.
+Version 2.0.4 fixes some problems with the configure scripts and
+Makefiles that were present in 2.0.3.  It will probably be the last
+2.0.x release unless some serious new bugs are found and reported.
 
-Version 2.0.3 is primarily a bug-fixing release.  Most bugs reported
-since the release of version 2.0.2 have been fixed.  There are also a
-few new features, including:
+There are also two new features (what would be the fun of making a
+release just to fix bugs? :-) both of which are kluges to allow a bit
+more compatibility with Matlab:
 
-  * The manual has been completely revised and now corresponds much
-    more closely to the features of the current version.
+  * It is now possible to use commands like ls, save, and cd as simple
+    variable names.  They still cannot be used as formal parameters
+    for functions, or as the names of structure variables.  Failed
+    assignments leave them undefined (you can recover the orginal
+    function definition using clear).
 
-  * The return value for assignment expressions is now the RHS since
-    that is more consistent with the way other programming languages
-    work.  However, Octave still prints the entire LHS value so that
-
-      x = zeros (1, 2);
-      x(2) = 1
-
-    still prints
-
-      x =
-
-        0  1
-
-    but an assignment like
-
-      z = x(2) = 1
-
-    sets z to 1 (not [ 0, 1 ] as in previous versions of Octave).
-
-  * It is now much easier to make binary distributions.  See the
-    Binary Distributions section of the manual for more details.
-
+  * Is is now possible to invoke commands like ls, save, and cd as
+    normal functions (for example, load ("foo", "x", "y", "z")).
 
 You can help make Octave more reliable by reporting any bugs you find
 to bug-octave@bevo.che.wisc.edu.

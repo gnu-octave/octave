@@ -553,7 +553,7 @@ try_info (const string& nm)
 
   cmd_str = cmd_buf.str ();
 
-  volatile octave_interrupt_handler *old_interrupt_handler
+  volatile octave_interrupt_handler old_interrupt_handler
     = octave_ignore_interrupts ();
 
   status = system (cmd_str);

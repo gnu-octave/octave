@@ -2,6 +2,15 @@ Wed Feb 19 10:30:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.4 released.
 
+	* sighandlers.cc (octave_ignore_interrupts,
+	octave_catch_interrupts, octave_set_interrupt_handler):
+	Return old value, not pointer to static data.  Fix all uses.
+	
+	* sighandlers.h (octave_interrupt_handler): Move declaration here.
+	* sighandlers.cc: From here.
+
+	* toplev.cc: Undo previous change.
+
 	* lex.l (handle_identifier): Allow commands like ls, save, etc. to
 	also be used as simple variable names.  Also make it possible to
 	use the normal function call syntax to invoke them.

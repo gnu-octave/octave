@@ -42,7 +42,7 @@ all: liboctave.info liboctave.dvi liboctave.ps
 .PHONY: all
 
 liboctave.info: $(TEXINFO) ../conf.texi
-	-makeinfo -I$(srcdir) $(srcdir)/liboctave.texi
+	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/liboctave.texi
 
 liboctave.dvi: $(TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \

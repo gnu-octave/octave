@@ -103,20 +103,6 @@ octave_restore_signal_mask (void)
 #endif
 }
 
-struct
-octave_interrupt_handler
-{
-#ifdef SIGINT
-  sig_handler *int_handler;
-#endif
-
-#ifdef SIGBREAK
-  sig_handler *brk_handler;
-#endif
-};
-
-static octave_interrupt_handler the_interrupt_handler;
-
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {
@@ -189,7 +175,7 @@ generic_sig_handler (int sig)
 static RETSIGTYPE
 sigchld_handler (int /* sig */)
 {
-  volatile octave_interrupt_handler *saved_interrupt_handler
+  volatile octave_interrupt_handler saved_interrupt_handler
      = octave_ignore_interrupts ();
 
   // I wonder if this is really right, or if SIGCHLD should just be
@@ -313,55 +299,52 @@ sigpipe_handler (int /* sig */)
   SIGHANDLER_RETURN (0);
 }
 
-void
+octave_interrupt_handler
 octave_catch_interrupts (void)
 {
-#ifdef SIGINT
-  octave_set_signal_handler (SIGINT, sigint_handler);
+  octave_interrupt_handler retval;
 
-  the_interrupt_handler.int_handler = sigint_handler;
+#ifdef SIGINT
+  retval.int_handler = octave_set_signal_handler (SIGINT, sigint_handler);
 #endif
 
 #ifdef SIGBREAK
-  octave_set_signal_handler (SIGBREAK, sigint_handler);
-
-  the_interrupt_handler.brk_handler = sigint_handler;
+  retval.brk_handler = octave_set_signal_handler (SIGBREAK, sigint_handler);
 #endif
+
+  return retval;
 }
 
-octave_interrupt_handler *
+octave_interrupt_handler
 octave_ignore_interrupts (void)
 {
+  octave_interrupt_handler retval;
+
 #ifdef SIGINT
-  the_interrupt_handler.int_handler
-    = octave_set_signal_handler (SIGINT, SIG_IGN);
+  retval.int_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
 #endif
 
 #ifdef SIGBREAK
-  the_interrupt_handler.int_handler
-    = octave_set_signal_handler (SIGBREAK, SIG_IGN);
+  retval.brk_handler = octave_set_signal_handler (SIGBREAK, SIG_IGN);
 #endif
-  
-  return &the_interrupt_handler;
+
+  return retval;
 }
 
-octave_interrupt_handler *
-octave_set_interrupt_handler (const volatile octave_interrupt_handler *h)
+octave_interrupt_handler
+octave_set_interrupt_handler (const volatile octave_interrupt_handler& h)
 {
-  if (h)
-    {
+  octave_interrupt_handler retval;
+
 #ifdef SIGINT
-      the_interrupt_handler.int_handler
-	= octave_set_signal_handler (SIGINT, h->int_handler);
+  retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler);
 #endif
 
 #ifdef SIGBREAK
-      the_interrupt_handler.int_handler
-	= octave_set_signal_handler (SIGBREAK, h->brk_handler);
+  retval.brk_handler = octave_set_signal_handler (SIGBREAK, h.brk_handler);
 #endif
-    }
-  
-  return &the_interrupt_handler;
+
+  return retval;
 }
 
 // Install all the handlers for the signals we might care about.

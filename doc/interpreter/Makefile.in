@@ -57,7 +57,7 @@ all: octave.info octave.dvi octave.ps
 .PHONY: all
 
 octave.info: $(TEXINFO) ../conf.texi
-	-makeinfo -I$(srcdir) $(srcdir)/octave.texi
+	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/octave.texi
 
 octave.dvi: $(TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
@@ -69,12 +69,12 @@ octave.ps: octave.dvi
 
 ../../INSTALL.OCTAVE: install.texi
 	-makeinfo -D INSTALLONLY --no-headers --no-split --output INSTALL \
-	  -I$(srcdir) $(srcdir)/install.texi
+	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/install.texi
 	mv INSTALL ../../INSTALL.OCTAVE
 
 ../../BUGS: bugs.texi
 	-makeinfo -D BUGSONLY --no-headers --no-split --output BUGS \
-	  -I$(srcdir) $(srcdir)/bugs.texi
+	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/bugs.texi
 	mv BUGS ../../BUGS
 
 check: all

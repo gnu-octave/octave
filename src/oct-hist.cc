@@ -427,7 +427,7 @@ do_edit_history (int argc, const string_vector& argv)
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?
 
-  volatile octave_interrupt_handler *old_interrupt_handler
+  volatile octave_interrupt_handler old_interrupt_handler
     = octave_ignore_interrupts ();
 
   system (cmd.c_str ());

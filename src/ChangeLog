@@ -1,5 +1,19 @@
 2004-09-08  John W. Eaton  <jwe@octave.org>
 
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Save and set curr_caller_function and curr_caller_statement here.
+	* ov-mapper.cc (octave_mapper::do_multi_index_op): Likewise.
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Likewise.
+
+	* pt-stmt.cc (curr_caller_statement): New variable.
+	* pt-stmt.h: Provide decl.	
+
+	* toplev.cc (curr_caller_function): New variable.
+	* toplev.h: Provide decl.
+
+	* input.cc (get_user_input): Print location info before the debug
+	prompt.  From Keith Goodman <kwgoodman@gmail.com>.
+
 	* pt-arg-list.cc (convert_to_const_vector):
 	Unwind-protect index_position before modifying it.
 	Don't protect and set index_position unless stash_object is true.

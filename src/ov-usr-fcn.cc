@@ -393,6 +393,11 @@ octave_user_function::do_multi_index_op (int nargout,
   curr_sym_tab = sym_tab;
 
   unwind_protect_ptr (curr_function);
+  unwind_protect_ptr (curr_caller_function);
+  unwind_protect_ptr (curr_caller_statement);
+
+  curr_caller_statement = curr_statement;
+  curr_caller_function = curr_function;
   curr_function = this;
 
   if (! is_nested_function ())

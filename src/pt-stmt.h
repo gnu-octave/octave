@@ -159,6 +159,9 @@ private:
 // Pointer to the current statement being executed.
 extern tree_statement *curr_statement;
 
+// Pointer to the current statement being executed in the calling function.
+extern tree_statement *curr_caller_statement;
+
 #endif
 
 /*

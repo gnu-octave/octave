@@ -109,6 +109,9 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
   else
     {
       unwind_protect_ptr (curr_function);
+      unwind_protect_ptr (curr_caller_function);
+
+      curr_caller_function = curr_function;
       curr_function = this;
 
       retval = (*f) (args, nargout);

@@ -288,6 +288,9 @@ octave_mapper::do_multi_index_op (int, const octave_value_list& args)
       if (args(0).is_defined ())
 	{
 	  unwind_protect_ptr (curr_function);
+	  unwind_protect_ptr (curr_caller_function);
+
+	  curr_caller_function = curr_function;
 	  curr_function = this;
 
 	  retval = apply (args(0));

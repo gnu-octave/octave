@@ -48,6 +48,9 @@ extern tree_statement_list *global_command;
 // Pointer to function that is currently being evaluated.
 extern octave_function *curr_function;
 
+// Pointer to caller of curr_function.
+extern octave_function *curr_caller_function;
+
 // Pointer to parent function that is currently being evaluated.
 extern octave_function *curr_parent_function;
 

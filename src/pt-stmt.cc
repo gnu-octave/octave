@@ -51,6 +51,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Pointer to the current statement being executed.
 tree_statement *curr_statement = 0;
 
+// Pointer to the current statement being executed in the calling function.
+tree_statement *curr_caller_statement = 0;
+
 // A list of commands to be executed.
 
 tree_statement::~tree_statement (void)

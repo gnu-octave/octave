@@ -535,7 +535,43 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
   if (nargin == 2)
     read_as_string++;
 
-  std::string prompt ("debug> ");
+  std::string nm;
+  int line = -1;
+
+  // We look at curr_caller_function because curr_function is always
+  // "keyboard".
+
+  if (curr_caller_function)
+    {
+      nm = curr_caller_function->fcn_file_name ();
+
+      if (nm.empty ())
+	nm = curr_caller_function->name ();
+
+      if (curr_statement)
+	line = curr_statement->line ();
+    }
+
+  OSSTREAM buf;
+
+  if (! nm.empty ())
+    {
+      buf << "stopped in " << nm;
+
+      if (line > 0)
+	buf << " at line " << line;
+    }
+    
+  buf << OSSTREAM_ENDS;
+
+  std::string msg = OSSTREAM_STR (buf);
+
+  OSSTREAM_FREEZE (buf);
+
+  if (! msg.empty ())
+    message ("keyboard", msg.c_str ());
+
+  std::string prompt = "debug> ";
 
   if (nargin > 0)
     {

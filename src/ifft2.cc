@@ -30,7 +30,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "mappers.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 // This function should be merged with Ffft2.

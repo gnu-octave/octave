@@ -31,7 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 // XXX FIXME XXX -- the next two functions should really be just

@@ -34,7 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "pr-output.h"
 #include "pt-pr-code.h"
-#include "user-prefs.h"
 
 void
 tree_print_code::visit_argument_list (tree_argument_list& lst)

@@ -52,7 +52,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 // The default output format.  May be one of "binary", "text", or

@@ -59,7 +59,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-plot.h"
 #include "pt-walk.h"
 #include "sysdep.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 // If TRUE, a replot command is issued automatically each time a plot

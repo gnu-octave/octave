@@ -35,7 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "pt-const.h"
 #include "pt-exp-base.h"
-#include "user-prefs.h"
 
 // Expressions.
 

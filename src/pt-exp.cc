@@ -44,7 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-misc.h"
 #include "pt-mvr.h"
 #include "pt-walk.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 // Nonzero means we're returning from a function.

@@ -34,7 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mappers.h"
 #include "oct-obj.h"
 #include "pr-output.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 DEFUN_DLD_BUILTIN (svd, args, nargout,

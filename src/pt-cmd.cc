@@ -52,7 +52,6 @@ int returning = 0;
 #include "pt-mvr.h"
 #include "pt-walk.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "variables.h"
 
 // Decide if it's time to quit a for or while loop.

@@ -50,7 +50,6 @@ extern "C"
 #include "toplev.h"
 #include "pathsearch.h"
 #include "pt-const.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 

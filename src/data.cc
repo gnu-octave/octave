@@ -47,7 +47,6 @@ Software Foundation, Inc.
 #include "oct-map.h"
 #include "pt-const.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
 #include "utils.h"
 
 #ifndef MIN

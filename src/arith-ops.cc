@@ -36,7 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mappers.h"
 #include "pt-const.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "xdiv.h"
 #include "xpow.h"

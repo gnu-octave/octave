@@ -94,7 +94,8 @@ CollocWt::init (void)
       return;
     }
 
-  nt = n + inc_left + inc_right;
+  int nt = n + inc_left + inc_right;
+
   if (nt < 0)
     {
       error ("total number of collocation points less than zero");

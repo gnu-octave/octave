@@ -84,7 +84,7 @@ endif
 INCLUDES := arith-ops.h builtins.h defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h \
 	file-io.h gripes.h help.h input.h lex.h load-save.h \
-	mappers.h oct-fstrm.h oct-gperf.h oct-hist.h oct-iostrm.h \
+	mappers.h oct-fstrm.h oct-hist.h oct-iostrm.h \
 	oct-map.h oct-obj.h oct-prcstrm.h oct-procbuf.h \
 	oct-stdstrm.h oct-stream.h oct-strstrm.h pager.h parse.h \
 	pathlen.h pr-output.h procstream.h pt-base.h pt-cmd.h \
@@ -167,7 +167,8 @@ TERMLIBS = @TERMLIBS@
 LIBS = @LIBS@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links.in \
-	defaults.h.in octave.gperf octave.cc parse.cc lex.cc y.tab.h \
+	defaults.h.in octave.gperf oct-gperf.h \
+	octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
 all: stamp-prereq stamp-picdir libraries \
@@ -256,9 +257,13 @@ install-lib:
 
 install-inc:
 	$(top_srcdir)/mkinstalldirs $(includedir)
-	for f in $(INCLUDES) defaults.h ; do \
+	for f in $(INCLUDES) ; do \
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
+	done
+	for f in defaults.h oct-gperf.h ; do \
+	  rm -f $(includedir)/$$f ; \
+	  $(INSTALL_DATA) $$f $(includedir)/$$f ; \
 	done
 	linkdir=`echo $(includedir) | sed 's/-$(version)$$//'` ; \
 	if [ "$$linkdir" = $(includedir) ] ; then \

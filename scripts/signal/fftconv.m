@@ -37,7 +37,7 @@ function c = fftconv (a, b, N)
     usage ("fftconv (b, x [, N])");
   endif
 
-  if (is_matrix (a) || is_matrix (b))
+  if (! (is_vector (a) && is_vector (b)))
     error ("fftconv:  both a and b should be vectors");
   endif
   la = length (a);

@@ -414,7 +414,9 @@ Interpreter:
 
   * Make whos report total memory used by variables (and functions?).
 
-  * Rewrite whos and the symbol_record_info class.
+  * Rewrite whos and the symbol_record_info class.  Write a built-in
+    function that gives all the basic information, then write who and
+    whos as M-files.
 
 -------
 History:

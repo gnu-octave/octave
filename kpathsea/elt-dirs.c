@@ -284,7 +284,16 @@ kpse_element_dirs P1C(const_string, elt)
   /* OK, so much for the trivial cases.  We handle the hard case in
      a subroutine.  */
   else
-    expand_elt (ret, elt, 0);
+    {
+      /* If the path starts with ~ or ~user, expand it.  Do this
+         before calling `expand_subdir' or `add_directory', so that
+         we don't expand the same ~ over and over.  */
+      string dir = kpse_expand (elt);
+
+      expand_elt (ret, dir, 0);
+
+      free (dir);
+    }
 
   /* Remember the directory list we just found, in case future calls are
      made with the same ELT.  */

@@ -1,3 +1,16 @@
+Sun Nov 17 14:14:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (handle_identifier): Set lexer_flags.doing_set if the
+	token is "gset", not "set".
+
+Sat Nov 16 21:41:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (parse.cc, lex.cc): Add special rules for these files.
+	Delete pattern rules for .y and .l files.
+
+	* parse.y (expression): Move colon_expr here.
+	(simple_expr1): From here.
+
 Fri Nov 15 13:48:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-plot.cc: Put semicolons at the ends of all plot commands.

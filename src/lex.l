@@ -1709,7 +1709,7 @@ handle_identifier (const string& tok, int spc_gobbled)
     {
       BEGIN TEXT_FCN;
 
-      if (tok == "set")
+      if (tok == "gset")
 	lexer_flags.doing_set = 1;
     }
 

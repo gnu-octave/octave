@@ -18,21 +18,6 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-# Cancel default rule for .c from .y and make .cc from .y instead.
-
-%.c : %.y
-
-%.cc : %.y
-	$(YACC) $(YFLAGS) $<
-	@$(top_srcdir)/move-if-change y.tab.c $(@F)
-
-# Likewise for .c from .l.
-
-%.c : %.l
-
-%.cc : %.l
-	$(LEX) $(LFLAGS) $< > $(@F)
-
 XALL_CXXFLAGS_1 = $(subst -fexternal-templates, , $(ALL_CXXFLAGS))
 XALL_CXXFLAGS = $(subst -fno-implicit-templates, , $(XALL_CXXFLAGS_1))
 
@@ -371,6 +356,14 @@ conf-dist:
 .PHONY: conf-dist
 
 # Special rules -- these files need special things to be defined.
+
+parse.cc : parse.y
+	@echo "expect 18 shift/reduce conflicts"
+	$(YACC) $(YFLAGS) $<
+	@$(top_srcdir)/move-if-change y.tab.c $(@F)
+
+lex.cc : lex.l
+	$(LEX) $(LFLAGS) $< > $(@F)
 
 defaults.h: defaults.h.in ../Makeconf Makefile
 	@$(do-subst-default-vals)

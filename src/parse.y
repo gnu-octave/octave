@@ -354,9 +354,9 @@ static void maybe_warn_missing_semi (tree_statement_list *);
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
 %right POW EPOW
 
-// There are 19 shift/reduce conflicts, ok?  But this only works with
+// There are 18 shift/reduce conflicts, ok?  But this only works with
 // bison...
-// %expect 19
+// %expect 18
 
 // Where to start.
 %start input
@@ -771,6 +771,8 @@ screwed_again	: // empty
 
 expression	: simple_expr
 		  { $$ = $1; }
+		| colon_expr
+		  { $$ = finish_colon_expression ($1); }
 		| NUM '=' expression
 		  {
 		    yyerror ("invalid assignment to a number");
@@ -810,8 +812,6 @@ simple_expr1	: NUM
 		  { $$ = new tree_constant (Matrix ()); }
 		| '[' ';' ']'
 		  { $$ = new tree_constant (Matrix ()); }
-		| colon_expr
-		  { $$ = finish_colon_expression ($1); }
 		| PLUS_PLUS identifier %prec UNARY
 		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
 		| MINUS_MINUS identifier %prec UNARY

@@ -172,6 +172,10 @@ extern char *rl_completer_quote_characters;
    Nothing is added if this is '\0'. */
 extern char rl_completion_append_character;
 
+/* List of characters treated as string delimiters if doing paren
+   matching.  By default this is "'\"". */
+extern char *rl_paren_string_delimiters;
+
 /* List of characters that are word break characters, but should be left
    in TEXT when it is passed to the completion function.  The shell uses
    this to help determine what kind of completing to do. */

@@ -945,6 +945,11 @@ initialize_readline (void)
 
   rl_add_defun ("operate-and-get-next",
 		(Function *) operate_and_get_next, CTRL ('O'));
+
+  // Don't treat single quotes as string delimiters when doing paren
+  // matching.
+
+  rl_paren_string_delimiters = "\"";
 }
 
 static int

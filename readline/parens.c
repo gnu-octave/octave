@@ -28,6 +28,16 @@
 
 #include "rlconf.h"
 
+#if defined (HAVE_STRING_H)
+#  include <string.h>
+#else /* !HAVE_STRING_H */
+#  include <strings.h>
+#endif /* !HAVE_STRING_H */  
+
+/* List of characters treated as string delimiters if doing paren
+   matching.  By default this is "'\"". */
+char *rl_paren_string_delimiters = "'\"";
+
 #if !defined (PAREN_MATCHING)
 
 rl_insert_close (count, invoking_key)
@@ -131,10 +141,13 @@ find_matching_open (string, from, closer)
 
   for (i = from; i > -1; i--)
     {
+      char *match = 0;
+
       if (delimiter && (string[i] == delimiter))
 	delimiter = 0;
-      else if ((string[i] == '\'') || (string[i] == '"'))
-	delimiter = rl_line_buffer[i];
+      else if (rl_paren_string_delimiters
+	       && (match = strchr (rl_paren_string_delimiters, string[i])))
+	delimiter = *match;
       else if (!delimiter && (string[i] == closer))
 	level++;
       else if (!delimiter && (string[i] == opener))

@@ -354,10 +354,10 @@ esac
 # with functions from the BSD/NET2 math library.
 
 AC_HAVE_LIBRARY(-lm)dnl
-XCFLAGS=$CFLAGS
+XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
 AC_HAVE_FUNCS(finite isnan isinf)dnl
-CFLAGS=$XCFLAGS
+CFLAGS="$XCFLAGS"
 AC_REPLACE_FUNCS(acosh asinh atanh)dnl
 
 if test -n "$LIBOBJS"; then

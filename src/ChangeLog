@@ -1,3 +1,20 @@
+Thu Feb 13 03:02:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* gripes.cc (gripe_wrong_type_arg (const char*, const string&)):
+	New function.
+
+Wed Feb 12 17:27:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* syscalls.cc (symbols_of_syscalls): Add O_ASYNC and O_SYNC.
+
+Mon Feb 10 01:22:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dirfns.cc (Freaddir, Fmkdir, Frmdir, Frename):
+	Also return status and error message.
+
+	* syscalls.cc (Fdup2, Fexec, Ffork, Ffcntl, Funlink, Fmkfifo,
+	Fpipe, Fwaitpid): Also return error message.
+
 Sat Feb  8 17:16:09 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-exp.cc (tree_simple_assignment_expression::eval): Return

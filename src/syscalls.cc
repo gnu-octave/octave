@@ -29,7 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cerrno>
 #include <cstdio>
+#include <cstring>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -86,9 +88,17 @@ mk_stat_map (const file_stat& fs)
 }
 
 DEFUN (dup2, args, ,
- "fid = dup2 (old, new): duplicate a file descriptor")
+ "[FID, MSG] = dup2 (OLD, NEW)\n\
+\n\
+Duplicate a file descriptor.\n\
+\n\
+If successful, FID is greater than zero and contains the new file ID.\n\
+Otherwise, FID is negative and MSG contains a system-dependent error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -107,7 +117,14 @@ DEFUN (dup2, args, ,
 
 	      // XXX FIXME XXX -- are these checks sufficient?
 	      if (i_old >= 0 && i_new >= 0)
-		retval = (double) dup2 (i_old, i_new);
+		{
+		  int status = dup2 (i_old, i_new);
+
+		  retval(0) = (double) status;
+
+		  if (status < 0)
+		    retval(1) = strerror (errno);
+		}
 	      else
 		error ("dup2: invalid file id");
 	    }
@@ -125,9 +142,17 @@ DEFUN (dup2, args, ,
 }
 
 DEFUN (exec, args, ,
- "exec (file, args): replace current process with a new process")
+ "[STATUS, MSG] = exec (FILE, ARGS)\n\
+\n\
+Replace current process with a new process.\n\
+\n\
+If successful, exec does not return.  If exec does return, status will
+be nonzero, and MSG will contain a system-dependent error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -178,7 +203,14 @@ DEFUN (exec, args, ,
 	    }
 
 	  if (! error_state)
-	    execvp (exec_file.c_str (), exec_args);
+	    {
+	      int status = execvp (exec_file.c_str (), exec_args);
+
+	      retval(0) = (double) status;
+
+	      if (status < 0)
+		retval(1) = strerror (errno);
+	    }
 	}
       else
 	error ("exec: first argument must be a string");
@@ -193,9 +225,17 @@ DEFUN (exec, args, ,
 }
 
 DEFUN (fcntl, args, ,
- "fcntl (fid, request, argument): control open file descriptors")
+ "[STATUS, MSG] = fcntl (FID, REQUEST, ARGUMENT)\n\
+\n\
+Control open file descriptors.\n\
+\n\
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -219,7 +259,14 @@ DEFUN (fcntl, args, ,
 	  if (fid < 0)
 	    error ("fcntl: invalid file id");
 	  else
-	    retval = fcntl (fid, req, arg);
+	    {
+	      int status = fcntl (fid, req, arg);
+
+	      retval(0) = (double) status;
+
+	      if (status < 0)
+		retval(1) = strerror (errno);
+	    }
 	}
       else
 	error ("fcntl: file id must be an integer");
@@ -234,16 +281,30 @@ DEFUN (fcntl, args, ,
 }
 
 DEFUN (fork, args, ,
- "fork (): create a copy of the current process")
+ "[PID, MSG] = fork ()\n\
+\n\
+Create a copy of the current process.\n\
+\n\
+If successful, PID is either the process ID and you are in the parent,\n\
+or 0, and you are in the child.  If PID is less than zero, an error\n\
+has occured, and MSG contains a system-dependent error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
 #if defined (HAVE_FORK)
-      retval = fork ();
+      pid_t pid = fork ();
+
+      retval(0) = (double) pid;
+
+      if (pid < 0)
+	retval(1) = strerror (errno);
 #else
       gripe_not_supported ("fork");
 #endif
@@ -439,16 +500,17 @@ points to.")
 }
 
 DEFUN (mkfifo, args, ,
-  "STATUS = mkfifo (NAME, MODE)\n\
+  "[STATUS, MSG] = mkfifo (NAME, MODE)\n\
 \n\
-  Create a FIFO special file named NAME with file mode MODE\n\
+Create a FIFO special file named NAME with file mode MODE\n\
 \n\
-  STATUS is:\n\
-\n\
-    != 0 : if mkfifo failed\n\
-       0 : if the FIFO special file could be created")
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -462,7 +524,14 @@ DEFUN (mkfifo, args, ,
 	    {
 	      long mode = (long) args(1).double_value ();
 
-	      retval = oct_mkfifo (name, mode);
+	      string msg;
+
+	      int status = oct_mkfifo (name, mode, msg);
+
+	      retval(0) = (double) status;
+
+	      if (status < 0)
+		retval(1) = msg;
 	    }
 	  else
 	    error ("mkfifo: MODE must be an integer");
@@ -478,9 +547,19 @@ DEFUN (mkfifo, args, ,
 }
 
 DEFUN (pipe, args, ,
-  "[file_ids, status] = pipe (): create an interprocess channel")
+  "[FILE_IDS, STATUS, MSG] = pipe (): create an interprocess channel.\n\
+\n\
+Return the FILE_IDS corresponding to the reading and writing ends of\n\
+the pipe, as a vector.\n\
+\n\
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
-  octave_value_list retval (2, octave_value (-1.0));
+  octave_value_list retval;
+
+  retval(2) = string ();
+  retval(1) = -1.0;
+  retval(0) = Matrix ();
 
   int nargin = args.length ();
 
@@ -489,7 +568,13 @@ DEFUN (pipe, args, ,
 #if defined (HAVE_PIPE)
       int fid[2];
 
-      if (pipe (fid) >= 0)
+      int status = pipe (fid);
+
+      if (status < 0)
+	{
+	  retval(2) = strerror (errno);
+	}
+      else
 	{
 	  FILE *in_file = fdopen (fid[0], "r");
 	  FILE *out_file = fdopen (fid[1], "w");
@@ -506,8 +591,8 @@ DEFUN (pipe, args, ,
 	  file_ids (0, 1) = octave_stream_list::insert (os);
 
           retval(0) = file_ids;
-	  retval(1) = 0.0;
-	}	  
+	  retval(1) = (double) status;
+	}
 #else
       gripe_not_supported ("pipe");
 #endif
@@ -575,16 +660,17 @@ DEFUN (stat, args, ,
 }
 
 DEFUN (unlink, args, ,
-  "STATUS = unlink (NAME)\n\
+  "[STATUS, MSG] = unlink (NAME)\n\
 \n\
-  Delete the file NAME\n\
+Delete the file NAME\n\
 \n\
-  STATUS is:\n\
-\n\
-    != 0 : if unlink failed\n\
-       0 : if the file could be successfully deleted")
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -594,7 +680,14 @@ DEFUN (unlink, args, ,
 	{
 	  string name = args(0).string_value ();
 
-	  retval = oct_unlink (name);
+	  string msg;
+
+	  int status = oct_unlink (name, msg);
+
+	  retval(0) = (double) status;
+
+	  if (status < 0)
+	    retval(1) = msg;	    
 	}
       else
 	error ("unlink: file name must be a string");
@@ -606,9 +699,9 @@ DEFUN (unlink, args, ,
 }
 
 DEFUN (waitpid, args, ,
-  "STATUS = waitpid (PID, OPTIONS)\n\
+  "[PID, MSG] = waitpid (PID, OPTIONS)\n\
 \n\
-  wait for process PID to terminate\n\
+Wait for process PID to terminate\n\
 \n\
   PID can be:\n\
 \n\
@@ -627,12 +720,15 @@ DEFUN (waitpid, args, ,
          since they stopped\n\
      3 : implies both 1 and 2\n\
 \n\
-  STATUS is:\n\
-\n\
-     -1 : if an error occured\n\
-    > 0 : the process ID of the child process that exited")
+If successful, PID is greater than 0 and contains the process ID of\n\
+the child process that exited and MSG is an empty string.\n\
+Otherwise, PID is less than zero and MSG contains a system-dependent\n\
+error message.")
 {
-  double retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -669,7 +765,14 @@ DEFUN (waitpid, args, ,
 		}
 
 	      if (! error_state)
-		retval = waitpid (pid, 0, options);
+		{
+		  pid_t status = waitpid (pid, 0, options);
+
+		  retval(0) = (double) status;
+
+		  if (status < 0)
+		    retval(1) = strerror (errno);
+		}
 	    }
 	}
 #else
@@ -719,6 +822,11 @@ symbols_of_syscalls (void)
     "");
 #endif
 
+#if defined (O_ASYNC)
+  DEFCONST (O_ASYNC, (double) O_ASYNC, 0, 0,
+    "");
+#endif
+
 #if defined (O_CREAT)
   DEFCONST (O_CREAT, (double) O_CREAT, 0, 0,
     "");
@@ -741,6 +849,11 @@ symbols_of_syscalls (void)
 
 #if defined (O_RDWR)
   DEFCONST (O_RDWR, (double) O_RDWR, 0, 0,
+    "");
+#endif
+
+#if defined (O_SYNC)
+  DEFCONST (O_SYNC, (double) O_SYNC, 0, 0,
     "");
 #endif
 

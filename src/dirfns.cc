@@ -441,13 +441,19 @@ DEFUN (pwd, , nargout,
 }
 
 DEFUN (readdir, args, ,
-  "readdir (NAME)\n\
+  "[FILES, STATUS, MSG] = readdir (NAME)\n\
 \n\
 Return an array of strings containing the list of all files in the
-named directory.  If sucessful, returns 0; otherwise an error message
-is printed.")
+named directory in FILES, or an empty matrix if an error occurs\n\
+\n\
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
   octave_value_list retval;
+
+  retval(2) = string ();
+  retval(1) = -1.0;
+  retval(0) = Matrix ();
 
   if (args.length () == 1)
     {
@@ -463,11 +469,11 @@ is printed.")
 	    {
 	      string_vector dirlist = dir.read ();
 	      retval(0) = dirlist.qsort ();
+	      retval(1) = 0.0;
 	    }
 	  else
 	    {
-	      string msg = dir.error ();
-	      error ("%s", msg.c_str ());
+	      retval(2) = dir.error ();
 	    }
 	}
     }
@@ -481,14 +487,17 @@ is printed.")
 // mode.
 
 DEFUN (mkdir, args, ,
-  "mkdir (NAME)\n\
+  "[STATUS, MSG] = mkdir (NAME)\n\
 \n\
-Create the directory named by NAME.  If successful, returns 0;\n\
-otherwise prints an error message.")
+Create the directory named by NAME.\n\
+\n\
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
   octave_value_list retval;
 
-  int status = 0;
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   if (args.length () == 1)
     {
@@ -498,33 +507,35 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("mkdir", args(0));
       else
 	{
-	  int mkdir_retval = oct_mkdir (oct_tilde_expand (dirname), 0777);
+	  string msg;
 
-	  if (mkdir_retval < 0)
-	    {
-	      status = -1;
-	      error ("%s", strerror (errno));
-	    }
+	  int status = oct_mkdir (oct_tilde_expand (dirname),
+				  0777, msg);
+
+	  retval(0) = (double) status;
+
+	  if (status < 0)
+	    retval(1) = msg;
 	}
     }
   else
     print_usage ("mkdir");
 
-  if (status == 0)
-    retval (0) = (double) status;
-
   return retval;
 }
 
 DEFUN (rmdir, args, ,
-  "rmdir (NAME)\n\
+  "[STATUS, MSG] = rmdir (NAME)\n\
 \n\
-Remove the directory named by NAME.  If successful, returns 0;\n\
-otherwise prints an error message.")
+Remove the directory named by NAME.\n\
+\n\
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
   octave_value_list retval;
 
-  int status = 0;
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   if (args.length () == 1)
     {
@@ -534,33 +545,34 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("rmdir", args(0));
       else
 	{
-	  int rmdir_retval = oct_rmdir (oct_tilde_expand (dirname));
+	  string msg;
 
-	  if (rmdir_retval < 0)
-	    {
-	      status = -1;
-	      error ("%s", strerror (errno));
-	    }
+	  int status = oct_rmdir (oct_tilde_expand (dirname), msg);
+
+	  retval(0) = (double) status;
+
+	  if (status < 0)
+	    retval(1) = msg;
 	}
     }
   else
     print_usage ("rmdir");
 
-  if (status == 0)
-    retval (0) = (double) status;
-
   return retval;
 }
 
 DEFUN (rename, args, ,
-  "rename (FROM, TO)\n\
+  "[STATUS, MSG] = rename (FROM, TO)\n\
 \n\
-Rename a file.  If successful, returns 0;\n\
-otherwise prints an error message and returns -1.")
+Rename a file.\n\
+\n\
+If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
+STATUS is nonzero and MSG contains a system-dependent error message.")
 {
   octave_value_list retval;
 
-  int status = 0;
+  retval(1) = string ();
+  retval(0) = -1.0;
 
   if (args.length () == 2)
     {
@@ -574,18 +586,21 @@ otherwise prints an error message and returns -1.")
 
 	  if (error_state)
 	    gripe_wrong_type_arg ("rename", args(1));
-	  else if (oct_rename (from, to) < 0)
+	  else
 	    {
-	      status = -1;
-	      error ("%s", strerror (errno));
+	      string msg;
+
+	      int status = oct_rename (from, to, msg);
+
+	      retval(0) = (double) status;
+
+	      if (status < 0)
+		retval(1) = msg;
 	    }
 	}
     }
   else
     print_usage ("rename");
-
-  if (status == 0)
-    retval (0) = (double) status;
 
   return retval;
 }

@@ -71,7 +71,7 @@ function image (x, y, A, zoom)
 
   saveimage (ppm_name, A, "ppm");
 
-  ## Start the viewer.  Try xv, then xloadimage.
+  ## Start the viewer.  Try display, xv, then xloadimage.
 
   xv = sprintf ("xv -expand %f %s", zoom, ppm_name);
 

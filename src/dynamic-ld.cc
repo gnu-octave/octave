@@ -27,7 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-#include "dld.h"
+#include "dld/dld.h"
 }
 
 #include "dynamic-ld.h"

@@ -15,7 +15,7 @@ VPATH = @srcdir@:@srcdir@/../bsd-math
 
 # Can this be fixed?
 
-INCFLAGS = -I. -I$(srcdir)/../liboctave -I$(srcdir)/../dld -I$(srcdir)/../info -I$(srcdir)/.. -I$(srcdir) -I$(TOPDIR)/liboctave -I$(TOPDIR)/dld -I$(TOPDIR)/info  -I$(TOPDIR)
+INCFLAGS = -I. -I$(srcdir)/../liboctave -I$(srcdir)/.. -I$(srcdir) -I$(TOPDIR)/liboctave -I$(TOPDIR)
 
 LIBOBJS = @LIBOBJS@
 

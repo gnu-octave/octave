@@ -81,9 +81,9 @@ extern "C"
 
 extern "C"
 {
-#include "info.h"
-#include "dribble.h"
-#include "terminal.h"
+#include "info/info.h"
+#include "info/dribble.h"
+#include "info/terminal.h"
 
   extern int initialize_info_session ();
   extern int index_entry_exists ();

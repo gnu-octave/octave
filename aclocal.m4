@@ -402,3 +402,16 @@ AC_MSG_RESULT($octave_cv_func_putenv_malloc)
 if test $octave_cv_func_putenv_malloc = yes; then
   AC_DEFINE(SMART_PUTENV)
 fi])
+dnl
+dnl This is a GNU libc invention, and this check is also from Karl
+dnl Berry's kpathsea library.
+dnl
+AC_DEFUN(OCTAVE_PROGRAM_INVOCATION_NAME,
+[AC_MSG_CHECKING(whether program_invocation_name is predefined)
+AC_CACHE_VAL(octave_cv_var_program_inv_name,
+[AC_TRY_LINK(, [main() { program_invocation_name = "love"; }],
+  octave_cv_var_program_inv_name=yes, octave_cv_var_program_inv_name=no)])dnl
+AC_MSG_RESULT($octave_cv_var_program_inv_name)
+if test $octave_cv_var_program_inv_name = yes; then
+  AC_DEFINE(HAVE_PROGRAM_INVOCATION_NAME)
+fi])

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.464 $)
+AC_REVISION($Revision: 1.465 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -396,6 +396,12 @@ if test -n "$hdf5_lib"; then
 	  AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])])])])])
 fi
 
+if $WITH_HDF5; then
+  true
+else
+  warn_hdf5="HDF5 library not found.  Octave will not be able to save or load HDF5 data files."
+fi
+
 # Checks for FFTW header and library.
 
 # subdirectories of libcruft to build if they aren't found on the system:
@@ -415,13 +421,51 @@ if test "$with_fftw" = "yes"; then
   with_fftw3=no
   AC_CHECK_HEADER(fftw3.h, [have_fftw3_header=yes; break])
   if test "$have_fftw3_header" = yes; then
-      AC_CHECK_LIB(fftw3, fftw_plan_dft_1d, [FFTW_LIBS="-lfftw3"; with_fftw3=yes])
+    AC_CHECK_LIB(fftw3, fftw_plan_dft_1d, [FFTW_LIBS="-lfftw3"; with_fftw3=yes])
   fi
 fi
 
 if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
   FFT_DIR=''
   AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
+fi
+
+# Check for UMFPACK library.
+
+UMFPACK_LIBS=
+AC_SUBST(UMFPACK_LIBS)
+
+AC_ARG_WITH(umfpack,
+  [  --without-umfpack          don't use UMFPACK, disable some sparse functionality],
+  with_umfpack=$withval, with_umfpack=yes)
+
+if test "$with_umfpack" = "yes"; then
+  have_umfpack_header=no
+  with_umfpack=no
+  AC_CHECK_HEADER(umfpack/umfpack.h, [have_umfpack_header=yes; break])
+  if test "$have_umfpack_header" = yes; then
+    AC_CHECK_LIB(amd, amd_postorder, [
+      LIBS="-lamd $LIBS"
+      AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
+        LIBS="-lumfpack $LIBS"
+        UMFPACK_LIBS="-lumfpack"; with_umfpack=yes])])
+    if test "$with_umfpack" = yes; then
+      # For now the code needed for this is not in umfpack, will add
+      # a test later that will probably have to be based on version
+      # numbers as there is no interface changes that are visible at
+      # compile time.
+      with_umfpack_split=no
+    fi
+  fi
+fi
+
+if test "$with_umfpack" = yes; then
+  AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
+  if test "$with_umfpack_split" = yes; then
+    AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
+  fi
+else
+  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
 fi
 
 WITH_MPI=true
@@ -1479,6 +1523,7 @@ Octave is now configured for $canonical_host_type
   Fortran libraries:    $FLIBS
   BLAS libraries:       $BLAS_LIBS
   FFTW libraries:       $FFTW_LIBS
+  UMFPACK libraries:    $UMFPACK_LIBS
   HDF5 libraries:       $HDF5_LIBS
   MPI libraries:        $MPI_LIBS
   LIBS:                 $LIBS
@@ -1561,6 +1606,16 @@ fi
 
 if test -n "$warn_runtest"; then
   AC_MSG_WARN($warn_runtest)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_umfpack"; then
+  AC_MSG_WARN($warn_umfpack)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_hdf5"; then
+  AC_MSG_WARN($warn_hdf5)
   warn_msg_printed=true
 fi
 

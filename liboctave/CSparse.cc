@@ -40,10 +40,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-spparms.h"
 #include "SparseCmplxLU.h"
 
+#ifdef HAVE_UMFPACK
 // External UMFPACK functions in C
 extern "C" {
-#include "umfpack.h"
+#include <umfpack/umfpack.h>
 }
+#endif
 
 // Fortran functions we call.
 extern "C"
@@ -627,6 +629,7 @@ ComplexDET
 SparseComplexMatrix::determinant (int& err, double& rcond, int calc_cond) const
 {
   ComplexDET retval;
+#ifdef HAVE_UMFPACK
 
   int nr = rows ();
   int nc = cols ();
@@ -742,6 +745,9 @@ SparseComplexMatrix::determinant (int& err, double& rcond, int calc_cond) const
 	    }
 	}
     }
+#else
+  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 
   return retval;
 }
@@ -4446,6 +4452,7 @@ SparseComplexMatrix::factorize (int& err, double &rcond, Matrix &Control,
   void *Numeric;
   err = 0;
 
+#ifdef HAVE_UMFPACK
   // Setup the control parameters
   Control = Matrix (UMFPACK_CONTROL, 1);
   double *control = Control.fortran_vec ();
@@ -4542,6 +4549,9 @@ SparseComplexMatrix::factorize (int& err, double &rcond, Matrix &Control,
 
   if (err != 0)
     umfpack_zi_free_numeric (&Numeric);
+#else
+  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 
   return Numeric;
 }
@@ -4580,6 +4590,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, int& err,
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, 
 				     sing_handler);
@@ -4594,16 +4605,20 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, int& err,
 	      const int *Ap = cidx ();
 	      const int *Ai = ridx ();
 	      const Complex *Ax = data ();
+#ifdef UMFPACK_SEPARATE_SPLIT
 	      const double *Bx = b.fortran_vec ();
 	      OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
 	      for (int i = 0; i < b_nr; i++)
 		Bz[i] = 0.;
-
+#else
+	      OCTAVE_LOCAL_BUFFER (Complex, Bz, b_nr);
+#endif
 	      retval.resize (b_nr, b_nc);
 	      Complex *Xx = retval.fortran_vec ();
 
 	      for (int j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
 		{
+#ifdef UMFPACK_SEPARATE_SPLIT
 		  status = umfpack_zi_solve (UMFPACK_A, Ap, Ai, 
 					     X_CAST (const double *, Ax), 
 					     NULL,
@@ -4611,6 +4626,20 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, int& err,
 					     NULL,
 					     &Bx[iidx], Bz, Numeric, 
 					     control, info);
+#else
+		  for (int i = 0; i < b_nr; i++)
+		    Bz[i] = b.elem (i, j);
+
+		  status = umfpack_zi_solve (UMFPACK_A, Ap, Ai, 
+					     X_CAST (const double *, Ax), 
+					     NULL,
+					     X_CAST (double *, &Xx[iidx]), 
+					     NULL,
+					     X_CAST (const double *, Bz),
+					     NULL, Numeric, 
+					     control, info);
+#endif
+
 		  if (status < 0)
 		    {
 		      (*current_liboctave_error_handler) 
@@ -4647,6 +4676,9 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, int& err,
 
 	      umfpack_zi_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
@@ -4689,6 +4721,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, sing_handler);
 
@@ -4703,10 +4736,14 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	      const int *Ai = ridx ();
 	      const Complex *Ax = data ();
 
+#ifdef UMFPACK_SEPARATE_SPLIT
 	      OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
 	      OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
 	      for (int i = 0; i < b_nr; i++)
 		Bz[i] = 0.;
+#else
+	      OCTAVE_LOCAL_BUFFER (Complex, Bz, b_nr);
+#endif
 
 	      // Take a first guess that the number of non-zero terms
 	      // will be as many as in b
@@ -4720,6 +4757,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	      for (int j = 0; j < b_nc; j++)
 		{
 
+#ifdef UMFPACK_SEPARATE_SPLIT
 		  for (int i = 0; i < b_nr; i++)
 		    Bx[i] = b.elem (i, j);
 
@@ -4729,6 +4767,18 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 					     X_CAST (double *, Xx), NULL, 
 					     Bx, Bz, Numeric, control, 
 					     info);
+#else
+		  for (int i = 0; i < b_nr; i++)
+		    Bz[i] = b.elem (i, j);
+
+		  status = umfpack_zi_solve (UMFPACK_A, Ap, Ai, 
+					     X_CAST (const double *, Ax),
+					     NULL,
+					     X_CAST (double *, Xx), NULL, 
+					     X_CAST (double *, Bz), NULL,
+					     Numeric, control, 
+					     info);
+#endif
 		  if (status < 0)
 		    {
 		      (*current_liboctave_error_handler) 
@@ -4786,6 +4836,9 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 
 	      umfpack_zi_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
@@ -4828,6 +4881,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, sing_handler);
 
@@ -4891,6 +4945,9 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 
 	      umfpack_zi_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
@@ -4933,6 +4990,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, sing_handler);
 
@@ -5026,6 +5084,9 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	      umfpack_zi_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");

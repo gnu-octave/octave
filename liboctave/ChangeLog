@@ -1,3 +1,27 @@
+2005-03-14  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (DISTFILES): Don't include $(UMFPACK_EXTRAS).
+	(DISTDIRS): Don't include UMFPACK.
+	(LIBOCTAVE_OBJECTS): Don't include $(UMFPACK_OBJ).
+	(UMFPACK_SPECIAL_1, UMFPACK_SPECIAL): No need for special include
+	flags for these files.
+	Don't include include $(srcdir)/UMFPACK.files.
+	Don't include include $(srcdir)/UMFPACK.rules.
+
+	* UMFPACK.README, UMFPACK.files, UMFPACK.patch, UMFPACK.rules:
+	Delete files.
+	* UMFPACK: Delete directory tree.
+
+	* dSparse.cc: Include <umfpack/umfpack.h> instead of just "umfpack.h".
+	* CSparse.cc: Likewise.
+	* SparsedbleLU.cc: Likewise.
+	* SparseCmplxLU.cc: Likewise.
+
+2005-03-14  David Bateman  <dbateman@free.org>
+
+	* CSParse.cc, SparseCmplxLU.cc, SparsedbleLU.cc, dSparse.cc:
+	Allow compilation to succeed if UMFPACK is not available.
+
 2005-03-09  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (bin-dist): Delete target.

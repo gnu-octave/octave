@@ -24,8 +24,6 @@ LINK_DEPS = \
 
 include $(srcdir)/COLAMD.files
 
-include $(srcdir)/UMFPACK.files
-
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-flags.h Array-util.h ArrayN-idx.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h MArrayN.h \
@@ -155,10 +153,10 @@ INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
 	sparse-mk-ops.awk sparse-mx-ops \
 	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA) \
-	$(COLAMD_EXTRAS) $(UMFPACK_EXTRAS)
+	$(COLAMD_EXTRAS)
 
 # Complete directory trees to distribute.
-DISTDIRS := COLAMD UMFPACK
+DISTDIRS := COLAMD
 
 MAKEDEPS_2 := $(SOURCES) $(COLAMD_SRC)
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(MAKEDEPS_2))
@@ -166,7 +164,6 @@ MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
 LIBOCTAVE_OBJECTS := \
 	$(COLAMD_OBJ) \
-	$(UMFPACK_OBJ) \
 	$(LIBOCTAVE_CXX_SOURCES:.cc=.o) \
 	$(LIBOCTAVE_C_SOURCES:.c=.o) \
 	$(LIBOCT_READLINE_CXX_SOURCES:.cc=.o) \
@@ -182,19 +179,10 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-UMFPACK_SPECIAL_1 := CSparse.o dSparse.o SparseCmplxLU.o SparsedbleLU.o
-UMFPACK_SPECIAL := \
-	$(UMFPACK_SPECIAL_1) \
-	$(addprefix pic/, $(UMFPACK_SPECIAL_1)) \
-	$(UMFPACK_SPECIAL_1:.o=.d)
-$(UMFPACK_SPECIAL): INCFLAGS += $(UMFPACK_INCFLAGS)
-
 all: libraries
 .PHONY: all
 
 objects: $(OBJECTS)
-
-include $(srcdir)/UMFPACK.rules
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

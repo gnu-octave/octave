@@ -41,10 +41,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SparsedbleLU.h"
 #include "SparseType.h"
 
+#ifdef HAVE_UMFPACK
 // External UMFPACK functions in C
 extern "C" {
-#include "umfpack.h"
+#include <umfpack/umfpack.h>
 }
+#endif
 
 // Fortran functions we call.
 extern "C"
@@ -714,6 +716,7 @@ SparseMatrix::determinant (int& err, double& rcond, int) const
 {
   DET retval;
 
+#ifdef HAVE_UMFPACK
   int nr = rows ();
   int nc = cols ();
 
@@ -821,6 +824,9 @@ SparseMatrix::determinant (int& err, double& rcond, int) const
 	    }
 	}
     }
+#else
+  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 
   return retval;
 }
@@ -4671,6 +4677,7 @@ SparseMatrix::factorize (int& err, double &rcond, Matrix &Control, Matrix &Info,
   void *Numeric;
   err = 0;
 
+#ifdef HAVE_UMFPACK
   // Setup the control parameters
   Control = Matrix (UMFPACK_CONTROL, 1);
   double *control = Control.fortran_vec ();
@@ -4766,6 +4773,10 @@ SparseMatrix::factorize (int& err, double &rcond, Matrix &Control, Matrix &Info,
   if (err != 0)
     umfpack_di_free_numeric (&Numeric);
 
+#else
+  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
+
   return Numeric;
 }
 
@@ -4803,6 +4814,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, int& err,
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = 
 	    factorize (err, rcond, Control, Info, sing_handler);
@@ -4862,6 +4874,9 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, int& err,
 		
 	      umfpack_di_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
@@ -4903,6 +4918,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, int& err, doub
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, 
 				     sing_handler);
@@ -4994,6 +5010,9 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, int& err, doub
 
 	      umfpack_di_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
@@ -5035,6 +5054,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, int& err, dou
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, 
 				     sing_handler);
@@ -5113,6 +5133,9 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, int& err, dou
 
 	      umfpack_di_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
@@ -5155,6 +5178,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
       if (typ == SparseType::Full)
 	{
+#ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
 	  void *Numeric = factorize (err, rcond, Control, Info, 
 				     sing_handler);
@@ -5256,6 +5280,9 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	      umfpack_di_free_numeric (&Numeric);
 	    }
+#else
+	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 	}
       else if (typ != SparseType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");

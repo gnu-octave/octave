@@ -37,13 +37,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template class sparse_base_lu <SparseMatrix, double, SparseMatrix, double>;
 
+#ifdef HAVE_UMFPACK
 // Include the UMFPACK functions
 extern "C" {
-#include "umfpack.h"
+#include <umfpack/umfpack.h>
 }
+#endif
 
 SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 {
+#ifdef HAVE_UMFPACK
   int nr = a.rows ();
   int nc = a.cols ();
 
@@ -204,11 +207,15 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 	    }
 	}
     }
+#else
+  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 }
 
 SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 		    double piv_thres, bool FixedQ)
 {
+#ifdef HAVE_UMFPACK
   int nr = a.rows ();
   int nc = a.cols ();
 
@@ -382,6 +389,9 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 	    }
 	}
     }
+#else
+  (*current_liboctave_error_handler) ("UMFPACK not installed");
+#endif
 }
 
 /*

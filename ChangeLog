@@ -1,7 +1,19 @@
+2005-03-14  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for umfpack/umfpack.h instead of just umfpack.h.
+
+2004-06-22  David Bateman  <dbateman@free.org>
+
+	* configure.in: Check for UMFPACK library and header files.
+
+2005-03-14  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Also print a warning if HDF5 library is not found.
+
 2005-03-10  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in: Accept -R DIR.
-
+p
 2005-03-09  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (bin-dist): Delete target.

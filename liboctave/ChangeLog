@@ -1,5 +1,9 @@
 2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array2.h (Array2<T>::get_size): Now protected instead of private.
+	* Array3.h, Array3.cc: Use it in constructors and resize methods
+	to get total size to be allocated.
+
 	* DASSL.cc (DASSL::integrate): Declare do_restart and save_output
 	as bool, not int.
 

@@ -43,11 +43,9 @@ class idx_vector;
 template <class T>
 class Array2 : public Array<T>
 {
-private:
+protected:
 
   int get_size (int r, int c) const;
-
-protected:
 
   Array2 (T *d, int n, int m) : Array<T> (d, get_size (n, m))
     {

@@ -45,7 +45,7 @@ protected:
 
   int d3;
 
-  Array3 (T *d, int n, int m, int k) : Array2<T> (d, n, m*k)
+  Array3 (T *d, int n, int m, int k) : Array2<T> (d, n, get_size (m, k))
     {
       d2 = m;
       d3 = k;
@@ -61,7 +61,7 @@ public:
       set_max_indices (3);
     }
 
-  Array3 (int n, int m, int k) : Array2<T> (n, m*k)
+  Array3 (int n, int m, int k) : Array2<T> (n, get_size (m, k))
     {
       d2 = m;
       d3 = k;

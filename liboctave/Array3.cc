@@ -66,7 +66,9 @@ Array3<T>::resize (int r, int c, int p)
   int old_d3 = dim3 ();
   int old_len = length ();
 
-  rep = new ArrayRep (r*c*p);
+  int ts = get_size (get_size (r, c), p);
+
+  rep = new ArrayRep (ts);
 
   d1 = r;
   d2 = c;
@@ -111,7 +113,9 @@ Array3<T>::resize (int r, int c, int p, const T& val)
 
   int old_len = length ();
 
-  rep = new ArrayRep (r*c*p);
+  int ts = get_size (get_size (r, c), p);
+
+  rep = new ArrayRep (ts);
 
   d1 = r;
   d2 = c;

@@ -102,6 +102,8 @@ public:
 
   std::streamoff streamoff_value (void) const;
 
+  streamoff_array streamoff_array_value (void) const;
+
   octave_value convert_to_str_internal (bool pad, bool force) const;
 
   void increment (void) { ++scalar; }

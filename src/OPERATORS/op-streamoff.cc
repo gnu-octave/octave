@@ -66,62 +66,52 @@ DEFNDBINOP_OP (sub_so_s, streamoff, scalar, streamoff_array, streamoff, -)
 DEFNDBINOP_OP (add_s_so, scalar, streamoff, streamoff, streamoff_array, +)
 DEFNDBINOP_OP (sub_s_so, scalar, streamoff, streamoff, streamoff_array, +)
 
-DEFBINOP (eq, streamoff, streamoff)
-{
-  CAST_BINOP_ARGS (const octave_streamoff&,
-		   const octave_streamoff&);
+#define STREAMOFF_COMP_OP(FN, OP, T1, T2) \
+  DEFBINOP (FN, T1, T2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## T1&, octave_ ## T2&); \
+ \
+    streamoff_array cm1 = v1.streamoff_array_value (); \
+    streamoff_array cm2 = v2.streamoff_array_value (); \
+ \
+    if (! error_state) \
+      { \
+	if (cm1.rows () == 1 && cm1.columns () == 1) \
+	  { \
+	    if (cm2.rows () == 1 && cm2.columns () == 1) \
+	      return octave_value (cm1(0,0) OP cm2(0,0)); \
+	    else \
+	      SC_MX_BOOL_OP (std::streamoff, c, cm1 (0, 0), streamoff_array, \
+			     m, cm2, c OP m(i,j), 0.0); \
+	  } \
+	else \
+	  { \
+	    if (cm2.rows () == 1 && cm2.columns () == 1) \
+	      MX_SC_BOOL_OP (streamoff_array, m, cm1, std::streamoff, \
+			     c, cm2(0,0), c OP m(i,j), 0.0); \
+	    else \
+	      MX_MX_BOOL_OP (streamoff_array, m1, cm1, streamoff_array, \
+			     m2, cm2, m1(i,j) OP m2(i,j), #OP, 0.0, 1.0); \
+	  } \
+      } \
+    else \
+      return octave_value (); \
+  }
 
-  streamoff_array cm1 = v1.streamoff_array_value ();
-  streamoff_array cm2 = v2.streamoff_array_value ();
+STREAMOFF_COMP_OP (eq, ==, streamoff, streamoff);
+STREAMOFF_COMP_OP (ne, !=, streamoff, streamoff);
 
-  if (cm1.rows () == 1 && cm1.columns () == 1)
-    {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	return octave_value (cm1 (0, 0) == cm2 (0, 0));
-      else
-	SC_MX_BOOL_OP (std::streamoff, c, cm1 (0, 0), streamoff_array, m, cm2,
-		       c == m (i, j), 0.0);
-    }
-  else
-    {
-      int cm2_nr = cm2.rows ();
-      int cm2_nc = cm2.cols ();
+STREAMOFF_COMP_OP (eq_so_m, ==, streamoff, matrix);
+STREAMOFF_COMP_OP (ne_so_m, !=, streamoff, matrix);
 
-      if (cm2_nr == 1 && cm2_nc == 1)
-	MX_SC_BOOL_OP (streamoff_array, m, cm1, std::streamoff, c, cm2 (0, 0),
-		       c == m (i, j), 0.0);
-      else
-	MX_MX_BOOL_OP (streamoff_array, m1, cm1, streamoff_array, m2, cm2,
-		       m1 (i, j) == m2 (i, j), "==", 0.0, 1.0);
-    }
-}
+STREAMOFF_COMP_OP (eq_m_so, ==, matrix, streamoff);
+STREAMOFF_COMP_OP (ne_m_so, !=, matrix, streamoff);
 
-DEFBINOP (ne, streamoff, streamoff)
-{
-  CAST_BINOP_ARGS (const octave_streamoff&,
-		   const octave_streamoff&);
+STREAMOFF_COMP_OP (eq_so_s, ==, streamoff, scalar);
+STREAMOFF_COMP_OP (ne_so_s, !=, streamoff, scalar);
 
-  streamoff_array cm1 = v1.streamoff_array_value ();
-  streamoff_array cm2 = v2.streamoff_array_value ();
-
-  if (cm1.rows () == 1 && cm1.columns () == 1)
-    {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	return octave_value (cm1 (0, 0) != cm2 (0, 0));
-      else
-	SC_MX_BOOL_OP (std::streamoff, c, cm1 (0, 0), streamoff_array, m, cm2,
-		       c != m (i, j), 1.0);
-    }
-  else
-    {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	MX_SC_BOOL_OP (streamoff_array, m, cm1, std::streamoff, c, cm2 (0, 0),
-		       c != m (i, j), 1.0);
-      else
-	MX_MX_BOOL_OP (streamoff_array, m1, cm1, streamoff_array, m2, cm2,
-		       m1 (i, j) != m2 (i, j), "!=", 1.0, 0.0);
-    }
-}
+STREAMOFF_COMP_OP (eq_s_so, ==, scalar, streamoff);
+STREAMOFF_COMP_OP (ne_s_so, !=, scalar, streamoff);
 
 DEFASSIGNOP (assign, streamoff, streamoff)
 {
@@ -142,6 +132,18 @@ install_streamoff_ops (void)
 
   INSTALL_BINOP (op_eq, octave_streamoff, octave_streamoff, eq);
   INSTALL_BINOP (op_ne, octave_streamoff, octave_streamoff, ne);
+
+  INSTALL_BINOP (op_eq, octave_streamoff, octave_matrix, eq_so_m);
+  INSTALL_BINOP (op_ne, octave_streamoff, octave_matrix, ne_so_m);
+
+  INSTALL_BINOP (op_eq, octave_matrix, octave_streamoff, eq_m_so);
+  INSTALL_BINOP (op_ne, octave_matrix, octave_streamoff, ne_m_so);
+
+  INSTALL_BINOP (op_eq, octave_streamoff, octave_scalar, eq_so_s);
+  INSTALL_BINOP (op_ne, octave_streamoff, octave_scalar, ne_so_s);
+
+  INSTALL_BINOP (op_eq, octave_scalar, octave_streamoff, eq_s_so);
+  INSTALL_BINOP (op_ne, octave_scalar, octave_streamoff, ne_s_so);
 
   INSTALL_BINOP (op_add, octave_streamoff, octave_streamoff, add);
   INSTALL_BINOP (op_sub, octave_streamoff, octave_streamoff, sub);

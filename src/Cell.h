@@ -90,16 +90,6 @@ public:
   Cell& assign (const octave_value_list& idx, const Cell& rhs,
 		const octave_value& fill_val = octave_value ());
 
-  octave_value& operator () (int i) { return elem_internal (i); }
-
-  octave_value operator () (int i) const { return elem_internal (i); }
-
-  octave_value& operator () (int i, int j)
-    { return ArrayN<octave_value>::operator () (i, j); }
-
-  octave_value operator () (int i, int j) const
-    { return ArrayN<octave_value>::operator () (i, j); }
-
   // XXX FIXME XXX
   boolMatrix all (int dim = 0) const { return boolMatrix (); }
 
@@ -110,28 +100,6 @@ public:
   bool is_true (void) const { return false; }
 
   static octave_value resize_fill_value (void) { return Matrix (); }
-
-private:
-
-  // XXX FIXME XXX -- we need to do something intelligent if there is
-  // more than one dimension, but for now this is all we need...
-
-  void maybe_resize (int n)
-    {
-      if (n >= rows ())
-	resize (dim_vector (n + 1, 1), octave_value ());
-    }
-
-  octave_value& elem_internal (int n)
-    {
-      maybe_resize (n);
-      return elem (n);
-    }
-
-  octave_value elem_internal (int n) const
-    {
-      return elem (n);
-    }
 };
 
 #endif

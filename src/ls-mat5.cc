@@ -705,8 +705,8 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 // the appropriate tag.
 
 static bool 
-write_mat5_cell_array (std::ostream& os, Cell& cell, bool mark_as_global,
-		       bool save_as_floats)
+write_mat5_cell_array (std::ostream& os, const Cell& cell,
+		       bool mark_as_global, bool save_as_floats)
 {
   int nel = cell.nelem ();
 

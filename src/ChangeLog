@@ -1,3 +1,18 @@
+2004-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-scalar.cc (streamoff_array_value): New function.
+	* ov-scalar.h: Provide decl.
+
+	* OPERATORS/op-streamoff.cc (STREAMOFF_COMP_OP): New maco.
+	Use it to define streamoff by matrix, streamoff by scalar, scalar
+	by streamoff, and matrix by streamoff comparison operators.
+	(install_streamoff_ops): Install them.
+
+	* Cell.h (Cell::operator ()): Delete (we inherit them from Array<T>).
+	(maybe_resize, elem_internal): Delete unused functions.
+
+	* ls-mat5.cc (write_mat5_cell_array): Cell& arg is now const.
+
 2004-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (is_valid_function): If warn, also print error

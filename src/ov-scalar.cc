@@ -92,6 +92,19 @@ octave_scalar::streamoff_value (void) const
   return retval;
 }
 
+streamoff_array
+octave_scalar::streamoff_array_value (void) const
+{
+  streamoff_array retval;
+
+  std::streamoff soff = streamoff_value ();
+
+  if (! error_state)
+    retval = streamoff_array (dim_vector (1, 1), soff);
+
+  return retval;
+}
+
 octave_value
 octave_scalar::convert_to_str_internal (bool, bool) const
 {

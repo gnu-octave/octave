@@ -582,7 +582,8 @@ looks_like_octave_copyright (char *s)
 	  if (s)
 	    {
 	      s++;
-	      if (strncmp (s, " This file is part of Octave.", 29) == 0)
+	      if (strncmp (s, " This file is part of Octave.", 29) == 0
+		  || strncmp (s, " This program is free software", 30) == 0)
 		return 1;
 	    }
 	}

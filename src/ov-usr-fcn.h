@@ -120,6 +120,10 @@ public:
   std::string function_name (void)
     { return fcn_name; }
 
+  void mark_as_nested_function (void) { nested_function = true; }
+
+  bool is_nested_function (void) const { return nested_function; }
+
   void save_args_passed (const octave_value_list& args)
     {
       if (call_depth > 1)
@@ -210,6 +214,9 @@ private:
 
   // The number of arguments that have names.
   int num_named_args;
+
+  // TRUE means this is a nested function.
+  bool nested_function;
 
   // The values that were passed as arguments.
   octave_value_list args_passed;

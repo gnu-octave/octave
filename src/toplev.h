@@ -48,6 +48,9 @@ extern tree_statement_list *global_command;
 // Pointer to function that is currently being evaluated.
 extern octave_user_function *curr_function;
 
+// Pointer to parent function that is currently being evaluated.
+extern octave_user_function *curr_parent_function;
+
 // Original value of TEXMFDBS environment variable.
 extern std::string octave_original_texmfdbs;
 

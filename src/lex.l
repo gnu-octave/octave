@@ -22,6 +22,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 %s COMMAND_START
 %s MATRIX_START
+%s NESTED_FUNCTION_START
 
 %{
 #ifdef HAVE_CONFIG_H
@@ -193,6 +194,8 @@ static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
 static int is_plot_keyword (const std::string& s);
 static int is_keyword (const std::string& s);
+static void prep_for_function (void);
+static void prep_for_nested_function (void);
 static std::string plot_style_token (const std::string& s);
 static symbol_record *lookup_identifier (const std::string& s);
 static void grab_help_text (void);
@@ -237,6 +240,12 @@ IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
+
+<NESTED_FUNCTION_START>{} {
+    BEGIN 0;
+    prep_for_nested_function ();
+    return FCN;
+  }
 
 %{
 // Help and other command-style functions are a pain in the ass.  This
@@ -529,7 +538,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {IDENT}{S}* {
-    return handle_identifier ();
+    int id_tok = handle_identifier ();
+
+    if (id_tok >= 0)
+      return id_tok;
   }
 
 %{
@@ -814,7 +826,10 @@ reset_parser (void)
   error_state = 0;
   warning_state = 0;
   parser_end_of_input = false;
-  symtab_context = 0;
+  end_tokens_expected = 0;
+
+  while (! symtab_context.empty ())
+    symtab_context.pop ();
 
   // We do want a prompt by default.
   promptflag = 1;
@@ -1046,7 +1061,35 @@ is_plot_keyword (const std::string& s)
     }
 }
 
-// Handle keywords.
+static void
+prep_for_function (void)
+{
+  end_tokens_expected++;
+
+  // Prepare for local symbols.
+
+  tmp_local_sym_tab = new symbol_table ();
+
+  promptflag--;
+
+  lexer_flags.defining_func = true;
+  lexer_flags.parsed_function_name = false;
+  lexer_flags.beginning_of_function = true;
+
+  if (! (reading_fcn_file || reading_script_file))
+    input_line_number = 1;
+}
+
+static void
+prep_for_nested_function (void)
+{
+  lexer_flags.parsing_nested_function = true;
+  prep_for_function ();
+  yylval.tok_val = new token (input_line_number, current_input_column);
+  token_stack.push (yylval.tok_val);
+}
+
+// Handle keywords.  Return -1 if the keyword should be ignored.
 
 static int
 is_keyword (const std::string& s)
@@ -1111,40 +1154,65 @@ is_keyword (const std::string& s)
 	  if (lexer_flags.looking_at_object_index)
 	    return 0;
 	  else
-	    yylval.tok_val = new token (token::simple_end, l, c);
+	    {
+	      if (reading_fcn_file && end_tokens_expected == 1)
+		return -1;
+	      else
+		{
+		  yylval.tok_val = new token (token::simple_end, l, c);
+		  end_tokens_expected--;
+		}
+	    }
 	  break;
 
 	case end_try_catch_kw:
+	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::try_catch_end, l, c);
 	  break;
 
 	case end_unwind_protect_kw:
+	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::unwind_protect_end, l, c);
 	  break;
 
 	case endfor_kw:
+	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::for_end, l, c);
 	  break;
 
 	case endfunction_kw:
-	  yylval.tok_val = new token (token::function_end, l, c);
+	  {
+	    if (reading_fcn_file && end_tokens_expected == 1)
+	      return -1;
+	    else
+	      {
+		yylval.tok_val = new token (token::function_end, l, c);
+		end_tokens_expected--;
+	      }
+	  }
 	  break;
 
 	case endif_kw:
+	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::if_end, l, c);
 	  break;
 
 	case endswitch_kw:
+	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::switch_end, l, c);
 	  break;
 
 	case endwhile_kw:
+	  end_tokens_expected--;
 	  yylval.tok_val = new token (token::while_end, l, c);
 	  break;
 
-	case do_kw:
 	case for_kw:
 	case while_kw:
+	  end_tokens_expected++;
+	  // Fall through...
+
+	case do_kw:
 	  promptflag--;
 	  lexer_flags.looping++;
 	  break;
@@ -1153,6 +1221,7 @@ is_keyword (const std::string& s)
 	case try_kw:
 	case switch_kw:
 	case unwind_protect_kw:
+	  end_tokens_expected++;
 	  promptflag--;
 	  break;
 
@@ -1172,35 +1241,40 @@ is_keyword (const std::string& s)
 	  break;
 
 	case function_kw:
-	  if (lexer_flags.defining_func)
-	    {
-	      error ("function keyword invalid within a function body");
+	  {
+	    if (lexer_flags.defining_func)
+	      {
+		if (reading_fcn_file)
+		  {
 
-	      if ((reading_fcn_file || reading_script_file)
-		  && ! curr_fcn_file_name.empty ())
-		error ("defining new function near line %d of file `%s.m'",
-		       input_line_number, curr_fcn_file_name.c_str ());
-	      else
-		error ("defining new function near line %d",
-		       input_line_number);
+		    if (lexer_flags.parsing_nested_function)
+		      {
+			BEGIN NESTED_FUNCTION_START;
+			yylval.tok_val = new token (token::function_end, l, c);
+		      }
+		    else
+		      {
+			prep_for_nested_function ();
+			return FCN;
+		      }
+		  }
+		else
+		  {
+		    error ("nested functions not implemented in this context");
 
-	      return LEXICAL_ERROR;
-	    }
-	  else
-	    {
-	      // Prepare for local symbols.
+		    if ((reading_fcn_file || reading_script_file)
+			&& ! curr_fcn_file_name.empty ())
+		      error ("near line %d of file `%s.m'",
+			     input_line_number, curr_fcn_file_name.c_str ());
+		    else
+		      error ("near line %d", input_line_number);
 
-	      tmp_local_sym_tab = new symbol_table ();
-
-	      promptflag--;
-
-	      lexer_flags.defining_func = true;
-	      lexer_flags.parsed_function_name = false;
-	      lexer_flags.beginning_of_function = true;
-
-	      if (! (reading_fcn_file || reading_script_file))
-		input_line_number = 1;
-	    }
+		    return LEXICAL_ERROR;
+		  }
+	      }
+	    else
+	      prep_for_function ();
+	  }
 	  break;
 
         case magic_file_kw:
@@ -1248,7 +1322,13 @@ is_keyword (const std::string& s)
 static symbol_record *
 lookup_identifier (const std::string& name)
 {
-  return curr_sym_tab->lookup (name, true);
+  std::string sym_name = name;
+
+  if (curr_sym_tab == fbi_sym_tab
+      && lexer_flags.parsing_nested_function)
+    sym_name = parent_function_name + ":" + sym_name;
+
+  return curr_sym_tab->lookup (sym_name, true);
 }
 
 static bool
@@ -2243,7 +2323,8 @@ maybe_unput_comma (int spc_gobbled)
 }
 
 // Figure out exactly what kind of token to return when we have seen
-// an identifier.  Handles keywords.
+// an identifier.  Handles keywords.  Return -1 if the identifier
+// should be ignored.
 
 static int
 handle_identifier (void)
@@ -2295,7 +2376,9 @@ handle_identifier (void)
 
   if (kw_token)
     {
-      if (kw_token == STYLE)
+      if (kw_token < 0)
+	return kw_token;
+      else if (kw_token == STYLE)
 	{
 	  current_input_column += yyleng;
 	  lexer_flags.quote_is_transpose = false;
@@ -2536,6 +2619,7 @@ lexical_feedback::init (void)
   beginning_of_function = false;
   defining_func = false;
   parsed_function_name = false;
+  parsing_nested_function = false;
 
   // Not parsing a function return or parameter list.
   looking_at_return_list = false;

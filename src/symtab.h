@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <stack>
 
+#include "lo-sstream.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
 
@@ -406,10 +407,20 @@ symbol_table
 {
 public:
 
-  symbol_table (unsigned int tab_size = 128)
-    : table_size (tab_size), table (new symbol_record [table_size])
+  symbol_table (unsigned int tab_size = 128,
+		const std::string& nm = std::string ())
+    : table_size (tab_size), table (new symbol_record [table_size]),
+      table_name (nm)
     {
       assert ((tab_size % 2) == 0);
+
+      if (table_name.empty ())
+	{
+	  OSSTREAM buf;
+	  buf << symtab_count++ << OSSTREAM_ENDS;
+	  table_name = OSSTREAM_STR (buf);
+	  OSSTREAM_FREEZE (buf);
+	}
     }
 
   ~symbol_table (void)
@@ -494,6 +505,10 @@ private:
   unsigned int table_size;
 
   symbol_record *table;
+
+  std::string table_name;
+
+  static unsigned long int symtab_count;
 
   unsigned int hash (const std::string& s);
 

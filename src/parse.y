@@ -133,8 +133,15 @@ bool input_from_command_line_file = true;
 // an eval() statement.
 bool evaluating_function_body = false;
 
+// Keep a count of how many END tokens we expect.
+int end_tokens_expected = 0;
+
 // Keep track of symbol table information when parsing functions.
-symbol_table *symtab_context = 0;
+std::stack<symbol_table*> symtab_context;
+
+// Name of parent function when parsing function files that might
+// contain nested functions.
+std::string parent_function_name;
 
 // Forward declarations for some functions defined at the bottom of
 // the file.
@@ -321,10 +328,10 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
     { \
       global_command = 0; \
       yyerrok; \
-      if (symtab_context) \
+      if (! symtab_context.empty ()) \
         { \
-	  curr_sym_tab = symtab_context; \
-	  symtab_context = 0; \
+	  curr_sym_tab = symtab_context.top (); \
+	  symtab_context.pop (); \
         } \
       if (interactive || forced_interactive) \
 	YYACCEPT; \
@@ -420,7 +427,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_expression_type> title matrix cell
 %type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
-%type <tree_identifier_type> identifier
+%type <tree_identifier_type> identifier fcn_name
 %type <octave_user_function_type> function1 function2 function3
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_colon_expression_type> colon_expr1
@@ -1097,12 +1104,7 @@ except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
 // ===========================================
 
 save_symtab	: // empty
-		  {
-		    if (symtab_context)
-		      panic_impossible ();
-
-		    symtab_context = curr_sym_tab;
-		  }
+		  { symtab_context.push (curr_sym_tab); }
 		;
 		   
 function_symtab	: // empty
@@ -1115,10 +1117,6 @@ local_symtab	: // empty
 
 in_return_list	: // empty
 		  { lexer_flags.looking_at_return_list = true; }
-		;
-
-parsed_fcn_name	: // empty
-		  { lexer_flags.parsed_function_name = true; }
 		;
 
 // ===========================
@@ -1229,8 +1227,8 @@ return_list_end	: function_symtab ']'
 // Function definition
 // ===================
 
-function_beg	: save_symtab FCN stash_comment function_symtab
-		  { $$ = $3; }
+function_beg	: save_symtab FCN function_symtab stash_comment
+		  { $$ = $4; }
 		;
 
 function	: function_beg function2
@@ -1257,9 +1255,24 @@ function1	: function_symtab '=' function2
 		  { $$ = $3; }
 		;
 
-function2	: identifier local_symtab parsed_fcn_name function3
+fcn_name	: identifier local_symtab
 		  {
-		    if (! ($$ = frob_function ($1, $4)))
+		    std::string id_name = $1->name ();
+
+		    if (reading_fcn_file
+		        && ! lexer_flags.parsing_nested_function)
+		      parent_function_name = (curr_fcn_file_name == id_name)
+			? id_name : curr_fcn_file_name;
+
+		    lexer_flags.parsed_function_name = true;
+
+		    $$ = $1;
+		  }
+		;
+
+function2	: fcn_name function3
+		  {
+		    if (! ($$ = frob_function ($1, $2)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -1276,16 +1289,13 @@ function4	: opt_sep opt_list function_end
 
 function_end	: END
 		  {
-		    if (end_token_ok ($1, token::function_end))
-		      {
-			if (reading_fcn_file)
-			  check_for_garbage_after_fcn_def ();
-		      }
-		    else
+		    if (! end_token_ok ($1, token::function_end))
 		      ABORT_PARSE;
 		  }
 		| END_OF_INPUT
 		  {
+		    lexer_flags.parsing_nested_function = false;
+
 		    if (! (reading_fcn_file || reading_script_file
 			   || get_input_from_eval_string))
 		      YYABORT;
@@ -2525,7 +2535,8 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 
   if (reading_fcn_file)
     {
-      if (curr_fcn_file_name != id_name)
+      if (! lexer_flags.parsing_nested_function
+          && curr_fcn_file_name != id_name)
 	{
 	  if (Vwarn_function_name_clash)
 	    warning ("function name `%s' does not agree with function\
@@ -2569,7 +2580,12 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
   symbol_record *sr = fbi_sym_tab->lookup (id_name);
 
   if (sr)
-    fcn->stash_symtab_ptr (sr);
+    {
+      fcn->stash_symtab_ptr (sr);
+
+      if (lexer_flags.parsing_nested_function)
+        fcn->mark_as_nested_function ();
+    }
   else
     panic_impossible ();
 
@@ -2613,11 +2629,11 @@ finish_function (tree_parameter_list *ret_list,
 static void
 recover_from_parsing_function (void)
 {
-  if (! symtab_context)
+  if (symtab_context.empty ())
     panic_impossible ();
 
-  curr_sym_tab = symtab_context;
-  symtab_context = 0;
+  curr_sym_tab = symtab_context.top ();
+  symtab_context.pop ();
 
   lexer_flags.defining_func = false;
   lexer_flags.beginning_of_function = false;
@@ -3238,13 +3254,17 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
   unwind_protect_int (input_line_number);
   unwind_protect_int (current_input_column);
+  unwind_protect_int (end_tokens_expected);
   unwind_protect_bool (reading_fcn_file);
   unwind_protect_bool (line_editing);
+  unwind_protect_str (parent_function_name);
 
   input_line_number = 0;
   current_input_column = 1;
+  end_tokens_expected = 0;
   reading_fcn_file = true;
   line_editing = false;
+  parent_function_name = "";
 
   FILE *ffile = get_input_from_file (ff, 0);
 

@@ -82,7 +82,8 @@ octave_user_function::octave_user_function
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0),
-    num_named_args (0), args_passed (), num_args_passed (0),
+    num_named_args (0), nested_function (false),
+    args_passed (), num_args_passed (0),
     curr_va_arg_number (0), vr_list (0), symtab_entry (0),
     argn_sr (0), nargin_sr (0), nargout_sr (0), varargin_sr (0)
 {
@@ -404,6 +405,12 @@ octave_user_function::do_multi_index_op (int nargout,
 
   unwind_protect_ptr (curr_function);
   curr_function = this;
+
+  if (! is_nested_function ())
+    {
+      unwind_protect_ptr (curr_parent_function);
+      curr_parent_function = this;
+    }
 
   // Save and restore args passed for recursive calls.
 

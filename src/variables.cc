@@ -86,13 +86,13 @@ void
 initialize_symbol_tables (void)
 {
   if (! fbi_sym_tab)
-    fbi_sym_tab = new symbol_table (2048);
+    fbi_sym_tab = new symbol_table (2048, "FBI");
 
   if (! global_sym_tab)
-    global_sym_tab = new symbol_table (2048);
+    global_sym_tab = new symbol_table (2048, "GLOBAL");
 
   if (! top_level_sym_tab)
-    top_level_sym_tab = new symbol_table (4096);
+    top_level_sym_tab = new symbol_table (4096, "TOP");
 
   curr_sym_tab = top_level_sym_tab;
 }
@@ -923,7 +923,19 @@ link_to_global_variable (symbol_record *sr)
 void
 link_to_builtin_or_function (symbol_record *sr)
 {
-  symbol_record *tmp_sym = fbi_sym_tab->lookup (sr->name ());
+  std::string nm = sr->name ();
+
+  symbol_record *tmp_sym = 0;
+
+  if (curr_parent_function)
+    {
+      std::string parent = curr_parent_function->function_name ();
+
+      tmp_sym = fbi_sym_tab->lookup (parent + ":" + nm);
+    }
+
+  if (! tmp_sym)
+    tmp_sym = fbi_sym_tab->lookup (nm);
 
   if (tmp_sym
       && (tmp_sym->is_builtin_variable ()

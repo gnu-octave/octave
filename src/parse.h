@@ -73,10 +73,17 @@ extern bool input_from_command_line_file;
 extern bool evaluating_function_body;
 
 // Keep track of symbol table information when parsing functions.
-extern symbol_table *symtab_context;
+extern std::stack<symbol_table*> symtab_context;
+
+// Name of parent function when parsing function files that might
+// contain nested functions.
+extern std::string parent_function_name;
 
 // TRUE means warn about function files that have time stamps in the future.
 extern bool Vwarn_future_time_stamp;
+
+// Keep a count of how many END tokens we expect.
+extern int end_tokens_expected;
 
 extern void
 parse_and_execute (FILE *f);

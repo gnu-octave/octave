@@ -113,11 +113,6 @@ extern void restore_input_buffer (void *buf);
 // Delete a buffer (for unwind-prot).
 extern void delete_input_buffer (void *buf);
 
-// See if a function file has extra garbage after the end statement.
-// This needs to be defined in lex.l so that it can use yyinput() but
-// it must be called from parse.y.
-extern void check_for_garbage_after_fcn_def (void);
-
 // For communication between the lexer and parser.
 
 class
@@ -190,6 +185,9 @@ public:
   // TRUE means that we've already seen the name of this function.
   // Should only matter if defining_func is also TRUE.
   bool parsed_function_name;
+
+  // TRUE means that we're parsing a nested function definition.
+  bool parsing_nested_function;
 
   // TRUE means we've seen something that means we must be past the
   // range part of a plot command.

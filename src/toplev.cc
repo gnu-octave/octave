@@ -92,6 +92,9 @@ tree_statement_list *global_command = 0;
 // Pointer to function that is currently being evaluated.
 octave_user_function *curr_function = 0;
 
+// Pointer to parent function that is currently being evaluated.
+octave_user_function *curr_parent_function = 0;
+
 // Original value of TEXMFDBS environment variable.
 std::string octave_original_texmfdbs;
 

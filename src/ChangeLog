@@ -1,8 +1,74 @@
+2002-12-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (link_to_builtin_or_function): Maybe prepend parent
+	function name symbol name.
+
+	* parse.y (parent_function_name): New variable.
+	(fcn_name): New non-terminal.
+	(function2): Use it.
+	(parsed_fcn_name): Fold into fcn_name.
+	(function_end): Don't call check_for_garbage_after_fcn_def.
+	Set lexer_flags.parsing_nested_function on EOF.
+	* parse.h: Provide decl for parent_function_name.
+
+	* ov-usr-fcn.h (octave_user_function::mark_as_nested_function,
+	(octave_user_funciton::is_nested_function): New functions.
+	(octave_user_function::nested_function): New data member.
+	(octave_user_function::do_multi_index_op): Maybe protect and set
+	curr_parent_function pointer.
+	* parse.y (frob_function): Maybe mark as nested function.
+
+	* toplev.cc (curr_parent_function): New global variable.
+	* toplev.h: Provide decl.
+
+	* lex.l (check_for_garbage_after_fcn_def): Delete.
+	* lex.h: Delete decl.
+
+	* lex.l (prep_for_nested_function): New function.
+	(<NESTED_FUNCTION_START>): Use it here.
+	(is_keyword): And here.
+	(lookup_identifier): Maybe prepend parent function name.
+
+	* variables.cc (initialize_symbol_tables): Give names to the three
+	main symbol tables.
+	* symtab.cc (symbol_table::lookup, symbol_table::rename): Print
+	debugging info if Vdebug_symtab_lookups is nonzero.
+	(debug_symtab_lookups): New function.
+	(Vdebug_symtab_lookups): New static varaible.
+	(symbols_of_symtab): DEFVAR it.
+	* symtab.h (symbol_table::table_name): New member variable.
+	(symtab_count): New static member variable.
+	(symbol_table::symbol_table): Handle table name.
+
 2002-12-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (frob_function): Don't give nested functions the same
+	name as the function file.
+
+	* lex.h (lexical_feedback::parsing_nested_function): New data member.
+	* lex.l (lexical_feedback::init): Initialize it to false.
+	(<NESTED_FUNCTION_START>): Set lexer_flags.parsing_nested_function
+	to true.
+
+	* parse.y (symtab_context): Now a stack.  Change all uses.
+
+	* lex.l (NESTED_FUNCTION_START): New start state to handle
+	"function" keyword in a nested function context.
+	(prep_for_function): New function.
+	(is_keyword): Allow functions to be nested in function files.
+
+	* lex.l (is_keyword): Maybe ignore END tokens.
+	Increment and decrement end_tokens_expected as appropriate.
+	(handle_identifier): If is_keyword returns -1, return immediately.
+	({IDENT}{S}*): Do nothing if handle_identifier returns -1.
+
+	* parse.y (end_tokens_expected): New variable.
+	(parse_fcn_file): Protect and set it.
 
 	* parse.y (begin_obj_idx): Increment
 	lexer_flags.looking_at_object_index.
 	(postfix_expr): Decrement it as appropriate here.
+
 	* lex.h (lexical_feedback::looking_at_object_index): Now int.
 
 	* parse.y (postfix_expr): Reset	lexer_flags.looking_at_object_index

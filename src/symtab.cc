@@ -47,10 +47,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+unsigned long int symbol_table::symtab_count = 0;
+
 // Should variables be allowed to hide functions of the same name?  A
 // positive value means yes.  A negative value means yes, but print a
 // warning message.  Zero means it should be considered an error.
 static int Vvariables_can_hide_functions;
+
+// Nonzero means we print debugging info about symbol table lookups.
+static int Vdebug_symtab_lookups;
 
 octave_allocator
 symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
@@ -462,6 +467,15 @@ symbol_record::read_only_error (const char *action)
 symbol_record *
 symbol_table::lookup (const std::string& nm, bool insert, bool warn)
 {
+  if (Vdebug_symtab_lookups)
+    {
+      std::cerr << (table_name.empty () ? "???" : table_name)
+		<< " symtab::lookup ["
+		<< (insert ? "I" : "-")
+		<< (warn ? "W" : "-")
+		<< "] \"" << nm << "\"\n";
+    }
+
   unsigned int index = hash (nm);
 
   symbol_record *ptr = table[index].next ();
@@ -491,6 +505,15 @@ symbol_table::lookup (const std::string& nm, bool insert, bool warn)
 void
 symbol_table::rename (const std::string& old_name, const std::string& new_name)
 {
+  if (Vdebug_symtab_lookups)
+    {
+      std::cerr << (table_name.empty () ? "???" : table_name)
+		<< " symtab::rename "
+		<< "\"" << old_name << "\""
+		<< " to "
+		<< "\"" << new_name << "\"\n";
+    }
+
   unsigned int index = hash (old_name);
 
   symbol_record *prev = &table[index];
@@ -1072,6 +1095,14 @@ variables_can_hide_functions (void)
   return 0;
 }
 
+static int
+debug_symtab_lookups (void)
+{
+  Vdebug_symtab_lookups = check_preference ("debug_symtab_lookups");
+
+  return 0;
+}
+
 void
 symbols_of_symtab (void)
 {
@@ -1083,6 +1114,11 @@ hide previously defined functions of the same name.  A negative value\n\
 will cause Octave to print a warning, but allow the operation.\n\
 @end defvr");
 
+  DEFVAR (debug_symtab_lookups, false, debug_symtab_lookups,
+    "-*- texinfo -*-\n\
+@defvr debug_symtab_lookups\n\
+If the value of htis variable is nonzero, print debugging info when\n\
+searching for symbols in the symbol tables");
 }
 
 

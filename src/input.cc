@@ -34,7 +34,7 @@ Free Software Foundation, Inc.
 // Use the GNU readline library for command line editing and hisory.
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <sys/types.h>

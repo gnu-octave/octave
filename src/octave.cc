@@ -24,7 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // Born February 20, 1992.
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <sys/types.h>

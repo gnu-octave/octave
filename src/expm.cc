@@ -24,7 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // Written by A. S. Hodel <scotte@eng.auburn.edu>
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <math.h>

@@ -1,3 +1,10 @@
+1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_base_stream::do_scanf): If it looks like
+	we have a matching failure, then reset the failbit in the stream
+	state.
+	(octave_base_stream::do_oscanf): Likewise.
+
 1999-11-02  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* src/help.cc (Fhelp): Texinfoize doc string.

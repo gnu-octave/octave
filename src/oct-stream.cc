@@ -1264,6 +1264,12 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      final_nc = 1;
 		    }
 
+		  // If it looks like we have a matching failure, then
+		  // reset the failbit in the stream state.
+
+		  if (is.rdstate () & ios::failbit)
+		    is.clear (is.rdstate () & (~ios::failbit));
+
 		  // XXX FIXME XXX -- is this the right thing to do?
 		  // What about other streams?
 		  if (name () == "stdin")
@@ -1336,10 +1342,16 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 
 		if (! is)
 		  {
-		    error ("fscanf: read error");
+		    // If it looks like we have a matching failure, then
+		    // reset the failbit in the stream state.
+
+		    if (is.rdstate () & ios::failbit)
+		      is.clear (is.rdstate () & (~ios::failbit));
+		    else
+		      error ("fscanf: read error");
 
 		    // XXX FIXME XXX -- is this the right thing to do?
-
+		    // What about other streams?
 		    if (name () == "stdin")
 		      {
 			is.clear ();

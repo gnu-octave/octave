@@ -715,9 +715,8 @@ display the definition of each NAME that refers to a function")
 
   begin_unwind_frame ("Ftype");
 
-  // XXX FIXME XXX -- need a way to protect strings.
-  //  unwind_protect_ptr (user_pref.ps4);
-  //  user_pref.ps4 = "";
+  unwind_protect_str (user_pref.ps4);
+  user_pref.ps4 = "";
 
   int argc = args.length () + 1;
 

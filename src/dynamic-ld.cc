@@ -96,7 +96,9 @@ octave_dlopen_dynamic_loader::resolve_reference (const string& name,
 
   if (handle)
     {
-      retval = (octave_dynamic_loader::builtin_fcn) dlsym (handle, nm);
+      void *tmp = dlsym (handle, nm);
+
+      retval = static_cast<octave_dynamic_loader::builtin_fcn> (tmp);
 
       if (! retval)
 	{

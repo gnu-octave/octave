@@ -1,3 +1,11 @@
+1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleSCHUR.cc (SCHUR::init): IWORK is always referenced by dgeesx.
+	Don't forget to pass length of third string argument to dgeesx.
+
+	* CmplxSCHUR.cc (ComplexSCHUR::init): Don't forget to pass length
+	of third string argument to zgeesx.
+
 1999-11-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DiagArray2.cc (DiagArray2<T>::operator () (int, int)):

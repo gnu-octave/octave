@@ -42,7 +42,7 @@ extern "C"
 				int&, double*, double*, double*,
 				const int&, double&, double&, double*,
 				const int&, int*, const int&, int*,
-				int&, long, long);
+				int&, long, long, long);
 }
 
 static int
@@ -68,6 +68,9 @@ SCHUR::init (const Matrix& a, const string& ord)
       (*current_liboctave_error_handler) ("SCHUR requires square matrix");
       return -1;
     }
+
+  // Workspace requirements may need to be fixed if any of the
+  // following change.
 
   char jobvs = 'V';
   char sense = 'N';
@@ -108,25 +111,17 @@ SCHUR::init (const Matrix& a, const string& ord)
   Array<double> work (lwork);
   double *pwork = work.fortran_vec ();
 
-  // These are not referenced for the non-ordered Schur routine.
-
-  Array<int> bwork;
-  Array<int> iwork;
-
-  if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
-    {
-      bwork.resize (n);
-      iwork.resize (liwork);
-    }
-
+  // BWORK is not referenced for the non-ordered Schur routine.
+  Array<int> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
   int *pbwork = bwork.fortran_vec ();
-  int *piwork = iwork.fortran_vec ();
 
+  Array<int> iwork (liwork);
+  int *piwork = iwork.fortran_vec ();
 
   F77_XFCN (dgeesx, DGEESX, (&jobvs, &sort, selector, &sense, n, s,
 			     n, sdim, pwr, pwi, q, n, rconde, rcondv,
 			     pwork, lwork, piwork, liwork, pbwork,
-			     info, 1L, 1L));
+			     info, 1L, 1L, 1L));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgeesx");

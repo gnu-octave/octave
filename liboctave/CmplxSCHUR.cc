@@ -40,7 +40,7 @@ extern "C"
 				const int&, int&, Complex*, Complex*,
 				const int&, double&, double&,
 				Complex*, const int&, double*, int*,
-				int&, long, long);
+				int&, long, long, long);
 }
 
 static int
@@ -67,6 +67,9 @@ ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
 	("ComplexSCHUR requires square matrix");
       return -1;
     }
+
+  // Workspace requirements may need to be fixed if any of the
+  // following change.
 
   char jobvs = 'V';
   char sense = 'N';
@@ -106,18 +109,13 @@ ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
   Array<Complex> work (lwork);
   Complex *pwork = work.fortran_vec ();
 
-  // bwork is not referenced for non-ordered Schur.
-
-  Array<int> bwork;
-
-  if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
-    bwork.resize (n);
-
+  // BWORK is not referenced for non-ordered Schur.
+  Array<int> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
   int *pbwork = bwork.fortran_vec ();
 
   F77_XFCN (zgeesx, ZGEESX, (&jobvs, &sort, selector, &sense, n, s, n,
 			     sdim, pw, q, n, rconde, rcondv, pwork,
-			     lwork, prwork, pbwork, info, 1L, 1L));
+			     lwork, prwork, pbwork, info, 1L, 1L, 1L));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgeesx");

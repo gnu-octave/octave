@@ -1,3 +1,7 @@
+Tue Jan  7 00:16:52 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.1 released.
+
 Thu Dec 19 22:16:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* elfun/lcm.m: Replace missing if statement.

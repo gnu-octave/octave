@@ -1,3 +1,7 @@
+Tue Jan  7 00:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.1 released.
+
 Tue Dec 17 11:02:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/lo-error.c: Convert C++-style comments to C-style comments.

@@ -1,10 +1,10 @@
-Since July 1996, most work on Octave has been done using a
-Linux/GNU system, and a number of people who regularly test Octave
-snapshot releases also primarily use Linux/GNU systems.
+Since July 1996, most work on Octave has been done using a Linux
+system, and a number of people who regularly test Octave snapshot
+releases also primarily use Linux systems.
 
 However, I have recently started to receive a significant number of
 reports from people who say that they can't compile or run Octave on
-Linux/GNU systems.  In nearly every case, the problem has turned out
+Linux systems.  In nearly every case, the problem has turned out
 to be that the compilers or libraries have not been installed
 properly.  I suspect that this often results from a botched upgrade,
 or from attempting to install the compilers from the standard source

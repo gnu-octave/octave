@@ -78,6 +78,10 @@ Numerical:
 
   * Check matrix classes for proper handling of empty matrices.
 
+  * Force all empty matrices to be 0x0 even when other dimensions have
+    been speicified, for compatibility with Matlab, at least when some
+    preference variable is set.
+
   * Improve design of ODE, DAE, classes.
 
   * Make it possible to specify a time which dassl and lsode should

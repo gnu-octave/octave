@@ -1,3 +1,19 @@
+Tue Jan  7 00:16:41 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.1 released.
+
+Mon Jan  6 00:00:07 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-mat.cc (tm_row_const_rep::all_mt): New variable.
+	(tm_row_const::all_empty): New function.
+	(tm_row_const::tm_row_const_rep::init): Set all_mt here.
+	(tm_const::all_mt): New variable.
+	(tm_const::all_emtpy): New function.
+	(tm_const::init): Set all_mt here.
+	(tree_matrix::eval): Return an empty matrix if the list contains
+	only empty elements.  If it contains only empty strings, return an
+	empty string.
+
 Sun Jan  5 12:50:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ops.h (SC_MX_BOOL_OP, MX_SC_BOOL_OP): New arg, empty_result.

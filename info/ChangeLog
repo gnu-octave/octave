@@ -1,3 +1,8 @@
+Mon Jan  6 19:14:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* terminal.c (terminal_prep_terminal): Only delete OCRNL from
+	ttybuff.c_oflag if it is defined.
+
 Mon Dec  9 14:20:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install): Use $(EXE) suffix so that install will

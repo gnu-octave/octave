@@ -54,7 +54,7 @@ octave_dld_function::octave_dld_function
 
   system_fcn_file
     = (! file_name.empty ()
-       && Vfcn_file_dir.compare (file_name, 0, Vfcn_file_dir.length ()) == 0);
+       && Vfcn_file_dir == file_name.substr (0, Vfcn_file_dir.length ()));
 }
 
 octave_dld_function::~octave_dld_function (void)

@@ -592,15 +592,12 @@ check_preference (const std::string& var)
     }
   else
     {
-      if (val.compare ("yes", 0, 3) == 0
-	  || val.compare ("true", 0, 4) == 0)
+      if (val == "yes" || val == "true")
 	{
 	  warn_old_style_preference (true, val);
 	  pref = 1;
 	}
-      else if (val.compare ("never", 0, 5) == 0
-	       || val.compare ("no", 0, 2) == 0
-	       || val.compare ("false", 0, 5) == 0)
+      else if (val == "never" || val == "no" || val == "false")
 	{
 	  warn_old_style_preference (false, val);
 	  pref = 0;

@@ -138,7 +138,7 @@ octave_user_function::mark_as_system_fcn_file (void)
 
       std::string ff_name = fcn_file_in_path (file_name);
 
-      if (Vfcn_file_dir.compare (ff_name, 0, Vfcn_file_dir.length ()) == 0)
+      if (Vfcn_file_dir == ff_name.substr (0, Vfcn_file_dir.length ()))
 	system_fcn_file = 1;
     }
   else

@@ -2287,9 +2287,9 @@ whitespace_in_literal_matrix (void)
 
   if (! val.empty ())
     {
-      if (val.compare ("ignore", 0, 6) == 0)
+      if (val == "ignore")
 	pref = 2;
-      else if (val.compare ("traditional", 0, 11) == 0)
+      else if (val == "traditional")
 	pref = 1;
     }
 

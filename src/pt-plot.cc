@@ -208,9 +208,11 @@ send_to_plot_stream (const char *cmd)
   int splot_len = Vgnuplot_command_splot.length ();
   int plot_len = Vgnuplot_command_plot.length ();
 
-  bool is_replot = (Vgnuplot_command_replot.compare (cmd, 0, replot_len) == 0);
-  bool is_splot = (Vgnuplot_command_splot.compare (cmd, 0, splot_len) == 0);
-  bool is_plot = (Vgnuplot_command_plot.compare (cmd, 0, plot_len) == 0);
+  std::string s = cmd;
+
+  bool is_replot = (Vgnuplot_command_replot == s.substr (0, replot_len));
+  bool is_splot = (Vgnuplot_command_splot == s.substr (0, splot_len));
+  bool is_plot = (Vgnuplot_command_plot == s.substr (0, plot_len));
 
   if (plot_line_count == 0 && is_replot)
     error ("replot: no previous plot");

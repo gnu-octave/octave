@@ -1,5 +1,16 @@
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-plot.cc (send_to_plot_stream): Use operator== and substr
+	method to do limited-length string comparison.
+	* input.cc (generate_completion): Likewise.
+	* ov-dld-fcn.cc (octave_dld_function::octave_dld_function): Likewise.
+	* ov-usr-fcn.cc (octave_user_function::mark_as_system_fcn_file):
+	Likewise.
+
+	* utils.cc (check_preference): Expect exact string matches.
+	* variables.cc (ignore_function_time_stamp): Likewise.
+	* lex.l (whitespace_in_literal_matrix): Likewise.
+
 	* mappers.cc (xconj, ximag, xreal): New functions.  Use them in
 	DEFUN_MAPPER calls.
 

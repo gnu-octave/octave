@@ -425,7 +425,7 @@ generate_completion (const std::string& text, int state)
       matches = 0;
 
       for (int i = 0; i < name_list_len; i++)
-	if (! name_list[i].compare (hint, 0, hint_len))
+	if (hint == name_list[i].substr (0, hint_len))
 	  matches++;
     }
 
@@ -437,7 +437,7 @@ generate_completion (const std::string& text, int state)
 
 	  list_index++;
 
-	  if (! name.compare (hint, 0, hint_len))
+	  if (hint == name.substr (0, hint_len))
 	    {
 	      if (! prefix.empty ())
 		retval = prefix + "." + name;

@@ -1298,9 +1298,9 @@ ignore_function_time_stamp (void)
 
   if (! val.empty ())
     {
-      if (val.compare ("all", 0, 3) == 0)
+      if (val == "all")
 	pref = 2;
-      if (val.compare ("system", 0, 6) == 0)
+      else if (val == "system")
 	pref = 1;
     }
 

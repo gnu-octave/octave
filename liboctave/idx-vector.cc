@@ -585,11 +585,11 @@ IDX_VEC_REP::freeze (int z_len, const char *tag, bool resize_ok,
 	      if (warn_resize && max_val >= z_len)
 		{
 		  if (tag)
-		    (*current_liboctave_error_handler)
+		    (*current_liboctave_warning_handler)
 		      ("resizing object with %s index = %d out of bounds",
 		       tag, max_val+1);
 		  else
-		    (*current_liboctave_error_handler)
+		    (*current_liboctave_warning_handler)
 		      ("resizing object with index = %d out of bounds",
 		       max_val+1);
 		}

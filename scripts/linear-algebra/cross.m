@@ -71,7 +71,7 @@ function z = cross (x, y, dim)
 
   nd = ndims (x);
   sz = size (x);
-  idx1 = cell ();
+  idx1 = cell (1, nd);
   for i = 1:nd
     idx1{i} = 1:sz(i);
   endfor

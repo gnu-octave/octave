@@ -1056,17 +1056,15 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
       if (dva.numel ())
         {
 	  const T *a_data = a.data ();   
-	  int numel_to_move = dva (0);
-	  int skip = dv (0);
-	  for (int i = 0; i < len_a - 1; i++)
+	  int numel_to_move = 1;
+	  int skip = 0;
+	  for (int i = 0; i < len_a; i++) 
 	    if (ra_idx(i) == 0 && dva(i) == dv(i))
-	      {
-		numel_to_move *= dva(i+1);
-		skip *= dv(i+1);
-	      }
+	      numel_to_move *= dva(i);
 	    else
 	      {
-		skip -= dva(i);
+		skip = numel_to_move * (dv(i) - dva(i));
+		numel_to_move *= dva(i);
 		break;
 	      }
 

@@ -1,3 +1,13 @@
+2005-01-18  David Bateman <dbateman@free.fr>
+
+	* Array.cc (Array<T>::insert (const Array<T>&, const Array<int>&)):
+	Modify calculation of number elements to skip between copied blocks.
+
+2005-01-18  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.cc (IDX_VEC_REP::freeze): Call warning handler, not
+	error handler, to warn about resizing.
+
 2004-12-27  Martin Dalecki  <martin@dalecki.de>
 
 	* Array.cc, ArrayN.cc, base-lu.cc, boolMatrix.cc, boolNDArray.cc,

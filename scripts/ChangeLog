@@ -1,3 +1,7 @@
+2005-01-18  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/cross.m: Allocate idx1 before use.
+
 2004-12-08  Heikki Junes  <Heikki.Junes@hut.fi>
 
 	* statistics/base/range.m: Fix varargin usage.

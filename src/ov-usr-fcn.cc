@@ -489,7 +489,7 @@ octave_user_function::bind_automatic_vars
 DEFUNX ("va_arg", Fva_arg, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} va_arg ()\n\
-Return the value of hte next available argument and move the internal\n\
+Return the value of the next available argument and move the internal\n\
 pointer to the next argument.  It is an error to call @code{va_arg}\n\
 when ther eare no more arguments available, or in a function that\n\
 has not been declared to take a variable number of parameters.\n\

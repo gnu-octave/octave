@@ -58,6 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
+#include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "toplev.h"
 #include "pager.h"
@@ -182,6 +183,10 @@ make_constant (int op, token *tok_val);
 // Build a function handle.
 static tree_fcn_handle *
 make_fcn_handle (token *tok_val);
+
+// Build an anonymous function handle.
+static tree_constant *
+make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt);
 
 // Build a binary expression.
 static tree_expression *
@@ -432,7 +437,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <comment_type> stash_comment function_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
-%type <tree_constant_type> constant magic_colon
+%type <tree_constant_type> constant magic_colon anon_fcn_handle
 %type <tree_fcn_handle_type> fcn_handle
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
@@ -445,7 +450,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_colon_expression_type> colon_expr1
 %type <tree_argument_list_type> arg_list word_list assign_lhs
 %type <tree_argument_list_type> cell_or_matrix_row
-%type <tree_parameter_list_type> param_list param_list1
+%type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
 %type <tree_command_type> jump_command except_command function
@@ -679,8 +684,8 @@ fcn_handle	: '@' FCN_HANDLE
 		  }
 		;
 
-fcn_handle	: FCN_HANDLE
-		  { $$ = make_fcn_handle ($1); }
+anon_fcn_handle	: '@' param_list statement
+		  { $$ = make_anon_fcn_handle ($2, $3); }
 		;
 
 primary_expr	: identifier
@@ -938,6 +943,8 @@ expression	: simple_expr
 		  { $$ = $1; }
 		| assign_expr
 		  { $$ = $1; }
+		| anon_fcn_handle
+		  { $$ = $1; }
 		;
 
 // ================================================
@@ -1160,46 +1167,29 @@ in_return_list	: // empty
 // ===========================
 
 param_list_beg	: '('
-		  { lexer_flags.looking_at_parameter_list = true; }
+		  {
+		    lexer_flags.looking_at_parameter_list = true;
+
+		    if (lexer_flags.looking_at_function_handle)
+		      {
+		        symtab_context.push (curr_sym_tab);
+
+			tmp_local_sym_tab = new symbol_table ();
+			curr_sym_tab = tmp_local_sym_tab;
+
+			lexer_flags.looking_at_function_handle--;
+		      }
+		  }
 		;
 
 param_list_end	: ')'
 		  { lexer_flags.looking_at_parameter_list = false; }
 		;
 
-param_list	: param_list_beg param_list_end
+param_list	: param_list_beg param_list1 param_list_end
 		  {
 		    lexer_flags.quote_is_transpose = false;
-		    $$ = 0;
-		  }
-		| param_list_beg VARARGIN param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    tree_parameter_list *tmp = new tree_parameter_list ();
-		    tmp->mark_varargs_only ();
-		    $$ = tmp;
-		  }
-		| param_list1 param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    $1->mark_as_formal_parameters ();
-		    $$ = $1;
-		  }
-		| param_list1 ',' VARARGIN param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    $1->mark_as_formal_parameters ();
-		    $1->mark_varargs ();
-		    $$ = $1;
-		  }
-		;
-
-param_list1	: param_list_beg identifier
-		  { $$ = new tree_parameter_list ($2); }
-		| param_list1 ',' identifier
-		  {
-		    $1->append ($3);
-		    $$ = $1;
+		    $$ = $2;
 		  }
 		| param_list_beg error
 		  {
@@ -1207,11 +1197,35 @@ param_list1	: param_list_beg identifier
 		    $$ = 0;
 		    ABORT_PARSE;
 		  }
-		| param_list1 ',' error
+		;
+
+param_list1	: // empty
+		  { $$ = 0; }
+		| param_list2
 		  {
-		    yyerror ("invalid parameter list");
-		    $$ = 0;
-		    ABORT_PARSE;
+		    $1->mark_as_formal_parameters ();
+		    $$ = $1;
+		  }
+		| VARARGIN
+		  {
+		    tree_parameter_list *tmp = new tree_parameter_list ();
+		    tmp->mark_varargs_only ();
+		    $$ = tmp;
+		  }
+		| param_list2 ',' VARARGIN
+		  {
+		    $1->mark_as_formal_parameters ();
+		    $1->mark_varargs ();
+		    $$ = $1;
+		  }
+		;
+
+param_list2	: identifier
+		  { $$ = new tree_parameter_list ($1); }
+		| param_list2 ',' identifier
+		  {
+		    $1->append ($3);
+		    $$ = $1;
 		  }
 		;
 
@@ -1977,6 +1991,61 @@ make_fcn_handle (token *tok_val)
   int c = tok_val->column ();
 
   tree_fcn_handle *retval = new tree_fcn_handle (tok_val->text (), l, c);
+
+  return retval;
+}
+
+// Make an anonymous function handle.
+
+static tree_constant *
+make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
+{
+  // XXX FIXME XXX -- need to get these from the location of the @ symbol.
+
+  int l = -1;
+  int c = -1;
+
+  tree_parameter_list *ret_list = 0;
+
+  if (stmt && stmt->is_expression ())
+    {
+      symbol_record *sr = curr_sym_tab->lookup ("__retval__", true);
+
+      tree_expression *e = stmt->expression ();
+
+      tree_identifier *id = new tree_identifier (sr);
+
+      tree_simple_assignment *asn = new tree_simple_assignment (id, e);
+
+      stmt->set_expression (asn);
+
+      stmt->set_print_flag (false);
+
+      // XXX FIXME XXX -- would like to delete old_stmt here or
+      // replace expression inside it with the new expression we just
+      // created so we don't have to create a new statement at all.
+
+      id = new tree_identifier (sr);
+
+      ret_list = new tree_parameter_list (id);
+    }
+
+  tree_statement_list *body = new tree_statement_list (stmt);
+
+  body->mark_as_function_body ();
+
+  octave_user_function *fcn
+    = new octave_user_function (param_list, ret_list, body, curr_sym_tab);
+
+  if (symtab_context.empty ())
+    panic_impossible ();
+
+  curr_sym_tab = symtab_context.top ();
+  symtab_context.pop ();
+
+  octave_value fh (new octave_fcn_handle (fcn, "@<anonymous>"));
+
+  tree_constant *retval = new tree_constant (fh, l, c);
 
   return retval;
 }

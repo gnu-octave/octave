@@ -1,3 +1,14 @@
+2004-08-05  John W. Eaton  <jwe@octave.org>
+
+	* pt-stmt.h (tree_statement::set_command,
+	(tree_statement::set_expression): New functions.
+
+	* parse.y (param_list_beg): Handle pushing new symbol table
+	context for anonymous function handle parameter lists here.
+	(anon_fcn_handle): New non-terminal.
+	(expression): Include anon_fcn_handle here.
+	(make_anon_fcn_handle): New static function.
+
 2004-08-05  David Bateman  <dbateman@free.fr>
 
 	* ov.cc (octave_value::fcn_inline_value): New virtual function.

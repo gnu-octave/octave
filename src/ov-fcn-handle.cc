@@ -146,7 +146,12 @@ Return a struct containing information about the function handle\n\
 	      std::string nm = fcn->fcn_file_name ();
 
 	      if (nm.empty ())
-		m.assign ("file", "built-in function");
+		{
+		  if (fh_nm == "@<anonymous>")
+		    m.assign ("file", "none");
+		  else
+		    m.assign ("file", "built-in function");
+		}
 	      else
 		m.assign ("file", nm);
 

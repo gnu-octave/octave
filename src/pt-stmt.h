@@ -77,6 +77,14 @@ public:
 
   octave_comment_list *comment_text (void) { return comm; }
 
+  // Allow modification of this statement.  Note that there is no
+  // checking.  If you use these, are you sure you knwo what you are
+  // doing?
+
+  void set_command (tree_command *c) { cmd = c; }
+
+  void set_expression (tree_expression *e) { expr = e; }
+
   void accept (tree_walker& tw);
 
 private:

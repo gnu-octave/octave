@@ -39,6 +39,8 @@ function fmt = __pltopt1__ (caller, opt)
   set_boxes = 0;
   set_errbars = 0;
   set_key = 0;
+  set_linestyle = "solid";
+
   more_opts = 1;
 
   WITH = "w";
@@ -77,9 +79,20 @@ function fmt = __pltopt1__ (caller, opt)
     ## Now set flags based on char.
 
     if (strcmp (char, "-"))
-      set_lines = 1;
+      if (set_lines)
+	set_linestyle = "dash";
+      else
+      	set_lines = 1;
+      endif
     elseif (strcmp (char, "."))
-      set_dots  = 1;
+      if (set_lines)
+	set_linestyle = "dashdot";
+      else
+      	set_dots  = 1;
+      endif
+    elseif (strcmp (char, ":"))
+      set_lines = 1;
+      set_linestyle = "dot";
     elseif (strcmp (char, "@"))
       set_points = 1;
     elseif (strcmp (char, "^"))

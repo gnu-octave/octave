@@ -1,3 +1,9 @@
+2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* COPYING.LIB: Delete.
+	* COPYING: New file.  RMS says Octave should use the GPL for its
+	copy of glob.
+
 Wed Apr 16 16:21:37 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* glob.h ("C"): Check _GNU_SOURCE, not _BSD_SOURCE.

@@ -39,25 +39,17 @@ function p = polyreduce (p)
     error ("polyreduce: argument must be a vector");
   endif
 
-  if (! isempty (p))
+  if (! isempty (p) )
 
-    index = find (p == 0);
+    index = find (p != 0);
 
-    if (length (index) != 0)
+    if (isempty (index))
+      
+      p = 0;
+    
+    else
 
-      index = find (index == 1:length (index));
-
-      if (length (index) != 0)
-
-        if (length (p) > 1)
-          p = p (index (length (index))+1:length (p));
-        endif
-
-        if (length (p) == 0)
-          p = 0;
-        endif
-
-      endif
+      p = p (index (1):length (p));
 
     endif
 

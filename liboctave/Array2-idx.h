@@ -118,7 +118,7 @@ Array2<T>::index (idx_vector& idx) const
 	  if (idx.is_colon ())
 	    {
 	      result_nr = nr * nc;
-	      result_nc = 1;
+	      result_nc = result_nr ? 1 : 0;
 	    }
 	  else if (idx.one_zero_only ())
 	    {

@@ -39,24 +39,27 @@
 ##   "n"   with n in 1-6 (wraps at 8), plot color
 ##   "nm"  with m in 1-6 (wraps at 6), point style (only valid for "@" or "-@")
 ##   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
+##   ";title;" where "title" is the label for the key.
 ##
 ##   Special points formats:
 ##
-##      "+", "*", "o", "x" will display points in that style.
+##      "+", "*", "o", "x" will display points in that style for term x11.
 ##
 ##   The legend may be fixed to include the name of the variable
 ##   plotted in some future version of Octave.
 ##
-##   The color line styles have the following meanings on terminals
-##   that support color.
+##   The colors, line styles, and point styles have the following
+##   meanings for X11 and Postscript terminals under Gnuplot 3.6.
 ##
-##     Number  Gnuplot colors     (lines)points style
-##       1       red                 "*"
-##       2       green               "+"
-##       3       blue                "o"
-##       4       magenta             "x"
-##       5       cyan                house
-##       6       brown               there exists
+##   Number ------ Color -------  Line Style      ---- Points Style ----   
+##          x11       postscript  postscript      x11         postscript   
+##   =====================================================================
+##     1    red       green       solid           "o"         "+"         
+##     2    green     blue        long dash       "+"         "x"         
+##     3    blue      red         short dash     square       "*"         
+##     4    magenta   magenta     dotted          "x"        open square  
+##     5    cyan      cyan        dot long dash  triangle    filled square
+##     6    brown     yellow      dot short dash  "*"         "o"         
 
 ## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
 ## Adapted-By: jwe
@@ -73,6 +76,7 @@ function fmt = __pltopt__ (caller, opt)
   set_steps = 0;
   set_boxes = 0;
   set_errbars = 0;
+  set_key = 0;
   more_opts = 1;
 
   WITH = "w";
@@ -85,6 +89,7 @@ function fmt = __pltopt__ (caller, opt)
   IMPULSES = "i";
   STEPS = "s";
   ERRORBARS = "e";
+  TITLE = "title";
 
   if (nargin != 2)
     usage ("__pltopt__ (opt)");
@@ -99,7 +104,9 @@ function fmt = __pltopt__ (caller, opt)
     ## First get next char.
 
     if (max (size (opt)) > 1)
-      [char, opt] = sscanf (opt, "%c %s", "C");
+#      [char, opt] = sscanf (opt, "%c %s", "C");
+       char = opt(1);
+       opt = opt(2:length(opt));
     else
       char = opt;
       more_opts = 0;
@@ -155,7 +162,7 @@ function fmt = __pltopt__ (caller, opt)
     elseif (strcmp (char, "*"))
       set_points = 1;
       set_symbol = 1;
-      symbol = "1";
+      symbol = "6";
     elseif (strcmp (char, "+"))
       set_points = 1;
       set_symbol = 1;
@@ -163,13 +170,41 @@ function fmt = __pltopt__ (caller, opt)
     elseif (strcmp (char, "o"))
       set_points = 1;
       set_symbol = 1;
-      symbol = "3";
+      symbol = "1";
     elseif (strcmp (char, "x"))
       set_points = 1;
       set_symbol = 1;
       symbol = "4";
+    elseif (strcmp (char, ";"))  # title mode.
+      set_key = 1;
+      working = 1;
+      key_title = ""; 
+      while (working)
+        if (max (size (opt)) > 1)
+	  char = opt(1);
+	  opt = opt(2:length(opt))
+        else
+	  char = opt;
+	  if (! strcmp (char, ";"))
+            error ("%s: unfinished key label", caller);
+          end
+          more_opts = 0;
+          working = 0;
+        endif
+        if strcmp (char, ";")
+          working = 0;
+        else
+	  if (isempty (key_title))  # needs this to avoid empty matrix warning.
+            key_title = char;
+	  else
+            key_title = strcat (key_title, char);
+	  endif
+        endif
+      endwhile
+    elseif (strcmp (char, " ")) 
+      ## whitespace -- do nothing.
     else
-      error (sprintf ("%s: unrecognized format character %s", caller, char));
+      error ("%s: unrecognized format character: '%s'", caller, char);
     endif
   endwhile
 
@@ -214,4 +249,7 @@ function fmt = __pltopt__ (caller, opt)
     fmt = strcat (fmt, " 1 ", symbol);
   endif
 
+  if (set_key)
+    fmt = strcat (fmt, " ", TITLE, ' "', key_title, '" ');
+  endif
 endfunction

@@ -1,5 +1,168 @@
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* control/base/Makefile.in: Ditto.
+	* control/hinf/Makefile.in: New file.
+	* control/marsyas/Makefile.in: Ditto.
+	* control/obsolete/Makefile.in: Ditto.
+	* control/system/Makefile.in: Ditto.
+	* control/util/Makefile.in: Ditto.
+
+	* strings/com2str.m: Move here from control directory.
+
+	* control/base: New directory.
+	* control/base/DEMOcontrol.m: Move here from control directory.
+	* control/base/analdemo.m: Ditto.
+	* control/base/are.m: Ditto.
+	* control/base/bddemo.m: Ditto.
+	* control/base/bode.m: Ditto.
+	* control/base/bode_bounds.m: Ditto.
+	* control/base/bodquist.m: Ditto.
+	* control/base/controldemo.m: Ditto.
+	* control/base/ctrb.m: Ditto.
+	* control/base/damp.m: Ditto.
+	* control/base/dare.m: Ditto.
+	* control/base/dcgain.m: Ditto.
+	* control/base/dgkfdemo.m: Ditto.
+	* control/base/dgram.m: Ditto.
+	* control/base/dlqe.m: Ditto.
+	* control/base/dlqr.m: Ditto.
+	* control/base/dlyap.m: Ditto.
+	* control/base/dre.m: Ditto.
+	* control/base/frdemo.m: Ditto.
+	* control/base/freqchkw.m: Ditto.
+	* control/base/freqresp.m: Ditto.
+	* control/base/gram.m: Ditto.
+	* control/base/impulse.m: Ditto.
+	* control/base/is_controllable.m: Ditto.
+	* control/base/is_detectable.m: Ditto.
+	* control/base/is_dgkf.m: Ditto.
+	* control/base/is_observable.m: Ditto.
+	* control/base/is_stabilizable.m: Ditto.
+	* control/base/is_stable.m: Ditto.
+	* control/base/lqe.m: Ditto.
+	* control/base/lqg.m: Ditto.
+	* control/base/lqr.m: Ditto.
+	* control/base/lsim.m: Ditto.
+	* control/base/ltifr.m: Ditto.
+	* control/base/lyap.m: Ditto.
+	* control/base/nichols.m: Ditto.
+	* control/base/nyquist.m: Ditto.
+	* control/base/obsv.m: Ditto.
+	* control/base/place.m: Ditto.
+	* control/base/pzmap.m: Ditto.
+	* control/base/rldemo.m: Ditto.
+	* control/base/rlocus.m: Ditto.
+	* control/base/step.m: Ditto.
+	* control/base/stepimp.m: Ditto.
+	* control/base/tzero.m: Ditto.
+	* control/base/tzero2.m: Ditto.
+
+	* control/hinf: New directory.
+	* control/hinf/dhinfdemo.m: Move here from control directory.
+	* control/hinf/h2norm.m: Ditto.
+	* control/hinf/h2syn.m: Ditto.
+	* control/hinf/hinf_ctr.m: Ditto.
+	* control/hinf/hinfdemo.m: Ditto.
+	* control/hinf/hinfnorm.m: Ditto.
+	* control/hinf/hinfsyn.m: Ditto.
+	* control/hinf/hinfsyn_chk.m: Ditto.
+	* control/hinf/hinfsyn_ric.m: Ditto.
+	* control/hinf/wgt1o.m: Ditto.
+
+	* control/marsyas: New directory.
+	* control/marsyas/demomarsyas.m: Move here from control directory.
+	* control/marsyas/susball.m: Ditto.
+
+	* control/obsolete/dezero.m: Move here from control directory.
+	* control/obsolete/rotg.m: Ditto.
+
+	* control/system: New directory.
+	* control/system/abcddim.m: Move here from control directory.
+	* control/system/abcddims.m: Ditto.
+	* control/system/buildssic.m: Ditto.
+	* control/system/c2d.m: Ditto.
+	* control/system/d2c.m: Ditto.
+	* control/system/dmr2d.m: Ditto.
+	* control/system/fir2sys.m: Ditto.
+	* control/system/is_abcd.m: Ditto.
+	* control/system/is_digital.m: Ditto.
+	* control/system/is_sample.m: Ditto.
+	* control/system/is_signal_list.m: Ditto.
+	* control/system/is_siso.m: Ditto.
+	* control/system/jet707.m: Ditto.
+	* control/system/listidx.m: Ditto.
+	* control/system/moddemo.m: Ditto.
+	* control/system/ord2.m: Ditto.
+	* control/system/packedform.m: Ditto.
+	* control/system/parallel.m: Ditto.
+	* control/system/ss2sys.m: Ditto.
+	* control/system/ss2tf.m: Ditto.
+	* control/system/ss2zp.m: Ditto.
+	* control/system/starp.m: Ditto.
+	* control/system/sys2fir.m: Ditto.
+	* control/system/sys2ss.m: Ditto.
+	* control/system/sys2tf.m: Ditto.
+	* control/system/sys2zp.m: Ditto.
+	* control/system/sysadd.m: Ditto.
+	* control/system/sysappend.m: Ditto.
+	* control/system/syschnamesl.m: Ditto.
+	* control/system/syschtsam.m: Ditto.
+	* control/system/sysconnect.m: Ditto.
+	* control/system/syscont.m: Ditto.
+	* control/system/syscont_disc.m: Ditto.
+	* control/system/sysdefioname.m: Ditto.
+	* control/system/sysdefstname.m: Ditto.
+	* control/system/sysdimensions.m: Ditto.
+	* control/system/sysdisc.m: Ditto.
+	* control/system/sysdup.m: Ditto.
+	* control/system/sysgetsignals.m: Ditto.
+	* control/system/sysgettsam.m: Ditto.
+	* control/system/sysgettype.m: Ditto.
+	* control/system/sysgroup.m: Ditto.
+	* control/system/sysgroupn.m: Ditto.
+	* control/system/sysidx.m: Ditto.
+	* control/system/sysmin.m: Ditto.
+	* control/system/sysmult.m: Ditto.
+	* control/system/sysout.m: Ditto.
+	* control/system/sysprune.m: Ditto.
+	* control/system/sysreorder.m: Ditto.
+	* control/system/sysrepdemo.m: Ditto.
+	* control/system/sysscale.m: Ditto.
+	* control/system/syssetsignals.m: Ditto.
+	* control/system/syssub.m: Ditto.
+	* control/system/sysupdate.m: Ditto.
+	* control/system/tf2ss.m: Ditto.
+	* control/system/tf2sys.m: Ditto.
+	* control/system/tf2sysl.m: Ditto.
+	* control/system/tf2zp.m: Ditto.
+	* control/system/tfout.m: Ditto.
+	* control/system/ugain.m: Ditto.
+	* control/system/zp2ss.m: Ditto.
+	* control/system/zp2ssg2.m: Ditto.
+	* control/system/zp2sys.m: Ditto.
+	* control/system/zp2tf.m: Ditto.
+	* control/system/zpout.m: Ditto.
+
+	* control/util: New directory.
+	* control/util/axis2dlim.m: Move here from control directory.
+	* control/util/outlist.m: Ditto.
+	* control/util/prompt.m: Ditto.
+	* control/util/run_cmd.m: Ditto.
+	* control/util/sortcom.m: Ditto.
+	* control/util/strappend.m: Ditto.
+	* control/util/swap.m: Ditto.
+	* control/util/zgfmul.m: Ditto.
+	* control/util/zgfslv.m: Ditto.
+	* control/util/zginit.m: Ditto.
+	* control/util/zgpbal.m: Ditto.
+	* control/util/zgreduce.m: Ditto.
+	* control/util/zgrownorm.m: Ditto.
+	* control/util/zgscal.m: Ditto.
+	* control/util/zgsgiv.m: Ditto.
+	* control/util/zgshsr.m: Ditto.
+
+2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* gethelp.cc (extract_help_text): Discard first space character
 	after consecutive comment characters.
 
@@ -7,15 +170,15 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 
 	* control/obsolete: New directory
 	* control/obsolete/swaprows.m: Move here from control directory.
-	* control/obsolete/swapcols.m: Likewise.
-	* control/obsolete/dlqg.m: Likewise.
-	* control/obsolete/minfo.m: Likewise.
-	* control/obsolete/packsys.m: Likewise.
-	* control/obsolete/qzval.m: Likewise.
-	* control/obsolete/unpacksys.m: Likewise.
-	* control/obsolete/series.m: Likewise.
-	* control/obsolete/syschnames.m: Likewise.
-	* polynomial/polyout.m: Likewise.
+	* control/obsolete/swapcols.m: Ditto.
+	* control/obsolete/dlqg.m: Ditto.
+	* control/obsolete/minfo.m: Ditto.
+	* control/obsolete/packsys.m: Ditto.
+	* control/obsolete/qzval.m: Ditto.
+	* control/obsolete/unpacksys.m: Ditto.
+	* control/obsolete/series.m: Ditto.
+	* control/obsolete/syschnames.m: Ditto.
+	* polynomial/polyout.m: Ditto.
 
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

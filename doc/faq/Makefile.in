@@ -49,7 +49,7 @@ FAQ.dvi: FAQ.texi
 FAQ.ps: FAQ.dvi
 	-dvips -o FAQ.ps FAQ.dvi
 
-check install uninstall
+check install uninstall:
 .PHONY: check install uninstall
 
 tags: $(SOURCES)
@@ -62,9 +62,9 @@ spell: $(SPELL)
 .PHONY: spell
 
 mostlyclean clean:
-	rm -f faq.cp faq.fn faq.ky faq.pg faq.tp faq.vr \
-	faq.cps faq.fns faq.kys faq.pgs faq.tps faq.vrs \
-	faq.aux	faq.log faq.toc
+	rm -f FAQ.cp FAQ.fn FAQ.ky FAQ.pg FAQ.tp FAQ.vr \
+	FAQ.cps FAQ.fns FAQ.kys FAQ.pgs FAQ.tps FAQ.vrs \
+	FAQ.aux	FAQ.log FAQ.toc
 .PHONY: mostlyclean clean
 
 distclean: clean

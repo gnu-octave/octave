@@ -35,13 +35,13 @@ class ostream;
 
 #include "Range.h"
 
+#include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
-#include "mappers.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 

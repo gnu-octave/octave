@@ -26,98 +26,101 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cctype>
 
+#include "lo-mappers.h"
+
 #include "defun.h"
 #include "error.h"
 #include "mappers.h"
+#include "oct-mapper.h"
 
 // XXX FIXME XXX -- perhaps this could be avoided by determining
 // whether the is* functions are actually functions or just macros.
 
-int
+static int
 xisalnum (int c)
 {
   return isalnum (c);
 }
 
-int
+static int
 xisalpha (int c)
 {
   return isalpha (c);
 }
 
-int
+static int
 xisascii (int c)
 {
   return isascii (c);
 }
 
-int
+static int
 xiscntrl (int c)
 {
   return iscntrl (c);
 }
 
-int
+static int
 xisdigit (int c)
 {
   return isdigit (c);
 }
 
-int
+static int
 xisgraph (int c)
 {
   return isgraph (c);
 }
 
-int
+static int
 xislower (int c)
 {
   return islower (c);
 }
 
-int
+static int
 xisprint (int c)
 {
   return isprint (c);
 }
 
-int
+static int
 xispunct (int c)
 {
   return ispunct (c);
 }
 
-int
+static int
 xisspace (int c)
 {
   return isspace (c);
 }
 
-int
+static int
 xisupper (int c)
 {
   return isupper (c);
 }
 
-int
+static int
 xisxdigit (int c)
 {
   return isxdigit (c);
 }
 
-int
+static int
 xtoascii (int c)
 {
   return toascii (c);
 }
 
-int
+static int
 xtolower (int c)
 {
   return tolower (c);
 }
 
-int
+static int
 xtoupper (int c)
 {
   return toupper (c);

@@ -24,11 +24,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "lo-mappers.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "mappers.h"
 #include "oct-obj.h"
 #include "utils.h"
 

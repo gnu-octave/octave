@@ -27,11 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "CollocWt.h"
+#include "lo-mappers.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "help.h"
-#include "mappers.h"
 #include "oct-obj.h"
 #include "utils.h"
 

@@ -1,6 +1,6 @@
 Thu Jan 15 23:12:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* config.guess: Update to new version from the FSF.
+	* config.guess, config.sub: Update to new version from the FSF.
 	* configure.in: Match alpha*-... instead of just alpha-... to cope
 	with new strings like alphaev56-dec-osf4.0b returned from
 	config.guess.

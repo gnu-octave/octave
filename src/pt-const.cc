@@ -71,7 +71,7 @@ tree_constant::eval (bool print_result)
 octave_value_list
 tree_constant::eval (bool, int, const octave_value_list& idx)
 {
-  return (idx.length () > 0) ? index (idx) : val;
+  return (idx.length () > 0) ? val.do_index_op (idx) : val;
 }
 
 void

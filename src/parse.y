@@ -141,14 +141,10 @@ static tree_expression *make_boolean_op
 
 // Build a prefix expression.
 static tree_expression *make_prefix_op
-	 (int op, tree_identifier *op1, token *tok_val);
+	 (int op, tree_expression *op1, token *tok_val);
 
 // Build a postfix expression.
 static tree_expression *make_postfix_op
-	 (int op, tree_identifier *op1, token *tok_val);
-
-// Build a binary expression.
-static tree_expression *make_unary_op
 	 (int op, tree_expression *op1, token *tok_val);
 
 // Build an unwind-protect command.
@@ -343,7 +339,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 // Nonterminals we construct.
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
-%type <tree_constant_type> magic_colon
+%type <tree_constant_type> constant magic_colon
 %type <tree_matrix_type> rows rows1
 %type <tree_matrix_row_type> matrix_row matrix_row1
 %type <tree_expression_type> expression simple_expr simple_expr1
@@ -773,17 +769,18 @@ simple_expr	: simple_expr1
 		  }
 		;
 
-simple_expr1	: NUM
+constant	: NUM
 		  { $$ = make_constant (NUM, $1); }
 		| IMAG_NUM
 		  { $$ = make_constant (IMAG_NUM, $1); }
 		| TEXT
 		  { $$ = make_constant (TEXT, $1); }
+		;
+
+simple_expr1	: constant
+		  { $$ = $1; }
 		| '(' simple_expr ')'
-		  {
-		    $2->mark_in_parens ();
-		    $$ = $2;
-		  }
+		  { $$ = $2->mark_in_parens (); }
 		| word_list_cmd
 		  { $$ = $1; }
 		| variable
@@ -796,16 +793,16 @@ simple_expr1	: NUM
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
 		| '[' ';' ']'
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| PLUS_PLUS identifier %prec UNARY
+		| PLUS_PLUS simple_expr %prec UNARY
 		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
-		| MINUS_MINUS identifier %prec UNARY
+		| MINUS_MINUS simple_expr %prec UNARY
 		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
-		| EXPR_NOT simple_expr
-		  { $$ = make_unary_op (EXPR_NOT, $2, $1); }
+		| EXPR_NOT simple_expr %prec UNARY
+		  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
 		| '+' simple_expr %prec UNARY
 		  { $$ = $2; }
 		| '-' simple_expr %prec UNARY
-		  { $$ = make_unary_op ('-', $2, $1); }
+		  { $$ = make_prefix_op ('-', $2, $1); }
 		| variable '=' simple_expr
 		  { $$ = make_assign_op ('=', $1, $2, $3); }
 		| variable ADD_EQ simple_expr
@@ -829,18 +826,15 @@ simple_expr1	: NUM
 		| variable OR_EQ simple_expr
 		  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
 		| '[' screwed_again matrix_row SCREW_TWO '=' simple_expr
-		  {
-		    if (! ($$ = make_multi_val_ret ($3, $6, $5)))
-		      ABORT_PARSE;
-		  }
-		| identifier PLUS_PLUS
+		  { $$ = make_multi_val_ret ($3, $6, $5); }
+		| simple_expr PLUS_PLUS
 		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
-		| identifier MINUS_MINUS
+		| simple_expr MINUS_MINUS
 		  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
 		| simple_expr QUOTE
-		  { $$ = make_unary_op (QUOTE, $1, $2); }
+		  { $$ = make_postfix_op (QUOTE, $1, $2); }
 		| simple_expr TRANSPOSE
-		  { $$ = make_unary_op (TRANSPOSE, $1, $2); }
+		  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
 		| simple_expr POW simple_expr
 		  { $$ = make_binary_op (POW, $1, $2, $3); }
 		| simple_expr EPOW simple_expr
@@ -1521,48 +1515,6 @@ fold (tree_binary_expression *e)
   return retval;
 }
 
-static tree_expression *
-fold (tree_unary_expression *e)
-{
-  tree_expression *retval = 0;
-
-  tree_expression *op1 = e->operand ();
-
-  if (op1->is_constant ())
-    {
-      octave_value tmp = e->eval ();
-
-      if (! error_state)
-	{
-	  tree_constant *tc_retval = new tree_constant (tmp);
-
-	  ostrstream buf;
-
-	  tree_print_code tpc (buf);
-
-	  e->accept (tpc);
-
-	  buf << ends;
-
-	  char *s = buf.str ();
-
-	  tc_retval->stash_original_text (s);
-
-	  delete [] s;
-
-	  delete e;
-
-	  retval = tc_retval;
-	}
-      else
-	delete e;
-    }
-  else
-    retval = e;
-
-  return retval;
-}
-
 // Finish building a range.
 
 static tree_expression *
@@ -1792,12 +1744,20 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 // Build a prefix expression.
 
 static tree_expression *
-make_prefix_op (int op, tree_identifier *op1, token *tok_val)
+make_prefix_op (int op, tree_expression *op1, token *tok_val)
 {
   tree_prefix_expression::type t;
 
   switch (op)
     {
+    case EXPR_NOT:
+      t = tree_prefix_expression::unot;
+      break;
+
+    case '-':
+      t = tree_prefix_expression::uminus;
+      break;
+
     case PLUS_PLUS:
       t = tree_prefix_expression::increment;
       break;
@@ -1814,18 +1774,26 @@ make_prefix_op (int op, tree_identifier *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  return new tree_prefix_expression (op1, l, c, t);
+  return new tree_prefix_expression (t, op1, l, c);
 }
 
 // Build a postfix expression.
 
 static tree_expression *
-make_postfix_op (int op, tree_identifier *op1, token *tok_val)
+make_postfix_op (int op, tree_expression *op1, token *tok_val)
 {
   tree_postfix_expression::type t;
 
   switch (op)
     {
+    case QUOTE:
+      t = tree_postfix_expression::hermitian;
+      break;
+
+    case TRANSPOSE:
+      t = tree_postfix_expression::transpose;
+      break;
+
     case PLUS_PLUS:
       t = tree_postfix_expression::increment;
       break;
@@ -1842,46 +1810,7 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  return new tree_postfix_expression (op1, l, c, t);
-}
-
-// Build a unary expression.
-
-static tree_expression *
-make_unary_op (int op, tree_expression *op1, token *tok_val)
-{
-  tree_unary_expression::type t;
-
-  switch (op)
-    {
-    case QUOTE:
-      t = tree_unary_expression::hermitian;
-      break;
-
-    case TRANSPOSE:
-      t = tree_unary_expression::transpose;
-      break;
-
-    case EXPR_NOT:
-      t = tree_unary_expression::unot;
-      break;
-
-    case '-':
-      t = tree_unary_expression::uminus;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  tree_unary_expression *e
-    = new tree_unary_expression (op1, l, c, t);
-
-  return fold (e);
+  return new tree_postfix_expression (t, op1, l, c);
 }
 
 // Build an unwind-protect command.

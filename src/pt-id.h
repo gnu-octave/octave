@@ -69,10 +69,6 @@ public:
 
   bool is_defined (void);
 
-  void increment (void);
-
-  void decrement (void);
-
   octave_symbol *do_lookup (bool& script_file_executed, bool
 			    exec_script = true);
 

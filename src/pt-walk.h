@@ -64,7 +64,6 @@ class subplot_list;
 class subplot_style;
 class subplot_using;
 class tree_try_catch_command;
-class tree_unary_expression;
 class tree_unwind_protect_command;
 class tree_while_command;
 
@@ -195,9 +194,6 @@ public:
 
   virtual void
   visit_try_catch_command (tree_try_catch_command&) = 0;
-
-  virtual void
-  visit_unary_expression (tree_unary_expression&) = 0;
 
   virtual void
   visit_unwind_protect_command (tree_unwind_protect_command&) = 0;

@@ -73,34 +73,6 @@ tree_identifier::is_defined (void)
 }
 
 void
-tree_identifier::increment (void)
-{
-  if (sym)
-    {
-      if (sym->is_read_only ())
-	::error ("can't redefined read-only variable `%s'", name ().c_str ());
-      else if (sym->is_defined () && sym->is_variable ())
-	reference () . increment ();
-      else
-	::error ("can only increment variables");
-    }
-}
-
-void
-tree_identifier::decrement (void)
-{
-  if (sym)
-    {
-      if (sym->is_read_only ())
-	::error ("can't redefined read-only variable `%s'", name ().c_str ());
-      else if (sym->is_defined () && sym->is_variable ())
-	reference () . decrement ();
-      else
-	::error ("can only decrement variables");
-    }
-}
-
-void
 tree_identifier::eval_undefined_error (void)
 {
   int l = line ();

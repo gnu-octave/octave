@@ -692,10 +692,10 @@ tree_print_code::visit_postfix_expression (tree_postfix_expression& expr)
   if (in_parens)
     os << "(";
 
-  tree_identifier *id = expr.ident ();
+  tree_expression *e = expr.operand ();
 
-  if (id)
-    id->accept (*this);
+  if (e)
+    e->accept (*this);
 
   os << expr.oper ();
 
@@ -715,10 +715,10 @@ tree_print_code::visit_prefix_expression (tree_prefix_expression& expr)
 
   os << expr.oper ();
 
-  tree_identifier *id = expr.ident ();
+  tree_expression *e = expr.operand ();
 
-  if (id)
-    id->accept (*this);
+  if (e)
+    e->accept (*this);
 
   if (in_parens)
     os << ")";
@@ -1043,37 +1043,6 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
   indent ();
 
   os << "end_try_catch";
-}
-
-void
-tree_print_code::visit_unary_expression (tree_unary_expression& expr)
-{
-  indent ();
-
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
-
-  tree_expression *op = expr.operand ();
-
-  if (expr.is_prefix_op ())
-    {
-      os << expr.oper ();
-
-      if (op)
-	op->accept (*this);
-    }
-  else
-    {
-      if (op)
-	op->accept (*this);
-
-      os << expr.oper ();
-    }
-
-  if (in_parens)
-    os << ")";
 }
 
 void

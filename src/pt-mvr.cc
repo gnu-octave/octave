@@ -274,8 +274,6 @@ octave_value_list
 tree_multi_assignment_expression::eval (bool print, int nargout,
 					const octave_value_list&)
 {
-  assert (etype == tree_expression::multi_assignment);
-
   if (error_state || ! rhs)
     return octave_value_list ();
 

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "pager.h"
+#include "oct-var-ref.h"
 #include "ov.h"
 #include "pt-exp-base.h"
 
@@ -72,6 +73,13 @@ tree_expression::eval (bool /* print */)
 {
   panic ("invalid evaluation of generic expression");
   return octave_value ();
+}
+
+octave_variable_reference
+tree_expression::reference (void)
+{
+  panic ("invalid attempt to convert generic expression to lvalue");
+  return octave_variable_reference ();
 }
 
 string

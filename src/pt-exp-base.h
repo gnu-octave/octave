@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 class octave_value;
+class octave_variable_reference;
 
 #include "pt-base.h"
 
@@ -40,18 +41,8 @@ tree_expression : public tree
 {
 public:
 
-  enum type
-    {
-      unknown,
-      assignment,
-      simple_assignment,
-      multi_assignment,
-      colon,
-      index
-   };
-
-  tree_expression (int l = -1, int c = -1, type et = unknown)
-    : tree (l, c), in_parens (0), etype (et) { }
+  tree_expression (int l = -1, int c = -1)
+    : tree (l, c), in_parens (0) { }
 
   virtual ~tree_expression (void) { }
 
@@ -81,25 +72,24 @@ public:
 
   virtual bool is_logically_true (const char *);
 
-  virtual void mark_in_parens (void) { in_parens++; }
-
   virtual bool is_in_parens (void) { return in_parens; }
 
   virtual void mark_for_possible_ans_assign (void);
 
   virtual octave_value eval (bool print = false) = 0;
 
+  virtual octave_variable_reference reference (void);
+
   virtual string oper (void) const { return "<unknown>"; }
 
   virtual string original_text (void) const;
+
+  expression *mark_in_parens (void) { in_parens++; return this; }
 
 protected:
 
   // Nonzero if this expression appears inside parentheses.
   int in_parens;
-
-  // The type of this expression.
-  type etype;
 };
 
 #endif

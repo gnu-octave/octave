@@ -133,15 +133,13 @@ tree_multi_assignment_expression : public tree_multi_val_ret
 public:
 
   tree_multi_assignment_expression (bool plhs = false, int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c, tree_expression::multi_assignment),
-      preserve (plhs), lhs (0), rhs (0) { }
+    : tree_multi_val_ret (l, c), preserve (plhs), lhs (0), rhs (0) { }
 
   tree_multi_assignment_expression (tree_return_list *lst,
 				    tree_multi_val_ret *r,
 				    bool plhs = false,
 				    int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c, tree_expression::multi_assignment),
-      preserve (plhs), lhs (lst), rhs (r) { }
+    : tree_multi_val_ret (l, c), preserve (plhs), lhs (lst), rhs (r) { }
 
   ~tree_multi_assignment_expression (void);
 

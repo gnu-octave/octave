@@ -130,8 +130,6 @@ public:
 
   void visit_try_catch_command (tree_try_catch_command&);
 
-  void visit_unary_expression (tree_unary_expression&);
-
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
   void visit_while_command (tree_while_command&);

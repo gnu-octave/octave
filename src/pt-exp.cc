@@ -62,50 +62,46 @@ static bool Vprint_rhs_assign_val;
 
 // Prefix expressions.
 
-tree_prefix_expression::~tree_prefix_expression (void)
-{
-  delete id;
-}
-
 octave_value
-tree_prefix_expression::eval (bool print)
+tree_prefix_expression::eval (bool)
 {
   octave_value retval;
 
   if (error_state)
     return retval;
 
-  if (id)
+  if (op)
     {
-      switch (etype)
+      if (etype == unot || etype == uminus)
 	{
-	case increment:
-	  id->increment ();
-	  break;
+	  octave_value val = op->eval ();
 
-	case decrement:
-	  id->decrement ();
-	  break;
-
-	default:
-	  error ("prefix operator %d not implemented", etype);
-	  break;
-	}
-
-
-      if (error_state)
-	eval_error ();
-      else
-	{
-	  retval = id->eval (print);
-	  if (error_state)
+	  if (! error_state)
 	    {
-	      retval = octave_value ();
-	      if (error_state)
-		eval_error ();
+	      if (etype == unot)
+		retval = val.not ();
+	      else
+		retval = val.uminus ();
 	    }
 	}
+      else if (etype == increment || etype == decrement)
+	{
+	  octave_variable_reference ref = op->reference ();
+
+	  if (! error_state)
+	    {
+	      if (etype == increment)
+		ref.increment ();
+	      else
+		ref.decrement ();
+
+	      retval = ref.value ();
+	    }
+	}
+      else
+	error ("prefix operator %d not implemented", etype);
     }
+
   return retval;
 }
 
@@ -116,6 +112,14 @@ tree_prefix_expression::oper (void) const
 
   switch (etype)
     {
+    case unot:
+      retval = "!";
+      break;
+
+    case uminus:
+      retval = "-";
+      break;
+
     case increment:
       retval = "++";
       break;
@@ -147,45 +151,46 @@ tree_prefix_expression::accept (tree_walker& tw)
 
 // Postfix expressions.
 
-tree_postfix_expression::~tree_postfix_expression (void)
-{
-  delete id;
-}
-
 octave_value
-tree_postfix_expression::eval (bool print)
+tree_postfix_expression::eval (bool)
 {
   octave_value retval;
 
   if (error_state)
     return retval;
 
-  if (id)
+  if (op)
     {
-      retval = id->eval (print);
-
-      switch (etype)
+      if (etype == transpose || etype == hermitian)
 	{
-	case increment:
-	  id->increment ();
-	  break;
+	  octave_value val = op->eval ();
 
-	case decrement:
-	  id->decrement ();
-	  break;
-
-	default:
-	  error ("postfix operator %d not implemented", etype);
-	  break;
+	  if (! error_state)
+	    {
+	      if (etype == transpose)
+		retval = val.transpose ();
+	      else
+		retval = val.hermitian ();
+	    }
 	}
-
-      if (error_state)
+      else if (etype == increment || etype == decrement)
 	{
-	  retval = octave_value ();
-	  if (error_state)
-	    eval_error ();
+	  octave_variable_reference ref = op->reference ();
+
+	  if (! error_state)
+	    {
+	      retval = ref.value ();
+
+	      if (etype == increment)
+		ref.increment ();
+	      else
+		ref.decrement ();
+	    }
 	}
+      else
+	error ("postfix operator %d not implemented", etype);
     }
+
   return retval;
 }
 
@@ -196,6 +201,14 @@ tree_postfix_expression::oper (void) const
 
   switch (etype)
     {
+    case transpose:
+      retval = ".'";
+      break;
+
+    case hermitian:
+      retval = "'";
+      break;
+
     case increment:
       retval = "++";
       break;
@@ -223,102 +236,6 @@ void
 tree_postfix_expression::accept (tree_walker& tw)
 {
   tw.visit_postfix_expression (*this);
-}
-
-// Unary expressions.
-
-octave_value
-tree_unary_expression::eval (bool /* print */)
-{
-  octave_value retval;
-
-  if (error_state)
-    return retval;
-
-  if (op)
-    {
-      octave_value u = op->eval ();
-
-      if (error_state)
-	eval_error ();
-      else if (u.is_defined ())
-	{
-	  switch (etype)
-	    {
-	    case unot:
-	      retval = u.not ();
-	      break;
-
-	    case uminus:
-	      retval = u.uminus ();
-	      break;
-
-	    case transpose:
-	      retval = u.transpose ();
-	      break;
-
-	    case hermitian:
-	      retval = u.hermitian ();
-	      break;
-
-	    default:
-	      ::error ("unary operator %d not implemented", etype);
-	      break;
-	    }
-
-	  if (error_state)
-	    {
-	      retval = octave_value ();
-	      eval_error ();
-	    }
-	}
-    }
-
-  return retval;
-}
-
-string
-tree_unary_expression::oper (void) const
-{
-  string retval = "<unknown>";
-
-  switch (etype)
-    {
-    case unot:
-      retval = "!";
-      break;
-
-    case uminus:
-      retval = "-";
-      break;
-
-    case transpose:
-      retval = ".'";
-      break;
-
-    case hermitian:
-      retval = "'";
-      break;
-
-    default:
-      break;
-    }
-
-  return retval;
-}
-
-void
-tree_unary_expression::eval_error (void)
-{
-  if (error_state > 0)
-    ::error ("evaluating unary operator `%s' near line %d, column %d",
-	     oper () . c_str (), line (), column ());
-}
-
-void
-tree_unary_expression::accept (tree_walker& tw)
-{
-  tw.visit_unary_expression (*this);
 }
 
 // Binary expressions.

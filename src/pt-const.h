@@ -73,11 +73,6 @@ public:
   void operator delete (void *p, size_t size)
     { allocator.free (p, size); }
 
-  // Indexed assignment.
-
-  octave_value index (const octave_value_list& idx) const
-    { return val.index (idx); }
-
   // Type.  It would be nice to eliminate the need for this.
 
   bool is_constant (void) const { return true; }

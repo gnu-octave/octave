@@ -42,97 +42,33 @@ class octave_variable_reference;
 
 #include "pt-exp-base.h"
 
-// Prefix expressions.
-
-class
-tree_prefix_expression : public tree_expression
-{
-public:
-
-  enum type
-    {
-      unknown,
-      increment,
-      decrement
-    };
-
-  tree_prefix_expression (int l = -1, int c = -1, type t = unknown)
-    : tree_expression (l, c), id (0), etype (t) { }
-
-  tree_prefix_expression (tree_identifier *i, int l = -1, int c = -1,
-			  type t = unknown)
-    : tree_expression (l, c), id (i), etype (t) { }
-
-  ~tree_prefix_expression (void);
-
-  octave_value eval (bool print = false);
-
-  void eval_error (void);
-
-  bool is_prefix_expression (void) const
-    { return true; }
-
-  string oper (void) const;
-
-  tree_identifier *ident (void) { return id; }
-
-  void accept (tree_walker& tw);
-
-private:
-
-  // Currently, a prefix expression can only apply to an identifier.
-  tree_identifier *id;
-
-  // The type of the expression.
-  type etype;
-};
-
-// Postfix expressions.
-
-class
-tree_postfix_expression : public tree_expression
-{
-public:
-
-  enum type
-    {
-      unknown,
-      increment,
-      decrement
-    };
-
-  tree_postfix_expression (int l = -1, int c = -1, type t = unknown)
-    : tree_expression (l, c), id (0), etype (t) { }
-
-  tree_postfix_expression (tree_identifier *i, int l = -1, int c = -1,
-			   type t = unknown)
-    : tree_expression (l, c), id (i), etype (t) { }
-
-  ~tree_postfix_expression (void);
-
-  octave_value eval (bool print = false);
-
-  void eval_error (void);
-
-  string oper (void) const;
-
-  tree_identifier *ident (void) { return id; }
-
-  void accept (tree_walker& tw);
-
-private:
-
-  // Currently, a prefix expression can only apply to an identifier.
-  tree_identifier *id;
-
-  // The type of the expression.
-  type etype;
-};
-
 // Unary expressions.
 
 class
 tree_unary_expression : public tree_expression
+{
+public:
+
+  tree_unary_expression (int l = -1, int c = -1)
+    : tree_expression (l, c), op (0)  { }
+
+  tree_unary_expression (tree_expression *e, int l = -1, int c = -1)
+    : tree_expression (l, c), op (e) { }
+
+  ~tree_unary_expression (void) { delete op; }
+
+  tree_expression *operand (void) { return op; }
+
+protected:
+
+  // The operand for the expression.
+  tree_expression *op;
+};
+
+// Prefix expressions.
+
+class
+tree_prefix_expression : public tree_unary_expression
 {
 public:
 
@@ -141,19 +77,18 @@ public:
       unknown,
       unot,
       uminus,
-      hermitian,
-      transpose
+      increment,
+      decrement
     };
 
-  tree_unary_expression (int l = -1, int c = -1, type t = unknown)
-    : tree_expression (l, c), op (0), etype (t) { }
+  tree_prefix_expression (int l = -1, int c = -1)
+    : tree_unary_expression (l, c), etype (unknown) { }
 
-  tree_unary_expression (tree_expression *a, int l = -1, int c = -1,
-			 type t = unknown)
-    : tree_expression (l, c), op (a), etype (t) { }
+  tree_prefix_expression (type t = unknown, tree_expression *e,
+			  int l = -1, int c = -1)
+    : tree_unary_expression (e, l, c), etype (t) { }
 
-  ~tree_unary_expression (void)
-    { delete op; }
+  ~tree_prefix_expression (void) { }
 
   octave_value eval (bool print = false);
 
@@ -161,16 +96,48 @@ public:
 
   string oper (void) const;
 
-  bool is_prefix_op (void) { return (etype == unot || etype == uminus); }
-
-  tree_expression *operand (void) { return op; }
-
   void accept (tree_walker& tw);
 
 private:
 
-  // The operand for the expression.
-  tree_expression *op;
+  // The type of the expression.
+  type etype;
+};
+
+// Postfix expressions.
+
+class
+tree_postfix_expression : public tree_unary_expression
+{
+public:
+
+  enum type
+    {
+      unknown,
+      hermitian,
+      transpose,
+      increment,
+      decrement
+    };
+
+  tree_postfix_expression (int l = -1, int c = -1)
+    : tree_unary_expression (l, c), etype (unknown) { }
+
+  tree_postfix_expression (type t = unknown, tree_expression *e,
+			   int l = -1, int c = -1)
+    : tree_unary_expression (e, l, c), etype (t) { }
+
+  ~tree_postfix_expression (void) { }
+
+  octave_value eval (bool print = false);
+
+  void eval_error (void);
+
+  string oper (void) const;
+
+  void accept (tree_walker& tw);
+
+private:
 
   // The type of the expression.
   type etype;
@@ -354,13 +321,11 @@ tree_colon_expression : public tree_expression
 public:
 
   tree_colon_expression (int l = -1, int c = -1)
-    : tree_expression (l, c, tree_expression::colon),
-      op_base (0), op_limit (0), op_increment (0) { }
+    : tree_expression (l, c), op_base (0), op_limit (0), op_increment (0) { }
 
   tree_colon_expression (tree_expression *a, tree_expression *b,
 			 int l = -1, int c = -1)
-    : tree_expression (l, c, tree_expression::colon),
-      op_base (a), op_limit (b), op_increment (0) { }
+    : tree_expression (l, c), op_base (a), op_limit (b), op_increment (0) { }
 
   ~tree_colon_expression (void)
     {

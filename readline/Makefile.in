@@ -142,7 +142,7 @@ libhistory.a: history.o
 
 stamp-readline:
 	if $(SHARED_LIBS); then \
-	  $(CC) -shared -o libreadine.$(SHLEXT) $(PICOBJ) -ltermcap; \
+	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) -ltermcap; \
 	fi
 	touch stamp-readline
 

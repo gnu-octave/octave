@@ -95,7 +95,7 @@ liboctave.a: $(OBJECTS)
 	$(AR) $(ARFLAGS) liboctave.a $(OBJECTS)
 	$(RANLIB) liboctave.a
 
-stamp-shared:
+stamp-shared: $(PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CXX) -shared -o liboctave.$(SHLEXT) $(PICOBJ) \
 	  -L../libcruft -lcruft; \

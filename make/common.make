@@ -5,7 +5,7 @@ top_srcdir = @top_srcdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-CPICFLAGS = @CPICFLAG@
+CPICFLAG = @CPICFLAG@
 
 SHLEXT = @SHLEXT@
 

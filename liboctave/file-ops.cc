@@ -213,7 +213,8 @@ file_ops::tilde_expand (const string& name)
 
   if (beg != NPOS && name[beg] == '~')
     {
-      // If `~' or `~/', use $HOME if it exists, or `.' if it doesn't.
+      // If `~' or `~/', use the user's home directory.  If that is
+      // empty, just use ".".
 
       // If `~user' or `~user/', look up user in the passwd database.
 
@@ -237,21 +238,24 @@ file_ops::tilde_expand (const string& name)
 
 	  size_t len = end;
 
-	  if (len != NPOS)
+	  if (end != NPOS)
 	    len -= beg + 1;
 
 	  string user = name.substr (beg+1, len);
 
 	  octave_passwd pw = octave_passwd::getpwnam (user);
 
-	  // If no such user, just use `.'.
+	  // If no such user, just return the original string.
 
-	  string home = pw ? string (".") : pw.dir ();
-      
-	  expansion = string (" ", beg) + home;
+	  if (pw)
+	    {
+	      expansion = string (" ", beg) + pw.dir ();
 
-	  if (end != NPOS)
-	    expansion.append (name.substr (end));
+	      if (end != NPOS)
+		expansion.append (name.substr (end));
+	    }
+	  else
+	    expansion = name;
 	}
     }
 

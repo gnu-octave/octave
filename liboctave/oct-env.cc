@@ -54,6 +54,7 @@ Free Software Foundation, Inc.
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
+#include "oct-syscalls.h"
 
 octave_env::octave_env (void)
   : follow_symbolic_links (true), verbatim_pwd (true),
@@ -359,7 +360,14 @@ octave_env::do_get_home_directory (void) const
 {
   string hd = do_getenv ("HOME");
 
-  return hd.empty () ? string ("I have no home!") : hd;
+  if (hd.empty ())
+    {
+      octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
+
+      hd = pw ? pw.dir () : string ("I have no home!");
+    }
+
+  return hd;
 }
 
 string
@@ -370,7 +378,7 @@ octave_env::do_get_user_name (void) const
 
   if (user_name.empty ())
     {
-      octave_passwd pw = octave_passwd::getpwuid (getuid ());
+      octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
       user_name = pw ? string ("I have no name!") : pw.name ();
     }

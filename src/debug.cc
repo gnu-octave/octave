@@ -27,8 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <fstream>
 #include <strstream>
-#include <cstring>
-#include <cstdlib>
+#include <string>
 
 #include "defun.h"
 #include "error.h"
@@ -127,7 +126,7 @@ The rline returned is the real line that the breakpoint was set at.\n\
 	  result = cmds->set_breakpoint (line);
 	}
       else
-	error ("unable to find the function requested\n");
+	error ("dbstop: unable to find the function requested\n");
     }
   else if (nargin == 1)
     {
@@ -143,10 +142,10 @@ The rline returned is the real line that the breakpoint was set at.\n\
 	  result = cmds->set_breakpoint (line);
 	}
       else
-	error ("unable to find the function requested\n");	
+	error ("dbstop: unable to find the function requested\n");	
     }
   else
-    error ("one argument when in a function and two when not\n");
+    error ("dbstop: one argument when in a function and two when not\n");
 
   retval = static_cast<double> (result);
 
@@ -176,53 +175,43 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
   int line = -1;
   int nargin = args.length ();
 
-  if (nargin != 1 && nargin != 2)
-    {
-      error ("need one or two arguements\n");
-      return retval;
-    }
-
   string_vector argv = args.make_argv ("dbclear");
 
   if (error_state)
     return retval;
 
-  if (nargin == 2)
+  if (nargin == 1 || nargin == 2)
     {
-      octave_stdout << "2 input arguments\n";
-      symbol_name = argv[1];
+      if (nargin == 2)
+	{
+	  symbol_name = argv[1];
 
-      octave_stdout << argv[1] << std::endl;
-      line_number = argv[2];
+	  octave_stdout << argv[1] << std::endl;
+	  line_number = argv[2];
+	}
+      else if (nargin == 1)
+	{
+	  line_number = argv[1];
+	}
 
-    }
-  else if (nargin == 1)
-    {
-      octave_stdout << "1 input argument\n";
-      line_number = argv[1];
-    }
-  else
-    {
-      error ("need one or two arguements\n");
-      return retval;
-    }
+      if (line_number.compare ("all") && line_number.compare ("ALL"))
+	line = atoi (line_number.c_str ());
+      else
+	line = -1;
 
+      octave_stdout << "symbol_name = " << symbol_name << std::endl;
+      octave_user_function *dbg_fcn = get_user_function (symbol_name);
 
-  if (line_number.compare("all") && line_number.compare("ALL"))
-    line = atoi (line_number.c_str ());
-  else
-    line = -1;
-
-  octave_stdout << "symbol_name = " << symbol_name << std::endl;
-  octave_user_function *dbg_fcn = get_user_function (symbol_name);
-
-  if (dbg_fcn)
-    {
-      tree_statement_list *cmds = dbg_fcn->body ();
-      cmds->delete_breakpoint (line);
+      if (dbg_fcn)
+	{
+	  tree_statement_list *cmds = dbg_fcn->body ();
+	  cmds->delete_breakpoint (line);
+	}
+      else
+	error ("dbclear: unable to find the function requested\n");
     }
   else
-    error ("unable to find the function requested\n");
+    error ("dbclear: expecting one or two arguements\n");
 
   return retval;
 }
@@ -246,7 +235,7 @@ mode this should be left out.\n\
 
   if (nargin != 0 && nargin != 1)
     {
-      error ("only zero or one arguements accepted\n");
+      error ("dbstatus: only zero or one arguements accepted\n");
       return retval;
     }
 
@@ -281,7 +270,7 @@ mode this should be left out.\n\
       retval = octave_value (vec);
     }
   else
-    error ("unable to find the function you requested\n");
+    error ("dbstatus: unable to find the function you requested\n");
 
   return retval;
 }
@@ -314,7 +303,7 @@ Show where we are in the code\n\
 	octave_stdout << "-1\n";
     }
   else
-    error ("must be inside of a user function to use dbwhere\n");
+    error ("dbwhere: must be inside of a user function to use dbwhere\n");
 
   return retval;
 }
@@ -384,11 +373,11 @@ List script file with line numbers.\n\
 	  if (dbg_fcn)
 	    do_dbtype (octave_stdout, dbg_fcn->function_name (), 0, INT_MAX);
 	  else
-	    error ("must be in a user function to give no arguments to dbtype\n");
+	    error ("dbtype: must be in a user function to give no arguments to dbtype\n");
 	  break;
 
 	case 1: // (dbtype func) || (dbtype start:end)
-	  dbg_fcn = get_user_function (argv[1].c_str ());
+	  dbg_fcn = get_user_function (argv[1]);
 
 	  if (dbg_fcn)
 	    do_dbtype (octave_stdout, dbg_fcn->function_name (), 0, INT_MAX);
@@ -398,85 +387,60 @@ List script file with line numbers.\n\
 
 	      if (dbg_fcn)
 		{
-		  char *str = (char *) malloc (strlen (argv[1].c_str ()) + 1);
+		  std::string arg = argv[1];
 
-		  if (str)
-		    memcpy (str, argv[1].c_str (),
-			    strlen (argv[1].c_str ()) + 1);
-		  else
-		    error ("croaked\n");
-		
-		  char *ind = strchr (str, ':');
-		
-		  if (ind)
-		    *ind = '\0';
-		  else
+		  size_t ind = arg.find (':');
+
+		  if (ind != NPOS)
 		    {
-		      free (str);
-		      error ("if you specify lines it must be like `start:end`");
+		      std::string start_str = arg.substr (0, ind);
+		      std::string end_str = arg.substr (ind + 1);
+
+		      int start = atoi (start_str.c_str ());
+		      int end = atoi (end_str.c_str ());
+		
+		      if (start < end)
+			do_dbtype (octave_stdout,
+				   dbg_fcn->function_name (), start, end);
+		      else
+			error ("dbtype: the start line must be less than the end line\n");
 		    }
-		  ind++;
-		
-		  int start = atoi (str);
-		  int end   = atoi (ind);
-		
-		  free (str);
-		  str = NULL;
-		  ind = NULL;
-		
-		  octave_stdout << "got start and end\n";
-		
-		  if (start > end)
-		    error("the start line must be less than the end line\n");
-		
-		  octave_stdout << "doing dbtype\n";
-		  do_dbtype (octave_stdout, dbg_fcn->function_name (), start, end);
-		  octave_stdout << "did dbtype\n";
+		  else
+		    error ("dbtype: if you specify lines it must be like `start:end`");
 		}
 	    }
 	  break;
 
 	case 2: // (dbtype func start:end)
-	  dbg_fcn = get_user_function (argv[1].c_str ());
+	  dbg_fcn = get_user_function (argv[1]);
 
 	  if (dbg_fcn)
 	    {
-	
-	      char *str = (char *) malloc (strlen (argv[2].c_str ()) + 1);
+	      std::string arg = argv[2];
 
-	      if (str)
-		memcpy (str, argv[2].c_str (), strlen (argv[2].c_str ()) + 1);
-	      else
-		error ("not enough memory\n");
+	      size_t ind = arg.find (':');
 
-	
-	      char *ind = strchr (str, ':');
-
-	      if (ind)
-		*ind = '\0';
-	      else
+	      if (ind != NPOS)
 		{
-		  free (str);
-		  error ("if you specify lines it must be like `start:end`");
+		  std::string start_str = arg.substr (0, ind);
+		  std::string end_str = arg.substr (ind + 1);
+
+		  int start = atoi (start_str.c_str ());
+		  int end = atoi (end_str.c_str ());
+		
+		  if (start < end)
+		    do_dbtype (octave_stdout,
+			       dbg_fcn->function_name (), start, end);
+		  else
+		    error ("dbtype: the start line must be less than the end line\n");
 		}
-	      ind++;
-
-	      int start = atoi (str);
-	      int end   = atoi (ind);
-
-	      free (str);
-	      ind = NULL;
-	      str = NULL;
-
-	      if (start > end)
-		error ("the start line must be less than the end line\n");
-
-	      do_dbtype (octave_stdout, dbg_fcn->function_name (), start, end);
+	      else
+		error ("dbtype: if you specify lines it must be like `start:end`");
 	    }
 	  break;
 
 	default:
-	  error ("unacceptable number of arguments\n");
+	  error ("dbtype: expecting zero, one, or two arguments\n");
 	}
     }
 

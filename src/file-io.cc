@@ -1550,12 +1550,12 @@ system-dependent error message.\n\
 
 	  std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-	  octave_stream s = octave_iostdiostream::create (nm, fid, md);
+	  octave_stream s = octave_stdiostream::create (nm, fid, md);
 
 	  if (s)
 	    retval(0) = octave_stream_list::insert (s);
 	  else
-	    error ("tmpfile: failed to create octave_iostdiostream object");
+	    error ("tmpfile: failed to create octave_stdiostream object");
 
 	}
       else
@@ -1635,7 +1635,7 @@ error message.\n\
 
 		  std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
 
-		  octave_stream s = octave_iostdiostream::create (nm, fid, md);
+		  octave_stream s = octave_stdiostream::create (nm, fid, md);
 
 		  if (s)
 		    {
@@ -1646,7 +1646,7 @@ error message.\n\
 			mark_for_deletion (nm);
 		    }
 		  else
-		    error ("mkstemp: failed to create octave_iostdiostream object");
+		    error ("mkstemp: failed to create octave_stdiostream object");
 		}
 	      else
 		{

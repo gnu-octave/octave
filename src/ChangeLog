@@ -1,5 +1,10 @@
 2003-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stdstrm.h, oct-stdstrm.cc (octave_base_stdiostream,
+	octave_iostdiostream, octave_istdiostram, octave_ostdiostream):
+	Combine all functionality into one class, octave_stdiostream.
+	Change all uses.	
+
 	* file-io.cc (Ftmpfile, Fmkstemp): New functions.
 	* oct-stdstrm.h (octave_iostdiostream): New class.
 	(octave_istdiostream::octave_istdiostream,
@@ -9,7 +14,7 @@
 	octave_iostdiostream::create): Make close function the last arg.
 	Change all uses.
 
-	* c-file-ptr-stream.h (iostream): New class.
+	* c-file-ptr-stream.h (io_c_file_ptr_stream): New class.
 
 2003-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

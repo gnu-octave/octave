@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // oprocstream, which in turn use the octave_procbuf class?
 
 class
-octave_iprocstream : public octave_istdiostream
+octave_iprocstream : public octave_stdiostream
 {
 public:
 
@@ -56,7 +56,7 @@ private:
 };
 
 class
-octave_oprocstream : public octave_ostdiostream
+octave_oprocstream : public octave_stdiostream
 {
 public:
 

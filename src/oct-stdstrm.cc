@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_stdiostream::seek (std::streamoff offset, std::ios::seekdir origin)
+octave_stdiostream::seek (std::streamoff offset, std::ios::seekdir origin)
 {
   int retval = -1;
 
@@ -54,7 +54,7 @@ octave_base_stdiostream::seek (std::streamoff offset, std::ios::seekdir origin)
 // Return current stream position.
 
 long
-octave_base_stdiostream::tell (void) const
+octave_stdiostream::tell (void) const
 {
   long retval = -1;
 
@@ -72,99 +72,6 @@ octave_base_stdiostream::tell (void) const
     }
 
   return retval;
-}
-
-octave_stream
-octave_istdiostream::create (const std::string& n, FILE *f,
-			     std::ios::openmode arg_md,
-			     oct_mach_info::float_format flt_fmt,
-			     c_file_ptr_buf::close_fcn cf)
-{
-  return octave_stream (new octave_istdiostream (n, f, arg_md, flt_fmt, cf));
-}
-
-octave_istdiostream::octave_istdiostream (const std::string& n, FILE *f,
-					  std::ios::openmode arg_md,
-					  oct_mach_info::float_format flt_fmt,
-					  c_file_ptr_buf::close_fcn cf)
-  : octave_base_stdiostream (n, arg_md, flt_fmt), is (0)
-{
-  if (f)
-    is = new i_c_file_ptr_stream (f, cf);
-}
-
-octave_istdiostream::~octave_istdiostream (void)
-{
-  delete is;
-}
-
-void
-octave_istdiostream::do_close (void)
-{
-  if (is)
-    is->close ();
-}
-
-octave_stream
-octave_ostdiostream::create (const std::string& n, FILE *f,
-			     std::ios::openmode arg_md,
-			     oct_mach_info::float_format flt_fmt,
-			     c_file_ptr_buf::close_fcn cf)
-{
-  return octave_stream (new octave_ostdiostream (n, f, arg_md, flt_fmt, cf));
-}
-
-octave_ostdiostream::octave_ostdiostream (const std::string& n, FILE *f,
-					  std::ios::openmode arg_md,
-					  oct_mach_info::float_format flt_fmt,
-					  c_file_ptr_buf::close_fcn cf)
-  : octave_base_stdiostream (n, arg_md, flt_fmt), os (0)
-{
-  if (f)
-    os = new o_c_file_ptr_stream (f, cf);
-}
-
-octave_ostdiostream::~octave_ostdiostream (void)
-{
-  delete os;
-}
-
-void
-octave_ostdiostream::do_close (void)
-{
-  if (os)
-    os->close ();
-}
-
-octave_stream
-octave_iostdiostream::create (const std::string& n, FILE *f,
-			      std::ios::openmode arg_md,
-			      oct_mach_info::float_format flt_fmt,
-			      c_file_ptr_buf::close_fcn cf)
-{
-  return octave_stream (new octave_iostdiostream (n, f, arg_md, flt_fmt, cf));
-}
-
-octave_iostdiostream::octave_iostdiostream (const std::string& n, FILE *f,
-					    std::ios::openmode arg_md,
-					    oct_mach_info::float_format flt_fmt,
-					    c_file_ptr_buf::close_fcn cf)
-  : octave_base_stdiostream (n, arg_md, flt_fmt), s (0)
-{
-  if (f)
-    s = new io_c_file_ptr_stream (f, cf);
-}
-
-octave_iostdiostream::~octave_iostdiostream (void)
-{
-  delete s;
-}
-
-void
-octave_iostdiostream::do_close (void)
-{
-  if (s)
-    s->close ();
 }
 
 /*

@@ -671,8 +671,13 @@ system-dependent error message.\n\
 	  FILE *ifile = fdopen (fid[0], "r");
 	  FILE *ofile = fdopen (fid[1], "w");
 
-	  octave_stream is = octave_istdiostream::create (std::string (), ifile);
-	  octave_stream os = octave_ostdiostream::create (std::string (), ofile);
+	  std::string nm;
+
+	  octave_stream is = octave_stdiostream::create (nm, ifile,
+							 std::ios::in);
+
+	  octave_stream os = octave_stdiostream::create (nm, ofile,
+							 std::ios::out);
 
 	  octave_value_list file_ids;
 

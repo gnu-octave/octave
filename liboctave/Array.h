@@ -202,11 +202,7 @@ public:
       fill (val);
     }
 
-  Array (const Array<T>& a, const dim_vector& dv)
-    : rep (a.rep), dimensions (dv), idx (0), idx_count (0)
-    {
-      rep->count++;
-    }
+  Array (const Array<T>& a, const dim_vector& dv);
 
   ~Array (void);
 

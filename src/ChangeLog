@@ -1,3 +1,8 @@
+2004-03-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::subsasgn): If empty,
+	allow type conversion when indexing with "{" and ".".
+
 2004-03-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pr-output.cc (init_format_state): Also set compact_format.

@@ -102,8 +102,17 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	if (is_empty ())
+	  {
+	    octave_value tmp = octave_value::empty_conv (type, rhs);
+
+	    retval = tmp.subsasgn (type, idx, rhs);
+	  }
+	else
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
       }
       break;
 

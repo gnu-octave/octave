@@ -22,7 +22,8 @@
 ## Return an @var{m}-element vector with @var{i}-th element given by
 ## @code{sin (2 * pi * (@var{i}+@var{d}-1) / @var{n})}.
 ##
-## The default value for @var{d} is 0.
+## The default value for @var{d} is 0 and the default value for @var{n}
+## is @var{m}.
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -30,12 +31,16 @@
 
 function x = sinewave (m, n, d)
 
-  if (nargin == 2)
-    d = 0;
-  elseif (nargin != 3)
+  if (nargin > 0 && nargin < 4)
+    if (nargin < 3)
+      d = 0;
+    endif
+    if (nargin < 2)
+      n = m;
+    endif
+    x = sin (((1 : m) + d - 1) * 2 * pi / n);
+  else
     usage ("sinewave (m, n, d)");
   endif
-
-  x = sin (((1 : m) + d - 1) * 2 * pi / n);
 
 endfunction

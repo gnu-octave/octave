@@ -46,6 +46,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // all the derived classes.
 
 template <class T>
+Array<T>::Array (const Array<T>& a, const dim_vector& dv)
+  : rep (a.rep), dimensions (dv), idx (0), idx_count (0)
+{
+  rep->count++;
+
+  if (a.numel () < dv.numel ())
+    (*current_liboctave_error_handler)
+      ("Array::Array (const Array&, const dim_vector&): dimension mismatch");
+}
+
+template <class T>
 Array<T>::~Array (void)
 {
   if (--rep->count <= 0)

@@ -1,5 +1,8 @@
 Thu Feb 13 03:02:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-conf.h.in: Reinstate RLD_FLAG.
+	* toplev.cc (octave_config_info): Likewise.
+
 	* data.cc (map_d_m, map_m_d, map_m_m): Rename from map.
 	(Fatan2): Use new function names.
 

@@ -45,8 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <pwd.h>
 
-#include "getopt.h"
-
 #include "lo-error.h"
 
 #include "builtins.h"
@@ -65,6 +63,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
+#include "prog-args.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "pt-const.h"
@@ -126,7 +125,7 @@ static const char *short_opts = "+?Vdfhip:qvx";
 #define INFO_FILE_OPTION 2
 #define INFO_PROG_OPTION 3
 #define TRADITIONAL_OPTION 4
-static struct option long_opts[] =
+long_options long_opts[] =
   {
     { "debug",            no_argument,       0, 'd' },
     { "echo-commands",    no_argument,       0, 'x' },
@@ -401,8 +400,10 @@ main (int argc, char **argv)
 
   initialize_pathsearch ();
 
+  prog_args args (argc, argv, short_opts, long_opts);
+
   int optc;
-  while ((optc = getopt_long (argc, argv, short_opts, long_opts, 0)) != EOF)
+  while ((optc = args.getopt ()) != EOF)
     {
       switch (optc)
 	{
@@ -428,8 +429,8 @@ main (int argc, char **argv)
 	  break;
 
 	case 'p':
-	  if (optarg)
-	    load_path = string (optarg);
+	  if (args.optarg ())
+	    load_path = string (args.optarg ());
 	  break;
 
 	case 'q':
@@ -445,18 +446,18 @@ main (int argc, char **argv)
 	  break;
 
 	case EXEC_PATH_OPTION:
-	  if (optarg)
-	    exec_path = string (optarg);
+	  if (args.optarg ())
+	    exec_path = string (args.optarg ());
 	  break;
 
 	case INFO_FILE_OPTION:
-	  if (optarg)
-	    info_file = string (optarg);
+	  if (args.optarg ())
+	    info_file = string (args.optarg ());
 	  break;
 
 	case INFO_PROG_OPTION:
-	  if (optarg)
-	    info_prog = string (optarg);
+	  if (args.optarg ())
+	    info_prog = string (args.optarg ());
 	  break;
 
 	case TRADITIONAL_OPTION:
@@ -516,11 +517,12 @@ main (int argc, char **argv)
   // Additional arguments are taken as command line options for the
   // script.
 
-  int remaining_args = argc - optind;
+  int last_arg_idx = args.optind ();
+  int remaining_args = argc - last_arg_idx;
   if (remaining_args > 0)
     {
       reading_script_file = 1;
-      curr_fcn_file_name = argv[optind];
+      curr_fcn_file_name = argv[last_arg_idx];
       curr_fcn_file_full_name = curr_fcn_file_name;
 
       FILE *infile = get_input_from_file (curr_fcn_file_name);
@@ -539,7 +541,7 @@ main (int argc, char **argv)
 
 	  bind_builtin_variable ("program_name", tmp);
 
-	  intern_argv (remaining_args, argv+optind);
+	  intern_argv (remaining_args, argv+last_arg_idx);
 
 	  rl_blink_matching_paren = 0;
 	  switch_to_buffer (create_buffer (infile));

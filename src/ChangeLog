@@ -1,3 +1,30 @@
+2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ops.h (DEFNDUNOP_OP, DEFNDUNOP_FN): New arg e, to name value
+	extractor function prefix.
+	* OPERATORS/op-bm-bm.cc, OPERATORS/op-cm-cm.cc,	OPERATORS/op-m-m.cc:
+	Change all uses.
+
+	* ov-cx-mat.h (octave_complex_matrix::complex_array_value,
+	octave_char_matrix::char_array_value,
+	octave_bool_matrix::bool_array_value): Rename from array_value.
+	* OPERATORS/op-bm-bm.cc, OPERATORS/op-cm-cm.cc,
+	OPERATORS/op-cm-cs.cc, OPERATORS/op-cm-m.cc,
+	OPERATORS/op-cm-s.cc, OPERATORS/op-cs-cm.cc,
+	OPERATORS/op-m-cm.cc, OPERATORS/op-m-m.cc,
+	OPERATORS/op-s-cm.cc: Use complex_array, char_array, and
+	bool_array as appropriate (instead of just array).
+
+	* ov-base.cc (octave_base_value::array_value,
+	octave_base_value::bool_array_value,
+	octave_base_value::complex_array_value,
+	octave_base_value::char_array_value): Provide default implementations.
+	* ov-base.h: Provide decls.
+
+	* ov.h (octave_value::array_value, octave_value::bool_array_value,
+	octave_value::complex_array_value, octave_value::char_array_value):
+	New virtual functions.
+
 2003-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-idx.cc (make_subs_cell): Pass dim_vector object to resize.

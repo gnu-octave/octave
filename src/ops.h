@@ -190,11 +190,11 @@ extern void install_ops (void);
     return octave_value (op v.t ## _value ()); \
   }
 
-#define DEFNDUNOP_OP(name, t, op) \
+#define DEFNDUNOP_OP(name, t, e, op) \
   UNOPDECL (name, a) \
   { \
     CAST_UNOP_ARG (const octave_ ## t&); \
-    return octave_value (op v.array_value ()); \
+    return octave_value (op v.e ## _value ()); \
   }
 
 // XXX FIXME XXX -- in some cases, the constructor isn't necessary.
@@ -206,11 +206,11 @@ extern void install_ops (void);
     return octave_value (f (v.t ## _value ())); \
   }
 
-#define DEFNDUNOP_FN(name, t, f) \
+#define DEFNDUNOP_FN(name, t, e, f) \
   UNOPDECL (name, a) \
   { \
     CAST_UNOP_ARG (const octave_ ## t&); \
-    return octave_value (f (v.array_value ())); \
+    return octave_value (f (v.e ## _value ())); \
   }
 
 #define DEFNCUNOP_METHOD(name, t, method) \

@@ -46,9 +46,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // scalar by complex matrix ops.
 
-DEFNDBINOP_OP (add, scalar, complex_matrix, scalar, array, +)
-DEFNDBINOP_OP (sub, scalar, complex_matrix, scalar, array, -)
-DEFNDBINOP_OP (mul, scalar, complex_matrix, scalar, array, *)
+DEFNDBINOP_OP (add, scalar, complex_matrix, scalar, complex_array, +)
+DEFNDBINOP_OP (sub, scalar, complex_matrix, scalar, complex_array, -)
+DEFNDBINOP_OP (mul, scalar, complex_matrix, scalar, complex_array, *)
 
 DEFBINOP (div, scalar, complex_matrix)
 {
@@ -71,19 +71,19 @@ DEFBINOP (ldiv, scalar, complex_matrix)
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v2.array_value () / d);
+  return octave_value (v2.complex_array_value () / d);
 }
 
-DEFNDBINOP_FN (lt, scalar, complex_matrix, scalar, array, mx_el_lt)
-DEFNDBINOP_FN (le, scalar, complex_matrix, scalar, array, mx_el_le)
-DEFNDBINOP_FN (eq, scalar, complex_matrix, scalar, array, mx_el_eq)
-DEFNDBINOP_FN (ge, scalar, complex_matrix, scalar, array, mx_el_ge)
-DEFNDBINOP_FN (gt, scalar, complex_matrix, scalar, array, mx_el_gt)
-DEFNDBINOP_FN (ne, scalar, complex_matrix, scalar, array, mx_el_ne)
+DEFNDBINOP_FN (lt, scalar, complex_matrix, scalar, complex_array, mx_el_lt)
+DEFNDBINOP_FN (le, scalar, complex_matrix, scalar, complex_array, mx_el_le)
+DEFNDBINOP_FN (eq, scalar, complex_matrix, scalar, complex_array, mx_el_eq)
+DEFNDBINOP_FN (ge, scalar, complex_matrix, scalar, complex_array, mx_el_ge)
+DEFNDBINOP_FN (gt, scalar, complex_matrix, scalar, complex_array, mx_el_gt)
+DEFNDBINOP_FN (ne, scalar, complex_matrix, scalar, complex_array, mx_el_ne)
 
-DEFNDBINOP_OP (el_mul, scalar, complex_matrix, scalar, array, *)
-DEFNDBINOP_FN (el_div, scalar, complex_matrix, scalar, array, x_el_div)
-DEFNDBINOP_FN (el_pow, scalar, complex_matrix, scalar, array, elem_xpow)
+DEFNDBINOP_OP (el_mul, scalar, complex_matrix, scalar, complex_array, *)
+DEFNDBINOP_FN (el_div, scalar, complex_matrix, scalar, complex_array, x_el_div)
+DEFNDBINOP_FN (el_pow, scalar, complex_matrix, scalar, complex_array, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, complex_matrix)
 {
@@ -94,21 +94,21 @@ DEFBINOP (el_ldiv, scalar, complex_matrix)
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v2.array_value () / d);
+  return octave_value (v2.complex_array_value () / d);
 }
 
 DEFBINOP (el_and, scalar, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
-  return mx_el_and (v1.double_value (), v2.array_value ());
+  return mx_el_and (v1.double_value (), v2.complex_array_value ());
 }
 
 DEFBINOP (el_or, scalar, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
-  return mx_el_or (v1.double_value (), v2.array_value ());
+  return mx_el_or (v1.double_value (), v2.complex_array_value ());
 }
 
 DEFCONV (complex_matrix_conv, scalar, complex_matrix)

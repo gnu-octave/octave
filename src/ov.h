@@ -485,8 +485,8 @@ public:
   virtual Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
 
-  virtual NDArray double_nd_array_value (bool frc_str_conv = false) const
-    { return rep->double_nd_array_value (frc_str_conv); }
+  virtual NDArray array_value (bool frc_str_conv = false) const
+    { return rep->array_value (frc_str_conv); }
 
   virtual Complex complex_value (bool frc_str_conv = false) const
     { return rep->complex_value (frc_str_conv); }
@@ -494,8 +494,23 @@ public:
   virtual ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const
     { return rep->complex_matrix_value (frc_str_conv); }
 
+  virtual ComplexNDArray complex_array_value (bool frc_str_conv = false) const
+    { return rep->complex_array_value (frc_str_conv); }
+
+  virtual bool bool_value (void) const
+    { return rep->bool_value (); }
+
+  virtual boolMatrix bool_matrix_value (void) const
+    { return rep->bool_matrix_value (); }
+
+  virtual boolNDArray bool_array_value (void) const
+    { return rep->bool_array_value (); }
+
   virtual charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }
+
+  virtual charNDArray char_array_value (bool frc_str_conv = false) const
+    { return rep->char_array_value (frc_str_conv); }
 
   virtual string_vector all_strings (bool pad = false,
 				     bool force = false) const
@@ -521,12 +536,6 @@ public:
   virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
 
   virtual octave_value_list list_value (void) const;
-
-  virtual bool bool_value (void) const
-    { return rep->bool_value (); }
-
-  virtual boolMatrix bool_matrix_value (void) const
-    { return rep->bool_matrix_value (); }
 
   ColumnVector column_vector_value (bool frc_str_conv = false,
 			     bool frc_vec_conv = false) const;

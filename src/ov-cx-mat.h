@@ -102,7 +102,7 @@ public:
 
   ComplexMatrix complex_matrix_value (bool = false) const;
 
-  ComplexNDArray array_value (void) const { return matrix; }
+  ComplexNDArray complex_array_value (bool = false) const { return matrix; }
 
   void increment (void) { matrix += Complex (1.0); }
 

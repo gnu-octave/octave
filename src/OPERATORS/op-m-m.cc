@@ -39,8 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // matrix unary ops.
 
-DEFNDUNOP_OP (not, matrix, !)
-DEFNDUNOP_OP (uminus, matrix, -)
+DEFNDUNOP_OP (not, matrix, array, !)
+DEFNDUNOP_OP (uminus, matrix, array, -)
 
 DEFUNOP (transpose, matrix)
 {

@@ -300,11 +300,10 @@ octave_base_value::matrix_value (bool) const
 }
 
 NDArray
-octave_base_value::double_nd_array_value (bool) const
+octave_base_value::array_value (bool) const
 {
   NDArray retval;
-  gripe_wrong_type_arg ("octave_base_value::double_nd_array_value()",
-			type_name ());
+  gripe_wrong_type_arg ("octave_base_value::array_value()", type_name ());
   return retval;
 }
 
@@ -326,6 +325,41 @@ octave_base_value::complex_matrix_value (bool) const
   return retval;
 }
 
+ComplexNDArray
+octave_base_value::complex_array_value (bool) const
+{
+  ComplexNDArray retval;
+  gripe_wrong_type_arg ("octave_base_value::complex_array_value()",
+			type_name ());
+  return retval;
+}
+
+bool
+octave_base_value::bool_value (void) const
+{
+  bool retval = false;
+  gripe_wrong_type_arg ("octave_base_value::bool_value()", type_name ());
+  return retval;
+}
+
+boolMatrix
+octave_base_value::bool_matrix_value (void) const
+{
+  boolMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::bool_matrix_value()",
+			type_name ());
+  return retval;
+}
+
+boolNDArray
+octave_base_value::bool_array_value (bool) const
+{
+  boolNDArray retval;
+  gripe_wrong_type_arg ("octave_base_value::bool_array_value()",
+			type_name ());
+  return retval;
+}
+
 charMatrix
 octave_base_value::char_matrix_value (bool) const
 {
@@ -336,6 +370,15 @@ octave_base_value::char_matrix_value (bool) const
   if (! error_state)
     retval = tmp.char_matrix_value ();
 
+  return retval;
+}
+
+charNDArray
+octave_base_value::char_array_value (bool) const
+{
+  charNDArray retval;
+  gripe_wrong_type_arg ("octave_base_value::char_array_value()",
+			type_name ());
   return retval;
 }
 
@@ -432,23 +475,6 @@ octave_base_value::list_value (void) const
 {
   octave_value_list retval;
   gripe_wrong_type_arg ("octave_base_value::list_value()", type_name ());
-  return retval;
-}
-
-bool
-octave_base_value::bool_value (void) const
-{
-  bool retval = false;
-  gripe_wrong_type_arg ("octave_base_value::bool_value()", type_name ());
-  return retval;
-}
-
-boolMatrix
-octave_base_value::bool_matrix_value (void) const
-{
-  boolMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::bool_matrix_value()",
-			type_name ());
   return retval;
 }
 

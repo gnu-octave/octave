@@ -195,13 +195,23 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-  NDArray double_nd_array_value (bool frc_str_conv = false) const;
+  NDArray array_value (bool = false) const;
 
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const;
 
+  ComplexNDArray complex_array_value (bool = false) const;
+
+  bool bool_value (void) const;
+
+  boolMatrix bool_matrix_value (void) const;
+
+  boolNDArray bool_array_value (bool = false) const;
+
   charMatrix char_matrix_value (bool = false) const;
+
+  charNDArray char_array_value (bool = false) const;
 
   string_vector all_strings (bool pad = false, bool force = false) const;
 
@@ -222,10 +232,6 @@ public:
   octave_fcn_handle *fcn_handle_value (bool silent);
 
   octave_value_list list_value (void) const;
-
-  bool bool_value (void) const;
-
-  boolMatrix bool_matrix_value (void) const;
 
   octave_value convert_to_str_internal (bool pad, bool force) const;
 

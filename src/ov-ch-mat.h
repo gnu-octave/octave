@@ -106,7 +106,7 @@ public:
   charMatrix char_matrix_value (bool = false) const
     { return matrix.matrix_value (); }
 
-  charNDArray array_value (bool = false) const
+  charNDArray char_array_value (bool = false) const
     { return matrix; }
 
   octave_value convert_to_str_internal (bool, bool) const

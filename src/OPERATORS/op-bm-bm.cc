@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // unary bool matrix ops.
 
-DEFNDUNOP_OP (not, bool_matrix, !)
+DEFNDUNOP_OP (not, bool_matrix, bool_array, !)
 
 DEFUNOP (transpose, bool_matrix)
 {
@@ -50,8 +50,8 @@ DEFUNOP (transpose, bool_matrix)
 
 // bool matrix by bool matrix ops.
 
-DEFNDBINOP_FN (eq, bool_matrix, bool_matrix, array, array, mx_el_eq)
-DEFNDBINOP_FN (ne, bool_matrix, bool_matrix, array, array, mx_el_ne)
+DEFNDBINOP_FN (eq, bool_matrix, bool_matrix, bool_array, bool_array, mx_el_eq)
+DEFNDBINOP_FN (ne, bool_matrix, bool_matrix, bool_array, bool_array, mx_el_ne)
 
 void
 install_bm_bm_ops (void)

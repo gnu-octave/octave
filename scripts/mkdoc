@@ -1,11 +1,18 @@
 #! /bin/sh
 
+set -e
+
 if test $# != 1; then
   d=.
 else
   d=$1
 fi
 
-find $d -name '*.m' | \
-  sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/^ *@/@/'," | \
-  /bin/sh
+if test -f gethelp; then
+  find $d -name '*.m' | \
+    sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/^ *@/@/'," | \
+    /bin/sh
+else
+  echo "gethelp program seems to be missing!" 1>&2
+  exit 1
+fi

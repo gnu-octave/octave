@@ -215,7 +215,7 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: octave DOCSTRINGS
+all: octave$(EXEEXT) DOCSTRINGS
 .PHONY: all
 
 objects: $(OBJECTS)
@@ -264,10 +264,10 @@ stamp-oct-links: $(OCT_FILES)
 stamp-prereq: defaults.h oct-conf.h $(OPT_HANDLERS)
 	touch stamp-prereq
 
-octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
+octave$(EXEEXT): stamp-prereq $(LIBRARIES) stamp-oct-links \
 	octave.o builtins.o ops.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
-	$(ALL_LDFLAGS) -o octave \
+	$(ALL_LDFLAGS) -o $@ \
 	octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
@@ -300,7 +300,7 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(srcdir)/mkbuiltins def-files var-files > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
-DOCSTRINGS: gendoc
+DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	./gendoc > $@-t
 	mv $@-t $@
 
@@ -315,7 +315,7 @@ gendoc.cc: doc-files mkgendoc
 	@$(srcdir)/mkgendoc doc-files > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
-gendoc: gendoc.cc
+gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) -o $@ $^
 
 ops.cc: $(OP_SRC) mkops
@@ -409,7 +409,7 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
-	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o stmp-pic gendoc
+	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o stmp-pic gendoc$(EXEEXT)
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
 	-rmdir pic
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
@@ -419,7 +419,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave .fname so_locations
+	rm -f Makefile octave$(EXEEXT) .fname so_locations
 	rm -f stamp-prereq stamp-oct-links
 .PHONY: distclean
 

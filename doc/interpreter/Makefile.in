@@ -62,12 +62,12 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 all: octave.info octave.dvi octave.ps octave_toc.html
 .PHONY: all
 
-$(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi
+$(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
 
 %.o : %.cc
 	$(BUILD_CXX) -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
 
-munge-texi: munge-texi.o Map-s.o
+munge-texi$(BUILD_EXEEXT): munge-texi.o Map-s.o
 	$(BUILD_CXX) -o $@ $^
 
 src-DOCSTRINGS:
@@ -83,7 +83,7 @@ scripts-DOCSTRINGS:
 	@./munge-texi \
 	  -d $(TOPDIR)/src/DOCSTRINGS \
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
-	@mv $@.t $@
+	@$(top_srcdir)/move-if-change $@.t $@
 
 octave.info: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 	-makeinfo -I$(srcdir) -I$(srcdir)/.. $<
@@ -179,7 +179,7 @@ mostlyclean clean:
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi munge-texi.o Map-s.o
+	munge-texi$(BUILD_EXEEXT) munge-texi.o Map-s.o
 .PHONY: mostlyclean clean
 
 distclean: clean

@@ -1,3 +1,10 @@
+2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkdoc: Exit immediately on errors.
+	Exit with error if gethelp does not exist.
+
+	* Makefile.in: Use $(BUILD_EXEEXT) as appropriate.
+
 2002-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (gethelp): Use $(BUILD_CXX), not $(CXX).

@@ -1300,7 +1300,7 @@ changes by setting the value of the builtin variable\n\
 inefficient, the default value is 0.\n\
 @end defvr");
 
-  DEFVAR (gnuplot_binary, "gnuplot", gnuplot_binary,
+  DEFVAR (gnuplot_binary, GNUPLOT_BINARY, gnuplot_binary,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_binary\n\
 The name of the program invoked by the plot command.  The default value\n\
@@ -1347,7 +1347,7 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @defvr {Built-in Variable} gnuplot_command_end\n\
 @end defvr");
 
-#ifdef GNUPLOT_HAS_FRAMES
+#if defined (GNUPLOT_HAS_FRAMES)
   double with_frames = 1.0;
 #else
   double with_frames = 0.0;
@@ -1363,7 +1363,7 @@ can be changed in your startup script or at the command line in case\n\
 configure got it wrong, or if you upgrade your gnuplot installation.\n\
 @end defvr");
 
-#ifdef GNUPLOT_HAS_MULTIPLOT
+#if defined (GNUPLOT_HAS_MULTIPLOT)
   double with_multiplot = 1.0;
 #else
   double with_multiplot = 0.0;

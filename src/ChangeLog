@@ -1,4 +1,13 @@
+2002-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* move-if-change: Delete.
+	* Makefile.in (DISTFILES): Delete it from the list.
+
 2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: Use $(EXEEXT) and $(BUILD_EXEEXT) as appropriate.
+
+	* pt-plot.cc (Vgnuplot_binary): Use GNUPLOT_BINARY as default.
 
 	* octave.cc (execute_startup_files): 
 	Use octave_env::getcwd instead of "./".

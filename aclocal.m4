@@ -471,31 +471,40 @@ fi
 dnl
 dnl Does gnuplot exist?  Is it a recent version?
 dnl
-AC_DEFUN(OCTAVE_PROG_GNUPLOT,
-[if test "$cross_compiling" = yes; then
-  GNUPLOT_BINARY=gnuplot
+AC_DEFUN(OCTAVE_PROG_GNUPLOT, [
+case "$canonical_host_type" in
+  *-*-cygwin*|*-*-mingw32*)
+    gp_names="pgnuplot pipe-gnuplot gnuplot"
+    gp_default=pgnuplot
+  ;;
+  *)
+    gp_names=gnuplot
+    gp_default=gnuplot
+  ;;
+esac
+GNUPLOT_BINARY="$gp_default"
+GNUPLOT_HAS_MULTIPLOT=1
+GNUPLOT_HAS_FRAMES=1
+if test "$cross_compiling" = yes; then
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
-  AC_SUBST(DEFAULT_PAGER)
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiplot mode)
-  AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1, [Define if gnuplot has multiplot.])
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiple frams)
-  AC_DEFINE(GNUPLOT_HAS_FRAMES, 1, [Define if gnuplot has frames.])
 else
-  AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])
+  AC_CHECK_PROGS(GNUPLOT_BINARY, $gp_names)
   if test -n "$GNUPLOT_BINARY"; then
     AC_MSG_CHECKING([to see if your gnuplot supports multiplot])
     if test -z "`echo 'set term unknown; set multiplot' | \
       $GNUPLOT_BINARY 2>&1`"; then
       AC_MSG_RESULT([yes])
-      AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1)
     else
+      GNUPLOT_HAS_MULTIPLOT=
       AC_MSG_RESULT([no])
     fi
     AC_MSG_CHECKING([to see if your gnuplot supports multiple plot windows])
     if test -z "`echo 'set term x11 2' | $GNUPLOT_BINARY 2>&1`"; then
       AC_MSG_RESULT([yes])
-      AC_DEFINE(GNUPLOT_HAS_FRAMES, 1)
     else
+      GNUPLOT_HAS_FRAMES=
       AC_MSG_RESULT([no])
     fi
   else
@@ -516,6 +525,9 @@ else
     AC_MSG_WARN([at the Octave prompt.])
   fi
 fi
+AC_DEFINE_UNQUOTED(GNUPLOT_BINARY, "$GNUPLOT_BINARY", [Name of gnuplot program.])
+AC_DEFINE_UNQUOTED(GNUPLOT_HAS_MULTIPLOT, $GNUPLOT_HAS_MULTIPLOT, [Define if your gnuplot program supports multiplot mode.])
+AC_DEFINE_UNQUOTED(GNUPLOT_HAS_FRAMES, $GNUPLOT_HAS_FRAMES, [Define if your gnuplot program supports multiple plot windows.])
 ])
 dnl
 dnl Is DejaGNU installed?

@@ -26,7 +26,7 @@ ALL_M_FILES1 := $(shell find $(srcdir) -name '*.m' -print)
 ALL_M_FILES := $(patsubst $(srcdir)/%, %, $(ALL_M_FILES1))
 
 DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
-	configure mkinstalldirs move-if-change mkdoc gethelp.cc \
+	configure mkinstalldirs mkdoc gethelp.cc \
 	skip-autoheader DOCSTRINGS
 
 SUBDIRS = audio control deprecated elfun finance general image io \
@@ -48,11 +48,11 @@ $(SUBDIRS):
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
-DOCSTRINGS: gethelp mkdoc $(ALL_M_FILES)
+DOCSTRINGS: gethelp$(BUILD_EXEEXT) mkdoc $(ALL_M_FILES)
 	$(srcdir)/mkdoc $(srcdir) > $@.t
 	mv $@.t $@
 
-gethelp: gethelp.cc
+gethelp$(BUILD_EXEEXT): gethelp.cc
 	$(BUILD_CXX) -o $@ $^
 
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::
@@ -77,7 +77,7 @@ TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
 clean::
-	rm -f gethelp
+	rm -f gethelp$(BUILD_EXEEXT)
 
 distclean::
 	rm -f Makefile config.log config.status

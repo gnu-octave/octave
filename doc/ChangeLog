@@ -1,3 +1,12 @@
+2002-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (%.texi : %.txi):
+	Use $(top_srcdir)/move-if-change.
+
+2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in: Use $(BUILD_EXEEXT) as appropriate.
+
 2002-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (munge-texi, %.o : %.cc):

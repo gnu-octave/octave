@@ -1,5 +1,14 @@
 2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* aclocal.m4 (OCTAVE_PROG_GNUPLOT): AC_DEFINE GNUPLOT_BINARY
+	Default value on Windows systems is pgnuplot.
+	If not cross compiling and no gnuplot program is found, set
+	default to gnuplot.  Set defaults for multiplot and frames.  Check
+	for pgnpuplot, pipe-gnuplot, and gnuplot on Windows systems.
+
+	* configure.in (BUILD_EXEEXT): New variable.
+	* Makeconf.in (BUILD_EXEEXT): Substitute it here.
+
 	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION):
 	Add second test for OS X.
 

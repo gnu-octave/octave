@@ -23,6 +23,8 @@ version := $(shell $(getversion) $(version_file))
 
 EXEEXT = @EXEEXT@
 
+BUILD_EXEEXT = @BUILD_EXEEXT@
+
 LEX = @LEX@
 LFLAGS = @LFLAGS@
 LEXLIB = @LEXLIB@

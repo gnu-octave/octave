@@ -180,7 +180,7 @@ Ben Sapp @email{bsapp@@lanl.gov} implemented the debugger functions and
 added Texinfo markup commands to the internal doc strings.
 
 @item
-R. Bruce Tenison @email{btenison@rstc.cc.al.us} wrote the
+R. Bruce Tenison @email{btenison@@rstc.cc.al.us} wrote the
 @code{hess} and @code{schur} functions.
 
 @item

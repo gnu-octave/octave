@@ -30,13 +30,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <octave/config.h>
 
+#include <octave/Matrix.h>
+
 #include <octave/defun-dld.h>
 #include <octave/error.h>
 #include <octave/gripes.h>
 #include <octave/help.h>
 #include <octave/oct-obj.h>
-#include <octave/oct-obj.h>
+#include <octave/pager.h>
 #include <octave/utils.h>
+#include <octave/variables.h>
 
 #endif
 

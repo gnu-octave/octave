@@ -1,5 +1,6 @@
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Matrix.h: Include mx-ops.h too.
 	* mx-ops.h: New file.
 
 2002-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>

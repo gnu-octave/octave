@@ -37,6 +37,12 @@ typedef double (*integrand_fcn) (double x);
 
 #endif
 
+// XXX FIXME XXX -- would be nice to not have to have this global
+// variable.
+// Nonzero means an error occurred in the calculation of the integrand
+// function, and the user wants us to quit.
+extern int quad_integration_error;
+
 class Quad
 {
  public:
@@ -96,6 +102,7 @@ class IndefQuad : public Quad
 
  private:
 
+  int integration_error;
   double bound;
   IntegralType type;
 };

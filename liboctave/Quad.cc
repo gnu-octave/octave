@@ -31,15 +31,21 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 static integrand_fcn user_fcn;
 
+// XXX FIXME XXX -- would be nice to not have to have this global
+// variable.
+// Nonzero means an error occurred in the calculation of the integrand
+// function, and the user wants us to quit.
+int quad_integration_error = 0;
+
 extern "C"
 {
-  int F77_FCN (dqagp) (const double (*)(double*), const double*,
+  int F77_FCN (dqagp) (const double (*)(double*, int*), const double*,
 		       const double*, const int*, const double*,
 		       const double*, const double*, double*, double*,
 		       int*, int*, const int*, const int*, int*, int*,
 		       double*);
 
-  int F77_FCN (dqagi) (const double (*)(double*), const double*,
+  int F77_FCN (dqagi) (const double (*)(double*, int*), const double*,
 		       const int*, const double*, const double*,
 		       double*, double*, int*, int*, const int*,
 		       const int*, int*, int*, double*);
@@ -83,7 +89,7 @@ Quad::integrate (int& ier, int& neval)
 }
 
 static double
-user_function (double *x)
+user_function (double *x, int *ierr)
 {
 #if defined (sun) && defined (__GNUC__)
   double xx = access_double (x);
@@ -91,7 +97,14 @@ user_function (double *x)
   double xx = *x;
 #endif
 
-  return (*user_fcn) (xx);
+  quad_integration_error = 0;
+
+  double retval = (*user_fcn) (xx);
+
+  if (quad_integration_error)
+    *ierr = -1;
+
+  return retval;
 }
 
 DefQuad::DefQuad (integrand_fcn fcn) : Quad (fcn)

@@ -59,7 +59,17 @@ quad_user_function (double x)
   if (quad_fcn != NULL_TREE)
     {
       tree_constant *tmp = quad_fcn->eval (args, 2, 1, 0);
+
       delete [] args;
+
+      if (error_state)
+	{
+	  delete [] tmp;
+	  quad_integration_error = 1;  // XXX FIXME XXX
+	  gripe_user_supplied_eval ("quad");
+	  return retval;
+	}
+
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
 	  retval = tmp[0].to_scalar ();
@@ -68,8 +78,8 @@ quad_user_function (double x)
       else
 	{
 	  delete [] tmp;
+	  quad_integration_error = 1;  // XXX FIXME XXX
 	  gripe_user_supplied_eval ("quad");
-	  jump_to_top_level ();
 	}
     }
 

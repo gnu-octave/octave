@@ -86,6 +86,7 @@ npsol_objective_function (const ColumnVector& x)
 	{
 	  error ("npsol: error evaluating objective function");
 	  npsol_objective_error = 1; // XXX FIXME XXX
+	  delete [] tmp;
 	  return retval;
 	}
 
@@ -163,6 +164,7 @@ npsol_constraint_function (const ColumnVector& x)
 
       if (error_state)
 	{
+	  delete [] tmp;
 	  error ("npsol: error evaluating constraints");
 	  return retval;
 	}

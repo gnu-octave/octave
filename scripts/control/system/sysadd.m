@@ -73,19 +73,25 @@ function sys = sysadd (varargin)
   endfor
 
   ## perform the add
-  if(nargin == 2)
-    Gsys = nth(arglist,1);   Hsys = nth(arglist,2);
-    if( strcmp(sysgettype(Gsys),"tf") | strcmp(sysgettype(Hsys),"tf") )
-      ## see if adding  transfer functions with identical denominators
+  if (nargin == 2)
+    Gsys = nth(arglist,1);
+    Hsys = nth(arglist,2);
+
+    if (! strcmp (sysgettype (Gsys), "tf"))
       [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
+    endif
+
+    if (! strcmp (sysgettype (Hsys),"tf"))
       [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
-      if(length(Hden) == length(Gden) )
-        if( (Hden == Gden) & (HT == GT) )
-          sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
-          return
-        endif
-        ## if not, we go on and do the usual thing...
+    endif
+
+    ## see if adding  transfer functions with identical denominators
+    if (length(Hden) == length(Gden) )
+      if( (Hden == Gden) & (HT == GT) )
+        sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
+        return
       endif
+      ## if not, we go on and do the usual thing...
     endif
 
     ## make sure in ss form

@@ -108,25 +108,29 @@ system-dependent error message.\n\
 
   if (nargin == 2)
     {
-      octave_stream old_stream = octave_stream_list::lookup (args(0));
-      octave_stream new_stream = octave_stream_list::lookup (args(1));
+      octave_stream old_stream
+	= octave_stream_list::lookup (args(0), "dup2");
 
-      if (old_stream.is_valid () && new_stream.is_valid ())
+      if (! error_state)
 	{
-	  int i_old = old_stream.file_number ();
-	  int i_new = new_stream.file_number ();
+	  octave_stream new_stream
+	    = octave_stream_list::lookup (args(1), "dup2");
 
-	  if (i_old >= 0 && i_new >= 0)
+	  if (! error_state)
 	    {
-	      string msg;
+	      int i_old = old_stream.file_number ();
+	      int i_new = new_stream.file_number ();
 
-	      int status = octave_syscalls::dup2 (i_old, i_new, msg);
+	      if (i_old >= 0 && i_new >= 0)
+		{
+		  string msg;
 
-	      retval(0) = static_cast<double> (status);
-	      retval(1) = msg;
+		  int status = octave_syscalls::dup2 (i_old, i_new, msg);
+
+		  retval(0) = static_cast<double> (status);
+		  retval(1) = msg;
+		}
 	    }
-	  else
-	    error ("dup2: invalid file id");
 	}
       else
 	error ("dup2: invalid stream");

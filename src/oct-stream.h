@@ -495,11 +495,13 @@ public:
 
   static octave_value insert (const octave_stream& os);
 
-  static octave_stream lookup (int fid);
-  static octave_stream lookup (const octave_value& fid);
+  static octave_stream lookup (int fid, const string& who = string ());
+  static octave_stream lookup (const octave_value& fid,
+			       const string& who = string ());
 
-  static int remove (int fid);
-  static int remove (const octave_value& fid);
+  static int remove (int fid, const string& who = string ());
+  static int remove (const octave_value& fid,
+		     const string& who = string ());
 
   static void clear (void);
 
@@ -522,11 +524,12 @@ private:
 
   octave_value do_insert (const octave_stream& os);
 
-  octave_stream do_lookup (int fid) const;
-  octave_stream do_lookup (const octave_value& fid) const;
+  octave_stream do_lookup (int fid, const string& who = string ()) const;
+  octave_stream do_lookup (const octave_value& fid,
+			   const string& who = string ()) const;
 
-  int do_remove (int fid);
-  int do_remove (const octave_value& fid);
+  int do_remove (int fid, const string& who = string ());
+  int do_remove (const octave_value& fid, const string& who = string ());
 
   void do_clear (void);
 

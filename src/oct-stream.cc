@@ -2638,27 +2638,27 @@ octave_stream_list::insert (const octave_stream& os)
 }
 
 octave_stream
-octave_stream_list::lookup (int fid)
+octave_stream_list::lookup (int fid, const string& who)
 {
-  return (instance_ok ()) ? instance->do_lookup (fid) : octave_stream ();
+  return (instance_ok ()) ? instance->do_lookup (fid, who) : octave_stream ();
 }
 
 octave_stream
-octave_stream_list::lookup (const octave_value& fid)
+octave_stream_list::lookup (const octave_value& fid, const string& who)
 {
-  return (instance_ok ()) ? instance->do_lookup (fid) : octave_stream ();
+  return (instance_ok ()) ? instance->do_lookup (fid, who) : octave_stream ();
 }
 
 int
-octave_stream_list::remove (int fid)
+octave_stream_list::remove (int fid, const string& who)
 {
-  return (instance_ok ()) ? instance->do_remove (fid) : -1;
+  return (instance_ok ()) ? instance->do_remove (fid, who) : -1;
 }
 
 int
-octave_stream_list::remove (const octave_value& fid)
+octave_stream_list::remove (const octave_value& fid, const string& who)
 {
-  return (instance_ok ()) ? instance->do_remove (fid) : -1;
+  return (instance_ok ()) ? instance->do_remove (fid, who) : -1;
 }
 
 void
@@ -2736,32 +2736,44 @@ octave_stream_list::do_insert (const octave_stream& os)
   return octave_value (os, stream_number);
 }
 
+static void
+gripe_invalid_file_id (int fid, const string& who)
+{
+  if (who.empty ())
+    ::error ("invalid stream number = %d", fid);
+  else
+    ::error ("%s: invalid stream number = %d", who.c_str (), fid);
+}
+
 octave_stream
-octave_stream_list::do_lookup (int fid) const
+octave_stream_list::do_lookup (int fid, const string& who) const
 {
   octave_stream retval;
 
   if (fid >= 0 && fid < curr_len)
     retval = list(fid);
+  else
+    gripe_invalid_file_id (fid, who);
 
   return retval;
 }
 
 octave_stream
-octave_stream_list::do_lookup (const octave_value& fid) const
+octave_stream_list::do_lookup (const octave_value& fid,
+			       const string& who) const
 {
   octave_stream retval;
 
   int i = get_file_number (fid);
 
   if (! error_state)
-    retval = do_lookup (i);
+    retval = do_lookup (i, who);
 
   return retval;
 }
 
 int
-octave_stream_list::do_remove (int fid)
+octave_stream_list::do_remove (int fid, const string& who)
 {
   int retval = -1;
 
@@ -2771,26 +2783,30 @@ octave_stream_list::do_remove (int fid)
     {
       octave_stream os = list(fid);
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  os.close ();
 	  list(fid) = octave_stream ();
 	  retval = 0;
 	}
+      else
+	gripe_invalid_file_id (fid, who);
     }
+  else
+    gripe_invalid_file_id (fid, who);
 
   return retval;
 }
 
 int
-octave_stream_list::do_remove (const octave_value& fid)
+octave_stream_list::do_remove (const octave_value& fid, const string& who)
 {
   int retval = -1;
 
   int i = get_file_number (fid);
 
   if (! error_state)
-    retval = do_remove (i);
+    retval = do_remove (i, who);
 
   return retval;
 }
@@ -2816,7 +2832,7 @@ octave_stream_list::do_get_info (int fid) const
 
   octave_stream os = do_lookup (fid);
 
-  if (os)
+  if (os.is_valid ())
     {
       retval.resize (3);
 
@@ -2825,7 +2841,7 @@ octave_stream_list::do_get_info (int fid) const
       retval(2) = oct_mach_info::float_format_as_string (os.float_format ());
     }
   else
-    ::error ("invalid file id");
+    ::error ("invalid file id = %d", fid);
 
   return retval;
 }

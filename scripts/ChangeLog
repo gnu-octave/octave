@@ -1,3 +1,10 @@
+2000-05-31  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+
+	* control/base/dlqe.m: Update documentation.  Fix typo.  Warn
+	about difference with Matlab dlqe function.
+
+	* control/system/sysmult.m: Fix typo in argument dimensions checking.
+
 2000-05-24  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* strings/strrep.m: Fix typo.

@@ -218,7 +218,8 @@ install_headers = *.h $(srcdir)/*.h
 # Put tex-file.o first, because it's what depends on the paths, and may
 # reduce frustration if the paths are wrong by doing it first.
 
-objects = tex-file.lo absolute.lo atou.lo cnf.lo concat.lo concat3.lo \
+objects = \
+tex-file.lo absolute.lo atou.lo basename.lo cnf.lo concat.lo concat3.lo \
 concatn.lo db.lo debug.lo dir.lo elt-dirs.lo expand.lo extend-fname.lo \
 file-p.lo find-suffix.lo fn.lo fontmap.lo getopt.lo getopt1.lo hash.lo \
 kdefault.lo line.lo magstep.lo make-suffix.lo path-elt.lo \

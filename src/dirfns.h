@@ -32,6 +32,7 @@ extern void pathname_backup (char *, int);
 extern char *make_absolute (const char *, const char *);
 extern int is_newer (const char *, time_t);
 extern char *get_working_directory (const char *);
+extern char *octave_tilde_expand (const char *);
 
 #endif
 

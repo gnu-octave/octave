@@ -1,4 +1,25 @@
 // f-filter.cc						-*- C++ -*-
+/*
+
+Copyright (C) 1993, 1994, 1995 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
 
 // Based on Tony Richardson's filter.m.
 //
@@ -8,10 +29,24 @@
 // Rewritten to use templates to handle both real and complex cases by
 // jwe, Wed Nov  1 19:15:29 1995.
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "Array.h"
+#include "CColVector.h"
+#include "dColVector.h"
+
 #include "defun-dld.h"
+#include "error.h"
 #include "tree-const.h"
 #include "help.h"
+
+extern Array<double>
+filter (Array<double>&, Array<double>&, Array<double>&);
+
+extern Array<Complex>
+filter (Array<Complex>&, Array<Complex>&, Array<Complex>&);
 
 template <class T>
 Array<T>
@@ -96,6 +131,12 @@ filter (Array<T>& b, Array<T>& a, Array<T>& x, Array<T>& si)
   return y;
 }
 
+extern Array<double>
+filter (Array<double>&, Array<double>&, Array<double>&, Array<double>&);
+
+extern Array<Complex>
+filter (Array<Complex>&, Array<Complex>&, Array<Complex>&, Array<Complex>&);
+
 template <class T>
 Array<T>
 filter (Array<T>& b, Array<T>& a, Array<T>& x)
@@ -109,18 +150,6 @@ filter (Array<T>& b, Array<T>& a, Array<T>& x)
 
   return filter (b, a, x, si);
 }
-
-extern Array<double>
-filter (Array<double>&, Array<double>&, Array<double>&, Array<double>&);
-
-extern Array<double>
-filter (Array<double>&, Array<double>&, Array<double>&);
-
-extern Array<Complex>
-filter (Array<Complex>&, Array<Complex>&, Array<Complex>&, Array<Complex>&);
-
-extern Array<Complex>
-filter (Array<Complex>&, Array<Complex>&, Array<Complex>&);
 
 DEFUN_DLD_BUILTIN ("filter", Ffilter, Sfilter, 10,
   "usage: [y [, sf]] = filter (b, a, x [, si])\n\
@@ -247,7 +276,7 @@ implementation.")
 
   return retval;
 }
-      
+
 template Array<double>
 filter (Array<double>&, Array<double>&, Array<double>&, Array<double>&);
 

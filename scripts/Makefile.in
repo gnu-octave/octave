@@ -25,7 +25,7 @@ SOURCES = # *.m
 DISTFILES = Makefile.in $(SOURCES) configure.in configure \
 	mkinstalldirs
 
-SUBDIRS = audio control elfun general image linear-algebra \
+SUBDIRS = control elfun general image linear-algebra \
 	miscellaneous plot polynomial set signal specfun \
 	special-matrix startup statistics strings time
 

@@ -465,12 +465,6 @@ Reporting Bugs
 Installing Octave
 
 * Installation Problems::       
-* Binary Distributions::        
-
-Binary Distributions
-
-* Installing Octave from a Binary Distribution::  
-* Creating a Binary Distribution::  
 
 Emacs Octave Support
 

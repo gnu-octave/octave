@@ -26,8 +26,7 @@ Free Software Foundation.
 @cindex installing Octave
 
 Here is the procedure for installing Octave from scratch on a Unix
-system.  For instructions on how to install the binary distributions of
-Octave, see @ref{Binary Distributions}.
+system.
 
 @itemize @bullet
 @item
@@ -218,10 +217,9 @@ Image files that are distributed with Octave.
 
 @menu
 * Installation Problems::       
-* Binary Distributions::        
 @end menu
 
-@node Installation Problems, Binary Distributions, Installation, Installation
+@node Installation Problems, , Installation, Installation
 @appendixsec Installation Problems
 
 This section contains a list of problems (and some apparent problems
@@ -440,145 +438,4 @@ binary distribution in the default directory, or copy the commands in
 the octave shell script wrapper to your shell startup files (and the
 shell startup files for anyone else who is using Octave) and then
 rename the file @file{octave.bin} to be @file{octave}.
-@end itemize
-
-@node Binary Distributions,  , Installation Problems, Installation
-@appendixsec Binary Distributions
-
-Although Octave is not very difficult to build from its sources, it is a
-relatively large program that does require a significant amount of time
-and disk space to compile and install.  Because of this, many people
-want to be able to obtain binary distributions so they can start using
-Octave immediately, without having to bother with the details of
-compiling it first.  This is understandable, so I try to maintain a
-current collection of binary distributions at
-@url{ftp://ftp.che.wisc.edu/pub/octave/BINARIES}.
-
-Please understand, however, that there is only a limited amount of time
-available to devote to making binaries, so binaries may not be
-immediately available for some platforms.  (Please contact
-@email{bug-octave@@bevo.che.wisc.edu} if you are interested in helping
-make a binary distribution available for your system.)
-
-@menu
-* Installing Octave from a Binary Distribution::  
-* Creating a Binary Distribution::  
-@end menu
-
-@node Installing Octave from a Binary Distribution, Creating a Binary Distribution, Binary Distributions, Binary Distributions
-@appendixsubsec Installing Octave from a Binary Distribution
-
-To install Octave from a binary distribution, execute the command
-
-@example
-sh ./install-octave
-@end example
-
-@noindent
-in the top level directory of the distribution.
-
-Binary distributions are normally compiled assuming that Octave will be
-installed in the following subdirectories of @file{/usr/local}.
-
-@table @file
-@item bin
-Octave and other binaries that people will want to run directly.
-
-@item lib
-Shared libraries that Octave needs in order to run.  These files are
-not included if you are installing a statically linked version of
-Octave.
-
-@item man/man1
-Unix-style man pages describing Octave.
-
-@item info
-Info files describing Octave.
-
-@item share/octave/@var{version}/m
-Function files distributed with Octave.  This includes the Octave
-version, so that multiple versions of Octave may be installed at the
-same time.
-
-@item libexec/octave/@var{version}/exec/@var{arch}
-Executables to be run by Octave rather than the user.
-
-@item libexec/octave/@var{version}/oct/@var{arch}
-Object files that will be dynamically loaded.
-
-@item share/octave/@var{version}/imagelib
-Image files that are distributed with Octave.
-@end table
-
-@noindent
-where @var{version} stands for the current version number of the
-interpreter, and @var{arch} is the type of computer on which Octave
-is installed (for example, @samp{@value{TARGETHOSTTYPE}}).
-
-If these directories don't exist, the script @code{install-octave} will
-create them for you.  The installation script also creates the following
-subdirectories of @file{/usr/local} that are intended for locally
-installed functions:
-
-@table @file
-@item share/octave/site/m
-Locally installed M-files.
-
-@item libexec/octave/site/exec/@var{arch}
-Locally installed binaries intended to be run by Octave rather than by
-the user.
-
-@item libexec/octave/site/octave/@var{arch}
-Local object files that will be dynamically linked.
-@end table
-
-If it is not possible for you to install Octave in @file{/usr/local}, or
-if you would prefer to install it in a different directory, you can
-specify the name of the top level directory as an argument to the
-@file{install-octave} script.  For example:
-
-@example
-sh ./install-octave /some/other/directory
-@end example
-
-@noindent
-will install Octave in subdirectories of the directory
-@file{/some/other/directory}.
-
-@node Creating a Binary Distribution,  , Installing Octave from a Binary Distribution, Binary Distributions
-@appendixsubsec Creating a Binary Distribution
-
-Here is how to build a binary distribution for others to use.  If you
-want to make a binary distribution for your system available along with
-the Octave sources and binaries on @url{ftp.che.wisc.edu}, please follow
-this procedure.  For directions explaining how to make the binary
-available on the ftp site, please contact
-@email{bug-octave@@bevo.che.wisc.edu}.
-
-@itemize @bullet
-@item
-Unpack the source distribution:
-
-@example
-gunzip -c octave-@value{VERSION}.tar.gz | tar xf -
-@end example
-
-@item
-Change your current directory to the top-level directory of the source
-distribution:
-
-@example
-cd octave-@value{VERSION}
-@end example
-
-@item
-Make the binary distribution:
-
-@example
-make binary-dist
-@end example
-
-This will create a compressed tar file ready for distribution.
-It will have a name like
-@file{octave-@value{VERSION}-@value{TARGETHOSTTYPE}.tar.gz}
 @end itemize

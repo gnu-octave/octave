@@ -1,7 +1,7 @@
 // tc-index.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -359,6 +359,12 @@ tree_constant_rep::do_vector_index (const tree_constant& i_arg) const
   int nc = columns ();
 
   int len = nr > nc ? nr : nc;
+
+  if (nr == 0 || nc == 0)
+    {
+      ::error ("attempt to index empty matrix");
+      return retval;
+    }
 
   assert ((nr == 1 || nc == 1) && ! user_pref.do_fortran_indexing);
 

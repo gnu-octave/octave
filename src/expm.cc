@@ -60,7 +60,7 @@ extern "C"
 extern int empty_arg (tree_constant&);
 
 tree_constant
-matrix_exp (const tree_constant& a)
+matrix_exp (tree_constant& a)
 {
   tree_constant retval;
   tree_constant tmp = a.make_numeric ();
@@ -132,12 +132,12 @@ matrix_exp (const tree_constant& a)
 					 fortran_vec (), &n_cols,
 					 work.fortran_vec ());
 
-	    sqpow = 1.0 + log (inf_norm) / log (2.0);
+	    sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
 // Check whether we need to square at all.
 
-	    if (sqpow <= 0.0)
-	      sqpow = 0.0;
+	    if (sqpow < 0)
+	      sqpow = 0;
 	    else
 	      {
 		for (inf_norm = 1.0, i = 0; i < sqpow; i++)
@@ -235,12 +235,12 @@ matrix_exp (const tree_constant& a)
 					 m.fortran_vec (), &n_cols,
 					 work.fortran_vec ());
 
-	    sqpow = 1.0 + log (inf_norm) / log (2.0);
+	    sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
 // Check whether we need to square at all.
 
-	    if (sqpow <= 0.0)
-	      sqpow = 0.0;
+	    if (sqpow < 0)
+	      sqpow = 0;
 	    else
 	      {
 		for (inf_norm = 1.0, i = 0; i < sqpow; i++)

@@ -13,6 +13,10 @@
    names. */ 
 #undef F77_APPEND_UNDERSCORE
 
+/* Define if your Fortran compiler converts external names to
+   upper case. */
+#undef F77_UPPERCASE_NAMES
+
 /* Define if you don't have FSQP. */
 #undef FSQP_MISSING
 

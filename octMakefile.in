@@ -163,8 +163,8 @@ clean-tar:
 	find `cat .fname` \( \( -name RCS -a -type d \) \
 	  -o -name '*~' -o -name '#*#' \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
-	rm -f `cat .fname`/test/octave.test/npsol
-	rm -f `cat .fname`/test/octave.test/qpsol
+	rm -rf `cat .fname`/test/octave.test/npsol
+	rm -rf `cat .fname`/test/octave.test/qpsol
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname` .fname

@@ -24,72 +24,52 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_mx_ext_h)
 #define octave_mx_ext_h 1
 
-/*
- * Result of a AEP Balance operation.
- */
+// Result of a AEP Balance operation.
 
 #include "dbleAEPBAL.h"
 #include "CmplxAEPBAL.h"
 
-/*
- * Result of a Determinant calculation.
- */
+// Result of a Determinant calculation.
 
 #include "dbleDET.h"
 #include "CmplxDET.h"
 
-/*
- * Result of a GEP Balance operation
- * Note: currenlty only do balancing on real data.  Complex balancing
- * done on magnitudes of complex data.
- */
+// Result of a GEP Balance operation
+// Note: currenlty only do balancing on real data.  Complex balancing
+// done on magnitudes of complex data.
 
 #include "dbleGEPBAL.h"
 
-/*
- * Result of a Cholesky Factorization
- */
+// Result of a Cholesky Factorization
 
 #include "dbleCHOL.h"
 #include "CmplxCHOL.h"
 
-/*
- * Result of a Hessenberg Decomposition
- */
+// Result of a Hessenberg Decomposition
 
 #include "dbleHESS.h"
 #include "CmplxHESS.h"
 
-/*
- * Result of a Schur Decomposition
- */
+// Result of a Schur Decomposition
 
 #include "dbleSCHUR.h"
 #include "CmplxSCHUR.h"
 
-/*
- * Result of a Singular Value Decomposition.
- */
+// Result of a Singular Value Decomposition.
 
 #include "dbleSVD.h"
 #include "CmplxSVD.h"
 
-/*
- * Result of an Eigenvalue computation.
- */
+// Result of an Eigenvalue computation.
 
 #include "EIG.h"
 
-/*
- * Result of an LU decomposition.
- */
+// Result of an LU decomposition.
 
 #include "dbleLU.h"
 #include "CmplxLU.h"
 
-/*
- * Result of a QR decomposition.
- */
+// Result of a QR decomposition.
 
 #include "dbleQR.h"
 #include "CmplxQR.h"

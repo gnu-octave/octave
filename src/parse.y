@@ -79,7 +79,7 @@ static bool Vwarn_variable_switch_label;
 //
 //   octave> global a, b = 2
 //
-static bool Vwarn_comma_in_global_decl;
+static bool Vwarn_comma_in_declaration;
 
 // If TRUE, generate warning if declared function name disagrees with
 // the name of the file in which it is defined.
@@ -239,11 +239,18 @@ static tree_function *finish_function_def
 static tree_index_expression *make_index_expression
 	 (tree_indirect_ref *indir, tree_argument_list *args);
 
+// Make a declaration command.
+static tree_decl_command *make_decl_command
+	(int tok, token *tok_val, tree_decl_init_list *lst);
+
 // Finish building a matrix list.
 static tree_expression *finish_matrix (tree_matrix *m);
 
 // Maybe print a warning.  Duh.
 static void maybe_warn_missing_semi (tree_statement_list *);
+
+// Maybe print a warning.  Duh.
+static void maybe_warn_comma_in_decl (void);
 
 // Set the print flag for a statement based on the separator type.
 static void set_stmt_print_flag (tree_statement_list *, char, bool);
@@ -290,9 +297,9 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
   tree_switch_command *tree_switch_command_type;
   tree_switch_case *tree_switch_case_type;
   tree_switch_case_list *tree_switch_case_list_type;
-  tree_global *tree_global_type;
-  tree_global_init_list *tree_global_init_list_type;
-  tree_global_command *tree_global_command_type;
+  tree_decl_elt *tree_decl_elt_type;
+  tree_decl_init_list *tree_decl_init_list_type;
+  tree_decl_command *tree_decl_command_type;
   tree_statement *tree_statement_type;
   tree_statement_list *tree_statement_list_type;
   tree_plot_command *tree_plot_command_type;
@@ -323,7 +330,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> BREAK CONTINUE FUNC_RET
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
-%token <tok_val> GLOBAL
+%token <tok_val> GLOBAL STATIC
 %token <tok_val> TEXT_ID
 
 // Other tokens.
@@ -356,9 +363,9 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_switch_command_type> switch_command
 %type <tree_switch_case_type> switch_case default_case
 %type <tree_switch_case_list_type> case_list1 case_list
-%type <tree_global_type> global_decl2
-%type <tree_global_init_list_type> global_decl1
-%type <tree_global_command_type> global_decl
+%type <tree_decl_elt_type> decl2
+%type <tree_decl_init_list_type> decl1
+%type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list input1
@@ -600,46 +607,43 @@ ans_expression	: expression
 		  { $$ = maybe_convert_to_ans_assign ($1); }
 		;
 
-global_decl	: GLOBAL global_decl1
+decl1		: decl2
+		  { $$ = new tree_decl_init_list ($1); }
+		| decl1 decl2
 		  {
-		    $$ = new tree_global_command ($2, $1->line (),
-						  $1->column ());
+		    $1->append ($2);
+		    $$ = $1;
 		  }
-		;
-
-global_decl1	: global_decl2
-		  { $$ = new tree_global_init_list ($1); }
-		| global_decl1 optcomma global_decl2
+		| decl1 ',' decl2
 		  {
+		    maybe_warn_comma_in_decl ();
 		    $1->append ($3);
 		    $$ = $1;
 		  }
+		;
 
-global_decl2	: identifier
-		  { $$ = new tree_global ($1); }
+decl2		: identifier
+		  { $$ = new tree_decl_elt ($1); }
 		| identifier '=' expression
 		  {
 		    tree_simple_assignment_expression *tmp_ass;
 		    tmp_ass = new tree_simple_assignment_expression
 		      ($1, $3, 0, 0, $2->line (), $2->column ());
-		    $$ = new tree_global (tmp_ass);
+		    $$ = new tree_decl_elt (tmp_ass);
 		  }
 		;
 
-optcomma	: // empty
-		| ','
-		  {
-		    if (Vwarn_comma_in_global_decl)
-		      warning ("comma in global declaration not\
- interpreted as a command separator");
-		  }
+declaration	: GLOBAL decl1
+		  { $$ = make_decl_command (GLOBAL, $1, $2); }
+		| STATIC decl1
+		  { $$ = make_decl_command (STATIC, $1, $2); }
 		;
 
 command		: plot_command
 		  { $$ = $1; }
 		| func_def
 		  { $$ = $1; }
-		| global_decl
+		| declaration
 		  { $$ = $1; }
 		| switch_command
 		  { $$ = $1; }
@@ -2246,6 +2250,8 @@ finish_function_def (tree_parameter_list *ret_list, tree_function *fcn)
   return fcn->define_ret_list (ret_list);
 }
 
+// Make an index expression.
+
 static tree_index_expression *
 make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
 {
@@ -2262,6 +2268,43 @@ make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
     }
   else
     retval =  new tree_index_expression (indir, args, l, c);
+
+  return retval;
+}
+
+// Make a declaration command.
+
+static tree_decl_command *
+make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
+{
+  tree_decl_command *retval = 0;
+
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  switch (tok)
+    {
+    case GLOBAL:
+      retval = new tree_global_command (lst, l, c);
+      break;
+
+    case STATIC:
+      if (lexer_flags.defining_func)
+	retval = new tree_static_command (lst, l, c);
+      else
+	{
+	  if (reading_script_file)
+	    warning ("ignoring static declaration near line %d of file `%s'",
+		     l, curr_fcn_file_full_name.c_str ());
+	  else
+	    warning ("ignoring static declaration near line %d", l);
+	}
+      break;
+
+    default:
+      panic_impossible ();
+      break;
+    }
 
   return retval;
 }
@@ -2350,6 +2393,19 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
     }
 }
 
+static void
+maybe_warn_comma_in_decl (void)
+{
+  if (Vwarn_comma_in_declaration)\
+    {
+      warning ("comma in declaration not interpreted as a command separator"); 
+
+      if (reading_fcn_file || reading_script_file)
+	warning ("near line %d of file `%s'", input_line_number,
+		 curr_fcn_file_full_name.c_str ());
+    }
+}
+
 static int
 warn_assign_as_truth_value (void)
 {
@@ -2360,9 +2416,9 @@ warn_assign_as_truth_value (void)
 }
 
 static int
-warn_comma_in_global_decl (void)
+warn_comma_in_declaration (void)
 {
-  Vwarn_comma_in_global_decl = check_preference ("warn_comma_in_global_decl");
+  Vwarn_comma_in_declaration = check_preference ("warn_comma_in_declaration");
 
   return 0;
 }
@@ -2398,8 +2454,8 @@ symbols_of_parse (void)
   DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 
-  DEFVAR (warn_comma_in_global_decl, 1.0, 0, warn_comma_in_global_decl,
-    "produce warning for commas in global declarations");
+  DEFVAR (warn_comma_in_declaration, 1.0, 0, warn_comma_in_declaration,
+    "produce warning for commas in declaration statements");
 
   DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");

@@ -428,58 +428,38 @@ tree_return_list::accept (tree_walker& tw)
   tw.visit_return_list (*this);
 }
 
-// Global.
+// Declarations (global, static, etc.).
 
-tree_global::~tree_global (void)
+tree_decl_elt::~tree_decl_elt (void)
 {
   delete id;
   delete ass_expr;
 }
 
 void
-tree_global::eval (void)
+tree_decl_elt::accept (tree_walker& tw)
 {
-  if (id)
-    {
-      id->link_to_global ();
-    }
-  else if (ass_expr)
-    {
-      tree_identifier *idnt = 0;
-
-      if (ass_expr->left_hand_side_is_identifier_only ()
-	  && (idnt = ass_expr->left_hand_side_id ()))
-	{
-	  idnt->link_to_global ();
-	  ass_expr->eval (false);
-	}
-      else
-	error ("global: unable to make individual structure elements global");
-    }
+  tw.visit_decl_elt (*this);
 }
 
-void
-tree_global::accept (tree_walker& tw)
-{
-  tw.visit_global (*this);
-}
-
-// Global initializer lists.
+// Initializer lists for declaration statements.
 
 void
-tree_global_init_list::eval (void)
+tree_decl_init_list::eval (tree_decl_elt::eval_fcn f, bool skip_init)
 {
   for (Pix p = first (); p != 0; next (p))
     {
-      tree_global *t = this->operator () (p);
-      t->eval ();
+      f (*(this->operator () (p)), skip_init);
+
+      if (error_state)
+	break;
     }
 }
 
 void
-tree_global_init_list::accept (tree_walker& tw)
+tree_decl_init_list::accept (tree_walker& tw)
 {
-  tw.visit_global_init_list (*this);
+  tw.visit_decl_init_list (*this);
 }
 
 // If.

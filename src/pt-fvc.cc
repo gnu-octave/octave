@@ -295,6 +295,13 @@ tree_identifier::link_to_global (void)
 }
 
 void
+tree_identifier::mark_as_static (void)
+{
+  if (sym)
+    sym->mark_as_static ();
+}
+
+void
 tree_identifier::mark_as_formal_parameter (void)
 {
   if (sym)

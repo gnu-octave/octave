@@ -26,6 +26,7 @@ enum octave_kw_id
   otherwise_kw,
   replot_kw,
   return_kw,
+  static_kw,
   switch_kw,
   try_kw,
   unwind_protect_kw,
@@ -60,6 +61,7 @@ if, IF, if_kw
 otherwise, OTHERWISE, otherwise_kw
 replot, PLOT, replot_kw
 return, FUNC_RET, return_kw
+static, STATIC, static_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw
 unwind_protect, UNWIND, unwind_protect_kw

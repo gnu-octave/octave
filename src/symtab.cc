@@ -237,6 +237,7 @@ symbol_record::init_state (void)
 {
   formal_param = 0;
   linked_to_global = 0;
+  tagged_static = 0;
   sv_fcn = 0;
   definition = 0;
   next_elem = 0;
@@ -547,7 +548,7 @@ symbol_record::clear (void)
       definition = 0;
       linked_to_global = 0;
     }
-  else
+  else if (! tagged_static)
     {
       symbol_def *old_def = pop_def ();
       count = maybe_delete (old_def);
@@ -595,6 +596,23 @@ int
 symbol_record::is_linked_to_global (void) const
 {
   return linked_to_global;
+}
+
+void
+symbol_record::mark_as_static (void)
+{
+  if (is_linked_to_global ())
+    error ("can't make global variable static");
+  else if (is_formal_parameter ())
+    error ("can't make formal parameter static");
+  else
+    tagged_static = 1;
+}
+
+int
+symbol_record::is_static (void) const
+{
+  return tagged_static;
 }
 
 octave_value
@@ -649,11 +667,14 @@ symbol_record::chain (symbol_record *s)
 void
 symbol_record::push_context (void)
 {
-  context.push (definition);
-  definition = 0;
+  if (! is_static ())
+    {
+      context.push (definition);
+      definition = 0;
 
-  global_link_context.push (static_cast<unsigned> (linked_to_global));
-  linked_to_global = 0;
+      global_link_context.push (static_cast<unsigned> (linked_to_global));
+      linked_to_global = 0;
+    }
 }
 
 void

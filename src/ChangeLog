@@ -1,3 +1,40 @@
+Wed Mar 26 17:08:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	Implement static variable declaration:
+
+	* lex.l (is_keyword): Handle static.
+	* octave.gperf: Likewise.
+	* parse.y (Vwarn_comma_in_declaration): Rename from
+	Vwarn_comma_in_global_decl.
+	Handle new static command.
+	* pt-cmd.h, pt-cmd.cc (class tree_decl_command): New base class
+	for static and global declaration commands.
+	(class tree_global_command): Derive from tree_decl_command.
+	(class tree_static_command): New class, derived from tree_decl_command.
+	* pt-fvc.cc, pt-fvc.h (tree_identifier::mark_as_static): New function.
+	* pt-misc.h, pt-misc.h (class tree_decl_elt): Rename from tree_global.
+	(class tree_decl_init_list): Rename from tree_global_init_list.
+	* pt-pr-code.cc, pt-pr-code.h (tree_print_code::visit_decl_command):
+	Rename from visit_global_command.
+	(tree_print_code::visit_decl_elt): Rename from visit_global.
+	(tree_print_code::visit_decl_init_list): Rename from
+	visit_global_init_list.
+	* pt-walk.h (tree_walker::visit_decl_command): Rename from
+	visit_global_command.
+	(tree_walker::visit_decl_elt): Rename from visit_tree_global.
+	(tree_walker::visit_decl_init_list): Rename from
+	visit_global_init_list.
+	* variables.cc (link_to_global_variable): Trying to make a static
+	variable global is an error.
+	* SLList-misc.cc: Instantiate lists of pointers to tree_decl_elt
+	objects, not tree_global objects.
+	* symtab.h, symtab.cc (symbol_record::tagged_static): New field.
+	(symbol_record::mark_as_static, symbol_record::is_static):
+	New functions.
+	* symtab.cc (symbol_record::init_state): Initialize tagged_static.
+	(symbol_record::clear): Don't clear static variables.
+	* symtab.cc (push_context): Don't do anything for static variables.
+
 Tue Mar 25 17:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-bool-mat.cc (octave_bool_matrix::is_true): Write guts.

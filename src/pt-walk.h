@@ -57,19 +57,19 @@ public:
   visit_continue_command (tree_continue_command&) = 0;
 
   virtual void
+  visit_decl_command (tree_decl_command&) = 0;
+
+  virtual void
+  visit_decl_elt (tree_decl_elt&) = 0;
+
+  virtual void
+  visit_decl_init_list (tree_decl_init_list&) = 0;
+
+  virtual void
   visit_for_command (tree_for_command&) = 0;
 
   virtual void
   visit_function (tree_function&) = 0;
-
-  virtual void
-  visit_global (tree_global&) = 0;
-
-  virtual void
-  visit_global_command (tree_global_command&) = 0;
-
-  virtual void
-  visit_global_init_list (tree_global_init_list&) = 0;
 
   virtual void
   visit_identifier (tree_identifier&) = 0;

@@ -32,7 +32,7 @@ class ostream;
 class octave_value_list;
 
 class tree_statement_list;
-class tree_global_init_list;
+class tree_decl_init_list;
 class tree_if_command_list;
 class tree_switch_case_list;
 class tree_expression;
@@ -43,7 +43,9 @@ class octave_value;
 class symbol_record;
 
 class tree_command;
+class tree_decl_command;
 class tree_global_command;
+class tree_static_command;
 class tree_while_command;
 class tree_for_command;
 class tree_if_command;
@@ -75,30 +77,74 @@ public:
   virtual void eval (void) = 0;
 };
 
+// Base class for declaration commands -- global, static, etc.
+
 class
-tree_global_command : public tree_command
+tree_decl_command : public tree_command
+{
+public:
+
+  tree_decl_command (const string& n, int l = -1, int c = -1)
+    : tree_command (l, c), cmd_name (n), initialized (false), init_list (0) { }
+
+  tree_decl_command (const string& n, tree_decl_init_list *t,
+		     int l = -1, int c = -1)
+    : tree_command (l, c), cmd_name (n), initialized (false), init_list (t) { }
+
+  ~tree_decl_command (void);
+
+  tree_decl_init_list *initializer_list (void) { return init_list; }
+
+  void accept (tree_walker& tw);
+
+  string name (void) { return cmd_name; }
+
+protected:
+
+  // The name of this command -- global, static, etc.
+  string cmd_name;
+
+  // TRUE if this command has been evaluated.
+  bool initialized;
+
+  // The list of variables or initializers in this declaration command.
+  tree_decl_init_list *init_list;
+};
+
+// Global.
+
+class
+tree_global_command : public tree_decl_command
 {
 public:
 
   tree_global_command (int l = -1, int c = -1)
-    : tree_command (l, c), init_list (0) { }
+    : tree_decl_command ("global", l, c) { }
 
-  tree_global_command (tree_global_init_list *t, int l = -1, int c = -1)
-    : tree_command (l, c), init_list (t) { }
+  tree_global_command (tree_decl_init_list *t, int l = -1, int c = -1)
+    : tree_decl_command ("global", t, l, c) { }
 
-  ~tree_global_command (void);
+  ~tree_global_command (void) { }
 
   void eval (void);
+};
 
-  tree_global_init_list *initializer_list (void) { return init_list; }
+// Static.
 
-  void accept (tree_walker& tw);
+class
+tree_static_command : public tree_decl_command
+{
+public:
 
-private:
+  tree_static_command (int l = -1, int c = -1)
+    : tree_decl_command ("static", l, c) { }
 
-  // The list of global variables or initializers in this global
-  // command.
-  tree_global_init_list *init_list;
+  tree_static_command (tree_decl_init_list *t, int l = -1, int c = -1)
+    : tree_decl_command ("static", t, l, c) { }
+
+  ~tree_static_command (void) { }
+
+  void eval (void);
 };
 
 // While.

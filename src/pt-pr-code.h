@@ -56,6 +56,12 @@ public:
 
   void visit_continue_command (tree_continue_command&);
 
+  void visit_decl_command (tree_decl_command&);
+
+  void visit_decl_elt (tree_decl_elt&);
+
+  void visit_decl_init_list (tree_decl_init_list&);
+
   void visit_for_command (tree_for_command&);
 
   void visit_function (tree_function&);
@@ -64,12 +70,6 @@ public:
 
   void visit_function_trailer (tree_function&);
 
-  void visit_global (tree_global&);
-
-  void visit_global_command (tree_global_command&);
-
-  void visit_global_init_list (tree_global_init_list&);
-
   void visit_identifier (tree_identifier&);
 
   void visit_if_clause (tree_if_clause&);
@@ -77,12 +77,6 @@ public:
   void visit_if_command (tree_if_command&);
 
   void visit_if_command_list (tree_if_command_list&);
-
-  void visit_switch_case (tree_switch_case&);
-
-  void visit_switch_case_list (tree_switch_case_list&);
-
-  void visit_switch_command (tree_switch_command&);
 
   void visit_index_expression (tree_index_expression&);
 
@@ -129,6 +123,12 @@ public:
   void visit_subplot_style (subplot_style&);
 
   void visit_subplot_using (subplot_using&);
+
+  void visit_switch_case (tree_switch_case&);
+
+  void visit_switch_case_list (tree_switch_case_list&);
+
+  void visit_switch_command (tree_switch_command&);
 
   void visit_try_catch_command (tree_try_catch_command&);
 

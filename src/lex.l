@@ -967,6 +967,7 @@ is_keyword (const string& s)
 	case global_kw:
 	case otherwise_kw:
 	case return_kw:
+	case static_kw:
 	case unwind_protect_cleanup_kw:
  	  break;
 

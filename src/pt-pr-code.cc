@@ -142,6 +142,54 @@ tree_print_code::visit_continue_command (tree_continue_command&)
 }
 
 void
+tree_print_code::visit_decl_command (tree_decl_command& cmd)
+{
+  indent ();
+
+  os << cmd.name () << " ";
+
+  tree_decl_init_list *init_list = cmd.initializer_list ();
+
+  if (init_list)
+    init_list->accept (*this);
+}
+
+void
+tree_print_code::visit_decl_elt (tree_decl_elt& cmd)
+{
+  tree_identifier *id = cmd.ident ();
+
+  if (id)
+    id->accept (*this);
+
+  tree_simple_assignment_expression *ass_expr = cmd.assign_expr ();
+
+  if (ass_expr)
+    ass_expr->accept (*this);
+}
+
+void
+tree_print_code::visit_decl_init_list (tree_decl_init_list& lst)
+{
+  Pix p = lst.first ();
+
+  while (p)
+    {
+      tree_decl_elt *elt = lst (p);
+
+      lst.next (p);
+
+      if (elt)
+	{
+	  elt->accept (*this);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
+}
+
+void
 tree_print_code::visit_for_command (tree_for_command& cmd)
 {
   indent ();
@@ -278,54 +326,6 @@ tree_print_code::visit_function_trailer (tree_function&)
 }
 
 void
-tree_print_code::visit_global (tree_global& cmd)
-{
-  tree_identifier *id = cmd.ident ();
-
-  if (id)
-    id->accept (*this);
-
-  tree_simple_assignment_expression *ass_expr = cmd.assign_expr ();
-
-  if (ass_expr)
-    ass_expr->accept (*this);
-}
-
-void
-tree_print_code::visit_global_command (tree_global_command& cmd)
-{
-  indent ();
-
-  os << "global ";
-
-  tree_global_init_list *init_list = cmd.initializer_list ();
-
-  if (init_list)
-    init_list->accept (*this);
-}
-
-void
-tree_print_code::visit_global_init_list (tree_global_init_list& lst)
-{
-  Pix p = lst.first ();
-
-  while (p)
-    {
-      tree_global *elt = lst (p);
-
-      lst.next (p);
-
-      if (elt)
-	{
-	  elt->accept (*this);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
-}
-
-void
 tree_print_code::visit_identifier (tree_identifier& id)
 {
   indent ();
@@ -410,77 +410,6 @@ tree_print_code::visit_if_command_list (tree_if_command_list& lst)
       first_elt = false;
       lst.next (p);
     }
-}
-
-void
-tree_print_code::visit_switch_case (tree_switch_case& cs)
-{
-  indent ();
-
-  if (cs.is_default_case ())
-    os << "otherwise";
-  else
-    os << "case ";
-
-  tree_expression *label = cs.case_label ();
-
-  if (label)
-    label->accept (*this);
-
-  newline ();
-
-  increment_indent_level ();
-
-  tree_statement_list *list = cs.commands ();
-
-  if (list)
-    {
-      list->accept (*this);
-
-      decrement_indent_level ();
-    }
-}
-
-void
-tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
-{
-  Pix p = lst.first ();
-
-  while (p)
-    {
-      tree_switch_case *elt = lst (p);
-
-      if (elt)
-	elt->accept (*this);
-
-      lst.next (p);
-    }
-}
-
-void
-tree_print_code::visit_switch_command (tree_switch_command& cmd)
-{
-  indent ();
-
-  os << "switch ";
-
-  tree_expression *expr = cmd.switch_value ();
-
-  if (expr)
-    expr->accept (*this);
-
-  newline ();
-
-  increment_indent_level ();
-
-  tree_switch_case_list *list = cmd.case_list ();
-
-  if (list)
-    list->accept (*this);
-
-  indent ();
-
-  os << "endswitch";
 }
 
 void
@@ -1002,6 +931,77 @@ tree_print_code::visit_subplot_using (subplot_using& cmd)
       if (scanf_fmt)
 	scanf_fmt->accept (*this);
     }
+}
+
+void
+tree_print_code::visit_switch_case (tree_switch_case& cs)
+{
+  indent ();
+
+  if (cs.is_default_case ())
+    os << "otherwise";
+  else
+    os << "case ";
+
+  tree_expression *label = cs.case_label ();
+
+  if (label)
+    label->accept (*this);
+
+  newline ();
+
+  increment_indent_level ();
+
+  tree_statement_list *list = cs.commands ();
+
+  if (list)
+    {
+      list->accept (*this);
+
+      decrement_indent_level ();
+    }
+}
+
+void
+tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
+{
+  Pix p = lst.first ();
+
+  while (p)
+    {
+      tree_switch_case *elt = lst (p);
+
+      if (elt)
+	elt->accept (*this);
+
+      lst.next (p);
+    }
+}
+
+void
+tree_print_code::visit_switch_command (tree_switch_command& cmd)
+{
+  indent ();
+
+  os << "switch ";
+
+  tree_expression *expr = cmd.switch_value ();
+
+  if (expr)
+    expr->accept (*this);
+
+  newline ();
+
+  increment_indent_level ();
+
+  tree_switch_case_list *list = cmd.case_list ();
+
+  if (list)
+    list->accept (*this);
+
+  indent ();
+
+  os << "endswitch";
 }
 
 void

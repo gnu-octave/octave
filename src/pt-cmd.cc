@@ -71,28 +71,107 @@ quit_loop_now (void)
   return quit;
 }
 
-// Global.
+// Base class for declaration commands (global, static).
 
-tree_global_command::~tree_global_command (void)
+tree_decl_command::~tree_decl_command (void)
 {
   delete init_list;
+}
+
+void
+tree_decl_command::accept (tree_walker& tw)
+{
+  tw.visit_decl_command (*this);
+}
+
+// Global.
+
+static void
+do_global_init (tree_decl_elt& elt, bool skip_initializer)
+{
+  tree_identifier *id = elt.ident ();
+
+  if (id)
+    id->link_to_global ();
+  else
+    {
+      tree_simple_assignment_expression *expr = elt.assign_expr ();
+
+      if (expr)
+	{
+	  if (expr->left_hand_side_is_identifier_only ()
+	      && (id = expr->left_hand_side_id ()))
+	    {
+	      id->link_to_global ();
+
+	      if (! (skip_initializer || error_state))
+		expr->eval (false);
+	    }
+	  else
+	    error ("global: unable to make structure elements global");
+	}
+    }
 }
 
 void
 tree_global_command::eval (void)
 {
   if (init_list)
-    init_list->eval ();
+    {
+      init_list->eval (do_global_init, initialized);
+
+      initialized = true;
+    }
 
   if (error_state > 0)
     ::error ("evaluating global command near line %d, column %d",
 	     line (), column ());
 }
 
-void
-tree_global_command::accept (tree_walker& tw)
+// Static.
+
+static void
+do_static_init (tree_decl_elt& elt, bool)
 {
-  tw.visit_global_command (*this);
+  tree_identifier *id = elt.ident ();
+
+  if (id)
+    id->mark_as_static ();
+  else
+    {
+      tree_simple_assignment_expression *expr = elt.assign_expr ();
+
+      if (expr)
+	{
+	  if (expr->left_hand_side_is_identifier_only ()
+	      && (id = expr->left_hand_side_id ()))
+	    {
+	      id->mark_as_static ();
+
+	      if (! error_state)
+		expr->eval (false);
+	    }
+	  else
+	    error ("global: unable to make structure elements global");
+	}
+    }
+}
+
+void
+tree_static_command::eval (void)
+{
+  // Static variables only need to be marked and initialized once.
+
+  if (init_list && ! initialized)
+    {
+      init_list->eval (do_static_init, initialized);
+
+      initialized = true;
+
+      if (error_state > 0)
+	::error ("evaluating static command near line %d, column %d",
+		 line (), column ());
+    }
 }
 
 // While.

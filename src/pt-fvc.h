@@ -81,6 +81,8 @@ public:
 
   void link_to_global (void);
 
+  void mark_as_static (void);
+
   void mark_as_formal_parameter (void);
 
   void mark_for_possible_ans_assign (void)

@@ -956,6 +956,12 @@ link_to_global_variable (symbol_record *sr)
       return;
     }
 
+  if (sr->is_static ())
+    {
+      error ("can't make static variable `%s' global", nm.c_str ());
+      return;
+    }
+
   // There must be a better way to do this.   XXX FIXME XXX
 
   if (sr->is_variable ())

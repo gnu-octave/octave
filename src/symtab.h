@@ -180,6 +180,9 @@ public:
   void mark_as_linked_to_global (void);
   int is_linked_to_global (void) const;
 
+  void mark_as_static (void);
+  int is_static (void) const;
+
   octave_value variable_value (void) const;
   octave_value& variable_reference (void);
 
@@ -194,6 +197,7 @@ private:
 
   unsigned formal_param : 1;
   unsigned linked_to_global : 1;
+  unsigned tagged_static : 1;
 
   string nm;
   sv_Function sv_fcn;

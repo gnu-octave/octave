@@ -45,8 +45,8 @@ class tree_argument_list;
 class tree_parameter_list;
 class tree_return_list;
 class tree_va_return_list;
-class tree_global;
-class tree_global_init_list;
+class tree_decl_elt;
+class tree_decl_init_list;
 class tree_if_clause;
 class tree_if_command_list;
 class tree_switch_case;
@@ -254,23 +254,25 @@ public:
   ~tree_va_return_list (void) { }
 };
 
-// List of expressions that make up a global statement.
+// List of expressions that make up a declaration statement.
 
 class
-tree_global
+tree_decl_elt
 {
 public:
 
-  tree_global (void)
+  typedef void (*eval_fcn) (tree_decl_elt &, bool);
+
+  tree_decl_elt (void)
     : id (0), ass_expr (0) { }
 
-  tree_global (tree_identifier *i)
+  tree_decl_elt (tree_identifier *i)
     : id (i), ass_expr (0) { }
 
-  tree_global (tree_simple_assignment_expression *ass)
+  tree_decl_elt (tree_simple_assignment_expression *ass)
     : id (0), ass_expr (ass) { }
 
-  ~tree_global (void);
+  ~tree_decl_elt (void);
 
   void eval (void);
 
@@ -284,7 +286,7 @@ private:
 
   // Only one of id or ass_expr can be valid at once.
 
-  // An identifier to make global.
+  // An identifier to tag with the declared property.
   tree_identifier *id;
 
   // An assignemnt expression.  Valid only if the left hand side of
@@ -293,26 +295,26 @@ private:
 };
 
 class
-tree_global_init_list : public SLList<tree_global *>
+tree_decl_init_list : public SLList<tree_decl_elt *>
 {
 public:
 
-  tree_global_init_list (void)
-    : SLList<tree_global *> () { }
+  tree_decl_init_list (void)
+    : SLList<tree_decl_elt *> () { }
 
-  tree_global_init_list (tree_global *t)
-    : SLList<tree_global *> () { append (t); }
+  tree_decl_init_list (tree_decl_elt *t)
+    : SLList<tree_decl_elt *> () { append (t); }
 
-  ~tree_global_init_list (void)
+  ~tree_decl_init_list (void)
     {
       while (! empty ())
 	{
-	  tree_global *t = remove_front ();
+	  tree_decl_elt *t = remove_front ();
 	  delete t;
 	}
     }
 
-  void eval (void);
+  void eval (tree_decl_elt::eval_fcn, bool);
 
   void accept (tree_walker& tw);
 };

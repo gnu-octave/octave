@@ -42,8 +42,8 @@ template class SLList<tree_if_clause *>;
 template class SLList<tree_switch_case *>;
 template class SLNode<tree_switch_case *>;
 
-template class SLList<tree_global *>;
-template class SLNode<tree_global *>;
+template class SLList<tree_decl_elt *>;
+template class SLNode<tree_decl_elt *>;
 
 /*
 ;;; Local Variables: ***

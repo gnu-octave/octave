@@ -1,5 +1,8 @@
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* error.cc (pr_where): New arg, print_code with default value true.
+	(warning): Call pr_where with second arg false.
+
 	* file-io.cc (Ffrewind): Only return value if nargout > 0.
 	(Ffprintf): Likewise.
 	(Fprintf): Likewise.

@@ -313,7 +313,7 @@ pr_where_1 (const char *fmt, ...)
 }
 
 static void
-pr_where (const char *name)
+pr_where (const char *name, bool print_code = true)
 {
   if (curr_statement)
     {
@@ -335,25 +335,28 @@ pr_where (const char *name)
       else
 	pr_where_1 ("%s: near line %d, column %d:", name, l, c);
 
-      // XXX FIXME XXX -- Note that the column number is probably not
-      // going to mean much here since the code is being reproduced
-      // from the parse tree, and we are only showing one statement
-      // even if there were multiple statements on the original source
-      // line.
+      if (print_code)
+	{
+	  // XXX FIXME XXX -- Note that the column number is probably
+	  // not going to mean much here since the code is being
+	  // reproduced from the parse tree, and we are only showing
+	  // one statement even if there were multiple statements on
+	  // the original source line.
 
-      OSSTREAM output_buf;
+	  OSSTREAM output_buf;
 
-      output_buf << std::endl;
+	  output_buf << std::endl;
 
-      tree_print_code tpc (output_buf, ">>> ");
+	  tree_print_code tpc (output_buf, ">>> ");
 
-      curr_statement->accept (tpc);
+	  curr_statement->accept (tpc);
 
-      output_buf << std::endl << OSSTREAM_ENDS;
+	  output_buf << std::endl << OSSTREAM_ENDS;
 
-      pr_where_1 ("%s", OSSTREAM_C_STR (output_buf));
+	  pr_where_1 ("%s", OSSTREAM_C_STR (output_buf));
 
-      OSSTREAM_FREEZE (output_buf);
+	  OSSTREAM_FREEZE (output_buf);
+	}
     }
 }
 
@@ -366,7 +369,7 @@ warning (const char *fmt, ...)
 	  && Vwarning_option == "backtrace"
 	  && ! warning_state
 	  && ! discard_warning_messages)
-	pr_where ("warning");
+	pr_where ("warning", false);
 
       va_list args;
       va_start (args, fmt);

@@ -85,6 +85,9 @@ extern octave_value_list
 feval (const octave_value_list& args, int nargout);
 
 extern octave_value
+eval_string (const string&, bool silent, int& parse_status, int hargout);
+
+extern octave_value
 eval_string (const string&, bool silent, int& parse_status);
 
 #endif

@@ -2935,7 +2935,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
   return retval;
 }
 
-static octave_value_list
+octave_value_list
 eval_string (const string& s, bool silent, int& parse_status, int nargout)
 {
   unwind_protect::begin_frame ("eval_string");

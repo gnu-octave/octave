@@ -1,3 +1,7 @@
+2003-01-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/rand.cc: Rewrite to use new octave_rand functions.
+
 2003-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (octave_base_stream::do_printf): Handle values

@@ -1,3 +1,8 @@
+2003-01-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-rand.h, oct-rand.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2003-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::index): Fix off-by-one error.

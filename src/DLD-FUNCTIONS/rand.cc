@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "f77-fcn.h"
 #include "lo-mappers.h"
+#include "oct-rand.h"
 #include "quit.h"
 
 #include "defun-dld.h"
@@ -39,130 +40,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 
-// Possible distributions of random numbers.  This was handled with an
-// enum, but unwind_protecting that doesn't work so well.
-#define uniform_dist 1
-#define normal_dist 2
-
-// Current distribution of random numbers.
-static int current_distribution = uniform_dist;
-
-// Has the seed been set yet?
-static int initialized = 0;
-
-extern "C"
-{
-  int F77_FUNC (dgennor, DGENNOR) (const double&, const double&,
-				  double&);
-
-  int F77_FUNC (dgenunf, DGENUNF) (const double&, const double&,
-				  double&);
-
-  int F77_FUNC (setall, SETALL) (const int&, const int&);
-
-  int F77_FUNC (getsd, GETSD) (int&, int&);
-
-  int F77_FUNC (setsd, SETSD) (const int&, const int&);
-
-  int F77_FUNC (setcgn, SETCGN) (const int&);
-}
-
-static double
-curr_rand_seed (void)
-{
-  union d2i { double d; int i[2]; };
-  union d2i u;
-  F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
-  return u.d;
-}
-
-static int
-force_to_fit_range (int i, int lo, int hi)
-{
-  assert (hi > lo && lo >= 0 && hi > lo);
-
-  i = i > 0 ? i : -i;
-
-  if (i < lo)
-    i = lo;
-  else if (i > hi)
-    i = i % hi;
-
-  return i;
-}
-
-static void
-set_rand_seed (double val)
-{
-  union d2i { double d; int i[2]; };
-  union d2i u;
-  u.d = val;
-  int i0 = force_to_fit_range (u.i[0], 1, 2147483563);
-  int i1 = force_to_fit_range (u.i[1], 1, 2147483399);
-  F77_FUNC (setsd, SETSD) (i0, i1);
-}
-
-static const char *
-curr_rand_dist (void)
-{
-  if (current_distribution == uniform_dist)
-    return "uniform";
-  else if (current_distribution == normal_dist)
-    return "normal";
-  else
-    {
-      panic_impossible ();
-      return 0;
-    }
-}
-
-// Make the random number generator give us a different sequence every
-// time we start octave unless we specifically set the seed.  The
-// technique used below will cycle monthly, but it it does seem to
-// work ok to give fairly different seeds each time Octave starts.
-
-static void
-do_initialization (void)
-{
-  time_t now;
-  struct tm *tm;
- 
-  time (&now);
-  tm = localtime (&now);
- 
-  int hour = tm->tm_hour + 1;
-  int minute = tm->tm_min + 1;
-  int second = tm->tm_sec + 1;
-
-  int s0 = tm->tm_mday * hour * minute * second;
-  int s1 = hour * minute * second;
-
-  s0 = force_to_fit_range (s0, 1, 2147483563);
-  s1 = force_to_fit_range (s1, 1, 2147483399);
-
-  F77_FUNC (setall, SETALL) (s0, s1);
-
-  initialized = 1;
-}
-
-#define MAKE_RAND_MAT(mat, nr, nc, f, F) \
-  do \
-    { \
-      double val; \
-      for (volatile int j = 0; j < nc; j++) \
-	for (volatile int i = 0; i < nr; i++) \
-	  { \
-	    OCTAVE_QUIT; \
-	    F77_FUNC (f, F) (0.0, 1.0, val); \
-	    mat(i,j) = val; \
-	  } \
-    } \
-  while (0)
-
-static octave_value_list
+static octave_value
 do_rand (const octave_value_list& args, int nargin)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   volatile int n = 0;
   volatile int m = 0;
@@ -184,23 +65,19 @@ do_rand (const octave_value_list& args, int nargin)
 
 	  if (s_arg == "dist")
 	    {
-	      retval(0) = curr_rand_dist ();
+	      retval = octave_rand::distribution ();
 	    }
 	  else if (s_arg == "seed")
 	    {
-	      retval(0) = curr_rand_seed ();
+	      retval = octave_rand::seed ();
 	    }
 	  else if (s_arg == "uniform")
 	    {
-	      current_distribution = uniform_dist;
-
-	      F77_FUNC (setcgn, SETCGN) (uniform_dist);
+	      octave_rand::uniform_distribution ();
 	    }
 	  else if (s_arg == "normal")
 	    {
-	      current_distribution = normal_dist;
-
-	      F77_FUNC (setcgn, SETCGN) (normal_dist);
+	      octave_rand::normal_distribution ();
 	    }
 	  else
 	    error ("rand: unrecognized string argument");
@@ -271,7 +148,7 @@ do_rand (const octave_value_list& args, int nargin)
 	      double d = args(1).double_value ();
 
 	      if (! error_state)
-		set_rand_seed (d);
+		octave_rand::seed (d);
 	    }
 	  else
 	    error ("rand: unrecognized string argument");
@@ -303,36 +180,7 @@ do_rand (const octave_value_list& args, int nargin)
 
  gen_matrix:
 
-  if (n == 0 || m == 0)
-    {
-      Matrix m;
-      retval.resize (1, m);
-    }
-  else if (n > 0 && m > 0)
-    {
-      Matrix rand_mat (n, m);
-
-      switch (current_distribution)
-	{
-	case uniform_dist:
-	  MAKE_RAND_MAT (rand_mat, n, m, dgenunf, DGENUNF);
-	  break;
-
-	case normal_dist:
-	  MAKE_RAND_MAT (rand_mat, n, m, dgennor, DGENNOR);
-	  break;
-
-	default:
-	  panic_impossible ();
-	  break;
-	}
-
-      retval(0) = rand_mat;
-    }
-  else
-    error ("rand: invalid negative argument");
-
-  return retval;
+  return octave_rand::matrix (n, m);
 }
 
 DEFUN_DLD (rand, args, nargout,
@@ -361,27 +209,24 @@ rand (\"seed\")\n\
 @code{rand} returns the current value of the seed.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
   if (nargin > 2 || nargout > 1)
     print_usage ("rand");
   else
-    {
-      if (! initialized)
-	do_initialization ();
-
-      retval = do_rand (args, nargin);
-    }
+    retval = do_rand (args, nargin);
 
   return retval;
 }
 
+static std::string current_distribution = octave_rand::distribution ();
+
 static void
 reset_rand_generator (void *)
 {
-  F77_FUNC (setcgn, SETCGN) (current_distribution);
+  octave_rand::distribution (current_distribution);
 }
 
 DEFUN_DLD (randn, args, nargout,
@@ -409,7 +254,7 @@ randn (\"seed\")\n\
 @code{randn} returns the current value of the seed.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -417,9 +262,6 @@ randn (\"seed\")\n\
     print_usage ("randn");
   else
     {
-      if (! initialized)
-	do_initialization ();
-
       unwind_protect::begin_frame ("randn");
 
       // This relies on the fact that elements are popped from the
@@ -428,11 +270,11 @@ randn (\"seed\")\n\
       // reset_rand_generator()).
 
       unwind_protect::add (reset_rand_generator, 0);
-      unwind_protect_int (current_distribution);
+      unwind_protect_str (current_distribution);
 
-      current_distribution = normal_dist;
+      current_distribution = "normal";
 
-      F77_FUNC (setcgn, SETCGN) (normal_dist);
+      octave_rand::distribution (current_distribution);
 
       retval = do_rand (args, nargin);
 

@@ -1,3 +1,6 @@
+#if !defined (octave_MArray_defs_h)
+#define octave_MArray_defs_h 1
+
 // Nothing like a little CPP abuse to brighten everyone's day.
 
 #define DO_VS_OP(r, l, v, OP, s) \
@@ -313,3 +316,4 @@
 
 // Now we have all the definitions we need.
 
+#endif

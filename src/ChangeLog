@@ -1,3 +1,9 @@
+2000-11-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun-int.h (UNDERSCORIFY): Omit `##' in macro definition since
+	they are not needed to paste strings together and picky compilers
+	choke on them.
+
 2000-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (save_ascii_data_for_plotting): New function.

@@ -160,7 +160,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
   install_builtin_constant (name, octave_value (defn), protect, doc)
 
 #define UNDERSCORIFY(name) \
-  "__" ## name ## "__"
+  "__" name "__"
 
 #define DEFCONST_INTERNAL(name, defn, doc) \
   INSTALL_CONST (#name, SBV_ ## name, defn, false, doc); \

@@ -215,7 +215,9 @@ private:
 
   std::stack<int> context;
 
-  enum { BRACKET = 1, BRACE = 2, PAREN = 3 };
+  static const int BRACKET = 1;
+  static const int BRACE = 2;
+  static const int PAREN = 3;
 
   bracket_brace_paren_nesting_level (const bracket_brace_paren_nesting_level&);
 

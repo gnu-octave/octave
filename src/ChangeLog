@@ -1,3 +1,8 @@
+2005-03-17  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (class bracket_brace_paren_nesting_level): Use static
+	const int members instead of anonymous enum.
+
 2005-03-16  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::save_ascii): Don't convert Cell

@@ -603,25 +603,27 @@ If the second argument is an integer @var{n}, the arguments are\n\
 	  if (nargin == 1)
 	    {
 	      int dist = -1;
-	      char c;
+	      char c = '\0';
 
 	      fargs.resize (1);
 	      fargs(0) = "x";
 
-	      for (int i = 0; i < fun.length (); i++)
+	      int fun_len = fun.length ();
+
+	      for (int i = 0; i < fun_len; i++)
 		{
 		  if (islower (fun[i])
 		      && (i == 0 || ! islower (fun[i-1]))
-		      && (i == fun.length () || ! islower (fun[i+1])))
+		      && (i == fun_len || ! islower (fun[i+1])))
 		    {
-		      char new_c = fun [i];
+		      char new_c = fun[i];
 
 		      if (new_c == 'i' || new_c == 'j') 
 			continue;
 
 		      int new_dist = std::abs (new_c - 'x');
 
-		      if (dist == -1 || (new_dist < dist)
+		      if (dist == -1 || new_dist < dist
 			  || (new_dist == dist && c < new_c))
 			{
 			  fargs(0) = new_c;

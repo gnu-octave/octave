@@ -38,13 +38,7 @@ function status = strcmp (s1, s2)
       if (len_s1 == 0)
         status = 1;
       else
-        tmp = implicit_str_to_num_ok;
-        unwind_protect
-          implicit_str_to_num_ok = "true";
-          status = all (s1 == s2);
-        unwind_protect_cleanup
-          implicit_str_to_num_ok = tmp;
-        end_unwind_protect
+        status = all (s1 == s2);
       endif
     endif
   endif

@@ -32,10 +32,10 @@ function secs = toc ()
     warning ("toc: ignoring extra arguments");
   endif
 
-  global _time_tic_called;
+  global __tic_toc_timestamp__;
 
-  if (exist ("_time_tic_called"))
-    secs = etime (clock (), _time_tic_called);
+  if (exist ("__tic_toc_timestamp__"))
+    secs = etime (clock (), __tic_toc_timestamp__);
   else
     warning ("toc called before timer set");
     secs = [];

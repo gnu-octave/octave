@@ -31,8 +31,8 @@ function tic ()
     warning ("tic: ignoring extra arguments");
   endif
 
-  global _time_tic_called;
+  global __tic_toc_timestamp__;
 
-  _time_tic_called = clock ();
+  __tic_toc_timestamp__ = clock ();
 
 endfunction

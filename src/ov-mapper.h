@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <cstdlib>
+
 #include <string>
 
 #include "oct-obj.h"
@@ -42,6 +44,8 @@ class
 octave_mapper : public octave_function
 {
 public:
+
+  octave_mapper (void) { abort (); }
 
   typedef int (*ch_mapper) (int);
   typedef bool (*d_b_mapper) (double);
@@ -81,8 +85,6 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args);
 
 private:
-
-  octave_mapper (void);
 
   octave_mapper (const octave_mapper& m);
 

@@ -77,7 +77,7 @@ function saveimage (filename, X, img_form, map)
 
 # Save image in octave image file format
 
-  eval (['save ', oct_file, ' map X']);
+  eval (['save -asciii ', oct_file, ' map X']);
 
 # Convert to another format if requested.
 

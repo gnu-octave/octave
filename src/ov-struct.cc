@@ -34,10 +34,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-struct.h"
 #include "unwind-prot.h"
 
-int octave_struct::t_id = -1;
+octave_allocator
+octave_struct::allocator (sizeof (octave_struct));
 
-const string octave_struct::t_name ("struct");
+int
+octave_struct::t_id (-1);
 
+const string
+octave_struct::t_name ("struct");
 
 octave_value
 octave_struct::struct_elt_val (const string& nm, bool silent) const

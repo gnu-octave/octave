@@ -1,3 +1,13 @@
+Thu Nov  7 07:59:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-struct.cc, ov-struct.h: Add hooks for custom memory management.
+	* ov-scalar.cc, ov-scalar.h: Likewise.
+	* ov-re-mat.cc, ov-re-mat.h: Likewise.
+	* ov-range.cc, ov-range.h: Likewise.
+	* ov-cx-mat.cc, ov-cx-mat.h: Likewise.
+	* ov-complex.cc, ov-complex.h: Likewise.
+	* ov-ch-mat.cc, ov-ch-mat.h: Likewise.
+
 Wed Nov  6 12:32:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pager.cc (do_sync): Don't call clear_external_pager here.

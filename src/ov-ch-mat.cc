@@ -35,9 +35,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "pr-output.h"
 
-int octave_char_matrix::t_id = -1;
+octave_allocator
+octave_char_matrix::allocator (sizeof (octave_char_matrix));
 
-const string octave_char_matrix::t_name ("char matrix");
+int
+octave_char_matrix::t_id (-1);
+
+const string
+octave_char_matrix::t_name ("char matrix");
 
 bool
 octave_char_matrix::valid_as_scalar_index (void) const

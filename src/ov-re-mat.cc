@@ -40,9 +40,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "pr-output.h"
 
-int octave_matrix::t_id = -1;
+octave_allocator
+octave_matrix::allocator (sizeof (octave_matrix));
 
-const string octave_matrix::t_name ("matrix");
+int
+octave_matrix::t_id (-1);
+
+const string
+octave_matrix::t_name ("matrix");
 
 octave_matrix::octave_matrix (const RowVector& v, int pcv)
   : octave_base_value (),

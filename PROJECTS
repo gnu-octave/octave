@@ -45,6 +45,9 @@ Numerical:
 
   * Move rand, eye, xpow, xdiv, etc., functions to the matrix classes.
 
+  * Use octave_allocator for memory management in Array classes once
+    g++ supports static member templates.
+
   * Implement the following functions:
     -- ppval    -- cross    -- dot
 

@@ -119,6 +119,7 @@ Array2<T>::resize (int r, int c, const T& val)
 
   ArrayRep *old_rep = rep;
   const T *old_data = data ();
+
   int old_d1 = dim1 ();
   int old_d2 = dim2 ();
   int old_len = length ();

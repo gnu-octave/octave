@@ -37,6 +37,7 @@ class ostream;
 #include "str-vec.h"
 
 #include "error.h"
+#include "oct-alloc.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -46,7 +47,7 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// Data structures.
 
 class
 octave_struct : public octave_base_value
@@ -66,10 +67,11 @@ public:
 
   octave_value *clone (void) { return new octave_struct (*this); }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   octave_value struct_elt_val (const string& nm, bool silent) const;
 
@@ -94,10 +96,16 @@ public:
 
 private:
 
+  // The associative array used to manage the structure data.
   Octave_map map;
 
+  // For custom memory management.
+  static octave_allocator allocator;
+
+  // Type id of struct objects, set by register_type().
   static int t_id;
 
+  // Type name of struct objects, defined in ov-struct.cc.
   static const string t_name;
 };
 

@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ostream;
 
 #include "mx-base.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -45,7 +46,7 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// Complex scalar values.
 
 class
 octave_complex : public octave_base_value
@@ -65,10 +66,11 @@ public:
 
   octave_value *clone (void) { return new octave_complex (*this); }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   octave_value *try_narrowing_conversion (void);
 
@@ -133,8 +135,12 @@ private:
 
   Complex scalar;
 
+  static octave_allocator allocator;
+
+  // Type id of complex scalar objects, set in register_type().
   static int t_id;
 
+  // Type name of complex scalar objects, defined in ov-complex.cc.
   static const string t_name;
 };
 

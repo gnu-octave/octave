@@ -51,6 +51,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+// We are likely to have a lot of octave_value objects to allocate, so
+// make the grow_size large.
+octave_allocator
+octave_value::allocator (sizeof (octave_value), 1024);
+
 // If TRUE, allow assignments like
 //
 //   octave> A(1) = 3; A(2) = 5

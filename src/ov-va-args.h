@@ -41,7 +41,7 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// A type to represent `all_va_args' as used in function calls.
 
 class
 octave_all_va_args : public octave_base_value
@@ -57,11 +57,6 @@ public:
   ~octave_all_va_args (void) { }
 
   octave_value *clone (void) { return new octave_all_va_args (*this); }
-
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
 
   bool is_defined (void) const { return true; }
 
@@ -80,8 +75,10 @@ public:
 
 private:
 
+  // Type id of all_va_arg objects, set by register_type().
   static int t_id;
 
+  // Type name of all_va_arg objects, defined in ov-va-args.cc.
   static const string t_name;
 };
 

@@ -45,7 +45,9 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// A base value type, so that derived types only have to redefine what
+// they need (if they are derived from octave_base_value instead of
+// octave_value).
 
 class
 octave_base_value : public octave_value
@@ -61,11 +63,6 @@ public:
   ~octave_base_value (void) { }
 
   octave_value *clone (void) { return new octave_base_value (*this); }
-
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
 
   type_conv_fcn numeric_conversion_function (void) const
     { return (type_conv_fcn) 0; }
@@ -182,8 +179,10 @@ public:
 
 private:
 
+  // Type id of base value objects, set by register_type().
   static int t_id;
 
+  // Type name of base value objects, defined in ov-base.cc.
   static const string t_name;
 };
 

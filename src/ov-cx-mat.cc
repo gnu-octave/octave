@@ -40,9 +40,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "pr-output.h"
 
-int octave_complex_matrix::t_id = -1;
+octave_allocator
+octave_complex_matrix::allocator (sizeof (octave_complex_matrix));
 
-const string octave_complex_matrix::t_name ("complex matrix");
+int
+octave_complex_matrix::t_id (-1);
+
+const string
+octave_complex_matrix::t_name ("complex matrix");
 
 octave_complex_matrix::octave_complex_matrix (const ComplexRowVector& v,
 					      int pcv)

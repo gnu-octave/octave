@@ -41,7 +41,7 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// A type to represent `:' as used for indexing.
 
 class
 octave_magic_colon : public octave_base_value
@@ -57,11 +57,6 @@ public:
   ~octave_magic_colon (void) { }
 
   octave_value *clone (void) { return new octave_magic_colon (*this); }
-
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
 
   idx_vector index_vector (void) const { return idx_vector (':'); }
 
@@ -86,8 +81,10 @@ public:
 
 private:
 
+  // Type id of magic colon objects, set by register_type().
   static int t_id;
 
+  // Type name of magic colon objects, defined in ov-colon.cc.
   static const string t_name;
 };
 

@@ -35,6 +35,7 @@ class ostream;
 
 #include "lo-utils.h"
 #include "mx-base.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "mappers.h"
@@ -66,10 +67,11 @@ public:
 
   octave_value *clone (void) { return new octave_scalar (*this); }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   octave_value index (const octave_value_list& idx) const;
 
@@ -132,10 +134,16 @@ public:
 
 private:
 
+  // The value of this scalar.
   double scalar;
 
+  // For custom memory management.
+  static octave_allocator allocator;
+
+  // Type id of scalar objects, set by register_type().
   static int t_id;
 
+  // Type name of scalar objects, defined in ov-scalar.cc.
   static const string t_name;
 };
 

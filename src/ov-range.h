@@ -37,6 +37,7 @@ class ostream;
 
 #include "lo-utils.h"
 #include "mx-base.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -80,10 +81,11 @@ public:
 
   octave_value *clone (void) { return new octave_range (*this); }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 
@@ -156,8 +158,12 @@ private:
 
   Range range;
 
+  static octave_allocator allocator;
+
+  // Type id of range objects, set by register_type ().
   static int t_id;
 
+  // Type name of scalar objects, defined in ov-range.cc.
   static const string t_name;
 };
 

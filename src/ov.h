@@ -38,6 +38,7 @@ class ostream;
 #include "Range.h"
 #include "idx-vector.h"
 #include "mx-base.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -158,10 +159,11 @@ public:
 	}
     }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   // Simple assignment.
 
@@ -391,6 +393,8 @@ protected:
   octave_value (const octave_xvalue&) : rep (0) { }
 
 private:
+
+  static octave_allocator allocator;
 
   union
     {

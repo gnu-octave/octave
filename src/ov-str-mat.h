@@ -45,7 +45,8 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// Character matrix values with special properties for use as
+// strings.
 
 class
 octave_char_matrix_str : public octave_char_matrix
@@ -76,11 +77,6 @@ public:
   ~octave_char_matrix_str (void) { }
 
   octave_value *clone (void) { return new octave_char_matrix_str (*this); }
-
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
 
   type_conv_fcn numeric_conversion_function (void) const;
 
@@ -119,8 +115,10 @@ public:
 
 private:
 
+  // Type id of char_matrix_str objects, set by register_type().
   static int t_id;
 
+  // Type name of char_matrix_strXX objects, defined in ov-str-mat.cc.
   static const string t_name;
 };
 

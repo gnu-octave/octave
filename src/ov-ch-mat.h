@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ostream;
 
 #include "mx-base.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -45,7 +46,7 @@ class octave_value_list;
 
 class tree_walker;
 
-// Real scalar values.
+// Character matrix values.
 
 class
 octave_char_matrix : public octave_base_value
@@ -74,10 +75,11 @@ public:
 
   octave_value *clone (void) { return new octave_char_matrix (*this); }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }
@@ -129,8 +131,12 @@ protected:
 
   charMatrix matrix;
 
+  static octave_allocator allocator;
+
+  // Type id of character matrix objects, set by register_type().
   static int t_id;
 
+  // Type name of character matrix objects, defined in ov-ch-mat.cc.
   static const string t_name;
 };
 

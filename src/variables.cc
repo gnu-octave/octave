@@ -42,6 +42,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "defaults.h"
 #include "version.h"
+#include "dynamic-ld.h"
 #include "octave-hist.h"
 #include "unwind-prot.h"
 #include "variables.h"
@@ -619,26 +620,22 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 
   char *nm = sym_rec->name ();
 
+// This is needed by yyparse.
+
   curr_fcn_file_name = nm;
 
-  char *oct_file = oct_file_in_path (curr_fcn_file_name);
+#ifdef WITH_DLD
 
-  int loaded_oct_file = 0;
-
-  if (oct_file)
+  if (load_octave_oct_file (nm))
     {
-      cerr << "found: " << oct_file << "\n";
-
-      delete [] oct_file;
-
-// XXX FIXME XXX -- this is where we try to link to an external
-// object...
-      loaded_oct_file = 1;
+      force_link_to_function (nm);
     }
+  else
 
-  if (! loaded_oct_file)
+#endif
+
     {
-      char *ff = fcn_file_in_path (curr_fcn_file_name);
+      char *ff = fcn_file_in_path (nm);
 
       if (ff)
 	{

@@ -43,6 +43,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "variables.h"
 #include "user-prefs.h"
+#include "dynamic-ld.h"
 #include "help.h"
 #include "error.h"
 #include "pager.h"
@@ -1923,8 +1924,7 @@ tree_builtin::tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
   mapper_fcn = m_fcn;
   is_mapper = 1;
   fcn = 0;
-  if (nm)
-    my_name = strsave (nm);
+  my_name = nm ? strsave (nm) : 0;
 }
 
 tree_builtin::tree_builtin (int i_max, int o_max, Octave_builtin_fcn g_fcn,
@@ -1934,8 +1934,7 @@ tree_builtin::tree_builtin (int i_max, int o_max, Octave_builtin_fcn g_fcn,
   nargout_max = o_max;
   is_mapper = 0;
   fcn = g_fcn;
-  if (nm)
-    my_name = strsave (nm);
+  my_name = nm ? strsave (nm) : 0;
 }
 
 tree_constant
@@ -1948,14 +1947,23 @@ tree_builtin::eval (int print)
 
   if (fcn)
     {
+    eval_fcn:
+
       Octave_object args;
       args(0) = tree_constant (my_name);
       Octave_object tmp = (*fcn) (args, 1);
       if (tmp.length () > 0)
 	retval = tmp(0);
     }
-  else // Assume mapper function
-    ::error ("%s: argument expected", my_name);
+  else
+    {
+      fcn = load_octave_builtin (my_name);
+
+      if (fcn)
+	goto eval_fcn;
+      else
+	error ("unable to load builtin function %s", my_name);
+    }
 
   return retval;
 }
@@ -1972,6 +1980,8 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
 
   if (fcn)
     {
+    eval_fcn:
+
       if (any_arg_is_magic_colon (args))
 	::error ("invalid use of colon in function argument list");
       else
@@ -1989,7 +1999,14 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
 	}	
     }
   else
-    panic_impossible ();
+    {
+      fcn = load_octave_builtin (my_name);
+
+      if (fcn)
+	goto eval_fcn;
+      else
+	error ("unable to load builtin function %s", my_name);
+    }
 
   return retval;
 }

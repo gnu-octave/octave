@@ -79,8 +79,7 @@ Handle all of the following:
   Matrix H = args[2].to_matrix ();
   if (H.rows () != H.columns () || H.rows () != x.capacity ())
     {
-      error ("qpsol: H must be a square matrix consistent with the\
- size of x");
+      error ("qpsol: H must be a square matrix consistent with the size of x");
       return retval;
     }
 
@@ -101,8 +100,8 @@ Handle all of the following:
       int ub_len = ub.capacity ();
       if (lb_len != ub_len || lb_len != x.capacity ())
 	{
-	  error ("qpsol: lower and upper bounds and decision variable\n\
-       vector must all have the same number of elements");
+	  error ("qpsol: lower and upper bounds and decision variable vector");
+	  error ("must all have the same number of elements");
 	  return retval;
 	}
 

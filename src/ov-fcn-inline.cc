@@ -605,69 +605,73 @@ If the second argument is an integer @var{n}, the arguments are\n\
 	  if (nargin == 1)
 	    {
 	      bool is_arg = false;
+	      bool in_string = false;
 	      std::string tmp_arg;
 	      size_t i = 0;
 	      
 	      while (i < fun.length ())
 		{
+		  bool terminate_arg = false;
 		  char c = fun[i++];
 
-		  if (! isalpha (c) || c == '_')
+		  if (in_string)
+		    {
+		      if (c == '\'' || c == '\"')
+			in_string = false;
+		    }
+		  else if (c == '\'' || c == '\"')
+		    {
+		      in_string = true;
+		      if (is_arg)
+			terminate_arg = true;
+		    }
+		  else if (! isalpha (c) && c != '_')
 		    if (! is_arg)
 		      continue;
 		    else if (isdigit (c))
-			tmp_arg.append (1, c);
+		      tmp_arg.append (1, c);
 		    else
 		      {
-			bool have_arg = false;
-
-			// Before we do anything remove trailing whitespaces
+			// Before we do anything remove trailing whitespaces.
 			while (i < fun.length () && isspace (c))
 			  c = fun[i++];
-
+			
 			// Do we have a variable or a function?
 			if (c != '(')
+			  terminate_arg = true;
+			else
 			  {
-			    for (int j = 0; j < fargs.length (); j++)
-			      if (tmp_arg == fargs (j))
-				{
-				  have_arg = true;
-				  break;
-				}
-
-			    // "i" and "j" aren't valid arguments
-			    if (! have_arg && tmp_arg != "i" && tmp_arg != "j")
-			      fargs.append (tmp_arg);
+			    tmp_arg = std::string ();
+			    is_arg = false;
 			  }
-
-			tmp_arg = std::string ();
-			is_arg = false;
 		      }
 		  else
 		    {
 		      tmp_arg.append (1, c);
 		      is_arg = true;
+		    }
 
-		      if (i == fun.length ())
-			{
-			  bool have_arg = false;
-		  
-			  for (int j = 0; j < fargs.length (); j++)
-			    if (tmp_arg == fargs (j))
-			      {
-				have_arg = true;
-				break;
-			      }
+		  if (terminate_arg || (i == fun.length () && is_arg))
+		    {
+		      bool have_arg = false;
+		      
+		      for (int j = 0; j < fargs.length (); j++)
+			if (tmp_arg == fargs (j))
+			  {
+			    have_arg = true;
+			    break;
+			  }
 			  
-			  if (! have_arg && tmp_arg != "i" && tmp_arg != "j")
-			    fargs.append (tmp_arg);
-			}
+		      if (! have_arg && tmp_arg != "i" && tmp_arg != "j")
+			fargs.append (tmp_arg);
+
+		      tmp_arg = std::string ();
+		      is_arg = false;
 		    }
 		}
 
-	      // Sort the arguments into ascii order
+	      // Sort the arguments into ascii order.
 	      fargs.qsort ();
-
 	    }
 	  else if (nargin == 2 && args(1).is_numeric_type ())
 	    {

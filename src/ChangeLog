@@ -1,3 +1,35 @@
+2000-03-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (printf_format_list::add_elt_to_list,
+	printf_format_list::process_conversion,
+	printf_format_list::finish_conversion): New args, flags, fw, and prec.
+	(printf_format_list::printf_format_list): Save more complete info.
+	(printf_format_list::printme): Print flags, fw, and prec.
+	(octave_base_stream::printf): Simplify.
+	(do_printf_conv): Delete have_arg arg, since it is always true now.
+	(octave_base_stream::do_printf): Handle case of no args and %
+	directly instead of using do_printf_conv.
+	(printf_value_cache::exhausted): Rename from no_more_values.
+	(DO_PCT_CONVERSION): New macro
+	(octave_base_streain::do_scanf, octave_base_streain::do_oscanf):
+	Use it.
+	(scanf_format_list::finish_conversion): `%' counts as a conversion too.
+	Also don't forget to set type for it.
+	(OCTAVE_SCAN_0): Delete.
+	(OCTAVE_SCAN): Rename from OCTAVE_SCAN_1.
+	(octave_base_stream::scanf, octave_base_stream::oscanf): Don't
+	special-case number of conversions here.
+	(octave_base_stream::oscanf, octave_base_stream::do_oscanf): Only
+	cycle through fmt elements if the number of conversions is greater
+	than 0.
+
+	* oct-stream.h (scanf_format_list::next): New arg, `cycle'.
+	(printf_format_list::next): New arg, `cycle'.
+	(printf_format_list::last_elt_p): New function.
+	(printf_format_elt): New fields fw, prec, and flags.
+	Define copy constructor and assignment operator.
+	(scanf_format_elt): Define copy constructor and assignment operator.
+
 2000-03-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (OCTAVE_SCAN_0, OCTAVE_SCAN_1): New macros.

@@ -34,11 +34,14 @@ class octave_value_list;
 
 #include "Array.h"
 #include "data-conv.h"
+#include "lo-utils.h"
 #include "mach-info.h"
 
-struct
+class
 scanf_format_elt
 {
+public:
+
   enum special_conversion
     {
       whitespace_conversion = 1,
@@ -48,16 +51,47 @@ scanf_format_elt
   scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
 		    char typ = '\0', char mod = '\0',
 		    const std::string& ch_class = std::string ())
-    : text (txt), width (w), discard (d), type (typ), modifier (mod),
-      char_class (ch_class) { }
+    : text (strsave (txt)), width (w), discard (d), type (typ),
+      modifier (mod), char_class (ch_class) { }
 
-  ~scanf_format_elt (void) { delete text; }
+  scanf_format_elt (const scanf_format_elt& e)
+    : text (strsave (e.text)), width (e.width), discard (e.discard),
+      type (e.type), modifier (e.modifier), char_class (e.char_class) { }
 
+  scanf_format_elt& operator = (const scanf_format_elt& e)
+    {
+      if (this != &e)
+	{
+	  text = strsave (e.text);
+	  width = e.width;
+	  discard = e.discard;
+	  type = e.type;
+	  modifier = e.modifier;
+	  char_class = e.char_class;
+	}
+
+      return *this;
+    }
+
+  ~scanf_format_elt (void) { delete [] text; }
+
+  // The C-style format string.
   const char *text;
+
+  // The maximum field width.
   int width;
+
+  // TRUE if we are not storing the result of this conversion.
   bool discard;
+
+  // Type of conversion -- `d', `i', `o', `u', `x', `e', `f', `g',
+  // `c', `s', `p', `%', or `['.
   char type;
+
+  // A length modifier -- `h', `l', or `L'.
   char modifier;
+
+  // The class of characters in a `[' format.
   std::string char_class;
 };
 
@@ -88,11 +122,17 @@ public:
   const scanf_format_elt *current (void) const
     { return list.length () > 0 ? list.elem (curr_idx) : 0; }
 
-  const scanf_format_elt *next (void)
+  const scanf_format_elt *next (bool cycle = true)
     {
       curr_idx++;
+
       if (curr_idx >= list.length ())
-	curr_idx = 0;
+	{
+	  if (cycle)
+	    curr_idx = 0;
+	  else
+	    return 0;
+	}
       return current ();
     }
 
@@ -122,7 +162,8 @@ private:
   std::ostrstream *buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
-			int& num_elts, const std::string& char_class = std::string ());
+			int& num_elts,
+			const std::string& char_class = std::string ()); 
 
   void process_conversion (const std::string& s, int& i, int n, int& width,
 			   bool& discard, char& type, char& modifier,
@@ -138,18 +179,59 @@ private:
   scanf_format_list& operator = (const scanf_format_list&);
 };
 
-struct
+class
 printf_format_elt
 {
-  printf_format_elt (const char *txt = 0, int n = 0, char typ = '\0',
-		     char mod = '\0')
-    : text (txt), args (n), type (typ), modifier (mod) { }
+public:
 
-  ~printf_format_elt (void) { delete text; }
+  printf_format_elt (const char *txt = 0, int n = 0, int w = 0,
+		     int p = 0, const std::string& f = std::string (),
+		     char typ = '\0', char mod = '\0')
+    : text (strsave (txt)), args (n), fw (w), prec (p), flags (f),
+      type (typ), modifier (mod) { }
 
+  printf_format_elt (const printf_format_elt& e)
+    : text (strsave (e.text)), args (e.args), fw (e.fw), prec (e.prec),
+      flags (e.flags), type (e.type), modifier (e.modifier) { }
+
+  printf_format_elt& operator = (const printf_format_elt& e)
+    {
+      if (this != &e)
+	{
+	  text = strsave (e.text);
+	  args = e.args;
+	  fw = e.fw;
+	  prec = e.prec;
+	  flags = e.flags;
+	  type = e.type;
+	  modifier = e.modifier;
+	}
+
+      return *this;
+    }
+
+  ~printf_format_elt (void) { delete [] text; }
+ 
+  // The C-style format string.
   const char *text;
+
+  // How many args do we expect to consume?
   int args;
+
+  // Field width.
+  int fw;
+
+  // Precision.
+  int prec;
+
+  // Flags -- `-', `+', ` ', `0', or `#'.
+  string flags;
+
+  // Type of conversion -- `d', `i', `o', `x', `X', `u', `c', `s',
+  // `f', `e', `E', `g', `G', `p', or `%'
   char type;
+
+  // A length modifier -- `h', `l', or `L'.
   char modifier;
 };
 
@@ -173,13 +255,22 @@ public:
   const printf_format_elt *current (void) const
     { return list.length () > 0 ? list.elem (curr_idx) : 0; }
 
-  const printf_format_elt *next (void)
+  const printf_format_elt *next (bool cycle = true)
     {
       curr_idx++;
+
       if (curr_idx >= list.length ())
-	curr_idx = 0;
+	{
+	  if (cycle)
+	    curr_idx = 0;
+	  else
+	    return 0;
+	}
+
       return current ();
     }
+
+  bool last_elt_p (void) { return (curr_idx + 1 == list.length ()); }
 
   void printme (void) const;
 
@@ -202,13 +293,17 @@ private:
   // Temporary buffer.
   std::ostrstream *buf;
 
-  void add_elt_to_list (int args, char type, char modifier,
-			int& num_elts);
-
-  void process_conversion (const std::string& s, int& i, int n, int& args,
-			   char& modifier, char& type, int& num_elts);
-
+  void add_elt_to_list (int args, const std::string& flags, int fw,
+			int prec, char type, char modifier,
+ 			int& num_elts);
+ 
+  void process_conversion (const std::string& s, int& i, int n,
+			   int& args, std::string& flags, int& fw,
+			   int& prec, char& modifier, char& type,
+			   int& num_elts); 
+ 
   void finish_conversion (const std::string& s, int& i, int args,
+			  const std::string& flags, int fw, int prec,
 			  char modifier, char& type, int& num_elts);
 
   // No copying!

@@ -23,13 +23,11 @@ function x = lyap (a, b, c)
 # whichever is appropriate.
 
   if (nargin != 3 && nargin != 2)
-    error ("lyap: illegal number of arguments");
-    return;
+    error ("usage: lyap (a, b {,c})");
   endif
 
   if ((n = is_square(a)) == 0)
     error ("lyap: a is not square");
-    return;
   endif
 
   if (nargin == 2)
@@ -53,7 +51,6 @@ function x = lyap (a, b, c)
 
       if (m != n)
 	error ("lyap: a, b not conformably dimensioned");
-	return;
       endif
     endif
 
@@ -69,7 +66,6 @@ function x = lyap (a, b, c)
 
     if ((m = is_square (b)) == 0)
       error ("lyap: b must be square in a sylvester equation");
-      return;
     endif
 
     [n1,m1] = size(c);

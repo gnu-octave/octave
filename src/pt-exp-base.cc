@@ -2373,7 +2373,7 @@ tree_builtin::eval (int print)
     eval_fcn:
 
       Octave_object args;
-      Octave_object tmp = (*fcn) (args, 1);
+      Octave_object tmp = (*fcn) (args, 0);
       if (tmp.length () > 0)
 	retval = tmp(0);
     }

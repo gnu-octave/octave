@@ -1,5 +1,11 @@
 Fri May  9 07:40:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-exp.cc (print_rhs_assign_val, symbols_of_pt_exp): New functions.
+	(Vprint_rhs_assign_val): New static variable.
+	(tree_simple_assignment_expression::eval): Use it to optionally
+	allow the rhs (which is the result) of an assignment to be printed
+	instead of the left.
+
 	* pt-exp.cc (tree_simple_assignment_expression::eval): Use new
 	octave_variabl_reference::index function to handle indexing.
 

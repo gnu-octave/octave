@@ -56,6 +56,10 @@ extern int returning;
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;
 
+// TRUE means print the right hand side of an assignment instead of
+// the left.
+static bool Vprint_rhs_assign_val;
+
 // Prefix expressions.
 
 tree_prefix_expression::~tree_prefix_expression (void)
@@ -520,85 +524,105 @@ tree_simple_assignment_expression::left_hand_side_id (void)
 octave_value
 tree_simple_assignment_expression::eval (bool print)
 {
-  octave_value retval;
-
-  octave_value lhs_val;
+  octave_value rhs_val;
 
   if (error_state)
-    return retval;
+    return rhs_val;
 
   if (rhs)
     {
-      octave_value rhs_val = rhs->eval ();
+      octave_value lhs_val;
 
-      if (error_state)
-	{
-	  eval_error ();
-	}
-      else if (rhs_val.is_undefined ())
-	{
-	  error ("value on right hand side of assignment is undefined");
-	  eval_error ();
-	}
-      else
-	{
-	  octave_variable_reference ult = lhs->reference ();
+      rhs_val = rhs->eval ();
 
-	  if (error_state)
-	    eval_error ();
+      if (! error_state)
+	{
+	  if (rhs_val.is_undefined ())
+	    {
+	      error ("value on right hand side of assignment is undefined");
+	      eval_error ();
+	    }
 	  else
 	    {
-	      if (index)
-		{
-		  // Extract the arguments into a simple vector.
+	      octave_variable_reference ult = lhs->reference ();
 
-		  octave_value_list args = index->convert_to_const_vector ();
-
-		  if (error_state)
-		    eval_error ();
-		  else
-		    {
-		      int nargin = args.length ();
-
-		      if (nargin > 0)
-			{
-			  ult.index (args);
-
-			  ult.assign (etype, rhs_val);
-
-			  if (error_state)
-			    eval_error ();
-			  else
-			    {
-			      lhs_val = ult.value ();
-
-			      retval = rhs_val;
-			    }
-			}
-		      else
-			error ("??? invalid index list ???");
-		    }
-		}
+	      if (error_state)
+		eval_error ();
 	      else
 		{
-		  ult.assign (etype, rhs_val);
+		  if (index)
+		    {
+		      // Extract the arguments into a simple vector.
 
-		  lhs_val = ult.value ();
+		      octave_value_list args
+			= index->convert_to_const_vector ();
 
-		  retval = rhs_val;
+		      if (! error_state)
+			{
+			  int nargin = args.length ();
+
+			  if (nargin > 0)
+			    {
+			      ult.index (args);
+
+			      ult.assign (etype, rhs_val);
+
+			      if (error_state)
+				eval_error ();
+			      else if (! Vprint_rhs_assign_val)
+				lhs_val = ult.value ();
+			    }
+			  else
+			    error ("??? invalid index list ???");
+			}
+		      else
+			eval_error ();
+		    }
+		  else
+		    {
+		      ult.assign (etype, rhs_val);
+
+		      if (error_state)
+			eval_error ();
+		      else if (! Vprint_rhs_assign_val)
+			lhs_val = ult.value ();
+		    }
 		}
 	    }
 	}
+      else
+	eval_error ();
+
+      if (! error_state && print)
+	{
+	  if (Vprint_rhs_assign_val)
+	    {
+	      ostrstream buf;
+
+	      buf << lhs->name ();
+
+	      if (index)
+		{
+		  buf << " (";
+		  tree_print_code tpc (buf);
+		  index->accept (tpc);
+		  buf << ")";
+		}
+
+	      buf << ends;
+
+	      const char *tag = buf.str ();
+
+	      rhs_val.print_with_name (octave_stdout, tag);
+
+	      delete [] tag;
+	    }
+	  else
+	    lhs_val.print_with_name (octave_stdout, lhs->name ());
+	}
     }
 
-  // Return value is RHS value, but the value we print is the complete
-  // LHS value so that expressions like x(2) = 2 (for x previously
-  // undefined) print b = [ 0; 2 ], which is more Matlab-like.
-
-  if (! error_state && print && lhs_val.is_defined ())
-    lhs_val.print_with_name (octave_stdout, lhs->name ());
-
-  return retval;
+  return rhs_val;
 }
 
 void
@@ -737,6 +761,21 @@ void
 tree_colon_expression::accept (tree_walker& tw)
 {
   tw.visit_colon_expression (*this);
+}
+
+static int
+print_rhs_assign_val (void)
+{
+  Vprint_rhs_assign_val = check_preference ("print_rhs_assign_val");
+
+  return 0;
+}
+
+void
+symbols_of_pt_exp (void)
+{
+  DEFVAR (print_rhs_assign_val, 0.0, 0, print_rhs_assign_val,
+    "if TRUE, print the right hand side of assignments instead of the left");
 }
 
 /*

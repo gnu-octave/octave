@@ -161,6 +161,9 @@ public:
   void mark_as_formal_parameter (void);
   int is_formal_parameter (void);
 
+  void mark_as_forced_global (void);
+  int is_forced_global (void);
+
   void alias (symbol_record *s, int force = 0);
 
   symbol_record *next (void);
@@ -169,6 +172,7 @@ private:
 
   char *nm;
   int formal_param;
+  int forced_global;
   symbol_def *var;
   symbol_def *fcn;
   sv_Function sv_fcn;

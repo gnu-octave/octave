@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "cmd-edit.h"
 #include "f77-fcn.h"
+#include "file-ops.h"
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
@@ -190,7 +191,8 @@ initialize_pathsearch (void)
     odb = octave_env::getenv ("OCTAVE_DB_DIR");
 
   if (odb.empty ())
-    odb = Vdata_dir + std::string ("/octave:") + Vlibexec_dir + std::string ("/octave");
+    odb = Vdata_dir + OCTAVE_DIR_SEP_STR + "octave:"
+      + Vlibexec_dir + OCTAVE_DIR_SEP_STR + "octave";
 
   octave_original_texmfdbs = octave_env::getenv ("TEXMFDBS");
 
@@ -240,8 +242,8 @@ execute_startup_files (void)
 
       std::string home_dir = octave_env::get_home_directory ();
 
-      std::string home_rc = home_dir + "/" + initfile;
-      std::string local_rc = std::string ("./") + initfile;
+      std::string home_rc = home_dir + OCTAVE_DIR_SEP_STR + initfile;
+      std::string local_rc = octave_env::getcwd () + initfile;
 
       if (! home_dir.empty ())
 	{
@@ -536,7 +538,7 @@ main (int argc, char **argv)
 	  bind_builtin_variable ("program_invocation_name",
 				 curr_fcn_file_name);
 
-	  size_t pos = curr_fcn_file_name.rfind ('/');
+	  size_t pos = curr_fcn_file_name.find_last_of (OCTAVE_DIR_SEP_CHARS);
 
 	  std::string tmp = (pos != NPOS)
 	    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;

@@ -1,3 +1,23 @@
+2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-env.h (octave_env::current_directory): Now mutable.
+	(octave_env:do_getcwd): Now const.
+
+	* file-ops.h, file-ops.cc (file_ops::is_dir_sep): New function.
+	(OCTAVE_DIR_SEP_CHAR, OCTAVE_DIR_SEP_STR, OCTAVE_DIR_SEP_CHARS,
+	OCTAVE_CURRENT_DIR_STR): New macros.
+	* oct-env.cc (is_dir_sep): Delete.
+	(octave_env::do_base_pathname): Look for OCTAVE_DIR_SEP_CHARS, not '/'.
+	(octave_env::do_set_program_name): Likewise.
+	(octave_env::do_polite_directory_format): Use file_ops::is_dir_sep
+	instead of checking for '/'.
+	(octave_env::pathname_backup): Likewise.
+	(octave_env::do_absolute_pathname): Likewise.
+	(octave_env::do_make_absolute): Likewise.
+	If dot_path is empty, use getcwd to set current_dir.
+	(octave_env::do_get_home_directory): Use OCTAVE_DIR_SEP_STR
+	instead of "/".
+
 2002-10-07  Paul Kienzle <pkienzle@users.sf.net>
 
 	* lo-cutils.c: On non-Posix Windows systems, include winsock.h.

@@ -40,7 +40,8 @@ public:
 
   static std::string base_pathname (const std::string& s);
 
-  static std::string make_absolute (const std::string& s, const std::string& dot_path);
+  static std::string make_absolute (const std::string& s,
+				    const std::string& dot_path);
 
   static std::string getcwd (void);
 
@@ -72,9 +73,10 @@ private:
 
   std::string do_base_pathname (const std::string& s) const;
 
-  std::string do_make_absolute (const std::string& s, const std::string& dot_path) const;
+  std::string do_make_absolute (const std::string& s,
+				const std::string& dot_path) const;
 
-  std::string do_getcwd (void);
+  std::string do_getcwd (void) const;
 
   std::string do_get_home_directory (void) const;
 
@@ -114,7 +116,7 @@ private:
   bool verbatim_pwd;
 
   // Where are we?
-  std::string current_directory;
+  mutable std::string current_directory;
 
   // Etc.
   mutable std::string program_name;

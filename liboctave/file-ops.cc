@@ -620,6 +620,16 @@ file_ops::unlink (const std::string& name, std::string& msg)
   return status;
 }
 
+bool
+file_ops::is_dir_sep (char c)
+{
+#if defined (__WIN32__)
+  return (c == '/' || c == '\\');
+#else
+  return (c == '/');
+#endif
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

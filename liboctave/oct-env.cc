@@ -52,6 +52,7 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
+#include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "lo-utils.h"
@@ -200,7 +201,7 @@ octave_env::do_set_program_name (const std::string& s) const
 {
   program_invocation_name = s;
 
-  size_t pos = program_invocation_name.rfind ('/');
+  size_t pos = program_invocation_name.find_last_of (OCTAVE_DIR_SEP_CHARS);
 
   program_name = (pos == NPOS)
     ? program_invocation_name : program_invocation_name.substr (pos+1);
@@ -219,7 +220,7 @@ octave_env::do_polite_directory_format (const std::string& name) const
   size_t len = home_dir.length ();
 
   if (len > 1 && home_dir == name.substr (0, len)
-      && (name.length () == len || name[len] == '/'))
+      && (name.length () == len || file_ops::is_dir_sep (name[len])))
     {
       retval = "~";
       retval.append (name.substr (len));
@@ -230,16 +231,6 @@ octave_env::do_polite_directory_format (const std::string& name) const
   return retval;
 }
 
-static inline bool
-is_dir_sep (char c)
-{
-#if defined (__CYGWIN__)
-  return (c == '/' || c == '\\');
-#else
-  return (c == '/');
-#endif
-}
-
 bool
 octave_env::do_absolute_pathname (const std::string& s) const
 {
@@ -248,12 +239,15 @@ octave_env::do_absolute_pathname (const std::string& s) const
   if (len == 0)
     return false;
 
-  if (s[0] == '/')
+#if defined (__CYGWIN__) || ! defined (__WIN32__)
+  if (file_ops::is_dir_sep (s[0]))
     return true;
+#endif
 
 #if defined (__WIN32__)
   if ((len == 2 && isalpha (s[0]) && s[1] == ':')
-      || (len > 2 && isalpha (s[0]) && s[1] == ':' && is_dir_sep (s[2])))
+      || (len > 2 && isalpha (s[0]) && s[1] == ':'
+	  && file_ops::is_dir_sep (s[2])))
     return true;
 #endif
 
@@ -261,7 +255,8 @@ octave_env::do_absolute_pathname (const std::string& s) const
 }
 
 // Return the `basename' of the pathname in STRING (the stuff after
-// the last '/').  If STRING is not a full pathname, simply return it.
+// the last directory separator).  If STRING is not a full pathname,
+// simply return it.
 
 std::string
 octave_env::do_base_pathname (const std::string& s) const
@@ -269,7 +264,7 @@ octave_env::do_base_pathname (const std::string& s) const
   if (! do_absolute_pathname (s))
     return s;
 
-  size_t pos = s.rfind ('/');
+  size_t pos = s.find_last_of (OCTAVE_DIR_SEP_CHARS);
 
   if (pos == NPOS)
     return s;
@@ -278,7 +273,7 @@ octave_env::do_base_pathname (const std::string& s) const
 }
 
 // Turn STRING (a pathname) into an absolute pathname, assuming that
-// DOT_PATH contains the symbolic location of '.'.
+// DOT_PATH contains the symbolic location of the current directory.
 
 std::string
 octave_env::do_make_absolute (const std::string& s,
@@ -292,15 +287,17 @@ octave_env::do_make_absolute (const std::string& s,
   if (dot_path.empty () || s.empty () || do_absolute_pathname (s))
     return s;
 
-  std::string current_path = dot_path;
+  std::string current_dir = dot_path;
 
-  if (current_path.empty ())
-    current_path = "./";
+  if (current_dir.empty ())
+    current_dir = do_getcwd ();
 
-  size_t pos = current_path.length () - 1;
+  size_t pos = current_dir.length () - 1;
 
-  if (current_path[pos] != '/')
-    current_path.append ("/");
+  if (! file_ops::is_dir_sep (current_dir[pos]))
+    current_dir.append (OCTAVE_DIR_SEP_STR);
+
+  // XXX FIXME XXX -- this is probably not correct for all systems.
 
   size_t i = 0;
   size_t slen = s.length ();
@@ -310,48 +307,49 @@ octave_env::do_make_absolute (const std::string& s,
       if (s[i] == '.')
 	{
 	  if (i + 1 == slen)
-	    return current_path;
+	    return current_dir;
 
-	  if (s[i+1] == '/')
+	  if (file_ops::is_dir_sep (s[i+1]))
 	    {
 	      i += 2;
 	      continue;
 	    }
 
-	  if (s[i+1] == '.' && (i + 2 == slen || s[i+2] == '/'))
+	  if (s[i+1] == '.'
+	      && (i + 2 == slen || file_ops::is_dir_sep (s[i+2])))
 	    {
 	      i += 2;
 
 	      if (i != slen)
 		i++;
 
-	      pathname_backup (current_path, 1);
+	      pathname_backup (current_dir, 1);
 
 	      continue;
 	    }
 	}
 
-      size_t tmp = s.find ('/', i);
+      size_t tmp = s.find_first_of (OCTAVE_DIR_SEP_CHARS, i);
 
       if (tmp == NPOS)
 	{
-	  current_path.append (s, i, tmp-i);
+	  current_dir.append (s, i, tmp-i);
 	  break;
 	}
       else
 	{
-	  current_path.append (s, i, tmp-i+1);
+	  current_dir.append (s, i, tmp-i+1);
 	  i = tmp + 1;
 	}
     }
 
-  return current_path;
+  return current_dir;
 }
 
-// Return a consed string which is the current working directory.
+// Return a string which is the current working directory.
 
 std::string
-octave_env::do_getcwd ()
+octave_env::do_getcwd () const
 {
   if (! follow_symbolic_links)
     current_directory = "";
@@ -374,7 +372,7 @@ octave_env::do_get_home_directory (void) const
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      hd = pw ? pw.dir () : std::string ("/");
+      hd = pw ? pw.dir () : std::string (OCTAVE_DIR_SEP_STR);
     }
 
   return hd;
@@ -442,13 +440,13 @@ octave_env::do_chdir (const std::string& newdir)
       else
 	tmp = do_make_absolute (newdir, current_directory);
 
-      // Get rid of trailing `/'.
+      // Get rid of trailing directory separator.
 
       size_t len = tmp.length ();
 
       if (len > 1)
 	{
-	  if (is_dir_sep (tmp[--len]))
+	  if (file_ops::is_dir_sep (tmp[--len]))
 	    tmp.resize (len);
 	}
 
@@ -476,10 +474,10 @@ octave_env::pathname_backup (std::string& path, int n) const
 
   while (n--)
     {
-      while (path[i] == '/' && i > 0)
+      while (file_ops::is_dir_sep (path[i]) && i > 0)
 	i--;
 
-      while (path[i] != '/' && i > 0)
+      while (! file_ops::is_dir_sep (path[i]) && i > 0)
 	i--;
 
       i++;

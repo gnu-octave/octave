@@ -68,6 +68,8 @@ private:
   int count;
   int len;
 
+  ArrayRep<T>& operator = (const ArrayRep<T>& a);  
+
 protected:
 
   ArrayRep (T *d, int l)

@@ -116,7 +116,7 @@ template <class T>
 Array<T>&
 Array<T>::operator = (const Array<T>& a)
 {
-  if (this != &a)
+  if (this != &a && rep != a.rep)
     {
       if (--rep->count <= 0)
 	delete rep;

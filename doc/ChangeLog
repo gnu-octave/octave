@@ -1,3 +1,9 @@
+2000-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* liboctave/Makefile.in (liboctave_toc.html): Add space after -I
+	in texi2html command.
+	* interpreter/Makefile.in (octave_toc.html): Ditto.
+
 2000-03-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/octave-bug.1: New file.

@@ -73,7 +73,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-list.h \
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
-	pt-decl.h pt-except.h pt-exp.h pt-id.h pt-idx.h pt-indir.h \
+	pt-decl.h pt-except.h pt-exp.h pt-id.h pt-idx.h \
 	pt-jump.h pt-loop.h pt-mat.h pt-misc.h pt-plot.h \
 	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h \
 
@@ -117,7 +117,7 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc pt-cell.cc \
 	pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc pt-decl.cc \
-	pt-except.cc pt-exp.cc pt-id.cc pt-idx.cc pt-indir.cc pt-jump.cc \
+	pt-except.cc pt-exp.cc pt-id.cc pt-idx.cc pt-jump.cc \
 	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
 	pt-select.cc pt-stmt.cc pt-unop.cc
 

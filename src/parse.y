@@ -284,7 +284,7 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
 		       tree_index_expression::type);
 
 // Make an indirect reference expression.
-static tree_indirect_ref *
+static tree_index_expression *
 make_indirect_ref (tree_expression *expr, const std::string&);
 
 // Make a declaration command.
@@ -2607,15 +2607,15 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
 
 // Make an indirect reference expression.
 
-static tree_indirect_ref *
+static tree_index_expression *
 make_indirect_ref (tree_expression *expr, const std::string& elt)
 {
-  tree_indirect_ref *retval = 0;
+  tree_index_expression *retval = 0;
 
   int l = expr->line ();
   int c = expr->column ();
 
-  retval = new tree_indirect_ref (expr, elt, l, c);
+  retval = new tree_index_expression (expr, elt, l, c);
 
   lexer_flags.looking_at_indirect_ref = false;
 

@@ -28,7 +28,6 @@ class symbol_record;
 class symbol_table;
 
 class tree_identifier;
-class tree_indirect_ref;
 class octave_value;
 class octave_value_list;
 class octave_builtin;

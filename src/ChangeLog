@@ -1,3 +1,42 @@
+2002-05-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-indir.h, pt-indir.cc: Delete.
+
+	* pt-all.h: Don't include pt-indir.h.
+
+	* Makefile.in (PT_SRC): Delete pt-indir.cc from the list.
+	(PT_INCLUDES): Delete pt-indir.h from the list.
+
+	* pt-walk.h (tree_walker::visit_indirect_ref): Delete.
+	* pt-pr-code.h, pt-pr-code.cc (tree_print_code::visit_indirect_ref):
+	Likewise.
+	* pt-check.h, pt-check.cc (tree_checker::visit_indirect_ref): Likewise.
+	* pt-bp.h, pt-bp.cc (tree_breakpoint::visit_indirect_ref): Likewise.
+
+	* pt-walk.h: Delete forward decl for tree_indirect_ref.
+	* variables.h: Likewise.
+
+	* parse.y (make_indirect_ref): Return tree_index_expression, not
+	tree_indirect_ref.
+
+	* pt-idx.h (tree_index_expression::struct_elt_name): New function.
+
+	* pt-idx.cc (tree_index_expression::lvalue): Handle dot case too.
+	(tree_index_expression::name): Likewise.
+	(tree_index_expression rvalue (int)): Likewise.
+	(tree_index_expression::eval_error): Likewise.
+	* pt-pr-code.cc (visit_index_expression): Likewise.
+	* pt-bp.cc (tree_breakpoint::visit_index_expression): Likewise.
+
+	* pt-idx.h (tree_index_expression::dot): New type enum element.
+	(tree_index_expression::expr_type): New function.
+	(tree_index_expression::tree_index_expression (tree_expression*,
+	const std::string&, int, int)): New constructor.
+	(tree_index_expression::is_index_expression): Return value is now
+	conditional on itype.
+	(tree_index_expression::is_indirect_ref): New function.
+	(tree_index_expression::lvalue_ok): Also return true if itype is dot.
+
 2002-05-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (ABORT_PARSE): Maybe restore symbol table context too.

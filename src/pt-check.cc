@@ -255,15 +255,6 @@ tree_checker::visit_index_expression (tree_index_expression& expr)
 }
 
 void
-tree_checker::visit_indirect_ref (tree_indirect_ref& expr)
-{
-  tree_expression *e = expr.expression ();
-
-  if (e)
-    e->accept (*this);
-}
-
-void
 tree_checker::visit_matrix (tree_matrix& lst)
 {
   Pix p = lst.first ();

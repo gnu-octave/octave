@@ -50,18 +50,30 @@ public:
     {
       unknown,
       paren,
-      brace
+      brace,
+      dot
     };
 
   tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
 			 int l = -1, int c = -1, type t = paren);
 
+  tree_index_expression (tree_expression *e, const std::string& n,
+			 int l = -1, int c = -1);
+
   ~tree_index_expression (void);
 
   bool is_index_expression (void) const
-    { return true; }
+    { return (itype == paren || itype == brace); }
+
+  bool is_indirect_ref (void) const
+    { return (itype == dot); }
 
   std::string name (void) const;
+
+  std::string struct_elt_name (void) const
+    { return itype == dot ? arg_nm(0) : "<unknown>"; }
+
+  type expr_type (void) { return itype; }
 
   tree_expression *expression (void)
     { return expr; }
@@ -70,7 +82,7 @@ public:
     { return list; }
 
   bool lvalue_ok (void) const
-    { return expr->lvalue_ok (); }
+    { return (itype == dot || expr->lvalue_ok ()); }
 
   bool rvalue_ok (void) const
     { return true; }
@@ -87,12 +99,16 @@ public:
 
 private:
 
+  // The LHS of this index expression.
   tree_expression *expr;
 
+  // The indices (only valid if itype == paren || itype == brace).
   tree_argument_list *list;
 
+  // The type of this index expression.
   type itype;
 
+  // The names of the arguments.
   string_vector arg_nm;
 
   // No copying!

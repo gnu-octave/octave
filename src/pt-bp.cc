@@ -345,26 +345,23 @@ tree_breakpoint::visit_index_expression (tree_index_expression& cmd)
   if (found)
     return;
 
-  tree_expression *expr = cmd.expression ();
+  if (cmd.expr_type () == tree_index_expression::dot)
+    {
+      if (cmd.line () >= line)
+	take_action (cmd);
+    }
+  else
+    {
+      tree_expression *expr = cmd.expression ();
 
-  if (expr)
-    if (expr->line () >= line)
-      take_action (*expr);
+      if (expr && expr->line () >= line)
+	take_action (*expr);
 
-  tree_argument_list *lst = cmd.arg_list ();
+      tree_argument_list *lst = cmd.arg_list ();
 
-  if (lst)
-    lst->accept (*this);
-}
-
-void 
-tree_breakpoint::visit_indirect_ref (tree_indirect_ref& cmd)
-{
-  if (found)
-    return;
-
-  if (cmd.line () >= line)
-    take_action (cmd);  
+      if (lst)
+	lst->accept (*this);
+    }
 }
 
 void 

@@ -37,7 +37,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-id.h"
 #include "pt-idx.h"
-#include "pt-indir.h"
 #include "pt-jump.h"
 #include "pt-loop.h"
 #include "pt-mat.h"

@@ -250,7 +250,8 @@ public:
 
   virtual void
   assign_struct_elt (assign_op, const std::string& elt_nm,
-		     const octave_value_list& idx, const octave_value& rhs);
+		     const octave_value_list& idx,
+		     const octave_value& rhs);
 
   virtual idx_vector index_vector (void) const
     { return rep->index_vector (); }
@@ -260,7 +261,8 @@ public:
     { return rep->do_struct_elt_index_op (nm, silent); }
 
   virtual octave_value
-  do_struct_elt_index_op (const std::string& nm, const octave_value_list& idx,
+  do_struct_elt_index_op (const std::string& nm,
+			  const octave_value_list& idx,
 			  bool silent = false)
     { return rep->do_struct_elt_index_op (nm, idx, silent); }
 

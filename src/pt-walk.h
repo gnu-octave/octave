@@ -42,7 +42,6 @@ class tree_switch_case;
 class tree_switch_case_list;
 class tree_switch_command;
 class tree_index_expression;
-class tree_indirect_ref;
 class tree_matrix;
 class tree_cell;
 class tree_multi_assignment;
@@ -130,9 +129,6 @@ public:
 
   virtual void
   visit_index_expression (tree_index_expression&) = 0;
-
-  virtual void
-  visit_indirect_ref (tree_indirect_ref&) = 0;
 
   virtual void
   visit_matrix (tree_matrix&) = 0;

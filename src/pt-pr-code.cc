@@ -486,31 +486,20 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 
   tree_argument_list *list = expr.arg_list ();
 
-  if (list)
+  if (expr.expr_type () == tree_index_expression::dot)
+    {
+      os << "." << expr.struct_elt_name ();
+    }
+  else if (list)
     {
       os << " (";
       list->accept (*this);
       os << ")";
     }
   else if (expr_has_parens)
-    os << " ()";
-
-  print_parens (expr, ")");
-}
-
-void
-tree_print_code::visit_indirect_ref (tree_indirect_ref& expr)
-{
-  indent ();
-
-  print_parens (expr, "(");
-
-  tree_expression *e = expr.expression ();
-
-  if (e)
-    e->accept (*this);
-
-  os << "." << expr.elt_name ();
+    {
+      os << " ()";
+    }
 
   print_parens (expr, ")");
 }

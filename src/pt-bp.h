@@ -89,8 +89,6 @@ tree_breakpoint : public tree_walker
 
   void visit_index_expression (tree_index_expression&);
 
-  void visit_indirect_ref (tree_indirect_ref&);
-
   void visit_matrix (tree_matrix&);
 
   void visit_cell (tree_cell&);

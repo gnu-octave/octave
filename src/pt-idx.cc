@@ -29,12 +29,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
+#include "oct-map.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "ov.h"
+#include "pager.h"
 #include "pt-arg-list.h"
+#include "pt-bp.h"
 #include "pt-idx.h"
 #include "pt-walk.h"
+#include "utils.h"
+#include "variables.h"
 
 // Index expressions.
 
@@ -43,6 +48,12 @@ tree_index_expression::tree_index_expression (tree_expression *e,
 					      int l, int c, type t)
   : tree_expression (l, c), expr (e), list (lst),
     itype (t), arg_nm (lst ? lst->get_arg_names () : string_vector ()) { }
+
+tree_index_expression::tree_index_expression (tree_expression *e,
+					      const std::string& n,
+					      int l = -1, int c = -1)
+  : tree_expression (l, c), expr (e), list (0), itype (dot),
+    arg_nm (n) { }
 
 tree_index_expression::~tree_index_expression (void)
 {
@@ -56,7 +67,10 @@ tree_index_expression::~tree_index_expression (void)
 std::string
 tree_index_expression::name (void) const
 {
-  return expr->name ();
+  // ??? FIXME ???
+  std::string xname = expr->name ();
+
+  return (! dot || xname == "<unknown>") ? xname : xname + "." + arg_nm(0);
 }
 
 octave_value_list
@@ -71,24 +85,63 @@ tree_index_expression::rvalue (int nargout)
 
   if (! error_state)
     {
-      octave_value_list args;
-
-      if (list)
-	args = list->convert_to_const_vector ();
-
-      if (! error_state)
+      if (itype == dot)
 	{
-	  if (! args.empty ())
-	    args.stash_name_tags (arg_nm);
+	  MAYBE_DO_BREAKPOINT;
 
-	  // XXX FIXME XXX -- is this the right thing to do?
-	  if (tmp.is_constant ())
-	    retval = tmp.do_index_op (args);
+	  if (nargout > 1)
+	    error ("invalid number of output arguments for structure reference");
 	  else
-	    retval = tmp.do_multi_index_op (nargout, args);
+	    {
+	      octave_value_list tmp = expr->rvalue (nargout);
+
+	      if (tmp.empty ())
+		eval_error ();
+	      else
+		{
+		  octave_value val = tmp(0).do_struct_elt_index_op (arg_nm(0));
+
+		  if (print_result () && nargout == 0 && val.is_defined ())
+		    {
+		      // ??? FIXME ???
+
+		      std::string xname = name ();
+
+		      if (xname == "<unknown>")
+			bind_ans (val, true);
+		      else
+			val.print_with_name (octave_stdout, xname);
+		    }
+
+		  retval = val;
+		}
+	    }
 	}
+      else if (itype == paren || itype == brace)
+	{
+	  octave_value_list args;
+
+	  if (list)
+	    args = list->convert_to_const_vector ();
+
+	  if (! error_state)
+	    {
+	      if (! args.empty ())
+		args.stash_name_tags (arg_nm);
+
+	      // XXX FIXME XXX -- is this the right thing to do?
+	      if (tmp.is_constant ())
+		retval = tmp.do_index_op (args);
+	      else
+		retval = tmp.do_multi_index_op (nargout, args);
+	    }
+	  else
+	    eval_error ();
+	}
+#if 0
       else
-	eval_error ();
+	panic_impossible ();
+#endif
     }
   else
     eval_error ();
@@ -116,16 +169,32 @@ tree_index_expression::lvalue (void)
 
   if (! error_state)
     {
-      retval = expr->lvalue ();
-
-      if (! error_state)
+      if (itype == dot)
 	{
-	  octave_value_list args;
-	  
-	  if (list)
-	    args = list->convert_to_const_vector ();
+	  octave_lvalue tmp = expr->lvalue ();
 
-	  retval.set_index (args);
+	  if (tmp.is_undefined () || ! tmp.is_map ())
+	    tmp.define (Octave_map ());
+
+	  retval = tmp.struct_elt_ref (arg_nm(0));
+	}
+      else if (itype == paren || itype == brace)
+	{
+	  retval = expr->lvalue ();
+
+	  if (! error_state)
+	    {
+	      octave_value_list args;
+	  
+	      if (list)
+		args = list->convert_to_const_vector ();
+
+	      retval.set_index (args);
+	    }
+#if 0
+	  else
+	    panic_impossible ();
+#endif
 	}
     }
 
@@ -140,21 +209,19 @@ tree_index_expression::eval_error (void)
       int l = line ();
       int c = column ();
 
-      if (l != -1 && c != -1)
-	{
-	  if (list)
-	    ::error ("evaluating index expression near line %d, column %d",
-		     l, c);
-	  else
-	    ::error ("evaluating expression near line %d, column %d", l, c);
-	}
+      const char *type_str;
+
+      if (itype == dot)
+	type_str = "structure reference operator";
+      else if (list)
+	type_str = "index expression";
       else
-	{
-	  if (list)
-	    ::error ("evaluating index expression");
-	  else
-	    ::error ("evaluating expression");
-	}
+	type_str = "expression";
+
+      if (l != -1 && c != -1)
+	::error ("evaluating %s near line %d, column %d", type_str, l, c);
+      else
+	::error ("evaluating %s", type_str);
     }
 }
 

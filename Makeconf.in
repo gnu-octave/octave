@@ -35,6 +35,7 @@ F2CFLAGS = @F2CFLAGS@
 
 # Fortran compiler flags.
 
+FC = @FC@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 

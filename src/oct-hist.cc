@@ -114,7 +114,7 @@ default_history_file (void)
 
   if (! env_file.empty ())
     {
-      fstream f (env_file.c_str (), (std::ios::in | std::ios::out));
+      std::fstream f (env_file.c_str (), (std::ios::in | std::ios::out));
 
       if (f)
 	{
@@ -227,7 +227,7 @@ do_history (int argc, const string_vector& argv)
 // caller should free the storage.
 
 static char *
-edit_history_readline (fstream& stream)
+edit_history_readline (std::fstream& stream)
 {
   char c;
   int line_len = 128;
@@ -405,7 +405,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
 
   std::string name = file_ops::tempnam ("", "oct-");
 
-  fstream file (name.c_str (), std::ios::out);
+  std::fstream file (name.c_str (), std::ios::out);
 
   if (! file)
     {
@@ -457,7 +457,7 @@ do_edit_history (int argc, const string_vector& argv)
   // Write the commands to the history file since parse_and_execute
   // disables command line history while it executes.
 
-  fstream file (name.c_str (), std::ios::in);
+  std::fstream file (name.c_str (), std::ios::in);
 
   char *line;
   int first = 1;

@@ -70,7 +70,7 @@ private:
 
   std::string nm;
 
-  fstream fs;
+  std::fstream fs;
 
   // No copying!
 

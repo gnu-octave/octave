@@ -62,6 +62,7 @@ static int info_windows_slots = 0;
 void remember_window_and_node (), forget_window_and_nodes ();
 void initialize_info_session (), info_session ();
 void display_startup_message_and_start ();
+void finish_info_session ();
 
 /* Begin an info session finding the nodes specified by FILENAME and NODENAMES.
    For each loaded node, create a new window.  Always split the largest of the
@@ -86,7 +87,7 @@ begin_multiple_window_info_session (filename, nodenames)
       /* If this is the first node, initialize the info session. */
       if (!window)
 	{
-	  initialize_info_session (node);
+	  initialize_info_session (node, 1);
 	  window = active_window;
 	}
       else
@@ -139,7 +140,7 @@ begin_info_session_with_error (initial_node, format, arg)
      char *format;
      void *arg;
 {
-  initialize_info_session (initial_node);
+  initialize_info_session (initial_node, 1);
   info_error (format, arg, (void *)NULL);
   info_session ();
 }
@@ -149,8 +150,15 @@ void
 begin_info_session (initial_node)
      NODE *initial_node;
 {
-  initialize_info_session (initial_node);
+  initialize_info_session (initial_node, 1);
   display_startup_message_and_start ();
+}
+
+void
+finish_info_session ()
+{
+  close_dribble_file ();
+  clear_info_signal_handler ();
 }
 
 void
@@ -251,8 +259,9 @@ extern void initialize_info_signal_handler ();
 /* Initialize the first info session by starting the terminal, window,
    and display systems. */
 void
-initialize_info_session (node)
+initialize_info_session (node, clear_screen)
      NODE *node;
+     int clear_screen;
 {
   char *getenv (), *term_name;
 
@@ -267,7 +276,8 @@ initialize_info_session (node)
       info_error (TERM_TOO_DUMB, term_name);
       exit (1);
     }
-  terminal_clear_screen ();
+  if (clear_screen)
+    terminal_clear_screen ();
   initialize_info_keymaps ();
   window_initialize_windows (screenwidth, screenheight);
   initialize_info_signal_handler ();
@@ -3645,11 +3655,15 @@ dispatch_error (keyseq)
      char *keyseq;
 {
   char *rep;
+  char *format;
 
   rep = pretty_keyseq (keyseq);
 
+  format = replace_in_documentation
+    ("Unknown command (%s).  Type \"\\[quit]\" to quit, \"\\[get-help-window]\" for help.");
+
   if (!echo_area_is_active)
-    info_error ("Unknown command (%s).", rep);
+    info_error (format, rep); 
   else
     {
       char *temp;

@@ -595,7 +595,10 @@ struct tchars original_tchars;
 struct ltchars original_ltchars;
 #endif
 
-#if defined (HAVE_TERMIO_H)
+#if defined (HAVE_TERMIOS_H)
+/* A buffer containing the terminal mode flags upon entry to info. */
+struct termios original_termios, ttybuff;
+#elif defined (HAVE_TERMIO_H)
 /* A buffer containing the terminal mode flags upon entry to info. */
 struct termio original_termio, ttybuff;
 #else /* !HAVE_TERMIO_H */
@@ -619,7 +622,27 @@ terminal_prep_terminal ()
 
   tty = fileno (stdin);
 
-#if defined (HAVE_TERMIO_H)
+#if defined (HAVE_TERMIOS_H)
+
+  tcgetattr (tty, &original_termios);
+  tcgetattr (tty, &ttybuff);
+  ttybuff.c_iflag &= (~ISTRIP & ~INLCR & ~IGNCR & ~ICRNL & ~IXON);
+  ttybuff.c_oflag &= (~ONLCR & ~OCRNL);
+  ttybuff.c_lflag &= (~ICANON & ~ECHO);
+
+  ttybuff.c_cc[VMIN] = 1;
+  ttybuff.c_cc[VTIME] = 0;
+
+  if (ttybuff.c_cc[VINTR] = '\177')
+    ttybuff.c_cc[VINTR] = -1;
+
+  if (ttybuff.c_cc[VQUIT] = '\177')
+    ttybuff.c_cc[VQUIT] = -1;
+
+  tcsetattr (tty, TCSAFLUSH, &ttybuff);
+
+#elif defined (HAVE_TERMIO_H)
+
   ioctl (tty, TCGETA, &original_termio);
   ioctl (tty, TCGETA, &ttybuff);
   ttybuff.c_iflag &= (~ISTRIP & ~INLCR & ~IGNCR & ~ICRNL & ~IXON);
@@ -702,6 +725,7 @@ terminal_prep_terminal ()
   ttybuff.sg_flags &= ~ECHO;
   ttybuff.sg_flags |= CBREAK;
   ioctl (tty, TIOCSETN, &ttybuff);
+
 #endif /* !HAVE_TERMIO_H */
 }
 
@@ -720,9 +744,16 @@ terminal_unprep_terminal ()
 
   tty = fileno (stdin);
 
-#if defined (HAVE_TERMIO_H)
+#if defined (HAVE_TERMIOS_H)
+
+  tcsetattr (tty, TCSAFLUSH, &original_termios);
+
+#elif defined (HAVE_TERMIO_H)
+
   ioctl (tty, TCSETA, &original_termio);
+
 #else /* !HAVE_TERMIO_H */
+
   ioctl (tty, TIOCGETP, &ttybuff);
   ttybuff.sg_flags = original_tty_flags;
   ioctl (tty, TIOCSETN, &ttybuff);

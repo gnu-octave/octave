@@ -27,7 +27,22 @@
 #include <fcntl.h>
 #endif /* !HAVE_SYS_FCNTL_H */
 
-#if defined (HAVE_TERMIO_H)
+#if defined (HAVE_TERMIOS_H)
+
+#include <termios.h>
+#include <string.h>
+#if defined (HAVE_SYS_PTEM_H)
+#if !defined (M_XENIX)
+#include <sys/stream.h>
+#include <sys/ptem.h>
+#undef TIOCGETC
+#else /* M_XENIX */
+#define tchars tc
+#endif /* M_XENIX */
+#endif /* HAVE_SYS_PTEM_H */
+
+#elif defined (HAVE_TERMIO_H)
+
 #include <termio.h>
 #include <string.h>
 #if defined (HAVE_SYS_PTEM_H)
@@ -39,10 +54,13 @@
 #define tchars tc
 #endif /* M_XENIX */
 #endif /* HAVE_SYS_PTEM_H */
+
 #else /* !HAVE_TERMIO_H */
+
 #include <sys/file.h>
 #include <sgtty.h>
 #include <strings.h>
+
 #endif /* !HAVE_TERMIO_H */
 
 #if defined (HAVE_SYS_TTOLD_H)

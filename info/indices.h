@@ -35,5 +35,6 @@ REFERENCE **apropos_in_all_indices ();
 
 /* User visible functions declared in indices.c. */
 extern void info_index_search (), info_next_index_match ();
+extern void do_info_index_search ();
 
 #endif /* !_INDICES_H_ */

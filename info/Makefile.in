@@ -17,48 +17,24 @@
 
 #### Start of system configuration section. ####
 
+TOPDIR = ..
+
+include $(TOPDIR)/Makeconf
+
 srcdir = @srcdir@
-VPATH  = $(srcdir):$(common)
+VPATH  = @srcdir@:@srcdir@/../src
 
-common = $(srcdir)/../libtxi
+common = @srcdir@/../src
 
-CC = @CC@
-
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-
-LN	= ln
-RM	= rm -f
-TAR	= tar
-MKDIR	= mkdir
-MAKEINFO= ../makeinfo/makeinfo
-COMPRESS= compress
-
-DEFS = @DEFS@
+MAKEINFO= makeinfo
 
 LDEFS = -DNAMED_FUNCTIONS=1 -DDEFAULT_INFOPATH='"$(DEFAULT_INFOPATH)"'
 
 TERMLIBS = @TERMLIBS@
-LIBS = $(TERMLIBS) -L../libtxi -ltxi @LIBS@
+LIBS = $(TERMLIBS) @LIBS@
 LOADLIBES = $(LIBS)
 
 SHELL = /bin/sh
-
-CFLAGS = -g
-LDFLAGS = -g
-
-prefix = /usr/local
-exec_prefix = $(prefix)
-bindir = $(exec_prefix)/bin
-# Prefix for each installed program, normally empty or `g'.
-binprefix = 
-libdir = $(prefix)/lib
-# Prefix for each installed man page, normally empty or `g'.
-manprefix = 
-mandir = $(prefix)/man/man1
-manext = 1
-infodir = $(prefix)/info
 
 #### End of system configuration section. ####
 
@@ -67,7 +43,8 @@ SRCS =	dir.c		display.c	echo_area.c	filesys.c \
 	m-x.c		nodes.c		search.c	session.c \
 	signals.c	terminal.c	tilde.c		window.c \
 	xmalloc.c	indices.c	makedoc.c	nodemenu.c \
-	footnotes.c	dribble.c	variables.c	gc.c
+	footnotes.c	dribble.c	variables.c	gc.c \
+	error.c
 
 HDRS =	display.h	doc.h		echo_area.h	filesys.h \
 	general.h	getopt.h	info-utils.h	info.h \
@@ -76,10 +53,16 @@ HDRS =	display.h	doc.h		echo_area.h	filesys.h \
 	indices.h	window.h	footnotes.h	dribble.h \
 	variables.h	gc.h
 
-OBJS =	dir.o display.o doc.o echo_area.o filesys.o info-utils.o info.o \
+DISTFILES = $(SRCS) $(HDRS)
+
+GETOPT_OBJS = getopt.o getopt1.o
+
+LIBOBJS = dir.o display.o doc.o echo_area.o filesys.o info-utils.o \
 	infodoc.o infomap.o m-x.o nodes.o search.o session.o signals.o \
 	terminal.o tilde.o window.o indices.o xmalloc.o nodemenu.o \
-	footnotes.o dribble.o variables.o gc.o 
+	footnotes.o dribble.o variables.o gc.o error.o
+
+OBJS = info.o $(LIBOBJS) $(GETOPT_OBJS)
 
 # The names of files which declare info commands.
 CMDFILES = $(srcdir)/session.c $(srcdir)/echo_area.c $(srcdir)/infodoc.c \
@@ -91,24 +74,30 @@ MAKEDOC_OBJECTS = makedoc.o xmalloc.o
 MAKEDOC_SOURCE = makedoc.c xmalloc.c
 
 .c.o:
-	$(CC) -c $(CPPFLAGS) $(LDEFS) $(DEFS) -I. -I$(srcdir) -I$(common) $(CFLAGS) $<
+	$(CC) -c $(CPPFLAGS) $(LDEFS) -I$(common) $(ALL_CFLAGS) $<
 
-all: info info.info info-stnd.info
+all: ../libinfo.a # info.info info-stnd.info
 sub-all: all
 
 install: all
-	$(INSTALL_PROGRAM) info $(bindir)/info
-	-d=$(srcdir); test -f ./info.info && d=.; $(INSTALL_DATA) $$d/info.info $(infodir)/info.info
-	-d=$(srcdir); test -f ./info-stnd.info && d=.; $(INSTALL_DATA) $$d/info-stnd.info $(infodir)/info-stnd.info
-	-$(INSTALL_DATA) $(srcdir)/info.1 $(mandir)/info.$(manext)
+	$(INSTALL_PROGRAM) info $(datadir)/info
+#	-d=$(srcdir); test -f ./info.info && d=.; \
+#	    $(INSTALL_DATA) $$d/info.info $(infodir)/info.info
+#	-d=$(srcdir); test -f ./info-stnd.info && d=.; \
+#	    $(INSTALL_DATA) $$d/info-stnd.info $(infodir)/info-stnd.info
+#	-$(INSTALL_DATA) $(srcdir)/info.1 $(mandir)/info.$(manext)
 
 uninstall:
-	rm -f $(bindir)/info
-	rm -f $(infodir)/info.info
-	rm -f $(infodir)/info-stnd.info
-	rm -f $(mandir)/info.$(manext)
+	rm -f $(libexecdir)/info
+#	rm -f $(infodir)/info.info
+#	rm -f $(infodir)/info-stnd.info
+#	rm -f $(mandir)/info.$(manext)
 
-info: $(OBJS) ../libtxi/libtxi.a
+../libinfo.a: $(LIBOBJS)
+	$(AR) $(ARFLAGS) ../libinfo.a $(LIBOBJS)
+	$(RANLIB) ../libinfo.a
+
+info: $(OBJS)
 	$(CC) $(LDFLAGS) -o info $(OBJS) $(LOADLIBES)
 
 info.info: info.texi
@@ -117,7 +106,7 @@ info.info: info.texi
 info-stnd.info: info-stnd.texi
 	$(MAKEINFO) --no-split -I$(srcdir) info-stnd.texi
 
-makedoc: $(MAKEDOC_OBJECTS) ../libtxi/libtxi.a
+makedoc: $(MAKEDOC_OBJECTS)
 	$(CC) $(LDFLAGS) -o makedoc $(MAKEDOC_OBJECTS) $(LOADLIBES)
 
 Makefile: $(srcdir)/Makefile.in ../config.status
@@ -134,6 +123,14 @@ mostlyclean: clean
 realclean: distclean
 	rm -f funs.h doc.c
 	rm -f info.info info-stnd.info
+
+local-dist:
+	ln $(DISTFILES) ../`cat ../.fname`/info
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/info
+.PHONY: dist
 
 TAGS: $(SRCS) makedoc-TAGS
 	etags $(SRCS)

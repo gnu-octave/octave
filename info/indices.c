@@ -176,6 +176,15 @@ info_indices_of_file_buffer (file_buffer)
 DECLARE_INFO_COMMAND (info_index_search,
    "Look up a string in the index for this file")
 {
+  do_info_index_search (window, count, 0);
+}
+
+void
+do_info_index_search (window, count, search_string)
+     WINDOW *window;
+     int count;
+     char *search_string;
+{
   FILE_BUFFER *fb;
   char *line;
 
@@ -204,35 +213,40 @@ DECLARE_INFO_COMMAND (info_index_search,
       return;
     }
 
-  /* Okay, there is an index.  Let the user select one of the members of it. */
-  line =
-    info_read_maybe_completing (window, "Index entry: ", index_index);
-
-  window = active_window;
-
-  /* User aborted? */
-  if (!line)
+  if (search_string && *search_string)
+    line = savestring (search_string);
+  else
     {
-      info_abort_key (active_window, 1, 0);
-      return;
-    }
+      /* Okay, there is an index.  Let the user select one of the
+	 members of it. */ 
+      line = info_read_maybe_completing (window, "Index entry: ", index_index);
 
-  /* Empty line means move to the Index node. */
-  if (!*line)
-    {
-      free (line);
+      window = active_window;
 
-      if (initial_index_filename && initial_index_nodename)
+      /* User aborted? */
+      if (!line)
 	{
-	  NODE *node;
-
-	  node =
-	    info_get_node (initial_index_filename, initial_index_nodename);
-	  set_remembered_pagetop_and_point (window);
-	  window_set_node_of_window (window, node);
-	  remember_window_and_node (window, node);
-	  window_clear_echo_area ();
+	  info_abort_key (active_window, 1, 0);
 	  return;
+	}
+
+      /* Empty line means move to the Index node. */
+      if (!*line)
+	{
+	  free (line);
+
+	  if (initial_index_filename && initial_index_nodename)
+	    {
+	      NODE *node;
+
+	      node =
+		info_get_node (initial_index_filename, initial_index_nodename);
+	      set_remembered_pagetop_and_point (window);
+	      window_set_node_of_window (window, node);
+	      remember_window_and_node (window, node);
+	      window_clear_echo_area ();
+	      return;
+	    }
 	}
     }
 
@@ -265,6 +279,53 @@ DECLARE_INFO_COMMAND (info_index_search,
     if (index_offset == old_offset)
       index_offset = 0;
   }
+}
+
+int
+index_entry_exists (window, string)
+     WINDOW *window;
+     char *string;
+{
+  register int i;
+  FILE_BUFFER *fb;
+
+  /* If there is no previous search string, the user hasn't built an index
+     yet. */
+  if (!string)
+    return 0;
+
+  fb = file_buffer_of_window (window);
+  if (!initial_index_filename ||
+      (strcmp (initial_index_filename, fb->filename) != 0))
+    {
+      info_free_references (index_index);
+      index_index = info_indices_of_file_buffer (fb);
+    }
+
+  /* If there is no index, that is an error. */
+  if (!index_index)
+    return 0;
+
+  for (i = 0; (i > -1) && (index_index[i]); i++)
+    if (strcmp (string, index_index[i]->label) == 0)
+      break;
+
+  /* If that failed, look for the next substring match. */
+  if ((i < 0) || (!index_index[i]))
+    {
+      for (i = 0; (i > -1) && (index_index[i]); i++)
+	if (string_in_line (string, index_index[i]->label) != -1)
+	  break;
+
+      if ((i > -1) && (index_index[i]))
+	string_in_line (string, index_index[i]->label);
+    }
+
+  /* If that failed, return 0. */
+  if ((i < 0) || (!index_index[i]))
+    return 0;
+
+  return 1;
 }
 
 DECLARE_INFO_COMMAND (info_next_index_match,
@@ -664,4 +725,3 @@ DECLARE_INFO_COMMAND (info_index_apropos,
   if (!info_error_was_printed)
     window_clear_echo_area ();
 }
-

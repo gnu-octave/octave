@@ -23,18 +23,22 @@
 
 #include "info.h"
 #include "dribble.h"
+#include "terminal.h"
 #include "getopt.h"
-
-/* The version numbers of this version of Info. */
-int info_major_version = 2;
-int info_minor_version = 10;
-int info_patch_level = 1;
 
 /* Non-zero means search all indices for APROPOS_SEARCH_STRING. */
 static int apropos_p = 0;
 
 /* Variable containing the string to search for when apropos_p is non-zero. */
 static char *apropos_search_string = (char *)NULL;
+
+/* Non-zero means search all indices for INDEX_SEARCH_STRING.  Unlike
+   apropos, this puts the user at the node, running info. */
+static int index_search_p = 0;
+
+/* Variable containing the string to search for when index_search_p is
+   non-zero. */ 
+static char *index_search_string = (char *)NULL;
 
 /* Non-zero means print version info only. */
 static int print_version_p = 0;
@@ -67,6 +71,7 @@ int dump_subnodes = 0;
 #define APROPOS_OPTION 1
 #define DRIBBLE_OPTION 2
 #define RESTORE_OPTION 3
+#define IDXSRCH_OPTION 4
 static struct option long_options[] = {
   { "apropos", 1, 0, APROPOS_OPTION },
   { "directory", 1, 0, 'd' },
@@ -78,14 +83,12 @@ static struct option long_options[] = {
   { "version", 0, &print_version_p, 1 },
   { "dribble", 1, 0, DRIBBLE_OPTION },
   { "restore", 1, 0, RESTORE_OPTION },
+  { "index-search", 1, 0, IDXSRCH_OPTION },
   {NULL, 0, NULL, 0}
 };
 
 /* String describing the shorthand versions of the long options found above. */
 static char *short_options = "d:n:f:o:s";
-
-/* When non-zero, the Info window system has been initialized. */
-int info_windows_initialized_p = 0;
 
 /* Some "forward" declarations. */
 static void usage (), info_short_help (), remember_info_program_name ();
@@ -182,6 +185,13 @@ main (argc, argv)
 	  info_set_input_from_file (optarg);
 	  break;
 
+	  /* User has specified a string to search all indices for. */
+	case IDXSRCH_OPTION:
+	  index_search_p = 1;
+	  maybe_free (index_search_string);
+	  index_search_string = savestring (optarg);
+	  break;
+
 	default:
 	  usage ();
 	}
@@ -274,6 +284,37 @@ main (argc, argv)
 	begin_multiple_window_info_session (user_filename, user_nodenames);
 
       exit (0);
+    }
+
+  /* If the user specified `--index-search string', start the info
+     session in the node corresponding to the first match. */
+  if (index_search_p)
+    {
+      int status = 0;
+
+      initialize_info_session (initial_node, 0);
+
+      if (index_entry_exists (windows, index_search_string))
+	{
+	  terminal_clear_screen ();
+	  terminal_prep_terminal ();
+	  display_update_display (windows);
+	  info_last_executed_command = (VFunction *)NULL;
+
+	  do_info_index_search (windows, 0, index_search_string);
+
+	  info_read_and_dispatch ();
+
+	  terminal_unprep_terminal ();
+	}
+      else
+	{
+	  fprintf (stderr, "no entries found\n");
+	  status = 13;
+	}
+
+      close_dribble_file (); 
+      exit (status);
     }
 
   /* If there are arguments remaining, they are the names of menu items
@@ -391,28 +432,6 @@ main (argc, argv)
   exit (0);
 }
 
-/* Return a string describing the current version of Info. */
-char *
-version_string ()
-{
-  static char *vstring = (char *)NULL;
-
-  if (!vstring)
-    {
-      vstring = (char *)xmalloc (50);
-      sprintf (vstring, "%d.%d", info_major_version, info_minor_version);
-      if (info_patch_level)
-	sprintf (vstring + strlen (vstring), "-p%d", info_patch_level);
-    }
-  return (vstring);
-}
-
-/* **************************************************************** */
-/*								    */
-/*		   Error Handling for Info			    */
-/*								    */
-/* **************************************************************** */
-
 static char *program_name = (char *)NULL;
 
 static void
@@ -423,51 +442,6 @@ remember_info_program_name (fullpath)
 
   filename = filename_non_directory (fullpath);
   program_name = savestring (filename);
-}
-
-/* Non-zero if an error has been signalled. */
-int info_error_was_printed = 0;
-
-/* Non-zero means ring terminal bell on errors. */
-int info_error_rings_bell_p = 1;
-
-/* Print FORMAT with ARG1 and ARG2.  If the window system was initialized,
-   then the message is printed in the echo area.  Otherwise, a message is
-   output to stderr. */
-void
-info_error (format, arg1, arg2)
-     char *format;
-     void *arg1, *arg2;
-{
-  info_error_was_printed = 1;
-
-  if (!info_windows_initialized_p || display_inhibited)
-    {
-      fprintf (stderr, "%s: ", program_name);
-      fprintf (stderr, format, arg1, arg2);
-      fprintf (stderr, "\n");
-      fflush (stderr);
-    }
-  else
-    {
-      if (!echo_area_is_active)
-	{
-	  if (info_error_rings_bell_p)
-	    terminal_ring_bell ();
-	  window_message_in_echo_area (format, arg1, arg2);
-	}
-      else
-	{
-	  NODE *temp;
-
-	  temp = build_message_node (format, arg1, arg2);
-	  if (info_error_rings_bell_p)
-	    terminal_ring_bell ();
-	  inform_in_echo_area (temp->contents);
-	  free (temp->contents);
-	  free (temp);
-	}
-    }
 }
 
 /* Produce a very brief descripton of the available options and exit with

@@ -91,6 +91,24 @@ initialize_info_signal_handler ()
 #endif
 }
 
+void
+clear_info_signal_handler ()
+{
+#if defined (SIGTSTP)
+  signal (SIGTSTP, old_TSTP);
+  signal (SIGTTOU, old_TTOU);
+  signal (SIGTTIN, old_TTIN);
+#endif /* SIGTSTP */
+
+#if defined (SIGWINCH)
+  signal (SIGWINCH, old_WINCH);
+#endif
+
+#if defined (SIGINT)
+  signal (SIGINT, old_INT);
+#endif
+}
+
 static void
 redisplay_after_signal ()
 {

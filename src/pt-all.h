@@ -20,36 +20,36 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Instantiate Stacks of symbol_def* values.
+#if !defined (octave_tree_all_h)
+#define octave_tree_all_h 1
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "pt.h"
+#include "pt-arg-list.h"
+#include "pt-assign.h"
+#include "pt-binop.h"
+#include "pt-check.h"
+#include "pt-cmd.h"
+#include "pt-colon.h"
+#include "pt-const.h"
+#include "pt-decl.h"
+#include "pt-except.h"
+#include "pt-exp.h"
+#include "pt-id.h"
+#include "pt-idx.h"
+#include "pt-indir.h"
+#include "pt-jump.h"
+#include "pt-loop.h"
+#include "pt-mat.h"
+#include "pt-misc.h"
+#include "pt-plot.h"
+#include "pt-pr-code.h"
+#include "pt-select.h"
+#include "pt-stmt.h"
+#include "pt-unop.h"
+#include "pt-pr-code.h"
+#include "pt-walk.h"
+
 #endif
-
-#include "SLList.h"
-#include "SLList.cc"
-
-#include "Stack.h"
-#include "Stack.cc"
-
-#include "SLStack.h"
-#include "SLStack.cc"
-
-#include "symtab.h"
-
-extern template class SLNode<unsigned>;
-extern template class SLList<unsigned>;
-
-extern template class Stack<unsigned>;
-
-extern template class SLStack<unsigned>;
-
-template class SLNode<symbol_record::symbol_def *>;
-template class SLList<symbol_record::symbol_def *>;
-
-template class Stack<symbol_record::symbol_def *>;
-
-template class SLStack<symbol_record::symbol_def *>;
 
 /*
 ;;; Local Variables: ***

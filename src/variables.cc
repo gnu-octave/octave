@@ -1196,82 +1196,6 @@ make_name_list (void)
 
 // List variable names.
 
-static void
-print_symbol_info_line (ostream& os, const symbol_record_info& s)
-{
-  os << (s.is_read_only () ? " -" : " w");
-  os << (s.is_eternal () ? "- " : "d ");
-#if 0
-  os << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
-#endif
-  os.form ("  %-16s", s.type_name ().c_str ());
-
-  int nr = s.rows ();
-  int nc = s.columns ();
-
-  if (nr < 0)
-    os << "      -";
-  else
-    os.form ("%7d", nr);
-
-  if (nc < 0)
-    os << "      -";
-  else
-    os.form ("%7d", nc);
-
-  os << "  " << s.name () << "\n";
-}
-
-static void
-print_long_listing (ostream& os, symbol_record_info *s)
-{
-  if (! s)
-    return;
-
-  symbol_record_info *ptr = s;
-  while (ptr->is_defined ())
-    {
-      print_symbol_info_line (os, *ptr);
-      ptr++;
-    }
-}
-
-static int
-maybe_list (const char *header, const string_vector& argv, int argc,
-	    ostream& os, bool show_verbose, symbol_table
-	    *sym_tab, unsigned type, unsigned scope)
-{
-  int count;
-  int status = 0;
-  if (show_verbose)
-    {
-      symbol_record_info *symbols;
-      symbols = sym_tab->long_list (count, argv, argc, 1, type, scope);
-      if (symbols && count > 0)
-	{
-	  os << "\n" << header << "\n\n"
-		     << "prot  type               rows   cols  name\n"
-		     << "====  ====               ====   ====  ====\n";
-
-	  print_long_listing (os, symbols);
-	  status = 1;
-	}
-      delete [] symbols;
-    }
-  else
-    {
-      string_vector symbols = sym_tab->list (count, argv, argc, 1,
-					     type, scope);
-      if (symbols.length () > 0 && count > 0)
-	{
-	  os << "\n" << header << "\n\n";
-	  symbols.list_in_columns (os);
-	  status = 1;
-	}
-    }
-  return status;
-}
-
 DEFUN (document, args, ,
   "document (NAME, STRING)\n\
 \n\
@@ -1377,36 +1301,33 @@ do_who (int argc, const string_vector& argv)
 
   if (show_builtins)
     {
-      pad_after += maybe_list ("*** built-in variables:", pats, npats,
-			       octave_stdout, show_verbose, global_sym_tab,
-			       symbol_def::BUILTIN_VARIABLE,
-			       SYMTAB_ALL_SCOPES);
+      pad_after += global_sym_tab->maybe_list
+	("*** built-in variables:", pats, npats, octave_stdout,
+	 show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
 
-      pad_after += maybe_list ("*** built-in functions:", pats, npats,
-			       octave_stdout, show_verbose, global_sym_tab,
-			       symbol_def::BUILTIN_FUNCTION,
-			       SYMTAB_ALL_SCOPES);
+      pad_after += global_sym_tab->maybe_list
+	("*** built-in functions:", pats, npats, octave_stdout,
+	 show_verbose, symbol_record::BUILTIN_FUNCTION, SYMTAB_ALL_SCOPES);
     }
 
   if (show_functions)
     {
-      pad_after += maybe_list ("*** currently compiled functions:",
-			       pats, npats, octave_stdout, show_verbose,
-			       global_sym_tab, symbol_def::USER_FUNCTION,
-			       SYMTAB_ALL_SCOPES);
+      pad_after += global_sym_tab->maybe_list
+	("*** currently compiled functions:", pats, npats,
+	 octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
+	 SYMTAB_ALL_SCOPES);
     }
 
   if (show_variables)
     {
-      pad_after += maybe_list ("*** local user variables:", pats, npats,
-			       octave_stdout, show_verbose, curr_sym_tab,
-			       symbol_def::USER_VARIABLE,
-			       SYMTAB_LOCAL_SCOPE);
+      pad_after += curr_sym_tab->maybe_list
+	("*** local user variables:", pats, npats, octave_stdout,
+	 show_verbose, symbol_record::USER_VARIABLE, SYMTAB_LOCAL_SCOPE);
 
-      pad_after += maybe_list ("*** globally visible user variables:",
-			       pats, npats, octave_stdout, show_verbose,
-			       curr_sym_tab, symbol_def::USER_VARIABLE,
-			       SYMTAB_GLOBAL_SCOPE);
+      pad_after += curr_sym_tab->maybe_list
+	("*** globally visible user variables:", pats, npats,
+	 octave_stdout, show_verbose, symbol_record::USER_VARIABLE,
+	 SYMTAB_GLOBAL_SCOPE);
     }
 
   if (pad_after)
@@ -1733,7 +1654,7 @@ With -x, exclude the named variables")
 				      SYMTAB_GLOBAL_SCOPE);
 
 	  fcns = global_sym_tab->list (fcount, 0, 0, 0,
-				       symbol_def::USER_FUNCTION,
+				       symbol_record::USER_FUNCTION,
 				       SYMTAB_ALL_SCOPES);
 	}
 

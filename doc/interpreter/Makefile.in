@@ -78,10 +78,10 @@ refcard-local.tex: refcard.tex.in
 	rm -f refcard-local.tex.tmp
 
 refcard.dvi: refcard.tex
-	tex refcard.tex
+	tex $(srcdir)/refcard.tex
 
 refcard-local.dvi: refcard-local.tex
-	tex refcard-local.tex
+	tex $(srcdir)/refcard-local.tex
 
 refcard.ps: refcard.dvi
 	dvips -o refcard.ps refcard.dvi

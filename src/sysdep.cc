@@ -478,6 +478,43 @@ DEFUN ("pause", Fpause, Spause, 1, 1,
   return retval;
 }
 
+// XXX FIXME XXX -- maybe this should only return 1 if IEEE floating
+// point functions really work.
+
+DEFUN ("isieee", Fisieee, Sisieee, 1, 1,
+  "isieee (): return 1 if host uses IEEE floating point")
+{
+  Octave_object retval;
+
+#if defined (IEEE_BIG_ENDIAN) || defined (IEEE_LITTLE_ENDIAN)
+  retval = 1.0;
+#else
+  retval = 0.0;
+#endif
+
+  return retval;
+}
+
+DEFUN ("realmax", Frealmax, Srealmax, 0, 1,
+  "realmax (): return largest representable floating point number")
+{
+  Octave_object retval;
+
+  retval = DBL_MAX;
+
+  return retval;
+}
+
+DEFUN ("realmin", Frealmin, Srealmin, 0, 1,
+  "realmin (): return smallest representable floating point number")
+{
+  Octave_object retval;
+
+  retval = DBL_MIN;
+
+  return retval;
+}
+
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 extern "C"
 {

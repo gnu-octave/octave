@@ -22,7 +22,7 @@
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap and should have values between 1 and the
 ## length of the colormap.  If @var{zoom} is omitted, a value of 4 is
-## assumed. 
+## assumed.
 ## @end deftypefn
 
 ## SEE ALSO: imshow, imagesc, colormap.
@@ -59,7 +59,7 @@ function image (x, zoom)
   ## the viewer in the background.
 
   command = sprintf ("( %s || %s && %s ) > /dev/null 2>&1 &",
-		     xv, xloadimage, rm);
+                     xv, xloadimage, rm);
 
   system (command);
 

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} polyinteg (@var{c})
 ## Return the coefficients of the integral of the polynomial whose
 ## coefficients are represented by the vector @var{c}.
-## 
+##
 ## The constant of integration is set to zero.
 ## @end deftypefn
 

@@ -1,20 +1,20 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ##  O B S O L E T E * * * D O   N O T   U S E!
 ##
@@ -22,7 +22,7 @@
 ##
 ## function [K,Q,P,Ee,Er] = dlqg(A,B,C,G,Sigw,Sigv,Q,R)
 ## function [K,Q,P,Ee,Er] = dlqg(Sys,Sigw,Sigv,Q,R)
-## 
+##
 ## design a discrete-time linear quadratic gaussian optimal controller
 ## for the system
 ##
@@ -36,10 +36,10 @@
 ##    Ee: estimator poles
 ##    Es: controller poles
 ## inputs:
-##  A,B,C,G, or Sys: state space representation of system.  
-##  Sigw, Sigv: covariance matrices of independent Gaussian noise processes 
+##  A,B,C,G, or Sys: state space representation of system.
+##  Sigw, Sigv: covariance matrices of independent Gaussian noise processes
 ##      (as above)
-##  Q, R: state, control weighting matrices for dlqr call respectively.  
+##  Q, R: state, control weighting matrices for dlqr call respectively.
 ##
 ## See also: lqg, dlqe, dlqr
 
@@ -70,10 +70,10 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
       error("dlqg: system has no discrete time states")
     elseif(nin <= columns(Sigw))
       error(["dlqg: ",num2str(nin)," inputs provided, noise dimension is ", ...
-	  num2str(columns(Sigw))])
+          num2str(columns(Sigw))])
     elseif(nout != columns(Sigv))
       error(["dlqg: number of outputs (",num2str(nout),") incompatible with ", ...
-	  "dimension of Sigv (",num2str(columns(Sigv)),")"])
+          "dimension of Sigv (",num2str(columns(Sigv)),")"])
     endif
 
     ## put parameters into correct variables

@@ -22,27 +22,27 @@
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
 ## Sets @code{gnuplot} in multiplot mode and plots in location
 ## given by index (there are @var{cols} by @var{rows} subwindows).
-## 
+##
 ## Input:
-## 
+##
 ## @table @var
 ## @item rows
 ## Number of rows in subplot grid.
-## 
+##
 ## @item columns
 ## Number of columns in subplot grid.
-## 
+##
 ## @item index
 ## Index of subplot where to make the next plot.
 ## @end table
-## 
+##
 ## If only one argument is supplied, then it must be a three digit value
 ## specifying the location in digits 1 (rows) and 2 (columns) and the plot
 ## index in digit 3.
-## 
+##
 ## The plot index runs row-wise.  First all the columns in a row are filled
 ## and then the next row is filled.
-## 
+##
 ## For example, a plot with 4 by 2 grid will have plot indices running as
 ## follows:
 ## @iftex
@@ -137,8 +137,8 @@ function subplot (rows, columns, index)
     ## doing multiplot plots
 
     if (! __multiplot_mode__
- 	|| __multiplot_xn__ != columns
-	|| __multiplot_yn__ != rows)
+        || __multiplot_xn__ != columns
+        || __multiplot_yn__ != rows)
 
       __multiplot_mode__ = 1;
       __multiplot_xn__ = columns;
@@ -151,7 +151,7 @@ function subplot (rows, columns, index)
       gset multiplot;
 
       eval (sprintf ("gset size %g, %g", __multiplot_xsize__,
-		     __multiplot_ysize__));
+                     __multiplot_ysize__));
     endif
 
     ## get the sub plot location

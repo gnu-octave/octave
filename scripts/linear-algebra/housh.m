@@ -28,7 +28,7 @@ function [housv,beta,zer] = housh(x,j,z)
   #   beta: If beta = 0, then no reflection need be applied (zer set to 0)
   #   housv: householder vector
   # mar 6,1987 : rev dec 17,1988
-  #		rev sep 19,1991 (blas)
+  #             rev sep 19,1991 (blas)
   # translated from FORTRAN Aug 1995
   # A. S. Hodel
 
@@ -43,10 +43,10 @@ function [housv,beta,zer] = housh(x,j,z)
   else
     housv = x;
     m = max(abs(housv));
-    if (m ~= 0.0) 
+    if (m ~= 0.0)
       housv = housv/m;
       alpha = norm(housv);
-      if (alpha > z) 
+      if (alpha > z)
         beta = 1.0/(alpha*(alpha+abs(housv(j))));
         sg = sign(housv(j));
         if( sg == 0)

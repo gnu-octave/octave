@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -22,38 +22,38 @@
 ## with df = length (x) - 1 degrees of freedom.
 ##
 ## With the optional argument string alt, the alternative of interest
-## can be selected.  
+## can be selected.
 ## If alt is "!=" or "<>", the null is tested against the two-sided
 ## alternative mean(x) != m.
 ## If alt is ">", the one-sided alternative mean(x) > m is considered,
-## similarly for "<".  
+## similarly for "<".
 ## The default is the two-sided case.
 ##
 ## pval is the p-value of the test.
-##  
+##
 ## If no output argument is given, the p-value of the test is displayed.
-  
+
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Student's one-sample t test 
+## Description:  Student's one-sample t test
 
 function [pval, t, df] = t_test (x, m, alt)
-  
+
   if ((nargin < 2) || (nargin > 3))
     usage ("[pval, t, df] = t_test (x, m [, alt])");
   endif
-    
+
   if (! is_vector (x))
     error ("t_test:  x must be a vector.");
   endif
   if (! is_scalar (m))
     error ("t_test:  m must be a scalar.");
   endif
-  
+
   n   = length (x);
   df  = n - 1;
   t   = sqrt (n) * (sum (x) / n - m) / std (x);
   cdf = t_cdf (t, df);
-  
+
   if (nargin == 2)
     alt  = "!=";
   endif
@@ -74,5 +74,5 @@ function [pval, t, df] = t_test (x, m, alt)
   if (nargout == 0)
     printf ("  pval:  %g\n", pval);
   endif
-  
+
 endfunction

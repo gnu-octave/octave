@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -37,9 +37,9 @@
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  One-way analysis of variance (ANOVA)
-  
+
 function [pval, f, df_b, df_w] = anova (y, g)
-  
+
   if ((nargin < 1) || (nargin > 2))
     usage ("anova (y [, g])");
   elseif (nargin == 1)
@@ -56,7 +56,7 @@ function [pval, f, df_b, df_w] = anova (y, g)
     n = length (y);
     if (! is_vector (g) || (length (g) != n))
       error (["anova:  for `anova (y, g)', g must be a vector", ...
-		" of the same length y"]);
+                " of the same length y"]);
     endif
     s = sort (g);
     i = find (s (2 : n) > s(1 : (n-1)));
@@ -71,12 +71,12 @@ function [pval, f, df_b, df_w] = anova (y, g)
       group_count (i) = length (v);
       group_mean (i) = mean (v);
     endfor
-    
+
   endif
-  
-  total_mean = mean (group_mean);  
+
+  total_mean = mean (group_mean);
   SSB = sum (group_count .* (group_mean - total_mean) .^ 2);
-  SST = sumsq (reshape (y, n, 1) - total_mean); 
+  SST = sumsq (reshape (y, n, 1) - total_mean);
   SSW = SST - SSB;
   df_b = k - 1;
   df_w = n - k;
@@ -84,7 +84,7 @@ function [pval, f, df_b, df_w] = anova (y, g)
   v_w = SSW / df_w;
   f = v_b / v_w;
   pval = 1 - f_cdf (f, df_b, df_w);
-  
+
   if (nargout == 0)
     ## This eventually needs to be done more cleanly ...
     printf ("\n");
@@ -97,9 +97,9 @@ function [pval, f, df_b, df_w] = anova (y, g)
     printf ("---------------------------------------------------------\n");
     printf ("Total                %15.4f  %4d\n", SST, n - 1);
     printf ("\n");
-    printf ("Test Statistic f     %15.4f\n", f);    
+    printf ("Test Statistic f     %15.4f\n", f);
     printf ("p-value              %15.4f\n", pval);
     printf ("\n");
-  endif  
-  
+  endif
+
 endfunction

@@ -21,34 +21,34 @@
 ## @deftypefn {Function File} {} norm (@var{a}, @var{p})
 ## Compute the p-norm of the matrix @var{a}.  If the second argument is
 ## missing, @code{p = 2} is assumed.
-## 
+##
 ## If @var{a} is a matrix:
-## 
+##
 ## @table @asis
 ## @item @var{p} = @code{1}
 ## 1-norm, the largest column sum of @var{a}.
-## 
+##
 ## @item @var{p} = @code{2}
 ## Largest singular value of @var{a}.
-## 
+##
 ## @item @var{p} = @code{Inf}
 ## @cindex infinity norm
 ## Infinity norm, the largest row sum of @var{a}.
-## 
+##
 ## @item @var{p} = @code{"fro"}
 ## @cindex Frobenius norm
 ## Frobenius norm of @var{a}, @code{sqrt (sum (diag (@var{a}' * @var{a})))}.
 ## @end table
-## 
+##
 ## If @var{a} is a vector or a scalar:
-## 
+##
 ## @table @asis
 ## @item @var{p} = @code{Inf}
 ## @code{max (abs (@var{a}))}.
-## 
+##
 ## @item @var{p} = @code{-Inf}
 ## @code{min (abs (@var{a}))}.
-## 
+##
 ## @item other
 ## p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.
 ## @end table
@@ -82,13 +82,13 @@ function retval = norm (x, p)
           error ("norm: unrecognized norm");
         endif
       else
-	if (p == Inf)
-	  retval = max (abs (x));
-	elseif (p == -Inf)
-	  retval = min (abs (x));
-	else
-	  retval = sum (abs (x) .^ p) ^ (1/p);
-	endif
+        if (p == Inf)
+          retval = max (abs (x));
+        elseif (p == -Inf)
+          retval = min (abs (x));
+        else
+          retval = sum (abs (x) .^ p) ^ (1/p);
+        endif
       endif
     elseif (nargin == 1)
       retval = sum (abs (x) .^ 2) ^ 0.5;

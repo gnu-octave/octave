@@ -21,12 +21,12 @@
 ## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
 ## Return the position of the last occurrence of the string @var{t} in the
 ## string @var{s}, or 0 if no occurrence is found.  For example,
-## 
+##
 ## @example
 ## rindex ("Teststring", "t")
 ##      @result{} 6
 ## @end example
-## 
+##
 ## @strong{Note:}  This function does not work for arrays of strings.
 ## @end deftypefn
 
@@ -51,10 +51,10 @@ function n = rindex (s, t)
     if (l_t <= l_s)
       tmp = l_s - l_t + 1;
       for idx = tmp : -1 : 1
-	if (strcmp (substr (s, idx, l_t), t))
-	  n = idx;
-	  return;
-	endif
+        if (strcmp (substr (s, idx, l_t), t))
+          n = idx;
+          return;
+        endif
       endfor
     endif
 

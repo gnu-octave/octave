@@ -40,11 +40,11 @@ function f = figure (n)
   if (nargin < 2)
     if (gnuplot_has_frames)
       if (! isempty (getenv ("DISPLAY")))
-	oneplot ();
-	figure_list = union (figure_list, f);
-	eval (sprintf ("gset term x11 %d\n", f));
+        oneplot ();
+        figure_list = union (figure_list, f);
+        eval (sprintf ("gset term x11 %d\n", f));
       else
-	error ("figure: requires X11 and valid DISPLAY");
+        error ("figure: requires X11 and valid DISPLAY");
       endif
     else
       error ("figure: gnuplot doesn't appear to support this feature");

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} compan (@var{c})
 ## Compute the companion matrix corresponding to polynomial coefficient
 ## vector @var{c}.
-## 
+##
 ## The companion matrix is
 ## @iftex
 ## @tex
@@ -36,7 +36,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @smallexample
 ##      _                                                        _
 ##     |  -c(2)/c(1)   -c(3)/c(1)  ...  -c(N)/c(1)  -c(N+1)/c(1)  |
@@ -48,7 +48,7 @@
 ##     |_      0            0      ...       1             0     _|
 ## @end smallexample
 ## @end ifinfo
-## 
+##
 ## The eigenvalues of the companion matrix are equal to the roots of the
 ## polynomial.
 ## @end deftypefn

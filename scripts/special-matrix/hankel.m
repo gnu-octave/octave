@@ -24,7 +24,7 @@
 ## not the same as the first element of @var{r}, the last element of
 ## @var{c} is used.  If the second argument is omitted, the last row is
 ## taken to be the same as the first column.
-## 
+##
 ## A Hankel matrix formed from an m-vector @var{c}, and an n-vector
 ## @var{r}, has the elements
 ## @iftex
@@ -35,7 +35,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## @group
 ## H (i, j) = c (i+j-1),  i+j-1 <= m;

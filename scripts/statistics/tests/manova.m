@@ -33,7 +33,7 @@
 ## Three test statistics (Wilks, Hotelling-Lawley, and Pillai-Bartlett)
 ## and corresponding approximate p-values are calculated and displayed.
 ## (Currently NOT because the f_cdf respectively betai code is too bad.)
-  
+
 ## Author:  TF <Thomas.Fuereder@ci.tuwien.ac.at>
 ## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  One-way multivariate analysis of variance (MANOVA)
@@ -57,7 +57,7 @@ function manova (Y, g)
   s = sort (g);
   i = find (s (2:n) > s(1:(n-1)));
   k = length (i) + 1;
-    
+
   if (k == 1)
     error ("manova:  there should be at least 2 groups");
   else
@@ -75,7 +75,7 @@ function manova (Y, g)
     SSB = SSB + s' * s / rows (v);
   endfor
   n_b = k - 1;
-    
+
   SSW = SST - SSB;
   n_w = n - k;
 
@@ -86,11 +86,11 @@ function manova (Y, g)
   ## =============
 
   Lambda = prod (1 ./ (1 + l));
-  
+
   delta = n_w + n_b - (p + n_b + 1) / 2
   df_num = p * n_b
   W_pval_1 = 1 - chisquare_cdf (- delta * log (Lambda), df_num);
-  
+
   if (p < 3)
     eta = p;
   else
@@ -98,7 +98,7 @@ function manova (Y, g)
   endif
 
   df_den = delta * eta - df_num / 2 + 1
-  
+
   WT = exp (- log (Lambda) / eta) - 1
   W_pval_2 = 1 - f_cdf (WT * df_den / df_num, df_num, df_den);
 
@@ -106,11 +106,11 @@ function manova (Y, g)
 
     ## Hotelling-Lawley Test
     ## =====================
-  
+
     HL = sum (l);
-  
+
     theta = min (p, n_b);
-    u = (abs (p - n_b) - 1) / 2; 
+    u = (abs (p - n_b) - 1) / 2;
     v = (n_w - p - 1) / 2;
 
     df_num = theta * (2 * u + theta + 1);
@@ -120,7 +120,7 @@ function manova (Y, g)
 
     ## Pillai-Bartlett
     ## ===============
-  
+
     PB = sum (l ./ (1 + l));
 
     df_den = theta * (2 * v + theta + 1);
@@ -128,7 +128,7 @@ function manova (Y, g)
 
     printf ("\n");
     printf ("One-way MANOVA Table:\n");
-    printf ("\n"); 
+    printf ("\n");
     printf ("Test             Test Statistic      Approximate p\n");
     printf ("**************************************************\n");
     printf ("Wilks            %10.4f           %10.9f \n", Lambda, W_pval_1);
@@ -142,13 +142,13 @@ function manova (Y, g)
   printf ("\n");
   printf ("MANOVA Results:\n");
   printf ("\n");
-  printf ("# of groups:     %d\n", k);  
+  printf ("# of groups:     %d\n", k);
   printf ("# of samples:    %d\n", n);
   printf ("# of variables:  %d\n", p);
-  printf ("\n");  
+  printf ("\n");
   printf ("Wilks' Lambda:   %5.4f\n", Lambda);
   printf ("Approximate p:   %10.9f (chisquare approximation)\n", W_pval_1);
   printf ("                 %10.9f (F approximation)\n", W_pval_2);
   printf ("\n");
-  
+
 endfunction

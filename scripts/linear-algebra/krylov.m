@@ -109,7 +109,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
         if(pflg)
           # locate max magnitude element in short_q
           asq = abs(short_q);
-	  maxv = max(asq);
+          maxv = max(asq);
           maxidx = find(asq == maxv);
           pivot_idx = short_pv(maxidx(1));
 

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} vander (@var{c})
 ## Return the Vandermonde matrix whose next to last column is @var{c}.
-## 
+##
 ## A Vandermonde matrix has the form
 ## @iftex
 ## @tex
@@ -33,7 +33,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## @group
 ## c(0)^n ... c(0)^2  c(0)  1
@@ -41,7 +41,7 @@
 ##  .           .      .    .
 ##  .           .      .    .
 ##  .           .      .    .
-##                  
+##
 ## c(n)^n ... c(n)^2  c(n)  1
 ## @end group
 ## @end example

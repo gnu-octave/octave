@@ -36,7 +36,7 @@ function retval = is_square (x)
     if (is_matrix (x))
       [nr, nc] = size (x);
       if (nr == nc && nr > 0)
-      	retval = nr;
+        retval = nr;
       endif
     endif
   else

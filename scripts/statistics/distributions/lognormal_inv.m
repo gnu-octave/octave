@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -41,11 +41,11 @@ function inv = lognormal_inv (x, a, v)
   ## not work (because exp (Inf) -> NaN):
   ## inv = exp (normal_inv (x, log (a), v));
   ## Hence ...
-  
+
   [retval, x, a, v] = common_size (x, a, v);
   if (retval > 0)
     error (["lognormal_inv:  ", ...
-	    "x, a and v must be of common size or scalars"]);
+            "x, a and v must be of common size or scalars"]);
   endif
 
   [r, c] = size (x);
@@ -56,16 +56,16 @@ function inv = lognormal_inv (x, a, v)
   inv = zeros (1, s);
 
   k = find (!(x >= 0) | !(x <= 1) | !(a > 0) | !(a < Inf) ...
-      | !(v > 0) | !(v < Inf)); 
+      | !(v > 0) | !(v < Inf));
   if any (k)
     inv(k) = NaN * ones (1, length (k));
   endif
-  
+
   k = find ((x == 1) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if any (k)
     inv(k) = Inf * ones (1, length (k));
   endif
-  
+
   k = find ((x > 0) & (x < 1) & (a > 0) & (a < Inf) ...
       & (v > 0) & (v < Inf));
   if any (k)
@@ -73,5 +73,5 @@ function inv = lognormal_inv (x, a, v)
   endif
 
   inv = reshape (inv, r, c);
-  
+
 endfunction

@@ -40,7 +40,7 @@ function p = path (...)
     if (nargout == 0)
       stdout << "\nLOADPATH contains the following directories:\n\n  ";
       stdout << strrep (LOADPATH, ":", "\n  ") << "\n\n";
-    else    
+    else
       p = LOADPATH;
     endif
   else

@@ -20,11 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} null (@var{a}, @var{tol})
 ## Return an orthonormal basis of the null space of @var{a}.
-## 
+##
 ## The dimension of the null space is taken as the number of singular
 ## values of @var{a} not greater than @var{tol}.  If the argument @var{tol}
 ## is missing, it is computed as
-## 
+##
 ## @example
 ## max (size (@var{a})) * max (svd (@var{a})) * eps
 ## @end example

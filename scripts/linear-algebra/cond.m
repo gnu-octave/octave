@@ -47,9 +47,9 @@ function retval = cond (a)
       sigma_1 = sigma(1);
       sigma_n = sigma(length (sigma));
       if (sigma_1 == 0 || sigma_n == 0)
-	retval = Inf;
+        retval = Inf;
       else
-	retval = sigma_1 / sigma_n;
+        retval = sigma_1 / sigma_n;
       endif
     endif
   else

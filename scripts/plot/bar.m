@@ -20,25 +20,25 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} bar (@var{x}, @var{y})
 ## Given two vectors of x-y data, @code{bar} produces a bar graph.
-## 
+##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
-## 
+##
 ## If two output arguments are specified, the data are generated but
 ## not plotted.  For example,
-## 
+##
 ## @example
 ## bar (x, y);
 ## @end example
-## 
+##
 ## @noindent
 ## and
-## 
+##
 ## @example
 ## [xb, yb] = bar (x, y);
 ## plot (xb, yb);
 ## @end example
-## 
+##
 ## @noindent
 ## are equivalent.
 ## @end deftypefn
@@ -83,27 +83,27 @@ function [xb, yb] = bar (x, y)
         delta_m = delta_p;
         tmp_xb(1) = x(1) - delta_m;
         tmp_yb(1) = 0.0;
-	k = 1;
+        k = 1;
         for i = 2:3:len
           tmp_xb(i) = tmp_xb(i-1);
           tmp_xb(i+1) = x(k) + delta_p;
           tmp_xb(i+2) = tmp_xb(i+1);
-	  tmp_yb(i) = y(k);
-	  tmp_yb(i+1) = y(k);
-	  tmp_yb(i+2) = 0.0;
+          tmp_yb(i) = y(k);
+          tmp_yb(i+1) = y(k);
+          tmp_yb(i+2) = 0.0;
           if (k < xlen)
             if (x(k+1) < x(k))
               error ("bar: x vector values must be in ascending order");
             endif
-	    delta_m = x(k+1) - cutoff(k);
+            delta_m = x(k+1) - cutoff(k);
             k++;
             if (k < xlen)
               delta_p = cutoff(k) - x(k);
-	    else
-	      delta_p = delta_m;
+            else
+              delta_p = delta_m;
             endif
-	  endif
-	endfor
+          endif
+        endfor
       else
         error ("bar: arguments must be the same length");
       endif

@@ -43,47 +43,47 @@ function __plt__ (caller, ...)
 
       while (nargin-- > 0)
 
-	fmt = "";
-	new = va_arg ();
+        fmt = "";
+        new = va_arg ();
 
-	if (isstr (new))
-	  if (! x_set)
-	    error ("plot: no data to plot");
-	  endif
-	  fmt = __pltopt__ (caller, new);
-	  if (! y_set)
-	    __plt1__ (x, fmt);
-	  else
-	    __plt2__ (x, y, fmt);
-	  endif
-	  hold on;
-	  x_set = 0;
-	  y_set = 0;
-	elseif (x_set)
-	  if (y_set)
-	    __plt2__ (x, y, fmt);
-	    hold on;
-	    x = new;
-	    y_set = 0;
-	  else
-	    y = new;
-	    y_set = 1;
-	  endif
-	else
-	  x = new;
-	  x_set = 1;
-	endif
+        if (isstr (new))
+          if (! x_set)
+            error ("plot: no data to plot");
+          endif
+          fmt = __pltopt__ (caller, new);
+          if (! y_set)
+            __plt1__ (x, fmt);
+          else
+            __plt2__ (x, y, fmt);
+          endif
+          hold on;
+          x_set = 0;
+          y_set = 0;
+        elseif (x_set)
+          if (y_set)
+            __plt2__ (x, y, fmt);
+            hold on;
+            x = new;
+            y_set = 0;
+          else
+            y = new;
+            y_set = 1;
+          endif
+        else
+          x = new;
+          x_set = 1;
+        endif
 
       endwhile
 
       ## Handle last plot.
 
       if  (x_set)
-	if (y_set)
-	  __plt2__ (x, y, fmt);
-	else
-	  __plt1__ (x, fmt);
-	endif
+        if (y_set)
+          __plt2__ (x, y, fmt);
+        else
+          __plt1__ (x, fmt);
+        endif
       endif
 
     unwind_protect_cleanup

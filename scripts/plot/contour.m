@@ -44,13 +44,13 @@ function contour (z, n, x, y)
       gset contour;
       gset cntrparam bspline;
       if (is_scalar (n))
-	command = sprintf ("gset cntrparam levels %d", n);
+        command = sprintf ("gset cntrparam levels %d", n);
       elseif (is_vector (n))
-	tmp = sprintf ("%f", n(1));
-	for i = 2:length (n)
-	  tmp = sprintf ("%s, %f", tmp, n(i));
-	endfor
-	command = sprintf ("gset cntrparam levels discrete %s", tmp);
+        tmp = sprintf ("%f", n(1));
+        for i = 2:length (n)
+          tmp = sprintf ("%s, %f", tmp, n(i));
+        endfor
+        command = sprintf ("gset cntrparam levels discrete %s", tmp);
       endif
       eval (command);
       gset noparametric;
@@ -79,19 +79,19 @@ function contour (z, n, x, y)
         gset nosurface;
         gset contour;
         gset cntrparam bspline;
-	if (is_scalar (n))
+        if (is_scalar (n))
           command = sprintf ("gset cntrparam levels %d", n);
-	elseif (is_vector (n))
-	  tmp = sprintf ("%f", n(1));
-	  for i = 2:length (n)
-	    tmp = sprintf ("%s, %f", tmp, n(i));
-	  endfor
-	  command = sprintf ("gset cntrparam levels discrete %s", tmp);
-	endif
+        elseif (is_vector (n))
+          tmp = sprintf ("%f", n(1));
+          for i = 2:length (n)
+            tmp = sprintf ("%s, %f", tmp, n(i));
+          endfor
+          command = sprintf ("gset cntrparam levels discrete %s", tmp);
+        endif
         eval (command);
-	gset parametric;
+        gset parametric;
         gset view 0, 0, 1, 1;
-	gsplot zz w l 1;
+        gsplot zz w l 1;
       else
         msg = "contour: rows (z) must be the same as length (x) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);

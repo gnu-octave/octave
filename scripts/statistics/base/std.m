@@ -29,7 +29,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## @group
 ## std (x) = sqrt (sumsq (x - mean (x)) / (n - 1))

@@ -21,27 +21,27 @@
 ## @deftypefn {Function File} {} plot_border (...)
 ## Multiple arguments allowed to specify the sides on which the border
 ## is shown.  Allowed arguments include:
-## 
+##
 ## @table @code
 ## @item "blank"
 ## No borders displayed.
-## 
+##
 ## @item "all"
 ## All borders displayed
-## 
+##
 ## @item "north"
 ## North Border
-## 
+##
 ## @item "south"
 ## South Border
-## 
+##
 ## @item "east"
 ## East Border
-## 
+##
 ## @item "west"
 ## West Border
 ## @end table
-## 
+##
 ## @noindent
 ## The arguments may be abbreviated to single characters.  Without any
 ## arguments, @code{plot_border} turns borders off.
@@ -83,20 +83,20 @@ function plot_border (...)
     else
       none = 0;
       if (strcmp (arg, "south") || strcmp (arg, "SOUTH")
-	  || strcmp (arg, "s") || strcmp (arg, "S"))
-	south = 1;
+          || strcmp (arg, "s") || strcmp (arg, "S"))
+        south = 1;
       elseif (strcmp (arg, "west") || strcmp (arg, "WEST")
-	      || strcmp (arg, "w") || strcmp (arg, "W"))
-	west = 2;
+              || strcmp (arg, "w") || strcmp (arg, "W"))
+        west = 2;
       elseif (strcmp (arg, "north") || strcmp (arg, "NORTH")
-	      || strcmp (arg, "n") || strcmp (arg, "N"))
-	north = 4;
+              || strcmp (arg, "n") || strcmp (arg, "N"))
+        north = 4;
       elseif (strcmp (arg, "east") || strcmp (arg, "EAST")
-	      || strcmp (arg, "e") || strcmp (arg, "E"))
-	east = 8;
+              || strcmp (arg, "e") || strcmp (arg, "E"))
+        east = 8;
       elseif (strcmp (arg, "all") || strcmp (arg, "ALL")
-	      || strcmp (arg, "a") || strcmp (arg, "A"))
-	all = 1;
+              || strcmp (arg, "a") || strcmp (arg, "A"))
+        all = 1;
       endif
     endif
   endwhile

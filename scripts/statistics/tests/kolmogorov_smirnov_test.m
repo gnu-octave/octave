@@ -1,20 +1,20 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  
+## usage:
 ##   [pval, ks] = kolmogorov_smirnov_test (x, dist [, params] [, alt])
 ##
 ##
@@ -44,11 +44,11 @@
 ## Description:  One-sample Kolmogorov-Smirnov test
 
 function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
-  
+
   if (nargin < 2)
     error (sprintf (["usage:\n\t", ...
-	"[pval, ks] = ", ...
-	"kolmogorov_smirnov_test (x, dist, [, params] [, alt])"]));
+        "[pval, ks] = ", ...
+        "kolmogorov_smirnov_test (x, dist, [, params] [, alt])"]));
   endif
 
   if (! is_vector (x))
@@ -60,7 +60,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
   f = sprintf ("%s_cdf", dist);
 
   alt  = "!=";
-  
+
   if (nargin == 2)
     z = reshape (feval (f, s), 1, n);
   else
@@ -68,13 +68,13 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
     for k = 1 : (nargin-2);
       tmp  = va_arg ();
       if isstr (tmp)
-	alt = tmp;
+        alt = tmp;
       else
-	args = sprintf ("%s, %g", args, tmp);
+        args = sprintf ("%s, %g", args, tmp);
       endif
     endfor
     z = reshape (eval (sprintf ("%s(s%s);", f, args)), 1, n);
-  endif    
+  endif
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     ks   = sqrt(n) * max(max([abs(z - (0:(n-1))/n); abs(z - (1:n)/n)]));
@@ -87,11 +87,11 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
     pval = exp(- 2 * ks^2);
   else
     error (sprintf (["kolmogorov_smirnov_test:  ", ...
-	"alternative %s not recognized"], alt));
+        "alternative %s not recognized"], alt));
   endif
-    
+
   if (nargout == 0)
     printf ("pval:  %g\n", pval);
   endif
-  
+
 endfunction

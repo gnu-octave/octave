@@ -18,20 +18,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} polyout (@var{c}@{, @var{x}@})
-## write formatted polynomial 
+## write formatted polynomial
 ## @example
 ##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
 ## @end example
 ##  to string @var{y} or to the screen (if @var{y} is omitted)
 ##  @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
-## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue, 
+## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
 ## filter, polyderiv, and polyinteg}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: May 1995
 ## Nov 1998: Correctly handles complex coefficients
-  
+
 function y = polyout (c, x)
 
   if (nargin < 1 ) || (nargin > 2) || (nargout < 0 ) || (nargout > 1)
@@ -41,7 +41,7 @@ function y = polyout (c, x)
   if (!is_vector(c))
     error("polyout: first argument must be a vector");
   endif
-  
+
   if (nargin == 1)
     x = "s";
   elseif( ! isstr(x) )
@@ -63,7 +63,7 @@ function y = polyout (c, x)
       else                    nstr = num2str(c(ii));           endif
 
       tmp = sprintf("%s*%s^%d%s%s",tmp,x,n1-ii,ns,nstr);
-      
+
     endfor
   else
     tmp = " ";

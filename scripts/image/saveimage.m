@@ -21,22 +21,22 @@
 ## @deftypefn {Function File} {} saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})
 ## Save the matrix @var{x} to @var{file} in image format @var{fmt}.  Valid
 ## values for @var{fmt} are
-## 
+##
 ## @table @code
 ## @item "img"
 ## Octave's image format.  The current colormap is also saved in the file.
-## 
+##
 ## @item "ppm"
 ## Portable pixmap format.
-## 
+##
 ## @item "ps"
 ## PostScript format.  Note that images saved in PostScript format can not
 ## be read back into Octave with loadimage.
 ## @end table
-## 
+##
 ## If the fourth argument is supplied, the specified colormap will also be
 ## saved along with the image.
-## 
+##
 ## Note: if the colormap contains only two entries and these entries are
 ## black and white, the bitmap ppm and PostScript formats are used.  If the
 ## image is a gray scale image (the entries within each row of the colormap
@@ -97,7 +97,7 @@ function saveimage (filename, img, img_form, map)
     error ("image format specification must be a string");
   elseif (! (strcmp (img_form, "img")
              || strcmp (img_form, "ppm")
-	     || strcmp (img_form, "ps")))
+             || strcmp (img_form, "ps")))
     error ("unsupported image format specification");
   endif
 
@@ -154,32 +154,32 @@ function saveimage (filename, img, img_form, map)
     if (grey && map_nr == 2 && bw)
 
       if (map(1) != 0)
-      	map = [1; 0];
+        map = [1; 0];
       else
-      	map = [0; 1];
+        map = [0; 1];
       endif
 
       n_long = rem (img_nc, 8);
       tmp = zeros (ceil (img_nc/8), img_nr);
 
       for i = 1:img_nr
-	idx = (i-1)*img_nc+1:i*img_nc;
-      	if (n_long > 0)
-	  img_row = [map(img(idx)); (zeros (8-n_long, 1))];
-	else
-      	  img_row = map(img(idx));
-	endif
-	img_row
-	tmp
-	if (img_nc < 8)
-	  for j = 1:8
-	    tmp(:,i) = tmp(:,i) + img_row (j) * 2^(8-j);
-	  endfor
-	else
-	  for j = 1:8
-	    tmp(:,i) = tmp(:,i) + img_row (j:8:img_nc) * 2^(8-j);
-	  endfor
-	endif
+        idx = (i-1)*img_nc+1:i*img_nc;
+        if (n_long > 0)
+          img_row = [map(img(idx)); (zeros (8-n_long, 1))];
+        else
+          img_row = map(img(idx));
+        endif
+        img_row
+        tmp
+        if (img_nc < 8)
+          for j = 1:8
+            tmp(:,i) = tmp(:,i) + img_row (j) * 2^(8-j);
+          endfor
+        else
+          for j = 1:8
+            tmp(:,i) = tmp(:,i) + img_row (j:8:img_nc) * 2^(8-j);
+          endfor
+        endif
       endfor
 
       fid = fopen (filename, "w");
@@ -245,14 +245,14 @@ function saveimage (filename, img, img_form, map)
 
     if (scols > pagewid * MARGIN || srows > pagehgt * MARGIN)
       if (scols > pagewid * MARGIN)
-	scale = scale * (pagewid / scols * MARGIN);
-	scols = scale * img_nr * pixfac;
-	srows = scale * img_nc * pixfac;
+        scale = scale * (pagewid / scols * MARGIN);
+        scols = scale * img_nr * pixfac;
+        srows = scale * img_nc * pixfac;
       endif
       if (srows > pagehgt * MARGIN)
-	scale = scale * (pagehgt / srows * MARGIN);
-	scols = scale * img_nr * pixfac;
-	srows = scale * img_nc * pixfac;
+        scale = scale * (pagehgt / srows * MARGIN);
+        scols = scale * img_nr * pixfac;
+        srows = scale * img_nc * pixfac;
       endif
       warning ("image too large for page, rescaling to %g", scale);
     endif

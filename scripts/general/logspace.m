@@ -29,7 +29,7 @@
 ## @ifinfo
 ## 10^base to 10^limit.
 ## @end ifinfo
-## 
+##
 ## If @var{limit} is equal to
 ## @iftex
 ## @tex

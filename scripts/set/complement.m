@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} complement (@var{x}, @var{y})
 ## Return the elements of set @var{y} that are not in set @var{x}.  For
 ## example,
-## 
+##
 ## @example
 ## @group
 ## complement ([ 1, 2, 3 ], [ 2, 3, 5 ])

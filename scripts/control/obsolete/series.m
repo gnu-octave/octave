@@ -1,20 +1,20 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## Forms the series connection of two systems.
 ##
@@ -28,7 +28,7 @@
 ## Type of input: State space systems
 ## Command:       [a,b,c,d]=series(a1,b1,c1,d1,a2,b2,c2,d2)
 ## Forms the series representation of the two state space system arguments.
-## The series connected system will have the inputs of system 1 and the 
+## The series connected system will have the inputs of system 1 and the
 ## outputs of system 2.
 ##
 ## Type of input: system data structure
@@ -55,8 +55,8 @@ function [a, b, c, d] = series (a1, b1, c1, d1, a2, b2, c2, d2)
   ## If four arguments input, put two transfer functions in series
 
   if(nargin == 4)
-    a = conv(a1,c1);	% was conv1
-    b = conv(b1,d1);	% was conv1
+    a = conv(a1,c1);    % was conv1
+    b = conv(b1,d1);    % was conv1
     c = 0;
     d = 0;
 
@@ -65,7 +65,7 @@ function [a, b, c, d] = series (a1, b1, c1, d1, a2, b2, c2, d2)
   elseif((nargin == 8)||(muflag == 1))
 
     ## check matrix dimensions
-  
+
     [n1,m1,p1] = abcddim(a1,b1,c1,d1);
     [n2,m2,p2] = abcddim(a2,b2,c2,d2);
 
@@ -92,7 +92,7 @@ function [a, b, c, d] = series (a1, b1, c1, d1, a2, b2, c2, d2)
     if(muflag == 1)
       a=ss2sys(a,b,c,d);
       b=c=d=0;
-    endif 
+    endif
   endif
 
 endfunction

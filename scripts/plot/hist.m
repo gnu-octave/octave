@@ -20,19 +20,19 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hist (@var{y}, @var{x})
 ## Produce histogram counts or plots.
-## 
+##
 ## With one vector input argument, plot a histogram of the values with
 ## 10 bins.  The range of the histogram bins is determined by the range
 ## of the data.
-## 
+##
 ## Given a second scalar argument, use that as the number of bins.
-## 
+##
 ## Given a second vector argument, use that as the centers of the bins,
 ## with the width of the bins determined from the adjacent values in
 ## the vector.
-## 
+##
 ## Extreme values are lumped in the first and last bins.
-## 
+##
 ## With two output arguments, produce the values @var{nn} and @var{xx} such
 ## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
 ## @end deftypefn

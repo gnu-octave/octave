@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## @deftypefn {Function File } { @var{bool} =} isletter(@var{s})
-## Returns true if @var{s} is a letter false otherwise.  
+## Returns true if @var{s} is a letter false otherwise.
 ## @end deftypefn
 ## @seealso{isalpha}
 

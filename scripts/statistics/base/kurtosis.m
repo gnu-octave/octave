@@ -28,12 +28,12 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## kurtosis (x) = N^(-1) std(x)^(-4) sum ((x - mean(x)).^4) - 3
 ## @end example
 ## @end ifinfo
-## 
+##
 ## @noindent
 ## of @var{x}.  If @var{x} is a matrix, return the row vector containing
 ## the kurtosis of each column.

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated.  For example,
-## 
+##
 ## @example
 ## @group
 ## s = [ "ab"; "cde" ];
@@ -40,18 +40,18 @@ function st = strcat (s, t, ...)
     unwind_protect
       empty_list_elements_ok = 1;
       if (isstr (s) && isstr (t))
-      	tmpst = [s, t];
+        tmpst = [s, t];
       else
-      	error ("strcat: all arguments must be strings");
+        error ("strcat: all arguments must be strings");
       endif
       n = nargin - 2;
       while (n--)
-      	tmp = va_arg ();
-      	if (isstr (tmp))
+        tmp = va_arg ();
+        if (isstr (tmp))
           tmpst = [tmpst, tmp];
-      	else
+        else
           error ("strcat: all arguments must be strings");
-      	endif
+        endif
       endwhile
     unwind_protect_cleanup
       empty_list_elements_ok = save_empty_list_elements_ok;

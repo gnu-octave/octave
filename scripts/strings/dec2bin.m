@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} dec2bin (@var{n})
 ## Return a binary number corresponding the nonnegative decimal number
 ## @var{n}, as a string of ones and zeros.  For example,
-## 
+##
 ## @example
 ## dec2bin (14)
 ##      @result{} "1110"
@@ -50,14 +50,14 @@ function y = dec2bin (x)
     for i = 1:len
       tmp = x (i);
       if (tmp == round (tmp) && tmp >= 0)
-	while (tmp >= 2)
-	  z = fix (tmp ./ 2);
-	  y = [y, tmp - 2 * z];
-	  tmp = z;
-	endwhile
-	y = [y, tmp];
+        while (tmp >= 2)
+          z = fix (tmp ./ 2);
+          y = [y, tmp - 2 * z];
+          tmp = z;
+        endwhile
+        y = [y, tmp];
       else
-	error ("dec2hex: invalid conversion");
+        error ("dec2hex: invalid conversion");
       endif
     endfor
     y = fliplr (y);

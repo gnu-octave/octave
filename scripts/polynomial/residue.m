@@ -23,13 +23,13 @@
 ## residue calculates the partial fraction expansion corresponding to the
 ## ratio of the two polynomials.
 ## @cindex partial fraction expansion
-## 
+##
 ## The function @code{residue} returns @var{r}, @var{p}, @var{k}, and
 ## @var{e}, where the vector @var{r} contains the residue terms, @var{p}
 ## contains the pole values, @var{k} contains the coefficients of a direct
 ## polynomial term (if it exists) and @var{e} is a vector containing the
 ## powers of the denominators in the partial fraction terms.
-## 
+##
 ## Assuming @var{b} and @var{a} represent polynomials
 ## @iftex
 ## @tex
@@ -49,19 +49,19 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ##  P(s)    M       r(m)         N
 ##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
 ##  Q(s)   m=1 (s-p(m))^e(m)    i=1
 ## @end example
 ## @end ifinfo
-## 
+##
 ## @noindent
 ## where @var{M} is the number of poles (the length of the @var{r},
 ## @var{p}, and @var{e} vectors) and @var{N} is the length of the @var{k}
 ## vector.
-## 
+##
 ## The argument @var{tol} is optional, and if not specified, a default
 ## value of 0.001 is assumed.  The tolerance value is used to determine
 ## whether poles with small imaginary components are declared real.  It is
@@ -69,7 +69,7 @@
 ## imaginary part of a pole to the real part is less than @var{tol}, the
 ## imaginary part is discarded.  If two poles are farther apart than
 ## @var{tol} they are distinct.  For example,
-## 
+##
 ## @example
 ## @group
 ##  b = [1, 1, 1];
@@ -81,7 +81,7 @@
 ##      @result{} e = [1, 2, 1]
 ## @end group
 ## @end example
-## 
+##
 ## @noindent
 ## which implies the following partial fraction expansion
 ## @iftex
@@ -92,7 +92,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ##         s^2 + s + 1       -2        7        3
 ##    ------------------- = ----- + ------- + -----

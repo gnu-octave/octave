@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -26,16 +26,16 @@
 
 ## Can easily be made to work for continuous distributions (using quad)
 ## as well, but how does the general case work?
-  
+
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compute moments
-  
+
 function m = moment (x, p, opt)
-  
+
   if ((nargin < 2) || (nargin > 3))
     usage ("moment (x, p [, type]")
   endif
-  
+
   [nr, nc] = size (x);
   if (nr == 0 || nc == 0)
     error ("moment:  x must not be empty");
@@ -43,7 +43,7 @@ function m = moment (x, p, opt)
     x  = reshape (x, nc, 1);
     nr = nc;
   endif
-  
+
   if (nargin == 3)
     tmp = implicit_str_to_num_ok;
     implicit_str_to_num_ok = "true";
@@ -55,7 +55,7 @@ function m = moment (x, p, opt)
     endif
     implicit_str_to_num_ok = tmp;
   endif
-  
+
   m = sum(x .^ p) / nr;
-  
+
 endfunction

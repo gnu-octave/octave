@@ -24,7 +24,7 @@
 ## how many 90-degree rotations are to be applied (the default value is 1).
 ## Negative values of @var{n} rotate the matrix in a clockwise direction.
 ## For example,
-## 
+##
 ## @example
 ## @group
 ## rot90 ([1, 2; 3, 4], -1)
@@ -32,11 +32,11 @@
 ##          4  2
 ## @end group
 ## @end example
-## 
+##
 ## @noindent
 ## rotates the given matrix clockwise by 90 degrees.  The following are all
 ## equivalent statements:
-## 
+##
 ## @example
 ## @group
 ## rot90 ([1, 2; 3, 4], -1)

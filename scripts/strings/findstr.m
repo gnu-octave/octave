@@ -23,7 +23,7 @@
 ## @var{s} and @var{t} where an occurrence of the shorter of the two starts.
 ## If the optional argument @var{overlap} is nonzero, the returned vector
 ## can include overlapping positions (this is the default).  For example,
-## 
+##
 ## @example
 ## findstr ("ababab", "a")
 ##      @result{} [ 1, 3, 5 ]
@@ -68,10 +68,10 @@ function v = findstr (s, t, overlap)
     k = 1;
     while (k <= limit)
       if (s (ind + k - 1) == t)
-	v (++i) = k;
-	if (! overlap)
-	  k = k + l_t - 1;
-	endif
+        v (++i) = k;
+        if (! overlap)
+          k = k + l_t - 1;
+        endif
       endif
       k++;
     endwhile

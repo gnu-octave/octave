@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} deblank (@var{s})
-## Removes the trailing blanks from the string @var{s}. 
+## Removes the trailing blanks from the string @var{s}.
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>

@@ -23,11 +23,11 @@
 ## The rank is taken to be the number  of singular values of @var{a} that
 ## are greater than the specified tolerance @var{tol}.  If the second
 ## argument is omitted, it is taken to be
-## 
+##
 ## @example
 ## tol = max (size (@var{a})) * sigma (1) * eps;
 ## @end example
-## 
+##
 ## @noindent
 ## where @code{eps} is machine precision and @code{sigma} is the largest
 ## singular value of @var{a}.

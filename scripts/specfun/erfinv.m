@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -25,7 +25,7 @@
 ## Adapted-By: jwe
 
 function [y, iterations] = erfinv (x)
-  
+
   if (nargin != 1)
     usage ("erfinv (x)");
   endif
@@ -35,7 +35,7 @@ function [y, iterations] = erfinv (x)
 
   iterations = 0;
 
-  [m, n] = size (x);  
+  [m, n] = size (x);
   x = reshape (x, m * n, 1);
   y = zeros (m * n, 1);
 
@@ -59,13 +59,13 @@ function [y, iterations] = erfinv (x)
       z_old = z_new;
       z_new = z_old - (erf (z_old) - x(i)) .* exp (z_old.^2) * s;
       if (++iterations > maxit)
-	warning ("erfinv: iteration limit exceeded");
-	break;
+        warning ("erfinv: iteration limit exceeded");
+        break;
       endif
     endwhile
     y(i) = z_new;
   endif
-  
+
   y = reshape (y, m, n);
-    
+
 endfunction

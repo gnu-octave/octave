@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} create_set (@var{x})
 ## Return a row vector containing the unique values in @var{x}, sorted in
 ## ascending order.  For example,
-## 
+##
 ## @example
 ## @group
 ## create_set ([ 1, 2; 3, 4; 4, 2 ])

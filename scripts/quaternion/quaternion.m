@@ -3,13 +3,13 @@ function [a,b,c,d] = quaternion(w,x,y,z)
 #  w = a*i + b*j + c*k + d from given data.
 #
 # calling formats:
-# [a,b,c,d]   = quaternion(w)		-or-
+# [a,b,c,d]   = quaternion(w)           -or-
 # [vv,theta] = quaternion(w)
 # w           = quaternion(a,b,c,d)
 # w           = quaternion(vv,theta)
 
 switch(nargin)
-case(1),					# extract information
+case(1),                                        # extract information
   if(!(is_vector(w) & length(w) == 4) )
     error("input vector must be of length 4)")
   endif
@@ -55,7 +55,7 @@ case(2),
   elseif(!is_scalar(theta))
     error("theta must be a scalar");
   elseif(norm(vv) == 0)
-    error("quaternion: vv is zero.") 
+    error("quaternion: vv is zero.")
   elseif(abs(norm(vv)-1) > 1e-12)
     warning("quaternion: ||vv|| != 1, normalizing")
     vv = vv/norm(vv);
@@ -67,7 +67,7 @@ case(2),
   endif
   vv = vv*sin(theta/2);
   d = cos(theta/2);
-  a = quaternion(vv(1), vv(2), vv(3), d); 
+  a = quaternion(vv(1), vv(2), vv(3), d);
 
 case(4),
   if(nargout != 1)

@@ -20,25 +20,25 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stairs (@var{x}, @var{y})
 ## Given two vectors of x-y data, bar produces a `stairstep' plot.
-## 
+##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
-## 
+##
 ## If two output arguments are specified, the data are generated but
 ## not plotted.  For example,
-## 
+##
 ## @example
 ## stairs (x, y);
 ## @end example
-## 
+##
 ## @noindent
 ## and
-## 
+##
 ## @example
 ## [xs, ys] = stairs (x, y);
 ## plot (xs, ys);
 ## @end example
-## 
+##
 ## @noindent
 ## are equivalent.
 ## @end deftypefn
@@ -71,18 +71,18 @@ function [xs, ys] = stairs (x, y)
       if (xlen == ylen)
         len = 2 * xlen;
         tmp_xs = tmp_ys = zeros (len, 1);
-	k = 1;
+        k = 1;
         len_m2 = len - 2;
-	for i = 1:2:len_m2
-	  tmp_xs(i) = x(k);
-	  tmp_ys(i) = y(k);
-	  tmp_ys(i+1) = y(k);
+        for i = 1:2:len_m2
+          tmp_xs(i) = x(k);
+          tmp_ys(i) = y(k);
+          tmp_ys(i+1) = y(k);
           k++;
-	  tmp_xs(i+1) = x(k);
+          tmp_xs(i+1) = x(k);
           if (x(k) < x(k-1))
             error ("stairs: x vector values must be in ascending order");
           endif
-	endfor
+        endfor
         tmp_xs(len-1) = x(xlen);
         delta = x(xlen) - x(xlen-1);
         tmp_xs(len) = x(xlen) + delta;

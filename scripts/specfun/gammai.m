@@ -28,7 +28,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @smallexample
 ##                               x
 ##                     1        /
@@ -37,10 +37,10 @@
 ##                           t=0
 ## @end smallexample
 ## @end ifinfo
-## 
+##
 ## If @var{a} is scalar, then @code{gammai (@var{a}, @var{x})} is returned
 ## for each element of @var{x} and vice versa.
-## 
+##
 ## If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
 ## @var{x} must agree, and @var{gammai} is applied element-by-element.
 ## @end deftypefn

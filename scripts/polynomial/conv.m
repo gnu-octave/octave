@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} conv (@var{a}, @var{b})
 ## Convolve two vectors.
-## 
+##
 ## @code{y = conv (a, b)} returns a vector of length equal to
 ## @code{length (a) + length (b) - 1}.
 ## If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}

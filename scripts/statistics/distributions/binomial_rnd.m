@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -23,7 +23,7 @@
 ## binomial_rnd (n, p, r, c) returns an r by c matrix of random samples
 ## from the binomial distribution with parameters n and p. Both n and p
 ## must be scalar or of size r by c.
-  
+
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Random deviates from the binomial distribution
 
@@ -39,8 +39,8 @@ function rnd = binomial_rnd (n, p, r, c)
     [retval, n, p] = common_size (n, p, zeros (r, c));
     if (retval > 0)
       error (strcat("binomial_rnd:  ",
-		    "n and p must be scalar or of size ",
-		    sprintf ("%d by %d", r, c)));
+                    "n and p must be scalar or of size ",
+                    sprintf ("%d by %d", r, c)));
     endif
   elseif (nargin == 2)
     [retval, n, p] = common_size (n, p);
@@ -56,13 +56,13 @@ function rnd = binomial_rnd (n, p, r, c)
   n = reshape (n, 1, s);
   p = reshape (p, 1, s);
   rnd = zeros (1, s);
-  
+
   k = find (!(n > 0) | !(n < Inf) | !(n == round (n)) |
-	    !(p <= 0) | !(p >= 1));
+            !(p <= 0) | !(p >= 1));
   if any (k)
     rnd(k) = NaN * ones (1, length (k));
   endif
-  
+
   k = find ((n > 0) & (n < Inf) & (n == round (n)) & (p >= 0) & (p <= 1));
   if any (k)
     N = max (n(k));
@@ -70,9 +70,9 @@ function rnd = binomial_rnd (n, p, r, c)
     tmp = rand (N, L);
     ind = (1 : N)' * ones (1, L);
     rnd(k) = sum ((tmp < ones (N, 1) * p(k)) &
-		  (ind <= ones (N, 1) * n(k)));
+                  (ind <= ones (N, 1) * n(k)));
   endif
-  
+
   rnd = reshape (rnd, r, c);
-  
+
 endfunction

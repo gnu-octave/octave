@@ -31,10 +31,10 @@
 ##  $2\pi$.
 ## @end tex
 ## @end iftex
-## 
+##
 ## @noindent
 ## The output value @var{w} is a vector of the frequencies.
-## 
+##
 ## If the fourth argument is omitted, the response is evaluated at
 ## frequencies between 0 and
 ## @ifinfo
@@ -45,12 +45,12 @@
 ##  $\pi$.
 ## @end tex
 ## @end iftex
-## 
+##
 ## If @var{n} is omitted, a value of 512 is assumed.
-## 
+##
 ## If @var{a} is omitted, the denominator is assumed to be 1 (this
 ## corresponds to a simple FIR filter).
-## 
+##
 ## For fastest computation, @var{n} should factor into a small number of
 ## small primes.
 ## @end deftypefn

@@ -1,20 +1,20 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  y = arch_rnd (a, b, T)  
+## usage:  y = arch_rnd (a, b, T)
 ##
 ## Simulates an ARCH sequence y of length T with AR coefficients b and
 ## CH coefficients a.
@@ -27,23 +27,23 @@
 ## Description:  Simulate an ARCH process
 
 function y = arch_rnd (a, b, T)
-  
+
   if (nargin != 3)
     usage ("arch_rnd (a, b, T)");
   endif
-  
+
   if !( (min (size (a)) == 1) && (min (size (b)) == 1) )
     error ("arch_rnd:  a and b must both be scalars or vectors");
   endif
   if !( is_scalar (T) && (T > 0) && (rem (T, 1) == 0) )
     error ("arch_rnd:  T must be a positive integer");
   endif
-  
+
   if !(a(1) > 0)
     error ("arch_rnd:  a(1) must be positive");
   endif
   ## perhaps add a test for the roots of a(z) here ...
-  
+
   la = length (a);
   a  = reshape (a, 1, la);
   if (la == 1)
@@ -57,15 +57,15 @@ function y = arch_rnd (a, b, T)
     lb = lb + 1;
   endif
   M  = max([la, lb]);
-  
+
   e  = zeros (T, 1);
   h  = zeros (T, 1);
   y  = zeros (T, 1);
-  
+
   h(1) = a(1);
   e(1) = sqrt (h(1)) * randn;
   y(1) = b(1) + e(1);
-  
+
   for t= 2 : M;
     ta   = min ([t, la]);
     h(t) = a(1) + a(2:ta) * e(t-1:t-ta+1).^2;
@@ -80,8 +80,7 @@ function y = arch_rnd (a, b, T)
       y(t) = b(1) + b(2:lb) * y(t-1:t-tb+1) + e(t);
     endfor
   endif
-  
+
   y = y(1:T);
-  
+
 endfunction
-    

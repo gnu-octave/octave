@@ -20,10 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polyval (@var{c}, @var{x})
 ## Evaluate a polynomial.
-## 
+##
 ## @code{polyval (@var{c}, @var{x})} will evaluate the polynomial at the
 ## specified value of @var{x}.
-## 
+##
 ## If @var{x} is a vector or matrix, the polynomial is evaluated at each of
 ## the elements of @var{x}.
 ## @end deftypefn

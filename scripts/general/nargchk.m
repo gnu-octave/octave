@@ -22,7 +22,7 @@
 ## If @var{n} is in the range @var{nargin_min} through @var{nargin_max}
 ## inclusive, return the empty matrix.  Otherwise, return a message
 ## indicating whether @var{n} is too large or too small.
-## 
+##
 ## This is useful for checking to see that the number of arguments supplied
 ## to a function is within an acceptable range.
 ## @end deftypefn

@@ -26,9 +26,9 @@
 ## @var{out}.  If execution of the command is successful, @var{pid}
 ## contains the process ID of the subprocess.  Otherwise, @var{pid} is
 ## @minus{}1.
-## 
+##
 ## For example,
-## 
+##
 ## @example
 ## @group
 ## [in, out, pid] = popen2 ("sort", "-nr");
@@ -67,41 +67,41 @@ function [in, out, pid] = popen2 (command, args)
 
       if (stdin_status == 0 && stdout_status == 0)
 
-	pid = fork ();
+        pid = fork ();
 
-	if (pid == 0)
+        if (pid == 0)
 
-	  fclose (stdin_pipe (2));
-	  fclose (stdout_pipe (1));
+          fclose (stdin_pipe (2));
+          fclose (stdout_pipe (1));
 
-	  dup2 (stdin_pipe (1), stdin);
-	  fclose (stdin_pipe (1));
+          dup2 (stdin_pipe (1), stdin);
+          fclose (stdin_pipe (1));
 
-	  dup2 (stdout_pipe (2), stdout);
-	  fclose (stdout_pipe (2));
+          dup2 (stdout_pipe (2), stdout);
+          fclose (stdout_pipe (2));
 
-	  if (exec (command, args) < 0)
-	    error ("popen2: unable to start process `%s'", command);
-	    exit (0);
-	  endif
+          if (exec (command, args) < 0)
+            error ("popen2: unable to start process `%s'", command);
+            exit (0);
+          endif
 
-	elseif (pid)
+        elseif (pid)
 
-	  fclose (stdin_pipe (1));
-	  fclose (stdout_pipe (2));
+          fclose (stdin_pipe (1));
+          fclose (stdout_pipe (2));
 
-	  if (fcntl (stdout_pipe (1), __F_SETFL__, __O_NONBLOCK__) < 0)
-	    error ("popen2: error setting file mode");
-	  else
-	    in = stdin_pipe (2);
-	    out = stdout_pipe (1);
-	  endif
+          if (fcntl (stdout_pipe (1), __F_SETFL__, __O_NONBLOCK__) < 0)
+            error ("popen2: error setting file mode");
+          else
+            in = stdin_pipe (2);
+            out = stdout_pipe (1);
+          endif
 
-	elseif (pid < 0)
-	  error ("popen2: fork failed -- unable to create child process");
-	endif
+        elseif (pid < 0)
+          error ("popen2: fork failed -- unable to create child process");
+        endif
       else
-	error ("popen2: pipe creation failed");
+        error ("popen2: pipe creation failed");
       endif
     else
       error ("popen2: file name must be a string");

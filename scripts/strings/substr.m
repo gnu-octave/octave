@@ -21,22 +21,22 @@
 ## @deftypefn {Function File} {} substr (@var{s}, @var{beg}, @var{len})
 ## Return the substring of @var{s} which starts at character number
 ## @var{beg} and is @var{len} characters long.
-## 
+##
 ## If OFFSET is negative, extraction starts that far from the end of
 ## the string.  If LEN is omitted, the substring extends to the end
 ## of S.
-## 
+##
 ##   For example,
-## 
+##
 ## @example
 ## substr ("This is a test string", 6, 9)
 ##      @result{} "is a test"
 ## @end example
-## 
+##
 ## @quotation
 ## @strong{Note:}
 ## This function is patterned after AWK.  You can get the same result by
-## @code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
+## @code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.
 ## @end quotation
 ## @end deftypefn
 
@@ -53,19 +53,19 @@ function t = substr (s, offset, len)
     nc = columns (s);
     if (abs (offset) > 0 && abs (offset) <= nc)
       if (offset > 0)
-	beg = offset;
+        beg = offset;
       else
-	beg = nc + offset + 1;
+        beg = nc + offset + 1;
       endif
       if (nargin == 2)
-	eos = nc;
+        eos = nc;
       else
-	eos = beg + len - 1;
+        eos = beg + len - 1;
       endif
       if (eos <= nc)
-	t = s (:, beg:eos);
+        t = s (:, beg:eos);
       else
-	error ("substr: length = %d out of range", len);
+        error ("substr: length = %d out of range", len);
       endif
     else
       error ("substr: offset = %d out of range", offset);

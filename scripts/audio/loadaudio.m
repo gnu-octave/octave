@@ -20,13 +20,13 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
 ## Loads audio data from the file @file{@var{name}.@var{ext}} into the
-## vector @var{x}.  
+## vector @var{x}.
 ##
 ## The extension @var{ext} determines how the data in the audio file is
 ## interpreted;  the extensions @file{lin} (default) and @file{raw}
 ## correspond to linear, the extensions @file{au}, @file{mu}, or @file{snd}
 ## to mu-law encoding.
-## 
+##
 ## The argument @var{bps} can be either 8 (default) or 16, and specifies
 ## the number of bits per sample used in the audio file.
 ## @end deftypefn

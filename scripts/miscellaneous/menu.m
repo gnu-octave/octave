@@ -59,16 +59,16 @@ function num = menu (t, ...)
     while (1)
       va_start ();
       for i = 1:nopt
-	printf ("  [%2d] ", i);
-	disp (va_arg ());
+        printf ("  [%2d] ", i);
+        disp (va_arg ());
       endfor
       printf ("\n");
       s = input ("pick a number, any number: ", "s");
       eval (sprintf ("num = %s;", s), "num = [];");
       if (! is_scalar (num) || num < 1 || num > nopt)
-	printf ("\nerror: input invalid or out of range\n\n");
+        printf ("\nerror: input invalid or out of range\n\n");
       else
-	break;
+        break;
       endif
     endwhile
 

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} hex2dec (@var{s})
 ## Return the decimal number corresponding to the hexadecimal number stored
 ## in the string @var{s}.  For example,
-## 
+##
 ## @example
 ## hex2dec ("12B")
 ##      @result{} 299
@@ -45,14 +45,14 @@ function d = hex2dec (h)
     for i = 1:nr
       s = h (i, :);
       if (isxdigit (s))
-	tmp = sscanf (s, "%x");
-	if (isempty (tmp))
-	  error ("hex2dec: invalid conversion");
-	else
-	  d (i) = tmp;
-	endif
+        tmp = sscanf (s, "%x");
+        if (isempty (tmp))
+          error ("hex2dec: invalid conversion");
+        else
+          d (i) = tmp;
+        endif
       else
-	error ("hex2dec: argument must be a string of hexadecimal digits");
+        error ("hex2dec: argument must be a string of hexadecimal digits");
       endif
     endfor
   else

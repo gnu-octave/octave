@@ -22,7 +22,7 @@
 ## Return 1 if the given year is a leap year and 0 otherwise.  If no
 ## arguments are provided, @code{is_leap_year} will use the current year.
 ## For example,
-## 
+##
 ## @example
 ## @group
 ## is_leap_year (2000)
@@ -45,6 +45,6 @@ function retval = is_leap_year (year)
   endif
 
   retval = ((rem (year, 4) == 0 & rem (year, 100) != 0) ...
-	    | rem (year, 400) == 0);
+            | rem (year, 400) == 0);
 
 endfunction

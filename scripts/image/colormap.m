@@ -21,15 +21,15 @@
 ## @deftypefn {Function File} {} colormap (@var{map})
 ## @deftypefnx {Function File} {} colormap ("default")
 ## Set the current colormap.
-## 
+##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
 ## color map should be an @var{n} row by 3 column matrix.  The columns
 ## contain red, green, and blue intensities respectively.  All entries
 ## should be between 0 and 1 inclusive.  The new colormap is returned.
-## 
+##
 ## @code{colormap ("default")} restores the default colormap (a gray scale
 ## colormap with 64 entries).  The default colormap is returned.
-## 
+##
 ## With no arguments, @code{colormap} returns the current color map.
 ## @end deftypefn
 
@@ -51,19 +51,19 @@ function cmap = colormap (map)
       if (strcmp (map, "default"))
         map = gray ();
       else
-	unwind_protect
-	  save_default_eval_print_flag = default_eval_print_flag;
-	  default_eval_print_flag = 0;
-	  map = eval (map);
-	unwind_protect_cleanup
-	  default_eval_print_flag = save_default_eval_print_flag;
-	end_unwind_protect
+        unwind_protect
+          save_default_eval_print_flag = default_eval_print_flag;
+          default_eval_print_flag = 0;
+          map = eval (map);
+        unwind_protect_cleanup
+          default_eval_print_flag = save_default_eval_print_flag;
+        end_unwind_protect
       endif
     endif
 
     if (! isempty (map))
       if (columns (map) != 3)
-	error( "colormap: map must have 3 columns: [R,G,B]." );
+        error( "colormap: map must have 3 columns: [R,G,B]." );
       endif
       if (min (min (map)) < 0 || max (max (map)) > 1)
         error( "colormap: map must have values in [0,1]." );

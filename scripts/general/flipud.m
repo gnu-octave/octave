@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} flipud (@var{x})
 ## Return a copy of @var{x} with the order of the rows reversed.  For
 ## example,
-## 
+##
 ## @example
 ## @group
 ## flipud ([1, 2; 3, 4])

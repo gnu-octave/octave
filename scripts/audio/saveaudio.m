@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## -*- texinfo -*- 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} saveaudio (@var{name}, @var{x}, @var{ext}, @var{bps})
 ## Saves a vector @var{x} of audio data to the file
 ## @file{@var{name}.@var{ext}}.  The optional parameters @var{ext} and
@@ -63,12 +63,12 @@ function saveaudio (name, X, ext, bit)
     if (bit == 8)
       ld = max (abs (X));
       if (ld > 127)   # convert 16 to 8 bit
-	if (ld < 16384)
-	  sc = 64 / ld;
-	else
-	  sc = 1 / 256;
-	endif
-	X = fix (X * sc);
+        if (ld < 16384)
+          sc = 64 / ld;
+        else
+          sc = 1 / 256;
+        endif
+        X = fix (X * sc);
       endif
       X = X + 127;
       c = fwrite (num, X, "uchar");

@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -27,16 +27,16 @@
 ##
 ## Note that the rate r is not specified in percent, i.e., one has to
 ## write 0.05 rather than 5 %.
-  
+
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Future value of an investment
 
 function v = fv (r, n, p, l, m)
-  
+
   if ((nargin < 3) || (nargin > 5))
     usage ("fv (r, n, p [, l] [, method])");
   endif
-  
+
   if !(is_scalar (r) && (r > -1))
     error ("fv:  r must be a scalar > -1");
   elseif !(is_scalar (n) && (n > 0))
@@ -44,13 +44,13 @@ function v = fv (r, n, p, l, m)
   elseif !is_scalar (p)
     error ("fv:  p must be a scalar.");
   endif
-  
+
   if (r != 0)
     v = p * ((1 + r)^n - 1) / r;
   else
     v = p * n;
   endif
-  
+
   if (nargin > 3)
     if (nargin == 5)
       if !isstr (m)
@@ -71,6 +71,6 @@ function v = fv (r, n, p, l, m)
       error ("fv:  l must be a scalar");
     endif
   endif
-  
+
 endfunction
-      
+

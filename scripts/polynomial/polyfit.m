@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{p}, @var{yf}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
-## @var{n} that minimizes 
+## @var{n} that minimizes
 ## @iftex
 ## @tex
 ## $$
@@ -36,7 +36,7 @@
 ## The polynomial coefficients are returned in a row vector if @var{x}
 ## and @var{y} are both row vectors; otherwise, they are returned in a
 ## column vector.
-## 
+##
 ## If two output arguments are requested, the second contains the values of
 ## the polynomial for each value of @var{x}.
 ## @end deftypefn

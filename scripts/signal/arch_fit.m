@@ -1,20 +1,20 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [a, b] = arch_fit (y, X, p [, ITER [, gamma [, a0, b0]]]) 
+## usage:  [a, b] = arch_fit (y, X, p [, ITER [, gamma [, a0, b0]]])
 ##
 ## Fits an ARCH regression model to the time series y using the scoring
 ## algorithm in Engle's original ARCH paper.  The model is
@@ -33,7 +33,7 @@
 ## The input parameters are:
 ##    y     ... time series (vector)
 ##    X     ... matrix of (ordinary) regressors or order of
-##              autoregression 
+##              autoregression
 ##    p     ... order of the regression of the residual variance
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -44,7 +44,7 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
   if ((nargin < 3) || (nargin == 6) || (nargin > 7))
     usage ("arch_fit (y, X, p [, ITER [, gamma [, a0, b0]]])");
   endif
-  
+
   if !(is_vector (y))
     error ("arch_test:  y must be a vector");
   endif
@@ -56,11 +56,11 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
     X = autoreg_matrix (y, X);
   elseif !(rx == T)
     error (["arch_test:  ", ...
-	    "either rows (X) == length (y), or X is a scalar"]);
+            "either rows (X) == length (y), or X is a scalar"]);
   endif
 
   [T, k] = size (X);
-  
+
   if (nargin == 7)
     a   = a0;
     b   = b0;
@@ -71,11 +71,11 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
     if (nargin < 5)
       gamma = 0.1;
       if (nargin < 4)
-	ITER = 50;
+        ITER = 50;
       endif
     endif
   endif
-  
+
   esq = e.^2;
   Z   = autoreg_matrix (esq, p);
 
@@ -104,5 +104,5 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
     delta_a = inv (Z_tilde' * Z_tilde) * Z_tilde' * f;
     a   = a + gamma * delta_a;
   endfor
-  
+
 endfunction

@@ -21,12 +21,12 @@
 ## @deftypefn {Function File} {} index (@var{s}, @var{t})
 ## Return the position of the first occurrence of the string @var{t} in the
 ## string @var{s}, or 0 if no occurrence is found.  For example,
-## 
+##
 ## @example
 ## index ("Teststring", "t")
 ##      @result{} 4
 ## @end example
-## 
+##
 ## @strong{Note:}  This function does not work for arrays of strings.
 ## @end deftypefn
 
@@ -55,10 +55,10 @@ function n = index (s, t)
     if (l_t <= l_s)
       tmp = l_s - l_t + 1;
       for idx = 1 : tmp
-	if (strcmp (substr (s, idx, l_t), t))
-	  n = idx;
-	  return;
-	endif
+        if (strcmp (substr (s, idx, l_t), t))
+          n = idx;
+          return;
+        endif
       endfor
     endif
 

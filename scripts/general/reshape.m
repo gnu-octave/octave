@@ -23,9 +23,9 @@
 ## taken from the matrix @var{a}.  To decide how to order the elements,
 ## Octave pretends that the elements of a matrix are stored in column-major
 ## order (like Fortran arrays are stored).
-## 
+##
 ## For example,
-## 
+##
 ## @example
 ## @group
 ## reshape ([1, 2, 3, 4], 2, 2)
@@ -33,17 +33,17 @@
 ##          2  4
 ## @end group
 ## @end example
-## 
+##
 ## If the variable @code{do_fortran_indexing} is nonzero, the
 ## @code{reshape} function is equivalent to
-## 
+##
 ## @example
 ## @group
 ## retval = zeros (m, n);
 ## retval (:) = a;
 ## @end group
 ## @end example
-## 
+##
 ## @noindent
 ## but it is somewhat less cryptic to use @code{reshape} instead of the
 ## colon operator.  Note that the total number of elements in the original
@@ -68,15 +68,15 @@ function retval = reshape (a, m, n)
       istno = implicit_str_to_num_ok;
       unwind_protect
         do_fortran_indexing = 1;
-	implicit_str_to_num_ok = 1;
+        implicit_str_to_num_ok = 1;
         retval = zeros (m, n);
         retval (:) = a;
-	if (isstr (a))
-	  retval = setstr (retval);
-	endif
+        if (isstr (a))
+          retval = setstr (retval);
+        endif
       unwind_protect_cleanup
         do_fortran_indexing = dfi;
-	implicit_str_to_num_ok = istno;
+        implicit_str_to_num_ok = istno;
       end_unwind_protect
     else
       error ("reshape: sizes must match");

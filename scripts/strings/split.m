@@ -22,7 +22,7 @@
 ## Divides the string @var{s} into pieces separated by @var{t}, returning
 ## the result in a string array (padded with blanks to form a valid
 ## matrix).  For example,
-## 
+##
 ## @example
 ## split ("Test string", "t")
 ##      @result{} "Tes "

@@ -51,15 +51,15 @@
 ##   The colors, line styles, and point styles have the following
 ##   meanings for X11 and Postscript terminals under Gnuplot 3.6.
 ##
-##   Number ------ Color -------  Line Style      ---- Points Style ----   
-##          x11       postscript  postscript      x11         postscript   
+##   Number ------ Color -------  Line Style      ---- Points Style ----
+##          x11       postscript  postscript      x11         postscript
 ##   =====================================================================
-##     1    red       green       solid           "o"         "+"         
-##     2    green     blue        long dash       "+"         "x"         
-##     3    blue      red         short dash     square       "*"         
-##     4    magenta   magenta     dotted          "x"        open square  
+##     1    red       green       solid           "o"         "+"
+##     2    green     blue        long dash       "+"         "x"
+##     3    blue      red         short dash     square       "*"
+##     4    magenta   magenta     dotted          "x"        open square
 ##     5    cyan      cyan        dot long dash  triangle    filled square
-##     6    brown     yellow      dot short dash  "*"         "o"         
+##     6    brown     yellow      dot short dash  "*"         "o"
 ##
 ## @seealso{__pltopt1__}
 

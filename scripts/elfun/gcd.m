@@ -20,22 +20,22 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} gcd (@var{x}, @code{...})
 ## Compute the greatest common divisor of the elements of @var{x}, or the
-## list of all the arguments.  For example, 
-## 
+## list of all the arguments.  For example,
+##
 ## @example
 ## gcd (a1, ..., ak)
 ## @end example
-## 
+##
 ## @noindent
 ## is the same as
-## 
+##
 ## @example
 ## gcd ([a1, ..., ak])
 ## @end example
-## 
+##
 ## An optional second return value, @var{v}
 ## contains an integer vector such that
-## 
+##
 ## @example
 ## g = v(1) * a(k) + ... + v(k) * a(k)
 ## @end example

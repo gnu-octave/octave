@@ -28,7 +28,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
 ## @end example

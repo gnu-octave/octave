@@ -21,13 +21,13 @@
 ## @deftypefn {Function File} {} etime (@var{t1}, @var{t2})
 ## Return the difference (in seconds) between two time values returned from
 ## @code{clock}.  For example:
-## 
+##
 ## @example
 ## t0 = clock ();
 ## # many computations later...
 ## elapsed_time = etime (clock (), t0);
 ## @end example
-## 
+##
 ## @noindent
 ## will set the variable @code{elapsed_time} to the number of seconds since
 ## the variable @code{t0} was set.

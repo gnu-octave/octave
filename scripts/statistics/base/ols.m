@@ -35,7 +35,7 @@
 ##  where
 ## @iftex
 ## @tex
-## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix, 
+## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix,
 ## $b$ is a $k \times p$ matrix, and $e$ is a $t \times p$ matrix.
 ## @end tex
 ## @end iftex
@@ -44,22 +44,22 @@
 ## matrix, @var{B} is a @var{k} by @var{p} matrix, and @var{e} is a @var{t}
 ## by @var{p} matrix.
 ## @end ifinfo
-## 
+##
 ## Each row of @var{y} and @var{x} is an observation and each column a
 ## variable.
-## 
+##
 ## The return values @var{beta}, @var{sigma}, and @var{r} are defined as
 ## follows.
-## 
+##
 ## @table @var
 ## @item beta
 ## The OLS estimator for @var{b}, @code{@var{beta} = pinv (@var{x}) *
 ## @var{y}}, where @code{pinv (@var{x})} denotes the pseudoinverse of
 ## @var{x}.
-## 
+##
 ## @item sigma
 ## The OLS estimator for the matrix @var{s},
-## 
+##
 ## @example
 ## @group
 ## @var{sigma} = (@var{y}-@var{x}*@var{beta})'
@@ -67,7 +67,7 @@
 ##   / (@var{t}-rank(@var{x}))
 ## @end group
 ## @end example
-## 
+##
 ## @item r
 ## The matrix of OLS residuals, @code{@var{r} = @var{y} - @var{x} *
 ## @var{beta}}.

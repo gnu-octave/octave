@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
 ## Compares two strings, returning 1 if they are the same, and 0 otherwise.
-## 
+##
 ## @strong{Note:}  For compatibility with @sc{Matlab}, Octave's strcmp
 ## function returns 1 if the strings are equal, and 0 otherwise.  This is
 ## just the opposite of the corresponding C library function.

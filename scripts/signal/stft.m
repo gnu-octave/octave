@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Andreas Weingessel
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -38,41 +38,41 @@
 ## Description:  Short-term Fourier transform
 
 function [Y, c] = stft(X, win, inc, coef, w_type)
-  
+
   ## default values of unspecified arguments
   if (nargin < 5)
     w_type = 1;
     if (nargin < 4)
       coef = 64;
       if (nargin < 3)
-	inc = 24;
-	if (nargin < 2)
-	  win = 80;
-	endif
+        inc = 24;
+        if (nargin < 2)
+          win = 80;
+        endif
       endif
     endif
-  elseif (nargin == 5)  
+  elseif (nargin == 5)
     if (isstr (w_type))
       if (strcmp (w_type, "hanning"))
-	w_type = 1;
+        w_type = 1;
       elseif (strcmp (w_type, "hamming"))
-	w_type = 2;
+        w_type = 2;
       elseif (strcmp (w_type, "rectangle"))
-	w_type = 3;
+        w_type = 3;
       else
-	error (["stft:  unknown window type `", w_type, "'"])
+        error (["stft:  unknown window type `", w_type, "'"])
       endif
     endif
   else
     usage ("[Y [, c]] = ", ...
-	   "stft(X [, win_size [, inc [, num_coef [, w_type]]]])");
+           "stft(X [, win_size [, inc [, num_coef [, w_type]]]])");
   endif
 
   ## check whether X is a vector
   [nr, nc] = size (X);
   if (nc != 1)
     if (nr == 1)
-      X = X'; 
+      X = X';
       nr = nc;
     else
       error ("stft:  X must be a vector");
@@ -87,14 +87,14 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
   num_win = fix ((nr - win) / inc);
 
   ## compute the window coefficients
-  if (w_type == 3)		# rectangular window 
+  if (w_type == 3)              # rectangular window
     WIN_COEF = ones (win, 1);
-  elseif (w_type == 2)		# Hamming window
+  elseif (w_type == 2)          # Hamming window
     WIN_COEF = hamming (win);
-  else				# Hanning window
+  else                          # Hanning window
     WIN_COEF = hanning (win);
   endif
-  
+
   ## create a matrix Z whose columns contain the windowed time-slices
   Z = zeros (num_coef, num_win + 1);
   start = 1;

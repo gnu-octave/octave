@@ -19,10 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
-## 
+##
 ## With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
 ## @var{b} using the FFT.
-## 
+##
 ## Given the optional third argument, @var{n}, @code{fftfilt} uses the
 ## overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
 ## @end deftypefn

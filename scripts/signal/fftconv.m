@@ -23,7 +23,7 @@
 ## with length equal to the @code{length (a) + length (b) - 1}.  If @var{a}
 ## and @var{b} are the coefficient vectors of two polynomials, the returned
 ## value is the coefficient vector of the product polynomial.
-## 
+##
 ## The computation uses the FFT by calling the function @code{fftfilt}.  If
 ## the optional argument @var{n} is specified, an N-point FFT is used.
 ## @end deftypefn
@@ -53,7 +53,7 @@ function c = fftconv (a, b, N)
       c = fftfilt (a, b);
     else
       if !(is_scalar (N))
-	error ("fftconv: N has to be a scalar");
+        error ("fftconv: N has to be a scalar");
       endif
       c = fftfilt (a, b, N);
     endif

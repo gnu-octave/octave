@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## @deftypefn {Operator} {} , 
+## @deftypefn {Operator} {} ,
 ## Array index, function argument, or command separator.
 ## @end deftypefn
 ## @seealso{semicolon}

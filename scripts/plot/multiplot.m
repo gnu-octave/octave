@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} multiplot (@var{xn}, @var{yn})
 ## Sets and resets multiplot mode.
-## 
+##
 ## If the arguments are non-zero, @code{multiplot} will set up multiplot
 ## mode with @var{xn}, @var{yn} subplots along the @var{x} and @var{y}
 ## axes.  If both arguments are zero, @code{multiplot} closes multiplot

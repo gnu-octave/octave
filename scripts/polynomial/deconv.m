@@ -20,10 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} deconv (@var{y}, @var{a})
 ## Deconvolve two vectors.
-## 
+##
 ## @code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that
 ## @code{y = conv (a, b) + r}.
-## 
+##
 ## If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
 ## contain the coefficients of the polynomial quotient and @var{r} will be
 ## a remander polynomial of lowest order.

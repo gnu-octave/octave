@@ -20,20 +20,20 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} lcm (@var{x}, @code{...})
 ## Compute the least common multiple of the elements elements of @var{x}, or
-## the list of all the arguments.  For example, 
-## 
+## the list of all the arguments.  For example,
+##
 ## @example
 ## lcm (a1, ..., ak)
 ## @end example
-## 
+##
 ## @noindent
 ## is the same as
-## 
+##
 ## @example
 ## lcm ([a1, ..., ak]).
 ## @end example
 ## @end deftypefn
-## @seealso{gcd, min, max, ceil, and floor}  
+## @seealso{gcd, min, max, ceil, and floor}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994

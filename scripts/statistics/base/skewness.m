@@ -28,12 +28,12 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## skewness (x) = N^(-1) std(x)^(-3) sum ((x - mean(x)).^3)
 ## @end example
 ## @end ifinfo
-## 
+##
 ## @noindent
 ## of @var{x}.  If @var{x} is a matrix, return the row vector containing
 ## the skewness of each column.

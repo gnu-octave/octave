@@ -22,7 +22,7 @@
 ## Return a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
 ## its rows.  Each string is padded with blanks in order to form a valid
 ## matrix.
-## 
+##
 ## @strong{Note:}
 ## This function is modelled after @sc{Matlab}.  In Octave, you can create
 ## a matrix of strings by @code{[@var{s_1}; @dots{}; @var{s_n}]} even if

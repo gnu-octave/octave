@@ -28,7 +28,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @smallexample
 ##                                     x
 ##                                    /
@@ -37,7 +37,7 @@
 ##                                 t=0
 ## @end smallexample
 ## @end ifinfo
-## 
+##
 ## If x has more than one component, both @var{a} and @var{b} must be
 ## scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
 ## compatible dimensions.

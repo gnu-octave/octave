@@ -19,7 +19,7 @@
 function [Uret,Ucols] = krylovb(A,V,k,eps1,pflg);
   # function [U,Ucols] = krylovb(A,V,k{,eps1,pflg});
   # construct orthogonal basis U of block Krylov subspace;
-  # 	[V AV A^2*V ... A^(k+1)*V];
+  #     [V AV A^2*V ... A^(k+1)*V];
   # method used: householder reflections to guard against loss of
   # orthogonality
   # eps1: threshhold for 0 (default: 1e-12)

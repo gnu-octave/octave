@@ -67,14 +67,14 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-	gset hidden3d;
-	gset data style lines;
+        gset hidden3d;
+        gset data style lines;
         gset surface;
         gset nocontour;
-	gset parametric;
+        gset parametric;
         gset view 60, 30, 1, 1
-	gsplot (zz);
-	gset noparametric;
+        gsplot (zz);
+        gset noparametric;
       else
         msg = "mesh: rows (z) must be the same as length (x) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);
@@ -84,7 +84,7 @@ function mesh (x, y, z)
       xlen = columns (z);
       ylen = rows (z);
       if (xlen == columns (x) && xlen == columns (y) &&
-	ylen == rows (x) && ylen == rows(y))
+        ylen == rows (x) && ylen == rows(y))
         len = 3 * xlen;
         zz = zeros (ylen, len);
         k = 1;
@@ -94,14 +94,14 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-	gset hidden3d;
-	gset data style lines;
+        gset hidden3d;
+        gset data style lines;
         gset surface;
         gset nocontour;
-	gset parametric;
+        gset parametric;
         gset view 60, 30, 1, 1
-	gsplot (zz);
-	gset noparametric;
+        gsplot (zz);
+        gset noparametric;
       else
         error ("mesh: x, y, and z must have same dimensions");
       endif

@@ -24,7 +24,7 @@
 ## is not the same as the first element of @var{r}, the first element of
 ## @var{c} is used.  If the second argument is omitted, the first row is
 ## taken to be the same as the first column.
-## 
+##
 ## A square Toeplitz matrix has the form
 ## @iftex
 ## @tex
@@ -38,7 +38,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## @group
 ## c(0)  r(1)   r(2)  ...  r(n)
@@ -47,7 +47,7 @@
 ##  .                       .
 ##  .                       .
 ##  .                       .
-## 
+##
 ## c(n) c(n-1) c(n-2) ...  c(0)
 ## @end group
 ## @end example

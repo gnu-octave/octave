@@ -32,7 +32,7 @@
 ## @end ifinfo
 ##  where
 ## @iftex
-## @tex 
+## @tex
 ## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix, $b$ is a $k
 ## \times p$ matrix, $e$ is a $t \times p$ matrix, and $o$ is a $tp \times
 ## tp$ matrix.
@@ -44,20 +44,20 @@
 ## @var{p} matrix, and @var{O} is a @var{T}@var{p} by @var{T}@var{p}
 ## matrix.
 ## @end ifinfo
-## 
+##
 ## @noindent
 ## Each row of Y and X is an observation and each column a variable.
-## 
+##
 ## The return values @var{beta}, @var{v}, and @var{r} are defined as
 ## follows.
-## 
+##
 ## @table @var
 ## @item beta
 ## The GLS estimator for @var{b}.
-## 
+##
 ## @item v
 ## The GLS estimator for @code{@var{s}^2}.
-## 
+##
 ## @item r
 ## The matrix of GLS residuals, @code{@var{r} = @var{y} - @var{x} *
 ## @var{beta}}.

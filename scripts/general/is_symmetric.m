@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} is_symmetric (@var{x}, @var{tol})
-## If @var{x} is symmetric within the tolerance specified by @var{tol}, 
+## If @var{x} is symmetric within the tolerance specified by @var{tol},
 ## then return the dimension of @var{x}.  Otherwise, return 0.  If
 ## @var{tol} is omitted, use a tolerance equal to the machine precision.
 ## @end deftypefn
@@ -36,7 +36,7 @@ function retval = is_symmetric (x,tol)
     retval = is_square (x);
     if (retval != 0)
       if (nargin == 1)
-	tol = eps;
+        tol = eps;
       endif
       if (norm (x - x') / norm(x) > tol)
         retval = 0;

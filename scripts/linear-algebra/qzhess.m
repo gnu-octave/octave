@@ -21,10 +21,10 @@
 ## @deftypefn {Function File} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
 ## Compute the Hessenberg-triangular decomposition of the matrix pencil
 ## @code{(@var{a}, @var{b})}, returning
-## @code{@var{aa} = @var{q} * @var{a} * @var{z}}, 
+## @code{@var{aa} = @var{q} * @var{a} * @var{z}},
 ## @code{@var{bb} = @var{q} * @var{b} * @var{z}}, with @var{q} and @var{z}
 ## orthogonal.  For example,
-## 
+##
 ## @example
 ## @group
 ## [aa, bb, q, z] = qzhess ([1, 2; 3, 4], [5, 6; 7, 8])
@@ -34,10 +34,10 @@
 ##      @result{}  z = [ 1, 0; 0, 1 ]
 ## @end group
 ## @end example
-## 
+##
 ## The Hessenberg-triangular decomposition is the first step in
 ## Moler and Stewart's QZ decomposition algorithm.
-## 
+##
 ## Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
 ## edition}.
 ## @end deftypefn

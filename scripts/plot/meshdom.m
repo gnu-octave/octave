@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} meshdom (@var{x}, @var{y})
 ## Given vectors of @var{x} and @var{y} coordinates, return two matrices
 ## corresponding to the @var{x} and @var{y} coordinates of the mesh.
-## 
+##
 ## See the file @file{sombrero.m} for an example of using @code{mesh} and
 ## @code{meshdom}.
 ##

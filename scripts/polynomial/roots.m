@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} roots (@var{v})
-## 
+##
 ## For a vector @var{v} with @var{N} components, return
 ## the roots of the polynomial
 ## @iftex
@@ -30,7 +30,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## v(1) * z^(N-1) + ... + v(N-1) * z + v(N).
 ## @end example
@@ -65,7 +65,7 @@ function r = roots (v)
       r = eig (A);
       if (f(m) < n)
         tmp = zeros (n - f(m), 1);
-	r = [r; tmp];
+        r = [r; tmp];
       endif
     else
       r = zeros (n - f(m), 1);

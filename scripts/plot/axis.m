@@ -20,14 +20,14 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} axis (@var{limits})
 ## Sets the axis limits for plots.
-## 
+##
 ## The argument @var{limits} should be a 2, 4, or 6 element vector.  The
 ## first and second elements specify the lower and upper limits for the x
 ## axis.  The third and fourth specify the limits for the y axis, and the
 ## fifth and sixth specify the limits for the z axis.
-## 
+##
 ## With no arguments, @code{axis} turns autoscaling on.
-## 
+##
 ## If your plot is already drawn, then you need to use @code{replot} before
 ## the new axis limits will take effect.  You can get this to happen
 ## automatically by setting the built-in variable @code{automatic_replot}

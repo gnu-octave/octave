@@ -50,13 +50,13 @@ function p = polyreduce (p)
 
       if (length (index) != 0)
 
-      	if (length (p) > 1)
-	  p = p (index (length (index))+1:length (p));
-      	endif
+        if (length (p) > 1)
+          p = p (index (length (index))+1:length (p));
+        endif
 
-      	if (length (p) == 0)
-	  p = 0;
-      	endif
+        if (length (p) == 0)
+          p = 0;
+        endif
 
       endif
 

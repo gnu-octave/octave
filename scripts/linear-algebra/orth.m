@@ -20,11 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} orth (@var{a}, @var{tol})
 ## Return an orthonormal basis of the range space of @var{a}.
-## 
+##
 ## The dimension of the range space is taken as the number of singular
 ## values of @var{a} greater than @var{tol}.  If the argument @var{tol} is
 ## missing, it is computed as
-## 
+##
 ## @example
 ## max (size (@var{a})) * max (svd (@var{a})) * eps
 ## @end example

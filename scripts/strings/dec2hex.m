@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} dec2hex (@var{n})
 ## Return the hexadecimal number corresponding to the nonnegative decimal
 ## number @var{n}, as a string.  For example,
-## 
+##
 ## @example
 ## dec2hex (2748)
 ##      @result{} "abc"
@@ -50,9 +50,9 @@ function h = dec2hex (d)
     for i = 1:len
       tmp = d (i);
       if (tmp == round (tmp))
-	h = sprintf ("%s%x", h, tmp);
+        h = sprintf ("%s%x", h, tmp);
       else
-	error ("dec2hex: invalid conversion");
+        error ("dec2hex: invalid conversion");
       endif
     endfor
   unwind_protect_cleanup

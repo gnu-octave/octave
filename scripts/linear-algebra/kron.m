@@ -20,13 +20,13 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} kron (@var{a}, @var{b})
 ## Form the kronecker product of two matrices, defined block by block as
-## 
+##
 ## @example
 ## x = [a(i, j) b]
 ## @end example
-## 
+##
 ## For example,
-## 
+##
 ## @example
 ## @group
 ## kron (1:4, ones (3, 1))
@@ -48,17 +48,17 @@ function x = kron (a, b)
     [m, n] = size (b);
     [ma, na] = size (a);
 
-    x = zeros (ma*m, na*n);	
+    x = zeros (ma*m, na*n);
     i_vec = 1:m;
     j_vec = 1:n;
 
     for jj = 1:na
       for ii = 1:ma
-	x(i_vec+(ii-1)*m,j_vec) = a(ii,jj) * b;
+        x(i_vec+(ii-1)*m,j_vec) = a(ii,jj) * b;
       endfor
       j_vec = j_vec + n;
     endfor
-    
+
   else
     usage ("kron (a, b)");
   endif

@@ -1,15 +1,15 @@
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details. 
-## 
+## General Public License for more details.
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -29,23 +29,23 @@
 ## 0.05 rather than 5 %.
 ## @end deftypefn
 ## @seealso{irr and pv}
-  
+
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Net present value of a series of payments
 
 function v = npv (r, p, i)
-  
+
   if ((nargin < 2) || (nargin > 3))
     usage ("npv (r, p [, i]");
   endif
-  
+
   if !(is_vector (p))
     error ("npv:  p has to be a vector");
   else
     n = length (p);
     p = reshape (p, 1, n);
   endif
-  
+
   if any (any (r <= -1))
     error ("npv:  all interest rates must be > -1");
   endif
@@ -64,8 +64,8 @@ function v = npv (r, p, i)
   else
     i = 0;
   endif
-  
+
   p = [i, p];
   v = sum (d .* p);
-  
+
 endfunction

@@ -38,10 +38,10 @@ function playaudio (name, ext)
     [nr, nc] = size (name);
     if (nc != 1)
       if (nr == 1)
-	name = name';
-	nr = nc;
+        name = name';
+        nr = nc;
       else
-	error ("playaudio: X must be a vector");
+        error ("playaudio: X must be a vector");
       endif
     endif
     X = name + 127;

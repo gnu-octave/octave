@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
 ## Replaces all occurrences of the substring @var{x} of the string @var{s}
 ## with the string @var{y}.  For example,
-## 
+##
 ## @example
 ## strrep ("This is a test string", "is", "&%$")
 ##      @result{} "Th&%$ &%$ a test string"
@@ -59,8 +59,8 @@ function t = strrep (s, x, y)
       tmp = s (1 : ind (1) - 1);
       t = strcat (tmp, y);
       for k = 1 : len - 1
-      	tmp = s (ind (k) + l_x : ind (k+1) - 1);
-      	t = strcat (t, tmp, y);
+        tmp = s (ind (k) + l_x : ind (k+1) - 1);
+        t = strcat (t, tmp, y);
       endfor
       tmp = s (ind(len) + l_x : length (s));
       t = [t, tmp];

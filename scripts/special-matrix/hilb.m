@@ -37,7 +37,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## H (i, j) = 1 / (i + j - 1)
 ## @end example

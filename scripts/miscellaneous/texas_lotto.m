@@ -21,7 +21,7 @@
 ##
 ## Pick 6 unique numbers between 1 and 50 that are guaranteed to win
 ## the Texas Lotto.
-## @end deftypefn 
+## @end deftypefn
 ## @seealso{rand}
 
 ## Author: jwe

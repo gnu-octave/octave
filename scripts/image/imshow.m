@@ -23,15 +23,15 @@
 ## @deftypefnx {Function File} {} imshow (@var{i}, @var{n})
 ## @deftypefnx {Function File} {} imshow (@var{r}, @var{g}, @var{b})
 ## Display images.
-## 
+##
 ## @code{imshow (@var{x})} displays an indexed image using the current
 ## colormap.
-## 
+##
 ## @code{imshow (@var{x}, @var{map})} displays an indexed image using the
 ## specified colormap.
-## 
+##
 ## @code{imshow (@var{i}, @var{n})} displays a gray scale intensity image.
-## 
+##
 ## @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
 ## @end deftypefn
 

@@ -21,23 +21,23 @@
 ## @deftypefn {Function File} {} tic ()
 ## @deftypefnx {Function File} {} toc ()
 ## These functions set and check a wall-clock timer.  For example,
-## 
+##
 ## @example
 ## tic ();
 ## # many computations later...
 ## elapsed_time = toc ();
 ## @end example
-## 
+##
 ## @noindent
 ## will set the variable @code{elapsed_time} to the number of seconds since
 ## the most recent call to the function @code{tic}.
-## 
+##
 ## If you are more interested in the CPU time that your process used, you
 ## should use the @code{cputime} function instead.  The @code{tic} and
 ## @code{toc} functions report the actual wall clock time that elapsed
 ## between the calls.  This may include time spent processing other jobs or
 ## doing nothing at all.  For example,
-## 
+##
 ## @example
 ## @group
 ## tic (); sleep (5); toc ()
@@ -46,7 +46,7 @@
 ##      @result{} 0
 ## @end group
 ## @end example
-## 
+##
 ## @noindent
 ## (This example also illustrates that the CPU timer may have a fairly
 ## coarse resolution.)

@@ -22,10 +22,10 @@
 ## @deftypefnx {Function File} {} mplot (@var{x}, @var{y}, @var{fmt})
 ## @deftypefnx {Function File} {} mplot (@var{x1}, @var{y1}, @var{x2}, @var{y2})
 ## This is a modified version of the @code{plot} function that works with
-## the multiplot version of @code{gnuplot} to plot multiple plots per page. 
+## the multiplot version of @code{gnuplot} to plot multiple plots per page.
 ## This plot version automatically advances to the next subplot position
 ## after each set of arguments are processed.
-## 
+##
 ## See the description of the @var{plot} function for the various options.
 ## @end deftypefn
 
@@ -62,9 +62,9 @@ function mplot (...)
     else
       __multiplot_xi__ = 1;
       if (__multiplot_yi__ < __multiplot_yn__)
-	__multiplot_yi__++;
+        __multiplot_yi__++;
       else
-	__multiplot_yi__ = 1;
+        __multiplot_yi__ = 1;
       endif
     endif
 

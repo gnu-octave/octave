@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} union (@var{x}, @var{y})
 ## Return the set of elements that are in either of the sets @var{x} and
 ## @var{y}.  For example,
-## 
+##
 ## @example
 ## @group
 ## union ([ 1, 2, 4 ], [ 2, 3, 5 ])

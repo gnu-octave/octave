@@ -97,12 +97,12 @@ function fmt = __pltopt1__ (caller, opt)
             || strcmp (char, "6") || strcmp (char, "7") ...
             || strcmp (char, "8") || strcmp (char, "9"))
       if (set_color)
-	set_points = 1;
-	symbol = char;
-	set_symbol = 1;
+        set_points = 1;
+        symbol = char;
+        set_symbol = 1;
       else
-	color = char;
-	set_color = 1;
+        color = char;
+        set_color = 1;
       endif
     elseif (strcmp (char, "r"))
       set_color = 1;
@@ -141,14 +141,14 @@ function fmt = __pltopt1__ (caller, opt)
     elseif (strcmp (char, ";"))  # title mode.
       set_key = 1;
       working = 1;
-      key_title = ""; 
+      key_title = "";
       while (working)
         if (max (size (opt)) > 1)
-	  char = opt(1);
-	  opt = opt(2:length(opt));
+          char = opt(1);
+          opt = opt(2:length(opt));
         else
-	  char = opt;
-	  if (! strcmp (char, ";"))
+          char = opt;
+          if (! strcmp (char, ";"))
             error ("%s: unfinished key label", caller);
           end
           more_opts = 0;
@@ -157,14 +157,14 @@ function fmt = __pltopt1__ (caller, opt)
         if strcmp (char, ";")
           working = 0;
         else
-	  if (isempty (key_title))  # needs this to avoid empty matrix warning.
+          if (isempty (key_title))  # needs this to avoid empty matrix warning.
             key_title = char;
-	  else
+          else
             key_title = strcat (key_title, char);
-	  endif
+          endif
         endif
       endwhile
-    elseif (strcmp (char, " ")) 
+    elseif (strcmp (char, " "))
       ## whitespace -- do nothing.
     else
       error ("%s: unrecognized format character: '%s'", caller, char);

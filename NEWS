@@ -1,21 +1,5 @@
-Summary of changes for version 2.0.6:
+Summary of changes for version 2.1.x:
 ------------------------------------
-
-  This is primarily a bug-fixing release.  There are only a few new
-  user-visible features.
-
-  * The new built-in variable default_eval_print_flag controls whether
-    Octave prints the results of commands executed by eval() that do
-    not end with semicolons.  The default is 1.
-
-  * The new built-in constant OCTAVE_HOME specifies the top-level
-    directory where Octave is installed.
-
-  * Octave no longer includes functions to work with NPSOL or QPSOL,
-    because they are not free software.
-
-Summary of changes since version 2.0.5:
---------------------------------------
 
   * Octave's expression parser is more general and consistent.  It is
     now possible to access structure elements and index arbitrary
@@ -168,6 +152,29 @@ Summary of changes since version 2.0.5:
     now.
 
   * New configure option, --enable-readline.
+
+  * New configure option, --enable-static.
+
+Summary of changes for version 2.0.7:
+------------------------------------
+
+  This is a bug-fixing release.  There are no new user-visible features.
+
+Summary of changes for version 2.0.6:
+------------------------------------
+
+  This is primarily a bug-fixing release.  There are only a few new
+  user-visible features.
+
+  * The new built-in variable default_eval_print_flag controls whether
+    Octave prints the results of commands executed by eval() that do
+    not end with semicolons.  The default is 1.
+
+  * The new built-in constant OCTAVE_HOME specifies the top-level
+    directory where Octave is installed.
+
+  * Octave no longer includes functions to work with NPSOL or QPSOL,
+    because they are not free software.
 
 Summary of changes for version 2.0.5:
 ------------------------------------

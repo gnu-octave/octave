@@ -99,7 +99,7 @@ AC_FUNC_SETVBUF_REVERSED
 
 TERMLIBS=""
 for termlib in termcap terminfo curses termlib ; do
-  AC_CHECK_LIB(${termlib}, main, [TERMLIBS="${TERMLIBS} -l${termlib}"])
+  AC_CHECK_LIB(${termlib}, tputs, [TERMLIBS="${TERMLIBS} -l${termlib}"])
   case "${TERMLIBS}" in
     *-l${termlib}*)
       AC_MSG_RESULT([defining TERMLIBS to be $TERMLIBS])

@@ -1,4 +1,10 @@
 a = [0, 2, 1; 2, 1, 2];
-[q, r, p] = qr (a);
+
+[q, r, p] = qr (a);  # not giving right dimensions. XXX FIXME XXX
+
+[qe, re, pe] = qr (a, 0);
+
 (size (q) == [2, 2] && size (r) == [2, 3] && size (p) == [3, 3]
- && abs (a * p - q * r) < sqrt (eps))
+ && abs (q * r - a * p) < sqrt (eps)
+ && size (qe) == [2, 2] && size (re) == [2, 3] && size (pe) == [1, 3]
+ && abs (qe * re - a(:,pe)) < sqrt (eps))

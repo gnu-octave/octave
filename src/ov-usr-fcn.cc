@@ -603,7 +603,13 @@ when ther eare no more arguments available, or in a function that\n\
 has not been declared to take a variable number of parameters.\n\
 @end deftypefn")
 {
-  ::warning ("va_arg is deprecated; use varargin instead");
+  static bool warned = false;
+
+  if (! warned)
+    {
+      ::warning ("va_arg is deprecated; use varargin instead");
+      warned = true;
+    }
 
   octave_value_list retval;
 
@@ -639,7 +645,13 @@ arguments.  It is an error to call @code{va_start} in a function\n\
 that has not been declared to take a variable number of parameters.\n\
 @end deftypefn")
 {
-  ::warning ("va_start is deprecated; use varargin instead");
+  static bool warned = false;
+
+  if (! warned)
+    {
+      ::warning ("va_start is deprecated; use varargin instead");
+      warned = true;
+    }
 
   octave_value_list retval;
 
@@ -677,7 +689,13 @@ values.  This function may only be called within functions that have\n\
 been declared to return an unspecified number of output arguments.\n\
 @end deftypefn")
 {
-  ::warning ("vr_val is deprecated; use varargout instead");
+  static bool warned = false;
+
+  if (! warned)
+    {
+      ::warning ("vr_val is deprecated; use varargout instead");
+      warned = true;
+    }
 
   octave_value_list retval;
 

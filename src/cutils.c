@@ -119,13 +119,19 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
   return strncasecmp (s1, s2, n);
 }
 
+// We manage storage.  User should not free it, and its contents are
+// only valid until next call to vsnprintf.
+
 char *
 octave_vsnprintf (const char *fmt, va_list args)
 {
 #if defined (HAVE_VSNPRINTF)
-  size_t size = 100;
+  static size_t size = 100;
 
-  char *buf = malloc (size);
+  static char *buf = 0;
+
+  if (! buf)
+    buf = malloc (size);
 
   while (1)
     {

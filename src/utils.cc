@@ -717,19 +717,7 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 #if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
 
-  OSSTREAM buf;
-
-  buf.vform (fmt, args);
-
-  buf << OSSTREAM_ENDS;
-
-  std::string s = OSSTREAM_STR (buf);
-
-  OSSTREAM_FREEZE (buf);
-
-  os << s;
-
-  retval = s.length ();
+  os.vform (fmt, args);
 
 #else
 
@@ -740,8 +728,6 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
       os << s;
 
       retval = strlen (s);
-
-      free (s);
     }
 
 #endif

@@ -23,6 +23,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_liboctave_sstream_h)
 #define octave_liboctave_sstream_h 1
 
+#if defined (__GNUG__) && __GNUC__ < 3
+#undef HAVE_SSTREAM
+#endif
+
 #ifdef HAVE_SSTREAM
 
 #include <sstream>

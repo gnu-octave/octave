@@ -1,5 +1,12 @@
 2002-10-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* cutils.c (octave_vsnprintf): Buffer and buffer size now static.
+	* utils.cc (octave_vformat): Don't free buffer returned from
+	octave_vsnprintf here.
+
+	* ov-usr-fcn.cc (va_arg, va_start, vr_val): Only print warning
+	once per session.
+
 	* ov-mapper.cc (octave_mapper::apply): Don't try real_type case if
 	arg is a string and we have a ch_map_fcn.
 

@@ -1,3 +1,230 @@
+Fri Oct 23 00:21:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Add finance/Makefile, statistics/base/Makefile,
+	statistics/distributions/Makefile, statistics/models/Makefile, 
+	and statistics/tests/Makefile to the list of files to create.
+
+	* finance/Makefile.in, statistics/base/Makefile.in,
+	statistics/distributions/Makefile.in, statistics/models/Makefile.in,
+  	statistics/tests/Makefile.in: New files.
+	* statistics/Makefile.in: Delete file lists.  Now only handle
+	subdirectories.
+	* Makefile.in (SUBDIRS): Add finance.
+
+	* Move the following files from statistics to statistics/base:
+
+	    corrcoef.m
+	    kurtosis.m
+	    mahalanobis.m
+	    median.m
+	    ols.m
+	    skewness.m
+	    std.m
+	
+	New files, from Kurt Hornik's octave-ci package:
+
+	* finance (new directory):
+
+	    fv.m
+	    fvl.m
+	    irr.m
+	    nper.m
+	    npv.m
+	    pmt.m
+	    pv.m
+	    pvl.m
+	    rate.m
+	    vol.m
+
+	* linear-algebra/dmult.m
+
+	* signal:
+
+	    arch_fit.m
+	    arch_rnd.m
+	    arch_test.m
+	    arma_rnd.m
+	    autocor.m
+	    autocov.m
+	    autoreg_matrix.m
+	    bartlett.m
+	    blackman.m
+	    diffpara.m
+	    durbinlevinson.m
+	    fractdiff.m
+	    hamming.m
+	    hanning.m
+	    hurst.m
+	    periodogram.m
+	    rectangle_lw.m
+	    rectangle_sw.m
+	    sinetone.m
+	    sinewave.m
+	    spectral_adf.m
+	    spectral_xdf.m
+	    spencer.m
+	    stft.m
+	    synthesis.m
+	    triangle_lw.m
+	    triangle_sw.m
+	    yulewalker.m
+
+	* statistics/base (new directory):
+
+	    center.m
+	    cloglog.m
+	    cor.m
+	    cov.m
+	    cut.m
+	    iqr.m
+	    kendall.m
+	    logit.m
+	    mean.m
+	    meansq.m
+	    moment.m
+	    ppplot.m
+	    probit.m
+	    qqplot.m
+	    range.m
+	    ranks.m
+	    run_count.m
+	    spearman.m
+	    statistics.m
+	    studentize.m
+	    table.m
+	    values.m
+	    var.m
+
+	(Replaces cov.m and mean.m with new versions.)
+
+	* statistics/distributions (new directory):
+
+	    beta_cdf.m
+	    beta_inv.m
+	    beta_pdf.m
+	    beta_rnd.m
+	    binomial_cdf.m
+	    binomial_inv.m
+	    binomial_pdf.m
+	    binomial_rnd.m
+	    cauchy_cdf.m
+	    cauchy_inv.m
+	    cauchy_pdf.m
+	    cauchy_rnd.m
+	    chisquare_cdf.m
+	    chisquare_inv.m
+	    chisquare_pdf.m
+	    chisquare_rnd.m
+	    discrete_cdf.m
+	    discrete_inv.m
+	    discrete_pdf.m
+	    discrete_rnd.m
+	    empirical_cdf.m
+	    empirical_inv.m
+	    empirical_pdf.m
+	    empirical_rnd.m
+	    exponential_cdf.m
+	    exponential_inv.m
+	    exponential_pdf.m
+	    exponential_rnd.m
+	    f_cdf.m
+	    f_inv.m
+	    f_pdf.m
+	    f_rnd.m
+	    gamma_cdf.m
+	    gamma_inv.m
+	    gamma_pdf.m
+	    gamma_rnd.m
+	    geometric_cdf.m
+	    geometric_inv.m
+	    geometric_pdf.m
+	    geometric_rnd.m
+	    hypergeometric_cdf.m
+	    hypergeometric_inv.m
+	    hypergeometric_pdf.m
+	    hypergeometric_rnd.m
+	    kolmogorov_smirnov_cdf.m
+	    laplace_cdf.m
+	    laplace_inv.m
+	    laplace_pdf.m
+	    laplace_rnd.m
+	    logistic_cdf.m
+	    logistic_inv.m
+	    logistic_pdf.m
+	    logistic_rnd.m
+	    lognormal_cdf.m
+	    lognormal_inv.m
+	    lognormal_pdf.m
+	    lognormal_rnd.m
+	    normal_cdf.m
+	    normal_inv.m
+	    normal_pdf.m
+	    normal_rnd.m
+	    pascal_cdf.m
+	    pascal_inv.m
+	    pascal_pdf.m
+	    pascal_rnd.m
+	    poisson_cdf.m
+	    poisson_inv.m
+	    poisson_pdf.m
+	    poisson_rnd.m
+	    stdnormal_cdf.m
+	    stdnormal_inv.m
+	    stdnormal_pdf.m
+	    stdnormal_rnd.m
+	    t_cdf.m
+	    t_inv.m
+	    t_pdf.m
+	    t_rnd.m
+	    uniform_cdf.m
+	    uniform_inv.m
+	    uniform_pdf.m
+	    uniform_rnd.m
+	    weibull_cdf.m
+	    weibull_inv.m
+	    weibull_pdf.m
+	    weibull_rnd.m
+	    wiener_rnd.m
+	
+	* statistics/models (new directory):
+
+	    logistic_regression.m
+	    logistic_regression_derivatives.m
+	    logistic_regression_likelihood.m
+
+	* statistics/tests (new directory):
+
+	    anova.m
+	    bartlett_test.m
+	    chisquare_test_homogeneity.m
+	    chisquare_test_independence.m
+	    cor_test.m
+	    f_test_regression.m
+	    hotelling_test.m
+	    hotelling_test_2.m
+	    kolmogorov_smirnov_test.m
+	    kolmogorov_smirnov_test_2.m
+	    kruskal_wallis_test.m
+	    manova.m
+	    mcnemar_test.m
+	    prop_test_2.m
+	    run_test.m
+	    sign_test.m
+	    t_test.m
+	    t_test_2.m
+	    t_test_regression.m
+	    u_test.m
+	    var_test.m
+	    welch_test.m
+	    wilcoxon_test.m
+	    z_test.m
+	    z_test_2.m
+
+Thu Oct 22 12:25:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time/date.m: Use %Y, not %y in format string, for Matlab 5
+	compatibility and to avoid Y2K problems.
+
 Mon Oct 19 17:26:35 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* polynomial/polyfit.m: Just use the \ operator to handle the

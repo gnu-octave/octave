@@ -25,6 +25,6 @@
 
 function retval = date ()
 
-  retval = strftime ("%d-%b-%y", localtime (time ()));
+  retval = strftime ("%d-%b-%Y", localtime (time ()));
 
 endfunction

@@ -20,56 +20,56 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = # *.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
-FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
+SUBDIRS = base distributions models tests
 
-BINDISTFILES = $(FCN_FILES)
+DISTSUBDIRS = $(SUBDIRS)
 
-all:
+BINDISTSUBDIRS = $(SUBDIRS)
+
+FCN_FILES = # $(wildcard $(srcdir)/*.m)
+FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
+
+all: $(SUBDIRS)
 .PHONY: all
 
-install install-strip:
-	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
-	for f in $(FCN_FILES_NO_DIR); do \
-	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	done
-.PHONY: install install-strip
+$(SUBDIRS):
+	echo making all in $@
+	cd $@; $(MAKE) all
+.PHONY: $(SUBDIRS)
 
-uninstall:
-	for f in $(FCN_FILES_NO_DIR); \
-	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	done
-.PHONY: uninstall
+install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+	@$(subdir-for-command)
+.PHONY: install install-strip uninstall
+.PHONY: clean mostlyclean distclean maintainer-clean
 
-clean:
-.PHONY: clean
+install install-strip::
 
-tags: $(SOURCES)
+uninstall::
+
+tags TAGS:: $(SOURCES)
+	$(SUBDIR_FOR_COMMAND)
+
+tags::
 	ctags $(SOURCES)
 
-TAGS: $(SOURCES)
+TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-mostlyclean: clean
-.PHONY: mostlyclean
-
-distclean: clean
+distclean::
 	rm -f Makefile
-.PHONY: distclean
 
-maintainer-clean: distclean
-	rm -f tags TAGS
-.PHONY: maintainer-clean
+maintainer-clean::
+	rm -f tags TAGS Makefile
 
 dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/statistics
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts
+	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/scripts/statistics/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: dist
 
 bin-dist:
-	ln $(BINDISTFILES) ../../`cat ../../.fname`/scripts/statistics
+	for dir in $(BINDISTSUBDIRS); do mkdir ../../`cat ../../.fname`/scripts/statistics/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: bin-dist

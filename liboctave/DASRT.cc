@@ -322,10 +322,10 @@ DASRT::integrate (double tout)
   static double *dummy = 0;
   static int *idummy = 0;
 
-  F77_XFCN (ddasrt, DASRT, (ddasrt_f, nn, t, px, pxdot, tout, pinfo,
-			    prel_tol, pabs_tol, istate, prwork, lrw,
-			    piwork, liw, dummy, idummy, ddasrt_j,
-			    ddasrt_g, ng, pjroot));
+  F77_XFCN (ddasrt, DDASRT, (ddasrt_f, nn, t, px, pxdot, tout, pinfo,
+			     prel_tol, pabs_tol, istate, prwork, lrw,
+			     piwork, liw, dummy, idummy, ddasrt_j,
+			     ddasrt_g, ng, pjroot));
 
   if (f77_exception_encountered)
     {

@@ -1,3 +1,7 @@
+2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASRT.cc (DASRT::integrate): Fix typo in Fortran function name.
+
 2003-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mach-info.h (oct_mach_info): Prefix enum elements with flt_fmt_.

@@ -22,8 +22,8 @@
 ##
 ## Produces a plot for the output of the system, sys.
 ##
-## U is an array that contains the system's inputs.  Each column in u
-## corresponds to a different time step.  Each row in u corresponds to a
+## U is an array that contains the system's inputs.  Each row in u
+## corresponds to a different time step.  Each column in u corresponds to a
 ## different input.  T is an array that contains the time index of the
 ## system.  T should be regularly spaced.  If initial conditions are required
 ## on the system, the x0 vector should be added to the argument list.

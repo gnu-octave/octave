@@ -95,7 +95,7 @@ public:
     : data (1, octave_value (r)) { }
 
   octave_value_list (const octave_value_list& obj)
-    : data (obj.data) { }
+    : data (obj.data), names (obj.names) { }
 
   void *operator new (size_t size)
     { return allocator.alloc (size); }
@@ -106,7 +106,10 @@ public:
   octave_value_list& operator = (const octave_value_list& obj)
     {
       if (this != &obj)
-	data = obj.data;
+	{
+	  data = obj.data;
+	  names = obj.names;
+	}
 
       return *this;
     }

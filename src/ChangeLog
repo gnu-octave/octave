@@ -1,3 +1,11 @@
+2002-11-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cutils.c (octave_vsnprintf): Handle C99 snprintf semantics.
+
+	* oct-obj.h (octave_value_list::operator =): Copy names too.
+	(octave_value_list::octave_value_list (const octave_value_list&)):
+	Likewise.
+
 2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.39.

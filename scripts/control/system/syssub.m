@@ -80,7 +80,7 @@ function sys = syssub (varargin)
       [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
       if(length(Hden) == length(Gden) )
         if( (Hden == Gden) & (HT == GT) )
-          sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
+          sys = tf2sys(Gnum-Hnum,Gden,GT,Gin,Gout);
           return
         endif
         ## if not, we go on and do the usual thing...

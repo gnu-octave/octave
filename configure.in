@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.268 $)
+AC_REVISION($Revision: 1.269 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -335,7 +335,7 @@ AC_SUBST(LD_STATIC_FLAG)
 ### installed as /opt/gnu/bin/f77.
 
 if $use_f77; then
-  if test "$with_g77" = yes; then
+  if test "$with_f77" = yes; then
     F77=f77
   else
     F77="$with_f77"

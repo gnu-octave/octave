@@ -85,7 +85,8 @@ extern char *version_string ();
 #define NO_XREF_NODE	"No cross references in this node."
 #define NO_POINTER	"No \"%s\" pointer for this node."
 #define UNKNOWN_COMMAND	"Unknown Info command `%c'.  `?' for help."
-#define TERM_TOO_DUMB	"Terminal type \"%s\" is not smart enough to run Info."
+#define TERM_TOO_DUMB	\
+"Terminal type \"%s\" unknown or not smart enough to run Info."
 #define TERM_TOO_SMALL	"%d row by %d column terminal too small to run Info."
 #define AT_NODE_BOTTOM	"You are already at the last page of this node."
 #define AT_NODE_TOP	"You are already at the first page of this node."

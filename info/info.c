@@ -432,7 +432,7 @@ main (argc, argv)
   exit (0);
 }
 
-static char *program_name = (char *)NULL;
+static char *program_name = "info";
 
 static void
 remember_info_program_name (fullpath)

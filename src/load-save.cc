@@ -4100,7 +4100,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= mxCHAR_CLASS;
   else if (tc.is_real_scalar ())
     flags |= mxDOUBLE_CLASS;
-  else if (tc.is_real_matrix ())
+  else if (tc.is_real_matrix () || tc.is_range ())
     flags |= mxDOUBLE_CLASS;
   else if (tc.is_complex_scalar ())
     flags |= mxDOUBLE_CLASS;
@@ -4118,34 +4118,19 @@ save_mat5_binary_element (std::ostream& os,
   os.write ((char *)&junk, 4);
   
   // dimensions array subelement
-  {
-    if (tc.is_string ())
-      {
-	charMatrix chm = tc.char_matrix_value ();
-	nr = tc.rows ();
-	nc = chm.cols ();
-      }
-    else if (tc.is_real_scalar () || tc.is_complex_scalar () || tc.is_map ()) 
-      {
-	nr = nc = 1;
-      }
-    else if (tc.is_real_matrix ())
-      {
-	Matrix m = tc.matrix_value ();
-	nr = m.rows ();
-	nc = m.columns ();
-      }
-    else if (tc.is_complex_matrix ())
-      {
-	ComplexMatrix m = tc.complex_matrix_value ();
-	nr = m.rows ();
-	nc = m.columns ();
-      }
+  if (tc.is_map ())
+    {
+      nr = nc = 1;
+    }
+  else
+    {
+      nr = tc.rows ();
+      nc = tc.columns ();
+    }
 
-    write_mat5_tag (os, miINT32, 8);
-    os.write ((char *)&nr, 4);
-    os.write ((char *)&nc, 4);
-  }
+  write_mat5_tag (os, miINT32, 8);
+  os.write ((char *)&nr, 4);
+  os.write ((char *)&nc, 4);
 
   // array name subelement
   {
@@ -4191,7 +4176,7 @@ save_mat5_binary_element (std::ostream& os,
 
       delete [] buf;
     }
-  else if (tc.is_real_scalar () || tc.is_real_matrix ())
+  else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {
       Matrix m = tc.matrix_value ();
 

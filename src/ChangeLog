@@ -1,3 +1,9 @@
+2001-12-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_mat5_binary_element):
+	Extract dimensions directly from tc.
+	Handle ranges the same as real matrices.
+
 2001-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (DATA_REDUCTION): If no DIM arg, pass -1 to FCN.

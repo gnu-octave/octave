@@ -29,7 +29,7 @@ DISTDIRS = bsd-math kpathsea
 SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src doc scripts 
 
 # Subdirectories to run `make dist' in
-DISTSUBDIRS = $(SUBDIRS) dld test
+DISTSUBDIRS = libcruft liboctave info readline src doc scripts dld test
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 	BUGS PROJECTS octave-bug octave.sh octave-mode.el doinstall.sh \

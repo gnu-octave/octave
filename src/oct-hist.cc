@@ -335,6 +335,67 @@ edit_history_readline (fstream& stream)
   return line;
 }
 
+extern "C"
+{
+  HIST_ENTRY *history_get ();
+}
+
+/*
+ * Use `command' to replace the last entry in the history list, which,
+ * by this time, is `run_history blah...'.  The intent is that the
+ * new command become the history entry, and that `fc' should never
+ * appear in the history list.  This way you can do `run_history' to
+ * your heart's content.
+ */ 
+static void
+edit_history_repl_hist (char *command)
+{
+  if (command == (char *) NULL || *command == '\0')
+    return;
+
+  HIST_ENTRY **hlist = history_list ();
+
+  if (hlist == (HIST_ENTRY **) NULL)
+    return;
+
+  for (int i = 0; hlist[i]; i++)
+    ; // Count 'em.
+  i--;
+
+  /* History_get () takes a parameter that should be
+     offset by history_base. */
+
+// Don't free this.
+  HIST_ENTRY *histent = history_get (history_base + i);
+  if (histent == (HIST_ENTRY *) NULL)
+    return;
+
+  char *data = (char *) NULL;
+  if (histent->data != (char *) NULL)
+    {
+      int len = strlen (histent->data);
+      data = (char *) malloc (len);
+      strcpy (data, histent->data);
+    }
+
+  int n = strlen (command);
+
+  if (command[n - 1] == '\n')
+    command[n - 1] = '\0';
+
+  if (command != (char *) NULL && *command != '\0')
+    {
+      HIST_ENTRY *discard = replace_history_entry (i, command, data);
+      if (discard != (HIST_ENTRY *) NULL)
+	{
+	  if (discard->line != (char *) NULL)
+	    free (discard->line);
+
+	  free ((char *) discard);
+	}
+    }
+}
+
 static void
 edit_history_add_hist (char *line)
 {
@@ -353,8 +414,8 @@ edit_history_add_hist (char *line)
 
 #define EDIT_COMMAND "${EDITOR:-vi}"
 
-void
-do_edit_history (int argc, char **argv)
+static char *
+mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
 {
   HIST_ENTRY **hlist;
 
@@ -369,7 +430,8 @@ do_edit_history (int argc, char **argv)
 // time we get to this point.  Delete it from the list.
 
   hist_count -= 2;
-  remove_history (hist_count);
+  if (! insert_curr)
+    remove_history (hist_count);
   hist_count--;
 
 // If no numbers have been specified, the default is to edit the last
@@ -409,14 +471,14 @@ do_edit_history (int argc, char **argv)
   if (hist_beg < 0 || hist_end < 0 || hist_beg > hist_count
       || hist_end > hist_count)
     {
-      error ("history specification out of range");
-      return;
+      error ("%s: history specification out of range", warn_for);
+      return (char *) NULL;
     }
 
   if (usage_error)
     {
-      usage ("edit_history [first] [last]");
-      return;
+      usage ("%s [first] [last]", warn_for);
+      return (char *) NULL;
     }
 
   if (hist_end < hist_beg)
@@ -430,10 +492,11 @@ do_edit_history (int argc, char **argv)
   char *name = tmpnam ((char *) NULL);
 
   fstream file (name, ios::out);
+
   if (! file)
     {
-      error ("edit_history: couldn't open temporary file `%s'", name);
-      return;
+      error ("%s: couldn't open temporary file `%s'", warn_for, name);
+      return (char *) NULL;
     }
 
   if (reverse)
@@ -449,6 +512,17 @@ do_edit_history (int argc, char **argv)
 
   file.close ();
 
+  return name;
+}
+
+void
+do_edit_history (int argc, char **argv)
+{
+  char *name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
+
+  if (name == (char *) NULL)
+    return;
+
 // Call up our favorite editor on the file of commands.
 
   ostrstream buf;
@@ -456,8 +530,7 @@ do_edit_history (int argc, char **argv)
   char *cmd = buf.str ();
 
 // Ignore interrupts while we are off editing commands.  Should we
-// maybe avoid using system()?  There still seems to be a problem with
-// properly waiting for emacsclient.
+// maybe avoid using system()?
 
   volatile sig_handler *saved_sigint_handler = signal (SIGINT, SIG_IGN);
   system (cmd);
@@ -466,9 +539,10 @@ do_edit_history (int argc, char **argv)
 // Write the commands to the history file since parse_and_execute
 // disables command line history while it executes.
 
-  file.open (name, ios::in);
+  fstream file (name, ios::in);
 
   char *line;
+  int first = 1;
   while ((line = edit_history_readline (file)) != NULL)
     {
 
@@ -480,7 +554,13 @@ do_edit_history (int argc, char **argv)
 	  continue;
 	}
 
-      edit_history_add_hist (line);
+      if (first)
+	{
+	  first = 0;
+	  edit_history_repl_hist (line);
+	}
+      else
+	edit_history_add_hist (line);
     }
 
   file.close ();
@@ -494,6 +574,30 @@ do_edit_history (int argc, char **argv)
   parse_and_execute (name, 1);
 
   run_unwind_frame ("do_edit_history");
+
+// Delete the temporary file.  Should probably be done with an
+// unwind_protect.
+
+  unlink (name);
+}
+
+void
+do_run_history (int argc, char **argv)
+{
+  char *name = mk_tmp_hist_file (argc, argv, 1, "run_history");
+
+  if (name == (char *) NULL)
+    return;
+
+// Turn on command echo, so the output from this will make better sense.
+
+  begin_unwind_frame ("do_run_history");
+  unwind_protect_int (echo_input);
+  echo_input = 1;
+
+  parse_and_execute (name, 1);
+
+  run_unwind_frame ("do_run_history");
 
 // Delete the temporary file.  Should probably be done with an
 // unwind_protect.

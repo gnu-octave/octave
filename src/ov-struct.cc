@@ -453,6 +453,135 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
   return retval;
 }
 
+static bool 
+scalar (const dim_vector& dims) 
+{
+  return dims.length () == 2 && dims (0) == 1 && dims (1) == 1;
+}
+
+// XXX FIXME XXX -- move these tests to the test directory?
+/*
+%!shared x
+%! x(1).a=1; x(2).a=2; x(1).b=3; x(2).b=3;
+%!assert(struct('a',1,'b',3),x(1))
+%!assert(struct('a',{},'b',{}),x([]))
+%!assert(struct('a',{1,2},'b',{3,3}),x)
+%!assert(struct('a',{1,2},'b',3),x)
+%!assert(struct('a',{1,2},'b',{3}),x)
+%!assert(struct('b',3,'a',{1,2}),x)
+%!assert(struct('b',{3},'a',{1,2}),x) 
+%!test x=struct([]);
+%!assert(size(x),[0,0]);
+%!assert(isstruct(x));
+%!assert(isempty(fieldnames(x)));
+%!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
+%!fail("struct(1,2,3,4)","struct expects alternating 'field',value pairs");
+%!fail("struct('1',2,'3')","struct expects alternating 'field',value pairs");
+*/
+
+DEFUN (struct, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} struct (\"field\", @var{value}, \"field\", @var{value}, @dots{})\n\
+\n\
+Create a structure and initialize its value.\n\
+\n\
+If the values are cell arrays, create a structure array and initialize\n\
+its values.  The dimensions of each cell array of values must match.\n\
+Singleton cells and non-cell values are repeated so that they fill\n\
+the entire array.  If the cells are empty, create an empty structure\n\
+array with the specified field names.")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  // struct([]) returns an empty struct.
+  // XXX FIXME XXX should struct() also create an empty struct?
+
+  if (nargin == 1 && args(0).is_empty () && args(0).is_real_matrix ())
+    return octave_value (Octave_map ());
+    
+  // Check for "field", VALUE pairs.
+
+  for (int i = 0; i < nargin; i += 2) 
+    {
+      if (! args(i).is_string () || i + 1 >= nargin)
+	{
+	  error ("struct expects alternating \"field\", VALUE pairs");
+	  return retval;
+	}
+    }
+
+  // Check that the dimensions of the values correspond.
+
+  dim_vector dims (1, 1);
+
+  int first_dimensioned_value = 0;
+
+  for (int i = 1; i < nargin; i += 2) 
+    {
+      if (args(i).is_cell ()) 
+	{
+	  dim_vector argdims (args(i).dims ());
+
+	  if (! scalar (argdims))
+	    {
+	      if (! first_dimensioned_value)
+		{
+		  dims = argdims;
+		  first_dimensioned_value = i + 1;
+		}
+	      else if (dims != argdims)
+		{
+		  error ("struct: dimensions of parameter %d do not match those of parameter %d",
+			 first_dimensioned_value, i+1);
+		  return retval;
+		}
+	    }
+	}
+    }
+
+  // Create the return value.
+
+  Octave_map map (dims);
+
+  for (int i = 0; i < nargin; i+= 2) 
+    {
+      // Get key.
+
+      std::string key (args(i).string_value ());
+
+      if (error_state)
+	return retval;
+
+      // Value may be v, { v }, or { v1, v2, ... }
+      // In the first two cases, we need to create a cell array of
+      // the appropriate dimensions filled with v.  In the last case, 
+      // the cell array has already been determined to be of the
+      // correct dimensions.
+
+      if (args(i+1).is_cell ()) 
+	{
+	  const Cell c (args(i+1).cell_value ());
+
+	  if (error_state)
+	    return retval;
+
+	  if (scalar (c.dims ())) 
+	    map.assign (key, Cell (dims, c(0)));
+	  else 
+	    map.assign (key, c);
+	}
+      else 
+	map.assign (key, Cell (dims, args(i+1)));
+
+      if (error_state)
+	return retval;
+    }
+  
+  return octave_value (map);
+}
+
 DEFUN (isstruct, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isstruct (@var{expr})\n\
@@ -486,7 +615,11 @@ argument that is not a structure.\n\
       if (args(0).is_map ())
 	{
 	  Octave_map m = args(0).map_value ();
-	  retval = Cell (m.keys ());
+	  string_vector keys = m.keys ();
+	  if (keys.length () == 0)
+	    retval = Cell (0, 1);
+	  else
+	    retval = Cell (m.keys ());
 	}
       else
 	gripe_wrong_type_arg ("fieldnames", args(0));

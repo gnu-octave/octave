@@ -42,7 +42,10 @@ Octave_map
   typedef std::map<std::string, Cell>::iterator iterator;
   typedef std::map<std::string, Cell>::const_iterator const_iterator;
 
-  Octave_map (void) : map (), dimensions (0, 0) { }
+  // Warning!  You should always use at least two dimensions.
+
+  Octave_map (const dim_vector& dv = dim_vector (0, 0))
+    : map (), dimensions (dv) { }
 
   Octave_map (const std::string& k, const octave_value& value)
     : map (), dimensions (1, 1)

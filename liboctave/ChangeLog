@@ -1,5 +1,7 @@
 2000-07-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-time.cc: Comment out _BSD_SOURCE and _XOPEN_SOURCE definitions.
+
 	* Makefile.in (MATRIX_INC): Add ArrayN-idx.h to the list.
 
 2000-06-29  John W. Eaton  <jwe@bevo.che.wisc.edu>

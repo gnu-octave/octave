@@ -896,9 +896,7 @@ cell2struct_check_args (const dim_vector& c_dv, const dim_vector& f_dv,
     {
       if (is_cell)
 	{
-	  int f_el = f_dv.numel ();
-
-	  if (f_el != c_dv(dim))
+	  if (f_dv.numel () != c_dv(dim))
 	    {
 	      error ("cell2struct: numel (FIELD) != size (CELL, DIM)");
 
@@ -978,6 +976,9 @@ A(1)\n\
 	  octave_value field = args(1);
 
 	  // Field is either cell or character matrix.
+
+	  // XXX FIXME XX -- this could be simplified if we had
+	  // cellstr and iscellstr functions available.
 
 	  bool field_is_cell = field.is_cell ();
 

@@ -41,6 +41,7 @@ struct user_preferences
   int print_answer_id_name;
   int print_empty_dimensions;
   int propagate_empty_matrices;
+  int read_only_constants;
   int resize_on_range_error;
   int return_last_computed_value;
   int save_precision;
@@ -82,6 +83,7 @@ extern int prefer_zero_one_indexing (void);
 extern int print_answer_id_name (void);
 extern int print_empty_dimensions (void);
 extern int propagate_empty_matrices (void);
+extern int read_only_constants (void);
 extern int resize_on_range_error (void);
 extern int return_last_computed_value (void);
 extern int silent_functions (void);

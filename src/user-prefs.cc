@@ -57,6 +57,7 @@ init_user_prefs (void)
   user_pref.print_answer_id_name = 0;
   user_pref.print_empty_dimensions = 0;
   user_pref.propagate_empty_matrices = 0;
+  user_pref.read_only_constants = 1;
   user_pref.resize_on_range_error = 0;
   user_pref.return_last_computed_value = 0;
   user_pref.save_precision = 0;
@@ -345,6 +346,15 @@ propagate_empty_matrices (void)
   return 0;
 }
 
+// Should built-in constants always be read only?
+
+int
+read_only_constants (void)
+{
+  user_pref.read_only_constants = check_str_pref ("read_only_constants");
+
+  return 0;
+}
 
 // When doing assignments, should we resize matrices if the indices
 // are outside the current bounds?

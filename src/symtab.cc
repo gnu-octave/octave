@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "variables.h"
 #include "utils.h"
+#include "user-prefs.h"
 #include "tree-base.h"
 #include "tree-expr.h"
 #include "tree-const.h"
@@ -621,13 +622,27 @@ symbol_record::read_only_error (void)
 {
   if (is_read_only ())
     {
-      char *tag = "symbol";
       if (is_variable ())
-	tag = "variable";
+	{
+	  if (user_pref.read_only_constants)
+	    {
+	      if (user_pref.read_only_constants < 0)
+		{
+		  ::warning ("redefinition of constant `%s'", nm);
+		  return 0;
+		}
+	      else
+		::error ("can't redefine read-only constant `%s'", nm);
+	    }
+	}
       else if (is_function ())
-	tag = "function";
-	
-      ::error ("can't redefine read-only %s `%s'", tag, nm);
+	{
+	  ::error ("can't redefine read-only function `%s'", nm);
+	}
+      else
+	{
+	  ::error ("can't redefine read-only symbol `%s'", nm);
+	}
 
       return 1;
     }

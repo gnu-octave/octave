@@ -1571,6 +1571,12 @@ install_builtin_variables (void)
 	  "true", 0, 0, 1, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");
 
+#if 0
+  DEFVAR ("read_only_constants", SBV_read_only_constants, "true", 0,
+        0, 1, read_only_constants,
+    "allow built-in constants to be modified");
+#endif
+
   DEFVAR ("realmax", SBV_realmax, DBL_MAX, 1, 1, 1, 0,
     "realmax (): return largest representable floating point number");
 

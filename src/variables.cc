@@ -288,15 +288,18 @@ subst_octave_home (char *s)
 
       int count = 0;
       char *ptr = s;
-      while (strstr (ptr, prefix))
+      char *next = 0;
+      while ((next = strstr (ptr, prefix)))
 	{
-	  ptr += len_prefix;
+	  ptr = next + len_prefix;
 	  count++;
 	}
 
       int grow_size = count * (len_home - len_prefix);
 
-      int len_retval = strlen (s) + grow_size;
+      int len_s = strlen (s);
+
+      int len_retval = len_s + count * grow_size;
 
       retval = new char [len_retval+1];
 
@@ -304,21 +307,23 @@ subst_octave_home (char *s)
       char *p2 = p1;
       char *pdest = retval;
 
-      for (int i = 0; i < count; i++)
+// Is this really a good way to do this?
+
+      while (count >= 0)
 	{
 	  p2 = strstr (p1, prefix);
 	  
 	  if (! p2)
 	    {
-	      error ("unable to substitute OCTAVE_HOME");
-	      return retval;
+	      memcpy (pdest, p1, strlen (p1)+1);
+	      break;
 	    }
-
-	  if (p1 == p2)
+	  else if (p1 == p2)
 	    {
 	      memcpy (pdest, home, len_home);
 	      pdest += len_home;
 	      p1 += len_prefix;
+	      count--;
 	    }
 	  else
 	    {

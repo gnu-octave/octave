@@ -113,7 +113,7 @@ DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
 	../libcruft/libcruft.a @LIBINFO@ @LIBREADLINE@ \
-	../kpathsea/libkpathsea.a @LIBDLD@
+	../kpathsea/kpathsea.a @LIBDLD@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins \
 	parse.cc lex.cc y.tab.h $(INCLUDES) $(DLD_SRC) $(SOURCES) \

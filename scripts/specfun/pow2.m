@@ -14,10 +14,30 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage: y = pow2 (f [, e])
-##
-## y = pow2 (x) returns 2 .^ x.
-## y = pow2 (f, e) returns f .* (2 .^ e).
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} pow2 (@var{x})
+## @deftypefnx {Mapping Function} {} pow2 (@var{f}, @var{e})
+## With one argument, computes
+## @iftex
+## @tex
+##  $2^x$
+## @end tex
+## @end iftex
+## @ifinfo
+##  2 .^ x
+## @end ifinfo
+## for each element of @var{x}.  With two arguments, returns
+## @iftex
+## @tex
+##  $f \cdot 2^e$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  f .* (2 .^ e).
+## @end ifinfo
+## @end deftypefn
+
+## See also: nextpow2
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

@@ -25,193 +25,39 @@ Each expects a single argument.  They are called @dfn{mapping functions}
 because when given a matrix argument, they apply the given function to
 each element of the matrix.
 
-@deftypefn {Mapping Function} {} ceil (@var{x})
-Return the smallest integer not less than @var{x}.  If @var{x} is
-complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.
-@end deftypefn
+@DOCSTRING(ceil)
 
-@deftypefn {Mapping Function} {} exp (@var{x})
-Compute the exponential of @var{x}.  To compute the matrix exponential,
-see @ref{Linear Algebra}.
-@end deftypefn
+@DOCSTRING(exp)
 
-@deftypefn {Mapping Function} {} fix (@var{x})
-Truncate @var{x} toward zero.  If @var{x} is complex, return
-@code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.
-@end deftypefn
+@DOCSTRING(fix)
 
-@deftypefn {Mapping Function} {} floor (@var{x})
-Return the largest integer not greater than @var{x}.  If @var{x} is
-complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
-@end deftypefn
+@DOCSTRING(floor)
 
-@deftypefn {Mapping Function} {} gcd (@var{x}, @code{...})
-Compute the greatest common divisor of the elements of @var{x}, or the
-list of all the arguments.  For example, 
+@DOCSTRING(gcd)
 
-@example
-gcd (a1, ..., ak)
-@end example
+@DOCSTRING(lcm)
 
-@noindent
-is the same as
+@DOCSTRING(log)
 
-@example
-gcd ([a1, ..., ak])
-@end example
+@DOCSTRING(log10)
 
-An optional second return value, @var{v}
-contains an integer vector such that
+@DOCSTRING(log2)
 
-@example
-g = v(1) * a(k) + ... + v(k) * a(k)
-@end example
-@end deftypefn
+@DOCSTRING(max)
 
-@deftypefn {Mapping Function} {} lcm (@var{x}, @code{...})
-Compute the least common multiple of the elements elements of @var{x}, or
-the list of all the arguments.  For example, 
+@DOCSTRING(min)
 
-@example
-lcm (a1, ..., ak)
-@end example
+@DOCSTRING(nextpow2)
 
-@noindent
-is the same as
+@DOCSTRING(pow2)
 
-@example
-lcm ([a1, ..., ak]).
-@end example
-@end deftypefn
+@DOCSTRING(rem)
 
-@deftypefn {Mapping Function} {} log (@var{x})
-Compute the natural logarithm of @var{x}.  To compute the matrix logarithm, 
-see @ref{Linear Algebra}.
-@end deftypefn
+@DOCSTRING(round)
 
-@deftypefn {Mapping Function} {} log10 (@var{x})
-Compute the base-10 logarithm of @var{x}.
-@end deftypefn
+@DOCSTRING(sign)
 
-@deftypefn {Mapping Function} {@var{y} =} log2 (@var{x})
-@deftypefnx {Mapping Function} {[@var{f}, @var{e}]} log2 (@var{x})
-Compute the base-2 logarithm of @var{x}.  With two outputs, returns
-@var{f} and @var{e} such that
-@iftex
-@tex
- $1/2 <= |f| < 1$ and $x = f \cdot 2^e$.
-@end tex
-@end iftex
-@ifinfo
- 1/2 <= abs(f) < 1 and x = f * 2^e.
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Loadable Function} {} max (@var{x})
-For a vector argument, return the maximum value.  For a matrix argument,
-return the maximum value from each column, as a row vector.  Thus,
-
-@example
-max (max (@var{x}))
-@end example
-
-@noindent
-returns the largest element of @var{x}.
-
-For complex arguments, the magnitude of the elements are used for
-comparison.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} min (@var{x})
-Like @code{max}, but return the minimum value.
-@end deftypefn
-
-@deftypefn {Function File} {} nextpow2 (@var{x})
-If @var{x} is a scalar, returns the first integer @var{n} such that
-@iftex
-@tex
- $2^n \ge |x|$.
-@end tex
-@end iftex
-@ifinfo
- 2^n >= abs (x).
-@end ifinfo
-
-If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} pow2 (@var{x})
-@deftypefnx {Mapping Function} {} pow2 (@var{f}, @var{e})
-With one argument, computes
-@iftex
-@tex
- $2^x$
-@end tex
-@end iftex
-@ifinfo
- 2 .^ x
-@end ifinfo
-for each element of @var{x}.  With two arguments, returns
-@iftex
-@tex
- $f \cdot 2^e$.
-@end tex
-@end iftex
-@ifinfo
- f .* (2 .^ e).
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Mapping Function} {} rem (@var{x}, @var{y})
-Return the remainder of @code{@var{x} / @var{y}}, computed using the
-expression
-
-@example
-x - y .* fix (x ./ y)
-@end example
-
-An error message is printed if the dimensions of the arguments do not
-agree, or if either of the arguments is complex.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} round (@var{x})
-Return the integer nearest to @var{x}.  If @var{x} is complex, return
-@code{round (real (@var{x})) + round (imag (@var{x})) * I}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} sign (@var{x})
-Compute the @dfn{signum} function, which is defined as
-@iftex
-@tex
-$$
-{\rm sign} (@var{x}) = \cases{1,&$x>0$;\cr 0,&$x=0$;\cr -1,&$x<0$.\cr}
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-           -1, x < 0;
-sign (x) =  0, x = 0;
-            1, x > 0.
-@end example
-@end ifinfo
-
-For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} sqrt (@var{x})
-Compute the square root of @var{x}.  If @var{x} is negative, a complex
-result is returned.  To compute the matrix square root, see
-@ref{Linear Algebra}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
-Return the `exclusive or' of the entries of @var{x} and @var{y}.
-For boolean expressions @var{x} and @var{y},
-@code{xor (@var{x}, @var{y})} is true if and only if @var{x} or @var{y}
-is true, but not if both @var{x} and @var{y} are true.
-@end deftypefn
+@DOCSTRING(sqrt)
 
 @node Complex Arithmetic, Trigonometry, Utility Functions, Arithmetic
 @section Complex Arithmetic
@@ -231,71 +77,15 @@ $\sqrt{-1}$.
 defined as @code{sqrt (-1)}.
 @end ifinfo
 
-@deftypefn {Mapping Function} {} abs (@var{z})
-Compute the magnitude of @var{z}, defined as
-@iftex
-@tex
-$|z| = \sqrt{x^2 + y^2}$.
-@end tex
-@end iftex
-@ifinfo
-|@var{z}| = @code{sqrt (x^2 + y^2)}.
-@end ifinfo
+@DOCSTRING(abs)
 
-For example,
+@DOCSTRING(arg)
 
-@example
-@group
-abs (3 + 4i)
-     @result{} 5
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(conj)
 
-@deftypefn {Mapping Function} {} arg (@var{z})
-@deftypefnx {Mapping Function} {} angle (@var{z})
-Compute the argument of @var{z}, defined as
-@iftex
-@tex
-$\theta = \tan^{-1}(y/x)$.
-@end tex
-@end iftex
-@ifinfo
-@var{theta} = @code{atan (@var{y}/@var{x})}.
-@end ifinfo
+@DOCSTRING(imag)
 
-@noindent
-in radians. 
-
-For example,
-
-@example
-@group
-arg (3 + 4i)
-     @result{} 0.92730
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Mapping Function} {} conj (@var{z})
-Return the complex conjugate of @var{z}, defined as
-@iftex
-@tex
-$\bar{z} = x - iy$.
-@end tex
-@end iftex
-@ifinfo
-@code{conj (@var{z})} = @var{x} - @var{i}@var{y}.
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Mapping Function} {} imag (@var{z})
-Return the imaginary part of @var{z} as a real number.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} real (@var{z})
-Return the real part of @var{z}.
-@end deftypefn
+@DOCSTRING(real)
 
 @node Trigonometry, Sums and Products, Complex Arithmetic, Arithmetic
 @section Trigonometry
@@ -312,41 +102,33 @@ $\pi/180$
 @end ifinfo
  (e.g. @code{sin (30 * pi/180)} returns the sine of 30 degrees).
 
-@deftypefn {Mapping Function} {} sin (@var{z})
-@deftypefnx {Mapping Function} {} cos (@var{z})
-@deftypefnx {Mapping Function} {} tan (@var{z})
-@deftypefnx {Mapping Function} {} sec (@var{z})
-@deftypefnx {Mapping Function} {} csc (@var{z})
-@deftypefnx {Mapping Function} {} cot (@var{z})
-The ordinary trigonometric functions.
-@end deftypefn
+@DOCSTRING(sin)
+@DOCSTRING(cos)
+@DOCSTRING(tan)
+@DOCSTRING(sec)
+@DOCSTRING(csc)
+@DOCSTRING(cot)
 
-@deftypefn {Mapping Function} {} asin (@var{z})
-@deftypefnx {Mapping Function} {} acos (@var{z})
-@deftypefnx {Mapping Function} {} atan (@var{z})
-@deftypefnx {Mapping Function} {} asec (@var{z})
-@deftypefnx {Mapping Function} {} acsc (@var{z})
-@deftypefnx {Mapping Function} {} acot (@var{z})
-The ordinary inverse trigonometric functions.
-@end deftypefn
+@DOCSTRING(asin)
+@DOCSTRING(acos)
+@DOCSTRING(atan)
+@DOCSTRING(asec)
+@DOCSTRING(acsc)
+@DOCSTRING(acot)
 
-@deftypefn {Mapping Function} {} sinh (@var{z})
-@deftypefnx {Mapping Function} {} cosh (@var{z})
-@deftypefnx {Mapping Function} {} tanh (@var{z})
-@deftypefnx {Mapping Function} {} sech (@var{z})
-@deftypefnx {Mapping Function} {} csch (@var{z})
-@deftypefnx {Mapping Function} {} coth (@var{z})
-Hyperbolic trigonometric functions.
-@end deftypefn
+@DOCSTRING(sinh)
+@DOCSTRING(cosh)
+@DOCSTRING(tanh)
+@DOCSTRING(sech)
+@DOCSTRING(scsh)
+@DOCSTRING(coth)
 
-@deftypefn {Mapping Function} {} asinh (@var{z})
-@deftypefnx {Mapping Function} {} acosh (@var{z})
-@deftypefnx {Mapping Function} {} atanh (@var{z})
-@deftypefnx {Mapping Function} {} asech (@var{z})
-@deftypefnx {Mapping Function} {} acsch (@var{z})
-@deftypefnx {Mapping Function} {} acoth (@var{z})
-Inverse hyperbolic trigonometric functions.
-@end deftypefn
+@DOCSTRING(asinh)
+@DOCSTRING(acosh)
+@DOCSTRING(atanh)
+@DOCSTRING(asech)
+@DOCSTRING(acsch)
+@DOCSTRING(acoth)
 
 Each of these functions expect a single argument.  For matrix arguments,
 they work on an element by element basis.  For example,
@@ -359,503 +141,66 @@ sin ([1, 2; 3, 4])
 @end group
 @end example
 
-@deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})
-Return the arctangent of @var{y}/@var{x}.  The signs of the arguments
-are used to determine the quadrant of the result, which is in the range
-@iftex
-@tex
-$\pi$ to $-\pi$.
-@end tex
-@end iftex
-@ifinfo
-@code{pi} to -@code{pi}.
-@end ifinfo
-@end deftypefn
+@DOCSTRING(atan2)
+
 
 @node Sums and Products, Special Functions, Trigonometry, Arithmetic
 @section Sums and Products
 
-@deftypefn {Built-in Function} {} sum (@var{x})
-For a vector argument, return the sum of all the elements.  For a matrix
-argument, return the sum of the elements in each column, as a row
-vector.  The sum of an empty matrix is 0 if it has no columns, or a
-vector of zeros if it has no rows (@pxref{Empty Matrices}).
-@end deftypefn
+@DOCSTRING(sum)
 
-@deftypefn {Built-in Function} {} prod (@var{x})
-For a vector argument, return the product of all the elements.  For a
-matrix argument, return the product of the elements in each column, as a
-row vector.  The product of an empty matrix is 1 if it has no columns,
-or a vector of ones if it has no rows (@pxref{Empty Matrices}).
-@end deftypefn
+@DOCSTRING(prod)
 
-@deftypefn {Built-in Function} {} cumsum (@var{x})
-Return the cumulative sum of each column of @var{x}.  For example,
+@DOCSTRING(cumsum)
 
-@example
-@group
-cumsum ([1, 2; 3, 4])
-     @result{}  1  2
-         4  6
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(cumprod)
 
-@deftypefn {Built-in Function} {} cumprod (@var{x})
-Return the cumulative product of each column of @var{x}.  For example,
-
-@example
-@group
-cumprod ([1, 2; 3, 4])
-     @result{}  1  2
-         3  8
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Built-in Function} {} sumsq (@var{x})
-For a vector argument, return the sum of the squares of all the
-elements.  For a matrix argument, return the sum of the squares of the
-elements in each column, as a row vector.
-@end deftypefn
+@DOCSTRING(sumsq)
 
 @node Special Functions, Mathematical Constants, Sums and Products, Arithmetic
 @section Special Functions
 
-@deftypefn {Mapping Function} {} besseli (@var{alpha}, @var{x})
-@deftypefnx {Mapping Function} {} besselj (@var{alpha}, @var{x})
-@deftypefnx {Mapping Function} {} besselk (@var{alpha}, @var{x})
-@deftypefnx {Mapping Function} {} bessely (@var{alpha}, @var{x})
-Compute Bessel functions of the following types:
+@DOCSTRING(bessel)
 
-@table @code
-@item besselj
-Bessel functions of the first kind.
+@DOCSTRING(beta)
 
-@item bessely
-Bessel functions of the second kind.
+@DOCSTRING(betai)
 
-@item besseli
-Modified Bessel functions of the first kind.
+@DOCSTRING(bincoeff)
 
-@item besselk
-Modified Bessel functions of the second kind.
-@end table
+@DOCSTRING(erf)
 
-The second argument, @var{x}, must be a real matrix, vector, or scalar.
+@DOCSTRING(erfc)
 
-The first argument, @var{alpha}, must be greater than or equal to zero.
-If @var{alpha} is a range, it must have an increment equal to one.
+@DOCSTRING(erfinv)
 
-If @var{alpha} is a scalar, the result is the same size as @var{x}.
+@DOCSTRING(gamma)
 
-If @var{alpha} is a range, @var{x} must be a vector or scalar, and the
-result is a matrix with @code{length(@var{x})} rows and
-@code{length(@var{alpha})} columns.
-@end deftypefn
+@DOCSTRING(gammai)
 
-@deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
-Return the Beta function,
-@iftex
-@tex
-$$
- B (a, b) = {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
-$$
-@end tex
-@end iftex
-@ifinfo
+@DOCSTRING(lgamma)
 
-@example
-beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
-@end example
-@end ifinfo
-@end deftypefn
+@DOCSTRING(cross)
 
-@deftypefn {Mapping Function} {} betai (@var{a}, @var{b}, @var{x})
-Return the incomplete Beta function,
-@iftex
-@tex
-$$
- \beta (a, b, x) = B (a, b)^{-1} \int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.
-$$
-@end tex
-@end iftex
-@ifinfo
+@DOCSTRING(commutation_matrix)
 
-@smallexample
-                                    x
-                                   /
-betai (a, b, x) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.
-                                   /
-                                t=0
-@end smallexample
-@end ifinfo
-
-If x has more than one component, both @var{a} and @var{b} must be
-scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
-compatible dimensions.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
-Return the binomial coefficient of @var{n} and @var{k}, defined as
-@iftex
-@tex
-$$
- {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-@group
- /   \
- | n |    n (n-1) (n-2) ... (n-k+1)
- |   |  = -------------------------
- | k |               k!
- \   /
-@end group
-@end example
-@end ifinfo
-
-For example,
-
-@example
-@group
-bincoeff (5, 2)
-     @result{} 10
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Mapping Function} {} erf (@var{z})
-Computes the error function,
-@iftex
-@tex
-$$
- {\rm erf} (z) = {2 \over \sqrt{\pi}}\int_0^z e^{-t^2} dt
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@smallexample
-                         z
-                        /
-erf (z) = (2/sqrt (pi)) | e^(-t^2) dt
-                        /
-                     t=0
-@end smallexample
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Mapping Function} {} erfc (@var{z})
-Computes the complementary error function,
-@iftex
-@tex
-$1 - {\rm erf} (z)$.
-@end tex
-@end iftex
-@ifinfo
-@code{1 - erf (@var{z})}.
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Mapping Function} {} erfinv (@var{z})
-Computes the inverse of the error function,
-@end deftypefn
-
-@deftypefn {Mapping Function} {} gamma (@var{z})
-Computes the Gamma function,
-@iftex
-@tex
-$$
- \Gamma (z) = \int_0^\infty t^{z-1} e^{-t} dt.
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-            infinity
-            /
-gamma (z) = | t^(z-1) exp (-t) dt.
-            /
-         t=0
-@end example
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Mapping Function} {} gammai (@var{a}, @var{x})
-Computes the incomplete gamma function,
-@iftex
-@tex
-$$
- \gamma (a, x) = {\displaystyle\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@smallexample
-                              x
-                    1        /
-gammai (a, x) = ---------    | exp (-t) t^(a-1) dt
-                gamma (a)    /
-                          t=0
-@end smallexample
-@end ifinfo
-
-If @var{a} is scalar, then @code{gammai (@var{a}, @var{x})} is returned
-for each element of @var{x} and vice versa.
-
-If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
-@var{x} must agree, and @var{gammai} is applied element-by-element.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} lgamma (@var{a}, @var{x})
-@deftypefnx {Mapping Function} {} gammaln (@var{a}, @var{x})
-Return the natural logarithm of the gamma function.
-@end deftypefn
-
-@deftypefn {Function File} {} cross (@var{x}, @var{y})
-Computes the vector cross product of the two 3-dimensional vectors
-@var{x} and @var{y}.  For example,
-
-@example
-@group
-cross ([1,1,0], [0,1,1])
-     @result{} [ 1; -1; 1 ]
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
-Return the commutation matrix
-@iftex
-@tex
- $K_{m,n}$
-@end tex
-@end iftex
-@ifinfo
- K(m,n)
-@end ifinfo
- which is the unique
-@iftex
-@tex
- $m n \times m n$
-@end tex
-@end iftex
-@ifinfo
- @var{m}*@var{n} by @var{m}*@var{n}
-@end ifinfo
- matrix such that
-@iftex
-@tex
- $K_{m,n} \cdot {\rm vec} (A) = {\rm vec} (A^T)$
-@end tex
-@end iftex
-@ifinfo
- @var{K}(@var{m},@var{n}) * vec (@var{A}) = vec (@var{A}')
-@end ifinfo
- for all
-@iftex
-@tex
- $m\times n$
-@end tex
-@end iftex
-@ifinfo
- @var{m} by @var{n}
-@end ifinfo
- matrices
-@iftex
-@tex
- $A$.
-@end tex
-@end iftex
-@ifinfo
- @var{A}.
-@end ifinfo
-
-If only one argument @var{m} is given,
-@iftex
-@tex
- $K_{m,m}$
-@end tex
-@end iftex
-@ifinfo
- K(m,m)
-@end ifinfo
- is returned.
-
-See Magnus and Neudecker (1988), Matrix differential calculus with
-applications in statistics and econometrics.
-@end deftypefn
-
-@deftypefn {Function File} {} duplication_matrix (@var{n})
-Return the duplication matrix
-@iftex
-@tex
- $D_n$
-@end tex
-@end iftex
-@ifinfo
- @var{D}_@var{n}
-@end ifinfo
- which is the unique
-@iftex
-@tex
- $n^2 \times n(n+1)/2$
-@end tex
-@end iftex
-@ifinfo
- @var{n}^2 by @var{n}*(@var{n}+1)/2
-@end ifinfo
- matrix such that
-@iftex
-@tex
- $D_n * {\rm vech} (A) = {\rm vec} (A)$
-@end tex
-@end iftex
-@ifinfo
- @var{D}_@var{n} \cdot vech (@var{A}) = vec (@var{A})
-@end ifinfo
- for all symmetric
-@iftex
-@tex
- $n \times n$
-@end tex
-@end iftex
-@ifinfo
- @var{n} by @var{n}
-@end ifinfo
- matrices
-@iftex
-@tex
- $A$.
-@end tex
-@end iftex
-@ifinfo
- @var{A}.
-@end ifinfo
-
-See Magnus and Neudecker (1988), Matrix differential calculus with
-applications in statistics and econometrics.
-@end deftypefn
+@DOCSTRING(duplication_matrix)
 
 @node Mathematical Constants,  , Special Functions, Arithmetic
 @section Mathematical Constants
 
-@defvr {Built-in Variable} I
-@defvrx {Built-in Variable} J
-@defvrx {Built-in Variable} i
-@defvrx {Built-in Variable} j
-A pure imaginary number, defined as
-@iftex
-@tex
-  $\sqrt{-1}$.
-@end tex
-@end iftex
-@ifinfo
-  @code{sqrt (-1)}.
-@end ifinfo
-The @code{I} and @code{J} forms are true constants, and cannot be
-modified.  The @code{i} and @code{j} forms are like ordinary variables,
-and may be used for other purposes.  However, unlike other variables,
-they once again assume their special predefined values if they are
-cleared @xref{Status of Variables}.
-@end defvr
+@DOCSTRING(I)
 
-@defvr {Built-in Variable} Inf
-@defvrx {Built-in Variable} inf
-Infinity.  This is the result of an operation like 1/0, or an operation
-that results in a floating point overflow.
-@end defvr
+@DOCSTRING(Inf)
 
-@defvr {Built-in Variable} NaN
-@defvrx {Built-in Variable} nan
-Not a number.  This is the result of an operation like
-@iftex
-@tex
-$0/0$, or $\infty - \infty$,
-@end tex
-@end iftex
-@ifinfo
-0/0, or @samp{Inf - Inf},
-@end ifinfo
-or any operation with a NaN.
+@DOCSTRING(NaN)
 
-Note that NaN always compares not equal to NaN.  This behavior is
-specified by the IEEE standard for floating point arithmetic.  To
-find NaN values, you must use the @code{isnan} function.
-@end defvr
+@DOCSTRING(pi)
 
-@defvr {Built-in Variable} pi
-The ratio of the circumference of a circle to its diameter.
-Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.
-@end defvr
+@DOCSTRING(e)
 
-@defvr {Built-in Variable} e
-The base of natural logarithms.  The constant
-@iftex
-@tex
- $e$
-@end tex
-@end iftex
-@ifinfo
- @var{e}
-@end ifinfo
- satisfies the equation
-@iftex
-@tex
- $\log (e) = 1$.
-@end tex
-@end iftex
-@ifinfo
- @code{log} (@var{e}) = 1.
-@end ifinfo
-@end defvr
+@DOCSTRING(eps)
 
-@defvr {Built-in Variable} eps
-The machine precision.  More precisely, @code{eps} is the largest
-relative spacing between any two adjacent numbers in the machine's
-floating point system.  This number is obviously system-dependent.  On
-machines that support 64 bit IEEE floating point arithmetic, @code{eps}
-is approximately
-@ifinfo
- 2.2204e-16.
-@end ifinfo
-@iftex
-@tex
- $2.2204\times10^{-16}$.
-@end tex
-@end iftex
-@end defvr
+@DOCSTRING(realmax)
 
-@defvr {Built-in Variable} realmax
-The largest floating point number that is representable.  The actual
-value is system-dependent.  On machines that support 64 bit IEEE
-floating point arithmetic, @code{realmax} is approximately
-@ifinfo
- 1.7977e+308
-@end ifinfo
-@iftex
-@tex
- $1.7977\times10^{308}$.
-@end tex
-@end iftex
-@end defvr
-
-@defvr {Built-in Variable} realmin
-The smallest floating point number that is representable.  The actual
-value is system-dependent.  On machines that support 64 bit IEEE
-floating point arithmetic, @code{realmin} is approximately
-@ifinfo
- 2.2251e-308
-@end ifinfo
-@iftex
-@tex
- $2.2251\times10^{-308}$.
-@end tex
-@end iftex
-@end defvr
+@DOCSTRING(realmin)

@@ -17,11 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: is_square (x)
-##
-## If x is square, then return value is the dimension of x.
-## otherwise, returns a value of 0
-##
+## -*- texinfo -*-
+## @deftypefn {Usage} {} is_square (@var{x})
+## If @var{x} is a square matrix, then return the dimension of @var{x}.
+## Otherwise, return 0.
+## @end deftypefn
+
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

@@ -14,16 +14,68 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  commutation_matrix (m [, n])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
+## Return the commutation matrix
+## @iftex
+## @tex
+##  $K_{m,n}$
+## @end tex
+## @end iftex
+## @ifinfo
+##  K(m,n)
+## @end ifinfo
+##  which is the unique
+## @iftex
+## @tex
+##  $m n \times m n$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{m}*@var{n} by @var{m}*@var{n}
+## @end ifinfo
+##  matrix such that
+## @iftex
+## @tex
+##  $K_{m,n} \cdot {\rm vec} (A) = {\rm vec} (A^T)$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{K}(@var{m},@var{n}) * vec (@var{A}) = vec (@var{A}')
+## @end ifinfo
+##  for all
+## @iftex
+## @tex
+##  $m\times n$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{m} by @var{n}
+## @end ifinfo
+##  matrices
+## @iftex
+## @tex
+##  $A$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{A}.
+## @end ifinfo
 ## 
-## Returns the commutation matrix K_{m,n} which is the unique m*n by
-## m*n matrix such that K_{m,n} * vec (A) = vec (A') for all m by n
-## matrices A.
-##
-## If only one argument m is given, K_{m,m} is returned.
-##
+## If only one argument @var{m} is given,
+## @iftex
+## @tex
+##  $K_{m,m}$
+## @end tex
+## @end iftex
+## @ifinfo
+##  K(m,m)
+## @end ifinfo
+##  is returned.
+## 
 ## See Magnus and Neudecker (1988), Matrix differential calculus with
 ## applications in statistics and econometrics.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 8 May 1995

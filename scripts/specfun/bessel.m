@@ -17,23 +17,40 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## The following functions are available for computing the values of
-## Bessel functions:
-##
-##   besselj (alpha, x)   Bessel functions of the first kind
-##   bessely (alpha, x)   Bessel functions of the second kind
-##   besseli (alpha, x)   modified Bessel functions of the first kind
-##   besselk (alpha, x)   modified Bessel functions of the second kind
-##
-## X must be a real matrix, vector or scalar.
-##
-## If ALPHA is a scalar, the result is the same size as X.  If ALPHA is
-## a range, X must be a vector or scalar, and the result is a matrix
-## with length(X) rows and length(ALPHA) columns.
-##
-## ALPHA must be greater than or equal to zero.  If ALPHA is a range, it
-## must have an increment equal to one.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} besseli (@var{alpha}, @var{x})
+## @deftypefnx {Mapping Function} {} besselj (@var{alpha}, @var{x})
+## @deftypefnx {Mapping Function} {} besselk (@var{alpha}, @var{x})
+## @deftypefnx {Mapping Function} {} bessely (@var{alpha}, @var{x})
+## Compute Bessel functions of the following types:
+## 
+## @table @code
+## @item besselj
+## Bessel functions of the first kind.
+## 
+## @item bessely
+## Bessel functions of the second kind.
+## 
+## @item besseli
+## Modified Bessel functions of the first kind.
+## 
+## @item besselk
+## Modified Bessel functions of the second kind.
+## @end table
+## 
+## The second argument, @var{x}, must be a real matrix, vector, or scalar.
+## 
+## The first argument, @var{alpha}, must be greater than or equal to zero.
+## If @var{alpha} is a range, it must have an increment equal to one.
+## 
+## If @var{alpha} is a scalar, the result is the same size as @var{x}.
+## 
+## If @var{alpha} is a range, @var{x} must be a vector or scalar, and the
+## result is a matrix with @code{length(@var{x})} rows and
+## @code{length(@var{alpha})} columns.
+## @end deftypefn
 
 function bessel ()
   error ("bessel: you must use besselj, bessely, besseli, or besselk");
 endfunction
+

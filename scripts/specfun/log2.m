@@ -14,12 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  y = log2 (x) or [f, e] = log2 (x)
-##
-## y = log2 (x) returns the logarithm of base 2 of x.
-##
-## [f, e] = log2 (x) returns f and e with 1/2 <= abs(f) < 1 and
-## x = f * 2^e.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {@var{y} =} log2 (@var{x})
+## @deftypefnx {Mapping Function} {[@var{f}, @var{e}]} log2 (@var{x})
+## Compute the base-2 logarithm of @var{x}.  With two outputs, returns
+## @var{f} and @var{e} such that
+## @iftex
+## @tex
+##  $1/2 <= |f| < 1$ and $x = f \cdot 2^e$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  1/2 <= abs(f) < 1 and x = f * 2^e.
+## @end ifinfo
+## @end deftypefn
+
+## See also: log, log10, logspace, exp
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

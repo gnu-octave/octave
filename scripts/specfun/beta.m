@@ -17,10 +17,22 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: beta (a, b)
-##
-## Returns the beta function beta(a,b) = gamma(a) * gamma(b) / gamma(a+b)
-## of a and b.
+## @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
+## Return the Beta function,
+## @iftex
+## @tex
+## $$
+##  B (a, b) = {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
+## @end example
+## @end ifinfo
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 13 June 1993

@@ -14,11 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  xor (x, y)
-##
-## Returns the "exclusive or" of the entries of x and y.
-## For boolean expressions x and y, xor (x, y) is true iff either x
-## or y is true.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
+## Return the `exclusive or' of the entries of @var{x} and @var{y}.
+## For boolean expressions @var{x} and @var{y},
+## @code{xor (@var{x}, @var{y})} is true if and only if @var{x} or @var{y}
+## is true, but not if both @var{x} and @var{y} are true.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994

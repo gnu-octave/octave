@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## acsch (z):  compute the inverse hyperbolic cosecant for each element of z.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} acsch (@var{X})
+## acsch (X): compute the inverse hyperbolic for each element of X
+## @end deftypefn
 
 ## Author: jwe
 

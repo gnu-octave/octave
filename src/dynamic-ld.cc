@@ -99,24 +99,39 @@ octave_dlopen_dynamic_loader::resolve_reference (const string& name,
 
   void *handle = dlopen (file.c_str (), RTLD_LAZY);
 
-  const char *nm = name.c_str ();
+  string mangled_name = mangle_name (name);
+
+  const char *nm = mangled_name.c_str ();
 
   if (handle)
     {
-      void *tmp = dlsym (handle, nm);
+      // Try the installer function first.
 
-      retval = X_CAST (octave_dynamic_loader::builtin_fcn_installer, tmp);
+      string tmp_name = mangle_name ("octave_install_dld_functions");
 
+      const char *tmp_nm = tmp_name.c_str ();
+
+      void *tmp = dlsym (handle, tmp_nm);
+
+      retval = X_CAST (octave_dynamic_loader::builtin_fcn_installer,
+		       tmp);
       if (! retval)
 	{
-	  const char *errmsg = dlerror ();
+	  tmp = dlsym (handle, nm);
 
-	  if (errmsg)
-	    error("%s: `%s'", nm, errmsg);
-	  else
-	    error("unable to link function `%s'", nm);
+	  retval = X_CAST (octave_dynamic_loader::builtin_fcn_installer, tmp);
 
-	  dlclose (handle);
+	  if (! retval)
+	    {
+	      const char *errmsg = dlerror ();
+
+	      if (errmsg)
+		error("%s: `%s'", nm, errmsg);
+	      else
+		error("unable to link function `%s'", nm);
+
+	      dlclose (handle);
+	    }
 	}
     }
   else
@@ -162,25 +177,38 @@ octave_shl_load_dynamic_loader::resolve_reference (const string& name,
 
   shl_t handle = shl_load (file.c_str (), BIND_DEFERRED, 0L);
 
-  const char *nm = name.c_str ();
+  string mangled_name = mangle_name (name);
+
+  const char *nm = mangled_name.c_str ();
 
   if (handle)
     {
+      // Try the installer function first.
+
+      string tmp_name = mangle_name ("octave_install_dld_functions");
+
+      const char *tmp_nm = tmp_name.c_str ();
+
       // Don't use TYPE_PROCEDURE here.  The man page says that future
       // versions of HP-UX may not support it.
 
-      int status = shl_findsym (&handle, nm, TYPE_UNDEFINED, &retval);
+      int status = shl_findsym (&handle, tmp_nm, TYPE_UNDEFINED, &retval);
 
       if (status < 0)
 	{
-	  const char *errmsg = strerror (errno);
+	  status = shl_findsym (&handle, nm, TYPE_UNDEFINED, &retval);
 
-	  if (errmsg)
-	    error("%s: `%s'", nm, errmsg);
-	  else
-	    error("unable to link function `%s'", nm);
+	  if (status < 0)
+	    {
+	      const char *errmsg = strerror (errno);
 
-	  retval = 0;
+	      if (errmsg)
+		error("%s: `%s'", nm, errmsg);
+	      else
+		error("unable to link function `%s'", nm);
+
+	      retval = 0;
+	    }
 	}
     }
   else
@@ -235,10 +263,8 @@ octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
 
   if (! oct_file.empty ())
     {
-      string mangled_name = instance->mangle_name (fcn_name);
-
       builtin_fcn_installer f
-	= instance->resolve_reference (mangled_name, oct_file);
+	= instance->resolve_reference (fcn_name, oct_file);
 
       if (f)
 	retval = f ();

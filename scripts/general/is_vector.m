@@ -17,10 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: is_vector (x)
-##
-## Return 1 if X is a vector.  Otherwise, return 0.
-##
+## -*- texinfo -*-
+## @deftypefn {Usage} {} is_vector (@var{a})
+## Return 1 if @var{a} is a vector.  Otherwise, return 0.
+## @end deftypefn
+
 ## See also: size, rows, columns, length, is_scalar, is_matrix
 
 ## Author: jwe

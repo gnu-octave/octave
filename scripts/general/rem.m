@@ -17,9 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: rem (x, y)
-##
-## Return remainder (x, y).
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} rem (@var{x}, @var{y})
+## Return the remainder of @code{@var{x} / @var{y}}, computed using the
+## expression
+## 
+## @example
+## x - y .* fix (x ./ y)
+## @end example
+## 
+## An error message is printed if the dimensions of the arguments do not
+## agree, or if either of the arguments is complex.
+## @end deftypefn
+
+## See also: round
 
 ## Author: jwe
 

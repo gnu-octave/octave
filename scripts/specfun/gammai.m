@@ -17,17 +17,35 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: gammai (a, x)
-##
-## Compute the incomplete gamma function
-##
-##   gammai (a, x) = (\int_0^x exp(-t) t^(a-1) dt) / gamma(a).
-##
-## If a is scalar, then gammai (a, x) is returned for each element of x
-## and vice versa.
-##
-## If neither a nor x is scalar, the sizes of a and x must agree, and
-## gammainc is applied for corresponding elements of x and a.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} gammai (@var{a}, @var{x})
+## Computes the incomplete gamma function,
+## @iftex
+## @tex
+## $$
+##  \gamma (a, x) = {\displaystyle\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @smallexample
+##                               x
+##                     1        /
+## gammai (a, x) = ---------    | exp (-t) t^(a-1) dt
+##                 gamma (a)    /
+##                           t=0
+## @end smallexample
+## @end ifinfo
+## 
+## If @var{a} is scalar, then @code{gammai (@var{a}, @var{x})} is returned
+## for each element of @var{x} and vice versa.
+## 
+## If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
+## @var{x} must agree, and @var{gammai} is applied element-by-element.
+## @end deftypefn
+
+## See also: gamma, lgamma
 
 ## Author: jwe
 ## Created: 30 Jan 1998

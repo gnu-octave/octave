@@ -1,3 +1,39 @@
+1999-10-26  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* elfun/acot.m: Texinfoize doc string.
+	* elfun/acsc.m: Ditto.
+	* elfun/acsch.m: Ditto.
+	* elfun/asec.m: Ditto.
+	* elfun/asech.m: Ditto.
+	* elfun/cot.m: Ditto.
+	* elfun/coth.m: Ditto.
+	* elfun/csc.m: Ditto.
+	* elfun/csch.m: Ditto.
+	* elfun/gcd.m: Ditto.
+	* elfun/lcm.m: Ditto.
+	* elfun/sec.m: Ditto.
+	* elfun/sech.m: Ditto.
+	* general/nextpow2.m: Ditto.
+	* general/rem.m: Ditto.
+	* linear-algebra/commutation_matrix.m: Ditto.
+	* linear-algebra/cross.m: Ditto.
+	* linear-algebra/duplication_matrix.m: Ditto.
+	* miscellaneous/bincoeff.m: Ditto.
+	* miscellaneous/xor.m: Ditto.
+	* specfun/bessel.m: Ditto.
+	* specfun/beta.m: Ditto.
+	* specfun/betai.m: Ditto.
+	* specfun/erfinv.m: Ditto.
+	* specfun/gammai.m: Ditto.
+	* specfun/log2.m: Ditto.
+	* specfun/pow2.m: Ditto.
+
+1999-10-23  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* general/is_scalar.m: Texinfoize help text.
+	* general/is_square.m: Ditto.
+	* general/is_symmetric.m: Ditto.
+
 1999-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/split.m: If the string to be split is empty, just return

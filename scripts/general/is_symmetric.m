@@ -17,10 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: is_symmetric (x {,tol})
-##
-## If x is symmetric, return the dimension of x, otherwise, return 0.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} is_symmetric (@var{x}, @var{tol})
+## If @var{x} is symmetric within the tolerance specified by @var{tol}, 
+## then return the dimension of @var{x}.  Otherwise, return 0.  If
+## @var{tol} is omitted, use a tolerance equal to the machine precision.
+## @end deftypefn
+
 ## See also: size, rows, columns, length, is_matrix, is_scalar,
 ## is_square, is_vector
 

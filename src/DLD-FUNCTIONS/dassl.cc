@@ -385,6 +385,22 @@ to the shortest match.")
   return retval;
 }
 
+#define DLD_INSTALLER_FCN() \
+  bool \
+  FSoctave_install_dld_functions (void)
+
+#define INSTALL_DLD_FCN(name) \
+  if (! FS ## name ()) \
+    return false
+
+DLD_INSTALLER_FCN ()
+{
+  INSTALL_DLD_FCN (dassl);
+  INSTALL_DLD_FCN (dassl_options);
+
+  return true;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

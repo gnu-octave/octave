@@ -14,12 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  nextpow2 (x)
-##
-## If x is a scalar, returns the first integer n such that
-## 2^n >= abs (x). 
-##
-## If x is a vector, return nextpow2 (length (x)). 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} nextpow2 (@var{x})
+## If @var{x} is a scalar, returns the first integer @var{n} such that
+## @iftex
+## @tex
+##  $2^n \ge |x|$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  2^n >= abs (x).
+## @end ifinfo
+## 
+## If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
+## @end deftypefn
+
+## See also: pow2
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 7 October 1994

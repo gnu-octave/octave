@@ -17,11 +17,24 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: lcm (a, ...)
-##
-## lcm (a) returns the least common multiple of the entries of the
-## integer vector a.
-## lcm (a1, ..., ak) is the same as lcm([a1, ..., ak]).
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} lcm (@var{x}, @code{...})
+## Compute the least common multiple of the elements elements of @var{x}, or
+## the list of all the arguments.  For example, 
+## 
+## @example
+## lcm (a1, ..., ak)
+## @end example
+## 
+## @noindent
+## is the same as
+## 
+## @example
+## lcm ([a1, ..., ak]).
+## @end example
+## @end deftypefn
+
+## See also: gcd, min, max, ceil, floor.  
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994

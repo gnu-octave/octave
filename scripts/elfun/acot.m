@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## acot (z):  compute the inverse cotangent for each element of z.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} acot (@var{X})
+## acot (X): compute the inverse cotangent of X for each element of X
+## @end deftypefn
 
 ## Author: jwe
 

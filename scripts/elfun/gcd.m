@@ -17,13 +17,31 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: gcd (a, ...)
-##
-## [g [, v]] = gcd (a) returns the greatest common divisor g of the
-## entries of the integer vector a, and an integer vector v such that
-## g = v(1) * a(k) + ... + v(k) * a(k).
-##
-## [g [, v]] = gcd (a1, ..., ak) is the same with a = [a1, ..., ak].
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} gcd (@var{x}, @code{...})
+## Compute the greatest common divisor of the elements of @var{x}, or the
+## list of all the arguments.  For example, 
+## 
+## @example
+## gcd (a1, ..., ak)
+## @end example
+## 
+## @noindent
+## is the same as
+## 
+## @example
+## gcd ([a1, ..., ak])
+## @end example
+## 
+## An optional second return value, @var{v}
+## contains an integer vector such that
+## 
+## @example
+## g = v(1) * a(k) + ... + v(k) * a(k)
+## @end example
+## @end deftypefn
+
+## See also: lcm, min, max, ceil, floor.
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994

@@ -56,16 +56,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // called `__name__' (which may not be redefined).
 
 #define DEFCONST(name, defn, doc) \
-  DEFCONST_INTERNAL (#name, SBV_ ## name, defn, false, doc); \
-  DEFCONST_INTERNAL ("__" ## #name ## "__", XSBV_ ## name, defn, true, doc)
+  DEFCONST_INTERNAL (name, defn, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the name of the structure has to be passed too.
 
 #define DEFCONSTX(name, sname, defn, doc) \
-  DEFCONST_INTERNAL (name, sname, defn, false, doc); \
-  DEFCONST_INTERNAL ("__" ## name ## "__", X ## sname, defn, true, doc)
+  DEFCONSTX_INTERNAL (name, sname, defn, doc)
 
 // Define a builtin function.
 //

@@ -14,9 +14,38 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  bincoeff (n, k)
-##
-## Returns the binomial coefficient of n and k.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
+## Return the binomial coefficient of @var{n} and @var{k}, defined as
+## @iftex
+## @tex
+## $$
+##  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## @group
+##  /   \
+##  | n |    n (n-1) (n-2) ... (n-k+1)
+##  |   |  = -------------------------
+##  | k |               k!
+##  \   /
+## @end group
+## @end example
+## @end ifinfo
+## 
+## For example,
+## 
+## @example
+## @group
+## bincoeff (5, 2)
+##      @result{} 10
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 8 October 1994

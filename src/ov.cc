@@ -1519,7 +1519,13 @@ symbols_of_ov (void)
     "set output style to print `var_name = ...'");
 
   DEFVAR (propagate_empty_matrices, 1.0, propagate_empty_matrices,
-    "operations on empty matrices return an empty matrix, not an error");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} propagate_empty_matrices\n\
+If the value of @code{propagate_empty_matrices} is nonzero,\n\
+functions like @code{inverse} and @code{svd} will return an empty matrix\n\
+if they are given one as an argument.  The default value is 1.\n\
+@end defvr\n\
+");
 
   DEFVAR (resize_on_range_error, 1.0, resize_on_range_error,
     "enlarge matrices on assignment");

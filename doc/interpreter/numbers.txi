@@ -222,83 +222,7 @@ separate matrix elements and rows.  It is possible to enforce this style
 by setting the built-in variable @code{whitespace_in_literal_matrix} to
 @code{"ignore"}.
 
-@defvr {Built-in Variable} whitespace_in_literal_matrix
-This variable allows some control over how Octave decides to convert
-spaces to commas and semicolons in matrix expressions like
-@code{[m (1)]} or
-
-@example
-[ 1, 2,
-  3, 4 ]
-@end example
-
-If the value of @code{whitespace_in_literal_matrix} is @code{"ignore"},
-Octave will never insert a comma or a semicolon in a literal matrix
-list.  For example, the expression @code{[1 2]} will result in an error
-instead of being treated the same as @code{[1, 2]}, and the expression
-
-@example
-[ 1, 2,
-  3, 4 ]
-@end example
-
-@noindent
-will result in the vector @code{[ 1, 2, 3, 4 ]} instead of a matrix.
-
-If the value of @code{whitespace_in_literal_matrix} is @code{"traditional"},
-Octave will convert spaces to a comma between identifiers and @samp{(}.  For
-example, given the matrix
-
-@example
-m = [3 2]
-@end example
-
-@noindent
-the expression
-
-@example
-[m (1)]
-@end example
-
-@noindent
-will be parsed as
-
-@example
-[m, (1)]
-@end example
-
-@noindent
-and will result in
-
-@example
-[3 2 1]
-@end example
-
-@noindent
-and the expression
-
-@example
-[ 1, 2,
-  3, 4 ]
-@end example
-
-@noindent
-will result in a matrix because the newline character is converted to a
-semicolon (row separator) even though there is a comma at the end of the
-first line (trailing commas or semicolons are ignored).  This is
-apparently how @sc{Matlab} behaves.
-
-Any other value for @code{whitespace_in_literal_matrix} results in behavior
-that is the same as traditional, except that Octave does not
-convert spaces to a comma between identifiers and @samp{(}.  For
-example, the expression
-
-@example
-[m (1)]
-@end example
-
-will produce @samp{3}.  This is the way Octave has always behaved.
-@end defvr
+@DOCSTRING(whitespace_in_literal_matrix)
 
 When you type a matrix or the name of a variable whose value is a
 matrix, Octave responds by printing the matrix in with neatly aligned
@@ -307,53 +231,16 @@ screen, Octave splits the matrix and displays a header before each
 section to indicate which columns are being displayed.  You can use the
 following variables to control the format of the output.
 
-@defvr {Built-in Variable} output_max_field_width
-This variable specifies the maximum width of a numeric output field.
-The default value is 10.
-@end defvr
+@DOCSTRING(output_max_field_width)
 
-@defvr {Built-in Variable} output_precision
-This variable specifies the minimum number of significant figures to
-display for numeric output.  The default value is 5.
-@end defvr
+@DOCSTRING(output_precision)
 
 It is possible to achieve a wide range of output styles by using
 different values of @code{output_precision} and
 @code{output_max_field_width}.  Reasonable combinations can be set using
 the @code{format} function.  @xref{Basic Input and Output}.
 
-@defvr {Built-in Variable} split_long_rows
-For large matrices, Octave may not be able to display all the columns of
-a given row on one line of your screen.  This can result in missing
-information or output that is nearly impossible to decipher, depending
-on whether your terminal truncates or wraps long lines.
-
-If the value of @code{split_long_rows} is nonzero, Octave will display
-the matrix in a series of smaller pieces, each of which can fit within
-the limits of your terminal width.  Each set of rows is labeled so that
-you can easily see which columns are currently being displayed.
-For example:
-
-@smallexample
-@group
-octave:13> rand (2,10)
-ans =
-
- Columns 1 through 6:
-
-  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467
-  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201
-
- Columns 7 through 10:
-
-  0.90174  0.11854  0.72313  0.73326
-  0.44672  0.94303  0.56564  0.82150
-@end group
-@end smallexample
-
-@noindent
-The default value of @code{split_long_rows} is nonzero.
-@end defvr
+@DOCSTRING(split_long_rows)
 
 Octave automatically switches to scientific notation when values become
 very large or very small.  This guarantees that you will see several
@@ -363,33 +250,7 @@ the built-in variable @code{fixed_point_format} to a nonzero value.  But
 doing so is not recommended, because it can produce output that can
 easily be misinterpreted.
 
-@defvr {Built-in Variable} fixed_point_format
-If the value of this variable is nonzero, Octave will scale all values
-in a matrix so that the largest may be written with one leading digit.
-The scaling factor is printed on the first line of output.  For example,
-
-@example
-@group
-octave:1> logspace (1, 7, 5)'
-ans =
-
-  1.0e+07  *
-
-  0.00000
-  0.00003
-  0.00100
-  0.03162
-  1.00000
-@end group
-@end example
-
-@noindent
-Notice that first value appears to be zero when it is actually 1.  For
-this reason, you should be careful when setting
-@code{fixed_point_format} to a nonzero value.
-
-The default value of @code{fixed_point_format} is 0.
-@end defvr
+@DOCSTRING(fixed_point_format)
 
 @menu
 * Empty Matrices::              
@@ -444,22 +305,7 @@ By default, dimensions of the empty matrix are printed along with the
 empty matrix symbol, @samp{[]}.  The built-in variable
 @code{print_empty_dimensions} controls this behavior.
 
-@defvr {Built-in Variable} print_empty_dimensions
-If the value of @code{print_empty_dimensions} is nonzero, the
-dimensions of empty matrices are printed along with the empty matrix
-symbol, @samp{[]}.  For example, the expression
-
-@example
-zeros (3, 0)
-@end example
-
-@noindent
-will print
-
-@example
-ans = [](3x0)
-@end example
-@end defvr
+@DOCSTRING(print_empty_dimensions)
 
 Empty matrices may also be used in assignment statements as a convenient
 way to delete rows or columns of matrices.
@@ -470,32 +316,13 @@ list of elements that make up another matrix.  You can use the variable
 @code{empty_list_elements_ok} to suppress the warning or to treat it as
 an error.
 
-@defvr {Built-in Variable} empty_list_elements_ok
-This variable controls whether Octave ignores empty matrices in a matrix
-list.
-
-For example, if the value of @code{empty_list_elements_ok} is
-nonzero, Octave will ignore the empty matrices in the expression
-
-@example
-a = [1, [], 3, [], 5]
-@end example
-
-@noindent
-and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.
-
-The default value is @code{"warn"}.
-@end defvr
+@DOCSTRING(empty_list_elements_ok)
 
 When Octave parses a matrix expression, it examines the elements of the
 list to determine whether they are all constants.  If they are, it
 replaces the list with a single matrix constant.
 
-@defvr {Built-in Variable} propagate_empty_matrices
-If the value of @code{propagate_empty_matrices} is nonzero,
-functions like @code{inverse} and @code{svd} will return an empty matrix
-if they are given one as an argument.  The default value is 1.
-@end defvr
+@DOCSTRING(propagate_empty_matrices)
 
 @node Ranges, Predicates for Numeric Objects, Matrices, Numeric Data Types
 @section Ranges
@@ -547,25 +374,12 @@ replaces the range expression with a single range constant.
 @node Predicates for Numeric Objects,  , Ranges, Numeric Data Types
 @section Predicates for Numeric Objects
 
-@deftypefn {Function File} {} is_matrix (@var{a})
-Return 1 if @var{a} is a matrix.  Otherwise, return 0.
-@end deftypefn
+@DOCSTRING(is_matrix)
 
-@deftypefn {Function File} {} is_vector (@var{a})
-Return 1 if @var{a} is a vector.  Otherwise, return 0.
-@end deftypefn
+@DOCSTRING(is_vector)
 
-@deftypefn {Function File} {} is_scalar (@var{a})
-Return 1 if @var{a} is a scalar.  Otherwise, return 0.
-@end deftypefn
+@DOCSTRING(is_scalar)
 
-@deftypefn {Function File} {} is_square (@var{x})
-If @var{x} is a square matrix, then return the dimension of @var{x}.
-Otherwise, return 0.
-@end deftypefn
+@DOCSTRING(is_square)
 
-@deftypefn {Function File} {} is_symmetric (@var{x}, @var{tol})
-If @var{x} is symmetric within the tolerance specified by @var{tol}, 
-then return the dimension of @var{x}.  Otherwise, return 0.  If
-@var{tol} is omitted, use a tolerance equal to the machine precision.
-@end deftypefn
+@DOCSTRING(is_symmetric)

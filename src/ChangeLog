@@ -1,3 +1,48 @@
+1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkgendoc (print_doc_string): Handle quoted names.
+
+	* file-io.cc (symbols_of_file_io): Use DEFCONSTX for SEEK_SET,
+	SEEK_CUR, and SEEK_END.
+
+	* defun.h (DEFCONST): Just pass name, defn, and doc to
+	DEFCONST_INTERNAL.
+	(DEFCONSTX): Likewise, pass name, defn, and doc to DEFCONSTX_INTERNAL.
+	* defun-int.h [MKBUILTINS] (DEFCONST_INTERNAL): Likewise, pass
+	name, defn, and doc to XDEFCONST_INTERNAL.
+	[MKBUILTINS] (DEFCONSTX_INTERNAL): New macro.
+	(INSTALL_CONST): New macro.
+	[! MKBUILTINS] (DEFCONST_INTERNAL): Use it to handle details here.
+	[! MKBUILTINS] (DEFCONSTX_INTERNAL): Ditto.
+	* mkgendoc: Fix definition of XDEFCONST_INTERNAL to match.
+	* mkbuiltins: Ditto.
+
+	* mkdefs: Match spaces before BEGIN_INSTALL_BUILTIN.
+
+	* Makefile.in (DEFUN_PATTERN): Also match DEFUN_MAPPER.
+
+1999-10-26  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* data.cc (VI, VInf, VJ, VNaN, Ve, Veps, Vfalse, Vi, Vinf, Vj,
+	Vnan, Vpi, Vrealmax, Vrealmin): Texinfoize doc strings.
+	* mappers.cc (Fabs, Facos, Facosh, Fangle, Farg, Fasin, Fasinh,
+	Fatan, Fatanh, Fceil, Fconj, Fcos, Fcosh, Ferf, Ferfc, Fexp,
+	Ffinite, Ffix, Ffloor, Fgamma, Fimag, Flgamma, Flog, Flog10,
+	Freal, Fround, Fsign, Fsin, Fsinh, Fsqrt, Ftan, Ftanh): Ditto.
+
+1999-10-23  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* data.cc (Fis_matrix): Texinfoize doc string.  * ov.cc
+	(Vpropagate_empty_matrices): Ditto.  * pr-output.cc
+	(Vfixed_point_format, Voutput_max_field_width, Voutput_precision,
+	Vprint_empty_dimensions, Vsplit_long_rows): Ditto.  * pt-mat.cc:cd
+	(Vempty_list_elements_ok): Ditto.
+
+1999-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-usr-fcn.cc (octave_user_function::do_index_op): If call_depth
+	is exceeded, call unwind_protect::run_frame before returning.
+
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cutils.c (do_octave_usleep): Handle useconds > 1e6.

@@ -6,4 +6,6 @@ else
   d=$1
 fi
 
-find $d -name '*.m' | sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < &," | /bin/sh
+find $d -name '*.m' | \
+  sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/ *@/@/'," | \
+  /bin/sh

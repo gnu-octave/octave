@@ -14,14 +14,57 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage: duplication_matrix (n)
-## 
-## Returns the duplication matrix D_n which is the unique n^2 by
-## n*(n+1)/2 matrix such that D_n * vech (A) = vec (A) for all
-## symmetric n by n matrices A.
+## -*- texinfo -*- 
+## @deftypefn {Function File} {} duplication_matrix (@var{n})
+## Return the duplication matrix
+## @iftex
+## @tex
+##  $D_n$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{D}_@var{n}
+## @end ifinfo
+##  which is the unique
+## @iftex
+## @tex
+##  $n^2 \times n(n+1)/2$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{n}^2 by @var{n}*(@var{n}+1)/2
+## @end ifinfo
+##  matrix such that
+## @iftex
+## @tex
+##  $D_n * {\rm vech} (A) = {\rm vec} (A)$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{D}_@var{n} \cdot vech (@var{A}) = vec (@var{A})
+## @end ifinfo
+##  for all symmetric
+## @iftex
+## @tex
+##  $n \times n$
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{n} by @var{n}
+## @end ifinfo
+##  matrices
+## @iftex
+## @tex
+##  $A$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{A}.
+## @end ifinfo
 ## 
 ## See Magnus and Neudecker (1988), Matrix differential calculus with
 ## applications in statistics and econometrics.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 8 May 1995

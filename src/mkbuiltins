@@ -38,7 +38,7 @@ cat << \EOF
 
 #define XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc)
 
-#define XDEFCONST_INTERNAL(name, sname, defn, protect, doc)
+#define XDEFCONST_INTERNAL(name, defn, doc)
 
 #define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
 			       d_c_map, c_c_map, lo, hi, \

@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## sec (z): compute the secant for each element of z.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} sec (@var{X})
+## sec (X): compute the secant of X for each element of X
+## @end deftypefn
 
 ## Author: jwe
 

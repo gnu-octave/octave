@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## acsc (z):  compute the inverse cosecant for each element of z.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} acsc (@var{X})
+## acsc (X): compute the inverse cosecant of X for each element of X
+## @end deftypefn
 
 ## Author: jwe
 

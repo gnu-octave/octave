@@ -26,7 +26,7 @@ cat << \EOF
 #define XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
   print_doc_string (#name, doc);
 
-#define XDEFCONST_INTERNAL(name, sname, defn, protect, doc) \
+#define XDEFCONST_INTERNAL(name, defn, doc) \
   print_doc_string (#name, doc);
 
 #define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
@@ -37,8 +37,16 @@ cat << \EOF
 static void
 print_doc_string (const string& name, const string& doc)
 {
-  cout << "" << name << "\n";
-  cout << doc << "\n";
+  cout << "";
+
+  size_t len = name.length ();
+
+  if (name[0] == '"' && name[len-1] == '"')
+    cout << name.substr (1, len-2);
+  else
+    cout << name;
+
+  cout << "\n" << doc << "\n";
 }
 
 EOF

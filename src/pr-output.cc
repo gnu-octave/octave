@@ -1890,19 +1890,107 @@ void
 symbols_of_pr_output (void)
 {
   DEFVAR (fixed_point_format, 0.0, fixed_point_format,
-    "use scaled fixed point format for `format short' and `format long'");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} fixed_point_format\n\
+If the value of this variable is nonzero, Octave will scale all values\n\
+in a matrix so that the largest may be written with one leading digit.\n\
+The scaling factor is printed on the first line of output.  For example,\n\
+\n\
+@example\n\
+@group\n\
+octave:1> logspace (1, 7, 5)'\n\
+ans =\n\
+\n\
+  1.0e+07  *\n\
+\n\
+  0.00000\n\
+  0.00003\n\
+  0.00100\n\
+  0.03162\n\
+  1.00000\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+Notice that first value appears to be zero when it is actually 1.  For\n\
+this reason, you should be careful when setting\n\
+@code{fixed_point_format} to a nonzero value.\n\
+\n\
+The default value of @code{fixed_point_format} is 0.\n\
+@end defvr\n\
+");
 
   DEFVAR (output_max_field_width, 10.0, output_max_field_width,
-    "maximum width of an output field for numeric output");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} output_max_field_width\n\
+This variable specifies the maximum width of a numeric output field.\n\
+The default value is 10.\n\
+@end defvr\n\
+");
 
   DEFVAR (output_precision, 5.0, output_precision,
-    "number of significant figures to display for numeric output");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} output_precision\n\
+This variable specifies the minimum number of significant figures to\n\
+display for numeric output.  The default value is 5.\n\
+@end defvr\n\
+");
 
   DEFVAR (print_empty_dimensions, 1.0, print_empty_dimensions,
-    "also print dimensions of empty matrices");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} print_empty_dimensions\n\
+If the value of @code{print_empty_dimensions} is nonzero, the\n\
+dimensions of empty matrices are printed along with the empty matrix\n\
+symbol, @samp{[]}.  For example, the expression\n\
+\n\
+@example\n\
+zeros (3, 0)\n\
+@end example\n\
+\n\
+@noindent\n\
+will print\n\
+\n\
+@example\n\
+ans = [](3x0)\n\
+@end example\n\
+@end defvr\n\
+");
 
   DEFVAR (split_long_rows, 1.0, split_long_rows,
-    "split long matrix rows instead of wrapping");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} split_long_rows\n\
+For large matrices, Octave may not be able to display all the columns of\n\
+a given row on one line of your screen.  This can result in missing\n\
+information or output that is nearly impossible to decipher, depending\n\
+on whether your terminal truncates or wraps long lines.\n\
+\n\
+If the value of @code{split_long_rows} is nonzero, Octave will display\n\
+the matrix in a series of smaller pieces, each of which can fit within\n\
+the limits of your terminal width.  Each set of rows is labeled so that\n\
+you can easily see which columns are currently being displayed.\n\
+For example:\n\
+\n\
+@smallexample\n\
+@group\n\
+octave:13> rand (2,10)\n\
+ans =\n\
+\n\
+ Columns 1 through 6:\n\
+\n\
+  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467\n\
+  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201\n\
+\n\
+ Columns 7 through 10:\n\
+\n\
+  0.90174  0.11854  0.72313  0.73326\n\
+  0.44672  0.94303  0.56564  0.82150\n\
+@end group\n\
+@end smallexample\n\
+\n\
+@noindent\n\
+The default value of @code{split_long_rows} is nonzero.\n\
+@end defvr\n\
+");
 }
 
 /*

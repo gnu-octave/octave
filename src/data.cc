@@ -797,7 +797,11 @@ DEFUN (is_list, args, ,
 }
 
 DEFUN (is_matrix, args, ,
-  "is_matrix (x): return nonzero if x can be considered a matrix")
+  "-*- texinfo -*-\n\
+@deftypefn {Usage} {} is_matrix (@var{a})\n\
+Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
+@end deftypefn\n\
+")
 {
   double retval = 0.0;
 
@@ -1186,17 +1190,65 @@ treat_neg_dim_as_zero (void)
 void
 symbols_of_data (void)
 {
+
+#define IMAGINARY_DOC_STRING "-*- texinfo -*-\n\
+@defvr {Built-in Variable} I\n\
+@defvrx {Built-in Variable} J\n\
+@defvrx {Built-in Variable} i\n\
+@defvrx {Built-in Variable} j\n\
+A pure imaginary number, defined as\n\
+@iftex\n\
+@tex\n\
+  $\\sqrt{-1}$.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+  @code{sqrt (-1)}.\n\
+@end ifinfo\n\
+The @code{I} and @code{J} forms are true constants, and cannot be\n\
+modified.  The @code{i} and @code{j} forms are like ordinary variables,\n\
+and may be used for other purposes.  However, unlike other variables,\n\
+they once again assume their special predefined values if they are\n\
+cleared @xref{Status of Variables}.\n\
+@end defvr"
+
+#define INFINITY_DOC_STRING "-*- texinfo -*-\n\
+@defvr {Built-in Variable} Inf\n\
+@defvrx {Built-in Variable} inf\n\
+Infinity.  This is the result of an operation like 1/0, or an operation\n\
+that results in a floating point overflow.\n\
+@end defvr"
+
+#define NAN_DOC_STRING "-*- texinfo -*-\n\
+@defvr {Built-in Variable} NaN\n\
+@defvrx {Built-in Variable} nan\n\
+Not a number.  This is the result of an operation like\n\
+@iftex\n\
+@tex\n\
+$0/0$, or $\\infty - \\infty$,\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+0/0, or @samp{Inf - Inf},\n\
+@end ifinfo\n\
+or any operation with a NaN.\n\
+\n\
+Note that NaN always compares not equal to NaN.  This behavior is\n\
+specified by the IEEE standard for floating point arithmetic.  To\n\
+find NaN values, you must use the @code{isnan} function.\n\
+@end defvr"
+
   DEFCONST (I, Complex (0.0, 1.0),
-    "sqrt (-1)");
+    IMAGINARY_DOC_STRING);
 
   DEFCONST (Inf, octave_Inf,
-    "infinity");
+    INFINITY_DOC_STRING);
 
   DEFCONST (J, Complex (0.0, 1.0),
-    "sqrt (-1)");
+    IMAGINARY_DOC_STRING);
 
   DEFCONST (NaN, octave_NaN,
-    "not a number");
+    NAN_DOC_STRING);
 
 #if defined (M_E)
   double e_val = M_E;
@@ -1205,25 +1257,60 @@ symbols_of_data (void)
 #endif
 
   DEFCONST (e, e_val,
-    "exp (1)");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} e\n\
+The base of natural logarithms.  The constant\n\
+@iftex\n\
+@tex\n\
+ $e$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+ @var{e}\n\
+@end ifinfo\n\
+ satisfies the equation\n\
+@iftex\n\
+@tex\n\
+ $\\log (e) = 1$.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+ @code{log} (@var{e}) = 1.\n\
+@end ifinfo\n\
+@end defvr");
 
   DEFCONST (eps, DBL_EPSILON,
-    "machine precision");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} eps\n\
+The machine precision.  More precisely, @code{eps} is the largest\n\
+relative spacing between any two adjacent numbers in the machine's\n\
+floating point system.  This number is obviously system-dependent.  On\n\
+machines that support 64 bit IEEE floating point arithmetic, @code{eps}\n\
+is approximately\n\
+@ifinfo\n\
+ 2.2204e-16.\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $2.2204\\times10^{-16}$.\n\
+@end tex\n\
+@end iftex\n\
+@end defvr");
 
   DEFCONST (false, false,
     "logical false value");
 
   DEFCONST (i, Complex (0.0, 1.0),
-    "sqrt (-1)");
+    IMAGINARY_DOC_STRING);
 
   DEFCONST (inf, octave_Inf,
-    "infinity");
+    INFINITY_DOC_STRING);
 
   DEFCONST (j, Complex (0.0, 1.0),
-    "sqrt (-1)");
+    IMAGINARY_DOC_STRING);
 
   DEFCONST (nan, octave_NaN,
-    "not a number");
+    NAN_DOC_STRING);
 
 #if defined (M_PI)
   double pi_val = M_PI;
@@ -1232,13 +1319,43 @@ symbols_of_data (void)
 #endif
 
   DEFCONST (pi, pi_val,
-    "ratio of the circumference of a circle to its diameter");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} pi\n\
+The ratio of the circumference of a circle to its diameter.\n\
+Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
+@end defvr");
 
   DEFCONST (realmax, DBL_MAX,
-    "realmax (): return largest representable floating point number");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} realmax\n\
+The largest floating point number that is representable.  The actual\n\
+value is system-dependent.  On machines that support 64 bit IEEE\n\
+floating point arithmetic, @code{realmax} is approximately\n\
+@ifinfo\n\
+ 1.7977e+308\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $1.7977\\times10^{308}$.\n\
+@end tex\n\
+@end iftex\n\
+@end defvr");
 
   DEFCONST (realmin, DBL_MIN,
-    "realmin (): return smallest representable floating point number");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} realmin\n\
+The smallest floating point number that is representable.  The actual\n\
+value is system-dependent.  On machines that support 64 bit IEEE\n\
+floating point arithmetic, @code{realmin} is approximately\n\
+@ifinfo\n\
+ 2.2251e-308\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $2.2251\\times10^{-308}$.\n\
+@end tex\n\
+@end iftex\n\
+@end defvr");
 
   DEFVAR (treat_neg_dim_as_zero, 0.0, treat_neg_dim_as_zero,
     "convert negative dimensions to zero");

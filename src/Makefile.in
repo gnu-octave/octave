@@ -163,7 +163,7 @@ MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 # so we have to repeat ourselves because some stupid egreps don't like
 # empty elements in alternation patterns.
 
-DEFUN_PATTERN = "^[ \t]*DEFU(N|N_DLD|N_TEXT)[ \t]*\\("
+DEFUN_PATTERN = "^[ \t]*DEFU(N|N_DLD|N_TEXT|N_MAPPER)[ \t]*\\("
 
 DEF_5 := $(SOURCES) $(DLD_SRC)
 DEF_4 := $(addprefix $(srcdir)/, $(DEF_5))

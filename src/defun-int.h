@@ -104,9 +104,14 @@ alias_builtin (const string& alias, const string& name);
     XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
   END_INSTALL_BUILTIN
 
-#define DEFCONST_INTERNAL(name, sname, defn, protect, doc) \
+#define DEFCONST_INTERNAL(name, defn, doc) \
   BEGIN_INSTALL_BUILTIN \
-    XDEFCONST_INTERNAL(name, sname, defn, protect, doc) \
+    XDEFCONST_INTERNAL(name, defn, doc) \
+  END_INSTALL_BUILTIN
+
+#define DEFCONSTX_INTERNAL(name, sname, defn, doc) \
+  BEGIN_INSTALL_BUILTIN \
+    XDEFCONST_INTERNAL(name, defn, doc) \
   END_INSTALL_BUILTIN
 
 #define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
@@ -138,8 +143,16 @@ alias_builtin (const string& alias, const string& name);
 
 // How builtin variables are actually installed.
 
-#define DEFCONST_INTERNAL(name, sname, defn, protect, doc) \
+#define INSTALL_CONST(name, sname, defn, protect, doc) \
   install_builtin_constant (name, octave_value (defn), protect, doc)
+
+#define DEFCONST_INTERNAL(name, defn, doc) \
+  INSTALL_CONST (#name, SBV_ ## name, defn, false, doc); \
+  INSTALL_CONST ("__" ## #name ## "__", XSBV_ ## name, defn, true, doc)
+
+#define DEFCONSTX_INTERNAL(name, sname, defn, doc) \
+  INSTALL_CONST (name, sname, defn, false, doc); \
+  INSTALL_CONST ("__" ## name ## "__", X ## sname, defn, true, doc)
 
 // How mapper functions are actually installed.
 

@@ -14,9 +14,12 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  erfinv (x)
-##
-## Computes the inverse of the error function erf.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} erfinv (@var{z})
+## Computes the inverse of the error function,
+## @end deftypefn
+
+##  See also: erf, erfc
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 27 September 1994

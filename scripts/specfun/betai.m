@@ -17,13 +17,31 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: beta (a, b, x)
-##
-## Compute the incomplete beta function
-##
-##  betai (a, b, x) = beta(a,b)^(-1) \int_0^x t^(a-1) (1-t)^(b-1) dt
-##
-## The sizes of x, a, and b must agree.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} betai (@var{a}, @var{b}, @var{x})
+## Return the incomplete Beta function,
+## @iftex
+## @tex
+## $$
+##  \beta (a, b, x) = B (a, b)^{-1} \int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @smallexample
+##                                     x
+##                                    /
+## betai (a, b, x) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.
+##                                    /
+##                                 t=0
+## @end smallexample
+## @end ifinfo
+## 
+## If x has more than one component, both @var{a} and @var{b} must be
+## scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
+## compatible dimensions.
+## @end deftypefn
 
 ## Author: jwe
 ## Created: 30 Jan 1998

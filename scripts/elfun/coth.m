@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## coth (z):  compute the hyperbolic cotangent for each element of z.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {} coth (@var{X})
+## coth (X): compute the hyperbolic cotangent of X for each element of X
+## @end deftypefn
 
 ## Author: jwe
 

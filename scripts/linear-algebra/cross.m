@@ -14,10 +14,18 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  cross (x, y)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cross (@var{x}, @var{y})
 ## Computes the vector cross product of the two 3-dimensional vectors
-## x and y.
+## @var{x} and @var{y}.  For example,
+## 
+## @example
+## @group
+## cross ([1,1,0], [0,1,1])
+##      @result{} [ 1; -1; 1 ]
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 15 October 1994

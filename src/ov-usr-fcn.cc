@@ -273,6 +273,7 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
   if (call_depth > Vmax_recursion_depth)
     {
       ::error ("max_recursion_limit exceeded");
+      unwind_protect::run_frame ("func_eval");
       return retval;
     }
 

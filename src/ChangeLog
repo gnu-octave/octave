@@ -1,3 +1,7 @@
+2000-04-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load): Undo previous change.
+
 2000-04-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.cc (octave_dynamic_loader::do_load): Also fail with

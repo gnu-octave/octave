@@ -57,7 +57,7 @@ function inv = beta_inv (x, a, b)
     a = a (k);
     b = b (k);
     x = x (k);
-    y = a ./ b;
+    y = a ./ (a + b);
     l = find (y < eps);
     if (any (l))
       y(l) = sqrt (eps) * ones (length (l), 1);

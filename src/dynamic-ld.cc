@@ -267,11 +267,11 @@ octave_dynamic_loader::do_load (const std::string& fcn_name)
 	= X_CAST (octave_dld_fcn_installer, function);
 
       retval = f (oct_file);
+
+      if (! retval)
+	::error ("failed to install dld function `%s'", fcn_name.c_str ());
     }
   
-  if (! retval)
-    ::error ("failed to install dld function `%s'", fcn_name.c_str ());
-
   unwind_protect::run_frame ("octave_dynamic_loader::do_load");
 
   return retval;

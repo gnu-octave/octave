@@ -1,3 +1,8 @@
+2000-04-04  John Smith <john@arrows.demon.co.uk>
+
+	* statistics/distributions/beta_inv.m: Provide better(?) initial
+	guess for iteration.
+
 2000-03-31   Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* image/image.m: Allow image (A) or image (x, y, A).

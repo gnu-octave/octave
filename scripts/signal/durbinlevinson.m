@@ -14,16 +14,18 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  durbinlevinson (c, [oldphi, oldv])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
+## Perform one step of the Durbin-Levinson algorithm.
 ##
-## Performs one step of the Durbin-Levinson algorithm.
+## The vector @var{c} specifies the autocovariances @code{[gamma_0, ...,
+## gamma_t]} from lag 0 to @var{t}, @var{oldphi} specifies the
+## coefficients based on @var{c}(@var{t}-1) and @var{oldv} specifies the
+## corresponding error.
 ##
-## The vector c_t = [gamma_0, ..., gamma_t] contains the autocovariances
-## from lag 0 to t, oldphi the coefficients based on c_(t-1) and oldv
-## the corresponding error.
-##
-## If oldphi is omitted, all steps from 1 to t of the algorithm are
-## performed.
+## If @var{oldphi} and @var{oldv} are omitted, all steps from 1 to
+## @var{t} of the algorithm are performed.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Perform one step of the Durbin-Levinson algorithm
@@ -31,7 +33,7 @@
 function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
 
   if( !((nargin == 1) || (nargin == 3)) )
-    usage ("durbinlevinson (c, [oldphi, oldv])");
+    usage ("durbinlevinson (c, oldphi, oldv)");
   endif
 
   if( columns (c) > 1 )

@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  autocov (X [, h])
-##
-## returns the autocovariances from lag 0 to h of vector X.
-## If h is omitted, all autocovariances are computed.
-## If X is a matrix, the autocovariances of every single column are
+## -*- texinfo -*-
+## @deftypefn {Function File} {} autocov (@var{x}, @var{h})
+## Return the autocovariances from lag 0 to @var{h} of vector @var{x}.
+## If @var{h} is omitted, all autocovariances are computed.
+## If @var{x} is a matrix, the autocovariances of each column are
 ## computed.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Compute autocovariances

@@ -17,7 +17,8 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## @deftypefn {Operator} {} ,
+## -*- texinfo -*-
+## @deffn {Operator} ,
 ## Array index, function argument, or command separator.
-## @end deftypefn
+## @end deffn
 ## @seealso{semicolon}

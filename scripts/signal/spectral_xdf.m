@@ -14,16 +14,17 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  retval = spectral_xdf (X, [win, [b]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} spectral_xdf (@var{x}, @var{win}, @var{b})
+## Return the spectral density estimator given a data vector @var{x},
+## window name @var{win}, and bandwidth, @var{b}.
 ##
-## Returns the spectral density estimator.
-## X ....... data vector
-## win ..... window name, eg. "triangle" or "rectangle"
-##           spectral_adf searches for a function called win_sw ()
-## b ....... bandwidth
+## The window name, e.g., @code{"triangle"} or @code{"rectangle"} is
+## used to search for a function called @code{@var{win}_sw}.
 ##
-## If win is omitted, the triangle window is used as default.
-## If b is omitted, 1 / sqrt (length (X)) is used as default.
+## If @var{win} is omitted, the triangle window is used.  If @var{b} is
+## omitted, @code{1 / sqrt (length (@var{x}))} is used.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Spectral density estimation

@@ -14,27 +14,34 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [a, b] = arch_fit (y, X, p [, ITER [, gamma [, a0, b0]]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{a}, @var{b}] =} arch_fit (@var{y}, @var{x}, @var{p}, @var{iter}, @var{gamma}, @var{a0}, @var{b0})
+## Fit an ARCH regression model to the time series @var{y} using the
+## scoring algorithm in Engle's original ARCH paper.  The model is
 ##
-## Fits an ARCH regression model to the time series y using the scoring
-## algorithm in Engle's original ARCH paper.  The model is
-##    y(t) = b(1) * x(t,1) + ... + b(k) * x(t,k) + e(t),
-##    h(t) = a(1) + a(2) * e(t-1)^2 + ... + a(p+1) * e(t-p)^2,
-## where e(t) is N(0, h(t)), given y up to time t-1 and X up to t.
+## @example
+## y(t) = b(1) * x(t,1) + ... + b(k) * x(t,k) + e(t),
+## h(t) = a(1) + a(2) * e(t-1)^2 + ... + a(p+1) * e(t-p)^2
+## @end example
 ##
-## If invoked as arch_fit (y, k, p) with a positive integer k, fit an
-## ARCH(k,p) process, i.e., do the above with the t-th row of X given by
-## [1, y(t-1), ..., y(t-k)].
+## @noindent
+## in which @var{e}(@var{t}) is @var{N}(0, @var{h}(@var{t})), given a
+## time-series vector @var{y} up to time @var{t}-1 and a matrix of
+## (ordinary) regressors @var{x} up to @var{t}.  The order of the
+## regression of the residual variance is specified by @var{p}.
 ##
-## Optionally, one can specify the number of iterations ITER, the
-## updating factor gamma, and initial values a0 and b0 for the scoring
-## algorithm.
+## If invoked as @code{arch_fit (@var{y}, @var{k}, @var{p})} with a
+## positive integer @var{k}, fit an ARCH(@var{k}, @var{p}) process,
+## i.e., do the above with the @var{t}-th row of @var{x} given by
 ##
-## The input parameters are:
-##    y     ... time series (vector)
-##    X     ... matrix of (ordinary) regressors or order of
-##              autoregression
-##    p     ... order of the regression of the residual variance
+## @example
+## [1, y(t-1), ..., y(t-k)]
+## @end example
+##
+## Optionally, one can specify the number of iterations @var{iter}, the
+## updating factor @var{gamma}, and initial values @var{a0} and @var{b0}
+## for the scoring algorithm.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Fit an ARCH regression model
@@ -42,7 +49,7 @@
 function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
 
   if ((nargin < 3) || (nargin == 6) || (nargin > 7))
-    usage ("arch_fit (y, X, p [, ITER [, gamma [, a0, b0]]])");
+    usage ("arch_fit (y, X, p, ITER, gamma, a0, b0)");
   endif
 
   if !(is_vector (y))

@@ -17,10 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: randperm (N)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} randperm (@var{n})
 ## Return a row vector containing a random permutation of the
-## integers from 1 to N.
+## integers from 1 to @var{n}.
+## @end deftypefn
 
 ## Author: "James R. Van Zandt" <jrv@vanzandt.mv.com>
 ## Adapted-By: jwe

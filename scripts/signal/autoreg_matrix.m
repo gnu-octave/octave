@@ -14,12 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  X = autoreg_matrix (y, k)
-##
-## Given a time series (vector) y, returns a matrix X with ones in the
-## first column and the first k lagged values of y in the other columns.
-## I.e., for t > k, [1, y(t-1), ..., y(t-k)] is the t-th row of X. X can
-## be used as regressor matrix in autoregressions.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} autoreg_matrix (@var{y}, @var{k})
+## Given a time series (vector) @var{y}, return a matrix with ones in the
+## first column and the first @var{k} lagged values of @var{y} in the
+## other columns.  I.e., for @var{t} > @var{k}, @code{[1,
+## @var{y}(@var{t}-1), ..., @var{y}(@var{t}-@var{k})]} is the t-th row
+## of the result.  The resulting matrix may be used as a regressor matrix
+## in autoregressions.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Design matrix for autoregressions

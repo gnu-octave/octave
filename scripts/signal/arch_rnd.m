@@ -14,14 +14,24 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  y = arch_rnd (a, b, T)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} arch_rnd (@var{a}, @var{b}, @var{t})
+## Simulate an ARCH sequence, @var{y}, of length @var{t} with AR
+## coefficients @var{b} and CH coefficients @var{a}.  I.e., the result
+## follows the model
 ##
-## Simulates an ARCH sequence y of length T with AR coefficients b and
-## CH coefficients a.
-## I.e., y follows the model
-##     y(t) = b(1) + b(2) * y(t-1) + ... + b(lb) * y(t-lb+1) + e(t),
-## where e(t), given y up to time t-1, is N(0, h(t)), with
-##     h(t) = a(1) + a(2) * e(t-1)^2 + ... + a(la) * e(t-la+1)^2.
+## @example
+## y(t) = b(1) + b(2) * y(t-1) + ... + b(lb) * y(t-lb+1) + e(t),
+## @end example
+##
+## @noindent
+## where e(t), given @var{y} up to time @var{t}-1, is @var{N}(0,
+## @var{h}(@var{t})), with
+##
+## @example
+## h(t) = a(1) + a(2) * e(t-1)^2 + ... + a(la) * e(t-la+1)^2
+## @end example
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Simulate an ARCH process

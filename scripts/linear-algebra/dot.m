@@ -14,9 +14,10 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  dot (x, y)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dot (@var{x}, @var{y})
 ## Computes the dot product of two vectors.
+## @end deftypefn
 
 ## Author: jwe
 

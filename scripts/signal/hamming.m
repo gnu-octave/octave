@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  hamming (m)
-##
-## Returns the filter coefficients of a Hamming window of length m.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hamming (@var{m})
+## Return the filter coefficients of a Hamming window of length @var{m}.
 ##
 ## For a definition of the Hamming window, see e.g. A. V. Oppenheim &
 ## R. W. Schafer, "Discrete-Time Signal Processing".
+## @end deftypefn
 
 ## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description:  Coefficients of the Hamming window

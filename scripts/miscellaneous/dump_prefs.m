@@ -17,11 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: dump_prefs (file)
-##
-## Have Octave dump all the current user preference variables to FILE
-## in a format that can be parsed by Octave later.  If FILE is omitted,
-## the listing is printed to stdout.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dump_prefs (@var{file})
+## Have Octave dump all the current user preference variables to
+## @var{file} in a format that can be parsed by Octave later.  If
+## @var{file} is omitted, the listing is printed to stdout.
+## @end deftypefn
 
 ## Author: jwe
 

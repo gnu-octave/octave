@@ -14,12 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [a, v] = yulewalker (c)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{a}, @var{v}] =} yulewalker (@var{c})
+## Fit an AR (p)-model with Yule-Walker estimates given a vector @var{c}
+## of autocovariances @code{[gamma_0, ..., gamma_p]}.
 ##
-## fits an AR (p)-model with Yule-Walker estimates.
-## c = [gamma_0, ..., gamma_p] autocovariances
-## a .... AR coefficients
-## v .... variance of white noise
+## Returns the AR coefficients, @var{a}, and the variance of white
+## noise, @var{v}.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Fit AR model by Yule-Walker method

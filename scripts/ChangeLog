@@ -1,6 +1,64 @@
 2000-01-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/bin2dec.m: Texinfoize doc string.
+	* plot/__plr1__.m: Ditto.
+	* plot/__pltopt__.m: Ditto.
+	* plot/__plt__.m: Ditto.
+	* plot/__plt2vv__.m: Ditto.
+	* plot/__plr2__.m: Ditto.
+	* plot/__plr__.m: Ditto.
+	* plot/__plt1__.m: Ditto.
+	* plot/__plt2__.m: Ditto.
+	* plot/__plt2mm__.m: Ditto.
+	* plot/__plt2mv__.m: Ditto.
+	* plot/__plt2ss__.m: Ditto.
+	* miscellaneous/paren.m: Ditto.
+	* miscellaneous/comma.m: Ditto.
+	* miscellaneous/semicolon.m: Ditto.
+	* miscellaneous/path.m: Ditto.
+	* miscellaneous/list_primes.m: Ditto.
+	* miscellaneous/flops.m: Ditto.
+	* miscellaneous/dump_prefs.m: Ditto.
+	* miscellaneous/bug_report.m: Ditto.
+	* linear-algebra/dot.m: Ditto
+	* linear-algebra/dmult.m: Ditto.
+	* general/randperm.m: Ditto.
+	* general/logical.m: Ditto.
+	* general/is_duplicate_entry.m: Ditto.
+	* signal/arch_fit.m: Ditto.
+	* signal/arch_rnd.m: Ditto.
+	* signal/arch_test.m: Ditto.
+	* signal/arma_rnd.m: Ditto.
+	* signal/autocor.m: Ditto.
+	* signal/autocov.m: Ditto.
+	* signal/autoreg_matrix.m: Ditto.
+	* signal/bartlett.m: Ditto.
+	* signal/blackman.m: Ditto.
+	* signal/detrend.m: Ditto.
+	* signal/diffpara.m: Ditto.
+	* signal/durbinlevinson.m: Ditto.
+	* signal/fftconv.m: Ditto.
+	* signal/fftfilt.m: Ditto.
+	* signal/fftshift.m: Ditto.
+	* signal/fractdiff.m: Ditto.
+	* signal/freqz.m: Ditto.
+	* signal/hamming.m: Ditto.
+	* signal/hanning.m: Ditto.
+	* signal/hurst.m: Ditto.
+	* signal/periodogram.m: Ditto.
+	* signal/rectangle_lw.m: Ditto.
+	* signal/rectangle_sw.m: Ditto.
+	* signal/sinc.m: Ditto.
+	* signal/sinetone.m: Ditto.
+	* signal/sinewave.m: Ditto.
+	* signal/spectral_adf.m: Ditto.
+	* signal/spectral_xdf.m: Ditto.
+	* signal/spencer.m: Ditto.
+	* signal/stft.m: Ditto.
+	* signal/synthesis.m: Ditto.
+	* signal/triangle_lw.m: Ditto.
+	* signal/triangle_sw.m: Ditto.
+	* signal/yulewalker.m: Ditto.
 
 2000-01-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

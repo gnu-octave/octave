@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  sinewave (m, n [, d])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sinewave (@var{m}, @var{n}, @var{d})
+## Return an @var{m}-element vector with @var{i}-th element given by
+## @code{sin (2 * pi * (@var{i}+@var{d}-1) / @var{n})}.
 ##
-## Computes an (m x 1)-vector X with i-th element X(i) given by sin (2 *
-## pi * (i+d-1) / n).
-##
-## The default value for d is 0.
+## The default value for @var{d} is 0.
+## @end deftypefn
 
 ## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description:  Compute a sine wave
@@ -29,7 +30,7 @@ function x = sinewave (m, n, d)
   if (nargin == 2)
     d = 0;
   elseif (nargin != 3)
-    usage ("sinewave (m, n [, d])");
+    usage ("sinewave (m, n, d)");
   endif
 
   x = sin ( ((1 : m) + d - 1) * 2 * pi / n);

@@ -17,9 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: is_duplicate_entry (x)
-##
-## Return non-zero if any entries in x are duplicates of one another.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} is_duplicate_entry (@var{x})
+## Return non-zero if any entries in @var{x} are duplicates of one
+## another.
+## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 

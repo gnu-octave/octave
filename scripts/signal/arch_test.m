@@ -14,26 +14,51 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, lm] = arch_test (y, X, p)
-##         [pval, lm] = arch_test (y, k, p)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
+## For a linear regression model
 ##
-## arch_test (y, X, p) performs a Lagrange Multiplier (LM) test of the
-## null hypothesis of no conditional heteroscedascity in the linear
-## regression model y = X * b + e against the alternative of CH(p).
+## @example
+## y = x * b + e
+## @end example
+##
+## @noindent
+## perform a Lagrange Multiplier (LM) test of the null hypothesis of no
+## conditional heteroscedascity against the alternative of CH(@var{p}).
+##
 ## I.e., the model is
-##     y(t) = b(1) * x(t,1) + ... + b(k) * x(t,k) + e(t),
-## where given y up to t-1 and x up to t, e(t) is N(0, h(t)) with
-##     h(t) = v + a(1) * e(t-1)^2 + ... + a(p) * e(t-p)^2,
-## and the null is a(1) == ... == a(p) == 0.
 ##
-## arch_test (y, k, p) does the same in a linear autoregression model of
-## order k, i.e., with [1, y(t-1), ..., y(t-k)] as the t-th row of X.
+## @example
+## y(t) = b(1) * x(t,1) + ... + b(k) * x(t,k) + e(t),
+## @end example
 ##
-## Under the null, lm approximately has a chisquare distribution with p
-## degrees of freedom.  pval is the p-value (1 minus the CDF of this
-## distribution at lm) of the test.
+## @noindent
+## given @var{y} up to @var{t}-1 and @var{x} up to @var{t},
+## @var{e}(@var{t}) is @var{N}(0, @var{h}(@var{t})) with
 ##
-## If no output argument is given, the p-value is displayed.
+## @example
+## h(t) = v + a(1) * e(t-1)^2 + ... + a(p) * e(t-p)^2,
+## @end example
+##
+## @noindent
+## and the null is @var{a}(1) == ... == @var{a}(@var{p}) == 0.
+##
+## If the second argument is a scalar integer, @var{k}, perform the same
+## test in a linear autoregression model of order @var{k}, i.e., with
+##
+## @example
+## [1, y(t-1), ..., y(t-@var{k})]
+## @end example
+##
+## @noindent
+## as the @var{t}-th row of @var{x}.
+##
+## Under the null, LM approximately has a chisquare distribution with
+## @var{p} degrees of freedom and @var{pval} is the @var{p}-value (1
+## minus the CDF of this distribution at LM) of the test.
+##
+## If no output argument is given, the @var{p}-value is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Test for conditional heteroscedascity

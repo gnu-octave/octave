@@ -14,18 +14,25 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  arma_rnd (a, b, v, t [, n])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} arma_rnd (@var{a}, @var{b}, @var{v}, @var{t}, @var{n})
+## Return a simulation of the ARMA model
 ##
-## Returns a simulation of the ARMA model
-##   x(n) = a(1) * x(n-1) + ... + a(k) * x(n-k) +
-##              + e(n) + b(1) * e(n-1) + ... + b(l) * e(n-l),
-## where k is the length of vector a, l is the length of vector b and e
-## is gaussian white noise with variance v.  The function returns a
-## vector of length t.
+## @example
+## x(n) = a(1) * x(n-1) + ... + a(k) * x(n-k)
+##      + e(n) + b(1) * e(n-1) + ... + b(l) * e(n-l)
+## @end example
 ##
-## The optional parameter n gives the number of dummy x(i) used for
-## initialization, i.e., a sequence of length t+n is generated and
-## x(n+1:t+n) is returned.  If n is omitted, n=100 is used.
+## @noindent
+## in which @var{k} is the length of vector @var{a}, @var{l} is the
+## length of vector @var{b} and @var{e} is gaussian white noise with
+## variance @var{v}.  The function returns a vector of length @var{t}.
+##
+## The optional parameter @var{n} gives the number of dummy
+## @var{x}(@var{i}) used for initialization, i.e., a sequence of length
+## @var{t}+@var{n} is generated and @var{x}(@var{n}+1:@var{t}+@var{n})
+## is returned.  If @var{n} is omitted, @var{n} = 100 is used. 
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Simulate an ARMA process
@@ -43,7 +50,7 @@ function x = arma_rnd (a, b, v, t, n)
         error ("arma_rnd: n must be a scalar");
       endif
     else
-      usage ("arma_rnd (a, b, v, t [, n])");
+      usage ("arma_rnd (a, b, v, t, n)");
     endif
 
     if ( (min (size (a)) > 1) || (min (size (b)) > 1) )

@@ -14,9 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  periodogram (x)
-##
-## For a data matrix x from a sample of size n, return the periodogram.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} periodogram (@var{x})
+## For a data matrix @var{x} from a sample of size @var{n}, return the
+## periodogram.
+## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Compute the periodogram

@@ -17,7 +17,9 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: function __plt2vm__ (x, y, fmt)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __plt2vm__ (@var{x}, @var{y}, @var{fmt})
+## @end deftypefn
 
 ## Author: jwe
 

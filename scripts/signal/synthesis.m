@@ -14,12 +14,18 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  X = synthesis (Y, c)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{x} =} synthesis (@var{y}, @var{c})
+## Compute a signal from its short-time Fourier transform @var{y} and a
+## 3-element vector @var{c} specifying window size, increment, and
+## window type.
 ##
-## recovers a signal X from its short-time Fourier transform Y. c =
-## [win_size, increment, window_type].
+## The values @var{y} and @var{c} can be derived by
 ##
-## Y and c can be derived by [Y, c] = stft (X [, ...]).
+## @example
+## [@var{y}, @var{c}] = stft (@var{x} , @dots{})
+## @end example
+## @end deftypefn
 
 ## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description:  Recover a signal from its short-term Fourier transform

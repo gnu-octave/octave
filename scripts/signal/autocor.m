@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  autocor (X [, h])
-##
-## returns the autocorrelations from lag 0 to h of vector X.
-## If h is omitted, all autocorrelations are computed.
-## If X is a matrix, the autocorrelations of every single column are
+## -*- texinfo -*-
+## @deftypefn {Function File} {} autocor (@var{x}, @var{h})
+## Return the autocorrelations from lag 0 to @var{h} of vector @var{x}.
+## If @var{h} is omitted, all autocorrelations are computed.
+## If @var{X} is a matrix, the autocorrelations of each column are
 ## computed.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Compute autocorrelations
@@ -31,7 +32,7 @@ function retval = autocor (X, h)
   elseif (nargin == 2)
     retval = autocov (X, h);
   else
-    usage ("autocor (X [, h])");
+    usage ("autocor (X, h)");
   endif
 
   if (min (retval (1,:)) != 0)

@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  sinetone (freq [, rate [, sec [, ampl]]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sinetone (@var{freq}, @var{rate}, @var{sec}, @var{ampl})
+## Return a sinetone of frequency @var{freq} with length of @var{sec}
+## seconds at sampling rate @var{rate} and with amplitude @var{ampl}.
+## The arguments @var{freq} and @var{ampl} may be vectors of common size.
 ##
-## Returns a sinetone of frequency freq with length of sec seconds at
-## sampling rate rate and with amplitude ampl.  freq and ampl may be
-## vectors of common size.
-##
-## Defaults are rate = 8000, sec = 1 and ampl = 64.
+## Defaults are @var{rate} = 8000, @var{sec} = 1 and @var{ampl} = 64.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Compute a sine tone
@@ -37,7 +38,7 @@ function retval = sinetone (f, r, s, a)
   elseif (nargin == 3)
     a = 64;
   elseif ((nargin < 1) || (nargin > 4))
-    usage ("sinetone (freq [, rate [, sec [, ampl]]])");
+    usage ("sinetone (freq, rate, sec, ampl)");
   endif
 
   [err, f, a] = common_size (f, a);

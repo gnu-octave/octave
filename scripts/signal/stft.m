@@ -14,25 +14,39 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [Y, c] = stft (X [, win_size [, inc [, num_coef [, w_type]]]])
-##
-## Computes the short-term Fourier transform of the vector X with
-## "num_coef" coefficients by applying a window of "win_size" data
-## points and an increment of "inc" points.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{y}, @var{c}]} = stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{w_type})
+## Compute the short-term Fourier transform of the vector @var{x} with
+## @var{num_coef} coefficients by applying a window of @var{win_size} data
+## points and an increment of @var{inc} points.
 ##
 ## Before computing the Fourier transform, one of the following windows
-## is applied:  "hanning" (w_type = 1), "hamming" (w_type = 2),
-## "rectangle" (w_type = 3).  The window names can be passed as strings
-## or by the w_type number.
+## is applied:
+##
+## @table @asis
+## @item hanning
+## w_type = 1
+## @item hamming
+## w_type = 2
+## @item rectangle
+## w_type = 3
+## @end table
+##
+## The window names can be passed as strings or by the @var{w_type} number.
 ##
 ## If not all arguments are specified, the following defaults are used:
-## win_size = 80, inc = 24, num_coef = 64, w_type = 1.
+## @var{win_size} = 80, @var{inc} = 24, @var{num_coef} = 64, and
+## @var{w_type} = 1.
 ##
-## Y = stft (X [, ...]) returns the absolute values of the Fourier
-## coefficients according to the num_coef positive frequencies.
-## [Y, c] = stft (X [, ...]) returns the entire STFT-matrix Y and a
-## vector c = [win_size, inc, w_type] which is needed by the synthesis
-## function.
+## @code{@var{y} = stft (@var{x}, @dots{})} returns the absolute values
+## of the Fourier coefficients according to the @var{num_coef} positive
+## frequencies.
+##
+## @code{[@var{y}, @var{c}] = stft (@code{x}, @dots{})} returns the
+## entire STFT-matrix @var{y} and a 3-element vector @var{c} containing
+## the window size, increment, and window type, which is needed by the
+## synthesis function.
+## @end deftypefn
 
 ## Author:  AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description:  Short-term Fourier transform
@@ -64,8 +78,7 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
       endif
     endif
   else
-    usage ("[Y [, c]] = ", ...
-           "stft(X [, win_size [, inc [, num_coef [, w_type]]]])");
+    usage ("[Y, c] = stft(X, win_size, inc, num_coef, w_type)");
   endif
 
   ## check whether X is a vector

@@ -14,18 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage: y = fftshift(W)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fftshift (@var{v})
+## Perform a shift of the vector @var{v}, for use with the @code{fft}
+## and @code{ifft} functions, in order the move the frequency 0 to the
+## centre of the vector or matrix.
 ##
-## Performs a shift of the vector V, for use with the "fft" and "ifft"
-## functions, in order the move the frequency 0 to the centre of
-## the vector or matrix.
+## If @var{v} is a vector of @var{E} elements corresponding to @var{E}
+## time samples spaced of @var{Dt} each, then @code{fftshift (fft
+## (@var{v}))} corresponds to frequencies
 ##
-## If V is a vector of E datas corresponding to E time samples spaced
-## of Dt each, then fftshift (fft (V)) correspond to frequencies
+## @example
+## f = linspace (-@var{E}/(4*@var{Dt}), (@var{E}/2-1)/(2*@var{Dt}), @var{E})
+## @end example
 ##
-##   f = linspace (-E/(4*DT), (E/2-1)/(2*DT), E)
-##
-## If V is a matrix, does the same holds for rows and columns.
+## If @var{v} is a matrix, does the same holds for rows and columns.
+## @end deftypefn
 
 ## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>
 ## Created: July 1997

@@ -40,7 +40,7 @@ function y = fftfilt (b, x, N)
   ## one blocks, but if the user knows better ...
 
   if (nargin < 2 || nargin > 3)
-    usage (" fftfilt (b, x [, N])");
+    usage (" fftfilt (b, x, N)");
   endif
 
   [r_x, c_x] = size (x);

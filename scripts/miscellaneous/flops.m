@@ -17,9 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: flops
-##
-## Count floating point operations.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} flops ()
+## This function is provided for Matlab compatibility, but it doesn't
+## actually do anything.
+## @end deftypefn
 
 ## Author: jwe
 

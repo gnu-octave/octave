@@ -17,20 +17,22 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: p = path (...)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{p} =} path (@dots{})
+## Modify or display Octave's @code{LOADPATH}.
 ##
-## Modify or display Octave's LOADPATH.
+## If @var{nargin} and @var{nargout} are zero, display the elements of
+## Octave's @code{LOADPATH} in an easy to read format.
 ##
-## If nargin and nargout are 0, display the elements of Octave's
-## LOADPATH in an easy to read format.
+## If @var{nargin} is zero and nargout is greater than zero, return the
+## current value of @code{LOADPATH}.
 ##
-## If nargin is zero and nargout is greater than zero, return the
-## current value of LOADPATH.
-##
-## If nargin is greater than zero, concatenate the arguments, separating
-## them with ":".  Set LOADPATH to the result and also return it.
+## If @var{nargin} is greater than zero, concatenate the arguments,
+## separating them with @code{":"}.  Set @code{LOADPATH} to the result
+## and also return it.
 ##
 ## No checks are made for duplicate elements.
+## @end deftypefn
 
 ## Author: jwe
 

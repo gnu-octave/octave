@@ -17,10 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: pack
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} pack ()
 ## This function is provided for compatibility with Matlab, but it
 ## doesn't actually do anything.
+## @end deftypefn
 
 ## Author: jwe
 

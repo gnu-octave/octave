@@ -17,7 +17,9 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: function __plr1__ (theta, fmt)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __plr1__ (@var{theta}, @var{fmt})
+## @end deftypefn
 
 ## Author: jwe
 

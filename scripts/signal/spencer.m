@@ -14,9 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  spencer (X)
-##
-## returns Spencer's 15 point moving average of every single column of X
+## -*- texinfo -*-
+## @deftypefn {Function File} {} spencer (@var{x})
+## Return Spencer's 15 point moving average of every single column of
+## @var{x}.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Apply Spencer's 15-point MA filter

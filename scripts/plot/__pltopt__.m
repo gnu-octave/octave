@@ -17,55 +17,71 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: fmt = __pltopt__ (caller, opt)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{fmt} =} __pltopt__ (@var{caller}, @var{opt})
 ## Decode plot option strings.
 ##
-## If OPT is a valid option string, return a string of the form "w l 2"
-## ("with lines 2").  Uses abbreviations for the options to avoid
-## overrunning gnuplot's command line buffer unnecessarily.
+## If @var{opt} is a valid option string, return a string of the form
+## @code{"w l 2"} ("with lines 2").  Uses abbreviations for the options
+## to avoid overrunning gnuplot's command line buffer unnecessarily.
 ##
-## OPT can currently be some combination of the following:
+## @var{opt} can currently be some combination of the following:
 ##
-##   "-"   for lines plot style (default).
-##   "."   for dots plot style.
-##   "@"   for points plot style.
-##   "-@"  for linespoints plot style.
-##   "^"   for impulses plot style.
-##   "L"   for steps plot style.
-##   "#"   for boxes plot style.
-##   "~"   for errorbars plot style.
-##   "#~"  for boxerrorbars plot style.
-##   "n"   with n in 1-6 (wraps at 8), plot color
-##   "nm"  with m in 1-6 (wraps at 6), point style (only valid for "@" or "-@")
-##   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
-##   ";title;" where "title" is the label for the key.
+## @table @code
+## @item "-"
+## For lines plot style (default).
+## @item "."
+## For dots plot style.
+## @item "@"
+## For points plot style.
+## @item "-@"
+##For linespoints plot style.
+## @item "^"
+## For impulses plot style.
+## @item "L"
+## For steps plot style.
+## @item "#"
+## For boxes plot style.
+## @item "~"
+## For errorbars plot style.
+## @item "#~"
+## For boxerrorbars plot style.
+## @item "n"
+## With @code{n} in 1-6 (wraps at 8), plot color
+## @item "nm"
+## With @code{m} in 1-6 (wraps at 6), point style (only valid for @code{"@"} or
+## @code{"-@"})
+## @item @var{c}
+## Where @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
+## @code{"c"}, or @code{"w"} colors.
+## @item ";title;"
+## Here @code{"title"} is the label for the key.
+## @end table
 ##
-##   Special points formats:
+## Special points formats:  @code{"+"}, @code{"*"}, @code{"o"}, or
+## @code{"x"} will display points in that style for term x11.
 ##
-##      "+", "*", "o", "x" will display points in that style for term x11.
+## The legend may be fixed to include the name of the variable
+## plotted in some future version of Octave.
 ##
-##   The legend may be fixed to include the name of the variable
-##   plotted in some future version of Octave.
+## The colors, line styles, and point styles have the following
+## meanings for X11 and Postscript terminals under Gnuplot 3.6.
 ##
-##   The colors, line styles, and point styles have the following
-##   meanings for X11 and Postscript terminals under Gnuplot 3.6.
-##
-##   Number ------ Color -------  Line Style      ---- Points Style ----
-##          x11       postscript  postscript      x11         postscript
-##   =====================================================================
-##     1    red       green       solid           "o"         "+"
-##     2    green     blue        long dash       "+"         "x"
-##     3    blue      red         short dash     square       "*"
-##     4    magenta   magenta     dotted          "x"        open square
-##     5    cyan      cyan        dot long dash  triangle    filled square
-##     6    brown     yellow      dot short dash  "*"         "o"
-##
+## @example
+## Number ------ Color -------  Line Style      ---- Points Style ----
+##        x11       postscript  postscript      x11         postscript
+## =====================================================================
+##   1    red       green       solid           "o"         "+"
+##   2    green     blue        long dash       "+"         "x"
+##   3    blue      red         short dash     square       "*"
+##   4    magenta   magenta     dotted          "x"        open square
+##   5    cyan      cyan        dot long dash  triangle    filled square
+##   6    brown     yellow      dot short dash  "*"         "o"
+## @end example
+## @end deftypefn
 ## @seealso{__pltopt1__}
 
 ## Author: jwe
-## Adapted-By: jwe
-## Maintainer: jwe
 
 function fmt = __pltopt__ (caller, opt)
 

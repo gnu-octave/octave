@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  fractdiff(x, d)
-##
-## Computes the fractional differences (1-L)^d x where L denotes the
-## lag-operator and d > -1.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fractdiff (@var{x}, @var{d})
+## Compute the fractional differences @code{(1-@var{L})^@var{d} * @var{x}}
+## where @var{L} denotes the lag-operator and @var{d} is greater than -1.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Compute fractional differences

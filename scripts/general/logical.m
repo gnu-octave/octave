@@ -17,15 +17,21 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: logical (arg)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} logical (@var{arg})
+## Convert @var{arg} to a logical value.  For example,
 ##
-## Convert ARG to a logical value.  For example,
+## @example
+## logical ([-1, 0, 1])
+## @end example
 ##
-##   logical ([-1, 0, 1])
-##
+## @noindent
 ## is equivalent to
 ##
-##   [-1, 0, 1] != 0
+## @example
+## [-1, 0, 1] != 0
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

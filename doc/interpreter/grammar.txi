@@ -3,7 +3,7 @@
 @c For copying conditions, see the file gpl.texi.
 
 @node Grammar, Copying, Emacs, Top
-@chapter Grammar
+@appendix Grammar
 @cindex grammar rules
 @cindex language definition
 

@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  dmult (a, B)
-##
-## If a is a vector of length rows (B), return diag (a) * B (but
-## computed much more efficiently).
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dmult (@var{a}, @var{b})
+## If @var{a} is a vector of length @code{rows (@var{b})}, return
+## @code{diag (@var{a}) * @var{b}} (but computed much more efficiently).
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Rescale the rows of a matrix

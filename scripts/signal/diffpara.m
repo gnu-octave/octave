@@ -14,22 +14,26 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [d, D] = diffpara (X [, a [, b]])
-##
-## Returns the estimator d for the differencing parameter of an
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{d}, @var{D}]} = diffpara (@var{x}, @var{a}, @var{b})
+## Return the estimator @var{d} for the differencing parameter of an
 ## integrated time series.
 ##
-## The frequencies from [2*pi*a/T, 2*pi*b/T] are used for the
-## estimation. If b is omitted, the interval [2*pi/T, 2*pi*a/T] is used,
-## if both b and a are omitted then a = 0.5 * sqrt(T) and b = 1.5 *
-## sqrt(T) is used, where T is the sample size. If X is a matrix, the
-## differencing parameter of every single column is estimated.
+## The frequencies from @code{[2*pi*@var{a}/@var{T},
+## 2*pi*@var{b}/@var{T}]} are used for the estimation.  If @var{b} is
+## omitted, the interval @code{[2*pi/@var{T}, 2*pi*@var{a}/@var{T}]} is
+## used.  If both @var{b} and @var{a} are omitted then @code{@var{a} =
+## 0.5 * sqrt(@var{T})} and @code{@var{b} = 1.5 * sqrt(@var{T})} is
+## used, where @var{T} is the sample size.  If @var{x} is a matrix, the
+## differencing parameter of each column is estimated.
 ##
-## D contains the estimators for all frequencies in the intervals
-## described above, d is simply mean(D).
+## The estimators for all frequencies in the intervals
+## described above is returned in @var{D}.  The value of @var{d} is
+## simply the mean of @var{D}.
 ##
 ## Reference: Brockwell, Peter J. & Davis, Richard A. Time Series:
-## Theory and Methods Springer 1987
+## Theory and Methods Springer 1987.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Estimate the fractional differencing parameter
@@ -37,7 +41,7 @@
 function [d, D] = diffpara (X, a, b)
 
   if ((nargin < 1) || (nargin > 3))
-    usage ("[d [, D]] = diffpara (X [, a [, b]])");
+    usage ("[d, D] = diffpara (X, a, b)");
   else
     if is_vector (X)
       n = length (X);

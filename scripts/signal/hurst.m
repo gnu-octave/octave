@@ -14,11 +14,12 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  H = hurst (x)
-##
-## Estimates the Hurst parameter of sample x via the rescaled range
-## statistic. If x is a matrix, the parameter is estimated for every
-## single column.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hurst (@var{x})
+## Estimate the Hurst parameter of sample @var{x} via the rescaled range
+## statistic.  If @var{x} is a matrix, the parameter is estimated for
+## every single column.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Estimate the Hurst parameter

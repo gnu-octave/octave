@@ -17,12 +17,21 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: list_primes (n)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} list_primes (@var{n})
+## List the first @var{n} primes.  If @var{n} is unspecified, the first
+## 30 primes are listed.
 ##
-## List the first n primes.  If n is unspecified, the first 30 primes
-## are listed.
-##
-## The algorithm used is from page 218 of the TeXbook.
+## The algorithm used is from page 218 of the
+## @iftex
+## @tex
+##  \TeXbook.
+## @end tex
+## @end iftex
+## @ifinfo
+##  TeXbook.
+## @end ifinfo
+## @end deftypefn
 
 ## Author: jwe
 

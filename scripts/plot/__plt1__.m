@@ -17,7 +17,9 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: function __plt1__ (x1, fmt)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} __plt1__ (@var{x1}, @var{fmt})
+## @end deftypefn
 
 ## Author: jwe
 

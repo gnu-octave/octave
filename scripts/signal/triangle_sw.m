@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  retval = triangle_sw (n, b)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} triangle_sw (@var{n}, @var{b})
 ## Triangular spectral window.  Subfunction used for spectral density
 ## estimation.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Triangular spectral window

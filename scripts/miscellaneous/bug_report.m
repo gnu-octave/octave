@@ -17,11 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: bug_report
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} bug_report ()
 ## Have Octave create a bug report template file, invoke your favorite
 ## editor, and submit the report to the bug-octave mailing list when
 ## you are finished editing.
+## @end deftypefn
 
 ## Author: jwe
 

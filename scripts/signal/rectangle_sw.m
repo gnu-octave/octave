@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  retval = rectangle_sw (n, b)
-##
-## Rectangular spectral window. Subfunction used for spectral density
+## -*- texinfo -*-
+## @deftypefn {Function File} {} rectangle_sw (@var{n}, @var{b})
+## Rectangular spectral window.  Subfunction used for spectral density
 ## estimation.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Rectangular spectral window

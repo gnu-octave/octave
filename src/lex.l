@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // because it may not be protected to allow it to be included multiple
 // times.
 
+#include "defun.h"
 #include "error.h"
 #include "input.h"
 #include "lex.h"

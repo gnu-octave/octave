@@ -63,6 +63,7 @@ Free Software Foundation, Inc.
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "input.h"
 #include "oct-map.h"
@@ -79,6 +80,18 @@ Free Software Foundation, Inc.
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
+
+// Primary prompt string.
+static string Vps1;
+
+// Secondary prompt string.
+static string Vps2;
+
+// String printed before echoed input (enabled by --echo-input).
+string Vps4;
+
+// Character to append after successful command-line completion attempts.
+static char Vcompletion_append_char;
 
 // Global pointer for eval().
 string current_eval_string;
@@ -371,12 +384,12 @@ do_input_echo (const string& input_string)
       if (forced_interactive)
 	{
 	  if (promptflag > 0)
-	    octave_stdout << decode_prompt_string (user_pref.ps1);
+	    octave_stdout << decode_prompt_string (Vps1);
 	  else
-	    octave_stdout << decode_prompt_string (user_pref.ps2);
+	    octave_stdout << decode_prompt_string (Vps2);
 	}
       else
-	octave_stdout << decode_prompt_string (user_pref.ps4);
+	octave_stdout << decode_prompt_string (Vps4);
 
       if (! input_string.empty ())
 	{
@@ -465,8 +478,8 @@ octave_gets (void)
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file || reading_script_file)))
     {
-      const char *ps = (promptflag > 0) ? user_pref.ps1.c_str () :
-	user_pref.ps2.c_str ();
+      const char *ps = (promptflag > 0) ? Vps1.c_str () :
+	Vps2.c_str ();
 
       string prompt = decode_prompt_string (ps);
 
@@ -855,7 +868,7 @@ command_generator (const char *text, int state)
 		rl_completion_append_character = '.';
 	      else
 		rl_completion_append_character
-		  = user_pref.completion_append_char;
+		  = Vcompletion_append_char;
 
 	      return buf;
 	    }
@@ -1182,6 +1195,78 @@ Without any arguments, toggle the current echo state.")
     }
 
   return retval;
+}
+
+static int
+ps1 (void)
+{
+  int status = 0;
+
+  Vps1 = builtin_string_variable ("PS1");
+
+  return status;
+}
+
+static int
+ps2 (void)
+{
+  int status = 0;
+
+  Vps2 = builtin_string_variable ("PS2");
+
+  return status;
+}
+
+static int
+ps4 (void)
+{
+  int status = 0;
+
+  Vps4 = builtin_string_variable ("PS4");
+
+  return status;
+}
+
+static int
+completion_append_char (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("completion_append_char");
+
+  switch (s.length ())
+    {
+    case 1:
+      Vcompletion_append_char = s[0];
+      break;
+
+    case 0:
+      Vcompletion_append_char = '\0';
+      break;
+
+    default:
+      warning ("completion_append_char must be a single character");
+      status = -1;
+      break;
+    }
+
+  return status;
+}
+
+void
+symbols_of_input (void)
+{
+  DEFVAR (PS1, "\\s:\\#> ", 0, ps1,
+    "primary prompt string");
+
+  DEFVAR (PS2, "> ", 0, ps2,
+    "secondary prompt string");
+
+  DEFVAR (PS4, "+ ", 0, ps4,
+    "string printed before echoed input (enabled by --echo-input)");
+
+  DEFVAR (completion_append_char, " ", 0, completion_append_char,
+    "the string to append after successful command-line completion attempts");
 }
 
 /*

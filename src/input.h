@@ -69,6 +69,10 @@ extern string current_input_line;
 
 char *gnu_readline (const char *s);
 
+extern string Vps4;
+
+extern void symbols_of_input (void);
+
 #endif
 
 /*

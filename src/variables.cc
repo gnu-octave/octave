@@ -63,7 +63,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-const.h"
 #include "oct-obj.h"
 #include "pt-exp.h"
+#include "pt-fcn.h"
 #include "pt-fvc.h"
+#include "pt-mat.h"
+#include "pt-plot.h"
+#include "pr-output.h"
 #include "syscalls.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
@@ -1598,15 +1602,6 @@ install_builtin_variables_2 (void)
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
     "Octave version");
 
-  DEFVAR (PS1, "\\s:\\#> ", 0, sv_ps1,
-    "primary prompt string");
-
-  DEFVAR (PS2, "> ", 0, sv_ps2,
-    "secondary prompt string");
-
-  DEFVAR (PS4, "+ ", 0, sv_ps4,
-    "string printed before echoed input (enabled by --echo-input)");
-
   DEFCONST (PWD, get_working_directory ("initialize_globals"), 0, sv_pwd,
     "current working directory");
 
@@ -1629,16 +1624,6 @@ install_builtin_variables_3 (void)
   DEFCONST (argv, , 0, 0,
     "the command line arguments this program was invoked with");
 
-  DEFVAR (automatic_replot, 0.0, 0, automatic_replot,
-    "if true, auto-insert a replot command when a plot changes");
-
-  DEFVAR (beep_on_error, 0.0, 0, beep_on_error,
-    "if true, beep before printing error messages");
-
-  DEFVAR (completion_append_char, " ", 0, sv_completion_append_char,
-    "the string to append after successful command-line completion\n\
-attempts");
-
   DEFCONST (error_text, "", 0, 0,
     "the text of error messages that would have been printed in the
 body of the most recent unwind_protect statement or the TRY part of\n\
@@ -1646,22 +1631,9 @@ the most recent eval() command.  Outside of unwind_protect and\n\
 eval(), or if no error has ocurred within them, the value of\n\
 __error_text__ is guaranteed to be the empty string.");
 
-  DEFVAR (default_return_value, Matrix (), 0, 0,
-    "the default for value for unitialized variables returned from\n\
-functions.  Only used if the variable initialize_return_values is\n\
-set to \"true\".");
-
   DEFVAR (default_save_format, "ascii", 0, sv_default_save_format,
     "default format for files created with save, may be one of\n\
 \"binary\", \"text\", or \"mat-binary\"");
-
-  DEFVAR (define_all_return_values, 0.0, 0, define_all_return_values,
-    "control whether values returned from functions should have a\n\
-value even if one has not been explicitly assigned.  See also\n\
-default_return_value");
-
-  DEFVAR (do_fortran_indexing, 0.0, 0, do_fortran_indexing,
-    "allow single indices for matrices");
 
   DEFVAR (echo_executing_commands, 0.0, 0, echo_executing_commands,
     "echo commands as they are executed");
@@ -1679,23 +1651,8 @@ install_builtin_variables_4 (void)
   DEFCONST (e, e_val, 0, 0,
     "exp (1)");
 
-  DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
-    "ignore the empty element in expressions like `a = [[], 1]'");
-
   DEFCONST (eps, DBL_EPSILON, 0, 0,
     "machine precision");
-
-  DEFVAR (gnuplot_binary, "gnuplot", 0, sv_gnuplot_binary,
-    "path to gnuplot binary");
-
-#ifdef GNUPLOT_HAS_MULTIPLOT
-  double with_multiplot = 1.0;
-#else
-  double with_multiplot = 0.0;
-#endif
-
-  DEFVAR (gnuplot_has_multiplot, with_multiplot, 0, gnuplot_has_multiplot,
-    "true if gnuplot supports multiplot, false otherwise");
 
   DEFVAR (history_file, default_history_file (), 0, sv_history_file,
     "name of command history file");
@@ -1709,9 +1666,6 @@ install_builtin_variables_4 (void)
   DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
     "don't check to see if function files have changed since they were\n\
   last compiled.  Possible values are \"system\" and \"all\"");
-
-  DEFVAR (implicit_str_to_num_ok, 0.0, 0, implicit_str_to_num_ok,
-    "allow implicit string to number conversion");
 }
 
 static void
@@ -1726,15 +1680,6 @@ install_builtin_variables_5 (void)
   DEFCONST (nan, octave_NaN, 0, 0,
     "not a number");
 
-  DEFVAR (ok_to_lose_imaginary_part, "warn", 0, ok_to_lose_imaginary_part,
-    "silently convert from complex to real by dropping imaginary part");
-
-  DEFVAR (output_max_field_width, 10.0, 0, set_output_max_field_width,
-    "maximum width of an output field for numeric output");
-
-  DEFVAR (output_precision, 5.0, 0, set_output_precision,
-    "number of significant figures to display for numeric output");
-
 #if defined (M_PI)
   double pi_val = M_PI;
 #else
@@ -1743,12 +1688,6 @@ install_builtin_variables_5 (void)
 
   DEFCONST (pi, pi_val, 0, 0,
     "ratio of the circumference of a circle to its diameter");
-
-  DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,
-    "prefer column/row vectors");
-
-  DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
-    "when there is a conflict, prefer zero-one style indexing");
 }
 
 static void
@@ -1757,18 +1696,12 @@ install_builtin_variables_6 (void)
   DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
     "set output style to print `var_name = ...'");
 
-  DEFVAR (print_empty_dimensions, 1.0, 0, print_empty_dimensions,
-    "also print dimensions of empty matrices");
-
   DEFCONST (program_invocation_name, raw_prog_name, 0, 0,
     "the full name of the current program or script, including the\n\
 directory specification");
 
   DEFCONST (program_name, prog_name, 0, 0,
     "the name of the current program or script");
-
-  DEFVAR (propagate_empty_matrices, 1.0, 0, propagate_empty_matrices,
-    "operations on empty matrices return an empty matrix, not an error");
 
 #if 0
   DEFVAR (read_only_constants, 1.0, 0, read_only_constants,
@@ -1780,13 +1713,6 @@ directory specification");
 
   DEFCONST (realmin, DBL_MIN, 0, 0,
     "realmin (): return smallest representable floating point number");
-
-  DEFVAR (resize_on_range_error, 1.0, 0, resize_on_range_error,
-    "enlarge matrices on assignment");
-
-  DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
-    "if a function does not return any values explicitly, return the\n\
-  last computed value");
 }
 
 static void
@@ -1797,15 +1723,6 @@ install_builtin_variables_7 (void)
 
   DEFVAR (saving_history, 1.0, 0, saving_history,
     "save command history");
-
-  DEFVAR (silent_functions, 0.0, 0, silent_functions,
-    "suppress printing results in called functions");
-
-  DEFVAR (split_long_rows, 1.0, 0, split_long_rows,
-    "split long matrix rows instead of wrapping");
-
-  DEFVAR (struct_levels_to_print, 2.0, 0, struct_levels_to_print,
-    "number of levels of structure elements to print");
 
 #ifdef USE_GNU_INFO
   DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
@@ -1829,24 +1746,8 @@ help and usage functions");
 static void
 install_builtin_variables_8 (void)
 {
-  DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
-    "produce warning for assignments used as truth values");
-
-  DEFVAR (warn_comma_in_global_decl, 1.0, 0, warn_comma_in_global_decl,
-    "produce warning for commas in global declarations");
-
   DEFVAR (warn_divide_by_zero, 1.0, 0, warn_divide_by_zero,
     "on IEEE machines, allow divide by zero errors to be suppressed");
-
-  DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
-    "produce warning if function name conflicts with file name");
-
-  DEFVAR (warn_missing_semicolon, 0.0, 0, warn_missing_semicolon,
-    "produce a warning if a statement in a function file is not
-terminated with a semicolon");
-
-  DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
-    "control auto-insertion of commas and semicolons in literal matrices");
 }
 
 void
@@ -1861,7 +1762,16 @@ install_builtin_variables (void)
   install_builtin_variables_7 ();
   install_builtin_variables_8 ();
 
+  symbols_of_error ();
+  symbols_of_input ();
+  symbols_of_lex ();
   symbols_of_pager ();
+  symbols_of_parse ();
+  symbols_of_pr_output ();
+  symbols_of_pt_const ();
+  symbols_of_pt_fcn ();
+  symbols_of_pt_mat ();
+  symbols_of_pt_plot ();
   symbols_of_syscalls ();
 }
 

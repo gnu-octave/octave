@@ -38,11 +38,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <SLList.h>
 
+#include "Array-flags.h"
+
 #include "mx-base.h"
 #include "Range.h"
 #include "str-vec.h"
 
 #include "arith-ops.h"
+#include "defun.h"
 #include "error.h"
 #include "gripes.h"
 #include "idx-vector.h"
@@ -83,6 +86,56 @@ static OCT_VAL_REP *tc_rep_newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int tc_rep_newlist_grow_size = 128;
+
+// If TRUE, allow assignments like
+//
+//   octave> A(1) = 3; A(2) = 5
+//
+// for A already defined and a matrix type.
+static bool Vdo_fortran_indexing;
+
+// Should we allow things like:
+//
+//   octave> 'abc' + 0
+//   97 98 99
+//
+// to happen?  A positive value means yes.  A negative value means
+// yes, but print a warning message.  Zero means it should be
+// considered an error.
+int Vimplicit_str_to_num_ok;
+
+// Should we allow silent conversion of complex to real when a real
+// type is what we're really looking for?  A positive value means yes.
+// A negative value means yes, but print a warning message.  Zero
+// means it should be considered an error.
+static int Vok_to_lose_imaginary_part;
+
+// If TRUE, create column vectors when doing assignments like:
+//
+//   octave> A(1) = 3; A(2) = 5
+//
+// (for A undefined).  Only matters when resize_on_range_error is also
+// TRUE.
+static bool Vprefer_column_vectors;
+
+// If TRUE, prefer logical (zore-one) indexing over normal indexing
+// when there is a conflice.  For example, given a = [2, 3], the
+// expression  a ([1, 1]) would return [2 3] (instead of [2 2], which
+// would be returned if prefer_zero_one_indxing were FALSE).
+static bool Vprefer_zero_one_indexing;
+
+// Should operations on empty matrices return empty matrices or an
+// error?  A positive value means yes.  A negative value means yes,
+// but print a warning message.  Zero means it should be considered an
+// error.
+int Vpropagate_empty_matrices;
+
+// If TRUE, resize matrices when performing and indexed assignment and
+// the indices are outside the current bounds.
+bool Vresize_on_range_error;
+
+// How many levels of structure elements should we print?
+static int Vstruct_levels_to_print;
 
 // Indentation level for structures.
 static int struct_indent = 0;
@@ -465,7 +518,7 @@ OCT_VAL_REP::octave_value_rep (const RowVector& v, int prefer_column_vector)
   else
     {
       int pcv = (prefer_column_vector < 0)
-	? user_pref.prefer_column_vectors
+	? Vprefer_column_vectors
 	  : prefer_column_vector;
 
       if (pcv)
@@ -498,7 +551,7 @@ OCT_VAL_REP::octave_value_rep (const ColumnVector& v, int prefer_column_vector)
   else
     {
       int pcv = (prefer_column_vector < 0)
-	? user_pref.prefer_column_vectors
+	? Vprefer_column_vectors
 	  : prefer_column_vector;
 
       if (pcv)
@@ -604,7 +657,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
   else
     {
       int pcv = (prefer_column_vector < 0)
-	? user_pref.prefer_column_vectors
+	? Vprefer_column_vectors
 	  : prefer_column_vector;
 
       if (pcv)
@@ -648,7 +701,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
   else
     {
       int pcv = (prefer_column_vector < 0)
-	? user_pref.prefer_column_vectors
+	? Vprefer_column_vectors
 	  : prefer_column_vector;
 
       if (pcv)
@@ -1152,7 +1205,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 
     case matrix_constant:
       {
-	if (user_pref.do_fortran_indexing && rows () > 0 && columns () > 0)
+	if (Vdo_fortran_indexing && rows () > 0 && columns () > 0)
 	  retval = matrix->elem (0, 0);
 	else
 	  gripe_invalid_conversion ("real matrix", "real scalar");
@@ -1162,7 +1215,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
     case complex_matrix_constant:
     case complex_scalar_constant:
       {
-	int flag = user_pref.ok_to_lose_imaginary_part;
+	int flag = Vok_to_lose_imaginary_part;
 
 	if (flag < 0)
 	  warn_implicit_conversion ("complex scalar", "real scalar");
@@ -1173,7 +1226,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 	      retval = ::real (*complex_scalar);
 	    else if (type_tag == complex_matrix_constant)
 	      {
-		if (user_pref.do_fortran_indexing
+		if (Vdo_fortran_indexing
 		    && rows () > 0 && columns () > 0)
 		  retval = ::real (complex_matrix->elem (0, 0));
 		else
@@ -1191,7 +1244,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
       {
 	int len = char_matrix->rows ();
 	if ((char_matrix->rows () == 1 && len == 1)
-	    || (len > 1 && user_pref.do_fortran_indexing))
+	    || (len > 1 && Vdo_fortran_indexing))
 	  retval = toascii ((int) char_matrix->elem (0, 0));
 	else
 	  gripe_invalid_conversion ("char matrix", "real scalar");
@@ -1202,7 +1255,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
       {
 	int flag = force_string_conv;
 	if (! flag)
-	  flag = user_pref.implicit_str_to_num_ok;
+	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "real scalar");
@@ -1210,7 +1263,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 	int len = char_matrix->rows ();
 	if (flag
 	    && ((char_matrix->rows () == 1 && len == 1)
-		|| (len > 1 && user_pref.do_fortran_indexing)))
+		|| (len > 1 && Vdo_fortran_indexing)))
 	  retval = toascii ((int) char_matrix->elem (0, 0));
 	else
 	  gripe_invalid_conversion ("string", "real scalar");
@@ -1220,7 +1273,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
     case range_constant:
       {
 	int nel = range->nelem ();
-	if (nel == 1 || (nel > 1 && user_pref.do_fortran_indexing))
+	if (nel == 1 || (nel > 1 && Vdo_fortran_indexing))
 	  retval = range->base ();
 	else
 	  gripe_invalid_conversion ("range", "real scalar");
@@ -1253,7 +1306,7 @@ OCT_VAL_REP::matrix_value (bool force_string_conv) const
     case complex_scalar_constant:
     case complex_matrix_constant:
       {
-	int flag = user_pref.ok_to_lose_imaginary_part;
+	int flag = Vok_to_lose_imaginary_part;
 	if (flag < 0)
 	  warn_implicit_conversion ("complex matrix", "real matrix");
 
@@ -1279,7 +1332,7 @@ OCT_VAL_REP::matrix_value (bool force_string_conv) const
       {
 	int flag = force_string_conv;
 	if (! flag)
-	  flag = user_pref.implicit_str_to_num_ok;
+	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "real matrix");
@@ -1321,7 +1374,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
     case complex_matrix_constant:
     case matrix_constant:
       {
-	if (user_pref.do_fortran_indexing && rows () > 0 && columns () > 0)
+	if (Vdo_fortran_indexing && rows () > 0 && columns () > 0)
 	  {
 	    if (type_tag == complex_matrix_constant)
 	      retval = complex_matrix->elem (0, 0);
@@ -1337,7 +1390,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
       {
 	int len = char_matrix->cols ();
 	if ((char_matrix->rows () == 1 && len == 1)
-	    || (len > 1 && user_pref.do_fortran_indexing))
+	    || (len > 1 && Vdo_fortran_indexing))
 	  retval = toascii ((int) char_matrix->elem (0, 0));
 	else
 	  gripe_invalid_conversion ("char matrix", "complex scalar");
@@ -1348,7 +1401,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
       {
 	int flag = force_string_conv;
 	if (! flag)
-	  flag = user_pref.implicit_str_to_num_ok;
+	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "complex scalar");
@@ -1356,7 +1409,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
 	int len = char_matrix->cols ();
 	if (flag
 	    && ((char_matrix->rows () == 1 && len == 1)
-		|| (len > 1 && user_pref.do_fortran_indexing)))
+		|| (len > 1 && Vdo_fortran_indexing)))
 	  retval = toascii ((int) char_matrix->elem (0, 0));
 	else
 	  gripe_invalid_conversion ("string", "complex scalar");
@@ -1366,7 +1419,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
     case range_constant:
       {
 	int nel = range->nelem ();
-	if (nel == 1 || (nel > 1 && user_pref.do_fortran_indexing))
+	if (nel == 1 || (nel > 1 && Vdo_fortran_indexing))
 	  retval = range->base ();
 	else
 	  gripe_invalid_conversion ("range", "complex scalar");
@@ -1412,7 +1465,7 @@ OCT_VAL_REP::complex_matrix_value (bool force_string_conv) const
       {
 	int flag = force_string_conv;
 	if (! flag)
-	  flag = user_pref.implicit_str_to_num_ok;
+	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "complex matrix");
@@ -1445,7 +1498,7 @@ OCT_VAL_REP::char_matrix_value (bool force_string_conv) const
 
   int flag = force_string_conv;
   if (! flag)
-    flag = user_pref.implicit_str_to_num_ok;
+    flag = Vimplicit_str_to_num_ok;
 
   switch (type_tag)
     {
@@ -1553,7 +1606,7 @@ OCT_VAL_REP::vector_value (bool force_string_conv,
 	retval.elem (i) = m.elem (i, 0);
     }
   else if (nr > 0 && nc > 0
-	   && (user_pref.do_fortran_indexing || force_vector_conversion))
+	   && (Vdo_fortran_indexing || force_vector_conversion))
     {
       retval.resize (nr * nc);
       int k = 0;
@@ -1597,7 +1650,7 @@ OCT_VAL_REP::complex_vector_value (bool force_string_conv,
 	retval.elem (i) = m.elem (i, 0);
     }
   else if (nr > 0 && nc > 0
-	   && (user_pref.do_fortran_indexing || force_vector_conversion))
+	   && (Vdo_fortran_indexing || force_vector_conversion))
     {
       retval.resize (nr * nc);
       int k = 0;
@@ -1759,7 +1812,7 @@ OCT_VAL_REP::convert_to_row_or_column_vector (void)
   int new_nr = 1;
   int new_nc = 1;
 
-  if (user_pref.prefer_column_vectors)
+  if (Vprefer_column_vectors)
     new_nr = len;
   else
     new_nc = len;
@@ -1883,7 +1936,7 @@ OCT_VAL_REP::force_numeric (bool force_string_conv)
 
     case char_matrix_constant_str:
       {
-	if (! force_string_conv && ! user_pref.implicit_str_to_num_ok)
+	if (! force_string_conv && ! Vimplicit_str_to_num_ok)
 	  {
 	    ::error ("string to numeric conversion failed --\
  default conversion turned off");
@@ -1987,7 +2040,7 @@ OCT_VAL_REP::make_numeric (bool force_string_conv) const
       {
 	int flag = force_string_conv;
 	if (! flag)
-	  flag = user_pref.implicit_str_to_num_ok;
+	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "char matrix");
@@ -2249,9 +2302,9 @@ OCT_VAL_REP::print (ostream& output_buf)
 	begin_unwind_frame ("OCT_VAL_REP_print");
 
 	unwind_protect_int (struct_indent);
-	unwind_protect_int (user_pref.struct_levels_to_print);
+	unwind_protect_int (Vstruct_levels_to_print);
 
-	if (user_pref.struct_levels_to_print-- > 0)
+	if (Vstruct_levels_to_print-- > 0)
 	  {
 	    output_buf.form ("\n%*s{\n", struct_indent, "");
 
@@ -2365,7 +2418,7 @@ do_binary_op (octave_value& a, octave_value& b, tree_expression::type t)
 
   if (first_empty || second_empty)
     {
-      int flag = user_pref.propagate_empty_matrices;
+      int flag = Vpropagate_empty_matrices;
       if (flag < 0)
 	warning ("binary operation on empty matrix");
       else if (flag == 0)
@@ -2543,7 +2596,7 @@ do_unary_op (octave_value& a, tree_expression::type t)
 
   if (a.rows () == 0 || a.columns () == 0)
     {
-      int flag = user_pref.propagate_empty_matrices;
+      int flag = Vpropagate_empty_matrices;
       if (flag < 0)
 	warning ("unary operation on empty matrix");
       else if (flag == 0)
@@ -2697,7 +2750,7 @@ OCT_VAL_REP::set_index (const Matrix& m)
   int nc = m.cols ();
 
   if (nr <= 1 || nc <= 1
-      || user_pref.do_fortran_indexing)
+      || Vdo_fortran_indexing)
     {
       switch (type_tag)
 	{
@@ -3105,6 +3158,117 @@ bool
 OCT_VAL_REP::print_as_structure (void)
 {
   return is_map ();
+}
+
+static int
+do_fortran_indexing (void)
+{
+  Vdo_fortran_indexing = check_preference ("do_fortran_indexing");
+
+  liboctave_dfi_flag = Vdo_fortran_indexing;
+
+  return 0;
+}
+
+static int
+implicit_str_to_num_ok (void)
+{
+  Vimplicit_str_to_num_ok = check_preference ("implicit_str_to_num_ok");
+
+  return 0;
+}
+
+static int
+ok_to_lose_imaginary_part (void)
+{
+  Vok_to_lose_imaginary_part = check_preference ("ok_to_lose_imaginary_part");
+
+  return 0;
+}
+
+static int
+prefer_column_vectors (void)
+{
+  Vprefer_column_vectors
+    = check_preference ("prefer_column_vectors");
+
+  liboctave_pcv_flag = Vprefer_column_vectors;
+
+  return 0;
+}
+
+static int
+prefer_zero_one_indexing (void)
+{
+  Vprefer_zero_one_indexing = check_preference ("prefer_zero_one_indexing");
+
+  liboctave_pzo_flag = Vprefer_zero_one_indexing;
+
+  return 0;
+}
+
+static int
+propagate_empty_matrices (void)
+{
+  Vpropagate_empty_matrices = check_preference ("propagate_empty_matrices");
+
+  return 0;
+}
+
+static int
+resize_on_range_error (void)
+{
+  Vresize_on_range_error = check_preference ("resize_on_range_error");
+
+  liboctave_rre_flag = Vresize_on_range_error;
+
+  return 0;
+}
+
+static int
+struct_levels_to_print (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  Vstruct_levels_to_print = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("struct_levels_to_print");
+  return -1;
+}
+
+void
+symbols_of_pt_const (void)
+{
+  DEFVAR (do_fortran_indexing, 0.0, 0, do_fortran_indexing,
+    "allow single indices for matrices");
+
+  DEFVAR (implicit_str_to_num_ok, 0.0, 0, implicit_str_to_num_ok,
+    "allow implicit string to number conversion");
+
+  DEFVAR (ok_to_lose_imaginary_part, "warn", 0, ok_to_lose_imaginary_part,
+    "silently convert from complex to real by dropping imaginary part");
+
+  DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,
+    "prefer column/row vectors");
+
+  DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
+    "when there is a conflict, prefer zero-one style indexing");
+
+  DEFVAR (propagate_empty_matrices, 1.0, 0, propagate_empty_matrices,
+    "operations on empty matrices return an empty matrix, not an error");
+
+  DEFVAR (resize_on_range_error, 1.0, 0, resize_on_range_error,
+    "enlarge matrices on assignment");
+
+  DEFVAR (struct_levels_to_print, 2.0, 0, struct_levels_to_print,
+    "number of levels of structure elements to print");
 }
 
 /*

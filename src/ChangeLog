@@ -1,5 +1,8 @@
 2005-03-09  John W. Eaton  <jwe@octave.org>
 
+	* load-save.cc (Fload, Fsave): Accept -text as an alias for -ascii.
+	Issue warning for future change in meaning of -ascii.
+
 	* Makefile.in (bin-dist): Delete target.
 	(BINDISTFILES, BINDISTLIBS): Delete variables.
 

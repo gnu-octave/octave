@@ -578,6 +578,11 @@ the same name as those found in the file.\n\
 @item -ascii\n\
 Force Octave to assume the file is in Octave's text format.\n\
 \n\
+@strong{WARNING: the meaning of this option will change in a future\n\
+version of Octave to be compatible with @sc{Matlab}.  To keep the\n\
+meaning of your code the same across this change, use the @code{-text}\n\
+option instead.}\n\
+\n\
 @item -binary\n\
 Force Octave to assume the file is in Octave's binary format.\n\
 \n\
@@ -604,6 +609,8 @@ The @samp{-import} is accepted but ignored for backward compatiability.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
 modifies variable names if they are invalid Octave identifiers.\n\
 \n\
+@item -text
+Force Octave to assume the file is in Octave's text format.\n\
 @end table\n\
 @end deffn")
 {
@@ -644,6 +651,11 @@ modifies variable names if they are invalid Octave identifiers.\n\
 	}
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
+	  warning ("the meaning of this option will change in a future");
+	  warning ("version of Octave to be compatible with @sc{Matlab}.");
+	  warning ("To keep the meaning of your code the same across");
+	  warning ("this change, use the -text option instead.");
+
 	  format = LS_ASCII;
 	}
       else if (argv[i] == "-binary" || argv[i] == "-b")
@@ -670,6 +682,10 @@ modifies variable names if they are invalid Octave identifiers.\n\
       else if (argv[i] == "-import" || argv[i] == "-i")
 	{
 	  warning ("load: -import ignored");
+	}
+      else if (argv[i] == "-text" || argv[i] == "-t")
+	{
+	  format = LS_ASCII;
 	}
       else
 	break;
@@ -1202,6 +1218,11 @@ variable @code{default_save_format}.\n\
 @item -ascii\n\
 Save the data in Octave's text data format.\n\
 \n\
+@strong{WARNING: the meaning of this option will change in a future\n\
+version of Octave to be compatible with @sc{Matlab}.  To keep the\n\
+meaning of your code the same across this change, use the @code{-text}\n\
+option instead.}\n\
+\n\
 @item -binary\n\
 Save the data in Octave's binary data format.\n\
 \n\
@@ -1249,6 +1270,9 @@ Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
 match all lower and upper case alphabetic characters. \n\
+\n\
+@item -text
+Save the data in Octave's text data format.\n\
 @end table\n\
 \n\
 Except when using the @sc{Matlab} binary data file format, saving global\n\
@@ -1295,6 +1319,15 @@ the file @file{data} in Octave's binary format.\n\
 	  append = true;
 	}
       else if (argv[i] == "-ascii" || argv[i] == "-a")
+	{
+	  warning ("the meaning of this option will change in a future");
+	  warning ("version of Octave to be compatible with @sc{Matlab}.");
+	  warning ("To keep the meaning of your code the same across");
+	  warning ("this change, use the -text option instead.");
+
+	  format = LS_ASCII;
+	}
+      else if (argv[i] == "-text" || argv[i] == "-t")
 	{
 	  format = LS_ASCII;
 	}

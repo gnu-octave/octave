@@ -961,12 +961,30 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 	{
 	  if (elt)
 	    {
-	      if (nr > 0 && nc > 0 && count == max_size)
+	      if (count == max_size)
 		{
-		  final_nr = nr;
-		  final_nc = nc;
+		  if (nr > 0)
+		    {
+		      if (nc > 0)
+			{
+			  final_nr = nr;
+			  final_nc = nc;
 
-		  break;
+			  break;
+			}
+		      else
+			{
+			  max_size *= 2;
+			  mval.resize (nr, max_size / nr, 0.0);
+			  data = mval.fortran_vec ();
+			}
+		    }
+		  else
+		    {
+		      max_size *=2;
+		      mval.resize (max_size, 1, 0.0);
+		      data = mval.fortran_vec ();
+		    }
 		}
 
 	      const char *fmt = elt->text;

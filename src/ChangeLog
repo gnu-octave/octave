@@ -1,5 +1,8 @@
 Fri Feb 14 16:23:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (octave_base_stream::do_scanf): Don't forget to
+	check to see if the result matrix needs resizing!
+
 	* Makefile.in (bin-dist): Don't write empty strings to LIBRARIES.
 
 Thu Feb 13 03:02:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

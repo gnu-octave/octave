@@ -45,10 +45,12 @@ extern "C"
 #ifndef HAVE_STRNCASECMP
 extern int strncasecmp (const char*, const char*, size_t);
 #endif
-}
 
-extern "C"
-{
+#define boolean kpathsea_boolean
+#define false kpathsea_false
+#define true kpathsea_true
+#include <kpathsea/pathsearch.h>
+
 #if defined (HAVE_TERMIOS_H)
 #include <termios.h>
 #elif defined (HAVE_TERMIO_H)
@@ -202,6 +204,7 @@ octave_tmp_file_name (void)
   return retval;
 }
 
+#if 0
 char **
 pathstring_to_vector (char *pathstring)
 {
@@ -250,6 +253,7 @@ pathstring_to_vector (char *pathstring)
 
   return path;
 }
+#endif
 
 // Return to the main command loop in octave.cc.
 
@@ -421,38 +425,45 @@ get_fcn_file_names (int& num, int no_suffix)
   char **retval = new char * [num_max];
   int i = 0;
 
-  char **path = pathstring_to_vector (user_pref.loadpath);
+  char *path_elt = kpse_path_element (user_pref.loadpath);
 
-  char **ptr = path;
-  if (ptr)
+  while (path_elt)
     {
-      while (*ptr)
-	{
-	  int tmp_num;
-	  char **names = get_fcn_file_names (tmp_num, *ptr, no_suffix);
+      str_llist_type *elt_dirs = kpse_element_dirs (path_elt);
 
-	  if (i + tmp_num >= num_max - 1)
+      str_llist_elt_type *dir;
+      for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
+	{
+	  char *elt_dir = STR_LLIST (*dir);
+
+	  if (elt_dir)
 	    {
+	      int tmp_num;
+	      char **names = get_fcn_file_names (tmp_num, elt_dir, no_suffix);
+
+	      if (i + tmp_num >= num_max - 1)
+		{
 // Reallocate the array.  Only copy pointers, not the strings they
 // point to, then only delete the original array of pointers, and not
 // the strings they point to.
 
-	      num_max += 1024;
-	      char **tmp = new char * [num_max];
-	      for (int j = 0; j < i; j++)
-		tmp[j] = retval[j];
+		  num_max += 1024;
+		  char **tmp = new char * [num_max];
+		  for (int j = 0; j < i; j++)
+		    tmp[j] = retval[j];
 
-	      delete [] retval;
+		  delete [] retval;
 
-	      retval = tmp;
+		  retval = tmp;
+		}
+
+	      int k = 0;
+	      while (k < tmp_num)
+		retval[i++] = names[k++];
 	    }
-
-	  int k = 0;
-	  while (k < tmp_num)
-	    retval[i++] = names[k++];
-
-	  ptr++;
 	}
+
+      path_elt = kpse_path_element (0);
     }
 
   retval[i] = 0;
@@ -609,7 +620,7 @@ file_in_path (const char *name, const char *suffix)
 {
   char *retval = 0;
 
-  char *nm = strconcat ("/", name);
+  char *nm = strsave (name);
   if (suffix)
     {
       char *tmp = nm;
@@ -620,30 +631,15 @@ file_in_path (const char *name, const char *suffix)
   if (! the_current_working_directory)
     get_working_directory ("file_in_path");
 
-  char **path = pathstring_to_vector (user_pref.loadpath);
+  char *tmp = kpse_path_search (user_pref.loadpath, nm, kpathsea_true);
 
-  char **ptr = path;
-  if (ptr)
+  if (tmp)
     {
-      while (*ptr)
-	{
-	  char *tmp = strconcat (*ptr, nm);
-	  char *p = make_absolute (tmp, the_current_working_directory);
-	  delete [] tmp;
-	  ifstream in_file (p);
-	  if (in_file)
-	    {
-	      in_file.close ();
-	      retval = p;
-	      goto done;
-	    }
-	  delete [] p;
-	  ptr++;
-	}
+      retval = make_absolute (tmp, the_current_working_directory);
+      free (tmp);
+      delete [] nm;
     }
 
- done:
-  delete [] nm;
   return retval;
 }
 

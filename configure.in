@@ -21,10 +21,10 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.41 $)dnl
+AC_REVISION($Revision: 1.42 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
 dnl
 AC_DEFINE(OCTAVE_SOURCE, 1)dnl
 dnl
@@ -82,7 +82,7 @@ libdir='$(exec_prefix)/lib'
 includedir='$(prefix)/include'
 mandir='$(prefix)/man/man1'
 infodir='$(prefix)/info'
-fcnfiledir='$(datadir)/octave/$(version)/m'
+fcnfiledir='$(datadir)/octave/$(version)/m//'
 localfcnfilepath='$(datadir)/octave/site-m'
 archlibdir='$(libdir)/octave/$(version)/$(target_host_type)/exec'
 octfiledir='$(archlibdir)/oct'
@@ -97,7 +97,7 @@ AC_ENABLE(run-in-place, [
   if test "$enableval" = "yes"; then
     builddir="."
   else
-    builddir=enableval
+    builddir=$enableval
   fi
 ], run_in_place=false)dnl
 dnl
@@ -124,7 +124,7 @@ if $run_in_place; then
   absolute_builddir=$absolute_builddir
   prefix=$absolute_srcdir
   infodir=$absolute_srcdir/info
-  fcnfiledir=$absolute_srcdir/scripts
+  fcnfiledir=$absolute_srcdir/scripts//
   archlibdir=$absolute_builddir
   fcnfilepath='.:$(fcnfiledir)'
 fi
@@ -329,6 +329,15 @@ dnl
 dnl Does the C compiler handle alloca() and const correctly?
 dnl
 AC_ALLOCA
+dnl
+dnl It would be nicer to test for the requisite putenv features directly,
+dnl but can't figure out how to do that.
+dnl
+if test "`(uname) 2>/dev/null`" = NetBSD \
+   || test "`(uname) 2>/dev/null`" = FreeBSD; then
+  AC_DEFINE(SMART_PUTENV)
+fi
+dnl
 AC_CONST
 dnl
 dnl If we haven't been forced to use f2c, try to find a Fortran compiler
@@ -428,6 +437,7 @@ dnl
 dnl Checks for header files.
 dnl
 AC_STDC_HEADERS
+AC_HAVE_HEADERS(assert.h float.h limits.h memory.h pwd.h stdlib.h)dnl
 AC_HAVE_HEADERS(string.h varargs.h unistd.h floatingpoint.h)dnl
 AC_HAVE_HEADERS(sys/utsname.h sys/time.h sys/fcntl.h)dnl
 AC_HAVE_HEADERS(sys/ttold.h sys/ptem.h sys/select.h)dnl
@@ -463,7 +473,7 @@ dnl Checks for functions.
 dnl
 AC_HAVE_FUNCS(setvbuf getcwd gethostname bzero rindex vfprintf vsprintf)dnl
 AC_HAVE_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror)dnl
-AC_HAVE_FUNCS(atexit on_exit tempnam)dnl
+AC_HAVE_FUNCS(atexit on_exit tempnam memmove putenv)dnl
 dnl
 dnl Check to see if we have IEEE math functions, and if so, which ones.
 dnl
@@ -713,6 +723,6 @@ define([tmpA], [Makefile Makeconf libcruft/Makefile libcruft/Makerules])dnl
 define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
 define([tmpC], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
 define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
-define([tmpE], [scripts/Makefile test/Makefile])dnl
+define([tmpE], [scripts/Makefile test/Makefile kpathsea/Makefile])dnl
 define([srcdirs], [tmpA tmpB tmpC tmpD tmpE])dnl
 AC_OUTPUT([srcdirs cruftdirs])dnl

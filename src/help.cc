@@ -61,6 +61,11 @@ extern char *replace_in_documentation ();
 // XXX FIXME XXX
 #undef __FUNCTION_DEF
 #include <readline/tilde.h>
+
+#define boolean kpathsea_boolean
+#define false kpathsea_false
+#define true kpathsea_true
+#include <kpathsea/pathsearch.h>
 }
 
 static help_list operators[] =
@@ -388,23 +393,33 @@ simple_help (void)
 
 // Also need to search octave_path for script files.
 
-  char **path = pathstring_to_vector (user_pref.loadpath);
+  char *path_elt = kpse_path_element (user_pref.loadpath);
 
-  char **ptr = path;
-  if (ptr)
+  while (path_elt)
     {
-      while (*ptr)
+      str_llist_type *elt_dirs = kpse_element_dirs (path_elt);
+
+      str_llist_elt_type *dir;
+      for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
 	{
-	  int count;
-	  char **names = get_fcn_file_names (count, *ptr, 0);
-	  output_buf << "\n*** function files in "
-		     << make_absolute (*ptr, the_current_working_directory)
-		     << ":\n\n";
-	  if (names && count > 0)
-	    list_in_columns (output_buf, names);
-	  delete [] names;
-	  ptr++;
+	  char *elt_dir = STR_LLIST (*dir);
+
+	  if (elt_dir)
+	    {
+	      int count;
+	      char **names = get_fcn_file_names (count, elt_dir, 0);
+
+	      output_buf << "\n*** function files in "
+		<< make_absolute (elt_dir, the_current_working_directory)
+		  << ":\n\n";
+
+	      if (names && count > 0)
+		list_in_columns (output_buf, names);
+
+	      delete [] names;
+	    }
 	}
+      path_elt = kpse_path_element (0);
     }
 
   additional_help_message (output_buf);

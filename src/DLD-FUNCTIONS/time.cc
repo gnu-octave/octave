@@ -26,72 +26,53 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include<iostream.h>
-
 #include "defun-dld.h"
 #include "error.h"
 #include "oct-map.h"
-#include "systime.h"
+#include "oct-time.h"
 #include "ov.h"
 #include "oct-obj.h"
-#include "utils.h"
 
 // Date and time functions.
 
 static Octave_map
-mk_tm_map (struct tm *tm, double fraction)
+mk_tm_map (const octave_base_tm& t)
 {
   Octave_map m;
 
-  m ["usec"] = fraction * 1e6;
-  m ["sec"] = static_cast<double> (tm->tm_sec);
-  m ["min"] = static_cast<double> (tm->tm_min);
-  m ["hour"] = static_cast<double> (tm->tm_hour);
-  m ["mday"] = static_cast<double> (tm->tm_mday);
-  m ["mon"] = static_cast<double> (tm->tm_mon);
-  m ["year"] = static_cast<double> (tm->tm_year);
-  m ["wday"] = static_cast<double> (tm->tm_wday);
-  m ["yday"] = static_cast<double> (tm->tm_yday);
-  m ["isdst"] = static_cast<double> (tm->tm_isdst);
-
-#if defined (HAVE_TM_ZONE)
-  m ["zone"]  = tm->tm_zone;
-#elif defined (HAVE_TZNAME)
-  if (tm->tm_isdst == 0 || tm->tm_isdst == 1)
-    m ["zone"] = tzname[tm->tm_isdst];
-#endif
+  m ["usec"] = static_cast<double> (t.usec ());
+  m ["sec"] = static_cast<double> (t.sec ());
+  m ["min"] = static_cast<double> (t.min ());
+  m ["hour"] = static_cast<double> (t.hour ());
+  m ["mday"] = static_cast<double> (t.mday ());
+  m ["mon"] = static_cast<double> (t.mon ());
+  m ["year"] = static_cast<double> (t.year ());
+  m ["wday"] = static_cast<double> (t.wday ());
+  m ["yday"] = static_cast<double> (t.yday ());
+  m ["isdst"] = static_cast<double> (t.isdst ());
+  m ["zone"]  = t.zone ();
 
   return m;
 }
 
-static struct tm*
-extract_tm (Octave_map &m, double& fraction)
+static octave_base_tm
+extract_tm (Octave_map &m)
 {
-  static struct tm tm;
+  octave_base_tm tm;
 
-  fraction = (m ["usec"] . double_value ()) / 1e6;
-  tm.tm_sec = static_cast<int> (m ["sec"] . double_value ());
-  tm.tm_min = static_cast<int> (m ["min"] . double_value ());
-  tm.tm_hour = static_cast<int> (m ["hour"] . double_value ());
-  tm.tm_mday = static_cast<int> (m ["mday"] . double_value ());
-  tm.tm_mon = static_cast<int> (m ["mon"] . double_value ());
-  tm.tm_year = static_cast<int> (m ["year"] . double_value ());
-  tm.tm_wday = static_cast<int> (m ["wday"] . double_value ());
-  tm.tm_yday = static_cast<int> (m ["yday"] . double_value ());
-  tm.tm_isdst = static_cast<int> (m ["isdst"] . double_value ());
+  tm.usec (static_cast<int> (m ["usec"] . double_value ()));
+  tm.sec (static_cast<int> (m ["sec"] . double_value ()));
+  tm.min (static_cast<int> (m ["min"] . double_value ()));
+  tm.hour (static_cast<int> (m ["hour"] . double_value ()));
+  tm.mday (static_cast<int> (m ["mday"] . double_value ()));
+  tm.mon (static_cast<int> (m ["mon"] . double_value ()));
+  tm.year (static_cast<int> (m ["year"] . double_value ()));
+  tm.wday (static_cast<int> (m ["wday"] . double_value ()));
+  tm.yday (static_cast<int> (m ["yday"] . double_value ()));
+  tm.isdst (static_cast<int> (m ["isdst"] . double_value ()));
+  tm.zone (m ["zone"] . string_value ());
 
-#if defined (HAVE_TM_ZONE)
-  static char *tm_zone = 0;
-
-  string tstr = m ["zone"] . string_value ();
-
-  delete [] tm_zone;
-  tm_zone = strsave (tstr.c_str ());
-
-  tm.tm_zone = tm_zone;
-#endif
-
-  return &tm;
+  return tm;
 }
 
 DEFUN_DLD (time, , ,
@@ -100,30 +81,9 @@ DEFUN_DLD (time, , ,
 Return current time.  On Unix systems, this is the number of\n\
 seconds since the epoch.")
 {
-  time_t now;
-  double fraction = 0.0;
+  octave_time now;
 
-#if defined (HAVE_GETTIMEOFDAY)
-
-  struct timeval tp;
-
-#if defined  (GETTIMEOFDAY_NO_TZ)
-  gettimeofday (&tp);
-#else
-  gettimeofday (&tp, 0);
-#endif
-
-  now = tp.tv_sec;
-
-  fraction = tp.tv_usec / 1e6;
-
-#else
-
-  now = time (0);
-
-#endif
- 
-  return static_cast<double> (now) + fraction;
+  return now.as_double ();
 }
 
 DEFUN_DLD (gmtime, args, ,
@@ -140,13 +100,7 @@ Coordinated Universal Time (UTC).")
       double tmp = args(0).double_value ();
 
       if (! error_state)
-	{
-	  time_t timeval = static_cast<int> (tmp);
-	  double ip;
-	  double fraction = modf (tmp, &ip); 
-
-	  retval = octave_value (mk_tm_map (gmtime (&timeval), fraction));
-	}
+	retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
     }
   else
     print_usage ("gmtime");
@@ -169,8 +123,8 @@ the following elements:\n\
   year  : years since 1900\n\
   wday  : days since Sunday (0, 6)\n\
   yday  : days since January 1 (0, 365)\n\
-  isdst : Daylight Savings Time flag\n\
-  zone  : Time zone")
+  isdst : daylight savings time flag\n\
+  zone  : time zone")
 {
   octave_value_list retval;
 
@@ -179,13 +133,7 @@ the following elements:\n\
       double tmp = args(0).double_value ();
 
       if (! error_state)
-	{
-	  time_t timeval = static_cast<int> (tmp);
-	  double ip;
-	  double fraction = modf (tmp, &ip); 
-
-	  retval = octave_value (mk_tm_map (localtime (&timeval), fraction));
-	}
+	retval = octave_value (mk_tm_map (octave_localtime (tmp)));
     }
   else
     print_usage ("localtime");
@@ -198,26 +146,31 @@ DEFUN_DLD (mktime, args, ,
 {
   octave_value_list retval;
 
-  if (args.length () == 1 && args(0).is_map ()) 
+  if (args.length () == 1)
     {
       Octave_map map = args(0).map_value ();
 
-      double fraction;
-
-      struct tm *tm = extract_tm (map, fraction);
-
       if (! error_state)
-	retval = static_cast<double> (mktime (tm)) + fraction;
+	{
+	  octave_base_tm tm = extract_tm (map);
+
+	  if (! error_state)
+	    {
+	      octave_time ot (tm);
+
+	      retval = ot.as_double ();
+	    }
+	  else
+	    error ("mktime: invalid TMSTRUCT argument");
+	}
+      else
+	error ("mktime: expecting structure argument");
     }
   else
     print_usage ("mktime");
 
   return retval;
 }
-
-#if !defined STRFTIME_BUF_INITIAL_SIZE
-#define STRFTIME_BUF_INITIAL_SIZE 128
-#endif
 
 DEFUN_DLD (strftime, args, ,
   "strftime (FMT, TMSTRUCT)\n\
@@ -283,39 +236,28 @@ Date fields:\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 2 && args(0).is_string () && args(1).is_map ()) 
+  if (args.length () == 2)
     {
       string fmt = args(0).string_value ();
 
-      Octave_map map = args(1).map_value ();
-
-      double fraction;
-
-      struct tm *tm = extract_tm (map, fraction);
-
       if (! error_state)
 	{
-	  const char *fmt_str = fmt.c_str ();
+	  Octave_map map = args(1).map_value ();
 
-	  char *buf = 0;
-	  size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
-	  size_t chars_written = 0;
-
-	  while (chars_written == 0)
+	  if (! error_state)
 	    {
-	      delete [] buf;
-	      buf = new char[bufsize];
-	      buf[0] = '\0';
+	      octave_base_tm tm = extract_tm (map);
 
-	      chars_written = strftime (buf, bufsize, fmt_str, tm);
-
-	      bufsize *= 2;
+	      if (! error_state)
+		retval = tm.format_as_string (fmt);
+	      else
+		error ("strftime: invalid TMSTRUCT argument");
 	    }
-
-	  retval = buf;
-
-	  delete [] buf;
+	  else
+	    error ("strftime: expecting structure as second argument");
 	}
+      else
+	error ("strftime: expecting format string as first argument");
     }
   else
     print_usage ("strftime");

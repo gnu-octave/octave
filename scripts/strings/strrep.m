@@ -34,7 +34,7 @@
 
 function t = strrep (s, x, y)
 
-  if (nargin <> 3)
+  if (nargin != 3)
     usage ("strrep (s, x, y)");
   endif
 
@@ -48,25 +48,43 @@ function t = strrep (s, x, y)
   endif
 
   ind = findstr (s, x, 0);
-  len = length (ind);
-  if (len == 0)
+
+  if (length(ind) == 0)
     t = s;
-  else
-    save_empty_list_elements_ok = empty_list_elements_ok;
-    unwind_protect
-      empty_list_elements_ok = 1;
-      l_x = length (x);
-      tmp = s (1 : ind (1) - 1);
-      t = strcat (tmp, y);
-      for k = 1 : len - 1
-        tmp = s (ind (k) + l_x : ind (k+1) - 1);
-        t = strcat (t, tmp, y);
-      endfor
-      tmp = s (ind(len) + l_x : length (s));
-      t = [t, tmp];
-    unwind_protect_cleanup
-      empty_list_elements_ok = save_empty_list_elements_ok;
-    end_unwind_protect
+  elseif (length(y) > 0)      # replacement
+    ## Copy the parts of s that aren't being replaced.  This is done
+    ## with an index vector, with jumps where each search string
+    ## is found.  For a jump of 0 (target length == replacement length)
+    ## the index is just cumsum ( ones (length (s))).  For non-zero
+    ## jumps, add the jump size to the ones vector at each found position.
+    jump = length(y) - length(x);
+    if (jump > 0)     # s expands
+      di = ones(size(s));
+      di (ind) = 1 + jump * ones (length (ind), 1);
+      t (cumsum (di)) = s
+    elseif (jump < 0) # s contracts
+      di = ones (jump * length (ind) + length (s), 1);
+      di (ind + jump * [0:length(ind)-1]) = 1 - jump * ones(length(ind), 1);
+      t = s (cumsum (di));
+    else              # s stays the same length
+      t = s;
+    endif
+    ## Now, substitute a copy of the replacement string whereever the
+    ## search string was found.  Note that we must first update the
+    ## target positions to account for any expansion or contraction
+    ## of s that may have occurred.
+    ind = ind + jump * [ 0 : length (ind) - 1 ];
+    repeat = [1 : length (y)]' * ones (1, length (ind));
+    dest = ones (length (y), 1) * ind + repeat - 1;
+    t (dest) = y (repeat);
+  else                        # deletion
+    ## Build an index vector of all locations where the target was found
+    ## in the search string, and zap them. 
+    t = toascii(s);
+    repeat = [1:length(x)]' * ones (1, length (ind));
+    delete = ones (length (x), 1) * ind + repeat - 1;
+    t (delete) = [];
+    t = setstr(t);
   endif
 
 endfunction

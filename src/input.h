@@ -42,8 +42,11 @@ extern int get_input_from_eval_string;
 // Nonzero means we're parsing a function file.
 extern int reading_fcn_file;
 
-// Simple name of M-file we are reading.
-extern char *curr_fcn_file_name;
+// Simple name of function file we are reading.
+extern const char *curr_fcn_file_name;
+
+// Full name of file we are reading.
+extern const char *curr_fcn_file_full_name;
 
 // Nonzero means we're parsing a script file.
 extern int reading_script_file;

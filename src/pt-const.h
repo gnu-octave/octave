@@ -352,7 +352,7 @@ public:
   tree_constant (void) : tree_fvc ()
     { rep = new tree_constant_rep (); rep->count = 1; }
 
-  tree_constant (double d) : tree_fvc ()
+  tree_constant (double d, int l = -1, int c = -1) : tree_fvc (l, c)
     { rep = new tree_constant_rep (d); rep->count = 1; }
 
   tree_constant (const Matrix& m) : tree_fvc ()
@@ -367,8 +367,8 @@ public:
   tree_constant (const ColumnVector& v, int pcv = -1) : tree_fvc ()
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const Complex& c) : tree_fvc ()
-    { rep = new tree_constant_rep (c); rep->count = 1; }
+  tree_constant (const Complex& C, int l = -1, int c = -1) : tree_fvc (l, c)
+    { rep = new tree_constant_rep (C); rep->count = 1; }
 
   tree_constant (const ComplexMatrix& m) : tree_fvc ()
     { rep = new tree_constant_rep (m); rep->count = 1; }
@@ -382,7 +382,7 @@ public:
   tree_constant (const ComplexColumnVector& v, int pcv = -1) : tree_fvc () 
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const char *s) : tree_fvc ()
+  tree_constant (const char *s, int l = -1, int c = -1) : tree_fvc (l, c)
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
   tree_constant (const charMatrix& chm, int is_string = 0) : tree_fvc ()

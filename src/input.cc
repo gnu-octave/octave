@@ -129,7 +129,10 @@ int get_input_from_eval_string = 0;
 int reading_fcn_file = 0;
 
 // Simple name of function file we are reading.
-char *curr_fcn_file_name = 0;
+const char *curr_fcn_file_name = 0;
+
+// Full name of file we are reading.
+const char *curr_fcn_file_full_name = 0;
 
 // Nonzero means we're parsing a script file.
 int reading_script_file = 0;

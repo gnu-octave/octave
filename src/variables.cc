@@ -777,10 +777,6 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 
   char *nm = sym_rec->name ();
 
-  // This is needed by yyparse.
-
-  curr_fcn_file_name = nm;
-
 #ifdef WITH_DLD
 
   if (load_octave_oct_file (nm))
@@ -793,6 +789,11 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 
     {
       char *ff = fcn_file_in_path (nm);
+
+      // These are needed by yyparse.
+
+      curr_fcn_file_name = nm;
+      curr_fcn_file_full_name = ff;
 
       if (ff)
 	{

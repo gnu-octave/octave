@@ -316,8 +316,11 @@ volatile void
 clean_up_and_exit (int retval)
 {
   raw_mode (0);
+
   clean_up_history ();
+
   close_plot_stream ();
+
   close_files ();
 
   if (!quitting_gracefully && (interactive || forced_interactive))
@@ -468,6 +471,7 @@ main (int argc, char **argv)
   if (setjmp (toplevel) != 0)
     {
       raw_mode (0);
+
       cout << "\n";
     }
 

@@ -4095,7 +4095,8 @@ write_mat5_array (std::ostream& os, Matrix& m, const int save_as_floats)
 #define MAT5_DO_WRITE(TYPE, data, count, stream)			\
   do									\
     {									\
-      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count);				\
+      std::auto_ptr<TYPE> tmp_auto_ptr (new TYPE [count]);              \
+      TYPE *ptr = tmp_auto_ptr.get ();                                  \
       for (int i = 0; i < count; i++)					\
         ptr[i] = X_CAST (TYPE, data[i]);				\
       stream.write (X_CAST (char *, ptr), count * sizeof (TYPE));	\

@@ -26,13 +26,9 @@ AC_INIT(startup/octaverc)
 
 AC_PROG_INSTALL
 
-define([tmpA], [Makefile control/Makefile elfun/Makefile])dnl
-define([tmpB], [general/Makefile image/Makefile])dnl
-define([tmpC], [linear-algebra/Makefile miscellaneous/Makefile])dnl
-define([tmpD], [plot/Makefile polynomial/Makefile set/Makefile])dnl
-define([tmpE], [signal/Makefile specfun/Makefile])dnl
-define([tmpF], [special-matrix/Makefile startup/Makefile])dnl
-define([tmpG], [statistics/Makefile strings/Makefile time/Makefile])dnl
-define([scriptdirs], [tmpA tmpB tmpC tmpD tmpE tmpF tmpG])dnl
-
-AC_OUTPUT([scriptdirs])
+AC_OUTPUT(Makefile audio/Makefile control/Makefile elfun/Makefile
+	  general/Makefile image/Makefile linear-algebra/Makefile
+	  miscellaneous/Makefile plot/Makefile polynomial/Makefile
+	  set/Makefile signal/Makefile specfun/Makefile
+	  special-matrix/Makefile startup/Makefile statistics/Makefile
+	  strings/Makefile time/Makefile)

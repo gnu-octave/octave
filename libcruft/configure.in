@@ -26,13 +26,9 @@ AC_INIT(misc/xstopx.f)
 
 AC_PROG_INSTALL
 
-define([tmpA], [Makefile Makerules])dnl
-define([tmpB], [blas/Makefile balgen/Makefile dassl/Makefile])dnl
-define([tmpC], [eispack/Makefile fftpack/Makefile fsqp/Makefile])dnl
-define([tmpD], [lapack/Makefile linpack/Makefile minpack/Makefile])dnl
-define([tmpE], [misc/Makefile npsol/Makefile odepack/Makefile])dnl
-define([tmpF], [qpsol/Makefile quadpack/Makefile ranlib/Makefile])dnl
-define([tmpG], [slatec-fn/Makefile villad/Makefile])dnl
-define([cruftdirs], [tmpA tmpB tmpC tmpD tmpE tmpF tmpG])dnl
-
-AC_OUTPUT([cruftdirs])
+AC_OUTPUT(Makefile Makerules blas/Makefile balgen/Makefile
+          dassl/Makefile eispack/Makefile fftpack/Makefile
+          fsqp/Makefile lapack/Makefile linpack/Makefile
+          minpack/Makefile misc/Makefile npsol/Makefile
+          odepack/Makefile qpsol/Makefile quadpack/Makefile
+          ranlib/Makefile slatec-fn/Makefile villad/Makefile)

@@ -35,14 +35,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_eig (tree_constant *args, int nargin, int nargout)
+builtin_eig (const tree_constant *args, int nargin, int nargout)
 {
   return eig (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-eig (tree_constant *args, int nargin, int nargout)
+eig (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 

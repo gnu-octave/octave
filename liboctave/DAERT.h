@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 2002 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,41 +20,45 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_DAE_h)
-#define octave_DAE_h 1
+#if !defined (octave_DAERT_h)
+#define octave_DAERT_h 1
 
-#include "DAEFunc.h"
+#include "DAE.h"
+#include "DAERTFunc.h"
 #include "base-dae.h"
 
 class
-DAE : public base_diff_alg_eqn, public DAEFunc
+DAERT : public base_diff_alg_eqn, public DAERTFunc
 {
 public:
 
-  DAE (void)
-    : base_diff_alg_eqn (), DAEFunc () { }
+  DAERT (void)
+    : base_diff_alg_eqn (), DAERTFunc () { }
 
-  DAE (const ColumnVector& xx, double tt, DAEFunc& f)
-    : base_diff_alg_eqn (xx, tt), DAEFunc (f) { }
+  DAERT (const ColumnVector& x, const ColumnVector& xdot, double t,
+	DAERTFunc& f)
+    : base_diff_alg_eqn (x, xdot, t), DAERTFunc (f) { }
 
-  DAE (const ColumnVector& xx, const ColumnVector& xxdot,
-       double tt, DAEFunc& f)
-    : base_diff_alg_eqn (xx, xxdot, tt), DAEFunc (f) { }
+  DAERT (const DAERT& a)
+    : base_diff_alg_eqn (a), DAERTFunc (a) { }
 
-  DAE (const DAE& a)
-    : base_diff_alg_eqn (a), DAEFunc (a){ }
-
-  DAE& operator = (const DAE& a)
+  DAERT& operator = (const DAERT& a)
     {
       if (this != &a)
 	{
 	  base_diff_alg_eqn::operator = (a);
-	  DAEFunc::operator = (a);
+	  DAERTFunc::operator = (a);
+
 	}
       return *this;
     }
 
-  ~DAE (void) { }
+  ~DAERT (void) { }
+
+  void initialize (const ColumnVector& x, const ColumnVector& xdot, double t)
+    {
+      base_diff_alg_eqn::initialize (x, xdot, t);
+    }
 };
 
 #endif

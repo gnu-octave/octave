@@ -195,7 +195,7 @@ ddaspk_j (const double& time, const double *, const double *, double *pd,
 
   // Fix up the matrix of partial derivatives for daspk.
 
-  tmp_dfdx = tmp_dfdx +  cj * tmp_dfdxdot;
+  tmp_dfdx = tmp_dfdx + cj * tmp_dfdxdot;
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)

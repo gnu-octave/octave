@@ -181,7 +181,7 @@ ddassl_j (const double& time, double *, double *, double *pd, const
 
   // Fix up the matrix of partial derivatives for dassl.
 
-  tmp_dfdx = tmp_dfdx +  cj * tmp_dfdxdot;
+  tmp_dfdx = tmp_dfdx + cj * tmp_dfdxdot;
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)

@@ -1,3 +1,8 @@
+2002-07-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/dasrt.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 2002-07-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (@): Handle new token.

@@ -44,18 +44,19 @@ VX_OP_INC := vx-ccv-s.h vx-crv-s.h vx-cs-cv.h vx-cs-rv.h vx-cv-cs.h \
 	vx-rv-cs.h vx-s-ccv.h vx-s-crv.h \
 	vx-rv-crv.h vx-cv-ccv.h vx-crv-rv.h vx-ccv-cv.h
 
-INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASPK.h DASSL.h FEGrid.h \
-	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
-	NLP.h ODE.h ODEFunc.h ODES.h ODESFunc.h ODESSA.h \
-	Objective.h QP.h Quad.h Range.h base-de.h \
-	base-min.h byte-swap.h cmd-edit.h cmd-hist.h data-conv.h \
-	dir-ops.h file-ops.h file-stat.h getopt.h glob-match.h \
-	idx-vector.h lo-ieee.h lo-mappers.h lo-specfun.h lo-sysdep.h \
-	lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h oct-env.h \
-	oct-fftw.h oct-getopt.h oct-group.h oct-kpse.h oct-passwd.h \
-	oct-rl-edit.h oct-rl-hist.h oct-shlib.h oct-syscalls.h oct-time.h \
-	pathlen.h pathsearch.h prog-args.h statdefs.h str-vec.h sun-utils.h \
-	sysdir.h systime.h syswait.h \
+INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h DAERTFunc.h \
+	DASPK.h DASRT.h DASSL.h FEGrid.h LinConst.h \
+	LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h NLP.h \
+	ODE.h ODEFunc.h ODES.h ODESFunc.h ODESSA.h Objective.h \
+	QP.h Quad.h Range.h base-de.h base-min.h byte-swap.h \
+	cmd-edit.h cmd-hist.h data-conv.h dir-ops.h file-ops.h \
+	file-stat.h getopt.h glob-match.h idx-vector.h lo-ieee.h \
+	lo-mappers.h lo-specfun.h lo-sysdep.h lo-utils.h mach-info.h \
+	oct-alloc.h oct-cmplx.h oct-env.h oct-fftw.h oct-getopt.h \
+	oct-group.h oct-kpse.h oct-passwd.h oct-rl-edit.h \
+	oct-rl-hist.h oct-shlib.h oct-syscalls.h oct-time.h \
+	pathlen.h pathsearch.h prog-args.h statdefs.h str-vec.h\
+	sun-utils.h sysdir.h systime.h syswait.h \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \
 	$(VX_OP_INC)
@@ -85,10 +86,10 @@ VX_OP_SRC := vx-ccv-s.cc vx-crv-s.cc vx-cs-cv.cc vx-cs-rv.cc vx-cv-cs.cc \
 	vx-rv-cs.cc vx-s-ccv.cc vx-s-crv.cc \
 	vx-rv-crv.cc vx-cv-ccv.cc vx-crv-rv.cc vx-ccv-cv.cc
 
-LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DAE.cc \
-	DASPK.cc DASSL.cc FEGrid.cc LinConst.cc LPsolve.cc \
-	LSODE.cc NLEqn.cc ODES.cc ODESSA.cc Quad.cc \
-	Range.cc data-conv.cc dir-ops.cc \
+LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
+	DASPK.cc DASRT.cc DASSL.cc FEGrid.cc LinConst.cc \
+	LPsolve.cc LSODE.cc NLEqn.cc ODES.cc ODESSA.cc \
+	Quad.cc Range.cc data-conv.cc dir-ops.cc \
 	file-ops.cc file-stat.cc glob-match.cc idx-vector.cc \
 	lo-ieee.cc lo-mappers.cc lo-specfun.cc lo-sysdep.cc \
 	lo-utils.cc mach-info.cc oct-alloc.cc oct-env.cc \

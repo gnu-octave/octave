@@ -39,10 +39,10 @@ public:
 
   typedef ColumnVector (*DAERHSFunc) (const ColumnVector& x,
 				      const ColumnVector& xdot,
-				      double, int&); 
+				      double t, int& ires);
 
   typedef DAEJac (*DAEJacFunc) (const ColumnVector& x,
-				const ColumnVector& xdot, double);
+				const ColumnVector& xdot, double t);
 
   DAEFunc (void)
     : fun (0), jac (0) { }

@@ -79,7 +79,6 @@ tree_subplot_list : public tree
   tree_subplot_list *next_elem (void);
 
   tree_constant eval (int print);
-//  tree_constant *eval (int print, int nargout);
 
   int print (int ndim, ostrstream& plot_buf);
 

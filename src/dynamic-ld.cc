@@ -1,7 +1,7 @@
 // dynamic-ld.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -140,11 +140,11 @@ octave_dld_tc2 (const char *name, const char *fcn, const char *object)
     
 }
 
-tree_constant *
-octave_dld_tc2_and_go (tree_constant *args, int nargin, int nargout,
+Octave_object
+octave_dld_tc2_and_go (const Octave_object& args, int nargin, int nargout,
 		       const char *name, const char *fcn, const char *object)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   builtin_fcn_ptr fcn_to_call = octave_dld_tc2 (name, fcn, object);
 

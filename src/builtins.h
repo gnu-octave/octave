@@ -28,14 +28,9 @@ class ostrstream;
 class Complex;
 struct help_list;
 
-#ifndef MAPPER_FCN_TYPEDEFS
-#define MAPPER_FCN_TYPEDEFS 1
-
 typedef double (*d_d_Mapper)(double);
 typedef double (*d_c_Mapper)(const Complex&);
 typedef Complex (*c_c_Mapper)(const Complex&);
-
-#endif
 
 // If can_return_complex_for_real_arg is 1, lower_limit and
 // upper_limit specify the range of values for which a real arg
@@ -67,12 +62,7 @@ struct builtin_mapper_functions
   char *help_string;
 };
 
-#ifndef SV_FUNCTION_TYPEDEFS
-#define SV_FUNCTION_TYPEDEFS 1
-
 typedef int (*sv_Function)(void);
-
-#endif
 
 struct builtin_string_variables
 {

@@ -34,23 +34,23 @@ struct builtin_text_functions
   char *help_string;
 };
 
-extern tree_constant *builtin_casesen (int argc, char **argv, int nargout);
-extern tree_constant *builtin_cd (int argc, char **argv, int nargout);
-extern tree_constant *builtin_clear (int argc, char **argv, int nargout);
-extern tree_constant *builtin_document (int argc, char **argv, int nargout);
-extern tree_constant *builtin_edit_history (int argc, char **argv,
+extern Octave_object builtin_casesen (int argc, char **argv, int nargout);
+extern Octave_object builtin_cd (int argc, char **argv, int nargout);
+extern Octave_object builtin_clear (int argc, char **argv, int nargout);
+extern Octave_object builtin_document (int argc, char **argv, int nargout);
+extern Octave_object builtin_edit_history (int argc, char **argv,
 					    int nargout);
-extern tree_constant *builtin_format (int argc, char **argv, int nargout);
-extern tree_constant *builtin_help (int argc, char **argv, int nargout);
-extern tree_constant *builtin_history (int argc, char **argv, int nargout);
-extern tree_constant *builtin_hold (int argc, char **argv, int nargout);
-extern tree_constant *builtin_load (int argc, char **argv, int nargout);
-extern tree_constant *builtin_ls (int argc, char **argv, int nargout);
-extern tree_constant *builtin_run_history (int argc, char **argv, int nargout);
-extern tree_constant *builtin_save (int argc, char **argv, int nargout);
-extern tree_constant *builtin_set (int argc, char **argv, int nargout);
-extern tree_constant *builtin_show (int argc, char **argv, int nargout);
-extern tree_constant *builtin_who (int argc, char **argv, int nargout);
+extern Octave_object builtin_format (int argc, char **argv, int nargout);
+extern Octave_object builtin_help (int argc, char **argv, int nargout);
+extern Octave_object builtin_history (int argc, char **argv, int nargout);
+extern Octave_object builtin_hold (int argc, char **argv, int nargout);
+extern Octave_object builtin_load (int argc, char **argv, int nargout);
+extern Octave_object builtin_ls (int argc, char **argv, int nargout);
+extern Octave_object builtin_run_history (int argc, char **argv, int nargout);
+extern Octave_object builtin_save (int argc, char **argv, int nargout);
+extern Octave_object builtin_set (int argc, char **argv, int nargout);
+extern Octave_object builtin_show (int argc, char **argv, int nargout);
+extern Octave_object builtin_who (int argc, char **argv, int nargout);
 
 #endif
 

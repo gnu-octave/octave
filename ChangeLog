@@ -1,3 +1,8 @@
+2000-03-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (DIRS_TO_MAKE): Double up on $ in awk command to
+	get them past Make.
+
 2000-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (SUBDIRS): Omit src.

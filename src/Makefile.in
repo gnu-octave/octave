@@ -167,11 +167,11 @@ VAR_2 := $(patsubst %.y, %, $(VAR_3))
 VAR_1 := $(patsubst %.l, %, $(VAR_2))
 VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
 
-OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
-	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
+OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../glob \
+	-L../dlfcn -L. $(RLD_FLAG)
 
-OCTAVE_LIBS = -loctinterp -loctave -lcruft \
-	$(LIBPLPLOT) $(LIBREADLINE) -lkpathsea -lglob $(LIBDLFCN)
+OCTAVE_LIBS = -loctinterp -loctave -lcruft $(LIBPLPLOT) \
+	$(LIBREADLINE) ../kpathsea/libkpathsea.a -lglob $(LIBDLFCN)
 
 LIBS_TO_INSTALL = liboctinterp.a
 

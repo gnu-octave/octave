@@ -1,7 +1,20 @@
+Thu May 22 16:48:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Remove duplicate entry for emacs/Makefile.
+
+	* octMakefile.in (INSTALL_SUBDIRS): New macro.
+	(install): Use it.
+
+	* kpathsea: Update to new version (3.0).
+
+	* readline: Update to new version (2.1-beta2).
+
 Wed May 21 16:33:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (install, install-strip): Append version
 	information to octave-bug and mkoctfile.
+	(install, install-strip): Remove octave-bug and mkoctfile first.
+	Ensure link is made in include directory.
 
 	* configure.in (octlibdir): New variable.
 	* Makeconf.in: Substitute it here.	

@@ -53,8 +53,6 @@ command_editor *command_editor::instance = 0;
 
 // It would be nice if readline.h declared these, I think.
 
-extern "C" void rl_deprep_terminal (void);
-
 extern int rl_blink_matching_paren;
 
 extern int screenheight;
@@ -98,7 +96,7 @@ public:
 
   void do_blink_matching_paren (bool flag);
 
-  void do_set_paren_string_delimiters (const string& s);
+  void do_set_basic_quote_characters (const string& s);
 
   void do_set_completion_append_character (char c);
 
@@ -242,7 +240,8 @@ gnu_readline::newline_chars (void)
 void
 gnu_readline::do_restore_terminal_state (void)
 {
-  rl_deprep_terminal ();
+  if (rl_deprep_term_function)
+    rl_deprep_term_function ();
 }
 
 void
@@ -252,7 +251,7 @@ gnu_readline::do_blink_matching_paren (bool flag)
 }
 
 void
-gnu_readline::do_set_paren_string_delimiters (const string& s)
+gnu_readline::do_set_basic_quote_characters (const string& s)
 {
   static char *ss = 0;
 
@@ -260,7 +259,7 @@ gnu_readline::do_set_paren_string_delimiters (const string& s)
 
   ss = strsave (s.c_str ());
 
-  rl_paren_string_delimiters = ss;
+  rl_basic_quote_characters = ss;
 }
 
 void
@@ -589,10 +588,10 @@ command_editor::blink_matching_paren (bool flag)
 }
 
 void
-command_editor::set_paren_string_delimiters (const string& s)
+command_editor::set_basic_quote_characters (const string& s)
 {
   if (instance_ok ())
-    instance->do_set_paren_string_delimiters (s);
+    instance->do_set_basic_quote_characters (s);
 }
 
 void

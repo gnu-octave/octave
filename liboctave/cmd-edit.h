@@ -67,7 +67,7 @@ public:
 
   static void blink_matching_paren (bool flag);
 
-  static void set_paren_string_delimiters (const string& s);
+  static void set_basic_quote_characters (const string& s);
 
   static void set_completion_append_character (char c);
 
@@ -138,7 +138,7 @@ protected:
 
   virtual void do_blink_matching_paren (bool) { }
 
-  virtual void do_set_paren_string_delimiters (const string&) { }
+  virtual void do_set_basic_quote_characters (const string&) { }
 
   virtual void do_set_completion_append_character (char) { }
 

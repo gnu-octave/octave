@@ -1,3 +1,13 @@
+Thu May 22 16:20:43 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.h, cmd-edit.cc: Rename set_paren_string_delimiters to
+	set_basic_quote_characters, to match new version of readline.
+
+	* cmd-edit.cc (do_restore_terminal_state): Call readline function
+	for restoring terminal state through rl_deprep_term_function, now
+	declared in readline.h
+	(rl_deprep_terminal): Delete declaration.
+
 Wed May 21 16:30:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-in): Use new mk-includedir-link macro.

@@ -31,11 +31,15 @@ DISTFILES = $(CONF_DISTFILES) \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = glob kpathsea make # plplot
+DISTDIRS = glob kpathsea # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
 	kpathsea libcruft liboctave src scripts doc examples
+
+
+# Subdirectories in which to run `make all'.
+INSTALL_SUBDIRS = @INFO_DIR@ libcruft liboctave src scripts doc examples
 
 # Subdirectories in which to run `make conf-dist'.
 CONF_DISTSUBDIRS = src
@@ -102,11 +106,14 @@ BUGS:
 
 install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
+	rm -f $(bindir)/octave-bug
 	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug-$(version)
 	cd $(bindir) ; $(LN_S) octave-bug-$(version) octave-bug
+	rm -f $(bindir)/mkoctfile
 	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile-$(version)
 	cd $(bindir) ; $(LN_S) mkoctfile-$(version) mkoctfile
 	$(INSTALL_DATA) config.h $(octincludedir)/config.h
+	$(mk-includedir-link)
 
 maintainer-clean::
 	@echo ""
@@ -119,7 +126,7 @@ maintainer-clean::
 	@echo ""
 
 install install-strip uninstall tags TAGS::
-	@$(subdir-for-command)
+	$(foreach d, $(INSTALL_SUBDIRS), $(do-subdir-for-command))
 .PHONY: install install-strip uninstall tags
 
 clean mostlyclean distclean maintainer-clean::

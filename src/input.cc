@@ -444,7 +444,7 @@ initialize_command_input (void)
 
   command_editor::set_name ("Octave");
 
-  command_editor::set_paren_string_delimiters ("\"");
+  command_editor::set_basic_quote_characters ("\"");
 
   command_editor::set_completion_function (generate_completion);
 }

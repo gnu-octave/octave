@@ -1,3 +1,11 @@
+2003-08-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (maybe_add_or_del_packages): Use source_file instead
+	of parse_and_execute.
+	* parse.y (source_file): New function.
+	(Fsource): Use it.
+	* parse.h (source_file): Provide decl.
+
 2003-08-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (octave_vsnprintf): Copy va_list to avoid using more

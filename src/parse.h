@@ -100,6 +100,9 @@ extern std::string get_help_from_file (const std::string& f);
 extern bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
+extern void
+source_file (const std::string file_name);
+
 extern octave_value_list
 feval (const std::string& name,
        const octave_value_list& args = octave_value_list (),

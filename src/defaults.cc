@@ -135,7 +135,7 @@ maybe_add_or_del_packages (const string_vector& a,
 	  file_stat fs = file_stat (file);
 
 	  if (fs.exists ())
-	    parse_and_execute (file);
+	    source_file (file);
 
 	  if (error_state)
 	    return;

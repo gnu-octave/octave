@@ -3459,6 +3459,28 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
   return script_file_executed;
 }
 
+void
+source_file (const std::string file_name)
+{
+  std::string file_full_name = file_ops::tilde_expand (file_name);
+
+  unwind_protect::begin_frame ("source_file");
+
+  unwind_protect_str (curr_fcn_file_name);
+  unwind_protect_str (curr_fcn_file_full_name);
+
+  curr_fcn_file_name = file_name;
+  curr_fcn_file_full_name = file_full_name;
+
+  parse_fcn_file (file_full_name, true, true);
+
+  if (error_state)
+    error ("source: error sourcing file `%s'",
+	   file_full_name.c_str ());
+
+  unwind_protect::run_frame ("source_file");
+}
+
 DEFUN (source, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} source (@var{file})\n\
@@ -3476,25 +3498,7 @@ be named @file{@var{file}.m}.\n\
       std::string file_name = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string file_full_name = file_ops::tilde_expand (file_name);
-
-	  unwind_protect::begin_frame ("Fsource");
-
-	  unwind_protect_str (curr_fcn_file_name);
-	  unwind_protect_str (curr_fcn_file_full_name);
-
-	  curr_fcn_file_name = file_name;
-	  curr_fcn_file_full_name = file_full_name;
-
-	  parse_fcn_file (file_full_name, true, true);
-
-	  if (error_state)
-	    error ("source: error sourcing file `%s'",
-		   file_full_name.c_str ());
-
-	  unwind_protect::run_frame ("Fsource");
-	}
+        source_file (file_name);
       else
 	error ("source: expecting file name as argument");
     }

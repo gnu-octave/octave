@@ -62,7 +62,6 @@ octave_file::numeric_conversion_function (void) const
 void
 octave_file::print (ostream& os, bool) const
 {
-  indent (os);
   print_raw (os);
   newline (os);
 }
@@ -70,7 +69,7 @@ octave_file::print (ostream& os, bool) const
 void
 octave_file::print_raw (ostream& os, bool) const
 {
-  os << "{"; newline (os);
+  indent (os); os << "{"; newline (os);
 
   if (stream)
     {

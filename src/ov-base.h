@@ -138,6 +138,8 @@ public:
 
   double double_value (bool) const;
 
+  double scalar_value (bool) const { return double_value (); }
+
   Matrix matrix_value (bool frc_str_conv = false) const;
 
   Complex complex_value (bool frc_str_conv = false) const;

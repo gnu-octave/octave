@@ -338,6 +338,9 @@ public:
   virtual double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
 
+  virtual double scalar_value (bool frc_str_conv = false) const
+    { return rep->scalar_value (frc_str_conv); }
+
   virtual Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
 

@@ -127,6 +127,8 @@ public:
 
   double double_value (bool) const;
 
+  double scalar_value (bool) const { return double_value (); }
+
   Matrix matrix_value (bool) const
     { return range.matrix_value (); }
 

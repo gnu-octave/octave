@@ -262,7 +262,6 @@ octave_matrix::convert_to_str (void) const
 void
 octave_matrix::print (ostream& os, bool pr_as_read_syntax) const
 {
-  indent (os);
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }

@@ -115,7 +115,6 @@ octave_bool::convert_to_str (void) const
 void
 octave_bool::print (ostream& os, bool pr_as_read_syntax) const
 {
-  indent (os);
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }
@@ -123,6 +122,7 @@ octave_bool::print (ostream& os, bool pr_as_read_syntax) const
 void
 octave_bool::print_raw (ostream& os, bool pr_as_read_syntax) const
 {
+  indent (os);
   octave_print_internal (os, scalar, pr_as_read_syntax);
 }
 

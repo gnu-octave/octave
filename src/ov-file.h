@@ -70,7 +70,9 @@ public:
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  double double_value (void) const { return static_cast<double> (number); }
+  double double_value (bool) const { return static_cast<double> (number); }
+
+  double scalar_value (bool) const { return static_cast<double> (number); }
 
   octave_stream *stream_value (void) const { return stream; }
 

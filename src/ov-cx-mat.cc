@@ -309,7 +309,6 @@ octave_complex_matrix::complex_matrix_value (bool) const
 void
 octave_complex_matrix::print (ostream& os, bool pr_as_read_syntax) const
 {
-  indent (os);
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }

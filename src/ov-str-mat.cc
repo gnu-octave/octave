@@ -220,7 +220,7 @@ octave_char_matrix_str::string_value (void) const
 void
 octave_char_matrix_str::print (ostream& os, bool pr_as_read_syntax) const
 {
-  indent (os);
+  // indent (os);
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }

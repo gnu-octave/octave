@@ -100,6 +100,8 @@ public:
 
   double double_value (bool = false) const { return scalar; }
 
+  double scalar_value (bool = false) const { return scalar; }
+
   Matrix matrix_value (bool = false) const { return Matrix (1, 1, scalar); }
 
   Complex complex_value (bool = false) const { return scalar; }

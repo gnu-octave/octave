@@ -98,7 +98,6 @@ octave_char_matrix::complex_value (bool) const
 void
 octave_char_matrix::print (ostream& os, bool pr_as_read_syntax) const
 {
-  indent (os);
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }

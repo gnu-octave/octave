@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream.h>
+#include <strstream.h>
 
 #include "lo-utils.h"
 
@@ -90,7 +91,6 @@ octave_list::print_raw (ostream& os, bool) const
 {
   begin_unwind_frame ("octave_list_print");
 
-  newline (os);
   indent (os);
   os << "(";
   newline (os);
@@ -101,9 +101,15 @@ octave_list::print_raw (ostream& os, bool) const
 
   for (int i = 0; i < n; i++)
     {
+      ostrstream buf;
+      buf << "[" << i+1 << "]" << ends;
+      const char *nm = buf.str ();
+
       octave_value val = lst(i);
 
-      val.print (os);
+      val.print_with_name (os, nm);
+
+      delete [] nm;
     }
 
   decrement_indent_level ();
@@ -120,6 +126,7 @@ octave_list::print_name_tag (ostream& os, const string& name) const
 {
   indent (os);
   os << name << " =";
+  newline (os);
   return false;
 }
 

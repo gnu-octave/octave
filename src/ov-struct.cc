@@ -83,7 +83,6 @@ octave_struct::print_raw (ostream& os, bool) const
 
   if (Vstruct_levels_to_print-- > 0)
     {
-      newline (os);
       indent (os);
       os << "{";
       newline (os);
@@ -118,6 +117,7 @@ octave_struct::print_name_tag (ostream& os, const string& name) const
 {
   indent (os);
   os << name << " =";
+  newline (os);
   return false;
 }
 

@@ -1,4 +1,119 @@
-Mon Apr 28 00:38:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Wed Apr 30 00:24:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base.h, ov-bool-mat.cc, ov-bool-mat.h, ov-bool.cc, ov-bool.h,
+	ov-ch-mat.cc, ov-ch-mat.h, ov-complex.cc, ov-complex.h,
+	ov-cx-mat.cc, ov-cx-mat.h, ov-file.cc, ov-file.h, ov-list.cc,
+	ov-range.cc, ov-range.h, ov-re-mat.cc, ov-re-mat.h, ov-scalar.cc,
+	ov-scalar.h, ov-str-mat.cc, ov-struct.cc, ov.h (scalar_value):
+	New function.  Same as double_value, but name is consistent with
+	octave_scalar class.
+
+	* op-fil-b.cc, op-fil-cm.cc, op-fil-lis.cc, op-fil-rec.cc,
+	op-fil-str.cc, op-fil-bm.cc, op-fil-cs.cc, op-fil-m.cc,
+	op-fil-s.cc: New files.
+
+	* ops.h (ASSIGNOPDECL, DEFASSIGNOP, DEFASSIGNOP_FN, CONVDECL,
+	DEFCONV, BINOPDECL, DEFBINOPX, DEFBINOP, DEFBINOP_OP, DEFBINOP_FN,
+	BINOP_NONCONFORMANT): New macros.
+	* op-b-b.cc, op-bm-bm.cc, op-cm-cm.cc, op-cm-cs.cc, op-cm-m.cc,
+	op-cm-s.cc, op-cs-cm.cc, op-cs-cs.cc, op-cs-m.cc, op-cs-s.cc,
+	op-m-cm.cc, op-m-cs.cc, op-m-m.cc, op-m-s.cc, op-s-cm.cc,
+	op-s-cs.cc, op-s-m.cc, op-s-s.cc, op-str-str.cc: Use them.
+
+	* Makefile.in (octave): Also depend on ops.o.
+
+	* builtins.h: Delete.
+	* octave.cc: Add extern declaration here.
+
+	* mappers.h: Delete.
+	* Makefile.in (INCLUDES): Delete from list.
+	* mkbuiltins: Add extern declaration in builtins.cc.
+
+	* mkops: New file.
+	* ops.cc: Delete.
+	* Makefile.in (SOURCES): Delete from the list.
+	(ops.cc): New target.
+	(OP_SOURCES): New list.  Move all op-*.cc files here from SOURCES.
+	Add $(OP_SOURCES) to SOURCES list.
+
+	* variables.cc (symbols_of_variables): No longer static.
+	* ov.cc (symbols_of_ov): Rename from symbols_of_value.
+
+	* ov-base.h: Delete declaration for install_base_type_conversions.
+	* op-b-b.h, op-bm-bm.h, op-cm-cm.h, op-cm-cs.h, op-cm-m.h,
+	op-cm-s.h, op-cs-cm.h, op-cs-cs.h, op-cs-m.h, op-cs-s.h,
+	op-m-cm.h, op-m-cs.h, op-m-m.h, op-m-s.h, op-s-cm.h, op-s-cs.h,
+	op-s-m.h, op-s-s.h, op-str-str.h: Delete.
+	* Makefile.in (INCLUDES): Delete them from the list.
+
+Tue Apr 29 22:27:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.h, variables.cc (install_builtin_variables): Delete.
+	* mkbuiltins: Also generate install_builtin_variables function.
+	* Makefile.in: Fix rule to call mkbuiltins with correct args.
+	(clean): Also delete def-files and var-files.
+	* defaults.h.in, dirfns.h, error.h, file-io.h, help.h, input.h,
+	lex.h, load-save.h, oct-usr-fcn.h, pager.h, parse.h, pr-output.cc,
+	pr-output.h, pt-mat.h, pt-misc.h, pt-plot.h, toplev.h:
+	Delete declarations of symbols_of_* functions.
+	* data.h, syscalls.h: Delete.
+
+	* pr-output.cc (octave_print_internal): Leave printing of final
+	new line up to the caller.
+
+	* ov.h, ov.cc (reset_indent_level, increment_indent_level,
+	decrement_indent_level, newline, indent, reset,
+	curr_print_indent_level, beginning_of_line):
+	New functions and static data to manage indent level for printing.
+	(print_as_scalar): Delete.
+	(print, print_with_name): Always require stream arg.
+	Change all callers.
+
+	* oct-stream.h (octave_stream::input_stream): Make publicly available.
+	(octave_stream::output_stream): Likewise.
+
+	* ov-base.h, ov-base.cc, ov.h, ov.cc, ov-file.h ov-base.h
+	(is_file, stream_value, stream_number): New functions.
+	* ov-file.h, ov-file.cc: New files for value class to manage files.
+	* file-io.cc (symbols_of_file_io): Define stdin, stdout, and
+	stderr as octve_file objects, not just integers.
+	(Ffopen, Fpopen): Return octave_file objects, not integer file ids. 
+	* syscalls.cc (Fpipe): Likewise.
+	* oct-stream.h, oct-stream.cc (octave_stream_list::insert):
+	Return octave_file object, not integer file id.
+
+	* ov-base.cc, ov-bool-mat.cc, ov-bool.cc, ov-ch-mat.cc,
+	ov-complex.cc, ov-cx-mat.cc, ov-file.cc, ov-list.cc, ov-range.cc,
+	ov-re-mat.cc, ov-scalar.cc, ov-str-mat.cc, ov-struct.cc, ov.cc
+	(print_name_tag, print_raw): New functions.
+
+	* help.cc (Ftype): Don't cast symbol definition to tree_constant *.
+
+	* variables.cc (link_to_global_variable): Don't try to define
+	symbol with tree_constant objects.
+	(bind_ans): Call symbol_record::define directly and then
+	octave_value::print_with_name instead of creating a temporary
+	assignment expression.
+
+	* pt-pr-code.cc (tree_print_code::indent): Don't use ostream::form.
+
+	* pt-exp-base.h, pt-exp.h, pt-exp.cc (oper): Return string, not
+	char *.  Change all where necessary.
+
+Mon Apr 28 16:33:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value binary_op enum): Add lshift and rshift.
+	(octave_value assign_op enum): Add lshift_eq and rshift_eq.
+	* ov.cc (assign_op_as_string, binary_op_as_string): Include them.
+	* parse.y (LSHIFT_EQ RSHIFT_EQ LSHIFT RSHIFT): New tokens.
+	Add them to the precedence list.
+	(simple_expr): Add new operators.
+	(make_assign_op, make_binary_op): Handle new operators.
+	* lex.l: Recognize new operators.
+
+	* lex.l: Recognize them.
+
+Sun Apr 27 20:17:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-misc.cc (Vsilent_functions, silent_functions):
 	Move here from oct-usr-fcn.cc.
@@ -14,8 +129,6 @@ Mon Apr 28 00:38:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.h, dynamic-ld.cc: Rewrite to use singleton class.
 	* variables.cc (load_fcn_from_file): Use new dynamic linking class.
-
-Sun Apr 27 20:17:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.h (Octave_builtin_fcn): Delete typedef.
 	* dynamic-ld.cc: Simplify via the magic of function pointers.

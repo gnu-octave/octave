@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "pager.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -43,6 +44,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static octave_function *fsolve_fcn;
 
 static NLEqn_options fsolve_opts;
+
+// Is this a recursive call?
+static int call_depth = 0;
 
 int
 hybrd_info_to_fsolve_info (int info)
@@ -134,48 +138,60 @@ where y and x are vectors.")
 {
   octave_value_list retval;
 
+  unwind_protect::begin_frame ("Ffsolve");
+
+  unwind_protect_int (call_depth);
+  call_depth++;
+
+  if (call_depth > 1)
+    {
+      error ("fsolve: invalid recursive call");
+      return retval;
+    }
+
   int nargin = args.length ();
 
-  if (nargin != 2 || nargout > 3)
+  if (nargin == 2 && nargout < 4)
     {
-      print_usage ("fsolve");
-      return retval;
+      fsolve_fcn = extract_function (args(0), "fsolve", "__fsolve_fcn__",
+				    "function y = __fsolve_fcn__ (x) y = ",
+				    "; endfunction");
+      if (! fsolve_fcn)
+	return retval;
+
+      ColumnVector x = args(1).vector_value ();
+
+      if (error_state)
+	{
+	  error ("fsolve: expecting vector as second argument");
+	  return retval;
+	}
+
+      if (nargin > 2)
+	warning ("fsolve: ignoring extra arguments");
+
+      if (nargout > 2)
+	warning ("fsolve: can't compute path output yet");
+
+      NLFunc foo_fcn (fsolve_user_function);
+      NLEqn foo (x, foo_fcn);
+      foo.set_options (fsolve_opts);
+
+      int info;
+      ColumnVector soln = foo.solve (info);
+
+      info = hybrd_info_to_fsolve_info (info);
+
+      retval.resize (nargout ? nargout : 1);
+      retval(0) = soln, 1;
+
+      if (nargout > 1)
+	retval(1) = static_cast<double> (info);
     }
+  else
+    print_usage ("fsolve");
 
-  fsolve_fcn = extract_function (args(0), "fsolve", "__fsolve_fcn__",
-				"function y = __fsolve_fcn__ (x) y = ",
-				"; endfunction");
-  if (! fsolve_fcn)
-    return retval;
-
-  ColumnVector x = args(1).vector_value ();
-
-  if (error_state)
-    {
-      error ("fsolve: expecting vector as second argument");
-      return retval;
-    }
-
-  if (nargin > 2)
-    warning ("fsolve: ignoring extra arguments");
-
-  if (nargout > 2)
-    warning ("fsolve: can't compute path output yet");
-
-  NLFunc foo_fcn (fsolve_user_function);
-  NLEqn foo (x, foo_fcn);
-  foo.set_options (fsolve_opts);
-
-  int info;
-  ColumnVector soln = foo.solve (info);
-
-  info = hybrd_info_to_fsolve_info (info);
-
-  retval.resize (nargout ? nargout : 1);
-  retval(0) = soln, 1;
-
-  if (nargout > 1)
-    retval(1) = static_cast<double> (info);
+  unwind_protect::run_frame ("Ffsolve");
 
   return retval;
 }

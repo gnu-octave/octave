@@ -61,7 +61,7 @@
       T *a_tmp = a.fortran_vec (); \
       const T *b_tmp = b.data (); \
       for (int i = 0; i < l; i++) \
-	a_tmp[i] += b_tmp[i]; \
+	a_tmp[i] OP b_tmp[i]; \
     } \
   while (0)
 

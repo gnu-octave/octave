@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "pager.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -43,6 +44,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static octave_function *dassl_fcn;
 
 static DASSL_options dassl_opts;
+
+// Is this a recursive call?
+static int call_depth = 0;
 
 ColumnVector
 dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
@@ -117,88 +121,100 @@ where x, xdot, and res are vectors, and t is a scalar.")
 {
   octave_value_list retval;
 
+  unwind_protect::begin_frame ("Fdassl");
+
+  unwind_protect_int (call_depth);
+  call_depth++;
+
+  if (call_depth > 1)
+    {
+      error ("dassl: invalid recursive call");
+      return retval;
+    }
+
   int nargin = args.length ();
 
-  if (nargin < 4 || nargin > 5)
+  if (nargin > 3 && nargin < 6)
     {
-      print_usage ("dassl");
-      return retval;
-    }
+      dassl_fcn = extract_function
+	(args(0), "dassl", "__dassl_fcn__",
+	 "function res = __dassl_fcn__ (x, xdot, t) res = ",
+	 "; endfunction");
 
-  dassl_fcn = extract_function
-    (args(0), "dassl", "__dassl_fcn__",
-     "function res = __dassl_fcn__ (x, xdot, t) res = ",
-     "; endfunction");
+      if (! dassl_fcn)
+	return retval;
 
-  if (! dassl_fcn)
-    return retval;
-
-  ColumnVector state = args(1).vector_value ();
-
-  if (error_state)
-    {
-      error ("dassl: expecting state vector as second argument");
-      return retval;
-    }
-
-  ColumnVector deriv = args(2).vector_value ();
-
-  if (error_state)
-    {
-      error ("dassl: expecting derivative vector as third argument");
-      return retval;
-    }
-
-  ColumnVector out_times = args(3).vector_value ();
-
-  if (error_state)
-    {
-      error ("dassl: expecting output time vector as fourth argument");
-      return retval;
-    }
-
-  ColumnVector crit_times;
-  int crit_times_set = 0;
-  if (nargin > 4)
-    {
-      crit_times = args(4).vector_value ();
+      ColumnVector state = args(1).vector_value ();
 
       if (error_state)
 	{
-	  error ("dassl: expecting critical time vector as fifth argument");
+	  error ("dassl: expecting state vector as second argument");
 	  return retval;
 	}
 
-      crit_times_set = 1;
+      ColumnVector deriv = args(2).vector_value ();
+
+      if (error_state)
+	{
+	  error ("dassl: expecting derivative vector as third argument");
+	  return retval;
+	}
+
+      ColumnVector out_times = args(3).vector_value ();
+
+      if (error_state)
+	{
+	  error ("dassl: expecting output time vector as fourth argument");
+	  return retval;
+	}
+
+      ColumnVector crit_times;
+      int crit_times_set = 0;
+      if (nargin > 4)
+	{
+	  crit_times = args(4).vector_value ();
+
+	  if (error_state)
+	    {
+	      error ("dassl: expecting critical time vector as fifth argument");
+	      return retval;
+	    }
+
+	  crit_times_set = 1;
+	}
+
+      if (state.capacity () != deriv.capacity ())
+	{
+	  error ("dassl: x and xdot must have the same size");
+	  return retval;
+	}
+
+      double tzero = out_times (0);
+
+      DAEFunc func (dassl_user_function);
+      DASSL dae (state, deriv, tzero, func);
+      dae.copy (dassl_opts);
+
+      Matrix output;
+      Matrix deriv_output;
+
+      if (crit_times_set)
+	output = dae.integrate (out_times, deriv_output, crit_times);
+      else
+	output = dae.integrate (out_times, deriv_output);
+
+      if (! error_state)
+	{
+	  retval.resize (2);
+
+	  retval(0) = output;
+	  retval(1) = deriv_output;
+	}
     }
-
-  if (state.capacity () != deriv.capacity ())
-    {
-      error ("dassl: x and xdot must have the same size");
-      return retval;
-    }
-
-  double tzero = out_times (0);
-
-  DAEFunc func (dassl_user_function);
-  DASSL dae (state, deriv, tzero, func);
-  dae.copy (dassl_opts);
-
-  Matrix output;
-  Matrix deriv_output;
-
-  if (crit_times_set)
-    output = dae.integrate (out_times, deriv_output, crit_times);
   else
-    output = dae.integrate (out_times, deriv_output);
+    print_usage ("dassl");
 
-  if (! error_state)
-    {
-      retval.resize (2);
-
-      retval(0) = output;
-      retval(1) = deriv_output;
-    }
+  unwind_protect::run_frame ("Fdassl");
 
   return retval;
 }

@@ -1,3 +1,20 @@
+Thu May 27 18:28:35 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/chol.cc (Fchol): Also return info as second output.
+
+	* DLD-FUNCTIONS/minmax.cc (max (const ComplexMatrix&, const
+	ComplexMatrix&)): Correct test for real columns only.  
+	(min (const ComplexMatrix&, const ComplexMatrix&)): Likewise.
+
+Wed Apr 14 12:54:25 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/dassl.cc (Fdassl): Prevent recursive calls.
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Likewise.
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Likewise.
+	* DLD-FUNCTIONS/quad.cc (Fquad): Likewise.
+
+	* file-io.cc (Fsscanf, Ffscanf): Doc fix.
+
 Sat Mar 27 11:07:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h (octave_value::count): New function.

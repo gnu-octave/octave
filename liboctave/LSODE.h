@@ -78,6 +78,7 @@ public:
       x_maximum_step_size = opt.x_maximum_step_size;
       x_minimum_step_size = opt.x_minimum_step_size;
       x_relative_tolerance = opt.x_relative_tolerance;
+
       x_step_limit = opt.x_step_limit;
     }
 

@@ -34,13 +34,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (chol, args, nargout,
-  "R = chol (X): cholesky factorization")
+  "[R, p] = chol (X): cholesky factorization")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin != 1 || nargout > 1)
+  if (nargin != 1 || nargout > 2)
     {
       print_usage ("chol");
       return retval;
@@ -69,7 +69,10 @@ DEFUN_DLD (chol, args, nargout,
 	  if (info != 0)
 	    error ("chol: matrix not positive definite");
 	  else
-	    retval = fact.chol_matrix ();
+	    {
+	      retval(1) = static_cast<double> (info);
+	      retval(0) = fact.chol_matrix ();
+	    }
 	}
     }
   else if (arg.is_complex_type ())
@@ -83,7 +86,10 @@ DEFUN_DLD (chol, args, nargout,
 	  if (info != 0)
 	    error ("chol: matrix not positive definite");
 	  else
-	    retval = fact.chol_matrix ();
+	    {
+	      retval(1) = static_cast<double> (info);
+	      retval(0) = fact.chol_matrix ();
+	    }
 	}
     }
   else

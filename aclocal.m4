@@ -81,7 +81,7 @@ octave_cv_f77_is_g77,
   octave_cv_f77_is_g77=yes
 else
   echo "      END" > conftest.f
-  foutput=`${F77-f77} -v 2>&1 | grep "GNU F77"`
+  foutput=`${F77-f77} -v conftest.f 2>&1 | egrep "GNU F77|FSF-g77"`
   if test -n "$foutput"; then
     octave_cv_f77_is_g77=yes
   else

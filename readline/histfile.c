@@ -52,11 +52,11 @@
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
-#if defined (__EMX__)
+#if defined (__EMX__) || defined (__CYGWIN__)
 #  ifndef O_BINARY
 #    define O_BINARY 0
 #  endif
-#else /* !__EMX__ */
+#else /* !__EMX__ && !__CYGWIN__ */
    /* If we're not compiling for __EMX__, we don't want this at all.  Ever. */
 #  undef O_BINARY
 #  define O_BINARY 0

@@ -1,3 +1,17 @@
+Mon May 10 07:45:11 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray-defs.h (DO_VV_OP2): Fix macro definition to use arg.
+
+Wed May  5 20:06:10 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>index (idx_vector& idx)): Always return a
+	column vector for A(:), for compatibility with Matlab.
+
+Fri Apr 23 11:52:23 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* LSODE.cc (LSODE::do_integrate (double)): Don't forget to set
+	iopt when there are optional inputs in rwork or iwork.
+
 Fri Mar 26 11:26:32 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (libraries): Use the libfoo.a(objects) method of

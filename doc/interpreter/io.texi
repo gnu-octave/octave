@@ -622,10 +622,9 @@ Write a string to the standard output with no formatting.
 @subsection Line-Oriented Input
 
 @deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
-Read characters from a file, stopping at the first newline character
-that is encountered or after @var{len} characters have been read, and
-returning the characters as a string.  The newline is not included in
-the returned value.
+Read characters from a file, stopping after a newline, or EOF,
+or @var{len} characters have been read.  The characters read, excluding
+the possible trailing newline, are returned as a string.
 
 If @var{len} is omitted, @code{fgetl} reads until the next newline
 character.
@@ -634,10 +633,9 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
-Read characters from a file, stopping at the first newline character
-that is encountered or after @var{len} characters have been read, and
-returning the characters as a string.  The newline is included in the
-returned value.
+Read characters from a file, stopping after a newline, or EOF,
+or @var{len} characters have been read.  The characters read, including
+the possible trailing newline, are returned as a string.
 
 If @var{len} is omitted, @code{fgets} reads until the next newline
 character.
@@ -1066,7 +1064,9 @@ and may be one of
 Read as much as possible, returning a column vector.
 
 @item @var{nr}
-@itemx [@var{nr}, Inf]
+Read up to @var{nr} elements, returning a column vector.
+
+@item [@var{nr}, Inf]
 Read as much as possible, returning a matrix with @var{nr} rows.  If the
 number of elements read is not an exact multiple of @var{nr}, the last
 column is padded with zeros.
@@ -1320,7 +1320,9 @@ and may be one of
 Read as much as possible, returning a column vector.
 
 @item @var{nr}
-@itemx [@var{nr}, Inf]
+Read up to @var{nr} elements, returning a column vector.
+
+@item [@var{nr}, Inf]
 Read as much as possible, returning a matrix with @var{nr} rows.  If the
 number of elements read is not an exact multiple of @var{nr}, the last
 column is padded with zeros.

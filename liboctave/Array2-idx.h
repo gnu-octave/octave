@@ -84,10 +84,7 @@ Array2<T>::index (idx_vector& idx) const
     }
   else if (nr == 1 || nc == 1)
     {
-      int result_is_column_vector = (nc == 1);
-
-      if (liboctave_dfi_flag && idx.is_colon ())
-	    result_is_column_vector = 1;
+      int result_is_column_vector = (nc == 1 || idx.is_colon ());
 
       Array<T> tmp = Array<T>::index (idx);
 

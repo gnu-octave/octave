@@ -73,7 +73,7 @@ The exact values are given by the variables @code{realmin},
 
 Matrix objects can be of any size, and can be dynamically reshaped and
 resized.  It is easy to extract individual rows, columns, or submatrices
-is using a variety of powerful indexing features.  @xref{Index Expressions}.
+using a variety of powerful indexing features.  @xref{Index Expressions}.
 
 @xref{Numeric Data Types}, for more information.
 

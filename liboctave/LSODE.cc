@@ -218,14 +218,11 @@ LSODE::do_integrate (double tout)
       sanity_checked = 1;
     }
 
-  // Try 5000 steps before giving up.
-
-  iwork.elem (5) = 5000;
-
   if (stop_time_set)
     {
       itask = 4;
       rwork.elem (0) = stop_time;
+      iopt = 1;
     }
   else
     {
@@ -235,12 +232,29 @@ LSODE::do_integrate (double tout)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  rwork.elem (4) = (initial_step_size () >= 0.0) ? initial_step_size () : 0.0;
-  rwork.elem (5) = (maximum_step_size () >= 0.0) ? maximum_step_size () : 0.0;
-  rwork.elem (6) = (minimum_step_size () >= 0.0) ? minimum_step_size () : 0.0;
+  if (initial_step_size () >= 0.0)
+    {
+      rwork.elem (4) = initial_step_size ();
+      iopt = 1;
+    }
+
+  if (maximum_step_size () >= 0.0)
+    {
+      rwork.elem (5) = maximum_step_size ();
+      iopt = 1;
+    }
+
+  if (minimum_step_size () >= 0.0)
+    {
+      rwork.elem (6) = minimum_step_size ();
+      iopt = 1;
+    }
 
   if (step_limit () > 0)
-    iwork.elem (5) = step_limit ();
+    {
+      iwork.elem (5) = step_limit ();
+      iopt = 1;
+    }
 
   int *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();

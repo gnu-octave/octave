@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "pager.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -47,6 +48,9 @@ static octave_function *lsode_fcn;
 static octave_function *lsode_jac;
 
 static LSODE_options lsode_opts;
+
+// Is this a recursive call?
+static int call_depth = 0;
 
 ColumnVector
 lsode_user_function (const ColumnVector& x, double t)
@@ -140,114 +144,126 @@ where xdot and x are vectors and t is a scalar.\n")
 {
   octave_value_list retval;
 
+  unwind_protect::begin_frame ("Flsode");
+
+  unwind_protect_int (call_depth);
+  call_depth++;
+
+  if (call_depth > 1)
+    {
+      error ("lsode: invalid recursive call");
+      return retval;
+    }
+
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 4 || nargout > 1)
+  if (nargin > 2 && nargin < 5 && nargout < 2)
     {
-      print_usage ("lsode");
-      return retval;
-    }
+      octave_value f_arg = args(0);
 
-  octave_value f_arg = args(0);
+      switch (f_arg.rows ())
+	{
+	case 1:
+	  lsode_fcn = extract_function
+	    (args(0), "lsode", "__lsode_fcn__",
+	     "function xdot = __lsode_fcn__ (x, t) xdot = ",
+	     "; endfunction");
+	  break;
 
-  switch (f_arg.rows ())
-    {
-    case 1:
-      lsode_fcn = extract_function
-	(args(0), "lsode", "__lsode_fcn__",
-	 "function xdot = __lsode_fcn__ (x, t) xdot = ",
-	 "; endfunction");
-      break;
-
-    case 2:
-      {
-	string_vector tmp = args(0).all_strings ();
-
-	if (! error_state)
+	case 2:
 	  {
-	    lsode_fcn = extract_function
-	      (tmp(0), "lsode", "__lsode_fcn__",
-	       "function xdot = __lsode_fcn__ (x, t) xdot = ",
-	       "; endfunction");
+	    string_vector tmp = args(0).all_strings ();
 
-	    if (lsode_fcn)
+	    if (! error_state)
 	      {
-		lsode_jac = extract_function
-		  (tmp(1), "lsode", "__lsode_jac__",
-		   "function jac = __lsode_jac__ (x, t) jac = ",
+		lsode_fcn = extract_function
+		  (tmp(0), "lsode", "__lsode_fcn__",
+		   "function xdot = __lsode_fcn__ (x, t) xdot = ",
 		   "; endfunction");
 
-		if (! lsode_jac)
-		  lsode_fcn = 0;
+		if (lsode_fcn)
+		  {
+		    lsode_jac = extract_function
+		      (tmp(1), "lsode", "__lsode_jac__",
+		       "function jac = __lsode_jac__ (x, t) jac = ",
+		       "; endfunction");
+
+		    if (! lsode_jac)
+		      lsode_fcn = 0;
+		  }
 	      }
 	  }
-      }
-      break;
+	  break;
 
-    default:
-      error ("lsode: first arg should be a string or 2-element string array");
-      break;
-    }
+	default:
+	  error ("lsode: first arg should be a string or 2-element string array");
+	  break;
+	}
 
-  if (error_state || ! lsode_fcn)
-    return retval;
+      if (error_state || ! lsode_fcn)
+	return retval;
 
-  ColumnVector state = args(1).vector_value ();
-
-  if (error_state)
-    {
-      error ("lsode: expecting state vector as second argument");
-      return retval;
-    }
-
-  ColumnVector out_times = args(2).vector_value ();
-
-  if (error_state)
-    {
-      error ("lsode: expecting output time vector as third argument");
-      return retval;
-    }
-
-  ColumnVector crit_times;
-
-  int crit_times_set = 0;
-  if (nargin > 3)
-    {
-      crit_times = args(3).vector_value ();
+      ColumnVector state = args(1).vector_value ();
 
       if (error_state)
 	{
-	  error ("lsode: expecting critical time vector as fourth argument");
+	  error ("lsode: expecting state vector as second argument");
 	  return retval;
 	}
 
-      crit_times_set = 1;
+      ColumnVector out_times = args(2).vector_value ();
+
+      if (error_state)
+	{
+	  error ("lsode: expecting output time vector as third argument");
+	  return retval;
+	}
+
+      ColumnVector crit_times;
+
+      int crit_times_set = 0;
+      if (nargin > 3)
+	{
+	  crit_times = args(3).vector_value ();
+
+	  if (error_state)
+	    {
+	      error ("lsode: expecting critical time vector as fourth argument");
+	      return retval;
+	    }
+
+	  crit_times_set = 1;
+	}
+
+      double tzero = out_times (0);
+      int nsteps = out_times.capacity ();
+
+      ODEFunc func (lsode_user_function);
+      if (lsode_jac)
+	func.set_jacobian_function (lsode_user_jacobian);
+
+      LSODE ode (state, tzero, func);
+
+      ode.copy (lsode_opts);
+
+      int nstates = state.capacity ();
+      Matrix output (nsteps, nstates + 1);
+
+      if (crit_times_set)
+	output = ode.integrate (out_times, crit_times);
+      else
+	output = ode.integrate (out_times);
+
+      if (! error_state)
+	{
+	  retval.resize (1);
+	  retval(0) = output;
+	}
     }
-
-  double tzero = out_times (0);
-  int nsteps = out_times.capacity ();
-
-  ODEFunc func (lsode_user_function);
-  if (lsode_jac)
-    func.set_jacobian_function (lsode_user_jacobian);
-
-  LSODE ode (state, tzero, func);
-
-  ode.copy (lsode_opts);
-
-  int nstates = state.capacity ();
-  Matrix output (nsteps, nstates + 1);
-
-  if (crit_times_set)
-    output = ode.integrate (out_times, crit_times);
   else
-    output = ode.integrate (out_times);
+    print_usage ("lsode");
 
-  if (! error_state)
-    {
-      retval.resize (1);
-      retval(0) = output;
-    }
+  unwind_protect::run_frame ("Flsode");
 
   return retval;
 }

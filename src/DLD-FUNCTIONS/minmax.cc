@@ -169,7 +169,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
     {
       int columns_are_real_only = 1;
       for (int i = 0; i < nr; i++)
-	if (imag (a (i, j)) != 0.0 && imag (b (i, j)) != 0.0)
+	if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
 	  {
 	    columns_are_real_only = 0;
 	    break;
@@ -327,7 +327,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
     {
       int columns_are_real_only = 1;
       for (int i = 0; i < nr; i++)
-	if (imag (a (i, j)) != 0.0 && imag (b (i, j)) != 0.0)
+	if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
 	  {
 	    columns_are_real_only = 0;
 	    break;

@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -48,6 +49,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static octave_function *quad_fcn;
 
 static Quad_options quad_opts;
+
+// Is this a recursive call?
+static int call_depth = 0;
 
 double
 quad_user_function (double x)
@@ -111,141 +115,157 @@ integrand is singular.")
 {
   octave_value_list retval;
 
+  unwind_protect::begin_frame ("Fquad");
+
+  unwind_protect_int (call_depth);
+  call_depth++;
+
+  if (call_depth > 1)
+    {
+      error ("quad: invalid recursive call");
+      return retval;
+    }
+
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 5 || nargout > 4)
+  if (nargin > 2 && nargin < 6 && nargout < 5)
+    {
+      quad_fcn = extract_function (args(0), "quad", "__quad_fcn__",
+				   "function y = __quad_fcn__ (x) y = ",
+				   "; endfunction");
+      if (! quad_fcn)
+	return retval;
+
+      double a = args(1).double_value ();
+
+      if (error_state)
+	{
+	  error ("quad: expecting second argument to be a scalar");
+	  return retval;
+	}
+
+      double b = args(2).double_value ();
+
+      if (error_state)
+	{
+	  error ("quad: expecting third argument to be a scalar");
+	  return retval;
+	}
+
+      int indefinite = 0;
+      IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
+      double bound = 0.0;
+      if (xisinf (a) && xisinf (b))
+	{
+	  indefinite = 1;
+	  indef_type = IndefQuad::doubly_infinite;
+	}
+      else if (xisinf (a))
+	{
+	  indefinite = 1;
+	  bound = b;
+	  indef_type = IndefQuad::neg_inf_to_bound;
+	}
+      else if (xisinf (b))
+	{
+	  indefinite = 1;
+	  bound = a;
+	  indef_type = IndefQuad::bound_to_inf;
+	}
+
+      int ier = 0;
+      int nfun = 0;
+      double abserr = 0.0;
+      double val = 0.0;
+      double abstol = 1e-6;
+      double reltol = 1e-6;
+      ColumnVector tol (2);
+      ColumnVector sing;
+      int have_sing = 0;
+      switch (nargin)
+	{
+	case 5:
+	  if (indefinite)
+	    {
+	      error("quad: singularities not allowed on infinite intervals");
+	      return retval;
+	    }
+
+	  have_sing = 1;
+
+	  sing = args(4).vector_value ();
+
+	  if (error_state)
+	    {
+	      error ("quad: expecting vector of singularities as fourth argument");
+	      return retval;
+	    }
+
+	case 4:
+	  tol = args(3).vector_value ();
+
+	  if (error_state)
+	    {
+	      error ("quad: expecting vector of tolerances as fifth argument");
+	      return retval;
+	    }
+
+	  switch (tol.capacity ())
+	    {
+	    case 2:
+	      reltol = tol (1);
+
+	    case 1:
+	      abstol = tol (0);
+	      break;
+
+	    default:
+	      error ("quad: expecting tol to contain no more than two values");
+	      return retval;
+	    }
+
+	case 3:
+	  if (indefinite)
+	    {
+	      IndefQuad iq (quad_user_function, bound, indef_type, abstol, reltol);
+	      iq.set_options (quad_opts);
+	      val = iq.integrate (ier, nfun, abserr);
+	    }
+	  else
+	    {
+	      if (have_sing)
+		{
+		  DefQuad dq (quad_user_function, a, b, sing, abstol, reltol);
+		  dq.set_options (quad_opts);
+		  val = dq.integrate (ier, nfun, abserr);
+		}
+	      else
+		{
+		  DefQuad dq (quad_user_function, a, b, abstol, reltol);
+		  dq.set_options (quad_opts);
+		  val = dq.integrate (ier, nfun, abserr);
+		}
+	    }
+	  break;
+
+	default:
+	  panic_impossible ();
+	  break;
+	}
+
+      retval(3) = abserr;
+      retval(2) = static_cast<double> (nfun);
+      retval(1) = static_cast<double> (ier);
+      retval(0) = val;
+    }
+  else
     {
       print_usage ("quad");
       return retval;
     }
 
-  quad_fcn = extract_function (args(0), "quad", "__quad_fcn__",
-			       "function y = __quad_fcn__ (x) y = ",
-			       "; endfunction");
-  if (! quad_fcn)
-    return retval;
-
-  double a = args(1).double_value ();
-
-  if (error_state)
-    {
-      error ("quad: expecting second argument to be a scalar");
-      return retval;
-    }
-
-  double b = args(2).double_value ();
-
-  if (error_state)
-    {
-      error ("quad: expecting third argument to be a scalar");
-      return retval;
-    }
-
-  int indefinite = 0;
-  IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
-  double bound = 0.0;
-  if (xisinf (a) && xisinf (b))
-    {
-      indefinite = 1;
-      indef_type = IndefQuad::doubly_infinite;
-    }
-  else if (xisinf (a))
-    {
-      indefinite = 1;
-      bound = b;
-      indef_type = IndefQuad::neg_inf_to_bound;
-    }
-  else if (xisinf (b))
-    {
-      indefinite = 1;
-      bound = a;
-      indef_type = IndefQuad::bound_to_inf;
-    }
-
-  int ier = 0;
-  int nfun = 0;
-  double abserr = 0.0;
-  double val = 0.0;
-  double abstol = 1e-6;
-  double reltol = 1e-6;
-  ColumnVector tol (2);
-  ColumnVector sing;
-  int have_sing = 0;
-  switch (nargin)
-    {
-    case 5:
-      if (indefinite)
-	{
-	  error("quad: singularities not allowed on infinite intervals");
-	  return retval;
-	}
-
-      have_sing = 1;
-
-      sing = args(4).vector_value ();
-
-      if (error_state)
-	{
-	  error ("quad: expecting vector of singularities as fourth argument");
-	  return retval;
-	}
-
-    case 4:
-      tol = args(3).vector_value ();
-
-      if (error_state)
-	{
-	  error ("quad: expecting vector of tolerances as fifth argument");
-	  return retval;
-	}
-
-      switch (tol.capacity ())
-	{
-	case 2:
-	  reltol = tol (1);
-
-	case 1:
-	  abstol = tol (0);
-	  break;
-
-	default:
-	  error ("quad: expecting tol to contain no more than two values");
-	  return retval;
-	}
-
-    case 3:
-      if (indefinite)
-	{
-	  IndefQuad iq (quad_user_function, bound, indef_type, abstol, reltol);
-	  iq.set_options (quad_opts);
-	  val = iq.integrate (ier, nfun, abserr);
-	}
-      else
-	{
-	  if (have_sing)
-	    {
-	      DefQuad dq (quad_user_function, a, b, sing, abstol, reltol);
-	      dq.set_options (quad_opts);
-	      val = dq.integrate (ier, nfun, abserr);
-	    }
-	  else
-	    {
-	      DefQuad dq (quad_user_function, a, b, abstol, reltol);
-	      dq.set_options (quad_opts);
-	      val = dq.integrate (ier, nfun, abserr);
-	    }
-	}
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  retval(3) = abserr;
-  retval(2) = static_cast<double> (nfun);
-  retval(1) = static_cast<double> (ier);
-  retval(0) = val;
+ abort:
+  unwind_protect::run_frame ("Fquad");
 
   return retval;
 }

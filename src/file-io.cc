@@ -654,9 +654,9 @@ matrix A.  SIZE is optional.  If present, it can be one of\n\
        Inf : read as much as possible, returning a column vector\n\
              (unless doing all character conversions, in which case a\n\
              string is returned)\n\
-        NR : read as much as possible, returning a matrix with NR rows\n\
+        NR : read up to NR elements, returning a column vector\n\
   [NR, NC] : read up to NR x NC elements, returning a matrix with NR rows\n\
- [NR, Inf] : same as NR\n\
+ [NR, Inf] : read as much as possible, returning a matrix with NR rows\n\
 \n\
 If it is omitted, a value of Inf is assumed.\n\
 \n\
@@ -740,9 +740,9 @@ matrix A.  SIZE is optional.  If present, it can be one of\n\
        Inf : read as much as possible, returning a column vector\n\
              (unless doing all character conversions, in which case a\n\
              string is returned)\n\
-        NR : read as much as possible, returning a matrix with NR rows\n\
+        NR : read up to NR elements, returning a column vector\n\
   [NR, NC] : read up to NR x NC elements, returning a matrix with NR rows\n\
- [NR, Inf] : same as NR\n\
+ [NR, Inf] : read as much as possible, returning a matrix with NR rows\n\
 \n\
 If it is omitted, a value of Inf is assumed.\n\
 \n\

@@ -1,3 +1,7 @@
+Wed Apr  7 13:57:26 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/qrhouse.m, linear-algebra/krygetq.m: Delete.
+
 Wed Apr  7 13:22:43 1999  A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
 	* control/is_controllable.m, control/zgscal.m: Accomodate new

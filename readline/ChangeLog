@@ -1,3 +1,7 @@
+Thu May 27 21:47:26 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* histfile.c [__CYGWIN__]: Define O_BINARY if not already defined.
+
 Mon Aug 31 12:07:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.sub: Accept armv4 everywhere arm is allowed.

@@ -286,8 +286,8 @@ Summary of changes for version 2.1.x:
     even if you build a copy of Octave that depends on shared versions
     of the Octave libraries.
 
-  * For matrices, x(:) now works no matter what the value of
-    do_fortran_indexing is.
+  * For matrices, x(:) now works and returns a column vector no matter
+    what the value of do_fortran_indexing is.
 
   * New keywords __FILE__ and __LINE__ expand to the name of the file
     that is being read and the current input line number, respectively.

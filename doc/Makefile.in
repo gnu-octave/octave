@@ -26,8 +26,6 @@ SUBDIRS = faq interpreter liboctave refcard
 
 DISTSUBDIRS = $(SUBDIRS)
 
-BINDISTSUBDIRS = $(SUBDIRS)
-
 all: $(SUBDIRS)
 .PHONY: all
 
@@ -63,7 +61,3 @@ dist:
 	ln $(DISTFILES) ../`cat ../.fname`/doc
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
-
-bin-dist:
-	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; $(MAKE) -C $$dir $@; done
-.PHONY: bin-dist

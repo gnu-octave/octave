@@ -41,11 +41,6 @@ CLEAN_SUBDIRS = $(DISTSUBDIRS)
 
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
-ifeq ($(SHARED_LIBS), true)
-  BINDISTLIBS = libcruft/libcruft
-  BINDISTFILES = libcruft.$(SHLEXT_VER)
-endif
-
 # include BLAS and FFTW just in case some of libcruft depends on them
 LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
 
@@ -179,14 +174,5 @@ dist:
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done
 	ln $(DISTFILES) ../`cat ../.fname`/libcruft
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/libcruft; \
-	fi
-	if [ -n "$(BINDISTLIBS)" ]; then \
-	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
-	fi
-.PHONY: bin-dist
 
 .NOTPARALLEL:

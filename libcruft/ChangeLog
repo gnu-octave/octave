@@ -1,3 +1,8 @@
+2005-03-09  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (bin-dist): Delete target.
+	(BINDISTLIBS, BINDISTFILES): Delete variables.
+
 2005-03-01  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (CRUFT_DIRS): Remove it from the list.

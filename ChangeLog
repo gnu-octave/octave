@@ -1,3 +1,12 @@
+2005-03-09  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (bin-dist): Delete target.
+	(BINDISTFILES): Delete variable.
+	* emacs/Makefile.in: Likewise.
+
+	* octMakefile.in (VERSION, ARCH, binary-dist): Delete targets.
+	(XBINDISTFILES, BINDISTFILES, BINDISTSUBDIRS): Delete variables.
+
 2005-03-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (GXX_PICKY_FLAGS): Don't include

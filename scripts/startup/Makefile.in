@@ -27,8 +27,6 @@ DISTFILES = Makefile.in $(SOURCES)
 FCN_FILES = # $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
-BINDISTFILES = $(srcdir)/octaverc
-
 all:
 .PHONY: all
 
@@ -81,7 +79,3 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/startup
 .PHONY: dist
-
-bin-dist:
-	ln $(BINDISTFILES) ../../`cat ../../.fname`/scripts/startup
-.PHONY: bin-dist

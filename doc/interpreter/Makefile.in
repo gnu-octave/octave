@@ -47,12 +47,6 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
   $(SOURCES) $(TEXINFO) $(FORMATTED)
 
-ifeq ($(wildcard octave.info), )
-  BINDISTFILES = $(addprefix $(srcdir)/, $(MAN_SRC) $(FORMATTED))
-else
-  BINDISTFILES = $(addprefix $(srcdir)/, $(MAN_SRC)) $(FORMATTED)
-endif
-
 # Look for version.h to get version information.
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
 
@@ -205,9 +199,3 @@ clean-texi:
 dist: clean-texi all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/interpreter; \
-	fi
-.PHONY: bin-dist

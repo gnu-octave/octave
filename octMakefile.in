@@ -50,17 +50,6 @@ CONF_DISTSUBDIRS = src
 DISTSUBDIRS_1 = $(sort $(ALL_SUBDIRS) dlfcn test emacs)
 DISTSUBDIRS = $(filter-out $(DISTDIRS), $(DISTSUBDIRS_1))
 
-XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
-	PROJECTS README README.Linux README.Windows README.MachTen \
-	SENDING-PATCHES THANKS octave-sh install-octave mkinstalldirs \
-	ChangeLog ChangeLog.[0-9]
-
-BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
-	octave-bug octave-config config.status config.h VERSION ARCH
-
-# Subdirectories in which to run `make bin-dist'.
-BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
-
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS)
 
@@ -226,43 +215,5 @@ conf-dist:
 	gzip --best `cat .fname`.tar
 	rm -f .fname
 .PHONY: conf-dist
-
-# Rules for making a binary distribution.
-
-VERSION:
-	echo $(version) > VERSION
-.PHONY: VERSION
-
-ARCH:
-	echo $(canonical_host_type) > ARCH
-.PHONY: ARCH
-
-binary-dist: VERSION ARCH octave-bug octave-config dist-info-files
-	echo octave-$(version)-$(canonical_host_type) > .fname
-	rm -rf `cat .fname`
-	mkdir `cat .fname`
-	ln $(BINDISTFILES) `cat .fname`
-	for dir in $(BINDISTSUBDIRS); do \
-	  mkdir `cat .fname`/$$dir; \
-	  $(MAKE) -C $$dir bin-dist; \
-	done
-	tar chf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname`
-	tar xf `cat .fname`.tar
-	find `cat .fname` \( \( -name RCS -a -type d \) \
-	  -o \( -name CVS -a -type d \) -o \( -name OLD -a -type d \) \
-	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name Makefile \
-	  -o -name c-auto.h \) -print | xargs rm -rf
-	rm -f `cat .fname`/test/octave.test/*.m
-	chmod -R a+rw `cat .fname`
-	find `cat .fname` \( -perm 766 -o -perm 676 -o -perm 667 \
-	  -o -perm 776 -o -perm 677 -o -perm 767 \) -print | \
-	  xargs chmod a+x scripts
-	strip src/octave
-	tar cf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname`
-	gzip --best `cat .fname`.tar
-	rm -f .fname
-.PHONY: binary-dist
 
 .NOTPARALLEL:

@@ -428,17 +428,4 @@ In any case, please report this as a bug since it might be possible to
 modify Octave's configuration script to automatically determine the
 proper thing to do.
 
-@item
-After installing the binary distribution of Octave in an alternate
-directory, the Emacs command @code{run-octave} doesn't work.  Emacs
-hangs in @code{accept-process-output} in @code{inferior-octave-startup}.
-
-This seems to be a problem with executing a shell script using the
-comint package.  You can avoid the problem by changing the way Octave is
-installed to eliminate the need for the shell script.  You can either
-compile and install Octave using the source distribution, reinstall the
-binary distribution in the default directory, or copy the commands in
-the octave shell script wrapper to your shell startup files (and the
-shell startup files for anyone else who is using Octave) and then
-rename the file @file{octave.bin} to be @file{octave}.
 @end itemize

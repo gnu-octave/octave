@@ -1,3 +1,14 @@
+2005-03-09  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (bin-dist): Delete target.
+	(BINDISTSUBDIRS): Delete variable.
+
+	* refcard/Makefile.in (bin-dist): Delete target.
+	(BINDISTFILES): Delete variable.
+	* liboctave/Makefile.in: Likewise.
+	* interpreter/Makefile.in: Likewise.
+	* faq/Makefile.in: Likewise.
+
 2005-02-25  John W. Eaton  <jwe@octave.org>
 
 	Sparse merge.

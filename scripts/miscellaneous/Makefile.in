@@ -27,8 +27,6 @@ DISTFILES = Makefile.in $(SOURCES)
 FCN_FILES = $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-BINDISTFILES = $(FCN_FILES)
-
 all:
 .PHONY: all
 
@@ -63,7 +61,3 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/miscellaneous
 .PHONY: dist
-
-bin-dist:
-	ln $(BINDISTFILES) ../../`cat ../../.fname`/scripts/miscellaneous
-.PHONY: bin-dist

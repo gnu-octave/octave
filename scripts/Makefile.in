@@ -36,8 +36,6 @@ SUBDIRS = audio control deprecated elfun finance general image io \
 
 DISTSUBDIRS = $(SUBDIRS)
 
-BINDISTSUBDIRS = $(SUBDIRS)
-
 FCN_FILES = # $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
@@ -94,7 +92,3 @@ dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
-
-bin-dist:
-	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
-.PHONY: bin-dist

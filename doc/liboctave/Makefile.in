@@ -30,8 +30,6 @@ FORMATTED = liboctave.dvi liboctave.ps liboctave.pdf \
 
 DISTFILES = Makefile.in gpl.texi $(TEXINFO) $(FORMATTED)
 
-BINDISTFILES =
-
 SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 
 %.spell : %.texi
@@ -104,9 +102,3 @@ maintainer-clean: distclean
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/liboctave
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/liboctave; \
-	fi
-.PHONY: bin-dist

@@ -25,8 +25,6 @@ SOURCES = $(EL_FILES) otags
 
 DISTFILES = Makefile.in $(EL_FILES) otags otags.1 NEWS TODO README
 
-BINDISTFILES = $(addprefix $(srcdir)/, $(EL_FILES) otags NEWS TODO README)
-
 all:
 .PHONY: all
 
@@ -58,9 +56,3 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/emacs
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/emacs; \
-	fi
-.PHONY: bin-dist

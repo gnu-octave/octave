@@ -251,13 +251,6 @@ DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
-ifeq ($(SHARED_LIBS), true)
-  BINDISTLIBS = src/liboctinterp
-  BINDISTFILES = octave $(OCT_FILES) liboctinterp.$(SHLEXT_VER)
-else
-  BINDISTFILES = octave $(OCT_FILES)
-endif
-
 all: octave$(EXEEXT) stamp-oct-links PKG_ADD DOCSTRINGS
 .PHONY: all
 
@@ -512,20 +505,6 @@ dist: parse.cc lex.cc oct-gperf.h
 conf-dist:
 	ln octave.cc Makefile.in ../`cat ../.fname`/src
 .PHONY: conf-dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/src; \
-	fi
-	if [ -n "$(OCT_FILES)" ]; then \
-	  $(srcdir)/mk-oct-links -p $(octfiledir) \
-	    $(addprefix $(srcdir)/, $(DLD_SRC)) \
-	    > ../`cat ../.fname`/src/links-to-make; \
-	fi
-	if [ -n "$(BINDISTLIBS)" ]; then \
-	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
-	fi
-.PHONY: bin-dist
 
 # Special rules -- these files need special things to be defined.
 

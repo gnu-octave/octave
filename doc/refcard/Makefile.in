@@ -26,12 +26,6 @@ FORMATTED := refcard-a4.dvi refcard-a4.ps refcard-a4.pdf \
 
 DISTFILES := Makefile.in $(TEX) $(FORMATTED)
 
-ifeq ($(wildcard refcard-letter.ps), )
-  BINDISTFILES = $(addprefix $(srcdir)/, $(FORMATTED))
-else
-  BINDISTFILES = $(FORMATTED)
-endif
-
 all: $(FORMATTED)
 
 refcard-a4.dvi: refcard-a4.tex refcard.tex
@@ -91,9 +85,3 @@ maintainer-clean: distclean
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/refcard
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/refcard; \
-	fi
-.PHONY: bin-dist

@@ -27,8 +27,6 @@ FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf \
 
 DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
 
-BINDISTFILES =
-
 SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
 %.spell : %.texi
@@ -92,9 +90,3 @@ maintainer-clean: distclean
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/faq; \
-	fi
-.PHONY: bin-dist

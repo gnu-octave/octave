@@ -22,18 +22,6 @@ $(TARGETS): FORCE
 $(NO_DEP_TARGETS): FORCE
 	$(MAKE) -f octMakefile omit_deps=true $@
 
-binary-dist: FORCE
-	@if test -f configure && test -f octMakefile.in; then \
-	  ./configure --enable-shared --enable-lite-kernel ; \
-	else \
-	  echo ""; \
-	  echo "*** You must run make binary-dist in the source directory."; \
-	  echo ""; \
-	  exit 1; \
-	fi
-	$(MAKE) -f octMakefile CFLAGS=-O CXXFLAGS=-O all
-	$(MAKE) -f octMakefile binary-dist
-
 # Maybe this message will prevent people from asking why the
 # Makefiles don't work for them.  Maybe not.
 
@@ -77,7 +65,6 @@ help: header-msg
 	@echo ""
 	@echo "  dist                 create a source distribution"
 	@echo "  conf-dist            create a config files distribution"
-	@echo "  binary-dist          create a binary distribution"
 	@echo ""
 	@echo "  clean                remove files created by make all"
 	@echo "  mostlyclean          remove most files created by make all"

@@ -160,11 +160,6 @@ DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
 # Complete directory trees to distribute.
 DISTDIRS := COLAMD UMFPACK
 
-ifeq ($(SHARED_LIBS), true)
-  BINDISTLIBS = liboctave/liboctave
-  BINDISTFILES = liboctave.$(SHLEXT_VER)
-endif
-
 MAKEDEPS_2 := $(SOURCES) $(COLAMD_SRC)
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(MAKEDEPS_2))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
@@ -344,15 +339,6 @@ dist: stamp-prereq
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 	for dir in $(DISTDIRS); do ln -s ../../liboctave/$$dir ../`cat ../.fname/liboctave`; done
 .PHONY: dist
-
-bin-dist:
-	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/liboctave; \
-	fi
-	if [ -n "$(BINDISTLIBS)" ]; then \
-	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
-	fi
-.PHONY: bin-dist
 
 $(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<

@@ -1,3 +1,10 @@
+2004-11-01  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/filter.cc (filter (MArray<T>&, MArray<T>&,
+	MArrayN<T>&, MArrayN<T>&, int)): The variable si is now at least 2-D.
+	(Ffilter): Force si to be 2-D, while allowing arbitrary vector
+	orientation.
+
 2004-11-01  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (INSTANTIATE_EYE): New macro.  Use it to instantiate

@@ -1681,6 +1681,10 @@ With -x, exclude the named variables")
 				       SYMTAB_ALL_SCOPES);
 	}
 
+      // XXX FIXME XXX -- this needs to be optimized to avoid the
+      // pattern matching code if the string doesn't contain any
+      // globbing patterns.
+
       for (int k = idx; k < argc; k++)
 	{
 	  string patstr = argv[k];

@@ -9,6 +9,229 @@ Summary of changes for version 2.1.x:
     when it crashes or is killed by a signal.  The default value is 1
     (0 if you use --traditional).
 
+  * If LOADPATH contains a doubled colon, the default path is inserted
+    in its place.  This is similar to the substitution that also takes
+    place for leading or trailing colons in the LOADPATH.
+
+  * Loops of the form `for i = STRING ... endfor' are now allowed.
+
+  * It is now possible to set the iteration limit for lsode using
+    lsode_options ("step limit", N).
+
+  * New functions:
+
+      is_complex  -- tell whether a variable is complex
+      rehash      -- re-initialize the cache of directories in LOADPATH
+      graw        -- send a string to the gnuplot subprocess
+
+  * New functions from Kurt Hornik's Octave-ci package:
+
+    In finance (new directory):
+
+      fv
+      fvl
+      irr
+      nper
+      npv
+      pmt
+      pv
+      pvl
+      rate
+      vol
+
+    In linear-algebra:
+
+      dmult
+
+    In signal:
+
+      arch_fit
+      arch_rnd
+      arch_test
+      arma_rnd
+      autocor
+      autocov
+      autoreg_matrix
+      bartlett
+      blackman
+      diffpara
+      durbinlevinson
+      fractdiff
+      hamming
+      hanning
+      hurst
+      periodogram
+      rectangle_lw
+      rectangle_sw
+      sinetone
+      sinewave
+      spectral_adf
+      spectral_xdf
+      spencer
+      stft
+      synthesis
+      triangle_lw
+      triangle_sw
+      yulewalker
+
+    In statistics/base (new directory):
+
+      center
+      cloglog
+      cor
+      cov
+      cut
+      iqr
+      kendall
+      logit
+      mean
+      meansq
+      moment
+      ppplot
+      probit
+      qqplot
+      range
+      ranks
+      run_count
+      spearman
+      statistics
+      studentize
+      table
+      values
+      var
+
+    In statistics/distributions (new directory):
+
+      beta_cdf
+      beta_inv
+      beta_pdf
+      beta_rnd
+      binomial_cdf
+      binomial_inv
+      binomial_pdf
+      binomial_rnd
+      cauchy_cdf
+      cauchy_inv
+      cauchy_pdf
+      cauchy_rnd
+      chisquare_cdf
+      chisquare_inv
+      chisquare_pdf
+      chisquare_rnd
+      discrete_cdf
+      discrete_inv
+      discrete_pdf
+      discrete_rnd
+      empirical_cdf
+      empirical_inv
+      empirical_pdf
+      empirical_rnd
+      exponential_cdf
+      exponential_inv
+      exponential_pdf
+      exponential_rnd
+      f_cdf
+      f_inv
+      f_pdf
+      f_rnd
+      gamma_cdf
+      gamma_inv
+      gamma_pdf
+      gamma_rnd
+      geometric_cdf
+      geometric_inv
+      geometric_pdf
+      geometric_rnd
+      hypergeometric_cdf
+      hypergeometric_inv
+      hypergeometric_pdf
+      hypergeometric_rnd
+      kolmogorov_smirnov_cdf
+      laplace_cdf
+      laplace_inv
+      laplace_pdf
+      laplace_rnd
+      logistic_cdf
+      logistic_inv
+      logistic_pdf
+      logistic_rnd
+      lognormal_cdf
+      lognormal_inv
+      lognormal_pdf
+      lognormal_rnd
+      normal_cdf
+      normal_inv
+      normal_pdf
+      normal_rnd
+      pascal_cdf
+      pascal_inv
+      pascal_pdf
+      pascal_rnd
+      poisson_cdf
+      poisson_inv
+      poisson_pdf
+      poisson_rnd
+      stdnormal_cdf
+      stdnormal_inv
+      stdnormal_pdf
+      stdnormal_rnd
+      t_cdf
+      t_inv
+      t_pdf
+      t_rnd
+      uniform_cdf
+      uniform_inv
+      uniform_pdf
+      uniform_rnd
+      weibull_cdf
+      weibull_inv
+      weibull_pdf
+      weibull_rnd
+      wiener_rnd
+
+    In statistics/models (new directory):
+
+      logistic_regression
+      logistic_regression_derivatives
+      logistic_regression_likelihood
+
+    In statistics/tests (new directory):
+
+      anova
+      bartlett_test
+      chisquare_test_homogeneity
+      chisquare_test_independence
+      cor_test
+      f_test_regression
+      hotelling_test
+      hotelling_test_2
+      kolmogorov_smirnov_test
+      kolmogorov_smirnov_test_2
+      kruskal_wallis_test
+      manova
+      mcnemar_test
+      prop_test_2
+      run_test
+      sign_test
+      t_test
+      t_test_2
+      t_test_regression
+      u_test
+      var_test
+      welch_test
+      wilcoxon_test
+      z_test
+      z_test_2
+
+  * The load command now accepts the option -append to save the
+    variables at the end of the file, leaving the existing contents.
+
+  * New command-line option --no-history (also available using the
+    single character option -H) inhibits saving command history.
+
+  * The mkoctfile script now accepts -DDEF options and passes them on
+    to the C and C++ compilers.
+
   * Running `make check' should work now before you run `make install', 
     even if you build a copy of Octave that depends on shared versions
     of the Octave libraries.

@@ -1,3 +1,19 @@
+Fri Oct 23 12:07:32 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (Vdefault_load_path): New static variable.
+	(set_default_path): Set it.
+	(maybe_add_default_load_path): Use it.
+	(symbols_of_defaults): Add DEFCONST for DEFAULT_LOADPATH.
+	Thanks to Rafael Laboissiere <rafael@icp.inpg.fr>.
+
+	* defaults.cc (set_default_path): If OCTAVE_PATH is set in the
+	environment, call maybe_add_default_load_path on it.
+
+Tue Oct 20 20:58:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (maybe_add_default_load_path): If LOADPATH contains
+	an embedded "::", insert the default path there too.
+
 Fri Oct 16 00:52:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (in_matrix_or_assign_lhs): New subroutine for lexical

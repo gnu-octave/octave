@@ -70,6 +70,9 @@ string Vexec_path;
 // (--path path; -p path)
 string Vload_path;
 
+// The default load path with OCTAVE_HOME appropriately substituted.
+static string Vdefault_load_path;
+
 // And the cached directory path corresponding to Vload_path.
 dir_path Vload_path_dir_path;
 
@@ -181,11 +184,12 @@ set_default_exec_path (void)
 static void
 set_default_path (void)
 {
-  string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
+  Vdefault_load_path = subst_octave_home (OCTAVE_FCNFILEPATH);
 
   string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path.empty () ? std_path : oct_path;
+  Vload_path = oct_path.empty ()
+    ? Vdefault_load_path : maybe_add_default_path (oct_path);
 
   Vload_path_dir_path = dir_path (Vload_path);
 }
@@ -239,22 +243,30 @@ set_site_defaults_file (void)
 string
 maybe_add_default_load_path (const string& pathstring)
 {
-  string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
-
   string retval;
 
   if (! pathstring.empty ())
     {
       if (pathstring[0] == SEPCHAR)
 	{
-	  retval = std_path;
+	  retval = Vdefault_load_path;
 	  retval.append (pathstring);
 	}
       else
 	retval = pathstring;
 
       if (pathstring[pathstring.length () - 1] == SEPCHAR)
-	retval.append (std_path);
+	retval.append (Vdefault_load_path);
+
+      size_t pos = 0;
+      do
+	{
+	  pos = retval.find ("::");
+
+	  if (pos != NPOS)
+	    retval.insert (pos+1, Vdefault_load_path);
+	}
+      while (pos != NPOS);
     }
 
   return retval;
@@ -415,9 +427,15 @@ symbols_of_defaults (void)
   DEFVAR (EXEC_PATH, Vexec_path, 0, exec_path,
     "colon separated list of directories to search for programs to run");
 
-  DEFVAR (LOADPATH, Vload_path, 0, loadpath,
-    "colon separated list of directories to search for scripts");
+  DEFVAR (LOADPATH, ":", 0, octave_loadpath,
+    "colon separated list of directories to search for scripts.\n\
+The default value is \":\", which means to search the default list\n\
+of directories.  The default list of directories may be found in\n\
+the built-in constant DEFAULT_LOADPATH");
 
+  DEFCONST (DEFAULT_LOADPATH, Vdefault_load_path,
+    "the default colon separated list of directories to search for scripts");
+  
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0, imagepath,
     "colon separated list of directories to search for image files");
 

@@ -226,6 +226,7 @@ Array<T>::checkelem (int n) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return elem (n);
@@ -476,6 +477,7 @@ Array2<T>::checkelem (int i, int j) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return Array<T>::elem (d1*j+i);
@@ -489,6 +491,7 @@ Array2<T>::operator () (int i, int j) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return Array<T>::elem (d1*j+i);
@@ -696,6 +699,7 @@ Array3<T>::checkelem (int i, int j, int k) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return Array2<T>::elem (i, d1*k+j);
@@ -709,6 +713,7 @@ Array3<T>::operator () (int i, int j, int k) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return Array2<T>::elem (i, d2*k+j);
@@ -893,6 +898,7 @@ DiagArray<T>::checkelem (int r, int c) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return (r == c) ? Array<T>::elem (r) : T (0);
@@ -906,6 +912,7 @@ DiagArray<T>::operator () (int r, int c) const
     {
       (*current_liboctave_error_handler) ("range error");
       T foo;
+      static T *bar = &foo;
       return foo;
     }
   return (r == c) ? Array<T>::elem (r) : T (0);

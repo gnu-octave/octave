@@ -99,6 +99,7 @@ gnu_readline (char *s)
 #include "parse.h"
 #include "dirfns.h"
 #include "octave.h"
+#include "sysdep.h"
 #include "variables.h"
 #include "tree-const.h"
 #include "octave-hist.h"

@@ -372,7 +372,13 @@ where y and x are vectors.", },
 #endif
 
   { "fsqp_options", -1, 1, builtin_fsqp_options,
+#if defined (FSQP_MISSING)
+    "This function requires FSQP, which is not freely\n\
+       redistributable.  For more information, read the file\n\
+       libcruft/fsqp/README.MISSING in the source distribution.", },
+#else
     "fsqp_options (keyword, value): set or show options for fsqp", },
+#endif
 
   { "ftell", 2, 1, builtin_ftell,
     "position = ftell (\"filename\" or filenum): returns the current file position", },
@@ -463,7 +469,13 @@ where xdot and x are vectors and t is a scalar.\n", },
 #endif
 
   { "npsol_options", -1, 1, builtin_npsol_options,
+#if defined (NPSOL_MISSING)
+    "This function requires NPSOL, which is not freely\n\
+       redistributable.  For more information, read the file\n\
+       libcruft/npsol/README.MISSING in the source distribution.", },
+#else
     "npsol_options (keyword, value): set or show options for npsol", },
+#endif
 
   { "ones", 3, 1, builtin_ones,
     "ones (n), ones (n, m), ones (x): create a matrix of all ones", },
@@ -496,7 +508,13 @@ where xdot and x are vectors and t is a scalar.\n", },
 #endif
 
   { "qpsol_options", -1, 1, builtin_qpsol_options,
+#if defined (QPSOL_MISSING)
+    "This function requires QPSOL, which is not freely\n\
+       redistributable.  For more information, read the file\n\
+       libcruft/qpsol/README.MISSING in the source distribution.", },
+#else
     "qpsol_options (keyword, value): set or show options for qpsol", },
+#endif
 
   { "qr", 2, 2, builtin_qr,
     "[q, r] = qr (X): form QR factorization of X", },

@@ -815,7 +815,7 @@ builtin_fsqp (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
 #if defined (FSQP_MISSING)
-  print_usage ("fsolve");
+  print_usage ("fsqp");
 #else
   if ((nargin == 3 || nargin == 5 || nargin == 6 || nargin == 8
        || nargin == 9 || nargin == 11)
@@ -834,11 +834,12 @@ builtin_fsqp_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, fsqp_options,
-		 retval = fsqp_options (args, nargin, nargout);)
-  else
-    print_usage ("fsqp_options");
+#if defined (FSQP_MISSING)
+  print_usage ("fsqp_options");
+#else
+  DLD_BUILTIN (args, nargin, nargout, fsqp_options,
+	       retval = fsqp_options (args, nargin, nargout);)
+#endif
 
   return retval;
 }
@@ -1174,11 +1175,12 @@ builtin_npsol_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, npsol_options,
-		 retval = npsol_options (args, nargin, nargout);)
-  else
-    print_usage ("npsol_options");
+#if defined (NPSOL_MISSING)
+  print_usage ("npsol_options");
+#else
+  DLD_BUILTIN (args, nargin, nargout, npsol_options,
+	       retval = npsol_options (args, nargin, nargout);)
+#endif
 
   return retval;
 }
@@ -1349,11 +1351,12 @@ builtin_qpsol_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, qpsol_options,
-		 retval = qpsol_options (args, nargin, nargout);)
-  else
-    print_usage ("qpsol_options");
+#if defined (QPSOL_MISSING)
+  print_usage ("qpsol");
+#else
+  DLD_BUILTIN (args, nargin, nargout, qpsol_options,
+	       retval = qpsol_options (args, nargin, nargout);)
+#endif
 
   return retval;
 }

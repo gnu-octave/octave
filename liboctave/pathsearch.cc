@@ -136,20 +136,29 @@ dir_path::find_all (const std::string& nm)
 void
 dir_path::set_program_name (const std::string& nm)
 {
+  std::string selfautodir = octave_env::getenv ("SELFAUTODIR");
+  std::string selfautoloc = octave_env::getenv ("SELFAUTOLOC");
+  std::string selfautoparent = octave_env::getenv ("SELFAUTOPARENT");
+
   ::octave_kpse_set_progname (nm.c_str ());
 
   // Calling kpse_set_progname has the unfortunate side-effect of
-  // exporting the following variables.  We make them empty here so
-  // that they will not interfere with TeX, if it is run as a
-  // subprocess of Octave.
+  // exporting the following variables.  If they were empty when we
+  // started, we make them empty again so that they will not interfere
+  // with TeX if it is run as a subprocess of Octave (if they were set
+  // before, we want to preserve their values).
   //
   // XXX FIXME XXX -- is there a reasonable way to actually remove
   // them from the environment?
 
-  octave_env::putenv ("SELFAUTOLOC", "");
-  octave_env::putenv ("SELFAUTODIR", "");
-  octave_env::putenv ("SELFAUTOPARENT", "");
-  octave_env::putenv ("TEXMFDBS", "");
+  if (selfautodir.empty ())
+    octave_env::putenv ("SELFAUTODIR", "");
+
+  if (selfautoloc.empty ())
+    octave_env::putenv ("SELFAUTOLOC", "");
+
+  if (selfautoparent.empty ())
+    octave_env::putenv ("SELFAUTOPARENT", "");
 }
 
 void

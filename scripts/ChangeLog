@@ -1,3 +1,7 @@
+2002-04-29  Paul Kienzle <pkienzle@users.sf.net>
+
+	* general/repmat.m: New function.
+
 2002-04-25  Paul Kienzle <pkienzle@users.sf.net>
 
 	* audio/lin2mu.m: Accept matrices and [-1,1] normalized audio.

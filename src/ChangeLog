@@ -1,3 +1,8 @@
+2005-02-04  John W. Eaton  <jwe@octave.org>
+
+	* sighandlers.cc (octave_child_list::~octave_child_list): Move here.
+	* sighandlers.h: From here.
+
 2005-02-02  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (parse.cc): Expect 12 shift/reduce conflicts.

@@ -148,7 +148,7 @@ protected:
 
 public:
 
-  ~octave_child_list (void) { }
+  ~octave_child_list (void);
 
   static bool instance_ok (void);
 

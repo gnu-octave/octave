@@ -704,6 +704,12 @@ make_sig_struct (void)
 
 octave_child_list *octave_child_list::instance = 0;
 
+// This needs to be here for linking on AIX, at least for some
+// versions of GCC, otherwise we fail with unresolved references to
+// the Array<octave_child> destructor.
+
+octave_child_list::~octave_child_list (void) { }
+
 bool
 octave_child_list::instance_ok (void)
 {

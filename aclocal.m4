@@ -459,11 +459,9 @@ case "$canonical_host_type" in
   ;;
 esac
 GNUPLOT_BINARY="$gp_default"
-GNUPLOT_HAS_MULTIPLOT=1
 GNUPLOT_HAS_FRAMES=1
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
-  AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiplot mode)
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiple frams)
 else
   AC_CHECK_PROGS(GNUPLOT_BINARY, $gp_names)
@@ -473,7 +471,6 @@ else
       $GNUPLOT_BINARY 2>&1`"; then
       AC_MSG_RESULT([yes])
     else
-      GNUPLOT_HAS_MULTIPLOT=
       AC_MSG_RESULT([no])
     fi
     AC_MSG_CHECKING([to see if your gnuplot supports multiple plot windows])
@@ -502,7 +499,6 @@ else
   fi
 fi
 AC_DEFINE_UNQUOTED(GNUPLOT_BINARY, "$GNUPLOT_BINARY", [Name of gnuplot program.])
-AC_DEFINE_UNQUOTED(GNUPLOT_HAS_MULTIPLOT, $GNUPLOT_HAS_MULTIPLOT, [Define if your gnuplot program supports multiplot mode.])
 AC_DEFINE_UNQUOTED(GNUPLOT_HAS_FRAMES, $GNUPLOT_HAS_FRAMES, [Define if your gnuplot program supports multiple plot windows.])
 ])
 dnl

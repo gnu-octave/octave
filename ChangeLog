@@ -1,5 +1,7 @@
 2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* aclocal.m4 (GNUPLOT_HAS_FRAMES): Eliminate variable.
+
 	* emacs/octave-mod.el (octave-variables): Eliminate
 	gnuplot_has_multiplot.
 

@@ -91,14 +91,14 @@ function plot_border (...)
   endwhile
 
   if (none)
-    set noborder;
+    gset noborder;
   else
     if (all)
       border = 15;
     else
       border = south + west + north + east;
     endif
-    eval (sprintf ("set border %d", border));
+    eval (sprintf ("gset border %d", border));
   endif
 
 endfunction

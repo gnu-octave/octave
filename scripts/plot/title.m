@@ -34,7 +34,7 @@ function title (text)
   endif
 
   if (isstr (text))
-    command = sprintf ("set title \"%s\"", text);
+    command = sprintf ("gset title \"%s\"", text);
     eval (command);
   else
     error ("title: text must be a string");

@@ -1,5 +1,9 @@
 Thu Nov 14 00:06:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-plot.cc (Fgset, Fgshow): New commands.
+	(Fshow): Print warning and call gshow.
+	(Fset): Print warning and call gset.
+
 	* variables.cc (parse_fcn_file): Add unwind-protect for file
 	pointer, so the file is always closed.
 	(get_help_from_file): Likewise.

@@ -31,13 +31,13 @@
 function grid (x)
 
   if (nargin == 0)
-    set grid;
+    gset grid;
   elseif (nargin == 1)
     if (isstr (x))
       if (strcmp ("off", x))
-        set nogrid;
+        gset nogrid;
       elseif (strcmp ("on", x))
-        set grid;
+        gset grid;
       else
     usage ("grid (\"on\" | \"off\")");
       endif

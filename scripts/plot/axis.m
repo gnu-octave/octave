@@ -47,7 +47,7 @@ function curr_axis = axis (ax)
   endif
 
   if (nargin == 0)
-    set autoscale;
+    gset autoscale;
     curr_axis = __current_axis__;
   elseif (is_vector (ax))
 
@@ -60,15 +60,15 @@ function curr_axis = axis (ax)
     __current_axis__ = reshape (ax, 1, len);
 
     if (len > 1)
-      eval (sprintf ("set xrange [%g:%g];", ax (1), ax (2)));
+      eval (sprintf ("gset xrange [%g:%g];", ax (1), ax (2)));
     endif
 
     if (len > 3)
-      eval (sprintf ("set yrange [%g:%g];", ax (3), ax (4)));
+      eval (sprintf ("gset yrange [%g:%g];", ax (3), ax (4)));
     endif
 
     if (len > 5)
-      eval (sprintf ("set zrange [%g:%g];", ax (5), ax (6)));
+      eval (sprintf ("gset zrange [%g:%g];", ax (5), ax (6)));
     endif
 
   else

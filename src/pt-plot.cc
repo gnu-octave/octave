@@ -987,10 +987,10 @@ DEFUN (purge_tmp_files, , ,
   return retval;
 }
 
-DEFUN_TEXT (set, args, ,
-  "set [options]\n\
+DEFUN_TEXT (gset, args, ,
+  "gset [options]\n\
 \n\
-set plotting options")
+set plotting options for gnuplot")
 {
   octave_value_list retval;
 
@@ -1033,8 +1033,15 @@ set plotting options")
   return retval;
 }
 
-DEFUN_TEXT (show, args, ,
-  "show [options]\n\
+DEFUN_TEXT (set, args, nargout,
+  "This command is has been replaced by `gset'.")
+{
+  warning ("set is obsolete -- use gset instead")
+  return Fgset (args, nargout);
+}
+
+DEFUN_TEXT (gshow, args, ,
+  "gshow [options]\n\
 \n\
 show plotting options")
 {
@@ -1060,6 +1067,13 @@ show plotting options")
   delete [] plot_command;
 
   return retval;
+}
+
+DEFUN_TEXT (show, args, nargout,
+  "This command is has been replaced by `gshow'.")
+{
+  warning ("show is obsolete -- use gshow instead")
+  return Fgshow (args, nargout);
 }
 
 static int

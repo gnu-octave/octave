@@ -264,7 +264,7 @@ name are given by the first and third parenthetical grouping.")
 (defvar octave-text-functions
   '("casesen" "cd" "chdir" "clear" "diary" "dir" "document" "echo"
     "edit_history" "format" "help" "history" "hold" "load" "ls" "more"
-    "run_history" "save" "set" "show" "type" "which" "who" "whos")
+    "run_history" "save" "gset" "gshow" "type" "which" "who" "whos")
   "Octave text functions (these names are also reserved.")
 
 (defvar octave-variables

@@ -33,9 +33,9 @@
 
 function semilogx (...)
 
-  set logscale x;
-  set nologscale y;
-  set nopolar;
+  gset logscale x;
+  gset nologscale y;
+  gset nopolar;
 
   __plt__ ("semilogx", all_va_args);
 

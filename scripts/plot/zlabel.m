@@ -35,7 +35,7 @@ function zlabel (text)
   endif
 
   if (isstr (text))
-    eval (sprintf ("set zlabel \"%s\"", text));
+    eval (sprintf ("gset zlabel \"%s\"", text));
   else
     error ("error: zlabel: text must be a string");
   endif

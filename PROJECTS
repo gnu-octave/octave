@@ -194,6 +194,18 @@ Input/Output:
 Interpreter:
 -----------
 
+  * Fix the grammar to allow structure references and index operations
+    for for anonymous expressions.  For example, it should be possible
+    to write
+
+      localtime (time ()) . hour;
+
+    to get the current hour.  Likewise, it should be possible to write
+
+      svd (A) (1:13);
+
+    to extract the first 13 singular values of the matrix A.
+
   * Consider grouping all preference variables in a structure instead
     of further polluting the namespace.  Maybe `Octave_options.xxx'?
 

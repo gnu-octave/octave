@@ -35,12 +35,12 @@ function mesh (x, y, z)
   if (nargin == 1)
     z = x;
     if (is_matrix (z))
-      set hidden3d;
-      set data style lines;
-      set surface;
-      set nocontour;
-      set noparametric;
-      set view 60, 30, 1, 1
+      gset hidden3d;
+      gset data style lines;
+      gset surface;
+      gset nocontour;
+      gset noparametric;
+      gset view 60, 30, 1, 1
       gsplot (z');
     else
       error ("mesh: argument must be a matrix");
@@ -62,12 +62,12 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-	set hidden3d;
-	set data style lines;
-        set surface;
-        set nocontour;
-	set parametric;
-        set view 60, 30, 1, 1
+	gset hidden3d;
+	gset data style lines;
+        gset surface;
+        gset nocontour;
+	gset parametric;
+        gset view 60, 30, 1, 1
 	gsplot (zz);
       else
         msg = "mesh: rows (z) must be the same as length (x) and";
@@ -88,12 +88,12 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-	set hidden3d;
-	set data style lines;
-        set surface;
-        set nocontour;
-	set parametric;
-        set view 60, 30, 1, 1
+	gset hidden3d;
+	gset data style lines;
+        gset surface;
+        gset nocontour;
+	gset parametric;
+        gset view 60, 30, 1, 1
 	gsplot (zz);
       else
         error ("mesh: x, y, and z must have same dimensions");

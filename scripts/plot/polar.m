@@ -30,8 +30,8 @@
 
 function polar (x1, x2, fmt)
 
-  set nologscale;
-  set nopolar;
+  gset nologscale;
+  gset nopolar;
 
   if (nargin == 3)
     if (isstr (fmt))

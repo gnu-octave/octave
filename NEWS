@@ -1,6 +1,14 @@
 Summary of changes for version 2.0:
 ----------------------------------
 
+  * The set and show commands for setting and displaying gnuplot
+    parameters have been replaced by gset and gshow.  This change will
+    probably break lots of things, but it is necessary to allow for
+    compatibility with the Matlab graphics and GUI commands in a
+    future version of Octave.  (For now, the old set and show commands
+    do work, but they print an annoying warning message to try to get
+    people to switch to using gset.)
+
   * New data types can be added to Octave by writing a C++ class.  On
     systems that support dynamic linking, new data types can be added
     to an already running Octave binary.  A simple example appears in

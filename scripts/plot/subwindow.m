@@ -74,6 +74,6 @@ function subwindow (xn, yn)
   xo = (xn - 1.0)*multiplot_xsize;
   yo = (multiplot_yn - yn)*multiplot_ysize;
 
-  eval (sprintf ("set origin %g, %g", xo, yo));
+  eval (sprintf ("gset origin %g, %g", xo, yo));
 
 endfunction

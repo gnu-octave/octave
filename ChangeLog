@@ -1,5 +1,8 @@
 Thu Nov 14 00:07:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* emacs/octave.el (octave-text-functions): Change set and show to
+	gset and gshow.
+
 	* Makeconf.in (TEXI2DVI): Define to be our own private version.
 
 	* texi2dvi: New file.

@@ -117,9 +117,9 @@ function subplot (rows, columns, index)
 
     ## switching to single plot ?
 
-    set nomultiplot;
-    set size 1, 1;
-    set origin 0, 0;
+    gset nomultiplot;
+    gset size 1, 1;
+    gset origin 0, 0;
 
     multiplot_xn = 1;
     multiplot_yn = 1;
@@ -152,9 +152,9 @@ function subplot (rows, columns, index)
       multiplot_xsize = 1.0 ./ columns;
       multiplot_ysize = 1.0 ./ rows;
 
-      set multiplot;
+      gset multiplot;
 
-      eval (sprintf ("set size %g, %g", multiplot_xsize, multiplot_ysize));
+      eval (sprintf ("gset size %g, %g", multiplot_xsize, multiplot_ysize));
 
     endif
 
@@ -170,7 +170,7 @@ function subplot (rows, columns, index)
     xo = (xp - 1.0)*multiplot_xsize;
     yo = (rows - yp)*multiplot_ysize;
 
-    eval (sprintf ("set origin %g, %g", xo, yo));
+    eval (sprintf ("gset origin %g, %g", xo, yo));
 
   endif
 

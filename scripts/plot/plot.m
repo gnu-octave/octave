@@ -65,8 +65,8 @@
 
 function plot (...)
 
-  set nologscale;
-  set nopolar;
+  gset nologscale;
+  gset nopolar;
 
   __plt__ ("plot", all_va_args);
 

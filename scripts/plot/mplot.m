@@ -57,8 +57,8 @@ function mplot (...)
     automatic_replot = 0;
   endif
 
-  set nologscale;
-  set nopolar;
+  gset nologscale;
+  gset nopolar;
 
   __plt__ ("plot", all_va_args);
 
@@ -80,7 +80,7 @@ function mplot (...)
     xo = (multiplot_xi - 1.0)*multiplot_xsize;
     yo = (multiplot_yn - multiplot_yi)*multiplot_ysize;
 
-    eval (sprintf ("set origin %g, %g", xo,yo));
+    eval (sprintf ("gset origin %g, %g", xo,yo));
 
   endif
 

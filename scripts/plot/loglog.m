@@ -33,9 +33,9 @@
 
 function loglog (...)
 
-  set logscale x;
-  set logscale y;
-  set nopolar;
+  gset logscale x;
+  gset logscale y;
+  gset nopolar;
 
   __plt__ ("loglog", all_va_args);
 

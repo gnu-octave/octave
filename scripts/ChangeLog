@@ -1,5 +1,13 @@
 Thu Nov 14 00:06:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* plot/axis.m, plot/bottom_title.m, plot/contour.m,
+	plot/figure.m, plot/grid.m, plot/loglog.m, plot/mesh.m,
+	plot/mplot.m, plot/multiplot.m, plot/oneplot.m, plot/plot.m,
+	plot/plot_border.m, plot/polar.m, plot/semilogx.m,
+	plot/semilogy.m, plot/subplot.m, plot/subwindow.m, plot/title.m,
+	plot/top_title.m, plot/xlabel.m, plot/ylabel.m, plot/zlabel.m:
+	Uset gset, not set.
+
 	* Version 1.92.
 
 Thu Nov  7 12:43:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

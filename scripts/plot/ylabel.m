@@ -34,7 +34,7 @@ function ylabel (text)
   endif
 
   if (isstr (text))
-    command = sprintf ("set ylabel \"%s\"", text);
+    command = sprintf ("gset ylabel \"%s\"", text);
     eval (command);
   else
     error ("ylabel: text must be a string");

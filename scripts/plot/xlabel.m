@@ -34,7 +34,7 @@ function xlabel (text)
   endif
 
   if (isstr (text))
-    command = sprintf ("set xlabel \"%s\"", text);
+    command = sprintf ("gset xlabel \"%s\"", text);
     eval (command);
   else
     error ("xlabel: text must be a string");

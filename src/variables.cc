@@ -167,7 +167,7 @@ takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
   if (nargin != e_nargin)
     {
       if (warn)
-	error ("%s: expecting function to take %d argument%s", 
+	error ("%s: expecting function to take %d argument%s",
 	       warn_for, e_nargin, (e_nargin == 1 ? "" : "s"));
       return 0;
     }
@@ -207,7 +207,7 @@ DEFUN ("exist", Fexist, Sexist, 1, 1,
   "exist (NAME): check if variable or file exists\n\
 \n\
 return 0 if NAME is undefined, 1 if it is a variable, or 2 if it is\n\
-a function.") 
+a function.")
 {
   Octave_object retval;
 
@@ -332,7 +332,7 @@ subst_octave_home (char *s)
       while (count >= 0)
 	{
 	  p2 = strstr (p1, prefix);
-	  
+
 	  if (! p2)
 	    {
 	      memcpy (pdest, p1, strlen (p1)+1);
@@ -438,7 +438,7 @@ octave_lib_dir (void)
 // `:', do both (which is useless, but the luser asked for it...).
 //
 // This function may eventually be called more than once, so be
-// careful not to create memory leaks. 
+// careful not to create memory leaks.
 
 char *
 default_path (void)
@@ -544,8 +544,12 @@ looks_like_octave_copyright (char *s)
   return 0;
 }
 
+// Eat whitespace and comments from FFILE, returning the first block
+// of comments.  If SKIP_COPYRIGHT, keep reading until the first block
+// of comments that doesn't look like a copyright notice.
+
 static char *
-gobble_leading_white_space (FILE *ffile)
+gobble_leading_white_space (FILE *ffile, int skip_copyright)
 {
   ostrstream buf;
 
@@ -569,6 +573,15 @@ gobble_leading_white_space (FILE *ffile)
 	      input_line_number++;
 	      current_input_column = 0;
 	      in_comment = 0;
+	      if ((c = getc (ffile)) != EOF)
+		{
+		  current_input_column--;
+		  ungetc (c, ffile);
+		  if (c == '\n')
+		    break;
+		}
+	      else
+		break;
 	    }
 	}
       else
@@ -606,9 +619,15 @@ gobble_leading_white_space (FILE *ffile)
   buf << ends;
   char *help_txt = buf.str ();
 
-  if (! help_txt || ! *help_txt || looks_like_octave_copyright (help_txt))
+  if (skip_copyright && help_txt && looks_like_octave_copyright (help_txt)) 
     {
-      delete help_txt;
+      delete [] help_txt;
+      help_txt = gobble_leading_white_space (ffile, skip_copyright);
+    }
+
+  if (help_txt && ! *help_txt)
+    {
+      delete [] help_txt;
       help_txt = 0;
     }
 
@@ -667,7 +686,7 @@ parse_fcn_file (int exec_script, char *ff)
       // Check to see if this file defines a function or is just a
       // list of commands.
 
-      char *tmp_help_txt = gobble_leading_white_space (ffile);
+      char *tmp_help_txt = gobble_leading_white_space (ffile, 0);
 
       if (is_function_file (ffile))
 	{
@@ -815,7 +834,7 @@ get_help_from_file (const char *path)
       FILE *fptr = fopen (path, "r");
       if (fptr)
 	{
-	  char *help_txt = gobble_leading_white_space (fptr);
+	  char *help_txt = gobble_leading_white_space (fptr, 1);
 	  fclose (fptr);
 	  return help_txt;
 	}
@@ -859,7 +878,7 @@ builtin_string_variable (const char *name)
 
 // Look for the given name in the global symbol table.  If it refers
 // to a real scalar, place the value in d and return 0.  Otherwise,
-// return -1. 
+// return -1.
 
 int
 builtin_real_scalar_variable (const char *name, double& d)
@@ -912,7 +931,7 @@ builtin_any_variable (const char *name)
 
 // Make the definition of the symbol record sr be the same as the
 // definition of the global variable of the same name, creating it if
-// it doesn't already exist. 
+// it doesn't already exist.
 
 void
 link_to_global_variable (symbol_record *sr)
@@ -1034,7 +1053,7 @@ make_name_list (void)
   int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
 
   char **list = new char * [total_len+1];
-  
+
   // Put all the symbols in one big list.  Only copy pointers, not the
   // strings they point to, then only delete the original array of
   // pointers, and not the strings they point to.
@@ -1201,7 +1220,7 @@ do_who (int argc, char **argv, int nargout)
 	{
 	  show_builtins++;
 	  show_functions++;
-	  show_variables++;	  
+	  show_variables++;
 	}
       else if (strcmp (*argv, "-builtins") == 0 || strcmp (*argv, "-b") == 0)
 	show_builtins++;
@@ -1255,7 +1274,7 @@ do_who (int argc, char **argv, int nargout)
       pad_after += maybe_list ("*** local user variables:", argv, argc,
 			       output_buf, show_verbose, curr_sym_tab,
 			       symbol_def::USER_VARIABLE,
-			       SYMTAB_LOCAL_SCOPE); 
+			       SYMTAB_LOCAL_SCOPE);
 
       pad_after += maybe_list ("*** globally visible user variables:",
 			       argv, argc, output_buf, show_verbose,
@@ -1484,7 +1503,7 @@ bind_builtin_variable (const char *varname, tree_constant *val,
     sr->make_eternal ();
 
   if (help)
-    sr->document (help);    
+    sr->document (help);
 }
 
 void
@@ -1502,250 +1521,250 @@ install_builtin_variables (void)
   // XXX FIXME XX -- these should probably be moved to where they
   // logically belong instead of being all grouped here.
 
-  DEFVAR ("EDITOR", SBV_EDITOR, editor, 0, 0, 1, sv_editor,
+  DEFVAR ("EDITOR", SBV_EDITOR, editor, 0, sv_editor,
     "name of the editor to be invoked by the edit_history command");
 
-  DEFVAR ("I", SBV_I, Complex (0.0, 1.0), 0, 1, 1, 0,
+  DEFCONST ("I", SBV_I, Complex (0.0, 1.0), 0, 0,
     "sqrt (-1)");
 
-  DEFVAR ("Inf", SBV_Inf, octave_Inf, 0, 1, 1, 0,
+  DEFCONST ("Inf", SBV_Inf, octave_Inf, 0, 0,
     "infinity");
 
-  DEFVAR ("INFO_FILE", SBV_INFO_FILE, info_file, 0, 0, 1, sv_info_file,
+  DEFVAR ("INFO_FILE", SBV_INFO_FILE, info_file, 0, sv_info_file,
     "name of the Octave info file");
 
-  DEFVAR ("J", SBV_J, Complex (0.0, 1.0), 0, 1, 1, 0,
+  DEFCONST ("J", SBV_J, Complex (0.0, 1.0), 0, 0,
     "sqrt (-1)");
 
-  DEFVAR ("NaN", SBV_NaN, octave_NaN, 0, 1, 1, 0,
+  DEFCONST ("NaN", SBV_NaN, octave_NaN, 0, 0,
     "not a number");
 
-  DEFVAR ("LOADPATH", SBV_LOADPATH, load_path, 0, 0, 1, sv_loadpath,
+  DEFVAR ("LOADPATH", SBV_LOADPATH, load_path, 0, sv_loadpath,
     "colon separated list of directories to search for scripts");
 
-  DEFVAR ("IMAGEPATH", SBV_IMAGEPATH, OCTAVE_IMAGEPATH, 0, 0, 1,
+  DEFVAR ("IMAGEPATH", SBV_IMAGEPATH, OCTAVE_IMAGEPATH, 0,
 	  sv_imagepath,
     "colon separated list of directories to search for image files");
 
-  DEFVAR ("OCTAVE_VERSION", SBV_version, OCTAVE_VERSION, 0, 1, 1, 0,
+  DEFCONST ("OCTAVE_VERSION", SBV_version, OCTAVE_VERSION, 0, 0,
     "Octave version");
 
-  DEFVAR ("PAGER", SBV_PAGER, default_pager (), 0, 0, 1, sv_pager_binary,
+  DEFVAR ("PAGER", SBV_PAGER, default_pager (), 0, sv_pager_binary,
     "path to pager binary");
 
-  DEFVAR ("PS1", SBV_PS1, "\\s:\\#> ", 0, 0, 1, sv_ps1,
+  DEFVAR ("PS1", SBV_PS1, "\\s:\\#> ", 0, sv_ps1,
     "primary prompt string");
 
-  DEFVAR ("PS2", SBV_PS2, "> ", 0, 0, 1, sv_ps2,
+  DEFVAR ("PS2", SBV_PS2, "> ", 0, sv_ps2,
     "secondary prompt string");
 
-  DEFVAR ("PS4", SBV_PS4, "+ ", 0, 0, 1, sv_ps4,
+  DEFVAR ("PS4", SBV_PS4, "+ ", 0, sv_ps4,
     "string printed before echoed input (enabled by --echo-input)");
 
-  DEFVAR ("PWD", SBV_PWD, get_working_directory ("initialize_globals"),
-	  0, 1, 1, sv_pwd,
+  DEFCONST ("PWD", SBV_PWD,
+	    get_working_directory ("initialize_globals"), 0, sv_pwd,
     "current working directory");
 
-  DEFVAR ("SEEK_SET", SBV_SEEK_SET, 0.0, 0, 1, 1, 0,
+  DEFCONST ("SEEK_SET", SBV_SEEK_SET, 0.0, 0, 0,
     "used with fseek to position file relative to the beginning");
 
-  DEFVAR ("SEEK_CUR", SBV_SEEK_CUR, 1.0, 0, 1, 1, 0,
+  DEFCONST ("SEEK_CUR", SBV_SEEK_CUR, 1.0, 0, 0,
     "used with fseek to position file relative to the current position");
 
-  DEFVAR ("SEEK_END", SBV_SEEK_END, 2.0, 0, 1, 1, 0,
+  DEFCONST ("SEEK_END", SBV_SEEK_END, 2.0, 0, 0,
     "used with fseek to position file relative to the end");
 
-  DEFVAR ("ans", SBV_ans, , 0, 0, 1, 0,
+  DEFVAR ("ans", SBV_ans, , 0, 0,
     "");
 
-  DEFVAR ("argv", SBV_argv, , 0, 1, 1, 0,
+  DEFCONST ("argv", SBV_argv, , 0, 0,
     "the command line arguments this program was invoked with");
 
   DEFVAR ("automatic_replot", SBV_automatic_replot, "false",
-	  0, 0, 1, automatic_replot,
+	  0, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
   DEFVAR ("default_return_value", SBV_default_return_value, Matrix (),
-	  0, 0, 1, 0,
+	  0, 0,
     "the default for value for unitialized variables returned from\n\
 functions.  Only used if the variable initialize_return_values is\n\
 set to \"true\".");
 
   DEFVAR ("default_save_format", SBV_default_save_format, "ascii",
-	  0, 0, 1, sv_default_save_format,
+	  0, sv_default_save_format,
     "default format for files created with save, may be one of\n\
-\"binary\", \"text\", or \"mat-binary\""); 
+\"binary\", \"text\", or \"mat-binary\"");
 
   DEFVAR ("define_all_return_values", SBV_define_all_return_values,
-	  "false", 0, 0, 1, define_all_return_values,
+	  "false", 0, define_all_return_values,
     "control whether values returned from functions should have a\n\
 value even if one has not been explicitly assigned.  See also\n\
-default_return_value"); 
+default_return_value");
 
-  DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, "false", 0, 0,
-	  1, do_fortran_indexing,
+  DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, "false", 0,
+	  do_fortran_indexing,
     "allow single indices for matrices");
 
-  DEFVAR ("empty_list_elements_ok", SBV_empty_list_elements_ok, "warn",
-	  0, 0, 1, empty_list_elements_ok,
+  DEFVAR ("empty_list_elements_ok", SBV_empty_list_elements_ok,
+	  "warn", 0, empty_list_elements_ok,
     "ignore the empty element in expressions like `a = [[], 1]'");
 
-  DEFVAR ("eps", SBV_eps, DBL_EPSILON, 0, 1, 1, 0,
+  DEFCONST ("eps", SBV_eps, DBL_EPSILON, 0, 0,
     "machine precision");
 
-  DEFVAR ("gnuplot_binary", SBV_gnuplot_binary, "gnuplot", 0, 0, 1,
+  DEFVAR ("gnuplot_binary", SBV_gnuplot_binary, "gnuplot", 0,
 	  sv_gnuplot_binary,
     "path to gnuplot binary");
 
-  DEFVAR ("i", SBV_i, Complex (0.0, 1.0), 1, 1, 1, 0,
+  DEFCONST ("i", SBV_i, Complex (0.0, 1.0), 1, 0,
     "sqrt (-1)");
 
-  DEFVAR ("ignore_function_time_stamp", SBV_ignore_function_time_stamp,
-	  "system", 0, 0, 1,
+  DEFVAR ("ignore_function_time_stamp",
+	  SBV_ignore_function_time_stamp, "system", 0,
 	  ignore_function_time_stamp,
     "don't check to see if function files have changed since they were\n\
   last compiled.  Possible values are \"system\" and \"all\"");
 
-  DEFVAR ("implicit_str_to_num_ok", SBV_implicit_str_to_num_ok, "false",
-	  0, 0, 1, implicit_str_to_num_ok,
+  DEFVAR ("implicit_str_to_num_ok", SBV_implicit_str_to_num_ok,
+	  "false", 0, implicit_str_to_num_ok,
     "allow implicit string to number conversion");
 
-  DEFVAR ("inf", SBV_inf, octave_Inf, 0, 1, 1, 0,
+  DEFCONST ("inf", SBV_inf, octave_Inf, 0, 0,
     "infinity");
 
-  DEFVAR ("j", SBV_j, Complex (0.0, 1.0), 1, 1, 1, 0,
+  DEFCONST ("j", SBV_j, Complex (0.0, 1.0), 1, 0,
     "sqrt (-1)");
 
-  DEFVAR ("nan", SBV_nan, octave_NaN, 0, 1, 1, 0,
+  DEFCONST ("nan", SBV_nan, octave_NaN, 0, 0,
     "not a number");
 
   DEFVAR ("ok_to_lose_imaginary_part", SBV_ok_to_lose_imaginary_part,
-	  "warn", 0, 0, 1, ok_to_lose_imaginary_part,
+	  "warn", 0, ok_to_lose_imaginary_part,
     "silently convert from complex to real by dropping imaginary part");
 
-  DEFVAR ("output_max_field_width", SBV_output_max_field_width, 10.0, 0,
-	  0, 1, set_output_max_field_width,
+  DEFVAR ("output_max_field_width", SBV_output_max_field_width, 10.0,
+	  0, set_output_max_field_width,
     "maximum width of an output field for numeric output");
 
-  DEFVAR ("output_precision", SBV_output_precision, 5.0, 0, 0, 1,
+  DEFVAR ("output_precision", SBV_output_precision, 5.0, 0,
 	  set_output_precision,
     "number of significant figures to display for numeric output");
 
-  DEFVAR ("page_screen_output", SBV_page_screen_output, "true", 0, 0, 1,
+  DEFVAR ("page_screen_output", SBV_page_screen_output, "true", 0,
 	  page_screen_output,
     "if possible, send output intended for the screen through the pager");
 
-  DEFVAR ("pi", SBV_pi, 4.0 * atan (1.0), 0, 1, 1, 0,
+  DEFCONST ("pi", SBV_pi, 4.0 * atan (1.0), 0, 0,
     "ratio of the circumference of a circle to its diameter");
 
-  DEFVAR ("prefer_column_vectors", SBV_prefer_column_vectors, "true", 0,
-	  0, 1, prefer_column_vectors,
+  DEFVAR ("prefer_column_vectors", SBV_prefer_column_vectors, "true",
+	  0, prefer_column_vectors,
     "prefer column/row vectors");
 
   DEFVAR ("prefer_zero_one_indexing", SBV_prefer_zero_one_indexing,
-	  "false", 0, 0, 1, prefer_zero_one_indexing,
+	  "false", 0, prefer_zero_one_indexing,
     "when there is a conflict, prefer zero-one style indexing");
 
   DEFVAR ("print_answer_id_name", SBV_print_answer_id_name, "true", 0,
-	  0, 1, print_answer_id_name,
+	  print_answer_id_name,
     "set output style to print `var_name = ...'");
 
-  DEFVAR ("print_empty_dimensions", SBV_print_empty_dimensions, "true",
-	  0, 0, 1, print_empty_dimensions,
+  DEFVAR ("print_empty_dimensions", SBV_print_empty_dimensions,
+	  "true", 0, print_empty_dimensions,
     "also print dimensions of empty matrices");
 
-  DEFVAR ("program_invocation_name", SBV_program_invocation_name,
-	  raw_prog_name, 0, 1, 1, 0,
+  DEFCONST ("program_invocation_name", SBV_program_invocation_name,
+	    raw_prog_name, 0, 0,
     "the full name of the current program or script, including the\n\
 directory specification");
 
-  DEFVAR ("program_name", SBV_program_name, prog_name, 0, 1, 1, 0,
+  DEFCONST ("program_name", SBV_program_name, prog_name, 0, 0,
     "the name of the current program or script");
 
   DEFVAR ("propagate_empty_matrices", SBV_propagate_empty_matrices,
-	  "true", 0, 0, 1, propagate_empty_matrices,
+	  "true", 0, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");
 
 #if 0
   DEFVAR ("read_only_constants", SBV_read_only_constants, "true", 0,
-        0, 1, read_only_constants,
+	  read_only_constants,
     "allow built-in constants to be modified");
 #endif
 
-  DEFVAR ("realmax", SBV_realmax, DBL_MAX, 1, 1, 1, 0,
+  DEFCONST ("realmax", SBV_realmax, DBL_MAX, 0, 0,
     "realmax (): return largest representable floating point number");
 
-  DEFVAR ("realmin", SBV_realmin, DBL_MIN, 1, 1, 1, 0,
+  DEFCONST ("realmin", SBV_realmin, DBL_MIN, 0, 0,
     "realmin (): return smallest representable floating point number");
 
-  DEFVAR ("resize_on_range_error", SBV_resize_on_range_error, "true", 0,
-	  0, 1, resize_on_range_error,
+  DEFVAR ("resize_on_range_error", SBV_resize_on_range_error, "true",
+	  0, resize_on_range_error,
     "enlarge matrices on assignment");
 
-  DEFVAR ("return_last_computed_value", SBV_return_last_computed_value,
-	  "false", 0, 0, 1,
+  DEFVAR ("return_last_computed_value",
+	  SBV_return_last_computed_value, "false", 0,
 	  return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\
   last computed value");
 
-  DEFVAR ("save_precision", SBV_save_precision, 17.0, 0, 0, 1,
+  DEFVAR ("save_precision", SBV_save_precision, 17.0, 0,
 	  set_save_precision,
     "number of significant figures kept by the ASCII save command");
 
-  DEFVAR ("silent_functions", SBV_silent_functions, "false", 0, 0, 1,
+  DEFVAR ("silent_functions", SBV_silent_functions, "false", 0,
 	  silent_functions,
     "suppress printing results in called functions");
 
-  DEFVAR ("split_long_rows", SBV_split_long_rows, "true", 0, 0, 1,
+  DEFVAR ("split_long_rows", SBV_split_long_rows, "true", 0,
 	  split_long_rows,
     "split long matrix rows instead of wrapping");
 
   DEFVAR ("struct_levels_to_print", SBV_struct_levels_to_print, 2.0,
-	  0, 0, 1, struct_levels_to_print,
+	  0, struct_levels_to_print,
     "number of levels of structure elements to print");
 
 #ifdef USE_GNU_INFO
   DEFVAR ("suppress_verbose_help_message",
-	  SBV_suppress_verbose_help_message, "false", 0, 0, 1,
+	  SBV_suppress_verbose_help_message, "false", 0,
 	  suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\
 help and usage functions");
 #endif
 
-  DEFVAR ("stdin", SBV_stdin, 0.0, 0, 1, 1, 0,
+  DEFCONST ("stdin", SBV_stdin, 0.0, 0, 0,
     "file number of the standard input stream");
 
-  DEFVAR ("stdout", SBV_stdout, 1.0, 0, 1, 1, 0,
+  DEFCONST ("stdout", SBV_stdout, 1.0, 0, 0,
     "file number of the standard output stream");
 
-  DEFVAR ("stderr", SBV_stderr, 2.0, 0, 1, 1, 0,
+  DEFCONST ("stderr", SBV_stderr, 2.0, 0, 0,
     "file number of the standard error stream");
 
   DEFVAR ("treat_neg_dim_as_zero", SBV_treat_neg_dim_as_zero, "false",
-	  0, 0, 1, treat_neg_dim_as_zero,
+	  0, treat_neg_dim_as_zero,
     "convert negative dimensions to zero");
 
-  DEFVAR ("warn_assign_as_truth_value", SBV_warn_assign_as_truth_value,
-	  "true", 0, 0, 1,
+  DEFVAR ("warn_assign_as_truth_value",
+	  SBV_warn_assign_as_truth_value, "true", 0,
 	  warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 
   DEFVAR ("warn_comma_in_global_decl", SBV_warn_comma_in_global_decl,
-	  "true", 0, 0, 1, warn_comma_in_global_decl,
+	  "true", 0, warn_comma_in_global_decl,
     "produce warning for commas in global declarations");
 
-  DEFVAR ("warn_divide_by_zero", SBV_warn_divide_by_zero, "true", 0, 0,
-	  1, warn_divide_by_zero,
+  DEFVAR ("warn_divide_by_zero", SBV_warn_divide_by_zero, "true", 0,
+	  warn_divide_by_zero,
     "on IEEE machines, allow divide by zero errors to be suppressed");
 
   DEFVAR ("warn_function_name_clash", SBV_warn_function_name_clash,
-	  "true", 0, 0, 1, warn_function_name_clash,
+	  "true", 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
 
-  DEFVAR ("whitespace_in_literal_matrix", SBV_whitespace_in_literal_matrix, "",
-	  0, 0, 1, whitespace_in_literal_matrix,
+  DEFVAR ("whitespace_in_literal_matrix",
+	  SBV_whitespace_in_literal_matrix, "", 0,
+	  whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
-
 }
 
 // Deleting names from the symbol tables.
@@ -1803,11 +1822,11 @@ With -x, exclude the named variables")
       if (argc > 0)
 	{
 	  lvars = curr_sym_tab->list (lcount, 0, 0, 0,
-				      symbol_def::USER_VARIABLE,
+				      SYMTAB_VARIABLES,
 				      SYMTAB_LOCAL_SCOPE);
 
 	  gvars = curr_sym_tab->list (gcount, 0, 0, 0,
-				      symbol_def::USER_VARIABLE,
+				      SYMTAB_VARIABLES,
 				      SYMTAB_GLOBAL_SCOPE);
 
 	  fcns = global_sym_tab->list (fcount, 0, 0, 0,

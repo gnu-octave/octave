@@ -62,6 +62,8 @@ DASSL::DASSL (void) : DAE ()
   liw = 0;
   lrw = 0;
 
+  sanity_checked = 0;
+
   info.resize (15);
 
   for (int i = 0; i < 15; i++)
@@ -78,6 +80,8 @@ DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
 
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
+
+  sanity_checked = 0;
 
   info.resize (15);
 
@@ -99,6 +103,8 @@ DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
 
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
+
+  sanity_checked = 0;
 
   info.resize (15);
 
@@ -213,6 +219,22 @@ DASSL::do_integrate (double tout)
   user_fun = DAEFunc::fun;
   user_jac = DAEFunc::jac;
 
+  if (! sanity_checked)
+    {
+      ColumnVector res = (*user_fun) (x, xdot, t);
+
+      if (res.length () != x.length ())
+	{
+	  (*current_liboctave_error_handler)
+	    ("dassl: inconsistent sizes for state and residual vectors");
+
+	  integration_error = 1;
+	  return retval;
+	}
+
+      sanity_checked = 1;
+    }
+  
   if (stop_time_set)
     {
       info.elem (3) = 1;

@@ -2,6 +2,7 @@ Wed Jul 24 16:39:16 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.cc (do_integrate): Check to make sure that the state and
 	derivative vectors are the same size.
+	* DASSL.cc (do_integrate): Likewise.
 
 Sun Jul 14 17:30:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

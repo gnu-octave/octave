@@ -188,9 +188,14 @@ where x, xdot, and res are vectors, and t is a scalar.")
   else
     output = dae.integrate (out_times, deriv_output);
 
-  retval.resize (2);
-  retval(0) = output;
-  retval(1) = deriv_output;
+  if (! error_state)
+    {
+      retval.resize (2);
+
+      retval(0) = output;
+      retval(1) = deriv_output;
+    }
+
   return retval;
 }
 

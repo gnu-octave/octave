@@ -145,6 +145,7 @@ private:
   int liw;  
   int lrw;
   int idid;
+  int sanity_checked;
   Array<int> info;
   Array<int> iwork;
   Array<double> rwork;

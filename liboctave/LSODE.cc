@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cmath>
 
 #include <iostream>
+#include <strstream>
 
 #include "LSODE.h"
 #include "f77-fcn.h"
@@ -298,6 +299,12 @@ LSODE::error_message (void) const
 {
   std::string retval;
 
+  std::ostrstream buf;
+  buf << t << ends;
+  const char *t = buf.str ();
+  std::string curr_t = t;
+  delete [] t;
+
   switch (istate)
     {
     case 1:
@@ -313,7 +320,8 @@ LSODE::error_message (void) const
       break;
 	  
     case -1:
-      retval = "excess work on this call (perhaps wrong integration method)";
+      retval = std::string ("excess work on this call (t = ")
+	+ curr_t + "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -325,21 +333,25 @@ LSODE::error_message (void) const
       break;
 
     case -4:
-      retval = "repeated error test failures (check all inputs)";
+      retval = std::string ("repeated error test failures (t = ")
+	+ curr_t + "check all inputs)";
       break;
 
     case -5:
-      retval = "repeated convergence failures (perhaps bad jacobian\
- supplied or wrong choice of integration method or tolerances)";
+      retval = std::string ("repeated convergence failures (t = ")
+	+ curr_t
+	+ "perhaps bad jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
-      retval = "error weight became zero during problem.\
-  (solution component i vanished, and atol or atol(i) == 0)";
+      retval = std::string ("error weight became zero during problem. (t = ")
+	+ curr_t
+	+ "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:
-      retval = "return requested in user-supplied function";
+      retval = "return requested in user-supplied function (t = "
+	+ curr_t + ")";
       break;
 
     default:

@@ -1,5 +1,8 @@
 2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* LSODE.cc (LSODE::error_message): Also return current T on
+	failures when that makes sense.
+
 	* Makefile.in (liboct-pathsearch.$(SHLEXT_VER)): Link to
 	$(LIBKPATHSEA) here.
 

@@ -1619,7 +1619,8 @@ C-----------------------------------------------------------------------
       IF (NHNIL .GT. MXHNIL) GO TO 290
       CALL XERRWD ('ODESSA - WARNING..INTERNAL T (=R1) AND H (=R2) ARE',
      1   101, 1, 0, 0, 0, 0, ZERO, ZERO)
-      CALL XERRWD ('SUCH THAT IN THE MACHINE, T + H = T ON THE NEXT STEP',
+      CALL XERRWD
+     1 ('SUCH THAT IN THE MACHINE, T + H = T ON THE NEXT STEP',
      1   101, 1, 0, 0, 0, 0, ZERO, ZERO)
       CALL XERRWD ('(H = STEP SIZE). SOLVER WILL CONTINUE ANYWAY',
      1   101, 1, 0, 0, 0, 2, TN, H)

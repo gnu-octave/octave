@@ -18,50 +18,33 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = computer.in *.m
+SOURCES = *.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
 # Complete directory trees to distribute.
 DISTDIRS = amr-image
 
-MFILES = $(wildcard $(srcdir)/*.m)
-MFILES_NO_DIR = $(notdir $(MFILES))
+FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-all: computer.m
+all:
 .PHONY: all
 
-computer.m: computer.in
-	rm -f computer.m
-	if test "$(target_host_type)" = unknown ; then \
-	  sed -e "s/%target_host_type%/Hi Dave, I'm a HAL-9000/" \
-	    $(srcdir)/computer.in > computer.t ; \
-	else \
-	  sed -e "s/%target_host_type%/$(target_host_type)/" \
-	    $(srcdir)/computer.in > computer.t ; \
-	fi
-	mv computer.t computer.m
-
-check: all
-.PHONY: check
-
 install: all
-	if test -d $(libsubdir) ; then true ; \
-	else $(TOPDIR)/mkpath $(libsubdir) ; fi
-	for f in $(MFILES_NO_DIR) ; do \
-	  rm -f $(libdir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(libsubdir)/$$f ; \
+	if test -d $(fcnfiledir) ; then true ; \
+	else $(TOPDIR)/mkpath $(fcnfiledir) ; fi
+	for f in $(FCN_FILES_NO_DIR) ; do \
+	  rm -f $(fcnfiledir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$$f ; \
 	done
-	rm -f $(libsubdir)/computer.m
-	$(INSTALL_DATA) computer.m $(libsubdir)/computer.m
 .PHONY: install
 
 uninstall:
-	for f in $(MFILES_NO_DIR) ; do rm -f $(libsubdir)/$$f ; done
+	for f in $(FCN_FILES_NO_DIR) ; do rm -f $(fcnfiledir)/$$f ; done
 .PHONY: uninstall
 
 clean:
-	rm -f computer.m computer.t
 .PHONY: clean
 
 tags: $(SOURCES)

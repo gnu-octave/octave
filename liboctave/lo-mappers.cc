@@ -315,13 +315,13 @@ xisinf (const Complex& x)
 Complex
 xmin (const Complex& x, const Complex& y)
 {
-  return abs (x) < abs (y) ? x : (xisnan (x) ? x : y);
+  return abs (x) <= abs (y) ? x : (xisnan (x) ? x : y);
 }
 
 Complex
 xmax (const Complex& x, const Complex& y)
 {
-  return abs (x) > abs (y) ? x : (xisnan (x) ? x : y);
+  return abs (x) >= abs (y) ? x : (xisnan (x) ? x : y);
 }
 
 /*

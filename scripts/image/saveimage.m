@@ -133,6 +133,10 @@ function saveimage (filename, img, img_form, map)
 
   map = round (255 * map);
 
+  bw = (map_nr == 2
+        && ((map(1,1) == 0 && map(2,1) == 255)
+            || (map(1,1) == 255 && map(2,1) == 0)));
+
   img = round (img');
   [img_nr, img_nc] = size (img);
 
@@ -156,7 +160,38 @@ function saveimage (filename, img, img_form, map)
     tagline = sprintf ("# Created by Octave %s, %s",
 		       __OCTAVE_VERSION__, time_string);
 
-    if (grey)
+    if (grey && bw)
+
+      if (map(1) != 0)
+        map = [0; 1];
+      else
+        map = [1; 0];
+      endif
+
+      n_long = rem (img_nc, 8);
+      tmp = zeros (ceil (img_nc/8), img_nr);
+
+      k = ceil (img_nr/8);
+      tmp = zeros (k, img_nc);
+
+      ## Append columns with zeros to original image so that
+      ## mod (cols, 8) = 0.
+
+      bwimg = postpad (reshape (map(img), img_nr, img_nc), k * 8, 0);
+
+      b = kron (pow2 (7:-1:0)', ones (1, img_nc));
+
+      for i = 1:k
+        tmp(i,:) = sum (bwimg(8*(i-1)+1:8*i,:) .* b);
+      endfor
+
+      fid = fopen (filename, "w");
+      fprintf (fid, "P4\n%s\n%d %d\n", tagline, img_nr, img_nc);
+      fwrite (fid, tmp, "char");
+      fprintf (fid, "\n");
+      fclose (fid);
+
+    elseif (grey)
 
       fid = fopen (filename, "w");
       fprintf (fid, "P5\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);

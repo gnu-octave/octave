@@ -1,3 +1,9 @@
+2000-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (xmin (const Complex&, const Complex& y):
+	If args are equal in magnitude, return first arg instead of
+	second.
+
 2000-12-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Range.cc (Range::nelem_internal): Call tfloor, not round, but

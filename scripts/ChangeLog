@@ -1,3 +1,8 @@
+2000-12-15  Kai Habel  <kai.habel@gmx.de>
+
+	* saveimage.m: Do create rawbit image for black and white images,
+	but do it correctly.
+
 2000-12-13   Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
 
         * polynomial/deconv.m: For compatibility with Matlab, don't reduce

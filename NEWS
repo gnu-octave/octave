@@ -1,6 +1,10 @@
 Summary of changes since version 2.0.5:
 --------------------------------------
 
+  * The built-in variable PWD has been removed.  If you need to get
+    the value of the current working directory, use the pwd() function
+    instead.
+
   * New operators.  Octave's parser now recognizes the following
     operators:  << >> += -= *= /= .+= .-= .*= ./= &= |= <<= >>=.  So
     far, there are only a few operations defined that actually use
@@ -98,6 +102,11 @@ Summary of changes since version 2.0.5:
     where JAC is the Jacobian matrix of partial derivatives of the
     right-hand-side functions that define the set of differential
     equations with respect to the state vector X.
+
+  * Structure elements completion on the command line actually works
+    now.
+
+  * New configure option, --enable-readline.
 
 Summary of changes for version 2.0.5:
 ------------------------------------

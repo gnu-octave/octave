@@ -10,7 +10,7 @@ TOPDIR = ..
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-VPATH = @srcdir@
+VPATH = @srcdir@:@srcdir@/DLD-FUNCTIONS:@srcdir@/OPERATORS:@srcdir@/TEMPLATE-INST
 
 include $(TOPDIR)/Makeconf
 
@@ -39,14 +39,16 @@ ifeq ($(OCTAVE_LITE), true)
   endif
 endif
 
-DLD_SRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
+DLD_XSRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
 	   expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
 	   fsqp.cc getgrent.cc getpwent.cc getrusage.cc givens.cc \
 	   hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc lsode.cc \
 	   lu.cc minmax.cc npsol.cc pinv.cc qpsol.cc qr.cc quad.cc \
 	   qzval.cc rand.cc schur.cc sort.cc svd.cc syl.cc time.cc 
 
-DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
+DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
+
+DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_XSRC))
 
 ifeq ($(OCTAVE_LITE), true)
   OCT_FILES := $(patsubst %.o, %.oct, $(DLD_OBJ))
@@ -62,39 +64,37 @@ else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif
 
-INCLUDES := defun.h defun-dld.h defun-int.h dirfns.h dynamic-ld.h \
-	error.h file-io.h fn-cache.h gripes.h help.h input.h lex.h \
-	load-save.h oct.h oct-fstrm.h oct-hist.h oct-iostrm.h \
-	oct-map.h oct-obj.h oct-prcstrm.h oct-procbuf.h \
-	oct-stdstrm.h oct-stream.h oct-strstrm.h pager.h parse.h \
-	pathlen.h pr-output.h procstream.h pt-base.h pt-cmd.h \
+OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h \
+	ov-list.h ov-struct.h ov-scalar.h ov-range.h \
+	ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
+	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
+	ov-typeinfo.h
+
+PT_INCLUDES := pt-base.h pt-cmd.h \
 	pt-const.h pt-exp-base.h pt-exp.h pt-id.h pt-indir.h \
 	pt-mat.h pt-misc.h pt-mvr-base.h pt-mvr.h \
-	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
-	sysdep.h systime.h syswait.h token.h toplev.h \
-	unwind-prot.h utils.h variables.h version.h xdiv.h xpow.h \
-	BaseSLList.h Map.h SLList.h SLStack.h Stack.h ov-re-mat.h \
-	ov-cx-mat.h ov-ch-mat.h ov-list.h ov-struct.h ov-scalar.h \
-	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
-	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
-	ov-typeinfo.h ops.h oct-sym.h oct-fcn.h oct-builtin.h \
-	oct-mapper.h oct-usr-fcn.h
+	pt-plot.h pt-pr-code.h pt-walk.h 
 
-TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
-	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
-	SLList-tm.cc SLStack-i.cc SLStack-pc.cc SLStack-str.cc \
-	SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc SLStack-ui.cc
+INCLUDES := BaseSLList.h Map.h SLList.h SLStack.h Stack.h defun-dld.h \
+	defun-int.h defun.h dirfns.h dynamic-ld.h error.h file-io.h \
+	fn-cache.h gripes.h help.h input.h lex.h load-save.h \
+	oct-builtin.h oct-fcn.h oct-fstrm.h oct-hist.h oct-iostrm.h \
+	oct-map.h oct-mapper.h oct-obj.h oct-prcstrm.h oct-procbuf.h \
+	oct-stdstrm.h oct-stream.h oct-strstrm.h oct-sym.h \
+	oct-usr-fcn.h oct.h ops.h pager.h parse.h pathlen.h \
+	pr-output.h procstream.h sighandlers.h symtab.h sysdep.h \
+	systime.h syswait.h token.h toplev.h unwind-prot.h utils.h \
+	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
 
-TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
+TI_XSRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc \
+	Map-tc.cc SLList-expr.cc SLList-misc.cc SLList-plot.cc \
+	SLList-tc.cc SLList-tm.cc SLStack-i.cc SLStack-pc.cc \
+	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc \
+	SLStack-ue.cc SLStack-ui.cc
 
-TI_PICOBJ := $(TI_OBJ)
-ifeq ($(SHARED_LIBS), true)
-  ifdef CXXPICFLAG
-    TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
-  endif
-endif
+TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 
-OP_SOURCES := op-b-b.cc op-bm-bm.cc op-cm-cm.cc op-cm-cs.cc \
+OP_XSRC := op-b-b.cc op-bm-bm.cc op-cm-cm.cc op-cm-cs.cc \
 	op-cm-m.cc op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
 	op-cs-s.cc op-m-cm.cc op-m-cs.cc op-m-m.cc op-m-s.cc \
 	op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc op-str-str.cc \
@@ -102,6 +102,16 @@ OP_SOURCES := op-b-b.cc op-bm-bm.cc op-cm-cm.cc op-cm-cs.cc \
 	op-fil-m.cc op-fil-s.cc op-fil-lis.cc op-fil-rec.cc \
 	op-fil-str.cc
 
+OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
+
+OV_SRC := ov-base.cc ov-ch-mat.cc ov-list.cc ov-re-mat.cc \
+	ov-cx-mat.cc ov-range.cc ov-scalar.cc ov-complex.cc \
+	ov-str-mat.cc ov-struct.cc ov-va-args.cc ov-colon.cc \
+	ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc ov-typeinfo.cc 
+
+PT_SRC := pt-base.cc pt-cmd.cc pt-const.cc pt-exp-base.cc \
+	pt-exp.cc pt-id.cc pt-indir.cc pt-mat.cc pt-misc.cc \
+	pt-mvr-base.cc pt-mvr.cc pt-plot.cc pt-pr-code.cc 
 
 SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	data.cc defaults.cc dirfns.cc dynamic-ld.cc error.cc \
@@ -109,20 +119,14 @@ SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
 	oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
-	pager.cc parse.y pr-output.cc procstream.cc pt-base.cc \
-	pt-cmd.cc pt-const.cc pt-exp-base.cc pt-exp.cc pt-id.cc \
-	pt-indir.cc pt-mat.cc pt-misc.cc pt-mvr-base.cc \
-	pt-mvr.cc pt-plot.cc pt-pr-code.cc sighandlers.cc \
+	pager.cc parse.y pr-output.cc procstream.cc sighandlers.cc \
 	strcasecmp.c strncase.c strfns.cc strftime.c symtab.cc \
 	syscalls.cc sysdep.cc token.cc toplev.cc unwind-prot.cc \
-	utils.cc variables.cc xdiv.cc xpow.cc ov-base.cc ov-ch-mat.cc \
-	ov-list.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc ov-scalar.cc \
-	ov-complex.cc ov-str-mat.cc ov-struct.cc ov-va-args.cc \
-	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc \
-	ov-typeinfo.cc oct-fcn.cc oct-builtin.cc oct-mapper.cc \
-	oct-usr-fcn.cc $(OP_SOURCES)
+	utils.cc variables.cc xdiv.cc xpow.cc oct-fcn.cc \
+	oct-builtin.cc oct-mapper.cc oct-usr-fcn.cc \
+	$(OP_SRC) $(OV_SRC) $(PT_SRC) $(TI_SRC)
 
-OBJECTS_4 := $(SOURCES)
+OBJECTS_4 := $(notdir $(SOURCES))
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
 OBJECTS_2 := $(patsubst %.y, %.o, $(OBJECTS_3))
 OBJECTS_1 := $(patsubst %.c, %.o, $(OBJECTS_2))
@@ -138,20 +142,21 @@ endif
 
 # Ugh.
 
-DEP_4 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc ops.cc octave.cc
+DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc ops.cc octave.cc
+DEP_4 := $(notdir $(DEP_5))
 DEP_3 := $(patsubst %.l, %.cc, $(DEP_4))
 DEP_2 := $(patsubst %.y, %.cc, $(DEP_3))
 DEP_1 := $(patsubst %.c, %.d, $(DEP_2))
 MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 
-DEF_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
+DEF_5 := $(SOURCES) $(DLD_SRC)
 DEF_4 := $(addprefix $(srcdir)/, $(DEF_5))
 DEF_3 := $(notdir $(shell grep -l "^DEFUN" $(DEF_4)))
 DEF_2 := $(patsubst %.y, %.df, $(DEF_3))
 DEF_1 := $(patsubst %.l, %.df, $(DEF_2))
 DEF_FILES := $(patsubst %.cc, %.df, $(DEF_1))
 
-VAR_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
+VAR_5 := $(SOURCES) $(DLD_SRC)
 VAR_4 := $(addprefix $(srcdir)/, $(VAR_5))
 VAR_3 := $(notdir $(shell egrep -l "^[\t ]*DEF(VAR|CONST)" $(VAR_4)))
 VAR_2 := $(patsubst %.y, %, $(VAR_3))
@@ -161,19 +166,19 @@ VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
 OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
 	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
 
-OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
+OCTAVE_LIBS = -loctinterp -loctave -lcruft \
 	$(LIBPLPLOT) $(LIBREADLINE) -lkpathsea -lglob $(LIBDLFCN)
 
-LIBS_TO_INSTALL = liboctinterp.a libtinst.a
+LIBS_TO_INSTALL = liboctinterp.a
 
-SH_LIBS_TO_INSTALL = liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
+SH_LIBS_TO_INSTALL = liboctinterp.$(SHLEXT)
 
 LIBS = @LIBS@
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
-	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TI_SRC)
+	$(INCLUDES) $(DLD_SRC) $(SOURCES)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = octave $(OCT_FILES) $(SH_LIBS_TO_INSTALL)
@@ -216,15 +221,11 @@ stamp-picdir:
 	fi
 	touch stamp-picdir
 
-libraries: liboctinterp.a libtinst.a stamp-interp stamp-tinst
+libraries: liboctinterp.a stamp-interp
 
 liboctinterp.a: stamp-prereq $(OBJECTS)
 	$(AR) $(ARFLAGS) liboctinterp.a $(OBJECTS)
 	$(RANLIB) liboctinterp.a
-
-libtinst.a: stamp-prereq $(TI_OBJ)
-	$(AR) $(ARFLAGS) libtinst.a $(TI_OBJ)
-	$(RANLIB) libtinst.a
 
 stamp-interp: stamp-prereq $(PICOBJ)
 	if $(SHARED_LIBS); then \
@@ -233,14 +234,6 @@ stamp-interp: stamp-prereq $(PICOBJ)
 	  true ; \
 	fi
 	touch stamp-interp
-
-stamp-tinst: stamp-prereq $(TI_PICOBJ)
-	if $(SHARED_LIBS); then \
-	  $(SH_LD) $(SH_LDFLAGS) -o libtinst.$(SHLEXT) $(TI_PICOBJ) ; \
-	else \
-	  true ; \
-	fi
-	touch stamp-tinst
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@
@@ -335,11 +328,11 @@ uninstall:
 	done
 .PHONY: uninstall
 
-tags: $(SOURCES) $(DLD_SRC) $(TI_SRC)
-	ctags $(SOURCES) $(DLD_SRC) $(TI_SRC)
+tags: $(SOURCES) $(DLD_SRC)
+	ctags $(SOURCES) $(DLD_SRC)
 
-TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
-	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
+TAGS: $(SOURCES) $(DLD_SRC)
+	etags $(SOURCES) $(DLD_SRC)
 
 clean:
 	rm -f *.a *.o *.d *.df *.oct pic/*.o
@@ -353,13 +346,13 @@ mostlyclean:
 
 distclean: clean
 	rm -f Makefile octave .fname so_locations
-	rm -f stamp-picdir stamp-tinst stamp-interp stamp-prereq
+	rm -f stamp-picdir stamp-interp stamp-prereq
 	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h stamp-picdir stamp-tinst stamp-interp stamp-prereq
+	rm -f oct-gperf.h stamp-picdir stamp-interp stamp-prereq
 	-rmdir pic
 .PHONY: maintainer-clean
 

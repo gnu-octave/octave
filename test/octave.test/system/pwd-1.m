@@ -1,1 +1,1 @@
-isstr (pwd ()) && strcmp (pwd (), PWD)
+isstr (pwd ())

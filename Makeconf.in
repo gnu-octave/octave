@@ -122,8 +122,9 @@ RLD_FLAG = @RLD_FLAG@
 FLIBS = @FLIBS@
 
 TERMLIBS = @TERMLIBS@
-LIBPLPLOT = @LIBPLPLOT@
 LIBDLFCN = @LIBDLFCN@
+LIBPLPLOT = @LIBPLPLOT@
+LIBREADLINE = @LIBREADLINE@
 
 # The arguments passed to configure.
 config_opts = @config_opts@

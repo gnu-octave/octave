@@ -72,7 +72,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include "dMatrix.h"
 
+#ifdef HAVE_HDF5
 #include "ls-hdf5.h"
+#endif
 #include "ls-mat-ascii.h"
 #include "ls-mat4.h"
 #include "ls-mat5.h"

@@ -3,6 +3,9 @@
 	* version.h (OCTAVE_VERSION): Now 2.1.52.
 	(OCTAVE_API_VERSION): Now api-v3.
 
+	* load-save.cc: Only include ls-hdf5.h if HAVE_HDF5 is defined.
+	From Melqart <melqart@free.fr>.
+
 	* pr-output.h (octave_fcn_handle::print_as_scalar): Delete.
 
 	* pr-output.cc (octave_print_internal): New version for

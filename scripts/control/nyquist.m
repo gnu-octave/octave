@@ -97,9 +97,6 @@ function [realp,imagp,w] = nyquist(sys,w,outputs,inputs,atol)
   ## is SISO, andd computes the frequency response.  Only the way the
   ## response is plotted is different between the two functions.
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   ## check number of input arguments given
   if (nargin < 1 | nargin > 5)
     usage("[realp,imagp,w] = nyquist(sys[,w,outputs,inputs,atol])");
@@ -205,7 +202,5 @@ function [realp,imagp,w] = nyquist(sys,w,outputs,inputs,atol)
     realp=[];
     imagp=[];
   endif
-
-  implicit_str_to_num_ok = save_val;	# restore value
 
 endfunction

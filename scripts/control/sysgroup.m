@@ -52,9 +52,6 @@ function sys = sysgroup(...)
   ## modified by John Ingram July 1996
   ## A. S. Hodel: modified for variable number of arguments 1999
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   save_emp = empty_list_elements_ok;
   empty_list_elements_ok = 1;
 
@@ -149,7 +146,6 @@ function sys = sysgroup(...)
     endfor
   endif
   
-  implicit_str_to_num_ok = save_val;	# restore value  
   empty_list_elements_ok = save_emp;
     
 endfunction

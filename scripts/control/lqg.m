@@ -66,9 +66,6 @@ function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
   ## Written by A. S. Hodel August 1995; revised for new system format
   ## August 1996
 
-  sav_val = implicit_str_to_num_ok;
-  implicit_str_to_num_ok = 1;
-
   if ( (nargin < 5) | (nargin > 6))
     usage("[K,Q1,P1,Ee,Er] = lqg(sys,Sigw, Sigv,Q,R{,input_list})");
 
@@ -147,5 +144,4 @@ function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
     K = ss2sys(Ac,Bc,Cc,Dc,tsam,n,nz,stname,inname1,outname1);
   endif
 
-  implicit_str_to_num_ok = sav_val;
 endfunction

@@ -1,3 +1,31 @@
+1999-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/zp2sys.m: Don't save and restore implicit_str_to_num_ok.
+	* control/zpout.m: Ditto.
+	* control/tfout.m: Ditto.
+	* control/tf2sys.m: Ditto.
+	* control/syssub.m: Ditto.
+	* control/syssetsignals.m: Ditto.
+	* control/sysout.m: Ditto.
+	* control/sysmult.m: Ditto.
+	* control/sysgroup.m: Ditto.
+	* control/sysdup.m: Ditto.
+	* control/sysdisc.m: Ditto.
+	* control/syscont.m: Ditto.
+	* control/sysconnect.m: Ditto.
+	* control/sysappend.m: Ditto.
+	* control/sysadd.m: Ditto.
+	* control/ss2sys.m: Ditto.
+	* control/nyquist.m: Ditto.
+	* control/lqg.m: Ditto.
+	* control/fir2sys.m: Ditto.
+	* control/dmr2d.m: Ditto.
+	* control/dezero.m: Ditto.
+	* control/d2c.m: Ditto.
+	* control/c2d.m: Ditto.
+	* control/bddemo.m: Ditto.
+	* control/pzmap.m: Ditto.
+
 1999-12-08  Daniel Calvelo <dcalvelo@pharion.univ-lille2.fr>
 
 	* signal/spectral_adf.m: Fix typo.

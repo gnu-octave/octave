@@ -55,9 +55,6 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   ## Name changed to TF2SYS July 1995
   ## updated for new system data structure format July 1996
 
-  save_val = implicit_str_to_num_ok;
-  implicit_str_to_num_ok = 1;
-
   ## Test for the correct number of input arguments
   if ((nargin < 2) || (nargin > 5))
     usage('outsys=tf2sys(num,den[,tsam,inname,outname])');
@@ -139,5 +136,4 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
     endif
   endif 
 
-  implicit_str_to_num_ok = save_val;
 endfunction

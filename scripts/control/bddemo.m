@@ -26,9 +26,7 @@ function bddemo()
   ## Written by David Clem August 15, 1994
   ## Modified by A S Hodel Summer-Fall 1996
 
-  str_sav = implicit_str_to_num_ok;
   sav_page = page_screen_output;
-  implicit_str_to_num_ok = 1;
   page_screen_output = 1;
 
   while (1)
@@ -538,13 +536,8 @@ function bddemo()
           disp(" ")
       disp("Step 1: We've already created systems P and K.  Create a sum ")
       disp("block as follows:")
-      implicit_str_to_num_ok = "warn";
       cmd = "S = ss2sys([],[],[],[1 -1],0,0,0,[],list(""r(t)"",""y(t)""),""e(t)"");";
       run_cmd
-      implicit_str_to_num_ok = 1;
-      disp("You may avoid the string conversion warning by setting the ")
-      disp("Octave global variables implicit_str_to_num_ok = 1");
-      disp(" ");
       disp("(You may wish to look at help ss2sys to see what the above does)");
       disp("S=")
       sysout(S)

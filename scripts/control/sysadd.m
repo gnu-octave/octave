@@ -44,9 +44,6 @@ function sys = sysadd(...)
   ## Written by John Ingram July 1996
   ## Updated for variable number of arguments July 1999 A. S. Hodel
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if(nargin < 1)
     usage("sysadd: sys = sysysadd(Gsys{,Hsys, ...})");
   endif
@@ -115,5 +112,6 @@ function sys = sysadd(...)
       sys = sysadd(sys,nth(arglist,kk));
     endfor
   endif
+
 endfunction
 

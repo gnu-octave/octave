@@ -56,9 +56,6 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
 
   ## Modified by John Ingram  July 20, 1996  
 
-  save_val = implicit_str_to_num_ok;	# save for restoring later
-  implicit_str_to_num_ok = 1;
-
   ## Test for the correct number of input arguments
   if ((nargin < 3) || (nargin > 6))
     usage("outsys = zp2sys(zer,pol,k[,tsam,inname,outname])");
@@ -146,5 +143,4 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
     endif
   endif 
 
-  implicit_str_to_num_ok = save_val;
 endfunction

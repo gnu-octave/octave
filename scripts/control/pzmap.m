@@ -30,10 +30,8 @@
  
 function [zer,pol]=pzmap(sys)
 
-  save_val = implicit_str_to_num_ok;	# save for later
   save_emp = empty_list_elements_ok;
 
-  implicit_str_to_num_ok = 1;
   empty_list_elements_ok = 1;
 
   if(nargin != 1)
@@ -83,7 +81,6 @@ function [zer,pol]=pzmap(sys)
   endif
   replot
 
-  implicit_str_to_num_ok = save_val;	# restore value
   empty_list_elements_ok = save_emp;
 
 endfunction

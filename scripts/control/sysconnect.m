@@ -68,9 +68,6 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   ## A. S. Hodel August 1995
   ## modified by John Ingram July 1996
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if( (nargin < 3) | (nargin > 5) )
     usage("retsys = sysconnect(sys,output_list,input_list[,order,tol])");
   endif
@@ -273,7 +270,5 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   if    (strcmp(sysgettype(sys),"tf") )       sysupdate(sys,'tf');
   elseif(strcmp(sysgettype(sys),"zp") )       sysupdate(sys,'zp');
   endif
-
-  implicit_str_to_num_ok = save_val;	# restore value  
 
 endfunction

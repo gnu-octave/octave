@@ -90,9 +90,6 @@ function retsys = syssetsignals(sys,opt,names,sig_idx)
 
   ## Written by John Ingram August 1996
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if (nargin < 3 | nargin > 4)
     usage("retsys=syssetsignals(sys,opt,names{,sig_idx})");
   elseif (!is_struct(sys))
@@ -227,6 +224,5 @@ function retsys = syssetsignals(sys,opt,names,sig_idx)
   endif
 
   retsys = sys;
-  implicit_str_to_num_ok = save_val;	# restore value
 
 endfunction

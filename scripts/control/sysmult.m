@@ -37,9 +37,6 @@ function sys = sysmult(...)
   ## Written by John Ingram July 1996
   ## updated for variable number of arguments by A. S. Hodel July 1999
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if(nargin < 1)
     usage("sysmult: sys = sysmult(Asys{,Bsys,...})");
   endif
@@ -111,6 +108,6 @@ function sys = sysmult(...)
       sys = sysmult(sys,nth(arglist,kk));
     endfor
   endif
-  implicit_str_to_num_ok = save_val;	# restore value  
+
 endfunction  
   

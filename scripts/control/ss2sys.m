@@ -191,9 +191,6 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
 
   ## Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   ## Test for correct number of inputs
   if ((nargin < 3) | (nargin > 11))
     usage("retsys = ss2sys  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})");
@@ -293,5 +290,4 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
     endif
   endif
 
-  implicit_str_to_num_ok = save_val;	## restore value
 endfunction

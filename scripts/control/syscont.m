@@ -40,9 +40,8 @@ function [csys,Acd,Ccd] = syscont(sys)
 
   ## Written by John Ingram August 1996
 
-  save_val = implicit_str_to_num_ok;	# save for later
   save_empty = empty_list_elements_ok;
-  empty_list_elements_ok = implicit_str_to_num_ok = 1;
+  empty_list_elements_ok = 1;
 
   if (nargin != 1)
     usage("[csys,Acd,Ccd,Dcd] = syscont(sys)");
@@ -83,7 +82,6 @@ function [csys,Acd,Ccd] = syscont(sys)
   
   csys = ss2sys(Acc,Bcc,Ccc,Dcc,0,sys_n,0,stname,inname,outname);
 
-  implicit_str_to_num_ok = save_val;	# restore value
   empty_list_elements_ok = save_empty;
  
 endfunction

@@ -56,9 +56,6 @@ function retsys = sysdup(Asys,output_list,input_list)
   ## A. S. Hodel August 1995
   ## modified by John Ingram July 1996
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if( nargin != 3)
     usage("retsys = sysdup(Asys,output_list,input_list)");
   endif
@@ -118,7 +115,5 @@ function retsys = sysdup(Asys,output_list,input_list)
     dflg = sysgetsignals(retsys,"yd",onum);
     retsys = syssetsignals(retsys,"yd",dflg,jj);
   endfor
-
-  implicit_str_to_num_ok = save_val;	# restore value
 
 endfunction

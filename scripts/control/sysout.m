@@ -43,10 +43,6 @@ function retsys = sysout(sys,opt)
 
   ## Written by A S Hodel: 1995-1996
 
-  ## save for restoring at end of routine
-  save_val = implicit_str_to_num_ok;
-  implicit_str_to_num_ok = 1;
-
   if( (nargin < 1) || (nargin > 2) )
     usage("sysout(sys[,opt])");
   endif
@@ -150,6 +146,5 @@ function retsys = sysout(sys,opt)
   endif 
 
   ## restore global variable
-  implicit_str_to_num_ok = save_val;
 
 endfunction

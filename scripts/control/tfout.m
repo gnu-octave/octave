@@ -28,9 +28,8 @@
 function tfout(num,denom,x)
 ## Written by A. Scottedward Hodel (scotte@eng.auburn.edu) June 1995)
   
-  save_val = implicit_str_to_num_ok;
   save_empty = empty_list_elements_ok;
-  empty_list_elements_ok = implicit_str_to_num_ok = 1;
+  empty_list_elements_ok = 1;
   
   if (nargin < 2 ) | (nargin > 3) | (nargout != 0 ) 
     usage("tfout(num,denom[,x])");
@@ -58,6 +57,5 @@ function tfout(num,denom,x)
     error('tfout: empty transfer function')
   end
 
-  implicit_str_to_num_ok = save_val;
   empty_list_elements_ok = save_empty;
 endfunction

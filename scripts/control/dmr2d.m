@@ -74,9 +74,6 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
 
   ## Adapted from c2d by a.s.hodel@eng.auburn.edu
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   ## parse input arguments
   if(nargin != 4 | nargout > 2)
     usage("[dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2 {,cuflg})");
@@ -257,7 +254,5 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
 
   ## construct new system and return
   dsys = ss2sys(da,db,dc,dd,Ts2,0,nz,stname,inname,outname,find(yd == 1));
-
-  implicit_str_to_num_ok = save_val;	# restore value
 
 endfunction

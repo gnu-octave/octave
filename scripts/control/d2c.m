@@ -62,9 +62,6 @@ function csys = d2c(sys,opt)
   ## Updated by John Ingram for system data structure  August 1996
   ## SYS_INTERNAL accesses members of system data structure
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if( (nargin != 1) & (nargin != 2) )
     usage("csys = d2c(sys[,tol]), csys = d2c(sys,opt)");
   elseif (!is_struct(sys))
@@ -222,5 +219,4 @@ function csys = d2c(sys,opt)
     endfor
   endif
 
-  implicit_str_to_num_ok = save_val;	# restore value
 endfunction

@@ -36,9 +36,6 @@ function t = dezero (s)
     usage ("dezero (s)");
   elseif (isstr (s))
 
-    save_val = implicit_str_to_num_ok;
-    implicit_str_to_num_ok = 1;
-
     [nr, nc] = size (s);
     len = nr * nc;
 
@@ -52,8 +49,6 @@ function t = dezero (s)
       s = 1*s;
       t = deblank(setstr(s(find(s != 0) )));
     endif
-
-    implicit_str_to_num_ok = save_val;
 
   else
     error ("dezero: expecting string argument");

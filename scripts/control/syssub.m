@@ -41,9 +41,6 @@ function sys = syssub(...)
   ## Written by John Ingram July 1996
   ## updated for variable numbers of input arguments by July 1999 A. S. Hodel
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   if(nargin < 1)
     usage("syssub: sys = syssub(Gsys{,Hsys,...})");
   endif

@@ -72,9 +72,6 @@ function dsys = c2d (sys, opt, T)
   ## October 1993
   ## Updated by John Ingram for system data structure August 1996
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
   ## parse input arguments
   if(nargin < 1 | nargin > 3)
     usage("dsys=c2d(sys[,T])");
@@ -169,6 +166,4 @@ function dsys = c2d (sys, opt, T)
     error(["Bad option=",opt])
   endif
   
-  implicit_str_to_num_ok = save_val;	# restore value
-
 endfunction

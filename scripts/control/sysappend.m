@@ -78,10 +78,9 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
 
   ## written by John Ingram August 1996
   
-  sav_implicit_str_to_num_ok = implicit_str_to_num_ok;	# save for later
   sav_empty_list_elements_ok = empty_list_elements_ok;
 
-  empty_list_elements_ok = 1;                implicit_str_to_num_ok = 1;
+  empty_list_elements_ok = 1;
   
   ## check input arguments
   if ( (nargin < 2) | (nargin > 7) | (!is_struct(sys)))
@@ -187,7 +186,6 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
   ## construct return system
   retsys = ss2sys(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
   
-  implicit_str_to_num_ok = sav_implicit_str_to_num_ok;	# restore value
   empty_list_elements_ok = sav_empty_list_elements_ok;
 
 endfunction

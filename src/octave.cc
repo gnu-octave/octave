@@ -355,7 +355,6 @@ maximum_braindamage (void)
   bind_builtin_variable ("implicit_num_to_str_ok", true);
   bind_builtin_variable ("implicit_str_to_num_ok", true);
   bind_builtin_variable ("initialize_global_variables", true);
-  bind_builtin_variable ("ok_to_lose_imaginary_part", true);
   bind_builtin_variable ("page_screen_output", false);
   bind_builtin_variable ("prefer_column_vectors", false);
   bind_builtin_variable ("print_empty_dimensions", false);

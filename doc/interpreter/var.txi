@@ -316,11 +316,6 @@ Default value: 0.
 
 Default value: 256.
 
-@item ok_to_lose_imaginary_part
-@xref{Special Utility Matrices}.
-
-Default value: @code{"warn"}.
-
 @item output_max_field_width
 @xref{Matrices}.
 
@@ -420,6 +415,11 @@ Default value: 1.
 @xref{Arithmetic Ops}.
 
 Default value: 1.
+
+@item warn_imag_to_real
+@xref{Special Utility Matrices}.
+
+Default value: 0.
 
 @item warn_function_name_clash
 @xref{Function Files}.

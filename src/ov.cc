@@ -95,11 +95,8 @@ bool Vimplicit_num_to_str_ok;
 // considered an error.
 int Vimplicit_str_to_num_ok;
 
-// Should we allow silent conversion of complex to real when a real
-// type is what we're really looking for?  A positive value means yes.
-// A negative value means yes, but print a warning message.  Zero
-// means it should be considered an error.
-int Vok_to_lose_imaginary_part;
+// Should we warn about conversions from complex to real?
+int Vwarn_imag_to_real;
 
 // If TRUE, create column vectors when doing assignments like:
 //
@@ -1773,9 +1770,9 @@ implicit_str_to_num_ok (void)
 }
 
 static int
-ok_to_lose_imaginary_part (void)
+warn_imag_to_real (void)
 {
-  Vok_to_lose_imaginary_part = check_preference ("ok_to_lose_imaginary_part");
+  Vwarn_imag_to_real = check_preference ("warn_imag_to_real");
 
   return 0;
 }
@@ -1890,17 +1887,6 @@ Otherwise, an error message is printed and control is returned to the\n\
 top level.  The default value is 0.\n\
 @end defvr");
 
-  DEFVAR (ok_to_lose_imaginary_part, "warn", ok_to_lose_imaginary_part,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} ok_to_lose_imaginary_part\n\
-If the value of @code{ok_to_lose_imaginary_part} is nonzero, implicit\n\
-conversions of complex numbers to real numbers are allowed (for example,\n\
-by fsolve).  If the value is @code{\"warn\"}, the conversion is allowed,\n\
-but a warning is printed.  Otherwise, an error message is printed and\n\
-control is returned to the top level.  The default value is\n\
-@code{\"warn\"}.\n\
-@end defvr");
-
   DEFVAR (prefer_column_vectors, true, prefer_column_vectors,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} prefer_column_vectors\n\
@@ -1991,6 +1977,14 @@ built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
 If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
 is issued when Octave encounters a division by zero.  If the value is\n\
 0, the warning is omitted.  The default value is 1.\n\
+@end defvr");
+
+  DEFVAR (warn_imag_to_real, false, warn_imag_to_real,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_imag_to_real\n\
+If the value of @code{warn_imag_to_real} is nonzero, a warning is\n\
+printed for implicit conversions of complex numbers to real numbers.\n\
+The default value is 0.\n\
 @end defvr");
 }
 

@@ -1,3 +1,11 @@
+2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dump_prefs.m: Include DEFAULT_EXEC_PATH,
+	DEFAULT_LOAD_PATH, crash_dumps_octave_core,
+	sighup_dumps_octave_core, sigterm_dumps_octave_core, and
+	warn_imag_to_real in the list.
+	Delete ok_to_lose_imaginary_part from list.	
+
 2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (distclean, maintainer-clean): Also remove

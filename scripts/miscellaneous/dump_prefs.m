@@ -37,7 +37,9 @@ function dump_prefs (file)
   ## remember to update it each time the list of preference variables
   ## changes
 
-  var_list = ["EDITOR";
+  var_list = ["DEFAULT_EXEC_PATH";
+	      "DEFAULT_LOADPATH";
+	      "EDITOR";
               "EXEC_PATH";
               "IMAGEPATH";
               "INFO_FILE";
@@ -50,6 +52,7 @@ function dump_prefs (file)
               "automatic_replot";
               "beep_on_error";
               "completion_append_char";
+              "crash_dumps_octave_core";
               "default_eval_print_flag";
               "default_global_variable_value";
               "default_return_value";
@@ -75,7 +78,6 @@ function dump_prefs (file)
               "implicit_str_to_num_ok";
               "initialize_global_variables";
               "max_recursion_depth";
-              "ok_to_lose_imaginary_part";
               "output_max_field_width";
               "output_precision";
               "page_output_immediately";
@@ -89,6 +91,8 @@ function dump_prefs (file)
               "return_last_computed_value";
               "save_precision";
               "saving_history";
+              "sighup_dumps_octave_core";
+              "sigterm_dumps_octave_core";
               "silent_functions";
               "split_long_rows";
               "string_fill_char";
@@ -99,6 +103,7 @@ function dump_prefs (file)
               "warn_divide_by_zero";
               "warn_function_name_clash";
               "warn_future_time_stamp";
+              "warn_imag_to_real";
               "warn_missing_semicolon";
               "warn_variable_switch_label";
               "whitespace_in_literal_matrix"];

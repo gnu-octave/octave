@@ -125,7 +125,8 @@ All Octave abbrevs start with a grave accent (`).")
   "Text functions in Octave (these names are also reserved).")
 
 (defvar octave-variables
-  '("EDITOR" "EXEC_PATH" "F_DUPFD" "F_GETFD" "F_GETFL" "F_SETFD"
+  '("DEFAULT_EXEC_PATH" "DEFAULT_LOADPATH"
+    "EDITOR" "EXEC_PATH" "F_DUPFD" "F_GETFD" "F_GETFL" "F_SETFD"
     "F_SETFL" "I" "IMAGEPATH" "INFO_FILE" "INFO_PROGRAM" "Inf" "J"
     "LOADPATH" "NaN" "OCTAVE_VERSION" "O_APPEND" "O_CREAT" "O_EXCL"
     "O_NONBLOCK" "O_RDONLY" "O_RDWR" "O_TRUNC" "O_WRONLY" "PAGER" "PS1"
@@ -139,12 +140,13 @@ All Octave abbrevs start with a grave accent (`).")
     "__program_invocation_name__" "__program_name__" "__realmax__"
     "__realmin__" "__stderr__" "__stdin__" "__stdout__" "ans" "argv"
     "automatic_replot" "beep_on_error" "completion_append_char"
+    "crash_dumps_octave_core"
     "default_return_value" "default_save_format"
     "define_all_return_values" "do_fortran_indexing" "e"
     "echo_executing_commands" "empty_list_elements_ok" "eps"
     "error_text" "gnuplot_binary" "history_file"
     "history_size" "ignore_function_time_stamp" "implicit_str_to_num_ok"
-    "inf" "nan" "nargin" "ok_to_lose_imaginary_part"
+    "inf" "nan" "nargin"
     "output_max_field_width" "output_precision"
     "page_output_immediately" "page_screen_output" "pi"
     "prefer_column_vectors" "prefer_zero_one_indexing"
@@ -152,11 +154,13 @@ All Octave abbrevs start with a grave accent (`).")
     "program_invocation_name" "program_name" "propagate_empty_matrices"
     "realmax" "realmin" "resize_on_range_error"
     "return_last_computed_value" "save_precision" "saving_history"
+    "sighup_dumps_octave_core" "sigterm_dumps_octave_core"
     "silent_functions" "split_long_rows" "stderr" "stdin" "stdout"
     "string_fill_char" "struct_levels_to_print"
     "suppress_verbose_help_message" "treat_neg_dim_as_zero"
     "warn_assign_as_truth_value" "warn_comma_in_global_decl"
     "warn_divide_by_zero" "warn_function_name_clash"
+    "warn_imag_to_real"
     "warn_missing_semicolon" "whitespace_in_literal_matrix")
   "Builtin variables in Octave.")
 

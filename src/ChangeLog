@@ -1,3 +1,23 @@
+2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.cc (Vwarn_imag_to_real): New variable.
+	(warn_imag_to_real): New function.
+	(symbols_of_ov): Add DEFVAR for warn_imag_to_real.
+	* ov.h (Vwarn_imag_to_real): Provide decl.
+
+	* ov.cc (Vok_to_lose_imaginary_part): Delete unused variable.
+	(ok_to_lose_imaginary_part): Delete unused function.
+	(symbols_of_ov): Delete DEFVAR for ok_to_lose_imaginary_part.
+	* ov.h (Vok_to_lose_imaginary_part): Delete decl.
+
+	* ov-complex.cc (octave_complex::double_value): Warn based on
+	Vwarn_imag_to_real instead of Vok_to_lose_imaginary_part.
+	(octave_complex::matrix_value): Likewise.
+	* ov-cx-mat.cc (octave_complex_matrix::double_value): Likewise.
+	(octave_complex_matrix::matrix_value): Likewise.
+
+	* octave.cc (maximum_braindamage): Don't set ok_to_lose_imaginary_part.
+
 2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.cc (sig_hup_or_term_handler): New function.

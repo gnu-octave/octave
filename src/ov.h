@@ -736,11 +736,8 @@ extern bool Vimplicit_num_to_str_ok;
 // considered an error.
 extern int Vimplicit_str_to_num_ok;
 
-// Should we allow silent conversion of complex to real when a real
-// type is what we're really looking for?  A positive value means yes.
-// A negative value means yes, but print a warning message.  Zero
-// means it should be considered an error.
-extern int Vok_to_lose_imaginary_part;
+// Should we warn about conversions from complex to real?
+extern int Vwarn_imag_to_real;
 
 // If TRUE, print the name along with the value.
 extern bool Vprint_answer_id_name;

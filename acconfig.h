@@ -43,6 +43,10 @@
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING
 
+/* Define to make Octave look for info files and function files in the
+   directory tree as the sources. */
+#undef RUN_IN_PLACE
+
 /* Define if this is Octave. */
 #undef OCTAVE_SOURCE
 

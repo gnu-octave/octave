@@ -1,7 +1,7 @@
 // defaults.h                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_defaults_h)
-#define _defaults_h 1
+#if !defined (octave_defaults_h)
+#define octave_defaults_h 1
 
 #ifndef DEFAULT_PAGER
 #define DEFAULT_PAGER %DEFAULT_PAGER%
@@ -30,6 +30,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifndef OCTAVE_HOME
 #define OCTAVE_HOME %OCTAVE_HOME%
+#endif
+
+#ifndef OCTAVE_LIB_DIR
+#define OCTAVE_LIB_DIR %OCTAVE_LIB_DIR%
+#endif
+
+#ifndef OCTAVE_INFO_DIR
+#define OCTAVE_INFO_DIR %OCTAVE_INFO_DIR%
 #endif
 
 #endif

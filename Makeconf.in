@@ -117,6 +117,14 @@ includedir = $(prefix)/include/octave
 # The type of computer we are running on.
 target_host_type = @target_host_type@
 
+# Normally this is the same as $(prefix).  With --run-in-place it is
+# $(srcdir).
+OCTAVE_HOME = @OCTAVE_HOME@
+
+# These are not used unless RUN_IN_PLACE is defined.
+OCTAVE_INFO_DIR = @OCTAVE_INFO_DIR@
+OCTAVE_LIB_DIR = @OCTAVE_LIB_DIR@
+
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 

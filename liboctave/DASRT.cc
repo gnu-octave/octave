@@ -242,17 +242,19 @@ DASRT::integrate (double tout)
 
       // DASRT_options
 
-      if (maximum_step_size () >= 0.0)
+      double mss = maximum_step_size ();
+      if (mss >= 0.0)
 	{
-	  rwork(1) = maximum_step_size ();
+	  rwork(1) = mss;
 	  info(6) = 1;
 	}
       else
 	info(6) = 0;
 
-      if (initial_step_size () >= 0.0)
+      double iss = initial_step_size ();
+      if (iss >= 0.0)
 	{
-	  rwork(2) = initial_step_size ();
+	  rwork(2) = iss;
 	  info(7) = 1;
 	}
       else

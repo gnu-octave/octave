@@ -16,6 +16,9 @@ END_DOC_STRING
 
 OPTION
   NAME = "tolerance"
+  DOC_ITEM
+Nonnegative relative tolerance.
+  END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "::sqrt (DBL_EPSILON)"
   SET_EXPR = "(val > 0.0) ? val : ::sqrt (DBL_EPSILON)"

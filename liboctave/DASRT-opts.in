@@ -4,6 +4,11 @@ INCLUDE = "DAERT.h"
 
 OPTION
   NAME = "absolute tolerance"
+  DOC_ITEM
+Absolute tolerance.  May be either vector or scalar.  If a vector, it
+must match the dimension of the state vector, and the relative
+tolerance must also be a vector of the same length.
+  END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
@@ -25,6 +30,16 @@ END_OPTION
 
 OPTION
   NAME = "relative tolerance"
+  DOC_ITEM
+Relative tolerance.  May be either vector or scalar.  If a vector, it
+must match the dimension of the state vector, and the absolute
+tolerance must also be a vector of the same length.
+
+The local error test applied at each integration step is
+@example
+  abs (local error in x(i)) <= rtol(i) * abs (Y(i)) + atol(i)
+@end example
+  END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
@@ -46,6 +61,12 @@ END_OPTION
 
 OPTION
   NAME = "initial step size"
+  DOC_ITEM
+Differential-algebraic problems may occaisionally suffer from severe
+scaling difficulties on the first step.  If you know a great deal
+about the scaling of your problem, you can help to alleviate this
+problem by specifying an initial stepsize.
+  END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "-1.0"
   SET_EXPR = "(val >= 0.0) ? val : -1.0"
@@ -53,6 +74,10 @@ END_OPTION
 
 OPTION
   NAME = "maximum order"
+  DOC_ITEM
+Restrict the maximum order of the solution method.  This option must
+be between 1 and 5, inclusive.
+  END_DOC_ITEM
   TYPE = "int"
   INIT_VALUE = "-1"
   SET_EXPR = "val"
@@ -60,6 +85,10 @@ END_OPTION
 
 OPTION
   NAME = "maximum step size"
+  DOC_ITEM
+Setting the maximum stepsize will avoid passing over very large
+regions.
+  END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "-1.0"
   SET_EXPR = "(val >= 0.0) ? val : -1.0"
@@ -67,6 +96,10 @@ END_OPTION
 
 OPTION
   NAME = "step limit"
+  DOC_ITEM
+Maximum number of integration steps to attempt on a single call to the
+underlying Fortran code.
+  END_DOC_ITEM
   TYPE = "int"
   INIT_VALUE = "-1"
   SET_EXPR = "(val >= 0) ? val : -1"

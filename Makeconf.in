@@ -312,7 +312,7 @@ pic/%.o : %.cc
 	  sed \
               $(DEPEND_EXTRA_SED_PATTERN) \
 	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
-	      -e 's,$*\.o,pic/& & $@,g' > $@-t
+	      -e 's,$*\.o,pic/& & $*.df $@,g' > $@-t
 	@mv $@-t $@
 
 # And one for .c files.too:

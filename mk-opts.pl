@@ -20,6 +20,7 @@
 # DOC_STRING doc END_DOC_STRING
 # OPTION
 #   NAME = string
+#   DOC_ITEM doc END_DOC_ITEM
 #   TYPE = string
 #   SET_ARG_TYPE = string   (optional, defaults to TYPE)
 #   INIT_VALUE = string | INIT_BODY code END_INIT_BODY
@@ -107,7 +108,7 @@ sub parse_input
 
 sub parse_option_block
 {
-  local ($have_init_body, $have_set_body, $have_set_code);
+  local ($have_doc_item, $have_init_body, $have_set_body, $have_set_code);
 
   while (<INFILE>)
     {
@@ -125,6 +126,12 @@ sub parse_option_block
           $optvar[$opt_num] = "x_$opt[$opt_num]";
           $kw_tok[$opt_num] = [ split (/\s+/, $name[$opt_num]) ];
           $n_toks[$opt_num] = @{$kw_tok[$opt_num]};
+        }
+      elsif (/^\s*DOC_ITEM\s*$/)
+        {
+          die "duplicate DOC_ITEM" if ($have_doc_item);
+          &parse_doc_item;
+          $have_doc_item = 1;
         }
       elsif (/^\s*TYPE\s*=\s*"(.*)"\s*$/)
         {
@@ -290,6 +297,18 @@ sub parse_doc_string
     }
 
   $doc_string =~ s/\n/\\n\\\n/g;
+}
+
+sub parse_doc_item
+{
+  while (<INFILE>)
+    {
+      last if (/^\s*END_DOC_ITEM\s*$/);
+
+      $doc_item[$opt_num] .= $_;
+    }
+
+  $doc_item[$opt_num] =~ s/\n/\\n\\\n/g;
 }
 
 sub parse_init_body
@@ -794,7 +813,21 @@ sub emit_options_function
   print "DEFUN_DLD ($opt_fcn_name, args, ,
   \"-*- texinfo -*-\\n\\
 \@deftypefn {Loadable Function} {} $opt_fcn_name (\@var{opt}, \@var{val})\\n\\
-$doc_string\@end deftypefn\")
+$doc_string\\n\\
+Options include\\n\\
+\\n\\
+\@table \@code\\n\\\n";
+
+  for ($i = 0; $i < $opt_num; $i++)
+    {
+      print "\@item \\\"$name[$i]\\\"\\n\\\n";
+      if ($doc_item[$i] ne "")
+	{
+	  print "$doc_item[$i]";
+	}
+    }
+
+  print "\@end table\\n\\\n\@end deftypefn\")
 {
   octave_value_list retval;
 

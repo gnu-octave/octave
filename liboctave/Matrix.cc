@@ -1044,7 +1044,7 @@ Matrix::operator * (const ColumnVector& a) const
   double beta  = 0.0;
   int i_one = 1;
 
-  double *y = new double [a.len];
+  double *y = new double [nr];
 
   F77_FCN (dgemv) (&trans, &nr, &nc, &alpha, data, &ld, a.data,
 		   &i_one, &beta, y, &i_one, 1L); 
@@ -3315,7 +3315,7 @@ ComplexMatrix::operator * (const ComplexColumnVector& a) const
   Complex beta (0.0);
   int i_one = 1;
 
-  Complex *y = new Complex [a.len];
+  Complex *y = new Complex [nr];
 
   F77_FCN (zgemv) (&trans, &nr, &nc, &alpha, data, &ld, a.data,
 		   &i_one, &beta, y, &i_one, 1L); 

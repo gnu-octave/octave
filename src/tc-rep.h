@@ -284,7 +284,7 @@ private:
 
 // Assignment.
 
-  void assign (const tree_constant& rhs, const Octave_object& args);
+  void assign (tree_constant& rhs, const Octave_object& args);
 
   void do_scalar_assignment (const tree_constant& rhs,
 			     const Octave_object& args);

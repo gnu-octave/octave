@@ -651,7 +651,7 @@ tree_multi_val_ret::eval (int print)
 // A base class for objects that can be evaluated with argument lists.
 
 tree_constant
-tree_fvc::assign (const tree_constant& t, const Octave_object& args)
+tree_fvc::assign (tree_constant& t, const Octave_object& args)
 {
   panic_impossible ();
   return tree_constant ();
@@ -694,7 +694,7 @@ tree_identifier::document (char *s)
 }
 
 tree_constant
-tree_identifier::assign (const tree_constant& rhs)
+tree_identifier::assign (tree_constant& rhs)
 {
   tree_constant retval;
 
@@ -725,7 +725,7 @@ tree_identifier::assign (const tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (const tree_constant& rhs, const Octave_object& args)
+tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
 {
   tree_constant retval;
 
@@ -772,7 +772,7 @@ tree_identifier::assign (const tree_constant& rhs, const Octave_object& args)
 }
 
 tree_constant
-tree_identifier::assign (SLList<char*> list, const tree_constant& rhs)
+tree_identifier::assign (SLList<char*> list, tree_constant& rhs)
 {
   tree_constant retval;
 
@@ -804,7 +804,7 @@ tree_identifier::assign (SLList<char*> list, const tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (SLList<char*> list, const tree_constant& rhs,
+tree_identifier::assign (SLList<char*> list, tree_constant& rhs,
 			 const Octave_object& args)
 {
   tree_constant retval;
@@ -1099,7 +1099,7 @@ tree_indirect_ref::name (void)
 }
 
 tree_constant
-tree_indirect_ref::assign (const tree_constant& t)
+tree_indirect_ref::assign (tree_constant& t)
 {
   tree_constant retval;
 
@@ -1112,7 +1112,7 @@ tree_indirect_ref::assign (const tree_constant& t)
 }
 
 tree_constant
-tree_indirect_ref::assign (const tree_constant& t, const Octave_object& args)
+tree_indirect_ref::assign (tree_constant& t, const Octave_object& args)
 {
   tree_constant retval;
 

@@ -156,7 +156,7 @@ public:
 
 // Indexed assignment.
 
-  tree_constant assign (const tree_constant& rhs, const Octave_object& args)
+  tree_constant assign (tree_constant& rhs, const Octave_object& args)
     {
       if (rep->count > 1)
 	{
@@ -170,11 +170,13 @@ public:
 
 // Simple structure assignment.
 
-  tree_constant assign_map_element (SLList<char*>& list, tree_constant& rhs);
+  tree_constant assign_map_element (SLList<char*>& list,
+				    tree_constant& rhs);
 
 // Indexed structure assignment.
 
-  tree_constant assign_map_element (SLList<char*>& list, tree_constant& rhs,
+  tree_constant assign_map_element (SLList<char*>& list,
+				    tree_constant& rhs,
 				    const Octave_object& args);
 
 // Type.  It would be nice to eliminate the need for this.

@@ -158,7 +158,7 @@ tree_constant::make_unique_map (void)
 
 tree_constant
 tree_constant::assign_map_element (SLList<char*>& list,
-				   const tree_constant& rhs)
+				   tree_constant& rhs)
 {
   tree_constant_rep *tmp_rep = make_unique_map ();
 
@@ -190,7 +190,7 @@ tree_constant::assign_map_element (SLList<char*>& list,
 
 tree_constant
 tree_constant::assign_map_element (SLList<char*>& list,
-				   const tree_constant& rhs,
+				   tree_constant& rhs,
 				   const Octave_object& args)
 {
   tree_constant_rep *tmp_rep = make_unique_map ();

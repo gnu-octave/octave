@@ -1,3 +1,8 @@
+2002-08-05  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+
+	* plot/__errcomm__.m: If format is not specified, default to error
+	bar format.
+
 2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/popen2.m: Use F_SETFL and O_NONBLOCK, not

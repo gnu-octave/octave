@@ -56,7 +56,6 @@ function __errcomm__ (caller, varargin)
       sz = size (a);
       ndata = 1;
       arg1 = a;
-      fmt = " ";
       while (nargin)
 	nargin--;
 	a = varargin{k++};
@@ -87,7 +86,7 @@ function __errcomm__ (caller, varargin)
     endwhile
 
     if (! isstr (a))
-      fmt = " ";
+      fmt = "~";
       cmd = "__errplot__ (arg1";
       for i = 2:ndata,
 	cmd = sprintf ("%s, arg%d", cmd, i);

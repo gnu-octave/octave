@@ -62,7 +62,7 @@ octave_builtin::subsref (const std::string& type,
     {
     case '(':
       {
-	int tmp_nargout = (type.length () > 0 && nargout == 0) ? 1 : nargout;
+	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
 	retval = do_multi_index_op (tmp_nargout, idx.front ());
       }

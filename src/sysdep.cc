@@ -75,6 +75,7 @@ LOSE! LOSE!
 #include "input.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "pager.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "utils.h"
@@ -414,7 +415,10 @@ DEFUN (pause, args, ,
 	  if (xisnan (dval))
 	    warning ("pause: NaN is an invalid delay");
 	  else if (xisinf (dval))
-	    kbhit ();
+	    {
+	      flush_octave_stdout ();
+	      kbhit ();
+	    }
 	  else
 	    {
 	      int delay = NINT (dval);
@@ -424,7 +428,10 @@ DEFUN (pause, args, ,
 	}
     }
   else
-    kbhit ();
+    {
+      flush_octave_stdout ();
+      kbhit ();
+    }
 
   return retval;
 }

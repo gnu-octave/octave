@@ -1,3 +1,9 @@
+Thu Jan 28 21:05:32 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-config-vals): Do substitution on
+	CANONICAL_HOST_TYPE, not TARGET_HOST_TYPE.
+	(do-subst-default-vals): Likewise.
+
 Wed Jan 20 12:56:02 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't put -O in FFLAGS for powerpc-apple-machten*.

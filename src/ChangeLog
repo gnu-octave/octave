@@ -1,3 +1,11 @@
+Thu Jan 28 21:29:16 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (Fcomputer): Use CANONICAL_HOST_TYPE, not TARGET_HOST_TYPE.
+	(octave_config_info): Likewise.
+	* version.h: Ditto.
+
+	* sysdep.cc (Fpause): Flush output before getting user input.
+
 Wed Jan 27 14:18:29 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (DEFFUN_PATTERN, DEFVAR_PATTERN): Use egrep again.

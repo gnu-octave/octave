@@ -342,7 +342,7 @@ sed < $< \
   -e "s;%RLD_FLAG%;\"${RLD_FLAG}\";" \
   -e "s;%SH_LD%;\"${SH_LD}\";" \
   -e "s;%SH_LDFLAGS%;\"${SH_LDFLAGS}\";" \
-  -e "s;%TARGET_HOST_TYPE%;\"${canonical_host_type}\";" \
+  -e "s;%CANONICAL_HOST_TYPE%;\"${canonical_host_type}\";" \
   -e "s;%TERMLIBS%;\"${TERMLIBS}\";" \
   -e "s;%VERSION%;\"${version}\";" \
   -e "s;%XTRA_CFLAGS%;\"${XTRA_CFLAGS}\";" \
@@ -374,7 +374,7 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
   -e "s;%OCTAVE_OCTFILEDIR%;\"${octfiledir}\";" \
   -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
-  -e "s;%TARGET_HOST_TYPE%;\"${canonical_host_type}\";"
+  -e "s;%CANONICAL_HOST_TYPE%;\"${canonical_host_type}\";"
 $(top_srcdir)/move-if-change $@.tmp $@
 endef
 

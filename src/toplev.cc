@@ -210,10 +210,10 @@ Have Octave ask the system, \"What kind of computer are you?\"")
 
   string msg;
 
-  if (strcmp (TARGET_HOST_TYPE, "unknown") == 0)
+  if (strcmp (CANONICAL_HOST_TYPE, "unknown") == 0)
     msg = "Hi Dave, I'm a HAL-9000";
   else
-    msg = TARGET_HOST_TYPE;
+    msg = CANONICAL_HOST_TYPE;
 
   if (nargout == 0)
     octave_stdout << msg << "\n";
@@ -591,7 +591,7 @@ information.")
   m ["localoctfilepath"] = OCTAVE_LOCALOCTFILEPATH;
   m ["fcnfilepath"] = OCTAVE_FCNFILEPATH;
   m ["imagepath"] = OCTAVE_IMAGEPATH;
-  m ["canonical_host_type"] = TARGET_HOST_TYPE;
+  m ["canonical_host_type"] = CANONICAL_HOST_TYPE;
   m ["configure_options"] = config_opts;
   m ["F77"] = F77;
   m ["FFLAGS"] = FFLAGS;

@@ -65,6 +65,28 @@ octave_lvalue::do_unary_op (octave_value::unary_op op)
     *val = tmp;
 }
 
+octave_value
+octave_lvalue::value (void)
+{
+  octave_value retval;
+
+  if (idx.empty ())
+    retval = *val;
+  else
+    {
+      if (val->is_constant ())
+	retval = val->subsref (type, idx);
+      else
+	{
+	  octave_value_list t = val->subsref (type, idx, 1);
+	  if (t.length () > 0)
+	    retval = t(0);	      
+	}
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

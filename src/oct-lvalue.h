@@ -82,8 +82,7 @@ public:
 
   void do_unary_op (octave_value::unary_op op);
 
-  octave_value value (void)
-    { return idx.empty () ? *val : val->subsref (type, idx); }
+  octave_value value (void);
 
   const octave_value *object (void) const { return val; }
 

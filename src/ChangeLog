@@ -1,5 +1,8 @@
 2004-09-15  John W. Eaton  <jwe@octave.org>
 
+	* ov.cc (octave_value::assign): Handle subsref for containers.
+	* oct-lvalue.cc (octave_lvale::value): Likewise.
+
 	* DLD-FUNCTIONS/sort.cc (mx_sort): Return octave_value, not
 	octave_value list.
 

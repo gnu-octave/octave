@@ -653,7 +653,7 @@ ordered lists.\n\
   int nargin = args.length ();
   sortmode smode = ASCENDING;
 
-  if (nargin < 1 && nargin > 3)
+  if (nargin < 1 || nargin > 3)
     {
       print_usage ("sort");
       return retval;

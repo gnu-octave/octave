@@ -926,7 +926,15 @@ octave_value::assign (assign_op op, const std::string& type,
       // a specific function to call to handle the op= operation for
       // the types we have.
 
-      octave_value t = subsref (type, idx);
+      octave_value t;
+      if (is_constant ())
+	t = subsref (type, idx);
+      else
+	{
+	  octave_value_list tl = subsref (type, idx, 1);
+	  if (tl.length () > 0)
+	    t = tl(0);
+	}
 
       if (! error_state)
 	{

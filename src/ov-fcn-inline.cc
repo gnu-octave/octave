@@ -574,11 +574,13 @@ DEFUN (inline, args, ,
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, ...)\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
-If called with a single argument, the generated function is\n\
-assumed to have a single argument and will be defined as the\n\
-isolated lower case character, except i or j, that is closest\n\
-to x. If more than argument is the same distance from x, the\n\
-one later in the alphabet is chosen.\n\
+If called with a single argument, the arguments of the generated\n\
+function are extracted from the function itself. The generated\n\
+function arguments will then be in alphabetical order. It should\n\
+be noted that i, and j are ignored as arguments due to the\n\
+ambiguity between their use as a variable or their use as an inbuilt\n\
+constant. All arguments followed by a parentheses are considered\n\
+to be functions.\n\
 \n\
 If the second and subsequent arguments are character strings,\n\
 they are the names of the arguments of the function.\n\
@@ -602,34 +604,70 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
 	  if (nargin == 1)
 	    {
-	      int dist = -1;
-	      char c = '\0';
-
-	      fargs.resize (1);
-	      fargs(0) = "x";
-
-	      int fun_len = fun.length ();
-
-	      for (int i = 0; i < fun_len; i++)
+	      bool is_arg = false;
+	      std::string tmp_arg;
+	      size_t i = 0;
+	      
+	      while (i < fun.length ())
 		{
-		  char new_c = fun[i];
+		  char c = fun[i++];
 
-		  if (new_c != 'i' && new_c != 'j'
-		      && islower (new_c)
-		      && (i == 0 || ! islower (fun[i-1]))
-		      && (i == fun_len || ! islower (fun[i+1])))
+		  if (! isalpha (c) || c == '_')
+		    if (! is_arg)
+		      continue;
+		    else if (isdigit (c))
+			tmp_arg.append (1, c);
+		    else
+		      {
+			bool have_arg = false;
+
+			// Before we do anything remove trailing whitespaces
+			while (i < fun.length () && isspace (c))
+			  c = fun[i++];
+
+			// Do we have a variable or a function?
+			if (c != '(')
+			  {
+			    for (int j = 0; j < fargs.length (); j++)
+			      if (tmp_arg == fargs (j))
+				{
+				  have_arg = true;
+				  break;
+				}
+
+			    // "i" and "j" aren't valid arguments
+			    if (! have_arg && tmp_arg != "i" && tmp_arg != "j")
+			      fargs.append (tmp_arg);
+			  }
+
+			tmp_arg = std::string ();
+			is_arg = false;
+		      }
+		  else
 		    {
-		      int new_dist = std::abs (new_c - 'x');
+		      tmp_arg.append (1, c);
+		      is_arg = true;
 
-		      if (dist == -1 || new_dist < dist
-			  || (new_dist == dist && c < new_c))
+		      if (i == fun.length ())
 			{
-			  fargs(0) = new_c;
-			  dist = new_dist;
-			  c = new_c;
+			  bool have_arg = false;
+		  
+			  for (int j = 0; j < fargs.length (); j++)
+			    if (tmp_arg == fargs (j))
+			      {
+				have_arg = true;
+				break;
+			      }
+			  
+			  if (! have_arg && tmp_arg != "i" && tmp_arg != "j")
+			    fargs.append (tmp_arg);
 			}
 		    }
 		}
+
+	      // Sort the arguments into ascii order
+	      fargs.qsort ();
+
 	    }
 	  else if (nargin == 2 && args(1).is_numeric_type ())
 	    {

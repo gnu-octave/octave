@@ -54,8 +54,76 @@ static int Vvariables_can_hide_functions;
 octave_allocator
 symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
 
+#define SYMBOL_DEF symbol_record::symbol_def
+
+string
+SYMBOL_DEF::type_as_string (void) const
+{
+  string retval = "<unknown type>";
+
+  if (is_user_variable ())
+    retval = "user-defined variable";
+  else if (is_text_function ())
+    retval = "built-in text function";
+  else if (is_mapper_function ())
+    retval = "built-in mapper function";
+  else if (is_user_function ())
+    retval = "user-defined function";
+  else if (is_builtin_constant ())
+    retval = "built-in constant";
+  else if (is_builtin_variable ())
+    retval = "built-in variable";
+  else if (is_builtin_function ())
+    retval = "built-in function";
+  else if (is_dld_function ())
+    retval = "dynamically-linked function";
+
+  return retval;
+}
+
+string
+SYMBOL_DEF::which (const string& name)
+{
+  string retval;
+
+  if (is_user_function () || is_dld_function ())
+    {
+      octave_function *defn = definition.function_value ();
+
+      if (defn)
+	retval = defn->fcn_file_name ();
+    }
+  else
+    retval = name + " is a " + type_as_string ();
+
+  return retval;
+}
+
 void
-symbol_record::symbol_def::dump_symbol_info (void)
+SYMBOL_DEF::which (ostream& os, const string& name)
+{
+  os << name;
+
+  if (is_user_function () || is_dld_function ())
+    {
+      octave_function *defn = definition.function_value ();
+
+      string fn = defn ? defn->fcn_file_name () : string ();
+
+      if (! fn.empty ())
+	{
+	  os << " is the " << type_as_string () << " from the file\n"
+	     << fn << "\n";
+
+	  return;
+	}
+    }
+
+  os << " is a " << type_as_string () << "\n";
+}
+
+void
+SYMBOL_DEF::dump_symbol_info (void)
 {
   octave_stdout << "symbol_def::count: " << count << "\n";
   octave_stdout << "def.type_name():   " << definition.type_name () << "\n";
@@ -558,17 +626,17 @@ matches_patterns (const string& name, const string_vector& pats)
 }
 
 Array<symbol_record *>
-symbol_table::symbol_list (int& count, const string_vector& pats,
+symbol_table::symbol_list (const string_vector& pats,
 			   unsigned int type, unsigned int scope) const
 {
-  count = 0;
+  int count = 0;
 
   int n = size ();
 
-  if (n == 0)
-    return 0;
-
   Array<symbol_record *> symbols (n);
+
+  if (n == 0)
+    return symbols;
 
   for (unsigned int i = 0; i < table_size; i++)
     {
@@ -598,11 +666,10 @@ symbol_table::symbol_list (int& count, const string_vector& pats,
 }
 
 string_vector
-symbol_table::name_list (int& count, const string_vector& pats, bool sort,
+symbol_table::name_list (const string_vector& pats, bool sort,
 			 unsigned int type, unsigned int scope) const
 {
-  Array<symbol_record *> symbols
-    = symbol_list (count, pats, type, scope);
+  Array<symbol_record *> symbols = symbol_list (pats, type, scope);
 
   string_vector names;
 
@@ -639,17 +706,15 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 			  ostream& os, bool show_verbose,
 			  unsigned type, unsigned scope)
 {
-  int count;
-
   int status = 0;
 
   if (show_verbose)
     {
-      Array<symbol_record *> symbols = symbol_list (count, argv, type, scope);
+      Array<symbol_record *> symbols = symbol_list (argv, type, scope);
 
       int len = symbols.length ();
 
-      if (len > 0 && count > 0)
+      if (len > 0)
 	{
 	  os << "\n" << header << "\n\n"
 		     << "prot  type                       rows   cols  name\n"
@@ -665,9 +730,9 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
     }
   else
     {
-      string_vector symbols = name_list (count, argv, 1, type, scope);
+      string_vector symbols = name_list (argv, 1, type, scope);
 
-      if (symbols.length () > 0 && count > 0)
+      if (! symbols.empty ())
 	{
 	  os << "\n" << header << "\n\n";
 
@@ -680,16 +745,18 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
   return status;
 }
 
-symbol_record **
-symbol_table::glob (int& count, const string& pat, unsigned int type,
+Array<symbol_record *>
+symbol_table::glob (const string& pat, unsigned int type,
 		    unsigned int scope) const
 {
-  count = 0;
-  int n = size ();
-  if (n == 0)
-    return 0;
+  int count = 0;
 
-  symbol_record **symbols = new symbol_record * [n+1];
+  int n = size ();
+
+  Array<symbol_record *> symbols (n);
+
+  if (n == 0)
+    return symbols;
 
   for (unsigned int i = 0; i < table_size; i++)
     {
@@ -708,13 +775,14 @@ symbol_table::glob (int& count, const string& pat, unsigned int type,
 	  if ((type & my_type) && (scope & my_scope)
 	      && pattern.match (ptr->name ()))
 	    {
-	      symbols[count++] = ptr;
+	      symbols(count++) = ptr;
 	    }
 
 	  ptr = ptr->next ();
 	}
     }
-  symbols[count] = 0;
+
+  symbols.resize (count);
 
   return symbols;
 }

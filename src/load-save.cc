@@ -2379,41 +2379,35 @@ static int
 save_vars (ostream& os, const string& pattern, bool save_builtins,
 	   load_save_format fmt, int save_as_floats)
 {
-  int count;
+  Array<symbol_record *> vars = curr_sym_tab->glob
+    (pattern, symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
 
-  symbol_record **vars = curr_sym_tab->glob
-    (count, pattern, symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
+  int saved = vars.length ();
 
-  int saved = count;
-
-  int i;
-
-  for (i = 0; i < count; i++)
+  for (int i = 0; i < saved; i++)
     {
-      do_save (os, vars[i], fmt, save_as_floats);
+      do_save (os, vars(i), fmt, save_as_floats);
 
       if (error_state)
 	break;
     }
 
-  delete [] vars;
-
   if (! error_state && save_builtins)
     {
-      symbol_record **vars = global_sym_tab->glob
-	(count, pattern, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
+      vars = global_sym_tab->glob
+	(pattern, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
+
+      int count = vars.length ();
 
       saved += count;
 
-      for (i = 0; i < count; i++)
+      for (int i = 0; i < count; i++)
 	{
-	  do_save (os, vars[i], fmt, save_as_floats);
+	  do_save (os, vars(i), fmt, save_as_floats);
 
 	  if (error_state)
 	    break;
 	}
-
-      delete [] vars;
     }
 
   return saved;

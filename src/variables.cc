@@ -103,7 +103,7 @@ is_text_function_name (const string& s)
   return (sr && sr->is_text_function ());
 }
 
-// Is this a mapper function?
+// Is this a built-in function?
 
 bool
 is_builtin_function_name (const string& s)
@@ -1075,10 +1075,6 @@ With -x, exclude the named variables")
 	    }
 	}
 
-      int lcount = 0;
-      int gcount = 0;
-      int fcount = 0;
-
       string_vector lvars;
       string_vector gvars;
       string_vector fcns;
@@ -1088,13 +1084,13 @@ With -x, exclude the named variables")
 	  string_vector tmp;
 
 	  lvars = curr_sym_tab->name_list
-	    (lcount, tmp, false, SYMTAB_VARIABLES, SYMTAB_LOCAL_SCOPE);
+	    (tmp, false, SYMTAB_VARIABLES, SYMTAB_LOCAL_SCOPE);
 
 	  gvars = curr_sym_tab->name_list
-	    (gcount, tmp, false, SYMTAB_VARIABLES, SYMTAB_GLOBAL_SCOPE);
+	    (tmp, false, SYMTAB_VARIABLES, SYMTAB_GLOBAL_SCOPE);
 
 	  fcns = global_sym_tab->name_list
-	    (fcount, tmp, false,
+	    (tmp, false,
 	     symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION,
 	     SYMTAB_ALL_SCOPES);
 	}
@@ -1111,8 +1107,9 @@ With -x, exclude the named variables")
 	    {
 	      glob_match pattern (patstr);
 
-	      int i;
-	      for (i = 0; i < lcount; i++)
+	      int lcount = lvars.length ();
+
+	      for (int i = 0; i < lcount; i++)
 		{
 		  string nm = lvars[i];
 		  int match = pattern.match (nm);
@@ -1120,26 +1117,27 @@ With -x, exclude the named variables")
 		    curr_sym_tab->clear (nm);
 		}
 
-	      int count;
-	      for (i = 0; i < gcount; i++)
+	      int gcount = gvars.length ();
+	      for (int i = 0; i < gcount; i++)
 		{
 		  string nm = gvars[i];
 		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
-		      count = curr_sym_tab->clear (nm);
+		      int count = curr_sym_tab->clear (nm);
 		      if (count > 0)
 			global_sym_tab->clear (nm, clear_user_functions);
 		    }
 		}
 
-	      for (i = 0; i < fcount; i++)
+	      int fcount = fcns.length ();
+	      for (int i = 0; i < fcount; i++)
 		{
 		  string nm = fcns[i];
 		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
-		      count = curr_sym_tab->clear (nm);
+		      curr_sym_tab->clear (nm);
 		      global_sym_tab->clear (nm, clear_user_functions);
 		    }
 		}

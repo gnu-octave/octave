@@ -1,3 +1,33 @@
+1999-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_record::symbol_def::type_as_string): New function.
+
+	* symtab.cc (symbol_record::which): New functions.
+	* help.cc (do_which): New functions.
+	(Fwhich): Use them.
+
+	* help.cc (help_from_symbol_table, help_from_file): New functions.
+	(builtin_help): Use them.
+
+	* help.cc (do_type): New function.
+	(Ftype): Use them.
+
+	* help.cc (print_symbol_type): Delete.
+
+	* symtab.cc (symbol_table::name_list): Delete count arg.
+	(symbol_table::symbol_list): Likewise.
+	(symbol_table::glob): Likewise.  Also return Array<symbol_record *>
+	instead of symbol_record **.
+	Change all callers.
+	* help.cc (names, display_symtab_names): Delete count arg.
+
+	* help.cc (print_symbol_type, Ftype): No longer need to look up
+	fcn_file_name in the loadpath.
+
+	* help.cc (print_symbol_type): Handle dld functions.
+	(help_from_symbol_table, help_from_file): New functions.
+	(builtin_help): Use them.
+
 1999-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cell.cc (Fiscell, Fcell): New Functions.

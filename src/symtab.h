@@ -141,6 +141,12 @@ private:
 
     string type_name (void) const { return definition.type_name (); }
 
+    string type_as_string (void) const;
+
+    string which (const string& name);
+
+    void which (ostream& os, const string& name);
+
     void define (const octave_value& val, unsigned int sym_type)
       {
 	definition = val;
@@ -308,6 +314,13 @@ public:
 
   string type_name (void) const { return definition->type_name (); }
 
+  string type_as_string (void) const
+    { return definition->type_as_string (); }
+
+  string which (void) { return definition->which (name ()); }
+
+  void which (ostream& os) { definition->which (os, name ()); }
+
   octave_value& variable_value (void);
   octave_lvalue variable_reference (void);
 
@@ -402,13 +415,13 @@ public:
   int size (void) const;
 
   Array<symbol_record *>
-  symbol_list (int& count, const string_vector& pats = string_vector (),
+  symbol_list (const string_vector& pats = string_vector (),
 	       unsigned int type = SYMTAB_ALL_TYPES,
 	       unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
 
   string_vector
-  name_list (int& count, const string_vector& pats = string_vector (),
+  name_list (const string_vector& pats = string_vector (),
 	     bool sort = false, unsigned int type = SYMTAB_ALL_TYPES,
 	     unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
@@ -417,9 +430,9 @@ public:
 		  ostream& os, bool show_verbose,
 		  unsigned type, unsigned scope);
   
-  symbol_record **glob (int& count, const string& pat = string ("*"),
-			unsigned int type = SYMTAB_ALL_TYPES,
-			unsigned int scope = SYMTAB_ALL_SCOPES) const;
+  Array<symbol_record *> glob (const string& pat = string ("*"),
+			       unsigned int type = SYMTAB_ALL_TYPES,
+			       unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
   void push_context (void);
 

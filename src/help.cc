@@ -301,11 +301,11 @@ static help_list keywords[] =
 // Return a copy of the operator or keyword names.
 
 static string_vector
-names (help_list *lst, int& count)
+names (help_list *lst)
 {
   string_vector retval;
 
-  count = 0;
+  int count = 0;
   help_list *ptr = lst;
   while (ptr->name)
     {
@@ -345,30 +345,21 @@ keyword_help (void)
 string_vector
 make_name_list (void)
 {
-  int key_len = 0;
-  int glb_len = 0;
-  int top_len = 0;
-  int lcl_len = 0;
+  string_vector key = names (keyword_help ());
+  int key_len = key.length ();
 
-  string_vector key;
-  string_vector glb;
-  string_vector top;
+  string_vector glb = global_sym_tab->name_list ();
+  int glb_len = glb.length ();
+
+  string_vector top = top_level_sym_tab->name_list ();
+  int top_len = top.length ();
+
   string_vector lcl;
-  string_vector ffl;
-
-  // Each of these functions returns a new vector of pointers to new
-  // strings.
-
-  key = names (keyword_help (), key_len);
-
-  glb = global_sym_tab->name_list (glb_len);
-
-  top = top_level_sym_tab->name_list (top_len);
-
   if (top_level_sym_tab != curr_sym_tab)
-    lcl = curr_sym_tab->name_list (lcl_len);
+    lcl = curr_sym_tab->name_list ();
+  int lcl_len = lcl.length ();
 
-  ffl = octave_fcn_file_name_cache::list_no_suffix ();
+  string_vector ffl = octave_fcn_file_name_cache::list_no_suffix ();
   int ffl_len = ffl.length ();
 
   int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
@@ -418,9 +409,7 @@ static void
 display_names_from_help_list (ostream& os, help_list *list,
 			      const char *desc)
 {
-  int count = 0;
-
-  string_vector symbols = names (list, count);
+  string_vector symbols = names (list);
 
   if (! symbols.empty ())
     {
@@ -432,90 +421,9 @@ display_names_from_help_list (ostream& os, help_list *list,
     }
 }
 
-static string
-print_symbol_type (ostream& os, symbol_record *sym_rec,
-		   const string& name, int print)
-{
-  string retval;
-
-  if (sym_rec->is_user_function ())
-    {
-      octave_value tmp = sym_rec->def ();
-
-      octave_function *defn = tmp.function_value ();
-
-      string fn = defn ? defn->fcn_file_name () : string ();
-
-      if (! fn.empty ())
-	{
-	  string ff = fcn_file_in_path (fn);
-
-	  ff = ff.length () > 0 ? ff : fn;
-
-	  if (print)
-	    os << name
-	       << " is the function defined from: "
-	       << ff << "\n";
-	  else
-	    retval = ff;
-	}
-      else
-	{
-	  if (print)
-	    os << name << " is a user-defined function\n";
-	  else
-	    retval = "user-defined function";
-	}
-    }
-  else if (sym_rec->is_text_function ())
-    {
-      if (print)
-	os << name << " is a built-in text-function\n";
-      else
-	retval = "built-in text-function";
-    }
-  else if (sym_rec->is_builtin_function ())
-    {
-      if (print)
-	os << name << " is a built-in function\n";
-      else
-	retval = "built-in function";
-    }
-  else if (sym_rec->is_user_variable ())
-    {
-      if (print)
-	os << name << " is a user-defined variable\n";
-      else
-	retval = "user-defined variable";
-    }
-  else if (sym_rec->is_builtin_variable ())
-    {
-      if (print)
-	os << name << " is a built-in variable\n";
-      else
-	retval = "built-in variable";
-    }
-  else if (sym_rec->is_builtin_constant ())
-    {
-      if (print)
-	os << name << " is a built-in constant\n";
-      else
-	retval = "built-in variable";
-    }
-  else
-    {
-      if (print)
-	os << "which: `" << name << "' has unknown type\n";
-      else
-	retval = "unknown type";
-    }
-
-  return retval;
-}
-
 static void
 display_symtab_names (ostream& os, const string_vector& names,
-		      int /* count */, const string& desc)
+		      const string& desc)
 {
   if (! names.empty ())
     {
@@ -530,10 +438,9 @@ display_symtab_names (ostream& os, const string_vector& names,
 #define LIST_SYMBOLS(type, msg) \
   do \
     { \
-      int count; \
       string_vector names \
-	= global_sym_tab->name_list (count, string_vector (), true, type); \
-      display_symtab_names (octave_stdout, names, count, msg); \
+	= global_sym_tab->name_list (string_vector (), true, type); \
+      display_symtab_names (octave_stdout, names, msg); \
     } \
   while (0)
 
@@ -776,6 +683,50 @@ help_from_list (ostream& os, const help_list *list,
   return false;
 }
 
+static bool
+help_from_symbol_table (ostream& os, const string& nm)
+{
+  bool retval = false;
+
+  symbol_record *sym_rec = lookup_by_name (nm, 0);
+
+  if (sym_rec && sym_rec->is_defined ())
+    {
+      string h = sym_rec->help ();
+
+      if (h.length () > 0)
+	{
+	  sym_rec->which (os);
+	  os << "\n";
+	  display_help_text (os, h);
+	  os << "\n";
+	  retval = true;
+	}
+    }
+
+  return retval;
+}
+
+static bool
+help_from_file (ostream& os, const string& nm)
+{
+  bool retval = false;
+
+  string path = fcn_file_in_path (nm);
+
+  string h = get_help_from_file (path);
+
+  if (! h.empty ())
+    {
+      os << nm << " is the file: " << path << "\n\n";
+      display_help_text (os, h);
+      os << "\n";
+      retval = true;
+    }
+
+  return retval;
+}
+
 static void
 builtin_help (int argc, const string_vector& argv)
 {
@@ -790,34 +741,11 @@ builtin_help (int argc, const string_vector& argv)
       if (help_from_list (octave_stdout, kw_help_list, argv[i], 0))
 	continue;
 
-      symbol_record *sym_rec = lookup_by_name (argv[i], 0);
+      if (help_from_symbol_table (octave_stdout, argv[i]))
+	continue;
 
-      if (sym_rec && sym_rec->is_defined ())
-	{
-	  string h = sym_rec->help ();
-
-	  if (h.length () > 0)
-	    {
-	      print_symbol_type (octave_stdout, sym_rec, argv[i], 1);
-	      octave_stdout << "\n";
-	      display_help_text (octave_stdout, h);
-	      octave_stdout << "\n";
-	      continue;
-	    }
-	}
-
-      string path = fcn_file_in_path (argv[i]);
-
-      string h = get_help_from_file (path);
-
-      if (! h.empty ())
-	{
-	  octave_stdout << argv[i] << " is the file: "
-	    << path << "\n\n";
-	  display_help_text (octave_stdout, h);
-	  octave_stdout << "\n";
-	  continue;
-	}
+      if (help_from_file (octave_stdout, argv[i]))
+	continue;
 
       octave_stdout << "\nhelp: sorry, `" << argv[i]
 		    << "' is not documented\n"; 
@@ -867,6 +795,122 @@ using the command @kbd{C-h}.\n\
   return retval;
 }
 
+static void
+do_type (ostream& os, const string& name, bool pr_type_info,
+	 bool quiet, bool pr_orig_txt)
+{
+  symbol_record *sym_rec = lookup_by_name (name, 0);
+
+  if (sym_rec && sym_rec->is_defined ())
+    {
+      if (sym_rec->is_user_function ())
+	{
+	  octave_value tmp = sym_rec->def ();
+		  
+	  octave_function *defn = tmp.function_value ();
+
+	  string fn = defn ? defn->fcn_file_name () : string ();
+
+	  if (pr_orig_txt && ! fn.empty ())
+	    {
+	      ifstream fs (fn.c_str (), ios::in);
+
+	      if (fs)
+		{
+		  if (pr_type_info && ! quiet)
+		    os << name << " is the function defined from: "
+		       << fn << "\n\n";
+
+		  char ch;
+
+		  while (fs.get (ch))
+		    os << ch;
+		}
+	      else
+		os << "unable to open `" << fn << "' for reading!\n";
+	    }
+	  else
+	    {
+	      if (pr_type_info && ! quiet)
+		os << name << " is a user-defined function:\n\n";
+
+	      tree_print_code tpc (os, "", pr_orig_txt);
+
+	      defn->accept (tpc);
+	    }
+	}
+
+      // XXX FIXME XXX -- this code should be shared with
+      // Fwhich.
+
+      else if (sym_rec->is_text_function ())
+	os << name << " is a built-in text-function\n";
+      else if (sym_rec->is_builtin_function ())
+	os << name << " is a built-in function\n";
+      else if (sym_rec->is_user_variable ()
+	       || sym_rec->is_builtin_variable ()
+	       || sym_rec->is_builtin_constant ())
+	{
+	  octave_value defn = sym_rec->def ();
+
+	  int var_ok = 1;
+
+	  if (! error_state)
+	    {
+	      if (pr_type_info && ! quiet)
+		{
+		  if (var_ok)
+		    {
+		      os << name;
+
+		      if (sym_rec->is_user_variable ())
+			os << " is a user-defined variable\n";
+		      else if (sym_rec->is_builtin_variable ())
+			os << " is a built-in variable\n";
+		      else if (sym_rec->is_builtin_constant ())
+			os << " is a built-in constant\n";
+		      else
+			panic_impossible ();
+		    }
+		  else
+		    os << "type: `" << name << "' has unknown type!\n";
+		}
+
+	      defn.print_raw (os, true);
+
+	      if (pr_type_info)
+		os << "\n";
+	    }
+	}
+      else
+	error ("type: `%s' has unknown type!", name.c_str ());
+    }
+  else
+    {
+      string ff = fcn_file_in_path (name);
+
+      if (! ff.empty ())
+	{
+	  ifstream fs (ff.c_str (), ios::in);
+
+	  if (fs)
+	    {
+	      if (pr_type_info && ! quiet)
+		os << name << " is the script file: " << ff << "\n\n";
+
+	      char ch;
+
+	      while (fs.get (ch))
+		os << ch;
+	    }
+	  else
+	    os << "unable to open `" << ff << "' for reading!\n";
+	}
+      else
+	error ("type: `%s' undefined", name.c_str ());
+    }
+}
+
 DEFUN_TEXT (type, args, nargout,
   "type NAME\n\
 \n\
@@ -880,200 +924,106 @@ display the definition of each NAME that refers to a function")
 
   string_vector argv = args.make_argv ("type");
 
-  if (error_state)
-    return retval;
-
-  if (argc > 1)
+  if (! error_state)
     {
-      // XXX FIXME XXX -- we should really use getopt ()
-
-      bool quiet = false;
-      bool pr_orig_txt = true;
-
-      int idx;
-
-      for (idx = 1; idx < argc; idx++)
+      if (argc > 1)
 	{
-	  if (argv[idx] == "-q" || argv[idx] == "-quiet")
-	    quiet = true;
-	  else if (argv[idx] == "-t" || argv[idx] == "-transformed")
-	    pr_orig_txt = false;
-	  else
-	    break;
-	}
+	  // XXX FIXME XXX -- we should really use getopt ()
 
-      if (idx == argc)
-	{
-	  print_usage ("type");
-	  return retval;
-	}
+	  bool quiet = false;
+	  bool pr_orig_txt = true;
 
-      ostrstream output_buf;
+	  int idx;
 
-      for (int i = idx; i < argc; i++)
-	{
-	  string id = argv[i];
-	  string elts;
-
-	  if (id[id.length () - 1] != '.')
+	  for (idx = 1; idx < argc; idx++)
 	    {
-	      size_t pos = id.find ('.');
-
-	      if (pos != NPOS)
-		{
-		  elts = id.substr (pos+1);
-		  id = id.substr (0, pos);
-		}
+	      if (argv[idx] == "-q" || argv[idx] == "-quiet")
+		quiet = true;
+	      else if (argv[idx] == "-t" || argv[idx] == "-transformed")
+		pr_orig_txt = false;
+	      else
+		break;
 	    }
 
-	  symbol_record *sym_rec = lookup_by_name (id, 0);
-
-	  if (sym_rec && sym_rec->is_defined ())
+	  if (idx < argc)
 	    {
-	      if (sym_rec->is_user_function ())
+	      ostrstream output_buf;
+
+	      for (int i = idx; i < argc; i++)
 		{
-		  octave_value tmp = sym_rec->def ();
-		  
-		  octave_function *defn = tmp.function_value ();
+		  string id = argv[i];
 
-		  string fn = defn ? defn->fcn_file_name () : string ();
-
-		  string ff = fn.empty () ? string () : fcn_file_in_path (fn);
-
-		  if (pr_orig_txt && ! ff.empty ())
-		    {
-		      ifstream fs (ff.c_str (), ios::in);
-
-		      if (fs)
-			{
-			  if (nargout == 0 && ! quiet)
-			    output_buf << argv[i]
-				       << " is the function defined from: "
-				       << ff << "\n\n";
-
-			  char ch;
-
-			  while (fs.get (ch))
-			    output_buf << ch;
-			}
-		      else
-			output_buf << "unable to open `" << ff
-				   << "' for reading!\n";
-		    }
+		  if (nargout == 0)
+		    do_type (octave_stdout, id, true, quiet, pr_orig_txt);
 		  else
-		    {
-		      if (nargout == 0 && ! quiet)
-			output_buf << argv[i]
-				   << " is a user-defined function:\n\n";
+		    do_type (output_buf, id, false, quiet, pr_orig_txt);
 
-		      tree_print_code tpc (output_buf, "", pr_orig_txt);
-
-		      defn->accept (tpc);
-		    }
+		  if (error_state)
+		    goto abort;
 		}
 
-	      // XXX FIXME XXX -- this code should be shared with
-	      // Fwhich.
-
-	      else if (sym_rec->is_text_function ())
-		output_buf << argv[i] << " is a built-in text-function\n";
-	      else if (sym_rec->is_builtin_function ())
-		output_buf << argv[i] << " is a built-in function\n";
-	      else if (sym_rec->is_user_variable ()
-		       || sym_rec->is_builtin_variable ()
-		       || sym_rec->is_builtin_constant ())
+	      if (nargout == 0)
 		{
-		  octave_value defn = sym_rec->def ();
+		  output_buf << ends;
 
-		  int var_ok = 1;
+		  char *s = output_buf.str ();
 
-		  // XXX FIXME XXX -- need to handle structure
-		  // references correctly.
+		  retval = s;
 
-		  //if (defn.is_map ())
-		  //  error ("type: operations on structs not implemented");
-
-		  if (! error_state)
-		    {
-		      if (nargout == 0 && ! quiet)
-			{
-			  if (var_ok)
-			    {
-			      output_buf << argv[i];
-
-			      if (sym_rec->is_user_variable ())
-				output_buf << " is a user-defined variable\n";
-			      else if (sym_rec->is_builtin_variable ())
-				output_buf << " is a built-in variable\n";
-			      else if (sym_rec->is_builtin_constant ())
-				output_buf << " is a built-in constant\n";
-			      else
-				panic_impossible ();
-			    }
-			  else
-			    {
-			      if (! elts.empty ())
-				output_buf << "type: structure `" << id
-					   << "' has no member `" << elts
-					   << "'\n";
-			      else
-				output_buf << "type: `" << id
-					   << "' has unknown type!\n";
-			    }
-			}
-
-		      defn.print_raw (output_buf, true);
-
-		      if (nargout == 0)
-			output_buf << "\n";
-		    }
+		  delete [] s;
 		}
-	      else
-		error ("type: `%s' has unknown type!", argv[i].c_str ());
 	    }
 	  else
-	    {
-	      string ff = fcn_file_in_path (argv[i]);
-
-	      if (! ff.empty ())
-		{
-		  ifstream fs (ff.c_str (), ios::in);
-
-		  if (fs)
-		    {
-		      if (nargout == 0 && ! quiet)
-			output_buf << argv[i] << " is the script file: "
-				   << ff << "\n\n";
-
-		      char ch;
-
-		      while (fs.get (ch))
-			output_buf << ch;
-		    }
-		  else
-		    output_buf << "unable to open `" << ff
-			       << "' for reading!\n";
-		}
-	      else
-		error ("type: `%s' undefined", argv[i].c_str ());
-	    }
+	    print_usage ("type");
 	}
-
-      output_buf << ends;
-
-      char *s = output_buf.str ();
-
-      if (nargout == 0)
-	octave_stdout << s;
       else
-	retval = s;
-
-      delete [] s;
+	print_usage ("type");
     }
-  else
-    print_usage ("type");
+
+ abort:
 
   return retval;
+}
+
+static string
+do_which (const string& name)
+{
+  string retval;
+
+  symbol_record *sym_rec = lookup_by_name (name, 0);
+
+  if (sym_rec && sym_rec->is_defined ())
+    retval = sym_rec->which ();
+  else
+    {
+      string path = fcn_file_in_path (name);
+
+      if (! path.empty ())
+	retval = path;
+      else
+	retval = "undefined";
+    }
+
+  return retval;
+}
+
+static void
+do_which (ostream& os, const string& name)
+{
+  symbol_record *sym_rec = lookup_by_name (name, 0);
+
+  if (sym_rec && sym_rec->is_defined ())
+    sym_rec->which (os);
+  else
+    {
+      string path = fcn_file_in_path (name);
+
+      if (! path.empty ())
+	os << "which: `" << name << "' is the script file\n"
+	   << path << "\n";
+      else
+	os << "which: `" << name << "' is undefined\n";
+    }
 }
 
 DEFUN_TEXT (which, args, nargout,
@@ -1084,57 +1034,30 @@ file, print the full name of the file.")
 {
   octave_value_list retval;
 
-  int argc = args.length () + 1;
-
   string_vector argv = args.make_argv ("which");
 
-  if (error_state)
-    return retval;
-
-  if (argc > 1)
+  if (! error_state)
     {
+      int argc = argv.length ();
+
       if (nargout > 0)
 	retval.resize (argc-1, Matrix ());
 
-      for (int i = 1; i < argc; i++)
+      if (argc > 1)
 	{
-	  symbol_record *sym_rec = lookup_by_name (argv[i], 0);
-
-	  if (sym_rec && sym_rec->is_defined ())
+	  for (int i = 1; i < argc; i++)
 	    {
-	      int print = (nargout == 0);
+	      string id = argv[i];
 
-	      string tmp = print_symbol_type (octave_stdout, sym_rec,
-					      argv[i], print);
-	      if (! print)
-		retval(i) = tmp;
-	    }
-	  else
-	    {
-	      string path = fcn_file_in_path (argv[i]);
-
-	      if (! path.empty ())
-		{
-		  if (nargout == 0)
-		    octave_stdout << "which: `" << argv[i]
-				  << "' is the script file: "
-				  << path << "\n";
-		  else
-		    retval(i) = path;
-		}
+	      if (nargout == 0)
+		do_which (octave_stdout, id);
 	      else
-		{
-		  if (nargout == 0)
-		    octave_stdout << "which: `" << argv[i]
-				  << "' is undefined\n";
-		  else
-		    retval(i) = "undefined";
-		}
+		retval(i-1) = do_which (id);
 	    }
 	}
+      else
+	print_usage (argv[0]);
     }
-  else
-    print_usage ("which");
 
   return retval;
 }

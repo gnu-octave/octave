@@ -1,5 +1,12 @@
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* getopt.h: Update to version from kpathsearch, so we will install
+	the version that we are using.
+
+	* getopt.c, getopt1.c: Delete.
+	(INCLUDES): Delete them from the list.  We'll get these files from
+	kpathsearch.
+
 	* Makefile.in (liboctave.$(LIBEXT)): Link directly to
 	../kpathsea/STATIC/*.o.
 	(liboctave.$(SHLEXT)): Link directly to	../kpathsea/SHARED/*.o.

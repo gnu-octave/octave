@@ -1,3 +1,7 @@
+2003-03-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/shift.m: Force empty_list_elements_ok to 1.
+
 2003-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* deprecated/struct_contains.m, deprecated/struct_elements.m:

@@ -49,17 +49,29 @@ function y = shift (x, b)
     error ("shift: b must be an integer");
   endif
 
-  if (b >= 0)
-    b = rem (b, nr);
-    t1 = x (nr-b+1:nr, :);
-    t2 = x (1:nr-b, :);
-    y = [t1; t2];
-  elseif (b < 0)
-    b = rem (abs (b), nr);
-    t1 = x (b+1:nr, :);
-    t2 = x (1:b, :);
-    y = [t1; t2];
-  endif
+  elo = empty_list_elements_ok;
+
+  unwind_protect
+
+    empty_list_elements_ok = 1;
+
+    if (b >= 0)
+      b = rem (b, nr);
+      t1 = x (nr-b+1:nr, :);
+      t2 = x (1:nr-b, :);
+      y = [t1; t2];
+    elseif (b < 0)
+      b = rem (abs (b), nr);
+      t1 = x (b+1:nr, :);
+      t2 = x (1:b, :);
+      y = [t1; t2];
+    endif
+
+  unwind_protect_cleanup
+
+    empty_list_elements_ok = elo;
+
+  end_unwind_protect
 
   if (nc == 0)
     y = reshape (y, 1, nr);

@@ -30,7 +30,7 @@ MATRIX_INC := Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
 	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
-	Range.h base-min.h cmd-hist.h dir-ops.h file-ops.h \
+	Range.h base-de.h base-min.h cmd-hist.h dir-ops.h file-ops.h \
 	f77-uscore.h getopt.h idx-vector.h lo-error.h oct-cmplx.h \
 	oct-glob.h oct-math.h oct-term.h pathsearch.h prog-args.h \
 	statdefs.h str-vec.h sun-utils.h sysdir.h \

@@ -36,11 +36,11 @@ FAQ_TEXINFO = FAQ.texi
 
 ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO) $(FAQ_TEXINFO)
 
-REFCARD = refcard.tex.in refcard.tex refcard.dvi refcard.ps
+REFCARD = refcard.tex.in refcard.tex
 
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
-	FAQ.info FAQ.dvi FAQ.ps
-#	liboctave.info liboctave.info-[0-9]*
+	FAQ.info FAQ.dvi FAQ.ps refcard.dvi refcard.ps
+#	liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
 
 DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex dir \
 	octave.1 $(REFCARD) $(ALL_TEXINFO) $(FORMATTED)

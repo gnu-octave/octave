@@ -31,11 +31,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (ddassl) (int (*)(), const int*, double*, double*,
-			double*, double*, const int*, const double*,
+  int F77_FCN (ddassl) (int (*)(double*, double*, double*, double*,
+				int*, double*, int*),
+			const int*, double*, double*, double*,
+			double*, const int*, const double*,
 			const double*, int*, double*, const int*, 
 			int*, const int*, const double*, const int*,
-			int (*)());
+			int (*)(double*, double*, double*, double*,
+				double*, double*, int*));
 }
 
 static DAERHSFunc user_fun;
@@ -50,6 +53,7 @@ DAE::DAE (void)
   stop_time_set = 0;
   stop_time = 0.0;
 
+  integration_error = 0;
   restart = 1;
 
   DAEFunc::set_function (NULL);
@@ -77,6 +81,7 @@ DAE::DAE (int size)
   stop_time_set = 0;
   stop_time = 0.0;
 
+  integration_error = 0;
   restart = 1;
 
   DAEFunc::set_function (NULL);
@@ -106,6 +111,7 @@ DAE::DAE (Vector& state, double time, DAEFunc& f)
   stop_time_set = 0;
   stop_time = 0.0;
 
+  integration_error = 0;
   restart = 1;
 
   DAEFunc::set_function (f.function ());
@@ -174,6 +180,7 @@ DAE::deriv (void)
 void
 DAE::initialize (Vector& state, double time)
 {
+  integration_error = 0;
   restart = 1;
   x = state;
   int nx = x.capacity ();
@@ -184,6 +191,7 @@ DAE::initialize (Vector& state, double time)
 void
 DAE::initialize (Vector& state, Vector& deriv, double time)
 {
+  integration_error = 0;
   restart = 1;
   xdot = deriv;
   x = state;
@@ -206,8 +214,13 @@ ddassl_f (double *time, double *state, double *deriv, double *delta,
 
   tmp_delta = user_fun (tmp_state, tmp_deriv, *time);
 
-  for (i = 0; i < nn; i++)
-    delta [i] = tmp_delta.elem (i);
+  if (tmp_delta.length () == 0)
+    *ires = -2;
+  else
+    {
+      for (i = 0; i < nn; i++)
+	delta [i] = tmp_delta.elem (i);
+    }
 
   return 0;
 }
@@ -244,6 +257,8 @@ ddassl_j (double *time, double *state, double *deriv, double *pd,
 Vector
 DAE::integrate (double tout)
 {
+  integration_error = 0;
+
   if (DAEFunc::jac == NULL)
     iwork [4] = 0;
   else
@@ -294,40 +309,29 @@ DAE::integrate (double tout)
 	    // interpolation.  YPRIME(*) is obtained by interpolation.
       break;
     case -1: // A large amount of work has been expended.  (About 500 steps).
-      break;
     case -2: // The error tolerances are too stringent.
-      break;
     case -3: // The local error test cannot be satisfied because you
 	     // specified a zero component in ATOL and the
 	     // corresponding computed solution component is zero.
 	     // Thus, a pure relative error test is impossible for
 	     // this component.
-      break;
     case -6: // DDASSL had repeated error test failures on the last
 	     // attempted step.
-      break;
     case -7: // The corrector could not converge.
-      break;
     case -8: // The matrix of partial derivatives is singular.
-      break;
     case -9: // The corrector could not converge.  There were repeated
 	     // error test failures in this step.
-      break;
     case -10: // The corrector could not converge because IRES was
 	      // equal to minus one.
-      break;
     case -11: // IRES equal to -2 was encountered and control is being
 	      // returned to the calling program.
-      break;
     case -12: // DDASSL failed to compute the initial YPRIME.
-      break;
     case -33: // The code has encountered trouble from which it cannot
 	      // recover. A message is printed explaining the trouble
 	      // and control is returned to the calling program. For
 	      // example, this occurs when invalid input is detected.
-      break;
     default:
-      // Error?
+      integration_error = 1;
       break;
     }
 
@@ -356,6 +360,10 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out)
       for (int j = 1; j < n_out; j++)
 	{
 	  ColumnVector x_next = integrate (tout.elem (j));
+
+	  if (integration_error)
+	    return retval;
+
 	  for (i = 0; i < n; i++)
 	    {
 	      retval.elem (j, i) = x_next.elem (i);
@@ -440,6 +448,9 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit)
 
 	      ColumnVector x_next = integrate (t_out);
 
+	      if (integration_error)
+		return retval;
+
 	      if (save_output)
 		{
 		  for (i = 0; i < n; i++)
@@ -454,7 +465,12 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit)
 	    }
 	}
       else
-	retval = integrate (tout, xdot_out);
+	{
+	  retval = integrate (tout, xdot_out);
+
+	  if (integration_error)
+	    return retval;
+	}
     }
 
   return retval;

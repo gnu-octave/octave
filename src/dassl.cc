@@ -86,17 +86,28 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   if (dassl_fcn != NULL_TREE)
     {
       tree_constant *tmp = dassl_fcn->eval (args, 4, 1, 0);
+
       delete [] args;
+
+      if (error_state)
+	{
+	  gripe_user_supplied_eval ("dassl");
+	  return retval;
+	}
+
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
 	  retval = tmp[0].to_vector ();
+
 	  delete [] tmp;
+
+	  if (retval.length () == 0)
+	    gripe_user_supplied_eval ("dassl");
 	}
       else
 	{
 	  delete [] tmp;
 	  gripe_user_supplied_eval ("dassl");
-	  jump_to_top_level ();
 	}
     }
 

@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "oct-stream.h"
 #include "ops.h"
+#include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"
 #include "gripes.h"
@@ -57,11 +58,21 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)
 {
+  octave_value *retval = 0;
+
   CAST_CONV_ARG (const octave_char_matrix_str&);
 
   NDArray nda = v.array_value (true);
 
-  return error_state ? 0 : new octave_matrix (nda);
+  if (! error_state)
+    {
+      if (nda.numel () == 1)
+	retval = new octave_scalar (nda(0));
+      else
+	retval = new octave_matrix (nda);
+    }
+
+  return retval;
 }
 
 type_conv_fcn

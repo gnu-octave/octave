@@ -2223,7 +2223,7 @@ operator >> (istream& is, Matrix& a)
  * Read an array of data froma file in binary format.
  */
 int
-Matrix::read (FILE *fptr, int size, Matrix::conversion conv)
+Matrix::read (FILE *fptr, char *type)
 {
 // Allocate buffer pointers.
 
@@ -2232,7 +2232,6 @@ Matrix::read (FILE *fptr, int size, Matrix::conversion conv)
       void *vd;
       char *ch;
       u_char *uc;
-//    s_char *sc; // Some systems may need this?
       short *sh;
       u_short *us;
       int *in;
@@ -2244,73 +2243,54 @@ Matrix::read (FILE *fptr, int size, Matrix::conversion conv)
     }
   buf;
 
-  buf.db = fortran_vec ();
-
-// Read data directly into matrix data array.
-
-  int count = fread (buf.ch, size, length (), fptr);
-
 // Convert data to double.
 
-  int k;
-
-  switch (conv)
+  if (! type)
     {
-    case CNV_DOUBLE:
-      break;
+      (*current_liboctave_error_handler)
+	("fread: invalid NULL type parameter");
+      return 0;
+    }    
 
-    case CNV_CHAR:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.ch[k];
-      break;
+  int count;
+  int nitems = length ();
 
-    case CNV_UCHAR:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.uc[k];
-      break;
+  double *d = fortran_vec (); // Ensures only one reference to my privates!
 
-// Some systems may need this??
-//    case CNV_SCHAR:
-//      for (k = count - 1; k > -1; k--)
-//	buf.db[k] = buf.sc[k];
-//      break;
+#define DO_FREAD(TYPE,ELEM) \
+  do \
+    { \
+      size_t size = sizeof (TYPE); \
+      buf.ch = new char [size * nitems]; \
+      count = fread (buf.ch, size, nitems, fptr); \
+      for (int k = 0; k < count; k++) \
+	d[k] = buf.ELEM[k]; \
+      delete [] buf.ch; \
+    } \
+  while (0)
 
-    case CNV_SHORT:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.sh[k];
-      break;
-
-    case CNV_USHORT:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.us[k];
-      break;
-
-    case CNV_INT:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.in[k];
-      break;
-
-    case CNV_UINT:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.ui[k];
-      break;
-
-    case CNV_LONG:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.ln[k];
-      break;
-
-    case CNV_ULONG:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.ul[k];
-      break;
-
-    case CNV_FLOAT:
-      for (k = count - 1; k > -1; k--)
-	buf.db[k] = buf.fl[k];
-      break;
-
-    default:
+  if (strcasecmp (type, "double") == 0)
+    DO_FREAD (double, db);
+  else if (strcasecmp (type, "char") == 0)
+    DO_FREAD (char, ch);
+  else if (strcasecmp (type, "uchar") == 0)
+    DO_FREAD (u_char, uc);
+  else if (strcasecmp (type, "short") == 0)
+    DO_FREAD (short, sh);
+  else if (strcasecmp (type, "ushort") == 0)
+    DO_FREAD (u_short, us);
+  else if (strcasecmp (type, "int") == 0)
+    DO_FREAD (int, in);
+  else if (strcasecmp (type, "uint") == 0)
+    DO_FREAD (u_int, ui);
+  else if (strcasecmp (type, "long") == 0)
+    DO_FREAD (long, ul);
+  else if (strcasecmp (type, "float") == 0)
+    DO_FREAD (float, fl);
+  else
+    {
+      (*current_liboctave_error_handler)
+	("fread: invalid NULL type parameter");
       return 0;
     }
 
@@ -2321,7 +2301,7 @@ Matrix::read (FILE *fptr, int size, Matrix::conversion conv)
  * Write the data array to a file in binary format.
  */
 int
-Matrix::write (FILE *fptr, int size, Matrix::conversion conv)
+Matrix::write (FILE *fptr, char *type)
 {
 // Allocate buffer pointers.
 
@@ -2330,7 +2310,6 @@ Matrix::write (FILE *fptr, int size, Matrix::conversion conv)
       void *vd;
       char *ch;
       u_char *uc;
-//    s_char *sc; // Some systems may need this?
       short *sh;
       u_short *us;
       int *in;
@@ -2342,84 +2321,60 @@ Matrix::write (FILE *fptr, int size, Matrix::conversion conv)
     }
   buf;
 
-  int len = length ();
+  int nitems = length ();
 
-  if (conv != CNV_DOUBLE)
-    buf.db = new double [len];
-
-  double *bufi = fortran_vec ();
+  double *d = fortran_vec ();
 
 // Convert from double to correct size.
 
-  int k;
-
-  switch (conv)
+  if (! type)
     {
-    case CNV_DOUBLE:
-      buf.db = bufi;
-      break;
-
-    case CNV_CHAR:
-      for (k = 0; k < len; k++)
-	buf.ch[k] = (char) bufi[k];
-      break;
-
-    case CNV_UCHAR:
-      for (k = 0; k < len; k++)
-	buf.uc[k] = (u_char) bufi[k];
-      break;
-
-// Some systems may need this?
-//    case CNV_SCHAR:
-//      for (k = 0; k < len; k++)
-//	buf.uc[k] = (s_char) bufi[k];
-//      break;
-
-    case CNV_SHORT:
-      for (k = 0; k < len; k++)
-	buf.sh[k] = (short) bufi[k];
-      break;
-
-    case CNV_USHORT:
-      for (k = 0; k < len; k++)
-	buf.us[k] = (u_short) bufi[k];
-      break;
-
-    case CNV_INT:
-      for (k = 0; k < len; k++)
-	buf.in[k] = (int) bufi[k];
-      break;
-
-    case CNV_UINT:
-      for (k = 0; k < len; k++)
-	buf.ui[k] = (u_int) bufi[k];
-      break;
-
-    case CNV_LONG:
-      for (k = 0; k < len; k++)
-	buf.ln[k] = (long) bufi[k];
-      break;
-
-    case CNV_ULONG:
-      for (k = 0; k < len; k++)
-	buf.ul[k] = (u_long) bufi[k];
-      break;
-
-    case CNV_FLOAT:
-      for (k = 0; k < len; k++)
-	buf.fl[k] = (float) bufi[k];
-      break;
-
-    default:
+      (*current_liboctave_error_handler)
+	("fwrite: invalid NULL type parameter");
       return 0;
-  }
+    }    
 
-// Write data from converted matrix data array.
+  size_t size;
+  int count;
 
-  int count = fwrite (buf.ch, size, length (), fptr);
+#define DO_FWRITE(TYPE,ELEM) \
+  do \
+    { \
+      size = sizeof (TYPE); \
+      buf.ELEM = new TYPE [nitems]; \
+      for (int k = 0; k < nitems; k++) \
+	buf.ELEM[k] = (TYPE) d[k]; \
+      count = fwrite (buf.ELEM, size, nitems, fptr); \
+      delete [] buf.ELEM; \
+    } \
+  while (0)
 
-  if (conv != CNV_DOUBLE)
-    delete [] buf.db;
+  if (strcasecmp (type, "double") == 0)
+    DO_FWRITE (double, db);
+  else if (strcasecmp (type, "char") == 0)
+    DO_FWRITE (char, ch);
+  else if (strcasecmp (type, "uchar") == 0)
+    DO_FWRITE (u_char, uc);
+  else if (strcasecmp (type, "short") == 0)
+    DO_FWRITE (short, sh);
+  else if (strcasecmp (type, "ushort") == 0)
+    DO_FWRITE (u_short, us);
+  else if (strcasecmp (type, "int") == 0)
+    DO_FWRITE (int, in);
+  else if (strcasecmp (type, "uint") == 0)
+    DO_FWRITE (u_int, ui);
+  else if (strcasecmp (type, "long") == 0)
+    DO_FWRITE (long, ln);
+  else if (strcasecmp (type, "ulong") == 0)
+    DO_FWRITE (u_long, ul);
+  else if (strcasecmp (type, "float") == 0)
+    DO_FWRITE (float, fl);
+  else
+    {
+      (*current_liboctave_error_handler)
+	("fwrite: unrecognized type parameter %s", type);
+      return 0;
+    }
 
   return count;
 }

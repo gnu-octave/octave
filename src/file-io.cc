@@ -1208,114 +1208,46 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Find out how many elements are left.
- *
- *   size is the size of the elements
- *   nr is the number of rows or columns in the matrix
+ * Find out how many elements are left to read.
  */
 static long
-get_whats_left (FILE *fptr, int size, int nn)
+num_items_remaining (FILE *fptr, char *type)
 {
+  size_t size;
+
+  if (strcasecmp (type, "uchar") == 0)
+    size = sizeof (u_char);
+  else if (strcasecmp (type, "char") == 0)
+    size = sizeof (char);
+  else if (strcasecmp (type, "short") == 0)
+    size = sizeof (short);
+  else if (strcasecmp (type, "ushort") == 0)
+    size = sizeof (u_short);
+  else if (strcasecmp (type, "int") == 0)
+    size = sizeof (int);
+  else if (strcasecmp (type, "uint") == 0)
+    size = sizeof (u_int);
+  else if (strcasecmp (type, "long") == 0)
+    size = sizeof (long);
+  else if (strcasecmp (type, "ulong") == 0)
+    size = sizeof (u_long);
+  else if (strcasecmp (type, "float") == 0)
+    size = sizeof (float);
+  else if (strcasecmp (type, "double") == 0)
+    size = sizeof (double);
+  else
+    return 0;
+
   long curr_pos = ftell (fptr);
 
   fseek (fptr, 0, SEEK_END);
   long end_of_file = ftell (fptr);
 
-  fseek (fptr, end_of_file, SEEK_SET);
+  fseek (fptr, curr_pos, SEEK_SET);
 
   long len = end_of_file - curr_pos;
 
-  long num_items = len / size / nn;
-
-  if (len > num_items * size * nn)
-    num_items++;
-
-  return num_items;
-}
-
-static void
-get_size_conv (const char *preci, int& size, Matrix::conversion& conv,
-	       const char *warn)
-{
-// Get type and number of bytes per element to read.
-
-  char *prec = strdup (preci);
-  char *ip = prec;
-
-  while (*ip > 0)
-    {
-      tolower (*ip);
-      ip++;
-    }
-
-  if (strcmp (prec, "uchar") == 0)
-    {
-      size = 1;
-      conv = Matrix::CNV_UCHAR;
-    }
-  else if (strcmp (prec, "char") == 0)
-    {
-      size = 1;
-      conv = Matrix::CNV_CHAR;
-    }
-  else if (strcmp (prec, "schar") == 0)
-    {
-      size = 1;
-      conv = Matrix::CNV_CHAR;
-// Some systems may need this??
-// size = 1;
-// conv = CNV_SCHAR;
-    }
-  else if (strcmp (prec, "short") == 0)
-    {
-      size = 2;
-      conv = Matrix::CNV_SHORT;
-    }
-  else if (strcmp (prec, "ushort") == 0)
-    {
-      size = 2;
-      conv = Matrix::CNV_USHORT;
-    }
-  else if (strcmp (prec, "int") == 0)
-    {
-      size = 4;
-      conv = Matrix::CNV_INT;
-    }
-  else if (strcmp (prec, "uint") == 0)
-    {
-      size = 4;
-      conv = Matrix::CNV_UINT;
-    }
-  else if (strcmp (prec, "long") == 0)
-    {
-      size = 4;
-      conv = Matrix::CNV_LONG;
-    }
-  else if (strcmp (prec, "ulong") == 0)
-    {
-      size = 4;
-      conv = Matrix::CNV_ULONG;
-    }
-  else if (strcmp (prec, "float") == 0)
-    {
-      size = 4;
-      conv = Matrix::CNV_FLOAT;
-    }
-  else if (strcmp (prec, "double") == 0)
-    {
-      size = 8;
-      conv = Matrix::CNV_DOUBLE;
-    }
-  else
-    {
-      error ("%s: precision: \'%s\' unknown", warn, prec);
-      size = -1;
-      conv = Matrix::CNV_UNKNOWN;
-    }
-
-  delete [] prec;
-
-  return;
+  return len / size;
 }
 
 /*
@@ -1364,86 +1296,87 @@ fread_internal (const tree_constant *args, int nargin, int nargout)
 	}
     }
 
-  int size;
-  Matrix::conversion conv;
-  get_size_conv (prec, size, conv, "fread");
-  if (size < 0)
-    return retval;
-
 // Get file info.
+
   file_info file = file_list (p);
-  FILE * fptr = file.fptr ();
+
+  FILE *fptr = file.fptr ();
 
 // Set up matrix to read into.  If specified in arguments use that
 // number, otherwise read everyting left in file.
 
-  double dnr = 1.0;
-  double dnc = 1.0;
-  int nr = 1;
-  int nc = 1;
+  double dnr = 0.0;
+  double dnc = 0.0;
+  int nr;
+  int nc;
 
   if (nargin > 2)
     {
-// tree_constant tmpa = args[2].make_numeric (); // ??
-
       if (args[2].is_scalar_type ())
 	{
 	  tree_constant tmpa = args[2].make_numeric ();
-
-	  dnr = 1.0;
-	  dnc = tmpa.double_value ();
+	  dnr = tmpa.double_value ();
+	  dnc = 1.0;
 	}
       else if (args[2].is_matrix_type ())
 	{
-// tree_constant tmpa = args[2].make_numeric (); // ??
-      Matrix tmpm = args[2].to_matrix ();
-      nr = tmpm.rows ();
-      nc = tmpm.columns ();
+	  ColumnVector tmp = args[2].to_vector ();
 
-      if(nr != 1 || nc > 2)
+	  if (tmp.length () == 2)
+	    {
+	      dnr = tmp.elem (0);
+	      dnc = tmp.elem (1);
+	    }
+	  else
+	    {
+	      error ("fread: invalid size specification\n");
+	      return retval;
+	    }
+	}
+
+      if ((xisinf (dnr)) && (xisinf (dnc)))
 	{
-	  error ("fread: Illegal size specification\n");
-	  print_usage ("fread");
+	  error ("fread: number of rows and columns cannot both be infinite");
 	  return retval;
 	}
-      dnr = tmpm.elem (0, 0);
-      dnc = tmpm.elem (0, 1);
-    }
 
-    if ((xisinf (dnr)) && (xisinf (dnc)))
-      {
-	error ("fread: number of rows and columns cannot both be infinite\n");
-	return retval;
-      }
-
-    if (xisinf (dnr))
-      {
-	nc = NINT (dnc);
-	nr = get_whats_left (fptr, size, nc);
-      }
-    else if (xisinf (dnc))
-      {
-	nr = NINT (dnr);
-	nc = get_whats_left (fptr, size, nr);
-      }
-    else
-      {
-	nr = NINT (dnr);
-	nc = NINT (dnc);
-      }
+      if (xisinf (dnr))
+	{
+	  nc = NINT (dnc);
+	  int n = num_items_remaining (fptr, prec);
+	  nr = n / nc;
+	  if (n > nr * nc)
+	    nr++;
+	}
+      else if (xisinf (dnc))
+	{
+	  nr = NINT (dnr);
+	  int n = num_items_remaining (fptr, prec);
+	  nc = n / nr;
+	  if (n > nc * nr)
+	    nc++;
+	}
+      else
+	{
+	  nr = NINT (dnr);
+	  nc = NINT (dnc);
+	}
     }
   else
     {
 // No size parameter, read what's left of the file.
-      nr = 1;
-      nc = get_whats_left (fptr, size, nr);
+      nc = 1;
+      int n = num_items_remaining (fptr, prec);
+      nr = n / nc;
+      if (n > nr * nc)
+	nr++;
     }
 
   Matrix m (nr, nc, octave_NaN);
 
 // Read data.
 
-  int count = m.read (fptr, size, conv);
+  int count = m.read (fptr, prec);
 
   if (nargout > 1)
     {
@@ -1497,21 +1430,11 @@ fwrite_internal (const tree_constant *args, int nargin, int nargout)
 	}
     }
 
-  int size;
-  Matrix::conversion conv;
-  get_size_conv(prec, size, conv, "fwrite");
-  if (size < 0)
-    return retval;
-
-// Get file info.
   file_info file = file_list (p);
 
-// Write the matrix data.
-  tree_constant tmpa = args[2].make_numeric ();
+  Matrix m = args[2].to_matrix ();
 
-  Matrix tmpm = tmpa.to_matrix ();
-
-  int count = tmpm.write (file.fptr(), size, conv);
+  int count = m.write (file.fptr (), prec);
 
   retval = new tree_constant[2];
   retval[0] = tree_constant ((double) count);

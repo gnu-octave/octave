@@ -34,9 +34,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "file-ops.h"
+#include "statdefs.h"
+
+// These must come after <sys/types.h> and <sys/stat.h>.
+
 #include "safe-lstat.h"
 #include "safe-stat.h"
-#include "statdefs.h"
 
 // XXX FIXME XXX -- the is_* and mode_as_string functions are only valid
 // for initialized objects.  If called for an object that is not

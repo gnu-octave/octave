@@ -191,18 +191,19 @@ from system to system.\n\
       for (;;)
 	{
 	  if (cmd->get (ch))
-	    {
-	      octave_stdout << ch;
-	      output_buf << ch;
-	    }
+	    output_buf << ch;
 	  else
 	    break;
 	}
 
       output_buf << OSSTREAM_ENDS;
 
+      std::string output = OSSTREAM_STR (output_buf);
+
       if (nargout > 0)
-	retval = OSSTREAM_STR (output_buf);
+	retval = output;
+      else
+	octave_stdout << output;
 
       OSSTREAM_FREEZE (output_buf);
     }

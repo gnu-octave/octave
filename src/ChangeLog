@@ -1,5 +1,7 @@
 2005-02-15  John W. Eaton  <jwe@octave.org>
 
+	* dirfns.cc (deftypefn): Don't print to octave_stdout if nargout > 0.
+
 	* pt-mat.cc (tree_matrix::rvalue): Min size of ra_idx is 2.
 
 	* file-io.cc (Ffclear): New function.

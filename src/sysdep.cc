@@ -113,6 +113,35 @@ octave_ieee_init (void)
 #endif
 }
 
+
+#if defined (EXCEPTION_IN_MATH)
+extern "C"
+{
+int
+matherr (struct exception *x)
+{
+// Possibly print our own message someday.  Should probably be
+// user-switchable.
+
+  switch (x->type)
+    {
+    case DOMAIN:
+    case SING:
+    case OVERFLOW:
+    case UNDERFLOW:
+    case TLOSS:
+    case PLOSS:
+    default:
+      break;
+    }
+
+// But don't print the system message.
+
+  return 1;
+}
+}
+#endif
+
 void
 sysdep_init (void)
 {

@@ -527,7 +527,7 @@ last release.
 @cindex OS/2 support
 
 Octave currently runs on Unix-like systems, OS/2, and Windows NT/95
-(using the gnu-win32 tools from Cygnus Support).  It should be possible
+(using the Cygwin tools from Red Hat).  It should be possible
 to make Octave work on other systems as well.  If you are interested in
 porting Octave to other systems, please contact
 bug-octave@@bevo.che.wisc.edu.

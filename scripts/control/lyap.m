@@ -81,7 +81,7 @@ function x = lyap (a, b, c)
 
     c = b;
     b = a;
-    a = b'
+    a = b';
 
   else 
 
@@ -95,7 +95,7 @@ function x = lyap (a, b, c)
 
     if (n != n1 || m != m1)
       error("lyap: a,b,c not conformably dimensioned");
-    endif;
+    endif
   endif
 
 # Call octave built-in function.

@@ -1,6 +1,8 @@
 Thu Oct 31 13:50:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (DISTFILES): Add NEWS.[0-9].
+	* NEWS.1: Old news.
+	* NEWS: Just keep news since last major release.
 
 Wed Oct 30 01:04:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

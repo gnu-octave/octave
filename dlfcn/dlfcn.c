@@ -4,6 +4,18 @@
  * 30159 Hannover, Germany
  */
 
+/*
+ * Changes marked with `--jwe' were made on April 7 1996 by John W. Eaton
+ * <jwe@bevo.che.wisc.edu> to support g++ and/or use with Octave.
+ */
+
+/*
+ * This makes my life easier with Octave.  --jwe
+ */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -35,6 +47,8 @@ typedef struct {
 	void (*term)(void);		/* call static destructors */
 } Cdtor, *CdtorPtr;
 
+typedef void (*GccCDtorPtr)(void);
+
 /*
  * The void * handle returned from dlopen is actually a ModulePtr.
  */
@@ -45,6 +59,8 @@ typedef struct Module {
 	void		*entry;		/* entry point from load */
 	struct dl_info	*info;		/* optional init/terminate functions */
 	CdtorPtr	cdtors;		/* optional C++ constructors */
+	GccCDtorPtr	gcc_ctor;	/* g++ constructors  --jwe */
+	GccCDtorPtr	gcc_dtor;	/* g++ destructors  --jwe */
 	int		nExports;	/* the number of exports found */
 	ExportPtr	exports;	/* the array of exports */
 } Module, *ModulePtr;
@@ -62,7 +78,13 @@ static ModulePtr modList;
 static char errbuf[BUFSIZ];
 static int errvalid;
 
+/*
+ * The `fixed' gcc header files on AIX 3.2.5 provide a prototype for
+ * strdup().  --jwe
+ */
+#ifndef HAVE_STRDUP
 extern char *strdup(const char *);
+#endif
 static void caterr(char *);
 static int readExports(ModulePtr);
 static void terminate(void);
@@ -181,6 +203,15 @@ void *dlopen(const char *path, int mode)
 				(*cp->init)();
 			cp++;
 		}
+	/*
+	 * If the shared object was compiled using g++, we will need
+	 * to call global constructors using the _GLOBAL__DI function,
+	 * and later, global destructors using the _GLOBAL_DD
+	 * funciton.  --jwe
+	 */
+	} else if (mp->gcc_ctor = (GccCDtorPtr)dlsym(mp, "_GLOBAL__DI")) {
+		(*mp->gcc_ctor)();
+		mp->gcc_dtor = (GccCDtorPtr)dlsym(mp, "_GLOBAL__DD"); 
 	} else
 		errvalid = 0;
 	return mp;
@@ -270,6 +301,12 @@ int dlclose(void *handle)
 				(*cp->term)();
 			cp++;
 		}
+	/*
+	 * If the function to handle global destructors for g++
+	 * exists, call it.  --jwe
+	 */
+	} else if (mp->gcc_dtor) {
+	        (*mp->gcc_dtor)();
 	}
 	result = unload(mp->entry);
 	if (result == -1) {

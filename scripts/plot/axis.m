@@ -18,20 +18,25 @@
 
 function axis (ax)
 
-# usage: axis ([xmin, xmax])
+# usage: axis ()
+#        axis ([xmin, xmax])
 #        axis ([xmin, xmax, ymin, ymax])
 #        axis ([xmin, xmax, ymin, ymax, zmin, zmax])
 #
 # Sets the axis limits.
 #
+# With no arguments, turns autoscaling on.
+#
 # If your plot is already drawn, then you need to REPLOT before 
 # the new axis limits will take effect.
 
-  if (nargin != 1)
+  if (nargin > 1)
     error ("usage: axis ([xmin, xmax, ymin, ymax, zmin, zmax])");
   endif
 
-  if (is_vector (ax))
+  if (nargin == 0)
+    set autoscale;
+  elseif (is_vector (ax))
 
     len = length (ax);
 
@@ -52,7 +57,7 @@ function axis (ax)
     endif
 
   else
-    error ("axis: expecting vector with 2, 4, or 6 elements");
+    error ("axis: expecting no args, or a vector with 2, 4, or 6 elements");
   endif
 
 endfunction

@@ -46,6 +46,9 @@ public:
   octave_fcn_handle (void)
     : fcn (), nm () { }
 
+  octave_fcn_handle (const std::string& n)
+    : fcn (), nm (n) { }
+
   octave_fcn_handle (const octave_value& f,  const std::string& n)
     : fcn (f), nm (n) { }
 
@@ -76,6 +79,8 @@ public:
     { return fcn.function_value (); }
 
   octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
+
+  octave_value fcn_val (void) const { return fcn; }
 
   std::string fcn_name (void) const { return nm; }
 

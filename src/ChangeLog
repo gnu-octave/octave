@@ -1,3 +1,14 @@
+2004-09-17  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-inline.cc (octave_fcn_inline::octave_fcn_inline):
+	Call eval_string instead of feval ("eval", ...).
+	Construct anonymous function handle to avoid going through the
+	symbol table.
+
+	* ov-fcn-handle.h (octave_fcn_handle::fcn_val): New function.
+	(octave_fcn_handle::octave_fcn_handle (const std:string&)):
+	New constructor.
+
 2004-09-16  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (frob_function): Clear id_name from curr_sym_tab, not

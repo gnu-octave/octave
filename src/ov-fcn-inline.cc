@@ -58,16 +58,13 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_inline,
 octave_fcn_inline::octave_fcn_inline (const std::string& f,
 				      const string_vector& a,
 				      const std::string& n)
-  : octave_fcn_handle (0, n), iftext (f), ifargs (a)
+  : octave_fcn_handle (n), iftext (f), ifargs (a)
 {
-  // Find a function name that isn't already in the symbol table.
-  std::string fname = unique_symbol_name ("__inline_");
-
   // Form a string representing the function.
 
   OSSTREAM buf;
 
-  buf << "function __retval__ = " << fname << "(";
+  buf << "@(";
 
   for (int i = 0; i < ifargs.length (); i++)
     {
@@ -77,25 +74,23 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
       buf << ifargs(i);
     }
 
-  buf << ")\n  __retval__ = " << iftext << ";\nendfunction" << OSSTREAM_ENDS;
+  buf << ") " << iftext << OSSTREAM_ENDS;
 
-  // Parse this function and create a user function.
-
-  octave_value eval_args (OSSTREAM_STR (buf));
-
-  feval ("eval", eval_args, 0);
+  int parse_status;
+  octave_value anon_fcn_handle = eval_string (OSSTREAM_STR (buf), true,
+					      parse_status);
 
   OSSTREAM_FREEZE (buf);
 
-  octave_value tmp = lookup_function (fname);
-
-  if (tmp.is_function ())
+  if (parse_status == 0)
     {
-      fcn = tmp;
+      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
 
-      clear_function (fname);
+      if (fh)
+	fcn = fh->fcn_val ();
     }
-  else
+
+  if (fcn.is_undefined ())
     error ("inline: unable to define function");
 }
 

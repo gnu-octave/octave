@@ -1,5 +1,7 @@
 2005-02-22  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (POW, EPOW): Use %left associativity for compatibility.
+
 	* ov-base-int.cc (octave_baes_int_matrix<T>::load_binary):
 	Handle arrays with only one dimension.
 	* ov-bool-mat.cc (octave_bool_matrix::load_binary): Likewise.

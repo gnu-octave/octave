@@ -559,6 +559,9 @@ tree_print_code::visit_oct_obj (tree_oct_obj&)
   ::error ("visit_oct_obj: internal error");
 }
 
+// XXX FIXME XXX -- this should just call val.print_internal () or
+// something.  Checking the types here is a big no-no.
+
 void
 tree_print_code::visit_constant (tree_constant& val)
 {
@@ -604,13 +607,13 @@ tree_print_code::visit_constant (tree_constant& val)
     {
       octave_print_internal (os, val.complex_matrix_value (), 1);
     }
-  else if (val.is_char_matrix ())
-    {
-      octave_print_internal (os, val.char_matrix_value (), 1);
-    }
   else if (val.is_string ())
     {
       octave_print_internal (os, val.all_strings (), 1, 1);
+    }
+  else if (val.is_char_matrix ())
+    {
+      octave_print_internal (os, val.char_matrix_value (), 1);
     }
   else if (val.is_range ())
     {

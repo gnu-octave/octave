@@ -1,3 +1,11 @@
+Sun Nov  3 00:45:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-pr-code.cc (tree_print_code::visit_constant): Check for
+	string before checking for char_matrix.
+
+	* ov-ch-mat.cc (octave_char_matrix::print): Supply correct number
+	of args to octave_print_internal().
+
 Sat Nov  2 20:44:55 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc (Ftmpnam): Rename from Foctave_temp_file_name.

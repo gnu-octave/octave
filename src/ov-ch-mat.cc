@@ -91,7 +91,7 @@ octave_char_matrix::complex_value (bool) const
 void
 octave_char_matrix::print (ostream& os)
 {
-  octave_print_internal (os, matrix, false, struct_indent);
+  octave_print_internal (os, matrix, false, false, struct_indent);
 }
 
 /*

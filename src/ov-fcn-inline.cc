@@ -55,14 +55,14 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_inline,
 				     "inline function");
 
 octave_fcn_inline::octave_fcn_inline (const std::string& f,
-				      const string_vector& a, 
+				      const string_vector& a,
 				      const std::string& n)
-  : octave_fcn_handle (0, n), iftext (f), ifargs (a) 
+  : octave_fcn_handle (0, n), iftext (f), ifargs (a)
 {
   // Find a function name that isn't already in the symbol table.
   std::string fname = unique_symbol_name ("__inline_");
 
-  // Form a string representing the function. 
+  // Form a string representing the function.
 
   OSSTREAM buf;
 
@@ -77,10 +77,10 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
     }
 
   buf << ")\n  __retval__ = " << iftext << ";\nendfunction" << OSSTREAM_ENDS;
-  
+
   // Parse this function and create a user function.
 
-  octave_value eval_args (OSSTREAM_STR (buf)); 
+  octave_value eval_args (OSSTREAM_STR (buf));
 
   feval ("eval", eval_args, 0);
 
@@ -101,11 +101,11 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 bool
 octave_fcn_inline::save_ascii (std::ostream& os, bool&, bool)
 {
-  os << "# nargs: " <<  ifargs.length() << "\n";
+  os << "# nargs: " <<  ifargs.length () << "\n";
   for (int i = 0; i < ifargs.length (); i++)
-    os << ifargs (i) << "\n";
-  if (nm.length() < 1)
-    // Write an illegal value to flag empty fcn handle name
+    os << ifargs(i) << "\n";
+  if (nm.length () < 1)
+    // Write an invalid value to flag empty fcn handle name.
     os << "0\n";
   else
     os << nm << "\n";
@@ -121,7 +121,7 @@ octave_fcn_inline::load_ascii (std::istream& is)
     {
       ifargs.resize (nargs);
       for (int i = 0; i < nargs; i++)
-	is >> ifargs (i);
+	is >> ifargs(i);
       is >> nm;
       if (nm == "0")
 	nm = "";
@@ -136,27 +136,27 @@ octave_fcn_inline::load_ascii (std::istream& is)
     return false;
 }
 
-bool 
+bool
 octave_fcn_inline::save_binary (std::ostream& os, bool&)
 {
-  FOUR_BYTE_INT tmp = ifargs.length();
+  FOUR_BYTE_INT tmp = ifargs.length ();
   os.write (X_CAST (char *, &tmp), 4);
-  for (int i=0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.length (); i++)
     {
-      tmp = ifargs(i).length();
+      tmp = ifargs(i).length ();
       os.write (X_CAST (char *, &tmp), 4);
-      os.write (ifargs(i).c_str(), ifargs(i).length());
+      os.write (ifargs(i).c_str (), ifargs(i).length ());
     }
-  tmp = nm.length();
+  tmp = nm.length ();
   os.write (X_CAST (char *, &tmp), 4);
-  os.write (nm.c_str(), nm.length());
-  tmp = iftext.length();
+  os.write (nm.c_str (), nm.length ());
+  tmp = iftext.length ();
   os.write (X_CAST (char *, &tmp), 4);
-  os.write (iftext.c_str(), iftext.length());
+  os.write (iftext.c_str (), iftext.length ());
   return true;
 }
 
-bool 
+bool
 octave_fcn_inline::load_binary (std::istream& is, bool swap,
 				oct_mach_info::float_format)
 {
@@ -171,7 +171,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
   else
     {
       FOUR_BYTE_INT tmp;
-      ifargs.resize(nargs);
+      ifargs.resize (nargs);
       for (int i = 0; i < nargs; i++)
 	{
 	  if (! is.read (X_CAST (char *, &tmp), 4))
@@ -185,7 +185,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
 
 	  if (! is)
 	    return false;
-	}      
+	}
 
       if (! is.read (X_CAST (char *, &tmp), 4))
 	return false;
@@ -227,9 +227,9 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
   if (group_hid < 0 ) return false;
 
   size_t len = 0;
-  for (int i = 0; i < ifargs.length(); i++)
-    if (len < ifargs(i).length())
-      len = ifargs(i).length();
+  for (int i = 0; i < ifargs.length (); i++)
+    if (len < ifargs(i).length ())
+      len = ifargs(i).length ();
 
   hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
   bool retval = true;
@@ -240,7 +240,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
-  hdims[1] = ifargs.length();
+  hdims[1] = ifargs.length ();
   hdims[0] = len + 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);
@@ -250,7 +250,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-  data_hid = H5Dcreate (group_hid, "args", H5T_NATIVE_CHAR, space_hid, 
+  data_hid = H5Dcreate (group_hid, "args", H5T_NATIVE_CHAR, space_hid,
 			H5P_DEFAULT);
   if (data_hid < 0)
     {
@@ -259,18 +259,18 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (char, s, ifargs.length() * (len + 1));
+  OCTAVE_LOCAL_BUFFER (char, s, ifargs.length () * (len + 1));
 
   // Save the args as a null teminated list
-  for (int i = 0; i < ifargs.length(); i++)
+  for (int i = 0; i < ifargs.length (); i++)
     {
-      const char * cptr = ifargs(i).c_str();
-      for (size_t j = 0; j < ifargs(i).length(); j++)
+      const char * cptr = ifargs(i).c_str ();
+      for (size_t j = 0; j < ifargs(i).length (); j++)
 	s[i*(len+1)+j] = *cptr++;
-      s[ifargs(i).length()] = '\0';
+      s[ifargs(i).length ()] = '\0';
     }
 
-  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
+  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL,
 		     H5P_DEFAULT, s) >= 0;
 
   H5Dclose (data_hid);
@@ -280,16 +280,16 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
     {
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
   // attach the type of the variable
-  type_hid = H5Tcopy (H5T_C_S1); 
+  type_hid = H5Tcopy (H5T_C_S1);
   H5Tset_size (type_hid, nm.length () + 1);
   if (type_hid < 0)
     {
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
   hdims[0] = 0;
   space_hid = H5Screate_simple (0 , hdims, (hsize_t*) 0);
@@ -298,17 +298,17 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
       H5Tclose (type_hid);
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, 
-				    H5P_DEFAULT, (void*) nm.c_str ()) < 0)
+  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
+				H5P_DEFAULT, (void*) nm.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
       H5Gclose (group_hid);
       return false;
-    }    
+    }
   H5Dclose (data_hid);
 
   // attach the type of the variable
@@ -317,18 +317,18 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
     {
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
-  data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid, 
+  data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid,
 			H5P_DEFAULT);
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, 
-				    H5P_DEFAULT, (void*) iftext.c_str ()) < 0)
+  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
+				H5P_DEFAULT, (void*) iftext.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
   H5Dclose (data_hid);
 
@@ -337,7 +337,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
 
 bool
 octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
-				   bool /* have_h5giterate_bug */)
+			      bool /* have_h5giterate_bug */)
 {
   hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
   hsize_t rank;
@@ -351,7 +351,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
   rank = H5Sget_simple_extent_ndims (space_hid);
 
   if (rank != 2)
-    { 
+    {
       H5Dclose (data_hid);
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -363,13 +363,13 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  ifargs.resize(hdims[1]);
+  ifargs.resize (hdims[1]);
 
   OCTAVE_LOCAL_BUFFER (char, s1, hdims[0] * hdims[1]);
 
-  if (H5Dread (data_hid, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL, 
+  if (H5Dread (data_hid, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL,
 	       H5P_DEFAULT, s1) < 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -400,7 +400,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-	  
+
   space_hid = H5Dget_space (data_hid);
   rank = H5Sget_simple_extent_ndims (space_hid);
 
@@ -429,8 +429,8 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-	       (void *) nm_tmp) < 0)
+  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+	       X_CAST (void *, nm_tmp)) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -459,7 +459,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-	  
+
   space_hid = H5Dget_space (data_hid);
   rank = H5Sget_simple_extent_ndims (space_hid);
 
@@ -488,8 +488,8 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-	       (void *) iftext_tmp) < 0)
+  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+	       X_CAST (void *, iftext_tmp)) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -744,7 +744,7 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 		    new_func.append (".");
 
 		  // Special case for ** operator.
-		  if (t1 == "*" && i < (old_func.length () - 1) 
+		  if (t1 == "*" && i < (old_func.length () - 1)
 		      && old_func.substr (i+1, 1) == "*")
 		    {
 		      new_func.append ("*");

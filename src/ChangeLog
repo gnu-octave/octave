@@ -1,6 +1,6 @@
 Sun Nov 17 14:14:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Makefile.in (parse.cc): Expect 12 shift/reduce conflicts.
+	* Makefile.in (parse.cc): Expect 13 shift/reduce conflicts.
 
 	* parse.y (set_stmt_print_flag): New function.
 	(sep_type): New member for bison %union declaration.
@@ -15,9 +15,6 @@ Sat Nov 16 21:41:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (parse.cc, lex.cc): Add special rules for these files.
 	Delete pattern rules for .y and .l files.
-
-	* parse.y (expression): Move colon_expr here.
-	(simple_expr1): From here.
 
 Fri Nov 15 13:48:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

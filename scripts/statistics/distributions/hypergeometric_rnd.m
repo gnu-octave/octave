@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hypergeometric_rnd (@var{n_size}, @var{m}, @var{t}, @var{n})
-## @deftypefnx {Function File} {} hypergeometric_rnd (@var{@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} hypergeometric_rnd (@var{@var{m}, @var{t}, @var{n}, @var{sz})
+## @deftypefnx {Function File} {} hypergeometric_rnd (@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} hypergeometric_rnd (@var{m}, @var{t}, @var{n}, @var{sz})
 ## Generate a row vector containing a random sample of size @var{n_size}
 ## from the hypergeometric distribution with parameters @var{m}, @var{t},
 ## and @var{n}.

@@ -143,8 +143,8 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 	Complex c = m.elem (i, j);
 	if (c != 0.0)
 	  {
-	    i_idx (count) = i;
-	    j_idx (count) = j;
+	    i_idx (count) = i + 1;
+	    j_idx (count) = j + 1;
 	    v (count) = c;
 	    count++;
 	  }

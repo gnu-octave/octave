@@ -362,8 +362,7 @@ install-oct:
 	  for f in $$xfiles; do \
 	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
 	  done; \
-	  $(srcdir)/mk-oct-links \
-	    $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)); \
+	  $(srcdir)/mk-oct-links $(octfiledir) $(DLD_DEF_FILES); \
 	fi
 .PHONY: install-oct
 

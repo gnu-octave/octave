@@ -1,5 +1,7 @@
 function [aa, bb, q, z] = qzhess (a, b)
 
+# Usage: [aa, bb, q, z] = qzhess (a, b)
+#
 # Compute the qz decomposition of the matrix pencil (a - lambda b)
 #
 # result: (for Matlab compatibility):
@@ -10,6 +12,8 @@ function [aa, bb, q, z] = qzhess (a, b)
 # This ought to be done in a compiled program
 #
 # Algorithm taken from Golub and Van Loan, Matrix Computations, 2nd ed.
+
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin != 2)
     error ("usage: [aa, bb, q, z] = qzhess (a, b)");

@@ -121,12 +121,12 @@ automatic_replot (void)
 //
 //   user specifies   value of pref
 //   --------------   -------------
-//   "ignored"              2
+//   "ignore"               2
 //   "traditional"          1
 //   anything else          0
 //
 // Octave will never insert a comma in a literal matrix list if the
-// user specifies "ignored".  For example, the statement [1 2] will
+// user specifies "ignore".  For example, the statement [1 2] will
 // result in an error instead of being treated the same as [1, 2], and
 // the statement
 //

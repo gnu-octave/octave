@@ -1,5 +1,8 @@
 2000-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Range.cc (Range::nelem_internal): Call round here, not tfloor.
+	Rename n_intervals to be n_elt.
+
 	* strptime.c: Surround everything after including config.h in
 	#ifndef HAVE_STRPTIME ... #endif.
 

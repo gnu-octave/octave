@@ -235,11 +235,11 @@ Range::nelem_internal (void) const
 {
   double ct = 3.0 * DBL_EPSILON;
 
-  double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
+  double tmp = round ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 
-  int n_intervals = (tmp > 0.0 ? static_cast<int> (tmp) : 0);
+  int n_elt = (tmp > 0.0 ? static_cast<int> (tmp) : 0);
 
-  return (n_intervals >= INT_MAX - 1) ? -1 : n_intervals;
+  return (n_elt >= INT_MAX - 1) ? -1 : n_elt;
 }
 
 /*

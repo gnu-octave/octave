@@ -1059,7 +1059,7 @@ public:
 	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
       if (file_id < 0)
-	set (std::ios::badbit);
+	std::ios::setstate (std::ios::badbit);
 
       current_item = 0;
     }
@@ -1069,7 +1069,7 @@ public:
       if (file_id >= 0)
 	{
 	  if (H5Fclose (file_id) < 0)
-	    set (std::ios::badbit);
+	    std::ios::setstate (std::ios::badbit);
 	  file_id = -1;
 	}
     }
@@ -1084,7 +1084,7 @@ public:
 	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
       if (file_id < 0)
-	set (std::ios::badbit);
+	std::ios::setstate (std::ios::badbit);
 
       current_item = 0;
     }
@@ -1097,10 +1097,10 @@ class hdf5_ifstream : public hdf5_fstreambase, public std::istream
 {
 public:
 
-  hdf5_ifstream () : hdf5_fstreambase () { }
+  hdf5_ifstream () : hdf5_fstreambase (), std::istream (0) { }
 
   hdf5_ifstream (const char *name, int mode = std::ios::in, int prot = 0)
-    : hdf5_fstreambase (name, mode, prot) { }
+    : hdf5_fstreambase (name, mode, prot), std::istream (0) { }
 
   void open (const char *name, int mode = std::ios::in, int prot = 0)
     { hdf5_fstreambase::open (name, mode, prot); }
@@ -1110,10 +1110,10 @@ class hdf5_ofstream : public hdf5_fstreambase, public std::ostream
 {
 public:
 
-  hdf5_ofstream () : hdf5_fstreambase () { }
+  hdf5_ofstream () : hdf5_fstreambase (), std::ostream (0) { }
 
   hdf5_ofstream (const char *name, int mode = std::ios::out, int prot = 0)
-    : hdf5_fstreambase (name, mode, prot) { }
+    : hdf5_fstreambase (name, mode, prot), std::ostream (0) { }
 
   void open (const char *name, int mode = std::ios::out, int prot = 0)
     { hdf5_fstreambase::open (name, mode, prot); }

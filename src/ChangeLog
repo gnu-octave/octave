@@ -1,3 +1,13 @@
+2002-04-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (hdf5_ofstream::hdf5_ofstream):
+	Explicitly List std::ostream(0) in constructor.
+	(hdf5_ifstream::hdf5_ifstream):
+	Explicitly List std::istream(0) in constructor.
+	(hdf5_fstreambase::hdf5_fstreambase): Use std::ios::setstate, not set.
+	(hdf5_fstreambase::close): Likewise.
+	(hdf5_fstreambase::open): Likewise.
+
 2002-04-10  Ben Sapp <bsapp@lanl.gov>
 
 	* pt-stmt.cc (delete_breakpoint): List breakpoints if line < 0.

@@ -1,3 +1,14 @@
+Fri Dec  6 00:20:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (TEMPLATE_SRC): Delete.  Move files to SOURCES.
+	* Map.h, Map.cc: Add #pragma interface/implementation.
+	* SLStack.h, SLStack.cc: Add #pragma interface/implementation.
+
+	* SLList.h, SLList.cc: New files, from libg++, but with #pragma
+	interface/implementation.
+	* Makefile.in (SOURCES): Add SLList.cc.
+	(INCLUDES): Add SLList.h.
+
 Thu Dec  5 18:36:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc: Don't include sun-utils.h.

@@ -36,6 +36,10 @@ License as published by the Free Software Foundation.
 #if !defined (_SLStack_h)
 #define _SLStack_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "SLList.h"
 #include "Stack.h"
 

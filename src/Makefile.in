@@ -80,7 +80,7 @@ INCLUDES := builtins.h data.h defun.h defun-dld.h \
 	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
 	unwind-prot.h utils.h variables.h version.h \
-	xdiv.h xpow.h Map.h SLStack.h Stack.h \
+	xdiv.h xpow.h Map.h SLList.h SLStack.h Stack.h \
 	ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-struct.h ov-scalar.h \
 	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
 	ov-str-mat.h ov.h ov-typeinfo.h ops.h \
@@ -104,8 +104,8 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-SOURCES := data.cc defaults.cc dirfns.cc dynamic-ld.cc error.cc \
-	file-io.cc fn-cache.cc gripes.cc \
+SOURCES := Map.cc SLList.cc SLStack.cc data.cc defaults.cc dirfns.cc \
+	dynamic-ld.cc error.cc file-io.cc fn-cache.cc gripes.cc \
 	help.cc input.cc lex.l load-save.cc mappers.cc oct-fstrm.cc \
 	oct-hist.cc oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
@@ -123,8 +123,6 @@ SOURCES := data.cc defaults.cc dirfns.cc dynamic-ld.cc error.cc \
 	op-cs-cs.cc op-cs-m.cc op-cs-s.cc op-m-cm.cc op-m-cs.cc \
 	op-m-m.cc op-m-s.cc op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc \
 	op-str-str.cc
-
-TEMPLATE_SRC = Map.cc SLStack.cc
 
 OBJECTS_4 := $(SOURCES)
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
@@ -170,7 +168,7 @@ LIBS = @LIBS@
 DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links.in \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
-	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
+	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TI_SRC)
 
 all: stamp-prereq stamp-picdir libraries \
 	$(OCT_FILES) octave

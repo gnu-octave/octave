@@ -204,6 +204,12 @@ Input/Output:
 Interpreter:
 -----------
 
+  * If foo.oct and foo.m both exist in the LOADPATH, Octave will
+    always find foo.oct, even if foo.m appears earlier in the list of
+    directories.  This should be fixed (in the kpathsearch library) to
+    find the first .oct or .m file in the path, and only prefer .oct
+    over .m if both files are in the same directory.
+
   * Fix the grammar to allow structure references and index operations
     for for anonymous expressions.  For example, it should be possible
     to write

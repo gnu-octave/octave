@@ -36,6 +36,10 @@ License as published by the Free Software Foundation.
 #if ! defined (octave_Map_h)
 #define octave_Map_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <string>
 
 #include <Pix.h>

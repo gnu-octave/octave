@@ -33,6 +33,10 @@ License as published by the Free Software Foundation.
 
 */
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

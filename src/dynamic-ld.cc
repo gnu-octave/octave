@@ -52,6 +52,8 @@ typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
 // XXX FIXME XXX -- should this list be in a user-level variable,
 // with default taken from the environment?
 
+#ifdef WITH_DLD
+
 #ifndef STD_LIB_PATH
 #define STD_LIB_PATH "/lib:/usr/lib:/usr/local/lib"
 #endif
@@ -94,8 +96,6 @@ mangle_octave_oct_file_name (const char *name)
   delete [] tmp;
   return retval;
 }
-
-#ifdef WITH_DLD
 
 static void
 octave_dld_init (void)

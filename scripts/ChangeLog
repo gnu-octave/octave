@@ -1,3 +1,8 @@
+Mon Jan 27 13:48:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__plt__.m: Use usleep() instead of replot to try to avoid
+	weird missing-lines bug without creating extra plots unecessarily.
+
 Sat Jan 25 22:37:07 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in, audio/Makefile.in, control/Makefile.in,

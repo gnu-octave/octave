@@ -1,5 +1,17 @@
 Thu Mar 13 11:44:46 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Move extra checks for Fortran compiler above
+	checks for dynamic linking and shared library stuff.
+	Handle --with-f77.  Check for Fortran compiler compatibility, even
+	if using g77.  Handle --enable-picky-flags.
+
+	* configure.in: Don't set special PIC options on SGI systems,
+	since PIC is apparently the default.
+
+	* aclocal.m4 (OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS,
+	OCTAVE_HOST_TYPE, OCTAVE_SET_DEFAULT): New macros.
+	* configure.in: Use them.
+
 	* octMakefile.in (distclean): Don't remove configure, config.h.in,
 	BUGS, or INSTALL.OCTAVE.
 

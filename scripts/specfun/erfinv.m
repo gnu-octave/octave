@@ -1,4 +1,4 @@
-## Copyright (C) 1995, 1996  Kurt Hornik
+## Copyright (C) 1995, 1996, 1997  Kurt Hornik
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -45,11 +45,12 @@ function y = erfinv (x)
   
   i = find ((x > -1) & (x < 1));
   if any (i)
+    s = sqrt (pi) / 2
     z_old = ones (length (i), 1);
     z_new = zeros (length (i), 1);
-    while (any (any (abs (z_new - z_old) > eps)))
+    while (any (any (abs (z_new - z_old) > 2 * eps)))
       z_old = z_new;
-      z_new = z_old - (erf (z_old) - x(i)) .* exp (z_old.^2);
+      z_new = z_old - (erf (z_old) - x(i)) .* exp (z_old.^2) * s;
     endwhile
     y(i) = z_new;
   endif

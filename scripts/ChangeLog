@@ -1,3 +1,8 @@
+Thu Mar 13 16:36:35 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* specfun/erfinv.m: Scale update by sqrt (pi) / 2.
+	Use tolerance of 2 * eps.
+
 Wed Mar 12 16:57:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-strip): New target.

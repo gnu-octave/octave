@@ -19,6 +19,47 @@ dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA. 
 dnl
+dnl ----------------------------------------------------------------------
+dnl
+dnl Figure out the hardware-vendor-os info.
+dnl
+dnl OCTAVE_HOST_TYPE
+AC_DEFUN(OCTAVE_HOST_TYPE,
+[AC_CANONICAL_HOST
+if test -z "$host"; then
+  host=unknown
+fi
+target_host_type=$host
+canonical_host_type=$host
+if test "$host" = unknown; then
+  AC_MSG_WARN([configuring Octave for unknown system type
+])
+fi
+AC_SUBST(target_host_type)])
+dnl
+dnl Set default value for a variable and substitute it.
+dnl
+dnl OCTAVE_SET_DEFAULT
+AC_DEFUN(OCTAVE_SET_DEFAULT,
+[ifelse($#, 2, [$1=$2
+])dnl
+AC_MSG_RESULT([defining $1 to be $$1])
+AC_SUBST($1)])
+dnl
+dnl 
+dnl OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS
+AC_DEFUN(OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS,
+[if test "${with_$1+set}" = set; then
+  if test "${with_$2+set}" = set; then
+    if test "$with_$2" = no; then
+      true
+    else
+      $3
+    fi
+  fi
+fi])
+dnl
+dnl
 dnl See what libraries are used by the C++ compiler.  Need this for
 dnl dynamic linking.
 dnl

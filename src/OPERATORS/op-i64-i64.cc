@@ -37,99 +37,40 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
-// matrix unary ops.
+#include "op-int.h"
 
-DEFNDUNOP_OP (not, int64_matrix, int64_array, !)
-DEFNDUNOP_OP (uminus, int64_matrix, int64_array, -)
+OCTAVE_S_INT_UNOPS (int64)
+OCTAVE_SS_INT_CMP_OPS (int64, int64)
+OCTAVE_SS_INT_BOOL_OPS (int64, int64)
 
-DEFUNOP (transpose, int64_matrix)
-{
-  CAST_UNOP_ARG (const octave_int64_matrix&);
+OCTAVE_SM_INT_CMP_OPS (int64, int64)
+OCTAVE_SM_INT_BOOL_OPS (int64, int64)
 
-  if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.int64_array_value().transpose ());
-}
+OCTAVE_MS_INT_CMP_OPS (int64, int64)
+OCTAVE_MS_INT_BOOL_OPS (int64, int64)
 
-//DEFNCUNOP_METHOD (incr, int64_matrix, increment)
-//DEFNCUNOP_METHOD (decr, int64_matrix, decrement)
-
-// matrix by matrix ops.
-
-//DEFNDBINOP_OP (add, int64_matrix, int64_matrix, int64_array, int64_array, +)
-//DEFNDBINOP_OP (sub, int64_matrix, int64_matrix, int64_array, int64_array, -)
-
-//DEFBINOP_OP (mul, int64_matrix, int64_matrix, *)
-//DEFBINOP_FN (div, int64_matrix, int64_matrix, xdiv)
-
-DEFBINOPX (pow, int64_matrix, int64_matrix)
-{
-  error ("can't do A ^ B for A and B both matrices");
-  return octave_value ();
-}
-
-//DEFBINOP_FN (ldiv, int64_matrix, int64_matrix, xleftdiv)
-
-DEFNDBINOP_FN (lt, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_lt)
-DEFNDBINOP_FN (le, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_le)
-DEFNDBINOP_FN (eq, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_eq)
-DEFNDBINOP_FN (ge, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_ge)
-DEFNDBINOP_FN (gt, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_gt)
-DEFNDBINOP_FN (ne, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_ne)
-
-//DEFNDBINOP_FN (el_mul, int64_matrix, int64_matrix, int64_array, int64_array, product)
-
-//DEFNDBINOP_FN (el_div, int64_matrix, int64_matrix, int64_array, int64_array, quotient)
-
-//DEFNDBINOP_FN (el_pow, int64_matrix, int64_matrix, int64_array, int64_array, elem_xpow)
-
-//DEFBINOP (el_ldiv, int64_matrix, int64_matrix)
-//{
-//  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-//
-//  return octave_value (quotient (v2.array_value (), v1.array_value ()));
-//}
-
-DEFNDBINOP_FN (el_and, int64_matrix, int64_matrix, int64_array, int64_array, mx_el_and)
-DEFNDBINOP_FN (el_or,  int64_matrix, int64_matrix, int64_array, int64_array, mx_el_or)
-
-DEFNDASSIGNOP_FN (assign, int64_matrix, int64_matrix, int64_array, assign)
+OCTAVE_M_INT_UNOPS (int64)
+OCTAVE_MM_INT_CMP_OPS (int64, int64)
+OCTAVE_MM_INT_BOOL_OPS (int64, int64)
+OCTAVE_MM_INT_ASSIGN_OPS (int64)
 
 void
 install_i64_i64_ops (void)
 {
-  INSTALL_UNOP (op_not, octave_int64_matrix, not);
-  INSTALL_UNOP (op_uminus, octave_int64_matrix, uminus);
-  INSTALL_UNOP (op_transpose, octave_int64_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_int64_matrix, transpose);
+  OCTAVE_INSTALL_S_INT_UNOPS (int64);
+  OCTAVE_INSTALL_SS_INT_CMP_OPS (int64, int64);
+  OCTAVE_INSTALL_SS_INT_BOOL_OPS (int64, int64);
 
-  //  INSTALL_NCUNOP (op_incr, octave_int64_matrix, incr);
-  //  INSTALL_NCUNOP (op_decr, octave_int64_matrix, decr);
+  OCTAVE_INSTALL_SM_INT_CMP_OPS (int64, int64);
+  OCTAVE_INSTALL_SM_INT_BOOL_OPS (int64, int64);
 
-  //  INSTALL_BINOP (op_add, octave_int64_matrix, octave_int64_matrix, add);
-  //  INSTALL_BINOP (op_sub, octave_int64_matrix, octave_int64_matrix, sub);
-  //  INSTALL_BINOP (op_mul, octave_int64_matrix, octave_int64_matrix, mul);
-  //  INSTALL_BINOP (op_div, octave_int64_matrix, octave_int64_matrix, div);
-  INSTALL_BINOP (op_pow, octave_int64_matrix, octave_int64_matrix, pow);
-  //  INSTALL_BINOP (op_ldiv, octave_int64_matrix, octave_int64_matrix, ldiv);
-  INSTALL_BINOP (op_lt, octave_int64_matrix, octave_int64_matrix, lt);
-  INSTALL_BINOP (op_le, octave_int64_matrix, octave_int64_matrix, le);
-  INSTALL_BINOP (op_eq, octave_int64_matrix, octave_int64_matrix, eq);
-  INSTALL_BINOP (op_ge, octave_int64_matrix, octave_int64_matrix, ge);
-  INSTALL_BINOP (op_gt, octave_int64_matrix, octave_int64_matrix, gt);
-  INSTALL_BINOP (op_ne, octave_int64_matrix, octave_int64_matrix, ne);
-  //  INSTALL_BINOP (op_el_mul, octave_int64_matrix, octave_int64_matrix, el_mul);
-  //  INSTALL_BINOP (op_el_div, octave_int64_matrix, octave_int64_matrix, el_div);
-  //  INSTALL_BINOP (op_el_pow, octave_int64_matrix, octave_int64_matrix, el_pow);
-  //  INSTALL_BINOP (op_el_ldiv, octave_int64_matrix, octave_int64_matrix, el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_int64_matrix, octave_int64_matrix, el_and);
-  INSTALL_BINOP (op_el_or, octave_int64_matrix, octave_int64_matrix, el_or);
+  OCTAVE_INSTALL_MS_INT_CMP_OPS (int64, int64);
+  OCTAVE_INSTALL_MS_INT_BOOL_OPS (int64, int64);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_int64_matrix, octave_int64_matrix, assign);
+  OCTAVE_INSTALL_M_INT_UNOPS (int64);
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (int64, int64);
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (int64, int64);
+  OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (int64);
 }
 
 /*

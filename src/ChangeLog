@@ -1,3 +1,12 @@
+2004-06-16  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-int.h: New file.
+	* OPERATORS/op-i16-i16.cc, OPERATORS/op-i8-i8.cc,
+	OPERATORS/op-ui32-ui32.cc, OPERATORS/op-i32-i32.cc,
+	OPERATORS/op-int-conv.cc, OPERATORS/op-ui64-ui64.cc,
+	OPERATORS/op-i64-i64.cc, OPERATORS/op-ui16-ui16.cc,
+	OPERATORS/op-ui8-ui8.cc: Use new macros from op-int.h.
+
 2004-06-14  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.h, pr-output.cc (octave_print_conv): New traits class.

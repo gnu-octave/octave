@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include "CMatrix.h"
 
 class ComplexAEPBALANCE
@@ -40,7 +42,7 @@ public:
 
   ComplexAEPBALANCE (void) { }
 
-  ComplexAEPBALANCE (const ComplexMatrix& a, const char * balance_job)
+  ComplexAEPBALANCE (const ComplexMatrix& a, const string& balance_job)
     {
       init (a, balance_job); 
     }
@@ -67,7 +69,7 @@ public:
 
 private:
 
-  int init (const ComplexMatrix& a, const char * balance_job);
+  int init (const ComplexMatrix& a, const string& balance_job);
 
   ComplexMatrix balanced_mat;
   ComplexMatrix balancing_mat;

@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "dbleAEPBAL.h"
 #include "f77-uscore.h"
 
@@ -45,9 +47,10 @@ extern "C"
 }
 
 int
-AEPBALANCE::init (const Matrix& a, const char *balance_job)
+AEPBALANCE::init (const Matrix& a, const string& balance_job)
 {
   int a_nc = a.cols ();
+
   if (a.rows () != a_nc)
     {
       (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
@@ -67,7 +70,9 @@ AEPBALANCE::init (const Matrix& a, const char *balance_job)
 
   balanced_mat = a;
 
-  F77_FCN (dgebal, DGEBAL) (balance_job, n,
+  char bal_job = balance_job[0];
+
+  F77_FCN (dgebal, DGEBAL) (&bal_job, n,
 			    balanced_mat.fortran_vec (), n, ilo, ihi,
 			    scale, info, 1L, 1L);
 
@@ -77,7 +82,7 @@ AEPBALANCE::init (const Matrix& a, const char *balance_job)
   for (int i = 0; i < n; i++)
     balancing_mat.elem (i ,i) = 1.0;
 
-  F77_FCN (dgebak, DGEBAK) (balance_job, "R", n, ilo, ihi, scale, n,
+  F77_FCN (dgebak, DGEBAK) (&bal_job, "R", n, ilo, ihi, scale, n,
 			    balancing_mat.fortran_vec (), n, info, 1L,
 			    1L);
 

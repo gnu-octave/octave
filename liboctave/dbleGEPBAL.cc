@@ -31,6 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 
+#include <string>
+
 #include "dbleGEPBAL.h"
 #include "f77-uscore.h"
 
@@ -56,11 +58,12 @@ extern "C"
 }
 
 int
-GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
+GEPBALANCE::init (const Matrix& a, const Matrix& b, const string& balance_job)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
   int b_nr = b.rows ();
+
   if (a_nr != a_nc || a_nr != b_nr || b_nr != b.cols ())
     {
       (*current_liboctave_error_handler)
@@ -109,7 +112,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   // Check for permutation option.
 
-  if (*balance_job == 'P' || *balance_job == 'B')
+  char bal_job = balance_job[0];
+
+  if (bal_job == 'P' || bal_job == 'B')
     {
       F77_FCN (reduce, REDUCE) (n, n, balanced_a_mat.fortran_vec (),
 				n, balanced_b_mat.fortran_vec (), ilo,
@@ -125,7 +130,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   // Check for scaling option.
 
-  if ((*balance_job == 'S' || *balance_job == 'B') && ilo != ihi)
+  if ((bal_job == 'S' || bal_job == 'B') && ilo != ihi)
     {
       F77_FCN (scaleg, SCALEG) (n, n, balanced_a_mat.fortran_vec (), 
 				n, balanced_b_mat.fortran_vec (), ilo,
@@ -152,13 +157,13 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   // Column permutations/scaling.
 
-  F77_FCN (dgebak, DGEBAK) (balance_job, "R", n, ilo, ihi, cscale, n, 
+  F77_FCN (dgebak, DGEBAK) (&bal_job, "R", n, ilo, ihi, cscale, n, 
 			    right_balancing_mat.fortran_vec (), n,
 			    info, 1L, 1L);
     
   // Row permutations/scaling.
 
-  F77_FCN (dgebak, DGEBAK) (balance_job, "L", n, ilo, ihi,
+  F77_FCN (dgebak, DGEBAK) (&bal_job, "L", n, ilo, ihi,
 			    wk.fortran_vec (), n,
 			    left_balancing_mat.fortran_vec (), n,
 			    info, 1L, 1L);
@@ -168,7 +173,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
   // here they are.
 
 #if 0
-  if ((*balance_job == 'P' || *balance_job == 'B') && ilo != ihi)
+  if ((bal_job == 'P' || bal_job == 'B') && ilo != ihi)
     {
       F77_FCN (gradeq, GRADEQ) (n, n, balanced_a_mat.fortran_vec (),
 				n, balanced_b_mat.fortran_vec (), ilo,

@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include "dMatrix.h"
 
 class AEPBALANCE
@@ -40,7 +42,7 @@ public:
 
   AEPBALANCE (void) { }
 
-  AEPBALANCE (const Matrix& a,const char * balance_job)
+  AEPBALANCE (const Matrix& a,const string& balance_job)
     {
       init (a, balance_job); 
     }
@@ -67,7 +69,7 @@ public:
 
 private:
 
-  int init (const Matrix& a, const char * balance_job);
+  int init (const Matrix& a, const string& balance_job);
 
   Matrix balanced_mat;
   Matrix balancing_mat;

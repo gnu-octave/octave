@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include "dMatrix.h"
 
 class GEPBALANCE
@@ -40,7 +42,7 @@ public:
 
   GEPBALANCE (void) { }
 
-  GEPBALANCE (const Matrix& a, const Matrix& b, const char * balance_job)
+  GEPBALANCE (const Matrix& a, const Matrix& b, const string& balance_job)
     {
       init (a, b, balance_job); 
     }
@@ -73,7 +75,7 @@ public:
 
 private:
 
-  int init (const Matrix& a, const Matrix& b, const char * balance_job);
+  int init (const Matrix& a, const Matrix& b, const string& balance_job);
 
   Matrix balanced_a_mat;
   Matrix balanced_b_mat;

@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "CmplxAEPBAL.h"
 #include "dMatrix.h"
 #include "f77-uscore.h"
@@ -46,10 +48,17 @@ extern "C"
 }
 
 int
-ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
+ComplexAEPBALANCE::init (const ComplexMatrix& a, const string& balance_job)
 {
+  int a_nc = a.cols ();
 
-  int n = a.cols ();
+  if (a.rows () != a_nc)
+    {
+      (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
+      return -1;
+    }
+
+  int n = a_nc;
 
   // Parameters for balance call.
 
@@ -62,7 +71,9 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
 
   balanced_mat = a;
 
-  F77_FCN (zgebal, ZGEBAL) (balance_job, n,
+  char bal_job = balance_job[0];
+
+  F77_FCN (zgebal, ZGEBAL) (&bal_job, n,
 			    balanced_mat.fortran_vec (), n, ilo, ihi,
 			    scale, info, 1L, 1L);
 
@@ -72,7 +83,7 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
   for (int i = 0; i < n; i++)
     balancing_mat (i, i) = 1.0;
 
-  F77_FCN (zgebak, ZGEBAK) (balance_job, "R", n, ilo, ihi, scale, n, 
+  F77_FCN (zgebak, ZGEBAK) (&bal_job, "R", n, ilo, ihi, scale, n, 
 			    balancing_mat.fortran_vec (), n, info, 1L,
 			    1L);
 

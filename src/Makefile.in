@@ -77,8 +77,8 @@ TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
 SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	dynamic-ld.cc erf.c erfc.c error.cc file-io.cc fnmatch.c \
-	getopt.c getopt1.c gripes.cc help.cc idx-vector.cc input.cc \
-	lex.l lgamma.c load-save.cc mappers.cc octave.cc \
+	getopt.c getopt1.c gripes.cc help.cc idx-vector.cc \
+	input.cc lex.l load-save.cc mappers.cc octave.cc \
 	octave-hist.cc oct-obj.cc pager.cc parse.y pr-output.cc \
 	procstream.cc sighandlers.cc strcasecmp.c strncase.c strfns.cc \
 	symtab.cc sysdep.cc tc-rep.cc tc-rep-ass.cc tc-rep-idx.cc \

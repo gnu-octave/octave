@@ -1,7 +1,7 @@
 // Objective.h                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -26,44 +26,37 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "dColVector.h"
 
-class Objective
+class
+Objective
 {
- public:
+public:
 
   typedef double (*objective_fcn) (const ColumnVector&);
   typedef ColumnVector (*gradient_fcn) (const ColumnVector&);
 
   Objective (void)
-    {
-      phi = 0;
-      grad = 0;
-    }
+    : phi (0), grad (0) { }
 
   Objective (const objective_fcn obj)
-    {
-      phi = obj;
-      grad = 0;
-    }
+    : phi (obj), grad (0) { }
 
   Objective (const objective_fcn obj, const gradient_fcn g)
-    {
-      phi = obj;
-      grad = g;
-    }
+    : phi (obj), grad (g) { }
 
   Objective (const Objective& a)
-    {
-      phi = a.phi;
-      grad = a.grad;
-    }
+    : phi (a.phi), grad (a.grad) { }
 
   Objective& operator = (const Objective& a)
     {
-      phi = a.phi;
-      grad = a.grad;
-
+      if (this != &a)
+	{
+	  phi = a.phi;
+	  grad = a.grad;
+	}
       return *this;
     }
+
+  ~Objective (void) { }
 
   objective_fcn objective_function (void) const { return phi; }
 
@@ -81,7 +74,7 @@ class Objective
       return *this;
     }
 
- private:
+private:
 
   objective_fcn phi;
   gradient_fcn grad;

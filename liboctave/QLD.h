@@ -1,7 +1,7 @@
 // QLD.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,58 +33,62 @@ class ColumnVector;
 
 #include "QP.h"
 
-class QLD : public QP
+class
+QLD : public QP
 {
- public:
+public:
 
-  QLD (void) : QP ()
-    { set_default_options (); }
+  QLD (void)
+    : QP (), iprint (0) { }
 
-  QLD (const ColumnVector& x, const Matrix& H) : QP (x, H)
-    { set_default_options (); }
+  QLD (const ColumnVector& x, const Matrix& H)
+    : QP (x, H), iprint (0) { }
 
   QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c)
-    : QP (x, H, c) { set_default_options (); }
+    : QP (x, H, c), iprint (0) { }
 
-  QLD (const ColumnVector& x, const Matrix& H, const Bounds& b) : QP (x, H, b)
-    { set_default_options (); }
+  QLD (const ColumnVector& x, const Matrix& H, const Bounds& b)
+    : QP (x, H, b), iprint (0) { }
 
   QLD (const ColumnVector& x, const Matrix& H, const LinConst& lc)
-    : QP (x, H, lc)
-      { set_default_options (); }
+    : QP (x, H, lc), iprint (0) { }
 
   QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
-       const Bounds& b) : QP (x, H, c, b) { set_default_options (); }
+       const Bounds& b)
+    : QP (x, H, c, b), iprint (0) { }
 
   QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
-       const LinConst& lc) : QP (x, H, c, lc) { set_default_options (); }
+       const LinConst& lc)
+    : QP (x, H, c, lc), iprint (0) { }
 
   QLD (const ColumnVector& x, const Matrix& H, const Bounds& b,
-       const LinConst& lc) : QP (x, H, b, lc) { set_default_options (); }
+       const LinConst& lc)
+    : QP (x, H, b, lc), iprint (0) { }
 
   QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
-       const Bounds& b, const LinConst& lc) : QP (x, H, c, b, lc)
-   { set_default_options (); }
+       const Bounds& b, const LinConst& lc)
+    : QP (x, H, c, b, lc), iprint (0) { }
 
-  QLD (const QLD& a) : QP (a.x, a.H, a.c, a.bnds, a.lc)
-    { set_default_options (); }
+  QLD (const QLD& a)
+    : QP (a.x, a.H, a.c, a.bnds, a.lc), iprint (0) { }
 
   QLD& operator = (const QLD& a)
     {
-      x = a.x;
-      H = a.H;
-      c = a.c;
-      bnds = a.bnds;
-      lc = a.lc;
-      iprint = a.iprint;
+      if (this != &a)
+	{
+	  QP::operator = (a);
 
+	  iprint = a.iprint;
+	}
       return *this;
     }
+
+  ~QLD (void) { }
 
   ColumnVector minimize (double& objf, int& inform);
 
 private:
-  void set_default_options (void);
+
   int iprint;
 };
 

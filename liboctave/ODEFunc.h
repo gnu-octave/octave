@@ -27,7 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Matrix;
 class ColumnVector;
 
-class ODEFunc
+class
+ODEFunc
 {
 public:
 
@@ -56,6 +57,8 @@ public:
       return *this;
     }
 
+  ~ODEFunc (void) { }
+
   ODERHSFunc function (void) const { return fun; }
 
   ODEFunc& set_function (ODERHSFunc f)
@@ -75,7 +78,6 @@ public:
 protected:
 
   ODERHSFunc fun;
-
   ODEJacFunc jac;
 };
 

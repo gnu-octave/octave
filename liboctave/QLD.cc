@@ -127,12 +127,6 @@ QLD::minimize (double& objf, int& inform)
   return x;
 }
 
-void
-QLD::set_default_options (void)
-{
-  iprint = 0;
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

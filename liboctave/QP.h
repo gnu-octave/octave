@@ -1,7 +1,7 @@
 // QP.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -30,41 +30,43 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "LinConst.h"
 #include "base-min.h"
 
-class QP : public base_minimizer
+class
+QP : public base_minimizer
 {
- public:
+public:
 
-  QP (void) : base_minimizer () { }
+  QP (void)
+    : base_minimizer (), H (), c (), bnds (), lc () { }
 
   QP (const ColumnVector& x, const Matrix& H_arg)
-    : base_minimizer (x), H (H_arg)
+    : base_minimizer (x), H (H_arg), c (), bnds (), lc ()
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg)
-    : base_minimizer (x), H (H_arg), c (c_arg)
+    : base_minimizer (x), H (H_arg), c (c_arg), bnds (), lc ()
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const Bounds& b)
-    : base_minimizer (x), H (H_arg), bnds (b)
+    : base_minimizer (x), H (H_arg), c (), bnds (b), lc ()
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const LinConst& l)
-    : base_minimizer (x), H (H_arg), lc (l)
+    : base_minimizer (x), H (H_arg), lc (l), bnds (), lc ()
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
       const Bounds& b)
-    : base_minimizer (x), H (H_arg), c (c_arg), bnds (b)
+    : base_minimizer (x), H (H_arg), c (c_arg), bnds (b), lc ()
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
       const LinConst& l)
-    : base_minimizer (x), H (H_arg), c (c_arg), lc (l)
+    : base_minimizer (x), H (H_arg), c (c_arg), bnds (), lc (l)
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const Bounds& b,
       const LinConst& l)
-    : base_minimizer (x), H (H_arg), bnds (b), lc (l)
+    : base_minimizer (x), H (H_arg), c (), bnds (b), lc (l)
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
@@ -72,17 +74,43 @@ class QP : public base_minimizer
     : base_minimizer (x), H (H_arg), c (c_arg), bnds (b), lc (l)
       { make_h_symmetric (); }
 
+  QP (const QP& qp)
+    : base_minimizer (qp), H (qp.H), c (qp.c), bnds (qp.bnds), lc (qp.lc) { }
+
+  QP& operator = (const QP& qp)
+    {
+      if (this != &qp)
+	{
+	  base_minimizer::operator = (qp);
+
+	  H = qp.H;
+	  c = qp.c;
+	  bnds = qp.bnds;
+	  lc = qp.lc;
+	}
+      return *this;
+    }
+
+  ~QP (void) { }
+
+  Matrix hessian (void) const { return H; }
+
+  ColumnVector linear_obj_coeff (void) const { return c; }
+
+  Bounds bounds (void) const { return bnds; }
+
+  LinConst linear_constraints (void) const { return lc; }
+
   virtual ~QP (void) { }
 
- protected:
+protected:
 
-  ColumnVector x;
   Matrix H;  
   ColumnVector c;
   Bounds bnds;
   LinConst lc;
 
- private:
+private:
 
   Matrix make_h_symmetric (void) { return 0.5 * (H + H.transpose ()); }
 };

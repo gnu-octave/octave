@@ -27,7 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ODEFunc.h"
 #include "base-de.h"
 
-class ODE : public base_diff_eqn, public ODEFunc
+class
+ODE : public base_diff_eqn, public ODEFunc
 {
 public:
 

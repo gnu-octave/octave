@@ -496,8 +496,9 @@ subplot_using::values (int ndim, int n_max)
 {
   int status = eval (ndim, n_max);
 
+  // XXX FIXME XXX -- is the following really right?
   if (status < 0)
-    return -1;
+    return ColumnVector (1, -1.0);
 
   return val;
 }

@@ -139,7 +139,7 @@ p =\n\
 	    case 1:
 	    case 2:
 	      {
-		ComplexMatrix P = fact.P ();
+		Matrix P = fact.P ();
 		ComplexMatrix L = P.transpose () * fact.L ();
 		retval(1) = fact.U ();
 		retval(0) = L;

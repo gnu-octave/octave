@@ -477,16 +477,16 @@ See also: balance, dare, eig, schur\n\
     {
       // complex case
       if (args(0).is_real_type ())
-	caa = aa;
+	caa = ComplexMatrix (aa);
 
       if (args(1).is_real_type ())
-	cbb = bb;
+	cbb = ComplexMatrix (bb);
 
       if (compq == 'V')
-	CQ = QQ;
+	CQ = ComplexMatrix (QQ);
 
       if (compz == 'V')
-	CZ = ZZ;
+	CZ = ComplexMatrix (ZZ);
 
       error ("complex case not done yet");
       return retval;

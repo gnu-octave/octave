@@ -232,10 +232,10 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       if (complex_case)
 	{
 	  if (args(0).is_real_type ())
-	    caa = aa;
+	    caa = ComplexMatrix (aa);
 
 	  if (args(1).is_real_type ())
-	    cbb = bb;
+	    cbb = ComplexMatrix (bb);
   
 	  F77_XFCN (zggbal, ZGGBAL,
 		    (&job, nn, caa.fortran_vec(), nn,

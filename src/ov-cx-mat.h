@@ -60,7 +60,7 @@ public:
     : octave_base_matrix<ComplexMatrix> (m) { }
 
   octave_complex_matrix (const ComplexDiagMatrix& d)
-    : octave_base_matrix<ComplexMatrix> (d) { }
+    : octave_base_matrix<ComplexMatrix> (ComplexMatrix (d)) { }
 
   octave_complex_matrix (const ComplexRowVector& v)
     : octave_base_matrix<ComplexMatrix> (ComplexMatrix (v)) { }

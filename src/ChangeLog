@@ -1,5 +1,24 @@
 2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/balance.cc (Fbalance): Explicitly request
+	conversion from Matrix to ComplexMatrix.
+	* DLD-FUNCTIONS/qz.cc (Fqz): Likewise.
+
+	* ov-re-mat.h (octave_matrix::complex_matrix_value): Explicitly
+	request conversion from Matrix type.
+
+	* ov-ch-mat.h (octave_char_matrix::matrix_value): Explicitly
+	request conversion from charMatrix type.
+	(octave_char_matrix::complex_matrix_value): Likewise.
+	* ov-bool-mat.h (octave_bool_matrix::matrix_value): Likewise.
+	(octave_bool_matrix::complex_matrix_value): Likewise.
+
+	* ov-range.h (octave_range::complex_matrix_value): Explicitly
+	request conversion from Matrix type.
+
+	* ov-cx-mat.h, ov-re-mat.h: Explicitly request conversions from
+	diagonal matrix types in constructors.
+
 	* mappers.cc (ximag, xreal): Return double, not Complex.
 
 	* error.cc (panic): Turn off buffering of error messages.

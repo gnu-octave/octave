@@ -60,7 +60,7 @@ public:
     : octave_base_matrix<Matrix> (m) { }
 
   octave_matrix (const DiagMatrix& d)
-    : octave_base_matrix<Matrix> (d) { }
+    : octave_base_matrix<Matrix> (Matrix (d)) { }
 
   octave_matrix (const RowVector& v)
     : octave_base_matrix<Matrix> (Matrix (v)) { }
@@ -97,7 +97,7 @@ public:
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return matrix; }
+    { return ComplexMatrix (matrix); }
 
   void increment (void) { matrix += 1.0; }
 

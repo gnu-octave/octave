@@ -89,12 +89,12 @@ public:
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
-  Matrix matrix_value (bool = false) const { return matrix; }
+  Matrix matrix_value (bool = false) const { return Matrix (matrix); }
 
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return matrix; }
+    { return ComplexMatrix (matrix); }
 
   boolMatrix bool_matrix_value (void) const
     { return matrix; }

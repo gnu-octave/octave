@@ -15,8 +15,6 @@ if [ $1 = "-p" ]; then
   shift
 fi
 
-LN_S="%LN_S%"
-
 links_dir=$1
 shift
 
@@ -34,7 +32,7 @@ for f in "$@"; do
           echo $base.oct $n.oct
         else
           echo "creating link $n.oct -> $base.oct"
-          ( cd $links_dir; rm -f $n.oct; $LN_S $base.oct $n.oct )
+          ( cd $links_dir; rm -f $n.oct; ln $base.oct $n.oct )
         fi
       fi
     done

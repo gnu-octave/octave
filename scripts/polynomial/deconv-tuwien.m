@@ -5,7 +5,7 @@ function [x, r] = deconv(a, b)
 # vectors of coefficients of quotient and remainder in the polynomial
 # division of a by b. 
 
-# written by KH (Kurt.Hornik@neuro.tuwien.ac.at) on Dec 27, 1993
+# written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 27, 1993
 # copyright Dept of Probability Theory and Statistics TU Wien
   
   if !(nargin == 2)

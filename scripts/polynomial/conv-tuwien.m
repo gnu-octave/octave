@@ -7,7 +7,7 @@ function c=conv(a,b)
 # conv(a,b) is equivalent to polynomial multiplication.
 
 # written by Gerhard Kircher on Aug 27, 1993
-# modified by KH (Kurt.Hornik@neuro.tuwien.ac.at) on Dec 23, 1993.
+# modified by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 23, 1993.
 
   l_a = length(a);
   l_b = length(b);  

@@ -10,7 +10,7 @@ function retval = orth (A, tol)
 # max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
 # maximal singular value of A.
 
-# written by KH (Kurt.Hornik@neuro.tuwien.ac.at) on Dec 24, 1993
+# written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993
 # copyright Dept of Probability Theory and Statistics TU Wien
 
   [U, S, V] = svd (A);

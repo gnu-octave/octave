@@ -34,7 +34,7 @@ function [BETA, v, R] = gls (Y, X, O)
 # v is the GLS estimator for s^2.
 # R = Y - X*BETA is the matrix of GLS residuals.
 
-# Written by Teresa Twaroch (twaroch@neuro.tuwien.ac.at) May 1993.
+# Written by Teresa Twaroch (twaroch@ci.tuwien.ac.at) May 1993.
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 3)

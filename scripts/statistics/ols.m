@@ -40,7 +40,7 @@ function [BETA, SIGMA, R] = ols (Y, X)
 #
 # R = Y - X*BETA is the matrix of OLS residuals.
 
-# Written by Teresa Twaroch (twaroch@neuro.tuwien.ac.at) May 1993.
+# Written by Teresa Twaroch (twaroch@ci.tuwien.ac.at) May 1993.
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 2)

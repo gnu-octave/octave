@@ -24,7 +24,7 @@ function retval = mahalanobis (X, Y)
 # samples X and Y, which must have the same number of components
 # (columns), but may have a different number of observations (rows).
 
-# Written by Friedrich Leisch (leisch@neuro.tuwien.ac.at) July 1993.
+# Written by Friedrich Leisch (leisch@ci.tuwien.ac.at) July 1993.
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 2)

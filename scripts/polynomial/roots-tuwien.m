@@ -3,7 +3,7 @@ function r = roots(v)
 # For a vector v with n components, return the roots of the polynomial
 # v(1)*z^(n-1) + ... + v(n-1) * z + v(n).
   
-# written by KH (Kurt.Hornik@neuro.tuwien.ac.at) on Dec 24, 1993
+# written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993
 # copyright Dept of Probability Theory and Statistics TU Wien
 # modified by KH on Jan 10, 1994
   

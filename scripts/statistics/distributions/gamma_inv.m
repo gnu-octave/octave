@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  gamma_inv (x, a, b)
-##
-## For each component of x, compute the quantile (the inverse of the
-## CDF) at x of the Gamma distribution with parameters a and b.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} gamma_inv (@var{x}, @var{a}, @var{b})
+## For each component of @var{x}, compute the quantile (the inverse of
+## the CDF) at @var{x} of the Gamma distribution with parameters @var{a}
+## and @var{b}. 
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the Gamma distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the Gamma distribution
 
 function inv = gamma_inv (x, a, b)
 
@@ -30,7 +32,7 @@ function inv = gamma_inv (x, a, b)
 
   [retval, x, a, b] = common_size (x, a, b);
   if (retval > 0)
-    error ("gamma_inv:  x, a and b must be of common size or scalars");
+    error ("gamma_inv: x, a and b must be of common size or scalars");
   endif
 
   [r, c] = size (x);
@@ -41,23 +43,23 @@ function inv = gamma_inv (x, a, b)
   inv = zeros (s, 1);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(a > 0) | !(b > 0));
-  if any (k)
+  if (any (k))
     inv (k) = NaN * ones (length (k), 1);
   endif
 
   k = find ((x == 1) & (a > 0) & (b > 0));
-  if any (k)
+  if (any (k))
     inv (k) = Inf * ones (length (k), 1);
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
-  if any (k)
+  if (any (k))
     a = a (k);
     b = b (k);
     x = x (k);
     y = a ./ b;
     l = find (x < eps);
-    if any (l)
+    if (any (l))
       y(l) = sqrt (eps) * ones (length (l), 1);
     endif
 

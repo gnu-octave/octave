@@ -14,14 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  weibull_cdf (x, alpha, sigma)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} weibull_cdf (@var{x}, @var{alpha}, @var{sigma})
+## Compute the cumulative distribution function (CDF) at @var{x} of the
+## Weibull distribution with shape parameter @var{alpha} and scale
+## parameter @var{sigma}, which is
 ##
-## Compute the cumulative distribution function (CDF) at x of the
-## Weibull distribution with shape parameter alpha and scale parameter
-## sigma, which is 1 - exp(-(x/sigma)^alpha), x >= 0.
+## @example
+## 1 - exp(-(x/sigma)^alpha)
+## @end example
+##
+## @noindent
+## for @var{x} >= 0.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the Weibull distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the Weibull distribution
 
 function cdf = weibull_cdf (x, shape, scale)
 
@@ -31,8 +39,7 @@ function cdf = weibull_cdf (x, shape, scale)
 
   [retval, x, shape, scale] = common_size (x, shape, scale);
   if (retval > 0)
-    error (["weibull_cdf:  ", ...
-            "x, alpha and sigma must be of common size or scalar"]);
+    error ("weibull_cdf: x, alpha and sigma must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -46,17 +53,17 @@ function cdf = weibull_cdf (x, shape, scale)
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x <= 0) & ok);
-  if any (k)
+  if (any (k))
     cdf(k) = zeros (1, length (k));
   endif
 
   k = find ((x > 0) & (x < Inf) & ok);
-  if any (k)
+  if (any (k))
     cdf(k) = 1 - exp (- (x(k) ./ scale(k)) .^ shape(k));
   endif
 
   k = find ((x == Inf) & ok);
-  if any (k)
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 

@@ -14,35 +14,49 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  kolmogorov_smirnov_cdf (x [, tol])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
+## Return the CDF at @var{x} of the Kolmogorov-Smirnov distribution,
+## @iftex
+## @tex
+## $$ Q(x) = sum_{k=-\infty}^\infty (-1)^k exp(-2 k^2 x^2) $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+##          Inf
+## Q(x) =   SUM    (-1)^k exp(-2 k^2 x^2)
+##        k = -Inf
+## @end example
+## @end ifinfo
 ##
-## Returns the CDF at x of the Kolmogorov-Smirnov distribution,
-## i.e. Q(x) = sum_{k=-\infty}^\infty (-1)^k exp(-2 k^2 x^2), x > 0.
+## @noindent
+## for @var{x} > 0.
 ##
-## The optional tol specifies the precision up to which the series
-## should be evaluated;  the default is tol = eps.
+## The optional parameter @var{tol} specifies the precision up to which
+## the series should be evaluated;  the default is @var{tol} = @code{eps}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the Kolmogorov-Smirnov distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the Kolmogorov-Smirnov distribution
 
 function cdf = kolmogorov_smirnov_cdf (x, tol)
 
   if (nargin < 1 || nargin > 2)
-    usage ("kolmogorov_smirnov_cdf (x [, tol])");
+    usage ("kolmogorov_smirnov_cdf (x, tol)");
   endif
 
   if (nargin == 1)
     tol = eps;
   else
     if (!is_scalar (tol) || !(tol > 0))
-      error (["kolmogorov_smirnov_cdf:  ", ...
-              "tol has to be a positive scalar."]);
+      error ("kolmogorov_smirnov_cdf: tol has to be a positive scalar");
     endif
   endif
 
   [nr, nc] = size(x);
   if (min (nr, nc) == 0)
-    error ("kolmogorov_smirnov_cdf:  x must not be empty.");
+    error ("kolmogorov_smirnov_cdf: x must not be empty");
   endif
 
   n   = nr * nc;

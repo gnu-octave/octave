@@ -14,36 +14,34 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  geometric_rnd (p [, r, c])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} geometric_rnd (@var{p}, @var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random samples from the
+## geometric distribution with parameter @var{p}, which must be a scalar
+## or of size @var{r} by @var{c}.
 ##
-## geometric_rnd (p) returns a matrix of random samples from the
-## geometric distribution with parameter p.  The size of the matrix is
-## the size of p.
-##
-## geometric_rnd (p, r, c) returns an r by c matrix of random samples
-## from the geometric distribution with parameter p, which must be a
-## scalar or of size r by c.
+## If @var{r} and @var{c} are omitted, the size of the result matrix is
+## the size of @var{p}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the geometric distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the geometric distribution
 
 function rnd = geometric_rnd (p, r, c)
 
   if (nargin == 3)
-    if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-      error ("geometric_rnd:  r must be a positive integer");
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+      error ("geometric_rnd: r must be a positive integer");
     endif
-    if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-      error ("geometric_rnd:  c must be a positive integer");
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+      error ("geometric_rnd: c must be a positive integer");
     endif
     [retval, p] = common_size (p, zeros (r, c));
     if (retval > 0)
-      error (strcat("geometric_rnd:  ",
-                    "p must be scalar or of size ",
-                    sprintf ("%d by %d", r, c)));
+      error ("geometric_rnd: p must be scalar or of size %d by %d", r, c);
     endif
   elseif (nargin != 1)
-    usage ("geometric_rnd (p [, r, c])");
+    usage ("geometric_rnd (p, r, c)");
   endif
 
   [r, c] = size (p);

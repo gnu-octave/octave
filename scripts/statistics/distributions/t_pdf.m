@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  t_pdf (x, n)
-##
-## For each element of x, compute the probability density function (PDF)
-## at x of the t (Student) distribution with n degrees of freedom.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} t_pdf (@var{x}, @var{n})
+## For each element of @var{x}, compute the probability density function
+## (PDF) at @var{x} of the @var{t} (Student) distribution with @var{n}
+## degrees of freedom. 
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the t distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the t distribution
 
 function pdf = t_pdf (x, n)
 
@@ -30,7 +32,7 @@ function pdf = t_pdf (x, n)
 
   [retval, x, n] = common_size (x, n);
   if (retval > 0)
-    error ("t_pdf:  x and n must be of common size or scalar");
+    error ("t_pdf: x and n must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -40,21 +42,20 @@ function pdf = t_pdf (x, n)
   pdf = zeros (1, s);
 
   k = find (isnan (x) | !(n > 0) | !(n < Inf));
-  if any (k)
+  if (any (k))
     pdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find (!isinf (x) & !isnan (x) & (n > 0) & (n < Inf));
-  if any (k)
-    pdf(k) = exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k)) / 2) ...
-      ./ (sqrt (n(k)) .* beta (n(k) / 2, 1 / 2));
+  if (any (k))
+    pdf(k) = (exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k))/2)
+	      ./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
   endif
 
   ## should we really only allow for positive integer n?
   k = find (n != round (n));
-  if any (k)
-    fprintf (stderr, ...
-        "WARNING:  n should be positive integer\n");
+  if (any (k))
+    warning ("t_pdf: n should be positive integer");
     pdf(k) = NaN * ones (1, length (k));
   endif
 

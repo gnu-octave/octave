@@ -21,8 +21,8 @@
 ## of each column.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute mean square
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute mean square
 
 function y = meansq (x)
 

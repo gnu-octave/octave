@@ -14,15 +14,17 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  exponential_cdf (x, lambda)
-##
-## For each element of x, compute the cumulative distribution function
-## (CDF) at x of the exponential distribution with parameter lambda.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} exponential_cdf (@var{x}, @var{lambda})
+## For each element of @var{x}, compute the cumulative distribution
+## function (CDF) at @var{x} of the exponential distribution with
+## parameter @var{lambda}.
 ##
 ## The arguments can be of common size or scalar.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the exponential distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the exponential distribution
 
 function cdf = exponential_cdf (x, l)
 
@@ -42,17 +44,17 @@ function cdf = exponential_cdf (x, l)
   cdf = zeros (1, s);
 
   k = find (isnan (x) | !(l > 0));
-  if any (k)
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x == Inf) & (l > 0));
-  if any (k)
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < Inf) & (l > 0));
-  if any (k)
+  if (any (k))
     cdf (k) = 1 - exp (- l(k) .* x(k));
   endif
 

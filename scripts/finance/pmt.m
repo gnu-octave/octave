@@ -34,23 +34,23 @@
 function p = pmt (r, n, a, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("pmt (r, n, a [, l] [, method])");
+    usage ("pmt (r, n, a, l, method)");
   endif
 
-  if !(is_scalar (r) && (r > -1))
+  if (! (is_scalar (r) && (r > -1)))
     error ("pmt:  rate must be a scalar > -1");
-  elseif !(is_scalar (n) && (n > 0))
+  elseif (! (is_scalar (n) && (n > 0)))
     error ("pmt:  n must be a positive scalar");
-  elseif !(is_scalar (a) && (a > 0))
+  elseif (! (is_scalar (a) && (a > 0)))
     error ("pmt:  a must be a positive scalar.");
   endif
 
   if (nargin == 5)
-    if !isstr (m)
+    if (! isstr (m))
       error ("pmt:  `method' must be a string");
     endif
   elseif (nargin == 4)
-    if isstr (l)
+    if (isstr (l))
       m = l;
       l = 0;
     else
@@ -63,7 +63,7 @@ function p = pmt (r, n, a, l, m)
 
   p = r * (a - l * (1 + r)^(-n)) / (1 - (1 + r)^(-n));
 
-  if strcmp (m, "b")
+  if (strcmp (m, "b"))
     p = p / (1 + r);
   endif
 

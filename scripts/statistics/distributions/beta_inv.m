@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  beta_inv (x, a, b)
-##
-## For each component of x, compute the quantile (the inverse of the
-## CDF) at x of the Beta distribution with parameters a and b.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} beta_inv (@var{x}, @var{a}, @var{b})
+## For each component of @var{x}, compute the quantile (the inverse of
+## the CDF) at @var{x} of the Beta distribution with parameters @var{a}
+## and @var{b}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the Beta distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the Beta distribution
 
 function inv = beta_inv (x, a, b)
 
@@ -30,7 +32,7 @@ function inv = beta_inv (x, a, b)
 
   [retval, x, a, b] = common_size (x, a, b);
   if (retval > 0)
-    error ("beta_inv:  x, a and b must be of common size or scalars");
+    error ("beta_inv: x, a and b must be of common size or scalars");
   endif
 
   [r, c] = size (x);
@@ -41,27 +43,27 @@ function inv = beta_inv (x, a, b)
   inv = zeros (s, 1);
 
   k = find ((x < 0) | (x > 1) | !(a > 0) | !(b > 0) | isnan (x));
-  if any (k)
+  if (any (k))
     inv (k) = NaN * ones (length (k), 1);
   endif
 
   k = find ((x == 1) & (a > 0) & (b > 0));
-  if any (k)
+  if (any (k))
     inv (k) = ones (length (k), 1);
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
-  if any (k)
+  if (any (k))
     a = a (k);
     b = b (k);
     x = x (k);
     y = a ./ b;
     l = find (y < eps);
-    if any (l)
+    if (any (l))
       y(l) = sqrt (eps) * ones (length (l), 1);
     endif
     l = find (y > 1 - eps);
-    if any (l)
+    if (any (l))
       y(l) = 1 - sqrt (eps) * ones (length (l), 1);
     endif
 
@@ -74,7 +76,7 @@ function inv = beta_inv (x, a, b)
         y_new (ind) = y_old (ind) / 10;
       endif
       ind = find (y_new >= 1 - eps);
-      if any (ind)
+      if (any (ind))
         y_new (ind) = 1 - (1 - y_old (ind)) / 10;
       endif
       h = y_old - y_new;

@@ -23,13 +23,13 @@
 ## with one argument, compute @code{cov (@var{x}, @var{x})}.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute covariances
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute covariances
 
 function c = cov (x, y)
 
   if (nargin < 1 || nargin > 2)
-    usage ("cov (x [, y])");
+    usage ("cov (x, y)");
   endif
 
   if (rows (x) == 1)

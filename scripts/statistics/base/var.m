@@ -21,8 +21,8 @@
 ## each column.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute variance
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute variance
 
 function y = var(x)
 
@@ -32,7 +32,7 @@ function y = var(x)
 
   [nr, nc] = size (x);
   if (nr == 0 || nc == 0)
-    error ("var:  x must not be empty");
+    error ("var: x must not be empty");
   elseif ((nr == 1) && (nc == 1))
     y = 0;
   elseif ((nr == 1) || (nc == 1))

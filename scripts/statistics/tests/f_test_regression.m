@@ -30,33 +30,31 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Test linear hypotheses in linear regression model
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Test linear hypotheses in linear regression model
 
 function [pval, f, df_num, df_den] = f_test_regression (y, X, R, r)
 
   if (nargin < 3 || nargin > 4)
-    usage (["[pval, f, df_num, df_den] ", ...
-            "= f_test_regression (y, X, R [, r])"]);
+    usage ("[pval, f, df_num, df_den] = f_test_regression (y, X, R, r)");
   endif
 
   [T, k] = size (X);
   if !( is_vector (y) && (length (y) == T) )
-    error (["f_test_regression:  ", ...
-            "y must be a vector of length rows (X)."]);
+    error ("f_test_regression: y must be a vector of length rows (X)");
   endif
   y = reshape (y, T, 1);
 
   [q, c_R ] = size (R);
   if (c_R != k)
-    error (["f_test_regression:  ", ...
+    error (["f_test_regression: ", ...
             "R must have as many columns as X."]);
   endif
 
   if (nargin == 4)
     s_r = size (r);
     if ((min (s_r) != 1) || (max (s_r) != q))
-      error (["f_test_regression:  ", ...
+      error (["f_test_regression: ", ...
               "r must be a vector of length rows (R)."]);
     endif
     r = reshape (r, q, 1);
@@ -73,7 +71,7 @@ function [pval, f, df_num, df_den] = f_test_regression (y, X, R, r)
   pval  = 1 - f_cdf (f, df_num, df_den);
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

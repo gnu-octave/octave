@@ -43,19 +43,17 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  One-sample Kolmogorov-Smirnov test
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: One-sample Kolmogorov-Smirnov test
 
 function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
 
   if (nargin < 2)
-    error (sprintf (["usage:\n\t", ...
-        "[pval, ks] = ", ...
-        "kolmogorov_smirnov_test (x, dist, [, params] [, alt])"]));
+    usage ("[pval, ks] = kolmogorov_smirnov_test (x, dist,, params, alt)");
   endif
 
   if (! is_vector (x))
-    error ("kolmogorov_smirnov_test:  x must be a vector.");
+    error ("kolmogorov_smirnov_test: x must be a vector.");
   endif
 
   n = length (x);
@@ -80,21 +78,20 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
   endif
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
-    ks   = sqrt(n) * max(max([abs(z - (0:(n-1))/n); abs(z - (1:n)/n)]));
+    ks   = sqrt (n) * max (max ([abs(z - (0:(n-1))/n); abs(z - (1:n)/n)]));
     pval = 1 - kolmogorov_smirnov_cdf (ks);
   elseif (strcmp (alt, ">"))
-    ks   = sqrt(n) * max (max ([z - (0:(n-1))/n; z - (1:n)/n]));
-    pval = exp(- 2 * ks^2);
+    ks   = sqrt (n) * max (max ([z - (0:(n-1))/n; z - (1:n)/n]));
+    pval = exp (- 2 * ks^2);
   elseif (strcmp (alt, "<"))
-    ks   = - sqrt(n) * min (min ([z - (0:(n-1))/n; z - (1:n)/n]));
-    pval = exp(- 2 * ks^2);
+    ks   = - sqrt (n) * min (min ([z - (0:(n-1))/n; z - (1:n)/n]));
+    pval = exp (- 2 * ks^2);
   else
-    error (sprintf (["kolmogorov_smirnov_test:  ", ...
-        "alternative %s not recognized"], alt));
+    error ("kolmogorov_smirnov_test: alternative %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("pval:  %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

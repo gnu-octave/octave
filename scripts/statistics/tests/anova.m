@@ -39,34 +39,33 @@
 ## printed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  One-way analysis of variance (ANOVA)
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: One-way analysis of variance (ANOVA)
 
 function [pval, f, df_b, df_w] = anova (y, g)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("anova (y [, g])");
+    usage ("anova (y, g)");
   elseif (nargin == 1)
     if (is_vector (y))
-      error ("anova:  for `anova (y)', y must not be a vector");
+      error ("anova: for `anova (y)', y must not be a vector");
     endif
     [group_count, k] = size (y);
     n = group_count * k;
     group_mean = mean (y);
   else
     if (! is_vector (y))
-      error ("anova:  for `anova (y, g)', y must be a vector");
+      error ("anova: for `anova (y, g)', y must be a vector");
     endif
     n = length (y);
     if (! is_vector (g) || (length (g) != n))
-      error (["anova:  for `anova (y, g)', g must be a vector", ...
-                " of the same length y"]);
+      error ("anova: g must be a vector of the same length as y");
     endif
     s = sort (g);
     i = find (s (2 : n) > s(1 : (n-1)));
     k = length (i) + 1;
     if (k == 1)
-      error ("anova:  there should be at least 2 groups");
+      error ("anova: there should be at least 2 groups");
     else
       group_label = s ([1, (reshape (i, 1, k-1) + 1)]);
     endif

@@ -39,17 +39,17 @@
 ## If no output arguments are given, the data are plotted directly.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Perform a QQ-plot (quantile plot)
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Perform a QQ-plot (quantile plot)
 
 function [q, s] = qqplot (x, dist, ...)
 
   if (nargin < 1)
-    usage ("qqplot (x [,dist [,params]])");
+    usage ("qqplot (x, dist, params)");
   endif
 
   if !(is_vector(x))
-    error ("qqplot:  x must be a vector.");
+    error ("qqplot: x must be a vector.");
   endif
 
   s = sort (x);

@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  exponential_inv (x, lambda)
-##
-## For each element of x, compute the quantile (the inverse of the CDF)
-## at x of the exponential distribution with parameter lambda.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} exponential_inv (@var{x}, @var{lambda})
+## For each element of @var{x}, compute the quantile (the inverse of the
+## CDF) at @var{x} of the exponential distribution with parameter
+## @var{lambda}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the exponential distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the exponential distribution
 
 function inv = exponential_inv (x, l)
 
@@ -30,8 +32,7 @@ function inv = exponential_inv (x, l)
 
   [retval, x, l] = common_size (x, l);
   if (retval > 0)
-    error (["exponential_inv:  ", ...
-            "x and lambda must be of common size or scalar"]);
+    error ("exponential_inv: x and lambda must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,17 +42,17 @@ function inv = exponential_inv (x, l)
   inv = zeros (1, s);
 
   k = find (!(l > 0) | (x < 0) | (x > 1) | isnan (x));
-  if any (k)
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x == 1) & (l > 0));
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1) & (l > 0));
-  if any (k)
+  if (any (k))
     inv(k) = - log (1 - x(k)) ./ l(k);
   endif
 

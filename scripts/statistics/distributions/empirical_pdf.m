@@ -14,21 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  empirical_pdf (X, DATA)
-##
-## For each element of X, compute the probability density function (PDF)
-## at X of the empirical distribution obtained from the univariate
-## sample DATA.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} empirical_pdf (@var{x}, @var{data})
+## For each element of @var{x}, compute the probability density function
+## (PDF) at @var{x} of the empirical distribution obtained from the
+## univariate sample @var{data}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the empirical distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the empirical distribution
 
-function pdf = empirical_pdf (X, DATA)
+function pdf = empirical_pdf (x, data)
 
-  if (! is_vector (DATA))
-    error ("empirical_pdf:  DATA must be a vector");
+  if (! is_vector (data))
+    error ("empirical_pdf: data must be a vector");
   endif
 
-  pdf = discrete_pdf (X, DATA, ones (size (DATA)) / length (DATA));
+  pdf = discrete_pdf (x, data, ones (size (data)) / length (data));
 
 endfunction

@@ -34,23 +34,23 @@
 function r = rate (n, p, v, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("rate (n, p, v [, l] [, method])");
+    usage ("rate (n, p, v, l, method)");
   endif
 
-  if !(is_scalar (n) && (n > 0))
+  if (! (is_scalar (n) && (n > 0)))
     error ("rate:  n must be a positive scalar");
-  elseif !is_scalar (p)
+  elseif (! is_scalar (p))
     error ("rate:  p must be a scalar");
-  elseif !is_scalar (v)
+  elseif (! is_scalar (v))
     error ("rate:  p must be a scalar");
   endif
 
   if (nargin == 5)
-    if !isstr (m)
+    if (! isstr (m))
       error ("rate:  `method' must be a string");
     endif
   elseif (nargin == 4)
-    if isstr (l)
+    if (isstr (l))
       m = l;
       l = 0;
     else
@@ -61,14 +61,11 @@ function r = rate (n, p, v, l, m)
     m = "e";
   endif
 
-  if !is_scalar (l)
+  if (! is_scalar (l))
     error ("rate:  l must be a scalar");
   endif
 
-  string = ["function delta = f (r) ", ...
-      "delta = pv (r, %g, %g, %g, \"%s\") - %g;  end"];
-  eval (sprintf (string, n, p, l, m, v));
-
-  [r, info] = fsolve ("f", 0);
+  [r, info] = fsolve (sprintf ("pv (x, %g, %g, %g, \"%s\") - %g",
+			       n, p, l, m, v), 0);
 
 endfunction

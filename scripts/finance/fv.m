@@ -37,14 +37,14 @@
 function v = fv (r, n, p, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("fv (r, n, p [, l] [, method])");
+    usage ("fv (r, n, p, l, method)");
   endif
 
-  if !(is_scalar (r) && (r > -1))
+  if (! (is_scalar (r) && (r > -1)))
     error ("fv:  r must be a scalar > -1");
-  elseif !(is_scalar (n) && (n > 0))
+  elseif (! (is_scalar (n) && (n > 0)))
     error ("fv:  n must be a positive scalar");
-  elseif !is_scalar (p)
+  elseif (! is_scalar (p))
     error ("fv:  p must be a scalar.");
   endif
 
@@ -56,7 +56,7 @@ function v = fv (r, n, p, l, m)
 
   if (nargin > 3)
     if (nargin == 5)
-      if !isstr (m)
+      if (! isstr (m))
         error ("fv:  `method' must be a string");
       endif
     elseif isstr (l)

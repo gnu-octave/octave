@@ -14,17 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## Compute the cumulative distribution function (CDF) at x of the
-## hypergeometric distribution with parameters m, t, and n.  This is the
-## probability of obtaining not more than x marked items when randomly
-## drawing a sample of size n without replacement from a population of
-## total size t containing m marked items.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hypergeometric_cdf (@var{x}, @var{m}, @var{t}, @var{n})
+## Compute the cumulative distribution function (CDF) at @var{x} of the
+## hypergeometric distribution with parameters @var{m}, @var{t}, and
+## @var{n}.  This is the probability of obtaining not more than @var{x}
+## marked items when randomly drawing a sample of size @var{n} without
+## replacement from a population of total size @var{t} containing
+## @var{m} marked items.
 ##
-## The parameters m, t, and n must positive integers with m and n not
-## greater than t.
+## The parameters @var{m}, @var{t}, and @var{n} must positive integers
+## with @var{m} and @var{n} not greater than @var{t}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the hypergeometric distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the hypergeometric distribution
 
 function cdf = hypergeometric_cdf (x, m, t, n)
 

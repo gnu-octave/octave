@@ -14,39 +14,40 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  discrete_rnd (N, V, P)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} discrete_rnd (@var{n}, @var{v}, @var{p})
+## Generate a row vector containing a random sample of size @var{n} from
+## the univariate distribution which assumes the values in @var{v} with
+## probabilities @var{p}.
 ##
-## Generate a row vector containing a random sample of size N from the
-## univariate distribution which assumes the values in V with
-## probabilities P.
-##
-## Currently, N must be a scalar.
+## Currently, @var{n} must be a scalar.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from a discrete distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from a discrete distribution
 
-function rnd = discrete_rnd (N, V, P)
+function rnd = discrete_rnd (n, v, p)
 
   if (nargin != 3)
-    usage ("discrete_rnd (N, V, P)");
+    usage ("discrete_rnd (n, v, p)");
   endif
 
-  if (! is_scalar (N))
-    error ("discrete_rnd:  N must be a scalar");
+  if (! is_scalar (n))
+    error ("discrete_rnd: n must be a scalar");
   endif
 
-  if (! is_vector (V))
-    error ("discrete_rnd:  V must be a vector");
-  elseif (! is_vector (P) || (length (P) != length (V)))
-    error ("discrete_rnd:  P must be a vector with length (V) elements");
-  elseif (! (all (P >= 0) && any (P)))
-    error ("discrete_rnd:  P must be a nonzero, nonnegative vector");
+  if (! is_vector (v))
+    error ("discrete_rnd: v must be a vector");
+  elseif (! is_vector (p) || (length (p) != length (v)))
+    error ("discrete_rnd: p must be a vector with length (v) elements");
+  elseif (! (all (p >= 0) && any (p)))
+    error ("discrete_rnd: p must be a nonzero, nonnegative vector");
   endif
 
-  u = rand (1, N);
-  m = length (P);
-  s = reshape (cumsum (P / sum (P)), m, 1);
+  u = rand (1, n);
+  m = length (p);
+  s = reshape (cumsum (p / sum (p)), m, 1);
 
-  rnd = V (1 + sum ((s * ones (1, N)) <= ((ones (m, 1) * u))));
+  rnd = v (1 + sum ((s * ones (1, n)) <= ((ones (m, 1) * u))));
 
 endfunction

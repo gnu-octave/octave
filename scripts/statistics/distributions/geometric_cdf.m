@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  geometric_cdf (x, p)
-##
-## For each element of x, compute the CDF at x of the geometric
-## distribution with parameter p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} geometric_cdf (@var{x}, @var{p})
+## For each element of @var{x}, compute the CDF at @var{x} of the
+## geometric distribution with parameter @var{p}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the geometric distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the geometric distribution
 
 function cdf = geometric_cdf (x, p)
 
@@ -30,8 +31,7 @@ function cdf = geometric_cdf (x, p)
 
   [retval, x, p] = common_size (x, p);
   if (retval > 0)
-    error (["geometric_cdf:  ", ...
-            "x and p must be of common size or scalar"]);
+    error ("geometric_cdf: x and p must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,18 +41,17 @@ function cdf = geometric_cdf (x, p)
   cdf = zeros (1, s);
 
   k = find (isnan (x) | !(p >= 0) | !(p <= 1));
-  if any (k)
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x == Inf) & (p >= 0) & (p <= 1));
-  if any (k)
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) ...
-      & (p > 0) & (p <= 1));
-  if any (k)
+  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (p > 0) & (p <= 1));
+  if (any (k))
     cdf(k) = 1 - ((1 - p(k)) .^ (x(k) + 1));
   endif
 

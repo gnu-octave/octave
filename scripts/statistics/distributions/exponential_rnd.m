@@ -14,36 +14,35 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  exponential_rnd (lambda [, r, c])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} exponential_rnd (@var{lambda}, @var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random samples from the
+## exponential distribution with parameter @var{lambda}, which must be a
+## scalar or of size @var{r} by @var{c}.
 ##
-## exponential_rnd (lambda) returns a matrix of random samples from the
-## exponential distribution with parameter lambda.  The size of the
-## matrix is the size of lambda.
-##
-## exponential_rnd (lambda, r, c) returns an r by c matrix of random
-## samples from the exponential distribution with parameter lambda,
-## which must be a scalar or of size r by c.
+## If @var{r} and @var{c} are omitted, the size of the result matrix is
+## the size of @var{lambda}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the exponential distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the exponential distribution
 
 function rnd = exponential_rnd (l, r, c)
 
   if (nargin == 3)
-    if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-      error ("exponential_rnd:  r must be a positive integer");
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+      error ("exponential_rnd: r must be a positive integer");
     endif
-    if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-      error ("exponential_rnd:  c must be a positive integer");
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+      error ("exponential_rnd: c must be a positive integer");
     endif
     [retval, l] = common_size (l, zeros (r, c));
     if (retval > 0)
-      error (strcat("exponential_rnd:  ",
-                    "lambda must be scalar or of size ",
-                    sprintf ("%d by %d", r, c)));
+      error ("exponential_rnd: lambda must be scalar or of size %d by %d",
+	     r, c);
     endif
   elseif (nargin != 1)
-    usage ("exponential_rnd (lambda [, r, c])");
+    usage ("exponential_rnd (lambda, r, c)");
   endif
 
   [r, c] = size (l);

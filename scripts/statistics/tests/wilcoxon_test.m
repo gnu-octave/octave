@@ -33,17 +33,17 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Wilcoxon signed-rank test
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Wilcoxon signed-rank test
 
 function [pval, z] = wilcoxon_test (x, y, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, z] = wilcoxon_test (x, y [, alt])");
+    usage ("[pval, z] = wilcoxon_test (x, y, alt)");
   endif
 
   if (! (is_vector (x) && is_vector (y) && (length (x) == length (y))))
-    error ("wilcoxon_test:  x and y must be vectors of the same length");
+    error ("wilcoxon_test: x and y must be vectors of the same length");
   endif
 
   n = length (x);
@@ -67,7 +67,7 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   endif
 
   if (! isstr (alt))
-    error("wilcoxon_test:  alt must be a string");
+    error("wilcoxon_test: alt must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
   elseif (strcmp (alt, ">"))
@@ -75,11 +75,11 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   elseif (strcmp (alt, "<"))
     pval = cdf;
   else
-    error (sprintf ("wilcoxon_test:  option %s not recognized", alt));
+    error ("wilcoxon_test: option %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

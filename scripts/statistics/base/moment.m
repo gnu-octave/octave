@@ -36,18 +36,18 @@
 ## Can easily be made to work for continuous distributions (using quad)
 ## as well, but how does the general case work?
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute moments
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute moments
 
 function m = moment (x, p, opt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("moment (x, p [, type]")
+    usage ("moment (x, p, type");
   endif
 
   [nr, nc] = size (x);
   if (nr == 0 || nc == 0)
-    error ("moment:  x must not be empty");
+    error ("moment: x must not be empty");
   elseif (nr == 1)
     x  = reshape (x, nc, 1);
     nr = nc;

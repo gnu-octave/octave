@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  laplace_inv (x)
-##
-## For each element of x, compute the quantile (the inverse of the CDF)
-## at x of the Laplace distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} laplace_inv (@var{x})
+## For each element of @var{x}, compute the quantile (the inverse of the
+## CDF) at @var{x} of the Laplace distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the Laplace distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the Laplace distribution
 
 function inv = laplace_inv (x)
 
@@ -34,19 +35,19 @@ function inv = laplace_inv (x)
   inv = (-Inf) * ones (1, s);
 
   k = find (isnan (x) | (x < 0) | (x > 1));
-  if any (k)
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
   k = find (x == 1);
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1));
-  if any (k)
-    inv(k) = (x(k) < 1/2) .* log (2 * x(k)) ...
-        - (x(k) > 1/2) .* log (2 * (1 - x(k)));
+  if (any (k))
+    inv(k) = ((x(k) < 1/2) .* log (2 * x(k))
+	      - (x(k) > 1/2) .* log (2 * (1 - x(k))));
   endif
 
   inv = reshape (inv, r, c);

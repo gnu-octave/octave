@@ -78,7 +78,7 @@ function y = rot90 (x, k)
       error ("rot90: internal error!");
     endif
   else
-    usage ("rot90 (x [, k])");
+    usage ("rot90 (x, k)");
   endif
 
 endfunction

@@ -20,8 +20,8 @@
 ## @var{n}-1 and greater than or equal to @var{n}.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Count upward runs
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Count upward runs
 
 function retval = run_count (x, n)
 

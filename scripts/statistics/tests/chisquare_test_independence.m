@@ -27,8 +27,8 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Chi-square test for independence
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Chi-square test for independence
 
 function [pval, chisq, df] = chisquare_test_independence (X)
 
@@ -45,7 +45,7 @@ function [pval, chisq, df] = chisquare_test_independence (X)
   pval  = 1 - chisquare_cdf (chisq, df);
 
   if (nargout == 0)
-    printf("  pval:  %g\n", pval);
+    printf("  pval: %g\n", pval);
   endif
 
 endfunction

@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  binomial_inv (x, n, p)
-##
-## For each element of x, compute the quantile at x of the binomial
-## distribution with parameters n and p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} binomial_inv (@var{x}, @var{n}, @var{p})
+## For each element of @var{x}, compute the quantile at @var{x} of the
+## binomial distribution with parameters @var{n} and @var{p}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the binomial distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the binomial distribution
 
 function inv = binomial_inv (x, n, p)
 
@@ -30,8 +31,7 @@ function inv = binomial_inv (x, n, p)
 
   [retval, x, n, p] = common_size (x, n, p);
   if (retval > 0)
-    error (["binomial_inv:  ", ...
-            "x, n and p must be of common size or scalars"]);
+    error ("binomial_inv: x, n and p must be of common size or scalars");
   endif
 
   [r, c] = size (x);
@@ -41,19 +41,19 @@ function inv = binomial_inv (x, n, p)
   p   = reshape (p, 1, s);
   inv = zeros (1, s);
 
-  k = find (!(x >= 0) | !(x <= 1) | !(n >= 0) | (n != round (n)) ...
-      | !(p >= 0) | !(p <= 1));
-  if any (k)
+  k = find (!(x >= 0) | !(x <= 1) | !(n >= 0) | (n != round (n))
+	    | !(p >= 0) | !(p <= 1));
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
-  k = find ((x >= 0) & (x <= 1) & (n >= 0) & (n == round (n)) ...
-      & (p >= 0) & (p <= 1));
-  if any (k)
+  k = find ((x >= 0) & (x <= 1) & (n >= 0) & (n == round (n))
+	    & (p >= 0) & (p <= 1));
+  if (any (k))
     cdf = binomial_pdf (0, n(k), p(k));
     while (any (inv(k) < n(k)))
       m = find (cdf < x(k));
-      if any (m)
+      if (any (m))
         inv(k(m)) = inv(k(m)) + 1;
         cdf(m) = cdf(m) + binomial_pdf (inv(k(m)), n(k(m)), p(k(m)));
       else

@@ -23,14 +23,14 @@
 ## Currently, only 1- and 2-dimensional tables are supported.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Cross tabulation
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Cross tabulation
 
 function [t, v, w] = table (x, y)
 
   if (nargin == 1)
     if !(is_vector (x))
-      error ("table:  x must be a vector");
+      error ("table: x must be a vector");
     endif
     v = values (x);
     for i = 1 : length (v)
@@ -38,7 +38,7 @@ function [t, v, w] = table (x, y)
     endfor
   elseif (nargin == 2)
     if !(is_vector (x) && is_vector (y) && (length (x) == length (y)))
-      error ("table:  x and y must be vectors of the same length");
+      error ("table: x and y must be vectors of the same length");
     endif
     v = values (x);
     w = values (y);

@@ -14,41 +14,39 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  f_rnd (m, n [, r, c])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} f_rnd (@var{m}, @var{n}, @var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random samples from the F
+## distribution with @var{m} and @var{n} degrees of freedom.  Both
+## @var{m} and @var{n} must be scalar or of size @var{r} by @var{c}.
 ##
-## f_rnd (m, n) returns a matrix of random samples from the F
-## distribution with m and n degrees of freedom.  The size of the matrix
-## is the common size of m and n.
-##
-## f_rnd (m, n, r, c) returns an r by c matrix of random samples from
-## the F distribution with m and n degrees of freedom.  Both m and n
-## must be scalar or of size r by c.
+## If @var{r} and @var{c} are omitted, the size of the result matrix is
+## the common size of @var{m} and @var{n}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the F distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the F distribution
 
 function rnd = f_rnd (m, n, r, c)
 
   if (nargin == 4)
-    if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-      error ("f_rnd:  r must be a positive integer");
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+      error ("f_rnd: r must be a positive integer");
     endif
-    if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-      error ("f_rnd:  c must be a positive integer");
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+      error ("f_rnd: c must be a positive integer");
     endif
     [retval, m, n] = common_size (m, n, zeros (r, c));
     if (retval > 0)
-      error (strcat("f_rnd:  ",
-                    "m and n must be scalar or of size ",
-                    sprintf ("%d by %d", r, c)));
+      error ("f_rnd: m and n must be scalar or of size %d by %d", r, c);
     endif
   elseif (nargin == 2)
     [retval, m, n] = common_size (m, n);
     if (retval > 0)
-      error ("f_rnd:  m and n must be of common size or scalar");
+      error ("f_rnd: m and n must be of common size or scalar");
     endif
   else
-    usage ("f_rnd (m, n [, r, c])");
+    usage ("f_rnd (m, n, r, c)");
   endif
 
   [r, c] = size (m);

@@ -35,8 +35,8 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Test one linear hypothesis in linear regression model
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Test one linear hypothesis in linear regression model
 
 function [pval, t, df] = t_test_regression (y, X, R, r, alt)
 
@@ -51,25 +51,22 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
       alt = "!=";
     endif
   elseif !(nargin == 5)
-    usage (["[pval, t, df] ", ...
-            "= t_test_regression (y, X, R [, r] [, alt]"]);
+    usage ("[pval, t, df] = t_test_regression (y, X, R, r, alt)");
   endif
 
   if (! is_scalar (r))
-    error ("t_test_regression:  r must be a scalar");
+    error ("t_test_regression: r must be a scalar");
   elseif (! isstr (alt))
-    error ("t_test_regression:  alt must be a string");
+    error ("t_test_regression: alt must be a string");
   endif
 
   [T, k] = size (X);
   if !(is_vector (y) && (length (y) == T))
-    error (["t_test_regression:  ", ...
-            "y must be a vector of length rows (X)"]);
+    error ("t_test_regression: y must be a vector of length rows (X)");
   endif
   s      = size (R);
   if !((max (s) == k) && (min (s) == 1))
-    error (["t_test_regression:  ", ...
-            "R must be a vector of length columns (X)"]);
+    error ("t_test_regression: R must be a vector of length columns (X)");
   endif
 
   R      = reshape (R, 1, k);
@@ -90,7 +87,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
   endif
 
   if (nargout == 0)
-    printf ("pval:  %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

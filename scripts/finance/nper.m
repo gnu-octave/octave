@@ -37,23 +37,23 @@
 function n = nper (r, p, a, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("nper (r, p, a [, l] [, method])");
+    usage ("nper (r, p, a, l, method)");
   endif
 
-  if !(is_scalar (r) && (r > -1))
+  if (! (is_scalar (r) && (r > -1)))
     error ("nper:  r must be a scalar > -1");
-  elseif !is_scalar (p)
+  elseif (! is_scalar (p))
     error ("nper:  p must be a scalar");
-  elseif !is_scalar (a)
+  elseif (! is_scalar (a))
     error ("nper:  a must be a scalar");
   endif
 
   if (nargin == 5)
-    if !isstr (m)
+    if (! isstr (m))
       error ("nper:  `method' must be a string");
     endif
   elseif (nargin == 4)
-    if isstr (l)
+    if (isstr (l))
       m = l;
       l = 0;
     else
@@ -64,7 +64,7 @@ function n = nper (r, p, a, l, m)
     l = 0;
   endif
 
-  if strcmp (m, "b")
+  if (strcmp (m, "b"))
     p = p * (1 + r);
   endif
 

@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  poisson_inv (x, lambda)
-##
-## For each component of x, compute the quantile (the inverse of the
-## CDF) at x of the Poisson distribution with parameter lambda.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} poisson_inv (@var{x}, @var{lambda})
+## For each component of @var{x}, compute the quantile (the inverse of
+## the CDF) at @var{x} of the Poisson distribution with parameter
+## @var{lambda}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the Poisson distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the Poisson distribution
 
 function inv = poisson_inv (x, l)
 
@@ -30,8 +32,7 @@ function inv = poisson_inv (x, l)
 
   [retval, x, l] = common_size (x, l);
   if (retval > 0)
-    error (["poisson_inv:  ", ...
-            "x and lambda must be of common size or scalar"]);
+    error ("poisson_inv: x and lambda must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,21 +42,21 @@ function inv = poisson_inv (x, l)
   inv = zeros (1, s);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(l > 0));
-  if any (k)
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x == 1) & (l > 0));
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1) & (l > 0));
-  if any (k)
+  if (any (k))
     cdf = exp (-l(k));
     while (1)
       m = find (cdf < x(k));
-      if any (m)
+      if (any (m))
         inv(k(m)) = inv(k(m)) + 1;
         cdf(m) = cdf(m) + poisson_pdf (inv(k(m)), l(k(m)));
       else

@@ -20,8 +20,8 @@
 ## order.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Extract unique elements
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Extract unique elements
 
 function v = values (x)
 
@@ -30,7 +30,7 @@ function v = values (x)
   endif
 
   if !(is_vector (x))
-    error ("values:  x must be a vector");
+    error ("values: x must be a vector");
   endif
 
   i = any (isnan (x));

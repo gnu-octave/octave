@@ -23,7 +23,7 @@
 ## @end deftypefn
 
 ## Author KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Interquartile range
+## Description: Interquartile range
 
 function y = iqr (x)
 

@@ -34,20 +34,20 @@
 ## along with some information.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compare means of two normal samples with known variances
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compare means of two normal samples with known variances
 
 function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
 
   if ((nargin < 4) || (nargin > 5))
-    usage ("[pval, z] = z_test_2 (x, y, v_x, v_y [, alt])");
+    usage ("[pval, z] = z_test_2 (x, y, v_x, v_y, alt)");
   endif
 
   if (! (is_vector (x) && is_vector (y)))
-    error("z_test_2:  both x and y must be vectors");
+    error("z_test_2: both x and y must be vectors");
   elseif (! (is_scalar (v_x) && (v_x > 0)
              && is_scalar (v_y) && (v_y > 0)))
-    error ("z_test_2:  both v_x and v_y must be positive scalars.");
+    error ("z_test_2: both v_x and v_y must be positive scalars.");
   endif
 
   n_x  = length (x);
@@ -62,7 +62,7 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (! isstr (alt))
-    error ("z_test_2:  alt must be a string");
+    error ("z_test_2: alt must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
   elseif (strcmp (alt, ">"))
@@ -70,7 +70,7 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   elseif (strcmp (alt, "<"))
     pval = cdf;
   else
-    error (sprintf ("z_test_2:  option %s not recognized", alt));
+    error ("z_test_2: option %s not recognized", alt);
   endif
 
   if (nargout == 0)

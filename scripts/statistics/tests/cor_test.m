@@ -54,30 +54,30 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Adapted-by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Test for zero correlation
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Adapted-by: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Test for zero correlation
 
 function t = cor_test (X, Y, ALTERNATIVE, METHOD)
 
   if ((nargin < 2) || (nargin > 4))
-    usage ("cor_test (X, Y [, ALTERNATIVE [, METHOD]])")
+    usage ("cor_test (X, Y, ALTERNATIVE, METHOD)")
   endif
 
   if (!is_vector (X) || !is_vector (Y) || length (X) != length (Y))
-    error ("cor_test:  X and Y must be vectors of the same length")
+    error ("cor_test: X and Y must be vectors of the same length")
   endif
 
   if (nargin < 3)
     ALTERNATIVE = "!=";
   elseif !isstr (ALTERNATIVE)
-    error ("cor_test:  ALTERNATIVE must be a string");
+    error ("cor_test: ALTERNATIVE must be a string");
   endif
 
   if (nargin < 4)
     METHOD = "pearson";
   elseif !isstr (METHOD)
-    error ("cor_test:  METHOD must be a string");
+    error ("cor_test: METHOD must be a string");
   endif
 
   n = length (X);
@@ -106,7 +106,7 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
     t.dist = "stdnormal";
     cdf = stdnormal_cdf (t.stat);
   else
-    error ("cor_test:  method `%s' not recognized", METHOD)
+    error ("cor_test: method `%s' not recognized", METHOD)
   endif
 
   if (strcmp (ALTERNATIVE, "!=") || strcmp (ALTERNATIVE, "<>"))
@@ -116,13 +116,13 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
   elseif (strcmp (ALTERNATIVE, "<"))
     t.pval = cdf;
   else
-    error ("cor_test:  alternative `%s' not recognized", ALTERNATIVE);
+    error ("cor_test: alternative `%s' not recognized", ALTERNATIVE);
   endif
 
   t.alternative = ALTERNATIVE;
 
   if (nargout == 0)
-    printf ("pval:  %g\n", t.pval);
+    printf ("pval: %g\n", t.pval);
   endif
 
 endfunction

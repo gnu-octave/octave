@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  chisquare_pdf (x, n)
-##
-## For each element of x, compute the probability density function (PDF)
-## at x of the chisquare distribution with k degrees of freedom.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} chisquare_pdf (@var{x}, @var{n})
+## For each element of @var{x}, compute the probability density function
+## (PDF) at @var{x} of the chisquare distribution with @var{k} degrees
+## of freedom.
+## @end deftypefn
 
-## Author:  TT <Teresa.Twaroch@ci.tuwien.ac.at>
-## Description:  PDF of the chi-sqaure distribution
+## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
+## Description: PDF of the chi-sqaure distribution
 
 function pdf = chisquare_pdf (x, n)
 
@@ -30,17 +32,15 @@ function pdf = chisquare_pdf (x, n)
 
   [retval, x, n] = common_size (x, n);
   if (retval > 0)
-    error (["chisquare_pdf:  ", ...
-            "x and n must be of common size or scalar"]);
+    error ("chisquare_pdf: x and n must be of common size or scalar");
   endif
 
   pdf = gamma_pdf (x, n / 2, 1 / 2);
 
   ## should we really only allow for positive integer n?
   k = find (n != round (n));
-  if any (k)
-    fprintf (stderr, ...
-             "WARNING:  n should be positive integer\n");
+  if (any (k))
+    warning ("chisquare_pdf: n should be positive integer");
     [r, c] = size (x);
     pdf = reshape (pdf, 1, r * c);
     pdf(k) = NaN * ones (1, length (k));

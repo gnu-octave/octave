@@ -49,7 +49,7 @@ function y = pow2 (f, e)
   elseif (nargin == 2)
     y = f .* (2 .^ e);
   else
-    usage ("y = pow2 (f [, e])");
+    usage ("y = pow2 (f, e)");
   endif
 
 endfunction

@@ -36,20 +36,20 @@
 function v = npv (r, p, i)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("npv (r, p [, i]");
+    usage ("npv (r, p, i");
   endif
 
-  if !(is_vector (p))
+  if (! (is_vector (p)))
     error ("npv:  p has to be a vector");
   else
     n = length (p);
     p = reshape (p, 1, n);
   endif
 
-  if any (any (r <= -1))
+  if (any (any (r <= -1)))
     error ("npv:  all interest rates must be > -1");
   endif
-  if is_scalar (r)
+  if (is_scalar (r))
     d = 1 ./ (1 + r) .^ (0 : n);
   elseif (is_vector (r) && (length (r) == n))
     d = [1, (1 ./ cumprod (reshape (1 + r, 1, n)))];
@@ -58,7 +58,7 @@ function v = npv (r, p, i)
   endif
 
   if (nargin == 3)
-    if !is_scalar (i)
+    if (! is_scalar (i))
       error ("npv:  I_0 must be a scalar");
     endif
   else

@@ -81,7 +81,7 @@
 function [BETA, SIGMA, R] = ols (Y, X)
 
   if (nargin != 2)
-    error("usage : [BETA, SIGMA [, R]] = ols (Y, X)");
+    usage ("[BETA, SIGMA, R] = ols (Y, X)");
   endif
 
   [nr, nc] = size (X);

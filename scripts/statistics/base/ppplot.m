@@ -37,17 +37,17 @@
 ## If no output arguments are given, the data are plotted directly.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Perform a PP-plot (probability plot)
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Perform a PP-plot (probability plot)
 
 function [p, y] = ppplot (x, dist, ...)
 
   if (nargin < 1)
-    usage ("ppplot (x [, dist [, params]])");
+    usage ("ppplot (x, dist, params)");
   endif
 
   if !is_vector (x)
-    error ("ppplot:  x must be a vector.");
+    error ("ppplot: x must be a vector.");
   endif
 
   s = sort (x);

@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  binomial_cdf (x, n, p)
-##
-## For each element of x, compute the CDF at x of the binomial
-## distribution with parameters n and p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} binomial_cdf (@var{x}, @var{n}, @var{p})
+## For each element of @var{x}, compute the CDF at @var{x} of the
+## binomial distribution with parameters @var{n} and @var{p}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the binomial distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the binomial distribution
 
 function cdf = binomial_cdf (x, n, p)
 
@@ -30,8 +31,7 @@ function cdf = binomial_cdf (x, n, p)
 
   [retval, x, n, p] = common_size (x, n, p);
   if (retval > 0)
-    error (["binomial_cdf:  ", ...
-            "x, n and p must be of common size or scalar"]);
+    error ("binomial_cdf: x, n and p must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,21 +41,21 @@ function cdf = binomial_cdf (x, n, p)
   p   = reshape (p, 1, s);
   cdf = zeros (1, s);
 
-  k = find (isnan (x) | !(n >= 0) | (n != round (n)) ...
-      | !(p >= 0) | !(p <= 1));
-  if any (k)
+  k = find (isnan (x) | !(n >= 0) | (n != round (n))
+	    | !(p >= 0) | !(p <= 1));
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
-  k = find ((x >= n) & (n >= 0) & (n == round (n)) ...
-      & (p >= 0) & (p <= 1));
-  if any (k)
+  k = find ((x >= n) & (n >= 0) & (n == round (n))
+	    & (p >= 0) & (p <= 1));
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
-  k = find ((x >= 0) & (x < n) & (n == round (n)) ...
-      & (p >= 0) & (p <= 1));
-  if any (k)
+  k = find ((x >= 0) & (x < n) & (n == round (n))
+	    & (p >= 0) & (p <= 1));
+  if (any (k))
     tmp = floor (x(k));
     cdf(k) = 1 - betai (tmp + 1, n(k) - tmp, p(k));
   endif

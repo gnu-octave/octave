@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  f_pdf (x, m, n)
-##
-## For each element of x, compute the probability density function (PDF)
-## at x of the F distribution with m and n degrees of freedom.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} f_pdf (@var{x}, @var{m}, @var{n})
+## For each element of @var{x}, compute the probability density function
+## (PDF) at @var{x} of the F distribution with @var{m} and @var{n}
+## degrees of freedom.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the F distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the F distribution
 
 function pdf = f_pdf (x, m, n)
 
@@ -30,7 +32,7 @@ function pdf = f_pdf (x, m, n)
 
   [retval, x, m, n] = common_size (x, m, n);
   if (retval > 0)
-    error ("f_pdf:  x, m and n must be of common size or scalar");
+    error ("f_pdf: x, m and n must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,23 +43,22 @@ function pdf = f_pdf (x, m, n)
   pdf = zeros (1, s);
 
   k = find (isnan (x) | !(m > 0) | !(n > 0));
-  if any (k)
+  if (any (k))
     pdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < Inf) & (m > 0) & (n > 0));
-  if any (k)
+  if (any (k))
     tmp = m(k) .* x(k) ./ n(k);
-    pdf(k) = exp ((m(k) / 2 - 1) .* log (tmp) ...
-        - ((m(k) + n(k)) / 2) .* log (1 + tmp)) ...
-        .* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2);
+    pdf(k) = (exp ((m(k) / 2 - 1) .* log (tmp)
+		   - ((m(k) + n(k)) / 2) .* log (1 + tmp))
+	      .* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2));
   endif
 
   ## should we really only allow for positive integer m, n?
   k = find ((m != round (m)) | (n != round (n)));
-  if any (k)
-    fprintf (stderr, ...
-             "WARNING:  m and n should be positive integers\n");
+  if (any (k))
+    warning ("f_pdf: m and n should be positive integers");
     pdf(k) = NaN * ones (1, length (k));
   endif
 

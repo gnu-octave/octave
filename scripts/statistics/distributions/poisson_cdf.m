@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  poisson_cdf (x, lambda)
-##
-## For each element of x, compute the cumulative distribution function
-## (CDF) at x of the Poisson distribution with parameter lambda.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} poisson_cdf (@var{x}, @var{lambda})
+## For each element of @var{x}, compute the cumulative distribution
+## function (CDF) at @var{x} of the Poisson distribution with parameter
+## lambda.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the Poisson distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the Poisson distribution
 
 function cdf = poisson_cdf (x, l)
 
@@ -40,17 +42,17 @@ function cdf = poisson_cdf (x, l)
   cdf = zeros (1, s);
 
   k = find (isnan (x) | !(l > 0));
-  if any (k)
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x == Inf) & (l > 0));
-  if any (k)
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
   k = find ((x >= 0) & (x < Inf) & (l > 0));
-  if any (k)
+  if (any (k))
     cdf(k) = 1 - gammai (floor (x(k)) + 1, l(k));
   endif
 

@@ -14,19 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  cauchy_inv (x [, lambda, sigma])
-##
-## For each element of x, compute the quantile (the inverse of the CDF)
-## at x of the Cauchy distribution with location parameter lambda and
-## scale parameter sigma. Default values are lambda = 0, sigma = 1.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cauchy_inv (@var{x}, @var{lambda}, @var{sigma})
+## For each element of @var{x}, compute the quantile (the inverse of the
+## CDF) at @var{x} of the Cauchy distribution with location parameter
+## @var{lambda} and scale parameter @var{sigma}.  Default values are
+## @var{lambda} = 0, @var{sigma} = 1. 
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the Cauchy distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the Cauchy distribution
 
 function inv = cauchy_inv (x, location, scale)
 
-  if !(nargin == 1 || nargin == 3)
-    usage ("cauchy_inv (x [, lambda, sigma])");
+  if (! (nargin == 1 || nargin == 3))
+    usage ("cauchy_inv (x, lambda, sigma)");
   endif
 
   if (nargin == 1)
@@ -36,8 +38,7 @@ function inv = cauchy_inv (x, location, scale)
 
   [retval, x, location, scale] = common_size (x, location, scale);
   if (retval > 0)
-    error (["cauchy_inv:  ", ...
-            "x, lambda and sigma must be of common size or scalar"]);
+    error ("cauchy_inv: x, lambda and sigma must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -52,17 +53,17 @@ function inv = cauchy_inv (x, location, scale)
        (scale > 0) & (scale < Inf));
 
   k = find ((x == 0) & ok);
-  if any (k)
+  if (any (k))
     inv(k) = -Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1) & ok);
-  if any (k)
+  if (any (k))
     inv(k) = location(k) - scale(k) .* cot (pi * x(k));
   endif
 
   k = find ((x == 1) & ok);
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 

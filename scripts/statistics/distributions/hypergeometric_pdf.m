@@ -14,18 +14,19 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  hypergeometric_pdf (x, m, t, n)
-##
-## Compute the probability density function (PDF) at x of the
-## hypergeometric distribution with parameters m, t, and n. This is the
-## probability of obtaining x marked items when randomly drawing a
-## sample of size n without replacement from a population of total size
-## t containing m marked items.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hypergeometric_pdf (@var{x}, @var{m}, @var{t}, @var{n})
+## Compute the probability density function (PDF) at @var{x} of the
+## hypergeometric distribution with parameters @var{m}, @var{t}, and
+## @var{n}. This is the probability of obtaining @var{x} marked items
+## when randomly drawing a sample of size @var{n} without replacement
+## from a population of total size @var{t} containing @var{m} marked items.
 ##
 ## The arguments must be of common size or scalar.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the hypergeometric distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the hypergeometric distribution
 
 function pdf = hypergeometric_pdf (x, m, t, n)
 
@@ -35,8 +36,7 @@ function pdf = hypergeometric_pdf (x, m, t, n)
 
   [retval, x, m, t, n] = common_size (x, m, t, n);
   if (retval > 0)
-    error (["hypergeometric_pdf:  ", ...
-            "x, m, t, and n must be of common size or scalar"]);
+    error ("hypergeometric_pdf: x, m, t, and n must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -52,11 +52,11 @@ function pdf = hypergeometric_pdf (x, m, t, n)
   ## everything in i2 gives 0 unless in i1
   i2 = ((x != round (x)) | (x < 0) | (x > m) | (n < x) | (n-x > t-m));
   k = find (i1);
-  if any (k)
+  if (any (k))
     pdf (k) = NaN * ones (size (k));
   endif
   k = find (!i1 & !i2);
-  if any (k)
+  if (any (k))
     pdf (k) = (bincoeff (m(k), x(k)) .* bincoeff (t(k)-m(k), n(k)-x(k))
                ./ bincoeff (t(k), n(k)));
   endif

@@ -71,7 +71,7 @@
 function [BETA, v, R] = gls (Y, X, O)
 
   if (nargin != 3)
-    usage ("[BETA, v [, R]] = gls (Y, X, O)");
+    usage ("[BETA, v, R] = gls (Y, X, O)");
   endif
 
   [rx, cx] = size (X);

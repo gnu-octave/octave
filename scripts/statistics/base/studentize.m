@@ -22,8 +22,8 @@
 ## If @var{x} is a matrix, do the above for each column.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Subtract mean and divide by standard deviation
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Subtract mean and divide by standard deviation
 
 function t = studentize (x)
 
@@ -42,7 +42,7 @@ function t = studentize (x)
     t = x - l * mean (x);
     t = t ./ (l * max ([(std (t)); (! any (t))]));
   else
-    error ("studentize:  x must be a vector or a matrix.");
+    error ("studentize: x must be a vector or a matrix.");
   endif
 
 endfunction

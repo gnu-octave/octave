@@ -14,16 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  weibull_pdf (x, alpha, sigma)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} weibull_pdf (@var{x}, @var{alpha}, @var{sigma})
+## Compute the probability density function (PDF) at @var{x} of the
+## Weibull distribution with shape parameter @var{alpha} and scale
+## parameter @var{sigma} which is given by
 ##
-## Compute the probability density function (PDF) at x of the Weibull
-## distribution with shape parameter alpha and scale parameter sigma
-## which is given by
+## @example
 ##    alpha * sigma^(-alpha) * x^(alpha-1) * exp(-(x/sigma)^alpha)
-## for x > 0.
+## @end example
+##
+## @noindent
+## for @var{x} > 0.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the Weibull distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the Weibull distribution
 
 function pdf = weibull_pdf (x, shape, scale)
 
@@ -33,8 +39,7 @@ function pdf = weibull_pdf (x, shape, scale)
 
   [retval, x, shape, scale] = common_size (x, shape, scale);
   if (retval > 0)
-    error (["weibull_pdf:  ", ...
-            "x, alpha and sigma must be of common size or scalar"]);
+    error ("weibull_pdf: x, alpha and sigma must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -47,12 +52,12 @@ function pdf = weibull_pdf (x, shape, scale)
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x > -Inf) & (x <= 0) & ok);
-  if any (k)
+  if (any (k))
     pdf(k) = zeros (1, length (k));
   endif
 
   k = find ((x > 0) & (x < Inf) & ok);
-  if any (k)
+  if (any (k))
     pdf(k) = (shape(k) .* (scale(k) .^ shape(k))
               .* (x(k) .^ (shape(k) - 1))
               .* exp(- (x(k) ./ scale(k)) .^ shape(k)));

@@ -64,7 +64,7 @@ function retval = orth (A, tol)
 
   else
 
-    usage ("orth (a [, tol]");
+    usage ("orth (a, tol");
 
   endif
 

@@ -21,7 +21,7 @@
 ## @end deftypefn
 
 ## Written by KH <Kurt.Hornik@ci.tuwien.ac.at> on 1995/02/04
-## Description:  Probit transformation
+## Description: Probit transformation
 
 function y = probit (p)
 

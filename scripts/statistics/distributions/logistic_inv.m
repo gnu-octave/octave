@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  logistic_inv (x)
-##
-## For each component of x, compute the quantile (the inverse of the
-## CDF) at x of the logistic distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} logistic_inv (@var{x})
+## For each component of @var{x}, compute the quantile (the inverse of
+## the CDF) at @var{x} of the logistic distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the logistic distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the logistic distribution
 
 function inv = logistic_inv (x)
 
@@ -34,22 +35,22 @@ function inv = logistic_inv (x)
   inv = zeros (1, s);
 
   k = find ((x < 0) | (x > 1) | isnan (x));
-  if any (k)
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
   k = find (x == 0);
-  if any (k)
+  if (any (k))
     inv(k) = (-Inf) * ones (1, length (k));
   endif
 
   k = find (x == 1);
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1));
-  if any (k)
+  if (any (k))
     inv (k) = - log (1 ./ x(k) - 1);
   endif
 

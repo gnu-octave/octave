@@ -14,43 +14,41 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  cauchy_rnd (lambda, sigma [, r, c])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random samples from the Cauchy
+## distribution with parameters @var{lambda} and @var{sigma} which must
+## both be scalar or of size @var{r} by @var{c}.
 ##
-## cauchy_rnd (lambda, sigma) returns a matrix of random samples from
-## the Cauchy distribution with parameters lambda and sigma.  The size
-## of the matrix is the common size of the parameters.
-##
-## cauchy_rnd (lambda, sigma, r, c) returns an r by c matrix of random
-## samples from the Cauchy distribution with parameters lambda and sigma
-## which must both be scalar or of size r by c.
+## If @var{r} and @var{c} are omitted, the size of the result matrix is
+## the common size of @var{lambda} and @var{sigma}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the Cauchy distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the Cauchy distribution
 
 function rnd = cauchy_rnd (l, scale, r, c)
 
   if (nargin == 4)
-    if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-      error ("cauchy_rnd:  r must be a positive integer");
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+      error ("cauchy_rnd: r must be a positive integer");
     endif
-    if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-      error ("cauchy_rnd:  c must be a positive integer");
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+      error ("cauchy_rnd: c must be a positive integer");
     endif
     [retval, l, scale] = common_size (l, scale, zeros (r, c));
     if (retval > 0)
-      error (strcat("cauchy_rnd:  ",
-                    "lambda and sigma must be scalar or of size",
-                    sprintf ("%d by %d.", r, c)));
+      error ("cauchy_rnd: lambda and sigma must be scalar or of size %d by %d",
+	     r, c); 
     endif
   elseif (nargin == 2)
     [retval, l, scale] = common_size (l, scale);
     if (retval > 0)
-      error (["cauchy_rnd:  ", ...
-              "lambda and sigma must be of common size or scalar"]);
+      error ("cauchy_rnd: lambda and sigma must be of common size or scalar");
     endif
     [r, c] = size (l);
   else
-    usage ("cauchy_rnd (lambda, sigma [, r, c])");
+    usage ("cauchy_rnd (lambda, sigma, r, c)");
   endif
 
   s = r * c;

@@ -14,20 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  empirical_rnd (N, DATA)
-##
-## Generate a bootstrap sample of size N from the empirical distribution
-## obtained from the univariate sample DATA.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} empirical_rnd (@var{n}, @var{data})
+## Generate a bootstrap sample of size @var{n} from the empirical
+## distribution obtained from the univariate sample @var{data}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Bootstrap samples from the empirical distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Bootstrap samples from the empirical distribution
 
-function rnd = empirical_rnd (N, DATA)
+function rnd = empirical_rnd (n, data)
 
-  if (! is_vector (DATA))
-    error ("empirical_rnd:  DATA must be a vector");
+  if (! is_vector (data))
+    error ("empirical_rnd: data must be a vector");
   endif
 
-  rnd = discrete_rnd (N, DATA, ones (size (DATA)) / length (DATA));
+  rnd = discrete_rnd (n, data, ones (size (data)) / length (data));
 
 endfunction

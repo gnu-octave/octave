@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  weibull_inv (x, lambda, alpha)
-##
-## Compute the quantile (the inverse of the CDF) at x of the Weibull
-## distribution with shape parameter alpha and scale parameter sigma.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} weibull_inv (@var{x}, @var{lambda}, @var{alpha})
+## Compute the quantile (the inverse of the CDF) at @var{x} of the
+## Weibull distribution with shape parameter @var{alpha} and scale
+## parameter @var{sigma}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the Weibull distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the Weibull distribution
 
 function inv = weibull_inv (x, shape, scale)
 
@@ -30,8 +32,7 @@ function inv = weibull_inv (x, shape, scale)
 
   [retval, x, shape, scale] = common_size (x, shape, scale);
   if (retval > 0)
-    error (["weibull_inv:  ", ...
-            "x, alpha and sigma must be of common size or scalar"]);
+    error ("weibull_inv: x, alpha and sigma must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -44,17 +45,17 @@ function inv = weibull_inv (x, shape, scale)
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x == 0) & ok);
-  if any (k)
+  if (any (k))
     inv(k) = -Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1) & ok);
-  if any (k)
+  if (any (k))
     inv(k) = scale(k) .* (- log (1 - x(k))) .^ (1 ./ shape(k));
   endif
 
   k = find ((x == 1) & ok);
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 

@@ -23,8 +23,8 @@
 ## @end example
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Complementary log-log function
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Complementary log-log function
 
 function y = cloglog (x)
 

@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  laplace_pdf (x)
-##
-## For each element of x, compute the probability density function (PDF)
-## at x of the Laplace distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} laplace_pdf (@var{x})
+## For each element of @var{x}, compute the probability density function
+## (PDF) at @var{x} of the Laplace distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the Laplace distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the Laplace distribution
 
 function pdf = laplace_pdf (x)
 
@@ -34,12 +35,12 @@ function pdf = laplace_pdf (x)
   pdf = zeros (1, s);
 
   k = find (isnan (x));
-  if any (k)
+  if (any (k))
     pdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x > -Inf) & (x < Inf));
-  if any (k)
+  if (any (k))
     pdf(k) = exp (- abs (x(k))) / 2;
   endif
 

@@ -29,8 +29,8 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Bartlett test for homogeneity of variances
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Bartlett test for homogeneity of variances
 
 function [pval, chisq, df] = bartlett_test (...)
 
@@ -45,7 +45,7 @@ function [pval, chisq, df] = bartlett_test (...)
   for i = 1 : k;
     x = va_arg ();
     if (! is_vector (x))
-      error ("bartlett_test:  all arguments must be vectors");
+      error ("bartlett_test: all arguments must be vectors");
     endif
     f(i) = length (x) - 1;
     v(i) = var (x);
@@ -59,7 +59,7 @@ function [pval, chisq, df] = bartlett_test (...)
   pval  = 1 - chisquare_cdf (chisq, df);
 
   if (nargout == 0)
-    printf("  pval:  %g\n", pval);
+    printf("  pval: %g\n", pval);
   endif
 
 endfunction

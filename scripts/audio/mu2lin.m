@@ -39,7 +39,7 @@ function y = mu2lin (x, bit)
       error ("mu2lin: bit must be either 8 or 16");
     endif
   else
-    usage ("y = mu2lin (x [, bit])");
+    usage ("y = mu2lin (x, bit)");
   endif
 
   if (! is_vector (x))

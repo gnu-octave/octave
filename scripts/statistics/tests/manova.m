@@ -34,9 +34,9 @@
 ## and corresponding approximate p-values are calculated and displayed.
 ## (Currently NOT because the f_cdf respectively betai code is too bad.)
 
-## Author:  TF <Thomas.Fuereder@ci.tuwien.ac.at>
-## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  One-way multivariate analysis of variance (MANOVA)
+## Author: TF <Thomas.Fuereder@ci.tuwien.ac.at>
+## Adapted-By: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: One-way multivariate analysis of variance (MANOVA)
 
 function manova (Y, g)
 
@@ -45,13 +45,13 @@ function manova (Y, g)
   endif
 
   if (is_vector (Y))
-    error ("manova:  Y must not be a vector");
+    error ("manova: Y must not be a vector");
   endif
 
   [n, p] = size (Y);
 
   if (!is_vector (g) || (length (g) != n))
-    error ("manova:  g must be a vector of length rows (Y)");
+    error ("manova: g must be a vector of length rows (Y)");
   endif
 
   s = sort (g);
@@ -59,7 +59,7 @@ function manova (Y, g)
   k = length (i) + 1;
 
   if (k == 1)
-    error ("manova:  there should be at least 2 groups");
+    error ("manova: there should be at least 2 groups");
   else
     group_label = s ([1, (reshape (i, 1, k - 1) + 1)]);
   endif
@@ -142,12 +142,12 @@ function manova (Y, g)
   printf ("\n");
   printf ("MANOVA Results:\n");
   printf ("\n");
-  printf ("# of groups:     %d\n", k);
-  printf ("# of samples:    %d\n", n);
-  printf ("# of variables:  %d\n", p);
+  printf ("# of groups:    %d\n", k);
+  printf ("# of samples:   %d\n", n);
+  printf ("# of variables: %d\n", p);
   printf ("\n");
-  printf ("Wilks' Lambda:   %5.4f\n", Lambda);
-  printf ("Approximate p:   %10.9f (chisquare approximation)\n", W_pval_1);
+  printf ("Wilks' Lambda:  %5.4f\n", Lambda);
+  printf ("Approximate p:  %10.9f (chisquare approximation)\n", W_pval_1);
   printf ("                 %10.9f (F approximation)\n", W_pval_2);
   printf ("\n");
 

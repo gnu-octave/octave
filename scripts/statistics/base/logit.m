@@ -20,8 +20,8 @@
 ## (1-@var{p}))} of @var{p}.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Logit transformation
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Logit transformation
 
 function y = logit (p)
 

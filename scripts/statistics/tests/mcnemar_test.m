@@ -29,8 +29,8 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  McNemar's test for symmetry
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: McNemar's test for symmetry
 
 function [pval, chisq, df] = mcnemar_test (x)
 
@@ -39,11 +39,9 @@ function [pval, chisq, df] = mcnemar_test (x)
   endif
 
   if (! (min (size (x)) > 1) && is_square (x))
-    error (strcat ("mcnemar_test:  ",
-                   "x must be a square matrix of size > 1."));
+    error ("mcnemar_test: x must be a square matrix of size > 1");
   elseif (! (all (all (x >= 0)) && all (all (x == round (x)))))
-    error (strcat ("mcnemar_test:  ",
-                   "all entries of x must be nonnegative integers."));
+    error ("mcnemar_test: all entries of x must be nonnegative integers");
   endif
 
   r = rows (x);
@@ -58,7 +56,7 @@ function [pval, chisq, df] = mcnemar_test (x)
   pval = 1 - chisquare_cdf (chisq, df);
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

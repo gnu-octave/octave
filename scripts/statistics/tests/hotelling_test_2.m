@@ -37,8 +37,8 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compare means of two multivariate normals
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compare means of two multivariate normals
 
 function [pval, Tsq] = hotelling_test_2 (x, y)
 
@@ -49,7 +49,7 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
   if (is_vector (x))
     n_x = length (x);
     if (! is_vector (y))
-      error ("hotelling_test_2:  If x is a vector, y must be too.");
+      error ("hotelling_test_2: If x is a vector, y must be too.");
     else
       n_y = length (y);
       p   = 1;
@@ -58,11 +58,10 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
     [n_x, p] = size (x);
     [n_y, q] = size (y);
     if (p != q)
-      error (strcat ("hotelling_test_2:  ",
-                     "x and y must have the same number of columns"));
+      error ("hotelling_test_2: x and y must have the same number of columns");
     endif
   else
-    error ("hotelling_test_2:  x and y must be matrices (or vectors)");
+    error ("hotelling_test_2: x and y must be matrices (or vectors)");
   endif
 
   d    = mean (x) - mean (y);
@@ -72,7 +71,7 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
                     p, n_x + n_y - p - 1);
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

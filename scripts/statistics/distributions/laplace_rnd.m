@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  laplace_rnd (r, c)
-##
-## Return an r by c matrix of random numbers from the Laplace
-## distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} laplace_rnd (@var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random numbers from the
+## Laplace distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the Laplace distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the Laplace distribution
 
 function rnd = laplace_rnd (r, c)
 
@@ -28,11 +29,11 @@ function rnd = laplace_rnd (r, c)
     usage ("laplace_rnd (r, c)");
   endif
 
-  if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-    error ("laplace_rnd:  r must be a positive integer");
+  if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+    error ("laplace_rnd: r must be a positive integer");
   endif
-  if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-    error ("laplace_rnd:  c must be a positive integer");
+  if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+    error ("laplace_rnd: c must be a positive integer");
   endif
 
   tmp = rand (r, c);

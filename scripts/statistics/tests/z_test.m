@@ -34,23 +34,23 @@
 ## along with some information.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Test for mean of a normal sample with known variance
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Test for mean of a normal sample with known variance
 
 function [pval, z] = z_test (x, m, v, alt)
 
   if ((nargin < 3) || (nargin > 4))
-    usage ("[pval, z] = z_test (x, m, v [, alt])");
+    usage ("[pval, z] = z_test (x, m, v, alt)");
   endif
 
   if (! is_vector (x))
-    error ("z_test:  x must be a vector.");
+    error ("z_test: x must be a vector.");
   endif
   if (! is_scalar (m))
-    error ("z_test:  m must be a scalar.");
+    error ("z_test: m must be a scalar.");
   endif
   if (! (is_scalar (v) && (v > 0)))
-    error ("z_test:  v must be a positive scalar.");
+    error ("z_test: v must be a positive scalar.");
   endif
 
   n = length (x);
@@ -62,7 +62,7 @@ function [pval, z] = z_test (x, m, v, alt)
   endif
 
   if (! isstr (alt))
-    error ("z_test:  alt must be a string");
+    error ("z_test: alt must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
   elseif (strcmp (alt, ">"))
@@ -70,7 +70,7 @@ function [pval, z] = z_test (x, m, v, alt)
   elseif (strcmp (alt, "<"))
     pval = cdf;
   else
-    error (sprintf ("z_test:  option %s not recognized", alt));
+    error ("z_test: option %s not recognized", alt);
   endif
 
   if (nargout == 0)

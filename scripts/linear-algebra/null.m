@@ -51,7 +51,7 @@ function retval = null (A, tol)
   if (nargin == 1)
     tol = max (size (A)) * s (1) * eps;
   elseif (nargin != 2)
-    usage ("null (A [, tol])");
+    usage ("null (A, tol)");
   endif
 
   rank = sum (s > tol);

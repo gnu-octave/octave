@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  f_inv (x, m, n)
-##
-## For each component of x, compute the quantile (the inverse of the
-## CDF) at x of the F distribution with parameters m and n.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} f_inv (@var{x}, @var{m}, @var{n})
+## For each component of @var{x}, compute the quantile (the inverse of
+## the CDF) at @var{x} of the F distribution with parameters @var{m} and
+## @var{n}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the F distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the F distribution
 
 function inv = f_inv (x, m, n)
 
@@ -30,7 +32,7 @@ function inv = f_inv (x, m, n)
 
   [retval, x, m, n] = common_size (x, m, n);
   if (retval > 0)
-    error ("f_inv:  x, m and n must be of common size or scalar");
+    error ("f_inv: x, m and n must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,26 +43,25 @@ function inv = f_inv (x, m, n)
   inv = zeros (1, s);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(m > 0) | !(n > 0));
-  if any (k)
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x == 1) & (m > 0) & (n > 0));
-  if any (k)
+  if (any (k))
     inv(k) = Inf * ones (1, length (k));
   endif
 
   k = find ((x > 0) & (x < 1) & (m > 0) & (n > 0));
-  if any (k)
-    inv(k) = (1 ./ beta_inv (1 - x(k), n(k) / 2, m(k) / 2) - 1) ...
-        .* n(k) ./ m(k);
+  if (any (k))
+    inv(k) = ((1 ./ beta_inv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
+	      .* n(k) ./ m(k));
   endif
 
   ## should we really only allow for positive integer m, n?
   k = find ((m != round (m)) | (n != round (n)));
-  if any (k)
-    fprintf (stderr, ...
-             "WARNING:  m and n should be positive integers\n");
+  if (any (k))
+    warning ("f_inv: m and n should be positive integers");
     inv(k) = NaN * ones (1, length (k));
   endif
 

@@ -31,8 +31,8 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Chi-square test for homogeneity
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Chi-square test for homogeneity
 
 function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
 
@@ -46,7 +46,7 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
   ## Now test c for strictly increasing entries
   df = length (c);
   if (any ( (c(2 : df) - c(1 : (df - 1))) <= 0))
-    error ("chisquare_test_homogeneity:  c must be increasing");
+    error ("chisquare_test_homogeneity: c must be increasing");
   endif
 
   c     = [(reshape (c, 1, df)), Inf];
@@ -60,7 +60,7 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
   pval  = 1 - chisquare_cdf (chisq, df);
 
   if (nargout == 0)
-    printf("  pval:  %g\n", pval);
+    printf("  pval: %g\n", pval);
   endif
 
 endfunction

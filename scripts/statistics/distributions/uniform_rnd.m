@@ -14,41 +14,39 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  uniform_rnd (a, b [, r, c])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} uniform_rnd (@var{a}, @var{b}, @var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random samples from the
+## uniform distribution on [@var{a}, @var{b}].  Both @var{a} and @var{b}
+## must be scalar or of size @var{r} by @var{c}.
 ##
-## uniform_rnd (a, b) returns a matrix of random samples from the
-## uniform distribution on [a, b].  The size of the matrix is the common
-## size of a and b.
-##
-## uniform_rnd (a, b, r, c) returns an r by c matrix of random samples
-## from the uniform distribution on [a, b].  Both a and b must be scalar
-## or of size r by c.
+## If @var{r} and @var{c} are omitted, the size of the result matrix is
+## the common size of @var{a} and @var{b}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the uniform distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the uniform distribution
 
 function rnd = uniform_rnd (a, b, r, c)
 
   if (nargin == 4)
-    if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-      error ("uniform_rnd:  r must be a positive integer");
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+      error ("uniform_rnd: r must be a positive integer");
     endif
-    if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-      error ("uniform_rnd:  c must be a positive integer");
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+      error ("uniform_rnd: c must be a positive integer");
     endif
     [retval, a, b] = common_size (a, b, zeros (r, c));
     if (retval > 0)
-      error (strcat("uniform_rnd:  ",
-                    "a and b must be scalar or of size ",
-                    sprintf ("%d by %d", r, c)));
+      error ("uniform_rnd: a and b must be scalar or of size %d by %d", r, c);
     endif
   elseif (nargin == 2)
     [retval, a, b] = common_size (a, b);
     if (retval > 0)
-      error ("uniform_rnd:  a and b must be of common size or scalar");
+      error ("uniform_rnd: a and b must be of common size or scalar");
     endif
   else
-    usage ("uniform_rnd (a, b [, r, c])");
+    usage ("uniform_rnd (a, b, r, c)");
   endif
 
   [r, c] = size (a);
@@ -58,12 +56,12 @@ function rnd = uniform_rnd (a, b, r, c)
   rnd = zeros (1, s);
 
   k = find (!(-Inf < a) | !(a < b) | !(b < Inf));
-  if any (k)
+  if (any (k))
     rnd(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((-Inf < a) & (a < b) & (b < Inf));
-  if any (k)
+  if (any (k))
     rnd(k) = a(k) + (b(k) - a(k)) .* rand (1, length (k));
   endif
 

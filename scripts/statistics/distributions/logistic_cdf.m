@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  logistic_cdf (x)
-##
-## For each component of x, compute the CDF at x of the logistic
-## distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} logistic_cdf (@var{x})
+## For each component of @var{x}, compute the CDF at @var{x} of the
+## logistic distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the logistic distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the logistic distribution
 
 function cdf = logistic_cdf (x)
 

@@ -50,7 +50,7 @@ function x = diff (x, k)
       return;
     endif
   else
-    usage ("diff (x [, k]");
+    usage ("diff (x, k");
   endif
 
   if (isstr (x))

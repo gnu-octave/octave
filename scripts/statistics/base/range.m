@@ -22,8 +22,8 @@
 ## If @var{x} is a matrix, do the above for each column of @var{x}.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute range
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute range
 
 function y = range (x)
 

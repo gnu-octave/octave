@@ -61,13 +61,13 @@
 ## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Kendall's rank correlation tau
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Kendall's rank correlation tau
 
 function tau = kendall (x, y)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("kendall (x [, y])");
+    usage ("kendall (x, y)");
   endif
 
   if (rows (x) == 1)
@@ -80,8 +80,7 @@ function tau = kendall (x, y)
       y = y';
     endif
     if (rows (y) != n)
-      error (["kendall:  ", ...
-              "x and y must have the same number of observations"]);
+      error ("kendall: x and y must have the same number of observations");
     else
       x = [x, y];
     endif

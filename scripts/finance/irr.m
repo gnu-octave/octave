@@ -30,28 +30,20 @@ function r = irr (p, i)
 
   if (nargin == 1)
     i = 0;
-  elseif !(nargin == 2)
-    usage ("irr (p [, i])");
+  elseif (! (nargin == 2))
+    usage ("irr (p, i)");
   endif
 
-  tmp = output_precision;
-  output_precision = 15;
-  if !(is_vector (p))
+  if (! (is_vector (p)))
     error ("irr:  p must be a vector");
   else
-    p_string = type p;
+    p_string = strcat ("[", sprintf ("%.15f, ", p), "]");
   endif
 
-  if !is_scalar (i)
+  if (! is_scalar (i))
     error ("irr:  i must be a scalar");
   endif
 
-  string = ["function delta = f (r) ", ...
-      "delta = npv (r, %s) - %g;  end"];
-  eval (sprintf (string, p_string, i));
-
-  r = fsolve ("f", 0.01);
-
-  output_precision = tmp;
+  r = fsolve (sprintf ("npv (x, %s) - %g", p_string, i), 0.01);
 
 endfunction

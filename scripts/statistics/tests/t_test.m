@@ -34,20 +34,20 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Student's one-sample t test
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Student's one-sample t test
 
 function [pval, t, df] = t_test (x, m, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, t, df] = t_test (x, m [, alt])");
+    usage ("[pval, t, df] = t_test (x, m, alt)");
   endif
 
   if (! is_vector (x))
-    error ("t_test:  x must be a vector.");
+    error ("t_test: x must be a vector.");
   endif
   if (! is_scalar (m))
-    error ("t_test:  m must be a scalar.");
+    error ("t_test: m must be a scalar.");
   endif
 
   n   = length (x);
@@ -60,7 +60,7 @@ function [pval, t, df] = t_test (x, m, alt)
   endif
 
   if (! isstr (alt))
-    error ("t_test:  alt must be a string");
+    error ("t_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
@@ -69,11 +69,11 @@ function [pval, t, df] = t_test (x, m, alt)
   elseif strcmp (alt, "<")
     pval = cdf;
   else
-    error (sprintf ("t_test:  option %s not recognized", alt));
+    error ("t_test: option %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

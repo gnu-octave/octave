@@ -125,7 +125,7 @@ function __plr__ (theta, rho, fmt)
       endif
     endif
   else
-    usage ("__plr__ (x [, y])");
+    usage ("__plr__ (x, y)");
   endif
 
 endfunction

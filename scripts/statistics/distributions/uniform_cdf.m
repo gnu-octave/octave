@@ -14,20 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  uniform_cdf (x [, a, b])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} uniform_cdf (@var{x}, @var{a}, @var{b})
+## Return the CDF at @var{x} of the uniform distribution on [@var{a},
+## @var{b}], i.e., PROB (uniform (@var{a}, @var{b}) <= x).
 ##
-## Returns the CDF at x of the uniform distribution on [a, b], i.e.,
-## PROB( uniform(a,b) <= x ).
-##
-## Default values are a = 0, b = 1.
+## Default values are @var{a} = 0, @var{b} = 1.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the uniform distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the uniform distribution
 
 function cdf = uniform_cdf (x, a, b)
 
-  if !(nargin == 1 || nargin == 3)
-    usage ("uniform_cdf (x [, a, b])");
+  if (! (nargin == 1 || nargin == 3))
+    usage ("uniform_cdf (x, a, b)");
   endif
 
   if (nargin == 1)
@@ -37,8 +38,7 @@ function cdf = uniform_cdf (x, a, b)
 
   [retval, x, a, b] = common_size (x, a, b);
   if (retval > 0)
-    error (["uniform_cdf:  ", ...
-            "x, a and b must be of common size or scalar"]);
+    error ("uniform_cdf: x, a and b must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -49,17 +49,17 @@ function cdf = uniform_cdf (x, a, b)
   cdf = zeros (1, s);
 
   k = find (isnan (x) | !(a < b));
-  if any (k)
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x >= b) & (a < b));
-  if any (k)
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
   k = find ((x > a) & (x < b));
-  if any (k)
+  if (any (k))
     cdf(k) = (x(k) < b(k)) .* (x(k) - a(k)) ./ (b(k) - a(k));
   endif
 

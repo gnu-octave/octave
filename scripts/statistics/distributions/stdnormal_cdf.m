@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  stdnormal_cdf (x)
-##
-## For each component of x, compute the CDF of the standard normal
-## distribution at x.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} stdnormal_cdf (@var{x})
+## For each component of @var{x}, compute the CDF of the standard normal
+## distribution at @var{x}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the standard normal distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the standard normal distribution
 
 function cdf = stdnormal_cdf (x)
 
@@ -30,7 +31,7 @@ function cdf = stdnormal_cdf (x)
 
   [r_x, c_x] = size (x);
   if (r_x * c_x == 0)
-    error ("stdnormal_cdf:  x must not be empty.");
+    error ("stdnormal_cdf: x must not be empty.");
   endif
 
   cdf = ( ones (r_x, c_x) + erf (x / sqrt(2)) ) / 2;

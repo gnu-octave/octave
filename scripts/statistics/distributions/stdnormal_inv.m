@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  stdnormal_inv (x)
-##
-## For each component of x, compute compute the quantile (the inverse of
-## the CDF) at x of the standard normal distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} stdnormal_inv (@var{x})
+## For each component of @var{x}, compute compute the quantile (the
+## inverse of the CDF) at @var{x} of the standard normal distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the standard normal distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the standard normal distribution
 
 function inv = stdnormal_inv (x)
 

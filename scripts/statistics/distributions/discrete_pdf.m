@@ -14,46 +14,47 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  discrete_pdf (X, V, P)
-##
-## For each element of X, compute the probability density function (PDF)
-## at X of a univariate discrete distribution which assumes the values
-## in V with probabilities P.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} discrete_pdf (@var{x}, @var{v}, @var{p})
+## For each element of @var{x}, compute the probability density function
+## (pDF) at @var{x} of a univariate discrete distribution which assumes
+## the values in @var{v} with probabilities @var{p}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of a discrete distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: pDF of a discrete distribution
 
-function pdf = discrete_pdf (X, V, P)
+function pdf = discrete_pdf (x, v, p)
 
   if (nargin != 3)
-    usage ("discrete_pdf (X, V, P)");
+    usage ("discrete_pdf (x, v, p)");
   endif
 
-  [r, c] = size (X);
+  [r, c] = size (x);
 
-  if (! is_vector (V))
-    error ("discrete_pdf:  V must be a vector");
-  elseif (! is_vector (P) || (length (P) != length (V)))
-    error ("discrete_pdf:  P must be a vector with length (V) elements");
-  elseif (! (all (P >= 0) && any (P)))
-    error ("discrete_pdf:  P must be a nonzero, nonnegative vector");
+  if (! is_vector (v))
+    error ("discrete_pdf: v must be a vector");
+  elseif (! is_vector (p) || (length (p) != length (v)))
+    error ("discrete_pdf: p must be a vector with length (v) elements");
+  elseif (! (all (p >= 0) && any (p)))
+    error ("discrete_pdf: p must be a nonzero, nonnegative vector");
   endif
 
   n = r * c;
-  m = length (V);
-  X = reshape (X, n, 1);
-  V = reshape (V, 1, m);
-  P = reshape (P / sum (P), m, 1);
+  m = length (v);
+  x = reshape (x, n, 1);
+  v = reshape (v, 1, m);
+  p = reshape (p / sum (p), m, 1);
 
   pdf = zeros (n, 1);
-  k = find (isnan (X));
-  if any (k)
+  k = find (isnan (x));
+  if (any (k))
     pdf (k) = NaN * ones (length (k), 1);
   endif
-  k = find (!isnan (X));
-  if any (k)
+  k = find (!isnan (x));
+  if (any (k))
     n = length (k);
-    pdf (k) = ((X(k) * ones (1, m)) == (ones (n, 1) * V)) * P;
+    pdf (k) = ((x(k) * ones (1, m)) == (ones (n, 1) * v)) * P;
   endif
 
   pdf = reshape (pdf, r, c);

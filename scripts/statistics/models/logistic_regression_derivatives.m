@@ -20,9 +20,9 @@
 ## log-likelihood for ordinal logistic regression model.
 ## @end deftypefn
 
-## Author:  Gordon K. Smyth <gks@maths.uq.oz.au>
-## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Derivates of log-likelihood in logistic regression
+## Author: Gordon K. Smyth <gks@maths.uq.oz.au>
+## Adapted-By: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Derivates of log-likelihood in logistic regression
 
 function [dl, d2l] = logistic_regression_derivatives (x, z, z1, g, g1, p)
 

@@ -36,25 +36,24 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Two-sample Kolmogorov-Smirnov test
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Two-sample Kolmogorov-Smirnov test
 
 function [pval, ks] = kolmogorov_smirnov_test_2 (x, y, alt)
 
   if (nargin < 2 || nargin > 3)
-    usage (strcat ("[pval, ks] = ",
-                   "kolmogorov_smirnov_test_2 (x, y [, tol])"));
+    usage ("[pval, ks] = kolmogorov_smirnov_test_2 (x, y, tol)");
   endif
 
   if !( is_vector (x) && is_vector (y))
-    error ("kolmogorov_smirnov_test_2:  both x and y must be vectors.");
+    error ("kolmogorov_smirnov_test_2: both x and y must be vectors.");
   endif
 
   if (nargin == 2)
     alt = "!=";
   else
     if (! isstr (alt))
-      error ("kolmogorov_smirnov_test_2:  alt must be a string.");
+      error ("kolmogorov_smirnov_test_2: alt must be a string.");
     endif
   endif
 
@@ -76,12 +75,11 @@ function [pval, ks] = kolmogorov_smirnov_test_2 (x, y, alt)
     ks   = - sqrt (n) * min (cumsum (count));
     pval = exp(- 2 * ks^2);
   else
-    error (sprintf (["kolmogorov_smirnov_test_2:  ", ...
-                     "option %s not recognized"], alt));
+    error ("kolmogorov_smirnov_test_2: option %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

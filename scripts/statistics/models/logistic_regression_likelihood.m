@@ -20,9 +20,9 @@
 ## Called by logistic_regression.
 ## @end deftypefn
 
-## Author:  Gordon K. Smyth <gks@maths.uq.oz.au>
-## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Likelihood in logistic regression
+## Author: Gordon K. Smyth <gks@maths.uq.oz.au>
+## Adapted-By: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Likelihood in logistic regression
 
 function [g, g1, p, dev] = logistic_regression_likelihood (y, x, beta, z, z1)
 

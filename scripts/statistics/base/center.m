@@ -20,8 +20,8 @@
 ## If @var{x} is a matrix, do the above for each column.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Center by subtracting means
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Center by subtracting means
 
 function retval = center (x)
 
@@ -34,7 +34,7 @@ function retval = center (x)
   elseif is_matrix (x)
     retval = x - ones (rows (x), 1) * mean(x);
   else
-    error ("center:  x must be a vector or a matrix.");
+    error ("center: x must be a vector or a matrix.");
   endif
 
 endfunction

@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  chisquare_inv (x, n)
-##
-## For each element of x, compute the quantile (the inverse of the CDF)
-## at x of the chisquare distribution with n degrees of freedom.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} chisquare_inv (@var{x}, @var{n})
+## For each element of @var{x}, compute the quantile (the inverse of the
+## CDF) at @var{x} of the chisquare distribution with @var{n} degrees of
+## freedom.
+## @end deftypefn
 
-## Author:  TT <Teresa.Twaroch@ci.tuwien.ac.at>
-## Description:  Quantile function of the chi-square distribution
+## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
+## Description: Quantile function of the chi-square distribution
 
 function inv = chisquare_inv (x, n)
 
@@ -30,16 +32,15 @@ function inv = chisquare_inv (x, n)
 
   [retval, x, n] = common_size (x, n);
   if (retval > 0)
-    error ("chisquare_inv:  x and n must be of common size or scalar");
+    error ("chisquare_inv: x and n must be of common size or scalar");
   endif
 
   inv = gamma_inv (x, n / 2, 1 / 2);
 
   ## Allow only for (positive) integer n.
   k = find (n != round (n));
-  if any (k)
-    fprintf (stderr, ...
-             "WARNING:  n should be positive integer\n");
+  if (any (k))
+    warning ("chisquare_inv: n should be positive integer");
     [r, c] = size (x);
     inv = reshape (inv, 1, r * c);
     inv(k) = NaN * ones (1, length (k));

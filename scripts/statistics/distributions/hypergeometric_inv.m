@@ -14,14 +14,18 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## For each element of x, compute the quantile at x of the hypergeometric
-## distribution with parameters m, t, and n.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hypergeometric_inv (@var{x}, @var{m}, @var{t}, @var{n})
+## For each element of @var{x}, compute the quantile at @var{x} of the
+## hypergeometric distribution with parameters @var{m}, @var{t}, and
+## @var{n}.
 ##
-## The parameters m, t, and n must positive integers with m and n not
-## greater than t.
+## The parameters @var{m}, @var{t}, and @var{n} must positive integers
+## with @var{m} and @var{n} not greater than @var{t}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the hypergeometric distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the hypergeometric distribution
 
 function inv = hypergeometric_inv (x, m, t, n)
 

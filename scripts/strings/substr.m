@@ -46,7 +46,7 @@
 function t = substr (s, offset, len)
 
   if (nargin < 2 || nargin > 3)
-    usage ("substr (s, offset [, len])");
+    usage ("substr (s, offset, len)");
   endif
 
   if (isstr (s))

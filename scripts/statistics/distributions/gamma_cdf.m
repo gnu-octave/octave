@@ -14,13 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  gamma_cdf (x, a, b)
-##
-## For each element of x, compute the cumulative distribution function
-## (CDF) at x of the Gamma distribution with parameters a and b.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} gamma_cdf (@var{x}, @var{a}, @var{b})
+## For each element of @var{x}, compute the cumulative distribution
+## function (CDF) at @var{x} of the Gamma distribution with parameters
+## @var{a} and @var{b}.
+## @end deftypefn
 
-## Author:  TT <Teresa.Twaroch@ci.tuwien.ac.at>
-## Description:  CDF of the Gamma distribution
+## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
+## Description: CDF of the Gamma distribution
 
 function cdf = gamma_cdf (x, a, b)
 
@@ -30,7 +32,7 @@ function cdf = gamma_cdf (x, a, b)
 
   [retval, x, a, b] = common_size (x, a, b);
   if (retval > 0)
-    error ("gamma_cdf:  x, a and b must be of common size or scalars");
+    error ("gamma_cdf: x, a and b must be of common size or scalars");
   endif
 
   [r, c] = size (x);
@@ -41,12 +43,12 @@ function cdf = gamma_cdf (x, a, b)
   cdf = zeros (s, 1);
 
   k = find (!(a > 0) | !(b > 0) | isnan (x));
-  if any (k)
+  if (any (k))
     cdf (k) = NaN * ones (length (k), 1);
   endif
 
   k = find ((x > 0) & (a > 0) & (b > 0));
-  if any (k)
+  if (any (k))
     cdf (k) = gammai (a(k), b(k) .* x(k));
   endif
 

@@ -14,19 +14,20 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  wiener_rnd (t [, d [,n]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} wiener_rnd (@var{t}, @var{d}, @var{n})
+## Return a simulated realization of the @var{d}-dimensional Wiener Process
+## on the interval [0,@var{t}].  If @var{d} is omitted, @var{d} = 1 is
+## used. The first column of the return matrix contains time, the
+## remaining columns contain the Wiener process.
 ##
-## Returns a simulated realization of the d-dimensional Wiener Process
-## on the interval [0,t].  If d is omitted, d=1 is used. The first
-## column of the return matrix contains time, the remaining columns
-## contain the Wiener process.
-##
-## The optional parameter n gives the number of summands used for
-## simulating the process over an interval of length 1.  If n is
-## omitted, n=1000 is used.
+## The optional parameter @var{n} gives the number of summands used for
+## simulating the process over an interval of length 1.  If @var{n} is
+## omitted, @var{n} = 1000 is used.
+## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Simulate a Wiener process
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Simulate a Wiener process
 
 function retval = wiener_rnd (t, d, n)
 
@@ -36,11 +37,12 @@ function retval = wiener_rnd (t, d, n)
   elseif (nargin == 2)
     n = 1000;
   elseif (nargin > 3)
-    usage ("wiener_rnd (t [, d [,n]])");
+    usage ("wiener_rnd (t, d,n)");
   endif
 
   retval = randn (n * t, d);
   retval = cumsum (retval) / sqrt (n);
 
   retval = [((1: n*t)' / n), retval];
+
 endfunction

@@ -33,13 +33,13 @@
 ## asymptotically normally distributed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Spearman's rank correlation rho
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Spearman's rank correlation rho
 
 function rho = spearman (x, y)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("spearman (x [, y])");
+    usage ("spearman (x, y)");
   endif
 
   if (rows (x) == 1)
@@ -54,8 +54,7 @@ function rho = spearman (x, y)
       y = y';
     endif
     if (rows (y) != n)
-      error (["spearman:  ", ...
-              "x and y must have the same number of observations"]);
+      error ("spearman: x and y must have the same number of observations");
     endif
     rho = cor (ranks (x), ranks (y));
   endif

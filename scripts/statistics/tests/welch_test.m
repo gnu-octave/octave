@@ -34,17 +34,17 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Welch two-sample t test
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Welch two-sample t test
 
 function [pval, t, df] = welch_test (x, y, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, t, df] = welch_test (x, y [, alt])");
+    usage ("[pval, t, df] = welch_test (x, y, alt)");
   endif
 
   if (! (is_vector (x) && is_vector (y)))
-    error ("welch_test:  both x and y must be vectors");
+    error ("welch_test: both x and y must be vectors");
   endif
 
   n_x  = length (x);
@@ -63,7 +63,7 @@ function [pval, t, df] = welch_test (x, y, alt)
   endif
 
   if (! isstr (alt))
-    error ("welch_test:  alt must be a string");
+    error ("welch_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
@@ -72,11 +72,11 @@ function [pval, t, df] = welch_test (x, y, alt)
   elseif (strcmp (alt, "<"))
     pval = cdf;
   else
-    error (sprintf ("welch_test:  option %s not recognized", alt));
+    error ("welch_test: option %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

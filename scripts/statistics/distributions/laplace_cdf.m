@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  laplace_cdf (x)
-##
-## For each element of x, compute the cumulative distribution function
-## (CDF) at x of the Laplace distribution.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} laplace_cdf (@var{x})
+## For each element of @var{x}, compute the cumulative distribution
+## function (CDF) at @var{x} of the Laplace distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the Laplace distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the Laplace distribution
 
 function cdf = laplace_cdf (x)
 
@@ -34,17 +35,17 @@ function cdf = laplace_cdf (x)
   cdf = zeros (1, s);
 
   k = find (isnan (x));
-  if any (k)
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find (x == Inf);
-  if any (k)
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
   k = find ((x > -Inf) & (x < Inf));
-  if any (k)
+  if (any (k))
     cdf(k) = (1 + sign (x(k)) .* (1 - exp (- abs (x(k))))) / 2;
   endif
 

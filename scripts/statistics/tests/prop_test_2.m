@@ -34,13 +34,13 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compare two proportions
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compare two proportions
 
 function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
 
   if ((nargin < 4) || (nargin > 5))
-        usage ("[pval, z] = prop_test_2 (x1, n1, x2, n2 [, alt])");
+        usage ("[pval, z] = prop_test_2 (x1, n1, x2, n2, alt)");
   endif
 
   ## Could do sanity checking on x1, n1, x2, n2 here
@@ -58,7 +58,7 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
 
   if !isstr (alt)
-    error ("prop_test_2:  alt must be a string");
+    error ("prop_test_2: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
@@ -67,11 +67,11 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   elseif strcmp (alt, "<")
     pval = cdf;
   else
-    error (sprintf ("prop_test_2:  option %s not recognized", alt));
+    error ("prop_test_2: option %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

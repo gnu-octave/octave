@@ -46,17 +46,17 @@
 ## @end table
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute arithmetic, geometric, and harmonic mean
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute arithmetic, geometric, and harmonic mean
 
 function y = mean (x, opt)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("mean (x [, opt])");
+    usage ("mean (x, opt])");
   endif
 
   if isempty (x)
-    error ("mean:  x must not be empty");
+    error ("mean: x must not be empty");
   endif
 
   if (rows (x) == 1)
@@ -84,7 +84,7 @@ function y = mean (x, opt)
       y(i) = r ./ sum (1 ./ x(:, i));
     endif
   else
-    error (sprintf ("mean:  option `%s' not recognized", opt));
+    error ("mean: option `%s' not recognized", opt);
   endif
 
 endfunction

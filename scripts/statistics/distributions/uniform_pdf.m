@@ -14,20 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  uniform_pdf (x [, a, b])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} uniform_pdf (@var{x}, @var{a}, @var{b})
+## For each element of @var{x}, compute the PDF at @var{x} of the uniform
+## distribution on [@var{a}, @var{b}].
 ##
-## For each element of x, compute the PDF at x of the uniform
-## distribution on [a, b].
-##
-## Default values are a = 0, b = 1.
+## Default values are @var{a} = 0, @var{b} = 1.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the uniform distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the uniform distribution
 
 function pdf = uniform_pdf (x, a, b)
 
-  if !(nargin == 1 || nargin == 3)
-    usage ("uniform_pdf (x [, a, b])");
+  if (! (nargin == 1 || nargin == 3))
+    usage ("uniform_pdf (x, a, b)");
   endif
 
   if (nargin == 1)
@@ -37,8 +38,7 @@ function pdf = uniform_pdf (x, a, b)
 
   [retval, x, a, b] = common_size (x, a, b);
   if (retval > 0)
-    error (["uniform_pdf:  ", ...
-            "x, a and b must be of common size or scalars"]);
+    error ("uniform_pdf: x, a and b must be of common size or scalars");
   endif
 
   [r, c] = size (x);
@@ -49,12 +49,12 @@ function pdf = uniform_pdf (x, a, b)
   pdf = zeros (1, s);
 
   k = find (isnan (x) | !(a < b));
-  if any (k)
+  if (any (k))
     pdf(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x > a) & (x < b));
-  if any (k)
+  if (any (k))
     pdf(k) = 1 ./ (b(k) - a(k));
   endif
 

@@ -33,11 +33,11 @@ function v = fvl (r, n, l)
     usage ("fvl (r, n, l)");
   endif
 
-  if !(is_scalar (r) && (r > -1))
+  if (! (is_scalar (r) && (r > -1)))
     error ("fvl:  r has to be a scalar > -1");
-  elseif !(is_scalar (n) && (n > 0))
+  elseif (! (is_scalar (n) && (n > 0)))
     error ("fvl:  n has to be a positive scalar");
-  elseif !is_scalar (l)
+  elseif (! is_scalar (l))
     error ("fvl:  l has to be a scalar");
   endif
 

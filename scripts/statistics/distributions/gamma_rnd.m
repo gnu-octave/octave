@@ -14,42 +14,39 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  gamma_rnd (a, b [, r, c])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} gamma_rnd (@var{a}, @var{b}, @var{r}, @var{c})
+## Return an @var{r} by @var{c} matrix of random samples from the Gamma
+## distribution with parameters @var{a} and @var{b}.  Both @var{a} and
+## @var{b} must be scalar or of size @var{r} by @var{c}.
 ##
-## gamma_rnd (a, b) returns a matrix of random samples from the Gamma
-## distribution with parameters a and b.  The size of the matrix is the
-## common size of a and b.
-##
-## gamma_rnd (a, b, r, c) returns an r by c matrix of random samples
-## from the Gamma distribution with parameters a and b.  Both a and b
-## must be scalar or of size r by c.
+## If @var{r} and @var{c} are omitted, the size of the result matrix is
+## the common size of @var{a} and @var{b}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Random deviates from the Gamma distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Random deviates from the Gamma distribution
 
 function rnd = gamma_rnd (a, b, r, c)
 
   if (nargin == 4)
-    if ( !(is_scalar (r) && (r > 0) && (r == round (r))) )
-      error ("gamma_rnd:  r must be a positive integer");
+    if (! (is_scalar (r) && (r > 0) && (r == round (r))) )
+      error ("gamma_rnd: r must be a positive integer");
     endif
-    if ( !(is_scalar (c) && (c > 0) && (c == round (c))) )
-      error ("gamma_rnd:  c must be a positive integer");
+    if (! (is_scalar (c) && (c > 0) && (c == round (c))) )
+      error ("gamma_rnd: c must be a positive integer");
     endif
     [retval, a, b] = common_size (a, b, zeros (r, c));
     if (retval > 0)
-      error (strcat("gamma_rnd:  ",
-                    "a and b must be scalar or of size ",
-                    sprintf ("%d by %d", r, c)));
+      error ("gamma_rnd: a and b must be scalar or of size %d by %d", r, c);
     endif
   elseif (nargin == 2)
     [retval, a, b] = common_size (a, b);
     if (retval > 0)
-      error (["gamma_rnd:  ", ...
-              "a and b must be of common size or scalar"]);
+      error ("gamma_rnd: a and b must be of common size or scalar");
     endif
   else
-    usage ("gamma_rnd (a, b [, r, c])");
+    usage ("gamma_rnd (a, b, r, c)");
   endif
 
   [r, c] = size (a);

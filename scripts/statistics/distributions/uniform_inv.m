@@ -14,20 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  uniform_inv (x [, a, b])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} uniform_inv (@var{x}, @var{a}, @var{b})
+## For each element of @var{x}, compute the quantile (the inverse of the
+## CDF) at @var{x} of the uniform distribution on [@var{a}, @var{b}].
 ##
-## For each element of x, compute the quantile (the inverse of the CDF)
-## at x of the uniform distribution on [a, b].
-##
-## Default values are a = 0, b = 1.
+## Default values are @var{a} = 0, @var{b} = 1.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Quantile function of the uniform distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Quantile function of the uniform distribution
 
 function inv = uniform_inv (x, a, b)
 
-  if !(nargin == 1 || nargin == 3)
-    usage ("uniform_inv (x [, a, b])");
+  if (! (nargin == 1 || nargin == 3))
+    usage ("uniform_inv (x, a, b)");
   endif
 
   if (nargin == 1)
@@ -37,7 +38,7 @@ function inv = uniform_inv (x, a, b)
 
   [retval, x, a, b] = common_size (x, a, b);
   if (retval > 0)
-    error ("uniform_inv:  x, a and b must be of common size or scalars");
+    error ("uniform_inv: x, a and b must be of common size or scalars");
   endif
 
   [r, c] = size (x);
@@ -48,12 +49,12 @@ function inv = uniform_inv (x, a, b)
   inv = zeros (1, s);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(a < b));
-  if any (k)
+  if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
 
   k = find ((x >= 0) & (x <= 1) & (a < b));
-  if any (k)
+  if (any (k))
     inv(k) = a(k) + x(k) .* (b(k) - a(k));
   endif
 

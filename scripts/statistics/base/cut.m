@@ -29,8 +29,8 @@
 ## @var{breaks} are labelled by @code{NaN}.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Cut data into intervals
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Cut data into intervals
 
 function group = cut (X, BREAKS)
 
@@ -39,7 +39,7 @@ function group = cut (X, BREAKS)
   endif
 
   if !is_vector (X)
-    error ("cut:  X must be a vector");
+    error ("cut: X must be a vector");
   endif
   if is_scalar (BREAKS)
     BREAKS = linspace (min (X), max (X), BREAKS + 1);
@@ -47,7 +47,7 @@ function group = cut (X, BREAKS)
   elseif is_vector (BREAKS)
     BREAKS = sort (BREAKS);
   else
-    error ("cut:  BREAKS must be a scalar or vector");
+    error ("cut: BREAKS must be a scalar or vector");
   endif
 
   group = NaN * ones (size (X));

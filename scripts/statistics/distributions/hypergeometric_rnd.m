@@ -14,11 +14,15 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## Generate a row vector containing a random sample of size N from the
-## hypergeometric distribution with parameters m, t, and n.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hypergeometric_rnd (@var{N}, @var{m}, @var{t}, @var{n})
+## Generate a row vector containing a random sample of size @var{N} from
+## the hypergeometric distribution with parameters @var{m}, @var{t}, and
+## @var{n}.
 ##
-## The parameters m, t, and n must positive integers with m and n not
-## greater than t.
+## The parameters @var{m}, @var{t}, and @var{n} must positive integers
+## with @var{m} and @var{n} not greater than @var{t}.
+## @end deftypefn
 
 function rnd = hypergeometric_rnd (N, m, t, n)
 

@@ -23,8 +23,8 @@
 ## If @var{x} is a vector, treat it as a column vector.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Compute basic statistics
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Compute basic statistics
 
 function S = statistics (X)
 
@@ -46,7 +46,7 @@ function S = statistics (X)
                 (kurtosis (X(:,k)))];
     endfor
   else
-    error ("statistics:  invalid argument");
+    error ("statistics: invalid argument");
   endif
 
 endfunction

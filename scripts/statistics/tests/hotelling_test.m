@@ -30,8 +30,8 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Test for mean of a multivariate normal
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Test for mean of a multivariate normal
 
 function [pval, Tsq] = hotelling_test (x, m)
 
@@ -41,24 +41,22 @@ function [pval, Tsq] = hotelling_test (x, m)
 
   if (is_vector (x))
     if (! is_scalar (m))
-      error ("hotelling_test:  If x is a vector, m must be a scalar.");
+      error ("hotelling_test: If x is a vector, m must be a scalar.");
     endif
     n = length (x);
     p = 1;
   elseif (is_matrix (x))
     [n, p] = size (x);
     if (n <= p)
-      error ("hotelling_test:  x must have more rows than columns.");
+      error ("hotelling_test: x must have more rows than columns.");
     endif
     if (is_vector (m) && length (m) == p)
       m = reshape (m, 1, p);
     else
-      error (strcat ("hotelling_test:  ",
-                     "If x is a matrix, m must be a vector\n",
-                     "\tof length columns (x)"));
+      error ("hotelling_test: if x is a matrix, m must be a vector of length columns (x)");
     endif
   else
-    error ("hotelling_test:  x must be a matrix or vector");
+    error ("hotelling_test: x must be a matrix or vector");
   endif
 
   d    = mean (x) - m;
@@ -66,7 +64,7 @@ function [pval, Tsq] = hotelling_test (x, m)
   pval = 1 - f_cdf ((n-p) * Tsq / (p * (n-1)), p, n-p);
 
   if (nargout == 0)
-    printf ("  pval:  %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

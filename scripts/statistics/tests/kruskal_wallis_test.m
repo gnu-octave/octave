@@ -32,8 +32,8 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Kruskal-Wallis test
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Kruskal-Wallis test
 
 function [pval, k, df] = kruskal_wallis_test (...)
 
@@ -48,7 +48,7 @@ function [pval, k, df] = kruskal_wallis_test (...)
   for i = 1 : m;
     x = va_arg ();
     if (! is_vector (x))
-      error ("kruskal_wallis_test:  all arguments must be vectors");
+      error ("kruskal_wallis_test: all arguments must be vectors");
     endif
     l = length (x);
     n = [n, l];
@@ -70,7 +70,7 @@ function [pval, k, df] = kruskal_wallis_test (...)
   pval = 1 - chisquare_cdf (k, df);
 
   if (nargout == 0)
-    printf ("pval:  %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

@@ -73,9 +73,9 @@
 ## U of Queensland, Australia, on Nov 19, 1990.  Last revision Aug 3,
 ## 1992.
 
-## Author:  Gordon K Smyth <gks@maths.uq.oz.au>,
-## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Ordinal logistic regression
+## Author: Gordon K Smyth <gks@maths.uq.oz.au>,
+## Adapted-By: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Ordinal logistic regression
 
 ## Uses the auxiliary functions logistic_regression_derivatives and
 ## logistic_regression_likelihood.
@@ -161,8 +161,8 @@ function [theta, beta, dev, dl, d2l, p] ...
     printf ("\n");
     printf ("Logistic Regression Results:\n");
     printf ("\n");
-    printf ("Number of Iterations:  %d\n", iter);
-    printf ("Deviance:              %f\n", dev);
+    printf ("Number of Iterations: %d\n", iter);
+    printf ("Deviance:             %f\n", dev);
     printf ("Parameter Estimates:\n");
     printf ("     Theta         S.E.\n");
     se = sqrt (diag (inv (-d2l)));

@@ -31,7 +31,7 @@
 function retval = vol (X, m, n)
 
   if (nargin < 2)
-    usage ("vol (X, m [, n])");
+    usage ("vol (X, m, n)");
   endif
 
   [xr, xc] = size (X);
@@ -49,7 +49,7 @@ function retval = vol (X, m, n)
 
   U = zeros (xr - 1, xc);
 
-  if all (X)
+  if (all (X))
     U = X ((2 : xr), :) ./ X((1 : (xr-1)), :);
   else
     error ("vol:  zero element in X");

@@ -33,17 +33,17 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  F test to compare two variances
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: F test to compare two variances
 
 function [pval, f, df_num, df_den] = var_test (x, y, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, f, df_num, df_den] = var_test (x, y [, alt])");
+    usage ("[pval, f, df_num, df_den] = var_test (x, y, alt)");
   endif
 
   if (! (is_vector (x) && is_vector (y)))
-    error ("var_test:  both x and y must be vectors");
+    error ("var_test: both x and y must be vectors");
   endif
 
   df_num = length (x) - 1;
@@ -56,7 +56,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   endif
 
   if (! isstr (alt))
-    error ("var_test:  alt must be a string");
+    error ("var_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
@@ -65,11 +65,11 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   elseif (strcmp (alt, "<"))
     pval = cdf;
   else
-    error (sprintf ("var_test:  option %s not recognized", alt));
+    error ("var_test: option %s not recognized", alt);
   endif
 
   if (nargout == 0)
-    printf ("pval:  %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  geometric_pdf (x, p)
-##
-## For each element of x, compute the probability density function (PDF)
-## at x of the geometric distribution with parameter p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} geometric_pdf (@var{x}, @var{p})
+## For each element of @var{x}, compute the probability density function
+## (PDF) at @var{x} of the geometric distribution with parameter @var{p}.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  PDF of the geometric distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: PDF of the geometric distribution
 
 function pdf = geometric_pdf (x, p)
 
@@ -30,8 +31,7 @@ function pdf = geometric_pdf (x, p)
 
   [retval, x, p] = common_size (x, p);
   if (retval > 0)
-    error (["geometric_pdf:  ", ...
-            "x and p must be of common size or scalar"]);
+    error ("geometric_pdf: x and p must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -41,19 +41,18 @@ function pdf = geometric_pdf (x, p)
   cdf = zeros (1, s);
 
   k = find (isnan (x) | !(p >= 0) | !(p <= 1));
-  if any (k)
+  if (any (k))
     pdf(k) = NaN * ones (1, length (k));
   endif
 
   ## Just for the fun of it ...
   k = find ((x == Inf) & (p == 0));
-  if any (k)
+  if (any (k))
     pdf(k) = ones (1, length (k));
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) ...
-      & (p > 0) & (p <= 1));
-  if any (k)
+  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (p > 0) & (p <= 1));
+  if (any (k))
     pdf(k) = p(k) .* ((1 - p(k)) .^ x(k));
   endif
 

@@ -14,16 +14,18 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  pascal_cdf (x, n, p)
-##
-## For each element of x, compute the CDF at x of the Pascal (negative
-## binomial) distribution with parameters n and p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} pascal_cdf (@var{x}, @var{n}, @var{p})
+## For each element of @var{x}, compute the CDF at x of the Pascal
+## (negative binomial) distribution with parameters @var{n} and @var{p}.
 ##
 ## The number of failures in a Bernoulli experiment with success
-## probability p before the n-th success follows this distribution.
+## probability @var{p} before the @var{n}-th success follows this
+## distribution.
+## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  CDF of the Pascal (negative binomial) distribution
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: CDF of the Pascal (negative binomial) distribution
 
 function cdf = pascal_cdf (x, n, p)
 
@@ -33,8 +35,7 @@ function cdf = pascal_cdf (x, n, p)
 
   [retval, x, n, p] = common_size (x, n, p);
   if (retval > 0)
-    error (["pascal_cdf:  ", ...
-            "x, n and p must be of common size or scalar"]);
+    error ("pascal_cdf: x, n and p must be of common size or scalar");
   endif
 
   [r, c] = size (x);
@@ -44,21 +45,21 @@ function cdf = pascal_cdf (x, n, p)
   p   = reshape (p, 1, s);
   cdf = zeros (1, s);
 
-  k = find (isnan (x) | (n < 1) | (n == Inf) | (n != round (n)) ...
-      | (p < 0) | (p > 1));
-  if any (k)
+  k = find (isnan (x) | (n < 1) | (n == Inf) | (n != round (n))
+	    | (p < 0) | (p > 1));
+  if (any (k))
     cdf(k) = NaN * ones (1, length (k));
   endif
 
-  k = find ((x == Inf) & (n > 0) & (n < Inf) & (n == round (n)) ...
-      & (p >= 0) & (p <= 1));
-  if any (k)
+  k = find ((x == Inf) & (n > 0) & (n < Inf) & (n == round (n))
+	    & (p >= 0) & (p <= 1));
+  if (any (k))
     cdf(k) = ones (1, length (k));
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (n > 0) ...
-      & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
-  if any (k)
+  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (n > 0)
+	    & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
+  if (any (k))
     ## Does anyone know a better way to do the summation?
     m = zeros (1, length (k));
     x = floor (x(k));
@@ -67,7 +68,7 @@ function cdf = pascal_cdf (x, n, p)
     y = cdf(k);
     while (1)
       l = find (m <= x);
-      if any (l)
+      if (any (l))
         y(l) = y(l) + pascal_pdf (m(l), n(l), p(l));
         m(l) = m(l) + 1;
       else

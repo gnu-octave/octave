@@ -2,6 +2,9 @@
 
 	* version.h (OCTAVE_VERSION): Now 2.1.61.
 
+	* DLD-FUNCTIONS/det.cc (det): Always compute rcond so we can
+	detect numerically singular matrices.
+
 2004-11-04  John W. Eaton  <jwe@octave.org>
 
 	* pt-colon.cc (tree_colon_expression::line,

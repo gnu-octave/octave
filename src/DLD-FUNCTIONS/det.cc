@@ -79,26 +79,16 @@ of the reciprocal condition number if requested.\n\
 
       if (! error_state)
 	{
+	  // Always compute rcond, so we can detect numerically
+	  // singular matrices.
+
 	  int info;
 	  double rcond = 0.0;
-
-	  if (nargout > 1)
-	    {
-	      DET det = m.determinant (info, rcond);
-	      retval(1) = rcond;
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0)
-			   ? 0.0 : det.value ());
-	    }
-	  else
-	    {
-	      DET det = m.determinant (info);
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0)
-			   ? 0.0 : det.value ());
-	    }
+	  DET det = m.determinant (info, rcond);
+	  retval(1) = rcond;
+	  volatile double xrcond = rcond;
+	  xrcond += 1.0;
+	  retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
 	}
     }
   else if (arg.is_complex_type ())
@@ -107,26 +97,17 @@ of the reciprocal condition number if requested.\n\
 
       if (! error_state)
 	{
+	  // Always compute rcond, so we can detect numerically
+	  // singular matrices.
+
 	  int info;
 	  double rcond = 0.0;
-
-	  if (nargout > 1)
-	    {
-	      ComplexDET det = m.determinant (info, rcond);
-	      retval(1) = rcond;
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0)
-			   ? Complex (0.0) : det.value ());
-	    }
-	  else
-	    {
-	      ComplexDET det = m.determinant (info);
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0)
-			   ? Complex (0.0) : det.value ());
-	    }
+	  ComplexDET det = m.determinant (info, rcond);
+	  retval(1) = rcond;
+	  volatile double xrcond = rcond;
+	  xrcond += 1.0;
+	  retval(0) = ((info == -1 || xrcond == 1.0)
+		       ? Complex (0.0) : det.value ());
 	}
     }
   else

@@ -1,3 +1,8 @@
+2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (SHLEXT_VER, SHLLIB_VER, SHLBIN_VER): Use
+	$(version), not $(VERSION).
+
 2002-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (HAVE_DLOPEN_API, HAVE_SHL_LOAD_API,

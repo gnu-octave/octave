@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = is_vector (x)
+## usage: is_vector (x)
+##
+## Return 1 if the either the number of rows (columns) of x is 1 and
+## the number of columns (rows) is greater than one.  Otherwise, return 0. 
+##
+## See also: size, rows, columns, length, is_scalar, is_matrix
 
-  ## usage: is_vector (x)
-  ##
-  ## Return 1 if the either the number of rows (columns) of x is 1 and
-  ## the number of columns (rows) is greater than one.  Otherwise, return 0. 
-  ##
-  ## See also: size, rows, columns, length, is_scalar, is_matrix
+function retval = is_vector (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);

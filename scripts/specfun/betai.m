@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: betai (a, b, x)
+##
+## Returns the incomplete beta function
+##   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
+## If x has more than one component, both a and b must be scalars.
+## If x is a scalar, a and b must be of compatible dimensions.
+
 function y = betai (a, b, x)
-  
-  ## usage: betai (a, b, x)
-  ##
-  ## Returns the incomplete beta function
-  ##   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
-  ## If x has more than one component, both a and b must be scalars.
-  ## If x is a scalar, a and b must be of compatible dimensions.
   
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 2, 1994.
 

@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function sombrero (n)
+## usage: sombrero (n)
+##
+## Draw a `sombrero' in three dimensions using n grid lines.  The
+## function plotted is
+##
+##   z = sin (x^2 + y^2) / (x^2 + y^2);
 
-  ## usage: sombrero (n)
-  ##
-  ## Draw a `sombrero' in three dimensions using n grid lines.  The
-  ## function plotted is
-  ##
-  ##   z = sin (x^2 + y^2) / (x^2 + y^2);
+function sombrero (n)
 
   if (nargin != 1)
     usage ("sombrero (n)");

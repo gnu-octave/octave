@@ -17,28 +17,28 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [nn, xx] = hist (y, x)
+## usage: [NN, XX] = hist (Y, X)  or  hist (Y, X)
+##
+## Produce histogram counts or plots.
+##
+## With one vector input argument, plot a histogram of the values with
+## 10 bins.  The range of the histogram bins is determined by the range
+## of the data.
+##
+## Given a second scalar argument, use that as the number of bins.
+##
+## Given a second vector argument, use that as the centers of the bins,
+## with the width of the bins determened from the adjacent values in
+## the vector.
+##
+## Extreme values are lumped in the first and last bins.
+##
+## With two output arguments, produce the values NN and XX such that
+## bar (XX, NN) will plot the histogram.
+##
+## See also: bar
 
-  ## usage: [NN, XX] = hist (Y, X)  or  hist (Y, X)
-  ##
-  ## Produce histogram counts or plots.
-  ##
-  ## With one vector input argument, plot a histogram of the values with
-  ## 10 bins.  The range of the histogram bins is determined by the range
-  ## of the data.
-  ##
-  ## Given a second scalar argument, use that as the number of bins.
-  ##
-  ## Given a second vector argument, use that as the centers of the bins,
-  ## with the width of the bins determened from the adjacent values in
-  ## the vector.
-  ##
-  ## Extreme values are lumped in the first and last bins.
-  ##
-  ## With two output arguments, produce the values NN and XX such that
-  ## bar (XX, NN) will plot the histogram.
-  ##
-  ## See also: bar
+function [nn, xx] = hist (y, x)
 
   if (nargin < 1 || nargin > 2)
     usage ("[nn, xx] = hist (y, x)");

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  deblank (s)
+##
+## Remove trailing blanks from the string s.
+
 function t = deblank (s)
   
-  ## usage:  deblank (s)
-  ##
-  ## Remove trailing blanks from the string s.
-  
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("deblank (s)");

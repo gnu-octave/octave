@@ -17,29 +17,29 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [BETA, SIGMA, R] = ols (Y, X)
+## usage: [BETA, SIGMA [, R]] = ols (Y, X)
+##
+## Ordinary Least Squares (OLS) estimation for the multivariate model
+##
+##     Y = X*B + E,  mean(E) = 0,  cov(vec(E)) = kron(S,I)
+##
+## with Y ... T x p     As usual, each row of Y and X is an observation
+##      X ... T x k     and each column a variable.
+##      B ... k x p
+##      E ... T x p.
+##
+## BETA is the OLS estimator for B, i.e.
+##
+##   BETA = pinv(X)*Y,
+##
+## where pinv(X) denotes the pseudoinverse of X.
+## SIGMA is the OLS estimator for the matrix S, i.e.
+##
+##   SIGMA = (Y - X*BETA)'*(Y - X*BETA) / (T - rank(X)).
+##
+## R = Y - X*BETA is the matrix of OLS residuals.
 
-  ## usage: [BETA, SIGMA [, R]] = ols (Y, X)
-  ##
-  ## Ordinary Least Squares (OLS) estimation for the multivariate model
-  ##
-  ##     Y = X*B + E,  mean(E) = 0,  cov(vec(E)) = kron(S,I)
-  ##
-  ## with Y ... T x p     As usual, each row of Y and X is an observation
-  ##      X ... T x k     and each column a variable.
-  ##      B ... k x p
-  ##      E ... T x p.
-  ##
-  ## BETA is the OLS estimator for B, i.e.
-  ##
-  ##   BETA = pinv(X)*Y,
-  ##
-  ## where pinv(X) denotes the pseudoinverse of X.
-  ## SIGMA is the OLS estimator for the matrix S, i.e.
-  ##
-  ##   SIGMA = (Y - X*BETA)'*(Y - X*BETA) / (T - rank(X)).
-  ##
-  ## R = Y - X*BETA is the matrix of OLS residuals.
+function [BETA, SIGMA, R] = ols (Y, X)
 
   ## Written by Teresa Twaroch (twaroch@ci.tuwien.ac.at) May 1993.
   ## Dept of Probability Theory and Statistics TU Wien, Austria.

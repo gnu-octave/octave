@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = prepad (x, l, c)
+## prepad (x, l)
+##
+## Prepends zeros to the vector x until it is of length l.
+## prepad(x,l,c) prepends the constant c instead of zero.
+##
+## If length (x) > l, elements from the beginning of x are removed
+## until a vector of length l is obtained.
 
-  ## prepad (x, l)
-  ##
-  ## Prepends zeros to the vector x until it is of length l.
-  ## prepad(x,l,c) prepends the constant c instead of zero.
-  ##
-  ## If length (x) > l, elements from the beginning of x are removed
-  ## until a vector of length l is obtained.
+function y = prepad (x, l, c)
 
   ## Author:
   ##  Tony Richardson

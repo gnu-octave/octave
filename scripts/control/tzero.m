@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function zr = tzero (a, b, c, d, bal)
+## Usage: zr = tzero (a, b, c, d, bal)
+##
+## Compute the transmission zeros of a, b, c, d.
+##
+## bal = balancing option (see balance); default is "B".
+##
+## Needs to incorporate mvzero algorithm to isolate finite zeros.
 
-  ## Usage: zr = tzero (a, b, c, d, bal)
-  ##
-  ## Compute the transmission zeros of a, b, c, d.
-  ##
-  ## bal = balancing option (see balance); default is "B".
-  ##
-  ## Needs to incorporate mvzero algorithm to isolate finite zeros.
+function zr = tzero (a, b, c, d, bal)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

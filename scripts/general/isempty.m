@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = isempty (var)
+## usage: isempty (x)
+##
+## Return 1 if the argument is an empty matrix.  Otherwise, return 0.
 
-  ## usage: isempty (x)
-  ##
-  ## Return 1 if the argument is an empty matrix.  Otherwise, return 0.
+function retval = isempty (var)
 
   if (nargin != 1)
     usage ("isempty (var)");

@@ -17,28 +17,28 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
+## Usage: [k, p, e] = lqe (A, G, C, SigW, SigV {,Z})
+##
+## Linear quadratic estimator (Kalman filter) design for the 
+## continuous time system
+##
+##   dx/dt = A x + B u + G w
+##       y = C x + D u + v
+##
+## where w, v are zero-mean gaussian noise processes with respective
+## intensities SigW = cov (w, w) and SigV = cov (v, v).
+##
+## Z (if specified) is cov(w,v); otherwise cov(w,v) = 0.
+##
+## Observer structure is dz/dt = A z + B u + k( y - C z - D u).
+##
+## Returns:
+##
+##   k = observer gain, (A - K C) is stable
+##   p = solution of algebraic Riccati equation
+##   e = closed loop poles of (A - K C)
 
-  ## Usage: [k, p, e] = lqe (A, G, C, SigW, SigV {,Z})
-  ##
-  ## Linear quadratic estimator (Kalman filter) design for the 
-  ## continuous time system
-  ##
-  ##   dx/dt = A x + B u + G w
-  ##       y = C x + D u + v
-  ##
-  ## where w, v are zero-mean gaussian noise processes with respective
-  ## intensities SigW = cov (w, w) and SigV = cov (v, v).
-  ##
-  ## Z (if specified) is cov(w,v); otherwise cov(w,v) = 0.
-  ##
-  ## Observer structure is dz/dt = A z + B u + k( y - C z - D u).
-  ##
-  ## Returns:
-  ##
-  ##   k = observer gain, (A - K C) is stable
-  ##   p = solution of algebraic Riccati equation
-  ##   e = closed loop poles of (A - K C)
+function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 

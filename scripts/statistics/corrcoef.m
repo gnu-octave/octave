@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = corrcoef (X, Y)
+## usage: corrcoef (X [, Y])
+##
+## If each row of X and Y is an observation and each column is a variable,
+## the (i,j)-th entry of corrcoef(X, Y) is the correlation between the
+## i-th variable in X and the j-th variable in Y.
+## corrcoef(X) is corrcoef(X, X).
 
-  ## usage: corrcoef (X [, Y])
-  ##
-  ## If each row of X and Y is an observation and each column is a variable,
-  ## the (i,j)-th entry of corrcoef(X, Y) is the correlation between the
-  ## i-th variable in X and the j-th variable in Y.
-  ## corrcoef(X) is corrcoef(X, X).
+function retval = corrcoef (X, Y)
 
   ## Written by Kurt Hornik (hornik@ci.tuwien.ac.at) March 1993.
   ## Dept of Probability Theory and Statistics TU Wien, Austria.

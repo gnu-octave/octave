@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = trace (x)
+## usage: trace (x)
+##
+## Returns the trace (the sum of the diagonal elements) of x.
 
-  ## usage: trace (x)
-  ##
-  ## Returns the trace (the sum of the diagonal elements) of x.
+function y = trace (x)
 
   if (nargin != 1)
     usage ("trace (x)");

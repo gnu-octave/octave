@@ -17,19 +17,19 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function semilogx (...)
+## usage: semilogx (x, y)
+##        semilogx (x1, y1, x2, y2, ...)
+##        semilogx (x, y, fmt)
+##
+## Make a 2D plot of y versus x using a log scale for the x axis. 
+##
+## See the help message for the plot command for a description of how
+## the arguments are interpreted. 
+##
+## See also: plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
+##           gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: semilogx (x, y)
-  ##        semilogx (x1, y1, x2, y2, ...)
-  ##        semilogx (x, y, fmt)
-  ##
-  ## Make a 2D plot of y versus x using a log scale for the x axis. 
-  ##
-  ## See the help message for the plot command for a description of how
-  ## the arguments are interpreted. 
-  ##
-  ## See also: plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-  ##           gplot, gsplot, replot, xlabel, ylabel, title 
+function semilogx (...)
 
   set logscale x;
   set nologscale y;

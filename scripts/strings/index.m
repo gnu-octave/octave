@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function n = index (s, t)
+## usage:  index (s, t)
+##
+## Returns the position of the first occurence of the string T in the
+## string S or 0 if no occurence is found.
+##
+## NOTE: this function does not work for arrays of strings.
 
-  ## usage:  index (s, t)
-  ##
-  ## Returns the position of the first occurence of the string T in the
-  ## string S or 0 if no occurence is found.
-  ##
-  ## NOTE: this function does not work for arrays of strings.
+function n = index (s, t)
 
   ## This is patterned after the AWK function of the same name.
 

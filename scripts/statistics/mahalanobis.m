@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = mahalanobis (X, Y)
+## usage: mahalanobis (X, Y)
+##
+## Returns Mahalanobis' D-square distance between the multivariate
+## samples X and Y, which must have the same number of components
+## (columns), but may have a different number of observations (rows).
 
-  ## usage: mahalanobis (X, Y)
-  ##
-  ## Returns Mahalanobis' D-square distance between the multivariate
-  ## samples X and Y, which must have the same number of components
-  ## (columns), but may have a different number of observations (rows).
+function retval = mahalanobis (X, Y)
 
   ## Written by Friedrich Leisch (leisch@ci.tuwien.ac.at) July 1993.
   ## Dept of Probability Theory and Statistics TU Wien, Austria.

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  y = lin2mu (x)
+##
+## x is a vector of an 8- or 16-bit linearly encoded audio sample,
+## This is transformed into a mu-law encoded vector.
+
 function y = lin2mu (x)
   
-  ## usage:  y = lin2mu (x)
-  ##
-  ## x is a vector of an 8- or 16-bit linearly encoded audio sample,
-  ## This is transformed into a mu-law encoded vector.
-
   ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 17, 1994
   ## Copyright Department of Probability Theory and Statistics TU Wien
 

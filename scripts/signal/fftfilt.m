@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = fftfilt (b, x, N)
+## usage:  fftfilt (b, x [, N])
+##
+## y = fftfilt (b, x) filters x with the FIR filter b using the FFT.
+## y = fftfilt (b, x, N) uses the overlap-add method to filter x with
+## b using an N-point FFT.
 
-  ## usage:  fftfilt (b, x [, N])
-  ##
-  ## y = fftfilt (b, x) filters x with the FIR filter b using the FFT.
-  ## y = fftfilt (b, x, N) uses the overlap-add method to filter x with
-  ## b using an N-point FFT.
+function y = fftfilt (b, x, N)
 
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994
 

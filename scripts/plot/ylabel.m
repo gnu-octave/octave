@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function ylabel (text)
+## usage: ylabel (text)
+##
+## Defines a label for the y-axis of a plot.  The label will appear the
+## next time a plot is displayed.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, title
 
-  ## usage: ylabel (text)
-  ##
-  ## Defines a label for the y-axis of a plot.  The label will appear the
-  ## next time a plot is displayed.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, title
+function ylabel (text)
 
   if (nargin != 1)
     usage ("ylabel (text)");

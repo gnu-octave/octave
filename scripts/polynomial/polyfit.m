@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  polyfit (x, y, n)
+##
+## Returns the coefficients of a polynomial p(x) of degree n that
+## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data 
+## in the least squares sense.
+
 function p = polyfit (x, y, n)
-  
-  ## usage:  polyfit (x, y, n)
-  ##
-  ## Returns the coefficients of a polynomial p(x) of degree n that
-  ## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data 
-  ## in the least squares sense.
   
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 13, 1994
   ## Copyright Dept of Statistics and Probability Theory TU Wien

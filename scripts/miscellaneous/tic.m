@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function tic ()
+## usage: tic
+##
+## Set a wall-clock timer.
+##
+## See also: toc, clock, etime, cputime
 
-  ## usage: tic
-  ##
-  ## Set a wall-clock timer.
-  ##
-  ## See also: toc, clock, etime, cputime
+function tic ()
 
   if (nargin != 0)
     warning ("tic: ignoring extra arguments");

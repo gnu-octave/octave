@@ -17,25 +17,25 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = logspace (x1, x2, n)
+## usage: logspace (x1, x2, n)
+##
+## Return a vector of n logarithmically equally spaced points between
+## x1 and x2 inclusive.
+##
+## If the final argument is omitted, n = 50 is assumed.
+##
+## All three arguments must be scalars. 
+##
+## Note that if if x2 is pi, the points are between 10^x1 and pi, NOT
+## 10^x1 and 10^pi.
+##
+## Yes, this is pretty stupid, because you could achieve the same
+## result with logspace (x1, log10 (pi)), but Matlab does this, and
+## claims that is useful for signal processing applications.
+##
+## See also: linspace
 
-  ## usage: logspace (x1, x2, n)
-  ##
-  ## Return a vector of n logarithmically equally spaced points between
-  ## x1 and x2 inclusive.
-  ##
-  ## If the final argument is omitted, n = 50 is assumed.
-  ##
-  ## All three arguments must be scalars. 
-  ##
-  ## Note that if if x2 is pi, the points are between 10^x1 and pi, NOT
-  ## 10^x1 and 10^pi.
-  ##
-  ## Yes, this is pretty stupid, because you could achieve the same
-  ## result with logspace (x1, log10 (pi)), but Matlab does this, and
-  ## claims that is useful for signal processing applications.
-  ##
-  ## See also: linspace
+function retval = logspace (x1, x2, n)
 
   if (nargin == 2)
     npoints = 50;

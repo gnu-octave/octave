@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function x = kron (a, b)
+## Usage: x = kron (a, b)
+##
+## Form the Kronecker product of two matrices, defined block by block
+## as 
+##
+##   x = [a(i,j) b]
 
-  ## Usage: x = kron (a, b)
-  ##
-  ## Form the Kronecker product of two matrices, defined block by block
-  ## as 
-  ##
-  ##   x = [a(i,j) b]
+function x = kron (a, b)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

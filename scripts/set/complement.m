@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = complement (a, b)
+## usage: complement (a, b)
+##
+## Returns the elements of set b that are not in set a.
+##
+## See - create_set, union, intersection
 
-  ## usage: complement (a, b)
-  ##
-  ## Returns the elements of set b that are not in set a.
-  ##
-  ## See - create_set, union, intersection
+function y = complement (a, b)
 
   if (nargin != 2)
     usage ("complement(a,b)");

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = flipud (x)
+## usage: flipud (x)
+##
+## Return x with the rows swapped.
+##
+## See also: fliplr, rot90
 
-  ## usage: flipud (x)
-  ##
-  ## Return x with the rows swapped.
-  ##
-  ## See also: fliplr, rot90
+function y = flipud (x)
 
   if (nargin != 1)
     usage ("flipud (x)");

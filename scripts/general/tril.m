@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = tril (x, k)
+## usage: triu (x, k)
+##
+## Return the lower triangular part of x above the k-th diagonal.  If
+## the second argument is omitted, k = 0 is assumed.
+##
+## See also: triu, diag
 
-  ## usage: triu (x, k)
-  ##
-  ## Return the lower triangular part of x above the k-th diagonal.  If
-  ## the second argument is omitted, k = 0 is assumed.
-  ##
-  ## See also: triu, diag
+function retval = tril (x, k)
 
   if (nargin > 0)
     [nr, nc] = size (x);

@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = hankel (c, r)
+## usage: hankel (c, r)
+##
+## Return the Hankel matrix constructed given the first column
+## c, and (optionally) the last row r.
+##
+## If the second argument is omitted, zeros are inserted below the main
+## anti-diagonal.  If the last element of c is not the same as the first 
+## element of r, the last element of c is used.
+##
+## See also: vander, hadamard, hilb, invhilb, toeplitz
 
-  ## usage: hankel (c, r)
-  ##
-  ## Return the Hankel matrix constructed given the first column
-  ## c, and (optionally) the last row r.
-  ##
-  ## If the second argument is omitted, zeros are inserted below the main
-  ## anti-diagonal.  If the last element of c is not the same as the first 
-  ## element of r, the last element of c is used.
-  ##
-  ## See also: vander, hadamard, hilb, invhilb, toeplitz
+function retval = hankel (c, r)
 
   if (nargin == 1)
     r = zeros (size (c));

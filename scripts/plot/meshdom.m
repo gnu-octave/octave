@@ -17,17 +17,17 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [xx, yy] = meshdom (x, y)
+## usage: [xx, yy] = meshdom (x, y)
+##
+## Given vectors of x and y coordinates, return two matrices
+## corresponding to the x and y coordinates of the mesh.
+##
+## See the file sombrero.m for an example of using mesh and meshdom.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: [xx, yy] = meshdom (x, y)
-  ##
-  ## Given vectors of x and y coordinates, return two matrices
-  ## corresponding to the x and y coordinates of the mesh.
-  ##
-  ## See the file sombrero.m for an example of using mesh and meshdom.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+function [xx, yy] = meshdom (x, y)
 
   if (nargin == 2)
     if (is_vector (x) && is_vector (y))

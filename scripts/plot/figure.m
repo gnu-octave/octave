@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function figure (n)
+## usage: figure (n)
+##
+## Set the current plot window to plot window N.  This function
+## currently requires X11 and a recent version of gnuplot.
 
-  ## usage: figure (n)
-  ##
-  ## Set the current plot window to plot window N.  This function
-  ## currently requires X11 and a recent version of gnuplot.
+function figure (n)
 
   if (nargin == 1)
     if (gnuplot_has_frames)

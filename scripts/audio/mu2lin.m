@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: y = mu2lin (x [, bit])
+##
+## If x is a vector of audio data with mu-law encoding, mu2lin (x)
+## holds the same data with linear encoding.
+## The optional argument bit specifies whether the input data is 
+## 8 bit (default) or 16 bit.
+
 function y = mu2lin (x, bit)
   
-  ## usage: y = mu2lin (x [, bit])
-  ##
-  ## If x is a vector of audio data with mu-law encoding, mu2lin (x)
-  ## holds the same data with linear encoding.
-  ## The optional argument bit specifies whether the input data is 
-  ## 8 bit (default) or 16 bit.
-
   ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 18, 1994
   ## Updated by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 27, 1994
   ## Copyright Department of Probability Theory and Statistics TU Wien

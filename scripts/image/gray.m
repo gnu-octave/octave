@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function map = gray (number)
+## Colormap.
 
-  ## Colormap.
+function map = gray (number)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

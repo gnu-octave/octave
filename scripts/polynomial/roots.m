@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: roots (v)
+##
+## For a vector v with n components, return the roots of the
+## polynomial v(1) * z^(n-1) + ... + v(n-1) * z + v(n).
+
 function r = roots (v)
 
-  ## usage: roots (v)
-  ##
-  ## For a vector v with n components, return the roots of the
-  ## polynomial v(1) * z^(n-1) + ... + v(n-1) * z + v(n).
-  
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993
   ## Updated by KH on Nov 25, 1994
   

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function bug_report ()
+## usage: bug_report
+##
+## Have Octave create a bug report template file, invoke your favorite
+## editor, and submit the report to the bug-octave mailing list when
+## you are finished editing.
 
-  ## usage: bug_report
-  ##
-  ## Have Octave create a bug report template file, invoke your favorite
-  ## editor, and submit the report to the bug-octave mailing list when
-  ## you are finished editing.
+function bug_report ()
 
   if (nargin != 0)
     warning ("bug_report: ignoring extra arguments");

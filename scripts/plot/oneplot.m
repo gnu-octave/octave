@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function oneplot ()
+## usage: oneplot 
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch
+##
+## Switches from multiplot (if in  multiplot mode) to single plot
+## mode
 
-  ## usage: oneplot 
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch
-  ##
-  ## Switches from multiplot (if in  multiplot mode) to single plot
-  ## mode
+function oneplot ()
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 

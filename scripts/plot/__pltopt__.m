@@ -19,48 +19,48 @@
 
 ## Originally written by Rick Niles <niles@axp745.gsfc.nasa.gov>.
 
-function fmt = plot_opt (caller, opt)
+## usage: fmt = plot_opt (caller, opt)
+##
+## Decode plot option strings.
+##
+## If OPT is a valid option string, return a string of the form "w l 2"
+## ("with lines 2").  Uses abbreviations for the options to avoid
+## overrunning gnuplot's command line buffer unnecessarily.
+##
+## OPT can currently be some combination of the following:
+##
+##   "-"   for lines plot style (default).
+##   "."   for dots plot style.
+##   "@"   for points plot style.
+##   "-@"  for linespoints plot style.
+##   "^"   for impulses plot style.
+##   "L"   for steps plot style.
+##   "#"   for boxes plot style.
+##   "~"   for errorbars plot style.
+##   "#~"  for boxerrorbars plot style.
+##   "n"   with n in 1-6 (wraps at 8), plot color
+##   "nm"  with m in 1-6 (wraps at 6), point style (only valid with "@" or "-@")
+##   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
+##
+##   Special points formats:
+##
+##      "+", "*", "o", "x" will display points in that style.
+##
+##   The legend may be fixed to include the name of the variable
+##   plotted in some future version of Octave.
+##
+##   The color line styles have the following meanings on terminals
+##   that support color.
+##
+##     Number  Gnuplot colors     (lines)points style
+##       1       red                 "*"
+##       2       green               "+"
+##       3       blue                "o"
+##       4       magenta             "x"
+##       5       cyan                house
+##       6       brown               there exists
 
-  ## usage: fmt = plot_opt (caller, opt)
-  ##
-  ## Decode plot option strings.
-  ##
-  ## If OPT is a valid option string, return a string of the form "w l 2"
-  ## ("with lines 2").  Uses abbreviations for the options to avoid
-  ## overrunning gnuplot's command line buffer unnecessarily.
-  ##
-  ## OPT can currently be some combination of the following:
-  ##
-  ##   "-"   for lines plot style (default).
-  ##   "."   for dots plot style.
-  ##   "@"   for points plot style.
-  ##   "-@"  for linespoints plot style.
-  ##   "^"   for impulses plot style.
-  ##   "L"   for steps plot style.
-  ##   "#"   for boxes plot style.
-  ##   "~"   for errorbars plot style.
-  ##   "#~"  for boxerrorbars plot style.
-  ##   "n"   with n in 1-6 (wraps at 8), plot color
-  ##   "nm"  with m in 1-6 (wraps at 6), point style (only valid with "@" or "-@")
-  ##   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
-  ##
-  ##   Special points formats:
-  ##
-  ##      "+", "*", "o", "x" will display points in that style.
-  ##
-  ##   The legend may be fixed to include the name of the variable
-  ##   plotted in some future version of Octave.
-  ##
-  ##   The color line styles have the following meanings on terminals
-  ##   that support color.
-  ##
-  ##     Number  Gnuplot colors     (lines)points style
-  ##       1       red                 "*"
-  ##       2       green               "+"
-  ##       3       blue                "o"
-  ##       4       magenta             "x"
-  ##       5       cyan                house
-  ##       6       brown               there exists
+function fmt = plot_opt (caller, opt)
 
   set_color = 0;
   set_symbol = 0;

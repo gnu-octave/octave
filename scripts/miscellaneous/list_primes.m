@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = list_primes (n)
+## usage: list_primes (n)
+##
+## List the first n primes.  If n is unspecified, the first 30 primes
+## are listed.
+##
+## The algorithm used is from page 218 of the TeXbook.
 
-  ## usage: list_primes (n)
-  ##
-  ## List the first n primes.  If n is unspecified, the first 30 primes
-  ## are listed.
-  ##
-  ## The algorithm used is from page 218 of the TeXbook.
+function retval = list_primes (n)
 
   if (nargin > 0)
     if (! is_scalar (n))

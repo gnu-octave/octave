@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function bottom_title (text)
+## usage: bottom_title (text)
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch
+##
+## makes a title with the given text at the bottom of the plot 
+## rather than the top.
+##
 
-  ## usage: bottom_title (text)
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch
-  ##
-  ## makes a title with the given text at the bottom of the plot 
-  ## rather than the top.
-  ##
+function bottom_title (text)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 

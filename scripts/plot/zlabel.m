@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function zlabel (text)
+## usage: zlabel (text)
+##
+## Defines a label for the z-axis of a plot.  The label will appear the
+## next time a plot is displayed.
+##
+## See other plotting commands also.
 
-  ## usage: zlabel (text)
-  ##
-  ## Defines a label for the z-axis of a plot.  The label will appear the
-  ## next time a plot is displayed.
-  ##
-  ## See other plotting commands also.
+function zlabel (text)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 

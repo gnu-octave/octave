@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = nargchk (nargin_min, nargin_max, n)
+## usage: nargchk (nargin_min, nargin_max, n)
+##
+## If N is in the range NARGIN_MIN to NARGIN_MAX, return the empty
+## matrix.  Otherwise, return a message indicating whether N is too
+## large or too small.
 
-  ## usage: nargchk (nargin_min, nargin_max, n)
-  ##
-  ## If N is in the range NARGIN_MIN to NARGIN_MAX, return the empty
-  ## matrix.  Otherwise, return a message indicating whether N is too
-  ## large or too small.
+function retval = nargchk (nargin_min, nargin_max, n)
 
   if (nargin != 3)
     usage ("nargchk (nargin_min, nargin_max, n)");

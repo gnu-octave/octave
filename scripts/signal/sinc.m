@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function result = sinc (x)
+## usage: sinc(x)
+##
+##        Returns sin(pi*x)/(pi*x).
 
-  ## usage: sinc(x)
-  ##
-  ##        Returns sin(pi*x)/(pi*x).
+function result = sinc (x)
 
   ## We either need to set the do_fortran_indexing variable to "true"
   ## or use reshape to convert the input matrix to a vector, so that

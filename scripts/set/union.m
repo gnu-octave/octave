@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = union(a,b)
+## usage: union(a,b)
+##
+## Returns the union of sets a and b.
+##
+## See - create_set, intersection, complement
 
-  ## usage: union(a,b)
-  ##
-  ## Returns the union of sets a and b.
-  ##
-  ## See - create_set, intersection, complement
+function y = union(a,b)
 
   if (nargin != 2)
     usage ("union(a,b)");

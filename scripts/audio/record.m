@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function X = record (sec, sampling_rate)
+## usage:  X = record (sec [, sampling_rate])
+##
+## Records sec seconds of audio into the vector X.
+## The default value for the sampling_rate is 8000, ie. 8kHz.
+## The program waits for you to hit the ENTER key, then the recording
+## starts immediatly.
 
-  ## usage:  X = record (sec [, sampling_rate])
-  ##
-  ## Records sec seconds of audio into the vector X.
-  ## The default value for the sampling_rate is 8000, ie. 8kHz.
-  ## The program waits for you to hit the ENTER key, then the recording
-  ## starts immediatly.
+function X = record (sec, sampling_rate)
 
   ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Sep 19, 1994
   ## Last modified by AW on Oct 5, 1994

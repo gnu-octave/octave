@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function yiq = rgb2ntsc (rgb)
+## Image format conversion.
 
-  ## Image format conversion.
+function yiq = rgb2ntsc (rgb)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

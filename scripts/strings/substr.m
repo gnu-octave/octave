@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function t = substr (s, beg, len)
+## usage:  substr (s, beg, len)
+##
+## Returns the substring of S of length LEN starting at index BEG.
+## If LEN is missing, the substring extends to the end of S.
 
-  ## usage:  substr (s, beg, len)
-  ##
-  ## Returns the substring of S of length LEN starting at index BEG.
-  ## If LEN is missing, the substring extends to the end of S.
+function t = substr (s, beg, len)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 

@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function top_title (text)
+## usage: top_title (text)
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch
+##
+## makes a title with text "text" at the top of the plot 
 
-  ## usage: top_title (text)
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch
-  ##
-  ## makes a title with text "text" at the top of the plot 
+function top_title (text)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 

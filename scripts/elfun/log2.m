@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## log2 (z):  compute the logarithm base 2 for each element of z.
+
 function w = log2 (z)
   
-  ## log2 (z):  compute the logarithm base 2 for each element of z.
-  
-  if (nargin != 1)
+if (nargin != 1)
     usage ("log2 (z)");
   endif
 

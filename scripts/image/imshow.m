@@ -17,19 +17,19 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function imshow (a1, a2, a3)
+## Display images.
+##
+## imshow (X) displays an indexed image using the current colormap.
+##
+## imshow (X, map) displays an indexed image using the specified colormap.
+##
+## imshow (I, n) displays a gray scale intensity image.
+##
+## imshow (R, G, B) displays an RGB image.
+##
+## SEE ALSO: image, imagesc, colormap, gray2ind, rgb2ind.
 
-  ## Display images.
-  ##
-  ## imshow (X) displays an indexed image using the current colormap.
-  ##
-  ## imshow (X, map) displays an indexed image using the specified colormap.
-  ##
-  ## imshow (I, n) displays a gray scale intensity image.
-  ##
-  ## imshow (R, G, B) displays an RGB image.
-  ##
-  ## SEE ALSO: image, imagesc, colormap, gray2ind, rgb2ind.
+function imshow (a1, a2, a3)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

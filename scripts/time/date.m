@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = date ()
+## usage: date ()
+##
+## Return current date in a string, in the form `18-Jul-94'.
 
-  ## usage: date ()
-  ##
-  ## Return current date in a string, in the form `18-Jul-94'.
+function retval = date ()
 
   retval = strftime ("%d-%b-%y", localtime (time ()));
 

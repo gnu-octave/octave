@@ -17,17 +17,17 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function image (x, zoom)
+## Display an octave image matrix.
+##
+## image (x) displays a matrix as a color image. The elements of x are
+## indices into the current colormap and should have values between 1
+## and the length of the colormap.
+##
+## image (x, zoom) changes the zoom factor.  The default value is 4.
+##
+## SEE ALSO: imshow, imagesc, colormap.
 
-  ## Display an octave image matrix.
-  ##
-  ## image (x) displays a matrix as a color image. The elements of x are
-  ## indices into the current colormap and should have values between 1
-  ## and the length of the colormap.
-  ##
-  ## image (x, zoom) changes the zoom factor.  The default value is 4.
-  ##
-  ## SEE ALSO: imshow, imagesc, colormap.
+function image (x, zoom)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

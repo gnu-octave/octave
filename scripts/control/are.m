@@ -17,23 +17,23 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function x = are (a, b, c, opt)
+## Usage: x = are (a, b, c {,opt})
+##
+## Solves algebraic riccati equation
+##
+##   a' x + x a - x b x + c = 0
+##
+## for identically dimensioned square matrices a, b, c.  If b (c) is not
+## square, then the function attempts to use b * b' (c' * c) instead.
+##
+## Solution method: apply Laub's Schur method (IEEE Trans. Auto. Contr,
+## 1979) to the appropriate Hamiltonian matrix.
+##
+## opt is an option passed to the eigenvalue balancing routine default is "B".
+##
+## See also: balance
 
-  ## Usage: x = are (a, b, c {,opt})
-  ##
-  ## Solves algebraic riccati equation
-  ##
-  ##   a' x + x a - x b x + c = 0
-  ##
-  ## for identically dimensioned square matrices a, b, c.  If b (c) is not
-  ## square, then the function attempts to use b * b' (c' * c) instead.
-  ##
-  ## Solution method: apply Laub's Schur method (IEEE Trans. Auto. Contr,
-  ## 1979) to the appropriate Hamiltonian matrix.
-  ##
-  ## opt is an option passed to the eigenvalue balancing routine default is "B".
-  ##
-  ## See also: balance
+function x = are (a, b, c, opt)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

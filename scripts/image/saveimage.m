@@ -17,42 +17,42 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function saveimage (filename, img, img_form, map)
+## Save a matrix to disk in image format.
+##
+## saveimage (filename, x) saves matrix x to file filename in octave's
+## image format.  The current colormap is saved in the file also.
+##
+## saveimage (filename, x, "img") saves the image in the default format
+## and is the same as saveimage (filename, x).
+##
+## saveimage (filename, x, "ppm") saves the image in ppm format instead
+## of the default octave image format.
+##
+## saveimage (filename, x, "ps") saves the image in PostScript format
+## instead of the default octave image format. (Note: images saved in
+## PostScript format can not be read back into octave with loadimage.)
+##
+## saveimage (filename, x, format, map) saves the image along with the
+## specified colormap in the specified format.
+##
+## Note: If the colormap contains only two entries and these entries
+## are black and white, the bitmap ppm and PostScript formats are used.
+## If the image is a gray scale image (the entries within each row of
+## the colormap are equal) the gray scale ppm and PostScript image
+## formats are used, otherwise the full color formats are used.
+##
+## The conversion to PostScript is based on pbmtolps.c, which was
+## written by 
+##
+##   George Phillips <phillips@cs.ubc.ca>
+##   Department of Computer Science
+##   University of British Columbia
+##
+## and is part of the portable bitmap utilities,
+##
+## SEE ALSO: loadimage, save, load, colormap
 
-  ## Save a matrix to disk in image format.
-  ##
-  ## saveimage (filename, x) saves matrix x to file filename in octave's
-  ## image format.  The current colormap is saved in the file also.
-  ##
-  ## saveimage (filename, x, "img") saves the image in the default format
-  ## and is the same as saveimage (filename, x).
-  ##
-  ## saveimage (filename, x, "ppm") saves the image in ppm format instead
-  ## of the default octave image format.
-  ##
-  ## saveimage (filename, x, "ps") saves the image in PostScript format
-  ## instead of the default octave image format. (Note: images saved in
-  ## PostScript format can not be read back into octave with loadimage.)
-  ##
-  ## saveimage (filename, x, format, map) saves the image along with the
-  ## specified colormap in the specified format.
-  ##
-  ## Note: If the colormap contains only two entries and these entries
-  ## are black and white, the bitmap ppm and PostScript formats are used.
-  ## If the image is a gray scale image (the entries within each row of
-  ## the colormap are equal) the gray scale ppm and PostScript image
-  ## formats are used, otherwise the full color formats are used.
-  ##
-  ## The conversion to PostScript is based on pbmtolps.c, which was
-  ## written by 
-  ##
-  ##   George Phillips <phillips@cs.ubc.ca>
-  ##   Department of Computer Science
-  ##   University of British Columbia
-  ##
-  ## and is part of the portable bitmap utilities,
-  ##
-  ## SEE ALSO: loadimage, save, load, colormap
+function saveimage (filename, img, img_form, map)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

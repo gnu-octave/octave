@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  strrep (s, x, y)
+##
+## Replace all occurences of the substring x of the string s with the
+## string y.
+
 function t = strrep (s, x, y)
   
-  ## usage:  strrep (s, x, y)
-  ##
-  ## Replace all occurences of the substring x of the string s with the
-  ## string y.
-  
-  ## Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1994/10/11
+## Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1994/10/11
   ## Updated by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/25  
   
   if (nargin <> 3)

@@ -17,52 +17,52 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [r, p, k, e] = residue (b, a, toler)
+## usage: [r, p, k, e] = residue (b, a)
+##
+## If b and a are vectors of polynomial coefficients, then residue
+## calculates the partial fraction expansion corresponding to the
+## ratio of the two polynomials. The vector r contains the residue
+## terms, p contains the pole values, k contains the coefficients of
+## a direct polynomial term (if it exists) and e is a vector containing
+## the powers of the denominators in the partial fraction terms.
+## Assuming b and a represent polynomials P(s) and Q(s) we have:
+##
+##  P(s)    M       r(m)         N
+##  ---- =  #  -------------  +  # k(n)*s^(N-n)
+##  Q(s)   m=1 (s-p(m))^e(m)    n=1
+##
+## (# represents summation) where M is the number of poles (the length of
+## the r, p, and e vectors) and N is the length of the k vector.
+##
+## [r p k e] = residue(b,a,tol)
+##
+## This form of the function call may be used to set a tolerance value.
+## The default value is 0.001. The tolerance value is used to determine
+## whether poles with small imaginary components are declared real. It is
+## also used to determine if two poles are distinct. If the ratio of the
+## imaginary part of a pole to the real part is less than tol, the
+## imaginary part is discarded. If two poles are farther apart than tol
+## they are distinct.
+##
+## Example:
+##  b = [1,  1, 1];
+##  a = [1, -5, 8, -4];
+##
+##  [r, p, k, e] = residue (b, a)
+##
+##  returns
+##
+##  r = [-2, 7, 3]; p = [2, 2, 1]; k = []; e = [1, 2, 1];
+##
+##  which implies the following partial fraction expansion
+##
+##        s^2 + s + 1         -2       7        3
+##    ------------------- = ----- + ------- + -----
+##    s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
+##
+## SEE ALSO: poly, roots, conv, deconv, polyval, polyderiv, polyinteg
 
-  ## usage: [r, p, k, e] = residue (b, a)
-  ##
-  ## If b and a are vectors of polynomial coefficients, then residue
-  ## calculates the partial fraction expansion corresponding to the
-  ## ratio of the two polynomials. The vector r contains the residue
-  ## terms, p contains the pole values, k contains the coefficients of
-  ## a direct polynomial term (if it exists) and e is a vector containing
-  ## the powers of the denominators in the partial fraction terms.
-  ## Assuming b and a represent polynomials P(s) and Q(s) we have:
-  ##
-  ##  P(s)    M       r(m)         N
-  ##  ---- =  #  -------------  +  # k(n)*s^(N-n)
-  ##  Q(s)   m=1 (s-p(m))^e(m)    n=1
-  ##
-  ## (# represents summation) where M is the number of poles (the length of
-  ## the r, p, and e vectors) and N is the length of the k vector.
-  ##
-  ## [r p k e] = residue(b,a,tol)
-  ##
-  ## This form of the function call may be used to set a tolerance value.
-  ## The default value is 0.001. The tolerance value is used to determine
-  ## whether poles with small imaginary components are declared real. It is
-  ## also used to determine if two poles are distinct. If the ratio of the
-  ## imaginary part of a pole to the real part is less than tol, the
-  ## imaginary part is discarded. If two poles are farther apart than tol
-  ## they are distinct.
-  ##
-  ## Example:
-  ##  b = [1,  1, 1];
-  ##  a = [1, -5, 8, -4];
-  ##
-  ##  [r, p, k, e] = residue (b, a)
-  ##
-  ##  returns
-  ##
-  ##  r = [-2, 7, 3]; p = [2, 2, 1]; k = []; e = [1, 2, 1];
-  ##
-  ##  which implies the following partial fraction expansion
-  ##
-  ##        s^2 + s + 1         -2       7        3
-  ##    ------------------- = ----- + ------- + -----
-  ##    s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
-  ##
-  ## SEE ALSO: poly, roots, conv, deconv, polyval, polyderiv, polyinteg
+function [r, p, k, e] = residue (b, a, toler)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = int2str (x)
+## usage: int2str (x)
+##
+## Round x to the nearest integer and format as a string.
+##
+## See also: sprintf, num2str 
 
-  ## usage: int2str (x)
-  ##
-  ## Round x to the nearest integer and format as a string.
-  ##
-  ## See also: sprintf, num2str 
+function retval = int2str (x)
 
   ## XXX FIXME XXX -- this will fail for very large values.
 

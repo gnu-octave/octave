@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## Usage: gammainc (x, a)
+##
+## See also: gammai
+
 function y = gammainc (x, a)
   
-  ## Usage: gammainc (x, a)
-  ##
-  ## See also: gammai
-
   y = gammai (a, x);
 
 endfunction

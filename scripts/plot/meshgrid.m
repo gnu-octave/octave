@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [xx, yy] = meshgrid (x, y)
+## usage: [xx, yy] = meshgrid (x, y)
+##
+## Given vectors of x and y coordinates, return two matrices corresponding
+## to the x and y coordinates of a mesh.  The rows of xx are copies of x,
+## and the columns of yy are copies of y.
+##
+## [xx, yy] = meshgrid (x) is an abbreviation for [xx, yy] = meshgrid (x, x).
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: [xx, yy] = meshgrid (x, y)
-  ##
-  ## Given vectors of x and y coordinates, return two matrices corresponding
-  ## to the x and y coordinates of a mesh.  The rows of xx are copies of x,
-  ## and the columns of yy are copies of y.
-  ##
-  ## [xx, yy] = meshgrid (x) is an abbreviation for [xx, yy] = meshgrid (x, x).
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+function [xx, yy] = meshgrid (x, y)
 
   if (nargin == 1)
     y = x;

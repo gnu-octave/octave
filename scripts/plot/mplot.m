@@ -17,20 +17,20 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function mplot (...)
+## usage: mplot (x, y)
+##        mplot (x1, y1, x2, y2, ...)
+##        mplot (x, y, fmt)
+##
+## This is a modified version of plot() command to work with
+## multiplot version of gnuplot to plot multiple plots per page.
+## This plot version automatically updates the plot position to
+## next plot position after making the plot in the given subplot
+## position.
+##
+## See command plot() for the various options to this command
+## as this is just mulitplot version of the same command.
 
-  ## usage: mplot (x, y)
-  ##        mplot (x1, y1, x2, y2, ...)
-  ##        mplot (x, y, fmt)
-  ##
-  ## This is a modified version of plot() command to work with
-  ## multiplot version of gnuplot to plot multiple plots per page.
-  ## This plot version automatically updates the plot position to
-  ## next plot position after making the plot in the given subplot
-  ## position.
-  ##
-  ## See command plot() for the various options to this command
-  ## as this is just mulitplot version of the same command.
+function mplot (...)
 
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU

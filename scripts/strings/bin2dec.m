@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  bin2dec (x)
+##
+## Returns the decimal number corresponding to the binary number in
+## quotes.  For example, bin2dec ("1110") returns 14.
+
 function y = bin2dec (x)
 
-  ## usage:  bin2dec (x)
-  ##
-  ## Returns the decimal number corresponding to the binary number in
-  ## quotes.  For example, bin2dec ("1110") returns 14.
-  
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
   
   if (nargin != 1)
     usage ("bin2dec (x)");

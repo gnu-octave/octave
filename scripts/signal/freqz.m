@@ -17,25 +17,25 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [h, w] = freqz(b,...)
+## Compute the frequency response of a filter.
+##
+## [h,w] = resp(b)
+##   returns the complex frequency response h of the FIR filter with
+##   coefficients b. The response is evaluated at 512 angular frequencies
+##   between 0 and pi.  w is a vector containing the 512 frequencies.
+##
+## [h,w] = resp(b,a)
+##   returns the complex frequency response of the rational IIR filter
+##   whose numerator has coefficients b and denominator coefficients a.
+##
+## [h,w] = resp(b,a,n)
+##   returns the response evaluated at n angular frequencies.  For fastest
+##   computation n should factor into a small number of small primes.
+##
+## [h,w] = freqz(b,a,n,"whole")
+##   evaluates the response at n frequencies between 0 and 2*pi.
 
-  ## Compute the frequency response of a filter.
-  ##
-  ## [h,w] = resp(b)
-  ##   returns the complex frequency response h of the FIR filter with
-  ##   coefficients b. The response is evaluated at 512 angular frequencies
-  ##   between 0 and pi.  w is a vector containing the 512 frequencies.
-  ##
-  ## [h,w] = resp(b,a)
-  ##   returns the complex frequency response of the rational IIR filter
-  ##   whose numerator has coefficients b and denominator coefficients a.
-  ##
-  ## [h,w] = resp(b,a,n)
-  ##   returns the response evaluated at n angular frequencies.  For fastest
-  ##   computation n should factor into a small number of small primes.
-  ##
-  ## [h,w] = freqz(b,a,n,"whole")
-  ##   evaluates the response at n frequencies between 0 and 2*pi.
+function [h, w] = freqz(b,...)
 
   if (nargin == 1)
     ## Response of an FIR filter.

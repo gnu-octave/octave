@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = kurtosis (x)
+## usage: kurtosis (x)
+##
+## If x is a vector of length N, return the kurtosis
+##
+##   kurtosis(x) = N^(-1) std(x)^(-4) SUM_i (x(i)-mean(x))^4 - 3
+##
+## of x.
+##
+## If x is a matrix, return a row vector containing the kurtosis for each
+## column.
 
-  ## usage: kurtosis (x)
-  ##
-  ## If x is a vector of length N, return the kurtosis
-  ##
-  ##   kurtosis(x) = N^(-1) std(x)^(-4) SUM_i (x(i)-mean(x))^4 - 3
-  ##
-  ## of x.
-  ##
-  ## If x is a matrix, return a row vector containing the kurtosis for each
-  ## column.
+function retval = kurtosis (x)
 
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
 

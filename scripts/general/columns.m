@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function nc = columns (x)
+## usage: columns (x)
+##
+## Return the the number of columns in x.
+##
+## See also: size, rows, length, is_scalar, is_vector, is_matrix
 
-  ## usage: columns (x)
-  ##
-  ## Return the the number of columns in x.
-  ##
-  ## See also: size, rows, length, is_scalar, is_vector, is_matrix
+function nc = columns (x)
 
   if (nargin != 1)
     usage ("columns (x)");

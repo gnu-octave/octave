@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = create_set(x)
+## usage: create_set(x)
+##
+## Returns the unique elements of x, sorted in ascending order.
+##
+## See - union, intersection, complement
 
-  ## usage: create_set(x)
-  ##
-  ## Returns the unique elements of x, sorted in ascending order.
-  ##
-  ## See - union, intersection, complement
+function y = create_set(x)
 
   if ( nargin != 1)
     usage ("create_set(x)");

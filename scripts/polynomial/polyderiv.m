@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function q = polyderiv (p)
+## usage: polyderiv (p)
+##
+## Returns the coefficients of the derivative of the polynomial whose
+## coefficients are given by vector p.
+##
+## SEE ALSO: poly, polyinteg, polyreduce, roots, conv, deconv, residue,
+##           filter, polyval, polyvalm
 
-  ## usage: polyderiv (p)
-  ##
-  ## Returns the coefficients of the derivative of the polynomial whose
-  ## coefficients are given by vector p.
-  ##
-  ## SEE ALSO: poly, polyinteg, polyreduce, roots, conv, deconv, residue,
-  ##           filter, polyval, polyvalm
+function q = polyderiv (p)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 

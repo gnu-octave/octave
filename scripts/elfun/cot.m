@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## cot (z):  compute the cotangent for each element of z.
+
 function w = cot (z)
-  
-  ## cot (z):  compute the cotangent for each element of z.
   
   if (nargin != 1)
     usage ("cot (z)");

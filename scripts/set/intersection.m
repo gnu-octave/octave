@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = intersection(a,b)
+## usage: intersection(a,b)
+##
+## Returns the intersection of sets a and b.
+##
+## See - create_set, union, complement
 
-  ## usage: intersection(a,b)
-  ##
-  ## Returns the intersection of sets a and b.
-  ##
-  ## See - create_set, union, complement
+function y = intersection(a,b)
 
   if (nargin != 2)
     usage ("intersection(a,b)");

@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function grid (x)
+## usage: grid ("on" | "off")
+##
+## Turn grid lines on or off for plotting.
+##
+## If the argument is omitted, "on" is assumed.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: grid ("on" | "off")
-  ##
-  ## Turn grid lines on or off for plotting.
-  ##
-  ## If the argument is omitted, "on" is assumed.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+function grid (x)
 
   if (nargin == 0)
     set grid;

@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = reshape (a, m, n)
+## usage: reshape (a, m, n)
+##
+## Form an m x n matrix from the elements of a (taken in Fortran's
+## column major ordering).
+##
+## See also: `:', do_fortran_indexing
 
-  ## usage: reshape (a, m, n)
-  ##
-  ## Form an m x n matrix from the elements of a (taken in Fortran's
-  ## column major ordering).
-  ##
-  ## See also: `:', do_fortran_indexing
+function retval = reshape (a, m, n)
 
   if (nargin != 3)
     usage ("reshape (a, m, n)");

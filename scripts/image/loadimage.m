@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [X, map] = loadimage (filename)
+## Load an image file.
+##
+## [X, map] = loadimage (img_file) loads an image and it's associated
+## color map from file img_file.  The image must be in stored in
+## octave's image format.
+##
+## SEE ALSO: saveimage, load, save
 
-  ## Load an image file.
-  ##
-  ## [X, map] = loadimage (img_file) loads an image and it's associated
-  ## color map from file img_file.  The image must be in stored in
-  ## octave's image format.
-  ##
-  ## SEE ALSO: saveimage, load, save
+function [X, map] = loadimage (filename)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

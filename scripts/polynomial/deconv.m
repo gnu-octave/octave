@@ -17,21 +17,21 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [b, r] = deconv (y, a)
+## usage: deconv (y, a)
+##
+## Deconvolve two vectors.
+##
+## [b, r] = deconv (y, a) solves for b and r such that 
+##    y = conv(a,b) + r
+##
+## If y and a are polynomial coefficient vectors, b will contain the
+## coefficients of the polynomial quotient and r will be a remander
+## polynomial of lowest order.
+##
+## SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
+## polyinteg 
 
-  ## usage: deconv (y, a)
-  ##
-  ## Deconvolve two vectors.
-  ##
-  ## [b, r] = deconv (y, a) solves for b and r such that 
-  ##    y = conv(a,b) + r
-  ##
-  ## If y and a are polynomial coefficient vectors, b will contain the
-  ## coefficients of the polynomial quotient and r will be a remander
-  ## polynomial of lowest order.
-  ##
-  ## SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
-  ## polyinteg 
+function [b, r] = deconv (y, a)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 

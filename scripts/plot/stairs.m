@@ -17,29 +17,29 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [xs, ys] = stairs (x, y)
+## usage: [xs, ys] = stairs (x, y)
+##
+## Given two vectors of x-y data, stairs produces a `stairstep' plot.
+##
+## If only one argument is given, it is taken as a vector of y-values
+## and the x coordiates are taken to be the indices of the elements.
+##
+## If two output arguments are specified, the data are generated but
+## not plotted.  For example,
+##
+##   stairs (x, y);
+##
+## and
+##
+##   [xs, ys] = stairs (x, y);
+##   plot (xs, ys);
+##
+## are equivalent.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: [xs, ys] = stairs (x, y)
-  ##
-  ## Given two vectors of x-y data, stairs produces a `stairstep' plot.
-  ##
-  ## If only one argument is given, it is taken as a vector of y-values
-  ## and the x coordiates are taken to be the indices of the elements.
-  ##
-  ## If two output arguments are specified, the data are generated but
-  ## not plotted.  For example,
-  ##
-  ##   stairs (x, y);
-  ##
-  ## and
-  ##
-  ##   [xs, ys] = stairs (x, y);
-  ##   plot (xs, ys);
-  ##
-  ## are equivalent.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, gplot, gsplot, replot, xlabel, ylabel, title 
+function [xs, ys] = stairs (x, y)
 
 
   if (nargin == 1)

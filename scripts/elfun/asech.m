@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## asech (z):  compute the inverse hyperbolic secant for each element of z.
+
 function w = asech (z)
-  
-  ## asech (z):  compute the inverse hyperbolic secant for each element of z.
   
   if (nargin != 1)
     usage ("acosh (z)");

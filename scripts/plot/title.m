@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function title (text)
+## usage: title (text)
+##
+## Defines a title for a plot.  The title will appear the next time a
+## plot is displayed. 
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
 
-  ## usage: title (text)
-  ##
-  ## Defines a title for a plot.  The title will appear the next time a
-  ## plot is displayed. 
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
+function title (text)
 
   if (nargin != 1)
     usage ("title (text)");

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function d = hex2dec (h)
+## usage:  hex2dec (h)
+##
+## Returns the decimal number corresponding to the hex number in
+## quotes.  For example, hex2dec ("12B") and hex2dec ("12b") both
+## return 299.
 
-  ## usage:  hex2dec (h)
-  ##
-  ## Returns the decimal number corresponding to the hex number in
-  ## quotes.  For example, hex2dec ("12B") and hex2dec ("12b") both
-  ## return 299.
+function d = hex2dec (h)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 

@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function polar (x1, x2, fmt)
+## usage: polar (theta, rho, fmt)
+##
+## Make a 2D plot given polar the coordinates theta and rho.
+##
+## The optional third argument specifies the line type.
+##
+## See also: plot, semilogx, semilogy, loglog, mesh, contour, bar,
+##           stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: polar (theta, rho, fmt)
-  ##
-  ## Make a 2D plot given polar the coordinates theta and rho.
-  ##
-  ## The optional third argument specifies the line type.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, mesh, contour, bar,
-  ##           stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+function polar (x1, x2, fmt)
 
   set nologscale;
   set nopolar;

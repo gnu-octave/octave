@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function secs = toc ()
+## usage: toc
+##
+## Return the difference between the current wall-clock time and the
+## time that the function tic () was last called, in seconds.
+##
+## See also: tic, clock, etime, cputime
 
-  ## usage: toc
-  ##
-  ## Return the difference between the current wall-clock time and the
-  ## time that the function tic () was last called, in seconds.
-  ##
-  ## See also: tic, clock, etime, cputime
+function secs = toc ()
 
   if (nargin != 0)
     warning ("toc: ignoring extra arguments");

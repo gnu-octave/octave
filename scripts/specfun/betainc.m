@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## Usage: betainc (x, a, b)
+##
+## See also: betai
+
 function y = betainc (x, a, b)
   
-  ## Usage: betainc (x, a, b)
-  ##
-  ## See also: betai
-
   y = betai (a, b, x);
 
 endfunction

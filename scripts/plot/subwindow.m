@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function subwindow (xn, yn)
+## usage: subwindow (xn, yn)
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch
+##
+## Sets subwindow position in multiplot mode for next plot. The
+## multiplot mode has to be previously initialized using multiplot()
+## command, else this command just becomes an aliad to multiplot()
 
-  ## usage: subwindow (xn, yn)
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch
-  ##
-  ## Sets subwindow position in multiplot mode for next plot. The
-  ## multiplot mode has to be previously initialized using multiplot()
-  ## command, else this command just becomes an aliad to multiplot()
+function subwindow (xn, yn)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 

@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## asec (z):  compute the inverse secant for each element of z.
+
 function w = asec (z)
-  
-  ## asec (z):  compute the inverse secant for each element of z.
   
   if (nargin != 1)
     usage ("asec (z)");

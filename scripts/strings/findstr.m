@@ -17,20 +17,20 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function v = findstr (s, t, overlap)
+## usage: findstr (s, t [, overlap])
+##
+## Returns the vector of all positions in the longer of the two strings
+## S and T where an occurence of the shorter of the two starts.
+##
+## If the optional argument OVERLAP is nonzero, the returned vector
+## can include overlapping positions (this is the default).
+##
+## For example, 
+##
+##   findstr ("abababa", "aba")     =>  [1, 3, 5]
+##   findstr ("abababa", "aba", 0)  =>  [1, 5]
 
-  ## usage: findstr (s, t [, overlap])
-  ##
-  ## Returns the vector of all positions in the longer of the two strings
-  ## S and T where an occurence of the shorter of the two starts.
-  ##
-  ## If the optional argument OVERLAP is nonzero, the returned vector
-  ## can include overlapping positions (this is the default).
-  ##
-  ## For example, 
-  ##
-  ##   findstr ("abababa", "aba")     =>  [1, 3, 5]
-  ##   findstr ("abababa", "aba", 0)  =>  [1, 5]
+function v = findstr (s, t, overlap)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 

@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function n = rindex (s, t)
+## usage: rindex (s, t)
+##
+## Returns the position of the last occurence of the string T in the
+## string S or 0 if no occurence is found.
+##
+## NOTE: this function does not work for arrays of strings.
 
-  ## usage: rindex (s, t)
-  ##
-  ## Returns the position of the last occurence of the string T in the
-  ## string S or 0 if no occurence is found.
-  ##
-  ## NOTE: this function does not work for arrays of strings.
+function n = rindex (s, t)
 
   ## This is patterned after the AWK function of the same name.
 

@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## sech (z):  compute the hyperbolic secant for each element of z.
+
 function w = sech (z)
   
-  ## sech (z):  compute the hyperbolic secant for each element of z.
-  
-  if (nargin != 1)
+if (nargin != 1)
     usage ("sech (z)");
   endif
 

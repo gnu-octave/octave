@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = invhilb (n)
+## usage: invhilb (n)
+##
+## Return the inverse of a Hilbert matrix of order n.  This is slow but
+## exact.  Compare with inv (hilb (n)).
+##
+## See also: hankel, vander, hadamard, hilb, toeplitz
 
-  ## usage: invhilb (n)
-  ##
-  ## Return the inverse of a Hilbert matrix of order n.  This is slow but
-  ## exact.  Compare with inv (hilb (n)).
-  ##
-  ## See also: hankel, vander, hadamard, hilb, toeplitz
+function retval = invhilb (n)
 
   if (nargin != 1)
     usage ("invhilb (n)");

@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function q = polyder (p)
+## usage: polyder (p)
+##
+## SEE ALSO: polyderiv
 
-  ## usage: polyder (p)
-  ##
-  ## SEE ALSO: polyderiv
+function q = polyder (p)
 
   if (nargin == 1)
     q = polyderiv (p);

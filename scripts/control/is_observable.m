@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = is_observable (a,c,tol)
+## usage: is_observable (a, c {,tol})
+##
+## Returns 1 if the pair (a, c) is observable, or 0 if not.
+##
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
 
-  ## usage: is_observable (a, c {,tol})
-  ##
-  ## Returns 1 if the pair (a, c) is observable, or 0 if not.
-  ##
-  ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
+function retval = is_observable (a,c,tol)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

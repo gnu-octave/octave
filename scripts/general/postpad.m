@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = postpad (x, l, c)
+## postpad (x, l)
+##
+## Appends zeros to the vector x until it is of length l.
+## postpad (x, l, c) appends the constant c instead of zero.
+##
+## If length (x) > l, elements from the end of x are removed
+## until a vector of length l is obtained.
 
-  ## postpad (x, l)
-  ##
-  ## Appends zeros to the vector x until it is of length l.
-  ## postpad (x, l, c) appends the constant c instead of zero.
-  ##
-  ## If length (x) > l, elements from the end of x are removed
-  ## until a vector of length l is obtained.
+function y = postpad (x, l, c)
 
   ## Author:
   ##  Tony Richardson

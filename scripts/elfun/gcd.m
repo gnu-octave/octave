@@ -17,17 +17,17 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: gcd (a, ...)
+##  
+## [g [, v]] = gcd (a) returns the greatest common divisor g of the
+## entries of the integer vector a, and an integer vector v such that
+## g = v(1) * a(k) + ... + v(k) * a(k).
+##
+## [g [, v]] = gcd (a1, ..., ak) is the same with a = [a1, ..., ak].
+
 function [g, v] = gcd (a, ...)
 
-  ## usage: gcd (a, ...)
-  ##  
-  ## [g [, v]] = gcd (a) returns the greatest common divisor g of the
-  ## entries of the integer vector a, and an integer vector v such that
-  ## g = v(1) * a(k) + ... + v(k) * a(k).
-  ##
-  ## [g [, v]] = gcd (a1, ..., ak) is the same with a = [a1, ..., ak].
-  
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
+## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
 
   if (nargin > 1)
     va_start;

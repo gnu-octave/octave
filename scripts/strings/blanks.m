@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  blanks (n)
+##
+## Returns a string of n blanks.
+
 function s = blanks (n)
   
-  ## usage:  blanks (n)
-  ##
-  ## Returns a string of n blanks.
-  
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("blanks (n)");

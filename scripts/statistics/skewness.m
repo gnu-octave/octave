@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = skewness (x)
+## usage: skewness (x)
+##
+## If x is a vector of length N, return the skewness
+##
+##   skewness (x) = N^(-1) std(x)^(-3) SUM_i (x(i)-mean(x))^3
+##
+## of x.
+##
+## If x is a matrix, return a row vector containing the skewness for each
+## column.
 
-  ## usage: skewness (x)
-  ##
-  ## If x is a vector of length N, return the skewness
-  ##
-  ##   skewness (x) = N^(-1) std(x)^(-3) SUM_i (x(i)-mean(x))^3
-  ##
-  ## of x.
-  ##
-  ## If x is a matrix, return a row vector containing the skewness for each
-  ## column.
+function retval = skewness (x)
 
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
 

@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = asctime (t)
+## usage: asctime (TMSTRUCT)
 
-  ## usage: asctime (TMSTRUCT)
+function retval = asctime (t)
 
   if (nargin == 1)
     retval = strftime ("%a %b %d %H:%M:%S %Y\n", t);

@@ -17,17 +17,17 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = null (A, tol)
+## usage: null (A, tol)
+##        null (A)
+##
+## Returns an orthonormal basis of the null space of A.
+##
+## The dimension of the null space is taken as the number of singular
+## values of A not greater than tol;  the default for tol is
+## max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
+## maximal singular value of A. 
 
-  ## usage: null (A, tol)
-  ##        null (A)
-  ##
-  ## Returns an orthonormal basis of the null space of A.
-  ##
-  ## The dimension of the null space is taken as the number of singular
-  ## values of A not greater than tol;  the default for tol is
-  ## max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
-  ## maximal singular value of A. 
+function retval = null (A, tol)
 
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993.
 

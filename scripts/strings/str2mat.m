@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  m = str2mat (s1, ...)
+##
+## Forms the matrix M containing the strings S1, ... as its rows.
+## Each string is padded with blanks in order to form a valid matrix.
+
 function m = str2mat (...)
   
-  ## usage:  m = str2mat (s1, ...)
-  ##
-  ## Forms the matrix M containing the strings S1, ... as its rows.
-  ## Each string is padded with blanks in order to form a valid matrix.
-
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin == 0)

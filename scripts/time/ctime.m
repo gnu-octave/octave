@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = ctime (t)
+## usage: ctime (TIME)
 
-  ## usage: ctime (TIME)
+function retval = ctime (t)
 
   if (nargin == 1)
     retval = asctime (localtime (t));

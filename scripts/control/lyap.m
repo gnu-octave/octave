@@ -17,31 +17,31 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function x = lyap (a, b, c)
+## Usage: x = lyap (a, b {,c})
+##
+## If (a, b, c) are specified, then lyap returns the solution of the
+## Sylvester equation
+##
+##   a x + x b + c = 0
+##
+## If only (a, b) are specified, then lyap returns the solution of the 
+## Lyapunov equation
+##
+##   a' x + x a + b = 0
+##
+## If b is not square, then lyap returns the solution of either
+##
+##   a' x + x a + b' b = 0 	
+##
+## or
+##
+##   a x + x a' + b b' = 0
+##
+## whichever is appropriate.
+##
+## Solves by using the Bartels-Stewart algorithm (1972).
 
-  ## Usage: x = lyap (a, b {,c})
-  ##
-  ## If (a, b, c) are specified, then lyap returns the solution of the
-  ## Sylvester equation
-  ##
-  ##   a x + x b + c = 0
-  ##
-  ## If only (a, b) are specified, then lyap returns the solution of the 
-  ## Lyapunov equation
-  ##
-  ##   a' x + x a + b = 0
-  ##
-  ## If b is not square, then lyap returns the solution of either
-  ##
-  ##   a' x + x a + b' b = 0 	
-  ##
-  ## or
-  ##
-  ##   a x + x a' + b b' = 0
-  ##
-  ## whichever is appropriate.
-  ##
-  ## Solves by using the Bartels-Stewart algorithm (1972).
+function x = lyap (a, b, c)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
   

@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = std (a)
+## usage: std (a)
+##
+## For vector arguments, std returns the standard deviation of the
+## values.  For matrix arguments, std returns a row vector containing
+## the standard deviation for each column.
+##
+## See also: mean, median
 
-  ## usage: std (a)
-  ##
-  ## For vector arguments, std returns the standard deviation of the
-  ## values.  For matrix arguments, std returns a row vector containing
-  ## the standard deviation for each column.
-  ##
-  ## See also: mean, median
+function retval = std (a)
 
   if (nargin != 1)
     usage ("std (a)");

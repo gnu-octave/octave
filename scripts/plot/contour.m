@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function contour (z, n, x, y)
+## usage: contour (z, n, x, y)
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: contour (z, n, x, y)
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+function contour (z, n, x, y)
 
 
   if (nargin == 1)

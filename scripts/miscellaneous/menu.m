@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function num = menu (t, ...)
+## usage: menu (title, opt1, ...)
+##
+## See also: disp, printf, input
 
-  ## usage: menu (title, opt1, ...)
-  ##
-  ## See also: disp, printf, input
+function num = menu (t, ...)
 
   if (nargin < 2)
     usage ("menu (title, opt1, ...)");

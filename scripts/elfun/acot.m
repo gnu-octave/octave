@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function w = acot (z)
+## acot (z):  compute the inverse cotangent for each element of z.
 
-  ## acot (z):  compute the inverse cotangent for each element of z.
+function w = acot (z)
 
   if (nargin != 1)
     usage ("acot (z)");

@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [X, map] = rgb2ind (R, G, B)
+## Convert and RGB image to an octave indexed image.
+##
+## [X, map] = rgb2ind (R, G, B)
+##
+## SEE ALSO: ind2rgb, rgb2ntsc.
+##
+## Bugs: The color map may have duplicate entries.
 
-  ## Convert and RGB image to an octave indexed image.
-  ##
-  ## [X, map] = rgb2ind (R, G, B)
-  ##
-  ## SEE ALSO: ind2rgb, rgb2ntsc.
-  ##
-  ## Bugs: The color map may have duplicate entries.
+function [X, map] = rgb2ind (R, G, B)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = num2str (x)
+## usage: num2str (x)
+##
+## Format x as a string.
+##
+## See also: sprintf, int2str
 
-  ## usage: num2str (x)
-  ##
-  ## Format x as a string.
-  ##
-  ## See also: sprintf, int2str
+function retval = num2str (x)
 
   if (nargin == 1)
     if (rows (x) == 1 && columns (x) == 1)

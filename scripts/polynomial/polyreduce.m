@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function p = polyreduce (p)
+## usage: polyreduce(c)
+##
+## Reduces a polynomial coefficient vector to a minimum number of terms,
+## i.e. it strips off any leading zeros.
+##
+## SEE ALSO: poly, roots, conv, deconv, residue, filter, polyval, polyvalm,
+##           polyderiv, polyinteg
 
-  ## usage: polyreduce(c)
-  ##
-  ## Reduces a polynomial coefficient vector to a minimum number of terms,
-  ## i.e. it strips off any leading zeros.
-  ##
-  ## SEE ALSO: poly, roots, conv, deconv, residue, filter, polyval, polyvalm,
-  ##           polyderiv, polyinteg
+function p = polyreduce (p)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 

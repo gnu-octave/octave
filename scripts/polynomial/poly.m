@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = poly (x)
+## usage: poly (x)
+##
+## If A is a square n-by-n matrix, poly (A) is the row vector of 
+## the coefficients of det (z * eye(n) - A), the characteristic
+## polynomial of A.
+##
+## If x is a vector, poly (x) is a vector of coefficients of the
+## polynomial whose roots are the elements of x.
 
-  ## usage: poly (x)
-  ##
-  ## If A is a square n-by-n matrix, poly (A) is the row vector of 
-  ## the coefficients of det (z * eye(n) - A), the characteristic
-  ## polynomial of A.
-  ##
-  ## If x is a vector, poly (x) is a vector of coefficients of the
-  ## polynomial whose roots are the elements of x.
+function y = poly (x)
 
   ## Written by KH (Kurt.Hornik@neuro.tuwien.ac.at) Dec 24, 1993.
 

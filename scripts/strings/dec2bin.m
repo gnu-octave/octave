@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = dec2bin (x)
+## usage:  dec2bin (x)
+##
+## Returns the binary number corresponding to the nonnegative integer
+## x.  For example, dec2bin (14) returns "1110".
 
-  ## usage:  dec2bin (x)
-  ##
-  ## Returns the binary number corresponding to the nonnegative integer
-  ## x.  For example, dec2bin (14) returns "1110".
+function y = dec2bin (x)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
   

@@ -17,27 +17,27 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [k, p, e] = dlqr (a, b, q, r, zz)
+## Usage: [k, p, e] = dlqr (A, B, Q, R {,Z})
+##
+## Linear quadratic regulator design for the discrete time system
+##
+##   x[k+1] = A x[k] + B u[k]
+##
+## to minimize the cost functional
+##
+##  J = Sum { x' Q x + u' R u } 			Z omitted
+##
+## or
+##
+##  J = Sum { x' Q x + u' R u +2 x' Z u}		Z included
+##
+## Returns:
+##
+##   k = state feedback gain, (A - B K) is stable
+##   p = solution of algebraic Riccati equation
+##   e = closed loop poles of (A - B K)
 
-  ## Usage: [k, p, e] = dlqr (A, B, Q, R {,Z})
-  ##
-  ## Linear quadratic regulator design for the discrete time system
-  ##
-  ##   x[k+1] = A x[k] + B u[k]
-  ##
-  ## to minimize the cost functional
-  ##
-  ##  J = Sum { x' Q x + u' R u } 			Z omitted
-  ##
-  ## or
-  ##
-  ##  J = Sum { x' Q x + u' R u +2 x' Z u}		Z included
-  ##
-  ## Returns:
-  ##
-  ##   k = state feedback gain, (A - B K) is stable
-  ##   p = solution of algebraic Riccati equation
-  ##   e = closed loop poles of (A - B K)
+function [k, p, e] = dlqr (a, b, q, r, zz)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
   ## Converted to discrete time by R. B. Tenison

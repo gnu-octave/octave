@@ -17,17 +17,17 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = orth (A, tol)
+## usage: orth (A, tol)
+##        orth (A)
+##
+## Returns an orthonormal basis of the range of A.
+##
+## The dimension of the range space is taken as the number of singular
+## values of A greater than tol; the default for tol is
+## max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
+## maximal singular value of A.
 
-  ## usage: orth (A, tol)
-  ##        orth (A)
-  ##
-  ## Returns an orthonormal basis of the range of A.
-  ##
-  ## The dimension of the range space is taken as the number of singular
-  ## values of A greater than tol; the default for tol is
-  ## max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
-  ## maximal singular value of A.
+function retval = orth (A, tol)
 
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993.
 

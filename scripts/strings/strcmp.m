@@ -17,19 +17,19 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function status = strcmp (s1, s2)
+## usage: strcmp (s1, s2)
+##
+## Compare two strings.  Trailing blanks are significant.
+##
+## WARNING:  Unlike the C function of the same name, this function
+## returns 1 for equal and zero for not equal.  Why?  To be compatible
+## with Matlab, of course. 
+##
+## Why doesn't this always return a scalar instead of vector with
+## elements corresponding to the rows of the string array?  To be
+## compatible with Matlab, of course. 
 
-  ## usage: strcmp (s1, s2)
-  ##
-  ## Compare two strings.  Trailing blanks are significant.
-  ##
-  ## WARNING:  Unlike the C function of the same name, this function
-  ## returns 1 for equal and zero for not equal.  Why?  To be compatible
-  ## with Matlab, of course. 
-  ##
-  ## Why doesn't this always return a scalar instead of vector with
-  ## elements corresponding to the rows of the string array?  To be
-  ## compatible with Matlab, of course. 
+function status = strcmp (s1, s2)
 
   if (nargin != 2)
     usage ("strcmp (s, t)");

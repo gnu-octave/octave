@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function xlabel (text)
+## usage: xlabel (text)
+##
+## Defines a label for the x-axis of a plot.  The label will appear the
+## next time a plot is displayed.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, ylabel, title
 
-  ## usage: xlabel (text)
-  ##
-  ## Defines a label for the x-axis of a plot.  The label will appear the
-  ## next time a plot is displayed.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, ylabel, title
+function xlabel (text)
 
   if (nargin != 1)
     usage ("xlabel (text)");

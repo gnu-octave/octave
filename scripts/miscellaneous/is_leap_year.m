@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = is_leap_year (year)
+## usage: is_leap_year (year)
+##
+## Return 1 if the given year is a leap year; otherwise, return 0.
+## With no arguments, use the current year.
 
-  ## usage: is_leap_year (year)
-  ##
-  ## Return 1 if the given year is a leap year; otherwise, return 0.
-  ## With no arguments, use the current year.
+function retval = is_leap_year (year)
 
   if (nargin > 1)
     usage ("is_leap_year (year)");

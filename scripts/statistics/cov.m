@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = cov (X, Y)
+## usage: cov (X [, Y])
+##
+## If each row of X and Y is an observation and each column is a
+## variable, the (i,j)-th entry of cov(X, Y) is the covariance
+## between the i-th variable in X and the j-th variable in Y.
+## cov(X) is cov(X, X).
 
-  ## usage: cov (X [, Y])
-  ##
-  ## If each row of X and Y is an observation and each column is a
-  ## variable, the (i,j)-th entry of cov(X, Y) is the covariance
-  ## between the i-th variable in X and the j-th variable in Y.
-  ## cov(X) is cov(X, X).
+function retval = cov (X, Y)
 
   ## Written by Kurt Hornik (hornik@ci.tuwien.ac.at) March 1993.
   ## Dept of Probability Theory and Statistics TU Wien, Austria.

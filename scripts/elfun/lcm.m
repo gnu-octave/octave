@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: lcm (a, ...)
+##
+## lcm (a) returns the least common multiple of the entries of the
+## integer vector a.
+## lcm (a1, ..., ak) is the same as lcm([a1, ..., ak]).
+
 function l = lcm (a, ...)
 
-  ## usage: lcm (a, ...)
-  ##
-  ## lcm (a) returns the least common multiple of the entries of the
-  ## integer vector a.
-  ## lcm (a1, ..., ak) is the same as lcm([a1, ..., ak]).
-  
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
+## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
 
   if (nargin > 1)
     va_start;

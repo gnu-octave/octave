@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = fliplr (x)
+## usage: fliplr (x)
+##
+## Return x with the columns swapped.
+##
+## See also: flipu, rot90
 
-  ## usage: fliplr (x)
-  ##
-  ## Return x with the columns swapped.
-  ##
-  ## See also: flipu, rot90
+function y = fliplr (x)
 
   if (nargin != 1)
     usage ("fliplr (x)");

@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [X, map] = gray2ind (I, n)
+## Image format conversion
 
-  ## Image format conversion
+function [X, map] = gray2ind (I, n)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 

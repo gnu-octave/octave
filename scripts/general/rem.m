@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = rem (x, y)
+## usage: rem (x, y)
+##
+## Return remainder (x, y).
 
-  ## usage: rem (x, y)
-  ##
-  ## Return remainder (x, y).
+function retval = rem (x, y)
 
   if (nargin != 2)
     usage ("rem (x, y)");

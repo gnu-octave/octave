@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function y = rot90 (x, k)
+## usage: rot90 (x, k)
+##
+## Rotate the matrix x counterclockwise k*90 degrees.
+##
+## If the second argument is omitted, k is taken to be 1.
+##
+## See also: flipud, fliplr
 
-  ## usage: rot90 (x, k)
-  ##
-  ## Rotate the matrix x counterclockwise k*90 degrees.
-  ##
-  ## If the second argument is omitted, k is taken to be 1.
-  ##
-  ## See also: flipud, fliplr
+function y = rot90 (x, k)
 
   if (nargin < 2)
     k = 1;

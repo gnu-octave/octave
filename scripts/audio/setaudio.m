@@ -17,12 +17,12 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: setaudio ([w_type [, value]])
+##
+## executes the shell command `mixer [w_type [, value]]'
+
 function setaudio (w_type, value)
   
-  ## usage: setaudio ([w_type [, value]])
-  ##
-  ## executes the shell command `mixer [w_type [, value]]'
-
   ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 5, 1994
   ## Updated by AW on Nov 3, 1994
   ## Copyright Department of Probability Theory and Statistics TU Wien

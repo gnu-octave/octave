@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = toeplitz (c, r)
+## usage: toeplitz (c, r)
+##
+## Return the Toeplitz matrix constructed given the first column
+## c, and (optionally) the first row r.
+##
+## If the second argument is omitted, the first row is taken to be the
+## same as the first column.  If the first element of c is not the same
+## as the first element of r, the first element of c is used.
+##
+## See also: hankel, vander, hadamard, hilb, invhib
 
-  ## usage: toeplitz (c, r)
-  ##
-  ## Return the Toeplitz matrix constructed given the first column
-  ## c, and (optionally) the first row r.
-  ##
-  ## If the second argument is omitted, the first row is taken to be the
-  ## same as the first column.  If the first element of c is not the same
-  ## as the first element of r, the first element of c is used.
-  ##
-  ## See also: hankel, vander, hadamard, hilb, invhib
+function retval = toeplitz (c, r)
 
   if (nargin == 1)
     r = c;

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = puts (s)
+## usage: puts (string)
+##
+## Write string to the standard output.
+##
+## See also: fputs, printf, fprintf
 
-  ## usage: puts (string)
-  ##
-  ## Write string to the standard output.
-  ##
-  ## See also: fputs, printf, fprintf
+function retval = puts (s)
 
   retval = -1;
 

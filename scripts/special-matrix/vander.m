@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = vander (c)
+## usage: vander (c)
+##
+## Return the Vandermonde matrix whose next to last column is c.
+##
+## See also: hankel, hadamard, hilb, invhilb, toeplitz
 
-  ## usage: vander (c)
-  ##
-  ## Return the Vandermonde matrix whose next to last column is c.
-  ##
-  ## See also: hankel, hadamard, hilb, invhilb, toeplitz
+function retval = vander (c)
 
   if (nargin != 1)
     usage ("vander (c)");

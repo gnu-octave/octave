@@ -17,15 +17,15 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function shg ()
+## usage: shg
+##
+## Show the graph window.  Currently, this is the same as executing
+## replot without any arguments.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
 
-  ## usage: shg
-  ##
-  ## Show the graph window.  Currently, this is the same as executing
-  ## replot without any arguments.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-  ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
+function shg ()
 
   if (nargin != 0)
     warning ("shg: ignoring extra arguments");

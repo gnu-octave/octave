@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = hadamard (k)
+## usage: hadamard (k)
+##
+## Return the Hadamard matrix of order n = 2^k.
+##
+## See also: hankel, vander, hilb, invhilb, toeplitz
 
-  ## usage: hadamard (k)
-  ##
-  ## Return the Hadamard matrix of order n = 2^k.
-  ##
-  ## See also: hankel, vander, hilb, invhilb, toeplitz
+function retval = hadamard (k)
 
   if (nargin != 1)
     usage ("hadamard (n)");

@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [n, m, p] = abcddim (a, b, c, d)
+## Usage: [n, m, p] = abcddim (a, b, c, d)
+##
+## Check for compatibility of the dimensions of the matrices defining
+## the linear system (a, b, c, d).
+##
+## Returns n = number of system states,
+##         m = number of system inputs,
+##         p = number of system outputs.
+##
+## Returns n = m = p = -1 if the system is not compatible.
 
-  ## Usage: [n, m, p] = abcddim (a, b, c, d)
-  ##
-  ## Check for compatibility of the dimensions of the matrices defining
-  ## the linear system (a, b, c, d).
-  ##
-  ## Returns n = number of system states,
-  ##         m = number of system inputs,
-  ##         p = number of system outputs.
-  ##
-  ## Returns n = m = p = -1 if the system is not compatible.
+function [n, m, p] = abcddim (a, b, c, d)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

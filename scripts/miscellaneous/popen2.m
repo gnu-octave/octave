@@ -17,28 +17,28 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [in, out, pid] = popen2 (command, args)
+## usage: [IN, OUT, PID] = popen2 (COMMAND, ARGS)
+##
+## Start a subprocess with two-way communication.  COMMAND specifies
+## the name of the command to start.  ARGS is an array of strings
+## containing options for COMMAND.  IN and out are the file ids of the
+## input and streams for the subprocess, and PID is the process id of
+## the subprocess, or -1 if COMMAND could not be executed.
+##
+## Example:
+##
+##  [in, out, pid] = popen2 ("sort", "-nr");
+##  fputs (in, "these\n");
+##  fputs (in, "are\n");
+##  fputs (in, "some\n");
+##  fputs (in, "strings\n");
+##  fclose (in);
+##  while (isstr (s = fgets (out)))
+##    fputs (stdout, s);
+##  endwhile
+##  fclose (out);
 
-  ## usage: [IN, OUT, PID] = popen2 (COMMAND, ARGS)
-  ##
-  ## Start a subprocess with two-way communication.  COMMAND specifies
-  ## the name of the command to start.  ARGS is an array of strings
-  ## containing options for COMMAND.  IN and out are the file ids of the
-  ## input and streams for the subprocess, and PID is the process id of
-  ## the subprocess, or -1 if COMMAND could not be executed.
-  ##
-  ## Example:
-  ##
-  ##  [in, out, pid] = popen2 ("sort", "-nr");
-  ##  fputs (in, "these\n");
-  ##  fputs (in, "are\n");
-  ##  fputs (in, "some\n");
-  ##  fputs (in, "strings\n");
-  ##  fclose (in);
-  ##  while (isstr (s = fgets (out)))
-  ##    fputs (stdout, s);
-  ##  endwhile
-  ##  fclose (out);
+function [in, out, pid] = popen2 (command, args)
 
   in = -1;
   out = -1;

@@ -17,9 +17,9 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## csc (z):  compute the cosecant for each element of z.
+
 function w = csc (z)
-  
-  ## csc (z):  compute the cosecant for each element of z.
   
   if (nargin != 1)
     usage ("csc (z)");

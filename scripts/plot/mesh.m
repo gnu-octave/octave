@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function mesh (x, y, z)
+## usage: mesh (x, y, z)
+##
+## Surface plot.  If x, y, and z are matrices with the same dimensions,
+## then corresponding elements represent vertices of the plot.  If x and
+## y are vectors, then a typical vertex is (x(j), y(i), z(i,j)).  Thus,
+## columns of z correspond to different x values and rows of z correspond
+## to different y values.
+##
+## See also: plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom, 
+##           contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
-  ## usage: mesh (x, y, z)
-  ##
-  ## Surface plot.  If x, y, and z are matrices with the same dimensions,
-  ## then corresponding elements represent vertices of the plot.  If x and
-  ## y are vectors, then a typical vertex is (x(j), y(i), z(i,j)).  Thus,
-  ## columns of z correspond to different x values and rows of z correspond
-  ## to different y values.
-  ##
-  ## See also: plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom, 
-  ##           contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+function mesh (x, y, z)
 
   if (nargin == 1)
     z = x;

@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = mean (a)
+## usage: mean (a)
+##
+## For vector arguments, return the mean the values.
+##
+## For matrix arguments, return a row vector containing the mean for
+## each column.
+##
+## See also: median, std
 
-  ## usage: mean (a)
-  ##
-  ## For vector arguments, return the mean the values.
-  ##
-  ## For matrix arguments, return a row vector containing the mean for
-  ## each column.
-  ##
-  ## See also: median, std
+function retval = mean (a)
 
   if (nargin != 1)
     usage ("mean (a)");

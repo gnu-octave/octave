@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = median (a)
+## usage: median (a)
+##
+## For vector arguments, return the median of the values.
+##
+## For matrix arguments, return a row vector containing the median for
+## each column.
+##
+## See also: std, mean
 
-  ## usage: median (a)
-  ##
-  ## For vector arguments, return the median of the values.
-  ##
-  ## For matrix arguments, return a row vector containing the median for
-  ## each column.
-  ##
-  ## See also: std, mean
+function retval = median (a)
 
   if (nargin != 1)
     usage ("median (a)");

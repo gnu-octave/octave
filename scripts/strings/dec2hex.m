@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  dec2hex (d)
+##
+## Returns the hex number corresponding to the decimal number d.  For
+## example, dec2hex (2748) returns "abc". 
+
 function h = dec2hex (d)
 
-  ## usage:  dec2hex (d)
-  ##
-  ## Returns the hex number corresponding to the decimal number d.  For
-  ## example, dec2hex (2748) returns "abc". 
-  
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("dec2hex (d)");

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = clock ()
+## usage: clock ()
+##
+## Return current date and time in vector with elements
+##
+##   [ year, month, day-of-month, hour, minute, second ]
 
-  ## usage: clock ()
-  ##
-  ## Return current date and time in vector with elements
-  ##
-  ##   [ year, month, day-of-month, hour, minute, second ]
+function retval = clock ()
 
   tm = localtime (time ());
 

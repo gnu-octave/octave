@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = is_matrix (x)
+## usage: is_matrix (x)
+##
+## Return 1 if the number of rows and columns of x are both greater
+## than 1.
+##
+## See also: size, rows, columns, length, is_scalar, is_vector
 
-  ## usage: is_matrix (x)
-  ##
-  ## Return 1 if the number of rows and columns of x are both greater
-  ## than 1.
-  ##
-  ## See also: size, rows, columns, length, is_scalar, is_vector
+function retval = is_matrix (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);

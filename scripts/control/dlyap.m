@@ -17,22 +17,22 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function x = dlyap (a, b)
+## Usage: x = dlyap (a, b)
+##
+## Solve a x a' - x + b = 0 (discrete Lyapunov equation) for square
+## matrices a and b.  If b is not square, then the function attempts 
+## to solve either
+##
+##  a x a' - x + b b' = 0
+##
+## or
+##
+##  a' x a - x + b' b = 0
+##
+## whichever is appropriate.  Uses Schur decomposition as in Kitagawa
+## (1977).
 
-  ## Usage: x = dlyap (a, b)
-  ##
-  ## Solve a x a' - x + b = 0 (discrete Lyapunov equation) for square
-  ## matrices a and b.  If b is not square, then the function attempts 
-  ## to solve either
-  ##
-  ##  a x a' - x + b b' = 0
-  ##
-  ## or
-  ##
-  ##  a' x a - x + b' b = 0
-  ##
-  ## whichever is appropriate.  Uses Schur decomposition as in Kitagawa
-  ## (1977).
+function x = dlyap (a, b)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

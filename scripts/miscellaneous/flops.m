@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = flops ()
+## usage: flops
+##
+## Count floating point operations.
 
-  ## usage: flops
-  ##
-  ## Count floating point operations.
+function retval = flops ()
 
   if (nargin > 0)
     usage ("flops ()");

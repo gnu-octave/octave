@@ -17,19 +17,19 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function curr_axis = axis (ax)
+## usage: axis ()
+##        axis ([xmin, xmax])
+##        axis ([xmin, xmax, ymin, ymax])
+##        axis ([xmin, xmax, ymin, ymax, zmin, zmax])
+##
+## Sets the axis limits.
+##
+## With no arguments, turns autoscaling on.
+##
+## If your plot is already drawn, then you need to REPLOT before 
+## the new axis limits will take effect.
 
-  ## usage: axis ()
-  ##        axis ([xmin, xmax])
-  ##        axis ([xmin, xmax, ymin, ymax])
-  ##        axis ([xmin, xmax, ymin, ymax, zmin, zmax])
-  ##
-  ## Sets the axis limits.
-  ##
-  ## With no arguments, turns autoscaling on.
-  ##
-  ## If your plot is already drawn, then you need to REPLOT before 
-  ## the new axis limits will take effect.
+function curr_axis = axis (ax)
 
   ## This may not be correct if someone has used the gnuplot interface
   ## directly...

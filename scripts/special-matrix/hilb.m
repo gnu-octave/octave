@@ -17,16 +17,16 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = hilb (n)
+## usage: hilb (n)
+##
+## Return the Hilbert matrix of order n.  The i, j element of a Hilbert
+## matrix is defined as
+##
+##  H (i, j) = 1 / (i + j - 1);
+##
+## See also: hankel, vander, hadamard, invhilb, toeplitz
 
-  ## usage: hilb (n)
-  ##
-  ## Return the Hilbert matrix of order n.  The i, j element of a Hilbert
-  ## matrix is defined as
-  ##
-  ##  H (i, j) = 1 / (i + j - 1);
-  ##
-  ## See also: hankel, vander, hadamard, invhilb, toeplitz
+function retval = hilb (n)
 
 
   if (nargin != 1)

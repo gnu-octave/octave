@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function multiplot (xn, yn)
+## usage: multiplot (xn, yn)
+##
+## Sets and resets multiplot mode
+##
+## If multiplot(0,0) then it will close multiplot mode and and if
+## arguments are non-zero, then it will set up multiplot mode with
+## xn,yn subplots along x and y axes. 
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch
 
-  ## usage: multiplot (xn, yn)
-  ##
-  ## Sets and resets multiplot mode
-  ##
-  ## If multiplot(0,0) then it will close multiplot mode and and if
-  ## arguments are non-zero, then it will set up multiplot mode with
-  ## xn,yn subplots along x and y axes. 
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch
+function multiplot (xn, yn)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 

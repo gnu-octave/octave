@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = printf (fmt, ...)
+## usage: printf (fmt, ...)
+##
+## Formatted write to standard output.
+##
+## See also: fprintf sprintf
 
-  ## usage: printf (fmt, ...)
-  ##
-  ## Formatted write to standard output.
-  ##
-  ## See also: fprintf sprintf
+function retval = printf (fmt, ...)
 
   retval = -1;
 

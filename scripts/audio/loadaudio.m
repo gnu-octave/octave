@@ -17,23 +17,23 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage:  X = loadaudio (name [, ext [, bit]])
+##
+## Loads audio data from the file "name.ext" into the data vector X. 
+## Default value for the "ext" argument, which has to be written
+## without the initial ".", is "lin".
+## Currently, the following audio formats are supported:
+## *) mu-law encoding with extension "mu", "au" or "snd"
+## *) linear encoding with extension "lin" or "raw"
+## 
+## The `bit' argument can be either 8 (default) or 16.
+## Depending on the value of bit, linearly encoded files are
+## interpreted as being in 8 and 16 bit format, respectively, and
+## mu-law encoded files are transformed to 8 and 16-bit linear
+## format, respectively.
+
 function X = loadaudio (name, ext, bit)
   
-  ## usage:  X = loadaudio (name [, ext [, bit]])
-  ##
-  ## Loads audio data from the file "name.ext" into the data vector X. 
-  ## Default value for the "ext" argument, which has to be written
-  ## without the initial ".", is "lin".
-  ## Currently, the following audio formats are supported:
-  ## *) mu-law encoding with extension "mu", "au" or "snd"
-  ## *) linear encoding with extension "lin" or "raw"
-  ## 
-  ## The `bit' argument can be either 8 (default) or 16.
-  ## Depending on the value of bit, linearly encoded files are
-  ## interpreted as being in 8 and 16 bit format, respectively, and
-  ## mu-law encoded files are transformed to 8 and 16-bit linear
-  ## format, respectively.
-
   ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Apr 10, 1994
   ## Last modified by AW on Oct 29, 1994
 

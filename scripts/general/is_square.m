@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = is_square (x)
+## usage: is_square (x)
+##
+## If x is square, then return value is the dimension of x.
+## otherwise, returns a value of 0
+##
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 
-  ## usage: is_square (x)
-  ##
-  ## If x is square, then return value is the dimension of x.
-  ## otherwise, returns a value of 0
-  ##
-  ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
+function retval = is_square (x)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

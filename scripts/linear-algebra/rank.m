@@ -17,19 +17,19 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = rank (A, tol)
+## usage: rank (a, tol)
+##
+## Return the rank of the matrix a.  The rank is taken to be the number
+## of singular values of a that are greater than tol.
+##
+## If the second argument is omitted, it is taken to be
+##
+##   tol =  max (size (a)) * sigma (1) * eps;
+##
+## where eps is machine precision and sigma is the largest singular
+## value of a.
 
-  ## usage: rank (a, tol)
-  ##
-  ## Return the rank of the matrix a.  The rank is taken to be the number
-  ## of singular values of a that are greater than tol.
-  ##
-  ## If the second argument is omitted, it is taken to be
-  ##
-  ##   tol =  max (size (a)) * sigma (1) * eps;
-  ##
-  ## where eps is machine precision and sigma is the largest singular
-  ## value of a.
+function retval = rank (A, tol)
 
   if (nargin == 1)
     sigma = svd (A);

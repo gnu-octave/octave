@@ -17,20 +17,20 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [aa, bb, q, z] = qzhess (a, b)
+## Usage: [aa, bb, q, z] = qzhess (a, b)
+##
+## Compute the qz decomposition of the matrix pencil (a - lambda b)
+##
+## result: (for Matlab compatibility):
+##
+##   aa = q*a*z and bb = q*b*z, with q, z orthogonal, and
+##   v = matrix of generalized eigenvectors.
+##
+## This ought to be done in a compiled program
+##
+## Algorithm taken from Golub and Van Loan, Matrix Computations, 2nd ed.
 
-  ## Usage: [aa, bb, q, z] = qzhess (a, b)
-  ##
-  ## Compute the qz decomposition of the matrix pencil (a - lambda b)
-  ##
-  ## result: (for Matlab compatibility):
-  ##
-  ##   aa = q*a*z and bb = q*b*z, with q, z orthogonal, and
-  ##   v = matrix of generalized eigenvectors.
-  ##
-  ## This ought to be done in a compiled program
-  ##
-  ## Algorithm taken from Golub and Van Loan, Matrix Computations, 2nd ed.
+function [aa, bb, q, z] = qzhess (a, b)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

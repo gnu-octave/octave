@@ -17,26 +17,26 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function plot_border (...)
+## usage: plot_border (...)
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch
+##
+## Multiple arguments allowed to specify the sides on which the border
+## is shown. allowed strings: 
+##
+## allowed input strings:
+##
+##  "blank", "BLANK", "b", "B",   --->  No borders displayed
+##    "all",   "ALL", "a", "A",   ---> All borders displayed
+##  "north", "NORTH", "n", "N",   ---> North Border
+##  "south", "SOUTH", "s", "S",   ---> South Border
+##   "east",  "EAST", "e", "E",   --->  East Border
+##   "west",  "WEST", "w", "W",   --->  West Border
+##
+## Without any arguments, turns borders off.
 
-  ## usage: plot_border (...)
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch
-  ##
-  ## Multiple arguments allowed to specify the sides on which the border
-  ## is shown. allowed strings: 
-  ##
-  ## allowed input strings:
-  ##
-  ##  "blank", "BLANK", "b", "B",   --->  No borders displayed
-  ##    "all",   "ALL", "a", "A",   ---> All borders displayed
-  ##  "north", "NORTH", "n", "N",   ---> North Border
-  ##  "south", "SOUTH", "s", "S",   ---> South Border
-  ##   "east",  "EAST", "e", "E",   --->  East Border
-  ##   "west",  "WEST", "w", "W",   --->  West Border
-  ##
-  ## Without any arguments, turns borders off.
+function plot_border (...)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 

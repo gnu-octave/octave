@@ -17,27 +17,27 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [k, p, e] = lqr (a, b, q, r, zz)
+## Usage: [k, p, e] = lqr (A, B, Q, R {,Z})
+##
+## Linear quadratic regulator design for the continuous time system
+##
+##   dx/dt = A x + B u
+##
+## to minimize the cost functional
+##
+##  J = int_0^\infty{ x' Q x + u' R u } 			Z omitted
+##
+## or
+##
+##  J = int_0^\infty{ x' Q x + u' R u +2 x' Z u}		Z included
+##
+## Returns:
+##
+##   k = state feedback gain, (A - B K) is stable
+##   p = solution of algebraic Riccati equation
+##   e = closed loop poles of (A - B K)
 
-  ## Usage: [k, p, e] = lqr (A, B, Q, R {,Z})
-  ##
-  ## Linear quadratic regulator design for the continuous time system
-  ##
-  ##   dx/dt = A x + B u
-  ##
-  ## to minimize the cost functional
-  ##
-  ##  J = int_0^\infty{ x' Q x + u' R u } 			Z omitted
-  ##
-  ## or
-  ##
-  ##  J = int_0^\infty{ x' Q x + u' R u +2 x' Z u}		Z included
-  ##
-  ## Returns:
-  ##
-  ##   k = state feedback gain, (A - B K) is stable
-  ##   p = solution of algebraic Riccati equation
-  ##   e = closed loop poles of (A - B K)
+function [k, p, e] = lqr (a, b, q, r, zz)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function len = length (x)
+## usage: length (x)
+##
+## Return the number of rows or columns, whichever is greater.
+##
+## See also: size, rows, columns, is_scalar, is_vector, is_matrix
 
-  ## usage: length (x)
-  ##
-  ## Return the number of rows or columns, whichever is greater.
-  ##
-  ## See also: size, rows, columns, is_scalar, is_vector, is_matrix
+function len = length (x)
 
   if (nargin != 1)
     usage ("length (x)");

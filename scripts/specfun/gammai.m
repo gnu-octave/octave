@@ -17,20 +17,20 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: gammai (a, x)
+##
+## Computes the incomplete gamma function
+##
+##   gammai (a, x) 
+##     = (integral from 0 to x of exp(-t) t^(a-1) dt) / gamma(a).
+##
+## If a is scalar, then gammai(a, x) is returned for each element of x
+## and vice versa.
+##
+## If neither a nor x is scalar, the sizes of a and x must agree, and
+## gammai is applied pointwise.
+
 function y = gammai (a, x)
-  
-  ## usage: gammai (a, x)
-  ##
-  ## Computes the incomplete gamma function
-  ##
-  ##   gammai (a, x) 
-  ##     = (integral from 0 to x of exp(-t) t^(a-1) dt) / gamma(a).
-  ##
-  ## If a is scalar, then gammai(a, x) is returned for each element of x
-  ## and vice versa.
-  ##
-  ## If neither a nor x is scalar, the sizes of a and x must agree, and
-  ## gammai is applied pointwise.
   
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 13, 1994
 

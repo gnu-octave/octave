@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
+## usage: beta (a, b)
+##
+## Returns the beta function beta(a,b) = gamma(a) * gamma(b) / gamma(a+b)
+## of a and b.
+
 function retval = beta (a, b)
   
-  ## usage: beta (a, b)
-  ##
-  ## Returns the beta function beta(a,b) = gamma(a) * gamma(b) / gamma(a+b)
-  ## of a and b.
-
   ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jun 13, 1993
 
   if (nargin != 2)

@@ -17,43 +17,43 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function subplot (rows, columns, index)
+## usage: subplot (rows, columns, index)
+##        subplot (rcn)
+##
+## NOTE: this will work only with gnuplot installed with
+##       multiplot patch (or version 3.6 beta)
+##
+## Sets gnuplot in multiplot mode and plots in location
+## given by index (there are columns X rows subwindows)
+##
+## Input:
+##
+##   rows   : number of rows in subplot grid
+##   columns: number of columns in subplot grid
+##   index  : index of subplot where to make the next plot
+##
+## If only one arg, then it (crn) has to be three digit value
+## specifying the location in digit 1 (rows) and 2 (columns) and digit
+## 3 is the plot index
+##
+## The plot index runs row-wise,i.e., first all the columns in a row
+## are filled and then the next row is filled
+##
+## For example, plot with 4 X 2 grid, will have plot indices running as
+## follows:
+##
+##   -----------------------------------
+##   |        |       |       |        |
+##   |    1   |    2  |    3  |    4   |
+##   |        |       |       |        |
+##   -----------------------------------
+##   |        |       |       |        |
+##   |    5   |    6  |    7  |    8   |
+##   |        |       |       |        |
+##   -----------------------------------
+##
 
-  ## usage: subplot (rows, columns, index)
-  ##        subplot (rcn)
-  ##
-  ## NOTE: this will work only with gnuplot installed with
-  ##       multiplot patch (or version 3.6 beta)
-  ##
-  ## Sets gnuplot in multiplot mode and plots in location
-  ## given by index (there are columns X rows subwindows)
-  ##
-  ## Input:
-  ##
-  ##   rows   : number of rows in subplot grid
-  ##   columns: number of columns in subplot grid
-  ##   index  : index of subplot where to make the next plot
-  ##
-  ## If only one arg, then it (crn) has to be three digit value
-  ## specifying the location in digit 1 (rows) and 2 (columns) and digit
-  ## 3 is the plot index
-  ##
-  ## The plot index runs row-wise,i.e., first all the columns in a row
-  ## are filled and then the next row is filled
-  ##
-  ## For example, plot with 4 X 2 grid, will have plot indices running as
-  ## follows:
-  ##
-  ##   -----------------------------------
-  ##   |        |       |       |        |
-  ##   |    1   |    2  |    3  |    4   |
-  ##   |        |       |       |        |
-  ##   -----------------------------------
-  ##   |        |       |       |        |
-  ##   |    5   |    6  |    7  |    8   |
-  ##   |        |       |       |        |
-  ##   -----------------------------------
-  ##
+function subplot (rows, columns, index)
 
   ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 

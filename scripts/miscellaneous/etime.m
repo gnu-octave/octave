@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function secs = etime (t1, t0)
+## usage: etime (t1, t0)
+##
+## Return the difference between t1 and t0 in seconds.  The arguments
+## are expected to be vectors in the form returned by clock ().
+##
+## See also: tic, toc, clock, cputime
 
-  ## usage: etime (t1, t0)
-  ##
-  ## Return the difference between t1 and t0 in seconds.  The arguments
-  ## are expected to be vectors in the form returned by clock ().
-  ##
-  ## See also: tic, toc, clock, cputime
+function secs = etime (t1, t0)
 
   if (nargin != 2)
     usage ("etime (t1, t0)");

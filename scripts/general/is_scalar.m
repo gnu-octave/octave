@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = is_scalar (x)
+## usage: is_scalar (x)
+##
+## Return 1 if the number of rows and columns of x are both equal to 1.
+##
+## See also: size, rows, columns, length, is_scalar, is_matrix
 
-  ## usage: is_scalar (x)
-  ##
-  ## Return 1 if the number of rows and columns of x are both equal to 1.
-  ##
-  ## See also: size, rows, columns, length, is_scalar, is_matrix
+function retval = is_scalar (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);

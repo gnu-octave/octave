@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function vs = version ()
+## usage: version
+##
+## Return the Octave version number as a string.
+##
+## See also: OCTAVE_VERSION
 
-  ## usage: version
-  ##
-  ## Return the Octave version number as a string.
-  ##
-  ## See also: OCTAVE_VERSION
+function vs = version ()
 
   if (nargin != 0)
     warning ("version: ignoring extra arguments");

@@ -17,19 +17,19 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [Ad, Bd] = c2d (Ac, Bc, T)
+## Usage: [Ad, Bd] = c2d (Ac, Bc, T)
+##
+## converts the continuous time system described by:
+##   .
+##   x = Ac x + Bc u
+##
+## into a discrete time equivalent model via the matrix exponential
+##
+##   x[n+1] = Ad x[n] + Bd u[n]
+##
+## assuming a zero-order hold on the input and sample time T.
 
-  ## Usage: [Ad, Bd] = c2d (Ac, Bc, T)
-  ##
-  ## converts the continuous time system described by:
-  ##   .
-  ##   x = Ac x + Bc u
-  ##
-  ## into a discrete time equivalent model via the matrix exponential
-  ##
-  ##   x[n+1] = Ad x[n] + Bd u[n]
-  ##
-  ## assuming a zero-order hold on the input and sample time T.
+function [Ad, Bd] = c2d (Ac, Bc, T)
 
   ## Written by R.B. Tenison (btenison@eng.auburn.edu)
   ## October 1993

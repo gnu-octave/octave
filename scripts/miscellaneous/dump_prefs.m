@@ -17,13 +17,13 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function dump_prefs (file)
+## usage: dump_prefs (file)
+##
+## Have Octave dump all the current user preference variables to FILE
+## in a format that can be parsed by Octave later.  If FILE is omitted,
+## the listing is printed to stdout.
 
-  ## usage: dump_prefs (file)
-  ##
-  ## Have Octave dump all the current user preference variables to FILE
-  ## in a format that can be parsed by Octave later.  If FILE is omitted,
-  ## the listing is printed to stdout.
+function dump_prefs (file)
 
   if (nargin == 0)
     file = stdout;

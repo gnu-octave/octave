@@ -17,17 +17,17 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function p = polyinteg (p)
+## usage: polyinteg (p)
+##
+## Returns the coefficients of the integral the polynomial whose coefficients
+## are represented by the vector p.
+##
+## The constant of integration is zero.
+##
+## SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
+##           filter, polyval, polyvalm
 
-  ## usage: polyinteg (p)
-  ##
-  ## Returns the coefficients of the integral the polynomial whose coefficients
-  ## are represented by the vector p.
-  ##
-  ## The constant of integration is zero.
-  ##
-  ## SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
-  ##           filter, polyval, polyvalm
+function p = polyinteg (p)
 
   ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 

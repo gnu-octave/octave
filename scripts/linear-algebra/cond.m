@@ -17,14 +17,14 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function retval = cond (a)
+## usage: cond (a)
+##
+## Return the condition number of a, computed using the singular values
+## of a.
+##
+## See also: norm, svd
 
-  ## usage: cond (a)
-  ##
-  ## Return the condition number of a, computed using the singular values
-  ## of a.
-  ##
-  ## See also: norm, svd
+function retval = cond (a)
 
   if (nargin == 1)
     [nr, nc] = size (a);

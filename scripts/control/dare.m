@@ -17,34 +17,34 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function x = dare (a, b, c, r, opt)
+## Usage: x = dare (a, b, c, r {,opt})
+##
+## Solves discrete-time algebraic riccati equation
+##
+##   a' x a - x + a' x b (r + b' x b)^{-1} b' x a + c = 0
+##
+## for
+##
+##   a: nxn
+##   b: nxm
+##   c: nxn, symmetric positive semidefinite 
+##   r: mxm, invertible
+##
+## If c is not square, then the function attempts to use c'*c instead.
+##
+## Solution method: Laub's Schur method (IEEE Trans Auto Contr, 1979) applied
+## to the appropriate symplectic matrix.
+##
+## See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
+## Algebraic Riccati Equations," Mathematics of Control, Signals and
+## Systems, Vol 5, no 2 (1992)  pp 165-194.
+##
+## opt is an option passed to the eigenvalue balancing routine default
+## is "B". 
+##
+## See also: balance, are
 
-  ## Usage: x = dare (a, b, c, r {,opt})
-  ##
-  ## Solves discrete-time algebraic riccati equation
-  ##
-  ##   a' x a - x + a' x b (r + b' x b)^{-1} b' x a + c = 0
-  ##
-  ## for
-  ##
-  ##   a: nxn
-  ##   b: nxm
-  ##   c: nxn, symmetric positive semidefinite 
-  ##   r: mxm, invertible
-  ##
-  ## If c is not square, then the function attempts to use c'*c instead.
-  ##
-  ## Solution method: Laub's Schur method (IEEE Trans Auto Contr, 1979) applied
-  ## to the appropriate symplectic matrix.
-  ##
-  ## See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
-  ## Algebraic Riccati Equations," Mathematics of Control, Signals and
-  ## Systems, Vol 5, no 2 (1992)  pp 165-194.
-  ##
-  ## opt is an option passed to the eigenvalue balancing routine default
-  ## is "B". 
-  ##
-  ## See also: balance, are
+function x = dare (a, b, c, r, opt)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

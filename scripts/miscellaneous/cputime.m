@@ -17,11 +17,11 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function [total, user, system] = cputime ()
+## usage: cputime
+##
+## Get CPU time statistics.
 
-  ## usage: cputime
-  ##
-  ## Get CPU time statistics.
+function [total, user, system] = cputime ()
 
   if (nargin != 0)
     warning ("cputime: ignoring extra arguments");

@@ -17,18 +17,18 @@
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA.
 
-function perror (name, err)
+## usage: perror (name, err)
+##
+## Print an error message for error number `err' from function "name".
+##
+## Messages correspond to the following subroutine versions:
+##
+##   npsol : 4.0
+##   qpsol : 3.2
+##
+## See also: strerror
 
-  ## usage: perror (name, err)
-  ##
-  ## Print an error message for error number `err' from function "name".
-  ##
-  ## Messages correspond to the following subroutine versions:
-  ##
-  ##   npsol : 4.0
-  ##   qpsol : 3.2
-  ##
-  ## See also: strerror
+function perror (name, err)
 
   if (nargin != 2)
     usage ("perror (name, err)");

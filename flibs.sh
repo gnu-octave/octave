@@ -36,6 +36,10 @@ ld_run_path=`echo $foutput | \
   sed -n -e 's/.*\(LD_RUN_PATH *= *[^ ]*\).*/\1/p' | \
   sed -e 's/LD_RUN_PATH *= *//'`
 
+# We are only supposed to find this on Solaris systems, and this
+# substitution is probably only going to work with gcc on those
+# systems...
+
 if test -n "$ld_run_path"
 then
   ld_run_path="-Xlinker -R -Xlinker $ld_run_path"
@@ -99,7 +103,21 @@ do
   else
     if test x$want_arg = x-Y
     then
-      arg="-Xlinker -Y -Xlinker $arg"
+
+# Should probably try to ensure unique directory options here too.
+# This probably only applies to Solaris systems, and then will only
+# work with gcc...
+
+      arg=`echo $arg | sed -e 's%^P,%%'`
+      SAVE_IFS=$IFS
+      IFS=:
+      list=
+      for elt in $arg
+      do
+        list="$list -L $elt"
+      done
+      IFS=$SAVE_IFS
+      arg="$list"
     fi
     want_arg=
   fi

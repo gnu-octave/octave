@@ -50,7 +50,7 @@ int returning = 0;
 #include "unwind-prot.h"
 
 // Decide if it's time to quit a for or while loop.
-static int
+static inline int
 quit_loop_now (void)
 {
 // Maybe handle `continue N' someday...
@@ -240,116 +240,13 @@ tree_for_command::~tree_for_command (void)
   delete list;
 }
 
-void
-tree_for_command::eval (void)
-{
-  if (error_state || ! expr)
-    return;
-
-  tree_constant tmp_expr = expr->eval (0);
-
-  if (error_state || tmp_expr.is_undefined ())
-    {
-      eval_error ();
-      return;
-    }
-
-  if (tmp_expr.is_scalar_type ())
-    {
-      tree_constant *rhs = new tree_constant (tmp_expr);
-      int quit = 0;
-      do_for_loop_once (rhs, quit);
-    }
-  else if (tmp_expr.is_matrix_type ())
-    {
-      Matrix m_tmp;
-      ComplexMatrix cm_tmp;
-      int nr;
-      int steps;
-      if (tmp_expr.is_real_matrix ())
-	{
-	  m_tmp = tmp_expr.matrix_value ();
-	  nr = m_tmp.rows ();
-	  steps = m_tmp.columns ();
-	}
-      else
-	{
-	  cm_tmp = tmp_expr.complex_matrix_value ();
-	  nr = cm_tmp.rows ();
-	  steps = cm_tmp.columns ();
-	}
-
-      for (int i = 0; i < steps; i++)
-	{
-	  tree_constant *rhs = 0;
-
-	  if (nr == 1)
-	    {
-	      if (tmp_expr.is_real_matrix ())
-		rhs = new tree_constant (m_tmp (0, i));
-	      else
-		rhs = new tree_constant (cm_tmp (0, i));
-	    }
-	  else
-	    {
-	      if (tmp_expr.is_real_matrix ())
-		rhs = new tree_constant (m_tmp.extract (0, i, nr-1, i));
-	      else
-		rhs = new tree_constant (cm_tmp.extract (0, i, nr-1, i));
-	    }
-
-	  int quit = 0;
-	  do_for_loop_once (rhs, quit);
-	  if (quit)
-	    break;
-	}
-    }
-  else if (tmp_expr.is_string ())
-    {
-      gripe_string_invalid ();
-    }
-  else if (tmp_expr.is_range ())
-    {
-      Range rng = tmp_expr.range_value ();
-
-      int steps = rng.nelem ();
-      double b = rng.base ();
-      double increment = rng.inc ();
-
-      for (int i = 0; i < steps; i++)
-	{
-	  double tmp_val = b + i * increment;
-
-	  tree_constant *rhs = new tree_constant (tmp_val);
-
-	  int quit = 0;
-	  do_for_loop_once (rhs, quit);
-	  if (quit)
-	    break;
-	}
-    }
-  else
-    {
-      ::error ("invalid type in for loop expression near line %d, column %d",
-	       line (), column ());
-    }
-}
-
-void
-tree_for_command::eval_error (void)
-{
-  if (error_state > 0)
-    ::error ("evaluating for command near line %d, column %d",
-	     line (), column ());
-}
-
-void
-tree_for_command::do_for_loop_once (tree_constant *rhs, int& quit)
+inline void
+tree_for_command::do_for_loop_once (tree_constant& rhs, int& quit)
 {
   quit = 0;
 
-  tree_simple_assignment_expression tmp_ass (id, rhs, 1);
-
+  tree_constant *tmp = new tree_constant (rhs);
+  tree_simple_assignment_expression tmp_ass (id, tmp, 1);
   tmp_ass.eval (0);
 
   if (error_state)
@@ -370,6 +267,180 @@ tree_for_command::do_for_loop_once (tree_constant *rhs, int& quit)
     }
 
   quit = quit_loop_now ();
+}
+
+inline void
+tree_for_command::do_for_loop_once (tree_identifier *ident,
+				    tree_constant& rhs, int& quit)
+{
+  quit = 0;
+
+  ident->assign (rhs);
+
+  if (error_state)
+    {
+      eval_error ();
+      return;
+    }
+
+  if (list)
+    {
+      list->eval (1);
+      if (error_state)
+	{
+	  eval_error ();
+	  quit = 1;
+	  return;
+	}
+    }
+
+  quit = quit_loop_now ();
+}
+
+#define DO_LOOP(val) \
+  do \
+    { \
+      if (ident) \
+	for (int i = 0; i < steps; i++) \
+	  { \
+	    tree_constant rhs (val); \
+	    int quit = 0; \
+	    do_for_loop_once (ident, rhs, quit); \
+	    if (quit) \
+	      break; \
+	  } \
+      else \
+	for (int i = 0; i < steps; i++) \
+	  { \
+	    tree_constant rhs (val); \
+	    int quit = 0; \
+	    do_for_loop_once (rhs, quit); \
+	    if (quit) \
+	      break; \
+	  } \
+    } \
+  while (0)
+
+void
+tree_for_command::eval (void)
+{
+  if (error_state || ! expr)
+    return;
+
+  tree_constant tmp_expr = expr->eval (0);
+
+  if (error_state || tmp_expr.is_undefined ())
+    {
+      eval_error ();
+      return;
+    }
+
+  tree_identifier *ident = 0;
+  if (! id->arg_list ())
+    {
+      tree_indirect_ref *idr = id->ident ();
+      if (idr->is_identifier_only ())
+	ident = idr->ident ();
+    }
+
+  if (tmp_expr.is_scalar_type ())
+    {
+      int quit = 0;
+      if (ident)
+	do_for_loop_once (ident, tmp_expr, quit);
+      else
+	do_for_loop_once (tmp_expr, quit);
+    }
+  else if (tmp_expr.is_matrix_type ())
+    {
+      Matrix m_tmp;
+      ComplexMatrix cm_tmp;
+      int nr;
+      int steps;
+      if (tmp_expr.is_real_matrix ())
+	{
+	  m_tmp = tmp_expr.matrix_value ();
+	  nr = m_tmp.rows ();
+	  steps = m_tmp.columns ();
+	}
+      else
+	{
+	  cm_tmp = tmp_expr.complex_matrix_value ();
+	  nr = cm_tmp.rows ();
+	  steps = cm_tmp.columns ();
+	}
+
+      if (tmp_expr.is_real_matrix ())
+	{
+	  if (nr == 1)
+	    DO_LOOP(m_tmp (0, i));
+	  else
+	    DO_LOOP(m_tmp.extract (0, i, nr-1, i));
+	}
+      else
+	{
+	  if (nr == 1)
+	    DO_LOOP(cm_tmp (0, i));
+	  else
+	    DO_LOOP(cm_tmp.extract (0, i, nr-1, i));
+	}
+    }
+  else if (tmp_expr.is_string ())
+    {
+      gripe_string_invalid ();
+    }
+  else if (tmp_expr.is_range ())
+    {
+      Range rng = tmp_expr.range_value ();
+
+      int steps = rng.nelem ();
+      double b = rng.base ();
+      double increment = rng.inc ();
+
+      if (ident)
+	{
+	  for (int i = 0; i < steps; i++)
+	    {
+	      double tmp_val = b + i * increment;
+
+	      tree_constant rhs (tmp_val);
+
+	      int quit = 0;
+	      do_for_loop_once (ident, rhs, quit);
+
+	      if (quit)
+		break;
+	    }
+	}
+      else
+	{
+	  for (int i = 0; i < steps; i++)
+	    {
+	      double tmp_val = b + i * increment;
+
+	      tree_constant rhs (tmp_val);
+
+	      int quit = 0;
+	      do_for_loop_once (rhs, quit);
+
+	      if (quit)
+		break;
+	    }
+	}
+    }
+  else
+    {
+      ::error ("invalid type in for loop expression near line %d, column %d",
+	       line (), column ());
+    }
+}
+
+void
+tree_for_command::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating for command near line %d, column %d",
+	     line (), column ());
 }
 
 void

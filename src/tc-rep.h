@@ -81,10 +81,8 @@ private:
 
   ~tree_constant_rep (void);
 
-#if defined (MDEBUG)
   void *operator new (size_t size);
   void operator delete (void *p, size_t size);
-#endif
 
   int rows (void) const;
   int columns (void) const;
@@ -373,20 +371,22 @@ private:
 
 // Data.
 
-  int count;
+  union
+    {
+      double scalar;		      // A real scalar constant.
+      Matrix *matrix;		      // A real matrix constant.
+      Complex *complex_scalar;	      // A real scalar constant.
+      ComplexMatrix *complex_matrix;  // A real matrix constant.
+      char *string;		      // A character string constant.
+      Range *range;		      // A set of evenly spaced values.
+      Octave_map *a_map;	      // An associative array.
+
+      tree_constant_rep *freeptr;     // For custom memory management.
+    };
 
   constant_type type_tag;
 
-  union
-    {
-      double scalar;			// A real scalar constant.
-      Matrix *matrix;			// A real matrix constant.
-      Complex *complex_scalar;		// A real scalar constant.
-      ComplexMatrix *complex_matrix;	// A real matrix constant.
-      char *string;			// A character string constant.
-      Range *range;			// A set of evenly spaced values.
-      Octave_map *a_map;		// An associative array.
-    };
+  int count;
 
   char *orig_text;
 };

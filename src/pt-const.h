@@ -47,11 +47,15 @@ tree_constant : public tree_fvc
 {
 private:
 
-#include "tc-rep.h"
-
 // The real representation of a constant, declared in tc-rep.h
 
-  tree_constant_rep *rep;
+#include "tc-rep.h"
+
+  union
+    {
+      tree_constant *freeptr;  // For custom memory management.
+      tree_constant_rep *rep;  // The real representation.
+    };
 
 public:
 
@@ -151,10 +155,8 @@ public:
 
   ~tree_constant (void);
 
-#if defined (MDEBUG)
   void *operator new (size_t size);
   void operator delete (void *p, size_t size);
-#endif
 
 // Simple assignment.
 

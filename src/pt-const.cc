@@ -33,6 +33,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "oct-map.h"
 
+// The following three variables could be made static members of the
+// tree_constant class.
+
+// Pointer to the blocks of memory we manage.
+static tree_constant *newlist;
+
+// Multiplier for allocating new blocks.
+static const int newlist_grow_size = 128;
+
+// Pointer to the last element of the last block allocated.
+static tree_constant *newlist_tail = 0;
+
 Octave_map
 tree_constant::map_value (void) const
 {
@@ -53,22 +65,39 @@ tree_constant::~tree_constant (void)
     }
 }
 
-#if defined (MDEBUG)
 void *
 tree_constant::operator new (size_t size)
 {
-  tree_constant *p = ::new tree_constant;
-  cerr << "tree_constant::new(): " << p << "\n";
-  return p;
+  assert (size == sizeof (tree_constant));
+
+  if (! newlist)
+    {
+      int block_size = newlist_grow_size * sizeof (tree_constant);
+      newlist = (tree_constant *) new char [block_size];
+
+      for (int i = 0; i < newlist_grow_size - 1; i++)
+	newlist[i].freeptr = &newlist[i+1];
+
+      newlist[i].freeptr = 0;
+
+      if (newlist_tail)
+	newlist_tail->freeptr = newlist;
+
+      newlist_tail = &newlist[i];
+    }
+
+  tree_constant *tmp = newlist;
+  newlist = newlist->freeptr;
+  return tmp;
 }
 
 void
 tree_constant::operator delete (void *p, size_t size)
 {
-  cerr << "tree_constant::delete(): " << p << "\n";
-  ::delete p;
+  tree_constant *tmp = (tree_constant *) p;
+  tmp->freeptr = newlist;
+  newlist = tmp;
 }
-#endif
 
 // Simple assignment.
 

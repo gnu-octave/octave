@@ -31,6 +31,7 @@ class tree_global_init_list;
 class tree_if_command_list;
 class tree_expression;
 class tree_index_expression;
+class tree_identifier;
 class tree_constant;
 class symbol_record;
 
@@ -149,7 +150,10 @@ public:
   void print_code (ostream& os);
 
 private:
-  void do_for_loop_once (tree_constant *rhs, int& quit);
+  void do_for_loop_once (tree_identifier *ident,
+			 tree_constant& rhs, int& quit);
+
+  void do_for_loop_once (tree_constant& rhs, int& quit);
 
   tree_index_expression *id;	// Identifier to modify.
   tree_expression *expr;	// Expression to evaluate.

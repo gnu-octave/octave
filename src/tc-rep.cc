@@ -49,6 +49,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tc-inlines.h"
 
+// The following three variables could be made static members of the
+// TC_REP class.
+
+// Pointer to the blocks of memory we manage.
+static TC_REP *newlist;
+
+// Multiplier for allocating new blocks.
+static const int newlist_grow_size = 128;
+
+// Pointer to the last element of the last block allocated.
+static TC_REP *newlist_tail = 0;
+
 static int
 any_element_is_complex (const ComplexMatrix& a)
 {
@@ -446,22 +458,39 @@ TC_REP::~tree_constant_rep (void)
   delete [] orig_text;
 }
 
-#if defined (MDEBUG)
 void *
 TC_REP::operator new (size_t size)
 {
-  tree_constant_rep *p = ::new tree_constant_rep;
-  cerr << "TC_REP::new(): " << p << "\n";
-  return p;
+  assert (size == sizeof (TC_REP));
+
+  if (! newlist)
+    {
+      int block_size = newlist_grow_size * sizeof (TC_REP);
+      newlist = (TC_REP *) new char [block_size];
+
+      for (int i = 0; i < newlist_grow_size - 1; i++)
+	newlist[i].freeptr = &newlist[i+1];
+
+      newlist[i].freeptr = 0;
+
+      if (newlist_tail)
+	newlist_tail->freeptr = newlist;
+
+      newlist_tail = &newlist[i];
+    }
+
+  TC_REP *tmp = newlist;
+  newlist = newlist->freeptr;
+  return tmp;
 }
 
 void
 TC_REP::operator delete (void *p, size_t size)
 {
-  cerr << "TC_REP::delete(): " << p << "\n";
-  ::delete p;
+  TC_REP *tmp = (TC_REP *) p;
+  tmp->freeptr = newlist;
+  newlist = tmp;
 }
-#endif
 
 int
 TC_REP::rows (void) const

@@ -113,18 +113,18 @@ void
 octave_variable_reference::assign (octave_value::assign_op op,
 				   const octave_value& rhs)
 {
-  //  octave_value saved_val;
+  octave_value saved_val;
 
-  //  if (chg_fcn)
-  //    octave_value saved_val = *val;
+  if (chg_fcn)
+    octave_value saved_val = *val;
 
   if (struct_elt_name.empty ())
     val->assign (op, rhs);
   else
     val->assign_struct_elt (op, struct_elt_name, rhs);
 
-  //  if (chg_fcn && chg_fcn () < 0)
-  //    *val = saved_val;
+  if (chg_fcn && chg_fcn () < 0)
+    *val = saved_val;
 }
 
 void

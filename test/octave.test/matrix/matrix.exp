@@ -103,11 +103,11 @@ set prog_output "^error:.*"
 do_test reshape-2.m
 
 set test reshape-3
-set prog_output "^usage:.*"
+set prog_output "\n... reshape:.*"
 do_test reshape-3.m
 
 set test reshape-4
-set prog_output "^usage:.*"
+set prog_output "^error:.*"
 do_test reshape-4.m
 
 set test shift-1

@@ -25,7 +25,7 @@ function figure (n)
 
   if (nargin == 1)
     if (gnuplot_has_frames)
-      if (! isempty (getenv (DISPLAY)))
+      if (! isempty (getenv ("DISPLAY")))
 	eval (sprintf ("set term x11 %d\n", n));
       else
 	error ("figure: requires X11 and valid DISPLAY");

@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-function retval = cputime ()
+function [total, user, system] = cputime ()
 
 # usage: cputime
 #
@@ -31,13 +31,8 @@ function retval = cputime ()
   usr = resource_stats.utime;
   sys = resource_stats.stime;
 
-  usr_time = usr.sec + usr.usec / 1e6;
-  sys_time = sys.sec + sys.usec / 1e6;
-
-  retval = zeros (1, 3);
-
-  retval (1) = usr_time + sys_time;
-  retval (2) = usr_time;
-  retval (3) = sys_time;
+  user = usr.sec + usr.usec / 1e6;
+  system = sys.sec + sys.usec / 1e6;
+  total = user + system;
 
 endfunction

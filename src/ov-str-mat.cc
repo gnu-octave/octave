@@ -475,6 +475,18 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 	  dv(i) = di;
 	}
       
+      // Convert an array with a single dimension to be a row vector.
+      // Octave should never write files like this, other software
+      // might.
+
+      if (mdims == 1)
+	{
+	  mdims = 2;
+	  dv.resize (mdims);
+	  dv(1) = dv(0);
+	  dv(0) = 1;
+	}
+
       charNDArray m(dv);
       char *tmp = m.fortran_vec ();
       is.read (tmp, dv.numel ());

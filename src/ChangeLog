@@ -1,5 +1,13 @@
 2005-02-22  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-int.cc (octave_baes_int_matrix<T>::load_binary):
+	Handle arrays with only one dimension.
+	* ov-bool-mat.cc (octave_bool_matrix::load_binary): Likewise.
+	* ov-cell.cc (octave_cell::load_binary): Likewise.
+	* ov-cell.cc (octave_complex_matrix::load_binary): Likewise.
+	* ov-re-mat.cc (octave_matrix::load_binary): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::load_binary): Likewise.
+
 	* ov-mapper.cc (octave_mapper::subsref): Return retval after
 	calling next_subsref.
 

@@ -173,6 +173,18 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
       dv(i) = di;
     }
 
+  // Convert an array with a single dimension to be a row vector.
+  // Octave should never write files like this, other software
+  // might.
+
+  if (mdims == 1)
+    {
+      mdims = 2;
+      dv.resize (mdims);
+      dv(1) = dv(0);
+      dv(0) = 1;
+    }
+
   T m (dv);
 
   if (! is.read (X_CAST (char *, m.data ()), m.byte_size ()))

@@ -9,8 +9,10 @@ function x = are (a, b, c, opt)
 # for identically dimensioned square matrices a, b, c.  If b (c) is not
 # square, then the function attempts to use b * b' (c' * c) instead.
 #
-# opt is an option passed to the eigenvalue balancing routine; default
-# is `B'. 
+# Solution method: apply Laub's Schur method (IEEE Trans. Auto. Contr,
+# 1979) to the appropriate Hamiltonian matrix.
+#
+# opt is an option passed to the eigenvalue balancing routine default is "B".
 #
 # See also: balance
 
@@ -56,7 +58,9 @@ function x = are (a, b, c, opt)
 #                     n-1
 # rank ([ B A*B ... A^   *B]) method 
 
-    [u, s] = schur (balance ([a, -b; -c, -a'], opt), "A");
+    [d, h] = balance ([a, -b; -c, -a'], opt), "A"
+    [u, s] = schur (h, "A");
+    u = d * u;
     n1 = n + 1;
     n2 = 2 * n;
     x = u (n1:n2, 1:n) / u (1:n, 1:n);

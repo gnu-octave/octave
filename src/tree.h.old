@@ -638,14 +638,14 @@ tree_for_command : public tree_command
 {
  public:
   tree_for_command (void);
-  tree_for_command (tree_identifier *id, tree *e, tree *l);
+  tree_for_command (tree_index_expression *id, tree *e, tree *l);
 
   ~tree_for_command (void);
 
   tree_constant eval (int print);
 
  private:
-  tree_identifier *id;		// Identifier to modify.
+  tree_index_expression *id;	// Identifier to modify.
   tree *expr;			// Expression to evaluate.
   tree *list;			// List of commands to execute.
 };

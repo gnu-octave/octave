@@ -37,10 +37,24 @@ function bug_report ()
 # XXX FIXME XXX -- really need a better system command, one that will
 # automatically send output from the command to stdout...
 
-  if (length (subject) > 0)
-    system (sprintf ("octave-bug -s \"%s\" > /dev/tty", subject));
-  else
-    system ("octave-bug > /dev/tty");
+  prefs = octave_tmp_file_name ();
+
+  if (! isempty (prefs))
+    fopen (prefs, "w");
+    dump_prefs (prefs);
+    fclose (prefs);
   endif
+
+  cmd = "octave-bug";
+
+  if (length (subject) > 0)
+    cmd = sprintf ("%s -s \"%s\"", cmd, subject);
+  endif
+
+  if (! isempty (prefs))
+    cmd = sprintf ("%s %s", cmd, prefs);
+  endif
+
+  system (sprintf ("%s > /dev/tty", cmd));
 
 endfunction

@@ -1110,8 +1110,8 @@ yyerror (char *s)
 {
   char *line = current_input_line;
   int err_col = current_input_column - 1;
-  if (err_col == 0)
-    err_col = strlen (current_input_line) + 1;
+  if (err_col == 0 && line != (char *) NULL)
+    err_col = strlen (line) + 1;
 
 // Print a message like `parse error'.
   fprintf (stderr, "\n%s", s);
@@ -1121,18 +1121,20 @@ yyerror (char *s)
     fprintf (stderr, " near line %d of file %s.m", input_line_number,
 	     curr_m_file_name);
 
-  int len = strlen (line);
-  if (line[len-1] == '\n')
+  if (line != (char *) NULL)
     {
-      len--;
-      line[len] = '\0';
-    }
-
+      int len = strlen (line);
+      if (line[len-1] == '\n')
+        {
+          len--;
+          line[len] = '\0';
+        }
 // Print the line, maybe with a pointer near the error token.
-  if (err_col > len)
-    fprintf (stderr, ":\n\n  %s\n\n", line);
-  else
-    fprintf (stderr, ":\n\n  %s\n  %*s\n\n", line, err_col, "^");
+      if (err_col > len)
+        fprintf (stderr, ":\n\n  %s\n\n", line);
+      else
+        fprintf (stderr, ":\n\n  %s\n  %*s\n\n", line, err_col, "^");
+    }
 }
 
 static int

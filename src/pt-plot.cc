@@ -80,15 +80,15 @@ tree_plot_command::tree_plot_command (void)
   ndim = 0;
 }
 
-tree_plot_command::tree_plot_command (tree_subplot_list *plt, int nd)
+tree_plot_command::tree_plot_command (subplot_list *plt, int nd)
 {
   range = 0;
   plot_list = plt;
   ndim = nd;
 }
 
-tree_plot_command::tree_plot_command (tree_subplot_list *plt,
-				      tree_plot_limits *rng, int nd)
+tree_plot_command::tree_plot_command (subplot_list *plt,
+				      plot_limits *rng, int nd)
 {
   range = rng;
   plot_list = plt;
@@ -101,13 +101,11 @@ tree_plot_command::~tree_plot_command (void)
   delete plot_list;
 }
 
-tree_constant
-tree_plot_command::eval (int print)
+void
+tree_plot_command::eval (void)
 {
-  tree_constant retval;
-
   if (error_state)
-    return retval;
+    return;
 
   ostrstream plot_buf;
 
@@ -121,7 +119,7 @@ tree_plot_command::eval (int print)
 	  else
 	    {
 	      ::error ("replot: must have something to plot");
-	      return retval;
+	      return;
 	    }
 	}
       else
@@ -157,18 +155,20 @@ tree_plot_command::eval (int print)
     }
 
   if (error_state)
-    return retval;
+    return;
 
-  for (tree_subplot_list *ptr = plot_list; ptr; ptr = ptr->next_elem ())
+  for (Pix p = plot_list->first () ; p != 0; plot_list->next (p))
     {
+      subplot *ptr = plot_list->operator () (p);
+
       plot_line_count++;
 
-      if (ptr != plot_list)
+      if (p != plot_list->first ())
 	plot_buf << ",\\\n  ";
 
       int status = ptr->print (ndim, plot_buf);
       if (status < 0)
-	return retval;
+	return;
     }
 
   plot_buf << "\n" << ends;
@@ -192,103 +192,10 @@ tree_plot_command::eval (int print)
       send_to_plot_stream (message);
       delete [] message;
     }
-
-  return retval;
-}
-
-tree_subplot_list::tree_subplot_list (void)
-{
-  plot_data = 0;
-  using = 0;
-  title = 0;
-  style = 0;
-  next = 0;
-}
-
-tree_subplot_list::tree_subplot_list (tree_expression *data)
-{
-  plot_data = data;
-  using = 0;
-  title = 0;
-  style = 0;
-  next = 0;
-}
-
-tree_subplot_list::tree_subplot_list (tree_subplot_list *t)
-{
-  plot_data = t->plot_data;
-  using = t->using;
-  title = t->title;
-  style = t->style;
-  next = t->next;
-}
-
-tree_subplot_list::tree_subplot_list (tree_subplot_using *u,
-				      tree_expression *t,
-				      tree_subplot_style *s)
-{
-  plot_data = 0;
-  using = u;
-  title = t;
-  style = s;
-  next = 0;
-}
-
-tree_subplot_list::~tree_subplot_list (void)
-{
-  delete plot_data;
-  delete using;
-  delete title;
-  delete style;
-  delete next;
-}
-
-tree_subplot_list *
-tree_subplot_list::set_data (tree_expression *data)
-{
-  plot_data = data;
-  return this;
-}
-
-tree_subplot_list *
-tree_subplot_list::chain (tree_subplot_list *t)
-{
-  tree_subplot_list *tmp = new tree_subplot_list (t);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_subplot_list *
-tree_subplot_list::reverse (void)
-{
-  tree_subplot_list *list = this;
-  tree_subplot_list *next;
-  tree_subplot_list *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-tree_subplot_list *
-tree_subplot_list::next_elem (void)
-{
-  return next;
-}
-
-tree_constant
-tree_subplot_list::eval (int print)
-{
-  return plot_data->eval (0);
 }
 
 int
-tree_subplot_list::print (int ndim, ostrstream& plot_buf)
+subplot::print (int ndim, ostrstream& plot_buf)
 {
   int nc = 0;
   if (plot_data)
@@ -378,53 +285,46 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
   return 0;
 }
 
-tree_plot_limits::tree_plot_limits (void)
+plot_limits::plot_limits (void)
 {
   x_range = 0;
   y_range = 0;
   z_range = 0;
 }
 
-tree_plot_limits::tree_plot_limits (tree_plot_range *xlim)
+plot_limits::plot_limits (plot_range *xlim)
 {
   x_range = xlim;
   y_range = 0;
   z_range = 0;
 }
 
-tree_plot_limits::tree_plot_limits (tree_plot_range *xlim,
-				    tree_plot_range *ylim)
+plot_limits::plot_limits (plot_range *xlim,
+				    plot_range *ylim)
 {
   x_range = xlim;
   y_range = ylim;
   z_range = 0;
 }
 
-tree_plot_limits::tree_plot_limits (tree_plot_range *xlim,
-				    tree_plot_range *ylim,
-				    tree_plot_range *zlim)
+plot_limits::plot_limits (plot_range *xlim,
+				    plot_range *ylim,
+				    plot_range *zlim)
 {
   x_range = xlim;
   y_range = ylim;
   z_range = zlim;
 }
 
-tree_plot_limits::~tree_plot_limits (void)
+plot_limits::~plot_limits (void)
 {
   delete x_range;
   delete y_range;
   delete z_range;
 }
 
-tree_constant
-tree_plot_limits::eval (int print)
-{
-  tree_constant retval;
-  return retval;
-}
-
 void
-tree_plot_limits::print (int ndim, ostrstream& plot_buf)
+plot_limits::print (int ndim, ostrstream& plot_buf)
 {
   if (ndim  == 2 || ndim == 3)
     {
@@ -443,33 +343,26 @@ tree_plot_limits::print (int ndim, ostrstream& plot_buf)
     z_range->print (plot_buf);
 }
 
-tree_plot_range::tree_plot_range (void)
+plot_range::plot_range (void)
 {
   lower = 0;
   upper = 0;
 }
 
-tree_plot_range::tree_plot_range (tree_expression *l, tree_expression *u)
+plot_range::plot_range (tree_expression *l, tree_expression *u)
 {
   lower = l;
   upper = u;
 }
 
-tree_plot_range::~tree_plot_range (void)
+plot_range::~plot_range (void)
 {
   delete lower;
   delete upper;
 }
 
-tree_constant
-tree_plot_range::eval (int print)
-{
-  tree_constant retval;
-  return retval;
-}
-
 void
-tree_plot_range::print (ostrstream& plot_buf)
+plot_range::print (ostrstream& plot_buf)
 {
   plot_buf << " [";
 
@@ -508,7 +401,7 @@ tree_plot_range::print (ostrstream& plot_buf)
   plot_buf << "]";
 }
 
-tree_subplot_using::tree_subplot_using (void)
+subplot_using::subplot_using (void)
 {
   qualifier_count = 0;
   x[0] = 0;
@@ -518,7 +411,7 @@ tree_subplot_using::tree_subplot_using (void)
   scanf_fmt = 0;
 }
 
-tree_subplot_using::tree_subplot_using (tree_expression *fmt)
+subplot_using::subplot_using (tree_expression *fmt)
 {
   qualifier_count = 0;
   x[0] = 0;
@@ -528,20 +421,20 @@ tree_subplot_using::tree_subplot_using (tree_expression *fmt)
   scanf_fmt = fmt;
 }
 
-tree_subplot_using::~tree_subplot_using (void)
+subplot_using::~subplot_using (void)
 {
   delete scanf_fmt;
 }
 
-tree_subplot_using *
-tree_subplot_using::set_format (tree_expression *fmt)
+subplot_using *
+subplot_using::set_format (tree_expression *fmt)
 {
   scanf_fmt = fmt;
   return this;
 }
 
-tree_subplot_using *
-tree_subplot_using::add_qualifier (tree_expression *t)
+subplot_using *
+subplot_using::add_qualifier (tree_expression *t)
 {
   if (qualifier_count < 4)
     x[qualifier_count] = t;
@@ -551,15 +444,8 @@ tree_subplot_using::add_qualifier (tree_expression *t)
   return this;
 }
 
-tree_constant
-tree_subplot_using::eval (int print)
-{
-  tree_constant retval;
-  return retval;
-}
-
 int
-tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
+subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 {
   if ((ndim == 2 && qualifier_count > 4)
       || (ndim == 3 && qualifier_count > 3))
@@ -608,28 +494,28 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
   return 0;
 }
 
-tree_subplot_style::tree_subplot_style (void)
+subplot_style::subplot_style (void)
 {
   style = 0;
   linetype = 0;
   pointtype = 0;
 }
 
-tree_subplot_style::tree_subplot_style (char *s)
+subplot_style::subplot_style (char *s)
 {
   style = strsave (s);
   linetype = 0;
   pointtype = 0;
 }
 
-tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt)
+subplot_style::subplot_style (char *s, tree_expression *lt)
 {
   style = strsave (s);
   linetype = lt;
   pointtype = 0;
 }
 
-tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt,
+subplot_style::subplot_style (char *s, tree_expression *lt,
 					tree_expression *pt)
 {
   style = strsave (s);
@@ -637,22 +523,15 @@ tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt,
   pointtype = pt;
 }
 
-tree_subplot_style::~tree_subplot_style (void)
+subplot_style::~subplot_style (void)
 { 
   delete [] style;
   delete linetype;
   delete pointtype;
 }
 
-tree_constant
-tree_subplot_style::eval (int print)
-{
-  tree_constant retval;
-  return retval;
-}
-
 int
-tree_subplot_style::print (ostrstream& plot_buf)
+subplot_style::print (ostrstream& plot_buf)
 {
   if (style)
     {

@@ -240,7 +240,7 @@ public:
   void delete_columns (idx_vector& j);
   void delete_columns (Range& j);
 
-  void bump_value (tree::expression_type);
+  void bump_value (tree_expression::type);
 
   void maybe_mutate (void);
   void print (void);
@@ -345,10 +345,10 @@ private:
 };
 
 extern tree_constant do_binary_op (tree_constant& a, tree_constant& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_unary_op (tree_constant& a,
-				  tree::expression_type t);
+				  tree_expression::type t);
 
 #endif
 

@@ -55,7 +55,7 @@ extern char **get_fcn_file_names (int& ffl_len, int no_suffix);
 extern int NINT (double x);
 extern double D_NINT (double x);
 
-extern char **make_argv (const Octave_object& args, const char *warnfor);
+extern char **make_argv (const Octave_object& args, const char *fcn_name);
 
 extern ostrstream& list_in_columns (ostrstream& os, char **list);
 

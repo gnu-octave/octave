@@ -37,6 +37,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "oct-obj.h"
 
 class tree_constant;
+class tree_statement_list;
+class tree_argument_list;
+class tree_parameter_list;
+class tree_return_list;
 class symbol_record;
 class symbol_table;
 
@@ -54,22 +58,56 @@ class tree_simple_assignment_expression;
 class tree_multi_assignment_expression;
 class tree_colon_expression;
 class tree_index_expression;
-class tree_argument_list;
-class tree_parameter_list;
-class tree_return_list;
 
-/*
- * A base class for expressions.
- */
+#include "tree-base.h"
+
+// A base class for expressions.
+
 class
 tree_expression : public tree
 {
 public:
-  tree_expression (void);
+  enum type
+    {
+      unknown,
+      assignment,
+      simple_assignment,
+      multi_assignment,
+      add,
+      subtract,
+      multiply,
+      el_mul,
+      divide,
+      el_div,
+      leftdiv,
+      el_leftdiv,
+      power,
+      elem_pow,
+      cmp_lt,
+      cmp_le,
+      cmp_eq,
+      cmp_ge,
+      cmp_gt,
+      cmp_ne,
+      and_and,
+      or_or,
+      and,
+      or,
+      not,
+      unot,
+      uminus,
+      hermitian,
+      transpose,
+      colon,
+      index,
+      increment,
+      decrement,
+   };
 
-  ~tree_expression (void);
+  tree_expression (int l = -1, int c = -1) : tree (l, c)
+    { etype = unknown; }
 
-  tree_constant eval (int print);
+  ~tree_expression (void) { }
 
   virtual int is_identifier (void) const
     { return 0; }
@@ -86,27 +124,46 @@ public:
   virtual void mark_for_possible_ans_assign (void)
     { panic_impossible (); }
 
+  virtual tree_constant eval (int print) = 0;
+
   virtual Octave_object eval (int print, int nargout,
 			      const Octave_object& args);
 
 protected:
-  expression_type etype;
+  type etype;
 };
 
-/*
- * General matrices.  This allows us to construct matrices from
- * other matrices, variables, and functions.
- */
+// General matrices.  This allows us to construct matrices from
+// other matrices, variables, and functions.
+
 class
 tree_matrix : public tree_expression
 {
 public:
-  tree_matrix (void);
-  tree_matrix (tree_expression *e, tree::matrix_dir d);
+  enum dir
+    {
+      md_none,
+      md_right,
+      md_down,
+    };
+
+  tree_matrix (void)
+    {
+      dir_next = tree_matrix::md_none;
+      element = 0;
+      next = 0;
+    }
+
+  tree_matrix (tree_expression *e, tree_matrix::dir d)
+    {
+      dir_next = d;
+      element = e;
+      next = 0;
+    }
 
   ~tree_matrix (void);
 
-  tree_matrix *chain (tree_expression *e, tree::matrix_dir d);
+  tree_matrix *chain (tree_expression *e, tree_matrix::dir d);
   tree_matrix *reverse (void);
   int length (void);
 
@@ -115,232 +172,19 @@ public:
   tree_constant eval (int print);
 
 private:
-  tree::matrix_dir dir; // Direction to the next element.
+  tree_matrix::dir dir_next; // Direction to the next element.
   tree_expression *element;
   tree_matrix *next;
 };
 
-/*
- * Prefix expressions.
- */
-class
-tree_prefix_expression : public tree_expression
-{
- public:
-  tree_prefix_expression (int l = -1, int c = -1);
-  tree_prefix_expression (tree_identifier *t, tree::expression_type et,
-			  int l = -1, int c = -1);
+// A base class for objects that can be evaluated with argument lists.
 
-  ~tree_prefix_expression (void);
-
-  tree_constant eval (int print);
-
-  void eval_error (void);
-
-  int is_prefix_expression (void) const;
-
- private:
-  tree_identifier *id;
-};
-
-/*
- * Postfix expressions.
- */
-class
-tree_postfix_expression : public tree_expression
-{
- public:
-  tree_postfix_expression (int l = -1, int c = -1);
-  tree_postfix_expression (tree_identifier *t, tree::expression_type et,
-			   int l = -1, int c = -1);
-
-  ~tree_postfix_expression (void);
-
-  tree_constant eval (int print);
-
-  void eval_error (void);
-
- private:
-  tree_identifier *id;
-};
-
-/*
- * Unary expressions.
- */
-class
-tree_unary_expression : public tree_expression
-{
- public:
-  tree_unary_expression (int l = -1, int c = -1);
-  tree_unary_expression (tree_expression *a, tree::expression_type t,
-			 int l = -1, int c = -1);
-
-  ~tree_unary_expression (void);
-
-  tree_constant eval (int print);
-
-  void eval_error (void);
-
- private:
-  tree_expression *op;
-};
-
-/*
- * Binary expressions.
- */
-class
-tree_binary_expression : public tree_expression
-{
- public:
-  tree_binary_expression (int l = -1, int c = -1);
-  tree_binary_expression (tree_expression *a, tree_expression *b,
-			  tree::expression_type t, int l = -1, int c = -1);
-
-  ~tree_binary_expression (void);
-
-  tree_constant eval (int print);
-
-  void eval_error (void);
-
- private:
-  tree_expression *op1;
-  tree_expression *op2;
-};
-
-/*
- * Assignment expressions.
- */
-class
-tree_assignment_expression : public tree_expression
-{
-public:
-  int in_parens;
-
-  tree_assignment_expression (void);
-
-  ~tree_assignment_expression (void);
-
-  tree_constant eval (int print);
-
-  int is_assignment_expression (void) const;
-};
-
-/*
- * Simple assignment expressions.
- */
-class
-tree_simple_assignment_expression : public tree_assignment_expression
-{
- public:
-  tree_simple_assignment_expression (int l = -1, int c = -1);
-  tree_simple_assignment_expression (tree_identifier *i,
-				     tree_expression *r,
-				     int l = -1, int c = -1);
-  tree_simple_assignment_expression (tree_index_expression *idx_expr,
-				     tree_expression *r, int l = -1, int c = -1);
-
-  ~tree_simple_assignment_expression (void);
-
-  tree_constant eval (int print);
-
-  void eval_error (void);
-
- private:
-  tree_identifier *lhs;
-  tree_argument_list *index;
-  tree_expression *rhs;
-};
-
-/*
- * Multi-valued assignment expressions.
- */
-class
-tree_multi_assignment_expression : public tree_assignment_expression
-{
- public:
-  tree_multi_assignment_expression (int l = -1, int c = -1);
-  tree_multi_assignment_expression (tree_return_list *lst,
-				    tree_expression *r,
-				    int l = -1, int c = -1);
-
-  ~tree_multi_assignment_expression (void);
-
-  tree_constant eval (int print);
-
-  Octave_object eval (int print, int nargout, const Octave_object& args);
-
-  void eval_error (void);
-
- private:
-  tree_return_list *lhs;
-  tree_expression *rhs;
-};
-
-/*
- * Colon expressions.
- */
-class
-tree_colon_expression : public tree_expression
-{
- public:
-  tree_colon_expression (int l = -1, int c = -1);
-  tree_colon_expression (tree_expression *a, tree_expression *b,
-			 int l = -1, int c = -1);
-
-  ~tree_colon_expression (void);
-
-  tree_colon_expression *chain (tree_expression *t);
-
-  tree_constant eval (int print);
-
-  void eval_error (const char *s);
-
- private:
-  tree_expression *op1;
-  tree_expression *op2;
-  tree_expression *op3;
-};
-
-/*
- * Index expressions.
- */
-class
-tree_index_expression : public tree_expression
-{
- public:
-  tree_index_expression (int l = -1, int c = -1);
-  tree_index_expression (tree_identifier *i, int l = -1, int c = -1);
-  tree_index_expression (tree_identifier *i, tree_argument_list *lst,
-			 int l = -1, int c = -1);
-
-  ~tree_index_expression (void);
-
-  int is_index_expression (void) const;
-
-  tree_identifier *ident (void);
-
-  tree_argument_list *arg_list (void);
-
-  void mark_for_possible_ans_assign (void);
-
-  tree_constant eval (int print);
-
-  Octave_object eval (int print, int nargout, const Octave_object& args);
-
-  void eval_error (void);
-
- private:
-  tree_identifier *id;
-  tree_argument_list *list;
-};
-
-/*
- * A base class for objects that can be evaluated with argument lists.
- */
 class
 tree_fvc : public tree_expression
 {
 public:
+  tree_fvc (int l = -1, int c = -1) : tree_expression (l, c) { }
+
   virtual int is_constant (void) const
     { return 0; }
 
@@ -352,7 +196,7 @@ public:
   virtual char *name (void) const
     { panic_impossible (); return 0; }
 
-  virtual void bump_value (tree::expression_type)
+  virtual void bump_value (tree_expression::type)
     { panic_impossible (); }
 
   virtual int max_expected_args (void)
@@ -372,59 +216,30 @@ public:
     { panic_impossible (); return 0; }
 };
 
-/*
- * Builtin functions.
- */
-class
-tree_builtin : public tree_fvc
-{
-public:
-  tree_builtin (const char *nm = 0);
+// Symbols from the symbol table.
 
-  tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
-		const char *nm = 0);
-
-  tree_builtin (int i_max, int o_max, Octave_builtin_fcn f,
-		const char *nm = 0);
-
-  ~tree_builtin (void);
-
-//  int is_builtin (void) const;
-
-  int is_mapper_function (void) const;
-
-  tree_constant eval (int print);
-
-  Octave_object eval (int print, int nargout, const Octave_object& args);
-
-  char *name (void) const;
-
-  int max_expected_args (void);
-
-private:
-  int nargin_max;
-  int nargout_max;
-  int is_mapper;
-  Mapper_fcn mapper_fcn;
-  Octave_builtin_fcn fcn;
-  char *my_name;
-};
-
-/*
- * Symbols from the symbol table.
- */
 class
 tree_identifier : public tree_fvc
 {
   friend class tree_index_expression;
 
 public:
-  tree_identifier (int l = -1, int c = -1);
-  tree_identifier (symbol_record *s, int l = -1, int c = -1);
+  tree_identifier (int l = -1, int c = -1)
+    {
+      sym = 0;
+      maybe_do_ans_assign = 0;
+    }
 
-  ~tree_identifier (void);
+  tree_identifier (symbol_record *s, int l = -1, int c = -1)
+    {
+      sym = s;
+      maybe_do_ans_assign = 0;
+    }
 
-  int is_identifier (void) const;
+  ~tree_identifier (void) { }
+
+  int is_identifier (void) const
+    { return 1; }
 
   char *name (void) const;
 
@@ -438,7 +253,7 @@ public:
 
   int is_defined (void);
 
-  void bump_value (tree::expression_type);
+  void bump_value (tree_expression::type);
 
   int load_fcn_from_file (int exec_script = 1);
 
@@ -446,9 +261,16 @@ public:
 
   tree_fvc *do_lookup (int& script_file_executed);
 
+  void link_to_global (void)
+    {
+      if (sym)
+	::link_to_global_variable (sym);
+    }
+
   void mark_as_formal_parameter (void);
 
-  void mark_for_possible_ans_assign (void);
+  void mark_for_possible_ans_assign (void)
+    { maybe_do_ans_assign = 1; }
 
   tree_constant eval (int print);
 
@@ -461,37 +283,459 @@ private:
   int maybe_do_ans_assign;
 };
 
-/*
- * User defined functions.
- */
+// Index expressions.
+
+class
+tree_index_expression : public tree_expression
+{
+ public:
+  tree_index_expression (int l = -1, int c = -1) : tree_expression (l, c)
+    {
+      id = 0;
+      list = 0;
+    }
+
+  tree_index_expression (tree_identifier *i, int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	id = i;
+	list = 0;
+      }
+
+  tree_index_expression (tree_identifier *i, tree_argument_list *lst,
+			 int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	id = i;
+	list = lst;
+      }
+
+  ~tree_index_expression (void);
+
+  int is_index_expression (void) const
+    { return 1; }
+
+  tree_identifier *ident (void)
+    { return id; }
+
+  tree_argument_list *arg_list (void)
+    { return list; }
+
+  void mark_for_possible_ans_assign (void)
+    {
+      if (id)
+	id->mark_for_possible_ans_assign ();
+    }
+
+  tree_constant eval (int print);
+
+  Octave_object eval (int print, int nargout, const Octave_object& args);
+
+  void eval_error (void);
+
+ private:
+  tree_identifier *id;
+  tree_argument_list *list;
+};
+
+// Prefix expressions.
+
+class
+tree_prefix_expression : public tree_expression
+{
+ public:
+  tree_prefix_expression (int l = -1, int c = -1) : tree_expression (l, c)
+    {
+      id = 0;
+      etype = unknown;
+    }
+
+  tree_prefix_expression (tree_identifier *t, tree_expression::type et,
+			  int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	id = t;
+	etype = et;
+      }
+
+  ~tree_prefix_expression (void)
+    { delete id; }
+
+  tree_constant eval (int print);
+
+  void eval_error (void);
+
+  int is_prefix_expression (void) const
+    { return 1; }
+
+ private:
+  tree_identifier *id;
+};
+
+// Postfix expressions.
+
+class
+tree_postfix_expression : public tree_expression
+{
+ public:
+  tree_postfix_expression (int l = -1, int c = -1) : tree_expression (l, c)
+    {
+      id = 0;
+      etype = unknown;
+    }
+
+  tree_postfix_expression (tree_identifier *t, tree_expression::type et,
+			   int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	id = t;
+	etype = et;
+      }
+
+  ~tree_postfix_expression (void)
+    { delete id; }
+
+  tree_constant eval (int print);
+
+  void eval_error (void);
+
+ private:
+  tree_identifier *id;
+};
+
+// Unary expressions.
+
+class
+tree_unary_expression : public tree_expression
+{
+ public:
+  tree_unary_expression (int l = -1, int c = -1) : tree_expression (l, c)
+    {
+      etype = tree_expression::unknown;
+      op = 0;
+    }
+
+  tree_unary_expression (tree_expression *a, tree_expression::type t,
+			 int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	etype = t;
+	op = a;
+      }
+
+  ~tree_unary_expression (void)
+    { delete op; }
+
+  tree_constant eval (int print);
+
+  void eval_error (void);
+
+ private:
+  tree_expression *op;
+};
+
+// Binary expressions.
+
+class
+tree_binary_expression : public tree_expression
+{
+ public:
+  tree_binary_expression (int l = -1, int c = -1) : tree_expression (l, c)
+    {
+      etype = tree_expression::unknown;
+      op1 = 0;
+      op2 = 0;
+    }
+
+  tree_binary_expression (tree_expression *a, tree_expression *b,
+			  tree_expression::type t, int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	etype = t;
+	op1 = a;
+	op2 = b;
+      }
+
+  ~tree_binary_expression (void)
+    {
+      delete op1;
+      delete op2;
+    }
+
+  tree_constant eval (int print);
+
+  void eval_error (void);
+
+ private:
+  tree_expression *op1;
+  tree_expression *op2;
+};
+
+// Assignment expressions.
+
+class
+tree_assignment_expression : public tree_expression
+{
+public:
+  int in_parens;
+
+  tree_assignment_expression (int l = -1, int c = -1)
+    : tree_expression (l, c)
+    {
+      in_parens = 0;
+      etype = tree_expression::assignment;
+    }
+
+  ~tree_assignment_expression (void) { }
+
+  tree_constant eval (int print);
+
+  int is_assignment_expression (void) const
+    { return 1; }
+};
+
+// Simple assignment expressions.
+
+class
+tree_simple_assignment_expression : public tree_assignment_expression
+{
+ public:
+  tree_simple_assignment_expression (int plhs = 0, int l = -1, int c = -1)
+    : tree_assignment_expression (l, c)
+      {
+	etype = tree_expression::assignment;
+	lhs = 0;
+	index = 0;
+	rhs = 0;
+	preserve = plhs;
+      }
+
+  tree_simple_assignment_expression (tree_identifier *i,
+				     tree_expression *r,
+				     int plhs = 0, int l = -1, int c = -1)
+    : tree_assignment_expression (l, c)
+      {
+	etype = tree_expression::assignment;
+	lhs = i;
+	index = 0;
+	rhs = r;
+	preserve = plhs;
+      }
+
+  tree_simple_assignment_expression (tree_index_expression *idx_expr,
+				     tree_expression *r,
+				     int plhs = 0, int l = -1, int c = -1)
+    : tree_assignment_expression (l, c)
+      {
+	etype = tree_expression::assignment;
+	lhs = idx_expr->ident ();
+	index = idx_expr->arg_list ();
+	rhs = r;
+	preserve = plhs;
+      }
+
+  ~tree_simple_assignment_expression (void);
+
+  tree_identifier *left_hand_side (void)
+    { return lhs; }
+
+  tree_constant eval (int print);
+
+  void eval_error (void);
+
+ private:
+  tree_identifier *lhs;
+  tree_argument_list *index;
+  tree_expression *rhs;
+  int preserve;
+};
+
+// Multi-valued assignment expressions.
+
+class
+tree_multi_assignment_expression : public tree_assignment_expression
+{
+ public:
+  tree_multi_assignment_expression (int l = -1, int c = -1)
+    : tree_assignment_expression (l, c)
+      {
+	etype = tree_expression::multi_assignment;
+	lhs = 0;
+	rhs = 0;
+      }
+
+  tree_multi_assignment_expression (tree_return_list *lst,
+				    tree_expression *r,
+				    int l = -1, int c = -1)
+    : tree_assignment_expression (l, c)
+      {
+	etype = tree_expression::multi_assignment;
+	lhs = lst;
+	rhs = r;
+      }
+
+  ~tree_multi_assignment_expression (void);
+
+  tree_constant eval (int print);
+
+  Octave_object eval (int print, int nargout, const Octave_object& args);
+
+  void eval_error (void);
+
+ private:
+  tree_return_list *lhs;
+  tree_expression *rhs;
+};
+
+// Colon expressions.
+
+class
+tree_colon_expression : public tree_expression
+{
+ public:
+  tree_colon_expression (int l = -1, int c = -1) : tree_expression (l, c)
+    {
+      etype = tree_expression::colon;
+      op1 = 0;
+      op2 = 0;
+      op3 = 0;
+    }
+
+  tree_colon_expression (tree_expression *a, tree_expression *b,
+			 int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	etype = tree_expression::colon;
+	op1 = a;
+	op2 = b;
+	op3 = 0;
+      }
+
+  ~tree_colon_expression (void)
+    {
+      delete op1;
+      delete op2;
+      delete op3;
+    }
+
+  tree_colon_expression *chain (tree_expression *t);
+
+  tree_constant eval (int print);
+
+  void eval_error (const char *s);
+
+ private:
+  tree_expression *op1;
+  tree_expression *op2;
+  tree_expression *op3;
+};
+
+// Builtin functions.
+
+class
+tree_builtin : public tree_fvc
+{
+public:
+  tree_builtin (const char *nm = 0);
+
+  tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
+		const char *nm = 0);
+
+  tree_builtin (int i_max, int o_max, Octave_builtin_fcn f,
+		const char *nm = 0);
+
+  ~tree_builtin (void) { }
+
+//  int is_builtin (void) const;
+
+  int is_mapper_function (void) const
+    { return is_mapper; }
+
+  tree_constant eval (int print);
+
+  Octave_object eval (int print, int nargout, const Octave_object& args);
+
+  char *name (void) const
+    { return my_name; }
+
+  int max_expected_args (void);
+
+private:
+  int nargin_max;
+  int nargout_max;
+  int is_mapper;
+  Mapper_fcn mapper_fcn;
+  Octave_builtin_fcn fcn;
+  char *my_name;
+};
+
+// User defined functions.
+
 class
 tree_function : public tree_fvc
 {
 public:
-  tree_function (void);
-  tree_function (tree *cl, symbol_table *st);
+  void init (void)
+    {
+      call_depth = 0;
+      param_list = 0;
+      ret_list = 0;
+      sym_tab = 0;
+      cmd_list = 0;
+      file_name = 0;
+      fcn_name = 0;
+      t_parsed = 0;
+      system_fcn_file = 0;
+      num_named_args = 0;
+      num_args_passed = 0;
+      curr_va_arg_number = 0;
+    }
 
-  ~tree_function (void);
+  tree_function (int l = -1, int c = -1) : tree_fvc (l, c)
+    { init (); }
 
-  tree_function *define (tree *t);
+  tree_function (tree_statement_list *cl, symbol_table *st,
+		 int l = -1, int c = -1)
+     : tree_fvc (l, c)
+       {
+	 init ();
+	 sym_tab = st;
+	 cmd_list = cl;
+       }
+
+  ~tree_function (void) { }
+
+//  tree_function *define (tree_statement_list *t);
   tree_function *define_param_list (tree_parameter_list *t);
   tree_function *define_ret_list (tree_parameter_list *t);
 
   void stash_fcn_file_name (char * s);
-  void stash_fcn_file_time (time_t t);
 
-  char *fcn_file_name (void);
-  time_t time_parsed (void);
+  void stash_fcn_file_time (time_t t)
+    { t_parsed = t; }
+
+  char *fcn_file_name (void)
+    { return file_name; }
+
+  time_t time_parsed (void)
+    { return t_parsed; }
 
   void mark_as_system_fcn_file (void);
-  int is_system_fcn_file (void) const;
+
+  int is_system_fcn_file (void) const
+    { return system_fcn_file; }
 
   int takes_varargs (void) const;
-  void octave_va_start (void);
+
+  void octave_va_start (void)
+    { curr_va_arg_number = num_named_args; }
+
   tree_constant octave_va_arg (void);
 
   void stash_function_name (char *s);
-  char *function_name (void);
+
+  char *function_name (void)
+    { return fcn_name; }
 
   tree_constant eval (int print);
 
@@ -506,7 +750,7 @@ private:
   tree_parameter_list *param_list;
   tree_parameter_list *ret_list;
   symbol_table *sym_tab;
-  tree *cmd_list;
+  tree_statement_list *cmd_list;
   char *file_name;
   char *fcn_name;
   time_t t_parsed;
@@ -515,109 +759,6 @@ private:
   Octave_object args_passed;
   int num_args_passed;
   int curr_va_arg_number;
-};
-
-/*
- * Argument lists.
- */
-class
-tree_argument_list : public tree
-{
- public:
-  tree_argument_list (void);
-  tree_argument_list (tree *t);
-
-  ~tree_argument_list (void);
-
-  tree_argument_list *chain (tree *t);
-  tree_argument_list *reverse (void);
-  int length (void);
-
-  tree_argument_list *next_elem (void);
-
-  Octave_object convert_to_const_vector (void);
-
-  tree_constant eval (int print);
-
- private:
-  tree *arg;
-  tree_argument_list *next;
-};
-
-/*
- * Parameter lists.  Almost like argument lists, except that the
- * elements are only supposed to be identifiers, never constants or
- * expressions.
- */
-class
-tree_parameter_list : public tree
-{
- public:
-  tree_parameter_list (void);
-  tree_parameter_list (tree_identifier *t);
-
-  ~tree_parameter_list (void);
-
-  tree_parameter_list *chain (tree_identifier *t);
-  tree_parameter_list *reverse (void);
-  int length (void);
-
-  char *name (void) const;
-
-  void mark_as_formal_parameters (void);
-
-  void mark_varargs (void);
-  int takes_varargs (void) const;
-
-  void mark_varargs_only (void);
-  int varargs_only (void);
-
-  tree_identifier *define (tree_constant *t);
-
-  void define_from_arg_vector (const Octave_object& args);
-
-  int is_defined (void);
-
-  Octave_object convert_to_const_vector (void);
-
-  tree_parameter_list *next_elem (void);
-
-  tree_constant eval (int print);
-
- private:
-  int marked_for_varargs;
-  tree_identifier *param;
-  tree_parameter_list *next;
-};
-
-/*
- * Return lists.  Almost like parameter lists, except that the
- * elements may also be index expressions.
- */
-class
-tree_return_list : public tree
-{
- public:
-  tree_return_list (void);
-  tree_return_list (tree_identifier *t);
-  tree_return_list (tree_index_expression *t);
-
-  ~tree_return_list (void);
-
-  tree_return_list *chain (tree_identifier *t);
-  tree_return_list *chain (tree_index_expression *t);
-  tree_return_list *reverse (void);
-  int length (void);
-
-  tree_index_expression *idx_expr (void);
-
-  tree_return_list *next_elem (void);
-
-  tree_constant eval (int print);
-
- private:
-  tree_index_expression *retval;
-  tree_return_list *next;
 };
 
 #endif

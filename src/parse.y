@@ -44,6 +44,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "input.h"
 #include "utils.h"
 #include "tree.h"
+#include "tree-misc.h"
 #include "tree-plot.h"
 #include "tree-const.h"
 #include "symtab.h"
@@ -111,10 +112,10 @@ int in_plot_style = 0;
 // Generic error messages.
 static void yyerror (char *s);
 
-// Error mesages for mismatched end statements.
+// Error mesages for mismatched end tokens.
 static void end_error (char *type, token::end_tok_type ettype, int l, int c);
 
-// Check to see that end statements are properly matched.
+// Check to see that end tokens are properly matched.
 static int check_end (token *tok, token::end_tok_type expected);
 
 // Try to figure out early if an expression should become an
@@ -124,6 +125,23 @@ static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
 // Maybe print a warning if an assignment expression is used as the
 // test in a logical expression.
 static void maybe_warn_assign_as_truth_value (tree_expression *expr);
+
+// Build a binary expression.
+static tree_expression *make_binary_op (int op, tree_expression *op1,
+				    	token *tok_val,
+					tree_expression *op2);
+
+// Build a prefix expression.
+static tree_expression *make_prefix_op (int op, tree_identifier *op1,
+					token *tok_val);
+
+// Build a postfix expression.
+static tree_expression *make_postfix_op (int op, tree_identifier *op1,
+					 token *tok_val);
+
+// Build a binary expression.
+static tree_expression *make_unary_op (int op, tree_expression *op1,
+				       token *tok_val);
 
 #define ABORT_PARSE \
   do \
@@ -161,14 +179,20 @@ static void maybe_warn_assign_as_truth_value (tree_expression *expr);
   tree_parameter_list *tree_parameter_list_type;
   tree_command *tree_command_type;
   tree_if_command *tree_if_command_type;
+  tree_if_clause *tree_if_clause_type;
+  tree_if_command_list *tree_if_command_list_type;
+  tree_global *tree_global_type;
+  tree_global_init_list *tree_global_init_list_type;
   tree_global_command *tree_global_command_type;
-  tree_command_list *tree_command_list_type;
+  tree_statement *tree_statement_type;
+  tree_statement_list *tree_statement_list_type;
   tree_plot_command *tree_plot_command_type;
-  tree_subplot_list *tree_subplot_list_type;
-  tree_plot_limits *tree_plot_limits_type;
-  tree_plot_range *tree_plot_range_type;
-  tree_subplot_using *tree_subplot_using_type;
-  tree_subplot_style *tree_subplot_style_type;
+  subplot *subplot_type;
+  subplot_list *subplot_list_type;
+  plot_limits *plot_limits_type;
+  plot_range *plot_range_type;
+  subplot_using *subplot_using_type;
+  subplot_style *subplot_style_type;
 }
 
 // Tokens with line and column information.
@@ -184,35 +208,41 @@ static void maybe_warn_assign_as_truth_value (tree_expression *expr);
 %token <tok_val> PLOT
 %token <tok_val> TEXT STYLE
 %token <tok_val> FOR WHILE IF ELSEIF ELSE BREAK CONTINUE FUNC_RET
+%token <tok_val> GLOBAL
 
 // Other tokens.
 %token FCN SCREW_TWO
-%token GLOBAL
 %token ELLIPSIS
 %token END_OF_INPUT
 %token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE
 
 // Nonterminals we construct.
-%type <tree_type> input command 
+%type <tree_type> input
 %type <tree_expression_type> expression simple_expr simple_expr1
 %type <tree_expression_type> ans_expression title
 %type <tree_matrix_type> matrix
 %type <tree_identifier_type> identifier
-%type <tree_function_type> func_def func_def1 func_def2 func_def3
+%type <tree_function_type> func_def1 func_def2 func_def3
 %type <tree_index_expression_type> variable word_list_cmd
 %type <tree_colon_expression_type> colon_expr
-%type <tree_argument_list_type> arg_list arg_list1 word_list word_list1
+%type <tree_argument_list_type> arg_list word_list
 %type <tree_parameter_list_type> param_list param_list1 func_def1a 
-%type <tree_command_type> statement
-%type <tree_if_command_type> elseif
-%type <tree_global_command_type> global_decl global_decl1
-%type <tree_command_list_type> simple_list simple_list1 list list1 opt_list
+%type <tree_command_type> command func_def
+%type <tree_if_command_type> if_command
+%type <tree_if_clause_type> elseif_clause else_clause
+%type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
+%type <tree_global_type> global_decl2
+%type <tree_global_init_list_type> global_decl1
+%type <tree_global_command_type> global_decl
+%type <tree_statement_type> statement
+%type <tree_statement_list_type> simple_list simple_list1 list list1 opt_list
 %type <tree_plot_command_type> plot_command 
-%type <tree_subplot_list_type> plot_command1 plot_command2 plot_options
-%type <tree_plot_limits_type> ranges
-%type <tree_plot_range_type> ranges1 
-%type <tree_subplot_using_type> using using1 
-%type <tree_subplot_style_type> style
+%type <subplot_type> plot_command2 plot_options
+%type <subplot_list_type> plot_command1
+%type <plot_limits_type> ranges
+%type <plot_range_type> ranges1 
+%type <subplot_using_type> using using1 
+%type <subplot_style_type> style
 
 // Precedence and associativity.
 %left ';' ',' '\n'
@@ -287,29 +317,30 @@ simple_list	: semi_comma
 		| comma_semi
 		  { $$ = 0; }
 		| simple_list1
-		  { $$ = $1->reverse (); }
+		  { $$ = $1; }
 		| simple_list1 semi_comma
 		  {
-		    $1->set_print_flag (0);
-		    $$ = $1->reverse ();
+		    tree_statement *tmp = $1->rear ();
+		    tmp->set_print_flag (0);
 		  }
 		| simple_list1 comma_semi
-		  { $$ = $1->reverse (); }
+		  { $$ = $1; }
 		;
 
-simple_list1	: command
-		  { $$ = new tree_command_list ($1); }
-		| semi_comma command
-		  { $$ = new tree_command_list ($2); }
-		| comma_semi command
-		  { $$ = new tree_command_list ($2); }
-		| simple_list1 semi_comma command
+simple_list1	: statement
+		  { $$ = new tree_statement_list ($1); }
+		| semi_comma statement
+		  { $$ = new tree_statement_list ($2); }
+		| comma_semi statement
+		  { $$ = new tree_statement_list ($2); }
+		| simple_list1 semi_comma statement
 		  {
-		    $1->set_print_flag (0);
-		    $$ = $1->chain ($3);
+		    tree_statement *tmp = $1->rear ();
+		    tmp->set_print_flag (0);
+		    $1->append ($3);
 		  }
-		| simple_list1 comma_semi command
-		  { $$ = $1->chain ($3); }
+		| simple_list1 comma_semi statement
+		  { $1->append ($3); }
 		;
 
 semi_comma	: ';'
@@ -332,62 +363,53 @@ semi_sep	: ';'
 		;
 
 opt_list	: // empty
-		  { $$ = new tree_command_list (); }
+		  { $$ = new tree_statement_list (); }
 		| list
 		  { $$ = $1; }
 		;
 
 list		: list1
-		  { $$ = $1->reverse (); }
+		  { $$ = $1; }
 		| list1 comma_nl_sep
-		  { $$ = $1->reverse (); }
+		  { $$ = $1; }
 		| list1 semi_sep
 		  {
-		    $1->set_print_flag (0);
-		    $$ = $1->reverse ();
+		    tree_statement *tmp = $1->rear ();
+		    tmp->set_print_flag (0);
 		  }
 		;
 
-list1		: command
+list1		: statement
 		  {
 		    beginning_of_function = 0;
-		    $$ = new tree_command_list ($1);
+		    $$ = new tree_statement_list ($1);
 		  }
-		| list1 comma_nl_sep command
-		  { $$ = $1->chain ($3); }
-		| list1 semi_sep command
+		| list1 comma_nl_sep statement
+		  { $1->append ($3); }
+		| list1 semi_sep statement
 		  {
-		    $1->set_print_flag (0);
-		    $$ = $1->chain ($3);
+		    tree_statement *tmp = $1->rear ();
+		    tmp->set_print_flag (0);
+		    $1->append ($3);
 		  }
 		;
 
-command		: plot_command
-		  { $$ = $1; }
-		| statement
-		  { $$ = $1; }
+statement	: command
+		  { $$ = new tree_statement ($1); }
 		| ans_expression
-		  { $$ = $1; }
-		| func_def
-		  { $$ = $1; }
-		| global_decl
-		  { $$ = $1; }
+		  { $$ = new tree_statement ($1); }
 		;
 
 plot_command	: PLOT plot_command1
 		  {
-		    tree_subplot_list *tmp = 0;
-		    if ($2)
-		      tmp = $2->reverse ();
-
-		    if (! tmp && $1->pttype () != token::replot)
+		    if (! $2 && $1->pttype () != token::replot)
 		      {
 			yyerror ("must have something to plot");
 			ABORT_PARSE;
 		      }
 		    else
 		      {
-			$$ = new tree_plot_command (tmp, $1->pttype ());
+			$$ = new tree_plot_command ($2, $1->pttype ());
 			plotting = 0;
 			past_plot_range = 0;
 			in_plot_range = 0;
@@ -404,8 +426,7 @@ plot_command	: PLOT plot_command1
 		      }
 		    else
 		      {
-			tree_subplot_list *tmp = $3->reverse ();
-			$$ = new tree_plot_command (tmp, $2, $1->pttype ());
+			$$ = new tree_plot_command ($3, $2, $1->pttype ());
 			plotting = 0;
 			past_plot_range = 0;
 			in_plot_range = 0;
@@ -416,69 +437,72 @@ plot_command	: PLOT plot_command1
 		;
 
 ranges		: ranges1
-		  { $$ = new tree_plot_limits ($1); }
+		  { $$ = new plot_limits ($1); }
 		| ranges1 ranges1
-		  { $$ = new tree_plot_limits ($1, $2); }
+		  { $$ = new plot_limits ($1, $2); }
 		| ranges1 ranges1 ranges1
-		  { $$ = new tree_plot_limits ($1, $2, $3); }
+		  { $$ = new plot_limits ($1, $2, $3); }
 		;
 
 ranges1		: OPEN_BRACE expression COLON expression CLOSE_BRACE
-		  { $$ = new tree_plot_range ($2, $4); }
+		  { $$ = new plot_range ($2, $4); }
 		| OPEN_BRACE COLON expression CLOSE_BRACE
-		  { $$ = new tree_plot_range (0, $3); }
+		  { $$ = new plot_range (0, $3); }
 		| OPEN_BRACE expression COLON CLOSE_BRACE
-		  { $$ = new tree_plot_range ($2, 0); }
+		  { $$ = new plot_range ($2, 0); }
 		| OPEN_BRACE COLON CLOSE_BRACE
-		  { $$ = new tree_plot_range (); }
+		  { $$ = new plot_range (); }
 		| OPEN_BRACE CLOSE_BRACE
-		  { $$ = new tree_plot_range (); }
+		  { $$ = new plot_range (); }
 		;
 
 plot_command1	: // empty
 		  { $$ = 0; }
 		| plot_command2
-		  { $$ = $1; }
+		  { $$ = new subplot_list ($1); }
 		| plot_command1 ',' plot_command2
-		  { $$ = $1->chain ($3); }
+		  { $1->append ($3); }
 		;
 
 plot_command2	: expression
-		  { $$ = new tree_subplot_list ($1); }
+		  { $$ = new subplot ($1); }
 		| expression plot_options
-		  { $$ = $2->set_data ($1); }
+		  {
+		    $2->set_data ($1);
+		    $$ = $2;
+		  }
 		;
 
 plot_options	: using
-		  { $$ = new tree_subplot_list ($1, 0, 0); }
+		  { $$ = new subplot ($1, 0, 0); }
 		| title
-		  { $$ = new tree_subplot_list (0, $1, 0); }
+		  { $$ = new subplot (0, $1, 0); }
 		| style
-		  { $$ = new tree_subplot_list (0, 0, $1); }
+		  { $$ = new subplot (0, 0, $1); }
 		| using title
-		  { $$ = new tree_subplot_list ($1, $2, 0); }
-		| title using
-		  { $$ = new tree_subplot_list ($2, $1, 0); }
-		| using style
-		  { $$ = new tree_subplot_list ($1, 0, $2); }
-		| style using
-		  { $$ = new tree_subplot_list ($2, 0, $1); }
-		| title style
-		  { $$ = new tree_subplot_list (0, $1, $2); }
-		| style title
-		  { $$ = new tree_subplot_list (0, $2, $1); }
-		| using title style
-		  { $$ = new tree_subplot_list ($1, $2, $3); }
-		| using style title
-		  { $$ = new tree_subplot_list ($1, $3, $2); }
-		| title using style
-		  { $$ = new tree_subplot_list ($2, $1, $3); }
-		| title style using
-		  { $$ = new tree_subplot_list ($3, $1, $2); }
-		| style using title
-		  { $$ = new tree_subplot_list ($2, $3, $1); }
-		| style title using
-		  { $$ = new tree_subplot_list ($3, $2, $1); }
+		  { $$ = new subplot ($1, $2, 0); }
+		| title using		 
+		  { $$ = new subplot ($2, $1, 0); }
+		| using style		 
+		  { $$ = new subplot ($1, 0, $2); }
+		| style using		 
+		  { $$ = new subplot ($2, 0, $1); }
+		| title style		 
+		  { $$ = new subplot (0, $1, $2); }
+		| style title		 
+		  { $$ = new subplot (0, $2, $1); }
+		| using title style	 
+		  { $$ = new subplot ($1, $2, $3); }
+		| using style title	 
+		  { $$ = new subplot ($1, $3, $2); }
+		| title using style	 
+		  { $$ = new subplot ($2, $1, $3); }
+		| title style using	 
+		  { $$ = new subplot ($3, $1, $2); }
+		| style using title	 
+		  { $$ = new subplot ($2, $3, $1); }
+		| style title using	 
+		  { $$ = new subplot ($3, $2, $1); }
 		;
 
 using		: using1
@@ -495,7 +519,7 @@ using		: using1
 
 using1		: USING expression
 		  {
-		    tree_subplot_using *tmp = new tree_subplot_using ();
+		    subplot_using *tmp = new subplot_using ();
 		    $$ = tmp->add_qualifier ($2);
 		  }
 		| using1 COLON expression
@@ -507,11 +531,11 @@ title		: TITLE expression
 		;
 
 style		: WITH STYLE
-		  { $$ = new tree_subplot_style ($2->string ()); }
+		  { $$ = new subplot_style ($2->string ()); }
 		| WITH STYLE expression
-		  { $$ = new tree_subplot_style ($2->string (), $3); }
+		  { $$ = new subplot_style ($2->string (), $3); }
 		| WITH STYLE expression bogus_syntax expression
-		  { $$ = new tree_subplot_style ($2->string (), $3, $5); }
+		  { $$ = new subplot_style ($2->string (), $3, $5); }
 		;
 
 bogus_syntax	: // empty
@@ -522,30 +546,25 @@ ans_expression	: expression
 		;
 
 global_decl	: GLOBAL global_decl1
-		  { $$ = $2->reverse (); }
-		| GLOBAL global_decl1 ','
-		  { $$ = $2->reverse (); }
+		  {
+		    $$ = new tree_global_command ($2, $1->line (),
+						  $1->column ());
+		  }
 		;
 
-global_decl1	: NAME
+global_decl1	: global_decl2
+		  { $$ = new tree_global_init_list ($1); }
+		| global_decl1 optcomma global_decl2
+		  { $1->append ($3); }
+
+global_decl2	: identifier
+		  { $$ = new tree_global ($1); }
+		| identifier '=' expression
 		  {
-		    $$ = new tree_global_command
-			   ($1->sym_rec (), $1->line (), $1->column ());
-		  }
-		| NAME '=' expression
-		  {
-		    $$ = new tree_global_command
-			   ($1->sym_rec (), $3, $1->line (), $1->column ());
-		  }
-		| global_decl1 optcomma NAME
-		  {
-		    $$ = $1->chain ($3->sym_rec (), $3->line (),
-				    $3->column ());
-		  }
-		| global_decl1 optcomma NAME '=' expression
-		  {
-		    $$ = $1->chain ($3->sym_rec (), $5, $3->line (),
-				    $3->column ());
+		    tree_simple_assignment_expression *tmp_ass;
+		    tmp_ass = new tree_simple_assignment_expression
+		      ($1, $3, 0, $2->line (), $2->column ());
+		    $$ = new tree_global (tmp_ass);
 		  }
 		;
 
@@ -558,7 +577,18 @@ optcomma	: // empty
 		  }
 		;
 
-statement	: WHILE expression optsep opt_list END
+command		: plot_command
+		  { $$ = $1; }
+		| func_def
+		  { $$ = $1; }
+		| global_decl
+		  { $$ = $1; }
+		| if_command
+		  {
+		    iffing--;
+		    $$ = $1;
+		  }
+		| WHILE expression optsep opt_list END
 		  {
 		    maybe_warn_assign_as_truth_value ($2);
 		    if (check_end ($5, token::while_end))
@@ -574,51 +604,6 @@ statement	: WHILE expression optsep opt_list END
 		    looping--;
 		    $$ = new tree_for_command ($2, $4, $6,
 					       $1->line (), $1->column ());
-		  }
-		| IF expression optsep opt_list END
-		  {
-		    maybe_warn_assign_as_truth_value ($2);
-		    if (check_end ($5, token::if_end))
-		      ABORT_PARSE;
-		    iffing--;
-		    $$ = new tree_if_command ($2, $4,
-					      $1->line (), $1->column ());
-		  }
-		| IF expression optsep opt_list ELSE optsep opt_list END
-		  {
-		    maybe_warn_assign_as_truth_value ($2);
-		    if (check_end ($8, token::if_end))
-		      ABORT_PARSE;
-		    iffing--;
-		    tree_if_command *t1 = new tree_if_command
-					    ($7, $5->line (), $5->column ());
-		    $$ = t1->chain ($2, $4, $1->line (), $1->column ());
-		  }
-		| IF expression optsep opt_list elseif END
-		  {
-		    maybe_warn_assign_as_truth_value ($2);
-		    if (check_end ($6, token::if_end))
-		      ABORT_PARSE;
-		    iffing--;
-		    tree_if_command *t1 = $5->reverse ();
-		    // Add the if list to the new head of the elseif
-		    // list, and return the list.
-		    $$ = t1->chain ($2, $4, $1->line (), $1->column ());
-		  }
-		| IF expression optsep opt_list elseif ELSE optsep opt_list END
-		  {
-		    maybe_warn_assign_as_truth_value ($2);
-		    if (check_end ($9, token::if_end))
-		      ABORT_PARSE;
-		    iffing--;
-		    // Add the else list to the head of the elseif list,
-		    // then reverse the list.
-		    tree_if_command *t1 = $5->chain ($8, $6->line (),
-						     $6->column ());
-		    t1 = t1->reverse ();
-		    // Add the if list to the new head of the elseif
-		    // list, and return the list.
-		    $$ = t1->chain ($2, $4, $1->line (), $1->column ());
 		  }
 		| BREAK
 		  {
@@ -655,17 +640,39 @@ statement	: WHILE expression optsep opt_list END
 		  }
 		;
 
-elseif		: ELSEIF optsep expression optsep opt_list
+if_command	: IF if_cmd_list END
+		  {
+		    if (check_end ($3, token::if_end))
+		      ABORT_PARSE;
+		    $$ = new tree_if_command ($2, $1->line (), $1->column ());
+		  }
+		;
+
+if_cmd_list	: if_cmd_list1
+		  { $$ = $1 }
+		| if_cmd_list1 else_clause
+		  { $1->append ($2); }
+		;
+
+if_cmd_list1	: expression optsep opt_list
+		  {
+		    maybe_warn_assign_as_truth_value ($1);
+		    tree_if_clause *t = new tree_if_clause ($1, $3);
+		    $$ = new tree_if_command_list (t);
+		  }
+		| if_cmd_list1 elseif_clause
+		  { $1->append ($2); }
+		;
+
+elseif_clause	: ELSEIF optsep expression optsep opt_list
 		  {
 		    maybe_warn_assign_as_truth_value ($3);
-		    $$ = new tree_if_command ($3, $5, $1->line (),
-					      $1->column ());
+		    $$ = new tree_if_clause ($3, $5);
 		  }
-		| elseif ELSEIF optsep expression optsep opt_list
-		  {
-		    maybe_warn_assign_as_truth_value ($4);
-		    $$ = $1->chain ($4, $6, $2->line (), $2->column ());
-		  }
+		;
+
+else_clause	: ELSE optsep opt_list
+		  { $$ = new tree_if_clause ($3); }
 		;
 
 optsep		: // empty
@@ -686,7 +693,7 @@ screwed_again	: // empty
 
 expression	: variable '=' expression
 		  { $$ = new tree_simple_assignment_expression
-		      ($1, $3, $2->line (), $2->column ()); }
+		      ($1, $3, 0, $2->line (), $2->column ()); }
 		| '[' screwed_again matrix_row SCREW_TWO '=' expression
 		  {
 
@@ -727,77 +734,53 @@ expression	: variable '=' expression
 simple_expr	: simple_expr1
 		  { $$ = $1; }
 		| identifier PLUS_PLUS
-		  { $$ = new tree_postfix_expression
-		      ($1, tree::increment, $2->line (), $2->column ()); }
+		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
 		| identifier MINUS_MINUS
-		  { $$ = new tree_postfix_expression
-		      ($1, tree::decrement, $2->line (), $2->column ()); }
+		  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
 		| simple_expr QUOTE
-		  { $$ = new tree_unary_expression
-		      ($1, tree::hermitian, $2->line (), $2->column ()); }
+		  { $$ = make_unary_op (QUOTE, $1, $2); }
 		| simple_expr TRANSPOSE
-		  { $$ = new tree_unary_expression
-		      ($1, tree::transpose, $2->line (), $2->column ()); }
+		  { $$ = make_unary_op (TRANSPOSE, $1, $2); }
 		| simple_expr POW simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::power, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (POW, $1, $2, $3); }
 		| simple_expr EPOW simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::elem_pow, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EPOW, $1, $2, $3); }
 		| simple_expr '+' simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::add, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op ('+', $1, $2, $3); }
 		| simple_expr '-' simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::subtract, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op ('-', $1, $2, $3); }
 		| simple_expr '*' simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::multiply, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op ('*', $1, $2, $3); }
 		| simple_expr '/' simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::divide, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op ('/', $1, $2, $3); }
 		| simple_expr EMUL simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::el_mul, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EMUL, $1, $2, $3); }
 		| simple_expr EDIV simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::el_div, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EDIV, $1, $2, $3); }
 		| simple_expr LEFTDIV simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::leftdiv, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
 		| simple_expr ELEFTDIV simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::el_leftdiv, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
 		| simple_expr EXPR_LT simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::cmp_lt, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_LT, $1, $2, $3); }
 		| simple_expr EXPR_LE simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::cmp_le, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_LE, $1, $2, $3); }
 		| simple_expr EXPR_EQ simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::cmp_eq, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_EQ, $1, $2, $3); }
 		| simple_expr EXPR_GE simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::cmp_ge, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_GE, $1, $2, $3); }
 		| simple_expr EXPR_GT simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::cmp_gt, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
 		| simple_expr EXPR_NE simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::cmp_ne, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
 		| simple_expr EXPR_AND_AND simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::and_and, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_AND_AND, $1, $2, $3); }
 		| simple_expr EXPR_OR_OR simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::or_or, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_OR_OR, $1, $2, $3); }
 		| simple_expr EXPR_AND simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::and, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
 		| simple_expr EXPR_OR simple_expr
-		  { $$ = new tree_binary_expression
-		      ($1, $3, tree::or, $2->line (), $2->column ()); }
+		  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
 		;
 
 simple_expr1	: NUM
@@ -831,19 +814,15 @@ simple_expr1	: NUM
 		| colon_expr
 		  { $$ = $1; }
 		| PLUS_PLUS identifier %prec UNARY
-		  { $$ = new tree_prefix_expression
-		      ($2, tree::increment, $1->line (), $1->column ()); }
+		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
 		| MINUS_MINUS identifier %prec UNARY
-		  { $$ = new tree_prefix_expression
-		      ($2, tree::decrement, $1->line (), $1->column ()); }
+		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
 		| EXPR_NOT simple_expr
-		  { $$ = new tree_unary_expression
-		      ($2, tree::not, $1->line (), $1->column ()); }
+		  { $$ = make_unary_op (EXPR_NOT, $2, $1); }
 		| '+' simple_expr %prec UNARY
 		  { $$ = $2; }
 		| '-' simple_expr %prec UNARY
-		  { $$ = new tree_unary_expression
-		      ($2, tree::uminus, $1->line (), $1->column ()); }
+		  { $$ = make_unary_op ('-', $2, $1); }
 		;
 
 colon_expr	: simple_expr ':' simple_expr
@@ -867,19 +846,15 @@ word_list_cmd	: identifier word_list
 		  }
 		;
 
-word_list	: word_list1
-		  { $$ = $1->reverse (); }
-		;
-
-word_list1	: TEXT
+word_list	: TEXT
 		  {
 		    tree_constant *tmp = new tree_constant ($1->string ());
 		    $$ = new tree_argument_list (tmp);
 		  }
-		| word_list1 TEXT
+		| word_list TEXT
 		  {
 		    tree_constant *tmp = new tree_constant ($2->string ());
-		    $$ = $1->chain (tmp);
+		    $1->append (tmp);
 		  }
 		;
 
@@ -920,22 +895,20 @@ func_def1	: SCREW safe g_symtab '=' func_def2
 		    tree_identifier *tmp = new tree_identifier
 		      ($1->sym_rec (), $1->line (), $1->column ());
 		    tree_parameter_list *tpl = new tree_parameter_list (tmp);
-		    tpl = tpl->reverse ();
 		    tpl->mark_as_formal_parameters ();
 		    $$ = $5->define_ret_list (tpl);
 		  }
 		| func_def1a ']' g_symtab '=' func_def2
 		  {
-		    tree_parameter_list *tpl = $1->reverse ();
-		    tpl->mark_as_formal_parameters ();
-		    $$ = $5->define_ret_list (tpl);
+		    $1->mark_as_formal_parameters ();
+		    $$ = $5->define_ret_list ($1);
 		  }
 		;
 
 func_def1a	: '[' safe local_symtab identifier
 		  { $$ = new tree_parameter_list ($4); }
 		| func_def1a ',' identifier
-		  { $$ = $1->chain ($3); }
+		  { $1->append ($3); }
 		;
 
 func_def2	: identifier safe local_symtab func_def3
@@ -1053,24 +1026,20 @@ param_list	: '(' ')'
 		| param_list1 ')'
 		  {
 		    quote_is_transpose = 0;
-		    tree_parameter_list *tmp = $1->reverse ();
-		    tmp->mark_as_formal_parameters ();
-		    $$ = tmp;
+		    $1->mark_as_formal_parameters ();
 		  }
 		| param_list1 ',' ELLIPSIS ')'
 		  {
 		    quote_is_transpose = 0;
-		    tree_parameter_list *tmp = $1->reverse ();
-		    tmp->mark_as_formal_parameters ();
-		    tmp->mark_varargs ();
-		    $$ = tmp;
+		    $1->mark_as_formal_parameters ();
+		    $1->mark_varargs ();
 		  }
 		;
 
 param_list1	: '(' identifier
 		  { $$ = new tree_parameter_list ($2); }
 		| param_list1 ',' identifier
-		  { $$ = $1->chain ($3); }
+		  { $1->append ($3); }
 		| '(' error
 		  {
 		    yyerror ("parse error");
@@ -1092,38 +1061,22 @@ identifier	: NAME
 		  }
 		;
 
-arg_list	: arg_list1
-		  { $$ = $1->reverse (); }
-		;
-
-arg_list1	: ':'
+arg_list	: ':'
 		  {
 		    tree_constant *colon;
 		    colon = new tree_constant (tree_constant_rep::magic_colon);
 		    $$ = new tree_argument_list (colon);
 		  }
-		| arg_list1 ',' ':'
+		| arg_list ',' ':'
 		  {
 		    tree_constant *colon;
 		    colon = new tree_constant (tree_constant_rep::magic_colon);
-		    $$ = $1->chain (colon);
-		    if (! $$)
-		      {
-			yyerror ("parse error");
-			ABORT_PARSE;
-		      }
+		    $1->append (colon);
 		  }
 		| expression
 		  { $$ = new tree_argument_list ($1); }
-		| arg_list1 ',' expression
-		  {
-		    $$ = $1->chain ($3);
-		    if (! $$)
-		      {
-			yyerror ("parse error");
-			ABORT_PARSE;
-		      }
-		  }
+		| arg_list ',' expression
+		  { $1->append ($3); }
 		;
 
 matrix		: '[' screwed_again rows ']'
@@ -1146,13 +1099,14 @@ matrix_row	: expression		// First element on row.
 		      {
 			mlnm.pop ();
 			mlnm.push (0);
-			tree_matrix *tmp = new tree_matrix ($1, tree::md_none);
+			tree_matrix *tmp = new tree_matrix
+			  ($1, tree_matrix::md_none);
 			ml.push (tmp);
 		      }
 		    else
 		      {
 			tree_matrix *tmp = ml.pop ();
-			tmp = tmp->chain ($1, tree::md_down);
+			tmp = tmp->chain ($1, tree_matrix::md_down);
 			ml.push (tmp);
 		      }
 		  }
@@ -1160,7 +1114,7 @@ matrix_row	: expression		// First element on row.
 		| matrix_row ',' expression
 		  {
 		    tree_matrix *tmp = ml.pop ();
-		    tmp = tmp->chain ($3, tree::md_right);
+		    tmp = tmp->chain ($3, tree_matrix::md_right);
 		    ml.push (tmp);
 		  }
 		;
@@ -1311,4 +1265,157 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
     {
       warning ("suggest parenthesis around assignment used as truth value");
     }
+}
+
+static tree_expression *
+make_binary_op (int op, tree_expression *op1, token *tok_val,
+		tree_expression *op2)
+{
+  tree_expression::type t;
+  switch (op)
+    {
+    case POW:
+      t = tree_expression::power;
+      break;
+    case EPOW:
+      t = tree_expression::elem_pow;
+      break;
+    case '+':
+      t = tree_expression::add;
+      break;
+    case '-':
+      t = tree_expression::subtract;
+      break;
+    case '*':
+      t = tree_expression::multiply;
+      break;
+    case '/':
+      t = tree_expression::divide;
+      break;
+    case EMUL:
+      t = tree_expression::el_mul;
+      break;
+    case EDIV:
+      t = tree_expression::el_div;
+      break;
+    case LEFTDIV:
+      t = tree_expression::leftdiv;
+      break;
+    case ELEFTDIV:
+      t = tree_expression::el_leftdiv;
+      break;
+    case EXPR_LT:
+      t = tree_expression::cmp_lt;
+      break;
+    case EXPR_LE:
+      t = tree_expression::cmp_le;
+      break;
+    case EXPR_EQ:
+      t = tree_expression::cmp_eq;
+      break;
+    case EXPR_GE:
+      t = tree_expression::cmp_ge;
+      break;
+    case EXPR_GT:
+      t = tree_expression::cmp_gt;
+      break;
+    case EXPR_NE:
+      t = tree_expression::cmp_ne;
+      break;
+    case EXPR_AND_AND:
+      t = tree_expression::and_and;
+      break;
+    case EXPR_OR_OR:
+      t = tree_expression::or_or;
+      break;
+    case EXPR_AND:
+      t = tree_expression::and;
+      break;
+    case EXPR_OR:
+      t = tree_expression::or;
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  return new tree_binary_expression (op1, op2, t, l, c);
+}
+
+static tree_expression *
+make_prefix_op (int op, tree_identifier *op1, token *tok_val)
+{
+  tree_expression::type t;
+  switch (op)
+    {
+    case PLUS_PLUS:
+      t = tree_expression::increment;
+      break;
+    case MINUS_MINUS:
+      t = tree_expression::decrement;
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  return new tree_prefix_expression (op1, t, l, c);
+}
+
+static tree_expression *
+make_postfix_op (int op, tree_identifier *op1, token *tok_val)
+{
+  tree_expression::type t;
+  switch (op)
+    {
+    case PLUS_PLUS:
+      t = tree_expression::increment;
+      break;
+    case MINUS_MINUS:
+      t = tree_expression::decrement;
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  return new tree_postfix_expression (op1, t, l, c);
+}
+
+static tree_expression *
+make_unary_op (int op, tree_expression *op1, token *tok_val)
+{
+  tree_expression::type t;
+  switch (op)
+    {
+    case QUOTE:
+      t = tree_expression::hermitian;
+      break;
+    case TRANSPOSE:
+      t = tree_expression::transpose;
+      break;
+    case EXPR_NOT:
+      t = tree_expression::not;
+      break;
+    case '-':
+      t = tree_expression::uminus;
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  return new tree_unary_expression (op1, t, l, c);
 }

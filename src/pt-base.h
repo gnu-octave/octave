@@ -33,58 +33,19 @@ class
 tree
 {
 public:
-  enum matrix_dir
+  tree (int l = -1, int c = -1)
     {
-      md_none,
-      md_right,
-      md_down,
-    };
-
-  enum expression_type
-    {
-      unknown,
-      assignment,
-      simple_assignment,
-      multi_assignment,
-      add,
-      subtract,
-      multiply,
-      el_mul,
-      divide,
-      el_div,
-      leftdiv,
-      el_leftdiv,
-      power,
-      elem_pow,
-      cmp_lt,
-      cmp_le,
-      cmp_eq,
-      cmp_ge,
-      cmp_gt,
-      cmp_ne,
-      and_and,
-      or_or,
-      and,
-      or,
-      not,
-      unot,
-      uminus,
-      hermitian,
-      transpose,
-      colon,
-      index,
-      increment,
-      decrement,
-   };
+      line_num = l;
+      column_num = c;
+    }
 
   virtual ~tree (void) { }
 
-  virtual tree_constant eval (int print) = 0;
-
   virtual int line (void) const { return line_num; }
+
   virtual int column (void) const { return column_num; }
 
-protected:
+private:
   int line_num;
   int column_num;
 };

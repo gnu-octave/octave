@@ -24,70 +24,70 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_arith_ops_h)
 #define octave_arith_ops_h 1
 
-#include "tree-base.h"
+#include "tree-expr.h"
 
 class Complex;
 class Matrix;
 class ComplexMatrix;
 class tree_constant;
 
-extern tree_constant do_unary_op (double d, tree::expression_type t);
+extern tree_constant do_unary_op (double d, tree_expression::type t);
 
-extern tree_constant do_unary_op (const Matrix& a, tree::expression_type t);
+extern tree_constant do_unary_op (const Matrix& a, tree_expression::type t);
 
-extern tree_constant do_unary_op (const Complex& c, tree::expression_type t);
+extern tree_constant do_unary_op (const Complex& c, tree_expression::type t);
 
 extern tree_constant do_unary_op (const ComplexMatrix& a,
-				  tree::expression_type t);
+				  tree_expression::type t);
 
 extern tree_constant do_binary_op (double a, double b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (double a, const Matrix& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (double a, const Complex& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (double a, const ComplexMatrix& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Matrix& a, double b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Matrix& a, const Matrix& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Matrix& a, const Complex& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Matrix& a, const ComplexMatrix& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Complex& a, double b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Complex& a, const Matrix& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Complex& a, const Complex& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const Complex& a, const ComplexMatrix& b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const ComplexMatrix& a, double b,
-				   tree::expression_type t);
+				   tree_expression::type t);
 
 extern tree_constant do_binary_op (const ComplexMatrix& a, const Matrix& b,
-				   tree::expression_type t); 
+				   tree_expression::type t); 
 
 extern tree_constant do_binary_op (const ComplexMatrix& a, const Complex& b,
-				   tree::expression_type t); 
+				   tree_expression::type t); 
 
 extern tree_constant do_binary_op (const ComplexMatrix& a,
 				   const ComplexMatrix& b,
-				   tree::expression_type t); 
+				   tree_expression::type t); 
 
 #endif
 

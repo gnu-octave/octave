@@ -800,20 +800,20 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
  */
 
 tree_constant
-do_unary_op (double d, tree::expression_type t)
+do_unary_op (double d, tree_expression::type t)
 {
   double result = 0.0;
 
   switch (t)
     {
-    case tree::not:
+    case tree_expression::not:
       result = (! d);
       break;
-    case tree::uminus:
+    case tree_expression::uminus:
       result = -d;
       break;
-    case tree::hermitian:
-    case tree::transpose:
+    case tree_expression::hermitian:
+    case tree_expression::transpose:
       result = d;
       break;
     default:
@@ -825,20 +825,20 @@ do_unary_op (double d, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (const Matrix& a, tree::expression_type t)
+do_unary_op (const Matrix& a, tree_expression::type t)
 {
   Matrix result;
 
   switch (t)
     {
-    case tree::not:
+    case tree_expression::not:
       result = (! a);
       break;
-    case tree::uminus:
+    case tree_expression::uminus:
       result = -a;
       break;
-    case tree::hermitian:
-    case tree::transpose:
+    case tree_expression::hermitian:
+    case tree_expression::transpose:
       result = a.transpose ();
       break;
     default:
@@ -850,22 +850,22 @@ do_unary_op (const Matrix& a, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (const Complex& c, tree::expression_type t)
+do_unary_op (const Complex& c, tree_expression::type t)
 {
   Complex result = 0.0;
 
   switch (t)
     {
-    case tree::not:
+    case tree_expression::not:
       result = (c == 0.0);
       break;
-    case tree::uminus:
+    case tree_expression::uminus:
       result = -c;
       break;
-    case tree::hermitian:
+    case tree_expression::hermitian:
       result = conj (c);
       break;
-    case tree::transpose:
+    case tree_expression::transpose:
       result = c;
       break;
     default:
@@ -877,22 +877,22 @@ do_unary_op (const Complex& c, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (const ComplexMatrix& a, tree::expression_type t)
+do_unary_op (const ComplexMatrix& a, tree_expression::type t)
 {
   ComplexMatrix result;
 
   switch (t)
     {
-    case tree::not:
+    case tree_expression::not:
       result = (! a);
       break;
-    case tree::uminus:
+    case tree_expression::uminus:
       result = -a;
       break;
-    case tree::hermitian:
+    case tree_expression::hermitian:
       result = a.hermitian ();
       break;
-    case tree::transpose:
+    case tree_expression::transpose:
       result = a.transpose ();
       break;
     default:
@@ -921,60 +921,60 @@ do_unary_op (const ComplexMatrix& a, tree::expression_type t)
 
 /* 1 */
 tree_constant
-do_binary_op (double a, double b, tree::expression_type t)
+do_binary_op (double a, double b, tree_expression::type t)
 {
   double result = 0.0;
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       if (b == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       result = a / b;
       break;
-    case tree::leftdiv:
-    case tree::el_leftdiv:
+    case tree_expression::leftdiv:
+    case tree_expression::el_leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       result = b / a;
       break;
-    case tree::power:
-    case tree::elem_pow:
+    case tree_expression::power:
+    case tree_expression::elem_pow:
       return xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result = a < b;
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result = a <= b;
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result = a == b;
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result = a >= b;
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result = a > b;
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result = a != b;
       break;
-    case tree::and:
+    case tree_expression::and:
       result = (a && b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result = (a || b);
       break;
     default:
@@ -990,62 +990,62 @@ do_binary_op (double a, double b, tree::expression_type t)
 
 /* 2 */
 tree_constant
-do_binary_op (double a, const Matrix& b, tree::expression_type t)
+do_binary_op (double a, const Matrix& b, tree_expression::type t)
 {
   Matrix result;
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result = a - b;
       break;
-    case tree::el_leftdiv:
-    case tree::leftdiv:
+    case tree_expression::el_leftdiv:
+    case tree_expression::leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       a = 1.0 / a;
 // fall through...
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       return x_el_div (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
     default:
@@ -1061,7 +1061,7 @@ do_binary_op (double a, const Matrix& b, tree::expression_type t)
 
 /* 3 */
 tree_constant
-do_binary_op (double a, const Complex& b, tree::expression_type t)
+do_binary_op (double a, const Complex& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1071,66 +1071,66 @@ do_binary_op (double a, const Complex& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result_type = RT_complex;
       if (b == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       complex_result = a / b;
       break;
-    case tree::leftdiv:
-    case tree::el_leftdiv:
+    case tree_expression::leftdiv:
+    case tree_expression::el_leftdiv:
       result_type = RT_complex;
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       complex_result = b / a;
       break;
-    case tree::power:
-    case tree::elem_pow:
+    case tree_expression::power:
+    case tree_expression::elem_pow:
       return xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = a < real (b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = a <= real (b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = a == b;
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = a >= real (b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = a > real (b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = a != b;
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = (a && (b != 0.0));
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = (a || (b != 0.0));
       break;
@@ -1152,7 +1152,7 @@ do_binary_op (double a, const Complex& b, tree::expression_type t)
 
 /* 4 */
 tree_constant
-do_binary_op (double a, const ComplexMatrix& b, tree::expression_type t)
+do_binary_op (double a, const ComplexMatrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1162,66 +1162,66 @@ do_binary_op (double a, const ComplexMatrix& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::el_leftdiv:
-    case tree::leftdiv:
+    case tree_expression::el_leftdiv:
+    case tree_expression::leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       a = 1.0 / a;
 // fall through...
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       return x_el_div (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -1243,60 +1243,60 @@ do_binary_op (double a, const ComplexMatrix& b, tree::expression_type t)
 
 /* 5 */
 tree_constant
-do_binary_op (const Matrix& a, double b, tree::expression_type t)
+do_binary_op (const Matrix& a, double b, tree_expression::type t)
 {
   Matrix result;
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result = a / b;
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       return x_el_div (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
     default:
@@ -1312,78 +1312,78 @@ do_binary_op (const Matrix& a, double b, tree::expression_type t)
 
 /* 6 */
 tree_constant
-do_binary_op (const Matrix& a, const Matrix& b, tree::expression_type t)
+do_binary_op (const Matrix& a, const Matrix& b, tree_expression::type t)
 {
   Matrix result;
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       if (m_add_conform (a, b, 1))
 	result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       if (m_add_conform (a, b, 1))
 	result = a - b;
       break;
-    case tree::el_mul:
+    case tree_expression::el_mul:
       if (m_add_conform (a, b, 1))
 	result = product (a, b);
       break;
-    case tree::multiply:
+    case tree_expression::multiply:
       if (m_mul_conform (a, b, 1))
 	result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       if (m_add_conform (a, b, 1))
 	result = quotient (a, b);
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       if (m_add_conform (a, b, 1))
 	result = quotient (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       return xleftdiv (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       return xdiv (a, b);
       break;
-    case tree::power:
+    case tree_expression::power:
       error ("can't do A ^ B for A and B both matrices");
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -1400,7 +1400,7 @@ do_binary_op (const Matrix& a, const Matrix& b, tree::expression_type t)
 
 /* 7 */
 tree_constant
-do_binary_op (const Matrix& a, const Complex& b, tree::expression_type t)
+do_binary_op (const Matrix& a, const Complex& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1410,65 +1410,65 @@ do_binary_op (const Matrix& a, const Complex& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result_type = RT_complex;
       complex_result = a / b;
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       return x_el_div (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -1490,7 +1490,7 @@ do_binary_op (const Matrix& a, const Complex& b, tree::expression_type t)
 
 /* 8 */
 tree_constant
-do_binary_op (const Matrix& a, const ComplexMatrix& b, tree::expression_type t)
+do_binary_op (const Matrix& a, const ComplexMatrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1500,85 +1500,85 @@ do_binary_op (const Matrix& a, const ComplexMatrix& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a - b;
       break;
-    case tree::el_mul:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = product (a, b);
       break;
-    case tree::multiply:
+    case tree_expression::multiply:
       result_type = RT_complex;
       if (m_mul_conform (a, b, 1))
 	complex_result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = quotient (a, b);
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = quotient (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       return xleftdiv (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       return xdiv (a, b);
       break;
-    case tree::power:
+    case tree_expression::power:
       error ("can't do A ^ B for A and B both matrices");
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
@@ -1601,7 +1601,7 @@ do_binary_op (const Matrix& a, const ComplexMatrix& b, tree::expression_type t)
 
 /* 9 */
 tree_constant
-do_binary_op (const Complex& a, double b, tree::expression_type t)
+do_binary_op (const Complex& a, double b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1611,66 +1611,66 @@ do_binary_op (const Complex& a, double b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result_type = RT_complex;
       if (b == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       complex_result = a / b;
       break;
-    case tree::leftdiv:
-    case tree::el_leftdiv:
+    case tree_expression::leftdiv:
+    case tree_expression::el_leftdiv:
       result_type = RT_complex;
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       complex_result = b / a;
       break;
-    case tree::power:
-    case tree::elem_pow:
+    case tree_expression::power:
+    case tree_expression::elem_pow:
       return xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = real (a) < b;
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = real (a) <= b;
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = a == b;
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = real (a) >= b;
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = real (a) > b;
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = a != b;
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = ((a != 0.0) && b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = ((a != 0.0) || b);
       break;
@@ -1692,7 +1692,7 @@ do_binary_op (const Complex& a, double b, tree::expression_type t)
 
 /* 10 */
 tree_constant
-do_binary_op (const Complex& a, const Matrix& b, tree::expression_type t)
+do_binary_op (const Complex& a, const Matrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1702,67 +1702,67 @@ do_binary_op (const Complex& a, const Matrix& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::el_leftdiv:
-    case tree::leftdiv:
+    case tree_expression::el_leftdiv:
+    case tree_expression::leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       result_type = RT_complex;
       complex_result = b / a;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       return x_el_div (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -1784,7 +1784,7 @@ do_binary_op (const Complex& a, const Matrix& b, tree::expression_type t)
 
 /* 11 */
 tree_constant
-do_binary_op (const Complex& a, const Complex& b, tree::expression_type t)
+do_binary_op (const Complex& a, const Complex& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1794,66 +1794,66 @@ do_binary_op (const Complex& a, const Complex& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result_type = RT_complex;
       if (b == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       complex_result = a / b;
       break;
-    case tree::leftdiv:
-    case tree::el_leftdiv:
+    case tree_expression::leftdiv:
+    case tree_expression::el_leftdiv:
       result_type = RT_complex;
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       complex_result = b / a;
       break;
-    case tree::power:
-    case tree::elem_pow:
+    case tree_expression::power:
+    case tree_expression::elem_pow:
       return xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = real (a) < real (b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = real (a) <= real (b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = a == b;
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = real (a) >= real (b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = real (a) > real (b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = a != b;
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = ((a != 0.0) && (b != 0.0));
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = ((a != 0.0) || (b != 0.0));
       break;
@@ -1876,7 +1876,7 @@ do_binary_op (const Complex& a, const Complex& b, tree::expression_type t)
 /* 12 */
 tree_constant
 do_binary_op (const Complex& a, const ComplexMatrix& b,
-	      tree::expression_type t)
+	      tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1886,67 +1886,67 @@ do_binary_op (const Complex& a, const ComplexMatrix& b,
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::el_leftdiv:
-    case tree::leftdiv:
+    case tree_expression::el_leftdiv:
+    case tree_expression::leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
       result_type = RT_complex;
       complex_result = b / a;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       return x_el_div (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -1968,7 +1968,7 @@ do_binary_op (const Complex& a, const ComplexMatrix& b,
 
 /* 13 */
 tree_constant
-do_binary_op (const ComplexMatrix& a, double b, tree::expression_type t)
+do_binary_op (const ComplexMatrix& a, double b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1978,65 +1978,65 @@ do_binary_op (const ComplexMatrix& a, double b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result_type = RT_complex;
       complex_result = a / b;
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       return x_el_div (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -2058,7 +2058,7 @@ do_binary_op (const ComplexMatrix& a, double b, tree::expression_type t)
 
 /* 14 */
 tree_constant
-do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
+do_binary_op (const ComplexMatrix& a, const Matrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -2068,85 +2068,85 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a - b;
       break;
-    case tree::el_mul:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = product (a, b);
       break;
-    case tree::multiply:
+    case tree_expression::multiply:
       result_type = RT_complex;
       if (m_mul_conform (a, b, 1))
 	complex_result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = quotient (a, b);
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = quotient (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       return xleftdiv (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       return xdiv (a, b);
       break;
-    case tree::power:
+    case tree_expression::power:
       error ("can't do A ^ B for A and B both matrices");
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
@@ -2170,7 +2170,7 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
 /* 15 */
 tree_constant
 do_binary_op (const ComplexMatrix& a, const Complex& b,
-	      tree::expression_type t)
+	      tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -2180,65 +2180,65 @@ do_binary_op (const ComplexMatrix& a, const Complex& b,
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       complex_result = a - b;
       break;
-    case tree::multiply:
-    case tree::el_mul:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       complex_result = a * b;
       break;
-    case tree::divide:
-    case tree::el_div:
+    case tree_expression::divide:
+    case tree_expression::el_div:
       result_type = RT_complex;
       complex_result = a / b;
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       return x_el_div (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
-    case tree::power:
+    case tree_expression::power:
       return xpow (a, b);
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       result = mx_stupid_bool_op (Matrix_OR, a, b);
       break;
@@ -2261,7 +2261,7 @@ do_binary_op (const ComplexMatrix& a, const Complex& b,
 /* 16 */
 tree_constant
 do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
-	      tree::expression_type t)
+	      tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -2271,85 +2271,85 @@ do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
 
   switch (t)
     {
-    case tree::add:
+    case tree_expression::add:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a + b;
       break;
-    case tree::subtract:
+    case tree_expression::subtract:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a - b;
       break;
-    case tree::el_mul:
+    case tree_expression::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = product (a, b);
       break;
-    case tree::multiply:
+    case tree_expression::multiply:
       result_type = RT_complex;
       if (m_mul_conform (a, b, 1))
 	complex_result = a * b;
       break;
-    case tree::el_div:
+    case tree_expression::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = quotient (a, b);
       break;
-    case tree::el_leftdiv:
+    case tree_expression::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = quotient (b, a);
       break;
-    case tree::leftdiv:
+    case tree_expression::leftdiv:
       return xleftdiv (a, b);
       break;
-    case tree::divide:
+    case tree_expression::divide:
       return xdiv (a, b);
       break;
-    case tree::power:
+    case tree_expression::power:
       error ("can't do A ^ B for A and B both matrices");
       break;
-    case tree::elem_pow:
+    case tree_expression::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
       break;
-    case tree::cmp_lt:
+    case tree_expression::cmp_lt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
       break;
-    case tree::cmp_le:
+    case tree_expression::cmp_le:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
       break;
-    case tree::cmp_eq:
+    case tree_expression::cmp_eq:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
       break;
-    case tree::cmp_ge:
+    case tree_expression::cmp_ge:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
       break;
-    case tree::cmp_gt:
+    case tree_expression::cmp_gt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
       break;
-    case tree::cmp_ne:
+    case tree_expression::cmp_ne:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
       break;
-    case tree::and:
+    case tree_expression::and:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
       break;
-    case tree::or:
+    case tree_expression::or:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);

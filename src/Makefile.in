@@ -58,9 +58,9 @@ INCLUDES = arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	missing-math.h octave.h octave-hist.h \
 	oct-obj.h pager.h parse.h pr-output.h procstream.h \
 	sighandlers.h statdefs.h symtab.h sysdep.h token.h tree.h \
-	tree-base.h tree-cmd.h tree-const.h tree-expr.h tree-plot.h \
-	tc-rep.h unwind-prot.h user-prefs.h utils.h variables.h \
-	version.h xdiv.h xpow.h SLStack.h Stack.h
+	tree-base.h tree-cmd.h tree-const.h tree-expr.h tree-misc.h \
+	tree-plot.h tc-rep.h unwind-prot.h user-prefs.h utils.h \
+	variables.h version.h xdiv.h xpow.h SLStack.h Stack.h
 
 SOURCES = arith-ops.cc data.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fnmatch.c getopt.c getopt1.c gripes.cc \
@@ -68,9 +68,9 @@ SOURCES = arith-ops.cc data.cc dirfns.cc dynamic-ld.cc \
 	oct-obj.cc octave-hist.cc pager.cc parse.y pr-output.cc \
 	procstream.cc sighandlers.cc strcasecmp.c strncase.c \
 	symtab.cc sysdep.cc tc-inlines.cc tc-rep.cc timefns.cc \
-	token.cc tree-cmd.cc tree-const.cc tree-expr.cc tree-plot.cc \
-	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
-	xpow.cc SLStack.cc \
+	token.cc tree-cmd.cc tree-const.cc tree-expr.cc tree-misc.cc \
+	tree-plot.cc unwind-prot.cc user-prefs.cc utils.cc \
+	variables.cc xdiv.cc xpow.cc SLStack.cc \
 	$(DLD_SRC)
 
 # Ugh.
@@ -95,8 +95,8 @@ OBJECTS = arith-ops.o builtins.o data.o dirfns.o error.o \
 	oct-obj.o pager.o parse.o pr-output.o procstream.o sighandlers.o \
 	strcasecmp.o strncase.o symtab.o sysdep.o tc-rep.o timefns.o \
 	token.o tree-cmd.o tree-const.o tree-expr.o tree-plot.o \
-	unwind-prot.o user-prefs.o utils.o variables.o xdiv.o xpow.o \
-	SLStack.o \
+	tree-misc.o unwind-prot.o user-prefs.o utils.o variables.o \
+	xdiv.o xpow.o SLStack.o \
 	@DYNAMIC_LD_OBJ@
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave.a ../libcruft.a ../libinfo.a \

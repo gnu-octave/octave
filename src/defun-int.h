@@ -76,10 +76,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // XXX FIXME XXX -- eliminate the need for these in the functions that
 // use them?
 
-#define DEFINE_ARGV(warnfor) \
+#define DEFINE_ARGV(fcn_name) \
   int argc = args.length (); \
   int save_argc = argc; \
-  char **argv = make_argv (args, warnfor); \
+  char **argv = make_argv (args, fcn_name); \
   char **save_argv = argv; \
   if (error_state) \
     return retval

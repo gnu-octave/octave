@@ -921,7 +921,7 @@ tree_constant_rep::make_numeric (int force_str_conv) const
 }
 
 tree_constant
-do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
+do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 {
   tree_constant ans;
 
@@ -1066,7 +1066,7 @@ do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (tree_constant& a, tree::expression_type t)
+do_unary_op (tree_constant& a, tree_expression::type t)
 {
   tree_constant ans;
 
@@ -1113,11 +1113,11 @@ do_unary_op (tree_constant& a, tree::expression_type t)
 }
 
 void
-tree_constant_rep::bump_value (tree::expression_type etype)
+tree_constant_rep::bump_value (tree_expression::type etype)
 {
   switch (etype)
     {
-    case tree::increment:
+    case tree_expression::increment:
       switch (type_tag)
 	{
 	case scalar_constant:
@@ -1145,7 +1145,7 @@ tree_constant_rep::bump_value (tree::expression_type etype)
 	  break;
 	}
       break;
-    case tree::decrement:
+    case tree_expression::decrement:
       switch (type_tag)
 	{
 	case scalar_constant:

@@ -248,7 +248,7 @@ public:
   tree_constant mapper (Mapper_fcn& m_fcn, int print) const
     { return rep->mapper (m_fcn, print); }
 
-  void bump_value (tree::expression_type et)
+  void bump_value (tree_expression::type et)
     {
       if (rep->count > 1)
 	{

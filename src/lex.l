@@ -1056,6 +1056,8 @@ is_keyword (char *s)
     }
   else if (strcmp ("global", s) == 0)
     {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return GLOBAL;
     }
   else if (strcmp ("gplot", s) == 0)

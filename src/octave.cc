@@ -50,6 +50,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "sighandlers.h"
 #include "variables.h"
 #include "error.h"
+#include "tree-misc.h"
 #include "tree-const.h"
 #include "tree-plot.h"
 #include "utils.h"
@@ -110,7 +111,7 @@ int current_command_number = 1;
 int quitting_gracefully = 0;
 
 // Current command to execute.
-tree *global_command = 0;
+tree_statement_list *global_command = 0;
 
 // Pointer to function that is currently being evaluated.
 tree_function *curr_function = 0;
@@ -137,6 +138,9 @@ octave_Complex_error_handler (const char* msg)
 
 // Nonzero means we read ~/.octaverc and ./.octaverc.
 static int read_init_files = 1;
+
+// Nonzero means we printed messages about reading startup files.
+static int reading_startup_message_printed = 0;
 
 // Nonzero means we don\'t print the usual startup message.
 static int inhibit_startup_message = 0;
@@ -242,7 +246,7 @@ parse_and_execute (FILE *f, int print)
 }
 
 void
-parse_and_execute (char *s, int print)
+parse_and_execute (char *s, int print, int verbose)
 {
   begin_unwind_frame ("parse_and_execute_2");
 
@@ -261,7 +265,17 @@ parse_and_execute (char *s, int print)
       current_input_column = 1;
       echo_input = 0;
 
+      if (verbose)
+	{
+	  cout << "Reading commands from " << s << " ... ";
+	  reading_startup_message_printed = 1;
+	  cout.flush ();
+	}
+
       parse_and_execute (f, print);
+
+      if (verbose)
+	cout << "done." << endl;
     }
 
   run_unwind_frame ("parse_and_execute_2");
@@ -278,11 +292,13 @@ execute_startup_files (void)
   unwind_protect_int (input_from_startup_file);
   input_from_startup_file = 1;
 
+  int verbose = ! inhibit_startup_message;
+
 // Execute commands from the site-wide configuration file.
 
   char *sd = get_site_defaults ();
 
-  parse_and_execute (sd, 0);
+  parse_and_execute (sd, 0, verbose);
 
 // Try to execute commands from $HOME/.octaverc and ./.octaverc.
 
@@ -290,7 +306,7 @@ execute_startup_files (void)
   if (home_directory)
     {
       home_rc = strconcat (home_directory, "/.octaverc");
-      parse_and_execute (home_rc, 0);
+      parse_and_execute (home_rc, 0, verbose);
     }
 
 // Names alone are not enough.
@@ -303,7 +319,7 @@ execute_startup_files (void)
   stat ("./.octaverc", &dot_rc_statbuf);
 
   if (home_rc_statbuf.st_ino != dot_rc_statbuf.st_ino)
-    parse_and_execute ("./.octaverc", 0);
+    parse_and_execute ("./.octaverc", 0, verbose);
 
   run_unwind_frame ("execute_startup_files");
 }
@@ -464,12 +480,21 @@ main (int argc, char **argv)
 
   install_signal_handlers ();
 
+  if (! inhibit_startup_message)
+    cout << "Octave, version " << version_string
+	 << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton.\n"
+	 << "This is free software with ABSOLUTELY NO WARRANTY.\n"
+	 << "For details, type `warranty'.\n" << endl;
+
   if (read_init_files)
     {
       saving_history = 0;
       execute_startup_files ();
       saving_history = 1;
     }
+
+  if (! inhibit_startup_message && reading_startup_message_printed)
+    cout << endl;
 
 // Avoid counting commands executed from startup files.
   current_command_number = 1;
@@ -513,15 +538,6 @@ main (int argc, char **argv)
 
   if (! (interactive || forced_interactive))
     using_readline = 0;
-
-  if (! inhibit_startup_message)
-    {
-      cout << "Octave, version " << version_string
-	   << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton.\n"
-	   << "This is free software with ABSOLUTELY NO WARRANTY.\n"
-	   << "For details, type `warranty'.\n"
-	   << endl;
-    }
 
 // Allow the user to interrupt us without exiting.
 
@@ -703,7 +719,7 @@ eval_string (const char *string, int print, int ans_assign,
 // trying to eval the command we just parsed -- it might contain the
 // name of an function file that still needs to be parsed!
 
-  tree *command = global_command;
+  tree_statement_list *command = global_command;
 
   run_unwind_frame ("eval_string");
 

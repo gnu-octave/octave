@@ -47,6 +47,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "pager.h"
 #include "tree.h"
 #include "tree-expr.h"
+#include "tree-misc.h"
 #include "tree-const.h"
 #include "input.h"
 #include "symtab.h"
@@ -71,9 +72,8 @@ extern int returning;
 // We seem to have no use for this now.  Maybe it will be needed at
 // some future date, so here it is.
 #if 0
-/*
- * Convert a linked list of trees to a vector of pointers to trees.
- */
+// Convert a linked list of trees to a vector of pointers to trees.
+
 static tree **
 list_to_vector (tree *list, int& len)
 {
@@ -106,9 +106,8 @@ print_as_scalar (const tree_constant& val)
 		  || nc == 0)));
 }
 
-/*
- * Make sure that all arguments have values.
- */
+// Make sure that all arguments have values.
+
 static int
 all_args_defined (const Octave_object& args)
 {
@@ -122,9 +121,8 @@ all_args_defined (const Octave_object& args)
   return 1;
 }
 
-/*
- * Are any of the arguments `:'?
- */
+// Are any of the arguments `:'?
+
 static int
 any_arg_is_magic_colon (const Octave_object& args)
 {
@@ -142,24 +140,9 @@ any_arg_is_magic_colon (const Octave_object& args)
 // are now defined in tree-const.cc.  This should help speed up
 // compilation when working only on the tree_constant class.
 
-/*
- * General matrices.  This list type is much more work to handle than
- * constant matrices, but it allows us to construct matrices from
- * other matrices, variables, and functions.
- */
-tree_matrix::tree_matrix (void)
-{
-  dir = tree::md_none;
-  element = 0;
-  next = 0;
-}
-
-tree_matrix::tree_matrix (tree_expression *e, tree::matrix_dir d)
-{
-  dir = d;
-  element = e;
-  next = 0;
-}
+// General matrices.  This list type is much more work to handle than
+// constant matrices, but it allows us to construct matrices from
+// other matrices, variables, and functions.
 
 tree_matrix::~tree_matrix (void)
 {
@@ -168,7 +151,7 @@ tree_matrix::~tree_matrix (void)
 }
 
 tree_matrix *
-tree_matrix::chain (tree_expression *t, tree::matrix_dir d)
+tree_matrix::chain (tree_expression *t, tree_matrix::dir d)
 {
   tree_matrix *tmp = new tree_matrix (t, d);
   tmp->next = this;
@@ -209,26 +192,32 @@ tree_return_list *
 tree_matrix::to_return_list (void)
 {
   tree_return_list *retval = 0;
+
   tree_matrix *list;
+
   for (list = this; list; list = list->next)
     {
       tree_expression *elem = list->element;
-      if (elem->is_identifier ())
+
+      int is_id = elem->is_identifier ();
+
+      int is_idx_expr = elem->is_index_expression ();
+
+      if (is_id || is_idx_expr)
 	{
-	  tree_identifier *id = (tree_identifier *) elem;
-	  if (list == this)
-	    retval = new tree_return_list (id);
+	  tree_index_expression *idx_expr;
+	  if (is_id)
+	    {
+	      tree_identifier *id = (tree_identifier *) elem;
+	      idx_expr = new tree_index_expression (id);
+	    }
 	  else
-	    retval = retval->chain (id);
-	}
-      else if (elem->is_index_expression ())
-//	       && ! ((tree_index_expression *) elem) -> arg_list ())
-	{
-	  tree_index_expression *idx_expr = (tree_index_expression *) elem;
+	    idx_expr = (tree_index_expression *) elem;
+
 	  if (list == this)
 	    retval = new tree_return_list (idx_expr);
 	  else
-	    retval = retval->chain (idx_expr);
+	    retval->append (idx_expr);
 	}
       else
 	{
@@ -238,8 +227,6 @@ tree_matrix::to_return_list (void)
 	}
     }
 
-  if (retval)
-    retval = retval->reverse ();
   return retval;
 }
 
@@ -247,7 +234,7 @@ tree_matrix::to_return_list (void)
 
 struct const_matrix_list
 {
-  tree::matrix_dir dir;
+  tree_matrix::dir dir_next;
   tree_constant elem;
   int nr;
   int nc;
@@ -330,7 +317,7 @@ tree_matrix::eval (int print)
       int nr = tmp.rows ();
       int nc = tmp.columns ();
 
-      matrix_dir direct = ptr->dir;
+      dir direct = ptr->dir_next;
 
       if (nr == 0 || nc == 0)
 	{
@@ -352,10 +339,10 @@ tree_matrix::eval (int print)
       if (found_new_row_in_empties)
 	{
 	  found_new_row_in_empties = 0;
-	  list[len].dir = md_down;
+	  list[len].dir_next = md_down;
 	}
       else
-	list[len].dir = direct;
+	list[len].dir_next = direct;
 
       list[len].elem = tmp;
       list[len].nr = nr;
@@ -382,7 +369,8 @@ tree_matrix::eval (int print)
 
   for (i = 0; i < len; i++)
     {
-      matrix_dir direct = list[i].dir;
+      dir direct = list[i].dir_next;
+
       int nr = list[i].nr;
       int nc = list[i].nc;
 
@@ -472,7 +460,7 @@ tree_matrix::eval (int print)
 	}
       else
 	{
-	  switch (list[i].dir)
+	  switch (list[i].dir_next)
 	    {
 	    case md_right:
 	      put_col += prev_nc;
@@ -584,9 +572,8 @@ tree_fvc::assign (tree_constant& t, const Octave_object& args)
   return tree_constant ();
 }
 
-/*
- * Builtin functions.
- */
+// Builtin functions.
+
 tree_builtin::tree_builtin (const char *nm)
 {
   nargin_max = -1;
@@ -620,23 +607,6 @@ tree_builtin::tree_builtin (int i_max, int o_max, Octave_builtin_fcn g_fcn,
     my_name = strsave (nm);
 }
 
-tree_builtin::~tree_builtin (void)
-{
-}
-
-#if 0
-int
-tree_builtin::is_builtin (void) const
-{
-  return 1;
-}
-#endif
-
-int
-tree_builtin::is_mapper_function (void) const
-{
-  return is_mapper;
-}
 
 tree_constant
 tree_builtin::eval (int print)
@@ -694,12 +664,6 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
   return retval;
 }
 
-char *
-tree_builtin::name (void) const
-{
-  return my_name;
-}
-
 int
 tree_builtin::max_expected_args (void)
 {
@@ -711,34 +675,7 @@ tree_builtin::max_expected_args (void)
   return ea;
 }
 
-/*
- * Symbols from the symbol table.
- */
-tree_identifier::tree_identifier (int l, int c)
-{
-  sym = 0;
-  line_num = l;
-  column_num = c;
-  maybe_do_ans_assign = 0;
-}
-
-tree_identifier::tree_identifier (symbol_record *s, int l, int c)
-{
-  sym = s;
-  line_num = l;
-  column_num = c;
-  maybe_do_ans_assign = 0;
-}
-
-tree_identifier::~tree_identifier (void)
-{
-}
-
-int
-tree_identifier::is_identifier (void) const
-{
-  return 1;
-}
+// Symbols from the symbol table.
 
 char *
 tree_identifier::name (void) const
@@ -859,7 +796,7 @@ tree_identifier::is_defined (void)
 }
 
 void
-tree_identifier::bump_value (tree::expression_type etype)
+tree_identifier::bump_value (tree_expression::type etype)
 {
   if (sym)
     {
@@ -1055,22 +992,21 @@ tree_identifier::eval_undefined_error (void)
     ::error ("`%s' undefined near line %d column %d", nm, l, c);
 }
 
-/*
- * Try to find a definition for an identifier.  Here's how:
- *
- *   * If the identifier is already defined and is a function defined
- *     in an function file that has been modified since the last time 
- *     we parsed it, parse it again.
- *
- *   * If the identifier is not defined, try to find a builtin
- *     variable or an already compiled function with the same name.
- *
- *   * If the identifier is still undefined, try looking for an
- *     function file to parse.
- *
- *   * On systems that support dynamic linking, we prefer .oct files
- *     over .m files.
- */
+// Try to find a definition for an identifier.  Here's how:
+//
+//   * If the identifier is already defined and is a function defined
+//     in an function file that has been modified since the last time 
+//     we parsed it, parse it again.
+//
+//   * If the identifier is not defined, try to find a builtin
+//     variable or an already compiled function with the same name.
+//
+//   * If the identifier is still undefined, try looking for an
+//     function file to parse.
+//
+//   * On systems that support dynamic linking, we prefer .oct files
+//     over .m files.
+
 tree_fvc *
 tree_identifier::do_lookup (int& script_file_executed)
 {
@@ -1113,12 +1049,6 @@ tree_identifier::mark_as_formal_parameter (void)
 {
   if (sym)
     sym->mark_as_formal_parameter ();
-}
-
-void
-tree_identifier::mark_for_possible_ans_assign (void)
-{
-  maybe_do_ans_assign = 1;
 }
 
 tree_constant
@@ -1259,51 +1189,16 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
   return retval;
 }
 
-/*
- * User defined functions.
- */
-tree_function::tree_function (void)
-{
-  call_depth = 0;
-  param_list = 0;
-  ret_list = 0;
-  sym_tab = 0;
-  cmd_list = 0;
-  file_name = 0;
-  fcn_name = 0;
-  t_parsed = 0;
-  system_fcn_file = 0;
-  num_named_args = 0;
-  num_args_passed = 0;
-  curr_va_arg_number = 0;
-}
+// User defined functions.
 
-tree_function::tree_function (tree *cl, symbol_table *st)
-{
-  call_depth = 0;
-  param_list = 0;
-  ret_list = 0;
-  sym_tab = st;
-  cmd_list = cl;
-  file_name = 0;
-  fcn_name = 0;
-  t_parsed = 0;
-  system_fcn_file = 0;
-  num_named_args = 0;
-  num_args_passed = 0;
-  curr_va_arg_number = 0;
-}
-
-tree_function::~tree_function (void)
-{
-}
-
+#if 0
 tree_function *
-tree_function::define (tree *t)
+tree_function::define (tree statement_list *t)
 {
   cmd_list = t;
   return this;
 }
+#endif
 
 tree_function *
 tree_function::define_param_list (tree_parameter_list *t)
@@ -1336,24 +1231,6 @@ tree_function::stash_fcn_file_name (char *s)
 }
 
 void
-tree_function::stash_fcn_file_time (time_t t)
-{
-  t_parsed = t;
-}
-
-char *
-tree_function::fcn_file_name (void)
-{
-  return file_name;
-}
-
-time_t
-tree_function::time_parsed (void)
-{
-  return t_parsed;
-}
-
-void
 tree_function::mark_as_system_fcn_file (void)
 {
   if (file_name)
@@ -1380,21 +1257,9 @@ tree_function::mark_as_system_fcn_file (void)
 }
 
 int
-tree_function::is_system_fcn_file (void) const
-{
-  return system_fcn_file;
-}
-
-int
 tree_function::takes_varargs (void) const
 {
   return (param_list && param_list->takes_varargs ());
-}
-
-void
-tree_function::octave_va_start (void)
-{
-  curr_va_arg_number = num_named_args;
 }
 
 tree_constant
@@ -1416,12 +1281,6 @@ tree_function::stash_function_name (char *s)
 {
   delete [] fcn_name;
   fcn_name = strsave (s);
-}
-
-char *
-tree_function::function_name (void)
-{
-  return fcn_name;
 }
 
 tree_constant
@@ -1646,17 +1505,7 @@ to the beginning")
   return retval;
 }
 
-/*
- * Expressions.
- */
-tree_expression::tree_expression (void)
-{
-  etype = tree::unknown;
-}
-
-tree_expression::~tree_expression (void)
-{
-}
+// Expressions.
 
 tree_constant
 tree_expression::eval (int print)
@@ -1668,35 +1517,11 @@ tree_expression::eval (int print)
 Octave_object
 tree_expression::eval (int print, int nargout, const Octave_object& args)
 {
-  panic_impossible ();
+  panic ("invalid evaluation of generic expression");
   return Octave_object ();
 }
 
-/*
- * Prefix expressions.
- */
-tree_prefix_expression::tree_prefix_expression (int l, int c)
-{
-  id = 0;
-  etype = unknown;
-  line_num = l;
-  column_num = c;
-}
-
-tree_prefix_expression::tree_prefix_expression (tree_identifier *t,
-						tree::expression_type et,
-						int l, int c)
-{
-  id = t;
-  etype = et;
-  line_num = l;
-  column_num = c;
-}
-
-tree_prefix_expression::~tree_prefix_expression (void)
-{
-  delete id;
-}
+// Prefix expressions.
 
 tree_constant
 tree_prefix_expression::eval (int print)
@@ -1728,9 +1553,9 @@ tree_prefix_expression::eval_error (void)
       char *op;
       switch (etype)
 	{
-	case tree::increment: op = "++";      break;
-	case tree::decrement: op = "--";      break;
-	default:              op = "unknown"; break;
+	case tree_expression::increment: op = "++";      break;
+	case tree_expression::decrement: op = "--";      break;
+	default:                         op = "unknown"; break;
 	}
 
       ::error ("evaluating prefix operator `%s' near line %d, column %d",
@@ -1738,37 +1563,7 @@ tree_prefix_expression::eval_error (void)
     }
 }
 
-int
-tree_prefix_expression::is_prefix_expression (void) const
-{
-  return 1;
-}
-
-/*
- * Postfix expressions.
- */
-tree_postfix_expression::tree_postfix_expression (int l, int c)
-{
-  id = 0;
-  etype = unknown;
-  line_num = l;
-  column_num = c;
-}
-
-tree_postfix_expression::tree_postfix_expression (tree_identifier *t,
-						  tree::expression_type et,
-						  int l, int c)
-{
-  id = t;
-  etype = et;
-  line_num = l;
-  column_num = c;
-}
-
-tree_postfix_expression::~tree_postfix_expression (void)
-{
-  delete id;
-}
+// Postfix expressions.
 
 tree_constant
 tree_postfix_expression::eval (int print)
@@ -1800,9 +1595,9 @@ tree_postfix_expression::eval_error (void)
       char *op;
       switch (etype)
 	{
-	case tree::increment: op = "++";      break;
-	case tree::decrement: op = "--";      break;
-	default:              op = "unknown"; break;
+	case tree_expression::increment: op = "++";      break;
+	case tree_expression::decrement: op = "--";      break;
+	default:                         op = "unknown"; break;
 	}
 
       ::error ("evaluating postfix operator `%s' near line %d, column %d",
@@ -1810,31 +1605,7 @@ tree_postfix_expression::eval_error (void)
     }
 }
 
-/*
- * Unary expressions.
- */
-tree_unary_expression::tree_unary_expression (int l, int c)
-{
-  etype = tree::unknown;
-  op = 0;
-  line_num = l;
-  column_num = c;
-}
-
-tree_unary_expression::tree_unary_expression (tree_expression *a,
-					      tree::expression_type t,
-					      int l, int c)
-{
-  etype = t;
-  op = a;
-  line_num = l;
-  column_num = c;
-}
-
-tree_unary_expression::~tree_unary_expression (void)
-{
-  delete op;
-}
+// Unary expressions.
 
 tree_constant
 tree_unary_expression::eval (int print)
@@ -1846,10 +1617,10 @@ tree_unary_expression::eval (int print)
 
   switch (etype)
     {
-    case tree::not:
-    case tree::uminus:
-    case tree::hermitian:
-    case tree::transpose:
+    case tree_expression::not:
+    case tree_expression::uminus:
+    case tree_expression::hermitian:
+    case tree_expression::transpose:
       if (op)
 	{
 	  tree_constant u = op->eval (0);
@@ -1883,11 +1654,11 @@ tree_unary_expression::eval_error (void)
       char *op;
       switch (etype)
 	{
-	case tree::not:        op = "!";       break;
-	case tree::uminus:     op = "-";       break;
-	case tree::hermitian:  op = "'";       break;
-	case tree::transpose:  op = ".'";      break;
-	default:               op = "unknown"; break;
+	case tree_expression::not:        op = "!";       break;
+	case tree_expression::uminus:     op = "-";       break;
+	case tree_expression::hermitian:  op = "'";       break;
+	case tree_expression::transpose:  op = ".'";      break;
+	default:                          op = "unknown"; break;
 	}
 
       ::error ("evaluating unary operator `%s' near line %d, column %d",
@@ -1895,36 +1666,8 @@ tree_unary_expression::eval_error (void)
     }
 }
 
-/*
- * Binary expressions.
- */
-tree_binary_expression::tree_binary_expression (int l, int c)
-{
-  etype = tree::unknown;
-  op1 = 0;
-  op2 = 0;
-  line_num = l;
-  column_num = c;
-}
-
-tree_binary_expression::tree_binary_expression (tree_expression *a,
-						tree_expression *b,
-						tree::expression_type t,
-						int l, int c)
-{
-  etype = t;
-  op1 = a;
-  op2 = b;
-  line_num = l;
-  column_num = c;
-}
-
-tree_binary_expression::~tree_binary_expression (void)
-{
-  delete op1;
-  delete op2;
-}
-
+// Binary expressions.
+ 
 tree_constant
 tree_binary_expression::eval (int print)
 {
@@ -1934,24 +1677,24 @@ tree_binary_expression::eval (int print)
   tree_constant ans;
   switch (etype)
     {
-    case tree::add:
-    case tree::subtract:
-    case tree::multiply:
-    case tree::el_mul:
-    case tree::divide:
-    case tree::el_div:
-    case tree::leftdiv:
-    case tree::el_leftdiv:
-    case tree::power:
-    case tree::elem_pow:
-    case tree::cmp_lt:
-    case tree::cmp_le:
-    case tree::cmp_eq:
-    case tree::cmp_ge:
-    case tree::cmp_gt:
-    case tree::cmp_ne:
-    case tree::and:
-    case tree::or:
+    case tree_expression::add:
+    case tree_expression::subtract:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
+    case tree_expression::divide:
+    case tree_expression::el_div:
+    case tree_expression::leftdiv:
+    case tree_expression::el_leftdiv:
+    case tree_expression::power:
+    case tree_expression::elem_pow:
+    case tree_expression::cmp_lt:
+    case tree_expression::cmp_le:
+    case tree_expression::cmp_eq:
+    case tree_expression::cmp_ge:
+    case tree_expression::cmp_gt:
+    case tree_expression::cmp_ne:
+    case tree_expression::and:
+    case tree_expression::or:
       if (op1)
 	{
 	  tree_constant a = op1->eval (0);
@@ -1975,8 +1718,8 @@ tree_binary_expression::eval (int print)
 	    }
 	}
       break;
-    case tree::and_and:
-    case tree::or_or:
+    case tree_expression::and_and:
+    case tree_expression::or_or:
       {
 	int result = 0;
 	if (op1)
@@ -1997,7 +1740,7 @@ tree_binary_expression::eval (int print)
 
 	    if (a_true)
 	      {
-		if (etype == tree::or_or)
+		if (etype == tree_expression::or_or)
 		  {
 		    result = 1;
 		    goto done;
@@ -2005,7 +1748,7 @@ tree_binary_expression::eval (int print)
 	      }
 	    else
 	      {
-		if (etype == tree::and_and)
+		if (etype == tree_expression::and_and)
 		  {
 		    result = 0;
 		    goto done;
@@ -2049,27 +1792,27 @@ tree_binary_expression::eval_error (void)
       char *op;
       switch (etype)
 	{
-	case tree::add:        op = "+";       break;
-	case tree::subtract:   op = "-";       break;
-	case tree::multiply:   op = "*";       break;
-	case tree::el_mul:     op = ".*";      break;
-	case tree::divide:     op = "/";       break;
-	case tree::el_div:     op = "./";      break;
-	case tree::leftdiv:    op = "\\";      break;
-	case tree::el_leftdiv: op = ".\\";     break;
-	case tree::power:      op = "^";       break;
-	case tree::elem_pow:   op = ".^";      break;
-	case tree::cmp_lt:     op = "<";       break;
-	case tree::cmp_le:     op = "<=";      break;
-	case tree::cmp_eq:     op = "==";      break;
-	case tree::cmp_ge:     op = ">=";      break;
-	case tree::cmp_gt:     op = ">";       break;
-	case tree::cmp_ne:     op = "!=";      break;
-	case tree::and_and:    op = "&&";      break;
-	case tree::or_or:      op = "||";      break;
-	case tree::and:        op = "&";       break;
-	case tree::or:         op = "|";       break;
-	default:               op = "unknown"; break;
+	case tree_expression::add:        op = "+";       break;
+	case tree_expression::subtract:   op = "-";       break;
+	case tree_expression::multiply:   op = "*";       break;
+	case tree_expression::el_mul:     op = ".*";      break;
+	case tree_expression::divide:     op = "/";       break;
+	case tree_expression::el_div:     op = "./";      break;
+	case tree_expression::leftdiv:    op = "\\";      break;
+	case tree_expression::el_leftdiv: op = ".\\";     break;
+	case tree_expression::power:      op = "^";       break;
+	case tree_expression::elem_pow:   op = ".^";      break;
+	case tree_expression::cmp_lt:     op = "<";       break;
+	case tree_expression::cmp_le:     op = "<=";      break;
+	case tree_expression::cmp_eq:     op = "==";      break;
+	case tree_expression::cmp_ge:     op = ">=";      break;
+	case tree_expression::cmp_gt:     op = ">";       break;
+	case tree_expression::cmp_ne:     op = "!=";      break;
+	case tree_expression::and_and:    op = "&&";      break;
+	case tree_expression::or_or:      op = "||";      break;
+	case tree_expression::and:        op = "&";       break;
+	case tree_expression::or:         op = "|";       break;
+	default:                          op = "unknown"; break;
 	}
 
       ::error ("evaluating binary operator `%s' near line %d, column %d",
@@ -2077,18 +1820,7 @@ tree_binary_expression::eval_error (void)
     }
 }
 
-/*
- * Assignment expressions.
- */
-tree_assignment_expression::tree_assignment_expression (void)
-{
-  in_parens = 0;
-  etype = tree::assignment;
-}
-
-tree_assignment_expression::~tree_assignment_expression (void)
-{
-}
+// Assignment expressions.
 
 tree_constant
 tree_assignment_expression::eval (int print)
@@ -2097,59 +1829,22 @@ tree_assignment_expression::eval (int print)
   return tree_constant ();
 }
 
-int
-tree_assignment_expression::is_assignment_expression (void) const
-{
-  return 1;
-}
-
-/*
- * Simple assignment expressions.
- */
-tree_simple_assignment_expression::tree_simple_assignment_expression
-  (int l, int c)
-{
-  etype = tree::assignment;
-  lhs = 0;
-  index = 0;
-  rhs = 0;
-  line_num = l;
-  column_num = c;
-}
-
-tree_simple_assignment_expression::tree_simple_assignment_expression
-  (tree_identifier *i, tree_expression *r, int l, int c)
-{
-  etype = tree::assignment;
-  lhs = i;
-  index = 0;
-  rhs = r;
-  line_num = l;
-  column_num = c;
-}
-
-tree_simple_assignment_expression::tree_simple_assignment_expression
-  (tree_index_expression *idx_expr, tree_expression *r, int l, int c)
-{
-  etype = tree::assignment;
-  lhs = idx_expr->ident ();
-  index = idx_expr->arg_list ();
-  rhs = r;
-  line_num = l;
-  column_num = c;
-}
+// Simple assignment expressions.
 
 tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
 {
-//  delete lhs;
-//  delete index; 
+  if (! preserve)
+    {
+      delete lhs;
+      delete index;
+    }
   delete rhs;
 }
 
 tree_constant
 tree_simple_assignment_expression::eval (int print)
 {
-  assert (etype == tree::assignment);
+  assert (etype == tree_expression::assignment);
 
   tree_constant ans;
   tree_constant retval;
@@ -2237,28 +1932,7 @@ tree_simple_assignment_expression::eval_error (void)
     }
 }
 
-/*
- * Multi-valued assignmnt expressions.
- */
-tree_multi_assignment_expression::tree_multi_assignment_expression
-  (int l, int c)
-{
-  etype = tree::multi_assignment;
-  lhs = 0;
-  rhs = 0;
-  line_num = l;
-  column_num = c;
-}
-
-tree_multi_assignment_expression::tree_multi_assignment_expression
-  (tree_return_list *lst, tree_expression *r, int l, int c)
-{
-  etype = tree::multi_assignment;
-  lhs = lst;
-  rhs = r;
-  line_num = l;
-  column_num = c;
-}
+// Multi-valued assignmnt expressions.
 
 tree_multi_assignment_expression::~tree_multi_assignment_expression (void)
 {
@@ -2287,7 +1961,7 @@ Octave_object
 tree_multi_assignment_expression::eval (int print, int nargout,
 					const Octave_object& args)
 {
-  assert (etype == tree::multi_assignment);
+  assert (etype == tree_expression::multi_assignment);
 
   if (error_state || ! rhs)
     return Octave_object ();
@@ -2304,13 +1978,13 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 
   if (results.length () > 0)
     {
-      tree_return_list *elem;
       int i = 0;
       int pad_after = 0;
       int last_was_scalar_type = 0;
-      for (elem = lhs; elem; elem = elem->next_elem ())
+      for (Pix p = lhs->first (); p != 0; lhs->next (p))
 	{
-	  tree_index_expression *lhs_expr = elem->idx_expr ();
+	  tree_index_expression *lhs_expr = (*lhs) (p);
+
 	  if (i < nargout)
 	    {
 // XXX FIXME? XXX -- this is apparently the way Matlab works, but
@@ -2326,7 +2000,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 		tmp = new tree_constant (results(i));
 
 	      tree_simple_assignment_expression tmp_expr
-		(lhs_expr, tmp, ma_line, ma_column);
+		(lhs_expr, tmp, 1, ma_line, ma_column);
 
 	      results(i) = tmp_expr.eval (0); // May change
 
@@ -2369,7 +2043,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 	  else
 	    {
 	      tree_simple_assignment_expression tmp_expr
-		(lhs_expr, 0, ma_line, ma_column);
+		(lhs_expr, 0, 1, ma_line, ma_column);
 
 	      tmp_expr.eval (0);
 
@@ -2402,36 +2076,7 @@ tree_multi_assignment_expression::eval_error (void)
 	     line (), column ());
 }
 
-/*
- * Colon expressions.
- */
-tree_colon_expression::tree_colon_expression (int l, int c)
-{
-  etype = tree::colon;
-  op1 = 0;
-  op2 = 0;
-  op3 = 0;
-  line_num = l;
-  column_num = c;
-}
-
-tree_colon_expression::tree_colon_expression (tree_expression *a, tree_expression *b,
-					      int l, int c)
-{
-  etype = tree::colon;
-  op1 = a;	// base
-  op2 = b;	// limit
-  op3 = 0;	// increment if not empty.
-  line_num = l;
-  column_num = c;
-}
-
-tree_colon_expression::~tree_colon_expression (void)
-{
-  delete op1;
-  delete op2;
-  delete op3;
-}
+// Colon expressions.
 
 tree_colon_expression *
 tree_colon_expression::chain (tree_expression *t)
@@ -2534,66 +2179,13 @@ tree_colon_expression::eval_error (const char *s)
     ::error ("%s near line %d column %d", s, line (), column ());
 }
 
-/*
- * Index expressions.
- */
-tree_index_expression::tree_index_expression (int l, int c)
-{
-  id = 0;
-  list = 0;
-  line_num = l;
-  column_num = c;
-}
-
-tree_index_expression::tree_index_expression (tree_identifier *i,
-					      tree_argument_list *lst,
-					      int l, int c)
-{
-  id = i;
-  list = lst;
-  line_num = l;
-  column_num = c;
-}
-
-tree_index_expression::tree_index_expression (tree_identifier *i,
-					      int l, int c)
-{
-  id = i;
-  list = 0;
-  line_num = l;
-  column_num = c;
-}
+// Index expressions.
 
 tree_index_expression::~tree_index_expression (void)
 {
   delete id;
   delete list;
 }
-
-int
-tree_index_expression::is_index_expression (void) const
-{
-  return 1;
-}
-
-tree_identifier *
-tree_index_expression::ident (void)
-{
-  return id;
-}
-
-tree_argument_list *
-tree_index_expression::arg_list (void)
-{
-  return list;
-}
-
-void
-tree_index_expression::mark_for_possible_ans_assign (void)
-{
-  id->mark_for_possible_ans_assign ();
-}
-
 
 tree_constant
 tree_index_expression::eval (int print)
@@ -2690,386 +2282,6 @@ tree_index_expression::eval_error (void)
 	    ::error ("evaluating expression");
 	}
     }
-}
-
-/*
- * Argument lists.
- */
-tree_argument_list::tree_argument_list (void)
-{
-  arg = 0;
-  next = 0;
-}
-
-tree_argument_list::tree_argument_list (tree *t)
-{
-  arg = t;
-  next = 0;
-}
-
-tree_argument_list::~tree_argument_list (void)
-{
-  delete arg;
-  delete next;
-}
-
-tree_argument_list *
-tree_argument_list::chain (tree *t)
-{
-  tree_argument_list *tmp = new tree_argument_list (t);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_argument_list *
-tree_argument_list::reverse (void)
-{
-  tree_argument_list *list = this;
-  tree_argument_list *next;
-  tree_argument_list *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-int
-tree_argument_list::length (void)
-{
-  tree_argument_list *list = this;
-  int len = 0;
-  while (list)
-    {
-      len++;
-      list = list->next;
-    }
-  return len;
-}
-
-tree_argument_list *
-tree_argument_list::next_elem (void)
-{
-  return next;
-}
-
-/*
- * Convert a linked list of trees to a vector of pointers to trees,
- * evaluating them along the way.
- */
-Octave_object
-tree_argument_list::convert_to_const_vector (void)
-{
-  int len = length () + 1;
-
-  Octave_object args;
-  args.resize (len);
-
-// args[0] may eventually hold something useful, like the function
-// name.
-  tree_argument_list *tmp_list = this;
-  for (int k = 1; k < len; k++)
-    {
-      if (tmp_list)
-	{
-	  args(k) = tmp_list->eval (0);
-	  if (error_state)
-	    {
-	      ::error ("evaluating argument list element number %d", k);
-	      break;
-	    }
-	  tmp_list = tmp_list->next;
-	}
-      else
-	{
-	  args(k) = tree_constant ();
-	  break;
-	}
-    }
-  return args;
-}
-
-tree_constant
-tree_argument_list::eval (int print)
-{
-  if (error_state || ! arg)
-    return tree_constant ();
-  else
-    return arg->eval (print);
-}
-
-/*
- * Parameter lists.
- */
-tree_parameter_list::tree_parameter_list (void)
-{
-  marked_for_varargs = 0;
-  param = 0;
-  next = 0;
-}
-
-tree_parameter_list::tree_parameter_list (tree_identifier *t)
-{
-  marked_for_varargs = 0;
-  param = t;
-  next = 0;
-}
-
-tree_parameter_list::~tree_parameter_list (void)
-{
-  delete param;
-  delete next;
-}
-
-tree_parameter_list *
-tree_parameter_list::chain (tree_identifier *t)
-{
-  tree_parameter_list *tmp = new tree_parameter_list (t);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_parameter_list *
-tree_parameter_list::reverse (void)
-{
-  tree_parameter_list *list = this;
-  tree_parameter_list *next;
-  tree_parameter_list *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-int
-tree_parameter_list::length (void)
-{
-  tree_parameter_list *list = this;
-  int len = 0;
-  while (list)
-    {
-      len++;
-      list = list->next;
-    }
-  return len;
-}
-
-char *
-tree_parameter_list::name (void) const
-{
-  return param->name ();
-}
-
-void
-tree_parameter_list::mark_as_formal_parameters (void)
-{
-  param->mark_as_formal_parameter ();
-  if (next)
-    next->mark_as_formal_parameters ();
-}
-
-void
-tree_parameter_list::mark_varargs (void)
-{
-  marked_for_varargs = 1;
-}
-
-int
-tree_parameter_list::takes_varargs (void) const
-{
-  return marked_for_varargs;
-}
-
-void
-tree_parameter_list::mark_varargs_only (void)
-{
-  marked_for_varargs = -1;
-}
-
-int
-tree_parameter_list::varargs_only (void)
-{
-  return (marked_for_varargs < 0);
-}
-
-tree_identifier *
-tree_parameter_list::define (tree_constant *t)
-{
-  return param->define (t);
-}
-
-void
-tree_parameter_list::define_from_arg_vector (const Octave_object& args)
-{
-  if (args.length () <= 0)
-    return;
-
-  int nargin = args.length ();
-
-  int expected_nargin = length () + 1;
-
-  tree_parameter_list *ptr = this;
-
-  for (int i = 1; i < expected_nargin; i++)
-    {
-      tree_constant *tmp = 0;
-
-      if (i < nargin)
-	{
-	  if (args(i).is_defined ()
-	      && (args(i).const_type () == tree_constant_rep::magic_colon))
-	    {
-	      ::error ("invalid use of colon in function argument list");
-	      return;
-	    }
-	  tmp = new tree_constant (args(i));
-	}
-
-      ptr->define (tmp);
-      ptr = ptr->next;
-    }
-}
-
-Octave_object
-tree_parameter_list::convert_to_const_vector (void)
-{
-  int nout = length ();
-
-  Octave_object retval;
-  retval.resize (nout);
-
-  int i = 0;
-  
-  for (tree_parameter_list *elem = this; elem; elem = elem->next)
-    {
-      if (elem->is_defined ())
-	retval(i) = elem->eval (0);
-      i++;
-    }
-
-  return retval;
-}
-
-int
-tree_parameter_list::is_defined (void)
-{
-  return (param && param->is_defined ());
-}
-
-tree_parameter_list *
-tree_parameter_list::next_elem (void)
-{
-  return next;
-}
-
-tree_constant
-tree_parameter_list::eval (int print)
-{
-  if (error_state || ! param)
-    return tree_constant ();
-  else
-    return param->eval (print);
-}
-
-/*
- * Return lists.
- */
-tree_return_list::tree_return_list (void)
-{
-  retval = 0;
-  next = 0;
-}
-
-tree_return_list::tree_return_list (tree_identifier *t)
-{
-  retval = new tree_index_expression (t);
-  next = 0;
-}
-
-tree_return_list::tree_return_list (tree_index_expression *t)
-{
-  retval = t;
-  next = 0;
-}
-
-tree_return_list::~tree_return_list (void)
-{
-  delete retval;
-  delete next;
-}
-
-tree_return_list *
-tree_return_list::chain (tree_identifier *t)
-{
-  tree_return_list *tmp = new tree_return_list (t);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_return_list *
-tree_return_list::chain (tree_index_expression *t)
-{
-  tree_return_list *tmp = new tree_return_list (t);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_return_list *
-tree_return_list::reverse (void)
-{
-  tree_return_list *list = this;
-  tree_return_list *next;
-  tree_return_list *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-int
-tree_return_list::length (void)
-{
-  tree_return_list *list = this;
-  int len = 0;
-  while (list)
-    {
-      len++;
-      list = list->next;
-    }
-  return len;
-}
-
-tree_index_expression *
-tree_return_list::idx_expr (void)
-{
-  return retval;
-}
-
-tree_return_list *
-tree_return_list::next_elem (void)
-{
-  return next;
-}
-
-tree_constant
-tree_return_list::eval (int print)
-{
-  panic ("invalid evaluation of return list");
-  return tree_constant ();
 }
 
 /*

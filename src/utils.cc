@@ -456,19 +456,19 @@ all_strings (const Octave_object& args)
 }
 
 char **
-make_argv (const Octave_object& args, const char *warnfor)
+make_argv (const Octave_object& args, const char *fcn_name)
 {
   char **argv = 0;
   if (all_strings (args))
     {
       int n = args.length ();
       argv = new char * [n + 1];
-      argv[0] = 0;
+      argv[0] = strsave (fcn_name);
       for (int i = 1; i < n; i++)
 	argv[i] = strsave (args(i).string_value ());
     }
   else
-    error ("%s: expecting all arguments to be strings", warnfor);
+    error ("%s: expecting all arguments to be strings", fcn_name);
 
   return argv;
 }

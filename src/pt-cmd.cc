@@ -31,24 +31,26 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 
+// Nonzero means we're breaking out of a loop.
+int breaking = 0;
+
+// Nonzero means we're jumping to the end of a loop.
+int continuing = 0;
+
+// Nonzero means we're returning from a function.  Global because it
+// is also needed in tree-expr.cc.
+int returning = 0;
+
 #include "user-prefs.h"
 #include "variables.h"
 #include "symtab.h"
 #include "error.h"
 #include "gripes.h"
 #include "tree.h"
+#include "tree-expr.h"
 #include "tree-cmd.h"
+#include "tree-misc.h"
 #include "tree-const.h"
-
-// Nonzero means we're breaking out of a loop.
-static int breaking = 0;
-
-// Nonzero means we're jumping to the end of a loop.
-static int continuing = 0;
-
-// Nonzero means we're returning from a function.  Global because it
-// is also needed in tree-expr.cc.
-int returning = 0;
 
 // Decide if it's time to quit a for or while loop.
 static int
@@ -72,9 +74,9 @@ quit_loop_now (void)
 // We seem to have no use for this now.  Maybe it will be needed at
 // some future date, so here it is.
 #if 0
-/*
- * Convert a linked list of trees to a vector of pointers to trees.
- */
+
+// Convert a linked list of trees to a vector of pointers to trees.
+
 static tree **
 list_to_vector (tree *list, int& len)
 {
@@ -94,243 +96,25 @@ list_to_vector (tree *list, int& len)
 }
 #endif
 
-/*
- * A command or two to be executed.
- */
-tree_command_list::tree_command_list (void)
-{
-  command = 0;
-  print_flag = 1;
-  next = 0;
-}
-
-tree_command_list::tree_command_list (tree *t)
-{
-  command = t;
-  print_flag = 1;
-  next = 0;
-}
-
-tree_command_list::~tree_command_list (void)
-{
-  delete command;
-  delete next;
-}
-
-void
-tree_command_list::set_print_flag (int flag)
-{
-  print_flag = flag;
-}
-
-tree_command_list *
-tree_command_list::chain (tree *t)
-{
-  tree_command_list *tmp = new tree_command_list (t);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_command_list *
-tree_command_list::reverse (void)
-{
-  tree_command_list *list = this;
-  tree_command_list *next;
-  tree_command_list *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-tree_constant
-tree_command_list::eval (int print)
-{
-  int pf;
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  for (tree_command_list *list = this; list; list = list->next)
-    {
-      if (print == 0)
-	pf = 0;
-      else
-	pf = list->print_flag;
-
-      tree *cmd = list->command;
-      if (! cmd)
-	retval = tree_constant ();
-      else
-	{
-	  retval = cmd->eval (pf);
-
-	  if (error_state)
-	    return tree_constant ();
-
-	  if (breaking || continuing)
-	    break;
-
-	  if (returning)
-	    break;
-	}
-    }
-  return retval;
-}
-
-/*
- * Global.
- */
-tree_global_command::tree_global_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  sr = 0;
-  rhs = 0;
-  next = 0;
-}
-
-tree_global_command::tree_global_command (symbol_record *s, int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  sr = s;
-  rhs = 0;
-  next = 0;
-}
-
-tree_global_command::tree_global_command (symbol_record *s,
-					  tree_expression *e,
-					  int l, int c) 
-{
-  line_num = l;
-  column_num = c;
-  sr = s;
-  rhs = e;
-  next = 0;
-}
+// Global.
 
 tree_global_command::~tree_global_command (void)
 {
-  delete next;
-}
-
-tree_global_command *
-tree_global_command::chain (symbol_record *s, int l, int c)
-{
-  tree_global_command *tmp = new tree_global_command (s, l, c);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_global_command *
-tree_global_command::chain (symbol_record *s, tree_expression *e,
-			    int l, int c)
-{
-  tree_global_command *tmp = new tree_global_command (s, e, l, c);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_global_command *
-tree_global_command::reverse (void)
-{
-  tree_global_command *list = this;
-  tree_global_command *next;
-  tree_global_command *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-tree_constant
-tree_global_command::eval (int print)
-{
-  tree_constant retval;
-
-  link_to_global_variable (sr);
-
-  if (rhs)
-    {
-      tree_identifier *id = new tree_identifier (sr);
-      tree_constant tmp_rhs = rhs->eval (0);
-      if (error_state)
-	{
-	  delete id;
-	  eval_error ();
-	  return retval;
-	}
-      else
-	{
-	  tree_constant *tmp_val = new tree_constant (tmp_rhs);
-
-	  tree_simple_assignment_expression tmp_ass (id, tmp_val);
-
-	  tmp_ass.eval (0);
-
-	  delete id; // XXX FIXME XXX
-
-	  if (error_state)
-	    {
-	      eval_error ();
-	      return retval;
-	    }
-	}
-    }
-
-  if (next)
-    next->eval (print);
-
-  return retval;
+  delete init_list;
 }
 
 void
-tree_global_command::eval_error (void)
+tree_global_command::eval (void)
 {
+  if (init_list)
+    init_list->eval ();
+
   if (error_state > 0)
     ::error ("evaluating global command near line %d, column %d",
 	     line (), column ());
 }
 
-/*
- * While.
- */
-tree_while_command::tree_while_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  expr = 0;
-  list = 0;
-}
-
-tree_while_command::tree_while_command (tree_expression *e, int l, int c) 
-{
-  line_num = l;
-  column_num = c;
-  expr = e;
-  list = 0;
-}
-
-tree_while_command::tree_while_command (tree_expression *e, tree *lst,
-					int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  expr = e;
-  list = lst;
-}
+// While.
 
 tree_while_command::~tree_while_command (void)
 {
@@ -338,25 +122,23 @@ tree_while_command::~tree_while_command (void)
   delete list;
 }
 
-tree_constant
-tree_while_command::eval (int print)
+void
+tree_while_command::eval (void)
 {
-  tree_constant retval;
-
   if (error_state)
-    return retval;
+    return;
 
   for (;;)
     {
       int expr_value = 0;
       if (! expr)
-	return tree_constant ();
+	return;
       tree_constant t1 = expr->eval (0);
 
       if (error_state)
 	{
 	  eval_error ();
-	  return tree_constant ();
+	  return;
 	}
 
       if (t1.rows () == 0 || t1.columns () == 0)
@@ -367,7 +149,7 @@ tree_while_command::eval (int print)
 	  else if (flag == 0)
 	    {
 	      ::error ("while: empty matrix used in conditional");
-	      return tree_constant ();
+	      return;
 	    }
 	  t1 = tree_constant (0.0);
 	}
@@ -389,11 +171,11 @@ tree_while_command::eval (int print)
 	{
 	  if (list)
 	    {
-	      retval = list->eval (1);
+	      list->eval (1);
 	      if (error_state)
 		{
 		  eval_error ();
-		  return tree_constant ();
+		  return;
 		}
 	    }
 
@@ -403,7 +185,6 @@ tree_while_command::eval (int print)
       else
 	break;
     }
-  return retval;
 }
 
 void
@@ -414,28 +195,7 @@ tree_while_command::eval_error (void)
 	     line (), column ());
 }
 
-/*
- * For.
- */
-tree_for_command::tree_for_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  id = 0;
-  expr = 0;
-  list = 0;
-}
-
-tree_for_command::tree_for_command (tree_index_expression *ident,
-				    tree_expression *e, tree *lst,
-				    int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  id = ident;
-  expr = e;
-  list = lst;
-}
+// For.
 
 tree_for_command::~tree_for_command (void)
 {
@@ -444,20 +204,18 @@ tree_for_command::~tree_for_command (void)
   delete list;
 }
 
-tree_constant
-tree_for_command::eval (int print)
+void
+tree_for_command::eval (void)
 {
-  tree_constant retval;
-
   if (error_state || ! expr)
-    return retval;
+    return;
 
   tree_constant tmp_expr = expr->eval (0);
 
   if (error_state || tmp_expr.is_undefined ())
     {
       eval_error ();
-      return retval;
+      return;
     }
 
   tree_constant_rep::constant_type expr_type = tmp_expr.const_type ();
@@ -468,7 +226,7 @@ tree_for_command::eval (int print)
       {
 	tree_constant *rhs = new tree_constant (tmp_expr);
 	int quit = 0;
-	retval = do_for_loop_once (rhs, quit);
+	do_for_loop_once (rhs, quit);
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
@@ -511,7 +269,7 @@ tree_for_command::eval (int print)
 	      }
 
 	    int quit = 0;
-	    retval = do_for_loop_once (rhs, quit);
+	    do_for_loop_once (rhs, quit);
 	    if (quit)
 	      break;
 	  }
@@ -535,7 +293,7 @@ tree_for_command::eval (int print)
 	    tree_constant *rhs = new tree_constant (tmp_val);
 
 	    int quit = 0;
-	    retval = do_for_loop_once (rhs, quit);
+	    do_for_loop_once (rhs, quit);
 	    if (quit)
 	      break;
 	  }
@@ -545,8 +303,6 @@ tree_for_command::eval (int print)
       panic_impossible ();
       break;
     }
-  
-  return retval;
 }
 
 void
@@ -557,260 +313,78 @@ tree_for_command::eval_error (void)
 	     line (), column ());
 }
 
-tree_constant
+void
 tree_for_command::do_for_loop_once (tree_constant *rhs, int& quit)
 {
-  tree_constant retval;
-
   quit = 0;
 
-  tree_simple_assignment_expression tmp_ass (id, rhs);
+  tree_simple_assignment_expression tmp_ass (id, rhs, 1);
 
   tmp_ass.eval (0);
 
   if (error_state)
     {
       eval_error ();
-      return tree_constant ();
+      return;
     }
 
   if (list)
     {
-      retval = list->eval (1);
+      list->eval (1);
       if (error_state)
 	{
 	  eval_error ();
 	  quit = 1;
-	  return tree_constant ();
+	  return;
 	}
     }
 
   quit = quit_loop_now ();
-
-  return retval;
 }
 
-/*
- * If.
- */
-tree_if_command::tree_if_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  expr = 0;
-  list = 0;
-  next = 0;
-}
-
-tree_if_command::tree_if_command (tree *lst, int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  expr = 0;
-  list = lst;
-  next = 0;
-}
-
-tree_if_command::tree_if_command (tree_expression *e, tree *lst,
-				  int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  expr = e;
-  list = lst;
-  next = 0;
-}
+// If.
 
 tree_if_command::~tree_if_command (void)
 {
-  delete expr;
   delete list;
-  delete next;
-}
-
-tree_if_command *
-tree_if_command::chain (tree *lst, int l, int c)
-{
-  tree_if_command *tmp = new tree_if_command (lst, l, c);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_if_command *
-tree_if_command::chain (tree_expression *e, tree *lst, int l, int c)
-{
-  tree_if_command *tmp = new tree_if_command (e, lst, l, c);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_if_command *
-tree_if_command::reverse (void)
-{
-  tree_if_command *list = this;
-  tree_if_command *next;
-  tree_if_command *prev = 0;
-
-  while (list)
-    {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
-    }
-  return prev;
-}
-
-tree_constant
-tree_if_command::eval (int print)
-{
-  int expr_value = 0;
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  
-  for (tree_if_command *lst = this; lst; lst = lst->next)
-    {
-      if (lst->expr)
-	{
-	  tree_expression *tmp = lst->expr;
-	  if (! tmp)
-	    return tree_constant ();
-	  tree_constant t1 = tmp->eval (0);
-	  if (error_state || t1.is_undefined ())
-	    {
-	      lst->eval_error ();
-	      break;
-	    }
-
-	  if (t1.rows () == 0 || t1.columns () == 0)
-	    {
-	      int flag = user_pref.propagate_empty_matrices;
-	      if (flag < 0)
-		warning ("if: empty matrix used in conditional");
-	      else if (flag == 0)
-		{
-		  ::error ("if: empty matrix used in conditional");
-		  lst->eval_error ();
-		  return tree_constant ();
-		}
-	      t1 = tree_constant (0.0);
-	    }
-	  else if (! t1.is_scalar_type ())
-	    {
-	      tree_constant t2 = t1.all ();
-	      t1 = t2.all ();
-	    }
-
-	  tree_constant_rep::constant_type t = t1.const_type ();
-	  if (t == tree_constant_rep::scalar_constant)
-	    expr_value = (int) t1.double_value ();
-	  else if (t == tree_constant_rep::complex_scalar_constant)
-	    expr_value = t1.complex_value () != 0.0;
-	  else
-	    panic_impossible ();
-
-	  if (expr_value)
-	    {
-	      if (lst->list)
-		retval = lst->list->eval (1);
-	      else
-		::error ("if: empty command list");
-
-	      if (error_state)
-		lst->eval_error ();
-
-	      break;
-	    }
-	}
-      else
-	{
-	  if (lst->list)
-	    retval = lst->list->eval (1);
-	  else
-	    ::error ("if: empty command list");
-
-	  if (error_state)
-	    lst->eval_error ();
-
-	  break;
-	}
-    }
-
-  return retval;
 }
 
 void
-tree_if_command::eval_error (void)
+tree_if_command::eval (void)
 {
+  if (list)
+    list->eval ();
+
   if (error_state > 0)
     ::error ("evaluating if command near line %d, column %d",
 	     line (), column ());
 }
 
-/*
- * Break.  Is this overkill, or what?
- */
-tree_break_command::tree_break_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-}
+// Break.
 
-tree_break_command::~tree_break_command (void)
-{
-}
-
-tree_constant
-tree_break_command::eval (int print)
+void
+tree_break_command::eval (void)
 {
   if (! error_state)
     breaking = 1;
-  return tree_constant ();
 }
 
-/*
- * Continue.
- */
-tree_continue_command::tree_continue_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-}
+// Continue.
 
-tree_continue_command::~tree_continue_command (void)
-{
-}
-
-tree_constant
-tree_continue_command::eval (int print)
+void
+tree_continue_command::eval (void)
 {
   if (! error_state)
     continuing = 1;
-  return tree_constant ();
 }
 
-/*
- * Return.
- */
-tree_return_command::tree_return_command (int l, int c)
-{
-  line_num = l;
-  column_num = c;
-}
+// Return.
 
-tree_return_command::~tree_return_command (void)
-{
-}
-
-tree_constant
-tree_return_command::eval (int print)
+void
+tree_return_command::eval (void)
 {
   if (! error_state)
     returning = 1;
-  return tree_constant ();
 }
 
 /*

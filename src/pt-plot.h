@@ -29,15 +29,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 class tree_command;
-class tree_plot_limits;
-class tree_plot_range;
-class tree_subplot;
-class tree_subplot_using;
-class tree_subplot_style;
-class tree_subplot_list;
 class tree_plot_command;
+class plot_limits;
+class plot_range;
+class subplot_using;
+class subplot_style;
+class subplot;
+class subplot_list;
 
 class ostream;
+
+#include <SLList.h>
 
 #include "tree.h"
 
@@ -46,83 +48,47 @@ tree_plot_command : public tree_command
 {
  public:
   tree_plot_command (void);
-  tree_plot_command (tree_subplot_list *plt, int nd);
-  tree_plot_command (tree_subplot_list *plt, tree_plot_limits *rng, int nd);
+  tree_plot_command (subplot_list *plt, int nd);
+  tree_plot_command (subplot_list *plt, plot_limits *rng, int nd);
 
   ~tree_plot_command (void);
 
-  tree_constant eval (int print);
+  void eval (void);
 
  private:
   int ndim;
-  tree_plot_limits *range;
-  tree_subplot_list *plot_list;
+  plot_limits *range;
+  subplot_list *plot_list;
 };
 
 class
-tree_subplot_list : public tree
+plot_limits
 {
  public:
-  tree_subplot_list (void);
-  tree_subplot_list (tree_expression *data);
-  tree_subplot_list (tree_subplot_list *t);
-  tree_subplot_list (tree_subplot_using *u, tree_expression *t,
-		     tree_subplot_style *s);
+  plot_limits (void);
+  plot_limits (plot_range *xlim);
+  plot_limits (plot_range *xlim, plot_range *ylim);
+  plot_limits (plot_range *xlim, plot_range *ylim,
+		    plot_range *zlim);
 
-  ~tree_subplot_list (void);
-
-  tree_subplot_list *set_data (tree_expression *data);
-
-  tree_subplot_list *chain (tree_subplot_list *t);
-
-  tree_subplot_list *reverse (void);
-
-  tree_subplot_list *next_elem (void);
-
-  tree_constant eval (int print);
-
-  int print (int ndim, ostrstream& plot_buf);
-
- private:
-  tree_expression *plot_data;
-  tree_subplot_using *using;
-  tree_expression *title;
-  tree_subplot_style *style;
-  tree_subplot_list *next;
-};
-
-class
-tree_plot_limits : public tree
-{
- public:
-  tree_plot_limits (void);
-  tree_plot_limits (tree_plot_range *xlim);
-  tree_plot_limits (tree_plot_range *xlim, tree_plot_range *ylim);
-  tree_plot_limits (tree_plot_range *xlim, tree_plot_range *ylim,
-		    tree_plot_range *zlim);
-
-  ~tree_plot_limits (void);
-
-  tree_constant eval (int print);
+  ~plot_limits (void);
 
   void print (int print, ostrstream& plot_buf);
 
  private:
-  tree_plot_range *x_range;
-  tree_plot_range *y_range;
-  tree_plot_range *z_range;
+  plot_range *x_range;
+  plot_range *y_range;
+  plot_range *z_range;
 };
 
 class
-tree_plot_range : public tree
+plot_range
 {
  public:
-  tree_plot_range (void);
-  tree_plot_range (tree_expression *l, tree_expression *u);
+  plot_range (void);
+  plot_range (tree_expression *l, tree_expression *u);
 
-  ~tree_plot_range (void);
-
-  tree_constant eval (int print);
+  ~plot_range (void);
 
   void print (ostrstream& plot_buf);
 
@@ -132,19 +98,17 @@ tree_plot_range : public tree
 };
 
 class
-tree_subplot_using : public tree
+subplot_using
 {
  public:
-  tree_subplot_using (void);
-  tree_subplot_using (tree_expression *fmt);
+  subplot_using (void);
+  subplot_using (tree_expression *fmt);
 
-  ~tree_subplot_using (void);
+  ~subplot_using (void);
 
-  tree_subplot_using *set_format (tree_expression *fmt);
+  subplot_using *set_format (tree_expression *fmt);
 
-  tree_subplot_using *add_qualifier (tree_expression *t);
-
-  tree_constant eval (int print);
+  subplot_using *add_qualifier (tree_expression *t);
 
   int print (int ndim, int n_max, ostrstream& plot_buf);
 
@@ -155,17 +119,15 @@ tree_subplot_using : public tree
 };
 
 class
-tree_subplot_style : public tree
+subplot_style
 {
  public:
-  tree_subplot_style (void);
-  tree_subplot_style (char *s);
-  tree_subplot_style (char *s, tree_expression *lt);
-  tree_subplot_style (char *s, tree_expression *lt, tree_expression *pt);
+  subplot_style (void);
+  subplot_style (char *s);
+  subplot_style (char *s, tree_expression *lt);
+  subplot_style (char *s, tree_expression *lt, tree_expression *pt);
 
-  ~tree_subplot_style (void);
-
-  tree_constant eval (int print);
+  ~subplot_style (void);
 
   int print (ostrstream& plot_buf);
 
@@ -173,6 +135,73 @@ tree_subplot_style : public tree
   char *style;
   tree_expression *linetype;
   tree_expression *pointtype;
+};
+
+class
+subplot
+{
+public:
+  subplot (void)
+    {
+      plot_data = 0;
+      using = 0;
+      title = 0;
+      style = 0;
+    }
+
+  subplot (tree_expression *data)
+    {
+      plot_data = data;
+      using = 0;
+      title = 0;
+      style = 0;
+    }
+
+  subplot (subplot_using *u, tree_expression *t,
+		subplot_style *s)
+    {
+      plot_data = 0;
+      using = u;
+      title = t;
+      style = s;
+    }
+
+  ~subplot (void)
+    {
+      delete plot_data;
+      delete using;
+      delete title;
+      delete style;
+    }
+
+  void set_data (tree_expression *data)
+    { plot_data = data; }
+
+  int print (int ndim, ostrstream& plot_buf);
+
+private:
+  tree_expression *plot_data;
+  subplot_using *using;
+  tree_expression *title;
+  subplot_style *style;
+};
+
+class
+subplot_list : public SLList<subplot *>
+{
+ public:
+  subplot_list (void) : SLList<subplot *> () { }
+  subplot_list (subplot *t) : SLList<subplot *> ()
+    { append (t); }
+
+  ~subplot_list (void)
+    {
+      while (! empty ())
+	{
+	  subplot *t = remove_front ();
+	  delete t;
+	}
+    }
 };
 
 extern char *save_in_tmp_file (tree_constant& t, int ndim = 2,

@@ -121,26 +121,14 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 {
   octave_value retval;
 
-  int len = idx.length ();
+  int n_idx = idx.length ();
 
-  switch (len)
+  int nd = matrix.ndims ();
+
+  switch (n_idx)
     {
-    case 2:
-      {
-	int nd = matrix.ndims ();
-
-	if (nd == 2)
-	  {
-	    idx_vector i = idx (0).index_vector ();
-	    idx_vector j = idx (1).index_vector ();
-
-	    retval = MT (matrix.index (i, j, resize_ok,
-				       MT::resize_fill_value ()));
-	  }
-	else
-	  error ("invalid number of indices (= 2) for %d-dimensional array",
-		 nd);
-      }
+    case 0:
+      error ("invalid number of indices (= 0) for %d-dimensional array", nd);
       break;
 
     case 1:
@@ -153,13 +141,24 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
     default:
       {
-	Array<idx_vector> idx_vec (len);
+	if (n_idx == 2 && nd == 2)
+	  {
+	    idx_vector i = idx (0).index_vector ();
+	    idx_vector j = idx (1).index_vector ();
 
-	for (int i = 0; i < len; i++)
-	  idx_vec(i) = idx(i).index_vector ();
+	    retval = MT (matrix.index (i, j, resize_ok,
+				       MT::resize_fill_value ()));
+	  }
+	else
+	  {
+	    Array<idx_vector> idx_vec (n_idx);
 
-	retval = MT (matrix.index (idx_vec, resize_ok,
-				   MT::resize_fill_value ()));
+	    for (int i = 0; i < n_idx; i++)
+	      idx_vec(i) = idx(i).index_vector ();
+
+	    retval = MT (matrix.index (idx_vec, resize_ok,
+				       MT::resize_fill_value ()));
+	  }
       }
       break;
     }

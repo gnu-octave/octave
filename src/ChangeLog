@@ -1,3 +1,8 @@
+2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op):
+	Don't fail if number of indices is greater than 2.
+
 2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (Fsize): Update for N-d objects.

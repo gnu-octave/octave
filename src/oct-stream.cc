@@ -855,7 +855,7 @@ octave_base_stream::do_read (int nr, int nc, data_type dt, int skip,
 	{
 	  mval.resize (nr, 32, 0.0);
 	  data = mval.fortran_vec ();
-	  max_size = nr * nc;
+	  max_size = nr * 32;
 	}
     }
   else
@@ -1000,7 +1000,7 @@ octave_base_stream::do_read (int nr, int nc, data_type dt, int skip,
 
   if (ok ())
     {
-      mval.resize (final_nr, final_nc);
+      mval.resize (final_nr, final_nc, 0.0);
 
       retval = mval;
     }
@@ -1048,7 +1048,7 @@ octave_base_stream::read (const Matrix& size, data_type dt, int skip,
 	      max_size *= 2; \
  \
 	      if (nr > 0) \
-		mval.resize (nr, max_size / 2, 0.0); \
+		mval.resize (nr, max_size / nr, 0.0); \
 	      else \
 		mval.resize (max_size, 1, 0.0); \
  \
@@ -1065,6 +1065,8 @@ octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 			      int nr, int nc, int& count)
 {
+  count = 0;
+
   octave_value retval = Matrix ();
 
   istream *isp = input_stream ();
@@ -1090,7 +1092,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 	{
 	  mval.resize (nr, 32, 0.0);
 	  data = mval.fortran_vec ();
-	  max_size = nr * nc;
+	  max_size = nr * 32;
 	}
     }
   else
@@ -1239,7 +1241,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
   if (ok ())
     {
-      mval.resize (final_nr, final_nc);
+      mval.resize (final_nr, final_nc, 0.0);
 
       if (all_char_conv)
 	{

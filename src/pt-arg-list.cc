@@ -123,45 +123,37 @@ DEFCONSTFUN (__end__, , ,
 
   if (indexed_object)
     {
+      dim_vector dv = indexed_object->dims ();
+
       switch (index_position)
 	{
 	case -1:
-	  // XXX FIXME XXX -- we really want "numel" here.
 	  {
-	    int nr = indexed_object->rows ();
-	    int nc = indexed_object->columns ();
+	    int numel = indexed_object->numel ();
 
-	    if (nr < 0 || nc < 0)
-	      ::error ("invalid use of end: (nr=%d, nc=%d)", nr, nc);
+	    if (numel < 0)
+	      {
+		std::string dv_str = dv.str ();
+		::error ("invalid use of end: (index 1, dims %s)",
+			 dv_str.c_str ());
+	      }
 	    else
-	      retval = nr * nc;
-	  }
-	  break;
-
-	case 0:
-	  {
-	    int nr = indexed_object->rows ();
-
-	    if (nr < 0)
-	      ::error ("invalid use of end: (nr=%d)", nr);
-	    else
-	      retval = nr;
-	  }
-	  break;
-
-	case 1:
-	  {
-	    int nc = indexed_object->columns ();
-
-	    if (nc < 0)
-	      ::error ("invalid use of end: (nc=%d)", nc);
-	    else
-	      retval = nc;
+	      retval = numel;
 	  }
 	  break;
 
 	default:
-	  ::error ("__end__: internal error");
+	  {
+
+	    if (index_position < dv.length ())
+	      retval = dv(index_position);
+	    else
+	      {
+		std::string dv_str = dv.str ();
+		::error ("invalid use of end: (index %d, dims %s)",
+			 index_position+1, dv_str.c_str ());
+	      }
+	  }
 	  break;
 	}
     }

@@ -1041,6 +1041,7 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
       dim_vector dva = a.dims ();
       dim_vector dv = dims ();
       int len_a = dva.length ();
+      int non_full_dim = 0;
 
       for (int i = 0; i < n; i++)
 	{
@@ -1051,37 +1052,65 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 		("Array<T>::insert: range error for insert");
 	      return *this;
 	    }
+
+	  if (dv(i) != (i < len_a ? dva(i) : 1))
+	    non_full_dim++;
 	}
 
       if (dva.numel ())
         {
-	  const T *a_data = a.data ();   
-	  int numel_to_move = 1;
-	  int skip = 0;
-	  for (int i = 0; i < len_a; i++) 
-	    if (ra_idx(i) == 0 && dva(i) == dv(i))
-	      numel_to_move *= dva(i);
-	    else
-	      {
-		skip = numel_to_move * (dv(i) - dva(i));
-		numel_to_move *= dva(i);
-		break;
-	      }
-
-	  int jidx = ra_idx (n - 1);
-	  for (int i = n-2; i >= 0; i--)
+	  if (non_full_dim < 2)
 	    {
-	      jidx *= dv (i);
-	      jidx += ra_idx (i);
+	      // Special case for fast concatenation
+	      const T *a_data = a.data ();
+	      int numel_to_move = 1;
+	      int skip = 0;
+	      for (int i = 0; i < len_a; i++)
+		if (ra_idx(i) == 0 && dva(i) == dv(i))
+		  numel_to_move *= dva(i);
+		else
+		  {
+		    skip = numel_to_move * (dv(i) - dva(i));
+		    numel_to_move *= dva(i);
+		    break;
+		  }
+
+	      int jidx = ra_idx(n-1);
+	      for (int i = n-2; i >= 0; i--)
+		{
+		  jidx *= dv(i);
+		  jidx += ra_idx(i);
+		}
+
+	      int iidx = 0;
+	      int moves = dva.numel () / numel_to_move;
+	      for (int i = 0; i < moves; i++)
+		{
+		  for (int j = 0; j < numel_to_move; j++)
+		    elem (jidx++) = a_data[iidx++];
+		  jidx += skip;
+		}
 	    }
-
-	  int iidx = 0;
-	  int moves = dva.numel () / numel_to_move;
-	  for (int i = 0; i < moves; i++)
+	  else
 	    {
-	      for (int j = 0; j < numel_to_move; j++)
-		elem (jidx++) = a_data[iidx++];
-	      jidx += skip;
+	      // Generic code
+	      const T *a_data = a.data ();
+	      int nel = a.numel ();
+	      Array<int> a_idx (n, 0);
+
+	      for (int i = 0; i < nel; i++)
+		{
+		  int iidx = a_idx(n-1) + ra_idx(n-1);
+		  for (int j = n-2; j >= 0; j--)
+		    {
+		      iidx *= dv(j);
+		      iidx += a_idx(j) + ra_idx(j);
+		    }
+
+		  elem (iidx) = a_data[i];
+
+		  increment_index (a_idx, dva);
+		}
 	    }
 	}
     }

@@ -103,8 +103,16 @@ set prog_output "ans = 1"
 do_test tmpnam-1.m
 
 set test tmpnam-2
-set prog_output "\n... tmpnam:.*"
+set prog_output "error:.*"
 do_test tmpnam-2.m
+
+set test tmpnam-3
+set prog_output "error:.*"
+do_test tmpnam-3.m
+
+set test tmpnam-4
+set prog_output "\n... tmpnam:.*"
+do_test tmpnam-4.m
 
 ## set test file-io-1
 ## set prog_output "ok"

@@ -1,0 +1,1 @@
+tmpnam ("foo", 1)

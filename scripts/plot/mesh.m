@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
-## Plot a mesh given matrices @code{x}, and @var{y} from @code{meshdom} and
+## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshdom} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}

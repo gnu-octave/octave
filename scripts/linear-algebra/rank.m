@@ -25,11 +25,11 @@
 ## argument is omitted, it is taken to be
 ##
 ## @example
-## tol = max (size (@var{a})) * sigma (1) * eps;
+## tol = max (size (@var{a})) * sigma(1) * eps;
 ## @end example
 ##
 ## @noindent
-## where @code{eps} is machine precision and @code{sigma} is the largest
+## where @code{eps} is machine precision and @code{sigma(1)} is the largest
 ## singular value of @var{a}.
 ## @end deftypefn
 

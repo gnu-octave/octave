@@ -331,7 +331,7 @@ see @ref{Linear Algebra}.\n\
   DEFUN_MAPPER (finite, 0, xfinite, xfinite, 0, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} finite (@var{x})\n\
-Return 1 for elements of @var{x} that are NaN values and zero\n\
+Return 1 for elements of @var{x} that are finite values and zero\n\
 otherwise. For example,\n\
 \n\
 @example\n\

@@ -354,9 +354,9 @@ DEFUN (warning, args, ,
 @deftypefn {Built-in Function} {} warning (@var{msg})\n\
 Print a warning message @var{msg} prefixed by the string @samp{warning: }.  \n\
 After printing the warning message, Octave will continue to execute\n\
-commands.  You should use this function should when you want to notify\n\
-the user of an unusual condition, but only when it makes sense for your\n\
-program to go on.\n\
+commands.  You should use this function when you want to notify the user\n\
+of an unusual condition, but only when it makes sense for your program\n\
+to go on.\n\
 @end deftypefn")
 {
   return handle_message (warning, "unspecified warning", args);

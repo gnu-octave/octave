@@ -135,7 +135,7 @@ $2\\times 2$\n\
 @ifinfo\n\
 @code{2 x 2}\n\
 @end ifinfo\n\
-blocks along the diagonal.  The diagonal elements of\n\
+along the diagonal.  The diagonal elements of\n\
 @iftex\n\
 @tex\n\
 $S$\n\

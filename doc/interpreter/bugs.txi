@@ -79,7 +79,7 @@ Input line too long
 @end example
 
 when trying to plot many lines on one graph, you have probably generated
-a plot command that is too larger for @code{gnuplot}'s fixed-length
+a plot command that is too large for @code{gnuplot}'s fixed-length
 buffer for commands.  Splitting up the plot command doesn't help because
 replot is implemented in gnuplot by simply appending the new plotting
 commands to the old command line and then evaluating it again.

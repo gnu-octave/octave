@@ -120,7 +120,7 @@ entries of @code{r} are decreasing in magnitude order.  For example,\n\
 given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
-[q, r, pi] = qr(a)\n\
+[q, r, p] = qr(a)\n\
 @end example\n\
 \n\
 @noindent\n\

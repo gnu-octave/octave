@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.258 $)
+AC_REVISION($Revision: 1.259 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -757,11 +757,12 @@ fi
 
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
   fork getcwd getegid geteuid getgid getgrent getgrgid getgrnam \
-  gethostname getpgrp getpid getppid getpwent getpwnam getpwuid getuid \
-  lstat memmove mkdir mkfifo on_exit pipe putenv rename rindex rmdir \
-  setgrent setpwent setvbuf sigaction sigpending sigprocmask \
-  sigsuspend stat strcasecmp strdup strerror stricmp strncasecmp \
-  strnicmp tempnam umask unlink usleep vfprintf vsprintf waitpid)
+  gethostname getpgrp getpid getppid getpwent getpwnam getpwuid \
+  gettimeofday getuid lstat memmove mkdir mkfifo on_exit pipe putenv \
+  rename rindex rmdir setgrent setpwent setvbuf sigaction sigpending \
+  sigprocmask sigsuspend stat strcasecmp strdup strerror stricmp \
+  strncasecmp strnicmp tempnam umask unlink usleep vfprintf vsprintf \
+  waitpid)
 
 OCTAVE_SMART_PUTENV
 OCTAVE_PROGRAM_INVOCATION_NAME
@@ -833,12 +834,42 @@ fi
 AC_SUBST(WITH_DYNAMIC_LINKING)
 
 ### There is more than one possible prototype for gettimeofday.  See
-### which one (if any) appears in sys/time.h.
+### which one (if any) appears in sys/time.h.  These tests are from
+### Emacs 19.
 
-AC_CHECK_FUNC(gettimeofday,
-  AC_TRY_COMPILE([#include <sys/time.h>],
-  [gettimeofday ((struct timeval *) 0,(struct timezone *) 0);],
-  [], AC_DEFINE(GETTIMEOFDAY_NO_TZ)))
+AC_MSG_CHECKING(for struct timeval)
+AC_TRY_COMPILE([#ifdef TIME_WITH_SYS_TIME
+#include <sys/time.h>
+#include <time.h>
+#else
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
+#endif], [static struct timeval x; x.tv_sec = x.tv_usec;],
+  [AC_MSG_RESULT(yes)
+   HAVE_TIMEVAL=yes
+   AC_DEFINE(HAVE_TIMEVAL)],
+  [AC_MSG_RESULT(no)
+   HAVE_TIMEVAL=no])
+
+if test "x$HAVE_TIMEVAL" = xyes; then
+AC_MSG_CHECKING(whether gettimeofday can't accept two arguments)
+AC_TRY_LINK([#ifdef TIME_WITH_SYS_TIME
+#include <sys/time.h>
+#include <time.h>
+#else
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
+#endif],[struct timeval time; struct timezone dummy;
+  gettimeofday (&time, &dummy);], [AC_MSG_RESULT(no)],
+  [AC_MSG_RESULT(yes)
+   AC_DEFINE(GETTIMEOFDAY_NO_TZ)])
+fi
 
 dnl Would like to get rid of this cruft, and just have
 dnl

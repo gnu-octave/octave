@@ -151,8 +151,8 @@ dist: dist-info-files
 	rm -rf `cat .fname`
 	tar xf `cat .fname`.tar
 	find `cat .fname` \( \( -name RCS -a -type d \) \
-	  -o \( -name OLD -a -type d \) -o -name "=*" \
-	  -o -name '*~' -o -name '#*#' -o -name config.log \
+	  -o \( -name CVS -a -type d \) -o \( -name OLD -a -type d \) \
+	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name config.log \
 	  -o -name config.status -o -name c-auto.h \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
 	rm -rf `cat .fname`/test/octave.test/npsol
@@ -224,8 +224,8 @@ binary-dist: VERSION ARCH octave-bug dist-info-files
 	rm -rf `cat .fname`
 	tar xf `cat .fname`.tar
 	find `cat .fname` \( \( -name RCS -a -type d \) \
-	  -o \( -name OLD -a -type d \) -o -name "=*" \
-	  -o -name '*~' -o -name '#*#' -o -name Makefile \
+	  -o \( -name CVS -a -type d \) -o \( -name OLD -a -type d \) \
+	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name Makefile \
 	  -o -name c-auto.h \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
 	rm -rf `cat .fname`/test/octave.test/npsol

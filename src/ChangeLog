@@ -1,3 +1,16 @@
+2002-05-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc (warning): Don't do anything if Vdebug_option == "off".
+	Only print backtrace if Vdebug_option == "backtrace".
+	(handle_message): Now returns a string containing the text of the
+	formatted message.  Change all callers.
+	(Fwarning): Now a text-style function.  Handle Matlab-compatible
+	warning options.
+	(Flastwarn, set_warning_option): New functions.
+	(Vlast_warning_message, Vwarning_frequency, Vwarning_option):
+	New static variables.
+	(vwarning): Set Vlast_warning_message here too.
+
 2002-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h (octave_value::get_count): Now const.

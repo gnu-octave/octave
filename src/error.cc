@@ -57,6 +57,17 @@ static bool Vdebug_on_error;
 // is encountered.
 static bool Vdebug_on_warning;
 
+// The text of the last warning message.
+static std::string Vlast_warning_message;
+
+// The warning frequency for Matlab handle graphics backwards
+// compatibility warnings (currently not used).
+static std::string Vwarning_frequency = "once";
+
+// The current warning state.  Valid values are "on", "off",
+// "backtrace", or "debug".
+static std::string Vwarning_option = "backtrace";
+
 // Current error state.
 int error_state = 0;
 
@@ -93,10 +104,13 @@ vwarning (const char *name, const char *fmt, va_list args)
 
   char *msg = output_buf.str ();
 
-  octave_diary << msg;
-  std::cerr << msg;
+  Vlast_warning_message = msg;
 
   delete [] msg;
+
+  octave_diary << Vlast_warning_message;
+
+  std::cerr << Vlast_warning_message;
 }
 
 static void
@@ -303,23 +317,27 @@ pr_where (const char *name)
 void
 warning (const char *fmt, ...)
 {
-  va_list args;
-  va_start (args, fmt);
-  warning_state = 1;
-  vwarning ("warning", fmt, args);
-  va_end (args);
-
-  pr_where ("warning");
-
-  if ((interactive || forced_interactive)
-      && Vdebug_on_warning && curr_function)
+  if (Vwarning_option != "off")
     {
-      unwind_protect_bool (Vdebug_on_warning);
-      Vdebug_on_warning = false;
+      va_list args;
+      va_start (args, fmt);
+      warning_state = 1;
+      vwarning ("warning", fmt, args);
+      va_end (args);
 
-      do_keyboard (octave_value_list ());
+      if (Vwarning_option == "backtrace")
+	pr_where ("warning");
 
-      unwind_protect::run ();
+      if ((interactive || forced_interactive)
+	  && Vdebug_on_warning && curr_function)
+	{
+	  unwind_protect_bool (Vdebug_on_warning);
+	  Vdebug_on_warning = false;
+
+	  do_keyboard (octave_value_list ());
+
+	  unwind_protect::run ();
+	}
     }
 }
 
@@ -374,10 +392,10 @@ typedef void (*error_fun)(const char *, ...);
 
 extern octave_value_list Fsprintf (const octave_value_list&, int);
 
-static octave_value_list
+static std::string
 handle_message (error_fun f, const char *msg, const octave_value_list& args)
 {
-  octave_value_list retval;
+  std::string retval;
 
   std::string tstr;
 
@@ -420,11 +438,15 @@ handle_message (error_fun f, const char *msg, const octave_value_list& args)
 	  char *tmp_msg = strsave (msg);
 	  tmp_msg[len - 1] = '\0';
 	  f ("%s\n", tmp_msg);
+	  retval = tmp_msg;
 	  delete [] tmp_msg;
 	}
     }
   else
-    f ("%s", msg);
+    {
+      f ("%s", msg);
+      retval = msg;
+    }
 
   return retval;
 }
@@ -485,10 +507,33 @@ error: nargin != 1\n\
 @end example\n\
 @end deftypefn")
 {
-  return handle_message (error, "unspecified error", args);
+  octave_value_list retval;
+  handle_message (error, "unspecified error", args);
+  return retval;
 }
 
-DEFUN (warning, args, ,
+static inline octave_value_list
+set_warning_option (const std::string& state,
+		   const std::string& frequency, int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    retval(1) = Vwarning_frequency;
+
+  if (nargout > 0)
+    retval(0) = Vwarning_option;
+
+  if (! state.empty ())
+    Vwarning_option = state;
+    
+  if (! frequency.empty ())
+    Vwarning_frequency = frequency;
+    
+  return retval;
+}
+
+DEFUN_TEXT (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warning (@var{msg})\n\
 Print a warning message @var{msg} prefixed by the string @samp{warning: }.  \n\
@@ -498,7 +543,80 @@ of an unusual condition, but only when it makes sense for your program\n\
 to go on.\n\
 @end deftypefn")
 {
-  return handle_message (warning, "unspecified warning", args);
+  octave_value_list retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("warning");
+
+  if (! error_state)
+    {
+      bool done = false;
+
+      if (argc == 1)
+	{
+	  retval = set_warning_option ("", "", nargout);
+	  done = true;
+	}
+      else if (argc == 2)
+	{
+	  std::string arg = argv(1);
+
+	  if (arg == "on" || arg == "off" || arg == "backtrace")
+	    {
+	      retval = set_warning_option (arg, "", nargout);
+	      done = true;
+	    }
+	  else if (arg == "once" || arg == "always")
+	    {
+	      retval = set_warning_option ("", arg, nargout);
+	      done = true;
+	    }
+	  else if (arg == "debug")
+	    {
+	      bind_builtin_variable ("debug_on_warning", 1.0);
+	      retval = set_warning_option ("", "", nargout);
+	      done = true;
+	    }
+	}
+
+      if (! done)
+	{
+	  std::string curr_msg
+	    = handle_message (warning, "unspecified warning", args);
+
+	  if (nargout > 0)
+	    retval(0) = Vlast_warning_message;
+
+	  Vlast_warning_message = curr_msg;
+	}
+    }
+
+  return retval;
+}
+
+DEFUN (lastwarn, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} lastwarn ()\n\
+@deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
+Without any arguments, return the last error message.  With one\n\
+argument, set the last warning message to @var{msg}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("lastwarn");
+
+  if (argc == 1)
+    retval(0) = Vlast_warning_message;
+  else if (argc == 2)
+    Vlast_warning_message = argv(1);
+  else
+    print_usage ("lastwarn");
+
+  return retval;  
 }
 
 DEFUN (usage, args, ,
@@ -530,7 +648,9 @@ endif\n\
 to check for the proper number of arguments.\n\
 @end deftypefn")
 {
-  return handle_message (usage, "unknown", args);
+  octave_value_list retval;
+  handle_message (usage, "unknown", args);
+  return retval;
 }
 
 void

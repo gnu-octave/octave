@@ -1,5 +1,8 @@
 Fri Feb 21 13:36:58 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* plot/contour.m: Order data so that it is consistent with
+	meshgrid and mesh.
+
 	* plot/meshdom.m, plot/meshgrid.m: Change help message.
 	* plot/sombrero.m: Use meshgrid, not meshdom.
 

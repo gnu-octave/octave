@@ -30,7 +30,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CRUFT_DIRS = amos @BLAS_DIR@ blas-xtra daspk dasrt dassl \
 	@FFT_DIR@ @LAPACK_DIR@ lapack-xtra minpack \
-	misc odepack odessa ordered-qz quadpack ranlib \
+	misc odepack ordered-qz quadpack ranlib \
 	slatec-err slatec-fn villad
 
 SUBDIRS = $(CRUFT_DIRS)

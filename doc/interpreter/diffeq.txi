@@ -87,14 +87,6 @@ t = [0, logspace (-1, log10(303), 150), \
 @end group
 @end example
 
-Octave also includes @sc{Odessa}, a modification of @sc{Lsode} that
-allows for the computation of parametric sensitivity information
-simultaneously with the solution of the set of ODEs.
-
-@DOCSTRING(odessa)
-
-@DOCSTRING(odessa_options)
-
 See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
 Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
 more information about the inner workings of @code{lsode}.

@@ -1,5 +1,8 @@
 2005-03-01  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (CRUFT_DIRS): Remove it from the list.
+	* odessa: Delete directory.
+
 	* misc/machar.c (rmachar): Declare local REAL variables volatile.
 
 2005-02-25  John W. Eaton  <jwe@octave.org>

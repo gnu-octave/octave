@@ -1,3 +1,8 @@
+2005-03-01  John W. Eaton  <jwe@octave.org>
+
+	* ODESSA.h, ODESSA.cc, ODESSA-opts.in: Delete.
+	* Makefile.in: Remove them from the lists.
+
 2005-02-28  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LINK_DEPS): Remove -lglob from the list.

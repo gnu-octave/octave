@@ -1,3 +1,9 @@
+2005-03-01  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/odessa.cc: Delete.
+	* Makefile.in (DLD_XSRC): Remove it from the list.
+	(OPT_HANDLERS): Remove ODESSA-opts.cc from the list.
+
 2005-02-28  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (octave_config_info): Remove LIBGLOB and GLOB_INCFLAGS

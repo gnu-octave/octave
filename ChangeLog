@@ -1,3 +1,8 @@
+2005-03-01  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_CONFIG_FILES): Remove libcruft/odessa/Makefile
+	from the list.
+
 2005-03-01  Todd Neal  <tolchz@gmail.com>
 
 	* examples/make_int.cc: DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA now

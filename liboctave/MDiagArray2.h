@@ -84,7 +84,7 @@ public:
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  MDIAGARRAY2_OPS_FRIEND_DECLS (MDiagArray2)
+  // MDIAGARRAY2_OPS_FRIEND_DECLS (MDiagArray2)
 
 };
 

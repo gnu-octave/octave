@@ -77,7 +77,7 @@ public:
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  MARRAY_OPS_FRIEND_DECLS (MArray2)
+  // MARRAY_OPS_FRIEND_DECLS (MArray2)
 };
 
 extern void

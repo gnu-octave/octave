@@ -69,7 +69,7 @@ public:
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  MARRAY_OPS_FRIEND_DECLS (MArray)
+  // MARRAY_OPS_FRIEND_DECLS (MArray)
 };
 
 // XXX FIXME XXX -- there must be a better place for this...

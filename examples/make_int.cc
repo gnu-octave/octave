@@ -82,6 +82,8 @@ public:
   int rows (void) const { return 1; }
   int columns (void) const { return 1; }
 
+  bool is_constant (void) const { return true; }
+
   bool is_defined (void) const { return true; }
   bool is_real_scalar (void) const { return true; }
 

@@ -36,7 +36,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "ov-cell.h"
+#include "oct-obj.h"
 #include "unwind-prot.h"
+#include "utils.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
@@ -47,16 +49,36 @@ octave_cell::do_index_op (const octave_value_list& idx)
 {
   octave_value retval;
 
-#if 0
-  if (idx.length () == 1)
-    {
-      idx_vector i = idx (0).index_vector ();
+  int len = idx.length ();
 
-      retval = octave_value_list (lst.index (i));
+  switch (len)
+    {
+    case 2:
+      {
+	idx_vector i = idx (0).index_vector ();
+	idx_vector j = idx (1).index_vector ();
+
+	retval = cell_val.index (i, j);
+      }
+      break;
+
+    case 1:
+      {
+	idx_vector i = idx (0).index_vector ();
+
+	retval = cell_val.index (i);
+      }
+      break;
+
+    default:
+      {
+	string n = type_name ();
+
+	error ("invalid number of indices (%d) for %s value",
+	       len, n.c_str ());
+      }
+      break;
     }
-  else
-    error ("lists may only be indexed by a single scalar");
-#endif
 
   return retval;
 }
@@ -150,6 +172,58 @@ octave_cell::print_name_tag (ostream& os, const string& name) const
       newline (os);
     }
   return false;
+}
+
+DEFUN (iscell, args, ,
+  "iscell (x): return nonzero if x is a cell array")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_cell ();
+  else
+    print_usage ("iscell");
+
+  return retval;
+}
+
+DEFUN (cell, args, ,
+  "cell (N)\n\
+cell (M, N)\n\
+cell (size (A))")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  switch (nargin)
+    {
+    case 1:
+      {
+	int nr, nc;
+	get_dimensions (args(0), "cell", nr, nc);
+
+	if (! error_state)
+	  retval = Cell (nr, nc, Matrix ());
+      }
+      break;
+
+    case 2:
+      {
+	int nr, nc;
+	get_dimensions (args(0), args(1), "cell", nr, nc);
+
+	if (! error_state)
+	  retval = Cell (nr, nc, Matrix ());
+      }
+      break;
+
+    default:
+      print_usage ("cell");
+      break;
+    }
+
+  return retval;
 }
 
 /*

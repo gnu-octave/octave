@@ -172,23 +172,6 @@ Array2<T>::insert (const Array2<T>& a, int r, int c)
 }
 
 template <class T>
-bool
-Array2<T>::is_symmetric (void) const
-{
-  if (is_square () && d1 > 0)
-    {
-      for (int i = 0; i < d1; i++)
-	for (int j = i+1; j < d2; j++)
-	  if (elem (i, j) != elem (j, i))
-	    return false;
-
-      return true;
-    }
-
-  return false;
-}
-
-template <class T>
 Array2<T>
 Array2<T>::transpose (void) const
 {

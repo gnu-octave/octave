@@ -49,12 +49,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ABS(x) (((x) < 0) ? (-x) : (x))
 #endif
 
-// Should expressions like ones (-1, 5) result in an empty matrix or
-// an error?  A positive value means yes.  A negative value means
-// yes, but print a warning message.  Zero means it should be
-// considered an error.
-static int Vtreat_neg_dim_as_zero;
-
 DEFUN (all, args, ,
   "all (X): are all elements of X nonzero?")
 {
@@ -889,131 +883,10 @@ S must be a structure and NAME must be a string.")
   return retval;
 }
 
-static void
-check_dimensions (int& nr, int& nc, const char *warnfor)
-{
-  if (nr < 0 || nc < 0)
-    {
-      if (Vtreat_neg_dim_as_zero)
-	{
-	  nr = (nr < 0) ? 0 : nr;
-	  nc = (nc < 0) ? 0 : nc;
-
-	  if (Vtreat_neg_dim_as_zero < 0)
-	    warning ("%s: converting negative dimension to zero",
-		     warnfor);
-	}
-      else
-	error ("%s: can't create a matrix with negative dimensions",
-	       warnfor);
-    }
-}
-
-static void
-get_dimensions (const octave_value& a, const char *warn_for,
-		int& nr, int& nc)
-{
-  if (a.is_scalar_type ())
-    {
-      nr = nc = a.nint_value ();
-    }
-  else
-    {
-      nr = a.rows ();
-      nc = a.columns ();
-
-      if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
-	{
-	  ColumnVector v = a.vector_value ();
-
-	  if (error_state)
-	    return;
-
-	  nr = NINT (v (0));
-	  nc = NINT (v (1));
-	}
-      else
-	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
-    }
-
-  check_dimensions (nr, nc, warn_for); // May set error_state.
-}
-
-static void
-get_dimensions (const octave_value& a, const octave_value& b,
-		const char *warn_for, int& nr, int& nc)
-{
-  nr = a.is_empty () ? 0 : a.nint_value ();
-  nc = b.is_empty () ? 0 : b.nint_value ();
-
-  if (error_state)
-    error ("%s: expecting two scalar arguments", warn_for);
-  else
-    check_dimensions (nr, nc, warn_for); // May set error_state.
-}
-
 static octave_value
-fill_matrix (const octave_value& a, double val, const char *warn_for)
+fill_matrix (const octave_value_list& args, double val, const char *fcn)
 {
-  int nr, nc;
-  get_dimensions (a, warn_for, nr, nc);
-
-  if (error_state)
-    return  octave_value ();
-
-  Matrix m (nr, nc, val);
-
-  return m;
-}
-
-static octave_value
-fill_matrix (const octave_value& a, const octave_value& b,
-	     double val, const char *warn_for)
-{
-  int nr, nc;
-  get_dimensions (a, b, warn_for, nr, nc); // May set error_state.
-
-  if (error_state)
-    return octave_value ();
-
-  Matrix m (nr, nc, val);
-
-  return m;
-}
-
-DEFUN (ones, args, ,
-  "ones (N), ones (N, M), ones (X): create a matrix of all ones")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  switch (nargin)
-    {
-    case 0:
-      retval = 1.0;
-      break;
-
-    case 1:
-      retval = fill_matrix (args(0), 1.0, "ones");
-      break;
-
-    case 2:
-      retval = fill_matrix (args(0), args(1), 1.0, "ones");
-      break;
-
-    default:
-      print_usage ("ones");
-      break;
-    }
-
-  return retval;
-}
-
-DEFUN (zeros, args, ,
-  "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
-{
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1024,51 +897,48 @@ DEFUN (zeros, args, ,
       break;
 
     case 1:
-      retval = fill_matrix (args(0), 0.0, "zeros");
+      {
+	int nr, nc;
+	get_dimensions (args(0), fcn, nr, nc);
+
+	if (! error_state)
+	  retval = Matrix (nr, nc, val);
+      }
       break;
 
     case 2:
-      retval = fill_matrix (args(0), args(1), 0.0, "zeros");
+      {
+	int nr, nc;
+	get_dimensions (args(0), args(1), fcn, nr, nc);
+
+	if (! error_state)
+	  retval = Matrix (nr, nc, val);
+      }
       break;
 
     default:
-      print_usage ("zeros");
+      print_usage (fcn);
       break;
     }
 
   return retval;
 }
 
-static octave_value
-identity_matrix (const octave_value& a)
+DEFUN (ones, args, ,
+  "ones (N), ones (N, M), ones (X): create a matrix of all ones")
 {
-  int nr, nc;
-  get_dimensions (a, "eye", nr, nc); // May set error_state.
-
-  if (error_state)
-    return octave_value ();
-
-  Matrix m (nr, nc, 0.0);
-
-  if (nr > 0 && nc > 0)
-    {
-      int n = MIN (nr, nc);
-      for (int i = 0; i < n; i++)
-	m (i, i) = 1.0;
-    }
-
-  return m;
+  return fill_matrix (args, 1.0, "ones");
 }
 
-static octave_value
-identity_matrix (const octave_value& a, const octave_value& b)
+DEFUN (zeros, args, ,
+  "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
 {
-  int nr, nc;
-  get_dimensions (a, b, "eye", nr, nc);  // May set error_state.
+  return fill_matrix (args, 0.0, "zeros");
+}
 
-  if (error_state)
-    return octave_value ();
-
+static Matrix
+identity_matrix (int nr, int nc)
+{
   Matrix m (nr, nc, 0.0);
 
   if (nr > 0 && nc > 0)
@@ -1084,7 +954,7 @@ identity_matrix (const octave_value& a, const octave_value& b)
 DEFUN (eye, args, ,
   "eye (N), eye (N, M), eye (X): create an identity matrix")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1095,11 +965,23 @@ DEFUN (eye, args, ,
       break;
 
     case 1:
-      retval = identity_matrix (args(0));
+      {
+	int nr, nc;
+	get_dimensions (args(0), "eye", nr, nc);
+
+	if (! error_state)
+	  retval = identity_matrix (nr, nc);
+      }
       break;
 
     case 2:
-      retval = identity_matrix (args(0), args(1));
+      {
+	int nr, nc;
+	get_dimensions (args(0), args(1), "eye", nr, nc);
+
+	if (! error_state)
+	  retval = identity_matrix (nr, nc);
+      }
       break;
 
     default:
@@ -1171,14 +1053,6 @@ See also: logspace")
     }
 
   return retval;
-}
-
-static int
-treat_neg_dim_as_zero (void)
-{
-  Vtreat_neg_dim_as_zero = check_preference ("treat_neg_dim_as_zero");
-
-  return 0;
 }
 
 void
@@ -1351,11 +1225,9 @@ floating point arithmetic, @code{realmin} is approximately\n\
 @end iftex\n\
 @end defvr");
 
-  DEFVAR (treat_neg_dim_as_zero, 0.0, treat_neg_dim_as_zero,
-    "convert negative dimensions to zero");
-
   DEFCONST (true, true,
     "logical true value");
+
 }
 
 /*

@@ -29,6 +29,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
+#include "Array2.h"
+#include "Array2.cc"
+
+#include "DiagArray2.h"
+#include "DiagArray2.cc"
+
 #include "ov.h"
 
 extern template class Array<int>;

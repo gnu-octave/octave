@@ -76,6 +76,12 @@ LOSE! LOSE!
 #include "utils.h"
 #include "variables.h"
 
+// Should expressions like ones (-1, 5) result in an empty matrix or
+// an error?  A positive value means yes.  A negative value means
+// yes, but print a warning message.  Zero means it should be
+// considered an error.
+static int Vtreat_neg_dim_as_zero;
+
 // Top level context (?)
 extern jmp_buf toplevel;
 
@@ -572,6 +578,85 @@ check_preference (const string& var)
     }
 
   return pref;
+}
+
+static void
+check_dimensions (int& nr, int& nc, const char *warnfor)
+{
+  if (nr < 0 || nc < 0)
+    {
+      if (Vtreat_neg_dim_as_zero)
+	{
+	  nr = (nr < 0) ? 0 : nr;
+	  nc = (nc < 0) ? 0 : nc;
+
+	  if (Vtreat_neg_dim_as_zero < 0)
+	    warning ("%s: converting negative dimension to zero",
+		     warnfor);
+	}
+      else
+	error ("%s: can't create a matrix with negative dimensions",
+	       warnfor);
+    }
+}
+
+void
+get_dimensions (const octave_value& a, const char *warn_for,
+		int& nr, int& nc)
+{
+  if (a.is_scalar_type ())
+    {
+      nr = nc = a.nint_value ();
+    }
+  else
+    {
+      nr = a.rows ();
+      nc = a.columns ();
+
+      if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
+	{
+	  ColumnVector v = a.vector_value ();
+
+	  if (error_state)
+	    return;
+
+	  nr = NINT (v (0));
+	  nc = NINT (v (1));
+	}
+      else
+	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+    }
+
+  check_dimensions (nr, nc, warn_for); // May set error_state.
+}
+
+void
+get_dimensions (const octave_value& a, const octave_value& b,
+		const char *warn_for, int& nr, int& nc)
+{
+  nr = a.is_empty () ? 0 : a.nint_value ();
+  nc = b.is_empty () ? 0 : b.nint_value ();
+
+  if (error_state)
+    error ("%s: expecting two scalar arguments", warn_for);
+  else
+    check_dimensions (nr, nc, warn_for); // May set error_state.
+}
+
+static int
+treat_neg_dim_as_zero (void)
+{
+  Vtreat_neg_dim_as_zero = check_preference ("treat_neg_dim_as_zero");
+
+  return 0;
+}
+
+void
+symbols_of_utils (void)
+{
+  DEFVAR (treat_neg_dim_as_zero, 0.0, treat_neg_dim_as_zero,
+    "convert negative dimensions to zero");
+
 }
 
 /*

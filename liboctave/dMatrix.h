@@ -73,6 +73,8 @@ public:
   bool operator == (const Matrix& a) const;
   bool operator != (const Matrix& a) const;
 
+  bool is_symmetric (void) const;
+
   // destructive insert/delete/reorder operations
 
   Matrix& insert (const Matrix& a, int r, int c);

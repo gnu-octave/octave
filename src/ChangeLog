@@ -1,3 +1,16 @@
+1999-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (Fiscell, Fcell): New Functions.
+	(octave_cell::do_index_op): New function.
+
+	* utils.cc (get_dimensions): Move here from data.cc and make extern.
+	(Vtreat_neg_dim_as_zero, treat_neg_dim_as_zero): Likewise.
+	(symbols_of_utils): New function.
+
+	* data.cc (fill_matrix (const octave_value_list&, double,
+	const char*)): New function.
+	(Fones, Fzeros): Use it to avoid some code duplication.
+
 1999-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-cell.h, pt-cell.cc, ov-cell.h, ov-cell.cc, Cell.h, Cell.cc:

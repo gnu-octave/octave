@@ -175,8 +175,6 @@ public:
 
   bool is_square (void) const { return (d1 == d2); }
 
-  bool is_symmetric (void) const;
-
   Array2<T> transpose (void) const;
 
 #ifdef HEAVYWEIGHT_INDEXING

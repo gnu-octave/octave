@@ -33,6 +33,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 octave_allocator
 Cell::allocator (sizeof (Cell));
 
+Cell
+Cell::index (idx_vector& i) const
+{
+  return Cell (data.index (i));
+}
+
+Cell
+Cell::index (idx_vector& i, idx_vector& j) const
+{
+  return Cell (data.index (i, j));
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -167,6 +167,22 @@ Matrix::operator != (const Matrix& a) const
   return !(*this == a);
 }
 
+bool
+Matrix::is_symmetric (void) const
+{
+  if (is_square () && rows () > 0)
+    {
+      for (int i = 0; i < rows (); i++)
+	for (int j = i+1; j < cols (); j++)
+	  if (elem (i, j) != elem (j, i))
+	    return false;
+
+      return true;
+    }
+
+  return false;
+}
+
 Matrix&
 Matrix::insert (const Matrix& a, int r, int c)
 {

@@ -30,6 +30,7 @@ class ostrstream;
 
 #include "lo-utils.h"
 
+class octave_value;
 class octave_value_list;
 class string_vector;
 
@@ -57,6 +58,14 @@ extern string do_string_escapes (const string& s);
 extern string undo_string_escapes (const string& s);
 
 extern int check_preference (const string& var);
+
+extern void
+get_dimensions (const octave_value& a, const octave_value& b,
+		const char *warn_for, int& nr, int& nc);
+
+extern void
+get_dimensions (const octave_value& a,
+		const char *warn_for, int& nr, int& nc);
 
 extern "C" void octave_usleep (unsigned int useconds);
 

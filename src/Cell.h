@@ -46,6 +46,9 @@ public:
   Cell (int n, int m, const octave_value& val = octave_value ())
     : data (n, m, val) { }
 
+  Cell (const Array2<octave_value>& c)
+    : data (c) { }
+
   Cell (const Cell& c)
     : data (c.data) { }
 
@@ -74,6 +77,10 @@ public:
   octave_value& elem (int i, int j) { return data.elem (i, j); }
 
   octave_value elem (int i, int j) const { return data.elem (i, j); }
+
+  Cell index (idx_vector& i) const;
+
+  Cell index (idx_vector& i, idx_vector& j) const;
 
 private:
 

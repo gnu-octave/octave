@@ -29,7 +29,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
+#ifdef WITH_DLD
 #include <dld/dld.h>
+#endif
 
 #define boolean kpathsea_boolean
 #define false kpathsea_false

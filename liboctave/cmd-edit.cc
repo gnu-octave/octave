@@ -478,7 +478,7 @@ default_command_editor::do_readline (const std::string& prompt, bool& eof)
   fprintf (output_stream, prompt.c_str ());
   fflush (output_stream);
 
-  return octave_fgets (input_stream);
+  return octave_fgetl (input_stream);
 }
 
 void

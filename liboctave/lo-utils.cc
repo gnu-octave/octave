@@ -162,6 +162,19 @@ octave_fgets (FILE *f)
   return retval;
 }
 
+std::string
+octave_fgetl (FILE *f)
+{
+  std::string retval = octave_fgets (f);
+
+  size_t len = retval.length ();
+
+  if (retval[len-1] == '\n')
+    retval.resize (len-1);
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

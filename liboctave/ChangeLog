@@ -1,3 +1,8 @@
+2002-07-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-utils.cc (octave_fgetl): New function.
+	* cmd-edit.cc (do_readline): Use it instead of octave_fgets.
+
 2002-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.cc (LSODE::error_message): New function.

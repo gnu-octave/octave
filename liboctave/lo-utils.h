@@ -36,6 +36,8 @@ extern void octave_putenv (const std::string&, const std::string&);
 
 extern std::string octave_fgets (std::FILE *);
 
+extern std::string octave_fgetl (std::FILE *);
+
 extern "C" int octave_gethostname (char *, int);
 
 extern "C" void octave_qsort (void *base, size_t n, size_t size,

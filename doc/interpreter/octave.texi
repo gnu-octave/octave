@@ -260,6 +260,7 @@ Boolean Expressions
 Statements
 
 * The if Statement::            
+* The switch Statement::            
 * The while Statement::         
 * The for Statement::           
 * The break Statement::         

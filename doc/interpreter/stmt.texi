@@ -33,6 +33,7 @@ The list of statements contained between keywords like @code{if} or
 
 @menu
 * The if Statement::            
+* The switch Statement::        
 * The while Statement::         
 * The for Statement::           
 * The break Statement::         
@@ -42,7 +43,7 @@ The list of statements contained between keywords like @code{if} or
 * Continuation Lines::          
 @end menu
 
-@node The if Statement, The while Statement, Statements, Statements
+@node The if Statement, The switch Statement, Statements, Statements
 @section The @code{if} Statement
 @cindex @code{if} statement
 @cindex @code{else} statement
@@ -253,7 +254,104 @@ contexts.
 The default value of @code{warn_assign_as_truth_value} is 1.
 @end defvr
 
-@node The while Statement, The for Statement, The if Statement, Statements
+@node The switch Statement, The while Statement, The if Statement, Statements
+@section The @code{switch} Statement
+@cindex @code{switch} statement
+@cindex @code{case} statement
+@cindex @code{otherwise} statement
+@cindex @code{endswitch} statement
+
+The @code{switch} statement was introduced in Octave 2.0.5.  It should
+be considered experimental, and details of the implementation may change
+slightly in future versions of Octave.  If you have comments or would
+like to share your experiences in trying to use this new command in real
+programs, please send them to
+@email{octave-maintainers@@bevo.che.wisc.edu}.  (But if you think you've
+found a bug, please report it to @email{bug-octave@@bevo.che.wisc.edu}.
+
+The general form of the @code{switch} statement is
+
+@example
+@group
+switch @var{expression}
+  case @var{label}
+    @var{command_list}
+  case @var{label}
+    @var{command_list}
+  @dots{}
+
+  otherwise
+    @var{command_list}
+endswitch
+@end group
+@end example
+
+@itemize @bullet
+@item
+The identifiers @code{switch}, @code{case}, @code{otherwise}, and
+@code{endswitch} are now keywords. 
+
+@item
+The @var{label} may be any expression.
+
+@item
+Duplicate @var{label} values are not detected.  The @var{command_list}
+corresponding to the first match will be executed.
+
+@item
+You must have at least one @code{case @var{label} @var{command_list}}
+clause.
+
+@item
+The @code{otherwise @var{command_list}} clause is optional.
+
+@item
+As with all other specific @code{end} keywords, @code{endswitch} may be
+replaced by @code{end}, but you can get better diagnostics if you use
+the specific forms.
+
+@item
+Cases are exclusive, so they don't `fall through' as do the cases
+in the switch statement of the C language.
+
+@item
+The @var{command_list} elements are not optional.  Making the list
+optional would have meant requiring a separator between the label and
+the command list.  Otherwise, things like
+
+@example
+@group
+switch (foo)
+  case (1) -2
+  @dots{}
+@end group
+@end example
+
+@noindent
+would produce surprising results, as would
+
+@example
+@group
+switch (foo)
+  case (1)
+  case (2)
+    doit ();
+  @dots{}
+@end group
+@end example
+
+@noindent
+particularly for C programmers.
+
+@item
+The implementation is simple-minded and currently offers no real
+performance improvement over an equivalent @code{if} block, even if all
+the labels are integer constants.  Perhaps a future variation on this
+could detect all constant integer labels and improve performance by
+using a jump table.
+@end itemize
+
+@node The while Statement, The for Statement, The switch Statement, Statements
 @section The @code{while} Statement
 @cindex @code{while} statement
 @cindex @code{endwhile} statement

@@ -411,6 +411,8 @@ users home directory")
   return retval;
 }
 
+DEFALIAS (chdir, cd);
+
 /*
  * Get a directory listing.
  */

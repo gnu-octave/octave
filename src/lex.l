@@ -613,6 +613,8 @@ EXPON	([DdEe][+-]?{D}+)
 		  do_comma_insert_check ();
 		  current_input_column++;
 		  quote_is_transpose = 1;
+		  convert_spaces_to_comma = (! in_brace_or_paren.empty ()
+					     && in_brace_or_paren.top ());
 		  return ')';
 		}
 

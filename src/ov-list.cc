@@ -221,8 +221,9 @@ splice (LIST_1, OFFSET, LENGTH, LIST_2)\n\
 splice (LIST_1, OFFSET, LENGTH)\n\
 splice (LIST_1, OFFSET)\n\
 \n\
-Replace LENGTH elements of LIST_1 beginning at OFFSET with the
-contents of LIST_2 (if any).  If LENGTH is omitted, ")
+Replace LENGTH elements of LIST_1 beginning at OFFSET with the\n\
+contents of LIST_2 (if any).  If LENGTH is omitted, all elements\n\
+from OFFSET to the end of LIST_1 are replaced.")
 {
   octave_value retval;
 

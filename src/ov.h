@@ -129,10 +129,12 @@ public:
     sub_eq,
     mul_eq,
     div_eq,
+    ldiv_eq,
     lshift_eq,
     rshift_eq,
     el_mul_eq,
     el_div_eq,
+    el_ldiv_eq,
     el_and_eq,
     el_or_eq,
     num_assign_ops,
@@ -517,6 +519,11 @@ private:
 
   static int curr_print_indent_level;
   static bool beginning_of_line;
+
+  binary_op op_eq_to_binary_op (assign_op op);
+
+  void simple_assign (assign_op orig_op, const octave_value_list& idx,
+		      const octave_value& rhs);
 };
 
 #define OV_UNOP_FN(name) \

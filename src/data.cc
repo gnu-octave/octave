@@ -786,6 +786,19 @@ DEFUN (isempty, args, ,
   return retval;
 }
 
+DEFUN (is_list, args, ,
+  "is_list (x): return nonzero if x is a list")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_list () ? 1.0 : 0.0;
+  else
+    print_usage ("is_list");
+
+  return retval;
+}
+
 DEFUN (is_matrix, args, ,
   "is_matrix (x): return nonzero if x can be considered a matrix")
 {

@@ -1,5 +1,15 @@
 Fri Oct 30 08:39:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (LEFTDIV_EQ, ELEFTDIV_EQ): New tokens.
+	(assign_expr): Add rules for them.
+	(make_assign_op): Handle them here too.
+	* lex.l: Recognize them.
+	* ov.h (octave_value::assign_op): Add ldiv_eq and el_ldiv_eq.
+	* ov.cc (octave_value::assign_op_as_string): Ditto.
+	(octave_value::op_eq_to_binary_op): Ditto.
+	(octave_value::assign): Handle OP= style operators with brute force.
+	(octave_value::simple_assign): New function.
+
 	* parse.y (matrix): Dont' forget to reset
 	lexer_flags.looking_at_matrix_or_assign_lhs.
 

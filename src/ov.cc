@@ -284,6 +284,10 @@ octave_value::assign_op_as_string (assign_op op)
       retval = "/=";
       break;
 
+    case ldiv_eq:
+      retval = "\\=";
+      break;
+
     case lshift_eq:
       retval = "<<=";
       break;
@@ -298,6 +302,10 @@ octave_value::assign_op_as_string (assign_op op)
 
     case el_div_eq:
       retval = "./=";
+      break;
+
+    case el_ldiv_eq:
+      retval = ".\\=";
       break;
 
     case el_and_eq:
@@ -547,17 +555,64 @@ gripe_no_conversion (const string& on, const string& tn1, const string& tn2)
 	 on.c_str (), tn2.c_str (), tn1.c_str ());
 }
 
+static void
+gripe_assign_failed (const string& on, const string& tn1, const string& tn2)
+{
+  error ("assignment failed for `%s %s %s'",
+	 tn1.c_str (), on.c_str (), tn2.c_str ());
+}
+
+static void
+gripe_assign_failed_or_no_method (const string& on, const string& tn1,
+				  const string& tn2)
+{
+  error ("assignment failed, or no method for `%s %s %s'",
+	 tn1.c_str (), on.c_str (), tn2.c_str ());
+}
+
 void
 octave_value::assign (assign_op op, const octave_value& rhs)
 {
-  // XXX FIXME XXX -- make this work for ops other than `='.
-
   if (op == asn_eq)
     operator = (rhs);
   else
     {
-      string on = assign_op_as_string (op);
-      error ("operator `%s' not supported yet", on.c_str ());
+      // XXX FIXME XXX -- only do the following stuff if we can't find
+      // a specific function to call to handle the op= operation for
+      // the types we have.
+
+      binary_op binop = op_eq_to_binary_op (op);
+
+      if (! error_state)
+	{
+	  octave_value t = do_binary_op (binop, *this, rhs);
+
+	  if (! error_state)
+	    operator = (t);
+	}
+
+      if (error_state)
+	gripe_assign_failed_or_no_method (assign_op_as_string (op),
+					  type_name (), rhs.type_name ());
+    }
+}
+
+void
+octave_value::simple_assign (octave_value::assign_op orig_op,
+			     const octave_value_list& idx,
+			     const octave_value& rhs)
+{
+  make_unique ();
+
+  bool assignment_ok = try_assignment (asn_eq, idx, rhs);
+
+  if (! (error_state || assignment_ok))
+    {
+      assignment_ok = try_assignment_with_conversion (asn_eq, idx, rhs);
+
+      if (! (error_state || assignment_ok))
+	gripe_no_conversion (assign_op_as_string (orig_op),
+			     type_name (), rhs.type_name ());
     }
 }
 
@@ -568,16 +623,46 @@ octave_value::assign (octave_value::assign_op op,
 {
   if (Vresize_on_range_error || is_defined ())
     {
-      make_unique ();
-
-      bool assignment_ok = try_assignment (op, idx, rhs);
-
-      if (! (error_state || assignment_ok))
+      if (op == asn_eq)
+	simple_assign (op, idx, rhs);
+      else
 	{
-	  assignment_ok = try_assignment_with_conversion (op, idx, rhs);
+	  // XXX FIXME XXX -- only do the following stuff if we can't
+	  // find a specific function to call to handle the op=
+	  // operation for the types we have.
 
-	  if (! (error_state || assignment_ok))
-	    gripe_no_conversion (assign_op_as_string (op),
+	  octave_value t1 = *this;
+
+	  t1 = t1.do_index_op (idx);
+
+	  if (! error_state)
+	    {
+	      binary_op binop = op_eq_to_binary_op (op);
+
+	      if (! error_state)
+		{
+		  octave_value t2 = do_binary_op (binop, t1, rhs);
+
+		  if (! error_state)
+		    {
+		      simple_assign (op, idx, t2);
+
+		      if (error_state)
+			gripe_assign_failed (assign_op_as_string (op),
+					     type_name (), rhs.type_name ());
+		    }
+		  else
+		    gripe_assign_failed_or_no_method (assign_op_as_string (op),
+						      type_name (),
+						      rhs.type_name ());
+		}
+	      else
+		gripe_assign_failed_or_no_method (assign_op_as_string (op),
+						  type_name (),
+						  rhs.type_name ());
+	    }
+	  else
+	    gripe_assign_failed (assign_op_as_string (op),
 				 type_name (), rhs.type_name ());
 	}
 
@@ -1188,6 +1273,71 @@ octave_value::reset (void) const
 {
   beginning_of_line = true;
   curr_print_indent_level = 0;
+}
+
+octave_value::binary_op 
+octave_value::op_eq_to_binary_op (assign_op op)
+{
+  binary_op binop = unknown_binary_op;
+
+  switch (op)
+    {
+    case add_eq:
+      binop = add;
+      break;
+
+    case sub_eq:
+      binop = sub;
+      break;
+
+    case mul_eq:
+      binop = mul;
+      break;
+
+    case div_eq:
+      binop = div;
+      break;
+
+    case ldiv_eq:
+      binop = ldiv;
+      break;
+
+    case lshift_eq:
+      binop = lshift;
+      break;
+
+    case rshift_eq:
+      binop = rshift;
+      break;
+
+    case el_mul_eq:
+      binop = el_mul;
+      break;
+
+    case el_div_eq:
+      binop = el_div;
+      break;
+
+    case el_ldiv_eq:
+      binop = el_ldiv;
+      break;
+
+    case el_and_eq:
+      binop = el_and;
+      break;
+
+    case el_or_eq:
+      binop = el_or;
+      break;
+
+    default:
+      {
+	string on = assign_op_as_string (op);
+	error ("operator %s: no binary operator found", on.c_str ());
+      }
+    }
+
+  return binop;
 }
 
 void

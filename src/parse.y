@@ -331,7 +331,8 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Tokens with line and column information.
 %token <tok_val> '=' ':' '-' '+' '*' '/'
-%token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ EMUL_EQ EDIV_EQ AND_EQ OR_EQ
+%token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ 
+%token <tok_val> EMUL_EQ EDIV_EQ ELEFTDIV_EQ AND_EQ OR_EQ
 %token <tok_val> LSHIFT_EQ RSHIFT_EQ LSHIFT RSHIFT
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
@@ -398,7 +399,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Precedence and associativity.
 %left ';' ',' '\n'
-%right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ EMUL_EQ EDIV_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
+%right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
 %left EXPR_AND_AND EXPR_OR_OR
 %left EXPR_AND EXPR_OR
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
@@ -732,6 +733,8 @@ assign_expr	: assign_lhs '=' expression
 		  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
 		| assign_lhs DIV_EQ expression
 		  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
+		| assign_lhs LEFTDIV_EQ expression
+		  { $$ = make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
 		| assign_lhs LSHIFT_EQ expression
 		  { $$ = make_assign_op (LSHIFT_EQ, $1, $2, $3); }
 		| assign_lhs RSHIFT_EQ expression
@@ -740,6 +743,8 @@ assign_expr	: assign_lhs '=' expression
 		  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
 		| assign_lhs EDIV_EQ expression
 		  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
+		| assign_lhs ELEFTDIV_EQ expression
+		  { $$ = make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
 		| assign_lhs AND_EQ expression
 		  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
 		| assign_lhs OR_EQ expression
@@ -2164,6 +2169,10 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
       t = octave_value::div_eq;
       break;
 
+    case LEFTDIV_EQ:
+      t = octave_value::ldiv_eq;
+      break;
+
     case LSHIFT_EQ:
       t = octave_value::lshift_eq;
       break;
@@ -2178,6 +2187,10 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
 
     case EDIV_EQ:
       t = octave_value::el_div_eq;
+      break;
+
+    case ELEFTDIV_EQ:
+      t = octave_value::el_ldiv_eq;
       break;
 
     case AND_EQ:

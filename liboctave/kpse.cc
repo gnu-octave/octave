@@ -241,22 +241,6 @@ extern int fclose (FILE *);
 #define WARNING4(str, e1, e2, e3, e4)					\
   START_WARNING (); fprintf (stderr, str, e1, e2, e3, e4); END_WARNING ()
 
-/* I find this easier to read.  */
-#define STREQ(s1, s2) (strcmp (s1, s2) == 0)
-#define STRNEQ(s1, s2, n) (strncmp (s1, s2, n) == 0)
-
-/* Support for FAT/ISO-9660 filesystems.  Theoretically this should be
-   done at runtime, per filesystem, but that's painful to program.  */
-#ifdef MONOCASE_FILENAMES
-#define FILESTRCASEEQ(s1, s2) (strcasecmp (s1, s2) == 0)
-#define FILESTRNCASEEQ(s1, s2, l) (strncasecmp (s1, s2, l) == 0)
-#define FILECHARCASEEQ(c1, c2) (toupper (c1) == toupper (c2))
-#else
-#define FILESTRCASEEQ STREQ
-#define FILESTRNCASEEQ STRNEQ
-#define FILECHARCASEEQ(c1, c2) ((c1) == (c2))
-#endif
-
 /* (Re)Allocate N items of type T using xmalloc/xrealloc.  */
 #define XTALLOC(n, t) ((t *) xmalloc ((n) * sizeof (t)))
 #define XTALLOC1(t) XTALLOC (1, t)
@@ -279,6 +263,12 @@ static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
 static std::string kpse_var_expand (const std::string& src);
 
 #include <ctime> /* for `time' */
+
+bool
+kpse_is_env_sep (char c)
+{
+  return IS_ENV_SEP (c);
+}
 
 /* xmalloc.c: malloc with error checking.  */
 
@@ -406,15 +396,6 @@ struct hash_table_type
   unsigned size;
 };
 
-/* The hash function.  We go for simplicity here.  */
-
-/* All our hash tables are related to filenames.  */
-#ifdef MONOCASE_FILENAMES
-#define TRANSFORM(x) toupper (x)
-#else
-#define TRANSFORM(x) (x)
-#endif
-
 static unsigned
 hash (hash_table_type table, const std::string& key)
 {
@@ -424,7 +405,7 @@ hash (hash_table_type table, const std::string& key)
      weighting the characters.  */
   size_t len = key.length ();
   for (size_t i = 0; i < len; i++)
-    n = (n + n + TRANSFORM (key[i])) % table.size;
+    n = (n + n + key[i]) % table.size;
 
   return n;
 }
@@ -485,7 +466,7 @@ hash_lookup (hash_table_type table, const std::string& key)
 
   /* Look at everything in this bucket.  */
   for (p = table.buckets[n]; p != NULL; p = p->next)
-    if (FILESTRCASEEQ (key.c_str (), p->key.c_str ()))
+    if (key == p->key)
       ret.append (p->value);
 
 #ifdef KPSE_DEBUG
@@ -822,7 +803,7 @@ absolute_search (const std::string& name)
 
   /* Add `found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
-  ret_list.append (std::string (found));
+  ret_list.append (found);
 
   return ret_list;
 }
@@ -831,45 +812,45 @@ absolute_search (const std::string& name)
    return the first file found.  Otherwise, search all elements of PATH.  */
 
 static string_vector
-path_search (const std::string& path_arg, const std::string& name,
+path_search (const std::string& path, const std::string& name,
 	     bool must_exist, bool all)
 {
-  char *elt;
   string_vector ret_list;
   bool done = false;
 
-  const char *path = path_arg.c_str ();
-
-  for (elt = kpse_path_element (path); !done && elt;
-       elt = kpse_path_element (NULL))
+  for (kpse_path_iterator pi (path); ! done && pi != NPOS; pi++)
     {
+      std::string elt = *pi;
+
       string_vector found;
       bool allow_disk_search = true;
 
-      if (*elt == '!' && *(elt + 1) == '!')
+      if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
 	{
 	  /* Those magic leading chars in a path element means don't
 	     search the disk for this elt.  And move past the magic to
 	     get to the name.  */
 	  allow_disk_search = false;
-	  elt += 2;
+	  elt = elt.substr (2);
 	}
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
 	{
-	  while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3)))
+	  while (elt.length () > 3
+		 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
 	    {
-	      *(elt + 2) = *(elt + 1);
-	      *(elt + 1) = *elt;
-	      elt++;
+	      elt[2] = elt[1];
+	      elt[1] = elt[0];
+	      elt = elt.substr (1);
 	    }
 	}
       else
 	{
 	  /* We never want to search the whole disk.  */
-	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-	    elt++;
+	  while (elt.length () > 1
+		 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
+	    elt = elt.substr (1);
 	}
 
       /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
@@ -987,49 +968,49 @@ kpse_all_path_search (const std::string& path, const std::string& name)
    Otherwise, search all elements of PATH.  */
 
 static string_vector
-path_find_first_of (const std::string& path_arg, const string_vector& names,
+path_find_first_of (const std::string& path, const string_vector& names,
 		    bool must_exist, bool all)
 {
-  char *elt;
   string_vector ret_list;
   bool done = false;
 
-  const char *path = path_arg.c_str ();
-
-  for (elt = kpse_path_element (path); !done && elt;
-       elt = kpse_path_element (NULL))
+  for (kpse_path_iterator pi (path); ! done && pi != NPOS; pi++)
     {
+      std::string elt = *pi;
+
       str_llist_type *dirs;
       str_llist_elt_type *dirs_elt;
       string_vector found;
       bool allow_disk_search = true;
 
-      if (*elt == '!' && *(elt + 1) == '!')
+      if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
 	{
 	  /* Those magic leading chars in a path element means don't
 	     search the disk for this elt.  And move past the magic to
 	     get to the name.  */
 
 	  allow_disk_search = false;
-	  elt += 2;
+	  elt = elt.substr (2);
 	}
 
       /* Do not touch the device if present */
 
       if (NAME_BEGINS_WITH_DEVICE (elt))
 	{
-	  while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3)))
+	  while (elt.length () > 3
+		 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
 	    {
-	      *(elt + 2) = *(elt + 1);
-	      *(elt + 1) = *elt;
-	      elt++;
+	      elt[2] = elt[1];
+	      elt[1] = elt[0];
+	      elt = elt.substr (1);
 	    }
 	}
       else
 	{
 	  /* We never want to search the whole disk.  */
-	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-	    elt++;
+	  while (elt.length () > 1
+		 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
+	    elt = elt.substr (1);
 	}
 
       /* We have to search one directory at a time.  */
@@ -1286,7 +1267,7 @@ kpse_expand (const std::string& s)
 }
 
 /* Forward declarations of functions from the original expand.c  */
-static char **brace_expand (const char *);
+static char **brace_expand (const std::string&);
 static void free_array (char **);
 
 /* If $KPSE_DOT is defined in the environment, prepend it to any relative
@@ -1296,27 +1277,29 @@ static std::string
 kpse_expand_kpse_dot (const std::string& path)
 {
   std::string ret;
-  char *elt;
   std::string kpse_dot = octave_env::getenv ("KPSE_DOT");
 
   if (kpse_dot.empty ())
     return path;
 
-  char *tmp = xstrdup (path.c_str ());
-
-  for (elt = kpse_path_element (tmp); elt; elt = kpse_path_element (NULL))
+  for (kpse_path_iterator pi (path); pi != NPOS; pi++)
     {
+      std::string elt = *pi;
+
       /* We assume that the !! magic is only used on absolute components.
 	 Single "." get special treatment, as does "./" or its  equivalent.  */
 
-      if (kpse_absolute_p (elt, false) || (elt[0] == '!' && elt[1] == '!'))
-	ret += std::string (elt) + ENV_SEP_STRING;
-      else if (elt[0] == '.' && elt[1] == 0)
-	ret += std::string (kpse_dot) + ENV_SEP_STRING;
-      else if (elt[0] == '.' && IS_DIR_SEP (elt[1]))
-	ret += std::string (kpse_dot) + (elt + 1) + ENV_SEP_STRING;
+      size_t elt_len = elt.length ();
+
+      if (kpse_absolute_p (elt, false)
+	  || (elt_len > 1 && elt[0] == '!' && elt[1] == '!'))
+	ret += elt + ENV_SEP_STRING;
+      else if (elt_len == 1 && elt[0] == '.')
+	ret += kpse_dot + ENV_SEP_STRING;
+      else if (elt_len > 1 && elt[0] == '.' && IS_DIR_SEP (elt[1]))
+	ret += kpse_dot + elt.substr (1) + ENV_SEP_STRING;
       else
-	ret += std::string (kpse_dot) + DIR_SEP_STRING + elt + ENV_SEP_STRING;
+	ret += kpse_dot + DIR_SEP_STRING + elt + ENV_SEP_STRING;
     }
 
   int len = ret.length ();
@@ -1333,7 +1316,7 @@ kpse_expand_kpse_dot (const std::string& path)
    string comprising all of the results separated by ENV_SEP_STRING.  */
 
 static std::string
-kpse_brace_expand_element (const char *elt)
+kpse_brace_expand_element (const std::string& elt)
 {
   unsigned i;
   char **expansions = brace_expand (elt);
@@ -1350,7 +1333,7 @@ kpse_brace_expand_element (const char *elt)
 	     recursive variable definitions are not allowed, this recursion
 	     must terminate.  (In practice, it's unlikely there will ever be
 	     more than one level of recursion.)  */
-	  x = kpse_brace_expand_element (x.c_str ());
+	  x = kpse_brace_expand_element (x);
 	}
 
       ret += x + ENV_SEP_STRING;
@@ -1366,10 +1349,10 @@ kpse_brace_expand_element (const char *elt)
 /* Be careful to not waste all the memory we allocate for each element.  */
 
 std::string
-kpse_brace_expand (const char *path)
+kpse_brace_expand (const std::string& path_arg)
 {
-  char *elt;
-  unsigned len;
+  const char *path = path_arg.c_str ();
+
   /* Must do variable expansion first because if we have
        foo = .:~
        TEXINPUTS = $foo
@@ -1377,18 +1360,20 @@ kpse_brace_expand (const char *path)
      Since kpse_path_element is not reentrant, we must get all
      the path elements before we start the loop.  */
   std::string tmp = kpse_var_expand (path);
-  const char *xpath = tmp.c_str ();
+
   std::string ret;
 
-  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL))
+  for (kpse_path_iterator pi (tmp); pi != NPOS; pi++)
     {
+      std::string elt = *pi;
+
       /* Do brace expansion first, so tilde expansion happens in {~ka,~kb}.  */
       std::string expansion = kpse_brace_expand_element (elt);
       ret += expansion + ENV_SEP_STRING;
     }
 
   /* Waste the last byte by overwriting the trailing env_sep with a null.  */
-  len = ret.length ();
+  size_t len = ret.length ();
 
   if (len > 0)
     ret.resize (len - 1);
@@ -1402,7 +1387,6 @@ std::string
 kpse_path_expand (const std::string& path_arg)
 {
   std::string ret;
-  char *elt;
   unsigned len;
 
   const char *path = path_arg.c_str ();
@@ -1412,63 +1396,66 @@ kpse_path_expand (const std::string& path_arg)
   /* Expand variables and braces first.  */
   std::string tmp = kpse_brace_expand (path);
 
-  const char *xpath = tmp.c_str ();
-
   /* Now expand each of the path elements, printing the results */
-  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL))
+  for (kpse_path_iterator pi (tmp); pi != NPOS; pi++)
     {
+      std::string elt = *pi;
+
       str_llist_type *dirs;
 
       /* Skip and ignore magic leading chars.  */
-      if (*elt == '!' && *(elt + 1) == '!')
-	elt += 2;
+      if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
+	elt = elt.substr (2);
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
 	{
-	  while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3)))
+	  while (elt.length () > 3
+		 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
 	    {
-	      *(elt + 2) = *(elt + 1);
-	      *(elt + 1) = *elt;
-	      elt++;
+	      elt[2] = elt[1];
+	      elt[1] = elt[0];
+	      elt = elt.substr (1);
 	    }
 	}
       else
 	{
 	  /* We never want to search the whole disk.  */
-	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-	    elt++;
+	  while (elt.length () > 1
+		 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
+	    elt = elt.substr (1);
 	}
 
-    /* Search the disk for all dirs in the component specified.
-       Be faster to check the database, but this is more reliable.  */
-    dirs = kpse_element_dirs (elt);
+      /* Search the disk for all dirs in the component specified.
+	 Be faster to check the database, but this is more reliable.  */
+      dirs = kpse_element_dirs (elt);
 
-    if (dirs && *dirs)
-      {
-	str_llist_elt_type *dir;
+      if (dirs && *dirs)
+	{
+	  str_llist_elt_type *dir;
 
-	for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir))
-	  {
-	    const std::string thedir = STR_LLIST (*dir);
-	    unsigned dirlen = thedir.length ();
+	  for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir))
+	    {
+	      const std::string thedir = STR_LLIST (*dir);
+	      unsigned dirlen = thedir.length ();
 
-	    /* Retain trailing slash if that's the root directory.  */
-	    if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
-				&& IS_DIR_SEP (thedir[2])))
-	      {
-		ret += thedir + ENV_SEP_STRING;
-		len += dirlen + 1;
-		ret[len - 1] = ENV_SEP;
-	      }
-	    else
-	      {
-		ret += thedir;
-		len += dirlen;
-		ret [len - 1] = ENV_SEP;
-	      }
-	  }
-      }
+	      /* Retain trailing slash if that's the root directory.  */
+	      if (dirlen == 1
+		  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
+		      && IS_DIR_SEP (thedir[2])))
+		{
+		  ret += thedir + ENV_SEP_STRING;
+		  len += dirlen + 1;
+		  ret[len - 1] = ENV_SEP;
+		}
+	      else
+		{
+		  ret += thedir;
+		  len += dirlen;
+		  ret [len - 1] = ENV_SEP;
+		}
+	    }
+	}
     }
 
   /* Get rid of trailing ':', if any. */
@@ -1558,13 +1545,15 @@ copy_array (char **array)
 
 /* Return an array of strings; the brace expansion of TEXT. */
 static char **
-brace_expand (const char *text)
+brace_expand (const std::string& text_arg)
 {
   register int start;
   char *preamble, *amble;
   const char *postamble;
   char **tack, **result;
   int i, c;
+
+  const char *text = text_arg.c_str ();
 
   /* Find the text of the preamble. */
   i = 0;
@@ -1809,8 +1798,7 @@ typedef struct
   std::string client_path;   /* E.g., from dvips's config.ps.  */
   std::string cnf_path;	     /* From texmf.cnf.  */
   std::string default_path;  /* If all else fails.  */
-  const char **suffix;	     /* For kpse_find_file to check for/append.  */
-  const char **alt_suffix;   /* More suffixes to check for.  */
+  string_vector suffix;	     /* For kpse_find_file to check for/append.  */
   bool suffix_search_only;   /* Only search with a suffix?  */
   std::string program;	     /* ``mktexpk'', etc.  */
   std::string program_args;  /* Args to `program'.  */
@@ -1831,7 +1819,7 @@ static kpse_format_info_type kpse_format_info;
   if (! try_path.empty ())					\
     {								\
       info->raw_path = try_path;				\
-      info->path = kpse_expand_default (try_path.c_str (), (info->path).c_str ());	\
+      info->path = kpse_expand_default (try_path, info->path);	\
       info->path_source = source_string;			\
     }
 
@@ -1898,31 +1886,8 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
     }
 
   EXPAND_DEFAULT (info->override_path, "application override variable");
-  std::string tmp = kpse_brace_expand ((info->path).c_str ());
+  std::string tmp = kpse_brace_expand (info->path);
   info->path = tmp;
-}
-
-/* Some file types have more than one suffix.  */
-
-static void
-add_suffixes (const char ***list, ...)
-{
-  const char *s;
-  unsigned count = 0;
-  va_list ap;
-
-  va_start (ap, list);
-
-  while ((s = va_arg (ap, char *)) != NULL)
-    {
-      count++;
-      XRETALLOC (*list, count + 1, const char *);
-      (*list)[count - 1] = s;
-    }
-
-  va_end (ap);
-
-  (*list)[count] = NULL;
 }
 
 static std::string
@@ -1962,7 +1927,7 @@ kpse_init_format (void)
 
   kpse_format_info.type = "ls-R";
   init_path (&kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
-  add_suffixes (&kpse_format_info.suffix, "ls-R", NULL);
+  kpse_format_info.suffix.append (std::string ("ls-R"));
   kpse_format_info.path = remove_dbonly (kpse_format_info.path);
 
 #ifdef KPSE_DEBUG
@@ -1992,12 +1957,13 @@ kpse_init_format (void)
 
       DEBUGF  ("  default suffixes =");
 
-      if (kpse_format_info.suffix)
+      if (! kpse_format_info.suffix.empty ())
 	{
-	  const char **ext;
-	  for (ext = kpse_format_info.suffix; ext && *ext; ext++)
+	  string_vector tmp = kpse_format_info.suffix;
+	  int len = tmp.length ();
+	  for (int i = 0; i < len; i++)
 	    {
-	      fprintf (stderr, " %s", *ext);
+	      fprintf (stderr, " %s", tmp[i].c_str ());
 	    }
 	  putc ('\n', stderr);
 	}
@@ -2007,20 +1973,6 @@ kpse_init_format (void)
 	}
 
       DEBUGF  ("  other suffixes =");
-
-      if (kpse_format_info.alt_suffix)
-	{
-	  const char **alt;
-	  for (alt = kpse_format_info.alt_suffix; alt && *alt; alt++)
-	    {
-	      fprintf (stderr, " %s", *alt);
-	    }
-	  putc ('\n', stderr);
-	}
-      else
-	{
-	  fputs (" (none)\n", stderr);
-	}
 
       DEBUGF1 ("  search only with suffix = %d\n",
 	       kpse_format_info.suffix_search_only);
@@ -2198,7 +2150,7 @@ db_build (hash_table_type *table, const std::string& db_filename)
 	  db_file = NULL;
 	}
       else
-	db_dir_list.append (std::string (top_dir));
+	db_dir_list.append (top_dir);
 
 #ifdef KPSE_DEBUG
       if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
@@ -2228,14 +2180,14 @@ db_build (hash_table_type *table, const std::string& db_filename)
    rebuilt.  */
 
 void
-kpse_db_insert (const char *passed_fname)
+kpse_db_insert (const std::string& passed_fname)
 {
   /* We might not have found ls-R, or even had occasion to look for it
      yet, so do nothing if we have no hash table.  */
   if (db.buckets)
     {
       const char *dir_part;
-      char *fname = xstrdup (passed_fname);
+      char *fname = xstrdup (passed_fname.c_str ());
       char *baseptr = xbasename (fname);
       const char *file_part = xstrdup (baseptr);
 
@@ -2261,7 +2213,7 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
 
   for (; *filename && *path_elt; filename++, path_elt++)
     {
-      if (FILECHARCASEEQ (*filename, *path_elt)) /* normal character match */
+      if (*filename == *path_elt) /* normal character match */
 	;
 
       else if (IS_DIR_SEP (*path_elt)  /* at // */
@@ -2284,8 +2236,7 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
 	      for (; !matched && *filename; filename++)
 		{
 		  /* Try matching at each possible character.  */
-		  if (IS_DIR_SEP (filename[-1])
-		      && FILECHARCASEEQ (*filename, *path_elt))
+		  if (IS_DIR_SEP (filename[-1]) && *filename == *path_elt)
 		    matched = match (filename, path_elt);
 		}
 
@@ -2342,7 +2293,7 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
 
   size_t i = 0;
 
-  while (! found && FILECHARCASEEQ (db_dir[i], path_elt[i]))
+  while (! found && db_dir[i] == path_elt[i])
     {
       i++;
       /* If we've matched the entire db directory, it's good.  */
@@ -2492,17 +2443,14 @@ kpse_init_db (void)
 
 string_vector
 kpse_db_search (const std::string& name_arg,
-		const std::string& orig_path_elt_arg, bool all)
+		const std::string& orig_path_elt, bool all)
 {
-  const char *last_slash;
-  char *path_elt;
   bool done;
   string_vector ret;
   string_vector aliases;
   bool relevant = false;
 
-  const char *name = name_arg.c_str ();
-  const char *orig_path_elt = orig_path_elt_arg.c_str ();
+  std::string name = name_arg;
 
   /* If we failed to build the database (or if this is the recursive
      call to build the db path), quit.  */
@@ -2515,25 +2463,22 @@ kpse_db_search (const std::string& name_arg,
      here, since that's what tex-glyph.c unconditionally uses in
      DPI_BITMAP_SPEC.  But don't do anything if the / begins NAME; that
      should never happen.  */
-  last_slash = strrchr (name, '/');
-  if (last_slash && last_slash != name)
+  std::string path_elt;
+  size_t last_slash = name.rfind ('/');
+  if (last_slash != NPOS && last_slash != 0)
     {
-      unsigned len = last_slash - name + 1;
-      char *dir_part = (char *) xmalloc (len);
-      strncpy (dir_part, name, len - 1);
-      dir_part[len - 1] = 0;
-      path_elt = concat3 (orig_path_elt, "/", dir_part);
-      name = last_slash + 1;
+      std::string dir_part = name.substr (0, last_slash);
+      name = name.substr (last_slash + 1);
     }
   else
-    path_elt = (char *) orig_path_elt;
+    path_elt = orig_path_elt;
 
   /* Don't bother doing any lookups if this `path_elt' isn't covered by
      any of database directories.  We do this not so much because the
      extra couple of hash lookups matter -- they don't -- but rather
      because we want to return NULL in this case, so path_search can
      know to do a disk search.  */
-  for (int e = 0; !relevant && e < db_dir_list.length (); e++)
+  for (int e = 0; ! relevant && e < db_dir_list.length (); e++)
     relevant = elt_in_db (db_dir_list[e], path_elt);
 
   if (! relevant)
@@ -2571,7 +2516,7 @@ kpse_db_search (const std::string& name_arg,
 
 #ifdef KPSE_DEBUG
 	  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	    DEBUGF3 ("db:match (%s,%s) = %d\n", db_file.c_str (), path_elt, matched);
+	    DEBUGF3 ("db:match (%s,%s) = %d\n", db_file.c_str (), path_elt.c_str (), matched);
 #endif
 
 	  /* We got a hit in the database.  Now see if the file actually
@@ -2615,10 +2560,6 @@ kpse_db_search (const std::string& name_arg,
 	}
     }
 
-  /* If we had to break up NAME, free the temporary PATH_ELT.  */
-  if (path_elt != orig_path_elt)
-    free (path_elt);
-
   return ret;
 }
 
@@ -2627,22 +2568,20 @@ kpse_db_search (const std::string& name_arg,
 /* Check for leading colon first, then trailing, then doubled, since
    that is fastest.  Usually it will be leading or trailing.  */
 
-char *
-kpse_expand_default (const char *path, const char *fallback)
+std::string
+kpse_expand_default (const std::string& path, const std::string& fallback)
 {
-  unsigned path_length;
-  char *expansion;
+  std::string expansion;
 
-  /* The default path better not be null.  */
-  assert (fallback);
+  size_t path_len = path.length ();
 
-  if (path == NULL)
-    expansion = xstrdup (fallback);
+  if (path_len == 0)
+    expansion = fallback;
 
   /* Solitary or leading :?  */
-  else if (IS_ENV_SEP (*path))
+  else if (IS_ENV_SEP (path[0]))
     {
-      expansion = path[1] == 0 ? xstrdup (fallback) : concat (fallback, path);
+      expansion = path_len == 1 ? fallback : fallback + path;
     }
 
   /* Sorry about the assignment in the middle of the expression, but
@@ -2650,30 +2589,25 @@ kpse_expand_default (const char *path, const char *fallback)
      point of calling strlen twice or complicating the logic just to
      avoid the assignment (especially now that I've pointed it out at
      such great length).  */
-  else if (path[(path_length = strlen (path)) - 1] == ENV_SEP)
-    expansion = concat (path, fallback);
+  else if (IS_ENV_SEP (path[path_len-1]))
+    expansion = path + fallback;
 
   /* OK, not leading or trailing.  Check for doubled.  */
   else
     {
-      const char *loc;
-
       /* What we'll return if we find none.  */
-      expansion = xstrdup (path);
+      expansion = path;
 
-      for (loc = path; *loc; loc++)
+      for (size_t i = 0; i < path_len; i++)
         {
-          if (IS_ENV_SEP (loc[0]) && IS_ENV_SEP (loc[1]))
-            { /* We have a doubled colon.  */
-              expansion = (char *) xmalloc (path_length + strlen (fallback) + 1);
+          if (i + 1 < path_len
+	      && IS_ENV_SEP (path[i]) && IS_ENV_SEP (path[i+1]))
+            {
+	      /* We have a doubled colon.  */
 
               /* Copy stuff up to and including the first colon.  */
-              strncpy (expansion, path, loc - path + 1);
-              expansion[loc - path + 1] = 0;
-
               /* Copy in FALLBACK, and then the rest of PATH.  */
-              strcat (expansion, fallback);
-              strcat (expansion, loc + 1);
+	      expansion = path.substr (0, i+1) + fallback + path.substr (i+1);
 
 	      break;
             }
@@ -2767,7 +2701,7 @@ cached (const char *key)
 
   for (p = 0; p < cache_length; p++)
     {
-      if (FILESTRCASEEQ (the_cache[p].key, key))
+      if (! strcmp (the_cache[p].key, key))
         return the_cache[p].value;
     }
 
@@ -2954,8 +2888,10 @@ expand_elt (str_llist_type *str_list_ptr, const char *elt, unsigned start)
 /* Here is the entry point.  Returns directory list for ELT.  */
 
 str_llist_type *
-kpse_element_dirs (const char *elt)
+kpse_element_dirs (const std::string& elt_arg)
 {
+  const char *elt = elt_arg.c_str ();
+
   str_llist_type *ret;
 
   /* If given nothing, return nothing.  */
@@ -2992,78 +2928,6 @@ kpse_element_dirs (const char *elt)
       fflush (stderr);
     }
 #endif /* KPSE_DEBUG */
-
-  return ret;
-}
-
-/* path-elt.c: Return the stuff between colons.  */
-
-/* The static (but dynamically allocated) area we return the answer in,
-   and how much we've currently allocated for it.  */
-static char *elt = NULL;
-static unsigned elt_alloc = 0;
-
-/* The path we're currently working on.  */
-static const char *path = NULL;
-
-/* Upon entry, the static `path' is at the first (and perhaps last)
-   character of the return value, or else NULL if we're at the end (or
-   haven't been called).  I make no provision for caching the results;
-   thus, we parse the same path over and over, on every lookup.  If that
-   turns out to be a significant lose, it can be fixed, but I'm guessing
-   disk accesses overwhelm everything else.  If ENV_P is true, use
-   IS_ENV_SEP; else use IS_DIR_SEP.  */
-
-char *
-kpse_path_element (const char *passed_path)
-{
-  const char *p;
-  char *ret;
-  int brace_level;
-  unsigned len;
-
-  if (passed_path)
-    path = passed_path;
-  /* Check if called with NULL, and no previous path (perhaps we reached
-     the end).  */
-  else if (! path)
-    return NULL;
-
-  /* OK, we have a non-null `path' if we get here.  */
-  assert (path);
-  p = path;
-
-  /* Find the next colon not enclosed by braces (or the end of the path).  */
-  brace_level = 0;
-  while (*p != 0  && ! (brace_level == 0 && IS_ENV_SEP (*p)))
-    {
-      if (*p == '{')
-	++brace_level;
-      else if (*p == '}')
-	--brace_level;
-
-      ++p;
-    }
-
-  /* Return the substring starting at `path'.  */
-  len = p - path;
-
-  /* Make sure we have enough space (including the null byte).  */
-  if (len + 1 > elt_alloc)
-    {
-      elt_alloc = len + 1;
-      elt = (char *) xrealloc (elt, elt_alloc);
-    }
-
-  strncpy (elt, path, len);
-  elt[len] = 0;
-  ret = elt;
-
-  /* If we are at the end, return NULL next time.  */
-  if (path[len] == 0)
-    path = NULL;
-  else
-    path += len + 1;
 
   return ret;
 }

@@ -40,18 +40,63 @@ typedef struct str_llist_elt *str_llist_type;
 #define STR_LLIST_MOVED(sl) ((sl).moved)
 #define STR_LLIST_NEXT(sl) ((sl).next)
 
-/* If PATH is non-null, return its first element (as defined by
-   IS_ENV_SEP).  If it's NULL, return the next element in the previous
-   path, a la strtok.  Leading, trailing, or doubled colons result in
-   the empty string.  When at the end of PATH, return NULL.  In any
-   case, return a pointer to an area that may be overwritten on
-   subsequent calls.  */
-extern char *kpse_path_element (const char *path);
+extern bool kpse_is_env_sep (char c);
 
-/* Like `kpse_path_element', but for filename components (using
-   IS_DIR_SEP).  Uses same area as `kpse_path_element'.  */
-extern char *kpse_filename_component (const char *path);
+class kpse_path_iterator
+{
+public:
 
+  kpse_path_iterator (const std::string& p)
+    : path (p), b (0), e (0), len (path.length ()) { set_end (); }
+
+  kpse_path_iterator (const kpse_path_iterator& pi)
+    : path (pi.path), b (pi.b), e (pi.e), len (pi.len) { }
+
+  kpse_path_iterator operator ++ (int)
+    {
+      kpse_path_iterator retval (*this);
+      next ();
+      return retval;
+    }
+
+  std::string operator * (void) { return path.substr (b, e-b); }
+
+  bool operator != (const size_t sz) { return b != sz; }
+
+private:
+
+  const std::string& path;
+  size_t b;
+  size_t e;
+  size_t len;
+
+  void set_end (void)
+    {
+      e = b + 1;
+
+      if (e >= len)
+	b = e = NPOS;
+      else
+	{
+	  /* Find the next colon not enclosed by braces (or the end of
+	     the path).  */
+
+	  int brace_level = 0;
+	  while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
+	    e++;
+	}
+    }
+
+  void next (void)
+    {
+      b = e + 1;
+
+      if (b >= len)
+	b = e = NPOS;
+      else
+	set_end ();
+    }
+};
 
 /* Given a path element ELT, return a pointer to a NULL-terminated list
    of the corresponding (existing) directory or directories, with
@@ -61,8 +106,7 @@ extern char *kpse_filename_component (const char *path);
    It's up to the caller to expand ELT.  This is because this routine is
    most likely only useful to be called from `kpse_path_search', which
    has already assumed expansion has been done.  */
-extern str_llist_type *kpse_element_dirs (const char *elt);
-
+extern str_llist_type *kpse_element_dirs (const std::string& elt);
 
 /* Call `kpse_expand' on NAME.  If the result is an absolute or
    explicitly relative filename, check whether it is a readable
@@ -84,7 +128,6 @@ extern str_llist_type *kpse_element_dirs (const char *elt);
 extern std::string kpse_path_search (const std::string& path,
 				     const std::string& name,
 				     bool must_exist);
-
 
 /* Like `kpse_path_search' with MUST_EXIST true, but return a list of
    all the filenames (or NULL if none), instead of taking the first.  */
@@ -114,7 +157,7 @@ extern std::string kpse_expand (const std::string& s);
    no expansions were done).  We don't call `kpse_expand_default'
    because there is a whole sequence of defaults to run through; see
    `kpse_init_format'.  */
-extern std::string kpse_brace_expand (const char *path);
+extern std::string kpse_brace_expand (const std::string& path);
 
 /* Do brace expansion and call `kpse_expand' on each argument of the
    result, then expand any `//' constructs.  The final expansion (always
@@ -128,7 +171,8 @@ extern std::string kpse_path_expand (const std::string& path);
    no extra colons, return PATH.  Only one extra colon is replaced.
    DFLT may not be NULL.  */
 
-extern char *kpse_expand_default (const char *path, const char *dflt);
+extern std::string kpse_expand_default (const std::string& path,
+					const std::string& dflt);
 
 /* db.h: lookups in an externally built db file.  */
 
@@ -146,7 +190,7 @@ extern string_vector kpse_db_search (const std::string& name,
 
 /* Insert the filename FNAME into the database.
    Called by mktexpk et al.  */
-extern void kpse_db_insert (const char *fname);
+extern void kpse_db_insert (const std::string& fname);
 
 extern unsigned int kpathsea_debug;
 

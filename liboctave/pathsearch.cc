@@ -60,8 +60,7 @@ dir_path::all_directories (void)
 
       for (int i = 0; i < len; i++)
 	{
-	  str_llist_type *elt_dirs
-	    = kpse_element_dirs (pv[i].c_str ());
+	  str_llist_type *elt_dirs = kpse_element_dirs (pv[i]);
 
 	  if (elt_dirs)
 	    {
@@ -121,10 +120,10 @@ dir_path::init (void)
 {
   if (! octave_kpathsea_initialized)
     {
-      char *s = getenv ("KPATHSEA_DEBUG");
+      std::string val = octave_env::getenv ("KPATHSEA_DEBUG");
 
-      if (s)
-	kpathsea_debug |= atoi (s);
+      if (! val.empty ())
+	kpathsea_debug |= atoi (val.c_str ());
 
       octave_kpathsea_initialized = true;
     }
@@ -133,31 +132,23 @@ dir_path::init (void)
     p = kpse_path_expand (p_orig);
   else
     {
-      char *t2
-	= kpse_expand_default (p_orig.c_str (), p_default.c_str ());
+      std::string s = kpse_expand_default (p_orig, p_default);
 
-      p = kpse_path_expand (t2);
-
-      if (t2)
-	free (t2);
+      p = kpse_path_expand (s);
     }
 
   int count = 0;
-  char *path_elt = kpse_path_element (p.c_str ());
-  while (path_elt)
-    {
-      path_elt = kpse_path_element (0);
-      count++;
-    }
+  for (kpse_path_iterator pi (p); pi != NPOS; pi++)
+    count++;
 
   pv.resize (count);
 
-  path_elt = kpse_path_element (p.c_str ());
+  kpse_path_iterator pi (p);
 
   for (int i = 0; i < count; i++)
     {
-      pv[i] = path_elt;
-      path_elt = kpse_path_element (0);
+      pv[i] = *pi++;
+      std::cerr << pv[i] << std::endl;
     }
 
   initialized = true;

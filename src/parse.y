@@ -1135,6 +1135,8 @@ yyerror (char *s)
       else
         fprintf (stderr, ":\n\n  %s\n  %*s\n\n", line, err_col, "^");
     }
+  else
+    fprintf (stderr, "\n\n");
 }
 
 static int

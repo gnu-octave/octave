@@ -21,7 +21,7 @@ dnl Copyright (C) 1992, 1993, 1994 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.74 $)
+AC_REVISION($Revision: 1.75 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -541,7 +541,17 @@ AC_CHECK_LIB(m, main)
 XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
 
-AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan erf erfc lgamma)
+### Inf and NaN don't work with gcc on the Alpha yet.
+
+case "$canonical_host_type" in
+  alpha-dec-osf*)
+  ;;
+  *)
+    AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan)
+  ;;
+esac
+
+AC_CHECK_FUNCS(erf erfc lgamma)
 
 AC_MSG_CHECKING([for signgam declaration in math.h])
 AC_TRY_LINK([#include <math.h>],

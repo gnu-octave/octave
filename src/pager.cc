@@ -25,34 +25,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <csignal>
-#include <cstdlib>
 
 #include <string>
-
-#include <iostream.h>
-#include <strstream.h>
 #include <fstream.h>
 
 #include "procstream.h"
 
-#include "oct-term.h"
-#include "str-vec.h"
-
 #include "defun.h"
 #include "error.h"
 #include "help.h"
-#include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
-#include "pt-const.h"
 #include "sighandlers.h"
-#include "unwind-prot.h"
 #include "user-prefs.h"
-#include "utils.h"
-#include "variables.h"
 
-// Where we stash output headed for the screen.
-static ostrstream *pager_buf = 0;
+pid_t octave_pager_pid = -1;
+
+// Our actual connection to the external pager.
+static oprocstream *external_pager = 0;
 
 // Nonzero means we write to the diary file.
 static int write_to_diary_file = 0;
@@ -61,141 +51,175 @@ static int write_to_diary_file = 0;
 static string diary_file;
 
 // The diary file.
-static ofstream diary_stream;
+static ofstream external_diary_file;
 
-static int
-line_count (char *s)
+static sig_handler *saved_sigint_handler = 0;
+
+static void
+do_sync (const char *msg)
 {
-  int count = 0;
-  if (s)
+  if (! error_state)
     {
-      char c;
-      while ((c = *s++) != '\0')
-	if (c == '\n')
-	  count++;
+      if (msg && *msg)
+	{
+	  if (! external_pager)
+	    {
+	      string pgr = user_pref.pager_binary;
+
+	      if (! pgr.empty ())
+		{
+		  saved_sigint_handler
+		    = octave_set_signal_handler (SIGINT, SIG_IGN);
+
+		  external_pager = new oprocstream (pgr.c_str ());
+
+		  if (external_pager)
+		    octave_pager_pid = external_pager->pid ();
+		}
+	    }
+
+	  if (external_pager)
+	    {
+	      *external_pager << msg;
+
+	      if (external_pager->fail ())
+		{
+		  octave_pager_pid = -1;
+
+		  delete external_pager;
+		  external_pager = 0;
+
+		  if (saved_sigint_handler)
+		    {
+		      octave_set_signal_handler (SIGINT, saved_sigint_handler);
+		      saved_sigint_handler = 0;
+		    }
+		}
+	      else
+		external_pager->flush ();
+	    }
+	  else
+	    cout << msg;
+	}
     }
-  return count;
+}
+
+int
+octave_pager_buf::sync (void)
+{
+  sputc ('\0');
+
+  char *buf = eback ();
+
+  do_sync (buf);
+
+  octave_diary << buf;
+
+  seekoff (0, ios::beg);
+
+  return 0;
+}
+
+int
+octave_diary_buf::sync (void)
+{
+  sputc ('\0');
+
+  if (write_to_diary_file && external_diary_file)
+    external_diary_file << eback ();
+
+  seekoff (0, ios::beg);
+
+  return 0;
+}
+
+octave_pager_stream *octave_pager_stream::instance = 0;
+
+octave_pager_stream::octave_pager_stream (void) : ostream (), pb (0)
+{
+  pb = new octave_pager_buf;
+  rdbuf (pb);
+  setf (unitbuf);
+}
+
+octave_pager_stream::~octave_pager_stream (void)
+{
+  flush ();
+  delete pb;
+}
+
+octave_pager_stream&
+octave_pager_stream::stream (void)
+{
+  if (! instance)
+    instance = new octave_pager_stream ();
+      
+  return *instance;
+}
+
+octave_diary_stream *octave_diary_stream::instance = 0;
+
+octave_diary_stream::octave_diary_stream (void) : ostream (), db (0)
+{
+  db = new octave_diary_buf;
+  rdbuf (db);
+  setf (unitbuf);
+}
+
+octave_diary_stream::~octave_diary_stream (void)
+{
+  flush ();
+  delete db;
+}
+
+octave_diary_stream&
+octave_diary_stream::stream (void)
+{
+  if (! instance)
+    instance = new octave_diary_stream ();
+
+  return *instance;
 }
 
 void
-initialize_pager (void)
+flush_octave_stdout (void)
 {
-  delete pager_buf;
-  pager_buf = new ostrstream ();
-}
+  octave_stdout.flush ();
 
-void
-maybe_page_output (ostrstream& msg_buf)
-{
-  msg_buf << ends;
-
-  char *message = msg_buf.str ();
-
-  if (message)
+  if (external_pager)
     {
-      maybe_write_to_diary_file (message);
+      octave_pager_pid = -1;
 
-      if (interactive
-	  && user_pref.page_screen_output
-	  && ! user_pref.pager_binary.empty ())
-	{
-	  *pager_buf << message;
-	}
-      else
-	{
-	  cout << message;
-	  cout.flush ();
-	}
+      delete external_pager;
+      external_pager = 0;
 
-      delete [] message;
+      if (saved_sigint_handler)
+	{
+	  octave_set_signal_handler (SIGINT, saved_sigint_handler);
+	  saved_sigint_handler = 0;
+	}
     }
 }
 
 static void
-cleanup_oprocstream (void *p)
+close_diary_file (void)
 {
-  delete (oprocstream *) p;
-}
-
-void
-flush_output_to_pager (void)
-{
-  // Extract message from buffer, then delete the buffer so that any
-  // new messages get sent separately.
-
-  *pager_buf << ends;
-  char *message = pager_buf->str ();
-  initialize_pager ();
-
-  if (! message || ! *message)
+  if (external_diary_file.is_open ())
     {
-      delete [] message;
-      return;
+      octave_diary.flush ();
+      external_diary_file.close ();
     }
-
-  int nlines = line_count (message);
-
-  if (nlines > terminal_rows () - 2)
-    {
-      string pgr = user_pref.pager_binary;
-
-      if (! pgr.empty ())
-	{
-	  volatile sig_handler *old_sigint_handler;
-	  old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
-
-	  oprocstream *pager_stream = new oprocstream (pgr.c_str ());
-
-	  add_unwind_protect (cleanup_oprocstream, pager_stream);
-
-	  int output_paged = 0;
-	  if (pager_stream && *pager_stream)
-	    {
-	      output_paged = 1;
-	      *pager_stream << message;
-	      delete [] message;
-	      pager_stream->flush ();
-	      pager_stream->close ();
-	    }
-
-	  run_unwind_protect ();
-
-	  octave_set_signal_handler (SIGINT, old_sigint_handler);
-
-	  if (output_paged)
-	    return;
-	}
-    }
-
-  cout << message;
-  delete [] message;
-  cout.flush ();
 }
 
 static void
 open_diary_file (void)
 {
-  if (diary_stream.is_open ())
-    diary_stream.close ();
+  close_diary_file ();
 
-  diary_stream.open (diary_file.c_str (), ios::app);
+  external_diary_file.open (diary_file.c_str (), ios::app);
 
-  if (! diary_stream)
+  if (! external_diary_file)
     error ("diary: can't open diary file `%s'", diary_file.c_str ());
-}
-
-void
-close_diary_file (void)
-{
-  if (diary_stream)
-    diary_stream.close ();
-}
-
-void
-maybe_write_to_diary_file (const string& s)
-{
-  if (write_to_diary_file && diary_stream)
-    diary_stream << s;
 }
 
 DEFUN_TEXT (diary, args, ,
@@ -233,7 +257,10 @@ redirect all input and screen output to a file.")
 	    open_diary_file ();
 	  }	
 	else if (arg == "off")
-	  write_to_diary_file = 0;
+	  {
+	    close_diary_file ();
+	    write_to_diary_file = 0;
+	  }
 	else
 	  {
 	    diary_file = arg;

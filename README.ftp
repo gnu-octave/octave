@@ -1,4 +1,4 @@
-This file last updated: Fri Apr 12 20:21:16 2002
+This file last updated: Fri Nov 14 21:19:27 2003
 
 This directory contains the source for Octave, a high-level interactive
 language for solving numerical problems.  See the files README.octave
@@ -13,10 +13,11 @@ Octave binaries are no longer distributed from this site.
 Packaged versions of Octave for various GNU/Linux systems are available
 with the major GNU/Linux distributions (Debian, Red Hat, SuSE, etc.).
 
-Tom Weichmann <tomcw@localnet.com> and Julian A. de Marchi
-<julian@matlinks.net> have created a package that makes 
-Octave easier to install on Windows systems.  You can find a pointer
-to it on the download page of the Octave web site, www.octave.org.
+Binary distributions of Octave for Mac OS X are available as part of
+the fink project: http://fink.sourceforge.net
+
+The file README.Windows provides instructions for installing Octave on
+Windows systems.
 
 A note about .gz files:
 ----------------------

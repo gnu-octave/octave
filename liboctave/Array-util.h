@@ -56,16 +56,9 @@ extern dim_vector freeze (Array<idx_vector>& ra_idx,
 
 extern bool vector_equivalent (const Array<int>& ra_idx);
 
-extern bool equal_arrays (const dim_vector& a, const dim_vector& b);
-
 extern bool all_ok (const Array<idx_vector>& ra_idx);
 
 extern bool any_orig_empty (const Array<idx_vector>& ra_idx);
-
-extern bool any_zero_len (const dim_vector& frozen_lengths);
-
-extern dim_vector get_zero_len_size (const dim_vector& frozen_lengths,
-				     const dim_vector& dimensions);
 
 extern bool all_colon_equiv (const Array<idx_vector>& ra_idx,
 			     const dim_vector& frozen_lengths);
@@ -78,8 +71,6 @@ extern bool all_ones (const Array<int>& arr);
 
 extern Array<int> get_elt_idx (const Array<idx_vector>& ra_idx,
 			       const Array<int>& result_idx);
-
-extern int number_of_elements (const dim_vector ra_idx);
 
 extern Array<int> get_ra_idx (int idx, const dim_vector& dims);
 

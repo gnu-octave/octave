@@ -39,7 +39,7 @@ index_in_bounds (const Array<int>& ra_idx, const dim_vector& dimensions)
     {
       for (int i = 0; i < n; i++)
 	{
-	  if (ra_idx(i) < 0 || ra_idx(i) > dimensions(i))
+	  if (ra_idx(i) < 0 || ra_idx(i) >= dimensions(i))
 	    {
 	      retval = false;
 	      break;
@@ -236,25 +236,6 @@ vector_equivalent (const Array<int>& ra_idx)
 }
 
 bool
-equal_arrays (const dim_vector& a, const dim_vector& b)
-{
-  bool retval = true;
-
-  if (a.length () != b.length ())
-    retval = false;
-  else
-    {
-      for (int i = 0; i < a.length (); i++)
-	{
-	  if (a(i) != b(i))
-	    retval = false;
-	}
-    }
-
-  return retval;
-}
-
-bool
 all_ok (const Array<idx_vector>& ra_idx)
 {
   bool retval = true;
@@ -283,25 +264,6 @@ any_orig_empty (const Array<idx_vector>& ra_idx)
   for (int i = 0; i < n; i++)
     {
       if (ra_idx(i).orig_empty ())
-	{
-	  retval = true;
-	  break;
-	}
-    }
-
-  return retval;
-}
-
-bool
-any_zero_len (const dim_vector& frozen_lengths)
-{
-  bool retval = false;
-
-  int n = frozen_lengths.length ();
-
-  for (int i = 0; i < n; i++)
-    {
-      if (frozen_lengths(i) == 0)
 	{
 	  retval = true;
 	  break;
@@ -393,22 +355,6 @@ get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
   return retval;
 }
 
-int
-number_of_elements (const dim_vector ra_idx)
-{
-  int retval = 1;
-
-  int n = ra_idx.length ();
-
-  if (n == 0)
-    retval = 0;
-
-  for (int i = 0; i < n; i++)
-    retval *= ra_idx(i);
-
-  return retval;
-}
-
 Array<int>
 get_ra_idx (int idx, const dim_vector& dims)
 {
@@ -421,7 +367,7 @@ get_ra_idx (int idx, const dim_vector& dims)
   for (int i = 0; i < n_dims; i++)
     retval(i) = 0;
 
-  assert (idx > 0 || idx < number_of_elements (dims));
+  assert (idx > 0 || idx < dims.numel ());
 
   for (int i = 0; i < idx; i++)
     increment_index (retval, dims);

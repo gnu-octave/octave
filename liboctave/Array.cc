@@ -475,7 +475,7 @@ Array<T>::resize_no_fill (int n)
 
   dimensions = dim_vector (n);
 
-  if (old_data && old_len > 0)
+  if (n > 0 && old_data && old_len > 0)
     {
       int min_len = old_len < n ? old_len : n;
 
@@ -529,18 +529,23 @@ Array<T>::resize_no_fill (const dim_vector& dv)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  rep = new typename Array<T>::ArrayRep (get_size (dv));
+  int ts = get_size (dv);
+
+  rep = new typename Array<T>::ArrayRep (ts);
 
   dimensions = dv;
 
-  Array<int> ra_idx (dimensions.length (), 0);
-
-  for (int i = 0; i < old_len; i++)
+  if (ts > 0)
     {
-      if (index_in_bounds (ra_idx, dimensions))
-	xelem (ra_idx) = old_data[i];
+      Array<int> ra_idx (dimensions.length (), 0);
 
-      increment_index (ra_idx, dimensions);
+      for (int i = 0; i < old_len; i++)
+	{
+	  if (index_in_bounds (ra_idx, dimensions))
+	    xelem (ra_idx) = old_data[i];
+
+	  increment_index (ra_idx, dimensions);
+	}
     }
 
   if (--old_rep->count <= 0)
@@ -575,11 +580,13 @@ Array<T>::resize_no_fill (int r, int c)
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new typename Array<T>::ArrayRep (get_size (r, c));
+  int ts = get_size (r, c);
+
+  rep = new typename Array<T>::ArrayRep (ts);
 
   dimensions = dim_vector (r, c);
 
-  if (old_data && old_len > 0)
+  if (ts > 0 && old_data && old_len > 0)
     {
       int min_r = old_d1 < r ? old_d1 : r;
       int min_c = old_d2 < c ? old_d2 : c;
@@ -628,7 +635,7 @@ Array<T>::resize_no_fill (int r, int c, int p)
 
   dimensions = dim_vector (r, c, p);
 
-  if (old_data && old_len > 0)
+  if (ts > 0 && old_data && old_len > 0)
     {
       int min_r = old_d1 < r ? old_d1 : r;
       int min_c = old_d2 < c ? old_d2 : c;
@@ -666,16 +673,19 @@ Array<T>::resize_and_fill (int n, const T& val)
 
   dimensions = dim_vector (n);
 
-  int min_len = old_len < n ? old_len : n;
-
-  if (old_data && old_len > 0)
+  if (n > 0)
     {
-      for (int i = 0; i < min_len; i++)
-	xelem (i) = old_data[i];
-    }
+      int min_len = old_len < n ? old_len : n;
 
-  for (int i = old_len; i < n; i++)
-    xelem (i) = val;
+      if (old_data && old_len > 0)
+	{
+	  for (int i = 0; i < min_len; i++)
+	    xelem (i) = old_data[i];
+	}
+
+      for (int i = old_len; i < n; i++)
+	xelem (i) = val;
+    }
 
   if (--old_rep->count <= 0)
     delete old_rep;
@@ -707,27 +717,32 @@ Array<T>::resize_and_fill (int r, int c, const T& val)
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new typename Array<T>::ArrayRep (get_size (r, c));
+  int ts = get_size (r, c);
+
+  rep = new typename Array<T>::ArrayRep (ts);
 
   dimensions = dim_vector (r, c);
 
-  int min_r = old_d1 < r ? old_d1 : r;
-  int min_c = old_d2 < c ? old_d2 : c;
-
-  if (old_data && old_len > 0)
+  if (ts > 0)
     {
+      int min_r = old_d1 < r ? old_d1 : r;
+      int min_c = old_d2 < c ? old_d2 : c;
+
+      if (old_data && old_len > 0)
+	{
+	  for (int j = 0; j < min_c; j++)
+	    for (int i = 0; i < min_r; i++)
+	      xelem (i, j) = old_data[old_d1*j+i];
+	}
+
       for (int j = 0; j < min_c; j++)
-	for (int i = 0; i < min_r; i++)
-	  xelem (i, j) = old_data[old_d1*j+i];
+	for (int i = min_r; i < r; i++)
+	  xelem (i, j) = val;
+
+      for (int j = min_c; j < c; j++)
+	for (int i = 0; i < r; i++)
+	  xelem (i, j) = val;
     }
-
-  for (int j = 0; j < min_c; j++)
-    for (int i = min_r; i < r; i++)
-      xelem (i, j) = val;
-
-  for (int j = min_c; j < c; j++)
-    for (int i = 0; i < r; i++)
-      xelem (i, j) = val;
 
   if (--old_rep->count <= 0)
     delete old_rep;
@@ -767,34 +782,37 @@ Array<T>::resize_and_fill (int r, int c, int p, const T& val)
 
   dimensions = dim_vector (r, c, p);
 
-  int min_r = old_d1 < r ? old_d1 : r;
-  int min_c = old_d2 < c ? old_d2 : c;
-  int min_p = old_d3 < p ? old_d3 : p;
+  if (ts > 0)
+    {
+      int min_r = old_d1 < r ? old_d1 : r;
+      int min_c = old_d2 < c ? old_d2 : c;
+      int min_p = old_d3 < p ? old_d3 : p;
 
-  if (old_data && old_len > 0)
-    for (int k = 0; k < min_p; k++)
-      for (int j = 0; j < min_c; j++)
-	for (int i = 0; i < min_r; i++)
-	  xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
+      if (old_data && old_len > 0)
+	for (int k = 0; k < min_p; k++)
+	  for (int j = 0; j < min_c; j++)
+	    for (int i = 0; i < min_r; i++)
+	      xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
 
-  // XXX FIXME XXX -- if the copy constructor is expensive, this may
-  // win.  Otherwise, it may make more sense to just copy the value
-  // everywhere when making the new ArrayRep.
+      // XXX FIXME XXX -- if the copy constructor is expensive, this
+      // may win.  Otherwise, it may make more sense to just copy the
+      // value everywhere when making the new ArrayRep.
 
-  for (int k = 0; k < min_p; k++)
-    for (int j = min_c; j < c; j++)
-      for (int i = 0; i < min_r; i++)
-	xelem (i, j, k) = val;
+      for (int k = 0; k < min_p; k++)
+	for (int j = min_c; j < c; j++)
+	  for (int i = 0; i < min_r; i++)
+	    xelem (i, j, k) = val;
 
-  for (int k = 0; k < min_p; k++)
-    for (int j = 0; j < c; j++)
-      for (int i = min_r; i < r; i++)
-	xelem (i, j, k) = val;
+      for (int k = 0; k < min_p; k++)
+	for (int j = 0; j < c; j++)
+	  for (int i = min_r; i < r; i++)
+	    xelem (i, j, k) = val;
 
-  for (int k = min_p; k < p; k++)
-    for (int j = 0; j < c; j++)
-      for (int i = 0; i < r; i++)
-	xelem (i, j, k) = val;
+      for (int k = min_p; k < p; k++)
+	for (int j = 0; j < c; j++)
+	  for (int i = 0; i < r; i++)
+	    xelem (i, j, k) = val;
+    }
 
   if (--old_rep->count <= 0)
     delete old_rep;
@@ -858,23 +876,26 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 
   dimensions = dv;
 
-  Array<int> ra_idx (dimensions.length (), 0);
-
-  // XXX FIXME XXX -- it is much simpler to fill the whole array
-  // first, but probably slower for large arrays, or if the assignment
-  // operator for the type T is expensive.  OTOH, the logic for
-  // deciding whether an element needs the copied value or the filled
-  // value might be more expensive.
-
-  for (int i = 0; i < len; i++)
-    rep->elem (i) = val;
-
-  for (int i = 0; i < old_len; i++)
+  if (len > 0)
     {
-      if (index_in_bounds (ra_idx, dv_old))
-	xelem (ra_idx) = old_data[get_scalar_idx (ra_idx, dv_old)];
+      Array<int> ra_idx (dimensions.length (), 0);
 
-      increment_index (ra_idx, dv_old);
+      // XXX FIXME XXX -- it is much simpler to fill the whole array
+      // first, but probably slower for large arrays, or if the assignment
+      // operator for the type T is expensive.  OTOH, the logic for
+      // deciding whether an element needs the copied value or the filled
+      // value might be more expensive.
+
+      for (int i = 0; i < len; i++)
+	rep->elem (i) = val;
+
+      for (int i = 0; i < old_len; i++)
+	{
+	  if (index_in_bounds (ra_idx, dv_old))
+	    xelem (ra_idx) = old_data[get_scalar_idx (ra_idx, dv_old)];
+
+	  increment_index (ra_idx, dv_old);
+	}
     }
 
   if (--old_rep->count <= 0)
@@ -1840,9 +1861,9 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
 
-  int n_dims = dims ().length ();
+  int n_dims = dims().length ();
 
-  int orig_len = number_of_elements (dims ());
+  int orig_len = dims().numel ();
 
   dim_vector idx_orig_dims = ra_idx.orig_dimensions (); 
 
@@ -1873,7 +1894,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
       if (len == 0)
 	{
-	  if (any_zero_len (idx_orig_dims))
+	  if (idx_orig_dims.any_zero ())
 	    retval = Array<T> (idx_orig_dims);
 	  else
 	    {
@@ -1922,8 +1943,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
     {
       if (liboctave_wfi_flag
 	  && ! (ra_idx.is_colon ()
-		|| (ra_idx.one_zero_only ()
-		    && equal_arrays (idx_orig_dims, dims ()))))
+		|| (ra_idx.one_zero_only () && idx_orig_dims == dims ())))
 	(*current_liboctave_warning_handler)
 	  ("single index used for N-d array");
 
@@ -1945,7 +1965,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
 	  retval.resize (result_dims);
 
-	  int n = number_of_elements (result_dims);
+	  int n = result_dims.numel ();
 
 	  int r_dims = result_dims.length ();
 
@@ -2063,7 +2083,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
     {
       if (all_ok (ra_idx))
 	{
-	  if (any_orig_empty (ra_idx) || any_zero_len (frozen_lengths))
+	  if (any_orig_empty (ra_idx) || frozen_lengths.any_zero ())
 	    {
 	      frozen_lengths.chop_trailing_singletons ();
 
@@ -2644,158 +2664,168 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       dim_vector final_lhs_dims = lhs_dims;
 
-      bool rhs_is_empty = rhs_dims_len == 0 ? true : any_zero_len (rhs_dims);
-
-      Array<int> idx_is_colon (n_idx, 0);
-      Array<int> idx_is_colon_equiv (n_idx, 0);
-
       dim_vector frozen_len;
 
-      if (! rhs_is_empty)
+      int orig_lhs_dims_len = lhs_dims_len;
+
+      bool orig_empty = lhs_dims.all_zero ();
+
+      if (n_idx < lhs_dims_len)
 	{
-	  int orig_lhs_dims_len = lhs_dims_len;
+	  // Collapse dimensions beyond last index.
 
-	  if (n_idx < lhs_dims_len)
+	  if (liboctave_wfi_flag && ! (idx(n_idx-1).is_colon ()))
+	    (*current_liboctave_warning_handler)
+	      ("fewer indices than dimensions for N-d array");
+
+	  for (int i = n_idx; i < lhs_dims_len; i++)
+	    lhs_dims(n_idx-1) *= lhs_dims(i);
+
+	  lhs_dims.resize (n_idx);
+
+	  lhs.resize (lhs_dims);
+
+	  lhs_dims = lhs.dims ();
+
+	  lhs_dims_len = lhs_dims.length ();
+	}
+
+      // Resize.
+
+      dim_vector new_dims;
+      new_dims.resize (n_idx);
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  if (orig_empty)
 	    {
-	      // Collapse dimensions beyond last index.
-
-	      if (liboctave_wfi_flag && ! (idx(n_idx-1).is_colon ()))
-		(*current_liboctave_warning_handler)
-		  ("fewer indices than dimensions for N-d array");
-
-	      for (int i = n_idx; i < lhs_dims_len; i++)
-		lhs_dims(n_idx-1) *= lhs_dims(i);
-
-	      lhs_dims.resize (n_idx);
-
-	      lhs.resize (lhs_dims);
-
-	      lhs_dims = lhs.dims ();
-
-	      lhs_dims_len = lhs_dims.length ();
-	    }
-
-	  // Resize.
-
-	  dim_vector new_dims;
-	  new_dims.resize (n_idx);
-
-	  for (int i = 0; i < n_idx; i++)
-	    {
-	      int tmp = (i < rhs_dims.length () && idx(i).is_colon ())
-		? rhs_dims(i) : idx(i).max () + 1;
+	      // If index is a colon, resizing to RHS dimensions is
+	      // allowed because we started out empty.
 
 	      new_dims(i)
-		= ((lhs_dims_len == 0 || i >= lhs_dims_len || tmp > lhs_dims(i))
-		   ? tmp : lhs_dims(i));
+		= (i < rhs_dims.length () && idx(i).is_colon ())
+		? rhs_dims(i) : idx(i).max () + 1;
 	    }
-
-	  if (n_idx < orig_lhs_dims_len && new_dims(n_idx-1) != lhs_dims(n_idx-1))
-	    {
-	      // We reshaped and the last dimension changed.  This has to
-	      // be an error, because we don't know how to undo that
-	      // later...
-
-	      (*current_liboctave_error_handler)
-		("array index %d (= %d) for assignment requires invalid resizing operation",
-		 n_idx, new_dims(n_idx-1));
-
-	      retval = 0;
-	      goto done;
-	    }
-
-	  if (n_idx > orig_lhs_dims_len)
-	    final_lhs_dims = new_dims;
 	  else
+	    {
+	      // We didn't start out with all zero dimensions, so if
+	      // index is a colon, it refers to the current LHS
+	      // dimension.  Otherwise, it is OK to enlarge to a
+	      // dimension given by the largest index.
+
+	      new_dims(i)
+		= (idx(i).is_colon () || idx(i).max () < lhs_dims(i))
+		? lhs_dims(i) : idx(i).max () + 1;
+	    }
+	}
+
+      if (! orig_empty
+	  && n_idx < orig_lhs_dims_len
+	  && new_dims(n_idx-1) != lhs_dims(n_idx-1))
+	{
+	  // We reshaped and the last dimension changed.  This has to
+	  // be an error, because we don't know how to undo that
+	  // later...
+
+	  (*current_liboctave_error_handler)
+	    ("array index %d (= %d) for assignment requires invalid resizing operation",
+	     n_idx, new_dims(n_idx-1));
+
+	  retval = 0;
+	}
+      else
+	{
+	  if (n_idx < orig_lhs_dims_len)
 	    {
 	      for (int i = 0; i < n_idx-1; i++)
 		final_lhs_dims(i) = new_dims(i);
 	    }
+	  else
+	    final_lhs_dims = new_dims;
 
 	  lhs.resize_and_fill (new_dims, rfv);
 	  lhs_dims = lhs.dims ();
 	  lhs_dims_len = lhs_dims.length ();
-	}
 
-      for (int i = 0; i < n_idx; i++)
-	{
-	  idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
+	  frozen_len = freeze (idx, lhs_dims, true);
 
-	  idx_is_colon(i) = idx(i).is_colon ();
-	}
-
-      frozen_len = freeze (idx, lhs_dims, true);
-
-      if (rhs_is_scalar)
-	{
-	  int n = Array<LT>::get_size (frozen_len);
-
-	  Array<int> result_idx (lhs_dims_len, 0);
-
-	  RT scalar = rhs.elem (0);
-
-	  for (int i = 0; i < n; i++)
+	  if (rhs_is_scalar)
 	    {
-	      Array<int> elt_idx = get_elt_idx (idx, result_idx);
+	      if  (! final_lhs_dims.any_zero ())
+		{
+		  int n = Array<LT>::get_size (frozen_len);
 
-	      lhs.checkelem (elt_idx) = scalar;
+		  Array<int> result_idx (lhs_dims_len, 0);
 
-	      increment_index (result_idx, frozen_len);
-	    }
-	}
-      else
-	{
-	  // RHS is matrix or higher dimension.
+		  RT scalar = rhs.elem (0);
 
-	  // Check that non-singleton RHS dimensions conform to
-	  // non-singleton LHS index dimensions.
+		  for (int i = 0; i < n; i++)
+		    {
+		      Array<int> elt_idx = get_elt_idx (idx, result_idx);
 
-	  dim_vector t_rhs_dims = rhs_dims.squeeze ();
-	  dim_vector t_frozen_len = frozen_len.squeeze ();
+		      lhs.elem (elt_idx) = scalar;
 
-	  // If after sqeezing out singleton dimensions, RHS is vector
-	  // and LHS is vector, force them to have the same orientation
-	  // so that operations like
-	  //
-	  //   a = zeros (3, 3, 3);
-	  //   a(1:3,1,1) = [1,2,3];
-	  //
-	  // will work.
-
-	  if (t_rhs_dims.length () == 2 && t_frozen_len.length () == 2
-	      && (t_rhs_dims.elem(1) == 1 && t_frozen_len.elem(0) == 1 
-		  || t_rhs_dims.elem(0) == 1 && t_frozen_len.elem(1) == 1))
-	    {
-	      int t0 = t_rhs_dims.elem(0);
-	      t_rhs_dims.elem(0) = t_rhs_dims.elem(1);
-	      t_rhs_dims.elem(1) = t0;
-	    }
-
-	  if (t_rhs_dims != t_frozen_len)
-	    {
-	      (*current_liboctave_error_handler)
-		("A(IDX-LIST) = X: X must be a scalar or size of X must equal number of elements indexed by IDX-LIST");
-
-	      retval = 0;
+		      increment_index (result_idx, frozen_len);
+		    }
+		}
 	    }
 	  else
 	    {
-	      int n = Array<LT>::get_size (frozen_len);
+	      // RHS is matrix or higher dimension.
 
-	      Array<int> result_idx (lhs_dims_len, 0);
+	      // Check that non-singleton RHS dimensions conform to
+	      // non-singleton LHS index dimensions.
 
-	      for (int i = 0; i < n; i++)
+	      dim_vector t_rhs_dims = rhs_dims.squeeze ();
+	      dim_vector t_frozen_len = frozen_len.squeeze ();
+
+	      // If after sqeezing out singleton dimensions, RHS is
+	      // vector and LHS is vector, force them to have the same
+	      // orientation so that operations like
+	      //
+	      //   a = zeros (3, 3, 3);
+	      //   a(1:3,1,1) = [1,2,3];
+	      //
+	      // will work.
+
+	      if (t_rhs_dims.length () == 2 && t_frozen_len.length () == 2
+		  && ((t_rhs_dims.elem(1) == 1
+		       && t_frozen_len.elem(0) == 1)
+		      || (t_rhs_dims.elem(0) == 1
+			  && t_frozen_len.elem(1) == 1)))
 		{
-		  Array<int> elt_idx = get_elt_idx (idx, result_idx);
+		  int t0 = t_rhs_dims.elem(0);
+		  t_rhs_dims.elem(0) = t_rhs_dims.elem(1);
+		  t_rhs_dims.elem(1) = t0;
+		}
 
-		  lhs.elem (elt_idx) = rhs.elem (i);
+	      if (t_rhs_dims != t_frozen_len)
+		{
+		  (*current_liboctave_error_handler)
+		    ("A(IDX-LIST) = X: X must be a scalar or size of X must equal number of elements indexed by IDX-LIST");
 
-		  increment_index (result_idx, frozen_len);
+		      retval = 0;
+		}
+	      else
+		{
+		  if  (! final_lhs_dims.any_zero ())
+		    {
+		      int n = Array<LT>::get_size (frozen_len);
+
+		      Array<int> result_idx (lhs_dims_len, 0);
+
+		      for (int i = 0; i < n; i++)
+			{
+			  Array<int> elt_idx = get_elt_idx (idx, result_idx);
+
+			  lhs.elem (elt_idx) = rhs.elem (i);
+
+			  increment_index (result_idx, frozen_len);
+			}
+		    }
 		}
 	    }
 	}
-
-    done:
 
       lhs.resize (final_lhs_dims);
     }

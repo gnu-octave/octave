@@ -1,8 +1,31 @@
 2004-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (Array<T>::resize_and_fill): Don't bother to assign any
+	values unless the length of the new array is greater than 0.
+	(Array<T>::resize_no_fill): Likewise.
+
+	* Array-util.cc (index_in_bounds): Also return false if ra_idx(i)
+	is equal to dimensions(i).
+
+	* Array-util.h, Array-util.cc (equal_arrays, any_zero_len,
+	get_zero_len_size, number_of_elements):
+	Delete unused functions.
+
+	* Array-util.cc (get_ra_idx): Use dim_vector::numel instead of
+	number_of_elements function.
+	* Array.cc (Array<T>::indexN): Likewise.
+
+	* Array.cc (Array<T>::indexN): Use dim_vector::operator == instead
+	of equal_arrays function.
+	(Array<T>::index, Array<T>::indexN, Array<T>::assignN) Use
+	dim_vector::any_zero instead of any_zero_len function.
+
+	* Array.cc (Array<T>::assignN): Eliminate special case for empty index.
+	Don't skip reshaping and resizing if RHS is empty.
+
 	* Array.cc (Array<T>::assignN): Simplify loop for array	assignment.
 	Move body of MAYBE_RESIZE_ND_DIMS here since it is only used once.  
-	Eliminate special case for empty index.
+	Delete unused variables is_colon and is_colon_equiv.
 	Correctly resize for expressions like x(:,:,2) = ones(3,3) when
 	LHS is not yet defined.
 	Error for resizing if number of indices is less than number of LHS

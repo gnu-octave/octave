@@ -213,7 +213,7 @@ available.
 For this to work well, you should use the specific forms of end
 statements (endif, endfor, endwhile, etc., and not just `end').
 
-Type ;? or ;\\[help-command] to display a list of built-in abbrevs for
+Type `? or `\\[help-command] to display a list of built-in abbrevs for
 Octave keywords.
 
 Keybindings
@@ -267,17 +267,17 @@ with no args, if that value is non-nil.
 To begin using this mode for all .m files that you edit, add the
 following lines to your .emacs file:
 
-(autoload 'octave-mode \"octave\" nil t)
-(setq auto-mode-alist (cons '(\"\\\\.m$\" . octave-mode) auto-mode-alist))
+  (autoload 'octave-mode \"octave\" nil t)
+  (setq auto-mode-alist (cons '(\"\\\\.m$\" . octave-mode) auto-mode-alist))
 
 To turn on the abbrevs, auto-fill and font-lock features
 automatically, also add the following lines to your .emacs file:
 
-(setq octave-mode-hook
-      (list 'turn-on-abbrevs 'turn-on-auto-fill
-	    (lambda () (if (eq window-system 'x)
-			   (progn
-			     (font-lock-mode))))))
+  (setq octave-mode-hook
+        (list 'turn-on-auto-fill
+              (lambda () ((abbrev-mode 1)
+			  (if (eq window-system 'x)
+			      (font-lock-mode))))))
 
 See the Emacs manual for more information about how to customize font
 lock mode."

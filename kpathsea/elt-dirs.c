@@ -68,6 +68,7 @@ typedef struct
 static cache_entry *the_cache = NULL;
 static unsigned cache_length = 0;
 
+#if 0
 void
 kpse_clear_dir_cache P1H(void)
 {
@@ -95,6 +96,7 @@ kpse_clear_dir_cache P1H(void)
 
   the_cache = NULL;
 }
+#endif
 
 /* Associate KEY with VALUE.  We implement the cache as a simple linear
    list, since it's unlikely to ever be more than a dozen or so elements

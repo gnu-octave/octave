@@ -104,7 +104,15 @@ DEFCONSTFUN (__end__, , ,
 	{
 	case -1:
 	  // XXX FIXME XXX -- we really want "numel" here.
-	  retval = indexed_object->rows () * indexed_object->columns ();
+	  {
+	    int nr = indexed_object->rows ();
+	    int nc = indexed_object->columns ();
+
+	    if (nr < 0 || nc < 0)
+	      ::error ("invalid use of end");
+	    else
+	      retval = nr * nc;
+	  }
 	  break;
 
 	case 0:

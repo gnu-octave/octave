@@ -1,5 +1,7 @@
 2002-12-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-arg-list.cc (F__end__): Fail if rows or columns is negative.
+
 	* syscalls.cc (Fmkfifo): Use long_value instead of cast.
 
 	* ov.h (octave_value::short_value, octave_value::ushort_value,

@@ -34,8 +34,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-sym.h"
 #include "oct-fcn.h"
+#include "oct-sym.h"
+#include "oct-var-ref.h"
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
@@ -344,7 +345,7 @@ symbol_record::make_eternal (void)
 }
 
 void
-symbol_record::set_sv_function (sv_Function f)
+symbol_record::set_sv_function (sv_function f)
 {
   sv_fcn = f;
 }

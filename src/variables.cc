@@ -109,43 +109,6 @@ symbol_table *curr_sym_tab = 0;
 // Symbol table for global symbols.
 symbol_table *global_sym_tab = 0;
 
-void
-octave_variable_reference::assign (octave_value::assign_op op,
-				   const octave_value& rhs)
-{
-  octave_value saved_val;
-
-  if (chg_fcn)
-    octave_value saved_val = *val;
-
-  if (struct_elt_name.empty ())
-    val->assign (op, rhs);
-  else
-    val->assign_struct_elt (op, struct_elt_name, rhs);
-
-  if (chg_fcn && chg_fcn () < 0)
-    *val = saved_val;
-}
-
-void
-octave_variable_reference::assign (octave_value::assign_op op,
-				   const octave_value_list& idx,
-				   const octave_value& rhs)
-{
-  octave_value saved_val;
-
-  if (chg_fcn)
-    octave_value saved_val = *val;
-
-  if (struct_elt_name.empty ())
-    val->assign (op, idx, rhs);
-  else
-    val->assign_struct_elt (op, struct_elt_name, idx, rhs);
-
-  if (chg_fcn && chg_fcn () < 0)
-    *val = saved_val;
-}
-
 // Initialization.
 
 // Create the initial symbol tables and set the current scope at the
@@ -1577,7 +1540,7 @@ install_builtin_variable (const builtin_variable& v)
 					  v.eternal, v.help_string);
   else
     bind_builtin_variable (v.name, v.value, v.protect, v.eternal,
-			   v.sv_function, v.help_string);
+			   v.sv_fcn, v.help_string);
 }
 
 void
@@ -1665,7 +1628,8 @@ clear_global_error_variable (void *)
 
 void
 bind_builtin_variable (const string& varname, const octave_value& val,
-		       bool protect, bool eternal, sv_Function sv_fcn,
+		       bool protect, bool eternal,
+		       symbol_record::sv_function sv_fcn,
 		       const string& help)
 {
   symbol_record *sr = global_sym_tab->lookup (varname, true);

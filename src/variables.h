@@ -38,84 +38,22 @@ class string_vector;
 #include <string>
 
 #include "ov.h"
-
-typedef int (*sv_Function)(void);
+#include "symtab.h"
 
 struct builtin_variable
 {
   builtin_variable (const string& n, const octave_value& v, bool iaf,
 		    bool p, bool e, sv_Function svf, const string& h)
     : name (n), value (v), install_as_function (iaf), protect (p),
-      eternal (e), sv_function (svf), help_string (h) { }
+      eternal (e), sv_fcn (svf), help_string (h) { }
 
   string name;
   octave_value value;
   bool install_as_function;
   bool protect;
   bool eternal;
-  sv_Function sv_function;
+  symbol_record::sv_function sv_fcn;
   string help_string;
-};
-
-class
-octave_variable_reference
-{
-public:
-
-  octave_variable_reference (octave_value *v = 0, sv_Function f = 0)
-    : val (v), chg_fcn (f), struct_elt_name () { }
-
-  octave_variable_reference (octave_value *v, const string& nm,
-			     sv_Function f = 0)
-    : val (v), chg_fcn (f), struct_elt_name (nm) { }
-
-  octave_variable_reference (const octave_variable_reference& vr)
-    : val (vr.val), chg_fcn (vr.chg_fcn),
-      struct_elt_name (vr.struct_elt_name) { }
-
-  octave_variable_reference& operator = (const octave_variable_reference& vr)
-    {
-      if (this != &vr)
-	{
-	  val = vr.val;
-	  chg_fcn = vr.chg_fcn;
-	  struct_elt_name = vr.struct_elt_name;
-	}
-
-      return *this;
-    }
-
-  ~octave_variable_reference (void) { }
-
-  bool is_undefined (void) { return val->is_undefined (); }
-
-  void define (const octave_value& v) { *val = v; }
-
-  void assign (octave_value::assign_op, const octave_value&);
-
-  void assign (octave_value::assign_op, const octave_value_list&,
-	       const octave_value&);
-
-  octave_variable_reference struct_elt_ref (const string& nm)
-    { return val->struct_elt_ref (nm); }
-
-  void increment (void) { val->increment (); }
-
-  void decrement (void) { val->decrement (); }
-
-  octave_value value (void)
-    {
-      return struct_elt_name.empty ()
-	? *val : val->struct_elt_val (struct_elt_name);
-    }
-
-private:
-
-  octave_value *val;
-
-  sv_Function chg_fcn;
-
-  string struct_elt_name;
 };
 
 typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
@@ -196,7 +134,7 @@ extern void clear_global_error_variable (void *);
 extern void
 bind_builtin_variable (const string&, const octave_value&,
 		       bool protect = false, bool eternal = false,
-		       sv_Function f = (sv_Function) 0,
+		       symbol_record::sv_function f = 0,
 		       const string& help = string ());
 
 // Symbol table for symbols at the top level.

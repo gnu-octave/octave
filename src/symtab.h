@@ -33,8 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "str-vec.h"
 
-#include "variables.h"
-
 // Must be multiple of 2.
 #define HASH_TABLE_SIZE 1024
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
@@ -122,6 +120,9 @@ symbol_record
   friend class symbol_record_info;
 
 public:
+
+  typedef int (*sv_function) (void);
+
   symbol_record (void);
   symbol_record (const string& n, symbol_record *nxt = 0);
 
@@ -153,7 +154,7 @@ public:
   void unprotect (void);
   void make_eternal (void);
 
-  void set_sv_function (sv_Function f);
+  void set_sv_function (sv_function f);
 
   int define (const octave_value& v,
 	      unsigned int sym_type = symbol_def::USER_VARIABLE);
@@ -196,7 +197,7 @@ private:
   unsigned int tagged_static : 1;
 
   string nm;
-  sv_Function sv_fcn;
+  sv_function sv_fcn;
   symbol_def *definition;
   symbol_record *next_elem;
 

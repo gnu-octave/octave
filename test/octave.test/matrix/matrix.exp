@@ -239,7 +239,7 @@ set prog_output "ans = 1"
 do_test linspace-1.m
 
 set test linspace-2
-set prog_output "error:.*"
+set prog_output "ans = 1"
 do_test linspace-2.m
 
 set test linspace-3
@@ -249,6 +249,10 @@ do_test linspace-3.m
 set test linspace-4
 set prog_output "\n... linspace:.*"
 do_test linspace-4.m
+
+set test linspace-5
+set prog_output "warning:.*"
+do_test linspace-5.m
 
 set test logspace-1
 set prog_output "ans = 1"

@@ -85,11 +85,18 @@ mostlyclean::
 	rm -f stmp-pic
 .PHONY: mostlyclean
 
-distclean:: clean
+distclean::
+	rm -f *.d *.a *.o pic/*.o
+	-rmdir pic
+	rm -f stmp-pic
 	rm -f Makefile
 .PHONY: distclean
 	
-maintainer-clean:: distclean
+maintainer-clean::
+	rm -f *.d *.a *.o pic/*.o
+	-rmdir pic
+	rm -f stmp-pic
+	rm -f Makefile
 	rm -f tags TAGS
 .PHONY: maintainer-clean
 

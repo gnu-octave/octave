@@ -22,7 +22,7 @@ SOURCES =
 
 TEXINFO := Octave-FAQ.texi
 
-FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ_toc.html
+FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ_*.html
 
 DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
 

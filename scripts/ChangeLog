@@ -1,3 +1,9 @@
+2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (distclean, maintainer-clean): Also remove
+	gethelp$(BUILD_EXEEXT), $(DOCSTRINGS), and autom4te.cache
+	directory.
+
 2003-06-17  Aaron A. King <king@quercus.tiem.utk.edu>
 
 	* plot/hist.m: Don't forget to define n if x is a vector.

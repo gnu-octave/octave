@@ -1,3 +1,7 @@
+2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (distclean): remove install-octave here.
+
 2003-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: If user doesn't specify --enable-rpath, then

@@ -736,7 +736,7 @@ specified option.\n\
       "SH_LDFLAGS", OCTAVE_CONF_SH_LDFLAGS,
       "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS,
       "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS,
-      "UGLY_DEFS", OCTAVE_CONF_DEFS,
+      "DEFS", OCTAVE_CONF_DEFS,
       "UGLY_DEFS", OCTAVE_CONF_UGLY_DEFS,
       "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING,
       "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS,
@@ -784,7 +784,8 @@ specified option.\n\
       m ["dld"](0) = octave_value (octave_supports_dynamic_linking);
 
       int i = 0;
-      while (1)
+
+      while (true)
 	{
 	  const char *key = conf_info[i++];
 

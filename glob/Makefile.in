@@ -61,6 +61,7 @@ clean glob-clean:
 distclean glob-maintainer-clean: clean
 	-rm -f TAGS tags Makefile config.status config.cache \
 	config.h config.log
+	-rm -rf autom4te.cache
 
 maintainer-clean: distclean
 	-rm -f configure

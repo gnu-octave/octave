@@ -1,3 +1,7 @@
+2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (distclean): Also remove autom4te.cache directory.
+
 2002-10-10  Paul Kienzle <pkienzle@users.sf.net>
 
 	* configure.in: Use AH_BOTTOM to maybe define WINDOWS32.

@@ -1,3 +1,8 @@
+2003-06-28  Arno J. Klaassen  <arno@heho.snv.jussieu.fr>
+
+	* toplev.cc (octave_config_info): Key for OCTAVE_CONF_DEFS should
+	be DEFS, not UGLY_DEFS.
+
 2003-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (symbol_exist): Distinguish between user and dld

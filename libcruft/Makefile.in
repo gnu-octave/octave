@@ -165,12 +165,12 @@ clean mostlyclean::
 
 distclean::
 	rm -f *.$(LIBEXT) *.o Makefile Makerules so_locations
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER); fi
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 
 maintainer-clean::
 	rm -f *.$(LIBEXT) *.o configure Makefile Makerules 
 	rm -f so_locations tags TAGS
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER); fi
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 
 dist:
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done

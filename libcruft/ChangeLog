@@ -1,3 +1,13 @@
+2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in (maintainer-clean, distclean): Don't use
+	dependencies on double colon rules.
+	(distclean): Also remove *.d, *.a, *.o, pic/*.o, pic, and stmp-pic.
+	(maintainer-clean): Also remove *.d, *.a, *.o, pic/*.o, pic, and
+	stmp-pic, and Makefile.
+
+	* Makefile.in (maintainer-clean, distclean): Also remove *.$(SHLEXT).
+
 2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dasrt/ddasrt.f (DDASRT): Print correct message for invalid MXSTP.

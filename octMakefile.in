@@ -149,10 +149,10 @@ clean mostlyclean distclean maintainer-clean::
 maintainer-clean distclean::
 	rm -f octMakefile octave-bug octave-config Makeconf config.cache \
 	config.h config.log config.status Makerules.f77 mk-oct-links \
-	mkoctfile Makefrag.f77
+	mkoctfile Makefrag.f77 install-octave
 
 maintainer-clean::
-	rm -f configure config.h.in BUGS INSTALL.OCTAVE install-octave
+	rm -f configure config.h.in BUGS INSTALL.OCTAVE
 
 # Rules for making a source distribution.
 

@@ -641,7 +641,7 @@ octave_main (int argc, char **argv, int embedded)
 
       int parse_status = execute_eval_option_code (code_to_eval);
 
-      if (! (persist && remaining_args > 0))
+      if (! (persist || remaining_args > 0))
 	return (parse_status || error_state ? 1 : 0);
     }
 

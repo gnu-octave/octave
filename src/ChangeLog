@@ -1,3 +1,8 @@
+2005-03-24  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (octave_main): Fix logic in test for exit after
+	evaluating --eval option code.
+
 2005-03-23  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Require 9 arguments.

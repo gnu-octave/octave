@@ -248,7 +248,10 @@ public:
   dim_vector dims (void) const { return dimensions; }
 
   Array<T> squeeze (void) const;
-
+  
+  void chop_trailing_singletons (void) 
+  { dimensions.chop_trailing_singletons (); }
+  
   static int get_size (int r, int c);
   static int get_size (int r, int c, int p);
   static int get_size (const dim_vector& dv);

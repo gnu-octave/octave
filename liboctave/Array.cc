@@ -2737,7 +2737,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       for (int j = 0; j < idx_is_colon.length (); j++)
 	{
-	  if (rhs_dims(jj) == 1)
+	  if (jj < rhs_dims.length () && rhs_dims(jj) == 1)
 	    jj++;
 	  else if (idx_is_colon(j))
 	    {
@@ -2869,6 +2869,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       retval = 0;
     }
 
+  lhs.chop_trailing_singletons ();
+  
   lhs.clear_index ();
 
   return retval;

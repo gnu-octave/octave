@@ -1,10 +1,12 @@
 2004-01-21  Petter Risholm  <risholm@stud.ntnu.no>
 
-	* Array.cc (Array<T>::assignN(Array<LT>&, const Array<RT>&,
-	const LT&)): Fix incorrectly nested if statement.
+	* Array.h (Array<T>::chop_trailing_singletons): New function.
+	* Array.cc (Array<T>::assignN): Use it on LHS.
+
+	* Array.cc (Array<T>::assignN): Fix incorrectly nested if statement.
 	Retrieve scalar element by passin 0 instead of an index array.
-	Check for singleton dimensions where RHS is matrix or higher
-	dimension.
+	Check for singleton dimensions where RHS is matrix or higher dimension.
+	Make sure index is in bounds.
 
 2004-01-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

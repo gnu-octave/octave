@@ -1,5 +1,8 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* idx-vector.h, idx-vector.cc: Convert boolMatrix functions to use
+	boolNDArray.  Likewise, convert Matrix functions to use	NDArray.
+
 	* Array-so.cc: New file.  Move instantiations here from so-array.h.
 	* Makefile.in (TI_SRC): Add it to the list.
 

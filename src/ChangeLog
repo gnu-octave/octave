@@ -1,5 +1,14 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-bool-mat.h (octave_bool_matrix::array_value): Construct return
+	value directly from matrix data member, not matrix.matrix_value ().
+
+	* ov-re-mat.h (octave_matrix::index_vector): Construct idx_vector
+	from NDArray, not Matrix.
+
+	* ov-bool-mat.h (octave_bool_matrix::index_vector): Construct
+	idx_vector from boolNDArray, not boolMatrix.
+
 	* ov.cc (install_types): Also register dld function type.
 
 	* OPERATORS/op-streamoff.cc: Install increment and decrement operators.

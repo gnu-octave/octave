@@ -33,9 +33,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "Range.h"
-#include "boolMatrix.h"
+#include "boolNDArray.h"
 #include "dColVector.h"
-#include "dMatrix.h"
+#include "dNDArray.h"
 
 #include "idx-vector.h"
 #include "lo-error.h"
@@ -147,7 +147,7 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
   init_state ();
 }
 
-IDX_VEC_REP::idx_vector_rep (const Matrix& m)
+IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
 {
   data = 0;
   initialized = 0;
@@ -157,10 +157,7 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
   colon = 0;
   one_zero = 0;
 
-  orig_nr = m.rows ();
-  orig_nc = m.columns ();
-
-  len = orig_nr * orig_nc;
+  len = nda.length ();
 
   if (len == 0)
     {
@@ -176,16 +173,15 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
       int k = 0;
       data = new int [len];
 
-      for (int j = 0; j < orig_nc; j++)
-	for (int i = 0; i < orig_nr; i++)
-	  {
-	    double d = m.elem (i, j);
+      for (int i = 0; i < len; i++)
+	{
+	  double d = nda.elem (i);
 
-	    if (idx_is_inf_or_nan (d))
-	      return;
-	    else
-	      data[k++] = tree_to_mat_idx (d);
-	  }
+	  if (idx_is_inf_or_nan (d))
+	    return;
+	  else
+	    data[k++] = tree_to_mat_idx (d);
+	}
     }
 
   init_state ();
@@ -328,7 +324,7 @@ IDX_VEC_REP::idx_vector_rep (bool b)
   init_state ();
 }
 
-IDX_VEC_REP::idx_vector_rep (const boolMatrix& bm)
+IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
 {
   data = 0;
   initialized = 0;
@@ -338,10 +334,7 @@ IDX_VEC_REP::idx_vector_rep (const boolMatrix& bm)
   colon = 0;
   one_zero = 1;
 
-  orig_nr = bm.rows ();
-  orig_nc = bm.columns ();
-
-  len = orig_nr * orig_nc;
+  len = bnda.length ();
 
   if (len == 0)
     {
@@ -358,9 +351,8 @@ IDX_VEC_REP::idx_vector_rep (const boolMatrix& bm)
       int k = 0;
       data = new int [len];
 
-      for (int j = 0; j < orig_nc; j++)
-	for (int i = 0; i < orig_nr; i++)
-	  data[k++] = tree_to_mat_idx (bm.elem (i, j));
+      for (int i = 0; i < len; i++)
+	data[k++] = tree_to_mat_idx (bnda.elem (i));
     }
 
   init_state ();

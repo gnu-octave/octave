@@ -32,8 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 
 class ColumnVector;
-class boolMatrix;
-class Matrix;
+class boolNDArray;
+class NDArray;
 class Range;
 
 class
@@ -64,7 +64,7 @@ private:
 
     idx_vector_rep (const ColumnVector& v);
 
-    idx_vector_rep (const Matrix& m);
+    idx_vector_rep (const NDArray& nda);
 
     idx_vector_rep (const Range& r);
 
@@ -76,7 +76,7 @@ private:
 
     idx_vector_rep (bool b);
 
-    idx_vector_rep (const boolMatrix& bm);
+    idx_vector_rep (const boolNDArray& bnda);
 
     idx_vector_rep (const idx_vector_rep& a);
 
@@ -166,9 +166,9 @@ public:
       rep->count = 1;
     }
 
-  idx_vector (const Matrix& m)
+  idx_vector (const NDArray& nda)
     {
-      rep = new idx_vector_rep (m);
+      rep = new idx_vector_rep (nda);
       rep->count = 1;
     }
 
@@ -202,9 +202,9 @@ public:
       rep->count = 1;
     }
 
-  idx_vector (const boolMatrix& bm)
+  idx_vector (const boolNDArray& bnda)
     {
-      rep = new idx_vector_rep (bm);
+      rep = new idx_vector_rep (bnda);
       rep->count = 1;
     }
 

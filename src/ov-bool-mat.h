@@ -76,9 +76,7 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  // XXX FIXME XXX
-  idx_vector index_vector (void) const
-    { return idx_vector (matrix.matrix_value ()); }
+  idx_vector index_vector (void) const { return idx_vector (matrix); }
 
   bool is_bool_matrix (void) const { return true; }
 
@@ -97,7 +95,7 @@ public:
     { return Matrix (matrix.matrix_value ()); }
 
   NDArray array_value (bool = false) const
-    { return NDArray (matrix.matrix_value ()); }
+    { return NDArray (matrix); }
 
   Complex complex_value (bool = false) const;
 

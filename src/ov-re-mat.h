@@ -82,8 +82,7 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  // XXX FIXME XXX
-  idx_vector index_vector (void) const { return idx_vector (matrix_value ()); }
+  idx_vector index_vector (void) const { return idx_vector (matrix); }
 
   bool is_real_matrix (void) const { return true; }
 

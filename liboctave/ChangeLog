@@ -1,5 +1,10 @@
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dMatrix.cc (Matrix::ifourier): Cast divisor to double.
+	(Matrix::ifourier2d): Likewise.
+	* CMatrix.cc (ComplexMatrix::ifourier): Likewise.
+	(ComplexMatrix::ifourier2d): Likewise.
+
 	* Array.h (Array::ArrayRep::qsort): Cast len to size_t.
 
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>

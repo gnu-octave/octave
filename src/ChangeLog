@@ -1,5 +1,7 @@
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-base-mat.cc: Include pr-output.h here.
+
 	* DLD-FUNCTIONS/rand.cc (curr_rand_dist): Return const char *
 	instead of char *.
 

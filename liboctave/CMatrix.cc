@@ -1026,7 +1026,7 @@ ComplexMatrix::ifourier (void) const
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / npts;
+    tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
 
   return retval;
 }
@@ -1126,7 +1126,7 @@ ComplexMatrix::ifourier2d (void) const
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / npts;
+    tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
 
   npts = nc;
   nsamples = nr;
@@ -1148,7 +1148,7 @@ ComplexMatrix::ifourier2d (void) const
       F77_FCN (cfftb, CFFTB) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
-	tmp_data[i*nr + j] = prow[i] / npts;
+	tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);
     }
 
   return retval;

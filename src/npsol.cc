@@ -316,10 +316,16 @@ Handle all of the following:
 	  Matrix c = args[nargin-2].to_matrix ();
 	  ColumnVector llb = args[nargin-3].to_vector ();
 
-	  LinConst linear_constraints (llb, c, lub);
+	  if (llb.capacity () == 0 || lub.capacity () == 0)
+	    {
+	      error ("npsol: bounds for linear constraints must be vectors");
+	      return retval;
+	    }
 
 	  if (! linear_constraints_ok (x, llb, c, lub, "npsol", 1))
 	    return retval;
+
+	  LinConst linear_constraints (llb, c, lub);
 
 	  if (nargin == 6)
 	    {
@@ -396,6 +402,12 @@ Handle all of the following:
 	      ColumnVector lub = args[nargin-4].to_vector ();
 	      Matrix c = args[nargin-5].to_matrix ();
 	      ColumnVector llb = args[nargin-6].to_vector ();
+
+	      if (llb.capacity () == 0 || lub.capacity () == 0)
+		{
+		  error ("npsol: bounds for linear constraints must be vectors");
+		  return retval;
+		}
 
 	      if (! linear_constraints_ok (x, llb, c, lub, "npsol", 1))
 		return retval;

@@ -101,7 +101,7 @@ set_rand_seed (double val)
   F77_XFCN (setsd, SETSD, (i0, i1));
 }
 
-static char *
+static const char *
 curr_rand_dist (void)
 {
   if (current_distribution == uniform_dist)

@@ -1,5 +1,8 @@
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/rand.cc (curr_rand_dist): Return const char *
+	instead of char *.
+
 	* oct-fstrm.cc (octave_fstream::seek, octave_fstream::tell): 
 	Call pubseekoff instead of seekoff.
 

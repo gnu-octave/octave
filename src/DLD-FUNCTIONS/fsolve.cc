@@ -151,7 +151,7 @@ fsolve_user_function (const ColumnVector& x)
 
 DEFUN_DLD (fsolve, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{info}] =} fsolve (@var{fcn}, @var{x0})\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{info}, @var{msg}] =} fsolve (@var{fcn}, @var{x0})\n\
 Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
 and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
 equations such that @code{f(@var{x}) == 0}.\n\
@@ -191,20 +191,30 @@ parameters for @code{fsolve}.\n\
       if (nargout > 2)
 	warning ("fsolve: can't compute path output yet");
 
-      NLFunc foo_fcn (fsolve_user_function);
-      NLEqn foo (x, foo_fcn);
-      foo.set_options (fsolve_opts);
+      NLFunc nleqn_fcn (fsolve_user_function);
+      NLEqn nleqn (x, nleqn_fcn);
+      nleqn.set_options (fsolve_opts);
 
       int info;
-      ColumnVector soln = foo.solve (info);
+      ColumnVector soln = nleqn.solve (info);
 
-      info = hybrd_info_to_fsolve_info (info);
+      if (! error_state)
+	{
+	  std::string msg = nleqn.error_message ();
 
-      retval.resize (nargout ? nargout : 1);
-      retval(0) = soln, 1;
+	  retval(2) = msg;
+	  retval(1) = static_cast<double> (hybrd_info_to_fsolve_info (info));
 
-      if (nargout > 1)
-	retval(1) = static_cast<double> (info);
+	  if (nleqn.solution_ok ())
+	    retval(0) = soln;
+	  else
+	    {
+	      retval(0) = Matrix ();
+
+	      if (nargout < 2)
+		error ("fsolve: %s", msg.c_str ());
+	    }
+	}
     }
   else
     print_usage ("fsolve");

@@ -1,3 +1,12 @@
+2002-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (loadpath): Comment out previous change.
+
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Return message too.  Only
+	generate error if user is not at least requesting the info output.
+
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Fix typos in setting return value.
+
 2002-07-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (printf_value_cache::double_value): If the current

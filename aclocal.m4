@@ -402,7 +402,7 @@ AC_DEFUN(OCTAVE_PROG_PAGER,
 else
   octave_possible_pagers="less more page pg"
   case "$canonical_host_type" in
-    *-*-cygwin32)
+    *-*-cygwin*)
       octave_possible_pagers="$octave_possible_pagers more.com"
     ;;
   esac

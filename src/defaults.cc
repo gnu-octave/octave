@@ -415,9 +415,11 @@ loadpath (void)
     }
   else
     {
-      if (! (s[0] == ':' || s[s.length () - 1] == ':'
-	     || s.find ("::") != NPOS))
-	warning ("LOADPATH will ignore default load path");
+      // I'm not sure whether this causes more problems that it
+      // solves...
+      //      if (! (s[0] == ':' || s[s.length () - 1] == ':'
+      //	     || s.find ("::") != NPOS))
+      //	warning ("LOADPATH will ignore default load path");
 
       Vload_path = s;
 

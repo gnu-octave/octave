@@ -826,7 +826,7 @@ octave --no-line-editing --silent\n\
 @end example\n\
 \n\
 @noindent\n\
-@code{argv} would be a list of strings with the elements\n\
+@code{argv} would be a cell array of strings with the elements\n\
 @code{--no-line-editing} and @code{--silent}.\n\
 \n\
 If you write an executable Octave script, @code{argv} will contain the\n\

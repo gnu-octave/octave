@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.360 $)
+AC_REVISION($Revision: 1.361 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1077,7 +1077,7 @@ AC_CHECK_TYPES(sigset_t, , , [#include <signal.h>])
 
 AC_CHECK_FUNCS(getrusage times)
 case "$canonical_host_type" in
-  *-*-cygwin32)
+  *-*-cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1, [Define if your struct rusage only has time information.])
   ;;
 esac

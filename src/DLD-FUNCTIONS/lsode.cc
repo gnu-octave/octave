@@ -290,10 +290,10 @@ parameters for @code{lsode}.\n\
 	  retval(1) = static_cast<double> (ode.integration_state ());
 
 	  if (ode.integration_ok ())
-	    retval = output;
+	    retval(0) = output;
 	  else
 	    {
-	      output = Matrix ();
+	      retval(0) = Matrix ();
 
 	      if (nargout < 2)
 		{

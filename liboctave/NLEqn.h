@@ -75,13 +75,14 @@ NLEqn : public NLFunc, public NLEqn_options
 public:
 
   NLEqn (void)
-    : NLFunc (), NLEqn_options (), x () { }
+    : NLFunc (), NLEqn_options (), x (), solution_status (0) { }
 
   NLEqn (const ColumnVector& xx, const NLFunc f) 
-    : NLFunc (f), NLEqn_options (), x (xx) { }
+    : NLFunc (f), NLEqn_options (), x (xx), solution_status (0) { }
 
   NLEqn (const NLEqn& a)
-    : NLFunc (a.fun, a.jac), NLEqn_options (), x (a.x) { }
+    : NLFunc (a.fun, a.jac), NLEqn_options (), x (a.x),
+      solution_status (a.solution_status) { }
 
   NLEqn& operator = (const NLEqn& a)
     {
@@ -91,6 +92,7 @@ public:
 	  NLEqn_options::operator = (a);
 
 	  x = a.x;
+	  solution_status = a.solution_status;
 	}
       return *this;
     }
@@ -124,9 +126,16 @@ public:
 
   ColumnVector solve (int& info);
 
- private:
+  int solution_state (void) const { return solution_status; }
+
+  bool solution_ok (void) const { return solution_status == 1; }
+
+  std::string error_message (void) const;
+
+private:
 
   ColumnVector x;
+  int solution_status;
 
   void error (const char* msg);
 };

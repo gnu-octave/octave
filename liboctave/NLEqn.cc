@@ -164,6 +164,8 @@ NLEqn::solve (int& info)
       F77_XFCN (hybrj1, HYBRJ1, (hybrj1_fcn, n, px, pfvec, pfjac, n,
 				 tol, info, pwa, lwa));
 
+      solution_status = info;
+
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in hybrj1");
     }
@@ -179,12 +181,58 @@ NLEqn::solve (int& info)
       F77_XFCN (hybrd1, HYBRD1, (hybrd1_fcn, n, px, pfvec, tol, info,
 				 pwa, lwa));
 
+      solution_status = info;
+
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in hybrd1");
     }
 
   if (info < 0)
     retval.resize (0);
+
+  return retval;
+}
+
+std::string
+NLEqn::error_message (void) const
+{
+  std::string retval;
+
+  std::string prefix;
+
+  int info = solution_status;
+  if (info < 0)
+    info = -info;
+
+  switch (info)
+    {
+    case 0:
+      retval = "improper input parameters";
+      break;
+
+    case 1:
+      retval = "solution converged within specified tolerance";
+      break;
+
+    case 2:
+      retval = "number of function calls exceeded limit";
+      break;
+
+    case 3:
+      retval = "no further improvement possible (tolerance may be too small)";
+      break;
+
+    case 4:
+      retval = "iteration is not making good progress";
+      break;
+
+    default:
+      retval = "unknown error state";
+      break;
+    }
+
+  if (solution_status < 0)
+    retval = std::string ("user requested termination: ") + retval;
 
   return retval;
 }

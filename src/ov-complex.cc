@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-ieee.h"
 
 #include "oct-obj.h"
+#include "oct-stream.h"
 #include "ops.h"
 #include "ov-complex.h"
 #include "ov-base.h"
@@ -236,6 +237,7 @@ octave_complex::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_complex::save_hdf5 (hid_t loc_id, const char *name,
 			   bool /* save_as_floats */)
@@ -317,6 +319,7 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name,
 
   return retval;
 }
+
 #endif
 
 /*

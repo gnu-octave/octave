@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quit.h"
 
 #include "oct-obj.h"
+#include "oct-stream.h"
 #include "ov.h"
 #include "ov-base.h"
 #include "ov-bool.h"
@@ -1448,6 +1449,14 @@ gripe_assign_conversion_failed (const std::string& tn1,
 {
   error ("type conversion for assignment of `%s' to indexed `%s' failed",
 	 tn2.c_str (), tn1.c_str ());
+}
+
+int
+octave_value::write (octave_stream& os, int block_size,
+		     oct_data_conv::data_type output_type, int skip,
+		     oct_mach_info::float_format flt_fmt) const
+{
+  return rep->write (os, block_size, output_type, skip, flt_fmt);
 }
 
 octave_value

@@ -96,7 +96,14 @@ public:
   NDArray array_value (bool = false) const;
 
   octave_value resize (const dim_vector& dv) const
-    { ComplexNDArray retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
+    {
+      ComplexNDArray retval (dv);
+
+      if (dv.numel ())
+	retval(0) = scalar;
+
+      return retval;
+    }
 
   Complex complex_value (bool = false) const;
 
@@ -123,6 +130,15 @@ public:
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
+
+  int write (octave_stream& os, int block_size,
+	     oct_data_conv::data_type output_type, int skip,
+	     oct_mach_info::float_format flt_fmt) const
+    {
+      // Yes, for compatibility, we drop the imaginary part here.
+      return os.write (array_value (true), block_size, output_type,
+		       skip, flt_fmt);
+    }
 
 private:
 

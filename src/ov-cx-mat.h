@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
+#include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-typeinfo.h"
@@ -126,6 +127,15 @@ public:
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
+
+  int write (octave_stream& os, int block_size,
+	     oct_data_conv::data_type output_type, int skip,
+	     oct_mach_info::float_format flt_fmt) const
+    {
+      // Yes, for compatibility, we drop the imaginary part here.
+      return os.write (matrix_value (true), block_size, output_type,
+		       skip, flt_fmt);
+    }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

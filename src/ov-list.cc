@@ -623,7 +623,7 @@ octave_list::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &len), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &len));
+    swap_bytes<4> (&len);
 
   if (len > 0)
     {
@@ -663,6 +663,7 @@ octave_list::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
@@ -727,6 +728,7 @@ octave_list::load_hdf5 (hid_t loc_id,  const char *name,
   
   return retval;
 }
+
 #endif
 
 /*

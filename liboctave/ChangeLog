@@ -1,3 +1,23 @@
+2004-08-31  John W. Eaton  <jwe@octave.org>
+
+	* data-conv.h (oct_data_conv::data_type): Include sized types.
+	Explicitly number enum elements.
+
+	* data-conv.cc (oct_data_conv::string_to_data_type (const
+	std::string&, int&, oct_data_conv::data_type&,
+	oct_data_conv::data_type&)): New function.
+	(oct_data_conv::string_to_data_type (const std::string&, int&,
+	oct_data_conv::data_type&)): New function.
+	(oct_data_conv::data_type_as_string): New function.
+
+	* dMatrix.cc (read_int, do_read, Matrix::read): Delete.
+	(write_int, do_write, Matrix::write): Delete.
+	* dMatrix.h (Matrix::read, Matrix::write): Delete decls.
+
+	* byte-swap.h: Use template functions and specialization.
+	Change all uses.
+	(swap_2_bytes, swap_4_bytes, swap_8_bytes): Delete.
+
 2004-08-30  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (octave_int_fit_to_range): Use template

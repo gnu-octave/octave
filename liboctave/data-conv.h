@@ -66,23 +66,41 @@ public:
 
   enum data_type
     {
-      dt_unknown,
-      dt_char,
-      dt_schar,
-      dt_uchar,
-      dt_short,
-      dt_ushort,
-      dt_int,
-      dt_uint,
-      dt_long,
-      dt_ulong,
-      dt_float,
-      dt_double,
-      dt_float_complex,
-      dt_double_complex
+      dt_int8      =  0,
+      dt_uint8     =  1,
+      dt_int16     =  2,
+      dt_uint16    =  3,
+      dt_int32     =  4,
+      dt_uint32    =  5,
+      dt_int64     =  6,
+      dt_uint64    =  7,
+      dt_single    =  8,
+      dt_double    =  9,
+      dt_char      = 10,
+      dt_schar     = 11,
+      dt_uchar     = 12,
+      dt_short     = 13,
+      dt_ushort    = 14,
+      dt_int       = 15,
+      dt_uint      = 16,
+      dt_long      = 17,
+      dt_ulong     = 18,
+      dt_longlong  = 19,
+      dt_ulonglong = 20,
+      dt_float     = 21,
+      dt_unknown   = 22 // Must be last, have largest value!
     };
 
   static data_type string_to_data_type (const std::string& s);
+
+  static void string_to_data_type (const std::string& s, int& block_size,
+				   data_type& input_type,
+				   data_type& output_type);
+
+  static void string_to_data_type (const std::string& s, int& block_size,
+				   data_type& output_type);
+
+  static std::string data_type_as_string (data_type dt);
 };
 
 // Add new entries to the end of this enum, otherwise Octave will not
@@ -104,16 +122,26 @@ enum save_type
   };
 
 extern void
-do_double_format_conversion (double *data, int len,
-			     oct_mach_info::float_format fmt);
+do_double_format_conversion (void *data, int len,
+			     oct_mach_info::float_format from_fmt,
+			     oct_mach_info::float_format to_fmt
+			       = oct_mach_info::native_float_format ());
 
 extern void
-do_float_format_conversion (float *data, int len,
-			    oct_mach_info::float_format fmt);
+do_float_format_conversion (void *data, int len,
+			    oct_mach_info::float_format from_fmt,
+			    oct_mach_info::float_format to_fmt
+			      = oct_mach_info::native_float_format ());
+
+extern void
+do_float_format_conversion (void *data, size_t sz, int len,
+			    oct_mach_info::float_format from_fmt,
+			    oct_mach_info::float_format to_fmt
+			      = oct_mach_info::native_float_format ());
 
 extern void
 read_doubles (std::istream& is, double *data, save_type type, int len,
-	      int swap, oct_mach_info::float_format fmt);
+	      bool swap, oct_mach_info::float_format fmt);
 extern void
 write_doubles (std::ostream& os, const double *data, save_type type, int len);
 

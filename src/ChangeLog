@@ -1,3 +1,38 @@
+2004-08-31  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (read_int): New function.
+
+	* oct-stream.cc (octave_base_stream::do_read,
+	octave_base_stream::read, octave_base_stream::write): Delete.
+	* oct-stream.h: Delete decls.
+
+	* oct-stream.cc (octave_stream::read): Handle block_size and
+	separate input/output types.
+	(octave_stream::write): Handle block_size and various input types.
+	(octave_type_traits, octave_array_type_traits):	New traits classes.
+	(do_read): New templates to read data and perform type conversion.
+	(octave_stream::write (const Array<T>&, int,
+	oct_data_conv::data_type, int, oct_mach_info::float_format),
+	do_write, write_int):
+	New templates to write ints and perform type conversion.
+	Instantiate for various Octave types.
+
+	* ov.cc (octave_value::write): New function.
+	* ov.h: Provide decl.
+	* ov-base.cc (octave_base_value::write): New function.
+	* ov-base.h: Provide decl.
+	* ov-complex.h (octave_complex::write): New function.
+	* ov-cx-mat.h (octave_complex_matrix::write): New function.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::write): New function.
+	(OCTAVE_VALUE_INT_SCALAR_T::write): New function.
+	* ov-re-mat.h (octave_matrix::write): New function.
+	* ov-scalar.h (octave_scalar::write): New function.
+	* ov-str-mat.h (octave_char_matrix_str::write): New function.
+
+	* file-io.cc (Ffread): Handle block size, to/from format in
+	precision argument.
+	(Ffwrite): Handle block size in precision argument.
+
 2004-08-25  David Bateman  <dbateman@free.fr>
 
 	* ov-cell.cc (octave_cell::subsasgn): Delete elements of cell array

@@ -342,21 +342,22 @@ octave_range::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &bas), 8))
     return false;
   if (swap)
-    swap_8_bytes (X_CAST (char *, &bas));
+    swap_bytes<8> (&bas);
   if (! is.read (X_CAST (char *, &lim), 8))
     return false;
   if (swap)
-    swap_8_bytes (X_CAST (char *, &lim));
+    swap_bytes<8> (&lim);
   if (! is.read (X_CAST (char *, &inc), 8))
     return false;
   if (swap)
-    swap_8_bytes (X_CAST (char *, &inc));
+    swap_bytes<8> (&inc);
   Range r (bas, lim, inc);
   range = r;
   return true;
 }
 
 #if defined (HAVE_HDF5)
+
 // The following subroutines creates an HDF5 representation of the way
 // we will store Octave range types (triplets of floating-point numbers). 
 // NUM_TYPE is the HDF5 numeric type to use for storage (e.g. 
@@ -461,6 +462,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
 
   return retval;
 }
+
 #endif
 
 /*

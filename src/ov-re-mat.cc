@@ -33,8 +33,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <vector>
 
+#include "data-conv.h"
 #include "lo-ieee.h"
 #include "lo-utils.h"
+#include "mach-info.h"
 #include "mx-base.h"
 #include "quit.h"
 
@@ -42,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -446,7 +449,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &mdims), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &mdims));
+    swap_bytes<4> (&mdims);
   if (mdims < 0)
     {
       mdims = - mdims;
@@ -459,7 +462,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 	  if (! is.read (X_CAST (char *, &di), 4))
 	    return false;
 	  if (swap)
-	    swap_4_bytes (X_CAST (char *, &di));
+	    swap_bytes<4> (&di);
 	  dv(i) = di;
 	}
 
@@ -480,7 +483,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
       if (! is.read (X_CAST (char *, &nc), 4))
 	return false;
       if (swap)
-	swap_4_bytes (X_CAST (char *, &nc));
+	swap_bytes<4> (&nc);
       if (! is.read (X_CAST (char *, &tmp), 1))
 	return false;
       Matrix m (nr, nc);
@@ -495,6 +498,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
@@ -618,6 +622,7 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   return retval;
 }
+
 #endif
 
 void

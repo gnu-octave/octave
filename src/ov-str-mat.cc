@@ -31,10 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <vector>
 
+#include "data-conv.h"
 #include "lo-ieee.h"
+#include "mach-info.h"
 #include "mx-base.h"
 
 #include "oct-obj.h"
+#include "oct-stream.h"
 #include "ops.h"
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"
@@ -438,7 +441,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &elements), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &elements));
+    swap_bytes<4> (&elements);
 
   if (elements < 0)
     {
@@ -452,7 +455,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 	  if (! is.read (X_CAST (char *, &di), 4))
 	    return false;
 	  if (swap)
-	    swap_4_bytes (X_CAST (char *, &di));
+	    swap_bytes<4> (&di);
 	  dv(i) = di;
 	}
       
@@ -474,7 +477,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 	  if (! is.read (X_CAST (char *, &len), 4))
 	    return false;
 	  if (swap)
-	    swap_4_bytes (X_CAST (char *, &len));
+	    swap_bytes<4> (&len);
 	  OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
 	  if (! is.read (X_CAST (char *, btmp), len))
 	    return false;
@@ -492,6 +495,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
 				   bool /* save_as_floats */)
@@ -703,6 +707,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 
   return retval;
 }
+
 #endif
 
 /*

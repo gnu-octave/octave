@@ -748,6 +748,10 @@ public:
     { return rep->load_hdf5 (loc_id, name, have_h5giterate_bug); }
 #endif
 
+  virtual int write (octave_stream& os, int block_size,
+		     oct_data_conv::data_type output_type, int skip,
+		     oct_mach_info::float_format flt_fmt) const;
+
   octave_value *internal_rep (void) const { return rep; }
 
 protected:

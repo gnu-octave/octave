@@ -172,7 +172,7 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
     goto data_read_error;
 
   if (swap)
-    swap_4_bytes ((char *)&temp);
+    swap_bytes<4> (&temp);
 
   upper = (temp >> 16) & 0xffff;
   type = temp & 0xffff;
@@ -187,7 +187,7 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
       if (! is.read (X_CAST (char *, &temp), 4 ))
 	goto data_read_error;
       if (swap)
-	swap_4_bytes ((char *)&temp);
+	swap_bytes<4> (&temp);
       bytes = temp;
     }
 
@@ -195,6 +195,15 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
 
  data_read_error:
   return 1;
+}
+
+static void
+read_int (std::istream& is, bool swap, FOUR_BYTE_INT& val)
+{
+  is.read (reinterpret_cast<char *> (&val), 4);
+
+  if (swap)
+    swap_bytes<4> (&val);
 }
 
 // Extract one data element (scalar, matrix, string, etc.) from stream
@@ -378,7 +387,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  goto data_read_error;
 
 	if (swap)
-	  swap_4_bytes ((char *)&field_name_length);
+	  swap_bytes<4> (&field_name_length);
 
 	// field name subelement.  The length of this subelement tells
 	// us how many fields there are.

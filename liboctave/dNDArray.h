@@ -34,9 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-defs.h"
 #include "mx-op-defs.h"
 
-#include "data-conv.h"
-#include "mach-info.h"
-
 class
 NDArray : public MArrayN<double>
 {

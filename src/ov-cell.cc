@@ -634,7 +634,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &mdims), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &mdims));
+    swap_bytes<4> (&mdims);
   if (mdims >= 0)
     return false;
 
@@ -648,7 +648,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
       if (! is.read (X_CAST (char *, &di), 4))
 	return false;
       if (swap)
-	swap_4_bytes (X_CAST (char *, &di));
+	swap_bytes<4> (&di);
       dv(i) = di;
     }
   

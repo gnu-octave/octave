@@ -32,6 +32,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "data-conv.h"
 #include "lo-error.h"
 
+#if defined HAVE_LONG_LONG_INT
+#define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
+  do \
+    { \
+      int sz = BITS / CHAR_BIT; \
+      if (sizeof (TQ char) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## char; \
+      else if (sizeof (TQ short) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## short; \
+      else if (sizeof (TQ int) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## int; \
+      else if (sizeof (TQ long) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## long; \
+      else if (sizeof (TQ long long) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## longlong; \
+      else \
+        VAL = oct_data_conv::dt_unknown; \
+    } \
+  while (0)
+#else
 #define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
   do \
     { \
@@ -48,6 +68,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         VAL = oct_data_conv::dt_unknown; \
     } \
   while (0)
+#endif
 
 #define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
   do \
@@ -101,6 +122,52 @@ init_sized_type_lookup_table (oct_data_conv::data_type table[3][4])
     }
 }
 
+static std::string
+strip_spaces (const std::string& str)
+{
+  int n = str.length ();
+
+  int k = 0;
+
+  std::string s (n, ' ');
+
+  for (int i = 0; i < n; i++)
+    if (! isspace (str[i]))
+      s[k++] = tolower (str[i]);
+
+  s.resize (k);
+
+  return s;
+}
+
+#define GET_SIZED_INT_TYPE(T, U) \
+  do \
+    { \
+      switch (sizeof (T)) \
+	{ \
+	case 1: \
+	  retval = dt_ ## U ## int8; \
+	  break; \
+ \
+	case 2: \
+	  retval = dt_ ## U ## int16; \
+	  break; \
+ \
+	case 4: \
+	  retval = dt_ ## U ## int32; \
+	  break; \
+ \
+	case 8: \
+	  retval = dt_ ## U ## int64; \
+	  break; \
+ \
+	default: \
+	  retval = dt_unknown; \
+	  break; \
+	} \
+    } \
+  while (0)
+
 oct_data_conv::data_type
 oct_data_conv::string_to_data_type (const std::string& str)
 {
@@ -117,62 +184,57 @@ oct_data_conv::string_to_data_type (const std::string& str)
       initialized = true;
     }
 
-  // XXX FIXME XXX -- finish implementing this.
+  std::string s = strip_spaces (str);
 
-  int n = str.length ();
-
-  int k = 0;
-
-  std::string s (n, ' ');
-
-  for (int i = 0; i < n; i++)
-    if (! isspace (str[i]))
-      s[k++] = tolower (str[i]);
-
-  s.resize (k);
-
-  if (s == "char")
+  if (s == "int8" || s == "integer*1")
+    retval = dt_int8;
+  else if (s == "uint8")
+    retval = dt_uint8;
+  else if (s == "int16" || s == "integer*2")
+    retval = dt_int16;
+  else if (s == "uint16")
+    retval = dt_uint16;
+  else if (s == "int32" || s == "integer*4")
+    retval = dt_int32;
+  else if (s == "uint32")
+    retval = dt_uint32;
+  else if (s == "int64" || s == "integer*8")
+    retval = dt_int64;
+  else if (s == "uint64")
+    retval = dt_uint64;
+  else if (s == "single" || s == "float32" || s == "real*4")
+    retval = dt_single;
+  else if (s == "double" || s == "float64" || s == "real*8")
+    retval = dt_double;
+  else if (s == "char" || s == "char*1")
     retval = dt_char;
   else if (s == "schar" || s == "signedchar")
     retval = dt_schar;
   else if (s == "uchar" || s == "unsignedchar")
     retval = dt_uchar;
   else if (s == "short")
-    retval = dt_short;
+    GET_SIZED_INT_TYPE (short, );
   else if (s == "ushort" || s == "unsignedshort")
-    retval = dt_ushort;
+    GET_SIZED_INT_TYPE (unsigned short, u);
   else if (s == "int")
-    retval = dt_int;
+    GET_SIZED_INT_TYPE (int, );
   else if (s == "uint" || s == "unsignedint")
-    retval = dt_uint;
+    GET_SIZED_INT_TYPE (unsigned int, u);
   else if (s == "long")
-    retval = dt_long;
+    GET_SIZED_INT_TYPE (long, );
   else if (s == "ulong" || s == "unsignedlong")
-    retval = dt_ulong;
+    GET_SIZED_INT_TYPE (unsigned long, u);
+  else if (s == "longlong")
+    GET_SIZED_INT_TYPE (long long, );
+  else if (s == "ulonglong" || s == "unsignedlonglong")
+    GET_SIZED_INT_TYPE (unsigned long long, u);
   else if (s == "float")
-    retval = dt_float;
-  else if (s == "double")
-    retval = dt_double;
-  else if (s == "int8" || s == "char*1" || s == "integer*1")
-    retval = sized_type_table[0][0];
-  else if (s == "int16" || s == "integer*2")
-    retval = sized_type_table[0][1];
-  else if (s == "int32" || s == "integer*4")
-    retval = sized_type_table[0][2];
-  else if (s == "int64" || s == "integer*8")
-    retval = sized_type_table[0][3];
-  else if (s == "uint8")
-    retval = sized_type_table[1][0];
-  else if (s == "uint16")
-    retval = sized_type_table[1][1];
-  else if (s == "uint32")
-    retval = sized_type_table[1][2];
-  else if (s == "uint64")
-    retval = sized_type_table[1][3];
-  else if (s == "float32" || s == "real*4")
-    retval = sized_type_table[2][2];
-  else if (s == "float64" || s == "real*8")
-    retval = sized_type_table[2][3];
+    {
+      if (sizeof (float) == sizeof (double))
+	retval = dt_double;
+      else
+	retval = dt_single;
+    }
   else
     (*current_liboctave_error_handler) ("invalid data type specified");
 
@@ -183,7 +245,217 @@ oct_data_conv::string_to_data_type (const std::string& str)
   return retval;
 }
 
-#define swap_1_bytes(x, y)
+void
+oct_data_conv::string_to_data_type
+  (const std::string& str, int& block_size,
+   oct_data_conv::data_type& input_type,
+   oct_data_conv::data_type& output_type)
+{
+  block_size = 1;
+  input_type = dt_uchar;
+  output_type = dt_double;
+
+  bool input_is_output = false;
+
+  std::string s = strip_spaces (str);
+
+  size_t pos = 0;
+
+  if (s[0] == '*')
+    input_is_output = true;
+  else
+    {
+      size_t len = s.length ();
+
+      while (pos < len && isdigit (s[pos]))
+	pos++;
+
+      if (pos > 0)
+	{
+	  if (s[pos] == '*')
+	    {
+	      block_size = atoi (s.c_str ());
+	      s = s.substr (pos+1);
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("invalid repeat count in `%s'", str.c_str ());
+
+	      return;
+	    }
+	}
+    }
+
+  pos = s.find ('=');
+
+  if (pos != std::string::npos)
+    {
+      if (s[pos+1] == '>')
+	{
+	  if (input_is_output)
+	    {
+	      input_is_output = false;
+
+	      (*current_liboctave_warning_handler)
+		("warning: ignoring leading * in fread precision");
+	    }
+
+	  input_type = string_to_data_type (s.substr (0, pos));
+	  output_type = string_to_data_type (s.substr (pos+2));
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("fread: invalid precision specified");
+    }
+  else
+    {
+      input_type = string_to_data_type (s);
+
+      if (input_is_output)
+	output_type = input_type;
+    }
+}
+
+void
+oct_data_conv::string_to_data_type
+  (const std::string& str, int& block_size,
+   oct_data_conv::data_type& output_type)
+{
+  block_size = 1;
+  output_type = dt_double;
+
+  std::string s = strip_spaces (str);
+
+  size_t pos = 0;
+
+  size_t len = s.length ();
+
+  while (pos < len && isdigit (s[pos]))
+    pos++;
+
+  if (pos > 0)
+    {
+      if (s[pos] == '*')
+	{
+	  block_size = atoi (s.c_str ());
+	  s = s.substr (pos+1);
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("invalid repeat count in `%s'", str.c_str ());
+
+	  return;
+	}
+    }
+
+  output_type = string_to_data_type (s);
+}
+
+std::string
+oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
+{
+  std::string retval;
+
+  switch (dt)
+    {
+    case oct_data_conv::dt_int8:
+      retval = "int8";
+      break;
+
+    case oct_data_conv::dt_uint8:
+      retval = "uint8";
+      break;
+
+    case oct_data_conv::dt_int16:
+      retval = "int16";
+      break;
+
+    case oct_data_conv::dt_uint16:
+      retval = "uint16";
+      break;
+
+    case oct_data_conv::dt_int32:
+      retval = "int32";
+      break;
+
+    case oct_data_conv::dt_uint32:
+      retval = "uint32";
+      break;
+
+    case oct_data_conv::dt_int64:
+      retval = "int64";
+      break;
+
+    case oct_data_conv::dt_uint64:
+      retval = "uint64";
+      break;
+
+    case oct_data_conv::dt_single:
+      retval = "single";
+      break;
+
+    case oct_data_conv::dt_double:
+      retval = "double";
+      break;
+
+    case oct_data_conv::dt_char:
+      retval = "char";
+      break;
+
+    case oct_data_conv::dt_schar:
+      retval = "signed char";
+      break;
+
+    case oct_data_conv::dt_uchar:
+      retval = "usigned char";
+      break;
+
+    case oct_data_conv::dt_short:
+      retval = "short";
+      break;
+
+    case oct_data_conv::dt_ushort:
+      retval = "unsigned short";
+      break;
+
+    case oct_data_conv::dt_int:
+      retval = "int";
+      break;
+
+    case oct_data_conv::dt_uint:
+      retval = "usigned int";
+      break;
+
+    case oct_data_conv::dt_long:
+      retval = "long";
+      break;
+
+    case oct_data_conv::dt_ulong:
+      retval = "usigned long";
+      break;
+
+    case oct_data_conv::dt_longlong:
+      retval = "long long";
+      break;
+
+    case oct_data_conv::dt_ulonglong:
+      retval = "unsigned long long";
+      break;
+
+    case oct_data_conv::dt_float:
+      retval = "float";
+      break;
+
+    case oct_data_conv::dt_unknown:
+    default:
+      retval = "unknown";
+      break;
+    }
+
+  return retval;
+}
 
 #define LS_DO_READ(TYPE, swap, data, size, len, stream) \
   do \
@@ -193,7 +465,7 @@ oct_data_conv::string_to_data_type (const std::string& str)
 	  volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
 	  stream.read (X_CAST (char *, ptr), size * len); \
 	  if (swap) \
-	    swap_ ## size ## _bytes (ptr, len); \
+	    swap_bytes< size > (ptr, len); \
 	  TYPE tmp = ptr[0]; \
 	  for (int i = len - 1; i > 0; i--) \
 	    data[i] = ptr[i]; \
@@ -247,205 +519,206 @@ gripe_data_conversion (const char *from, const char *to)
 // XXX FIXME XXX -- assumes sizeof (float) == 4
 
 static void
-IEEE_big_double_to_IEEE_little_double (double *d, int len)
+IEEE_big_double_to_IEEE_little_double (void *d, int len)
 {
-  swap_8_bytes (d, len);
+  swap_bytes<8> (d, len);
 }
 
 static void
-VAX_D_double_to_IEEE_little_double (double * /* d */, int /* len */)
-{
-  gripe_data_conversion ("VAX D float", "IEEE little endian format");
-}
-
-static void
-VAX_G_double_to_IEEE_little_double (double * /* d */, int /* len */)
-{
-  gripe_data_conversion ("VAX G float", "IEEE little endian format");
-}
-
-static void
-Cray_to_IEEE_little_double (double * /* d */, int /* len */)
-{
-  gripe_data_conversion ("Cray", "IEEE little endian format");
-}
-
-static void
-IEEE_big_float_to_IEEE_little_float (float *d, int len)
-{
-  swap_4_bytes (d, len);
-}
-
-static void
-VAX_D_float_to_IEEE_little_float (float * /* d */, int /* len */)
+VAX_D_double_to_IEEE_little_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
-VAX_G_float_to_IEEE_little_float (float * /* d */, int /* len */)
+VAX_G_double_to_IEEE_little_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
-Cray_to_IEEE_little_float (float * /* d */, int /* len */)
+Cray_to_IEEE_little_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE little endian format");
 }
 
 static void
-IEEE_little_double_to_IEEE_big_double (double *d, int len)
+IEEE_big_float_to_IEEE_little_float (void *d, int len)
 {
-  swap_8_bytes (d, len);
+  swap_bytes<4> (d, len);
 }
 
 static void
-VAX_D_double_to_IEEE_big_double (double * /* d */, int /* len */)
+VAX_D_float_to_IEEE_little_float (void * /* d */, int /* len */)
+{
+  gripe_data_conversion ("VAX D float", "IEEE little endian format");
+}
+
+static void
+VAX_G_float_to_IEEE_little_float (void * /* d */, int /* len */)
+{
+  gripe_data_conversion ("VAX G float", "IEEE little endian format");
+}
+
+static void
+Cray_to_IEEE_little_float (void * /* d */, int /* len */)
+{
+  gripe_data_conversion ("Cray", "IEEE little endian format");
+}
+
+static void
+IEEE_little_double_to_IEEE_big_double (void *d, int len)
+{
+  swap_bytes<8> (d, len);
+}
+
+static void
+VAX_D_double_to_IEEE_big_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
-VAX_G_double_to_IEEE_big_double (double * /* d */, int /* len */)
+VAX_G_double_to_IEEE_big_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big_double (double * /* d */, int /* len */)
+Cray_to_IEEE_big_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 static void
-IEEE_little_float_to_IEEE_big_float (float *d, int len)
+IEEE_little_float_to_IEEE_big_float (void *d, int len)
 {
-  swap_4_bytes (d, len);
+  swap_bytes<4> (d, len);
 }
 
 static void
-VAX_D_float_to_IEEE_big_float (float * /* d */, int /* len */)
+VAX_D_float_to_IEEE_big_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
-VAX_G_float_to_IEEE_big_float (float * /* d */, int /* len */)
+VAX_G_float_to_IEEE_big_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big_float (float * /* d */, int /* len */)
+Cray_to_IEEE_big_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 static void
-IEEE_little_double_to_VAX_D_double (double * /* d */, int /* len */)
+IEEE_little_double_to_VAX_D_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
-IEEE_big_double_to_VAX_D_double (double * /* d */, int /* len */)
+IEEE_big_double_to_VAX_D_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
-VAX_G_double_to_VAX_D_double (double * /* d */, int /* len */)
+VAX_G_double_to_VAX_D_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
-Cray_to_VAX_D_double (double * /* d */, int /* len */)
+Cray_to_VAX_D_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
-IEEE_little_float_to_VAX_D_float (float * /* d */, int /* len */)
+IEEE_little_float_to_VAX_D_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
-IEEE_big_float_to_VAX_D_float (float * /* d */, int /* len */)
+IEEE_big_float_to_VAX_D_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
-VAX_G_float_to_VAX_D_float (float * /* d */, int /* len */)
+VAX_G_float_to_VAX_D_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
-Cray_to_VAX_D_float (float * /* d */, int /* len */)
+Cray_to_VAX_D_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
-IEEE_little_double_to_VAX_G_double (double * /* d */, int /* len */)
+IEEE_little_double_to_VAX_G_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
-IEEE_big_double_to_VAX_G_double (double * /* d */, int /* len */)
+IEEE_big_double_to_VAX_G_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
-VAX_D_double_to_VAX_G_double (double * /* d */, int /* len */)
+VAX_D_double_to_VAX_G_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
-Cray_to_VAX_G_double (double * /* d */, int /* len */)
+Cray_to_VAX_G_double (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 static void
-IEEE_little_float_to_VAX_G_float (float * /* d */, int /* len */)
+IEEE_little_float_to_VAX_G_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
-IEEE_big_float_to_VAX_G_float (float * /* d */, int /* len */)
+IEEE_big_float_to_VAX_G_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
-VAX_D_float_to_VAX_G_float (float * /* d */, int /* len */)
+VAX_D_float_to_VAX_G_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
-Cray_to_VAX_G_float (float * /* d */, int /* len */)
+Cray_to_VAX_G_float (void * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 void
-do_double_format_conversion (double *data, int len,
-			     oct_mach_info::float_format fmt)
+do_double_format_conversion (void *data, int len,
+			     oct_mach_info::float_format from_fmt,
+			     oct_mach_info::float_format to_fmt)
 {
-  switch (oct_mach_info::native_float_format ())
+  switch (to_fmt)
     {
     case oct_mach_info::flt_fmt_ieee_little_endian:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  break;
@@ -473,7 +746,7 @@ do_double_format_conversion (double *data, int len,
       break;
 
     case oct_mach_info::flt_fmt_ieee_big_endian:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  IEEE_little_double_to_IEEE_big_double (data, len);
@@ -501,7 +774,7 @@ do_double_format_conversion (double *data, int len,
       break;
 
     case oct_mach_info::flt_fmt_vax_d:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  IEEE_little_double_to_VAX_D_double (data, len);
@@ -529,7 +802,7 @@ do_double_format_conversion (double *data, int len,
       break;
 
     case oct_mach_info::flt_fmt_vax_g:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  IEEE_little_double_to_VAX_G_double (data, len);
@@ -565,13 +838,14 @@ do_double_format_conversion (double *data, int len,
 }
 
 void
-do_float_format_conversion (float *data, int len,
-			    oct_mach_info::float_format fmt)
+do_float_format_conversion (void *data, int len,
+			    oct_mach_info::float_format from_fmt,
+			    oct_mach_info::float_format to_fmt)
 {
-  switch (oct_mach_info::native_float_format ())
+  switch (to_fmt)
     {
     case oct_mach_info::flt_fmt_ieee_little_endian:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  break;
@@ -599,7 +873,7 @@ do_float_format_conversion (float *data, int len,
       break;
 
     case oct_mach_info::flt_fmt_ieee_big_endian:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  IEEE_little_float_to_IEEE_big_float (data, len);
@@ -627,7 +901,7 @@ do_float_format_conversion (float *data, int len,
       break;
 
     case oct_mach_info::flt_fmt_vax_d:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  IEEE_little_float_to_VAX_D_float (data, len);
@@ -655,7 +929,7 @@ do_float_format_conversion (float *data, int len,
       break;
 
     case oct_mach_info::flt_fmt_vax_g:
-      switch (fmt)
+      switch (from_fmt)
 	{
 	case oct_mach_info::flt_fmt_ieee_little_endian:
 	  IEEE_little_float_to_VAX_G_float (data, len);
@@ -691,8 +965,32 @@ do_float_format_conversion (float *data, int len,
 }
 
 void
+do_float_format_conversion (void *data, size_t sz, int len,
+			    oct_mach_info::float_format from_fmt,
+			    oct_mach_info::float_format to_fmt)
+{
+  switch (sz)
+    {
+    case sizeof (float):
+      do_float_format_conversion (data, len, from_fmt, to_fmt);
+      break;
+
+    case sizeof (double):
+      do_double_format_conversion (data, len, from_fmt, to_fmt);
+      break;
+
+    default:
+      (*current_liboctave_error_handler)
+	("impossible state reached in file `%s' at line %d",
+	 __FILE__, __LINE__);
+      break;
+    }
+}
+
+
+void
 read_doubles (std::istream& is, double *data, save_type type, int len,
-	      int swap, oct_mach_info::float_format fmt)
+	      bool swap, oct_mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -724,7 +1022,7 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
       {
 	volatile float *ptr = X_CAST (float *, data);
 	is.read (X_CAST (char *, data), 4 * len);
-	do_float_format_conversion (X_CAST (float *, data), len, fmt);
+	do_float_format_conversion (data, len, fmt);
 	float tmp = ptr[0];
 	for (int i = len - 1; i > 0; i--)
 	  data[i] = ptr[i];

@@ -308,6 +308,10 @@ public:
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
 
+  int write (octave_stream& os, int block_size,
+	     oct_data_conv::data_type output_type, int skip,
+	     oct_mach_info::float_format flt_fmt) const;
+
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

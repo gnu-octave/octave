@@ -33,9 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-defs.h"
 #include "mx-op-defs.h"
 
-#include "data-conv.h"
-#include "mach-info.h"
-
 class
 Matrix : public MArray2<double>
 {
@@ -229,12 +226,6 @@ public:
 
   friend std::ostream& operator << (std::ostream& os, const Matrix& a);
   friend std::istream& operator >> (std::istream& is, Matrix& a);
-
-  int read (std::istream& is, int nr, int nc, oct_data_conv::data_type dt,
-	    int skip, oct_mach_info::float_format flt_fmt);
-
-  int write (std::ostream& os, oct_data_conv::data_type dt, int skip,
-	     oct_mach_info::float_format flt_fmt);
 
   static double resize_fill_value (void) { return 0; }
 

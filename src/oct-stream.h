@@ -432,14 +432,6 @@ private:
   std::string getl (int max_len, bool& err, const std::string& who /* = "getl" */);
   std::string gets (int max_len, bool& err, const std::string& who /* = "gets" */);
 
-  octave_value do_read (int nr, int nc, oct_data_conv::data_type dt,
-			int skip, oct_mach_info::float_format flt_fmt,
-			int& count);
-
-  octave_value read (const Array<double>& size, oct_data_conv::data_type dt,
-		     int skip, oct_mach_info::float_format flt_fmt,
-		     int& count);
-
   octave_value do_scanf (scanf_format_list& fmt_list, int nr, int nc,
 			 bool one_elt_size_spec, int& count,
 			 const std::string& who /* = "scanf" */);
@@ -457,9 +449,6 @@ private:
   // are those that define os).
 
   int flush (void);
-
-  int write (const octave_value& data, oct_data_conv::data_type dt,
-	     int skip, oct_mach_info::float_format flt_fmt);
 
   int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
 		 const std::string& who /* = "printf" */);
@@ -517,11 +506,19 @@ public:
 
   void close (void);
 
-  octave_value read (const Array<double>& size, oct_data_conv::data_type dt,
+  octave_value read (const Array<double>& size, int block_size,
+		     oct_data_conv::data_type input_type,
+		     oct_data_conv::data_type output_type,
 		     int skip, oct_mach_info::float_format flt_fmt,
 		     int& count);
 
-  int write (const octave_value& data, oct_data_conv::data_type dt,
+  int write (const octave_value& data, int block_size,
+	     oct_data_conv::data_type output_type,
+	     int skip, oct_mach_info::float_format flt_fmt);
+
+  template <class T>
+  int write (const Array<T>&, int block_size,
+	     oct_data_conv::data_type output_type,
 	     int skip, oct_mach_info::float_format flt_fmt);
 
   octave_value scanf (const std::string& fmt, const Array<double>& size,
@@ -601,6 +598,12 @@ private:
 	}
 
       return retval;
+    }
+
+  void invalid_operation (const std::string& who, const char *rw)
+    {
+      if (rep)
+	rep->invalid_operation (who, rw);
     }
 };
 

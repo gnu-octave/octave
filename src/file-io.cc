@@ -1129,8 +1129,12 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
       if (! error_state)
 	{
-	  oct_data_conv::data_type dt
-	    = oct_data_conv::string_to_data_type (prec);
+	  int block_size = 1;
+	  oct_data_conv::data_type input_type;
+	  oct_data_conv::data_type output_type;
+
+	  oct_data_conv::string_to_data_type (prec, block_size,
+					      input_type, output_type);
 
 	  if (! error_state)
 	    {
@@ -1146,7 +1150,8 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 			= oct_mach_info::string_to_float_format (arch);
 
 		      if (! error_state)
-			retval = os.read (size, dt, skip, flt_fmt, count);
+			retval = os.read (size, block_size, input_type,
+					  output_type, skip, flt_fmt, count);
 		    }
 		  else
 		    ::error ("fread: architecture type must be a string");
@@ -1200,73 +1205,113 @@ The optional argument @var{precision} is a string specifying the type of\n\
 data to read and may be one of\n\
 \n\
 @table @code\n\
-@item \"char\"\n\
-@itemx \"char*1\"\n\
-@itemx \"integer*1\"\n\
-@itemx \"int8\"\n\
-Single character.\n\
-\n\
-@item \"signed char\"\n\
-@itemx \"schar\"\n\
+@item \"schar\"\n\
+@itemx \"signed char\"\n\
 Signed character.\n\
 \n\
-@item \"unsigned char\"\n\
-@itemx \"uchar\"\n\
-@itemx \"uint8\"\n\
+@item \"uchar\"\n\
+@itemx \"unsigned char\"\n\
 Unsigned character.\n\
 \n\
-@item \"short\"\n\
-Short integer.\n\
+@item \"int8\"\n\
+@itemx \"integer*1\"\n\
 \n\
-@item \"unsigned short\"\n\
-@itemx \"ushort\"\n\
-Unsigned short integer.\n\
+8-bit signed integer.\n\
 \n\
-@item \"int\"\n\
-Integer.\n\
+@item \"int16\"\n\
+@itemx \"integer*2\"\n\
+16-bit signed integer.\n\
 \n\
-@item \"unsigned int\"\n\
-@itemx \"uint\"\n\
-Unsigned integer.\n\
+@item \"int32\"\n\
+@itemx \"integer*4\"\n\
+32-bit signed integer.\n\
 \n\
-@item \"long\"\n\
-Long integer.\n\
+@item \"int64\"\n\
+@itemx \"integer*8\"\n\
+64-bit signed integer.\n\
 \n\
-@item \"unsigned long\"\n\
-@itemx \"ulong\"\n\
-Unsigned long integer.\n\
+@item \"uint8\"\n\
+8-bit unsigned integer.\n\
 \n\
-@item \"float\"\n\
+@item \"uint16\"\n\
+16-bit unsigned integer.\n\
+\n\
+@item \"uint32\"\n\
+32-bit unsigned integer.\n\
+\n\
+@item \"uint64\"\n\
+64-bit unsigned integer.\n\
+\n\
+@item \"single\"\n\
 @itemx \"float32\"\n\
 @itemx \"real*4\"\n\
-Single precision float.\n\
+32-bit floating point number.\n\
 \n\
 @item \"double\"\n\
 @itemx \"float64\"\n\
 @itemx \"real*8\"\n\
-Double precision float.\n\
+64-bit floating point number.\n\
 \n\
-@item \"integer*2\"\n\
-@itemx \"int16\"\n\
-Two byte signed integer.\n\
+@item \"char\"\n\
+@itemx \"char*1\"\n\
+Single character.\n\
 \n\
-@item \"integer*4\"\n\
-@itemx \"int32\"\n\
-Four byte signed integer.\n\
+@item \"short\"\n\
+Short integer (size is platform dependent).\n\
 \n\
-@item \"uint16\"\n\
-Two byte unsigned integer.\n\
+@item \"int\"\n\
+Integer (size is platform dependent).\n\
 \n\
-@item \"uint32\"\n\
-Four byte unsigned integer.\n\
+@item \"long\"\n\
+Long integer (size is platform dependent).\n\
+\n\
+@item \"ushort\"\n\
+@itemx \"unsigned short\"\n\
+Unsigned short integer (size is platform dependent).\n\
+\n\
+@item \"uint\"\n\
+@itemx \"unsigned int\"\n\
+Unsigned integer (size is platform dependent).\n\
+\n\
+@item \"ulong\"\n\
+@itemx \"unsigned long\"\n\
+Unsigned long integer (size is platform dependent).\n\
+\n\
+@item \"float\"\n\
+Single precision floating point number (size is platform dependent).\n\
 @end table\n\
 \n\
 @noindent\n\
 The default precision is @code{\"uchar\"}.\n\
 \n\
+The @var{precision} argument may also specify an optional repeat\n\
+count.  For example, @samp{32*single} causes @code{fread} to read\n\
+a block of 32 single precision floating point numbers.  Reading in\n\
+blocks is useful in combination with the @var{skip} argument.\n\
+\n\
+The @var{precision} argument may also specify a type conversion.\n\
+For example, @samp{int16=>int32} causes @code{fread} to read 16-bit\n\
+integer values and return an array of 32-bit integer values.  By\n\
+default, @code{fread} returns a double precision array.  The special\n\
+form @samp{*TYPE} is shorthand for @samp{TYPE=>TYPE}.\n\
+\n\
+The conversion and repeat counts may be combined.  For example,\n\
+@samp{32*single=>single} causes @code{fread} to read blocks of single\n\
+precision floating point values and return an array of single precision\n\
+values instead of the default array of double precision values.\n\
+\n\
 The optional argument @var{skip} specifies the number of bytes to skip\n\
-after each element is read.  If it is not specified, a value of 0 is\n\
-assumed.\n\
+after each element (or block of elements) is read.  If it is not\n\
+specified, a value of 0 is assumed.  If the final block read is not\n\
+complete, the final skip is omitted.  For example,\n\
+\n\
+@example\n\
+fread (f, 10, \"3*single=>single\", 8)\n\
+@end example\n\
+\n\
+@noindent\n\
+will omit the final 8-byte skip because the last read will not be\n\
+a complete block of 3 values.\n\
 \n\
 The optional argument @var{arch} is a string specifying the data format\n\
 for the file.  Valid values are\n\
@@ -1356,8 +1401,10 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
   if (! error_state)
     {
-      oct_data_conv::data_type dt
-	= oct_data_conv::string_to_data_type (prec);
+      int block_size = 1;
+      oct_data_conv::data_type output_type;
+
+      oct_data_conv::string_to_data_type (prec, block_size, output_type);
 
       if (! error_state)
 	{
@@ -1373,7 +1420,8 @@ do_fwrite (octave_stream& os, const octave_value& data,
 		    = oct_mach_info::string_to_float_format (arch);
 
 		  if (! error_state)
-		    retval = os.write (data, dt, skip, flt_fmt);
+		    retval = os.write (data, block_size, output_type,
+				       skip, flt_fmt);
 		}
 	      else
 		::error ("fwrite: architecture type must be a string");

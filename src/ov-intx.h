@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
+#include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-int.h"
 #include "ov-typeinfo.h"
@@ -72,6 +73,11 @@ public:
     }
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
+
+  int write (octave_stream& os, int block_size,
+	     oct_data_conv::data_type output_type, int skip,
+	     oct_mach_info::float_format flt_fmt) const
+    { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
 private:
 
@@ -122,6 +128,14 @@ public:
     }
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
+
+  int write (octave_stream& os, int block_size,
+	     oct_data_conv::data_type output_type, int skip,
+	     oct_mach_info::float_format flt_fmt) const
+    {
+      return os.write (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (),
+		       block_size, output_type, skip, flt_fmt);
+    }
 
 private:
 

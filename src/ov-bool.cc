@@ -162,6 +162,7 @@ octave_bool::load_binary (std::istream& is, bool /* swap */,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_bool::save_hdf5 (hid_t loc_id, const char *name,
 			bool /* save_as_floats */)
@@ -220,6 +221,7 @@ octave_bool::load_hdf5 (hid_t loc_id, const char *name,
 
   return true;
 }
+
 #endif
 
 /*

@@ -725,6 +725,7 @@ octave_base_value::load_binary (std::istream&, bool,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_base_value::save_hdf5 (hid_t, const char *, bool)
 {
@@ -740,7 +741,17 @@ octave_base_value::load_hdf5 (hid_t, const char *, bool)
 
   return false;
 }
+
 #endif
+
+int
+octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
+			  int, oct_mach_info::float_format) const
+{
+  gripe_wrong_type_arg ("octave_base_value::write()", type_name ());
+
+  return false;
+}
 
 CONVDECLX (matrix_conv)
 {

@@ -31,6 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <string>
 
+#include <Array.h>
+#include <Array2.h>
+#include <Array3.h>
+
+#include <Array.cc>
+
+#include "byte-swap.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-sstream.h"
@@ -1030,48 +1037,6 @@ std::string
 octave_base_stream::gets (int max_len, bool& err, const std::string& who)
 {
   return do_gets (max_len, err, false, who);
-}
-
-octave_value
-octave_base_stream::read (const Array<double>& size,
-			  oct_data_conv::data_type dt, int skip,
-			  oct_mach_info::float_format ffmt,
-			  int& char_count)
-{
-  Matrix retval;
-
-  char_count = 0;
-
-  std::istream *isp = input_stream ();
-
-  if (isp)
-    {
-      std::istream& is = *isp;
-
-      int nr = -1;
-      int nc = -1;
-
-      bool ignore;
-
-      get_size (size, nr, nc, ignore, "fread");
-
-      if (! error_state)
-	{
-	  if (ffmt == oct_mach_info::flt_fmt_unknown)
-	    ffmt = float_format ();
-
-	  int tmp = retval.read (is, nr, nc, dt, skip, ffmt);
-
-	  if (tmp < 0)
-	    error ("fread: read error");
-	  else
-	    char_count = tmp;
-	}
-    }
-  else
-    invalid_operation ("fread", "reading");
-
-  return retval;
 }
 
 #if defined (__GNUG__) && ! defined (CXX_ISO_COMPLIANT_LIBRARY)
@@ -2092,49 +2057,6 @@ octave_base_stream::flush (void)
   return retval;
 }
 
-int
-octave_base_stream::write (const octave_value& data,
-			   oct_data_conv::data_type dt, int skip,
-			   oct_mach_info::float_format ffmt)
-{
-  int retval = -1;
-
-  std::ostream *osp = output_stream ();
-
-  if (osp)
-    {
-      std::ostream& os = *osp;
-
-      int status = 0;
-
-      // XXX FIXME XXX -- the octave_value class should probably have
-      // a write method that would handle the dispatch for us?
-      //
-      // If DATA is a character matrix, then it is a bit of a kluge to
-      // force it to be a double matrix and then write it out as uchar
-      // data, but this is the quick fix...
-
-      Matrix mval = data.matrix_value (true);
-
-      if (! error_state)
-	{
-	  if (ffmt == oct_mach_info::flt_fmt_unknown)
-	    ffmt = float_format ();
-
-	  status = mval.write (os, dt, skip, ffmt);
-
-	  if (status < 0)
-	    error ("fwrite: write error");
-	  else
-	    retval = status;
-	}
-    }
-  else
-    invalid_operation ("fwrite", "writing");
-
-  return retval;
-}
-
 class
 printf_value_cache
 {
@@ -2848,31 +2770,645 @@ octave_stream::close (void)
     rep->close ();
 }
 
+// XXX FIXME XXX -- these trait classes probably belong somehwere else...
+
+template <typename T>
+class
+octave_type_traits
+{
+public:
+  typedef T val_type;
+};
+
+#define OCTAVE_TYPE_TRAIT(T, VAL_T) \
+  template <> \
+  class \
+  octave_type_traits<T> \
+  { \
+  public: \
+    typedef VAL_T val_type; \
+  }
+
+OCTAVE_TYPE_TRAIT (octave_int8, octave_int8::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint8, octave_uint8::val_type);
+OCTAVE_TYPE_TRAIT (octave_int16, octave_int16::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint16, octave_uint16::val_type);
+OCTAVE_TYPE_TRAIT (octave_int32, octave_int32::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint32, octave_uint32::val_type);
+OCTAVE_TYPE_TRAIT (octave_int64, octave_int64::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint64, octave_uint64::val_type);
+
+template <typename T>
+class octave_array_type_traits
+{
+public:
+  typedef T element_type;
+};
+
+#define OCTAVE_ARRAY_TYPE_TRAIT(T, ELT_T) \
+  template <> \
+  class \
+  octave_array_type_traits<T> \
+  { \
+  public: \
+    typedef ELT_T element_type; \
+  }
+
+OCTAVE_ARRAY_TYPE_TRAIT (charNDArray, char);
+OCTAVE_ARRAY_TYPE_TRAIT (int8NDArray, octave_int8);
+OCTAVE_ARRAY_TYPE_TRAIT (uint8NDArray, octave_uint8);
+OCTAVE_ARRAY_TYPE_TRAIT (int16NDArray, octave_int16);
+OCTAVE_ARRAY_TYPE_TRAIT (uint16NDArray, octave_uint16);
+OCTAVE_ARRAY_TYPE_TRAIT (int32NDArray, octave_int32);
+OCTAVE_ARRAY_TYPE_TRAIT (uint32NDArray, octave_uint32);
+OCTAVE_ARRAY_TYPE_TRAIT (int64NDArray, octave_int64);
+OCTAVE_ARRAY_TYPE_TRAIT (uint64NDArray, octave_uint64);
+OCTAVE_ARRAY_TYPE_TRAIT (NDArray, double);
+
+template <class RET_T, class READ_T>
 octave_value
-octave_stream::read (const Array<double>& size,
-		     oct_data_conv::data_type dt, int skip,
-		     oct_mach_info::float_format flt_fmt, int& count)
+do_read (octave_stream& strm, int nr, int nc, int block_size,
+	 int skip, bool do_float_fmt_conv,
+	 oct_mach_info::float_format from_flt_fmt, int& count)
 {
   octave_value retval;
 
+  RET_T nda;
+
+  bool ok = true;
+
+  count = 0;
+
+  typename octave_array_type_traits<RET_T>::element_type elt_zero
+    = typename octave_array_type_traits<RET_T>::element_type ();
+
+  typename octave_array_type_traits<RET_T>::element_type *dat = 0;
+
+  int max_size = 0;
+
+  int final_nr = 0;
+  int final_nc = 0;
+
+  if (nr > 0)
+    {
+      if (nc > 0)
+	{
+	  nda.resize (dim_vector (nr, nc), elt_zero);
+	  dat = nda.fortran_vec ();
+	  max_size = nr * nc;
+	}
+      else
+	{
+	  nda.resize (dim_vector (nr, 32), elt_zero);
+	  dat = nda.fortran_vec ();
+	  max_size = nr * 32;
+	}
+    }
+  else
+    {
+      nda.resize (dim_vector (32, 1), elt_zero);
+      dat = nda.fortran_vec ();
+      max_size = 32;
+    }
+
+  // XXX FIXME XXX -- byte order for Cray?
+
+  bool swap = false;
+
+  if (oct_mach_info::words_big_endian ())
+    swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
+	    || from_flt_fmt == oct_mach_info::flt_fmt_vax_g
+	    || from_flt_fmt == oct_mach_info::flt_fmt_vax_g);
+  else
+    swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+
+  union
+  {
+    char buf[sizeof (typename octave_type_traits<READ_T>::val_type)];
+    typename octave_type_traits<READ_T>::val_type val;
+  } u;
+
+  std::istream *isp = strm.input_stream ();
+
+  if (isp)
+    {
+      std::istream& is = *isp;
+
+      int elts_read = 0;
+
+      for (;;)
+	{
+	  // XXX FIXME XXX -- maybe there should be a special case for
+	  // skip == 0.
+
+	  if (is)
+	    {
+	      if (nr > 0 && nc > 0 && count == max_size)
+		{
+		  final_nr = nr;
+		  final_nc = nc;
+
+		  break;
+		}
+
+	      is.read (u.buf, sizeof (typename octave_type_traits<READ_T>::val_type));
+
+	      // We only swap bytes for integer types.  For float
+	      // types, the format conversion will also handle byte
+	      // swapping.
+
+	      if (swap)
+		swap_bytes<sizeof (typename octave_type_traits<READ_T>::val_type)> (u.buf);
+	      else if (do_float_fmt_conv)
+		do_float_format_conversion
+		  (u.buf,
+		   sizeof (typename octave_type_traits<READ_T>::val_type),
+		   1, from_flt_fmt, oct_mach_info::float_format ());
+
+	      typename octave_array_type_traits<RET_T>::element_type tmp
+		= static_cast <typename octave_array_type_traits<RET_T>::element_type> (u.val);
+
+	      if (ok)
+		{
+		  if (is)
+		    {
+		      if (count == max_size)
+			{
+			  max_size *= 2;
+
+			  if (nr > 0)
+			    nda.resize (dim_vector (nr, max_size / nr),
+					elt_zero);
+			  else
+			    nda.resize (dim_vector (max_size, 1), elt_zero);
+
+			  dat = nda.fortran_vec ();
+			}
+
+		      dat[count++] = tmp;
+
+		      elts_read++;
+		    }
+
+		  if (skip != 0 && elts_read == block_size)
+		    {
+		      strm.seek (skip, SEEK_CUR);
+		      elts_read = 0;
+		    }
+
+		  if (is.eof ())
+		    {
+		      if (nr > 0)
+			{
+			  if (count > nr)
+			    {
+			      final_nr = nr;
+			      final_nc = (count - 1) / nr + 1;
+			    }
+			  else
+			    {
+			      final_nr = count;
+			      final_nc = 1;
+			    }
+			}
+		      else
+			{
+			  final_nr = count;
+			  final_nc = 1;
+			}
+
+		      break;
+		    }
+		}
+	      else
+		{
+		  ok = false;
+		  break;
+		}
+	    }
+	  else
+	    {
+	      ok = false;
+	      break;
+	    }
+	}
+    }
+
+  if (ok)
+    {
+      nda.resize (dim_vector (final_nr, final_nc), elt_zero);
+
+      retval = nda;
+    }
+
+  return retval;
+}
+
+#define DO_READ_VAL_TEMPLATE(RET_T, READ_T) \
+  template octave_value \
+  do_read<RET_T, READ_T> (octave_stream&, int, int, int, int, bool, \
+			  oct_mach_info::float_format, int&)
+
+// XXX FIXME XXX -- should we only have float if it is a different
+// size from double?
+
+#define INSTANTIATE_DO_READ(VAL_T) \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_int8); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_uint8); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_int16); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_uint16); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_int32); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_uint32); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_int64); \
+  DO_READ_VAL_TEMPLATE (VAL_T, octave_uint64); \
+  DO_READ_VAL_TEMPLATE (VAL_T, float); \
+  DO_READ_VAL_TEMPLATE (VAL_T, double); \
+  DO_READ_VAL_TEMPLATE (VAL_T, char); \
+  DO_READ_VAL_TEMPLATE (VAL_T, signed char); \
+  DO_READ_VAL_TEMPLATE (VAL_T, unsigned char)
+
+INSTANTIATE_DO_READ(int8NDArray);
+INSTANTIATE_DO_READ(uint8NDArray);
+INSTANTIATE_DO_READ(int16NDArray);
+INSTANTIATE_DO_READ(uint16NDArray);
+INSTANTIATE_DO_READ(int32NDArray);
+INSTANTIATE_DO_READ(uint32NDArray);
+INSTANTIATE_DO_READ(int64NDArray);
+INSTANTIATE_DO_READ(uint64NDArray);
+// INSTANTIATE_DO_READ(floatNDArray);
+INSTANTIATE_DO_READ(NDArray);
+INSTANTIATE_DO_READ(charNDArray);
+
+typedef octave_value (*read_fptr) (octave_stream&, int, int, int, int, bool,
+				   oct_mach_info::float_format ffmt, int&);
+
+INSTANTIATE_ARRAY (read_fptr);
+template class Array2<read_fptr>;
+
+#define FILL_TABLE_ROW(R, VAL_T) \
+  read_fptr_table(R,oct_data_conv::dt_int8) = do_read<VAL_T, octave_int8>; \
+  read_fptr_table(R,oct_data_conv::dt_uint8) = do_read<VAL_T, octave_uint8>; \
+  read_fptr_table(R,oct_data_conv::dt_int16) = do_read<VAL_T, octave_int16>; \
+  read_fptr_table(R,oct_data_conv::dt_uint16) = do_read<VAL_T, octave_uint16>; \
+  read_fptr_table(R,oct_data_conv::dt_int32) = do_read<VAL_T, octave_int32>; \
+  read_fptr_table(R,oct_data_conv::dt_uint32) = do_read<VAL_T, octave_uint32>; \
+  read_fptr_table(R,oct_data_conv::dt_int64) = do_read<VAL_T, octave_int64>; \
+  read_fptr_table(R,oct_data_conv::dt_uint64) = do_read<VAL_T, octave_uint64>; \
+  read_fptr_table(R,oct_data_conv::dt_single) = do_read<VAL_T, float>; \
+  read_fptr_table(R,oct_data_conv::dt_double) = do_read<VAL_T, double>; \
+  read_fptr_table(R,oct_data_conv::dt_char) = do_read<VAL_T, char>; \
+  read_fptr_table(R,oct_data_conv::dt_schar) = do_read<VAL_T, signed char>; \
+  read_fptr_table(R,oct_data_conv::dt_uchar) = do_read<VAL_T, unsigned char>
+
+octave_value
+octave_stream::read (const Array<double>& size, int block_size,
+		     oct_data_conv::data_type input_type,
+		     oct_data_conv::data_type output_type,
+		     int skip, oct_mach_info::float_format ffmt,
+		     int& char_count)
+{
+  static bool initialized = false;
+
+  // Table function pointers for return types x read types.
+
+  static Array2<read_fptr> read_fptr_table (oct_data_conv::dt_unknown, 13, 0);
+
+  if (! initialized)
+    {
+      FILL_TABLE_ROW (oct_data_conv::dt_int8, int8NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_uint8, uint8NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_int16, int16NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_uint16, uint16NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_int32, int32NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_uint32, uint32NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_int64, int64NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_uint64, uint64NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_double, NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_char, charNDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_schar, charNDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_uchar, charNDArray);
+
+      initialized = true;
+    }
+
+  octave_value retval;
+
   if (stream_ok ("fread"))
-    retval = rep->read (size, dt, skip, flt_fmt, count);
+    {
+      // XXX FIXME XXX -- we may eventually want to make this extensible.
+
+      // XXX FIXME XXX -- we need a better way to ensure that this
+      // numbering stays consistent with the order of the elements in the
+      // data_type enum in the oct_data_conv class.
+
+      char_count = 0;
+
+      int nr = -1;
+      int nc = -1;
+
+      bool ignore;
+
+      get_size (size, nr, nc, ignore, "fread");
+
+      if (! error_state)
+	{
+	  if (nr == 0 || nc == 0)
+	    retval = Matrix (nr, nc);
+	  else
+	    {
+	      if (ffmt == oct_mach_info::flt_fmt_unknown)
+		ffmt = float_format ();
+
+	      read_fptr fcn = read_fptr_table (output_type, input_type);
+
+	      bool do_float_fmt_conv = ((input_type == oct_data_conv::dt_double
+					 || input_type == oct_data_conv::dt_single)
+					&& ffmt != float_format ());
+
+	      if (fcn)
+		{
+		  retval = (*fcn) (*this, nr, nc, block_size, skip,
+				   do_float_fmt_conv, ffmt, char_count);
+
+		  // XXX FIXME XXX -- kluge!
+
+		  if (! error_state
+		      && (output_type == oct_data_conv::dt_char
+			  || output_type == oct_data_conv::dt_schar
+			  || output_type == oct_data_conv::dt_uchar))
+		    retval = octave_value (retval.char_matrix_value (), true);
+		}
+	      else
+		error ("fread: unable to read and convert requested types");
+	    }
+	}
+      else
+	invalid_operation ("fread", "reading");
+    }
 
   return retval;
 }
 
 int
-octave_stream::write (const octave_value& data,
-		      oct_data_conv::data_type dt, int skip,
+octave_stream::write (const octave_value& data, int block_size,
+		      oct_data_conv::data_type output_type, int skip,
 		      oct_mach_info::float_format flt_fmt)
 {
   int retval = -1;
 
   if (stream_ok ("fwrite"))
-    retval = rep->write (data, dt, skip, flt_fmt);
+    {
+      if (! error_state)
+	{
+	  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
+	    flt_fmt = float_format ();
+
+	  int status = data.write (*this, block_size, output_type,
+				   skip, flt_fmt);
+
+	  if (status < 0)
+	    error ("fwrite: write error");
+	  else
+	    retval = status;
+	}
+      else
+	invalid_operation ("fwrite", "writing");
+    }
 
   return retval;
 }
+
+template <class T>
+void
+write_int (std::ostream& os, bool swap, const T& val)
+{
+  typename octave_type_traits<T>::val_type tmp = val.value ();
+
+  if (swap)
+    swap_bytes<sizeof (typename octave_type_traits<T>::val_type)> (&tmp);
+
+  os.write (reinterpret_cast<const char *> (&tmp),
+	    sizeof (typename octave_type_traits<T>::val_type));
+}
+
+template void write_int (std::ostream&, bool, const octave_int8&);
+template void write_int (std::ostream&, bool, const octave_uint8&);
+template void write_int (std::ostream&, bool, const octave_int16&);
+template void write_int (std::ostream&, bool, const octave_uint16&);
+template void write_int (std::ostream&, bool, const octave_int32&);
+template void write_int (std::ostream&, bool, const octave_uint32&);
+template void write_int (std::ostream&, bool, const octave_int64&);
+template void write_int (std::ostream&, bool, const octave_uint64&);
+
+template <class T>
+static inline bool
+do_write (std::ostream& os, const T& val, oct_data_conv::data_type output_type,
+	  oct_mach_info::float_format flt_fmt, bool swap,
+	  bool do_float_conversion)
+{
+  bool retval = true;
+
+  // For compatibility, Octave converts to the output type, then
+  // writes.  This means that truncation happens on the conversion.
+  // For example, the following program prints 0:
+  //
+  //   x = int8 (-1)
+  //   f = fopen ("foo.dat", "w");
+  //   fwrite (f, x, "unsigned char");
+  //   fclose (f);
+  //   f = fopen ("foo.dat", "r");
+  //   y = fread (f, 1, "unsigned char");
+  //   printf ("%d\n", y);
+
+  switch (output_type)
+    {
+    case oct_data_conv::dt_char:
+    case oct_data_conv::dt_schar:
+    case oct_data_conv::dt_int8:
+      write_int (os, swap, octave_int8 (val));
+      break;
+
+    case oct_data_conv::dt_uchar:
+    case oct_data_conv::dt_uint8:
+      write_int (os, swap, octave_uint8 (val));
+      break;
+
+    case oct_data_conv::dt_int16:
+      write_int (os, swap, octave_int16 (val));
+      break;
+
+    case oct_data_conv::dt_uint16:
+      write_int (os, swap, octave_uint16 (val));
+      break;
+
+    case oct_data_conv::dt_int32:
+      write_int (os, swap, octave_int32 (val));
+      break;
+
+    case oct_data_conv::dt_uint32:
+      write_int (os, swap, octave_uint32 (val));
+      break;
+
+    case oct_data_conv::dt_int64:
+      write_int (os, swap, octave_int64 (val));
+      break;
+
+    case oct_data_conv::dt_uint64:
+      write_int (os, swap, octave_uint64 (val));
+      break;
+
+    case oct_data_conv::dt_single:
+      {
+	float f = static_cast<float> (val);
+
+	if (do_float_conversion)
+	  do_float_format_conversion (&f, 1, flt_fmt);
+
+	os.write (reinterpret_cast<const char *> (&f), sizeof (float));
+      }
+      break;
+
+    case oct_data_conv::dt_double:
+      {
+	double d = static_cast<double> (val);
+	if (do_float_conversion)
+	  do_double_format_conversion (&d, 1, flt_fmt);
+
+	os.write (reinterpret_cast<const char *> (&d), sizeof (double));
+      }
+      break;
+
+    default:
+      retval = false;
+      (*current_liboctave_error_handler)
+	("write: invalid type specification");
+      break;
+    }
+
+  return retval;
+}
+
+template <class T>
+int
+octave_stream::write (const Array<T>& data, int block_size,
+		      oct_data_conv::data_type output_type,
+		      int skip, oct_mach_info::float_format flt_fmt)
+{
+  int retval = -1;
+
+  bool status = true;
+
+  int count = 0;
+
+  const T *d = data.data ();
+
+  int n = data.length ();
+
+  oct_mach_info::float_format native_flt_fmt
+    = oct_mach_info::float_format ();
+
+  bool do_float_conversion = (flt_fmt != native_flt_fmt);
+
+  // XXX FIXME XXX -- byte order for Cray?
+
+  bool swap = false;
+
+  if (oct_mach_info::words_big_endian ())
+    swap = (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
+	    || flt_fmt == oct_mach_info::flt_fmt_vax_g
+	    || flt_fmt == oct_mach_info::flt_fmt_vax_g);
+  else
+    swap = (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+
+  for (int i = 0; i < n; i++)
+    {
+      std::ostream *osp = output_stream ();
+
+      if (osp)
+	{
+	  std::ostream& os = *osp;
+
+	  if (skip != 0 && (i % block_size) == 0)
+	    seek (skip, SEEK_CUR);
+
+	  if (os)
+	    {
+	      status = do_write (os, d[i], output_type, flt_fmt, swap,
+				 do_float_conversion);
+
+	      if (os && status)
+		count++;
+	      else
+		break;
+	    }
+	  else
+	    {
+	      status = false;
+	      break;
+	    }
+	}
+      else
+	{
+	  status = false;
+	  break;
+	}
+    }
+
+  if (status)
+    retval = count;
+
+  return retval;
+}
+
+template int
+octave_stream::write (const Array<char>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<double>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_int8>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_uint8>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_int16>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_uint16>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_int32>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_uint32>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_int64>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<octave_uint64>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
 
 octave_value
 octave_stream::scanf (const std::string& fmt, const Array<double>& size,

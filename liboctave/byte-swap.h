@@ -36,68 +36,62 @@ swap_bytes (volatile void *ptr, unsigned int i, unsigned int j)
   t[j] = tmp;
 }
 
-static inline void
-swap_2_bytes (volatile void *ptr)
+template <int n>
+void
+swap_bytes (volatile void *ptr)
 {
-  volatile char *t = static_cast<volatile char *> (ptr);
-
-  swap_bytes (t, 0, 1);
+  for (size_t i = 0; i < n/2; i++)
+    swap_bytes (ptr, i, n-1-i);
 }
 
-static inline void
-swap_4_bytes (volatile void *ptr)
+template <>
+inline void
+swap_bytes <1> (volatile void *)
 {
-  volatile char *t = static_cast<volatile char *> (ptr);
-
-  swap_bytes (t, 0, 3);
-  swap_bytes (t, 1, 2);
 }
 
-static inline void
-swap_8_bytes (volatile void *ptr)
+template <>
+inline void
+swap_bytes <2> (volatile void *ptr)
 {
-  volatile char *t = static_cast<volatile char *> (ptr);
-
-  swap_bytes (t, 0, 7);
-  swap_bytes (t, 1, 6);
-  swap_bytes (t, 2, 5);
-  swap_bytes (t, 3, 4);
+  swap_bytes (ptr, 0, 1);
 }
 
-static inline void
-swap_2_bytes (volatile void *ptr, int len)
+template <>
+inline void
+swap_bytes <4> (volatile void *ptr)
+{
+  swap_bytes (ptr, 0, 3);
+  swap_bytes (ptr, 1, 2);
+}
+
+template <>
+inline void
+swap_bytes <8> (volatile void *ptr)
+{
+  swap_bytes (ptr, 0, 7);
+  swap_bytes (ptr, 1, 6);
+  swap_bytes (ptr, 2, 5);
+  swap_bytes (ptr, 3, 4);
+}
+
+template <int n>
+void
+swap_bytes (volatile void *ptr, int len)
 {
   volatile char *t = static_cast<volatile char *> (ptr);
 
   for (int i = 0; i < len; i++)
     {
-      swap_2_bytes (t);
-      t += 2;
+      swap_bytes<n> (t);
+      t += n;
     }
 }
 
-static inline void
-swap_4_bytes (volatile void *ptr, int len)
+template <>
+inline void
+swap_bytes<1> (volatile void *, int)
 {
-  volatile char *t = static_cast<volatile char *> (ptr);
-
-  for (int i = 0; i < len; i++)
-    {
-      swap_4_bytes (t);
-      t += 4;
-    }
-}
-
-static inline void
-swap_8_bytes (volatile void *ptr, int len)
-{
-  volatile char *t = static_cast<volatile char *> (ptr);
-
-  for (int i = 0; i < len; i++)
-    {
-      swap_8_bytes (t);
-      t += 8;
-    }
 }
 
 #endif

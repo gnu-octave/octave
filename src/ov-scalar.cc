@@ -30,9 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "data-conv.h"
+#include "mach-info.h"
+
 #include "defun.h"
 #include "gripes.h"
 #include "oct-obj.h"
+#include "oct-stream.h"
 #include "ov-scalar.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
@@ -208,6 +212,7 @@ octave_scalar::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_scalar::save_hdf5 (hid_t loc_id, const char *name,
 			  bool /* save_as_floats */)
@@ -266,6 +271,7 @@ octave_scalar::load_hdf5 (hid_t loc_id, const char *name,
 
   return true;
 }
+
 #endif
 
 /*

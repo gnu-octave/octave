@@ -155,11 +155,11 @@ read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt,
 
   if (swap)
     {
-      swap_4_bytes (X_CAST (char *, &mopt));
-      swap_4_bytes (X_CAST (char *, &nr));
-      swap_4_bytes (X_CAST (char *, &nc));
-      swap_4_bytes (X_CAST (char *, &imag));
-      swap_4_bytes (X_CAST (char *, &len));
+      swap_bytes<4> (&mopt);
+      swap_bytes<4> (&nr);
+      swap_bytes<4> (&nc);
+      swap_bytes<4> (&imag);
+      swap_bytes<4> (&len);
     }
 
   if (mopt > 9999 || mopt < 0 || imag > 1 || imag < 0)

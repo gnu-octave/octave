@@ -153,7 +153,7 @@ read_binary_data (std::istream& is, bool swap,
   if (! is)
     return retval;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &name_len));
+    swap_bytes<4> (&name_len);
 
   {
     OCTAVE_LOCAL_BUFFER (char, name, name_len+1);
@@ -167,7 +167,7 @@ read_binary_data (std::istream& is, bool swap,
   if (! is)
     goto data_read_error;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &doc_len));
+    swap_bytes<4> (&doc_len);
 
   {
     OCTAVE_LOCAL_BUFFER (char, tdoc, doc_len+1);
@@ -213,7 +213,7 @@ read_binary_data (std::istream& is, bool swap,
 	if (! is.read (X_CAST (char *, &len), 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (X_CAST (char *, &len));
+	  swap_bytes<4> (&len);
 	OCTAVE_LOCAL_BUFFER (char, s, len+1);
 	if (! is.read (X_CAST (char *, s), len))
 	  goto data_read_error;
@@ -240,7 +240,7 @@ read_binary_data (std::istream& is, bool swap,
 	if (! is.read (X_CAST (char *, &len), 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (X_CAST (char *, &len));
+	  swap_bytes<4> (&len);
 	OCTAVE_LOCAL_BUFFER (char, s, len+1);
 	if (! is.read (X_CAST (char *, s), len))
 	  goto data_read_error;

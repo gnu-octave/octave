@@ -1083,7 +1083,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &len), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &len));
+    swap_bytes<4> (&len);
 
   if (len > 0)
     {

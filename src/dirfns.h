@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_dirfns_h)
 #define octave_dirfns_h 1
 
+#include <ctime>
+
 extern char *polite_directory_format (char *);
 extern int absolute_pathname (const char *);
 extern int absolute_program (const char *);

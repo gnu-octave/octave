@@ -59,6 +59,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "pager.h"
+#include "parse.h"
 #include "pr-output.h"
 #include "utils.h"
 #include "variables.h"
@@ -66,6 +67,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // We are likely to have a lot of octave_value objects to allocate, so
 // make the grow_size large.
 DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
+
+// If TRUE, turn off printing of results in functions (as if a
+// semicolon has been appended to each statement).
+static bool Vsilent_functions;
 
 // If TRUE, allow assignments like
 //
@@ -942,15 +947,19 @@ octave_value::complex_vector_value (bool force_string_conv,
 }
 
 void
-octave_value::print_with_name (std::ostream& output_buf, const std::string& name,
+octave_value::print_with_name (std::ostream& output_buf,
+			       const std::string& name, 
 			       bool print_padding) const
 {
-  bool pad_after = print_name_tag (output_buf, name);
+  if (! (evaluating_function_body && Vsilent_functions))
+    {
+      bool pad_after = print_name_tag (output_buf, name);
 
-  print (output_buf);
+      print (output_buf);
 
-  if (print_padding && pad_after)
-    newline (output_buf);
+      if (print_padding && pad_after)
+	newline (output_buf);
+    }
 }
 
 static void
@@ -1608,6 +1617,14 @@ resize_on_range_error (void)
 }
 
 static int
+silent_functions (void)
+{
+  Vsilent_functions = check_preference ("silent_functions");
+
+  return 0;
+}
+
+static int
 struct_levels_to_print (void)
 {
   double val;
@@ -1719,6 +1736,27 @@ being resized to be just large enough to hold the new value.  New\n\
 elements that have not been given a value are set to zero.  If the value\n\
 of @code{resize_on_range_error} is 0, an error message is printed and\n\
 control is returned to the top level.  The default value is 1.\n\
+@end defvr");
+
+  DEFVAR (silent_functions, 0.0, silent_functions,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} silent_functions\n\
+If the value of @code{silent_functions} is nonzero, internal output\n\
+from a function is suppressed.  Otherwise, the results of expressions\n\
+within a function body that are not terminated with a semicolon will\n\
+have their values printed.  The default value is 0.\n\
+\n\
+For example, if the function\n\
+\n\
+@example\n\
+function f ()\n\
+  2 + 2\n\
+endfunction\n\
+@end example\n\
+\n\
+@noindent\n\
+is executed, Octave will either print @samp{ans = 4} or nothing\n\
+depending on the value of @code{silent_functions}.\n\
 @end defvr");
 
   DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,

@@ -48,10 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-// If TRUE, turn off printing of results in functions (as if a
-// semicolon has been appended to each statement).
-static bool Vsilent_functions;
-
 // Pointer to the current statement being executed.
 tree_statement *curr_statement = 0;
 
@@ -160,10 +156,7 @@ tree_statement_list::eval (bool silent, int nargout)
 
       if (elt)
 	{
-	  bool silent_flag =
-	    silent ? true : (function_body ? Vsilent_functions : false);
-
-	  retval = elt->eval (silent_flag, nargout, function_body);
+	  retval = elt->eval (silent, nargout, function_body);
 
 	  if (error_state)
 	    break;
@@ -228,39 +221,6 @@ void
 tree_statement_list::accept (tree_walker& tw)
 {
   tw.visit_statement_list (*this);
-}
-
-static int
-silent_functions (void)
-{
-  Vsilent_functions = check_preference ("silent_functions");
-
-  return 0;
-}
-
-void
-symbols_of_pt_stmt (void)
-{
-  DEFVAR (silent_functions, 0.0, silent_functions,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} silent_functions\n\
-If the value of @code{silent_functions} is nonzero, internal output\n\
-from a function is suppressed.  Otherwise, the results of expressions\n\
-within a function body that are not terminated with a semicolon will\n\
-have their values printed.  The default value is 0.\n\
-\n\
-For example, if the function\n\
-\n\
-@example\n\
-function f ()\n\
-  2 + 2\n\
-endfunction\n\
-@end example\n\
-\n\
-@noindent\n\
-is executed, Octave will either print @samp{ans = 4} or nothing\n\
-depending on the value of @code{silent_functions}.\n\
-@end defvr");
 }
 
 /*

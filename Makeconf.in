@@ -188,6 +188,10 @@ exec_prefix = @exec_prefix@
 # run directly.
 bindir = @bindir@
 
+# Normally the directory for installing executables that system
+# administrators run.  This is the same as libexecdir on Cygwin systems.
+sbindir = @sbindir@
+
 # Where to install architecture-independent data files.  ${fcnfiledir}
 # and ${localfcnfiledir} are subdirectories of this.
 datadir = @datadir@

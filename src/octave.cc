@@ -59,6 +59,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "octave.h"
 #include "parse.h"
+#include "procstream.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
 #include "builtins.h"

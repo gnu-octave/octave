@@ -18,24 +18,14 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_vector (@var{a})
-## Return 1 if @var{a} is a vector.  Otherwise, return 0.
+## @deftypefn {Function File} {} issymmetric (@var{x}, @var{tol})
+## This function has been deprecated.  Use issymmetric instead.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_scalar, and is_matrix}
 
 ## Author: jwe
 
-function retval = is_vector (x)
+function retval = is_symmetric (varargin)
 
-  retval = 0;
-
-  if (nargin == 1)
-    if (is_matrix (x))
-      [nr, nc] = size (x);
-      retval = ((nr == 1 && nc >= 1) || (nc == 1 && nr >= 1));
-    endif
-  else
-    usage ("is_vector (x)");
-  endif
+  retval = issymmetric (varargin{:});
 
 endfunction

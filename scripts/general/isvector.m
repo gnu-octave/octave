@@ -18,29 +18,24 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_square (@var{x})
-## If @var{x} is a square matrix, then return the dimension of @var{x}.
-## Otherwise, return 0.
+## @deftypefn {Function File} {} isvector (@var{a})
+## Return 1 if @var{a} is a vector.  Otherwise, return 0.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_matrix, is_scalar, and is_vector}
+## @seealso{size, rows, columns, length, isscalar, and ismatrix}
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
+## Author: jwe
 
-function retval = is_square (x)
+function retval = isvector (x)
 
   retval = 0;
 
   if (nargin == 1)
-    if (is_matrix (x))
+    if (ismatrix (x))
       [nr, nc] = size (x);
-      if (nr == nc && nr > 0)
-        retval = nr;
-      endif
+      retval = ((nr == 1 && nc >= 1) || (nc == 1 && nr >= 1));
     endif
   else
-    usage ("is_square (x)");
+    usage ("isvector (x)");
   endif
 
 endfunction

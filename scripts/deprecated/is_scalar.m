@@ -18,32 +18,14 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_symmetric (@var{x}, @var{tol})
-## If @var{x} is symmetric within the tolerance specified by @var{tol},
-## then return the dimension of @var{x}.  Otherwise, return 0.  If
-## @var{tol} is omitted, use a tolerance equal to the machine precision.
+## @deftypefn {Function File} {} is_scalar (@var{a})
+## This function has been deprecated.  Use isscalar instead.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_matrix, is_scalar,
-## is_square, and is_vector}
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
+## Author: jwe
 
-function retval = is_symmetric (x,tol)
+function retval = is_scalar (varargin)
 
-  if (nargin == 1 || nargin == 2)
-    retval = is_square (x);
-    if (retval != 0)
-      if (nargin == 1)
-        tol = eps;
-      endif
-      if (norm (x - x') / norm(x) > tol)
-        retval = 0;
-      endif
-    endif
-  else
-    usage ("is_symmetric (x {,tol})");
-  endif
+  retval = isscalar (varargin{:});
 
 endfunction

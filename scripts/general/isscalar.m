@@ -18,24 +18,24 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_scalar (@var{a})
+## @deftypefn {Function File} {} isscalar (@var{a})
 ## Return 1 if @var{a} is a scalar.  Otherwise, return 0.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_scalar, and is_matrix}
+## @seealso{size, rows, columns, length, isscalar, and ismatrix}
 
 ## Author: jwe
 
-function retval = is_scalar (x)
+function retval = isscalar (x)
 
   retval = 0;
 
   if (nargin == 1)
-    if (is_matrix (x))
+    if (ismatrix (x))
       [nr, nc] = size (x);
       retval = (nr == 1 && nc == 1);
     endif
   else
-    usage ("is_scalar (x)");
+    usage ("isscalar (x)");
   endif
 
 endfunction

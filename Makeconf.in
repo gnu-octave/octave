@@ -445,6 +445,7 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_OCTFILEDIR%;\"${octfiledir}\";" \
   -e "s;%OCTAVE_OCTINCLUDEDIR%;\"${octincludedir}\";" \
   -e "s;%OCTAVE_OCTLIBDIR%;\"${octlibdir}\";" \
-  -e "s;%OCTAVE_PREFIX%;\"${prefix}\";"
+  -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
+  -e "s;%OCTAVE_VERSION%;\"${version}\";"
 $(top_srcdir)/move-if-change $@.tmp $@
 endef

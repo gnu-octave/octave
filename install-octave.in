@@ -217,6 +217,10 @@ echo "installing octave-bug as $bindir/octave-bug"
 cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug
 
+echo "installing octave-config as $bindir/octave-config"
+cp octave-config $bindir/octave-config
+chmod 755 $bindir/octave-config
+
 if test -f LIBRARIES; then
   echo "installing shared libraries in $octlibdir"
   for f in `cat LIBRARIES`

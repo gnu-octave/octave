@@ -27,8 +27,8 @@ DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	PROJECTS README README.Linux README.Windows README.MachTen ROADMAP \
 	SENDING-PATCHES THANKS move-if-change octave-sh octave-bug.in \
-	install-octave.in mkinstalldirs mkoctfile.in texi2dvi \
-	ChangeLog ChangeLog.[0-9]
+	octave-config.in install-octave.in mkinstalldirs mkoctfile.in \
+	texi2dvi ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = glob kpathsea # plplot
@@ -54,7 +54,7 @@ XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	ChangeLog ChangeLog.[0-9]
 
 BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
-	octave-bug config.status config.h VERSION ARCH
+	octave-bug octave-config config.status config.h VERSION ARCH
 
 # Subdirectories in which to run `make bin-dist'.
 BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
@@ -67,7 +67,7 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}'`
 
-all: octave-bug mkoctfile src
+all: octave-bug octave-config mkoctfile src
 .PHONY: all
 
 src: $(SUBDIRS)
@@ -76,6 +76,10 @@ src: $(SUBDIRS)
 
 octave-bug: octave-bug.in Makeconf octMakefile
 	@$(do-subst-config-vals)
+	chmod a+rx $@
+
+octave-config: octave-config.in Makeconf octMakefile
+	@$(do-subst-default-vals)
 	chmod a+rx $@
 
 mkoctfile: mkoctfile.in Makeconf octMakefile
@@ -107,6 +111,9 @@ install install-strip ::
 	rm -f $(bindir)/octave-bug
 	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug-$(version)
 	cd $(bindir); $(LN_S) octave-bug-$(version) octave-bug
+	rm -f $(bindir)/octave-config
+	$(INSTALL_SCRIPT) octave-config $(bindir)/octave-config-$(version)
+	cd $(bindir); $(LN_S) octave-config-$(version) octave-config
 	rm -f $(bindir)/mkoctfile
 	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile-$(version)
 	cd $(bindir); $(LN_S) mkoctfile-$(version) mkoctfile
@@ -131,7 +138,7 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile octave-bug Makeconf config.cache \
+	rm -f octMakefile octave-bug octave-config Makeconf config.cache \
 	config.h config.log config.status Makerules.f77 mk-oct-links \
 	mkoctfile Makefrag.f77
 
@@ -216,7 +223,7 @@ ARCH:
 	echo $(canonical_host_type) > ARCH
 .PHONY: ARCH
 
-binary-dist: VERSION ARCH octave-bug dist-info-files
+binary-dist: VERSION ARCH octave-bug octave-config dist-info-files
 	echo octave-$(version)-$(canonical_host_type) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`

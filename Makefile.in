@@ -6,10 +6,10 @@
 # University of Wisconsin-Madison
 # Department of Chemical Engineering
 
-TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea dlfcn \
-	readline src scripts doc check octave.info INSTALL.OCTAVE BUGS \
-	install install-strip uninstall tags TAGS dist conf-dist \
-	snapshot snapshot-version
+TARGETS = octave-bug octave-config mkoctfile libcruft liboctave \
+	kpathsea dlfcn readline src scripts doc check octave.info \
+	INSTALL.OCTAVE BUGS install install-strip uninstall \
+	tags TAGS dist conf-dist snapshot snapshot-version
 
 NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
 
@@ -85,6 +85,7 @@ help: header-msg
 	@echo "  maintainer-clean     clean up everything"
 	@echo ""
 	@echo "  octave-bug           create octave-bug script"
+	@echo "  octave-config        create octave-config script"
 	@echo "  mkoctfile            create mkoctfile script"
 	@echo "  INSTALL.OCTAVE       create INSTALL.OCTAVE doc file"
 	@echo "  BUGS                 create BUGS doc file"

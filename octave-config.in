@@ -1,0 +1,56 @@
+#! /bin/sh -
+#
+# octave-config - reports some configuration values for Octave
+#
+# Rafael Laboissiere <rafael@laboissiere.net>
+# This script is in the public domain
+
+VERSION="%OCTAVE_VERSION%"
+OCT_SITE_DIR="%OCTAVE_LOCALVEROCTFILEDIR%"
+M_SITE_DIR="%OCTAVE_LOCALVERFCNFILEDIR%"
+
+usage_msg="usage: octave-config [options]"
+
+if [ $# -eq 0 ]; then
+  echo "$usage_msg" 1>&2
+  exit 1
+fi
+
+for arg
+do
+  case "$1" in
+    -h | -\? | --help)
+      echo "$usage_msg"
+      cat << EOF
+
+Options:
+
+  -h, -?, --help      Print this message.
+
+  --m-site-dir        Print the name of the directory where Octave
+                      expects to find locally installed .m files.
+
+  --oct-site-dir      Print the name of the directory where Octave
+                      expects to find locally installed .oct files.
+
+  -v, --version       Print the Octave version number.
+
+EOF
+      exit 0
+    ;;
+    --m-site-dir)
+      echo $M_SITE_DIR
+    ;;
+    --oct-site-dir)
+      echo $OCT_SITE_DIR
+    ;;
+    -v | --version)
+      echo $VERSION
+    ;;
+    *)
+      echo "octave-config: unrecognized argument $1" 2>&1
+      exit 1
+    ;;
+  esac
+  shift
+done

@@ -86,8 +86,6 @@ Octave.\n\
 {
   octave_value retval;
 
-#if defined (HAVE_FFTW3)
-
   int nargin = args.length();
 
   if (nargin < 1 || nargin > 2)
@@ -95,6 +93,8 @@ Octave.\n\
       print_usage ("fftw_wisdom");
       return retval;
     }
+
+#if defined (HAVE_FFTW3)
 
   if (args(0).is_string ())
     {

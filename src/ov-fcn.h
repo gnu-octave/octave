@@ -86,7 +86,7 @@ public:
 
   virtual bool takes_var_return (void) const { return false; }
 
-  virtual void octave_vr_val (const octave_value& val) { }
+  virtual void octave_vr_val (const octave_value&) { }
 
   virtual bool has_varargout (void) const { return false; }
 

@@ -379,11 +379,11 @@ bool
 octave_range::save_hdf5 (hid_t loc_id, const char *name,
 			 bool /* save_as_floats */)
 {
-  hsize_t dims[3];
+  hsize_t dimens[3];
   hid_t space_hid = -1, type_hid = -1, data_hid = -1;
   bool retval = true;
 
-  space_hid = H5Screate_simple (0, dims, (hsize_t*) 0);
+  space_hid = H5Screate_simple (0, dimens, (hsize_t*) 0);
   if (space_hid < 0) return false;
 
   type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);

@@ -873,7 +873,7 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
 
   hdf5_callback_data dsub;
 
-  herr_t retval2;
+  herr_t retval2 = 0;
   Octave_map m;
   int current_item = 0;
 #ifdef HAVE_H5GGET_NUM_OBJS

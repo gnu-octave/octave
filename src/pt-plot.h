@@ -185,9 +185,9 @@ class
 subplot_list : public SLList<subplot *>, public tree_print_code
 {
  public:
-  subplot_list (void) : SLList<subplot *> () { }
+  subplot_list (void) : SLList<subplot *> (), tree_print_code () { }
 
-  subplot_list (subplot *t) : SLList<subplot *> ()
+  subplot_list (subplot *t) : SLList<subplot *> (), tree_print_code ()
     { append (t); }
 
   ~subplot_list (void)

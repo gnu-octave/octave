@@ -96,9 +96,12 @@ class
 tree_statement_list : public SLList<tree_statement *>, public tree_print_code
 {
 public:
-  tree_statement_list (void) : SLList<tree_statement *> () { }
-  tree_statement_list (tree_statement *s) : SLList<tree_statement *> ()
-    { append (s); }
+  tree_statement_list (void)
+    : SLList<tree_statement *> (), tree_print_code () { }
+
+  tree_statement_list (tree_statement *s)
+    : SLList<tree_statement *> (), tree_print_code ()
+      { append (s); }
 
   ~tree_statement_list (void)
     {
@@ -123,9 +126,12 @@ class
 tree_argument_list : public SLList<tree_expression *>, public tree_print_code
 {
 public:
-  tree_argument_list (void) : SLList<tree_expression *> () { }
-  tree_argument_list (tree_expression *t) : SLList<tree_expression *> ()
-    { append (t); }
+  tree_argument_list (void)
+    : SLList<tree_expression *> (), tree_print_code () { }
+
+  tree_argument_list (tree_expression *t)
+    : SLList<tree_expression *> (), tree_print_code ()
+      { append (t); }
 
   ~tree_argument_list (void)
     {
@@ -149,14 +155,16 @@ class
 tree_parameter_list : public SLList<tree_identifier *>, public tree_print_code
 {
 public:
-  tree_parameter_list (void) : SLList<tree_identifier *> ()
-    { marked_for_varargs = 0; }
+  tree_parameter_list (void)
+    : SLList<tree_identifier *> (), tree_print_code ()
+      { marked_for_varargs = 0; }
 
-  tree_parameter_list (tree_identifier *t) : SLList<tree_identifier *> ()
-    {
-      marked_for_varargs = 0;
-      append (t);
-    }
+  tree_parameter_list (tree_identifier *t)
+    : SLList<tree_identifier *> (), tree_print_code ()
+      {
+	marked_for_varargs = 0;
+	append (t);
+      }
 
   ~tree_parameter_list (void)
     {
@@ -205,9 +213,11 @@ tree_return_list : public SLList<tree_index_expression *>,
   public tree_print_code 
 {
 public:
-  tree_return_list (void) : SLList<tree_index_expression *> () { }
+  tree_return_list (void)
+    : SLList<tree_index_expression *> (), tree_print_code () { }
+
   tree_return_list (tree_index_expression *t)
-    : SLList<tree_index_expression *> ()
+    : SLList<tree_index_expression *> (), tree_print_code ()
       { append (t); }
 
   ~tree_return_list (void)
@@ -272,9 +282,12 @@ class
 tree_global_init_list : public SLList<tree_global *>, public tree_print_code
 {
 public:
-  tree_global_init_list (void) : SLList<tree_global *> () { }
-  tree_global_init_list (tree_global *t) : SLList<tree_global *> ()
-    { append (t); }
+  tree_global_init_list (void)
+    : SLList<tree_global *> (), tree_print_code () { }
+
+  tree_global_init_list (tree_global *t)
+    : SLList<tree_global *> (), tree_print_code ()
+      { append (t); }
 
   ~tree_global_init_list (void)
     {
@@ -333,9 +346,12 @@ class
 tree_if_command_list : public SLList<tree_if_clause *>, public tree_print_code
 {
 public:
-  tree_if_command_list (void) : SLList<tree_if_clause *> () { }
-  tree_if_command_list (tree_if_clause *t) : SLList<tree_if_clause *> ()
-    { append (t); }
+  tree_if_command_list (void)
+    : SLList<tree_if_clause *> (), tree_print_code () { }
+
+  tree_if_command_list (tree_if_clause *t)
+    : SLList<tree_if_clause *> (), tree_print_code ()
+      { append (t); }
 
   ~tree_if_command_list (void)
     {

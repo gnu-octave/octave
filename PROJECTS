@@ -97,6 +97,8 @@ Numerical:
     columns as M, then either w .* M or M .* w scales the columns of
     M.
 
+  * Add support for +=, -=, etc.
+
   * Given two vectors x and y of length m and n, implement a function
     outer (x, y, f) that returns an m-by-n matrix with entries
     f (x(i), y(j)).  If f is omitted, multiplication is the default.
@@ -515,6 +517,12 @@ Documentation and On-Line Help:
     though I wouldn't mind adding some basic support for listing the
     names of all the directories in the LOADPATH, and the names of all
     the M-files in a given directory if that is needed.
+
+    Also make it possible to recursively search for Contents files:
+
+      help dir        -- Contents from dir
+      help dir//      -- Contents from dir and all its subdirectories
+      help dir1/dir2  -- Contents from dir2 which is under dir1
 
   * Some sort of blurb (2-3 pages) describing Octave in a reasonably
     coherent way, where to get it etc., perhaps formatted pretty,

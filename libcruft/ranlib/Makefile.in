@@ -15,7 +15,7 @@ VPATH = @srcdir@
 SPECIAL = README ranlib.chs ranlib.fdoc tstbot.for tstgmn.for \
 	tstmid.for
 
-EXTERNAL_DISTFILES = $(DISTFILES)
+EXTERNAL_DISTFILES = $(DISTFILES) Basegen.doc
 
 include $(TOPDIR)/Makeconf
 

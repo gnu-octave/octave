@@ -112,7 +112,8 @@ ifeq ($(SHARED_LIBS), true)
 endif
 
 DISTFILES = $(CSOURCES) $(HSOURCES) Makefile.in configure.in \
-	configure README STANDALONE COPYING config.h.in
+	configure README STANDALONE COPYING config.h.in \
+	config.guess config.sub ChangeLog
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = $(SH_LIBS_TO_INSTALL)

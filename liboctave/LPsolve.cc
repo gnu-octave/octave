@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 
 Vector
-LPsolve::minimize (double& objf, int& inform, Vector& lambda)
+LPsolve::minimize (double&, int&, Vector&)
 {
   return Vector ();
 }

@@ -198,8 +198,7 @@ DAE::initialize (const Vector& state, const Vector& deriv, double time)
 
 int
 ddassl_f (const double& time, double *state, double *deriv,
-	  double *delta, int& ires, double *rpar UNUSED,
-	  int *ipar UNUSED)
+	  double *delta, int& ires, double *, int *)
 {
   Vector tmp_deriv (nn);
   Vector tmp_state (nn);
@@ -225,9 +224,8 @@ ddassl_f (const double& time, double *state, double *deriv,
 }
 
 int
-ddassl_j (const double& time, double *state UNUSED,
-	  double *deriv UNUSED, double *pd, const double& cj,
-	  double *rpar UNUSED, int *ipar UNUSED) 
+ddassl_j (const double& time, double *, double *, double *pd, const
+	  double& cj, double *, int *)
 {
   Vector tmp_state (nn);
   Vector tmp_deriv (nn);

@@ -156,7 +156,7 @@ ODE::~ODE (void)
 }
 
 int
-lsode_f (const int& neq, const double& time, double *state,
+lsode_f (const int& neq, const double& time, double *,
 	 double *deriv, int& ierr) 
 {
   ColumnVector tmp_deriv (neq);
@@ -179,8 +179,8 @@ lsode_f (const int& neq, const double& time, double *state,
 }
 
 int
-lsode_j (const int& neq, const double& time, double *state,
-	 const int& ml, const int& mu, double *pd, const int& nrowpd)
+lsode_j (const int& neq, const double& time, double *,
+	 const int&, const int&, double *pd, const int& nrowpd)
 {
   Matrix tmp_jac (neq, neq);
 

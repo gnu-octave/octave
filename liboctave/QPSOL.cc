@@ -57,7 +57,7 @@ extern "C"
 }
 
 int
-qphess (const int& n, const int& nrowh, const int& ncolh,
+qphess (const int& n, const int& nrowh, const int&,
 	const int& jthcol, double *hess, double *x, double *hx)
 {
   if (jthcol > 0)

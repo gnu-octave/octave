@@ -71,7 +71,7 @@ static jacobian_fcn user_jac;
 
 int
 npsol_objfun (int& mode, const int& n, double *xx, double *objf,
-	      double *objgrd, int* nstate)
+	      double *objgrd, int *)
 {
   Vector tmp_x (n);
 
@@ -117,8 +117,8 @@ npsol_objfun (int& mode, const int& n, double *xx, double *objf,
 
 int
 npsol_confun (int& mode, const int& ncnln, const int& n,
-	      const int& nrowj, int* needc, double *xx,
-	      double *cons, double *cjac, int* nstate) 
+	      const int& nrowj, int *, double *xx, double *cons,
+	      double *cjac, int *)
 {
   Vector tmp_x (n);
   Vector tmp_c (ncnln);
@@ -361,7 +361,7 @@ NPSOL::minimize (const Vector& xnew, double& objf, int& inform, Vector& lambda)
 }
 
 NPSOL&
-NPSOL::option (char *s)
+NPSOL::option (char *)
 {
   cerr << "This function no longer has any effect.\n"
        << "Use the NPSOL_option class instead\n";

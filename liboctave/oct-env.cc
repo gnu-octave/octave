@@ -216,7 +216,7 @@ octave_env::do_polite_directory_format (const std::string& name) const
 
   size_t len = home_dir.length ();
 
-  if (len > 1 && home_dir.compare (name, 0, len) == 0
+  if (len > 1 && home_dir == name.substr (0, len)
       && (name.length () == len || name[len] == '/'))
     {
       retval = "~";

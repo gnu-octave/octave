@@ -1034,7 +1034,7 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 }
 
 ComplexMatrix
-ComplexMatrix::pseudo_inverse (double tol)
+ComplexMatrix::pseudo_inverse (double tol) const
 {
   ComplexMatrix retval;
 

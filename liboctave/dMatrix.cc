@@ -701,7 +701,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 }
 
 Matrix
-Matrix::pseudo_inverse (double tol)
+Matrix::pseudo_inverse (double tol) const
 {
   SVD result (*this, SVD::economy);
 

@@ -1,3 +1,8 @@
+2003-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::pseudo_inverse): Now const.
+	* CMatrix.cc (ComplexMatrix::pseudo_inverse): Likewise.
+
 2003-04-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* getopt.c, getopt1.c, getopt.h: Move here from kpathsea.

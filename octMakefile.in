@@ -31,7 +31,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = glob kpathsea readline # plplot
+DISTDIRS = glob kpathsea # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ @GLOB_DIR@ \
@@ -46,7 +46,7 @@ INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = $(sort $(ALL_SUBDIRS) readline dlfcn glob kpathsea test emacs)
+DISTSUBDIRS = $(sort $(ALL_SUBDIRS) dlfcn glob kpathsea test emacs)
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	PROJECTS README README.Linux README.Windows README.MachTen \
@@ -60,7 +60,7 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
 
 # Subdirectories in which to run clean targets.
-CLEANSUBDIRS = $(DISTSUBDIRS) @READLINE_DIR@ @GLOB_DIR@ kpathsea
+CLEANSUBDIRS = $(DISTSUBDIRS) @GLOB_DIR@ kpathsea
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(octfiledir) $(archlibdir) $(localarchlibdir) \
@@ -162,10 +162,9 @@ dist: dist-info-files
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
 	  -o -name klibtool.config -o -name stamp-auto \
 	  -o -name c-auto.h \) -print | xargs rm -rf
-	find `cat .fname`/readline `cat .fname`/kpathsea `cat .fname`/glob \
+	find `cat .fname`/kpathsea `cat .fname`/glob 
 	  -name Makefile | xargs rm -f
-	find `cat .fname`/readline `cat .fname`/info `cat .fname`/glob \
-	  -name config.h | xargs rm -f
+	find `cat .fname`/info `cat .fname`/glob -name config.h | xargs rm -f
 	rm -f `cat .fname`/test/octave.test/*.m
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`

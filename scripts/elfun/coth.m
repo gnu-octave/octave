@@ -27,6 +27,6 @@ function w = coth (z)
     usage ("coth (z)");
   endif
 
-  w = cosh (x) ./ sinh (x);
+  w = cosh (z) ./ sinh (z);
 
 endfunction

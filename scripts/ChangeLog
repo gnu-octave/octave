@@ -1,3 +1,7 @@
+2005-01-25  Daniel J Sebald  <daniel.sebald@ieee.org>.
+
+	* plot/__plt__.m: Initialize fmt and sep outside of loop.
+
 2005-01-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/__plr__.m, plot/__plr2__.m: Pass name of caller to __plt__.

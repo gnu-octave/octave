@@ -37,18 +37,17 @@ function __plt__ (caller, varargin)
     y_set = 0;
     gp_cmd = "gplot";
     have_gp_cmd = false;
+    fmt = "";
+    sep = "";
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
     while (nargs-- > 0)
 
-      fmt = "";
       new = varargin{k++};
 
       if (j > 1)
 	sep = ",\\\n";
-      else
-	sep = "";
       endif
 
       if (isstr (new))

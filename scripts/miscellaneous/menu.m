@@ -1,11 +1,11 @@
-function s = menu (t,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16)
+function s = menu (t, ...)
 
-# usage: menu (title, opt1, opt2, ..., opt16)
+# usage: menu (title, opt1, ...)
 #
 # See also: disp, printf, input
 
-  if (nargin < 2 || nargin > 17)
-    error ("usage: menu (title, opt1, opt2, ..., opt16)");
+  if (nargin < 2)
+    error ("usage: menu (title, opt1, ...)");
   endif
 
 # Force pending output to appear before the menu.
@@ -28,9 +28,10 @@ function s = menu (t,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16)
   s = 0;
   while (1)
     page_screen_output = "false";
+    va_start ();
     for i = 1:nopt
-      command = sprintf ("printf (\"  [%2d] \"); disp (x%d)", i, i);
-      eval (command);
+      printf ("  [%2d] ", i);
+      disp (va_arg ());
     endfor
     printf ("\n");
     page_screen_output = save_page_screen_output;

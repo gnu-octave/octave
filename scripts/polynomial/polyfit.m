@@ -51,19 +51,9 @@ function [p, yf] = polyfit (x, y, n)
   x = reshape (x, l, 1);
   y = reshape (y, l, 1);
 
-  ## Unfortunately, the economy QR factorization doesn't really save
-  ## memory doing the computation -- the returned values are just
-  ## smaller.
-
-  ## [Q, R] = qr (X, 0);
-  ## p = flipud (R \ (Q' * y));
-
-  ## XXX FIXME XXX -- this is probably not so good for extreme values of
-  ## N or X...
-
   X = (x * ones (1, n+1)) .^ (ones (l, 1) * (0 : n));
 
-  p = (X' * X) \ (X' * y);
+  p = X \ y;
 
   if (nargout == 2)
     yf = X * p;

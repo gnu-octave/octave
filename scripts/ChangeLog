@@ -1,3 +1,8 @@
+Mon Oct 19 17:26:35 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Just use the \ operator to handle the
+	least-squares solution.
+
 Thu Sep  3 12:40:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/str2num.m: If eval returns a string, return an empty matrix.

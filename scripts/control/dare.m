@@ -53,13 +53,13 @@ function x = dare (a, b, c, r, opt)
     endif
 
     if (is_controllable (a, b) == 0)
-      fprintf ("warning: dare: a,b are not controllable");
+      fprintf (stderr, "warning: dare: a,b are not controllable");
     endif
 
 # Check a,c compatibility.
 
     if (is_observable (a, c) == 0)
-      fprintf (stderr "warning: dare: a,c are not observable");
+      fprintf (stderr, "warning: dare: a,c are not observable");
     endif
 
     if ((p = is_square (c)) == 0)
@@ -74,7 +74,7 @@ function x = dare (a, b, c, r, opt)
 # Check r dimensions.
 
     if ((m1 = is_square (r)) == 0)
-      fprintf("warning: dare: r is not square");
+      fprintf(stderr, "warning: dare: r is not square");
     elseif (m1 != m)
       fprintf(stderr, "warning: b,r are not conformable");
     endif

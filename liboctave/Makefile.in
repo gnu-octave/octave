@@ -14,20 +14,33 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
+MATRIX_INC = CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h \
+	CmplxAEPBAL.h CmplxCHOL.h CmplxColVec.h CmplxDET.h CmplxHESS.h \
+	CmplxLU.h CmplxQR.h CmplxSCHUR.h CmplxSVD.h EIG.h dColVector.h \
+	dDiagMatrix.h dMatrix.h dRowVector.h dbleAEPBAL.h dbleCHOL.h \
+	dbleDET.h dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h \
+	dbleSCHUR.h dbleSVD.h
+
 INCLUDES = Array.h Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h \
 	FSQP.h LinConst.h LP.h LPsolve.h MArray.h Matrix.h NLConst.h \
 	NLEqn.h NLFunc.h NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h \
 	QLD.h QP.h QPSOL.h Quad.h Range.h mx-kludge.h lo-error.h \
-	f77-uscore.h sun-utils.h
+	f77-uscore.h sun-utils.h $(MATRIX_INC) 
 
 TEMPLATE_SRC = Array.cc
 
-SOURCES = $(TEMPLATE_SRC) Bounds.cc ColVector.cc CollocWt.cc DAE.cc \
-	DAEFunc.cc DiagMatrix.cc FEGrid.cc FSQP.cc LinConst.cc LP.cc \
-	LPsolve.cc Matrix-ext.cc Matrix.cc NLConst.cc NLEqn.cc \
-	NLFunc.cc NPSOL.cc Objective.cc ODE.cc ODEFunc.cc QLD.cc \
-	QP.cc QPSOL.cc Quad.cc Range.cc RowVector.cc lo-error.cc \
-	sun-utils.cc
+MATRIX_SRC = CColVector.cc CDiagMatrix.cc CMatrix.cc CRowVector.cc \
+	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc CmplxLU.cc \
+	CmplxQR.cc CmplxSCHUR.cc CmplxSVD.cc EIG.cc dColVector.cc \
+	dDiagMatrix.cc dMatrix.cc dRowVector.cc dbleAEPBAL.cc \
+	dbleCHOL.cc dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc \
+	dbleQR.cc dbleSCHUR.cc dbleSVD.cc
+
+SOURCES = Bounds.cc CollocWt.cc DAE.cc DAEFunc.cc FEGrid.cc FSQP.cc \
+	LinConst.cc LP.cc LPsolve.cc NLConst.cc NLEqn.cc NLFunc.cc \
+	NPSOL.cc Objective.cc ODE.cc ODEFunc.cc QLD.cc QP.cc QPSOL.cc \
+	Quad.cc Range.cc lo-error.cc sun-utils.cc $(TEMPLATE_SRC) \
+	$(MATRIX_SRC)
 
 EXTRAS = MArray.cc mx-kludge.cc mx-inlines.cc
 

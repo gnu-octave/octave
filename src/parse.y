@@ -1251,7 +1251,8 @@ function_end	: END
 		  }
 		| END_OF_INPUT
 		  {
-		    if (! (reading_fcn_file || reading_script_file))
+		    if (! (reading_fcn_file || reading_script_file
+			   || get_input_from_eval_string))
 		      YYABORT;
 		  }
 		;

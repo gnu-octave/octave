@@ -288,6 +288,13 @@ decode_prompt_string (const string& s)
 	      {
 		temp = Vhost_name;
 
+		goto add_string;
+	      }
+
+	    case 'H':
+	      {
+		temp = Vhost_name;
+
 		size_t pos = temp.find ('.');
 
 		if (pos != NPOS)

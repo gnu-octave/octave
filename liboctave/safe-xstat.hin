@@ -20,6 +20,10 @@
 #ifndef _safe_@l@stat_h_
 #define _safe_@l@stat_h_ 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* NOTE: you must include the following headers (in the listed order)
    before this one: <sys/types.h>, <sys/stat.h>.  */
 
@@ -68,4 +72,9 @@ safe_@l@stat (name, buf)
 #endif
 
 #endif /* S_ISLNK */						@LSTAT_ONLY@
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* _safe_@l@stat_h_ */

@@ -427,7 +427,6 @@ public:
   int is_identifier (void) const;
 
   char *name (void) const;
-  void rename (const char *n);
 
   tree_identifier *define (tree_constant *t);
   tree_identifier *define (tree_function *t);
@@ -441,9 +440,9 @@ public:
 
   void bump_value (tree::expression_type);
 
-  int parse_fcn_file (int exec_script = 1);
-  int parse_fcn_file (char *ff, int exec_script = 1);
-  void parse_fcn_file (FILE *ffile, char *ff);
+  int load_fcn_from_file (int exec_script = 1);
+
+  int parse_fcn_file (int exec_script = 1, char *ff = 0);
 
   tree_fvc *do_lookup (int& script_file_executed);
 

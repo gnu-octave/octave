@@ -136,7 +136,7 @@ public:
   char *help (void) const; 
   tree_fvc *def (void) const;
 
-  void rename (const char *n);
+  void rename (const char *new_name);
 
   int is_function (void) const;
   int is_user_function (void) const;
@@ -298,6 +298,8 @@ public:
   symbol_table (void);
 
   symbol_record *lookup (const char *nm, int insert = 0, int warn = 0);
+
+  void rename (const char *old_name, const char *new_name);
 
   void clear (int clear_user_functions = 1);
   int clear (const char *nm, int clear_user_functions = 1);

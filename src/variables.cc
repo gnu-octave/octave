@@ -677,13 +677,13 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
   if (sr && symbol_out_of_date (sr))
     {
       tree_identifier tmp (sr);
-      tmp.parse_fcn_file (0);
+      tmp.load_fcn_from_file (0);
     }
   else
     {
       sr = global_sym_tab->lookup (fcn_name, 1, 0);
       tree_identifier tmp (sr);
-      tmp.parse_fcn_file (0);
+      tmp.load_fcn_from_file (0);
     }
 
   ans = sr->def ();

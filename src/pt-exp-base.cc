@@ -746,12 +746,6 @@ tree_identifier::name (void) const
   return sym->name ();
 }
 
-void
-tree_identifier::rename (const char *n)
-{
-  sym->rename (n);
-}
-
 tree_identifier *
 tree_identifier::define (tree_constant *t)
 {
@@ -875,20 +869,6 @@ tree_identifier::bump_value (tree::expression_type etype)
     }
 }
 
-int
-tree_identifier::parse_fcn_file (int exec_script)
-{
-  curr_fcn_file_name = name ();
-  char *ff = fcn_file_in_path (curr_fcn_file_name);
-  int script_file_executed = parse_fcn_file (ff, exec_script);
-  delete [] ff;
-
-  if (! (error_state || script_file_executed))
-    force_link_to_function (name ());
-
-  return script_file_executed;
-}
-
 static void
 gobble_leading_white_space (FILE *ffile)
 {
@@ -938,98 +918,129 @@ is_function_file (FILE *ffile)
 }
 
 int
-tree_identifier::parse_fcn_file (char *ff, int exec_script)
+tree_identifier::load_fcn_from_file (int exec_script)
 {
-  begin_unwind_frame ("parse_fcn_file");
-
   int script_file_executed = 0;
 
-  if (ff)
+  curr_fcn_file_name = name ();
+
+  char *oct_file = oct_file_in_path (curr_fcn_file_name);
+
+  int loaded_oct_file = 0;
+
+  if (oct_file)
     {
-// Open function file and parse.
+      cerr << "found: " << oct_file << "\n";
 
-      int old_reading_fcn_file_state = reading_fcn_file;
+      delete [] oct_file;
 
-      unwind_protect_ptr (rl_instream);
-      unwind_protect_ptr (ff_instream);
+// XXX FIXME XXX -- this is where we try to link to an external
+// object...
+      loaded_oct_file = 1;
+    }
 
-      unwind_protect_int (using_readline);
-      unwind_protect_int (input_line_number);
-      unwind_protect_int (current_input_column);
-      unwind_protect_int (reading_fcn_file);
+  if (! loaded_oct_file)
+    {
+      char *ff = fcn_file_in_path (curr_fcn_file_name);
 
-      using_readline = 0;
-      reading_fcn_file = 1;
-      input_line_number = 0;
-      current_input_column = 1;
-
-      FILE *ffile = get_input_from_file (ff, 0);
-
-      if (ffile)
+      if (ff)
 	{
-// Check to see if this file defines a function or is just a list of
-// commands.
-
-	  if (is_function_file (ffile))
-	    {
-	      parse_fcn_file (ffile, ff);
-	    }
-	  else if (exec_script)
-	    {
-// The value of `reading_fcn_file' will be restored to the proper value
-// when we unwind from this frame.
-	      reading_fcn_file = old_reading_fcn_file_state;
-
-	      unwind_protect_int (reading_script_file);
-	      reading_script_file = 1;
-
-	      parse_and_execute (ffile, 1);
-
-	      script_file_executed = 1;
-	    }
-	  fclose (ffile);
+	  script_file_executed = parse_fcn_file (exec_script, ff);
+	  delete [] ff;
 	}
 
-      run_unwind_frame ("parse_fcn_file");
+      if (! (error_state || script_file_executed))
+	{
+	  char *foo = name ();
+	  force_link_to_function (foo);
+	}
     }
 
   return script_file_executed;
 }
 
-void
-tree_identifier::parse_fcn_file (FILE *ffile, char *ff)
+int
+tree_identifier::parse_fcn_file (int exec_script, char *ff)
 {
-  begin_unwind_frame ("parse_fcn_file_2");
+  begin_unwind_frame ("parse_fcn_file");
 
-  unwind_protect_int (echo_input);
-  unwind_protect_int (saving_history);
+  int script_file_executed = 0;
+
+  assert (ff);
+
+// Open function file and parse.
+
+  int old_reading_fcn_file_state = reading_fcn_file;
+
+  unwind_protect_ptr (rl_instream);
+  unwind_protect_ptr (ff_instream);
+
+  unwind_protect_int (using_readline);
+  unwind_protect_int (input_line_number);
+  unwind_protect_int (current_input_column);
   unwind_protect_int (reading_fcn_file);
 
-  echo_input = 0;
-  saving_history = 0;
+  using_readline = 0;
   reading_fcn_file = 1;
+  input_line_number = 0;
+  current_input_column = 1;
 
-  YY_BUFFER_STATE old_buf = current_buffer ();
-  YY_BUFFER_STATE new_buf = create_buffer (ffile);
+  FILE *ffile = get_input_from_file (ff, 0);
 
-  add_unwind_protect (restore_input_buffer, (void *) old_buf);
-  add_unwind_protect (delete_input_buffer, (void *) new_buf);
-
-  switch_to_buffer (new_buf);
-
-  unwind_protect_ptr (curr_sym_tab);
-
-  reset_parser ();
-
-  int status = yyparse ();
-
-  if (status != 0)
+  if (ffile)
     {
-      ::error ("parse error while reading function file %s", ff);
-      global_sym_tab->clear (curr_fcn_file_name);
+// Check to see if this file defines a function or is just a list of
+// commands.
+
+      if (is_function_file (ffile))
+	{
+	  unwind_protect_int (echo_input);
+	  unwind_protect_int (saving_history);
+	  unwind_protect_int (reading_fcn_file);
+
+	  echo_input = 0;
+	  saving_history = 0;
+	  reading_fcn_file = 1;
+
+	  YY_BUFFER_STATE old_buf = current_buffer ();
+	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
+
+	  add_unwind_protect (restore_input_buffer, (void *) old_buf);
+	  add_unwind_protect (delete_input_buffer, (void *) new_buf);
+
+	  switch_to_buffer (new_buf);
+
+	  unwind_protect_ptr (curr_sym_tab);
+
+	  reset_parser ();
+
+	  int status = yyparse ();
+
+	  if (status != 0)
+	    {
+	      ::error ("parse error while reading function file %s", ff);
+	      global_sym_tab->clear (curr_fcn_file_name);
+	    }
+	}
+      else if (exec_script)
+	{
+// The value of `reading_fcn_file' will be restored to the proper value
+// when we unwind from this frame.
+	  reading_fcn_file = old_reading_fcn_file_state;
+
+	  unwind_protect_int (reading_script_file);
+	  reading_script_file = 1;
+
+	  parse_and_execute (ffile, 1);
+
+	  script_file_executed = 1;
+	}
+      fclose (ffile);
     }
 
-  run_unwind_frame ("parse_fcn_file_2");
+  run_unwind_frame ("parse_fcn_file");
+
+  return script_file_executed;
 }
 
 void
@@ -1048,7 +1059,7 @@ tree_identifier::eval_undefined_error (void)
  * Try to find a definition for an identifier.  Here's how:
  *
  *   * If the identifier is already defined and is a function defined
- *     in an function file that has been modified since the last time
+ *     in an function file that has been modified since the last time 
  *     we parsed it, parse it again.
  *
  *   * If the identifier is not defined, try to find a builtin
@@ -1056,6 +1067,9 @@ tree_identifier::eval_undefined_error (void)
  *
  *   * If the identifier is still undefined, try looking for an
  *     function file to parse.
+ *
+ *   * On systems that support dynamic linking, we prefer .oct files
+ *     over .m files.
  */
 tree_fvc *
 tree_identifier::do_lookup (int& script_file_executed)
@@ -1068,7 +1082,7 @@ tree_identifier::do_lookup (int& script_file_executed)
 	{
 	  if (sym->is_function () && symbol_out_of_date (sym))
 	    {
-	      script_file_executed = parse_fcn_file ();
+	      script_file_executed = load_fcn_from_file ();
 	    }
 	}
       else if (! sym->is_formal_parameter ())
@@ -1077,11 +1091,11 @@ tree_identifier::do_lookup (int& script_file_executed)
 	  
 	  if (! sym->is_defined ())
 	    {
-	      script_file_executed = parse_fcn_file ();
+	      script_file_executed = load_fcn_from_file ();
 	    }
 	  else if (sym->is_function () && symbol_out_of_date (sym))
 	    {
-	      script_file_executed = parse_fcn_file ();
+	      script_file_executed = load_fcn_from_file ();
 	    }
 	}
     }

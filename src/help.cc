@@ -609,7 +609,7 @@ print cryptic yet witty messages")
 		  if (sym_rec)
 		    {
 		      tree_identifier tmp (sym_rec);
-		      tmp.parse_fcn_file (0);
+		      tmp.load_fcn_from_file (0);
 		      char *h = sym_rec->help ();
 		      if (h && *h)
 			{

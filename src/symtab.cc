@@ -257,17 +257,17 @@ symbol_record::help (void) const
   return definition ? definition->help () : 0;
 }
 
-void
-symbol_record::rename (const char *n)
-{
-  delete [] nm;
-  nm = strsave (n);
-}
-
 tree_fvc *
 symbol_record::def (void) const
 {
   return definition ? definition->def () : 0;
+}
+
+void
+symbol_record::rename (const char *new_name)
+{
+  delete [] nm;
+  nm = strsave (new_name);
 }
 
 int
@@ -916,6 +916,34 @@ symbol_table::lookup (const char *nm, int insert, int warn)
     warning ("lookup: symbol`%s' not found", nm);
 
   return 0;
+}
+
+void
+symbol_table::rename (const char *old_name, const char *new_name)
+{
+  int index = hash (old_name) & HASH_MASK;
+
+  symbol_record *prev = &table[index];
+  symbol_record *ptr = prev->next ();
+
+  while (ptr)
+    {
+      if (strcmp (ptr->name (), old_name) == 0)
+	{
+	  prev->chain (ptr->next ());
+
+	  index = hash (new_name) & HASH_MASK;
+	  table[index].chain (ptr);
+	  ptr->rename (new_name);
+
+	  return;
+	}
+
+      prev = ptr;
+      ptr = ptr->next ();
+    }
+
+  panic_impossible ();
 }
 
 void

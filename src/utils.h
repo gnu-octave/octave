@@ -41,6 +41,7 @@ extern char *strconcat (const char *, const char *);
 extern void discard_until (istream&, char);
 extern char *file_in_path (const char *, const char *);
 extern char *fcn_file_in_path (const char *);
+extern char *oct_file_in_path (const char *);
 extern char **pathstring_to_vector (char *pathstring);
 extern void jump_to_top_level (void);
 extern int almost_match (const char *std, const char *s,

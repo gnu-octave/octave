@@ -598,6 +598,16 @@ fcn_file_in_path (const char *name)
 }
 
 /*
+ * See if there is an octave file in the path.  If so, return the
+ * full path to the file.
+ */
+char *
+oct_file_in_path (const char *name)
+{
+  return file_in_path (name, ".oct");
+}
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; page-delimiter: "^/\\*" ***

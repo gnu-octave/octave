@@ -959,7 +959,9 @@ func_def2	: identifier safe local_symtab func_def3
 			    warning ("function name `%s' does not agree\
  with function file name `%s.m'", id_name, curr_fcn_file_name);
 
-			    $1->rename (curr_fcn_file_name);
+			    global_sym_tab->rename (id_name,
+						    curr_fcn_file_name);
+
 			    id_name = $1->name ();
 			  }
 

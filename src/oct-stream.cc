@@ -25,6 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
+#include <cstdarg>
 #include <cstring>
 
 #include <iomanip>
@@ -42,6 +43,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-stream.h"
 #include "oct-obj.h"
 #include "utils.h"
+
+static istream&
+octave_scan (istream& is, const char *fmt, ...)
+{
+#if defined (__GNUG__)
+
+  va_list args;
+  va_start (args, fmt);
+
+  is.vscan (fmt, args);
+
+  va_end (args);
+
+#endif
+
+  return is;
+}
 
 // Possible values for conv_err:
 //
@@ -1012,7 +1030,7 @@ do_scanf_conv (std::istream& is, const char *fmt, T valptr, Matrix& mval,
 	       double *data, int& idx, int& conversion_count, int nr,
 	       int max_size, bool discard) 
 {
-  is.scan (fmt, valptr);
+  octave_scan (is, fmt, valptr);
 
   if (is)
     {
@@ -1126,7 +1144,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	{ \
 	  tmp = new char [width+1]; \
  \
-	  is.scan (fmt, tmp); \
+	  octave_scan (is, fmt, tmp); \
  \
 	  tmp[width] = '\0'; \
 	} \
@@ -1167,7 +1185,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	{ \
 	  tmp = new char[width+1]; \
  \
-	  is.scan (fmt, tmp); \
+	  octave_scan (is, fmt, tmp); \
  \
 	  tmp[width] = '\0'; \
 	} \
@@ -1381,7 +1399,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  {
 		    int dummy;
 
-		    is.scan (fmt, &dummy);
+		    octave_scan (is, fmt, &dummy);
 		  }
 		  break;
 
@@ -1581,7 +1599,7 @@ octave_base_stream::scanf (const std::string& fmt, const Matrix& size,
 	      {
 		is.clear ();
 
-		is.scan (elt->text);
+		octave_scan (is, elt->text);
 
 		if (! is)
 		  {
@@ -1665,7 +1683,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      {
 		int dummy;
 
-		if (! is.scan (fmt, &dummy))
+		if (! octave_scan (is, fmt, &dummy))
 		  quit = true;
 	      }
 	      break;
@@ -1674,7 +1692,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      {
 		int tmp;
 
-		if (is.scan (fmt, &tmp))
+		if (octave_scan (is, fmt, &tmp))
 		  {
 		    if (! discard)
 		      retval = static_cast<double> (tmp);
@@ -1688,7 +1706,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      {
 		double tmp;
 
-		if (is.scan (fmt, &tmp))
+		if (octave_scan (is, fmt, &tmp))
 		  {
 		    if (! discard)
 		      retval = tmp;
@@ -1800,7 +1818,7 @@ octave_base_stream::oscanf (const std::string& fmt)
 	      {
 		is.clear ();
 
-		is.scan (elt->text);
+		octave_scan (is, elt->text);
 
 		if (! is)
 		  {

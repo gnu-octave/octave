@@ -54,6 +54,9 @@ DEFUN_DLD_BUILTIN ("fft", Ffft, Sfft, 3, 1,
   tree_constant arg = args(0);
 
   int n_points = arg.rows ();
+  if (n_points == 1)
+    n_points = arg.columns ();
+
   if (nargin == 2)
     n_points = NINT (args(1).double_value ());
 

@@ -1,5 +1,3 @@
-@c DO NOT EDIT!  Generated automatically by munge-texi.
-
 @c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
@@ -7,19 +5,17 @@
 @node Quaternions, System Utilities, Audio Processing, Top
 @chapter Quaternions
 
-Quaternions are hypercomplex numbers
-used to represent spatial rotations in three dimensions.
-This set of routines provides a useful basis for working with quaternions
-in Octave.  A tutorial is in the Octave source, 
-scripts/quaternion/quaternion.ps.
+Quaternions are hypercomplex numbers used to represent spatial
+rotations in three dimensions.  This set of routines provides a useful
+basis for working with quaternions in Octave.  A tutorial is in the
+Octave source, scripts/quaternion/quaternion.ps.
 
-A. S. Hodel, Associate Professor, Auburn University.
+These functions were written by A. S. Hodel, Associate Professor,
+Auburn University.
 
-@DOCSTRING(demoquat)
+@DOCSTRING(quaternion)
 
 @DOCSTRING(qconj)
-
-@DOCSTRING(qccordinate_plot)
 
 @DOCSTRING(qderiv)
 
@@ -35,5 +31,4 @@ A. S. Hodel, Associate Professor, Auburn University.
 
 @DOCSTRING(qtransvmat)
 
-@DOCSTRING(quaternion)
-
+@DOCSTRING(qcoordinate_plot)

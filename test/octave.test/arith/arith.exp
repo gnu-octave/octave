@@ -80,6 +80,10 @@ set test exp-4
 set prog_output "error:.*"
 do_test exp-4.m
 
+set test exp-5
+set prog_output "ans = 1"
+do_test exp-5.m
+
 set test fix-1
 set prog_output "ans = 1"
 do_test fix-1.m

@@ -1,1 +1,1 @@
-strcmp (date (), strftime ("%d-%b-%y", localtime (time ())))
+strcmp (date (), strftime ("%d-%b-%Y", localtime (time ())))

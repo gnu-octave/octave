@@ -1,3 +1,13 @@
+Fri Oct 23 15:53:01 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/arith/exp-5.m: New test.
+
+	* octave.test/stats/mean-3.m: New version of mean accepts a second
+	optional arg.
+
+	* octave.test/system/date-1.m: Correct test for new Y2K-compliant
+	date function.
+
 Wed May 27 00:38:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/diffeq/dassl-1.m, octave.test/diffeq/dassl-2.m,

@@ -41,8 +41,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
-// This file could probably be condensed quite a bit by an appropriate
-// amount of C preprocessor abuse.
+// XXX FIXME XXX -- it would be nice to share code among the min/max
+// functions below.
 
 static Matrix
 min (double d, const Matrix& m)
@@ -91,14 +91,16 @@ min (const Complex& c, const ComplexMatrix& m)
   double abs_c = abs (c);
 
   for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double abs_m_elem = abs (m.elem (i, j));
-	if (abs_c < abs_m_elem)
-	  result.elem (i, j) = c;
-	else
-	  result.elem (i, j) = m.elem (i, j);
-      }
+    {
+      for (int i = 0; i < nr; i++)
+	{
+	  double abs_m_elem = abs (m.elem (i, j));
+	  if (abs_c < abs_m_elem)
+	    result.elem (i, j) = c;
+	  else
+	    result.elem (i, j) = m.elem (i, j);
+	}
+    }
 
   return result;
 }
@@ -164,15 +166,40 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double abs_a_elem = abs (a.elem (i, j));
-	double abs_b_elem = abs (b.elem (i, j));
-	if (abs_a_elem < abs_b_elem)
-	  result.elem (i, j) = a.elem (i, j);
-	else
-	  result.elem (i, j) = b.elem (i, j);
-      }
+    {
+      int columns_are_real_only = 1;
+      for (int i = 0; i < nr; i++)
+	if (imag (a.elem (i, j)) != 0.0 && imag (b.elem (i, j)) != 0.0)
+	  {
+	    columns_are_real_only = 0;
+	    break;
+	  }
+
+      if (columns_are_real_only)
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double a_elem = real (a.elem (i, j));
+	      double b_elem = real (b.elem (i, j));
+	      if (a_elem < b_elem)
+		result.elem (i, j) = a_elem;
+	      else
+		result.elem (i, j) = b_elem;
+	    }
+	}
+      else
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double abs_a_elem = abs (a.elem (i, j));
+	      double abs_b_elem = abs (b.elem (i, j));
+	      if (abs_a_elem < abs_b_elem)
+		result.elem (i, j) = a.elem (i, j);
+	      else
+		result.elem (i, j) = b.elem (i, j);
+	    }
+	}
+    }
 
   return result;
 }
@@ -297,15 +324,40 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double abs_a_elem = abs (a.elem (i, j));
-	double abs_b_elem = abs (b.elem (i, j));
-	if (abs_a_elem > abs_b_elem)
-	  result.elem (i, j) = a.elem (i, j);
-	else
-	  result.elem (i, j) = b.elem (i, j);
-      }
+    {
+      int columns_are_real_only = 1;
+      for (int i = 0; i < nr; i++)
+	if (imag (a.elem (i, j)) != 0.0 && imag (b.elem (i, j)) != 0.0)
+	  {
+	    columns_are_real_only = 0;
+	    break;
+	  }
+
+      if (columns_are_real_only)
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double a_elem = real (a.elem (i, j));
+	      double b_elem = real (b.elem (i, j));
+	      if (a_elem > b_elem)
+		result.elem (i, j) = a_elem;
+	      else
+		result.elem (i, j) = b_elem;
+	    }
+	}
+      else
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double abs_a_elem = abs (a.elem (i, j));
+	      double abs_b_elem = abs (b.elem (i, j));
+	      if (abs_a_elem > abs_b_elem)
+		result.elem (i, j) = a.elem (i, j);
+	      else
+		result.elem (i, j) = b.elem (i, j);
+	    }
+	}
+    }
 
   return result;
 }

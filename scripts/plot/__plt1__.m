@@ -32,7 +32,7 @@ function plot_int_1 (x1, fmt)
 
   [nr, nc] = size (x1);
   if (nr == 1)
-    x1 = x1';
+    x1 = x1.';
     tmp = nr;
     nr = nc;
     nc = tmp;

@@ -558,14 +558,12 @@ subplot_style::print_code (ostream& os)
     {
       os << " ";
       linetype->print_code (os);
-      os << " ";
     }
 
   if (pointtype)
     {
       os << " ";
       pointtype->print_code (os);
-      os << " ";
     }
 }
 
@@ -664,7 +662,10 @@ void
 subplot::print_code (ostream& os)
 {
   if (plot_data)
-    plot_data->print_code (os);
+    {
+      os << " ";
+      plot_data->print_code (os);
+    }
 
   if (using)
     using->print_code (os);
@@ -715,7 +716,7 @@ subplot_list::print_code (ostream& os)
 	  elt->print_code (os);
 
 	  if (p)
-	    os << ", ";
+	    os << ",";
 	}
     }
 }

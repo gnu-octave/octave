@@ -56,20 +56,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   int nargin = args.length (); \
  \
-  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
- \
-  if (! error_state) \
+  if (nargin == 1 || nargin == 2) \
     { \
-      if (dim <= 1 && dim >= -1) \
-	{ \
-	  if (nargin == 1 || nargin == 2) \
+      int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
+ \
+      if (! error_state) \
+        { \
+          if (dim <= 1 && dim >= -1) \
 	    retval = args(0).FCN (dim); \
-	  else \
-	    print_usage (#FCN); \
-	} \
+          else \
+	    error (#FCN ": invalid dimension argument = %d", dim + 1); \
+        } \
       else \
-	error (#FCN ": invalid dimension argument = %d", dim + 1); \
+        error (#FCN ": expecting dimension argument to be an integer"); \
     } \
+  else \
+    print_usage (#FCN); \
  \
   return retval
 

@@ -1,10 +1,11 @@
 2002-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* plot/loglogerr.m: Likewise.
+	* general/mod.m: Use isreal (x), not any (any (imag (x))).
+	* general/rem.m: Likewise.
 
+	* plot/loglogerr.m: Use varargin instead of old style varargs.
+	* plot/semilogxerr.m: Likewise.
 	* plot/semilogyerr.m: Likewise.
-
-	* plot/semilogxerr.m: Use varargin instead of old style varargs.
 
 2002-07-25  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 

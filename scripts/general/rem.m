@@ -46,10 +46,10 @@ function r = rem (x, y)
   ## Matlab allows complex arguments, but as far as I can tell, that's a
   ## bunch of hooey.
 
-  if (any (any (imag (x))) || any (any (imag (y))))
+  if (isreal (x) && isreal (y))
+    r = x - y .* fix (x ./ y);
+  else
     error ("rem: complex arguments are not allowed");
   endif
-
-  r = x - y .* fix (x ./ y);
 
 endfunction

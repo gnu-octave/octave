@@ -34,19 +34,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-fcn.h"
-#include "oct-sym.h"
 #include "oct-var-ref.h"
+#include "ov.h"
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
 
 // Variables and functions.
 
-symbol_def::symbol_def (octave_symbol *sym, unsigned int sym_type)
+symbol_def::symbol_def (void)
 {
   init_state ();
-  definition = sym;
+}
+
+symbol_def::symbol_def (const octave_value& val, unsigned int sym_type)
+{
+  init_state ();
+  definition = val;
   type = sym_type;
 }
 
@@ -57,14 +61,8 @@ symbol_def::init_state (void)
   eternal = 0;
   read_only = 0;
 
-  definition = 0;
   next_elem = 0;
   count = 0;
-}
-
-symbol_def::~symbol_def (void)
-{
-  delete definition;
 }
 
 bool
@@ -123,9 +121,9 @@ symbol_def::is_map_element (const string& /* elts */) const
 }
 
 void
-symbol_def::define (octave_symbol *s, unsigned int sym_type)
+symbol_def::define (const octave_value& val, unsigned int sym_type)
 {
-  definition = s;
+  definition = val;
 
   type = sym_type;
 }
@@ -149,8 +147,8 @@ symbol_def::make_eternal (void)
   eternal = 1;
 }
 
-octave_symbol *
-symbol_def::def (void) const
+octave_value&
+symbol_def::def (void)
 {
   return definition;
 }
@@ -221,10 +219,12 @@ symbol_record::help (void) const
   return retval;
 }
 
-octave_symbol *
-symbol_record::def (void) const
+octave_value&
+symbol_record::def (void)
 {
-  return definition ? definition->def () : false;
+  static octave_value foo;
+
+  return definition ? definition->def () : foo;
 }
 
 void
@@ -297,7 +297,7 @@ symbol_record::type (void) const
 bool
 symbol_record::is_defined (void) const
 {
-  return definition ? (definition->def () != 0) : false;
+  return (definition != 0);
 }
 
 bool
@@ -371,7 +371,7 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
       if (definition->symbol_type () == symbol_def::BUILTIN_VARIABLE)
 	sym_type = symbol_def::BUILTIN_VARIABLE;
 
-      definition->define (new octave_value (v), sym_type);
+      definition->define (v, sym_type);
     }
 
   return retval;
@@ -406,8 +406,7 @@ symbol_record::define_as_fcn (const octave_value& v)
       maybe_delete (old_def);
     }
 
-  push_def (new symbol_def (new octave_value (v),
-			    symbol_def::BUILTIN_FUNCTION));
+  push_def (new symbol_def (v, symbol_def::BUILTIN_FUNCTION));
 
   definition->count = 1;
 
@@ -432,7 +431,9 @@ symbol_record::define (octave_function *f, unsigned int sym_type)
       maybe_delete (old_def);
     }
 
-  push_def (new symbol_def (f, sym_type));
+  octave_value tmp (f);
+
+  push_def (new symbol_def (tmp, sym_type));
 
   definition->count = 1;
 
@@ -502,7 +503,12 @@ symbol_record::is_formal_parameter (void) const
 void
 symbol_record::mark_as_linked_to_global (void)
 {
-  linked_to_global = 1;
+  if (is_formal_parameter ())
+    error ("can't make function parameter `%s' global", nm.c_str ());
+  else if (is_static ())
+    error ("can't make static variable `%s' global", nm.c_str ());
+  else
+    linked_to_global = 1;
 }
 
 bool
@@ -515,9 +521,9 @@ void
 symbol_record::mark_as_static (void)
 {
   if (is_linked_to_global ())
-    error ("can't make global variable static");
+    error ("can't make global variable `%s' static", nm.c_str ());
   else if (is_formal_parameter ())
-    error ("can't make formal parameter static");
+    error ("can't make formal parameter `%s' static", nm.c_str ());
   else
     tagged_static = 1;
 }
@@ -528,18 +534,12 @@ symbol_record::is_static (void) const
   return tagged_static;
 }
 
-octave_value
-symbol_record::variable_value (void) const
+octave_value&
+symbol_record::variable_value (void)
 {
-  octave_value retval;
+  static octave_value foo;
 
-  if (is_variable ())
-    {
-      octave_symbol *tmp = def ();
-      retval = tmp->eval ();
-    }
-
-  return retval;
+  return is_variable () ? def () : foo;
 }
 
 octave_variable_reference
@@ -554,11 +554,13 @@ symbol_record::variable_reference (void)
 	link_to_builtin_variable (this);
 
       if (! is_defined ())
-	define (octave_value ());
+	{
+	  octave_value tmp;
+	  define (tmp);
+	}
     }
 
-  return octave_variable_reference
-    (static_cast<octave_value *> (def ()), sv_fcn);
+  return octave_variable_reference (&(def ()), sv_fcn);
 }
 
 symbol_record *
@@ -662,23 +664,19 @@ symbol_record_info::symbol_record_info (void)
     hides (SR_INFO_NONE), eternal (0), read_only (0), nm (),
     const_type () { }
 
-symbol_record_info::symbol_record_info (const symbol_record& sr)
+symbol_record_info::symbol_record_info (symbol_record& sr)
   : initialized (0), nr (-1), nc (-1), type (sr.type ()),
     hides (SR_INFO_NONE), eternal (0), read_only (0), nm (),
     const_type ()
 {
   if (sr.is_variable () && sr.is_defined ())
     {
-      // Would be nice to avoid this cast.  XXX FIXME XXX
+      octave_value tmp = sr.def ();
 
-      octave_symbol *tmp = sr.def ();
+      const_type = tmp.type_name ();
 
-      octave_value vtmp = tmp->eval ();
-
-      const_type = vtmp.type_name ();
-
-      nr = vtmp.rows ();
-      nc = vtmp.columns ();
+      nr = tmp.rows ();
+      nc = tmp.columns ();
 
       symbol_def *sr_def = sr.definition;
       symbol_def *hidden_def = sr_def->next_elem;

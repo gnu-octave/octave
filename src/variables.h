@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_variables_h)
 #define octave_variables_h 1
 
-class octave_symbol;
+class octave_function;
 class symbol_record;
 class symbol_table;
 
@@ -38,6 +38,7 @@ class string_vector;
 #include <string>
 
 #include "ov.h"
+#include "ov-builtin.h"
 #include "symtab.h"
 
 typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
@@ -71,10 +72,10 @@ extern bool is_mapper_function_name (const string&);
 extern bool is_builtin_function_name (const string&);
 extern bool is_globally_visible (const string&);
 
-extern octave_symbol *
+extern octave_function *
 is_valid_function (const octave_value&, const string&, bool warn = false); 
 
-extern octave_symbol *
+extern octave_function *
 extract_function (const octave_value& arg, const string& warn_for,
 		  const string& fname, const string& header,
 		  const string& trailer);
@@ -90,26 +91,6 @@ generate_struct_completions (const string& text, string& prefix,
 			     string& hint);
 
 extern string_vector make_name_list (void);
-
-extern void
-install_builtin_mapper (octave_mapper *mf);
-
-extern void
-install_builtin_function (octave_builtin *f, bool is_text_fcn = false);
-
-extern void
-install_builtin_variable (const string& n, const octave_value& v,
-			  bool iaf, bool p, bool e,
-			  symbol_record::sv_function svf, const string& h);
-
-extern void
-install_builtin_variable_as_function (const string& name,
-				      const octave_value& val,
-				      bool protect = false,
-				      bool eternal = false,
-				      const string& help = string ());
-
-extern void alias_builtin (const string& alias, const string& name);
 
 extern void bind_ans (const octave_value& val, bool print);
 

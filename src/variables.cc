@@ -63,9 +63,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sysdep.h"
 #include "oct-hist.h"
 #include "oct-map.h"
-#include "oct-mapper.h"
+#include "ov-mapper.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
 #include "ov.h"
 #include "pager.h"
 #include "parse.h"
@@ -175,10 +174,10 @@ is_globally_visible (const string& name)
 
 // Is this octave_value a valid function?
 
-octave_symbol *
+octave_function *
 is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
 {
-  octave_symbol *ans = 0;
+  octave_function *ans = 0;
 
   string fcn_name;
 
@@ -199,7 +198,10 @@ is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
     sr = lookup_by_name (fcn_name);
 
   if (sr)
-    ans = sr->def ();
+    {
+      octave_value tmp = sr->def ();
+      ans = tmp.function_value (true);
+    }
 
   if (! sr || ! ans || ! sr->is_function ())
     {
@@ -212,12 +214,12 @@ is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
   return ans;
 }
 
-octave_symbol *
+octave_function *
 extract_function (const octave_value& arg, const string& warn_for,
 		  const string& fname, const string& header,
 		  const string& trailer)
 {
-  octave_symbol *retval = 0;
+  octave_function *retval = 0;
 
   retval = is_valid_function (arg, warn_for, 0);
 
@@ -332,28 +334,23 @@ generate_struct_completions (const string& text, string& prefix, string& hint)
 
   if (sr && sr->is_defined ())
     {
-      octave_symbol *tmp = sr->def ();
-
-      octave_value vtmp;
-
-      if (tmp->is_constant ())
-	vtmp = tmp->eval ();
+      octave_value tmp = sr->def ();
 
       // XXX FIXME XXX -- make this work for all types that can do
       // structure reference operations.
-      if (vtmp.is_map ())
+      if (tmp.is_map ())
 	{
 	  for (int i = 1; i < elts.length (); i++)
 	    {
-	      vtmp = vtmp.do_struct_elt_index_op (elts[i], true);
+	      tmp = tmp.do_struct_elt_index_op (elts[i], true);
 
-	      if (! vtmp.is_map ())
+	      if (! tmp.is_map ())
 		break;
 	    }
 
-	  if (vtmp.is_map ())
+	  if (tmp.is_map ())
 	    {
-	      Octave_map m = vtmp.map_value ();
+	      Octave_map m = tmp.map_value ();
 
 	      names = m.make_name_list ();
 	    }
@@ -379,23 +376,18 @@ looks_like_struct (const string& text)
 
   if (sr && sr->is_defined ())
     {
-      octave_symbol *tmp = sr->def ();
-
-      octave_value vtmp;
-
-      if (tmp->is_constant ())
-	vtmp = tmp->eval ();
+      octave_value tmp = sr->def ();
 
       // XXX FIXME XXX -- should this work for all types that can do
       // structure reference operations?
 
-      if (vtmp.is_map ())
+      if (tmp.is_map ())
 	{
 	  for (int i = 1; i < elts.length (); i++)
 	    {
-	      vtmp = vtmp.do_struct_elt_index_op (elts[i], true);
+	      tmp = tmp.do_struct_elt_index_op (elts[i], true);
 
-	      if (! vtmp.is_map ())
+	      if (! tmp.is_map ())
 		{
 		  retval = false;
 		  break;
@@ -538,22 +530,27 @@ symbol_out_of_date (symbol_record *sr)
 
   if (Vignore_function_time_stamp != 2 && sr)
     {
-      octave_symbol *ans = sr->def ();
-      if (ans)
+      octave_value ans = sr->def ();
+
+      if (! Vignore_function_time_stamp && ans.is_defined ())
 	{
-	  string ff = ans->fcn_file_name ();
-	  if (! ff.empty ()
-	      && ! (Vignore_function_time_stamp
-		    && ans->is_system_fcn_file ()))
+	  octave_function *tmp = ans.function_value (true);
+
+	  if (tmp && tmp->is_system_fcn_file ())
 	    {
-	      time_t tp = ans->time_parsed ();
+	      string ff = tmp->fcn_file_name ();
 
-	      string fname = fcn_file_in_path (ff);
+	      if (! ff.empty ())
+		{
+		  time_t tp = tmp->time_parsed ();
 
-	      int status = file_stat::is_newer (fname, tp);
+		  string fname = fcn_file_in_path (ff);
 
-	      if (status > 0)
-		retval = true;
+		  int status = file_stat::is_newer (fname, tp);
+
+		  if (status > 0)
+		    retval = true;
+		}
 	    }
 	}
     }
@@ -945,11 +942,9 @@ get_global_value (const string& nm)
 
   if (sr)
     {
-      octave_symbol *sr_def = sr->def ();
+      octave_value sr_def = sr->def ();
 
-      if (sr_def)
-	retval  = sr_def->eval ();
-      else
+      if (sr_def.is_undefined ())
 	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
     }
   else
@@ -1007,15 +1002,10 @@ builtin_string_variable (const string& name)
 
   string retval;
 
-  octave_symbol *defn = sr->def ();
+  octave_value val = sr->def ();
 
-  if (defn)
-    {
-      octave_value val = defn->eval ();
-
-      if (! error_state && val.is_string ())
-	retval = val.string_value ();
-    }
+  if (! error_state && val.is_string ())
+    retval = val.string_value ();
 
   return retval;
 }
@@ -1034,17 +1024,12 @@ builtin_real_scalar_variable (const string& name, double& d)
 
   assert (sr);
 
-  octave_symbol *defn = sr->def ();
+  octave_value val = sr->def ();
 
-  if (defn)
+  if (! error_state && val.is_scalar_type ())
     {
-      octave_value val = defn->eval ();
-
-      if (! error_state && val.is_scalar_type ())
-	{
-	  d = val.double_value ();
-	  status = 1;
-	}
+      d = val.double_value ();
+      status = 1;
     }
 
   return status;
@@ -1055,20 +1040,13 @@ builtin_real_scalar_variable (const string& name, double& d)
 octave_value
 builtin_any_variable (const string& name)
 {
-  octave_value retval;
-
   symbol_record *sr = global_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
   assert (sr);
 
-  octave_symbol *defn = sr->def ();
-
-  if (defn)
-    retval = defn->eval ();
-
-  return retval;
+  return sr->def ();
 }
 
 // Global stuff and links to builtin variables and functions.
@@ -1080,49 +1058,31 @@ builtin_any_variable (const string& name)
 void
 link_to_global_variable (symbol_record *sr)
 {
-  if (sr->is_linked_to_global ())
-    return;
-
-  string nm = sr->name ();
-
-  symbol_record *gsr = global_sym_tab->lookup (nm, true);
-
-  if (sr->is_formal_parameter ())
+  if (! sr->is_linked_to_global ())
     {
-      error ("can't make function parameter `%s' global", nm.c_str ());
-      return;
+      sr->mark_as_linked_to_global ();
+
+      if (! error_state)
+	{
+	  string nm = sr->name ();
+
+	  symbol_record *gsr = global_sym_tab->lookup (nm, true);
+
+	  // There must be a better way to do this.   XXX FIXME XXX
+
+	  if (sr->is_variable ())
+	    gsr->define (sr->def ());
+	  else
+	    sr->clear ();
+
+	  // Make sure this symbol is a variable.
+
+	  if (! gsr->is_variable ())
+	    gsr->define (octave_value ());
+
+	  sr->alias (gsr, 1);
+	}
     }
-
-  if (sr->is_static ())
-    {
-      error ("can't make static variable `%s' global", nm.c_str ());
-      return;
-    }
-
-  // There must be a better way to do this.   XXX FIXME XXX
-
-  if (sr->is_variable ())
-    {
-      octave_symbol *tmp = sr->def ();
-
-      octave_value vtmp;
-
-      if (tmp)
-	vtmp = tmp->eval ();
-
-      gsr->define (vtmp);
-    }
-  else
-    sr->clear ();
-
-  // If the global symbol is currently defined as a function, we need
-  // to hide it with a variable.
-
-  if (gsr->is_function ())
-    gsr->define (octave_value ());
-
-  sr->alias (gsr, 1);
-  sr->mark_as_linked_to_global ();
 }
 
 // Make the definition of the symbol record sr be the same as the
@@ -1500,94 +1460,6 @@ character, but may not be combined.")
   retval = do_who (argc, argv);
 
   return retval;
-}
-
-// Install variables and functions in the symbol tables.
-
-void
-install_builtin_mapper (octave_mapper *mf)
-{
-  symbol_record *sym_rec = global_sym_tab->lookup (mf->name (), true);
-
-  unsigned int t
-    = symbol_def::BUILTIN_FUNCTION | symbol_def::MAPPER_FUNCTION;
-
-  sym_rec->unprotect ();
-  sym_rec->define (mf, t);
-  sym_rec->document (mf->doc_string ());
-  sym_rec->make_eternal ();
-  sym_rec->protect ();
-}
-
-void
-install_builtin_function (octave_builtin *f, bool is_text_fcn)
-{
-  symbol_record *sym_rec = global_sym_tab->lookup (f->name (), true);
-
-  unsigned int t
-    = symbol_def::BUILTIN_FUNCTION | symbol_def::MAPPER_FUNCTION;
-
-  if (is_text_fcn)
-    t |= symbol_def::TEXT_FUNCTION;
-
-  sym_rec->unprotect ();
-  sym_rec->define (f, t);
-  sym_rec->document (f->doc_string ());
-  sym_rec->make_eternal ();
-  sym_rec->protect ();
-}
-
-void
-install_builtin_variable (const string& name, const octave_value& value,
-			  bool install_as_function, bool protect,
-			  bool eternal, symbol_record::sv_function sv_fcn,
-			  const string& help_string)
-{
-  if (install_as_function)
-    install_builtin_variable_as_function (name, value, protect,
-					  eternal, help_string);
-  else
-    bind_builtin_variable (name, value, protect, eternal,
-			   sv_fcn, help_string);
-}
-
-void
-install_builtin_variable_as_function (const string& name,
-				      const octave_value& val,
-				      bool protect, bool eternal,
-				      const string& help)
-{
-  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
-  sym_rec->unprotect ();
-
-  string tmp_help = help.empty () ? sym_rec->help () : help;
-
-  sym_rec->define_as_fcn (val);
-
-  sym_rec->document (tmp_help);
-
-  if (protect)
-    sym_rec->protect ();
-
-  if (eternal)
-    sym_rec->make_eternal ();
-}
-
-void
-alias_builtin (const string& alias, const string& name)
-{
-  symbol_record *sr_name = global_sym_tab->lookup (name);
-
-  if (! sr_name)
-    panic ("can't alias to undefined name!");
-
-  symbol_record *sr_alias = global_sym_tab->lookup (alias, true);
-
-  if (sr_alias)
-    sr_alias->alias (sr_name);
-  else
-    panic ("can't find symbol record for builtin function `%s'",
-	   alias.c_str ());
 }
 
 // Defining variables.

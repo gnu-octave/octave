@@ -33,13 +33,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "str-vec.h"
 
+#include "ov.h"
+
 // Must be multiple of 2.
 #define HASH_TABLE_SIZE 1024
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
 
-class octave_symbol;
-class octave_function;
-class octave_value;
 class octave_variable_reference;
 
 class string_vector;
@@ -58,9 +57,11 @@ class symbol_def
 
 public:
 
-  symbol_def (octave_symbol *sym = 0, unsigned int sym_type = 0);
+  symbol_def (void);
 
-  ~symbol_def (void);
+  symbol_def (const octave_value& val, unsigned int sym_type = 0);
+
+  ~symbol_def (void) { }
 
   bool is_variable (void) const;
   bool is_function (void) const;
@@ -72,13 +73,13 @@ public:
   bool is_builtin_function (void) const;
   bool is_map_element (const string& elts) const;
 
-  void define (octave_symbol *sym, unsigned int sym_type);
+  void define (const octave_value& val, unsigned int sym_type);
 
   void protect (void);
   void unprotect (void);
   void make_eternal (void);
 
-  octave_symbol *def (void) const;
+  octave_value& def (void);
   string help (void) const;
   void document (const string& h);
 
@@ -104,7 +105,7 @@ private:
   unsigned int read_only : 1;
 
   string help_string;
-  octave_symbol *definition;
+  octave_value definition;
   symbol_def *next_elem;
   int count;
 
@@ -132,7 +133,8 @@ public:
 
   string name (void) const;
   string help (void) const; 
-  octave_symbol *def (void) const;
+
+  octave_value& def (void);
 
   void rename (const string& new_name);
 
@@ -182,7 +184,7 @@ public:
   void mark_as_static (void);
   bool is_static (void) const;
 
-  octave_value variable_value (void) const;
+  octave_value& variable_value (void);
   octave_variable_reference variable_reference (void);
 
   symbol_record *next (void) const;
@@ -226,7 +228,7 @@ symbol_record_info
 public:
 
   symbol_record_info (void);
-  symbol_record_info (const symbol_record& s);
+  symbol_record_info (symbol_record& s);
 
   symbol_record_info (const symbol_record_info& s);
 

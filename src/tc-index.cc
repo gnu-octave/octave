@@ -79,8 +79,9 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 		if (len == j.ones_count ())
 		  cols = len;
 	      }
-	    else if (args[2].is_scalar_type ()
-		     && NINT (args[2].double_value ()) == 1)
+	    else if (args[2].const_type () == magic_colon
+		     || (args[2].is_scalar_type ()
+			 && NINT (args[2].double_value ()) == 1))
 	      {
 		cols = 1;
 	      }
@@ -102,8 +103,9 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 		if (len == i.ones_count ())
 		  rows = len;
 	      }
-	    else if (args[1].is_scalar_type ()
-		     && NINT (args[1].double_value ()) == 1)
+	    else if (args[1].const_type () == magic_colon
+		     || (args[1].is_scalar_type ()
+			 && NINT (args[1].double_value ()) == 1))
 	      {
 		rows = 1;
 	      }

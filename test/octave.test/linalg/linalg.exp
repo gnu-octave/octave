@@ -67,27 +67,27 @@ do_test eig-5.m
 
 set test expm-1
 set prog_output "^ans = 1"
-do_test expm-1
+do_test expm-1.m
 
 set test expm-2
 set prog_output "^ans = 1"
-do_test expm-2
+do_test expm-2.m
 
 set test expm-3
 set prog_output "^ans = 1"
-do_test expm-3
+do_test expm-3.m
 
 set test expm-4
 set prog_output "^\n... expm:.*"
-do_test expm-4
+do_test expm-4.m
 
 set test expm-5
 set prog_output "^\n... expm:.*"
-do_test expm-5
+do_test expm-5.m
 
 set test expm-6
 set prog_output "^error:.*"
-do_test expm-6
+do_test expm-6.m
 
 set test inv-1
 set prog_output "^ans = 1"

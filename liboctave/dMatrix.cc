@@ -1200,32 +1200,37 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 
       double rcond = -1.0;
 
-      int lwork;
-      if (m < n)
-	lwork = 3*m + (2*m > nrhs
-		       ? (2*m > n ? 2*m : n)
-		       : (nrhs > n ? nrhs : n));
-      else
-	lwork = 3*n + (2*n > nrhs
-		       ? (2*n > m ? 2*n : m)
-		       : (nrhs > m ? nrhs : m));
+      // Ask DGELSS what the dimension of WORK should be.
 
-      lwork *= 16;
+      int lwork = -1;
 
-      Array<double> work (lwork);
-      double *pwork = work.fortran_vec ();
+      Array<double> work (1);
 
       F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
-				 rcond, rank, pwork, lwork, info));
+				 rcond, rank, work.fortran_vec (),
+				 lwork, info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
       else
 	{
-	  retval.resize (n, nrhs);
-	  for (int j = 0; j < nrhs; j++)
-	    for (int i = 0; i < n; i++)
-	      retval.elem (i, j) = result.elem (i, j);
+	  lwork = static_cast<int> (work(0));
+	  work.resize (lwork);
+
+	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, ps, rcond, rank,
+				     work.fortran_vec (), lwork, info));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgelss");
+	  else
+	    {
+	      retval.resize (n, nrhs);
+	      for (int j = 0; j < nrhs; j++)
+		for (int i = 0; i < n; i++)
+		  retval.elem (i, j) = result.elem (i, j);
+	    }
 	}
     }
 
@@ -1303,31 +1308,36 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 
       double rcond = -1.0;
 
-      int lwork;
-      if (m < n)
-	lwork = 3*m + (2*m > nrhs
-		       ? (2*m > n ? 2*m : n)
-		       : (nrhs > n ? nrhs : n));
-      else
-	lwork = 3*n + (2*n > nrhs
-		       ? (2*n > m ? 2*n : m)
-		       : (nrhs > m ? nrhs : m));
+      // Ask DGELSS what the dimension of WORK should be.
 
-      lwork *= 16;
+      int lwork = -1;
 
-      Array<double> work (lwork);
-      double *pwork = work.fortran_vec ();
+      Array<double> work (1);
 
-      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr,
-				 ps, rcond, rank, pwork, lwork, info));
+      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
+				 rcond, rank, work.fortran_vec (),
+				 lwork, info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
       else
 	{
-	  retval.resize (n);
-	  for (int i = 0; i < n; i++)
-	    retval.elem (i) = result.elem (i);
+	  lwork = static_cast<int> (work(0));
+	  work.resize (lwork);
+
+	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, ps, rcond, rank,
+				     work.fortran_vec (), lwork, info));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgelss");
+	  else
+	    {
+	      retval.resize (n);
+	      for (int i = 0; i < n; i++)
+		retval.elem (i) = result.elem (i);
+	    }
 	}
     }
 

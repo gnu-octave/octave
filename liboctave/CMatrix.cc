@@ -1531,34 +1531,44 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 
       double rcond = -1.0;
 
-      int lwork;
-      if (m < n)
-	lwork = 2*m + (nrhs > n ? nrhs : n);
-      else
-	lwork = 2*n + (nrhs > m ? nrhs : m);
-
-      lwork *= 16;
-
-      Array<Complex> work (lwork);
-      Complex *pwork = work.fortran_vec ();
-
       int lrwork = (5 * (m < n ? m : n)) - 4;
       lrwork = lrwork > 1 ? lrwork : 1;
       Array<double> rwork (lrwork);
       double *prwork = rwork.fortran_vec ();
 
+      // Ask ZGELSS what the dimension of WORK should be.
+
+      int lwork = -1;
+
+      Array<Complex> work (1);
+
       F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
-				 nrr, ps, rcond, rank, pwork, lwork,
-				 prwork, info));
+				 nrr, ps, rcond, rank,
+				 work.fortran_vec (), lwork, prwork,
+				 info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
-	  retval.resize (n, nrhs);
-	  for (int j = 0; j < nrhs; j++)
-	    for (int i = 0; i < n; i++)
-	      retval.elem (i, j) = result.elem (i, j);
+	  lwork = static_cast<int> (real (work(0)));
+	  work.resize (lwork);
+
+	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, ps, rcond, rank,
+				     work.fortran_vec (), lwork,
+				     prwork, info));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in zgelss");
+	  else
+	    {
+	      retval.resize (n, nrhs);
+	      for (int j = 0; j < nrhs; j++)
+		for (int i = 0; i < n; i++)
+		  retval.elem (i, j) = result.elem (i, j);
+	    }
 	}
     }
 
@@ -1634,33 +1644,43 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
 
       double rcond = -1.0;
 
-      int lwork;
-      if (m < n)
-	lwork = 2*m + (nrhs > n ? nrhs : n);
-      else
-	lwork = 2*n + (nrhs > m ? nrhs : m);
-
-      lwork *= 16;
-
-      Array<Complex> work (lwork);
-      Complex *pwork = work.fortran_vec ();
-
       int lrwork = (5 * (m < n ? m : n)) - 4;
       lrwork = lrwork > 1 ? lrwork : 1;
       Array<double> rwork (lrwork);
       double *prwork = rwork.fortran_vec ();
 
+      // Ask ZGELSS what the dimension of WORK should be.
+
+      int lwork = -1;
+
+      Array<Complex> work (1);
+
       F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
-				 nrr, ps, rcond, rank, pwork, lwork,
-				 prwork, info));
+				 nrr, ps, rcond, rank,
+				 work.fortran_vec (), lwork, prwork,
+				 info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
-	  retval.resize (n);
-	  for (int i = 0; i < n; i++)
-	    retval.elem (i) = result.elem (i);
+	  lwork = static_cast<int> (real (work(0)));
+	  work.resize (lwork);
+
+	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, ps, rcond, rank,
+				     work.fortran_vec (), lwork,
+				     prwork, info));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in zgelss");
+	  else
+	    {
+	      retval.resize (n);
+	      for (int i = 0; i < n; i++)
+		retval.elem (i) = result.elem (i);
+	    }
 	}
     }
 

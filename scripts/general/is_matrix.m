@@ -19,8 +19,7 @@
 
 ## usage: is_matrix (x)
 ##
-## Return 1 if the number of rows and columns of x are both greater
-## than 1.
+## Return 1 if X is a matrix.  Otherwise, return 0.
 ##
 ## See also: size, rows, columns, length, is_scalar, is_vector
 
@@ -30,7 +29,7 @@ function retval = is_matrix (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);
-    retval = (nr > 1 && nc > 1);
+    retval = (nr >= 0 && nc >= 0);
   else
     usage ("is_matrix (x)");
   endif

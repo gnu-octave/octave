@@ -39,7 +39,7 @@ function contour (z, n, x, y)
       command = sprintf ("gset cntrparam levels %d", n);
       eval (command);
       gset noparametric;
-      gset view 0, 0, 1.9, 1;
+      gset view 0, 0, 1, 1;
       gsplot z w l 1;
     else
       error ("mesh: argument must be a matrix");
@@ -64,10 +64,10 @@ function contour (z, n, x, y)
         gset nosurface;
         gset contour;
         gset cntrparam bspline;
-        command = sprintf ("set cntrparam levels %d", n);
+        command = sprintf ("gset cntrparam levels %d", n);
         eval (command);
 	gset parametric;
-        gset view 0, 0, 1.9, 1;
+        gset view 0, 0, 1, 1;
 	gsplot zz w l 1;
       else
         msg = "mesh: rows (z) must be the same as length (x) and";

@@ -29,6 +29,8 @@ function retval = isempty (var)
     usage ("isempty (var)");
   endif
 
-  retval = (rows (var) == 0 || columns (var) == 0);
+  [nr, nc] = size (var);
+
+  retval = (nr == 0 || nc == 0);
 
 endfunction

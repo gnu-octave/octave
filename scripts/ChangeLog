@@ -1,3 +1,15 @@
+Sun Feb  9 19:52:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/is_matrix.m: Scalars, vectors, and empty matrices may
+	also be considered to be matrices.
+
+	* general/is_vector.m: Scalars may also be considered to be vectors.
+
+	* general/isempty.m: Use size(), not rows() and columns().
+
+	* plot/contour.m: Convert set to gset.
+	Set view to 0, 0, 1, 1, not 0, 0, 1.9, 1.
+
 Fri Feb  7 12:55:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/erfinv.m: Fix typo in last change.

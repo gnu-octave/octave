@@ -154,7 +154,7 @@ public:
 
   int save (ostream& os, int mark_as_global = 0);
 
-  void clear_visible (void);
+  int clear_visible (void);
   void clear_all (void);
 
   void mark_as_formal_parameter (void);
@@ -177,7 +177,7 @@ private:
   sv_Function sv_fcn;
   symbol_record *next_elem;
 
-  symbol_record (const symbol_record& s);
+  symbol_record (const symbol_record& s) { assert (0); }
   symbol_record& operator = (const symbol_record& s);
 };
 

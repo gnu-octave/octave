@@ -425,22 +425,33 @@ symbol_record::save (ostream& os, int mark_as_global = 0)
   return status;
 }
 
-void
+int
 symbol_record::clear_visible (void)
 {
-  if (var != (symbol_def *) NULL && var->lifespan != symbol_def::eternal)
+  int status = 0;
+
+  if (is_defined ())
     {
-      if (--var->count <= 0)
-	delete var;
-      var = (symbol_def *) NULL;
-      forced_global = 0;
+      if (var != (symbol_def *) NULL
+	  && var->lifespan != symbol_def::eternal)
+	{
+	  if (--var->count <= 0)
+	    delete var;
+	  var = (symbol_def *) NULL;
+	  forced_global = 0;
+	  status = 1;
+	}
+      else if (fcn != (symbol_def *) NULL
+	       && fcn->lifespan != symbol_def::eternal)
+	{
+	  if (--fcn->count <= 0)
+	    delete fcn;
+	  fcn = (symbol_def *) NULL;
+	  status = 1;
+	}
     }
-  else if (fcn != (symbol_def *) NULL && fcn->lifespan != symbol_def::eternal)
-    {
-      if (--fcn->count <= 0)
-	delete fcn;
-      fcn = (symbol_def *) NULL;
-    }
+
+  return status;
 }
 
 void
@@ -583,9 +594,8 @@ symbol_table::clear (const char *nm)
     {
       if (strcmp (curr->name (), nm) == 0)
 	{
-	  curr->clear_visible ();
-
-	  return 1;
+	  if (curr->clear_visible ())
+	    return 1;
 	}
       prev = curr;
       curr = curr->next ();

@@ -397,6 +397,26 @@ sv_loadpath (void)
 }
 
 int
+sv_info_file (void)
+{
+  int status = 0;
+
+  char *s = octave_string_variable ("INFO_FILE");
+  if (s != (char *) NULL)
+    {
+      delete [] user_pref.info_file;
+      user_pref.info_file = s;
+    }
+  else
+    {
+      warning ("invalid value specified for INFO_FILE");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
 sv_ps1 (void)
 {
   int status = 0;

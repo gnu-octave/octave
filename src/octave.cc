@@ -98,6 +98,9 @@ char *the_current_working_directory = (char *) NULL;
 // Load path specified on command line.
 char *load_path = (char *) NULL;
 
+// Name of the info file specified on command line.
+char *info_file = (char *) NULL;
+
 // If nonzero, don't do fancy line editing.
 int no_line_editing = 0;
 
@@ -122,19 +125,21 @@ static int inhibit_startup_message = 0;
 // Usage message
 static const char *usage_string = 
   "octave [-?dfhiqvx] [-p path] [--debug] [--help] [--interactive]\n\
-         [--norc] [--path path] [--quiet] [--version] [--echo-commands]\n\
-         [file]";
+         [--info-file file] [--norc] [--path path] [--quiet] [--version]\n\
+         [--echo-commands] [file]";
 
 // This is here so that it\'s more likely that the usage message and
 // the real set of options will agree.
 static const char *short_opts = "?dfhip:qvx";
 
 // Long options.
+#define INFO_FILE_OPTION 1
 static struct option long_opts[] =
   {
     { "debug", 0, 0, 'd' },
     { "help", 0, 0, 'h' },
     { "interactive", 0, 0, 'i' },
+    { "info-file", 1, 0, INFO_FILE_OPTION },
     { "norc", 0, 0, 'f' },
     { "path", 1, 0, 'p' },
     { "quiet", 0, 0, 'q' },
@@ -172,6 +177,8 @@ initialize_globals (char *name)
   prog_name = strsave ("octave");
 
   load_path = default_path ();
+
+  info_file = default_info_file ();
 }
 
 void
@@ -383,6 +390,10 @@ main (int argc, char **argv)
 	  break;
 	case 'v':
 	  print_version_and_exit ();
+	  break;
+	case INFO_FILE_OPTION:
+	  if (optarg != (char *) NULL)
+	    info_file = strsave (optarg);
 	  break;
 	default:
 	  usage ();

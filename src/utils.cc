@@ -410,6 +410,16 @@ octave_lib_dir (void)
   return ol;
 }
 
+static char *
+octave_info_dir (void)
+{
+  static char *oi = (char *) NULL;
+  delete [] oi;
+  char *oh = octave_home ();
+  oi = strconcat (oh, "/info/");
+  return oi;
+}
+
 char *
 default_path (void)
 {
@@ -424,6 +434,22 @@ default_path (void)
       pathstring = strconcat (".:", libdir);
     }
   return pathstring;
+}
+
+char *
+default_info_file (void)
+{
+  static char *info_file_string = (char *) NULL;
+  delete [] info_file_string;
+  char *oct_info_file = getenv ("OCTAVE_INFO_FILE");
+  if (oct_info_file != (char *) NULL)
+    info_file_string = strsave (oct_info_file);
+  else
+    {
+      char *infodir = octave_info_dir ();
+      info_file_string = strconcat (infodir, "octave.info");
+    }
+  return info_file_string;
 }
 
 char *

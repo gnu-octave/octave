@@ -53,6 +53,9 @@ extern char *the_current_working_directory;
 // Load path specified on command line.
 extern char *load_path;
 
+// Name of the info file specified on command line.
+extern char *info_file;
+
 // If nonzero, don't do fancy line editing.
 extern int no_line_editing;
 

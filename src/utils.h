@@ -42,6 +42,7 @@ extern void raw_mode (int);
 extern int kbhit (void);
 extern char **pathstring_to_vector (char *);
 extern char *default_path (void);
+extern char *default_info_file (void);
 extern char *get_site_defaults (void);
 extern char *default_pager (void);
 extern char *file_in_path (const char *, const char *);

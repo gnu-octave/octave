@@ -52,6 +52,7 @@ struct user_preferences
   int output_precision;
 
   char *loadpath;
+  char *info_file;
   char *ps1;
   char *ps2;
   char *pwd;
@@ -84,6 +85,7 @@ extern int set_output_max_field_width (void);
 extern int set_output_precision (void);
 
 extern int sv_loadpath (void);
+extern int sv_info_file (void);
 extern int sv_pager_binary (void);
 extern int sv_ps1 (void);
 extern int sv_ps2 (void);

@@ -423,7 +423,7 @@ try_info (const char *string, int force = 0)
 {
   int status = 0;
 
-  char *directory_name = strsave (DEFAULT_INFO_FILE);
+  char *directory_name = strsave (user_pref.info_file);
   char *temp = filename_non_directory (directory_name);
 
   if (temp != directory_name)
@@ -434,46 +434,48 @@ try_info (const char *string, int force = 0)
 
   delete [] directory_name;
 
-  NODE *initial_node = info_get_node (DEFAULT_INFO_FILE, (char *)NULL);
+  NODE *initial_node = info_get_node (user_pref.info_file, (char *)NULL);
 
   if (! initial_node)
     {
       warning ("can't find info file!\n");
-      return status;
+      status = -1;
     }
-
-  initialize_info_session (initial_node, 0);
-
-  if (force || index_entry_exists (windows, string))
+  else
     {
-      terminal_clear_screen ();
+      initialize_info_session (initial_node, 0);
 
-      terminal_prep_terminal ();
+      if (force || index_entry_exists (windows, string))
+	{
+	  terminal_clear_screen ();
 
-      display_update_display (windows);
+	  terminal_prep_terminal ();
 
-      info_last_executed_command = (VFunction *)NULL;
+	  display_update_display (windows);
 
-      if (! force)
-	do_info_index_search (windows, 0, string);
+	  info_last_executed_command = (VFunction *)NULL;
 
-      char *format = replace_in_documentation
-	("Type \"\\[quit]\" to quit, \"\\[get-help-window]\" for help.");
+	  if (! force)
+	    do_info_index_search (windows, 0, string);
 
-      window_message_in_echo_area (format);
+	  char *format = replace_in_documentation
+	    ("Type \"\\[quit]\" to quit, \"\\[get-help-window]\" for help.");
 
-      info_read_and_dispatch ();
+	  window_message_in_echo_area (format);
 
-      terminal_goto_xy (0, screenheight - 1);
+	  info_read_and_dispatch ();
 
-      terminal_clear_to_eol ();
+	  terminal_goto_xy (0, screenheight - 1);
 
-      terminal_unprep_terminal ();
+	  terminal_clear_to_eol ();
 
-      status = 1;
+	  terminal_unprep_terminal ();
+
+	  status = 1;
+	}
+
+      finish_info_session (initial_node, 0);
     }
-
-  finish_info_session (initial_node, 0);
 
   return status;
 }

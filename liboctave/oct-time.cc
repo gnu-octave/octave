@@ -47,10 +47,15 @@ octave_time::octave_time (const octave_base_tm& tm)
 
 #if defined (HAVE_TM_ZONE)
   string s = tm.zone ();
-  t.tm_zone = s.c_str ();
+  char *ps = strsave (s.c_str ());
+  t.tm_zone = ps;
 #endif
 
   ot_unix_time = mktime (&t);
+
+#if defined (HAVE_TM_ZONE)
+  delete [] ps;
+#endif
 
   ot_usec = tm.usec ();
 }
@@ -138,7 +143,8 @@ octave_base_tm::strftime (const string& fmt) const
   t.tm_isdst = tm_isdst;
 
 #if defined (HAVE_TM_ZONE)
-  t.tm_zone = tm_zone.c_str ();
+  char *ps = strsave (tm_zone.c_str ());
+  t.tm_zone = ps;
 #endif
 
   const char *fmt_str = fmt.c_str ();
@@ -157,6 +163,10 @@ octave_base_tm::strftime (const string& fmt) const
 
       bufsize *= 2;
     }
+
+#if defined (HAVE_TM_ZONE)
+  delete [] ps;
+#endif
 
   retval = buf;
 

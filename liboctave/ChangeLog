@@ -1,3 +1,8 @@
+1999-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.cc (Fstrftime): Undo previous change.
+	(octave_time::octave_time (const octave_base_tm&)): Likewise.
+
 1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dbleSVD.cc (SVD::init): Let DGESVD determine work space requirement.

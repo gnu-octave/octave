@@ -1,3 +1,9 @@
+2003-06-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (set_format (const Matrix&, int&, double&)): Ask
+	any_element_is_negative to return true for negative zero as well.
+	(set_format (const ComplexMatrix&, int&, int&, double&)): Likewise.
+
 2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (main_loop): Set octave_interrupt_hook and

@@ -1984,15 +1984,25 @@ Matrix::apply (d_d_Mapper f)
 }
 
 bool
-Matrix::any_element_is_negative (void) const
+Matrix::any_element_is_negative (bool neg_zero) const
 {
   int nr = rows ();
   int nc = cols ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      if (elem (i, j) < 0.0)
-	return true;
+  if (neg_zero)
+    {
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  if (lo_ieee_signbit (elem (i, j)))
+	    return true;
+    }
+  else
+    {
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  if (elem (i, j) < 0)
+	    return true;
+    }
 
   return false;
 }

@@ -483,7 +483,7 @@ set_format (const Matrix& m, int& fw, double& scale)
   if (free_format)
     return;
 
-  bool sign = m.any_element_is_negative ();
+  bool sign = m.any_element_is_negative (true);
 
   bool inf_or_nan = m.any_element_is_inf_or_nan ();
 
@@ -820,7 +820,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   Matrix rp = real (cm);
   Matrix ip = imag (cm);
 
-  bool sign = rp.any_element_is_negative ();
+  bool sign = rp.any_element_is_negative (true);
 
   bool inf_or_nan = cm.any_element_is_inf_or_nan ();
 

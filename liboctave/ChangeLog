@@ -1,3 +1,8 @@
+2003-06-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (any_element_is_negative): If new optional arg
+	neg_zero is true, also return true for negative zero.
+
 2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DASSL.cc (DASSL::do_integrate): Set liw to 21 + n, not 20 + n.

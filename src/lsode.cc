@@ -75,17 +75,28 @@ lsode_user_function (const ColumnVector& x, double t)
   if (lsode_fcn != NULL_TREE)
     {
       tree_constant *tmp = lsode_fcn->eval (args, 3, 1, 0);
+
       delete [] args;
+
+      if (error_state)
+	{
+	  gripe_user_supplied_eval ("lsode");
+	  return retval;
+	}
+
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
 	  retval = tmp[0].to_vector ();
+
 	  delete [] tmp;
+
+	  if (retval.length () == 0)
+	    gripe_user_supplied_eval ("lsode");
 	}
       else
 	{
 	  delete [] tmp;
 	  gripe_user_supplied_eval ("lsode");
-	  jump_to_top_level ();
 	}
     }
 

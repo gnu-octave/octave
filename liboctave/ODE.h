@@ -76,6 +76,7 @@ protected:
 
 private:
 
+  int integration_error;
   int restart;
   int method_flag;
   int *iwork;

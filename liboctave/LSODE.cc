@@ -31,9 +31,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (lsode) (int (*)(), int *, double *, double *, double *,
+  int F77_FCN (lsode) (int (*)(int*, double*, double*, double*, int*),
+		       int *, double *, double *, double *,
 		       int *, double *, double *, int *, int *, int *,
-		       double *, int *, int *, int *, int (*)(), int *);
+		       double *, int *, int *, int *,
+		       int (*)(int*, double*, double*, int*, int*,
+			       double*, int*), int *);
 }
 
 static ColumnVector (*user_fun) (ColumnVector&, double);
@@ -51,6 +54,7 @@ ODE::ODE (void)
   stop_time_set = 0;
   stop_time = 0.0;
 
+  integration_error = 0;
   restart = 1;
 
   istate = 1;
@@ -84,6 +88,7 @@ ODE::ODE (int size)
   stop_time_set = 0;
   stop_time = 0.0;
 
+  integration_error = 0;
   restart = 1;
 
   istate = 1;
@@ -118,6 +123,7 @@ ODE::ODE (const ColumnVector& state, double time, const ODEFunc& f)
   stop_time_set = 0;
   stop_time = 0.0;
 
+  integration_error = 0;
   restart = 1;
 
   istate = 1;
@@ -147,7 +153,7 @@ ODE::~ODE (void)
 }
 
 int
-lsode_f (int *neq, double *time, double *state, double *deriv)
+lsode_f (int *neq, double *time, double *state, double *deriv, int *ierr)
 {
   int nn = *neq;
   ColumnVector tmp_deriv (nn);
@@ -159,8 +165,13 @@ lsode_f (int *neq, double *time, double *state, double *deriv)
    */
   tmp_deriv = (*user_fun) (*tmp_x, *time);
 
-  for (int i = 0; i < nn; i++)
-    deriv [i] = tmp_deriv.elem (i);
+  if (tmp_deriv.length () == 0)
+    *ierr = -1;
+  else
+    {
+      for (int i = 0; i < nn; i++)
+	deriv [i] = tmp_deriv.elem (i);
+    }
 
   return 0;
 }
@@ -193,6 +204,8 @@ ODE::integrate (double tout)
     method_flag = 22;
   else
     method_flag = 21;
+
+  integration_error = 0;
 
   double *xp = x.fortran_vec ();
 
@@ -236,17 +249,16 @@ ODE::integrate (double tout)
 
   switch (istate)
     {
+    case -13: // Return requested in user-supplied function.
     case -6: // error weight became zero during problem. (solution
 	     // component i vanished, and atol or atol(i) = 0.)
-      break;
     case -5: // repeated convergence failures (perhaps bad jacobian
 	     // supplied or wrong choice of mf or tolerances).
-      break;
     case -4: // repeated error test failures (check all inputs).
-      break;
     case -3: // illegal input detected (see printed message).
-      break;
     case -2: // excess accuracy requested (tolerances too small).
+      integration_error = 1;
+      return ColumnVector ();
       break;
     case -1: // excess work done on this call (perhaps wrong mf).
       working_too_hard++;
@@ -255,6 +267,7 @@ ODE::integrate (double tout)
 	  (*current_liboctave_error_handler)
 	    ("giving up after more than %d steps attempted in lsode",
 	     iwork[5] * 20);
+	  integration_error = 1;
 	  return ColumnVector ();
 	}
       else
@@ -317,6 +330,10 @@ ODE::integrate (const ColumnVector& tout)
       for (int j = 1; j < n_out; j++)
 	{
 	  ColumnVector x_next = integrate (tout.elem (j));
+
+	  if (integration_error)
+	    return retval;
+
 	  for (i = 0; i < n; i++)
 	    retval.elem (j, i) = x_next.elem (i);
 	}
@@ -394,6 +411,9 @@ ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
 	      ColumnVector x_next = integrate (t_out);
 
+	      if (integration_error)
+		return retval;
+
 	      if (save_output)
 		{
 		  for (i = 0; i < n; i++)
@@ -405,7 +425,12 @@ ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 	    }
 	}
       else
-	retval = integrate (tout);
+	{
+	  retval = integrate (tout);
+
+	  if (integration_error)
+	    return retval;
+	}
     }
 
   return retval;

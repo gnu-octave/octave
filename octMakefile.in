@@ -133,6 +133,7 @@ clean-tar:
 
 dist-z:
 	echo octave-$(version) > .fname
+	rm -f `cat .fname`.tar.gz
 	gzip --best `cat .fname`.tar
 	rm -f .fname
 .PHONY: dist-z

@@ -1,3 +1,7 @@
+2000-02-29  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* examples/make_int.cc (make_int): Handle new operator names.
+
 2000-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (maintainer-clean distclean): Don't delete Makefile.

@@ -266,32 +266,32 @@ Creates an integer variable from VAL.")
       cerr << "installing integer type at type-id = "
 	   << octave_integer::static_type_id () << "\n";
 
-      INSTALL_UNOP (not, octave_integer, not);
-      INSTALL_UNOP (uminus, octave_integer, uminus);
-      INSTALL_UNOP (transpose, octave_integer, transpose);
-      INSTALL_UNOP (hermitian, octave_integer, hermitian);
+      INSTALL_UNOP (op_not, octave_integer, not);
+      INSTALL_UNOP (op_uminus, octave_integer, uminus);
+      INSTALL_UNOP (op_transpose, octave_integer, transpose);
+      INSTALL_UNOP (op_hermitian, octave_integer, hermitian);
 
-      INSTALL_NCUNOP (incr, octave_integer, incr);
-      INSTALL_NCUNOP (decr, octave_integer, decr);
+      INSTALL_NCUNOP (op_incr, octave_integer, incr);
+      INSTALL_NCUNOP (op_decr, octave_integer, decr);
 
-      INSTALL_BINOP (add, octave_integer, octave_integer, add);
-      INSTALL_BINOP (sub, octave_integer, octave_integer, sub);
-      INSTALL_BINOP (mul, octave_integer, octave_integer, mul);
-      INSTALL_BINOP (div, octave_integer, octave_integer, div);
-      INSTALL_BINOP (ldiv, octave_integer, octave_integer, ldiv);
-      INSTALL_BINOP (lt, octave_integer, octave_integer, lt);
-      INSTALL_BINOP (le, octave_integer, octave_integer, le);
-      INSTALL_BINOP (eq, octave_integer, octave_integer, eq);
-      INSTALL_BINOP (ge, octave_integer, octave_integer, ge);
-      INSTALL_BINOP (gt, octave_integer, octave_integer, gt);
-      INSTALL_BINOP (ne, octave_integer, octave_integer, ne);
-      INSTALL_BINOP (el_mul, octave_integer, octave_integer, el_mul);
-      INSTALL_BINOP (el_div, octave_integer, octave_integer, el_div);
-      INSTALL_BINOP (el_ldiv, octave_integer, octave_integer, el_ldiv);
-      INSTALL_BINOP (el_and, octave_integer, octave_integer, el_and);
-      INSTALL_BINOP (el_or, octave_integer, octave_integer, el_or);
+      INSTALL_BINOP (op_add, octave_integer, octave_integer, add);
+      INSTALL_BINOP (op_sub, octave_integer, octave_integer, sub);
+      INSTALL_BINOP (op_mul, octave_integer, octave_integer, mul);
+      INSTALL_BINOP (op_div, octave_integer, octave_integer, div);
+      INSTALL_BINOP (op_ldiv, octave_integer, octave_integer, ldiv);
+      INSTALL_BINOP (op_lt, octave_integer, octave_integer, lt);
+      INSTALL_BINOP (op_le, octave_integer, octave_integer, le);
+      INSTALL_BINOP (op_eq, octave_integer, octave_integer, eq);
+      INSTALL_BINOP (op_ge, octave_integer, octave_integer, ge);
+      INSTALL_BINOP (op_gt, octave_integer, octave_integer, gt);
+      INSTALL_BINOP (op_ne, octave_integer, octave_integer, ne);
+      INSTALL_BINOP (op_el_mul, octave_integer, octave_integer, el_mul);
+      INSTALL_BINOP (op_el_div, octave_integer, octave_integer, el_div);
+      INSTALL_BINOP (op_el_ldiv, octave_integer, octave_integer, el_ldiv);
+      INSTALL_BINOP (op_el_and, octave_integer, octave_integer, el_and);
+      INSTALL_BINOP (op_el_or, octave_integer, octave_integer, el_or);
 
-      INSTALL_BINOP (div, octave_integer, octave_scalar, i_s_div);
+      INSTALL_BINOP (op_div, octave_integer, octave_scalar, i_s_div);
     }
 
   octave_value retval;

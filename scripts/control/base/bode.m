@@ -145,73 +145,79 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 
   if (nargout < 1),
     ## Plot the information
-    if(gnuplot_has_multiplot)
-      oneplot();
-    endif
-    gset autoscale;
-    if(gnuplot_has_multiplot)
-      gset nokey;
-    endif
-    clearplot();
-    gset data style lines;
-    if(is_digital(sys))
-      xlstr = ["Digital frequency w=rad/sec.  pi/T=",num2str(pi/systsam)];
-      tistr = "(exp(jwT)) ";
-    else
-      xlstr = "Frequency in rad/sec";
-      tistr = "(jw)";
-    endif
-    xlabel(xlstr);
-    if(is_siso(sys))
-      if (gnuplot_has_multiplot)
-        subplot(2,1,1);
-      endif
-      title(["|[Y/U]",tistr,"|, u=", nth(inname,1),", y=",nth(outname,1)]);
-    else
-      title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
-      disp("MIMO plot from")
-      disp(__outlist__(inname,"     "));
-      disp("to")
-      disp(__outlist__(outname,"    "));
-    endif
-    wv = [min(w), max(w)];
-    if(do_db_plot && max(mag) > 0)
-      ylabel("Gain in dB");
-      md = 20*log10(mag);
-      axvec = axis2dlim([vec(w),vec(md)]);
-      axvec(1:2) = wv;
-      axis(axvec);
-    else
-      ylabel("Gain |Y/U|")
-      md = mag;
-    endif
-
-    grid("on");
-    if (do_db_plot)
-      semilogx(w,md);
-    else
-      loglog(w,md);
-    endif
-    if (is_siso(sys))
-      if (gnuplot_has_multiplot)
-        subplot(2,1,2);
-      else
-        prompt("Press any key for phase plot");
-      endif
-      axvec = axis2dlim([vec(w),vec(phase)]);
-      axvec(1:2) = wv;
-      axis(axvec);
-      xlabel(xlstr);
-      ylabel("Phase in deg");
-      title([ "phase([Y/U]", tistr, ...
-         "), u=", nth(inname,1),", y=",nth(outname,1)]);
-      grid("on");
-      semilogx(w,phase);
-      ## This should be the default for subsequent plot commands.
+    save_automatic_replot = automatic_replot;
+    unwind_protect
+      automatic_replot = 0;
       if(gnuplot_has_multiplot)
-        oneplot();
+	oneplot();
       endif
-    endif
+      gset autoscale;
+      if(gnuplot_has_multiplot)
+	gset nokey;
+      endif
+      clearplot();
+      gset data style lines;
+      if(is_digital(sys))
+	xlstr = ["Digital frequency w=rad/sec.  pi/T=",num2str(pi/systsam)];
+	tistr = "(exp(jwT)) ";
+      else
+	xlstr = "Frequency in rad/sec";
+	tistr = "(jw)";
+      endif
+      xlabel(xlstr);
+      if(is_siso(sys))
+	if (gnuplot_has_multiplot)
+	  subplot(2,1,1);
+	endif
+	title(["|[Y/U]",tistr,"|, u=", nth(inname,1),", y=",nth(outname,1)]);
+      else
+	title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
+	disp("MIMO plot from")
+	disp(__outlist__(inname,"     "));
+	disp("to")
+	disp(__outlist__(outname,"    "));
+      endif
+      wv = [min(w), max(w)];
+      if(do_db_plot && max(mag) > 0)
+	ylabel("Gain in dB");
+	md = 20*log10(mag);
+	axvec = axis2dlim([vec(w),vec(md)]);
+	axvec(1:2) = wv;
+	axis(axvec);
+      else
+	ylabel("Gain |Y/U|")
+	md = mag;
+      endif
+
+      grid("on");
+      if (do_db_plot)
+	semilogx(w,md);
+      else
+	loglog(w,md);
+      endif
+      if (is_siso(sys))
+	if (gnuplot_has_multiplot)
+	  subplot(2,1,2);
+	else
+	  prompt("Press any key for phase plot");
+	endif
+	axvec = axis2dlim([vec(w),vec(phase)]);
+	axvec(1:2) = wv;
+	axis(axvec);
+	xlabel(xlstr);
+	ylabel("Phase in deg");
+	title([ "phase([Y/U]", tistr, ...
+	   "), u=", nth(inname,1),", y=",nth(outname,1)]);
+	grid("on");
+	semilogx(w,phase);
+	## This should be the default for subsequent plot commands.
+	if(gnuplot_has_multiplot)
+	  oneplot();
+	endif
+      endif
+    unwind_protect_cleanup
+      automatic_replot = save_automatic_replot;
+    end_unwind_protect
   else
     mag_r = mag;
     phase_r = phase;

@@ -1,3 +1,7 @@
+2000-02-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/base/bode.m: Temporarily disable automatic_replot.
+
 2000-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (clean): Also remove gethelp.

@@ -814,7 +814,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
             dim(i) = static_cast<int> (fix (v(i)));
         }
       else
-        warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+        error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
   check_dimensions (dim, warn_for); // May set error_state.
@@ -845,7 +845,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 	  nc = static_cast<int> (fix (v (1)));
 	}
       else
-	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+	error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
   check_dimensions (nr, nc, warn_for); // May set error_state.

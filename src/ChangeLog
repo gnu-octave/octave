@@ -1,5 +1,8 @@
 2005-03-29  John W. Eaton  <jwe@octave.org>
 
+	* utils.cc (get_dimensions): Produce error instead of warning if
+	given a matrix argument.
+
 	* load-save.cc (Fload, Fsave): Also accept -V4 option.
 
 	* ls-hdf5.h (hdf5_fstreambase::hdf5_fstreambase,

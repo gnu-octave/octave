@@ -27,7 +27,6 @@ function [zer,pol,k] = ss2zp(a,b,c,d)
 # Written by David Clem August 15, 1994
 # Hodel: changed order of output arguments to zer, pol, k. July 1996
 # a s hodel: added argument checking, allow for pure gain blocks aug 1996
-# $Revision: 2.0.0.2 $
 
   if(nargin != 4)
     usage("[zer,pol,k] = ss2zp(a,b,c,d)");

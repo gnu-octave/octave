@@ -28,22 +28,21 @@ function names = sysgroupn(names,kind)
 #
 #  used internally in sysgroup
 
-# $Revision: 2.0.0.2 $
-
   # check for duplicate names
   l = length(names);
   ii = 1;
-  while(ii < l-1)
+  while(ii <= l-1)
     st1 = nth(names,ii);
     jj = ii+1;
-    while ( jj < l)
+    while ( jj <= l)
       st2 = nth(names,jj);
       if(strcmp(st1,st2))
         suffix = ["_",num2str(jj)];
-        warning("sysgroup: %s name(%d) = %s name(%d); appending suffix %s to %d", ...
-		kind,ii,kind,jj,suffix,jj);
+        warning("sysgroup: %s name(%d) = %s name(%d) = %s", ...
+	  kind,ii,kind,jj,st1);
         strval = sprintf("%s%s",st2,suffix);
         names(jj) = strval;
+        warning("sysgroup:     changed %s name %d to %s",kind,jj,strval);
         # restart the check (just to be sure there's no further duplications)
         ii = 0; jj = l;
       endif

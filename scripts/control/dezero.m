@@ -26,7 +26,6 @@
 ## Adapted from deblank by A. S. Hodel (a.s.hodel@eng.auburn.edu)
 ## 	(the name dezero is a reference to the Fermilab D0 experiment,
 ##      where my sister did her PhD research) 
-## $Revision: 2.0.0.2 $
 
 function t = dezero (s)
 

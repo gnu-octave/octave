@@ -28,7 +28,6 @@ function retsys = sysout(sys,opt)
 #      "all": all of the above
 
 # Written by A S Hodel: 1995-1996
-# $Revision: 2.0.0.2 $
 
 # save for restoring at end of routine
 save_val = implicit_str_to_num_ok;

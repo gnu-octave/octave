@@ -23,7 +23,6 @@ function prompt(str)
 # Written by David Clem August 15, 1994
 # Modified A. S. Hodel June 1995
 
-# $Revision: 2.0.0.2 $
 
 if(nargin > 1)
   usage("prompt([str])");

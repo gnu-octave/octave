@@ -32,7 +32,6 @@ function out = ltifr(a,b,w)
 
   # R. B. Tenison, D. Clem, A. S. Hodel, July 1995
   # updated by John Ingram August 1996 for system format
-  # $Revision: 2.0.0.2 $
   
   if ((nargin < 2) || (nargin > 3))
     error("incorrect number of input arguments");

@@ -26,8 +26,6 @@ function [dsys,Adc,Cdc] = sysdisc(sys)
 #    outputs, respectively.
 #
 
-# $Revision: 2.0.0.2 $
-
   save_val = implicit_str_to_num_ok;	# save for later
   save_empty = empty_list_elements_ok;
   empty_list_elements_ok = implicit_str_to_num_ok = 1;

@@ -33,7 +33,6 @@ function sysp = parallel(Asys,Bsys)
 # Written by David Clem August 15, 1994
 # completely rewritten Oct 1996 a s hodel
 # SYS_INTERNAL accesses members of system structure
-# $Revision: 2.0.0.2 $
 
   if(nargin != 2)
     usage("sysp = parallel(Asys,Bsys)");
@@ -48,10 +47,18 @@ function sysp = parallel(Asys,Bsys)
   if(mA != mB)
     error(["Asys has ",num2str(mA)," inputs, Bsys has ",num2str(mB)," inputs"]);
   endif
+
+  # save signal names
+  Ain = sysgetsignals(Asys,"in");
+
+  # change signal names to avoid warning messages from sysgroup
+  Asys = syssetsignals(Asys,"in",sysdefioname(length(Ain),"Ain_u"));
+  Bsys = syssetsignals(Bsys,"in",sysdefioname(length(Ain),"Bin_u"));
+
   sysp = sysgroup(Asys,Bsys);
   sysD = ss2sys([],[],[],[eye(mA);eye(mA)]);
   
   sysp = sysmult(sysp,sysD);
-  sysp = syssetsignals(sysp,"in",sysgetsignals(Asys,"in"));
+  sysp = syssetsignals(sysp,"in",Ain);
   
 endfunction

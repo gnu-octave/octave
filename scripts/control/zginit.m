@@ -29,7 +29,6 @@ function zz = zginit(a,b,c,d)
   
   # A. S. Hodel July 24 1992
   # Conversion to Octave by R. Bruce Tenison, July 3, 1994
-  # $Revision: 2.0.0.2 $
 
   [nn,mm] = size(b);
   [pp,mm] = size(d);

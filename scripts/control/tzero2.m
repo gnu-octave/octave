@@ -27,7 +27,6 @@ function zr = tzero2 (a, b, c, d, bal)
 # Needs to incorporate mvzero algorithm to isolate finite zeros.
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
-# $Revision: 2.0.0.2 $
 
   if (nargin == 4)
     bal = "B";

@@ -42,7 +42,6 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
   #    Pf: ARE solution matrix for filter subproblem
 
   # Updated for System structure December 1996 by John Ingram
-  # $Revision: 2.0.0.2 $
 
   if ((nargin < 3) | (nargin > 4))
     usage("[K,gain, Kc, Kf, Pc, Pf] = h2syn(Asys,nu,ny[,tol])");

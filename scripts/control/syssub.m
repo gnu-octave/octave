@@ -36,7 +36,6 @@ function sys = syssub(Gsys,Hsys)
 #                  --------
 
 # Written by John Ingram July 1996
-# $Revision: 2.0.0.2 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -82,13 +81,16 @@ function sys = syssub(Gsys,Hsys)
   Gsys = sysupdate(Gsys,"ss");
   Hsys = sysupdate(Hsys,"ss");
 
+  # change signal names to avoid warning messages from sysgroup
+  Gsys = syssetsignals(Gsys,"in",sysdefioname(length(Gin),"Gin_u"));
+  Gsys = syssetsignals(Gsys,"out",sysdefioname(length(Gout),"Gout_u"));
+  Hsys = syssetsignals(Hsys,"in",sysdefioname(length(Hin),"Hin_u"));
+  Hsys = syssetsignals(Hsys,"out",sysdefioname(length(Hout),"Hout_u"));
+  
   sys = sysgroup(Gsys,Hsys);
 
   eyin = eye(mg); eyout = eye(pg);
 
-  inname = Gin;
-  outname = Gout;
-
-  sys = sysscale(sys,[eyout -eyout],[eyin;eyin],outname,inname);
+  sys = sysscale(sys,[eyout -eyout],[eyin;eyin],Gout,Gin);
 
 endfunction

@@ -35,7 +35,6 @@ function [y,x] = lsim(sys,u,t,x0)
 
 # Written by David Clem, A. S. Hodel July 1995
 # modified by John Ingram for system format August 1996
-# $Revision: 2.0.0.2 $
 
 
   if((nargin < 3)||(nargin > 4))

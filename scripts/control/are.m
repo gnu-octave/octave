@@ -35,7 +35,6 @@ function x = are (a, b, c, opt)
 # See also: balance
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
-# $Revision: 1.20 $
 
   if (nargin == 3 || nargin == 4)
     if (nargin == 4)

@@ -57,64 +57,6 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
 # Modified by David Clem November 13, 1994
 # again by A. S. Hodel July 1995 (smart plot range, etc.)
 # Modified by Kai P. Mueller September 28, 1997 (multiplot mode)
-# $Revision: 2.0.0.2 $
-# $Log: bode.m,v $
-# Revision 2.0.0.2  1998/12/08  23:29:23  hodel
-# Octave-Marsyas Interface updated for signals-as-lists
-#
-# Revision 2.0.0.1  1998/12/08  21:40:45  hodel
-# Dummy version to match ftp.eng.auburn.edu version number
-#
-# Revision 2.0.0.0  1998/12/08  21:36:52  hodel
-# Branch for beta release patches
-#
-# Revision 2.0  1998/12/08  21:34:57  hodel
-# Initial beta release of signals-as-lists rewrite;
-# sysdimensions now takes opt as an argument
-#
-# Revision 2.0.0.1  1998/12/08  20:54:19  hodel
-# sysdimensions takes opt parameter now
-#
-# Revision 2.0.0.0  1998/12/08  20:30:09  hodel
-# beta release revision
-#
-# Revision 2.0  1998/12/08  20:27:56  hodel
-# Initial list rewrite of OCST
-#
-# Revision 1.7  1998/10/21 12:46:59  hodelas
-# moved grid command so that grid appears in plots
-#
-# Revision 1.6  1998/09/04 20:57:18  hodelas
-# fixed bodquist bug (use reshape instead of  transpose); removed extraneous
-# output from bode.
-#
-# Bodquist is now much faster
-#
-# Revision 1.4  1998/08/24 15:50:03  hodelas
-# updated documentation
-#
-# Revision 1.3  1998/08/13 20:11:27  hodelas
-# Added calls to axis2dlim for flat-plots
-#
-# Revision 1.2  1998/07/24 18:16:51  hodelas
-# rewrote bodquist as a function call.  nyquist interactive plot now optional
-#
-# Revision 1.1.1.1  1998/05/19 20:24:05  jwe
-#
-# Revision 1.7  1998/02/09 13:04:11  scotte
-# fixed oneplot/gset nokey to function only if gnuplot_has_multiplot
-#
-# Revision 1.6  1997/12/01 16:51:50  scotte
-# updated by Mueller 27 Nov 97
-#
-# Revision 1.2  1997/11/24  18:53:01  mueller
-# gset autoscale prevents the following error message:
-#    line 0: x range must be greater than 0 for log scale!
-# gset nokey and call to oneplot() added
-#
-# Revision 1.1  1997/11/11  17:31:27  mueller
-# Initial revision
-#
 
   # check number of input arguments given
   if (nargin < 1 | nargin > 4)
@@ -158,7 +100,6 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
       tistr = "(jw)";
     endif
     xlabel(xlstr);
-    ylabel("Gain in dB");
     if(is_siso(sys))
       if (gnuplot_has_multiplot)
         subplot(2,1,1);
@@ -172,7 +113,13 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
       disp(outlist(outname,"	"));
     endif
     wv = [min(w), max(w)];
-    md = 20*log10(mag);
+    if(max(mag) > 0)
+      ylabel("Gain in dB");
+      md = 20*log10(mag);
+    else
+      ylabel("Gain |Y/U|")
+      md = mag;
+    endif
 
     axvec = axis2dlim([vec(w),vec(md)]);
     axvec(1:2) = wv;

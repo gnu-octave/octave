@@ -32,7 +32,6 @@ function [yy,idx] = sortcom(xx,opt)
 # idx: permutation vector: yy = xx(idx)
 
 # Written by A. S. Hodel June 1995
-# $Revision: 2.0.0.2 $
 
   if( nargin < 1 | nargin > 2 )
      usage("yy = sortcom(xx[,opt]");
@@ -46,34 +45,35 @@ function [yy,idx] = sortcom(xx,opt)
       error("sortcom: second argument must be a string");
     endif
   endif
-
-  if(strcmp(opt,"re"))        datavec = real(xx);
-  elseif(strcmp(opt,"im"))    datavec = imag(xx);
-  elseif(strcmp(opt,"mag"))   datavec = abs(xx);
+ 
+  if(isempty(xx))
+    yy = idx = [];
   else
-    error(["sortcom: illegal option = ", opt])
-  endif
-
-  [datavec,idx] = sort(datavec);
-  yy= xx(idx);
-  
-  if(strcmp(opt,"re") | strcmp(opt,"mag"))
-    # sort so that complex conjugate pairs appear together
-    
-    ddiff = diff(datavec);
-    zidx = find(ddiff == 0);
-
-    # sort common datavec values
-    if(!isempty(zidx))
-      for iv=create_set(datavec(zidx))
-        vidx = find(datavec == iv);
-        [vals,imidx] = sort(imag(yy(vidx)));
-        yy(vidx)  = yy(vidx(imidx));
-        idx(vidx) = idx(vidx(imidx));
-      endfor
+    if(strcmp(opt,"re"))        datavec = real(xx);
+    elseif(strcmp(opt,"im"))    datavec = imag(xx);
+    elseif(strcmp(opt,"mag"))   datavec = abs(xx);
+    else                        error(["sortcom: illegal option = ", opt])
     endif
-
-  endif
-
+  
+    [datavec,idx] = sort(datavec);
+    yy= xx(idx);
+    
+    if(strcmp(opt,"re") | strcmp(opt,"mag"))
+      # sort so that complex conjugate pairs appear together
+      
+      ddiff = diff(datavec);
+      zidx = find(ddiff == 0);
+  
+      # sort common datavec values
+      if(!isempty(zidx))
+        for iv=create_set(datavec(zidx))
+          vidx = find(datavec == iv);
+          [vals,imidx] = sort(imag(yy(vidx)));
+          yy(vidx)  = yy(vidx(imidx));
+          idx(vidx) = idx(vidx(imidx));
+        endfor
+      endif
+    endif
+  endif  
 endfunction
-
+  

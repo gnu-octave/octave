@@ -47,7 +47,6 @@
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993
 ## Adapted-By: jwe
-## $Revision: 1.17 $
 
 function x = dare (a, b, c, r, opt)
 

@@ -20,7 +20,6 @@ function analdemo()
 # Octave Controls toolbox demo: State Space analysis demo
 # Written by David Clem August 15, 1994
 # Updated by John Ingram December 1996
-# $Revision: 2.0.0.2 $
   
   while (1)
     clc

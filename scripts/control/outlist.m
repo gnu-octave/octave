@@ -34,7 +34,6 @@ function str_val = outlist(name_list,tabchar,yd,ilist)
 #   prints the list to the screen, numbering each string in order.
 
 # A. S. Hodel Dec. 1995, 1998
-# $Revision: 2.0.0.2 $
 
 #save for restore later
 save_empty = empty_list_elements_ok;

@@ -28,7 +28,7 @@ function x = zgscal(a,b,c,d,z,n,m,p)
   
   # A. S. Hodel July 24 1992
   # Conversion to Octave R. Bruce Tenison July 3, 1994
-  # $Revision: 2.0.0.2 $
+
 
   #**************************************************************************
   #initialize parameters:
@@ -42,6 +42,41 @@ function x = zgscal(a,b,c,d,z,n,m,p)
   xk2 = x;
   rk1 = z;
   k = 0;
+
+  # construct balancing least squares problem
+  F = eye(nmp);
+  for kk=1:nmp
+    F(1:nmp,kk) = zgfmul(a,b,c,d,F(:,kk));
+  endfor
+
+  [U,H,k1] = krylov(F,z,nmp,1e-12);
+  if(!is_square(H))
+    if(columns(H) != k1) 
+      error("zgscal(tzero): k1=%d, columns(H)=%d",k1,columns(H));
+    elseif(rows(H) != k1+1)
+      error("zgscal: k1=%d, rows(H) = %d",k1,rows(H));
+    elseif ( norm(H(k1+1,:)) > 1e-12*norm(H,"inf") )
+      zgscal_last_row_of_H = H(k1+1,:)
+      error("zgscal: last row of H nonzero (norm(H)=%e)",norm(H,"inf"))
+    endif
+    H = H(1:k1,1:k1);
+    U = U(:,1:k1);
+  endif
+
+  # tridiagonal H can still be rank deficient, so do permuted qr 
+  # factorization
+  [qq,rr,pp] = qr(H);	# H = qq*rr*pp'
+  nn = rank(rr);
+  qq = qq(:,1:nn);
+  rr = rr(1:nn,:);            # rr may not be square, but "\" does least
+  xx = U*pp*(rr\qq'*(U'*z));  # squares solution, so this works
+  #xx1 = pinv(F)*z;
+  #zgscal_x_xx1_err = [xx,xx1,xx-xx1]
+  return;
+
+  # the rest of this is left from the original zgscal;
+  # I've had some numerical problems with the GCG algorithm,
+  # so for now I'm solving it with the krylov routine.
 
   #initialize residual error norm
   rnorm = norm(rk1,1);

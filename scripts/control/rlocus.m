@@ -42,7 +42,6 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
   # Written by Clem and Tenison
   # Updated by Kristi McGowan July 1996 for intelligent gain selection
   # Updated by John Ingram July 1996 for systems
-  # $Revision: 2.0.0.2 $
   
   if (nargin < 1) | (nargin > 4)
     usage("rlocus(sys[,inc,mink,maxk])");

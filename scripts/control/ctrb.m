@@ -35,7 +35,6 @@ function Qs = ctrb(sys, b)
   # Written by Kai P. Mueller November 4, 1997
   # based on is_controllable.m of Scottedward Hodel
   # modified by
-  # $Revision: 2.0.0.2 $
 
   if (nargin == 2)
     a = sys;

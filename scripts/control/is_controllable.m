@@ -37,7 +37,6 @@ function [retval,U] = is_controllable (a, b, tol)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
-# $Revision: 1.16 $
 
   deftol = 1;    # assume default tolerance
   if(nargin < 1 | nargin > 3)

@@ -28,7 +28,6 @@ function outsys = ugain(n)
 
   # Written by Kai P. Mueller April, 1998
   # Updates
-  # $Revision: 2.0.0.2 $
 
   if((nargin != 1) || (nargout > 1))
     usage("outsys = ugain(n)")

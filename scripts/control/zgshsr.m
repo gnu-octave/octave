@@ -24,7 +24,6 @@ function x = zgshsr(y)
 
   # A. S. Hodel July 24, 1992
   # Conversion to Octave by R. Bruce Tenison July 3, 1994
-  # $Revision: 2.0.0.2 $
 
   if(!is_vector(y))
     error(sprintf("y(%dx%d) must be a vector",rows(y),columns(y)));

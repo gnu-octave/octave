@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -56,15 +56,10 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
 
   # A. S. Hodel August 1995
   # Updated for Packed system structures December 1996 by John Ingram
-  # $Revision: 2.0.0.2 $
   #
   # Revised by Kai P Mueller April 1998 to solve the general H_infinity
   # problem using unitary transformations Q (on w and z)
   # and non-singular transformations R (on u and y).
-  # $Revision: 2.0.0.2 $
-
-  old_page_val = page_screen_output;
-  page_screen_output = 0;
 
   if( (nargin < 1) | (nargin > 8) )
     usage("[K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)");
@@ -151,17 +146,38 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
     printf("----------------------------------------");
     printf("--------------------------------------\n");
 
+    # set up error messages
+    errmesg = list(" o   o   o   o   o  ", ...
+	" #   -   -   -   -  ", ...
+	" o   #   -   -   -  ", ...
+	" o   o   #   -   -  ", ...
+	" o   o   o   #   -  ", ...
+	" o   o   o   o   #  ", ...
+	" -   -   -   -   -  ");
+    errdesx = list("", ...
+	"X im eig.", ...
+	"Hx not Ham.", ...
+	"X inf.eig", ...
+	"X not symm.", ...
+	"X not pos", ...
+	"R singular");
+
+    errdesy = list(" ", ...
+	"Y im eig.", ...
+	"Hy not Ham.", ...
+	"Y inf.eig", ...
+	"Y not symm.", ...
+	"Y not pos", ...
+	"Rtilde singular");
+
+
     # now do the search
     while (!iteration_finished)
       switch (search_state)
-        case (0)
-	  g = ghi;
-        case (1)
-	  g = glo;
-        case (2)
-	  g = 0.5 * (ghi + glo);
-        otherwise
-	  error(" *** This should never happen!");
+        case (0) 	g = ghi;
+        case (1) 	g = glo;
+        case (2) 	g = 0.5 * (ghi + glo);
+        otherwise 	error(" *** This should never happen!");
       endswitch
       printf("%10.4f ", g);
 
@@ -175,128 +191,39 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
       Rtilde(1:nz,1:nz) = -g*g*eye(nz);
       Rtilde = Rtilde + ddot1 * ddot1';
 
-      # build hamiltonian Ha for X_inf
-      xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
-      Ha = [A 0*A; -C1'*C1 -A'] - xx;
-      x_ha_err = 0;
-      # copied from from are(...)...
-      [d, Ha] = balance(Ha);
-      [u, s] = schur(Ha, "A");
-      rev = real(eig(s));
-      if (any(abs(rev) <= ptol))
-        # eigenvalues near the imaginary axis
-        x_ha_err = 1;
-      elseif (sum(rev > 0) != sum(rev < 0))
-        # unequal number of positive and negative eigenvalues
-	x_ha_err = 2;
-      else
-	# compute positive Riccati equation solution
-      	u = d * u;
-      	Xinf = u(n+1:2*n,1:n) / u(1:n,1:n);
-	if (!all(all(finite(Xinf))))
-	  x_ha_err = 3;
-	elseif (norm(Xinf-Xinf') >= 10*ptol)
-	  # solution not symmetric
-	  x_ha_err = 4;
-	else
-	  # positive semidefinite?
-	  rev = eig(Xinf);
-	  if (any(rev <= -ptol))
-	    x_ha_err = 5;
-	  endif
-	endif
-      endif
-      
-      # build hamiltonian Ha for Y_inf
-      xx = ([CC'; -B1*ddot1']/Rtilde) * [ddot1*B1' CC];
-      Ha = [A' 0*A; -B1*B1' -A] - xx;
-      y_ha_err = 0;
-      # copied from from are(...)...
-      [d, Ha] = balance(Ha);
-      [u, s] = schur(Ha, "A");
-      rev = real(eig(s));
-      if (any(abs(rev) <= ptol))
-        # eigenvalues near the imaginary axis
-        y_ha_err = 1;
-      elseif (sum(rev > 0) != sum(rev < 0))
-        # unequal number of positive and negative eigenvalues
-	y_ha_err = 2;
-      else
-	# compute positive Riccati equation solution
-      	u = d * u;
-      	Yinf = u(n+1:2*n,1:n) / u(1:n,1:n);
-	if (!all(all(finite(Yinf))))
-	  y_ha_err = 3;
-	elseif (norm(Yinf-Yinf') >= 10*ptol)
-	  # solution not symmetric
-	  x_ha_err = 4;
-     	else
-	  # positive semidefinite?
-	  rev = eig(Yinf);
-	  if (any(rev <= -ptol))
-	    y_ha_err = 5;
-	  endif
-	endif
-      endif
+      [Xinf,x_ha_err] = hinfsyn_ric(A,BB,C1,d1dot,R,ptol);
+      [Yinf,y_ha_err] = hinfsyn_ric(A',CC',B1',ddot1',Rtilde,ptol);
 
       # assume failure for this gamma
       passed = 0;
+      rerr="";
       if (!x_ha_err && !y_ha_err)
 	# test spectral radius condition
 	rho = max(abs(eig(Xinf * Yinf)));
 	if (rho < g*g)
 	  # spectral radius condition passed
 	  passed = 1;
+        else
+          rerr = sprintf("rho=%f",rho);
 	endif
       endif
 
-      switch (x_ha_err)
-	case (0)
-	  #       iax nev ene sym pos
-	  printf(" o   o   o   o   o  ");
-          xerr = " ";
-	case (1)
-	  printf(" #   -   -   -   -  ");
-          xerr = "X im.eig.";
-	case (2)
-	  printf(" o   #   -   -   -  ");
-          xerr = "Hx not Ham.";
-	case (3)
-	  printf(" o   o   #   -   -  ");
-          xerr = "X inf.eig.";
-	case (4)
-	  printf(" o   o   o   #   -  ");
-          xerr = "X not symm.";
-	case (5)
-	  printf(" o   o   o   o   #  ");
-          xerr = "X not pos.";
-	otherwise
-	  error(" *** Xinf fail: this should never happen!");
-      endswitch
-      switch (y_ha_err)
-	case (0)
-	  #       iax nev ene sym pos rho
-	  if (passed)
-	    printf(" o   o   o   o   o   o    y  all tests passed.\n");
-	  elseif (x_ha_err)
-	    printf(" o   o   o   o   o   -    n  %s\n", xerr);
-	  else
-	    printf(" o   o   o   o   o   #    n  rho=%f.\n", rho);
-	  endif
-	case (1)
-	  printf(" #   -   -   -   -   -    n  %s/Y im. eig.", xerr);
-	case (2)
-	  printf(" o   #   -   -   -   -    n  %s/Hy not Ham.", xerr);
-	case (3)
-	  printf(" o   o   #   -   -   -    n  %s/Y inf.eig.", xerr);
-	case (4)
-	  printf(" o   o   o   #   -   -    n  %s/Y not symm.", xerr);
-	case (5)
-	  printf(" o   o   o   o   #   -    n  %s/Y not pos.", xerr);
-	otherwise
-	  error(" *** Yinf fail: this should never happen!");
-      endswitch
+      if(x_ha_err >= 0 & x_ha_err <= 6)
+        printf("%s",nth(errmesg,x_ha_err+1));
+        xerr = nth(errdesx,x_ha_err+1);
+      else
+        error(" *** Xinf fail: this should never happen!");
+      endif
 
+      if(y_ha_err >= 0 & y_ha_err <= 6)
+        printf("%s",nth(errmesg,y_ha_err+1));
+        yerr = nth(errdesy,y_ha_err+1);
+      else
+        error(" *** Yinf fail: this should never happen!");
+      endif
+
+      if(passed)  printf("  y all tests passed.\n");
+      else        printf("  n %s/%s%s\n",xerr,yerr,rerr);          endif
 
       if (passed && (de/g < gtol))
 	search_state = 3;
@@ -312,25 +239,19 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
             search_state = 1;
 	  endif
         case (1)
-	  if (!passed)
-            search_state = 2;
+	  if (!passed)      search_state = 2;
 	  else
 	    # lower bound must not pass but passed
 	    fprintf(" *** the lower bound of gamma (%f) passed.\n", g);
 	    iteration_finished = 3;
 	  endif
         case (2)
-	  if (!passed)
-	    glo = g;
-	  else
-	    ghi = g;
-	  endif
-	    de = ghi - glo;
-        case (3)
-	  # done
-	  iteration_finished = 1;
-        otherwise
-	  error(" *** This should never happen!");
+          # Normal case; must check that singular R, Rtilde wasn't the problem.
+	  if ((!passed) & (x_ha_err != 6) & (y_ha_err != 6) ) glo = g;
+	  else         ghi = g;        endif
+	  de = ghi - glo;
+        case (3)       iteration_finished = 1;        # done
+        otherwise      error(" *** This should never happen!");
       endswitch
     endwhile
 
@@ -366,5 +287,4 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
 
   endif
 
-  page_screen_output = old_page_val;
 endfunction

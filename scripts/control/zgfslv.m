@@ -22,7 +22,6 @@ function x = zgfslv(n,m,p,b)
   
   # Written by A. Scotte Hodel
   # Converted to Octave by R Bruce Tenison, July 3, 1994
-  # $Revision: 2.0.0.2 $
 
   nmp = n+m+p;
   gam1 = (2*n)+m+p;    gam2 = n+p;     gam3 = n+m;

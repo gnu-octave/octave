@@ -22,7 +22,6 @@ function [a1,b1] = swap(a,b)
 
   # A. S. Hodel July 24 1992
   # Conversion to Octave R. Bruce Tenison July 4, 1994
-  # $Revision: 2.0.0.2 $
 
   a1 = b;
   b1 = a;

@@ -36,7 +36,6 @@ function [sys] = sysmult(Asys,Bsys)
 # does not recognize discrete inputs)
 
 # Written by John Ingram July 1996
-# $Revision: 2.0.0.2 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -78,6 +77,10 @@ function [sys] = sysmult(Asys,Bsys)
       endif
     endif
   endif
+
+  # change signal names to avoid spurious warnings from sysgroup
+  Asys = syssetsignals(Asys,"in",sysdefioname(Am,"A_sysmult_tmp_name"));
+  Bsys = syssetsignals(Bsys,"out",sysdefioname(Bp,"B_sysmult_tmp_name"));
 
   sys = sysgroup(Asys,Bsys);
 

@@ -26,7 +26,6 @@ function gm = dcgain(sys, tol)
 #
 
 # Written by Kai P Mueller (mueller@ifr.ing.tu-bs.de) October 1, 1997
-# $Revision: 2.0.0.2 $
 
   if((nargin < 1) || (nargin > 2) || (nargout > 1))
     usage("[gm, ok] = dcgain(sys[, tol])");

@@ -72,7 +72,6 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   #
 
   #  Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
-  # $Revision: 1.6 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;

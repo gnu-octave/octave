@@ -47,7 +47,6 @@ function [K,Q,P,Ee,Er] = dlqg(A,B,C,G,Sigw, Sigv,Q,R)
 # See also: lqg, dlqe, dlqr
 
 # Written by A. S. Hodel August 1995
-# $Revision: 2.0.0.2 $
 
 warning("dlqg: obsolete. use lqg instead (system data structure format)");
 

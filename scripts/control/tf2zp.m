@@ -23,7 +23,6 @@ function [zer,pol,k] = tf2zp(num,den)
 # defined by num/den.  K is a gain associated with the system zeros.
 
 # Written by A. S. Hodel, etc.
-# $Revision: 2.0.0.2 $
 
   if(nargin == 2)
     if(length(den) > 1)          pol = roots(den);

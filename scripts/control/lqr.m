@@ -47,7 +47,6 @@ function [k, p, e] = lqr (a, b, q, r, s)
 # reference: Anderson and Moore, OPTIMAL CONTROL: LINEAR QUADRATIC METHODS,
 # Prentice-Hall, 1990, pp. 56-58
 
-# $Revision: 1.15 $
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 

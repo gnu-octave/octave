@@ -39,7 +39,6 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
 # k is a gain that is associated with the zero vector.
 
 # Written by David Clem August 15, 1994
-# $Revision: 2.0.0.2 $
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;

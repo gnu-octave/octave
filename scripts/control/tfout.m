@@ -28,7 +28,6 @@ function tfout(num,denom,x)
 #	filter, polyderiv, polyinteg, polyout
 
 # Written by A. Scottedward Hodel (scotte@eng.auburn.edu) June 1995)
-# $Revision: 2.0.0.2 $
   
   save_val = implicit_str_to_num_ok;
   save_empty = empty_list_elements_ok;

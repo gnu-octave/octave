@@ -39,7 +39,6 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
 
 # A. S. Hodel August 1995
 # modified by John Ingram 7-15-96
-# $Revision: 2.0.0.2 $
 
   if( (nargin < 3) || (nargin > 5)  )
     usage("retsys = sysscale(Asys,output_list,input_list{,inname,outname})");

@@ -21,7 +21,6 @@ function DEMOcontrol()
 # Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
 #  
 # Written by David Clem August 15, 1994
-# $Revision: 2.0.0.2 $    
 
   disp(' O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X')
 

@@ -21,17 +21,6 @@ function bddemo()
 # Written by David Clem August 15, 1994
 # Modified by A S Hodel Summer-Fall 1996
 
-# Revision 1.6  1998/05/05 17:02:45  scotte
-# updated May 5 by Kai Meuller
-#
-# Revision 1.2  1998/05/05  13:21:51  mueller
-# buildssic command description
-# buildssic example added
-#
-# Revision 1.1  1998/05/05  13:20:26  mueller
-# Initial revision
-#
- 
   str_sav = implicit_str_to_num_ok;
   sav_page = page_screen_output;
   implicit_str_to_num_ok = 1;

@@ -21,8 +21,6 @@ function stname = sysdefstname(n,nz)
 # return default state names given n, nz
 # used internally, minimal argument checking
 
-# $Revision: 2.0.0.2 $
-
   stname = list();
   if(n > 0)
     for ii = 1:n

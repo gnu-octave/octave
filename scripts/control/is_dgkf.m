@@ -70,7 +70,6 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   
   #  Written by A. S. Hodel
   #  Updated by John Ingram July 1996 to accept structured systems
-  #  $Revision: 2.0.0.2 $
   #
   # Revised by Kai P Mueller April 1998 to solve the general H_infinity
   # problem using unitary transformations Q (on w and z)
@@ -92,7 +91,6 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   #
   # This transformation together with the algorithm in [1] solves
   # the general problem (see [2] for example). 
-  # $Revision: 2.0.0.2 $
 
   if (nargin < 3) | (nargin > 4)
     usage("[retval,dgkf_struct] = is_dgkf(Asys,nu,ny{,tol})");

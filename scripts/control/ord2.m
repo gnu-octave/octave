@@ -38,7 +38,6 @@ function outsys = ord2(nfreq, damp, gain)
 
   # Written by Kai P. Mueller September 28, 1997
   # Updates
-  # $Revision: 2.0.0.2 $
 
   if(nargin != 2 & nargin != 3)
     usage("outsys = ord2(nfreq, damp[, gain])")

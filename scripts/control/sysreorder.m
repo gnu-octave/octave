@@ -28,7 +28,6 @@ function pv = sysreorder(vlen,list)
 # to use this at home!
 
 # A. S. Hodel, Aug 1995
-# $Revision: 2.0.0.2 $
   
   #disp('sysreorder: entry')
   

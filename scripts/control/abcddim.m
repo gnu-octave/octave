@@ -35,54 +35,6 @@ function [n, m, p] = abcddim (a, b, c, d)
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # a s hodel: modified to accept pure-gain systems aug 1996
-# $Revision: 1.17 $
-# $Log: abcddim.m,v $
-# Revision 1.17  1998-12-10 03:06:31  jwe
-# *** empty log message ***
-#
-# Revision 2.0.0.2  1998/12/08  23:29:21  hodel
-# Octave-Marsyas Interface updated for signals-as-lists
-#
-# Revision 2.0.0.1  1998/12/08  21:40:44  hodel
-# Dummy version to match ftp.eng.auburn.edu version number
-#
-# Revision 2.0.0.0  1998/12/08  21:36:51  hodel
-# Branch for beta release patches
-#
-# Revision 2.0  1998/12/08  21:34:56  hodel
-# Initial beta release of signals-as-lists rewrite;
-# sysdimensions now takes opt as an argument
-#
-# Revision 2.0.0.1  1998/12/08  20:54:18  hodel
-# sysdimensions takes opt parameter now
-#
-# Revision 2.0.0.0  1998/12/08  20:30:08  hodel
-# beta release revision
-#
-# Revision 2.0  1998/12/08  20:27:55  hodel
-# Initial list rewrite of OCST
-#
-# Revision 1.2  1998/10/05 17:12:56  hodelas
-# various bug changes
-#
-# Revision 1.1.1.1  1998/05/19 20:24:05  jwe
-#
-# Revision 1.4  1997/12/01 16:44:22  scotte
-# *** empty log message ***
-#
-# Revision 1.3  1997/02/12 15:38:14  hodel
-# *** empty log message ***
-#
-#
-# fixed typo
-#
-# Revision 1.1  1997/02/12 11:34:53  hodel
-# Initial revision
-#
-# Revision 1.7  1997/02/07 15:29:56  scotte
-# fixed is_square check to allow for empty a matrix
-# (this allows for pure gain blocks)
-#
 
   if (nargin != 4)
     error ("abcddim: four arguments required");

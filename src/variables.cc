@@ -672,6 +672,12 @@ is_function_file (FILE *ffile)
   return status;
 }
 
+static void
+restore_command_history (void *)
+{
+  octave_command_history.ignore_entries (! user_pref.saving_history);
+}
+
 static int
 parse_fcn_file (int exec_script, const string& ff)
 {
@@ -707,6 +713,13 @@ parse_fcn_file (int exec_script, const string& ff)
 
       if (is_function_file (ffile))
 	{
+	  // XXX FIXME XXX -- we shouldn't need both the
+	  // octave_command_history object and the
+	  // user_pref.saving_history variable...
+	  octave_command_history.ignore_entries ();
+
+	  add_unwind_protect (restore_command_history, 0);
+
 	  unwind_protect_int (user_pref.echo_executing_commands);
 	  unwind_protect_int (user_pref.saving_history);
 	  unwind_protect_int (reading_fcn_file);

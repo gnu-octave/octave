@@ -28,7 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
-#include <csetjmp>
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
@@ -46,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <pwd.h>
 
 #include "lo-error.h"
+#include "str-vec.h"
 
 #include "builtins.h"
 #include "defaults.h"
@@ -92,8 +92,8 @@ extern char *program_invocation_short_name;
 // This is from readline's paren.c:
 extern int rl_blink_matching_paren;
 
-// Top level context (?)
-jmp_buf toplevel;
+// The command-line options.
+static string_vector octave_argv;
 
 // Nonzero means we read ~/.octaverc and ./.octaverc.
 // (--norc; --ignore-init-file; -f)
@@ -166,13 +166,15 @@ intern_argv (int argc, char **argv)
 	    max_len = tmp_len;
 	}
 
-      octave_argv.resize (argc-1, max_len, 0);
+      octave_argv.resize (argc-1);
 
       for (int i = 1; i < argc; i++)
-	octave_argv.insert (argv[i], i-1, 0);
+	octave_argv[i-1] = argv[i];
 
       bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
     }
+
+  bind_builtin_variable ("nargin", (double) argc-1, 1, 1, 0);
 }
 
 // Initialize some global variables for later use.
@@ -575,7 +577,7 @@ main (int argc, char **argv)
   // Force input to be echoed if not really interactive, but the user
   // has forced interactive behavior.
 
-  if (!interactive && forced_interactive)
+  if (! interactive && forced_interactive)
     {
       rl_blink_matching_paren = 0;
 
@@ -588,38 +590,7 @@ main (int argc, char **argv)
   if (! interactive)
     using_readline = 0;
 
-  // Allow the user to interrupt us without exiting.
-
-  if (setjmp (toplevel) != 0)
-    {
-      raw_mode (0);
-
-      cout << "\n";
-    }
-
-  can_interrupt = 1;
-
-  catch_interrupts ();
-
-  // The big loop.
-
-  int retval;
-  do
-    {
-      curr_sym_tab = top_level_sym_tab;
-
-      reset_parser ();
-
-      retval = yyparse ();
-
-      if (retval == 0 && global_command)
-	{
-	  global_command->eval (1);
-	  delete global_command;
-	  current_command_number++;
-	}
-    }
-  while (retval == 0);
+  int retval = main_loop ();
 
   if (retval == 1 && ! error_state)
     retval = 0;

@@ -643,8 +643,6 @@ tree_builtin::eval (bool /* print */)
 
   if (fcn)
     {
-    eval_fcn:
-
       Octave_object args;
       Octave_object tmp = (*fcn) (args, 0);
       if (tmp.length () > 0)
@@ -655,14 +653,7 @@ tree_builtin::eval (bool /* print */)
       ::error ("%s: too few arguments", my_name.c_str ());
     }
   else
-    {
-      fcn = load_octave_builtin (my_name);
-
-      if (fcn)
-	goto eval_fcn;
-      else
-	::error ("unable to load builtin function %s", my_name.c_str ());
-    }
+    panic_impossible ();
 
   return retval;
 }
@@ -766,8 +757,6 @@ tree_builtin::eval (bool /* print */, int nargout, const Octave_object& args)
 
   if (fcn)
     {
-    eval_fcn:
-
       if (any_arg_is_magic_colon (args))
 	::error ("invalid use of colon in function argument list");
       else
@@ -791,14 +780,7 @@ tree_builtin::eval (bool /* print */, int nargout, const Octave_object& args)
 	}
     }
   else
-    {
-      fcn = load_octave_builtin (my_name);
-
-      if (fcn)
-	goto eval_fcn;
-      else
-	::error ("unable to load builtin function %s", my_name.c_str ());
-    }
+    panic_impossible ();
 
   return retval;
 }

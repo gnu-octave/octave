@@ -44,6 +44,8 @@ extern void parse_and_execute (const string& s, int print = 0,
 extern tree_constant eval_string (const string&, int print,
 				  int& parse_status);
 
+extern int main_loop (void);
+
 // argv[0] for this program.
 extern string raw_prog_name;
 
@@ -97,9 +99,6 @@ extern tree_function *curr_function;
 
 // Nonzero means input is coming from startup file.
 extern int input_from_startup_file;
-
-// The command-line options.
-extern charMatrix octave_argv;
 
 // Nonzero means that input is coming from a file that was named on
 // the command line.

@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #include <cstring>
 
+#include "Array-flags.h"
+
 #include "error.h"
 #include "gripes.h"
 #include "mappers.h"
@@ -188,6 +190,8 @@ do_fortran_indexing (void)
   user_pref.do_fortran_indexing =
     check_preference ("do_fortran_indexing"); 
 
+  liboctave_dfi_flag = user_pref.do_fortran_indexing;
+
   return 0;
 }
 
@@ -336,6 +340,8 @@ prefer_column_vectors (void)
   user_pref.prefer_column_vectors =
     check_preference ("prefer_column_vectors");
 
+  liboctave_pcv_flag = user_pref.prefer_column_vectors;
+
   return 0;
 }
 
@@ -351,6 +357,8 @@ prefer_zero_one_indexing (void)
 {
   user_pref.prefer_zero_one_indexing =
     check_preference ("prefer_zero_one_indexing");
+
+  liboctave_pzo_flag = user_pref.prefer_zero_one_indexing;
 
   return 0;
 }
@@ -416,6 +424,8 @@ resize_on_range_error (void)
 {
   user_pref.resize_on_range_error =
     check_preference ("resize_on_range_error");
+
+  liboctave_rre_flag = user_pref.resize_on_range_error;
 
   return 0;
 }

@@ -66,15 +66,6 @@ typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
 // function, the struct, and the helper function.
 
 static string
-mangle_octave_builtin_name (const string& name)
-{
-  string retval ("F");
-  retval.append (name);
-  retval.append ("__FRC13Octave_objecti");
-  return retval;
-}
-
-static string
 mangle_octave_oct_file_name (const string& name)
 {
   string retval ("FS");
@@ -173,26 +164,6 @@ resolve_octave_reference (const string& name, const string& file)
 }
 #endif
 
-Octave_builtin_fcn
-#if defined (WITH_DYNAMIC_LINKING)
-load_octave_builtin (const string& name)
-#else
-load_octave_builtin (const string&)
-#endif
-{
-  Octave_builtin_fcn retval = 0;
-
-#if defined (WITH_DYNAMIC_LINKING)
-
-  string mangled_name = mangle_octave_builtin_name (name);
-
-  retval = (Octave_builtin_fcn) resolve_octave_reference (mangled_name);
-
-#endif
-
-  return retval;
-}
-
 int
 load_octave_oct_file (const string& name)
 {
@@ -202,7 +173,7 @@ load_octave_oct_file (const string& name)
 
   string oct_file = oct_file_in_path (name);
 
-  if (oct_file.empty ())
+  if (! oct_file.empty ())
     {
       string mangled_name = mangle_octave_oct_file_name (name);
 
@@ -216,7 +187,7 @@ load_octave_oct_file (const string& name)
 
 	  if (s)
 	    {
-	      install_builtin_function (s);
+	      install_builtin_function (*s);
 	      retval = 1;
 	    }
 	}

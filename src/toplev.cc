@@ -135,12 +135,12 @@ tree_function *curr_function = 0;
 // Nonzero means input is coming from startup file.
 int input_from_startup_file = 0;
 
-// The command-line options.
-charMatrix octave_argv;
-
 // Nonzero means that input is coming from a file that was named on
 // the command line.
 int input_from_command_line_file = 1;
+
+// Top level context (?)
+jmp_buf toplevel;
 
 void
 parse_and_execute (FILE *f, int print)
@@ -221,6 +221,45 @@ parse_and_execute (const string& s, int print, int verbose,
     error ("%s: unable to open file `%s'", warn_for, s.c_str ());
 
   run_unwind_frame ("parse_and_execute_2");
+}
+
+int
+main_loop (void)
+{
+  // Allow the user to interrupt us without exiting.
+
+  if (setjmp (toplevel) != 0)
+    {
+      raw_mode (0);
+
+      cout << "\n";
+    }
+
+  can_interrupt = 1;
+
+  catch_interrupts ();
+
+  // The big loop.
+
+  int retval;
+  do
+    {
+      curr_sym_tab = top_level_sym_tab;
+
+      reset_parser ();
+
+      retval = yyparse ();
+
+      if (retval == 0 && global_command)
+	{
+	  global_command->eval (1);
+	  delete global_command;
+	  current_command_number++;
+	}
+    }
+  while (retval == 0);
+
+  return retval;
 }
 
 DEFUN ("source", Fsource, Ssource, 10,

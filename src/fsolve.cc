@@ -34,14 +34,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "pager.h"
-#include "pt-fvc.h"
+#include "oct-sym.h"
 #include "oct-obj.h"
+#include "pager.h"
 #include "utils.h"
 #include "variables.h"
 
 // Global pointer for user defined function required by hybrd1.
-static tree_fvc *fsolve_fcn;
+static octave_symbol *fsolve_fcn;
 
 static NLEqn_options fsolve_opts;
 
@@ -106,7 +106,7 @@ fsolve_user_function (const ColumnVector& x)
 
   if (fsolve_fcn)
     {
-      octave_value_list tmp = fsolve_fcn->eval (false, 1, args);
+      octave_value_list tmp = fsolve_fcn->eval (1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
 	  retval = tmp(0).vector_value ();

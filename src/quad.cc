@@ -29,14 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "Quad.h"
+#include "lo-mappers.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "mappers.h"
+#include "oct-sym.h"
 #include "pager.h"
-#include "pt-fvc.h"
 #include "oct-obj.h"
 #include "utils.h"
 #include "variables.h"
@@ -46,7 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 // Global pointer for user defined function required by quadrature functions.
-static tree_fvc *quad_fcn;
+static octave_symbol *quad_fcn;
 
 static Quad_options quad_opts;
 
@@ -60,7 +60,7 @@ quad_user_function (double x)
 
   if (quad_fcn)
     {
-      octave_value_list tmp = quad_fcn->eval (false, 1, args);
+      octave_value_list tmp = quad_fcn->eval (1, args);
 
       if (error_state)
 	{

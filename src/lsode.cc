@@ -29,22 +29,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "LSODE.h"
+#include "lo-mappers.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
+#include "oct-sym.h"
 #include "pager.h"
-#include "pt-fvc.h"
 #include "utils.h"
 #include "variables.h"
 
 // Global pointer for user defined function required by lsode.
-static tree_fvc *lsode_fcn;
+static octave_symbol *lsode_fcn;
 
 // Global pointer for optional user defined jacobian function used by lsode.
-static tree_fvc *lsode_jac;
+static octave_symbol *lsode_jac;
 
 static LSODE_options lsode_opts;
 
@@ -66,7 +67,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   if (lsode_fcn)
     {
-      octave_value_list tmp = lsode_fcn->eval (false, 1, args);
+      octave_value_list tmp = lsode_fcn->eval (1, args);
 
       if (error_state)
 	{
@@ -106,7 +107,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   if (lsode_jac)
     {
-      octave_value_list tmp = lsode_jac->eval (false, 1, args);
+      octave_value_list tmp = lsode_jac->eval (1, args);
 
       if (error_state)
 	{

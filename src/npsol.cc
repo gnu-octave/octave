@@ -29,23 +29,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "NPSOL.h"
+#include "lo-mappers.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "mappers.h"
 #include "oct-obj.h"
+#include "oct-sym.h"
 #include "pager.h"
-#include "pt-fvc.h"
 #include "utils.h"
 #include "variables.h"
 
 #ifndef NPSOL_MISSING
 
 // Global pointers for user defined functions required by npsol.
-static tree_fvc *npsol_objective;
-static tree_fvc *npsol_constraints;
+static octave_symbol *npsol_objective;
+static octave_symbol *npsol_constraints;
 
 static NPSOL_options npsol_opts;
 
@@ -77,7 +77,7 @@ npsol_objective_function (const ColumnVector& x)
   octave_value objective_value;
   if (npsol_objective)
     {
-      octave_value_list tmp = npsol_objective->eval (false, 1, args);
+      octave_value_list tmp = npsol_objective->eval (1, args);
 
       if (error_state)
 	{
@@ -146,7 +146,7 @@ npsol_constraint_function (const ColumnVector& x)
 
   if (npsol_constraints)
     {
-      octave_value_list tmp = npsol_constraints->eval (false, 1, args);
+      octave_value_list tmp = npsol_constraints->eval (1, args);
 
       if (error_state)
 	{

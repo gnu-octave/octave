@@ -293,6 +293,10 @@ octave_value::assign_op_as_string (assign_op op)
       retval = "\\=";
       break;
 
+    case op_pow_eq:
+      retval = "^=";
+      break;
+
     case op_lshift_eq:
       retval = "<<=";
       break;
@@ -311,6 +315,10 @@ octave_value::assign_op_as_string (assign_op op)
 
     case op_el_ldiv_eq:
       retval = ".\\=";
+      break;
+
+    case op_el_pow_eq:
+      retval = ".^=";
       break;
 
     case op_el_and_eq:
@@ -1454,6 +1462,10 @@ octave_value::op_eq_to_binary_op (assign_op op)
       binop = op_ldiv;
       break;
 
+    case op_pow_eq:
+      binop = op_pow;
+      break;
+
     case op_lshift_eq:
       binop = op_lshift;
       break;
@@ -1472,6 +1484,10 @@ octave_value::op_eq_to_binary_op (assign_op op)
 
     case op_el_ldiv_eq:
       binop = op_el_ldiv;
+      break;
+
+    case op_el_pow_eq:
+      binop = op_el_pow;
       break;
 
     case op_el_and_eq:

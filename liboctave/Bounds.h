@@ -24,11 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Bounds_h)
 #define octave_Bounds_h 1
 
+#include "Matrix.h"
+
 extern "C++" {
 
 class ostream;
-
-#include "Matrix.h"
 
 #ifndef Vector
 #define Vector ColumnVector

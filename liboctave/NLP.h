@@ -24,13 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_NLP_h)
 #define octave_NLP_h 1
 
-extern "C++" {
-
 #include "Matrix.h"
 #include "Objective.h"
 #include "Bounds.h"
 #include "LinConst.h"
 #include "NLConst.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector

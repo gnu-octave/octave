@@ -24,9 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_LinConst_h)
 #define octave_LinConst_h 1
 
-extern "C++" {
-
 #include <float.h>
+
+extern "C++" {
 
 class ostream;
 

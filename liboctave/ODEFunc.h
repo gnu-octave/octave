@@ -24,9 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ODEFunc_h)
 #define octave_ODEFunc_h 1
 
-extern "C++" {
-
 #include "Matrix.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector

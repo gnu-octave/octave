@@ -24,16 +24,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DAEFunc_h)
 #define octave_DAEFunc_h 1
 
-extern "C++" {
-
 #include "Matrix.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
 #endif
 
-#ifndef _DAEFunc_typedefs
-#define _DAEFunc_typedefs 1
+#if !defined (octave_DAEFunc_typedefs)
+#define octave_DAEFunc_typedefs 1
 
 typedef struct DAEJac
 {

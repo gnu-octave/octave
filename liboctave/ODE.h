@@ -24,12 +24,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ODE_h)
 #define octave_ODE_h 1
 
-extern "C++" {
-
 class ostream;
 
 #include "Matrix.h"
 #include "ODEFunc.h"
+
+extern "C++" {
 
 class ODE_options
 {

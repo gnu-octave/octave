@@ -24,12 +24,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_QPSOL_h)
 #define octave_QPSOL_h 1
 
-extern "C++" {
-
 #ifndef QPSOL_MISSING
 
 #include "Matrix.h"
 #include "QP.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector

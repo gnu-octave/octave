@@ -31,8 +31,6 @@ represented by some sort of inheritance tree...
 #if !defined (octave_Matrix_h)
 #define octave_Matrix_h 1
 
-extern "C++" {
-
 #include <stdlib.h>
 #include <stddef.h>
 #include <math.h>
@@ -40,6 +38,8 @@ extern "C++" {
 #include <iostream.h>
 // #include <iomanip.h>  // We don\'t use this yet.
 #include <Complex.h>
+
+extern "C++" {
 
 class ostream;
 class istream;

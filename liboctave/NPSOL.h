@@ -24,12 +24,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_NPSOL_h)
 #define octave_NPSOL_h 1
 
-extern "C++" {
-
 #ifndef NPSOL_MISSING
 
 #include "Matrix.h"
 #include "NLP.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector

@@ -24,16 +24,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Quad_h)
 #define octave_Quad_h 1
 
-extern "C++" {
-
 #include "Matrix.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
 #endif
 
-#ifndef _Quad_typedefs
-#define _Quad_typedefs 1
+#if !defined (octave_Quad_typedefs)
+#define octave_Quad_typedefs 1
 
 typedef double (*integrand_fcn) (double x);
 

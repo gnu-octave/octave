@@ -1,36 +1,37 @@
 ## Copyright (C) 1993, 1994, 1995 John W. Eaton
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{dsys} =} c2d (@var{sys}@{, @var{opt}, @var{T}@})
-## @deftypefnx {Function File } { @var{dsys} =} c2d (@var{sys}@{, @var{T}@})
-## 
+## @deftypefn {Function File} {@var{dsys} =} c2d (@var{sys}@{, @var{opt}, @var{T}@})
+## @deftypefnx {Function File} {@var{dsys} =} c2d (@var{sys}@{, @var{T}@})
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
-##  system data structure (may have both continuous time and discrete time subsystems)
+## system data structure (may have both continuous time and discrete
+## time subsystems)
 ## @item opt
-## string argument; conversion option (optional argument; 
-## may be omitted as shown above) 
+## string argument; conversion option (optional argument;
+## may be omitted as shown above)
 ## @table @code
-## @item "ex" 
+## @item "ex"
 ## use the matrix exponential (default)
-## @item "bi" 
+## @item "bi"
 ## use the bilinear transformation
 ## @end table
 ## @example
@@ -38,19 +39,19 @@
 ## s = -----
 ##     T(z+1)
 ## @end example
-## FIXME: This option exits with an error if @var{sys} is not purely 
+## FIXME: This option exits with an error if @var{sys} is not purely
 ## continuous. (The @code{ex} option can handle mixed systems.)
 ## @item @var{T}
 ## sampling time; required if sys is purely continuous.
-## 
+##
 ## @strong{Note} If the 2nd argument is not a string, @code{c2d} assumes that
 ## the 2nd argument is @var{T} and performs appropriate argument checks.
 ## @end table
-## 
+##
 ## @strong{Outputs}
-## @var{dsys} discrete time equivalent via zero-order hold, 
+## @var{dsys} discrete time equivalent via zero-order hold,
 ## sample each @var{T} sec.
-## 
+##
 ## converts the system data structure describing
 ## @example
 ## .
@@ -61,9 +62,9 @@
 ## x[n+1] = Ad x[n] + Bd u[n]
 ## @end example
 ## via the matrix exponential or bilinear transform
-## 
+##
 ## @strong{Note} This function adds the suffix  @code{_d}
-## to the names of the new discrete states.   
+## to the names of the new discrete states.
 ## @end deftypefn
 
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
@@ -110,7 +111,7 @@ function dsys = c2d (sys, opt, T)
     [aa,bb,cc,dd] = sys2ss(sys);
     crng= 1:n;
     drng = n+(1:nz);
-  
+
     ## partition state equations into continuous, imaginary subsystems
     Ac = aa(crng,crng);
     Bc = bb(crng,:);
@@ -123,8 +124,8 @@ function dsys = c2d (sys, opt, T)
       Bd  = bb(drng,:);
       Bc  = [Bc, Acd];   ## append discrete states as inputs to cont system
     endif
-    
-    ## convert state equations 
+
+    ## convert state equations
     mat = [Ac, Bc; zeros(m+nz,n+nz+m)];
     matexp = expm(mat * T);
 
@@ -144,7 +145,7 @@ function dsys = c2d (sys, opt, T)
     outnames = sysgetsignals(sys,"out");
     outlist = 1:p;
     dsys = ss2sys(aa,bb,cc,dd,T,0,n+nz,stnames,innames, ...
-  	outnames,outlist);
+        outnames,outlist);
     ## rename states
     for ii=1:n
       strval = sprintf("%s_d",sysgetsignals(dsys,"st",ii,1));
@@ -170,5 +171,5 @@ function dsys = c2d (sys, opt, T)
   else
     error(["Bad option=",opt])
   endif
-  
+
 endfunction

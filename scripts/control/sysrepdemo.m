@@ -1,23 +1,23 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {} sysrepdemo 
+## @deftypefn {Function File} {} sysrepdemo
 ## Tutorial for the use of the system data structure functions.
 ## @end deftypefn
 
@@ -92,7 +92,7 @@ function sysrepdemo ()
       disp("   sys2zp (SISO zero/pole/leading coefficient from system)")
       disp(" ")
       disp(["These functions are discussed in menu option ", ...
-	num2str(ch_extract)]);
+        num2str(ch_extract)]);
       disp("Other options discussed under this menu are updating the internal")
       disp("representation form of a system data structure with sysupdate and printing")
       disp("the description of a dynamic system to the screen with sysout.")
@@ -106,10 +106,10 @@ function sysrepdemo ()
       while(formopt != 4)
       disp("Three data formats may be used to initialize a system:")
         formopt = menu("System data structure initialization menu", ...
-		"State space form       (ss2sys)", ...
-		"Transfer function form (tf2sys)", ...
-		"zero-pole form         (zp2sys)", ...
-	    	"Return to System representation menu");
+                "State space form       (ss2sys)", ...
+                "Transfer function form (tf2sys)", ...
+                "zero-pole form         (zp2sys)", ...
+                "Return to System representation menu");
         if(formopt == 1)
           disp("State space representation of a system is based on the usual")
           disp("multi-variable differential equations")
@@ -124,12 +124,12 @@ function sysrepdemo ()
           ssquit = 5;
           while(ssopt < ssquit)
             ssopt = menu("State space initialization examples", ...
-		"Double integrator example", ...
-		"Double delay (discrete-time) example", ...
-		"Summing junction (D-matrix only) example", ...
-		"ss2sys details (help ss2sys)", ...
-		"return to system initialization menu", ...
-		"return to system representation main menu");
+                "Double integrator example", ...
+                "Double delay (discrete-time) example", ...
+                "Summing junction (D-matrix only) example", ...
+                "ss2sys details (help ss2sys)", ...
+                "return to system initialization menu", ...
+                "return to system representation main menu");
             if(ssopt == 1)
               disp("Example: construct a system representation of a")
               disp("double integrator via state-space form")
@@ -168,31 +168,31 @@ function sysrepdemo ()
               run_cmd
               disp("Notice that the D matrix was filled in automatically.")
               disp("This is done if D is input as the empty matrix.")
-	      disp(" ")
-	      disp("Notice also that the output y_1 is labelled as a discrete")
-	      disp("output.  The OCST data structure keeps track of states")
-	      disp("and output signals that are produced by the discrete-time")
-	      disp("portion of a system.  Discrete states and outputs are ")
-	      disp("implemented as shown in the block diagram below:")
-	      disp(" ")
-	      disp(" ")
-	      disp("       _________   ________ x(kT)  ________________")
-	      disp("f(t)-->|sampler|-->| delay |----->|zero order hold| -->")
-	      disp("       ---------   --------        ----------------")
-	      disp(" ")
-	      disp("        ___________    _______________")
-	      disp("f(t)-->| sampler |-->|zero-order hold| --> y(discrete)")
-	      disp("        -----------    ---------------")
-	      disp(" ")
-	      disp("where f(t) is an input signal to either the output or the")
-	      disp(" discrete state.")
-	      disp(" ")
-	      disp("The OCST does not implement samplers on inputs to continuous")
-	      disp("time states (i.e., there are no samplers implicit in the B")
-	      disp("or D matrices unless there are corresponding discrete")
+              disp(" ")
+              disp("Notice also that the output y_1 is labelled as a discrete")
+              disp("output.  The OCST data structure keeps track of states")
+              disp("and output signals that are produced by the discrete-time")
+              disp("portion of a system.  Discrete states and outputs are ")
+              disp("implemented as shown in the block diagram below:")
+              disp(" ")
+              disp(" ")
+              disp("       _________   ________ x(kT)  ________________")
+              disp("f(t)-->|sampler|-->| delay |----->|zero order hold| -->")
+              disp("       ---------   --------        ----------------")
+              disp(" ")
+              disp("        ___________    _______________")
+              disp("f(t)-->| sampler |-->|zero-order hold| --> y(discrete)")
+              disp("        -----------    ---------------")
+              disp(" ")
+              disp("where f(t) is an input signal to either the output or the")
+              disp(" discrete state.")
+              disp(" ")
+              disp("The OCST does not implement samplers on inputs to continuous")
+              disp("time states (i.e., there are no samplers implicit in the B")
+              disp("or D matrices unless there are corresponding discrete")
               disp("outputs or states.  The OCST provides warning messages when")
-	      disp("if this convention is violated.")
-	      prompt
+              disp("if this convention is violated.")
+              prompt
             elseif(ssopt == 3)
               disp("A summing junction that computes e(t) = r(t) - y(t) may be");
               disp("constructed as follows:");
@@ -204,7 +204,7 @@ function sysrepdemo ()
               cmd = "inname = list(\"r(t)\",\"y(t)\");";
               run_cmd;
               cmd = "outname = \"e(t)\";";
-	      run_cmd
+              run_cmd
               disp("Since the system is continous time and without states,")
               disp("the ss2sys inputs tsam, n, and nz are all zero:")
               cmd = "sys = ss2sys([],[],[],D,0,0,0,[],inname,outname);";
@@ -213,7 +213,7 @@ function sysrepdemo ()
               cmd = "sysout(sys)";
               run_cmd
               disp("A discrete-time summing block can be implemented by setting")
-	      disp("the sampling time positive:")
+              disp("the sampling time positive:")
               cmd = "sys = ss2sys([],[],[],D,1e-3,0,0,[],inname,outname);";
               run_cmd
               disp("The resulting system is:")
@@ -222,28 +222,28 @@ function sysrepdemo ()
               prompt
             elseif(ssopt == 4)
               help ss2sys
-	      disp(" ")
-	      disp(" ")
+              disp(" ")
+              disp(" ")
               disp("Notice that state-space form allows a single system to have")
               disp("both continuous and discrete-time states and to have both continuous")
               disp("and discrete-time outputs.  Since it's fairly easy to make an")
               disp("error when mixing systems of this form, the Octave controls")
               disp("toolbox attempts to print warning messages whenever something")
               disp("questionable occurs.")
-	    elseif(ssopt == 6)
-	      formopt = 4;		# return to main menu
+            elseif(ssopt == 6)
+              formopt = 4;              # return to main menu
             endif
           endwhile
         elseif(formopt == 2)
-	  tfopt = 0;
+          tfopt = 0;
           while(tfopt < 5)
             tfopt = menu("Transfer function initialization menu", ...
-		"Continuous time initialization" , ...
-		"Discrete time initialization" , ...
-		"User specified signal names" , ...
-		"tf2sys details (help tf2sys)", ...
-		"Return to system initialization menu", ...
-		"Return to system representation main menu");
+                "Continuous time initialization" , ...
+                "Discrete time initialization" , ...
+                "User specified signal names" , ...
+                "tf2sys details (help tf2sys)", ...
+                "Return to system initialization menu", ...
+                "Return to system representation main menu");
             if(tfopt == 1) # continuous time
               disp("A transfer function is represented by vectors of the")
               disp("coefficients of the numerator and denominator polynomials");
@@ -261,19 +261,19 @@ function sysrepdemo ()
               run_cmd
               cmd = "sys = tf2sys(num,denom);";
               run_cmd
-	      disp("alternatively, the system can be generated in a single command:");
-	      cmd = "sys = tf2sys([5, -1], [1, -2, 6]);";
+              disp("alternatively, the system can be generated in a single command:");
+              cmd = "sys = tf2sys([5, -1], [1, -2, 6]);";
               run_cmd
               disp("Notice the output of sys: it is an Octave data structure.")
               disp("The details of its member variables are explained under")
               disp("System Representation Menu option 5 (the details of system form)")
-	      disp(" ");
+              disp(" ");
               disp("The data structure can be observed with the sysout command:")
               cmd = "sysout(sys)";
               run_cmd
               disp("Notice that Octave assigns names to inputs and outputs.")
-	      disp("The user may manually select input and output names; see option 3");
-	      prompt
+              disp("The user may manually select input and output names; see option 3");
+              prompt
             elseif(tfopt == 2) # discrete time
               disp("A transfer function is represented by vectors of the")
               disp("coefficients of the numerator and denominator polynomials");
@@ -283,45 +283,45 @@ function sysrepdemo ()
               run_cmd
               cmd = "sysout(sys)";
               run_cmd
-	      disp("The OCST recognizes discrete-time transfer functions and")
-	      disp("accordingly prints them with the frequency domain variable z.");
+              disp("The OCST recognizes discrete-time transfer functions and")
+              disp("accordingly prints them with the frequency domain variable z.");
               disp("Notice that Octave assigns names to inputs and outputs.")
-	      disp("The user may set input and output names; see option 3");
+              disp("The user may set input and output names; see option 3");
             elseif(tfopt == 3) # user specified names
               disp("The OCST requires all signals to have names.  The OCST assigned default");
-	      disp("names to the signals in the other examples.  We may initialize a transfer");
-	      disp("function with user-specified names as follows: Consider a simple ")
-	      disp("double-integrator model of aircraft roll dynamics with ")
-	      disp("input \"aileron angle\" and output \"theta\".  A ")
-	      disp("system for this model is generated by the command")
-	      cmd = "aircraft=tf2sys(1, [1, 0, 0], 0,\"aileron angle\",\"theta\");";	      run_cmd
-	      disp("The sampling  time parameter 0 indicates that the system")
-	      disp("is continuous time.  A positive sampling time indicates a")
-	      disp("discrete-time system (or sampled data system).")
-	      cmd = "sysout(aircraft)";
-	      run_cmd
-	      disp("Notice that the user-selected signal names are listed.")
-	      disp("These signal names are used in OCST plots and design functions.");
-	      disp("(Run the frequency response demo to see an example of the use of ");
-	      disp("signal names in plots.)")
-	      prompt
+              disp("names to the signals in the other examples.  We may initialize a transfer");
+              disp("function with user-specified names as follows: Consider a simple ")
+              disp("double-integrator model of aircraft roll dynamics with ")
+              disp("input \"aileron angle\" and output \"theta\".  A ")
+              disp("system for this model is generated by the command")
+              cmd = "aircraft=tf2sys(1, [1, 0, 0], 0,\"aileron angle\",\"theta\");";          run_cmd
+              disp("The sampling  time parameter 0 indicates that the system")
+              disp("is continuous time.  A positive sampling time indicates a")
+              disp("discrete-time system (or sampled data system).")
+              cmd = "sysout(aircraft)";
+              run_cmd
+              disp("Notice that the user-selected signal names are listed.")
+              disp("These signal names are used in OCST plots and design functions.");
+              disp("(Run the frequency response demo to see an example of the use of ");
+              disp("signal names in plots.)")
+              prompt
             elseif(tfopt == 4) # help
               help  tf2sys
-	      prompt
+              prompt
             elseif(tfopt == 6) # return to main menu
-	      formopt = 4;
+              formopt = 4;
             endif
           endwhile
         elseif (formopt == 3)
-	  zpopt = 0;
+          zpopt = 0;
           while(zpopt < 5)
             zpopt = menu("Zero-pole initialization menu", ...
-		"Continuous time initialization" , ...
-		"Discrete time initialization" , ...
-		"User specified signal names" , ...
-		"zp2sys details (help zp2sys)", ...
-		"Return to system initialization menu", ...
-		"Return to system representation main menu");
+                "Continuous time initialization" , ...
+                "Discrete time initialization" , ...
+                "User specified signal names" , ...
+                "zp2sys details (help zp2sys)", ...
+                "Return to system initialization menu", ...
+                "Return to system representation main menu");
             if(zpopt == 1) # continuous time
               disp("A zero-pole form representation of a system includes vectors")
               disp("of the system poles and zeros and a scalar leading coefficient.");
@@ -338,23 +338,23 @@ function sysrepdemo ()
               run_cmd
               cmd = "denom = [1, -2, 6]";
               run_cmd
-	      cmd = "k = 5";
-	      run_cmd
+              cmd = "k = 5";
+              run_cmd
               cmd = "sys = zp2sys(num,denom,k);";
               run_cmd
-	      disp("alternatively, the system can be generated in a single command:");
-	      cmd = "sys = zp2sys([5, -1],[1, -2, 6],5);";
+              disp("alternatively, the system can be generated in a single command:");
+              cmd = "sys = zp2sys([5, -1],[1, -2, 6],5);";
               run_cmd
               disp("Notice the output of sys: it is an Octave data structure.")
               disp("The details of its member variables are explained under")
               disp("System Representation Menu option 5 (the details of system form)")
-	      disp(" ");
+              disp(" ");
               disp("The data structure can be observed with the sysout command:")
               cmd = "sysout(sys)";
               run_cmd
               disp("Notice that Octave assigns names to inputs and outputs.")
-	      disp("The user may manually select input and output names; see option 3");
-	      prompt
+              disp("The user may manually select input and output names; see option 3");
+              prompt
             elseif(zpopt == 2) # discrete time
               disp("A zero-pole form representation of a system includes vectors")
               disp("of the system poles and zeros and a scalar leading coefficient.");
@@ -364,33 +364,33 @@ function sysrepdemo ()
               run_cmd
               cmd = "sysout(sys)";
               run_cmd
-	      disp("The OCST recognizes discrete-time transfer functions and")
-	      disp("accordingly prints them with the frequency domain variable z.");
+              disp("The OCST recognizes discrete-time transfer functions and")
+              disp("accordingly prints them with the frequency domain variable z.");
               disp("Notice that Octave assigns names to inputs and outputs.")
-	      disp("The user may set input and output names; see option 3");
+              disp("The user may set input and output names; see option 3");
             elseif(zpopt == 3) # user specified names
               disp("The OCST requires all signals to have names.  The OCST assigned default");
-	      disp("names to the signals in the other examples.  We may initialize a transfer");
-	      disp("function with user-specified names as follows: Consider a simple ")
-	      disp("double-integrator model of aircraft roll dynamics with ")
-	      disp("input \"aileron angle\" and output \"theta\".  A ")
-	      disp("system for this model is generated by the command")
-	      cmd = "aircraft=zp2sys([],[0, 0],1,0,\"aileron angle\",\"theta\");";	      run_cmd
-	      disp("The sampling  time parameter 0 indicates that the system")
-	      disp("is continuous time.  A positive sampling time indicates a")
-	      disp("discrete-time system (or sampled data system).")
-	      cmd = "sysout(aircraft)";
-	      run_cmd
-	      disp("Notice that the user-selected signal names are listed.")
-	      disp("These signal names are used in OCST plots and design functions.");
-	      disp("(Run the frequency response demo to see an example of the use of ");
-	      disp("signal names in plots.)")
-	      prompt
+              disp("names to the signals in the other examples.  We may initialize a transfer");
+              disp("function with user-specified names as follows: Consider a simple ")
+              disp("double-integrator model of aircraft roll dynamics with ")
+              disp("input \"aileron angle\" and output \"theta\".  A ")
+              disp("system for this model is generated by the command")
+              cmd = "aircraft=zp2sys([],[0, 0],1,0,\"aileron angle\",\"theta\");";            run_cmd
+              disp("The sampling  time parameter 0 indicates that the system")
+              disp("is continuous time.  A positive sampling time indicates a")
+              disp("discrete-time system (or sampled data system).")
+              cmd = "sysout(aircraft)";
+              run_cmd
+              disp("Notice that the user-selected signal names are listed.")
+              disp("These signal names are used in OCST plots and design functions.");
+              disp("(Run the frequency response demo to see an example of the use of ");
+              disp("signal names in plots.)")
+              prompt
             elseif(zpopt == 4) # help
               help  zp2sys
-	      prompt
+              prompt
             elseif(zpopt == 6) # return to main menu
-	      formopt = 4;
+              formopt = 4;
             endif
           endwhile
         endif
@@ -403,20 +403,20 @@ function sysrepdemo ()
       formopt = 0;
       while(formopt != 8)
         formopt = menu("Extract system information", ...
-		"in state space form       (sys2ss)", ...
-		"in transfer function form (sys2tf)", ...
-		"in zero pole form         (sys2zp)", ...
-		"signal names       (sysgetsignals,syssetsignals)", ...
-		"sampling time         (sysgettsam)", ...
-		"signal dimensions  (sysdimensions)", ...
-		"primary system type   (sysgettype)", ...
-		"Return to system representation menu");
+                "in state space form       (sys2ss)", ...
+                "in transfer function form (sys2tf)", ...
+                "in zero pole form         (sys2zp)", ...
+                "signal names       (sysgetsignals,syssetsignals)", ...
+                "sampling time         (sysgettsam)", ...
+                "signal dimensions  (sysdimensions)", ...
+                "primary system type   (sysgettype)", ...
+                "Return to system representation menu");
         if(formopt == 1)
-	  help sys2ss
-	elseif(formopt == 2)
-	  help sys2tf
-	elseif(formopt == 3)
-	  help sys2zp
+          help sys2ss
+        elseif(formopt == 2)
+          help sys2tf
+        elseif(formopt == 3)
+          help sys2zp
         elseif(formopt == 4)
           help sysgetsignals
           cmd="sys=ss2sys(rand(4),rand(4,2),rand(3,4));";
@@ -433,14 +433,14 @@ function sysrepdemo ()
           printf("\nNotice that Aout is returned as a list; the signal name\n");
           printf("itself is obtained by specifying the input parameter strflg\n");
           cmd = "Aout = sysgetsignals(sys,\"out\",2,1)";
-	  run_cmd
+          run_cmd
           prompt
           cmd = "help syssetsignals";
           run_cmd
           printf("Example: set input 2 name to \"motor voltage\"\n");
           cmd = "sys = syssetsignals(sys,\"in\",\"motor voltage\",2); sysout(sys)";
           run_cmd
-          
+
           printf("Other syssetsignals demos are in the Block diagram demo program bddemo\n");
         elseif(formopt == 5)
           help sysgettsam
@@ -448,8 +448,8 @@ function sysrepdemo ()
           help sysdimensions
         elseif(formopt == 7)
           help sysgettype
-	endif
-	prompt
+        endif
+        prompt
       endwhile
     elseif(syschoice== ch_update)
       disp("The OCST system data structure format will store a system in the same format")
@@ -472,7 +472,7 @@ function sysrepdemo ()
     elseif(syschoice == ch_view)
       disp("The sysout command can be used to view a system in any desired format.")
       disp("For example, consider the system created as follows:")
-      cmd = "aircraft=zp2sys(1,[0, 0],1,0,\"aileron angle\",\"theta\");";	      run_cmd
+      cmd = "aircraft=zp2sys(1,[0, 0],1,0,\"aileron angle\",\"theta\");";             run_cmd
       disp("The system may be viewed in its default format (zero-pole) as follows")
       cmd = "sysout(aircraft)";
       run_cmd
@@ -486,10 +486,10 @@ function sysrepdemo ()
       help sysout
       prompt
     elseif(syschoice == ch_details)
-      packedform   
+      packedform
     endif
 
   endwhile
   page_screen_output = save_val;
 endfunction
-    
+

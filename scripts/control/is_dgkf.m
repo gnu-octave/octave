@@ -1,37 +1,37 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { [@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{Asys}, @var{nu}, @var{ny}, @var{tol} )
-##  Determine whether a continuous time state space system meets
-##  assumptions of DGKF algorithm.  
-##  Partitions system into: 
+## @deftypefn {Function File} {[@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{Asys}, @var{nu}, @var{ny}, @var{tol} )
+## Determine whether a continuous time state space system meets
+## assumptions of DGKF algorithm.
+## Partitions system into:
 ## @example
-## [dx/dt] = [A  | Bw  Bu  ][w] 
+## [dx/dt] = [A  | Bw  Bu  ][w]
 ## [ z   ]   [Cz | Dzw Dzu ][u]
 ## [ y   ]   [Cy | Dyw Dyu ]
 ## @end example
 ## or similar discrete-time system.
 ## If necessary, orthogonal transformations @var{Qw}, @var{Qz} and nonsingular
-##  transformations @var{Ru}, @var{Ry} are applied to respective vectors 
-## @var{w}, @var{z}, @var{u}, @var{y} in order to satisfy DGKF assumptions.  
+## transformations @var{Ru}, @var{Ry} are applied to respective vectors
+## @var{w}, @var{z}, @var{u}, @var{y} in order to satisfy DGKF assumptions.
 ## Loop shifting is used if @var{Dyu} block is nonzero.
-## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item         Asys
@@ -39,63 +39,63 @@
 ## @item           nu
 ## number of controlled inputs
 ## @item        ny
-##  number of measured outputs
+## number of measured outputs
 ## @item        tol
-##  threshhold for 0.  Default: 200@var{eps}
+## threshhold for 0.  Default: 200@var{eps}
 ## @end table
 ## @strong{Outputs}
 ## @table @var
 ## @item    retval
-##  true(1) if system passes check, false(0) otherwise
+## true(1) if system passes check, false(0) otherwise
 ## @item    dgkf_struct
-##  data structure of @code{is_dgkf} results.  Entries:
+## data structure of @code{is_dgkf} results.  Entries:
 ## @table @var
 ## @item      nw
 ## @itemx     nz
-##  dimensions of @var{w}, @var{z}
+## dimensions of @var{w}, @var{z}
 ## @item      A
-##  system @var{A} matrix
+## system @var{A} matrix
 ## @item      Bw
-##  (@var{n} x @var{nw}) @var{Qw}-transformed disturbance input matrix
+## (@var{n} x @var{nw}) @var{Qw}-transformed disturbance input matrix
 ## @item      Bu
-##  (@var{n} x @var{nu}) @var{Ru}-transformed controlled input matrix;
-## 
-##           @strong{Note} @math{B = [Bw Bu] }
+## (@var{n} x @var{nu}) @var{Ru}-transformed controlled input matrix;
+##
+## @strong{Note} @math{B = [Bw Bu] }
 ## @item      Cz
-##  (@var{nz} x @var{n}) Qz-transformed error output matrix
+## (@var{nz} x @var{n}) Qz-transformed error output matrix
 ## @item      Cy
-##  (@var{ny} x @var{n}) @var{Ry}-transformed measured output matrix 
-## 
-##           @strong{Note} @math{C = [Cz; Cy] }
+## (@var{ny} x @var{n}) @var{Ry}-transformed measured output matrix
+##
+## @strong{Note} @math{C = [Cz; Cy] }
 ## @item      Dzu
 ## @item      Dyw
-##  off-diagonal blocks of transformed @var{D} matrix that enter 
+## off-diagonal blocks of transformed @var{D} matrix that enter
 ## @var{z}, @var{y} from @var{u}, @var{w} respectively
 ## @item      Ru
-##  controlled input transformation matrix 
+## controlled input transformation matrix
 ## @item      Ry
-##  observed output transformation matrix
+## observed output transformation matrix
 ## @item      Dyu_nz
-##  nonzero if the @var{Dyu} block is nonzero.
+## nonzero if the @var{Dyu} block is nonzero.
 ## @item      Dyu
-##  untransformed @var{Dyu} block
+## untransformed @var{Dyu} block
 ## @item      dflg
-##  nonzero if the system is discrete-time
-##   @end table
-## @end table 
-## @code{is_dgkf} exits with an error if the system is mixed discrete/continuous
-## 
+## nonzero if the system is discrete-time
+## @end table
+## @end table
+## @code{is_dgkf} exits with an error if the system is mixed
+## discrete/continuous
+##
 ## @strong{References}
 ## @table @strong
 ## @item [1]
-##  Doyle, Glover, Khargonekar, Francis, "State Space Solutions
-##      to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
+## Doyle, Glover, Khargonekar, Francis, "State Space Solutions
+## to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
 ## @item [2]
-##  Maciejowksi, J.M.: "Multivariable feedback design,"
+## Maciejowksi, J.M.: "Multivariable feedback design,"
 ## @end table
-## 
 ## @end deftypefn
- 
+
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Updated by John Ingram July 1996 to accept structured systems
 
@@ -103,7 +103,7 @@
 ## problem using unitary transformations Q (on w and z)
 ## and non-singular transformations R (on u and y) such
 ## that the Dzu and Dyw matrices of the transformed plant
-## 
+##
 ##    ~
 ##    P  (the variable Asys here)
 ##
@@ -118,7 +118,7 @@
 ##     21   21  21  21
 ##
 ## This transformation together with the algorithm in [1] solves
-## the general problem (see [2] for example). 
+## the general problem (see [2] for example).
 
 function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
 
@@ -135,7 +135,7 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
     error("is_dgkf: tol must be a positive scalar")
   endif
 
-  retval = 1;		# assume passes test
+  retval = 1;           # assume passes test
 
   dflg = is_digital(Asys);
   [Anc, Anz, nin, nout ] = sysdimensions(Asys);
@@ -160,9 +160,9 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
   B = B / xx;  C = C * xx;
 
   ## partition matrices
-  			Bw = B(:,1:nw);		Bu = B(:,nw1:nin);
-  Cz = C(1:nz,:);	Dzw = D(1:nz,1:nw);	Dzu = D(1:nz,nw1:nin);
-  Cy = C(nz1:nout,:);	Dyw = D(nz1:nout,1:nw);	Dyu = D(nz1:nout,nw1:nin);
+                        Bw = B(:,1:nw);         Bu = B(:,nw1:nin);
+  Cz = C(1:nz,:);       Dzw = D(1:nz,1:nw);     Dzu = D(1:nz,nw1:nin);
+  Cy = C(nz1:nout,:);   Dyw = D(nz1:nout,1:nw); Dyu = D(nz1:nout,nw1:nin);
 
   ## Check for loopo shifting
   Dyu_nz = (norm(Dyu,Inf) != 0);
@@ -177,7 +177,7 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
   if (irank != nc)
     retval = 0;
     warning(sprintf("rank([A Bu; Cz Dzu]) = %d, need %d; n=%d, nz=%d, nu=%d", ...
-	irank,nc,(Anc+Anz),nz,nu));
+        irank,nc,(Anc+Anz),nz,nu));
     warning(" *** 12-rank condition violated at w = 0.");
   endif
 
@@ -188,7 +188,7 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
   if (irank != nr)
     retval = 0;
     warning(sprintf("rank([A Bw; Cy Dyw]) = %d, need %d; n=%d, ny=%d, nw=%d", ...
-	irank,nr,(Anc+Anz),ny,nw));
+        irank,nr,(Anc+Anz),ny,nw));
     warning(" *** 21-rank condition violated at w = 0.");
   endif
 
@@ -237,22 +237,22 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
   Dyw = Ry\Dyw*Qw;
 
   ## pack the return structure
-  dgkf_struct.nw	= nw;
-  dgkf_struct.nu	= nu;
-  dgkf_struct.nz	= nz;
-  dgkf_struct.ny	= ny;
-  dgkf_struct.A		= A;
-  dgkf_struct.Bw	= Bw;
-  dgkf_struct.Bu	= Bu;
-  dgkf_struct.Cz	= Cz;
-  dgkf_struct.Cy	= Cy;
-  dgkf_struct.Dzw	= Dzw;
-  dgkf_struct.Dzu	= Dzu;
-  dgkf_struct.Dyw	= Dyw;
-  dgkf_struct.Dyu	= Dyu;
-  dgkf_struct.Ru	= Ru;
-  dgkf_struct.Ry	= Ry;
-  dgkf_struct.Dyu_nz	= Dyu_nz;
-  dgkf_struct.dflg	= dflg;
+  dgkf_struct.nw        = nw;
+  dgkf_struct.nu        = nu;
+  dgkf_struct.nz        = nz;
+  dgkf_struct.ny        = ny;
+  dgkf_struct.A         = A;
+  dgkf_struct.Bw        = Bw;
+  dgkf_struct.Bu        = Bu;
+  dgkf_struct.Cz        = Cz;
+  dgkf_struct.Cy        = Cy;
+  dgkf_struct.Dzw       = Dzw;
+  dgkf_struct.Dzu       = Dzu;
+  dgkf_struct.Dyw       = Dyw;
+  dgkf_struct.Dyu       = Dyu;
+  dgkf_struct.Ru        = Ru;
+  dgkf_struct.Ry        = Ry;
+  dgkf_struct.Dyu_nz    = Dyu_nz;
+  dgkf_struct.dflg      = dflg;
 
 endfunction

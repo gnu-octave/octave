@@ -1,30 +1,30 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{wmin}, @var{wmax}] =} bode_bounds (@var{zer}, @var{pol}, @var{dflg}@{, @var{tsam} @})
+## @deftypefn {Function File} {[@var{wmin}, @var{wmax}] =} bode_bounds (@var{zer}, @var{pol}, @var{dflg}@{, @var{tsam} @})
 ## Get default range of frequencies based on cutoff frequencies of system
 ## poles and zeros.
 ## Frequency range is the interval [10^wmin,10^wmax]
-## 
+##
 ## Used internally in freqresp (@code{bode}, @code{nyquist})
 ## @end deftypefn
- 
+
 function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
 
   ## make sure zer,pol are row vectors
@@ -42,7 +42,7 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
     else               czer = [];                 endif
 
     if (!isempty(iip)) cpol = log(pol(iip))/tsam;
-    else 	       cpol = [];                 endif
+    else               cpol = [];                 endif
 
   else
     ## continuous

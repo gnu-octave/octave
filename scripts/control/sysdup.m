@@ -1,55 +1,54 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{retsys} =} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
-##  Duplicate specified input/output connections of a system
-## 
+## @deftypefn {Function File} {@var{retsys} =} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
+## Duplicate specified input/output connections of a system
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item Asys
-##  system data structure (@pxref{ss2sys})
+## system data structure (@pxref{ss2sys})
 ## @item out_idx
 ## @itemx in_idx
-##  list of connections indices; 
-##  duplicates are made of @code{y(out_idx(ii))} and @code{u(in_idx(ii))}.
+## list of connections indices;
+## duplicates are made of @code{y(out_idx(ii))} and @code{u(in_idx(ii))}.
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @var{retsys}: resulting closed loop system:
-##     duplicated i/o names are appended with a @code{"+"} suffix.
-## 
-## 
+## duplicated i/o names are appended with a @code{"+"} suffix.
+##
+##
 ## @strong{Method}
 ## @code{sysdup} creates copies of selected inputs and outputs as
-##  shown below.  u1/y1 is the set of original inputs/outputs, and 
-##  u2,y2 is the set of duplicated inputs/outputs in the order specified
-##  in @var{in_idx}, @var{out_idx}, respectively
+## shown below.  u1/y1 is the set of original inputs/outputs, and
+## u2,y2 is the set of duplicated inputs/outputs in the order specified
+## in @var{in_idx}, @var{out_idx}, respectively
 ## @example
 ## @group
 ##           ____________________
 ## u1  ----->|                  |----> y1
 ##           |       Asys       |
-## u2 ------>|                  |----->y2 
+## u2 ------>|                  |----->y2
 ## (in_idx)  -------------------| (out_idx)
 ## @end group
 ## @end example
-## 
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -91,7 +90,7 @@ function retsys = sysdup (Asys, output_list, input_list)
   elseif(osize != 0)
     error("output_list must be a vector or empty");
   endif
-  
+
   [stnam,innam,outnam,yd] = sysgetsignals(Asys);
   tsam = sysgettsam(Asys);
 

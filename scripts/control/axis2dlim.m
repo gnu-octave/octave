@@ -1,32 +1,32 @@
 ## Copyright (C) 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File } { @var{axvec} =} axis2dlim (@var{axdata})
-##  determine axis limits for 2-d data(column vectors); leaves a 10% margin 
-##  around the plots.
-##  puts in margins of +/- 0.1 if data is one dimensional (or a single point)
-## 
+## @deftypefn{Function File} {@var{axvec} =} axis2dlim (@var{axdata})
+## determine axis limits for 2-d data(column vectors); leaves a 10% margin
+## around the plots.
+## puts in margins of +/- 0.1 if data is one dimensional (or a single point)
+##
 ## @strong{Inputs}
-##    @var{axdata} nx2 matrix of data [x,y]
-## 
+## @var{axdata} nx2 matrix of data [x,y]
+##
 ## @strong{Outputs}
-##    @var{axvec} vector of axis limits appropriate for call to axis() function
+## @var{axvec} vector of axis limits appropriate for call to axis() function
 ## @end deftypefn
 
 function axvec = axis2dlim (axdata)
@@ -58,6 +58,6 @@ function axvec = axis2dlim (axdata)
       axdel(3:4) = 1.1*[-delv(2),delv(2)];
     endif
   endif
-  axvec = axmid + axdel; 
+  axvec = axmid + axdel;
 endfunction
 

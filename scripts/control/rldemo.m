@@ -1,26 +1,26 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-##@deftypefn {Function File } { outputs =} rldemo ( inputs ) 
+##@deftypefn {Function File} {@var{outputs} =} rldemo (@var{inputs})
 ##Octave Controls toolbox demo: Root Locus demo
 ##@end deftypefn
- 
+
 ## Author: David Clem
 ## Created: August 15, 1994
 ## Updated by John Ingram December 1996
@@ -30,11 +30,11 @@ function rldemo ()
   while (1)
     clc
     k = menu("Octave Root Locus Demo", ...
-    	"Display continuous system's open loop poles and zeros (pzmap)", ...
-    	"Display discrete system's open loop poles and zeros (pzmap)", ...
-    	"Display root locus diagram of SISO continuous system (rlocus)", ...
-    	"Display root locus diagram of SISO discrete system (rlocus)", ...	
-    	"Return to main demo menu");
+        "Display continuous system's open loop poles and zeros (pzmap)", ...
+        "Display discrete system's open loop poles and zeros (pzmap)", ...
+        "Display root locus diagram of SISO continuous system (rlocus)", ...
+        "Display root locus diagram of SISO discrete system (rlocus)", ...
+        "Return to main demo menu");
     gset autoscale
     if (k == 1)
       clc
@@ -53,11 +53,11 @@ function rldemo ()
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys1,""zp"");";
       disp(cmd);
-      eval(cmd);     
+      eval(cmd);
       disp("View the system's open loop poles and zeros with the command:")
       cmd = "pzmap(sys1);";
       run_cmd
-      prompt     
+      prompt
 
       clc
       disp("Example #2, Consider the following set of poles and zeros:");
@@ -77,15 +77,15 @@ function rldemo ()
       clc
       disp("Example #3, Consider the following state space system:\n");
       cmd = "sys3=ss2sys([0, 1; -10, -11], [0; 1], [0, -2], 1);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       cmd = "sysout(sys3);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys3,""zp"");";
       disp(cmd);
-      eval(cmd); 
+      eval(cmd);
       disp("\nOnce again, the pzmap command is the same:");
       cmd = "pzmap(sys3);";
       run_cmd;
@@ -93,7 +93,7 @@ function rldemo ()
 
       closeplot
       clc
-    
+
     elseif (k == 2)
       clc
       help pzmap
@@ -114,11 +114,11 @@ function rldemo ()
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys1,""zp"");";
       disp(cmd);
-      eval(cmd);     
+      eval(cmd);
       disp("View the system's open loop poles and zeros with the command:")
       cmd = "pzmap(sys1);";
       run_cmd
-      prompt     
+      prompt
 
       clc
       disp("Example #2, Consider the following set of discrete poles and zeros:");
@@ -138,15 +138,15 @@ function rldemo ()
       clc
       disp("Example #3, Consider the following discrete state space system:\n");
       cmd = "sys3=ss2sys([1, 0.0952; 0, 0.905], [0.00484; 0.0952], [1, 0], 0, Tsam);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       cmd = "sysout(sys3);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys3,""zp"");";
       disp(cmd);
-      eval(cmd); 
+      eval(cmd);
       disp("\nOnce again, the pzmap command is the same:");
       cmd = "pzmap(sys3);";
       run_cmd;
@@ -172,7 +172,7 @@ function rldemo ()
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys1,""zp"");";
       disp(cmd);
-      eval(cmd); 
+      eval(cmd);
       disp("\nWhen using rlocus, inital system poles are displayed as X's.")
       disp("Moving poles are displayed as diamonds.  Zeros are displayed as")
       disp("boxes.  The simplest form of the rlocus command is as follows:")
@@ -202,15 +202,15 @@ function rldemo ()
       clc
       disp("Example #3, Consider the following state space system:\n");
       cmd = "sys3=ss2sys([0, 1; -10, -11], [0; 1], [0, -2], 0);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       cmd = "sysout(sys3);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys3,""zp"");";
       disp(cmd);
-      eval(cmd); 
+      eval(cmd);
       disp("\nOnce again, the rlocus command is the same:");
       cmd = "rlocus(sys3);";
       run_cmd;
@@ -242,7 +242,7 @@ function rldemo ()
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys1,""zp"");";
       disp(cmd);
-      eval(cmd);     
+      eval(cmd);
       disp("\nWhen using rlocus, inital system poles are displayed as X's.")
       disp("Moving poles are displayed as diamonds.  Zeros are displayed as")
       disp("boxes.  The simplest form of the rlocus command is as follows:")
@@ -274,15 +274,15 @@ function rldemo ()
       clc
       disp("Example #3, Consider the following discrete state space system:\n");
       cmd = "sys3=ss2sys([1, 0.0952; 0, 0.905], [0.00484; 0.0952], [1, 0], 0, Tsam);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       cmd = "sysout(sys3);";
-      disp(cmd); 
+      disp(cmd);
       eval(cmd);
       disp("\nPole-zero form can be obtained as follows:");
       cmd = "sysout(sys3,""zp"");";
       disp(cmd);
-      eval(cmd); 
+      eval(cmd);
       disp("\nOnce again, the rlocus command is the same:");
       cmd = "rlocus(sys3);";
       run_cmd;
@@ -294,9 +294,9 @@ function rldemo ()
 
       closeplot
       clc
- 
+
     elseif (k == 5)
       return
     endif
-  endwhile  
+  endwhile
 endfunction

@@ -1,26 +1,26 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{out} =} freqresp (@var{sys},@var{USEW}@{,@var{w}@});
-##  Frequency response function - used internally by @code{bode}, @code{nyquist}.
-##  minimal argument checking; "do not attempt to do this at home"
-## 
+## @deftypefn {Function File} {@var{out} =} freqresp (@var{sys}, @var{USEW}@{,@var{w}@});
+## Frequency response function - used internally by @code{bode}, @code{nyquist}.
+## minimal argument checking; "do not attempt to do this at home"
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
@@ -28,14 +28,14 @@
 ## @item USEW
 ## returned by @code{freqchkw}
 ## @item optional
-##  must be present if @var{USEW} is true (nonzero)
+## must be present if @var{USEW} is true (nonzero)
 ## @end table
 ## @strong{Outputs}
 ## @table @var
-## @item @var{out} 
+## @item @var{out}
 ## vector of finite @math{G(j*w)} entries (or @math{||G(j*w)||} for MIMO)
-## @item w 
-## vector of corresponding frequencies 
+## @item w
+## vector of corresponding frequencies
 ## @end table
 ## @end deftypefn
 
@@ -75,7 +75,7 @@ function [ff, w] = freqresp (sys, USEW, w);
     [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,sysgettsam(sys));
     w = logspace(wmin,wmax,50);
   else
-    w = reshape(w,1,length(w)); 	# make sure it's a row vector
+    w = reshape(w,1,length(w));         # make sure it's a row vector
   endif
 
   ## now get complex values of s or z
@@ -104,7 +104,7 @@ function [ff, w] = freqresp (sys, USEW, w);
     ff = ff*sysk;
 
   elseif (strcmp(sysgettype(sys),"tf"))
-    ## transfer function form 
+    ## transfer function form
     [num,den] = sys2tf(sys);
     ff = polyval(num,jw)./polyval(den,jw);
   elseif (mm==pp)
@@ -115,13 +115,13 @@ function [ff, w] = freqresp (sys, USEW, w);
       ff(ii) = det(sysc*((jw(ii).*eye(n)-sysa)\sysb)+sysd);
     endfor;
   else
-    ## Must be state space... bode                            
+    ## Must be state space... bode
     [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
     n = sysn + sysnz;
     for ii=1:length(jw);
       ff(ii) = norm(sysc*((jw(ii)*eye(n)-sysa)\sysb)+sysd);
     endfor
-    
+
   endif
 
   w = reshape(w,1,length(w));

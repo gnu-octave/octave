@@ -1,6 +1,6 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -17,28 +17,28 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { } DEMOcontrol 
+## @deftypefn {Function File} {} DEMOcontrol
 ## Octave Control Systems Toolbox demo/tutorial program.  The demo
 ## allows the user to select among several categories of OCST function:
 ## @example
 ## @group
 ## octave:1> DEMOcontrol
-##  O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X
+## O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X
 ## Octave Controls System Toolbox Demo
 ##
 ##   [ 1] System representation
-##   [ 2] Block diagram manipulations 
-##   [ 3] Frequency response functions 
-##   [ 4] State space analysis functions 
-##   [ 5] Root locus functions 
-##   [ 6] LQG/H2/Hinfinity functions 
+##   [ 2] Block diagram manipulations
+##   [ 3] Frequency response functions
+##   [ 4] State space analysis functions
+##   [ 5] Root locus functions
+##   [ 6] LQG/H2/Hinfinity functions
 ##   [ 7] End
 ## @end group
 ## @end example
 ## Command examples are interactively run for users to observe the use
 ## of OCST functions.
 ## @end deftypefn
-## @seealso{Demo Programs: bddemo.m, frdemo.m, analdemo.m, 
+## @seealso{Demo Programs: bddemo.m, frdemo.m, analdemo.m,
 ## moddmeo.m, rldemo.m}
 
 ## Author: David Clem
@@ -56,14 +56,14 @@ function DEMOcontrol ()
 
     while (k > 8 || k < 1),
       k = menu ("Octave Controls System Toolbox Demo",
-		"System representation",
-    		"Block diagram manipulations",
-    		"Frequency response functions",
-    		"State space analysis functions",
-    		"System model manipulations",
-    		"Root locus functions",
-		"LQG/H2/Hinfinity functions",
-    		"End");
+                "System representation",
+                "Block diagram manipulations",
+                "Frequency response functions",
+                "State space analysis functions",
+                "System model manipulations",
+                "Root locus functions",
+                "LQG/H2/Hinfinity functions",
+                "End");
     endwhile
 
     switch (k)

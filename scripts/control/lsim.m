@@ -1,39 +1,39 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { } lsim (@var{sys}, @var{u}, @var{t}@{,@var{x0}@})
+## @deftypefn {Function File} {} lsim (@var{sys}, @var{u}, @var{t}@{,@var{x0}@})
 ## Produce output for a linear simulation of a system
-## 
+##
 ## Produces a plot for the output of the system, sys.
-## 
-## U is an array that contains the system's inputs.  Each column in u 
-## corresponds to a different time step.  Each row in u corresponds to a 
-## different input.  T is an array that contains the time index of the 
+##
+## U is an array that contains the system's inputs.  Each column in u
+## corresponds to a different time step.  Each row in u corresponds to a
+## different input.  T is an array that contains the time index of the
 ## system.  T should be regularly spaced.  If initial conditions are required
 ## on the system, the x0 vector should be added to the argument list.
-## 
+##
 ## When the lsim function is invoked with output parameters:
 ## [y,x] = lsim(sys,u,t,[x0])
 ## a plot is not displayed, however, the data is returned in y = system output
 ## and x = system states.
 ## @end deftypefn
- 
+
 ## Author: David Clem
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: July 1995
@@ -53,7 +53,7 @@ function [y, x] = lsim (sys, u, t, x0)
 
   [ncstates, ndstates, nin, nout] = sysdimensions(sys);
   [a,b,c,d] = sys2ss(sys);
-  
+
   if (nargin == 3)     x0 = zeros(columns(a),1);        endif
 
   if(rows(u) ~= length(t))

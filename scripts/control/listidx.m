@@ -21,8 +21,8 @@
 ## Inputs:
 ##   listvar: list of strings to be searched
 ##   strlist: list of strings to be located in listvar.
-## Note: listvar, strlist may be passed as strings or string matrices; 
-##    in this case, each entry is processed by deblank() prior to searching 
+## Note: listvar, strlist may be passed as strings or string matrices;
+##    in this case, each entry is processed by deblank() prior to searching
 ##    for the entries of strlist in listvar.
 ## Outputs:
 ## idxvec
@@ -32,7 +32,7 @@
 ##    if strlist contains a string not in listvar, then
 ##    an error message is returned in errmsg.  If only one output
 ##    argument is requested, e.g., idxvec = listidx(listvar, strlist),
-##    then listidx prints errmsg to the screen and exits with 
+##    then listidx prints errmsg to the screen and exits with
 ##    an error.
 ##
 
@@ -69,7 +69,7 @@ elseif(!is_signal_list(strlist))
 endif
 
 if(length(errmsg))
-  if(nargout < 2) error(errmsg); 
+  if(nargout < 2) error(errmsg);
   else return;
   endif
 endif

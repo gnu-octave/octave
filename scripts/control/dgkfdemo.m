@@ -1,31 +1,31 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-##@deftypefn {Function File } { } dgkfdemo ( ) 
+## @deftypefn {Function File} {} dgkfdemo ()
 ## Octave Controls toolbox demo: H2/Hinfinity options demos
-##@end deftypefn
- 
+## @end deftypefn
+
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: June 1995
 
 function dgkfdemo ()
- 
+
   save_val = page_screen_output;
   page_screen_output = 1;
   while (1)
@@ -33,16 +33,16 @@ function dgkfdemo ()
     sel = 0;
     while (sel > 10 || sel < 1)
       sel = menu ("Octave H2/Hinfinity options demo",
-		  "LQ regulator",
-		  "LG state estimator",
-		  "LQG optimal control design",
-		  "H2 gain of a system",
-		  "H2 optimal controller of a system",
-		  "Hinf gain of a system",
-		  "Hinf optimal controller of a SISO system",
-		  "Hinf optimal controller of a MIMO system",
-		  "Discrete-time Hinf optimal control by bilinear transform",
-		  "Return to main demo menu");
+                  "LQ regulator",
+                  "LG state estimator",
+                  "LQG optimal control design",
+                  "H2 gain of a system",
+                  "H2 optimal controller of a system",
+                  "Hinf gain of a system",
+                  "Hinf optimal controller of a SISO system",
+                  "Hinf optimal controller of a MIMO system",
+                  "Discrete-time Hinf optimal control by bilinear transform",
+                  "Return to main demo menu");
     endwhile
     if (sel == 1)
       disp("Linear/Quadratic regulator design:")
@@ -99,7 +99,7 @@ function dgkfdemo ()
       C = [1, 1];
       sys = ss2sys(A, [B, G], C);
       sys = syssetsignals(sys,"in", ...
-		       ["control input"; "disturbance 1"; "disturbance 2"]);
+                       ["control input"; "disturbance 1"; "disturbance 2"]);
       sysout(sys)
       prompt
       disp("Filtering/estimator parameters:")
@@ -267,7 +267,7 @@ function dgkfdemo ()
       grid();
       semilogx(w,M);
       disp(["Max magnitude is ",num2str(max(M)), ...
-	", compared with gmin=",num2str(gmin)," and gmax=", ...
+        ", compared with gmin=",num2str(gmin)," and gmax=", ...
         num2str(gmax),"."])
       prompt
       disp("Example 2: unstable plant")
@@ -348,7 +348,7 @@ function dgkfdemo ()
       return
     endif
     prompt
-  endwhile  
+  endwhile
   page_screen_output = save_val;
 
 endfunction

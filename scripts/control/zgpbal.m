@@ -1,37 +1,36 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {retsys =} zgpbal(Asys)
+## @deftypefn {Function File} {@var{retsys} =} zgpbal (@var{Asys})
 ##
 ## used internally in @code{tzero}; minimal argument checking performed
 ##
-## implementation of zero computation generalized eigenvalue problem 
+## implementation of zero computation generalized eigenvalue problem
 ## balancing method (Hodel and Tiller, Allerton Conference, 1991)
 ## Based on Ward's balancing algorithm (SIAM J. Sci Stat. Comput., 1981)
 ##
-## zgpbal computes a state/input/output weighting that attempts to 
+## zgpbal computes a state/input/output weighting that attempts to
 ## reduced the range of the magnitudes of the nonzero elements of [a,b,c,d]
 ## The weighting uses scalar multiplication by powers of 2, so no roundoff
-## will occur.  
+## will occur.
 ##
 ## zgpbal should be followed by zgpred
-##
 ## @end deftypefn
 
 ## References:
@@ -42,7 +41,7 @@
 ## Created: July 24, 1992
 ## Conversion to Octave by R. Bruce Tenison July 3, 1994
 
-function retsys = zgpbal (Asys)  
+function retsys = zgpbal (Asys)
 
   if( (nargin != 1) | (!is_struct(Asys)))
     usage("retsys = zgpbal(Asys)");
@@ -52,7 +51,7 @@ function retsys = zgpbal (Asys)
   [a,b,c,d] = sys2ss(Asys);
 
   [nn,mm,pp] = abcddim(a,b,c,d);
-  
+
   np1 = nn+1;
   nmp = nn+mm+pp;
 
@@ -66,12 +65,12 @@ function retsys = zgpbal (Asys)
   if (norm(zz))
     ## generalized conjugate gradient approach
     xx = zgscal(a,b,c,d,zz,nn,mm,pp);
-    
+
     for i=1:nmp
       xx(i) = floor(xx(i)+0.5);
       xx(i) = 2.0^xx(i);
     endfor
-    
+
     ## now scale a
     ## block 1: a = sigma a inv(sigma)
     for i=1:nn
@@ -104,7 +103,7 @@ function retsys = zgpbal (Asys)
       d(i,1:mm) = d(i,1:mm)*xx(i1);
     endfor
   endif
-  
+
   retsys = ss2sys(a,b,c,d);
 endfunction
 

@@ -1,33 +1,33 @@
 ## Copyright (C) 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{retval} =} com2str(@var{zz}[,@var{flg}])
-##  
+##
 ## convert complex number to a string
 ## @strong{Inputs}
 ## @table @var
 ## @item zz
-##      complex number
+## complex number
 ## @item flg
-##      format flag
-##      0 (default):            -1, 0, 1,   1i,   1 + 0.5i
-##      1 (for use with zpout): -1, 0, + 1, + 1i, + 1 + 0.5i
+## format flag
+## 0 (default):            -1, 0, 1,   1i,   1 + 0.5i
+## 1 (for use with zpout): -1, 0, + 1, + 1i, + 1 + 0.5i
 ## @end table
 ## @end deftypefn
 
@@ -39,7 +39,7 @@ function retval = com2str (zz, flg)
   if(nargin == 1)
     flg = 0;
   endif
- 
+
   if( !(is_scalar(zz) & is_scalar(flg) ) )
     error("com2str: arguments must be a scalar.");
   endif
@@ -78,5 +78,5 @@ function retval = com2str (zz, flg)
       retval = [ sgns(1+(rz< 0))," ", num2str(abs(rz))," ",com2str(i*iz,1)];
     endswitch
   endif
-  
+
 endfunction

@@ -1,42 +1,40 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { outputs =} rlocus ( inputs ) 
+## @deftypefn {Function File} {@var{outputs} =} rlocus (@var{inputs})
 ## @format
-##  [rldata, k] = rlocus(sys[,increment,min_k,max_k])
-##  Displays root locus plot of the specified SISO system.
-##  
-##        -----   ---     -------- 
+## [rldata, k] = rlocus(sys[,increment,min_k,max_k])
+## Displays root locus plot of the specified SISO system.
+##
+##        -----   ---     --------
 ##    --->| + |---|k|---->| SISO |----------->
-##        -----   ---     --------        | 
-##        - ^                             | 
-##          |_____________________________|  
-## 
+##        -----   ---     --------        |
+##        - ^                             |
+##          |_____________________________|
+##
 ## inputs: sys = system data structure
-##         min_k, max_k,increment: minimum, maximum values of k and
-##                the increment used in computing gain values
-##  Outputs: plots the root locus to the screen.  
-##    rldata: Data points plotted column 1: real values, column 2: imaginary
-##            values)
-##    k: gains for real axis break points.
-## 
-## 
+## min_k, max_k,increment: minimum, maximum values of k and
+## the increment used in computing gain values
+## Outputs: plots the root locus to the screen.
+## rldata: Data points plotted column 1: real values, column 2: imaginary
+## values)
+## k: gains for real axis break points.
 ## @end format
 ## @end deftypefn
 
@@ -46,14 +44,14 @@
 ## Updated by John Ingram July 1996 for systems
 
 function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, min_k, max_k)
-  
+
   if (nargin < 1) | (nargin > 4)
     usage("rlocus(sys[,inc,mink,maxk])");
   endif
 
   ## Convert the input to a transfer function if necessary
-  
-  [num,den] = sys2tf(sys)		# extract numerator/denom polyomials
+
+  [num,den] = sys2tf(sys)               # extract numerator/denom polyomials
   lnum = length(num);      lden = length(den);
   if(lden < 2)
     error(sprintf("length of derivative=%d, doesn't make sense",lden));
@@ -62,11 +60,11 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
   endif
 
   ## root locus plot axis limits
-  
+
   ## compute real axis locus breakpoints
-  ## compute the derivative of the numerator and the denominator 
+  ## compute the derivative of the numerator and the denominator
   dern=polyderiv(num);        derd=polyderiv(den);
-  
+
   ## compute real axis breakpoints
   real_ax_pol = conv(den,dern) - conv(num,derd);
   real_ax_pts = roots(real_ax_pol);
@@ -82,7 +80,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
   endif
 
   ## compute gain ranges based on computed K values
-  if(maxk == 0)     maxk = 1; 
+  if(maxk == 0)     maxk = 1;
   else              maxk = 1.1*maxk;        endif
   mink = 0;
   ngain = 20;
@@ -100,7 +98,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
   ## vector of gains
   ngain = max(3,ngain);
   gvec = linspace(mink,maxk,ngain);
-  
+
   ## Find the open loop zeros and the initial poles
   rlzer = roots(num);
 
@@ -124,10 +122,10 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
   axlim = axis2dlim([real(rlpolv(idx)),imag(rlpolv(idx))]);
   xmin = axlim(1);
   xmax = axlim(2);
-  
+
   ## set smoothing tolerance per axis limits
   smtol = 0.01*max(abs(axlim));
-  
+
   ## smooth poles if necessary, up to maximum of 1000 gain points
   ## only smooth points within the axis limit window
   ## smoothing done if max_k not specified as a command argument
@@ -141,14 +139,14 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     for ii=1:length(idx)
       i1 = idx(ii);      g1 = gvec(i1);       p1 = rlpol(:,i1);
       i2 = idx(ii)+1;    g2 = gvec(i2);       p2 = rlpol(:,i2);
-    
+
       ## isolate poles in p1, p2 that are inside the real axis limits
       bidx = find( (real(p1) >= xmin & real(p1) <= xmax)  ...
           | (real(p2) >= xmin & real(p2) <= xmax) );
       if(!isempty(bidx))
         p1 = p1(bidx);
         p2 = p2(bidx);
-        if( max(abs(p2-p1)) > smtol) 
+        if( max(abs(p2-p1)) > smtol)
           newg = linspace(g1,g2,5);
           newg = newg(2:4);
           if(isempty(newg))
@@ -167,7 +165,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
         endif
       endif
     endfor
-    
+
     ## process new gain values
     ngain1 = length(gvec);
     for ii=(ngain+1):ngain1
@@ -179,7 +177,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     rlpol = rlpol(:,idx);
     ngain = length(gvec);
   endwhile
-   
+
   ## Plot the data
   if(nargout  == 0)
     rlpolv = vec(rlpol);
@@ -193,12 +191,12 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     axis(axlim);
     [stn,inname,outname] = sysgetsignals(sys);
     xlabel(sprintf("Root locus from %s to %s, gain=[%f,%f]: Real axis", ...
-	nth(inname,1),nth(outname,1),gvec(1),gvec(ngain)));
+        nth(inname,1),nth(outname,1),gvec(1),gvec(ngain)));
     ylabel("Imag. axis");
-	
+
     plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...
-	real(olpol),imag(olpol),"x2;open loop poles;", ...
-	real(rlzer),imag(rlzer),"o3;zeros;");
+        real(olpol),imag(olpol),"x2;open loop poles;", ...
+        real(rlzer),imag(rlzer),"o3;zeros;");
     rldata = [];
   endif
 endfunction

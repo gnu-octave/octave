@@ -14,7 +14,7 @@ elseif(!is_struct(sys))
   error("sys must be a system data structure");
 elseif(!isstr(sigtype))
   error("sigtype must be a string");
-elseif(rows(sigtype) != 1) 
+elseif(rows(sigtype) != 1)
   error("sigtype (%d x %d) must be a single string", ...
     rows(sigtype),columns(sigtype));
 end

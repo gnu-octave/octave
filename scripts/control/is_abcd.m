@@ -1,26 +1,27 @@
 ## Copyright (C) 1997 Kai P. Mueller
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{retval} =} is_abcd( @var{a}@{, @var{b}, @var{c}, @var{d}@})
-##  Returns @var{retval} = 1 if the dimensions of @var{a}, @var{b}, @var{c}, @var{d}
-##  are compatible, otherwise @var{retval} = 0 with an appropriate diagnostic
-##  message printed to the screen.  The matrices b, c, or d may be omitted.
+## @deftypefn {Function File} {@var{retval} =} is_abcd (@var{a}@{, @var{b}, @var{c}, @var{d}@})
+##  Returns @var{retval} = 1 if the dimensions of @var{a}, @var{b},
+##  @var{c}, @var{d} are compatible, otherwise @var{retval} = 0 with an
+##  appropriate diagnostic message printed to the screen.  The matrices
+##  b, c, or d may be omitted.
 ## @end deftypefn
 ## @seealso{abcddim}
 
@@ -43,7 +44,7 @@ function retval = is_abcd (a, b, c, d)
       [na, ma] = size(a);  [nb, mb] = size(b);
       if (na != ma)
         disp("Matrix A ist not square.")
-	return;
+        return;
       endif
       if (na != nb)
         disp("A and B column dimension different.")
@@ -54,15 +55,15 @@ function retval = is_abcd (a, b, c, d)
       [na, ma] = size(a);  [nb, mb] = size(b);  [nc, mc] = size(c);
       if (na != ma)
         disp("Matrix A ist not square.")
-	return;
+        return;
       endif
       if (na != nb)
         disp("A and B column dimensions not compatible.")
-	return;
+        return;
       endif
       if (ma != mc)
         disp("A and C row dimensions not compatible.")
-	return;
+        return;
       endif
     case (4)
       ## all matrices A, B, C, D
@@ -70,23 +71,23 @@ function retval = is_abcd (a, b, c, d)
       [nc, mc] = size(c);  [nd, md] = size(d);
       if (na != ma)
         disp("Matrix A ist not square.")
-	return;
+        return;
       endif
       if (na != nb)
         disp("A and B column dimensions not compatible.")
-	return;
+        return;
       endif
       if (ma != mc)
         disp("A and C row dimensions not compatible.")
-	return;
+        return;
       endif
       if (mb != md)
         disp("B and D row dimensions not compatible.")
-	return;
+        return;
       endif
       if (nc != nd)
         disp("C and D column dimensions not compatible.")
-	return;
+        return;
       endif
     otherwise
       usage("retval = is_abcd(a [, b, c, d])")

@@ -1,33 +1,32 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[y, t] = } stepimp(@var{sitype},@var{sys}[, @var{inp}, @var{tstop}, @var{n}]) 
+## @deftypefn {Function File} {[@var{y}, @var{t}] = } stepimp (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
 ## Impulse or step response for a linear system.
-##       The system can be discrete or multivariable (or both).
-##       This m-file contains the "common code" of step and impulse.
-## 
+## The system can be discrete or multivariable (or both).
+## This m-file contains the "common code" of step and impulse.
+##
 ## Produces a plot or the response data for system sys.
-## 
+##
 ## Limited argument checking; "do not attempt to do this at home".
 ## Used internally in @code{impulse}, @code{step}. Use @code{step}
 ## or @code{impulse} instead.
-## 
 ## @end deftypefn
 ## @seealso{step and impulse}
 
@@ -39,7 +38,7 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
 
   if (sitype == 1)         IMPULSE = 0;
   elseif (sitype == 2)     IMPULSE = 1;
-  else		   	   error("stepimp: illegal sitype argument.")
+  else                     error("stepimp: illegal sitype argument.")
   endif
   sys = sysupdate(sys,"ss");
 
@@ -74,11 +73,11 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
       ## perform bilinear transformation on poles in z
       for i = 1:NSTATES
         pole = ev(i);
-	if (abs(pole + 1) < 1.0e-10)
-	  ev(i) = 0;
-	else
-	  ev(i) = 2 / TSAMPLE * (pole - 1) / (pole + 1);
-	endif
+        if (abs(pole + 1) < 1.0e-10)
+          ev(i) = 0;
+        else
+          ev(i) = 2 / TSAMPLE * (pole - 1) / (pole + 1);
+        endif
       endfor
     endif
     ## remove poles near zero from eigenvalue array ev
@@ -102,7 +101,7 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
       yy = 10^(ceil(log10(t_sim)) - 1);
       t_sim = yy * ceil(t_sim / yy);
       ## printf("##STEPIMP-DEBUG: nk=%d   t_step=%f  t_sim=%f\n",
-      ##   nk, t_step, t_sim);  
+      ##   nk, t_step, t_sim);
     endif
   endif
 
@@ -127,10 +126,10 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
       n = floor(tstop / TSAMPLE) + 1;
       if (n < 2)  n = 2;  endif
       if (n > N_MAX)
-	n = N_MAX;
-	printf("Hint: number of samples limited to %d by default.\n", \
-	       N_MAX);
-	printf("  ==> increase \"n\" parameter for longer simulations.\n");
+        n = N_MAX;
+        printf("Hint: number of samples limited to %d by default.\n", \
+               N_MAX);
+        printf("  ==> increase \"n\" parameter for longer simulations.\n");
       endif
     endif
     tstop = (n - 1) * TSAMPLE;
@@ -148,7 +147,7 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
         ## only n in unknown
         if (USE_DEF)
           n = N_MIN;
-	  t_step = tstop / (n - 1);
+          t_step = tstop / (n - 1);
         else
           n = floor(tstop / t_step) + 1;
         endif
@@ -156,21 +155,21 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
         ## tstop and n are unknown
         if (USE_DEF)
           tstop = T_DEF;
-	  n = N_MIN;
-	  t_step = tstop / (n - 1);
+          n = N_MIN;
+          t_step = tstop / (n - 1);
         else
           tstop = t_sim;
           n = floor(tstop / t_step) + 1;
         endif
       endif
       if (n < N_MIN)
-	n = N_MIN;
+        n = N_MIN;
         t_step = tstop / (n - 1);
       endif
       if (n > N_MAX)
-    	tstop = (n - 1) * t_step;
-	t_step = tstop / (N_MAX - 1);
-	n = N_MAX;
+        tstop = (n - 1) * t_step;
+        t_step = tstop / (N_MAX - 1);
+        n = N_MAX;
       endif
     endif
     tstop = (n - 1) * t_step;
@@ -222,55 +221,55 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
     if (gnuplot_has_multiplot)
       if (IMPULSE)
         gm = zeros(NOUT, 1);
-	tt = "impulse";
+        tt = "impulse";
       else
         ssys = ss2sys(F, G, C, D, t_step);
         gm = dcgain(ssys);
-	tt = "step";
+        tt = "step";
       endif
       ncols = floor(sqrt(NOUT));
       nrows = ceil(NOUT / ncols);
       for i = 1:NOUT
         subplot(nrows, ncols, i);
-	title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
-	  sysgetsignals(sys,"out",i,1)));
-	if (DIGITAL)
-	  [ts, ys] = stairs(t, y(i,:));
-	  ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
-	  if (length(gm) > 0)
-	    yy = [ys; gm(i)*ones(size(ts))];
-	  else
-	    yy = ys;
-	  endif
-	  grid("on");
-	  xlabel("time [s]");
-	  ylabel("y(t)");
+        title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
+          sysgetsignals(sys,"out",i,1)));
+        if (DIGITAL)
+          [ts, ys] = stairs(t, y(i,:));
+          ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
+          if (length(gm) > 0)
+            yy = [ys; gm(i)*ones(size(ts))];
+          else
+            yy = ys;
+          endif
+          grid("on");
+          xlabel("time [s]");
+          ylabel("y(t)");
           plot(ts, yy);
-	else
-	  if (length(gm) > 0)
-	    yy = [y(i,:); gm(i)*ones(size(t))];
-	  else
-	    yy = y(i,:);
-	  endif
-	  grid("on");
-	  xlabel("time [s]");
-	  ylabel("y(t)");
-	  plot(t, yy);
-	endif
+        else
+          if (length(gm) > 0)
+            yy = [y(i,:); gm(i)*ones(size(t))];
+          else
+            yy = y(i,:);
+          endif
+          grid("on");
+          xlabel("time [s]");
+          ylabel("y(t)");
+          plot(t, yy);
+        endif
       endfor
       ## leave gnuplot in multiplot mode is bad style
       oneplot();
     else
       ## plot everything in one diagram
       title([tt, " response | ", sysgetsignals(sys,"in",inp,1), ...
-	" -> all outputs"]);
+        " -> all outputs"]);
       if (DIGITAL)
         stairs(t, y(i,:));
       else
-	grid("on");
-	xlabel("time [s]");
-	ylabel("y(t)");
-	plot(t, y(i,:));
+        grid("on");
+        xlabel("time [s]");
+        ylabel("y(t)");
+        plot(t, y(i,:));
       endif
     endif
     y=[];

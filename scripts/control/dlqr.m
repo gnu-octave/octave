@@ -1,17 +1,17 @@
 ## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
@@ -27,11 +27,11 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## x[k+1] = A x[k] + B u[k]
 ## @end example
-## 
+##
 ## @end ifinfo
 ## to minimize the cost functional
 ## @iftex
@@ -42,12 +42,12 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## J = Sum (x' Q x + u' R u)
 ## @end example
 ## @end ifinfo
-## 
+##
 ## @noindent
 ## @var{z} omitted or
 ## @iftex
@@ -58,16 +58,16 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## J = Sum (x' Q x + u' R u + 2 x' Z u)
 ## @end example
-## 
+##
 ## @end ifinfo
 ## @var{z} included.
-## 
+##
 ## The following values are returned:
-## 
+##
 ## @table @var
 ## @item k
 ## The state feedback gain,
@@ -80,10 +80,10 @@
 ## (@var{a} - @var{b}@var{k})
 ## @end ifinfo
 ## is stable.
-## 
+##
 ## @item p
 ## The solution of algebraic Riccati equation.
-## 
+##
 ## @item e
 ## The closed loop poles of
 ## @iftex
@@ -99,7 +99,7 @@
 ## @enumerate
 ## @item Anderson and Moore, Optimal Control: Linear Quadratic Methods,
 ##      Prentice-Hall, 1990, pp. 56-58
-## @item  Kuo, Digital Control Systems, Harcourt Brace Jovanovich, 1992, 
+## @item  Kuo, Digital Control Systems, Harcourt Brace Jovanovich, 1992,
 ##      section 11-5-2.
 ## @end enumerate
 ## @end deftypefn

@@ -1,27 +1,27 @@
 ## Copyright (C) 1993, 1994, 1995 John W. Eaton
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {@var{gm} =} dcgain(@var{sys}@{, tol@})
-##       Returns dc-gain matrix. If dc-gain is infinite
-##       an empty matrix is returned.
-##       The argument @var{tol} is an optional tolerance for the condition
-##       number of @var{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
+## @deftypefn {Function File} {@var{gm} =} dcgain (@var{sys}@{, tol@})
+## Returns dc-gain matrix. If dc-gain is infinite
+## an empty matrix is returned.
+## The argument @var{tol} is an optional tolerance for the condition
+## number of @var{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
 ## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

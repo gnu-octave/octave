@@ -1,41 +1,41 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{sys} = } tf2sys( @var{num}, @var{den} @{, @var{tsam}, @var{inname}, @var{outname} @})
-##  build system data structure from transfer function format data
-## 
+## @deftypefn {Function File} {@var{sys} =} tf2sys (@var{num}, @var{den} @{, @var{tsam}, @var{inname}, @var{outname} @})
+## build system data structure from transfer function format data
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item  num
 ## @itemx den
-##  coefficients of numerator/denominator polynomials
+## coefficients of numerator/denominator polynomials
 ## @item tsam
-##  sampling interval. default: 0 (continuous time)
+## sampling interval. default: 0 (continuous time)
 ## @item inname
 ## @itemx outname
-##  input/output signal names; may be a string or list with a single string
+## input/output signal names; may be a string or list with a single string
 ## entry.
 ## @end table
-## 
+##
 ## @strong{Outputs}
-##  @var{sys} = system data structure
-## 
+## @var{sys} = system data structure
+##
 ## @strong{Example}
 ## @example
 ## octave:1> sys=tf2sys([2 1],[1 2 1],0.1);
@@ -65,14 +65,14 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
     return
   endif
 
-  ## check input format 
+  ## check input format
   if( ! ( (is_vector(num) || is_scalar(num)) && ...
-	(is_vector(den) || is_scalar(den))) )
+        (is_vector(den) || is_scalar(den))) )
     error(["num (",num2str(rows(num)),"x",num2str(columns(num)), ...
       ") and den (",num2str(rows(den)),"x",num2str(columns(den)), ...
       ") must be vectors"])
   endif
-  
+
   ## strip leading zero coefficients
   num = tf2sysl(num);
   den = tf2sysl(den);
@@ -82,7 +82,7 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   endif
 
   ## check sampling interval (if any)
-  if(nargin <= 2)           tsam = 0;		# default
+  if(nargin <= 2)           tsam = 0;           # default
   elseif (isempty(tsam))    tsam = 0;           endif
   if ( (! (is_scalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
     error("tsam must be a positive real scalar")
@@ -98,7 +98,7 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   outsys.tsam = tsam;
   outsys.n = length(den)-1;
   outsys.nz = 0;
-  outsys.yd = 0;	# assume discrete-time
+  outsys.yd = 0;        # assume discrete-time
   ## check discrete time
   if(tsam > 0)
     [outsys.n,outsys.nz] = swap(outsys.n, outsys.nz);
@@ -138,6 +138,6 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
       endif
       outsys = syssetsignals(outsys,"out",outname);
     endif
-  endif 
+  endif
 
 endfunction

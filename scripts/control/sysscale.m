@@ -1,29 +1,29 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {@var{sys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}@{, @var{outname}, @var{inname}@})
+## @deftypefn {Function File} {@var{sys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}@{, @var{outname}, @var{inname}@})
 ## scale inputs/outputs of a system.
-## 
+##
 ## @strong{Inputs}
-##    sys: structured system
-##    outscale, inscale: constant matrices of appropriate dimension
-## 
+## sys: structured system
+## outscale, inscale: constant matrices of appropriate dimension
+##
 ## @strong{Outputs}
 ## @var{sys}: resulting open loop system:
 ## @example
@@ -31,13 +31,13 @@
 ## u --->| inscale |--->| sys |--->| outscale |---> y
 ##       -----------    -------    -----------
 ## @end example
-##  If the input names and output names (each a list of strings)
+## If the input names and output names (each a list of strings)
 ## are not given and the scaling matrices
-##  are not square, then default names will be given to the inputs and/or
-##  outputs.
-## 
+## are not square, then default names will be given to the inputs and/or
+## outputs.
+##
 ## A warning message is printed if outscale attempts to add continuous
-## system outputs to discrete system outputs; otherwise @var{yd} is 
+## system outputs to discrete system outputs; otherwise @var{yd} is
 ## set appropriately in the returned value of @var{sys}.
 ## @end deftypefn
 
@@ -54,10 +54,10 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
   endif
 
   [nn,nz,mm,pp] = sysdimensions(sys);
- 
+
   ## check for omitted scales
-  if(isempty(outscale))    outscale = eye(pp);     endif 
-  if(isempty(inscale))     inscale = eye(mm);      endif 
+  if(isempty(outscale))    outscale = eye(pp);     endif
+  if(isempty(inscale))     inscale = eye(mm);      endif
 
   ## check dimensions of scaling matrices
   if(mm!=rows(inscale))
@@ -134,6 +134,6 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
   endif
 
   sys = ss2sys(sysa,sysb,sysc,sysd,systsam,nn,nz,sysstname, ...
-	inname,outname,find(sysyd==1));
+        inname,outname,find(sysyd==1));
 
 endfunction

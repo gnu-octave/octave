@@ -1,26 +1,26 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { outputs =} bddemo ( inputs ) 
-##  Octave Controls toolbox demo: Block Diagram Manipulations demo
+## @deftypefn {Function File} {@var{outputs} =} bddemo (@var{inputs})
+## Octave Controls toolbox demo: Block Diagram Manipulations demo
 ## @end deftypefn
- 
+
 ## Author: David Clem
 ## Created: August 15, 1994
 ## Modified by A S Hodel Summer-Fall 1996
@@ -35,20 +35,20 @@ function bddemo ()
     k=0;
     while(k > 14 || k < 1)
       k = menu("Octave Block Diagram Manipulations Demo", ...
-  	"sysadd/syssub: F(s) = G(s) +/- H(s)", ...
- 	"sysappend: add new inputs/outputs", ...
-	"syssetsignals: change names of inputs, outputs, and/or states", ...
-	"sysconnect: connect specified system inputs/outputs", ...
-	"syscont/sysdisc: extract the continuous (discrete) part of a system", ...
-	"sysdup: duplicate specified inputs/outputs", ...
-	"sysgroup: group two systems into a single system,", ...
-	"sysmult: F(s) = G(s)*H(s) (series connection)", ...
-	"sysprune: keep only specified inputs/outputs", ...
-	"sysscale: scale inputs/outputs by specified gain matrices", ...
-	"parallel: parallel connection of two systems", ...
-	"buildssic: the combination of all", ...
-	"Design examples:", ...
-	"Return to main demo menu");
+        "sysadd/syssub: F(s) = G(s) +/- H(s)", ...
+        "sysappend: add new inputs/outputs", ...
+        "syssetsignals: change names of inputs, outputs, and/or states", ...
+        "sysconnect: connect specified system inputs/outputs", ...
+        "syscont/sysdisc: extract the continuous (discrete) part of a system", ...
+        "sysdup: duplicate specified inputs/outputs", ...
+        "sysgroup: group two systems into a single system,", ...
+        "sysmult: F(s) = G(s)*H(s) (series connection)", ...
+        "sysprune: keep only specified inputs/outputs", ...
+        "sysscale: scale inputs/outputs by specified gain matrices", ...
+        "parallel: parallel connection of two systems", ...
+        "buildssic: the combination of all", ...
+        "Design examples:", ...
+        "Return to main demo menu");
     endwhile
     if (k == 1)
       clc
@@ -174,7 +174,7 @@ function bddemo ()
       sys2 = tf2sys([1, 0],[1, -3, -2],0,"c_in","y_out");
       disp("             ---------------------")
       disp(" u_in -->o-->| Discrete system   | --------> y_disc")
-      disp("         ^   ---------------------    |")  
+      disp("         ^   ---------------------    |")
       disp("         |                            | ");
       disp("         -----------------------------|---")
       disp("                                      |  |")
@@ -300,7 +300,7 @@ function bddemo ()
 
       sys2 = syssetsignals(sys2,"in",in2);
       sys2 = syssetsignals(sys2,"out",out2);
-     
+
       disp("sys1=")
       sysout(sys1);
       disp("sys2=")
@@ -393,11 +393,11 @@ function bddemo ()
         disp("Other design examples are in dgkfdemo (controldemo option 7)")
         disp(" ")
         meth = menu("Select design example method", ...
-		"Method 1 ", ...
-		"Method 1 (w/o algebraic loop warning)", ...
-		"Method 2", ...
-		"Method 3", ...
-		"Exit design examples");
+                "Method 1 ", ...
+                "Method 1 (w/o algebraic loop warning)", ...
+                "Method 2", ...
+                "Method 3", ...
+                "Exit design examples");
         if(meth == 1)
           disp(" * * * Method 1 * * *")
           disp(" ")
@@ -458,10 +458,10 @@ function bddemo ()
           prompt
           out_connect = [1, 2]
           in_connect = [3, 1]
-          cmd = "PK0 = sysconnect(PK,out_connect,in_connect);"; 
+          cmd = "PK0 = sysconnect(PK,out_connect,in_connect);";
           run_cmd
           prompt
-          disp("Notice that sysconnect detects the possibility of algebraic") 
+          disp("Notice that sysconnect detects the possibility of algebraic")
           disp("connections when connecting inputs.  Option 2 (Method 1 ")
           disp("without algebraic loops) shows how to avoid this warning")
           disp("by performing connections one at a time.")
@@ -498,7 +498,7 @@ function bddemo ()
           disp(" ")
           disp("Recall that sysconnect checks for algebraic loops.  Although")
           disp("Design option 1 gets a warning message about a possible");
- 	  disp("algebraic loop, such a loop does not exist.")
+          disp("algebraic loop, such a loop does not exist.")
           disp("This can be seen by performing the connections one at a time");
           cmd = "PK = sysgroup(P,K);";
           run_cmd
@@ -512,10 +512,10 @@ function bddemo ()
           disp("PK=")
           sysout(PK);
           disp("Connect controller to plant:")
-          cmd = "PK0 = sysconnect(PK,2,1);"; 
+          cmd = "PK0 = sysconnect(PK,2,1);";
           run_cmd
           disp("Plant output to negative control input")
-          cmd = "PK0 = sysconnect(PK0,1,3);"; 
+          cmd = "PK0 = sysconnect(PK0,1,3);";
           run_cmd
           disp("Only keep plant output (output 1) and r(t) (input 2)")
           cmd = "PK0 = sysprune(PK0,1,2);";
@@ -602,11 +602,11 @@ function bddemo ()
         disp("Illegal selection")
      endif
     endwhile
-      
+
     elseif (k == 14)
       return
     endif
-  endwhile  
+  endwhile
   implict_str_to_num_ok = str_sav;
   page_screen_output = sav_page;
 endfunction

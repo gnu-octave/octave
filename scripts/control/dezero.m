@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## -*- texinfo -*- 
+## -*- texinfo -*-
 ## @deftypefn {Functin File} {@var{t} =} dezero (@var{s})
 ## Remove trailing blank entries and all zero entries from the string s.
 ## @end deftypefn
@@ -26,8 +26,8 @@
 ## Adapted-By: jwe
 
 ## Adapted from deblank by A. S. Hodel (a.s.hodel@eng.auburn.edu)
-## 	(the name dezero is a reference to the Fermilab D0 experiment,
-##      where my sister did her PhD research) 
+##      (the name dezero is a reference to the Fermilab D0 experiment,
+##      where my sister did her PhD research)
 
 function t = dezero (s)
 

@@ -1,17 +1,17 @@
 ## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
@@ -31,10 +31,10 @@
 ## a' * x + x * a - x * b * x + c = 0
 ## @end example
 ## @end ifinfo
-## 
+##
 ## @strong{Inputs}
 ## @noindent
-## for identically dimensioned square matrices 
+## for identically dimensioned square matrices
 ## @table @var
 ## @item a
 ## @var{n}x@var{n} matrix.
@@ -48,15 +48,15 @@
 ## (optional argument; default = @code{"B"}):
 ## String option passed to @code{balance} prior to ordered Schur decomposition.
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @var{x}: solution of the ARE.
-## 
+##
 ## @strong{Method}
 ## Laub's Schur method (IEEE Transactions on
 ## Automatic Control, 1979) is applied to the appropriate Hamiltonian
 ## matrix.
-## 
+##
 ## @end deftypefn
 ## @seealso{balance and dare}
 
@@ -68,11 +68,11 @@ function x = are (a, b, c, opt)
   if (nargin == 3 || nargin == 4)
     if (nargin == 4)
       if (! (strcmp (opt, "N") || strcmp (opt, "P") ...
-	     || strcmp (opt, "S") || strcmp (opt, "B") ...
-	     || strcmp (opt, "n") || strcmp (opt, "p") ...
-	     || strcmp (opt, "s") || strcmp (opt, "b")))
-	warning ("are: opt has an invalid value; setting to B");
-	opt = "B";
+             || strcmp (opt, "S") || strcmp (opt, "B") ...
+             || strcmp (opt, "n") || strcmp (opt, "p") ...
+             || strcmp (opt, "s") || strcmp (opt, "b")))
+        warning ("are: opt has an invalid value; setting to B");
+        opt = "B";
       endif
     else
       opt = "B";
@@ -103,7 +103,7 @@ function x = are (a, b, c, opt)
 ## use Boley-Golub (Syst. Contr. Letters, 1984) method, not the
 ##
 ##                     n-1
-## rank ([ B A*B ... A^   *B]) method 
+## rank ([ B A*B ... A^   *B]) method
 
     [d, h] = balance ([a, -b; -c, -a'], opt);
     [u, s] = schur (h, "A");

@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{Xinf},@var{x_ha_err}] =} hinfsyn_ric(@var{A},@var{BB}.@var{C1},@var{d1dot},@var{R},@var{ptol})
-## @table 
+## @table
 ## @item forms
 ##        xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
 ##        Ha = [A 0*A; -C1'*C1 -A'] - xx;
-## @end table 
+## @end table
 ## and solves associated Riccati equation
 ## returns error code
 ## @table
@@ -35,11 +35,12 @@
 ##    5: Xinf not positive definite
 ##    6: R is singular
 ## @end table
-## @end deftypefn 
+## @end deftypefn
+
 function [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol)
 
   x_ha_err = 0;        # assume success
-  Xinf = [];		     # default return value
+  Xinf = [];                 # default return value
   n = is_square(A);
   nw = is_square(R);
   if(rank(R) != nw)    x_ha_err = 6;
@@ -51,7 +52,7 @@ function [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol)
     [u, s] = schur(Ha, "A");
     rev = real(eig(s));
 
-    if (any(abs(rev) <= ptol))	# eigenvalues near the imaginary axis
+    if (any(abs(rev) <= ptol))  # eigenvalues near the imaginary axis
       x_ha_err = 1;
     elseif (sum(rev > 0) != sum(rev < 0))
       ## unequal number of positive and negative eigenvalues
@@ -61,18 +62,18 @@ function [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol)
       u = d * u;
       Xinf = u(n+1:2*n,1:n) / u(1:n,1:n);
       if (!all(all(finite(Xinf))))
-	x_ha_err = 3;
+        x_ha_err = 3;
       elseif (norm(Xinf-Xinf') >= 10*ptol)
-	## solution not symmetric
-	x_ha_err = 4;
+        ## solution not symmetric
+        x_ha_err = 4;
       else
-	## positive semidefinite?
-	## force symmetry (faster, avoids some convergence problems)
-	Xinf = (Xinf + Xinf')/2;
-	rev = eig(Xinf);
-	if (any(rev <= -ptol))
-	  x_ha_err = 5;
-	endif
+        ## positive semidefinite?
+        ## force symmetry (faster, avoids some convergence problems)
+        Xinf = (Xinf + Xinf')/2;
+        rev = eig(Xinf);
+        if (any(rev <= -ptol))
+          x_ha_err = 5;
+        endif
       endif
     endif
   endif

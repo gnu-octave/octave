@@ -1,23 +1,23 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{A}, @var{B}, @var{C}, @var{D}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
+## @deftypefn {Function File} {[@var{A}, @var{B}, @var{C}, @var{D}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
 ## Conversion from zero / pole to state space.
 ## @strong{Inputs}
 ## @table @var
@@ -38,14 +38,14 @@
 ## y = Cx + Du
 ## @end example
 ## is obtained from a vector of zeros and a vector of poles via the
-## function call @code{[a,b,c,d] = zp2ss(zer,pol,k)}.  
-## The vectors @samp{zer} and 
+## function call @code{[a,b,c,d] = zp2ss(zer,pol,k)}.
+## The vectors @samp{zer} and
 ## @samp{pol} may either be row or column vectors.  Each zero and pole that
 ## has an imaginary part must have a conjugate in the list.
 ## The number of zeros must not exceed the number of poles.
 ## @samp{k} is @code{zp}-form leading coefficient.
 ## @end deftypefn
- 
+
 ## Author: David Clem
 ## Created: August 15, 1994
 
@@ -57,16 +57,16 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
   if(nargin != 3)
     error("Incorrect number of input arguments");
   endif
- 
+
   if(! (is_vector(zer) | isempty(zer)) )
     error(["zer(",num2str(rows(zer)),",",num2str(columns(zer)), ...
-	") should be a vector"]);
+        ") should be a vector"]);
   elseif(! (is_vector(pol) | isempty(pol) ) )
     error(["pol(",num2str(rows(pol)),",",num2str(columns(pol)), ...
-	") should be a vector"]);
+        ") should be a vector"]);
   elseif(! is_scalar(k))
     error(["k(",num2str(rows(k)),",",num2str(columns(k)), ...
-	") should be a scalar"]);
+        ") should be a scalar"]);
   elseif( k != real(k))
     warning("zp2ss: k is complex")
   endif
@@ -91,7 +91,7 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
 
   ## approach: remove poles/zeros from the list as they are included in
   ## the ss system
- 
+
   while(length(pol))
 
     ## search for complex poles, zeros
@@ -105,16 +105,16 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
 
     if(isempty(cpol) & isempty(czer))
       pcnt = 1;
-    else 
+    else
       pcnt = 2;
     endif
 
-    num=1;	# assume no zeros left.
+    num=1;      # assume no zeros left.
     switch(pcnt)
     case(1)
       ## real pole/zero combination
       if(length(zer))
-        num = [1, -zer(1)];  
+        num = [1, -zer(1)];
         zer = zer(2:length(zer));
       endif
       den = [1, -pol(1)];
@@ -122,12 +122,12 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
     case(2)
       ## got a complex pole or zero, need two roots (if available)
       if(length(zer) > 1)
-        [num,zer] = zp2ssg2(zer);	# get two zeros
+        [num,zer] = zp2ssg2(zer);       # get two zeros
       elseif(length(zer) == 1)
-        num = [1, -zer];		# use last zero (better be real!)
+        num = [1, -zer];                # use last zero (better be real!)
         zer = [];
       endif
-      [den,pol] = zp2ssg2(pol);		# get two poles
+      [den,pol] = zp2ssg2(pol);         # get two poles
     otherwise
       error(["pcnt = ",num2str(pcnt)])
     endswitch
@@ -145,7 +145,7 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
 
     zpsys = sysmult(zpsys,zpsys1);
 
-  endwhile 
+  endwhile
 
   [a,b,c,d] = sys2ss(zpsys);
 

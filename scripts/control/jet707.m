@@ -1,31 +1,31 @@
 ## Copyright (C) 1997 Kai P. Mueller
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{outsys}  =} jet707 ( ) 
-##  Creates linearized state space model of a Boeing 707-321 aircraft
-##  at v=80m/s. (M = 0.26, Ga0 = -3 deg, alpha0 = 4 deg, kappa = 50 deg)
-##  System inputs:   (1) thrust   and (2) elevator angle
-##  System outputs:  (1) airspeed and (2) pitch angle
-##  Ref: R. Brockhaus: Flugregelung (Flight Control), Springer, 1994
+## @deftypefn {Function File} {@var{outsys}  =} jet707 ()
+## Creates linearized state space model of a Boeing 707-321 aircraft
+## at v=80m/s. (M = 0.26, Ga0 = -3 deg, alpha0 = 4 deg, kappa = 50 deg)
+## System inputs:   (1) thrust   and (2) elevator angle
+## System outputs:  (1) airspeed and (2) pitch angle
+## Ref: R. Brockhaus: Flugregelung (Flight Control), Springer, 1994
 ## @end deftypefn
 ## @seealso{ord2}
- 
+
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: September 28, 1997
 

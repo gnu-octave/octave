@@ -1,96 +1,96 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{mag}, @var{phase}, @var{w}] =} bode(@var{sys}@{,@var{w}, @var{out_idx}, @var{in_idx}@})
+## @deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} bode(@var{sys}@{,@var{w}, @var{out_idx}, @var{in_idx}@})
 ## If no output arguments are given: produce Bode plots of a system; otherwise,
 ## compute the frequency response of a system data structure
-## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item   sys
-##  a system data structure (must be either purely continuous or discrete;
-## 	 see is_digital)
+## a system data structure (must be either purely continuous or discrete;
+## see is_digital)
 ## @item   w
-##  frequency values for evaluation.
-## 
+## frequency values for evaluation.
+##
 ## if @var{sys} is continuous, then bode evaluates @math{G(jw)} where
 ## @math{G(s)} is the system transfer function.
-## 
-## if @var{sys} is discrete, then bode evaluates G(@code{exp}(jwT)), where 
+##
+## if @var{sys} is discrete, then bode evaluates G(@code{exp}(jwT)), where
 ## @itemize @bullet
 ## @item @var{T}=@code{sysgettsam(@var{sys})} (the system sampling time) and
 ## @item @math{G(z)} is the system transfer function.
 ## @end itemize
-## 
+##
 ## @strong{ Default} the default frequency range is selected as follows: (These
-##         steps are NOT performed if @var{w} is specified)
+## steps are NOT performed if @var{w} is specified)
 ## @enumerate
 ## @item via routine bodquist, isolate all poles and zeros away from
 ## @var{w}=0 (@var{jw}=0 or @math{@code{exp}(jwT)}=1) and select the frequency
 ## range based on the breakpoint locations of the frequencies.
 ## @item if @var{sys} is discrete time, the frequency range is limited
-##               to @math{jwT} in 
+##               to @math{jwT} in
 ## @ifinfo
 ## [0,2 pi /T]
 ## @end ifinfo
 ## @iftex
-## @tex 
+## @tex
 ## $[0,2\pi/T]$
 ## @end tex
 ## @end iftex
 ## @item A "smoothing" routine is used to ensure that the plot phase does
-##               not change excessively from point to point and that singular
-##               points (e.g., crossovers from +/- 180) are accurately shown.
-## 
+## not change excessively from point to point and that singular
+## points (e.g., crossovers from +/- 180) are accurately shown.
+##
 ## @end enumerate
 ## @item out_idx
 ## @itemx in_idx
-##  the indices of the output(s) and input(s) to be used in
-##      the frequency response; see @code{sysprune}.
+## the indices of the output(s) and input(s) to be used in
+## the frequency response; see @code{sysprune}.
 ## @end table
 ## @strong{Outputs}
 ## @table @var
 ## @item mag
 ## @itemx phase
-##  the magnitude and phase of the frequency response
-##        @math{G(jw)} or @math{G(@code{exp}(jwT))} at the selected frequency values.
+## the magnitude and phase of the frequency response @math{G(jw)} or
+## @math{G(@code{exp}(jwT))} at the selected frequency values.
 ## @item w
 ## the vector of frequency values used
 ## @end table
-## 
+##
 ## @strong{Notes}
 ## @enumerate
 ## @item If no output arguments are given, e.g.,
 ## @example
 ## bode(sys);
 ## @end example
-## bode plots the results to the 
-## screen.  Descriptive labels are automatically placed. 
-## 
+## bode plots the results to the screen.  Descriptive labels are
+## automatically placed.
+##
 ## Failure to include a concluding semicolon will yield some garbage
 ## being printed to the screen (@code{ans = []}).
-## 
+##
 ## @item If the requested plot is for an MIMO system, mag is set to
-##  @math{||G(jw)||} or @math{||G(@code{exp}(jwT))||}
+## @math{||G(jw)||} or @math{||G(@code{exp}(jwT))||}
 ## and phase information is not computed.
 ## @end enumerate
-## @end deftypefn 
+## @end deftypefn
 
 ## Author: John Ingram <ingraje@eng.auburn.edu>
 ## Created: July 10, 1996
@@ -162,9 +162,9 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     else
       title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
       disp("MIMO plot from")
-      disp(outlist(inname,"	"));
+      disp(outlist(inname,"     "));
       disp("to")
-      disp(outlist(outname,"	"));
+      disp(outlist(outname,"    "));
     endif
     wv = [min(w), max(w)];
     if(do_db_plot && max(mag) > 0)
@@ -196,7 +196,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
       xlabel(xlstr);
       ylabel("Phase in deg");
       title([ "phase([Y/U]", tistr, ...
-	 "), u=", nth(inname,1),", y=",nth(outname,1)]);
+         "), u=", nth(inname,1),", y=",nth(outname,1)]);
       grid("on");
       semilogx(w,phase);
       ## This should be the default for subsequent plot commands.

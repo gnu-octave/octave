@@ -1,63 +1,62 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {@var{retsys} =} syssetsignals (@var{sys}, @var{opt}, @var{names}@{, @var{sig_idx}@})
-##  change the names of selected inputs, outputs and states.
+## @deftypefn {Function File} {@var{retsys} =} syssetsignals (@var{sys}, @var{opt}, @var{names}@{, @var{sig_idx}@})
+## change the names of selected inputs, outputs and states.
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
-##  system data structure
-## 
+## system data structure
+##
 ## @item opt
 ## change default name (output)
-## 
+##
 ## @table @code
 ## @item "out"
-##  change selected output names
+## change selected output names
 ## @item "in"
-##  change selected input names
+## change selected input names
 ## @item "st"
-##  change selected state names   
+## change selected state names
 ## @item "yd"
-##  change selected outputs from discrete to continuous or 
-##                    from continuous to discrete.
+## change selected outputs from discrete to continuous or
+## from continuous to discrete.
 ## @end table
-## 
+##
 ## @item names
 ## @table @code
 ## @item opt = "out", "in", or "st"
-##  string or string array containing desired signal names or values.
+## string or string array containing desired signal names or values.
 ## @item opt = "yd"
 ## To desired output continuous/discrete flag.
 ## Set name to 0 for continuous, or 1 for discrete.
 ## @end table
 ## @item list
-##  vector of indices of outputs, yd, inputs, or
-##              states whose respective names should be changed.
-## 
-##              Default: replace entire list of names/entire yd vector.
+## vector of indices of outputs, yd, inputs, or
+## states whose respective names should be changed.
+##
+## Default: replace entire list of names/entire yd vector.
 ## @end table
 ## @strong{Outputs}
-##     @var{retsys=sys} with appropriate signal names changed 
-##             (or yd values, where appropriate)
-## 
-## 
+## @var{retsys=sys} with appropriate signal names changed
+## (or yd values, where appropriate)
+##
 ## @strong{Example}
 ## @example
 ## octave:1> sys=ss2sys([1 2; 3 4],[5;6],[7 8]);
@@ -83,7 +82,6 @@
 ## D matrix: 1 x 1
 ## 0
 ## @end example
-## 
 ## @end deftypefn
 
 ## Author: John Ingram <ingraje@eng.auburn.edu>
@@ -185,7 +183,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
         error("opt=yd: length(names)=%d, length(sig_idx)=%d",length(names), ...
           length(sig_idx) );
       endif
-  
+
       badidx = find(names != 0 & names != 1);
       if(! isempty(badidx) )
         for ii=1:length(badidx)
@@ -194,7 +192,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
         endfor
         error("opt=yd: illegal values in names");
       endif
-  
+
       for ii=1:length(sig_idx)
         jj = sig_idx(ii);
         if(jj < 1 | jj > nsigs | jj != floor(jj))
@@ -210,7 +208,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
         printf("are digital\n");
         sys = syschtsam(sys,1);
       endif
-      
+
     endif
   endif
 

@@ -1,30 +1,30 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn(@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}@{, @var{ptol}, @var{tol}@})
-## 
+## @deftypefn {Function File} {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn(@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}@{, @var{ptol}, @var{tol}@})
+##
 ## @strong{Inputs} input system is passed as either
 ## @table @var
 ## @item Asys
 ## system data structure (see ss2sys, sys2ss)
 ## @itemize @bullet
-## @item controller is implemented for continuous time systems 
+## @item controller is implemented for continuous time systems
 ## @item controller is NOT implemented for discrete time systems  (see
 ## bilinear transforms in @code{c2d}, @code{d2c})
 ## @end itemize
@@ -40,13 +40,13 @@
 ## gain threshhold.  Routine quits when gmax/gmin < 1+tol
 ## @item ptol
 ## poles with abs(real(pole)) < ptol*||H|| (H is appropriate
-## Hamiltonian) are considered to be on the imaginary axis.  
+## Hamiltonian) are considered to be on the imaginary axis.
 ## Default: 1e-9
 ## @item tol
 ## threshhold for 0.  Default: 200*eps
-## 
+##
 ## @var{gmax}, @var{min}, @var{tol}, and @var{tol} must all be postive scalars.
-## @end table 
+## @end table
 ## @strong{Outputs}
 ## @table @var
 ## @item K
@@ -60,25 +60,25 @@
 ## @item Yinf
 ## ARE solution matrix for filter subproblem
 ## @end table
-## 
+##
 ## @enumerate
 ## @item Doyle, Glover, Khargonekar, Francis, "State Space Solutions
-##      to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
-## 
+## to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
+##
 ## @item Maciejowksi, J.M., "Multivariable feedback design,"
-##      Addison-Wesley, 1989, ISBN 0-201-18243-2
-## 
+## Addison-Wesley, 1989, ISBN 0-201-18243-2
+##
 ## @item Keith Glover and John C. Doyle, "State-space formulae for all
-##      stabilizing controllers that satisfy and h-infinity-norm bound
-##      and relations to risk sensitivity,"
-##      Systems & Control Letters 11, Oct. 1988, pp 167-172.
+## stabilizing controllers that satisfy and h-infinity-norm bound
+## and relations to risk sensitivity,"
+## Systems & Control Letters 11, Oct. 1988, pp 167-172.
 ## @end enumerate
 ## @end deftypefn
- 
+
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1995
 ## Updated for Packed system structures December 1996 by John Ingram
-## 
+##
 ## Revised by Kai P. Mueller April 1998 to solve the general H_infinity
 ## problem using unitary transformations Q (on w and z)
 ## and non-singular transformations R (on u and y).
@@ -99,7 +99,7 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
   elseif(!is_sample(ptol))
     error("hinfsyn: ptol must be a positive scalar");
   endif
-    
+
   if(!is_sample(gmax) | !is_sample(gmin) | !is_sample(gtol) )
     error(["hinfsyn: gmax=",num2str(gmax),", gmin=",num2str(gmin), ...
       "gtol=",num2str(gtol), " must be positive scalars."])
@@ -114,15 +114,15 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
   endif
 
   ## extract dgs information
-  			nw = dgs.nw;	nu = dgs.nu;
-  A = dgs.A;		B1 = dgs.Bw;	B2 = dgs.Bu;
-  C1 = dgs.Cz;		D11 = dgs.Dzw;	D12 = dgs.Dzu;		nz = dgs.nz;
-  C2 = dgs.Cy;		D21 = dgs.Dyw;	D22 = dgs.Dyu;		ny = dgs.ny;
+                        nw = dgs.nw;    nu = dgs.nu;
+  A = dgs.A;            B1 = dgs.Bw;    B2 = dgs.Bu;
+  C1 = dgs.Cz;          D11 = dgs.Dzw;  D12 = dgs.Dzu;          nz = dgs.nz;
+  C2 = dgs.Cy;          D21 = dgs.Dyw;  D22 = dgs.Dyu;          ny = dgs.ny;
   d22nz = dgs.Dyu_nz;
   dflg = dgs.dflg;
 
   ## recover i/o transformations
-  R12 = dgs.Ru;		R21 = dgs.Ry;
+  R12 = dgs.Ru;         R21 = dgs.Ry;
   [ncstates, ndstates, nin, nout] = sysdimensions(Asys);
   Atsam = sysgettsam(Asys);
   [Ast, Ain, Aout] = sysgetsignals(Asys);
@@ -148,7 +148,7 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
     endif
     if (glo > ghi)
       fprintf(" *** lower bound of gamma greater than upper bound(%f)", ...
-	      glo, ghi);
+              glo, ghi);
       disp(" *** unable to continue, Goodbye.");
       return;
     endif
@@ -172,36 +172,36 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
 
     ## set up error messages
     errmesg = list(" o   o   o   o   o  ", ...
-	" #   -   -   -   -  ", ...
-	" o   #   -   -   -  ", ...
-	" o   o   #   -   -  ", ...
-	" o   o   o   #   -  ", ...
-	" o   o   o   o   #  ", ...
-	" -   -   -   -   -  ");
+        " #   -   -   -   -  ", ...
+        " o   #   -   -   -  ", ...
+        " o   o   #   -   -  ", ...
+        " o   o   o   #   -  ", ...
+        " o   o   o   o   #  ", ...
+        " -   -   -   -   -  ");
     errdesx = list("", ...
-	"X im eig.", ...
-	"Hx not Ham.", ...
-	"X inf.eig", ...
-	"X not symm.", ...
-	"X not pos", ...
-	"R singular");
+        "X im eig.", ...
+        "Hx not Ham.", ...
+        "X inf.eig", ...
+        "X not symm.", ...
+        "X not pos", ...
+        "R singular");
 
     errdesy = list(" ", ...
-	"Y im eig.", ...
-	"Hy not Ham.", ...
-	"Y inf.eig", ...
-	"Y not symm.", ...
-	"Y not pos", ...
-	"Rtilde singular");
+        "Y im eig.", ...
+        "Hy not Ham.", ...
+        "Y inf.eig", ...
+        "Y not symm.", ...
+        "Y not pos", ...
+        "Rtilde singular");
 
 
     ## now do the search
     while (!iteration_finished)
       switch (search_state)
-        case (0) 	g = ghi;
-        case (1) 	g = glo;
-        case (2) 	g = 0.5 * (ghi + glo);
-        otherwise 	error(" *** This should never happen!");
+        case (0)        g = ghi;
+        case (1)        g = glo;
+        case (2)        g = 0.5 * (ghi + glo);
+        otherwise       error(" *** This should never happen!");
       endswitch
       printf("%10.4f ", g);
 
@@ -222,14 +222,14 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
       passed = 0;
       rerr="";
       if (!x_ha_err && !y_ha_err)
-	## test spectral radius condition
-	rho = max(abs(eig(Xinf * Yinf)));
-	if (rho < g*g)
-	  ## spectral radius condition passed
-	  passed = 1;
+        ## test spectral radius condition
+        rho = max(abs(eig(Xinf * Yinf)));
+        if (rho < g*g)
+          ## spectral radius condition passed
+          passed = 1;
         else
           rerr = sprintf("rho=%f",rho);
-	endif
+        endif
       endif
 
       if(x_ha_err >= 0 & x_ha_err <= 6)
@@ -250,30 +250,30 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
       else        printf("  n %s/%s%s\n",xerr,yerr,rerr);          endif
 
       if (passed && (de/g < gtol))
-	search_state = 3;
+        search_state = 3;
       endif
 
       switch (search_state)
         case (0)
-	  if (!passed)
-	    ## upper bound must pass but did not
-	    fprintf(" *** the upper bound of gamma (%f) is too small.\n", g);
-	    iteration_finished = 2;
-	  else
+          if (!passed)
+            ## upper bound must pass but did not
+            fprintf(" *** the upper bound of gamma (%f) is too small.\n", g);
+            iteration_finished = 2;
+          else
             search_state = 1;
-	  endif
+          endif
         case (1)
-	  if (!passed)      search_state = 2;
-	  else
-	    ## lower bound must not pass but passed
-	    fprintf(" *** the lower bound of gamma (%f) passed.\n", g);
-	    iteration_finished = 3;
-	  endif
+          if (!passed)      search_state = 2;
+          else
+            ## lower bound must not pass but passed
+            fprintf(" *** the lower bound of gamma (%f) passed.\n", g);
+            iteration_finished = 3;
+          endif
         case (2)
           ## Normal case; must check that singular R, Rtilde wasn't the problem.
-	  if ((!passed) & (x_ha_err != 6) & (y_ha_err != 6) ) glo = g;
-	  else         ghi = g;        endif
-	  de = ghi - glo;
+          if ((!passed) & (x_ha_err != 6) & (y_ha_err != 6) ) glo = g;
+          else         ghi = g;        endif
+          de = ghi - glo;
         case (3)       iteration_finished = 1;        # done
         otherwise      error(" *** This should never happen!");
       endswitch
@@ -300,10 +300,10 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
       [Ac, Bc, Cc, Dc] = sys2ss(K);
       K = ss2sys(Ac,Bc,Cc,Dc,Atsam,ncstates,ndstates,Kst,Kin,Kout);
       if (nargout >= 3)
-	GW = starp(Asys, K);
+        GW = starp(Asys, K);
       endif
     endif
-    
+
   elseif(ndstates)
 
     ## discrete time solution

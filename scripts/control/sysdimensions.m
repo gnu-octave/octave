@@ -17,34 +17,35 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { [@var{n}, @var{nz}, @var{m}, @var{p},@var{yd}] =} sysdimensions (@var{sys}@{, @var{opt}@})
-##  return the number of states, inputs, and/or outputs in the system @var{sys}.
-## 
+## @deftypefn {Function File} {[@var{n}, @var{nz}, @var{m}, @var{p}, @var{yd}] =} sysdimensions (@var{sys}@{, @var{opt}@})
+## return the number of states, inputs, and/or outputs in the system
+## @var{sys}.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
-##  system data structure
-## 
+## system data structure
+##
 ## @item opt
 ## String indicating which dimensions are desired.  Values:
 ## @table @code
 ## @item "all"
 ## (default) return all parameters as specified under Outputs below.
-## 
-## @item "cst"  
+##
+## @item "cst"
 ## return @var{n}= number of continuous states
-## 
-## @item "dst"  
+##
+## @item "dst"
 ## return @var{n}= number of discrete states
-## 
+##
 ## @item "in"
 ## return @var{n}= number of inputs
-## 
+##
 ## @item "out"
 ## return @var{n}= number of outputs
 ## @end table
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @table @var
 ## @item  n
@@ -61,7 +62,6 @@
 ## discrete.
 ## @math{yd(ii) = 0} if output @var{ii} is continous
 ## @end table
-## 
 ## @end deftypefn
 ## @seealso{sysgetsignals and sysgettsam}
 
@@ -89,7 +89,7 @@ function [n, nz, m, p, yd] = sysdimensions (sys, opt)
       n = nth(legal_values,ii);
       legal_opt = 1;
       if(ii > 1 & nargout > 1)
-	warning("opt=%s, %d output arguments requested",opt,nargout);
+        warning("opt=%s, %d output arguments requested",opt,nargout);
       endif
     endif
   endfor

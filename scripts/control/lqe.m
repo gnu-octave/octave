@@ -1,17 +1,17 @@
 ## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
@@ -31,32 +31,32 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## dx
 ## -- = a x + b u
 ## dt
-## 
+##
 ## y = c x + d u
 ## @end example
-## 
+##
 ## @end ifinfo
 ## where @var{w} and @var{v} are zero-mean gaussian noise processes with
 ## respective intensities
-## 
+##
 ## @example
 ## sigw = cov (w, w)
 ## sigv = cov (v, v)
 ## @end example
-## 
+##
 ## The optional argument @var{z} is the cross-covariance
 ## @code{cov (@var{w}, @var{v})}.  If it is omitted,
 ## @code{cov (@var{w}, @var{v}) = 0} is assumed.
-## 
+##
 ## Observer structure is @code{dz/dt = A z + B u + k (y - C z - D u)}
-## 
+##
 ## The following values are returned:
-## 
+##
 ## @table @var
 ## @item k
 ## The observer gain,
@@ -69,10 +69,10 @@
 ## (@var{a} - @var{k}@var{c})
 ## @end ifinfo
 ## is stable.
-## 
+##
 ## @item p
 ## The solution of algebraic Riccati equation.
-## 
+##
 ## @item e
 ## The vector of closed loop poles of
 ## @iftex

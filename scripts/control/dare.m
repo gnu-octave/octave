@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dare (@var{a}, @var{b}, @var{c}, @var{r}, @var{opt})
-## 
+##
 ## Return the solution, @var{x} of the discrete-time algebraic Riccati
 ## equation
 ## @iftex
@@ -35,38 +35,38 @@
 ## @end example
 ## @end ifinfo
 ## @noindent
-## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item a
 ## @var{n} by @var{n}.
-## 
+##
 ## @item b
 ## @var{n} by @var{m}.
-## 
+##
 ## @item c
 ## @var{n} by @var{n}, symmetric positive semidefinite, or @var{p} by @var{n}.
 ## In the latter case @math{c:=c'*c} is used.
-## 
+##
 ## @item r
 ## @var{m} by @var{m}, symmetric positive definite (invertible).
-## 
+##
 ## @item opt
 ## (optional argument; default = @code{"B"}):
 ## String option passed to @code{balance} prior to ordered @var{QZ} decomposition.
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @var{x} solution of DARE.
-## 
+##
 ## @strong{Method}
 ## Generalized eigenvalue approach (Van Dooren; SIAM J.
 ##  Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
-## 
+##
 ##  See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
 ##  Algebraic Riccati Equations," Mathematics of Control, Signals and
 ##  Systems, Vol 5, no 2 (1992)  pp 165-194.
-## 
+##
 ## @end deftypefn
 ## @seealso{balance and are}
 
@@ -79,8 +79,8 @@ function x = dare (a, b, c, r, opt)
   if (nargin == 4 | nargin == 5)
     if (nargin == 5)
       if (opt != "N" || opt != "P" || opt != "S" || opt != "B")
-	warning ("dare: opt has an invalid value -- setting to B");
-	opt = "B";
+        warning ("dare: opt has an invalid value -- setting to B");
+        opt = "B";
       endif
     else
       opt = "B";

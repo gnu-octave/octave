@@ -1,69 +1,68 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm(@var{sys}@{, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol}@})
+## @deftypefn {Function File} {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm(@var{sys}@{, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol}@})
 ##  Computes the H infinity norm of a system data structure.
-## 
+##
 ## @strong{Inputs}
 ## @table @var
-## @item sys 
+## @item sys
 ## system data structure
-## @item tol 
+## @item tol
 ## H infinity norm search tolerance (default: 0.001)
-## @item gmin 
+## @item gmin
 ## minimum value for norm search (default: 1e-9)
-## @item gmax 
+## @item gmax
 ## maximum value for norm search (default: 1e+9)
 ## @item ptol
-##  pole tolerance:
+## pole tolerance:
 ## @itemize @bullet
-## @item if sys is continuous, poles with 
+## @item if sys is continuous, poles with
 ## |real(pole)| < ptol*||H|| (H is appropriate Hamiltonian)
-## are considered to be on the imaginary axis.  
-## 
+## are considered to be on the imaginary axis.
+##
 ## @item if sys is discrete, poles with
 ## |abs(pole)-1| < ptol*||[s1,s2]|| (appropriate symplectic pencil)
 ## are considered to be on the unit circle
-## 
+##
 ## @item Default: 1e-9
 ## @end itemize
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @table @var
 ## @item g
-## Computed gain, within @var{tol} of actual gain.  @var{g} is returned as Inf 
+## Computed gain, within @var{tol} of actual gain.  @var{g} is returned as Inf
 ## if the system is unstable.
 ## @item gmin
 ## @itemx gmax
 ## Actual system gain lies in the interval [@var{gmin}, @var{gmax}]
 ## @end table
-## 
-##  References:
-##  Doyle, Glover, Khargonekar, Francis, "State space solutions to standard
-##     H2 and Hinf control problems", IEEE TAC August 1989
-##  Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
-##     Int. J. Control, vol 54, #5, 1991
-##  Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
-##  $Revision: 1.9 $
+##
+## References:
+## Doyle, Glover, Khargonekar, Francis, "State space solutions to standard
+## H2 and Hinf control problems", IEEE TAC August 1989
+## Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
+## Int. J. Control, vol 54, #5, 1991
+## Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
 ## @end deftypefn
- 
+
 function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   if((nargin == 0) || (nargin > 4))
@@ -74,10 +73,10 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   ## set defaults where applicable
   if(nargin < 5)
-    ptol = 1e-9;	# pole tolerance
+    ptol = 1e-9;        # pole tolerance
   endif
   if(nargin < 4)
-    gmax = 1e9;		# max gain value
+    gmax = 1e9;         # max gain value
   endif
 
   dflg = is_digital(sys);
@@ -94,18 +93,18 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   Dnrm = norm(D);
   if(nargin < 3)
-    gmin = max(1e-9,Dnrm); 	# min gain value
+    gmin = max(1e-9,Dnrm);      # min gain value
   elseif(gmin < Dnrm)
     warning(["hinfnorm: setting Gmin=||D||=",num2str(Dnrm)]);
   endif
 
   if(nargin < 2)
-    tol = 0.001;	# convergence measure for gmin, gmax
+    tol = 0.001;        # convergence measure for gmin, gmax
   endif
 
   ## check for scalar input arguments 2...5
-  if( ! (is_scalar(tol) && is_scalar(gmin) 
-	&& is_scalar(gmax) && is_scalar(ptol)) )
+  if( ! (is_scalar(tol) && is_scalar(gmin)
+        && is_scalar(gmax) && is_scalar(ptol)) )
     error("hinfnorm: tol, gmin, gmax, ptol must be scalars");
   endif
 
@@ -131,7 +130,7 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
       s1 = s1 .* (abs(s1) > ptol*norm(s1,"inf"));
       s2 = s2 .* (abs(s2) > ptol*norm(s2,"inf"));
       [cc,dd,s1,s2] = balance(s1,s2);
-      [qza,qzb,zz,pls] = qz(s1,s2,"S");	# ordered qz decomposition
+      [qza,qzb,zz,pls] = qz(s1,s2,"S"); # ordered qz decomposition
       eigerr = abs(abs(pls)-1);
       normH = norm([s1,s2]);
       Hb = [s1, s2];
@@ -143,14 +142,14 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
       Rinv = inv(g*g*Im - (D' * D));
       H = [A + B*Rinv*D'*C,        B*Rinv*B'; ...
            -C'*(Ip + D*Rinv*D')*C, -(A + B*Rinv*D'*C)'];
-      ## guard against roundoff: zero out extremely small values prior 
+      ## guard against roundoff: zero out extremely small values prior
       ## to balancing
       H = H .* (abs(H) > ptol*norm(H,"inf"));
       [DD,Hb] = balance(H);
       pls = eig(Hb);
       eigerr = abs(real(pls));
       normH = norm(H);
-      dcondfailed = 0;		# digital condition; doesn't apply here
+      dcondfailed = 0;          # digital condition; doesn't apply here
     endif
     if( (min(eigerr) <= ptol * normH) | dcondfailed)
       gmin = g;

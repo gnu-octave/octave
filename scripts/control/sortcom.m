@@ -1,37 +1,35 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { outputs =} sortcom ( inputs ) 
+## @deftypefn {Function File} {@var{outputs} =} sortcom (@var{inputs})
 ## @format
-##  [yy,idx] = sortcom(xx[,opt]): sort a complex vector
-##  xx: complex vector
-##  opt: sorting option:
-## 	"re": real part (default)
-## 	"mag": by magnitude
-## 	"im": by imaginary part
-## 
-##   if opt != "im" then complex conjugate pairs are grouped together,
-##      a - jb followed by a + jb.
-##  yy: sorted values
-##  idx: permutation vector: yy = xx(idx)
-## 
-## 
+## [yy,idx] = sortcom(xx[,opt]): sort a complex vector
+## xx: complex vector
+## opt: sorting option:
+##  "re": real part (default)
+##  "mag": by magnitude
+##  "im": by imaginary part
+##
+## if opt != "im" then complex conjugate pairs are grouped together,
+## a - jb followed by a + jb.
+## yy: sorted values
+## idx: permutation vector: yy = xx(idx)
 ## @end format
 ## @end deftypefn
 
@@ -52,7 +50,7 @@ function [yy, idx] = sortcom (xx, opt)
       error("sortcom: second argument must be a string");
     endif
   endif
- 
+
   if(isempty(xx))
     yy = idx = [];
   else
@@ -61,16 +59,16 @@ function [yy, idx] = sortcom (xx, opt)
     elseif(strcmp(opt,"mag"))   datavec = abs(xx);
     else                        error(["sortcom: illegal option = ", opt])
     endif
-  
+
     [datavec,idx] = sort(datavec);
     yy= xx(idx);
-    
+
     if(strcmp(opt,"re") | strcmp(opt,"mag"))
       ## sort so that complex conjugate pairs appear together
-      
+
       ddiff = diff(datavec);
       zidx = find(ddiff == 0);
-  
+
       ## sort common datavec values
       if(!isempty(zidx))
         for iv=create_set(datavec(zidx))
@@ -81,6 +79,6 @@ function [yy, idx] = sortcom (xx, opt)
         endfor
       endif
     endif
-  endif  
+  endif
 endfunction
-  
+

@@ -1,59 +1,59 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {@var{csys} =} d2c (@var{sys}@{,@var{tol}@})
-## @deftypefnx {Function File } {@var{csys} =} d2c (@var{sys}, @var{opt})
+## @deftypefn {Function File} {@var{csys} =} d2c (@var{sys}@{,@var{tol}@})
+## @deftypefnx {Function File} {@var{csys} =} d2c (@var{sys}, @var{opt})
 ## Convert discrete (sub)system to a purely continuous system.  Sampling
 ## time used is @code{sysgettsam(@var{sys})}
-## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item   sys
-##  system data structure with discrete components
+## system data structure with discrete components
 ## @item   tol
 ## Scalar value.
-##  tolerance for convergence of default @code{"log"} option (see below)
+## tolerance for convergence of default @code{"log"} option (see below)
 ## @item   opt
-##  conversion option.  Choose from:
+## conversion option.  Choose from:
 ## @table @code
 ## @item         "log"
-##  (default) Conversion is performed via a matrix logarithm.
+## (default) Conversion is performed via a matrix logarithm.
 ## Due to some problems with this computation, it is
-## followed by a steepest descent algorithm to identify continuous time 
-## @var{A}, @var{B}, to get a better fit to the original data.  
-## 
-## If called as @code{d2c}(@var{sys},@var{tol}), @var{tol=}positive scalar, 
-## 	the @code{"log"} option is used.  The default value for @var{tol} is 
-## 	@code{1e-8}.
+## followed by a steepest descent algorithm to identify continuous time
+## @var{A}, @var{B}, to get a better fit to the original data.
+##
+## If called as @code{d2c}(@var{sys},@var{tol}), @var{tol=}positive scalar,
+## the @code{"log"} option is used.  The default value for @var{tol} is
+## @code{1e-8}.
 ## @item        "bi"
-##  Conversion is performed via bilinear transform 
-## @math{z = (1 + s T / 2)/(1 - s T / 2)} where @var{T} is the 
+## Conversion is performed via bilinear transform
+## @math{z = (1 + s T / 2)/(1 - s T / 2)} where @var{T} is the
 ## system sampling time (see @code{sysgettsam}).
-## 
-## FIXME: bilinear option exits with an error if @var{sys} is not purely discrete
-## 
+##
+## FIXME: bilinear option exits with an error if @var{sys} is not purely
+## discrete
 ## @end table
 ## @end table
 ## @strong{Outputs} @var{csys} continuous time system (same dimensions and
 ## signal names as in @var{sys}).
 ## @end deftypefn
- 
+
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
 ## Created: August 23, 1994
 ## Updated by John Ingram for system data structure  August 1996
@@ -78,7 +78,7 @@ function csys = d2c (sys, opt)
     error("tol must be a postive scalar")
   elseif(opt > 1e-2)
     warning(["d2c: ridiculous error tolerance passed=",num2str(opt); ...
-	", intended c2d call?"])
+        ", intended c2d call?"])
   else
     tol = opt;
     opt = "log";
@@ -110,7 +110,7 @@ function csys = d2c (sys, opt)
   elseif(strcmp(opt,"log"))
     sys = sysupdate(sys,"ss");
     [n,nz,m,p] = sysdimensions(sys);
-  
+
     if(nz == 0)
       warning("d2c: all states continuous; setting outputs to agree");
       csys = syssetsignals(sys,"yd",zeros(1,1:p));
@@ -120,17 +120,17 @@ function csys = d2c (sys, opt)
       sys = c2d(sys,T);
     endif
     [a,b] = sys2ss(sys);
-  
+
     [ma,na] = size(a);
     [mb,nb] = size(b);
-  
+
     if(isempty(b) )
       warning("d2c: empty b matrix");
       Amat = a;
     else
       Amat = [a, b; zeros(nb,na), eye(nb)];
     endif
-  
+
     poles = eig(a);
     if( find(abs(poles) < 200*(n+nz)*eps) )
       warning("d2c: some poles very close to zero.  logm not performed");
@@ -143,16 +143,16 @@ function csys = d2c (sys, opt)
       logmat = real(logm(Amat)/T);
       Mtop = logmat(1:na,:);
     endif
-  
+
     ## perform simplistic, stupid optimization approach.
     ## should re-write with a Davidson-Fletcher CG approach
     mxthresh = norm(Mtop);
     if(mxthresh == 0)
       mxthresh = 1;
     endif
-    eps1 = mxthresh;	#gradient descent step size
-    cnt = max(20,(n*nz)*4);	#max number of iterations
-    newgrad=1;	#signal for new gradient
+    eps1 = mxthresh;    #gradient descent step size
+    cnt = max(20,(n*nz)*4);     #max number of iterations
+    newgrad=1;  #signal for new gradient
     while( (eps1/mxthresh > tol) & cnt)
       cnt = cnt-1;
       ## calculate the gradient of error with respect to Amat...
@@ -168,24 +168,24 @@ function csys = d2c (sys, opt)
         Mall = [Mtop; zeros(nb,na+nb)];
         DMall = [DMtop; zeros(nb,na+nb) ];
       endif
-  
+
       if(newgrad)
         GrMall = zeros(size(Mall));
         for ii=1:rows(Mtop)
           for jj=1:columns(Mtop)
-  	  DMall(ii,jj) = Mall(ii,jj) + geps;
+          DMall(ii,jj) = Mall(ii,jj) + geps;
             GrMall(ii,jj) = norm (Amat - expm (DMall*T), "fro") ...
-  		- norm (Amat - expm (Mall*T), "fro");
-      	  DMall(ii,jj) = Mall(ii,jj);
+                - norm (Amat - expm (Mall*T), "fro");
+          DMall(ii,jj) = Mall(ii,jj);
           endfor
         endfor
         GrMall = GrMall/norm(GrMall,1);
         newgrad = 0;
       endif
-  
+
       ## got a gradient, now try to use it
       DMall = Mall-eps1*GrMall;
-  
+
       FMall = expm(Mall*T);
       FDMall = expm(DMall*T);
       FmallErr = norm(Amat - FMall);
@@ -197,20 +197,20 @@ function csys = d2c (sys, opt)
       else
         eps1 = eps1/2;
       endif
-  
+
       if(FmallErr == 0)
         eps1 = 0;
       endif
-      
+
     endwhile
-  
+
     [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
     aa = Mall(1:na,1:na);
     if(!isempty(b))
       bb = Mall(1:na,(na+1):(na+nb));
     endif
     csys = ss2sys(aa,bb,cc,dd,0,na,0,stnam,innam,outnam);
-    
+
     ## update names
     nn = sysdimensions(sys);
     for ii = (nn+1):na

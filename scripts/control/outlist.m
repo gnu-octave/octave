@@ -1,45 +1,44 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## -*- texinfo -*- 
-## @deftypefn {Function File } { } outlist (@var{lmat}@{, @var{tabchar}, @var{yd}, @var{ilist} @})
-##  Prints an enumerated list of strings.
-##  internal use only; minimal argument checking performed
-## 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} outlist (@var{lmat}@{, @var{tabchar}, @var{yd}, @var{ilist} @})
+## Prints an enumerated list of strings.
+## internal use only; minimal argument checking performed
+##
 ## @strong{Inputs}
 ## @table @var
-## @item 	lmat
-##  list of strings
-## @item 	tabchar
-##  tab character (default: none)
+## @item        lmat
+## list of strings
+## @item        tabchar
+## tab character (default: none)
 ## @item   yd
-##  indices of strings to append with the string "(discrete)"
-##            (used by @var{sysout}; minimal checking of this argument)
-## 	   @math{yd = [] } indicates all outputs are continuous
+## indices of strings to append with the string "(discrete)"
+## (used by @var{sysout}; minimal checking of this argument)
+## @math{yd = [] } indicates all outputs are continuous
 ## @item ilist
-## index numbers to print with names.  
-## 
+## index numbers to print with names.
+##
 ## default: @code{1:rows(lmat)}
 ## @end table
-## 
+##
 ## @strong{Outputs}
-##    prints the list to the screen, numbering each string in order.
-## 
+## prints the list to the screen, numbering each string in order.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -70,7 +69,7 @@ function str_val = outlist (name_list, tabchar, yd, ilist)
   if((m >= 1) && (is_list(name_list)))
     for ii=1:m
       str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ilist(ii), ...
-	  nth(name_list,ii),nth(dstr,yd(ii)+1));
+          nth(name_list,ii),nth(dstr,yd(ii)+1));
     endfor
   else
     str_val = sprintf("%sNone",tabchar);

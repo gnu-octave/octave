@@ -1,6 +1,6 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -17,11 +17,10 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} { } controldemo
+## @deftypefn {Function File} {} controldemo ()
 ## Controls toolbox demo.
-## @end deftypefn  
-## @seealso{Demo programs: bddemo.m, frdemo.m, analdemo.m, 
-## moddmeo.m, rldemo.m
+## @end deftypefn
+## @seealso{Demo programs: bddemo, frdemo, analdemo, moddmeo, rldemo}
 
 ## Author: David Clem
 ## Created: August 15, 1994

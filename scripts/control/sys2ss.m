@@ -1,58 +1,58 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{a},@var{b},@var{c},@var{d},@var{tsam},@var{n},@var{nz},@var{stname},@var{inname},@var{outname},@var{yd}] =} sys2ss (@var{sys})
-## Extract state space representation from system data structure.  
-## 
+## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam},@var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{yd}] =} sys2ss (@var{sys})
+## Extract state space representation from system data structure.
+##
 ## @strong{Inputs}
 ## @var{sys} system data structure (@pxref{sysstruct})
-## 
+##
 ## @strong{Outputs}
 ## @table @var
 ## @item a
 ## @itemx b
 ## @itemx c
 ## @itemx d
-##  state space matrices for sys
-## 
+## state space matrices for sys
+##
 ## @item tsam
-##  sampling time of sys (0 if continuous)
-## 
+## sampling time of sys (0 if continuous)
+##
 ## @item n
 ## @itemx nz
-##  number of continuous, discrete states (discrete states come
-##           last in state vector @var{x})
-## 
+## number of continuous, discrete states (discrete states come
+## last in state vector @var{x})
+##
 ## @item stname
 ## @itemx inname
 ## @itemx outname
-##  signal names (lists of strings);  names of states,
-##           inputs, and outputs, respectively
-## 
+## signal names (lists of strings);  names of states,
+## inputs, and outputs, respectively
+##
 ## @item yd
-##  binary vector; @var{yd}(@var{ii}) is 1 if output @var{y}(@var{ii})$
-##  is discrete (sampled); otherwise  @var{yd}(@var{ii}) 0.
-##  
+## binary vector; @var{yd}(@var{ii}) is 1 if output @var{y}(@var{ii})$
+## is discrete (sampled); otherwise  @var{yd}(@var{ii}) 0.
+##
 ## @end table
 ## A warning massage is printed if the system is a mixed
 ## continuous and discrete system
-## 
+##
 ## @strong{Example}
 ## @example
 ## octave:1> sys=tf2sys([1 2],[3 4 5]);
@@ -67,7 +67,7 @@
 ## d = 0
 ## @end example
 ## @end deftypefn
- 
+
 ## Author: David Clem
 ## Created: August 19, 1994
 ## Updates by John Ingram July 14, 1996

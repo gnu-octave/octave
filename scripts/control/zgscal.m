@@ -1,25 +1,25 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+
 ## -*- texinfo -*-
-## @deftypefn {Function File } { x =} zgscal (@var{f}, @var{z}, @var{n}, @var{m}, @var{p})
-## Generalized conjugate gradient iteration to 
-## solve zero-computation generalized eigenvalue problem balancing equation 
+## @deftypefn {Function File} {@var{x} =} zgscal (@var{f}, @var{z}, @var{n}, @var{m}, @var{p})
+## Generalized conjugate gradient iteration to
+## solve zero-computation generalized eigenvalue problem balancing equation
 ## @math{fx=z};
 ## called by @code{zgepbal}
 ## @end deftypefn
@@ -38,7 +38,7 @@ function x = zgscal (a, b, c, d, z, n, m, p)
   ## Givens rotations, diagonalized 2x2 block of F, gcg vector initialization
 
   nmp = n+m+p;
-  
+
   ## x_0 = x_{-1} = 0, r_0 = z
   x = zeros(nmp,1);
   xk1 = x;
@@ -54,7 +54,7 @@ function x = zgscal (a, b, c, d, z, n, m, p)
 
   [U,H,k1] = krylov(F,z,nmp,1e-12,1);
   if(!is_square(H))
-    if(columns(H) != k1) 
+    if(columns(H) != k1)
       error("zgscal(tzero): k1=%d, columns(H)=%d",k1,columns(H));
     elseif(rows(H) != k1+1)
       error("zgscal: k1=%d, rows(H) = %d",k1,rows(H));
@@ -66,9 +66,9 @@ function x = zgscal (a, b, c, d, z, n, m, p)
     U = U(:,1:k1);
   endif
 
-  ## tridiagonal H can still be rank deficient, so do permuted qr 
+  ## tridiagonal H can still be rank deficient, so do permuted qr
   ## factorization
-  [qq,rr,pp] = qr(H);	# H = qq*rr*pp'
+  [qq,rr,pp] = qr(H);   # H = qq*rr*pp'
   nn = rank(rr);
   qq = qq(:,1:nn);
   rr = rr(1:nn,:);            # rr may not be square, but "\" does least
@@ -94,7 +94,7 @@ function x = zgscal (a, b, c, d, z, n, m, p)
   len_x = length(x);
   while ((k < 2*len_x) & (xnorm> 0.5) & (rnorm>fnorm))|(k == 0)
     k = k+1;
-    
+
     ## solve F_d z_{k-1} = r_{k-1}
     zk1= zgfslv(n,m,p,rk1);
 
@@ -130,7 +130,7 @@ function x = zgscal (a, b, c, d, z, n, m, p)
   x = xk2;
 
   ## check convergence
-  if (xnorm> 0.5 & rnorm>fnorm) 
+  if (xnorm> 0.5 & rnorm>fnorm)
     warning("zgscal(tzero): GCG iteration failed; solving with pinv");
 
     ## perform brute force least squares; construct F

@@ -1,17 +1,17 @@
 ## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
@@ -32,32 +32,32 @@
 ## @end iftex
 ## @ifinfo
 ## [A, B, C, D] corresponding to
-## 
+##
 ## @example
 ## dx/dt = a x + b u
 ## y = c x + d u
 ## @end example
-## 
+##
 ## @end ifinfo
 ## or a similar discrete-time system.
-## 
+##
 ## If the matrices are compatibly dimensioned, then @code{abcddim} returns
-## 
+##
 ## @table @var
 ## @item n
 ## The number of system states.
-## 
+##
 ## @item m
 ## The number of system inputs.
-## 
+##
 ## @item p
 ## The number of system outputs.
 ## @end table
-## 
+##
 ## Otherwise @code{abcddim} returns @var{n} = @var{m} = @var{p} = @minus{}1.
-## 
+##
 ## Note: n = 0 (pure gain block) is returned without warning.
-## 
+##
 ## @end deftypefn
 ## @seealso{is_abcd}
 
@@ -95,7 +95,7 @@ function [n, m, p] = abcddim (a, b, c, d)
     warning("abcddim: no outputs");
   elseif (cm != an)
     warning (["abcddim: a(",num2str(an),"x",num2str(am), ...
-	" and c(",num2str(cn),"x",num2str(cm),") are not compatible"]);
+        " and c(",num2str(cn),"x",num2str(cm),") are not compatible"]);
     return
   endif
 
@@ -110,13 +110,13 @@ function [n, m, p] = abcddim (a, b, c, d)
     [dn, dm] = size(d);
     if ( (cn != dn) & have_connections )
       warning (["abcddim: c(",num2str(cn),"x",num2str(cm), ...
-	" and d(",num2str(dn),"x",num2str(dm),") are not compatible"]);
+        " and d(",num2str(dn),"x",num2str(dm),") are not compatible"]);
       return
     endif
 
     if ( (bm != dm) & have_connections )
       warning (["abcddim: b(",num2str(bn),"x",num2str(bm), ...
-	  " and d(",num2str(dn),"x",num2str(dm),") are not compatible"]);
+          " and d(",num2str(dn),"x",num2str(dm),") are not compatible"]);
       return
     endif
 

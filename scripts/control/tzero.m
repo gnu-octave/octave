@@ -1,25 +1,25 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ##  -*- texinfo -*-
 ## @deftypefn {Function File} {} tzero (@var{a}, @var{b}, @var{c}, @var{d}@{, @var{opt}@})
 ## @deftypefnx {Function File} {} tzero (@var{sys}@{,@var{opt}@})
-##  Compute transmission zeros of a continuous
+## Compute transmission zeros of a continuous
 ## @example
 ## .
 ## x = Ax + Bu
@@ -64,9 +64,9 @@ function [zer, gain] = tzero (A, B, C, D)
     [A,B,C,D] = sys2ss(Asys);
   endif
 
-  Ao = Asys;			# save for leading coefficient
+  Ao = Asys;                    # save for leading coefficient
   siso = is_siso(Asys);
-  digital = is_digital(Asys);	# check if it's mixed or not
+  digital = is_digital(Asys);   # check if it's mixed or not
 
   ## see if it's a gain block
   if(isempty(A))
@@ -89,7 +89,7 @@ function [zer, gain] = tzero (A, B, C, D)
     [A,B,C,D] = sys2ss(Asys);    Asys = ss2sys(A', C', B', D');
   endif
 
-  zer = [];			# assume none
+  zer = [];                     # assume none
   [A,B,C,D] = sys2ss(Asys);
   if( !isempty(C) )
     [W,r,Pi] = qr([C, D]');
@@ -107,9 +107,9 @@ function [zer, gain] = tzero (A, B, C, D)
       zer = qz(Af,Bf);
     endif
   endif
-  
+
   mz = length(zer);
-  [A,B,C,D] = sys2ss(Ao);		# recover original system
+  [A,B,C,D] = sys2ss(Ao);               # recover original system
   ## compute leading coefficient
   if ( (nargout == 2) && siso)
     n = rows(A);

@@ -1,38 +1,39 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{retval}, @var{Pc}, @var{Pf}] =} hinfsyn_chk(@var{A}, @var{B1}, @var{B2}, @var{C1}, @var{C2}, @var{D12}, @var{D21}, @var{g}, @var{ptol})
-##  Called by @code{hinfsyn} to see if gain @var{g} satisfies conditions in 
+## Called by @code{hinfsyn} to see if gain @var{g} satisfies conditions in
 ## Theorem 3 of
-##  Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
-##  H2 and Hinf Control Problems", IEEE TAC August 1989
-##  
-## @strong{Warning} Do not attempt to use this at home; no argument checking performed.
-## 
+## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
+## H2 and Hinf Control Problems", IEEE TAC August 1989
+##
+## @strong{Warning} Do not attempt to use this at home; no argument
+## checking performed.
+##
 ## @strong{Inputs} as returned by @code{is_dgkf}, except for:
 ## @table @var
-## @item g 
+## @item g
 ## candidate gain level
 ## @item ptol
 ##  as in @code{hinfsyn}
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @table @var
 ## @item retval
@@ -43,7 +44,7 @@
 ##  solution of "filter" H-inf ARE
 ## @end table
 ## Do not attempt to use this at home; no argument checking performed.
-## @end deftypefn 
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1995
@@ -94,7 +95,7 @@ function [retval, Pc, Pf] = hinfsyn_chk (A, B1, B2, C1, C2, D12, D21, g, ptol)
     retval = 0;
     return
   endif
- 
+
   ## all conditions met.
   retval = 1;
 

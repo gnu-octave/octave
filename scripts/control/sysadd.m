@@ -1,36 +1,36 @@
 ## Copyright (C) 1996, 1999 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{sys} =}  sysadd ( @var{Gsys},@var{Hsys})
-## returns @var{sys} = @var{Gsys} + @var{Hsys}.  
+## @deftypefn {Function File} {@var{sys} =}  sysadd (@var{Gsys}, @var{Hsys})
+## returns @var{sys} = @var{Gsys} + @var{Hsys}.
 ## @itemize @bullet
 ## @item Exits with
 ## an error if @var{Gsys} and @var{Hsys} are not compatibly dimensioned.
 ## @item Prints a warning message is system states have identical names;
-##   duplicate names are given a suffix to make them unique.
+## duplicate names are given a suffix to make them unique.
 ## @item @var{sys} input/output names are taken from @var{Gsys}.
 ## @end itemize
 ## @example
 ## @group
 ##           ________
 ##      ----|  Gsys  |---
-## u   |    ----------  +|         
+## u   |    ----------  +|
 ## -----                (_)----> y
 ##     |     ________   +|
 ##      ----|  Hsys  |---
@@ -38,7 +38,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
- 
+
 ## Author: John Ingram <ingraje@eng.auburn.edu>
 ## Created: July 1996
 ## Updated for variable number of arguments July 1999 A. S. Hodel
@@ -88,24 +88,24 @@ function sys = sysadd (...)
         ## if not, we go on and do the usual thing...
       endif
     endif
-  
+
     ## make sure in ss form
     Gsys = sysupdate(Gsys,"ss");
     Hsys = sysupdate(Hsys,"ss");
-  
+
     ## change signal names to avoid warning messages from sysgroup
     Gsys = syssetsignals(Gsys,"in",sysdefioname(length(Gin),"Gin_u"));
     Gsys = syssetsignals(Gsys,"out",sysdefioname(length(Gout),"Gout_u"));
     Hsys = syssetsignals(Hsys,"in",sysdefioname(length(Hin),"Hin_u"));
     Hsys = syssetsignals(Hsys,"out",sysdefioname(length(Hout),"Hout_u"));
-    
+
     sys = sysgroup(Gsys,Hsys);
-  
+
     eyin = eye(mg);
     eyout = eye(pg);
-  
+
     sys = sysscale(sys,[eyout, eyout],[eyin;eyin],Gout,Gin);
-  
+
   else
     ## multiple systems (or a single system); combine together one by one
     sys = nth(arglist,1);

@@ -1,28 +1,28 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { } zpout (@var{zer}, @var{pol}, @var{k}@{, @var{x}@})
-##  print formatted zero-pole form to the screen.  
+## @deftypefn {Function File} {} zpout (@var{zer}, @var{pol}, @var{k}@{, @var{x}@})
+## print formatted zero-pole form to the screen.
 ## @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
-## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue, 
-## filter, polyderiv, polyinteg, and polyout} 
+## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
+## filter, polyderiv, polyinteg, and polyout}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: June 1995
@@ -35,7 +35,7 @@ function zpout (zer, pol, k, x)
   if (nargin < 3 ) | (nargin > 4) | (nargout != 0 )
     usage("zpout(zer,pol,k[,x])");
   endif
- 
+
   if( !(is_vector(zer) | isempty(zer)) | !(is_vector(pol) | isempty(pol)) )
     error("zer, pol must be vectors or empty");
   endif
@@ -43,13 +43,13 @@ function zpout (zer, pol, k, x)
   if(!is_scalar(k))
     error("zpout: argument k must be a scalar.")
   endif
- 
+
   if (nargin == 3)
     x = "s";
   elseif( ! isstr(x) )
     error("zpout: third argument must be a string");
   endif
- 
+
   numstring = num2str(k);
 
   if(length(zer))

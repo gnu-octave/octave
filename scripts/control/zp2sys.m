@@ -1,43 +1,43 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{sys} =} zp2sys (@var{zer},@var{pol},@var{k}@{,@var{tsam},@var{inname},@var{outname}@})
-##  Create system data structure from zero-pole data
-## 
+## @deftypefn {Function File} {@var{sys} =} zp2sys (@var{zer},@var{pol},@var{k}@{,@var{tsam},@var{inname},@var{outname}@})
+## Create system data structure from zero-pole data.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item   zer
-##  vector of system zeros
+## vector of system zeros
 ## @item   pol
-##  vector of system poles
+## vector of system poles
 ## @item   k
-##  scalar leading coefficient
+## scalar leading coefficient
 ## @item   tsam
-##  sampling period. default: 0 (continuous system)
+## sampling period. default: 0 (continuous system)
 ## @item   inname
 ## @itemx  outname
-##  input/output signal names (lists of strings)
+## input/output signal names (lists of strings)
 ## @end table
-## 
+##
 ## @strong{Outputs}
-##  sys: system data structure
-## 
+## sys: system data structure
+##
 ## @strong{Example}
 ## @example
 ## octave:1> sys=zp2sys([1 -1],[-2 -2 0],1);
@@ -52,8 +52,8 @@
 ## s (s + 2) (s + 2)
 ## @end example
 ## @end deftypefn
- 
-## Modified by John Ingram  July 20, 1996  
+
+## Modified by John Ingram  July 20, 1996
 
 function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
 
@@ -62,12 +62,12 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
     usage("outsys = zp2sys(zer,pol,k[,tsam,inname,outname])");
   endif
 
-  ## check input format 
+  ## check input format
   if( ! (is_vector(zer) | isempty(zer) ) )
     error("zer must be a vector or empty");
   endif
   if(!isempty(zer))
-    zer = reshape(zer,1,length(zer));		# make it a row vector
+    zer = reshape(zer,1,length(zer));           # make it a row vector
   endif
 
   if( ! (is_vector(pol) | isempty(pol)))
@@ -81,11 +81,11 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
      error("k must be a scalar");
   endif
 
-  ## Test proper numbers of poles and zeros.  The number of poles must be 
+  ## Test proper numbers of poles and zeros.  The number of poles must be
   ## greater than or equal to the number of zeros.
   if (length(zer) >  length(pol))
     error(["number of poles (", num2str(length(pol)), ...
-	") < number of zeros (", num2str(length(zer)),")"]);
+        ") < number of zeros (", num2str(length(zer)),")"]);
   endif
 
   ## Set the system transfer function
@@ -100,7 +100,7 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
   outsys.tsam = 0;
   outsys.n = length(pol);
   outsys.nz = 0;
-  outsys.yd = 0;	# assume (for now) continuous time outputs
+  outsys.yd = 0;        # assume (for now) continuous time outputs
 
   ## Set the type of system
   if (nargin > 3)
@@ -111,7 +111,7 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
       error("sampling time must be positve")
     elseif (tsam > 0)
       [outsys.n,outsys.nz] = swap(outsys.n, outsys.nz);
-      outsys.yd = 1;		# discrete-time output
+      outsys.yd = 1;            # discrete-time output
     endif
 
     outsys.tsam = tsam;
@@ -142,6 +142,6 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
       endif
       outsys.outname = outname(1);
     endif
-  endif 
+  endif
 
 endfunction

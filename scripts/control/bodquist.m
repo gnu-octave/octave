@@ -1,25 +1,25 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { [@var{f}, @var{w}] =} bodquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
-##  used internally by bode, nyquist; compute system frequency response.
-## 
+## @deftypefn {Function File} {[@var{f}, @var{w}] =} bodquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+## used internally by bode, nyquist; compute system frequency response.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
@@ -36,20 +36,20 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item w
-##  list of frequencies 
+## list of frequencies
 ## @item f
-##  frequency response of sys; @math{f(ii) = f(omega(ii))}
+## frequency response of sys; @math{f(ii) = f(omega(ii))}
 ## @end table
 ## @strong{Note} bodquist could easily be incorporated into a Nichols
 ## plot function; this is in a "to do" list.
 ##
-## Both bode and nyquist share the same introduction, so the common parts are 
-## in bodquist.  It contains the part that finds the number of arguments, 
-## determines whether or not the system is SISO, and computes the frequency 
-## response.  Only the way the response is plotted is different between the 
+## Both bode and nyquist share the same introduction, so the common parts are
+## in bodquist.  It contains the part that finds the number of arguments,
+## determines whether or not the system is SISO, and computes the frequency
+## response.  Only the way the response is plotted is different between the
 ## two functions.
 ## @end deftypefn
- 
+
 function [f, w] = bodquist (sys, w, outputs, inputs, rname)
 
   ## check number of input arguments given
@@ -61,7 +61,7 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
   if (!is_struct(sys))
     error("sys must be a system data structure");
   endif
-	
+
   ## let freqresp determine w if it's not already given
   USEW = freqchkw(w);
 
@@ -71,14 +71,14 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
   ## check for an output vector and to see whether it`s correct
   if (!isempty(outputs))
     if (isempty(inputs))
-      inputs = 1:mm;			# use all inputs
+      inputs = 1:mm;                    # use all inputs
       warning([rname,": outputs specified but not inputs"]);
     endif
     sys = sysprune(sys,outputs,inputs);
     [nn,nz,mm,pp ] = sysdimensions(sys);
   endif
 
-  ## for speed in computation, convert local copy of 
+  ## for speed in computation, convert local copy of
   ## SISO state space systems to zero-pole  form
   if( is_siso(sys) & strcmp( sysgettype(sys), "ss") )
     [zer,pol,k,tsam,inname,outname] = sys2zp(sys);
@@ -86,20 +86,20 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
   endif
 
   ## get system frequency response
-  [f,w] = freqresp(sys,USEW,w);   
+  [f,w] = freqresp(sys,USEW,w);
 
   phase = arg(f)*180.0/pi;
 
   if(!USEW)
     ## smooth plots
-    pcnt = 5;		# max number of refinement steps
-    dphase = 5;		# desired max change in phase
-    dmag = 0.2;		# desired max change in magnitude
+    pcnt = 5;           # max number of refinement steps
+    dphase = 5;         # desired max change in phase
+    dmag = 0.2;         # desired max change in magnitude
     while(pcnt)
-      pd = abs(diff(phase));			# phase variation
+      pd = abs(diff(phase));                    # phase variation
       pdbig = vec(find(pd > dphase));
 
-      lp = length(f);  lp1 = lp-1;		# relative variation
+      lp = length(f);  lp1 = lp-1;              # relative variation
       fd = abs(diff(f));
       fm = max(abs([f(1:lp1); f(2:lp)]));
       fdbig = vec(find(fd > fm/10));
@@ -113,8 +113,8 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
         wnew = [];
         crossover_points = find ( phase(1:lp1).*phase(2:lp) < 0);
         pd(crossover_points) = abs(359.99+dphase - pd(crossover_points));
-        np_pts = max(3,ceil(pd/dphase)+2);		# phase points
-        nm_pts = max(3,ceil(log(fd./fm)/log(dmag))+2); 	# magnitude points
+        np_pts = max(3,ceil(pd/dphase)+2);              # phase points
+        nm_pts = max(3,ceil(log(fd./fm)/log(dmag))+2);  # magnitude points
         npts = min(5,max(np_pts, nm_pts));
 
         w1 = log10(w(1:lp1));
@@ -133,9 +133,9 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
           pcnt = 0;
         else
           [fnew,wnew] = freqresp(sys,1,wnew);    # get new freq resp points
-          w = [w,wnew];			# combine with old freq resp
+          w = [w,wnew];                 # combine with old freq resp
           f = [f,fnew];
-          [w,idx] = sort(w);		# sort into order
+          [w,idx] = sort(w);            # sort into order
           f = f(idx);
           phase = arg(f)*180.0/pi;
         endif
@@ -152,5 +152,5 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
   w_idx = complement(w_dup,1:length(w));
   w = w(w_idx);
   f = f(w_idx);
-    
+
 endfunction

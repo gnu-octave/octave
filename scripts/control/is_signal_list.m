@@ -19,7 +19,7 @@
 function flg = is_signal_list(mylist)
 # function flg = is_signal_list(mylist)
 # returns true if mylist is a list of individual strings.
-# 
+#
 flg = is_list(mylist);
 if(flg)
   for ii=1:length(mylist)

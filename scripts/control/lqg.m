@@ -1,34 +1,34 @@
 ## Copyright (C) 1996, 1997 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg(@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
+## @deftypefn {Function File} {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg(@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
 ## Design a linear-quadratic-gaussian optimal controller for the system
 ## @example
 ## dx/dt = A x + B u + G w       [w]=N(0,[Sigw 0    ])
 ##     y = C x + v               [v]  (    0   Sigv ])
 ## @end example
 ## or
-## @example 
+## @example
 ## x(k+1) = A x(k) + B u(k) + G w(k)       [w]=N(0,[Sigw 0    ])
 ##   y(k) = C x(k) + v(k)                  [v]  (    0   Sigv ])
 ## @end example
-## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item  sys
@@ -41,9 +41,9 @@
 ## state, control weighting respectively.  Control ARE is
 ## @item  in_idx
 ## indices of controlled inputs
-## 
-##      default: last dim(R) inputs are assumed to be controlled inputs, all
-##               others are assumed to be noise inputs.
+##
+## default: last dim(R) inputs are assumed to be controlled inputs, all
+## others are assumed to be noise inputs.
 ## @end table
 ## @strong{Outputs}
 ## @table @var
@@ -89,14 +89,14 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
 
   elseif(nin != columns(Sigw)+ columns(R))
     error(["lqg: sys has ",num2str(nin)," inputs, dim(Sigw)=", ...
-	  num2str(columns(Sigw)),", dim(u)=",num2str(columns(R))])
+          num2str(columns(Sigw)),", dim(u)=",num2str(columns(R))])
 
   elseif(nout != columns(Sigv))
     error(["lqg: sys has ",num2str(nout)," outputs, dim(Sigv)=", ...
-	  num2str(columns(Sigv)),")"])
+          num2str(columns(Sigv)),")"])
   elseif(length(input_list) != columns(R))
     error(["lqg: length(input_list)=",num2str(length(input_list)), ...
-	  ", columns(R)=", num2str(columns(R))]);
+          ", columns(R)=", num2str(columns(R))]);
   endif
 
   varname = list("Sigw","Sigv","Q","R");

@@ -35,7 +35,7 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
 function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
-  
+
   switch(nargin)
   case(1), flg = 0;
   case(2), jnk = flg;    # dummy operation
@@ -49,7 +49,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
     [aa,bb,cc,dd,tsam,n,nz,stnam,innam,outnam,yd] = sys2ss(sys);
     crng = 1:n;
     drng = n+(1:nz);
-    
+
     # get minimal realization of continuous part
     Ac  = aa(crng,crng);
     Acd = aa(crng,drng);
@@ -94,7 +94,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
       dsys = syssetsignals(dsys,"st",dstnam);
       dsys = syssetsignals(dsys,"in",dinnam);
       dsys = syssetsignals(dsys,"out",doutnam);
-      
+
       # reduce discrete subsystem
       dsys = sysmin(dsys);
       [n1,nz] = sysdimensions(dsys);
@@ -102,7 +102,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
         # discrete subsystem is not needed
         retsys = sysprune(csys,1:p,1:m);
       else
-        # combine discrete, continuous subsystems 
+        # combine discrete, continuous subsystems
         [Ad,dbb,dcc] = sys2ss(dsys);
         dstnam = sysgetsignals(dsys,"st");
         Bd  = dbb(:,1:m);
@@ -123,7 +123,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
     case(0),
       ## reduce to a minimal system
       [aa,bb,cc,dd] = sys2ss(sys);
-      [cflg,Uc] = is_controllable(aa,bb); 
+      [cflg,Uc] = is_controllable(aa,bb);
       if(!cflg)
         ## reduce to controllable states
         if(!isempty(Uc))

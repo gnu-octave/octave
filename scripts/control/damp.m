@@ -1,30 +1,29 @@
 ## Copyright (C) 1993, 1994, 1995 John W. Eaton
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {} damp(@var{p}@{, @var{tsam}@})
-##       Displays eigenvalues, natural frequencies and damping ratios
-##       of the eigenvalues of a matrix @var{p} or the @var{A}-matrix of a
-##       system @var{p}, respectively.
-##       If @var{p} is a system, @var{tsam} must not be specified.
-##       If @var{p} is a matrix and @var{tsam} is specified, eigenvalues
-##       of @var{p} are assumed to be in @var{z}-domain.
-## 
+## @deftypefn {Function File} {} damp(@var{p}@{, @var{tsam}@})
+## Displays eigenvalues, natural frequencies and damping ratios
+## of the eigenvalues of a matrix @var{p} or the @var{A}-matrix of a
+## system @var{p}, respectively.
+## If @var{p} is a system, @var{tsam} must not be specified.
+## If @var{p} is a matrix and @var{tsam} is specified, eigenvalues
+## of @var{p} are assumed to be in @var{z}-domain.
 ## @end deftypefn
 ## @seealso{eig}
 

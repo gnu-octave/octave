@@ -1,25 +1,25 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## -*- texinfo -*- 
-## @deftypefn {Function File } {@var{retsys} =} sysconnect (@var{sys}, @var{out_idx},@var{in_idx}@{,@var{order}, @var{tol}@})
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{retsys} =} sysconnect (@var{sys}, @var{out_idx},@var{in_idx}@{,@var{order}, @var{tol}@})
 ## Close the loop from specified outputs to respective specified inputs
-## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item   sys
@@ -31,37 +31,36 @@
 ## @item   order
 ## logical flag (default = 0)
 ## @table @code
-## @item	0
+## @item        0
 ## leave inputs and outputs in their original order
-## @item	1
+## @item        1
 ## permute inputs and outputs to the order shown in the diagram below
 ## @end table
 ## @item     tol
 ## tolerance for singularities in algebraic loops default: 200@var{eps}
 ## @end table
-## 
+##
 ## @strong{Outputs}
-##  @var{sys}: resulting closed loop system.
-## 
+## @var{sys}: resulting closed loop system.
+##
 ## @strong{Method}
 ## @code{sysconnect} internally permutes selected inputs, outputs as shown
-##  below, closes the loop, and then permutes inputs and outputs back to their
-##  original order
+## below, closes the loop, and then permutes inputs and outputs back to their
+## original order
 ## @example
 ## @group
 ##                  ____________________
 ##  u_1       ----->|                  |----> y_1
 ##                  |        sys       |
 ##          old u_2 |                  |
-## u_2* ---->(+)--->|                  |----->y_2 
+## u_2* ---->(+)--->|                  |----->y_2
 ## (in_idx)   ^     -------------------|    | (out_idx)
 ##            |                             |
 ##            -------------------------------
 ## @end group
 ## @end example
-## The input that has the summing junction added to it has an * added to the end 
-## of the input name.
-## 
+## The input that has the summing junction added to it has an * added to
+## the end  of the input name.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -87,7 +86,7 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
     error("sysconnect: tol must be a positive scalar");
   elseif(tol > 1e2*sqrt(eps))
     warning(["sysconnect: tol set to large value=",num2str(tol), ...
-	", eps=",num2str(eps)])
+        ", eps=",num2str(eps)])
   endif
 
   ## verify sizes,format of input, output lists
@@ -99,12 +98,12 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
     if(lo != li)
       error("output_list and input_list must be of the same length")
     endif
-    
+
     if(is_duplicate_entry(output_list) | is_duplicate_entry(input_list) )
       error("duplicate entry in input_list and/or output_list");
     endif
   endif
-  
+
   [nc,nz,mm,pp] = sysdimensions(sys);
   nn = nc+nz;
 
@@ -112,14 +111,14 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
     error("sys must be in structured system form")
   elseif(pp < li)
     error(["length(output_list)=",num2str(li),", sys has only ", ...
-	num2str(pp),"system outputs"])
+        num2str(pp),"system outputs"])
   elseif(mm < li)
     error(["length(input_list)=",num2str(li),", sys has only ", ...
-	num2str(mm),"system inputs"])
+        num2str(mm),"system inputs"])
   endif
 
   ## check that there are enough inputs/outputs in the system for the lists
-  if(max(input_list) > mm) 
+  if(max(input_list) > mm)
     error("max(input_list) exceeds the number of inputs");
   elseif(max(output_list) > pp)
     error("max(output_list) exceeds the number of outputs");
@@ -193,8 +192,8 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   ## disp("/sysconnect");
 
   if( (nc > 0) & find(dyi > 0) )
-    B2con = B2(1:nc,dyi);	# connection to cont states
-    C2hd = C2h(dyi,1:nc);	# cont states -> outputs
+    B2con = B2(1:nc,dyi);       # connection to cont states
+    C2hd = C2h(dyi,1:nc);       # cont states -> outputs
   else
     B2con = C2hd = [];
   endif
@@ -240,7 +239,7 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
     Dc = [D12c; D22h];
   else
     Dc = D22h;
-  endif 
+  endif
 
   ## permute rows and columns of Bc, Cc, Dc back into original order
   Im = eye(mm,mm);
@@ -267,7 +266,7 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
     strval = sprintf("%s*",nth(sysgetsignals(sys,"in",idx),1) );
     sys = syssetsignals(sys,"in",strval,idx);
   endfor
-  
+
   ## maintain original system type if it was SISO
   if (strcmp (sysgettype (sys), "tf"))
     sysupdate (sys, "tf");

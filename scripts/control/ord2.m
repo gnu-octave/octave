@@ -1,35 +1,35 @@
 ## Copyright (C) 1997 Kai P. Mueller
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{outsys} =} ord2 (@var{nfreq}, @var{damp}@{[, @var{gain}@})
-##  Creates a continuous 2nd order system with parameters:
+## @deftypefn {Function File} {@var{outsys} =} ord2 (@var{nfreq}, @var{damp}@{[, @var{gain}@})
+## Creates a continuous 2nd order system with parameters:
 ## @strong{Inputs}
 ## @table @var
 ## @item  nfreq:   natural frequency [Hz]. (not in rad/s)
 ## @item      damp:    damping coefficient
 ## @item      gain:    dc-gain
-##                This is steady state value only for damp > 0.
-##                gain is assumed to be 1.0 if ommitted.
+## This is steady state value only for damp > 0.
+## gain is assumed to be 1.0 if ommitted.
 ## @end table
 ## @strong{Outputs}
 ## @var{outsys}
-##       system data structure has representation with @math{w = 2 * pi * nfreq}:
+## system data structure has representation with @math{w = 2 * pi * nfreq}:
 ## @example
 ##     /                                        \
 ##     | / -2w*damp -w \  / w \                 |
@@ -37,10 +37,9 @@
 ##     | \   w       0 /  \ 0 /                 |
 ##     \                                        /
 ## @end example
-## @strong{See also} @code{jet707} (MIMO example, Boeing 707-321 aircraft model)
+## @strong{See also} @code{jet707} (MIMO example, Boeing 707-321
+## aircraft model)
 ## @end deftypefn
-
-## See also: jet707 (MIMO example, Boeing 707-321 aircraft model)
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: September 28, 1997

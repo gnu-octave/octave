@@ -1,26 +1,26 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {x =} zgfslv(@var{n},@var{m},@var{p},@var{b})
-## solve system of equations for dense zgep problem
+## @deftypefn {Function File} {@var{x} =} zgfslv (@var{n}, @var{m}, @var{p}, @var{b})
+## Solve system of equations for dense zgep problem.
 ## @end deftypefn
- 
+
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Converted to Octave by R Bruce Tenison, July 3, 1994
 
@@ -49,8 +49,8 @@ function x = zgfslv (n, m, p, b)
 
   ## 6) Scale x, then back-transform to get x
   en = ones(n,1);  em = ones(m,1);   ep = ones(p,1);
-  lam = [gam1*en;gam2*em;gam3*ep]; 
-  lam(1) = n+m+p; 
+  lam = [gam1*en;gam2*em;gam3*ep];
+  lam(1) = n+m+p;
   lam(n+1) = 1;       # dummy value to avoid divide by zero
   lam(n+m+1)=n+m+p;
 

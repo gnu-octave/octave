@@ -1,73 +1,74 @@
 ## Copyright (C) 1998 Auburn University.  All rights reserved.
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{Ts2} @{,@var{cuflg}@})
-##  convert a multirate digital system to a single rate digital system
-##  states specified by @var{idx}, @var{sprefix} are sampled at @var{Ts2}, all 
-##   others are assumed sampled at @var{Ts1} = @code{sysgettsam(@var{sys})}.
-## 
+## @deftypefn {Function File} {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{Ts2} @{,@var{cuflg}@})
+## convert a multirate digital system to a single rate digital system
+## states specified by @var{idx}, @var{sprefix} are sampled at @var{Ts2}, all
+## others are assumed sampled at @var{Ts1} = @code{sysgettsam(@var{sys})}.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item   sys
 ## discrete time system;
 ## @code{dmr2d} exits with an error if @var{sys} is not discrete
 ## @item   idx
-## list of states with sampling time @code{sysgettsam(@var{sys})} (may be empty)
+## list of states with sampling time @code{sysgettsam(@var{sys})} (may
+## be empty)
 ## @item   sprefix
-## list of string prefixes of states with sampling time @code{sysgettsam(@var{sys})}
+## list of string prefixes of states with sampling time
+## @code{sysgettsam(@var{sys})}
 ## (may be empty)
 ## @item   Ts2
 ## sampling time of states not specified by @var{idx}, @var{sprefix}
 ## must be an integer multiple of @code{sysgettsam(@var{sys})}
 ## @item   cuflg
-## "constant u flag" if @var{cuflg} is nonzero then the system inputs are 
-##         assumed to be constant over the revised sampling interval @var{Ts2}.
-##         Otherwise, since the inputs can change during the interval
-##         @var{t} in @math{[k Ts2, (k+1) Ts2]}, an additional set of inputs is
-##         included in the revised B matrix so that these intersample inputs
-##         may be included in the single-rate system.
-##         default
-##  @var{cuflg} = 1.
+## "constant u flag" if @var{cuflg} is nonzero then the system inputs are
+## assumed to be constant over the revised sampling interval @var{Ts2}.
+## Otherwise, since the inputs can change during the interval
+## @var{t} in @math{[k Ts2, (k+1) Ts2]}, an additional set of inputs is
+## included in the revised B matrix so that these intersample inputs
+## may be included in the single-rate system.
+## default @var{cuflg} = 1.
 ## @end table
-## 
+##
 ## @strong{Outputs}
 ## @table @var
 ## @item   dsys
-##  equivalent discrete time system with sampling time @var{Ts2}.
-## 
-##          The sampling time of sys is updated to @var{Ts2}.
-## 
-##          if @var{cuflg}=0 then a set of additional inputs is added to
-##          the system with suffixes _d1, ..., _dn to indicate their
-##          delay from the starting time k @var{Ts2}, i.e.
-##          u = [u_1; u_1_d1; ..., u_1_dn] where u_1_dk is the input
-##              k*Ts1 units of time after u_1 is sampled. (Ts1 is
-##              the original sampling time of discrete time sys and
-##              @var{Ts2} = (n+1)*Ts1)
-## 
+## equivalent discrete time system with sampling time @var{Ts2}.
+##
+## The sampling time of sys is updated to @var{Ts2}.
+##
+## if @var{cuflg}=0 then a set of additional inputs is added to
+## the system with suffixes _d1, ..., _dn to indicate their
+## delay from the starting time k @var{Ts2}, i.e.
+## u = [u_1; u_1_d1; ..., u_1_dn] where u_1_dk is the input
+## k*Ts1 units of time after u_1 is sampled. (Ts1 is
+## the original sampling time of discrete time sys and
+## @var{Ts2} = (n+1)*Ts1)
+##
 ## @item   fidx
 ## indices of "formerly fast" states specified by @var{idx} and @var{sprefix};
 ## these states are updated to the new (slower) sampling interval @var{Ts2}.
 ## @end table
-## 
-## @strong{WARNING} Not thoroughly tested yet; especially when @var{cuflg} == 0.
-## 
+##
+## @strong{WARNING} Not thoroughly tested yet; especially when
+## @var{cuflg} == 0.
 ## @end deftypefn
 
 ## Adapted from c2d by a.s.hodel@eng.auburn.edu
@@ -104,7 +105,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   ## optional argument: cuflg
   if(nargin <= 4)
-    cuflg = 1;		# default: constant inputs over Ts2 sampling interv.
+    cuflg = 1;          # default: constant inputs over Ts2 sampling interv.
   elseif( !is_scalar(cuflg) )
     error("cuflg must be a scalar")
   elseif( cuflg != 0 | cuflg != 1)
@@ -144,7 +145,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
         sti = nth(stname,ii);  # compare spk with this state name
         if(length(sti) >= spl)
           ## if the prefix matches and ii isn't already in the list, add ii
-          if(strcmp(sti(1:spl),spk) & !any(fidx == ii) ) 
+          if(strcmp(sti(1:spl),spk) & !any(fidx == ii) )
             fidx = sort([fidx,ii]);
           endif
         endif
@@ -222,7 +223,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
       a11p2 = a11p2*a11p2;    # a11^(next power of 2)
     endif
   endwhile
-  
+
   ## FIXME: this part should probably also use squaring, but
   ## that would require exponentially growing memory.  What do do?
   for kk=2:nstp

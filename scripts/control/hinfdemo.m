@@ -32,26 +32,26 @@
 ## @item SISO plant
 ## @display
 ## @group
-##	           s - 2
-##	G(s) = --------------
-##	       (s + 2)(s - 1)
+##                 s - 2
+##      G(s) = --------------
+##             (s + 2)(s - 1)
 ##
-##	                         +----+
-##	    -------------------->| W1 |---> v1
-##	z   |                    +----+
-##	----|-------------+                   || T   ||     => min.
-##	    |             |                       vz   infty
-##	    |    +---+    v   y  +----+
-##	  u *--->| G |--->O--*-->| W2 |---> v2
-##	    |    +---+       |   +----+
-##	    |                |
-##	    |    +---+       |
-##	    -----| K |<-------
-##	         +---+
+##                               +----+
+##          -------------------->| W1 |---> v1
+##      z   |                    +----+
+##      ----|-------------+                   || T   ||     => min.
+##          |             |                       vz   infty
+##          |    +---+    v   y  +----+
+##        u *--->| G |--->O--*-->| W2 |---> v2
+##          |    +---+       |   +----+
+##          |                |
+##          |    +---+       |
+##          -----| K |<-------
+##               +---+
 ## @end group
 ## @end display
-##	W1 und W2 are the robustness and performance weighting
-##       functions
+## W1 und W2 are the robustness and performance weighting
+## functions
 ##
 ## @item MIMO plant
 ## The optimal controller minimizes the H_infinity norm of the
@@ -86,45 +86,45 @@
 ## @end display
 ##
 ## @item DISCRETE SYSTEM
-##   This is not a true discrete design. The design is carried out
-##   in continuous time while the effect of sampling is described by
-##   a bilinear transformation of the sampled system.
-##   This method works quite well if the sampling period is "small"
-##   compared to the plant time constants.
+## This is not a true discrete design. The design is carried out
+## in continuous time while the effect of sampling is described by
+## a bilinear transformation of the sampled system.
+## This method works quite well if the sampling period is "small"
+## compared to the plant time constants.
 ##
 ## @item The continuous plant
 ## @display
 ## @group
-##	              1
-##	G (s) = --------------
-##	 k      (s + 2)(s + 1)
+##                    1
+##      G (s) = --------------
+##       k      (s + 2)(s + 1)
 ##
 ## @end group
 ## @end display
 ## is discretised with a ZOH (Sampling period = Ts = 1 second):
 ## @display
 ## @group
-## 
-##	          0.199788z + 0.073498
-##	G(s) = --------------------------
-##	       (z - 0.36788)(z - 0.13534)
 ##
-##	                         +----+
-##	    -------------------->| W1 |---> v1
-##	z   |                    +----+
-##	----|-------------+                   || T   ||     => min.
-##	    |             |                       vz   infty
-##	    |    +---+    v      +----+
-##	    *--->| G |--->O--*-->| W2 |---> v2
-##	    |    +---+       |   +----+
-##	    |                |
-##	    |    +---+       |
-##	    -----| K |<-------
-##	         +---+
+##                0.199788z + 0.073498
+##      G(s) = --------------------------
+##             (z - 0.36788)(z - 0.13534)
+##
+##                               +----+
+##          -------------------->| W1 |---> v1
+##      z   |                    +----+
+##      ----|-------------+                   || T   ||     => min.
+##          |             |                       vz   infty
+##          |    +---+    v      +----+
+##          *--->| G |--->O--*-->| W2 |---> v2
+##          |    +---+       |   +----+
+##          |                |
+##          |    +---+       |
+##          -----| K |<-------
+##               +---+
 ## @end group
 ## @end display
-##	W1 and W2 are the robustness and performancs weighting
-##       functions
+## W1 and W2 are the robustness and performancs weighting
+## functions
 ## @end table
 ## @end deftypefn
 
@@ -155,9 +155,9 @@ switch (sys_type)
     disp("    ----------------------------------------------");
     disp("    H_infinity optimal control for the SISO plant:");
     disp(" ");
-    disp("		            s - 2");
-    disp("		G(s) = --------------");
-    disp("		       (s + 2)(s - 1)");
+    disp("                          s - 2");
+    disp("              G(s) = --------------");
+    disp("                     (s + 2)(s - 1)");
     disp(" ");
     disp("    ----------------------------------------------");
     disp(" ");
@@ -188,10 +188,10 @@ switch (sys_type)
     yn = input(" * Plot closed loop step response? [n]: ","S");
     if (length(yn) >= 1)
       if ((yn(1) == "y") || (yn(1) == 'Y'))
-      	disp(" o step responses of T and KS...");
-      	GW = buildssic([1 2; 2 1], [], [1 2], [-2], G, K);
-      	figure(1);
-      	step(GW, 1, 10);
+        disp(" o step responses of T and KS...");
+        GW = buildssic([1 2; 2 1], [], [1 2], [-2], G, K);
+        figure(1);
+        step(GW, 1, 10);
       endif
     endif
 
@@ -227,28 +227,28 @@ switch (sys_type)
     yn = input(" * Plot closed loop step responses? [n]: ","S");
     if (length(yn) >= 1)
       if ((yn(1) == "y") || (yn(1) == 'Y'))
-      	disp(" o step responses of T and KS...");
-      	GW = buildssic([1 3;2 4;3 1;4 2],[],[1 2 3 4],[-3 -4],G,K);
+        disp(" o step responses of T and KS...");
+        GW = buildssic([1 3;2 4;3 1;4 2],[],[1 2 3 4],[-3 -4],G,K);
 
-      	disp(" ");
-      	disp("  FIGURE 1: speed refence => 1, pitch angle ref. => 0");
-      	disp("  ===================================================");
-      	disp("      y1:  speed                      (should be 1)");
-      	disp("      y2:  pitch            angle (should remain 0)");
-      	disp("      y3:  thrust      (should be a slow transient)");
-      	disp("      y6:  elevator  (should be a faster transient)");
-      	disp(" ");
-      	disp("  FIGURE 2: speed refence => 0, pitch angle ref. => 1");
-      	disp("  ===================================================");
-      	disp("      y1:  speed                  (should remain 0)");
-      	disp("      y2:  pitch                angle (should be 1)");
-      	disp("      y3:  thrust      (should be a slow transient)");
-      	disp("      y6:  elevator  (should be a faster transient)");
-      	disp(" ");
-      	figure(1)
-      	step(GW);
-      	figure(2)
-      	step(GW,2);
+        disp(" ");
+        disp("  FIGURE 1: speed refence => 1, pitch angle ref. => 0");
+        disp("  ===================================================");
+        disp("      y1:  speed                      (should be 1)");
+        disp("      y2:  pitch            angle (should remain 0)");
+        disp("      y3:  thrust      (should be a slow transient)");
+        disp("      y6:  elevator  (should be a faster transient)");
+        disp(" ");
+        disp("  FIGURE 2: speed refence => 0, pitch angle ref. => 1");
+        disp("  ===================================================");
+        disp("      y1:  speed                  (should remain 0)");
+        disp("      y2:  pitch                angle (should be 1)");
+        disp("      y3:  thrust      (should be a slow transient)");
+        disp("      y6:  elevator  (should be a faster transient)");
+        disp(" ");
+        figure(1)
+        step(GW);
+        figure(2)
+        step(GW,2);
       endif
     endif
 
@@ -258,9 +258,9 @@ switch (sys_type)
     disp("    --------------------------------------------------");
     disp("    Discrete H_infinity optimal control for the plant:");
     disp(" ");
-    disp("	                   0.199788z + 0.073498");
-    disp("	        G(s) = --------------------------");
-    disp("	               (z - 0.36788)(z - 0.13533)");
+    disp("                         0.199788z + 0.073498");
+    disp("              G(s) = --------------------------");
+    disp("                     (z - 0.36788)(z - 0.13533)");
     disp("    --------------------------------------------------");
     disp(" ");
 
@@ -294,17 +294,17 @@ switch (sys_type)
     yn = input(" * Plot magnitudes of W1KS and W2S? [n]: ","S");
     if (length(yn) >= 1)
       if ((yn(1) == "y") || (yn(1) == 'Y'))
-    	disp(" o magnitudes of W1KS and W2S...");
-    	gwx = sysprune(GWC, 1, 1);
-    	mag1 = bode(gwx, ww);
-    	if (columns(mag1) > 1);  mag1 = mag1';  endif
-    	gwx = sysprune(GWC, 2, 1);
-    	mag2 = bode(gwx, ww);
-    	if (columns(mag2) > 1);  mag2 = mag2';  endif
-    	figure(fig_n)
-    	fig_n = fig_n + 1;
-    	gset grid
-    	loglog(ww, [mag1 mag2]);
+        disp(" o magnitudes of W1KS and W2S...");
+        gwx = sysprune(GWC, 1, 1);
+        mag1 = bode(gwx, ww);
+        if (columns(mag1) > 1);  mag1 = mag1';  endif
+        gwx = sysprune(GWC, 2, 1);
+        mag2 = bode(gwx, ww);
+        if (columns(mag2) > 1);  mag2 = mag2';  endif
+        figure(fig_n)
+        fig_n = fig_n + 1;
+        gset grid
+        loglog(ww, [mag1 mag2]);
       endif
     endif
 
@@ -317,9 +317,9 @@ switch (sys_type)
     yn = input(" * Plot closed loop step responses? [n]: ","S");
     if (length(yn) >= 1)
       if ((yn(1) == "y") || (yn(1) == 'Y'))
-    	disp(" o step responses of T and KS...");
-    	figure(fig_n)
-    	step(GG, 1, 10);
+        disp(" o step responses of T and KS...");
+        figure(fig_n)
+        step(GG, 1, 10);
       endif
     endif
 

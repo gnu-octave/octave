@@ -1,29 +1,27 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {zz =} zginit(@var{a},@var{b},@var{c},@var{d})
-## construct right hand side vector zz
+## @deftypefn {Function File} {@var{zz} =} zginit (@var{a}, @var{b}, @var{c}, @var{d})
+## Construct right hand side vector zz
 ## for the zero-computation generalized eigenvalue problem
-## balancing procedure
-## called by zgepbal
-## 
-## @end deftypefn 
+## balancing procedure.  Called by zgepbal.
+## @end deftypefn
 
 ## References:
 ## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
@@ -61,7 +59,7 @@ function zz = zginit (a, b, c, d)
     ## column of c
     cidx = find(c(:,i) != 0);
     c_col_i = c(cidx,i);
-   
+
     ## sum the entries
     zz(i) = sum(log(abs(acnz))) - sum(log(abs(arnz))) ...
             - sum(log(abs(b_row_i))) + sum(log(abs(c_col_i)));

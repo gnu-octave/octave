@@ -20,10 +20,10 @@
 ## @deftypefn {Function File} {[@var{tvals},@var{Plist}] =} dre(@var{sys},@var{Q},@var{R},@var{Qf},@var{t0},@var{tf}[,@var{Ptol},@var{maxits}]);
 ## Solve the differential Riccati equation
 ## @ifinfo
-## @example 
+## @example
 ##   -d P/dt = A'P + P A - P B inv(R) B' P + Q
 ##   P(tf) = Qf
-## @example 
+## @example
 ## @end ifinfo
 ## @iftex
 ## @tex
@@ -36,38 +36,38 @@
 ## optimal input is
 ##   u = - inv(R) B' P(t) x
 ## @strong{Inputs}
-## @table 
+## @table
 ## @item sys
-##     continuous time system data structure
+## continuous time system data structure
 ## @item Q
-##     state integral penalty
-## @item R 
-##     input integral penalty
+## state integral penalty
+## @item R
+## input integral penalty
 ## @item Qf
-##     state terminal penalty
+## state terminal penalty
 ## @item t0
 ## @itemx tf
-##     limits on the integral
+## limits on the integral
 ## @item Ptol
-##     tolerance (used to select time samples; see below); default = 0.1
-## @item maxits 
-##     number of refinement iterations (default=10)
+## tolerance (used to select time samples; see below); default = 0.1
+## @item maxits
+## number of refinement iterations (default=10)
 ## @end table
 ## @strong{Outputs}
-## @table 
+## @table
 ## @item tvals
-##     time values at which @var{P}(@var{t}) is computed
+## time values at which @var{P}(@var{t}) is computed
 ## @item Plist
-##     list values of @var{P}(@var{t}); nth(@var{Plist},@var{ii}) 
-##     is @var{P}(@var{tvals}(@var{ii})).
+## list values of @var{P}(@var{t}); nth(@var{Plist},@var{ii})
+## is @var{P}(@var{tvals}(@var{ii})).
 ##
-## @item tvals 
+## @item tvals
 ## @example
-##     is selected so that || nth(Plist,ii) - nth(Plist,ii-1) || < Ptol
-##     for ii=2:length(tvals)
-## @end example 
+## is selected so that || nth(Plist,ii) - nth(Plist,ii-1) || < Ptol
+## for ii=2:length(tvals)
+## @end example
 ## @end table
-## @end deftypefn 
+## @end deftypefn
 
 function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
@@ -81,15 +81,15 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
     error("Q, R, and Qf must be matrices.");
   elseif(!is_scalar(t0) | !is_scalar(tf))
     error("t0 and tf must be scalars")
-  elseif(t0 >= tf)		error("t0=%e >= tf=%e",t0,tf);
-  elseif(nargin == 6)		Ptol = 0.1;
-  elseif(!is_scalar(Ptol))	error("Ptol must be a scalar");
-  elseif(Ptol <= 0)		error("Ptol must be positive");
+  elseif(t0 >= tf)              error("t0=%e >= tf=%e",t0,tf);
+  elseif(nargin == 6)           Ptol = 0.1;
+  elseif(!is_scalar(Ptol))      error("Ptol must be a scalar");
+  elseif(Ptol <= 0)             error("Ptol must be positive");
   endif
 
   if(nargin < 8) maxits = 10;
-  elseif(!is_scalar(maxits))	error("maxits must be a scalar");
-  elseif(maxits <= 0)		error("maxits must be positive");
+  elseif(!is_scalar(maxits))    error("maxits must be a scalar");
+  elseif(maxits <= 0)           error("maxits must be positive");
   endif
   maxits = ceil(maxits);
 
@@ -136,9 +136,9 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
       Perr = norm(nth(Plist,ii) - nth(Plist,ii-1))/norm(nth(Plist,ii));
       maxerr = max(maxerr,Perr);
       if(Perr > Ptol)
-	new_t = mean(tvals([ii,ii-1]));
-	tvals = [tvals, new_t];
-	done = 0;
+        new_t = mean(tvals([ii,ii-1]));
+        tvals = [tvals, new_t];
+        done = 0;
       endif
     endfor
 
@@ -148,7 +148,7 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
   endwhile
   if(maxerr > Ptol)
     warning("dre: \n\texiting with%4d points, max rel chg. =%e, Ptol=%e\n", ...
-	  tvlen,maxerr,Ptol);
+          tvlen,maxerr,Ptol);
     tvals = tvals(1:length(Plist));
   endif
 

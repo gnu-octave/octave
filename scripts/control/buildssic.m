@@ -1,73 +1,73 @@
 ## Copyright (C) 1998 Kai P. Mueller
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {@var{sys} =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
-## 
-##  Form an arbitrary complex (open or closed loop) system in
-##  state-space form from several systems. "@code{buildssic}" can
-##  easily (despite it's cryptic syntax) integrate transfer functions
-##  from a complex block diagram into a single system with one call.
-##  This function is especially useful for building open loop
-##  interconnections for H_infinity and H2 designs or for closing
-##  loops with these controllers.
-## 
-##  Although this function is general purpose, the use of "@code{sysgroup}"
-##  "@code{sysmult}", "@code{sysconnect}" and the like is recommended for standard
-##  operations since they can handle mixed discrete and continuous
-##  systems and also the names of inputs, outputs, and states.
-##  
-##  The parameters consist of 4 lists that describe the connections
-##  outputs and inputs and up to 8 systems s1-s8.
-##  Format of the lists:
+## @deftypefn {Function File} {@var{sys} =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
+##
+## Form an arbitrary complex (open or closed loop) system in
+## state-space form from several systems. "@code{buildssic}" can
+## easily (despite it's cryptic syntax) integrate transfer functions
+## from a complex block diagram into a single system with one call.
+## This function is especially useful for building open loop
+## interconnections for H_infinity and H2 designs or for closing
+## loops with these controllers.
+##
+## Although this function is general purpose, the use of "@code{sysgroup}"
+## "@code{sysmult}", "@code{sysconnect}" and the like is recommended for
+## standard operations since they can handle mixed discrete and continuous
+## systems and also the names of inputs, outputs, and states.
+##
+## The parameters consist of 4 lists that describe the connections
+## outputs and inputs and up to 8 systems s1-s8.
+## Format of the lists:
 ## @table @var
 ## @item      Clst
 ## connection list, describes the input signal of
 ## each system. The maximum number of rows of Clst is
 ## equal to the sum of all inputs of s1-s8.
-## 
+##
 ## Example:
 ## @code{[1 2 -1; 2 1 0]} ==> new input 1 is old inpout 1
 ## + output 2 - output 1, new input 2 is old input 2
 ## + output 1. The order of rows is arbitrary.
-## 
+##
 ## @item     Ulst
-##  if not empty the old inputs in vector Ulst will
-##            be appended to the outputs. You need this if you
-##            want to "pull out" the input of a system. Elements
-##            are input numbers of s1-s8.
-## 
+## if not empty the old inputs in vector Ulst will
+## be appended to the outputs. You need this if you
+## want to "pull out" the input of a system. Elements
+## are input numbers of s1-s8.
+##
 ## @item     Olst
-##  output list, specifiy the outputs of the resulting
-##            systems. Elements are output numbers of s1-s8.
-##            The numbers are alowed to be negative and may
-##            appear in any order. An empty matrix means
-##            all outputs.
-## 
+## output list, specifiy the outputs of the resulting
+## systems. Elements are output numbers of s1-s8.
+## The numbers are alowed to be negative and may
+## appear in any order. An empty matrix means
+## all outputs.
+##
 ## @item     Ilst
-##  input list, specifiy the inputs of the resulting
-##            systems. Elements are input numbers of s1-s8.
-##            The numbers are alowed to be negative and may
-##            appear in any order. An empty matrix means
-##            all inputs.
+## input list, specifiy the inputs of the resulting
+## systems. Elements are input numbers of s1-s8.
+## The numbers are alowed to be negative and may
+## appear in any order. An empty matrix means
+## all inputs.
 ## @end table
-## 
-##  Example:  Very simple closed loop system.
+##
+## Example:  Very simple closed loop system.
 ## @example
 ## @group
 ## w        e  +-----+   u  +-----+
@@ -81,7 +81,7 @@
 ##      +----------------------------+
 ## @end group
 ## @end example
-## 
+##
 ## The closed loop system GW can be optained by
 ## @example
 ## GW = buildssic([1 2; 2 -1], 2, [1 2 3], 2, G, K);
@@ -97,7 +97,7 @@
 ## @item Ilst
 ## the only input is 2 (K).
 ## @end table
-## 
+##
 ## Here is a real example:
 ## @example
 ## @group
@@ -114,7 +114,7 @@
 ##    u                  y
 ## @end group
 ## @end example
-## 
+##
 ## The closed loop system GW from [z; u]' to [v1; v2; y]' can be
 ## obtained by (all SISO systems):
 ## @example
@@ -161,10 +161,10 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     endif
     if (D_SYS)
       if (n1)
-      	error("---> cannot handle mixed cont. and discr. systems.");
+        error("---> cannot handle mixed cont. and discr. systems.");
       endif
       if (tsam != sysgettsam(ss))
-	error("---> sampling time of all systems must match.");
+        error("---> sampling time of all systems must match.");
       endif
     endif
     [as,bs,cs,ds] = sys2ss(ss);
@@ -229,9 +229,9 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     for kk = 2:mx
       it = xx(kk);
       if (abs(it) > p)
-      	error("---> Illegal row value in Clst.");
+        error("---> Illegal row value in Clst.");
       elseif (it)
-	K(iu,abs(it)) = sign(it);
+        K(iu,abs(it)) = sign(it);
       endif
     endfor
   endfor

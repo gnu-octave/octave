@@ -1,17 +1,17 @@
 ## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
-## 
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
 ## later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
@@ -27,13 +27,13 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ## dx
 ## -- = A x + B u
 ## dt
 ## @end example
-## 
+##
 ## @end ifinfo
 ## to minimize the cost functional
 ## @iftex
@@ -44,7 +44,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ##       infinity
 ##       /
@@ -53,7 +53,7 @@
 ##     t=0
 ## @end example
 ## @end ifinfo
-## 
+##
 ## @noindent
 ## @var{z} omitted or
 ## @iftex
@@ -64,7 +64,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## 
+##
 ## @example
 ##       infinity
 ##       /
@@ -72,12 +72,12 @@
 ##      /
 ##     t=0
 ## @end example
-## 
+##
 ## @end ifinfo
 ## @var{z} included.
-## 
+##
 ## The following values are returned:
-## 
+##
 ## @table @var
 ## @item k
 ## The state feedback gain,
@@ -90,10 +90,10 @@
 ## (@var{a} - @var{b}@var{k})
 ## @end ifinfo
 ## is stable and minimizes the cost functional
-## 
+##
 ## @item p
 ## The stabilizing solution of appropriate algebraic Riccati equation.
-## 
+##
 ## @item e
 ## The vector of the closed loop poles of
 ## @iftex
@@ -106,7 +106,7 @@
 ## @end ifinfo
 ## @end table
 ##
-## @strong{Reference} 
+## @strong{Reference}
 ## Anderson and Moore, OPTIMAL CONTROL: LINEAR QUADRATIC METHODS,
 ## Prentice-Hall, 1990, pp. 56-58
 ## @end deftypefn

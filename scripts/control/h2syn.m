@@ -1,37 +1,37 @@
 ## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn(@var{Asys}, @var{nu}, @var{ny}, @var{tol})
-##  Design H2 optimal controller per procedure in 
-##  Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
-##  H2 and Hinf Control Problems", IEEE TAC August 1989
-## 
-##  Discrete time control per Zhou, Doyle, and Glover, ROBUST AND OPTIMAL
-##  CONTROL, Prentice-Hall, 1996
-## 
+## @deftypefn {Function File} {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn(@var{Asys}, @var{nu}, @var{ny}, @var{tol})
+## Design H2 optimal controller per procedure in
+## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
+## H2 and Hinf Control Problems", IEEE TAC August 1989
+##
+## Discrete time control per Zhou, Doyle, and Glover, ROBUST AND OPTIMAL
+## CONTROL, Prentice-Hall, 1996
+##
 ## @strong{Inputs} input system is passed as either
 ## @table @var
 ## @item Asys
 ## system data structure (see ss2sys, sys2ss)
 ## @itemize @bullet
-## @item controller is implemented for continuous time systems 
-## @item controller is NOT implemented for discrete time systems 
+## @item controller is implemented for continuous time systems
+## @item controller is NOT implemented for discrete time systems
 ## @end itemize
 ## @item nu
 ## number of controlled inputs
@@ -40,7 +40,7 @@
 ## @item tol
 ## threshhold for 0.  Default: 200*eps
 ## @end table
-##  
+##
 ## @strong{Outputs}
 ## @table @var
 ## @item    K
@@ -57,7 +57,7 @@
 ## ARE solution matrix for filter subproblem
 ## @end table
 ## @end deftypefn
- 
+
 ## Updated for System structure December 1996 by John Ingram
 
 function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
@@ -77,10 +77,10 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
   endif
 
   ## extract dgs information
-  			nw = dgs.nw; 	nu = dgs.nu;
+                        nw = dgs.nw;    nu = dgs.nu;
   A = dgs.A;            Bw = dgs.Bw;    Bu = dgs.Bu;
-  Cz = dgs.Cz;          Dzw = dgs.Dzw;  Dzu = dgs.Dzu;	nz = dgs.nz;
-  Cy = dgs.Cy;          Dyw = dgs.Dyw;  Dyu = dgs.Dyu;	ny = dgs.ny;
+  Cz = dgs.Cz;          Dzw = dgs.Dzw;  Dzu = dgs.Dzu;  nz = dgs.nz;
+  Cy = dgs.Cy;          Dyw = dgs.Dyw;  Dyu = dgs.Dyu;  ny = dgs.ny;
   d22nz = dgs.Dyu_nz;
   dflg = dgs.dflg;
 
@@ -99,7 +99,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
   if(dgs.dflg == 0)
     Pc = are(A,Bu*Bu',Cz'*Cz);    # solve control, filtering ARE's
     Pf = are(A',Cy'*Cy,Bw*Bw');
-    F2 = -Bu'*Pc;		  # calculate feedback gains
+    F2 = -Bu'*Pc;                 # calculate feedback gains
     L2 = -Pf*Cy';
 
     AF2 = A + Bu*F2;
@@ -122,7 +122,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
   g1 = h2norm(Kc1);
   g2 = h2norm(Kf1);
-  
+
   ## compute optimal closed loop gain
   gain = sqrt ( g1*g1 + g2*g2 );
 
@@ -141,7 +141,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
    ## system full information control input names
    inname2 = strappend(Ast,"_FI_in");
- 
+
     ## system full information control output names
     outname2 = strappend(Aout(1:(nout-ny)),"_FI_out");
 
@@ -149,7 +149,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
     nw = columns (Bw);
 
     Kc = ss2sys(AF2, In, CzF2, zeros(nz,nn), Atsam, ...
-	ncstates, ndstates, stname2, inname2, outname2);
+        ncstates, ndstates, stname2, inname2, outname2);
   endif
 
   if (nargout >3)

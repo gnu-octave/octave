@@ -1,32 +1,30 @@
 ## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { outputs =} ss2zp ( inputs ) 
+## @deftypefn {Function File} {@var{outputs} =} ss2zp (@var{inputs})
 ## @format
-##  Converts a state space representation to a set of poles and zeros.
-## 
-##  [pol,zer,k] = ss2zp(a,b,c,d) returns the poles and zeros of the state space 
-##  system (a,b,c,d).  K is a gain associated with the zeros.
-## 
-##  used internally in system data structure format manipulations
-## 
-## 
+## Converts a state space representation to a set of poles and zeros.
+##
+## [pol,zer,k] = ss2zp(a,b,c,d) returns the poles and zeros of the state space
+## system (a,b,c,d).  K is a gain associated with the zeros.
+##
+## used internally in system data structure format manipulations
 ## @end format
 ## @end deftypefn
 
@@ -47,7 +45,7 @@ function [zer, pol, k] = ss2zp (a, b, c, d)
   elseif ( (m != 1) | (p != 1))
     error(["ss2tf: not SISO system: m=",num2str(m)," p=",num2str(p)]);
   endif
- 
+
   if(n == 0)
     ## gain block only
     k = d;

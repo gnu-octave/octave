@@ -1,33 +1,33 @@
 ## Copyright (C) 1997 Jose Daniel Munoz Frias
 ##
-## This file is part of Octave. 
+## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it 
-## under the terms of the GNU General Public License as published by the 
-## Free Software Foundation; either version 2, or (at your option) any 
-## later version. 
-## 
-## Octave is distributed in the hope that it will be useful, but WITHOUT 
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
-## You should have received a copy of the GNU General Public License 
-## along with Octave; see the file COPYING.  If not, write to the Free 
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{K} =} place (@var{sys}, @var{P})
+## @deftypefn {Function File} {@var{K} =} place (@var{sys}, @var{P})
 ## Computes the matrix  K such that if the state
 ## is feedback with gain K, then the eigenvalues  of the closed loop
 ## system (i.e. A-BK) are those specified in the vector P.
-## 
+##
 ## Version: Beta (May-1997): If you have any comments, please let me know.
-## 			    (see the file place.m for my address)
+## (see the file place.m for my address)
 ## @end deftypefn
 
 ## Author: Jose Daniel Munoz Frias
- 
+
 ## Universidad Pontificia Comillas
 ## ICAIdea
 ## Alberto Aguilera, 23
@@ -42,7 +42,7 @@
 ## code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
 ## toolbox
 
-function K = place (sys, P) 
+function K = place (sys, P)
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;
@@ -52,18 +52,18 @@ function K = place (sys, P)
   if(!is_struct(sys))
     error("sys must be in system data structure format (see ss2sys)");
   endif
-  sys = sysupdate(sys,"ss");	# make sure it has state space form up to date
+  sys = sysupdate(sys,"ss");    # make sure it has state space form up to date
   if(!is_controllable(sys))
     error("sys is not controllable.");
   elseif( min(size(P)) != 1)
     error("P must be a vector")
   else
-    P = reshape(P,length(P),1);	# make P a column vector
+    P = reshape(P,length(P),1); # make P a column vector
   endif
   ## system must be purely continuous or discrete
   is_digital(sys);
   [n,nz,m,p] = sysdimensions(sys);
-  nx = n+nz;	# already checked that it's not a mixed system.
+  nx = n+nz;    # already checked that it's not a mixed system.
   if(m != 1)
     error(["sys has ", num2str(m)," inputs; need only 1"]);
   endif
@@ -75,7 +75,7 @@ function K = place (sys, P)
     error("place: A matrix is empty (0x0)");
   elseif(nx != length(P))
     error(["A=(",num2str(nx),"x",num2str(nx),", P has ", num2str(length(P)), ...
-	"entries."])
+        "entries."])
   endif
 
   ## arguments appear to be compatible; let's give it a try!
@@ -95,7 +95,7 @@ function K = place (sys, P)
 
   ## second, construct the matrix W
   PCO=PC(nx:-1:1);
-  PC1=PCO; 	# Matrix to shift and create W row by row
+  PC1=PCO;      # Matrix to shift and create W row by row
 
   for n = 1:nx
     W(n,:) = PC1;
@@ -104,11 +104,11 @@ function K = place (sys, P)
 
   T=M*W;
 
-  ## finaly the matrix K is calculated 
+  ## finaly the matrix K is calculated
   PD = poly(P); # The desired characteristic polynomial
   PD = PD(nx+1:-1:2);
   PC = PC(nx+1:-1:2);
-  
+
   K = (PD-PC)/T;
 
   ## Check if the eigenvalues of (A-BK) are the same specified in P

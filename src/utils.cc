@@ -99,7 +99,6 @@ LOSE! LOSE!
 #include "octave.h"
 #include "oct-obj.h"
 #include "mappers.h"
-#include "version.h"
 #include "tree-const.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"

@@ -143,17 +143,18 @@ realclean:
 # Shared rules for making clean tar files.
 
 clean-tar:
+	echo octave-$(version) > .fname
 	tar xf `cat .fname`.tar
-	find `cat .fname` \( -name RCS -a -type d \) -o -name '*~' \
-		-o -name '#*#' -exec rm -rf {} \;
+	find `cat .fname` \( \( -name RCS -a -type d \) \
+	  -o -name '*~' -o -name '#*#' \) -print | xargs rm -rf
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname` .fname
 .PHONY: clean-tar
 
 dist-z:
-	echo octave-$(version).tar > .fname
-	gzip --best `cat .fname`
+	echo octave-$(version) > .fname
+	gzip --best `cat .fname`.tar
 	rm -f .fname
 .PHONY: dist-z
 
@@ -192,6 +193,7 @@ links-for-bin-dist: octave.info INSTALL.info BUGS.info
 
 bin-dist-tar: links-for-bin-dist
 	strip src/octave
+	echo octave-$(version) > .fname
 	ln src/octave `cat .fname`/octave
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
@@ -247,14 +249,14 @@ local-dist: clean-local-dist-tar
 # Rules for splitting a distribution.
 
 split-dist:
-	echo octave-$(version).tar.gz > .fname
-	split -b 1350k `cat .fname` `cat .fname`-
+	echo octave-$(version) > .fname
+	split -b 1350k `cat .fname`.tar.gz `cat .fname`.tar.gz-
 	rm -f .fname
 .PHONY: split-dist
 
 split-local-dist:
-	echo octave-local-$(version).tar.gz > .fname
-	split -b 1350k `cat .fname` `cat .fname`-
+	echo octave-local-$(version) > .fname
+	split -b 1350k `cat .fname`.tar.gz `cat .fname`.tar.gz-
 	rm -f .fname
 .PHONY: split-local-dist
 

@@ -1,8 +1,9 @@
 Tue Nov 19 12:01:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (plot_style_token): Add new plot styles for gnuplot 3.6.
-	* pt-plot.cc (subplot_style::errorbars): Recognize more errorbar
-	plot types.
+	* pt-plot.cc (subplot_style::columns_ok): Rename from
+	subplot_style::errorbars. Recognize more styles and do a better
+	job of diagnosing column number/style mismatches.
 
 	* sighandlers.cc (my_friendly_exit): If we are called twice, try
 	to remove the signal handler for SIGABRT and the call abort ().

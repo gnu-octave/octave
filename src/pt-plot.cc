@@ -599,15 +599,33 @@ subplot_style::print (ostrstream& plot_buf)
   return 0;
 }
 
-int
-subplot_style::errorbars (void)
+bool
+subplot_style::columns_ok (int nc)
 {
-  return (almost_match ("boxerrorbars", sp_style, 5, 0)
-	  || almost_match ("boxxyerrorbars", sp_style, 4, 0)
-	  || almost_match ("errorbars", sp_style, 1, 0)
-	  || almost_match ("xerrorbars", sp_style, 2, 0)
-	  || almost_match ("xyerrorbars", sp_style, 2, 0)
-	  || almost_match ("yerrorbars", sp_style, 1, 0));
+  bool retval = true;
+
+  if ((almost_match ("boxes", sp_style, 5, 0) && nc != 3)
+      || (almost_match ("boxerrorbars", sp_style, 5, 0)
+	  && (! (nc == 3 || nc == 4 || nc == 5)))
+      || ((almost_match ("boxxyerrorbars", sp_style, 4, 0)
+	   || almost_match ("xyerrorbars", sp_style, 2, 0))
+	  && (! (nc == 4 || nc == 6 || nc == 7)))
+      || ((almost_match ("candlesticks", sp_style, 1, 0)
+	   || almost_match ("financebars", sp_style, 2, 0))
+	  && nc != 5)
+      || ((almost_match ("errorbars", sp_style, 1, 0)
+	   || almost_match ("xerrorbars", sp_style, 1, 0)
+	   || almost_match ("yerrorbars", sp_style, 1, 0))
+	  && (! (nc == 3 || nc == 4))))
+    {
+      error
+	("invalid number of data columns = %d specified for plot style `%s'",
+	 nc, sp_style.c_str ());
+
+      retval = false;
+    }
+
+  return retval;
 }
 
 void
@@ -647,17 +665,10 @@ subplot::extract_plot_data (int ndim, octave_value& data)
       retval = data;
     }
 
-  if (ndim == 2 && sp_style_clause && sp_style_clause->errorbars ())
-    {
-      int nc = retval.columns ();
+  int nc = retval.columns ();
 
-      if (nc < 3 || nc > 6)
-	{
-	  error ("plots with errorbars require 3 to 6 columns of data");
-	  error ("but %d were provided", nc);
-	  return octave_value ();
-	}
-    }
+  if (ndim == 2 && sp_style_clause && ! sp_style_clause->columns_ok (nc))
+    return octave_value ();
 
   return retval;
 }

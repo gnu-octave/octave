@@ -214,7 +214,7 @@ public:
 
   int print (ostrstream& plot_buf);
 
-  int errorbars (void);
+  bool columns_ok (int nc);
 
   string style (void) { return sp_style; }
 

@@ -44,7 +44,7 @@ tree_constant::~tree_constant (void)
   if (--rep->count <= 0)
     {
       delete rep;
-      rep = (tree_constant_rep *) NULL;
+      rep = 0;
     }
 }
 

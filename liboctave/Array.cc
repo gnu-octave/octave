@@ -998,6 +998,9 @@ typedef Array<Complex> array_type_complex;
 typedef Array2<Complex> array2_type_complex;
 typedef DiagArray<Complex> diag_array_type_complex;
 
+#include "tree-const.h"
+typedef Array<tree_constant> array_type_tree_constant;
+
 #elif defined (USER_TYPEDEFS)
 
 // Users can generate their own .o files with their own types, as many

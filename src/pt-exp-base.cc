@@ -221,8 +221,7 @@ tree_matrix::to_return_list (void)
 	    retval = retval->chain (id);
 	}
       else if (elem->is_index_expression ())
-//	       && (((tree_index_expression *) elem) -> arg_list ()
-//		   == (tree_argument_list *) NULL))
+//	       && ! ((tree_index_expression *) elem) -> arg_list ())
 	{
 	  tree_index_expression *idx_expr = (tree_index_expression *) elem;
 	  if (list == this)

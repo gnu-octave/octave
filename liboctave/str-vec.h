@@ -93,6 +93,10 @@ public:
 
   string_vector& uniq (void);
 
+  string_vector& append (const std::string& s);
+
+  string_vector& append (const string_vector& sv);
+
   char **c_str_vec (void) const;
 
   static void delete_c_str_vec (const char * const*);

@@ -120,7 +120,7 @@ extern std::string kpse_brace_expand (const char *path);
    result, then expand any `//' constructs.  The final expansion (always
    in fresh memory) is a path of all the existing directories that match
    the pattern. */
-extern char *kpse_path_expand (const char *path);
+extern std::string kpse_path_expand (const std::string& path);
 
 /* default.h: Declare default path expander.  */
 

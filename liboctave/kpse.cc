@@ -52,10 +52,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <unistd.h>
 #endif
 
-#ifdef WIN32
-#include <malloc.h>
-#endif /* not WIN32 */
-
 #include "sysdir.h"
 #include "statdefs.h"
 
@@ -119,9 +115,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 /* OK, we'll have tracing support.  */
 #define KPSE_DEBUG
 
-/* Set a bit.  */
-#define KPSE_DEBUG_SET(bit) kpathsea_debug |= 1 << (bit)
-
 /* Test if a bit is on.  */
 #define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
 
@@ -175,16 +168,6 @@ extern int fclose (FILE *);
 #define MAXPATHLEN      _MAX_PATH
 #endif
 
-#define HAVE_DUP2       	1
-#define HAVE_RENAME     	1
-#define HAVE_RMDIR      	1
-#define HAVE_MKDIR      	1
-#define HAVE_GETHOSTNAME	1
-#define HAVE_RANDOM		1
-#define USE_UTIME		1
-#define HAVE_MOUSE		1
-#define HAVE_TZNAME		1
-
 /* These have to be defined because our compilers treat __STDC__ as being
    defined (most of them anyway). */
 
@@ -204,9 +187,6 @@ extern int fclose (FILE *);
 
 #include <windows.h>
 
-/* Defines size_t and alloca ().  */
-#include <malloc.h>
-
 /* For proper declaration of environ.  */
 #include <io.h>
 #include <fcntl.h>
@@ -216,26 +196,6 @@ extern int fclose (FILE *);
 
 #endif /* WIN32 */
 
-/* hash.h: declarations for a hash table.  */
-
-/* A single (key,value) pair.  */
-struct hash_element_type
-{
-  std::string key;
-  std::string value;
-  struct hash_element_type *next;
-};
-
-/* The usual arrangement of buckets initialized to null.  */
-struct hash_table_type
-{
-  hash_element_type **buckets;
-  unsigned size;
-};
-
-static hash_table_type hash_create (unsigned size);
-
-
 /* lib.h: other stuff.  */
 
 /* Define common sorts of messages.  */
@@ -266,7 +226,6 @@ static hash_table_type hash_create (unsigned size);
 #define FATAL6(str, e1, e2, e3, e4, e5, e6)				\
   START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4, e5, e6); END_FATAL ()
 
-
 #define START_WARNING() do { fputs ("warning: ", stderr)
 #define END_WARNING() fputs (".\n", stderr); fflush (stderr); } while (0)
 
@@ -280,7 +239,6 @@ static hash_table_type hash_create (unsigned size);
   START_WARNING (); fprintf (stderr, str, e1, e2, e3); END_WARNING ()
 #define WARNING4(str, e1, e2, e3, e4)					\
   START_WARNING (); fprintf (stderr, str, e1, e2, e3, e4); END_WARNING ()
-
 
 /* I find this easier to read.  */
 #define STREQ(s1, s2) (strcmp (s1, s2) == 0)
@@ -298,8 +256,6 @@ static hash_table_type hash_create (unsigned size);
 #define FILECHARCASEEQ(c1, c2) ((c1) == (c2))
 #endif
 
-
-
 /* (Re)Allocate N items of type T using xmalloc/xrealloc.  */
 #define XTALLOC(n, t) ((t *) xmalloc ((n) * sizeof (t)))
 #define XTALLOC1(t) XTALLOC (1, t)
@@ -307,39 +263,13 @@ static hash_table_type hash_create (unsigned size);
 
 extern "C" char *xbasename (const char *name);
 
-static FILE *xfopen (const char *filename, const char *mode);
-
-static void xfclose (FILE *f, const char *filename);
-
 #ifndef WIN32
 static void xclosedir (DIR *d);
 #endif
 
-static void *xmalloc (unsigned size);
-
-static void *xrealloc (void *old_ptr, unsigned size);
-
 #ifndef WIN32
 int dir_links (const char *fn);
 #endif
-
-static unsigned hash (hash_table_type table, const std::string& key);
-
-static void hash_insert (hash_table_type *table, const std::string& key,
-			 const std::string& value);
-
-static string_vector hash_lookup (hash_table_type table,
-				  const std::string& key);
-
-static void hash_print (hash_table_type table, int summary_only);
-
-static char *concat (const char *s1, const char *s2);
-
-static char *concat3 (const char *s1, const char *s2, const char *s3);
-
-static void str_list_add (string_vector& l, const std::string& s);
-
-static void str_list_concat (string_vector& target, const string_vector& more);
 
 static void str_llist_add (str_llist_type *l, const std::string& str);
 
@@ -349,6 +279,52 @@ static std::string kpse_var_expand (const std::string& src);
 
 #include <ctime> /* for `time' */
 
+/* xmalloc.c: malloc with error checking.  */
+
+static void *
+xmalloc (unsigned size)
+{
+  void *new_mem = (void *) malloc (size);
+
+  if (new_mem == NULL)
+    {
+      fprintf (stderr, "fatal: memory exhausted (xmalloc of %u bytes).\n",
+               size);
+      /* 1 means success on VMS, so pick a random number (ASCII `K').  */
+      exit (75);
+    }
+
+  return new_mem;
+}
+
+/* xrealloc.c: realloc with error checking.  */
+
+static void *
+xrealloc (void *old_ptr, unsigned size)
+{
+  void *new_mem;
+
+  if (old_ptr == NULL)
+    new_mem = xmalloc (size);
+  else
+    {
+      new_mem = (void *) realloc (old_ptr, size);
+      if (new_mem == NULL)
+        {
+          /* We used to print OLD_PTR here using %x, and casting its
+             value to unsigned, but that lost on the Alpha, where
+             pointers and unsigned had different sizes.  Since the info
+             is of little or no value anyway, just don't print it.  */
+          fprintf (stderr, "fatal: memory exhausted (realloc of %u bytes).\n",
+                   size);
+          /* 1 means success on VMS, so pick a random number (ASCII `B').  */
+          exit (66);
+        }
+    }
+
+  return new_mem;
+}
+
 /* Return a copy of S in new storage.  */
 
 static char *
@@ -356,6 +332,231 @@ xstrdup (const char *s)
 {
   char *new_string = (char *) xmalloc (strlen (s) + 1);
   return strcpy (new_string, s);
+}
+
+/* These routines just check the return status from standard library
+   routines and abort if an error happens.  */
+
+static FILE *
+xfopen (const char *filename, const char *mode)
+{
+  FILE *f;
+
+  assert (filename && mode);
+
+  f = fopen (filename, mode);
+  if (f == NULL)
+    FATAL_PERROR (filename);
+
+  return f;
+}
+
+static void
+xfclose (FILE *f, const char *filename)
+{
+  assert (f);
+
+  if (fclose (f) == EOF)
+    FATAL_PERROR (filename);
+}
+
+/* Return the concatenation of S1 and S2.  See `concatn.c' for a
+   `concatn', which takes a variable number of arguments.  */
+
+static char *
+concat (const char *s1, const char *s2)
+{
+  char *answer = (char *) xmalloc (strlen (s1) + strlen (s2) + 1);
+  strcpy (answer, s1);
+  strcat (answer, s2);
+
+  return answer;
+}
+
+/* concat3.c: concatenate three strings.  */
+
+static char *
+concat3 (const char *s1, const char *s2, const char *s3)
+{
+  char *answer
+    = (char *) xmalloc (strlen (s1) + strlen (s2) + strlen (s3) + 1);
+  strcpy (answer, s1);
+  strcat (answer, s2);
+  strcat (answer, s3);
+
+  return answer;
+}
+
+/* A single (key,value) pair.  */
+
+struct hash_element_type
+{
+  std::string key;
+  std::string value;
+  struct hash_element_type *next;
+};
+
+/* The usual arrangement of buckets initialized to null.  */
+
+struct hash_table_type
+{
+  hash_element_type **buckets;
+  unsigned size;
+};
+
+/* The hash function.  We go for simplicity here.  */
+
+/* All our hash tables are related to filenames.  */
+#ifdef MONOCASE_FILENAMES
+#define TRANSFORM(x) toupper (x)
+#else
+#define TRANSFORM(x) (x)
+#endif
+
+static unsigned
+hash (hash_table_type table, const std::string& key)
+{
+  unsigned n = 0;
+
+  /* Our keys aren't often anagrams of each other, so no point in
+     weighting the characters.  */
+  size_t len = key.length ();
+  for (size_t i = 0; i < len; i++)
+    n = (n + n + TRANSFORM (key[i])) % table.size;
+
+  return n;
+}
+
+static hash_table_type
+hash_create (unsigned size)
+{
+  /* hash_table_type ret; changed into "static ..." to work around gcc
+     optimizer bug for Alpha.  */
+  static hash_table_type ret;
+  unsigned b;
+  ret.buckets = new hash_element_type * [size];
+  ret.size = size;
+
+  /* calloc's zeroes aren't necessarily NULL, so be safe.  */
+  for (b = 0; b <ret.size; b++)
+    ret.buckets[b] = NULL;
+
+  return ret;
+}
+
+/* Whether or not KEY is already in MAP, insert it and VALUE.  Do not
+   duplicate the strings, in case they're being purposefully shared.  */
+
+static void
+hash_insert (hash_table_type *table, const std::string& key,
+	     const std::string& value)
+{
+  unsigned n = hash (*table, key);
+  hash_element_type *new_elt = new hash_element_type;
+
+  new_elt->key = key;
+  new_elt->value = value;
+  new_elt->next = NULL;
+
+  /* Insert the new element at the end of the list.  */
+  if (! table->buckets[n])
+    /* first element in bucket is a special case.  */
+    table->buckets[n] = new_elt;
+  else
+    {
+      hash_element_type *loc = table->buckets[n];
+      while (loc->next)		/* Find the last element.  */
+        loc = loc->next;
+      loc->next = new_elt;	/* Insert the new one after.  */
+    }
+}
+
+/* Look up STR in MAP.  Return a (dynamically-allocated) list of the
+   corresponding strings or NULL if no match.  */
+
+static string_vector
+hash_lookup (hash_table_type table, const std::string& key)
+{
+  hash_element_type *p;
+  string_vector ret;
+  unsigned n = hash (table, key);
+
+  /* Look at everything in this bucket.  */
+  for (p = table.buckets[n]; p != NULL; p = p->next)
+    if (FILESTRCASEEQ (key.c_str (), p->key.c_str ()))
+      /* Cast because the general string_vector shouldn't force const data.  */
+      ret.append (p->value);
+
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
+    {
+      DEBUGF1 ("hash_lookup (%s) =>", key.c_str ());
+      if (ret.empty ())
+        fputs (" (nil)\n", stderr);
+      else
+        {
+	  int len = ret.length ();
+	  for (int i = 0; i < len; i++)
+            {
+              putc (' ', stderr);
+	      fputs (ret[i].c_str (), stderr);
+            }
+          putc ('\n', stderr);
+        }
+      fflush (stderr);
+    }
+#endif
+
+  return ret;
+}
+
+/* We only print nonempty buckets, to decrease output volume.  */
+
+static void
+hash_print (hash_table_type table, int summary_only)
+{
+  unsigned b;
+  unsigned total_elements = 0, total_buckets = 0;
+
+  for (b = 0; b < table.size; b++)
+    {
+      hash_element_type *bucket = table.buckets[b];
+
+      if (bucket)
+	{
+	  unsigned len = 1;
+	  hash_element_type *tb;
+
+	  total_buckets++;
+	  if (! summary_only)
+	    fprintf (stderr, "%4d ", b);
+
+	  for (tb = bucket->next; tb != NULL; tb = tb->next)
+	    len++;
+
+	  if (! summary_only)
+	    fprintf (stderr, ":%-5d", len);
+
+	  total_elements += len;
+
+	  if (! summary_only)
+	    {
+	      for (tb = bucket; tb != NULL; tb = tb->next)
+		fprintf (stderr, " %s=>%s", tb->key.c_str (),
+			 tb->value.c_str ());
+
+	      putc ('\n', stderr);
+	    }
+	}
+    }
+
+  fprintf (stderr,
+	   "%u buckets, %u nonempty (%u%%); %u entries, average chain %.1f.\n",
+	   table.size,
+	   total_buckets,
+	   100 * total_buckets / table.size,
+	   total_elements,
+	   total_buckets ? total_elements / (double) total_buckets : 0.0);
 }
 
 /* Here's the simple one, when a program just wants a value.  */
@@ -568,7 +769,7 @@ log_search (const string_vector& filenames)
 	}
     }
 }
-
+
 /* Concatenate each element in DIRS with NAME (assume each ends with a
    /, to save time).  If SEARCH_ALL is false, return the first readable
    regular file.  Else continue to search for more.  In any case, if
@@ -607,7 +808,7 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
 
       if (kpse_readable_file (potential))
         {
-          str_list_add (ret, potential);
+          ret.append (std::string (potential));
 
           /* Move this element towards the top of the list.  */
           str_llist_float (dirs, elt);
@@ -630,7 +831,7 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
 
   return ret;
 }
-
+
 /* This is called when NAME is absolute or explicitly relative; if it's
    readable, return (a list containing) it; otherwise, return NULL.  */
 
@@ -643,11 +844,11 @@ absolute_search (const std::string& name_arg)
 
   /* Add `found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
-  str_list_add (ret_list, found);
+  ret_list.append (std::string (found));
 
   return ret_list;
 }
-
+
 /* This is the hard case -- look for NAME in PATH.  If ALL is false,
    return the first file found.  Otherwise, search all elements of PATH.  */
 
@@ -718,10 +919,10 @@ path_search (const std::string& path_arg, const std::string& name,
       if (! found.empty ())
 	{
 	  if (all)
-	    str_list_concat (ret_list, found);
+	    ret_list.append (found);
 	  else
 	    {
-	      str_list_add (ret_list, found[0]);
+	      ret_list.append (found[0]);
 	      done = true;
 	    }
 	}
@@ -729,7 +930,7 @@ path_search (const std::string& path_arg, const std::string& name,
 
   return ret_list;
 }
-
+
 /* Search PATH for ORIGINAL_NAME.  If ALL is false, or ORIGINAL_NAME is
    absolute_p, check ORIGINAL_NAME itself.  Otherwise, look at each
    element of PATH for the first readable ORIGINAL_NAME.
@@ -782,7 +983,7 @@ search (const std::string& path, const std::string& original_name,
 
   return ret_list;
 }
-
+
 /* Search PATH for the first NAME.  */
 
 std::string
@@ -794,7 +995,6 @@ kpse_path_search (const std::string& path, const std::string& name,
   return ret_list.empty () ? std::string () : ret_list[0];
 }
 
-
 /* Search all elements of PATH for files named NAME.  Not sure if it's
    right to assert `must_exist' here, but it suffices now.  */
 
@@ -803,7 +1003,7 @@ kpse_all_path_search (const std::string& path, const std::string& name)
 {
   return search (path, name, true, true);
 }
-
+
 /* This is the hard case -- look in each element of PATH for each
    element of NAMES.  If ALL is false, return the first file found.
    Otherwise, search all elements of PATH.  */
@@ -901,10 +1101,10 @@ path_find_first_of (const std::string& path_arg, const string_vector& names,
 	      if (! found.empty ())
 		{
 		  if (all)
-		    str_list_concat (ret_list, found);
+		    ret_list.append (found);
 		  else
 		    {
-		      str_list_add (ret_list, found[0]);
+		      ret_list.append (found[0]);
 		      done = true;
 		    }
 		}
@@ -1106,7 +1306,6 @@ kpse_expand (const std::string& s)
   return kpse_tilde_expand (var_expansion);
 }
 
-
 /* Forward declarations of functions from the original expand.c  */
 static char **brace_expand (const char *);
 static void free_array (char **);
@@ -1123,20 +1322,6 @@ kpse_expand_kpse_dot (const std::string& path)
 
   if (kpse_dot.empty ())
     return path;
-
-#ifdef MSDOS
-  /* Some setups of ported Bash force $KPSE_DOT to have the //d/foo/bar
-     form (when `pwd' is used), which is not understood by libc and the OS.
-     Convert them back to the usual d:/foo/bar form.  */
-  if (kpse_dot.len > 3 && kpse_dot[0] == '/' && kpse_dot[1] == '/'
-      && kpse_dot[2] >= 'A' && kpse_dot[2] <= 'z' && kpse_dot[3] == '/')
-    {
-      kpse_dot = kpse_dot.substr (1);
-      kpse_dot = xstrdup (kpse_dot);
-      kpse_dot[0] = kpse_dot[1];  /* drive letter */
-      kpse_dot[1] = ':';
-    }
-#endif
 
   char *tmp = xstrdup (path.c_str ());
 
@@ -1231,23 +1416,23 @@ kpse_brace_expand (const char *path)
 
   return kpse_expand_kpse_dot (ret);
 }
-
+
 /* Expand all special constructs in a path, and include only the actually
    existing directories in the result. */
-char *
-kpse_path_expand (const char *path)
+std::string
+kpse_path_expand (const std::string& path_arg)
 {
-  char *ret;
+  std::string ret;
   char *elt;
   unsigned len;
 
-  /* Initialise ret to the empty string. */
-  ret = (char *) xmalloc (1);
-  *ret = 0;
+  const char *path = path_arg.c_str ();
+
   len = 0;
 
   /* Expand variables and braces first.  */
   std::string tmp = kpse_brace_expand (path);
+
   const char *xpath = tmp.c_str ();
 
   /* Now expand each of the path elements, printing the results */
@@ -1288,22 +1473,21 @@ kpse_path_expand (const char *path)
 	  {
 	    const std::string thedir = STR_LLIST (*dir);
 	    unsigned dirlen = thedir.length ();
-	    char *save_ret = ret;
+
 	    /* Retain trailing slash if that's the root directory.  */
 	    if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
 				&& IS_DIR_SEP (thedir[2])))
 	      {
-		ret = concat3 (ret, thedir.c_str (), ENV_SEP_STRING);
+		ret += thedir + ENV_SEP_STRING;
 		len += dirlen + 1;
 		ret[len - 1] = ENV_SEP;
 	      }
 	    else
 	      {
-		ret = concat (ret, thedir.c_str ());
+		ret += thedir;
 		len += dirlen;
 		ret [len - 1] = ENV_SEP;
 	      }
-	    free (save_ret);
 	  }
       }
     }
@@ -1314,7 +1498,7 @@ kpse_path_expand (const char *path)
 
   return ret;
 }
-
+
 /* braces.c -- code for doing word expansion in curly braces. Taken from
    bash 1.14.5.  [Ans subsequently modified for kpatshea.]
 
@@ -1394,7 +1578,6 @@ copy_array (char **array)
   return (new_array);
 }
 
-
 /* Return an array of strings; the brace expansion of TEXT. */
 static char **
 brace_expand (const char *text)
@@ -1452,7 +1635,6 @@ brace_expand (const char *text)
 
   return (result);
 }
-
 
 /* Expand the text found inside of braces.  We simply try to split the
    text at BRACE_ARG_SEPARATORs into separate strings.  We then brace
@@ -1632,7 +1814,6 @@ typedef enum
   kpse_src_cmdline     /* command-line option */
 } kpse_src_type;
 
-
 /* For each file format, we record the following information.  The main
    thing that is not part of this structure is the environment variable
    lists. They are used directly in tex-file.c. We could incorporate
@@ -1665,7 +1846,7 @@ typedef struct
 static kpse_format_info_type kpse_format_info;
 
 #define DB_ENVS "TEXMFDBS"
-
+
 /* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
    present info->path.  */
 #define EXPAND_DEFAULT(try_path, source_string)			\
@@ -1743,7 +1924,6 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
   info->path = tmp;
 }
 
-
 /* Some file types have more than one suffix.  */
 
 static void
@@ -1766,7 +1946,6 @@ add_suffixes (const char ***list, ...)
 
   (*list)[count] = NULL;
 }
-
 
 static char *
 remove_dbonly (const char *path)
@@ -1877,7 +2056,7 @@ kpse_init_format (void)
 
   return kpse_format_info.path;
 }
-
+
 static hash_table_type db; /* The hash table for all the ls-R's.  */
 /* SMALL: The old size of the hash table was 7603, with the assumption
    that a minimal ls-R bas about 3500 entries.  But a typical ls-R will
@@ -1898,7 +2077,7 @@ static hash_table_type alias_db;
 #endif
 
 static string_vector db_dir_list;
-
+
 /* If DIRNAME contains any element beginning with a `.' (that is more
    than just `./'), return true.  This is to allow ``hidden''
    directories -- ones that don't get searched.  */
@@ -1917,7 +2096,7 @@ ignore_dir_p (const char *dirname)
 
   return false;
 }
-
+
 /* Allocate in increments of this size.  */
 #define BLOCK_SIZE 75
 
@@ -2052,9 +2231,7 @@ db_build (hash_table_type *table, const std::string& db_filename)
 	  db_file = NULL;
 	}
       else
-	{
-	  str_list_add (db_dir_list, top_dir);
-	}
+	db_dir_list.append (std::string (top_dir));
 
 #ifdef KPSE_DEBUG
       if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
@@ -2081,7 +2258,6 @@ db_build (hash_table_type *table, const std::string& db_filename)
   return db_file != NULL;
 }
 
-
 /* Insert FNAME into the hash table.  This is for files that get built
    during a run.  We wouldn't want to reread all of ls-R, even if it got
    rebuilt.  */
@@ -2104,7 +2280,7 @@ kpse_db_insert (const char *passed_fname)
       hash_insert (&db, file_part, dir_part);
     }
 }
-
+
 /* Return true if FILENAME could be in PATH_ELT, i.e., if the directory
    part of FILENAME matches PATH_ELT.  Have to consider // wildcards, but
    $ and ~ expansion have already been done.  */
@@ -2216,7 +2392,7 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
 
   return found;
 }
-
+
 /* If ALIAS_FILENAME exists, read it into TABLE.  */
 
 static bool
@@ -2279,7 +2455,7 @@ alias_build (hash_table_type *table, const std::string& alias_filename)
 
   return alias_file != NULL;
 }
-
+
 /* Initialize the path for ls-R files, and read them all into the hash
    table `db'.  If no usable ls-R's are found, set db.buckets to NULL.  */
 
@@ -2336,7 +2512,7 @@ kpse_init_db (void)
       alias_db.buckets = NULL;
     }
 }
-
+
 /* Avoid doing anything if this PATH_ELT is irrelevant to the databases. */
 
 string_vector
@@ -2453,7 +2629,8 @@ kpse_db_search (const std::string& name_arg,
 	      /* If we have a real file, add it to the list, maybe done.  */
 	      if (! found.empty ())
 		{
-		  str_list_add (ret, found);
+		  ret.append (found);
+
 		  if (! (all || found.empty ()))
 		    done = true;
 		}
@@ -2535,7 +2712,7 @@ kpse_expand_default (const char *path, const char *fallback)
 /* To avoid giving prototypes for all the routines and then their real
    definitions, we give all the subroutines first.  The entry point is
    the last routine in the file.  */
-
+
 /* Make a copy of DIR (unless it's null) and save it in L.  Ensure that
    DIR ends with a DIR_SEP for the benefit of later searches.  */
 
@@ -2573,7 +2750,7 @@ checked_dir_list_add (str_llist_type *l, const std::string& dir)
   if (dir_p (dir))
     dir_list_add (l, dir);
 }
-
+
 /* The cache.  Typically, several paths have the same element; for
    example, /usr/local/lib/texmf/fonts//.  We don't want to compute the
    expansion of such a thing more than once.  Even though we also cache
@@ -2604,7 +2781,6 @@ cache (const char *key, str_llist_type *value)
   the_cache[cache_length - 1].value = value;
 }
 
-
 /* To retrieve, just check the list in order.  */
 
 static str_llist_type *
@@ -2620,12 +2796,11 @@ cached (const char *key)
 
   return NULL;
 }
-
+
 /* Handle the magic path constructs.  */
 
 /* Declare recursively called routine.  */
 static void expand_elt (str_llist_type *, const char *, unsigned);
-
 
 /* POST is a pointer into the original element (which may no longer be
    ELT) to just after the doubled DIR_SEP, perhaps to the null.  Append
@@ -2745,13 +2920,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
                  some such, we can still find subdirectories, even if it
                  is much slower.  */
 #ifdef ST_NLINK_TRICK
-#ifdef AMIGA
-              /* With SAS/C++ 6.55 on the Amiga, `stat' sets the `st_nlink'
-                 field to -1 for a file, or to 1 for a directory.  */
-              if (links == 1)
-#else
               if (links > 2)
-#endif /* not AMIGA */
 #endif /* not ST_NLINK_TRICK */
                 /* All criteria are met; find subdirectories.  */
                 do_subdir (str_list_ptr, name.c_str (),
@@ -2772,7 +2941,6 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
   xclosedir (dir);
 #endif /* not WIN32 */
 }
-
 
 /* Assume ELT is non-empty and non-NULL.  Return list of corresponding
    directories (with no terminating NULL entry) in STR_LIST_PTR.  Start
@@ -2805,7 +2973,7 @@ expand_elt (str_llist_type *str_list_ptr, const char *elt, unsigned start)
   /* When we reach the end of ELT, it will be a normal filename.  */
   checked_dir_list_add (str_list_ptr, elt);
 }
-
+
 /* Here is the entry point.  Returns directory list for ELT.  */
 
 str_llist_type *
@@ -2869,8 +3037,8 @@ static const char *path = NULL;
    disk accesses overwhelm everything else.  If ENV_P is true, use
    IS_ENV_SEP; else use IS_DIR_SEP.  */
 
-static char *
-element (const char *passed_path, bool env_p)
+char *
+kpse_path_element (const char *passed_path)
 {
   const char *p;
   char *ret;
@@ -2890,8 +3058,7 @@ element (const char *passed_path, bool env_p)
 
   /* Find the next colon not enclosed by braces (or the end of the path).  */
   brace_level = 0;
-  while (*p != 0  && !(brace_level == 0
-                       && (env_p ? IS_ENV_SEP (*p) : IS_DIR_SEP (*p))))
+  while (*p != 0  && ! (brace_level == 0 && IS_ENV_SEP (*p)))
     {
       if (*p == '{')
 	++brace_level;
@@ -2924,46 +3091,6 @@ element (const char *passed_path, bool env_p)
   return ret;
 }
 
-char *
-kpse_path_element (const char *p)
-{
-  return element (p, true);
-}
-
-char *
-kpse_filename_component (const char *p)
-{
-  return element (p, false);
-}
-
-/* xfopen.c: fopen and fclose with error checking.  */
-
-/* These routines just check the return status from standard library
-   routines and abort if an error happens.  */
-
-FILE *
-xfopen (const char *filename, const char *mode)
-{
-  FILE *f;
-
-  assert (filename && mode);
-
-  f = fopen (filename, mode);
-  if (f == NULL)
-    FATAL_PERROR (filename);
-
-  return f;
-}
-
-void
-xfclose (FILE *f, const char *filename)
-{
-  assert (f);
-
-  if (fclose (f) == EOF)
-    FATAL_PERROR (filename);
-}
-
 #ifndef WIN32
 void
 xclosedir (DIR *d)
@@ -2978,56 +3105,6 @@ xclosedir (DIR *d)
 #endif
 }
 #endif
-
-/* xmalloc.c: malloc with error checking.  */
-
-void *
-xmalloc (unsigned size)
-{
-  void *new_mem = (void *) malloc (size);
-
-  if (new_mem == NULL)
-    {
-      fprintf (stderr, "fatal: memory exhausted (xmalloc of %u bytes).\n",
-               size);
-      /* 1 means success on VMS, so pick a random number (ASCII `K').  */
-      exit (75);
-    }
-
-  return new_mem;
-}
-
-/* xrealloc.c: realloc with error checking.  */
-
-extern void *xmalloc (unsigned);
-
-void *
-xrealloc (void *old_ptr, unsigned size)
-{
-  void *new_mem;
-
-  if (old_ptr == NULL)
-    new_mem = xmalloc (size);
-  else
-    {
-      new_mem = (void *) realloc (old_ptr, size);
-      if (new_mem == NULL)
-        {
-          /* We used to print OLD_PTR here using %x, and casting its
-             value to unsigned, but that lost on the Alpha, where
-             pointers and unsigned had different sizes.  Since the info
-             is of little or no value anyway, just don't print it.  */
-          fprintf (stderr, "fatal: memory exhausted (realloc of %u bytes).\n",
-                   size);
-          /* 1 means success on VMS, so pick a random number (ASCII `B').  */
-          exit (66);
-        }
-    }
-
-  return new_mem;
-}
-
-/* xstrdup.c: strdup with error checking.  */
 
 /* dir.c: directory operations.  */
 
@@ -3066,192 +3143,6 @@ dir_links (const char *fn)
 
 #endif /* !WIN32 */
 
-/* hash.c: hash table operations.  */
-
-/* The hash function.  We go for simplicity here.  */
-
-/* All our hash tables are related to filenames.  */
-#ifdef MONOCASE_FILENAMES
-#define TRANSFORM(x) toupper (x)
-#else
-#define TRANSFORM(x) (x)
-#endif
-
-static unsigned
-hash (hash_table_type table, const std::string& key)
-{
-  unsigned n = 0;
-
-  /* Our keys aren't often anagrams of each other, so no point in
-     weighting the characters.  */
-  size_t len = key.length ();
-  for (size_t i = 0; i < len; i++)
-    n = (n + n + TRANSFORM (key[i])) % table.size;
-
-  return n;
-}
-
-hash_table_type
-hash_create (unsigned size)
-{
-  /* hash_table_type ret; changed into "static ..." to work around gcc
-     optimizer bug for Alpha.  */
-  static hash_table_type ret;
-  unsigned b;
-  ret.buckets = new hash_element_type * [size];
-  ret.size = size;
-
-  /* calloc's zeroes aren't necessarily NULL, so be safe.  */
-  for (b = 0; b <ret.size; b++)
-    ret.buckets[b] = NULL;
-
-  return ret;
-}
-
-/* Whether or not KEY is already in MAP, insert it and VALUE.  Do not
-   duplicate the strings, in case they're being purposefully shared.  */
-
-void
-hash_insert (hash_table_type *table, const std::string& key,
-	     const std::string& value)
-{
-  unsigned n = hash (*table, key);
-  hash_element_type *new_elt = new hash_element_type;
-
-  new_elt->key = key;
-  new_elt->value = value;
-  new_elt->next = NULL;
-
-  /* Insert the new element at the end of the list.  */
-  if (! table->buckets[n])
-    /* first element in bucket is a special case.  */
-    table->buckets[n] = new_elt;
-  else
-    {
-      hash_element_type *loc = table->buckets[n];
-      while (loc->next)		/* Find the last element.  */
-        loc = loc->next;
-      loc->next = new_elt;	/* Insert the new one after.  */
-    }
-}
-
-/* Look up STR in MAP.  Return a (dynamically-allocated) list of the
-   corresponding strings or NULL if no match.  */
-
-static string_vector
-hash_lookup (hash_table_type table, const std::string& key)
-{
-  hash_element_type *p;
-  string_vector ret;
-  unsigned n = hash (table, key);
-
-  /* Look at everything in this bucket.  */
-  for (p = table.buckets[n]; p != NULL; p = p->next)
-    if (FILESTRCASEEQ (key.c_str (), p->key.c_str ()))
-      /* Cast because the general string_vector shouldn't force const data.  */
-      str_list_add (ret, p->value);
-
-#ifdef KPSE_DEBUG
-  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
-    {
-      DEBUGF1 ("hash_lookup (%s) =>", key.c_str ());
-      if (ret.empty ())
-        fputs (" (nil)\n", stderr);
-      else
-        {
-	  int len = ret.length ();
-	  for (int i = 0; i < len; i++)
-            {
-              putc (' ', stderr);
-	      fputs (ret[i].c_str (), stderr);
-            }
-          putc ('\n', stderr);
-        }
-      fflush (stderr);
-    }
-#endif
-
-  return ret;
-}
-
-/* We only print nonempty buckets, to decrease output volume.  */
-
-void
-hash_print (hash_table_type table, int summary_only)
-{
-  unsigned b;
-  unsigned total_elements = 0, total_buckets = 0;
-
-  for (b = 0; b < table.size; b++)
-    {
-      hash_element_type *bucket = table.buckets[b];
-
-      if (bucket)
-	{
-	  unsigned len = 1;
-	  hash_element_type *tb;
-
-	  total_buckets++;
-	  if (! summary_only)
-	    fprintf (stderr, "%4d ", b);
-
-	  for (tb = bucket->next; tb != NULL; tb = tb->next)
-	    len++;
-
-	  if (! summary_only)
-	    fprintf (stderr, ":%-5d", len);
-
-	  total_elements += len;
-
-	  if (! summary_only)
-	    {
-	      for (tb = bucket; tb != NULL; tb = tb->next)
-		fprintf (stderr, " %s=>%s", tb->key.c_str (),
-			 tb->value.c_str ());
-
-	      putc ('\n', stderr);
-	    }
-	}
-    }
-
-  fprintf (stderr,
-	   "%u buckets, %u nonempty (%u%%); %u entries, average chain %.1f.\n",
-	   table.size,
-	   total_buckets,
-	   100 * total_buckets / table.size,
-	   total_elements,
-	   total_buckets ? total_elements / (double) total_buckets : 0.0);
-}
-
-/* concat.c: dynamic string concatenation.  */
-
-/* Return the concatenation of S1 and S2.  See `concatn.c' for a
-   `concatn', which takes a variable number of arguments.  */
-
-static char *
-concat (const char *s1, const char *s2)
-{
-  char *answer = (char *) xmalloc (strlen (s1) + strlen (s2) + 1);
-  strcpy (answer, s1);
-  strcat (answer, s2);
-
-  return answer;
-}
-
-/* concat3.c: concatenate three strings.  */
-
-static char *
-concat3 (const char *s1, const char *s2, const char *s3)
-{
-  char *answer
-    = (char *) xmalloc (strlen (s1) + strlen (s2) + strlen (s3) + 1);
-  strcpy (answer, s1);
-  strcat (answer, s2);
-  strcat (answer, s3);
-
-  return answer;
-}
-
 /* debug.c: Help the user discover what's going on.  */
 
 #ifdef KPSE_DEBUG
@@ -3287,34 +3178,6 @@ fclose (FILE *f)
 
 #endif
 
-/* str-list.c: define routines for string lists.  */
-
-/* See the lib.h file for comments.  */
-
-static void
-str_list_add (string_vector& l, const std::string& s)
-{
-  int len = l.length ();
-  l.resize (len + 1);
-  l[len] = s;
-}
-
-/* May as well save some reallocations and do everything in a chunk
-   instead of calling str_list_add on each element.  */
-
-void
-str_list_concat (string_vector& target, const string_vector& more)
-{
-  int e;
-  int prev_len = target.length ();
-  int new_len = prev_len + more.length ();
-
-  target.resize (new_len);
-
-  for (e = 0; e < more.length (); e++)
-    target[prev_len + e] = more[e];
-}
-
 /* str-llist.c: Implementation of a linked list of strings.  */
 
 /* Add the new string STR to the end of the list L.  */
@@ -3339,7 +3202,7 @@ str_llist_add (str_llist_type *l, const std::string& str)
   else
     STR_LLIST_NEXT (*e) = new_elt;
 }
-
+
 /* Move an element towards the top. The idea is that when a file is
    found in a given directory, later files will likely be in that same
    directory, and looking for the file in all the directories in between
@@ -3391,7 +3254,6 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
 
 /* variable.c: variable expansion.  */
 
-
 /* We have to keep track of variables being expanded, otherwise
    constructs like TEXINPUTS = $TEXINPUTS result in an infinite loop.
    (Or indirectly recursive variables, etc.)  Our simple solution is to
@@ -3414,7 +3276,7 @@ expanding_p (const std::string& var)
   return (expansions.find (var) != expansions.end ())
     ? expansions[var] : false;
 }
-
+
 /* Append the result of value of `var' to EXPANSION, where `var' begins
    at START and ends at END.  If `var' is not set, do not complain.
    This is a subroutine for the more complicated expansion function.  */
@@ -3441,7 +3303,7 @@ expand (std::string &expansion, const std::string& var)
 	}
     }
 }
-
+
 /* Can't think of when it would be useful to change these (and the
    diagnostic messages assume them), but ... */
 #ifndef IS_VAR_START /* starts all variable references */
@@ -3456,7 +3318,6 @@ expand (std::string &expansion, const std::string& var)
 #ifndef IS_VAR_END_DELIMITER
 #define IS_VAR_END_DELIMITER(c) ((c) == '}')
 #endif
-
 
 /* Maybe we should support some or all of the various shell ${...}
    constructs, especially ${var-value}.  */

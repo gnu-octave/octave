@@ -1,3 +1,8 @@
+2003-04-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* str-vec.cc (string_vector::append (const std::string&),
+	string_vector::append (const string_vector&)): New methods.
+
 2003-04-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* kpse.cc, kpse.h: Replace fn_type with std::string.

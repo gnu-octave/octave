@@ -129,28 +129,18 @@ dir_path::init (void)
       octave_kpathsea_initialized = true;
     }
 
-  char *t1 = 0;
-
   if (p_default.empty ())
-    t1 = kpse_path_expand (p_orig.c_str ());
+    p = kpse_path_expand (p_orig);
   else
     {
       char *t2
 	= kpse_expand_default (p_orig.c_str (), p_default.c_str ());
 
-      t1 = kpse_path_expand (t2);
+      p = kpse_path_expand (t2);
 
       if (t2)
 	free (t2);
     }
-
-  if (t1)
-    {
-      p = t1;
-      free (t1);
-    }
-  else
-    p = std::string ();
 
   int count = 0;
   char *path_elt = kpse_path_element (p.c_str ());

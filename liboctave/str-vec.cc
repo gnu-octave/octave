@@ -97,6 +97,33 @@ string_vector::uniq (void)
   return *this;
 }
 
+string_vector&
+string_vector::append (const std::string& s)
+{
+  int len = length ();
+
+  resize (len + 1);
+
+  elem(len) = s;
+
+  return *this;
+}
+
+string_vector&
+string_vector::append (const string_vector& sv)
+{
+  int len = length ();
+
+  int new_len = len + sv.length ();
+
+  resize (new_len);
+
+  for (int i = 0; i < new_len; i++)
+    elem(len + i) = sv[i];
+
+  return *this;
+}
+
 char **
 string_vector::c_str_vec (void) const
 {

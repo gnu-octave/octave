@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "oct-alloc.h"
+#include "oct-time.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -61,11 +62,13 @@ public:
 
   virtual string fcn_file_name (void) const { return string (); }
 
-  virtual void mark_fcn_file_up_to_date (time_t) { }
+  virtual void mark_fcn_file_up_to_date (const octave_time&) { }
 
-  virtual time_t time_parsed (void) const { return 0; }
+  virtual octave_time time_parsed (void) const
+    { return octave_time (static_cast<time_t> (0)); }
 
-  virtual time_t time_checked (void) const { return 0; }
+  virtual octave_time time_checked (void) const
+    { return octave_time (static_cast<time_t> (0)); }
 
   string name (void) const { return my_name; }
 

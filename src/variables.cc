@@ -523,7 +523,7 @@ symbol_out_of_date (symbol_record *sr)
 
 		  string fname = fcn_file_in_path (ff);
 
-		  tmp->mark_fcn_file_up_to_date (time (0));
+		  tmp->mark_fcn_file_up_to_date (octave_time ());
 
 		  file_stat fs (fname);
 

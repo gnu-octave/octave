@@ -26,9 +26,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_input_h 1
 
 #include <cstdio>
-#include <ctime>
 
 #include <string>
+
+#include "oct-time.h"
 
 extern int octave_read (char *buf, unsigned max_size);
 extern FILE *get_input_from_file (const string& name, int warn = 1);
@@ -86,7 +87,7 @@ enum echo_state
 
 extern int Vecho_executing_commands;
 
-extern time_t Vlast_prompt_time;
+extern octave_time Vlast_prompt_time;
 
 #endif
 

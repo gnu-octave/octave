@@ -1,3 +1,36 @@
+Thu Jul 15 10:59:42 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/time.cc (Ftime): Print usage message if	any
+	arguments are supplied.
+
+	* variables.cc (symbol_out_of_date): Call octave_time for time stamps.
+
+	* fn-cache.h (octave_fcn_file_name_cache::timestamp):
+	Now octave_time object.
+
+	* strftime.c: Move to liboctave directory.
+	* Makefile.in (DIST_SRC): Delete from list.
+
+	* ov-usr-fcn.h (octave_user_function::t_parsed,
+	octave_user_function::t_checked): Now octave_time objects.
+	(octave_user_function::time_parsed,
+	(octave_user_function::time_checked):
+	Return value is now octave_time object.
+	(octave_user_function::mark_fcn_file_up_to_date)):
+	Arg is now octave_time object.
+	
+	* ov-fcn.h (octave_function::mark_fcn_file_up_to_date)):
+	Arg is now octave_time object.
+	(octave_function::time_parsed, octave_function::time_checked):
+	Return value is now octave_time object.
+
+	* input.cc (Vlast_prompt_time): Now an octave_time object.
+	(octave_gets): Call octave_time::stamp() to set Vlast_prompt_time.
+
+	* DLD-FUNCTIONS/time.cc (mk_tm_map, extract_tm, Ftime, Fgmtime,
+	Flocaltime, Fmktime, Fstrftime): Use new classes defined in
+	liboctave/oct-time.cc instead of accessing C functions directly.
+
 Wed Jul 14 17:38:46 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* systime.h: Move to liboctave directory.

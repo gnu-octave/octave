@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Map.h"
 
+#include "oct-time.h"
+
 class string_vector;
 
 // XXX FIXME XXX -- this should maybe be nested in the
@@ -40,30 +42,32 @@ file_name_cache_elt
 public:
 
   file_name_cache_elt (void)
-    : timestamp (0), fcn_file_names (), fcn_file_names_no_suffix ()
-      { update (string ()); }
+    : timestamp (static_cast<time_t> (0)), fcn_file_names (),
+      fcn_file_names_no_suffix ()
+  { update (string ()); }
 
   file_name_cache_elt (const string& dir_name)
-    : timestamp (0), fcn_file_names (), fcn_file_names_no_suffix ()
-      { update (dir_name); }
+    : timestamp (static_cast<time_t> (0)), fcn_file_names (),
+      fcn_file_names_no_suffix ()
+  { update (dir_name); }
 
   file_name_cache_elt (const file_name_cache_elt& elt)
-    {
-      timestamp = elt.timestamp;
-      fcn_file_names = elt.fcn_file_names;
-      fcn_file_names_no_suffix = elt.fcn_file_names_no_suffix;
-    }
+  {
+    timestamp = elt.timestamp;
+    fcn_file_names = elt.fcn_file_names;
+    fcn_file_names_no_suffix = elt.fcn_file_names_no_suffix;
+  }
 
   file_name_cache_elt& operator = (const file_name_cache_elt& elt)
-    {
-      if (&elt != this)
-	{
-	  timestamp = elt.timestamp;
-	  fcn_file_names = elt.fcn_file_names;
-	  fcn_file_names_no_suffix = elt.fcn_file_names_no_suffix;
-	}
-      return *this;
-    }
+  {
+    if (&elt != this)
+      {
+	timestamp = elt.timestamp;
+	fcn_file_names = elt.fcn_file_names;
+	fcn_file_names_no_suffix = elt.fcn_file_names_no_suffix;
+      }
+    return *this;
+  }
 
   ~file_name_cache_elt (void) { }
 
@@ -72,7 +76,7 @@ public:
   bool update (const string& dir_name);
 
   // The time we last read this directory.
-  time_t timestamp;
+  octave_time timestamp;
 
   // The list of file names in this directory.
   string_vector fcn_file_names;
@@ -89,7 +93,7 @@ protected:
 
   octave_fcn_file_name_cache (void)
     : cache (file_name_cache_elt ())
-      { update (string ()); }
+  { update (string ()); }
 
 public:
 

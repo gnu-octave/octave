@@ -75,15 +75,20 @@ extract_tm (Octave_map &m)
   return tm;
 }
 
-DEFUN_DLD (time, , ,
+DEFUN_DLD (time, args, ,
   "time ()\n\
 \n\
 Return current time.  On Unix systems, this is the number of\n\
 seconds since the epoch.")
 {
-  octave_time now;
+  octave_value retval;
 
-  return now.as_double ();
+  if (args.length () == 0)
+    retval = static_cast<double> (octave_time ());
+  else
+    print_usage ("time");
+
+  return retval;
 }
 
 DEFUN_DLD (gmtime, args, ,
@@ -155,11 +160,7 @@ DEFUN_DLD (mktime, args, ,
 	  octave_base_tm tm = extract_tm (map);
 
 	  if (! error_state)
-	    {
-	      octave_time ot (tm);
-
-	      retval = ot.as_double ();
-	    }
+	    retval = static_cast<double> (octave_time (tm));
 	  else
 	    error ("mktime: invalid TMSTRUCT argument");
 	}
@@ -249,7 +250,7 @@ Date fields:\n\
 	      octave_base_tm tm = extract_tm (map);
 
 	      if (! error_state)
-		retval = tm.format_as_string (fmt);
+		retval = tm.strftime (fmt);
 	      else
 		error ("strftime: invalid TMSTRUCT argument");
 	    }

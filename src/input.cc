@@ -26,7 +26,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <ctime>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -88,7 +87,7 @@ string Vps4;
 int Vecho_executing_commands;
 
 // The time we last printed a prompt.
-time_t Vlast_prompt_time;
+octave_time Vlast_prompt_time;
 
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char;
@@ -198,7 +197,7 @@ octave_gets (void)
 {
   string retval;
 
-  Vlast_prompt_time = time (0);
+  Vlast_prompt_time.stamp ();
 
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file || reading_script_file)))

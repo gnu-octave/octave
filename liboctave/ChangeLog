@@ -1,3 +1,24 @@
+Thu Jul 15 14:10:33 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.h (octave_time::as_double): Delete.
+	(octave_time::operator double ()): New function.
+	(octave_time::operator time_t ()): New function.
+	(octave_time::ctime): New function.
+	(octave_base_tm::strftime): Renamed from format_as_string.
+	(octave_base_tm::asctime): New function.
+	(operator == (const octave_time&, const octave_time&),
+	operator != (const octave_time&, const octave_time&),
+	operator < (const octave_time&, const octave_time&),
+	operator <= (const octave_time&, const octave_time&),
+	operator > (const octave_time&, const octave_time&),
+	operator >= (const octave_time&, const octave_time&)):
+	New comparison functions.
+
+	* strftime.c: Move here from src directory.
+	* Makefile.in (SOURCES): Add it to the list.
+
+	* oct-time.h (octave_time::octave_time (time_t)): New constructor.
+
 Wed Jul 14 17:38:07 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.h, oct-time.cc: New files.

@@ -39,9 +39,11 @@ public:
   octave_time (void)
     : ot_unix_time (0), ot_usec (0) { stamp (); }
 
+  octave_time (time_t t)
+    : ot_unix_time (t), ot_usec (0) { }
+
   octave_time (double d)
-    : ot_unix_time (static_cast<time_t> (d)),
-      ot_usec (0)
+    : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
   {
     double ip;
     ot_usec = static_cast<int> (modf (d, &ip) * 1e6);
@@ -67,11 +69,15 @@ public:
 
   void stamp (void);
 
-  double as_double (void) const { return ot_unix_time + ot_usec / 1e6; }
+  operator double () const { return ot_unix_time + ot_usec / 1e6; }
+
+  operator time_t () const { return ot_unix_time; }
 
   time_t unix_time (void) const { return ot_unix_time; }
 
   int usec (void) const { return ot_usec; }
+
+  string ctime (void) const;
 
 private:
 
@@ -81,6 +87,56 @@ private:
   // Additional microseconds.
   int ot_usec;
 };
+
+inline bool
+operator == (const octave_time& t1, const octave_time& t2)
+{
+  return (t1.unix_time () == t2.unix_time () && t1.usec () == t2.usec ());
+}
+
+inline bool
+operator != (const octave_time& t1, const octave_time& t2)
+{
+  return ! (t1 == t2);
+}
+
+inline bool
+operator < (const octave_time& t1, const octave_time& t2)
+{
+  if (t1.unix_time () < t2.unix_time ())
+    return true;
+  else if (t1.unix_time () > t2.unix_time ())
+    return false;
+  else if (t1.usec () < t2.usec ())
+    return true;
+  else
+    return false;
+}
+
+inline bool
+operator <= (const octave_time& t1, const octave_time& t2)
+{
+  return (t1 < t2 || t1 == t2);
+}
+
+inline bool
+operator > (const octave_time& t1, const octave_time& t2)
+{
+  if (t1.unix_time () > t2.unix_time ())
+    return true;
+  else if (t1.unix_time () < t2.unix_time ())
+    return false;
+  else if (t1.usec () > t2.usec ())
+    return true;
+  else
+    return false;
+}
+
+inline bool
+operator >= (const octave_time& t1, const octave_time& t2)
+{
+  return (t1 > t2 || t1 == t2);
+}
 
 class
 octave_base_tm
@@ -146,7 +202,9 @@ public:
   octave_base_tm& isdst (int v);
   octave_base_tm& zone (const string& s);
 
-  string format_as_string (const string& fmt) const;
+  string strftime (const string& fmt) const;
+
+  string asctime (void) const { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
 
 protected:
 

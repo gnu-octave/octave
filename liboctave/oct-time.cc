@@ -58,6 +58,12 @@ octave_time::octave_time (const octave_base_tm& tm)
 #endif
 }
 
+string
+octave_time::ctime (void) const
+{
+  return octave_localtime (*this) . asctime ();
+}
+
 void
 octave_time::stamp (void)
 {
@@ -118,7 +124,7 @@ octave_base_tm::zone (const string& s)
 #endif
 
 string
-octave_base_tm::format_as_string (const string& fmt) const
+octave_base_tm::strftime (const string& fmt) const
 {
   string retval;
 
@@ -150,7 +156,7 @@ octave_base_tm::format_as_string (const string& fmt) const
       buf = new char[bufsize];
       buf[0] = '\0';
 
-      chars_written = strftime (buf, bufsize, fmt_str, &t);
+      chars_written = ::strftime (buf, bufsize, fmt_str, &t);
 
       bufsize *= 2;
     }
@@ -194,7 +200,7 @@ octave_localtime::init (const octave_time& ot)
 {
   tm_usec = ot.usec ();
 
-  time_t t = ot.unix_time ();
+  time_t t = ot;
 
   octave_base_tm::init (localtime (&t));
 }
@@ -204,7 +210,7 @@ octave_gmtime::init (const octave_time& ot)
 {
   tm_usec = ot.usec ();
 
-  time_t t = ot.unix_time ();
+  time_t t = ot;
 
   octave_base_tm::init (gmtime (&t));
 }

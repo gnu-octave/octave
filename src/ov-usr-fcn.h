@@ -67,10 +67,10 @@ public:
 
   void stash_fcn_file_name (void);
 
-  void mark_fcn_file_up_to_date (time_t t)
+  void mark_fcn_file_up_to_date (const octave_time& t)
     { t_checked = t; }
 
-  void stash_fcn_file_time (time_t t)
+  void stash_fcn_file_time (const octave_time& t)
     {
       t_parsed = t;
       mark_fcn_file_up_to_date (t);
@@ -82,10 +82,10 @@ public:
   string fcn_file_name (void) const
     { return file_name; }
 
-  time_t time_parsed (void) const
+  octave_time time_parsed (void) const
     { return t_parsed; }
 
-  time_t time_checked (void) const
+  octave_time time_checked (void) const
     { return t_checked; }
 
   void mark_as_system_fcn_file (void);
@@ -152,11 +152,11 @@ private:
   string fcn_name;
 
   // The time the file was parsed.
-  time_t t_parsed;
+  octave_time t_parsed;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  time_t t_checked;
+  octave_time t_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

@@ -124,7 +124,7 @@ DIST_SRC := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
 	oct-lvalue.cc pager.cc parse.y pr-output.cc procstream.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc \
-	strftime.c symtab.cc syscalls.cc sysdep.cc system.c token.cc \
+	symtab.cc syscalls.cc sysdep.cc system.c token.cc \
 	toplev.cc unwind-prot.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc $(OV_SRC) $(PT_SRC)
 

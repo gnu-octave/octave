@@ -159,6 +159,24 @@ builtin_any (tree_constant *args, int nargin, int nargout)
 }
 
 /*
+ * Balancing for eigenvalue problems
+ */
+tree_constant *
+builtin_balance (tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+  if (nargin <= 1 || nargin > 4 || nargout < 1 || nargout > 4)
+    usage ("[aa {,dd}] = balance (a, {opt}) or \n\
+[aa, bb {,cc, dd}] = balance (a, b {,opt}), opt = 'P' or 'S'");
+  else
+    {
+      DLD_BUILTIN (args, nargin, nargout, balance,
+		   retval = balance (args, nargin, nargout));
+    }
+  return retval;
+}
+
+/*
  * Clear the screen?
  */
 tree_constant *

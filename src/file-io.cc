@@ -182,7 +182,8 @@ DEFUN (fclose, args, ,
 @deftypefn {Built-in Function} {} fclose (@var{fid})\n\
 Closes the specified file.  If successful, @code{fclose} returns 0,\n\
 otherwise, it returns -1.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fopen, fseek, ftell}")
 {
   octave_value retval = -1;
 
@@ -203,7 +204,11 @@ Flush output to @var{fid}.  This is useful for ensuring that all\n\
 pending output makes it to the screen before some other event occurs.\n\
 For example, it is always a good idea to flush the standard output\n\
 stream before calling @code{input}.\n\
-@end deftypefn")
+\n\
+@code{fflush} returns 0 on success and an OS dependent error value\n\
+(@minus{}1 on unix) on error.\n\
+@end deftypefn\n\
+@seealso{fopen, fclose}")
 {
   octave_value retval = -1;
 
@@ -246,7 +251,8 @@ If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fread, fscanf}")
 {
   static std::string who = "fgetl";
 
@@ -294,7 +300,8 @@ If @var{len} is omitted, @code{fgets} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fread, fscanf}")
 {
   static std::string who = "fgets";
 
@@ -490,7 +497,8 @@ Cray floating format.\n\
 @noindent\n\
 however, conversions are currently only supported for @samp{native}\n\
 @samp{ieee-be}, and @samp{ieee-le} formats.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fclose, fread, fseek}")
 {
   octave_value_list retval;
 
@@ -626,14 +634,18 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
 DEFUN (fseek, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})\n\
-Set the file pointer to any location within the file @var{fid}.  The\n\
-pointer is positioned @var{offset} characters from the @var{origin},\n\
+Set the file pointer to any location within the file @var{fid}.\n\
+\n\
+The pointer is positioned @var{offset} characters from the @var{origin},\n\
 which may be one of the predefined variables @code{SEEK_CUR} (current\n\
 position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of\n\
-file). If @var{origin} is omitted, @code{SEEK_SET} is assumed.  The\n\
-offset must be zero, or a value returned by @code{ftell} (in which case\n\
-@var{origin} must be @code{SEEK_SET}.\n\
-@end deftypefn")
+file) or strings \"cof\", \"bof\" or \"eof\". If @var{origin} is omitted,\n\
+@code{SEEK_SET} is assumed.  The offset must be zero, or a value returned\n\
+by @code{ftell} (in which case @var{origin} must be @code{SEEK_SET}.\n\
+\n\
+Return 0 on success and -1 on error.\n\
+@end deftypefn\n\
+@seealso{ftell, fopen, fclose}")
 {
   octave_value retval = -1;
 
@@ -662,7 +674,8 @@ DEFUN (ftell, args, ,
 @deftypefn {Built-in Function} {} ftell (@var{fid})\n\
 Return the position of the file pointer as the number of characters\n\
 from the beginning of the file @var{fid}.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fseek, fopen, fclose}")
 {
   octave_value retval = -1;
 
@@ -686,7 +699,8 @@ DEFUN (fprintf, args, nargout,
 @deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
 This function is just like @code{printf}, except that the output is\n\
 written to the stream @var{fid} instead of @code{stdout}.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{printf, sprintf, fread, fscanf, fopen, fclose}")
 {
   static std::string who = "fprintf";
 
@@ -744,11 +758,13 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 
 DEFUN (printf, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} printf (@var{fid}, @var{template}, @dots{})\n\
+@deftypefn {Built-in Function} {} printf (@var{template}, @dots{})\n\
 Print optional arguments under the control of the template string\n\
 @var{template} to the stream @code{stdout}.\n\
+\n\
+Return the number of characters printed.\n\
 @end deftypefn\n\
-@seealso{fprintf and sprintf}")
+@seealso{fprintf, sprintf, scanf}")
 {
   static std::string who = "printf";
 
@@ -792,6 +808,8 @@ DEFUN (fputs, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})\n\
 Write a string to a file with no formatting.\n\
+\n\
+Return a non-negative number on success and EOF on error.\n\
 @end deftypefn")
 {
   static std::string who = "fputs";
@@ -817,6 +835,8 @@ DEFUN (puts, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} puts (@var{string})\n\
 Write a string to the standard output with no formatting.\n\
+\n\
+Return a non-negative number on success and EOF on error.\n\
 @end deftypefn")
 {
   static std::string who = "puts";
@@ -839,7 +859,8 @@ string.  Unlike the C library function, which requires you to provide a\n\
 suitably sized string as an argument, Octave's @code{sprintf} function\n\
 returns the string, automatically sized to hold all of the items\n\
 converted.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{printf, fprintf, sscanf}")
 {
   static std::string who = "sprintf";
 
@@ -930,7 +951,8 @@ with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
 conversions is returned in @var{count}\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{scanf, sscanf, fread, fprintf}")
 {
   static std::string who = "fscanf";
 
@@ -1001,7 +1023,8 @@ DEFUN (sscanf, args, ,
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fscanf, scanf, sprintf}")
 {
   static std::string who = "sscanf";
 
@@ -1099,7 +1122,8 @@ This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\
 programs.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fscanf, sscanf, printf}")
 {
   int nargin = args.length ();
 
@@ -1342,7 +1366,8 @@ Conversions are currently only supported for @code{\"ieee-be\"} and\n\
 \n\
 The data read from the file is returned in @var{val}, and the number of\n\
 values read is returned in @code{count}\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fwrite, fopen, fclose}")
 {
   octave_value_list retval;
 
@@ -1453,7 +1478,8 @@ optional, and are interpreted as described for @code{fread}.\n\
 \n\
 The behavior of @code{fwrite} is undefined if the values in @var{data}\n\
 are too large to fit in the specified precision.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fread, fopen, fclose}")
 {
   octave_value retval = -1;
 
@@ -1494,7 +1520,8 @@ Return 1 if an end-of-file condition has been encountered for a given\n\
 file and 0 otherwise.  Note that it will only return 1 if the end of the\n\
 file has already been encountered, not if the next read operation will\n\
 result in an end-of-file condition.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{fread, fopen, fclose}")
 {
   octave_value retval = -1;
 
@@ -1928,7 +1955,7 @@ symbols_of_file_io (void)
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} P_tmpdir\n\
 The default name of the directory for temporary files on this system.\n\
-of this variable is system dependent.\n\
+The value of this variable is system dependent.\n\
 @end defvr");
 
   // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be

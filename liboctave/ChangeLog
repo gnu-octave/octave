@@ -76,7 +76,7 @@
 	* Array.cc (assign2): Save result of squeeze operation.
 	Squeeze if ndims is > 2, not if length of RHS vector is > 2.
 
-2004-10-11  David Bateman <dbateman@free.fr>
+2004-10-11  David Bateman  <dbateman@free.fr>
 
 	* oct-fftw.cc (class octave_fftw_planner): Add inplace[2] to
 	flag whether transform in- or out-of-place.
@@ -648,7 +648,7 @@
 	* oct-fftw.cc (convert_packcomplex_1d, convert_packcomplex_Nd): 
 	Sprinkle with OCTAVE_QUIT.
 
-2004-02-16  David Bateman <dbateman@free.fr>
+2004-02-16  David Bateman  <dbateman@free.fr>
 
 	* oct-fftw.cc (octave_fftw_planner::create_plan, octave_fftw::fftNd):
 	Add support for FFTW 3.x. Include the ability to
@@ -1422,7 +1422,7 @@
 	* MArrayN.cc, MArrayN.h, NDArray.h, NDArray.cc: New files.
 	* Makefile.in: Add them to the appropriate lists.
 
-2003-09-09  David Bateman <dbateman@free.fr>
+2003-09-09  David Bateman  <dbateman@free.fr>
 
 	* lo-specfun.cc (zbesj, zbesy, zbesi, zbesk, zbesh1, zbesh2, airy,
 	biry): Always request scaled results from AMOS functions and
@@ -1494,7 +1494,7 @@
 
 	* ArrayN.cc (increment_index): New arg, start_dimension.
 
-2003-07-29  Heine Kolltveit <kolltvei@idi.ntnu.no>
+2003-07-29  Heine Kolltveit  <kolltvei@idi.ntnu.no>
 
 	* ArrayN.cc (operator <<): Improve output readability.
 
@@ -1542,7 +1542,7 @@
 
 	* Array2-idx.h (MAYBE_RESIZE_LHS): Don't check liboctave_rre_flag.
 
-2003-07-11  Russell Standish <R.Standish@unsw.edu.au>
+2003-07-11  Russell Standish  <R.Standish@unsw.edu.au>
 
 	* Array.h (resize_fill_value): Now a top-level template function.
 	Accept object as argument.  Change all uses.
@@ -1564,7 +1564,7 @@
 	* Array2-idx.h (Array2<T>::index (idx_vector&, int, const T&)):
 	Magic colon indexing always produces an object with one column.
 
-2003-06-21  Paul Kienzle <pkienzle@users.sf.net>
+2003-06-21  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* kpse-xfns.h (NAME_BEGINS_WITH_DEVICE): Arg is std::string, not char*.
 
@@ -1581,7 +1581,7 @@
 	Handle step limit.
 	* DASSL-opts.in: New option for step limit.
 
-2003-06-16  Per Persson <persquare@mac.com>
+2003-06-16  Per Persson  <persquare@mac.com>
 
 	* oct-shlib.cc: Include mach-o/dyld.h, not Mach-O/dyld.h.
 
@@ -1590,7 +1590,7 @@
 	* DASRT.cc (DASRT::integrate): Set liw to 21 + n, not 20 + n.
 	Store step limit in iwork(20), not iwork(18).
 
-2003-05-16  Paul Kienzle <pkienzle@users.sf.net>
+2003-05-16  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* oct-rand.cc: Use liboctave's clock layer instead of the system clock.
 
@@ -1703,7 +1703,7 @@
 
 	* lo-ieee.h (lo_ieee_signbit): New macro.
 
-2003-02-18  David Bateman <dbateman@free.fr>
+2003-02-18  David Bateman  <dbateman@free.fr>
 
 	* dMatrix.cc (Matrix::inverse, Matrix::determinant, Matrix::solve):
 	Use Lapack instead of Linpack.
@@ -1922,7 +1922,7 @@
 	* lo-ieee.cc (octave_ieee_init): Check defined (__osf__) instead
 	of ! defined (linux).
 
-2002-11-09  Per Persson <persquare@mac.com>
+2002-11-09  Per Persson  <persquare@mac.com>
 
 	* oct-shlib.cc (octave_dyld_shlib): New class.
 	(make_shlib): Instantiate octave_dyld_shlib.
@@ -2003,7 +2003,7 @@
 	* Makefile.in (LINK_DEPS): Include $(LIBKPATHSEA) here.
 	(liboctave.$(SHLEXT)): Not here.
 
-2002-10-17  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-17  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* oct-shlib.cc (octave_w32_shlib): New class to support Windows.
 
@@ -2012,7 +2012,7 @@
 	* Makefile.in (install-lib): Don't bother with versions for
 	$(SHLBIN) files.
 
-2002-10-16  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-16  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* Makefile.in (LIB_DEPS): Include $(LIBS).
 
@@ -2025,7 +2025,7 @@
 	* Makefile.in (install): No need to use cd to create links.
 	(LINK_DEPS): Include $(LIBOCTAVE_LFLAGS) before list of libraries.
 
-2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-14  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* Makefile.in: Merge liboctave with liboct-readline and
 	liboct-pathsearch.
@@ -2082,11 +2082,11 @@
 	(octave_env::do_get_home_directory): Use OCTAVE_DIR_SEP_STR
 	instead of "/".
 
-2002-10-07  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-07  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* lo-cutils.c: On non-Posix Windows systems, include winsock.h.
 
-2002-10-07  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-07  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* oct-env.cc (octave_env::do_absolute_pathname): Recognize
 	absolute path names under MinGW as well.
@@ -2104,7 +2104,7 @@
 	(octave_env::do_chdir): Likewise.
 	(is_dir_sep): New function.
 
-2002-10-03  Paul Kienzle <pkienzle@users.sf.net>
+2002-10-03  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* oct-time.cc (octave_time::stamp): Better resolution for Windows
 	systems.
@@ -2119,7 +2119,7 @@
 
 	* lo-specfun.cc (acosh): Call xdacosh, not dacosh.
 
-2002-09-27  Per Persson <persquare@mac.com>
+2002-09-27  Per Persson  <persquare@mac.com>
 
 	* oct-group.cc (octave_group::octave_group): Dont' forget to set
 	gr_gid too.
@@ -2167,7 +2167,7 @@
 	If __GNUG__, use pragma interface/implementation.  Allow this to
 	be turned off by defining NO_PRAGMA_INTERFACE_IMPLEMENTATION.
 
-2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-26  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* file-ops.cc (file_ops::readlink): Don't declare buffer if
 	system readlink function is not available.
@@ -2274,7 +2274,7 @@
 	* DASSL.cc (DASSL::do_integrate (double)): Handle more optoins.
 	* DASPK.cc (DASPK::do_integrate (double)): Likewise.
 
-2002-08-15  Paul Kienzle <pkienzle@users.sf.net>
+2002-08-15  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* DASPK-opts.in, DASPK.h: Move include to .in file.
 	* DASRT-opts.in, DASRT.h: Likewise.
@@ -2469,7 +2469,7 @@
 	(gnu_readline::gnu_readline): Use them instead of passing pointers
 	to extern "C" functions to octave_rl_ad_defun.
 
-2002-05-22  Mumit Khan <khan@nanotech.wisc.edu>
+2002-05-22  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* DASPK.cc (ddaspk_psol): Return value.
 	* oct-rl-edit.c: Use /* ... */ to comment.
@@ -2485,7 +2485,7 @@
 	sqrt(eps), not eps^2.
 	DASPK_options::set_absolute_tolerance): Likewise.
 
-2002-05-17  Mumit Khan <khan@nanotech.wisc.edu>
+2002-05-17  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* Array.h (Array<T>::resize_fill_value): Return default initialized
 	object.
@@ -2531,7 +2531,7 @@
 	* Array2.h (assign (Array2<LT>&, const Array2<RT>&)): Use it.
 	* ArrayN.h (assign (ArrayN<LT>&, const ArrayN<RT>&)): Use it.
 
-2002-05-02  Cai Jianming <caijianming@yahoo.co.uk> 
+2002-05-02  Cai Jianming  <caijianming@yahoo.co.uk> 
 
 	* Array3.h (Array3<T>::checkelem): Improve error message.
 	* ArrayN.h (ArrayN<T>::range_error): Likewise.
@@ -2560,7 +2560,7 @@
 	* LSODE.h (LSODE_options::init): Likewise.
 	(LSODE_options::set_absolute_tolerance): Likewise.
 
-2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+2002-04-03  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* f2c-main.c (MAIN_, MAIN__): Delete.  Use F77_DUMMY_MAIN instead.
 	* file-stat.cc (file_stat::update_internal, file_stat::copy):
@@ -2580,7 +2580,7 @@
 	dbleCHOL.cc, dbleHESS.cc, dbleLU.cc, dbleQR.cc, dbleQRP.cc,
 	dbleSCHUR.cc, dbleSVD.cc: Use F77_FUNC instead of F77_FCN.
 
-2002-04-02  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-02  Paul Kienzle  <pkienzle@users.sf.net>
 
         * CmplxQR.cc (ComplexQR::init): Use economy QR decomposition
 	internally when the user requests it.
@@ -2594,7 +2594,7 @@
 	definition for NULL by passing 0 as the last arg to fftwnd_one.
 	(octave_fftw::ifft2d): Likewise.
 
-2002-02-22  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
+2002-02-22  Paul Kienzle  <pkienzle@jazz.ncnr.nist.gov>
 
 	* lo-mappers.cc (arg): Simply call atan2 (0.0, x).
 
@@ -2838,7 +2838,7 @@
 	* Array2-idx.h (Array2<T>::index (idx_vector&)): Avoid copying
 	elements if arg is a colon.
 
-2000-10-12  Cai Jianming <caijianming@yahoo.co.uk>
+2000-10-12  Cai Jianming  <caijianming@yahoo.co.uk>
 
 	* dMatrix.cc (Matrix::cumprod (int) const): New arg, DIM.
 	(Matrix::cumsum (int) const): Likewise.
@@ -2930,7 +2930,7 @@
 	* Makefile.in (liboctave.$(SHLEXT)): Delete target
 	before rebuilding.
 
-2000-03-21  Ben Sapp <bsapp@nua.lampf.lanl.gov>:
+2000-03-21  Ben Sapp  <bsapp@nua.lampf.lanl.gov>:
 
 	* liboctave/Makefile.in (liboctave.$(LIBEXT)): New target.
 	(libraries): Depend only on library targets, not archive members.
@@ -3176,7 +3176,7 @@
 
 	* strptime.c: Only include langinfo.h if _LIBC is defined.
 
-2000-01-21  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+2000-01-21  A. Scottedward Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* CMatrix.cc (ComplexMatrix::expm): Apply permutation and scaling
 	operations directly in step 2 and reverse step 2.
@@ -3241,7 +3241,7 @@
 	On errors, simply return `T ()'.
 	(DiagArray2<T>::checkelem (int, int)): Likewise.
 
-1999-11-02  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+1999-11-02  A. Scottedward Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* dMatrix.cc (Matrix::expm): Do balancing here instead of using
 	AEPBALANCE class.
@@ -3362,7 +3362,7 @@ Fri Mar 26 11:26:32 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* Makefile.in (libraries): Use the libfoo.a(objects) method of
 	creating static libs.
 
-Thu Mar  4 02:17:04 1999  James Macnicol <jamesm@evans.ee.adfa.oz.au>
+Thu Mar  4 02:17:04 1999  James Macnicol  <jamesm@evans.ee.adfa.oz.au>
 
 	* data-conv.cc (oct_data_conv::string_to_data_type): Handle uint16
 	and uint32 data types.
@@ -3379,11 +3379,11 @@ Tue Jan 19 09:34:55 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* CMatrix.cc (operator * (const ComplexColumnVector& v, const
 	ComplexRowVector& a)): Likewise
 
-Tue Nov 24 23:38:19 1998  Eric Norum <eric@skatter.USask.Ca>
+Tue Nov 24 23:38:19 1998  Eric Norum  <eric@skatter.USask.Ca>
 
 	* statdefs.h: Only define mode_t if not already defined.
 
-Tue Nov 24 17:24:52 1998  john <john@arrows.demon.co.uk>
+Tue Nov 24 17:24:52 1998  john  <john@arrows.demon.co.uk>
 
 	* lo-specfun.cc (airy, biry): Set imaginary part of result to zero
 	when appropriate.
@@ -3512,7 +3512,7 @@ Thu Jul 30 00:34:10 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	Alloctate space before attempting to use it.
 	(ComplexMatrix::ComplexMatrix (const boolMatrix&)): Likewise.
 
-Mon Jun 22 17:04:27 1998  Tomislav Goles <tom@ait-tech.com>
+Mon Jun 22 17:04:27 1998  Tomislav Goles  <tom@ait-tech.com>
 
 	* EIG.cc (EIG::init): Move invariant code outside loop.
 
@@ -3668,7 +3668,7 @@ Wed Nov 26 20:02:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-sysdep.cc (octave_getcwd): Prefer getcwd over getwd.
 
-Wed Nov 19 02:30:04 1997  Mumit Khan <khan@dhaka.xraylith.wisc.edu>
+Wed Nov 19 02:30:04 1997  Mumit Khan  <khan@dhaka.xraylith.wisc.edu>
 
 	Changes to make support egcs snapshots that implement explicit
 	specification of template functions according to CD2.

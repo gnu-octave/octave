@@ -493,7 +493,7 @@
 
 	* plot/hist.m: Compute histogram correctly for n>=30.
 
-2004-03-02  Paul Kienzle <pkienzle@users.sf.net>
+2004-03-02  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* signal/sinc.m: Use i(:) instead of i when checking for any nonzeros.
 
@@ -728,7 +728,7 @@
 	Delete whitespace_in_literal_matrix and propagate_empty_matrices
 	from the list.
 
-2003-07-25  Paul Kienzle <pkienzle@users.sf.net>
+2003-07-25  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* signal/autocov.m: Transpose result of conj because diag returns
 	a column vector, not a row vector.
@@ -831,11 +831,11 @@
 	gethelp$(BUILD_EXEEXT), $(DOCSTRINGS), and autom4te.cache
 	directory.
 
-2003-06-17  Aaron A. King <king@quercus.tiem.utk.edu>
+2003-06-17  Aaron A. King  <king@quercus.tiem.utk.edu>
 
 	* plot/hist.m: Don't forget to define n if x is a vector.
 
-2003-06-13  Alois Schloegl <alois.schloegl@tugraz.at>
+2003-06-13  Alois Schloegl  <alois.schloegl@tugraz.at>
 
 	* miscellaneous/fileparts.m: For compatibility with Matlab,
 	return "." with extension.
@@ -853,7 +853,7 @@
 
 	* Makefile.in, image/Makefile.in, startup/Makefile.in: Handle DESTDIR.
 
-2003-05-05  Andy Adler <adler@site.uottawa.ca>
+2003-05-05  Andy Adler  <adler@site.uottawa.ca>
 
 	* plot/hist.m: Improve performance by using different algorithms
 	depending on number of bins.
@@ -863,11 +863,11 @@
 	* control/system/sysadd.m: If systems are not "tf", convert before
 	adding.
 
-2003-05-01  Paul Kienzle <pkienzle@users.sf.net>
+2003-05-01  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* image/imagesc.m: Accept data limits parameter for colormap.
 
-2003-04-11  Doug Stewart <dastew@sympatico.ca>
+2003-04-11  Doug Stewart  <dastew@sympatico.ca>
 
 	* control/base/__stepimp__.m: If digital impulse, reduce gain of
 	the impulse by t_step.
@@ -877,7 +877,7 @@
 	* control/base/__bodquist__.m: Don't convert pdbig and fdbig to
 	column vectors.
 
-2003-03-24  Quentin Spencer <qspencer@ieee.org>
+2003-03-24  Quentin Spencer  <qspencer@ieee.org>
 
 	* linear-algebra/null.m: Handle empty matrix arg.
 
@@ -907,15 +907,15 @@
 
 	* linear-algebra/logm.m: New file.
 
-2003-02-18  David Bateman <dbateman@free.fr>
+2003-02-18  David Bateman  <dbateman@free.fr>
 
  	* mkpkgadd: Scan C++ files as well
 
-2003-02-13  Alois Schloegl <alois.schloegl@tugraz.at>
+2003-02-13  Alois Schloegl  <alois.schloegl@tugraz.at>
 
 	* strings/findstr.m: Return empty set for zero-length target.
 
-2003-02-11  Paul Kienzle <pkienzle@users.sf.net>
+2003-02-11  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* set/union.m: Preserve the orientation of inputs.
 
@@ -927,7 +927,7 @@
 
 	* general/int2str.m: Do a better job with 0, Inf, and NaN, 
 
-2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
+2003-01-11  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* Makefile.in (gethelp$(BUILD_EXEEXT)): Pass $(BUILD_CXXFLAGS) and
 	$(BUILD_LDFLAGS) to compiler.
@@ -1000,15 +1000,15 @@
 
 	* signal/bartlett.m: Avoid row/column mismatch error.
 
-2002-11-12  Paul Kienzle <pkienzle@users.sf.net>
+2002-11-12  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* statistics/base/var.m: Use better formula for improved accuracy.
 
-2002-11-04  Nicholas Piper <nick-octave@nickpiper.co.uk>
+2002-11-04  Nicholas Piper  <nick-octave@nickpiper.co.uk>
 
 	* control/base/lsim.m: Correct doc string.
 
-2002-11-04  A S Hodel <a.s.hodel@Eng.Auburn.EDU>
+2002-11-04  A S Hodel  <a.s.hodel@Eng.Auburn.EDU>
 
 	* control/system/syssub.m: Call tf2sys with Gnum-Hnum, not Gnum+Hnum.
 
@@ -1016,7 +1016,7 @@
 
 	* plot/contour.m: Handle x and y as matrices too.
 
-2002-11-01  Joseph P. Skudlarek <jskud@jskud.com>
+2002-11-01  Joseph P. Skudlarek  <jskud@jskud.com>
 
 	* plot/contour.m: Fix error and usage messages.
 
@@ -1028,7 +1028,7 @@
 
 	* control/base/analdemo.m: Fix typo.
 
-2002-10-31  Francesco Potorti` <pot@gnu.org>
+2002-10-31  Francesco Potorti`  <pot@gnu.org>
 
 	* statistics/distributions/discrete_pdf.m: Fix typo.
 
@@ -1043,17 +1043,17 @@
 
 	* Makefile.in (gethelp): Use $(BUILD_CXX), not $(CXX).
 
-2002-09-27  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-27  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* statistics/distributions/normal_cdf.m: Handle variance == 0.
 	* statistics/distributions/normal_pdf.m: Likewise.
 	* statistics/distributions/normal_inv.m: Likewise.
 
-2002-09-27  Paul Kienzle <pkienzle@users.sf.net>
+2002-09-27  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* specfun/erfinv.m: Return NaN for NaN inputs.
 
-2002-09-26  Jeff Cunningham <jeffrey@cunningham.net>
+2002-09-26  Jeff Cunningham  <jeffrey@cunningham.net>
 
 	* statistics/base/var.m: Handle complex values.
 
@@ -1063,7 +1063,7 @@
 	list.
 	* deprecated/Makefile.in: New file.
 
-2002-08-09  Paul Kienzle <pkienzle@users.sf.net>
+2002-08-09  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* statistics/distributions/beta_cdf.m: Replace betai with betainc.
 	* statistics/distributions/binomial_cdf.m: Likewise.
@@ -1107,7 +1107,7 @@
 	* statistics/base/mean.m: Allow empty matrices.
 	Handle DIM arg.
 
-2002-08-05  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+2002-08-05  Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
 
 	* plot/__errcomm__.m: If format is not specified, default to error
 	bar format.
@@ -1129,7 +1129,7 @@
 	* plot/semilogxerr.m: Likewise.
 	* plot/semilogyerr.m: Likewise.
 
-2002-07-25  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+2002-07-25  Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
 
 	* plot/__errcomm__.m: New file.  Common functionality for error plots.
 	* plot/loglogerr.m: New file.  Double logarithm plots with errorbars.
@@ -1147,7 +1147,7 @@
 
 	* general/mod.m: Additional error checks, Texinfoize doc string.
 
-2002-04-29  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-29  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* general/mod.m: New function.
 
@@ -1184,7 +1184,7 @@
 	* strings/str2mat.m: Likewise.
 	* strings/strcat.m: Likewise.
 
-2002-06-27  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
+2002-06-27  Paul Kienzle  <pkienzle@jazz.ncnr.nist.gov>
 
 	* statistics/distributions/gamma_pdf.m: Avoid overflow in more cases.
 
@@ -1193,11 +1193,11 @@
 	* skip-autoheader: New file, for autogen.sh.
 	* Makefile.in (DISTFILES): Add it to the list.
 
-2002-04-29  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-29  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* general/repmat.m: New function.
 
-2002-04-25  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-25  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* audio/lin2mu.m: Accept matrices and [-1,1] normalized audio.
 	Use optional parameter to specify the number of bits in the input.
@@ -1210,48 +1210,48 @@
 
 	* linear-algebra/kron.m: Delete.
 
-2002-04-24  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-24  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* signal/freqz.m: If nargout is zero, plot results instead of
 	returning them.
 	* signal/freqz_plot.m: New file.
 
-2002-04-24  Bill Lash <lash@tellabs.com>
+2002-04-24  Bill Lash  <lash@tellabs.com>
 
 	* scripts/signal/unwrap.m: New file.
 
-2002-04-23  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-23  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* image/rgb2hsv.m: Faster, more accurate, remove the
 	divide by zero warning.
 
-2002-04-09  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-09  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* strings/deblank.m: Trim \0 as well as blank.
 
 	* scripts/freqz.m: Evaluate a specific range of frequencies
 	expressed in radians or Hz relative to a supplied sample rate.
 
-2002-04-04  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-04  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* signal/fftfilt.m: Filter columns if called with a matrix.
 
 	* strings/findstr.m: Vectorize as much as possible.
 
-2002-04-04  Dirk Laurie <dirk@calvyn.puk.ac.za>
+2002-04-04  Dirk Laurie  <dirk@calvyn.puk.ac.za>
 
 	* special-matrix/invhilb.m: New version that is faster and more
 	accurate.
 
-2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+2002-04-03  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* configure.in: Update for autoconf 2.5x.
 
-2002-04-03  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-03  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* special-matrix/vander.m: Code tidy and vectorize.
 
-2002-04-02  Paul Kienzle <pkienzle@users.sf.net>
+2002-04-02  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* linear-algebra/cross.m: Accept nx3 and 3xn matrices, in addition
 	to vectors.  Issue a warning in the case x matches y' but return a
@@ -1287,7 +1287,7 @@
 
 	* m/image/saveimage.m: fix saving an image to Postscript format.
 
-2001-04-18  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+2001-04-18  A. Scottedward Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* control/system/is_stabilizable.m: Pass a to sys2ss, not sys.
 
@@ -1342,12 +1342,12 @@
 	* strings/hex2dec.m: Replace with version that just calls base2dec.
 	* strings/bin2dec.m: Likewise.
 
-2001-02-07  David Livings <david.livings@asa.co.uk>
+2001-02-07  David Livings  <david.livings@asa.co.uk>
 
 	* statistics/base/ppplot.m: Use gset, not set.
 	* statistics/base/qqplot.m: Likewise.
 
-2001-02-05  Ondrej Popp <ondrej@geocities.com>
+2001-02-05  Ondrej Popp  <ondrej@geocities.com>
 
 	* control/system/c2d.m: Add missing endif.
 
@@ -1382,7 +1382,7 @@
 
 	* Makefile.in (bin-dist): Pass -C to $(MAKE), not -c.
 
-2000-11-16  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+2000-11-16  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* plot/contour.m: Reorder args for Matlab compatibility.
 
@@ -1426,11 +1426,11 @@
 
 	* plot/hist.m: Allow 3 argument form to work.
 
-2000-06-27  Matthew W. Roberts <matt@lehi.tamu.edu>
+2000-06-27  Matthew W. Roberts  <matt@lehi.tamu.edu>
 
 	* plot/plot.m: Add examples in doc string.
 
-2000-06-08  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+2000-06-08  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* control/base/__stepimp__.m: Reset multiplot state when done.
 	Do the right thing even if automatic_replot is not zero.
@@ -1441,14 +1441,14 @@
 	* general/logical.m: Return arg if it is empty.  Better error
 	message for non-numeric types.	
 
-2000-05-31  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+2000-05-31  A. Scottedward Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* control/base/dlqe.m: Update documentation.  Fix typo.  Warn
 	about difference with Matlab dlqe function.
 
 	* control/system/sysmult.m: Fix typo in argument dimensions checking.
 
-2000-05-24  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+2000-05-24  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* strings/strrep.m: Fix typo.
 
@@ -1456,12 +1456,12 @@
 
 	* strings/strrep.m: Don't transpose result for case of jump > 0.
 
-2000-05-13  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+2000-05-13  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* strings/strrep.m: Avoid for loop for speed.
 	* plot/axis.m: Handle string options for Matlab compatibility. 
 
-2000-04-04  John Smith <john@arrows.demon.co.uk>
+2000-04-04  John Smith  <john@arrows.demon.co.uk>
 
 	* statistics/distributions/beta_inv.m: Provide better(?) initial
 	guess for iteration.
@@ -1483,7 +1483,7 @@
 	when it was created.  Suggested by Stephen Eglen
 	<stephen@cogsci.ed.ac.uk>.
 
-2000-03-21  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+2000-03-21  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* polynomial/polyreduce.m: Simplify by looking for the first
 	non-zero element rather than the last of the first set of zero
@@ -1491,7 +1491,7 @@
 
 	* plot/__pltopt1__.m: Accept "--", "-.", and ":" line styles.
 
-2000-03-21  Kai Habel <kahacjde@calvados.zrz.TU-Berlin.DE>
+2000-03-21  Kai Habel  <kahacjde@calvados.zrz.TU-Berlin.DE>
 
 	* image/saveimage.m: Swap black and white colormaps so zero is
 	displayed as black and 1 is displayed as white.
@@ -1512,11 +1512,11 @@
 
 	* specfun/erfinv.m: Use z_new in convergence test, not z_old.
 
-2000-02-11  Georg Thimm <mgeorg@SGraphicsWS1.mpe.ntu.edu.sg>
+2000-02-11  Georg Thimm  <mgeorg@SGraphicsWS1.mpe.ntu.edu.sg>
 
 	* set/create_set.m: Use find to avoid while loop.
 
-2000-02-11  Stephen Eglen <stephen@cogsci.ed.ac.uk>
+2000-02-11  Stephen Eglen  <stephen@cogsci.ed.ac.uk>
 
 	* plot/hist.m: New optional third argument.
 
@@ -1558,11 +1558,11 @@
 
 	* plot/mesh.m: Fix error message to reflect reality.
 
-2000-01-24  Cyril Humbert <humbert@phobos.univ-mlv.fr>
+2000-01-24  Cyril Humbert  <humbert@phobos.univ-mlv.fr>
 
 	* statistics/distributions/weibull_pdf.m: Use correct formula.
 
-2000-01-22  Michael Reifenberger <mike@Plaut.de>
+2000-01-22  Michael Reifenberger  <mike@Plaut.de>
 
 	* audio/saveaudio.m: Also accept files with .ul extension.
 	* audio/loadaudio.m: Ditto.
@@ -2005,7 +2005,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	Always generate a row vector.
 	* statistics/distributions/hypergeometric_rnd.m: Likewise.
 
-2000-01-11  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+2000-01-11  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* strings/upper.m: Add missing `-*- texinfo -*-' tag to doc string.
 
@@ -2017,7 +2017,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	* control/dre.m: Likewise.
 	* control/hinfsyn_ric.m: Likewise.
 
-2000-01-05  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+2000-01-05  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* io/printf.m: Add @seealso{...} to doc string.
 	* io/puts.m: Likewise.
@@ -2201,7 +2201,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	* control/bddemo.m: Ditto.
 	* control/pzmap.m: Ditto.
 
-1999-12-08  Daniel Calvelo <dcalvelo@pharion.univ-lille2.fr>
+1999-12-08  Daniel Calvelo  <dcalvelo@pharion.univ-lille2.fr>
 
 	* signal/spectral_adf.m: Fix typo.
 
@@ -2342,7 +2342,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 
 	* Makefile.in (DISTFILES): Include DOCSTRINGS.
 
-1999-11-09  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+1999-11-09  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* control/DEMOcontrol.m: Texinfoize doc string.
 	* control/abcddim.m: Ditto.
@@ -2473,7 +2473,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	* control/zp2tf.m: Ditto.
 	* control/zpout.m: Ditto.
 
-1999-11-02  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+1999-11-02  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* scripts/audio/lin2mu.m: Texinfoize doc string.
 	* scripts/audio/loadaudio.m: Ditto.
@@ -2482,7 +2482,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	* scripts/audio/record.m: Ditto.
 	* scripts/audio/saveaudio.m: Ditto.
 
-1999-10-26  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+1999-10-26  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* elfun/acot.m: Texinfoize doc string.
 	* elfun/acsc.m: Ditto.
@@ -2512,7 +2512,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 	* specfun/log2.m: Ditto.
 	* specfun/pow2.m: Ditto.
 
-1999-10-23  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+1999-10-23  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
 	* general/is_scalar.m: Texinfoize help text.
 	* general/is_square.m: Ditto.
@@ -2575,7 +2575,7 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 
 	* control/bode.m: Allow optional 5th arg to specify plot style.
 
-Wed Sep 22 22:12:03 1999 A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+Wed Sep 22 22:12:03 1999 A. Scottedward Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* linear-algebra/krylov.m: Correctly handle case of V having full
 	rank when V has more columns than rows.
@@ -2625,7 +2625,7 @@ Mon Aug 16 07:46:57 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
  	figure now creates a new figure window and returns its number.
 	Accept figure (property, value) syntax, but do nothing.
 
-Thu Aug 12 09:28:01 PDT 1999  Tom Poage <tfpoage@ucdavis.edu>
+Thu Aug 12 09:28:01 PDT 1999  Tom Poage  <tfpoage@ucdavis.edu>
 
 	* general/shift.m: Avoid printing temporary value for backward shift.
 
@@ -2639,7 +2639,7 @@ Mon Jul 12 22:48:34 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* linear-algebra/cond.m: Avoid returning NaN for matrices that
 	contain only zeros.
 
-Sun Jun 20 22:24:27 1999  Eduardo Gallestey <eduardo@faceng.anu.edu.au>
+Sun Jun 20 22:24:27 1999  Eduardo Gallestey  <eduardo@faceng.anu.edu.au>
 
 	* linear-algebra/kron.m: Create result matrix and insert blocks
 	instead of appending them.
@@ -2658,7 +2658,7 @@ Wed Apr  7 13:57:26 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/qrhouse.m, linear-algebra/krygetq.m: Delete.
 
-Wed Apr  7 13:22:43 1999  A. S. Hodel <a.s.hodel@eng.auburn.edu>
+Wed Apr  7 13:22:43 1999  A. S. Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* control/is_controllable.m, control/zgscal.m: Accomodate new
 	version of krylov and krylovb.
@@ -2682,7 +2682,7 @@ Wed Mar 24 20:34:48 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	infinity-norms of complex matrices.  From Sven Khatri
 	<khatri@saturn.vocalpoint.com>.
 
-Tue Mar 16 13:36:36 1999  A. Scottedward Hodel" <scotte@eng.auburn.edu>
+Tue Mar 16 13:36:36 1999  A. Scottedward Hodel"  <scotte@eng.auburn.edu>
 
 	* linear-algebra/qrhouse.m: Handle default args correctly.
 
@@ -2691,19 +2691,19 @@ Thu Mar 11 12:52:34 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* strings/split.m: Avoid problems when splitting strings that have
 	\ in them.
 
-Thu Mar 11 12:36:13 1999  Massimo Lorenzin <maxlorenzin@tin.it>
+Thu Mar 11 12:36:13 1999  Massimo Lorenzin  <maxlorenzin@tin.it>
 
 	* image/colormap.m: Do better arg checking, handle string args
 	that name the colormap function to call (e.g., colormap ("ocean")).
 
-Mon Mar  8 22:23:24 1999  Rolf Fabian <fabian@TU-Cottbus.De>
+Mon Mar  8 22:23:24 1999  Rolf Fabian  <fabian@TU-Cottbus.De>
 
 	* polynomial/polyfit.m: Use .' transpose operator, not '.
 	* linear-algebra/dot.m: Likewise.
 	* linear-algebra/cross.m: Likewise.
 	* general/rot90.m: Likewise.
 
-Sat Mar  6 01:45:00 1999  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+Sat Mar  6 01:45:00 1999  A Scott Hodel  <hodel@edalf1.msfc.nasa.gov>
 
 	* linear-algebra/qrhouse.m: Permute columns at each iteration so
 	that the leading column is not all zeros.
@@ -2728,7 +2728,7 @@ Fri Mar  5 00:37:47 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* statistics/tests/run_test.m: Ditto.
 	* statistics/tests/chisquare_test_independence.m: Ditto.
 
-Wed Mar  3 02:25:00 1999  Joao Cardoso <jcardoso@inescn.pt>
+Wed Mar  3 02:25:00 1999  Joao Cardoso  <jcardoso@inescn.pt>
 
 	* plot/__plr2__.m: Fix typo.
 
@@ -2736,12 +2736,12 @@ Tue Jan 12 10:31:15 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__pltopt1__.m: Accept "k" to mean black.
 
-Fri Dec 11 10:43:19 1998  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+Fri Dec 11 10:43:19 1998  A Scott Hodel  <hodel@edalf1.msfc.nasa.gov>
 
 	* linear-algebra/krylov.m: Force empty_list_elements_ok for this
 	function.
 
-Thu Dec 10 11:07:00 1998  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+Thu Dec 10 11:07:00 1998  A Scott Hodel  <hodel@edalf1.msfc.nasa.gov>
 
 	* control/ss2sys.m: Fix typo.
 
@@ -2769,7 +2769,7 @@ Tue Nov 24 21:41:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	nearest position in colormap instead of truncating. Correct usage
 	message.
 
-Tue Nov 24 14:50:52 1998  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+Tue Nov 24 14:50:52 1998  A Scott Hodel  <hodel@edalf1.msfc.nasa.gov>
 
 	* linear-algebra/krylov.m: New arg pflg.  If nonzero, avoid using
 	zero rows of [A,v] as householder pivots; this avoids spurious
@@ -3294,7 +3294,7 @@ Fri Sep 19 17:04:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	return a column (row) vector.  If they don't match, pay attention
 	to the value of prefer_column_vectors.
 
-Thu Aug 28 15:31:20 1997  Rolf Fabian <fabian@olymp.Umwelt.TU-Cottbus.de>
+Thu Aug 28 15:31:20 1997  Rolf Fabian  <fabian@olymp.Umwelt.TU-Cottbus.de>
 
 	* polynomial/polyvalm.m: Don't assume orthogonal eigenvectors for
 	nonsymmetric matrices.
@@ -3314,7 +3314,7 @@ Wed Jun 25 21:26:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/mesh.m: Set noparametric plot mode after plotting.
 
-Wed Jun 25 21:06:10 1997  Rick Niles <niles@axp745.gsfc.nasa.gov>
+Wed Jun 25 21:06:10 1997  Rick Niles  <niles@axp745.gsfc.nasa.gov>
 
 	* plot/__pltopt__.m: Handle key/legend names.
 	Correctly set colors, line styles, and point styles.
@@ -3367,7 +3367,7 @@ Sat Mar 15 15:07:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* general/nextpow2.m: Correctly handle new meaning of is_scalar()
 	and is_vector().
 
-Thu Mar 13 16:36:35 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+Thu Mar 13 16:36:35 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* specfun/erfinv.m: Scale update by sqrt (pi) / 2.
 	Use tolerance of 2 * eps.

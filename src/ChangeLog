@@ -1,5 +1,8 @@
 1999-11-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sighandlers.cc (install_signal_handlers): Don't install
+	sigwinch_handler.
+
 	* oct-iostrm.h (octave_istream::eof, octave_ostream::eof): Provide
 	implementation for these.
 

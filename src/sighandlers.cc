@@ -269,6 +269,7 @@ sigfpe_handler (int /* sig */)
 }
 #endif
 
+#if 0
 #if defined (SIGWINCH)
 static RETSIGTYPE
 sigwinch_handler (int /* sig */)
@@ -281,6 +282,7 @@ sigwinch_handler (int /* sig */)
 
   SIGHANDLER_RETURN (0);
 }
+#endif
 #endif
 
 // Handle SIGINT by restarting the parser (see octave.cc).
@@ -491,8 +493,10 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGIO, SIG_IGN);
 #endif
 
+#if 0
 #ifdef SIGWINCH
   octave_set_signal_handler (SIGWINCH, sigwinch_handler);
+#endif
 #endif
 
 #ifdef SIGXCPU

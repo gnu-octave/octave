@@ -25,13 +25,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cfloat>
+#include <cmath>
 
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "lo-specfun.h"
 #include "lo-utils.h"
 #include "oct-cmplx.h"
-#include "oct-math.h"
 
 #include "f77-fcn.h"
 

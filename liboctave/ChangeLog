@@ -1,7 +1,13 @@
 Sun Nov 30 14:59:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* dbleBessel.h, dbleBessel.cc: New files.
+	* lo-mappers.cc: Include cmath and lo-specfun.h, not oct-math.h.
+
+	* lo-specfun.h, lo-specfun.cc: New files.
 	* Makefile.in (INCLUDES, SOURCES): Add them to the lists.
+
+	* acosh.c, asinh.c, atanh.c, erf.c, erfc.c, gamma.c, lgamma.c,
+	oct-math.h: Delete.
+	* Makefile.in (SOURCES): Delete them from the list.
 
 Wed Nov 26 20:02:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

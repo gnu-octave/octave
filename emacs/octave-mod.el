@@ -1,6 +1,6 @@
-;; octave-mod.el --- editing Octave source files under Emacs
+;;; octave-mod.el --- editing Octave source files under Emacs
 
-;;; Copyright (C) 1997 Free Software Foundation, Inc.
+;; Copyright (C) 1997 Free Software Foundation, Inc.
 
 ;; Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
@@ -40,6 +40,10 @@
 ;; `run-octave' for further information on usage and customization.
 
 ;;; Code:
+
+(defvar inferior-octave-output-list nil)
+(defvar inferior-octave-output-string nil)
+(defvar inferior-octave-receive-in-progress nil)
 
 (defconst octave-maintainer-address
   "Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>, bug-gnu-emacs@prep.ai.mit.edu" 

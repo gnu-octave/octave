@@ -1,3 +1,14 @@
+Fri Oct 17 04:43:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Include the following change from RMS for octave-mode.el:
+
+	1997-04-22  Richard Stallman  <rms@psilocin.gnu.ai.mit.edu>
+
+	* octave-mod.el (inferior-octave-output-list): Declare here
+        to avoid compiler warnings.
+        (inferior-octave-output-string): Likewise.
+        (inferior-octave-receive-in-progress): Likewise.
+
 Tue Oct 14 10:48:28 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* emacs/octave-mod.el (octave-block-match-alist):  Move

@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 2000 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -18,31 +18,30 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bin2dec (@var{s})
-## Return the decimal number corresponding to the binary number
-## represented by the string @var{s}.  For example,
+## @deftypefn {Function File} {} hex2dec (@var{s})
+## Return the decimal number corresponding to the binary number stored
+## in the string @var{s}.  For example,
 ##
 ## @example
-## bin2dec ("1110")
+## hex2dec ("1110")
 ##      @result{} 14
 ## @end example
+##
+## If @var{s} is a string matrix, returns a column vector of converted
+## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
 ## @end deftypefn
+##
+## @seealso{dec2hex, base2dec, dec2base, bin2dec, dec2bin}
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-## Adapted-By: jwe
+## Author: Daniel Calvelo
+## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function y = bin2dec (x)
+function d = bin2dec (h)
 
   if (nargin != 1)
-    usage ("bin2dec (x)");
-  endif
-
-  x = toascii (x) - toascii ("0");
-
-  if (all (x == 0 | x == 1))
-    y = sum ((x .* (ones (rows (x), 1) * 2.^((length (x) - 1) : -1 : 0)))')';
+    usage ("bin2dec (b)");
   else
-    error ("bin2dec: argument must be a string of zeros and ones");
+    d = base2dec (h, 2);
   endif
 
 endfunction

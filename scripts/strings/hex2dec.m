@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 2000 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hex2dec (@var{s})
-## Return the decimal number corresponding to the hexadecimal number stored
+## Returns the integer corresponding to the hexadecimal number stored
 ## in the string @var{s}.  For example,
 ##
 ## @example
@@ -28,35 +28,22 @@
 ## hex2dec ("12b")
 ##      @result{} 299
 ## @end example
+##
+## If @var{s} is a string matrix, returns a column vector of converted
+## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
 ## @end deftypefn
+##
+## @seealso{dec2hex, base2dec, dec2base, bin2dec, dec2bin}
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-## Adapted-By: jwe
+## Author: Daniel Calvelo
+## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function d = hex2dec (h)
 
   if (nargin != 1)
-    usage ("hex2dec (x)");
-  endif
-
-  if (isstr (h))
-    nr = rows (h);
-    d = zeros (nr, 1);
-    for i = 1:nr
-      s = h (i, :);
-      if (isxdigit (s))
-        tmp = sscanf (s, "%x");
-        if (isempty (tmp))
-          error ("hex2dec: invalid conversion");
-        else
-          d (i) = tmp;
-        endif
-      else
-        error ("hex2dec: argument must be a string of hexadecimal digits");
-      endif
-    endfor
+    usage ("hex2dec (b)");
   else
-    error ("hex2dec: expecting a string argument");
+    d = base2dec (h, 16);
   endif
 
 endfunction

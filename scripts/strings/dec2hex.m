@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 2000 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -19,44 +19,29 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2hex (@var{n})
-## Return the hexadecimal number corresponding to the nonnegative decimal
-## number @var{n}, as a string.  For example,
+## Return the hexadecimal string corresponding to the nonnegative 
+## integer @var{n}.  For example,
 ##
 ## @example
 ## dec2hex (2748)
-##      @result{} "abc"
+##      @result{} "ABC"
 ## @end example
+##
+## If @var{n} is a vector, returns a string matrix, one row per value,
+## padded with leading zeros to the width of the largest value.
 ## @end deftypefn
+##
+## @seealso{hex2dec, dec2base, base2dec, bin2dec, dec2bin}
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-## Adapted-By: jwe
+## Author: Daniel Calvelo
+## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function h = dec2hex (d)
 
   if (nargin != 1)
-    usage ("dec2hex (d)");
+    usage ("dec2hex (b)");
+  else
+    h = dec2base (d, 16);
   endif
-
-  [nr, nc] = size (d);
-
-  len = nr * nc;
-
-  d = reshape (d, 1, len);
-
-  eleo = empty_list_elements_ok;
-  unwind_protect
-    empty_list_elements_ok = 1;
-    h = "";
-    for i = 1:len
-      tmp = d (i);
-      if (tmp == round (tmp))
-        h = sprintf ("%s%x", h, tmp);
-      else
-        error ("dec2hex: invalid conversion");
-      endif
-    endfor
-  unwind_protect_cleanup
-    empty_list_elements_ok = eleo;
-  end_unwind_protect
 
 endfunction

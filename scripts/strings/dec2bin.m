@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 2001 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -26,44 +26,22 @@
 ## dec2bin (14)
 ##      @result{} "1110"
 ## @end example
+##
+## If @var{n} is a vector, returns a string matrix, one row per value,
+## padded with leading zeros to the width of the largest value.
 ## @end deftypefn
+##
+## @seealso{bin2dec, dec2base, base2dec, hex2dec, dec2hex}
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-## Adapted-By: jwe
+## Author: Daniel Calvelo
+## 2001-02-02 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function y = dec2bin (x)
+function h = dec2bin (d)
 
   if (nargin != 1)
-    usage ("dec2bin (x)");
+    usage ("dec2bin (b)");
+  else
+    h = dec2base (d, 2);
   endif
-
-  [nr, nc] = size (x);
-
-  len = nr * nc;
-
-  x = reshape (x, 1, len);
-
-  eleo = empty_list_elements_ok;
-  unwind_protect
-    empty_list_elements_ok = 1;
-    y = [];
-    for i = 1:len
-      tmp = x (i);
-      if (tmp == round (tmp) && tmp >= 0)
-        while (tmp >= 2)
-          z = fix (tmp ./ 2);
-          y = [y, tmp - 2 * z];
-          tmp = z;
-        endwhile
-        y = [y, tmp];
-      else
-        error ("dec2hex: invalid conversion");
-      endif
-    endfor
-    y = fliplr (y);
-    y = setstr (y + toascii ("0"));
-  unwind_protect_cleanup
-    empty_list_elements_ok = eleo;
-  end_unwind_protect
 
 endfunction

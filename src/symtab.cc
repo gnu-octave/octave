@@ -1427,6 +1427,13 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	      param.parameter_length = param_length(pos);
 	      param.text = param_names(pos);
 	      param.line.assign (param_names (pos).length (), '=');
+
+	      param.parameter_length = (a > param.parameter_length ? 
+		                       a : param.parameter_length);
+	      if((param.command == 's') && (param.modifier == 'c') && (b > 0))
+	      {
+		param.first_parameter_length = b;
+	      }
 	    }
 	  else
 	    {
@@ -1441,8 +1448,10 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	      // Space needed for Size column is hard to determine in prior,
 	      // because it depends on dimensions to be shown. That is why it is
 	      // recalculated for each Size-command
-	      int j, first = 0, rest = 0, total = 0;
+	      int j, first, rest = 0, total;
 	      param.dimensions = c;
+	      first = param.first_parameter_length;
+	      total = param.parameter_length;
 	     
 	      for (j = 0; j < len; j++)
 	      {

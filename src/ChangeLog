@@ -1,3 +1,8 @@
+2004-10-18  Oyvind Kristiansen  <oyvinkri@stud.ntnu.no>
+
+	* symtab.cc (symbol_table::parse_whos_line_format): Handle
+	size-of-parameter and center-specific format specifiers.
+
 2004-10-18  John W. Eaton  <jwe@octave.org>
 
 	* pt-plot.cc (handle_plot_data): If plotting data from file,

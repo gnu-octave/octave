@@ -1,5 +1,9 @@
 Fri Jun  6 04:30:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/npsol.cc, DLD-FUNCTIONS/qpsol.cc,
+	DLD-FUNCTIONS/fsqp.cc: Delete.
+	* Makefile.in (DLD_XSRC): Remove them from the list.
+
 	* utils.cc (search_path_for_file): New arg, do_tilde_expansion.
 	If TRUE, perform tilde expansion on path before searching.
 	(file_in_path): Call search_path_for_file with do_tilde_expansion

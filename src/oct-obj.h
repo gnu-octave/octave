@@ -42,7 +42,8 @@ class ComplexColumnVector;
 class ComplexDiagMatrix;
 class Range;
 
-class Octave_object : public Array<tree_constant>
+class
+Octave_object : public Array<tree_constant>
 {
 public:
 

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.395 $)
+AC_REVISION($Revision: 1.396 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -652,7 +652,7 @@ case "$canonical_host_type" in
   ;;
   *-*-darwin*)
     SH_LDFLAGS='-bundle -bundle_loader $(TOPDIR)/src/octave'
-    MKOCTFILE_SH_LDFLAGS='-bundle -bundle_loader $BINDIR/octave-$VERSION$EXEEXT'
+    MKOCTFILE_SH_LDFLAGS='-bundle -bundle_loader $(bindir)/octave-$(version)$(EXEEXT)'
     CXXPICFLAG=
     CPICFLAG=
     FPICFLAG=
@@ -929,26 +929,26 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
   ### Check for dyld first since OS X can have a non-standard libdl	
 
   AC_CHECK_HEADER(Mach-O/dyld.h)  
-  if test $ac_cv_header_Mach_O_dyld_h = yes; then
+  if test "$ac_cv_header_Mach_O_dyld_h" = yes; then
     dyld_api=true
   else 
     AC_CHECK_LIB(dld, shl_load)
     AC_CHECK_FUNCS(shl_load shl_findsym)
-    if test $ac_cv_func_shl_load = yes \
-      && test $ac_cv_func_shl_findsym = yes; then
+    if test "$ac_cv_func_shl_load" = yes \
+      && test "$ac_cv_func_shl_findsym" = yes; then
       shl_load_api=true
     else
       AC_CHECK_LIB(wsock32, LoadLibrary)
       AC_CHECK_FUNCS(LoadLibrary)
-      if test $ac_cv_func_loadlibrary = yes; then
+      if test "$ac_cv_func_loadlibrary" = yes; then
         loadlibrary_api=true
       else
         AC_CHECK_LIB(dl, dlopen)
         AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
-        if test $ac_cv_func_dlclose = yes \
-          && test $ac_cv_func_dlerror = yes \
-          && test $ac_cv_func_dlopen = yes \
-          && test $ac_cv_func_dlsym = yes; then
+        if test "$ac_cv_func_dlclose" = yes \
+          && test "$ac_cv_func_dlerror" = yes \
+          && test "$ac_cv_func_dlopen" = yes \
+          && test "$ac_cv_func_dlsym" = yes; then
           dlopen_api=true
         else
 	  case "$canonical_host_type" in

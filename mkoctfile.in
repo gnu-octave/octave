@@ -7,13 +7,6 @@
 
 set -e
 
-# These need to be set first, but you shouldn't change them unless
-# you are sure you know what you are doing.
-
-VERSION=%OCTAVE_CONF_VERSION%
-EXEEXT=%OCTAVE_CONF_EXEEXT%
-BINDIR=%OCTAVE_BINDIR%
-
 # Default values for these variables are filled in when Octave is
 # compiled. 
 

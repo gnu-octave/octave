@@ -1,3 +1,8 @@
+Tue Feb  4 14:10:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (binary-dist): Use find and xargs instead of
+	requiring chomd to support X.
+
 Mon Feb  3 23:51:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* examples/info-emacs-octave-help: Update from Kurt Hornik.

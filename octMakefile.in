@@ -242,7 +242,9 @@ binary-dist: bin-dist-type VERSION ARCH octave-bug dist-info-files
 	rm -f `cat .fname`/test/octave.test/*.m
 	rm -rf `cat .fname`/test/octave.test/npsol
 	rm -rf `cat .fname`/test/octave.test/qpsol
-	chmod -R a+rwX `cat .fname`
+	chmod -R a+rw `cat .fname`
+	find `cat .fname` \( -perm 766 -o -perm 676 -o -perm 667 \
+	  -o -perm 776 -o -perm 677 -o -perm 767 \) -print | xargs chmod a+x
 	tar cf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
 	gzip --best `cat .fname`.tar

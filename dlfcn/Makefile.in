@@ -28,12 +28,12 @@ MAKEDEPS := $(SOURCES:.c=.d)
 
 DISTFILES := $(SOURCES) $(INCLUDES) README dl.exp Makefile.in Makefile.orig
 
-all: dlfcn.a
+all: libdlfcn.a
 .PHONY: all
 
-dlfcn.a: $(OBJECTS)
-	$(AR) $(ARFLAGS) dlfcn.a $(OBJECTS)
-	$(RANLIB) dlfcn.a
+libdlfcn.a: $(OBJECTS)
+	$(AR) $(ARFLAGS) $@ $(OBJECTS)
+	$(RANLIB) $@
 
 check: all
 .PHONY: check

@@ -1,3 +1,7 @@
+2005-01-18  John W. Eaton  <jwe@octave.org>
+
+	* octave-bug.in: Try harder to find default editor.
+
 2004-12-17  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Use AC_GNU_SOURCE.

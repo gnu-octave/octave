@@ -63,7 +63,33 @@ export PATH
 
 TEMP=/tmp/octave-bug.$$
 
-: ${EDITOR=emacs}
+if [ -z "$DEFEDITOR" ] && [ -z "$EDITOR" ]; then
+  if [ -x /usr/bin/editor ]; then
+    DEFEDITOR=editor
+  elif [ -x /usr/local/bin/ce ]; then
+    DEFEDITOR=ce
+  elif [ -x /usr/local/bin/emacs ]; then
+    DEFEDITOR=emacs
+  elif [ -x /usr/contrib/bin/emacs ]; then
+    DEFEDITOR=emacs
+  elif [ -x /usr/bin/emacs ]; then
+    DEFEDITOR=emacs
+  elif [ -x /usr/bin/xemacs ]; then
+    DEFEDITOR=xemacs
+  elif [ -x /usr/contrib/bin/jove ]; then
+    DEFEDITOR=jove
+  elif [ -x /usr/local/bin/jove ]; then
+    DEFEDITOR=jove
+  elif [ -x /usr/bin/vi ]; then
+    DEFEDITOR=vi
+  else
+    echo "octave-bug: No default editor found: attempting to use vi" >&2
+    DEFEDITOR=vi
+  fi
+fi
+
+: ${EDITOR=$DEFEDITOR}
+
 : ${PAGER=more}
 
 trap 'rm -f $TEMP $TEMP.x; exit 1' 1 2 3 13 15

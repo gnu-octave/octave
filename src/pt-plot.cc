@@ -396,7 +396,7 @@ plot_range::print (ostrstream& plot_buf)
 	}
       else
 	{
-	  double lo = lower_val.to_scalar ();
+	  double lo = lower_val.double_value ();
 	  plot_buf << lo;
 	}
     }
@@ -413,7 +413,7 @@ plot_range::print (ostrstream& plot_buf)
 	}
       else
 	{
-	  double hi = upper_val.to_scalar ();
+	  double hi = upper_val.double_value ();
 	  plot_buf << hi;
 	}
     }
@@ -501,7 +501,7 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 	  double val;
 	  if (tmp.is_defined ())
 	    {
-	      val = tmp.to_scalar ();
+	      val = tmp.double_value ();
 	      if (i == 0)
 		plot_buf << " using ";
 	      else
@@ -592,7 +592,7 @@ subplot_style::print (ostrstream& plot_buf)
 	  tree_constant tmp = linetype->eval (0);
 	  if (! error_state && tmp.is_defined ())
 	    {
-	      double val = tmp.to_scalar ();
+	      double val = tmp.double_value ();
 	      plot_buf << " " << NINT (val);
 	    }
 	  else
@@ -607,7 +607,7 @@ subplot_style::print (ostrstream& plot_buf)
 	  tree_constant tmp = pointtype->eval (0);
 	  if (! error_state && tmp.is_defined ())
 	    {
-	      double val = tmp.to_scalar ();
+	      double val = tmp.double_value ();
 	      plot_buf << " " << NINT (val);
 	    }
 	  else

@@ -115,25 +115,6 @@ gripe_wrong_type_arg (const char *name, const tree_constant& tc)
   error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
 }
 
-char *
-tree_constant::type_as_string (void) const
-{
-  if (is_real_scalar ())
-    return "real scalar";
-  else if (is_real_matrix ())
-    return "real matrix";
-  else if (is_complex_scalar ())
-    return "complex scalar";
-  else if (is_complex_matrix ())
-    return "complex matrix";
-  else if (is_string ())
-    return "string";
-  else if (is_range ())
-    return "range";
-  else
-    return "<unknown type>";
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

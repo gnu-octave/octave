@@ -77,9 +77,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DEFVAR_INT(name, sname, defn, inst_as_fcn, protect, sv_fcn, doc) \
   do \
     { \
-      builtin_variable sname (name, new octave_value (defn), \
-			      inst_as_fcn, protect, (sv_fcn ? 1 : 0), \
-			      sv_fcn, doc); \
+      builtin_variable sname (name, octave_value (defn), inst_as_fcn, \
+			      protect, (sv_fcn ? 1 : 0), sv_fcn, doc); \
       install_builtin_variable (sname); \
     } \
   while (0)
@@ -153,7 +152,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // must be used in the same file where name is defined, after the
 // definition for name.
 
-#define DEFALIAS(name, alias) DEFALIAS_INTERNAL (name, alias)
+#define DEFALIAS(name, alias) \
+  DEFALIAS_INTERNAL (name, alias)
 
 #endif
 

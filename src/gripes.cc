@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "gripes.h"
-#include "pt-const.h"
+#include "ov.h"
 
 void
 gripe_not_supported (const char *fcn)
@@ -87,9 +87,9 @@ gripe_user_returned_invalid (const char *name)
 }
 
 void
-gripe_invalid_conversion (const char *from, const char *to)
+gripe_invalid_conversion (const string& from, const string& to)
 {
-  error ("invalid conversion from %s to %s", from, to);
+  error ("invalid conversion from %s to %s", from.c_str (), to.c_str ());
 }
 
 void
@@ -125,19 +125,35 @@ gripe_data_conversion (const char *from, const char *to)
 void
 gripe_wrong_type_arg (const char *name, const octave_value& tc)
 {
-  error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
+  string type = tc.type_name ();
+  error ("%s: wrong type argument `%s'", name, type.c_str ());
 }
 
 void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op)
 {
-  error ("invalid operand `%s' for unary operator", op.type_as_string ());
+  string type = op.type_name ();
+  error ("invalid operand `%s' for unary operator", type.c_str ());
 }
 
 void
 gripe_wrong_type_arg_for_binary_op (const octave_value& op)
 {
-  error ("invalid operand `%s' for binary operator", op.type_as_string ());
+  string type = op.type_name ();
+  error ("invalid operand `%s' for binary operator", type.c_str ());
+}
+
+void
+gripe_implicit_conversion (const char *from, const char *to)
+{
+  warning ("implicit conversion from %s to %s", from, to);
+}
+
+void
+gripe_divide_by_zero (void)
+{
+  if (Vwarn_divide_by_zero)
+    warning ("division by zero");
 }
 
 /*

@@ -38,7 +38,6 @@ Software Foundation, Inc.
 #include <string>
 
 #include <fstream.h>
-#include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
@@ -196,17 +195,8 @@ do_history (int argc, const string_vector& argv)
 
   int len = hlist.length ();
 
-  if (len > 0)
-    {
-      ostrstream output_buf;
-
-      for (i = 0; i < len; i++)
-	output_buf << hlist[i] << "\n";
-
-      output_buf << ends;
-
-      maybe_page_output (output_buf);
-    }
+  for (i = 0; i < len; i++)
+    octave_stdout << hlist[i] << "\n";
 }
 
 // Read the edited history lines from STREAM and return them

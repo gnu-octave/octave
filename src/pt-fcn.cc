@@ -29,7 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream.h>
-#include <strstream.h>
 
 #include "defun.h"
 #include "error.h"
@@ -416,10 +415,7 @@ tree_function::print_code (ostream& os)
 void
 tree_function::print_code_function_header (void)
 {
-  ostrstream output_buf;
-  print_code_function_header (output_buf);
-  output_buf << ends;
-  maybe_page_output (output_buf);
+  print_code_function_header (octave_stdout);
 }
 
 void
@@ -470,10 +466,7 @@ tree_function::print_code_function_header (ostream& os)
 void
 tree_function::print_code_function_trailer (void)
 {
-  ostrstream output_buf;
-  print_code_function_trailer (output_buf);
-  output_buf << ends;
-  maybe_page_output (output_buf);
+  print_code_function_trailer (octave_stdout);
 }
 
 void

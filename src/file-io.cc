@@ -20,282 +20,129 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by John C. Campbell <jcc@bevo.che.wisc.edu>
+// Originally written by John C. Campbell <jcc@bevo.che.wisc.edu>
 //
-// Thomas Baier <baier@ci.tuwien.ac.at> added the following functions:
+// Thomas Baier <baier@ci.tuwien.ac.at> added the original versions of
+// the following functions:
 //
-//   popen    pclose    execute  sync_system  async_system
-//   waitpid  mkfifo   unlink
+//   popen
+//   pclose
+//   execute       (now popen2.m)
+//   sync_system   (now merged with system)
+//   async_system  (now merged with system)
 
+// Completely rewritten by John W. Eaton <jwe@bevo.che.wisc.edu>,
+// April 1996.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <cstring>
-#include <cstdio>
-#include <cerrno>
-#include <cstdlib>
-#include <cctype>
+#include <climits>
 
-#include <string>
-
-#include <strstream.h>
+#include <iostream.h>
 
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <unistd.h>
 #endif
 
-#include <fcntl.h>
-
-#include <DLList.h>
-#include <SLStack.h>
-
-#include "dMatrix.h"
-
 #include "defun.h"
 #include "error.h"
-#include "file-info.h"
-#include "file-io.h"
 #include "file-ops.h"
 #include "help.h"
-#include "input.h"
-#include "mappers.h"
+#include "oct-fstrm.h"
+#include "oct-iostrm.h"
 #include "oct-map.h"
-#include "oct-hist.h"
 #include "oct-obj.h"
+#include "oct-prcstrm.h"
+#include "oct-stream.h"
+#include "oct-strstrm.h"
 #include "pager.h"
 #include "sysdep.h"
 #include "syswait.h"
 #include "utils.h"
-#include "variables.h"
-
-// keeps a count of args sent to printf or scanf
-static int fmt_arg_count = 0;
-
-// double linked list containing relevant information about open files
-static DLList <file_info> file_list;
-
-// stack for next available file number
-static SLStack <int> next_available_file_number;
-
-static int
-get_next_avail_file_num (void)
-{
-  if (next_available_file_number.empty ())
-    return file_list.length ();
-  else
-    return next_available_file_number.pop ();
-}
 
 void
 initialize_file_io (void)
 {
-  file_info octave_stdin (0, "stdin", stdin, "r");
-  file_info octave_stdout (1, "stdout", stdout, "w");
-  file_info octave_stderr (2, "stderr", stderr, "w");
+  octave_istream *stdin_stream = new octave_istream (&cin, "stdin");
+  octave_ostream *stdout_stream = new octave_ostream (&cout, "stdout");
+  octave_ostream *stderr_stream = new octave_ostream (&cerr, "stderr");
 
-  file_list.append (octave_stdin);
-  file_list.append (octave_stdout);
-  file_list.append (octave_stderr);
+  octave_stream_list::insert (stdin_stream);
+  octave_stream_list::insert (stdout_stream);
+  octave_stream_list::insert (stderr_stream);
 }
 
-// Given a file name or number, return a pointer to the corresponding
-// open file.  If the file has not already been opened, return NULL.
-
-Pix
-return_valid_file (const tree_constant& arg)
+void
+close_files (void)
 {
-  if (arg.is_string ())
-    {
-      Pix p = file_list.first ();
-      file_info file;
-      int file_count = file_list.length ();
-      for (int i = 0; i < file_count; i++)
-	{
-	  string file_name = arg.string_value ();
-	  file = file_list (p);
-	  if (file.name () == file_name)
-	    return p;
-	  file_list.next (p);
-	}
-    }
-  else
-    {
-      double file_num = arg.double_value ();
+  octave_stream_list::clear ();
+}
 
-      if (! error_state)
-	{
-	  if (D_NINT (file_num) != file_num)
-	    error ("file number not an integer value");
-	  else
-	    {
-	      Pix p = file_list.first ();
-	      file_info file;
-	      int file_count = file_list.length ();
-	      for (int i = 0; i < file_count; i++)
-		{
-		  file = file_list (p);
-		  if (file.number () == file_num)
-		    return p;
-		  file_list.next (p);
-		}
-	      error ("no file with that number");
-	    }
-	}
+static void
+gripe_invalid_file_id (const char *fcn)
+{
+  ::error ("%s: invalid file id", fcn);
+}
+
+static int
+fopen_mode_to_ios_mode (const string& mode)
+{
+  int retval = 0;
+
+  if (! mode.empty ())
+    {
+      // Could probably be faster, but does it really matter?
+
+      if (mode == "r")
+	retval = ios::in;
+      else if (mode == "w")
+	retval = ios::out | ios::trunc;
+      else if (mode == "a")
+	retval = ios::out | ios::app;
+      else if (mode == "r+")
+	retval = ios::in | ios::out;
+      else if (mode == "w+")
+	retval = ios::in | ios::out | ios::trunc;
+      else if (mode == "a+")
+	retval = ios::in | ios::out | ios::app;
+      else if (mode == "rb")
+	retval = ios::in | ios::bin;
+      else if (mode == "wb")
+	retval = ios::out | ios::trunc | ios::bin;
+      else if (mode == "ab")
+	retval = ios::out | ios::app | ios::bin;
+      else if (mode == "r+b")
+	retval = ios::in | ios::out | ios::bin;
+      else if (mode == "w+b")
+	retval = ios::in | ios::out | ios::trunc | ios::bin;
+      else if (mode == "a+b")
+	retval = ios::in | ios::out | ios::app | ios::bin;
       else
-	error ("inapproriate file specifier");
-    }
-
-  return 0;
-}
-
-static Pix 
-fopen_file_for_user (const string& name, const char *mode,
-		     const char *warn_for)
-{
-  FILE *file_ptr = fopen (name.c_str (), mode);
-  if (file_ptr)
-    { 
-      int file_number = get_next_avail_file_num ();
-
-      file_info file (file_number, name, file_ptr, mode);
-      file_list.append (file);
-      
-      Pix p = file_list.first ();
-      file_info file_from_list;
-      int file_count = file_list.length ();
-      for (int i = 0; i < file_count; i++)
-	{
-	  file_from_list = file_list (p);
-	  if (file_from_list.name () == name)
-	    return p;
-	  file_list.next (p);
-	}
-    }
-
-  error ("%s: unable to open file `%s'", warn_for, name.c_str ());
-
-  return 0;
-}
-
-static Pix
-file_io_get_file (const tree_constant& arg, const char *mode,
-		  const char *warn_for)
-{
-  Pix p = return_valid_file (arg);
-
-  if (! p)
-    {
-      if (arg.is_string ())
-	{
-	  string name = arg.string_value ();
-
-	  file_stat fs (name);
-
-	  if (fs)
-	    {
-	      if (fs.is_reg ())
-		p = fopen_file_for_user (name, mode, warn_for);
-	      else
-		error ("%s: invalid file type", warn_for);
-	    }
-	  else
-	    {
-	      if (*mode != 'r')
-		p = fopen_file_for_user (name, mode, warn_for);
-	      else
-		error ("%s: can't stat file `%s'", warn_for, name.c_str ());
-	    }
-	}
-      else
-	error ("%s: invalid file specifier", warn_for);
-    }
-
-  return p;
-}
-
-static Octave_object
-fclose_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  Pix p = return_valid_file (args(0));
-
-  if (! p)
-    return retval;
-
-  file_info file = file_list (p);
-
-  if (file.number () < 3)
-    {
-      warning ("fclose: can't close stdin, stdout, or stderr!");
-      return retval;
-    }
-
-  int success = fclose (file.fptr ());
-  next_available_file_number.push (file.number ());
-  file_list.del (p);
-
-  if (success == 0)
-    retval(0) = 1.0; // succeeded
-  else
-    {
-      error ("fclose: error on closing file");
-      retval(0) = 0.0; // failed
+	::error ("invalid mode specified");
     }
 
   return retval;
 }
 
 DEFUN (fclose, args, ,
-  "fclose (FILENAME or FILENUM):  close a file")
+  "fclose (FILENAME or FILENUM): close a file")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
+  if (nargin == 1)
+    {
+      retval = (double) octave_stream_list::remove (args(0));
+
+      if (retval < 0)
+	gripe_invalid_file_id ("fclose");
+    }
+  else
     print_usage ("fclose");
-  else
-    retval = fclose_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-fflush_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  Pix p = return_valid_file (args(0));
-
-  if (! p)
-    return retval;
-
-  file_info file = file_list (p);
-
-  if (file.mode () == "r")
-    {
-      warning ("can't flush an input stream");
-      return retval;
-    }
-
-  int success = 0;
-
-  if (file.number () == 1)
-    flush_output_to_pager ();
-  else
-    success = fflush (file.fptr ());
-
-  if (success == 0)
-    retval(0) = 1.0; // succeeded
-  else
-    {
-      error ("fflush: write error");
-      retval(0) = 0.0; // failed
-    }
 
   return retval;
 }
@@ -303,263 +150,217 @@ fflush_internal (const Octave_object& args)
 DEFUN (fflush, args, ,
   "fflush (FILENAME or FILENUM): flush buffered data to output file")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
+  if (nargin == 1)
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	retval = (double) os->flush ();
+      else
+	gripe_invalid_file_id ("fflush");
+    }
+  else
     print_usage ("fflush");
-  else
-    retval = fflush_internal (args);
 
   return retval;
 }
 
-static int
-valid_mode (const string& mode)
-{
-  if (! mode.empty ())
-    {
-      char m = mode[0];
-      if (m == 'r' || m == 'w' || m == 'a')
-	return (mode.length () == 2) ? mode[1] == '+' : 1;
-    }
-  return 0;
-}
-
-static Octave_object
-fgets_internal (const Octave_object& args, int nargin, int nargout,
-		int strip_final_newline = 0)
-{
-  Octave_object retval;
-
-  Pix p = file_io_get_file (args(0), "r", "fgets");
-  
-  if (! p)
-    return retval;
-
-  int length = 0;
-
-  if (nargin == 2)
-    {
-      double dlen = args(1).double_value ();
-
-      if (error_state)
-	return retval;
-
-      if (xisnan (dlen))
-	{
-	  error ("fgets: NaN invalid as length");
-	  return retval;
-	}
-
-      length = NINT (dlen);
-
-      if ((double) length != dlen)
-	{
-	  error ("fgets: length not an integer value");
-	  return retval;
-	}
-
-      if (length < 0)
-	{
-	  error ("fgets: length must be a nonnegative integer");
-	  return retval;
-	}
-    }
-
-  file_info file = file_list (p);
-  FILE *fileptr = file.fptr ();
-
-  ostrstream buf;
-  int c;
-  int count = 0;
-  int newline_stripped = 0;
-
-  if (nargin == 1 || length > 0)
-    {
-      while ((c = fgetc (fileptr)) != EOF)
-	{
-	  count++;
-	  if (c == '\n')
-	    {
-	      if (! strip_final_newline)
-		buf << (char) c;
-	      else
-		newline_stripped = 1;
-
-	      break;
-	    }
-	  else
-	    buf << (char) c;
-
-	  if (nargin == 2 && count == length)
-	    break;
-	}
-    }
-
-  buf << ends;
-  char *string = buf.str ();
-
-  if (count)
-    {
-      if (nargout == 2)
-	retval(1) = (double) (count - newline_stripped);
-
-      retval(0) = string;
-    }
-  else
-    retval(0) = -1.0;
-
-  delete [] string;
-
-  return retval;
-}
-
-DEFUN (fgetl, args, nargout,
-  "[STRING, LENGTH] = fgetl (FILENAME or FILENUM [, LENGTH])\n\
+DEFUN (fgetl, args, ,
+  "STRING = fgetl (FILENAME or FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {
-  Octave_object retval;
+  octave_value retval = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = fgets_internal (args, nargin, nargout, 1);
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	{
+	  octave_value len_arg = (nargin == 2)
+	    ? args(1) : octave_value ((double) INT_MAX);
+
+	  bool err = false;
+
+	  string tmp = os->getl (len_arg, err);
+
+	  if (! err)
+	    retval = tmp;
+	}
+      else
+	gripe_invalid_file_id ("fgetl");
+    }
   else
     print_usage ("fgetl");
 
   return retval;
 }
 
-DEFUN (fgets, args, nargout,
-  "[STRING, LENGTH] = fgets (FILENAME or FILENUM [, LENGTH])\n\
+DEFUN (fgets, args, ,
+  "STRING = fgets (FILENAME or FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {
-  Octave_object retval;
+  octave_value retval = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = fgets_internal (args, nargin, nargout);
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	{
+	  octave_value len_arg = (nargin == 2)
+	    ? args(1) : octave_value ((double) INT_MAX);
+
+	  bool err = false;
+
+	  string tmp = os->gets (len_arg, err);
+
+	  if (! err)
+	    retval = tmp;
+	}
+      else
+	gripe_invalid_file_id ("fgets");
+    }
   else
     print_usage ("fgets");
 
   return retval;
 }
 
-static Octave_object
-fopen_internal (const Octave_object& args)
+static octave_base_stream *
+do_stream_open (const string& name, const string& mode,
+		const string& arch, int& fid)
 {
-  Octave_object retval;
-  Pix p;
+  octave_base_stream *retval = 0;
 
-  if (! args(0).is_string ())
+  fid = -1;
+
+  int md = fopen_mode_to_ios_mode (mode);
+
+  if (! error_state)
     {
-      error ("fopen: file name must be a string");
-      return retval;
+      octave_base_stream::arch_type at = octave_stream::string_to_arch (arch);
+
+      if (! error_state)
+	retval = new octave_fstream (name, md, at);
     }
 
-  p = return_valid_file (args(0));
+  return retval;
+}
 
-  if (p)
+static octave_base_stream *
+do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
+		const octave_value& tc_arch, const char *fcn, int& fid)
+{
+  octave_base_stream *retval = 0;
+
+  fid = -1;
+
+  string name = tc_name.string_value ();
+
+  if (! error_state)
     {
-      file_info file = file_list (p);
+      string mode = tc_mode.string_value ();
 
-      retval(0) = (double) file.number ();
+      if (! error_state)
+	{
+	  string arch = tc_arch.string_value ();
 
-      return retval;
+	  if (! error_state)
+	    retval = do_stream_open (name, mode, arch, fid);
+	  else
+	    ::error ("%s: architecture type must be a string", fcn);
+	}
+      else
+	::error ("%s: file mode must be a string", fcn);
     }
-
-  if (! args(1).is_string ())
-    {
-      error ("fopen: file mode must be a string");
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-  string mode = args(1).string_value ();
-
-  if (! valid_mode (mode))
-    {
-      error ("fopen: invalid mode");
-      return retval;
-    }
-
-  file_stat fs (name);
-
-  if (fs && fs.is_dir ())
-    {
-      error ("fopen: can't open directory");
-      return retval;
-    }
-
-  FILE *file_ptr = fopen (name.c_str (), mode.c_str ());
-
-  if (! file_ptr)
-    {
-      error ("fopen: unable to open file `%s'", name.c_str ());
-      return retval;
-    }
-
-  int file_number = get_next_avail_file_num ();
-
-  file_info file (file_number, name, file_ptr, mode);
-  file_list.append (file);
-
-  retval(0) = (double) file_number;
+  else
+    ::error ("%s: file name must be a string", fcn);
 
   return retval;
 }
 
 DEFUN (fopen, args, ,
-  "FILENUM = fopen (FILENAME, MODE): open a file\n\
+  "FILENUM = fopen (FILENAME, MODE [, ARCH]): open a file\n\
 \n\
   Valid values for mode include:\n\
 \n\
-   r  : open text file for reading\n\
-   w  : open text file for writing; discard previous contents if any\n\
-   a  : append; open or create text file for writing at end of file\n\
-   r+ : open text file for update (i.e., reading and writing)\n\
-   w+ : create text file for update; discard previous contents if any\n\
-   a+ : append; open or create text file for update, writing at end\n\n\
- Update mode permits reading from and writing to the same file.")
+    r  : open text file for reading\n\
+    w  : open text file for writing; discard previous contents if any\n\
+    a  : append; open or create text file for writing at end of file\n\
+    r+ : open text file for update (i.e., reading and writing)\n\
+    w+ : create text file for update; discard previous contents if any\n\
+    a+ : append; open or create text file for update, writing at end\n\
+\n\
+  Update mode permits reading from and writing to the same file.")
 {
-  Octave_object retval;
+  octave_value_list retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
-    print_usage ("fopen");
-  else
-    retval = fopen_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-freport_internal (void)
-{
-  Octave_object retval;
-  Pix p = file_list.first ();
-
-  ostrstream output_buf;
-
-  output_buf << "\n number  mode  name\n\n";
-
-  int file_count = file_list.length ();
-  for (int i = 0; i < file_count; i++)
+  if (nargin == 1)
     {
-      file_info file = file_list (p);
-      output_buf.form ("%7d%6s  %s\n", file.number (),
-		       file.mode ().c_str (), file.name ().c_str ());
-      file_list.next (p);
+      if (args(0).is_string () && args(0).string_value () == "all")
+	{
+	  return octave_stream_list::open_file_numbers ();
+	}
+      else
+	{
+	  string_vector tmp = octave_stream_list::get_info (args(0));
+
+	  if (! error_state)
+	    {
+	      retval(2) = tmp(2);
+	      retval(1) = tmp(1);
+	      retval(0) = tmp(0);
+	    }
+
+	  return retval;
+	}
     }
 
-  output_buf << "\n" << ends;
-  maybe_page_output (output_buf);
+  if (nargin > 0 && nargin < 4)
+    {
+      octave_value mode = (nargin == 2 || nargin == 3)
+	? args(1) : octave_value ("r");
+
+      octave_value arch = (nargin == 3)
+	? args(2) : octave_value ("native");
+
+      int fid = -1;
+
+      octave_base_stream *os
+	= do_stream_open (args(0), mode, arch, "fopen", fid);
+
+      if (os)
+	{
+	  if (os->ok () && ! error_state)
+	    {
+	      retval(1) = "";
+	      retval(0) = (double) octave_stream_list::insert (os);
+	    }
+	  else
+	    {
+	      int errno = 0;
+	      retval(1) = os->error (false, errno);
+	      retval(0) = -1.0;
+	    }
+	}
+      else
+	::error ("fopen: internal error");
+    }
+  else
+    print_usage ("fopen");
 
   return retval;
 }
@@ -567,30 +368,14 @@ freport_internal (void)
 DEFUN (freport, args, ,
   "freport (): list open files and their status")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin > 0)
     warning ("freport: ignoring extra arguments");
 
-  retval = freport_internal ();
-
-  return retval;
-}
-
-static Octave_object
-frewind_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  Pix p = file_io_get_file (args(0), "a+", "frewind");
-
-  if (p)
-    {
-      file_info file = file_list (p);
-      rewind (file.fptr ());
-    }
+  octave_stdout << octave_stream_list::list_open_files ();
 
   return retval;
 }
@@ -598,95 +383,21 @@ frewind_internal (const Octave_object& args)
 DEFUN (frewind, args, ,
   "frewind (FILENAME or FILENUM): set file position at beginning of file")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ("frewind");
-  else
-    retval = frewind_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-fseek_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  Pix p = file_io_get_file (args(0), "a+", "fseek");
-
-  if (! p)
-    return retval;
-
-  long origin = SEEK_SET;
-
-  double doff = args(1).double_value ();
-
-  if (error_state)
-    return retval;
-
-  if (xisnan (doff))
+  if (nargin == 1)
     {
-      error ("fseek: NaN invalid as offset");
-      return retval;
-    }
+      octave_stream *os = octave_stream_list::lookup (args(0));
 
-  long offset = NINT (doff);
-
-  if ((double) offset != doff)
-    {
-      error ("fseek: offset not an integer value");
-      return retval;
-    }
-
-  if (nargin == 3)
-    {
-      double dorig = args(2).double_value ();
-
-      if (error_state)
-	return retval;
-
-      if (xisnan (dorig))
-	{
-	  error ("fseek: NaN invalid as origin");
-	  return retval;
-	}
-
-      origin = NINT (dorig);
-
-      if ((double) dorig != origin)
-	{
-	  error ("fseek: origin not an integer value");
-	  return retval;
-	}
-
-      if (origin == 0)
-	origin = SEEK_SET;
-      else if (origin == 1)
-	origin = SEEK_CUR;
-      else if (origin == 2)
-	origin = SEEK_END;
+      if (os)
+	retval = (double) os->rewind ();
       else
-	{
-	  error ("fseek: invalid value for origin");
-	  return retval;
-	}
+	gripe_invalid_file_id ("frewind");
     }
-
-  file_info file = file_list (p);
-  int success = fseek (file.fptr (), offset, origin);
-
-  if (success == 0)
-    retval(0) = 1.0; // succeeded
   else
-    {
-      error ("fseek: file error");
-      retval(0) = 0.0; // failed
-    }
+    print_usage ("frewind");
 
   return retval;
 }
@@ -696,37 +407,26 @@ DEFUN (fseek, args, ,
 \n\
 set file position for reading or writing")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 2 && nargin != 3)
-    print_usage ("fseek");
-  else
-    retval = fseek_internal (args);
-
-  return retval;
-}
-
-// Tell current position of file.
-
-static Octave_object
-ftell_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  Pix p = file_io_get_file (args(0), "a+", "ftell");
-
-  if (p)
+  if (nargin == 2 || nargin == 3)
     {
-      file_info file = file_list (p);
-      long offset = ftell (file.fptr ());
+      octave_stream *os = octave_stream_list::lookup (args(0));
 
-      retval(0) = (double) offset;
+      if (os)
+	{
+	  octave_value origin_arg = (nargin == 3)
+	    ? args(2) : octave_value (0.0);
 
-      if (offset == -1L)
-	error ("ftell: write error");
+	  retval = (double) os->seek (args(1), origin_arg);
+	}
+      else
+	::error ("fseek: invalid file id");
     }
+  else
+    print_usage ("fseek");
 
   return retval;
 }
@@ -734,355 +434,21 @@ ftell_internal (const Octave_object& args)
 DEFUN (ftell, args, ,
   "POSITION = ftell (FILENAME or FILENUM): returns the current file position")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ("ftell");
-  else
-    retval = ftell_internal (args);
-
-  return retval;
-}
-
-void
-close_files (void)
-{
-  Pix p = file_list.first ();
-
-  int file_count = file_list.length ();
-  for (int i = 0; i < file_count; i++)
+  if (nargin == 1)
     {
-      if (p)
-	{
-	  file_info file = file_list (p);
+      octave_stream *os = octave_stream_list::lookup (args(0));
 
-	  if (i > 2)   // do not close stdin, stdout, stderr!
-	    {
-	      int success = fclose (file.fptr ());
-	      if (success != 0)
-		error ("closing %s", file.name ().c_str ());
-	    }
-
-	  next_available_file_number.push (file.number ());
-	  file_list.del (p);
-	}
+      if (os)
+	retval = (double) os->tell ();
       else
-	{
-	  error ("inconsistent state for internal file list!");
-	  break;
-	}
-    }
-}
-
-static int
-process_printf_format (const char *s, const Octave_object& args,
-		       ostrstream& sb, const char *type)
-{
-  ostrstream fmt;
-
-  int nargin = args.length ();
-
-  fmt << "%";  // do_printf() already blew past this one...
-
-  int chars_from_fmt_str = 0;
-
- again:
-  switch (*s)
-    {
-    case '+': case '-': case ' ': case '0': case '#':
-      chars_from_fmt_str++;
-      fmt << *s++;
-      goto again;
-
-    case '\0':
-      goto invalid_format;
-
-    default:
-      break;
-    }
-
-  if (*s == '*')
-    {
-      if (fmt_arg_count > nargin)
-	{
-	  error ("%s: not enough arguments", type);
-	  return -1;
-	}
-
-      double tmp_len = args(fmt_arg_count++).double_value ();
-
-      if (error_state || xisnan (tmp_len))
-	{
-	  error ("%s: `*' must be replaced by an integer", type);
-	  return -1;
-	}
-
-      fmt << NINT (tmp_len);
-      s++;
-      chars_from_fmt_str++;
+	gripe_invalid_file_id ("ftell");
     }
   else
-    {
-      while (*s != '\0' && isdigit (*s))
-	{
-	  chars_from_fmt_str++;
-	  fmt << *s++;
-	}
-    }
-
-  if (*s == '\0')
-    goto invalid_format;
-
-  if (*s == '.')
-    {
-      chars_from_fmt_str++;
-      fmt << *s++;
-    }
-
-  if (*s == '*')
-    {
-      if (*(s-1) == '*')
-	goto invalid_format;
-
-      if (fmt_arg_count > nargin)
-	{
-	  error ("%s: not enough arguments", type);
-	  return -1;
-	}
-
-      double tmp_len = args(fmt_arg_count++).double_value ();
-
-      if (error_state || xisnan (tmp_len))
-	{
-	  error ("%s: `*' must be replaced by an integer", type);
-	  return -1;
-	}
-
-      fmt << NINT (tmp_len);
-      s++;
-      chars_from_fmt_str++;
-    }
-  else
-    {
-      while (*s != '\0' && isdigit (*s))
-	{
-	  chars_from_fmt_str++;
-	  fmt << *s++;
-	}
-    }
-
-  if (*s == '\0')
-    goto invalid_format;
-
-  if (*s != '\0' && (*s == 'h' || *s == 'l' || *s == 'L'))
-    {
-      chars_from_fmt_str++;
-      fmt << *s++;
-    }
-
-  if (*s == '\0')
-    goto invalid_format;
-
-  if (fmt_arg_count > nargin)
-    {
-      error ("%s: not enough arguments", type);
-      return -1;
-    }
-
-  switch (*s)
-    {
-    case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
-      {
-	double d = args(fmt_arg_count++).double_value ();
-
-	if (error_state || xisnan (d))
-	  goto invalid_conversion;
-
-	int val = NINT (d);
-
-	if ((double) val != d)
-	  goto invalid_conversion;
-	else
-	  {
-	    chars_from_fmt_str++;
-	    fmt << *s << ends;
-	    char *tmp_fmt = fmt.str ();
-	    sb.form (tmp_fmt, val);
-	    delete [] tmp_fmt;
-	    return chars_from_fmt_str;
-	  }
-      }
-
-    case 'e': case 'E': case 'f': case 'g': case 'G':
-      {
-	double val = args(fmt_arg_count++).double_value ();
-
-	if (error_state)
-	  goto invalid_conversion;
-	else
-	  {
-	    chars_from_fmt_str++;
-	    fmt << *s << ends;
-	    char *tmp_fmt = fmt.str ();
-	    sb.form (tmp_fmt, val);
-	    delete [] tmp_fmt;
-	    return chars_from_fmt_str;
-	  }
-      }
-
-    case 's':
-      {
-	string val = args(fmt_arg_count++).string_value ();
-
-	if (error_state)
-	  goto invalid_conversion;
-	else
-	  {
-	    chars_from_fmt_str++;
-	    fmt << *s << ends;
-	    char *tmp_fmt = fmt.str ();
-	    sb.form (tmp_fmt, val.c_str ());
-	    delete [] tmp_fmt;
-	    return chars_from_fmt_str;
-	  }
-      }
-
-    case 'c':
-      {
-	string val = args(fmt_arg_count++).string_value ();
-
-	if (error_state || val.length () != 1)
-	  goto invalid_conversion;
-	else
-	  {
-	    chars_from_fmt_str++;
-	    fmt << *s << ends;
-	    char *tmp_fmt = fmt.str ();
-	    sb.form (tmp_fmt, val[0]);
-	    delete [] tmp_fmt;
-	    return chars_from_fmt_str;
-	  }
-      }
-
-    default:
-      goto invalid_format;
-   }
-
- invalid_conversion:
-  error ("%s: invalid conversion", type);
-  return -1;
-
- invalid_format:
-  error ("%s: invalid format", type);
-  return -1;
-}
-
-// Formatted printing to a file.
-
-static Octave_object
-do_printf (const char *type, const Octave_object& args)
-{
-  Octave_object retval;
-  fmt_arg_count = 0;
-  const char *fmt;
-  string fmt_str;
-  file_info file;
-
-  if (strcmp (type, "fprintf") == 0)
-    {
-      Pix p = file_io_get_file (args(0), "a+", type);
-
-      if (! p)
-	return retval;
-
-      file = file_list (p);
-
-      if (file.mode () == "r")
-	{
-	  error ("%s: file is read only", type);
-	  return retval;
-	}
-
-      fmt_str = args(1).string_value ();
-      fmt = fmt_str.c_str ();
-
-      if (error_state)
-	{
-	  error ("%s: format must be a string", type);
-	  return retval;
-	}
-
-      fmt_arg_count += 2;
-    }
-  else
-    {
-      fmt_str = args(0).string_value ();
-      fmt = fmt_str.c_str ();
-
-      if (error_state)
-	{
-	  error ("%s: invalid format string", type);
-	  return retval;
-	}
-
-      fmt_arg_count++;
-    }
-
-  // Scan fmt for % escapes and print out the arguments.
-
-  ostrstream output_buf;
-
-  const char *ptr = fmt;
-
-  for (;;)
-    {
-      char c;
-      while ((c = *ptr++) != '\0' && c != '%')
-	output_buf << c;
-
-      if (c == '\0')
-	break;
-
-      if (*ptr == '%')
-	{
-	  ptr++;
-	  output_buf << c;
-	  continue;
-	}
-
-      // We must be looking at a format specifier.  Extract it or
-      // fail.
-
-      int status = process_printf_format (ptr, args, output_buf, type);
-
-      if (status < 0)
-	return retval;
-
-      ptr += status;
-    }
-
-  output_buf << ends;
-  if (strcmp (type, "printf") == 0
-      || (strcmp (type, "fprintf") == 0 && file.number () == 1))
-    {
-      maybe_page_output (output_buf);
-    }
-  else if (strcmp (type, "fprintf") == 0)
-    {
-      char *msg = output_buf.str ();
-      int success = fputs (msg, file.fptr ());
-      if (success == EOF)
-	warning ("%s: unknown failure writing to file", type);
-      delete [] msg;
-    }
-  else if (strcmp (type, "sprintf") == 0)
-    {
-      char *msg = output_buf.str ();
-      retval(0) = msg;
-      delete [] msg;
-    }
+    print_usage ("ftell");
 
   return retval;
 }
@@ -1090,639 +456,212 @@ do_printf (const char *type, const Octave_object& args)
 DEFUN (fprintf, args, ,
   "fprintf (FILENAME or FILENUM, FORMAT, ...)")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
-
-  if (nargin < 2)
-    print_usage ("fprintf");
-  else
-    retval = do_printf ("fprintf", args);
-
-  return retval;
-}
-
-// Formatted printing.
-
-DEFUN (printf, args, ,
-  "printf (FORMAT, ...)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1)
-    print_usage ("printf");
-  else
-    retval = do_printf ("printf", args);
-
-  return retval;
-}
-
-// Formatted printing to a string.
-
-DEFUN (sprintf, args, ,
-  "s = sprintf (FORMAT, ...)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1)
-    print_usage ("sprintf");
-  else
-    retval = do_printf ("sprintf", args);
-
-  return retval;
-}
-
-static int
-process_scanf_format (const char *s, ostrstream& fmt,
-		      const char *type, int nargout, FILE* fptr,
-		      Octave_object& values)
-{
-  fmt << "%";
-
-  int chars_from_fmt_str = 0;
-  int store_value = 1;
-  int string_width = 0;
-  int success = 1;
-
-  if (*s == '*')
-    {
-      store_value = 0;
-      s++;
-      chars_from_fmt_str++;
-    }
-
-  if (isdigit (*s))
-    {
-      ostrstream str_number;
-      while (*s != '\0' && isdigit (*s))
-	{
-	  chars_from_fmt_str++;
-	  str_number << *s;
-	  fmt << *s++;
-	}
-      str_number << ends;
-      char *number = str_number.str ();
-      string_width = atoi (number);
-      delete [] number;
-    }
-
-  if (*s == '\0')
-    goto invalid_format;
-
-  if (*s != '\0' && (*s == 'h' || *s == 'l' || *s == 'L'))
-    {
-      chars_from_fmt_str++;
-      s++;
-    }
-
-  if (*s == '\0')
-    goto invalid_format;
-
-  // Even if we don't have a place to store them, attempt to convert
-  // everything specified by the format string.
-
-  if (fmt_arg_count > (nargout ? nargout : 1))
-    store_value = 0;
-
-  switch (*s)
-    {
-    case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
-      {
-	chars_from_fmt_str++;
-	fmt << *s << ends;
-	int temp;
-	char *str = fmt.str ();
-	success = fscanf (fptr, str, &temp);
-	delete [] str;
-	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = (double) temp;
-      }
-      break;
-
-    case 'e': case 'E': case 'f': case 'g': case 'G':
-      {
-	chars_from_fmt_str++;
-	fmt << 'l' << *s << ends;
-	double temp;
-	char *str = fmt.str ();
-	success = fscanf (fptr, str, &temp);
-	delete [] str;
-	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = temp;
-      }
-      break;
-
-    case 's':
-      {
-	if (string_width < 1)
-	  {
-	    // XXX FIXME XXX -- The code below is miscompiled on the
-	    // Alpha with gcc 2.6.0, so that string_width is never
-	    // incremented, even though reading the data works
-	    // correctly.  One fix is to use a fixed-size buffer...
-//	    string_width = 8192;
-
-	    string_width = 0;
-	    long original_position = ftell (fptr);
-
-	    int c;
-
-	    while ((c = getc (fptr)) != EOF && isspace (c))
-	      ; // Don't count leading whitespace.
-
-	    if (c != EOF)
-	      string_width++;
-
-	    for (;;)
-	      {
-		c = getc (fptr);
-		if (c != EOF && ! isspace (c))
-		  string_width++;
-		else
-		  break;
-	      }
-
-	    fseek (fptr, original_position, SEEK_SET);
-	  }
-	chars_from_fmt_str++;
-	char temp [string_width+1];
-	fmt << *s << ends;
-	char *str = fmt.str ();
-	success = fscanf (fptr, str, temp);
-	delete [] str;
-	temp[string_width] = '\0';
-	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = temp;
-      }
-      break;
-
-    case 'c':
-      {
-	if (string_width < 1)
-	  string_width = 1;
-	chars_from_fmt_str++;
-	char temp [string_width+1];
-	memset (temp, '\0', string_width+1);
-	fmt << *s << ends;
-	char *str = fmt.str ();
-	success = fscanf (fptr, str, temp);
-	delete [] str;
-	temp[string_width] = '\0';
-	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = temp;
-      }
-      break;
-
-    default:
-      goto invalid_format;
-    }
-
-  if (success > 0)
-    return chars_from_fmt_str;
-  else if (success == 0)
-    warning ("%s: invalid conversion", type);
-  else if (success == EOF)
-    {
-      if (strcmp (type, "fscanf") == 0)
-	warning ("%s: end of file reached before final conversion", type);
-      else if (strcmp (type, "sscanf") == 0)
-	warning ("%s: end of string reached before final conversion", type);
-      else if (strcmp (type, "scanf") == 0)
-	warning ("%s: end of input reached before final conversion", type);
-    }
-  else
-    {
-    invalid_format:
-      warning ("%s: invalid format", type);
-    }
-
-  return -1;
-}
-
-// Formatted reading from a file.
-
-static Octave_object
-do_scanf (const char *type, const Octave_object& args, int nargout)
-{
-  Octave_object retval;
-  const char *scanf_fmt = 0;
-  string scanf_fmt_str;
-  string tmp_file;
-  int tmp_file_open = 0;
-  FILE *fptr = 0;
-  file_info file;
-
-  fmt_arg_count = 0;
-
-  if (strcmp (type, "scanf") != 0)
-    {
-      scanf_fmt_str = args(1).string_value (); 
-      scanf_fmt = scanf_fmt_str.c_str ();
-
-      if (error_state)
-	{
-	  error ("%s: format must be a string", type);
-	  return retval;
-	}
-    }
-
-  int doing_fscanf = (strcmp (type, "fscanf") == 0);
-
-  if (doing_fscanf)
-    {
-      Pix p = file_io_get_file (args(0), "r", type);
-
-      if (! p)
-	return retval;
-
-      file = file_list (p);
-
-      if (file.mode () == "w" || file.mode () == "a")
-	{
-	  error ("%s: this file is opened for writing only", type);
-	  return retval;
-	}
-
-      fptr = file.fptr ();
-    }
-
-  if ((! fptr && args(0).is_string ())
-      || (doing_fscanf && file.number () == 0))
-    {
-      string xstring_str;
-      const char *xstring;
-
-      if (strcmp (type, "scanf") == 0)
-	{
-	  scanf_fmt_str = args(0).string_value ();
-	  scanf_fmt = scanf_fmt_str.c_str ();
-	}
-
-      if (strcmp (type, "scanf") == 0
-	  || (doing_fscanf && file.number () == 0))
-	{
-	  // XXX FIXME XXX -- this should probably be possible for
-	  // more than just stdin/stdout pairs, using a list of output
-	  // streams to flush.  The list could be created with a
-	  // function like iostream's tie().
-
-	  flush_output_to_pager ();
-
-	  xstring = gnu_readline ("");
-
-	  if (xstring && *xstring)
-	    octave_command_history.add (xstring);
-	}
-      else
-	{
-	  xstring_str = args(0).string_value ();
-	  xstring = xstring_str.c_str ();
-	}
-
-      tmp_file = oct_tempnam ();
-
-      fptr = fopen (tmp_file.c_str (), "w+");
-      if (! fptr)
-	{
-	  error ("%s: error opening temporary file", type);
-	  return retval;
-	}
-      tmp_file_open = 1;
-      unlink (tmp_file.c_str ());
-
-      if (! xstring)
-	{
-	  error ("%s: no string to scan", type); 
-	  return retval;
-	}
-
-      int success = fputs (xstring, fptr);
-      fflush (fptr);
-      rewind (fptr);
-
-      if (success < 0)
-	{
-	  error ("%s: trouble writing temporary file", type);
-	  fclose (fptr);
-	  return retval;
-	}
-    }
-  else if (! doing_fscanf)
-    {
-      error ("%s: first argument must be a string", type);
-      return retval;
-    }
-
-  // Scan scanf_fmt for % escapes and assign the arguments.
-
-  retval.resize (nargout);
-
-  const char *ptr = scanf_fmt;
-
-  for (;;)
-    {
-      ostrstream fmt;
-      char c;
-      while ((c = *ptr++) != '\0' && c != '%')
-	fmt << c;
-
-      if (c == '\0')
-	break;
-
-      if (*ptr == '%')
-	{
-	  ptr++;
-	  fmt << c;
-	  continue;
-	}
-
-      // We must be looking at a format specifier.  Extract it or
-      // fail.
-
-      int status = process_scanf_format (ptr, fmt, type, nargout,
-					 fptr, retval);
-
-      if (status < 0)
-	{
-	  if (fmt_arg_count == 0)
-	    retval.resize (0);
-	  break;
-	}
-
-      ptr += status;
-    }
-
-  if (tmp_file_open)
-    fclose (fptr);
-
-  return retval;
-}
-
-DEFUN (fscanf, args, nargout,
-  "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1 && nargin != 2)
-    print_usage ("fscanf");
-  else
-    retval = do_scanf ("fscanf", args, nargout);
-
-  return retval;
-}
-
-// Formatted reading.
-
-DEFUN (scanf, args, nargout,
-  "[A, B, C, ...] = scanf (FORMAT)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("scanf");
-  else
-    retval = do_scanf ("scanf", args, nargout);
-
-  return retval;
-}
-
-// Formatted reading from a string.
-
-DEFUN (sscanf, args, nargout,
-  "[A, B, C, ...] = sscanf (STRING, FORMAT)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
-    print_usage ("sscanf");
-  else
-    retval = do_scanf ("sscanf", args, nargout);
-
-  return retval;
-}
-
-// Find out how many elements are left to read.
-
-static long
-num_items_remaining (FILE *fptr, const char *type)
-{
-  size_t size;
-
-  if (strcasecmp (type, "uchar") == 0)
-    size = sizeof (u_char);
-  else if (strcasecmp (type, "char") == 0)
-    size = sizeof (char);
-  else if (strcasecmp (type, "short") == 0)
-    size = sizeof (short);
-  else if (strcasecmp (type, "ushort") == 0)
-    size = sizeof (u_short);
-  else if (strcasecmp (type, "int") == 0)
-    size = sizeof (int);
-  else if (strcasecmp (type, "uint") == 0)
-    size = sizeof (u_int);
-  else if (strcasecmp (type, "long") == 0)
-    size = sizeof (long);
-  else if (strcasecmp (type, "ulong") == 0)
-    size = sizeof (u_long);
-  else if (strcasecmp (type, "float") == 0)
-    size = sizeof (float);
-  else if (strcasecmp (type, "double") == 0)
-    size = sizeof (double);
-  else
-    return 0;
-
-  long curr_pos = ftell (fptr);
-
-  fseek (fptr, 0, SEEK_END);
-  long end_of_file = ftell (fptr);
-
-  fseek (fptr, curr_pos, SEEK_SET);
-
-  long len = end_of_file - curr_pos;
-
-  return len / size;
-}
-
-// Read binary data from a file.
-//
-//   [data, count] = fread (fid, size, 'precision')
-//
-//     fid       : the file id from fopen
-//     size      : the size of the matrix or vector or scaler to read
-//
-//                 n	  : reads n elements of a column vector
-//                 inf	  : reads to the end of file (default)
-//                 [m, n] : reads enough elements to fill the matrix
-//                          the number of columns can be inf
-//
-//     precision : type of the element.  Can be:
-//
-//                 char, uchar, schar, short, ushort, int, uint,
-//                 long, ulong, float, double
-//
-//                 Default  is uchar.
-//
-//     data	 : output data
-//     count	 : number of elements read
-
-static Octave_object
-fread_internal (const Octave_object& args, int nargout)
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  Pix p = file_io_get_file (args(0), "r", "fread");
-
-  if (! p)
-    return retval;
-
-  // Get type and number of bytes per element to read.
-
-  const char *prec = "uchar";
-  string tstr;
-  if (nargin > 2)
-    {
-      tstr = args(2).string_value ();
-      prec = tstr.c_str ();
-
-      if (error_state)
-	{
-	  error ("fread: precision must be a specified as a string");
-	  return retval;
-	}
-    }
-
-  file_info file = file_list (p);
-
-  FILE *fptr = file.fptr ();
-
-  // Set up matrix to read into.  If specified in arguments use that
-  // number, otherwise read everyting left in file.
-
-  double dnr = 0.0;
-  double dnc = 0.0;
-  int nr;
-  int nc;
 
   if (nargin > 1)
     {
-      if (args(1).is_scalar_type ())
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
 	{
-	  dnr = args(1).double_value ();
+	  if (args(1).is_string ())
+	    {
+	      string fmt = args(1).string_value ();
 
-	  if (error_state)
-	    return retval;
+	      octave_value_list tmp_args;
 
-	  dnc = 1.0;
+	      if (nargin > 2)
+		{
+		  tmp_args.resize (nargin-2, octave_value ());
+
+		  for (int i = 2; i < nargin; i++)
+		    tmp_args(i-2) = args(i);
+		}
+
+	      retval = os->printf (fmt, tmp_args);
+	    }
+	  else
+	    ::error ("fprintf: format must be a string");
 	}
       else
-	{
-	  ColumnVector tmp = args(1).vector_value ();
-
-	  if (error_state || tmp.length () != 2)
-	    {
-	      error ("fread: invalid size specification\n");
-	      return retval;
-	    }
-
-	  dnr = tmp.elem (0);
-	  dnc = tmp.elem (1);
-	}
-
-      if ((xisinf (dnr)) && (xisinf (dnc)))
-	{
-	  error ("fread: number of rows and columns cannot both be infinite");
-	  return retval;
-	}
-
-      if (xisinf (dnr))
-	{
-	  if (xisnan (dnc))
-	    {
-	      error ("fread: NaN invalid as the number of columns");
-	      return retval;
-	    }
-	  else
-	    {
-	      nc = NINT (dnc);
-	      int n = num_items_remaining (fptr, prec);
-	      nr = n / nc;
-	      if (n > nr * nc)
-		nr++;
-	    }
-	}
-      else if (xisinf (dnc))
-	{
-	  if (xisnan (dnr))
-	    {
-	      error ("fread: NaN invalid as the number of rows");
-	      return retval;
-	    }
-	  else
-	    {
-	      nr = NINT (dnr);
-	      int n = num_items_remaining (fptr, prec);
-	      nc = n / nr;
-	      if (n > nc * nr)
-		nc++;
-	    }
-	}
-      else
-	{
-	  if (xisnan (dnr))
-	    {
-	      error ("fread: NaN invalid as the number of rows");
-	      return retval;
-	    }
-	  else
-	    nr = NINT (dnr);
-
-	  if (xisnan (dnc))
-	    {
-	      error ("fread: NaN invalid as the number of columns");
-	      return retval;
-	    }
-	  else
-	    nc = NINT (dnc);
-	}
+	gripe_invalid_file_id ("fprintf");
     }
   else
-    {
-      // No size parameter, read what's left of the file.
-
-      nc = 1;
-      int n = num_items_remaining (fptr, prec);
-      nr = n / nc;
-      if (n > nr * nc)
-	nr++;
-    }
-
-  Matrix m (nr, nc, octave_NaN);
-
-  // Read data.
-
-  int count = m.read (fptr, prec);
-
-  if (nargout > 1)
-    retval(1) = (double) count;
-
-  retval(0) = m;
+    print_usage ("fprintf");
 
   return retval;
 }
 
-DEFUN (fread, args, nargout,
+DEFUN (fputs, args, ,
+  "fputs (FILENAME or FILENUM, STRING)")
+{
+  double retval = -1.0;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	retval = os->puts (args(1));
+      else
+	gripe_invalid_file_id ("fputs");
+    }
+  else
+    print_usage ("fputs");
+
+  return retval;
+}
+
+DEFUN (sprintf, args, ,
+  "[s, errmsg, status] = sprintf (FORMAT, ...)")
+{
+  octave_value_list retval;
+
+  retval(2) = -1.0;
+  retval(1) = "unknown error";
+  retval(0) = "";
+
+  int nargin = args.length ();
+
+  if (nargin > 0)
+    {
+      octave_ostrstream ostr;
+
+      octave_stream os (&ostr);
+
+      if (os)
+	{
+	  if (args(0).is_string ())
+	    {
+	      string fmt = args(0).string_value ();
+
+	      octave_value_list tmp_args;
+
+	      if (nargin > 1)
+		{
+		  tmp_args.resize (nargin-1, octave_value ());
+
+		  for (int i = 1; i < nargin; i++)
+		    tmp_args(i-1) = args(i);
+		}
+
+	      retval(2) = os.printf (fmt, tmp_args);
+	      retval(1) = os.error ();
+	      char *tmp = ostr.str ();
+	      retval(0) = tmp;
+	      delete [] tmp;
+	    }
+	  else
+	    ::error ("sprintf: format must be a string");
+	}
+      else
+	::error ("sprintf: unable to create output buffer");
+    }
+  else
+    print_usage ("sprintf");
+
+  return retval;
+}
+
+DEFUN (fscanf, args, ,
+  "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT, SIZE)")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2 || nargin == 3)
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	{
+	  if (args(1).is_string ())
+	    {
+	      string fmt = args(1).string_value ();
+
+	      int count = 0;
+
+	      // XXX FIXME XXX
+	      Array<int> size (2);
+
+	      octave_value tmp = os->scanf (fmt, size, count);
+
+	      retval(1) = (double) count;
+	      retval(0) = tmp;
+	    }
+	  else
+	    ::error ("fscanf: format must be a string");
+	}
+      else
+	gripe_invalid_file_id ("fscanf");
+    }
+  else
+    print_usage ("fscanf");
+
+  return retval;
+}
+
+DEFUN (sscanf, args, ,
+  "[A, COUNT, ERRMSG, INDEX] = sscanf (STRING, FORMAT, SIZE)")
+{
+  octave_value_list retval;
+
+  retval(3) = -1.0;
+  retval(2) = "unknown error";
+  retval(1) = 0.0;
+  retval(0) = Matrix ();
+
+  int nargin = args.length ();
+
+  if (nargin == 2 || nargin == 3)
+    {
+      if (args(0).is_string ())
+	{
+	  string data = args(0).string_value ();
+
+	  octave_istrstream istr (data);
+
+	  octave_stream os (&istr);
+
+	  if (os)
+	    {
+	      if (args(1).is_string ())
+		{
+		  string fmt = args(1).string_value ();
+
+		  int count = 0;
+
+		  // XXX FIXME XXX
+		  Array<int> size (2);
+
+		  octave_value tmp = os.scanf (fmt, size, count);
+
+		  retval(3) = (double) (os.tell () + 1);
+		  retval(2) = os.error ();
+		  retval(1) = (double) count;
+		  retval(0) = tmp;
+		}
+	      else
+		::error ("sscanf: format must be a string");
+	    }
+	  else
+	    ::error ("sscanf: unable to create temporary input buffer");
+	}
+      else
+	::error ("sscanf: first argument must be a string");
+    }
+  else
+    print_usage ("sscanf");
+
+  return retval;
+}
+
+DEFUN (fread, , ,
   "[DATA, COUNT] = fread (FILENUM, SIZE, PRECISION)\n\
 \n\
  Reads data in binary form of type PRECISION from a file.\n\
@@ -1737,76 +676,12 @@ DEFUN (fread, args, nargout,
  DATA      : matrix in which the data is stored\n\
  COUNT     : number of elements read")
 {
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 3)
-    print_usage ("fread");
-  else
-    retval = fread_internal (args, nargout);
-
+  octave_value_list retval;
+  // XXX IMPLEMENTME XXX
   return retval;
 }
 
-// Write binary data to a file.
-//
-//   count = fwrite (fid, data, 'precision')
-//
-//    fid	: file id from fopen
-//    Data	: data to be written
-//    precision	: type of output element.  Can be:
-//
-//                char, uchar, schar, short, ushort, int, uint,
-//                long, float, double
-//
-//                 Default is uchar.
-//
-//    count     : the number of elements written
-
-static Octave_object
-fwrite_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  Pix p = file_io_get_file (args(0), "a+", "fwrite");
-
-  if (! p)
-    return retval;
-
-  // Get type and number of bytes per element to read.
-
-  const char *prec = "uchar";
-  string tstr;
-  if (nargin > 2)
-    {
-      tstr = args(2).string_value ();
-      prec = tstr.c_str ();
-
-      if (error_state)
-	{
-	  error ("fwrite: precision must be a specified as a string");
-	  return retval;
-	}
-    }
-
-  file_info file = file_list (p);
-
-  Matrix m = args(1).matrix_value ();
-
-  if (! error_state)
-    {
-      int count = m.write (file.fptr (), prec);
-
-      retval(0) = (double) count;
-    }
-
-  return retval;
-}
-
-DEFUN (fwrite, args, ,
+DEFUN (fwrite, , ,
   "COUNT = fwrite (FILENUM, DATA, PRECISION)\n\
 \n\
  Writes data to a file in binary form of size PRECISION\n\
@@ -1820,39 +695,8 @@ DEFUN (fwrite, args, ,
 \n\
  COUNT     : number of elements written")
 {
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 2 || nargin > 3)
-    print_usage ("fwrite");
-  else
-    retval = fwrite_internal (args);
-
-  return retval;
-}
-
-// Check for an EOF condition on a file opened by fopen.
-//
-//   eof = feof (fid)
-//
-//     fid : file id from fopen
-//     eof : non zero for an end of file condition
-
-static Octave_object
-feof_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  Pix p = return_valid_file (args(0));
-
-  if (! p)
-    return retval;
-
-  file_info file = file_list (p);
-
-  retval(0) = (double) feof (file.fptr ());
-
+  octave_value_list retval;
+  // XXX IMPLEMENTME XXX
   return retval;
 }
 
@@ -1862,125 +706,65 @@ DEFUN (feof, args, ,
  Returns a non zero value for an end of file condition for the\n\
  file specified by FILENAME or FILENUM from fopen")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ("feof");
+  if (nargin == 1)
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	retval = os->eof () ? 1.0 : 0.0;
+      else
+	gripe_invalid_file_id ("feof");
+    }
   else
-    retval = feof_internal (args);
+    print_usage ("feof");
 
   return retval;
 }
 
-// Check for an error condition on a file opened by fopen.
-//
-//   [message, errnum] = ferror (fid)
-//
-//     fid     : file id from fopen
-//     message : system error message
-//     errnum  : error number
-
-static Octave_object
-ferror_internal (const Octave_object& args, int nargout)
-{
-  Octave_object retval;
-
-  Pix p = return_valid_file (args(0));
-
-  if (! p)
-    return retval;
-
-  file_info file = file_list (p);
-
-  int ierr = ferror (file.fptr ());
-
-  if (nargout > 1)
-    retval(1) = (double) ierr;
-
-  retval(0) = strerror (ierr);
-
-  return retval;
-}
-
-DEFUN (ferror, args, nargout,
-  "ERROR = ferror (FILENAME or FILENUM)\n\
+DEFUN (ferror, args, ,
+  "ERROR = ferror (FILENAME or FILENUM, [\"clear\"])\n\
 \n\
  Returns a non zero value for an error condition on the\n\
  file specified by FILENAME or FILENUM from fopen")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ("ferror");
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	{
+	  bool clear = false;
+
+	  if (nargin == 2)
+	    {
+	      string opt = args(1).string_value ();
+
+	      if (! error_state)
+		clear = (opt == "clear");
+	      else
+		return retval;
+	    }
+
+	  int error_number = 0;
+
+	  string error_message = os->error (clear, error_number);
+
+	  retval(1) = (double) error_number;
+	  retval(0) = error_message;
+	}
+      else
+	gripe_invalid_file_id ("ferror");
+    }
   else
-    retval = ferror_internal (args, nargout);
-
-  return retval;
-}
-
-static Octave_object
-popen_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  if (! args(0).is_string ())
-    {
-      error ("popen: file name must be a string");
-      return retval;
-    }
-
-  Pix p = return_valid_file (args(0));
-
-  if (p)
-    {
-      file_info file = file_list (p);
-
-      retval(0) = (double) file.number ();
-
-      return retval;
-    }
-
-  if (! args(1).is_string ())
-    {
-      error ("popen: file mode must be a string");
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-  string mode = args(1).string_value ();
-
-  if (mode.length () > 1 || (mode[0] != 'w' && mode[0] != 'r'))
-    {
-      error ("popen: invalid mode, must be either \"r\" or \"w\".");
-      return retval;
-    }
-
-  file_stat fs (name);
-
-  if (fs && fs.is_dir ())
-    {
-      error ("popen: can't open directory");
-      return retval;
-    }
-
-  FILE *file_ptr = popen (name.c_str (), mode.c_str ());
-
-  if (! file_ptr)
-    {
-      error ("popen: unable to start process `%s'", name.c_str ());
-      return retval;
-    }
-
-  int number = get_next_avail_file_num ();
-
-  file_info file (number, name, file_ptr, mode);
-  file_list.append (file);
-
-  retval(0) = (double) number;
+    print_usage ("ferror");
 
   return retval;
 }
@@ -1993,47 +777,43 @@ DEFUN (popen, args, ,
   \"r\" : connect stdout of process to pipe\n\
   \"w\" : connect stdin of process to pipe")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 2)
+    {
+      string name = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  string mode = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      if (mode == "r")
+		{
+		  octave_iprocstream *ips = new octave_iprocstream (name);
+
+		  retval = octave_stream_list::insert (ips);
+		}
+	      else if (mode == "w")
+		{
+		  octave_oprocstream *ops = new octave_oprocstream (name);
+
+		  retval = octave_stream_list::insert (ops);
+		}
+	      else
+		::error ("popen: invalid mode specified");
+	    }
+	  else
+	    ::error ("popen: mode must be a string");
+	}
+      else
+	::error ("popen: name must be a string");
+    }
+  else
     print_usage ("popen");
-  else
-    retval = popen_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-pclose_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  Pix p = return_valid_file (args(0));
-
-  if (! p)
-    return retval;
-
-  file_info file = file_list (p);
-
-  if (file.number () < 3)
-    {
-      warning ("pclose: can't close stdin, stdout, or stderr!");
-      return retval;
-    }
-
-  int success = pclose (file.fptr ());
-  next_available_file_number.push (file.number ());
-  file_list.del (p);
-
-  if (success == 0)
-    retval(0) = 1.0; // succeeded
-  else
-    {
-      error ("pclose: error on closing file");
-      retval(0) = 0.0; // failed
-    }
 
   return retval;
 }
@@ -2043,471 +823,19 @@ DEFUN (pclose, args, ,
 \n\
   Close a pipe and terminate the associated process")
 {
-  Octave_object retval;
+  double retval = -1.0;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
+  if (nargin == 1)
+    {
+      retval = (double) octave_stream_list::remove (args(0));
+
+      if (retval < 0)
+	gripe_invalid_file_id ("pclose");
+    }
+  else
     print_usage ("pclose");
-  else
-    retval = pclose_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-execute_internal (const Octave_object& args)
-{
-  Octave_object retval (3, tree_constant (-1.0));
-
-  pid_t pid = 0;
-  int stdin_pipe[2];
-  int stdout_pipe[2];
-  FILE *stdin_file;
-  FILE *stdout_file;
-  int new_stdin;
-  int new_stdout;
-
-  if (! args(0).is_string ())
-    {
-      error ("execute: file name must be a string");
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-
-  if (pipe (stdin_pipe) || pipe (stdout_pipe)) 
-    {
-      error ("execute: pipe creation failed");
-      return retval;
-    }
-
-  pid = fork ();
-
-  if (pid < (pid_t) 0) 
-    {
-      error ("execute: fork failed - can't create child process");
-      return retval;
-    }
-
-  if (pid == (pid_t) 0) 
-    {
-      close (stdin_pipe[1]);
-      close (stdout_pipe[0]);
-
-      dup2 (stdin_pipe[0], STDIN_FILENO);
-      close (stdin_pipe[0]);
-    
-      dup2 (stdout_pipe[1], STDOUT_FILENO);
-      close (stdout_pipe[1]);
-
-      if (execlp (name.c_str (), name.c_str (), 0) == -1)
-	error ("execute: unable to start process `%s'", name.c_str ());
-
-      exit (0);
-      return 0.0;
-    } 
-  else 
-    {
-      close (stdin_pipe[0]);
-      close (stdout_pipe[1]);
-
-      stdout_file = fdopen (stdout_pipe[0], "r");
-      stdin_file = fdopen (stdin_pipe[1], "w"); 
-
-      if (fcntl (fileno (stdout_file), F_SETFL, O_NONBLOCK) < 0) 
-	{
-	  error ("execute: error setting file mode");
-	  return retval;
-	}
-
-      new_stdin = get_next_avail_file_num ();
-      new_stdout = new_stdin + 1;
-
-      file_info new_stdin_file_ptr (new_stdin, name, stdin_file, "w");
-      file_info new_stdout_file_ptr (new_stdout, name, stdout_file, "r");
-
-      file_list.append (new_stdin_file_ptr);
-      file_list.append (new_stdout_file_ptr);
-    }
-  
-  retval(2) = (double) pid;
-  retval(1) = (double) new_stdout;
-  retval(0) = (double) new_stdin;
-
-  return retval;
-}
-
-DEFUN (execute, args, ,
-  "[STDIN, STDOUT, PID] = execute (COMMAND)\n\
-\n\
-  Start a program and redirect its stdin to STDIN and its stdout to STDOUT")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("execute");
-  else
-    retval = execute_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-sync_system_internal (const Octave_object& args)
-{
-  Octave_object retval (1, tree_constant (-1.0));
-
-  if (! args(0).is_string ())
-    {
-      error ("sync_system: file name must be a string");
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-
-  retval (0) = (double) system (name.c_str ());
-  return retval;
-}
-
-DEFUN (sync_system, args, ,
-  "RETCODE = sync_system (FILENAME)\n\
-\n\
-  Start a program and wait until it terminates")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("sync_system");
-  else
-    retval = sync_system_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-async_system_internal (const Octave_object& args)
-{
-  Octave_object retval (1, tree_constant (-1.0));
-  pid_t pid;
-
-  if (! args(0).is_string ())
-    {
-      error ("async_system: file name must be a string");
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-
-  pid = fork ();
-
-  if (pid < 0) 
-    {
-      error ("async_system: fork failed -- can't create child process");
-      return retval;
-    }
-
-  if (pid == 0) 
-    {
-      system (name.c_str ());
-      exit (0);
-      retval (0) = 0.0;
-      return retval;
-    } 
-  else
-    {
-      retval (0) = (double) pid;
-      return retval;
-    }
-}
-
-DEFUN (async_system, args, ,
-  "PID = async_system (FILENAME)\n\
-\n\
-  Create a new process and start FILENAME")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("async_system");
-  else
-    retval = async_system_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-waitpid_internal (const Octave_object& args)
-{
-  Octave_object retval (1, tree_constant (-1.0));
-
-  double pid_num = args(0).double_value ();
-  
-  if (! error_state)
-    {
-      if (D_NINT (pid_num) != pid_num)
-	error ("waitpid: PID must be an integer value");
-      else
-	{
-	  pid_t pid = (pid_t) pid_num;
-
-	  int options = 0;
-
-	  if (args.length () == 2)
-	    {
-	      double options_num = args(1).double_value ();
-
-	      if (! error_state)
-		{
-		  if (D_NINT (options_num) != options_num)
-		    error ("waitpid: PID must be an integer value");
-		  else
-		    {
-		      options = NINT (options_num);
-		      if (options < 0 || options > 3)
-			error ("waitpid: invalid OPTIONS value specified");
-		    }
-		}
-	    }
-
-	  if (! error_state)
-	    retval (0) = (double) waitpid (pid, 0, options);
-	}
-    }
-
-  return retval;
-}
-
-DEFUN (waitpid, args, ,
-  "STATUS = waitpid (PID, OPTIONS)\n\
-\n\
-  wait for process PID to terminate\n\
-\n\
-  PID can be:\n\
-\n\
-     -1 : wait for any child process\n\
-      0 : wait for any child process whose process group ID is equal to\n\
-          that of the Octave interpreter process.\n\
-    > 0 : wait for termination of the child process with ID PID.\n\
-\n\
-  OPTIONS is:\n\
-\n\
-     0 : wait until signal is received or a child process exits (this\n\
-         is the default if the OPTIONS argument is missing) \n\
-     1 : do not hang if status is not immediately available\n\
-     2 : report the status of any child processes that are\n\
-         stopped, and whose status has not yet been reported\n\
-         since they stopped\n\
-     3 : implies both 1 and 2\n\
-\n\
-  STATUS is:\n\
-\n\
-     -1 : if an error occured\n\
-    > 0 : the process ID of the child process that exited")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 || nargin == 2)
-    retval = waitpid_internal (args);
-  else
-    print_usage ("waitpid");
-
-  return retval;
-}
-
-static Octave_object
-mkfifo_internal (const Octave_object& args)
-{
-  Octave_object retval (1, tree_constant (-1.0));
-
-  if (! args(0).is_string ())
-    {
-      error ("mkfifo: file name must be a string");
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-
-  if (! args(1).is_scalar_type ())
-    {
-      error ("mkfifo:  MODE must be an integer");
-      return retval;
-    }
-
-  long mode = (long) args(1).double_value ();
-
-  retval (0) = (double) oct_mkfifo (name, mode);
-
-  return retval;
-}
-
-DEFUN (mkfifo, args, ,
-  "STATUS = mkfifo (NAME, MODE)\n\
-\n\
-  Create a FIFO special file named NAME with file mode MODE\n\
-\n\
-  STATUS is:\n\
-\n\
-    != 0 : if mkfifo failed\n\
-       0 : if the FIFO special file could be created")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
-    print_usage ("mkfifo");
-  else
-    retval = mkfifo_internal (args);
-
-  return retval;
-}
-
-static Octave_object
-unlink_internal (const Octave_object& args)
-{
-  Octave_object retval;
-
-  if (! args(0).is_string ())
-    {
-      error ("unlink: file name must be a string");
-      retval (0) = -1.0;
-      return retval;
-    }
-
-  string name = args(0).string_value ();
-
-  retval (0) = (double) oct_unlink (name);
-
-  return retval;
-}
-
-DEFUN (unlink, args, ,
-  "STATUS = unlink (NAME)\n\
-\n\
-  Delete the file NAME\n\
-\n\
-  STATUS is:\n\
-\n\
-    != 0 : if unlink failed\n\
-       0 : if the file could be successfully deleted")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("unlink");
-  else
-    retval = unlink_internal (args);
-
-  return retval;
-}
-
-static Octave_map
-mk_stat_map (const file_stat& fs)
-{
-  Octave_map m;
-
-  m["dev"] = (double) fs.dev ();
-  m["ino"] = (double) fs.ino ();
-  m["modestr"] = fs.mode_as_string ();
-  m["nlink"] = (double) fs.nlink ();
-  m["uid"] = (double) fs.uid ();
-  m["gid"] = (double) fs.gid ();
-#if defined (HAVE_ST_RDEV)
-  m["rdev"] = (double) fs.rdev ();
-#endif
-  m["size"] = (double) fs.size ();
-  m["atime"] = (double) fs.atime ();
-  m["mtime"] = (double) fs.mtime ();
-  m["ctime"] = (double) fs.ctime ();
-#if defined (HAVE_ST_BLKSIZE)
-  m["blksize"] = (double) fs.blksize ();
-#endif
-#if defined (HAVE_ST_BLOCKS)
-  m["blocks"] = (double) fs.blocks ();
-#endif
-
-  return m;
-}
-
-DEFUN (stat, args, ,
-  "stat (NAME)\n\
-\n\
-  Given the name of a file, return a structure with the following
-  elements:\n\
-\n\
-    dev     : id of device containing a directory entry for this file\n\
-    ino     : file number of the file\n\
-    modestr : file mode, as a string of ten letters or dashes as in ls -l\n\
-    nlink   : number of links\n\
-    uid     : user id of file's owner\n\
-    gid     : group id of file's group \n\
-    rdev    : id of device for block or character special files\n\
-    size    : size in bytes\n\
-    atime   : time of last access\n\
-    mtime   : time of last modification\n\
-    ctime   : time of last file status change\n\
-    blksize : size of blocks in the file\n\
-    blocks  : number of blocks allocated for file\n\
-\n\
-  If the file does not exist, -1 is returned.")
-{
-  Octave_object retval;
-
-  if (args.length () == 1)
-    {
-      string fname = oct_tilde_expand (args(0).string_value ());
-
-      if (! error_state)
-	{
-	  file_stat fs (fname);
-
-	  if (fs)
-	    retval = tree_constant (mk_stat_map (fs));
-	  else
-	    retval = -1.0;
-	}
-    }
-  else
-    print_usage ("stat");
-
-  return retval;
-}
-
-DEFUN (lstat, args, ,
-  "lstat (NAME)\n\
-\n\
-  Like stat (NAME), but if NAME refers to a symbolic link, returns\n\
-  information about the link itself, not the file that it points to.")
-{
-  Octave_object retval;
-
-  if (args.length () == 1)
-    {
-      string fname = oct_tilde_expand (args(0).string_value ());
-
-      if (! error_state)
-	{
-	  file_stat fs (fname);
-
-	  if (fs)
-	    retval = tree_constant (mk_stat_map (fs));
-	  else
-	    retval = -1.0;
-	}
-    }
-  else
-    print_usage ("stat");
 
   return retval;
 }
@@ -2515,7 +843,7 @@ DEFUN (lstat, args, ,
 DEFUN (octave_tmp_file_name, args, ,
  "octave_tmp_file_name ()")
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (args.length () == 0)
     retval = oct_tempnam ();
@@ -2533,7 +861,7 @@ convert (int x, int ibase, int obase)
   int tmp = x % obase;
 
   if (tmp > ibase - 1)
-    error ("umask: invalid digit");
+    ::error ("umask: invalid digit");
   else
     {
       retval = tmp;
@@ -2543,7 +871,7 @@ convert (int x, int ibase, int obase)
 	  tmp = x % obase;
 	  if (tmp > ibase - 1)
 	    {
-	      error ("umask: invalid digit");
+	      ::error ("umask: invalid digit");
 	      break;
 	    }
 	  retval += mult * tmp;
@@ -2563,7 +891,7 @@ successful, returns the previous value of the mask (as an integer to
 be interpreted as an octal number); otherwise an error message is
 printed.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int status = 0;
 
@@ -2574,7 +902,7 @@ printed.")
       if (error_state)
 	{
 	  status = -1;
-	  error ("umask: expecting integer argument");
+	  ::error ("umask: expecting integer argument");
 	}
       else
 	{
@@ -2583,7 +911,7 @@ printed.")
 	  if ((double) mask != dmask || mask < 0)
 	    {
 	      status = -1;
-	      error ("umask: MASK must be a positive integer value");
+	      ::error ("umask: MASK must be a positive integer value");
 	    }
 	  else
 	    {

@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include <iostream.h>
 #include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
@@ -1122,26 +1123,26 @@ make_name_list (void)
 // List variable names.
 
 static void
-print_symbol_info_line (ostrstream& output_buf, const symbol_record_info& s)
+print_symbol_info_line (ostream& os, const symbol_record_info& s)
 {
-  output_buf << (s.is_read_only () ? " -" : " w");
-  output_buf << (s.is_eternal () ? "- " : "d ");
+  os << (s.is_read_only () ? " -" : " w");
+  os << (s.is_eternal () ? "- " : "d ");
 #if 0
-  output_buf << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
+  os << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
 #endif
-  output_buf.form ("  %-16s", s.type_as_string ().c_str ());
+  os.form ("  %-16s", s.type_as_string ().c_str ());
   if (s.is_function ())
-    output_buf << "      -      -";
+    os << "      -      -";
   else
     {
-      output_buf.form ("%7d", s.rows ());
-      output_buf.form ("%7d", s.columns ());
+      os.form ("%7d", s.rows ());
+      os.form ("%7d", s.columns ());
     }
-  output_buf << "  " << s.name () << "\n";
+  os << "  " << s.name () << "\n";
 }
 
 static void
-print_long_listing (ostrstream& output_buf, symbol_record_info *s)
+print_long_listing (ostream& os, symbol_record_info *s)
 {
   if (! s)
     return;
@@ -1149,14 +1150,14 @@ print_long_listing (ostrstream& output_buf, symbol_record_info *s)
   symbol_record_info *ptr = s;
   while (ptr->is_defined ())
     {
-      print_symbol_info_line (output_buf, *ptr);
+      print_symbol_info_line (os, *ptr);
       ptr++;
     }
 }
 
 static int
 maybe_list (const char *header, const string_vector& argv, int argc,
-	    ostrstream& output_buf, int show_verbose, symbol_table
+	    ostream& os, int show_verbose, symbol_table
 	    *sym_tab, unsigned type, unsigned scope)
 {
   int count;
@@ -1167,11 +1168,11 @@ maybe_list (const char *header, const string_vector& argv, int argc,
       symbols = sym_tab->long_list (count, argv, argc, 1, type, scope);
       if (symbols && count > 0)
 	{
-	  output_buf << "\n" << header << "\n\n"
+	  os << "\n" << header << "\n\n"
 		     << "prot  type               rows   cols  name\n"
 		     << "====  ====               ====   ====  ====\n";
 
-	  print_long_listing (output_buf, symbols);
+	  print_long_listing (os, symbols);
 	  status = 1;
 	}
       delete [] symbols;
@@ -1182,8 +1183,8 @@ maybe_list (const char *header, const string_vector& argv, int argc,
 					     type, scope);
       if (symbols.length () > 0 && count > 0)
 	{
-	  output_buf << "\n" << header << "\n\n";
-	  symbols.list_in_columns (output_buf);
+	  os << "\n" << header << "\n\n";
+	  symbols.list_in_columns (os);
 	  status = 1;
 	}
     }
@@ -1286,18 +1287,17 @@ do_who (int argc, const string_vector& argv)
       show_variables = 1;
     }
 
-  ostrstream output_buf;
   int pad_after = 0;
 
   if (show_builtins)
     {
       pad_after += maybe_list ("*** built-in variables:", pats, npats,
-			       output_buf, show_verbose, global_sym_tab,
+			       octave_stdout, show_verbose, global_sym_tab,
 			       symbol_def::BUILTIN_VARIABLE,
 			       SYMTAB_ALL_SCOPES);
 
       pad_after += maybe_list ("*** built-in functions:", pats, npats,
-			       output_buf, show_verbose, global_sym_tab,
+			       octave_stdout, show_verbose, global_sym_tab,
 			       symbol_def::BUILTIN_FUNCTION,
 			       SYMTAB_ALL_SCOPES);
     }
@@ -1305,7 +1305,7 @@ do_who (int argc, const string_vector& argv)
   if (show_functions)
     {
       pad_after += maybe_list ("*** currently compiled functions:",
-			       pats, npats, output_buf, show_verbose,
+			       pats, npats, octave_stdout, show_verbose,
 			       global_sym_tab, symbol_def::USER_FUNCTION,
 			       SYMTAB_ALL_SCOPES);
     }
@@ -1313,21 +1313,18 @@ do_who (int argc, const string_vector& argv)
   if (show_variables)
     {
       pad_after += maybe_list ("*** local user variables:", pats, npats,
-			       output_buf, show_verbose, curr_sym_tab,
+			       octave_stdout, show_verbose, curr_sym_tab,
 			       symbol_def::USER_VARIABLE,
 			       SYMTAB_LOCAL_SCOPE);
 
       pad_after += maybe_list ("*** globally visible user variables:",
-			       pats, npats, output_buf, show_verbose,
+			       pats, npats, octave_stdout, show_verbose,
 			       curr_sym_tab, symbol_def::USER_VARIABLE,
 			       SYMTAB_GLOBAL_SCOPE);
     }
 
   if (pad_after)
-    output_buf << "\n";
-
-  output_buf << ends;
-  maybe_page_output (output_buf);
+    octave_stdout << "\n";
 
   return retval;
 }

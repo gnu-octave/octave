@@ -29,7 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream.h>
-#include <strstream.h>
 
 #include "error.h"
 #include "oct-obj.h"
@@ -342,11 +341,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 		break;
 
 	      if (print && pad_after)
-		{
-		  ostrstream output_buf;
-		  output_buf << "\n" << ends;
-		  maybe_page_output (output_buf);
-		}
+		octave_stdout << "\n";
 
 	      if (print)
 		results(i).print_with_name (lhs_expr->name (), 0);
@@ -365,11 +360,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 	}
 
       if (print && pad_after)
-	{
-	  ostrstream output_buf;
-	  output_buf << "\n" << ends;
-	  maybe_page_output (output_buf);
-	}
+	octave_stdout << "\n";
     }
 
   return results;

@@ -35,7 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <fstream.h>
 #include <iostream.h>
-#include <strstream.h>
 
 #include <SLList.h>
 
@@ -252,24 +251,18 @@ octave_value::lookup_map_element (SLList<string>& list, bool insert,
 void
 octave_value::print (void)
 {
-  ostrstream output_buf;
-  print (output_buf);
-  output_buf << ends;
-  maybe_page_output (output_buf);
+  print (octave_stdout);
 }
 
 void
 octave_value::print_with_name (const string& name, bool print_padding)
 {
-  ostrstream output_buf;
-  print_with_name (output_buf, name, print_padding);
-  output_buf << ends;
-  maybe_page_output (output_buf);
+  print_with_name (octave_stdout, name, print_padding);
 }
 
 void
 octave_value::print_with_name (ostream& output_buf, const string& name,
-				bool print_padding) 
+			       bool print_padding) 
 {
   bool pad_after = false;
 

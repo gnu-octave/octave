@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <strstream.h>
+#include <iostream.h>
 
 #include "QPSOL.h"
 
@@ -314,45 +314,42 @@ static QPSOL_OPTIONS qpsol_option_table [] =
 };
 
 static void
-print_qpsol_option_list (void)
+print_qpsol_option_list (ostream& os)
 {
-  ostrstream output_buf;
-
   print_usage ("qpsol_options", 1);
 
-  output_buf << "\n"
-	     << "Options for qpsol include:\n\n"
-	     << "  keyword                                  value\n"
-	     << "  -------                                  -----\n\n";
+  os << "\n"
+     << "Options for qpsol include:\n\n"
+     << "  keyword                                  value\n"
+     << "  -------                                  -----\n\n";
 
   QPSOL_OPTIONS *list = qpsol_option_table;
 
   const char *keyword;
   while ((keyword = list->keyword) != 0)
     {
-      output_buf.form ("  %-40s ", keyword);
+      os.form ("  %-40s ", keyword);
       if (list->d_get_fcn)
 	{
 	  double val = (qpsol_opts.*list->d_get_fcn) ();
 	  if (val < 0.0)
-	    output_buf << "computed automatically";
+	    os << "computed automatically";
 	  else
-	    output_buf << val;
+	    os << val;
 	}
       else
 	{
 	  int val = (qpsol_opts.*list->i_get_fcn) ();
 	  if (val < 0)
-	    output_buf << "depends on problem size";
+	    os << "depends on problem size";
 	  else
-	    output_buf << val;
+	    os << val;
 	}
-      output_buf << "\n";
+      os << "\n";
       list++;
     }
 
-  output_buf << "\n" << ends;
-  maybe_page_output (output_buf);
+  os << "\n";
 }
 
 static void
@@ -437,7 +434,7 @@ to the shortest match.")
 
   if (nargin == 0)
     {
-      print_qpsol_option_list ();
+      print_qpsol_option_list (octave_stdout);
       return retval;
     }
   else if (nargin == 1 || nargin == 2)

@@ -28,7 +28,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream.h>
-#include <procbuf.h>
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#include "oct-procbuf.h"
 
 class
 procstreambase : virtual public ios
@@ -47,9 +52,11 @@ public:
 
   int close (void);
 
+  pid_t pid (void) { return pb.pid (); }
+
 private:
 
-  procbuf pb;
+  octave_procbuf pb;
 
   void pb_init (void) { init (&pb); }
 

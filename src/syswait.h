@@ -26,14 +26,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // This mess suggested by the autoconf manual.
 
 #include <sys/types.h>
+
 #if HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
+
+#ifndef WIFEXITED
+#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
+
 #ifndef WEXITSTATUS
 #define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
 #endif
-#ifndef WIFEXITED
-#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+
+#ifndef WIFSIGNALLED
+#define WIFSIGNALLED(stat_val) \
+  (((stat_val) & 0177) != 0177 && ((stat_val) & 0177) != 0)
 #endif
 
 #endif

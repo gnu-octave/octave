@@ -315,19 +315,17 @@ is available in the on-line version of the manual.\n\
 Use the command `help -i <topic>' to search the manual index.\n"
 
 static void
-additional_help_message (ostrstream& output_buf)
+additional_help_message (ostream& os)
 {
 #ifdef USE_GNU_INFO
   if (! user_pref.suppress_verbose_help_message)
-    output_buf << VERBOSE_HELP_MESSAGE;
+    os << VERBOSE_HELP_MESSAGE;
 #endif
 }
 
 void
 print_usage (const string& nm, int just_usage)
 {
-  ostrstream output_buf;
-
   symbol_record *sym_rec = global_sym_tab->lookup (nm, 0, 0);
   if (sym_rec)
     {
@@ -335,13 +333,11 @@ print_usage (const string& nm, int just_usage)
 
       if (h.length () > 0)
 	{
-	  output_buf << "\n*** " << nm << ":\n\n"
+	  octave_stdout << "\n*** " << nm << ":\n\n"
 	    << h << "\n";
 
 	  if (! just_usage)
-	    additional_help_message (output_buf);
-	  output_buf << ends;
-	  maybe_page_output (output_buf);
+	    additional_help_message (octave_stdout);
 	}
     }
   else
@@ -349,20 +345,20 @@ print_usage (const string& nm, int just_usage)
 }
 
 static void
-display_names_from_help_list (ostrstream& output_buf, help_list *list,
+display_names_from_help_list (ostream& os, help_list *list,
 			      const char *desc)
 {
   int count = 0;
   string_vector symbols = names (list, count);
   if (! symbols.empty ())
     {
-      output_buf << "\n*** " << desc << ":\n\n";
-      symbols.list_in_columns (output_buf);
+      os << "\n*** " << desc << ":\n\n";
+      symbols.list_in_columns (os);
     }
 }
 
 static string
-print_symbol_type (ostrstream& output_buf, symbol_record *sym_rec,
+print_symbol_type (ostream& os, symbol_record *sym_rec,
 		   const string& name, int print)
 {
   string retval;
@@ -380,16 +376,16 @@ print_symbol_type (ostrstream& output_buf, symbol_record *sym_rec,
 	  ff = ff.length () > 0 ? ff : fn;
 
 	  if (print)
-	    output_buf << name
-	      << " is the function defined from:\n"
-		<< ff << "\n";
+	    os << name
+	       << " is the function defined from:\n"
+	       << ff << "\n";
 	  else
 	    retval = ff;
 	}
       else
 	{
 	  if (print)
-	    output_buf << name << " is a user-defined function\n";
+	    os << name << " is a user-defined function\n";
 	  else
 	    retval = "user-defined function";
 	}
@@ -397,36 +393,35 @@ print_symbol_type (ostrstream& output_buf, symbol_record *sym_rec,
   else if (sym_rec->is_text_function ())
     {
       if (print)
-	output_buf << name << " is a builtin text-function\n";
+	os << name << " is a builtin text-function\n";
       else
 	retval = "builtin text-function";
     }
   else if (sym_rec->is_builtin_function ())
     {
       if (print)
-	output_buf << name << " is a builtin function\n";
+	os << name << " is a builtin function\n";
       else
 	retval = "builtin function";
     }
   else if (sym_rec->is_user_variable ())
     {
       if (print)
-	output_buf << name << " is a user-defined variable\n";
+	os << name << " is a user-defined variable\n";
       else
 	retval = "user-defined variable";
     }
   else if (sym_rec->is_builtin_variable ())
     {
       if (print)
-	output_buf << name << " is a builtin variable\n";
+	os << name << " is a builtin variable\n";
       else
 	retval = "builtin variable";
     }
   else
     {
       if (print)
-	output_buf << "which: `" << name
-	  << "' has unknown type\n";
+	os << "which: `" << name << "' has unknown type\n";
       else
 	retval = "unknown type";
     }
@@ -435,25 +430,23 @@ print_symbol_type (ostrstream& output_buf, symbol_record *sym_rec,
 }
 
 static void
-display_symtab_names (ostrstream& output_buf, const string_vector& names,
+display_symtab_names (ostream& os, const string_vector& names,
 		      int /* count */, const string& desc)
 {
   if (! names.empty ())
     {
-      output_buf << "\n*** " << desc << ":\n\n";
-      names.list_in_columns (output_buf);
+      os << "\n*** " << desc << ":\n\n";
+      names.list_in_columns (os);
     }
 }
 
 static void
 simple_help (void)
 {
-  ostrstream output_buf;
-
-  display_names_from_help_list (output_buf, operator_help (),
+  display_names_from_help_list (octave_stdout, operator_help (),
 				"operators");
 
-  display_names_from_help_list (output_buf, keyword_help (),
+  display_names_from_help_list (octave_stdout, keyword_help (),
 				"reserved words");
 
 #ifdef LIST_SYMBOLS
@@ -464,7 +457,7 @@ simple_help (void)
     { \
       int count; \
       string_vector names = global_sym_tab->list (count, 0, 0, 1, type); \
-      display_symtab_names (output_buf, names, count, msg); \
+      display_symtab_names (octave_stdout, names, count, msg); \
     } \
   while (0)
 
@@ -496,17 +489,16 @@ simple_help (void)
 
       if (! names.empty ())
 	{
-	  output_buf << "\n*** function files in "
-		     << make_absolute (dirs[i], the_current_working_directory)
-		     << ":\n\n";
+	  octave_stdout << "\n*** function files in "
+			<< make_absolute (dirs[i],
+					  the_current_working_directory)
+			<< ":\n\n";
 
-	  names.list_in_columns (output_buf);
+	  names.list_in_columns (octave_stdout);
 	}
     }
 
-  additional_help_message (output_buf);
-  output_buf << ends;
-  maybe_page_output (output_buf);
+  additional_help_message (octave_stdout);
 }
 
 #ifdef USE_GNU_INFO
@@ -591,7 +583,7 @@ help_from_info (const string_vector& argv, int idx, int argc)
 }
 
 int
-help_from_list (ostrstream& output_buf, const help_list *list,
+help_from_list (ostream& os, const help_list *list,
 		const string& nm, int usage)
 {
   char *name;
@@ -600,13 +592,13 @@ help_from_list (ostrstream& output_buf, const help_list *list,
       if (strcmp (name, nm.c_str ()) == 0)
 	{
 	  if (usage)
-	    output_buf << "\nusage: ";
+	    os << "\nusage: ";
 	  else
 	    {
-	      output_buf << "\n*** " << nm << ":\n\n";
+	      os << "\n*** " << nm << ":\n\n";
 	    }
 
-	  output_buf << list->help << "\n";
+	  os << list->help << "\n";
 
 	  return 1;
 	}
@@ -618,17 +610,15 @@ help_from_list (ostrstream& output_buf, const help_list *list,
 static void
 builtin_help (int argc, const string_vector& argv)
 {
-  ostrstream output_buf;
-
   help_list *op_help_list = operator_help ();
   help_list *kw_help_list = keyword_help ();
 
   for (int i = 1; i < argc; i++)
     {
-      if (help_from_list (output_buf, op_help_list, argv[i], 0))
+      if (help_from_list (octave_stdout, op_help_list, argv[i], 0))
 	continue;
 
-      if (help_from_list (output_buf, kw_help_list, argv[i], 0))
+      if (help_from_list (octave_stdout, kw_help_list, argv[i], 0))
 	continue;
 
       symbol_record *sym_rec = lookup_by_name (argv[i], 0);
@@ -639,8 +629,8 @@ builtin_help (int argc, const string_vector& argv)
 
 	  if (h.length () > 0)
 	    {
-	      print_symbol_type (output_buf, sym_rec, argv[i], 1);
-	      output_buf << "\n" << h << "\n";
+	      print_symbol_type (octave_stdout, sym_rec, argv[i], 1);
+	      octave_stdout << "\n" << h << "\n";
 	      continue;
 	    }
 	}
@@ -651,18 +641,17 @@ builtin_help (int argc, const string_vector& argv)
 
       if (! h.empty ())
 	{
-	  output_buf << argv[i] << " is the file:\n"
+	  octave_stdout << argv[i] << " is the file:\n"
 	    << path << "\n\n" << h << "\n";
 
 	  continue;
 	}
 
-      output_buf << "\nhelp: sorry, `" << argv[i] << "' is not documented\n"; 
+      octave_stdout << "\nhelp: sorry, `" << argv[i]
+		    << "' is not documented\n"; 
     }
 
-  additional_help_message (output_buf);
-  output_buf << ends;
-  maybe_page_output (output_buf);
+  additional_help_message (octave_stdout);
 }
 
 #ifdef USE_GNU_INFO
@@ -834,14 +823,14 @@ display the definition of each NAME that refers to a function")
 
       output_buf << ends;
 
+      char *s = output_buf.str ();
+
       if (nargout == 0)
-	maybe_page_output (output_buf);
+	octave_stdout << s;
       else
-	{
-	  char *s = output_buf.str ();
-	  retval = s;
-	  delete [] s;
-	}
+	retval = s;
+
+      delete [] s;
     }
   else
     print_usage ("type");
@@ -871,8 +860,6 @@ file, print the full name of the file.")
       if (nargout > 0)
 	retval.resize (argc-1, Matrix ());
 
-      ostrstream output_buf;
-
       for (int i = 1; i < argc; i++)
 	{
 	  symbol_record *sym_rec = lookup_by_name (argv[i], 0);
@@ -880,7 +867,7 @@ file, print the full name of the file.")
 	  if (sym_rec)
 	    {
 	      int print = (nargout == 0);
-	      string tmp = print_symbol_type (output_buf, sym_rec,
+	      string tmp = print_symbol_type (octave_stdout, sym_rec,
 					      argv[i], print);
 	      if (! print)
 		retval(i) = tmp;
@@ -888,13 +875,11 @@ file, print the full name of the file.")
 	  else
 	    {
 	      if (nargout == 0)
-		output_buf << "which: `" << argv[i] << "' is undefined\n";
+		octave_stdout << "which: `" << argv[i] << "' is undefined\n";
 	      else
 		retval(i) = "undefined";
 	    }
 	}
-      output_buf << ends;
-      maybe_page_output (output_buf);
     }
   else
     print_usage ("which");

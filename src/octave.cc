@@ -58,7 +58,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lex.h"
 #include "oct-hist.h"
 #include "toplev.h"
-#include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
@@ -397,8 +396,6 @@ main (int argc, char **argv)
   // line options override defaults.
 
   init_user_prefs ();
-
-  initialize_pager ();
 
   sysdep_init ();
 

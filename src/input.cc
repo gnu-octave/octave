@@ -46,7 +46,6 @@ Free Software Foundation, Inc.
 #include <string>
 
 #include <iostream.h>
-#include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
@@ -369,27 +368,23 @@ do_input_echo (const string& input_string)
 
   if (do_echo)
     {
-      ostrstream buf;
-
       if (forced_interactive)
 	{
 	  if (promptflag > 0)
-	    buf << decode_prompt_string (user_pref.ps1);
+	    octave_stdout << decode_prompt_string (user_pref.ps1);
 	  else
-	    buf << decode_prompt_string (user_pref.ps2);
+	    octave_stdout << decode_prompt_string (user_pref.ps2);
 	}
       else
-	buf << decode_prompt_string (user_pref.ps4);
+	octave_stdout << decode_prompt_string (user_pref.ps4);
 
       if (! input_string.empty ())
 	{
-	  buf << input_string;
+	  octave_stdout << input_string;
 
 	  if (input_string[input_string.length () - 1] != '\n')
-	    buf << "\n";
+	    octave_stdout << "\n";
 	}
-
-      maybe_page_output (buf);
     }
 }
 
@@ -478,10 +473,10 @@ octave_gets (void)
       if (interactive)
 	{
 	  pipe_handler_error_count = 0;
-	  flush_output_to_pager ();
+	  flush_octave_stdout ();
 	}
 
-      maybe_write_to_diary_file (prompt);
+      octave_diary << prompt;
 
       retval = gnu_readline (prompt.c_str ());
     }
@@ -498,12 +493,12 @@ octave_gets (void)
       if (! input_from_startup_file)
 	octave_command_history.add (current_input_line);
 
-      maybe_write_to_diary_file (current_input_line);
+      octave_diary << current_input_line;
 
       do_input_echo (current_input_line);
     }
 
-  maybe_write_to_diary_file ("\n");
+  octave_diary << "\n";
   
   return retval;
 }
@@ -1030,7 +1025,7 @@ get_user_input (const octave_value_list& args, int debug = 0)
 
  again:
 
-  flush_output_to_pager ();
+  flush_octave_stdout ();
 
   char *input_buf = gnu_readline (prompt.c_str ());
 

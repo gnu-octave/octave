@@ -308,8 +308,6 @@ clean_up_and_exit (int retval)
 
   close_plot_stream ();
 
-  close_diary_file ();
-
   close_files ();
 
   cleanup_tmp_files ();
@@ -362,25 +360,17 @@ Have Octave ask the system, \"What kind of computer are you?\"")
   if (nargin != 0)
     warning ("computer: ignoring extra arguments");
 
-  ostrstream output_buf;
+  string msg;
 
   if (strcmp (TARGET_HOST_TYPE, "unknown") == 0)
-    output_buf << "Hi Dave, I'm a HAL-9000";
+    msg = "Hi Dave, I'm a HAL-9000";
   else
-    output_buf << TARGET_HOST_TYPE;
+    msg = TARGET_HOST_TYPE;
 
   if (nargout == 0)
-    {
-      output_buf << "\n" << ends;
-      maybe_page_output (output_buf);
-    }
+    octave_stdout << msg << "\n";
   else
-    {
-      output_buf << ends;
-      char *msg = output_buf.str ();
-      retval = msg;
-      delete [] msg;
-    }
+    retval = msg;
 
   return retval;
 }
@@ -420,8 +410,7 @@ DEFUN (warranty, , ,
 {
   octave_value_list retval;
 
-  ostrstream output_buf;
-  output_buf << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\n\
+  octave_stdout << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\n\
 This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 2 of the License, or\n\
@@ -436,9 +425,6 @@ You should have received a copy of the GNU General Public License\n\
 along with this program. If not, write to the Free Software\n\
 Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n\
 \n";
-
-  output_buf << ends;
-  maybe_page_output (output_buf);
 
   return retval;
 }
@@ -627,17 +613,18 @@ do_system (const string& cmd_str, bool return_output)
   if (cmd && *cmd)
     {
       ostrstream output_buf;
-	      
+
       char ch;
       while (cmd->get (ch))
 	{
-	  if (return_output || user_pref.page_screen_output)
+	  if (return_output)
 	    output_buf.put (ch);
+
+	  if (user_pref.page_screen_output)
+	    octave_stdout.put (ch);
 	  else
 	    cout.put (ch);
 	}
-
-      output_buf << ends;
 
       status = cmd->close ();
 
@@ -657,8 +644,6 @@ do_system (const string& cmd_str, bool return_output)
 
 	  delete [] msg;
 	}
-      else
-	maybe_page_output (output_buf);
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());

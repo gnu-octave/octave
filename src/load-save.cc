@@ -1350,15 +1350,16 @@ do_load (istream& stream, const string& orig_fname, int force,
 
   if (list_only && count)
     {
+      output_buf << ends;
+
+      char *msg = output_buf.str ();
+
       if (nargout > 0)
-	{
-	  output_buf << ends;
-	  char *msg = output_buf.str ();
-	  retval = msg;
-	  delete [] msg;
-	}
+	retval = msg;
       else
-	maybe_page_output (output_buf);
+	octave_stdout << msg;
+
+      delete [] msg;
     }
 
   return retval;
@@ -2117,14 +2118,15 @@ get_default_save_format (void)
 }
 
 static void
-write_binary_header (ostream& stream, load_save_format format)
+write_binary_header (ostream& os, load_save_format format)
 {
   if (format == LS_BINARY)
     {
-      stream << (octave_words_big_endian ? "Octave-1-B" : "Octave-1-L");
+      os << (octave_words_big_endian ? "Octave-1-B" : "Octave-1-L");
 
       char tmp = (char) native_float_format;
-      stream.write (&tmp, 1);
+
+      os.write (&tmp, 1);
     }
 }
 
@@ -2248,12 +2250,8 @@ save variables in a file")
       // XXX FIXME XXX -- should things intended for the screen end up
       // in a octave_value (string)?
 
-      ostrstream buf;
-
-      save_vars (argv, i, argc, buf, save_builtins, format,
+      save_vars (argv, i, argc, octave_stdout, save_builtins, format,
 		 save_as_floats);
-
-      maybe_page_output (buf);
     }
 
   // Guard against things like `save a*', which are probably mistakes...

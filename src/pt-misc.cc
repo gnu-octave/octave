@@ -29,7 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream.h>
-#include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
@@ -85,12 +84,7 @@ tree_statement::maybe_echo_code (bool in_function_body)
 {
   if (in_function_body
       && (user_pref.echo_executing_commands & ECHO_FUNCTIONS))
-    {
-      ostrstream output_buf;
-      print_code (output_buf);
-      output_buf << ends;
-      maybe_page_output (output_buf);
-    }
+    print_code (octave_stdout);
 }
 
 void

@@ -23,17 +23,98 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_pager_h)
 #define octave_pager_h 1
 
-class ostrstream;
-
 #include <string>
 
-extern char *get_pager (void);
-extern void initialize_pager (void);
-extern void maybe_page_output (ostrstream& msg_buf);
-extern void flush_output_to_pager (void);
+#include <iostream.h>
+#include <strstream.h>
 
-extern void close_diary_file (void);
-extern void maybe_write_to_diary_file (const string& s);
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+class
+octave_pager_buf : public strstreambuf
+{
+public:
+
+  octave_pager_buf (int size = 0) : strstreambuf (size) { }
+
+protected:
+
+  int sync (void);
+};
+
+class
+octave_pager_stream : public ostream
+{
+protected:
+
+  octave_pager_stream (void);
+
+public:
+
+  ~octave_pager_stream (void);
+
+  static octave_pager_stream& stream (void);
+
+private:
+
+  static octave_pager_stream *instance;
+
+  octave_pager_buf *pb;
+
+  // No copying!
+
+  octave_pager_stream (const octave_pager_stream&);
+
+  octave_pager_stream& operator = (const octave_pager_stream&);
+};
+
+class
+octave_diary_buf : public strstreambuf
+{
+public:
+
+  octave_diary_buf (int size = 0) : strstreambuf (size) { }
+
+protected:
+
+  int sync (void);
+};
+
+class
+octave_diary_stream : public ostream
+{
+protected:
+
+  octave_diary_stream (void);
+
+public:
+
+  ~octave_diary_stream (void);
+
+  static octave_diary_stream& stream (void);
+
+private:
+
+  static octave_diary_stream *instance;
+
+  octave_diary_buf *db;
+
+  // No copying!
+
+  octave_diary_stream (const octave_diary_stream&);
+
+  octave_diary_stream& operator = (const octave_diary_stream&);
+};
+
+#define octave_stdout (octave_pager_stream::stream ())
+
+#define octave_diary (octave_diary_stream::stream ())
+
+extern void flush_octave_stdout (void);
+
+extern pid_t octave_pager_pid;
 
 #endif
 

@@ -390,12 +390,8 @@ print a directory listing")
   if (cmd && *cmd)
     {
       int ch;
-      ostrstream output_buf;
       while ((ch = cmd->get ()) != EOF)
-	output_buf << (char) ch;
-      output_buf << ends;
-
-      maybe_page_output (output_buf);
+	octave_stdout << (char) ch;
     }
   else
     error ("couldn't start process for ls!");
@@ -426,11 +422,7 @@ DEFUN (pwd, , nargout,
   if (! directory.empty ())
     {
       if (nargout == 0)
-	{
-	  ostrstream output_buf;
-	  output_buf << directory << "\n" << ends;
-	  maybe_page_output (output_buf);
-	}
+	octave_stdout << directory << "\n";
       else
 	retval = directory;
     }

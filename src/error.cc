@@ -53,7 +53,7 @@ ostrstream *error_message_buffer = 0;
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
-  flush_output_to_pager ();
+  flush_octave_stdout ();
 
   int to_beep_or_not_to_beep = user_pref.beep_on_error && ! error_state;
 
@@ -91,7 +91,7 @@ verror (const char *name, const char *fmt, va_list args)
     }
   else
     {
-      maybe_write_to_diary_file (msg);
+      octave_diary << msg;
       cerr << msg;
     }
 
@@ -185,7 +185,7 @@ parse_error (const char *fmt, ...)
 void
 panic (const char *fmt, ...)
 {
-  flush_output_to_pager ();
+  flush_octave_stdout ();
 
   va_list args;
   va_start (args, fmt);

@@ -1,3 +1,8 @@
+Sun Feb 23 00:15:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/is_square.m: Handle empty matrices correctly.
+	* general/is_symmetric.m: Handle empty matrices and strings.
+
 Sat Feb 22 01:06:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* polynomial/conv.m: Check inputs with is_vector(), not is_matrix().

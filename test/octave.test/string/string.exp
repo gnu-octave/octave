@@ -45,3 +45,91 @@ do_test str-esc-11.m
 set test str-esc-12
 set prog_output "ok"
 do_test str-esc-12.m
+
+set test string_fill_char-1
+set prog_output "ans = 1"
+do_test string_fill_char-1.m
+
+set test string_fill_char-2
+set prog_output "ans = 1"
+do_test string_fill_char-2.m
+
+set test isstr-1
+set prog_output "ans = 0"
+do_test isstr-1.m
+
+set test isstr-2
+set prog_output "ans = 0"
+do_test isstr-2.m
+
+set test isstr-3
+set prog_output "ans = 0"
+do_test isstr-3.m
+
+set test isstr-4
+set prog_output "ans = 0"
+do_test isstr-4.m
+
+set test isstr-5
+set prog_output "ans = 1"
+do_test isstr-5.m
+
+set test isstr-6
+set prog_output "ans = 1"
+do_test isstr-6.m
+
+set test isstr-7
+set prog_output "ans = 1"
+do_test isstr-7.m
+
+set test isstr-8
+set prog_output "ans = 1"
+do_test isstr-8.m
+
+set test isstr-9
+set prog_output "ans = 0"
+do_test isstr-9.m
+
+set test isstr-10
+set prog_output "\n... isstr:.*"
+do_test isstr-10.m
+
+set test isstr-11
+set prog_output "\n... isstr:.*"
+do_test isstr-11.m
+
+# blanks
+# int2str
+# num2str
+# setstr
+# strcat
+# str2mat
+# deblank
+# findstr
+# index
+# rindex
+# split
+# strcmp
+# strrep
+# substr
+# bin2dec
+# dec2bin
+# dec2hex
+# hex2dec
+# str2num
+# toascii
+# tolower
+# toupper
+# undo_string_escapes
+# isalnum
+# isalpha
+# isascii
+# iscntrl
+# isdigit
+# isgraph
+# islower
+# isprint
+# ispunct
+# isspace
+# isupper
+# isxdigit

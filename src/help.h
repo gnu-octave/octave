@@ -29,17 +29,7 @@ class ostrstream;
 
 class string_vector;
 
-// XXX FIXME XXX -- should probably use string, not char*.
-
-struct help_list
-{
-  const char *name;
-  const char *help;
-};
-
-extern string_vector names (help_list *l, int& count);
-
-extern help_list *keyword_help (void);
+extern string_vector make_name_list (void);
 
 extern void additional_help_message (ostream&);
 

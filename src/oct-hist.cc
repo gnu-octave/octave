@@ -52,12 +52,14 @@ Software Foundation, Inc.
 
 #include "cmd-hist.h"
 #include "file-ops.h"
+#include "lo-mappers.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
 #include <defaults.h>
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
@@ -71,6 +73,15 @@ Software Foundation, Inc.
 
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
+
+// Where history is saved.
+static string Vhistory_file;
+
+// The number of lines to keep in the history file.
+static int Vhistory_size;
+
+// TRUE if we are saving history.
+int Vsaving_history;
 
 // Get some default values, possibly reading them from the
 // environment.
@@ -572,6 +583,71 @@ run commands from the history list")
   do_run_history (argc, argv);
 
   return retval;
+}
+
+static int
+history_size (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("history_size", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && ival == val)
+	{
+	  Vhistory_size = ival;
+	  command_history::set_size (ival);
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("history_size");
+  return -1;
+}
+
+static int
+history_file (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("history_file");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("history_file");
+      status = -1;
+    }
+  else
+    {
+      Vhistory_file = s;
+      command_history::set_file (file_ops::tilde_expand (s));
+    }
+
+  return status;
+}
+
+static int
+saving_history (void)
+{
+  Vsaving_history = check_preference ("saving_history");
+
+  command_history::ignore_entries (! Vsaving_history);
+
+  return 0;
+}
+
+void
+symbols_of_oct_hist (void)
+{
+  DEFVAR (history_file, default_history_file (), 0, history_file,
+    "name of command history file");
+
+  double tmp_hist_size = default_history_size ();
+
+  DEFVAR (history_size, tmp_hist_size, 0, history_size,
+    "number of commands to save in the history list");
+
+  DEFVAR (saving_history, 1.0, 0, saving_history,
+    "save command history");
 }
 
 /*

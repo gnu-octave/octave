@@ -77,6 +77,14 @@ string Vinfo_prog;
 // functions.
 static bool Vsuppress_verbose_help_message;
 
+// XXX FIXME XXX -- maybe this should use string instead of char*.
+
+struct help_list
+{
+  const char *name;
+  const char *help;
+};
+
 static help_list operators[] =
 {
   { "!",
@@ -287,7 +295,7 @@ static help_list keywords[] =
 
 // Return a copy of the operator or keyword names.
 
-string_vector
+static string_vector
 names (help_list *lst, int& count)
 {
   string_vector retval;
@@ -321,10 +329,67 @@ operator_help (void)
   return operators;
 }
 
-help_list *
+static help_list *
 keyword_help (void)
 {
   return keywords;
+}
+
+// It's not likely that this does the right thing now.  XXX FIXME XXX
+
+string_vector
+make_name_list (void)
+{
+  int key_len = 0;
+  int glb_len = 0;
+  int top_len = 0;
+  int lcl_len = 0;
+
+  string_vector key;
+  string_vector glb;
+  string_vector top;
+  string_vector lcl;
+  string_vector ffl;
+
+  // Each of these functions returns a new vector of pointers to new
+  // strings.
+
+  key = names (keyword_help (), key_len);
+
+  glb = global_sym_tab->name_list (glb_len);
+
+  top = top_level_sym_tab->name_list (top_len);
+
+  if (top_level_sym_tab != curr_sym_tab)
+    lcl = curr_sym_tab->name_list (lcl_len);
+
+  ffl = octave_fcn_file_name_cache::list_no_suffix ();
+  int ffl_len = ffl.length ();
+
+  int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
+
+  string_vector list (total_len);
+
+  // Put all the symbols in one big list.
+
+  int j = 0;
+  int i = 0;
+  for (i = 0; i < key_len; i++)
+    list[j++] = key[i];
+
+  for (i = 0; i < glb_len; i++)
+    list[j++] = glb[i];
+
+  for (i = 0; i < top_len; i++)
+    list[j++] = top[i];
+
+  for (i = 0; i < lcl_len; i++)
+    list[j++] = lcl[i];
+
+  for (i = 0; i < ffl_len; i++)
+    list[j++] = ffl[i];
+
+  return list;
 }
 
 #if defined (USE_GNU_INFO)

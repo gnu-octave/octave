@@ -2180,7 +2180,7 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
   else
     panic_impossible ();
 
-  id->define (fcn, symbol_def::USER_FUNCTION);
+  id->define (fcn, symbol_record::USER_FUNCTION);
 
   id->document (help_buf);
 

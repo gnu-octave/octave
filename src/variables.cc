@@ -86,18 +86,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // more than one state can be active at once.
 int Vecho_executing_commands;
 
-// Where history is saved.
-static string Vhistory_file;
-
-// The number of lines to keep in the history file.
-static int Vhistory_size;
-
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
 static int Vignore_function_time_stamp;
-
-// TRUE if we are saving history.
-static int Vsaving_history;
 
 // Symbol table for symbols at the top level.
 symbol_table *top_level_sym_tab = 0;
@@ -1133,69 +1124,6 @@ force_link_to_function (const string& id_name)
     }
 }
 
-// Help stuff.  Shouldn't this go in help.cc?
-
-// It's not likely that this does the right thing now.  XXX FIXME XXX
-
-string_vector
-make_name_list (void)
-{
-  int key_len = 0;
-  int glb_len = 0;
-  int top_len = 0;
-  int lcl_len = 0;
-
-  string_vector key;
-  string_vector glb;
-  string_vector top;
-  string_vector lcl;
-  string_vector ffl;
-
-  // Each of these functions returns a new vector of pointers to new
-  // strings.
-
-  key = names (keyword_help (), key_len);
-
-  glb = global_sym_tab->name_list (glb_len);
-
-  top = top_level_sym_tab->name_list (top_len);
-
-  if (top_level_sym_tab != curr_sym_tab)
-    lcl = curr_sym_tab->name_list (lcl_len);
-
-  ffl = octave_fcn_file_name_cache::list_no_suffix ();
-  int ffl_len = ffl.length ();
-
-  int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
-
-  string_vector list (total_len);
-
-  // Put all the symbols in one big list.  Only copy pointers, not the
-  // strings they point to, then only delete the original array of
-  // pointers, and not the strings they point to.
-
-  int j = 0;
-  int i = 0;
-  for (i = 0; i < key_len; i++)
-    list[j++] = key[i];
-
-  for (i = 0; i < glb_len; i++)
-    list[j++] = glb[i];
-
-  for (i = 0; i < top_len; i++)
-    list[j++] = top[i];
-
-  for (i = 0; i < lcl_len; i++)
-    list[j++] = lcl[i];
-
-  for (i = 0; i < ffl_len; i++)
-    list[j++] = ffl[i];
-
-  return list;
-}
-
-// List variable names.
-
 DEFUN (document, args, ,
   "document (NAME, STRING)\n\
 \n\
@@ -1463,134 +1391,6 @@ bind_builtin_variable (const string& varname, const octave_value& val,
   sr->document (help);
 }
 
-// XXX FIXME XXX -- some of these should do their own checking to be
-// able to provide more meaningful warning or error messages.
-
-static int
-echo_executing_commands (void)
-{
-  Vecho_executing_commands = check_preference ("echo_executing_commands"); 
-
-  return 0;
-}
-
-static int
-history_size (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("history_size", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival >= 0 && ival == val)
-	{
-	  Vhistory_size = ival;
-	  command_history::set_size (ival);
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("history_size");
-  return -1;
-}
-
-static int
-history_file (void)
-{
-  int status = 0;
-
-  string s = builtin_string_variable ("history_file");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("history_file");
-      status = -1;
-    }
-  else
-    {
-      Vhistory_file = s;
-      command_history::set_file (file_ops::tilde_expand (s));
-    }
-
-  return status;
-}
-
-static int
-ignore_function_time_stamp (void)
-{
-  int pref = 0;
-
-  string val = builtin_string_variable ("ignore_function_time_stamp");
-
-  if (! val.empty ())
-    {
-      if (val.compare ("all", 0, 3) == 0)
-	pref = 2;
-      if (val.compare ("system", 0, 6) == 0)
-	pref = 1;
-    }
-
-  Vignore_function_time_stamp = pref;
-
-  return 0;
-}
-
-static int
-saving_history (void)
-{
-  Vsaving_history = check_preference ("saving_history");
-
-  command_history::ignore_entries (! Vsaving_history);
-
-  return 0;
-}
-
-// XXX FIXME XXX -- there still may be better places for some of these
-// to be defined.
-
-void
-symbols_of_variables (void)
-{
-  DEFVAR (ans, , 0, 0,
-    "");
-
-  DEFCONST (argv, , 0, 0,
-    "the command line arguments this program was invoked with");
-
-  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF), 0,
-	  echo_executing_commands,
-    "echo commands as they are executed");
-
-  DEFCONST (error_text, "", 0, 0,
-    "the text of error messages that would have been printed in the\n\
-body of the most recent unwind_protect statement or the TRY part of\n\
-the most recent eval() command.  Outside of unwind_protect and\n\
-eval(), or if no error has ocurred within them, the value of\n\
-__error_text__ is guaranteed to be the empty string.");
-
-  DEFVAR (history_file, default_history_file (), 0, history_file,
-    "name of command history file");
-
-  double tmp_hist_size = default_history_size ();
-
-  DEFVAR (history_size, tmp_hist_size, 0, history_size,
-    "number of commands to save in the history list");
-
-  DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
-    "don't check to see if function files have changed since they were\n\
-  last compiled.  Possible values are \"system\" and \"all\"");
-
-  DEFCONST (program_invocation_name,
-	    octave_env::get_program_invocation_name (), 0, 0,
-    "the full name of the current program or script, including the\n\
-directory specification");
-
-  DEFCONST (program_name, octave_env::get_program_name (), 0, 0,
-    "the name of the current program or script");
-
-  DEFVAR (saving_history, 1.0, 0, saving_history,
-    "save command history");
-}
-
 // Deleting names from the symbol tables.
 
 DEFUN_TEXT (clear, args, ,
@@ -1733,6 +1533,73 @@ DEFUN (__dump_symtab_info__, args, ,
     print_usage ("__dump_symtab_info__");
 
   return retval;
+}
+
+// XXX FIXME XXX -- some of these should do their own checking to be
+// able to provide more meaningful warning or error messages.
+
+static int
+echo_executing_commands (void)
+{
+  Vecho_executing_commands = check_preference ("echo_executing_commands"); 
+
+  return 0;
+}
+
+static int
+ignore_function_time_stamp (void)
+{
+  int pref = 0;
+
+  string val = builtin_string_variable ("ignore_function_time_stamp");
+
+  if (! val.empty ())
+    {
+      if (val.compare ("all", 0, 3) == 0)
+	pref = 2;
+      if (val.compare ("system", 0, 6) == 0)
+	pref = 1;
+    }
+
+  Vignore_function_time_stamp = pref;
+
+  return 0;
+}
+
+// XXX FIXME XXX -- there still may be better places for some of these
+// to be defined.
+
+void
+symbols_of_variables (void)
+{
+  DEFVAR (ans, , 0, 0,
+    "");
+
+  DEFCONST (argv, , 0, 0,
+    "the command line arguments this program was invoked with");
+
+  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF), 0,
+	  echo_executing_commands,
+    "echo commands as they are executed");
+
+  DEFCONST (error_text, "", 0, 0,
+    "the text of error messages that would have been printed in the\n\
+body of the most recent unwind_protect statement or the TRY part of\n\
+the most recent eval() command.  Outside of unwind_protect and\n\
+eval(), or if no error has ocurred within them, the value of\n\
+__error_text__ is guaranteed to be the empty string.");
+
+  DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
+    "don't check to see if function files have changed since they were\n\
+  last compiled.  Possible values are \"system\" and \"all\"");
+
+  DEFCONST (program_invocation_name,
+	    octave_env::get_program_invocation_name (), 0, 0,
+    "the full name of the current program or script, including the\n\
+directory specification");
+
+  DEFCONST (program_name, octave_env::get_program_name (), 0, 0,
+    "the name of the current program or script");
 }
 
 /*

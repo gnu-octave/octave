@@ -41,8 +41,6 @@ class string_vector;
 #include "ov-builtin.h"
 #include "symtab.h"
 
-typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
-
 extern void initialize_symbol_tables (void);
 
 extern bool lookup (symbol_record *s, bool exec_script = true);
@@ -89,8 +87,6 @@ looks_like_struct (const string& text);
 extern string_vector
 generate_struct_completions (const string& text, string& prefix,
 			     string& hint);
-
-extern string_vector make_name_list (void);
 
 extern void bind_ans (const octave_value& val, bool print);
 

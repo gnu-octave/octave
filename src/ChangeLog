@@ -1,3 +1,109 @@
+Mon Jun  2 00:40:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.h (Octave_builtin_fcn): Delete typedef.
+
+	* help.cc (make_name_list): Move here from variables.cc.
+	(keyword_help, names): Now static.
+	(struct help_list): Move declaration here from help.h.
+
+	* oct-hist.cc (Vhistory_file, Vhistory_size, Vsaving_history):
+	Move here from variables.cc.
+	(symbols_of_oct_hist): New function.
+
+	* version.h: Protect against multiple inclusion.
+
+	* defun.cc (check_version): New function.
+	* defun-int.h (DEFINE_FUN_INSTALLER_FUN): Use it.
+
+	* help.h, help.cc (additional_help_message): Now extern.
+	(operator_help): Now static. 
+
+	* defun.cc (print_usage): Move here from help.cc
+	* DLD-FUNCTIONS/*.cc, data.cc, dirfns.cc, file-io.cc, input.cc,
+	load-save.cc, octave.cc, ov-list.cc, ov-typeinfo.cc,
+	ov-usr-fcn.cc, pager.cc, pr-output.cc, pt-plot.cc, strfns.cc,
+	syscalls.cc, sysdep.cc, utils.cc, toplev.cc:
+	Don't include help.h.
+
+	* TEMPLATE-INST/Array-sym.cc: New file.
+
+	* load-save.cc (do_load): Don't use ostream::form.
+	* pr-output.cc: Likewise, at least where it is easy to do so.
+	* oct-stream.cc: Ditto.
+
+	* symtab.h (symbol_record::symbol_def::rows): New function.
+	(symbol_record::symbol_def::columns): Ditto.
+	(symbol_record::symbol_def::type_name): Ditto.
+	(symbol_record::rows): Ditto
+	(symbol_record::columns): Ditto
+	(symbol_record::type_name): Ditto
+
+	* symtab.h, symtab.cc (symbol_record::hides_fcn): New function.
+	(symbol_record::hides_builtin): Ditto.
+	(symbol_record::print_symbol_info_line): Ditto.
+	(symbol_table::long_list): Delete.
+	(symbol_table::symbol_list): New function.
+	(symbol_table::maybe_list): Delete argc arg.
+	(symbol_table::name_list): Rename from symbol_table::list.
+	Change all callers.
+
+	* symtab.h, symtab.cc (class symbol_record_info): Delete.
+
+	* symtab.cc (matches_patterns): Use vector form of glob_match.
+
+Sun Jun  1 14:04:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-check.h, pt-check.cc: New files, for semantic checking of
+	parse trees.
+
+	* symtab.h (class symbol_def): Now nested in symbol_record class.
+	(enum TYPE): Move from symbol_def to symbol record class.  Change
+	all uses.
+
+	* symtab.h, symtab.cc (symbol_table::maybe_list): New function,
+	from variables.cc.  Change all uses.
+
+	* pt-idx.h (tree_identifier::lvalue_ok): New function.
+	* pt-id.h (tree_index_expression::lvalue_ok): Likewise.
+	* pt-indir.h (tree_indirect_ref::lvalue_ok): Likewise.
+
+	* pt-pr-code.h, pt-pr-code.cc (tree_print_code::visit_oct_obj): Delete.
+	* pt-walk.h (tree_walker::visit_oct_obj): Delete declaration.
+
+	* lex.h (class lexical_feedback): Delete maybe_screwed_again.
+	* lex.l (lexical_feedback::init): Don't set it.
+
+Fri May 30 16:07:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mappers.cc: Include <cfloat> here.
+
+Tue May 27 10:08:43 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (eval_string): Don't index tmp if it is empty.
+
+Sat May 24 00:18:41 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (valid_identifier): Move here and make static.
+	* symtab.h, symtab.cc (valid_identifier): Delete declaration and
+	definition.
+
+Fri May 23 22:54:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.h (symbol_def::symbol_def): Use initializer list instead
+	of calling init_state.
+	(symbol_def::init_state): Delete.
+
+	* symtab.cc (symbol_table::print_stats): New function.
+	* variables.cc (F__dump_symtab_info__): New function.
+
+	* symtab.h, symtab.cc (symbol_table::hash): Return masked value.
+	(symbol_table::table_size): New data member.
+	(symbol_table::symbol_table): Set size of table in constructor.
+	(HASH_TABLE_SIZE): Replace uses with table_size.
+	(HASH_MASK): Delete.
+	* variables.cc (initialize_symbol_tables): Set top-level and
+	global symbol table sizes here.
+
 Thu May 22 13:32:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.cc (octave_shl_load_dynamic_loader::resolve_reference): 

@@ -33,6 +33,9 @@ extern string default_history_file (void);
 // Nonzero means input is coming from temporary history file.
 extern int input_from_tmp_history_file;
 
+// TRUE if we are saving history.
+extern int Vsaving_history;
+
 #endif
 
 /*

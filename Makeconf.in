@@ -23,6 +23,10 @@ RUNTEST = @RUNTEST@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
 
+WITH_DLD = @use_dld@
+
+OCTAVE_LITE = @lite_kernel@
+
 # Fortran to C translator and associated flags.
 
 F2C = @F2C@

@@ -54,15 +54,22 @@
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING
 
-/* Define to make Octave look for info files and function files in the
-   directory tree as the sources. */
-#undef RUN_IN_PLACE
+/* Define to compile smaller kernel.  Only works if some form of
+   dynamic linking is also supported and used. */
+#undef OCTAVE_LITE
 
 /* Define if this is Octave. */
 #undef OCTAVE_SOURCE
 
 /* Define if you don't have QPSOL. */
 #undef QPSOL_MISSING
+
+/* Define to make Octave look for info files and function files in the
+   directory tree as the sources. */
+#undef RUN_IN_PLACE
+
+/* To quiet autoheader. */
+#undef SMART_PUTENV
 
 /* Define if using -fexternal-templates with g++. */
 #undef USE_EXTERNAL_TEMPLATES

@@ -60,6 +60,11 @@ function v = findstr (s, t, overlap)
 
     l_t = length (t);
 
+    if (l_t < 1)
+      v = [];
+      return;
+    endif
+
     ind = 1 : l_t;
     limit = length (s) - l_t + 1;
     v  = zeros (1, limit);

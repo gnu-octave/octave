@@ -1,3 +1,16 @@
+2000-12-15  Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
+
+	* strings/index.m: Return 0 if either string is empty.
+
+2000-12-15  Ben Sapp  <bsapp@lanl.gov>
+
+	* control/system/c2d.m: Allow option of matched pole/zero
+	equivalent for conversion.  
+
+2000-12-15  Matthew W. Roberts  <matt@lehi.tamu.edu>
+
+	* strings/findstr.m: Return empty matrix if search string is empty.
+
 2000-12-15  Kai Habel  <kai.habel@gmx.de>
 
 	* saveimage.m: Do create rawbit image for black and white images,

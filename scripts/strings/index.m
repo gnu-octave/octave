@@ -48,6 +48,10 @@ function n = index (s, t)
     [nr_s, l_s] = size (s);
     [nr_t, l_t] = size (t);
 
+    if (nr_s == 0 || nr_t == 0)
+      return;
+    endif
+
     if (nr_s != 1 || nr_t != 1)
       error ("index: arguments cannot be string arrays");
     endif

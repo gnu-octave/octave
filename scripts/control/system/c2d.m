@@ -46,6 +46,9 @@
 ##
 ## @strong{Note} If the 2nd argument is not a string, @code{c2d} assumes that
 ## the 2nd argument is @var{t} and performs appropriate argument checks.
+## @item "matched"
+## Use the matched pole/zero equivalent transformation (currently only
+## works for purely continuous SISO systems).
 ## @end table
 ##
 ## @strong{Outputs}
@@ -84,6 +87,10 @@ function dsys = c2d (sys, opt, T)
     opt = "ex";
   endif
 
+  if (! isstr (opt))
+    error ("expecting option as a string");
+  endif
+
   ## check if sampling period T was passed.
   Ts = sysgettsam(sys);
   if(!exist("T"))
@@ -99,8 +106,10 @@ function dsys = c2d (sys, opt, T)
 
   if (!is_sample(T))
     error("sampling period T must be a postive, real scalar");
-  elseif( ! (strcmp(opt,"ex") | strcmp(opt,"bi") ) )
-    error(["invalid option passed: ",opt])
+  elseif (! (strcmp (opt, "ex")
+	     || strcmp (opt, "bi")
+	     || strcmp (opt, "matched")))
+    error ("invalid option passed: %s", opt);
   endif
 
   sys = sysupdate(sys,"ss");
@@ -167,9 +176,26 @@ function dsys = c2d (sys, opt, T)
       D = d + (c*iab);
       stnamed = strappend(stname,"_d");
       dsys = ss2sys(A,B,C,D,T,0,rows(A),stnamed,inname,outname);
+   elseif(strcmp(opt,"matched"))
+     if(is_digital(sys))
+       error("c2d: system is already digital");
+     elseif((length(sys.inname) != 1) || (length(sys.outname) != 1))
+       error("c2d: system in not single input, single output");
+     else
+       sys = sysupdate(sys,"zp");
+       p = exp(sys.pol*T);
+       z = exp(sys.zer*T);
+       infinite_zeros = max(size(sys.pol))-max(size(sys.zer))-1;
+       for i = 1:infinite_zeros
+	 z = [z ; -1];
+       endfor
+       ## Should the freaquency we adjust around always be 1?   
+       [cmag,cphase,cw] = bode(sys,1);
+       [dmag,dpahse,dw] = bode(zp2sys(z,p,1,T),1);
+      dsys = zp2sys(z,p,cmag/dmag,T);
     endif
   else
-    error(["Bad option=",opt])
+    error ("invalid option = %s", opt);
   endif
 
 endfunction

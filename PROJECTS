@@ -440,9 +440,6 @@ Interpreter:
   * Handle end-of-line comments correctly in parse trees for use with
     the type command.
 
-  * For dynamically linked functions, the which and type commands
-    should display the location of the .oct file.
-
   * Clean up eye, eval, feval, keyboard, input, ones, zeros.
 
   * It would be nice to have an interactive debugger.

@@ -43,7 +43,7 @@ public:
   SCHUR (const Matrix& a, const char *ord);
   SCHUR (const Matrix& a, const char *ord, int& info);
 
-  SCHUR (const SCHUR& a, const char *ord);
+  SCHUR (const SCHUR& a);
 
   SCHUR& operator = (const SCHUR& a);
 
@@ -70,7 +70,7 @@ inline SCHUR::SCHUR (const Matrix& a, const char *ord, int& info)
   info = init (a, ord);
 }
 
-inline SCHUR::SCHUR (const SCHUR& a, const char *ord)
+inline SCHUR::SCHUR (const SCHUR& a)
 {
   schur_mat = a.schur_mat;
   unitary_mat = a.unitary_mat;

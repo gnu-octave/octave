@@ -52,6 +52,7 @@ class Quad_options
  public:
 
   Quad_options (void);
+  Quad_options (double abs, double rel);
   Quad_options (const Quad_options& opt);
 
   Quad_options& operator = (const Quad_options& opt);

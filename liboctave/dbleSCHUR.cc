@@ -46,7 +46,7 @@ extern "C"
 }
 
 static int
-select_ana (const double& a, const double& b)
+select_ana (const double& a, const double&)
 {
    return (a < 0.0);
 }

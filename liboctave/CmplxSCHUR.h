@@ -43,7 +43,7 @@ public:
   ComplexSCHUR (const ComplexMatrix& a, const char *ord);
   ComplexSCHUR (const ComplexMatrix& a, const char *ord, int& info);
 
-  ComplexSCHUR (const ComplexSCHUR& a, const char *ord);
+  ComplexSCHUR (const ComplexSCHUR& a);
 
   ComplexSCHUR& operator = (const ComplexSCHUR& a);
 
@@ -71,7 +71,7 @@ inline ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& a, const char *ord,
   info = init (a,ord);
 }
 
-inline ComplexSCHUR::ComplexSCHUR (const ComplexSCHUR& a, const char *ord)
+inline ComplexSCHUR::ComplexSCHUR (const ComplexSCHUR& a)
 {
   schur_mat = a.schur_mat;
   unitary_mat = a.unitary_mat;

@@ -295,6 +295,17 @@ tree_parameter_list::mark_as_formal_parameters (void)
 }
 
 void
+tree_parameter_list::initialize_undefined_elements (const tree_constant& val)
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_identifier *elt = this->operator () (p);
+      if (! elt->is_defined ())
+	elt->assign (val);
+    }
+}
+
+void
 tree_parameter_list::define_from_arg_vector (const Octave_object& args)
 {
   int nargin = args.length ();

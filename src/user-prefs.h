@@ -27,7 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 struct user_preferences
 {
   int automatic_replot;
-  int whitespace_in_literal_matrix;
+  int define_all_return_values;
   int do_fortran_indexing;
   int empty_list_elements_ok;
   int ignore_function_time_stamp;
@@ -52,6 +52,7 @@ struct user_preferences
   int warn_comma_in_global_decl;
   int warn_divide_by_zero;
   int warn_function_name_clash;
+  int whitespace_in_literal_matrix;
 
   char *default_save_format;
   char *editor;
@@ -71,7 +72,7 @@ extern user_preferences user_pref;
 extern void init_user_prefs (void);
 
 extern int automatic_replot (void);
-extern int whitespace_in_literal_matrix (void);
+extern int define_all_return_values (void);
 extern int do_fortran_indexing (void);
 extern int empty_list_elements_ok (void);
 extern int ignore_function_time_stamp (void);
@@ -93,6 +94,7 @@ extern int warn_assign_as_truth_value (void);
 extern int warn_comma_in_global_decl (void);
 extern int warn_divide_by_zero (void);
 extern int warn_function_name_clash (void);
+extern int whitespace_in_literal_matrix (void);
 
 extern int set_output_max_field_width (void);
 extern int set_output_precision (void);

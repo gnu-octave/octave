@@ -44,7 +44,7 @@ void
 init_user_prefs (void)
 {
   user_pref.automatic_replot = 0;
-  user_pref.whitespace_in_literal_matrix = 0;
+  user_pref.define_all_return_values = 0;
   user_pref.do_fortran_indexing = 0;
   user_pref.empty_list_elements_ok = 0;
   user_pref.ignore_function_time_stamp = 0;
@@ -69,6 +69,7 @@ init_user_prefs (void)
   user_pref.warn_comma_in_global_decl = 0;
   user_pref.warn_divide_by_zero = 0;
   user_pref.warn_function_name_clash = 0;
+  user_pref.whitespace_in_literal_matrix = 0;
 
   user_pref.default_save_format = 0;
   user_pref.editor = 0;
@@ -120,59 +121,15 @@ automatic_replot (void)
 }
 
 
-// Should whitespace in a literal matrix list be automatically
-// converted to commas and semicolons?
-//
-//   user specifies   value of pref
-//   --------------   -------------
-//   "ignore"               2
-//   "traditional"          1
-//   anything else          0
-//
-// Octave will never insert a comma in a literal matrix list if the
-// user specifies "ignore".  For example, the statement [1 2] will
-// result in an error instead of being treated the same as [1, 2], and
-// the statement
-//
-//   [ 1, 2,
-//     3, 4 ]
-//
-// will result in the vector [1 2 3 4] instead of a matrix.
-//
-// Traditional behavior makes Octave convert spaces to a comma between
-// identifiers and `('.  For example, the statement
-//
-//   [eye (2)]
-//
-// will be parsed as
-//
-//   [eye, (2)]
-//
-// and will result in an error since the `eye' function will be
-// called with no arguments.  To get around this, you would have to
-// omit the space between `eye' and the `('.
-//
-// The default value is 0, which results in behavior that is the same
-// as traditional, except that Octave does not convert spaces to a
-// comma between identifiers and `('.  For example, the statement
-//
-//   [eye (2)]
-//
-// will result in a call to `eye' with the argument `2'. 
+// Should variables returned from functions have default values if
+// they are otherwise uninitialized?
 
 int
-whitespace_in_literal_matrix (void)
+define_all_return_values (void)
 {
-  int pref = 0;
-  char *val = builtin_string_variable ("whitespace_in_literal_matrix");
-  if (val)
-    {
-      if (strncmp (val, "ignore", 6) == 0)
-	pref = 2;
-      else if (strncmp (val, "traditional", 11) == 0)
-	pref = 1;
-    }
-  user_pref.whitespace_in_literal_matrix = pref;
+  user_pref.define_all_return_values =
+    check_str_pref ("define_all_return_values");
+
   return 0;
 }
 
@@ -475,6 +432,64 @@ warn_function_name_clash (void)
 
   return 0;
 }
+
+
+// Should whitespace in a literal matrix list be automatically
+// converted to commas and semicolons?
+//
+//   user specifies   value of pref
+//   --------------   -------------
+//   "ignore"               2
+//   "traditional"          1
+//   anything else          0
+//
+// Octave will never insert a comma in a literal matrix list if the
+// user specifies "ignore".  For example, the statement [1 2] will
+// result in an error instead of being treated the same as [1, 2], and
+// the statement
+//
+//   [ 1, 2,
+//     3, 4 ]
+//
+// will result in the vector [1 2 3 4] instead of a matrix.
+//
+// Traditional behavior makes Octave convert spaces to a comma between
+// identifiers and `('.  For example, the statement
+//
+//   [eye (2)]
+//
+// will be parsed as
+//
+//   [eye, (2)]
+//
+// and will result in an error since the `eye' function will be
+// called with no arguments.  To get around this, you would have to
+// omit the space between `eye' and the `('.
+//
+// The default value is 0, which results in behavior that is the same
+// as traditional, except that Octave does not convert spaces to a
+// comma between identifiers and `('.  For example, the statement
+//
+//   [eye (2)]
+//
+// will result in a call to `eye' with the argument `2'. 
+
+int
+whitespace_in_literal_matrix (void)
+{
+  int pref = 0;
+  char *val = builtin_string_variable ("whitespace_in_literal_matrix");
+  if (val)
+    {
+      if (strncmp (val, "ignore", 6) == 0)
+	pref = 2;
+      else if (strncmp (val, "traditional", 11) == 0)
+	pref = 1;
+    }
+  user_pref.whitespace_in_literal_matrix = pref;
+  return 0;
+}
+
 
 int
 set_output_max_field_width (void)

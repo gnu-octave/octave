@@ -857,6 +857,27 @@ builtin_real_scalar_variable (const char *name, double& d)
   return status;
 }
 
+// Look for the given name in the global symbol table.
+
+tree_constant
+builtin_any_variable (const char *name)
+{
+  tree_constant retval;
+
+  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+
+// It is a prorgramming error to look for builtins that aren't.
+
+  assert (sr);
+
+  tree_fvc *defn = sr->def ();
+
+  if (defn)
+    retval = defn->eval (0);
+
+  return retval;
+}
+
 // Global stuff and links to builtin variables and functions.
 
 // Make the definition of the symbol record sr be the same as the
@@ -1484,9 +1505,11 @@ install_builtin_variables (void)
 	  0, 0, 1, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
-  DEFVAR ("whitespace_in_literal_matrix", SBV_whitespace_in_literal_matrix, "",
-	  0, 0, 1, whitespace_in_literal_matrix,
-    "control auto-insertion of commas and semicolons in literal matrices");
+  DEFVAR ("default_return_value", SBV_default_return_value, Matrix (),
+	  0, 0, 1, 0,
+    "the default for value for unitialized variables returned from\n\
+functions.  Only used if the variable initialize_return_values is\n\
+set to \"true\".");
 
   DEFVAR ("default_save_format", SBV_default_save_format, "ascii",
 	  0, 0, 1, sv_default_save_format,
@@ -1523,6 +1546,12 @@ install_builtin_variables (void)
 
   DEFVAR ("inf", SBV_inf, octave_Inf, 0, 1, 1, 0,
     "infinity");
+
+  DEFVAR ("define_all_return_values", SBV_define_all_return_values,
+	  "false", 0, 0, 1, define_all_return_values,
+    "control whether values returned from functions should have a\n\
+value even if one has not been explicitly assigned.  See also\n\
+default_return_value"); 
 
   DEFVAR ("j", SBV_j, Complex (0.0, 1.0), 1, 1, 1, 0,
     "sqrt (-1)");
@@ -1634,6 +1663,11 @@ install_builtin_variables (void)
   DEFVAR ("warn_function_name_clash", SBV_warn_function_name_clash,
 	  "true", 0, 0, 1, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
+
+  DEFVAR ("whitespace_in_literal_matrix", SBV_whitespace_in_literal_matrix, "",
+	  0, 0, 1, whitespace_in_literal_matrix,
+    "control auto-insertion of commas and semicolons in literal matrices");
+
 }
 
 // Deleting names from the symbol tables.

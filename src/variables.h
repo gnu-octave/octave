@@ -72,6 +72,7 @@ extern char *get_help_from_file (const char *f);
 
 extern char *builtin_string_variable (const char *);
 extern int builtin_real_scalar_variable (const char *, double&);
+extern tree_constant builtin_any_variable (const char *);
 
 extern void link_to_global_variable (symbol_record *sr);
 extern void link_to_builtin_variable (symbol_record *sr);

@@ -1940,8 +1940,12 @@ tree_simple_assignment_expression::eval (int print)
       tree_constant rhs_val = rhs->eval (0);
       if (error_state)
 	{
-	  if (error_state)
-	    eval_error ();
+	  eval_error ();
+	}
+      else if (rhs_val.is_undefined ())
+	{
+	  error ("value on right hand side of assignment is undefined");
+	  eval_error ();
 	}
       else if (! index)
 	{
@@ -2112,8 +2116,9 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 	      tree_constant *tmp = 0;
 	      if (results(i).is_undefined ())
 		{
-		  Matrix m;
-		  tmp = new tree_constant (m);
+		  error ("element number %d undefined in return list", i+1);
+		  eval_error ();
+		  break;
 		}
 	      else
 		tmp = new tree_constant (results(i));
@@ -2808,7 +2813,16 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 // Copy return values out.
 
     if (ret_list)
-      retval = ret_list->convert_to_const_vector (vr_list);
+      {
+	if (nargout > 0 && user_pref.define_all_return_values)
+	  {
+	    tree_constant tmp = builtin_any_variable ("default_return_value");
+	    if (tmp.is_defined ())
+	      ret_list->initialize_undefined_elements (tmp);
+	  }
+
+	retval = ret_list->convert_to_const_vector (vr_list);
+      }
     else if (user_pref.return_last_computed_value)
       retval(0) = last_computed_value;
   }

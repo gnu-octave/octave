@@ -186,6 +186,9 @@ dist: dist-info-files
 	rm -rf `cat .fname`
 	gzip --best `cat .fname`.tar
 	rm -f .fname
+	echo "*******************"
+	echo "Tag the CVS archive"
+	echo "*******************"
 .PHONY: dist
 
 # Rules for making a snapshot.

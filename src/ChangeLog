@@ -1,3 +1,7 @@
+2003-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-range.h (octave_range::reshape): New function.
+
 2003-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.51.

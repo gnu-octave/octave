@@ -109,6 +109,9 @@ public:
       return dim_vector (n > 0, n);
     }
 
+  octave_value reshape (const dim_vector& new_dims) const
+    { return NDArray (matrix_value().reshape (new_dims)); }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

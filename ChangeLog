@@ -1,5 +1,7 @@
 2003-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (SHLLIB_VER): Fix typo.
+
 	* Makeconf.in (WARN_CFLAGS, WARN_CXXFLAGS): Substitute them.
 	(ALL_CFLAGS, BUG_CFLAGS): Add $(WARN_CFLAGS).
 	(ALL_CXXFLAGS, BUG_CXXFLAGS): Add $(WARN_CXXFLAGS).

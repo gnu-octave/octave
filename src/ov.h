@@ -217,6 +217,7 @@ public:
   octave_value (const string_vector& s);
   octave_value (const charMatrix& chm, bool is_string = false);
   octave_value (const charNDArray& chnda, bool is_string = false);
+  octave_value (const ArrayN<char>& chnda, bool is_string = false);
   octave_value (const octave_int8& i);
   octave_value (const octave_int16& i);
   octave_value (const octave_int32& i);

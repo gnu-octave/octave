@@ -38,13 +38,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-cell.h"
 #include "oct-sort.cc"
 
-enum sortmode {UNDEFINED, ASCENDING, DESCENDING};
+enum sortmode { UNDEFINED, ASCENDING, DESCENDING };
 
 template <class T>
 class
 vec_index
 {
- public:
+public:
   T vec;
   int indx;
 };
@@ -74,11 +74,13 @@ mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
     sort.set_compare (descending_compare);
 
   if (stride == 1)
-    for (unsigned int j = 0; j < iter; j++)
-      {
-	sort.sort (v, ns);
-	v += ns;
-      }
+    {
+      for (unsigned int j = 0; j < iter; j++)
+	{
+	  sort.sort (v, ns);
+	  v += ns;
+	}
+    }
   else
     {
       OCTAVE_LOCAL_BUFFER (T, vi, ns);
@@ -103,7 +105,8 @@ mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 	}
     }
 
-  retval (0) = octave_value (m);
+  retval(0) = octave_value (m);
+
   return retval;
 }
 
@@ -190,8 +193,8 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 	}
     }
 
-  retval (1) = idx;
-  retval (0) = octave_value (m);
+  retval(1) = idx;
+  retval(0) = octave_value (m);
   return retval;
 }
 
@@ -301,7 +304,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	    {
 	      unsigned int i = 0;
 	      double *vtmp = (double *)p;
-	      while (xisnan(vtmp[i++]) && i < ns);
+	      while (xisnan (vtmp[i++]) && i < ns);
 	      for (unsigned int l = 0; l < ns - i + 1; l++)
 		vtmp[l] = vtmp[l+i-1];
 	      for (unsigned int l = ns - i + 1; l < ns; l++)
@@ -350,7 +353,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	      (! lo_ieee_signbit (octave_NaN) && (mode == DESCENDING)))
 	    {
 	      unsigned int i = 0;
-	      while (xisnan(v[i++*stride + offset]) && i < ns);
+	      while (xisnan (v[i++*stride + offset]) && i < ns);
 	      for (unsigned int l = 0; l < ns - i + 1; l++)
 		v[l*stride + offset] = v[(l+i-1)*stride + offset];
 	      for (unsigned int l = ns - i + 1; l < ns; l++)
@@ -437,7 +440,7 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 	  (! lo_ieee_signbit (octave_NaN) && (mode == DESCENDING)))
 	{
 	  unsigned int i = 0;
-	  while (xisnan(v[i++*stride+offset]) && i < ns);
+	  while (xisnan (v[i++*stride+offset]) && i < ns);
 	  OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
 	  for (unsigned int l = 0; l < i -1; l++)
 	    itmp[l] = idx(l*stride + offset);
@@ -454,8 +457,8 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 	}
     }
 
-  retval (1) = idx;
-  retval (0) = m;
+  retval(1) = idx;
+  retval(0) = m;
   return retval;
 }
 
@@ -464,25 +467,25 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 bool
 ascending_compare (double a, double b)
 {
-  return (xisnan(b) || (a < b));
+  return (xisnan (b) || (a < b));
 }
 
 bool
 ascending_compare (vec_index<double> *a, vec_index<double> *b)
 {
-  return (xisnan(b->vec) || (a->vec < b->vec));
+  return (xisnan (b->vec) || (a->vec < b->vec));
 }
 
 bool
 descending_compare (double a, double b)
 {
-  return (xisnan(a) || (a > b));
+  return (xisnan (a) || (a > b));
 }
 
 bool
 descending_compare (vec_index<double> *a, vec_index<double> *b)
 {
-  return (xisnan(a->vec) || (a->vec > b->vec));
+  return (xisnan (a->vec) || (a->vec > b->vec));
 }
 
 template class octave_sort<double>;
@@ -508,15 +511,19 @@ xabs (const Complex& x)
 bool
 ascending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
 {
-  return (xisnan(b->vec) || (xabs(a->vec) < xabs(b->vec)) ||
-	  ((xabs(a->vec) == xabs(b->vec)) && (arg(a->vec) < arg(b->vec))));
+  return (xisnan (b->vec)
+	  || (xabs (a->vec) < xabs (b->vec))
+	  || ((xabs (a->vec) == xabs (b->vec))
+	      && (arg (a->vec) < arg (b->vec))));
 }
 
 bool
 descending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
 {
-  return (xisnan(a->vec) || (xabs(a->vec) > xabs(b->vec)) ||
-	  ((xabs(a->vec) == xabs(b->vec)) && (arg(a->vec) > arg(b->vec))));
+  return (xisnan (a->vec)
+	  || (xabs (a->vec) > xabs (b->vec))
+	  || ((xabs (a->vec) == xabs (b->vec))
+	      && (arg (a->vec) > arg (b->vec))));
 }
 
 template class vec_index<Complex>;

@@ -597,6 +597,15 @@ octave_value::octave_value (const charNDArray& chm, bool is_str)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<char>& chm, bool is_str)
+  : rep (is_str
+	 ? new octave_char_matrix_str (chm)
+	 : new octave_char_matrix (chm))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const octave_int8& i)
   : rep (new octave_int8_scalar (i))
 {

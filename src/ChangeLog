@@ -1,3 +1,33 @@
+2004-09-15  David Bateman  <dbateman@free.fr>
+
+	* ov.cc (octave_value::octave_value (const ArrayN<char>&, bool)):
+	New Constructor .
+	* ov.h: Provide decl.
+
+	* DLD-FUNCTIONS/sort.cc (sortmode): New enum to define sort direction.
+	(template <class T> class vec_index): New class to contain values and
+	index for indexed sorts, replacing all previous struct versions. 
+	Instantiate for double, Complex, char and octave_value.
+	(template <class T> static octave_value_list mx_sort (ArrayN<T> &, int,
+	sortmode)): New templated version of mx_sort replacing all previous
+	versions, but specific to non indexed sorts. Instantiate for char
+	and double if not IEEE754.
+	(template <> static octave_value_list mx_sort (ArrayN<double> &, 
+	int, sortmode)): Specialized function of mx_sort of IEEE754.
+	(template <class T> static octave_value_list mx_sort_indexed 
+	(ArrayN<T> &, int, sortmode)): New templated version of mx_sort 
+	for indexed sorts. Instantiate for double, Complex, char and 
+	octave_value.
+	(ascending_compare, descending_compare): Comparison functions
+	for double, char, vec_index<double> *, vec_index<Complex> *,
+	vec_index<char> *, vec_index<octave_value>. Fix Complex comparison
+	operator to sort by arg of values if absolute values are equal.
+	(Fsort): Update docs for new mode argument and for sorting of 
+	strings and cell arrays of strings. Implement mode argument to
+	define ascending and descending sorts. Include sorting of cell
+	arrays of strings. Adapt for new templated versions of the mx_sort
+	function.
+
 2004-09-15  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.cc (octave_cell::subsref): Pass nargout to next_subsref.

@@ -58,9 +58,9 @@
 ## @end ifinfo
 ##
 ## @noindent
-## where @var{M} is the number of poles (the length of the @var{r},
-## @var{p}, and @var{e} vectors) and @var{N} is the length of the @var{k}
-## vector.
+## where @math{M} is the number of poles (the length of the @var{r},
+## @var{p}, and @var{e} vectors) and @math{N} is the length of the
+## @var{k} vector.
 ##
 ## The argument @var{tol} is optional, and if not specified, a default
 ## value of 0.001 is assumed.  The tolerance value is used to determine

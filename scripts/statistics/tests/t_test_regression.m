@@ -15,10 +15,10 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{R}, @var{r}, @var{alt})
-## Perform an t test for the null hypothesis @code{@var{R} * @var{b} =
+## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{rr}, @var{r}, @var{alt})
+## Perform an t test for the null hypothesis @code{@var{rr} * @var{b} =
 ## @var{r}} in a classical normal regression model @code{@var{y} =
-## @var{X} * @var{b} + @var{e}}.  Under the null, the test statistic @var{t}
+## @var{x} * @var{b} + @var{e}}.  Under the null, the test statistic @var{t}
 ## follows a @var{t} distribution with @var{df} degrees of freedom.
 ##
 ## If @var{r} is omitted, a value of 0 is assumed.
@@ -26,9 +26,9 @@
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{@var{R} * @var{b} != @var{r}}.  If @var{alt} is @code{">"}, the
-## one-sided alternative @code{@var{R} * @var{b} > @var{r}} is used.
-## Similarly for @var{"<"}, the one-sided alternative @code{@var{R} *
+## @code{@var{rr} * @var{b} != @var{r}}.  If @var{alt} is @code{">"}, the
+## one-sided alternative @code{@var{rr} * @var{b} > @var{r}} is used.
+## Similarly for @var{"<"}, the one-sided alternative @code{@var{rr} *
 ## @var{b} < @var{r}} is used.  The default is the two-sided case. 
 ##
 ## The p-value of the test is returned in @var{pval}.

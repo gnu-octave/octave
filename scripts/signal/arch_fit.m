@@ -25,22 +25,22 @@
 ## @end example
 ##
 ## @noindent
-## in which @var{e}(@var{t}) is @var{N}(0, @var{h}(@var{t})), given a
-## time-series vector @var{y} up to time @var{t}-1 and a matrix of
-## (ordinary) regressors @var{x} up to @var{t}.  The order of the
-## regression of the residual variance is specified by @var{p}.
+## in which @math{e(t)} is @math{N(0, h(t))}, given a time-series vector
+## @var{y} up to time @math{t-1} and a matrix of (ordinary) regressors
+## @var{x} up to @math{t}.  The order of the regression of the residual
+## variance is specified by @var{p}.
 ##
 ## If invoked as @code{arch_fit (@var{y}, @var{k}, @var{p})} with a
 ## positive integer @var{k}, fit an ARCH(@var{k}, @var{p}) process,
-## i.e., do the above with the @var{t}-th row of @var{x} given by
+## i.e., do the above with the @math{t}-th row of @var{x} given by
 ##
 ## @example
 ## [1, y(t-1), ..., y(t-k)]
 ## @end example
 ##
 ## Optionally, one can specify the number of iterations @var{iter}, the
-## updating factor @var{gamma}, and initial values @var{a0} and @var{b0}
-## for the scoring algorithm.
+## updating factor @var{gamma}, and initial values @math{a0} and
+## @math{b0} for the scoring algorithm.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

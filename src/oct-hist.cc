@@ -599,8 +599,8 @@ Read the file @var{file}, replacing the current history list with its\n\
 contents.  If the name is omitted, use the default history file\n\
 (normally @file{~/.octave_hist}).\n\
 \n\
-@item @var{N}\n\
-Only display the most recent @var{N} lines of history.\n\
+@item @var{n}\n\
+Only display the most recent @var{n} lines of history.\n\
 \n\
 @item -q\n\
 Don't number the displayed lines of history.  This is useful for cutting\n\

@@ -17,9 +17,9 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{U}, @var{H}, @var{nu}] =} krylov (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg});
+## @deftypefn {Function File} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{a}, @var{v}, @var{k}, @var{eps1}, @var{pflg});
 ## construct orthogonal basis U of block Krylov subspace;
-##  [V AV A^2*V ... A^(k+1)*V];
+##  [v a*v a^2*v ... a^(k+1)*v];
 ## method used: householder reflections to guard against loss of
 ## orthogonality
 ## eps1: threshhold for 0 (default: 1e-12)
@@ -29,12 +29,12 @@
 ##   1          : pivoting performed
 ##
 ## outputs:
-##   Uret: orthogonal basis of block krylov subspace
-##   H: Hessenberg matrix; if V is a vector then A U = U H
-##      otherwise H is meaningless
-## nu: dimension of span of krylov subspace (based on eps1)
-## if B is a vector and k > m-1, krylov returns H = the Hessenberg
-## decompostion of A.
+##   u: orthogonal basis of block krylov subspace
+##   h: Hessenberg matrix; if v is a vector then a u = u h
+##      otherwise h is meaningless
+##  nu: dimension of span of krylov subspace (based on eps1)
+## if b is a vector and k > m-1, krylov returns h = the Hessenberg
+## decompostion of a.
 ##
 ## Reference: Hodel and Misra, "Partial Pivoting in the Computation of
 ##     Krylov Subspaces", to be submitted to Linear Algebra and its

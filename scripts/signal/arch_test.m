@@ -29,35 +29,35 @@
 ## I.e., the model is
 ##
 ## @example
-## y(t) = b(1) * x(t,1) + ... + b(k) * x(t,k) + e(t),
+## y(t) = b(1) * x(t,1) + @dots{} + b(k) * x(t,k) + e(t),
 ## @end example
 ##
 ## @noindent
-## given @var{y} up to @var{t}-1 and @var{x} up to @var{t},
-## @var{e}(@var{t}) is @var{N}(0, @var{h}(@var{t})) with
+## given @var{y} up to @math{t-1} and @var{x} up to @math{t},
+## @math{e}(t) is @math{N(0, h(t))} with
 ##
 ## @example
-## h(t) = v + a(1) * e(t-1)^2 + ... + a(p) * e(t-p)^2,
+## h(t) = v + a(1) * e(t-1)^2 + @dots{} + a(p) * e(t-p)^2,
 ## @end example
 ##
 ## @noindent
-## and the null is @var{a}(1) == ... == @var{a}(@var{p}) == 0.
+## and the null is @math{a(1)} == @dots{} == @math{a(p)} == 0.
 ##
-## If the second argument is a scalar integer, @var{k}, perform the same
-## test in a linear autoregression model of order @var{k}, i.e., with
+## If the second argument is a scalar integer, @math{k}, perform the same
+## test in a linear autoregression model of order @math{k}, i.e., with
 ##
 ## @example
-## [1, y(t-1), ..., y(t-@var{k})]
+## [1, y(t-1), @dots{}, y(t-@var{k})]
 ## @end example
 ##
 ## @noindent
-## as the @var{t}-th row of @var{x}.
+## as the @math{t}-th row of @var{x}.
 ##
 ## Under the null, LM approximately has a chisquare distribution with
-## @var{p} degrees of freedom and @var{pval} is the @var{p}-value (1
+## @var{p} degrees of freedom and @var{pval} is the @math{p}-value (1
 ## minus the CDF of this distribution at LM) of the test.
 ##
-## If no output argument is given, the @var{p}-value is displayed.
+## If no output argument is given, the @math{p}-value is displayed.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

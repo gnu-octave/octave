@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} {} autocor (@var{x}, @var{h})
 ## Return the autocorrelations from lag 0 to @var{h} of vector @var{x}.
 ## If @var{h} is omitted, all autocorrelations are computed.
-## If @var{X} is a matrix, the autocorrelations of each column are
+## If @var{x} is a matrix, the autocorrelations of each column are
 ## computed.
 ## @end deftypefn
 

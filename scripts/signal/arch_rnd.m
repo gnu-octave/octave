@@ -21,15 +21,15 @@
 ## follows the model
 ##
 ## @example
-## y(t) = b(1) + b(2) * y(t-1) + ... + b(lb) * y(t-lb+1) + e(t),
+## y(t) = b(1) + b(2) * y(t-1) + @dots{} + b(lb) * y(t-lb+1) + e(t),
 ## @end example
 ##
 ## @noindent
-## where e(t), given @var{y} up to time @var{t}-1, is @var{N}(0,
-## @var{h}(@var{t})), with
+## where @math{e(t)}, given @var{y} up to time @math{t-1}, is
+## @math{N(0, h(t))}, with
 ##
 ## @example
-## h(t) = a(1) + a(2) * e(t-1)^2 + ... + a(la) * e(t-la+1)^2
+## h(t) = a(1) + a(2) * e(t-1)^2 + @dots{} + a(la) * e(t-la+1)^2
 ## @end example
 ## @end deftypefn
 

@@ -18,17 +18,17 @@
 ## @deftypefn {Function File} {} fftshift (@var{v})
 ## Perform a shift of the vector @var{v}, for use with the @code{fft}
 ## and @code{ifft} functions, in order the move the frequency 0 to the
-## centre of the vector or matrix.
+## center of the vector or matrix.
 ##
-## If @var{v} is a vector of @var{E} elements corresponding to @var{E}
-## time samples spaced of @var{Dt} each, then @code{fftshift (fft
+## If @var{v} is a vector of @math{E} elements corresponding to @math{E}
+## time samples spaced of @math{Dt} each, then @code{fftshift (fft
 ## (@var{v}))} corresponds to frequencies
 ##
 ## @example
-## f = linspace (-@var{E}/(4*@var{Dt}), (@var{E}/2-1)/(2*@var{Dt}), @var{E})
+## f = linspace (-E/(4*Dt), (E/2-1)/(2*Dt), E)
 ## @end example
 ##
-## If @var{v} is a matrix, does the same holds for rows and columns.
+## If @var{v} is a matrix, the same holds for rows and columns.
 ## @end deftypefn
 
 ## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>

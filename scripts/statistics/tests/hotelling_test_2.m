@@ -15,13 +15,13 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{Tsq}] =} hotelling_test_2 (@var{x}, @var{y})
+## @deftypefn {Function File} {[@var{pval}, @var{tsq}] =} hotelling_test_2 (@var{x}, @var{y})
 ## For two samples @var{x} from multivariate normal distributions with
 ## the same number of variables (columns), unknown means and unknown
 ## equal covariance matrices, test the null hypothesis @code{mean
 ## (@var{x}) == mean (@var{y})}.
 ##
-## Hotelling's two-sample T^2 is returned in @var{Tsq}.  Under the null,
+## Hotelling's two-sample T^2 is returned in @var{tsq}.  Under the null,
 ##
 ## @example
 ## (n_x+n_y-p-1) T^2 / (p(n_x+n_y-2))

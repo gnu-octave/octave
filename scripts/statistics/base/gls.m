@@ -27,8 +27,8 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## @code{@var{y} = @var{x} * @var{b} + @var{e}} with @code{mean (@var{e}) =
-## 0} and @code{cov (vec (@var{e})) = (@var{s}^2)*@var{o}},
+## @math{y = x b + e} with @math{mean (e) = 0} and
+## @math{cov (vec (e)) = (s^2) o},
 ## @end ifinfo
 ##  where
 ## @iftex
@@ -39,28 +39,26 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## @var{Y} is a @var{T} by @var{p} matrix, @var{X} is a @var{T} by @var{k}
-## matrix, @var{B} is a @var{k} by @var{p} matrix, @var{E} is a @var{T} by
-## @var{p} matrix, and @var{O} is a @var{T}@var{p} by @var{T}@var{p}
-## matrix.
+## @math{y} is a @math{t} by @math{p} matrix, @math{x} is a @math{t} by
+## @math{k} matrix, @math{b} is a @math{k} by @math{p} matrix, @math{e}
+## is a @math{t} by @math{p} matrix, and @math{o} is a @math{t p} by
+## @math{t p} matrix.
 ## @end ifinfo
 ##
 ## @noindent
-## Each row of Y and X is an observation and each column a variable.
-##
-## The return values @var{beta}, @var{v}, and @var{r} are defined as
-## follows.
+## Each row of @var{y} and @var{x} is an observation and each column a
+## variable.  The return values @var{beta}, @var{v}, and @var{r} are
+## defined as follows.
 ##
 ## @table @var
 ## @item beta
-## The GLS estimator for @var{b}.
+## The GLS estimator for @math{b}.
 ##
 ## @item v
-## The GLS estimator for @code{@var{s}^2}.
+## The GLS estimator for @math{s^2}.
 ##
 ## @item r
-## The matrix of GLS residuals, @code{@var{r} = @var{y} - @var{x} *
-## @var{beta}}.
+## The matrix of GLS residuals, @math{r = y - x beta}.
 ## @end table
 ## @end deftypefn
 

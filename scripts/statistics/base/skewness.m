@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} skewness (@var{x})
-## If @var{x} is a vector of length @var{N}, return the skewness
+## If @var{x} is a vector of length @math{n}, return the skewness
 ## @iftex
 ## @tex
 ## $$

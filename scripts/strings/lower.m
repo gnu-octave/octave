@@ -18,7 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} lower(@var{S})
+## @deftypefn {Function File} {} lower (@var{s})
+## Transform all letters in the string @var{s} to lower case.
 ## @end deftypefn
 ## @seealso{tolower}
 

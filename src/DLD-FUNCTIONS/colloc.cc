@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFUN_DLD (colloc, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{r}, @var{A}, @var{B}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
+@deftypefn {Loadable Function} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
 Compute derivative and integral weight matrices for orthogonal\n\
 collocation using the subroutines given in J. Villadsen and\n\
 M. L. Michelsen, @cite{Solution of Differential Equation Models by\n\

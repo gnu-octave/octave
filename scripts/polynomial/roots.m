@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} roots (@var{v})
 ##
-## For a vector @var{v} with @var{N} components, return
+## For a vector @var{v} with @math{N} components, return
 ## the roots of the polynomial
 ## @iftex
 ## @tex

@@ -15,8 +15,8 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hypergeometric_rnd (@var{N}, @var{m}, @var{t}, @var{n})
-## Generate a row vector containing a random sample of size @var{N} from
+## @deftypefn {Function File} {} hypergeometric_rnd (@var{n_size}, @var{m}, @var{t}, @var{n})
+## Generate a row vector containing a random sample of size @var{n_size} from
 ## the hypergeometric distribution with parameters @var{m}, @var{t}, and
 ## @var{n}.
 ##

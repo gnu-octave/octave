@@ -28,9 +28,8 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## @code{@var{y} = @var{x}*@var{b} + @var{e}} with
-## @code{mean (@var{e}) = 0} and @code{cov (vec (@var{e})) = kron (@var{s},
-## @var{I})}.
+## @math{y = x b + e} with
+## @math{mean (e) = 0} and @math{cov (vec (e)) = kron (s, I)}.
 ## @end ifinfo
 ##  where
 ## @iftex
@@ -40,9 +39,9 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## @var{y} is a @var{t} by @var{p} matrix, @var{X} is a @var{t} by @var{k}
-## matrix, @var{B} is a @var{k} by @var{p} matrix, and @var{e} is a @var{t}
-## by @var{p} matrix.
+## @math{y} is a @math{t} by @math{p} matrix, @math{x} is a @math{t} by
+## @math{k} matrix, @math{b} is a @math{k} by @math{p} matrix, and
+## @math{e} is a @math{t} by @math{p} matrix.
 ## @end ifinfo
 ##
 ## Each row of @var{y} and @var{x} is an observation and each column a

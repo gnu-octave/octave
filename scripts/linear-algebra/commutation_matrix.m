@@ -41,7 +41,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{K}(@var{m},@var{n}) * vec (@var{A}) = vec (@var{A}')
+##  @math{K(m,n) * vec(A) = vec(A')}
 ## @end ifinfo
 ##  for all
 ## @iftex
@@ -50,7 +50,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{m} by @var{n}
+##  @math{m} by @math{n}
 ## @end ifinfo
 ##  matrices
 ## @iftex
@@ -59,7 +59,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{A}.
+##  @math{A}.
 ## @end ifinfo
 ##
 ## If only one argument @var{m} is given,
@@ -69,7 +69,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  K(m,m)
+##  @math{K(m,m)}
 ## @end ifinfo
 ##  is returned.
 ##

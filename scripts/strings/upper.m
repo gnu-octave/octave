@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{S} =} upper(@var{s})
-## Transform all letters in a string to upper case.
+## @deftypefn {Function File} {} upper (@var{s})
+## Transform all letters in the string @var{s} to upper case.
 ## @end deftypefn
 ## @seealso{toupper}
 

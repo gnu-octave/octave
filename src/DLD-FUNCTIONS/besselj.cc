@@ -259,7 +259,7 @@ Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
 \n\
 If thet argumemt @var{opt} is supplied, the result is scaled by the\n\
 @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
- @var{K} = 2.\n\
+ @var{k} = 2.\n\
 \n\
 If @var{alpha} is a scalar, the result is the same size as @var{x}.\n\
 If @var{x} is a scalar, the result is the same size as @var{alpha}.\n\

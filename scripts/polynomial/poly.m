@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} poly (@var{a})
-## If @var{a} is a square @var{N}-by-@var{N} matrix, @code{poly (@var{a})}
+## If @var{a} is a square @math{N}-by-@math{N} matrix, @code{poly (@var{a})}
 ## is the row vector of the coefficients of @code{det (z * eye (N) - a)},
 ## the characteristic polynomial of @var{a}.  If @var{x} is a vector,
 ## @code{poly (@var{x})} is a vector of coefficients of the polynomial

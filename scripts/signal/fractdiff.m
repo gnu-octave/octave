@@ -16,8 +16,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fractdiff (@var{x}, @var{d})
-## Compute the fractional differences @code{(1-@var{L})^@var{d} * @var{x}}
-## where @var{L} denotes the lag-operator and @var{d} is greater than -1.
+## Compute the fractional differences @math{(1-L)^d x} where @math{L}
+## denotes the lag-operator and @math{d} is greater than -1.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

@@ -23,7 +23,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{D}_@var{n}
+##  @math{Dn}
 ## @end ifinfo
 ##  which is the unique
 ## @iftex
@@ -32,7 +32,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{n}^2 by @var{n}*(@var{n}+1)/2
+##  @math{n^2} by @math{n*(n+1)/2}
 ## @end ifinfo
 ##  matrix such that
 ## @iftex
@@ -41,7 +41,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{D}_@var{n} \cdot vech (@var{A}) = vec (@var{A})
+##  @math{Dn vech (A) = vec (A)}
 ## @end ifinfo
 ##  for all symmetric
 ## @iftex
@@ -50,7 +50,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{n} by @var{n}
+##  @math{n} by @math{n}
 ## @end ifinfo
 ##  matrices
 ## @iftex
@@ -59,7 +59,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-##  @var{A}.
+##  @math{A}.
 ## @end ifinfo
 ##
 ## See Magnus and Neudecker (1988), Matrix differential calculus with

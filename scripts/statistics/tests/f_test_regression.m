@@ -15,8 +15,8 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_num}, @var{df_den}] =} f_test_regression (@var{y}, @var{X}, @var{R}, @var{r})
-## Perform an F test for the null hypothesis R * b = r in a classical
+## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_num}, @var{df_den}] =} f_test_regression (@var{y}, @var{x}, @var{rr}, @var{r})
+## Perform an F test for the null hypothesis rr * b = r in a classical
 ## normal regression model y = X * b + e.
 ##
 ## Under the null, the test statistic @var{f} follows an F distribution

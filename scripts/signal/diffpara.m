@@ -15,21 +15,20 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{d}, @var{D}]} = diffpara (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {[@var{d}, @var{dd}]} = diffpara (@var{x}, @var{a}, @var{b})
 ## Return the estimator @var{d} for the differencing parameter of an
 ## integrated time series.
 ##
-## The frequencies from @code{[2*pi*@var{a}/@var{T},
-## 2*pi*@var{b}/@var{T}]} are used for the estimation.  If @var{b} is
-## omitted, the interval @code{[2*pi/@var{T}, 2*pi*@var{a}/@var{T}]} is
-## used.  If both @var{b} and @var{a} are omitted then @code{@var{a} =
-## 0.5 * sqrt(@var{T})} and @code{@var{b} = 1.5 * sqrt(@var{T})} is
-## used, where @var{T} is the sample size.  If @var{x} is a matrix, the
-## differencing parameter of each column is estimated.
+## The frequencies from @math{[2*pi*a/t, 2*pi*b/T]} are used for the
+## estimation.  If @var{b} is omitted, the interval
+## @math{[2*pi/T, 2*pi*a/T]} is used.  If both @var{b} and @var{a} are
+## omitted then @math{a = 0.5 * sqrt (T)} and @math{b = 1.5 * sqrt (T)}
+## is used, where @math{T} is the sample size.  If @var{x} is a matrix,
+## the differencing parameter of each column is estimated.
 ##
 ## The estimators for all frequencies in the intervals
-## described above is returned in @var{D}.  The value of @var{d} is
-## simply the mean of @var{D}.
+## described above is returned in @var{dd}.  The value of @var{d} is
+## simply the mean of @var{dd}.
 ##
 ## Reference: Brockwell, Peter J. & Davis, Richard A. Time Series:
 ## Theory and Methods Springer 1987.

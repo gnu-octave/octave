@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFUN_DLD (givens, args, nargout,
   "-*- texinfo -*-
-@deftypefn {Loadable Function} {@var{G} =} givens (@var{x}, @var{y})\n\
+@deftypefn {Loadable Function} {@var{g} =} givens (@var{x}, @var{y})\n\
 @deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
 @iftex\n\
 @tex\n\
@@ -49,8 +49,8 @@ with $x$ and $y$ scalars.\n\
 @end iftex\n\
 @ifinfo\n\
 Return a 2 by 2 orthogonal matrix\n\
-@code{@var{G} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that\n\
-@code{@var{G} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.\n\
+@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that\n\
+@code{@var{g} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.\n\
 @end ifinfo\n\
 \n\
 For example,\n\

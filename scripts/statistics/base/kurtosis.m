@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} kurtosis (@var{x})
-## If @var{x} is a vector of length @var{N}, return the kurtosis
+## If @var{x} is a vector of length @math{N}, return the kurtosis
 ## @iftex
 ## @tex
 ## $$

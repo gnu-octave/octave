@@ -112,6 +112,13 @@ Strings:
 
   * Make find work for strings.
 
+  * Consider making octave_print_internal() print some sort of text
+    representation for unprintable characters instead of sending them
+    directly to the terminal.  (But don't do this for fprintf!)
+
+  * Consider changing the default value of `string_fill_char' from SPC
+    to NUL.
+
 ----------------
 Other Data Types:
 ----------------
@@ -156,6 +163,10 @@ Input/Output:
     user-preference variable with default value 8192.
 
   * Save image data in binary format to save space.
+
+  * Make it possible to load other image formats (ppm, pbm, etc. would
+    probably be best since there are already filters to convert to
+    these formats from others.)
 
   * Use HDF for binary data.
 
@@ -213,6 +224,18 @@ Interpreter:
   * Make it possible to disable or enable all warnings on an
     individual basis from the command line or via some built-in
     structure variable.
+
+  * Warn about complex comparisons?  Could just use double_value() or
+    matrix_value() instead of explicit conversions to real types.
+
+  * Make warnings also give some indication about the location of the
+    code that triggers the warning.
+
+  * Warn about complex comparisons?  Could just use double_value() or
+    matrix_value() instead of explicit conversions to real types.  For
+    this to really be useful, some additional information must be
+    available to point to the location of the code that triggers the
+    warning.
 
   * Consider making it possible to have arrays of structures, and some
     way of indexing them.
@@ -335,9 +358,14 @@ Interpreter:
 
   * Handle comments in parse trees for use with the type command.
 
+  * Make the type command handle script files too, by just reading and
+    printing them.
+
   * Clean up eye, eval, feval, keyboard, input, ones, zeros.
 
   * It would be nice to have an interactive debugger.
+
+  * Make whos report total memory used by variables (and functions?).
 
 -------
 History:
@@ -411,6 +439,9 @@ Documentation and On-Line Help:
   * Make the arrow keys work in the info reader.
 
   * Update Info to be based on the current Texinfo release.
+
+  * Should info/terminal.c include definitions for PC, BC, UP, and
+    ospeed on all systems?
 
   * Clean up help stuff.
 

@@ -5,4 +5,10 @@
 #define NORETURN
 #endif
 
+#define STATIC_CAST(T, E) (T) (E)
+
+#define DYNAMIC_CAST(T, E) (T) (E)
+
+#define REINTERPRET_CAST(T, E) (T) (E)
+
 #define HEAVYWEIGHT_INDEXING 1

@@ -1,5 +1,11 @@
 2003-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pr-output.cc (octave_print_internal): Don't indent rows for
+	plus_format.  Use pr_plus_format for Range type with plus_format.
+	(plus_format_chars): New static variable.
+	(set_format_style): Allow optional arg for plus format to set it.
+	(pr_plus_format): Use it.
+
 	* ov-bool.h (octave_bool::array_value,
 	octave_bool::complex_array_value): New functions.
 

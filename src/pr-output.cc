@@ -82,6 +82,9 @@ static bool free_format = false;
 // TRUE means print plus sign for nonzero, blank for zero.
 static bool plus_format = false;
 
+// First char for > 0, second for < 0, third for == 0.
+static std::string plus_format_chars = "+  ";
+
 // TRUE means always print like dollars and cents.
 static bool bank_format = false;
 
@@ -1341,12 +1344,12 @@ pr_col_num_header (std::ostream& os, int total_width, int max_width,
 static inline void
 pr_plus_format (std::ostream& os, double d)
 {
-  if (d == 0.0)
-    os << " ";
+  if (d > 0.0)
+    os << plus_format_chars[0];
   else if (d < 0.0)
-    os << "-";
+    os << plus_format_chars[1];
   else
-    os << "+";
+    os << plus_format_chars[2];
 }
 
 void
@@ -1382,9 +1385,6 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 	  for (int j = 0; j < nc; j++)
 	    {
 	      OCTAVE_QUIT;
-
-	      if (j == 0)
-		os << "  ";
 
 	      pr_plus_format (os, m(i,j));
 	    }
@@ -1644,9 +1644,6 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 	    {
 	      OCTAVE_QUIT;
 
-	      if (j == 0)
-		os << "  ";
-
 	      pr_plus_format (os, cm(i,j));
 	    }
 
@@ -1794,16 +1791,13 @@ octave_print_internal (std::ostream& os, const Range& r,
 
   if (plus_format && ! pr_as_read_syntax)
     {
-      os << "  ";
       for (int i = 0; i < num_elem; i++)
 	{
 	  OCTAVE_QUIT;
 
 	  double val = base + i * increment;
-	  if (val == 0.0)
-	    os << " ";
-	  else
-	    os << "+";
+
+	  pr_plus_format (os, val);
 	}
     }
   else
@@ -2210,6 +2204,21 @@ set_format_style (int argc, const string_vector& argv)
 	}
       else if (arg == "+" || arg == "plus")
 	{
+	  if (--argc > 0)
+	    {
+	      arg = argv[idx++];
+
+	      if (arg.length () == 3)
+		plus_format_chars = arg;
+	      else
+		{
+		  error ("format: invalid option for plus format");
+		  return;
+		}
+	    }
+	  else
+	    plus_format_chars = "+  ";
+
 	  init_format_state ();
 	  plus_format = true;
 	}
@@ -2336,9 +2345,26 @@ Print in a fixed format with two places to the right of the decimal\n\
 point.\n\
 \n\
 @item +\n\
+@itemx + @var{chars}\n\
+@itemx plus\n\
+@itemx plus @var{chars}\n\
 Print a @samp{+} symbol for nonzero matrix elements and a space for zero\n\
 matrix elements.  This format can be very useful for examining the\n\
 structure of a large matrix.\n\
+\n\
+The optional argument @var{chars} specifies a list of 3 characters to use\n\
+for printing values greater than zero, less than zero and equal to zero.\n\
+For example, with the @samp{+ \"+-.\"} format, @code{[1, 0, -1; -1, 0, 1]}\n\
+is displayed as\n\
+\n\
+@example\n\
+@group\n\
+ans =\n\
+\n\
++.-\n\
+-.+\n\
+@end group\n\
+@end example\n\
 \n\
 @item hex\n\
 Print the hexadecimal representation numbers as they are stored in\n\

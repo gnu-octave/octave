@@ -61,7 +61,17 @@ AC_PROG_GCC_TRADITIONAL
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-AC_CHECK_LIB(termcap, tputs)
+TERMLIBS=""
+for termlib in termcap terminfo curses termlib; do
+  AC_CHECK_LIB(${termlib}, tputs, [TERMLIBS="${TERMLIBS} -l${termlib}"])
+  case "${TERMLIBS}" in
+    *-l${termlib}*)
+      AC_MSG_RESULT([defining TERMLIBS to be $TERMLIBS])
+      break
+    ;;
+  esac
+done
+AC_SUBST(TERMLIBS)
 
 AC_HEADER_DIRENT
 AC_HEADER_STDC

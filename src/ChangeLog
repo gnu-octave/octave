@@ -1,3 +1,9 @@
+2004-09-14  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sort.cc (mx_sort (charNDArray&, bool, int)):
+	New function to sort character strings.
+	(Fsort): Handle character strings.
+
 2004-09-11  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-handle.cc (octave_fcn_handle::save_ascii):

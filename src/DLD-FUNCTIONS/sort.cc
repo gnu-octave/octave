@@ -80,13 +80,13 @@ struct vec_index
 bool
 double_compare (double a, double b)
 {
-  return (xisnan(b) || (a < b));
+  return (xisnan (b) || (a < b));
 }
 
 bool
 double_compare (vec_index *a, vec_index *b)
 {
-  return (xisnan(b->vec) || (a->vec < b->vec));
+  return (xisnan (b->vec) || (a->vec < b->vec));
 }
 
 template class octave_sort<double>;
@@ -102,7 +102,7 @@ struct complex_vec_index
 bool
 complex_compare (complex_vec_index *a, complex_vec_index *b)
 {
-  return (xisnan(b->vec) || (abs(a->vec) < abs(b->vec)));
+  return (xisnan (b->vec) || (abs (a->vec) < abs (b->vec)));
 }
 
 template class octave_sort<complex_vec_index *>;
@@ -194,7 +194,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	    }
 	}
 
-      retval (1) = idx;
+      retval(1) = idx;
     }
   else
     {
@@ -348,7 +348,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 		}
 	    }
 	}
-      retval (1) = idx;
+      retval(1) = idx;
     }
   else
     {
@@ -485,10 +485,145 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
     }
 
   if (return_idx)
-    retval (1) = idx;
+    retval(1) = idx;
   
   retval(0) = m;
 
+  return retval;
+}
+
+struct char_vec_index
+{
+  char vec;
+  int indx;
+};
+
+bool
+char_compare (char_vec_index *a, char_vec_index *b)
+{
+  return (a->vec < b->vec);
+}
+
+template class octave_sort<char>;
+template class octave_sort<char_vec_index *>;
+
+static octave_value_list
+mx_sort (charNDArray &m, bool return_idx, int dim)
+{
+  octave_value_list retval;
+
+  if (m.length () < 1)
+    return retval;
+
+  dim_vector dv = m.dims ();
+  unsigned int ns = dv (dim);
+  unsigned int iter = dv.numel () / ns;
+  unsigned int stride = 1;
+  for (unsigned int i = 0; i < static_cast <unsigned int> (dim); i++)
+    stride *= dv(i);
+
+  if (return_idx)
+    {
+      char *v = m.fortran_vec ();
+      octave_sort<char_vec_index *> indexed_char_sort (char_compare);
+
+      OCTAVE_LOCAL_BUFFER (char_vec_index *, vi, ns);
+      OCTAVE_LOCAL_BUFFER (char_vec_index, vix, ns);
+
+      for (unsigned int i = 0; i < ns; i++)
+	vi[i] = &vix[i];
+
+      NDArray idx (dv);
+      
+      if (stride == 1)
+	{
+	  for (unsigned int j = 0; j < iter; j++)
+	    {
+	      unsigned int offset = j * ns;
+
+	      for (unsigned int i = 0; i < ns; i++)
+		{
+		  vi[i]->vec = v[i];
+		  vi[i]->indx = i + 1;
+		}
+
+	      indexed_char_sort.sort (vi, ns);
+	  
+	      for (unsigned int i = 0; i < ns; i++)
+		{
+		  v[i] = vi[i]->vec;
+		  idx(i + offset) = vi[i]->indx;
+		}
+	      v += ns;
+	    }
+	}
+      else
+	{
+	  for (unsigned int j = 0; j < iter; j++)
+	    {
+	      unsigned int offset = j;
+	      unsigned int offset2 = 0;
+	      while (offset >= stride)
+		{
+		  offset -= stride;
+		  offset2++;
+		}
+	      offset += offset2 * stride * ns;
+	      
+	      for (unsigned int i = 0; i < ns; i++)
+		{
+		  vi[i]->vec = v[i*stride + offset];
+		  vi[i]->indx = i + 1;
+		}
+
+	      indexed_char_sort.sort (vi, ns);
+	      
+	      for (unsigned int i = 0; i < ns; i++)
+		{
+		  v[i*stride+offset] = vi[i]->vec;
+		  idx(i*stride+offset) = vi[i]->indx;
+		}
+	    }
+	}
+      retval(1) = idx;
+    }
+  else
+    {
+      char *v = m.fortran_vec ();
+      octave_sort<char> char_sort;
+
+      if (stride == 1)
+	for (unsigned int j = 0; j < iter; j++)
+	  {
+	    char_sort.sort (v, ns);
+	    v += ns;
+	  }
+      else
+	{
+	  OCTAVE_LOCAL_BUFFER (char, vi, ns);
+	  for (unsigned int j = 0; j < iter; j++) 
+	    {
+	      unsigned int offset = j;
+	      unsigned int offset2 = 0;
+	      while (offset >= stride)
+		{
+		  offset -= stride;
+		  offset2++;
+		}
+	      offset += offset2 * stride * ns;
+
+	      for (unsigned int i = 0; i < ns; i++)
+		vi[i] = v[i*stride + offset];
+
+	      char_sort.sort (vi, ns);
+	      
+	      for (unsigned int i = 0; i < ns; i++)
+		v[i*stride + offset] = vi[i];
+	    }
+	}
+    }
+
+  retval(0) = octave_value (m, true);
   return retval;
 }
 
@@ -593,6 +728,13 @@ ordered lists.\n\
 
       if (! error_state)
 	retval = mx_sort (cm, return_idx, dim);
+    }
+  else if (arg.is_string ())
+    {
+      charNDArray chm = arg.char_array_value ();
+
+      if (! error_state)
+	retval = mx_sort (chm, return_idx, dim);
     }
   else
     gripe_wrong_type_arg ("sort", arg);

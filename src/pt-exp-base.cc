@@ -36,6 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include <strstream.h>
+#include <string.h>
 #include <limits.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -487,13 +488,10 @@ tree_matrix::eval (int print)
 	    {
 	      cm (put_row, put_col) = tmp.double_value ();
 	    }
-	  else if (tmp.is_string ())
+	  else if (tmp.is_string () && all_strings && str_ptr)
 	    {
-	      if (all_strings && str_ptr)
-		{
-		  memcpy (str_ptr, tmp.string_value (), nc);
-		  str_ptr += nc;
-		}
+	      memcpy (str_ptr, tmp.string_value (), nc);
+	      str_ptr += nc;
 	    }
 	  else if (tmp.is_real_matrix () || tmp.is_range ())
 	    {
@@ -503,13 +501,14 @@ tree_matrix::eval (int print)
 	    {
 	      cm (put_row, put_col) = tmp.complex_value ();
 	    }
-	  else if (tmp.is_complex_matrix ())
-	    {
-	      cm.insert (tmp.complex_matrix_value (), put_row, put_col);
-	    }
 	  else
 	    {
-	      panic_impossible ();
+	      ComplexMatrix cm_tmp = tmp.complex_matrix_value ();
+
+	      if (error_state)
+		goto done;
+
+	      cm.insert (cm_tmp, put_row, put_col);
 	    }
 	}
       else
@@ -518,21 +517,19 @@ tree_matrix::eval (int print)
 	    {
 	      m (put_row, put_col) = tmp.double_value ();
 	    }
-	  else if (tmp.is_string ())
+	  else if (tmp.is_string () && all_strings && str_ptr)
 	    {
-	      if (all_strings && str_ptr)
-		{
-		  memcpy (str_ptr, tmp.string_value (), nc);
-		  str_ptr += nc;
-		}
-	    }
-	  else if (tmp.is_real_matrix () || tmp.is_range ())
-	    {
-	      m.insert (tmp.matrix_value (), put_row, put_col);
+	      memcpy (str_ptr, tmp.string_value (), nc);
+	      str_ptr += nc;
 	    }
 	  else
 	    {
-	      panic_impossible ();
+	      Matrix m_tmp = tmp.matrix_value ();
+
+	      if (error_state)
+		goto done;
+
+	      m.insert (m_tmp, put_row, put_col);
 	    }
 	}
 

@@ -123,18 +123,6 @@ discard_all_unwind_protects (void)
   unwind_protect_list.clear ();
 }
 
-void
-matrix_cleanup (void *m)
-{
-  delete [] (double *) m;
-}
-
-void
-complex_matrix_cleanup (void *cm)
-{
-  delete [] (ComplexMatrix *) cm;
-}
-
 class saved_variable
 {
  public:

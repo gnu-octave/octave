@@ -43,9 +43,6 @@ void discard_unwind_frame (const string& tag);
 void run_all_unwind_protects (void);
 void discard_all_unwind_protects (void);
 
-void matrix_cleanup (void *m);
-void complex_matrix_cleanup (void *cm);
-
 void unwind_protect_int_internal (int *ptr, int value);
 void unwind_protect_str_internal (string *ptr, const string& value);
 void unwind_protect_ptr_internal (void **ptr, void *value);

@@ -53,51 +53,51 @@ mk_ru_map (struct rusage *ru)
   Octave_map tv_tmp;
 
 #if defined (HAVE_GETRUSAGE)
-  tv_tmp ["tv_sec"] = (double) ru->ru_utime.tv_sec;
-  tv_tmp ["tv_usec"] = (double) ru->ru_utime.tv_usec;
-  m ["ru_utime"] = tree_constant (tv_tmp);
+  tv_tmp ["sec"] = (double) ru->ru_utime.tv_sec;
+  tv_tmp ["usec"] = (double) ru->ru_utime.tv_usec;
+  m ["utime"] = tree_constant (tv_tmp);
 
-  tv_tmp ["tv_sec"] = (double) ru->ru_stime.tv_sec;
-  tv_tmp ["tv_usec"] = (double) ru->ru_stime.tv_usec;
-  m ["ru_stime"] = tree_constant (tv_tmp);
+  tv_tmp ["sec"] = (double) ru->ru_stime.tv_sec;
+  tv_tmp ["usec"] = (double) ru->ru_stime.tv_usec;
+  m ["stime"] = tree_constant (tv_tmp);
 
-  m ["ru_maxrss"] = (double) ru->ru_maxrss;
-  m ["ru_ixrss"] = (double) ru->ru_ixrss;
-  m ["ru_idrss"] = (double) ru->ru_idrss;
-  m ["ru_isrss"] = (double) ru->ru_isrss;
-  m ["ru_minflt"] = (double) ru->ru_minflt;
-  m ["ru_majflt"] = (double) ru->ru_majflt;
-  m ["ru_nswap"] = (double) ru->ru_nswap;
-  m ["ru_inblock"] = (double) ru->ru_inblock;
-  m ["ru_oublock"] = (double) ru->ru_oublock;
-  m ["ru_msgsnd"] = (double) ru->ru_msgsnd;
-  m ["ru_msgrcv"] = (double) ru->ru_msgrcv;
-  m ["ru_nsignals"] = (double) ru->ru_nsignals;
-  m ["ru_nvcsw"] = (double) ru->ru_nvcsw;
-  m ["ru_nivcsw"] = (double) ru->ru_nivcsw;
+  m ["maxrss"] = (double) ru->ru_maxrss;
+  m ["ixrss"] = (double) ru->ru_ixrss;
+  m ["idrss"] = (double) ru->ru_idrss;
+  m ["isrss"] = (double) ru->ru_isrss;
+  m ["minflt"] = (double) ru->ru_minflt;
+  m ["majflt"] = (double) ru->ru_majflt;
+  m ["nswap"] = (double) ru->ru_nswap;
+  m ["inblock"] = (double) ru->ru_inblock;
+  m ["oublock"] = (double) ru->ru_oublock;
+  m ["msgsnd"] = (double) ru->ru_msgsnd;
+  m ["msgrcv"] = (double) ru->ru_msgrcv;
+  m ["nsignals"] = (double) ru->ru_nsignals;
+  m ["nvcsw"] = (double) ru->ru_nvcsw;
+  m ["nivcsw"] = (double) ru->ru_nivcsw;
 #else
-  tv_tmp ["tv_sec"] = octave_NaN;
-  tv_tmp ["tv_usec"] = octave_NaN;
-  m ["ru_utime"] = tree_constant (tv_tmp);
+  tv_tmp ["sec"] = octave_NaN;
+  tv_tmp ["usec"] = octave_NaN;
+  m ["utime"] = tree_constant (tv_tmp);
 
-  tv_tmp ["tv_sec"] = octave_NaN;
-  tv_tmp ["tv_usec"] = octave_NaN;
-  m ["ru_stime"] = tree_constant (tv_tmp);
+  tv_tmp ["sec"] = octave_NaN;
+  tv_tmp ["usec"] = octave_NaN;
+  m ["stime"] = tree_constant (tv_tmp);
 
-  m ["ru_maxrss"] = octave_NaN;
-  m ["ru_ixrss"] = octave_NaN;
-  m ["ru_idrss"] = octave_NaN;
-  m ["ru_isrss"] = octave_NaN;
-  m ["ru_minflt"] = octave_NaN;
-  m ["ru_majflt"] = octave_NaN;
-  m ["ru_nswap"] = octave_NaN;
-  m ["ru_inblock"] = octave_NaN;
-  m ["ru_oublock"] = octave_NaN;
-  m ["ru_msgsnd"] = octave_NaN;
-  m ["ru_msgrcv"] = octave_NaN;
-  m ["ru_nsignals"] = octave_NaN;
-  m ["ru_nvcsw"] = octave_NaN;
-  m ["ru_nivcsw"] = octave_NaN;
+  m ["maxrss"] = octave_NaN;
+  m ["ixrss"] = octave_NaN;
+  m ["idrss"] = octave_NaN;
+  m ["isrss"] = octave_NaN;
+  m ["minflt"] = octave_NaN;
+  m ["majflt"] = octave_NaN;
+  m ["nswap"] = octave_NaN;
+  m ["inblock"] = octave_NaN;
+  m ["oublock"] = octave_NaN;
+  m ["msgsnd"] = octave_NaN;
+  m ["msgrcv"] = octave_NaN;
+  m ["nsignals"] = octave_NaN;
+  m ["nvcsw"] = octave_NaN;
+  m ["nivcsw"] = octave_NaN;
 #endif
 
   return m;

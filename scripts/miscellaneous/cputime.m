@@ -28,11 +28,11 @@ function retval = cputime ()
 
   resource_stats = getrusage ();
 
-  usr = resource_stats.ru_utime;
-  sys = resource_stats.ru_stime;
+  usr = resource_stats.utime;
+  sys = resource_stats.stime;
 
-  usr_time = usr.tv_sec + usr.tv_usec / 1e6;
-  sys_time = sys.tv_sec + sys.tv_usec / 1e6;
+  usr_time = usr.sec + usr.usec / 1e6;
+  sys_time = sys.sec + sys.usec / 1e6;
 
   retval = zeros (1, 3);
 

@@ -258,7 +258,8 @@
 	* control/system/__tf2sysl__.m: Likewise.
 	* control/util/__zgpbal__.m: Likewise.
 	* control/system/__zp2ssg2__.m: Likewise.
-	* quaternion/demoquat.m: Ditto.
+
+	* quaternion/demoquat.m: Add copyright notice, Texinfoize doc string.
 	* quaternion/qconj.m: Ditto.
 	* quaternion/qcoordinate_plot.m: Ditto.
 	* quaternion/qderiv.m: Ditto.

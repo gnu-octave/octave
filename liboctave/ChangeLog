@@ -1,3 +1,8 @@
+Sun Nov 30 14:59:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleBessel.h, dbleBessel.cc: New files.
+	* Makefile.in (INCLUDES, SOURCES): Add them to the lists.
+
 Wed Nov 26 20:02:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-sysdep.cc (octave_getcwd): Prefer getcwd over getwd.

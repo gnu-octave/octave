@@ -39,8 +39,8 @@ ifeq ($(OCTAVE_LITE), true)
   endif
 endif
 
-DLD_XSRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
-	expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
+DLD_XSRC := balance.cc bessel.cc chol.cc colloc.cc dassl.cc det.cc \
+	eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
 	getgrent.cc getpwent.cc getrusage.cc givens.cc hess.cc \
 	ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc lsode.cc \
 	lu.cc minmax.cc pinv.cc qr.cc quad.cc qzval.cc rand.cc \

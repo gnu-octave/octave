@@ -1,3 +1,11 @@
+Sat Nov 29 13:02:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/ribesl.f (ribesl): Use d1mach to get machine parameters.
+	SAVE static data between calls.  Use PARAMETERS where possible.
+	* specfun/rjbesl.f (rjbesl): Likewise.
+	* specfun/rkbesl.f (rkbesl): Likewise.
+	* specfun/rybesl.f (rybesl): Likewise.
+
 Fri Nov 28 14:05:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun: New subdirectory.

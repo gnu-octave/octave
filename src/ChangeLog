@@ -1,3 +1,8 @@
+Sun Nov 30 14:58:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/bessel.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 Thu Nov 27 23:28:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (handle_string): Constructor for string class takes

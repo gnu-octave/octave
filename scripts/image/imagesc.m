@@ -18,15 +18,22 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} imagesc (@var{A}, @var{zoom})
-## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A}, @var{zoom})
+## @deftypefn {Function File} {} imagesc (@var{A})
+## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A})
+## @deftypefnx {Function File} {} imagesc (@dots{}, @var{zoom})
+## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
+## @deftypefnx {Function File} { @var{B} = } imagesc (@dots{})
 ## Display a scaled version of the matrix @var{A} as a color image.  The
 ## matrix is scaled so that its entries are indices into the current
 ## colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
-## comfortable size is chosen.
+## comfortable size is chosen.  If @var{limits} = [@var{lo}, @var{hi}] are
+## given, then that range maps into the full range of the colormap rather 
+## than the minimum and maximum values of @var{A}.
 ##
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}.  At present they are ignored.
+## @var{x} and @var{y}, either as pairs giving the minimum and maximum
+## values for the respective axes, or as values for each row and column
+## of the matrix @var{A}.  At present they are ignored.
 ## @end deftypefn
 ## @seealso{image and imshow}
 
@@ -34,25 +41,48 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function ret = imagesc (x, y, A, zoom)
+function ret = imagesc (x, y, A, zoom, limits)
 
-  if (nargin < 1 || nargin > 4)
-    usage ("imagesc (matrix, zoom) or imagesc (x, y, matrix, zoom)");
+  if (nargin < 1 || nargin > 5)
+    usage ("B = imagesc ([x, y,] matrix [,limits] [,zoom])");
   elseif (nargin == 1)
     A = x;
-    zoom = [];
-    x = y = [];
+    zoom = x = y = limits = [];
   elseif (nargin == 2)
     A = x;
     zoom = y;
-    x = y = [];
+    x = y = limits = [];
   elseif (nargin == 3)
-    zoom = [];
+    ## Assume imagesc(x,y,A) for compatibility.  It
+    ## could also be imagesc(A,limits,zoom), but if A is
+    ## a 1x2 vector, this is equivalent to imagesc(x,y,A)
+    ## for scalar A so we won't try to guess.
+    zoom = limits = [];
+  elseif (nargin == 4)
+    limits = [];
   endif
 
-  maxval = max (A(:));
-  minval = min (A(:));
+  ## correct for zoom, limits parameter order
+  if (length (zoom) == 2)
+     swap = limits;
+     limits = zoom;
+     zoom = swap;
+  endif
 
+  ## use given limits or guess them from the matrix
+  if (length (limits) == 2 && limits(2) >= limits(1))
+     minval = limits(1);
+     maxval = limits(2);
+     A(A < minval) = minval;
+     A(A > maxval) = maxval;
+  elseif (length (limits) == 0)
+     maxval = max (A(:));
+     minval = min (A(:));
+  else
+     error ("expected data limits to be [lo, hi]");
+  endif
+
+  ## scale the limits to the range of the colormap
   if (maxval == minval)
     B = ones (size (A));
   else
@@ -60,6 +90,7 @@ function ret = imagesc (x, y, A, zoom)
     B = round ((A - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
   endif
 
+  ## display or return the image
   if (nargout == 0)
     image (x, y, B, zoom);
   else

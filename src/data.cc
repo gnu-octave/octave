@@ -221,8 +221,30 @@ DEFUN ("cumprod", Fcumprod, Scumprod, 1, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).cumprod ();
+  if (nargin == 1)
+    {
+      tree_constant arg = args(0);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.cumprod ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix tmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.cumprod ();
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("cumprod", arg);
+	  return retval;
+	}
+    }
   else
     print_usage ("cumprod");
 
@@ -236,8 +258,30 @@ DEFUN ("cumsum", Fcumsum, Scumsum, 1, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).cumsum ();
+  if (nargin == 1)
+    {
+      tree_constant arg = args(0);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.cumsum ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix tmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.cumsum ();
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("cumsum", arg);
+	  return retval;
+	}
+    }
   else
     print_usage ("cumsum");
 
@@ -283,8 +327,30 @@ DEFUN ("prod", Fprod, Sprod, 1, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).prod ();
+  if (nargin == 1)
+    {
+      tree_constant arg = args(0);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.prod ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix tmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.prod ();
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("prod", arg);
+	  return retval;
+	}
+    }
   else
     print_usage ("prod");
 
@@ -345,8 +411,30 @@ DEFUN ("sum", Fsum, Ssum, 1, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).sum ();
+  if (nargin == 1)
+    {
+      tree_constant arg = args(0);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.sum ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix tmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.sum ();
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("sum", arg);
+	  return retval;
+	}
+    }
   else
     print_usage ("sum");
 
@@ -360,8 +448,30 @@ DEFUN ("sumsq", Fsumsq, Ssumsq, 1, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).sumsq ();
+  if (nargin == 1)
+    {
+      tree_constant arg = args(0);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.sumsq ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix tmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    retval(0) = tmp.sumsq ();
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("sumsq", arg);
+	  return retval;
+	}
+    }
   else
     print_usage ("sumsq");
 

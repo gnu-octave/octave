@@ -223,12 +223,6 @@ private:
 
 // These may not need to be member functions.
 
-  tree_constant cumprod (void) const;
-  tree_constant cumsum (void) const;
-  tree_constant prod (void) const;
-  tree_constant sum (void) const;
-  tree_constant sumsq (void) const;
-
   tree_constant diag (void) const;
   tree_constant diag (const tree_constant& a) const;
 

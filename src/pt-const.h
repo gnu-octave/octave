@@ -363,12 +363,6 @@ public:
 
 // These may not need to be member functions.
 
-  tree_constant cumprod (void) const { return rep->cumprod (); }
-  tree_constant cumsum (void) const { return rep->cumsum (); }
-  tree_constant prod (void) const { return rep->prod (); }
-  tree_constant sum (void) const { return rep->sum (); }
-  tree_constant sumsq (void) const { return rep->sumsq (); }
-
   tree_constant diag (void) const { return rep->diag (); }
   tree_constant diag (const tree_constant& a) const { return rep->diag (a); }
 

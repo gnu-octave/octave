@@ -415,6 +415,10 @@ loadpath (void)
     }
   else
     {
+      if (! (s[0] == ':' || s[s.length () - 1] == ':'
+	     || s.find ("::") != NPOS))
+	warning ("LOADPATH will ignore default load path");
+
       Vload_path = s;
 
       Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);

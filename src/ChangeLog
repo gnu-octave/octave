@@ -1,5 +1,8 @@
 2002-06-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defaults.cc (loadpath): Warn if loadpath doesn't contain
+	leading, trailing, or doubled colon.
+
 	* pt-decl.cc (tree_static_command::eval, tree_global_command::eval):
 	Call error for any non-zero value of error_state.
 	* pt-select.cc (tree_if_command::eval): Likewise.

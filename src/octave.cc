@@ -98,7 +98,7 @@ static bool read_init_files = true;
 
 // TRUE means we read the site-wide octaverc files.
 // (--norc; --no-site-file; -f)
-bool bool read_site_files = true;
+static bool read_site_files = true;
 
 // Nonzero means we don't print the usual startup message.
 // (--quiet; --silent; -q)
@@ -129,8 +129,10 @@ static const char *short_opts = "+?Vdfhip:qvx";
 #define EXEC_PATH_OPTION 1
 #define INFO_FILE_OPTION 2
 #define INFO_PROG_OPTION 3
-#define NO_LINE_EDITING_OPTION 4
-#define TRADITIONAL_OPTION 5
+#define NO_INIT_FILE_OPTION 4
+#define NO_LINE_EDITING_OPTION 5
+#define NO_SITE_FILE_OPTION 6
+#define TRADITIONAL_OPTION 7
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },

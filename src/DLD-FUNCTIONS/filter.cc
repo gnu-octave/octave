@@ -113,7 +113,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
       b = b / norm;
     }
 
-  if ((a_len <= 1) && (si_len <= 1))
+  if ((a_len <= 1) && (si_len <= 0))
     return b(0) * x;
 
   y.resize (x_dims, 0.0);

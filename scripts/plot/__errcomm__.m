@@ -31,13 +31,11 @@
 
 function __errcomm__ (caller, varargin)
 
-  nargs = nargin ();
-
-  if (nargs < 3)
-    usage ("%s (...)", caller);
+  if (nargin < 3)
+    usage ("%s (x,y,dy,'fmt',...)", caller);
   endif
 
-  nargs--;
+  nargs = length (varargin);
   save_hold = ishold;
   unwind_protect
     if (! ishold)
@@ -45,9 +43,9 @@ function __errcomm__ (caller, varargin)
     endif
     hold on;
     k = 1;
-    while (nargs-- > 0)
+    data = cell(6,1);
+    while (k <= nargs)
       a = varargin{k++};
-      nargs--;
       if (isvector (a))
         a = a(:);
       elseif (ismatrix (a))
@@ -57,16 +55,11 @@ function __errcomm__ (caller, varargin)
       endif
       sz = size (a);
       ndata = 1;
-      arg1 = a;
-      while (nargs-- > 0)
+      data{ndata} = a;
+      while (k <= nargs)
 	a = varargin{k++};
 	if (isstr (a))
-	  fmt = a;
-	  cmd = "__errplot__ (arg1";
-	  for i = 2:ndata,
-	    cmd = sprintf ("%s, arg%d", cmd, i);
-	  endfor
-	  eval (sprintf ("%s, fmt);", cmd));
+	  __errplot__ (a, data{1:ndata});
 	  break;
 	elseif (isvector (a))
 	  a = a(:);
@@ -78,8 +71,7 @@ function __errcomm__ (caller, varargin)
 	if (size (a) != sz)
 	  error ("argument sizes do not match");
 	endif
-	ndata++;
-	eval (sprintf ("arg%d = a;", ndata));
+	data{++ndata} = a;
 	if (ndata > 6)
 	  error ("too many arguments to a plot");
 	endif
@@ -87,12 +79,7 @@ function __errcomm__ (caller, varargin)
     endwhile
 
     if (! isstr (a))
-      fmt = "~";
-      cmd = "__errplot__ (arg1";
-      for i = 2:ndata,
-	cmd = sprintf ("%s, arg%d", cmd, i);
-      endfor
-      eval (sprintf ("%s, fmt);", cmd));
+      __errplot__ ("~", data{1:ndata});
     endif
   unwind_protect_cleanup
     if (! save_hold)

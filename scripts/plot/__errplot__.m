@@ -33,81 +33,41 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function __errplot__ (varargin)
+function __errplot__ (fstr,a1,a2,a3,a4,a5,a6)
 
-  nargs = nargin ();
-
-  if (nargs < 3) # atleast two data arguments needed
-    usage ("__errplot__ (arg1, ..., fmt)");
+  if (nargin < 3 || nargin > 7) # at least three data arguments needed
+    usage ("__errplot__ (fmt, arg1, ...)");
   endif
-
-  fstr = " ";
-  ndata = 0;
-  k = 1;
-
-  while (nargs--)
-    a = varargin{k++};
-    if (! isstr (a))
-      ndata++;
-      eval (sprintf ("arg%d = a;", ndata));
-    else
-      fstr = a;
-    endif
-  endwhile
 
   fmt = __pltopt__ ("__errplot__", fstr);
 
-  nplots = size (arg1, 2);
-  len = size (arg1, 1);
-
-  if (ndata == 2)
-    for i = 1:nplots,
-      tmp = [(1:len)', arg1(:,i), arg2(:,i)];
-      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-      eval (cmd);
-    endfor
-  elseif (ndata == 3)
-    for i = 1:nplots,
-      tstr = "tmp =[arg1(:,i)";
-      for j = 2:ndata,
-       tstr = [tstr, sprintf(", arg%d(:,i)", j)];
-      endfor
-      tstr = [tstr, "];"];
-      eval (tstr);
-      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-      eval (cmd);
-    endfor
-  elseif (ndata == 4)
-    for i = 1:nplots, # this is getting ugly
-      if (index (fmt, "boxxy") || index (fmt, "xyerr"))
-       tstr = "tmp = [arg1(:,i), arg2(:,i), arg3(:,i), arg4(:,i)];";
-      elseif (index (fmt, "xerr"))
-       tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i)];";
-      else
-       tstr = "tmp = [arg1(:,i), arg2(:,i), arg2(:,i)-arg3(:,i), arg2(:,i)+arg4(:,i)];";
-      endif
-      eval (tstr);
-      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-      eval (cmd);
-    endfor
-  elseif (ndata == 6)
-    for i = 1:nplots,
-      tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i), arg2(:,i)-arg5(:,i), arg2(:,i)+arg6(:,i)];";
-      eval (tstr);
-      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-      eval (cmd);
-    endfor
-  else
-    for i = 1:nplots,
-      tstr = "tmp = [arg1(:,i)";
-      for j = 2:ndata,
-       tstr = [tstr, sprintf(", arg%d(:,i)", j)];
-      endfor
-      tstr = [tstr, "];"];
-      eval (tstr);
-      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-      eval (cmd);
-    endfor
-  endif
+  nplots = size (a1, 2);
+  len = size (a1, 1);
+  for i = 1:nplots
+    ifmt = fmt(1+mod(i,size(fmt,1)), :);
+    switch (nargin - 1)
+      case 2
+	tmp = [(1:len)', a1(:,i), a2(:,i)];
+      case 3
+	tmp = [a1(:,i), a2(:,i), a3(:,i)];
+      case 4
+	if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
+	  tmp = [a1(:,i), a2(:,i), a3(:,i), a4(:,i)];
+	elseif (index (ifmt, "xerr"))
+	  tmp = [a1(:,i), a2(:,i), a1(:,i)-a3(:,i), a1(:,i)+a4(:,i)];
+	else
+	  tmp = [a1(:,i), a2(:,i), a2(:,i)-a3(:,i), a2(:,i)+a4(:,i)];
+	endif
+      case 5
+	error ("error plot requires 2, 3, 4 or 6 columns");
+	## tmp = [a1(:,i), a2(:,i), a3(:,i), a4(:,i), a5(:,i)];
+      case 6
+	tmp = [a1(:,i), a2(:,i), ...
+	       a1(:,i)-a3(:,i), a1(:,i)+a4(:,i), ...
+	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
+    endswitch
+    cmd = sprintf ("gplot tmp %s", ifmt);
+    eval (cmd);
+endfor
 
 endfunction

@@ -1,3 +1,7 @@
+2004-06-03  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/filter.cc: Fix for length(a)=1 && length(b)=2 case.
+
 2004-05-07  John W. Eaton  <jwe@octave.org>
 
 	* ov.cc (octave_value::print_with_name): Only print name tag if

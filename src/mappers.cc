@@ -281,7 +281,7 @@ Compute the cosine of each element of @var{x}.\n\
 Compute the hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (erf, 0, 0, 0, xerf, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (erf, 0, 0, 0, erf, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erf (@var{z})\n\
 Computes the error function,\n\
@@ -305,7 +305,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 @end deftypefn\n\
 @seealso{erfc and erfinv}");
 
-  DEFUN_MAPPER (erfc, 0, 0, 0, xerfc, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (erfc, 0, 0, 0, erfc, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
 Computes the complementary error function,\n\

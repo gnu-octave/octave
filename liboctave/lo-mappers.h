@@ -32,8 +32,6 @@ extern double imag (double x);
 extern double real (double x);
 extern double round (double x);
 extern double signum (double x);
-extern double xerf (double x);
-extern double xerfc (double x);
 
 extern bool xisnan (double x);
 extern bool xfinite (double x);

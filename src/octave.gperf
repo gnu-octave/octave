@@ -77,5 +77,5 @@ unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
 varargin, VARARGIN, varargin_kw
 varargout, VARARGOUT, varargout_kw
 while, WHILE, while_kw
-__FILE__, TEXT, magic_file_kw
+__FILE__, STRING, magic_file_kw
 __LINE__, NUM, magic_line_kw

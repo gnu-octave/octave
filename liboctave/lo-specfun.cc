@@ -105,7 +105,7 @@ double
 asinh (double x)
 {
   double retval;
-  F77_XFCN (dasinh, DASINH, (x, retval));
+  F77_XFCN (xdasinh, XDASINH, (x, retval));
   return retval;
 }
 #endif
@@ -115,7 +115,7 @@ double
 atanh (double x)
 {
   double retval;
-  F77_XFCN (datanh, DATANH, (x, retval));
+  F77_XFCN (xdatanh, XDATANH, (x, retval));
   return retval;
 }
 #endif
@@ -125,7 +125,7 @@ double
 erf (double x)
 {
   double retval;
-  F77_XFCN (derf, DERF, (x, retval));
+  F77_XFCN (xderf, XDERF, (x, retval));
   return retval;
 }
 #endif
@@ -135,7 +135,7 @@ double
 erfc (double x)
 {
   double retval;
-  F77_XFCN (derfc, DERFC, (x, retval));
+  F77_XFCN (xderfc, XDERFC, (x, retval));
   return retval;
 }
 #endif

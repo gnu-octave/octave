@@ -111,28 +111,6 @@ signum (double x)
 #endif
 }
 
-double
-xerf (double x)
-{
-#if defined (HAVE_ERF)
-  return erf (x);
-#else
-  (*current_liboctave_error_handler)
-    ("erf (x) not available on this system");
-#endif
-}
-
-double
-xerfc (double x)
-{
-#if defined (HAVE_ERFC)
-  return erfc (x);
-#else
-  (*current_liboctave_error_handler)
-    ("erfc (x) not available on this system");
-#endif
-}
-
 // double -> bool mappers.
 
 bool

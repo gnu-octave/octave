@@ -1,5 +1,8 @@
 2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
 
+	* lo-mappers.cc (xerf, xerfc): Delete.
+	* lo-mappers.h (xerf, xerfc): Delete decls.
+
 	* lo-mappers.cc: Remove unused #define M_PI.
 	* lo-specfun.cc: Add #define M_PI if needed.
 

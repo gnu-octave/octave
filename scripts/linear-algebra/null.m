@@ -34,7 +34,13 @@ function retval = null (A, tol)
 
   [rows, cols] = size (A);
 
-  s = diag (S);
+  [S_nr, S_nc] = size (S);
+
+  if (S_nr == 1 || S_nc == 1)
+    s = S(1);
+  else
+    s = diag (S);
+  endif
 
   if (nargin == 1)
     tol = max (size (A)) * s (1) * eps;

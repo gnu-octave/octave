@@ -26,6 +26,11 @@ function y = trace (x)
     usage ("trace (x)");
   endif
 
-  y = sum (diag (x));
+  [nr, nc] = size (x);
+  if (nr == 1 || nc == 1)
+    y = x(1);
+  else
+    y = sum (diag (x));
+  endif
 
 endfunction

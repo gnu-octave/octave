@@ -58,7 +58,22 @@ octave_rl_enable_paren_matching (int val)
 void
 octave_rl_clear_screen (void)
 {
-  rl_clear_screen ();
+  int ignore1 = 0;
+  int ignore2 = 0;
+
+  // XXX FIXME XXX -- After calling rl_clear_screen, the screen will
+  // not be correct.  If called from clc() for example, it will look
+  // like this:
+  //
+  //  octave:13> clcoctave:14> 
+  //
+  // What is the proper way to remove the clc and the second prompt?
+  // _rl_clear_screen does what we want (just clears the screen) but
+  // it is not a public function, and on some systems, it is not
+  // exported from shared library versions of readline, so we can't
+  // use it.
+
+  rl_clear_screen (ignore1, ignore2);
 }
 
 void

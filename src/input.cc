@@ -667,6 +667,9 @@ generate_struct_completions (const char *text, char *& prefix,
 {
   string_vector names;
 
+  // XXX FIXME XXX -- this needs some work, eh?
+
+#if 0
   assert (text);
 
   char *id = strsave (text);
@@ -720,6 +723,7 @@ generate_struct_completions (const char *text, char *& prefix,
     }
 
   delete [] id;
+#endif
 
   return names;
 }
@@ -770,6 +774,9 @@ looks_like_struct (const char *nm)
 {
   int retval = 0;
 
+  // XXX FIXME XXX -- this needs some work, eh?
+
+#if 0
   assert (nm);
 
   char *id = strsave (nm);
@@ -808,6 +815,7 @@ looks_like_struct (const char *nm)
     }
 
   delete [] id;
+#endif
 
   return retval;	
 }

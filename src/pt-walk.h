@@ -23,15 +23,51 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_tree_walker_h)
 #define octave_tree_walker_h 1
 
-#include "pt-cmd.h"
-#include "pt-const.h"
-#include "pt-exp.h"
-#include "pt-fcn.h"
-#include "pt-fvc.h"
-#include "pt-mat.h"
-#include "pt-misc.h"
-#include "pt-mvr.h"
-#include "pt-plot.h"
+class tree_argument_list;
+class tree_binary_expression;
+class tree_break_command;
+class tree_builtin;
+class tree_colon_expression;
+class tree_continue_command;
+class tree_decl_command;
+class tree_decl_elt;
+class tree_decl_init_list;
+class tree_for_command;
+class tree_function;
+class tree_identifier;
+class tree_if_clause;
+class tree_if_command;
+class tree_if_command_list;
+class tree_switch_case;
+class tree_switch_case_list;
+class tree_switch_command;
+class tree_index_expression;
+class tree_indirect_ref;
+class tree_matrix;
+class tree_matrix_row;
+class tree_multi_assignment_expression;
+class tree_no_op_command;
+class tree_oct_obj;
+class tree_constant;
+class tree_parameter_list;
+class tree_plot_command;
+class plot_limits;
+class plot_range;
+class tree_postfix_expression;
+class tree_prefix_expression;
+class tree_return_command;
+class tree_return_list;
+class tree_simple_assignment_expression;
+class tree_statement;
+class tree_statement_list;
+class subplot;
+class subplot_list;
+class subplot_style;
+class subplot_using;
+class tree_try_catch_command;
+class tree_unary_expression;
+class tree_unwind_protect_command;
+class tree_while_command;
 
 class
 tree_walker

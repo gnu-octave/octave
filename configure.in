@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.457 $)
+AC_REVISION($Revision: 1.458 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -245,10 +245,10 @@ case "$canonical_host_type" in
         XTRA_CFLAGS="$XTRA_CFLAGS -mieee-fp"
         AC_MSG_RESULT([adding -mieee-fp to XTRA_CFLAGS])])
 
-      OCTAVE_CC_FLAG(-ffloat-store, [
-	float_store_flag=-ffloat-store
-	XTRA_CFLAGS="$XTRA_CFLAGS -ffloat-store"
-	AC_MSG_RESULT([adding -ffloat-store to XTRA_CFLAGS])])
+###      OCTAVE_CC_FLAG(-ffloat-store, [
+###        float_store_flag=-ffloat-store
+###        XTRA_CFLAGS="$XTRA_CFLAGS -ffloat-store"
+###        AC_MSG_RESULT([adding -ffloat-store to XTRA_CFLAGS])])
     fi
     if test "$GXX" = yes; then
       OCTAVE_CXX_FLAG(-mieee-fp, [
@@ -256,10 +256,10 @@ case "$canonical_host_type" in
 	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
 	AC_MSG_RESULT([adding -mieee-fp to XTRA_CXXFLAGS])])
 
-      OCTAVE_CXX_FLAG(-ffloat-store, [
-	float_store_flag=-ffloat-store
-	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ffloat-store"
-	AC_MSG_RESULT([adding -ffloat-store to XTRA_CXXFLAGS])])
+###      OCTAVE_CXX_FLAG(-ffloat-store, [
+###        float_store_flag=-ffloat-store
+###        XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ffloat-store"
+###        AC_MSG_RESULT([adding -ffloat-store to XTRA_CXXFLAGS])])
     fi
   ;;
   alpha*-*-*)
@@ -502,7 +502,7 @@ else
       i[[3456789]]86-*-*)
         if test "$ac_cv_f77_compiler_gnu" = yes; then
 	  OCTAVE_F77_FLAG(-mieee-fp)
-	  OCTAVE_F77_FLAG(-ffloat-store)
+###          OCTAVE_F77_FLAG(-ffloat-store)
 	fi
       ;;
       alpha*-*-*)

@@ -62,7 +62,9 @@ function plot_border (varargin)
 
   k = 1;
 
-  while (nargin--)
+  nargs = nargin ();
+
+  while (nargs--)
 
     arg = varargin{k++};
 

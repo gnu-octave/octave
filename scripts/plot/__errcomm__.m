@@ -31,11 +31,13 @@
 
 function __errcomm__ (caller, varargin)
 
-  if (nargin < 3)
+  nargs = nargin ();
+
+  if (nargs < 3)
     usage ("%s (...)", caller);
   endif
 
-  nargin--;
+  nargs--;
   save_hold = ishold;
   unwind_protect
     if (! ishold)
@@ -43,9 +45,9 @@ function __errcomm__ (caller, varargin)
     endif
     hold on;
     k = 1;
-    while (nargin)
+    while (nargs)
       a = varargin{k++};
-      nargin--;
+      nargs--;
       if (isvector (a))
         a = a(:);
       elseif (ismatrix (a))
@@ -56,8 +58,7 @@ function __errcomm__ (caller, varargin)
       sz = size (a);
       ndata = 1;
       arg1 = a;
-      while (nargin)
-	nargin--;
+      while (nargs--)
 	a = varargin{k++};
 	if (isstr (a))
 	  fmt = a;

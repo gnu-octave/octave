@@ -1,5 +1,10 @@
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* plot/__errcomm__.m: Cope with nargin now being a function.
+	* plot/__errplot__.m: Likewise.
+	* plot/__plt__.m: Likewise.
+	* plot/plot_border.m: Likewise.
+
 	* Makefile.in (distclean, maintainer-clean): Remove DOCSTRINGS,
 	not $(DOCSTRINGS).
 

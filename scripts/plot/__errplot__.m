@@ -35,7 +35,9 @@
 
 function __errplot__ (varargin)
 
-  if (nargin < 3) # atleast two data arguments needed
+  nargs = nargin ();
+
+  if (nargs < 3) # atleast two data arguments needed
     usage ("__errplot__ (arg1, ..., fmt)");
   endif
 
@@ -43,7 +45,7 @@ function __errplot__ (varargin)
   ndata = 0;
   k = 1;
 
-  while (nargin--)
+  while (nargs--)
     a = varargin{k++};
     if (! isstr (a))
       ndata++;

@@ -25,11 +25,13 @@
 
 function __plt__ (caller, varargin)
 
-  if (nargin == 2)
+  nargs = nargin ();
+
+  if (nargs == 2)
 
     __plt1__ (varargin{1}, "");
 
-  elseif (nargin > 2)
+  elseif (nargs > 2)
 
     first_plot = 1;
     hold_state = ishold ();
@@ -38,13 +40,13 @@ function __plt__ (caller, varargin)
 
       k = 1;
       x = varargin{k++};
-      nargin = nargin - 2;
+      nargs -= 2;
       x_set = 1;
       y_set = 0;
 
       ## Gather arguments, decode format, and plot lines.
 
-      while (nargin-- > 0)
+      while (nargs-- > 0)
 
         fmt = "";
         new = varargin{k++};

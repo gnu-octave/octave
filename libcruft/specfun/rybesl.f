@@ -134,7 +134,9 @@ C               Argonne National Laboratory
 C               Argonne, IL  60439
 C
 C----------------------------------------------------------------------
+      LOGICAL FIRST
       INTEGER I,K,NA,NB,NCALC
+      DOUBLE PRECISION D1MACH
       DOUBLE PRECISION
      1  ALFA,ALPHA,AYE,B,BY,C,CH,COSMU,D,DEL,DEN,DDIV,DIV,DMU,D1,D2,
      2  E,EIGHT,EN,ENU,EN1,EPS,EVEN,EX,F,FIVPI,G,GAMMA,H,HALF,ODD,
@@ -150,16 +152,14 @@ C    ONBPI = 1/PI
 C    PIBY2 = PI/2
 C    SQ2BPI = SQUARE ROOT OF 2/PI
 C----------------------------------------------------------------------
-      DATA ZERO,HALF,ONE,TWO,THREE/0.0D0,0.5D0,1.0D0,2.0D0,3.0D0/
-      DATA EIGHT,ONE5,TEN9/8.0D0,15.0D0,1.9D1/
-      DATA FIVPI,PIBY2/1.5707963267948966192D1,1.5707963267948966192D0/
-      DATA PI,SQ2BPI/3.1415926535897932385D0,7.9788456080286535588D-1/
-      DATA PIM5,ONBPI/7.0796326794896619231D-1,3.1830988618379067154D-1/
-C----------------------------------------------------------------------
-C  Machine-dependent constants
-C----------------------------------------------------------------------
-      DATA DEL,XMIN,XINF,EPS/1.0D-8,4.46D-308,1.79D308,1.11D-16/
-      DATA THRESH,XLARGE/16.0D0,1.0D8/
+      PARAMETER (ZERO = 0.0D0, HALF = 0.5D0, ONE = 1.0D0, TWO = 2.0D0)
+      PARAMETER (THREE = 3.0D0, EIGHT = 8.0D0, ONE5 = 1.5D1)
+      PARAMETER (TEN9 = 1.9D1, FIVPI = 1.5707963267948966192D1)
+      PARAMETER (PIBY2 = 1.5707963267948966192D0)
+      PARAMETER (PI = 3.1415926535897932385D0)
+      PARAMETER (SQ2BPI = 7.9788456080286535588D-1)
+      PARAMETER (PIM5 = /7.0796326794896619231D-1)
+      PARAMETER (ONBPI = 3.1830988618379067154D-1)
 C----------------------------------------------------------------------
 C  Coefficients for Chebyshev polynomial expansion of 
 C         1/gamma(1-x), abs(x) .le. .5
@@ -175,6 +175,19 @@ C----------------------------------------------------------------------
      8         0.12719271366545622927D-02, 0.17063050710955562222D-02,
      9        -0.76852840844786673690D-01,-0.28387654227602353814D+00,
      A         0.92187029365045265648D+00/
+C----------------------------------------------------------------------
+C  Machine-dependent constants
+C----------------------------------------------------------------------
+      DATA FIRST /.TRUE./
+      IF (FIRST) THEN
+        EPS = D1MACH (4)
+        XINF = D1MACH (2)
+        XMIN = D1MACH (1)
+        DEL = SQRT (EPS)
+        XLARGE = ONE / DEL
+        THRESH = DINT (-LOG10 (EPS / TWO)) + ONE
+        FIRST = .FALSE.
+      ENDIF
 C----------------------------------------------------------------------
       EX = X
       ENU = ALPHA

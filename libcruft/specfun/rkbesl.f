@@ -141,7 +141,9 @@ C               Argonne National Laboratory
 C               Argonne, IL  60439
 C
 C-------------------------------------------------------------------
+      LOGICAL FIRST
       INTEGER I,IEND,ITEMP,IZE,J,K,M,MPLUS1,NB,NCALC
+      DOUBLE PRECISION D1MACH
       DOUBLE PRECISION  
      1    A,ALPHA,BLPHA,BK,BK1,BK2,C,D,DM,D1,D2,D3,ENU,EPS,ESTF,ESTM,
      2    EX,FOUR,F0,F1,F2,HALF,ONE,P,P0,Q,Q0,R,RATIO,S,SQXMIN,T,TINYX,
@@ -152,14 +154,10 @@ C  Mathematical constants
 C    A = LOG(2.D0) - Euler's constant
 C    D = SQRT(2.D0/PI)
 C---------------------------------------------------------------------
-      DATA HALF,ONE,TWO,ZERO/0.5D0,1.0D0,2.0D0,0.0D0/
-      DATA FOUR,TINYX/4.0D0,1.0D-10/
-      DATA A/ 0.11593151565841244881D0/,D/0.797884560802865364D0/
-C---------------------------------------------------------------------
-C  Machine dependent parameters
-C---------------------------------------------------------------------
-      DATA EPS/2.22D-16/,SQXMIN/1.49D-154/,XINF/1.79D+308/
-      DATA XMIN/2.23D-308/,XMAX/705.342D0/
+      PARAMETER (HALF = 0.5D0, ONE = 1.0D0, TWO = 2.0D0, ZERO = 0.0D0)
+      PARAMETER (FOUR = 4.0D0, TINYX = 1.0D-10)
+      PARAMETER (A = 0.11593151565841244881D0)
+      PARAMETER (D = 0.797884560802865364D0)
 C---------------------------------------------------------------------
 C  P, Q - Approximation for LOG(GAMMA(1+ALPHA))/ALPHA
 C                                         + Euler's constant
@@ -188,6 +186,18 @@ C---------------------------------------------------------------------
      1          9.3715D0/
       DATA ESTF/4.18341D1, 7.1075D0, 6.4306D0, 4.25110D1, 1.35633D0,
      1          8.45096D1, 2.0D1/
+C---------------------------------------------------------------------
+C  Machine dependent parameters
+C---------------------------------------------------------------------
+      DATA FIRST /.TRUE./
+      IF (FIRST) THEN
+        EPS = D1MACH (4)
+        XINF = D1MACH (2)
+        XMIN = D1MACH (1)
+        SQXMIN = SQRT (XMIN)
+        XMAX = 0.99D0 * LOG (XINF)
+        FIRST = .FALSE.
+      ENDIF
 C---------------------------------------------------------------------
       EX = X
       ENU = ALPHA

@@ -137,8 +137,9 @@ C          Argonne National Laboratory
 C          Argonne, IL  60439
 C
 C---------------------------------------------------------------------
-      INTEGER I,J,K,L,M,MAGX,N,NB,NBMX,NCALC,NEND,NSTART
-      DOUBLE PRECISION  DGAMMA,
+      LOGICAL FIRST
+      INTEGER I,J,K,L,M,MAGX,N,NB,NBMX,NCALC,NEND,NSIG,NSTART
+      DOUBLE PRECISION  DGAMMA, D1MACH
      1 ALPHA,ALPEM,ALP2EM,B,CAPP,CAPQ,CONV,EIGHTH,EM,EN,ENMTEN,ENSIG,
      2 ENTEN,FACT,FOUR,FUNC,GNU,HALF,HALFX,ONE,ONE30,P,PI2,PLAST,
      3 POLD,PSAVE,PSAVEL,RTNSIG,S,SUM,T,T1,TEMPA,TEMPB,TEMPC,TEST,
@@ -153,16 +154,13 @@ C   TWOPI1 - first few significant digits of 2 * PI
 C   TWOPI2 - (2*PI - TWOPI) to working precision, i.e.,
 C            TWOPI1 + TWOPI2 = 2 * PI to extra precision.
 C---------------------------------------------------------------------
-      DATA PI2, TWOPI1, TWOPI2 /0.636619772367581343075535D0,6.28125D0,
-     1 1.935307179586476925286767D-3/
-      DATA ZERO, EIGHTH, HALF, ONE /0.0D0,0.125D0,0.5D0,1.0D0/
-      DATA TWO, THREE, FOUR, TWOFIV /2.0D0,3.0D0,4.0D0,25.0D0/
-      DATA ONE30, THREE5 /130.0D0,35.0D0/
-C---------------------------------------------------------------------
-C  Machine-dependent parameters
-C---------------------------------------------------------------------
-      DATA ENTEN, ENSIG, RTNSIG /1.0D38,1.0D17,1.0D-4/
-      DATA ENMTEN, XLARGE /1.2D-37,1.0D4/
+      PARAMETER (PI2 = 0.636619772367581343075535D0)
+      PARAMETER (TWOPI1 = 6.28125D0,
+      PARAMETER (TWOPI2 = 1.935307179586476925286767D-3)
+      PARAMETER (ZERO = 0.0D0, EIGHTH = 0.125D0, HALF = 0.5D0)
+      PARAMETER (ONE = 1.0D0, TWO = 2.0D0, THREE = 3.0D0)
+      PARAMETER (FOUR = 4.0D0, TWOFIV = 2.5D1, ONE30 = 1.3D2)
+      PARAMETER (THREE5 = 3.5D1)
 C---------------------------------------------------------------------
 C     Factorial(N)
 C---------------------------------------------------------------------
@@ -172,6 +170,19 @@ C---------------------------------------------------------------------
      3 6.402373705728D15,1.21645100408832D17,2.43290200817664D18,
      4 5.109094217170944D19,1.12400072777760768D21,
      5 2.585201673888497664D22,6.2044840173323943936D23/
+C---------------------------------------------------------------------
+C  Machine-dependent parameters
+C---------------------------------------------------------------------
+      DATA FIRST /.TRUE./
+      IF (FIRST) THEN
+        NSIG = NINT (-LOG (D1MACH (1)))
+        ENTEN = 1.0D1 ** (INT (LOG10 (D1MACH (2)))
+        ENSIG = 1.0D1 ** NSIG
+        RTNSIG = 1.0D1 ** (-NINT (NSIG / 4.0))
+        ENMTEN = 4.0D0 * D1MACH (1)
+        XLARGE = 1.0D4
+        FIRST = .FALSE.
+      ENDIF
 C---------------------------------------------------------------------
 C Statement functions for conversion and the gamma function.
 C---------------------------------------------------------------------

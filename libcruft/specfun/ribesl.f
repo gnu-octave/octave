@@ -167,8 +167,9 @@ C               Argonne National Laboratory
 C               Argonne, IL  60439
 C
 C-------------------------------------------------------------------
+      LOGICAL FIRST
       INTEGER IZE,K,L,MAGX,N,NB,NBMX,NCALC,NEND,NSIG,NSTART
-      DOUBLE PRECISION DGAMMA,             
+      DOUBLE PRECISION DGAMMA, D1MACH
      1 ALPHA,B,CONST,CONV,EM,EMPAL,EMP2AL,EN,ENMTEN,ENSIG,
      2 ENTEN,EXPARG,FUNC,HALF,HALFX,ONE,P,PLAST,POLD,PSAVE,PSAVEL,
      3 RTNSIG,SUM,TEMPA,TEMPB,TEMPC,TEST,TOVER,TWO,X,XLARGE,ZERO
@@ -176,13 +177,25 @@ C-------------------------------------------------------------------
 C-------------------------------------------------------------------
 C  Mathematical constants
 C-------------------------------------------------------------------
-      DATA ONE,TWO,ZERO,HALF,CONST/1.0D0,2.0D0,0.0D0,0.5D0,1.585D0/
+      PARAMETER (ONE = 1.0D0, TWO = 2.0D0, ZERO = 0.0D0)
+      PARAMETER (HALF = 0.5D0, CONST = 1.585D0)
 C-------------------------------------------------------------------
 C  Machine-dependent parameters
 C-------------------------------------------------------------------
       DATA NSIG,XLARGE,EXPARG /16,1.0D4,709.0D0/
       DATA ENTEN,ENSIG,RTNSIG/1.0D308,1.0D16,1.0D-4/
       DATA ENMTEN/8.9D-308/
+      DATA FIRST /.TRUE./
+      IF (FIRST) THEN
+        NSIG = NINT (-LOG (D1MACH (1)))
+        ENTEN = 1.0D1 ** (INT (LOG10 (D1MACH (2)))
+        ENSIG = 1.0D1 ** NSIG
+        RTNSIG = 1.0D1 ** (-NINT (NSIG / 4.0))
+        ENMTEN = 4.0D0 * D1MACH (1)
+        EXPARG = LOG (D1MACH (2))
+        XLARGE = 1.0D4
+        FIRST = .FALSE.
+      ENDIF
 C-------------------------------------------------------------------
 C  Statement functions for conversion
 C-------------------------------------------------------------------

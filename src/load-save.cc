@@ -585,7 +585,7 @@ read_ascii_data (istream& is, const string& filename, int& global,
 		}
 
 	      if (! error_state)
-		tc = chm;
+		tc = octave_value (chm, true);
 	    }
 	  else
 	    error ("load: failed to extract number of string elements");
@@ -894,7 +894,7 @@ read_binary_data (istream& is, int swap,
 	    chm.insert (tmp, i, 0);
 	    delete [] tmp;
 	  }
-	tc = chm;
+	tc = octave_value (chm, true);
       }
       break;
 

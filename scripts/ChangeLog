@@ -1,3 +1,11 @@
+2005-01-27  David Bateman  <dbateman@free.fr>
+
+	* strings/dec2base.m: Be even more careful about handling all digits.
+
+2005-01-27  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* strings/dec2base.m: Use integer arithmetic to count number of digits.
+
 2005-01-27  Benjamin Hall  <benjamin.hall@pw.utc.com>
 
 	* statistics/base/median.m: Make it work for the scalar case too.

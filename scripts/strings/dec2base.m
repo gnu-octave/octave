@@ -73,8 +73,9 @@ function retval = dec2base (n, base, len)
     error ("dec2base: base must be between 2 and 36 or a string of symbols");
   endif
   
-  ## determine number of digits required to handle all numbers
-  max_len = floor (log (max (max (n), 1)) ./ log (base)) + 1;
+  ## determine number of digits required to handle all numbers, can overflow
+  ## by 1 digit
+  max_len = round (log (max (max (n), 1)) ./ log (base)) + 1;
 
   if (nargin == 3)
     max_len = max (max_len, len);
@@ -88,4 +89,39 @@ function retval = dec2base (n, base, len)
   ## convert digits to symbols
   retval = reshape (symbols (digits+1), size (digits));
 
+  ## Check if the first element is the zero symbol
+  if (all (retval(:,1) == symbols(1)))
+    retval = retval(:,2:end);
+  endif
+
 endfunction
+
+%!test
+%! s0='';
+%! for n=1:13
+%!   for b=2:16
+%!     pp=dec2base(b^n+1,b);
+%!     assert(dec2base(b^n,b),['1',s0,'0']);
+%!     assert(dec2base(b^n+1,b),['1',s0,'1']);
+%!   end
+%!   s0=[s0,'0'];
+%! end
+
+%!test
+%! digits='0123456789ABCDEF';
+%! for n=1:13
+%!   for b=2:16
+%!     pm=dec2base(b^n-1,b);
+%!     assert(length(pm),n);
+%!     assert(all(pm==digits(b)));
+%!   end
+%! end
+
+%!test
+%! for b=2:16
+%!   assert(dec2base(0,b),'0');
+%! end
+
+%!test
+%!   assert(dec2base(2^51-1,2),
+%!          '111111111111111111111111111111111111111111111111111');

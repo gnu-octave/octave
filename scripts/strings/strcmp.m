@@ -47,7 +47,7 @@ function retval = strcmp (s1, s2)
           retval = all (all (s1 == s2));
 	endif
       endif
-    elseif (iscell (s2))
+    elseif (iscellstr (s2))
       [r2, c2] = size (s2);
       if (r1 == 1)
 	t2 = s2(:);
@@ -77,7 +77,7 @@ function retval = strcmp (s1, s2)
 	endif
       endif
     endif
-  elseif (iscell (s1))
+  elseif (iscellstr (s1))
     [r1, c1] = size (s1);
     if (isstr (s2))
       [r2, c2] = size (s2);
@@ -108,7 +108,7 @@ function retval = strcmp (s1, s2)
 	  endif
 	endif
       endif      
-    elseif (iscell (s2))
+    elseif (iscellstr (s2))
       [r2, c2] = size (s2);
       if (r1 == 1 && c1 == 1)
 	t1 = s1{:};
@@ -139,7 +139,11 @@ function retval = strcmp (s1, s2)
       else
 	error ("strcmp: nonconformant cell arrays");
       endif
+    else
+      error ("strcmp: expecting args to be strings or cell arrays of strings");
     endif
+  else
+    error ("strcmp: expecting args to be strings or cell arrays of strings");
   endif
 
 endfunction

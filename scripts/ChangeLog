@@ -1,6 +1,8 @@
 2004-09-15  John W. Eaton  <jwe@octave.org>
 
 	* strings/strcmp.m: Fix typo in cell/string array case.
+	Use iscellstr to check for cells rather than iscell.
+	Improve diagnostics for invalid args.
 
 2004-09-10  David Bateman  <dbateman@free.fr>
 

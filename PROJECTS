@@ -16,11 +16,6 @@ so check with bug-octave@bevo.che.wisc.edu before you start.
 Numerical:
 ---------
 
-  * Allow sum, prod, cumsum, and cumprod to take a second argument
-    that specifies the dimension over which to operate.
-
-  * Merge control stuff.
-
   * Improve logm, and sqrtm.
 
   * Improve complex mapper functions.  See W. Kahan, ``Branch Cuts for
@@ -76,14 +71,7 @@ Numerical:
     compatibility with Matlab (but only if Matlab 5 still does things
     this way). For example:  [1, 2] * [] ==> [].
 
-  * Should any ([]) return [] or 0?  What about all ([])?
-
   * Improve design of ODE, DAE, classes.
-
-  * Make it possible to specify a time which dassl and lsode should
-    not integrate past.
-
-  * Add interface to daspk (new version of dassl).
 
   * Extend meaning of .* to include v .* M or M .* v (where v is a
     column vector with the same number of rows as M) to scale rows of
@@ -144,8 +132,6 @@ Graphics:
   * Make it possible to check the current graphics terminal type.
 
   * If possible, pass data to gnuplot without using temporary files.
-
-  * If using temporary files, delete them when gnuplot exits.
 
   * If possible, pass binary data to gnuplot to speed things up.
 
@@ -233,17 +219,12 @@ Input/Output:
     probably be best since there are already filters to convert to
     these formats from others.)
 
-  * Make ascii load and save work for Inf and NaN.  (This is really a
-    problem with the functions for reading floats in the GNU iolib.)
-
   * Complain if there is not enough disk space available (I think
     there is simply not enough error checking in the code that handles
     writing data).
 
   * Make it possible to tie arbitrary input and output streams
     together, similar to the way iostreams can be tied together.
-
-  * Allow comments in number-only data files.
 
 -----------
 Interpreter:
@@ -274,28 +255,12 @@ Interpreter:
 
     is parsed as IF expr STRING END.
 
-  * For indexing operations, allow `$' to indicate the last element.
-    For example, b = a (3:$, 1:$-1).  This means b is a, except for
-    its first 2 rows and last column.  Note that `$' must be able to
-    appear in arbitrarily complex expressions, so copying the the
-    current implementation of `:' won't work. 
-
-  * If foo.oct and foo.m both exist in the LOADPATH, Octave will
-    always find foo.oct, even if foo.m appears earlier in the list of
-    directories.  This should be fixed (in the kpathsearch library) to
-    find the first .oct or .m file in the path, and only prefer .oct
-    over .m if both files are in the same directory.
-
   * Consider grouping all preference variables in a structure instead
     of further polluting the namespace.  Maybe `Octave_options.xxx'?
 
   * Rewrite functions in input.cc to do the right thing in all cases
     of using readline, forced interactive behavior, echoing of input,
     etc.
-
-  * Make it possible to redefine built-in variables and functions.
-    (Fix whatever it is that is happening with clear for built-in
-    variables.)
 
   * Consider making linspace() and logspace() return the value
     corresponding to the first argument if the number of requested
@@ -317,29 +282,18 @@ Interpreter:
     individual basis from the command line or via some built-in
     structure variable.
 
-  * Make warnings also give some indication about the location of the
-    code that triggers the warning.
-
   * Warn about complex comparisons?  Could just use double_value() or
     matrix_value() instead of explicit conversions to real types.  For
     this to really be useful, some additional information must be
     available to point to the location of the code that triggers the
     warning.
 
-  * Consider making it possible to have arrays of structures, and some
-    way of indexing them.
+  * Allow arbitrary lower bounds for array indexing.
 
-  * Allow arbitrary lower bounds for array indexing.  (Watch out for
-    the additional conflict with zero-one style indexing.)
-
-  * Recursive problems.
+  * Improve performance of recursive function calls.
 
   * Improve the way ignore_function_time_stamp works to allow
     selecting by individual directories or functions.
-
-  * Make it possible to ask exist() to only look for certain classes
-   of variables, functions, files, etc. rather than always looking for
-   everything.
 
   * Add a command-line option to tell Octave to just do syntax
     checking and not execute statements.
@@ -408,32 +362,13 @@ Interpreter:
 
   * Handle arrays with more than two dimensions.
 
-  * Consider making assignment statements like
-
-      M (i_idx, j_idx) = RHS
-
-    produce the value of RHS instead of the value of M.
-
   * Consider making it possible to specify an empty matrix with a
     syntax like [](e1, e2).  Of course at least one of the expressions
     must be zero...
 
-  * Eliminate force_numeric and make_numeric functions.
-
   * Is Matrix::fortran_vec() really necessary?
 
   * print_usage() should set error_state in most cases?
-
-  * Make statements like this
-
-      foo bar baz
-
-    turn into function calls like this:
-
-      foo ("bar", "baz")
-
-    This is pretty ugly and introduces some conflicts, so I don't
-    think it is a good idea.
 
   * Add a command that works like bash's `builtin' command.
 
@@ -454,7 +389,7 @@ Interpreter:
 
       prot  type               rows   cols  name
       ====  ====               ====   ====  ====
-      wd   matrix                m      n  struct.x
+      wd   matrix                m      n   struct.field
 
   * Allow who to return information as a list of strings.
 
@@ -498,18 +433,8 @@ History:
 Configuration and Installation:
 ------------------------------
 
-  * Make Octave as independent of the particular readline version as
-    possible.
-
   * Add an --enable-pathsearch option to configure to make it possible
     to configure and run without kpathsea. 
-
-  * Make configure take more defaults from the environment.  It should
-    definitely pay attention to CFLAGS, CXXFLAGS, FFLAGS, etc.
-
-  * Should --enable-lite-kernel imply --enable-shared?
-
-  * Should --enable-dl imply --enable-shared?
 
   * Makefile changes:
       -- eliminate for loops
@@ -528,7 +453,6 @@ Documentation and On-Line Help:
 
   * Document new features.
       -- history-search-{back,for}ward.
-      -- try/catch.
       -- Other stuff mentioned in the NEWS file.
 
   * Improve the Texinfo Documentation for the interpreter.  It would
@@ -544,9 +468,6 @@ Documentation and On-Line Help:
     directory in the LOADPATH, so that local collections of M-files
     could be documented with Info.
 
-  * Figure out a good way to have functions and variables documented
-    in only one place.
-
   * Improve help messages for operators and keywords in help.cc.
 
   * Make index entries more consistent to improve behavior of `help -i'.
@@ -554,13 +475,6 @@ Documentation and On-Line Help:
   * Make `help -i' try to find a whole word match first.
 
   * Allow help for local additions to be accessible with help -i.
-
-  * Make the arrow keys work in the info reader.
-
-  * Update Info to be based on the current Texinfo release.
-
-  * Should info/terminal.c include definitions for PC, BC, UP, and
-    ospeed on all systems?
 
   * Clean up help stuff.
 
@@ -617,13 +531,6 @@ Tests:
 Programming:
 -----------
 
-  * Move toward using more stuff from standard C++ library.
-
-  * More C++/Fortran cleanups.
-
-  * It is likely that there are still some memory leaks.  Hunt then down
-    and plug them. 
-
   * Better error messages for missing operators?
 
   * Eliminate duplicate enums in pt-exp.cc, pt-const.cc, and ov.cc.
@@ -650,14 +557,7 @@ Programming:
 
   * Eliminate more global variables.
 
-  * Encapsulate readline in a class.  Include interface to stuff like
-    blink_matching_paren. 
-
-  * Encapsulate resource stuff in a class.
-
   * Move procstream to liboctave.
-
-  * Replace more C-style vectors with Array<T> stuff.
 
   * Use references and classes in more places.
 

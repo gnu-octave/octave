@@ -49,8 +49,11 @@ for d in $bindir $libsubdir $infodir ; do
   else
     echo "making $d"
     ./mkpath $d
+    chmod 755 $d
   fi
 done
+chmod 755 $prefix/lib
+chmod 755 $prefix/lib/octave
 
 if test "$prefix" = /usr/local ; then
   echo "installing ./octave as $bindir/octave"

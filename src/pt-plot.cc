@@ -69,6 +69,9 @@ static bool Vautomatic_replot;
 // The name of the shell command to execute to start gnuplot.
 static string Vgnuplot_binary;
 
+// TRUE if gnuplot appears to support multiple plot windows with X11.
+static bool Vgnuplot_has_frames;
+
 // TRUE if gnuplot appears to support multiplot.
 static bool Vgnuplot_has_multiplot;
 
@@ -1085,6 +1088,14 @@ gnuplot_binary (void)
 }
 
 static int
+gnuplot_has_frames (void)
+{
+  Vgnuplot_has_frames = check_preference ("gnuplot_has_frames");
+
+  return 0;
+}
+
+static int
 gnuplot_has_multiplot (void)
 {
   Vgnuplot_has_multiplot = check_preference ("gnuplot_has_multiplot");
@@ -1100,6 +1111,15 @@ symbols_of_pt_plot (void)
 
   DEFVAR (gnuplot_binary, "gnuplot", 0, gnuplot_binary,
     "path to gnuplot binary");
+
+#ifdef GNUPLOT_HAS_FRAMES
+  double with_frames = 1.0;
+#else
+  double with_frames = 0.0;
+#endif
+
+  DEFVAR (gnuplot_has_frames, with_frames, 0, gnuplot_has_frames,
+    "true if gnuplot supports multiple plot windows on X11, false otherwise");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
   double with_multiplot = 1.0;

@@ -27,6 +27,9 @@
 /* Define if your system has a single-arg prototype for gettimeofday. */
 #undef GETTIMEOFDAY_NO_TZ 
 
+/* Define if your gnuplot supports multiplt plot windows with X11. */
+#undef GNUPLOT_HAS_FRAMES
+
 /* Define if your gnuplot has mutliplot. */
 #undef GNUPLOT_HAS_MULTIPLOT
 

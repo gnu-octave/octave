@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.206 $)
+AC_REVISION($Revision: 1.207 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -988,6 +988,13 @@ if test -n "$GNUPLOT_BINARY"; then
     $GNUPLOT_BINARY 2>&1`"; then
     AC_MSG_RESULT([yes])
     AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1)
+  else
+    AC_MSG_RESULT([no])
+  fi
+  AC_MSG_CHECKING([to see if your gnuplot supports multiple plot windows])
+  if test -z "`echo 'set term x11 2' | $GNUPLOT_BINARY 2>&1`"; then
+    AC_MSG_RESULT([yes])
+    AC_DEFINE(GNUPLOT_HAS_FRAMES, 1)
   else
     AC_MSG_RESULT([no])
   fi

@@ -1,3 +1,8 @@
+2005-03-08  John W. Eaton  <jwe@octave.org>
+
+	* general/repmat.m: Correctly diagnose 3-argument non-scalar
+	dimensions case.  From Matthew A Swabey <mas01r@ecs.soton.ac.uk>.
+
 2005-03-04  John W. Eaton  <jwe@octave.org>
 
 	* plot/clg.m: New file.

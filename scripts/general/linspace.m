@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -47,10 +47,7 @@ function retval = linspace (x1, x2, n)
 
   if (length (x1) == 1 && length (x2) == 1)
     delta = (x2 - x1) / (npoints - 1);
-    retval = zeros (1, npoints);
-    for i = 0:npoints-1
-      retval (i+1) = x1 + i * delta;
-    endfor
+    retval = x1:delta:x2;
   else
     error ("linspace: arguments must be scalars");
   endif

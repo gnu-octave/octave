@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -57,10 +57,7 @@ function retval = logspace (x1, x2, n)
     if (x2 == pi)
       x2_tmp = log10 (pi);
     endif
-    retval = linspace (x1, x2_tmp, npoints);
-    for i = 1:npoints
-      retval(i) = 10 ^ retval(i);
-    endfor
+    retval = 10 .^ (linspace (x1, x2_tmp, npoints));
   else
     error ("logspace: arguments must be scalars");
   endif

@@ -689,6 +689,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     TOK_RETURN ('.');
   }
 
+"@" {
+    current_input_column++;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.convert_spaces_to_comma = false;
+    return '@';
+  }
+
 "+="	{ BIN_OP_RETURN (ADD_EQ, false); }
 "-="	{ BIN_OP_RETURN (SUB_EQ, false); }
 "*="	{ BIN_OP_RETURN (MUL_EQ, false); }
@@ -1728,9 +1736,9 @@ handle_number (void)
 
   assert (nread == 1);
 
-  lexer_flags.quote_is_transpose = 1;
-  lexer_flags.cant_be_identifier = 1;
-  lexer_flags.convert_spaces_to_comma = 1;
+  lexer_flags.quote_is_transpose = true;
+  lexer_flags.cant_be_identifier = true;
+  lexer_flags.convert_spaces_to_comma = true;
 
   if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
     lexer_flags.past_plot_range = true;

@@ -1,3 +1,9 @@
+2002-07-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (@): Handle new token.
+	* parse.y (constant): Accept function handle syntax.
+	(make_constant): Create function handles here.
+
 2002-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defun.cc (check_version): Improve error message.

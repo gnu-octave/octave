@@ -1,5 +1,7 @@
 2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* file-io.cc (fopen_mode_to_ios_mode): Ignore "t" in mode string.
+
 	* strfns.cc (Fischar): rename from Fisstr.
 
 2003-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -101,12 +101,21 @@ close_files (void)
 }
 
 static std::ios::openmode
-fopen_mode_to_ios_mode (const std::string& mode)
+fopen_mode_to_ios_mode (const std::string& mode_arg)
 {
   std::ios::openmode retval = std::ios::in;
 
-  if (! mode.empty ())
+  if (! mode_arg.empty ())
     {
+      std::string mode = mode_arg;
+
+      // Text mode doesn't matter (yet) for Octave.
+
+      size_t pos = mode.find ('t');
+
+      if (pos != NPOS)
+	mode.erase (pos);
+
       // Could probably be faster, but does it really matter?
 
       if (mode == "r")

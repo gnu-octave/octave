@@ -80,9 +80,6 @@ extern string editor;
 // Nonzero means we are using readline.
 extern int using_readline;
 
-// If nonzero, print verbose info in some cases.
-extern int verbose_flag;
-
 // Nonzero means we printed messages about reading startup files.
 extern int reading_startup_message_printed;
 

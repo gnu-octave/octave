@@ -107,6 +107,10 @@ static int inhibit_startup_message = 0;
 // (--traditional)
 static int traditional = 0;
 
+// If nonzero, print verbose info in some cases.
+// (--verbose; -V)
+static int verbose_flag = 0;
+
 // Usage message
 static const char *usage_string = 
   "octave [-?Vdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\

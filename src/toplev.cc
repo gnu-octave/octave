@@ -117,10 +117,6 @@ int using_readline = 1;
 int using_readline = 0;
 #endif
 
-// If nonzero, print verbose info in some cases.
-// (--verbose; -V)
-int verbose_flag = 0;
-
 // Nonzero means we printed messages about reading startup files.
 int reading_startup_message_printed = 0;
 

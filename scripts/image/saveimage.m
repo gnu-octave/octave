@@ -302,5 +302,3 @@ function saveimage (filename, img, img_form, map)
   endif
 
 endfunction
-
-

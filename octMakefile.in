@@ -20,7 +20,7 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	configure configure.in config.guess config.sub float-type.c \
 	move-if-change octave.sh octave-bug.in octave-mode.el \
 	install-sh doinstall.sh mkinstalldirs config.h.in acconfig.h \
-	LIBG++.PATCH MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
+	GCC.PATCH MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = bsd-math kpathsea

@@ -323,12 +323,10 @@ parse_and_execute (FILE *f, int print)
 
   switch_to_buffer (new_buf);
 
-  unwind_protect_int (echo_input);
   unwind_protect_int (using_readline);
   unwind_protect_int (saving_history);
   unwind_protect_int (input_from_command_line_file);
 
-  echo_input = 0;
   using_readline = 0;
   saving_history = 0;
   input_from_command_line_file = 0;
@@ -367,11 +365,9 @@ parse_and_execute (char *s, int print, int verbose)
     {
       unwind_protect_int (input_line_number);
       unwind_protect_int (current_input_column);
-      unwind_protect_int (echo_input);
 
       input_line_number = 0;
       current_input_column = 1;
-      echo_input = 0;
 
       if (verbose)
 	{
@@ -398,7 +394,10 @@ execute_startup_files (void)
 {
   begin_unwind_frame ("execute_startup_files");
 
+  unwind_protect_int (user_pref.echo_executing_commands);
   unwind_protect_int (input_from_startup_file);
+
+  user_pref.echo_executing_commands = ECHO_OFF;
   input_from_startup_file = 1;
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
@@ -547,6 +546,8 @@ maximum_braindamage (void)
 int
 main (int argc, char **argv)
 {
+  int echo_commands = ECHO_OFF;
+
   // The order of these calls is important, and initialize_globals
   // must come before the options are processed because some command
   // line options override defaults.
@@ -597,7 +598,7 @@ main (int argc, char **argv)
 	  break;
 
 	case 'x':
-	  echo_input = 1;
+	  echo_commands = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
 	  break;
 
 	case 'v':
@@ -648,6 +649,9 @@ main (int argc, char **argv)
 
   if (traditional)
     maximum_braindamage ();
+
+  bind_builtin_variable ("echo_executing_commands",
+			 (double) echo_commands);
 
   if (read_init_files)
     {
@@ -713,7 +717,11 @@ main (int argc, char **argv)
   if (!interactive && forced_interactive)
     {
       rl_blink_matching_paren = 0;
-      echo_input = 1;
+
+      // XXX FIXME XXX -- is this the right thing to do?
+
+      bind_builtin_variable ("echo_executing_commands",
+			     (double) ECHO_CMD_LINE);
     }
 
   if (! interactive)

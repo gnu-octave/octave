@@ -30,6 +30,7 @@ struct user_preferences
   int beep_on_error;
   int define_all_return_values;
   int do_fortran_indexing;
+  int echo_executing_commands;
   int empty_list_elements_ok;
   int gnuplot_has_multiplot;
   int ignore_function_time_stamp;
@@ -82,6 +83,7 @@ extern int automatic_replot (void);
 extern int beep_on_error (void);
 extern int define_all_return_values (void);
 extern int do_fortran_indexing (void);
+extern int echo_executing_commands (void);
 extern int empty_list_elements_ok (void);
 extern int gnuplot_has_multiplot (void);
 extern int ignore_function_time_stamp (void);
@@ -125,6 +127,14 @@ extern int sv_ps1 (void);
 extern int sv_ps2 (void);
 extern int sv_ps4 (void);
 extern int sv_pwd (void);
+
+enum echo_state
+{
+  ECHO_OFF = 0,
+  ECHO_SCRIPTS = 1,
+  ECHO_FUNCTIONS = 2,
+  ECHO_CMD_LINE = 4
+};
 
 #endif
 

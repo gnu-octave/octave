@@ -1048,11 +1048,15 @@ func_def2	: identifier safe local_symtab func_def3
 
 func_def3	: param_list optsep opt_list fcn_end_or_eof
 		  {
+		    $3->mark_as_function_body ();
 		    tree_function *fcn = new tree_function ($3, curr_sym_tab);
 		    $$ = fcn->define_param_list ($1);
 		  }
 		| optsep opt_list fcn_end_or_eof
-		  { $$ = new tree_function ($2, curr_sym_tab); }
+		  {
+		    $2->mark_as_function_body ();
+		    $$ = new tree_function ($2, curr_sym_tab);
+		  }
 		;
 
 fcn_end_or_eof	: END

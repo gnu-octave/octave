@@ -140,10 +140,6 @@ FILE *ff_instream = 0;
 // Nonzero means we are using readline.
 int using_readline = 1;
 
-// Nonzero means commands are echoed as they are executed.
-// (--echo-commands; -x).
-int echo_input = 0;
-
 // Nonzero means this is an interactive shell.
 int interactive = 0;
 
@@ -441,7 +437,11 @@ decode_prompt_string (const char *string)
 static void
 do_input_echo (const char *input_string)
 {
-  if (echo_input)
+  int do_echo = reading_script_file ?
+    (user_pref.echo_executing_commands & ECHO_SCRIPTS)
+      : (user_pref.echo_executing_commands & ECHO_CMD_LINE);
+
+  if (do_echo)
     {
       ostrstream buf;
 
@@ -1099,6 +1099,68 @@ maybe help in debugging function files")
     retval = get_user_input (args, 1);
   else
     print_usage ("keyboard");
+
+  return retval;
+}
+
+DEFUN_TEXT("echo", Fecho, Secho, 10,
+  "echo [options]\n\
+\n\
+  echo [on|off]         -- enable or disable echoing of commands as\n\
+                           they are executed in script files\n\
+\n\
+  echo [on all|off all] -- enable or disable echoing of commands as they\n\
+                           are executed in script files and functions\n\
+\n\
+Without any arguments, toggle the current echo state.")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV ("echo");
+
+  switch (argc)
+    {
+    case 1:
+      {
+	int echo_cmds = user_pref.echo_executing_commands;
+	if ((echo_cmds & ECHO_SCRIPTS) || (echo_cmds & ECHO_FUNCTIONS))
+	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	else
+	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
+      }
+      break;
+
+    case 2:
+      {
+	char *arg = argv[1];
+	if (strcmp (arg, "on") == 0)
+	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
+	else if (strcmp (arg, "on") == 0)
+	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	else
+	  print_usage ("echo");
+      }
+      break;
+
+    case 3:
+      {
+	char *arg = argv[1];
+	if (strcmp (arg, "on") == 0 && strcmp (argv[2], "all") == 0)
+	  bind_builtin_variable ("echo_executing_commands",
+				 (ECHO_SCRIPTS | ECHO_FUNCTIONS));
+	else if (strcmp (arg, "off") == 0 && strcmp (argv[2], "all") == 0)
+	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	else
+	  print_usage ("echo");
+      }
+      break;
+
+    default:
+      print_usage ("echo");
+      break;
+    }
+
+  DELETE_ARGV;
 
   return retval;
 }

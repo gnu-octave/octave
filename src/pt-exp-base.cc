@@ -2818,13 +2818,20 @@ tree_function::eval (int /* print */, int nargout, const Octave_object& args)
 
   {
     bind_nargin_and_nargout (nargin, nargout);
-      
-    // Evaluate the commands that make up the function.  Always turn
-    // on printing for commands inside functions.   Maybe this should
-    // be toggled by a user-leval variable?
+
+    int echo_commands
+      = (user_pref.echo_executing_commands & ECHO_FUNCTIONS);
+
+    if (echo_commands)
+      print_code_function_header ();
+
+    // Evaluate the commands that make up the function.
 
     int pf = ! user_pref.silent_functions;
     tree_constant last_computed_value = cmd_list->eval (pf);
+
+    if (echo_commands)
+      print_code_function_trailer ();
 
     if (returning)
       returning = 0;
@@ -2888,6 +2895,29 @@ tree_function::print_code (ostream& os)
 {
   print_code_reset ();
 
+  print_code_function_header (os);
+
+  if (cmd_list)
+    {
+      increment_indent_level ();
+      cmd_list->print_code (os);
+    }
+
+  print_code_function_trailer (os);
+}
+
+void
+tree_function::print_code_function_header (void)
+{
+  ostrstream output_buf;
+  print_code_function_header (output_buf);
+  output_buf << ends;
+  maybe_page_output (output_buf);
+}
+
+void
+tree_function::print_code_function_header (ostream& os)
+{
   print_code_indent (os);
 
   os << "function ";
@@ -2928,12 +2958,21 @@ tree_function::print_code (ostream& os)
       os << "()";
       print_code_new_line (os);
     }
+}
 
-  if (cmd_list)
-    {
-      increment_indent_level ();
-      cmd_list->print_code (os);
-    }
+void
+tree_function::print_code_function_trailer (void)
+{
+  ostrstream output_buf;
+  print_code_function_trailer (output_buf);
+  output_buf << ends;
+  maybe_page_output (output_buf);
+}
+
+void
+tree_function::print_code_function_trailer (ostream& os)
+{
+  print_code_indent (os);
 
   os << "endfunction";
 

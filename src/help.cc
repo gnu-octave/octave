@@ -52,6 +52,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tree-const.h"
 #include "tree-expr.h"
 #include "tree-expr.h"
+#include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -728,6 +729,11 @@ display the definition of each NAME that refers to a function")
 {
   Octave_object retval;
 
+  begin_unwind_frame ("Ftype");
+
+  unwind_protect_ptr (user_pref.ps4);
+  user_pref.ps4 = "";
+
   DEFINE_ARGV("type");
 
   if (argc > 1)
@@ -858,6 +864,8 @@ display the definition of each NAME that refers to a function")
     print_usage ("type");
 
   DELETE_ARGV;
+
+  run_unwind_frame ("Ftype");
 
   return retval;
 }

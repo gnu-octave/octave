@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "tree-base.h"
+#include "user-prefs.h"
 
 // Current indentation.
 int tree_print_code::curr_print_indent_level = 0;
@@ -63,7 +64,7 @@ tree_print_code::print_code_indent (ostream& os)
  
   if (beginning_of_line)
     {
-      os.form ("%*s", curr_print_indent_level, "");
+      os.form ("%s%*s", user_pref.ps4, curr_print_indent_level, "");
       beginning_of_line = 0;
     }
 }

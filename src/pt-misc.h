@@ -108,6 +108,8 @@ public:
 	  : (expression ? expression->column () : -1);
     }
 
+  void maybe_echo_code (int);
+
   void print_code (ostream& os);
 
 private:
@@ -121,11 +123,15 @@ tree_statement_list : public SLList<tree_statement *>, public tree_print_code
 {
 public:
   tree_statement_list (void)
-    : SLList<tree_statement *> (), tree_print_code () { }
+    : SLList<tree_statement *> (), tree_print_code ()
+      { function_body = 0; }
 
   tree_statement_list (tree_statement *s)
     : SLList<tree_statement *> (), tree_print_code ()
-      { append (s); }
+      {
+	function_body = 0;
+	append (s);
+      }
 
   ~tree_statement_list (void)
     {
@@ -136,11 +142,16 @@ public:
 	}
     }
 
+  void mark_as_function_body (void) { function_body = 1; }
+
   tree_constant eval (int print);
 
   Octave_object eval (int print, int nargout);
 
   void print_code (ostream& os);
+
+private:
+  int function_body;
 };
 
 // Argument lists.  Used to hold the list of expressions that are the

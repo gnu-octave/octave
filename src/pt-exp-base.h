@@ -945,6 +945,12 @@ private:
   tree_va_return_list *vr_list;
   symbol_record *nargin_sr;
   symbol_record *nargout_sr;
+
+  void print_code_function_header (void);
+  void print_code_function_header (ostream& os);
+
+  void print_code_function_trailer (void);
+  void print_code_function_trailer (ostream& os);
 };
 
 #endif

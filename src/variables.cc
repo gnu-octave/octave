@@ -711,12 +711,12 @@ parse_fcn_file (int exec_script, char *ff)
 
       if (is_function_file (ffile))
 	{
-	  unwind_protect_int (echo_input);
+	  unwind_protect_int (user_pref.echo_executing_commands);
 	  unwind_protect_int (saving_history);
 	  unwind_protect_int (reading_fcn_file);
 	  unwind_protect_int (input_from_command_line_file);
 
-	  echo_input = 0;
+	  user_pref.echo_executing_commands = ECHO_OFF;
 	  saving_history = 0;
 	  reading_fcn_file = 1;
 	  input_from_command_line_file = 0;
@@ -1667,6 +1667,10 @@ default_return_value");
   DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, 0.0, 0,
 	  do_fortran_indexing,
     "allow single indices for matrices");
+
+  DEFVAR ("echo_executing_commands", SBV_echo_executing_commands, 0.0, 0, 
+	  echo_executing_commands,
+    "echo commands as they are executed");
 
   DEFCONST ("e", SBV_e, exp (1.0), 0, 0,
     "exp (1)");

@@ -1465,15 +1465,23 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 
       for (int i = 0; i < nstr; i++)
 	{
+	  char *row = chm.row_as_string (i);
+
 	  if (pr_as_read_syntax)
 	    {
-	      os << "\"" << chm.row_as_string (i) << "\"";
+	      char *tmp = undo_string_escapes (row);
+
+	      os << "\"" << tmp << "\"";
+
+	      delete [] tmp;
 
 	      if (i < nstr - 1)
 		os << "; ";
 	    }
 	  else
-	    os << chm.row_as_string (i) << "\n";
+	    os << row << "\n";
+
+	  delete [] row;
 	}
 
       if (pr_as_read_syntax && nstr > 1)

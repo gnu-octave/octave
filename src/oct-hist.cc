@@ -578,9 +578,9 @@ do_edit_history (int argc, char **argv)
   // sense.
 
   begin_unwind_frame ("do_edit_history");
-  unwind_protect_int (echo_input);
+  unwind_protect_int (user_pref.echo_executing_commands);
   unwind_protect_int (input_from_tmp_history_file);
-  echo_input = 1;
+  user_pref.echo_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = 1;
 
   parse_and_execute (name, 1);
@@ -607,9 +607,9 @@ do_run_history (int argc, char **argv)
   // sense.
 
   begin_unwind_frame ("do_run_history");
-  unwind_protect_int (echo_input);
+  unwind_protect_int (user_pref.echo_executing_commands);
   unwind_protect_int (input_from_tmp_history_file);
-  echo_input = 1;
+  user_pref.echo_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = 1;
 
   parse_and_execute (name, 1);

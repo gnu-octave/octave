@@ -54,9 +54,6 @@ extern FILE *ff_instream;
 // Nonzero means we are using readline.
 extern int using_readline;
 
-// Nonzero means commands are echoed as they are executed (-x).
-extern int echo_input;
-
 // Nonzero means this is an interactive shell.
 extern int interactive;
 

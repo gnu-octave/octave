@@ -185,6 +185,24 @@ do_fortran_indexing (void)
 }
 
 
+// Echo commands as they are executed?
+//
+//   1  ==>  echo commands read from script files
+//   2  ==>  echo commands from functions
+//   4  ==>  echo commands read from command line
+//
+// more than one state can be active at once.
+
+int
+echo_executing_commands (void)
+{
+  user_pref.echo_executing_commands =
+    check_preference ("echo_executing_commands"); 
+
+  return 0;
+}
+
+
 // Should ignore empty elements in a matrix list (i.e., is an
 //  expression like `[[], 1]' ok?
 

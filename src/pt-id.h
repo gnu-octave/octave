@@ -38,7 +38,7 @@ class symbol_record;
 
 class tree_walker;
 
-#include "pt-exp-base.h"
+#include "pt-exp.h"
 
 // Symbols from the symbol table.
 

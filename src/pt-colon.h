@@ -20,43 +20,44 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_tree_indirect_ref_h)
-#define octave_tree_indirect_ref_h 1
+#if !defined (octave_tree_colon_h)
+#define octave_tree_colon 1
 
 #if defined (__GNUG__)
 #pragma interface
 #endif
 
-class ostream;
-
 #include <string>
+
+class tree_walker;
 
 class octave_value;
 class octave_value_list;
-class tree_walker;
+class octave_lvalue;
 
 #include "pt-exp.h"
 
-// Indirect references to values (structure references).
+// Colon expressions.
 
 class
-tree_indirect_ref : public tree_expression
+tree_colon_expression : public tree_expression
 {
 public:
 
-  tree_indirect_ref (int l = -1, int c = -1)
-    : tree_expression (l, c), expr (0), nm () { }
+  tree_colon_expression (int l = -1, int c = -1)
+    : tree_expression (l, c), op_base (0), op_limit (0), op_increment (0) { }
 
-  tree_indirect_ref (tree_expression *e, const string& n,
-		     int l = -1, int c = -1)
-    : tree_expression (l, c), expr (e), nm (n) { }
+  tree_colon_expression (tree_expression *e, int l = -1, int c = -1)
+    : tree_expression (l, c), op_base (e), op_limit (0), op_increment (0) { }
 
-  ~tree_indirect_ref (void);
+  ~tree_colon_expression (void)
+    {
+      delete op_base;
+      delete op_limit;
+      delete op_increment;
+    }
 
-  bool is_indirect_ref (void) const
-    { return true; }
-
-  string name (void) const;
+  tree_colon_expression *append (tree_expression *t);
 
   bool rvalue_ok (void) const
     { return true; }
@@ -65,25 +66,22 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  octave_lvalue lvalue (void);
+  void eval_error (const string& s = string ());
 
-  tree_expression *expression (void)
-    { return expr; }
+  tree_expression *base (void) { return op_base; }
 
-  string elt_name (void)
-    { return nm; }
+  tree_expression *limit (void) { return op_limit; }
+
+  tree_expression *increment (void) { return op_increment; }
 
   void accept (tree_walker& tw);
 
 private:
 
-  // The LHS of this structure reference.
-  tree_expression *expr;
-
-  // The sub-element name.
-  string nm;
-
-  void eval_error (void) const;
+  // The components of the expression.
+  tree_expression *op_base;
+  tree_expression *op_limit;
+  tree_expression *op_increment;
 };
 
 #endif

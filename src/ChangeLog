@@ -1,5 +1,11 @@
 Thu May 15 11:48:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-unop.h, pt-binop.h, pt-colon.h, pt-idx.h, pt-assign.h:
+	New files, extracted from pt-exp.h
+	* pt-unop.cc, pt-binop.cc, pt-colon.cc, pt-idx.cc, pt-assign.cc:
+	New files, extracted from pt-exp.cc
+	* pt-exp.h, pt-exp.cc: Rename from pt-exp-base.h, pt-exp-base.cc.
+
 	* oct-lvalue.h: Rename from oct-var-ref.h.  Rename class from
 	octave_variable_reference to octave_lvalue.  Change all uses.
 	* oct-lvalue.cc: Rename from oct-var-ref.cc.

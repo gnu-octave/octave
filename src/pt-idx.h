@@ -20,43 +20,46 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_tree_indirect_ref_h)
-#define octave_tree_indirect_ref_h 1
+#if !defined (octave_tree_index_h)
+#define octave_tree_index_h 1
 
 #if defined (__GNUG__)
 #pragma interface
 #endif
 
-class ostream;
+class tree_argument_list;
 
-#include <string>
+class tree_walker;
 
 class octave_value;
 class octave_value_list;
-class tree_walker;
+class octave_lvalue;
+
+#include "str-vec.h"
 
 #include "pt-exp.h"
 
-// Indirect references to values (structure references).
+// Index expressions.
 
 class
-tree_indirect_ref : public tree_expression
+tree_index_expression : public tree_expression
 {
 public:
 
-  tree_indirect_ref (int l = -1, int c = -1)
-    : tree_expression (l, c), expr (0), nm () { }
+  tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
+			 int l = -1, int c = -1)
+    : tree_expression (l, c), expr (e), list (lst), arg_nm () { }
 
-  tree_indirect_ref (tree_expression *e, const string& n,
-		     int l = -1, int c = -1)
-    : tree_expression (l, c), expr (e), nm (n) { }
+  ~tree_index_expression (void);
 
-  ~tree_indirect_ref (void);
-
-  bool is_indirect_ref (void) const
+  bool is_index_expression (void) const
     { return true; }
 
-  string name (void) const;
+  tree_expression *expression (void)
+    { return expr; }
+
+  tree_argument_list *arg_list (void)
+    { return list; }
 
   bool rvalue_ok (void) const
     { return true; }
@@ -67,23 +70,17 @@ public:
 
   octave_lvalue lvalue (void);
 
-  tree_expression *expression (void)
-    { return expr; }
-
-  string elt_name (void)
-    { return nm; }
+  void eval_error (void);
 
   void accept (tree_walker& tw);
 
 private:
 
-  // The LHS of this structure reference.
   tree_expression *expr;
 
-  // The sub-element name.
-  string nm;
+  tree_argument_list *list;
 
-  void eval_error (void) const;
+  string_vector arg_nm;
 };
 
 #endif

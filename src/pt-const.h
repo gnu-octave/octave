@@ -33,7 +33,7 @@ class ostream;
 
 #include "oct-alloc.h"
 
-#include "pt-exp-base.h"
+#include "pt-exp.h"
 
 class octave_value_list;
 

@@ -92,7 +92,7 @@ function [k, p, e] = dlqr (a, b, q, r, zz)
   if (is_symmetric (q) && is_symmetric (r) ...
       && all (eig (q) >= 0) && all (eig (r) > 0))
     p = dare (ao, b, qo, r);
-    k = (r+b'*p*b)\b'*p*a + r\zz';
+    k = (r+b'*p*b)\b'*p*ao + r\zz';
     e = eig (a - b*k);
   else
     error ("dlqr: q (r) must be symmetric positive (semi) definite");

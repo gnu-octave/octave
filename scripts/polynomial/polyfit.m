@@ -17,17 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  polyfit (x, y, n)
+## usage:  [p, yf] = polyfit (x, y, n)
 ##
 ## Returns the coefficients of a polynomial p(x) of degree n that
 ## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data
 ## in the least squares sense.
+##
+## If two outputs are requested, also return the values of the
+## polynomial for each value of x.
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 13 December 1994
 ## Adapted-By: jwe
 
-function p = polyfit (x, y, n)
+function [p, yf] = polyfit (x, y, n)
 
 
   if (nargin != 3)
@@ -46,22 +49,26 @@ function p = polyfit (x, y, n)
   x = reshape (x, l, 1);
   y = reshape (y, l, 1);
 
-  X = ones (l, 1);
+  ## Unfortunately, the economy QR factorization doesn't really save
+  ## memory doing the computation -- the returned values are just
+  ## smaller.
 
-  if (n > 0)
-    tmp = (x * ones (1, n)) .^ (ones (l, 1) * (1 : n));
-    X = [X, tmp];
-  endif
+  ## [Q, R] = qr (X, 0);
+  ## p = flipud (R \ (Q' * y));
 
-  ## Compute polynomial coeffients, making returned value compatible
-  ## with Matlab.
+  ## XXX FIXME XXX -- this is probably not so good for extreme values of
+  ## N or X...
 
-  [Q, R] = qr (X, 0);
+  X = (x * ones (1, n+1)) .^ (ones (l, 1) * (0 : n));
 
-  p = flipud (R \ (Q' * y));
+  p = (X' * X) \ (X' * y);
 
   if (! prefer_column_vectors)
     p = p';
+  endif
+
+  if (nargout == 2)
+    yf = X * p;
   endif
 
 endfunction

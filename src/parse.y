@@ -44,8 +44,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "oct-time.h"
 #include "lo-sstream.h"
+#include "oct-time.h"
+#include "quit.h"
 
 #include "comment-list.h"
 #include "defun.h"
@@ -2861,6 +2862,8 @@ parse_and_execute (FILE *f)
 	      delete global_command;
 
 	      global_command = 0;
+
+	      OCTAVE_QUIT;
 
 	      bool quit = (tree_return_command::returning
 			   || tree_break_command::breaking);

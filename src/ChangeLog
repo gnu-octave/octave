@@ -1,3 +1,21 @@
+2002-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (extract_keyword): Return std::string, not char *.
+	Change all uses.
+	(read_ascii_data): Likewise.
+	(read_binary_data): Likewise.
+	(read_hdf5_data): Likewise.
+	(read_mat_ascii_data): Likewise.
+	(read_mat_binary_data): Likewise.
+	(do_load): Name and doc are now std::string objects, not char *.
+	(install_loaded_variable): Likewise.
+	(read_hdf5_data): Doc is now std::string object, not char *&.
+	(read_mat_ascii_data): Call OCTAVE_QUIT in strategic locations.
+	(get_lines_and_columns): Likewise.
+
+	* toplev.cc (main_loop): Call OCTAVE_QUIT after executing command.
+	* parse.y (parse_and_execute (FILE *)): Likewise.
+
 2002-11-12  Joseph P. Skudlarek  <jskud@jskud.com>
 
 	* input.cc (match_sans_spaces_semi): Rename from match_sans_spaces.

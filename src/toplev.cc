@@ -131,6 +131,8 @@ main_loop (void)
 
 		  global_command = 0;
 
+		  OCTAVE_QUIT;
+
 		  if (! (interactive || forced_interactive))
 		    {
 		      bool quit = (tree_return_command::returning

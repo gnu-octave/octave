@@ -50,6 +50,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"
+#include "quit.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -165,8 +166,9 @@ make_valid_identifier (char *s)
 // Assumes TC is defined.
 
 static void
-install_loaded_variable (int force, char *name, const octave_value& val,
-			 int global, char *doc)
+install_loaded_variable (int force, const std::string& name,
+			 const octave_value& val,
+			 int global, const std::string& doc)
 {
   // Is there already a symbol by this name?  If so, what is it?
 
@@ -199,7 +201,8 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	    }
 	  else
 	    {
-	      warning ("load: global variable name `%s' exists.", name);
+	      warning ("load: global variable name `%s' exists",
+		       name.c_str ());
 	      warning ("use `load -force' to overwrite");
 	    }
 	}
@@ -213,7 +216,8 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	    }
 	  else
 	    {
-	      warning ("load: `%s' is currently a function in this scope", name);
+	      warning ("load: `%s' is currently a function in this scope",
+		       name.c_str ());
 	      warning ("`load -force' will load variable and hide function");
 	    }
 	}
@@ -227,7 +231,8 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	    }
 	  else
 	    {
-	      warning ("load: local variable name `%s' exists.", name);
+	      warning ("load: local variable name `%s' exists",
+		       name.c_str ());
 	      warning ("use `load -force' to overwrite");
 	    }
 	}
@@ -246,7 +251,8 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	    }
 	  else
 	    {
-	      warning ("load: global variable name `%s' exists.", name);
+	      warning ("load: global variable name `%s' exists",
+		       name.c_str ());
 	      warning ("use `load -force' to overwrite");
 	    }
 	}
@@ -260,7 +266,8 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	    }
 	  else
 	    {
-	      warning ("load: `%s' is currently a function in this scope", name);
+	      warning ("load: `%s' is currently a function in this scope",
+		       name.c_str ());
 	      warning ("`load -force' will load variable and hide function");
 	    }
 	}
@@ -273,7 +280,8 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	    }
 	  else
 	    {
-	      warning ("load: local variable name `%s' exists.", name);
+	      warning ("load: local variable name `%s' exists",
+		       name.c_str ());
 	      warning ("use `load -force' to overwrite");
 	    }
 	}
@@ -284,12 +292,11 @@ install_loaded_variable (int force, char *name, const octave_value& val,
   if (sr)
     {
       sr->define (val);
-      if (doc)
-	sr->document (doc);
+      sr->document (doc);
       return;
     }
   else
-    error ("load: unable to load variable `%s'", name);
+    error ("load: unable to load variable `%s'", name.c_str ());
 
   return;
 }
@@ -327,10 +334,10 @@ skip_comments (std::istream& is)
 //
 //  [%#][ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
 
-static char *
+static std::string
 extract_keyword (std::istream& is, const char *keyword)
 {
-  char *retval = 0;
+  std::string retval;
 
   char c;
   while (is.get (c))
@@ -366,22 +373,28 @@ extract_keyword (std::istream& is, const char *keyword)
 		    value << c;
 		}
 	      value << OSSTREAM_ENDS;
-	      retval = strsave (OSSTREAM_C_STR (value));
+	      retval = OSSTREAM_STR (value);
 	      OSSTREAM_FREEZE (value);
 	      break;
 	    }
 	}
     }
 
-  if (retval)
+  int len = retval.length ();
+
+  if (len > 0)
     {
-      int len = strlen (retval);
-      if (len > 0)
+      while (len)
 	{
-	  char *ptr = retval + len - 1;
-	  while (*ptr == ' ' || *ptr == '\t')
-	    ptr--;
-	  * (ptr+1) = '\0';
+	  char c = retval[len-1];
+
+	  if (c == ' ' || c == '\t')
+	    len--;
+	  else
+	    {
+	      retval.resize (len);
+	      break;
+	    }
 	}
     }
 
@@ -519,60 +532,54 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 // XXX FIXME XXX -- this format is fairly rigid, and doesn't allow for
 // arbitrary comments, etc.  Someone should fix that.
 
-static char *
+// Ugh.  The signature of the compare method is not standard in older
+// versions of the GNU libstdc++.  Do this instead:
+
+#define SUBSTRING_COMPARE_EQ(s, pos, n, t) (s.substr (pos, n) == t)
+
+static std::string
 read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		 octave_value& tc, int count)
 {
   // Read name for this entry or break on EOF.
 
-  char *name = extract_keyword (is, "name");
+  std::string name = extract_keyword (is, "name");
 
-  if (! name)
+  if (name.empty ())
     {
       if (count == 0)
-	error ("load: no data found in file `%s'", filename.c_str ());
+	error ("load: empty name keyword or no data found in file `%s'",
+	       filename.c_str ());
 
-      return 0;
+      return std::string ();
     }
-
-  if (! *name)
-    {
-      error ("load: empty name keyword found in file `%s'",
-	     filename.c_str ());
-      delete [] name;
-      return 0;
-    }
-      
 
   if (! valid_identifier (name))
     {
-      error ("load: bogus identifier `%s' found in file `%s'", name,
-	     filename.c_str ());
-      delete [] name;
-      return 0;
+      error ("load: bogus identifier `%s' found in file `%s'",
+	     name.c_str (), filename.c_str ());
+      return std::string ();
     }
 
   // Look for type keyword.
 
-  char *tag = extract_keyword (is, "type");
+  std::string tag = extract_keyword (is, "type");
 
-  if (tag && *tag)
+  if (! tag.empty ())
     {
-      char *ptr = strchr (tag, ' ');
-      if (ptr)
+      std::string typ;
+      size_t pos = tag.rfind (' ');
+
+      if (pos != NPOS)
 	{
-	  *ptr = '\0';
-	  global = (strncmp (tag, "global", 6) == 0);
-	  *ptr = ' ';
-	  if (global)
-	    ptr++;
-	  else
-	    ptr = tag;
+	  global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
+
+	  typ = global ? tag.substr (7) : tag;
 	}
       else
-	ptr = tag;
+	typ = tag;
 
-      if (strncmp (ptr, "scalar", 6) == 0)
+      if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "scalar"))
 	{
 	  double tmp = octave_read_double (is);
 	  if (is)
@@ -580,7 +587,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  else
 	    error ("load: failed to load scalar constant");
 	}
-      else if (strncmp (ptr, "matrix", 6) == 0)
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "matrix"))
 	{
 	  int nr = 0;
 	  int nc = 0;
@@ -605,7 +612,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  else
 	    error ("load: failed to extract number of rows and columns");
 	}
-      else if (strncmp (ptr, "complex scalar", 14) == 0)
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 14, "complex scalar"))
 	{
 	  Complex tmp = octave_read_complex (is);
 	  if (is)
@@ -613,7 +620,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  else
 	    error ("load: failed to load complex scalar constant");
 	}
-      else if (strncmp (ptr, "complex matrix", 14) == 0)
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 14, "complex matrix"))
 	{
 	  int nr = 0;
 	  int nc = 0;
@@ -631,7 +638,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  else
 	    error ("load: failed to extract number of rows and columns");
 	}
-      else if (strncmp (ptr, "string array", 12) == 0)
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
 	{
 	  int elements;
 	  if (extract_keyword (is, "elements", elements) && elements >= 0)
@@ -646,7 +653,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		  int len;
 		  if (extract_keyword (is, "length", len) && len >= 0)
 		    {
-		      char *tmp = new char [len+1];
+		      char tmp[len+1];
 		      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
 			{
 			  error ("load: failed to load string constant");
@@ -662,7 +669,6 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 			    }
 			  chm.insert (tmp, i, 0);
 			}
-		      delete [] tmp;
 		    }
 		  else
 		    error ("load: failed to extract string length for element %d", i+1);
@@ -674,7 +680,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  else
 	    error ("load: failed to extract number of string elements");
 	}
-      else if (strncmp (ptr, "string", 6) == 0)
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "string"))
 	{
 	  int len;
 	  if (extract_keyword (is, "length", len) && len >= 0)
@@ -697,7 +703,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  else
 	    error ("load: failed to extract string length");
 	}
-      else if (strncmp (ptr, "range", 5) == 0)
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 5, "range"))
 	{
 	  // # base, limit, range comment added by save ().
 
@@ -710,17 +716,15 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	    error ("load: failed to load range constant");
 	}
       else
-	error ("load: unknown constant type `%s'", tag);
+	error ("load: unknown constant type `%s'", tag.c_str ());
     }
   else
     error ("load: failed to extract keyword specifying value type");
 
-  delete [] tag;
-
   if (error_state)
     {
       error ("load: reading file %s", filename.c_str ());
-      return 0;
+      return std::string ();
     }
 
   return name;
@@ -796,33 +800,35 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 //
 // FILENAME is used for error messages.
 
-static char *
+static std::string
 read_binary_data (std::istream& is, bool swap,
 		  oct_mach_info::float_format fmt,
 		  const std::string& filename, bool& global,
-		  octave_value& tc, char *&doc)
+		  octave_value& tc, std::string& doc)
 {
+  std::string retval;
+
   char tmp = 0;
 
   FOUR_BYTE_INT name_len = 0;
   FOUR_BYTE_INT doc_len = 0;
-  char *name = 0;
 
-  doc = 0;
+  doc.resize (0);
 
   // We expect to fail here, at the beginning of a record, so not
   // being able to read another name should not result in an error.
 
   is.read (X_CAST (char *, &name_len), 4);
   if (! is)
-    return 0;
+    return retval;
   if (swap)
     swap_4_bytes (X_CAST (char *, &name_len));
 
-  name = new char [name_len+1];
+  char name[name_len+1];
   name[name_len] = '\0';
   if (! is.read (X_CAST (char *, name), name_len))
     goto data_read_error;
+  retval = name;
 
   is.read (X_CAST (char *, &doc_len), 4);
   if (! is)
@@ -830,10 +836,11 @@ read_binary_data (std::istream& is, bool swap,
   if (swap)
     swap_4_bytes (X_CAST (char *, &doc_len));
 
-  doc = new char [doc_len+1];
-  doc[doc_len] = '\0';
-  if (! is.read (X_CAST (char *, doc), doc_len))
+  char tdoc[doc_len+1];
+  tdoc[doc_len] = '\0';
+  if (! is.read (X_CAST (char *, tdoc), doc_len))
     goto data_read_error;
+  doc = tdoc;
 
   if (! is.read (X_CAST (char *, &tmp), 1))
     goto data_read_error;
@@ -924,12 +931,9 @@ read_binary_data (std::istream& is, bool swap,
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &len));
-	char *s = new char [len+1];
+	char s[len+1];
 	if (! is.read (X_CAST (char *, s), len))
-	  {
-	    delete [] s;
-	    goto data_read_error;
-	  }
+	  goto data_read_error;
 	s[len] = '\0';
 	tc = s;
       }
@@ -973,12 +977,9 @@ read_binary_data (std::istream& is, bool swap,
 	      goto data_read_error;
 	    if (swap)
 	      swap_4_bytes (X_CAST (char *, &len));
-	    char *tmp = new char [len+1];
+	    char tmp[len+1];
 	    if (! is.read (X_CAST (char *, tmp), len))
-	      {
-		delete [] tmp;
-		goto data_read_error;
-	      }
+	      goto data_read_error;
 	    if (len > max_len)
 	      {
 		max_len = len;
@@ -986,7 +987,6 @@ read_binary_data (std::istream& is, bool swap,
 	      }
 	    tmp [len] = '\0';
 	    chm.insert (tmp, i, 0);
-	    delete [] tmp;
 	  }
 	tc = octave_value (chm, true);
       }
@@ -995,12 +995,10 @@ read_binary_data (std::istream& is, bool swap,
     default:
     data_read_error:
       error ("load: trouble reading binary file `%s'", filename.c_str ());
-      delete [] name;
-      name = 0;
       break;
     }
 
-  return name;
+  return retval;
 }
 
 // HDF5 input/output
@@ -1653,7 +1651,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       bool is_list = hdf5_check_attr (subgroup_id, "OCTAVE_LIST");
 
       hdf5_callback_data dsub;
-      dsub.name = dsub.doc = (char*) 0;
+      dsub.name = dsub.doc = 0;
       dsub.global = 0;
       dsub.complex_type = d->complex_type;
       dsub.range_type = d->range_type;
@@ -1726,7 +1724,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  strcpy (d->doc, name);
 	}
       else
-	d->doc = (char *) 0;
+	d->doc = 0;
 
       // copy name (actually, vname):
       d->name = new char [strlen (vname) + 1];
@@ -1774,17 +1772,21 @@ hdf5_make_range_type (hid_t num_type)
 // and error.  If import is true, we try extra hard to import "foreign"
 // datasets (not created by Octave), although we usually do a reasonable
 // job anyway.  (c.f. load -import documentation.)
-static char *
+static std::string
 read_hdf5_data (std::istream& is,
 		const std::string& filename, bool& global,
-		octave_value& tc, char *&doc, bool import)
+		octave_value& tc, std::string& doc, bool import)
 {
+  std::string retval;
+
+  doc.resize (0);
+
   hdf5_ifstream& hs = (hdf5_ifstream&) is;
   hdf5_callback_data d;
 
-  d.name = (char *) 0;
+  d.name = 0;
   d.global = 0;
-  d.doc = (char *) 0;
+  d.doc = 0;
   d.complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
   d.range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
   d.import = import;
@@ -1803,8 +1805,8 @@ read_hdf5_data (std::istream& is,
        || (vers_major == 1 && (vers_minor < 2
 			       || (vers_minor == 2 && vers_release < 2))));
 
-  herr_t retval = H5Giterate (hs.file_id, "/", &hs.current_item,
-			      hdf5_read_next_data, &d);
+  herr_t H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
+					 hdf5_read_next_data, &d);
 
   if (have_h5giterate_bug)
     {
@@ -1814,23 +1816,27 @@ read_hdf5_data (std::istream& is,
       hs.current_item++;
     }
 
-  if (retval > 0)
+  if (H5Giterate_retval > 0)
     {
       global = d.global;
       tc = d.tc;
-      doc = d.doc;
+      if (d.doc)
+	doc = d.doc;
     }
   else
     {
-      // an error occurred (retval < 0) or there are no more datasets 
-      // print an error message if retval < 0?
+      // an error occurred (H5Giterate_retval < 0) or there are no
+      // more datasets print an error message if retval < 0?
       // hdf5_read_next_data already printed one, probably.
     }
 
   H5Tclose (d.complex_type);
   H5Tclose (d.range_type);
 
-  return d.name;
+  if (d.name)
+    retval = d.name;
+
+  return retval;
 }
 
 #endif /* HAVE_HDF5 */
@@ -1887,6 +1893,8 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 
   while (is && ! error_state)
     {
+      OCTAVE_QUIT;
+
       std::string buf = get_mat_data_input_line (is);
 
       file_line_number++;
@@ -1961,11 +1969,11 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 //
 // This format provides no way to tag the data as global.
 
-static char *
+static std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
 		     octave_value& tc)
 {
-  char *name = 0;
+  std::string retval;
 
   std::string varname;
 
@@ -1988,6 +1996,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
       get_lines_and_columns (is, filename, nr, nc);
 
+      OCTAVE_QUIT;
+
       if (! error_state && nr > 0 && nc > 0)
 	{
 	  Matrix tmp (nr, nc);
@@ -2009,6 +2019,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 		  for (int j = 0; j < nc; j++)
 		    {
+		      OCTAVE_QUIT;
+
 		      d = octave_read_double (tmp_stream);
 
 		      if (tmp_stream)
@@ -2018,7 +2030,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 			  error ("load: failed to read matrix from file `%s'",
 				 filename.c_str ());
 
-			  return name;
+			  return retval;
 			}
 
 		    }
@@ -2029,7 +2041,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	    {
 	      tc = tmp;
 
-	      name = strsave (varname.c_str ());
+	      retval = varname;
 	    }
 	  else
 	    error ("load: failed to read matrix from file `%s'",
@@ -2043,7 +2055,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
     error ("load: unable to convert filename `%s' to valid identifier",
 	   filename.c_str ());
 
-  return name;
+  return retval;
 }
 
 // Read LEN elements of data from IS in the format specified by
@@ -2237,17 +2249,18 @@ float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
 //
 // This format provides no way to tag the data as global.
 
-static char *
+static std::string
 read_mat_binary_data (std::istream& is, const std::string& filename,
 		      octave_value& tc)
 {
+  std::string retval;
+
   // These are initialized here instead of closer to where they are
   // first used to avoid errors from gcc about goto crossing
   // initialization of variable.
 
   Matrix re;
   oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
-  char *name = 0;
   bool swap = false;
   int type = 0;
   int prec = 0;
@@ -2263,7 +2276,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       if (err < 0)
 	goto data_read_error;
       else
-	return 0;
+	return retval;
     }
 
   type = mopt % 10;  // Full, sparse, etc.
@@ -2279,29 +2292,30 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   if (flt_fmt == oct_mach_info::unknown)
     {
       error ("load: unrecognized binary format!");
-      return 0;
+      return retval;
     }
 
   if (type != 0 && type != 1)
     {
       error ("load: can't read sparse matrices");
-      return 0;
+      return retval;
     }
 
   if (imag && type == 1)
     {
       error ("load: encountered complex matrix with string flag set!");
-      return 0;
+      return retval;
     }
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it, but apparently not all files do.  Either
   // way, I think this should work.
 
-  name = new char [len+1];
+  char name[len+1];
   if (! is.read (X_CAST (char *, name), len))
     goto data_read_error;
   name[len] = '\0';
+  retval = name;
 
   dlen = nr * nc;
   if (dlen < 0)
@@ -2350,12 +2364,11 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   if (type == 1)
     tc = tc.convert_to_str ();
 
-  return name;
+  return retval;
 
  data_read_error:
   error ("load: trouble reading binary file `%s'", filename.c_str ());
-  delete [] name;
-  return 0;
+  return retval;
 }
 
 // Read COUNT elements of data from IS in the format specified by TYPE,
@@ -2474,17 +2487,18 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
 //
 // FILENAME is used for error messages.
 
-static char *
+static std::string
 read_mat5_binary_element (std::istream& is, const std::string& filename,
 			  bool swap, bool& global, octave_value& tc)
 {
+  std::string retval;
+
   // These are initialized here instead of closer to where they are
   // first used to avoid errors from gcc about goto crossing
   // initialization of variable.
 
   Matrix re;
   oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
-  char *name = 0;
   int type = 0;
   bool imag;
   bool logicalvar;
@@ -2508,7 +2522,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   // element type and length
   if (read_mat5_tag (is, swap, type, element_length))
-    return 0;			// EOF
+    return retval;			// EOF
 
   if (type != miMATRIX)
     {
@@ -2562,7 +2576,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
 
     pos = is.tellg ();
-    name = new char[len+1];
+    char name[len+1];
 
     if (len)			// structure field subelements have
 				// zero-length array name subelements
@@ -2574,6 +2588,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
 
     name[len] = '\0';
+    retval = name;
   }  
 
   if (dimension_length != 8)
@@ -2638,12 +2653,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	// fields subelements
 	for (i = 0; i < len/field_name_length; i++)
 	  {
-	    char *thename;
 	    octave_value fieldtc;
-	    thename = read_mat5_binary_element (is, filename, swap,
-						global, fieldtc);
+	    read_mat5_binary_element (is, filename, swap, global, fieldtc);
 	    m[elname + i*field_name_length] = fieldtc;
-	    delete [] thename;
 	  }
 
 	delete [] elname;
@@ -2671,7 +2683,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	
 	if (read_mat5_tag (is, swap, type, len))
 	  {
-	    error ("load: reading matrix data for `%s'", name);
+	    error ("load: reading matrix data for `%s'", retval.c_str ());
 	    goto data_read_error;
 	  }
 
@@ -2681,7 +2693,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	if (! is || error_state)
 	  {
-	    error ("load: reading matrix data for `%s'", name);
+	    error ("load: reading matrix data for `%s'", retval.c_str ());
 	    goto data_read_error;
 	  }
 
@@ -2695,7 +2707,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  
 	  if (read_mat5_tag (is, swap, type, len))
 	    {
-	      error ("load: reading matrix data for `%s'", name);
+	      error ("load: reading matrix data for `%s'", retval.c_str ());
 	      goto data_read_error;
 	    }
 
@@ -2704,7 +2716,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	  if (! is || error_state)
 	    {
-	      error ("load: reading imaginary matrix data for `%s'", name);
+	      error ("load: reading imaginary matrix data for `%s'",
+		     retval.c_str ());
 	      goto data_read_error;
 	    }
 
@@ -2725,18 +2738,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   is.seekg (pos + static_cast<std::streamoff> (element_length));
 
-  return name;
+  return retval;
 
  data_read_error:
-  delete [] name;
-
  early_read_error:
   error ("load: trouble reading binary file `%s'", filename.c_str ());
-  return 0;
+  return std::string ();
 
  skip_ahead:
-  warning ("      skipping over `%s'", name);
-  delete [] name;
+  warning ("skipping over `%s'", retval.c_str ());
   is.seekg (pos + static_cast<std::streamoff> (element_length));
   return read_mat5_binary_element (is, filename, swap, global, tc);
 }
@@ -2879,14 +2889,10 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 	      file.clear ();
 	      file.seekg (0, std::ios::beg);
 
-	      char *tmp = extract_keyword (file, "name");
+	      std::string tmp = extract_keyword (file, "name");
 
-	      if (tmp)
-		{
-		  retval = LS_ASCII;
-
-		  delete [] tmp;
-		}
+	      if (! tmp.empty ())
+		retval = LS_ASCII;
 	      else
 		{
 		  // Try reading the file as numbers only, determining the
@@ -2930,8 +2936,8 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
       bool global = false;
       octave_value tc;
 
-      char *name = 0;
-      char *doc = 0;
+      std::string name;
+      std::string doc;
 
       switch (format)
 	{
@@ -2969,14 +2975,9 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	  break;
 	}
 
-      if (error_state || stream.eof () || ! name)
-	{
-	  delete [] name;
-	  delete [] doc;
-
-	  break;
-	}
-      else if (! error_state && name)
+      if (error_state || stream.eof () || name.empty ())
+	break;
+      else if (! error_state && ! name.empty ())
 	{
 	  if (tc.is_defined ())
 	    {
@@ -3022,25 +3023,19 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 		    }
 		}
 
-	      delete [] name;
-	      delete [] doc;
-
 	      // Only attempt to read one item from a headless text file.
 
 	      if (format == LS_MAT_ASCII)
 		break;
 	    }
 	  else
-	    error ("load: unable to load variable `%s'", name);
+	    error ("load: unable to load variable `%s'", name.c_str ());
 	}
       else
 	{
 	  if (count == 0)
 	    error ("load: are you sure `%s' is an Octave data file?",
 		   orig_fname.c_str ());
-
-	  delete [] name;
-	  delete [] doc;
 
 	  break;
 	}

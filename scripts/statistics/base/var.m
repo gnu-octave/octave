@@ -40,9 +40,9 @@ function y = var(x)
     y = 0;
   elseif ((nr == 1) || (nc == 1))
     n = length (x);
-    y = (sumsq (x) - abs(sum(x))^2 / n) / (n - 1);
+    y = sumsq (x - sum (x) / n) / (n - 1);
   else
-    y = (sumsq (x) - abs(sum(x)).^2 / nr) / (nr - 1);
+    y = sumsq (x - ones (nr, 1) * (sum (x) / nr) ) / (nr - 1);
   endif
 
 endfunction

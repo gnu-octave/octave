@@ -139,11 +139,7 @@ function retval = strcmp (s1, s2)
       else
 	error ("strcmp: nonconformant cell arrays");
       endif
-    else
-      error ("strcmp: expecting args to be strings or cell arrays of strings");
     endif
-  else
-    error ("strcmp: expecting args to be strings or cell arrays of strings");
   endif
 
 endfunction

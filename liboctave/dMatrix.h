@@ -255,6 +255,9 @@ MM_BOOL_OP_DECLS (Matrix, Matrix)
 
 MARRAY_FORWARD_DEFS (MArray2, Matrix, double)
 
+template <class T>
+void read_int (std::istream& is, bool swap_bytes, T& val);
+
 #endif
 
 /*

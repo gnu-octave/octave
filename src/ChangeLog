@@ -1,8 +1,6 @@
 2000-06-29  James R. Van Zandt  <jrv@vanzandt.mv.com>
 
-	* load-save.cc (read_int): New template function.  Instantiate it
-	for various integer types.
-	(load_save_format): New value, LS_MAT5_BINARY.
+	* load-save.cc (load_save_format): New value, LS_MAT5_BINARY.
 	(arrayclasstype, mat5_data_type): New enums.
 	(read_mat5_binary_data): New function.
 	(read_mat5_tag): New function.

@@ -70,48 +70,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define PAD(l) (((l)<=4)?4:(((l)+7)/8)*8)
 #define TAGLENGTH(l) ((l)<=4?4:8)
 
-template <class T>
-void
-read_int (std::istream& is, bool swap_bytes, T& val)
-{
-  is.read (X_CAST (char *, &val), sizeof (T));
-
-  if (swap_bytes)
-    {
-      switch (sizeof (T))
-	{
-	case 1:
-	  break;
-
-	case 2:
-	  swap_2_bytes (X_CAST (char *, &val));
-	  break;
-
-	case 4:
-	  swap_4_bytes (X_CAST (char *, &val));
-	  break;
-
-	case 8:
-	  swap_8_bytes (X_CAST (char *, &val));
-	  break;
-
-	default:
-	  (*current_liboctave_error_handler)
-	    ("read_int: unrecognized data format!");
-	}
-    }
-}
-
-template void read_int (std::istream&, bool, char&);
-template void read_int (std::istream&, bool, signed char&);
-template void read_int (std::istream&, bool, unsigned char&);
-template void read_int (std::istream&, bool, short&);
-template void read_int (std::istream&, bool, unsigned short&);
-template void read_int (std::istream&, bool, int&);
-template void read_int (std::istream&, bool, unsigned int&);
-template void read_int (std::istream&, bool, long&);
-template void read_int (std::istream&, bool, unsigned long&);
-
 // Write octave-core file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core;
 

@@ -177,9 +177,9 @@ public:
 
 private:
   tree_expression *plot_data;
-  subplot_using *using;
-  tree_expression *title;
-  subplot_style *style;
+  subplot_using *using_clause;
+  tree_expression *title_clause;
+  subplot_style *style_clause;
 };
 
 class

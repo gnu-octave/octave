@@ -741,33 +741,33 @@ subplot_style::print_code (ostream& os)
 subplot::subplot (void)
 {
   plot_data = 0;
-  using = 0;
-  title = 0;
-  style = 0;
+  using_clause = 0;
+  title_clause = 0;
+  style_clause = 0;
 }
 
 subplot::subplot (tree_expression *data)
 {
   plot_data = data;
-  using = 0;
-  title = 0;
-  style = 0;
+  using_clause = 0;
+  title_clause = 0;
+  style_clause = 0;
 }
 
 subplot::subplot (subplot_using *u, tree_expression *t, subplot_style *s)
 {
   plot_data = 0;
-  using = u;
-  title = t;
-  style = s;
+  using_clause = u;
+  title_clause = t;
+  style_clause = s;
 }
 
 subplot::~subplot (void)
 {
   delete plot_data;
-  delete using;
-  delete title;
-  delete style;
+  delete using_clause;
+  delete title_clause;
+  delete style_clause;
 }
 
 void
@@ -781,9 +781,9 @@ subplot::extract_plot_data (int ndim, tree_constant& data)
 {
   tree_constant retval;
 
-  if (using)
+  if (using_clause)
     {
-      ColumnVector val = using->values (ndim);
+      ColumnVector val = using_clause->values (ndim);
 
       Octave_object args;
       args(1) = val;
@@ -800,7 +800,7 @@ subplot::extract_plot_data (int ndim, tree_constant& data)
       retval = data;
     }
 
-  if (ndim == 2 && style && style->errorbars ())
+  if (ndim == 2 && style_clause && style_clause->errorbars ())
     {
       int nc = retval.columns ();
 
@@ -849,9 +849,9 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 		  plot_buf << " " << data.string_value ();
 		}
 
-	      if (using)
+	      if (using_clause)
 		{
-		  int status = using->print (ndim, n_max, plot_buf);
+		  int status = using_clause->print (ndim, n_max, plot_buf);
 		  if (status < 0)
 		    return -1;
 		}
@@ -905,9 +905,9 @@ subplot::print (int ndim, ostrstream& plot_buf)
   if (status < 0)
     return -1;
 
-  if (title)
+  if (title_clause)
     {
-      tree_constant tmp = title->eval (0);
+      tree_constant tmp = title_clause->eval (0);
       if (! error_state && tmp.is_string ())
 	plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
 	  << '"' << tmp.string_value () << '"';
@@ -922,9 +922,9 @@ subplot::print (int ndim, ostrstream& plot_buf)
     plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
       << '"' << "line " << plot_line_count << '"';
 
-  if (style)
+  if (style_clause)
     {
-      int status = style->print (plot_buf);
+      int status = style_clause->print (plot_buf);
       if (status < 0)
 	return -1;
     }
@@ -941,14 +941,14 @@ subplot::print_code (ostream& os)
       plot_data->print_code (os);
     }
 
-  if (using)
-    using->print_code (os);
+  if (using_clause)
+    using_clause->print_code (os);
 
-  if (title)
-    title->print_code (os);
+  if (title_clause)
+    title_clause->print_code (os);
 
-  if (style)
-    style->print_code (os);
+  if (style_clause)
+    style_clause->print_code (os);
 }
 
 int

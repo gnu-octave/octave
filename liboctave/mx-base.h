@@ -45,6 +45,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dDiagMatrix.h"
 #include "CDiagMatrix.h"
 
+// Sparse Matrix classes.
+
+#include "boolSparse.h"
+#include "dSparse.h"
+#include "CSparse.h"
+
 // N-d Array classes.
 
 #include "boolNDArray.h"

@@ -537,7 +537,7 @@ make_diag (const octave_value& arg)
 	  else
 	    {
 	      ColumnVector v = m.diag ();
-	      if (v.capacity () > 0)
+	      if (v.numel () > 0)
 		retval = v;
 	    }
 	}
@@ -560,7 +560,7 @@ make_diag (const octave_value& arg)
 	  else
 	    {
 	      ComplexColumnVector v = cm.diag ();
-	      if (v.capacity () > 0)
+	      if (v.numel () > 0)
 		retval = v;
 	    }
 	}
@@ -729,16 +729,26 @@ do_cat (const octave_value_list& args, std::string fname)
 	  octave_value tmp;
           bool any_strings = false;
           bool all_strings = true;
+	  bool first_non_empty_arg = true;
           for (int i = 1; i < n_args; i++)
-	    if (args(i).is_string ())
-	      any_strings = true;
-	    else
-	      all_strings = false;
-	  
+	    if (! args (i).all_zero_dims ())
+	      {
+		if (first_non_empty_arg)
+		  {
+		    first_non_empty_arg = false;
+		    tmp = args (i);
+		  }
+
+		if (args(i).is_string ())
+		  any_strings = true;
+		else
+		  all_strings = false;
+	      }
+
 	  if (all_strings)
 	    tmp = octave_value (charNDArray (dv, Vstring_fill_char), true);
 	  else
-	    tmp = args(1).resize (dim_vector (0,0)).resize (dv);
+	    tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
 	  if (error_state)
 	    return retval;

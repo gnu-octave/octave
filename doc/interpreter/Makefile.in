@@ -25,7 +25,7 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	grammar.txi image.txi install.txi intro.txi io.txi \
 	linalg.txi matrix.txi nonlin.txi numbers.txi \
 	op-idx.txi optim.txi plot.txi poly.txi preface.txi \
-	quad.txi quaternion.txi set.txi signal.txi stats.txi \
+	quad.txi quaternion.txi set.txi signal.txi sparse.txi stats.txi \
 	stmt.txi stream.txi strings.txi struct.txi system.txi \
 	tips.txi var.txi vr-idx.txi
 

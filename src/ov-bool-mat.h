@@ -108,6 +108,15 @@ public:
   boolNDArray bool_array_value (void) const
     { return matrix; }
 
+  SparseMatrix sparse_matrix_value (bool = false) const
+  { return SparseMatrix (Matrix (matrix.matrix_value ())); }
+
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
+  { return SparseComplexMatrix (ComplexMatrix (matrix.matrix_value ())); }
+
+  SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
+  { return SparseBoolMatrix (matrix.matrix_value ()); }
+
   octave_value convert_to_str_internal (bool pad, bool force) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

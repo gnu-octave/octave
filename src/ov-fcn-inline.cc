@@ -29,6 +29,7 @@ Open Source Initiative (www.opensource.org)
 
 #include <istream>
 #include <iostream>
+#include <vector>
 
 #include "defun.h"
 #include "error.h"

@@ -94,6 +94,8 @@ public:
 
   int numel (void) const { return dims ().numel (); }
 
+  int capacity (void) const { return numel (); }
+
   size_t byte_size (void) const { return 0; }
 
   octave_value reshape (const dim_vector&) const;
@@ -217,6 +219,12 @@ public:
   charMatrix char_matrix_value (bool force = false) const;
 
   charNDArray char_array_value (bool = false) const;
+
+  SparseMatrix sparse_matrix_value (bool = false) const;
+
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
+
+  SparseBoolMatrix sparse_bool_matrix_value (bool = false) const;
 
   octave_int8 int8_scalar_value (void) const;
 

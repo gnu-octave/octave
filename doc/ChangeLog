@@ -1,5 +1,16 @@
 2005-02-25  John W. Eaton  <jwe@octave.org>
 
+	Sparse merge.
+
+	2005-01-07  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: New file.
+	* interpreter/Makefile.in: Add it to the build.
+	* interpreter/octave.texi: Include it in the contents tables and the
+	top level document.
+
+2005-02-25  John W. Eaton  <jwe@octave.org>
+
 	* liboctave/Makefile.in (all): Also depend on Octave-FAQ.pdf.
 	Use $(MAKEINFO) instead of makeinfo in rules.
 

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD (det, args, nargout,
+DEFUN_DLD (det, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } det (@var{a})\n\
 Compute the determinant of @var{a} using @sc{Lapack}.  Return an estimate\n\
@@ -111,9 +111,7 @@ of the reciprocal condition number if requested.\n\
 	}
     }
   else
-    {
-      gripe_wrong_type_arg ("det", arg);
-    }
+    gripe_wrong_type_arg ("det", arg);
 
   return retval;
 }

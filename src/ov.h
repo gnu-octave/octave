@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-alloc.h"
 #include "oct-time.h"
 #include "str-vec.h"
+#include "SparseType.h"
 
 class Cell;
 class streamoff_array;
@@ -214,6 +215,11 @@ public:
   octave_value (const charMatrix& chm, bool is_string = false);
   octave_value (const charNDArray& chnda, bool is_string = false);
   octave_value (const ArrayN<char>& chnda, bool is_string = false);
+  octave_value (const SparseMatrix& m, const SparseType& t = SparseType ());
+  octave_value (const SparseComplexMatrix& m, 
+		const SparseType& t = SparseType ());
+  octave_value (const SparseBoolMatrix& bm, 
+		const SparseType& t = SparseType ());
   octave_value (const octave_int8& i);
   octave_value (const octave_int16& i);
   octave_value (const octave_int32& i);
@@ -356,8 +362,13 @@ public:
 
   int ndims (void) const;
 
+  bool all_zero_dims (void) const { return dims().all_zero (); }
+
   virtual int numel (void) const
     { return rep->numel (); }
+
+  virtual int capacity (void) const
+    { return rep->capacity (); }
 
   virtual size_t byte_size (void) const
     { return rep->byte_size (); }
@@ -567,6 +578,15 @@ public:
 
   virtual charNDArray char_array_value (bool frc_str_conv = false) const
     { return rep->char_array_value (frc_str_conv); }
+
+  virtual SparseMatrix sparse_matrix_value (bool frc_str_conv = false) const
+  { return rep->sparse_matrix_value (frc_str_conv); }
+
+  virtual SparseComplexMatrix sparse_complex_matrix_value (bool frc_str_conv = false) const
+  { return rep->sparse_complex_matrix_value (frc_str_conv); }
+
+  virtual SparseBoolMatrix sparse_bool_matrix_value (bool frc_str_conv = false) const
+  { return rep->sparse_bool_matrix_value (frc_str_conv); }
 
   virtual octave_int8 int8_scalar_value (void) const
     { return rep->int8_scalar_value (); }

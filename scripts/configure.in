@@ -34,8 +34,9 @@ AC_CONFIG_FILES([Makefile audio/Makefile control/Makefile \
 	  finance/Makefile general/Makefile image/Makefile io/Makefile \
 	  linear-algebra/Makefile miscellaneous/Makefile plot/Makefile \
 	  polynomial/Makefile quaternion/Makefile set/Makefile \
-	  signal/Makefile specfun/Makefile special-matrix/Makefile \
-	  startup/Makefile statistics/Makefile statistics/base/Makefile \
-	  statistics/distributions/Makefile statistics/models/Makefile \
-	  statistics/tests/Makefile strings/Makefile time/Makefile])
+	  signal/Makefile sparse/Makefile specfun/Makefile \
+	  special-matrix/Makefile startup/Makefile statistics/Makefile \
+	  statistics/base/Makefile statistics/distributions/Makefile \
+	  statistics/models/Makefile statistics/tests/Makefile \
+	  strings/Makefile time/Makefile])
 AC_OUTPUT

@@ -28,18 +28,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // config.h needs to be first because it includes #defines that can */
 // affect other header files.
 
-#include <octave/config.h>
+#include "config.h"
 
-#include <octave/Matrix.h>
+#include "Matrix.h"
 
-#include <octave/defun-dld.h>
-#include <octave/error.h>
-#include <octave/gripes.h>
-#include <octave/help.h>
-#include <octave/oct-obj.h>
-#include <octave/pager.h>
-#include <octave/utils.h>
-#include <octave/variables.h>
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
+#include "oct-obj.h"
+#include "pager.h"
+#include "utils.h"
+#include "variables.h"
 
 #endif
 

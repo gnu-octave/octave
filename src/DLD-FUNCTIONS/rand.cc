@@ -72,7 +72,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 	      {
 		retval = octave_rand::distribution ();
 	      }
-	    else if (s_arg == "seed")
+	    else if (s_arg == "seed" || s_arg == "state")
 	      {
 		retval = octave_rand::seed ();
 	      }
@@ -179,7 +179,9 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 	if (nargin == 2 && tmp.is_string ())
 	  {
-	    if (tmp.string_value () == "seed")
+	    std::string ts = tmp.string_value ();
+
+	    if (ts == "seed" || ts == "state")
 	      {
 		double d = args(1).double_value ();
 

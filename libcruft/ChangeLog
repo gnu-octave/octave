@@ -1,3 +1,29 @@
+2005-02-25  John W. Eaton  <jwe@octave.org>
+
+	* blas/zher.f: New file.
+
+	Sparse merge.
+
+	2005-01-13 David Bateman  <dbateman@free.fr>
+
+	* lapack/dgttrf.f lapack/dgttrs.f lapacl/zgttrf.f lapack/zgttrs.f:
+	new files
+
+	2005-01-23  David Bateman  <dbateman@free.fr>
+
+	* lapack/dgtsv.f lapack/dpbcon.f lapack/dpbtf2.f lapack/dpbtrf.f 
+	lapack/dpbtrs.f lapack/dptsv.f lapack/dpttrf.f lapack/dpttrs.f 
+	lapack/dptts2.f lapack/zgtsv.f lapack/zpbcon.f lapack/zpbtf2.f 
+	lapack/zpbtrf.f lapack/zpbtrs.f lapack/zptsv.f lapack/zpttrf.f 
+	lapack/zpttrs.f lapck/zptts2.f: New files.
+
+	2004-12-29  John W. Eaton  <jwe@octave.org>
+
+	* blas/zbtsv.f: New file.
+	* lapack/dgbcon.f, lapack/dgbtrf.f, lapack/dgbtrs.f,
+	lapack/dlatbs.f, lapack/zgbcon.f, lapack/zgbtf2.f,
+	lapack/zgbtrf.f, lapack/zgbtrs.f, lapack/zlatbs.f: New files.
+
 2005-02-10  John W. Eaton  <jwe@octave.org>
 
 	* misc/cquit.c (octave_signal_caught): New global variable.

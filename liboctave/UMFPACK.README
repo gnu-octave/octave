@@ -1,0 +1,47 @@
+This directory contains a modified copy of UMFPACKv4.4 in the
+directory UMFPACK.  The complete changes from the original version may
+be found in the file UMFPACK.patch.
+
+UMFPACK was written by Timothy A. Davis (davis@cise.ufl.edu),
+University of Florida.
+
+UMFPACK includes a modified version of COLAMD V2.0, by Stefan
+I. Larimore and Timothy A. Davis, University of Florida.  The COLAMD
+algorithm was developed in collaboration with John Gilbert, Xerox Palo
+Alto Research Center, and Esmond Ng, Lawrence Berkeley National
+Laboratory.
+
+UMFPACK also includes AMD, by Timothy A. Davis, Patrick R. Amestoy,
+and Iain S. Duff.
+
+UMFPACK Version 2.2.1 (MA38 in the Harwell Subroutine Library) is
+co-authored with Iain S. Duff, Rutherford Appleton Laboratory.
+
+The copyright and license information is:
+
+  UMFPACK Version 4.4 (Jan. 28, 2005),  Copyright (c) 2005 by Timothy A.
+  Davis.  All Rights Reserved.
+
+  Your use or distribution of UMFPACK or any modified version of
+  UMFPACK implies that you agree to this License.
+
+  THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY
+  EXPRESSED OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
+
+  Permission is hereby granted to use or copy this program, provided
+  that the Copyright, this License, and the Availability of the original
+  version is retained on all copies.  User documentation of any code that
+  uses UMFPACK or any modified version of UMFPACK code must cite the
+  Copyright, this License, the Availability note, and "Used by permission."
+  Permission to modify the code and to distribute modified code is granted,
+  provided the Copyright, this License, and the Availability note are
+  retained, and a notice that the code was modified is included.  This
+  software was developed with support from the National Science Foundation,
+  and is provided to you free of charge.
+
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical & Biological Engineering
+
+Wed Feb 01 22:15:20 2005

@@ -1,0 +1,11 @@
+
+COLAMD_SRC := colamd.c
+
+COLAMD_OBJ := $(COLAMD_SRC:.c=.o)
+
+COLAMD_DEP := $(COLAMD_SRC:.c=.d)
+
+$(COLAMD_OBJ) $(COLAMD_DEP) := INCFLAGS += -I$(top_srcdir)/liboctave/COLAMD
+
+COLAMD_EXTRAS := COLAMD.files COLAMD.README
+

@@ -160,6 +160,21 @@ octave_matrix::char_array_value (bool) const
   return retval;
 }
   
+SparseMatrix 
+octave_matrix::sparse_matrix_value (bool) const
+{
+  return SparseMatrix (matrix.matrix_value ());
+}
+
+SparseComplexMatrix 
+octave_matrix::sparse_complex_matrix_value (bool) const
+{
+  // XXX FIXME XXX Need a SparseComplexMatrix (Matrix) constructor to make
+  // this function more efficient. Then this should become
+  // return SparseComplexMatrix (matrix.matrix_value ());
+  return SparseComplexMatrix (sparse_matrix_value ());
+}
+
 streamoff_array
 octave_matrix::streamoff_array_value (void) const
 {

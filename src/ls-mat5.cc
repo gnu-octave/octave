@@ -164,7 +164,7 @@ read_mat5_binary_data (std::istream& is, double *data,
 
 template <class T>
 void
-read_mat5_integer_data (std::istream& is, T &m, int count, bool swap,
+read_mat5_integer_data (std::istream& is, T *m, int count, bool swap,
 			mat5_data_type type)
 {
 
@@ -188,33 +188,27 @@ read_mat5_integer_data (std::istream& is, T &m, int count, bool swap,
   switch (type)
     {
     case miINT8:
-      READ_INTEGER_DATA (signed char, swap, m.fortran_vec (), 1, 
-			 count, is);
+      READ_INTEGER_DATA (signed char, swap, m, 1, count, is);
       break;
 
     case miUINT8:
-      READ_INTEGER_DATA (unsigned char, swap, m.fortran_vec (), 1, 
-			 count, is);
+      READ_INTEGER_DATA (unsigned char, swap, m, 1, count, is);
       break;
 
     case miINT16:
-      READ_INTEGER_DATA (signed TWO_BYTE_INT, swap, m.fortran_vec (), 2, 
-			 count, is);
+      READ_INTEGER_DATA (signed TWO_BYTE_INT, swap, m, 2, count, is);
       break;
 
     case miUINT16:
-      READ_INTEGER_DATA (unsigned TWO_BYTE_INT, swap, m.fortran_vec (), 2, 
-			 count, is);
+      READ_INTEGER_DATA (unsigned TWO_BYTE_INT, swap, m, 2, count, is);
       break;
 
     case miINT32:
-      READ_INTEGER_DATA (signed FOUR_BYTE_INT, swap, m.fortran_vec (), 4, 
-			 count, is);
+      READ_INTEGER_DATA (signed FOUR_BYTE_INT, swap, m, 4, count, is);
       break;
 
     case miUINT32:
-      READ_INTEGER_DATA (unsigned FOUR_BYTE_INT, swap, m.fortran_vec (), 4, 
-			 count, is);
+      READ_INTEGER_DATA (unsigned FOUR_BYTE_INT, swap, m, 4, count, is);
       break;
 
     case miSINGLE:
@@ -226,15 +220,13 @@ read_mat5_integer_data (std::istream& is, T &m, int count, bool swap,
 
     case miINT64:
 #ifdef EIGHT_BYTE_INT
-      READ_INTEGER_DATA (signed EIGHT_BYTE_INT, swap, m.fortran_vec (), 8, 
-			 count, is);
+      READ_INTEGER_DATA (signed EIGHT_BYTE_INT, swap, m, 8, count, is);
 #endif
       break;
 
     case miUINT64:
 #ifdef EIGHT_BYTE_INT
-      READ_INTEGER_DATA (unsigned EIGHT_BYTE_INT, swap, m.fortran_vec (), 8, 
-			 count, is);
+      READ_INTEGER_DATA (unsigned EIGHT_BYTE_INT, swap, m, 8, count, is);
 #endif
       break;
 
@@ -247,28 +239,32 @@ read_mat5_integer_data (std::istream& is, T &m, int count, bool swap,
 
 }
 
-template void read_mat5_integer_data (std::istream& is, int8NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_int8 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, int16NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_int16 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, int32NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_int32 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, int64NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_int64 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, uint8NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_uint8 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, uint16NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_uint16 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, uint32NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_uint32 *m,
 				      int count, bool swap,
 				      mat5_data_type type);
-template void read_mat5_integer_data (std::istream& is, uint64NDArray &m,
+template void read_mat5_integer_data (std::istream& is, octave_uint64 *m,
+				      int count, bool swap,
+				      mat5_data_type type);
+
+template void read_mat5_integer_data (std::istream& is, int *m,
 				      int count, bool swap,
 				      mat5_data_type type);
 
@@ -286,7 +282,7 @@ template void read_mat5_integer_data (std::istream& is, uint64NDArray &m,
   \
 	int n = re.length (); \
 	tmp_pos = is.tellg (); \
-	read_mat5_integer_data (is, re, n, swap, \
+	read_mat5_integer_data (is, re.fortran_vec (), n, swap,	\
 				(enum mat5_data_type) type); \
   \
 	if (! is || error_state) \
@@ -401,7 +397,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   bool imag;
   bool logicalvar;
   enum arrayclasstype arrayclass;
-  FOUR_BYTE_INT junk;
+  FOUR_BYTE_INT nnz;
   FOUR_BYTE_INT flags;
   dim_vector dims;
   int len;
@@ -448,7 +444,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   global = (flags & 0x0400) != 0; // global variable?
   logicalvar = (flags & 0x0200) != 0; // we don't use this yet
   arrayclass = (arrayclasstype)(flags & 0xff);
-  read_int (is, swap, junk);	// an "undefined" entry
+  read_int (is, swap, nnz);	// number of non-zero in sparse
   
   // dimensions array subelement
   {
@@ -531,8 +527,124 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       goto skip_ahead;
 
     case mxSPARSE_CLASS:
-      warning ("load: sparse arrays are not implemented");
-      goto skip_ahead;
+      {
+	int nr = dims(0);
+	int nc = dims(1);
+	SparseMatrix sm;
+	SparseComplexMatrix scm;
+	NDArray re;
+	int *ridx;
+	int *cidx;
+	double *data;
+
+	// Setup return value
+	if (imag)
+	  {
+	    scm = SparseComplexMatrix (nr, nc, nnz);
+	    ridx = scm.ridx ();
+	    cidx = scm.cidx ();
+	    re = NDArray (dim_vector (static_cast<int> (nnz)));
+	    data = re.fortran_vec ();
+	  }
+	else
+	  {
+	    sm = SparseMatrix (nr, nc, nnz);
+	    ridx = sm.ridx ();
+	    cidx = sm.cidx ();
+	    data = sm.data ();
+	  }
+
+	// row indices
+	std::streampos tmp_pos;
+	  
+	if (read_mat5_tag (is, swap, type, len))
+	  {
+	    error ("load: reading sparse row data for `%s'", retval.c_str ());
+	    goto data_read_error;
+	  }
+
+	tmp_pos = is.tellg ();
+
+	read_mat5_integer_data (is, ridx, nnz, swap,
+				(enum mat5_data_type) type);
+
+	if (! is || error_state)
+	  {
+	    error ("load: reading sparse row data for `%s'", retval.c_str ());
+	    goto data_read_error;
+	  }
+
+	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
+
+	// col indices
+	if (read_mat5_tag (is, swap, type, len))
+	  {
+	    error ("load: reading sparse column data for `%s'", retval.c_str ());
+	    goto data_read_error;
+	  }
+
+	tmp_pos = is.tellg ();
+
+	read_mat5_integer_data (is, cidx, nc + 1, swap,
+				(enum mat5_data_type) type);
+
+	if (! is || error_state)
+	  {
+	    error ("load: reading sparse column data for `%s'", retval.c_str ());
+	    goto data_read_error;
+	  }
+
+	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
+
+	// real data subelement
+	if (read_mat5_tag (is, swap, type, len))
+	  {
+	    error ("load: reading sparse matrix data for `%s'", retval.c_str ());
+	    goto data_read_error;
+	  }
+
+	tmp_pos = is.tellg ();
+	read_mat5_binary_data (is, data, nnz, swap,
+			       (enum mat5_data_type) type, flt_fmt);
+
+	if (! is || error_state)
+	  {
+	    error ("load: reading sparse matrix data for `%s'", retval.c_str ());
+	    goto data_read_error;
+	  }
+
+	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
+
+	// imaginary data subelement
+	if (imag)
+	  {
+	    NDArray im (dim_vector (static_cast<int> (nnz)));
+	  
+	    if (read_mat5_tag (is, swap, type, len))
+	      {
+		error ("load: reading sparse matrix data for `%s'", retval.c_str ());
+		goto data_read_error;
+	      }
+
+	    read_mat5_binary_data (is, im.fortran_vec (), nnz, swap,
+				   (enum mat5_data_type) type, flt_fmt);
+
+	    if (! is || error_state)
+	      {
+		error ("load: reading imaginary sparse matrix data for `%s'",
+		       retval.c_str ());
+		goto data_read_error;
+	      }
+
+	    for (int i = 0; i < nnz; i++)
+	      scm.xdata (i) = Complex (re (i), im (i));
+
+	    tc = scm;
+	  }
+	else
+	  tc = sm;
+      }
+      break;
 
     case mxFUNCTION_CLASS:
       warning ("load: function handles are not implemented");
@@ -913,9 +1025,8 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 
 template <class T>
 void 
-write_mat5_integer_data (std::ostream& os, const T& m, int size)
+write_mat5_integer_data (std::ostream& os, const T *m, int size, int nel)
 {
-  int nel = m.nelem ();
   mat5_data_type mst;
   unsigned len;
 
@@ -927,10 +1038,10 @@ write_mat5_integer_data (std::ostream& os, const T& m, int size)
     case 2:
       mst = miUINT16;
       break;
-    case 3:
+    case 4:
       mst = miUINT32;
       break;
-    case 4:
+    case 8:
       mst = miUINT64;
       break;
     case -1:
@@ -941,11 +1052,11 @@ write_mat5_integer_data (std::ostream& os, const T& m, int size)
       mst = miINT16;
       size = - size;
       break;
-    case -3:
+    case -4:
       mst = miINT32;
       size = - size;
       break;
-    case -4:
+    case -8:
     default:
       mst = miINT64;
       size = - size;
@@ -955,7 +1066,7 @@ write_mat5_integer_data (std::ostream& os, const T& m, int size)
   len = nel*size;
   write_mat5_tag (os, mst, len);
 
-  os.write (X_CAST(char *, m.data ()), len);
+  os.write (X_CAST(char *, m), len);
 
   if (PAD (len) > len)
     {
@@ -964,22 +1075,24 @@ write_mat5_integer_data (std::ostream& os, const T& m, int size)
     }
 }
 
-template void write_mat5_integer_data (std::ostream& os,
-				       const int8NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os, 
-				       const int16NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os, 
-				       const int32NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os,
-				       const int64NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os, 
-				       const uint8NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os,
-				       const uint16NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os,
-				       const uint32NDArray &m, int size);
-template void write_mat5_integer_data (std::ostream& os,
-				       const uint64NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os, const octave_int8 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_int16 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_int32 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_int64 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_uint8 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_uint16 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_uint32 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const octave_uint64 *m,
+				       int size, int nel);
+template void write_mat5_integer_data (std::ostream& os, const int *m, 
+				       int size, int nel);
 
 // Write out cell element values in the cell array to OS, preceded by
 // the appropriate tag.
@@ -1011,7 +1124,7 @@ save_mat5_binary_element (std::ostream& os,
 			  bool mark_as_global, bool save_as_floats) 
 {
   FOUR_BYTE_INT flags=0;
-  FOUR_BYTE_INT junk=0;
+  FOUR_BYTE_INT nnz=0;
   std::streampos fixup, contin;
   std::string cname = tc.class_name ();
 
@@ -1046,6 +1159,20 @@ save_mat5_binary_element (std::ostream& os,
     flags |= mxUINT32_CLASS;
   else if (cname == "uint64")
     flags |= mxUINT64_CLASS;
+  else if (cname == "sparse")
+    {
+      flags |= mxSPARSE_CLASS;
+      if (tc.is_complex_type ())
+	{
+	  SparseComplexMatrix scm = tc.sparse_complex_matrix_value ();
+	  nnz = scm.nnz ();
+	}
+      else
+	{
+	  SparseMatrix sm = tc.sparse_matrix_value ();
+	  nnz = sm.nnz ();
+	}
+    }
   else if (tc.is_real_scalar ())
     flags |= mxDOUBLE_CLASS;
   else if (tc.is_real_matrix () || tc.is_range ())
@@ -1065,7 +1192,7 @@ save_mat5_binary_element (std::ostream& os,
     }
 
   os.write ((char *)&flags, 4);
-  os.write ((char *)&junk, 4);
+  os.write ((char *)&nnz, 4);
 
   {
     dim_vector dv = tc.dims ();
@@ -1128,53 +1255,93 @@ save_mat5_binary_element (std::ostream& os,
       if (paddedlength > len)
 	os.write ((char *)buf, paddedlength - len);
     }
+  else if (cname == "sparse")
+    {
+      if (tc.is_complex_type ())
+	{
+	  SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
+	  int nc = m.cols ();
+
+	  write_mat5_integer_data (os, m.ridx (), - sizeof(int), nnz);
+	  write_mat5_integer_data (os, m.cidx (), - sizeof(int), nc + 1);
+
+	  NDArray buf (dim_vector (nnz, 1));
+
+	  for (int i = 0; i < nnz; i++)
+	    buf (i) = ::real (m.data (i));
+
+	  write_mat5_array (os, buf, save_as_floats);
+
+	  for (int i = 0; i < nnz; i++)
+	    buf (i) = ::imag (m.data (i));
+
+	  write_mat5_array (os, buf, save_as_floats);
+	}
+      else
+	{
+	  SparseMatrix m = tc.sparse_matrix_value ();
+	  int nc = m.cols ();
+
+	  write_mat5_integer_data (os, m.ridx (), - sizeof(int), nnz);
+	  write_mat5_integer_data (os, m.cidx (), - sizeof(int), nc + 1);
+
+	  // XXX FIXME XXX
+	  // Is there a way to easily do without this buffer
+	  NDArray buf (dim_vector (nnz, 1));
+
+	  for (int i = 0; i < nnz; i++)
+	    buf (i) = m.data (i);
+
+	  write_mat5_array (os, buf, save_as_floats);
+	}
+    }
   else if (cname == "int8")
     {
       int8NDArray m = tc.int8_array_value ();
 
-      write_mat5_integer_data (os, m, -1);
+      write_mat5_integer_data (os, m.fortran_vec (), -1, m.nelem ());
     }
   else if (cname == "int16")
     {
       int16NDArray m = tc.int16_array_value ();
 
-      write_mat5_integer_data (os, m, -2);
+      write_mat5_integer_data (os, m.fortran_vec (), -2, m.nelem ());
     }
   else if (cname == "int32")
     {
       int32NDArray m = tc.int32_array_value ();
 
-      write_mat5_integer_data (os, m, -4);
+      write_mat5_integer_data (os, m.fortran_vec (), -4, m.nelem ());
     }
   else if (cname == "int64")
     {
       int64NDArray m = tc.int64_array_value ();
 
-      write_mat5_integer_data (os, m, -8);
+      write_mat5_integer_data (os, m.fortran_vec (), -8, m.nelem ());
     }
   else if (cname == "uint8")
     {
       uint8NDArray m = tc.uint8_array_value ();
 
-      write_mat5_integer_data (os, m, 1);
+      write_mat5_integer_data (os, m.fortran_vec (), 1, m.nelem ());
     }
   else if (cname == "uint16")
     {
       uint16NDArray m = tc.uint16_array_value ();
 
-      write_mat5_integer_data (os, m, 2);
+      write_mat5_integer_data (os, m.fortran_vec (), 2, m.nelem ());
     }
   else if (cname == "uint32")
     {
       uint32NDArray m = tc.uint32_array_value ();
 
-      write_mat5_integer_data (os, m, 4);
+      write_mat5_integer_data (os, m.fortran_vec (), 4, m.nelem ());
     }
   else if (cname == "uint64")
     {
       uint64NDArray m = tc.uint64_array_value ();
 
-      write_mat5_integer_data (os, m, 8);
+      write_mat5_integer_data (os, m.fortran_vec (), 8, m.nelem ());
     }
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {

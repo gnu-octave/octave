@@ -20,10 +20,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -41,6 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-uint64.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
+#include "ov-re-sparse.h"
+#include "ov-bool-sparse.h"
 #include "ov-range.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
@@ -73,6 +71,9 @@ DEFDBLCONVFN (uint64_scalar_to_double_matrix, uint64_scalar, uint64_array)
 DEFDBLCONVFN (bool_matrix_to_double_matrix, bool_matrix, bool_array)
 DEFDBLCONVFN (bool_scalar_to_double_matrix, bool, bool_array)
 
+DEFDBLCONVFN (sparse_matrix_to_double_matrix, sparse_matrix, array)
+DEFDBLCONVFN (sparse_bool_matrix_to_double_matrix, sparse_bool_matrix, array)
+
 DEFDBLCONVFN (range_to_double_matrix, range, array)
 
 DEFSTRDBLCONVFN(char_matrix_str_to_double_matrix)
@@ -104,6 +105,9 @@ install_double_conv_ops (void)
 
   INSTALL_CONVOP (octave_bool_matrix, octave_matrix, bool_matrix_to_double_matrix);
   INSTALL_CONVOP (octave_bool, octave_matrix, bool_scalar_to_double_matrix);
+
+  INSTALL_CONVOP (octave_sparse_matrix, octave_matrix, sparse_matrix_to_double_matrix);
+  INSTALL_CONVOP (octave_sparse_bool_matrix, octave_matrix, sparse_bool_matrix_to_double_matrix);
 
   INSTALL_CONVOP (octave_range, octave_matrix, range_to_double_matrix);
 

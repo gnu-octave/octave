@@ -35,8 +35,6 @@ Numerical:
 
   * Free NLP solver.
 
-  * Support for sparse matrices.
-
   * Fix CollocWt to handle Laguerre polynomials.  Make it easy to
     extend it to other polynomial types.
 
@@ -104,6 +102,104 @@ Numerical:
   * Consider making the behavior of the / and \ operators for
     non-square systems compatible with Matlab.  Currently, they return
     the minimum norm solution from DGELSS, which behaves differently.
+
+---------------
+Sparse Matrices:
+---------------
+
+  * Sparse Cholesky factorization for Fchol function and also for the 
+    in built polymorphic solvers.
+
+  * QR factorization functions, also for use in lssolve functions. Write
+    svds function based on this. Write sprank function based on svds.
+
+  * Once dmperm is implemented, use the technique to detect permuted
+    triangular matrices. Test the permuted triangular matrix solver code
+
+  * Accelerate the copying of the data from a sparse matrix to a banded matrix
+    in the solvers, that takes a significant portion of the computation time 
+    for narrow matrices. This is not obvious, due to the treatment of zero
+    elements in the matrix. Maybe current solution is optimal.
+
+  * Perhaps split the overly long ::solve functions up, either by the type 
+    of solver, or seperate factorization functions, so that they can be 
+    reused in each of 4 different ::solve functions.
+
+  * Sparse inverse function, based on Andy's code from octave-forge.
+
+  * Implement fourth argument to the sprand and sprandn that the leading
+    brand implements.
+
+  * Mapper functions such as real, imag, abs, etc need to be treated, either
+    with a dispatch or by changing the mapper function code.
+
+  * Write the rest of the sparse docs
+
+  * The algo in TOMS 582 is perfect for symrcm function. However, this is
+    under  the ACM license and can't be used in a GPL program.
+
+    An alternative is that PETSC is GPL compatiable and has a symrcm 
+    implemented from the original SPARSPAK. Its not clear that this is
+    legal to me as I have found no clarification of the original license
+    of SPARSPAK. As PETSC has had this code for over 10 years without
+    problem, we can perhaps assume that there is no issues. Maybe need
+    to contact PETSC people or the SPARSPAK people at uni of waterloo
+    to check issues.
+
+  * Make spalloc(r,c,n) actually create an empty sparse with n non-zero 
+    elements? This allows something like
+
+    sm = spalloc (r,c,n)
+    for j=1:c
+      for i=1:r
+        tmp = foo (i,j);
+        if (tmp != 0.)
+          sm (i,j) = tmp;
+        endif
+      endfor
+    endfor
+
+    actually make sense. Otherwise the above will cause massive amounts
+    of memory reallocation.
+
+    The fact is that this doesn't make sense in any case as the assign
+    function makes another copy of the sparse matrix. So although spalloc
+    might easily be made to have the correct behaviour, the first assign
+    will cause the matrix to be resized !!! There seems to be no simple
+    way to treat this but a complete rewrite of the sparse assignment
+    functions...
+
+  * Port the sparse testing code into the DejaGNU testing code.
+
+  * Treat the dispatching of the splu, spdet, functions, etc within octave
+    itself. This either means that classes need implementing or at the
+    minimum the octave-forge dispatch function is implemented within octave
+
+  * Other missing Functions
+      - eigs
+      - dmperm      Tim Davis is apparently working on something
+      - symmmd      Superseded by symamd
+      - colmmd      Superseded by colamd
+      - sprandsym
+      - symbfact
+      - etreeplot
+      - treeplot
+      - gplot
+      - treelayout
+      - cholinc
+      - condest
+      - normest
+      - bicg
+      - bicgstab
+      - cgs
+      - gmres
+      - lsqr
+      - minres
+      - pcg         Can this be taken from o-forge? Is it compatiable
+      - pcr         Can and should this be taken from o-forge?
+      - qmr
+      - symmlq 
+      - spaugment
 
 --------
 Graphics:

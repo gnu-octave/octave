@@ -29,6 +29,7 @@ class
 DET
 {
 friend class Matrix;
+friend class SparseMatrix;
 
 public:
 

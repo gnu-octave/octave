@@ -1,0 +1,327 @@
+/*
+
+Copyright (C) 2004 David Bateman
+Copyright (C) 1998-2004 Andy Adler
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <iostream>
+
+#include "oct-obj.h"
+#include "ov-base.h"
+#include "quit.h"
+#include "pr-output.h"
+
+#include "byte-swap.h"
+#include "ls-oct-ascii.h"
+#include "ls-utils.h"
+#if defined (HAVE_HDF5)
+#include "ls-hdf5.h"
+#endif
+
+#include "boolSparse.h"
+#include "ov-base-sparse.h"
+
+template <class T>
+octave_value
+octave_base_sparse<T>::do_index_op (const octave_value_list& idx, 
+				    int resize_ok)
+{
+  octave_value retval;
+
+  int n_idx = idx.length ();
+
+  int nd = matrix.ndims ();
+
+  switch (n_idx)
+    {
+    case 0:
+      error ("invalid number of indices (= 0) for %d-dimensional array", nd);
+      break;
+
+    case 1:
+      {
+	idx_vector i = idx (0).index_vector ();
+
+	if (! error_state)
+	  retval = octave_value (matrix.index (i, resize_ok));
+      }
+      break;
+
+    default:
+      {
+	if (n_idx == 2 && nd == 2)
+	  {
+	    idx_vector i = idx (0).index_vector ();
+
+	    if (! error_state)
+	      {
+		idx_vector j = idx (1).index_vector ();
+
+		if (! error_state)
+		  retval = octave_value (matrix.index (i, j, resize_ok));
+	      }
+	  }
+	else
+	  {
+	    Array<idx_vector> idx_vec (n_idx);
+
+	    for (int i = 0; i < n_idx; i++)
+	      {
+		idx_vec(i) = idx(i).index_vector ();
+
+		if (error_state)
+		  break;
+	      }
+
+	    if (! error_state)
+	      retval = octave_value (matrix.index (idx_vec, resize_ok));
+	  }
+      }
+      break;
+    }
+
+  return retval;
+}
+
+template <class T>
+octave_value
+octave_base_sparse<T>::subsref (const std::string& type,
+				const std::list<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_index_op (idx.front ());
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval.next_subsref (type, idx);
+}
+
+template <class T>
+octave_value 
+octave_base_sparse<T>::subsasgn (const std::string& type,
+				 const std::list<octave_value_list>& idx,
+				 const octave_value& rhs)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	if (type.length () == 1)
+	  retval = numeric_assign (type, idx, rhs);
+	else
+	  {
+	    std::string nm = type_name ();
+	    error ("in indexed assignment of %s, last lhs index must be ()",
+		   nm.c_str ());
+	  }
+      }
+      break;
+
+    case '{':
+    case '.':
+      {
+	if (is_empty ())
+	  {
+	    octave_value tmp = octave_value::empty_conv (type, rhs);
+
+	    retval = tmp.subsasgn (type, idx, rhs);
+	  }
+	else
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+}
+
+template <class T>
+void 
+octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
+{
+  int len = idx.length ();
+
+  for (int i = 0; i < len; i++)
+    matrix.set_index (idx(i).index_vector ());
+
+  ::assign (matrix, rhs);
+}
+
+
+template <class T>
+bool 
+octave_base_sparse<T>::is_true (void) const
+{
+  bool retval = false;
+  dim_vector dv = matrix.dims ();
+  int nel = dv.numel ();
+  int nz = nnz ();
+
+  if (nz == nel && nel > 0)
+    {
+      T t1 (matrix.reshape (dim_vector (nel, 1)));
+
+      SparseBoolMatrix t2 = t1.all ();
+
+      retval = t2(0);
+    }
+
+  return retval;
+}
+
+template <class T>
+bool 
+octave_base_sparse<T>::print_as_scalar (void) const
+{
+  dim_vector dv = dims ();
+
+  return (dv.all_ones () || dv.any_zero ());
+}
+
+template <class T>
+void 
+octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax) const
+{
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
+}
+
+template <class T>
+void 
+octave_base_sparse<T>::print_info (std::ostream& os, 
+				   const std::string& prefix) const
+{
+  matrix.print_info (os, prefix);
+}
+
+template <class T>
+void
+octave_base_sparse<T>::print_raw (std::ostream& os,
+				      bool pr_as_read_syntax) const
+{
+  int nr = matrix.rows ();
+  int nc = matrix.cols ();
+  int nz = nonzero ();
+
+  os << "Compressed Column Sparse (rows=" << nr <<
+    ", cols=" << nc <<
+    ", nnz=" << nz << ")";
+
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+
+  if (nz != 0)
+    {
+      for (int j = 0; j < nc; j++)
+	{
+	  OCTAVE_QUIT;
+	  for (int i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
+	    {
+	      os << "\n";
+	      os << "  (" << matrix.ridx(i)+1 <<
+		" , "  << j+1 << ") -> ";
+	      octave_print_internal( os, matrix.data(i), pr_as_read_syntax);
+	    }
+	}
+    }
+}
+
+template <class T>
+bool
+octave_base_sparse<T>::save_ascii (std::ostream& os, bool&, bool)
+{
+  dim_vector dv = this->dims ();
+
+  // Ensure that additional memory is deallocated
+  matrix.maybe_compress ();
+
+  os << "# nnz: "      << nnz () << "\n";
+  os << "# rows: "     << dv (0) << "\n";
+  os << "# columns: "  << dv (1) << "\n";
+
+  os << this->matrix;
+
+  return true;
+}
+
+template <class T>
+bool 
+octave_base_sparse<T>::load_ascii (std::istream& is)
+{
+  int nz = 0;
+  int nr = 0;
+  int nc = 0;
+  bool success = true;
+
+  if (extract_keyword (is, "nnz", nz, true) &&
+      extract_keyword (is, "rows", nr, true) &&
+      extract_keyword (is, "columns", nc, true))
+    {
+      T tmp (nr, nc, nz);
+
+      is >> tmp;
+
+      if (!is) 
+	{
+	  error ("load: failed to load matrix constant");
+	  success = false;
+	}
+
+      matrix = tmp;
+    }
+  else
+    {
+      error ("load: failed to extract number of rows and columns");
+      success = false;
+    }
+
+  return success;
+}
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

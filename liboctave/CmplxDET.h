@@ -31,6 +31,7 @@ class
 ComplexDET
 {
 friend class ComplexMatrix;
+friend class SparseComplexMatrix;
 
 public:
 

@@ -1,3 +1,282 @@
+2005-02-25  John W. Eaton  <jwe@octave.org>
+
+	Sparse merge.
+
+	2005-02-25  John W. Eaton  <jwe@octave.org>
+
+	* DLD-SRC/rand.cc (Frand): Accept "state" as an alias for "seed".
+
+	* DLD-SRC/dispatch.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
+	2005-02-13  David Bateman  <dbateman@free.fr>
+
+	* ov-fcn-inline.h, DLD-FUNCTIONS/spparms.cc, DLD-FUNCTIONS/gcd.cc:
+	Remove additional licensing clause, with authors permission
+
+	* ov-base-sparse.h: New constructor to cache SparseType, not yet
+	used
+	* ov-re-sparse.h: likewise
+	* ov-cx-sparse.h: likewise
+	* ov.h: Likewise
+
+	* sparse-xdiv.cc: Remove spparms umfpack flag
+
+	* DLD-FUNCTIONS/spparms.cc: Warning that umfpack flag is ignored.
+	
+	2005-01-16  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (read_mat5_integer_data): Change "T &m" to "T *m" and
+	instantiate with values like octave_int8 rather than int8NDArray.
+	Modify function to fit
+	(read_mat5_binary_element): Use new form of read_mat_integer_data
+	to read data directly into sparse matrix
+	(write_mat5_integer_data): Change "const T &m" to "T *m", etc. New
+	instantiation with int.
+	(save_mat5_binary_element): Modify to save sparse data
+	
+	2005-01-15  David Bateman  <dbateman@free.fr>
+
+	* data.cc (do_cat): Use first non-empty matrix as base for 
+	concatenation.
+	* pt-mat.cc (tree_matrix::rvalue): ditto.
+	
+	2005-01-14  John W. Eaton  <jwe@octave.org>
+
+	* ov.cc (do_cat_op): When checking for empty args, use
+	all_zero_dims, not numel.
+	* ov.h (octave_value::all_zero_dims): New function.
+
+	* ov-bool-sparse.cc (try_narrowing_conversion): Convert to
+	bool_matrix, not matrix.
+
+	2005-01-13  David Bateman  <dbateman@free.fr>
+
+	* data.cc (make_diag): Use numel not capacity to remove ambiguity.
+	* ov.h (octave_value::capacity): New virtual funtion.
+	* ov-base.h (octave_base_value::capacity): New function calls numel.
+	* data.cc (Freshape): Use arg.numel() rather than arg.dims().numel() 
+	since sparse numel now consistent.
+	* symtab.h (symbol_record::symbol_def::capacity, 
+	symbol_record::capacity): New methods.
+	* symtab.cc (symbol_record::print_symbol_info_line,
+	symbol_table::parse_whos_line_format, symbol_table::maybe_list):
+	used capacity() and not numel() to properly assess size of
+	sparse objects.
+	* ov-base-sparse.h (octave_base_sparse::capacity): New function,
+	(octave_base_sparse::numel): Delete.
+	* ov-re-sparse.cc (octave_sparse_matrix::streamoff_array_value):
+	Only fill from non-zero elements of sparse array.
+	* DLD-FUNCTIONS/splu.cc (Fsplu): Change use of nelem to numel.
+	* ov.cc (do_cat_op): Early return for concatenation with empty
+	objects.
+	
+	2005-01-12  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/find.cc (Ffind): Make it work for character strings.
+
+	2005-01-11  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-double-conv.cc: New conversions for sparse_matrix
+	and sparse_bool_matrix to matrix.
+
+	2005-01-11  David Bateman  <dbateman@free.fr>
+
+	* ov-base-sparse.h (octave_base_sparse::any, 
+	octave_base_sparse::all): Use new constructors, etc as pointed out
+	by JWE.
+
+	2005-01-10  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/sparse.cc (MINMAX_BODY, Fspatan2, make_spdiag):
+	Write retval(0) = result instead of retval(0) = octave_value (result).
+	* DLD-FUNCTIONS/splu.cc (Fsplu): Likewise.
+
+	2005-01-08  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (read_mat5_integer_data): Instantiate for Array<int>
+	(read_mat5_binary_element): Add code to read sparse matrices
+	saved in matlab v5 format
+
+	2005-01-07  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-bm-sbm.cc, OPERATORS/op-b-sbm.cc,
+	OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc,
+	OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc,
+	OPERATORS/op-m-scm.cc, OPERATORS/op-m-sm.cc,
+	OPERATORS/op-sbm-b.cc, OPERATORS/op-sbm-bm.cc,
+	OPERATORS/op-sbm-sbm.cc, OPERATORS/op-scm-cm.cc,
+	OPERATORS/op-scm-cs.cc, OPERATORS/op-scm-m.cc,
+	OPERATORS/op-scm-s.cc, OPERATORS/op-scm-scm.cc, 
+	OPERATORS/op-scm-sm.cc, OPERATORS/op-sm-cm.cc,
+	OPERATORS/op-sm-cs.cc, OPERATORS/op-sm-m.cc,
+	OPERATORS/op-sm-s.cc, OPERATORS/op-sm-scm.cc,
+	OPERATORS/op-sm-sm.cc, OPERATORS/op-s-scm.cc,
+	OPERATORS/op-s-sm.cc: New octave_value constructors allow
+	macros from ops.h to be used rather than sparse-ops.h. Remove
+	other explicit uses of maybe_mutate.
+
+	* sparse-ops.h: delete file.
+
+	* colamd.cc (Fcolamd, Fsymamd, Fetree): Remove no longer needed 
+	use of get_rep() and use the sparse matrix conversion functions
+	directly.
+
+	* data.cc (Freshape): Use arg.dims().numel() rather than 
+	arg.numel() due to definition of numel for sparse matrices.
+	
+	* sparse.cc (Ffull, Fspfind, SPARSE_DIM_ARG_BODY, MINMAX_BODY,
+	Fspatan2, make_spdiag): Convert to use new octave_value sparse
+	constructors, sparse matrix conversion functions and remove
+	maybe_mutate calls.
+	(Fspreshape): Delete
+
+	* splu.cc (Fsplu): Remove remaining explicit octave_value
+	construction.
+	
+	* ov-base-sparse.h (do_index_op, resize, reshape, permute, squeeze):
+	Move these methods from the derived classes.
+	* ov-base-spase.cc (do_index_op): Move this method from the derived
+	classes.
+	* ov-bool-sparse.h (do_index_op, resize, reshape, permute, squeeze):
+	delete.
+	* ov-re-spase.cc (do_index_op): delete.
+	* ov-cx-sparse.h (do_index_op, resize, reshape, permute, squeeze):
+	delete.
+	* ov-cx-spase.cc (do_index_op): delete.
+	* ov-bool-spase.cc (do_index_op): delete.
+	* ov-re-sparse.h (do_index_op, resize, reshape, permute, squeeze):
+	delete.
+
+	* DLD-FUNCTIONS/spdet.cc (Fspdet): Remove use of SparseDet and
+	SparseComplexDET classes and use DET and ComplexDET classes.
+	
+ 	* DLD-FUNCTIONS/colamd.cc op-bm-sbm.cc OPERATORS/op-b-sbm.cc
+	OPERATORS/op-cm-scm.cc OPERATORS/op-cm-sm.cc OPERATORS/op-cs-scm.cc 
+	OPERATORS/op-cs-sm.cc OPERATORS/op-fil-sbm.cc OPERATORS/op-fil-scm.cc
+	OPERATORS/op-fil-sm.cc OPERATORS/op-m-scm.cc OPERATORS/op-m-sm.cc 
+	OPERATORS/op-sbm-b.cc OPERATORS/op-sbm-bm.cc OPERATORS/op-sbm-sbm.cc 
+	OPERATORS/op-scm-cm.cc OPERATORS/op-scm-cs.cc OPERATORS/op-scm-m.cc
+	OPERATORS/op-scm-s.cc OPERATORS/op-scm-scm.cc OPERATORS/op-scm-sm.cc 
+	OPERATORS/op-sm-cm.cc OPERATORS/op-sm-cs.cc OPERATORS/op-sm-m.cc 
+	OPERATORS/op-sm-s.cc OPERATORS/op-sm-scm.cc OPERATORS/op-sm-sm.cc 
+	OPERATORS/op-s-scm.cc OPERATORS/op-s-sm.cc ov-base-sparse.cc 
+	ov-base-sparse.h ov-bool-sparse.cc ov-bool-sparse.h ov-cx-sparse.cc 
+	ov-cx-sparse.h ov-re-sparse.cc ov-re-sparse.h sparse-base-lu.cc 
+	sparse-base-lu.h DLD-FUNCTIONS/sparse.cc sparse-xdiv.cc sparse-xdiv.h
+	sparse-xpow.cc sparse-xpow.h DLD-FUNCTIONS/spdet.cc 
+	DLD-FUNCTIONS/splu.cc DLD-FUNCTIONS/spparms.cc: Remove additional 
+	licensing clause with authors permission.
+	
+	2005-01-05  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/colamd.cc: Rename from colamdoct.cc. Base colamd.h
+	now found in COLAMD/colamd.h.
+	(Fcolamd): Return value is now used.
+	(Fsymamd): ditto.
+	
+	* Makefile.in: include colamd.cc in DLD_XSRC.
+
+	* ov.h (sparse_matrix_value, sparse_complex_matrix_value,
+	sparse_bool_matrix_value): New virtual functions
+
+	* ov-base.cc (octave_base_value::sparse_matrix_value,
+	octave_base_value::sparse_complex_matrix_value,
+	octave_base_value::sparse_bool_matrix_value): New default sparse
+	matrix extraction functions.
+
+	* ov-base.h (sparse_matrix_value, sparse_complex_matrix_value,
+	sparse_bool_matrix_value): Declare them.
+
+	* ov-re-mat.cc (octave_matrix::sparse_matrix_value,
+	octave_matrix::sparse_complex_matrix_value): Conversion functions.
+
+	* ov-re-mat.h (sparse_matrix_value, sparse_complex_matrix_value):
+	Declare them.
+	
+	* ov-cx-mat.cc (octave_complex_matrix::sparse_matrix_value,
+	octave_complex_matrix::sparse_complex_matrix_value): Conversion 
+	functions.
+
+	* ov-cx-mat.h (sparse_matrix_value, sparse_complex_matrix_value):
+	Declare them.
+
+	* ov-bool-mat.h (sparse_matrix_value, sparse_complex_matrix_value,
+	sparse_bool_matrix_value): Conversion functions.
+
+	* DLD_FUNCTIONS/spdet.cc (Fspdet): Use the above constructors
+	and conversion functions.
+	* DLD_FUNCTIONS/splu.cc (Fsplu): ditto.
+	
+	2004-12-30  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/splu.cc (Fsplu): Avoid shadow warnings.
+
+	* sparse-xpow.cc (elem_xpow): Delete unsed variables.
+	* sparse-xdiv.cc (x_el_div): Likewise.
+
+	* DLD-FUNCTIONS/det.cc (Fdet): Delete unused argument nargout.
+	* DLD-FUNCTIONS/spdet.cc (Fspdet): Likewise.
+
+	* DLD-FUNCTIONS/sparse.cc (Fnzmax): Return a value.
+
+	* ov.cc, ov.h (octave_value::octave_value (const SparseMatrix&),
+	(octave_value::octave_value (const SparseBoolMatrix&),
+	(octave_value::octave_value (const SparseComplexMatrix&)):
+	New constructors.
+
+	2004-12-29  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/sparse.cc (SPARSE_DIM_ARG_BODY): Rename from
+	DEFUN_DLD_SPARSE_DIM_ARG.  Omit HELP arg.  Omit DEFUN_DLD, so the
+	macro only defines the function body.
+	(Fspprod, Fspcumprod, Fspsum, Fspcumsum, Fspsumsq): Define with
+	DEFUN_DLD, not DEFUN_DLD_SPARSE_DIM_ARG.  Use SPARSE_DIM_ARG_BODY
+	to define function body.
+
+	* DLD-FUNCTIONS/sparse.cc (load_sparse_type, sparse_type_loaded):
+	Delete function, variable, and all uses.
+	* ov.cc: Include ov-bool-sparse.h, ov-re-sparse.h, ov-cx-sparse.h.
+	(install_types): Register sparse types.
+
+	Merge of sparse code from David Bateman <dbateman@free.fr> and 
+	Andy Adler <adler@site.uottawa.ca>.
+
+	* sparse-xdiv.cc, sparse-xpow.cc: New files.
+	* Makefile.in (DIST_SRC): Add them to the list.
+
+	* sparse-ops.h sparse-xdiv.h, sparse-xpow.h: New files.
+	* Makefile.in (INCLUDES): Add them to the list.
+
+	* DLD-FUNCTIONS/colamdoct.cc, DLD-FUNCTIONS/sparse.cc,
+	DLD-FUNCTIONS/spdet.cc, DLD-FUNCTIONS/splu.cc,
+	DLD-FUNCTIONS/spparms.cc: New files.
+	* Makefile.in (DLD_XSRC): Add them to the list.
+
+	* ov-base-sparse.cc, ov-base-sparse.h, ov-bool-sparse.cc,
+	ov-bool-sparse.h, ov-cx-sparse.cc, ov-cx-sparse.h,
+	ov-re-sparse.cc, ov-re-sparse.h: New files.
+	* Makefile.in (OV_SPARSE_SRC, OV_SPARSE_INCLUDES): New lists.
+	(OV_SRC): Add $(OV_SPARSE_SRC) to the list.
+	(INCLUDES): Add $(OV_SPARSE_INCLUDES) to the list.
+	
+	* OPERATORS/op-bm-sbm.cc, OPERATORS/op-b-sbm.cc,
+	OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc,
+	OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc,
+	OPERATORS/op-fil-sbm.cc, OPERATORS/op-fil-scm.cc,
+	OPERATORS/op-fil-sm.cc, OPERATORS/op-m-scm.cc,
+	OPERATORS/op-m-sm.cc, OPERATORS/op-sbm-b.cc,
+	OPERATORS/op-sbm-bm.cc, OPERATORS/op-sbm-sbm.cc,
+	OPERATORS/op-scm-cm.cc, OPERATORS/op-scm-cs.cc,
+	OPERATORS/op-scm-m.cc, OPERATORS/op-scm-s.cc,
+	OPERATORS/op-scm-scm.cc, OPERATORS/op-scm-sm.cc,
+	OPERATORS/op-sm-cm.cc, OPERATORS/op-sm-cs.cc,
+	OPERATORS/op-sm-m.cc, OPERATORS/op-sm-s.cc,
+	OPERATORS/op-sm-scm.cc, OPERATORS/op-sm-sm.cc,
+	OPERATORS/op-s-scm.cc, OPERATORS/op-s-sm.cc: New files.
+	* Makefile.in (SPARSE_OP_XSRC): New list.
+	(OP_XSRC): Add $(SPARSE_OP_XSRC) to the list.
+
 2005-02-23  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (fold (tree_binary_expression*)): Skip constant folding

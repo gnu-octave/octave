@@ -176,6 +176,9 @@ private:
     int numel (void) const
       { return definition.numel (); };
 
+    int capacity (void) const
+      { return definition.capacity (); };
+
     dim_vector dims (void) const 
       { return definition.dims (); }
 
@@ -379,6 +382,9 @@ public:
 
   int numel (void) const
     { return definition->numel (); };
+
+  int capacity (void) const
+    { return definition->capacity (); };
 
   dim_vector dims (void) const { return definition->dims (); }
 

@@ -31,8 +31,8 @@ DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
 
 SUBDIRS = audio control deprecated elfun finance general image io \
 	linear-algebra miscellaneous plot polynomial quaternion \
-	set signal specfun special-matrix startup statistics \
-	strings time
+	set signal sparse specfun special-matrix startup \
+	statistics strings time
 
 DISTSUBDIRS = $(SUBDIRS)
 

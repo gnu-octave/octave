@@ -17,10 +17,6 @@ along with Octave; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
-In addition to the terms of the GPL, you are permitted to link
-this program with any Open Source program, as defined by the
-Open Source Initiative (www.opensource.org)
-
 */
 
 #if !defined (octave_fcn_inline_h)

@@ -138,6 +138,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Arithmetic::                  
 * Linear Algebra::              
 * Nonlinear Equations::         
+* Sparse Matrices::
 * Quadrature::                  
 * Differential Equations::      
 * Optimization::                
@@ -378,6 +379,16 @@ Linear Algebra
 * Matrix Factorizations::       
 * Functions of a Matrix::       
 
+Sparse Matrices
+
+* Basics::
+* Graph Theory::
+* Sparse Linear Algebra::
+* Iterative Techniques::
+* Oct-Files::
+* License::
+* Function Reference::
+
 Quadrature
 
 * Functions of One Variable::   
@@ -507,6 +518,7 @@ Grammar
 @include arith.texi
 @include linalg.texi
 @include nonlin.texi
+@include sparse.texi
 @include quad.texi
 @include diffeq.texi
 @include optim.texi

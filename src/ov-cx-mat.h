@@ -104,6 +104,10 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const { return matrix; }
 
+  SparseMatrix sparse_matrix_value (bool = false) const;
+
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
+
   void increment (void) { matrix += Complex (1.0); }
 
   void decrement (void) { matrix -= Complex (1.0); }

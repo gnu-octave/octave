@@ -179,6 +179,25 @@ octave_complex_matrix::complex_matrix_value (bool) const
   return matrix.matrix_value ();
 }
 
+SparseMatrix
+octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
+{
+  SparseMatrix retval;
+
+  if (! force_conversion && Vwarn_imag_to_real)
+    gripe_implicit_conversion ("complex matrix", "real matrix");
+
+  retval = SparseMatrix (::real (matrix.matrix_value ()));
+
+  return retval;
+}
+
+SparseComplexMatrix
+octave_complex_matrix::sparse_complex_matrix_value (bool) const
+{
+  return SparseComplexMatrix (matrix.matrix_value ());
+}
+
 static ComplexMatrix
 strip_infnan (const ComplexMatrix& m)
 {

@@ -607,7 +607,7 @@ symbol_record::print_symbol_info_line (std::ostream& os,
 	      break;
 
 	    case 'e':
-	      os << numel ();
+	      os << capacity ();
 	      break;
 
 	    case 'n':
@@ -1345,7 +1345,7 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 			      > static_cast<size_t> (param_length(pos_t)))
 			     ? str.length () : param_length(pos_t));
 
-      elements1 = symbols(i)->numel ();
+      elements1 = symbols(i)->capacity ();
       ss1 << elements1;
       str = ss1.str ();
       param_length(pos_e) = ((str.length ()
@@ -1561,7 +1561,7 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 	  for (int j = 0; j < len; j++)
 	    {
 	      symbols(j)->print_symbol_info_line (os, params);
-	      elements += symbols(j)->numel ();
+	      elements += symbols(j)->capacity ();
 	      bytes += symbols(j)->byte_size ();
 	    }
 

@@ -1,3 +1,42 @@
+2005-02-25  John W. Eaton  <jwe@octave.org>
+
+	Sparse merge.
+
+	2005-01-23  David Bateman  <dbateman@free.fr>
+
+	* sparse/randperm.m: Delete duplicate randperm.m.
+
+	2005-01-10  John W. Eaton  <jwe@octave.org>
+
+	* sparse/Makefile.in: New file.
+	* configure.in (AC_CONFIG_FILES): Add sparse/Makefile to the list.
+
+	2005-01-07  David Bateman  <dbateman@free.fr>
+
+	* set/unique.m: import file from octave-forge.
+
+	2005-01-05  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: include sparse directory in SUBDIRS.
+	
+	2004-12-30  John W. Eaton  <jwe@octave.org>
+
+	* sparse/nzmax.m: Delete (there is an nzmax function in
+	src/DLD-FUNCTIONS/sparse.cc).
+
+	2004-12-28  John W. Eaton  <jwe@octave.org>
+
+	Merge of sparse code from David Bateman <dbateman@free.fr> and 
+	Andy Adler <adler@site.uottawa.ca>.
+
+	* sparse/colperm.m, sparse/nonzeros.m, sparse/nzmax.m,
+	sparse/randperm.m, sparse/spalloc.m, sparse/spconvert.m,
+	sparse/spdiags.m, sparse/speye.m, sparse/spfun.m, sparse/sphcat.m,
+	sparse/spones.m, sparse/sprand.m, sparse/sprandn.m,
+	sparse/spstats.m, sparse/spvcat.m, sparse/spy.m: New files.
+
+	* sparse: New directory.
+
 2005-02-22  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/residue.m: Force prepad to always create row vectors.

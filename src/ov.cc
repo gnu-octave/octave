@@ -38,6 +38,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-cell.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-bool-sparse.h"
+#include "ov-cx-sparse.h"
+#include "ov-re-sparse.h"
 #include "ov-int8.h"
 #include "ov-int16.h"
 #include "ov-int32.h"
@@ -597,6 +600,27 @@ octave_value::octave_value (const ArrayN<char>& chm, bool is_str)
   : rep (is_str
 	 ? new octave_char_matrix_str (chm)
 	 : new octave_char_matrix (chm))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const SparseMatrix& m, const SparseType &t)
+  : rep (new octave_sparse_matrix (m, t))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const SparseComplexMatrix& m, const SparseType &t)
+  : rep (new octave_sparse_complex_matrix (m, t))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const SparseBoolMatrix& bm, const SparseType &t)
+  : rep (new octave_sparse_bool_matrix (bm, t))
 {
   rep->count = 1;
   maybe_mutate ();
@@ -1705,6 +1729,13 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 {
   octave_value retval;
 
+  // Rapid return for concatenation with an empty object. Dimension
+  // checking handled elsewhere.
+  if (v1.all_zero_dims ())
+    return v2;
+  if (v2.all_zero_dims ())
+    return v1;
+
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
 
@@ -2165,6 +2196,9 @@ install_types (void)
   octave_uint16_matrix::register_type ();
   octave_uint32_matrix::register_type ();
   octave_uint64_matrix::register_type ();
+  octave_sparse_bool_matrix::register_type ();
+  octave_sparse_matrix::register_type ();
+  octave_sparse_complex_matrix::register_type ();
   octave_struct::register_type ();
   octave_file::register_type ();
   octave_list::register_type ();

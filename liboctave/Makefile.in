@@ -10,7 +10,7 @@ TOPDIR = ..
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-VPATH = @srcdir@
+VPATH = @srcdir@:@srcdir@/COLAMD
 
 include $(TOPDIR)/Makeconf
 
@@ -21,6 +21,10 @@ INSTALL_DATA = @INSTALL_DATA@
 LINK_DEPS = \
   -L../libcruft -L../glob -L. $(RLD_FLAG) \
   $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) -lglob $(LIBS) $(FLIBS)
+
+include $(srcdir)/COLAMD.files
+
+include $(srcdir)/UMFPACK.files
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-flags.h Array-util.h ArrayN-idx.h MArray-defs.h \
@@ -33,6 +37,9 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	chMatrix.h chNDArray.h dColVector.h dDiagMatrix.h dMatrix.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
 	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
+	boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
+	Sparse.h oct-spparms.h sparse-base-lu.h SparseCmplxLU.h \
+	SparsedbleLU.h Sparse-op-defs.h SparseType.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
 	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \
 	intNDArray.h
@@ -40,6 +47,8 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 MX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_h_files=1 $(srcdir)/mx-ops)
 
 VX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_h_files=1 $(srcdir)/vx-ops)
+
+SPARSE_MX_OP_INC := $(shell $(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx list_h_files=1 $(srcdir)/sparse-mx-ops)
 
 OPTS_INC_DATA := DASPK-opts.in DASRT-opts.in DASSL-opts.in \
 	LSODE-opts.in NLEqn-opts.in ODESSA-opts.in Quad-opts.in
@@ -58,21 +67,24 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	lo-sysdep.h lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-inttypes.h \
 	oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h \
-	oct-shlib.h oct-sort.h oct-syscalls.h oct-time.h pathlen.h \
-	pathsearch.h prog-args.h so-array.h statdefs.h str-vec.h \
-	sun-utils.h sysdir.h systime.h syswait.h \
+	oct-shlib.h oct-sort.h oct-spparms.h oct-syscalls.h \
+	oct-time.h pathlen.h pathsearch.h prog-args.h so-array.h \
+	sparse-sort.h statdefs.h str-vec.h sun-utils.h sysdir.h \
+	systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \
-	$(VX_OP_INC)
+	$(VX_OP_INC) \
+	$(SPARSE_MX_OP_INC)
 
 TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MArrayN.cc MDiagArray2.cc \
-	base-lu.cc oct-sort.cc
+	base-lu.cc oct-sort.cc sparse-base-lu.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	Array-s.cc Array-so.cc Array-str.cc Array-idx-vec.cc \
 	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc \
+	MSparse-C.cc MSparse-d.cc Sparse-C.cc Sparse-b.cc Sparse-d.cc \
 	oct-inttypes.cc
 
 MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
@@ -83,13 +95,17 @@ MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
 	chNDArray.cc dColVector.cc dDiagMatrix.cc dMatrix.cc \
 	dNDArray.cc dRowVector.cc dbleAEPBAL.cc dbleCHOL.cc \
 	dbleDET.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
-	dbleSCHUR.cc dbleSVD.cc \
+	dbleSCHUR.cc dbleSVD.cc boolSparse.cc CSparse.cc dSparse.cc \
+	MSparse.cc Sparse.cc SparseCmplxLU.cc SparsedbleLU.cc \
+	SparseType.cc \
 	int8NDArray.cc uint8NDArray.cc int16NDArray.cc uint16NDArray.cc \
 	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc 
 
 MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_cc_files=1 $(srcdir)/mx-ops)
 
 VX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_cc_files=1 $(srcdir)/vx-ops)
+
+SPARSE_MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx list_cc_files=1 $(srcdir)/sparse-mx-ops)
 
 LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	DASPK.cc DASRT.cc DASSL.cc FEGrid.cc LinConst.cc \
@@ -99,12 +115,14 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	lo-ieee.cc lo-mappers.cc lo-specfun.cc lo-sysdep.cc \
 	lo-utils.cc mach-info.cc oct-alloc.cc oct-env.cc \
 	oct-fftw.cc oct-group.cc oct-passwd.cc oct-rand.cc oct-shlib.cc \
-	oct-syscalls.cc oct-time.cc prog-args.cc so-array.cc str-vec.cc \
+	oct-spparms.cc oct-syscalls.cc oct-time.cc prog-args.cc \
+	so-array.cc sparse-sort.cc str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \
 	$(MX_OP_SRC) \
-	$(VX_OP_SRC)
+	$(VX_OP_SRC) \
+	$(SPARSE_MX_OP_SRC)
 
 LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
 	lo-cieee.c lo-cutils.c mkdir.c oct-getopt.c rename.c \
@@ -135,17 +153,25 @@ EXTRAS := mx-inlines.cc kpse.cc intNDArray.cc
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
 DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
-	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)
+	sparse-mk-ops.awk sparse-mx-ops \
+	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA) \
+	$(COLAMD_EXTRAS) $(UMFPACK_EXTRAS)
+
+# Complete directory trees to distribute.
+DISTDIRS := COLAMD UMFPACK
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = liboctave/liboctave
   BINDISTFILES = liboctave.$(SHLEXT_VER)
 endif
 
-MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
+MAKEDEPS_2 := $(SOURCES) $(COLAMD_SRC)
+MAKEDEPS_1 := $(patsubst %.cc, %.d, $(MAKEDEPS_2))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
 LIBOCTAVE_OBJECTS := \
+	$(COLAMD_OBJ) \
+	$(UMFPACK_OBJ) \
 	$(LIBOCTAVE_CXX_SOURCES:.cc=.o) \
 	$(LIBOCTAVE_C_SOURCES:.c=.o) \
 	$(LIBOCT_READLINE_CXX_SOURCES:.cc=.o) \
@@ -161,10 +187,19 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
+UMFPACK_SPECIAL_1 := CSparse.o dSparse.o SparseCmplxLU.o SparsedbleLU.o
+UMFPACK_SPECIAL := \
+	$(UMFPACK_SPECIAL_1) \
+	$(addprefix pic/, $(UMFPACK_SPECIAL_1)) \
+	$(UMFPACK_SPECIAL_1:.o=.d)
+$(UMFPACK_SPECIAL): INCFLAGS += $(UMFPACK_INCFLAGS)
+
 all: libraries
 .PHONY: all
 
 objects: $(OBJECTS)
+
+include $(srcdir)/UMFPACK.rules
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \
@@ -182,7 +217,9 @@ pic:
 	  mkdir pic; \
 	fi
 
-stamp-prereq: $(OPTS_INC) $(VX_OP_INC) $(VX_OP_SRC) $(MX_OP_INC) $(MX_OP_SRC) mx-ops.h
+stamp-prereq: $(OPTS_INC) $(VX_OP_INC) $(VX_OP_SRC) \
+	$(MX_OP_INC) $(MX_OP_SRC) mx-ops.h \
+	$(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC)
 	touch stamp-prereq
 
 ifeq ($(SHARED_LIBS), true)
@@ -296,6 +333,7 @@ mostlyclean: clean
 distclean: clean
 	rm -f Makefile so_locations stamp-prereq $(OPTS_INC)
 	rm -f mx-ops.h $(MX_OP_INC) $(VX_OP_INC) $(MX_OP_SRC) $(VX_OP_SRC)
+	rm -f $(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC)
 .PHONY: distclean
 
 maintainer-clean: distclean
@@ -304,6 +342,7 @@ maintainer-clean: distclean
 
 dist: stamp-prereq
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
+	for dir in $(DISTDIRS); do ln -s ../../liboctave/$$dir ../`cat ../.fname/liboctave`; done
 .PHONY: dist
 
 bin-dist:
@@ -325,6 +364,9 @@ $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops
 
 $(MX_OP_INC) $(MX_OP_SRC) : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx $(srcdir)/mx-ops
+
+$(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC) : $(srcdir)/sparse-mk-ops.awk sparse-mx-ops
+	$(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx $(srcdir)/sparse-mx-ops
 
 mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t

@@ -107,6 +107,10 @@ public:
   
   NDArray array_value (bool = false) const { return matrix; }
 
+  SparseMatrix sparse_matrix_value (bool = false) const;
+
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
+
   streamoff_array streamoff_array_value (void) const;
 
   void increment (void) { matrix += 1.0; }

@@ -592,10 +592,24 @@ tree_matrix::rvalue (void)
 	  ctmp = octave_value (charNDArray (dv, Vstring_fill_char), true);
       else
 	{
-	  if (all_empty_p)
-	    ctmp = (*(tmp.begin() -> begin()));
-	  else
-	    ctmp = (*(tmp.begin() -> begin())).resize (dim_vector (0,0)).resize (dv);
+	  // Find the first non-empty object
+	  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+	    {
+	      tm_row_const row = *p;
+	      for (tm_row_const::iterator q = row.begin (); 
+		   q != row.end (); q++)
+		{
+		  ctmp = *q;
+		  if (! ctmp.all_zero_dims ())
+		    goto found_non_empty;
+		}
+	    }
+
+	  ctmp = (*(tmp.begin() -> begin()));
+
+	found_non_empty:
+	  if (! all_empty_p)
+	    ctmp = ctmp.resize (dim_vector (0,0)).resize (dv);
 	}
 
       if (error_state)

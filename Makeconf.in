@@ -101,13 +101,21 @@ else
   TMP_IF_1 = -I. -I$(srcdir)
 endif
 ifeq ($(TOPDIR),$(top_srcdir))
-  TMP_IF_2 = -I$(TOPDIR) -I$(TOPDIR)/liboctave -I$(TOPDIR)/src \
-	-I$(TOPDIR)/libcruft/misc
+  TMP_IF_2 = \
+    -I$(TOPDIR) \
+    -I$(TOPDIR)/liboctave \
+    -I$(TOPDIR)/src \
+    -I$(TOPDIR)/libcruft/misc
 else
-  TMP_IF_2 = -I$(TOPDIR) -I$(TOPDIR)/liboctave -I$(TOPDIR)/src \
-	-I$(TOPDIR)/libcruft/misc -I$(top_srcdir) \
-	-I$(top_srcdir)/liboctave -I$(top_srcdir)/src \
-	-I$(top_srcdir)/libcruft/misc
+  TMP_IF_2 = \
+    -I$(TOPDIR) \
+    -I$(TOPDIR)/liboctave \
+    -I$(TOPDIR)/src \
+    -I$(TOPDIR)/libcruft/misc \
+    -I$(top_srcdir) \
+    -I$(top_srcdir)/liboctave \
+    -I$(top_srcdir)/src \
+    -I$(top_srcdir)/libcruft/misc
 endif
 INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS) $(GLOB_INCFLAGS)
 

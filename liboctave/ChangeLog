@@ -1,3 +1,219 @@
+2005-02-25  John W. Eaton  <jwe@octave.org>
+
+	Sparse merge.
+
+	2005-02-13  David Bateman  <dbateman@free.fr>
+
+	* CSparse.cc (SparseComplexMatrix:dsolve, SparseComplexMatrix:utsolve,
+	SparseComplexMatrix::ltsolve, SparseComplexMatrix::trisolve,
+	SparseComplexMatrix::bsolve, SparseComplexMatrix:fsolve): Split sparse
+	solver into separate functions for the diagonal, upper, lower 
+	triangular, tridiagonal, banded and full cases.
+	(SparseComplexMatrix::solve): rewrite to call the above function. One
+	version that probes the matrix type and another that assumes the type
+	is passed.
+
+	* dSparse.cc (SparseMatrix:dsolve, SparseMatrix:utsolve,
+	SparseMatrix::ltsolve, SparseMatrix::trisolve,
+	SparseMatrix::bsolve, SparseMatrix:fsolve): Likewise
+	(SparseMatrix::solve): Likewise
+
+	* CSparse.h (dsolve, utsolve, ltsolve, trisolve, bsolve, fsolve):
+	Declaration of new functions
+	* dSparse.h (dsolve, utsolve, ltsolve, trisolve, bsolve, fsolve):
+	Likewise
+
+	* CSparse.cc (operator !): Reverse the sense of the test.
+	* dSpase.cc (operator !): Likewise
+
+	* dSparse.h (type, band_size, is_dense, triangular_row_perm,
+	triangular_col_perm, sparse_info): Remove matrix type code
+	* CSparse.h (type, band_size, is_dense, triangular_row_perm,
+	triangular_col_perm, sparse_info): Likewise
+	* boolSparse.h (type, band_size, is_dense, triangular_row_perm,
+	triangular_col_perm, sparse_info): Likewise
+	* MSparse.h (type, band_size, is_dense, triangular_row_perm,
+	triangular_col_perm, sparse_info): Likewise
+	* Sparse.h (type, band_size, is_dense, triangular_row_perm,
+	triangular_col_perm, sparse_info, matrix_type): Likewise
+
+	* Sparse.cc (type, sparse_info, band_size): Remove type code
+	
+	* SparseType.h: New class for the matrix type used in solvers
+	* SparseType.cc: methods of sparse matrix type class
+	
+	* Makefile.in: Add SparseType.cc
+
+	2005-02-01  David Bateman  <dbateman@free.fr>
+
+	* UMFPACK: Update to version 4.4
+	* UMFPACK.patch: Version 4.4 contains most of the previous patch. Only
+	keep octave specific test files
+
+	2005-01-23  David Bateman  <dbateman@free.fr>
+
+	* dSparse.cc (SparseMatrix::solve): Include tridiagonal, cholesky
+	tridiagonal and banded cholesky solvers. Remove calculation of
+	condition number for banded solvers.
+	* CSparse.cc (SparseComplexMatrix::solve): ditto.
+
+	* Sparse.h (int type (int) const, bool is_dense (void) const):
+	new functions.
+	* MSparse.h (int type (int) const, bool is_dense (void) const): ditto
+	* dSparse.h (int type (int) const, bool is_dense (void) const): ditto
+	* CSparse.h (int type (int) const, bool is_dense (void) const): ditto
+	* boolSparse.h (int type (int) const, bool is_dense (void) const): 
+	ditto
+
+	* Sparse.cc (int Sparse<T>::type (int) const, 
+	bool Sparse<T>::is_dense (void) const): New functions definition
+	
+	* Sparse.h (matrix_type typ): Move caching of matrix type to SparseRep,
+	so it actually is cached, but disable
+
+	* oct-spparms.cc (SparseParams::init_keys): Change spmoni to spumoni
+	for compatiability
+	
+	2005-01-18  David Bateman  <dbateman@free.fr>
+
+	* Array.cc (Array<T>::insert (const Array<T>&, const Array<int>&)):
+	Modify calculation of number elements to skip between copied blocks.
+
+	2005-01-07  David Bateman  <dbateman@free.fr>
+
+	* Sparse.h : Reverse definitions of numel and nelem.
+	* Sparse.cc (assign1): Use numel and not nelem
+	* Sparse-op-def.h: Replace all uses of nelem with numel
+	
+	2005-01-07  David Bateman  <dbateman@free.fr>
+
+	* dbleDET.h: Make SparseMatrix a friend of the class DET
+	* CmplexDET.h: Make SparseComplexMatrix a friend of the class 
+	ComplexDET
+	* dSparse.cc (SparseMatrix::determinant): Replace use of SparseDET 
+	by DET
+	* dSparse.h (determinant): ditto
+	* CSparse.cc (SparseComplexMatrix::determinant): Replace use of 
+	SparseComplexDET by ComplexDET
+	* CSparse.h (determinant): ditto
+	* SparsedbleDET.h, SparsedbleDET.cc, SparseCmplxDET.h, 
+	SparseCmplxDET.cc: delete files
+	* Makefile.in: Delete reference to SparsedbleDET.h, SparsedbleDET.cc,
+	SparseCmplxDET.h andSparseCmplxDET.cc.
+
+	* CSparse.cc (SparseComplexMatrix::solve): Store matrix type in 
+	local variable to avoid variable shadowing.
+	* dSparse.cc (SparseMatrix::solve): ditto.
+	
+        * boolSparse.cc boolSparse.h CSparse.cc CSparse.h dSparse.cc 
+	dSparse.h MSparse.cc MSparse-C.cc MSparse-d.cc MSparse-defs.h
+   	MSparse.h oct-spparms.cc oct-spparms.h Sparse-b.cc Sparse.cc 
+	Sparse-C.cc SparseCmplxLU.cc SparseCmplxLU.h SparsedbleLU.cc 
+	SparsedbleLU.h Sparse-d.cc Sparse.h Sparse-op-defs.h sparse-sort.cc 
+	sparse-sort.h: Remove additional licensing clause with authors
+	permission.
+	
+	2004-12-30  John W. Eaton  <jwe@octave.org>
+
+	* MSparse.cc (SPARSE_A2S_OP_2, SPARSE_SA2_OP_2):
+	Loop counter is int, not size_t.
+
+	* oct-spparms.cc (SparseParams::operator =): Return *this.
+
+	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Delete unused variable tmpval.
+
+	* dSparse.cc (operator << (ostream&, const SparseMatrix&), atan2):
+	Delete unused variables.
+	(SparseMatrix::solve): Avoid warnings about uninitialized
+	variables and variables that might be clobbered by longjmp.
+
+	* CSparse.cc (operator << (ostream&, const SparseComplexMatrix&),
+	min, max): Delete unused variables.
+	(SparseComplexMatrix::solve): Avoid warnings about uninitialized
+	variables and variables that might be clobbered by longjmp.
+
+	* Makefile.in (UMFPACK_SPECIAL): Include .d files in the list.
+
+	* Sparse-op-defs.h (SPARSE_SMS_BIN_OP_2, SPARSE_SSM_BIN_OP_2):
+	Loop counter is int, not size_t.
+
+	* CSparse.cc (SparseComplexMatrix::hermitian): Avoid shadow warnings.
+	* Sparse.cc (Sparse<T>::Sparse, Sparse<T>::type, assign): Likewise.
+	
+	* Sparse.h (Sparse::SparseRep): Order data members and initializer
+	lists consistently.
+
+	* mx-base.h: Include boolSparse.h, dSparse.h, and CSparse.h.
+
+	2004-12-29  John W. Eaton  <jwe@octave.org>
+
+	* COLAMD.files (COLAMD_EXTRAS): New variable.
+	* UMFPACK.files (UMFPACK_EXTRAS): New variable.
+	* Makefile.in (DISTFILES): Add $(COLAMD_EXTRAS) and
+	$(UMFPACK_EXTRAS) to the list.
+	(DISTDIRS): New variable.
+	(dist): Handle $(DISTDIRS).
+
+	Merge of sparse code from David Bateman <dbateman@free.fr> and 
+	Andy Adler <adler@site.uottawa.ca>.
+
+	* Makefile.in (VPATH): ADD @srcdir@/COLAMD to the list.
+
+	* Makefile.in (MAKEDEPS): Include $(COLAMD_SRC) and $(UMFPACK_SRC)
+	without directory prefix.
+
+	* Makefile.in (LIBOCTAVE_OBJECTS): Add $(COLAMD_OBJ) and
+	$(UMFPACK_OBJ) to the list.
+
+	* COLAMD: New directory.
+	* COLAMD.files: New file.
+	* Makefile.in: Include COLAMD.files.
+	(SOURCES): Add $(COLAMD_SOURCES) to the list.
+	(LIBOCTAVE_OBJECTS): Add $(COLAMD_OBJECTS) to the list.
+	(INCLUDES): Add $(COLAMD_INCLUDES) to the list.
+
+	* UMFPACK: New directory.
+	* UMFPACK.patch, UMFPACK.README, UMFPACK.files, UMFPACK.rules:
+	New files.
+	* Makefile.in: Include UMFPACK.files and UMFPACK.rules.
+	(SOURCES): Add $(UMFPACK_SOURCES) to the list.
+	(LIBOCTAVE_OBJECTS): Add $(UMFPACK_OBJECTS) to the list.
+	(INCLUDES): Add $(UMFPACK_INCLUDES) to the list.
+
+	* Makefile.in (SPARSE_MX_OP_INC): New variable.
+	(INCLUDES): Add it to the list.
+	(SPARSE_MX_OP_SRC): New variable.
+	(LIBOCTAVE_CXX_SOURCES): Add it to the list.
+	(distclean): Remove $(SPARSE_MX_OP_INC) and $(SPARSE_MX_OP_SRC).
+	(stamp-prereq): Depend on $(SPARSE_MX_OP_INC) and $(SPARSE_MX_OP_SRC).
+
+	* sparse-mk-ops.awk, sparse-mx-ops: New files.
+	* Makefile.in (DISTFILES): Add them to the lists.
+
+	* oct-spparms.h, sparse-sort.h: New files.
+	* Makefile.in (INCLUDES): Add them to the list.
+
+	* oct-spparms.cc, sparse-sort.cc: New files.
+	* Makefile.in (LIBOCTAVE_CXX_SOURCES): Add them to the list.
+
+	* sparse-base-lu.cc: New file.
+	* Makefile.in (TEMPLATE_SRC): Add it to the list.
+
+	* boolSparse.cc, CSparse.cc, dSparse.cc, MSparse.cc, Sparse.cc,
+	SparseCmplxDET.cc, SparseCmplxLU.cc, SparsedbleDET.cc,
+	SparsedbleLU.cc: New files.
+	* Makefile.in (MATRIX_SRC): Add them to the list.
+	
+	* boolSparse.h, CSparse.h, dSparse.h, MSparse-defs.h, MSparse.h,
+	Sparse.h, oct-spparms.h, sparse-base-lu.h, SparseCmplxDET.h,
+	SparseCmplxLU.h, SparsedbleDET.h, SparsedbleLU.h,
+	Sparse-op-defs.h: New files.
+	* Makefile.in (MATRIX_INC): Add them to the appropriate lists.
+
+	* MSparse-d.cc, MSparse-C.cc, Sparse-b.cc, Sparse-d.cc,
+	Sparse-C.cc: New files.
+	* Makefile.in (TI_SRC): Add them to the list.
+
 2005-02-18  John W. Eaton  <jwe@octave.org>
 
 	* file-ops.cc (file_ops::canonicalize_file_name) [HAVE_RESOLVEPATH]:

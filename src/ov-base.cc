@@ -413,6 +413,30 @@ octave_base_value::char_array_value (bool) const
   return retval;
 }
 
+SparseMatrix
+octave_base_value::sparse_matrix_value (bool) const
+{
+  SparseMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::sparse_matrix_value()", type_name ());
+  return retval;
+}
+
+SparseComplexMatrix
+octave_base_value::sparse_complex_matrix_value (bool) const
+{
+  SparseComplexMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::sparse_complex_matrix_value()", type_name ());
+  return retval;
+}
+
+SparseBoolMatrix
+octave_base_value::sparse_bool_matrix_value (bool) const
+{
+  SparseBoolMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::sparse_bool_matrix_value()", type_name ());
+  return retval;
+}
+
 octave_int8
 octave_base_value::int8_scalar_value (void) const
 {

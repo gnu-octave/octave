@@ -42,13 +42,14 @@ endif
 OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc ODESSA-opts.cc Quad-opts.cc
 
-DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc \
-	daspk.cc dasrt.cc dassl.cc det.cc eig.cc expm.cc fft.cc fft2.cc \
-	fftn.cc fftw_wisdom.cc filter.cc find.cc fsolve.cc gammainc.cc \
-	gcd.cc getgrent.cc getpwent.cc getrusage.cc givens.cc hess.cc \
-	inv.cc kron.cc lpsolve.cc lsode.cc lu.cc minmax.cc \
-	odessa.cc pinv.cc qr.cc quad.cc qz.cc rand.cc schur.cc \
-	sort.cc sqrtm.cc svd.cc syl.cc time.cc gplot.l
+DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colamd.cc \
+	colloc.cc daspk.cc dasrt.cc dassl.cc det.cc dispatch.cc \
+	eig.cc expm.cc fft.cc fft2.cc fftn.cc fftw_wisdom.cc \
+	filter.cc find.cc fsolve.cc gammainc.cc gcd.cc getgrent.cc \
+	getpwent.cc getrusage.cc givens.cc hess.cc inv.cc kron.cc \
+	lpsolve.cc lsode.cc lu.cc minmax.cc odessa.cc pinv.cc qr.cc \
+	quad.cc qz.cc rand.cc schur.cc sort.cc sparse.cc spdet.cc \
+	splu.cc spparms.cc sqrtm.cc svd.cc syl.cc time.cc gplot.l
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
@@ -79,6 +80,9 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-typeinfo.h ov-type-conv.h \
 	$(OV_INTTYPE_INC)
 
+OV_SPARSE_INCLUDES := \
+	ov-base-sparse.h ov-bool-sparse.h ov-cx-sparse.h ov-re-sparse.h
+
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
 	pt-decl.h pt-except.h pt-exp.h pt-fcn-handle.h pt-id.h pt-idx.h \
@@ -94,8 +98,12 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h \
 	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h \
 	parse.h pr-output.h procstream.h sighandlers.h siglist.h \
-	symtab.h sysdep.h token.h toplev.h unwind-prot.h utils.h \
-	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
+	sparse-ops.h sparse-xdiv.h sparse-xpow.h symtab.h sysdep.h \
+	token.h toplev.h unwind-prot.h utils.h variables.h version.h \
+	xdiv.h xpow.h \
+	$(OV_INCLUDES) \
+	$(PT_INCLUDES) \
+	$(OV_SPARSE_INCLUDES)
 
 TI_XSRC := Array-os.cc Array-sym.cc Array-tc.cc
 
@@ -104,6 +112,14 @@ TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 INTTYPE_OP_XSRC := op-int-concat.cc op-int-conv.cc op-double-conv.cc \
 	op-i8-i8.cc op-i16-i16.cc op-i32-i32.cc op-i64-i64.cc \
 	op-ui8-ui8.cc op-ui16-ui16.cc op-ui32-ui32.cc op-ui64-ui64.cc
+
+SPARSE_OP_XSRC := op-bm-sbm.cc op-b-sbm.cc op-cm-scm.cc op-cm-sm.cc \
+	op-cs-scm.cc op-cs-sm.cc op-fil-sbm.cc op-fil-scm.cc \
+	op-fil-sm.cc op-m-scm.cc op-m-sm.cc op-sbm-b.cc op-sbm-bm.cc \
+	op-sbm-sbm.cc op-scm-cm.cc op-scm-cs.cc op-scm-m.cc \
+	op-scm-s.cc op-scm-scm.cc op-scm-sm.cc op-sm-cm.cc \
+	op-sm-cs.cc op-sm-m.cc op-sm-s.cc op-sm-scm.cc op-sm-sm.cc \
+	op-s-scm.cc op-s-sm.cc
 
 OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 	op-cell.cc op-chm.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
@@ -114,7 +130,8 @@ OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
 	op-s-cs.cc op-s-m.cc op-s-s.cc op-str-m.cc \
 	op-str-s.cc op-str-str.cc op-streamoff.cc op-struct.cc \
-	$(INTTYPE_OP_XSRC)
+	$(INTTYPE_OP_XSRC) \
+	$(SPARSE_OP_XSRC)
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
 
@@ -124,6 +141,9 @@ OV_INTTYPE_SRC := \
 	ov-int8.cc ov-int16.cc ov-int32.cc ov-int64.cc \
 	ov-uint8.cc ov-uint16.cc ov-uint32.cc ov-uint64.cc
 
+OV_SPARSE_SRC := \
+	ov-base-sparse.cc ov-bool-sparse.cc ov-cx-sparse.cc ov-re-sparse.cc
+
 OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-cs-list.cc ov-list.cc ov-re-mat.cc ov-cx-mat.cc \
 	ov-range.cc ov-scalar.cc ov-complex.cc ov-str-mat.cc \
@@ -131,7 +151,8 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
 	ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc ov-typeinfo.cc \
-	$(OV_INTTYPE_SRC)
+	$(OV_INTTYPE_SRC) \
+	$(OV_SPARSE_SRC)
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 	pt-cell.cc pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc \
@@ -149,9 +170,10 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stdstrm.cc \
 	oct-stream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
-	siglist.c strcasecmp.c strncase.c strfns.cc symtab.cc \
-	syscalls.cc sysdep.cc token.cc toplev.cc \
-	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
+	siglist.c sparse-xdiv.cc sparse-xpow.cc strcasecmp.c \
+	strncase.c strfns.cc symtab.cc syscalls.cc sysdep.cc \
+	token.cc toplev.cc unwind-prot.cc utils.cc variables.cc \
+	xdiv.cc xpow.cc \
 	$(OV_SRC) \
 	$(PT_SRC)
 

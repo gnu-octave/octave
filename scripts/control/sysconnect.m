@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*- 
 ## @deftypefn {Function File } {@var{retsys} =} sysconnect (@var{sys}, @var{out_idx},@var{in_idx}@{,@var{order}, @var{tol}@})
@@ -64,8 +64,9 @@
 ## @end deftypefn
 
 function sys = sysconnect(sys,output_list,input_list,order,tol)
-# A. S. Hodel August 1995
-# modified by John Ingram July 1996
+
+  ## A. S. Hodel August 1995
+  ## modified by John Ingram July 1996
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -74,7 +75,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
     usage("retsys = sysconnect(sys,output_list,input_list[,order,tol])");
   endif
 
-  # check order
+  ## check order
   if(nargin <= 3)
     order = 0;
   elseif( (order != 0) & (order != 1) )
@@ -90,7 +91,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
 	", eps=",num2str(eps)])
   endif
 
-  # verify sizes,format of input, output lists
+  ## verify sizes,format of input, output lists
   if( min(size(output_list))*min(size(input_list)) != 1)
     error("output_list and input_list must be vectors");
   else
@@ -118,7 +119,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
 	num2str(mm),"system inputs"])
   endif
 
-  # check that there are enough inputs/outputs in the system for the lists
+  ## check that there are enough inputs/outputs in the system for the lists
   if(max(input_list) > mm) 
     error("max(input_list) exceeds the number of inputs");
   elseif(max(output_list) > pp)
@@ -127,10 +128,10 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
 
   output_list = reshape(output_list,1,length(output_list));
 
-  # make sure we're in state space form
+  ## make sure we're in state space form
   sys = sysupdate(sys,'ss');
 
-  # permute rows and columns of B,C,D matrices into pseudo-dgkf form...
+  ## permute rows and columns of B,C,D matrices into pseudo-dgkf form...
   all_inputs = sysreorder(mm,input_list);
   all_outputs = sysreorder(pp,output_list);
 
@@ -142,16 +143,16 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   yd = sysgetsignals(sys,"yd");
   yd = yd(all_outputs);
 
-  # m1, p1 = number of inputs, outputs that are not being connected
+  ## m1, p1 = number of inputs, outputs that are not being connected
   m1 = mm-li;
   p1 = pp-li;
 
-  # m2, p2: 1st column, row of B, C that is being connected
+  ## m2, p2: 1st column, row of B, C that is being connected
   m2 = m1+1;
   p2 = p1+1;
 
-  # partition system into a DGKF-like form; the loop is closed around
-  # B2, C2
+  ## partition system into a DGKF-like form; the loop is closed around
+  ## B2, C2
   if(m1 > 0)
     B1 = bb(:,1:m1);
     D21= dd(p2:pp,1:m1);
@@ -184,13 +185,13 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
 
   endif
 
-  # check cont state -> disc output -> cont state
+  ## check cont state -> disc output -> cont state
   dyi = find(yd(p2:pp));
 
-  #disp("sysconnect: dyi=")
-  #dyi
-  #nc
-  #disp("/sysconnect");
+  ## disp("sysconnect: dyi=")
+  ## dyi
+  ## nc
+  ## disp("/sysconnect");
 
   if( (nc > 0) & find(dyi > 0) )
     B2con = B2(1:nc,dyi);	# connection to cont states
@@ -219,7 +220,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
     D12c = D12*(eye(size(D22h))+D22h);
   endif
 
-  # construct system data structure
+  ## construct system data structure
   if(m1 > 0)
    Bc = [B1c, B2c];
   else
@@ -242,7 +243,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
     Dc = D22h;
   endif 
 
-  # permute rows and columns of Bc, Cc, Dc back into original order
+  ## permute rows and columns of Bc, Cc, Dc back into original order
   Im = eye(mm,mm);
   Pi = Im(:,all_inputs);
   back_inputs = Pi*[1:mm]';
@@ -256,19 +257,19 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   Dc = Dc(back_outputs,back_inputs);
   yd = yd(back_outputs);
 
-  # rebuild system
+  ## rebuild system
   Ts = sysgettsam(sys);
   [stnam,innam,outnam] = sysgetsignals(sys);
   sys = ss2sys(Ac,Bc,Cc,Dc,Ts,nc,nz,stnam,innam,outnam,find(yd));
 
-  # update connected input names
+  ## update connected input names
   for ii = 1:length(input_list)
     idx = input_list(ii);
     strval = sprintf("%s*",nth(sysgetsignals(sys,"in",idx),1) );
     sys = syssetsignals(sys,"in",strval,idx);
   endfor
   
-  # maintain original system type if it was SISO
+  ## maintain original system type if it was SISO
   if    (strcmp(sysgettype(sys),"tf") )       sysupdate(sys,'tf');
   elseif(strcmp(sysgettype(sys),"zp") )       sysupdate(sys,'zp');
   endif

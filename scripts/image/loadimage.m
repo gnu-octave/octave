@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{map}] =} loadimage (@var{file})
 ## Load an image file and it's associated color map from the specified
 ## @var{file}.  The image must be stored in Octave's image format.

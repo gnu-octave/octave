@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { outputs =} sortcom ( inputs ) 
@@ -36,7 +36,8 @@
 ## @end deftypefn
 
 function [yy,idx] = sortcom(xx,opt)
-# Written by A. S. Hodel June 1995
+
+  ## Written by A. S. Hodel June 1995
 
   if( nargin < 1 | nargin > 2 )
      usage("yy = sortcom(xx[,opt]");
@@ -64,12 +65,12 @@ function [yy,idx] = sortcom(xx,opt)
     yy= xx(idx);
     
     if(strcmp(opt,"re") | strcmp(opt,"mag"))
-      # sort so that complex conjugate pairs appear together
+      ## sort so that complex conjugate pairs appear together
       
       ddiff = diff(datavec);
       zidx = find(ddiff == 0);
   
-      # sort common datavec values
+      ## sort common datavec values
       if(!isempty(zidx))
         for iv=create_set(datavec(zidx))
           vidx = find(datavec == iv);

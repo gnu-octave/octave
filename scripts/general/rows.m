@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} rows (@var{a})
 ## Return the number of rows of @var{a}.
 ## @end deftypefn

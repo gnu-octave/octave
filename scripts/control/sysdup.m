@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{retsys} =} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
@@ -52,8 +52,9 @@
 ## @end deftypefn
 
 function retsys = sysdup(Asys,output_list,input_list)
-# A. S. Hodel August 1995
-# modified by John Ingram July 1996
+
+  ## A. S. Hodel August 1995
+  ## modified by John Ingram July 1996
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -70,7 +71,7 @@ function retsys = sysdup(Asys,output_list,input_list)
   [nn,nz,mm,pp] = sysdimensions(Asys);
   [aa,bb,cc,dd] = sys2ss(Asys);
 
-  # first duplicate inputs
+  ## first duplicate inputs
   if(is_vector(input_list))
     for ii=1:length(input_list);
       bb(:,mm+ii) = bb(:,input_list(ii));
@@ -81,7 +82,7 @@ function retsys = sysdup(Asys,output_list,input_list)
   endif
 
 
-  # now duplicate outputs
+  ## now duplicate outputs
   osize = min(size(output_list));
   if(osize == 1)
     for ii=1:length(output_list);
@@ -95,21 +96,21 @@ function retsys = sysdup(Asys,output_list,input_list)
   [stnam,innam,outnam,yd] = sysgetsignals(Asys);
   tsam = sysgettsam(Asys);
 
-  # pack system and then rename signals
+  ## pack system and then rename signals
   retsys = ss2sys(aa,bb,cc,dd,tsam,nn,nz);
   retsys = syssetsignals(retsys,"in",innam,1:mm);
   retsys = syssetsignals(retsys,"out",outnam,1:pp);
   retsys = syssetsignals(retsys,"yd",yd,1:pp);
 
-  # update added input names
+  ## update added input names
   for ii=(mm+1):(mm+length(input_list))
     onum = input_list(ii-mm);
     strval = sprintf("%s(dup)",sysgetsignals(retsys,"in",onum,1) );
     retsys = syssetsignals(retsys,"in",strval,ii);
   endfor
 
-  # update added output names/discrete flags
-  # give default names to the added outputs
+  ## update added output names/discrete flags
+  ## give default names to the added outputs
   for jj=(pp+1):(pp+length(output_list))
     onum = output_list(jj-pp);
     strval = sprintf("%s(dup)",sysgetsignals(retsys,"out",onum,1) );

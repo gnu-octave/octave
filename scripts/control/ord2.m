@@ -1,20 +1,20 @@
-# Copyright (C) 1997 Kai P. Mueller
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1997 Kai P. Mueller
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{outsys} =} ord2 (@var{nfreq}, @var{damp}@{[, @var{gain}@})
@@ -43,8 +43,9 @@
 ## See also: jet707 (MIMO example, Boeing 707-321 aircraft model)
 
 function outsys = ord2(nfreq, damp, gain)
-  # Written by Kai P. Mueller September 28, 1997
-  # Updates
+
+  ## Written by Kai P. Mueller September 28, 1997
+  ## Updates
 
   if(nargin != 2 & nargin != 3)
     usage("outsys = ord2(nfreq, damp[, gain])")

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn(@var{Asys}, @var{nu}, @var{ny}, @var{tol})
@@ -59,7 +59,8 @@
 ## @end deftypefn
  
 function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
-  # Updated for System structure December 1996 by John Ingram
+
+  ## Updated for System structure December 1996 by John Ingram
 
   if ((nargin < 3) | (nargin > 4))
     usage("[K,gain, Kc, Kf, Pc, Pf] = h2syn(Asys,nu,ny[,tol])");
@@ -75,7 +76,7 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
     error("h2syn: exit");
   endif
 
-  # extract dgs information
+  ## extract dgs information
   			nw = dgs.nw; 	nu = dgs.nu;
   A = dgs.A;            Bw = dgs.Bw;    Bu = dgs.Bu;
   Cz = dgs.Cz;          Dzw = dgs.Dzw;  Dzu = dgs.Dzu;	nz = dgs.nz;
@@ -89,7 +90,7 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
     D = [Dzw, Dzu ; Dyw, Dyu]
   endif
 
-  # recover i/o transformations
+  ## recover i/o transformations
   Ru = dgs.Ru;         Ry = dgs.Ry;
   [ncstates, ndstates, nout, nin] = sysdimensions(Asys);
   Atsam = sysgettsam(Asys);
@@ -107,7 +108,7 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
     BwL2 = Bw+L2*(Ry\Dyw);
 
   else
-    # discrete time solution
+    ## discrete time solution
     error("h2syn: discrete-time case not yet implemented")
     Pc = dare(A,Bu*Bu',Cz'*Cz);
     Pf = dare(A',Cy'*Cy,Bw*Bw');
@@ -122,7 +123,7 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
   g1 = h2norm(Kc1);
   g2 = h2norm(Kf1);
   
-  # compute optimal closed loop gain
+  ## compute optimal closed loop gain
   gain = sqrt ( g1*g1 + g2*g2 );
 
   if(nargout)
@@ -130,18 +131,18 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
     Kin = strappend(Aout((nout-ny+1):(nout)),"_K");
     Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
 
-    # compute systems for return
+    ## compute systems for return
     K = ss2sys(KA,-L2/Ru,Ry\F2,zeros(nu,ny),Atsam,ncstates,ndstates,Kst,Kin,Kout);
   endif
 
   if (nargout > 2)
-    #system full information control state names
+    ## system full information control state names
     stname2 = strappend(Ast,"_FI");
 
-   #system full information control input names
+   ## system full information control input names
    inname2 = strappend(Ast,"_FI_in");
  
-    #system full information control output names
+    ## system full information control output names
     outname2 = strappend(Aout(1:(nout-ny)),"_FI_out");
 
     nz = rows (Cz);
@@ -152,13 +153,13 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
   endif
 
   if (nargout >3)
-    #fix system state estimator state names
+    ## fix system state estimator state names
     stname3 = strappend(Ast,"_Kf");
 
-    #fix system state estimator input names
+    ## fix system state estimator input names
     inname3 = strappend(Ast,"_Kf_noise");
 
-    #fix system state estimator output names
+    ## fix system state estimator output names
     outname3 = strappend(Ast,"_est");
 
     Kf = ss2sys(AL2, BwL2, In, zeros(nn,nw),Atsam,  ...

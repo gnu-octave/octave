@@ -1,20 +1,20 @@
-# Copyright (C) 1993, 1994, 1995 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1993, 1994, 1995 John W. Eaton
+## 
+## This file is part of Octave.
+## 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{dsys} =} c2d (@var{sys}@{, @var{opt}, @var{T}@})
@@ -67,14 +67,15 @@
 ## @end deftypefn
 
 function dsys = c2d (sys, opt, T)
-# Written by R.B. Tenison (btenison@eng.auburn.edu)
-# October 1993
-# Updated by John Ingram for system data structure August 1996
+
+  ## Written by R.B. Tenison (btenison@eng.auburn.edu)
+  ## October 1993
+  ## Updated by John Ingram for system data structure August 1996
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
 
-# parse input arguments
+  ## parse input arguments
   if(nargin < 1 | nargin > 3)
     usage("dsys=c2d(sys[,T])");
   elseif (!is_struct(sys))
@@ -86,7 +87,7 @@ function dsys = c2d (sys, opt, T)
     opt = "ex";
   endif
 
-  # check if sampling period T was passed.
+  ## check if sampling period T was passed.
   Ts = sysgettsam(sys);
   if(!exist("T"))
     T = Ts;
@@ -112,7 +113,7 @@ function dsys = c2d (sys, opt, T)
     warning("c2d: sys has no continuous states; setting outputs to discrete");
     dsys = syssetsignals(sys,"yd",ones(1:p));
   elseif(strcmp(opt,"ex"))
-    # construct new state-space (a,b,c,d) for continuous subsystem
+    ## construct new state-space (a,b,c,d) for continuous subsystem
     [csys,Acd] = syscont(sys);   	# extract continuous subsystem
     [csys_a, csys_b, csys_c, csys_d] = sys2ss(csys);
     [ sys_a,  sys_b,  sys_c,  sys_d] = sys2ss( sys);
@@ -142,7 +143,7 @@ function dsys = c2d (sys, opt, T)
     [stnames,innames,outnames] = sysgetsignals(csys);
     dsys = ss2sys(Abar,Bbar,csysc,csysd,T,0,newnz,stnames,innames, ...
 	outnames,outlist);
-    # rename states
+    ## rename states
     for ii=1:newnz
       strval = sprintf("%s_d",sysgetsignals(dsys,"st",ii,1));
       dsys = syssetsignals(dsys,"st",strval,ii);
@@ -152,7 +153,7 @@ function dsys = c2d (sys, opt, T)
     if(is_digital(sys))
       error("c2d: system is already digital")
     else
-      # convert with bilinear transform
+      ## convert with bilinear transform
       [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys);
       IT = (2/T)*eye(size(a));
       A = (IT+a)/(IT-a);

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{retsys} =} syssetsignals (@var{sys}, @var{opt}, @var{names}@{, @var{sig_idx}@})
@@ -87,7 +87,8 @@
 ## @end deftypefn
 
 function retsys = syssetsignals(sys,opt,names,sig_idx)
-# Written by John Ingram August 1996
+
+  ## Written by John Ingram August 1996
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -113,11 +114,11 @@ function retsys = syssetsignals(sys,opt,names,sig_idx)
 
   sig_vals = sysgetsignals(sys,opt);
 
-  # make sure it's in state space form if state names are given
+  ## make sure it's in state space form if state names are given
   if(strcmp(opt,"st"))    sys = sysupdate(sys,"ss");    endif
 
   if(strcmp(opt,"yd") == 0)
-    # it's a signal name list we're changing
+    ## it's a signal name list we're changing
     if(!is_list(names))
       names = list(names);
     endif
@@ -136,14 +137,14 @@ function retsys = syssetsignals(sys,opt,names,sig_idx)
     nsigs = length(sig_vals);
 
     if(nargin == 3)
-      # replace all signal names
+      ## replace all signal names
       if(length(names) != nsigs)
         error("opt=%s, sig_idx omitted: names(len=%d) should have %d entries ", ...
           opt,length(names),nsigs);
       endif
       sig_idx = 1:nsigs;
     elseif(length(names) != length(sig_idx))
-      # replace specified signal names
+      ## replace specified signal names
       error("opt=%s, sig_idx(len=%d), names(len=%d) mismatch",opt, ...
         length(sig_idx), length(names));
     endif
@@ -158,8 +159,8 @@ function retsys = syssetsignals(sys,opt,names,sig_idx)
     endfor
 
   else
-    # update yd
-    # 1st check pathological case: no outputs
+    ## update yd
+    ## 1st check pathological case: no outputs
     nout = sysdimensions(sys,"out");
     if(nout == 0)
       if(nargin != 3)

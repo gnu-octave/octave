@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{csys} =} d2c (@var{sys}@{,@var{tol}@})
@@ -57,9 +57,10 @@
 
  
 function csys = d2c(sys,opt)
-# Written by R. Bruce Tenison August 23, 1994
-# Updated by John Ingram for system data structure  August 1996
-# SYS_INTERNAL accesses members of system data structure
+
+  ## Written by R. Bruce Tenison August 23, 1994
+  ## Updated by John Ingram for system data structure  August 1996
+  ## SYS_INTERNAL accesses members of system data structure
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -88,8 +89,8 @@ function csys = d2c(sys,opt)
   T = sysgettsam(sys);
 
   if(strcmp(opt,"bi"))
-    # bilinear transform
-    # convert with bilinear transform
+    ## bilinear transform
+    ## convert with bilinear transform
     if (! is_digital(sys) )
        error("d2c requires a discrete time system for input")
     endif
@@ -146,8 +147,8 @@ function csys = d2c(sys,opt)
       Mtop = logmat(1:na,:);
     endif
   
-    # perform simplistic, stupid optimization approach.
-    # should re-write with a Davidson-Fletcher CG approach
+    ## perform simplistic, stupid optimization approach.
+    ## should re-write with a Davidson-Fletcher CG approach
     mxthresh = norm(Mtop);
     if(mxthresh == 0)
       mxthresh = 1;
@@ -157,7 +158,7 @@ function csys = d2c(sys,opt)
     newgrad=1;	#signal for new gradient
     while( (eps1/mxthresh > tol) & cnt)
       cnt = cnt-1;
-      # calculate the gradient of error with respect to Amat...
+      ## calculate the gradient of error with respect to Amat...
       geps = norm(Mtop)*1e-8;
       if(geps == 0)
         geps = 1e-8;
@@ -185,7 +186,7 @@ function csys = d2c(sys,opt)
         newgrad = 0;
       endif
   
-      #got a gradient, now try to use it
+      ## got a gradient, now try to use it
       DMall = Mall-eps1*GrMall;
   
       FMall = expm(Mall*T);
@@ -213,7 +214,7 @@ function csys = d2c(sys,opt)
     endif
     csys = ss2sys(aa,bb,cc,dd,0,na,0,stnam,innam,outnam);
     
-    # update names
+    ## update names
     nn = sysdimensions(sys);
     for ii = (nn+1):na
       strval = sprintf("%s_c",sysgetsignals(csys,"st",ii,1));

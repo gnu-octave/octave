@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## -*texinfo -*-
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} printf (@var{template}, @dots{})
 ## The @code{printf} function prints the optional arguments under the
 ## control of the template string @var{template} to the stream

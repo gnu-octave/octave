@@ -1,39 +1,40 @@
-# Copyright (C) 1996 Auburn University. All rights reserved.
-#
-# This file is part of Octave.
-#
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-#
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
-#
-# Written by A. S. Hodel a.s.hodel@eng.auburn.edu
+## Copyright (C) 1996 Auburn University. All rights reserved.
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+##
+## Written by A. S. Hodel a.s.hodel@eng.auburn.edu
 
 function [retsys,nc,no,cflg,oflg] = sysmin(sys,flg);
-  # [retsys,nc,no] = sysmin(sys{,flg});
-  # return a minimal (or reduced order) system
-  # inputs:
-  #   sys: system data structure
-  #   flg: 0 [default] return minimal system; state names lost
-  #      : 1           return system with physical states removed that
-  #                    are either uncontrollable or unobservable
-  #                    (cannot reduce further without discarding physical
-  #                    meaning of states)
-  # outputs:
-  #   retsys: returned system
-  #   nc: number of controllable states in the returned system
-  #   no: number of observable states in the returned system
-  #   cflg: is_controllable(retsys)
-  #   oflg: is_observable(retsys)
+
+  ## [retsys,nc,no] = sysmin(sys{,flg});
+  ## return a minimal (or reduced order) system
+  ## inputs:
+  ##   sys: system data structure
+  ##   flg: 0 [default] return minimal system; state names lost
+  ##      : 1           return system with physical states removed that
+  ##                    are either uncontrollable or unobservable
+  ##                    (cannot reduce further without discarding physical
+  ##                    meaning of states)
+  ## outputs:
+  ##   retsys: returned system
+  ##   nc: number of controllable states in the returned system
+  ##   no: number of observable states in the returned system
+  ##   cflg: is_controllable(retsys)
+  ##   oflg: is_observable(retsys)
   
   switch(nargin)
   case(1), flg = 0;
@@ -45,11 +46,11 @@ function [retsys,nc,no,cflg,oflg] = sysmin(sys,flg);
   Ts = sysgettsam(sys);
   switch(flg)
   case(0),
-    # reduce to a minimal system
+    ## reduce to a minimal system
     [aa,bb,cc,dd] = sys2ss(sys);
     [cflg,Uc] = is_controllable(aa,bb); 
     if(!cflg)
-      # reduce to controllable states
+      ## reduce to controllable states
       if(!isempty(Uc))
         aa = Uc'*aa*Uc;
         bb = Uc'*bb;
@@ -82,7 +83,7 @@ function [retsys,nc,no,cflg,oflg] = sysmin(sys,flg);
     outname= sysgetsignals(sys,"out");
     retsys = ss2sys(aa,bb,cc,dd,Ts,nn,nz,[],inname,outname);
   case(1),
-    # reduced model with physical states
+    ## reduced model with physical states
     [cflg,Uc] = is_controllable(sys); xc = find(max(abs(Uc')) != 0);
     [oflg,Uo] = is_observable(sys);   xo = find(max(abs(Uo')) != 0);
     xx = intersection(xc,xo);

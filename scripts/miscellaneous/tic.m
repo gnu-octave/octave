@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} tic ()
 ## @deftypefnx {Function File} {} toc ()
 ## These functions set and check a wall-clock timer.  For example,

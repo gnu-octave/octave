@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {x =} zgfslv(@var{n},@var{m},@var{p},@var{b})
@@ -22,8 +22,8 @@
 ## @end deftypefn
  
 function x = zgfslv(n,m,p,b)
-  # Written by A. Scotte Hodel
-  # Converted to Octave by R Bruce Tenison, July 3, 1994
+  ## Written by A. Scotte Hodel
+  ## Converted to Octave by R Bruce Tenison, July 3, 1994
 
   nmp = n+m+p;
   gam1 = (2*n)+m+p;    gam2 = n+p;     gam3 = n+m;
@@ -33,20 +33,20 @@ function x = zgfslv(n,m,p,b)
 
   x = b;
 
-  # 1) U1 e^n = sqrt(n)e_1^n
-  # 2) U2 e^m = sqrt(m)e_1^m
-  # 3) U3 e^p = sqrt(p)e_1^p
+  ## 1) U1 e^n = sqrt(n)e_1^n
+  ## 2) U2 e^m = sqrt(m)e_1^m
+  ## 3) U3 e^p = sqrt(p)e_1^p
   xdx1 = 1:n; xdx2 = n+(1:m); xdx3 = n+m+(1:p);
   x(xdx1,1) = zgshsr(x(xdx1,1));
   x(xdx2,1) = zgshsr(x(xdx2,1));
   x(xdx3,1) = zgshsr(x(xdx3,1));
 
-  # 4) Givens rotations to reduce stray non-zero elements
+  ## 4) Givens rotations to reduce stray non-zero elements
   idx1 = [n+1,n+m+1];     idx2 = [1,n+1];
   x(idx1) = G1'*x(idx1);
   x(idx2) = G2'*x(idx2);
 
-  # 6) Scale x, then back-transform to get x
+  ## 6) Scale x, then back-transform to get x
   en = ones(n,1);  em = ones(m,1);   ep = ones(p,1);
   lam = [gam1*en;gam2*em;gam3*ep]; 
   lam(1) = n+m+p; 
@@ -55,7 +55,7 @@ function x = zgfslv(n,m,p,b)
 
   x = x ./ lam;       x(n+1) = 0;  # minimum norm solution
 
-  # back transform now.
+  ## back transform now.
   x(idx2) = G2*x(idx2);
   x(idx1) = G1*x(idx1);
   x(xdx3,1) = zgshsr(x(xdx3,1));

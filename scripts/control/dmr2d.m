@@ -1,20 +1,20 @@
-# Copyright (C) 1998 Auburn University.  All Rights Reserved
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1998 Auburn University.  All Rights Reserved
+## 
+## This file is part of Octave.
+## 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{Ts2} @{,@var{cuflg}@})
@@ -71,12 +71,13 @@
 ## @end deftypefn
 
 function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
-# Adapted from c2d by a.s.hodel@eng.auburn.edu
+
+  ## Adapted from c2d by a.s.hodel@eng.auburn.edu
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
 
-  # parse input arguments
+  ## parse input arguments
   if(nargin != 4 | nargout > 2)
     usage("[dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2 {,cuflg})");
 
@@ -104,7 +105,7 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
 
   endif
 
-  # optional argument: cuflg
+  ## optional argument: cuflg
   if(nargin <= 4)
     cuflg = 1;		# default: constant inputs over Ts2 sampling interv.
   elseif( !is_scalar(cuflg) )
@@ -113,10 +114,10 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     error(["cuflg = ",num2str(cuflg),", should be 0 or 1"]);
   endif
 
-  # extract  state space information
+  ## extract  state space information
   [da,db,dc,dd,Ts1,nc,nz,stname,inname,outname,yd] = sys2ss(sys);
 
-  # compute number of steps
+  ## compute number of steps
   if(Ts1 > Ts2)
     error(["Current sampling time=",num2str(Ts1),"< Ts2=",num2str(Ts2)]);
   endif
@@ -135,17 +136,17 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     fidx = idx;
   else
     fidx = reshape(idx,1,length(idx));
-    # find states whose name begins with any strings in sprefix.
+    ## find states whose name begins with any strings in sprefix.
     ns = length(sprefix);
     for kk=1:ns
       spk = nth(sprefix,kk);  # get next prefix and length
       spl = length(spk);
 
-      # check each state name
+      ## check each state name
       for ii=1:nz
         sti = nth(stname,ii);  # compare spk with this state name
         if(length(sti) >= spl)
-          # if the prefix matches and ii isn't already in the list, add ii
+          ## if the prefix matches and ii isn't already in the list, add ii
           if(strcmp(sti(1:spl),spk) & !any(fidx == ii) ) 
             fidx = sort([fidx,ii]);
           endif
@@ -162,20 +163,20 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     error(["nstp = ", num2str(nstp)," < 0; this shouldn't be!"]);
   endif
 
-  # permute system matrices
+  ## permute system matrices
   pv = sysreorder(nz,fidx);
   pv = pv(nz:-1:1);          # reverse order to put fast modes in leading block
 
-  # construct inverse permutation
+  ## construct inverse permutation
   Inz = eye(nz);
   pvi = (Inz(pv,:)'*[1:nz]')';
 
-  # permute A, B (stname permuted for debugging only)
+  ## permute A, B (stname permuted for debugging only)
   da = da(pv,pv);
   db = db(pv,:);
   stname = stname(pv,:);
 
-  # partition A, B:
+  ## partition A, B:
   lfidx = length(fidx);
   bki = 1:lfidx;
   a11 = da(bki,bki);
@@ -192,26 +193,23 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     bki2 = [];
   endif
 
-  #####################################
-  # begin system conversion: nstp steps
-  #####################################
+  ## begin system conversion: nstp steps
 
-  # compute abar_{n-1}*a12 and appropriate b matrix stuff
+  ## compute abar_{n-1}*a12 and appropriate b matrix stuff
   a12b = a12;      # running  total of abar_{n-1}*a12
   a12w = a12;      # current a11^n*a12  (start with n = 0)
   if(cuflg)
     b1b = b1;
     b1w = b1;
   else
-    # cuflg == 0, need to keep track of intersample inputs too
+    ## cuflg == 0, need to keep track of intersample inputs too
     nzdx = find(max(abs(b1)) != 0);  # FIXME: check tolerance relative to ||b1||
     b1w = b1(nzdx);
     innamenz = inname(nzdx);
     b1b = b1;                        # initial b1 must match columns in b2
   endif
 
-  ######################################
-  # compute a11h = a11^nstp by squaring
+  ## compute a11h = a11^nstp by squaring
   a11h = eye(size(a11));
   p2 = 1;
   a11p2 = a11;        #a11^p2
@@ -228,14 +226,14 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     endif
   endwhile
   
-  # FIXME: this part should probably also use squaring, but
-  # that would require exponentially growing memory.  What do do?
+  ## FIXME: this part should probably also use squaring, but
+  ## that would require exponentially growing memory.  What do do?
   for kk=2:nstp
-    # update a12 block to sum(a12 + ... + a11^(kk-1)*a12)
+    ## update a12 block to sum(a12 + ... + a11^(kk-1)*a12)
     a12w = a11*a12w;
     a12b = a12b + a12w;
 
-    # similar for b1 block (checking for cuflg first!)
+    ## similar for b1 block (checking for cuflg first!)
     b1w = a11*b1w;
     if(cuflg)
       b1b = b1b + b1w;        # update b1 block just like we did a12
@@ -246,7 +244,7 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     endif
   endfor
 
-  # reconstruct system and return
+  ## reconstruct system and return
   da(bki,bki) = a11h;
   db(bki,1:columns(b1b)) = b1b;
   if(!isempty(bki2))
@@ -257,7 +255,7 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
   db = db(pvi,:);
   stname = stname(pvi,:);
 
-  # construct new system and return
+  ## construct new system and return
   dsys = ss2sys(da,db,dc,dd,Ts2,0,nz,stname,inname,outname,find(yd == 1));
 
   implicit_str_to_num_ok = save_val;	# restore value

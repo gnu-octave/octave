@@ -1,20 +1,20 @@
-# Copyright (C) 1997 Jose Daniel Munoz Frias
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1997 Jose Daniel Munoz Frias
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{K} =} place (@var{sys}, @var{P})
@@ -29,25 +29,26 @@
 ## @end deftypefn
  
 function K = place(sys, P) 
-%	      Universidad Pontificia Comillas
-%	      ICAIdea
-%	      Alberto Aguilera, 23
-%	      28015 Madrid, Spain
-%
-%	      E-Mail: daniel@dea.icai.upco.es
-%
-%	      Phone: 34-1-5422800   Fax: 34-1-5596569
-%
-% Algorithm taken from "The Control Handbook", IEEE press pp. 209-212
-#
-# code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
-# toolbox
+
+  ## Universidad Pontificia Comillas
+  ## ICAIdea
+  ## Alberto Aguilera, 23
+  ## 28015 Madrid, Spain
+  ##
+  ## E-Mail: daniel@dea.icai.upco.es
+  ##
+  ## Phone: 34-1-5422800   Fax: 34-1-5596569
+  ##
+  ## Algorithm taken from "The Control Handbook", IEEE press pp. 209-212
+  ##
+  ## code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
+  ## toolbox
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;
-  #
-  # check arguments
-  #
+
+  ## check arguments
+
   if(!is_struct(sys))
     error("sys must be in system data structure format (see ss2sys)");
   endif
@@ -59,7 +60,7 @@ function K = place(sys, P)
   else
     P = reshape(P,length(P),1);	# make P a column vector
   endif
-  # system must be purely continuous or discrete
+  ## system must be purely continuous or discrete
   is_digital(sys);
   [n,nz,m,p] = sysdimensions(sys);
   nx = n+nz;	# already checked that it's not a mixed system.
@@ -67,7 +68,7 @@ function K = place(sys, P)
     error(["sys has ", num2str(m)," inputs; need only 1"]);
   endif
 
-  # takes the A and B matrix from the system representation
+  ## takes the A and B matrix from the system representation
   [A,B]=sys2ss(sys);
   sp = length(P);
   if(nx == 0)
@@ -77,14 +78,14 @@ function K = place(sys, P)
 	"entries."])
   endif
 
-  # arguments appear to be compatible; let's give it a try!
-  %The second step is the calculation of the characteristic polynomial ofA
+  ## arguments appear to be compatible; let's give it a try!
+  ## The second step is the calculation of the characteristic polynomial ofA
   PC=poly(A);
 
-  %Third step: Calculate the transformation matrix T that transforms the state
-  %equation in the controllable canonical form.
+  ## Third step: Calculate the transformation matrix T that transforms the state
+  ## equation in the controllable canonical form.
 
-  %first we must calculate the controllability matrix M:
+  ## first we must calculate the controllability matrix M:
   M=B;
   AA=A;
   for n = 2:nx
@@ -92,9 +93,9 @@ function K = place(sys, P)
     AA=AA*A;
   endfor
 
-  %second, construct the matrix W
+  ## second, construct the matrix W
   PCO=PC(nx:-1:1);
-  PC1=PCO; 	%Matrix to shift and create W row by row
+  PC1=PCO; 	# Matrix to shift and create W row by row
 
   for n = 1:nx
     W(n,:) = PC1;
@@ -103,14 +104,14 @@ function K = place(sys, P)
 
   T=M*W;
 
-  %finaly the matrix K is calculated 
-  PD = poly(P); %The desired characteristic polynomial
+  ## finaly the matrix K is calculated 
+  PD = poly(P); # The desired characteristic polynomial
   PD = PD(nx+1:-1:2);
   PC = PC(nx+1:-1:2);
   
   K = (PD-PC)/T;
 
-  %Check if the eigenvalues of (A-BK) are the same specified in P
+  ## Check if the eigenvalues of (A-BK) are the same specified in P
   Pcalc = eig(A-B*K);
 
   Pcalc = sortcom(Pcalc);

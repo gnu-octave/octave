@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn(@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}@{, @var{ptol}, @var{tol}@})
@@ -76,17 +76,18 @@
 ## @end deftypefn
  
 function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
-  # A. S. Hodel August 1995
-  # Updated for Packed system structures December 1996 by John Ingram
-  #
-  # Revised by Kai P Mueller April 1998 to solve the general H_infinity
-  # problem using unitary transformations Q (on w and z)
-  # and non-singular transformations R (on u and y).
+
+  ## A. S. Hodel August 1995
+  ## Updated for Packed system structures December 1996 by John Ingram
+  ## 
+  ## Revised by Kai P Mueller April 1998 to solve the general H_infinity
+  ## problem using unitary transformations Q (on w and z)
+  ## and non-singular transformations R (on u and y).
 
   if( (nargin < 1) | (nargin > 8) )
     usage("[K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)");
   endif
-  # set default arguments
+  ## set default arguments
   if(nargin < 8)
     tol = 200*eps;
   elseif(!is_sample(tol))
@@ -111,7 +112,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
     error("hinfsyn: exit");
   endif
 
-  # extract dgs information
+  ## extract dgs information
   			nw = dgs.nw;	nu = dgs.nu;
   A = dgs.A;		B1 = dgs.Bw;	B2 = dgs.Bu;
   C1 = dgs.Cz;		D11 = dgs.Dzw;	D12 = dgs.Dzu;		nz = dgs.nz;
@@ -119,7 +120,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
   d22nz = dgs.Dyu_nz;
   dflg = dgs.dflg;
 
-  # recover i/o transformations
+  ## recover i/o transformations
   R12 = dgs.Ru;		R21 = dgs.Ry;
   [ncstates, ndstates, nin, nout] = sysdimensions(Asys);
   Atsam = sysgettsam(Asys);
@@ -131,9 +132,9 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
 
   if (dflg == 0)
     n = ncstates;
-    # perform binary search to find gamma min
+    ## perform binary search to find gamma min
     ghi = gmax;
-    # derive a lower lower bound for gamma from D matrices
+    ## derive a lower lower bound for gamma from D matrices
     xx1 = norm((eye(nz) - (D12/(D12'*D12))*D12')*D11);
     xx2 = norm(D11*(eye(nw)-(D21'/(D21*D21'))*D21));
     glo = max(xx1, xx2);
@@ -160,7 +161,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
     printf("----------------------------------------");
     printf("--------------------------------------\n");
 
-    # ------123456789012345678901234567890123456789012345678901234567890
+    ## ------123456789012345678901234567890123456789012345678901234567890
     printf("           .........X......... .........Y......... ");
     printf(".Z. PASS REMARKS\n");
     printf("        ga iax nev ene sym pos iax nev ene sym pos ");
@@ -168,7 +169,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
     printf("----------------------------------------");
     printf("--------------------------------------\n");
 
-    # set up error messages
+    ## set up error messages
     errmesg = list(" o   o   o   o   o  ", ...
 	" #   -   -   -   -  ", ...
 	" o   #   -   -   -  ", ...
@@ -193,7 +194,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
 	"Rtilde singular");
 
 
-    # now do the search
+    ## now do the search
     while (!iteration_finished)
       switch (search_state)
         case (0) 	g = ghi;
@@ -203,7 +204,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
       endswitch
       printf("%10.4f ", g);
 
-      # computing R and R~
+      ## computing R and R~
       d1dot = [D11, D12];
       R = zeros(nin, nin);
       R(1:nw,1:nw) = -g*g*eye(nw);
@@ -216,14 +217,14 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
       [Xinf,x_ha_err] = hinfsyn_ric(A,BB,C1,d1dot,R,ptol);
       [Yinf,y_ha_err] = hinfsyn_ric(A',CC',B1',ddot1',Rtilde,ptol);
 
-      # assume failure for this gamma
+      ## assume failure for this gamma
       passed = 0;
       rerr="";
       if (!x_ha_err && !y_ha_err)
-	# test spectral radius condition
+	## test spectral radius condition
 	rho = max(abs(eig(Xinf * Yinf)));
 	if (rho < g*g)
-	  # spectral radius condition passed
+	  ## spectral radius condition passed
 	  passed = 1;
         else
           rerr = sprintf("rho=%f",rho);
@@ -254,7 +255,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
       switch (search_state)
         case (0)
 	  if (!passed)
-	    # upper bound must pass but did not
+	    ## upper bound must pass but did not
 	    fprintf(" *** the upper bound of gamma (%f) is too small.\n", g);
 	    iteration_finished = 2;
 	  else
@@ -263,12 +264,12 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
         case (1)
 	  if (!passed)      search_state = 2;
 	  else
-	    # lower bound must not pass but passed
+	    ## lower bound must not pass but passed
 	    fprintf(" *** the lower bound of gamma (%f) passed.\n", g);
 	    iteration_finished = 3;
 	  endif
         case (2)
-          # Normal case; must check that singular R, Rtilde wasn't the problem.
+          ## Normal case; must check that singular R, Rtilde wasn't the problem.
 	  if ((!passed) & (x_ha_err != 6) & (y_ha_err != 6) ) glo = g;
 	  else         ghi = g;        endif
 	  de = ghi - glo;
@@ -282,7 +283,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
     if (iteration_finished != 1)
       K = [];
     else
-      # success: compute controller
+      ## success: compute controller
       fprintf("   hinfsyn final: glo=%f ghi=%f, test gain g=%f\n", \
               glo, ghi, g);
       printf("----------------------------------------");
@@ -304,7 +305,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
     
   elseif(ndstates)
 
-    # discrete time solution
+    ## discrete time solution
     error("hinfsyn: discrete-time case not yet implemented")
 
   endif

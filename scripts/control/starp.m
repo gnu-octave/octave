@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { outputs =} starp ( inputs ) 
@@ -50,7 +50,8 @@
 ## @end deftypefn
 
 function [sys] = starp(P, K, ny, nu);
-# Written by Kai Mueller May 1998
+
+  ## Written by Kai Mueller May 1998
 
   if((nargin != 2) && (nargin != 4))
     usage("[sys] = starp(P, K, ny, nu)");
@@ -71,7 +72,7 @@ function [sys] = starp(P, K, ny, nu);
   ny_sign = 1;
   nu_sign = 1;
   if (nargin == 2)
-    # perform a LFT of P and K (upper or lower)
+    ## perform a LFT of P and K (upper or lower)
     ny = min([pp, mk]);
     nu = min([pk, mp]);
   else
@@ -107,7 +108,7 @@ function [sys] = starp(P, K, ny, nu);
     error("---> no outputs left for star product.");
   endif
 
-  # checks done, form sys
+  ## checks done, form sys
   if (nzp)  Olst = [1:nzp];  endif
   if (nzk)  Olst = [Olst, pp+nu+1:pp+pk];  endif
   if (nwp)  Ilst = [1:nwp];  endif

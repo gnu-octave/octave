@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{retsys} =} sysappend (@var{sys},@var{b}@{, @var{c}, @var{d}, @var{outname}, @var{inname}, @var{yd}@})
@@ -75,38 +75,38 @@
 ## @end deftypefn
 
 function retsys = sysappend(sys,b,c,d,outname,inname,yd)
-  # written by John Ingram August 1996
+
+  ## written by John Ingram August 1996
   
   sav_implicit_str_to_num_ok = implicit_str_to_num_ok;	# save for later
   sav_empty_list_elements_ok = empty_list_elements_ok;
 
   empty_list_elements_ok = 1;                implicit_str_to_num_ok = 1;
   
-  # check input arguments
+  ## check input arguments
   if ( (nargin < 2) | (nargin > 7) | (!is_struct(sys)))
     usage("retsys = sysappend(sys,b,c[,d,outname,inname,yd]) ");
   elseif(!is_struct(sys))
     error("sys must be a system data structure");
   endif
   
-  # default system type must be state space form
+  ## default system type must be state space form
   [Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,Ayd] = sys2ss(sys);
   [Ann,Anz,Am,Ap] = sysdimensions(sys);
 
-  #default c
+  ## default c
   if(nargin < 3)      c = [];                                endif
   
-  #default d
+  ## default d
   if(nargin < 4)     make_d = 1;
   elseif(isempty(d)) make_d = 1;
   else               make_d = 0;                             endif
   if(make_d)         d = zeros(rows(c)+Ap,columns(b) + Am);  endif
 
-  #
-  # Append new input(s) if any
+  ## Append new input(s) if any
   Bm = max(columns(d),columns(b)+Am);
   if(Bm != Am)    
-    # construct new signal names
+    ## construct new signal names
     if(nargin >= 6)   # new names were passed
       if(!isstr(inname))
         error("inname must be a string");
@@ -120,23 +120,22 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
     if(Am)   Ain = append(Ain,inname);
     else     Ain = inname;		endif
 
-    # default b matrix
+    ## default b matrix
     if(isempty(b))     b  = zeros(Ann+Anz,(Bm-Am));          
     elseif(rows(b) != Ann+Anz | columns(b) != (Bm-Am))
         error(sprintf("b(%dx%d); should be (%dx%d)", rows(b), columns(b), ...
           (Ann+Anz), (Bm-Am)));
     endif
 
-    # append new b matrix
+    ## append new b matrix
     Ab = [Ab,b];    # empty_list_elements_ok=1 makes this ok
   endif
 
-  #
-  # Append new output(s) if any
+  ## Append new output(s) if any
   Bp = max(rows(d),rows(c)+Ap);
   if(Bp != Ap)  
 
-    # construct new signal names, output classification
+    ## construct new signal names, output classification
     if(nargin >= 5)  # new names were passed
       if(!isstr(outname))
         error("outname must be a string");
@@ -150,7 +149,7 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
     if(Ap)   Aout = append(Aout,outname);
     else     Aout = outname;                endif
 
-    # construct new yd entries
+    ## construct new yd entries
     if(nargin == 7)
       if(!is_vector(yd))
         error(sprintf("yd(%dx%d) must be a vector",rows(yd),columns(yd)))
@@ -159,33 +158,33 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
 	  length(yd), rows(c), columns(c),rows(d),columns(d)));
       endif
     else
-      # default yd values
+      ## default yd values
       yd = ones(1,Bp)*( (Ats > 0) & (Ann == 0)  & isempty(find(Ayd == 0)) ) ;
     endif
     Ayd = [vec(Ayd);vec(yd)];
 
-    # default c matrix
+    ## default c matrix
     if(isempty(c))      c = zeros((Bp-Ap),Ann+Anz);          
     elseif(columns(c) != Ann+Anz | rows(c) != (Bp-Ap))
         error(sprintf("c(%dx%d); should be (%dx%d)", rows(c), columns(c), ...
           (Bp-Ap), (Ann+Anz) ));
     endif
 
-    # append new c matrix
+    ## append new c matrix
     Ac = [Ac;c];    # empty_list_elements_ok=1 makes this ok
   endif
 
-  # check d matrix
+  ## check d matrix
   if(isempty(d)) d = zeros(Bp,Bm);
   elseif(rows(d) != Bp | columns(d) != Bm)
     error(sprintf("d(%dx%d) should be (%dx%d)",rows(d), columns(d), Bp, Bp));
   endif
 
-  # Splice in original D matrix  
+  ## Splice in original D matrix  
   if(Am & Ap)          d(1:Ap, 1:Am) = Ad;       endif
   Ad = d;
   
-  # construct return system
+  ## construct return system
   retsys = ss2sys(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
   
   implicit_str_to_num_ok = sav_implicit_str_to_num_ok;	# restore value

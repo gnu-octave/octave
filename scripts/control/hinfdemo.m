@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Kai Mueller
-#
-# This file is part of Octave.
-#
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-#
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1996,1998 Kai Mueller
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## hinfdemo  H_infinity design demos for continuous SISO and MIMO
@@ -125,7 +125,7 @@
 ##       functions
 ## @end deftypefn
 
-# Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de
+## Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de
 
 yn = [];
 while (length(yn) < 1)
@@ -146,7 +146,7 @@ echo off
 switch (sys_type)
 
   case (1)
-    # siso
+    ## siso
     disp(" ");
     disp("    ----------------------------------------------");
     disp("    H_infinity optimal control for the SISO plant:");
@@ -158,14 +158,14 @@ switch (sys_type)
     disp("    ----------------------------------------------");
     disp(" ");
 
-    # weighting on actuator u
+    ## weighting on actuator u
     W1 = wgt1o(0.05, 100.0, 425.0);
-    # weighting on controlled variable y
+    ## weighting on controlled variable y
     W2 = wgt1o(10.0, 0.05, 0.001);
-    # plant
+    ## plant
     G = tf2sys([1 -2],[1 1 -2]);
 
-    # need One as the pseudo transfer function One = 1
+    ## need One as the pseudo transfer function One = 1
     One = ugain(1);
     disp(" o forming P...");
     psys = buildssic([1 4;2 4;3 1],[3],[2 3 5],[3 4],G,W1,W2,One);
@@ -177,8 +177,8 @@ switch (sys_type)
 
     disp("  Closed loop poles:");
     damp(GW);
-    # disp(" o Testing H_infinity norm: (hinfnorm does not work)");
-    # hinfnorm(GW);
+    ## disp(" o Testing H_infinity norm: (hinfnorm does not work)");
+    ## hinfnorm(GW);
 
     disp(" ");
     yn = input(" * Plot closed loop step response? [n]: ","S");
@@ -192,22 +192,22 @@ switch (sys_type)
     endif
 
   case (2)
-    # mimo
+    ## mimo
     disp(" ");
     disp("    -----------------------------------------------");
     disp("      H_inf optimal control for the jet707 plant");
     disp("    -----------------------------------------------");
     disp(" ");
 
-    # Weighting function on u (robustness weight)
+    ## Weighting function on u (robustness weight)
     ww1 = wgt1o(0.01,5,0.9);
     ww2 = wgt1o(0.01,5,2.2);
     W1 = buildssic([1 0;2 0],[],[1 2],[1 2],ww1,ww2);
-    # Weighting function on y (performance weight)
+    ## Weighting function on y (performance weight)
     ww1 = wgt1o(250,0.1,0.0001);
     ww2 = wgt1o(250,0.1,0.0002);
     W2 = buildssic([1 0;2 0],[],[1 2],[1 2],ww1,ww2);
-    # plant (2 x 2 system)
+    ## plant (2 x 2 system)
     G = jet707;
 
     disp(" o forming P...");
@@ -249,7 +249,7 @@ switch (sys_type)
     endif
 
   case (3)
-    # discrete
+    ## discrete
     disp(" ");
     disp("    --------------------------------------------------");
     disp("    Discrete H_infinity optimal control for the plant:");
@@ -260,26 +260,26 @@ switch (sys_type)
     disp("    --------------------------------------------------");
     disp(" ");
 
-    # sampling time
+    ## sampling time
     Ts = 1.0;
-    # weighting on actuator value u
+    ## weighting on actuator value u
     W1 = wgt1o(0.1, 200.0, 50.0);
-    # weighting on controlled variable y
+    ## weighting on controlled variable y
     W2 = wgt1o(350.0, 0.05, 0.0002);
-    # omega axis
+    ## omega axis
     ww = logspace(-4.99, 3.99, 100);
     if (columns(ww) > 1);  ww = ww';  endif
 
-    # continuous plant
+    ## continuous plant
     G = tf2sys(2,[1 3 2]);
-    # discrete plant with zoh
+    ## discrete plant with zoh
     Gd = c2d(G, Ts);
-    # w-plane (continuous representation of the sampled system)
+    ## w-plane (continuous representation of the sampled system)
     Gw = d2c(Gd, "bi");
 
     disp(" ");
     disp(" o building P...");
-    # need One as the pseudo transfer function One = 1
+    ## need One as the pseudo transfer function One = 1
     One = ugain(1);
     psys = buildssic([1 4;2 4;3 1],[3],[2 3 5],[3 4],Gw,W1,W2,One);
     disp(" o controller design...");
@@ -323,4 +323,4 @@ endswitch
 
 disp(" o hinfdemo terminated successfully.");
 
-# KPM-hinfdemo/End
+## KPM-hinfdemo/End

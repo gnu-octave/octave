@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{sys} = } tf2sys( @var{num}, @var{den} @{, @var{tsam}, @var{inname}, @var{outname} @})
@@ -51,20 +51,20 @@
 ## @end deftypefn
 
 function outsys = tf2sys(num,den,tsam,inname,outname)
-  #  Written by R. Bruce Tenison  July 29, 1994
-  #  Name changed to TF2SYS July 1995
-  #  updated for new system data structure format July 1996
+  ## Written by R. Bruce Tenison  July 29, 1994
+  ## Name changed to TF2SYS July 1995
+  ## updated for new system data structure format July 1996
 
   save_val = implicit_str_to_num_ok;
   implicit_str_to_num_ok = 1;
 
-  #  Test for the correct number of input arguments
+  ## Test for the correct number of input arguments
   if ((nargin < 2) || (nargin > 5))
     usage('outsys=tf2sys(num,den[,tsam,inname,outname])');
     return
   endif
 
-  # check input format 
+  ## check input format 
   if( ! ( (is_vector(num) || is_scalar(num)) && ...
 	(is_vector(den) || is_scalar(den))) )
     error(['num (',num2str(rows(num)),'x',num2str(columns(num)), ...
@@ -72,7 +72,7 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
       ') must be vectors'])
   endif
   
-  # strip leading zero coefficients
+  ## strip leading zero coefficients
   num = tf2sysl(num);
   den = tf2sysl(den);
 
@@ -80,7 +80,7 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
     error("# of poles (%d) < # of zeros (%d)",length(den)-1, length(num)-1);
   endif
 
-  # check sampling interval (if any)
+  ## check sampling interval (if any)
   if(nargin <= 2)           tsam = 0;		# default
   elseif (isempty(tsam))    tsam = 0;           endif
   if ( (! (is_scalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
@@ -90,15 +90,15 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   outsys.num = num;
   outsys.den = den;
 
-  #  Set the system vector:  active = 0(tf), updated = [1 0 0];
+  ## Set the system vector:  active = 0(tf), updated = [1 0 0];
   outsys.sys = [0, 1, 0, 0];
 
-  #  Set defaults
+  ## Set defaults
   outsys.tsam = tsam;
   outsys.n = length(den)-1;
   outsys.nz = 0;
   outsys.yd = 0;	# assume discrete-time
-  # check discrete time
+  ## check discrete time
   if(tsam > 0)
     [outsys.n,outsys.nz] = swap(outsys.n, outsys.nz);
     outsys.yd = 1;
@@ -108,9 +108,9 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   outsys.outname = sysdefioname(1,"y");
   outsys.stname  = sysdefstname(outsys.n,outsys.nz);
 
-  #  Set name of input
+  ## Set name of input
   if (nargin > 3)
-    # make sure its a list of a single string
+    ## make sure its a list of a single string
     if(!isempty(inname))
       if(!is_list(inname))  inname = list(inname);  endif
       if( !is_signal_list(inname) )
@@ -124,7 +124,7 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
     endif
   endif
 
-  #  Set name of output
+  ## Set name of output
   if (nargin > 4)
     if(!isempty(outname))
       if(!is_list(outname))  outname = list(outname);  endif

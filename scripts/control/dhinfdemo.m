@@ -1,63 +1,63 @@
-# Copyright (C) 1996,1998 Kai Mueller
-#
-# This file is part of Octave.
-#
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-#
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1996,1998 Kai Mueller
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-# ------------------------------------------------------------
-# dhinfdemo   Design of a discrete H_infinity controller.
-#             This is not a true discrete design. The design
-#             is carried out in continuous time while the
-#             effect of sampling is described by a bilinear
-#             transformation of the sampled system.
-#             This method works quite well if the sampling
-#             period is "small" compared to the plant time
-#             constants.
-#
-# This is a script file for OCTAVE.
-# ------------------------------------------------------------
-#
-# continuous plant:
-#	             1
-#	G(s) = --------------
-#	       (s + 2)(s + 1)
-#
-# discretised plant with ZOH (Sampling period = Ts = 1 second)
-#
-#	           0.39958z + 0.14700
-#	G(s) = --------------------------
-#	       (z - 0.36788)(z - 0.13533)
-#
-#	                         +----+
-#	    -------------------->| W1 |---> v1
-#	z   |                    +----+
-#	----|-------------+                   || T   ||     => min.
-#	    |             |                       vz   infty
-#	    |    +---+    v      +----+
-#	    *--->| G |--->O--*-->| W2 |---> v2
-#	    |    +---+       |   +----+
-#	    |                |
-#	    |    +---+       |
-#	    -----| K |<-------
-#	         +---+
-#
-#	W1 and W2 are the robustness and performancs weighting
-#       functions
+## ------------------------------------------------------------
+## dhinfdemo   Design of a discrete H_infinity controller.
+##             This is not a true discrete design. The design
+##             is carried out in continuous time while the
+##             effect of sampling is described by a bilinear
+##             transformation of the sampled system.
+##             This method works quite well if the sampling
+##             period is "small" compared to the plant time
+##             constants.
+##
+## This is a script file for OCTAVE.
+## ------------------------------------------------------------
+##
+## continuous plant:
+##	             1
+##	G(s) = --------------
+##	       (s + 2)(s + 1)
+##
+## discretised plant with ZOH (Sampling period = Ts = 1 second)
+##
+##	           0.39958z + 0.14700
+##	G(s) = --------------------------
+##	       (z - 0.36788)(z - 0.13533)
+##
+##	                         +----+
+##	    -------------------->| W1 |---> v1
+##	z   |                    +----+
+##	----|-------------+                   || T   ||     => min.
+##	    |             |                       vz   infty
+##	    |    +---+    v      +----+
+##	    *--->| G |--->O--*-->| W2 |---> v2
+##	    |    +---+       |   +----+
+##	    |                |
+##	    |    +---+       |
+##	    -----| K |<-------
+##	         +---+
+##
+##	W1 and W2 are the robustness and performancs weighting
+##       functions
 
-# K. Mueller, <mueller@ifr.ing.tu-bs.de>
-# Technical University of Braunschweig, IfR
+## K. Mueller, <mueller@ifr.ing.tu-bs.de>
+## Technical University of Braunschweig, IfR
 
 echo off
 disp(" ");
@@ -82,21 +82,21 @@ disp("weighting on controlled variable y");
 cmd = "W2 = wgt1o(350.0, 0.05, 0.0002);";
 disp(cmd);
 eval(cmd);
-# omega axis (column vector)
+## omega axis (column vector)
 ww = vec(logspace(-4.99, 3.99, 100));
 
 disp("Create ZOH equivalent model of a continuous plant");
 cmd = "G = tf2sys(2,[1 3 2]);  Gd = c2d(G, Ts);";
 run_cmd
 
-# w-plane (continuous representation of the sampled system)
+## w-plane (continuous representation of the sampled system)
 disp("W-plane transform of discrete time system:");
 cmd = "Gw = d2c(Gd, \"bi\");";
 run_cmd
 
 disp(" ");
 disp(" o building P...");
-# need One as the pseudo transfer function One = 1
+## need One as the pseudo transfer function One = 1
 cmd = "One = ugain(1);";
 disp(cmd);
 eval(cmd);
@@ -140,4 +140,4 @@ if (length(yn) >= 1)
   endif
 endif
 
-# --------- End of dhinfdemo/kpm
+## --------- End of dhinfdemo/kpm

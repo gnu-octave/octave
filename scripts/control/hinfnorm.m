@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm(@var{sys}@{, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol}@})
@@ -71,7 +71,7 @@ function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
     error("Sys must be a system data structure");
   endif
 
-  # set defaults where applicable
+  ## set defaults where applicable
   if(nargin < 5)
     ptol = 1e-9;	# pole tolerance
   endif
@@ -84,7 +84,7 @@ function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
   [A,B,C,D] = sys2ss(sys);
   [n,nz,m,p] = sysdimensions(sys);
 
-  # eigenvalues of A must all be stable
+  ## eigenvalues of A must all be stable
   if(!is_stable(sys))
     warning(["hinfnorm: unstable system (is_stable, ptol=",num2str(ptol), ...
       "), returning Inf"]);
@@ -102,7 +102,7 @@ function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
     tol = 0.001;	# convergence measure for gmin, gmax
   endif
 
-  # check for scalar input arguments 2...5
+  ## check for scalar input arguments 2...5
   if( ! (is_scalar(tol) && is_scalar(gmin) 
 	&& is_scalar(gmax) && is_scalar(ptol)) )
     error("hinfnorm: tol, gmin, gmax, ptol must be scalars");
@@ -111,22 +111,22 @@ function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
   In = eye(n+nz);
   Im = eye(m);
   Ip = eye(p);
-  # find the Hinf norm via binary search
+  ## find the Hinf norm via binary search
   while((gmax/gmin - 1) > tol)
     g = (gmax+gmin)/2;
 
     if(dflg)
-      # multiply g's through in formulas to avoid extreme magnitudes...
+      ## multiply g's through in formulas to avoid extreme magnitudes...
       Rg = g^2*Im - D'*D;
       Ak = A + (B/Rg)*D'*C;
       Ck = g^2*C'*((g^2*Ip-D*D')\C);
 
-      # set up symplectic generalized eigenvalue problem per Iglesias & Glover
+      ## set up symplectic generalized eigenvalue problem per Iglesias & Glover
       s1 = [Ak , zeros(nz) ; -Ck, In ];
       s2 = [In, -(B/Rg)*B' ; zeros(nz) , Ak' ];
 
-      # guard against roundoff again: zero out extremely small values
-      # prior to balancing
+      ## guard against roundoff again: zero out extremely small values
+      ## prior to balancing
       s1 = s1 .* (abs(s1) > ptol*norm(s1,"inf"));
       s2 = s2 .* (abs(s2) > ptol*norm(s2,"inf"));
       [cc,dd,s1,s2] = balance(s1,s2);
@@ -135,15 +135,15 @@ function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
       normH = norm([s1,s2]);
       Hb = [s1, s2];
 
-      # check R - B' X B condition (Iglesias and Glover's paper)
+      ## check R - B' X B condition (Iglesias and Glover's paper)
       X = zz((nz+1):(2*nz),1:nz)/zz(1:nz,1:nz);
       dcondfailed = min(real( eig(Rg - B'*X*B)) < ptol);
     else
       Rinv = inv(g*g*Im - (D' * D));
       H = [A + B*Rinv*D'*C,        B*Rinv*B'; ...
            -C'*(Ip + D*Rinv*D')*C, -(A + B*Rinv*D'*C)'];
-      # guard against roundoff: zero out extremely small values prior 
-      # to balancing
+      ## guard against roundoff: zero out extremely small values prior 
+      ## to balancing
       H = H .* (abs(H) > ptol*norm(H,"inf"));
       [DD,Hb] = balance(H);
       pls = eig(Hb);

@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { outputs =} rlocus ( inputs ) 
@@ -41,10 +41,11 @@
 ## @end deftypefn
 
 function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,max_k)
-  # Convert the input to a transfer function if necessary
-  # Written by Clem and Tenison
-  # Updated by Kristi McGowan July 1996 for intelligent gain selection
-  # Updated by John Ingram July 1996 for systems
+
+  ## Convert the input to a transfer function if necessary
+  ## Written by Clem and Tenison
+  ## Updated by Kristi McGowan July 1996 for intelligent gain selection
+  ## Updated by John Ingram July 1996 for systems
   
   if (nargin < 1) | (nargin > 4)
     usage("rlocus(sys[,inc,mink,maxk])");
@@ -58,33 +59,33 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
     num = [0, num];     # so that derivative is shortened by one
   endif
 
-  # root locus plot axis limits
+  ## root locus plot axis limits
   
-  # compute real axis locus breakpoints
-  # compute the derivative of the numerator and the denominator 
+  ## compute real axis locus breakpoints
+  ## compute the derivative of the numerator and the denominator 
   dern=polyderiv(num);        derd=polyderiv(den);
   
-  # compute real axis breakpoints
+  ## compute real axis breakpoints
   real_ax_pol = conv(den,dern) - conv(num,derd);
   real_ax_pts = roots(real_ax_pol);
   if(isempty(real_ax_pts))
     k_break = [];
     maxk = 0;
   else
-    # compute gains that achieve the breakpoints
+    ## compute gains that achieve the breakpoints
     c1 = polyval(num,real_ax_pts);
     c2 = polyval(den,real_ax_pts);
     k_break = -real(c2 ./ c1);
     maxk = max(max(k_break,0));
   endif
 
-  # compute gain ranges based on computed K values
+  ## compute gain ranges based on computed K values
   if(maxk == 0)     maxk = 1; 
   else              maxk = 1.1*maxk;        endif
   mink = 0;
   ngain = 20;
 
-  # check for input arguments:
+  ## check for input arguments:
   if (nargin > 2)       mink = min_k;          endif
   if (nargin > 3)       maxk = max_k;          endif
   if (nargin > 1)
@@ -94,24 +95,24 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
     endif
   endif
 
-  # vector of gains
+  ## vector of gains
   ngain = max(3,ngain);
   gvec = linspace(mink,maxk,ngain);
   
-  # Find the open loop zeros and the initial poles
+  ## Find the open loop zeros and the initial poles
   rlzer = roots(num);
 
-  # update num to be the same length as den
+  ## update num to be the same length as den
   lnum = length(num);  if(lnum < lden) num = [zeros(1,lden - lnum),num];  endif
 
-  # compute preliminary pole sets
+  ## compute preliminary pole sets
   nroots = lden-1;
   for ii=1:ngain
    gain = gvec(ii);
    rlpol(1:nroots,ii)  = vec(sortcom(roots(den + gain*num)));
   endfor
 
-  # compute axis limits (isolate asymptotes)
+  ## compute axis limits (isolate asymptotes)
   olpol = roots(den);
   real_axdat = union(real(rlzer), real(union(olpol,real_ax_pts)) );
   rmin = min(real_axdat);      rmax = max(real_axdat);
@@ -122,24 +123,24 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
   xmin = axlim(1);
   xmax = axlim(2);
   
-  # set smoothing tolerance per axis limits
+  ## set smoothing tolerance per axis limits
   smtol = 0.01*max(abs(axlim));
   
-  # smooth poles if necessary, up to maximum of 1000 gain points
-  # only smooth points within the axis limit window
-  # smoothing done if max_k not specified as a command argument
+  ## smooth poles if necessary, up to maximum of 1000 gain points
+  ## only smooth points within the axis limit window
+  ## smoothing done if max_k not specified as a command argument
   done=(nargin == 4);    # perform a smoothness check
   while((!done) & ngain < 1000)
     done = 1 ;      # assume done
     dp = abs(diff(rlpol'))';
     maxd = max(dp);
-    # search for poles in the real axis limits whose neighbors are distant
+    ## search for poles in the real axis limits whose neighbors are distant
     idx = find(maxd > smtol);
     for ii=1:length(idx)
       i1 = idx(ii);      g1 = gvec(i1);       p1 = rlpol(:,i1);
       i2 = idx(ii)+1;    g2 = gvec(i2);       p2 = rlpol(:,i2);
     
-      # isolate poles in p1, p2 that are inside the real axis limits
+      ## isolate poles in p1, p2 that are inside the real axis limits
       bidx = find( (real(p1) >= xmin & real(p1) <= xmax)  ...
           | (real(p2) >= xmin & real(p2) <= xmax) );
       if(!isempty(bidx))
@@ -165,7 +166,7 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
       endif
     endfor
     
-    # process new gain values
+    ## process new gain values
     ngain1 = length(gvec);
     for ii=(ngain+1):ngain1
       gain = gvec(ii);
@@ -177,7 +178,7 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
     ngain = length(gvec);
   endwhile
    
-  # Plot the data
+  ## Plot the data
   if(nargout  == 0)
     rlpolv = vec(rlpol);
     idx = find(real(rlpolv) >= xmin & real(rlpolv) <= xmax);

@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{num},@var{den},@var{tsam},@var{inname},@var{outname}] =} sys2tf (@var{sys})
@@ -32,9 +32,9 @@
 ## @end deftypefn
 
 function [num,den,tsam,inname,outname] = sys2tf(Asys)
-# Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
-# modified to make sys2tf by A. S. Hodel Aug 1995
-# modified again for updated system format by John Ingram July 1996
+## Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
+## modified to make sys2tf by A. S. Hodel Aug 1995
+## modified again for updated system format by John Ingram July 1996
 
   if(nargin != 1)
     usage("[num,den,tsam,inname,outname] = sys2tf(Asys)");

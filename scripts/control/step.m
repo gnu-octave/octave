@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{y}, @var{t}] =} impulse (@var{sys}@{, @var{inp},@var{tstop}, @var{n}@})
@@ -46,26 +46,26 @@
  
 ## See also:  impulse, stepimp
 
-# step: Step response for a linear system.
-#       The system can be discrete or multivariable (or both).
-#
-# [y, t] = step(sys[, inp, tstop, n])
-# Produces a plot or the step response data for system sys.
-#
-# The argument tstop (scalar value) denotes the time when the
-# simulation should end. The Parameter n is the number of data values.
-# Both parameters tstop and n can be ommitted and will be
-# computed from the eigenvalues of the A-Matrix.
-#
-# When the step function is invoked with the output parameter y
-# a plot is not displayed.
-#
-# See also: impulse, stepimp
+## step: Step response for a linear system.
+##       The system can be discrete or multivariable (or both).
+##
+## [y, t] = step(sys[, inp, tstop, n])
+## Produces a plot or the step response data for system sys.
+##
+## The argument tstop (scalar value) denotes the time when the
+## simulation should end. The Parameter n is the number of data values.
+## Both parameters tstop and n can be ommitted and will be
+## computed from the eigenvalues of the A-Matrix.
+##
+## When the step function is invoked with the output parameter y
+## a plot is not displayed.
+##
+## See also: impulse, stepimp
 
 function [y, t] = step(sys, inp, tstop, n)
-# Written by Kai P. Mueller September 30, 1997
-# based on lsim.m of Scottedward Hodel
-# modified by
+## Written by Kai P. Mueller September 30, 1997
+## based on lsim.m of Scottedward Hodel
+## modified by
 
   if((nargin < 1) || (nargin > 4))
     usage("[y, u] = step(sys[, inp, tstop, n])");

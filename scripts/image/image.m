@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} image (@var{x}, @var{zoom})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap and should have values between 1 and the

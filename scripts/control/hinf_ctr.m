@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{K} =} hinf_ctr(@var{dgs}, @var{F}, @var{H}, @var{Z}, @var{g})
@@ -36,10 +36,11 @@
 ## @end deftypefn
   
 function K = hinf_ctr(dgs,F,H,Z,g)
-  # A. S. Hodel August 1995
-  # Revised by Kai P Mueller April 1998 to solve the general H_infinity
-  # problem using unitary transformations Q (on w and z)
-  # and non-singular transformations R (on u and y).
+
+  ## A. S. Hodel August 1995
+  ## Revised by Kai P Mueller April 1998 to solve the general H_infinity
+  ## problem using unitary transformations Q (on w and z)
+  ## and non-singular transformations R (on u and y).
 
   nw = dgs.nw;
   nu = dgs.nu;
@@ -71,13 +72,13 @@ function K = hinf_ctr(dgs,F,H,Z,g)
   H12 = H(:,(nz-nu+1):nz);
   H2  = H(:,(nz+1):nout);
 
-  # D11 partitions
+  ## D11 partitions
   D1111 = D11(1:(nz-nu),1:(nw-ny));
   D1112 = D11(1:(nz-nu),(nw-ny+1):nw);
   D1121 = D11((nz-nu+1):nz,1:(nw-ny));
   D1122 = D11((nz-nu+1):nz,(nw-ny+1):nw);
 
-  # D11ik may be the empty matrix, don't calculate with empty matrices
+  ## D11ik may be the empty matrix, don't calculate with empty matrices
   [nd1111,md1111] = size(D1111);
   md1112 = length(D1112);
   md1121 = length(D1121);
@@ -113,14 +114,14 @@ function K = hinf_ctr(dgs,F,H,Z,g)
   c1hat =  F2*Z + (d11hat/d21hat)*c2hat;
   ahat  =  A + H*C + (b2hat/d12hat)*c1hat;
 
-  # rescale controller by Ru and Ry
+  ## rescale controller by Ru and Ry
   b1hat = b1hat/Ry;
   c1hat = Ru\c1hat;
   bhat  = [b1hat, b2hat];
   chat  = [c1hat; c2hat];
   dhat  = [Ru\d11hat/Ry, Ru\d12hat; d21hat/Ry, 0*d11hat'];
 
-  # non-zero D22 is a special case
+  ## non-zero D22 is a special case
   if (d22nz)
     if (rank(eye(nu) + d11hat*D22) < nu)
       error(" *** cannot compute controller for D22 non-zero.");

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { [@var{f}, @var{w}] =} bodquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
@@ -51,23 +51,24 @@
 ## @end deftypefn
  
 function [f,w] = bodquist(sys,w,outputs,inputs,rname)
-  # check number of input arguments given
+
+  ## check number of input arguments given
   if (nargin != 5)
     usage("[f,w] = bodquist(sys,w,outputs,inputs,rname)");
   endif
 
-  # check each argument to see if it's in the correct form
+  ## check each argument to see if it's in the correct form
   if (!is_struct(sys))
     error("sys must be a system data structure");
   endif
 	
-  # let freqresp determine w if it's not already given
+  ## let freqresp determine w if it's not already given
   USEW = freqchkw(w);
 
-  # get initial dimensions (revised below if sysprune is called)
+  ## get initial dimensions (revised below if sysprune is called)
   [nn,nz,mm,pp ] = sysdimensions(sys);
 
-  # check for an output vector and to see whether it`s correct
+  ## check for an output vector and to see whether it`s correct
   if (!isempty(outputs))
     if (isempty(inputs))
       inputs = 1:mm;			# use all inputs
@@ -77,20 +78,20 @@ function [f,w] = bodquist(sys,w,outputs,inputs,rname)
     [nn,nz,mm,pp ] = sysdimensions(sys);
   endif
 
-  # for speed in computation, convert local copy of 
-  # SISO state space systems to zero-pole  form
+  ## for speed in computation, convert local copy of 
+  ## SISO state space systems to zero-pole  form
   if( is_siso(sys) & strcmp( sysgettype(sys), "ss") )
     [zer,pol,k,tsam,inname,outname] = sys2zp(sys);
     sys = zp2sys(zer,pol,k,tsam,inname,outname);
   endif
 
-  # get system frequency response
+  ## get system frequency response
   [f,w] = freqresp(sys,USEW,w);   
 
   phase = arg(f)*180.0/pi;
 
   if(!USEW)
-    # smooth plots
+    ## smooth plots
     pcnt = 5;		# max number of refinement steps
     dphase = 5;		# desired max change in phase
     dmag = 0.2;		# desired max change in magnitude
@@ -142,7 +143,7 @@ function [f,w] = bodquist(sys,w,outputs,inputs,rname)
     endwhile
   endif
 
-  # ensure unique frequency values
+  ## ensure unique frequency values
   [w,idx] = sort(w);
   f = f(idx);
 

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1999 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1999 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*- 
 ## @deftypefn {Function File } { @var{sys} =} sysmult( @var{Asys}, @var{Bsys})
@@ -33,8 +33,9 @@
 ## @end deftypefn
 
 function sys = sysmult(...)
-# Written by John Ingram July 1996
-# updated for variable number of arguments by A. S. Hodel July 1999
+
+  ## Written by John Ingram July 1996
+  ## updated for variable number of arguments by A. S. Hodel July 1999
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -43,7 +44,7 @@ function sys = sysmult(...)
     usage("sysmult: sys = sysmult(Asys{,Bsys,...})");
   endif
 
-  # collect all arguments
+  ## collect all arguments
   arglist = list();
   va_start();
   for kk=1:nargin
@@ -53,7 +54,7 @@ function sys = sysmult(...)
     endif
   endfor
 
-  # check system dimensions
+  ## check system dimensions
   [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,1));
   for kk=2:nargin
     [n,nz,mh,ph,Hyd] = sysdimensions(nth(arglist,kk));
@@ -63,7 +64,7 @@ function sys = sysmult(...)
     [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,kk));   # for next iteration
   endfor
 
-  # perform the multiply
+  ## perform the multiply
   if(nargin == 2)
     Asys = nth(arglist,1);   Bsys = nth(arglist,2);
  
@@ -74,7 +75,7 @@ function sys = sysmult(...)
     [Ba,Bb,Bc,Bd,Btsam,Bn,Bnz,Bstname,Binname,Boutname,Byd] = sys2ss(Bsys);
   
     if(Byd)
-      # check direct feed-through of inputs through discrete outputs
+      ## check direct feed-through of inputs through discrete outputs
       alist = find(Byd);
       if(An)
         bd = Ab(1:An)* Bd(alist,:);	
@@ -82,7 +83,7 @@ function sys = sysmult(...)
           warning("sysmult: inputs -> Bsys discrete outputs -> continous states of Asys");
         endif
       endif
-      # check direct feed-through of continuous state through discrete outputs
+      ## check direct feed-through of continuous state through discrete outputs
       if(Bn)
         bc = Ab(1:An)* Bc(alist,1:(Bn));	
         if( norm(bc,1) )
@@ -91,20 +92,20 @@ function sys = sysmult(...)
       endif
     endif
   
-    # change signal names to avoid spurious warnings from sysgroup
+    ## change signal names to avoid spurious warnings from sysgroup
     Asys = syssetsignals(Asys,"in",sysdefioname(Am,"A_sysmult_tmp_name"));
     Bsys = syssetsignals(Bsys,"out",sysdefioname(Bp,"B_sysmult_tmp_name"));
   
     sys = sysgroup(Asys,Bsys);
   
-    # connect outputs of B to inputs of A
+    ## connect outputs of B to inputs of A
     sys = sysconnect(sys,Ap+(1:Bp),1:Am);
    
-    # now keep only  outputs of A and inputs of B
+    ## now keep only  outputs of A and inputs of B
     sys = sysprune(sys,1:Ap,Am+(1:Bm));
 
   else
-    # multiple systems (or a single system); combine together one by one
+    ## multiple systems (or a single system); combine together one by one
     sys = nth(arglist,1);
     for kk=2:length(arglist)
       sys = sysmult(sys,nth(arglist,kk));

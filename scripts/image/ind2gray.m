@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} ind2gray (@var{x}, @var{map})
 ## Convert an Octave indexed image to a gray scale intensity image.
 ## If @var{map} is omitted, the current colormap is used to determine the

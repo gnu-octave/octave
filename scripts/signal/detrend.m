@@ -14,6 +14,7 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} detrend (@var{x}, @var{p})
 ## If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
 ## best fit of a polynomial of order @var{p} from the data @var{x}.

@@ -1,20 +1,20 @@
-# Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved
+## 
+## This file is part of Octave.
+## 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
@@ -112,44 +112,44 @@
 ## @end deftypefn
 
 function [k, p, e] = lqr (a, b, q, r, s)
-# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
-  # disp("lqr: entry");
+  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+
+  ## disp("lqr: entry");
 
   if ((nargin != 4) && (nargin != 5))
     error ("lqr: invalid number of arguments");
   endif
 
-# Check a.
+  ## Check a.
   if ((n = is_square (a)) == 0)
     error ("lqr: requires 1st parameter(a) to be square");
   endif
 
-# Check b.
+  ## Check b.
   [n1, m] = size (b);
   if (n1 != n)
     error ("lqr: a,b not conformal");
   endif
 
-# Check q.
-  
+  ## Check q.
   if ( ((n1 = is_square (q)) == 0) || (n1 != n))
     error ("lqr: q must be square and conformal with a");
   endif
 
-# Check r.
+  ## Check r.
   if ( ((m1 = is_square(r)) == 0) || (m1 != m))
     error ("lqr: r must be square and conformal with column dimension of b");
   endif
 
-# Check if n is there.
+  ## Check if n is there.
   if (nargin == 5)
     [n1, m1] = size (s);
     if ( (n1 != n) || (m1 != m))
       error ("lqr: z must be identically dimensioned with b");
     endif
 
-# Incorporate cross term into a and q.
+    ## Incorporate cross term into a and q.
     ao = a - (b/r)*s';
     qo = q - (s/r)*s';
   else
@@ -158,7 +158,7 @@ function [k, p, e] = lqr (a, b, q, r, s)
     qo = q;
   endif
 
-# Check that q, (r) are symmetric, positive (semi)definite
+  ## Check that q, (r) are symmetric, positive (semi)definite
 
   if (is_symmetric (q) && is_symmetric (r) ...
       && all (eig (q) >= 0) && all (eig (r) > 0))
@@ -169,5 +169,5 @@ function [k, p, e] = lqr (a, b, q, r, s)
     error ("lqr: q (r) must be symmetric positive (semi) definite");
   endif
 
-  # disp("lqr: exit");
+  ## disp("lqr: exit");
 endfunction

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## -*texinfo -*-
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} menu (@var{title}, @var{opt1}, @dots{})
 ## Print a title string followed by a series of options.  Each option will
 ## be printed along with a number.  The return value is the number of the

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{out} =} freqresp (@var{sys},@var{USEW}@{,@var{w}@});
@@ -40,13 +40,14 @@
 ## @end deftypefn
 
 function [ff,w] = freqresp(sys,USEW,w);
-  #  Written by: R. Bruce Tenison July 11, 1994
-  # SYS_INTERNAL accesses members of system data structure
+
+  ## Written by: R. Bruce Tenison July 11, 1994
+  ## SYS_INTERNAL accesses members of system data structure
 
   save_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;
 
-  # Check Args
+  ## Check Args
   if( (nargin < 2) || (nargin > 4) )
     usage ("[ff,w] = freqresp(sys,USEW{,w})");
   elseif( USEW & (nargin < 3) )
@@ -58,7 +59,7 @@ function [ff,w] = freqresp(sys,USEW,w);
 
   DIGITAL = is_digital(sys);
 
-  # compute default w if needed
+  ## compute default w if needed
   if(!USEW)
     if(is_siso(sys))
       sys = sysupdate(sys,"zp");
@@ -68,14 +69,14 @@ function [ff,w] = freqresp(sys,USEW,w);
       pol = eig(sys2ss(sys));
     endif
 
-    # get default frequency range
+    ## get default frequency range
     [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,sysgettsam(sys));
     w = logspace(wmin,wmax,50);
   else
     w = reshape(w,1,length(w)); 	# make sure it's a row vector
   endif
 
-  # now get complex values of s or z
+  ## now get complex values of s or z
   if(DIGITAL)
     jw = exp(i*w*sysgettsam(sys));
   else
@@ -84,9 +85,9 @@ function [ff,w] = freqresp(sys,USEW,w);
 
   [nn,nz,mm,pp] = sysdimensions(sys);
 
-  # now compute the frequency response - divide by zero yields a warning
+  ## now compute the frequency response - divide by zero yields a warning
   if (strcmp(sysgettype(sys),"zp"))
-    # zero-pole form (preferred)
+    ## zero-pole form (preferred)
     [zer,pol,sysk] = sys2zp(sys);
     ff = ones(size(jw));
     l1 = min(length(zer)*(1-isempty(zer)),length(pol)*(1-isempty(pol)));
@@ -94,25 +95,25 @@ function [ff,w] = freqresp(sys,USEW,w);
       ff = ff .* (jw - zer(ii)) ./ (jw - pol(ii));
     endfor
 
-    # require proper  transfer function, so now just get poles.
+    ## require proper  transfer function, so now just get poles.
     for ii=(l1+1):length(pol)
       ff = ff ./ (jw - pol(ii));
     endfor
     ff = ff*sysk;
 
   elseif (strcmp(sysgettype(sys),"tf"))
-    # transfer function form 
+    ## transfer function form 
     [num,den] = sys2tf(sys);
     ff = polyval(num,jw)./polyval(den,jw);
   elseif (mm==pp)
-    # The system is square; do state-space form bode plot
+    ## The system is square; do state-space form bode plot
     [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
     n = sysn + sysnz;
     for ii=1:length(jw);
       ff(ii) = det(sysc*((jw(ii).*eye(n)-sysa)\sysb)+sysd);
     endfor;
   else
-    # Must be state space... bode                            
+    ## Must be state space... bode                            
     [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
     n = sysn + sysnz;
     for ii=1:length(jw);
@@ -124,7 +125,7 @@ function [ff,w] = freqresp(sys,USEW,w);
   w = reshape(w,1,length(w));
   ff = reshape(ff,1,length(ff));
 
-  # restore global variable
+  ## restore global variable
   empty_list_elements_ok = save_val;
 endfunction
 

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{sys} =} ss2sys  (@var{a},@var{b},@var{c}@{,@var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist}@})
@@ -186,42 +186,41 @@
 ## since none were given.
 ## 
 ## @end deftypefn
-## 
 
 function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
 
-  #  Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
+  ## Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
 
-  #  Test for correct number of inputs
+  ## Test for correct number of inputs
   if ((nargin < 3) | (nargin > 11))
     usage("retsys = ss2sys  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})");
   endif
 
-  # verify A, B, C, D arguments
-  #  If D is not specified, set it to a zero matrix of appriate dimension.
+  ## verify A, B, C, D arguments
+  ## If D is not specified, set it to a zero matrix of appriate dimension.
   if (nargin == 3)          d = zeros(rows(c) , columns(b));
   elseif (isempty(d))       d = zeros(rows(c) , columns(b));      endif
 
-  #  Check the dimensions
+  ## Check the dimensions
   [na,m,p] = abcddim(a,b,c,d);
 
-  #  If dimensions are wrong, exit function
+  ## If dimensions are wrong, exit function
   if (m == -1)
     error("a(%dx%d), b(%dx%d), c(%dx%d), d(%dx%d); incompatible", ...
       rows(a), columns(a), rows(b), columns(b), rows(c), columns(c), ...
       rows(d), columns(d));
   endif
 
-  # check for tsam input
+  ## check for tsam input
   if(nargin < 5) tsam = 0;
   elseif( !( is_sample(tsam) | (tsam == 0) ) )
     error("tsam must be a nonnegative real scalar");
   endif
 
-  # check for continuous states
+  ## check for continuous states
   if( (nargin < 6) & (tsam == 0) )               n = na;
   elseif(nargin < 6)                             n = 0;
   elseif((!is_matrix(n)) | isstr(n))
@@ -232,7 +231,7 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
 			   rows(n), columns(n));		endif
   endif
 
-  # check for num discrete states
+  ## check for num discrete states
   if( (nargin < 7) & (tsam == 0)) 		nz = 0;
   elseif(nargin < 7)				nz = na - n;
   elseif((!is_matrix(nz)) | isstr(nz))
@@ -246,13 +245,13 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
     endif
   endif
 
-  #check for total number of states
+  ## check for total number of states
   if( (n + nz) != na )
     error(["Illegal: a is ",num2str(na),"x",num2str(na),", n=", ...
 	num2str(n),", nz=",num2str(nz)]);
   endif
 
-  # construct system with default names
+  ## construct system with default names
   retsys.a = a;
   retsys.b = b; 
   retsys.c = c; 
@@ -263,29 +262,29 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   retsys.tsam = tsam;
   retsys.yd = zeros(1,p);     # default value entered below
 
-  #  Set the system vector:  active = 2(ss), updated = [0 0 1];
+  ## Set the system vector:  active = 2(ss), updated = [0 0 1];
   retsys.sys = [2, 0, 0, 1]; 
 
   retsys.stname = sysdefstname(n,nz);
   retsys.inname = sysdefioname(m,"u");
   retsys.outname = sysdefioname(p,"y");
 
-  # check for state names
+  ## check for state names
   if(nargin >= 8)
     if(!isempty(stname)) retsys = syssetsignals(retsys,"st",stname); endif
   endif
 
-  #check for input names
+  ## check for input names
   if(nargin >= 9)
     if(!isempty(inname)) retsys = syssetsignals(retsys,"in",inname); endif
   endif
 
-  #check for output names
+  ## check for output names
   if(nargin >= 10)
     if(!isempty(outname)) retsys = syssetsignals(retsys,"out",outname); endif
   endif
 
-  # set up yd
+  ## set up yd
   if(nargin < 11)
     retsys = syssetsignals(retsys,"yd",ones(1,p)*(tsam > 0));
   else
@@ -294,5 +293,5 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
     endif
   endif
 
-  implicit_str_to_num_ok = save_val;	# restore value
+  implicit_str_to_num_ok = save_val;	## restore value
 endfunction

@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { } sysout ( @var{sys}@{, @var{opt}@}) 
@@ -40,111 +40,116 @@
 ## @end deftypefn
  
 function retsys = sysout(sys,opt)
-# Written by A S Hodel: 1995-1996
 
-# save for restoring at end of routine
-save_val = implicit_str_to_num_ok;
-implicit_str_to_num_ok = 1;
+  ## Written by A S Hodel: 1995-1996
 
-if( (nargin < 1) || (nargin > 2) )
-  usage("sysout(sys[,opt])");
-endif
+  ## save for restoring at end of routine
+  save_val = implicit_str_to_num_ok;
+  implicit_str_to_num_ok = 1;
 
-if(isempty(sys))
-  retsys = sys;
-  warning("sysout: empty system")
-  return;
-endif
-
-if(! is_struct(sys))
-  disp("sysout: input must be a system structure")
-endif
-
-# set up output type array
-if( nargin == 1 )
-  opt = sysgettype(sys);
-else
-  if( ! (strcmp(opt,"ss") + strcmp(opt,"tf") + ...
-    strcmp(opt,"zp") + strcmp(opt,"all") ) )
-    error("opt must be one of [], \"ss\", \"tf\", \"zp\", or \"all\"");
+  if( (nargin < 1) || (nargin > 2) )
+    usage("sysout(sys[,opt])");
   endif
-endif
 
-# now check output for each form:
-[nn,nz,mm,pp] = sysdimensions(sys);
-if( mm > 0)
-  disp("Input(s)")
-  disp(outlist(sysgetsignals(sys,"in"),"	"));
-else
-  disp("Input(s): none");
-endif
-if (pp > 0)
-  disp("Output(s):")
-  disp(outlist(sysgetsignals(sys,"out"), ...
-	"	",sysgetsignals(sys,"yd")) );
-else
-  disp("Output(s): none");
-endif
-if(sysgettsam(sys) > 0)
-  disp(["Sampling interval: ",num2str(sysgettsam(sys))]);
-  str = "z";
-else
-  str = "s";
-endif
+  if(isempty(sys))
+    retsys = sys;
+    warning("sysout: empty system")
+    return;
+  endif
 
-# transfer function form
-if( strcmp(opt,"tf") + strcmp(opt,"all") )
-  sys = sysupdate(sys,"tf");		#make sure tf is up to date
-  disp("transfer function form:")
-  [num,den] = sys2tf(sys);
-  tfout(num,den,str);
-endif
+  if(! is_struct(sys))
+    disp("sysout: input must be a system structure")
+  endif
 
-if( strcmp(opt,"zp") + strcmp(opt,"all") )
-  sys = sysupdate(sys,"zp");		#make sure zp is up to date
-  disp("zero-pole form:")
-  [zer,pol,kk] = sys2zp(sys);
-  zpout(zer, pol, kk,str)
-endif
-
-if( strcmp(opt,"ss") + strcmp(opt,"all") )
-  sys = sysupdate(sys,"ss");
-  disp("state-space form:");
-  disp([num2str(nn)," continuous states, ", num2str(nz)," discrete states"]);
-  if( nn+nz > 0)
-    disp("State(s):")
-    xi = (nn+1):(nn+nz);
-    xd = zeros(1,nn+nz);
-    if(!isempty(xi))
-      xd(xi) = 1;
-    endif
-    disp(outlist(sysgetsignals(sys,"st"),"	",xd));
+  ## set up output type array
+  if( nargin == 1 )
+    opt = sysgettype(sys);
   else
-    disp("State(s): none");
+    if( ! (strcmp(opt,"ss") + strcmp(opt,"tf") + ...
+      strcmp(opt,"zp") + strcmp(opt,"all") ) )
+      error("opt must be one of [], \"ss\", \"tf\", \"zp\", or \"all\"");
+    endif
   endif
 
-  # display matrix values?
-  dmat = (max( [ (nn+nz), mm, pp ] ) <= 32);
+  ## now check output for each form:
+  [nn,nz,mm,pp] = sysdimensions(sys);
+  if( mm > 0)
+    disp("Input(s)")
+    disp(outlist(sysgetsignals(sys,"in"),"	"));
+  else
+    disp("Input(s): none");
+  endif
+  if (pp > 0)
+    disp("Output(s):")
+    disp(outlist(sysgetsignals(sys,"out"), ...
+	  "	",sysgetsignals(sys,"yd")) );
+  else
+    disp("Output(s): none");
+  endif
+  if(sysgettsam(sys) > 0)
+    disp(["Sampling interval: ",num2str(sysgettsam(sys))]);
+    str = "z";
+  else
+    str = "s";
+  endif
 
-  printf("A matrix: %d x %d\n",sysdimensions(sys,"st"),sysdimensions(sys,"st"));
-  [aa,bb,cc,dd] = sys2ss(sys);
-  if(dmat) 	disp(aa); 	endif
+  ## transfer function form
+  if( strcmp(opt,"tf") + strcmp(opt,"all") )
+    sys = sysupdate(sys,"tf");		#make sure tf is up to date
+    disp("transfer function form:")
+    [num,den] = sys2tf(sys);
+    tfout(num,den,str);
+  endif
 
-  printf("B matrix: %d x %d\n",sysdimensions(sys,"st"),sysdimensions(sys,"in"));
-  if(dmat)     disp(bb);              endif
+  if( strcmp(opt,"zp") + strcmp(opt,"all") )
+    sys = sysupdate(sys,"zp");		#make sure zp is up to date
+    disp("zero-pole form:")
+    [zer,pol,kk] = sys2zp(sys);
+    zpout(zer, pol, kk,str)
+  endif
 
-  printf("C matrix: %d x %d\n",sysdimensions(sys,"out"),sysdimensions(sys,"st"));
-  if(dmat) disp(cc);		endif
+  if( strcmp(opt,"ss") + strcmp(opt,"all") )
+    sys = sysupdate(sys,"ss");
+    disp("state-space form:");
+    disp([num2str(nn)," continuous states, ", num2str(nz)," discrete states"]);
+    if( nn+nz > 0)
+      disp("State(s):")
+      xi = (nn+1):(nn+nz);
+      xd = zeros(1,nn+nz);
+      if(!isempty(xi))
+	xd(xi) = 1;
+      endif
+      disp(outlist(sysgetsignals(sys,"st"),"	",xd));
+    else
+      disp("State(s): none");
+    endif
 
-  printf("D matrix: %d x %d\n",sysdimensions(sys,"out"),sysdimensions(sys,"in"));
-  if(dmat)       disp(dd);         endif
-endif
+    ## display matrix values?
+    dmat = (max( [ (nn+nz), mm, pp ] ) <= 32);
 
-if(nargout >= 1)
-  retsys = sys;
-endif 
-  
-# restore global variable
-implicit_str_to_num_ok = save_val;
+    printf("A matrix: %d x %d\n",sysdimensions(sys,"st"),
+	   sysdimensions(sys,"st"));
+    [aa,bb,cc,dd] = sys2ss(sys);
+    if(dmat) 	disp(aa); 	endif
+
+    printf("B matrix: %d x %d\n",sysdimensions(sys,"st"),
+	   sysdimensions(sys,"in"));
+    if(dmat)     disp(bb);              endif
+
+    printf("C matrix: %d x %d\n",sysdimensions(sys,"out"),
+	   sysdimensions(sys,"st"));
+    if(dmat) disp(cc);		endif
+
+    printf("D matrix: %d x %d\n",sysdimensions(sys,"out"),
+	   sysdimensions(sys,"in"));
+    if(dmat)       disp(dd);         endif
+  endif
+
+  if(nargout >= 1)
+    retsys = sys;
+  endif 
+
+  ## restore global variable
+  implicit_str_to_num_ok = save_val;
 
 endfunction

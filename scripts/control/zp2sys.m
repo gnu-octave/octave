@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{sys} =} zp2sys (@var{zer},@var{pol},@var{k}@{,@var{tsam},@var{inname},@var{outname}@})
@@ -53,17 +53,18 @@
 ## @end deftypefn
  
 function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
-  #  Modified by John Ingram  July 20, 1996  
+
+  ## Modified by John Ingram  July 20, 1996  
 
   save_val = implicit_str_to_num_ok;	# save for restoring later
   implicit_str_to_num_ok = 1;
 
-  #  Test for the correct number of input arguments
+  ## Test for the correct number of input arguments
   if ((nargin < 3) || (nargin > 6))
     usage("outsys = zp2sys(zer,pol,k[,tsam,inname,outname])");
   endif
 
-  # check input format 
+  ## check input format 
   if( ! (is_vector(zer) | isempty(zer) ) )
     error("zer must be a vector or empty");
   endif
@@ -82,28 +83,28 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
      error('k must be a scalar');
   endif
 
-  #  Test proper numbers of poles and zeros.  The number of poles must be 
-  #  greater than or equal to the number of zeros.
+  ## Test proper numbers of poles and zeros.  The number of poles must be 
+  ## greater than or equal to the number of zeros.
   if (length(zer) >  length(pol))
     error(["number of poles (", num2str(length(pol)), ...
 	") < number of zeros (", num2str(length(zer)),")"]);
   endif
 
-  #  Set the system transfer function
+  ## Set the system transfer function
   outsys.zer = zer;
   outsys.pol = pol;
   outsys.k = k;
 
-  #  Set the system vector:  active = 1, updated = [0 1 0];
+  ## Set the system vector:  active = 1, updated = [0 1 0];
   outsys.sys = [1, 0, 1, 0];
 
-  #  Set defaults
+  ## Set defaults
   outsys.tsam = 0;
-   outsys.n = length(pol);
+  outsys.n = length(pol);
   outsys.nz = 0;
   outsys.yd = 0;	# assume (for now) continuous time outputs
 
-  #  Set the type of system
+  ## Set the type of system
   if (nargin > 3)
     if( !is_scalar(tsam) )
       error("tsam must be a nonnegative scalar");
@@ -122,9 +123,9 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
   outsys.outname = sysdefioname(1,"y");
   outsys.stname = sysdefstname(outsys.n,outsys.nz);
 
-  #  Set name of input
+  ## Set name of input
   if (nargin > 4)
-    # make sure its a string
+    ## make sure its a string
     if(!isempty(inname))
       if(!is_list(inname))  inname = list(inname); endif
       if(!is_signal_list(inname))
@@ -134,7 +135,7 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
     endif
   endif
 
-  #  Set name of output
+  ## Set name of output
   if (nargin > 5)
     if(!isempty(outname))
       if(!is_list(outname))        outname = list(outname);    endif

@@ -1,20 +1,20 @@
-# Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved
+## 
+## This file is part of Octave.
+## 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{retval}, @var{U}] =} is_controllable (@var{sys}@{, @var{tol}@})
@@ -55,20 +55,21 @@
 ## 
 ## @end deftypefn
 
-# See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-#     is_observable, is_stabilizable, is_detectable, krylov, krylovb
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
+##     is_observable, is_stabilizable, is_detectable, krylov, krylovb
 
 function [retval,U] = is_controllable (a, b, tol)
-# Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-# Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
-# Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
+
+  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
+  ## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
+  ## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
 
   deftol = 1;    # assume default tolerance
   if(nargin < 1 | nargin > 3)
     usage("[retval,U] = %s\n\t%s", "is_controllable(a {, b ,tol})", ...
 	"is_controllable(sys{,tol})");
   elseif(is_struct(a))
-    # system structure passed.
+    ## system structure passed.
     sys = sysupdate(a,"ss");
     [a,bs] = sys2ss(sys);
     if(nargin > 2)
@@ -79,7 +80,7 @@ function [retval,U] = is_controllable (a, b, tol)
     endif
     b = bs;
   else
-    # a,b arguments sent directly.
+    ## a,b arguments sent directly.
     if(nargin < 2)
       usage("[retval,U] = is_controllable(a {, b ,tol})");
     else
@@ -87,10 +88,10 @@ function [retval,U] = is_controllable (a, b, tol)
     endif
   endif
 
-  # check for default tolerance
+  ## check for default tolerance
   if(deftol) tol = 1000*eps; endif
 
-  # check tol dimensions
+  ## check tol dimensions
   if( !is_scalar(tol) )
     error("is_controllable: tol(%dx%d) must be a scalar", ...
 	rows(tol),columns(tol));
@@ -98,7 +99,7 @@ function [retval,U] = is_controllable (a, b, tol)
     error("is_controllable: tol=%e must be positive",tol);
   endif
 
-  # check dimensions compatibility
+  ## check dimensions compatibility
   n = is_square (a);
   [nr, nc] = size (b);
 
@@ -106,8 +107,8 @@ function [retval,U] = is_controllable (a, b, tol)
     warning("is_controllable: a=(%dx%d), b(%dx%d)",rows(a),columns(a),nr,nc);
     retval = 0;
   else
-    # call block-krylov subspace routine to get an orthogonal basis
-    # of the controllable subspace.
+    ## call block-krylov subspace routine to get an orthogonal basis
+    ## of the controllable subspace.
     [U,H,Ucols] = krylov(a,b,n,tol,1);
     retval = (Ucols == n);
   endif

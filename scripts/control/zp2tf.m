@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{num}, @var{den}] =} zp2tf (@var{zer}, @var{pol}, @var{k})
@@ -32,11 +32,12 @@
 ## @end deftypefn
 
 function [num,den] = zp2tf(zer,pol,k)
-# Find out whether data was entered as a row or a column vector and
-# convert to a column vector if necessary
-# Written by A. S. Hodel with help from students Ingram, McGowan.
-# a.s.hodel@eng.auburn.edu
-#
+
+  ## Find out whether data was entered as a row or a column vector and
+  ## convert to a column vector if necessary
+  ## Written by A. S. Hodel with help from students Ingram, McGowan.
+  ## a.s.hodel@eng.auburn.edu
+
 
   [rp,cp] = size(pol);
   [rz,cz] = size(zer);
@@ -49,10 +50,13 @@ function [num,den] = zp2tf(zer,pol,k)
     error(sprintf("zer(%dx%d) longer than pol(%dx%d)",rz,cz,rp,cp));
   endif
 
-  num = k;  den = 1;		# initialize converted polynomials
+  ## initialize converted polynomials
 
-  # call zp2ssg2 if there are complex conjugate pairs left, otherwise
-  # construct real zeros one by one.  Repeat for poles.
+  num = k;  den = 1;
+
+  ## call zp2ssg2 if there are complex conjugate pairs left, otherwise
+  ## construct real zeros one by one.  Repeat for poles.
+
   while(!isempty(zer))
     if( max(abs(imag(zer))) )     [poly,zer] = zp2ssg2(zer);
     else                          poly = [1 -zer(1)];  

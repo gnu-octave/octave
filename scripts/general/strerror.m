@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} strerror (@var{name}, @var{num})
 ## Return the text of an error message for function @var{name}
 ## corresponding to the error number @var{num}.  This function is intended

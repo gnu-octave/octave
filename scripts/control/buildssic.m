@@ -1,20 +1,20 @@
-# Copyright (C) 1998 Kai P. Mueller
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1998 Kai P. Mueller
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{sys}] =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
@@ -127,7 +127,8 @@
 ## @end deftypefn
  
 function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
-# Written by Kai Mueller April 1998
+
+  ## Written by Kai Mueller April 1998
 
   if((nargin < 5) || (nargin > 12))
     usage("[sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");
@@ -169,7 +170,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     [as,bs,cs,ds] = sys2ss(ss);
     nt1 = n1 + nz1;
     if (!nt1)
-      # pure gain (pad B, C with zeros)
+      ## pure gain (pad B, C with zeros)
       B = [B, zeros(nt,m1)];
       C = [C; zeros(p1,nt)];
     else
@@ -185,7 +186,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     p = p + p1;
   endfor
 
-  # check maximum dimensions
+  ## check maximum dimensions
   [nx, mx] = size(Clst);
   if (nx > m)
     error("---> more rows in Clst than total number of inputs.");
@@ -193,7 +194,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
   if (mx > p+1)
     error("---> more cols in Clst than total number of outputs.");
   endif
-  # empty vector Ulst is OK
+  ## empty vector Ulst is OK
   lul = length(Ulst);
   if (lul)
     if (!is_vector(Ulst))
@@ -212,7 +213,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     error("---> Input list Ilst must be a vector.");
   endif
 
-  # build the feedback "K" from the interconnection data Clst
+  ## build the feedback "K" from the interconnection data Clst
   K = zeros(m, p);
   inp_used = zeros(m,1);
   for ii = 1:nx
@@ -235,15 +236,15 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     endfor
   endfor
 
-  # form the "closed loop", i.e replace u in
-  # .
-  # x = Ax + Bu
-  #                            ~
-  # y = Cx + Du   by   u = K*y+u
-  #
-  #            -1
-  # R = (I-D*K)   must exist.
-  # 
+  ## form the "closed loop", i.e replace u in
+  ## .
+  ## x = Ax + Bu
+  ##                            ~
+  ## y = Cx + Du   by   u = K*y+u
+  ##
+  ##            -1
+  ## R = (I-D*K)   must exist.
+
   R = eye(p) - D*K;
   if (rank(R) < p)
     error("---> singularity in algebraic loop.");
@@ -255,7 +256,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
   C = R*C;
   D = R*D;
 
-  # append old inputs u to the outputs (if lul > 0)
+  ## append old inputs u to the outputs (if lul > 0)
   kc = K*C;
   kdi = eye(m) + K*D;
   for ii = 1:lul
@@ -267,7 +268,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     D = [D; kdi(it,:)];
   endfor
 
-  # select and rearrange outputs
+  ## select and rearrange outputs
   nn = length(A);
   lol = length(Olst);
   Cnew = zeros(lol,nn);

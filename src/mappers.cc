@@ -227,7 +227,7 @@ complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (conj, 0, 0, 0, conj, 0, conj, 0.0, 0.0, 0,
-    "-* texinfo -*-\n\
+    "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} conj (@var{z})\n\
 Return the complex conjugate of @var{z}, defined as\n\
 @iftex\n\
@@ -493,7 +493,7 @@ Compute the base-10 logarithm for each element of @var{x}.\n\
 See also: log, log2, logspace, exp");
 
   DEFUN_MAPPER (real, 0, 0, 0, real, real, 0, 0.0, 0.0, 0,
-    "-*-texinfo -*-\n\
+    "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
 Return the real part of @var{z}.\n\
 @end deftypefn\n\

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{sys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}@{, @var{outname}, @var{inname}@})
@@ -42,8 +42,9 @@
 ## @end deftypefn
 
 function sys = sysscale(sys,outscale,inscale,outname,inname)
-# A. S. Hodel August 1995
-# modified by John Ingram 7-15-96
+
+  ## A. S. Hodel August 1995
+  ## modified by John Ingram 7-15-96
 
   if( (nargin < 3) || (nargin > 5)  )
     usage("retsys = sysscale(Asys,output_list,input_list{,inname,outname})");
@@ -53,11 +54,11 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
 
   [nn,nz,mm,pp] = sysdimensions(sys);
  
-  # check for omitted scales
+  ## check for omitted scales
   if(isempty(outscale))    outscale = eye(pp);     endif 
   if(isempty(inscale))     inscale = eye(mm);      endif 
 
-  # check dimensions of scaling matrices
+  ## check dimensions of scaling matrices
   if(mm!=rows(inscale))
     error("inscale(%dx%d) should have %d rows(# system inputs)", ...
       rows(inscale),columns(inscale),mm);
@@ -86,7 +87,7 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
     sysyd = ones(1,rows(outscale))*( length(outd) > 0);
   endif
 
-  # check for SISO system type
+  ## check for SISO system type
   if strcmp(sysgettype(sys),"tf")
     [num,den,tsam,innam,outnam] = sys2tf(sys);
     num = num*inscale*outscale;
@@ -99,7 +100,7 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
     return
   endif
 
-  # it's a state space system...
+  ## it's a state space system...
 
   [sysa,sysb,sysc,sysd,systsam, ...
     sysn,sysnz,sysstname,sysinname,sysoutname,oldyd] = sys2ss(sys);
@@ -109,7 +110,7 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
   sysd = outscale*sysd*inscale;
 
   if( !is_square(outscale) )
-    # strip extra output names (if any)
+    ## strip extra output names (if any)
     sysoutname = sysoutname(1:min(rows(outscale),columns(outscale)));
     if( nargin < 4)
       warning("sysscale: outscale not square, outname not specified");
@@ -120,7 +121,7 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
     outname = sysoutname;
   endif
   if( !is_square(inscale) )
-    # strip extra output names (if any)
+    ## strip extra output names (if any)
     sysinname = sysinname(1:min(rows(inscale),columns(inscale)));
     if(nargin < 5)
       warning("sysscale: inscale not square, inname not specified");

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-#  
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+##  
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*- 
 ## @deftypefn {Function File } { } frdemo ( ) 
@@ -22,10 +22,11 @@
 ## @end deftypefn
 
 function frdemo()
-# Written by David Clem August 15, 1994 
 
-# a s hodel: updated to match new order of ss2zp outputs
-# J Ingram:  updated for system data structure format August 1996
+  ## Written by David Clem August 15, 1994 
+
+  ## a s hodel: updated to match new order of ss2zp outputs
+  ## J Ingram:  updated for system data structure format August 1996
 
   disp("")
   clc
@@ -566,20 +567,20 @@ function frdemo()
           clc
           disp("MIMO SYSTEM:  Nyquist cannot be used for discrete MIMO systems");
           disp("at this time.");
-#	  cmd = "dsys_mimo = sysgroup(sys2,dsys3);";
-#          disp(cmd);
-#	  eval(cmd);
-#	  cmd = "sysout(dsys_mimo);";
-#	  disp(cmd);
-#	  eval(cmd);
-#	  disp("\nTo view the system's nyquist plot, execute the following command:\n")
-#      	  cmd = "nyquist(dsys_mimo);";
-#	  run_cmd; 	  
-#    	  prompt
-# 	  disp("\nTo view the nyquist plots for selected  channels, the command form changes:")
-#          cmd = "nyquist(dsys_mimo,[],1,1);";
-#	  run_cmd;
-#	  disp("\nNotice that this bode plot is the same as the plot from example 2.");         
+	  ## cmd = "dsys_mimo = sysgroup(sys2,dsys3);";
+	  ## disp(cmd);
+	  ## eval(cmd);
+	  ## cmd = "sysout(dsys_mimo);";
+	  ## disp(cmd);
+	  ## eval(cmd);
+	  ## disp("\nTo view the system's nyquist plot, execute the following command:\n")
+	  ## cmd = "nyquist(dsys_mimo);";
+	  ## run_cmd; 	  
+	  ## prompt
+	  ## disp("\nTo view the nyquist plots for selected  channels, the command form changes:")
+	  ## cmd = "nyquist(dsys_mimo,[],1,1);";
+	  ## run_cmd;
+	  ## disp("\nNotice that this bode plot is the same as the plot from example 2.");         
           prompt
           closeplot
 

@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{zer}, @var{pol}]=} pzmap (@var{sys})
@@ -44,7 +44,7 @@ function [zer,pol]=pzmap(sys)
 
   [zer,pol] = sys2zp(sys);
 
-  # force to column vectors, split into real, imaginary parts
+  ## force to column vectors, split into real, imaginary parts
   zerdata = poldata = [];
   if(length(zer))
     zer = reshape(zer,length(zer),1);
@@ -55,11 +55,11 @@ function [zer,pol]=pzmap(sys)
     poldata = [real(pol(:,1)), imag(pol(:,1))];
   endif
 
-  # determine continuous or discrete plane
+  ## determine continuous or discrete plane
   vars = "sz";
   varstr = vars(is_digital(sys) + 1);
 
-  # Plot the data
+  ## Plot the data
   gset nologscale xy;
   if(is_siso(sys))
     title(sprintf("Pole-zero map from %s to %s", ...
@@ -69,10 +69,10 @@ function [zer,pol]=pzmap(sys)
   ylabel(["Im(",varstr,")"]);
   grid;
 
-  # compute axis limits
+  ## compute axis limits
   axis(axis2dlim([zerdata;poldata]));
   grid
-  # finally, plot the data
+  ## finally, plot the data
   if(length(zer) == 0)
     plot(poldata(:,1), poldata(:,2),"@12 ;poles (no zeros);");
   elseif(length(pol) == 0)

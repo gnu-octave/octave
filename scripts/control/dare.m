@@ -87,7 +87,7 @@ function x = dare (a, b, c, r, opt)
       opt = "B";
     endif
 
-    # dimension checks are done in is_controllable, is_observable
+    ## dimension checks are done in is_controllable, is_observable
     if (is_controllable (a, b) == 0)
       warning ("dare: a,b are not controllable");
     elseif (is_observable (a, c) == 0)

@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*- 
 ## @deftypefn {Function File } { outputs =} ss2tf ( inputs ) 
@@ -39,10 +39,11 @@
 ## @end deftypefn
  
 function [num,den] = ss2tf(a,b,c,d)
-# Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
-# a s hodel: modified to allow for pure gain blocks Aug 1996
 
-# Check args
+  ## Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
+  ## a s hodel: modified to allow for pure gain blocks Aug 1996
+
+  ## Check args
   [n,m,p] = abcddim(a,b,c,d);
   if (n == -1)
     num = [];
@@ -55,24 +56,24 @@ function [num,den] = ss2tf(a,b,c,d)
   endif
   
   if(n == 0)
-    # gain block only
+    ## gain block only
     num = d;
     den = 1;
   else
-    # First, get the denominator coefficients
+    ## First, get the denominator coefficients
     den = poly(a);
   
-    # Get the zeros of the system
+    ## Get the zeros of the system
     [zz,g] = tzero(a,b,c,d);
 
-    # Form the Numerator (and include the gain)
+    ## Form the Numerator (and include the gain)
     if (!isempty(zz))
       num = g * poly(zz);
     else
       num = g;
     endif
   
-    # the coefficients must be real
+    ## the coefficients must be real
     den = real(den);
     num = real(num);
   endif

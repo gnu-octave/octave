@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { } lsim (@var{sys}, @var{u}, @var{t}@{,@var{x0}@})
@@ -35,9 +35,9 @@
 ## @end deftypefn
  
 function [y,x] = lsim(sys,u,t,x0)
-# Written by David Clem, A. S. Hodel July 1995
-# modified by John Ingram for system format August 1996
 
+  ## Written by David Clem, A. S. Hodel July 1995
+  ## modified by John Ingram for system format August 1996
 
   if((nargin < 3)||(nargin > 4))
     usage("[y,x] = lsim(sys,u,t[,x0])");
@@ -73,10 +73,10 @@ function [y,x] = lsim(sys,u,t,x0)
   n = max(size(t));
   for ii = 1:(n-1)
 
-    # check if step size changed
+    ## check if step size changed
     if (t(ii+1) - t(ii) != Ts)
       Ts = t(ii+1) - t(ii);
-      # [F,G] = c2d(a,b,Ts);
+      ## [F,G] = c2d(a,b,Ts);
       dsys = c2d(sys, Ts);
       [F,G] = sys2ss(dsys);
     endif
@@ -85,7 +85,7 @@ function [y,x] = lsim(sys,u,t,x0)
     x0 = F*x0 + G*u(:,ii);
   endfor
 
-  # pick up last point
+  ## pick up last point
   x(:,n) = x0;
 
   y = c*x + d*u;

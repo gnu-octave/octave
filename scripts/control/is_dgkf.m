@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { [@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{Asys}, @var{nu}, @var{ny}, @var{tol} )
@@ -95,29 +95,30 @@
 ## @end deftypefn
  
 function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
-  #  Written by A. S. Hodel
-  #  Updated by John Ingram July 1996 to accept structured systems
-  #
-  # Revised by Kai P Mueller April 1998 to solve the general H_infinity
-  # problem using unitary transformations Q (on w and z)
-  # and non-singular transformations R (on u and y) such
-  # that the Dzu and Dyw matrices of the transformed plant
-  #
-  #    ~
-  #    P  (the variable Asys here)
-  #
-  # become
-  #
-  #    ~            -1         T
-  #    D  = Q   D   R   = [ 0 I ]  or [ I ],
-  #     12   12  12  12
-  #
-  #    ~            T
-  #    D  = R   D   Q   = [ 0 I ] or [ I ].
-  #     21   21  21  21
-  #
-  # This transformation together with the algorithm in [1] solves
-  # the general problem (see [2] for example). 
+
+  ## Written by A. S. Hodel
+  ## Updated by John Ingram July 1996 to accept structured systems
+
+  ## Revised by Kai P Mueller April 1998 to solve the general H_infinity
+  ## problem using unitary transformations Q (on w and z)
+  ## and non-singular transformations R (on u and y) such
+  ## that the Dzu and Dyw matrices of the transformed plant
+  ## 
+  ##    ~
+  ##    P  (the variable Asys here)
+  ##
+  ## become
+  ##
+  ##    ~            -1         T
+  ##    D  = Q   D   R   = [ 0 I ]  or [ I ],
+  ##     12   12  12  12
+  ##
+  ##    ~            T
+  ##    D  = R   D   Q   = [ 0 I ] or [ I ].
+  ##     21   21  21  21
+  ##
+  ## This transformation together with the algorithm in [1] solves
+  ## the general problem (see [2] for example). 
 
   if (nargin < 3) | (nargin > 4)
     usage("[retval,dgkf_struct] = is_dgkf(Asys,nu,ny{,tol})");
@@ -149,25 +150,25 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   nz = nout - ny;          nz1 = nz + 1;
 
   [A,B,C,D] = sys2ss(Asys);
-  # scale input/output for numerical reasons
+  ## scale input/output for numerical reasons
   if(norm(C,'fro')*norm(B,'fro') == 0)
     error("||C||*||B|| = 0; no dynamic connnection from inputs to outputs");
   endif
   xx = sqrt(norm(B, Inf) / norm(C, Inf));
   B = B / xx;  C = C * xx;
 
-  # partition matrices
+  ## partition matrices
   			Bw = B(:,1:nw);		Bu = B(:,nw1:nin);
   Cz = C(1:nz,:);	Dzw = D(1:nz,1:nw);	Dzu = D(1:nz,nw1:nin);
   Cy = C(nz1:nout,:);	Dyw = D(nz1:nout,1:nw);	Dyu = D(nz1:nout,nw1:nin);
 
-  # Check for loopo shifting
+  ## Check for loopo shifting
   Dyu_nz = (norm(Dyu,Inf) != 0);
   if (Dyu_nz)
     warning("is_dgkf: D22 nonzero; performing loop shifting");
   endif
 
-  # 12 - rank condition at w = 0
+  ## 12 - rank condition at w = 0
   xx =[A, Bu; Cz, Dzu];
   [nr, nc] = size(xx);
   irank = rank(xx);
@@ -178,7 +179,7 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
     warning(" *** 12-rank condition violated at w = 0.");
   endif
 
-  # 21 - rank condition at w = 0
+  ## 21 - rank condition at w = 0
   xx =[A, Bw; Cy, Dyw];
   [nr, nc] = size(xx);
   irank = rank(xx);
@@ -189,8 +190,8 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
     warning(" *** 21-rank condition violated at w = 0.");
   endif
 
-  # can Dzu be transformed to become [0 I]' or [I]?
-  # This ensures a normalized weight
+  ## can Dzu be transformed to become [0 I]' or [I]?
+  ## This ensures a normalized weight
   [Qz, Ru] = qr(Dzu);
   irank = rank(Ru);
   if (irank != nu)
@@ -205,8 +206,8 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   endif
   Ru = Ru(1:nu,:);
 
-  # can Dyw be transformed to become [0 I] or [I]?
-  # This ensures a normalized weight
+  ## can Dyw be transformed to become [0 I] or [I]?
+  ## This ensures a normalized weight
   [Qw, Ry] = qr(Dyw');
   irank = rank(Ry);
   if (irank != ny)
@@ -222,7 +223,7 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   endif
   Ry = Ry(1:ny,:)';
 
-  # transform P by Qz/Ru and Qw/Ry
+  ## transform P by Qz/Ru and Qw/Ry
   Bw  = Bw*Qw;
   Bu  = Bu/Ru;
   B   = [Bw, Bu];
@@ -233,7 +234,7 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   Dzu = Qz*Dzu/Ru;
   Dyw = Ry\Dyw*Qw;
 
-  # pack the return structure
+  ## pack the return structure
   dgkf_struct.nw	= nw;
   dgkf_struct.nu	= nu;
   dgkf_struct.nz	= nz;

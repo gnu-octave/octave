@@ -1,20 +1,20 @@
-# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{retsys} =} sysprune ( @var{Asys}, @var{out_idx}, @var{in_idx})
@@ -46,8 +46,9 @@
 ## 
  
 function sys = sysprune(sys,output_idx,input_idx,state_idx)
-# A. S. Hodel August 1995
-# Updated by John Ingram 7-15-96
+
+  ## A. S. Hodel August 1995
+  ## Updated by John Ingram 7-15-96
 
   if( nargin < 3 | nargin > 4  )
     usage("retsys = sysprune(sys,output_idx,input_idx{,state_idx})");
@@ -55,13 +56,13 @@ function sys = sysprune(sys,output_idx,input_idx,state_idx)
     state_idx = [];
   endif
 
-  # default: no action
+  ## default: no action
   [nn,nz,mm,pp] = sysdimensions(sys);
   if(isempty(output_idx)) output_idx = 1:pp; endif
   if(isempty(input_idx)) input_idx = 1:mm; endif
   if(isempty(state_idx)) state_idx = 1:(nn+nz); endif
 
-  # check dimensions
+  ## check dimensions
   if( !(is_vector(output_idx) | isempty(output_idx) )  )
     if(!is_matrix(output_idx)) 
       error("sysprune: bad argument passed for output_idx");
@@ -116,7 +117,7 @@ function sys = sysprune(sys,output_idx,input_idx,state_idx)
 
   [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
 
-  # check for legal state permutation
+  ## check for legal state permutation
   if(nn & nz)
     c_idx = find(state_idx <= nn);
     if(!isempty(c_idx)) max_c = max(c_idx);

@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} imagesc (@var{x}, @var{zoom})
 ## Display a scaled version of the matrix @var{x} as a color image.  The
 ## matrix is scaled so that its entries are indices into the current

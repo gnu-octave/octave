@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} gray (@var{n})
 ## Return a gray colormap with @var{n} entries corresponding to values from
 ## 0 to @var{n}-1.  The argument @var{n} should be a scalar.  If it is

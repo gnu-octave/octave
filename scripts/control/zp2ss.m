@@ -1,20 +1,20 @@
-# Copyright (C) 1996 Auburn University.  All Rights Reserved
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996 Auburn University.  All Rights Reserved
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{A}, @var{B}, @var{C}, @var{D}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
@@ -46,7 +46,8 @@
 ## @end deftypefn
  
 function [a,b,c,d] = zp2ss(zer,pol,k)
-# Written by David Clem August 15, 1994
+
+  ## Written by David Clem August 15, 1994
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;
@@ -70,7 +71,7 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
 
   zpsys = ss2sys([],[],[],k);
 
-  # Find the number of zeros and the number of poles
+  ## Find the number of zeros and the number of poles
   nzer=length(zer);
   npol =length(pol);
 
@@ -78,20 +79,20 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
     error([num2str(nzer)," zeros, exceeds number of poles=",num2str(npol)]);
   endif
 
-  # Sort to place complex conjugate pairs together
+  ## Sort to place complex conjugate pairs together
   zer=sortcom(zer);
   pol=sortcom(pol);
 
-  # construct the system as a series connection of poles and zeros
-  # problem: poles and zeros may come in conjugate pairs, and not
-  # matched up!
+  ## construct the system as a series connection of poles and zeros
+  ## problem: poles and zeros may come in conjugate pairs, and not
+  ## matched up!
 
-  # approach: remove poles/zeros from the list as they are included in
-  # the ss system
+  ## approach: remove poles/zeros from the list as they are included in
+  ## the ss system
  
   while(length(pol))
 
-    # search for complex poles, zeros
+    ## search for complex poles, zeros
     cpol=[];    czer = [];
     if(!isempty(pol))
       cpol = find(imag(pol) != 0);
@@ -109,7 +110,7 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
     num=1;	# assume no zeros left.
     switch(pcnt)
     case(1)
-      # real pole/zero combination
+      ## real pole/zero combination
       if(length(zer))
         num = [1 -zer(1)];  
         zer = zer(2:length(zer));
@@ -117,7 +118,7 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
       den = [1 -pol(1)];
       pol = pol(2:length(pol));
     case(2)
-      # got a complex pole or zero, need two roots (if available)
+      ## got a complex pole or zero, need two roots (if available)
       if(length(zer) > 1)
         [num,zer] = zp2ssg2(zer);	# get two zeros
       elseif(length(zer) == 1)
@@ -129,10 +130,10 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
       error(["pcnt = ",num2str(pcnt)])
     endswitch
 
-    # pack tf into system form and put in series with earlier realization
+    ## pack tf into system form and put in series with earlier realization
     zpsys1 = tf2sys(num,den,0,"u","yy");
 
-    # change names to avoid warning messages from sysgroup
+    ## change names to avoid warning messages from sysgroup
     zpsys  = syssetsignals(zpsys,"in","u1",1);
     zpsys1 = sysupdate(zpsys1,"ss");
     nn     = sysdimensions(zpsys);        # working with continuous system

@@ -1,20 +1,20 @@
-# Copyright (C) 1996, 1998, 1999 Auburn University.  All Rights Reserved.
-#
-# This file is part of Octave. 
-#
-# Octave is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2, or (at your option) any 
-# later version. 
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License 
-# along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+## Copyright (C) 1996, 1998, 1999 Auburn University.  All Rights Reserved.
+##
+## This file is part of Octave. 
+##
+## Octave is free software; you can redistribute it and/or modify it 
+## under the terms of the GNU General Public License as published by the 
+## Free Software Foundation; either version 2, or (at your option) any 
+## later version. 
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT 
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License 
+## along with Octave; see the file COPYING.  If not, write to the Free 
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{sys} =} sysgroup ( @var{Asys}, @var{Bsys})
@@ -47,9 +47,10 @@
 ## @end deftypefn
  
 function sys = sysgroup(...)
-# A. S. Hodel August 1995
-# modified by John Ingram July 1996
-# A. S. Hodel: modified for variable number of arguments 1999
+
+  ## A. S. Hodel August 1995
+  ## modified by John Ingram July 1996
+  ## A. S. Hodel: modified for variable number of arguments 1999
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -62,7 +63,7 @@ function sys = sysgroup(...)
     usage("sys = sysgroup(Asys{,Bsys,...})");
   endif
 
-  # collect all arguments
+  ## collect all arguments
   arglist = list();
   va_start();
   for kk=1:nargin
@@ -73,11 +74,11 @@ function sys = sysgroup(...)
   endfor
 
   if(nargin == 2)
-    # the usual case; group the two systems together
+    ## the usual case; group the two systems together
     Asys = nth(arglist,1);
     Bsys = nth(arglist,2);
   
-    # extract information from Asys, Bsys to consruct sys
+    ## extract information from Asys, Bsys to consruct sys
     Asys = sysupdate(Asys,"ss");
     Bsys = sysupdate(Bsys,"ss");
     [n1,nz1,m1,p1] = sysdimensions(Asys);
@@ -103,7 +104,7 @@ function sys = sysgroup(...)
     D = [Ad,zeros(p1,m2); zeros(p2,m1),Bd];
     tsam = max(Atsam,Btsam);
   
-    # construct combined signal names; stnames must check for pure gain blocks
+    ## construct combined signal names; stnames must check for pure gain blocks
     if(isempty(Ast))
       stname = Bst;
     elseif(isempty(Bst))
@@ -114,7 +115,7 @@ function sys = sysgroup(...)
     inname  = append(Ain, Bin);
     outname = append(Aout,Bout);
   
-    # Sort states into continous first, then discrete
+    ## Sort states into continous first, then discrete
     dstates = ones(1,(nA+nB));
     if(An)
       dstates(1:(An)) = zeros(1,An);
@@ -128,19 +129,19 @@ function sys = sysgroup(...)
     C = C(:,pv);
     stname = stname(pv);
   
-    # check for duplicate signal names
+    ## check for duplicate signal names
     inname = sysgroupn(inname,"input");
     stname = sysgroupn(stname,"state");
     outname = sysgroupn(outname,"output");
   
-    # mark discrete outputs
+    ## mark discrete outputs
     outlist = find([Ayd, Byd]);
   
-    # build new system
+    ## build new system
     sys = ss2sys(A,B,C,D,tsam,An+Bn,Anz+Bnz,stname,inname,outname);
 
   else
-    # multiple systems (or a single system); combine together one by one
+    ## multiple systems (or a single system); combine together one by one
     sys = nth(arglist,1);
     for kk=2:length(arglist)
       printf("sysgroup: kk=%d\n",kk);

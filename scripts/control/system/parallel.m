@@ -60,7 +60,7 @@ function sysp = parallel (Asys, Bsys)
   Bsys = syssetsignals(Bsys,"in",__sysdefioname__(length(Ain),"Bin_u"));
 
   sysp = sysgroup(Asys,Bsys);
-  sysD = ss2sys([],[],[],[eye(mA);eye(mA)]);
+  sysD = ss([],[],[],[eye(mA);eye(mA)]);
 
   sysp = sysmult(sysp,sysD);
   sysp = syssetsignals(sysp,"in",Ain);

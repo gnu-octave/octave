@@ -20,11 +20,11 @@
 ## @deftypefn {Function File} {[@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname}] =} sys2tf (@var{sys})
 ## Extract transfer function data from a system data structure
 ##
-## See tf2sys for parameter descriptions.
+## See tf for parameter descriptions.
 ##
 ## @strong{Example}
 ## @example
-## octave:1> sys=ss2sys([1 -2; -1.1,-2.1],[0;1],[1 1]);
+## octave:1> sys=ss([1 -2; -1.1,-2.1],[0;1],[1 1]);
 ## octave:2> [num,den] = sys2tf(sys)
 ## num = 1.0000  -3.0000
 ## den = 1.0000   1.1000  -4.3000
@@ -43,7 +43,7 @@ function [num, den, tsam, inname, outname] = sys2tf (Asys)
   endif
 
   if( !isstruct(Asys))
-    error("Asys must be a system data structure (see ss2sys, tf2sys, zp2sys)");
+    error("Asys must be a system data structure (see ss, tf, zp)");
   elseif (! is_siso(Asys) )
     [n, nz, m, p] = sysdimensions(Asys);
     error(["system is not SISO (",num2str(m)," inputs, ...

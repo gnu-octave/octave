@@ -34,6 +34,7 @@
 ## @end deftypefn
 
 function [idxvec,errmsg]  = listidx(listvar,strlist)
+  error("listidx: don't use this anymore, ok?\n");
 
 if(nargin != 2)
   usage("idxvec = listidx(listvar,strlist)");
@@ -73,12 +74,12 @@ endif
 
 nsigs = length(listvar);
 for idx = 1:length(strlist)
-  signame = nth(strlist,idx);
+  signame = strlist{idx};
   for jdx = 1:nsigs
-    if( strcmp(signame,nth(listvar,jdx)) )
+    if( strcmp(signame,listvar{jdx}) )
       if(idxvec(idx) != 0)
         warning("Duplicate signal name %s (%d,%d)\n", ...
-          nth(listvar,jdx),jdx,idxvec(idx));
+          listvar{jdx},jdx,idxvec(idx));
       else
         idxvec(idx) = jdx;
       endif

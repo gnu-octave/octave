@@ -163,7 +163,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
       xlabel(xlstr);
       if(is_siso(sys))
 	subplot(2,1,1);
-	title(["|[Y/U]",tistr,"|, u=", nth(inname,1),", y=",nth(outname,1)]);
+	title(["|[Y/U]",tistr,"|, u=", inname{1},", y=",outname{1}]);
       else
 	title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
 	disp("MIMO plot from")
@@ -197,7 +197,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 	xlabel(xlstr);
 	ylabel("Phase in deg");
 	title([ "phase([Y/U]", tistr, ...
-	   "), u=", nth(inname,1),", y=",nth(outname,1)]);
+	   "), u=", inname{1},", y=",outname{1}]);
 	grid("on");
 	semilogx(w,phase);
 	## This should be the default for subsequent plot commands.

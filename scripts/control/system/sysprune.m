@@ -118,7 +118,7 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   lst = length(state_idx);
 
   if( !isstruct(sys))
-    error("Asys must be a system data structure (see ss2sys, tf2sys, or zp2sys)")
+    error("Asys must be a system data structure (see ss, tf, or zp)")
   elseif(pp < lo)
     error([num2str(lo)," output_idx entries, system has only ", ...
         num2str(pp)," outputs"]);
@@ -147,7 +147,7 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
         max_c,state_idx(max_c));
       warning("sysprune: sys has %d continuous states, %d discrete states", ...
         nn,nz);
-      error("continuous/discrete state partition not preserved ; see ss2sys");
+      error("continuous/discrete state partition not preserved ; see ss");
     endif
   endif
 
@@ -168,5 +168,5 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   stnam = stnam(state_idx);
   nn1 = length(find(state_idx <= nn));
   nz1 = length(find(state_idx > nn));
-  sys = ss2sys(aa,bb,cc,dd,tsam,nn1,nz1,stnam,innam,outnam,find(yd));
+  sys = ss(aa,bb,cc,dd,tsam,nn1,nz1,stnam,innam,outnam,find(yd));
 endfunction

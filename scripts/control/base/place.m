@@ -51,7 +51,7 @@ function K = place (sys, P)
     ## check arguments
 
     if(!isstruct(sys))
-      error("sys must be in system data structure format (see ss2sys)");
+      error("sys must be in system data structure format (see ss)");
     endif
     sys = sysupdate(sys,"ss");    # make sure it has state space form up to date
     if(!is_controllable(sys))

@@ -21,11 +21,11 @@
 ## Extract zero/pole/leading coefficient information from a system data
 ## structure
 ##
-## See zp2sys for parameter descriptions.
+## See zp for parameter descriptions.
 ##
 ## @strong{Example}
 ## @example
-## octave:1> sys=ss2sys([1 -2; -1.1,-2.1],[0;1],[1 1]);
+## octave:1> sys=ss([1 -2; -1.1,-2.1],[0;1],[1 1]);
 ## octave:2> [zer,pol,k] = sys2zp(sys)
 ## zer = 3.0000
 ## pol =

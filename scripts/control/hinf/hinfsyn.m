@@ -22,7 +22,7 @@
 ## @strong{Inputs} input system is passed as either
 ## @table @var
 ## @item asys
-## system data structure (see ss2sys, sys2ss)
+## system data structure (see ss, sys2ss)
 ## @itemize @bullet
 ## @item controller is implemented for continuous time systems
 ## @item controller is NOT implemented for discrete time systems  (see
@@ -171,28 +171,28 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
     printf("--------------------------------------\n");
 
     ## set up error messages
-    errmesg = list(" o   o   o   o   o  ", ...
+    errmesg = {" o   o   o   o   o  ", ...
         " #   -   -   -   -  ", ...
         " o   #   -   -   -  ", ...
         " o   o   #   -   -  ", ...
         " o   o   o   #   -  ", ...
         " o   o   o   o   #  ", ...
-        " -   -   -   -   -  ");
-    errdesx = list("", ...
+        " -   -   -   -   -  "};
+    errdesx = {"", ...
         "X im eig.", ...
         "Hx not Ham.", ...
         "X inf.eig", ...
         "X not symm.", ...
         "X not pos", ...
-        "R singular");
+        "R singular"};
 
-    errdesy = list(" ", ...
+    errdesy = {" ", ...
         "Y im eig.", ...
         "Hy not Ham.", ...
         "Y inf.eig", ...
         "Y not symm.", ...
         "Y not pos", ...
-        "Rtilde singular");
+        "Rtilde singular"};
 
 
     ## now do the search
@@ -233,15 +233,15 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
       endif
 
       if(x_ha_err >= 0 & x_ha_err <= 6)
-        printf("%s",nth(errmesg,x_ha_err+1));
-        xerr = nth(errdesx,x_ha_err+1);
+        printf("%s",errmesg{x_ha_err+1});
+        xerr = errdesx{x_ha_err+1};
       else
         error(" *** Xinf fail: this should never happen!");
       endif
 
       if(y_ha_err >= 0 & y_ha_err <= 6)
-        printf("%s",nth(errmesg,y_ha_err+1));
-        yerr = nth(errdesy,y_ha_err+1);
+        printf("%s",errmesg{y_ha_err+1});
+        yerr = errdesy{y_ha_err+1};
       else
         error(" *** Yinf fail: this should never happen!");
       endif
@@ -298,7 +298,7 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
       Kin = strappend(Aout((nout-ny+1):(nout)),"_K");
       Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
       [Ac, Bc, Cc, Dc] = sys2ss(K);
-      K = ss2sys(Ac,Bc,Cc,Dc,Atsam,ncstates,ndstates,Kst,Kin,Kout);
+      K = ss(Ac,Bc,Cc,Dc,Atsam,ncstates,ndstates,Kst,Kin,Kout);
       if (nargout >= 3)
         GW = starp(Asys, K);
       endif

@@ -106,7 +106,7 @@ function csys = d2c (sys, opt)
     C = tk*(c/(I+a));
     D = d- (c*iab);
     stnamec = strappend(stname,"_c");
-    csys = ss2sys(A,B,C,D,0,rows(A),0,stnamec,inname,outname);
+    csys = ss(A,B,C,D,0,rows(A),0,stnamec,inname,outname);
   elseif(strcmp(opt,"log"))
     sys = sysupdate(sys,"ss");
     [n,nz,m,p] = sysdimensions(sys);
@@ -209,7 +209,7 @@ function csys = d2c (sys, opt)
     if(!isempty(b))
       bb = Mall(1:na,(na+1):(na+nb));
     endif
-    csys = ss2sys(aa,bb,cc,dd,0,na,0,stnam,innam,outnam);
+    csys = ss(aa,bb,cc,dd,0,na,0,stnam,innam,outnam);
 
     ## update names
     nn = sysdimensions(sys);

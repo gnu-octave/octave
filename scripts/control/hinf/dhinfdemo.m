@@ -88,7 +88,7 @@ eval(cmd);
 ww = vec(logspace(-4.99, 3.99, 100));
 
 disp("Create ZOH equivalent model of a continuous plant");
-cmd = "G = tf2sys(2,[1 3 2]);  Gd = c2d(G, Ts);";
+cmd = "G = tf(2,[1 3 2]);  Gd = c2d(G, Ts);";
 run_cmd
 
 ## w-plane (continuous representation of the sampled system)

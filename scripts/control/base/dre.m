@@ -77,12 +77,12 @@
 ## @item tvals
 ## time values at which @var{p}(@var{t}) is computed
 ## @item plist
-## list values of @var{p}(@var{t}); nth (@var{plist}, @var{ii})
+## list values of @var{p}(@var{t}); @var{plist} {  @var{ii} }
 ## is @var{p}(@var{tvals}(@var{ii})).
 ##
 ## @item tvals
 ## @example
-## is selected so that || nth(Plist,ii) - nth(Plist,ii-1) || < Ptol
+## is selected so that || Plist{ii} - Plist{ii-1} || < Ptol
 ## for ii=2:length(tvals)
 ## @end example
 ## @end table
@@ -146,13 +146,13 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
     maxerr = 0;
     ## compute new values of P(t); recompute old values just in case
     for ii=2:tvlen
-      uv_i_minus_1 = [ In ; nth(Plist,ii-1) ];
+      uv_i_minus_1 = [ In ; Plist{ii-1} ];
       delta_t = tvals(ii-1) - tvals(ii);
       uv = expm(-H*delta_t)*uv_i_minus_1;
       Qi = uv(n1:n2,1:nn)/uv(1:nn,1:nn);
       Plist(ii) = (Qi+Qi')/2;
       ## check error
-      Perr = norm(nth(Plist,ii) - nth(Plist,ii-1))/norm(nth(Plist,ii));
+      Perr = norm(Plist{ii} - Plist{ii-1})/norm(Plist{ii});
       maxerr = max(maxerr,Perr);
       if(Perr > Ptol)
         new_t = mean(tvals([ii,ii-1]));

@@ -61,18 +61,18 @@ function sys = sysgroup (varargin)
     endif
 
     ## collect all arguments
-    arglist = list();
+    arglist = {};
     for kk=1:nargin
       arglist(kk) = varargin{kk};
-      if(!isstruct(nth(arglist,kk)))
+      if(!isstruct(arglist{kk}))
 	error("sysgroup: argument %d is not a data structure",kk);
       endif
     endfor
 
     if(nargin == 2)
       ## the usual case; group the two systems together
-      Asys = nth(arglist,1);
-      Bsys = nth(arglist,2);
+      Asys = arglist{1};
+      Bsys = arglist{2};
 
       ## extract information from Asys, Bsys to consruct sys
       Asys = sysupdate(Asys,"ss");
@@ -94,10 +94,54 @@ function sys = sysgroup (varargin)
 	error("sysgroup: Asys.tsam=%e, Bsys.tsam =%e", Atsam, Btsam);
       endif
 
-      A = [Aa,zeros(nA,nB); zeros(nB,nA),Ba];
-      B = [Ab,zeros(nA,m2); zeros(nB,m1),Bb];
-      C = [Ac,zeros(p1,nB); zeros(p2,nA),Bc];
-      D = [Ad,zeros(p1,m2); zeros(p2,m1),Bd];
+      if(nA*nB > 0)
+        A12 = zeros(nA,nB);
+      else
+        A12 = [];
+      endif
+      A = [Aa,A12; A12', Ba];
+ 
+      if(nA*m2 > 0)
+        B12 = zeros(nA,m2);
+      else
+        B12 = [];
+      endif
+      if(nB*m1 > 0)
+        B21 = zeros(nB,m1);
+      else
+        B21 = [];
+      endif
+      if(isempty(Ab))
+        Ab = [];
+      endif
+      if(isempty(Bb))
+        Bb = [];
+      endif
+      B = [Ab, B12; B21, Bb];
+ 
+      if(p1*nB > 0)
+        C12 = zeros(p1,nB);
+      else
+        C12 = [];
+      endif
+      if(p2*nA > 0)
+        C21 = zeros(p2,nA);
+      else
+        C21 = [];
+      endif
+      C = [Ac, C12; C21,Bc];
+ 
+      if(p1*m2 > 0)
+        D12 = zeros(p1,m2);
+      else
+        D12 = [];
+      endif
+      if(p2*m1 > 0)
+        D21 = zeros(p2,m1);
+      else
+        D21 = [];
+      endif
+      D = [Ad, D12; D21, Bd];
       tsam = max(Atsam,Btsam);
 
       ## construct combined signal names; stnames must check for pure gain blocks
@@ -106,10 +150,10 @@ function sys = sysgroup (varargin)
       elseif(isempty(Bst))
 	stname = Ast;
       else
-	stname  = append(Ast, Bst);
+        stname= __sysconcat__(Ast,Bst);
       endif
-      inname  = append(Ain, Bin);
-      outname = append(Aout,Bout);
+      inname = __sysconcat__(Ain,Bin);
+      outname = __sysconcat__(Aout,Bout);
 
       ## Sort states into continous first, then discrete
       dstates = ones(1,(nA+nB));
@@ -134,14 +178,14 @@ function sys = sysgroup (varargin)
       outlist = find([Ayd, Byd]);
 
       ## build new system
-      sys = ss2sys(A,B,C,D,tsam,An+Bn,Anz+Bnz,stname,inname,outname);
+      sys = ss(A,B,C,D,tsam,An+Bn,Anz+Bnz,stname,inname,outname);
 
     else
       ## multiple systems (or a single system); combine together one by one
-      sys = nth(arglist,1);
+      sys = arglist{1};
       for kk=2:length(arglist)
 	printf("sysgroup: kk=%d\n",kk);
-	sys = sysgroup(sys,nth(arglist,kk));
+	sys = sysgroup(sys,arglist{kk});
       endfor
     endif
 

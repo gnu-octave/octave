@@ -87,7 +87,7 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
   ## SISO state space systems to zero-pole  form
   if( is_siso(sys) & strcmp( sysgettype(sys), "ss") )
     [zer,pol,k,tsam,inname,outname] = sys2zp(sys);
-    sys = zp2sys(zer,pol,k,tsam,inname,outname);
+    sys = zp(zer,pol,k,tsam,inname,outname);
   endif
 
   ## get system frequency response

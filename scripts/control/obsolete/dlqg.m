@@ -118,7 +118,7 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
   Bc = Ke;
   Cc = -Ks;
   Dc = zeros(rows(Cc),columns(Bc));
-  K = ss2sys(Ac,Bc,Cc,Dc,1);
+  K = ss(Ac,Bc,Cc,Dc,1);
   disp("HODEL: need to add names to this guy!")
 
 endfunction

@@ -146,7 +146,7 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
       [stn, inn, outn] = sysgetsignals(sys);
       if(is_siso(sys))
         title(sprintf("Nyquist plot from %s to %s, w (rad/s) in [%e, %e]", ...
-          nth(inn,1), nth(outn,1), w(1), w(length(w))) )
+          inn{1}, outn{1}, w(1), w(length(w))) )
       endif
 
       gset nologscale xy;

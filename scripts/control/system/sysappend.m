@@ -115,8 +115,12 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
       else
 	inname = __sysdefioname__(Bm,"u",(Am+1));
       endif
-      if(Am)   Ain = append(Ain,inname);
-      else     Ain = inname;              endif
+
+      if(Am)
+        Ain = __sysconcat__(Ain,inname);
+      else
+        Ain = inname;
+      endif
 
       ## default b matrix
       if(isempty(b))     b  = zeros(Ann+Anz,(Bm-Am));
@@ -144,7 +148,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
       else
 	outname = __sysdefioname__(Bp,"y",(Ap+1));
       endif
-      if(Ap)   Aout = append(Aout,outname);
+      if(Ap)   Aout = __sysconcat__(Aout,outname);
       else     Aout = outname;                endif
 
       ## construct new yd entries
@@ -183,7 +187,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
     Ad = d;
 
     ## construct return system
-    retsys = ss2sys(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
+    retsys = ss(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
 
   unwind_protect_cleanup
     warn_empty_list_elements = save_warn_empty_list_elements;

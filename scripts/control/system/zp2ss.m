@@ -68,7 +68,7 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
       warning("zp2ss: k is complex")
     endif
 
-    zpsys = ss2sys (zeros (0, 0), zeros (0, 1), zeros (1, 0), k);
+    zpsys = ss (zeros (0, 0), zeros (0, 1), zeros (1, 0), k);
 
     ## Find the number of zeros and the number of poles
     nzer=length(zer);
@@ -130,7 +130,7 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
       endswitch
 
       ## pack tf into system form and put in series with earlier realization
-      zpsys1 = tf2sys(num,den,0,"u","yy");
+      zpsys1 = tf(num,den,0,"u","yy");
 
       ## change names to avoid warning messages from sysgroup
       zpsys  = syssetsignals (zpsys, "in", "u1", 1);

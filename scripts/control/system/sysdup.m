@@ -62,7 +62,7 @@ function retsys = sysdup (Asys, output_list, input_list)
   endif
 
   if( !isstruct(Asys))
-    error("Asys must be a system data structure (see ss2sys, tf2sys, or zp2sys)")
+    error("Asys must be a system data structure (see ss, tf, or zp)")
   endif
 
   Asys = sysupdate(Asys,"ss");
@@ -103,7 +103,7 @@ function retsys = sysdup (Asys, output_list, input_list)
   tsam = sysgettsam(Asys);
 
   ## pack system and then rename signals
-  retsys = ss2sys(aa,bb,cc,dd,tsam,nn,nz);
+  retsys = ss(aa,bb,cc,dd,tsam,nn,nz);
   retsys = syssetsignals(retsys,"in",innam,1:mm);
   retsys = syssetsignals(retsys,"out",outnam,1:pp);
   retsys = syssetsignals(retsys,"yd",yd,1:pp);

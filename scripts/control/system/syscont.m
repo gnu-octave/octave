@@ -82,7 +82,7 @@ function [csys, Acd, Ccd] = syscont (sys)
     Ccd = sys_c(y_c,st_d);
     inname = sys_inname;
 
-    csys = ss2sys(Acc,Bcc,Ccc,Dcc,0,sys_n,0,stname,inname,outname);
+    csys = ss(Acc,Bcc,Ccc,Dcc,0,sys_n,0,stname,inname,outname);
 
   unwind_protect_cleanup
     warn_empty_list_elements = save_warn_empty_list_elements;

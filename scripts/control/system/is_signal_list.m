@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998, 2000 Auburn University.  All rights reserved.
+## Copyright (C) 1996, 1998, 2000, 2004 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -23,11 +23,13 @@
 
 function flg = is_signal_list (mylist)
 
-  flg = islist (mylist);
-
+  flg = iscell (mylist);
+  if(flg)
+    flg = (rows(mylist) == 1 | columns(mylist) == 1);
+  end
   if (flg)
     for ii = 1:length (mylist)
-      if (! (isstr (nth (mylist, ii)) && rows (nth (mylist,ii)) == 1))
+      if (! (isstr (mylist{ii}) && rows (mylist{ii}) == 1))
 	flg = 0;
       endif
     endfor

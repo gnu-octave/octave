@@ -25,7 +25,7 @@
 ## used internally, minimal argument checking
 ##
 ## @strong{Example} @code{ioname = __sysdefioname__(5,"u",3)}
-## returns the list:
+## returns the cell array:
 ## @example
 ## ioname =
 ## (
@@ -44,11 +44,11 @@ function ioname = __sysdefioname__ (n, str, m)
 
   if (nargin == 2)           m = min(1,n);            endif
 
-  ioname = list();
+  ioname = {};
   jj = 1;
   if(n > 0 & m > 0 & m <= n)
     for ii = m:n
-      ioname(ii+1-m) = sprintf("%s_%d",str,ii);
+      ioname{ii+1-m} = sprintf("%s_%d",str,ii);
     endfor
   elseif(m > n)
     error("str=%s; start value m=%d > final value n=%d",str,m,n);

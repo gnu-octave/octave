@@ -62,5 +62,5 @@ function outsys = ord2 (nfreq, damp, gain)
   endif
 
   w = 2.0 * pi * nfreq;
-  outsys = ss2sys([-2.0*w*damp, -w; w, 0], [w; 0], [0, gain]);
+  outsys = ss ([-2.0*w*damp, -w; w, 0], [w; 0], [0, gain]);
 endfunction

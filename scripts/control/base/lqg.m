@@ -106,10 +106,10 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
           ", columns(R)=", num2str(columns(R))]);
   endif
 
-  varname = list("Sigw","Sigv","Q","R");
+  varname = {"Sigw","Sigv","Q","R"};
   for kk=1:length(varname);
-    eval(sprintf("chk = issquare(%s);",nth(varname,kk)));
-    if(! chk ) error("lqg: %s is not square",nth(varname,kk)); endif
+    eval(sprintf("chk = issquare(%s);",varname{kk}));
+    if(! chk ) error("lqg: %s is not square",varname{kk}); endif
   endfor
 
   ## permute (if need be)
@@ -149,9 +149,9 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
   inname1 = strappend(outname,"_K");
 
   if(DIG)
-    K = ss2sys(Ac,Bc,Cc,Dc,tsam,n,nz,stname1,inname1,outname1,1:rows(Cc));
+    K = ss(Ac,Bc,Cc,Dc,tsam,n,nz,stname1,inname1,outname1,1:rows(Cc));
   else
-    K = ss2sys(Ac,Bc,Cc,Dc,tsam,n,nz,stname,inname1,outname1);
+    K = ss(Ac,Bc,Cc,Dc,tsam,n,nz,stname,inname1,outname1);
   endif
 
 endfunction

@@ -55,5 +55,5 @@ function wsys = wgt1o (vl, vh, fc)
   endif
   d=[vh];
 
-  wsys = ss2sys(a,b,c,d);
+  wsys = ss(a,b,c,d);
 endfunction

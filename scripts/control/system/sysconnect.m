@@ -267,12 +267,13 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   ## rebuild system
   Ts = sysgettsam(sys);
   [stnam,innam,outnam] = sysgetsignals(sys);
-  sys = ss2sys(Ac,Bc,Cc,Dc,Ts,nc,nz,stnam,innam,outnam,find(yd));
+  sys = ss(Ac,Bc,Cc,Dc,Ts,nc,nz,stnam,innam,outnam,find(yd));
 
   ## update connected input names
   for ii = 1:length(input_list)
     idx = input_list(ii);
-    strval = sprintf("%s*",nth(sysgetsignals(sys,"in",idx),1) );
+    tmpval = sysgetsignals(sys,"in",idx);
+    strval = sprintf("%s*",tmpval{1} );
     sys = syssetsignals(sys,"in",strval,idx);
   endfor
 

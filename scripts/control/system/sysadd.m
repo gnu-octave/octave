@@ -50,18 +50,18 @@ function sys = sysadd (varargin)
   endif
 
   ## collect all arguments
-  arglist = list();
+  arglist = {};
   for kk=1:nargin
-    arglist(kk) = varargin{kk};
-    if(!isstruct(nth(arglist,kk)))
+    arglist{kk} = varargin{kk};
+    if(!isstruct(arglist{kk}))
       error("sysadd: argument %d is not a data structure",kk);
     endif
   endfor
 
   ## check system dimensions
-  [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,1));
+  [n,nz,mg,pg,Gyd] = sysdimensions(arglist{1});
   for kk=2:nargin
-    [n,nz,mh,ph,Hyd] = sysdimensions(nth(arglist,kk));
+    [n,nz,mh,ph,Hyd] = sysdimensions(arglist{kk});
     if(mg != mh)
       error("arg 1 has %d inputs; arg %d has vs %d inputs",mg,kk,mh);
     elseif(pg != ph)
@@ -74,29 +74,32 @@ function sys = sysadd (varargin)
 
   ## perform the add
   if (nargin == 2)
-    Gsys = nth(arglist,1);
-    Hsys = nth(arglist,2);
+    Gsys = arglist{1};
+    Hsys = arglist{2};
 
-    if (! strcmp (sysgettype (Gsys), "tf"))
+    # check if adding scalar transfer functions with identical denoms
+    [Gn, Gnz, Gm, Gp] = sysdimensions(Gsys);
+    [Hn, Hnz, Hm, Hp] = sysdimensions(Hsys);
+    if ( Gm ==1 & Gp == 1 & Hm == 1 & Hp == 1 & Gn == Hn & Gnz == Hnz )
+      # dimensions are compatible, check if can add
       [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
-    endif
-
-    if (! strcmp (sysgettype (Hsys),"tf"))
       [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
-    endif
+      if (length(Hden) == length(Gden) )
+        if( (Hden == Gden) & (HT == GT) )
+          sys = tf(Gnum+Hnum,Gden,GT,Gin,Gout);
 
-    ## see if adding  transfer functions with identical denominators
-    if (length(Hden) == length(Gden) )
-      if( (Hden == Gden) & (HT == GT) )
-        sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
-        return
+          return;   # return prematurely since the add is done.
+        endif
       endif
-      ## if not, we go on and do the usual thing...
     endif
 
     ## make sure in ss form
     Gsys = sysupdate(Gsys,"ss");
     Hsys = sysupdate(Hsys,"ss");
+    Gin = sysgetsignals(Gsys,"in");
+    Gout = sysgetsignals(Gsys,"out");
+    Hin = sysgetsignals(Hsys,"in");
+    Hout = sysgetsignals(Hsys,"out");
 
     ## change signal names to avoid warning messages from sysgroup
     Gsys = syssetsignals(Gsys,"in",__sysdefioname__(length(Gin),"Gin_u"));
@@ -113,9 +116,9 @@ function sys = sysadd (varargin)
 
   else
     ## multiple systems (or a single system); combine together one by one
-    sys = nth(arglist,1);
+    sys = arglist{1};
     for kk=2:length(arglist)
-      sys = sysadd(sys,nth(arglist,kk));
+      sys = sysadd(sys,arglist{kk});
     endfor
   endif
 

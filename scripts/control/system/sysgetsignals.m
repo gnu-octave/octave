@@ -44,10 +44,10 @@
 ## index(indices) or name(s) or signals; see @code{sysidx}
 ##
 ## @item strflg
-## flag to return a string instead of a list;  Values:
+## flag to return a string instead of a cell array;  Values:
 ## @table @code
 ## @item 0
-## (default) return a list (even if signum specifies an individual signal)
+## (default) return a cell array (even if signum specifies an individual signal)
 ##
 ## @item 1
 ## return a string.  Exits with an error if signum does not specify an 
@@ -63,7 +63,7 @@
 ## @item stname
 ## @itemx inname
 ## @itemx outname
-## signal names (lists of strings);  names of states,
+## signal names (cell array of strings);  names of states,
 ## inputs, and outputs, respectively
 ## @item yd
 ## binary vector; @var{yd}(@var{ii}) is nonzero if output @var{ii} is
@@ -73,13 +73,13 @@
 ## @item If @var{sigid} is specified but @var{signum} is not specified, then
 ## @table @code
 ## @item sigid="in"
-## @var{siglist} is set to the list of input names
+## @var{siglist} is set to the cell array of input names
 ##
 ## @item sigid="out"
-## @var{siglist} is set to the list of output names
+## @var{siglist} is set to the cell array of output names
 ##
 ## @item sigid="st"
-## @var{siglist} is set to the list of state names
+## @var{siglist} is set to the cell array of state names
 ##
 ## stage signals
 ## @item sigid="yd"
@@ -90,7 +90,7 @@
 ## @end table
 ##
 ## @item if the first three input arguments are specified, then @var{signame} is
-## a list of the specified signal names (@var{sigid} is @code{"in"},
+## a cell array of the specified signal names (@var{sigid} is @code{"in"},
 ## @code{"out"}, or @code{"st"}), or else the logical flag
 ## indicating whether output(s) @var{signum} is(are) discrete (@var{sigval}=1)
 ## or continuous (@var{sigval}=0).
@@ -98,7 +98,7 @@
 ##
 ## @strong{Examples} (From @code{sysrepdemo})
 ## @example
-## octave> sys=ss2sys(rand(4),rand(4,2),rand(3,4));
+## octave> sys=ss(rand(4),rand(4,2),rand(3,4));
 ## octave> [Ast,Ain,Aout,Ayd] = sysgetsignals(sys) i  # get all signal names
 ## Ast =
 ## (
@@ -127,7 +127,7 @@
 ##   [1] = u_1
 ##   [2] = u_2
 ## )
-## octave> Aout = sysgetsignals(sys,"out",2)   # get name of output 2 (in list)
+## octave> Aout = sysgetsignals(sys,"out",2)   # get name of output 2 (in cell array)
 ## Aout =
 ## (
 ##   [1] = y_2
@@ -139,7 +139,7 @@
 
 function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strflg)
 
-  ## Adapted from ss2sys
+  ## Adapted from ss
 
   if(nargin < 1 | nargin > 4 | nargout > 4)
     usage("[stname{,inname,outname,yd}] = sysgetsignals(sys{,sigid,signum})")
@@ -168,7 +168,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
     endif
     if(nargin >= 3)
       if( is_signal_list(signum) | isstr(signum) )
-        signum = listidx(stname,signum);
+        signum = cellidx(stname,signum);
       end
       if(max(signum) > length(stname))
         error(sprintf("sysgetsignals(sys,\"%s\",%d):only %d entries.\n", ...
@@ -184,7 +184,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
           if(length(signum) > 1)
             error("strflg=1, length(signum) = %d",length(signum));
           endif
-          stname = nth(stname,signum);
+          stname = stname{signum};
         otherwise,
           error ("invalid value of strflg = %e", strflg);
         endswitch

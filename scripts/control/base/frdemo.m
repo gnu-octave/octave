@@ -57,7 +57,7 @@ function frdemo ()
           disp("\nContinuous system bode analysis\n");
           disp("Example #1:")
           disp("\nConsider the system sys1=");
-          sys1=tf2sys([1, 1], [1, 0, -1]);
+          sys1=tf([1, 1], [1, 0, -1]);
           sysout(sys1);
           disp("\nPole-zero form can be obtained as follows:")
           cmd = "sysout(sys1,""zp"");";
@@ -87,7 +87,7 @@ function frdemo ()
           disp("")
           clc
           disp("Example #2, sys2=")
-          cmd = "sys2=zp2sys(1, [-1, -5], 10);";
+          cmd = "sys2=zp(1, [-1, -5], 10);";
           eval(cmd);
           cmd = "sysout(sys2);";
           eval(cmd);
@@ -101,7 +101,7 @@ function frdemo ()
           disp("")
           clc
           disp("Example #3, Consider the following state space system sys3=:\n");
-          cmd = "sys3=ss2sys([0, 1; -1000, -1001], [0; 1], [0, -891], 1);";
+          cmd = "sys3=ss([0, 1; -1000, -1001], [0; 1], [0, -891], 1);";
           eval(cmd);
           cmd = "sysout(sys3);";
           eval(cmd);
@@ -175,7 +175,7 @@ function frdemo ()
           disp("Display bode plots of a discrete SISO system (dbode)\n")
           disp("Example #1, Consider the following discrete transfer");
           disp(" function:\n");
-          cmd = "sys1 = tf2sys([0.00100502, -0.00099502], [1, -2, 1], 0.001);";
+          cmd = "sys1 = tf([0.00100502, -0.00099502], [1, -2, 1], 0.001);";
           disp(cmd);
           eval(cmd);
           cmd = "sysout(sys1)";
@@ -214,7 +214,7 @@ function frdemo ()
           clc
           disp("Example #2, Consider the following set of discrete poles and");
           disp("zeros:\n")
-          cmd = "sys2 = zp2sys([0.99258;0.99745],[0.99961;0.99242],1,0.001);";
+          cmd = "sys2 = zp([0.99258;0.99745],[0.99961;0.99242],1,0.001);";
           disp(cmd);
           eval(cmd);
           cmd = "sysout(sys2)";
@@ -232,7 +232,7 @@ function frdemo ()
           disp("")
           clc
           disp("\nExample #3, Now consider the following state space system:\n");
-          cmd = "sys3 = ss2sys([.857, .0011; 0, .99930],[1;1],[-.6318, .0057096],5.2, .001);";
+          cmd = "sys3 = ss([.857, .0011; 0, .99930],[1;1],[-.6318, .0057096],5.2, .001);";
           disp(cmd);
           eval(cmd);
           cmd = "sysout(sys3);";
@@ -323,7 +323,7 @@ function frdemo ()
           disp("\nContinuous system nyquist analysis\n");
           disp("Display Nyquist plots of a SISO system (nyquist)\n")
           disp("Example #1, Consider the following transfer function:\n")
-          cmd = "sys1 = tf2sys(1, [1, 0.8, 1]);";
+          cmd = "sys1 = tf(1, [1, 0.8, 1]);";
           disp(cmd);
           eval(cmd);
           disp("To examine the transfer function, use the command:");
@@ -360,7 +360,7 @@ function frdemo ()
           disp("")
           clc
           disp("Example #2, Consider the following set of poles and zeros:\n")
-          cmd = "sys2 = zp2sys([-1;-4],[-2+1.4142i;-2-1.4142i],1);";
+          cmd = "sys2 = zp([-1;-4],[-2+1.4142i;-2-1.4142i],1);";
           disp(cmd);
           eval(cmd);
           disp("\nTo examine the poles and zeros, use the command:");
@@ -376,7 +376,7 @@ function frdemo ()
           disp("")
           clc
           disp("\nExample #3, Consider the following state space system:\n")
-          cmd = "sys3 = ss2sys([0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1; 0, 0, -20, -12],[0;0;0;1],[50, 100, 0, 0],0);";
+          cmd = "sys3 = ss([0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1; 0, 0, -20, -12],[0;0;0;1],[50, 100, 0, 0],0);";
           disp(cmd);
           eval(cmd);
           disp("\nTo examine the state-space system, use the command:");
@@ -449,7 +449,7 @@ function frdemo ()
           disp(cmd);
           eval(cmd);
           disp("\nExample #1, Consider the following transfer function:\n")
-          cmd = "sys1 = tf2sys([2, -3.4, 1.5],[1, -1.6, 0.8],T);";
+          cmd = "sys1 = tf([2, -3.4, 1.5],[1, -1.6, 0.8],T);";
           disp(cmd);
           eval(cmd);
           disp("To examine the transfer function, use the command:");
@@ -491,7 +491,7 @@ function frdemo ()
           disp("")
           clc
           disp("\nExample #2, Consider the following set of poles and zeros:\n")
-          cmd = "sys2 = zp2sys([0.98025 + 0.01397i; 0.98025 - 0.01397i],[0.96079;0.99005],1,T);";
+          cmd = "sys2 = zp([0.98025 + 0.01397i; 0.98025 - 0.01397i],[0.96079;0.99005],1,T);";
           disp(cmd);
           eval(cmd);
           disp("\nTo examine the open loop zeros and poles, use the command:");
@@ -514,7 +514,7 @@ function frdemo ()
           disp("This example will use the same system used in the third");
           disp("example in the continuous nyquist demo.  First, that system");
           disp("will have to be re-entered useing the following commands:\n");
-          cmd = "sys3 = ss2sys([0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1; 0, 0, -20, -12],[0;0;0;1],[50, 100, 0, 0],0);";
+          cmd = "sys3 = ss([0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1; 0, 0, -20, -12],[0;0;0;1],[50, 100, 0, 0],0);";
           disp(cmd);
           eval(cmd);
           disp("\nTo examine the state-space system, use the command:");

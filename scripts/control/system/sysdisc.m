@@ -89,7 +89,7 @@ function [dsys, Adc, Cdc] = sysdisc (sys)
     if(!isempty(outname))
       tsam = sysgettsam(sys);
       [nc,nz] = sysdimensions(sys);
-      dsys = ss2sys(Add,Bdd,Cdd,Ddd,tsam,0,nz,stname,inname,outname,outlist);
+      dsys = ss(Add,Bdd,Cdd,Ddd,tsam,0,nz,stname,inname,outname,outlist);
     else
       dsys=[];
     endif

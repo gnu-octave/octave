@@ -55,7 +55,7 @@ function moddemo ()
       prompt
       disp("\nTo convert this to a discrete time system (using a zero order hold),")
       disp("use the following commands:\n")
-      cmd="sys=ss2sys(a,b,c,d);";
+      cmd="sys=ss(a,b,c,d);";
       run_cmd
       cmd="dsys = c2d(sys,0.2);";
       run_cmd

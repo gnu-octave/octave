@@ -1,3 +1,40 @@
+2004-02-16  A S Hodel  <a.s.hodel@Eng.Auburn.EDU>
+
+	* control/base/__bodquist__.m, control/base/__stepimp__.m,
+	control/base/analdemo.m, control/base/bddemo.m,
+	control/base/bode.m, control/base/dre.m, control/base/frdemo.m,
+	control/base/lqg.m, control/base/nyquist.m, control/base/place.m,
+	control/base/rldemo.m, control/base/rlocus.m,
+	control/base/tzero.m, control/hinf/dgkfdemo.m,
+	control/hinf/dhinfdemo.m, control/hinf/h2syn.m,
+	control/hinf/hinf_ctr.m, control/hinf/hinfsyn.m,
+	control/hinf/wgt1o.m, control/obsolete/dlqg.m,
+	control/obsolete/packsys.m, control/obsolete/series.m,
+	control/system/__sysdefioname__.m,
+	control/system/__sysdefstname__.m, control/system/__sysgroupn__.m,
+	control/system/__tf2sysl__.m, control/system/buildssic.m,
+	control/system/c2d.m, control/system/d2c.m,
+	control/system/dmr2d.m, control/system/fir2sys.m,
+	control/system/is_signal_list.m, control/system/is_siso.m,
+	control/system/jet707.m, control/system/listidx.m,
+	control/system/moddemo.m, control/system/ord2.m,
+	control/system/packedform.m, control/system/parallel.m,
+	control/system/ss2sys.m, control/system/sys2tf.m,
+	control/system/sys2zp.m, control/system/sysadd.m,
+	control/system/sysappend.m, control/system/sysconnect.m,
+	control/system/syscont.m, control/system/sysdimensions.m,
+	control/system/sysdisc.m, control/system/sysdup.m,
+	control/system/sysgetsignals.m, control/system/sysgettype.m,
+	control/system/sysgroup.m, control/system/sysmin.m,
+	control/system/sysmult.m, control/system/sysprune.m,
+	control/system/sysrepdemo.m, control/system/sysscale.m,
+	control/system/syssetsignals.m, control/system/syssub.m,
+	control/system/sysupdate.m, control/system/tf2sys.m,
+	control/system/ugain.m, control/system/zp2ss.m,
+	control/system/zp2sys.m, control/util/__outlist__.m,
+	control/util/__zgpbal__.m, control/util/strappend.m:
+	Use cell arrays instead of lists.
+
 2004-01-23  Stefan van der Walt  <stefan@sun.ac.za>
 
 	* plot/bar.m: Increase size of cutoff vector from xlen-1 to xlen

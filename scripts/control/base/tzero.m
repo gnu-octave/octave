@@ -54,7 +54,7 @@ function [zer, gain] = tzero (A, B, C, D)
 
   ## get A,B,C,D and Asys variables, regardless of initial form
   if(nargin == 4)
-    Asys = ss2sys(A,B,C,D);
+    Asys = ss(A,B,C,D);
   elseif( (nargin == 1) && (! isstruct(A)))
     usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");
   elseif(nargin != 1)
@@ -83,10 +83,10 @@ function [zer, gain] = tzero (A, B, C, D)
   Asys = zgreduce(Asys,meps);  [A, B, C, D] = sys2ss(Asys); # ENVD algorithm
   if(!isempty(A))
     ## repeat with dual system
-    Asys = ss2sys(A', C', B', D');   Asys = zgreduce(Asys,meps);
+    Asys = ss(A', C', B', D');   Asys = zgreduce(Asys,meps);
 
     ## transform back
-    [A,B,C,D] = sys2ss(Asys);    Asys = ss2sys(A', C', B', D');
+    [A,B,C,D] = sys2ss(Asys);    Asys = ss(A', C', B', D');
   endif
 
   zer = [];                     # assume none

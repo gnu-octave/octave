@@ -139,6 +139,6 @@ function K = hinf_ctr (dgs, F, H, Z, g)
 
   endif
 
-  K = ss2sys(ahat,bhat(:,1:ny),chat(1:nu,:),dhat(1:nu,1:ny));
+  K = ss(ahat,bhat(:,1:ny),chat(1:nu,:),dhat(1:nu,1:ny));
 
 endfunction

@@ -45,7 +45,7 @@
 ## Conversion to @code{tf} or @code{zp} exits with an error if the system is
 ## mixed continuous/digital.
 ## @end deftypefn
-## @seealso{tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, and sys2zp}
+## @seealso{tf, ss, zp, sysout, sys2ss, sys2tf, and sys2zp}
 
 ## Author: John Ingram <ingraje@eng.auburn.edu>
 ## Created: July 9, 1996

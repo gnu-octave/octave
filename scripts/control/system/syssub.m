@@ -49,18 +49,18 @@ function sys = syssub (varargin)
   endif
 
   ## collect all arguments
-  arglist = list();
+  arglist = {};
   for kk=1:nargin
-    arglist(kk) = varargin{kk};
-    if(!isstruct(nth(arglist,kk)))
+    arglist{kk} = varargin{kk};
+    if(!isstruct(arglist{kk}))
       error("syssub: argument %d is not a data structure",kk);
     endif
   endfor
 
   ## check system dimensions
-  [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,1));
+  [n,nz,mg,pg,Gyd] = sysdimensions(arglist{1});
   for kk=2:nargin
-    [n,nz,mh,ph,Hyd] = sysdimensions(nth(arglist,kk));
+    [n,nz,mh,ph,Hyd] = sysdimensions(arglist{kk});
     if(mg != mh)
       error("arg 1 has %d inputs; arg %d has vs %d inputs",mg,kk,mh);
     elseif(pg != ph)
@@ -73,14 +73,15 @@ function sys = syssub (varargin)
 
   ## perform the subtract
   if(nargin == 2)
-    Gsys = nth(arglist,1);   Hsys = nth(arglist,2);
+    Gsys = arglist{1};
+    Hsys = arglist{2};
     if( strcmp(sysgettype(Gsys),"tf") | strcmp(sysgettype(Hsys),"tf") )
       ## see if subtracting  transfer functions with identical denominators
       [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
       [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
       if(length(Hden) == length(Gden) )
         if( (Hden == Gden) & (HT == GT) )
-          sys = tf2sys(Gnum-Hnum,Gden,GT,Gin,Gout);
+          sys = tf(Gnum-Hnum,Gden,GT,Gin,Gout);
           return
         endif
         ## if not, we go on and do the usual thing...
@@ -106,9 +107,9 @@ function sys = syssub (varargin)
 
   else
     ## multiple systems (or a single system); combine together one by one
-    sys = nth(arglist,1);
+    sys = arglist{1};
     for kk=2:length(arglist)
-      sys = syssub(sys,nth(arglist,kk));
+      sys = syssub(sys,arglist{kk});
     endfor
   endif
 

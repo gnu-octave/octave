@@ -228,7 +228,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
 	gm = zeros(NOUT, 1);
 	tt = "impulse";
       else
-	ssys = ss2sys(F, G, C, D, t_step);
+	ssys = ss(F, G, C, D, t_step);
 	gm = dcgain(ssys);
 	tt = "step";
       endif

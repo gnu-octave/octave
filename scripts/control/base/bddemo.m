@@ -60,9 +60,9 @@ function bddemo ()
       help syssub
       prompt
       disp("Example #1, \n")
-      cmd = "sys1 = tf2sys([1 -1],[1 2 1]);";
+      cmd = "sys1 = tf([1 -1],[1 2 1]);";
       run_cmd
-      cmd = "sys2 = tf2sys([1 -1],[1 2 3]);";
+      cmd = "sys2 = tf([1 -1],[1 2 3]);";
       run_cmd
       disp("sys1=")
       sysout(sys1);
@@ -96,7 +96,7 @@ function bddemo ()
       help sysappend
       prompt
       disp("Consider a double-integrator system:")
-      sys = tf2sys(1, [1, 0, 0]);
+      sys = tf(1, [1, 0, 0]);
       sys=sysupdate(sys,"ss");
       sysout(sys,"ss");
       disp("We add a velocity disturbance input as follows:")
@@ -119,14 +119,14 @@ function bddemo ()
       a = rand(3,3);
       b = rand(3,2);
       c = rand(2,3);
-      sys = ss2sys(a,b,c);
+      sys = ss(a,b,c);
       sysout(sys);
       prompt
       disp("Change state names to larry, moe, and curly as follows:")
-      cmd = "sys = syssetsignals(sys,\"st\",list(\"larry\",\"moe  \" , \"curly\"));";
+      cmd = 'sys = syssetsignals(sys,"st",{"larry","moe" , "curly"});';
       run_cmd
       disp("Indicate that output 2 is discrete-time:")
-      cmd = "sys = syssetsignals(sys,\"yd\",1,2);";
+      cmd = 'sys = syssetsignals(sys,"yd",1,2);';
       run_cmd
       disp("Change output 2 name to \"Vir\"");
       cmd = "sys = syssetsignals(sys,\"out\",\"Vir\",2);";
@@ -146,8 +146,8 @@ function bddemo ()
       disp("        ------------------     ---------------------");
       disp(" u_in ->| Discrete system |--->| Continuous system | ---> y_out");
       disp("        ------------------     ---------------------");
-      sys1 = tf2sys([1, 2],[1, 2, 1], 1,"u_in","y_disc");
-      sys2 = tf2sys([1, 0],[1, -3, -2],0,"c_in","y_out");
+      sys1 = tf([1, 2],[1, 2, 1], 1,"u_in","y_disc");
+      sys2 = tf([1, 0],[1, -3, -2],0,"c_in","y_out");
       sys = sysmult(sys2,sys1);
       disp("Consider the hybrid system")
       sysout(sys);
@@ -170,8 +170,8 @@ function bddemo ()
       disp("sysdisc returns dsys=empty since sys has no discrete outputs.");
       prompt
       disp("Example block diagram 2:")
-      sys1 = tf2sys([1, 2],[1, 2, 1], 1,"u_in","y_disc");
-      sys2 = tf2sys([1, 0],[1, -3, -2],0,"c_in","y_out");
+      sys1 = tf([1, 2],[1, 2, 1], 1,"u_in","y_disc");
+      sys2 = tf([1, 0],[1, -3, -2],0,"c_in","y_out");
       disp("             ---------------------")
       disp(" u_in -->o-->| Discrete system   | --------> y_disc")
       disp("         ^   ---------------------    |")
@@ -209,9 +209,9 @@ function bddemo ()
       disp(" ")
       prompt
       disp("Example: combine two SISO systems together:")
-      cmd = "sys_a=tf2sys([1, 2],[3, 4]);";
+      cmd = "sys_a=tf([1, 2],[3, 4]);";
       run_cmd
-      cmd = "sys_b=tf2sys([5, 6],[7, 8],1);";
+      cmd = "sys_b=tf([5, 6],[7, 8],1);";
       run_cmd
       cmd = "sys_g=sysgroup(sys_a,sys_b);";
       run_cmd
@@ -235,8 +235,8 @@ function bddemo ()
       disp("   u --->|  Bsys  |---->|  Asys  |---> y")
       disp("         ----------     ----------")
       disp(" ")
-      Asys = tf2sys(1,[1, 2, 1],0,"a_in","a_out");
-      Bsys = tf2sys([2, 3],[1, 3, 2],0,"b_in","b_out");
+      Asys = tf(1,[1, 2, 1],0,"a_in","a_out");
+      Bsys = tf([2, 3],[1, 3, 2],0,"b_in","b_out");
       disp("Asys=")
       sysout(Asys);
       disp("Bsys=");
@@ -250,7 +250,7 @@ function bddemo ()
       disp("when multiplying polynomials");
       prompt
       disp("Example 2: same system, except that Bsys is discrete-time");
-      Bsys = tf2sys([2, 3],[1, 3, 2],1e-2,"b_in","b_out");
+      Bsys = tf([2, 3],[1, 3, 2],1e-2,"b_in","b_out");
       sysout(Bsys);
       cmd = "sys = sysmult(Asys,Bsys);";
       run_cmd
@@ -274,8 +274,8 @@ function bddemo ()
       help parallel
       disp("parallel operates by making a call to sysgroup and sysscale.")
       disp("Example:")
-      sys1 = tf2sys(1,[1, 1],0,"in1","out1");
-      sys2 = tf2sys(2,[1, 2],0,"in2","out2");
+      sys1 = tf(1,[1, 1],0,"in1","out1");
+      sys2 = tf(2,[1, 2],0,"in2","out2");
       disp("sys1=")
       sysout(sys1);
       disp("sys2=")
@@ -287,13 +287,13 @@ function bddemo ()
       prompt
       disp("parallel can be used for multiple input systems as well:")
 
-      in1 = list("u1.1","u1.2");
-      in2 = list("u2.1","u2.2");
-      out1 = list("y1.1","y1.2");
-      out2 = list("y2.1","y2.2");
+      in1 = {"u1.1","u1.2"};
+      in2 = {"u2.1","u2.2"};
+      out1 = {"y1.1","y1.2"};
+      out2 = {"y2.1","y2.2"};
 
-      sys1 = ss2sys([-1, 0; 0, -2],eye(2),eye(2),[]);
-      sys2 = ss2sys([-2, 0; 0, -4],eye(2),eye(2),[]);
+      sys1 = ss([-1, 0; 0, -2],eye(2),eye(2),[]);
+      sys2 = ss([-2, 0; 0, -4],eye(2),eye(2),[]);
 
       sys1 = syssetsignals(sys1,"in",in1);
       sys1 = syssetsignals(sys1,"out",out1);
@@ -371,8 +371,8 @@ function bddemo ()
       tfout(numk,denk);
       prompt
       disp("We'll show three approaches.  ")
-      P = tf2sys(nump,denp,0,"plant input","plant output");
-      K = tf2sys(numk, denk,0,"controller input","controller output");
+      P = tf(nump,denp,0,"plant input","plant output");
+      K = tf(numk, denk,0,"controller input","controller output");
 
       meth = 0;
       while(meth != 5)
@@ -410,14 +410,14 @@ function bddemo ()
           disp("Step 1: put plants in system format:");
           nump
           denp
-          cmd =  "P = tf2sys(nump,denp,0,""plant input"",""plant output"");";
+          cmd =  "P = tf(nump,denp,0,""plant input"",""plant output"");";
           run_cmd
           disp("P=")
           sysout(P)
           prompt
           numk
           denk
-          cmd = "K = tf2sys(numk, denk,0,""controller input"",""controller output"");";
+          cmd = "K = tf(numk, denk,0,""controller input"",""controller output"");";
           run_cmd
           sysout(K)
           prompt
@@ -537,9 +537,9 @@ function bddemo ()
           disp(" ")
       disp("Step 1: We've already created systems P and K.  Create a sum ")
       disp("block as follows:")
-      cmd = "S = ss2sys([],[],[],[1, -1],0,0,0,[],list(""r(t)"",""y(t)""),""e(t)"");";
+      cmd = 'S = ss([],[],[],[1, -1],0,0,0,[],{"r(t)", "y(t)"},"e(t)");';
       run_cmd
-      disp("(You may wish to look at help ss2sys to see what the above does)");
+      disp("(You may wish to look at help ss to see what the above does)");
       disp("S=")
       sysout(S)
       disp("notice that this is just a gain block that outputs e = r - y")

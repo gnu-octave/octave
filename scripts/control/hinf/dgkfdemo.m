@@ -27,7 +27,7 @@
 function dgkfdemo ()
 
   save_val = page_screen_output;
-  page_screen_output = 1;
+  page_screen_output = 0;
   while (1)
     clc
     sel = 0;
@@ -97,7 +97,7 @@ function dgkfdemo ()
       B = [0; 2];
       G = eye(2)
       C = [1, 1];
-      sys = ss2sys(A, [B, G], C);
+      sys = ss(A, [B, G], C);
       sys = syssetsignals(sys,"in", ...
                        ["control input"; "disturbance 1"; "disturbance 2"]);
       sysout(sys)
@@ -124,7 +124,7 @@ function dgkfdemo ()
       cmd = "pred_poles = sortcom([Er; Ee])";
       run_cmd
       disp("Example 2: discrete-time example")
-      cmd1 = "Dsys = ss2sys(A, [G, B], C, [0, 0, 0], 1);";
+      cmd1 = "Dsys = ss(A, [G, B], C, [0, 0, 0], 1);";
       cmd2 = "[K,Q1,P1,Ee,Er] = lqg(Dsys,SigW, SigV,Q,R);";
       disp("Run commands:")
       cmd = cmd1;
@@ -148,7 +148,7 @@ function dgkfdemo ()
       cmd = "A = [0, 1; -2, -1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Put into Packed system form:")
-      cmd = "Asys = ss2sys(A,B,C);";
+      cmd = "Asys = ss(A,B,C);";
       run_cmd
       disp("Evaluate system 2-norm (impulse response energy):");
       cmd = "AsysH2 = h2norm(Asys)";
@@ -172,7 +172,7 @@ function dgkfdemo ()
       run_cmd
       prompt
       disp("Put into system data structure form:")
-      cmd="Bsys = ss2sys(A,B,C);";
+      cmd="Bsys = ss(A,B,C);";
       run_cmd
       disp("Evaluate 2-norm:")
       cmd = "BsysH2 = h2norm(Bsys)";
@@ -212,7 +212,7 @@ function dgkfdemo ()
       disp("loop impulse response from w(t) =[w1; w2] to z(t) = [y1; y2]");
       prompt
       disp("First: pack system:")
-      cmd="Asys = ss2sys(A, [B1, B2], [C1; C2], D);";
+      cmd="Asys = ss(A, [B1, B2], [C1; C2], D);";
       run_cmd
       disp("Open loop multivariable Bode plot: (will take a moment)")
       cmd="bode(Asys);";
@@ -250,7 +250,7 @@ function dgkfdemo ()
       cmd = "A = [0, 1; -2, -1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Pack into system format:")
-      cmd = "Asys = ss2sys(A,B,C);";
+      cmd = "Asys = ss(A,B,C);";
       run_cmd
       disp("The infinity norm must be computed iteratively by")
       disp("binary search.  For this example, we select tolerance tol = 0.01, ")
@@ -274,7 +274,7 @@ function dgkfdemo ()
       cmd = "A = [0, 1; 2, 1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Pack into system format:")
-      cmd = "Bsys = ss2sys(A,B,C);";
+      cmd = "Bsys = ss(A,B,C);";
       run_cmd
       disp("Evaluate with BsysH2 = hinfnorm(Bsys,tol,gmin,gmax)")
       BsysH2 = hinfnorm(Bsys,tol,gmin,gmax)
@@ -301,7 +301,7 @@ function dgkfdemo ()
       D = [D11, D12; D21, D22]
       prompt
       disp("First: pack system:")
-      cmd="Asys = ss2sys(A, [B1, B2], [C1; C2], D);";
+      cmd="Asys = ss(A, [B1, B2], [C1; C2], D);";
       run_cmd
       prompt
       disp("Open loop multivariable Bode plot: (will take a moment)")

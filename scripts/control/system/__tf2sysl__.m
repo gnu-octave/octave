@@ -24,12 +24,6 @@
 
 function vec = __tf2sysl__ (vec)
 
-  while (length (vec) > 1 && vec(1) == 0)
-    vec = vec (2:end);
-  endwhile
-
-  if (vec(1) == 0)
-    warning ("tf2sys: polynomial has no nonzero coefficients!")
-  endif
+  error("__tf2sysl__ no longer used; use the tf function.");
 
 endfunction

@@ -191,7 +191,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     axis(axlim);
     [stn,inname,outname] = sysgetsignals(sys);
     xlabel(sprintf("Root locus from %s to %s, gain=[%f,%f]: Real axis", ...
-        nth(inname,1),nth(outname,1),gvec(1),gvec(ngain)));
+        inname{1}, outname{1},gvec(1),gvec(ngain)));
     ylabel("Imag. axis");
 
     plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...

@@ -150,12 +150,12 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     nt = n + nz;
   endif
   for ii = 6:nargin
-    eval(["ss = s", num2str(ii-4), ";"]);
-    if (!isstruct(ss))
+    eval(["mysys = s", num2str(ii-4), ";"]);
+    if (!isstruct(mysys))
       error("---> Parameter must be a structed system.");
     endif
-    ss = sysupdate(ss, "ss");
-    [n1, nz1, m1, p1] = sysdimensions(ss);
+    mysys = sysupdate(mysys, "ss");
+    [n1, nz1, m1, p1] = sysdimensions(mysys);
     if (n1 && nz1)
       error("---> cannot handle mixed continuous and discrete systems.");
     endif
@@ -163,11 +163,11 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
       if (n1)
         error("---> cannot handle mixed cont. and discr. systems.");
       endif
-      if (tsam != sysgettsam(ss))
+      if (tsam != sysgettsam(mysys))
         error("---> sampling time of all systems must match.");
       endif
     endif
-    [as,bs,cs,ds] = sys2ss(ss);
+    [as,bs,cs,ds] = sys2ss(mysys);
     nt1 = n1 + nz1;
     if (!nt1)
       ## pure gain (pad B, C with zeros)
@@ -295,6 +295,6 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     Dnew(:,ii) = sign(iu)*D(:,abs(iu));
   endfor
 
-  sys = ss2sys(A, Bnew, C, Dnew, tsam, n, nz);
+  sys = ss(A, Bnew, C, Dnew, tsam, n, nz);
 
 endfunction

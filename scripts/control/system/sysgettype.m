@@ -37,7 +37,7 @@ function systype = sysgettype (sys)
     error ("sysgettype: input sys is not a structure");
   endif
 
-  typestr = list ("tf", "zp", "ss");
-  systype = nth (typestr, sys.sys(1) + 1);
+  typestr = {"tf", "zp", "ss"};
+  systype = typestr{ sys.sys(1) + 1};
 
 endfunction

@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## O B S O L E T E: use ss2sys instead.
+## O B S O L E T E: use ss instead.
 ## function Asys = packsys(a,b,c[,d,dflg])
 ##
 ##   dflg: 0 for continuous time system, 1 for discrete-time system.
@@ -34,7 +34,7 @@
 
 function Asys = packsys (a, b, c, d, dflg)
 
-  warning("packsys is obsolete!  Use ss2sys instead.");
+  warning("packsys is obsolete!  Use ss instead.");
 
   if (nargin < 3 || nargin > 5)
     disp("packsys: Invalid number of arguments")
@@ -66,6 +66,6 @@ function Asys = packsys (a, b, c, d, dflg)
     error("packsys: incompatible dimensions")
   endif
 
-  Asys = ss2sys(a,b,c,d,dflg);
+  Asys = ss(a,b,c,d,dflg);
 
 endfunction

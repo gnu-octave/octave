@@ -104,6 +104,6 @@ function retsys = __zgpbal__ (Asys)
     endfor
   endif
 
-  retsys = ss2sys(a,b,c,d);
+  retsys = ss(a,b,c,d);
 endfunction
 

@@ -87,9 +87,9 @@ disp("===============================")
 disp("Object oriented programming:")
 disp("It is recommended that users do not directly access the internal")
 disp("variables themselves, but use the interface functions")
-disp("  fir2sys         ss2sys          tf2sys          sys2fir")
+disp("  fir             ss              tf              sys2fir")
 disp("  sys2ss          sys2tf          sys2zp          syschtsam")
 disp("  sysdimensions   sysgetsignals   syssetsignals   sysgettype")
-disp("  zp2sys")
+disp("  zp    ")
 disp("to create/access internal variables.  ");
 page_screen_output = save_var;

@@ -141,12 +141,12 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
     ## find states whose name begins with any strings in sprefix.
     ns = length(sprefix);
     for kk=1:ns
-      spk = nth(sprefix,kk);  # get next prefix and length
+      spk = sprefix{kk};  # get next prefix and length
       spl = length(spk);
 
       ## check each state name
       for ii=1:nz
-        sti = nth(stname,ii);  # compare spk with this state name
+        sti = stname{ii};  # compare spk with this state name
         if(length(sti) >= spl)
           ## if the prefix matches and ii isn't already in the list, add ii
           if(strcmp(sti(1:spl),spk) & !any(fidx == ii) )
@@ -242,7 +242,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
     else
       b1b = [b1b, b1w];       # append new inputs
       newin = strappend(innamenz,["_d",num2str(kk-1)]);
-      inname = append(inname,newin);
+      inname = __sysconcat__(inname,newin);
     endif
   endfor
 
@@ -258,6 +258,6 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   stname = stname(pvi);
 
   ## construct new system and return
-  dsys = ss2sys(da,db,dc,dd,Ts2,0,nz,stname,inname,outname,find(yd == 1));
+  dsys = ss(da,db,dc,dd,Ts2,0,nz,stname,inname,outname,find(yd == 1));
 
 endfunction

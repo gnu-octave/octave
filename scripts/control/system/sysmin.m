@@ -64,9 +64,9 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg)
 
     cstnam = stnam(crng);
     dstnam = stnam(drng);
-    cinnam = append(innam,stnam(drng));
-    coutnam = append(outnam,stnam(drng));
-    csys = ss2sys(Ac,[Bc,Acd],[Cc;Adc]);
+    cinnam = __sysconcat__(innam,stnam(drng));
+    coutnam = __sysconcat__(outnam,stnam(drng));
+    csys = ss(Ac,[Bc,Acd],[Cc;Adc]);
     csys = syssetsignals(csys,"st",cstnam);
     csys = syssetsignals(csys,"in",cinnam);
     csys = syssetsignals(csys,"out",coutnam);
@@ -90,9 +90,9 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg)
       Adc = ccc(p + (1:nz),:);
 
       # recombine to reduce discrete part of the system
-      dinnam = append(innam,cstnam);
-      doutnam = append(outnam,cstnam);
-      dsys = ss2sys(Ad,[Bd,Adc],[Cd;Acd],[],tsam);
+      dinnam = __sysconcat__(innam,cstnam);
+      doutnam = __sysconcat__(outnam,cstnam);
+      dsys = ss(Ad,[Bd,Adc],[Cd;Acd],[],tsam);
       dsys = syssetsignals(dsys,"st",dstnam);
       dsys = syssetsignals(dsys,"in",dinnam);
       dsys = syssetsignals(dsys,"out",doutnam);
@@ -111,11 +111,11 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg)
         Adc = dbb(:,m+(1:cn));
         Cd  = dcc(1:p,:);
         Acd = dcc(p+(1:cn),:);
-        stnam = append(cstnam,dstnam);
+        stnam = __sysconcat__(cstnam,dstnam);
         aa = [Ac, Acd; Adc, Ad];
         bb = [Bc; Bd];
         cc = [Cc, Cd];
-        retsys = ss2sys([Ac, Acd; Adc, Ad], [Bc ; Bd], [Cc, Cd], dd, tsam, ...
+        retsys = ss([Ac, Acd; Adc, Ad], [Bc ; Bd], [Cc, Cd], dd, tsam, ...
           cn, nz, stnam, innam, outnam, find(yd == 1));
       end
     endif
@@ -158,7 +158,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg)
       endswitch
       innam = sysgetsignals(sys,"in");
       outnam= sysgetsignals(sys,"out");
-      retsys = ss2sys(aa,bb,cc,dd,Ts,nn,nz,[],innam,outnam);
+      retsys = ss(aa,bb,cc,dd,Ts,nn,nz,[],innam,outnam);
     case(1),
       ## reduced model with physical states
       [cflg,Uc] = is_controllable(sys); xc = find(max(abs(Uc')) != 0);

@@ -28,7 +28,7 @@
 ## @strong{Inputs} input system is passed as either
 ## @table @var
 ## @item asys
-## system data structure (see ss2sys, sys2ss)
+## system data structure (see ss, sys2ss)
 ## @itemize @bullet
 ## @item controller is implemented for continuous time systems
 ## @item controller is NOT implemented for discrete time systems
@@ -117,8 +117,8 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
   nn = ncstates + ndstates;
   In = eye(nn);
   KA = A + Bu*F2 + L2*Cy;
-  Kc1 = ss2sys(AF2,Bw,CzF2,zeros(nz,nw));
-  Kf1 = ss2sys(AL2,BwL2,F2,zeros(nu,nw));
+  Kc1 = ss(AF2,Bw,CzF2,zeros(nz,nw));
+  Kf1 = ss(AL2,BwL2,F2,zeros(nu,nw));
 
   g1 = h2norm(Kc1);
   g2 = h2norm(Kf1);
@@ -132,7 +132,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
     Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
 
     ## compute systems for return
-    K = ss2sys(KA,-L2/Ru,Ry\F2,zeros(nu,ny),Atsam,ncstates,ndstates,Kst,Kin,Kout);
+    K = ss(KA,-L2/Ru,Ry\F2,zeros(nu,ny),Atsam,ncstates,ndstates,Kst,Kin,Kout);
   endif
 
   if (nargout > 2)
@@ -148,7 +148,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
     nz = rows (Cz);
     nw = columns (Bw);
 
-    Kc = ss2sys(AF2, In, CzF2, zeros(nz,nn), Atsam, ...
+    Kc = ss(AF2, In, CzF2, zeros(nz,nn), Atsam, ...
         ncstates, ndstates, stname2, inname2, outname2);
   endif
 
@@ -162,7 +162,7 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
     ## fix system state estimator output names
     outname3 = strappend(Ast,"_est");
 
-    Kf = ss2sys(AL2, BwL2, In, zeros(nn,nw),Atsam,  ...
+    Kf = ss(AL2, BwL2, In, zeros(nn,nw),Atsam,  ...
       ncstates, ndstates, stname3, inname3,outname3);
   endif
 

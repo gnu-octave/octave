@@ -90,7 +90,7 @@ function [a, b, c, d] = series (a1, b1, c1, d1, a2, b2, c2, d2)
     ## take care of mu output
 
     if(muflag == 1)
-      a=ss2sys(a,b,c,d);
+      a=ss(a,b,c,d);
       b=c=d=0;
     endif
   endif

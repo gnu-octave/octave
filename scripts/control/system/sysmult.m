@@ -43,27 +43,28 @@ function sys = sysmult (varargin)
   endif
 
   ## collect all arguments
-  arglist = list();
+  arglist = {};
   for kk=1:nargin
-    arglist(kk) = varargin{kk};
-    if(!isstruct(nth(arglist,kk)))
+    arglist{kk} = varargin{kk};
+    if(!isstruct(arglist{kk}))
       error("sysadd: argument %d is not a data structure",kk);
     endif
   endfor
 
   ## check system dimensions
-  [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,1));
+  [n,nz,mg,pg,Gyd] = sysdimensions(arglist{1});
   for kk=2:nargin
-    [n,nz,mh,ph,Hyd] = sysdimensions(nth(arglist,kk));
+    [n,nz,mh,ph,Hyd] = sysdimensions(arglist{kk});
     if(ph != mg)
       error("arg %d has %d outputs; arg %d has %d inputs",kk,ph,kk-1,mg);
     endif
-    [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,kk));   # for next iteration
+    [n,nz,mg,pg,Gyd] = sysdimensions(arglist{kk});   # for next iteration
   endfor
 
   ## perform the multiply
   if(nargin == 2)
-    Asys = nth(arglist,1);   Bsys = nth(arglist,2);
+    Asys = arglist{1};
+    Bsys = arglist{2};
 
     [An,Anz,Am,Ap] = sysdimensions(Asys);
     [Bn,Bnz,Bm,Bp] = sysdimensions(Bsys);
@@ -103,9 +104,9 @@ function sys = sysmult (varargin)
 
   else
     ## multiple systems (or a single system); combine together one by one
-    sys = nth(arglist,1);
+    sys = arglist{1};
     for kk=2:length(arglist)
-      sys = sysmult(sys,nth(arglist,kk));
+      sys = sysmult(sys,arglist{kk});
     endfor
   endif
 

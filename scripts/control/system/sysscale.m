@@ -92,12 +92,12 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
   if strcmp(sysgettype(sys),"tf")
     [num,den,tsam,innam,outnam] = sys2tf(sys);
     num = num*inscale*outscale;
-    sys = tf2sys(num,den,tsam,innam,outnam,find(sysyd));
+    sys = tf(num,den,tsam,innam,outnam,find(sysyd));
     return
   elseif strcmp(sysgettype(sys),"zp")
     [zer,pol,kk,tsam,innam,outnam] = sys2zp(sys);
     kk = kk*inscale*outscale;
-    sys = zp2sys(zer,pol,k,tsam,innam,outnam,find(sysyd));
+    sys = zp(zer,pol,k,tsam,innam,outnam,find(sysyd));
     return
   endif
 
@@ -133,7 +133,7 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
     inname = sysgetsignals(sys,"in");
   endif
 
-  sys = ss2sys(sysa,sysb,sysc,sysd,systsam,nn,nz,sysstname, ...
+  sys = ss(sysa,sysb,sysc,sysd,systsam,nn,nz,sysstname, ...
         inname,outname,find(sysyd==1));
 
 endfunction

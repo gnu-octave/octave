@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ss2sys (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
+## @deftypefn {Function File} {} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
 ## Create system structure from state-space data.   May be continous,
 ## discrete, or mixed (sampeled-data)
 ##
@@ -140,7 +140,7 @@
 ## octave:1> a = [1 2 3; 4 5 6; 7 8 10];
 ## octave:2> b = [0 0 ; 0 1 ; 1 0];
 ## octave:3> c = eye(3);
-## octave:4> sys = ss2sys(a,b,c,[],0,3,0,list("volts","amps","joules"));
+## octave:4> sys = ss(a,b,c,[],0,3,0,list("volts","amps","joules"));
 ## octave:5> sysout(sys);
 ## Input(s)
 ##         1: u_1
@@ -183,105 +183,9 @@
 ## Author: John Ingram <ingraje@eng.auburn.edu>
 ## Created: July 20, 1996
 
-function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
-
-  ## Test for correct number of inputs
-  if ((nargin < 3) | (nargin > 11))
-    usage("retsys = ss2sys  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})");
-  endif
-
-  ## verify A, B, C, D arguments
-  ## If D is not specified, set it to a zero matrix of appriate dimension.
-  if (nargin == 3)          d = zeros(rows(c) , columns(b));
-  elseif (isempty(d))       d = zeros(rows(c) , columns(b));      endif
-
-  ## Check the dimensions
-  [na,m,p] = abcddim(a,b,c,d);
-
-  ## If dimensions are wrong, exit function
-  if (m == -1)
-    error("a(%dx%d), b(%dx%d), c(%dx%d), d(%dx%d); incompatible", ...
-      rows(a), columns(a), rows(b), columns(b), rows(c), columns(c), ...
-      rows(d), columns(d));
-  endif
-
-  ## check for tsam input
-  if(nargin < 5) tsam = 0;
-  elseif( !( is_sample(tsam) | (tsam == 0) ) )
-    error("tsam must be a nonnegative real scalar");
-  endif
-
-  ## check for continuous states
-  if( (nargin < 6) & (tsam == 0) )               n = na;
-  elseif(nargin < 6)                             n = 0;
-  elseif((!ismatrix(n)) | isstr(n))
-    error("Parameter n is not a numerical value.");
-  elseif( (!isscalar(n)) | (n < 0 ) | (n != round(n)) )
-    if(isscalar(n))     error("invalid value of n=%d,%e",n,n);
-    else                 error("invalid value of n=(%dx%d)", ...
-                           rows(n), columns(n));                endif
-  endif
-
-  ## check for num discrete states
-  if( (nargin < 7) & (tsam == 0))               nz = 0;
-  elseif(nargin < 7)                            nz = na - n;
-  elseif((!ismatrix(nz)) | isstr(nz))
-    error("Parameter nz is not a numerical value.");
-  elseif( (!isscalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
-    if(isscalar(nz))
-      error(["invalid value of nz=",num2str(nz)]);
-    else
-      error(["invalid value of nz=(",num2str(rows(nz)),"x", ...
-        num2str(columns(nz)),")"]);
-    endif
-  endif
-
-  ## check for total number of states
-  if( (n + nz) != na )
-    error(["invalid: a is ",num2str(na),"x",num2str(na),", n=", ...
-        num2str(n),", nz=",num2str(nz)]);
-  endif
-
-  ## construct system with default names
-  retsys.a = a;
-  retsys.b = b;
-  retsys.c = c;
-  retsys.d = d;
-
-  retsys.n = n;
-  retsys.nz = nz;
-  retsys.tsam = tsam;
-  retsys.yd = zeros(1,p);     # default value entered below
-
-  ## Set the system vector:  active = 2(ss), updated = [0 0 1];
-  retsys.sys = [2, 0, 0, 1];
-
-  retsys.stname = __sysdefstname__ (n, nz);
-  retsys.inname = __sysdefioname__ (m, "u");
-  retsys.outname = __sysdefioname__ (p, "y");
-
-  ## check for state names
-  if(nargin >= 8)
-    if(!isempty(stname)) retsys = syssetsignals(retsys,"st",stname); endif
-  endif
-
-  ## check for input names
-  if(nargin >= 9)
-    if(!isempty(inname)) retsys = syssetsignals(retsys,"in",inname); endif
-  endif
-
-  ## check for output names
-  if(nargin >= 10)
-    if(!isempty(outname)) retsys = syssetsignals(retsys,"out",outname); endif
-  endif
-
-  ## set up yd
-  if(nargin < 11)
-    retsys = syssetsignals(retsys,"yd",ones(1,p)*(tsam > 0));
-  else
-    if(!isempty(outlist))
-      retsys = syssetsignals(retsys,"yd",ones(size(outlist)),outlist);
-    endif
-  endif
+function retsys = ss2sys (varargin )
+  
+  warning("ss2sys is deprecated.  Use ss() instead.");
+  retsys = ss(varargin{:});
 
 endfunction

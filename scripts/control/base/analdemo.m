@@ -113,7 +113,7 @@ function analdemo ()
       clc
 
       disp("Example #2, consider the state space system from example 1 again:");
-      cmd = "sys = ss2sys(a,b,c,d);";
+      cmd = "sys = ss(a,b,c,d);";
       disp(cmd);
       eval(cmd);
       sysout(sys);
@@ -137,7 +137,7 @@ function analdemo ()
       clc
       disp("Continuous => Discrete and Discrete => Continuous conversions (c2d,d2c)");
       disp("\nExample #1, consider the following continuous state space system");
-      cmd = "sys_cont = ss2sys([-11, 6; -15, 8], [1; 2], [2, -1], 0);";
+      cmd = "sys_cont = ss([-11, 6; -15, 8], [1; 2], [2, -1], 0);";
       eval(cmd);
       disp(cmd);
       disp("Examine the poles and zeros of the continuous system:");
@@ -218,7 +218,7 @@ function analdemo ()
       disp("--- Open loop balanced truncation: not yet implemented")
     elseif (k == 7)
       disp("SISO pole placement example:")
-      cmd = "sys=tf2sys(1, [1, -2, 1]);";
+      cmd = "sys=tf(1, [1, -2, 1]);";
       run_cmd
       disp("System in zero-pole form is:")
       cmd = "sysout(sys,\"zp\");";

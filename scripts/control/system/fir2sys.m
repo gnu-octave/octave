@@ -80,7 +80,7 @@ function sys = fir2sys (num, tsam, inname, outname)
     usage ("sys = fir2sys(num [, tsam, inname, outname])");
   endif
 
-  ## let tf2sys do the argument checking
+  ## let tf do the argument checking
   den = [1,zeros(1,length(num)-1)];
 
   ## check sampling interval (if any)
@@ -100,6 +100,6 @@ function sys = fir2sys (num, tsam, inname, outname)
     outname = __sysdefioname__ (1, "y");
   endif
 
-  sys = tf2sys (num, den, tsam, inname, outname);
+  sys = tf (num, den, tsam, inname, outname);
 
 endfunction

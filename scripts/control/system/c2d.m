@@ -153,7 +153,7 @@ function dsys = c2d (sys, opt, T)
     innames = sysgetsignals(sys,"in");
     outnames = sysgetsignals(sys,"out");
     outlist = 1:p;
-    dsys = ss2sys(aa,bb,cc,dd,T,0,n+nz,stnames,innames, ...
+    dsys = ss(aa,bb,cc,dd,T,0,n+nz,stnames,innames, ...
         outnames,outlist);
     ## rename states
     for ii=1:n
@@ -175,7 +175,7 @@ function dsys = c2d (sys, opt, T)
       C = tk*(c/(IT-a));
       D = d + (c*iab);
       stnamed = strappend(stname,"_d");
-      dsys = ss2sys(A,B,C,D,T,0,rows(A),stnamed,inname,outname);
+      dsys = ss(A,B,C,D,T,0,rows(A),stnamed,inname,outname);
      endif
    elseif(strcmp(opt,"matched"))
      if(is_digital(sys))
@@ -192,8 +192,8 @@ function dsys = c2d (sys, opt, T)
        endfor
        ## Should the freaquency we adjust around always be 1?   
        [cmag,cphase,cw] = bode(sys,1);
-       [dmag,dpahse,dw] = bode(zp2sys(z,p,1,T),1);
-      dsys = zp2sys(z,p,cmag/dmag,T);
+       [dmag,dpahse,dw] = bode(zp(z,p,1,T),1);
+      dsys = zp(z,p,cmag/dmag,T);
     endif
   else
     error ("invalid option = %s", opt);

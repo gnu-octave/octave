@@ -31,10 +31,10 @@ function retval = strappend (strlist, suffix);
     error ("suffix must be a single string");
   endif
 
-  retval = list ();
+  retval = {};
 
   for ii = 1:length (strlist)
-    retval(ii) = sprintf ("%s%s", nth (strlist, ii), suffix);
+    retval{ii} = sprintf ("%s%s", strlist{ii}, suffix);
   endfor
 
 endfunction

@@ -51,7 +51,7 @@
 ## indices or names of outputs, yd, inputs, or
 ## states whose respective names/values should be changed.
 ##
-## Default: replace entire list of names/entire yd vector.
+## Default: replace entire cell array of names/entire yd vector.
 ## @end table
 ## @strong{Outputs}
 ## @var{retsys=sys} with appropriate signal names changed
@@ -59,7 +59,7 @@
 ##
 ## @strong{Example}
 ## @example
-## octave:1> sys=ss2sys([1 2; 3 4],[5;6],[7 8]);
+## octave:1> sys=ss([1 2; 3 4],[5;6],[7 8]);
 ## octave:2> sys = syssetsignals(sys,"st",str2mat("Posx","Velx"));
 ## octave:3> sysout(sys)
 ## Input(s)
@@ -121,23 +121,25 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
   sig_vals = sysgetsignals(sys,opt);
 
   ## make sure it's in state space form if state names are given
-  if(strcmp(opt,"st"))    sys = sysupdate(sys,"ss");    endif
+  if(strcmp(opt,"st"))
+    sys = sysupdate(sys,"ss");
+  endif
 
   if(strcmp(opt,"yd") == 0)
     ## it's a signal name list we're changing
-    if(!islist(names))
-      names = list(names);
+    if(!iscell(names))
+      names = {names};
     endif
-    if(!is_signal_list(names))
-      if(isstr(nth(names,1)))
-        warning("syssetsignals(opt=%s): converting string matrix \"names\" to a list of strings",opt);
-        tmpstr = nth(names,1);
+    if( (!is_signal_list(names)) & (!isempty(names)) )
+      if(isstr(names{1}))
+        warning("syssetsignals(opt=%s): converting string matrix \"names\" to a cell array of strings",opt);
+        tmpstr = names{1};
         for ii=1:rows(tmpstr)
-          names(ii) = deblank(tmpstr(ii,:));
+          names{ii} = deblank(tmpstr(ii,:));
         endfor
       else
         names
-        error("parameter \"names\" must be a list of strings");
+        error("parameter \"names\" must be a cell array of strings");
       endif
     endif
     nsigs = length(sig_vals);
@@ -161,7 +163,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
         error("opt=%s, sig_idx(%d)=%d, %e: must be an integer between 1 and %d", ...
           opt, ii, jj, jj, nsigs);
       endif
-      sig_vals(jj) = nth(names,ii);
+      sig_vals{jj} = names{ii};
     endfor
 
   else

@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
+## Copyright (C) 1996, 1998, 2004 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -29,7 +29,7 @@
 ## sampling interval. default: 0 (continuous time)
 ## @item inname
 ## @itemx outname
-## input/output signal names; may be a string or list with a single string
+## input/output signal names; may be a string or cell array with a single string
 ## entry.
 ## @end table
 ##
@@ -56,88 +56,11 @@
 ## Created: July 29, 1994
 ## Name changed to TF2SYS July 1995
 ## updated for new system data structure format July 1996
+## name changed to tf Feb 2004
 
-function outsys = tf2sys (num, den, tsam, inname, outname)
-
-  ## Test for the correct number of input arguments
-  if ((nargin < 2) || (nargin > 5))
-    usage ("outsys = tf2sys (num, den [, tsam, inname, outname])");
-    return
-  endif
-
-  ## check input format
-  if( ! ( (isvector(num) || isscalar(num)) && ...
-        (isvector(den) || isscalar(den))) )
-    error(["num (",num2str(rows(num)),"x",num2str(columns(num)), ...
-      ") and den (",num2str(rows(den)),"x",num2str(columns(den)), ...
-      ") must be vectors"])
-  endif
-
-  ## strip leading zero coefficients
-  num = __tf2sysl__ (num);
-  den = __tf2sysl__ (den);
-
-  if (length(num) >  length(den))
-    error("# of poles (%d) < # of zeros (%d)",length(den)-1, length(num)-1);
-  endif
-
-  ## check sampling interval (if any)
-  if(nargin <= 2)           tsam = 0;           # default
-  elseif (isempty(tsam))    tsam = 0;           endif
-  if ( (! (isscalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
-    error("tsam must be a positive real scalar")
-  endif
-
-  outsys.num = num;
-  outsys.den = den;
-
-  ## Set the system vector:  active = 0(tf), updated = [1 0 0];
-  outsys.sys = [0, 1, 0, 0];
-
-  ## Set defaults
-  outsys.tsam = tsam;
-  outsys.n = length(den)-1;
-  outsys.nz = 0;
-  outsys.yd = 0;        # assume discrete-time
-  ## check discrete time
-  if(tsam > 0)
-    [outsys.n,outsys.nz] = swap(outsys.n, outsys.nz);
-    outsys.yd = 1;
-  endif
-
-  outsys.inname  = __sysdefioname__ (1, "u");
-  outsys.outname = __sysdefioname__ (1, "y");
-  outsys.stname  = __sysdefstname__ (outsys.n, outsys.nz);
-
-  ## Set name of input
-  if (nargin > 3)
-    ## make sure its a list of a single string
-    if(!isempty(inname))
-      if(!islist(inname))  inname = list(inname);  endif
-      if( !is_signal_list(inname) )
-        error("inname must be a string or list of strings");
-      endif
-      if(length(inname) > 1)
-        warning("tf2sys: %d input names provided; first used",length(inname));
-        inname = inname(1);
-      endif
-      outsys = syssetsignals(outsys,"in",inname);
-    endif
-  endif
-
-  ## Set name of output
-  if (nargin > 4)
-    if(!isempty(outname))
-      if(!islist(outname))  outname = list(outname);  endif
-      if(!is_signal_list(outname))
-        error("outname must be a string or a list of strings");
-      endif
-      if(length(outname) > 1)
-        warning("tf2sys: %d output names provided; first used",length(outname));
-        outname = outname(1);
-      endif
-      outsys = syssetsignals(outsys,"out",outname);
-    endif
-  endif
+function outsys = tf2sys (varargin)
+  
+  warning("tf2sys is deprecated.  Use tf() instead.");
+  outsys = tf(varargin{:});
 
 endfunction

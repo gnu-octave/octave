@@ -52,6 +52,6 @@ function outsys = jet707 ()
   inam = ["thrust"; "rudder"];
   onam = ["speed"; "pitch"];
   snam = ["x1"; "x2"; "x3"; "x4"];
-  outsys = ss2sys(a, b, c, d, 0.0, 4, 0, snam, inam, onam);
+  outsys = ss(a, b, c, d, 0.0, 4, 0, snam, inam, onam);
 
 endfunction

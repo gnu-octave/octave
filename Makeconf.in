@@ -28,6 +28,8 @@ LEXLIB = @LEXLIB@
 YACC = @YACC@
 YFLAGS = -dv
 
+GPERF = @GPERF@
+
 AR = @AR@
 ARFLAGS = @ARFLAGS@ 
 

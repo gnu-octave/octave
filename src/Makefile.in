@@ -463,7 +463,7 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
-	@gperf -a -g -p -t -C -D -E -G -L ANSI-C \
+	@$(GPERF) -a -g -p -t -C -D -E -G -L ANSI-C \
                -H octave_kw_hash -N octave_kw_lookup \
 	  $< | sed 's,lookup\[,gperf_lookup[,' > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@

@@ -1,3 +1,7 @@
+2000-06-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (oct-gperf.h): Use $(GPERF) instead of gperf.
+
 2000-05-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/qz.cc (Fqz): When computing finite generalized

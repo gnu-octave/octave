@@ -204,7 +204,7 @@ file_name_cache_elt::update (const std::string& dir_name)
 
 		  int len = entry.length ();
 
-#if defined (WITH_DYNAMIC_LINKING)
+#if defined (ENABLE_DYNAMIC_LINKING)
 		  if ((len > 2
 		       && entry[len-2] == '.' && entry[len-1] == 'm')
 		      || (len > 4

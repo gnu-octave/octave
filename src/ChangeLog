@@ -1,3 +1,12 @@
+2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (octave_config_info): Rename WITH_DYNAMIC_LINKING to
+	ENABLE_DYNAMIC_LINKING.
+	* oct-conf.h.in: Likewise.
+	* mkbuiltins: Likewise.
+	* fn-cache.cc (file_name_cache_elt::update): Likewise.
+	* Makefile.in: Likewise.
+
 2002-10-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cutils.c (octave_vsnprintf): Buffer and buffer size now static.

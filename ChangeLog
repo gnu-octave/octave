@@ -1,5 +1,14 @@
 2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (ENABLE_DYNAMIC_LINKING): Rename from
+	WITH_DYNAMIC_LINKING.
+	* Makeconf.in: Likewise.
+	* toplev.cc 
+	* examples/hello.cc: Likewise.  Improve comments.
+
+	* configure.in: Revive --enable-dl to set default value for
+	WITH_DYNAMIC_LINKING.
+
 	* configure.in: Also set SHLEXT_VER, SHLLIB_VER, SHLBIN_VER.
 	* Makeconf.in: Substitute them here.
 	Also substitute SHLLINKEXT.

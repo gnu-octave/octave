@@ -29,7 +29,7 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
 # How to make a .oct file from a .o file:
 
-ifeq ($(WITH_DYNAMIC_LINKING), true)
+ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   ifdef CXXPICFLAG
     %.oct : pic/%.o
 	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
@@ -55,7 +55,7 @@ DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
 DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_XSRC))
 
-ifeq ($(WITH_DYNAMIC_LINKING), true)
+ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   OCT_FILES := $(patsubst %.o, %.oct, $(DLD_OBJ))
   ifdef CXXPICFLAG
     DLD_PICOBJ := $(addprefix pic/, $(DLD_OBJ))

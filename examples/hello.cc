@@ -3,10 +3,10 @@
 // To use this file, your version of Octave must support dynamic
 // linking.  To find out if it does, type the command
 //
-//   x = octave_config_info; x.DEFS
+//   octave_config_info ("ENABLE_DYNAMIC_LINKING")
 //
 // at the Octave prompt.  Support for dynamic linking is included if
-// the output contains the string -DWITH_DYNAMIC_LINKING=1.
+// this expression returns the string "true".
 //
 // To compile this file, type the command
 //

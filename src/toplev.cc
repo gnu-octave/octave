@@ -642,7 +642,7 @@ specified option.\n\
 {
   octave_value retval;
 
-#if defined (WITH_DYNAMIC_LINKING)
+#if defined (ENABLE_DYNAMIC_LINKING)
   bool octave_supports_dynamic_linking = true;
 #else
   bool octave_supports_dynamic_linking = false;
@@ -717,7 +717,7 @@ specified option.\n\
   m ["STATIC_LIBS"] = OCTAVE_CONF_STATIC_LIBS;
   m ["UGLY_DEFS"] = OCTAVE_CONF_DEFS;
   m ["UGLY_DEFS"] = OCTAVE_CONF_UGLY_DEFS;
-  m ["WITH_DYNAMIC_LINKING"] = OCTAVE_CONF_WITH_DYNAMIC_LINKING;
+  m ["ENABLE_DYNAMIC_LINKING"] = OCTAVE_CONF_ENABLE_DYNAMIC_LINKING;
   m ["XTRA_CFLAGS"] = OCTAVE_CONF_XTRA_CFLAGS;
   m ["XTRA_CXXFLAGS"] = OCTAVE_CONF_XTRA_CXXFLAGS;
   m ["YACC"] = OCTAVE_CONF_YACC;

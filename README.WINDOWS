@@ -1,0 +1,64 @@
+Octave has been mostly ported to Windows NT and Windows 95 using the
+beta 17 release of the Cygnus GNU-WIN32 tools.  Not everything works,
+but it is usable.  If you would like to volunteer to work on
+improving this port, please contact bug-octave@bevo.che.wisc.edu.
+
+Here is a list of current problems (and workarounds, where available).
+
+* There is no binary version of Octave available for Windows NT or
+  Windows 95.  One will probably be released when the port is a little
+  more stable.
+
+* To compile and install Octave on a Windows NT or Windows 95 system,
+  you will need to get the beta 17 release of the GNU-WIN32 tools.  They
+  are available from ftp://ftp.cygnus.com/pub/gnu-win32.
+
+* There is a conflict between the files /cygnus/include/g++/String.h and
+  /cygnus/H-i386-cygwin32/i386-cygwin32/include/stringh.  You should
+  rename or remove /cygnus/include/g++/String.h.  (These file names
+  assume that you have installed the GNU-WIN32 tools in /cygnus).
+
+* On Windows 95 systems, there is a bug that causes redirections to
+  /dev/null to fail.  You can work around the problem by substituting
+  /dev/nul for /dev/null in all of the files that use it.
+
+* You will need to have f2c and libf2c.a or g77 installed.  You can get
+  a copy of f2c from ftp://netlib.att.com/netlib/f2c.
+
+* You will also need a termcap library.  The GNU termcap library seems
+  to work.  You can get it from any GNU archive site, including 
+  ftp://prep.ai.mit.edu/pub/gnu/termcap-1.3.tar.gz.
+
+* GNU info doesn't work yet.  It compiles but doesn't run.  Perhaps the
+  problem is just that a proper termcap entry needs to be defined.
+
+* If you have a working version of less, the pager will probably work.
+  The GNU-WIN32 tools used to include a copy of less, but I am told it
+  was dropped from the distribution because it didn't work very well.
+
+* To make plotting work, you will need to find a version of gnuplot
+  that can read commands from a pipe.  The binary versions of gnuplot
+  for Windows that I found could only read from their command windows,
+  and wouldn't accept commands through a pipe, so they could not be
+  called from Octave.
+
+  After deleting -DREADLINE from the Makefile, I was able to compile a
+  working version of gnuplot 3.6 beta 315 using the GNU-WIN32 tools,
+  but it does not support the Windows graphics terminal.  It does
+  support dumb terminals and lots of other output devices, including
+  PostScript, but it would be much nicer if it could open a separate
+  window and draw pretty graphs there.
+
+
+If you know of solutions for any of these problems, please contact
+bug-octave@bevo.che.wisc.edu.
+
+More information about the GNU-WIN32 project is available via the WWW
+at http://www.cygnus.com/gnu-win32.
+
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering
+
+Tue Dec 10 01:00:52 1996

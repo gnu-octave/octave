@@ -9,6 +9,11 @@ Summary of changes for version 2.0:
     do work, but they print an annoying warning message to try to get
     people to switch to using gset.)
 
+  * Octave has been mostly ported to Windows NT and Windows 95 using
+    the beta 17 release of the Cygnus GNU-WIN32 tools.  Not everything
+    works, but it is usable.  See the file README.WINDOWS for more
+    information.
+
   * Dynamic linking works on more systems using dlopen() and friends
     (most modern Unix systems) or shl_load() and friends (HP/UX
     systems).  A simple example is provided in examples/hello.cc.

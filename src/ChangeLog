@@ -1,3 +1,8 @@
+Mon Sep 22 16:44:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/rand.cc (do_rand): Print error if first of two
+	args is a string but doesn't match "seed".
+
 Mon Aug 25 10:42:07 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (get_user_input): Return an empty string if the user

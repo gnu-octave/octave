@@ -258,6 +258,8 @@ do_rand (const octave_value_list& args, int nargin)
 	      if (! error_state)
 		set_rand_seed (d);
 	    }
+	  else
+	    error ("rand: unrecognized string argument");
 	}
       else
 	{

@@ -366,7 +366,7 @@ kbhit (void)
 char *
 octave_getcwd (const char *buf, int len)
 {
-#if defined (EMX)
+#if defined (__EMX__)
   return _getcwd2 (buf, len);
 #else
   return getcwd (buf, len);
@@ -376,7 +376,7 @@ octave_getcwd (const char *buf, int len)
 int
 octave_chdir (const char *path)
 {
-#if defined (EMX)
+#if defined (__EMX__)
   int retval = -1;
 
   if (strlen (path) == 2 && path[1] == ':')

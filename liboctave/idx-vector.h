@@ -217,6 +217,12 @@ public:
   int orig_rows (void) const { return rep->orig_rows (); }
   int orig_columns (void) const { return rep->orig_columns (); }
 
+  int orig_empty (void) const
+    {
+      return (! is_colon ()
+	      && (orig_rows () == 0 || orig_columns () == 0));
+    }
+
 // Unsafe.  Avoid at all cost.
   void shorten (int n) { rep->shorten (n); }
 

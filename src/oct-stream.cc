@@ -294,13 +294,11 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 	  break;
 
 	case 'h': case 'l': case 'L':
+	  // We accept these but we don't actually use them.
 	  if (modifier != '\0')
 	    nconv = -1;
 	  else
-	    {
-	      modifier = s[i];
-	      *buf << s[i++];
-	    }
+	    modifier = s[i++];
 	  break;
 
 	case 'd': case 'i': case 'o': case 'u': case 'x':
@@ -317,6 +315,10 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 	      nconv = -1;
 	      break;
 	    }
+
+	  // No float or long double conversions, thanks.
+	  *buf << 'l';
+
 	  goto fini;
 
 	case 'c': case 's': case 'p': case '%': case '[':

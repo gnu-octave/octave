@@ -1,3 +1,7 @@
+Fri Feb  7 12:55:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/erfinv.m: Fix typo in last change.
+
 Fri Jan 31 09:30:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* image/loadimage.m: Make it possible to load files with image

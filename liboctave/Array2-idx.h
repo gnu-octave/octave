@@ -163,21 +163,27 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 
   if (idx_i && idx_j)
     {
-      if (n == 0)
+      if (idx_i.orig_empty () || idx_j.orig_empty ())
 	{
-	  if (m == 0 || idx_j.is_colon_equiv (nc, 1))
+	  retval.resize (n, m);
+	}
+      else if (n == 0)
+	{
+	  if (m = 0)
 	    retval.resize (0, 0);
+	  else if (idx_j.is_colon_equiv (nc, 1))
+	    retval.resize (0, nc);
 	  else
-	    (*current_liboctave_error_handler)
-	      ("invalid row index = 0");
+	    (*current_liboctave_error_handler) ("invalid row index = 0");
 	}
       else if (m == 0)
 	{
-	  if (n == 0 || idx_i.is_colon_equiv (nr, 1))
+	  if (n == 0)
 	    retval.resize (0, 0);
+	  else if (idx_i.is_colon_equiv (nr, 1))
+	    retval.resize (nr, 0);
 	  else
-	    (*current_liboctave_error_handler)
-	      ("invalid column index = 0");
+	    (*current_liboctave_error_handler) ("invalid column index = 0");
 	}
       else if (idx_i.is_colon_equiv (nr) && idx_j.is_colon_equiv (nc))
 	{

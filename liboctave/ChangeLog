@@ -1,3 +1,11 @@
+Fri Feb  7 13:15:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.h (idx_vector::orig_empty): New function.
+
+	* Array2-idx.h (Array2<T>::index (idx_vector&, idx_vector&)):
+	Don't always resize to [](0x0) if one of the indices is empty or
+	zero.
+
 Sun Feb  2 22:33:44 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-hist.cc (command_history::read): New arg, must_exist.

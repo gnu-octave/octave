@@ -47,6 +47,13 @@ compilers that I have.  I am simply saying that the versions listed
 above work for me.  Other version combinations may also work, but I
 don't have time to map out all the possibilities...
 
+Craig Earls <cpearls@ziplink.net> reports that the order of installing
+libc and lig++ is important.  If libg++ is installed *first*, Octave
+will work, but if the libraries are installed in the reverse orfer,
+Octave fails.  The conflict apparently arises because libc and libg++
+shared libraries both use libio, however no one seems to be able to
+provide a clear explanation of exactly what is happening.
+
 Octave won't even compile
 -------------------------
 
@@ -58,7 +65,7 @@ by compiling a simple C++ program with -v:
 
 bash$ cat foo.cc
 #include <iostream.h>
-int main (void} { cerr << "yo\n"; return 0; }
+int main (void) { cerr << "yo\n"; return 0; }
 
 bash$ g++ -v foo.cc
 gcc -v foo.cc -lg++ -lstdc++ -lm

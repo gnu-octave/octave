@@ -38,7 +38,7 @@ function y = erfinv (x)
   endif
 
   t = find (x == -1);
-  y (tmp) = (-Inf) * ones (size (t));
+  y (t) = (-Inf) * ones (size (t));
 
   t = find (x == 1);
   y (t) = Inf * ones (size (t));

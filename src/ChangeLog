@@ -1,3 +1,9 @@
+Wed Feb  5 14:30:44 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (scanf_format_list::process_conversion): Accept
+	but don't actually use h, l, and L modifiers.  Always insert l
+	modifier for floating point conversions.	
+
 Fri Jan 31 13:55:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pager.cc (do_sync): Always flush the cout stream after writing.

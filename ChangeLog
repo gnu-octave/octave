@@ -1,8 +1,12 @@
 Tue Nov  5 12:32:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Comment out code to handle --enable-readline since
+	it doesn't work yet.
+
 	* aclocal.m4 (OCTAVE_SIGNAL_CHECK, OCTAVE_REINSTALL_SIGHANDLERS):
 	New checks stolen from bash 2.0 config.
 	* configure.in: Use them.
+
 	* acconfig.h: Add #undefs for HAVE_BSD_SIGNALS, HAVE_POSIX_SIGNALS,
 	HAVE_USG_SIGHOLD, and MUST_REINSTALL_SIGHANDLERS.
 

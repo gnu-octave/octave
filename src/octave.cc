@@ -682,6 +682,7 @@ Have Octave ask the system, \"What kind of computer are you?\"")
     }
   else
     {
+      output_buf << ends;
       char *msg = output_buf.str ();
       retval = msg;
       delete [] msg;

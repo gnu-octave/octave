@@ -70,7 +70,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // quoted string, and the name of the structure has to be passed too.
 
 #define DEFCONSTX(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INT (#name, sname, defn, inst_as_fcn, 0, sv_fcn, doc); \
+  DEFVAR_INT (name, sname, defn, inst_as_fcn, 0, sv_fcn, doc); \
   DEFVAR_INT ("__" ## name ## "__", X ## sname, defn, 0, 1, sv_fcn, doc)
 
 // How builtin variables are actually installed.

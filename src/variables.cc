@@ -1654,6 +1654,10 @@ default_return_value");
 	  split_long_rows,
     "split long matrix rows instead of wrapping");
 
+  DEFVAR ("struct_levels_to_print", SBV_struct_levels_to_print, 2.0,
+	  0, 0, 1, struct_levels_to_print,
+    "number of levels of structure elements to print");
+
 #ifdef USE_GNU_INFO
   DEFVAR ("suppress_verbose_help_message",
 	  SBV_suppress_verbose_help_message, "false", 0, 0, 1,

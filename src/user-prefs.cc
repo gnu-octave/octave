@@ -64,6 +64,7 @@ init_user_prefs (void)
   user_pref.save_precision = 0;
   user_pref.silent_functions = 0;
   user_pref.split_long_rows = 0;
+  user_pref.struct_levels_to_print = 0;
   user_pref.suppress_verbose_help_message = 0;
   user_pref.treat_neg_dim_as_zero = 0;
   user_pref.warn_assign_as_truth_value = 0;
@@ -109,6 +110,9 @@ check_str_pref (char *var)
     }
   return pref;
 }
+
+// XXX FIXME XXX -- some of these should do their own checking to be
+// able to provide more meaningful warning or error messages.
 
 // Should a replot command be generated automatically each time a plot
 // changes in some way?
@@ -364,6 +368,39 @@ split_long_rows (void)
 }
 
 
+// How many levels of structure elements should we print?
+
+int
+struct_levels_to_print (void)
+{
+  int status = 0;
+
+  static int kludge = 0;
+
+  double val;
+  if (builtin_real_scalar_variable ("struct_levels_to_print", val) == 0
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival > 0 && (double) ival == val)
+	{
+	  user_pref.struct_levels_to_print = ival;
+	  return status;
+	}
+    }
+
+  if (kludge == 0)
+    kludge++;
+  else
+    {
+      warning ("invalid value specified for struct_levels_to_print");
+      status = -1;
+    }
+
+  return status;
+}
+
+
 // Suppress printing of additional help message in help and usage
 // functions?
 
@@ -519,7 +556,7 @@ set_output_max_field_width (void)
       int ival = NINT (val);
       if (ival > 0 && (double) ival == val)
 	{
-	  user_pref.output_max_field_width= ival;
+	  user_pref.output_max_field_width = ival;
 	  return status;
 	}
     }

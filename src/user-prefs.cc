@@ -996,15 +996,7 @@ sv_ps1 (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("PS1");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("PS1");
-      status = -1;
-    }
-  else
-    user_pref.ps1 = s;
+  user_pref.ps1 = builtin_string_variable ("PS1");
 
   return status;
 }
@@ -1014,15 +1006,7 @@ sv_ps2 (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("PS2");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("PS2");
-      status = -1;
-    }
-  else
-    user_pref.ps2 = s;
+  user_pref.ps2 = builtin_string_variable ("PS2");
 
   return status;
 }
@@ -1032,15 +1016,7 @@ sv_ps4 (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("PS4");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("PS4");
-      status = -1;
-    }
-  else
-    user_pref.ps4 = s;
+  user_pref.ps4 = builtin_string_variable ("PS4");
 
   return status;
 }

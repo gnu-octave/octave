@@ -60,6 +60,18 @@ static const int newlist_grow_size = 128;
 // Indentation level for structures.
 static int structure_indent_level = 0;
 
+static void
+increment_structure_indent_level (void)
+{
+  structure_indent_level += 2;
+}
+
+static void
+decrement_structure_indent_level (void)
+{
+  structure_indent_level -= 2;
+}
+
 static int
 any_element_is_complex (const ComplexMatrix& a)
 {
@@ -1772,11 +1784,11 @@ TC_REP::print (ostream& output_buf)
 	unwind_protect_int (structure_indent_level);
 	unwind_protect_int (user_pref.struct_levels_to_print);
 
-	structure_indent_level += 2;
-
 	if (user_pref.struct_levels_to_print > 0)
 	  {
 	    user_pref.struct_levels_to_print--;
+
+	    increment_structure_indent_level ();
 
 	    for (Pix p = a_map->first (); p != 0; a_map->next (p))
 	      {
@@ -1793,6 +1805,8 @@ TC_REP::print (ostream& output_buf)
 
 		val.print (output_buf);
 	      }
+
+	    decrement_structure_indent_level ();
 
 	    output_buf.form ("%*s%s", structure_indent_level, "", "}\n");
 	  }

@@ -166,6 +166,35 @@ printed.")
   return retval;
 }
 
+DEFUN ("warning", Fwarning, Swarning, 1, 1,
+  "warning (MESSAGE): print a warning MESSAGE.\n\
+\n\
+See also: error")
+{
+  Octave_object retval;
+
+  char *msg = "unspecified_error";
+
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_defined ())
+    {
+      if (args(0).is_string ())
+	{
+	  msg = args(0).string_value ();
+
+	  if (! msg || ! *msg)
+	    return retval;
+	}
+      else if (args(0).is_empty ())
+	return retval;
+    }
+
+  warning (msg);
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -325,7 +325,6 @@ maximum_braindamage (void)
 {
   bind_builtin_variable ("PS1", ">> ");
   bind_builtin_variable ("PS2", "");
-  bind_builtin_variable ("backslash_escapes", 0.0);
   bind_builtin_variable ("beep_on_error", 1.0);
   bind_builtin_variable ("default_eval_print_flag", 0.0);
   bind_builtin_variable ("default_save_format", "mat-binary");

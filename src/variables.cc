@@ -832,6 +832,41 @@ lookup_by_name (const string& nm, int exec_script)
   return sym_rec;
 }
 
+octave_value
+get_global_value (const string& nm)
+{
+  octave_value retval;
+
+  symbol_record *sr = global_sym_tab->lookup (nm);
+
+  if (sr)
+    {
+      // Do something with the value in foo.
+
+      tree_fvc *sr_def = sr->def ();
+
+      if (sr_def)
+	retval  = sr_def->eval (1);
+      else
+	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
+    }
+  else
+    error ("get_global_by_name: unknown symbol `%s'", nm.c_str ());
+
+  return retval;
+}
+
+void
+set_global_value (const string& nm, const octave_value& val)
+{
+  symbol_record *sr = global_sym_tab->lookup (nm, 1);
+
+  if (sr)
+    sr->define (val);
+  else
+    panic_impossible ();
+}
+
 string
 get_help_from_file (const string& path)
 {

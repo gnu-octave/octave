@@ -107,6 +107,10 @@ extern bool lookup (symbol_record *s, int exec_script = 1);
 
 extern symbol_record *lookup_by_name (const string& nm, int exec_script = 1);
 
+extern octave_value get_global_value (const string& nm);
+
+extern void set_global_value (const string& nm, const octave_value& val);
+
 extern string get_help_from_file (const string& f);
 
 extern string builtin_string_variable (const string&);

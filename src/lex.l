@@ -1499,7 +1499,7 @@ check_for_garbage_after_fcn_def (void)
 	  else
 	    {
 	      warning ("ignoring trailing garbage after end of function\n\
-         near line %d of file `%s.m'", lineno, curr_fcn_file_name);
+         near line %d of file `%s'", lineno, curr_fcn_file_name);
 	      
 	      yyunput ('\n', yytext);
 	      return;

@@ -25,7 +25,7 @@ CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS PROJECTS README \
 	README.NLP ROADMAP SENDING-PATCHES THANKS move-if-change \
-	octave.sh octave-bug.in doinstall.sh mkinstalldirs \
+	octave.sh octave-bug.in doinstall.sh mkinstalldirs mkoctfile.in \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
@@ -86,6 +86,7 @@ BUGS:
 install::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
 	$(INSTALL_PROGRAM) octave-bug $(bindir)/octave-bug
+	$(INSTALL_PROGRAM) mkoctfile $(bindir)/mkoctfile
 	$(INSTALL_DATA) config.h $(includedir)/config.h
 
 maintainer-clean::

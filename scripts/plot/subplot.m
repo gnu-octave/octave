@@ -60,9 +60,9 @@ function subplot (rows, columns, index)
 # global variables to keep track of multiplot options
 
   global multiplot_mode 
-  global multi_xsize multi_ysize 
-  global multi_xn multi_yn
-  global multi_xi multi_yi
+  global multiplot_xsize multiplot_ysize 
+  global multiplot_xn multiplot_yn
+  global multiplot_xi multiplot_yi
 
 # This is a real kludge.  We gnuplot should be made so that replot can
 # be executed while doing multiple plots...
@@ -82,14 +82,16 @@ function subplot (rows, columns, index)
 
   if (nargin == 1)
 
-    if (! is_scalar (rows))
-      error ("subplot: input rcn has to be a scalar");
+    if (! (is_scalar (rows) && rows >= 0))
+      error ("subplot: input rcn has to be a positive scalar");
     endif
 
-    xnp = rows;
-    rows = round (xnp/100);
-    columns = round ((xnp - 100*rows)/10);
-    index = xnp - 10*columns - 100*rows;
+    tmp = rows;
+    index = rem (tmp, 10);
+    tmp = (tmp - index) / 10;
+    columns = rem (tmp, 10);
+    tmp = (tmp - columns) / 10;
+    rows = rem (tmp, 10);
 
   elseif (! (is_scalar (columns) && is_scalar (rows) && is_scalar (index)))
     error ("subplot: columns, rows, and index have to be scalars");
@@ -115,8 +117,8 @@ function subplot (rows, columns, index)
     set size 1,1
     set origin 0,0
 
-    multi_xn = 1;
-    multi_yn = 1;
+    multiplot_xn = 1;
+    multiplot_yn = 1;
     multiplot_mode = 0;
 
 # Someone may have reset it betweeen calls...
@@ -125,46 +127,47 @@ function subplot (rows, columns, index)
       automatic_replot = multiplot_save_auto_replot;
     endif
 
-    return;
-
-  endif
+  else
 
 # doing multiplot plots
 
-  doagain = 0;
+    doagain = 0;
 
-  if (exist ("multiplot_mode") != 1)
-    doagain = 1;
-  elseif (multiplot_mode != 1 || multi_xn != columns || multi_yn != rows)
-    doagain = 1;
-  endif
+    if (exist ("multiplot_mode") != 1)
+      doagain = 1;
+    elseif (multiplot_mode != 1 || multiplot_xn != columns
+	    || multiplot_yn != rows)
+      doagain = 1;
+    endif
 
-  if (doagain)
+    if (doagain)
 
-    multiplot_mode = 1;
-    multi_xn = columns;
-    multi_yn = rows;
-    multi_xsize = 1.0 ./ columns;
-    multi_ysize = 1.0 ./ rows;
+      multiplot_mode = 1;
+      multiplot_xn = columns;
+      multiplot_yn = rows;
+      multiplot_xsize = 1.0 ./ columns;
+      multiplot_ysize = 1.0 ./ rows;
 
-    set multiplot;
+      set multiplot;
 
-    eval (sprintf ("set size %g, %g", multi_xsize, multi_ysize));
+      eval (sprintf ("set size %g, %g", multiplot_xsize, multiplot_ysize));
 
-  endif
+    endif
 
 # get the sub plot location
 
-  yp = round ((index-1)/columns);
-  xp = index - yp*columns - 1;
-  multi_xi = ++xp;
-  multi_yi = ++yp;
+    yp = fix ((index-1)/columns);
+    xp = index - yp*columns - 1;
+    multiplot_xi = ++xp;
+    multiplot_yi = ++yp;
 
 # set the origin
 
-  xo = (xp - 1.0)*multi_xsize;
-  yo = (rows - yp)*multi_ysize;
+    xo = (xp - 1.0)*multiplot_xsize;
+    yo = (rows - yp)*multiplot_ysize;
 
-  eval (sprintf ("set origin %g, %g", xo, yo));
+    eval (sprintf ("set origin %g, %g", xo, yo));
+
+  endif
 
 endfunction

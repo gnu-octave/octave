@@ -33,8 +33,8 @@ function subwindow (xn, yn)
 # global variables to keep track of multiplot options
 
   global multiplot_mode 
-  global multi_xsize multi_ysize 
-  global multi_xn multi_yn
+  global multiplot_xsize multiplot_ysize 
+  global multiplot_xn multiplot_yn
 
 # check calling argument count
 
@@ -61,12 +61,12 @@ function subwindow (xn, yn)
 
 # get the sub plot location
 
-  if (xn < 1 || xn > multi_xn || yn < 1 || yn > multi_yn)
+  if (xn < 1 || xn > multiplot_xn || yn < 1 || yn > multiplot_yn)
     error ("subwindow: incorrect xn and yn");
   endif
 
-  xo = (xn - 1.0)*multi_xsize;
-  yo = (multi_yn - yn)*multi_ysize;
+  xo = (xn - 1.0)*multiplot_xsize;
+  yo = (multiplot_yn - yn)*multiplot_ysize;
 
   eval (sprintf ("set origin %g, %g", xo, yo));
 

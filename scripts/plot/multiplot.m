@@ -35,9 +35,9 @@ function multiplot (xn, yn)
 # global variables to keep track of multiplot options
 
   global multiplot_mode
-  global multi_xsize multi_ysize
-  global multi_xn multi_yn
-  global multi_xi multi_yi
+  global multiplot_xsize multiplot_ysize
+  global multiplot_xn multiplot_yn
+  global multiplot_xi multiplot_yi
 
 # This is a real kludge.  We gnuplot should be made so that replot can
 # be executed while doing multiple plots...
@@ -69,12 +69,12 @@ function multiplot (xn, yn)
     set origin 0,0
 
     multiplot_mode = 0;
-    multi_xsize = 1;
-    multi_ysize = 1;
-    multi_xn = 1;
-    multi_yn = 1;
-    multi_xi = 1;
-    multi_yi = 1;
+    multiplot_xsize = 1;
+    multiplot_ysize = 1;
+    multiplot_xn = 1;
+    multiplot_yn = 1;
+    multiplot_xi = 1;
+    multiplot_yi = 1;
 
 # Someone may have reset it betweeen calls...
 
@@ -103,12 +103,12 @@ function multiplot (xn, yn)
     eval (sprintf ("set origin %g, %g", xo, yo));
 
     multiplot_mode = 1;
-    multi_xsize = xsize;
-    multi_ysize = ysize;
-    multi_xn = xn;
-    multi_yn = yn;
-    multi_xi = 1;
-    multi_yi = 1;
+    multiplot_xsize = xsize;
+    multiplot_ysize = ysize;
+    multiplot_xn = xn;
+    multiplot_yn = yn;
+    multiplot_xi = 1;
+    multiplot_yi = 1;
 
   endif
 

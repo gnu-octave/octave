@@ -38,9 +38,9 @@ function mplot (...)
 # global variables to keep track of multiplot options
 
   global multiplot_mode
-  global multi_xsize multi_ysize
-  global multi_xn multi_yn
-  global multi_xi multi_yi
+  global multiplot_xsize multiplot_ysize
+  global multiplot_xn multiplot_yn
+  global multiplot_xi multiplot_yi
 
 # This is a real kludge.  We gnuplot should be made so that replot can
 # be executed while doing multiple plots...
@@ -63,19 +63,19 @@ function mplot (...)
 
   if (multiplot_mode)
 
-    if (multi_xi < multi_xn)
-      multi_xi++;
+    if (multiplot_xi < multiplot_xn)
+      multiplot_xi++;
     else
-      multi_xi = 1;
-      if (multi_yi < multi_xn)
-	multi_yi++;
+      multiplot_xi = 1;
+      if (multiplot_yi < multiplot_xn)
+	multiplot_yi++;
       else
-	multi_yi = 1;
+	multiplot_yi = 1;
       endif
     endif
 
-    xo = (multi_xi - 1.0)*multi_xsize;
-    yo = (multi_yn - multi_yi)*multi_ysize;
+    xo = (multiplot_xi - 1.0)*multiplot_xsize;
+    yo = (multiplot_yn - multiplot_yi)*multiplot_ysize;
 
     eval (sprintf ("set origin %g, %g", xo,yo));
 

@@ -160,6 +160,13 @@ MARRAY_AA_OP (quotient,   /)
 
 template <class T>
 MArray<T>
+operator + (const MArray<T>& a)
+{
+  return a;
+}
+
+template <class T>
+MArray<T>
 operator - (const MArray<T>& a)
 {
   int l = a.length ();
@@ -168,13 +175,6 @@ operator - (const MArray<T>& a)
   const T *x = a.data ();
   NEG_V (r, l, x);
   return result;
-}
-
-template <class T>
-MArray<T>
-operator + (const MArray<T>& a)
-{
-  return a;
 }
 
 /*

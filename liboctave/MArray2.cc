@@ -173,6 +173,13 @@ MARRAY_A2A2_OP (quotient,   /)
 
 template <class T>
 MArray2<T>
+operator + (const MArray2<T>& a)
+{
+  return a;
+}
+
+template <class T>
+MArray2<T>
 operator - (const MArray2<T>& a)
 {
   int l = a.length ();

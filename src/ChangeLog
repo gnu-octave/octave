@@ -1,3 +1,7 @@
+2000-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (%.df : %.cc): Don't pass -c to compiler.
+
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-base-mat.cc: Include pr-output.h here.

@@ -71,7 +71,7 @@
 
 // Instantiate the OP= operators.
 #define MARRAY_OP_ASSIGN_DEFS(A_T, E_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , T) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , E_T) \
   MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , A_T<E_T>)
 
 // A function that can be used to forward OP= operations from derived

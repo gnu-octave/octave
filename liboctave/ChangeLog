@@ -1,7 +1,10 @@
 2000-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* dColVector.h, dRowVector.h, CColVector.h, CRowVector.h:
-	Use MARRAY_FORWARD_DEFS here.
+	* MArray-defs.h: Many new macros to make declaration and
+	definition of operators more consistent.
+	
+	* MArray.h, MArray2.h, dColVector.h, dRowVector.h, CColVector.h,
+	CRowVector.h, dMatrix.h, CMatrix.h: Use them.
 
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

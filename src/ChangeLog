@@ -1,3 +1,8 @@
+2005-03-14  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/dispatch.cc (Fbuiltin):	Avoid crash if symbol
+	lookup fails.
+
 2005-03-10  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (Foctave_config_info): Print error instead of crashing

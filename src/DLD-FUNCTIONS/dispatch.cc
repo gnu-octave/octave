@@ -307,16 +307,22 @@ some other function for the given type signature.\n\
 	return retval;
 
       symbol_record *sr = fbi_sym_tab->lookup (name, 0);
-      if (sr->def().type_id () == octave_dispatch::static_type_id ())
-	{
-	  octave_function *fcn = builtin (name);
 
-	  if (!error_state && fcn)
-	    retval = fcn->do_multi_index_op (nargout,
-					     args.splice (0, 1, retval));
+      if (sr)
+	{
+	  if (sr->def().type_id () == octave_dispatch::static_type_id ())
+	    {
+	      octave_function *fcn = builtin (name);
+
+	      if (!error_state && fcn)
+		retval = fcn->do_multi_index_op (nargout,
+						 args.splice (0, 1, retval));
+	    }
+	  else
+	    retval = feval (name, args, nargout);
 	}
       else
-	retval = feval (name, args, nargout);
+	error ("builtin: lookup for symbol `%s' failed", name.c_str ());
     }
   else
     print_usage ("builtin");

@@ -18,7 +18,7 @@
 
 function retval = rank (A, tol)
 
-# usage: rand (a, tol)
+# usage: rank (a, tol)
 #
 # Return the rank of the matrix a.  The rank is taken to be the number
 # of singular values of a that are greater than tol.
@@ -34,6 +34,7 @@ function retval = rank (A, tol)
     sigma = svd (A);
     tolerance = max (size (A)) * sigma (1) * eps;
   elseif (nargin == 2)
+    sigma = svd (A);
     tolerance = tol;
   else
     error ("usage: rank (A)");

@@ -1,3 +1,17 @@
+2004-03-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+2004-03-02  David Bateman  <dbateman@free.fr>
+ 
+	* oct-fftw.cc: Only two versions of plan, and avoid endless
+	changes between them.  Faster for small fft's.
+	(octave_fftw_planner::simd_align, octave_fftw_planner::rsimd_align):
+	New member variables. 
+	(octave_fftw_planner::ialign, octave_fftw_planner::oalign,
+	octave_fftw_planner::rialign, octave_fftw_planner::roalign): Delete.
+	Change all uses.
+	(CHECK_SIMD_ALIGNMENT): New macro.
+	(octave_fftw_planner::create_plan): Use it.
+
 2004-03-01  Petter Risholm  <risholm@idi.ntnu.no>
 
 	* Array.cc (Array<T>::insertN): Eliminate N-d indexing.

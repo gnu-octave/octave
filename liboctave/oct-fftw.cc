@@ -50,16 +50,19 @@ class
 octave_fftw_planner
 {
 public:
-  octave_fftw_planner ();
+
+  octave_fftw_planner (void);
 
   fftw_plan create_plan (int dir, const int rank, const dim_vector dims, 
 			 int howmany, int stride, int dist, 
 			 const Complex *in, Complex *out);
+
   fftw_plan create_plan (const int rank, const dim_vector dims, 
 			 int howmany, int stride, int dist, 
 			 const double *in, Complex *out);
 
 private:
+
   int plan_flags;
 
   // Plan for fft and ifft of complex values
@@ -69,8 +72,7 @@ private:
   int r[2];  // rank
   int h[2];  // howmany
   dim_vector n[2]; // dims
-  char ialign[2];
-  char oalign[2];
+  bool simd_align[2];
 
   // Plan for fft of real values
   fftw_plan rplan;
@@ -79,27 +81,29 @@ private:
   int rr;  // rank
   int rh;  // howmany
   dim_vector rn; // dims
-  char rialign;
-  char roalign;
+  bool rsimd_align;
 };
 
-octave_fftw_planner::octave_fftw_planner ()
+octave_fftw_planner::octave_fftw_planner (void)
 {
   plan_flags = FFTW_ESTIMATE;
 
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
-  ialign[0] = ialign[1] = oalign[0] = oalign[1] = 0;
-  n[0] = n[1] = dim_vector();
+  simd_align[0] = simd_align[1] = false;
+  n[0] = n[1] = dim_vector ();
 
   rplan = 0;
   rd = rs = rr = rh = 0;
-  rialign = roalign = 0;
+  rsimd_align = false;
   rn = dim_vector ();
 
   // If we have a system wide wisdom file, import it
-  fftw_import_system_wisdom ( );
+  fftw_import_system_wisdom ();
 }
+
+#define CHECK_SIMD_ALIGNMENT(x) \
+  ((reinterpret_cast<ptrdiff_t> (x)) & 0xF == 0)
 
 fftw_plan
 octave_fftw_planner::create_plan (int dir, const int rank,
@@ -110,12 +114,14 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
-  char in_align = (reinterpret_cast<ptrdiff_t> (in)) & 0xF;
-  char out_align = (reinterpret_cast<ptrdiff_t> (out)) & 0xF;
+  bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
 
+  // Don't create a new plan if we have a non SIMD plan already
+  // but can do SIMD. This prevents endlessly recreating plans
+  // if we change the alignment
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
-      || ialign[which] != in_align || oalign[which] != out_align)
+      || ((ioalign != simd_align[which]) ? !ioalign : false))
     create_new_plan = true;
   else
     // We still might not have the same shape of array
@@ -132,9 +138,13 @@ octave_fftw_planner::create_plan (int dir, const int rank,
       s[which] = stride;
       r[which] = rank;
       h[which] = howmany;
-      ialign[which] = in_align;
-      oalign[which] = out_align;
+      simd_align[which] = ioalign;
       n[which] = dims;
+
+      if (ioalign)
+	plan_flags &= ~FFTW_UNALIGNED;
+      else
+	plan_flags |= FFTW_UNALIGNED;
 
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
@@ -164,11 +174,13 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
 {
   fftw_plan *cur_plan_p = &rplan;
   bool create_new_plan = false;
-  char in_align = (reinterpret_cast<ptrdiff_t> (in)) & 0xF;
-  char out_align = (reinterpret_cast<ptrdiff_t> (out)) & 0xF;
+  bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
 
+  // Don't create a new plan if we have a non SIMD plan already
+  // but can do SIMD. This prevents endlessly recreating plans
+  // if we change the alignment
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
-      || rh != howmany || rialign != in_align || roalign != out_align)
+      || rh != howmany || ((ioalign != rsimd_align) ? !ioalign : false))
     create_new_plan = true;
   else
     // We still might not have the same shape of array
@@ -185,9 +197,13 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
       rs = stride;
       rr = rank;
       rh = howmany;
-      rialign = in_align;
-      roalign = out_align;
+      rsimd_align = ioalign;
       rn = dims;
+
+      if (ioalign)
+	plan_flags &= ~FFTW_UNALIGNED;
+      else
+	plan_flags |= FFTW_UNALIGNED;
 
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
@@ -232,7 +248,7 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
 {
   size_t nc = dv(0);
   size_t nr = dv(1);
-  size_t np = (dv.length() > 2 ? dv.numel () / nc / nr : 1);
+  size_t np = (dv.length () > 2 ? dv.numel () / nc / nr : 1);
   size_t nrp = nr * np;
   Complex *ptr1, *ptr2;
 
@@ -270,7 +286,7 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
   size_t kstep = dv(0);
   size_t nel = dv.numel ();
 
-  for (int inner = 2; inner < dv.length(); inner++) 
+  for (int inner = 2; inner < dv.length (); inner++) 
     {
       size_t jmax = jstart * dv(inner);
       for (size_t i = 0; i < nel; i+=jmax)

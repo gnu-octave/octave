@@ -1,3 +1,39 @@
+2004-12-27  Martin Dalecki  <martin@dalecki.de>
+
+	* Cell.cc, c-file-ptr-stream.cc, comment-list.cc, oct-map.cc,
+	oct-obj.cc, ov-base.cc, ov-base-int.cc, ov-base-mat.cc,
+	ov-base-scalar.cc, ov-bool.cc, ov-bool-mat.cc, ov-builtin.cc,
+	ov.cc, ov-cell.cc, ov-ch-mat.cc, ov-colon.cc, ov-complex.cc,
+	ov-cs-list.cc, ov-cx-mat.cc, ov-dld-fcn.cc, ov-fcn.cc,
+	ov-fcn-handle.cc, ov-fcn-inline.cc, ov-file.cc, ov-int16.cc,
+	ov-int32.cc, ov-int64.cc, ov-int8.cc, ov-list.cc, ov-mapper.cc,
+	ov-range.cc, ov-re-mat.cc, ov-scalar.cc, ov-streamoff.cc,
+	ov-str-mat.cc, ov-struct.cc, ov-typeinfo.cc, ov-uint16.cc,
+	ov-uint32.cc, ov-uint64.cc, ov-uint8.cc, ov-usr-fcn.cc,
+	ov-va-args.cc, procstream.cc, pt-arg-list.cc, pt-assign.cc,
+	pt-binop.cc, pt-bp.cc, pt.cc, pt-cell.cc, pt-check.cc, pt-cmd.cc,
+	pt-colon.cc, pt-const.cc, pt-decl.cc, pt-except.cc, pt-exp.cc,
+	pt-fcn-handle.cc, pt-id.cc, pt-idx.cc, pt-jump.cc, pt-loop.cc,
+	pt-mat.cc, pt-misc.cc, pt-pr-code.cc, pt-select.cc, pt-stmt.cc,
+	pt-unop.cc, symtab.cc, token.cc, unwind-prot.cc:
+	Delete #pragma implementation
+
+	* Cell.h, c-file-ptr-stream.h, comment-list.h, oct-map.h,
+	oct-obj.h, ov-base.h, ov-base-int.h, ov-base-mat.h,
+	ov-base-scalar.h, ov-bool.h, ov-bool-mat.h, ov-builtin.h,
+	ov-cell.h, ov-ch-mat.h, ov-complex.h, ov-cs-list.h, ov-cx-mat.h,
+	ov-dld-fcn.h, ov-fcn.h, ov-fcn-handle.h, ov-fcn-inline.h,
+	ov-file.h, ov.h, ov-int16.h, ov-int32.h, ov-int64.h, ov-int8.h,
+	ov-list.h, ov-mapper.h, ov-range.h, ov-re-mat.h, ov-scalar.h,
+	ov-streamoff.h, ov-str-mat.h, ov-struct.h, ov-typeinfo.h,
+	ov-uint16.h, ov-uint32.h, ov-uint64.h, ov-uint8.h, ov-usr-fcn.h,
+	procstream.h, pt-arg-list.h, pt-assign.h, pt-binop.h, pt-bp.h,
+	pt-cell.h, pt-check.h, pt-cmd.h, pt-colon.h, pt-const.h,
+	pt-decl.h, pt-except.h, pt-exp.h, pt-fcn-handle.h, pt.h, pt-id.h,
+	pt-idx.h, pt-jump.h, pt-loop.h, pt-mat.h, pt-misc.h, pt-pr-code.h,
+	pt-select.h, pt-stmt.h, pt-unop.h, symtab.h, token.h,
+	unwind-prot.h: Delete #pragma interface.
+
 2004-12-27  John W. Eaton  <jwe@octave.org>
 
 	Merge of changes from Teemu Ikonen <tpikonen@pcu.helsinki.fi> to

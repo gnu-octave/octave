@@ -23,10 +23,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_base_lu_h)
 #define octave_base_lu_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include "MArray.h"
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>

@@ -23,10 +23,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_uint64NDArray_h)
 #define octave_uint64NDArray_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include "intNDArray.h"
 #include "mx-op-defs.h"
 #include "oct-inttypes.h"

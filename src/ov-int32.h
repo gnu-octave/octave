@@ -23,10 +23,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_int32_h)
 #define octave_int32_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #define OCTAVE_VALUE_INT_MATRIX_T octave_int32_matrix
 #define OCTAVE_INT_NDARRAY_T int32NDArray
 #define OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION int32_array_value

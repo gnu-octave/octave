@@ -85,7 +85,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 		octave_rand::normal_distribution ();
 	      }
 	    else
-	      error ("rand: unrecognized string argument");
+	      error ("%s: unrecognized string argument", fcn);
 	  }
 	else if (tmp.is_scalar_type ())
 	  {
@@ -93,7 +93,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 	    if (xisnan (dval))
 	      {
-		error ("rand: NaN is invalid a matrix dimension");
+		error ("%s: NaN is invalid a matrix dimension", fcn);
 	      }
 	    else
 	      {
@@ -121,7 +121,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 		int lim = NINT (r.limit ());
 
 		if (base < 0 || lim < 0)
-		  error ("rand: all dimensions must be nonnegative");
+		  error ("%s: all dimensions must be nonnegative", fcn);
 		else
 		  {
 		    for (int i = 0; i < n; i++)
@@ -134,7 +134,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 		  }
 	      }
 	    else
-	      error ("rand: expecting all elements of range to be integers");
+	      error ("%s: expecting all elements of range to be integers",
+		     fcn);
 	  }
 	else if (tmp.is_matrix_type ())
 	  {
@@ -152,7 +153,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 		    if (elt < 0)
 		      {
-			error ("rand: all dimensions must be nonnegative");
+			error ("%s: all dimensions must be nonnegative", fcn);
 			goto done;
 		      }
 
@@ -162,7 +163,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 		goto gen_matrix;
 	      }
 	    else
-	      error ("rand: expecting integer vector");
+	      error ("%s: expecting integer vector", fcn);
 	  }
 	else
 	  {
@@ -186,7 +187,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 		  octave_rand::seed (d);
 	      }
 	    else
-	      error ("rand: unrecognized string argument");
+	      error ("%s: unrecognized string argument", fcn);
 	  }
 	else
 	  {
@@ -198,7 +199,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 		if (error_state)
 		  {
-		    error ("rand: expecting integer arguments");
+		    error ("%s: expecting integer arguments", fcn);
 		    goto done;
 		  }
 	      }

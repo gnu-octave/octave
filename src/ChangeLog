@@ -1,11 +1,17 @@
-2003-11-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
-
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.52.
 	(OCTAVE_API_VERSION): Now api-v3.
 
+	* DLD-FUNCTIONS/rand.cc (do_rand): Pass function name from arg
+	list in calls to error.
+
+	* ov-cs-list.cc, ov-cs-list.h (octave_cs_list::octave_cs_list):
+	Explicitly initialize base class in constructors.
+
 	* ov.h (octave_value::all_strings): Pass second arg to rep function.
+
+	* ov.h (octave_value::string_value): Pass arg to rep function.
 
 	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_f): Delete unused arg names.
 	* ls-hdf5.h (hdf5_streambase::hdf5_streambase): Likewise.
@@ -17,6 +23,7 @@
 	* ov-base-mat.h (octave_base_matrix::subsref): Likewise.
 	* ov-mapper.h (octave_mapper::subsref): Likewise.
 	* ov-builtin.h (octave_builtin::subsref): Likewise.
+	* ov-complex.cc (octave_complex::complex_array_value): Likewise.
 	* ov-cell.h (octave_cell::subsref): Likewise.
 	* ov-base-scalar.h (octave_base_scalar::subsref): Likewise.
 	* ov-struct.h (octave_struct::subsref): Likewise.

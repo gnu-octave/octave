@@ -141,7 +141,7 @@ octave_complex::complex_matrix_value (bool) const
 }
 
 ComplexNDArray
-octave_complex::complex_array_value (bool force_conversion) const
+octave_complex::complex_array_value (bool /* force_conversion */) const
 {
   return ComplexNDArray (dim_vector (1, 1), scalar);
 }

@@ -52,15 +52,15 @@ octave_cs_list : public octave_base_value
 public:
 
   octave_cs_list (void)
-    : lst () { }
+    : octave_base_value (), lst () { }
 
   octave_cs_list (const octave_value_list& l)
-    : lst (l) { }
+    : octave_base_value (), lst (l) { }
 
   octave_cs_list (const Cell& c);
 
   octave_cs_list (const octave_cs_list& l)
-    : lst (l) { }
+    : octave_base_value (), lst (l) { }
 
   ~octave_cs_list (void) { }
 

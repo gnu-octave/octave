@@ -127,7 +127,7 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 	  Complex *pwork2 = work.fortran_vec ();
 
 	  F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
-				     pwork, lwork, info));
+				     pwork2, lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

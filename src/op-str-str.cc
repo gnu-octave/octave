@@ -52,19 +52,19 @@ eq (const octave_value& a1, const octave_value& a2)
       else
 	SC_MX_BOOL_OP (char, c, cm1 (0, 0), \
 		       charMatrix, m, cm2, \
-		       c == m (i, j));
+		       c == m (i, j), 0.0);
     }
   else
     {
       if (cm2.rows () == 1 && cm2.columns () == 1)
 	MX_SC_BOOL_OP (charMatrix, m, cm1, \
 		       char, c, cm2 (0, 0), \
-		       c == m (i, j));
+		       c == m (i, j), 0.0);
       else
 	MX_MX_BOOL_OP (charMatrix, m1, cm1, \
 		       charMatrix, m2, cm2, \
 		       m1 (i, j) == m2 (i, j), \
-		       "==", 1.0);
+		       "==", 0.0);
     }
 }
 
@@ -84,14 +84,14 @@ ne (const octave_value& a1, const octave_value& a2)
       else
 	SC_MX_BOOL_OP (char, c, cm1 (0, 0), \
 		       charMatrix, m, cm2, \
-		       c != m (i, j));
+		       c != m (i, j), 1.0);
     }
   else
     {
       if (cm2.rows () == 1 && cm2.columns () == 1)
 	MX_SC_BOOL_OP (charMatrix, m, cm1, \
 		       char, c, cm2 (0, 0), \
-		       c != m (i, j));
+		       c != m (i, j), 1.0);
       else
 	MX_MX_BOOL_OP (charMatrix, m1, cm1, \
 		       charMatrix, m2, cm2, \

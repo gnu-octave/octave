@@ -1,3 +1,26 @@
+Sun Jan  5 12:50:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ops.h (SC_MX_BOOL_OP, MX_SC_BOOL_OP): New arg, empty_result.
+	* op-cm-cm.cc, op-cm-cs.cc, op-cm-m.cc, op-cm-s.cc, op-cs-cm.cc,
+	op-cs-m.cc, op-m-cm.cc, op-m-cs.cc, op-m-m.cc, op-m-s.cc,
+	op-s-cm.cc, op-s-m.cc, op-str-str.cc: Change all uses of
+	SC_MX_BOOL_OP and MX_SC_BOOL_OP macros.  Return correct results
+	for empty matrix cases.
+
+	* pt-fcn.cc (tree_function::eval): If Vdefine_all_return_values is
+	true, initialize return values before evaluating function, for
+	compatibility with Matlab.
+
+	* oct-stream.cc (get_size): Correctly set size when arg is scalar.
+
+Thu Jan  2 12:40:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-oct): Quote $(OCT_FILES) in for loop to
+	avoid syntax error from ksh.
+
+	* pr-output.cc (octave_print_internal): Avoid unused parameter
+	warning from gcc.
+
 Thu Dec 19 12:13:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (octave_base_stream::do_scanf):

@@ -60,20 +60,24 @@ extern void install_ops (void);
       retval (i, j) = test; \
   return retval;
 
-#define SC_MX_BOOL_OP(st, sn, get_s, mt, mn, get_m, test) \
+#define SC_MX_BOOL_OP(st, sn, get_s, mt, mn, get_m, test, empty_result) \
   do \
     { \
       BOOL_OP1 (st, sn, get_s, mt, mn, get_m) \
       BOOL_OP2 (mn) \
+      if (nr == 0|| nc == 0) \
+        return empty_result; \
       BOOL_OP3 (test) \
     } \
   while (0)
 
-#define MX_SC_BOOL_OP(mt, mn, get_m, st, sn, get_s, test) \
+#define MX_SC_BOOL_OP(mt, mn, get_m, st, sn, get_s, test, empty_result) \
   do \
     { \
       BOOL_OP1 (mt, mn, get_m, st, sn, get_s) \
       BOOL_OP2 (mn) \
+      if (nr == 0|| nc == 0) \
+        return empty_result; \
       BOOL_OP3 (test) \
     } \
   while (0)
@@ -83,10 +87,10 @@ extern void install_ops (void);
   do \
     { \
       BOOL_OP1 (m1t, m1n, get_m1, m2t, m2n, get_m2) \
-      int m1_nr = m1.rows (); \
-      int m1_nc = m1.cols (); \
-      int m2_nr = m2.rows (); \
-      int m2_nc = m2.cols (); \
+      int m1_nr = m1n.rows (); \
+      int m1_nc = m1n.cols (); \
+      int m2_nr = m2n.rows (); \
+      int m2_nc = m2n.cols (); \
       if (m1_nr != m2_nr || m1_nc != m2_nc) \
 	{ \
 	  gripe_nonconformant ("operator " op, m1_nr, m1_nc, m2_nr, m2_nc); \

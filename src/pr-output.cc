@@ -1480,7 +1480,7 @@ octave_print_internal (ostream& os, const Range& r,
 void
 octave_print_internal (ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax, bool pr_as_string,
-		       int extra_indent)
+		       int /* extra_indent XXX FIXME XXX */)
 {
   if (pr_as_string)
     {

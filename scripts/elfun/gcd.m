@@ -31,6 +31,10 @@
 
 function [g, v] = gcd (a, ...)
 
+  if (nargin == 0)
+    usage ("[g, v] = gcd (a, ...)");
+  endif
+
   if (nargin > 1)
     va_start;
     for k = 2:nargin;

@@ -261,7 +261,7 @@ install-oct: mk-oct-links
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(top_srcdir)/mkinstalldirs $(octfiledir) ; \
 	  chmod a+rx mk-oct-links ; \
-	  for f in $(OCT_FILES); do \
+	  for f in "$(OCT_FILES)"; do \
 	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
 	  done ; \
 	  ./mk-oct-links $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)) ; \

@@ -93,6 +93,12 @@ changing it to
 should keep gcc from adding -lieee to the link command.  You can find
 the location of the specs file by running the command gcc -v.
 
+If you can't edit the gcc specs file for some reason, another solution
+that should work is to create an empty libieee.a file in the Octave
+src directory using the command:
+
+  ar cq libieee.a
+
 My system doesn't have g77
 --------------------------
 
@@ -120,6 +126,11 @@ Installing libg++ on a Linux system is not as simple as it should be,
 because libg++ shares some basic I/O code with the Linux C library,
 and they must be compatible.  You should get and read the release
 notes for the compiler and libraries.
+
+If you decide to install versions of the libraries that are older (or
+newer) than the ones you already have, you should follow the
+directions in the release notes very carefully.
+
 
 If you have comments or suggestions for this document, please contact
 bug-octave@bevo.che.wisc.edu.

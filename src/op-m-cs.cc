@@ -93,17 +93,17 @@ ldiv (const octave_value& v1, const octave_value&)
   return octave_value ();
 }
 
-#define BOOL_OP(OP) \
+#define BOOL_OP(OP, EMPTY_RESULT) \
   MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
 		 Complex, s, v2.complex_value (), \
-		 m (i, j) OP real (s))
+		 m (i, j) OP real (s), EMPTY_RESULT)
 
 static octave_value
 lt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
 
-  BOOL_OP (<);
+  BOOL_OP (<, Matrix ());
 }
 
 static octave_value
@@ -111,7 +111,7 @@ le (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
 
-  BOOL_OP (<=);
+  BOOL_OP (<=, Matrix ());
 }
 
 static octave_value
@@ -121,7 +121,7 @@ eq (const octave_value& a1, const octave_value& a2)
 
   MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
 		 Complex, s, v2.complex_value (), \
-		 m (i, j) == s);
+		 m (i, j) == s, 0.0);
 }
 
 static octave_value
@@ -129,7 +129,7 @@ ge (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
 
-  BOOL_OP (>=);
+  BOOL_OP (>=, Matrix ());
 }
 
 static octave_value
@@ -137,7 +137,7 @@ gt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
 
-  BOOL_OP (>);
+  BOOL_OP (>, Matrix ());
 }
 
 static octave_value
@@ -147,7 +147,7 @@ ne (const octave_value& a1, const octave_value& a2)
 
   MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
 		 Complex, s, v2.complex_value (), \
-		 m (i, j) != s);
+		 m (i, j) != s, 1.0);
 }
 
 static octave_value
@@ -194,7 +194,7 @@ el_and (const octave_value& a1, const octave_value& a2)
 
   MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
 		 Complex, s, v2.complex_value (), \
-		 m (i, j) && s != 0.0);
+		 m (i, j) && s != 0.0, Matrix ());
 }
 
 static octave_value
@@ -204,7 +204,7 @@ el_or (const octave_value& a1, const octave_value& a2)
 
   MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
 		 Complex, s, v2.complex_value (), \
-		 m (i, j) || s != 0.0);
+		 m (i, j) || s != 0.0, Matrix ());
 }
 
 static octave_value *

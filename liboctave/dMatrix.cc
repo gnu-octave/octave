@@ -2888,7 +2888,7 @@ Matrix::read (istream& is, int nr, int nc,
 			  max_size *= 2;
 
 			  if (nr > 0)
-			    resize (nr, max_size / 2, 0.0);
+			    resize (nr, max_size / nr, 0.0);
 			  else
 			    resize (max_size, 1, 0.0);
 

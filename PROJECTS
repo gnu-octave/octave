@@ -210,6 +210,19 @@ Input/Output:
 Interpreter:
 -----------
 
+  * Fix the parser so that
+
+      function foo ()
+        implicit_str_to_num_ok = 1;
+        '#' + 0;
+      endfunction
+
+    succeeds, even when implicit_str_to_num_ok is 0 at the time the
+    function is parsed.
+
+  * Consider making x(:) work no matter what the value of
+    do_fortran_indexing.
+
   * If foo.oct and foo.m both exist in the LOADPATH, Octave will
     always find foo.oct, even if foo.m appears earlier in the list of
     directories.  This should be fixed (in the kpathsearch library) to

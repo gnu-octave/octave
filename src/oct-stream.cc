@@ -112,22 +112,30 @@ get_size (const Matrix& size, int& nr, int& nc, const char *warn_for)
   double dnr = -1.0;
   double dnc = -1.0;
 
-  if (size.rows () == 1 && size.cols () > 0)
+  int sz_nr = size.rows ();
+  int sz_nc = size.cols ();
+
+  if (sz_nr == 1 && sz_nc == 1)
+    {
+      dnr = size (0, 0);
+      dnc = 1.0;
+    }
+  else if (sz_nr == 1 && sz_nc > 0)
     {
       dnr = size (0, 0);
 
-      if (size.cols () == 2)
+      if (sz_nc == 2)
 	dnc = size (0, 1);
-      else if (size.cols () > 2)
+      else if (sz_nc > 2)
 	::error ("%s: invalid size specification", warn_for);
     }
-  else if (size.cols () == 1 && size.rows () > 0)
+  else if (sz_nc == 1 && sz_nr > 0)
     {
       dnr = size (0, 0);
 
-      if (size.rows () == 2)
+      if (sz_nr == 2)
 	dnc = size (1, 0);
-      else if (size.rows () > 2)
+      else if (sz_nr > 2)
 	::error ("%s: invalid size specification", warn_for);
     }
   else

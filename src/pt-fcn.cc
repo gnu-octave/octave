@@ -315,6 +315,14 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 	goto abort;
     }
 
+  if (ret_list && Vdefine_all_return_values)
+    {
+      octave_value tmp = builtin_any_variable ("default_return_value");
+
+      if (tmp.is_defined ())
+	ret_list->initialize_undefined_elements (tmp);
+    }
+
   // The following code is in a separate scope to avoid warnings from
   // G++ about `goto abort' crossing the initialization of some
   // variables.
@@ -350,16 +358,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
     // Copy return values out.
 
     if (ret_list)
-      {
-	if (nargout > 0 && Vdefine_all_return_values)
-	  {
-	    octave_value tmp = builtin_any_variable ("default_return_value");
-	    if (tmp.is_defined ())
-	      ret_list->initialize_undefined_elements (tmp);
-	  }
-
-	retval = ret_list->convert_to_const_vector (vr_list);
-      }
+      retval = ret_list->convert_to_const_vector (vr_list);
     else if (Vreturn_last_computed_value)
       retval(0) = last_computed_value;
   }

@@ -1,3 +1,9 @@
+Sun Jan  5 12:07:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::read): Correctly compute the number of
+	columns for resizing when the number of rows is specified but the
+	number of columns is not.
+
 Wed Dec 18 16:18:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Range.cc (operator -): New function.

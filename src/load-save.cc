@@ -1417,6 +1417,8 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 static floating_point_format
 get_floating_point_format (int mach)
 {
+  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
+
   switch (mach)
     {
     case 0:
@@ -1440,10 +1442,13 @@ get_floating_point_format (int mach)
       break;
 
     default:
-      flt_fmt = LS_UNKOWN_FLT_FMT;
+      flt_fmt = LS_UNKNOWN_FLT_FMT;
       break;
     }
+
+  return flt_fmt;
 }
+
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.
 //

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -25,7 +25,7 @@ function nc = columns (x)
 # See also: size, rows, length, is_scalar, is_vector, is_matrix
 
   if (nargin != 1)
-    error ("usage: columns (x)");
+    usage ("columns (x)");
   endif
 
   [nr, nc] = size (x);

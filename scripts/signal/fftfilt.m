@@ -1,25 +1,25 @@
 function y = fftfilt (b, x, N)
 
-  # usage:  fftfilt (b, x [, N])
-  #
-  # y = fftfilt (b, x) filters x with the FIR filter b using the FFT.
-  # y = fftfilt (b, x, N) uses the overlap-add method to filter x with
-  # b using an N-point FFT.
+# usage:  fftfilt (b, x [, N])
+#
+# y = fftfilt (b, x) filters x with the FIR filter b using the FFT.
+# y = fftfilt (b, x, N) uses the overlap-add method to filter x with
+# b using an N-point FFT.
 
-  # Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994
-  # Copyright Dept of Statistics and Probability Theory TU Wien
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994
+# Copyright Dept of Statistics and Probability Theory TU Wien
 
-  # Reference:  Oppenheim & Schafer (1989).  Discrete-time Signal
-  # Processing (Chapter 8).  Prentice-Hall.
-  
-  # If N is not specified explicitly, we do not use the overlap-add 
-  # method at all because loops are really slow.  Otherwise, we only
-  # ensure that the number of points in the FFT is the smallest power
-  # of two larger than N and length(b).  This could result in length
-  # one blocks, but if the user knows better ...
+# Reference:  Oppenheim & Schafer (1989).  Discrete-time Signal
+# Processing (Chapter 8).  Prentice-Hall.
+
+# If N is not specified explicitly, we do not use the overlap-add 
+# method at all because loops are really slow.  Otherwise, we only
+# ensure that the number of points in the FFT is the smallest power
+# of two larger than N and length(b).  This could result in length
+# one blocks, but if the user knows better ...
   
   if (nargin < 2 || nargin > 3)
-    error ("usage:  fftfilt (b, x [, N])");
+    usage (" fftfilt (b, x [, N])");
   endif
   
   [r_x, c_x] = size (x);

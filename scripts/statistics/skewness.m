@@ -33,7 +33,7 @@ function retval = skewness (x)
 # Copyright Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 1)
-    error ("usage: skewness (x)");
+    usage ("skewness (x)");
   endif
 
   if (is_vector (x))

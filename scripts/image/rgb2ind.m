@@ -1,14 +1,15 @@
 function [X map] = rgb2ind(R,G,B)
-#Convert and RGB image to an octave indexed image.
+
+# Convert and RGB image to an octave indexed image.
 #
-#[X map] = rgb2ind(R,G,B)
+# [X map] = rgb2ind(R,G,B)
 #
-#SEE ALSO: ind2rgb, rgb2ntsc.
+# SEE ALSO: ind2rgb, rgb2ntsc.
 #
-#Bugs: The color map may have duplicate entries.
+# Bugs: The color map may have duplicate entries.
 
   if(nargin != 3)
-    error("usage: [X, map] = rgb2ind(R,G,B)");
+    usage ("[X, map] = rgb2ind(R,G,B)");
   endif
 
   [hi wi] = size(R);

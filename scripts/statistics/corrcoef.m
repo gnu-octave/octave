@@ -29,7 +29,7 @@ function retval = corrcoef (X, Y)
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin < 1 || nargin > 2)
-    error ("usage: corrcoef (X [, Y])");
+    usage ("corrcoef (X [, Y])");
   endif
 
   if (nargin == 2)

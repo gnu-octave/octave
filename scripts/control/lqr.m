@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -41,7 +41,7 @@ function [k, p, e] = lqr (a, b, q, r, zz)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin != 4 && nargin != 5)
-    error ("lqr: illegal number of arguments");
+    error ("lqr: invalid number of arguments");
   endif
 
 # Check a.

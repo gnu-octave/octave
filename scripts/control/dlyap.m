@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -36,7 +36,7 @@ function x = dlyap (a, b)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if ((n = is_square (a)) == 0)
-    fprintf (stderr, "warning: dlyap: a must be square");
+    warning ("dlyap: a must be square");
   endif
 
   if ((m = is_square (b)) == 0)
@@ -51,7 +51,7 @@ function x = dlyap (a, b)
   endif
 
   if (n != m)
-    fprintf (stderr, "warning: dlyap: a,b not conformably dimensioned");
+    warning ("dlyap: a,b not conformably dimensioned");
   endif
 
   # Solve the equation column by column.

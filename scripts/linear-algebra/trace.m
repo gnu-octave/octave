@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -23,7 +23,7 @@ function y = trace (x)
 # Returns the trace (the sum of the diagonal elements) of x.
 
   if (nargin != 1)
-    error ("usage: trace (x)");
+    usage ("trace (x)");
   endif
 
   y = sum (diag (x));

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -35,7 +35,7 @@ function [Ad, Bd] = c2d (Ac, Bc, T)
 
 # check args
   if (nargin != 3)
-    error ("usage: c2d (Ac, Bc, T)");
+    usage ("c2d (Ac, Bc, T)");
   endif
 
   [ma, na] = size (Ac);

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -37,7 +37,7 @@ function retval = rank (A, tol)
     sigma = svd (A);
     tolerance = tol;
   else
-    error ("usage: rank (A)");
+    usage ("rank (A)");
   endif
   retval = sum (sigma > tolerance);
 

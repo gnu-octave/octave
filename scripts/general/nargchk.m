@@ -25,7 +25,7 @@ function retval = nargchk (nargin_min, nargin_max, n)
 # large or too small.
 
   if (nargin != 3)
-    error  ("usage: nargchk (nargin_min, nargin_max, n)");
+    usage ("nargchk (nargin_min, nargin_max, n)");
   endif
 
   if (nargin_min > nargin_max)

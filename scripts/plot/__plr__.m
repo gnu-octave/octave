@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -52,7 +52,7 @@ function polar_int (theta, rho)
     elseif (is_vector (theta))
       if (is_vector (rho))
         if (length (theta) != length (rho))
-          error ("error: polar: vector lengths must match");
+          error ("polar: vector lengths must match");
         endif
         if (rows (rho) == 1)
           rho = rho';
@@ -79,7 +79,7 @@ function polar_int (theta, rho)
           r_nc = tmp;
         endif
         if (t_nr != r_nr)
-          error ("error: polar: vector and matrix sizes must match");
+          error ("polar: vector and matrix sizes must match");
         endif
         x = diag (cos (theta)) * rho;
         y = diag (sin (theta)) * rho;
@@ -102,7 +102,7 @@ function polar_int (theta, rho)
           t_nc = tmp;
         endif
         if (r_nr != t_nr)
-          error ("error: polar: vector and matrix sizes must match");
+          error ("polar: vector and matrix sizes must match");
         endif
         diag_r = diag (r);
         x = diag_r * cos (theta);
@@ -110,7 +110,7 @@ function polar_int (theta, rho)
         plot_2_m_v (x, y);
       elseif (is_matrix (rho))
         if (size (rho) != size (theta))
-          error ("error: polar: matrix dimensions must match");
+          error ("polar: matrix dimensions must match");
         endif
         x = rho .* cos (theta);
         y = rho .* sin (theta);
@@ -118,9 +118,7 @@ function polar_int (theta, rho)
       endif
     endif
   else
-    usage = sprintf ("usage: polar_int (x)\n");
-    usage = sprintf ("%s       polar_int (x, y)", usage);
-    error (usage);
+    usage ("polar_int (x [, y])");
   endif
 
 endfunction

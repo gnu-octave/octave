@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -38,7 +38,7 @@ function retval = triu (x, k)
       error ("triu: requested diagonal out of range")
     endif
   else
-    error ("usage: triu (x [, k])");
+    usage ("triu (x [, k])");
   endif
 
   for j = 1:nc

@@ -40,7 +40,7 @@ function [nn, xx] = hist (y, x)
 # See also: bar
 
   if (nargin < 1 || nargin > 2)
-    error ("usage: [nn, xx] = hist (y, x)");
+    usage ("[nn, xx] = hist (y, x)");
   endif
     
   if (is_vector (y))
@@ -67,7 +67,7 @@ function [nn, xx] = hist (y, x)
     elseif (is_vector (x))
       tmp = sort (x);
       if (any (tmp != x))
-        fprintf (stderr, "warning: hist: bin values not sorted on input\n");
+        warning ("hist: bin values not sorted on input");
         x = tmp;
       endif
       n = length (x);

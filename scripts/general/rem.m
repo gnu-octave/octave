@@ -23,7 +23,7 @@ function retval = rem (x, y)
 # Return remainder (x, y).
 
   if (nargin != 2)
-    error ("usage: rem (x, y)");
+    usage ("rem (x, y)");
   endif
 
   if (any (size (x) != size (y)) && ! (is_scalar (x) || is_scalar (y)))

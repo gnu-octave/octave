@@ -29,7 +29,7 @@ function retval = hilb (n)
 
 
   if (nargin != 1)
-    error ("usage: hilb (n)");
+    usage ("hilb (n)");
   endif
 
   nmax = length (n);

@@ -7,7 +7,7 @@ function y = create_set(x)
 # See - union, intersection, complement
 
   if ( nargin != 1)
-    error("usage: create_set(x)");
+    usage ("create_set(x)");
   endif
 
   if(isempty(x))

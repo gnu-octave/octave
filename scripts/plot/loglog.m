@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -38,9 +38,7 @@ function loglog (x1, x2)
   elseif (nargin == 2)
     plot_int (x1, x2);
   else
-    usage = sprintf ("usage: loglog (x)\n");
-    usage = sprintf ("%s       loglog (x, y)", usage);
-    error (usage);
+    usage ("loglog (x [, y])");
   endif
 
 endfunction

@@ -28,7 +28,7 @@ function retval = mahalanobis (X, Y)
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 2)
-    error ("usage: mahalanobis (X, Y)");
+    usage ("mahalanobis (X, Y)");
   endif
 
   [xr, xc] = size (X);

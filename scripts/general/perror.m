@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -28,7 +28,7 @@ function perror (name, err)
 #   qpsol : 3.2
 
   if (nargin != 2)
-    error ("usage: perror (name, err)");
+    usage ("perror (name, err)");
   endif
 
   if (! isstr (name))

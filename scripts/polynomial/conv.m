@@ -1,21 +1,20 @@
 function y = conv (a, b)
   
-  # Convolve two vectors.
-  # y = conv (a, b) returns a vector of length equal to length (a) +
-  # length (b) -1.
-  # If a and b are polynomial coefficient vectors, conv returns the
-  # coefficients of the product polynomial.
-  #
-  # SEE ALSO: deconv, poly, roots, residue, polyval, polyderiv,
-  # polyinteg 
+# Convolve two vectors.
+# y = conv (a, b) returns a vector of length equal to length (a) +
+# length (b) -1.
+# If a and b are polynomial coefficient vectors, conv returns the
+# coefficients of the product polynomial.
+#
+# SEE ALSO: deconv, poly, roots, residue, polyval, polyderiv, polyinteg 
 
-  # Author:
-  #  Tony Richardson
-  #  amr@mpl.ucsd.edu
-  #  June 1994
+# Author:
+#  Tony Richardson
+#  amr@mpl.ucsd.edu
+#  June 1994
 
   if (nargin != 2)
-    error ("usage:  conv(a,b)");
+    usage (" conv(a,b)");
   endif
 
   if (is_matrix(a) || is_matrix(b))

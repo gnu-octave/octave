@@ -27,7 +27,7 @@ function status = strcmp (s1, s2)
 # with Matlab, of course. 
 
   if (nargin != 2)
-    error ("usage: strcmp (s, t)");
+    usage ("strcmp (s, t)");
   endif
 
   status = 0;

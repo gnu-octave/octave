@@ -19,7 +19,7 @@
 function dump_1_pref (file, var)
 
   if (nargin != 2)
-    error ("usage: dump_1_pref (file, var)");
+    usage ("dump_1_pref (file, var)");
   endif
 
   eval (sprintf ("tmp = %s;", var));

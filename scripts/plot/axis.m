@@ -31,7 +31,7 @@ function axis (ax)
 # the new axis limits will take effect.
 
   if (nargin > 1)
-    error ("usage: axis ([xmin, xmax, ymin, ymax, zmin, zmax])");
+    usage ("axis ([xmin, xmax, ymin, ymax, zmin, zmax])");
   endif
 
   if (nargin == 0)

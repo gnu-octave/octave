@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -26,7 +26,7 @@ function retval = reshape (a, m, n)
 # See also: `:', do_fortran_indexing
 
   if (nargin != 3)
-    error ("usage: reshape (a, m, n)");
+    usage ("reshape (a, m, n)");
   else
     [nr, nc] = size (a);
     if (nr * nc == m * n)

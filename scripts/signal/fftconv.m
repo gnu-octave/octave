@@ -1,20 +1,20 @@
 function c = fftconv (a, b, N)
 
-  # usage:  fftconv (a, b [, N])
-  #
-  # c = fftconv (a, b) returns the convolution of the vectors a and b,
-  # a vector with length equal to length (a) + length (b) - 1.  
-  # If a and b are the coefficient vectors of two polynomials, c is
-  # the coefficient vector of the product polynomial.
-  #
-  # The computation uses the FFT by calling fftfilt.  If the optional
-  # argument N is specified, an N-point FFT is used.
+# usage:  fftconv (a, b [, N])
+#
+# c = fftconv (a, b) returns the convolution of the vectors a and b,
+# a vector with length equal to length (a) + length (b) - 1.  
+# If a and b are the coefficient vectors of two polynomials, c is
+# the coefficient vector of the product polynomial.
+#
+# The computation uses the FFT by calling fftfilt.  If the optional
+# argument N is specified, an N-point FFT is used.
 
-  # Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994
-  # Copyright Dept of Statistics and Probability Theory TU Wien
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994
+# Copyright Dept of Statistics and Probability Theory TU Wien
   
   if (nargin < 2 || nargin > 3)
-    error ("usage:  fftconv (b, x [, N])");
+    usage (" fftconv (b, x [, N])");
   endif
   
   if (is_matrix (a) || is_matrix (b))

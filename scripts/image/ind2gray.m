@@ -1,14 +1,15 @@
 function Y = ind2gray(X,map)
-#Convert an octave indexed image to a gray scale intensity image.
+
+# Convert an octave indexed image to a gray scale intensity image.
 #
-#Y = ind2gray(X) converts an indexed image to a gray scale intensity
-#image.  The current colormap is used to determine the intensities.
-#The intensity values lie between 0 and 1 inclusive.
+# Y = ind2gray(X) converts an indexed image to a gray scale intensity
+# image.  The current colormap is used to determine the intensities.
+# The intensity values lie between 0 and 1 inclusive.
 #
-#Y = ind2gray(X,map) uses the specified colormap instead of the current
-#one in the conversion process.
+# Y = ind2gray(X,map) uses the specified colormap instead of the current
+# one in the conversion process.
 #
-#SEE ALSO: gray2ind, rgb2ntsc, image, colormap
+# SEE ALSO: gray2ind, rgb2ntsc, image, colormap
 
   if (nargin == 1)
     map = colormap;

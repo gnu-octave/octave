@@ -15,7 +15,7 @@ function y = prepad(x,l,c)
   if(nargin == 2)
     c = 0;
   elseif(nargin<2 || nargin>3)
-    error("usage: prepad(x,l) or prepad(x,l,c)");
+    usage ("prepad(x,l) or prepad(x,l,c)");
   endif
 
   if(is_matrix(x))

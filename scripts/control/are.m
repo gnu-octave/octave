@@ -42,7 +42,7 @@ function x = are (a, b, c, opt)
 	     || strcmp (opt, "S") || strcmp (opt, "B") ...
 	     || strcmp (opt, "n") || strcmp (opt, "p") ...
 	     || strcmp (opt, "s") || strcmp (opt, "b")))
-	printf ("warning: are: opt has an illegal value; setting to B");
+	warning ("are: opt has an invalid value; setting to B");
 	opt = "B";
       endif
     else
@@ -53,14 +53,14 @@ function x = are (a, b, c, opt)
     endif
 
     if (is_controllable(a,b) == 0)
-      printf("warning: are: a, b are not controllable");
+      warning ("are: a, b are not controllable");
     endif
     if ((m = is_square (b)) == 0)
       b = b * b';
       m = rows (b);
     endif
     if (is_observable (a, c) == 0)
-      printf ("warning: are: a,c are not observable");
+      warning ("are: a,c are not observable");
     endif
     if ((p = is_square (c)) == 0)
       c = c' * c;
@@ -83,7 +83,7 @@ function x = are (a, b, c, opt)
     n2 = 2 * n;
     x = u (n1:n2, 1:n) / u (1:n, 1:n);
   else
-    error("usage: x = are (a, b, c)")
+    usage ("x = are (a, b, c)")
   endif
 
 endfunction

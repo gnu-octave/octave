@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -28,7 +28,7 @@ function retval = is_scalar (x)
     [nr, nc] = size (x);
     retval = (nr == 1 && nc == 1);
   else
-    error ("usage: is_scalar (x)");
+    usage ("is_scalar (x)");
   endif
 
 endfunction

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -36,10 +36,10 @@ function grid (x)
       elseif (strcmp ("on", x))
         set grid;
       else
-        error ("usage: grid (\"on\" | \"off\")");
+    usage ("grid (\"on\" | \"off\")");
       endif
     else
-      error ("error: grid: argument must be a string");
+      error ("grid: argument must be a string");
     endif
   else
     error ("usage: grid (\"on\" | \"off\")");

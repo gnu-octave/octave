@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -31,7 +31,7 @@ function retval = is_observable (a,c,tol)
   elseif (nargin == 3)
     retval = is_controllable (a', c', tol);
   else
-    error ("usage: is_observable (a, c {,tol})");
+    usage ("is_observable (a, c {,tol})");
   endif
 
 endfunction

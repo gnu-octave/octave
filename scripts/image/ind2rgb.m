@@ -1,11 +1,12 @@
 function [R G B] = ind2rgb(X,map)
-#Convert an indexed image to red, green, and blue color components.
+
+# Convert an indexed image to red, green, and blue color components.
 #
-#[R G B] = ind2rgb(X) uses the current colormap for the conversion.
+# [R G B] = ind2rgb(X) uses the current colormap for the conversion.
 #
-#[R G B] = ind2rgb(X,map) uses the specified colormap.
+# [R G B] = ind2rgb(X,map) uses the specified colormap.
 #
-#SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
+# SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
 
   if(nargin == 1)
     map = colormap;

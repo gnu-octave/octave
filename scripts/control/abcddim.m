@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -32,38 +32,33 @@ function [n, m, p] = abcddim (a, b, c, d)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin != 4)
-    error ("abcddim: illegal number of arguments.  need four.")
+    error ("abcddim: invalid number of arguments.  need four.")
   endif
 
   n = m = p = -1;
 
   [an, am] = size(a);
   if (an != am)
-    fprintf (stderr, "abcddim: a is not square");
-    return;
+    error ("abcddim: a is not square");
   endif
 
   [bn, bm] = size(b);
   if (bn != am)
-    fprintf (stderr, "abcddim: a and b are not compatible");
-    return;
+    error ("abcddim: a and b are not compatible");
   endif
 
   [cn, cm] = size(c);
   if (cm != an)
-    fprintf (stderr, "abcddim: a and c are not compatible");
-    return;
+    error ("abcddim: a and c are not compatible");
   endif
 
   [dn, dm] = size(d);
   if (cn != dn)
-    fprintf (stderr, "abcddim: c and d are not compatible");
-    return;
+    error ("abcddim: c and d are not compatible");
   endif
 
   if (bm != dm)
-    fprintf (stderr, "abcddim: b and d are not compatible");
-    return;
+    error ("abcddim: b and d are not compatible");
   endif
 
   n = an;

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -46,7 +46,7 @@ function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, zz)
 # October, 1993
 
   if (nargin != 5 && nargin != 6)
-    error ("dlqe: illegal number of arguments");
+    error ("dlqe: invalid number of arguments");
   endif
 
 # The problem is dual to the regulator design, so transform to lqr

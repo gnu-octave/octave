@@ -33,7 +33,7 @@ function retval = kurtosis (x)
 # Copyright Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 1)
-    error ("usage: kurtosis (x)");
+    usage ("kurtosis (x)");
   endif
 
   if (is_vector (x))

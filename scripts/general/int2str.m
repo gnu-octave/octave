@@ -33,7 +33,7 @@ function retval = int2str (x)
       error ("int2str: expecting scalar argument");
     endif
   else
-    error ("usage: int2str (x)");
+    usage ("int2str (x)");
   endif
 
 endfunction

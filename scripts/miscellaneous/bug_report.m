@@ -25,7 +25,7 @@ function bug_report ()
 # you are finished editing.
 
   if (nargin != 0)
-    disp ("bug_report: ignoring extra arguments");
+    warning ("bug_report: ignoring extra arguments");
   endif
 
   printf ("Please enter a one-line description of your bug report.\n\n");

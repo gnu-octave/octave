@@ -1,24 +1,24 @@
 function [b, r] = deconv (y, a)
 
-  # Deconvolve two vectors.
-  #
-  # [b, r] = deconv (y, a) solves for b and r such that 
-  #    y = conv(a,b) + r
-  #
-  # If y and a are polynomial coefficient vectors, b will contain the
-  # coefficients of the polynomial quotient and r will be a remander
-  # polynomial of lowest order.
-  #
-  # SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
-  # polyinteg 
+# Deconvolve two vectors.
+#
+# [b, r] = deconv (y, a) solves for b and r such that 
+#    y = conv(a,b) + r
+#
+# If y and a are polynomial coefficient vectors, b will contain the
+# coefficients of the polynomial quotient and r will be a remander
+# polynomial of lowest order.
+#
+# SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
+# polyinteg 
 
-  # Author:
-  #  Tony Richardson
-  #  amr@mpl.ucsd.edu
-  #  June 1994
+# Author:
+#  Tony Richardson
+#  amr@mpl.ucsd.edu
+#  June 1994
 
   if (nargin != 2)
-    error ("usage:  deconv (y,a)");
+    usage (" deconv (y,a)");
   endif
 
   if (is_matrix (y) || is_matrix (a))

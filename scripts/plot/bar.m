@@ -92,7 +92,7 @@ function [xb, yb] = bar (x, y)
       error ("bar: arguments must be vectors");
     endif
   else
-    error ("usage: [xb, yb] = bar (x, y)");
+    usage ("[xb, yb] = bar (x, y)");
   endif
 
   if (nargout == 0)

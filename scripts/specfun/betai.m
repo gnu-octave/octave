@@ -1,23 +1,23 @@
 function y = betai(a, b, x)
   
-  # usage:  betai(a, b, x)
-  #
-  # Returns the incomplete beta function
-  #   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
-  # If x has more than one component, both a and b must be scalars.
-  # If x is a scalar, a and b must be of compatible dimensions.
+# usage:  betai(a, b, x)
+#
+# Returns the incomplete beta function
+#   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
+# If x has more than one component, both a and b must be scalars.
+# If x is a scalar, a and b must be of compatible dimensions.
   
-  # Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 2, 1994.
-  # Copyright Dept of Probability Theory and Statistics TU Wien.
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 2, 1994.
+# Copyright Dept of Probability Theory and Statistics TU Wien.
 
-  # Computation is based on the series expansion
-  #   betai(a, b, x) 
-  #     = \frac{1}{B(a, b)} x^a 
-  #         \sum_{k=0}^\infty \frac{(1-b)\cdots(k-b)}{a+k} \frac{x^k}{k!}
-  # for x <= 1/2.  For x > 1/2, betai(a, b, x) = 1 - betai(b, a, 1-x).
+# Computation is based on the series expansion
+#   betai(a, b, x) 
+#     = \frac{1}{B(a, b)} x^a 
+#         \sum_{k=0}^\infty \frac{(1-b)\cdots(k-b)}{a+k} \frac{x^k}{k!}
+# for x <= 1/2.  For x > 1/2, betai(a, b, x) = 1 - betai(b, a, 1-x).
 
   if (nargin <> 3)
-    error("usage:  betai (a, b, x)");
+    usage (" betai (a, b, x)");
   endif
 
   if !((a > 0) && (b > 0))
@@ -25,10 +25,10 @@ function y = betai(a, b, x)
   endif
   [nr, nc] = size(x);
   if (min([nr nc]) == 0)
-    error("betai:  x must not be empty.");
+    error ("betai:  x must not be empty.");
   endif
   if (any(x < 0) || any(x > 1))
-    error("betai:  all entries of x must be in [0,1].");
+    error ("betai:  all entries of x must be in [0,1].");
   endif
 
   if ((nr > 1) || (nc > 1))

@@ -1,9 +1,8 @@
-function result = sinc(x)
+function result = sinc (x)
 
 # usage: sinc(x)
 #
 #        Returns sin(pi*x)/(pi*x).
-#
 
 # We either need to set the do_fortran_indexing variable to "true"
 # or use reshape to convert the input matrix to a vector, so that
@@ -16,10 +15,10 @@ function result = sinc(x)
 
   x = reshape(x,nels,1);
 
-  # Set result to all ones initially.
+# Set result to all ones initially.
   result = ones(nels,1);
 
-  # Find non-zero elements in the input matrix.
+# Find non-zero elements in the input matrix.
   i = find(x);
 
   if (!isempty(i))

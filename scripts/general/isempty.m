@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -23,7 +23,7 @@ function retval = isempty (var)
 # Return 1 if the argument is an empty matrix.  Otherwise, return 0.
 
   if (nargin != 1)
-    error ("usage: isempty (var)");
+    usage ("isempty (var)");
   endif
 
   retval = (rows (var) == 0 || columns (var) == 0);

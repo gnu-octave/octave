@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -35,7 +35,7 @@ function retval = is_square (x)
       retval = 0;
     endif
   else
-    error ("usage: is_square (x)");
+    usage ("is_square (x)");
   endif
 
 endfunction

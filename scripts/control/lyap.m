@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -46,7 +46,7 @@ function x = lyap (a, b, c)
   
 
   if (nargin != 3 && nargin != 2)
-    error ("usage: lyap (a, b {,c})");
+    usage ("lyap (a, b {,c})");
   endif
 
   if ((n = is_square(a)) == 0)

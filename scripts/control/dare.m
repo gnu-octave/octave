@@ -50,7 +50,7 @@ function x = dare (a, b, c, r, opt)
   if (nargin == 4 || nargin == 5)
     if (nargin == 5)
       if (opt != "N" || opt != "P" || opt != "S" || opt != "B")
-	fprintf (stderr, "dare: opt has an illegal value -- setting to B");
+	warning ("dare: opt has an invalid value -- setting to B");
 	opt = "B";
       endif
     else
@@ -67,17 +67,17 @@ function x = dare (a, b, c, r, opt)
     [n1, m] = size (b);
 
     if (n1 != n)
-      fprintf (stderr, "warning: dare: a,b are not conformable");
+      warning ("dare: a,b are not conformable");
     endif
 
     if (is_controllable (a, b) == 0)
-      fprintf (stderr, "warning: dare: a,b are not controllable");
+      warning ("dare: a,b are not controllable");
     endif
 
 # Check a,c compatibility.
 
     if (is_observable (a, c) == 0)
-      fprintf (stderr, "warning: dare: a,c are not observable");
+      warning ("dare: a,c are not observable");
     endif
 
     if ((p = is_square (c)) == 0)
@@ -92,9 +92,9 @@ function x = dare (a, b, c, r, opt)
 # Check r dimensions.
 
     if ((m1 = is_square (r)) == 0)
-      fprintf(stderr, "warning: dare: r is not square");
+      warning ("dare: r is not square");
     elseif (m1 != m)
-      fprintf(stderr, "warning: b,r are not conformable");
+      warning ("b,r are not conformable");
     endif
 
     brb = (b/r)*b';
@@ -106,7 +106,7 @@ function x = dare (a, b, c, r, opt)
     n2 = 2*n;
     x = u (n1:n2, 1:n)/u(1:n, 1:n);
   else
-    error ("usage: x = dare (a, b, c, r {,opt})");
+    usage ("x = dare (a, b, c, r {,opt})");
   endif
 
 endfunction

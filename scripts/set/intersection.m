@@ -7,7 +7,7 @@ function y = intersection(a,b)
 # See - create_set, union, complement
 
   if (nargin != 2)
-    error("usage: intersection(a,b)");
+    usage ("intersection(a,b)");
   endif
 
   if(isempty(a) || isempty(b))

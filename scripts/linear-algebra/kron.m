@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -50,7 +50,7 @@ function x = kron (a, b)
     endfor
 
   else
-    error ("usage: kron (a, b)");
+    usage ("kron (a, b)");
   endif
 
 endfunction

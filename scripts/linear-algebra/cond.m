@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -32,14 +32,14 @@ function retval = cond (a)
         error ("cond: empty matrix is invalid as argument");
       endif
       if (strcmp (propagate_empty_matrices, "warn"))
-        printf ("warning: cond: argument is empty matrix\n");
+        warning ("cond: argument is empty matrix\n");
       endif
       retval = 0.0;
     endif
     sigma = svd (a);
     retval = sigma (1) / sigma (length (sigma));
   else
-    error ("usage: cond (a)");
+    usage ("cond (a)");
   endif
 
 endfunction

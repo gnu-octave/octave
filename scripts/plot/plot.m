@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -53,9 +53,7 @@ function plot (x1, x2)
   elseif (nargin == 2)
     plot_int (x1, x2);
   else
-    usage = sprintf ("usage: plot (x)\n");
-    usage = sprintf ("%s       plot (x, y)", usage);
-    error (usage);
+    usage ("plot (x [, y])");
   endif
 
 endfunction

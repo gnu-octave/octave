@@ -38,7 +38,7 @@ function retval = linspace (x1, x2, n)
       error ("linspace: arguments must be scalars");
     endif
   else
-    error ("usage: linspace (x1, x2 [, n])");
+    usage ("linspace (x1, x2 [, n])");
   endif
 
   if (npoints < 2)

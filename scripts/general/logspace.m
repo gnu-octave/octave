@@ -45,7 +45,7 @@ function retval = logspace (x1, x2, n)
       error ("logspace: arguments must be scalars");
     endif  
   else
-    error ("usage: logspace (x1, x2 [, n])");
+    usage ("logspace (x1, x2 [, n])");
   endif
 
   if (npoints < 2)

@@ -1,20 +1,20 @@
 function y = gammai(a, x)
   
-  # usage:  gammai(a, x)
-  #
-  # Computes the incomplete gamma function
-  #    gammai(a, x) 
-  #      = (integral from 0 to x of exp(-t) t^(a-1) dt) / gamma(a).
-  # If a is scalar, then gammai(a, x) is returned for each element of x
-  # and vice versa.
-  # If neither a nor x is scalar, the sizes of a and x must agree, and
-  # gammai is applied pointwise.
+# usage:  gammai(a, x)
+#
+# Computes the incomplete gamma function
+#    gammai(a, x) 
+#      = (integral from 0 to x of exp(-t) t^(a-1) dt) / gamma(a).
+# If a is scalar, then gammai(a, x) is returned for each element of x
+# and vice versa.
+# If neither a nor x is scalar, the sizes of a and x must agree, and
+# gammai is applied pointwise.
   
-  # Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 13, 1994
-  # Copyright Dept of Probability Theory and Statistics TU Wien
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 13, 1994
+# Copyright Dept of Probability Theory and Statistics TU Wien
 
   if (nargin != 2)
-    error("usage:  gammai(a, x)");
+    usage (" gammai(a, x)");
   endif
   
   [r_a, c_a] = size(a);
@@ -53,17 +53,18 @@ function y = gammai(a, x)
 
   # Now we can do sanity checking ...
   
-  if (any(a <= 0) || any(a == Inf))
-    error("gammai:  all entries of a must be positive anf finite");
+  if (any (a <= 0) || any (a == Inf))
+    error ("gammai:  all entries of a must be positive anf finite");
   endif
-  if any(x < 0)
-    error("gammai:  all entries of x must be nonnegative");
+  if (any (x < 0))
+    error ("gammai:  all entries of x must be nonnegative");
   endif
   
   y = zeros(1, n);
 
-  # For x < a + 1, use summation.  The below choice of k should ensure
-  # that the overall error is less than eps ... 
+# For x < a + 1, use summation.  The below choice of k should ensure
+# that the overall error is less than eps ... 
+
   S = find((x > 0) & (x < a + 1));
   s = length(S);
   if (s > 0)
@@ -74,9 +75,10 @@ function y = gammai(a, x)
     y(S) = exp(-x(S) + a(S) .* log(x(S))) .* (1 + sum(A)) ./ gamma(a(S)+1);
   endif
 
-  # For x >= a + 1, use the continued fraction.
-  # Note, however, that this converges MUCH slower than the series
-  # expansion for small a and x not too large!
+# For x >= a + 1, use the continued fraction.
+# Note, however, that this converges MUCH slower than the series
+# expansion for small a and x not too large!
+
   S = find((x >= a + 1) & (x < Inf));
   s = length(S);
   if (s > 0)

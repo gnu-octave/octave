@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -51,7 +51,7 @@ function [xx, yy] = meshdom (x, y)
       error ("meshdom: arguments must be vectors");
     endif
   else
-    error ("usage: [xx, yy] = meshdom (x, y)");
+    usage ("[xx, yy] = meshdom (x, y)");
   endif
 
 endfunction

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -19,7 +19,7 @@
 function plot_2_s_s (x, y)
 
   if (nargin != 2)
-    error ("usage: plot_2_s_s (x, y)");
+    usage ("plot_2_s_s (x, y)");
   endif
 
   [x_nr, x_nc] = size (x);

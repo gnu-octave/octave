@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -25,7 +25,7 @@ function y = flipud (x)
 # See also: fliplr, rot90
 
   if (nargin != 1)
-    error ("usage: flipud (x)");
+    usage ("flipud (x)");
   endif
 
   y = x;

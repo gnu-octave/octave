@@ -1,10 +1,11 @@
 function p = polyderiv(p)
-#polyderiv(c)
-#Returns the coefficients of the derivative of the polynomial whose
-#coefficients are given by vector c.
+
+# polyderiv(c)
+# Returns the coefficients of the derivative of the polynomial whose
+# coefficients are given by vector c.
 #
-#SEE ALSO: poly, polyinteg, polyreduce, roots, conv, deconv, residue,
-#          filter, polyval, polyvalm
+# SEE ALSO: poly, polyinteg, polyreduce, roots, conv, deconv, residue,
+#           filter, polyval, polyvalm
 
 # Author:
 #  Tony Richardson
@@ -12,7 +13,7 @@ function p = polyderiv(p)
 #  June 1994
 
   if(nargin != 1)
-    error("usage: polyderiv(vector)");
+    usage ("polyderiv(vector)");
   endif
 
   if(is_matrix(p))

@@ -22,7 +22,7 @@ function retval = null (A, tol)
   if (nargin == 1)
     tol = max (size (A)) * s (1) * eps;
   else (nargin != 2)
-    error("usage: null(A [, tol])"); 
+    usage ("null(A [, tol])"); 
   endif
 
   rank = sum (s > tol);

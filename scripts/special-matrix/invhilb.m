@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -26,7 +26,7 @@ function retval = invhilb (n)
 # See also: hankel, vander, hadamard, hilb, toeplitz
 
   if (nargin != 1)
-    error ("usage: invhilb (n)");
+    usage ("invhilb (n)");
   endif
 
   nmax = length (n);

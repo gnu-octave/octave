@@ -1,12 +1,13 @@
 function p = polyinteg(p)
-#polyinteg(c)
-#Returns the coefficients of the integral the polynomial whose coefficients
-#are represented by the vector c.
+
+# polyinteg(c)
+# Returns the coefficients of the integral the polynomial whose coefficients
+# are represented by the vector c.
 #
-#The constant of integration is zero.
+# The constant of integration is zero.
 #
-#SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
-#          filter, polyval, polyvalm
+# SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
+#           filter, polyval, polyvalm
 
 # Author:
 #  Tony Richardson
@@ -14,7 +15,7 @@ function p = polyinteg(p)
 #  June 1994
 
   if(nargin != 1)
-    error("usage: polyinteg(vector)");
+    usage ("polyinteg(vector)");
   endif
 
   if(is_matrix(p))

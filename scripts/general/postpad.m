@@ -1,10 +1,11 @@
 function y = postpad(x,l,c)
-#postpad(x,l)
-#Appends zeros to the vector x until it is of length l.
-#postpad(x,l,c) appends the constant c instead of zero.
+
+# postpad(x,l)
+# Appends zeros to the vector x until it is of length l.
+# postpad(x,l,c) appends the constant c instead of zero.
 #
-#If length(x) > l, elements from the end of x are removed
-#until a vector of length l is obtained.
+# If length(x) > l, elements from the end of x are removed
+# until a vector of length l is obtained.
 
 # Author:
 #  Tony Richardson
@@ -14,7 +15,7 @@ function y = postpad(x,l,c)
   if(nargin == 2)
     c = 0;
   elseif(nargin<2 || nargin>3)
-    error("usage: postpad(x,l) or postpad(x,l,c)");
+    usage ("postpad(x,l) or postpad(x,l,c)");
   endif
 
   if(is_matrix(x))

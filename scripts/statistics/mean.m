@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -28,7 +28,7 @@ function retval = mean (a)
 # See also: median, std
 
   if (nargin != 1)
-    error ("usage: mean (a)");
+    usage ("mean (a)");
   endif
 
   [nr, nc] = size (a);

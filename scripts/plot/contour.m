@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -67,14 +67,15 @@ function contour (z, n, x, y)
         set view 0, 0, 1.9, 1
 	gsplot zz w l 1;
       else
-        disp ("mesh: rows (z) must be the same as length (x)");
-        error ("      and columns (z) must be the same as length (y)");
+        msg = "mesh: rows (z) must be the same as length (x) and";
+        msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);
+        error (msg);
       endif
     else
       error ("mesh: x and y must be vectors and z must be a matrix");
     endif    
   else
-    error ("usage: mesh (z, levels, x, y)");
+    usage ("mesh (z, levels, x, y)");
   endif
 
 endfunction

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -27,14 +27,14 @@ function title (text)
 #           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
 
   if (nargin != 1)
-    error ("usage: title (text)");
+    usage ("title (text)");
   endif
 
   if (isstr (text))
     command = sprintf ("set title \"%s\"", text);
     eval (command);
   else
-    error ("error: title: text must be a string");
+    error ("title: text must be a string");
   endif
 
 endfunction

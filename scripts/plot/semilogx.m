@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -37,9 +37,7 @@ function semilogx (x1, x2)
   elseif (nargin == 2)
     plot_int (x1, x2);
   else
-    usage = sprintf ("usage: semilogx (x)\n");
-    usage = sprintf ("%s       semilogx (x, y)", usage);
-    error (usage);
+    usage ("semilogx (x [, y])");
   endif
 
 endfunction

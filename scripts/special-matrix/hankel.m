@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -32,7 +32,7 @@ function retval = hankel (c, r)
   if (nargin == 1)
     r = c;
   elseif (nargin != 2)
-    error ("usage: hankel (c, r)");
+    usage ("hankel (c, r)");
   endif
 
   [c_nr, c_nc] = size (c);
@@ -51,7 +51,7 @@ function retval = hankel (c, r)
   endif
 
   if (r (1) != c (1))
-    disp ("Column wins anti-diagonal conflict");
+    warning ("hankel: column wins anti-diagonal conflict");
   endif
 
 # This should probably be done with the colon operator...

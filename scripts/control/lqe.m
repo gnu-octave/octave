@@ -42,7 +42,7 @@ function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 
   if (nargin != 5 && nargin != 6)
-    error ("lqe: illegal number of arguments");
+    error ("lqe: invalid number of arguments");
   endif
 
 # The problem is dual to the regulator design, so transform to lqr

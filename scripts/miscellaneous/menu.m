@@ -23,7 +23,7 @@ function num = menu (t, ...)
 # See also: disp, printf, input
 
   if (nargin < 2)
-    error ("usage: menu (title, opt1, ...)");
+    usage ("menu (title, opt1, ...)");
   endif
 
 # Force pending output to appear before the menu.

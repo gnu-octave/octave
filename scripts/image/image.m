@@ -1,24 +1,19 @@
 function image(x, zoom)
-#Display an octave image matrix.
-#
-#image(x) displays a matrix as a color image. The elements of x are indices
-#into the current colormap and should have values between 1 and the length
-#of the colormap.
-#
-#image(x,zoom) changes the zoom factor.  The default value is 4.
-#
-#SEE ALSO: imshow, imagesc, colormap.
 
-#Author:
-# Tony Richardson
-# amr@mpl.ucsd.edu
-# July 1994
+# Display an octave image matrix.
 #
-#Modified:
-# Tony Richardson
-# amr@mpl.ucsd.edu
-# July 1994
-# (Modifications based on suggestions from John Eaton.)
+# image(x) displays a matrix as a color image. The elements of x are indices
+# into the current colormap and should have values between 1 and the length
+# of the colormap.
+#
+# image(x,zoom) changes the zoom factor.  The default value is 4.
+#
+# SEE ALSO: imshow, imagesc, colormap.
+
+# Author:
+#  Tony Richardson
+#  amr@mpl.ucsd.edu
+#  July 1994
 
   if (nargin == 0)
     # Load Bobbie Jo Richardson (Born 3/16/94)
@@ -27,7 +22,7 @@ function image(x, zoom)
   elseif(nargin == 1)
     zoom = 4;
   elseif(nargin > 2)
-    error("usage: image (matrix, [zoom])");
+    usage ("image (matrix, [zoom])");
   endif
 
   # Generate random file name

@@ -29,7 +29,7 @@ function retval = cov (X, Y)
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin < 1 || nargin > 2)
-    error ("usage: cov (X [, Y])");
+    usage ("cov (X [, Y])");
   endif
 
   [Tx, kx] = size (X);

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -31,7 +31,7 @@ function retval = num2str (x)
       error ("num2str: expecting scalar argument");
     endif
   else
-    error ("usage: num2str (x)");
+    usage ("num2str (x)");
   endif
 
 endfunction

@@ -1,27 +1,22 @@
 function x = imagesc(x, zoom)
-#Scale and display a matrix as an image.
-#
-#imagesc(x) displays a scaled version of the matrix x.  The matrix is
-#scaled so that its entries are indices into the current colormap.
-#The scaled matrix is returned.
-#
-#imagesc(x,zoom) sets the magnification, the default value is 4.
-#
-#SEE ALSO: image, imshow
 
-#Author:
-# Tony Richardson
-# amr@mpl.ucsd.edu
-# July 1994
+# Scale and display a matrix as an image.
 #
-#Modified:
-# Tony Richardson
-# amr@mpl.ucsd.edu
-# July 1994
-# (Modifications based on suggestions from John Eaton.)
+# imagesc(x) displays a scaled version of the matrix x.  The matrix is
+# scaled so that its entries are indices into the current colormap.
+# The scaled matrix is returned.
+#
+# imagesc(x,zoom) sets the magnification, the default value is 4.
+#
+# SEE ALSO: image, imshow
+
+# Author:
+#  Tony Richardson
+#  amr@mpl.ucsd.edu
+#  July 1994
 
   if (nargin < 1 || nargin > 2)
-    error("usage: image (matrix, [zoom])");
+    usage ("image (matrix, [zoom])");
   endif
 
   if (nargin == 1)

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -27,14 +27,14 @@ function xlabel (text)
 #           bar, stairs, gplot, gsplot, replot, ylabel, title
 
   if (nargin != 1)
-    error ("usage: xlabel (text)");
+    usage ("xlabel (text)");
   endif
 
   if (isstr (text))
     command = sprintf ("set xlabel \"%s\"", text);
     eval (command);
   else
-    error ("error: xlabel: text must be a string");
+    error ("xlabel: text must be a string");
   endif
 
 endfunction

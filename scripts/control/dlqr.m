@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -43,7 +43,7 @@ function [k, p, e] = dlqr (a, b, q, r, zz)
 # (btenison@eng.auburn.edu) October 1993
 
   if (nargin != 4 && nargin != 5)
-    error ("dlqr: illegal number of arguments");
+    error ("dlqr: invalid number of arguments");
   endif
 
 # Check a.

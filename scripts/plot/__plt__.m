@@ -61,9 +61,7 @@ function plot_int (x1, x2)
       endif
     endif
   else
-    usage = sprintf ("usage: plot_int (x)\n");
-    usage = sprintf ("%s       plot_int (x, y)", usage);
-    error (usage);
+    usage ("plot_int (x [, y])");
   endif
 
 endfunction

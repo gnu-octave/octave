@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -33,9 +33,7 @@ function polar (x1, x2)
   elseif (nargin == 2)
     polar_int (x1, x2);
   else
-    usage = sprintf ("usage: polar (x)\n");
-    usage = sprintf ("%s       polar (x, y)", usage);
-    error (usage);
+    usage ("polar (x [, y])");
   endif
 
 endfunction

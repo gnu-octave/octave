@@ -38,7 +38,7 @@ function [BETA, v, R] = gls (Y, X, O)
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 3)
-    error ("usage: [BETA, v [, R]] = gls (Y, X, O)");
+    usage ("[BETA, v [, R]] = gls (Y, X, O)");
   endif
 
   [rx, cx] = size (X);

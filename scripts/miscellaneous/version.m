@@ -25,7 +25,7 @@ function vs = version ()
 # See also: OCTAVE_VERSION
 
   if (nargin != 0)
-    disp ("version: ignoring extra arguments");
+    warning ("version: ignoring extra arguments");
   endif
 
   vs = OCTAVE_VERSION;

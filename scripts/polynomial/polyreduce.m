@@ -1,10 +1,11 @@
 function p = polyreduce(p)
-#polyreduce(c)
-#Reduces a polynomial coefficient vector to a minimum number of terms,
-#i.e. it strips off any leading zeros.
+
+# polyreduce(c)
+# Reduces a polynomial coefficient vector to a minimum number of terms,
+# i.e. it strips off any leading zeros.
 #
-#SEE ALSO: poly, roots, conv, deconv, residue, filter, polyval, polyvalm,
-#          polyderiv, polyinteg
+# SEE ALSO: poly, roots, conv, deconv, residue, filter, polyval, polyvalm,
+#           polyderiv, polyinteg
 
 # Author:
 #  Tony Richardson

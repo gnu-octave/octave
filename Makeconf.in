@@ -149,6 +149,7 @@ fcnfiledir = @fcnfiledir@
 # to this site (i.e. customizations), before consulting
 # ${fcnfiledir}.  This should be a colon-separated list of
 # directories.
+localfcnfiledir = @localfcnfiledir@
 localfcnfilepath = @localfcnfilepath@
 
 # Where to put executables to be run by Octave rather than
@@ -167,6 +168,7 @@ octfiledir = @octfiledir@
 # dynamically loaded and that are specific to this site
 # (i.e. customizations), before consulting ${octfiledir}.  This should
 # be a colon-separated list of directories.
+localoctfiledir = @localoctfiledir@
 localoctfilepath = @localoctfilepath@
 
 # Where Octave will search to find its function files.  Before
@@ -176,6 +178,7 @@ localoctfilepath = @localoctfilepath@
 fcnfilepath = @fcnfilepath@
 
 # Where Octave will search to find image files.es.
+imagedir = @imagedir@
 imagepath = @imagepath@
 
 # The type of computer we are running on.

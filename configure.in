@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.60 $)dnl
+AC_REVISION($Revision: 1.61 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -93,12 +93,15 @@ includedir='$(prefix)/include/octave'
 mandir='$(prefix)/man/man1'
 infodir='$(prefix)/info'
 fcnfiledir='$(datadir)/octave/$(version)/m'
-localfcnfilepath='$(datadir)/octave/site/m//'
+localfcnfiledir='$(datadir)/octave/site/m'
+localfcnfilepath='$(localfcnfiledir)//'
 archlibdir='$(libdir)/octave/$(version)/exec/$(target_host_type)'
 octfiledir='$(libdir)/octave/$(version)/oct/$(target_host_type)'
-localoctfilepath='$(datadir)/octave/site/oct/$(target_host_type)//'
+localoctfiledir='$(datadir)/octave/site/oct/$(target_host_type)'
+localoctfilepath='$(localoctfiledir)//'
 fcnfilepath='.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir)//:$(fcnfiledir)//'
-imagepath='.:$(datadir)/octave/$(version)/imagelib//'
+imagedir='$(datadir)/octave/$(version)/imagelib'
+imagepath='.:$(imagedir)//'
 dnl
 dnl Handle --enable-run-in-place.  This option makes Octave look for
 dnl info and function files in the same directory tree as the sources.
@@ -138,7 +141,8 @@ if $run_in_place; then
   fcnfiledir=$absolute_srcdir/scripts
   archlibdir=$absolute_builddir
   fcnfilepath='.:$(fcnfiledir)//'
-  imagepath='.:$(fcnfiledir)/imagelib//'
+  imagedir='$(fcnfiledir)/imagelib'
+  imagepath='.:$(imagedir)//'
 fi
 AC_VERBOSE([defining prefix to be $prefix])
 AC_VERBOSE([defining exec_prefix to be $exec_prefix])
@@ -149,11 +153,14 @@ AC_VERBOSE([defining includedir to be $includedir])
 AC_VERBOSE([defining mandir to be $mandir])
 AC_VERBOSE([defining infodir to be $infodir])
 AC_VERBOSE([defining fcnfiledir to be $fcnfiledir])
+AC_VERBOSE([defining localfcnfiledir to be $localfcnfiledir])
 AC_VERBOSE([defining localfcnfilepath to be $localfcnfilepath])
 AC_VERBOSE([defining archlibdir to be $archlibdir])
 AC_VERBOSE([defining octfiledir to be $octfiledir])
+AC_VERBOSE([defining localoctfiledir to be $localoctfiledir])
 AC_VERBOSE([defining localoctfilepath to be $localoctfilepath])
 AC_VERBOSE([defining fcnfilepath to be $fcnfilepath])
+AC_VERBOSE([defining imagedir to be $imagedir])
 AC_VERBOSE([defining imagepath to be $imagepath])
 AC_SUBST(exec_prefix)
 AC_SUBST(bindir)
@@ -163,11 +170,14 @@ AC_SUBST(includedir)
 AC_SUBST(mandir)
 AC_SUBST(infodir)
 AC_SUBST(fcnfiledir)
+AC_SUBST(localfcnfiledir)
 AC_SUBST(localfcnfilepath)
 AC_SUBST(archlibdir)
 AC_SUBST(octfiledir)
+AC_SUBST(localoctfiledir)
 AC_SUBST(localoctfilepath)
 AC_SUBST(fcnfilepath)
+AC_SUBST(imagedir)
 AC_SUBST(imagepath)
 dnl
 dnl Do special stuff if using dld.

@@ -2956,6 +2956,22 @@ ComplexMatrix::any_element_is_inf_or_nan (void) const
   return false;
 }
 
+// Return true if no elements have imaginary components.
+
+bool
+ComplexMatrix::all_elements_are_real (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      if (imag (elem (i, j)) != 0.0)
+	return false;
+
+  return true;
+}
+
 // Return nonzero if any element of CM has a non-integer real or
 // imaginary part.  Also extract the largest and smallest (real or
 // imaginary) values and return them in MAX_VAL and MIN_VAL. 

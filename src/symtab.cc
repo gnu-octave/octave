@@ -144,7 +144,11 @@ symbol_def::is_map_element (const string& /* elts */) const
 void
 symbol_def::define (tree_constant *t)
 {
+  if (t)
+    t->maybe_mutate ();
+
   definition = t;
+
   if (! is_builtin_variable ())
     type = USER_VARIABLE;
 }

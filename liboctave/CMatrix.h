@@ -321,6 +321,7 @@ public:
   void map (c_c_Mapper f);
 
   bool any_element_is_inf_or_nan (void) const;
+  bool all_elements_are_real (void) const;
   bool all_integers (double& max_val, double& min_val) const;
   bool too_large_for_float (void) const;
 

@@ -26,6 +26,262 @@ language.
 </p>
 
 <h2><a name="Language Features">Language Features</a></h2>
+<p>
+The best way to introduce Octave's language is probably to show a few
+simple examples.
+</p>
+
+<p>
+If you are new to Octave, I recommend that you try these examples to
+begin learning Octave by using it.  Lines marked with
+<tt>octave:13></tt> are lines you type, ending each with a carriage
+return.  Octave will respond with an answer, or by displaying a graph.
+</p>
+
+<h3>Creating a Matrix</h3>
+
+<p>
+To create a new matrix and store it in a variable so that it you can
+refer to it later, type the command
+
+<pre>
+    octave:1> a = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
+</pre>
+
+Octave will respond by printing the matrix in neatly aligned columns.
+Ending a command with a semicolon tells Octave to not print the result
+of a command.  For example
+
+<pre>
+    octave:2> b = rand (3, 2);
+</pre>
+
+will create a 3 row, 2 column matrix with each element set to a random
+value between zero and one.
+</p>
+
+<p>
+To display the value of any variable, simply type the name of the
+variable.  For example, to display the value stored in the matrix
+<tt>b</tt>, type the command
+
+<pre>
+    octave:3> b
+</pre>
+
+<h3>Matrix Arithmetic</h3>
+
+<p>
+Octave has a convenient operator notation for performing matrix
+arithmetic.  For example, to multiply the matrix <tt>a</tt> by a
+scalar value, type the command
+
+<pre>
+    octave:4> 2 * a
+</pre>
+
+<p>
+To multiply the two matrices <tt>a</tt> and <tt>b</tt>, type the
+command
+
+<pre>
+    octave:5> a * b
+</pre>
+
+<p>
+To form the matrix product <tt>transpose (a) * a</tt>, type the command
+
+<pre>
+    octave:6> a' * a
+</pre>
+</p>
+
+<h3>Solving Linear Equations</h3>
+
+<p>
+To solve the set of linear equations <tt>Ax = b</tt> use the left
+division operator, <tt>\</tt>:
+
+<pre>
+    octave:7> a \ b
+</pre>
+
+This is conceptually equivalent to <tt>inv (A) * b</tt>, but avoids
+computing the inverse of a matrix directly.
+</p>
+
+<p>
+If the coefficient matrix is singular, Octave will print a warning
+message and compute a minimum norm solution.
+</p>
+
+<h3>Integrating Differential Equations</h3>
+
+<p>
+Octave has built-in functions for solving nonlinear differential
+equations of the form
+
+<pre>
+    dx
+    -- = f (x, t)
+    dt
+</pre>
+
+with the initial condition
+
+<pre>
+    x(t = t0) = x0
+</pre>
+</p>
+
+<p>
+For Octave to integrate equations of this form, you must first provide a
+definition of the function <tt> f (x, t)</tt>.  This is
+straightforward, and may be accomplished by entering the function body
+directly on the command line.  For example, the following commands
+define the right hand side function for an interesting pair of
+nonlinear differential equations.  Note that while you are entering a
+function, Octave responds with a different prompt, to indicate that it
+is waiting for you to complete your input.
+
+<pre>
+    octave:8> function xdot = f (x, t) 
+    >
+    >  r = 0.25;
+    >  k = 1.4;
+    >  a = 1.5;
+    >  b = 0.16;
+    >  c = 0.9;
+    >  d = 0.8;
+    >
+    >  xdot(1) = r*x(1)*(1 - x(1)/k) - a*x(1)*x(2)/(1 + b*x(1));
+    >  xdot(2) = c*a*x(1)*x(2)/(1 + b*x(1)) - d*x(2);
+    >
+    > endfunction
+</pre>
+</p>
+
+<p>
+Given the initial condition
+
+<pre>
+    x0 = [1; 2];
+</pre>
+
+and the set of output times as a column vector (note that the first
+output time corresponds to the initial condition given above)
+
+<pre>
+    t = linspace (0, 50, 200)';
+</pre>
+
+it is easy to integrate the set of differential equations:
+
+<pre>
+    x = lsode ("f", x0, t);
+</pre>
+
+<p>
+The function <tt>lsode</tt> uses the Livermore Solver for Ordinary
+Differential Equations, described in A. C. Hindmarsh, <em>ODEPACK, a
+Systematized Collection of ODE Solvers</em>, in: Scientific Computing,
+R. S.  Stepleman et al. (Eds.), North-Holland, Amsterdam, 1983, pages
+55-64.
+</p>
+
+<h3>Producing Graphical Output</h3>
+
+<p>
+To display the solution of the previous example graphically, use the
+command
+
+<pre>
+    plot (t, x)
+</pre>
+</p>
+
+<p>
+If you are using the X Window System, Octave will automatically create
+a separate window to display the plot.  If you are using a terminal that
+supports some other graphics commands, you will need to tell Octave what
+kind of terminal you have.  Type the command
+</p>
+
+<pre>
+    gset term
+</pre>
+
+to see a list of the supported terminal types.  Octave uses
+<tt>gnuplot</tt> to display graphics, and can display graphics on any
+terminal that is supported by <tt>gnuplot</tt>.
+
+<p>
+To capture the output of the plot command in a file rather than sending
+the output directly to your terminal, you can use a set of commands like
+this
+
+<pre>
+    gset term postscript
+    gset output "foo.ps"
+    replot
+</pre>
+
+This will work for other types of output devices as well.  Octave's
+<tt>gset</tt> command is really just piped to the <tt>gnuplot</tt>
+subprocess, so that once you have a plot on the screen that you like,
+you should be able to do something like this to create an output file
+suitable for your graphics printer.
+</p>
+
+<p>
+Or, you can eliminate the intermediate file by using commands like this
+
+<pre>
+    gset term postscript
+    gset output "|lpr -Pname_of_your_graphics_printer"
+    replot
+</pre>
+
+<h3>Editing What You Have Typed</h3>
+
+<p>
+At the Octave prompt, you can recall, edit, and reissue previous
+commands using Emacs- or vi-style editing commands.  The default
+keybindings use Emacs-style commands.
+</p>
+
+<h3>Getting Help</h3>
+
+<p>
+Octave has an extensive help facility.  The same documentation that is
+available in printed form is also available from the Octave prompt,
+because both forms of the documentation are created from the same input
+file.
+</p>
+
+<p>
+In order to get good help you first need to know the name of the command
+that you want to use.  This name of the function may not always be
+obvious, but a good place to start is to just type <tt>help</tt>.
+This will show you all the operators, reserved words, functions,
+built-in variables, and function files.  You can then get more
+help on anything that is listed by simply including the name as an
+argument to help.  For example,
+
+<pre>
+    help plot
+</pre>
+
+will display the help text for the <tt>plot</tt> function.
+</p>
+
+<p>
+The complete text of the manual is availabe from Octave's command line
+using the command <tt>help -i</tt>.  Because it is written in Texinfo,
+it is also possible to put
+<a href="http://www.che.wisc.edu/cgi-bin/info2www?(octave)">the manual
+on the WWW</a>.
+</p>
 
 <h2><a name="Distribution Terms">Distribution Terms</a></h2>
 <p>

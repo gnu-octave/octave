@@ -14,7 +14,7 @@
 
 // To compile this file, type the command
 //
-//   mkoctfile hello
+//   mkoctfile hello.cc
 //
 // at the shell prompt.  The script mkoctfile should have been
 // installed along with Octave.  Running it will create a file called

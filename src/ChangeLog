@@ -1,3 +1,8 @@
+2003-06-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (printf_value_cache::string_value): Don't attempt
+	to extract values when none are available.
+
 2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-plot.cc (Vgnuplot_has_multiplot): Delete variable.

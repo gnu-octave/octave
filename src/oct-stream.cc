@@ -2175,30 +2175,35 @@ printf_value_cache::string_value (void)
 {
   std::string retval;
 
-  octave_value tval = values (val_idx++);
-
-  if (tval.rows () == 1)
-    retval = tval.string_value ();
+  if (exhausted ())
+    curr_state = conversion_error;
   else
     {
-      // In the name of Matlab compatibility.
+      octave_value tval = values (val_idx++);
 
-      charMatrix chm = tval.char_matrix_value ();
+      if (tval.rows () == 1)
+	retval = tval.string_value ();
+      else
+	{
+	  // In the name of Matlab compatibility.
 
-      int nr = chm.rows ();
-      int nc = chm.columns ();
+	  charMatrix chm = tval.char_matrix_value ();
 
-      int k = 0;
+	  int nr = chm.rows ();
+	  int nc = chm.columns ();
 
-      retval.resize (nr * nc, '\0');
+	  int k = 0;
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  retval[k++] = chm(i,j);
+	  retval.resize (nr * nc, '\0');
+
+	  for (int j = 0; j < nc; j++)
+	    for (int i = 0; i < nr; i++)
+	      retval[k++] = chm(i,j);
+	}
+
+      if (error_state)
+	curr_state = conversion_error;
     }
-
-  if (error_state)
-    curr_state = conversion_error;
 
   return retval;
 }

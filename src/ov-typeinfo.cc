@@ -215,7 +215,11 @@ octave_value_typeinfo::do_installed_type_names (void)
 }
 
 DEFUN (typeinfo, args, ,
-  "usage: typeinfo ([typename])")
+  "usage: typeinfo (expr)\n\
+\n\
+Return the type of the expression EXPR, as a string.  If EXPR is\n\
+omitted, return an array of strings containing all the currently\n\
+installed data types.")
 {
   octave_value retval;
 
@@ -223,6 +227,8 @@ DEFUN (typeinfo, args, ,
 
   if (nargin == 0)
     retval = octave_value_typeinfo::installed_type_names ();
+  else if (nargin == 1)
+    retval = args(0).type_name ();
   else
     print_usage ("typeinfo");
 

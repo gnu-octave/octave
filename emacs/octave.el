@@ -5,7 +5,7 @@
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
 ;; Author: Kurt Hornik <hornik@ci.tuwien.ac.at>
 ;; Maintainer: bug-octave@bevo.che.wisc.edu
-;; Version 0.0 (Sept 29 1995)
+;; Version 0.6 (Nov 27 1995)
 ;; Keywords: languages
 
 ;; This file is not yet a part of GNU Emacs.  It is part of Octave.
@@ -32,7 +32,7 @@
 
 ;;; Bugs to bug-octave@bevo.che.wisc.edu
 
-(defconst octave-mode-version "version 0.5")
+(defconst octave-mode-version "version 0.6")
 
 ;;; Code:
 

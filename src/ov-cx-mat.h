@@ -77,7 +77,8 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const ComplexMatrix& rhs);
+  void assign (const octave_value_list& idx, const ComplexMatrix& rhs)
+    { octave_base_matrix<ComplexMatrix>::assign (idx, rhs); }
 
   void assign (const octave_value_list& idx, const Matrix& rhs);
 

@@ -68,6 +68,8 @@ private:
 
     idx_vector_rep (double d);
 
+    idx_vector_rep (int i);
+
     idx_vector_rep (char c);
 
     idx_vector_rep (bool b);
@@ -167,6 +169,12 @@ public:
   idx_vector (double d)
     {
       rep = new idx_vector_rep (d);
+      rep->count = 1;
+    }
+
+  idx_vector (int i)
+    {
+      rep = new idx_vector_rep (i);
       rep->count = 1;
     }
 

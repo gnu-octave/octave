@@ -193,7 +193,7 @@ template <class LT, class RT>
 int
 assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs)
 {
-  return assign (lhs, rhs, static_cast<LT> (0));
+  return assign (lhs, rhs, Array<LT>::resize_fill_value ());
 }
 
 template <class T>

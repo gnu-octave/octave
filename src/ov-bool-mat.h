@@ -72,8 +72,6 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const boolMatrix& rhs);
-
   idx_vector index_vector (void) const { return idx_vector (matrix); }
 
   bool is_bool_matrix (void) const { return true; }

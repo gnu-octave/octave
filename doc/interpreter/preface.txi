@@ -117,6 +117,10 @@ helped tremendously with testing.  He has also been a constant source of
 new ideas for improving Octave.
 
 @item
+Cai Jianming @email{caijianming@@yahoo.co.uk} contributed the inital
+cell array implementation.
+
+@item
 Phil Johnson @email{johnsonp@@nicco.sscnet.ucla.edu} has helped to make
 Linux releases available.
 

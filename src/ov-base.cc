@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-ieee.h"
 
-#include "Cell.h"
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -40,14 +39,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
-#include "ov-scalar.h"
-#include "ov-re-mat.h"
+#include "ov-cell.h"
+#include "ov-ch-mat.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
-#include "ov-ch-mat.h"
-#include "ov-str-mat.h"
-#include "ov-range.h"
 #include "ov-list.h"
+#include "ov-range.h"
+#include "ov-re-mat.h"
+#include "ov-scalar.h"
+#include "ov-str-mat.h"
 #include "variables.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
@@ -338,6 +338,11 @@ CONVDECLX (string_conv)
   return new octave_char_matrix_str ();
 }
 
+CONVDECLX (cell_conv)
+{
+  return new octave_cell ();
+}
+
 void
 install_base_type_conversions (void)
 {
@@ -347,10 +352,12 @@ install_base_type_conversions (void)
   INSTALL_ASSIGNCONV (octave_base_value, octave_complex_matrix, octave_complex_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_range, octave_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_char_matrix_str, octave_char_matrix_str);
+  INSTALL_ASSIGNCONV (octave_base_value, octave_cell, octave_cell);
 
   INSTALL_WIDENOP (octave_base_value, octave_matrix, matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_complex_matrix, complex_matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
+  INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
 }
 
 /*

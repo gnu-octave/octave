@@ -248,6 +248,8 @@ public:
 
   Array<T> index (idx_vector& i) const;
 #endif
+
+  static T resize_fill_value (void) { return static_cast<T> (0); }
 };
 
 template <class LT, class RT>
@@ -258,7 +260,7 @@ template <class LT, class RT>
 int
 assign (Array<LT>& lhs, const Array<RT>& rhs)
 {
-  return assign (lhs, rhs, static_cast<LT> (0));
+  return assign (lhs, rhs, Array<LT>::resize_fill_value ());
 }
 
 #endif

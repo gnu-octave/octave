@@ -1525,6 +1525,7 @@ void
 install_types (void)
 {
   octave_base_value::register_type ();
+  octave_cell::register_type ();
   octave_scalar::register_type ();
   octave_complex::register_type ();
   octave_matrix::register_type ();

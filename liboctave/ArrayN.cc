@@ -137,7 +137,7 @@ ArrayN<T>::range_error (const char *fcn, const Array<int>& arr_idx) const
 {
   // XXX FIXME XXX -- report index values too!
 
-  (*current_liboctave_error_handler) ("range error");
+  (*current_liboctave_error_handler) ("range error in ArrayN");
 
   return T ();
 }
@@ -148,7 +148,7 @@ ArrayN<T>::range_error (const char *fcn, const Array<int>& arr_idx)
 {
   // XXX FIXME XXX -- report index values too!
 
-  (*current_liboctave_error_handler) ("range error");
+  (*current_liboctave_error_handler) ("range error in ArrayN");
 
   static T foo;
   return foo;

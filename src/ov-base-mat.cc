@@ -75,6 +75,48 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx)
   return retval;
 }
 
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+template <class MT>
+extern void assign (MT&, const MT&);
+#endif
+
+template <class MT>
+void
+octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
+{
+  int len = idx.length ();
+
+  switch (len)
+    {
+    case 2:
+      {
+	idx_vector i = idx (0).index_vector ();
+	idx_vector j = idx (1).index_vector ();
+
+	matrix.set_index (i);
+	matrix.set_index (j);
+
+	::assign (matrix, rhs);
+      }
+      break;
+
+    case 1:
+      {
+	idx_vector i = idx (0).index_vector ();
+
+	matrix.set_index (i);
+
+	::assign (matrix, rhs);
+      }
+      break;
+
+    default:
+      error ("invalid number of indices (%d) for indexed assignment",
+	     len);
+      break;
+    }
+}
+
 template <class MT>
 bool
 octave_base_matrix<MT>::is_true (void) const

@@ -75,7 +75,15 @@ IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
 static inline int
 tree_to_mat_idx (double x)
 {
-  return (x > 0) ? ((int) (x + 0.5) - 1) : ((int) (x - 0.5) - 1);
+  return (x > 0)
+    ? (static_cast<int> (x + 0.5) - 1)
+    : (static_cast<int> (x - 0.5) - 1);
+}
+
+static inline int
+tree_to_mat_idx (int i)
+{
+  return i - 1;
 }
 
 static inline bool
@@ -183,33 +191,6 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
   init_state ();
 }
 
-IDX_VEC_REP::idx_vector_rep (double d)
-{
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 0;
-
-  len = 1;
-
-  orig_nr = 1;
-  orig_nc = 1;
-
-  if (idx_is_inf_or_nan (d))
-    return;
-  else
-    {
-      data = new int [len];
-
-      data[0] = tree_to_mat_idx (d);
-    }
-
-  init_state ();
-}
-
 IDX_VEC_REP::idx_vector_rep (const Range& r)
 {
   data = 0;
@@ -254,6 +235,55 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
       else
 	data[i] = tree_to_mat_idx (val);
     }
+
+  init_state ();
+}
+
+IDX_VEC_REP::idx_vector_rep (double d)
+{
+  data = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
+  one_zero = 0;
+
+  len = 1;
+
+  orig_nr = 1;
+  orig_nc = 1;
+
+  if (idx_is_inf_or_nan (d))
+    return;
+  else
+    {
+      data = new int [len];
+
+      data[0] = tree_to_mat_idx (d);
+    }
+
+  init_state ();
+}
+
+IDX_VEC_REP::idx_vector_rep (int i)
+{
+  data = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
+  one_zero = 0;
+
+  len = 1;
+
+  orig_nr = 1;
+  orig_nc = 1;
+
+  data = new int [len];
+
+  data[0] = tree_to_mat_idx (i);
 
   init_state ();
 }

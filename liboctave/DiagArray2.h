@@ -201,7 +201,7 @@ public:
     {
       if (r < 0 || c < 0 || r >= nr || c >= nc)
 	{
-	  (*current_liboctave_error_handler) ("range error");
+	  (*current_liboctave_error_handler) ("range error in DiagArray2");
 	  return Proxy (0, r, c);
 	}
       else
@@ -212,7 +212,7 @@ public:
     {
       if (r < 0 || c < 0 || r >= nr || c >= nc)
 	{
-	  (*current_liboctave_error_handler) ("range error");
+	  (*current_liboctave_error_handler) ("range error in DiagArray2");
 	  return Proxy (0, r, c);
 	}
       else

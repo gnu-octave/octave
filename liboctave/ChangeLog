@@ -1,3 +1,21 @@
+2002-05-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.h (idx_vector::idx_vector (int)): New function.
+	(idx_vector_rep::idx_vector_rep (int)): New decl.
+	* idx-vector.cc (idx_vector_rep::idx_vector_rep (int)): New function.
+
+	* Array.h (Array<T>::resize_fill_value (void)): New static function.
+	(assign (Array<LT>&, const Array<RT>&)): Use it.
+	* Array2.h (assign (Array2<LT>&, const Array2<RT>&)): Use it.
+	* ArrayN.h (assign (ArrayN<LT>&, const ArrayN<RT>&)): Use it.
+
+2002-05-02  Cai Jianming <caijianming@yahoo.co.uk> 
+
+	* Array3.h (Array3<T>::checkelem): Improve error message.
+	* ArrayN.h (ArrayN<T>::range_error): Likewise.
+	* DiagArray2.cc (DiagArray2<T>::checkelem): Likewise.
+	* DiagArray2.cc (DiagArray2<T>::operator ()): Likewise.
+
 2002-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DASSL.h (DASSL_options::init): Undo previous change.

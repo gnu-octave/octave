@@ -39,139 +39,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "ov-base-mat.h"
+#include "ov-base-mat.cc"
+#include "ov-re-mat.h"
+#include "ov-scalar.h"
+
+template class octave_base_matrix<Cell>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell");
 
-octave_value
-octave_cell::do_index_op (const octave_value_list& idx)
-{
-  octave_value retval;
-
-  int len = idx.length ();
-
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
-
-	retval = cell_val.index (i, j);
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	retval = cell_val.index (i);
-      }
-      break;
-
-    default:
-      {
-	std::string n = type_name ();
-
-	error ("invalid number of indices (%d) for %s value",
-	       len, n.c_str ());
-      }
-      break;
-    }
-
-  return retval;
-}
-
 void
 octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
 {
-#if 0
-  if (idx.length () == 1)
-    {
-      int i = idx(0).int_value (true);
-
-      if (! error_state)
-	{
-	  int n = lst.length ();
-
-	  if (i > 0 && (Vresize_on_range_error || i <= n))
-	    lst(i-1) = rhs;
-	  else
-	    error ("list index = %d out of range", i);
-	}
-      else
-	error ("list index must be an integer");
-    }
+  if (rhs.is_cell ())
+    octave_base_matrix<Cell>::assign (idx, rhs.cell_value ());
   else
-    error ("lists may only be indexed by a single scalar");
-#endif
-}
-
-void
-octave_cell::print (std::ostream& os, bool) const
-{
-  print_raw (os);
-}
-
-void
-octave_cell::print_raw (std::ostream& os, bool) const
-{
-  unwind_protect::begin_frame ("octave_cell_print");
-
-  int nr = cell_val.rows ();
-  int nc = cell_val.columns();
-
-  if (nr > 0 && nc > 0)
-    {
-      indent (os);
-      os << "{";
-      newline (os);
-
-      increment_indent_level ();
-
-      for (int j = 0; j < nc; j++)
-	{
-	  for (int i = 0; i < nr; i++)
-	    {
-	      std::ostrstream buf;
-	      buf << "[" << i+1 << "," << j+1 << "]" << std::ends;
-	      const char *nm = buf.str ();
-
-	      octave_value val = cell_val(i,j);
-
-	      val.print_with_name (os, nm);
-
-	      delete [] nm;
-	    }
-	}
-
-      decrement_indent_level ();
-
-      indent (os);
-
-      os << "}";
-    }
-  else
-    os << "{}";
-
-  newline (os);
-
-  unwind_protect::run_frame ("octave_cell_print");
-}
-
-bool
-octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
-{
-  indent (os);
-  if (is_empty ())
-    os << name << " = ";
-  else
-    {
-      os << name << " =";
-      newline (os);
-    }
-  return false;
+    octave_base_matrix<Cell>::assign (idx, Cell (rhs));
 }
 
 DEFUN (iscell, args, ,

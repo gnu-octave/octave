@@ -67,6 +67,8 @@ public:
 
   octave_value do_index_op (const octave_value_list& idx);
 
+  void assign (const octave_value_list& idx, const MT& rhs);
+
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }
 

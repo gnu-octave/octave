@@ -1,3 +1,56 @@
+2002-05-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base.cc (cell_conv): New conversion function.
+	(install_base_type_conversions): Install it.
+	Install conversion for indexed assignment of octave_cells to
+	undefined values.
+
+	* TEMPLATE-INST/Array-tc.cc: Instantiate assign functions too.
+	(Array<octave_value>::resize_fill_value (void)):
+	Provide specialization for octave_value.
+
+	* ov-cell.cc (octave_cell::assign (const octave_value_list&,
+	const octave_value&)): New function.
+	* Cell.h (Cell::Cell (const octave_value&)): New function.
+
+	* OPERATORS/op-cell.cc (install_list_ops): Use DEFASSIGNANYOP_FN
+	and INSTALL_ASSIGNANYOP, not DEFASSIGNOP_FN and INSTALL_ASSIGNOP.
+
+2002-05-03  Cai Jianming <caijianming@yahoo.co.uk>
+
+	* OPERATORS/op-cell.cc: New file.
+	* src/Makefile.in (OP_XSRC): Include it in the list.
+
+	* parse.y (cell): Return a cell type instead of Matrix type.
+
+	* ov.cc (install_types): Install octave_cell type.
+
+	* pr-output.cc (octave_print_internal): Handle Cells.
+	* pr-output.h (octave_print_internal): Provide decl.
+
+	* ov-cell.h (octave_cell): Derive from octave_base_matrix<Cell>.
+	* ov-cell.cc (do_index_op, assign, print, print_raw,
+	print_name_tag): Delete.
+
+	* Cell.cc (allocator, index): Delete.
+	* Cell.h (Cell): Derive from Array2<octave_value>.
+	Most functions removed since we can use those from Array2 instead.
+
+2002-05-02  Cai Jianming <caijianming@yahoo.co.uk>
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::assign):
+	New function.
+	* ov-base-mat.h (octave_base_matrix<MT>::assign): Provide decl.
+	* ov-bool-mat.cc (octave_bool_matrix::assign): Delete.
+	* ov-bool-mat.h (octave_bool_matrix:assign): Delete decl
+	* ov-cx-mat.cc (octave_complex_matrix::assign (const
+	octave_value_list& idx, const ComplexMatrix&)): Delete.
+	* ov-cx-mat.h (octave_complex_matrix:assign (const
+	octave_value_list& idx, const ComplexMatrix&)): Replace decl with
+	function.
+	* ov-re-mat.cc (octave_bool_matrix::assign): Delete.
+	* ov-re-mat.h (octave_bool_matrix:assign): Delete decl.
+	
 2002-05-02  Cai Jianming <caijianming@yahoo.co.uk>
 
 	* OPERATORS/op-bm-b.cc: New file.x

@@ -36,57 +36,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 
 class
-Cell
+Cell : public Array2<octave_value>
 {
 public:
 
   Cell (void)
-    : data () { }
+    : Array2<octave_value> () { }
+
+  Cell (const octave_value& val)
+    : Array2<octave_value> (1, 1, val) { }
 
   Cell (int n, int m, const octave_value& val = octave_value ())
-    : data (n, m, val) { }
+    : Array2<octave_value> (n, m, val) { }
 
   Cell (const Array2<octave_value>& c)
-    : data (c) { }
+    : Array2<octave_value> (c) { }
 
   Cell (const Cell& c)
-    : data (c.data) { }
+    : Array2<octave_value> (c) { }
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
-
-  Cell& operator = (const Cell& c)
-    {
-      if (this != &c)
-	data = c.data;
-
-      return *this;
-    }
-
-  int rows (void) const { return data.rows (); }
-
-  int columns (void) const { return data.columns (); }
-
-  octave_value& operator () (int i, int j) { return elem (i, j); }
-
-  octave_value operator () (int i, int j) const { return elem (i, j); }
-
-  octave_value& elem (int i, int j) { return data.elem (i, j); }
-
-  octave_value elem (int i, int j) const { return data.elem (i, j); }
-
-  Cell index (idx_vector& i) const;
-
-  Cell index (idx_vector& i, idx_vector& j) const;
-
-private:
-
-  static octave_allocator allocator;
-
-  Array2<octave_value> data;
+  boolMatrix all(void) const { return boolMatrix();} //FIXME
+  boolMatrix any(void) const {return boolMatrix();}  //FIXME
+  bool is_true(void) const {return false;} //FIXME
 };
 
 #endif

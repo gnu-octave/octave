@@ -38,7 +38,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 
 template class Array<octave_value>;
+
+octave_value
+Array<octave_value>::resize_fill_value (void)
+{
+  static octave_value retval = octave_value (Matrix ());
+  return retval;
+}
+
+template int assign (Array<octave_value>&, const Array<octave_value>&);
+
+template int assign (Array<octave_value>&,
+		     const Array<octave_value>&, const octave_value&);
+
+
 template class Array2<octave_value>;
+
+template int assign (Array2<octave_value>&, const Array2<octave_value>&);
+
+template int assign (Array2<octave_value>&,
+		     const Array2<octave_value>&, const octave_value&);
 
 /*
 ;;; Local Variables: ***

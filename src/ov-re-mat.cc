@@ -66,42 +66,6 @@ octave_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-void
-octave_matrix::assign (const octave_value_list& idx, const Matrix& rhs)
-{
-  int len = idx.length ();
-
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
-
-	matrix.set_index (i);
-	matrix.set_index (j);
-
-	::assign (matrix, rhs);
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	matrix.set_index (i);
-
-	::assign (matrix, rhs);
-      }
-      break;
-
-    default:
-      error ("invalid number of indices (%d) for indexed matrix assignment",
-	     len);
-      break;
-    }
-}
-
 bool
 octave_matrix::valid_as_scalar_index (void) const
 {

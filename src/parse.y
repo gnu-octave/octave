@@ -40,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <strstream.h>
 
+#include "Cell.h"
 #include "Matrix.h"
 #include "cmd-edit.h"
 #include "cmd-hist.h"
@@ -606,9 +607,9 @@ matrix_rows1	: cell_or_matrix_row
 		;
 
 cell		: '{' '}'
-		  { $$ = new tree_constant (octave_value (Matrix ())); }
+		  { $$ = new tree_constant (octave_value (Cell ())); }
 		| '{' ';' '}'
-		  { $$ = new tree_constant (octave_value (Matrix ())); }
+		  { $$ = new tree_constant (octave_value (Cell ())); }
 		| '{' cell_rows '}'
 		  { $$ = finish_cell ($2); }
 		;

@@ -32,6 +32,7 @@ class Matrix;
 class Range;
 class boolMatrix;
 class charMatrix;
+class Cell;
 
 extern void
 octave_print_internal (std::ostream& os, double d,
@@ -66,6 +67,11 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);
+
+extern void
+octave_print_internal (std::ostream& os, const Cell& c,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
 
 #endif
 

@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Cell.h"
 #include "error.h"
-#include "ov-base.h"
+#include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -49,45 +49,36 @@ class tree_walker;
 // Cells.
 
 class
-octave_cell : public octave_base_value
+octave_cell : public octave_base_matrix<Cell>
 {
 public:
 
   octave_cell (void)
-    : octave_base_value () { }
+    : octave_base_matrix<Cell> () { }
 
   octave_cell (const Cell& c)
-    : octave_base_value (), cell_val (c) { }
+    : octave_base_matrix<Cell> (c) { }
 
   octave_cell (const octave_cell& c)
-    : octave_base_value (), cell_val (c.cell_val) { }
+    : octave_base_matrix<Cell> (c) { }
 
   ~octave_cell (void) { }
 
+  void assign (const octave_value_list& idx, const octave_value& rhs);
+
   octave_value *clone (void) { return new octave_cell (*this); }
 
-  octave_value do_index_op (const octave_value_list& idx);
-
-  void assign (const octave_value_list& idx, const octave_value& rhs);
+#if 0
+  octave_value *try_narrowing_conversion (void);
+#endif
 
   bool is_defined (void) const { return true; }
 
-  bool is_constant (void) const { return true; }
-
   bool is_cell (void) const { return true; }
 
-  Cell cell_value (void) const { return cell_val; }
-
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
+  Cell cell_value (void) const { return matrix; }
 
 private:
-
-  Cell cell_val;
-
   DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

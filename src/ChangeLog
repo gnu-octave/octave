@@ -1,3 +1,8 @@
+2003-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_ascii_data): If saving a range with
+	non-integer base, limit, or increment, save as matrix instead.
+
 2003-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (initialize_pathsearch): Don't save old and set new

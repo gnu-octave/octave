@@ -4588,7 +4588,7 @@ strip_infnan (const ComplexMatrix& m)
 // XXX FIXME XXX -- should probably write the help string here too.
 
 static bool
-save_ascii_data (std::ostream& os, const octave_value& tc,
+save_ascii_data (std::ostream& os, const octave_value& val_arg,
 		 const std::string& name, bool& infnan_warned,
 		 bool strip_nan_and_inf, bool mark_as_global,
 		 int precision)
@@ -4604,10 +4604,24 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
   long old_precision = os.precision ();
   os.precision (precision);
 
-  if (tc.is_string ())
+  octave_value val = val_arg;
+
+  if (val.is_range ())
+    {
+      Range r = val.range_value ();
+      double base = r.base ();
+      double limit = r.limit ();
+      double inc = r.inc ();
+      if (! (NINT (base) == base
+	     && NINT (limit) == limit
+	     && NINT (inc) == inc))
+	val = val.matrix_value ();
+    }	
+
+  if (val.is_string ())
     {
       ascii_save_type (os, "string array", mark_as_global);
-      charMatrix chm = tc.char_matrix_value ();
+      charMatrix chm = val.char_matrix_value ();
       int elements = chm.rows ();
       os << "# elements: " << elements << "\n";
       for (int i = 0; i < elements; i++)
@@ -4622,10 +4636,10 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	  os << "\n";
 	}
     }
-  else if (tc.is_range ())
+  else if (val.is_range ())
     {
       ascii_save_type (os, "range", mark_as_global);
-      Range tmp = tc.range_value ();
+      Range tmp = val.range_value ();
       os << "# base, limit, increment\n";
       octave_write_double (os, tmp.base ());
       os << " ";
@@ -4634,11 +4648,11 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
       octave_write_double (os, tmp.inc ());
       os << "\n";
     }
-  else if (tc.is_real_scalar ())
+  else if (val.is_real_scalar ())
     {
       ascii_save_type (os, "scalar", mark_as_global);
 
-      double d = tc.double_value ();
+      double d = val.double_value ();
 
       if (strip_nan_and_inf)
 	{
@@ -4666,14 +4680,14 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	  os << "\n";
 	}
     }
-  else if (tc.is_real_matrix ())
+  else if (val.is_real_matrix ())
     {
       ascii_save_type (os, "matrix", mark_as_global);
 
-      os << "# rows: " << tc.rows () << "\n"
-	 << "# columns: " << tc.columns () << "\n";
+      os << "# rows: " << val.rows () << "\n"
+	 << "# columns: " << val.columns () << "\n";
 
-      Matrix tmp = tc.matrix_value ();
+      Matrix tmp = val.matrix_value ();
 
       if (strip_nan_and_inf)
 	tmp = strip_infnan (tmp);
@@ -4685,14 +4699,14 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 
       os << tmp;
     }
-  else if (tc.is_cell ())
+  else if (val.is_cell ())
     {
       ascii_save_type (os, "cell", mark_as_global);
 
-      os << "# rows: " << tc.rows () << "\n"
-	 << "# columns: " << tc.columns () << "\n";
+      os << "# rows: " << val.rows () << "\n"
+	 << "# columns: " << val.columns () << "\n";
 
-      Cell tmp = tc.cell_value ();
+      Cell tmp = val.cell_value ();
       
       for (int j = 0; j < tmp.cols (); j++)
 	{
@@ -4712,11 +4726,11 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	  os << "\n";
 	}
     }
-  else if (tc.is_complex_scalar ())
+  else if (val.is_complex_scalar ())
     {
       ascii_save_type (os, "complex scalar", mark_as_global);
 
-      Complex c = tc.complex_value ();
+      Complex c = val.complex_value ();
 
       if (strip_nan_and_inf)
 	{
@@ -4751,14 +4765,14 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	  os << "\n";
 	}
     }
-  else if (tc.is_complex_matrix ())
+  else if (val.is_complex_matrix ())
     {
       ascii_save_type (os, "complex matrix", mark_as_global);
 
-      os << "# rows: " << tc.rows () << "\n"
-	 << "# columns: " << tc.columns () << "\n";
+      os << "# rows: " << val.rows () << "\n"
+	 << "# columns: " << val.columns () << "\n";
 
-      ComplexMatrix tmp = tc.complex_matrix_value ();
+      ComplexMatrix tmp = val.complex_matrix_value ();
 
       if (strip_nan_and_inf)
 	tmp = strip_infnan (tmp);
@@ -4771,7 +4785,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
       os << tmp;
     }
   else
-    gripe_wrong_type_arg ("save", tc, false);
+    gripe_wrong_type_arg ("save", val, false);
 
   os.precision (old_precision);
 

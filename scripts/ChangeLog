@@ -1,3 +1,8 @@
+2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/fliplr.m: Eliminate useless copy of arg.
+	* general/flipud.m: Ditto.
+
 2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/cross.m: Only return a row vector if both args

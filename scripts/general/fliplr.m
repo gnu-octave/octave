@@ -40,7 +40,6 @@ function y = fliplr (x)
     usage ("fliplr (x)");
   endif
 
-  y = x;
   nc = columns (x);
   y = x (:, nc:-1:1);
 

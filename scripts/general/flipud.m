@@ -40,7 +40,6 @@ function y = flipud (x)
     usage ("flipud (x)");
   endif
 
-  y = x;
   nr = rows (x);
   y = x (nr:-1:1, :);
 

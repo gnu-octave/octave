@@ -299,10 +299,13 @@ DOCSTRINGS: gendoc
 	./gendoc > $@.t
 	mv $@.t $@
 
-gendoc.cc: $(DOC_FILES) mkgendoc
+doc-files: $(DOC_FILES)
 	@echo making $@
 	@echo DOC_FILES = $(DOC_FILES)
-	@echo $(DOC_FILES) > doc-files
+	@echo $(DOC_FILES) > $@-t
+
+gendoc.cc: doc-files mkgendoc
+	@echo making $@
 	@$(srcdir)/mkgendoc doc-files > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 

@@ -1,6 +1,8 @@
 2002-07-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (OPT_HANDLERS): New targets.
+	(doc-files): New target.
+	(gendoc.cc): Depend on doc-files, not $(DOC_FILES).
 
 	* DLD-FUNCTIONS/daspk.cc, DLD-FUNCTIONS/dasrt.cc,
 	DLD-FUNCTIONS/dassl.cc, DLD-FUNCTIONS/fsolve.cc,

@@ -277,21 +277,14 @@ case "$RETSIGTYPE" in
 esac
 AC_SUBST(VOID_SIGHANDLER)dnl
 
-AC_HAVE_HEADERS(termio.h)dnl
+AC_HAVE_HEADERS(termios.h termio.h sgtty.h)dnl
 case "$DEFS" in
-  *HAVE_TERMIO_H*)
+  *HAVE_TERMIOS_H* | *HAVE_TERMIO_H* | *HAVE_SGTTY_H*)
   ;;
   *)
-    AC_HAVE_HEADERS(sgtty.h)dnl
-    case "$DEFS" in
-      *HAVE_SGTTY_H*)
-      ;;
-      *)
-        echo "I couldn't find either termio.h or sgtty.h!"
-        exit 1
-        ;;
-    esac
-    ;;
+    echo "I couldn't find termios.h, termio.h, or sgtty.h!"
+    exit 1
+  ;;
 esac
 
 # Hack for readline's sysdep.h

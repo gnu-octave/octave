@@ -1,3 +1,7 @@
+1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/bode.m: Allow optional 5th arg to specify plot style.
+
 Wed Sep 22 22:12:03 1999 A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
 	* linear-algebra/krylov.m: Correctly handle case of V having full

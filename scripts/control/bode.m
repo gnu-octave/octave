@@ -16,8 +16,8 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function [mag,phase,w] = bode(sys,w,outputs,inputs)
-# [mag,phase,w] = bode(sys[,w,outputs,inputs])
+function [mag,phase,w] = bode(sys,w,outputs,inputs,plot_style)
+# [mag,phase,w] = bode(sys[,w,outputs,inputs,plot_style])
 # Produce Bode plots of a system
 #
 # Compute the frequency response of a system.
@@ -40,6 +40,10 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
 #              points (e.g., crossovers from +/- 180) are accurately shown.
 #   outputs, inputs: the indices of the output(s) and input(s) to be used in
 #     the frequency response; see sysprune.
+#   plot_style: An optional argument specifying the type of plot to
+#               produce (if plotting is being done).  Valid values are
+#               "dB" or "mag".  If omitted, "dB" is assumed.
+#
 # outputs:
 #    mag, phase: the magnitude and phase of the frequency response
 #       G(jw) or G(exp(jwT)) at the selected frequency values.
@@ -59,8 +63,8 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
 # Modified by Kai P. Mueller September 28, 1997 (multiplot mode)
 
   # check number of input arguments given
-  if (nargin < 1 | nargin > 4)
-    usage("[mag,phase,w] = bode(sys[,w,outputs,inputs])");
+  if (nargin < 1 | nargin > 5)
+    usage("[mag,phase,w] = bode(sys[,w,outputs,inputs,plot_style])");
   endif
   if(nargin < 2)
     w = [];
@@ -70,6 +74,17 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
   endif
   if(nargin < 4)
     inputs = [];
+  endif
+  if(nargin < 5)
+    plot_style = "dB";
+  endif
+
+  if (strcmp (plot_style, "dB"))
+    do_db_plot = 1;
+  elseif (strcmp (plot_style, "mag"))
+    do_db_plot = 0;
+  else
+    error ("bode: invalid value of plot_style specified");
   endif
 
   [f, w] = bodquist(sys,w,outputs,inputs,"bode");
@@ -113,7 +128,7 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
       disp(outlist(outname,"	"));
     endif
     wv = [min(w), max(w)];
-    if(max(mag) > 0)
+    if(do_db_plot && max(mag) > 0)
       ylabel("Gain in dB");
       md = 20*log10(mag);
     else
@@ -125,7 +140,11 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
     axvec(1:2) = wv;
     axis(axvec);
     grid("on");
-    semilogx(w,md);
+    if (do_db_plot)
+      semilogx(w,md);
+    else
+      loglog(w,md);
+    endif
     if (is_siso(sys))
       if (gnuplot_has_multiplot)
         subplot(2,1,2);

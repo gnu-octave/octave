@@ -2786,6 +2786,13 @@ parse_and_execute (FILE *f)
 static void
 safe_fclose (void *f)
 {
+  // XXX FIXME XXX -- comments at the end of an input file are
+  // discarded (otherwise, they would be appended to the next
+  // statement, possibly from the command line or another file, which
+  // can be quite confusing).
+
+  octave_comment_buffer::get_comment ();
+
   if (f)
     fclose (static_cast<FILE *> (f));
 }

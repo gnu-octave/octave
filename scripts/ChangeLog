@@ -1,3 +1,11 @@
+2005-03-24  John W. Eaton  <jwe@octave.org>
+
+	* optimization/glpkmex.m: Texinfoize Doc string.
+	* optimization/glpk.m: Likewise.
+	Allow VARTYPE and CTYPE to be row or column vectors of characters
+	(row vectors are orginary character strings).
+	* optimization/glpkparam.m: Delete.
+
 2005-03-24  Quentin Spencer  <qspencer@ieee.org>
 
 	* statistics/base/mean.m: Allow DIMS arg greater than the number

@@ -396,14 +396,14 @@ install-bin:
 .PHONY: install-bin
 
 install-oct: PKG_ADD
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
+	$(INSTALL_DATA) PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD
 	if [ -n "$(OCT_FILES)" ]; then \
-	  $(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir); \
 	  xfiles="$(OCT_FILES)"; \
 	  for f in $$xfiles; do \
 	    $(INSTALL_PROGRAM) $$f $(DESTDIR)$(octfiledir)/$$f; \
 	  done; \
 	  $(srcdir)/mk-oct-links $(DESTDIR)$(octfiledir) $(DLD_DEF_FILES); \
-	  $(INSTALL_DATA) PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
 .PHONY: install-oct
 

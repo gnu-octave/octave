@@ -1,5 +1,8 @@
 2005-03-24  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (install-oct): Always create $(octfiledir) and
+	install PKG_ADD file there.
+
 	* octave.cc (octave_main): Fix logic in test for exit after
 	evaluating --eval option code.
 

@@ -17,10 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## GLPKMEX - An Octave Interface for the GNU GLPK library
-##
-## This function is provided for compatibility with the old Matlab
-## interface to GLPK.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{sense}, @var{c}, @var{a}, @var{b}, @var{ctype}, @var{lb}, @var{ub}, @var{vartype}, @var{param}, @var{lpsolver}, @var{save_pb})
+## This function is provided for compatibility with the old @sc{Matlab}
+## interface to the GNU GLPK library.  For Octave code, you should use
+## the @code{glpk} function instead.
+## @end deftypefn.
 
 function [xopt, fopt, status, extra] = glpkmex (varargin)
 

@@ -10,9 +10,6 @@ SHELL = /bin/sh
 
 #### Start of system configuration section. ####
 
-# The top of the directory tree where the sources live.
-top_srcdir = @top_srcdir@
-
 LEX = @LEX@
 LFLAGS = @LFLAGS@
 LEXLIB = @LEXLIB@

@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "byte-swap.h"
 #include "data-conv.h"
-#include "float-fmt.h"
+#include "mach-info.h"
 #include "oct-glob.h"
 #include "str-vec.h"
 
@@ -703,7 +703,8 @@ read_ascii_data (istream& is, const string& filename, int& global,
 // FILENAME is used for error messages.
 
 static char *
-read_binary_data (istream& is, int swap, floating_point_format fmt,
+read_binary_data (istream& is, int swap,
+		  oct_mach_info::float_format fmt,
 		  const string& filename, int& global,
 		  octave_value& tc, char *&doc)
 {
@@ -913,7 +914,8 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
 static void
 read_mat_binary_data (istream& is, double *data, int precision,
-		      int len, int swap, floating_point_format flt_fmt)
+		      int len, int swap,
+		      oct_mach_info::float_format flt_fmt)
 {
   switch (precision)
     {
@@ -983,7 +985,7 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 //
 // Gag me.
 
-  if (octave_words_big_endian && mopt == 0)
+  if (oct_mach_info::words_big_endian () && mopt == 0)
     swap = 1;
 
   // mopt is signed, therefore byte swap may result in negative value.
@@ -1016,39 +1018,73 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 // We don't just use a cast here, because we need to be able to detect
 // possible errors.
 
-static floating_point_format
-get_floating_point_format (int mach)
+static oct_mach_info::float_format
+mopt_digit_to_float_format (int mach)
 {
-  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
 
   switch (mach)
     {
     case 0:
-      flt_fmt = OCTAVE_IEEE_LITTLE;
+      flt_fmt = oct_mach_info::ieee_little_endian;
       break;
 
     case 1:
-      flt_fmt = OCTAVE_IEEE_BIG;
+      flt_fmt = oct_mach_info::ieee_big_endian;
       break;
 
     case 2:
-      flt_fmt = OCTAVE_VAX_D;
+      flt_fmt = oct_mach_info::vax_d;
       break;
 
     case 3:
-      flt_fmt = OCTAVE_VAX_G;
+      flt_fmt = oct_mach_info::vax_g;
       break;
 
     case 4:
-      flt_fmt = OCTAVE_CRAY;
+      flt_fmt = oct_mach_info::cray;
       break;
 
     default:
-      flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
+      flt_fmt = oct_mach_info::unknown;
       break;
     }
 
   return flt_fmt;
+}
+
+static int
+float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
+{
+  int retval = -1;
+
+  switch (flt_fmt)
+    {
+    case oct_mach_info::ieee_little_endian:
+      retval = 0;
+      break;
+
+    case oct_mach_info::ieee_big_endian:
+      retval = 1;
+      break;
+
+    case oct_mach_info::vax_d:
+      retval = 2;
+      break;
+
+    case oct_mach_info::vax_g:
+      retval = 3;
+      break;
+
+    case oct_mach_info::cray:
+      retval = 4;
+      break;
+
+    default:
+      break;
+    }
+
+  return retval;
 }
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
@@ -1070,7 +1106,7 @@ read_mat_binary_data (istream& is, const string& filename,
   // initialization of variable.
 
   Matrix re;
-  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
   char *name = 0;
   int swap = 0, type = 0, prec = 0, mach = 0, dlen = 0;
 
@@ -1091,8 +1127,9 @@ read_mat_binary_data (istream& is, const string& filename,
   mopt /= 100;      // Skip unused third digit too.
   mach = mopt % 10; // IEEE, VAX, etc.
 
-  flt_fmt = get_floating_point_format (mach);
-  if (flt_fmt == OCTAVE_UNKNOWN_FLT_FMT)
+  flt_fmt = mopt_digit_to_float_format (mach);
+
+  if (flt_fmt == oct_mach_info::unknown)
     {
       error ("load: unrecognized binary format!");
       return 0;
@@ -1180,16 +1217,17 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 
 static int
 read_binary_file_header (istream& is, int& swap,
-			 floating_point_format& flt_fmt, int quiet = 0) 
+			 oct_mach_info::float_format& flt_fmt,
+			 int quiet = 0) 
 {
   int magic_len = 10;
   char magic [magic_len+1];
   is.read (magic, magic_len);
   magic[magic_len] = '\0';
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
-    swap = octave_words_big_endian;
+    swap = oct_mach_info::words_big_endian ();
   else if (strncmp (magic, "Octave-1-B", magic_len) == 0)
-    swap = ! octave_words_big_endian;
+    swap = ! oct_mach_info::words_big_endian ();
   else
     {
       if (! quiet)
@@ -1200,8 +1238,9 @@ read_binary_file_header (istream& is, int& swap,
   char tmp = 0;
   is.read (&tmp, 1);
 
-  flt_fmt = get_floating_point_format (tmp);
-  if (flt_fmt == OCTAVE_UNKNOWN_FLT_FMT)
+  flt_fmt = mopt_digit_to_float_format (tmp);
+
+  if (flt_fmt == oct_mach_info::unknown)
     {
       if (! quiet)
         error ("load: unrecognized binary format!");
@@ -1225,7 +1264,7 @@ get_file_format (const string& fname, const string& orig_fname)
     }
 
   int swap;
-  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
 
   if (read_binary_file_header (file, swap, flt_fmt, 1) == 0)
     retval = LS_BINARY;
@@ -1264,7 +1303,7 @@ get_file_format (const string& fname, const string& orig_fname)
 
 static octave_value_list
 do_load (istream& stream, const string& orig_fname, int force,
-	 load_save_format format, floating_point_format flt_fmt,
+	 load_save_format format, oct_mach_info::float_format flt_fmt,
 	 int list_only, int swap, int verbose, const string_vector& argv,
 	 int argv_idx, int argc, int nargout)
 {
@@ -1442,7 +1481,7 @@ found in the file will be replaced with the values read from the file.")
 
   string orig_fname = argv[i];
 
-  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
 
   int swap = 0;
 
@@ -1726,7 +1765,11 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
   FOUR_BYTE_INT mopt = 0;
 
   mopt += tc.is_string () ? 1 : 0;
-  mopt += 1000 * get_floating_point_format (native_float_format);
+
+  oct_mach_info::float_format flt_fmt =
+    oct_mach_info::native_float_format ();;
+
+  mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 
   os.write (&mopt, 4);
   
@@ -2128,9 +2171,13 @@ write_binary_header (ostream& os, load_save_format format)
 {
   if (format == LS_BINARY)
     {
-      os << (octave_words_big_endian ? "Octave-1-B" : "Octave-1-L");
+      os << (oct_mach_info::words_big_endian ()
+	     ? "Octave-1-B" : "Octave-1-L");
 
-      char tmp = (char) native_float_format;
+      oct_mach_info::float_format flt_fmt =
+	oct_mach_info::native_float_format ();
+
+      char tmp = (char) float_format_to_mopt_digit (flt_fmt);
 
       os.write (&tmp, 1);
     }

@@ -258,11 +258,11 @@ do_stream_open (const string& name, const string& mode,
 
   if (! error_state)
     {
-      octave_base_stream::arch_type at
-	= octave_stream::string_to_arch_type (arch);
+      oct_mach_info::float_format flt_fmt =
+	oct_mach_info::string_to_float_format (arch);
 
       if (! error_state)
-	retval = new octave_fstream (name, md, at);
+	retval = new octave_fstream (name, md, flt_fmt);
     }
 
   return retval;
@@ -301,9 +301,12 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 }
 
 DEFUN (fopen, args, ,
-  "FILENUM = fopen (FILENAME, MODE [, ARCH]): open a file\n\
+  "[FILENUM, ERRMSG] = fopen (FILENAME, MODE [, ARCH]): open a file\n\
 \n\
-  Valid values for mode include:\n\
+  FILENAME is a string specifying the name of the file.\n\
+\n\
+  MODE is a string specifying whether the file should be opened for\n\
+  reading, writing, or both.  Valid values for MODE include:\n\
 \n\
     r  : open text file for reading\n\
     w  : open text file for writing; discard previous contents if any\n\
@@ -312,7 +315,25 @@ DEFUN (fopen, args, ,
     w+ : create text file for update; discard previous contents if any\n\
     a+ : append; open or create text file for update, writing at end\n\
 \n\
-  Update mode permits reading from and writing to the same file.")
+  Update mode permits reading from and writing to the same file.\n\
+\n\
+  ARCH is a string specifying the default data format for the file.\n\
+  Valid values for ARCH are:\n\
+\n\
+    native   --  the format of the current machine (this is the default)\n\
+    ieee-le  --  IEEE big endian\n\
+    ieee-be  --  IEEE little endian\n\
+    vaxd     --  VAX D floating format\n\
+    vaxg     --  VAX G floating format\n\
+    cray     --  Cray floating format\n
+\n\
+  however, conversions are currently only supported for ieee-be, and\n\
+  ieee-le formats.\n\
+\n\
+\n\
+  FILENUM is a number that can be used to refer to the open file.\n\
+  If fopen fails, FILENUM is set to -1 and ERRMSG contains a\n\
+  system-dependent error message")
 {
   octave_value_list retval = -1.0;
 
@@ -807,8 +828,8 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
       if (! error_state)
 	{
-	  octave_base_stream::data_type dt
-	    = octave_stream::string_to_data_type (prec);
+	  oct_data_conv::data_type dt
+	    = oct_data_conv::string_to_data_type (prec);
 
 	  if (! error_state)
 	    {
@@ -824,11 +845,11 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
 		      if (! error_state)
 			{
-			  octave_base_stream::arch_type at
-			    = octave_stream::string_to_arch_type (arch);
+			  oct_mach_info::float_format flt_fmt
+			    = oct_mach_info::string_to_float_format (arch);
 
 			  if (! error_state)
-			    retval = os.read (size, dt, skip, at, count);
+			    retval = os.read (size, dt, skip, flt_fmt, count);
 			}
 		      else
 			::error ("fread: architecture type must be a string");
@@ -854,23 +875,54 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 DEFUN (fread, args, ,
   "[DATA, COUNT] = fread (FILENUM [, SIZE] [, PRECISION] [, SKIP] [, ARCH])\n\
 \n\
- Reads data in binary form of type PRECISION from a file.\n\
+Reads data in binary form of type PRECISION from a file.\n\
 \n\
- FILENUM   : file number from fopen\n\
- SIZE      : size specification for the Data matrix\n\
- PRECISION : type of data to read, valid types are\n\
+  FILENUM   : file number from fopen\n\
 \n\
-             \"char\"   \"schar\" \"short\"  \"int\"  \"long\" \"float\"\n\
-             \"double\" \"uchar\" \"ushort\" \"uint\" \"ulong\"\n\
+  SIZE      : size specification for the data matrix\n\
 \n\
- DATA      : matrix in which the data is stored\n\
- COUNT     : number of elements read")
+  PRECISION : string specifying type of data to read, valid types are\n\
+\n\
+   char, char*1, integer*1, int8  --  character\n\
+   schar, signed char             --  signed character\n\
+   uchar, unsigned char           --  unsigned character (default)\n\
+   short                          --  short integer\n\
+   ushort, unsigned short         --  unsigned short integer\n\
+   int                            --  integer\n\
+   uint, unsigned int             --  unsigned integer\n\
+   long                           --  long integer\n\
+   ulong, unsigned long           --  unsigned long integer\n\
+   float, float32, real*4         --  single precision float\n\
+   double, float64, real*8        --  double precision float\n\
+   int16, integer*2               --  two byte integer\n\
+   int32, integer*4               --  four byte integer\n\
+\n\
+  SKIP      : number of bytes to skip before each element is read\n\
+              (default is 0)\n\
+\n\
+  ARCH      : string specifying the data format for the file.  Valid
+              values are\n\
+\n\
+    native   --  the format of the current machine (default)\n\
+    ieee-le  --  IEEE big endian\n\
+    ieee-be  --  IEEE little endian\n\
+    vaxd     --  VAX D floating format\n\
+    vaxg     --  VAX G floating format\n\
+    cray     --  Cray floating format\n
+\n\
+  however, conversions are currently only supported for ieee-be, and\n\
+  ieee-le formats.\n\
+\n\
+\n\
+  DATA      : matrix in which the data is stored\n\
+\n\
+  COUNT     : number of elements read")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin > 1 && nargin < 6)
+  if (nargin > 0 && nargin < 6)
     {
       retval(1) = -1.0;
       retval(0) = Matrix ();
@@ -889,7 +941,7 @@ DEFUN (fread, args, ,
 	    ? args(3) : octave_value (0.0);
 
 	  octave_value arch = (nargin > 4)
-	    ? args(4) : octave_value ("native");
+	    ? args(4) : octave_value ("unknown");
 
 	  int count = -1;
 
@@ -918,8 +970,8 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
   if (! error_state)
     {
-      octave_base_stream::data_type dt
-	= octave_stream::string_to_data_type (prec);
+      oct_data_conv::data_type dt
+	= oct_data_conv::string_to_data_type (prec);
 
       if (! error_state)
 	{
@@ -935,11 +987,11 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
 		  if (! error_state)
 		    {
-		      octave_base_stream::arch_type at
-			= octave_stream::string_to_arch_type (arch);
+		      oct_mach_info::float_format flt_fmt
+			= oct_mach_info::string_to_float_format (arch);
 
 		      if (! error_state)
-			retval = os.write (data, dt, skip, at);
+			retval = os.write (data, dt, skip, flt_fmt);
 		    }
 		  else
 		    ::error ("fwrite: architecture type must be a string");
@@ -960,16 +1012,46 @@ do_fwrite (octave_stream& os, const octave_value& data,
 DEFUN (fwrite, args, ,
   "COUNT = fwrite (FILENUM, DATA [, PRECISION] [, SKIP] [, ARCH])\n\
 \n\
- Writes data to a file in binary form of size PRECISION\n\
+  Writes data to a file in binary form of size PRECISION\n\
 \n\
- FILENUM   : file number from fopen\n\
- DATA      : matrix of elements to be written\n\
- PRECISION : type of data to read, valid types are\n\
+  FILENUM   : file number from fopen\n\
 \n\
-             \"char\"   \"schar\" \"short\"  \"int\"  \"long\" \"float\"\n\
-             \"double\" \"uchar\" \"ushort\" \"uint\" \"ulong\"\n\
+  DATA      : matrix of elements to be written\n\
 \n\
- COUNT     : number of elements written")
+  PRECISION : string specifying type of data to read, valid types are\n\
+\n\
+   char, char*1, integer*1, int8  --  character\n\
+   schar, signed char             --  signed character\n\
+   uchar, unsigned char           --  unsigned character (default)\n\
+   short                          --  short integer\n\
+   ushort, unsigned short         --  unsigned short integer\n\
+   int                            --  integer\n\
+   uint, unsigned int             --  unsigned integer\n\
+   long                           --  long integer\n\
+   ulong, unsigned long           --  unsigned long integer\n\
+   float, float32, real*4         --  single precision float\n\
+   double, float64, real*8        --  double precision float\n\
+   int16, integer*2               --  two byte integer\n\
+   int32, integer*4               --  four byte integer\n\
+\n\
+  SKIP      : number of bytes to skip before each element is read\n\
+              (the default is 0)\n\
+\n\
+  ARCH      : string specifying the data format for the file.  Valid
+              values are\n\
+\n\
+    native   --  the format of the current machine (default)\n\
+    ieee-le  --  IEEE big endian\n\
+    ieee-be  --  IEEE little endian\n\
+    vaxd     --  VAX D floating format\n\
+    vaxg     --  VAX G floating format\n\
+    cray     --  Cray floating format\n
+\n\
+  however, conversions are currently only supported for ieee-be, and\n\
+  ieee-le formats.\n\
+\n\
+\n\
+  COUNT     : number of elements written")
 {
   octave_value retval = -1.0;
 
@@ -982,9 +1064,15 @@ DEFUN (fwrite, args, ,
       if (os)
 	{
 	  octave_value data = args(1);
-	  octave_value prec = (nargin > 2) ? args(2) : octave_value ("uchar");
-	  octave_value skip = (nargin > 3) ? args(3) : octave_value (0.0);
-	  octave_value arch = (nargin > 4) ? args(4) : octave_value ("native");
+
+	  octave_value prec = (nargin > 2)
+	    ? args(2) : octave_value ("uchar");
+
+	  octave_value skip = (nargin > 3)
+	    ? args(3) : octave_value (0.0);
+
+	  octave_value arch = (nargin > 4)
+	    ? args(4) : octave_value ("unknown");
 
 	  retval = do_fwrite (*os, data, prec, skip, arch);
 	}

@@ -47,9 +47,9 @@ function analdemo ()
       clc 
       disp("System Grammians: (see Moore, IEEE T-AC, 1981) \n");
       disp("Example #1, consider the discrete time state space system:\n");
-      a=[1 5 -8.4;1.2 -3 5;1 7 9]
-      b=[1 5;2 6;-4.4 5]
-      c=[1 -1.5 2;6 -9.8 1]
+      a=[1, 5, -8.4; 1.2, -3, 5; 1, 7, 9]
+      b=[1, 5; 2, 6; -4.4, 5]
+      c=[1 -1.5, 2; 6, -9.8, 1]
       d=0
       prompt
       disp("\nThe discrete controllability grammian is computed as follows:");
@@ -69,9 +69,9 @@ function analdemo ()
       clc
 
       disp("Example #2, consider the continuous state space system:\n");
-      a=[1 3 -10.2;3.7 -2 9;1 3 7]
-      b=[1 12;6 2;-3.8 7]
-      c=[1 -1.1 7;3 -9.8 2]
+      a=[1, 3, -10.2; 3.7, -2, 9; n1, 3, 7]
+      b=[1, 12; 6, 2; -3.8, 7]
+      c=[1, -1.1, 7; 3, -9.8, 2]
       d=0
       prompt
       disp("\nThe continuous controllability grammian is computed as follows:");
@@ -94,9 +94,9 @@ function analdemo ()
 
       disp("System zeros (tzero) example\n");
       disp("Example #1, consider the state space system:\n");
-      a=[0 1 0;-10 -2 0;-10 0 -8]
-      b=[0;1;9]
-      c=[-10 0 -4]
+      a=[0, 1, 0; -10, -2, 0; -10, 0, -8]
+      b=[0; 1; 9]
+      c=[-10, 0, -4]
       d=1
       prompt
       disp("\nTo compute the zeros of this system, enter the following command:\n");
@@ -135,7 +135,7 @@ function analdemo ()
       clc
       disp("Continuous => Discrete and Discrete => Continuous conversions (c2d,d2c)");
       disp("\nExample #1, consider the following continuous state space system");
-      cmd = "sys_cont = ss2sys([-11 6;-15 8], [1;2], [2 -1], 0);";
+      cmd = "sys_cont = ss2sys([-11, 6; -15, 8], [1; 2], [2, -1], 0);";
       eval(cmd);
       disp(cmd);
       disp("Examine the poles and zeros of the continuous system:");
@@ -170,9 +170,9 @@ function analdemo ()
       disp("Algebraic Riccati Equation (are, dare)");
 
       disp("\nExample #1, consider the continuous state space system:\n");
-      a=[1 3 -10.2;3.7 -2 9;1 3 7]
-      b=[1 12;6 2;-3.8 7]
-      c=[1 -1.1 7;3 -9.8 2]
+      a=[1, 3, -10.2; 3.7, -2, 9; 1, 3, 7]
+      b=[1, 12; 6, 2; -3.8, 7]
+      c=[1, -1.1, 7; 3, -9.8, 2]
       d=0
       prompt
       disp("\nThe solution to the continuous algebraic riccati equation");
@@ -192,9 +192,9 @@ function analdemo ()
       clc
 
       disp("Example #2, consider the discrete time state space system:\n");
-      a=[1 5 -8.4;1.2 -3 5;1 7 9]
-      b=[1 5;2 6;-4.4 5]
-      c=[1 -1.5 2;6 -9.8 1]
+      a=[1, 5, -8.4; 1.2, -3, 5; 1, 7, 9]
+      b=[1, 5; 2, 6; -4.4, 5]
+      c=[1, -1.5, 2; 6, -9.8, 1]
       d=0
       r=eye(columns(b))
       prompt
@@ -216,7 +216,7 @@ function analdemo ()
       disp("--- Open loop balanced truncation: not yet implemented")
     elseif (k == 7)
       disp("SISO pole placement example:")
-      cmd = "sys=tf2sys(1,[1 -2 1]);";
+      cmd = "sys=tf2sys(1, [1, -2, 1]);";
       run_cmd
       disp("System in zero-pole form is:")
       cmd = "sysout(sys,\"zp\");";
@@ -225,7 +225,7 @@ function analdemo ()
       cmd = "sysout(sys,\"ss\");";
       run_cmd
       disp("Desired poles at -1, -1");
-      cmd = "K=place(sys,[-1 -1])";
+      cmd = "K=place(sys, [-1, -1])";
       run_cmd
       disp("Check results:")
       cmd = "[A,B] = sys2ss(sys);";

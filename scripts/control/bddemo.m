@@ -95,7 +95,7 @@ function bddemo ()
       help sysappend
       prompt
       disp("Consider a double-integrator system:")
-      sys = tf2sys(1,[1 0 0]);
+      sys = tf2sys(1, [1, 0, 0]);
       sys=sysupdate(sys,"ss");
       sysout(sys,"ss");
       disp("We add a velocity disturbance input as follows:")
@@ -145,8 +145,8 @@ function bddemo ()
       disp("        ------------------     ---------------------");
       disp(" u_in ->| Discrete system |--->| Continuous system | ---> y_out");
       disp("        ------------------     ---------------------");
-      sys1 = tf2sys([1 2],[1 2 1], 1,"u_in","y_disc");
-      sys2 = tf2sys([1 0],[1 -3 -2],0,"c_in","y_out");
+      sys1 = tf2sys([1, 2],[1, 2, 1], 1,"u_in","y_disc");
+      sys2 = tf2sys([1, 0],[1, -3, -2],0,"c_in","y_out");
       sys = sysmult(sys2,sys1);
       disp("Consider the hybrid system")
       sysout(sys);
@@ -169,8 +169,8 @@ function bddemo ()
       disp("sysdisc returns dsys=empty since sys has no discrete outputs.");
       prompt
       disp("Example block diagram 2:")
-      sys1 = tf2sys([1 2],[1 2 1], 1,"u_in","y_disc");
-      sys2 = tf2sys([1 0],[1 -3 -2],0,"c_in","y_out");
+      sys1 = tf2sys([1, 2],[1, 2, 1], 1,"u_in","y_disc");
+      sys2 = tf2sys([1, 0],[1, -3, -2],0,"c_in","y_out");
       disp("             ---------------------")
       disp(" u_in -->o-->| Discrete system   | --------> y_disc")
       disp("         ^   ---------------------    |")  
@@ -186,7 +186,7 @@ function bddemo ()
       sys = sysgroup(sys1, sys2);
       sysout(sys)
       prompt
-      sys = sysconnect(sys,[1 2],[2 1]);
+      sys = sysconnect(sys,[1, 2],[2, 1]);
       sysout(sys);
       cmd = "[csys,Acd,Bcd] = syscont(sys);";
       run_cmd
@@ -208,9 +208,9 @@ function bddemo ()
       disp(" ")
       prompt
       disp("Example: combine two SISO systems together:")
-      cmd = "sys_a=tf2sys([1 2],[3 4]);";
+      cmd = "sys_a=tf2sys([1, 2],[3, 4]);";
       run_cmd
-      cmd = "sys_b=tf2sys([5 6],[7 8],1);";
+      cmd = "sys_b=tf2sys([5, 6],[7, 8],1);";
       run_cmd
       cmd = "sys_g=sysgroup(sys_a,sys_b);";
       run_cmd
@@ -234,8 +234,8 @@ function bddemo ()
       disp("   u --->|  Bsys  |---->|  Asys  |---> y")
       disp("         ----------     ----------")
       disp(" ")
-      Asys = tf2sys(1,[1 2 1],0,"a_in","a_out");
-      Bsys = tf2sys([2 3],[1 3 2],0,"b_in","b_out");
+      Asys = tf2sys(1,[1, 2, 1],0,"a_in","a_out");
+      Bsys = tf2sys([2, 3],[1, 3, 2],0,"b_in","b_out");
       disp("Asys=")
       sysout(Asys);
       disp("Bsys=");
@@ -249,7 +249,7 @@ function bddemo ()
       disp("when multiplying polynomials");
       prompt
       disp("Example 2: same system, except that Bsys is discrete-time");
-      Bsys = tf2sys([2 3],[1 3 2],1e-2,"b_in","b_out");
+      Bsys = tf2sys([2, 3],[1, 3, 2],1e-2,"b_in","b_out");
       sysout(Bsys);
       cmd = "sys = sysmult(Asys,Bsys);";
       run_cmd
@@ -273,8 +273,8 @@ function bddemo ()
       help parallel
       disp("parallel operates by making a call to sysgroup and sysscale.")
       disp("Example:")
-      sys1 = tf2sys(1,[1 1],0,"in1","out1");
-      sys2 = tf2sys(2,[1 2],0,"in2","out2");
+      sys1 = tf2sys(1,[1, 1],0,"in1","out1");
+      sys2 = tf2sys(2,[1, 2],0,"in2","out2");
       disp("sys1=")
       sysout(sys1);
       disp("sys2=")
@@ -291,8 +291,8 @@ function bddemo ()
       out1 = list("y1.1","y1.2");
       out2 = list("y2.1","y2.2");
 
-      sys1 = ss2sys([-1,0;0 -2],eye(2),eye(2),[]);
-      sys2 = ss2sys([-2,0;0 -4],eye(2),eye(2),[]);
+      sys1 = ss2sys([-1, 0; 0, -2],eye(2),eye(2),[]);
+      sys2 = ss2sys([-2, 0; 0, -4],eye(2),eye(2),[]);
 
       sys1 = syssetsignals(sys1,"in",in1);
       sys1 = syssetsignals(sys1,"out",out1);
@@ -361,11 +361,11 @@ function bddemo ()
       disp("Simple example: P(s) is a first order lag, K(s) is a PI ")
       disp("controller")
       nump = 1;
-      denp = [1  1];
+      denp = [1, 1];
       disp("P(s)=")
       tfout(nump,denp)
-      numk = [1 1];
-      denk = [1 0];
+      numk = [1, 1];
+      denk = [1, 0];
       disp("\nK(s)=")
       tfout(numk,denk);
       prompt
@@ -445,7 +445,7 @@ function bddemo ()
           disp("Notice that PK now has three inputs (input 3 is a duplicate ");
           prompt("of input 2).  Press return to go on")
           disp("Step 3b: scale input 3 by -1")
-          cmd = "PK = sysscale(PK,[],diag([1,1,-1]));";
+          cmd = "PK = sysscale(PK,[],diag([1, 1, -1]));";
           run_cmd
           disp("PK=")
           sysout(PK);
@@ -455,8 +455,8 @@ function bddemo ()
           disp("   u(t) (output 2) to plant input (input 1)")
           disp("and prune extraneous inputs/outputs (retain input 2, output 1)")
           prompt
-          out_connect = [1 2]
-          in_connect = [3 1]
+          out_connect = [1, 2]
+          in_connect = [3, 1]
           cmd = "PK0 = sysconnect(PK,out_connect,in_connect);"; 
           run_cmd
           prompt
@@ -536,7 +536,7 @@ function bddemo ()
           disp(" ")
       disp("Step 1: We've already created systems P and K.  Create a sum ")
       disp("block as follows:")
-      cmd = "S = ss2sys([],[],[],[1 -1],0,0,0,[],list(""r(t)"",""y(t)""),""e(t)"");";
+      cmd = "S = ss2sys([],[],[],[1, -1],0,0,0,[],list(""r(t)"",""y(t)""),""e(t)"");";
       run_cmd
       disp("(You may wish to look at help ss2sys to see what the above does)");
       disp("S=")
@@ -570,7 +570,7 @@ function bddemo ()
           disp(" ")
       disp("Step 1: We've already created systems P and K.")
       disp("        Let us call buildssic:")
-      disp("   PKcl = buildssic([1 2;2 -1],[],[1],[2],P,K)")
+      disp("   PKcl = buildssic([1, 2; 2, -1],[],[1],[2],P,K)")
       disp(" ")
       disp("                         ^      ^  ^   ^  ^ ^")
       disp("                         |      |  |   |  | |")
@@ -589,7 +589,7 @@ function bddemo ()
       disp(" ")
       disp("      input list: the only input is 2 (K), positive")
       disp(" ")
-      cmd = "PKcl = buildssic([1 2;2 -1],[],[1],[2],P,K);"
+      cmd = "PKcl = buildssic([1, 2; 2, -1],[],[1],[2],P,K);"
       run_cmd
       sysout(PKcl)
       prompt

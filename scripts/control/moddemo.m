@@ -50,9 +50,9 @@ function moddemo ()
       clc
       disp('Perform continuous to discrete time conversion (c2d)\n')
       disp('Example #1, Consider the following continuous time state space system:\n')
-      a=[0 1;-25 -4]
-      b=[0;1]
-      c=[1 1]
+      a=[0, 1; -25, -4]
+      b=[0; 1]
+      c=[1, 1]
       d=1
       prompt
       disp('\nTo convert this to a discrete time system (using a zero order hold),')
@@ -84,9 +84,9 @@ function moddemo ()
       clc
       disp('Convert from state space to zero / pole form (ss2zp)\n')
       disp('Example #1, Consider the following state space system:\n')
-      a=[0 3 1;-2 -4 5;5 8 2]
-      b=[0;5;2.5]
-      c=[6 -1.9 2]
+      a=[0, 3, 1; -2, -4, 5; 5, 8, 2]
+      b=[0; 5; 2.5]
+      c=[6, -1.9, 2]
       d=[-20]
       prompt
       disp(' ')
@@ -129,9 +129,9 @@ function moddemo ()
       clc
       disp('Convert from state space to transfer function (ss2tf)\n')
       disp('Example #1, Consider the following state space system:\n')
-      a=[0 1;-2 -3]
-      b=[1;1]
-      c=[1 9]
+      a=[0, 1; -2, -3]
+      b=[1; 1]
+      c=[1, 9]
       d=[1]
       prompt
       disp('\nTo find an equivalent transfer function for this system, use')
@@ -167,8 +167,8 @@ function moddemo ()
       clc
       disp('Convert from transfer function to zero / pole form (tf2zp)\n')
       disp('Example #1, Consider the following transfer function:\n')
-      num=[1 2 3 4 5 ]
-      den=[1 2 3 4 5 6 7]
+      num=[1, 2, 3, 4, 5, ]
+      den=[1, 2, 3, 4, 5, 6, 7]
       prompt
       disp('\nTo find the zeros and poles of this system, use the following command:\n')
       disp('[zer,pol] = tf2zp(num,den)\n')

@@ -48,15 +48,15 @@ function dgkfdemo ()
       help lqr
       disp(' ')
       disp('Example:')
-      A = [0 1; -2 -1]
+      A = [0, 1; -2, -1]
       B = [0; 1]
-      Q = [1 0; 0 0]
+      Q = [1, 0; 0, 0]
       R = 1
       disp("Q = state penalty matrix; R = input penalty matrix")
       prompt
       disp('Compute state feedback gain k, ARE solution P, and closed-loop')
       disp('poles as follows:');
-      cmd = "[k p e] = lqr(A,B,Q,R)";
+      cmd = "[k, p, e] = lqr(A,B,Q,R)";
       run_cmd
       prompt
       disp("A similar approach can be used for LTI discrete-time systems")
@@ -67,19 +67,19 @@ function dgkfdemo ()
       help lqe
       disp(' ')
       disp('Example:')
-      A = [0 1; -2 -1]
+      A = [0, 1; -2, -1]
       disp("disturbance entry matrix G")
       G = eye(2)
       disp("Output measurement matrix C")
-      C = [0  1]
-      SigW = [1 0; 0 1]
+      C = [0, 1]
+      SigW = [1, 0; 0, 1]
       SigV = 1
       disp("SigW = input disturbance intensity matrix;")
       disp("SigV = measurement noise intensity matrix")
       prompt
       disp('Compute estimator feedback gain k, ARE solution P, and estimator')
       disp('poles via the command: ')
-      cmd = "[k p e] = lqe(A,G,C,SigW,SigV)";
+      cmd = "[k, p, e] = lqe(A,G,C,SigW,SigV)";
       run_cmd
       disp("A similar approach can be used for LTI discrete-time systems")
       disp("by using the dlqe command in place of lqe (see LQG example).")
@@ -91,11 +91,11 @@ function dgkfdemo ()
       prompt
       help lqg
       disp("Example system")
-      A = [0 1; .5 .5];
-      B = [0 ; 2];
+      A = [0, 1; .5, .5];
+      B = [0; 2];
       G = eye(2)
-      C = [1 1];
-      sys = ss2sys(A,[B G],C);
+      C = [1, 1];
+      sys = ss2sys(A, [B, G], C);
       sys = syssetsignals(sys,"in", ...
 		       ["control input"; "disturbance 1"; "disturbance 2"]);
       sysout(sys)
@@ -110,19 +110,19 @@ function dgkfdemo ()
       cmd = "[K,Q1,P1,Ee,Er] = lqg(sys,SigW,SigV,Q,R,1);";
       run_cmd
       disp("Check: closed loop system A-matrix is")
-      disp(" [A      B*Cc]")
-      disp(" [Bc*C   Ac  ]")
-      cmd = "[Ac,Bc,Cc] = sys2ss(K);";
+      disp(" [A,      B*Cc]")
+      disp(" [Bc*C,   Ac  ]")
+      cmd = "[Ac, Bc, Cc] = sys2ss(K);";
       run_cmd
-      cmd = "Acl = [A , B*Cc ; Bc*C  Ac]";
+      cmd = "Acl = [A, B*Cc; Bc*C, Ac]";
       run_cmd
       disp("Check: poles of Acl:")
       Acl_poles = sortcom(eig(Acl))
       disp("Predicted poles from design = union(Er,Ee)")
-      cmd = "pred_poles = sortcom([Er;Ee])";
+      cmd = "pred_poles = sortcom([Er; Ee])";
       run_cmd
       disp("Example 2: discrete-time example")
-      cmd1 = "Dsys = ss2sys(A,[G B],C,[0 0 0],1);";
+      cmd1 = "Dsys = ss2sys(A, [G, B], C, [0, 0, 0], 1);";
       cmd2 = "[K,Q1,P1,Ee,Er] = lqg(Dsys,SigW, SigV,Q,R);";
       disp("Run commands:")
       cmd = cmd1;
@@ -131,10 +131,10 @@ function dgkfdemo ()
       run_cmd
       prompt
       disp("Check: closed loop system A-matrix is")
-      disp(" [A      B*Cc]")
-      disp(" [Bc*C   Ac  ]")
+      disp(" [A,      B*Cc]")
+      disp(" [Bc*C,   Ac  ]")
       [Ac,Bc,Cc] = sys2ss(K);
-      Acl = [A , B*Cc ; Bc*C  Ac]
+      Acl = [A, B*Cc; Bc*C, Ac]
       prompt
       disp("Check: poles of Acl:")
       Acl_poles = sortcom(eig(Acl))
@@ -143,7 +143,7 @@ function dgkfdemo ()
     elseif (menuopt == 4)
       disp('H2 gain of a system: (Energy in impulse response)')
       disp('Example 1: Stable plant:')
-      cmd = "A = [0 1; -2 -1]; B = [0 ; 1]; C = [1 0]; sys_poles = eig(A)";
+      cmd = "A = [0, 1; -2, -1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Put into Packed system form:")
       cmd = "Asys = ss2sys(A,B,C);";
@@ -160,11 +160,11 @@ function dgkfdemo ()
       title("impulse response of example plant")
       prompt
       disp('Example 2: unstable plant')
-      cmd = "A = [0 1; 2 1]";
+      cmd = "A = [0, 1; 2, 1]";
       eval(cmd);
-      cmd = "B = [0 ; 1]";
+      cmd = "B = [0; 1]";
       eval(cmd);
-      cmd = "C = [1 0]";
+      cmd = "C = [1, 0]";
       eval(cmd);
       cmd = "sys_poles = eig(A)";
       run_cmd
@@ -195,22 +195,22 @@ function dgkfdemo ()
       disp("      w1(t)           w2(t)");
       disp(" ")
       disp("w enters the system through B1, u through B2")
-      disp("z = [y1 ; y2] is obtained through C1, y=y1 through C2");
+      disp("z = [y1; y2] is obtained through C1, y=y1 through C2");
       disp(" ")
-      cmd = "A = [0 1; 0 0];  B1 = [0 0;1 0]; B2 = [0;1];";
+      cmd = "A = [0, 1; 0, 0];  B1 = [0, 0; 1, 0]; B2 = [0; 1];";
       disp(cmd)
       eval(cmd);
-      cmd = "C1 = [1 0; 0 0]; C2 = [1 0];    D11 = zeros(2);";
+      cmd = "C1 = [1, 0; 0, 0]; C2 = [1, 0];    D11 = zeros(2);";
       disp(cmd)
       eval(cmd);
-      cmd = "D12 = [0;1];    D21 = [0 1];    D22 = 0; D = [D11 D12; D21 D22];";
+      cmd = "D12 = [0; 1];  D21 = [0, 1];  D22 = 0; D = [D11, D12; D21, D22];";
       disp(cmd)
       eval(cmd);
       disp("Design objective: compute U(s)=K(s)Y1(s) to minimize the closed")
       disp("loop impulse response from w(t) =[w1; w2] to z(t) = [y1; y2]");
       prompt
       disp("First: pack system:")
-      cmd="Asys = ss2sys(A,[B1 B2], [C1;C2] , D);";
+      cmd="Asys = ss2sys(A, [B1, B2], [C1; C2], D);";
       run_cmd
       disp("Open loop multivariable Bode plot: (will take a moment)")
       cmd="bode(Asys);";
@@ -245,7 +245,7 @@ function dgkfdemo ()
     elseif (menuopt == 6)
       disp('Hinfinity gain of a system: (max gain over all j-omega)')
       disp('Example 1: Stable plant:')
-      cmd = "A = [0 1; -2 -1]; B = [0 ; 1]; C = [1 0]; sys_poles = eig(A)";
+      cmd = "A = [0, 1; -2, -1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp('Pack into system format:')
       cmd = "Asys = ss2sys(A,B,C);";
@@ -269,7 +269,7 @@ function dgkfdemo ()
         num2str(gmax),"."])
       prompt
       disp('Example 2: unstable plant')
-      cmd = "A = [0 1; 2 1]; B = [0 ; 1]; C = [1 0]; sys_poles = eig(A)";
+      cmd = "A = [0, 1; 2, 1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Pack into system format:")
       cmd = "Bsys = ss2sys(A,B,C);";
@@ -287,19 +287,19 @@ function dgkfdemo ()
       prompt
       disp("Example system: double integrator with output noise and")
       disp("input disturbance:")
-      A = [0 1; 0 0]
-      B1 = [0 0;1 0]
-      B2 = [0;1]
-      C1 = [1 0; 0 0]
-      C2 = [1 0]
+      A = [0, 1; 0, 0]
+      B1 = [0, 0; 1, 0]
+      B2 = [0; 1]
+      C1 = [1, 0; 0, 0]
+      C2 = [1, 0]
       D11 = zeros(2);
-      D12 = [0;1];
-      D21 = [0 1];
+      D12 = [0; 1];
+      D21 = [0, 1];
       D22 = 0;
-      D = [D11 D12; D21 D22]
+      D = [D11, D12; D21, D22]
       prompt
       disp("First: pack system:")
-      cmd="Asys = ss2sys(A,[B1 B2], [C1;C2] , D);";
+      cmd="Asys = ss2sys(A, [B1, B2], [C1; C2], D);";
       run_cmd
       prompt
       disp("Open loop multivariable Bode plot: (will take a moment)")

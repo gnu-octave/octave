@@ -70,17 +70,7 @@ Array2<T>::index (idx_vector& idx_arg) const
     {
       Array<T> tmp = Array<T>::index (idx_arg);
 
-      int len = tmp.length ();
-
-      if (len == 0)
-	retval = Array2<T> (0, 0);
-      else
-	{
-	  if (liboctave_pcv_flag)
-	    retval = Array2<T> (tmp, len, 1);
-	  else
-	    retval = Array2<T> (tmp, 1, len);
-	}
+      retval = Array2<T> (tmp, idx_orig_rows, idx_orig_columns);
     }
   else if (nr == 1 || nc == 1)
     {

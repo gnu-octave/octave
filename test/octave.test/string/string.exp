@@ -171,7 +171,7 @@ set prog_output "usage:.*"
 do_test str2mat-2.m
 
 set test str2mat-3
-set prog_output "error:.*"
+set prog_output "ans = 1"
 do_test str2mat-3.m
 
 set test deblank-1

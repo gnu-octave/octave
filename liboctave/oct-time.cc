@@ -137,47 +137,50 @@ octave_base_tm::strftime (const std::string& fmt) const
 {
   std::string retval;
 
-  struct tm t;
-  
-  t.tm_sec = tm_sec;
-  t.tm_min = tm_min;
-  t.tm_hour = tm_hour;
-  t.tm_mday = tm_mday;
-  t.tm_mon = tm_mon;
-  t.tm_year = tm_year;
-  t.tm_wday = tm_wday;
-  t.tm_yday = tm_yday;
-  t.tm_isdst = tm_isdst;
-
-#if defined (HAVE_TM_ZONE)
-  char *ps = strsave (tm_zone.c_str ());
-  t.tm_zone = ps;
-#endif
-
-  const char *fmt_str = fmt.c_str ();
-
-  char *buf = 0;
-  size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
-  size_t chars_written = 0;
-
-  while (chars_written == 0)
+  if (! fmt.empty ())
     {
-      delete [] buf;
-      buf = new char[bufsize];
-      buf[0] = '\0';
-
-      chars_written = ::strftime (buf, bufsize, fmt_str, &t);
-
-      bufsize *= 2;
-    }
+      struct tm t;
+  
+      t.tm_sec = tm_sec;
+      t.tm_min = tm_min;
+      t.tm_hour = tm_hour;
+      t.tm_mday = tm_mday;
+      t.tm_mon = tm_mon;
+      t.tm_year = tm_year;
+      t.tm_wday = tm_wday;
+      t.tm_yday = tm_yday;
+      t.tm_isdst = tm_isdst;
 
 #if defined (HAVE_TM_ZONE)
-  delete [] ps;
+      char *ps = strsave (tm_zone.c_str ());
+      t.tm_zone = ps;
 #endif
 
-  retval = buf;
+      const char *fmt_str = fmt.c_str ();
 
-  delete [] buf;
+      char *buf = 0;
+      size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
+      size_t chars_written = 0;
+
+      while (chars_written == 0)
+	{
+	  delete [] buf;
+	  buf = new char[bufsize];
+	  buf[0] = '\0';
+
+	  chars_written = ::strftime (buf, bufsize, fmt_str, &t);
+
+	  bufsize *= 2;
+	}
+
+#if defined (HAVE_TM_ZONE)
+      delete [] ps;
+#endif
+
+      retval = buf;
+
+      delete [] buf;
+    }
 
   return retval;
 }

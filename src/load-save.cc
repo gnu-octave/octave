@@ -77,6 +77,11 @@ static bool Vcrash_dumps_octave_core;
 // "mat-binary", or "hdf5".
 static std::string Vdefault_save_format;
 
+// The format string for the comment line at the top of text-format
+// save files.  Passed to strftime.  Should begin with `#' and contain
+// no newline characters.
+static std::string Vsave_header_format_string;
+
 // The number of decimal digits to use when writing ascii data.
 static int Vsave_precision;
 
@@ -4717,38 +4722,22 @@ write_header (std::ostream& os, load_save_format format)
 #endif /* HAVE_HDF5 */
     case LS_ASCII:
       {
-	octave_gmtime now;
-	std::string time_string = now.asctime ();
-	time_string = time_string.substr (0, time_string.length () - 1);
-	std::ostream *s = &os;
-#ifdef HAVE_HDF5
-	// for HDF5, write data to a string instead of to os,
-	// and then save the string as the HDF5 file's "comment" field.
-	std::ostrstream ss;
-	if (format == LS_HDF5)
-	  s = &ss;
-#endif /* HAVE_HDF5 */
-	
-	*s << "# Created by Octave " OCTAVE_VERSION ", "
-	   << time_string
-	   << " <"
-	   << octave_env::get_user_name ()
-	   << "@"
-	   << octave_env::get_host_name ()
-	   << ">";
-	
-#ifdef HAVE_HDF5
-	if (format != LS_HDF5)  // don't append newline for HDF5
-#endif /* HAVE_HDF5 */
-	  *s << "\n";
+	octave_localtime now;
 
-#ifdef HAVE_HDF5
-	if (format == LS_HDF5)
+	std::string comment_string = now.strftime (Vsave_header_format_string);
+
+	if (! comment_string.empty ())
 	  {
-	    hdf5_ofstream& hs = (hdf5_ofstream&) os;
-	    H5Gset_comment (hs.file_id, "/", ss.str ());
-	  }
+#ifdef HAVE_HDF5
+	    if (format == LS_HDF5)
+	      {
+		hdf5_ofstream& hs = (hdf5_ofstream&) os;
+		H5Gset_comment (hs.file_id, "/", comment_string.c_str ());
+	      }
+	    else
 #endif /* HAVE_HDF5 */
+	      os << comment_string << "\n";
+	  }
       }
     break;
 
@@ -5174,6 +5163,35 @@ default_save_format (void)
   return status;
 }
 
+static string
+default_save_header_format (void)
+{
+  return
+    std::string ("# Created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
+    + octave_env::get_user_name ()
+    + std::string ("@")
+    + octave_env::get_host_name ()
+    + std::string (">");
+}
+
+static int
+save_header_format_string (void)
+{
+  int status = 0;
+
+  octave_value v = builtin_any_variable ("save_header_format_string");
+
+  if (v.is_string ())
+    Vsave_header_format_string = v.string_value ();
+  else
+    {
+      gripe_invalid_value_specified ("save_header_format_string");
+      status = -1;
+    }
+
+  return status;
+}
+
 static int
 save_precision (void)
 {
@@ -5210,6 +5228,24 @@ This variable specifies the default format for the @code{save} command.\n\
 It should have one of the following values: @code{\"ascii\"},\n\
 @code{\"binary\"}, @code{float-binary}, or @code{\"mat-binary\"}.  The\n\
 initial default save format is Octave's text format.\n\
+@end defvr");
+
+  DEFVAR (save_header_format_string, default_save_header_format (),
+	  save_header_format_string,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} save_header_format_string\n\
+This variable specifies the the format string for the comment line\n\
+that is written at the beginning of text-format data files saved by\n\
+Octave.  The format string is passed to @code{strftime} and should\n\
+begin with the character @samp{#} and contain no newline characters.\n\
+If the value of @code{save_header_format_string} is the empty string,\n\
+the header comment is omitted from text-format data files.  The\n\
+default value is\n\
+\n\
+@example\n\
+\"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
+@end example\n\
+@seealso{strftime}\n\
 @end defvr");
 
   DEFVAR (save_precision, 15.0, save_precision,

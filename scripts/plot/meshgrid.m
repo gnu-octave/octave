@@ -41,10 +41,10 @@ function [xx, yy] = meshgrid (x, y)
       xx = zeros (ylen, xlen);
       yy = zeros (ylen, xlen);
       if (columns (x) == 1)
-        x = x';
+        x = x.';
       endif
       if (rows (y) == 1)
-        y = y';
+        y = y.';
       endif
       for i = 1:ylen
         xx(i,:) = x;

@@ -1,3 +1,10 @@
+2000-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (Vsave_header_format_string): New variable.
+	(symbols_of_load_save): DEFVAR it.
+	(save_header_format, default_save_header_format): New functions.
+	(write_header): Use Vsave_header_format_string here.
+
 2000-07-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-pr-code.h (tree_print_code::curr_print_indent_level,

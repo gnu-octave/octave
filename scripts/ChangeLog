@@ -1,3 +1,8 @@
+2000-08-01  Rolf Fabian  <fabian@tu-cottbus.de>
+
+	* plot/meshgrid.m: Use transpose to reorient vectors, not complex
+	conjugate transpose.
+
 2000-07-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/str2mat.m: Apply setstr to each argument.

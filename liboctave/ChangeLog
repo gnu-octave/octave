@@ -1,3 +1,11 @@
+2000-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>::index (idx_vector&)): If a scalar is
+	indexed, always return an object the same size as the index arg.
+
+	* oct-time.cc (octave_base_tm::strftime): Return empty string for
+	empty format.
+
 2000-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-cutils.c (oct_strptime): New function.

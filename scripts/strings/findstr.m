@@ -16,17 +16,29 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-function v = findstr (s, t)
+function v = findstr (s, t, overlap)
 
-# usage: findstr (s, t)
+# usage: findstr (s, t [, overlap])
 #
 # Returns the vector of all positions in the longer of the two strings
 # S and T where an occurence of the shorter of the two starts.
-  
+#
+# If the optional argument OVERLAP is nonzero, the returned vector
+# can include overlapping positions (this is the default).
+#
+# For example, 
+#
+#   findstr ("abababa", "aba")     =>  [1, 3, 5]
+#   findstr ("abababa", "aba", 0)  =>  [1, 5]
+
 # Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
-  if (nargin != 2)
-    usage ("findstr (s, t)");
+  if (nargin < 2 || nargin > 3)
+    usage ("findstr (s, t [, overlap])");
+  endif
+
+  if (nargin == 2)
+    overlap = 1;
   endif
 
   if (isstr (s) && isstr (t))
@@ -42,16 +54,23 @@ function v = findstr (s, t)
     s = toascii (s);
     t = toascii (t);
 
-    ind = 1 : length (t);
-    limit = length (s) - length (t) + 1;
+    l_t = length (t);
+
+    ind = 1 : l_t;
+    limit = length (s) - l_t + 1;
     v  = zeros (1, limit);
     i = 0;
 
-    for k = 1 : limit
+    k = 1;
+    while (k <= limit)
       if (s (ind + k - 1) == t)
 	v (++i) = k;
+	if (! overlap)
+	  k = k + l_t - 1;
+	endif
       endif
-    endfor
+      k++;
+    endwhile
 
     if (i > 0)
       v = v (1:i);
@@ -60,7 +79,7 @@ function v = findstr (s, t)
     endif
 
   else
-    error ("findstr: both arguments must be strings");
+    error ("findstr: expecting first two arguments to be strings");
   endif
 
 endfunction

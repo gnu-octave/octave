@@ -67,7 +67,7 @@ extern int promptflag;
 // A line of input.
 extern string current_input_line;
 
-char *gnu_readline (const char *s);
+char *gnu_readline (const char *s, bool force_readline = false);
 
 extern string Vps4;
 

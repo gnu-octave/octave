@@ -2949,7 +2949,16 @@ OCT_VAL_REP::do_index (const octave_value_list& args)
 	      break;
 
 	    case char_matrix_constant_str:
-	      retval = octave_value (charMatrix (char_matrix->value ()), 1);
+	      {
+		// Kluge to prevent s([]) from turning into a string
+		// with no rows...
+		charMatrix tmp (char_matrix->value ());
+
+		if (tmp.rows () == 0 && tmp.columns () == 0)
+		  tmp.resize (1, 0);
+
+		retval = octave_value (tmp, 1);
+	      }
 	      break;
 
 	    default:

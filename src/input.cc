@@ -401,11 +401,11 @@ do_input_echo (const string& input_string)
 }
 
 char *
-gnu_readline (const char *s)
+gnu_readline (const char *s, bool force_readline)
 {
   char *retval = 0;
 
-  if (using_readline)
+  if (using_readline || force_readline)
     {
       char *tmp = retval = ::readline (s);
 
@@ -1010,7 +1010,7 @@ get_user_input (const octave_value_list& args, int debug = 0)
 
   flush_octave_stdout ();
 
-  char *input_buf = gnu_readline (prompt.c_str ());
+  char *input_buf = gnu_readline (prompt.c_str (), true);
 
   if (input_buf)
     {

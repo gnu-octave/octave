@@ -2,6 +2,8 @@ Mon Mar 31 00:37:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* symtab.h, symtab.cc: Use bool instead of int in more places.
 	* variables.h, variables.cc: Likewise.
+	* lex.h, lex.l: Likewise.
+	* parse.y: Likewise.
 	* help.cc, input.cc, lex.l, load-save.cc, parse.y, pt-fcn.cc:
 	Change callers of symbol_table::lookup to use bool instead of int,
 	and to make use of default arguments.

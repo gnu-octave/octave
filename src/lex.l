@@ -174,16 +174,16 @@ static int is_keyword (const string& s);
 static string plot_style_token (const string& s);
 static symbol_record *lookup_identifier (const string& s);
 static void grab_help_text (void);
-static int match_any (char c, const char *s);
-static int next_token_is_bin_op (int spc_prev, char *yytext);
-static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
+static bool match_any (char c, const char *s);
+static bool next_token_is_bin_op (int spc_prev, char *yytext);
+static bool next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static string strip_trailing_whitespace (char *s);
 static void handle_number (char *yytext);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_brace (int spc_gobbled);
 static int handle_identifier (const string& tok, int spc_gobbled);
-static int have_continuation (int trailing_comments_ok = 1);
-static int have_ellipsis_continuation (int trailing_comments_ok = 1);
+static bool have_continuation (int trailing_comments_ok = 1);
+static bool have_ellipsis_continuation (int trailing_comments_ok = 1);
 static yum_yum eat_whitespace (void);
 static yum_yum eat_continuation (void);
 
@@ -218,9 +218,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <TEXT_FCN>{NL} {
     BEGIN 0;
     current_input_column = 1;
-    lexer_flags.quote_is_transpose = 0;
-    lexer_flags.cant_be_identifier = 0;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
     return '\n';
   }
 
@@ -278,9 +278,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <MATRIX>{S}*\,{S}* {
     current_input_column += yyleng;
     int tmp = eat_continuation ();
-    lexer_flags.quote_is_transpose = 0;
-    lexer_flags.cant_be_identifier = 0;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
     if (Vwhitespace_in_literal_matrix != 2
 	&& (tmp & ATE_NEWLINE) == ATE_NEWLINE)
       unput (';');
@@ -306,9 +306,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	    && nesting_level.is_brace ()
 	    && lexer_flags.convert_spaces_to_comma)
 	  {
-	    lexer_flags.quote_is_transpose = 0;
-	    lexer_flags.cant_be_identifier = 0;
-	    lexer_flags.convert_spaces_to_comma = 1;
+	    lexer_flags.quote_is_transpose = false;
+	    lexer_flags.cant_be_identifier = false;
+	    lexer_flags.convert_spaces_to_comma = true;
 	    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
 	      unput (';');
 	    return (',');
@@ -325,9 +325,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <MATRIX>{SNLCMT}*;{SNLCMT}* {
     fixup_column_count (yytext);
     eat_whitespace ();
-    lexer_flags.quote_is_transpose = 0;
-    lexer_flags.cant_be_identifier = 0;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
     return ';';
   }
 
@@ -342,9 +342,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     eat_whitespace ();
     if (Vwhitespace_in_literal_matrix != 2)
       {
-	lexer_flags.quote_is_transpose = 0;
-	lexer_flags.cant_be_identifier = 0;
-	lexer_flags.convert_spaces_to_comma = 1;
+	lexer_flags.quote_is_transpose = false;
+	lexer_flags.cant_be_identifier = false;
+	lexer_flags.convert_spaces_to_comma = true;
 
 	if (nesting_level.none ())
 	  return LEXICAL_ERROR;
@@ -364,16 +364,16 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     nesting_level.brace ();
 
     current_input_column += yyleng;
-    lexer_flags.quote_is_transpose = 0;
-    lexer_flags.cant_be_identifier = 0;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
 
     promptflag--;
     eat_whitespace ();
 
     if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
       {
-	lexer_flags.in_plot_range = 1;
+	lexer_flags.in_plot_range = true;
 	return OPEN_BRACE;
       }
     else
@@ -389,7 +389,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
     if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
       {
-	lexer_flags.in_plot_range = 0;
+	lexer_flags.in_plot_range = false;
 	TOK_RETURN (CLOSE_BRACE);
       }
     else
@@ -473,9 +473,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 {NL} {
     current_input_column = 1;
-    lexer_flags.quote_is_transpose = 0;
-    lexer_flags.cant_be_identifier = 0;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
 
     if (nesting_level.none ())
       return '\n';
@@ -491,7 +491,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 "'" {
     current_input_column++;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.convert_spaces_to_comma = true;
 
     if (lexer_flags.quote_is_transpose)
       {
@@ -519,9 +519,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 ":" {
     if (lexer_flags.plotting
 	&& (lexer_flags.in_plot_range || lexer_flags.in_plot_using))
-      BIN_OP_RETURN (COLON, 1);
+      BIN_OP_RETURN (COLON, true);
     else
-      BIN_OP_RETURN (':', 0);
+      BIN_OP_RETURN (':', false);
   }
 
 %{
@@ -535,7 +535,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	&& nesting_level.none ())
       {
 	grab_help_text ();
-	lexer_flags.beginning_of_function = 0;
+	lexer_flags.beginning_of_function = false;
       }
     else
       {
@@ -545,9 +545,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
       }
 
     current_input_column = 1;
-    lexer_flags.quote_is_transpose = 0;
-    lexer_flags.cant_be_identifier = 0;
-    lexer_flags.convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = true;
 
     if (nesting_level.none ())
       return '\n';
@@ -559,54 +559,54 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // Other operators.
 %}
 
-".+"		{ BIN_OP_RETURN (EPLUS, 0); }
-".-"		{ BIN_OP_RETURN (EMINUS, 0); }
-".*"		{ BIN_OP_RETURN (EMUL, 0); }
-"./"		{ BIN_OP_RETURN (EDIV, 0); }
-".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
-{EPOW}		{ BIN_OP_RETURN (EPOW, 0); }
-".'"		{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, 1); }
-"++"		{ do_comma_insert_check (); BIN_OP_RETURN (PLUS_PLUS, 1); }
-"--"		{ do_comma_insert_check (); BIN_OP_RETURN (MINUS_MINUS, 1); }
-"<="		{ BIN_OP_RETURN (EXPR_LE, 0); }
-"=="		{ BIN_OP_RETURN (EXPR_EQ, 0); }
-{NOTEQ}		{ BIN_OP_RETURN (EXPR_NE, 0); }
-">="		{ BIN_OP_RETURN (EXPR_GE, 0); }
-"|"		{ BIN_OP_RETURN (EXPR_OR, 0); }
-"&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
-"<"		{ BIN_OP_RETURN (EXPR_LT, 0); }
-">"		{ BIN_OP_RETURN (EXPR_GT, 0); }
-"*"		{ BIN_OP_RETURN ('*', 0); }
-"/"		{ BIN_OP_RETURN ('/', 0); }
-"\\"		{ BIN_OP_RETURN (LEFTDIV, 0); }
-";"		{ BIN_OP_RETURN (';', 1); }
-","		{ BIN_OP_RETURN (',', 1); }
-{POW}		{ BIN_OP_RETURN (POW, 0); }
-"="		{ BIN_OP_RETURN ('=', 1); }
-"||"		{ BIN_OP_RETURN (EXPR_OR_OR, 0); }
-"&&"		{ BIN_OP_RETURN (EXPR_AND_AND, 0); }
+".+"	{ BIN_OP_RETURN (EPLUS, false); }
+".-"	{ BIN_OP_RETURN (EMINUS, false); }
+".*"	{ BIN_OP_RETURN (EMUL, false); }
+"./"	{ BIN_OP_RETURN (EDIV, false); }
+".\\"	{ BIN_OP_RETURN (ELEFTDIV, false); }
+{EPOW}	{ BIN_OP_RETURN (EPOW, false); }
+".'"	{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true); }
+"++"	{ do_comma_insert_check (); BIN_OP_RETURN (PLUS_PLUS, true); }
+"--"	{ do_comma_insert_check (); BIN_OP_RETURN (MINUS_MINUS, true); }
+"<="	{ BIN_OP_RETURN (EXPR_LE, false); }
+"=="	{ BIN_OP_RETURN (EXPR_EQ, false); }
+{NOTEQ}	{ BIN_OP_RETURN (EXPR_NE, false); }
+">="	{ BIN_OP_RETURN (EXPR_GE, false); }
+"|"	{ BIN_OP_RETURN (EXPR_OR, false); }
+"&"	{ BIN_OP_RETURN (EXPR_AND, false); }
+"<"	{ BIN_OP_RETURN (EXPR_LT, false); }
+">"	{ BIN_OP_RETURN (EXPR_GT, false); }
+"*"	{ BIN_OP_RETURN ('*', false); }
+"/"	{ BIN_OP_RETURN ('/', false); }
+"\\"	{ BIN_OP_RETURN (LEFTDIV, false); }
+";"	{ BIN_OP_RETURN (';', true); }
+","	{ BIN_OP_RETURN (',', true); }
+{POW}	{ BIN_OP_RETURN (POW, false); }
+"="	{ BIN_OP_RETURN ('=', true); }
+"||"	{ BIN_OP_RETURN (EXPR_OR_OR, false); }
+"&&"	{ BIN_OP_RETURN (EXPR_AND_AND, false); }
 
 {NOT} {
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = 1;
-    BIN_OP_RETURN (EXPR_NOT, 0);
+      lexer_flags.past_plot_range = true;
+    BIN_OP_RETURN (EXPR_NOT, false);
   }
 
 "+" { 
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = 1;
-    BIN_OP_RETURN ('+', 0);
+      lexer_flags.past_plot_range = true;
+    BIN_OP_RETURN ('+', false);
   }
 
 "-" { 
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = 1;
-    BIN_OP_RETURN ('-', 0);
+      lexer_flags.past_plot_range = true;
+    BIN_OP_RETURN ('-', false);
   }
 
 "(" {
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = 1;
+      lexer_flags.past_plot_range = true;
     nesting_level.paren ();
     promptflag--;
     TOK_RETURN ('(');
@@ -616,8 +616,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     nesting_level.remove ();
 
     current_input_column++;
-    lexer_flags.cant_be_identifier = 1;
-    lexer_flags.quote_is_transpose = 1;
+    lexer_flags.cant_be_identifier = true;
+    lexer_flags.quote_is_transpose = true;
     lexer_flags.convert_spaces_to_comma = nesting_level.is_brace ();
     do_comma_insert_check ();
     return ')';
@@ -908,12 +908,12 @@ is_plot_keyword (const string& s)
     }
   else if (almost_match ("using", t))
     {
-      lexer_flags.in_plot_using = 1;
+      lexer_flags.in_plot_using = true;
       return USING;
     }
   else if (almost_match ("with", t))
     {
-      lexer_flags.in_plot_style = 1;
+      lexer_flags.in_plot_style = true;
       return WITH;
     }
   else if (strcmp ("clear", t) == 0)
@@ -937,7 +937,7 @@ is_keyword (const string& s)
 
       if (! sty.empty ())
 	{
-	  lexer_flags.in_plot_style = 0;
+	  lexer_flags.in_plot_style = false;
 	  yylval.tok_val = new token (sty);
 	  token_stack.push (yylval.tok_val);
 	  return STYLE;
@@ -1017,17 +1017,17 @@ is_keyword (const string& s)
 	  break;
 
 	case gplot_kw:
-	  lexer_flags.plotting = 1;
+	  lexer_flags.plotting = true;
 	  yylval.tok_val = new token (token::two_dee, l, c);
 	  break;
 
 	case gsplot_kw:
-	  lexer_flags.plotting = 1;
+	  lexer_flags.plotting = true;
 	  yylval.tok_val = new token (token::three_dee, l, c);
 	  break;
 
 	case replot_kw:
-	  lexer_flags.plotting = 1;
+	  lexer_flags.plotting = true;
 	  yylval.tok_val = new token (token::replot, l, c);
 	  break;
 
@@ -1050,9 +1050,9 @@ is_keyword (const string& s)
 	    {
 	      tmp_local_sym_tab = new symbol_table ();
 	      curr_sym_tab = tmp_local_sym_tab;
-	      lexer_flags.defining_func = 1;
+	      lexer_flags.defining_func = true;
 	      promptflag--;
-	      lexer_flags.beginning_of_function = 1;
+	      lexer_flags.beginning_of_function = true;
 	      if (! (reading_fcn_file || reading_script_file))
 		input_line_number = 1;
 	    }
@@ -1160,16 +1160,16 @@ grab_help_text (void)
 // Return 1 if the given character matches any character in the given
 // string.
 
-static int
+static bool
 match_any (char c, const char *s)
 {
   char tmp;
   while ((tmp = *s++) != '\0')
     {
       if (c == tmp)
-	return 1;
+	return true;
     }
-  return 0;
+  return false;
 }
 
 // Given information about the spacing surrounding an operator,
@@ -1178,7 +1178,7 @@ match_any (char c, const char *s)
 //
 //   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==> binary
 
-static int
+static bool
 looks_like_bin_op (int spc_prev, int spc_next)
 {
   return ((spc_prev && spc_next) || ! spc_prev);
@@ -1187,10 +1187,10 @@ looks_like_bin_op (int spc_prev, int spc_next)
 // Try to determine if the next token should be treated as a postfix
 // unary operator.  This is ugly, but it seems to do the right thing.
 
-static int
+static bool
 next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 {
-  int un_op = 0;
+  bool un_op = false;
 
   int c0 = yyinput ();
   int c1 = yyinput ();
@@ -1227,10 +1227,10 @@ next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 //
 // However, we still do check for `.+', `.*', etc.
 
-static int
+static bool
 next_token_is_bin_op (int spc_prev, char *yytext)
 {
-  int bin_op = 0;
+  bool bin_op = false;
 
   int c0 = yyinput ();
 
@@ -1266,7 +1266,7 @@ next_token_is_bin_op (int spc_prev, char *yytext)
     case '~':
     case '!':
     case '=':
-      bin_op = 1;
+      bin_op = true;
       break;
 
     default:
@@ -1305,7 +1305,7 @@ static yum_yum
 eat_whitespace (void)
 {
   yum_yum retval = ATE_NOTHING;
-  int in_comment = 0;
+  bool in_comment = false;
   int c;
   while ((c = yyinput ()) != EOF)
     {
@@ -1320,13 +1320,13 @@ eat_whitespace (void)
 
 	case '\n':
 	  retval |= ATE_NEWLINE;
-	  in_comment = 0;
+	  in_comment = false;
 	  current_input_column = 0;
 	  break;
 
 	case '#':
 	case '%':
-	  in_comment = 1;
+	  in_comment = true;
 	  break;
 
 	case '.':
@@ -1410,12 +1410,12 @@ handle_number (char *yytext)
 // If non-whitespace characters are found before comment
 // characters, return 0.  Otherwise, return 1.
 
-static int
+static bool
 have_continuation (int trailing_comments_ok)
 {
   ostrstream buf;
 
-  int in_comment = 0;
+  bool in_comment = false;
   char c;
   while ((c = yyinput ()) != EOF)
     {
@@ -1430,7 +1430,7 @@ have_continuation (int trailing_comments_ok)
 	case '%':
 	case '#':
 	  if (trailing_comments_ok)
-	    in_comment = 1;
+	    in_comment = true;
 	  else
 	    goto cleanup;
 	  break;
@@ -1438,7 +1438,7 @@ have_continuation (int trailing_comments_ok)
 	case '\n':
 	  current_input_column = 0;
 	  promptflag--;
-	  return 1;
+	  return true;
 
 	default:
 	  if (! in_comment)
@@ -1448,7 +1448,7 @@ have_continuation (int trailing_comments_ok)
     }
 
   yyunput (c, yytext);
-  return 0;
+  return false;
 
  cleanup:
   buf << ends;
@@ -1460,14 +1460,14 @@ have_continuation (int trailing_comments_ok)
 	yyunput (s[len], yytext);
     }
   delete [] s;
-  return 0;
+  return false;
 }
 
 // We have seen a `.' and need to see if it is the start of a
 // continuation.  If so, this eats it, up to and including the new
 // line character.
 
-static int
+static bool
 have_ellipsis_continuation (int trailing_comments_ok)
 {
   char c1 = yyinput ();
@@ -1475,7 +1475,7 @@ have_ellipsis_continuation (int trailing_comments_ok)
     {
       char c2 = yyinput ();
       if (c2 == '.' && have_continuation (trailing_comments_ok))
-	return 1;
+	return true;
       else
 	{
 	  yyunput (c2, yytext);
@@ -1485,7 +1485,7 @@ have_ellipsis_continuation (int trailing_comments_ok)
   else
     yyunput (c1, yytext);
 
-  return 0;
+  return false;
 }
 
 // See if we have a continuation line.  If so, eat it and the leading
@@ -1580,9 +1580,9 @@ handle_string (char delim, int text_style)
 		    }
 		  else
 		    {
-		      lexer_flags.quote_is_transpose = 1;
-		      lexer_flags.cant_be_identifier = 1;
-		      lexer_flags.convert_spaces_to_comma = 1;
+		      lexer_flags.quote_is_transpose = true;
+		      lexer_flags.cant_be_identifier = true;
+		      lexer_flags.convert_spaces_to_comma = true;
 		    }
 
 		  yylval.tok_val = new token (tok);
@@ -1618,9 +1618,9 @@ handle_close_brace (int spc_gobbled)
   int c1 = yyinput ();
   if (c1 == '=')
     {
-      lexer_flags.quote_is_transpose = 0;
-      lexer_flags.cant_be_identifier = 0;
-      lexer_flags.convert_spaces_to_comma = 1;
+      lexer_flags.quote_is_transpose = false;
+      lexer_flags.cant_be_identifier = false;
+      lexer_flags.convert_spaces_to_comma = true;
 
       int c2 = yyinput ();
       unput (c2);
@@ -1653,9 +1653,9 @@ handle_close_brace (int spc_gobbled)
 	}
     }
 
-  lexer_flags.quote_is_transpose = 1;
-  lexer_flags.cant_be_identifier = 0;
-  lexer_flags.convert_spaces_to_comma = 1;
+  lexer_flags.quote_is_transpose = true;
+  lexer_flags.cant_be_identifier = false;
+  lexer_flags.convert_spaces_to_comma = true;
   return ']';
 }
 
@@ -1696,7 +1696,7 @@ handle_identifier (const string& tok, int spc_gobbled)
   // directly by another identifier.  Special cases are handled
   // below.
 
-  lexer_flags.cant_be_identifier = 1;
+  lexer_flags.cant_be_identifier = true;
 
   // If we are expecting a structure element, we just want to return
   // TEXT_ID, which is a string that is also a valid identifier.  But
@@ -1711,9 +1711,9 @@ handle_identifier (const string& tok, int spc_gobbled)
 
       token_stack.push (yylval.tok_val);
 
-      lexer_flags.cant_be_identifier = 0;
-      lexer_flags.quote_is_transpose = 1;
-      lexer_flags.convert_spaces_to_comma = 1;
+      lexer_flags.cant_be_identifier = false;
+      lexer_flags.quote_is_transpose = true;
+      lexer_flags.convert_spaces_to_comma = true;
 
       current_input_column += yyleng;
 
@@ -1730,8 +1730,8 @@ handle_identifier (const string& tok, int spc_gobbled)
       if (kw_token == STYLE)
 	{
 	  current_input_column += yyleng;
-	  lexer_flags.quote_is_transpose = 0;
-	  lexer_flags.convert_spaces_to_comma = 1;
+	  lexer_flags.quote_is_transpose = false;
+	  lexer_flags.convert_spaces_to_comma = true;
 	  return kw_token;
 	}
       else
@@ -1748,7 +1748,7 @@ handle_identifier (const string& tok, int spc_gobbled)
       // the square brackets that surround the range.
 
       if (! lexer_flags.in_plot_range)
-	lexer_flags.past_plot_range = 1;
+	lexer_flags.past_plot_range = true;
 
       // Option keywords can't appear in parentheses or braces.
 
@@ -1792,7 +1792,7 @@ handle_identifier (const string& tok, int spc_gobbled)
       else if (! next_tok_is_paren)
 	{
 	  if (tok == "gset")
-	    lexer_flags.doing_set = 1;
+	    lexer_flags.doing_set = true;
 
 	  BEGIN TEXT_FCN;
 	}
@@ -1809,7 +1809,7 @@ handle_identifier (const string& tok, int spc_gobbled)
   // After seeing an identifer, it is ok to convert spaces to a comma
   // (if needed).
 
-  lexer_flags.convert_spaces_to_comma = 1;
+  lexer_flags.convert_spaces_to_comma = true;
 
   // If we are defining a function and we have not seen the parameter
   // list yet and the next token is `=', return a token that
@@ -1834,7 +1834,7 @@ handle_identifier (const string& tok, int spc_gobbled)
   // allow a following `'' to be treated as a transpose (the next
   // token is `=', so it can't be `''.
 
-  lexer_flags.quote_is_transpose = 1;
+  lexer_flags.quote_is_transpose = true;
   do_comma_insert_check ();
 
   maybe_unput_comma (spc_gobbled);
@@ -1854,7 +1854,7 @@ check_for_garbage_after_fcn_def (void)
   // force the parser to return after reading the function.  Calling
   // yyunput with EOF seems not to work...
 
-  int in_comment = 0;
+  bool in_comment = false;
   int lineno = input_line_number;
   int c;
   while ((c = yyinput ()) != EOF)
@@ -1869,12 +1869,12 @@ check_for_garbage_after_fcn_def (void)
 
 	case '\n':
 	  if (in_comment)
-	    in_comment = 0;
+	    in_comment = false;
 	  break;
 
 	case '%':
 	case '#':
-	  in_comment = 1;
+	  in_comment = true;
 	  break;
 
 	default:
@@ -1896,45 +1896,45 @@ check_for_garbage_after_fcn_def (void)
 void
 lexical_feedback::init (void)
 {
-  // Not initially defining a function.
-  beginning_of_function = 0;
-  defining_func = 0;
-
-  // Not parsing a function return or parameter list.
-  looking_at_return_list = 0;
-  looking_at_parameter_list = 0;
-
   // Not initially defining a matrix list.
   braceflag = 0;
-
-  // Next token can be identifier.
-  cant_be_identifier = 0;
-
-  // No need to do comma insert or convert spaces to comma at
-  // beginning of input. 
-  convert_spaces_to_comma = 1;
-  do_comma_insert = 0;
-
-  // Not initially doing any plotting or setting of plot attributes.
-  doing_set = 0;
-  in_plot_range = 0;
-  in_plot_style = 0;
-  in_plot_using = 0;
-  past_plot_range = 0;
-  plotting = 0;
 
   // Not initially inside a loop or if statement.
   looping = 0;
 
+  // Not initially defining a function.
+  beginning_of_function = false;
+  defining_func = false;
+
+  // Not parsing a function return or parameter list.
+  looking_at_return_list = false;
+  looking_at_parameter_list = false;
+
+  // Next token can be identifier.
+  cant_be_identifier = false;
+
+  // No need to do comma insert or convert spaces to comma at
+  // beginning of input. 
+  convert_spaces_to_comma = true;
+  do_comma_insert = false;
+
+  // Not initially doing any plotting or setting of plot attributes.
+  doing_set = false;
+  in_plot_range = false;
+  in_plot_style = false;
+  in_plot_using = false;
+  past_plot_range = false;
+  plotting = false;
+
   // Not initially looking at indirect references.
-  looking_at_indirect_ref = 0;
+  looking_at_indirect_ref = false;
 
   // Not initially screwed by `function [...] = f (...)' syntax.
-  maybe_screwed = 0;
+  maybe_screwed = false;
   maybe_screwed_again = 0;
 
   // Quote marks strings intially.
-  quote_is_transpose = 0;
+  quote_is_transpose = false;
 }
 
 int

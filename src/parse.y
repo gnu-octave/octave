@@ -107,7 +107,7 @@ static void end_error
 	(const char *type, token::end_tok_type ettype, int l, int c);
 
 // Check to see that end tokens are properly matched.
-static int check_end (token *tok, token::end_tok_type expected);
+static bool end_token_ok (token *tok, token::end_tok_type expected);
 
 // Try to figure out early if an expression should become an
 // assignment to the built-in variable ans.
@@ -457,7 +457,7 @@ list		: list1 opt_sep
 
 list1		: statement
 		  {
-		    lexer_flags.beginning_of_function = 0;
+		    lexer_flags.beginning_of_function = false;
 		    $$ = new tree_statement_list ($1);
 		  }
 		| list1 sep statement
@@ -563,12 +563,12 @@ plot_options	: using
 
 using		: using1
 		  {
-		    lexer_flags.in_plot_using = 0;
+		    lexer_flags.in_plot_using = false;
 		    $$ = $1;
 		  }
 		| using1 expression
 		  {
-		    lexer_flags.in_plot_using = 0;
+		    lexer_flags.in_plot_using = false;
 		    $$ = $1->set_format ($2);
 		  }
 		;
@@ -900,7 +900,7 @@ g_symtab	: // empty
 		;
 
 in_return_list	: // empty
-		  { lexer_flags.looking_at_return_list = 1; }
+		  { lexer_flags.looking_at_return_list = true; }
 		;
 
 local_symtab	: // empty
@@ -908,23 +908,23 @@ local_symtab	: // empty
 		;
 
 safe		: // empty
-		  { lexer_flags.maybe_screwed = 0; }
+		  { lexer_flags.maybe_screwed = false; }
 		;
 
 are_we_screwed	: // empty
-		  { lexer_flags.maybe_screwed = 1; }
+		  { lexer_flags.maybe_screwed = true; }
 		;
 
 func_def	: FCN g_symtab are_we_screwed func_def1
 		  {
 		    curr_sym_tab = top_level_sym_tab;
-		    lexer_flags.defining_func = 0;
+		    lexer_flags.defining_func = false;
 		    $$ = 0;
 		  }
 		| FCN g_symtab are_we_screwed func_def2
 		  {
 		    curr_sym_tab = top_level_sym_tab;
-		    lexer_flags.defining_func = 0;
+		    lexer_flags.defining_func = false;
 		    $$ = 0;
 		  }
 		;
@@ -940,24 +940,24 @@ return_list_x	: '[' safe local_symtab in_return_list
 
 return_list	: return_list_x ']'
 		  {
-		    lexer_flags.looking_at_return_list = 0;
+		    lexer_flags.looking_at_return_list = false;
 		    $$ = new tree_parameter_list ();
 		  }
 		| return_list_x ELLIPSIS ']'
 		  {
-		    lexer_flags.looking_at_return_list = 0;
+		    lexer_flags.looking_at_return_list = false;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
 		| return_list1 ']'
 		  {
-		    lexer_flags.looking_at_return_list = 0;
+		    lexer_flags.looking_at_return_list = false;
 		    $$ = $1;
 		  }
 		| return_list1 ',' ELLIPSIS ']'
 		  {
-		    lexer_flags.looking_at_return_list = 0;
+		    lexer_flags.looking_at_return_list = false;
 		    $1->mark_varargs ();
 		    $$ = $1;
 		  }
@@ -993,11 +993,13 @@ func_def3	: param_list opt_sep opt_list fcn_end_or_eof
 
 fcn_end_or_eof	: END
 		  {
-		    if (check_end ($1, token::function_end))
+		    if (end_token_ok ($1, token::function_end))
+		      {
+			if (reading_fcn_file)
+			  check_for_garbage_after_fcn_def ();
+		      }
+		    else
 		      ABORT_PARSE;
-
-		    if (reading_fcn_file)
-		      check_for_garbage_after_fcn_def ();
 		  }
 		| END_OF_INPUT
 		  {
@@ -1008,7 +1010,7 @@ fcn_end_or_eof	: END
 
 indirect_ref	: indirect_ref1
 		  {
-		    lexer_flags.looking_at_indirect_ref = 0;
+		    lexer_flags.looking_at_indirect_ref = false;
 		    $$ = $1;
 		  }
 
@@ -1018,7 +1020,7 @@ indirect_ref1	: identifier
 						$1->column ());
 		  }
 		| indirect_ref1 '.'
-		    { lexer_flags.looking_at_indirect_ref = 1; } TEXT_ID
+		    { lexer_flags.looking_at_indirect_ref = true; } TEXT_ID
 		  { $$ = new tree_indirect_ref ($1, $4->text ()); }
 		;
 
@@ -1038,34 +1040,34 @@ variable	: indirect_ref
 		;
 
 param_list_beg	: '('
-		  { lexer_flags.looking_at_parameter_list = 1; }
+		  { lexer_flags.looking_at_parameter_list = true; }
 		;
 
 param_list_end	: ')'
-		  { lexer_flags.looking_at_parameter_list = 0; }
+		  { lexer_flags.looking_at_parameter_list = false; }
 		;
 
 param_list	: param_list_beg param_list_end
 		  {
-		    lexer_flags.quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = false;
 		    $$ = 0;
 		  }
 		| param_list_beg ELLIPSIS param_list_end
 		  {
-		    lexer_flags.quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = false;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
 		| param_list1 param_list_end
 		  {
-		    lexer_flags.quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = false;
 		    $1->mark_as_formal_parameters ();
 		    $$ = $1;
 		  }
 		| param_list1 ',' ELLIPSIS param_list_end
 		  {
-		    lexer_flags.quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = false;
 		    $1->mark_as_formal_parameters ();
 		    $1->mark_varargs ();
 		    $$ = $1;
@@ -1298,12 +1300,17 @@ end_error (const char *type, token::end_tok_type ettype, int l, int c)
 
 // Check to see that end tokens are properly matched.
 
-static int
-check_end (token *tok, token::end_tok_type expected)
+static bool
+end_token_ok (token *tok, token::end_tok_type expected)
 {
+  bool retval = true;
+
   token::end_tok_type ettype = tok->ettype ();
+
   if (ettype != expected && ettype != token::simple_end)
     {
+      retval = false;
+
       yyerror ("parse error");
 
       int l = tok->line ();
@@ -1343,10 +1350,9 @@ check_end (token *tok, token::end_tok_type expected)
 	  panic_impossible ();
 	  break;
 	}
-      return 1;
     }
-  else
-    return 0;
+
+  return retval;
 }
 
 // Try to figure out early if an expression should become an
@@ -1432,11 +1438,11 @@ make_plot_command (token *tok, plot_limits *range, subplot_list *list)
       return 0;
     }
 
-  lexer_flags.plotting = 0;
-  lexer_flags.past_plot_range = 0;
-  lexer_flags.in_plot_range = 0;
-  lexer_flags.in_plot_using = 0;
-  lexer_flags.in_plot_style = 0;
+  lexer_flags.plotting = false;
+  lexer_flags.past_plot_range = false;
+  lexer_flags.in_plot_range = false;
+  lexer_flags.in_plot_using = false;
+  lexer_flags.in_plot_style = false;
   
   return new tree_plot_command (list, range, tok->pttype ());
 }
@@ -1843,7 +1849,7 @@ make_unwind_command (token *unwind_tok, tree_statement_list *body,
 {
   tree_command *retval = 0;
 
-  if (! check_end (end_tok, token::unwind_protect_end))
+  if (end_token_ok (end_tok, token::unwind_protect_end))
     {
       int l = unwind_tok->line ();
       int c = unwind_tok->column ();
@@ -1862,7 +1868,7 @@ make_try_command (token *try_tok, tree_statement_list *body,
 {
   tree_command *retval = 0;
 
-  if (! check_end (end_tok, token::try_catch_end))
+  if (end_token_ok (end_tok, token::try_catch_end))
     {
       int l = try_tok->line ();
       int c = try_tok->column ();
@@ -1883,7 +1889,7 @@ make_while_command (token *while_tok, tree_expression *expr,
 
   maybe_warn_assign_as_truth_value (expr);
 
-  if (! check_end (end_tok, token::while_end))
+  if (end_token_ok (end_tok, token::while_end))
     {
       lexer_flags.looping--;
 
@@ -1905,7 +1911,7 @@ make_for_command (token *for_tok, tree_index_expression *var,
 {
   tree_command *retval = 0;
 
-  if (! check_end (end_tok, token::for_end))
+  if (end_token_ok (end_tok, token::for_end))
     {
       lexer_flags.looping--;
 
@@ -1927,7 +1933,7 @@ make_for_command (token *for_tok, tree_matrix_row *mr,
 {
   tree_command *retval = 0;
 
-  if (! check_end (end_tok, token::for_end))
+  if (end_token_ok (end_tok, token::for_end))
     {
       lexer_flags.looping--;
 
@@ -2016,7 +2022,7 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
 {
   tree_if_command *retval = 0;
 
-  if (! check_end (end_tok, token::if_end))
+  if (end_token_ok (end_tok, token::if_end))
     {
       int l = if_tok->line ();
       int c = if_tok->column ();
@@ -2045,7 +2051,7 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 {
   tree_switch_command *retval = 0;
 
-  if (! check_end (end_tok, token::switch_end))
+  if (end_token_ok (end_tok, token::switch_end))
     {
       int l = switch_tok->line ();
       int c = switch_tok->column ();

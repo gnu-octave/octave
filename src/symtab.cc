@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cctype>
+
 #include "oct-glob.h"
 #include "str-vec.h"
 
@@ -1154,6 +1156,21 @@ symbol_table::hash (const string& str)
   for (unsigned i = 0; i < str.length (); i++)
     h = h * 33 + str[i];
   return h;
+}
+
+// Return nonzero if S is a valid identifier.
+
+int
+valid_identifier (const char *s)
+{
+  if (! s || ! (isalnum (*s) || *s == '_'))
+     return 0;
+
+  while (*++s != '\0')
+    if (! (isalnum (*s) || *s == '_'))
+      return 0;
+
+  return 1;
 }
 
 /*

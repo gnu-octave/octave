@@ -328,6 +328,8 @@ private:
   symbol_record table[HASH_TABLE_SIZE];
 };
 
+extern int valid_identifier (const char *s);
+
 #endif
 
 /*

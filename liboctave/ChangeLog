@@ -1,3 +1,7 @@
+2002-10-17  Paul Kienzle <pkienzle@users.sf.net>
+
+	* oct-shlib.cc (octave_w32_shlib): New class to support Windows.
+
 2002-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-lib): Don't bother with versions for

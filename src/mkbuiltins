@@ -33,7 +33,7 @@ cat << \EOF
 #undef quad
 #endif
 
-#if defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING)
+#if defined (WITH_DYNAMIC_LINKING)
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc)
 #else
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \

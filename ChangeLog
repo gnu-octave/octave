@@ -1,3 +1,21 @@
+2002-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-config-vals): Don't substitute
+	OCTAVE_CONF_OCTAVE_LITE.
+	(OCTAVE_LITE): Delete.
+
+	* Makeconf.in: Use HAVE_DLOPEN_API, HAVE_LOADLIBRARY_API, and
+	HAVE_SHL_LOAD_API instead of WITH_DL and WITH_SHL.
+
+	* configure.in: Rewrite the way we handle dynamic linking.
+	If dynamic linking is used always do what was previously only
+	enabled by --enable-lite-kernel.
+
+2002-10-17  Paul Kienzle <pkienzle@users.sf.net>
+
+	* configure.in: Define WITH_DYNAMIC_LINKING based on --enable-shared.
+	Add -lwsock32 to LIBS for MinGW.
+
 2002-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_LANG_PROG_NO_CONFDEFS): New macro.

@@ -24,14 +24,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#if defined (WITH_SHL)
+#if defined (HAVE_SHL_LOAD_API)
 #include <cerrno>
 #include <cstring>
 #endif
 
 extern "C"
 {
-#if defined (WITH_DL)
+#if defined (HAVE_DLOPEN_API)
 #if defined (HAVE_DLFCN_H)
 #include <dlfcn.h>
 #else
@@ -43,7 +43,7 @@ extern int dlclose (void *);
 #ifndef RTLD_LAZY
 #define RTLD_LAZY 1
 #endif
-#elif defined (WITH_SHL)
+#elif defined (HAVE_SHL_LOAD_API)
 #include <dl.h>
 #endif
 }
@@ -193,7 +193,7 @@ octave_base_shlib::tabula_rasa (void)
   tm_loaded = static_cast<time_t> (0);
 }
 
-#if defined (WITH_DL)
+#if defined (HAVE_DLOPEN_API)
 
 class
 octave_dlopen_shlib : public octave_base_shlib
@@ -297,7 +297,7 @@ octave_dlopen_shlib::close (octave_shlib::close_hook cl_hook)
     }
 }
 
-#elif defined (WITH_SHL)
+#elif defined (HAVE_SHL_LOAD_API)
 
 class
 octave_shl_load_shlib : public octave_base_shlib
@@ -400,15 +400,141 @@ octave_shl_load_shlib::close (octave_shlib::close_hook cl_hook)
     }
 }
 
+#elif defined (HAVE_LOADLIBRARY_API)
+
+class
+octave_w32_shlib: public octave_base_shlib
+{
+public:
+
+  octave_w32_shlib (void);
+
+  ~octave_w32_shlib (void);
+
+  void open (const std::string& f, bool warn_future = false);
+
+  void *search (const std::string& name, name_mangler mangler = 0);
+
+  void close (octave_shlib::close_hook cl_hook = 0);
+
+  bool is_open (void) const { return (handle != 0); }
+
+private:
+
+  // No copying!
+
+  octave_w32_shlib (const octave_w32_shlib&);
+
+  octave_w32_shlib& operator = (const octave_w32_shlib&);
+
+  HINSTANCE handle; 
+};
+
+octave_w32_shlib::octave_w32_shlib (void)
+  : octave_base_shlib (), handle (0)
+{
+}
+
+octave_w32_shlib::~octave_w32_shlib (void)
+{
+  close ();
+}
+
+void
+octave_w32_shlib::open (const std::string& f, bool warn_future)
+{
+  if (! is_open ())
+    {
+      file = f;
+
+      handle = LoadLibrary (file.c_str ());
+
+      if (handle != NULL)
+	stamp_time (warn_future);
+      else
+	{
+	  DWORD lastError = GetLastError ();
+	  char *msg;
+
+	  switch (lastError)
+	    {
+	    case ERROR_MOD_NOT_FOUND:
+	    case ERROR_DLL_NOT_FOUND:
+	      msg = "could not find library or dependents";
+	      break;
+
+	    case ERROR_INVALID_DLL:
+	      msg = "library or its dependents are damaged";
+	      break;
+
+	    case ERROR_DLL_INIT_FAILED:
+	      msg = "library initialization routine failed";
+	      break;
+
+	    default:
+	      msg = "library open failed";
+	    }
+
+	  (*current_liboctave_error_handler) ("%s: %s", msg, file.c_str ());
+	}
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("shared library %s is already open", file.c_str ());
+}
+
+void *
+octave_w32_shlib::search (const std::string& name,
+			  octave_shlib::name_mangler mangler)
+{
+  void *function = 0;
+
+  if (is_open ())
+    {
+      std::string sym_name = name;
+
+      if (mangler)
+	sym_name = mangler (name);
+
+      function
+	= static_cast<void *> (GetProcAddress (handle, sym_name.c_str ()));
+
+      if (function)
+	add_to_fcn_names (name);
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("shared library %s is not open", file.c_str ());
+
+  return function;
+}
+
+void
+octave_w32_shlib::close (octave_shlib::close_hook cl_hook)
+{
+  if (is_open ())
+    {
+      do_close_hook (cl_hook);
+
+      FreeLibrary (handle);
+
+      handle = 0;
+
+      tabula_rasa ();
+    }
+}
+
 #endif
 
 octave_shlib *
 octave_shlib::make_shlib (void)
 {
-#if defined (WITH_DL)
+#if defined (HAVE_DLOPEN_API)
   return new octave_dlopen_shlib ();
-#elif defined (WITH_SHL)
+#elif defined (HAVE_SHL_LOAD_API)
   return new octave_shl_load_shlib ();
+#elif defined (HAVE_LOADLIBRARY_API)
+  return new octave_w32_shlib ();
 #else
   return new octave_base_shlib ();
 #endif

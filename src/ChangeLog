@@ -1,3 +1,20 @@
+2002-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-conf.h.in: No need to substitute OCTAVE_CONF_OCTAVE_LITE.
+	* toplev.cc (octave_config_info): Likewise, don't include it in
+	struct.
+
+	* mkbuiltins: Remove check for OCTAVE_LITE, since it is now
+	implied by WITH_DYNAMIC_LINKING.
+	* Makefile.in: Likewise, replace tests for OCTAVE_LITE with tests
+	for WITH_DYNAMIC_LINKING instead.
+
+	* oct-conf.h.in: Use OCTAVE_CONF_HAVE_DLOPEN_API,
+	OCTAVE_CONF_HAVE_LOADLIBRARY_API, and
+	OCTAVE_CONF_HAVE_SHL_LOAD_API instead of OCTAVE_CONF_WITH_DL and
+	OCTAVE_CONF_WITH_SHL.
+	* toplev.cc (octave_config_info): Likewise.
+
 2002-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (display_help_text): Quote output file name for Cygwin.

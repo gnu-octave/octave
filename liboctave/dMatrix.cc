@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dbleSVD.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-utils.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
@@ -1829,6 +1830,58 @@ Matrix::map (d_d_Mapper f)
 
   for (int i = 0; i < length (); i++)
     d[i] = f (d[i]);
+}
+
+// Return nonzero if any element of M is not an integer.  Also extract
+// the largest and smallest values and return them in MAX_VAL and MIN_VAL.
+
+int
+Matrix::all_integers (double& max_val, double& min_val) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  if (nr > 0 && nc > 0)
+    {
+      max_val = elem (0, 0);
+      min_val = elem (0, 0);
+    }
+  else
+    return 0;
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double val = elem (i, j);
+
+	if (val > max_val)
+	  max_val = val;
+
+	if (val < min_val)
+	  min_val = val;
+
+	if (D_NINT (val) != val)
+	  return 0;
+      }
+  return 1;
+}
+
+int
+Matrix::too_large_for_float (void) const
+{
+  int nr = rows ();
+  int nc = columns ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double val = elem (i, j);
+
+	if (val > FLT_MAX || val < FLT_MIN)
+	  return 1;
+      }
+
+  return 0;
 }
 
 // XXX FIXME XXX Do these really belong here?  They should maybe be

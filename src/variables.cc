@@ -1199,7 +1199,7 @@ Associate a cryptic message with a variable name.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "document");
+  string_vector argv = args.make_argv ("document");
 
   if (error_state)
     return retval;
@@ -1342,7 +1342,7 @@ character, but may not be combined.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "who");
+  string_vector argv = args.make_argv ("who");
 
   if (error_state)
     return retval;
@@ -1369,7 +1369,7 @@ character, but may not be combined.")
 
   int argc = tmp_args.length () + 1;
 
-  string_vector argv = make_argv (tmp_args, "whos");
+  string_vector argv = args.make_argv ("whos");
 
   if (error_state)
     return retval;
@@ -1857,7 +1857,7 @@ With -x, exclude the named variables")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "clear");
+  string_vector argv = args.make_argv ("clear");
 
   if (error_state)
     return retval;

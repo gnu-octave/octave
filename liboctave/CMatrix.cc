@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CmplxSVD.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-utils.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
@@ -2819,6 +2820,85 @@ ComplexMatrix::map (c_c_Mapper f)
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
       elem (i, j) = f (elem (i, j));
+}
+
+// Return nonzero if any element of CM has a non-integer real or
+// imaginary part.  Also extract the largest and smallest (real or
+// imaginary) values and return them in MAX_VAL and MIN_VAL. 
+
+int
+ComplexMatrix::all_integers (double& max_val, double& min_val) const
+{
+  int nr = rows ();
+  int nc = columns ();
+
+  if (nr > 0 && nc > 0)
+    {
+      Complex val = elem (0, 0);
+
+      double r_val = real (val);
+      double i_val = imag (val);
+
+      max_val = r_val;
+      min_val = r_val;
+
+      if (i_val > max_val)
+	max_val = i_val;
+
+      if (i_val < max_val)
+	min_val = i_val;
+    }
+  else
+    return 0;
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	Complex val = elem (i, j);
+
+	double r_val = real (val);
+	double i_val = imag (val);
+
+	if (r_val > max_val)
+	  max_val = r_val;
+
+	if (i_val > max_val)
+	  max_val = i_val;
+
+	if (r_val < min_val)
+	  min_val = r_val;
+
+	if (i_val < min_val)
+	  min_val = i_val;
+
+	if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
+	  return 0;
+      }
+  return 1;
+}
+
+int
+ComplexMatrix::too_large_for_float (void) const
+{
+  int nr = rows ();
+  int nc = columns ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	Complex val = elem (i, j);
+
+	double r_val = real (val);
+	double i_val = imag (val);
+
+	if (r_val > FLT_MAX
+	    || i_val > FLT_MAX
+	    || r_val < FLT_MIN
+	    || i_val < FLT_MIN)
+	  return 1;
+      }
+
+  return 0;
 }
 
 Matrix

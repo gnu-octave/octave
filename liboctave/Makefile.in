@@ -36,10 +36,11 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
 	NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
 	Range.h base-de.h base-min.h byte-swap.h cmd-hist.h data-conv.h \
-	dir-ops.h file-ops.h float-fmt.h f77-fcn.h getopt.h idx-vector.h \
-	lo-error.h oct-cmplx.h oct-glob.h oct-math.h oct-term.h \
-	pathsearch.h prog-args.h statdefs.h str-vec.h sun-utils.h \
-	sysdir.h $(MATRIX_INC)
+	dir-ops.h file-ops.h float-fmt.h f77-fcn.h getopt.h \
+	idx-vector.h lo-error.h lo-ieee.h lo-mappers.h lo-utils.h \
+	oct-cmplx.h oct-glob.h oct-math.h oct-term.h pathsearch.h \
+	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \
+	$(MATRIX_INC)
 
 TEMPLATE_SRC := Array.cc MArray.cc
 
@@ -60,9 +61,9 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	Quad.cc Range.cc acosh.c asinh.c atanh.c cmd-hist.cc \
 	data-conv.cc dir-ops.cc erf.c erfc.c f77-fcn.c file-ops.cc \
 	filemode.c float-fmt.cc gamma.c getopt.c getopt1.c \
-	idx-vector.cc lgamma.c mkdir.c oct-glob.cc oct-term.cc \
-	pathsearch.cc prog-args.cc rename.c rmdir.c str-vec.cc \
-	sun-utils.cc tempname.c tempnam.c \
+	idx-vector.cc lgamma.c lo-ieee.cc lo-mappers.cc lo-utils.cc \
+	mkdir.c oct-glob.cc oct-term.cc pathsearch.cc prog-args.cc \
+	rename.c rmdir.c str-vec.cc sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

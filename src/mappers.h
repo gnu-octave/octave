@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "lo-mappers.h"
 #include "oct-cmplx.h"
 
 typedef double (*d_d_Mapper)(double);
@@ -69,36 +70,6 @@ struct builtin_mapper_function
   c_c_Mapper c_c_mapper;
   string help_string;
 };
-
-extern double arg (double x);
-extern double conj (double x);
-extern double fix (double x);
-extern double imag (double x);
-extern double real (double x);
-extern double round (double x);
-extern double signum (double x);
-extern double xisnan (double x);
-extern double xfinite (double x);
-extern double xisinf (double x);
-
-extern double xisnan (const Complex& x);
-extern double xfinite (const Complex& x);
-extern double xisinf (const Complex& x);
-
-extern Complex acos (const Complex& x);
-extern Complex acosh (const Complex& x);
-extern Complex asin (const Complex& x);
-extern Complex asinh (const Complex& x);
-extern Complex atan (const Complex& x);
-extern Complex atanh (const Complex& x);
-extern Complex ceil (const Complex& x);
-extern Complex fix (const Complex& x);
-extern Complex floor (const Complex& x);
-extern Complex log10 (const Complex& x);
-extern Complex round (const Complex& x);
-extern Complex signum (const Complex& x);
-extern Complex tan (const Complex& x);
-extern Complex tanh (const Complex& x);
 
 extern void install_mapper_functions (void);
 

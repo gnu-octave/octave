@@ -1715,7 +1715,7 @@ set output formatting style")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "format");
+  string_vector argv = args.make_argv ("format");
 
   if (error_state)
     return retval;

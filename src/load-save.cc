@@ -1380,7 +1380,7 @@ found in the file will be replaced with the values read from the file.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "load");
+  string_vector argv = args.make_argv ("load");
 
   if (error_state)
     return retval;
@@ -2187,7 +2187,7 @@ save variables in a file")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "save");
+  string_vector argv = args.make_argv ("save");
 
   if (error_state)
     return retval;

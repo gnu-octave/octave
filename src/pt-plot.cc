@@ -1033,7 +1033,7 @@ drawn.  With no argument, toggle the current state.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "hold");
+  string_vector argv = args.make_argv ("hold");
 
   if (error_state)
     return retval;
@@ -1086,7 +1086,7 @@ set plotting options")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "set");
+  string_vector argv = args.make_argv ("set");
 
   if (error_state)
     return retval;
@@ -1132,7 +1132,7 @@ show plotting options")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "show");
+  string_vector argv = args.make_argv ("show");
 
   if (error_state)
     return retval;

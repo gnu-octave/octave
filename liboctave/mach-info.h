@@ -49,4 +49,3 @@ extern int float_format_init (void);
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */
-

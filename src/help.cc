@@ -682,7 +682,7 @@ print cryptic yet witty messages")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "help");
+  string_vector argv = args.make_argv ("help");
 
   if (error_state)
     return retval;
@@ -720,7 +720,7 @@ display the definition of each NAME that refers to a function")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "type");
+  string_vector argv = args.make_argv ("type");
 
   if (error_state)
     return retval;
@@ -862,7 +862,7 @@ file, print the full name of the file.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "which");
+  string_vector argv = args.make_argv ("which");
 
   if (error_state)
     return retval;

@@ -296,61 +296,6 @@ get_fcn_file_names (int no_suffix)
   return retval;
 }
 
-// Convert X to the nearest integer value.  Should not pass NaN to
-// this function.
-
-int
-NINT (double x)
-{
-  if (x > INT_MAX)
-    return INT_MAX;
-  else if (x < INT_MIN)
-    return INT_MIN;
-  else
-    return (x > 0) ? ((int) (x + 0.5)) : ((int) (x - 0.5));
-}
-
-double
-D_NINT (double x)
-{
-  if (xisinf (x) || xisnan (x))
-    return x;
-  else
-    return floor (x + 0.5);
-}
-
-// XXX FIXME XXX --  put these in some file, and make them extern.
-
-static int
-all_strings (const Octave_object& args)
-{
-  int n = args.length ();
-  for (int i = 0; i < n; i++)
-    if (! args(i).is_string ())
-      return 0;
-  return 1;
-}
-
-string_vector
-make_argv (const Octave_object& args, const string& fcn_name)
-{
-  string_vector argv;
-
-  if (all_strings (args))
-    {
-      int n = args.length ();
-      argv.resize (n+1);
-      argv[0] = fcn_name;
-
-      for (int i = 0; i < n; i++)
-	argv[i+1] = args(i).string_value ();
-    }
-  else
-    error ("%s: expecting all arguments to be strings", fcn_name.c_str ());
-
-  return argv;
-}
-
 // Return non-zero if either NR or NC is zero.  Return -1 if this
 // should be considered fatal; return 1 if this is ok.
 
@@ -397,7 +342,7 @@ DEFUN (file_in_path, args, ,
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "file_in_path");
+  string_vector argv = args.make_argv ("file_in_path");
 
   if (error_state)
     return retval;

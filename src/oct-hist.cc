@@ -523,7 +523,7 @@ edit commands from the history list")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "edit_history");
+  string_vector argv = args.make_argv ("edit_history");
 
   if (error_state)
     return retval;
@@ -542,7 +542,7 @@ display, save, or load command history")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "history");
+  string_vector argv = args.make_argv ("history");
 
   if (error_state)
     return retval;
@@ -561,7 +561,7 @@ run commands from the history list")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "run_history");
+  string_vector argv = args.make_argv ("run_history");
 
   if (error_state)
     return retval;

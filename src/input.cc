@@ -1137,7 +1137,7 @@ Without any arguments, toggle the current echo state.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "echo");
+  string_vector argv = args.make_argv ("echo");
 
   if (error_state)
     return retval;

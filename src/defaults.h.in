@@ -52,6 +52,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define OCTAVE_FCNFILEDIR %OCTAVE_FCNFILEDIR%
 #endif
 
+#ifndef OCTAVE_STARTUPFILEDIR
+#define OCTAVE_STARTUPFILEDIR OCTAVE_FCNFILEDIR "/startup"
+#endif
+
 #ifndef OCTAVE_LOCALFCNFILEPATH
 #define OCTAVE_LOCALFCNFILEPATH %OCTAVE_LOCALFCNFILEPATH%
 #endif
@@ -78,6 +82,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifndef TARGET_HOST_TYPE
 #define TARGET_HOST_TYPE %TARGET_HOST_TYPE%
+#endif
+
+#ifndef FLIB_LIST
+#define FLIB_LIST %FLIB_LIST%
+#endif
+
+#ifndef FLIB_PATH
+#define FLIB_PATH %FLIB_PATH%
+#endif
+
+#ifndef CXXLIB_LIST
+#define CXXLIB_LIST %CXXLIB_LIST%
+#endif
+
+#ifndef CXXLIB_PATH
+#define CXXLIB_PATH %CXXLIB_PATH%
 #endif
 
 #endif

@@ -27,7 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 
-// Nonzero means we're breaking out of a loop.
+// Nonzero means we're breaking out of a loop or function body.
 int breaking = 0;
 
 // Nonzero means we're jumping to the end of a loop.

@@ -80,6 +80,8 @@ extern void install_builtin_variable_as_function (const char *name,
 						  int eternal = 0,
 						  const char *help = 0);
 
+extern void alias_builtin (const char *alias, const char *name);
+
 extern void bind_nargin_and_nargout (symbol_table *sym_tab,
 				     int nargin, int nargout);
 
@@ -97,8 +99,6 @@ extern void link_to_builtin_or_function (symbol_record *sr);
 
 extern void force_link_to_function (const char *s);
 
-extern int is_globally_visible (const char *nm);
-
 extern char *extract_keyword (istream&, char *);
 extern int extract_keyword (istream&, char *, int&);
 
@@ -112,21 +112,6 @@ extern int takes_correct_nargs (tree_fvc *, int, char *, int warn = 0);
 extern char **make_name_list (void);
 
 extern int is_text_function_name (const char *s);
-
-struct help_list;
-
-extern help_list *builtin_mapper_functions_help (void);
-extern help_list *builtin_general_functions_help (void);
-extern help_list *builtin_text_functions_help (void);
-extern help_list *builtin_variables_help (void);
-
-extern int help_from_list (ostrstream& output_buf,
-			   const help_list *list, const char *string,
-			   int usage);
-
-extern void additional_help_message (ostrstream& output_buf);
-
-extern void print_usage (const char *s, int just_usage = 0);
 
 extern void install_builtin_variables (void);
 

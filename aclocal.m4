@@ -353,7 +353,17 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
   fi
 ])
 dnl
+dnl
+dnl
+dnl OCTAVE_LANG_PROG_NO_CONFDEFS
+AC_DEFUN(OCTAVE_LANG_PROG_NO_CONFDEFS,
+[_AC_LANG_DISPATCH([AC_LANG_PROGRAM], _AC_LANG, [$@])])
+dnl
 dnl Check to see if GNU C++ barfs on #pragma interface/#pragma implementation.
+dnl
+dnl Note that we are using AC_LINK_IFELSE and OCTAVE_LANG_PROG_NO_CONFDEFS
+dnl to prevent autoconf from including confdefs.h ahead of the #pragma
+dnl interface/implementation line.
 dnl
 dnl OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION
 AC_DEFUN(OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION, [
@@ -364,9 +374,7 @@ AC_DEFUN(OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION, [
     rm -f conftest.h
     cat > conftest.h <<EOB
 #include <iostream>
-#if defined (__GNUG__)
 #pragma interface
-#endif
 template <class T> class A
 {
 public:
@@ -381,9 +389,10 @@ public:
   B (void) : A<int> () { }
 };
 EOB
-    AC_TRY_LINK([#include "conftest.h"], [], [
-      rm -f conftest.h
-      cat > conftest.h <<EOB
+    AC_LINK_IFELSE([OCTAVE_LANG_PROG_NO_CONFDEFS([#include "conftest.h"])],
+      [octave_pii_test_1=yes], [octave_pii_test_1=no])
+    rm -f conftest.h
+    cat > conftest.h <<EOB
 #pragma interface
 class A
 {
@@ -391,13 +400,14 @@ public:
   virtual ~A (void) {}
 };
 EOB
-      AC_TRY_COMPILE([#pragma implementation
-#include "confdefs.h"], [],
-	octave_cv_cxx_pragma_interface_implementation=yes,
-      	octave_cv_cxx_pragma_interface_implementation=no
-	)],
+    AC_LINK_IFELSE([OCTAVE_LANG_PROG_NO_CONFDEFS([#pragma implementation
+#include "conftest.h"])],
+      [octave_pii_test_2=yes], [octave_pii_test_2=no])
+    if test $octave_pii_test_1 = yes && test $octave_pii_test_1 = yes; then
+      octave_cv_cxx_pragma_interface_implementation=yes
+    else
       octave_cv_cxx_pragma_interface_implementation=no
-    )
+    fi
     AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_pragma_interface_implementation)

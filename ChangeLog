@@ -1,3 +1,10 @@
+2002-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_LANG_PROG_NO_CONFDEFS): New macro.
+	(OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): Use it along with
+	AC_LINK_IFELSE instead of AC_TRY_LINK.
+	Require both programs to compile for success.
+
 2002-10-16  Paul Kienzle <pkienzle@users.sf.net>
 
 	* aclocal.m4: Both Cygwin and MinGW don't prepend underscores.

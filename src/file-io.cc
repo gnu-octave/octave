@@ -244,7 +244,7 @@ file_io_get_file (const tree_constant arg, const char *mode,
 	  struct stat buffer;
 	  int status = stat (name, &buffer);
 
-	  if (status == 0)
+	  if (status == 0 || (status < 0 && *mode != 'r'))
 	    {
 	      if ((buffer.st_mode & S_IFREG) == S_IFREG)
 		p = fopen_file_for_user (arg, mode, warn_for);

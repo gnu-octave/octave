@@ -26,13 +26,3 @@ configure:1145: checking for unistd.h
 configure:1187: checking for ranlib
 configure:1220: checking host system type
 configure:1244: checking for libtool object types
-configure:1293: checking for basename
-configure:1293: checking for putenv
-configure:1293: checking for strcasecmp
-configure:1293: checking for strtol
-configure:1293: checking for strstr
-configure:1351: checking for bcopy
-configure:1351: checking for getwd
-configure:1405: checking for working const
-configure:1482: checking whether program_invocation_name is predefined
-configure:1518: checking whether putenv uses malloc

@@ -15,7 +15,7 @@
 ### 
 ##configure_in = $(srcdir)/configure.in $(kpathsea_srcdir)/common.ac \
 ##  $(kpathsea_srcdir)/withenable.ac $(kpathsea_srcdir)/xt.ac \
-##  $(kpathsea_srcdir_parent)/acklibtool.m4
+##  $(kpathsea_srcdir)/acklibtool.m4
 ##$(srcdir)/configure: $(configure_in) $(autoconf)
 ##	cd $(srcdir) && autoconf
 ##endif

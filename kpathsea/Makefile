@@ -45,7 +45,7 @@ $(kpathsea): $(objects)
 	$(LIBTOOL) archive $(AR) $(ARFLAGS) $@ $(objects)
 
 # All the objects depend on the klibtool configuration file.
-$(objects): ../klibtool.config
+$(objects): klibtool.config
 
 # Make variable substitutions from paths.h.
 texmf.cnf: texmf.cnf.in texmf.sed

@@ -23,7 +23,7 @@ dnl because <kpathsea/config.h> includes <c-auto.h> (the programs'),
 dnl not <kpathsea/c-auto.h>.  Should it include both?  But then we will
 dnl have many benign redefinitions that some compilers may not consider
 dnl benign.  And it's a big change.
-sinclude(../acklibtool.m4)
+sinclude(acklibtool.m4)
 kb_AC_PROG_LIBTOOL
 dnl If the list of functions here changes, also change acconfig.h.  */
 kb_AC_KLIBTOOL_REPLACE_FUNCS(basename putenv strcasecmp strtol strstr)

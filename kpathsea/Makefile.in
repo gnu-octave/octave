@@ -3,12 +3,12 @@ version = 3.0
 
 # Add -DNO_DEBUG to disable debugging, for vanishingly better performance.
 
-ac_include ../make/paths.make
-ac_include ../make/makevars.make
-ac_include ../make/common.make
-ac_include ../make/library.make
-ac_include ../make/programs.make
-ac_include ../make/texi.make
+ac_include make/paths.make
+ac_include make/makevars.make
+ac_include make/common.make
+ac_include make/library.make
+ac_include make/programs.make
+ac_include make/texi.make
 
 ##ifdef HOSTNAME
 ##warn_more = -Wmissing-prototypes -Wwrite-strings -Wshadow
@@ -50,7 +50,7 @@ $(kpathsea): $(objects)
 	$(LIBTOOL) archive $(AR) $(ARFLAGS) $@ $(objects)
 
 # All the objects depend on the klibtool configuration file.
-$(objects): ../klibtool.config
+$(objects): klibtool.config
 
 # Make variable substitutions from paths.h.
 texmf.cnf: texmf.cnf.in texmf.sed
@@ -58,7 +58,7 @@ texmf.cnf: texmf.cnf.in texmf.sed
 
 # The idea is to turn each var=value into s%@var@%value%g. Seems simpler
 # to put the substitutions in a file than to play shell quoting games.
-texmf.sed: $(top_srcdir)/../make/makevars.make $(top_srcdir)/../make/paths.make
+texmf.sed: $(top_srcdir)/make/makevars.make $(top_srcdir)/make/paths.make
 	echo $(makevars) \
 	| tr ' ' '\012' \
 	| sed -e 's/^/s%@/' -e 's/=/@%/' -e 's/$$/%/' -e 's/$$/g/' \
@@ -183,7 +183,7 @@ $(library).h: always
 always:
 .PHONY: always
 
-ac_include ../make/config.make
+ac_include make/config.make
 
 info: $(library).info
 dvi: $(library).dvi
@@ -204,7 +204,7 @@ $(library).info: bugs.texi hier.texi install.texi unixtex.texi
 ##doc: info HIER BUGS INSTALL unixtex.ftp
 ##endif
 
-ac_include ../make/clean.make
+ac_include make/clean.make
 
 mostlyclean::
 	rm -f kpsewhich *.lo
@@ -212,7 +212,7 @@ mostlyclean::
 distclean::
 	rm -f paths.h texmf.cnf texmf.sed
 
-ac_include ../make/rdepend.make
+ac_include make/rdepend.make
 absolute.lo: absolute.c ../kpathsea/config.h c-auto.h \
  ../kpathsea/c-std.h \
  ../kpathsea/c-unistd.h ../kpathsea/systypes.h \

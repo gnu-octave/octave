@@ -47,6 +47,8 @@ public:
 
   static string readline (const string& prompt);
 
+  static string readline (const string& prompt, bool& eof);
+
   static void set_input_stream (FILE *f);
 
   static FILE *get_input_stream (void);
@@ -120,7 +122,14 @@ protected:
 
   virtual void do_set_name (const string&) { }
 
-  virtual string do_readline (const string&) = 0;
+  string do_readline (const string& prompt)
+    {
+      bool eof;
+
+      return do_readline (prompt, eof);
+    }
+
+  virtual string do_readline (const string&, bool&) = 0;
 
   virtual void do_set_input_stream (FILE *) = 0;
 

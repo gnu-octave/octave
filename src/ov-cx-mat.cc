@@ -36,32 +36,34 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ops.h"
+#include "ov-base.h"
+#include "ov-base-mat.h"
+#include "ov-base-mat.cc"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "pr-output.h"
 
-octave_allocator
-octave_complex_matrix::allocator (sizeof (octave_complex_matrix));
+template class octave_base_matrix<ComplexMatrix>;
 
-int
-octave_complex_matrix::t_id (-1);
+DEFINE_OCTAVE_ALLOCATOR (octave_complex_matrix);
 
-const string
-octave_complex_matrix::t_name ("complex matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix, "complex matrix");
 
 octave_complex_matrix::octave_complex_matrix (const ComplexRowVector& v,
 					      int pcv)
-  : octave_base_value (),
-    matrix ((pcv < 0 && Vprefer_column_vectors) || pcv
-	    ? ComplexMatrix (v.transpose ()) : ComplexMatrix (v)) { }
+  : octave_base_matrix<ComplexMatrix> (((pcv < 0 && Vprefer_column_vectors)
+					|| pcv)
+				       ? ComplexMatrix (v.transpose ())
+				       : ComplexMatrix (v)) { }
 
 octave_complex_matrix::octave_complex_matrix (const ComplexColumnVector& v,
 					      int pcv)
-  : octave_base_value (),
-    matrix ((pcv < 0 && Vprefer_column_vectors) || pcv
-	    ? ComplexMatrix (v) : ComplexMatrix (v.transpose ())) { }
+  : octave_base_matrix<ComplexMatrix> (((pcv < 0 && Vprefer_column_vectors)
+					|| pcv)
+				       ? ComplexMatrix (v)
+				       : ComplexMatrix (v.transpose ())) { }
 
 octave_value *
 octave_complex_matrix::try_narrowing_conversion (void)
@@ -308,43 +310,6 @@ ComplexMatrix
 octave_complex_matrix::complex_matrix_value (bool) const
 {
   return matrix;
-}
-
-void
-octave_complex_matrix::print (ostream& os, bool pr_as_read_syntax) const
-{
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
-octave_complex_matrix::print_raw (ostream& os, bool pr_as_read_syntax) const
-{
-  octave_print_internal (os, matrix, pr_as_read_syntax,
-			 current_print_indent_level ());
-}
-
-bool
-octave_complex_matrix::print_name_tag (ostream& os, const string& name) const
-{
-  bool retval = false;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  indent (os);
-
-  if (nr == 1 && nc == 1 || (nr == 0 || nc == 0))
-    os << name << " = ";
-  else
-    {
-      os << name << " =";
-      newline (os);
-      newline (os);
-      retval = true;
-    }
-
-  return retval;
 }
 
 /*

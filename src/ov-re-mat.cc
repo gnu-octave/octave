@@ -38,29 +38,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "ops.h"
+#include "ov-base.h"
+#include "ov-base-mat.h"
+#include "ov-base-mat.cc"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "pr-output.h"
 #include "variables.h"
 
-octave_allocator
-octave_matrix::allocator (sizeof (octave_matrix));
+template class octave_base_matrix<Matrix>;
 
-int
-octave_matrix::t_id (-1);
+DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
-const string
-octave_matrix::t_name ("matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix");
 
 octave_matrix::octave_matrix (const RowVector& v, int pcv)
-  : octave_base_value (),
-    matrix ((pcv < 0 && Vprefer_column_vectors) || pcv
-	    ? Matrix (v.transpose ()) : Matrix (v)) { }
+  : octave_base_matrix<Matrix> ((pcv < 0 && Vprefer_column_vectors) || pcv
+				? Matrix (v.transpose ()) : Matrix (v)) { }
 
 octave_matrix::octave_matrix (const ColumnVector& v, int pcv)
-  : octave_base_value (),
-    matrix ((pcv < 0 && Vprefer_column_vectors) || pcv
-	    ? Matrix (v) : Matrix (v.transpose ())) { }
+  : octave_base_matrix<Matrix> ((pcv < 0 && Vprefer_column_vectors) || pcv
+			       ? Matrix (v) : Matrix (v.transpose ())) { }
 
 octave_value *
 octave_matrix::try_narrowing_conversion (void)
@@ -365,43 +363,6 @@ octave_matrix::convert_to_str (void) const
 
 	  retval = octave_value (chm, 1);
 	}
-    }
-
-  return retval;
-}
-
-void
-octave_matrix::print (ostream& os, bool pr_as_read_syntax) const
-{
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
-octave_matrix::print_raw (ostream& os, bool pr_as_read_syntax) const
-{
-  octave_print_internal (os, matrix, pr_as_read_syntax,
-			 current_print_indent_level ());
-}
-
-bool
-octave_matrix::print_name_tag (ostream& os, const string& name) const
-{
-  bool retval = false;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  indent (os);
-
-  if (nr == 1 && nc == 1 || (nr == 0 || nc == 0))
-    os << name << " = ";
-  else
-    {
-      os << name << " =";
-      newline (os);
-      newline (os);
-      retval = true;
     }
 
   return retval;

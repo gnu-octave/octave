@@ -36,19 +36,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ops.h"
+#include "ov-base.h"
+#include "ov-base-mat.h"
+#include "ov-base-mat.cc"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-re-mat.h"
 #include "pr-output.h"
 
-octave_allocator
-octave_bool_matrix::allocator (sizeof (octave_bool_matrix));
+template class octave_base_matrix<boolMatrix>;
 
-int
-octave_bool_matrix::t_id (-1);
+DEFINE_OCTAVE_ALLOCATOR (octave_bool_matrix);
 
-const string
-octave_bool_matrix::t_name ("bool matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix, "bool matrix");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)
@@ -208,44 +208,6 @@ octave_bool_matrix::complex_value (bool) const
     retval = matrix (0, 0);
   else
     gripe_invalid_conversion ("bool matrix", "complex scalar");
-
-  return retval;
-}
-
-void
-octave_bool_matrix::print (ostream& os, bool pr_as_read_syntax) const
-{
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
-octave_bool_matrix::print_raw (ostream& os, bool pr_as_read_syntax) const
-{
-  Matrix tmp (matrix);
-  octave_print_internal (os, tmp, pr_as_read_syntax,
-			 current_print_indent_level ());
-}
-
-bool
-octave_bool_matrix::print_name_tag (ostream& os, const string& name) const
-{
-  bool retval = false;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  indent (os);
-
-  if (nr == 1 && nc == 1 || (nr == 0 || nc == 0))
-    os << name << " = ";
-  else
-    {
-      os << name << " =";
-      newline (os);
-      newline (os);
-      retval = true;
-    }
 
   return retval;
 }

@@ -67,12 +67,6 @@ public:
 
   octave_value *clone (void) { return new octave_struct (*this); }
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
-
   octave_value
   do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
 			  bool silent);
@@ -95,28 +89,14 @@ public:
 
   bool print_name_tag (ostream& os, const string& name) const;
 
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
   // The associative array used to manage the structure data.
   Octave_map map;
 
-  // For custom memory management.
-  static octave_allocator allocator;
+  DECLARE_OCTAVE_ALLOCATOR
 
-  // Type id of struct objects, set by register_type().
-  static int t_id;
-
-  // Type name of struct objects, defined in ov-struct.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

@@ -1,3 +1,9 @@
+Wed Nov 11 17:27:35 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (CRUFT_DIRS): Add amos.  Delete specfun.
+	* specfun: Delete directory.
+	* amos: New directory
+
 Thu Oct 15 00:43:13 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ranlib: Update to newer version of randlib.

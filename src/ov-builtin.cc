@@ -33,14 +33,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-builtin.h"
 #include "ov.h"
 
-octave_allocator
-octave_builtin::allocator (sizeof (octave_builtin));
+DEFINE_OCTAVE_ALLOCATOR (octave_builtin);
 
-int
-octave_builtin::t_id (-1);
-
-const string
-octave_builtin::t_name ("built-in function");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin, "built-in function");
 
 // Are any of the arguments `:'?
 

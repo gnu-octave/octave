@@ -39,6 +39,7 @@ class ostream;
 
 #include "error.h"
 #include "ov-base.h"
+#include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -49,35 +50,29 @@ class tree_walker;
 // Complex matrix values.
 
 class
-octave_complex_matrix : public octave_base_value
+octave_complex_matrix : public octave_base_matrix<ComplexMatrix>
 {
 public:
 
   octave_complex_matrix (void)
-    : octave_base_value () { }
+    : octave_base_matrix<ComplexMatrix> () { }
 
   octave_complex_matrix (const ComplexMatrix& m)
-    : octave_base_value (), matrix (m) { }
+    : octave_base_matrix<ComplexMatrix> (m) { }
 
   octave_complex_matrix (const ComplexDiagMatrix& d)
-    : octave_base_value (), matrix (d) { }
+    : octave_base_matrix<ComplexMatrix> (d) { }
 
   octave_complex_matrix (const ComplexRowVector& v, int pcv = -1);
 
   octave_complex_matrix (const ComplexColumnVector& v, int pcv = -1);
 
   octave_complex_matrix (const octave_complex_matrix& cm)
-    : octave_base_value (), matrix (cm.matrix) { }
+    : octave_base_matrix<ComplexMatrix> (cm) { }
 
   ~octave_complex_matrix (void) { }
 
   octave_value *clone (void) { return new octave_complex_matrix (*this); }
-
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
 
   octave_value *try_narrowing_conversion (void);
 
@@ -86,21 +81,6 @@ public:
   void assign (const octave_value_list& idx, const ComplexMatrix& rhs);
 
   void assign (const octave_value_list& idx, const Matrix& rhs);
-
-  int rows (void) const { return matrix.rows (); }
-  int columns (void) const { return matrix.columns (); }
-
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return r > c ? r : c;
-  }
-
-  bool is_defined (void) const { return true; }
-
-  bool is_constant (void) const { return true; }
 
   bool is_complex_matrix (void) const { return true; }
 
@@ -135,32 +115,11 @@ public:
 
   void decrement (void) { matrix -= Complex (1.0); }
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (ostream& os, const string& name) const;
-
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
-  ComplexMatrix matrix;
+  DECLARE_OCTAVE_ALLOCATOR
 
-  static octave_allocator allocator;
-
-  // Type id of complex matrix objects, set by register_type().
-  static int t_id;
-
-  // Type name of complex matrix objects, defined in ov-cx-mat.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

@@ -84,11 +84,11 @@ public:
 
   octave_lvalue struct_elt_ref (octave_value *parent, const string& nm);
 
-  int rows (void) const { reteurn -1; }
+  int rows (void) const { return -1; }
 
-  int columns (void) const { reteurn -1; }
+  int columns (void) const { return -1; }
 
-  int length (void) const { reteurn -1; }
+  int length (void) const { return -1; }
 
   bool is_defined (void) const { return false; }
 
@@ -197,22 +197,9 @@ public:
 
   bool print_name_tag (ostream& os, const string& name) const;
 
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
-  // Type id of base value objects, set by register_type().
-  static int t_id;
-
-  // Type name of base value objects, defined in ov-base.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

@@ -53,12 +53,6 @@ public:
 
   octave_function *clone (void);
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
-
   bool is_defined (void) const { return true; }
 
   bool is_function (void) const { return true; }
@@ -94,8 +88,7 @@ private:
   // The help text for this function.
   string doc;
 
-  // For custom memory management.
-  static octave_allocator allocator;
+  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #endif

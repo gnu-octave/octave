@@ -103,28 +103,15 @@ public:
 
   string string_value (void) const;
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
+  bool print_as_scalar (void) const { return (rows () <= 1); }
 
   void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (ostream& os, const string& name) const;
-
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
-  // Type id of char_matrix_str objects, set by register_type().
-  static int t_id;
+  DECLARE_OCTAVE_ALLOCATOR
 
-  // Type name of char_matrix_strXX objects, defined in ov-str-mat.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

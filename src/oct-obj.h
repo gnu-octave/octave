@@ -136,6 +136,8 @@ public:
   octave_value_list splice (int offset, int length,
 			    const octave_value_list& lst) const;
 
+  octave_value_list index (idx_vector& i) const;
+
   bool all_strings_p (void) const;
 
   string_vector make_argv (const string&) const;
@@ -169,6 +171,9 @@ private:
   // octave_value_list.
 
   octave_value_list (int n);
+
+  octave_value_list (const Array<octave_value>& d)
+    : data (d) { }
 
   void maybe_resize (int n)
     {

@@ -1,3 +1,74 @@
+Thu Nov 12 11:13:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (gnu_readline): Check for EOF from command_editor::readline.
+
+	* ov-str-mat.h, ov-str-mat.cc (class octave_char_matrix_str):
+	Get common functions via new derivation scheme.
+	
+	* ov-bool-mat.h, ov-bool-mat.cc (class octave_bool_matrix):
+	Derive from octave_base_matrix and get common functions via derivation.
+	* ov-ch-mat.h, ov-ch-mat.cc (class octave_char_matrix): Ditto.
+	* ov-cx-mat.h, ov-cx-mat.cc (class octave_complex_matrix): Ditto.
+	* ov-re-mat.h, ov-re-mat.cc (class octave_real_matrix): Ditto.
+
+	* ov-base-mat.h, ov-base-mat.cc (class octave_base_matrix): New
+	files  for new class definition.  Put common matrix data type
+	stuff here.
+
+	* ov-list.cc (Fnth): New function.
+
+	* ov-list.cc (octave_list::do_index_op): Allow more complex indexing.
+
+	* oct-obj.cc (octave_value_list::index): New function.
+	(octave_value_list::octve_value_list (Array<octave_value>)):
+	New private constructor.
+
+	* ov-list.cc (Fsplice): Fix docstring to match.
+	* oct-obj.cc (octave_value_list::splice): Allow special case
+	splice (x, length(x)+1, 0, y) to be equivalent to append (x, y).
+
+	* ov-list.cc (Fappend): If an arg is a list, concatenate the lists
+	instead of appending arg as a single element.
+
+Wed Nov 11 14:07:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (get_mat_data_input_line): New function.
+	(get_lines_and_columns): Use it here.
+	(read_mat_ascii_data): And here and do our own reading instead of
+	using Matrix::operator<<.
+
+Tue Nov 10 16:12:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (make_constant): Initialize retval to 0.
+
+	* toplev.h (clean_up_and_exit (void)): Delete declaration.
+	* toplev.cc (do_octave_atexit): Move guts of clean_up_for_exit
+	here, but ensure that the actions are only executed once.
+	* octave.cc (main): Don't register cleanup_tmp_files with atexit.
+
+	* ov.h, ov.cc (class octave_value): Use DECLARE_OCTAVE_ALLOCATOR
+	and DEFINE_OCTAVE_ALLOCATOR for uniform declaration and definition
+	of allocator functions.  Use DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+	and DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA for uniform declaration
+	and definition of type id functions and data.
+	* ov-usr-fcn.h, ov-usr-fcn.cc (class octave_user_function): Ditto.
+	* ov-scalar.h, ov-scalar.cc (class octave_scalar): Ditto.
+	* ov-re-mat.h ov-re-mat.cc (class octave_matrix): Ditto.
+	* ov-range.h, ov-range.cc (class octave_range): Ditto.
+	* ov-mapper.h, ov-mapper.cc (class octave_mapper): Ditto.
+	* ov-list.h, ov-list.cc (class octave_list): Ditto.
+	* ov-file.h, ov-file.cc (class octave_file): Ditto.
+	* ov-fcn.h, ov-fcn.cc (class octave_function): Ditto.
+	* ov-cx-mat.h, ov-cx-mat.cc (class octave_complex_matrix): Ditto.
+	* ov-complex.h, ov-complex.cc (class octave_complex): Ditto.
+	* ov-ch-mat.h, ov-ch-mat.cc (octave_char_matrix): Ditto.
+	* ov-builtin.h, ov-builtin.cc (class octave_builtin): Ditto.
+	* ov-bool.h, ov-bool.cc (class octave_bool): Ditto.
+	* ov-bool-mat.h, ov-bool-mat.cc (octave_bool_matrix): Ditto.
+
+	* ov.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): New macro.
+	(DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Ditto.
+
 Mon Nov  9 16:12:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pr-output.cc (octave_print_internal): Reorder default args for

@@ -74,22 +74,9 @@ public:
 
   void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
 
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
-  // Type id of magic colon objects, set by register_type().
-  static int t_id;
-
-  // Type name of magic colon objects, defined in ov-colon.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

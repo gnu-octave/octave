@@ -66,12 +66,6 @@ public:
 
   octave_value *clone (void) { return new octave_complex (*this); }
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
-
   octave_value *try_narrowing_conversion (void);
 
   octave_value do_index_op (const octave_value_list& idx);
@@ -131,26 +125,13 @@ public:
 
   bool print_name_tag (ostream& os, const string& name) const;
 
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
   Complex scalar;
 
-  static octave_allocator allocator;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
-  // Type id of complex scalar objects, set in register_type().
-  static int t_id;
-
-  // Type name of complex scalar objects, defined in ov-complex.cc.
-  static const string t_name;
+  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #endif

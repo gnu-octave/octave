@@ -33,18 +33,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-ieee.h"
 #include "mx-base.h"
 
+#include "ov-base.h"
+#include "ov-base-mat.h"
+#include "ov-base-mat.cc"
 #include "ov-ch-mat.h"
 #include "gripes.h"
 #include "pr-output.h"
 
-octave_allocator
-octave_char_matrix::allocator (sizeof (octave_char_matrix));
+template class octave_base_matrix<charMatrix>;
 
-int
-octave_char_matrix::t_id (-1);
+DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix);
 
-const string
-octave_char_matrix::t_name ("char matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix, "char matrix");
 
 bool
 octave_char_matrix::valid_as_scalar_index (void) const
@@ -110,43 +110,6 @@ octave_char_matrix::complex_value (bool) const
     retval = matrix (0, 0);
   else
     gripe_invalid_conversion ("character matrix", "complex scalar");
-
-  return retval;
-}
-
-void
-octave_char_matrix::print (ostream& os, bool pr_as_read_syntax) const
-{
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
-octave_char_matrix::print_raw (ostream& os, bool pr_as_read_syntax) const
-{
-  octave_print_internal (os, matrix, pr_as_read_syntax, false,
-			 current_print_indent_level ());
-}
-
-bool
-octave_char_matrix::print_name_tag (ostream& os, const string& name) const
-{
-  bool retval = false;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  indent (os);
-
-  if (nr == 1 && nc == 1 || (nr == 0 || nc == 0))
-    os << name << " = ";
-  else
-    {
-      os << name << " =";
-      newline (os);
-      newline (os);
-      retval = true;
-    }
 
   return retval;
 }

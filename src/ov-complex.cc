@@ -40,14 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "pr-output.h"
 
-octave_allocator
-octave_complex::allocator (sizeof (octave_complex));
+DEFINE_OCTAVE_ALLOCATOR (octave_complex);
 
-int
-octave_complex::t_id (-1);
-
-const string
-octave_complex::t_name ("complex scalar");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex, "complex scalar");
 
 octave_value *
 octave_complex::try_narrowing_conversion (void)

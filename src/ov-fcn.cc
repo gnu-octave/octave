@@ -31,8 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "ov-fcn.h"
 
-octave_allocator
-octave_function::allocator (sizeof (octave_function));
+DEFINE_OCTAVE_ALLOCATOR (octave_function);
 
 octave_function *
 octave_function::clone (void)

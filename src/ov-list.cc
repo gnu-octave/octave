@@ -38,14 +38,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-list.h"
 #include "unwind-prot.h"
 
-octave_allocator
-octave_list::allocator (sizeof (octave_list));
+DEFINE_OCTAVE_ALLOCATOR (octave_list);
 
-int
-octave_list::t_id (-1);
-
-const string
-octave_list::t_name ("list");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_list, "list");
 
 octave_value
 octave_list::do_index_op (const octave_value_list& idx)
@@ -54,19 +49,9 @@ octave_list::do_index_op (const octave_value_list& idx)
 
   if (idx.length () == 1)
     {
-      int i = idx(0).int_value (true);
+      idx_vector i = idx (0).index_vector ();
 
-      if (! error_state)
-	{
-	  int n = lst.length ();
-
-	  if (i > 0 && i <= n)
-	    retval = lst(i-1);
-	  else
-	    error ("list index = %d out of range", i);
-	}
-      else
-	error ("list index must be an integer");
+      retval = octave_value_list (lst.index (i));
     }
   else
     error ("lists may only be indexed by a single scalar");
@@ -166,10 +151,53 @@ Create a new list from ARGS.")
   return octave_value (args);
 }
 
-DEFUN (append, args, ,
-  "append (LIST, ARGS)\n\
+DEFUN (nth, args, ,
+  "nth (LIST, N)\n\
 \n\
-Return a new list created by appending ARGS to LIST")
+Return the N-th element of LIST.")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      octave_value_list lst = args(0).list_value ();
+
+      if (! error_state)
+	{
+	  int n = args(1).int_value (true);
+
+	  if (! error_state)
+	    {
+	      if (n > 0 && n <= lst.length ())
+		retval = lst(n-1);
+	      else
+		error ("nth: index = %d out of range", n);
+	    }
+	  else
+	    error ("nth: second argument must be an integer");
+	}
+      else
+	error ("nth: first argument must be a list");
+    }
+  else
+    print_usage ("nth");
+
+  return retval;
+}
+
+DEFUN (append, args, ,
+  "append (LIST, ARG, ...)\n\
+\n\
+Return a new list created by appending each ARG to LIST.  If any of\n\
+the arguments to be appended is a list, its elements are appended\n\
+individually.  For example,\n\
+\n\
+  x = list (1, 2);\n\
+  y = list (3, 4);\n\
+  append (x, y);\n\
+\n\
+results in the list containing the four elements (1 2 3 4), not a list\n\
+containing the three elements (1 2 (3 4))")
 {
   octave_value retval;
 
@@ -182,7 +210,14 @@ Return a new list created by appending ARGS to LIST")
       if (! error_state)
 	{
 	  for (int i = 1; i < nargin; i++)
-	    tmp.append (args(i));
+	    {
+	      octave_value ov = args(i);
+
+	      if (ov.is_list ())
+		tmp.append (ov.list_value ());
+	      else
+		tmp.append (ov);
+	    }
 
 	  retval = tmp;
 	}
@@ -223,7 +258,9 @@ splice (LIST_1, OFFSET)\n\
 \n\
 Replace LENGTH elements of LIST_1 beginning at OFFSET with the\n\
 contents of LIST_2 (if any).  If LENGTH is omitted, all elements\n\
-from OFFSET to the end of LIST_1 are replaced.")
+from OFFSET to the end of LIST_1 are replaced.  As a special case, if\n\
+OFFSET is one greater than the length of LIST_1 and LENGTH is 0,\n\
+splice is equivalent to append (LIST_1, LIST_2)")
 {
   octave_value retval;
 

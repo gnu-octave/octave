@@ -165,9 +165,11 @@ gnu_readline (const string& s, bool force_readline)
 
   if (line_editing || force_readline)
     {
-      retval = command_editor::readline (s);
+      bool eof;
 
-      if (retval.empty ())
+      retval = command_editor::readline (s, eof);
+
+      if (! eof && retval.empty ())
 	retval = "\n";
     }
   else

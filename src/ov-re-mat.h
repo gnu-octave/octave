@@ -39,6 +39,7 @@ class ostream;
 
 #include "error.h"
 #include "ov-base.h"
+#include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -49,35 +50,29 @@ class tree_walker;
 // Real matrix values.
 
 class
-octave_matrix : public octave_base_value
+octave_matrix : public octave_base_matrix<Matrix>
 {
 public:
 
   octave_matrix (void)
-    : octave_base_value () { }
+    : octave_base_matrix<Matrix> () { }
 
   octave_matrix (const Matrix& m)
-    : octave_base_value (), matrix (m) { }
+    : octave_base_matrix<Matrix> (m) { }
 
   octave_matrix (const DiagMatrix& d)
-    : octave_base_value (), matrix (d) { }
+    : octave_base_matrix<Matrix> (d) { }
 
   octave_matrix (const RowVector& v, int pcv = -1);
 
   octave_matrix (const ColumnVector& v, int pcv = -1);
 
   octave_matrix (const octave_matrix& m)
-    : octave_base_value (), matrix (m.matrix) { }
+    : octave_base_matrix<Matrix> (m) { }
 
   ~octave_matrix (void) { }
 
   octave_value *clone (void) { return new octave_matrix (*this); }
-
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
 
   octave_value *try_narrowing_conversion (void);
 
@@ -101,21 +96,6 @@ public:
   octave_value do_struct_elt_index_op (const string& nm, bool silent);
 
   octave_lvalue struct_elt_ref (octave_value *parent, const string& nm);
-
-  int rows (void) const { return matrix.rows (); }
-  int columns (void) const { return matrix.columns (); }
-
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return r > c ? r : c;
-  }
-
-  bool is_defined (void) const { return true; }
-
-  bool is_constant (void) const { return true; }
 
   bool is_real_matrix (void) const { return true; }
 
@@ -152,32 +132,11 @@ public:
 
   octave_value convert_to_str (void) const;
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (ostream& os, const string& name) const;
-
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 private:
 
-  Matrix matrix;
+  DECLARE_OCTAVE_ALLOCATOR
 
-  static octave_allocator allocator;
-
-  // Type id of matrix objects, set by register_type ().
-  static int t_id;
-
-  // Type name of matrix objects, defined in ov-re-mat.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

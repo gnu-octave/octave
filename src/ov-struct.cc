@@ -36,14 +36,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "variables.h"
 
-octave_allocator
-octave_struct::allocator (sizeof (octave_struct));
+DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
-int
-octave_struct::t_id (-1);
-
-const string
-octave_struct::t_name ("struct");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct");
 
 octave_value
 octave_struct::do_struct_elt_index_op (const string& nm,

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 1998 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_all_va_args_h)
-#define octave_all_va_args_h 1
+#if !defined (octave_base_matrix_h)
+#define octave_base_matrix_h 1
+
+#if defined (__GNUG__)
+#pragma interface
+#endif
 
 #include <cstdlib>
 
@@ -41,34 +45,52 @@ class octave_value_list;
 
 class tree_walker;
 
-// A type to represent `all_va_args' as used in function calls.
+// Real matrix values.
 
-class
-octave_all_va_args : public octave_base_value
+template <class MT> class
+octave_base_matrix : public octave_base_value
 {
 public:
 
-  octave_all_va_args (void)
+  octave_base_matrix (void)
     : octave_base_value () { }
 
-  octave_all_va_args (const octave_all_va_args&)
-    : octave_base_value () { }
+  octave_base_matrix (const MT& m)
+    : octave_base_value (), matrix (m) { }
 
-  ~octave_all_va_args (void) { }
+  octave_base_matrix (const octave_base_matrix& m)
+    : octave_base_value (), matrix (m.matrix) { }
 
-  octave_value *clone (void) { return new octave_all_va_args (*this); }
+  ~octave_base_matrix (void) { }
+
+  octave_value *clone (void) { return new octave_base_matrix (*this); }
+
+  int rows (void) const { return matrix.rows (); }
+  int columns (void) const { return matrix.columns (); }
+
+  int length (void) const
+  {
+    int r = rows ();
+    int c = columns ();
+
+    return r > c ? r : c;
+  }
 
   bool is_defined (void) const { return true; }
 
-  bool is_all_va_args (void) const { return true; }
+  bool is_constant (void) const { return true; }
+
+  virtual bool print_as_scalar (void) const;
 
   void print (ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
 
-private:
+  bool print_name_tag (ostream& os, const string& name) const;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+protected:
+
+  MT matrix;
 };
 
 #endif

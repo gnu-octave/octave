@@ -2617,7 +2617,7 @@ Matrix::read (istream& is, int nr, int nc,
 		  if (ok && skip != 0)
 		    is.seekg (skip, ios::cur);
 
-		  if (! ok)
+		  if (! ok || is.eof ())
 		    {
 		      if (is.eof ())
 			{

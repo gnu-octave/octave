@@ -40,14 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "pr-output.h"
 
-octave_allocator
-octave_bool::allocator (sizeof (octave_bool));
+DEFINE_OCTAVE_ALLOCATOR (octave_bool);
 
-int
-octave_bool::t_id (-1);
-
-const string
-octave_bool::t_name ("bool");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

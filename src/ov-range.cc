@@ -40,14 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "pr-output.h"
 
-octave_allocator
-octave_range::allocator (sizeof (octave_range));
+DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
-int
-octave_range::t_id (-1);
-
-const string
-octave_range::t_name ("range");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

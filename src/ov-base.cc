@@ -48,9 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-list.h"
 #include "variables.h"
 
-int octave_base_value::t_id = -1;
-
-const string octave_base_value::t_name ("<unknown type>");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
 
 octave_value
 octave_base_value::do_index_op (const octave_value_list&)

@@ -40,14 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
-octave_allocator
-octave_scalar::allocator (sizeof (octave_scalar));
+DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
 
-int
-octave_scalar::t_id (-1);
-
-const string
-octave_scalar::t_name ("scalar");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar");
 
 static inline bool
 valid_scalar_indices (const octave_value_list& args)

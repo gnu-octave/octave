@@ -59,6 +59,19 @@ private:
   bool grow (void);
 };
 
+#define DECLARE_OCTAVE_ALLOCATOR \
+  public: \
+    void *operator new (size_t size) { return allocator.alloc (size); } \
+    void operator delete (void *p, size_t size) { allocator.free (p, size); } \
+  private: \
+    static octave_allocator allocator;
+
+#define DEFINE_OCTAVE_ALLOCATOR(t) \
+  octave_allocator t::allocator (sizeof (t))
+
+#define DEFINE_OCTAVE_ALLOCATOR2(t, s) \
+  octave_allocator t::allocator (sizeof (t), s)
+
 #endif
 
 /*

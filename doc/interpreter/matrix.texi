@@ -68,7 +68,7 @@ all (all (rand (5) < 0.9))
 @end example
 
 @noindent
-tests a random 5 by 5 matrix to see if all of it's elements are less
+tests a random 5 by 5 matrix to see if all of its elements are less
 than 0.9.
 
 Note that in conditional contexts (like the test clause of @code{if} and

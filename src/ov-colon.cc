@@ -34,9 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr-output.h"
 #include "ov-colon.h"
 
-int octave_magic_colon::t_id = -1;
-
-const string octave_magic_colon::t_name ("magic-colon");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon, "magic-colon");
 
 void
 octave_magic_colon::print (ostream& os, bool) const

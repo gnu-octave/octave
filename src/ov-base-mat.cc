@@ -30,23 +30,54 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include "error.h"
-#include "pr-output.h"
-#include "ov-va-args.h"
+#include "ov-base.h"
+#include "ov-base-mat.h"
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_all_va_args, "va-arg");
-
-void
-octave_all_va_args::print (ostream& os, bool) const
+template <class MT>
+bool
+octave_base_matrix<MT>::print_as_scalar (void) const
 {
-  indent (os);
-  print (os);
+  int nr = rows ();
+  int nc = columns ();
+
+  return (nr == 1 && nc == 1 || (nr == 0 || nc == 0));
 }
 
+template <class MT>
 void
-octave_all_va_args::print_raw (ostream& os, bool) const
+octave_base_matrix<MT>::print (ostream& os, bool pr_as_read_syntax) const
 {
-  os << "all_va_args";
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
+}
+
+template <class MT>
+void
+octave_base_matrix<MT>::print_raw (ostream& os, bool pr_as_read_syntax) const
+{
+  octave_print_internal (os, matrix, pr_as_read_syntax,
+			 current_print_indent_level ());
+}
+
+template <class MT>
+bool
+octave_base_matrix<MT>::print_name_tag (ostream& os, const string& name) const
+{
+  bool retval = false;
+
+  indent (os);
+
+  if (print_as_scalar ())
+    os << name << " = ";
+  else
+    {
+      os << name << " =";
+      newline (os);
+      newline (os);
+      retval = true;
+    }
+
+  return retval;
 }
 
 /*

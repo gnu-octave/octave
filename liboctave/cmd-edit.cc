@@ -74,7 +74,7 @@ public:
 
   void do_set_name (const string& n);
 
-  string do_readline (const string& prompt);
+  string do_readline (const string& prompt, bool& eof);
 
   void do_set_input_stream (FILE *f);
 
@@ -176,9 +176,11 @@ gnu_readline::do_set_name (const string& n)
 }
 
 string
-gnu_readline::do_readline (const string& prompt)
+gnu_readline::do_readline (const string& prompt, bool& eof)
 {
   string retval;
+
+  eof = false;
 
   char *line = ::readline (prompt.c_str ());
 
@@ -188,6 +190,8 @@ gnu_readline::do_readline (const string& prompt)
 
       free (line);
     }
+  else
+    eof = true;
 
   return retval;
 }
@@ -419,7 +423,7 @@ public:
 
   ~default_command_editor (void) { }
 
-  string do_readline (const string& prompt);
+  string do_readline (const string& prompt, bool& eof);
 
   void do_set_input_stream (FILE *f);
 
@@ -441,8 +445,10 @@ private:
 };
 
 string
-default_command_editor::do_readline (const string& prompt)
+default_command_editor::do_readline (const string& prompt, bool& eof)
 {
+  eof = false;
+
   fprintf (output_stream, prompt.c_str ());
   fflush (output_stream);
 
@@ -524,8 +530,16 @@ command_editor::set_name (const string& n)
 string
 command_editor::readline (const string& prompt)
 {
+  bool eof;
+
+  return readline (prompt, eof);
+}
+
+string
+command_editor::readline (const string& prompt, bool& eof)
+{
   return (instance_ok ())
-    ? instance->do_readline (prompt) : string ();
+    ? instance->do_readline (prompt, eof) : string ();
 }
 
 void

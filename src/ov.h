@@ -206,12 +206,6 @@ public:
 	}
     }
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
-
   // Simple assignment.
 
   octave_value& operator = (const octave_value& a)
@@ -505,8 +499,6 @@ protected:
 
 private:
 
-  static octave_allocator allocator;
-
   union
     {
       octave_value *rep;      // The real representation.
@@ -532,6 +524,8 @@ private:
 
   void simple_assign (assign_op orig_op, const octave_value_list& idx,
 		      const octave_value& rhs);
+
+  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #define OV_UNOP_FN(name) \
@@ -606,6 +600,24 @@ OV_BINOP_FN (el_and)
 OV_BINOP_FN (el_or)
 
 OV_BINOP_FN (struct_ref)
+
+// T_ID is the type id of struct objects, set by register_type().
+// T_NAME is the type name of struct objects.
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA \
+  public: \
+    int type_id (void) const { return t_id; } \
+    string type_name (void) const { return t_name; } \
+    static int static_type_id (void) { return t_id; } \
+    static void register_type (void) \
+      { t_id = octave_value_typeinfo::register_type (t_name); } \
+ \
+  private: \
+    static int t_id; \
+    static const string t_name;
+
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n) \
+  int t::t_id (-1); \
+  const string t::t_name (n)
 
 // If TRUE, allow assignments like
 //

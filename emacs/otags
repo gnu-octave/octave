@@ -17,6 +17,8 @@
 # a line by yourself of the form `###key <script-name>' if you want to
 # jump to it.  :-(
 
+# Author: Mario Storti <mstorti@minerva.unl.edu.ar>
+
 etags --lang=none \
       --regex='/[ \t]*function.*=[ \t]*\([^ \t]*\)[ \t]*(/\1/' \
       --regex='/###key \(.*\)/\1/' \

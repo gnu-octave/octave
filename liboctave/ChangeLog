@@ -1,4 +1,15 @@
+Thu Nov 12 17:44:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.h (command_editor::readline): Add new variation that
+	allows EOF information to be passed back to caller.
+
+	* dMatrix.cc (Matrix::read): Do the right thing for EOF when
+	amount of data to read is unspecified.
+
 Tue Nov 10 07:53:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): New macro.
+	(DEFINE_OCTAVE_ALLOCATOR): Ditto.
 
 	* byte-swap.h (swap_bytes, swap_2_bytes, swap_4_bytes, swap_8_bytes): 
 	Add volatile qualifier to void* arg.

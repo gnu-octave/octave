@@ -103,8 +103,11 @@ octave_value_list::splice (int offset, int rep_length,
 
   if (offset < 0 || offset >= len)
     {
-      error ("octave_value_list::splice: invalid OFFSET");
-      return retval;
+      if (! (rep_length == 0 && offset == len))
+	{
+	  error ("octave_value_list::splice: invalid OFFSET");
+	  return retval;
+	}
     }
 
   if (rep_length < 0 || rep_length + offset > len)
@@ -131,6 +134,12 @@ octave_value_list::splice (int offset, int rep_length,
     retval(k++) = elem (i);
 
   return retval;
+}
+
+octave_value_list
+octave_value_list::index (idx_vector& i) const
+{
+  return octave_value_list (data.index (i));
 }
 
 bool

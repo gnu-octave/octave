@@ -40,11 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "pr-output.h"
 
-int
-octave_char_matrix_str::t_id (-1);
+DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
 
-const string
-octave_char_matrix_str::t_name ("string");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)
@@ -198,38 +196,10 @@ octave_char_matrix_str::string_value (void) const
 }
 
 void
-octave_char_matrix_str::print (ostream& os, bool pr_as_read_syntax) const
-{
-  // indent (os);
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
 octave_char_matrix_str::print_raw (ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, matrix, pr_as_read_syntax, true,
-			 current_print_indent_level ());
-}
-
-bool
-octave_char_matrix_str::print_name_tag (ostream& os, const string& name) const
-{
-  bool retval = false;
-
-  indent (os);
-
-  if (rows () <= 1)
-    os << name << " = ";
-  else
-    {
-      os << name << " =";
-      newline (os);
-      newline (os);
-      retval = true;
-    }
-
-  return retval;
+  octave_print_internal (os, matrix, pr_as_read_syntax,
+			 current_print_indent_level (), true);
 }
 
 /*

@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.1.9"
+#define OCTAVE_VERSION "2.1.10"
 
 #define OCTAVE_COPYRIGHT \
   "Copyright (C) 1996, 1997, 1998 John W. Eaton."
@@ -37,7 +37,15 @@ This is free software with ABSOLUTELY NO WARRANTY."
 
 #define OCTAVE_STARTUP_MESSAGE \
   OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
-For details, type `warranty'."
+For details, type `warranty'.\n\
+\n\
+*** This is a development version of Octave.  Development releases\n\
+*** are provided for people who want to help test, debug, and improve\n\
+*** Octave.\n\
+***\n\
+*** If you want a stable, well-tested version of Octave, you should be\n\
+*** using one of the stable releases (when this development release\n\
+*** was made, the latest stable version was 2.0.13)."
 
 #endif
 

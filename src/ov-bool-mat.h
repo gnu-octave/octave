@@ -38,6 +38,7 @@ class ostream;
 
 #include "error.h"
 #include "ov-base.h"
+#include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -48,28 +49,22 @@ class tree_walker;
 // Character matrix values.
 
 class
-octave_bool_matrix : public octave_base_value
+octave_bool_matrix : public octave_base_matrix<boolMatrix>
 {
 public:
 
   octave_bool_matrix (void)
-    : octave_base_value () { }
+    : octave_base_matrix () { }
 
   octave_bool_matrix (const boolMatrix& bm)
-    : octave_base_value (), matrix (bm) { }
+    : octave_base_matrix (bm) { }
 
   octave_bool_matrix (const octave_bool_matrix& bm)
-    : octave_base_value (), matrix (bm.matrix) { }
+    : octave_base_matrix (bm) { }
 
   ~octave_bool_matrix (void) { }
 
   octave_value *clone (void) { return new octave_bool_matrix (*this); }
-
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 
@@ -80,21 +75,6 @@ public:
   void assign (const octave_value_list& idx, const boolMatrix& rhs);
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
-
-  int rows (void) const { return matrix.rows (); }
-  int columns (void) const { return matrix.columns (); }
-
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return r > c ? r : c;
-  }
-
-  bool is_defined (void) const { return true; }
-
-  bool is_constant (void) const { return true; }
 
   bool is_bool_matrix (void) const { return true; }
 
@@ -133,32 +113,11 @@ public:
   octave_value convert_to_str (void) const
     { return octave_value (matrix); }
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (ostream& os, const string& name) const;
-
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
-
 protected:
 
-  boolMatrix matrix;
+  DECLARE_OCTAVE_ALLOCATOR
 
-  static octave_allocator allocator;
-
-  // Type id of bool matrix objects, set by register_type().
-  static int t_id;
-
-  // Type name of bool matrix objects, defined in ov-bool-mat.cc.
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

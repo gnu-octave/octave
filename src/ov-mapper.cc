@@ -34,14 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-mapper.h"
 #include "ov.h"
 
-octave_allocator
-octave_mapper::allocator (sizeof (octave_mapper));
+DEFINE_OCTAVE_ALLOCATOR (octave_mapper);
 
-int
-octave_mapper::t_id (-1);
-
-const string
-octave_mapper::t_name ("built-in mapper function");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mapper,
+				     "built-in mapper function");
 
 static bool
 any_element_less_than (const Matrix& a, double val)

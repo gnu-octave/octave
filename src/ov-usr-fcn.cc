@@ -62,14 +62,10 @@ static bool Vreturn_last_computed_value;
 
 // User defined functions.
 
-octave_allocator
-octave_user_function::allocator (sizeof (octave_user_function));
+DEFINE_OCTAVE_ALLOCATOR (octave_user_function);
 
-int
-octave_user_function::t_id (-1);
-
-const string
-octave_user_function::t_name ("user-defined function");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
+				     "user-defined function");
 
 // Ugh.  This really needs to be simplified (code/data?
 // extrinsic/intrinsic state?).

@@ -29,7 +29,7 @@
 ##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
 ##	filter, polyderiv, polyinteg
 
-function y = polyout(c,x)
+function y = polyout (c, x)
 
 ## Written by A. Scottedward Hodel (scotte@eng.auburn.edu) May 1995)
 ## Nov 1998: Correctly handles complex coefficients

@@ -31,7 +31,7 @@
 ## 
 ## @end deftypefn
  
-function names = sysgroupn(names,kind)
+function names = sysgroupn (names, kind)
 
   ## check for duplicate names
   l = length(names);

@@ -67,7 +67,7 @@
 ## @end example
 ## @end deftypefn
  
-function sys = fir2sys (num,tsam,inname,outname)
+function sys = fir2sys (num, tsam, inname, outname)
 
   ## Written by R. Bruce Tenison  July 29, 1994
   ## Name changed to TF2SYS July 1995

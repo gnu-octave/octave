@@ -39,7 +39,7 @@
 ## 
 ## @end deftypefn
 
-function m = dgram(a,b)
+function m = dgram (a, b)
 
   ## Written by A. S. Hodel July 1995
 

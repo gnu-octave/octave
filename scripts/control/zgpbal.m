@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[retsys] =} zgpbal(Asys)
+## @deftypefn {Function File } {retsys =} zgpbal(Asys)
 ##
 ## used internally in @code{tzero}; minimal argument checking performed
 ##
@@ -38,7 +38,8 @@
 ## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
 ## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
 
-function [retsys] = zgpbal(Asys)  
+function retsys = zgpbal (Asys)  
+
   ## A. S. Hodel July 24 1992
   ## Conversion to Octave by R. Bruce Tenison July 3, 1994
 

@@ -15,11 +15,16 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-## usage: B = swaprows(A)
-## permute rows of A into reverse order
 
-function B = swaprows(A)
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} swaprows ( inputs ) 
+## @format
+##  function B = swaprows(A)
+##  permute rows of A into reverse order
+## @end format
+## @end deftypefn
+
+function B = swaprows (A)
 
   ## A. S. Hodel July 23, 1992
   ## Conversion to Octave R. Bruce Tenison July 4, 1994

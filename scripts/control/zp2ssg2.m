@@ -23,7 +23,7 @@
 ##  a polynomial with those roots.
 ## @end deftypefn
 
-function [poly,rvals] = zp2ssg2(rvals)
+function [poly, rvals] = zp2ssg2 (rvals)
 
   ## A. S. Hodel Aug 1996
 

@@ -35,7 +35,7 @@
 ## Do not attempt to use this at home; no argument checking performed.
 ## @end deftypefn
   
-function K = hinf_ctr(dgs,F,H,Z,g)
+function K = hinf_ctr (dgs, F, H, Z, g)
 
   ## A. S. Hodel August 1995
   ## Revised by Kai P Mueller April 1998 to solve the general H_infinity

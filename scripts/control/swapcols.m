@@ -16,10 +16,15 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-## usage: B = swapcols(A)
-## permute columns of A into reverse order
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} swapcols ( inputs ) 
+## @format
+##  function B = swapcols(A)
+##  permute columns of A into reverse order
+## @end format
+## @end deftypefn
 
-function B = swapcols(A)
+function B = swapcols (A)
   
   ## A. S. Hodel July 23, 1992
   ## Conversion to Octave R. Bruce Tenison July 4, 1994

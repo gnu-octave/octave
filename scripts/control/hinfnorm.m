@@ -63,7 +63,7 @@
 ##  $Revision: 1.9 $
 ## @end deftypefn
  
-function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
+function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   if((nargin == 0) || (nargin > 4))
     usage("[g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])");

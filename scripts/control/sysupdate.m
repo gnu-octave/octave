@@ -48,7 +48,7 @@
 
 ## See also: tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, sys2zp
 
-function sys = sysupdate(sys,opt)
+function sys = sysupdate (sys, opt)
 
   ## Written by John Ingram  7-9-96
 

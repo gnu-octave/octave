@@ -26,7 +26,7 @@
 
 ## See also: fir2sys
  
-function [c,tsam,inname,outname] = sys2fir(sys)
+function [c, tsam, inname, outname] = sys2fir (sys)
 
   ## a s hodel July 1996
 

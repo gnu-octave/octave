@@ -25,7 +25,7 @@
 ## Used internally in freqresp (@code{bode}, @code{nyquist})
 ## @end deftypefn
  
-function [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,tsam)
+function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
 
   ## make sure zer,pol are row vectors
   if(!isempty(pol)) pol = reshape(pol,1,length(pol)); endif

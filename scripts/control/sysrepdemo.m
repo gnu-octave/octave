@@ -24,7 +24,7 @@
 ## Octave Controls toolbox demo: System representation
 ## Written by A. S. Hodel June 1995
 ## Revised Aug 1995 for system data structure format
-function sysrepdemo()
+function sysrepdemo ()
 
 
 

@@ -90,7 +90,7 @@
 ## @end enumerate
 ## @end deftypefn 
 
-function [mag_r,phase_r,w_r] = bode(sys,w,outputs,inputs,plot_style)
+function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 
   ## Written by John Ingram  July 10th, 1996
   ## Based on previous code

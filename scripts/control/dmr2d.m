@@ -70,7 +70,7 @@
 ## 
 ## @end deftypefn
 
-function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
+function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   ## Adapted from c2d by a.s.hodel@eng.auburn.edu
 

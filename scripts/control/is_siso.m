@@ -22,7 +22,7 @@
 ## @var{sys} is single-input, single-output.
 ## @end deftypefn
  
-function  SISO = is_siso(sys)
+function  SISO = is_siso (sys)
 ## function SISO = is_siso(sys)
 ## return nonzero if the system sys is single-input, single-output.
 

@@ -36,7 +36,7 @@
 ##        are much better for observability tests.
 ## @end deftypefn
 
-function Qb = obsv(sys, c)
+function Qb = obsv (sys, c)
 
   ## Written by Kai P. Mueller November 4, 1997
   ## modified by

@@ -21,7 +21,7 @@
 ## Octave Controls toolbox demo: H2/Hinfinity options demos
 ##@end deftypefn
  
-function dgkfdemo()
+function dgkfdemo ()
 ## Written by A. S. Hodel June 1995
  
   save_val = page_screen_output;

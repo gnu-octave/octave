@@ -33,7 +33,7 @@
 ## 
 ## @end deftypefn 
 
-function systype = sysgettype(sys)
+function systype = sysgettype (sys)
 
   if(!is_struct(sys))
     error("sysgettype: input sys is not a structure");

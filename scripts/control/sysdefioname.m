@@ -36,7 +36,7 @@
 ## @end example
 ## @end deftypefn
  
-function ioname = sysdefioname(n,str,m)
+function ioname = sysdefioname (n, str, m)
 
   if (nargin < 2 | nargin > 3)
     usage("ioname = sysdefioname(n,str[,m])");

@@ -41,7 +41,7 @@
 ## set appropriately in the returned value of @var{sys}.
 ## @end deftypefn
 
-function sys = sysscale(sys,outscale,inscale,outname,inname)
+function sys = sysscale (sys, outscale, inscale, outname, inname)
 
   ## A. S. Hodel August 1995
   ## modified by John Ingram 7-15-96

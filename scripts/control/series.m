@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [a,b,c,d] = series(a1,b1,c1,d1,a2,b2,c2,d2)
+function [a, b, c, d] = series (a1, b1, c1, d1, a2, b2, c2, d2)
 ## Forms the series connection of two systems.
 ##
 ## Superseded by sysmult.  Do not use this routine!

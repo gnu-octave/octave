@@ -21,7 +21,7 @@
 ## Octave Controls toolbox demo: Frequency Response demo
 ## @end deftypefn
 
-function frdemo()
+function frdemo ()
 
   ## Written by David Clem August 15, 1994 
 

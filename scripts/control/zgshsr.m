@@ -23,7 +23,8 @@
 ## Called by zgfslv
 ## @end deftypefn
 
-function x = zgshsr(y)
+function x = zgshsr (y)
+
   ## A. S. Hodel July 24, 1992
   ## Conversion to Octave by R. Bruce Tenison July 3, 1994
 

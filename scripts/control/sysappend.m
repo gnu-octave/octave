@@ -74,7 +74,7 @@
 ## 
 ## @end deftypefn
 
-function retsys = sysappend(sys,b,c,d,outname,inname,yd)
+function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 
   ## written by John Ingram August 1996
   

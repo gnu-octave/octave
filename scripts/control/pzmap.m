@@ -28,7 +28,7 @@
 ##           (see sys2zp for a preferable function call)
 ## @end deftypefn
  
-function [zer,pol]=pzmap(sys)
+function [zer, pol]=pzmap (sys)
 
   save_emp = empty_list_elements_ok;
 

@@ -34,7 +34,7 @@
 ## and x = system states.
 ## @end deftypefn
  
-function [y,x] = lsim(sys,u,t,x0)
+function [y, x] = lsim (sys, u, t, x0)
 
   ## Written by David Clem, A. S. Hodel July 1995
   ## modified by John Ingram for system format August 1996

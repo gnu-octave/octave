@@ -35,7 +35,7 @@
 ## @end format
 ## @end deftypefn
 
-function [yy,idx] = sortcom(xx,opt)
+function [yy, idx] = sortcom (xx, opt)
 
   ## Written by A. S. Hodel June 1995
 

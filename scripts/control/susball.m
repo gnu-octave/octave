@@ -19,108 +19,83 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { outputs =} susball ( inputs ) 
 ## @format
-## 
-## @end format
-## @end deftypefn
-## @deftypefn {Function File } { outputs =} swap ( inputs ) 
-## @format
-##  [a1,b1] = swap(a,b)
-##  interchange a and b
-## 
-## 
-## @end format
-## @end deftypefn
-## @deftypefn {Function File } { outputs =} swapcols ( inputs ) 
-## @format
-##  function B = swapcols(A)
-##  permute columns of A into reverse order
-## 
-## 
-## @end format
-## @end deftypefn
-## @deftypefn {Function File } { outputs =} swaprows ( inputs ) 
-## @format
-##  function B = swaprows(A)
-##  permute rows of A into reverse order
-## 
-## 
 ## @end format
 ## @end deftypefn
 
-    cmd = "ballsys = margetsys(""disc"")";
-    eval(cmd);
-    
-    disp("Design LQG controller");
-    cmd = "sysout(ballsys)";
-    run_cmd
-    disp("add noise inputs to system...")
- 
-    disp("discrete system:")
-    [nn,nz,mm,pp] = sysdimensions(ballsys);
-    cmd = "ballsys = sysappend(ballsys,nz);";
-    run_cmd 
+cmd = "ballsys = margetsys(""disc"")";
+eval(cmd);
 
-    cmd = "sysout(ballsys)";
-    run_cmd
+disp("Design LQG controller");
+cmd = "sysout(ballsys)";
+run_cmd
+disp("add noise inputs to system...")
 
-    disp("Notice the two additional inputs, u_2, and u_3.  These are the ");
-    disp("""entry points"" for the gaussian noise disturbance.");
-    disp(" ");
-    disp("We'll design the controller to use only position feedback:")
+disp("discrete system:")
+[nn,nz,mm,pp] = sysdimensions(ballsys);
+cmd = "ballsys = sysappend(ballsys,nz);";
+run_cmd 
 
-    cmd = "ballsys=sysprune(ballsys,1,[]);";
-    run_cmd
-    cmd = "sysout(ballsys)";
-    run_cmd
+cmd = "sysout(ballsys)";
+run_cmd
 
-    disp("Now design an LQG controller: Sigw: input noise")
-    Sigw = eye(2)
-    disp("Now design an LQG controller: Sigv: measurement noise")
-    Sigv = eye(pp);
+disp("Notice the two additional inputs, u_2, and u_3.  These are the ");
+disp("""entry points"" for the gaussian noise disturbance.");
+disp(" ");
+disp("We'll design the controller to use only position feedback:")
 
-    disp("State and input penalties:")
-    Q = eye(2)
-    R = 1
-    disp("Controlled input is input 1");
+cmd = "ballsys=sysprune(ballsys,1,[]);";
+run_cmd
+cmd = "sysout(ballsys)";
+run_cmd
 
-    cmd="Ksys = lqg(ballsys,Sigw,Sigv,Q,R,1);";
-    run_cmd
+disp("Now design an LQG controller: Sigw: input noise")
+Sigw = eye(2)
+disp("Now design an LQG controller: Sigv: measurement noise")
+Sigv = eye(pp);
 
-    disp("sysout(Ksys);");
-    sysout(Ksys);
+disp("State and input penalties:")
+Q = eye(2)
+R = 1
+disp("Controlled input is input 1");
 
-    disp("\nGet rid of the disturbance inputs");
-    cmd = "ballsys = sysprune(ballsys,1,1);"
-    run_cmd;
-    sysout(ballsys);
-    sysout(ballsys,"zp");
+cmd="Ksys = lqg(ballsys,Sigw,Sigv,Q,R,1);";
+run_cmd
 
-    disp("\nGrouping the plant and the controller");
-    cmd = "closed_loop = sysgroup(ballsys,Ksys);"
-    run_cmd;
-    sysout(closed_loop);
+disp("sysout(Ksys);");
+sysout(Ksys);
 
-    disp("\nduplicating the plant input");
-    cmd = "closed_loop = sysdup(closed_loop,[],1);"
-    run_cmd;
-    sysout(closed_loop);
+disp("\nGet rid of the disturbance inputs");
+cmd = "ballsys = sysprune(ballsys,1,1);"
+run_cmd;
+sysout(ballsys);
+sysout(ballsys,"zp");
 
-##    disp("\nscaling the duplicated input by -1");
-##    cmd = "closed_loop = sysscale(closed_loop,[],diag([1,1,1]));"
-##    run_cmd;
-##    sysout(closed_loop);
+disp("\nGrouping the plant and the controller");
+cmd = "closed_loop = sysgroup(ballsys,Ksys);"
+run_cmd;
+sysout(closed_loop);
 
-    disp("\nconnecting plant output to controller input and controller output");
-    disp("to the duplicated plant input");
-    cmd = "closed_loop = sysconnect(closed_loop,[1 2],[2 3]);"
-    run_cmd;
-    sysout(closed_loop);
+disp("\nduplicating the plant input");
+cmd = "closed_loop = sysdup(closed_loop,[],1);"
+run_cmd;
+sysout(closed_loop);
 
-    disp("\nkeeping only the original plant input and plant output");
-    cmd = "closed_loop = sysprune(closed_loop,1,1);"
-    run_cmd;
-    sysout(closed_loop);
+## disp("\nscaling the duplicated input by -1");
+## cmd = "closed_loop = sysscale(closed_loop,[],diag([1,1,1]));"
+## run_cmd;
+## sysout(closed_loop);
 
-    sysout(closed_loop,"zp");
+disp("\nconnecting plant output to controller input and controller output");
+disp("to the duplicated plant input");
+cmd = "closed_loop = sysconnect(closed_loop,[1 2],[2 3]);"
+run_cmd;
+sysout(closed_loop);
 
- 
+disp("\nkeeping only the original plant input and plant output");
+cmd = "closed_loop = sysprune(closed_loop,1,1);"
+run_cmd;
+sysout(closed_loop);
+
+sysout(closed_loop,"zp");
+
+

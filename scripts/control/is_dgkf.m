@@ -94,7 +94,7 @@
 ## 
 ## @end deftypefn
  
-function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
+function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
 
   ## Written by A. S. Hodel
   ## Updated by John Ingram July 1996 to accept structured systems

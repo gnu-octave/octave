@@ -30,7 +30,7 @@
 ##  desired locations.  
 ## @end deftypefn
  
-function pv = sysreorder(vlen,list)
+function pv = sysreorder (vlen, list)
 
   ## A. S. Hodel, Aug 1995
   

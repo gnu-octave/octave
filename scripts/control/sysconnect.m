@@ -63,7 +63,7 @@
 ## 
 ## @end deftypefn
 
-function sys = sysconnect(sys,output_list,input_list,order,tol)
+function sys = sysconnect (sys, output_list, input_list, order, tol)
 
   ## A. S. Hodel August 1995
   ## modified by John Ingram July 1996

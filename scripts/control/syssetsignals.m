@@ -86,7 +86,7 @@
 ## 
 ## @end deftypefn
 
-function retsys = syssetsignals(sys,opt,names,sig_idx)
+function retsys = syssetsignals (sys, opt, names, sig_idx)
 
   ## Written by John Ingram August 1996
 

@@ -21,7 +21,7 @@
 ##  Octave Controls toolbox demo: State Space analysis demo
 ## @end deftypefn
 
-function analdemo()
+function analdemo ()
 ## Written by David Clem August 15, 1994
 ## Updated by John Ingram December 1996
   

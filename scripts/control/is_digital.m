@@ -32,7 +32,7 @@
 ## Exits with an error of sys is a mixed (continuous and discrete) system
 ## @end deftypefn
 
-function DIGITAL = is_digital(sys,eflg)
+function DIGITAL = is_digital (sys, eflg)
 
   ## a s hodel July 1996
 

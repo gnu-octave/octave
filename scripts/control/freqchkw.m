@@ -22,7 +22,7 @@
 ## Returns boolean value.
 ## @end deftypefn
 
-function USEW = freqchkw(w)
+function USEW = freqchkw (w)
 
   ## A S Hodel July 1996
 

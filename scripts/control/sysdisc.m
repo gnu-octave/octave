@@ -34,7 +34,7 @@
 ## 
 ## @end deftypefn
  
-function [dsys,Adc,Cdc] = sysdisc(sys)
+function [dsys, Adc, Cdc] = sysdisc (sys)
 
   ## function [dsys,Adc,Cdc] = sysdisc(sys)
   ## inputs: sys = system data structure

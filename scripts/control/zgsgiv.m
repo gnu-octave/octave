@@ -22,7 +22,8 @@
 ## No longer used in zero-balancing (zgpbal); kept for backward compatibility
 ## @end deftypefn
 
-function [a,b] = zgsgiv(c,s,a,b)
+function [a, b] = zgsgiv (c, s, a, b)
+
   ## A. S. Hodel July 29, 1992
   ## Convertion to Octave by R. Bruce Tenison July 3, 1994
 

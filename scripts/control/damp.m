@@ -28,7 +28,7 @@
 ## See also: @code{eig}
 ## @end deftypefn
 
-function damp(p, tsam)
+function damp (p, tsam)
 
   ## Written by Kai P. Mueller September 29, 1997.
   ## Update

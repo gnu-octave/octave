@@ -28,7 +28,7 @@
 ## @end format
 ## @end deftypefn
 
-function [zer,pol,k] = tf2zp(num,den)
+function [zer, pol, k] = tf2zp (num, den)
 ## Written by A. S. Hodel, etc.
 
   if(nargin == 2)

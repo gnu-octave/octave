@@ -43,7 +43,7 @@
 ##
 ## See also: lqg, dlqe, dlqr
 
-function [K,Q,P,Ee,Er] = dlqg(A,B,C,G,Sigw, Sigv,Q,R)
+function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
 
   ## Written by A. S. Hodel August 1995
 

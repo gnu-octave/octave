@@ -28,7 +28,7 @@
 ## Written by: Jose Daniel Munoz Frias.
 ## @end deftypefn
  
-function K = place(sys, P) 
+function K = place (sys, P) 
 
   ## Universidad Pontificia Comillas
   ## ICAIdea

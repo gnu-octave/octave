@@ -25,7 +25,7 @@
 ##  H2 and Hinf Control Problems", IEEE TAC August 1989
 ## @end deftypefn
 
-function h2gain = h2norm(sys)
+function h2gain = h2norm (sys)
 
   ## A. S. Hodel Aug 1995
   ## updated for system data structure by John Ingram November 1996

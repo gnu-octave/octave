@@ -25,7 +25,7 @@
 
 ## See also: abcddim
 
-function retval = is_abcd(a, b, c, d)
+function retval = is_abcd (a, b, c, d)
 
   ## Written by Kai P. Mueller November 4, 1997
   ## based on is_controllable.m of Scottedward Hodel

@@ -23,7 +23,7 @@
 ##  used internally, minimal argument checking
 ## @end deftypefn
 
-function stname = sysdefstname(n,nz)
+function stname = sysdefstname (n, nz)
 
   stname = list();
   if(n > 0)

@@ -38,7 +38,7 @@
 ## for complex frequencies @math{s = jw}.
 ## @end deftypefn
 
-function out = ltifr(a,b,w)
+function out = ltifr (a, b, w)
 
   ## R. B. Tenison, D. Clem, A. S. Hodel, July 1995
   ## updated by John Ingram August 1996 for system format

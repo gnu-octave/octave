@@ -66,7 +66,7 @@
 
 ## See also: sysgetsignals, sysgettsam
 
-function [n,nz,m,p,yd] = sysdimensions(sys,opt)
+function [n, nz, m, p, yd] = sysdimensions (sys, opt)
 if(nargout > 5 | nargin < 1 | nargin > 2)
   usage("[n,nz,m,p[,yd]] = sysdimensions(sys{,opt})");
 elseif(!is_struct(sys))

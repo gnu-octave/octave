@@ -32,7 +32,7 @@
 ##        are much better for controllability tests.
 ## @end deftypefn
 
-function Qs = ctrb(sys, b)
+function Qs = ctrb (sys, b)
 
   ## Written by Kai P. Mueller November 4, 1997
   ## based on is_controllable.m of Scottedward Hodel

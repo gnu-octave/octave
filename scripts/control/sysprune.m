@@ -45,7 +45,7 @@
 ## @end deftypefn
 ## 
  
-function sys = sysprune(sys,output_idx,input_idx,state_idx)
+function sys = sysprune (sys, output_idx, input_idx, state_idx)
 
   ## A. S. Hodel August 1995
   ## Updated by John Ingram 7-15-96

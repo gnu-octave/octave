@@ -56,7 +56,7 @@
 ## 
 
  
-function csys = d2c(sys,opt)
+function csys = d2c (sys, opt)
 
   ## Written by R. Bruce Tenison August 23, 1994
   ## Updated by John Ingram for system data structure  August 1996

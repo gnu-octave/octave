@@ -41,7 +41,7 @@
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 ##     is_observable, is_stabilizable, is_detectable
 
-function [retval,U] = is_stabilizable (a, b, tol)
+function [retval, U] = is_stabilizable (a, b, tol)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
   ## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 

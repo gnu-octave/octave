@@ -27,7 +27,7 @@
 ## 
 ## Note: discrete-state sampling time is not included!
 
-function Asys = packsys(a,b,c,d,dflg)
+function Asys = packsys (a, b, c, d, dflg)
 
   
   ## Written by R. Bruce Tenison  July 29, 1994

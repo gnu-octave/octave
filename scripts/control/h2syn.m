@@ -58,7 +58,7 @@
 ## @end table
 ## @end deftypefn
  
-function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
+function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
   ## Updated for System structure December 1996 by John Ingram
 

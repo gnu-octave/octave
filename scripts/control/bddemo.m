@@ -21,7 +21,7 @@
 ##  Octave Controls toolbox demo: Block Diagram Manipulations demo
 ## @end deftypefn
  
-function bddemo()
+function bddemo ()
 
   ## Written by David Clem August 15, 1994
   ## Modified by A S Hodel Summer-Fall 1996

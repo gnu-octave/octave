@@ -22,7 +22,7 @@
 ## to @var{syssetsignals}).
 ## @end deftypefn
 
-function flg = is_signal_list(mylist)
+function flg = is_signal_list (mylist)
 flg = is_list(mylist);
 if(flg)
   for ii=1:length(mylist)

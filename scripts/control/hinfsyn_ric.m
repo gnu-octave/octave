@@ -32,7 +32,7 @@
 ##    5: Xinf not positive definite
 ##    6: R is singular
 
-function [Xinf,x_ha_err] = hinfsyn_ric(A,BB,C1,d1dot,R,ptol)
+function [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol)
 
   x_ha_err = 0;        # assume success
   Xinf = [];		     # default return value

@@ -27,7 +27,7 @@
 ##  combines the two string lists old_names and inames
 ## @end deftypefn
  
-function old_names = syschnamesl(olist,old_names,inames,listname)
+function old_names = syschnamesl (olist, old_names, inames, listname)
   ## $Revision: 2.1.14.5 $
   ## $Log: syschnamesl.m,v $
   ## Revision 2.1.14.5  1999/09/22  21:55:46  scotte

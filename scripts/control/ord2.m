@@ -42,7 +42,7 @@
 
 ## See also: jet707 (MIMO example, Boeing 707-321 aircraft model)
 
-function outsys = ord2(nfreq, damp, gain)
+function outsys = ord2 (nfreq, damp, gain)
 
   ## Written by Kai P. Mueller September 28, 1997
   ## Updates

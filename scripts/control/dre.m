@@ -40,7 +40,7 @@
 ##   tvals is selected so that || nth(Plist,ii) - nth(Plist,ii-1) || < Ptol
 ##     for ii=2:length(tvals)
 
-function [tvals,Plist] = dre(sys,Q,R,Qf,t0,tf,Ptol,maxits)
+function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
   if(nargin < 6 | nargin > 8 | nargout != 2)
     usage("[tvals,Plist] = dre(sys,Q,R,Qf,t0,tf{,Ptol})");

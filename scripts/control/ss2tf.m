@@ -38,7 +38,7 @@
 ## @end format
 ## @end deftypefn
  
-function [num,den] = ss2tf(a,b,c,d)
+function [num, den] = ss2tf (a, b, c, d)
 
   ## Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
   ## a s hodel: modified to allow for pure gain blocks Aug 1996

@@ -40,7 +40,7 @@
 ## @end format
 ## @end deftypefn
 
-function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,max_k)
+function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, min_k, max_k)
 
   ## Convert the input to a transfer function if necessary
   ## Written by Clem and Tenison

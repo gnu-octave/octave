@@ -21,7 +21,7 @@
 ##Octave Controls toolbox demo: Root Locus demo
 ##@end deftypefn
  
-function rldemo()
+function rldemo ()
 ## Written by David Clem August 15, 1994
 ## Updated by John Ingram December 1996
 

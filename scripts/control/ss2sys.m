@@ -187,7 +187,7 @@
 ## 
 ## @end deftypefn
 
-function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
+function  retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
 
   ## Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
 

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{sys}] =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
+## @deftypefn {Function File } {@var{sys} =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
 ## 
 ## Contributed by Kai Mueller.
 ## 
@@ -86,7 +86,7 @@
 ## 
 ## The closed loop system GW can be optained by
 ## @example
-## GW = buildssic([1 2; 2 -1], [2], [1 2 3], [2], G, K);
+## GW = buildssic([1 2; 2 -1], 2, [1 2 3], 2, G, K);
 ## @end example
 ## @table @var
 ## @item Clst
@@ -120,18 +120,19 @@
 ## The closed loop system GW from [z; u]' to [v1; v2; y]' can be
 ## obtained by (all SISO systems):
 ## @example
-## GW = buildssic([1 4;2 4;3 1],[3],[2 3 5],[3 4],G,W1,W2,One);
+## GW = buildssic([1, 4; 2, 4; 3, 1], 3, [2, 3, 5],
+##                [3, 4], G, W1, W2, One);
 ## @end example
 ## where "One" is a unity gain (auxillary) function with order 0.
 ## (e.g. @code{One = ugain(1);})
 ## @end deftypefn
  
-function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
+function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8)
 
   ## Written by Kai Mueller April 1998
 
   if((nargin < 5) || (nargin > 12))
-    usage("[sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");
+    usage("sys = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");
   endif
   if (nargin >= 5)
     if (!is_struct(s1))

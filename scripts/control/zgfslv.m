@@ -21,7 +21,7 @@
 ## solve system of equations for dense zgep problem
 ## @end deftypefn
  
-function x = zgfslv(n,m,p,b)
+function x = zgfslv (n, m, p, b)
   ## Written by A. Scotte Hodel
   ## Converted to Octave by R Bruce Tenison, July 3, 1994
 

@@ -50,7 +50,7 @@
 ## two functions.
 ## @end deftypefn
  
-function [f,w] = bodquist(sys,w,outputs,inputs,rname)
+function [f, w] = bodquist (sys, w, outputs, inputs, rname)
 
   ## check number of input arguments given
   if (nargin != 5)

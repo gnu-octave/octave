@@ -25,7 +25,7 @@
 ##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
 ##	filter, polyderiv, polyinteg, polyout 
 
-function zpout(zer,pol,k,x)
+function zpout (zer, pol, k, x)
 
   ## Written by A. Scottedward Hodel (scotte@eng.auburn.edu) June 1995)
 

@@ -39,7 +39,7 @@
 ## @end table
 ## @end deftypefn
 
-function [ff,w] = freqresp(sys,USEW,w);
+function [ff, w] = freqresp (sys, USEW, w);
 
   ## Written by: R. Bruce Tenison July 11, 1994
   ## SYS_INTERNAL accesses members of system data structure

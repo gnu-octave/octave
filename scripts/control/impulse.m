@@ -44,7 +44,7 @@
  
 ## See also:  step, stepimp
 
-function [y, t] = impulse(sys, inp, tstop, n)
+function [y, t] = impulse (sys, inp, tstop, n)
 
 ## Written by Kai P. Mueller October 2, 1997
 ## based on lsim.m of Scottedward Hodel

@@ -29,7 +29,7 @@
 ##    @var{axvec} vector of axis limits appropriate for call to axis() function
 ## @end deftypefn
 
-function axvec = axis2dlim(axdata)
+function axvec = axis2dlim (axdata)
 
   if(isempty(axdata))
     axdata = 0;

@@ -135,7 +135,7 @@
 ## 
 ## @end deftypefn
 
-function [stname,inname,outname,yd] = sysgetsignals(sys,sigid,signum,strflg)
+function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strflg)
 
   ## Adapted from ss2sys
 

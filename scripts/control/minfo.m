@@ -29,7 +29,7 @@
 ##      ncstates is the number of continuous states of the system
 ##	 ndstates is the number of discrete states of the system
 
-function [systype, nout, nin, ncstates, ndstates] = minfo(inmat)
+function [systype, nout, nin, ncstates, ndstates] = minfo (inmat)
 
   ## Written by R. Bruce Tenison July 29, 1994
   ## Modified by David Clem November 13, 1994

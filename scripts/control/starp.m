@@ -20,7 +20,7 @@
 ## @deftypefn {Function File } { outputs =} starp ( inputs ) 
 ## @format
 ## 
-##  [sys] = starp(P, K, ny, nu)
+##  sys = starp(P, K, ny, nu)
 ## 
 ##  Redheffer star product or upper/lower LFT, respectively.
 ## 
@@ -49,12 +49,12 @@
 ## @end format
 ## @end deftypefn
 
-function [sys] = starp(P, K, ny, nu);
+function sys = starp (P, K, ny, nu);
 
   ## Written by Kai Mueller May 1998
 
   if((nargin != 2) && (nargin != 4))
-    usage("[sys] = starp(P, K, ny, nu)");
+    usage("sys = starp(P, K, ny, nu)");
   endif
   if (!is_struct(P))
     error("---> P must be in system data structure");

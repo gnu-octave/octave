@@ -22,7 +22,7 @@
 ##  strip leading zero coefficients to get the true polynomial length
 ## @end deftypefn
 
-function vec = tf2sysl(vec)
+function vec = tf2sysl (vec)
 ## vec = tf2sysl(vec)
 ##
 ## used internally in tf2sys

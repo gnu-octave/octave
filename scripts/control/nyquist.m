@@ -84,7 +84,7 @@
 ## 
 ## @end deftypefn
  
-function [realp,imagp,w] = nyquist(sys,w,outputs,inputs,atol)
+function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
    
   ## By R. Bruce Tenison, July 13, 1994
   ## A. S. Hodel July 1995 (adaptive frequency spacing, 

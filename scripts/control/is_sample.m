@@ -22,7 +22,7 @@
 ##  (real,scalar, > 0)
 ## @end deftypefn
  
-function out = is_sample(Ts)
+function out = is_sample (Ts)
 ## A. S. Hodel July 1995
 
 out = (is_scalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );

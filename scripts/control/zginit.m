@@ -29,7 +29,7 @@
 ## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
 ## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
 
-function zz = zginit(a,b,c,d)
+function zz = zginit (a, b, c, d)
 
   ## A. S. Hodel July 24 1992
   ## Conversion to Octave by R. Bruce Tenison, July 3, 1994

@@ -31,13 +31,12 @@
 ## @code{num/den} from the vectors of poles and zeros.
 ## @end deftypefn
 
-function [num,den] = zp2tf(zer,pol,k)
+function [num, den] = zp2tf (zer, pol, k)
 
   ## Find out whether data was entered as a row or a column vector and
   ## convert to a column vector if necessary
   ## Written by A. S. Hodel with help from students Ingram, McGowan.
   ## a.s.hodel@eng.auburn.edu
-
 
   [rp,cp] = size(pol);
   [rz,cz] = size(zer);

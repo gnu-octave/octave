@@ -42,7 +42,7 @@
 ## @end format
 ## @end deftypefn
 
-function [a,b,c,d] = tf2ss(num,den)
+function [a, b, c, d] = tf2ss (num, den)
   ## Written by R. Bruce Tenison (June 22, 1994) btenison@eng.auburn.edu
   ## mod A S Hodel July, Aug  1995
 

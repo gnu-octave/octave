@@ -22,7 +22,7 @@
 ##         @var{zer} = number of rows of mat whose two norm is less than meps
 ## @end deftypefn
 
-function [sig, tau] = zgrownorm(mat,meps)
+function [sig, tau] = zgrownorm (mat, meps)
 
   rownorm = [];
   for ii=1:rows(mat)

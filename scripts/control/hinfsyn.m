@@ -75,7 +75,7 @@
 ## @end enumerate
 ## @end deftypefn
  
-function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
+function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol, tol)
 
   ## A. S. Hodel August 1995
   ## Updated for Packed system structures December 1996 by John Ingram

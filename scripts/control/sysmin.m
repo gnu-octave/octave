@@ -18,7 +18,7 @@
 ##
 ## Written by A. S. Hodel a.s.hodel@eng.auburn.edu
 
-function [retsys,nc,no,cflg,oflg] = sysmin(sys,flg);
+function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
 
   ## [retsys,nc,no] = sysmin(sys{,flg});
   ## return a minimal (or reduced order) system

@@ -46,7 +46,7 @@
 ## 
 ## @end deftypefn
  
-function sys = sysgroup(...)
+function sys = sysgroup (...)
 
   ## A. S. Hodel August 1995
   ## modified by John Ingram July 1996

@@ -29,7 +29,7 @@
 ## Contributed by Kai Mueller
 ## @end deftypefn
  
-function outsys = jet707()
+function outsys = jet707 ()
 
   ## Written by Kai P. Mueller September 28, 1997
   ## Updates

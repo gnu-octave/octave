@@ -45,7 +45,7 @@
 ## @samp{k} is @code{zp}-form leading coefficient.
 ## @end deftypefn
  
-function [a,b,c,d] = zp2ss(zer,pol,k)
+function [a, b, c, d] = zp2ss (zer, pol, k)
 
   ## Written by David Clem August 15, 1994
 

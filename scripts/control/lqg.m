@@ -61,7 +61,7 @@
 
 ## See also:  h2syn, lqe, lqr
 
-function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
+function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
 
   ## Written by A. S. Hodel August 1995; revised for new system format
   ## August 1996

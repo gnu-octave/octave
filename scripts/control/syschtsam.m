@@ -22,7 +22,7 @@
 ## an error if sys is purely continuous time.
 ## @end deftypefn
  
-function retsys = syschtsam(sys,tsam)
+function retsys = syschtsam (sys, tsam)
 ## Written by John Ingram August 1996
 
   if (nargin != 2)

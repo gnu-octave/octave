@@ -31,7 +31,7 @@
 ## @end deftypefn
 
  
-function [zer,pol,k] = ss2zp(a,b,c,d)
+function [zer, pol, k] = ss2zp (a, b, c, d)
 
   ## Written by David Clem August 15, 1994
   ## Hodel: changed order of output arguments to zer, pol, k. July 1996

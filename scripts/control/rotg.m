@@ -21,7 +21,7 @@
 ##
 ## NOTE: Use [c,s] = givens(a,b) instead.
 
-function [c,s] = rotg(a,b)
+function [c, s] = rotg (a, b)
 
   [c,s] = givens(a,b);
 endfunction

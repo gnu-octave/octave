@@ -24,7 +24,7 @@
 ##      0 (default):            -1, 0, 1,   1i,   1 + 0.5i
 ##      1 (for use with zpout): -1, 0, + 1, + 1i, + 1 + 0.5i
 
-function retval = com2str(zz,flg)
+function retval = com2str (zz, flg)
 
   if (nargin < 1 | nargin > 2)
     usage("com2str(zz{,flg})");

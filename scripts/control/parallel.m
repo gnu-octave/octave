@@ -29,7 +29,7 @@
 ##              --------------------
 ##                   Ksys
 
-function sysp = parallel(Asys,Bsys)
+function sysp = parallel (Asys, Bsys)
 
   ## Written by David Clem August 15, 1994
   ## completely rewritten Oct 1996 a s hodel

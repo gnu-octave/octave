@@ -35,7 +35,7 @@
 ## @strong{Note} @code{qzval} is obsolete; use @code{qz} instead.
 ## @end deftypefn
  
-function lam = qzval(A,B)
+function lam = qzval (A, B)
 ## A. S. Hodel July 1998
 
   warning("qzval is obsolete; calling qz instead")

@@ -29,7 +29,7 @@
 ## @end format
 ## @end deftypefn
  
-function prompt(str)
+function prompt (str)
 
 if(nargin > 1)
   usage("prompt([str])");

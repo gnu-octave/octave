@@ -39,7 +39,7 @@
 ## @end table
 ## @end deftypefn
  
-function retsys = sysout(sys,opt)
+function retsys = sysout (sys, opt)
 
   ## Written by A S Hodel: 1995-1996
 

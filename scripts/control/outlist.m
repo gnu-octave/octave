@@ -42,7 +42,7 @@
 ## 
 ## @end deftypefn
 
-function str_val = outlist(name_list,tabchar,yd,ilist)
+function str_val = outlist (name_list, tabchar, yd, ilist)
 
   ## A. S. Hodel Dec. 1995, 1998
 

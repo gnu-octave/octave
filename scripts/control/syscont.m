@@ -36,7 +36,7 @@
 ## 
 ## @end deftypefn
  
-function [csys,Acd,Ccd] = syscont(sys)
+function [csys, Acd, Ccd] = syscont (sys)
 
   ## Written by John Ingram August 1996
 

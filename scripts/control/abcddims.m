@@ -24,7 +24,7 @@
 ## @var{my} and @var{ny} are the row and column dimensions of the result.
 ## @end deftypefn
 
-function [y,my,ny] = abcddims (x)
+function [y, my, ny] = abcddims (x)
 ## Written by A. S. Hodel (scotte@eng.auburn.edu) Feb 1997
 
   y = x;

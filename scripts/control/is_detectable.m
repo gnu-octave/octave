@@ -33,7 +33,7 @@
 
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
 
-function [retval,U] = is_detectable (a,c,tol)
+function [retval, U] = is_detectable (a, c, tol)
 
   ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
   ## Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.

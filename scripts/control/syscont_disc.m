@@ -39,7 +39,7 @@
 ## 
 ## @end deftypefn
  
-function [n_tot,st_c,st_d,y_c,y_d] = syscont_disc(sys)
+function [n_tot, st_c, st_d, y_c, y_d] = syscont_disc (sys)
 
   ## Written by A. S. Hodel (a.s.hodel@eng.auburn.edu) Feb 1997
 

@@ -31,7 +31,7 @@
 ##  fc = Corner frequency (in Hz, *not* in rad/sec)
 ## @end deftypefn
  
-function wsys = wgt1o(vl, vh, fc)
+function wsys = wgt1o (vl, vh, fc)
 ## Written by Kai P. Mueller September 30, 1997
 
   if (nargin != 3)

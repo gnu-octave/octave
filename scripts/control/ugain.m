@@ -28,7 +28,7 @@
 ## 
 ## @end deftypefn
 
-function outsys = ugain(n)
+function outsys = ugain (n)
 
   ## Written by Kai P. Mueller April, 1998
   ## Updates

@@ -22,7 +22,7 @@
 ## Automatica, # 1982).
 ## @end deftypefn
  
-function retsys = zgreduce(Asys,meps)
+function retsys = zgreduce (Asys, meps)
 
   ## SYS_INTERNAL accesses members of system data structure
 

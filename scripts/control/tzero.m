@@ -47,7 +47,7 @@
 ## @end deftypefn
 
 
-function [zer, gain] = tzero(A,B,C,D)
+function [zer, gain] = tzero (A, B, C, D)
 
   ## R. Bruce Tenison July 4, 1994
   ## A. S. Hodel Aug 1995: allow for MIMO and system data structures

@@ -21,7 +21,7 @@
 ## Superseded by @code{syssetsignals}
 ## @end deftypefn
 
-function retsys = syschnames(sys,opt,list,names)
+function retsys = syschnames (sys, opt, list, names)
 ## Written by John Ingram August 1996; updated by A. S. Hodel 1998
 
   retsys = syssetsignals(sys,opt,names,list);

@@ -52,7 +52,7 @@
 ## @end example
 ## @end deftypefn
  
-function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
+function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
 
   ## Modified by John Ingram  July 20, 1996  
 

@@ -39,7 +39,7 @@
 ## @end example
 ## @end deftypefn
  
-function sys = sysadd(...)
+function sys = sysadd (...)
 
   ## Written by John Ingram July 1996
   ## Updated for variable number of arguments July 1999 A. S. Hodel

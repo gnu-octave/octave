@@ -36,7 +36,7 @@
 ## @end example
 ## @end deftypefn
  
-function sys = syssub(...)
+function sys = syssub (...)
 
   ## Written by John Ingram July 1996
   ## updated for variable numbers of input arguments by July 1999 A. S. Hodel

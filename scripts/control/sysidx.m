@@ -19,7 +19,7 @@
 ## Written by A. S. Hodel, a.s.hodel@eng.auburn.edu
 
 
-function idxvec = sysidx(sys,sigtype,signamelist)
+function idxvec = sysidx (sys, sigtype, signamelist)
 
   ## idxvec = sysidx(sys,sigtype,signamelist)
   ## return indices of signals with specified signal names

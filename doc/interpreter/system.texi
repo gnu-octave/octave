@@ -15,6 +15,7 @@ and even start other programs from the Octave prompt.
 * Timing Utilities::            
 * Filesystem Utilities::        
 * Interacting with the OS::     
+* Password Database Functions::  
 * System Information::          
 * Other Functions::             
 @end menu
@@ -350,7 +351,7 @@ Get information about a symbolic link.  If @var{file} is not a symbolic
 link, @code{lstat} is equivalent to @code{stat}.
 @end deftypefn
 
-@node Interacting with the OS, System Information, Filesystem Utilities, System Utilities
+@node Interacting with the OS, Password Database Functions, Filesystem Utilities, System Utilities
 @section Interacting with the OS
 
 @deftypefn {Built-in Function} {} fork ()
@@ -527,7 +528,61 @@ system's directory listing command, so the available options may vary
 from system to system.
 @end deffn
 
-@node System Information, Other Functions, Interacting with the OS, System Utilities
+@node Password Database Functions, System Information, Interacting with the OS, System Utilities
+@section Password Database Functions
+
+Octave's password database functions return information in a structure
+with the following fields.
+
+@table @code
+@item name
+The user name.
+
+@item passwd
+The encrypted password, if available.
+
+@item uid
+The numeric user id.
+
+@item gid
+The numeric group id.
+
+@item gecos
+The GECOS field.
+
+@item dir
+The home directory.
+
+@item shell
+The initial shell.
+@end table
+
+@deftypefn {Built-in Function} {passwd_struct =} getpwent ()
+Return an entry from the password database, opening it if necessary.
+Once the end of the data has been reached, @code{getpwent} returns 0.
+@end deftypefn
+
+@deftypefn {Built-in Function} {passwd_struct =} getpwuid (@var{uid}).
+Return the first entry from the password database with the user ID
+@var{uid}.  If the user ID does not exist in the database,
+code{getpwuid} returns 0.
+@end deftypefn
+
+@deftypefn {Built-in Function} {passwd_struct =} getpwnam (@var{name})
+Return the first entry from the password database with the user name
+@var{name}.  If the user name does not exist in the database,
+code{getpwname} returns 0.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} setpwent ()
+Return the internal pointer to the beginning of the password database.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} endpwent ()
+Close the password database.
+@end deftypefn
+
+@node System Information, Other Functions, Password Database Functions, System Utilities
 @section System Information
 
 @deftypefn {Built-in Function} {} computer ()

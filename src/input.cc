@@ -1215,6 +1215,8 @@ DEFUN (completion_matches, args, nargout,
 	    {
 	      if (! list.empty ())
 		retval = list;
+	      else
+		retval = "";
 	    }
 	  else
 	    {

@@ -227,5 +227,4 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 check: all
 .PHONY: check
 
-
-include $(MAKEDEPS)
+-include $(MAKEDEPS)

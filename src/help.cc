@@ -80,16 +80,16 @@ static help_list operators[] =
     "String delimiter.\n", },
 
   { "#",
-    "Begin comment character.  See also `%'.\n", },
+    "Begin comment character.  See also `%'.", },
 
   { "%",
-    "Begin comment charcter.  See also `#'.\n", },
+    "Begin comment charcter.  See also `#'.", },
 
   { "&",
-    "Logical and operator.  See also `&&'.\n", },
+    "Logical and operator.  See also `&&'.", },
 
   { "&&",
-    "Logical and operator.  See also `&'.\n", },
+    "Logical and operator.  See also `&'.", },
 
   { "'",
     "Matrix transpose operator.  For complex matrices, computes the\n\
@@ -97,160 +97,172 @@ complex conjugate (Hermitian) transpose.  See also `.''\n\
 \n\
 The single quote character may also be used to delimit strings, but\n\
 it is better to use the double quote character, since that is never\n\
-ambiguous\n", },
+ambiguous", },
 
   { "(",
-    "Array index or function argument delimiter.\n", },
+    "Array index or function argument delimiter.", },
 
   { ")",
-    "Array index or function argument delimiter.\n", },
+    "Array index or function argument delimiter.", },
 
   { "*",
-    "Multiplication operator.  See also `.*'\n", },
+    "Multiplication operator.  See also `.*'", },
 
   { "**",
-    "Power operator.  See also `^', `.**', and `.^'\n", },
+    "Power operator.  See also `^', `.**', and `.^'", },
 
   { "+",
-    "Addition operator.\n", },
+    "Addition operator.", },
 
   { "++",
-    "Increment operator.  As in C, may be applied as a prefix or postfix operator.\n", },
+    "Increment operator.  As in C, may be applied as a prefix or postfix operator.", },
 
   { ",",
-    "Array index, function argument, or command separator.\n", },
+    "Array index, function argument, or command separator.", },
 
   { "-",
-    "Subtraction or unary negation operator.\n", },
+    "Subtraction or unary negation operator.", },
 
   { "--",
-    "Decrement operator.  As in C, may be applied as a prefix or postfix operator.\n", },
+    "Decrement operator.  As in C, may be applied as a prefix or postfix operator.", },
 
   { ".'",
     "Matrix transpose operator.  For complex matrices, computes the\n\
-transpose, *not* the complex conjugate transpose.  See also `''.\n", },
+transpose, *not* the complex conjugate transpose.  See also `''.", },
 
   { ".*",
-    "Element by element multiplication operator.  See also `*'.\n", },
+    "Element by element multiplication operator.  See also `*'.", },
 
   { ".**",
-    "Element by element power operator.  See also `**', `^', and `.^'.\n", },
+    "Element by element power operator.  See also `**', `^', and `.^'.", },
 
   { "./",
-    "Element by element division operator.  See also `/' and `\\'.\n", },
+    "Element by element division operator.  See also `/' and `\\'.", },
 
   { ".^",
-    "Element by element power operator.  See also `**', `^', and `.^'.\n", },
+    "Element by element power operator.  See also `**', `^', and `.^'.", },
 
   { "/",
-    "Right division.  See also `\\' and `./'.\n", },
+    "Right division.  See also `\\' and `./'.", },
 
   { ":",
-    "Select entire rows or columns of matrices.\n", },
+    "Select entire rows or columns of matrices.", },
 
   { ";",
-    "Array row or command separator.  See also `,'.\n", },
+    "Array row or command separator.  See also `,'.", },
 
   { "<",
-    "Less than operator.\n", },
+    "Less than operator.", },
 
   { "<=",
-    "Less than or equals operator.\n", },
+    "Less than or equals operator.", },
 
   { "<>",
-    "Logical not equals operator.  See also `!=' and `~='.\n", },
+    "Logical not equals operator.  See also `!=' and `~='.", },
 
   { "=",
-    "Assignment operator.\n", },
+    "Assignment operator.", },
 
   { "==",
-    "Equality test operator.\n", },
+    "Equality test operator.", },
 
   { ">",
-    "Greater than operator.\n", },
+    "Greater than operator.", },
 
   { ">=",
-    "Greater than or equals operator.\n", },
+    "Greater than or equals operator.", },
 
   { "[",
-    "Return list delimiter.  See also `]'.\n", },
+    "Return list delimiter.  See also `]'.", },
 
   { "\\",
-    "Left division operator.  See also `/' and `./'.\n", },
+    "Left division operator.  See also `/' and `./'.", },
 
   { "]",
-    "Return list delimiter.  See also `['.\n", },
+    "Return list delimiter.  See also `['.", },
 
   { "^",
-    "Power operator.  See also `**', `.^', and `.**.'\n", },
+    "Power operator.  See also `**', `.^', and `.**.'", },
 
   { "|",
-    "Logical or operator.  See also `||'.\n", },
+    "Logical or operator.  See also `||'.", },
 
   { "||",
-    "Logical or operator.  See also `|'.\n", },
+    "Logical or operator.  See also `|'.", },
 
   { "~",
-    "Logical not operator.  See also `!' and `~'.\n", },
+    "Logical not operator.  See also `!' and `~'.", },
 
   { "~=",
-    "Logical not equals operator.  See also `<>' and `!='.\n", },
+    "Logical not equals operator.  See also `<>' and `!='.", },
 
   { 0, 0, },
 };
 
 static help_list keywords[] =
 {
+  { "all_va_args",
+    "Pass all unnamed arguments to another function call.", },
+
   { "break",
-    "Exit the innermost enclosing while or for loop.\n", },
+    "Exit the innermost enclosing while or for loop.", },
 
   { "continue",
-    "Jump to the end of the innermost enclosing while or for loop.\n", },
+    "Jump to the end of the innermost enclosing while or for loop.", },
 
   { "else",
-    "Alternate action for an if block.\n", },
+    "Alternate action for an if block.", },
 
   { "elseif",
-    "Alternate conditional test for an if block.\n", },
+    "Alternate conditional test for an if block.", },
 
   { "end",
-    "Mark the end of any for, if, while, or function block.\n", },
+    "Mark the end of any for, if, while, or function block.", },
+
+  { "end_unwind_protect",
+    "Mark the end of an unwind_protect block.", }, 
 
   { "endfor",
-    "Mark the end of a for loop.\n", },
+    "Mark the end of a for loop.", },
 
   { "endfunction",
-    "Mark the end of a function.\n", },
+    "Mark the end of a function.", },
 
   { "endif",
-    "Mark the end of an if block.\n", },
+    "Mark the end of an if block.", },
 
   { "endwhile",
-    "Mark the end of a while loop.\n", },
+    "Mark the end of a while loop.", },
 
   { "for",
-    "Begin a for loop.\n", },
+    "Begin a for loop.", },
 
   { "function",
-    "Begin a function body.\n", },
+    "Begin a function body.", },
 
   { "global",
-    "Declare variables to have global scope.\n", },
+    "Declare variables to have global scope.", },
 
   { "gplot",
-    "Produce 2-D plots using gnuplot-like command syntax.\n", },
+    "Produce 2-D plots using gnuplot-like command syntax.", },
 
   { "gsplot",
-    "Produce 3-D plots using gnuplot-like command syntax.\n", },
+    "Produce 3-D plots using gnuplot-like command syntax.", },
 
   { "if",
-    "Begin an if block.\n", },
+    "Begin an if block.", },
 
   { "return",
-    "Return from a function.\n", },
+    "Return from a function.", },
+
+  { "unwind_protect",
+    "Begin an unwind_protect block.", }, 
+
+  { "unwind_protect_cleanup",
+    "Begin the cleanup section of an unwind_protect block.", }, 
 
   { "while",
-    "Begin a while loop.\n", },
+    "Begin a while loop.", },
 
   { 0, 0, },
 };

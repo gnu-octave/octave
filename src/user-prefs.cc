@@ -67,6 +67,7 @@ init_user_prefs (void)
   user_pref.resize_on_range_error = 0;
   user_pref.return_last_computed_value = 0;
   user_pref.save_precision = 0;
+  user_pref.saving_history = 0;
   user_pref.silent_functions = 0;
   user_pref.split_long_rows = 0;
   user_pref.struct_levels_to_print = 0;
@@ -404,6 +405,17 @@ return_last_computed_value (void)
 {
   user_pref.return_last_computed_value =
     check_preference ("return_last_computed_value");
+
+  return 0;
+}
+
+
+// Should we save command history?
+
+int
+saving_history (void)
+{
+  user_pref.saving_history = check_preference ("saving_history");
 
   return 0;
 }

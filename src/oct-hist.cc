@@ -64,9 +64,6 @@ Software Foundation, Inc.
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
 
-// Nonzero means we are saving history lines.
-int saving_history = 1;
-
 // The number of lines to save in the history file.
 static int octave_hist_size = 1024;
 
@@ -141,7 +138,7 @@ clean_up_history (void)
 void
 maybe_save_history (const char *s)
 {
-  if (saving_history)
+  if (user_pref.saving_history)
     {
       add_history (s);
       history_lines_this_session++;

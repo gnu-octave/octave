@@ -305,7 +305,7 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   -i, --interactive       Force interactive behavior.\n\
-  --no-line-editing       Don't use readline for command-line editing\n\
+  --no-line-editing       Don't use readline for command-line editing.\n\
   -p PATH, --path PATH    Set initial LOADPATH to PATH.\n\
   -q, --silent            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\

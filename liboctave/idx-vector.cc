@@ -71,7 +71,7 @@ tree_to_mat_idx (double x)
 }
 
 idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
-			const char *rc, int z_len = 0)
+			const char *rc, int z_len)
 {
   initialized = 0;
 
@@ -178,7 +178,7 @@ idx_vector::operator = (const idx_vector& a)
 }
 
 void
-idx_vector::init_state (const char *rc, int z_len = 0)
+idx_vector::init_state (const char *rc, int z_len)
 {
   one_zero = 1;
   num_zeros = 0;
@@ -290,7 +290,7 @@ void
 idx_vector::sort (void)
 {
   qsort ((void *) data, len, sizeof (int),
-	 (int (*)(void*, void*)) intcmp); 
+	 (int (*)(const void*, const void*)) intcmp); 
 }
 
 void

@@ -48,10 +48,10 @@ Octave_object::Octave_object (const Matrix& m)
 Octave_object::Octave_object (const DiagMatrix& d)
   : Array<tree_constant> (1, tree_constant (d)) { }
 
-Octave_object::Octave_object (const RowVector& v, int pcv = -1)
+Octave_object::Octave_object (const RowVector& v, int pcv)
   : Array<tree_constant> (1, tree_constant (v, pcv)) { }
 
-Octave_object::Octave_object (const ColumnVector& v, int pcv = -1)
+Octave_object::Octave_object (const ColumnVector& v, int pcv)
   : Array<tree_constant> (1, tree_constant (v, pcv)) { }
 
 Octave_object::Octave_object (const Complex& c)
@@ -63,10 +63,10 @@ Octave_object::Octave_object (const ComplexMatrix& m)
 Octave_object::Octave_object (const ComplexDiagMatrix& d)
   : Array<tree_constant> (1, tree_constant (d)) { }
 
-Octave_object::Octave_object (const ComplexRowVector& v, int pcv = -1)
+Octave_object::Octave_object (const ComplexRowVector& v, int pcv)
   : Array<tree_constant> (1, tree_constant (v, pcv)) { }
 
-Octave_object::Octave_object (const ComplexColumnVector& v, int pcv = -1)
+Octave_object::Octave_object (const ComplexColumnVector& v, int pcv)
   : Array<tree_constant> (1, tree_constant (v, pcv)) { }
 
 Octave_object::Octave_object (const char *s)

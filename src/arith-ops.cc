@@ -1,5 +1,4 @@
-// Helper functions for arithmetic operations.            -*- C++ -*-
-// Used by the tree class.                    
+// arith-ops.cc                                         -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton

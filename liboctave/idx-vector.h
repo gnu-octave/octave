@@ -40,7 +40,7 @@ public:
   idx_vector (const idx_vector& a);
 
   idx_vector (const Matrix& m, int do_ftn_idx,
-	      const char *rc = (char *) 0, int z_len = 0);
+	      const char *rc = 0, int z_len = 0);
 
   idx_vector (const Range& r);
 
@@ -86,7 +86,7 @@ private:
   int initialized;
   int *data;
 
-  void init_state (const char *rc = (char *) 0, int z_len = 0);
+  void init_state (const char *rc = 0, int z_len = 0);
   void convert_one_zero_to_idx (void);
 };
 

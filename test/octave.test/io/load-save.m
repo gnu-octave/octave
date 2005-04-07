@@ -1,3 +1,5 @@
+1;
+
 function [ret, files] = testls (input)
 
   ## flag a1 global so as to test the storage of global flags
@@ -64,7 +66,7 @@ function [ret, files] = testls (input)
   vars = "a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20";
   if (! input)
     for i = 1:length(files)
-      eval (["save " opts{i} files{i} vars]);
+      eval (["save " opts{i} " " files{i} " " vars]);
     endfor
   else
     b1 = a1; b2 = a2; b3 = a3; b4 = a4; b5 = a5;
@@ -176,8 +178,6 @@ function [ret, files] = testls (input)
   ret = 1;
 
 endfunction
-
-
 
 [save_status, save_files] = testls (0);
 [load_status, load_files] = testls (1);

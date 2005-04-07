@@ -1,3 +1,13 @@
+2005-04-06  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Split the HDF5 and zlib detection code, so that zlib 
+	can be used for compressed load/save in the absence of HDF5.
+
+	* Makeconf.in: Define UMFPACK_LIBS.
+
+	* Configure.in: Slightly alter the UMFPACK detection code so that it 
+	correctly detects cblas bindings or not.
+
 2005-03-22  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (GLPK_LIBS): Substitute value.

@@ -56,18 +56,18 @@ operator << (std::ostream& os, const ArrayN<T>& a)
     {
       os << "data:";
 
-      Array<int> ra_idx (n_dims, 0);
+      Array<octave_idx_type> ra_idx (n_dims, 0);
 
       // Number of times the first 2d-array is to be displayed.
 
-      int m = 1;
+      octave_idx_type m = 1;
       for (int i = 2; i < n_dims; i++)
 	m *= a_dims(i);
 
       if (m == 1)
         {
-          int rows = 0;
-          int cols = 0;
+          octave_idx_type rows = 0;
+          octave_idx_type cols = 0;
 
           switch (n_dims)
             {
@@ -75,10 +75,10 @@ operator << (std::ostream& os, const ArrayN<T>& a)
 	      rows = a_dims(0);
 	      cols = a_dims(1);
 
-	      for (int j = 0; j < rows; j++)
+	      for (octave_idx_type j = 0; j < rows; j++)
 		{
 		  ra_idx(0) = j;
-		  for (int k = 0; k < cols; k++)
+		  for (octave_idx_type k = 0; k < cols; k++)
 		    {
 		      ra_idx(1) = k;
 		      os << " " << a.elem(ra_idx);
@@ -90,7 +90,7 @@ operator << (std::ostream& os, const ArrayN<T>& a)
 	    default:
 	      rows = a_dims(0);
 
-	      for (int k = 0; k < rows; k++)
+	      for (octave_idx_type k = 0; k < rows; k++)
 		{
 		  ra_idx(0) = k;
 		  os << " " << a.elem(ra_idx);
@@ -102,8 +102,8 @@ operator << (std::ostream& os, const ArrayN<T>& a)
         }
       else
         {
-          int rows = a_dims(0);
-          int cols = a_dims(1);
+          octave_idx_type rows = a_dims(0);
+          octave_idx_type cols = a_dims(1);
 
           for (int i = 0; i < m; i++)
             {
@@ -114,11 +114,11 @@ operator << (std::ostream& os, const ArrayN<T>& a)
 
 	      os << ra_idx(n_dims - 1) + 1 << ") = \n";
 
-	      for (int j = 0; j < rows; j++)
+	      for (octave_idx_type j = 0; j < rows; j++)
 	        {
 	          ra_idx(0) = j;
 
-	          for (int k = 0; k < cols; k++)
+	          for (octave_idx_type k = 0; k < cols; k++)
 	            {
 		      ra_idx(1) = k;
 		      os << " " << a.elem(ra_idx);

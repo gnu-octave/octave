@@ -45,11 +45,11 @@ public:
   Cell (const octave_value_list& ovl)
     : ArrayN<octave_value> (dim_vector (ovl.length (), 1))
     {
-      for (int i = 0; i < ovl.length (); i++)
+      for (octave_idx_type i = 0; i < ovl.length (); i++)
 	elem (i) = ovl (i);
     }
 
-  Cell (int n, int m, const octave_value& val = resize_fill_value ())
+  Cell (octave_idx_type n, octave_idx_type m, const octave_value& val = resize_fill_value ())
     : ArrayN<octave_value> (dim_vector (n, m), val) { }
 
   Cell (const dim_vector& dv, const octave_value& val = resize_fill_value ())
@@ -61,7 +61,7 @@ public:
   Cell (const Array<octave_value>& c)
     : ArrayN<octave_value> (c) { }
 
-  Cell (const Array<octave_value>& c, int nr, int nc)
+  Cell (const Array<octave_value>& c, octave_idx_type nr, octave_idx_type nc)
     : ArrayN<octave_value> (c, dim_vector (nr, nc)) { }
 
   Cell (const string_vector& sv);
@@ -95,10 +95,10 @@ public:
   // XXX FIXME XXX
   boolMatrix any (int /* dim */ = 0) const { return boolMatrix (); }
 
-  Cell concat (const Cell& rb, const Array<int>& ra_idx);
+  Cell concat (const Cell& rb, const Array<octave_idx_type>& ra_idx);
 
-  Cell& insert (const Cell& a, int r, int c);
-  Cell& insert (const Cell& a, const Array<int>& ra_idx);
+  Cell& insert (const Cell& a, octave_idx_type r, octave_idx_type c);
+  Cell& insert (const Cell& a, const Array<octave_idx_type>& ra_idx);
 
   // XXX FIXME XXX
   bool is_true (void) const { return false; }

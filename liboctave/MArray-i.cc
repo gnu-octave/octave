@@ -32,8 +32,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MArray.cc"
 
 template class MArray<int>;
+template class MArray<long>;
 
 INSTANTIATE_MARRAY_FRIENDS (int)
+INSTANTIATE_MARRAY_FRIENDS (long)
 
 template class MArray<octave_int8>;
 template class MArray<octave_int16>;

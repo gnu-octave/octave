@@ -33,25 +33,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const int&, Complex*, const int&, int&,
-			     int&, double*, int&
-			     F77_CHAR_ARG_LEN_DECL);
+  F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
+			     Complex*, const octave_idx_type&,
+			     octave_idx_type&, octave_idx_type&, double*,
+			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
  
   F77_RET_T
-  F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, const int&, double*,
-			     const int&, Complex*, const int&, int&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+  F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
+			     const octave_idx_type&, const octave_idx_type&,
+			     const octave_idx_type&, double*,
+			     const octave_idx_type&, Complex*,
+			     const octave_idx_type&, octave_idx_type&
+			     F77_CHAR_ARG_LEN_DECL  F77_CHAR_ARG_LEN_DECL);
 }
 
-int
+octave_idx_type
 ComplexAEPBALANCE::init (const ComplexMatrix& a,
 			 const std::string& balance_job)
 {
-  int n = a.cols ();
+  octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
     {
@@ -59,9 +59,9 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a,
       return -1;
     }
 
-  int info;
-  int ilo;
-  int ihi;
+  octave_idx_type info;
+  octave_idx_type ilo;
+  octave_idx_type ihi;
 
   Array<double> scale (n);
   double *pscale = scale.fortran_vec ();
@@ -81,7 +81,7 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a,
   else
     {
       balancing_mat = ComplexMatrix (n, n, 0.0);
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	balancing_mat.elem (i, i) = 1.0;
 
       Complex *p_balancing_mat = balancing_mat.fortran_vec ();

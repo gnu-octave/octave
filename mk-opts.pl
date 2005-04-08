@@ -619,7 +619,7 @@ print_${class_name} (std::ostream& os)
           print "    double val = $static_object_name.$opt[$i] ();\n\n";
           print "    os << val << \"\\n\";\n";
         }
-      elsif ($type[$i] eq "int")
+      elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
         {
           print "    int val = $static_object_name.$opt[$i] ();\n\n";
           print "    os << val << \"\\n\";\n";
@@ -628,9 +628,17 @@ print_${class_name} (std::ostream& os)
         {
           print "    os << $static_object_name.$opt[$i] () << \"\\n\";\n";
         }
-      elsif ($type[$i] eq "Array<int>")
+      elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
         {
-          print "    Array<int> val = $static_object_name.$opt[$i] ();\n\n";
+	  if ($type[$i] eq "Array<int>")
+            {
+              $elt_type = "int";
+            }
+          else
+            {
+              $elt_type = "octave_idx_type";
+            }
+          print "    Array<$elt_type> val = $static_object_name.$opt[$i] ();\n\n";
           print "    if (val.length () == 1)
       {
         os << val(0) << \"\\n\";
@@ -638,9 +646,9 @@ print_${class_name} (std::ostream& os)
     else
       {
         os << \"\\n\\n\";
-	int len = val.length ();
+	octave_idx_type len = val.length ();
 	Matrix tmp (len, 1);
-	for (int i = 0; i < len; i++)
+	for (octave_idx_type i = 0; i < len; i++)
 	  tmp(i,0) = val(i);
         octave_print_internal (os, tmp, false, 2);
         os << \"\\n\\n\";
@@ -695,7 +703,7 @@ set_${class_name} (const std::string& keyword, const octave_value& val)
           print "      if (! error_state)
         $static_object_name.set_$opt[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "int")
+      elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
         {
           print "      int tmp = val.int_value ();\n\n";
           print "      if (! error_state)
@@ -707,7 +715,7 @@ set_${class_name} (const std::string& keyword, const octave_value& val)
           print "      if (! error_state)
         $static_object_name.set_$opt[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "Array<int>")
+      elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
         {
           print "      Array<int> tmp = val.int_vector_value ();\n\n";
           print "      if (! error_state)
@@ -760,7 +768,7 @@ show_${class_name} (const std::string& keyword)
           print "      double val = $static_object_name.$opt[$i] ();\n\n";
           print "      retval = val;\n";
         }
-      elsif ($type[$i] eq "int")
+      elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
         {
           print "      int val = $static_object_name.$opt[$i] ();\n\n";
           print "      retval = static_cast<double> (val);\n";
@@ -769,18 +777,26 @@ show_${class_name} (const std::string& keyword)
         {
           print "      retval = $static_object_name.$opt[$i] ();\n";
         }
-      elsif ($type[$i] eq "Array<int>")
+      elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
         {
-          print "      Array<int> val = $static_object_name.$opt[$i] ();\n\n";
+	  if ($type[$i] eq "Array<int>")
+            {
+              $elt_type = "int";
+            }
+          else
+            {
+              $elt_type = "octave_idx_type";
+            }
+          print "      Array<$elt_type> val = $static_object_name.$opt[$i] ();\n\n";
           print "      if (val.length () == 1)
         {
           retval = static_cast<double> (val(0));
         }
       else
         {
-	  int len = val.length ();
+	  octave_idx_type len = val.length ();
 	  ColumnVector tmp (len);
-	  for (int i = 0; i < len; i++)
+	  for (octave_idx_type i = 0; i < len; i++)
 	    tmp(i) = val(i);
           retval = tmp;
         }\n";

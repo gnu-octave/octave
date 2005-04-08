@@ -32,34 +32,34 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const int&, double*, const int&, int&,
-			     int&, double*, int&
+			     const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&,
+			     octave_idx_type&, double*, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dgehrd, DGEHRD) (const int&, const int&, const int&,
-			     double*, const int&, double*, double*,
-			     const int&, int&);
+  F77_FUNC (dgehrd, DGEHRD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     double*, const octave_idx_type&, double*, double*,
+			     const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (dorghr, DORGHR) (const int&, const int&, const int&,
-			     double*, const int&, double*, double*,
-			     const int&, int&);
+  F77_FUNC (dorghr, DORGHR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     double*, const octave_idx_type&, double*, double*,
+			     const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, const int&, double*,
-			     const int&, double*, const int&, int&
+			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 }
 
-int
+octave_idx_type
 HESS::init (const Matrix& a)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
     {
@@ -70,11 +70,11 @@ HESS::init (const Matrix& a)
   char job = 'N';
   char side = 'R';
 
-  int n = a_nc;
-  int lwork = 32 * n;
-  int info;
-  int ilo;
-  int ihi;
+  octave_idx_type n = a_nc;
+  octave_idx_type lwork = 32 * n;
+  octave_idx_type info;
+  octave_idx_type ilo;
+  octave_idx_type ihi;
 
   hess_mat = a;
   double *h = hess_mat.fortran_vec ();
@@ -131,8 +131,8 @@ HESS::init (const Matrix& a)
 		  // me know!
 
 		  if (n > 2)
-		    for (int j = 0; j < a_nc; j++)
-		      for (int i = j+2; i < a_nr; i++)
+		    for (octave_idx_type j = 0; j < a_nc; j++)
+		      for (octave_idx_type i = j+2; i < a_nr; i++)
 			hess_mat.elem (i, j) = 0;
 		}
 	    }

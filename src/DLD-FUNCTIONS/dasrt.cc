@@ -58,7 +58,7 @@ static int call_depth = 0;
 
 static ColumnVector
 dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
-	      double t, int&)
+	      double t, octave_idx_type&)
 {
   ColumnVector retval;
 

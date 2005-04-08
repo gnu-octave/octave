@@ -332,7 +332,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
     if (order)
       {
-	int tmp = nr;
+	octave_idx_type tmp = nr;
 	nr = nc;
 	nc = tmp;
       }
@@ -362,8 +362,8 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
 	  ComplexMatrix ctmp (nr, nc);
 
-	  for (int j = 0; j < nc; j++)
-	    for (int i = 0; i < nr; i++)
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = 0; i < nr; i++)
 	      ctmp (i, j) = Complex (re (i, j), im (i, j));
 
 	  tc = order ? ctmp.transpose () : ctmp;
@@ -406,7 +406,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   FOUR_BYTE_INT nc = tc.columns ();
   os.write (X_CAST (char *, &nc), 4);
 
-  int len = nr * nc;
+  octave_idx_type len = nr * nc;
 
   FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
   os.write (X_CAST (char *, &imag), 4);
@@ -425,17 +425,17 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
       charMatrix chm = tc.char_matrix_value ();
 
-      int nrow = chm.rows ();
-      int ncol = chm.cols ();
+      octave_idx_type nrow = chm.rows ();
+      octave_idx_type ncol = chm.cols ();
 	
       OCTAVE_LOCAL_BUFFER (double, buf, ncol*nrow);
 	
-      for (int i = 0; i < nrow; i++)
+      for (octave_idx_type i = 0; i < nrow; i++)
       	{
 	  std::string tstr = chm.row_as_string (i);
 	  const char *s = tstr.data ();
 	  
-	  for (int j = 0; j < ncol; j++)
+	  for (octave_idx_type j = 0; j < ncol; j++)
 	    buf[j*nrow+i] = static_cast<double> (*s++ & 0x00FF);
        	}
       os.write ((char *)buf, nrow*ncol*sizeof(double));
@@ -447,8 +447,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       Range r = tc.range_value ();
       double base = r.base ();
       double inc = r.inc ();
-      int nel = r.nelem ();
-      for (int i = 0; i < nel; i++)
+      octave_idx_type nel = r.nelem ();
+      for (octave_idx_type i = 0; i < nel; i++)
 	{
 	  double x = base + i * inc;
 	  os.write (X_CAST (char *, &x), 8);

@@ -57,8 +57,8 @@ xpow (const SparseMatrix& a, double b)
 {
   octave_value retval;
 
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for A^b, A must be square");
@@ -70,12 +70,12 @@ xpow (const SparseMatrix& a, double b)
 	  if (btmp == 0)
 	    {
 	      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  tmp.data (i) = 1.0;
 		  tmp.ridx (i) = i;
 		}
-	      for (int i = 0; i < nr + 1; i++)
+	      for (octave_idx_type i = 0; i < nr + 1; i++)
 		tmp.cidx (i) = i;
 
 	      retval = tmp;
@@ -87,7 +87,7 @@ xpow (const SparseMatrix& a, double b)
 		{
 		  btmp = -btmp;
 
-		  int info;
+		  octave_idx_type info;
 		  double rcond = 0.0;
 
 		  atmp = a.inverse (info, rcond, 1);
@@ -129,8 +129,8 @@ xpow (const SparseComplexMatrix& a, double b)
 {
   octave_value retval;
 
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for A^b, A must be square");
@@ -142,12 +142,12 @@ xpow (const SparseComplexMatrix& a, double b)
 	  if (btmp == 0)
 	    {
 	      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  tmp.data (i) = 1.0;
 		  tmp.ridx (i) = i;
 		}
-	      for (int i = 0; i < nr + 1; i++)
+	      for (octave_idx_type i = 0; i < nr + 1; i++)
 		tmp.cidx (i) = i;
 
 	      retval = tmp;
@@ -159,7 +159,7 @@ xpow (const SparseComplexMatrix& a, double b)
 		{
 		  btmp = -btmp;
 
-		  int info;
+		  octave_idx_type info;
 		  double rcond = 0.0;
 
 		  atmp = a.inverse (info, rcond, 1);
@@ -231,8 +231,8 @@ elem_xpow (double a, const SparseMatrix& b)
 {
   octave_value retval;
 
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   double d1, d2;
 
@@ -241,9 +241,9 @@ elem_xpow (double a, const SparseMatrix& b)
       Complex atmp (a);
       ComplexMatrix result (nr, nc);
 
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
 	      OCTAVE_QUIT;
 	      result (i, j) = pow (atmp, b(i,j));
@@ -256,9 +256,9 @@ elem_xpow (double a, const SparseMatrix& b)
     {
       Matrix result (nr, nc);
 
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
 	      OCTAVE_QUIT;
 	      result (i, j) = pow (a, b(i,j));
@@ -275,15 +275,15 @@ elem_xpow (double a, const SparseMatrix& b)
 octave_value
 elem_xpow (double a, const SparseComplexMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   Complex atmp (a);
   ComplexMatrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 	  result (i, j) = pow (atmp, b(i,j));
@@ -303,12 +303,12 @@ elem_xpow (const SparseMatrix& a, double b)
 
   octave_value retval;
 
-  int nz = a.nnz ();
+  octave_idx_type nz = a.nnz ();
 
   if (b <= 0.0)
     {
-      int nr = a.rows ();
-      int nc = a.cols ();
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
 
       if (static_cast<int> (b) != b && a.any_element_is_negative ())
 	{
@@ -318,8 +318,8 @@ elem_xpow (const SparseMatrix& a, double b)
 	  // converting A and B to complex instead of just A.
 	  Complex btmp (b);
 
-	  for (int j = 0; j < nc; j++)
-	    for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
 		OCTAVE_QUIT;
 	      
@@ -334,8 +334,8 @@ elem_xpow (const SparseMatrix& a, double b)
 	{
 	  Matrix result (nr, nc, (pow (0.0, b)));
 
-	  for (int j = 0; j < nc; j++)
-	    for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
 		OCTAVE_QUIT;
 		result (a.ridx(i), j) = pow (a.data (i), b);
@@ -348,7 +348,7 @@ elem_xpow (const SparseMatrix& a, double b)
     {
       SparseComplexMatrix result (a);
 
-      for (int i = 0; i < nz; i++)
+      for (octave_idx_type i = 0; i < nz; i++)
 	{
 	  OCTAVE_QUIT;
 
@@ -369,7 +369,7 @@ elem_xpow (const SparseMatrix& a, double b)
     {
       SparseMatrix result (a);
 
-      for (int i = 0; i < nz; i++)
+      for (octave_idx_type i = 0; i < nz; i++)
 	{
 	  OCTAVE_QUIT;
 	  result.data (i) = pow (a.data (i), b);
@@ -389,11 +389,11 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
 {
   octave_value retval;
 
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
     {
@@ -402,8 +402,8 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
     }
 
   int convert_to_complex = 0;
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	double atmp = a (i, j);
@@ -417,9 +417,9 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
 
 done:
 
-  int nel = 0;
-  for (int j = 0; j < nc; j++) 
-    for (int i = 0; i < nr; i++)
+  octave_idx_type nel = 0;
+  for (octave_idx_type j = 0; j < nc; j++) 
+    for (octave_idx_type i = 0; i < nr; i++)
       if (!(a.elem (i, j) == 0. && b.elem (i, j) != 0.))
 	nel++;
 
@@ -427,11 +427,11 @@ done:
     {
       SparseComplexMatrix complex_result (nr, nc, nel);
 
-      int ii = 0;
+      octave_idx_type ii = 0;
       complex_result.cidx(0) = 0;
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
 	      OCTAVE_QUIT;
 	      Complex atmp (a (i, j));
@@ -452,12 +452,12 @@ done:
   else
     {
       SparseMatrix result (nr, nc, nel);
-      int ii = 0;
+      octave_idx_type ii = 0;
 
       result.cidx (0) = 0;
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
 	      OCTAVE_QUIT;
 	      double tmp = pow (a (i, j), b (i, j));
@@ -489,10 +489,10 @@ elem_xpow (const SparseMatrix& a, const Complex& b)
     retval = octave_value (NDArray (a.dims (), 1));
   else
     {
-      int nz = a.nnz ();
+      octave_idx_type nz = a.nnz ();
       SparseComplexMatrix result (a);
       
-      for (int i = 0; i < nz; i++)
+      for (octave_idx_type i = 0; i < nz; i++)
 	{
 	  OCTAVE_QUIT;
 	  result.data (i) = pow (Complex (a.data (i)), b);
@@ -510,11 +510,11 @@ elem_xpow (const SparseMatrix& a, const Complex& b)
 octave_value
 elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
     {
@@ -522,19 +522,19 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
       return octave_value ();
     }
 
-  int nel = 0;
-  for (int j = 0; j < nc; j++) 
-    for (int i = 0; i < nr; i++)
+  octave_idx_type nel = 0;
+  for (octave_idx_type j = 0; j < nc; j++) 
+    for (octave_idx_type i = 0; i < nr; i++)
       if (!(a.elem (i, j) == 0. && b.elem (i, j) != 0.))
 	nel++;
 
   SparseComplexMatrix result (nr, nc, nel);
-  int ii = 0;
+  octave_idx_type ii = 0;
 
   result.cidx(0) = 0;
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 	  Complex tmp = pow (Complex (a (i, j)), b (i, j));
@@ -556,14 +556,14 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
 octave_value
 elem_xpow (const Complex& a, const SparseMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 	  double btmp = b (i, j);
@@ -581,12 +581,12 @@ elem_xpow (const Complex& a, const SparseMatrix& b)
 octave_value
 elem_xpow (const Complex& a, const SparseComplexMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = pow (a, b (i, j));
@@ -603,15 +603,15 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 
   if (b <= 0)
     {
-      int nr = a.rows ();
-      int nc = a.cols ();
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
 
       ComplexMatrix result (nr, nc, Complex (pow (0.0, b)));
 
       if (xisint (b))
 	{
-	  for (int j = 0; j < nc; j++)
-	    for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
 		OCTAVE_QUIT;
 		result (a.ridx(i), j) = 
@@ -620,8 +620,8 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 	}
       else
 	{
-	  for (int j = 0; j < nc; j++)
-	    for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	      {
 		OCTAVE_QUIT;
 		result (a.ridx(i), j) = pow (a.data (i), b);
@@ -632,13 +632,13 @@ elem_xpow (const SparseComplexMatrix& a, double b)
     }
   else
     {
-      int nz = a.nnz ();
+      octave_idx_type nz = a.nnz ();
 
       SparseComplexMatrix result (a);
   
       if (xisint (b))
 	{
-	  for (int i = 0; i < nz; i++)
+	  for (octave_idx_type i = 0; i < nz; i++)
 	    {
 	      OCTAVE_QUIT;
 	      result.data (i) = pow (a.data (i), static_cast<int> (b));
@@ -646,7 +646,7 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 	}
       else
 	{
-	  for (int i = 0; i < nz; i++)
+	  for (octave_idx_type i = 0; i < nz; i++)
 	    {
 	      OCTAVE_QUIT;
 	      result.data (i) = pow (a.data (i), b);
@@ -665,11 +665,11 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 octave_value
 elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
     {
@@ -677,19 +677,19 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
       return octave_value ();
     }
 
-  int nel = 0;
-  for (int j = 0; j < nc; j++) 
-    for (int i = 0; i < nr; i++)
+  octave_idx_type nel = 0;
+  for (octave_idx_type j = 0; j < nc; j++) 
+    for (octave_idx_type i = 0; i < nr; i++)
       if (!(a.elem (i, j) == 0. && b.elem (i, j) != 0.))
 	nel++;
 
   SparseComplexMatrix result (nr, nc, nel);
-  int ii = 0;
+  octave_idx_type ii = 0;
 
   result.cidx (0) = 0;
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 	  double btmp = b (i, j);
@@ -725,11 +725,11 @@ elem_xpow (const SparseComplexMatrix& a, const Complex& b)
   else
     {
 
-      int nz = a.nnz ();
+      octave_idx_type nz = a.nnz ();
 
       SparseComplexMatrix result (a);
 
-      for (int i = 0; i < nz; i++)
+      for (octave_idx_type i = 0; i < nz; i++)
 	{
 	  OCTAVE_QUIT;
 	  result.data (i) = pow (a.data (i), b);
@@ -747,11 +747,11 @@ elem_xpow (const SparseComplexMatrix& a, const Complex& b)
 octave_value
 elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
     {
@@ -759,19 +759,19 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       return octave_value ();
     }
 
-  int nel = 0;
-  for (int j = 0; j < nc; j++) 
-    for (int i = 0; i < nr; i++)
+  octave_idx_type nel = 0;
+  for (octave_idx_type j = 0; j < nc; j++) 
+    for (octave_idx_type i = 0; i < nr; i++)
       if (!(a.elem (i, j) == 0. && b.elem (i, j) != 0.))
 	nel++;
 
   SparseComplexMatrix result (nr, nc, nel);
-  int ii = 0;
+  octave_idx_type ii = 0;
 
   result.cidx (0) = 0;
-  for (int j = 0; j < nc; j++) 
+  for (octave_idx_type j = 0; j < nc; j++) 
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 	  Complex tmp = pow (a (i, j), b (i, j));

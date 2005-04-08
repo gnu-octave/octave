@@ -77,17 +77,17 @@ public:
   NDArray prod (int dim = -1) const;
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
-  NDArray concat (const NDArray& rb, const Array<int>& ra_idx);
-  ComplexNDArray concat (const ComplexNDArray& rb, const Array<int>& ra_idx);
-  charNDArray concat (const charNDArray& rb, const Array<int>& ra_idx);
+  NDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
+  ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   NDArray max (int dim = 0) const;
-  NDArray max (ArrayN<int>& index, int dim = 0) const;
+  NDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
   NDArray min (int dim = 0) const;
-  NDArray min (ArrayN<int>& index, int dim = 0) const;
+  NDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
   
-  NDArray& insert (const NDArray& a, int r, int c);
-  NDArray& insert (const NDArray& a, const Array<int>& ra_idx);
+  NDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
+  NDArray& insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);
 
   NDArray abs (void) const;
 
@@ -107,11 +107,11 @@ public:
 
   NDArray squeeze (void) const { return MArrayN<double>::squeeze (); }
 
-  static void increment_index (Array<int>& ra_idx,
+  static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension = 0);
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions);
 
   // i/o

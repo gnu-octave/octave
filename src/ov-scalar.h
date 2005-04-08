@@ -85,14 +85,14 @@ public:
     {
       return (! xisnan (scalar)
 	      && D_NINT (scalar) == scalar
-	      && NINT (scalar) == 1);
+	      && NINTbig (scalar) == 1);
     }
 
   bool valid_as_zero_index (void) const
     {
       return (! xisnan (scalar)
 	      && D_NINT (scalar) == scalar
-	      && NINT (scalar) == 0);
+	      && NINTbig (scalar) == 0);
     }
 
   double double_value (bool = false) const { return scalar; }

@@ -190,6 +190,8 @@ GLPK_LIBS = @GLPK_LIBS@
 UMFPACK_LIBS = @UMFPACK_LIBS@
 LIBS = @LIBS@
 
+USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
+
 # The arguments passed to configure.
 config_opts = @config_opts@
 
@@ -465,6 +467,7 @@ $(SED) < $< \
   -e "s;%OCTAVE_CONF_SONAME_FLAGS%;\"${SONAME_FLAGS}\";" \
   -e "s;%OCTAVE_CONF_STATIC_LIBS%;\"${STATIC_LIBS}\";" \
   -e "s;%OCTAVE_CONF_UGLY_DEFS%;\"${UGLY_DEFS}\";" \
+  -e "s;%OCTAVE_CONF_USE_64_BIT_IDX_T%;\"${USE_64_BIT_IDX_T}\";" \
   -e "s;%OCTAVE_CONF_VERSION%;\"${version}\";" \
   -e "s;%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%;\"${ENABLE_DYNAMIC_LINKING}\";" \
   -e "s;%OCTAVE_CONF_XTRA_CFLAGS%;\"${XTRA_CFLAGS}\";" \

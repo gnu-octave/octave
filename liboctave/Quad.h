@@ -55,30 +55,30 @@ Quad : public Quad_options
 
   virtual double integrate (void)
     {
-      int ier, neval;
+      octave_idx_type ier, neval;
       double abserr;
       return do_integrate (ier, neval, abserr);
     }
 
-  virtual double integrate (int& ier)
+  virtual double integrate (octave_idx_type& ier)
     {
-      int neval;
+      octave_idx_type neval;
       double abserr;
       return do_integrate (ier, neval, abserr);
     }
 
-  virtual double integrate (int& ier, int& neval)
+  virtual double integrate (octave_idx_type& ier, octave_idx_type& neval)
     {
       double abserr;
       return do_integrate (ier, neval, abserr);
     }
 
-  virtual double integrate (int& ier, int& neval, double& abserr)
+  virtual double integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
     {
       return do_integrate (ier, neval, abserr);
     }
 
-  virtual double do_integrate (int& ier, int& neval, double& abserr) = 0;
+  virtual double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr) = 0;
 
  protected:
 
@@ -107,7 +107,7 @@ DefQuad : public Quad
 
   ~DefQuad (void) { }
 
-  double do_integrate (int& ier, int& neval, double& abserr);
+  double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr);
 
  private:
 
@@ -132,7 +132,7 @@ IndefQuad : public Quad
 
   ~IndefQuad (void) { }
 
-  double do_integrate (int& ier, int& neval, double& abserr);
+  double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr);
 
  private:
 

@@ -39,9 +39,9 @@ public:
 
   ComplexDiagMatrix (void) : MDiagArray2<Complex> () { }
 
-  ComplexDiagMatrix (int r, int c) : MDiagArray2<Complex> (r, c) { }
+  ComplexDiagMatrix (octave_idx_type r, octave_idx_type c) : MDiagArray2<Complex> (r, c) { }
 
-  ComplexDiagMatrix (int r, int c, const Complex& val)
+  ComplexDiagMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
     : MDiagArray2<Complex> (r, c, val) { }
 
   explicit ComplexDiagMatrix (const RowVector& a)
@@ -75,16 +75,16 @@ public:
 
   ComplexDiagMatrix& fill (double val);
   ComplexDiagMatrix& fill (const Complex& val);
-  ComplexDiagMatrix& fill (double val, int beg, int end);
-  ComplexDiagMatrix& fill (const Complex& val, int beg, int end);
+  ComplexDiagMatrix& fill (double val, octave_idx_type beg, octave_idx_type end);
+  ComplexDiagMatrix& fill (const Complex& val, octave_idx_type beg, octave_idx_type end);
   ComplexDiagMatrix& fill (const ColumnVector& a);
   ComplexDiagMatrix& fill (const ComplexColumnVector& a);
   ComplexDiagMatrix& fill (const RowVector& a);
   ComplexDiagMatrix& fill (const ComplexRowVector& a);
-  ComplexDiagMatrix& fill (const ColumnVector& a, int beg);
-  ComplexDiagMatrix& fill (const ComplexColumnVector& a, int beg);
-  ComplexDiagMatrix& fill (const RowVector& a, int beg);
-  ComplexDiagMatrix& fill (const ComplexRowVector& a, int beg);
+  ComplexDiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
+  ComplexDiagMatrix& fill (const ComplexColumnVector& a, octave_idx_type beg);
+  ComplexDiagMatrix& fill (const RowVector& a, octave_idx_type beg);
+  ComplexDiagMatrix& fill (const ComplexRowVector& a, octave_idx_type beg);
 
   ComplexDiagMatrix hermitian (void) const;  // complex conjugate transpose
   ComplexDiagMatrix transpose (void) const;
@@ -93,14 +93,14 @@ public:
 
   // resize is the destructive analog for this one
 
-  ComplexMatrix extract (int r1, int c1, int r2, int c2) const;
+  ComplexMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i
 
-  ComplexRowVector row (int i) const;
+  ComplexRowVector row (octave_idx_type i) const;
   ComplexRowVector row (char *s) const;
 
-  ComplexColumnVector column (int i) const;
+  ComplexColumnVector column (octave_idx_type i) const;
   ComplexColumnVector column (char *s) const;
 
   ComplexDiagMatrix inverse (int& info) const;
@@ -114,7 +114,7 @@ public:
   // other operations
 
   ComplexColumnVector diag (void) const;
-  ComplexColumnVector diag (int k) const;
+  ComplexColumnVector diag (octave_idx_type k) const;
 
   // i/o
 
@@ -122,7 +122,7 @@ public:
 
 private:
 
-  ComplexDiagMatrix (Complex *d, int nr, int nc)
+  ComplexDiagMatrix (Complex *d, octave_idx_type nr, octave_idx_type nc)
     : MDiagArray2<Complex> (d, nr, nc) { }
 };
 

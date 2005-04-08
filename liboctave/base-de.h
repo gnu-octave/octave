@@ -72,7 +72,7 @@ public:
       force_restart ();
     }
 
-  int size (void) const { return x.capacity (); }
+  octave_idx_type size (void) const { return x.capacity (); }
 
   ColumnVector state (void) const { return x; }
 
@@ -95,7 +95,7 @@ public:
 
   bool integration_ok (void) const { return ! integration_error; }
 
-  int integration_state (void) const { return istate; }
+  octave_idx_type integration_state (void) const { return istate; }
 
   virtual std::string error_message (void) const = 0;
 
@@ -113,7 +113,7 @@ protected:
 
   bool integration_error;
 
-  int istate;
+  octave_idx_type istate;
 };
 
 #endif

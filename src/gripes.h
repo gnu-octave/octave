@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "oct-types.h"
+
 class octave_value;
 
 extern void
@@ -40,7 +42,7 @@ extern void
 gripe_nonconformant (void);
 
 extern void
-gripe_nonconformant (int r1, int c1, int r2, int c2);
+gripe_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2);
 
 extern void
 gripe_empty_arg (const char *name, bool is_error);

@@ -586,7 +586,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	// Setup return value
 	if (imag)
 	  {
-	    scm = SparseComplexMatrix (nr, nc, nnz);
+	    scm = SparseComplexMatrix (static_cast<octave_idx_type> (nr),
+				       static_cast<octave_idx_type> (nc),
+				       static_cast<octave_idx_type> (nnz));
 	    ridx = scm.ridx ();
 	    cidx = scm.cidx ();
 	    re = NDArray (dim_vector (static_cast<int> (nnz)));
@@ -594,7 +596,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  }
 	else
 	  {
-	    sm = SparseMatrix (nr, nc, nnz);
+	    sm = SparseMatrix (static_cast<octave_idx_type> (nr),
+			       static_cast<octave_idx_type> (nc),
+			       static_cast<octave_idx_type> (nnz));
 	    ridx = sm.ridx ();
 	    cidx = sm.cidx ();
 	    data = sm.data ();

@@ -33,9 +33,9 @@ public:
 
   SparseBoolMatrix (void) : Sparse<bool> () { }
 
-  SparseBoolMatrix (int r, int c) : Sparse<bool> (r, c) { }
+  SparseBoolMatrix (octave_idx_type r, octave_idx_type c) : Sparse<bool> (r, c) { }
 
-  explicit SparseBoolMatrix (int r, int c, bool val) 
+  explicit SparseBoolMatrix (octave_idx_type r, octave_idx_type c, bool val) 
     : Sparse<bool> (r, c, val) { }
 
   SparseBoolMatrix (const Sparse<bool>& a) : Sparse<bool> (a) { }
@@ -49,17 +49,17 @@ public:
 
   explicit SparseBoolMatrix (const boolNDArray& a) : Sparse<bool> (a) { }
 
-  explicit SparseBoolMatrix (const Array<bool> a, const Array<int>& r, 
-			     const Array<int>& c, int nr = -1, 
-			     int nc = -1, bool sum_terms = true)
+  explicit SparseBoolMatrix (const Array<bool> a, const Array<octave_idx_type>& r, 
+			     const Array<octave_idx_type>& c, octave_idx_type nr = -1, 
+			     octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<bool> (a, r, c, nr, nc, sum_terms) { }
 
   explicit SparseBoolMatrix (const Array<bool> a, const Array<double>& r, 
-			     const Array<double>& c, int nr = -1, 
-			     int nc = -1, bool sum_terms = true)
+			     const Array<double>& c, octave_idx_type nr = -1, 
+			     octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<bool> (a, r, c, nr, nc, sum_terms) { }
 
-  SparseBoolMatrix (int r, int c, int num_nz) : Sparse<bool> (r, c, num_nz) { }
+  SparseBoolMatrix (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz) : Sparse<bool> (r, c, num_nz) { }
 
   SparseBoolMatrix& operator = (const SparseBoolMatrix& a)
     {
@@ -75,10 +75,10 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  SparseBoolMatrix& insert (const SparseBoolMatrix& a, int r, int c);
+  SparseBoolMatrix& insert (const SparseBoolMatrix& a, octave_idx_type r, octave_idx_type c);
 
   SparseBoolMatrix concat (const SparseBoolMatrix& rb, 
-			   const Array<int>& ra_idx);
+			   const Array<octave_idx_type>& ra_idx);
 
   boolMatrix matrix_value (void) const;
 
@@ -92,9 +92,9 @@ public:
 
   SparseBoolMatrix reshape (const dim_vector& new_dims) const;
 
-  SparseBoolMatrix permute (const Array<int>& vec, bool inv = false) const;
+  SparseBoolMatrix permute (const Array<octave_idx_type>& vec, bool inv = false) const;
 
-  SparseBoolMatrix ipermute (const Array<int>& vec) const;
+  SparseBoolMatrix ipermute (const Array<octave_idx_type>& vec) const;
 
   // unary operations
 

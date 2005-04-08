@@ -93,7 +93,7 @@ Array<T>::squeeze (void) const
 
 	    case 1:
 	      {
-		int tmp = new_dimensions(0);
+		octave_idx_type tmp = new_dimensions(0);
 
 		new_dimensions.resize (2);
 
@@ -124,8 +124,8 @@ Array<T>::squeeze (void) const
 #define MALLOC_OVERHEAD 1024
 
 template <class T>
-int
-Array<T>::get_size (int r, int c)
+octave_idx_type
+Array<T>::get_size (octave_idx_type r, octave_idx_type c)
 {
   // XXX KLUGE XXX
 
@@ -138,17 +138,17 @@ Array<T>::get_size (int r, int c)
 
   static int nl;
   static double dl
-    = frexp (static_cast<double>
-	     (INT_MAX - MALLOC_OVERHEAD) / sizeof (T), &nl);
+    = frexp (static_cast<double> 
+	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
 
   // This value should be an integer.  If we return this value and
   // things work the way we expect, we should be paying a visit to
   // new_handler in no time flat.
-  static int max_items = static_cast<int> (ldexp (dl, nl));
+  static octave_idx_type max_items = static_cast<octave_idx_type> (ldexp (dl, nl));  // = dl.2^nl
 
   int nr, nc;
-  double dr = frexp (static_cast<double> (r), &nr);
-  double dc = frexp (static_cast<double> (c), &nc);
+  double dr = frexp (static_cast<double> (r), &nr);   // r = dr * 2^nr
+  double dc = frexp (static_cast<double> (c), &nc);   // c = dc * 2^nc
 
   int nt = nr + nc;
   double dt = dr * dc;
@@ -159,12 +159,13 @@ Array<T>::get_size (int r, int c)
       dt *= 2;
     }
 
+	// if (r*c) below limit, then return r*c, otherwise return TOO BIG num!
   return (nt < nl || (nt == nl && dt < dl)) ? r * c : max_items;
 }
 
 template <class T>
-int
-Array<T>::get_size (int r, int c, int p)
+octave_idx_type
+Array<T>::get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p)
 {
   // XXX KLUGE XXX
 
@@ -178,12 +179,12 @@ Array<T>::get_size (int r, int c, int p)
   static int nl;
   static double dl
     = frexp (static_cast<double>
-	     (INT_MAX - MALLOC_OVERHEAD) / sizeof (T), &nl);
+	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
 
   // This value should be an integer.  If we return this value and
   // things work the way we expect, we should be paying a visit to
   // new_handler in no time flat.
-  static int max_items = static_cast<int> (ldexp (dl, nl));
+  static octave_idx_type max_items = static_cast<octave_idx_type> (ldexp (dl, nl));
 
   int nr, nc, np;
   double dr = frexp (static_cast<double> (r), &nr);
@@ -209,7 +210,7 @@ Array<T>::get_size (int r, int c, int p)
 }
 
 template <class T>
-int
+octave_idx_type
 Array<T>::get_size (const dim_vector& ra_idx)
 {
   // XXX KLUGE XXX
@@ -224,15 +225,15 @@ Array<T>::get_size (const dim_vector& ra_idx)
   static int nl;
   static double dl
     = frexp (static_cast<double>
-	     (INT_MAX - MALLOC_OVERHEAD) / sizeof (T), &nl);
+	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
 
   // This value should be an integer.  If we return this value and
   // things work the way we expect, we should be paying a visit to
   // new_handler in no time flat.
 
-  static int max_items = static_cast<int> (ldexp (dl, nl));
+  static octave_idx_type max_items = static_cast<octave_idx_type> (ldexp (dl, nl));
 
-  int retval = max_items;
+  octave_idx_type retval = max_items;
 
   int n = ra_idx.length ();
 
@@ -268,10 +269,10 @@ Array<T>::get_size (const dim_vector& ra_idx)
 #undef MALLOC_OVERHEAD
 
 template <class T>
-int
-Array<T>::compute_index (const Array<int>& ra_idx) const
+octave_idx_type
+Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  int retval = -1;
+  octave_idx_type retval = -1;
 
   int n = dimensions.length ();
 
@@ -294,7 +295,7 @@ Array<T>::compute_index (const Array<int>& ra_idx) const
 
 template <class T>
 T
-Array<T>::range_error (const char *fcn, int n) const
+Array<T>::range_error (const char *fcn, octave_idx_type n) const
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
   return T ();
@@ -302,7 +303,7 @@ Array<T>::range_error (const char *fcn, int n) const
 
 template <class T>
 T&
-Array<T>::range_error (const char *fcn, int n)
+Array<T>::range_error (const char *fcn, octave_idx_type n)
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
   static T foo;
@@ -311,7 +312,7 @@ Array<T>::range_error (const char *fcn, int n)
 
 template <class T>
 T
-Array<T>::range_error (const char *fcn, int i, int j) const
+Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d): range error", fcn, i, j);
@@ -320,7 +321,7 @@ Array<T>::range_error (const char *fcn, int i, int j) const
 
 template <class T>
 T&
-Array<T>::range_error (const char *fcn, int i, int j)
+Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d): range error", fcn, i, j);
@@ -330,7 +331,7 @@ Array<T>::range_error (const char *fcn, int i, int j)
 
 template <class T>
 T
-Array<T>::range_error (const char *fcn, int i, int j, int k) const
+Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k) const
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d, %d): range error", fcn, i, j, k);
@@ -339,7 +340,7 @@ Array<T>::range_error (const char *fcn, int i, int j, int k) const
 
 template <class T>
 T&
-Array<T>::range_error (const char *fcn, int i, int j, int k)
+Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k)
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d, %d): range error", fcn, i, j, k);
@@ -355,12 +356,12 @@ Array<T>::range_error (const char *fcn, const Array<int>& ra_idx) const
 
   buf << fcn << " (";
 
-  int n = ra_idx.length ();
+  octave_idx_type n = ra_idx.length ();
 
   if (n > 0)
     buf << ra_idx(0);
 
-  for (int i = 1; i < n; i++)
+  for (octave_idx_type i = 1; i < n; i++)
     buf << ", " << ra_idx(i);
 
   buf << "): range error";
@@ -382,12 +383,12 @@ Array<T>::range_error (const char *fcn, const Array<int>& ra_idx)
 
   buf << fcn << " (";
 
-  int n = ra_idx.length ();
+  octave_idx_type n = ra_idx.length ();
 
   if (n > 0)
     buf << ra_idx(0);
 
-  for (int i = 1; i < n; i++)
+  for (octave_idx_type i = 1; i < n; i++)
     buf << ", " << ra_idx(i);
 
   buf << "): range error";
@@ -423,7 +424,7 @@ Array<T>::reshape (const dim_vector& new_dims) const
 
 template <class T>
 Array<T>
-Array<T>::permute (const Array<int>& perm_vec, bool inv) const
+Array<T>::permute (const Array<octave_idx_type>& perm_vec, bool inv) const
 {
   Array<T> retval;
 
@@ -449,7 +450,7 @@ Array<T>::permute (const Array<int>& perm_vec, bool inv) const
   // Find dimension vector of permuted array.
   for (int i = 0; i < perm_vec_len; i++)
     {
-      int perm_elt = perm_vec.elem (i);
+      octave_idx_type perm_elt = perm_vec.elem (i);
 
       if (perm_elt >= perm_vec_len || perm_elt < 0)
 	{
@@ -477,17 +478,17 @@ Array<T>::permute (const Array<int>& perm_vec, bool inv) const
   retval.resize (dv_new);
 
   // Index array to the original array.
-  Array<int> old_idx (perm_vec_len, 0);
+  Array<octave_idx_type> old_idx (perm_vec_len, 0);
 
   // Number of elements in Array (should be the same for
   // both the permuted array and original array).
-  int n = retval.length ();
+  octave_idx_type n = retval.length ();
 
   // Permute array.
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
       // Get the idx of permuted array.
-      Array<int> new_idx = calc_permutated_idx (old_idx, perm_vec, inv);
+      Array<octave_idx_type> new_idx = calc_permutated_idx (old_idx, perm_vec, inv);
 
       retval.elem (new_idx) = tmp.elem (old_idx);
 
@@ -499,7 +500,7 @@ Array<T>::permute (const Array<int>& perm_vec, bool inv) const
 
 template <class T>
 void
-Array<T>::resize_no_fill (int n)
+Array<T>::resize_no_fill (octave_idx_type n)
 {
   if (n < 0)
     {
@@ -513,7 +514,7 @@ Array<T>::resize_no_fill (int n)
 
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
-  int old_len = length ();
+  octave_idx_type old_len = length ();
 
   rep = new typename Array<T>::ArrayRep (n);
 
@@ -521,9 +522,9 @@ Array<T>::resize_no_fill (int n)
 
   if (n > 0 && old_data && old_len > 0)
     {
-      int min_len = old_len < n ? old_len : n;
+      octave_idx_type min_len = old_len < n ? old_len : n;
 
-      for (int i = 0; i < min_len; i++)
+      for (octave_idx_type i = 0; i < min_len; i++)
 	xelem (i) = old_data[i];
     }
 
@@ -535,9 +536,9 @@ template <class T>
 void
 Array<T>::resize_no_fill (const dim_vector& dv)
 {
-  int n = dv.length ();
+  octave_idx_type n = dv.length ();
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
       if (dv(i) < 0)
 	{
@@ -555,7 +556,7 @@ Array<T>::resize_no_fill (const dim_vector& dv)
     }
   else
     {
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  if (dv(i) != dimensions(i))
 	    {
@@ -571,28 +572,28 @@ Array<T>::resize_no_fill (const dim_vector& dv)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  int ts = get_size (dv);
+  octave_idx_type ts = get_size (dv);
 
   rep = new typename Array<T>::ArrayRep (ts);
 
   dim_vector dv_old = dimensions;
-  int dv_old_orig_len = dv_old.length ();
+  octave_idx_type  dv_old_orig_len = dv_old.length ();
   dimensions = dv;
-  int ts_old = get_size (dv_old);
+  octave_idx_type ts_old = get_size (dv_old);
 
   if (ts > 0 && ts_old > 0 && dv_old_orig_len > 0)
     {
-      Array<int> ra_idx (dimensions.length (), 0);
+      Array<octave_idx_type> ra_idx (dimensions.length (), 0);
 
       if (n > dv_old_orig_len)
 	{
 	  dv_old.resize (n);
 
-	  for (int i = dv_old_orig_len; i < n; i++)
+	  for (octave_idx_type i = dv_old_orig_len; i < n; i++)
 	    dv_old.elem (i) = 1;
 	}
 
-      for (int i = 0; i < ts; i++)
+      for (octave_idx_type i = 0; i < ts; i++)
 	{
 	  if (index_in_bounds (ra_idx, dv_old))
 	    rep->elem (i) = old_data[get_scalar_idx (ra_idx, dv_old)];
@@ -607,7 +608,7 @@ Array<T>::resize_no_fill (const dim_vector& dv)
 
 template <class T>
 void
-Array<T>::resize_no_fill (int r, int c)
+Array<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
 {
   if (r < 0 || c < 0)
     {
@@ -629,11 +630,11 @@ Array<T>::resize_no_fill (int r, int c)
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
-  int old_d1 = dim1 ();
-  int old_d2 = dim2 ();
-  int old_len = length ();
+  octave_idx_type old_d1 = dim1 ();
+  octave_idx_type old_d2 = dim2 ();
+  octave_idx_type old_len = length ();
 
-  int ts = get_size (r, c);
+  octave_idx_type ts = get_size (r, c);
 
   rep = new typename Array<T>::ArrayRep (ts);
 
@@ -641,11 +642,11 @@ Array<T>::resize_no_fill (int r, int c)
 
   if (ts > 0 && old_data && old_len > 0)
     {
-      int min_r = old_d1 < r ? old_d1 : r;
-      int min_c = old_d2 < c ? old_d2 : c;
+      octave_idx_type min_r = old_d1 < r ? old_d1 : r;
+      octave_idx_type min_c = old_d2 < c ? old_d2 : c;
 
-      for (int j = 0; j < min_c; j++)
-	for (int i = 0; i < min_r; i++)
+      for (octave_idx_type j = 0; j < min_c; j++)
+	for (octave_idx_type i = 0; i < min_r; i++)
 	  xelem (i, j) = old_data[old_d1*j+i];
     }
 
@@ -655,7 +656,7 @@ Array<T>::resize_no_fill (int r, int c)
 
 template <class T>
 void
-Array<T>::resize_no_fill (int r, int c, int p)
+Array<T>::resize_no_fill (octave_idx_type r, octave_idx_type c, octave_idx_type p)
 {
   if (r < 0 || c < 0 || p < 0)
     {
@@ -677,12 +678,12 @@ Array<T>::resize_no_fill (int r, int c, int p)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  int old_d1 = dim1 ();
-  int old_d2 = dim2 ();
-  int old_d3 = dim3 ();
-  int old_len = length ();
+  octave_idx_type old_d1 = dim1 ();
+  octave_idx_type old_d2 = dim2 ();
+  octave_idx_type old_d3 = dim3 ();
+  octave_idx_type old_len = length ();
 
-  int ts = get_size (get_size (r, c), p);
+  octave_idx_type ts = get_size (get_size (r, c), p);
 
   rep = new typename Array<T>::ArrayRep (ts);
 
@@ -690,13 +691,13 @@ Array<T>::resize_no_fill (int r, int c, int p)
 
   if (ts > 0 && old_data && old_len > 0)
     {
-      int min_r = old_d1 < r ? old_d1 : r;
-      int min_c = old_d2 < c ? old_d2 : c;
-      int min_p = old_d3 < p ? old_d3 : p;
+      octave_idx_type min_r = old_d1 < r ? old_d1 : r;
+      octave_idx_type min_c = old_d2 < c ? old_d2 : c;
+      octave_idx_type min_p = old_d3 < p ? old_d3 : p;
 
-      for (int k = 0; k < min_p; k++)
-	for (int j = 0; j < min_c; j++)
-	  for (int i = 0; i < min_r; i++)
+      for (octave_idx_type k = 0; k < min_p; k++)
+	for (octave_idx_type j = 0; j < min_c; j++)
+	  for (octave_idx_type i = 0; i < min_r; i++)
 	    xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
     }
 
@@ -706,7 +707,7 @@ Array<T>::resize_no_fill (int r, int c, int p)
 
 template <class T>
 void
-Array<T>::resize_and_fill (int n, const T& val)
+Array<T>::resize_and_fill (octave_idx_type n, const T& val)
 {
   if (n < 0)
     {
@@ -720,7 +721,7 @@ Array<T>::resize_and_fill (int n, const T& val)
 
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
-  int old_len = length ();
+  octave_idx_type old_len = length ();
 
   rep = new typename Array<T>::ArrayRep (n);
 
@@ -728,15 +729,15 @@ Array<T>::resize_and_fill (int n, const T& val)
 
   if (n > 0)
     {
-      int min_len = old_len < n ? old_len : n;
+      octave_idx_type min_len = old_len < n ? old_len : n;
 
       if (old_data && old_len > 0)
 	{
-	  for (int i = 0; i < min_len; i++)
+	  for (octave_idx_type i = 0; i < min_len; i++)
 	    xelem (i) = old_data[i];
 	}
 
-      for (int i = old_len; i < n; i++)
+      for (octave_idx_type i = old_len; i < n; i++)
 	xelem (i) = val;
     }
 
@@ -746,7 +747,7 @@ Array<T>::resize_and_fill (int n, const T& val)
 
 template <class T>
 void
-Array<T>::resize_and_fill (int r, int c, const T& val)
+Array<T>::resize_and_fill (octave_idx_type r, octave_idx_type c, const T& val)
 {
   if (r < 0 || c < 0)
     {
@@ -766,11 +767,11 @@ Array<T>::resize_and_fill (int r, int c, const T& val)
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
-  int old_d1 = dim1 ();
-  int old_d2 = dim2 ();
-  int old_len = length ();
+  octave_idx_type old_d1 = dim1 ();
+  octave_idx_type old_d2 = dim2 ();
+  octave_idx_type old_len = length ();
 
-  int ts = get_size (r, c);
+  octave_idx_type ts = get_size (r, c);
 
   rep = new typename Array<T>::ArrayRep (ts);
 
@@ -778,22 +779,22 @@ Array<T>::resize_and_fill (int r, int c, const T& val)
 
   if (ts > 0)
     {
-      int min_r = old_d1 < r ? old_d1 : r;
-      int min_c = old_d2 < c ? old_d2 : c;
+      octave_idx_type min_r = old_d1 < r ? old_d1 : r;
+      octave_idx_type min_c = old_d2 < c ? old_d2 : c;
 
       if (old_data && old_len > 0)
 	{
-	  for (int j = 0; j < min_c; j++)
-	    for (int i = 0; i < min_r; i++)
+	  for (octave_idx_type j = 0; j < min_c; j++)
+	    for (octave_idx_type i = 0; i < min_r; i++)
 	      xelem (i, j) = old_data[old_d1*j+i];
 	}
 
-      for (int j = 0; j < min_c; j++)
-	for (int i = min_r; i < r; i++)
+      for (octave_idx_type j = 0; j < min_c; j++)
+	for (octave_idx_type i = min_r; i < r; i++)
 	  xelem (i, j) = val;
 
-      for (int j = min_c; j < c; j++)
-	for (int i = 0; i < r; i++)
+      for (octave_idx_type j = min_c; j < c; j++)
+	for (octave_idx_type i = 0; i < r; i++)
 	  xelem (i, j) = val;
     }
 
@@ -803,7 +804,7 @@ Array<T>::resize_and_fill (int r, int c, const T& val)
 
 template <class T>
 void
-Array<T>::resize_and_fill (int r, int c, int p, const T& val)
+Array<T>::resize_and_fill (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
 {
   if (r < 0 || c < 0 || p < 0)
     {
@@ -823,13 +824,13 @@ Array<T>::resize_and_fill (int r, int c, int p, const T& val)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  int old_d1 = dim1 ();
-  int old_d2 = dim2 ();
-  int old_d3 = dim3 ();
+  octave_idx_type old_d1 = dim1 ();
+  octave_idx_type old_d2 = dim2 ();
+  octave_idx_type old_d3 = dim3 ();
 
-  int old_len = length ();
+  octave_idx_type old_len = length ();
 
-  int ts = get_size (get_size (r, c), p);
+  octave_idx_type ts = get_size (get_size (r, c), p);
 
   rep = new typename Array<T>::ArrayRep (ts);
 
@@ -837,33 +838,33 @@ Array<T>::resize_and_fill (int r, int c, int p, const T& val)
 
   if (ts > 0)
     {
-      int min_r = old_d1 < r ? old_d1 : r;
-      int min_c = old_d2 < c ? old_d2 : c;
-      int min_p = old_d3 < p ? old_d3 : p;
+      octave_idx_type min_r = old_d1 < r ? old_d1 : r;
+      octave_idx_type min_c = old_d2 < c ? old_d2 : c;
+      octave_idx_type min_p = old_d3 < p ? old_d3 : p;
 
       if (old_data && old_len > 0)
-	for (int k = 0; k < min_p; k++)
-	  for (int j = 0; j < min_c; j++)
-	    for (int i = 0; i < min_r; i++)
+	for (octave_idx_type k = 0; k < min_p; k++)
+	  for (octave_idx_type j = 0; j < min_c; j++)
+	    for (octave_idx_type i = 0; i < min_r; i++)
 	      xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
 
       // XXX FIXME XXX -- if the copy constructor is expensive, this
       // may win.  Otherwise, it may make more sense to just copy the
       // value everywhere when making the new ArrayRep.
 
-      for (int k = 0; k < min_p; k++)
-	for (int j = min_c; j < c; j++)
-	  for (int i = 0; i < min_r; i++)
+      for (octave_idx_type k = 0; k < min_p; k++)
+	for (octave_idx_type j = min_c; j < c; j++)
+	  for (octave_idx_type i = 0; i < min_r; i++)
 	    xelem (i, j, k) = val;
 
-      for (int k = 0; k < min_p; k++)
-	for (int j = 0; j < c; j++)
-	  for (int i = min_r; i < r; i++)
+      for (octave_idx_type k = 0; k < min_p; k++)
+	for (octave_idx_type j = 0; j < c; j++)
+	  for (octave_idx_type i = min_r; i < r; i++)
 	    xelem (i, j, k) = val;
 
-      for (int k = min_p; k < p; k++)
-	for (int j = 0; j < c; j++)
-	  for (int i = 0; i < r; i++)
+      for (octave_idx_type k = min_p; k < p; k++)
+	for (octave_idx_type j = 0; j < c; j++)
+	  for (octave_idx_type i = 0; i < r; i++)
 	    xelem (i, j, k) = val;
     }
 
@@ -875,9 +876,9 @@ template <class T>
 void
 Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 {
-  int n = dv.length ();
+  octave_idx_type n = dv.length ();
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
       if (dv(i) < 0)
 	{
@@ -895,7 +896,7 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
     }
   else
     {
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  if (dv(i) != dimensions(i))
 	    {
@@ -911,27 +912,27 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  int len = get_size (dv);
+  octave_idx_type len = get_size (dv);
 
   rep = new typename Array<T>::ArrayRep (len);
 
   dim_vector dv_old = dimensions;
-  int dv_old_orig_len = dv_old.length ();
+  octave_idx_type dv_old_orig_len = dv_old.length ();
   dimensions = dv;
 
   if (len > 0 && dv_old_orig_len > 0)
     {
-      Array<int> ra_idx (dimensions.length (), 0);
+      Array<octave_idx_type> ra_idx (dimensions.length (), 0);
       
       if (n > dv_old_orig_len)
 	{
 	  dv_old.resize (n);
 
-	  for (int i = dv_old_orig_len; i < n; i++)
+	  for (octave_idx_type i = dv_old_orig_len; i < n; i++)
 	    dv_old.elem (i) = 1;
 	}
 
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
 	{
 	  if (index_in_bounds (ra_idx, dv_old))
 	    rep->elem (i) = old_data[get_scalar_idx (ra_idx, dv_old)];
@@ -942,7 +943,7 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 	}
     }
   else
-    for (int i = 0; i < len; i++)
+    for (octave_idx_type i = 0; i < len; i++)
       rep->elem (i) = val;
 
   if (--old_rep->count <= 0)
@@ -951,7 +952,7 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 
 template <class T>
 Array<T>&
-Array<T>::insert (const Array<T>& a, int r, int c)
+Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
 {
   if (ndims () == 2 && a.ndims () == 2)
     insert2 (a, r, c);
@@ -964,10 +965,10 @@ Array<T>::insert (const Array<T>& a, int r, int c)
 
 template <class T>
 Array<T>&
-Array<T>::insert2 (const Array<T>& a, int r, int c)
+Array<T>::insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
 {
-  int a_rows = a.rows ();
-  int a_cols = a.cols ();
+  octave_idx_type a_rows = a.rows ();
+  octave_idx_type a_cols = a.cols ();
 
   if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
     {
@@ -975,8 +976,8 @@ Array<T>::insert2 (const Array<T>& a, int r, int c)
       return *this;
     }
 
-  for (int j = 0; j < a_cols; j++)
-    for (int i = 0; i < a_rows; i++)
+  for (octave_idx_type j = 0; j < a_cols; j++)
+    for (octave_idx_type i = 0; i < a_rows; i++)
       elem (r+i, c+j) = a.elem (i, j);
 
   return *this;
@@ -984,7 +985,7 @@ Array<T>::insert2 (const Array<T>& a, int r, int c)
 
 template <class T>
 Array<T>&
-Array<T>::insertN (const Array<T>& a, int r, int c)
+Array<T>::insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c)
 {
   dim_vector dv = dims ();
 
@@ -994,7 +995,7 @@ Array<T>::insertN (const Array<T>& a, int r, int c)
 
   if (n == dimensions.length ())
     {
-      Array<int> a_ra_idx (a_dv.length (), 0);
+      Array<octave_idx_type> a_ra_idx (a_dv.length (), 0);
 
       a_ra_idx.elem (0) = r;
       a_ra_idx.elem (1) = c;
@@ -1009,21 +1010,21 @@ Array<T>::insertN (const Array<T>& a, int r, int c)
 	    }
 	}
 
-      int n_elt = a.numel ();
+      octave_idx_type n_elt = a.numel ();
       
       const T *a_data = a.data ();   
    
-      int iidx = 0;
+      octave_idx_type iidx = 0;
 	  
-      int a_rows = a_dv(0);
+      octave_idx_type a_rows = a_dv(0);
 
-      int this_rows = dv(0);
+      octave_idx_type this_rows = dv(0);
 	  
-      int numel_page = a_dv(0) * a_dv(1);	  
+      octave_idx_type numel_page = a_dv(0) * a_dv(1);	  
 
-      int count_pages = 0;
+      octave_idx_type count_pages = 0;
 	  
-      for (int i = 0; i < n_elt; i++)
+      for (octave_idx_type i = 0; i < n_elt; i++)
 	{
 	  if (i != 0 && i % a_rows == 0)
 	    iidx += (this_rows - a_rows);	      
@@ -1043,9 +1044,9 @@ Array<T>::insertN (const Array<T>& a, int r, int c)
 
 template <class T>
 Array<T>&
-Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
+Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
-  int n = ra_idx.length ();
+  octave_idx_type n = ra_idx.length ();
 
   if (n == dimensions.length ())
     {
@@ -1054,7 +1055,7 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
       int len_a = dva.length ();
       int non_full_dim = 0;
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  if (ra_idx(i) < 0 || (ra_idx(i) + 
 				(i < len_a ? dva(i) : 1)) > dimensions(i))
@@ -1074,8 +1075,8 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 	    {
 	      // Special case for fast concatenation
 	      const T *a_data = a.data ();
-	      int numel_to_move = 1;
-	      int skip = 0;
+	      octave_idx_type numel_to_move = 1;
+	      octave_idx_type skip = 0;
 	      for (int i = 0; i < len_a; i++)
 		if (ra_idx(i) == 0 && dva(i) == dv(i))
 		  numel_to_move *= dva(i);
@@ -1086,18 +1087,18 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 		    break;
 		  }
 
-	      int jidx = ra_idx(n-1);
+	      octave_idx_type jidx = ra_idx(n-1);
 	      for (int i = n-2; i >= 0; i--)
 		{
 		  jidx *= dv(i);
 		  jidx += ra_idx(i);
 		}
 
-	      int iidx = 0;
-	      int moves = dva.numel () / numel_to_move;
-	      for (int i = 0; i < moves; i++)
+	      octave_idx_type iidx = 0;
+	      octave_idx_type moves = dva.numel () / numel_to_move;
+	      for (octave_idx_type i = 0; i < moves; i++)
 		{
-		  for (int j = 0; j < numel_to_move; j++)
+		  for (octave_idx_type j = 0; j < numel_to_move; j++)
 		    elem (jidx++) = a_data[iidx++];
 		  jidx += skip;
 		}
@@ -1107,7 +1108,7 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 	      // Generic code
 	      const T *a_data = a.data ();
 	      int nel = a.numel ();
-	      Array<int> a_idx (n, 0);
+	      Array<octave_idx_type> a_idx (n, 0);
 
 	      for (int i = 0; i < nel; i++)
 		{
@@ -1138,15 +1139,15 @@ Array<T>::transpose (void) const
 {
   assert (ndims () == 2);
 
-  int nr = dim1 ();
-  int nc = dim2 ();
+  octave_idx_type nr = dim1 ();
+  octave_idx_type nc = dim2 ();
 
   if (nr > 1 && nc > 1)
     {
       Array<T> result (dim_vector (nc, nr));
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  result.xelem (j, i) = xelem (i, j);
 
       return result;
@@ -1261,7 +1262,7 @@ template <class T>
 void
 Array<T>::maybe_delete_elements_1 (idx_vector& idx_arg)
 {
-  int len = length ();
+  octave_idx_type len = length ();
 
   if (len == 0)
     return;
@@ -1274,11 +1275,11 @@ Array<T>::maybe_delete_elements_1 (idx_vector& idx_arg)
 
       if (num_to_delete != 0)
 	{
-	  int new_len = len;
+	  octave_idx_type new_len = len;
 
-	  int iidx = 0;
+	  octave_idx_type iidx = 0;
 
-	  for (int i = 0; i < len; i++)
+	  for (octave_idx_type i = 0; i < len; i++)
 	    if (i == idx_arg.elem (iidx))
 	      {
 		iidx++;
@@ -1292,9 +1293,9 @@ Array<T>::maybe_delete_elements_1 (idx_vector& idx_arg)
 	    {
 	      T *new_data = new T [new_len];
 
-	      int ii = 0;
+	      octave_idx_type ii = 0;
 	      iidx = 0;
-	      for (int i = 0; i < len; i++)
+	      for (octave_idx_type i = 0; i < len; i++)
 		{
 		  if (iidx < num_to_delete && i == idx_arg.elem (iidx))
 		    iidx++;
@@ -1326,13 +1327,13 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
 {
   assert (ndims () == 2);
 
-  int nr = dim1 ();
-  int nc = dim2 ();
+  octave_idx_type nr = dim1 ();
+  octave_idx_type nc = dim2 ();
 
   if (nr == 0 && nc == 0)
     return;
 
-  int n;
+  octave_idx_type n;
   if (nr == 1)
     n = nc;
   else if (nc == 1)
@@ -1359,15 +1360,15 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
 
   idx_arg.sort (true);
 
-  int num_to_delete = idx_arg.length (n);
+  octave_idx_type num_to_delete = idx_arg.length (n);
 
   if (num_to_delete != 0)
     {
-      int new_n = n;
+      octave_idx_type new_n = n;
 
-      int iidx = 0;
+      octave_idx_type iidx = 0;
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	if (i == idx_arg.elem (iidx))
 	  {
 	    iidx++;
@@ -1381,9 +1382,9 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
 	{
 	  T *new_data = new T [new_n];
 
-	  int ii = 0;
+	  octave_idx_type ii = 0;
 	  iidx = 0;
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
 	      if (iidx < num_to_delete && i == idx_arg.elem (iidx))
 		iidx++;
@@ -1425,8 +1426,8 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 {
   assert (ndims () == 2);
 
-  int nr = dim1 ();
-  int nc = dim2 ();
+  octave_idx_type nr = dim1 ();
+  octave_idx_type nc = dim2 ();
 
   if (nr == 0 && nc == 0)
     return;
@@ -1471,7 +1472,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	{
 	  idx_j.sort (true);
 
-	  int num_to_delete = idx_j.length (nc);
+	  octave_idx_type num_to_delete = idx_j.length (nc);
 
 	  if (num_to_delete != 0)
 	    {
@@ -1479,11 +1480,11 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		resize_no_fill (0, 0);
 	      else
 		{
-		  int new_nc = nc;
+		  octave_idx_type new_nc = nc;
 
-		  int iidx = 0;
+		  octave_idx_type iidx = 0;
 
-		  for (int j = 0; j < nc; j++)
+		  for (octave_idx_type j = 0; j < nc; j++)
 		    if (j == idx_j.elem (iidx))
 		      {
 			iidx++;
@@ -1497,15 +1498,15 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		    {
 		      T *new_data = new T [nr * new_nc];
 
-		      int jj = 0;
+		      octave_idx_type jj = 0;
 		      iidx = 0;
-		      for (int j = 0; j < nc; j++)
+		      for (octave_idx_type j = 0; j < nc; j++)
 			{
 			  if (iidx < num_to_delete && j == idx_j.elem (iidx))
 			    iidx++;
 			  else
 			    {
-			      for (int i = 0; i < nr; i++)
+			      for (octave_idx_type i = 0; i < nr; i++)
 				new_data[nr*jj+i] = elem (i, j);
 			      jj++;
 			    }
@@ -1534,7 +1535,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	{
 	  idx_i.sort (true);
 
-	  int num_to_delete = idx_i.length (nr);
+	  octave_idx_type num_to_delete = idx_i.length (nr);
 
 	  if (num_to_delete != 0)
 	    {
@@ -1542,11 +1543,11 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		resize_no_fill (0, 0);
 	      else
 		{
-		  int new_nr = nr;
+		  octave_idx_type new_nr = nr;
 
-		  int iidx = 0;
+		  octave_idx_type iidx = 0;
 
-		  for (int i = 0; i < nr; i++)
+		  for (octave_idx_type i = 0; i < nr; i++)
 		    if (i == idx_i.elem (iidx))
 		      {
 			iidx++;
@@ -1560,15 +1561,15 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		    {
 		      T *new_data = new T [new_nr * nc];
 
-		      int ii = 0;
+		      octave_idx_type ii = 0;
 		      iidx = 0;
-		      for (int i = 0; i < nr; i++)
+		      for (octave_idx_type i = 0; i < nr; i++)
 			{
 			  if (iidx < num_to_delete && i == idx_i.elem (iidx))
 			    iidx++;
 			  else
 			    {
-			      for (int j = 0; j < nc; j++)
+			      for (octave_idx_type j = 0; j < nc; j++)
 				new_data[new_nr*j+ii] = elem (i, j);
 			      ii++;
 			    }
@@ -1602,7 +1603,7 @@ template <class T>
 void
 Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 {
-  int n_idx = ra_idx.length ();
+  octave_idx_type n_idx = ra_idx.length ();
 
   dim_vector lhs_dims = dims ();
 
@@ -1617,7 +1618,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   // Initialization of colon arrays.
 
-  for (int i = 0; i < n_idx; i++)
+  for (octave_idx_type i = 0; i < n_idx; i++)
     {
       idx_is_colon_equiv(i) = ra_idx(i).is_colon_equiv (lhs_dims(i), 1);
 
@@ -1628,7 +1629,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   // Check for index out of bounds.
 
-  for (int i = 0 ; i < n_idx - 1; i++)
+  for (octave_idx_type i = 0 ; i < n_idx - 1; i++)
     {
       if (! (idx_is_colon(i) || idx_is_colon_equiv(i)))
 	{
@@ -1655,11 +1656,11 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   if (n_idx <= n_lhs_dims)
     {
-      int last_idx = ra_idx(n_idx-1).max ();
+      octave_idx_type last_idx = ra_idx(n_idx-1).max ();
 
-      int sum_el = lhs_dims(n_idx-1);
+      octave_idx_type sum_el = lhs_dims(n_idx-1);
 
-      for (int i = n_idx; i < n_lhs_dims; i++)
+      for (octave_idx_type i = n_idx; i < n_lhs_dims; i++)
 	  sum_el *= lhs_dims(i);
 
       if (last_idx > sum_el - 1)
@@ -1702,7 +1703,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	  dim_vector temp_dims;
 	  temp_dims.resize (n_idx);
 
-	  for (int i = 0; i < n_idx; i++)
+	  for (octave_idx_type i = 0; i < n_idx; i++)
 	    {
 	      if (idx_is_colon (i))
 		temp_dims(i) =  lhs_dims(i);
@@ -1725,7 +1726,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 		(*current_liboctave_warning_handler)
 		  ("fewer indices than dimensions for N-d array");
 
-	      for (int i = n_idx; i < n_lhs_dims; i++)
+	      for (octave_idx_type i = n_idx; i < n_lhs_dims; i++)
 		lhs_dims(n_idx-1) *= lhs_dims(i);
 
 	      lhs_dims.resize (n_idx);
@@ -1738,7 +1739,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 	  // Find the non-colon column.
 
-	  for (int i = 0; i < n_idx; i++)
+	  for (octave_idx_type i = 0; i < n_idx; i++)
 	    {
 	      if (! idx_is_colon(i))
 		non_col = i;
@@ -1746,9 +1747,9 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 	  // The length of the non-colon dimension.
 
-	  int non_col_dim = lhs_dims (non_col);
+	  octave_idx_type non_col_dim = lhs_dims (non_col);
 
-	  int num_to_delete = ra_idx(non_col).length (lhs_dims (non_col));
+	  octave_idx_type num_to_delete = ra_idx(non_col).length (lhs_dims (non_col));
 
 	  if (num_to_delete > 0)
 	    {
@@ -1771,11 +1772,11 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 		  // New length of non-colon dimension
 		  // (calculated in the next for loop)
 
-		  int new_dim = non_col_dim;
+		  octave_idx_type new_dim = non_col_dim;
 
-		  int iidx = 0;
+		  octave_idx_type iidx = 0;
 
-		  for (int j = 0; j < non_col_dim; j++)
+		  for (octave_idx_type j = 0; j < non_col_dim; j++)
 		    if (j == ra_idx(non_col).elem (iidx))
 		      {
 			iidx++;
@@ -1792,7 +1793,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 		    {
 		      // Calculate number of elements in new array.
 
-		      int num_new_elem=1;
+		      octave_idx_type num_new_elem=1;
 
 		      for (int i = 0; i < n_idx; i++)
 			{
@@ -1805,17 +1806,17 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 		      T *new_data = new T [num_new_elem];
 
-		      Array<int> result_idx (n_lhs_dims, 0);
+		      Array<octave_idx_type> result_idx (n_lhs_dims, 0);
 
 		      dim_vector new_lhs_dim = lhs_dims;
 
 		      new_lhs_dim(non_col) = new_dim;
 
-		      int num_elem = 1;
+		      octave_idx_type num_elem = 1;
 
-		      int numidx = 0;
+		      octave_idx_type numidx = 0;
 
-		      int n = length ();
+		      octave_idx_type n = length ();
 
 		      for (int i = 0; i < n_lhs_dims; i++)
 			if (i != non_col)
@@ -1823,7 +1824,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 		      num_elem *= ra_idx(non_col).capacity ();
 
-		      for (int i = 0; i < n; i++)
+		      for (octave_idx_type i = 0; i < n; i++)
 			{
 			  if (numidx < num_elem
 			      && is_in (result_idx(non_col), ra_idx(non_col)))
@@ -1831,14 +1832,14 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 			  else
 			    {
-			      Array<int> temp_result_idx = result_idx;
+			      Array<octave_idx_type> temp_result_idx = result_idx;
 
-			      int num_lgt = how_many_lgt (result_idx(non_col),
+			      octave_idx_type num_lgt = how_many_lgt (result_idx(non_col),
 							  ra_idx(non_col));
 
 			      temp_result_idx(non_col) -= num_lgt;
 
-			      int kidx
+			      octave_idx_type kidx
 				= ::compute_index (temp_result_idx, new_lhs_dim);
 
 			      new_data[kidx] = elem (result_idx);
@@ -1870,7 +1871,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	  // A(3,3,3)=2;
 	  // A(3:5) = []; A(6)=[]
 
-	  int lhs_numel = numel ();
+	  octave_idx_type lhs_numel = numel ();
 
 	  idx_vector idx_vec = ra_idx(0);
 
@@ -1878,20 +1879,20 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
       
 	  idx_vec.sort (true);
 
-	  int num_to_delete = idx_vec.length (lhs_numel);
+	  octave_idx_type num_to_delete = idx_vec.length (lhs_numel);
 
 	  if (num_to_delete > 0)
 	    {
-	      int new_numel = lhs_numel - num_to_delete;
+	      octave_idx_type new_numel = lhs_numel - num_to_delete;
 
 	      T *new_data = new T[new_numel];
 
-	      Array<int> lhs_ra_idx (ndims (), 0);
+	      Array<octave_idx_type> lhs_ra_idx (ndims (), 0);
 
-	      int ii = 0;
-	      int iidx = 0;
+	      octave_idx_type ii = 0;
+	      octave_idx_type iidx = 0;
 
-	      for (int i = 0; i < lhs_numel; i++)
+	      for (octave_idx_type i = 0; i < lhs_numel; i++)
 		{
 		  if (iidx < num_to_delete && i == idx_vec.elem (iidx))
 		    {
@@ -2000,9 +2001,9 @@ Array<T>::index1 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
 
-  int len = length ();
+  octave_idx_type len = length ();
 
-  int n = idx_arg.freeze (len, "vector", resize_ok);
+  octave_idx_type n = idx_arg.freeze (len, "vector", resize_ok);
 
   if (idx_arg)
     {
@@ -2024,9 +2025,9 @@ Array<T>::index1 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	{
 	  retval.resize_no_fill (n);
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
-	      int ii = idx_arg.elem (i);
+	      octave_idx_type ii = idx_arg.elem (i);
 	      if (ii >= len)
 		retval.elem (i) = rfv;
 	      else
@@ -2048,22 +2049,22 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
   assert (ndims () == 2);
 
-  int nr = dim1 ();
-  int nc = dim2 ();
+  octave_idx_type nr = dim1 ();
+  octave_idx_type nc = dim2 ();
 
-  int orig_len = nr * nc;
+  octave_idx_type orig_len = nr * nc;
 
   dim_vector idx_orig_dims = idx_arg.orig_dimensions ();
 
-  int idx_orig_rows = idx_arg.orig_rows ();
-  int idx_orig_columns = idx_arg.orig_columns ();
+  octave_idx_type idx_orig_rows = idx_arg.orig_rows ();
+  octave_idx_type idx_orig_columns = idx_arg.orig_columns ();
 
   if (idx_arg.is_colon ())
     {
       // Fast magic colon processing.
 
-      int result_nr = nr * nc;
-      int result_nc = 1;
+      octave_idx_type result_nr = nr * nc;
+      octave_idx_type result_nc = 1;
 
       retval = Array<T> (*this, dim_vector (result_nr, result_nc));
     }
@@ -2071,7 +2072,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
     {
       Array<T> tmp = Array<T>::index1 (idx_arg, resize_ok);
 
-      int len = tmp.length ();
+      octave_idx_type len = tmp.length ();
 
       if (len == 0 && idx_arg.one_zero_only ())
 	retval = Array<T> (tmp, dim_vector (0, 0));
@@ -2086,7 +2087,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
       Array<T> tmp = Array<T>::index1 (idx_arg, resize_ok);
 
-      int len = tmp.length ();
+      octave_idx_type len = tmp.length ();
 
       if ((len != 0 && idx_arg.one_zero_only ())
 	  || idx_orig_rows == 1 || idx_orig_columns == 1)
@@ -2114,8 +2115,8 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
       if (idx_arg)
 	{
-	  int result_nr = idx_orig_rows;
-	  int result_nc = idx_orig_columns;
+	  octave_idx_type result_nr = idx_orig_rows;
+	  octave_idx_type result_nc = idx_orig_columns;
 
 	  if (idx_arg.one_zero_only ())
 	    {
@@ -2125,18 +2126,18 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
 	  retval.resize_no_fill (result_nr, result_nc);
 
-	  int k = 0;
-	  for (int j = 0; j < result_nc; j++)
+	  octave_idx_type k = 0;
+	  for (octave_idx_type j = 0; j < result_nc; j++)
 	    {
-	      for (int i = 0; i < result_nr; i++)
+	      for (octave_idx_type i = 0; i < result_nr; i++)
 		{
-		  int ii = idx_arg.elem (k++);
+		  octave_idx_type ii = idx_arg.elem (k++);
 		  if (ii >= orig_len)
 		    retval.elem (i, j) = rfv;
 		  else
 		    {
-		      int fr = ii % nr;
-		      int fc = (ii - fr) / nr;
+		      octave_idx_type fr = ii % nr;
+		      octave_idx_type fc = (ii - fr) / nr;
 		      retval.elem (i, j) = elem (fr, fc);
 		    }
 		}
@@ -2156,7 +2157,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
   int n_dims = dims().length ();
 
-  int orig_len = dims().numel ();
+  octave_idx_type orig_len = dims().numel ();
 
   dim_vector idx_orig_dims = ra_idx.orig_dimensions ();
 
@@ -2172,7 +2173,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
       Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
 
-      int len = tmp.length ();
+      octave_idx_type len = tmp.length ();
 
       if (len != 0)
 	{
@@ -2188,7 +2189,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
       Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
 
-      int len = tmp.length ();
+      octave_idx_type len = tmp.length ();
 
       if (len == 0)
 	{
@@ -2254,7 +2255,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	  if (ra_idx.one_zero_only ())
 	    {
 	      result_dims.resize (2);
-	      int ntot = ra_idx.ones_count ();
+	      octave_idx_type ntot = ra_idx.ones_count ();
 	      result_dims(0) = ntot;
 	      result_dims(1) = (ntot > 0 ? 1 : 0);
 	    }
@@ -2263,17 +2264,17 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
 	  retval.resize (result_dims);
 
-	  int n = result_dims.numel ();
+	  octave_idx_type n = result_dims.numel ();
 
 	  int r_dims = result_dims.length ();
 
-	  Array<int> iidx (r_dims, 0);
+	  Array<octave_idx_type> iidx (r_dims, 0);
 
-	  int k = 0;
+	  octave_idx_type k = 0;
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
-	      int ii = ra_idx.elem (k++);
+	      octave_idx_type ii = ra_idx.elem (k++);
 
 	      if (ii >= orig_len)
 	        retval.elem (iidx) = rfv;
@@ -2301,11 +2302,11 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 
   assert (ndims () == 2);
 
-  int nr = dim1 ();
-  int nc = dim2 ();
+  octave_idx_type nr = dim1 ();
+  octave_idx_type nc = dim2 ();
 
-  int n = idx_i.freeze (nr, "row", resize_ok);
-  int m = idx_j.freeze (nc, "column", resize_ok);
+  octave_idx_type n = idx_i.freeze (nr, "row", resize_ok);
+  octave_idx_type m = idx_j.freeze (nc, "column", resize_ok);
 
   if (idx_i && idx_j)
     {
@@ -2321,12 +2322,12 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 	{
 	  retval.resize_no_fill (n, m);
 
-	  for (int j = 0; j < m; j++)
+	  for (octave_idx_type j = 0; j < m; j++)
 	    {
-	      int jj = idx_j.elem (j);
-	      for (int i = 0; i < n; i++)
+	      octave_idx_type jj = idx_j.elem (j);
+	      for (octave_idx_type i = 0; i < n; i++)
 		{
-		  int ii = idx_i.elem (i);
+		  octave_idx_type ii = idx_i.elem (i);
 		  if (ii >= nr || jj >= nc)
 		    retval.elem (i, j) = rfv;
 		  else
@@ -2355,10 +2356,10 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
   // Remove trailing singletons in ra_idx, but leave at least ndims
   // elements.
 
-  int ra_idx_len = ra_idx.length ();
+  octave_idx_type ra_idx_len = ra_idx.length ();
 
   bool trim_trailing_singletons = true;
-  for (int j = ra_idx_len; j > n_dims; j--)
+  for (octave_idx_type j = ra_idx_len; j > n_dims; j--)
     {
       idx_vector iidx = ra_idx (ra_idx_len-1);
       if (iidx.capacity () == 1 && trim_trailing_singletons)
@@ -2366,7 +2367,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
       else
 	trim_trailing_singletons = false;
 
-      for (int i = 0; i < iidx.capacity (); i++)
+      for (octave_idx_type i = 0; i < iidx.capacity (); i++)
 	if (iidx (i) != 0)
 	  {
 	    (*current_liboctave_error_handler)
@@ -2410,17 +2411,17 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 
 	  retval.resize (frozen_lengths_for_resize);
 
-	  int n = retval.length ();
+	  octave_idx_type n = retval.length ();
 
-	  Array<int> result_idx (ra_idx.length (), 0);
+	  Array<octave_idx_type> result_idx (ra_idx.length (), 0);
 
-	  Array<int> elt_idx;
+	  Array<octave_idx_type> elt_idx;
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
 	      elt_idx = get_elt_idx (ra_idx, result_idx);
 
-	      int numelem_elt = get_scalar_idx (elt_idx, new_dims);
+	      octave_idx_type numelem_elt = get_scalar_idx (elt_idx, new_dims);
 
 	      if (numelem_elt > length () || numelem_elt < 0)
 		(*current_liboctave_error_handler)
@@ -2496,25 +2497,25 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   idx_vector lhs_idx = tmp[0];
 
-  int lhs_len = lhs.length ();
-  int rhs_len = rhs.length ();
+  octave_idx_type lhs_len = lhs.length ();
+  octave_idx_type rhs_len = rhs.length ();
 
-  int n = lhs_idx.freeze (lhs_len, "vector", true, liboctave_wrore_flag);
+  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true, liboctave_wrore_flag);
 
   if (n != 0)
     {
       if (rhs_len == n || rhs_len == 1)
 	{
-	  int max_idx = lhs_idx.max () + 1;
+	  octave_idx_type max_idx = lhs_idx.max () + 1;
 	  if (max_idx > lhs_len)
 	    lhs.resize_and_fill (max_idx, rfv);
 	}
 
       if (rhs_len == n)
 	{
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
-	      int ii = lhs_idx.elem (i);
+	      octave_idx_type ii = lhs_idx.elem (i);
 	      lhs.elem (ii) = rhs.elem (i);
 	    }
 	}
@@ -2522,9 +2523,9 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  RT scalar = rhs.elem (0);
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
-	      int ii = lhs_idx.elem (i);
+	      octave_idx_type ii = lhs_idx.elem (i);
 	      lhs.elem (ii) = scalar;
 	    }
 	}
@@ -2542,7 +2543,7 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  lhs.resize_no_fill (rhs_len);
 
-	  for (int i = 0; i < rhs_len; i++)
+	  for (octave_idx_type i = 0; i < rhs_len; i++)
 	    lhs.elem (i) = rhs.elem (i);
 	}
       else
@@ -2565,11 +2566,11 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 #define MAYBE_RESIZE_LHS \
   do \
     { \
-      int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1; \
-      int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1; \
+      octave_idx_type max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1; \
+      octave_idx_type max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1; \
  \
-      int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
-      int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
+      octave_idx_type new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
+      octave_idx_type new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
  \
       lhs.resize_and_fill (new_nr, new_nc, rfv); \
     } \
@@ -2583,13 +2584,13 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   int n_idx = lhs.index_count ();
 
-  int lhs_nr = lhs.rows ();
-  int lhs_nc = lhs.cols ();
+  octave_idx_type lhs_nr = lhs.rows ();
+  octave_idx_type lhs_nc = lhs.cols ();
 
   Array<RT> xrhs = rhs;
 
-  int rhs_nr = xrhs.rows ();
-  int rhs_nc = xrhs.cols ();
+  octave_idx_type rhs_nr = xrhs.rows ();
+  octave_idx_type rhs_nc = xrhs.cols ();
 
   if (xrhs.ndims () > 2)
     {
@@ -2631,9 +2632,9 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   if (n_idx == 2)
     {
-      int n = idx_i.freeze (lhs_nr, "row", true, liboctave_wrore_flag);
+      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true, liboctave_wrore_flag);
 
-      int m = idx_j.freeze (lhs_nc, "column", true, liboctave_wrore_flag);
+      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true, liboctave_wrore_flag);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -2663,12 +2664,12 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		      RT scalar = xrhs.elem (0, 0);
 
-		      for (int j = 0; j < m; j++)
+		      for (octave_idx_type j = 0; j < m; j++)
 			{
-			  int jj = idx_j.elem (j);
-			  for (int i = 0; i < n; i++)
+			  octave_idx_type jj = idx_j.elem (j);
+			  for (octave_idx_type i = 0; i < n; i++)
 			    {
-			      int ii = idx_i.elem (i);
+			      octave_idx_type ii = idx_i.elem (i);
 			      lhs.elem (ii, jj) = scalar;
 			    }
 			}
@@ -2680,12 +2681,12 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		    {
 		      MAYBE_RESIZE_LHS;
 
-		      for (int j = 0; j < m; j++)
+		      for (octave_idx_type j = 0; j < m; j++)
 			{
-			  int jj = idx_j.elem (j);
-			  for (int i = 0; i < n; i++)
+			  octave_idx_type jj = idx_j.elem (j);
+			  for (octave_idx_type i = 0; i < n; i++)
 			    {
-			      int ii = idx_i.elem (i);
+			      octave_idx_type ii = idx_i.elem (i);
 			      lhs.elem (ii, jj) = xrhs.elem (i, j);
 			    }
 			}
@@ -2723,9 +2724,9 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       if (lhs_is_empty || (lhs_nr == 1 && lhs_nc == 1))
 	{
-	  int lhs_len = lhs.length ();
+	  octave_idx_type lhs_len = lhs.length ();
 
-	  int n = idx_i.freeze (lhs_len, 0, true, liboctave_wrore_flag);
+	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true, liboctave_wrore_flag);
 
 	  if (idx_i)
 	    {
@@ -2747,8 +2748,8 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			}
 		      else
 			{
-			  int idx_nr = idx_i.orig_rows ();
-			  int idx_nc = idx_i.orig_columns ();
+			  octave_idx_type idx_nr = idx_i.orig_rows ();
+			  octave_idx_type idx_nc = idx_i.orig_columns ();
 
 			  if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
 			    (*current_liboctave_warning_handler)
@@ -2758,7 +2759,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		  if (assign1 (lhs, xrhs, rfv))
 		    {
-		      int len = lhs.length ();
+		      octave_idx_type len = lhs.length ();
 
 		      if (len > 0)
 			{
@@ -2823,7 +2824,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    (*current_liboctave_warning_handler)
 	      ("single index used for matrix");
 
-	  int len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
+	  octave_idx_type len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
 
 	  if (idx_i)
 	    {
@@ -2838,14 +2839,14 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		}
 	      else if (len == rhs_nr * rhs_nc)
 		{
-		  int k = 0;
-		  for (int j = 0; j < rhs_nc; j++)
+		  octave_idx_type k = 0;
+		  for (octave_idx_type j = 0; j < rhs_nc; j++)
 		    {
-		      for (int i = 0; i < rhs_nr; i++)
+		      for (octave_idx_type i = 0; i < rhs_nr; i++)
 			{
-			  int ii = idx_i.elem (k++);
-			  int fr = ii % lhs_nr;
-			  int fc = (ii - fr) / lhs_nr;
+			  octave_idx_type ii = idx_i.elem (k++);
+			  octave_idx_type fr = ii % lhs_nr;
+			  octave_idx_type fc = (ii - fr) / lhs_nr;
 			  lhs.elem (fr, fc) = xrhs.elem (i, j);
 			}
 		    }
@@ -2854,9 +2855,9 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		{
 		  RT scalar = rhs.elem (0, 0);
 
-		  for (int i = 0; i < len; i++)
+		  for (octave_idx_type i = 0; i < len; i++)
 		    {
-		      int ii = idx_i.elem (i);
+		      octave_idx_type ii = idx_i.elem (i);
 		      lhs.elem (ii) = scalar;
 		    }
 		}
@@ -2892,7 +2893,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   dim_vector rhs_dims = rhs.dims ();
 
-  int rhs_dims_len = rhs_dims.length ();
+  octave_idx_type rhs_dims_len = rhs_dims.length ();
 
   bool rhs_is_scalar = is_scalar (rhs_dims);
 
@@ -2917,9 +2918,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	(*current_liboctave_warning_handler)
 	  ("single index used for N-d array");
 
-      int lhs_len = lhs.length ();
+      octave_idx_type lhs_len = lhs.length ();
 
-      int len = iidx.freeze (lhs_len, "N-d arrray");
+      octave_idx_type len = iidx.freeze (lhs_len, "N-d arrray");
 
       if (iidx)
 	{
@@ -2935,9 +2936,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	  else if (len == rhs.length ())
 	    {
-	      for (int i = 0; i < len; i++)
+	      for (octave_idx_type i = 0; i < len; i++)
 		{
-		  int ii = iidx.elem (i);
+		  octave_idx_type ii = iidx.elem (i);
 
 		  lhs.elem (ii) = rhs.elem (i);
 		}
@@ -2946,9 +2947,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    {
 	      RT scalar = rhs.elem (0);
 
-	      for (int i = 0; i < len; i++)
+	      for (octave_idx_type i = 0; i < len; i++)
 		{
-		  int ii = iidx.elem (i);
+		  octave_idx_type ii = iidx.elem (i);
 
 		  lhs.elem (ii) = scalar;
 		}
@@ -2970,13 +2971,13 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       dim_vector lhs_dims = lhs.dims ();
 
-      int lhs_dims_len = lhs_dims.length ();
+      octave_idx_type lhs_dims_len = lhs_dims.length ();
 
       dim_vector final_lhs_dims = lhs_dims;
 
       dim_vector frozen_len;
 
-      int orig_lhs_dims_len = lhs_dims_len;
+      octave_idx_type orig_lhs_dims_len = lhs_dims_len;
 
       bool orig_empty = lhs_dims.all_zero ();
 
@@ -3089,15 +3090,15 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		  if  (! final_lhs_dims.any_zero ())
 		    {
-		      int n = Array<LT>::get_size (frozen_len);
+		      octave_idx_type n = Array<LT>::get_size (frozen_len);
 
-		      Array<int> result_idx (lhs_dims_len, 0);
+		      Array<octave_idx_type> result_idx (lhs_dims_len, 0);
 
 		      RT scalar = rhs.elem (0);
 
-		      for (int i = 0; i < n; i++)
+		      for (octave_idx_type i = 0; i < n; i++)
 			{
-			  Array<int> elt_idx = get_elt_idx (idx, result_idx);
+			  Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
 
 			  lhs.elem (elt_idx) = scalar;
 
@@ -3109,7 +3110,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		{
 		  // RHS is matrix or higher dimension.
 
-		  int n = Array<LT>::get_size (frozen_len);
+		  octave_idx_type n = Array<LT>::get_size (frozen_len);
 
 		  if (n != rhs.numel ())
 		    {
@@ -3126,11 +3127,11 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			{
 			  n = Array<LT>::get_size (frozen_len);
 
-			  Array<int> result_idx (lhs_dims_len, 0);
+			  Array<octave_idx_type> result_idx (lhs_dims_len, 0);
 
-			  for (int i = 0; i < n; i++)
+			  for (octave_idx_type i = 0; i < n; i++)
 			    {
-			      Array<int> elt_idx = get_elt_idx (idx, result_idx);
+			      Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
 
 			      lhs.elem (elt_idx) = rhs.elem (i);
 

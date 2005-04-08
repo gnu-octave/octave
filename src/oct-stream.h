@@ -406,7 +406,7 @@ protected:
 private:
 
   // A reference count.
-  int count;
+  octave_idx_type count;
 
   // The permission bits for the file.  Should be some combination of
   // std::ios::open_mode bits.
@@ -427,18 +427,18 @@ private:
   // Functions that are defined for all input streams (input streams
   // are those that define is).
 
-  std::string do_gets (int max_len, bool& err, bool strip_newline,
+  std::string do_gets (octave_idx_type max_len, bool& err, bool strip_newline,
 		       const std::string& who /* = "gets" */);
 
-  std::string getl (int max_len, bool& err, const std::string& who /* = "getl" */);
-  std::string gets (int max_len, bool& err, const std::string& who /* = "gets" */);
+  std::string getl (octave_idx_type max_len, bool& err, const std::string& who /* = "getl" */);
+  std::string gets (octave_idx_type max_len, bool& err, const std::string& who /* = "gets" */);
 
-  octave_value do_scanf (scanf_format_list& fmt_list, int nr, int nc,
-			 bool one_elt_size_spec, int& count,
+  octave_value do_scanf (scanf_format_list& fmt_list, octave_idx_type nr, octave_idx_type nc,
+			 bool one_elt_size_spec, octave_idx_type& count,
 			 const std::string& who /* = "scanf" */);
 
   octave_value scanf (const std::string& fmt, const Array<double>& size,
-		      int& count, const std::string& who /* = "scanf" */);
+		      octave_idx_type& count, const std::string& who /* = "scanf" */);
 
   bool do_oscanf (const scanf_format_elt *elt, octave_value&,
 		  const std::string& who /* = "scanf" */);
@@ -488,11 +488,11 @@ public:
 
   int flush (void);
 
-  std::string getl (int max_len, bool& err, const std::string& who /* = "getl" */);
+  std::string getl (octave_idx_type max_len, bool& err, const std::string& who /* = "getl" */);
   std::string getl (const octave_value& max_len, bool& err,
 		    const std::string& who /* = "getl" */);
 
-  std::string gets (int max_len, bool& err, const std::string& who /* = "gets" */);
+  std::string gets (octave_idx_type max_len, bool& err, const std::string& who /* = "gets" */);
   std::string gets (const octave_value& max_len, bool& err,
 		    const std::string& who /* = "gets" */);
 
@@ -507,23 +507,23 @@ public:
 
   void close (void);
 
-  octave_value read (const Array<double>& size, int block_size,
+  octave_value read (const Array<double>& size, octave_idx_type block_size,
 		     oct_data_conv::data_type input_type,
 		     oct_data_conv::data_type output_type,
-		     int skip, oct_mach_info::float_format flt_fmt,
-		     int& count);
+		     octave_idx_type skip, oct_mach_info::float_format flt_fmt,
+		     octave_idx_type& count);
 
-  int write (const octave_value& data, int block_size,
+  octave_idx_type write (const octave_value& data, octave_idx_type block_size,
 	     oct_data_conv::data_type output_type,
-	     int skip, oct_mach_info::float_format flt_fmt);
+	     octave_idx_type skip, oct_mach_info::float_format flt_fmt);
 
   template <class T>
-  int write (const Array<T>&, int block_size,
+  octave_idx_type write (const Array<T>&, octave_idx_type block_size,
 	     oct_data_conv::data_type output_type,
-	     int skip, oct_mach_info::float_format flt_fmt);
+	     octave_idx_type skip, oct_mach_info::float_format flt_fmt);
 
   octave_value scanf (const std::string& fmt, const Array<double>& size,
-		      int& count, const std::string& who /* = "scanf" */);
+		      octave_idx_type& count, const std::string& who /* = "scanf" */);
 
   octave_value_list oscanf (const std::string& fmt,
 			    const std::string& who /* = "scanf" */);

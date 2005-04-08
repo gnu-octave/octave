@@ -45,36 +45,36 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zbesj, ZBESJ) (const double&, const double&, const double&,
-			   const int&, const int&, double*, double*,
-			   int&, int&);
+			   const octave_idx_type&, const octave_idx_type&, double*, double*,
+			   octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesy, ZBESY) (const double&, const double&, const double&,
-			   const int&, const int&, double*, double*,
-			   int&, double*, double*, int&);
+			   const octave_idx_type&, const octave_idx_type&, double*, double*,
+			   octave_idx_type&, double*, double*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesi, ZBESI) (const double&, const double&, const double&,
-			   const int&, const int&, double*, double*,
-			   int&, int&);
+			   const octave_idx_type&, const octave_idx_type&, double*, double*,
+			   octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesk, ZBESK) (const double&, const double&, const double&,
-			   const int&, const int&, double*, double*,
-			   int&, int&);
+			   const octave_idx_type&, const octave_idx_type&, double*, double*,
+			   octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesh, ZBESH) (const double&, const double&, const double&,
-			   const int&, const int&, const int&, double*,
-			   double*, int&, int&);
+			   const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
+			   double*, octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zairy, ZAIRY) (const double&, const double&, const int&,
-			   const int&, double&, double&, int&, int&);
+  F77_FUNC (zairy, ZAIRY) (const double&, const double&, const octave_idx_type&,
+			   const octave_idx_type&, double&, double&, octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zbiry, ZBIRY) (const double&, const double&, const int&,
-			   const int&, double&, double&, int&);
+  F77_FUNC (zbiry, ZBIRY) (const double&, const double&, const octave_idx_type&,
+			   const octave_idx_type&, double&, double&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (xdacosh, XDACOSH) (const double&, double&);
@@ -179,25 +179,25 @@ xlgamma (double x)
 }
 
 static inline Complex
-zbesj (const Complex& z, double alpha, int kode, int& ierr);
+zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
 static inline Complex
-zbesy (const Complex& z, double alpha, int kode, int& ierr);
+zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
 static inline Complex
-zbesi (const Complex& z, double alpha, int kode, int& ierr);
+zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
 static inline Complex
-zbesk (const Complex& z, double alpha, int kode, int& ierr);
+zbesk (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
 static inline Complex
-zbesh1 (const Complex& z, double alpha, int kode, int& ierr);
+zbesh1 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
 static inline Complex
-zbesh2 (const Complex& z, double alpha, int kode, int& ierr);
+zbesh2 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
 static inline Complex
-bessel_return_value (const Complex& val, int ierr)
+bessel_return_value (const Complex& val, octave_idx_type ierr)
 {
   static const Complex inf_val = Complex (octave_Inf, octave_Inf);
   static const Complex nan_val = Complex (octave_NaN, octave_NaN);
@@ -230,7 +230,7 @@ is_integer_value (double x)
 }
 
 static inline Complex
-zbesj (const Complex& z, double alpha, int kode, int& ierr)
+zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -239,7 +239,7 @@ zbesj (const Complex& z, double alpha, int kode, int& ierr)
       double yr = 0.0;
       double yi = 0.0;
 
-      int nz;
+      octave_idx_type nz;
 
       double zr = z.real ();
       double zi = z.imag ();
@@ -287,7 +287,7 @@ zbesj (const Complex& z, double alpha, int kode, int& ierr)
 }
 
 static inline Complex
-zbesy (const Complex& z, double alpha, int kode, int& ierr)
+zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -296,7 +296,7 @@ zbesy (const Complex& z, double alpha, int kode, int& ierr)
       double yr = 0.0;
       double yi = 0.0;
 
-      int nz;
+      octave_idx_type nz;
 
       double wr, wi;
 
@@ -357,7 +357,7 @@ zbesy (const Complex& z, double alpha, int kode, int& ierr)
 }
 
 static inline Complex
-zbesi (const Complex& z, double alpha, int kode, int& ierr)
+zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -366,7 +366,7 @@ zbesi (const Complex& z, double alpha, int kode, int& ierr)
       double yr = 0.0;
       double yi = 0.0;
 
-      int nz;
+      octave_idx_type nz;
 
       double zr = z.real ();
       double zi = z.imag ();
@@ -407,7 +407,7 @@ zbesi (const Complex& z, double alpha, int kode, int& ierr)
 }
 
 static inline Complex
-zbesk (const Complex& z, double alpha, int kode, int& ierr)
+zbesk (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -416,7 +416,7 @@ zbesk (const Complex& z, double alpha, int kode, int& ierr)
       double yr = 0.0;
       double yi = 0.0;
 
-      int nz;
+      octave_idx_type nz;
 
       double zr = z.real ();
       double zi = z.imag ();
@@ -462,7 +462,7 @@ zbesk (const Complex& z, double alpha, int kode, int& ierr)
 }
 
 static inline Complex
-zbesh1 (const Complex& z, double alpha, int kode, int& ierr)
+zbesh1 (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -471,7 +471,7 @@ zbesh1 (const Complex& z, double alpha, int kode, int& ierr)
       double yr = 0.0;
       double yi = 0.0;
 
-      int nz;
+      octave_idx_type nz;
 
       double zr = z.real ();
       double zi = z.imag ();
@@ -508,7 +508,7 @@ zbesh1 (const Complex& z, double alpha, int kode, int& ierr)
 }
 
 static inline Complex
-zbesh2 (const Complex& z, double alpha, int kode, int& ierr)
+zbesh2 (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -517,7 +517,7 @@ zbesh2 (const Complex& z, double alpha, int kode, int& ierr)
       double yr = 0.0;
       double yi = 0.0;
 
-      int nz;
+      octave_idx_type nz;
 
       double zr = z.real ();
       double zi = z.imag ();
@@ -553,11 +553,11 @@ zbesh2 (const Complex& z, double alpha, int kode, int& ierr)
   return retval;
 }
 
-typedef Complex (*fptr) (const Complex&, double, int, int&);
+typedef Complex (*fptr) (const Complex&, double, int, octave_idx_type&);
 
 static inline Complex
 do_bessel (fptr f, const char *, double alpha, const Complex& x,
-	   bool scaled, int& ierr)
+	   bool scaled, octave_idx_type& ierr)
 {
   Complex retval;
 
@@ -568,17 +568,17 @@ do_bessel (fptr f, const char *, double alpha, const Complex& x,
 
 static inline ComplexMatrix
 do_bessel (fptr f, const char *, double alpha, const ComplexMatrix& x,
-	   bool scaled, Array2<int>& ierr)
+	   bool scaled, Array2<octave_idx_type>& ierr)
 {
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
   ComplexMatrix retval (nr, nc);
 
   ierr.resize (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = f (x(i,j), alpha, (scaled ? 2 : 1), ierr(i,j));
 
   return retval;
@@ -586,17 +586,17 @@ do_bessel (fptr f, const char *, double alpha, const ComplexMatrix& x,
 
 static inline ComplexMatrix
 do_bessel (fptr f, const char *, const Matrix& alpha, const Complex& x,
-	   bool scaled, Array2<int>& ierr)
+	   bool scaled, Array2<octave_idx_type>& ierr)
 {
-  int nr = alpha.rows ();
-  int nc = alpha.cols ();
+  octave_idx_type nr = alpha.rows ();
+  octave_idx_type nc = alpha.cols ();
 
   ComplexMatrix retval (nr, nc);
 
   ierr.resize (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = f (x, alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
 
   return retval;
@@ -604,27 +604,27 @@ do_bessel (fptr f, const char *, const Matrix& alpha, const Complex& x,
 
 static inline ComplexMatrix
 do_bessel (fptr f, const char *fn, const Matrix& alpha,
-	   const ComplexMatrix& x, bool scaled, Array2<int>& ierr)
+	   const ComplexMatrix& x, bool scaled, Array2<octave_idx_type>& ierr)
 {
   ComplexMatrix retval;
 
-  int x_nr = x.rows ();
-  int x_nc = x.cols ();
+  octave_idx_type x_nr = x.rows ();
+  octave_idx_type x_nc = x.cols ();
 
-  int alpha_nr = alpha.rows ();
-  int alpha_nc = alpha.cols ();
+  octave_idx_type alpha_nr = alpha.rows ();
+  octave_idx_type alpha_nc = alpha.cols ();
 
   if (x_nr == alpha_nr && x_nc == alpha_nc)
     {
-      int nr = x_nr;
-      int nc = x_nc;
+      octave_idx_type nr = x_nr;
+      octave_idx_type nc = x_nc;
 
       retval.resize (nr, nc);
 
       ierr.resize (nr, nc);
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
     }
   else
@@ -636,15 +636,15 @@ do_bessel (fptr f, const char *fn, const Matrix& alpha,
 
 static inline ComplexNDArray
 do_bessel (fptr f, const char *, double alpha, const ComplexNDArray& x,
-	   bool scaled, ArrayN<int>& ierr)
+	   bool scaled, ArrayN<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
   ierr.resize (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
       retval(i) = f (x(i), alpha, (scaled ? 2 : 1), ierr(i));
 
   return retval;
@@ -652,15 +652,15 @@ do_bessel (fptr f, const char *, double alpha, const ComplexNDArray& x,
 
 static inline ComplexNDArray
 do_bessel (fptr f, const char *, const NDArray& alpha, const Complex& x,
-	   bool scaled, ArrayN<int>& ierr)
+	   bool scaled, ArrayN<octave_idx_type>& ierr)
 {
   dim_vector dv = alpha.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
   ierr.resize (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     retval(i) = f (x, alpha(i), (scaled ? 2 : 1), ierr(i));
 
   return retval;
@@ -668,19 +668,19 @@ do_bessel (fptr f, const char *, const NDArray& alpha, const Complex& x,
 
 static inline ComplexNDArray
 do_bessel (fptr f, const char *fn, const NDArray& alpha,
-	   const ComplexNDArray& x, bool scaled, ArrayN<int>& ierr)
+	   const ComplexNDArray& x, bool scaled, ArrayN<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
   ComplexNDArray retval;
 
   if (dv == alpha.dims ())
     {
-      int nel = dv.numel ();
+      octave_idx_type nel = dv.numel ();
 
       retval.resize (dv);
       ierr.resize (dv);
 
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	retval(i) = f (x(i), alpha(i), (scaled ? 2 : 1), ierr(i));
     }
   else
@@ -692,17 +692,17 @@ do_bessel (fptr f, const char *fn, const NDArray& alpha,
 
 static inline ComplexMatrix
 do_bessel (fptr f, const char *, const RowVector& alpha,
-	   const ComplexColumnVector& x, bool scaled, Array2<int>& ierr)
+	   const ComplexColumnVector& x, bool scaled, Array2<octave_idx_type>& ierr)
 {
-  int nr = x.length ();
-  int nc = alpha.length ();
+  octave_idx_type nr = x.length ();
+  octave_idx_type nc = alpha.length ();
 
   ComplexMatrix retval (nr, nc);
 
   ierr.resize (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = f (x(i), alpha(j), (scaled ? 2 : 1), ierr(i,j));
 
   return retval;
@@ -710,7 +710,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 
 #define SS_BESSEL(name, fcn) \
   Complex \
-  name (double alpha, const Complex& x, bool scaled, int& ierr) \
+  name (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -718,7 +718,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define SM_BESSEL(name, fcn) \
   ComplexMatrix \
   name (double alpha, const ComplexMatrix& x, bool scaled, \
-	Array2<int>& ierr) \
+	Array2<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -726,7 +726,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define MS_BESSEL(name, fcn) \
   ComplexMatrix \
   name (const Matrix& alpha, const Complex& x, bool scaled, \
-	Array2<int>& ierr) \
+	Array2<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -734,7 +734,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define MM_BESSEL(name, fcn) \
   ComplexMatrix \
   name (const Matrix& alpha, const ComplexMatrix& x, bool scaled, \
-	Array2<int>& ierr) \
+	Array2<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -742,7 +742,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define SN_BESSEL(name, fcn) \
   ComplexNDArray \
   name (double alpha, const ComplexNDArray& x, bool scaled, \
-	ArrayN<int>& ierr) \
+	ArrayN<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -750,7 +750,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define NS_BESSEL(name, fcn) \
   ComplexNDArray \
   name (const NDArray& alpha, const Complex& x, bool scaled, \
-	ArrayN<int>& ierr) \
+	ArrayN<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -758,7 +758,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define NN_BESSEL(name, fcn) \
   ComplexNDArray \
   name (const NDArray& alpha, const ComplexNDArray& x, bool scaled, \
-	ArrayN<int>& ierr) \
+	ArrayN<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -766,7 +766,7 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
 #define RC_BESSEL(name, fcn) \
   ComplexMatrix \
   name (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, \
-        Array2<int>& ierr) \
+        Array2<octave_idx_type>& ierr) \
   { \
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
@@ -789,17 +789,17 @@ ALL_BESSEL (besselh1, zbesh1)
 ALL_BESSEL (besselh2, zbesh2)
 
 Complex
-airy (const Complex& z, bool deriv, bool scaled, int& ierr)
+airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 {
   double ar = 0.0;
   double ai = 0.0;
 
-  int nz;
+  octave_idx_type nz;
 
   double zr = z.real ();
   double zi = z.imag ();
 
-  int id = deriv ? 1 : 0;
+  octave_idx_type id = deriv ? 1 : 0;
 
   F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, ierr);
 
@@ -823,7 +823,7 @@ airy (const Complex& z, bool deriv, bool scaled, int& ierr)
 }
 
 Complex
-biry (const Complex& z, bool deriv, bool scaled, int& ierr)
+biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 {
   double ar = 0.0;
   double ai = 0.0;
@@ -831,7 +831,7 @@ biry (const Complex& z, bool deriv, bool scaled, int& ierr)
   double zr = z.real ();
   double zi = z.imag ();
 
-  int id = deriv ? 1 : 0;
+  octave_idx_type id = deriv ? 1 : 0;
 
   F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, ierr);
 
@@ -855,72 +855,72 @@ biry (const Complex& z, bool deriv, bool scaled, int& ierr)
 }
 
 ComplexMatrix
-airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr)
+airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& ierr)
 {
-  int nr = z.rows ();
-  int nc = z.cols ();
+  octave_idx_type nr = z.rows ();
+  octave_idx_type nc = z.cols ();
 
   ComplexMatrix retval (nr, nc);
 
   ierr.resize (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
 
   return retval;
 }
 
 ComplexMatrix
-biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr)
+biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& ierr)
 {
-  int nr = z.rows ();
-  int nc = z.cols ();
+  octave_idx_type nr = z.rows ();
+  octave_idx_type nc = z.cols ();
 
   ComplexMatrix retval (nr, nc);
 
   ierr.resize (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
 
   return retval;
 }
 
 ComplexNDArray
-airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr)
+airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
   ierr.resize (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     retval (i) = airy (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
 
 ComplexNDArray
-biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr)
+biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
   ierr.resize (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     retval (i) = biry (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
 
 static void
-gripe_betainc_nonconformant (int r1, int c1, int r2, int c2, int r3,
-			     int c3)
+gripe_betainc_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2, octave_idx_type r3,
+			     octave_idx_type c3)
 {
   (*current_liboctave_error_handler)
    ("betainc: nonconformant arguments (x is %dx%d, a is %dx%d, b is %dx%d)",
@@ -953,13 +953,13 @@ betainc (double x, double a, double b)
 Matrix
 betainc (double x, double a, const Matrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = betainc (x, a, b(i,j));
 
   return retval;
@@ -968,13 +968,13 @@ betainc (double x, double a, const Matrix& b)
 Matrix
 betainc (double x, const Matrix& a, double b)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = betainc (x, a(i,j), b);
 
   return retval;
@@ -985,18 +985,18 @@ betainc (double x, const Matrix& a, const Matrix& b)
 {
   Matrix retval;
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (a_nr == b_nr && a_nc == b_nc)
     {
       retval.resize (a_nr, a_nc);
 
-      for (int j = 0; j < a_nc; j++)
-	for (int i = 0; i < a_nr; i++)
+      for (octave_idx_type j = 0; j < a_nc; j++)
+	for (octave_idx_type i = 0; i < a_nr; i++)
 	  retval(i,j) = betainc (x, a(i,j), b(i,j));
     }
   else
@@ -1058,13 +1058,13 @@ betainc (double x, const NDArray& a, const NDArray& b)
 Matrix
 betainc (const Matrix& x, double a, double b)
 {
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = betainc (x(i,j), a, b);
 
   return retval;
@@ -1075,18 +1075,18 @@ betainc (const Matrix& x, double a, const Matrix& b)
 {
   Matrix retval;
 
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (nr == b_nr && nc == b_nc)
     {
       retval.resize (nr, nc);
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  retval(i,j) = betainc (x(i,j), a, b(i,j));
     }
   else
@@ -1100,18 +1100,18 @@ betainc (const Matrix& x, const Matrix& a, double b)
 {
   Matrix retval;
 
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (nr == a_nr && nc == a_nc)
     {
       retval.resize (nr, nc);
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  retval(i,j) = betainc (x(i,j), a(i,j), b);
     }
   else
@@ -1125,21 +1125,21 @@ betainc (const Matrix& x, const Matrix& a, const Matrix& b)
 {
   Matrix retval;
 
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (nr == a_nr && nr == b_nr && nc == a_nc && nc == b_nc)
     {
       retval.resize (nr, nc);
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  retval(i,j) = betainc (x(i,j), a(i,j), b(i,j));
     }
   else
@@ -1250,16 +1250,16 @@ gammainc (double x, double a, bool& err)
 Matrix
 gammainc (double x, const Matrix& a)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   Matrix result (nr, nc);
   Matrix retval;
 
   bool err;
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	result(i,j) = gammainc (x, a(i,j), err);
 
@@ -1277,16 +1277,16 @@ gammainc (double x, const Matrix& a)
 Matrix
 gammainc (const Matrix& x, double a)
 {
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
   Matrix result (nr, nc);
   Matrix retval;
 
   bool err;
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	result(i,j) = gammainc (x(i,j), a, err);
 
@@ -1307,11 +1307,11 @@ gammainc (const Matrix& x, const Matrix& a)
   Matrix result;
   Matrix retval;
 
-  int nr = x.rows ();
-  int nc = x.cols ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (nr == a_nr && nc == a_nc)
     {
@@ -1319,8 +1319,8 @@ gammainc (const Matrix& x, const Matrix& a)
 
       bool err;
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  {
 	    result(i,j) = gammainc (x(i,j), a(i,j), err);
 

@@ -1,3 +1,65 @@
+2005-04-08  John W. Eaton  <jwe@octave.org>
+
+	* Initial merge of 64-bit changes from Clinton Chee:
+
+	2005-04-07  John W. Eaton  <jwe@octave.org>
+
+	* ls-oct-ascii.h, ls-oct-ascii.cc (extract_keyword): Now template
+	functions defined in the header file.
+
+	* ls-mat5.cc, ov-base-sparse.h, ov-base.h, ov-bool-sparse.cc
+	ov-cx-sparse.cc, ov-re-sparse.cc, ov.cc, pt-loop.cc,
+	sparse-xdiv.cc, sparse-xpow.cc, DLD-FUNCTIONS/sparse.cc,
+	DLD-FUNCTIONS/spdet.cc:
+	Use octave_idx_type instead of int where needed.
+
+	2005-03-31  Clinton Chee  <chee@parallel.hpc.unsw.edu.au>
+
+	* Cell.cc, Cell.h, data.cc, defaults.cc, dirfns.cc, file-io.cc,
+	gripes.cc, gripes.h, ls-mat-ascii.cc, ls-mat4.cc, ls-oct-ascii.cc,
+	oct-map.cc, oct-map.h, oct-obj.cc, oct-obj.h, oct-stream.cc,
+	oct-stream.h, octave.cc, ops.h, ov-base-mat.cc, ov-base.h,
+	ov-bool-mat.cc, ov-cell.cc, ov-cs-list.cc, ov-cx-mat.cc,
+	ov-intx.h, ov-list.cc, ov-mapper.cc, ov-range.cc, ov-range.h,
+	ov-re-mat.cc, ov-scalar.h, ov-str-mat.cc, ov-struct.cc, ov.cc,
+	ov.h, pr-output.cc, pt-arg-list.cc, pt-cell.cc, pt-loop.cc,
+	pt-mat.cc, pt-select.cc, symtab.h, utils.cc, utils.h, xdiv.cc,
+	xpow.cc:
+	Use octave_idx_type instead of int where needed.
+
+	2005-04-01  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_config_info): Add USE_64_BIT_IDX_T to the list.
+	* oct-conf.h.in (OCTAVE_CONF_USE_64_BIT_IDX_T): Substitute here.
+
+	2005-03-31  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/sort.cc: Don't use unsigned int for index into
+	dim_vector, or cast dim to unsigned int.
+	(Fsort): No need to cast arg before asking for dims.
+
+	* DLD-FUNCTIONS/gcd.cc (Fgcd): Use OCTAVE_LOCAL_BUFFER to allocate
+	local array of NDArray objects.
+
+	2005-03-31  Clinton Chee  <chee@parallel.hpc.unsw.edu.au>
+
+	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/besselj.cc,
+	DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/colloc.cc,
+	DLD-FUNCTIONS/daspk.cc, DLD-FUNCTIONS/dasrt.cc,
+	DLD-FUNCTIONS/dassl.cc, DLD-FUNCTIONS/det.cc,
+	DLD-FUNCTIONS/eig.cc, DLD-FUNCTIONS/expm.cc, DLD-FUNCTIONS/fft.cc,
+	DLD-FUNCTIONS/fft2.cc, DLD-FUNCTIONS/fftn.cc,
+	DLD-FUNCTIONS/fftw_wisdom.cc, DLD-FUNCTIONS/filter.cc,
+	DLD-FUNCTIONS/find.cc, DLD-FUNCTIONS/fsolve.cc,
+	DLD-FUNCTIONS/gcd.cc, DLD-FUNCTIONS/hess.cc, DLD-FUNCTIONS/inv.cc,
+	DLD-FUNCTIONS/kron.cc, DLD-FUNCTIONS/lu.cc,
+	DLD-FUNCTIONS/minmax.cc, DLD-FUNCTIONS/quad.cc,
+	DLD-FUNCTIONS/qz.cc, DLD-FUNCTIONS/rand.cc,
+	DLD-FUNCTIONS/schur.cc, DLD-FUNCTIONS/sort.cc,
+	DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/svd.cc,
+	DLD-FUNCTIONS/syl.cc:
+	Use octave_idx_type instead of int where needed.
+
 2005-04-06  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in: Link to UMFPACK_LIBS. Add zfstream.{cc,h} to build and 

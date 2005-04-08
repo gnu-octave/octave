@@ -36,7 +36,7 @@ public:
 
   ComplexCHOL (const ComplexMatrix& a) { init (a); }
 
-  ComplexCHOL (const ComplexMatrix& a, int& info)
+  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info)
     {
       info = init (a);
     }
@@ -63,7 +63,7 @@ private:
 
   ComplexMatrix chol_mat;
 
-  int init (const ComplexMatrix& a);
+  octave_idx_type init (const ComplexMatrix& a);
 };
 
 #endif

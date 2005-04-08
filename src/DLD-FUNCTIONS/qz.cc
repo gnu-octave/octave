@@ -55,7 +55,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-typedef int (*sort_function) (const int& LSIZE, const double& ALPHA,
+typedef octave_idx_type (*sort_function) (const octave_idx_type& LSIZE, const double& ALPHA,
 			      const double& BETA, const double& S,
 			      const double& P);
 
@@ -63,31 +63,31 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const int& N, double* A, const int& LDA,
-			     double* B, const int& LDB, int& ILO,
-			     int& IHI, double* LSCALE, double* RSCALE,
-			     double* WORK, int& INFO
+			     const octave_idx_type& N, double* A, const octave_idx_type& LDA,
+			     double* B, const octave_idx_type& LDB, octave_idx_type& ILO,
+			     octave_idx_type& IHI, double* LSCALE, double* RSCALE,
+			     double* WORK, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int& N, const int& ILO,
-			     const int& IHI, const double* LSCALE,
-			     const double* RSCALE, int& M, double* V,
-			     const int& LDV, int& INFO
+			     const octave_idx_type& N, const octave_idx_type& ILO,
+			     const octave_idx_type& IHI, const double* LSCALE,
+			     const double* RSCALE, octave_idx_type& M, double* V,
+			     const octave_idx_type& LDV, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgghrd, DGGHRD) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int& N, const int& ILO,
-			     const int& IHI, double* A,
-			     const int& LDA, double* B,
-			     const int& LDB, double* Q,
-			     const int& LDQ, double* Z,
-			     const int& LDZ, int& INFO
+			     const octave_idx_type& N, const octave_idx_type& ILO,
+			     const octave_idx_type& IHI, double* A,
+			     const octave_idx_type& LDA, double* B,
+			     const octave_idx_type& LDB, double* Q,
+			     const octave_idx_type& LDQ, double* Z,
+			     const octave_idx_type& LDZ, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
@@ -95,30 +95,30 @@ extern "C"
   F77_FUNC (dhgeqz, DHGEQZ) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int& N, const int& ILO, const int& IHI,
-			     double* A, const int& LDA, double* B,
-			     const int& LDB, double* ALPHAR,
+			     const octave_idx_type& N, const octave_idx_type& ILO, const octave_idx_type& IHI,
+			     double* A, const octave_idx_type& LDA, double* B,
+			     const octave_idx_type& LDB, double* ALPHAR,
 			     double* ALPHAI, double* BETA, double* Q,
-			     const int& LDQ, double* Z,
-			     const int& LDZ, double* WORK,
-			     const int& LWORK, int& INFO
+			     const octave_idx_type& LDQ, double* Z,
+			     const octave_idx_type& LDZ, double* WORK,
+			     const octave_idx_type& LWORK, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dlag2, DLAG2) (const double* A, const int& LDA, const double* B,
-			   const int& LDB, const double& SAFMIN,
+  F77_FUNC (dlag2, DLAG2) (const double* A, const octave_idx_type& LDA, const double* B,
+			   const octave_idx_type& LDB, const double& SAFMIN,
 			   double& SCALE1, double& SCALE2,
 			   double& WR1, double& WR2, double& WI);
 
   // Van Dooren's code (netlib.org: toms/590) for reordering
   // GEP.  Only processes Z, not Q.
   F77_RET_T
-  F77_FUNC (dsubsp, DSUBSP) (const int& NMAX, const int& N, double* A,
+  F77_FUNC (dsubsp, DSUBSP) (const octave_idx_type& NMAX, const octave_idx_type& N, double* A,
 			     double* B, double* Z, sort_function,
-			     const double& EPS, int& NDIM, int& FAIL,
-			     int* IND);
+			     const double& EPS, octave_idx_type& NDIM, octave_idx_type& FAIL,
+			     octave_idx_type* IND);
 
   // documentation for DTGEVC incorrectly states that VR, VL are
   // complex*16; they are declared in DTGEVC as double precision
@@ -126,12 +126,12 @@ extern "C"
   F77_RET_T
   F77_FUNC (dtgevc, DTGEVC) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     int* SELECT, const int& N, double* A,
-			     const int& LDA, double* B,
-			     const int& LDB, double* VL,
-			     const int& LDVL, double* VR,
-			     const int& LDVR, const int& MM,
-			     int& M, double* WORK, int& INFO
+			     octave_idx_type* SELECT, const octave_idx_type& N, double* A,
+			     const octave_idx_type& LDA, double* B,
+			     const octave_idx_type& LDB, double* VL,
+			     const octave_idx_type& LDVL, double* VR,
+			     const octave_idx_type& LDVR, const octave_idx_type& MM,
+			     octave_idx_type& M, double* WORK, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
@@ -142,8 +142,8 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG_DECL,
-			       const int&, const int&, const double*,
-			       const int&, double*, double&
+			       const octave_idx_type&, const octave_idx_type&, const double*,
+			       const octave_idx_type&, double*, double&
 			       F77_CHAR_ARG_LEN_DECL);
 }
 
@@ -155,8 +155,8 @@ extern "C"
 //    fcrhp: real(lambda) >= 0
 //    folhp: real(lambda) < 0
 
-static int
-fcrhp (const int& lsize, const double& alpha,
+static octave_idx_type
+fcrhp (const octave_idx_type& lsize, const double& alpha,
        const double& beta, const double& s, const double&)
 {
   if (lsize == 1)
@@ -165,11 +165,11 @@ fcrhp (const int& lsize, const double& alpha,
     return (s >= 0 ? 1 : -1);
 }
 
-static int
-fin (const int& lsize, const double& alpha,
+static octave_idx_type
+fin (const octave_idx_type& lsize, const double& alpha,
      const double& beta, const double&, const double& p)
 {
-  int retval;
+  octave_idx_type retval;
 
   if (lsize == 1)
     retval = (fabs (alpha) < fabs (beta) ? 1 : -1);
@@ -183,8 +183,8 @@ fin (const int& lsize, const double& alpha,
   return retval;
 }
 
-static int
-folhp (const int& lsize, const double& alpha,
+static octave_idx_type
+folhp (const octave_idx_type& lsize, const double& alpha,
        const double& beta, const double& s, const double&)
 {
   if (lsize == 1)
@@ -193,8 +193,8 @@ folhp (const int& lsize, const double& alpha,
     return (s < 0 ? 1 : -1);
 }
 
-static int
-fout (const int& lsize, const double& alpha,
+static octave_idx_type
+fout (const octave_idx_type& lsize, const double& alpha,
       const double& beta, const double&, const double& p)
 {
   if (lsize == 1)
@@ -361,7 +361,7 @@ See also: balance, dare, eig, schur\n\
 #endif
 
   // Argument 1: check if it's o.k. dimensioned
-  int nn = args(0).rows ();
+  octave_idx_type nn = args(0).rows ();
 
 #ifdef DEBUG
   std::cout << "argument 1 dimensions: (" << nn << "," << args(0).columns () << ")"
@@ -437,14 +437,14 @@ See also: balance, dare, eig, schur\n\
   RowVector alphar(nn), alphai(nn), betar(nn);
 
   ComplexMatrix CQ(nn,nn), CZ(nn,nn), CVR(nn,nn), CVL(nn,nn);
-  int ilo, ihi, info;
+  octave_idx_type ilo, ihi, info;
   char compq = (nargout >= 3 ? 'V' : 'N');
   char compz = (nargout >= 4 ? 'V' : 'N');
 
   // initialize Q, Z to identity if we need either of them
   if (compq == 'V' || compz == 'V')
-    for (int ii = 0; ii < nn; ii++)
-      for (int jj = 0; jj < nn; jj++)
+    for (octave_idx_type ii = 0; ii < nn; ii++)
+      for (octave_idx_type jj = 0; jj < nn; jj++)
 	{
 	  OCTAVE_QUIT;
 	  QQ(ii,jj) = ZZ(ii,jj) = (ii == jj ? 1.0 : 0.0);
@@ -673,7 +673,7 @@ See also: balance, dare, eig, schur\n\
 	      break;
 	    }
 
-	  int ndim, fail;
+	  octave_idx_type ndim, fail;
 	  double inf_norm;
 
 	  F77_XFCN (xdlange, XDLANGE,
@@ -703,7 +703,7 @@ See also: balance, dare, eig, schur\n\
 	  std::cout << std::endl;
 #endif
 
-	  Array<int> ind (nn);
+	  Array<octave_idx_type> ind (nn);
 
 	  F77_XFCN (dsubsp, DSUBSP,
 		    (nn, nn, aa.fortran_vec (), bb.fortran_vec (),
@@ -875,8 +875,8 @@ See also: balance, dare, eig, schur\n\
     {
       char side = (nargout == 5 ? 'R' : 'B');	// which side to compute?
       char howmny = 'B';  // compute all of them and backtransform
-      int *select = NULL; // dummy pointer; select is not used.
-      int m;
+      octave_idx_type *select = NULL; // dummy pointer; select is not used.
+      octave_idx_type m;
 
       if (complex_case)
 	{

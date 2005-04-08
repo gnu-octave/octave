@@ -58,7 +58,7 @@ static int call_depth = 0;
 
 ColumnVector
 dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
-		     double t, int& ires)
+		     double t, octave_idx_type& ires)
 {
   ColumnVector retval;
 

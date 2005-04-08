@@ -231,8 +231,8 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
 #define MX_CUMULATIVE_OP(RET_TYPE, ELT_TYPE, OP) \
  \
-  int nr = rows (); \
-  int nc = cols (); \
+  octave_idx_type nr = rows (); \
+  octave_idx_type nc = cols (); \
  \
   RET_TYPE retval (nr, nc); \
  \
@@ -240,10 +240,10 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
     { \
       if ((nr == 1 && dim == -1) || dim == 1) \
 	{ \
-	  for (int i = 0; i < nr; i++) \
+	  for (octave_idx_type i = 0; i < nr; i++) \
 	    { \
 	      ELT_TYPE t = elem (i, 0); \
-	      for (int j = 0; j < nc; j++) \
+	      for (octave_idx_type j = 0; j < nc; j++) \
 		{ \
 		  retval.elem (i, j) = t; \
 		  if (j < nc - 1) \
@@ -253,10 +253,10 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 	} \
       else \
 	{ \
-	  for (int j = 0; j < nc; j++) \
+	  for (octave_idx_type j = 0; j < nc; j++) \
 	    { \
 	      ELT_TYPE t = elem (0, j); \
-	      for (int i = 0; i < nr; i++) \
+	      for (octave_idx_type i = 0; i < nr; i++) \
 		{ \
 		  retval.elem (i, j) = t; \
 		  if (i < nr - 1) \
@@ -271,8 +271,8 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 #define MX_BASE_REDUCTION_OP(RET_TYPE, ROW_EXPR, COL_EXPR, INIT_VAL, \
 			     MT_RESULT) \
  \
-  int nr = rows (); \
-  int nc = cols (); \
+  octave_idx_type nr = rows (); \
+  octave_idx_type nc = cols (); \
  \
   RET_TYPE retval; \
  \
@@ -281,10 +281,10 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
       if ((nr == 1 && dim == -1) || dim == 1) \
 	{ \
 	  retval.resize (nr, 1); \
-	  for (int i = 0; i < nr; i++) \
+	  for (octave_idx_type i = 0; i < nr; i++) \
 	    { \
 	      retval.elem (i, 0) = INIT_VAL; \
-	      for (int j = 0; j < nc; j++) \
+	      for (octave_idx_type j = 0; j < nc; j++) \
 		{ \
 		  ROW_EXPR; \
 		} \
@@ -293,10 +293,10 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
       else \
 	{ \
 	  retval.resize (1, nc); \
-	  for (int j = 0; j < nc; j++) \
+	  for (octave_idx_type j = 0; j < nc; j++) \
 	    { \
 	      retval.elem (0, j) = INIT_VAL; \
-	      for (int i = 0; i < nr; i++) \
+	      for (octave_idx_type i = 0; i < nr; i++) \
 		{ \
 		  COL_EXPR; \
 		} \
@@ -439,7 +439,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
     } \
  \
   /*  Length of Dimension */ \
-  int dim_length = 1; \
+  octave_idx_type dim_length = 1; \
  \
   /* dim = -1 means from here that the user specified a */ \
   /* dimension which is larger that the number of dimensions */ \
@@ -454,20 +454,20 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
     dv(dim) = 1; \
  \
   /* This finds the number of elements in retval */ \
-  int num_iter = (this->numel () / dim_length); \
+  octave_idx_type num_iter = (this->numel () / dim_length); \
  \
   /* Make sure retval has correct dimensions */ \
   retval.resize (dv, VAL); \
  \
-  Array<int> iter_idx (dv.length (), 0); \
+  Array<octave_idx_type> iter_idx (dv.length (), 0); \
  \
   /* Filling in values.         */ \
   /* First loop finds new index */ \
  \
-  for (int j = 0; j < num_iter; j++) \
+  for (octave_idx_type j = 0; j < num_iter; j++) \
     { \
       ACC_DECL;\
-      for (int i = 0; i < dim_length; i++) \
+      for (octave_idx_type i = 0; i < dim_length; i++) \
 	{ \
 	  if (dim > -1) \
 	    iter_idx(dim) = i; \
@@ -567,23 +567,23 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   retval.resize (dv, VAL); \
  \
   /*  Length of Dimension */ \
-  int dim_length = 1; \
+  octave_idx_type dim_length = 1; \
  \
   dim_length = dv (dim); \
  \
   dv (dim) = 1; \
  \
   /* This finds the number of elements in retval */ \
-  int num_iter = (this->numel () / dim_length); \
+  octave_idx_type num_iter = (this->numel () / dim_length); \
  \
-  Array<int> iter_idx (dv.length (), 0); \
+  Array<octave_idx_type> iter_idx (dv.length (), 0); \
  \
   /* Filling in values.         */ \
   /* First loop finds new index */ \
  \
-  for (int j = 0; j < num_iter; j++) \
+  for (octave_idx_type j = 0; j < num_iter; j++) \
     { \
-      for (int i = 0; i < dim_length; i++) \
+      for (octave_idx_type i = 0; i < dim_length; i++) \
 	{ \
 	  if (i > 0) \
 	    { \

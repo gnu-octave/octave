@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_liboctave_specfun_h 1
 
 #include "oct-cmplx.h"
+#include "oct-types.h"
 #include "ArrayN.h"
 
 template <class T> class Array2;
@@ -59,205 +60,205 @@ extern double xgamma (double x);
 extern double xlgamma (double x);
 
 extern Complex
-besselj (double alpha, const Complex& x, bool scaled, int& ierr);
+besselj (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
 extern Complex
-bessely (double alpha, const Complex& x, bool scaled, int& ierr);
+bessely (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
 extern Complex
-besseli (double alpha, const Complex& x, bool scaled, int& ierr);
+besseli (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
 extern Complex
-besselk (double alpha, const Complex& x, bool scaled, int& ierr);
+besselk (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
 extern Complex
-besselh1 (double alpha, const Complex& x, bool scaled, int& ierr);
+besselh1 (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
 extern Complex
-besselh2 (double alpha, const Complex& x, bool scaled, int& ierr);
+besselh2 (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
 extern ComplexMatrix
 besselj (double alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 bessely (double alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besseli (double alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselk (double alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh1 (double alpha, const ComplexMatrix& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh2 (double alpha, const ComplexMatrix& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselj (const Matrix& alpha, const Complex& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 bessely (const Matrix& alpha, const Complex& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besseli (const Matrix& alpha, const Complex& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselk (const Matrix& alpha, const Complex& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh1 (const Matrix& alpha, const Complex& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh2 (const Matrix& alpha, const Complex& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselj (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 bessely (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besseli (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselk (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh1 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh2 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselj (double alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 bessely (double alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besseli (double alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselk (double alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselh1 (double alpha, const ComplexNDArray& x, bool scaled,
-	  ArrayN<int>& ierr);
+	  ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselh2 (double alpha, const ComplexNDArray& x, bool scaled,
-	  ArrayN<int>& ierr);
+	  ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselj (const NDArray& alpha, const Complex& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 bessely (const NDArray& alpha, const Complex& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besseli (const NDArray& alpha, const Complex& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselk (const NDArray& alpha, const Complex& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselh1 (const NDArray& alpha, const Complex& x, bool scaled,
-	  ArrayN<int>& ierr);
+	  ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselh2 (const NDArray& alpha, const Complex& x, bool scaled,
-	  ArrayN<int>& ierr);
+	  ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselj (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 bessely (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besseli (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselk (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
-	 ArrayN<int>& ierr);
+	 ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselh1 (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
-	  ArrayN<int>& ierr);
+	  ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
 besselh2 (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
-	  ArrayN<int>& ierr);
+	  ArrayN<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselj (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 bessely (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besseli (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselk (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
-	 Array2<int>& ierr);
+	 Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh1 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
 extern ComplexMatrix
 besselh2 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
-	  Array2<int>& ierr);
+	  Array2<octave_idx_type>& ierr);
 
-extern Complex airy (const Complex& z, bool deriv, bool scaled, int& ierr);
-extern Complex biry (const Complex& z, bool deriv, bool scaled, int& ierr);
-
-extern ComplexMatrix
-airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr);
+extern Complex airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
+extern Complex biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
 
 extern ComplexMatrix
-biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr);
+airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& ierr);
+
+extern ComplexMatrix
+biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& ierr);
 
 extern ComplexNDArray
-airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr);
+airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr);
 
 extern ComplexNDArray
-biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr);
+biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr);
 
 extern double betainc (double x, double a, double b);
 extern Matrix betainc (double x, double a, const Matrix& b);

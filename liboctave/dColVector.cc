@@ -40,10 +40,10 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const int&, const int&, const double&,
-			   const double*, const int&, const double*,
-			   const int&, const double&, double*,
-			   const int&
+			   const octave_idx_type&, const octave_idx_type&, const double&,
+			   const double*, const octave_idx_type&, const double*,
+			   const octave_idx_type&, const double&, double*,
+			   const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL);
 }
 
@@ -52,7 +52,7 @@ extern "C"
 bool
 ColumnVector::operator == (const ColumnVector& a) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (len != a.length ())
     return 0;
   return mx_inline_equal (data (), a.data (), len);
@@ -65,9 +65,9 @@ ColumnVector::operator != (const ColumnVector& a) const
 }
 
 ColumnVector&
-ColumnVector::insert (const ColumnVector& a, int r)
+ColumnVector::insert (const ColumnVector& a, octave_idx_type r)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (r < 0 || r + a_len > length ())
     {
@@ -79,7 +79,7 @@ ColumnVector::insert (const ColumnVector& a, int r)
     {
       make_unique ();
 
-      for (int i = 0; i < a_len; i++)
+      for (octave_idx_type i = 0; i < a_len; i++)
 	xelem (r+i) = a.elem (i);
     }
 
@@ -89,13 +89,13 @@ ColumnVector::insert (const ColumnVector& a, int r)
 ColumnVector&
 ColumnVector::fill (double val)
 {
-  int len = length ();
+  octave_idx_type len = length ();
 
   if (len > 0)
     {
       make_unique ();
 
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
 	xelem (i) = val;
     }
 
@@ -103,9 +103,9 @@ ColumnVector::fill (double val)
 }
 
 ColumnVector&
-ColumnVector::fill (double val, int r1, int r2)
+ColumnVector::fill (double val, octave_idx_type r1, octave_idx_type r2)
 {
-  int len = length ();
+  octave_idx_type len = length ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
     {
@@ -113,13 +113,13 @@ ColumnVector::fill (double val, int r1, int r2)
       return *this;
     }
 
-  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
+  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
 
   if (r2 >= r1)
     {
       make_unique ();
 
-      for (int i = r1; i <= r2; i++)
+      for (octave_idx_type i = r1; i <= r2; i++)
 	xelem (i) = val;
     }
 
@@ -129,8 +129,8 @@ ColumnVector::fill (double val, int r1, int r2)
 ColumnVector
 ColumnVector::stack (const ColumnVector& a) const
 {
-  int len = length ();
-  int nr_insert = len;
+  octave_idx_type len = length ();
+  octave_idx_type nr_insert = len;
   ColumnVector retval (len + a.length ());
   retval.insert (*this, 0);
   retval.insert (a, nr_insert);
@@ -146,7 +146,7 @@ ColumnVector::transpose (void) const
 ColumnVector
 real (const ComplexColumnVector& a)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   ColumnVector retval;
   if (a_len > 0)
     retval = ColumnVector (mx_inline_real_dup (a.data (), a_len), a_len);
@@ -156,7 +156,7 @@ real (const ComplexColumnVector& a)
 ColumnVector
 imag (const ComplexColumnVector& a)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   ColumnVector retval;
   if (a_len > 0)
     retval = ColumnVector (mx_inline_imag_dup (a.data (), a_len), a_len);
@@ -166,26 +166,26 @@ imag (const ComplexColumnVector& a)
 // resize is the destructive equivalent for this one
 
 ColumnVector
-ColumnVector::extract (int r1, int r2) const
+ColumnVector::extract (octave_idx_type r1, octave_idx_type r2) const
 {
-  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
+  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
 
-  int new_r = r2 - r1 + 1;
+  octave_idx_type new_r = r2 - r1 + 1;
 
   ColumnVector result (new_r);
 
-  for (int i = 0; i < new_r; i++)
+  for (octave_idx_type i = 0; i < new_r; i++)
     result.xelem (i) = elem (r1+i);
 
   return result;
 }
 
 ColumnVector
-ColumnVector::extract_n (int r1, int n) const
+ColumnVector::extract_n (octave_idx_type r1, octave_idx_type n) const
 {
   ColumnVector result (n);
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     result.xelem (i) = elem (r1+i);
 
   return result;
@@ -198,10 +198,10 @@ operator * (const Matrix& m, const ColumnVector& a)
 {
   ColumnVector retval;
 
-  int nr = m.rows ();
-  int nc = m.cols ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.cols ();
 
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (nc != a_len)
     gripe_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -211,7 +211,7 @@ operator * (const Matrix& m, const ColumnVector& a)
 	retval.resize (nr, 0.0);
       else
 	{
-	  int ld = nr;
+	  octave_idx_type ld = nr;
 
 	  retval.resize (nr);
 	  double *y = retval.fortran_vec ();
@@ -237,10 +237,10 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
 {
   ColumnVector retval;
 
-  int nr = m.rows ();
-  int nc = m.cols ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.cols ();
 
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (nc != a_len)
     gripe_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -252,10 +252,10 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
 	{
 	  retval.resize (nr);
 
-	  for (int i = 0; i < a_len; i++)
+	  for (octave_idx_type i = 0; i < a_len; i++)
 	    retval.elem (i) = a.elem (i) * m.elem (i, i);
 
-	  for (int i = a_len; i < nr; i++)
+	  for (octave_idx_type i = a_len; i < nr; i++)
 	    retval.elem (i) = 0.0;
 	}
     }
@@ -277,7 +277,7 @@ ColumnVector::apply (d_d_Mapper f)
 {
   double *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     d[i] = f (d[i]);
 
   return *this;
@@ -286,13 +286,13 @@ ColumnVector::apply (d_d_Mapper f)
 double
 ColumnVector::min (void) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (len == 0)
     return 0.0;
 
   double res = elem (0);
 
-  for (int i = 1; i < len; i++)
+  for (octave_idx_type i = 1; i < len; i++)
     if (elem (i) < res)
       res = elem (i);
 
@@ -302,13 +302,13 @@ ColumnVector::min (void) const
 double
 ColumnVector::max (void) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (len == 0)
     return 0.0;
 
   double res = elem (0);
 
-  for (int i = 1; i < len; i++)
+  for (octave_idx_type i = 1; i < len; i++)
     if (elem (i) > res)
       res = elem (i);
 
@@ -319,7 +319,7 @@ std::ostream&
 operator << (std::ostream& os, const ColumnVector& a)
 {
 //  int field_width = os.precision () + 7;
-  for (int i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.length (); i++)
     os << /* setw (field_width) << */ a.elem (i) << "\n";
   return os;
 }
@@ -327,14 +327,14 @@ operator << (std::ostream& os, const ColumnVector& a)
 std::istream&
 operator >> (std::istream& is, ColumnVector& a)
 {
-  int len = a.length();
+  octave_idx_type len = a.length();
 
   if (len < 1)
     is.clear (std::ios::badbit);
   else
     {
       double tmp;
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
         {
           is >> tmp;
           if (is)

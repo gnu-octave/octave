@@ -36,7 +36,7 @@ public:
   NLConst (void)
     : Bounds (), NLFunc () { }
 
-  NLConst (int n)
+  NLConst (octave_idx_type n)
     : Bounds (n), NLFunc () { }
 
   NLConst (const ColumnVector& lb, const NLFunc f, const ColumnVector& ub)

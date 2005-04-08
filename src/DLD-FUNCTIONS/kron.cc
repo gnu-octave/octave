@@ -48,14 +48,14 @@ kron (const Array2<T>& A, const Array2<T>& B, Array2<T>& C)
 {
   C.resize (A.rows () * B.rows (), A.columns () * B.columns ());
 
-  int Ac, Ar, Cc, Cr;
+  octave_idx_type Ac, Ar, Cc, Cr;
 
   for (Ac = Cc = 0; Ac < A.columns (); Ac++, Cc += B.columns ())
     for (Ar = Cr = 0; Ar < A.rows (); Ar++, Cr += B.rows ())
       {
 	const T v = A (Ar, Ac);
-	for (int Bc = 0; Bc < B.columns (); Bc++)
-	  for (int Br = 0; Br < B.rows (); Br++)
+	for (octave_idx_type Bc = 0; Bc < B.columns (); Bc++)
+	  for (octave_idx_type Br = 0; Br < B.rows (); Br++)
 	    {
 	      OCTAVE_QUIT;
 	      C.xelem (Cr+Br, Cc+Bc) = v * B.elem (Br, Bc);

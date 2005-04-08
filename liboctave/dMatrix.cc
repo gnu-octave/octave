@@ -58,15 +58,15 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const int&, double*, const int&, int&,
-			     int&, double*, int&
+			     const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&,
+			     octave_idx_type&, double*, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, const int&, double*,
-			     const int&, double*, const int&, int&
+			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
@@ -74,38 +74,38 @@ extern "C"
   F77_RET_T
   F77_FUNC (dgemm, DGEMM) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
-			   const int&, const int&, const int&,
-			   const double&, const double*, const int&,
-			   const double*, const int&, const double&,
-			   double*, const int&
+			   const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			   const double&, const double*, const octave_idx_type&,
+			   const double*, const octave_idx_type&, const double&,
+			   double*, const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*, const int&,
-		      int*, int&);
+  F77_FUNC (dgetrf, DGETRF) (const octave_idx_type&, const octave_idx_type&, double*, const octave_idx_type&,
+		      octave_idx_type*, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (dgetrs, DGETRS) (F77_CONST_CHAR_ARG_DECL, const int&, const int&, 
-			     const double*, const int&,
-			     const int*, double*, const int&, int&
+  F77_FUNC (dgetrs, DGETRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, const octave_idx_type&, 
+			     const double*, const octave_idx_type&,
+			     const octave_idx_type*, double*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dgetri, DGETRI) (const int&, double*, const int&, const int*,
-			     double*, const int&, int&);
+  F77_FUNC (dgetri, DGETRI) (const octave_idx_type&, double*, const octave_idx_type&, const octave_idx_type*,
+			     double*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (dgecon, DGECON) (F77_CONST_CHAR_ARG_DECL, const int&, double*, 
-			     const int&, const double&, double&, 
-			     double*, int*, int&
+  F77_FUNC (dgecon, DGECON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, double*, 
+			     const octave_idx_type&, const double&, double&, 
+			     double*, octave_idx_type*, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dgelss, DGELSS) (const int&, const int&, const int&,
-			     double*, const int&, double*,
-			     const int&, double*, double&, int&,
-			     double*, const int&, int&);
+  F77_FUNC (dgelss, DGELSS) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     double*, const octave_idx_type&, double*,
+			     const octave_idx_type&, double*, double&, octave_idx_type&,
+			     double*, const octave_idx_type&, octave_idx_type&);
 
   // Note that the original complex fft routines were not written for
   // double complex arguments.  They have been modified by adding an
@@ -113,13 +113,13 @@ extern "C"
   // each subroutine.
 
   F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const int&, Complex*);
+  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, Complex*);
 
   F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const int&, Complex*, Complex*);
+  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, Complex*, Complex*);
 
   F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const int&, Complex*, Complex*);
+  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, Complex*, Complex*);
 
   F77_RET_T
   F77_FUNC (dlartg, DLARTG) (const double&, const double&, double&,
@@ -128,17 +128,17 @@ extern "C"
   F77_RET_T
   F77_FUNC (dtrsyl, DTRSYL) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, const int&,
-			     const double*, const int&, const double*,
-			     const int&, const double*, const int&,
-			     double&, int&
+			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     const double*, const octave_idx_type&, const double*,
+			     const octave_idx_type&, const double*, const octave_idx_type&,
+			     double&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG_DECL, const int&,
-			       const int&, const double*,
-			       const int&, double*, double&
+  F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
+			       const octave_idx_type&, const double*,
+			       const octave_idx_type&, double*, double&
 			       F77_CHAR_ARG_LEN_DECL); 
 }
 
@@ -147,21 +147,21 @@ extern "C"
 Matrix::Matrix (const RowVector& rv)
   : MArray2<double> (1, rv.length (), 0.0)
 {
-  for (int i = 0; i < rv.length (); i++)
+  for (octave_idx_type i = 0; i < rv.length (); i++)
     elem (0, i) = rv.elem (i);
 }
 
 Matrix::Matrix (const ColumnVector& cv)
   : MArray2<double> (cv.length (), 1, 0.0)
 {
-  for (int i = 0; i < cv.length (); i++)
+  for (octave_idx_type i = 0; i < cv.length (); i++)
     elem (i, 0) = cv.elem (i);
 }
 
 Matrix::Matrix (const DiagMatrix& a)
   : MArray2<double> (a.rows (), a.cols (), 0.0)
 {
-  for (int i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
@@ -171,16 +171,16 @@ Matrix::Matrix (const DiagMatrix& a)
 Matrix::Matrix (const boolMatrix& a)
   : MArray2<double> (a.rows (), a.cols ())
 {
-  for (int i = 0; i < a.rows (); i++)
-    for (int j = 0; j < a.cols (); j++)
+  for (octave_idx_type i = 0; i < a.rows (); i++)
+    for (octave_idx_type j = 0; j < a.cols (); j++)
       elem (i, j) = a.elem (i, j);
 }
 
 Matrix::Matrix (const charMatrix& a)
   : MArray2<double> (a.rows (), a.cols ())
 {
-  for (int i = 0; i < a.rows (); i++)
-    for (int j = 0; j < a.cols (); j++)
+  for (octave_idx_type i = 0; i < a.rows (); i++)
+    for (octave_idx_type j = 0; j < a.cols (); j++)
       elem (i, j) = a.elem (i, j);
 }
 
@@ -204,8 +204,8 @@ Matrix::is_symmetric (void) const
 {
   if (is_square () && rows () > 0)
     {
-      for (int i = 0; i < rows (); i++)
-	for (int j = i+1; j < cols (); j++)
+      for (octave_idx_type i = 0; i < rows (); i++)
+	for (octave_idx_type j = i+1; j < cols (); j++)
 	  if (elem (i, j) != elem (j, i))
 	    return false;
 
@@ -216,16 +216,16 @@ Matrix::is_symmetric (void) const
 }
 
 Matrix&
-Matrix::insert (const Matrix& a, int r, int c)
+Matrix::insert (const Matrix& a, octave_idx_type r, octave_idx_type c)
 {
   Array2<double>::insert (a, r, c);
   return *this;
 }
 
 Matrix&
-Matrix::insert (const RowVector& a, int r, int c)
+Matrix::insert (const RowVector& a, octave_idx_type r, octave_idx_type c)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
@@ -237,7 +237,7 @@ Matrix::insert (const RowVector& a, int r, int c)
     {
       make_unique ();
 
-      for (int i = 0; i < a_len; i++)
+      for (octave_idx_type i = 0; i < a_len; i++)
 	xelem (r, c+i) = a.elem (i);
     }
 
@@ -245,9 +245,9 @@ Matrix::insert (const RowVector& a, int r, int c)
 }
 
 Matrix&
-Matrix::insert (const ColumnVector& a, int r, int c)
+Matrix::insert (const ColumnVector& a, octave_idx_type r, octave_idx_type c)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
@@ -259,7 +259,7 @@ Matrix::insert (const ColumnVector& a, int r, int c)
     {
       make_unique ();
 
-      for (int i = 0; i < a_len; i++)
+      for (octave_idx_type i = 0; i < a_len; i++)
 	xelem (r+i, c) = a.elem (i);
     }
 
@@ -267,10 +267,10 @@ Matrix::insert (const ColumnVector& a, int r, int c)
 }
 
 Matrix&
-Matrix::insert (const DiagMatrix& a, int r, int c)
+Matrix::insert (const DiagMatrix& a, octave_idx_type r, octave_idx_type c)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (r < 0 || r + a_nr > rows () || c < 0 || c + a_nc > cols ())
     {
@@ -280,13 +280,13 @@ Matrix::insert (const DiagMatrix& a, int r, int c)
 
   fill (0.0, r, c, r + a_nr - 1, c + a_nc - 1);
 
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (a_len > 0)
     {
       make_unique ();
 
-      for (int i = 0; i < a_len; i++)
+      for (octave_idx_type i = 0; i < a_len; i++)
 	xelem (r+i, c+i) = a.elem (i, i);
     }
 
@@ -296,15 +296,15 @@ Matrix::insert (const DiagMatrix& a, int r, int c)
 Matrix&
 Matrix::fill (double val)
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
       make_unique ();
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  xelem (i, j) = val;
     }
 
@@ -312,10 +312,10 @@ Matrix::fill (double val)
 }
 
 Matrix&
-Matrix::fill (double val, int r1, int c1, int r2, int c2)
+Matrix::fill (double val, octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
@@ -324,15 +324,15 @@ Matrix::fill (double val, int r1, int c1, int r2, int c2)
       return *this;
     }
 
-  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
+  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
   if (r2 >= r1 && c2 >= c1)
     {
       make_unique ();
 
-      for (int j = c1; j <= c2; j++)
-	for (int i = r1; i <= r2; i++)
+      for (octave_idx_type j = c1; j <= c2; j++)
+	for (octave_idx_type i = r1; i <= r2; i++)
 	  xelem (i, j) = val;
     }
 
@@ -342,15 +342,15 @@ Matrix::fill (double val, int r1, int c1, int r2, int c2)
 Matrix
 Matrix::append (const Matrix& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return Matrix ();
     }
 
-  int nc_insert = nc;
+  octave_idx_type nc_insert = nc;
   Matrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
@@ -360,15 +360,15 @@ Matrix::append (const Matrix& a) const
 Matrix
 Matrix::append (const RowVector& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nr != 1)
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return Matrix ();
     }
 
-  int nc_insert = nc;
+  octave_idx_type nc_insert = nc;
   Matrix retval (nr, nc + a.length ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
@@ -378,15 +378,15 @@ Matrix::append (const RowVector& a) const
 Matrix
 Matrix::append (const ColumnVector& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nr != a.length ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return Matrix ();
     }
 
-  int nc_insert = nc;
+  octave_idx_type nc_insert = nc;
   Matrix retval (nr, nc + 1);
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
@@ -396,15 +396,15 @@ Matrix::append (const ColumnVector& a) const
 Matrix
 Matrix::append (const DiagMatrix& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
     }
 
-  int nc_insert = nc;
+  octave_idx_type nc_insert = nc;
   Matrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
@@ -414,8 +414,8 @@ Matrix::append (const DiagMatrix& a) const
 Matrix
 Matrix::stack (const Matrix& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
@@ -423,7 +423,7 @@ Matrix::stack (const Matrix& a) const
       return Matrix ();
     }
 
-  int nr_insert = nr;
+  octave_idx_type nr_insert = nr;
   Matrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
@@ -433,8 +433,8 @@ Matrix::stack (const Matrix& a) const
 Matrix
 Matrix::stack (const RowVector& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
@@ -442,7 +442,7 @@ Matrix::stack (const RowVector& a) const
       return Matrix ();
     }
 
-  int nr_insert = nr;
+  octave_idx_type nr_insert = nr;
   Matrix retval (nr + 1, nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
@@ -452,8 +452,8 @@ Matrix::stack (const RowVector& a) const
 Matrix
 Matrix::stack (const ColumnVector& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nc != 1)
     {
       (*current_liboctave_error_handler)
@@ -461,7 +461,7 @@ Matrix::stack (const ColumnVector& a) const
       return Matrix ();
     }
 
-  int nr_insert = nr;
+  octave_idx_type nr_insert = nr;
   Matrix retval (nr + a.length (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
@@ -471,8 +471,8 @@ Matrix::stack (const ColumnVector& a) const
 Matrix
 Matrix::stack (const DiagMatrix& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
   if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
@@ -480,7 +480,7 @@ Matrix::stack (const DiagMatrix& a) const
       return Matrix ();
     }
 
-  int nr_insert = nr;
+  octave_idx_type nr_insert = nr;
   Matrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
@@ -490,7 +490,7 @@ Matrix::stack (const DiagMatrix& a) const
 Matrix
 real (const ComplexMatrix& a)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   Matrix retval;
   if (a_len > 0)
     retval = Matrix (mx_inline_real_dup (a.data (), a_len),
@@ -501,7 +501,7 @@ real (const ComplexMatrix& a)
 Matrix
 imag (const ComplexMatrix& a)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   Matrix retval;
   if (a_len > 0)
     retval = Matrix (mx_inline_imag_dup (a.data (), a_len),
@@ -510,30 +510,30 @@ imag (const ComplexMatrix& a)
 }
 
 Matrix
-Matrix::extract (int r1, int c1, int r2, int c2) const
+Matrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
 {
-  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
+  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
-  int new_r = r2 - r1 + 1;
-  int new_c = c2 - c1 + 1;
+  octave_idx_type new_r = r2 - r1 + 1;
+  octave_idx_type new_c = c2 - c1 + 1;
 
   Matrix result (new_r, new_c);
 
-  for (int j = 0; j < new_c; j++)
-    for (int i = 0; i < new_r; i++)
+  for (octave_idx_type j = 0; j < new_c; j++)
+    for (octave_idx_type i = 0; i < new_r; i++)
       result.xelem (i, j) = elem (r1+i, c1+j);
 
   return result;
 }
 
 Matrix
-Matrix::extract_n (int r1, int c1, int nr, int nc) const
+Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const
 {
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       result.xelem (i, j) = elem (r1+i, c1+j);
 
   return result;
@@ -542,9 +542,9 @@ Matrix::extract_n (int r1, int c1, int nr, int nc) const
 // extract row or column i.
 
 RowVector
-Matrix::row (int i) const
+Matrix::row (octave_idx_type i) const
 {
-  int nc = cols ();
+  octave_idx_type nc = cols ();
   if (i < 0 || i >= rows ())
     {
       (*current_liboctave_error_handler) ("invalid row selection");
@@ -552,7 +552,7 @@ Matrix::row (int i) const
     }
 
   RowVector retval (nc);
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     retval.xelem (j) = elem (i, j);
 
   return retval;
@@ -569,7 +569,7 @@ Matrix::row (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return row (0);
+    return row ( static_cast<octave_idx_type>(0) );
   else if (c == 'l' || c == 'L')
     return row (rows () - 1);
   else
@@ -580,9 +580,9 @@ Matrix::row (char *s) const
 }
 
 ColumnVector
-Matrix::column (int i) const
+Matrix::column (octave_idx_type i) const
 {
-  int nr = rows ();
+  octave_idx_type nr = rows ();
   if (i < 0 || i >= cols ())
     {
       (*current_liboctave_error_handler) ("invalid column selection");
@@ -590,7 +590,7 @@ Matrix::column (int i) const
     }
 
   ColumnVector retval (nr);
-  for (int j = 0; j < nr; j++)
+  for (octave_idx_type j = 0; j < nr; j++)
     retval.xelem (j) = elem (j, i);
 
   return retval;
@@ -607,7 +607,7 @@ Matrix::column (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return column (0);
+    return column (static_cast<octave_idx_type> (0));
   else if (c == 'l' || c == 'L')
     return column (cols () - 1);
   else
@@ -620,38 +620,38 @@ Matrix::column (char *s) const
 Matrix
 Matrix::inverse (void) const
 {
-  int info;
+  octave_idx_type info;
   double rcond;
   return inverse (info, rcond, 0, 0);
 }
 
 Matrix
-Matrix::inverse (int& info) const
+Matrix::inverse (octave_idx_type& info) const
 {
   double rcond;
   return inverse (info, rcond, 0, 0);
 }
 
 Matrix
-Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
+Matrix::inverse (octave_idx_type& info, double& rcond, int force, int calc_cond) const
 {
   Matrix retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr != nc || nr == 0 || nc == 0)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
   else
     {
-      Array<int> ipvt (nr);
-      int *pipvt = ipvt.fortran_vec ();
+      Array<octave_idx_type> ipvt (nr);
+      octave_idx_type *pipvt = ipvt.fortran_vec ();
 
       retval = *this;
       double *tmp_data = retval.fortran_vec ();
 
       Array<double> z(1);
-      int lwork = -1;
+      octave_idx_type lwork = -1;
 
       // Query the optimum work array size.
       F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt, 
@@ -664,7 +664,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	  return retval;
 	}
 
-      lwork = static_cast<int> (z(0));
+      lwork = static_cast<octave_idx_type> (z(0));
       lwork = (lwork < 2 *nc ? 2*nc : lwork);
       z.resize (lwork);
       double *pz = z.fortran_vec ();
@@ -674,7 +674,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond) 
-	anorm = retval.abs().sum().row(0).max();
+	anorm = retval.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
       F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -688,12 +688,12 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	    info = -1;
 	  else if (calc_cond) 
 	    {
-	      int dgecon_info = 0;
+	      octave_idx_type dgecon_info = 0;
 
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      Array<int> iz (nc);
-	      int *piz = iz.fortran_vec ();
+	      Array<octave_idx_type> iz (nc);
+	      octave_idx_type *piz = iz.fortran_vec ();
 	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					 nc, tmp_data, nr, anorm, 
 					 rcond, pz, piz, dgecon_info
@@ -711,7 +711,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	    retval = *this; // Restore matrix contents.
 	  else
 	    {
-	      int dgetri_info = 0;
+	      octave_idx_type dgetri_info = 0;
 
 	      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
 					 pz, lwork, dgetri_info));
@@ -740,9 +740,9 @@ Matrix::pseudo_inverse (double tol) const
 
   ColumnVector sigma = S.diag ();
 
-  int r = sigma.length () - 1;
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type r = sigma.length () - 1;
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (tol <= 0.0)
     {
@@ -859,10 +859,10 @@ Matrix::fourier (void) const
 {
   ComplexMatrix retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
-  int npts, nsamples;
+  octave_idx_type npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -875,7 +875,7 @@ Matrix::fourier (void) const
       nsamples = nc;
     }
 
-  int nn = 4*npts+15;
+  octave_idx_type nn = 4*npts+15;
 
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
@@ -885,7 +885,7 @@ Matrix::fourier (void) const
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
-  for (int j = 0; j < nsamples; j++)
+  for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
@@ -900,10 +900,10 @@ Matrix::ifourier (void) const
 {
   ComplexMatrix retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
-  int npts, nsamples;
+  octave_idx_type npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -916,7 +916,7 @@ Matrix::ifourier (void) const
       nsamples = nc;
     }
 
-  int nn = 4*npts+15;
+  octave_idx_type nn = 4*npts+15;
 
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
@@ -926,14 +926,14 @@ Matrix::ifourier (void) const
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
-  for (int j = 0; j < nsamples; j++)
+  for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
       F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
 
-  for (int j = 0; j < npts*nsamples; j++)
+  for (octave_idx_type j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
 
   return retval;
@@ -944,10 +944,10 @@ Matrix::fourier2d (void) const
 {
   ComplexMatrix retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
-  int npts, nsamples;
+  octave_idx_type npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -960,7 +960,7 @@ Matrix::fourier2d (void) const
       nsamples = nc;
     }
 
-  int nn = 4*npts+15;
+  octave_idx_type nn = 4*npts+15;
 
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
@@ -970,7 +970,7 @@ Matrix::fourier2d (void) const
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
-  for (int j = 0; j < nsamples; j++)
+  for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
@@ -989,16 +989,16 @@ Matrix::fourier2d (void) const
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
-  for (int j = 0; j < nsamples; j++)
+  for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
-      for (int i = 0; i < npts; i++)
+      for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
       F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
 
-      for (int i = 0; i < npts; i++)
+      for (octave_idx_type i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = prow[i];
     }
 
@@ -1010,10 +1010,10 @@ Matrix::ifourier2d (void) const
 {
   ComplexMatrix retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
-  int npts, nsamples;
+  octave_idx_type npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -1026,7 +1026,7 @@ Matrix::ifourier2d (void) const
       nsamples = nc;
     }
 
-  int nn = 4*npts+15;
+  octave_idx_type nn = 4*npts+15;
 
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
@@ -1036,14 +1036,14 @@ Matrix::ifourier2d (void) const
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
-  for (int j = 0; j < nsamples; j++)
+  for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
       F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
 
-  for (int j = 0; j < npts*nsamples; j++)
+  for (octave_idx_type j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
 
   npts = nc;
@@ -1058,16 +1058,16 @@ Matrix::ifourier2d (void) const
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
-  for (int j = 0; j < nsamples; j++)
+  for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
-      for (int i = 0; i < npts; i++)
+      for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
       F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
-      for (int i = 0; i < npts; i++)
+      for (octave_idx_type i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);
     }
 
@@ -1079,25 +1079,25 @@ Matrix::ifourier2d (void) const
 DET
 Matrix::determinant (void) const
 {
-  int info;
+  octave_idx_type info;
   double rcond;
   return determinant (info, rcond, 0);
 }
 
 DET
-Matrix::determinant (int& info) const
+Matrix::determinant (octave_idx_type& info) const
 {
   double rcond;
   return determinant (info, rcond, 0);
 }
 
 DET
-Matrix::determinant (int& info, double& rcond, int calc_cond) const
+Matrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
 {
   DET retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr == 0 || nc == 0)
     {
@@ -1108,8 +1108,8 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
     }
   else
     {
-      Array<int> ipvt (nr);
-      int *pipvt = ipvt.fortran_vec ();
+      Array<octave_idx_type> ipvt (nr);
+      octave_idx_type *pipvt = ipvt.fortran_vec ();
 
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
@@ -1119,7 +1119,7 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond) 
-	anorm = atmp.abs().sum().row(0).max();
+	anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -1142,8 +1142,8 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 		  char job = '1';
 		  Array<double> z (4 * nc);
 		  double *pz = z.fortran_vec ();
-		  Array<int> iz (nc);
-		  int *piz = iz.fortran_vec ();
+		  Array<octave_idx_type> iz (nc);
+		  octave_idx_type *piz = iz.fortran_vec ();
 
 		  F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nc, tmp_data, nr, anorm, 
@@ -1163,7 +1163,7 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 	      else 
 		{
 		  double d[2] = { 1., 0.};
-		  for (int i=0; i<nc; i++) 
+		  for (octave_idx_type i=0; i<nc; i++) 
 		    {
 		      if (ipvt(i) != (i+1)) d[0] = -d[0];
 		      d[0] *= atmp(i,i);
@@ -1191,32 +1191,32 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 Matrix
 Matrix::solve (const Matrix& b) const
 {
-  int info;
+  octave_idx_type info;
   double rcond;
   return solve (b, info, rcond, 0);
 }
 
 Matrix
-Matrix::solve (const Matrix& b, int& info) const
+Matrix::solve (const Matrix& b, octave_idx_type& info) const
 {
   double rcond;
   return solve (b, info, rcond, 0);
 }
 
 Matrix
-Matrix::solve (const Matrix& b, int& info, double& rcond) const
+Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 Matrix
-Matrix::solve (const Matrix& b, int& info, double& rcond,
+Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
   Matrix retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
@@ -1225,19 +1225,19 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
     {
       info = 0;
 
-      Array<int> ipvt (nr);
-      int *pipvt = ipvt.fortran_vec ();
+      Array<octave_idx_type> ipvt (nr);
+      octave_idx_type *pipvt = ipvt.fortran_vec ();
 
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
       Array<double> z (4 * nc);
       double *pz = z.fortran_vec ();
-      Array<int> iz (nc);
-      int *piz = iz.fortran_vec ();
+      Array<octave_idx_type> iz (nc);
+      octave_idx_type *piz = iz.fortran_vec ();
 
       // Calculate the norm of the matrix, for later use.
-      double anorm = atmp.abs().sum().row(0).max();
+      double anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -1292,7 +1292,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 		  retval = b;
 		  double *result = retval.fortran_vec ();
 
-		  int b_nc = b.cols ();
+		  octave_idx_type b_nc = b.cols ();
 
 		  job = 'N';
 		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1319,21 +1319,21 @@ Matrix::solve (const ComplexMatrix& b) const
 }
 
 ComplexMatrix
-Matrix::solve (const ComplexMatrix& b, int& info) const
+Matrix::solve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info);
 }
 
 ComplexMatrix
-Matrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
+Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcond) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcond);
 }
 
 ComplexMatrix
-Matrix::solve (const ComplexMatrix& b, int& info, double& rcond,
+Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (*this);
@@ -1343,31 +1343,31 @@ Matrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 ColumnVector
 Matrix::solve (const ColumnVector& b) const
 {
-  int info; double rcond;
+  octave_idx_type info; double rcond;
   return solve (b, info, rcond);
 }
 
 ColumnVector
-Matrix::solve (const ColumnVector& b, int& info) const
+Matrix::solve (const ColumnVector& b, octave_idx_type& info) const
 {
   double rcond;
   return solve (b, info, rcond);
 }
 
 ColumnVector
-Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
+Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 ColumnVector
-Matrix::solve (const ColumnVector& b, int& info, double& rcond,
+Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
   ColumnVector retval;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr == 0 || nc == 0 || nr != nc || nr != b.length ())
     (*current_liboctave_error_handler)
@@ -1376,19 +1376,19 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
     {
       info = 0;
 
-      Array<int> ipvt (nr);
-      int *pipvt = ipvt.fortran_vec ();
+      Array<octave_idx_type> ipvt (nr);
+      octave_idx_type *pipvt = ipvt.fortran_vec ();
 
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
       Array<double> z (4 * nc);
       double *pz = z.fortran_vec ();
-      Array<int> iz (nc);
-      int *piz = iz.fortran_vec ();
+      Array<octave_idx_type> iz (nc);
+      octave_idx_type *piz = iz.fortran_vec ();
 
       // Calculate the norm of the matrix, for later use.
-      double anorm = atmp.abs().sum().row(0).max();
+      double anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -1468,21 +1468,21 @@ Matrix::solve (const ComplexColumnVector& b) const
 }
 
 ComplexColumnVector
-Matrix::solve (const ComplexColumnVector& b, int& info) const
+Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info);
 }
 
 ComplexColumnVector
-Matrix::solve (const ComplexColumnVector& b, int& info, double& rcond) const
+Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcond) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcond);
 }
 
 ComplexColumnVector
-Matrix::solve (const ComplexColumnVector& b, int& info, double& rcond,
+Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (*this);
@@ -1492,27 +1492,27 @@ Matrix::solve (const ComplexColumnVector& b, int& info, double& rcond,
 Matrix
 Matrix::lssolve (const Matrix& b) const
 {
-  int info;
-  int rank;
+  octave_idx_type info;
+  octave_idx_type rank;
   return lssolve (b, info, rank);
 }
 
 Matrix
-Matrix::lssolve (const Matrix& b, int& info) const
+Matrix::lssolve (const Matrix& b, octave_idx_type& info) const
 {
-  int rank;
+  octave_idx_type rank;
   return lssolve (b, info, rank);
 }
 
 Matrix
-Matrix::lssolve (const Matrix& b, int& info, int& rank) const
+Matrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) const
 {
   Matrix retval;
 
-  int nrhs = b.cols ();
+  octave_idx_type nrhs = b.cols ();
 
-  int m = rows ();
-  int n = cols ();
+  octave_idx_type m = rows ();
+  octave_idx_type n = cols ();
 
   if (m == 0 || n == 0 || m != b.rows ())
     (*current_liboctave_error_handler)
@@ -1522,16 +1522,16 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      int nrr = m > n ? m : n;
+      octave_idx_type nrr = m > n ? m : n;
       Matrix result (nrr, nrhs, 0.0);
 
-      for (int j = 0; j < nrhs; j++)
-	for (int i = 0; i < m; i++)
+      for (octave_idx_type j = 0; j < nrhs; j++)
+	for (octave_idx_type i = 0; i < m; i++)
 	  result.elem (i, j) = b.elem (i, j);
 
       double *presult = result.fortran_vec ();
 
-      int len_s = m < n ? m : n;
+      octave_idx_type len_s = m < n ? m : n;
       Array<double> s (len_s);
       double *ps = s.fortran_vec ();
 
@@ -1539,7 +1539,7 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 
       // Ask DGELSS what the dimension of WORK should be.
 
-      int lwork = -1;
+      octave_idx_type lwork = -1;
 
       Array<double> work (1);
 
@@ -1551,7 +1551,7 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
       else
 	{
-	  lwork = static_cast<int> (work(0));
+	  lwork = static_cast<octave_idx_type> (work(0));
 	  work.resize (lwork);
 
 	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
@@ -1564,8 +1564,8 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 	  else
 	    {
 	      retval.resize (n, nrhs);
-	      for (int j = 0; j < nrhs; j++)
-		for (int i = 0; i < n; i++)
+	      for (octave_idx_type j = 0; j < nrhs; j++)
+		for (octave_idx_type i = 0; i < n; i++)
 		  retval.elem (i, j) = result.elem (i, j);
 	    }
 	}
@@ -1578,21 +1578,21 @@ ComplexMatrix
 Matrix::lssolve (const ComplexMatrix& b) const
 {
   ComplexMatrix tmp (*this);
-  int info;
-  int rank;
+  octave_idx_type info;
+  octave_idx_type rank;
   return tmp.lssolve (b, info, rank);
 }
 
 ComplexMatrix
-Matrix::lssolve (const ComplexMatrix& b, int& info) const
+Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
-  int rank;
+  octave_idx_type rank;
   return tmp.lssolve (b, info, rank);
 }
 
 ComplexMatrix
-Matrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
+Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_idx_type& rank) const
 {
   ComplexMatrix tmp (*this);
   return tmp.lssolve (b, info, rank);
@@ -1601,27 +1601,27 @@ Matrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 ColumnVector
 Matrix::lssolve (const ColumnVector& b) const
 {
-  int info;
-  int rank;
+  octave_idx_type info;
+  octave_idx_type rank;
   return lssolve (b, info, rank);
 }
 
 ColumnVector
-Matrix::lssolve (const ColumnVector& b, int& info) const
+Matrix::lssolve (const ColumnVector& b, octave_idx_type& info) const
 {
-  int rank;
+  octave_idx_type rank;
   return lssolve (b, info, rank);
 }
 
 ColumnVector
-Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
+Matrix::lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& rank) const
 {
   ColumnVector retval;
 
-  int nrhs = 1;
+  octave_idx_type nrhs = 1;
 
-  int m = rows ();
-  int n = cols ();
+  octave_idx_type m = rows ();
+  octave_idx_type n = cols ();
 
   if (m == 0 || n == 0 || m != b.length ())
     (*current_liboctave_error_handler)
@@ -1631,15 +1631,15 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      int nrr = m > n ? m : n;
+      octave_idx_type nrr = m > n ? m : n;
       ColumnVector result (nrr);
 
-      for (int i = 0; i < m; i++)
+      for (octave_idx_type i = 0; i < m; i++)
 	result.elem (i) = b.elem (i);
 
       double *presult = result.fortran_vec ();
 
-      int len_s = m < n ? m : n;
+      octave_idx_type len_s = m < n ? m : n;
       Array<double> s (len_s);
       double *ps = s.fortran_vec ();
 
@@ -1647,7 +1647,7 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 
       // Ask DGELSS what the dimension of WORK should be.
 
-      int lwork = -1;
+      octave_idx_type lwork = -1;
 
       Array<double> work (1);
 
@@ -1659,7 +1659,7 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
       else
 	{
-	  lwork = static_cast<int> (work(0));
+	  lwork = static_cast<octave_idx_type> (work(0));
 	  work.resize (lwork);
 
 	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
@@ -1672,7 +1672,7 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 	  else
 	    {
 	      retval.resize (n);
-	      for (int i = 0; i < n; i++)
+	      for (octave_idx_type i = 0; i < n; i++)
 		retval.elem (i) = result.elem (i);
 	    }
 	}
@@ -1689,14 +1689,14 @@ Matrix::lssolve (const ComplexColumnVector& b) const
 }
 
 ComplexColumnVector
-Matrix::lssolve (const ComplexColumnVector& b, int& info) const
+Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
   return tmp.lssolve (b, info);
 }
 
 ComplexColumnVector
-Matrix::lssolve (const ComplexColumnVector& b, int& info, int& rank) const
+Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info, octave_idx_type& rank) const
 {
   ComplexMatrix tmp (*this);
   return tmp.lssolve (b, info, rank);
@@ -1723,7 +1723,7 @@ Matrix::expm (void) const
 
   Matrix m = *this;
 
-  int nc = columns ();
+  octave_idx_type nc = columns ();
 
   // Preconditioning step 1: trace normalization to reduce dynamic
   // range of poles, but avoid making stable eigenvalues unstable.
@@ -1731,14 +1731,14 @@ Matrix::expm (void) const
   // trace shift value
   volatile double trshift = 0.0;
 
-  for (int i = 0; i < nc; i++)
+  for (octave_idx_type i = 0; i < nc; i++)
     trshift += m.elem (i, i);
 
   trshift /= nc;
 
   if (trshift > 0.0)
     {
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	m.elem (i, i) -= trshift;
     }
 
@@ -1747,7 +1747,7 @@ Matrix::expm (void) const
 
   double *p_m = m.fortran_vec ();
 
-  int info, ilo, ihi, ilos, ihis;
+  octave_idx_type info, ilo, ihi, ilos, ihis;
   Array<double> dpermute (nc);
   Array<double> dscale (nc);
 
@@ -1787,7 +1787,7 @@ Matrix::expm (void) const
       return retval;
     }
 
-  int sqpow = (int) (inf_norm > 0.0
+  octave_idx_type sqpow = static_cast<octave_idx_type> (inf_norm > 0.0
 		     ? (1.0 + log (inf_norm) / log (2.0))
 		     : 0.0);
   
@@ -1799,7 +1799,7 @@ Matrix::expm (void) const
   if (sqpow > 0)
     {
       double scale_factor = 1.0;
-      for (int i = 0; i < sqpow; i++)
+      for (octave_idx_type i = 0; i < sqpow; i++)
 	scale_factor *= 2.0;
   
       m = m / scale_factor;
@@ -1812,8 +1812,8 @@ Matrix::expm (void) const
   
   // Now powers a^8 ... a^1.
   
-  int minus_one_j = -1;
-  for (int j = 7; j >= 0; j--)
+  octave_idx_type minus_one_j = -1;
+  for (octave_idx_type j = 7; j >= 0; j--)
     {
       npp = m * npp + padec[j] * m;
       dpp = m * dpp + (minus_one_j * padec[j]) * m;
@@ -1823,7 +1823,7 @@ Matrix::expm (void) const
   // Zero power.
   
   dpp = -dpp;
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
       npp.elem (j, j) += 1.0;
       dpp.elem (j, j) += 1.0;
@@ -1843,45 +1843,45 @@ Matrix::expm (void) const
   
   // Reverse preconditioning step 2: inverse balancing.
   // apply inverse scaling to computed exponential
-  for (int i = 0; i < nc; i++)
-    for (int j = 0; j < nc; j++)
+  for (octave_idx_type i = 0; i < nc; i++)
+    for (octave_idx_type j = 0; j < nc; j++)
        retval(i,j) *= dscale(i) / dscale(j);
 
   OCTAVE_QUIT;
 
   // construct balancing permutation vector
-  Array<int> iperm (nc);
-  for (int i = 0; i < nc; i++)
+  Array<octave_idx_type> iperm (nc);
+  for (octave_idx_type i = 0; i < nc; i++)
     iperm(i) = i;  // identity permutation
 
   // leading permutations in forward order
-  for (int i = 0; i < (ilo-1); i++)
+  for (octave_idx_type i = 0; i < (ilo-1); i++)
     {
-      int swapidx = static_cast<int> (dpermute(i)) - 1;
-      int tmp = iperm(i);
+      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
+      octave_idx_type tmp = iperm(i);
       iperm(i) = iperm (swapidx);
       iperm(swapidx) = tmp;
     }
 
   // trailing permutations must be done in reverse order
-  for (int i = nc - 1; i >= ihi; i--)
+  for (octave_idx_type i = nc - 1; i >= ihi; i--)
     {
-      int swapidx = static_cast<int> (dpermute(i)) - 1;
-      int tmp = iperm(i);
+      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
+      octave_idx_type tmp = iperm(i);
       iperm(i) = iperm(swapidx);
       iperm(swapidx) = tmp;
     }
 
   // construct inverse balancing permutation vector
-  Array<int> invpvec (nc);
-  for (int i = 0; i < nc; i++)
+  Array<octave_idx_type> invpvec (nc);
+  for (octave_idx_type i = 0; i < nc; i++)
     invpvec(iperm(i)) = i;     // Thanks to R. A. Lippert for this method
 
   OCTAVE_QUIT;
  
   Matrix tmpMat = retval;
-  for (int i = 0; i < nc; i++)
-    for (int j = 0; j < nc; j++)
+  for (octave_idx_type i = 0; i < nc; i++)
+    for (octave_idx_type j = 0; j < nc; j++)
       retval(i,j) = tmpMat(invpvec(i),invpvec(j));
 
   // Reverse preconditioning step 1: fix trace normalization.
@@ -1895,11 +1895,11 @@ Matrix::expm (void) const
 Matrix&
 Matrix::operator += (const DiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nr || nc != a_nc)
     {
@@ -1907,7 +1907,7 @@ Matrix::operator += (const DiagMatrix& a)
       return *this;
     }
 
-  for (int i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) += a.elem (i, i);
 
   return *this;
@@ -1916,11 +1916,11 @@ Matrix::operator += (const DiagMatrix& a)
 Matrix&
 Matrix::operator -= (const DiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nr || nc != a_nc)
     {
@@ -1928,7 +1928,7 @@ Matrix::operator -= (const DiagMatrix& a)
       return *this;
     }
 
-  for (int i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) -= a.elem (i, i);
 
   return *this;
@@ -1939,13 +1939,13 @@ Matrix::operator -= (const DiagMatrix& a)
 boolMatrix
 Matrix::operator ! (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   boolMatrix b (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       b.elem (i, j) = ! elem (i, j);
 
   return b;
@@ -1958,11 +1958,11 @@ operator * (const ColumnVector& v, const RowVector& a)
 {
   Matrix retval;
 
-  int len = v.length ();
+  octave_idx_type len = v.length ();
 
   if (len != 0)
     {
-      int a_len = a.length ();
+      octave_idx_type a_len = a.length ();
 
       retval.resize (len, a_len);
       double *c = retval.fortran_vec ();
@@ -1994,13 +1994,13 @@ Matrix::map (d_d_Mapper f) const
 boolMatrix
 Matrix::map (b_d_Mapper f) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   boolMatrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval(i,j) = f (elem(i,j));
 
   return retval;
@@ -2011,7 +2011,7 @@ Matrix::apply (d_d_Mapper f)
 {
   double *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     d[i] = f (d[i]);
 
   return *this;
@@ -2020,17 +2020,17 @@ Matrix::apply (d_d_Mapper f)
 bool
 Matrix::any_element_is_negative (bool neg_zero) const
 {
-  int nel = nelem ();
+  octave_idx_type nel = nelem ();
 
   if (neg_zero)
     {
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	if (lo_ieee_signbit (elem (i)))
 	  return true;
     }
   else
     {
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	if (elem (i) < 0)
 	  return true;
     }
@@ -2042,9 +2042,9 @@ Matrix::any_element_is_negative (bool neg_zero) const
 bool
 Matrix::any_element_is_inf_or_nan (void) const
 {
-  int nel = nelem ();
+  octave_idx_type nel = nelem ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       double val = elem (i);
       if (xisinf (val) || xisnan (val))
@@ -2057,9 +2057,9 @@ Matrix::any_element_is_inf_or_nan (void) const
 bool
 Matrix::all_elements_are_int_or_inf_or_nan (void) const
 {
-  int nel = nelem ();
+  octave_idx_type nel = nelem ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       double val = elem (i);
       if (xisnan (val) || D_NINT (val) == val)
@@ -2077,7 +2077,7 @@ Matrix::all_elements_are_int_or_inf_or_nan (void) const
 bool
 Matrix::all_integers (double& max_val, double& min_val) const
 {
-  int nel = nelem ();
+  octave_idx_type nel = nelem ();
 
   if (nel > 0)
     {
@@ -2087,7 +2087,7 @@ Matrix::all_integers (double& max_val, double& min_val) const
   else
     return false;
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       double val = elem (i);
 
@@ -2107,9 +2107,9 @@ Matrix::all_integers (double& max_val, double& min_val) const
 bool
 Matrix::too_large_for_float (void) const
 {
-  int nel = nelem ();
+  octave_idx_type nel = nelem ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       double val = elem (i);
 
@@ -2179,13 +2179,13 @@ Matrix::sumsq (int dim) const
 Matrix
 Matrix::abs (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       retval (i, j) = fabs (elem (i, j));
 
   return retval;
@@ -2198,10 +2198,10 @@ Matrix::diag (void) const
 }
 
 ColumnVector
-Matrix::diag (int k) const
+Matrix::diag (octave_idx_type k) const
 {
-  int nnr = rows ();
-  int nnc = cols ();
+  octave_idx_type nnr = rows ();
+  octave_idx_type nnc = cols ();
   if (k > 0)
     nnc -= k;
   else if (k < 0)
@@ -2211,23 +2211,23 @@ Matrix::diag (int k) const
 
   if (nnr > 0 && nnc > 0)
     {
-      int ndiag = (nnr < nnc) ? nnr : nnc;
+      octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
 
       d.resize (ndiag);
 
       if (k > 0)
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i+k);
 	}
       else if (k < 0)
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i-k, i);
 	}
       else
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i);
 	}
     }
@@ -2241,26 +2241,26 @@ Matrix::diag (int k) const
 ColumnVector
 Matrix::row_min (void) const
 {
-  Array<int> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return row_min (dummy_idx);
 }
 
 ColumnVector
-Matrix::row_min (Array<int>& idx_arg) const
+Matrix::row_min (Array<octave_idx_type>& idx_arg) const
 {
   ColumnVector result;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
       idx_arg.resize (nr);
 
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-	  int idx_j;
+	  octave_idx_type idx_j;
 
 	  double tmp_min = octave_NaN;
 
@@ -2272,7 +2272,7 @@ Matrix::row_min (Array<int>& idx_arg) const
 		break;
 	    }
 
-	  for (int j = idx_j+1; j < nc; j++)
+	  for (octave_idx_type j = idx_j+1; j < nc; j++)
 	    {
 	      double tmp = elem (i, j);
 
@@ -2296,26 +2296,26 @@ Matrix::row_min (Array<int>& idx_arg) const
 ColumnVector
 Matrix::row_max (void) const
 {
-  Array<int> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return row_max (dummy_idx);
 }
 
 ColumnVector
-Matrix::row_max (Array<int>& idx_arg) const
+Matrix::row_max (Array<octave_idx_type>& idx_arg) const
 {
   ColumnVector result;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
       idx_arg.resize (nr);
 
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-	  int idx_j;
+	  octave_idx_type idx_j;
 
 	  double tmp_max = octave_NaN;
 
@@ -2327,7 +2327,7 @@ Matrix::row_max (Array<int>& idx_arg) const
 		break;
 	    }
 
-	  for (int j = idx_j+1; j < nc; j++)
+	  for (octave_idx_type j = idx_j+1; j < nc; j++)
 	    {
 	      double tmp = elem (i, j);
 
@@ -2351,26 +2351,26 @@ Matrix::row_max (Array<int>& idx_arg) const
 RowVector
 Matrix::column_min (void) const
 {
-  Array<int> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return column_min (dummy_idx);
 }
 
 RowVector
-Matrix::column_min (Array<int>& idx_arg) const
+Matrix::column_min (Array<octave_idx_type>& idx_arg) const
 {
   RowVector result;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
       idx_arg.resize (nc);
 
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
         {
-	  int idx_i;
+	  octave_idx_type idx_i;
 
 	  double tmp_min = octave_NaN;
 
@@ -2382,7 +2382,7 @@ Matrix::column_min (Array<int>& idx_arg) const
 		break;
 	    }
 
-	  for (int i = idx_i+1; i < nr; i++)
+	  for (octave_idx_type i = idx_i+1; i < nr; i++)
 	    {
 	      double tmp = elem (i, j);
 
@@ -2406,26 +2406,26 @@ Matrix::column_min (Array<int>& idx_arg) const
 RowVector
 Matrix::column_max (void) const
 {
-  Array<int> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return column_max (dummy_idx);
 }
 
 RowVector
-Matrix::column_max (Array<int>& idx_arg) const
+Matrix::column_max (Array<octave_idx_type>& idx_arg) const
 {
   RowVector result;
 
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
       idx_arg.resize (nc);
 
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
         {
-	  int idx_i;
+	  octave_idx_type idx_i;
 
 	  double tmp_max = octave_NaN;
 
@@ -2437,7 +2437,7 @@ Matrix::column_max (Array<int>& idx_arg) const
 		break;
 	    }
 
-	  for (int i = idx_i+1; i < nr; i++)
+	  for (octave_idx_type i = idx_i+1; i < nr; i++)
 	    {
 	      double tmp = elem (i, j);
 
@@ -2461,9 +2461,9 @@ Matrix::column_max (Array<int>& idx_arg) const
 std::ostream&
 operator << (std::ostream& os, const Matrix& a)
 {
-  for (int i = 0; i < a.rows (); i++)
+  for (octave_idx_type i = 0; i < a.rows (); i++)
     {
-      for (int j = 0; j < a.cols (); j++)
+      for (octave_idx_type j = 0; j < a.cols (); j++)
 	{
 	  os << " ";
 	  octave_write_double (os, a.elem (i, j));
@@ -2476,16 +2476,16 @@ operator << (std::ostream& os, const Matrix& a)
 std::istream&
 operator >> (std::istream& is, Matrix& a)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   if (nr < 1 || nc < 1)
     is.clear (std::ios::badbit);
   else
     {
       double tmp;
-      for (int i = 0; i < nr; i++)
-	for (int j = 0; j < nc; j++)
+      for (octave_idx_type i = 0; i < nr; i++)
+	for (octave_idx_type j = 0; j < nc; j++)
 	  {
 	    tmp = octave_read_double (is);
 	    if (is)
@@ -2543,11 +2543,11 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
   // Solve the sylvester equation, back-transform, and return the
   // solution.
 
-  int a_nr = a.rows ();
-  int b_nr = b.rows ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type b_nr = b.rows ();
 
   double scale;
-  int info;
+  octave_idx_type info;
 
   double *pa = sch_a.fortran_vec ();
   double *pb = sch_b.fortran_vec ();
@@ -2580,11 +2580,11 @@ operator * (const Matrix& m, const Matrix& a)
 {
   Matrix retval;
 
-  int nr = m.rows ();
-  int nc = m.cols ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (nc != a_nr)
     gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
@@ -2594,8 +2594,8 @@ operator * (const Matrix& m, const Matrix& a)
 	retval.resize (nr, a_nc, 0.0);
       else
 	{
-	  int ld  = nr;
-	  int lda = a_nr;
+	  octave_idx_type ld  = nr;
+	  octave_idx_type lda = a_nr;
 
 	  retval.resize (nr, a_nc);
 	  double *c = retval.fortran_vec ();
@@ -2626,15 +2626,15 @@ operator * (const Matrix& m, const Matrix& a)
 Matrix
 min (double d, const Matrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = xmin (d, m (i, j));
@@ -2646,15 +2646,15 @@ min (double d, const Matrix& m)
 Matrix
 min (const Matrix& m, double d)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = xmin (m (i, j), d);
@@ -2666,8 +2666,8 @@ min (const Matrix& m, double d)
 Matrix
 min (const Matrix& a, const Matrix& b)
 {
-  int nr = a.rows ();
-  int nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
 
   if (nr != b.rows () || nc != b.columns ())
     {
@@ -2680,8 +2680,8 @@ min (const Matrix& a, const Matrix& b)
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = xmin (a (i, j), b (i, j));
@@ -2693,15 +2693,15 @@ min (const Matrix& a, const Matrix& b)
 Matrix
 max (double d, const Matrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = xmax (d, m (i, j));
@@ -2713,15 +2713,15 @@ max (double d, const Matrix& m)
 Matrix
 max (const Matrix& m, double d)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = xmax (m (i, j), d);
@@ -2733,8 +2733,8 @@ max (const Matrix& m, double d)
 Matrix
 max (const Matrix& a, const Matrix& b)
 {
-  int nr = a.rows ();
-  int nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
 
   if (nr != b.rows () || nc != b.columns ())
     {
@@ -2747,8 +2747,8 @@ max (const Matrix& a, const Matrix& b)
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = xmax (a (i, j), b (i, j));

@@ -27,10 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "mach-info.h"
+#include "oct-types.h"
 
 extern "C"
 {
-  double F77_FUNC (d1mach, D1MACH) (const int&);
+  double F77_FUNC (d1mach, D1MACH) (const octave_idx_type&);
 }
 
 oct_mach_info *oct_mach_info::instance = 0;

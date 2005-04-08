@@ -127,7 +127,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   else if (single_arg && nargout == 2) \
     { \
-      ArrayN<int> index; \
+      ArrayN<octave_idx_type> index; \
  \
       if (arg1.is_real_type ()) \
 	{ \
@@ -152,7 +152,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
  \
-      int len = index.numel (); \
+      octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
 	{ \
@@ -160,7 +160,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
 	  NDArray idx (index.dims ()); \
  \
-	  for (int i = 0; i < len; i++) \
+	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
 	      OCTAVE_QUIT; \
 	      int tmp = index.elem (i) + 1; \

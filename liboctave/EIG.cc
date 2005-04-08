@@ -34,45 +34,45 @@ extern "C"
   F77_RET_T
   F77_FUNC (dgeev, DGEEV) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
-			   const int&, double*, const int&, double*,
-			   double*, double*, const int&, double*,
-			   const int&, double*, const int&, int&
+			   const octave_idx_type&, double*, const octave_idx_type&, double*,
+			   double*, double*, const octave_idx_type&, double*,
+			   const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgeev, ZGEEV) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
-			   const int&, Complex*, const int&, Complex*,
-			   Complex*, const int&, Complex*, const int&,
-			   Complex*, const int&, double*, int&
+			   const octave_idx_type&, Complex*, const octave_idx_type&, Complex*,
+			   Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
+			   Complex*, const octave_idx_type&, double*, octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dsyev, DSYEV) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
-			   const int&, double*, const int&, double*,
-			   double*, const int&, int&
+			   const octave_idx_type&, double*, const octave_idx_type&, double*,
+			   double*, const octave_idx_type&, octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zheev, ZHEEV) (F77_CONST_CHAR_ARG_DECL,
 			   F77_CONST_CHAR_ARG_DECL,
-			   const int&, Complex*, const int&, double*,
-			   Complex*, const int&, double*, int&
+			   const octave_idx_type&, Complex*, const octave_idx_type&, double*,
+			   Complex*, const octave_idx_type&, double*, octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL
 			   F77_CHAR_ARG_LEN_DECL);
 }
 
-int
+octave_idx_type
 EIG::init (const Matrix& a, bool calc_ev)
 {
   if (a.is_symmetric ())
     return symmetric_init (a, calc_ev);
 
-  int n = a.rows ();
+  octave_idx_type n = a.rows ();
 
   if (n != a.cols ())
     {
@@ -80,7 +80,7 @@ EIG::init (const Matrix& a, bool calc_ev)
       return -1;
     }
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   Matrix atmp = a;
   double *tmp_data = atmp.fortran_vec ();
@@ -91,15 +91,15 @@ EIG::init (const Matrix& a, bool calc_ev)
   Array<double> wi (n);
   double *pwi = wi.fortran_vec ();
 
-  volatile int nvr = calc_ev ? n : 0;
+  volatile octave_idx_type nvr = calc_ev ? n : 0;
   Matrix vr (nvr, nvr);
   double *pvr = vr.fortran_vec ();
 
-  int lwork = -1;
+  octave_idx_type lwork = -1;
   double dummy_work;
 
   double *dummy = 0;
-  int idummy = 1;
+  octave_idx_type idummy = 1;
 
   F77_XFCN (dgeev, DGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
 			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
@@ -110,7 +110,7 @@ EIG::init (const Matrix& a, bool calc_ev)
 
   if (! f77_exception_encountered && info == 0)
     {
-      lwork = static_cast<int> (dummy_work);
+      lwork = static_cast<octave_idx_type> (dummy_work);
       Array<double> work (lwork);
       double *pwork = work.fortran_vec ();
 
@@ -136,12 +136,12 @@ EIG::init (const Matrix& a, bool calc_ev)
       lambda.resize (n);
       v.resize (nvr, nvr);
 
-      for (int j = 0; j < n; j++)
+      for (octave_idx_type j = 0; j < n; j++)
 	{
 	  if (wi.elem (j) == 0.0)
 	    {
 	      lambda.elem (j) = Complex (wr.elem (j));
-	      for (int i = 0; i < nvr; i++)
+	      for (octave_idx_type i = 0; i < nvr; i++)
 		v.elem (i, j) = vr.elem (i, j);
 	    }
 	  else
@@ -155,7 +155,7 @@ EIG::init (const Matrix& a, bool calc_ev)
 	      lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
 	      lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
 
-	      for (int i = 0; i < nvr; i++)
+	      for (octave_idx_type i = 0; i < nvr; i++)
 		{
 		  double real_part = vr.elem (i, j);
 		  double imag_part = vr.elem (i, j+1);
@@ -172,10 +172,10 @@ EIG::init (const Matrix& a, bool calc_ev)
   return info;
 }
 
-int
+octave_idx_type 
 EIG::symmetric_init (const Matrix& a, bool calc_ev)
 {
-  int n = a.rows ();
+  octave_idx_type n = a.rows ();
 
   if (n != a.cols ())
     {
@@ -183,7 +183,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
       return -1;
     }
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   Matrix atmp = a;
   double *tmp_data = atmp.fortran_vec ();
@@ -191,7 +191,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
   ColumnVector wr (n);
   double *pwr = wr.fortran_vec ();
 
-  int lwork = -1;
+  octave_idx_type lwork = -1;
   double dummy_work;
 
   F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
@@ -202,7 +202,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
 
   if (! f77_exception_encountered && info == 0)
     {
-      lwork = static_cast<int> (dummy_work);
+      lwork = static_cast<octave_idx_type> (dummy_work);
       Array<double> work (lwork);
       double *pwork = work.fortran_vec ();
 
@@ -233,13 +233,13 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
   return info;
 }
 
-int
+octave_idx_type
 EIG::init (const ComplexMatrix& a, bool calc_ev)
 {
   if (a.is_hermitian ())
     return hermitian_init (a, calc_ev);
 
-  int n = a.rows ();
+  octave_idx_type n = a.rows ();
 
   if (n != a.cols ())
     {
@@ -247,7 +247,7 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
       return -1;
     }
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   ComplexMatrix atmp = a;
   Complex *tmp_data = atmp.fortran_vec ();
@@ -255,19 +255,19 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
   ComplexColumnVector w (n);
   Complex *pw = w.fortran_vec ();
 
-  int nvr = calc_ev ? n : 0;
+  octave_idx_type nvr = calc_ev ? n : 0;
   ComplexMatrix vtmp (nvr, nvr);
   Complex *pv = vtmp.fortran_vec ();
 
-  int lwork = -1;
+  octave_idx_type lwork = -1;
   Complex dummy_work;
 
-  int lrwork = 2*n;
+  octave_idx_type lrwork = 2*n;
   Array<double> rwork (lrwork);
   double *prwork = rwork.fortran_vec ();
 
   Complex *dummy = 0;
-  int idummy = 1;
+  octave_idx_type idummy = 1;
 
   F77_XFCN (zgeev, ZGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
 			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
@@ -278,7 +278,7 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
 
   if (! f77_exception_encountered && info == 0)
     {
-      lwork = static_cast<int> (dummy_work.real ());
+      lwork = static_cast<octave_idx_type> (dummy_work.real ());
       Array<Complex> work (lwork);
       Complex *pwork = work.fortran_vec ();
 
@@ -310,10 +310,10 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
   return info;
 }
 
-int
+octave_idx_type
 EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
 {
-  int n = a.rows ();
+  octave_idx_type n = a.rows ();
 
   if (n != a.cols ())
     {
@@ -321,7 +321,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
       return -1;
     }
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   ComplexMatrix atmp = a;
   Complex *tmp_data = atmp.fortran_vec ();
@@ -329,10 +329,10 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
   ColumnVector wr (n);
   double *pwr = wr.fortran_vec ();
 
-  int lwork = -1;
+  octave_idx_type lwork = -1;
   Complex dummy_work;
 
-  int lrwork = 3*n;
+  octave_idx_type lrwork = 3*n;
   Array<double> rwork (lrwork);
   double *prwork = rwork.fortran_vec ();
 
@@ -345,7 +345,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
 
   if (! f77_exception_encountered && info == 0)
     {
-      lwork = static_cast<int> (dummy_work.real ());
+      lwork = static_cast<octave_idx_type> (dummy_work.real ());
       Array<Complex> work (lwork);
       Complex *pwork = work.fortran_vec ();
 

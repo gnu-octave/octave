@@ -71,7 +71,7 @@ Octave_map
   ~Octave_map (void) { }
 
   // This is the number of keys.
-  int length (void) const { return map.size (); }
+  octave_idx_type length (void) const { return map.size (); }
 
   int empty (void) const { return map.empty (); }
 
@@ -109,9 +109,9 @@ Octave_map
 
   string_vector keys (void) const;
 
-  int rows (void) const { return dimensions(0); }
+  octave_idx_type rows (void) const { return dimensions(0); }
 
-  int columns (void) const { return dimensions(1); }
+  octave_idx_type columns (void) const { return dimensions(1); }
 
   dim_vector dims (void) const { return dimensions; }
 
@@ -119,9 +119,9 @@ Octave_map
 
   Octave_map resize (const dim_vector& dv) const;
 
-  int numel (void) const;
+  octave_idx_type numel (void) const;
 
-  Octave_map concat (const Octave_map& rb, const Array<int>& ra_idx);
+  Octave_map concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx);
 
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 

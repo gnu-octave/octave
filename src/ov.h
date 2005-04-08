@@ -354,20 +354,20 @@ public:
   virtual dim_vector dims (void) const
     { return rep->dims (); }
 
-  int rows (void) const;
+  octave_idx_type rows (void) const;
 
-  int columns (void) const;
+  octave_idx_type columns (void) const;
 
-  int length (void) const;
+  octave_idx_type length (void) const;
 
   int ndims (void) const;
 
   bool all_zero_dims (void) const { return dims().all_zero (); }
 
-  virtual int numel (void) const
+  virtual octave_idx_type numel (void) const
     { return rep->numel (); }
 
-  virtual int capacity (void) const
+  virtual octave_idx_type capacity (void) const
     { return rep->capacity (); }
 
   virtual size_t byte_size (void) const

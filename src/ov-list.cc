@@ -49,11 +49,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_list, "list", "list");
 octave_list::octave_list (const Cell& c)
   : octave_base_value (), data ()
 {
-  int n = c.length ();
+  octave_idx_type n = c.length ();
 
   data.resize (dim_vector (1, n));
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     data(i) = c(i);
 }
 
@@ -147,7 +147,7 @@ octave_list::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  int n = type.length ();
+  octave_idx_type n = type.length ();
 
   octave_value t_rhs = rhs;
 
@@ -194,9 +194,9 @@ octave_list::subsasgn (const std::string& type,
 	  {
 	    octave_value_list i = idx.front ();
 
-	    int len = i.length ();
+	    octave_idx_type len = i.length ();
 
-	    for (int k = 0; k < len; k++)
+	    for (octave_idx_type k = 0; k < len; k++)
 	      data.set_index (i(k).index_vector ());
 
 	    ::assign (data, Cell (t_rhs), Cell::resize_fill_value ());
@@ -230,7 +230,7 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
 
       if (! error_state)
 	{
-	  int n = data.length ();
+	  octave_idx_type n = data.length ();
 
 	  if (i > 0)
 	    {
@@ -254,7 +254,7 @@ octave_list::byte_size (void) const
 {
   size_t retval = 0;
 
-  for (int i = 0; i < numel (); i++)
+  for (octave_idx_type i = 0; i < numel (); i++)
     retval += data(i).byte_size ();
 
   return retval;
@@ -265,11 +265,11 @@ octave_list::list_value (void) const
 {
   octave_value_list retval;
 
-  int n = data.length ();
+  octave_idx_type n = data.length ();
 
   retval.resize (n);
   
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     retval(i) = data(i);
 
   return retval;
@@ -286,7 +286,7 @@ octave_list::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_list_print");
 
-  int n = data.length ();
+  octave_idx_type n = data.length ();
 
   if (n > 0)
     {
@@ -296,7 +296,7 @@ octave_list::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  OSSTREAM buf;
 
@@ -633,7 +633,7 @@ octave_list::load_binary (std::istream& is, bool swap,
     {
       octave_value_list lst;
 
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
 	{
 	  octave_value t2;
 	  bool dummy;
@@ -679,7 +679,7 @@ octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   // recursively add each element of the list to this group
   octave_value_list lst = list_value ();
 
-  for (int i = 0; i < lst.length (); ++i)
+  for (octave_idx_type i = 0; i < lst.length (); ++i)
     {
       // should we use lst.name_tags () to label the elements?
       char s[20];

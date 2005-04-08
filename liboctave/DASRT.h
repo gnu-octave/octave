@@ -92,14 +92,14 @@ private:
 
   bool initialized;
 
-  int liw;  
-  int lrw;
+  octave_idx_type liw;  
+  octave_idx_type lrw;
 
-  int ng;
+  octave_idx_type ng;
 
-  Array<int> info;
-  Array<int> iwork;
-  Array<int> jroot;
+  Array<octave_idx_type> info;
+  Array<octave_idx_type> iwork;
+  Array<octave_idx_type> jroot;
 
   Array<double> rwork;
 
@@ -110,10 +110,10 @@ private:
   double *pxdot;
   double *pabs_tol;
   double *prel_tol;
-  int *pinfo;
-  int *piwork;
+  octave_idx_type *pinfo;
+  octave_idx_type *piwork;
   double *prwork;
-  int *pjroot;
+  octave_idx_type *pjroot;
 
   void integrate (double t);
 };

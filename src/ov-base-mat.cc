@@ -131,7 +131,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 {
   octave_value retval;
 
-  int n_idx = idx.length ();
+  octave_idx_type n_idx = idx.length ();
 
   int nd = matrix.ndims ();
 
@@ -169,7 +169,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 	  {
 	    Array<idx_vector> idx_vec (n_idx);
 
-	    for (int i = 0; i < n_idx; i++)
+	    for (octave_idx_type i = 0; i < n_idx; i++)
 	      {
 		idx_vec(i) = idx(i).index_vector ();
 
@@ -192,9 +192,9 @@ template <class MT>
 void
 octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 {
-  int len = idx.length ();
+  octave_idx_type len = idx.length ();
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     matrix.set_index (idx(i).index_vector ());
 
   ::assign (matrix, rhs, MT::resize_fill_value ());

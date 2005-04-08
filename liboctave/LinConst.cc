@@ -40,7 +40,7 @@ LinConst::error (const char* msg)
 std::ostream&
 operator << (std::ostream& os, const LinConst& c)
 {
-  for (int i = 0; i < c.size (); i++)
+  for (octave_idx_type i = 0; i < c.size (); i++)
     os << c.lower_bound (i) << " " << c.upper_bound (i) << "\n";
 
   os << "\n";

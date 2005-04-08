@@ -614,11 +614,11 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
 
 	  Array<bool> tmp = pattern.match (str);
 
-	  int n = tmp.length ();
+	  octave_idx_type n = tmp.length ();
 
 	  ColumnVector result (n);
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    result(i) = tmp(i);
 
 	  retval = result;

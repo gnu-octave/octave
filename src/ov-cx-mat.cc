@@ -66,8 +66,8 @@ octave_complex_matrix::try_narrowing_conversion (void)
     {
       ComplexMatrix cm = matrix.matrix_value ();
 
-      int nr = cm.rows ();
-      int nc = cm.cols ();
+      octave_idx_type nr = cm.rows ();
+      octave_idx_type nc = cm.cols ();
 
       if (nr == 1 && nc == 1)
 	{
@@ -100,9 +100,9 @@ void
 octave_complex_matrix::assign (const octave_value_list& idx,
 			       const NDArray& rhs)
 {
-  int len = idx.length ();
+  octave_idx_type len = idx.length ();
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     matrix.set_index (idx(i).index_vector ());
 
   ::assign (matrix, rhs);
@@ -201,15 +201,15 @@ octave_complex_matrix::sparse_complex_matrix_value (bool) const
 static ComplexMatrix
 strip_infnan (const ComplexMatrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   ComplexMatrix retval (nr, nc);
 
-  int k = 0;
-  for (int i = 0; i < nr; i++)
+  octave_idx_type k = 0;
+  for (octave_idx_type i = 0; i < nr; i++)
     {
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
 	  Complex c = m (i, j);
 	  if (xisnan (c))
@@ -260,7 +260,7 @@ octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned,
 
       os << "# ndims: " << d.length () << "\n";
 
-      for (int i=0; i < d.length (); i++)
+      for (int i = 0; i < d.length (); i++)
 	os << " " << d (i);
 
       os << "\n" << tmp;
@@ -299,13 +299,13 @@ octave_complex_matrix::load_ascii (std::istream& is)
   keywords[1] = "rows";
 
   std::string kw;
-  int val = 0;
+  octave_idx_type val = 0;
 
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
 	{
-	  int mdims = val;
+	  int mdims = static_cast<int> (val);
 
 	  if (mdims >= 0)
 	    {
@@ -333,8 +333,8 @@ octave_complex_matrix::load_ascii (std::istream& is)
 	}
       else if (kw == "rows")
 	{
-	  int nr = val;
-	  int nc = 0;
+	  octave_idx_type nr = val;
+	  octave_idx_type nc = 0;
 
 	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
 	    {
@@ -382,7 +382,7 @@ octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   // Use negative value for ndims to differentiate with old format!!
   FOUR_BYTE_INT tmp = - d.length();
   os.write (X_CAST (char *, &tmp), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i = 0; i < d.length (); i++)
     {
       tmp = d(i);
       os.write (X_CAST (char *, &tmp), 4);
@@ -475,7 +475,7 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
 	return false;
       ComplexMatrix m (nr, nc);
       Complex *im = m.fortran_vec ();
-      int len = nr * nc;
+      octave_idx_type len = nr * nc;
       read_doubles (is, X_CAST (double *, im),
 		    X_CAST (save_type, tmp), 2*len, swap, fmt);
       if (error_state || ! is)

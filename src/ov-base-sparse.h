@@ -74,8 +74,8 @@ octave_base_sparse : public octave_base_value
   octave_value *empty_clone (void) const 
     { return new octave_base_sparse (); }
 
-  int nnz (void) const { return matrix.nnz (); }
-  int nonzero (void) const { return matrix.nonzero (); }
+  octave_idx_type nnz (void) const { return matrix.nnz (); }
+  octave_idx_type nonzero (void) const { return matrix.nonzero (); }
 
   size_t byte_size (void) const { return matrix.byte_size (); }
 
@@ -126,7 +126,7 @@ octave_base_sparse : public octave_base_value
 
   bool is_true (void) const;
 
-  int capacity (void) const { return matrix.capacity (); }
+  octave_idx_type capacity (void) const { return matrix.capacity (); }
 
   bool print_as_scalar (void) const;
 

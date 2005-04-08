@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 
 ColumnVector
-LPsolve::do_minimize (double&, int&, ColumnVector&)
+LPsolve::do_minimize (double&, octave_idx_type&, ColumnVector&)
 {
   (*current_liboctave_error_handler) ("sorry, not implemented");
   return ColumnVector ();

@@ -241,7 +241,8 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
   else
     {
       NDArray g = args(0).array_value ();
-      NDArray v[nargin];
+
+      OCTAVE_LOCAL_BUFFER (NDArray, v, nargin);
 
       int nel = dv.numel ();
 

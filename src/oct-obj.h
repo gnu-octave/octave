@@ -39,7 +39,7 @@ public:
   octave_value_list (void)
     : data () { }
 
-  octave_value_list (int n, const octave_value& val)
+  octave_value_list (octave_idx_type n, const octave_value& val)
     : data (n, val) { }
 
   octave_value_list (const octave_value& tc)
@@ -85,17 +85,17 @@ public:
 
   // Assignment will resize on range errors.
 
-  octave_value& operator () (int n) { return elem (n); }
+  octave_value& operator () (octave_idx_type n) { return elem (n); }
 
-  octave_value operator () (int n) const { return elem (n); }
+  octave_value operator () (octave_idx_type n) const { return elem (n); }
 
-  int length (void) const { return data.size (); }
+  octave_idx_type length (void) const { return data.size (); }
 
   bool empty (void) const { return length () == 0; }
 
-  void resize (int n) { data.resize (n); }
+  void resize (octave_idx_type n) { data.resize (n); }
 
-  void resize (int n, const octave_value& val);
+  void resize (octave_idx_type n, const octave_value& val);
 
   octave_value_list& prepend (const octave_value& val);
 
@@ -105,7 +105,7 @@ public:
 
   octave_value_list& reverse (void);
 
-  octave_value_list splice (int offset, int length,
+  octave_value_list splice (octave_idx_type offset, octave_idx_type length,
 			    const octave_value_list& lst) const;
 
   bool all_strings_p (void) const;
@@ -140,11 +140,11 @@ private:
   // and supply a default value to create a vector-valued
   // octave_value_list.
 
-  octave_value_list (int n);
+  octave_value_list (octave_idx_type n);
 
   octave_value_list (const Array<octave_value>& d);
 
-  octave_value& elem (int n)
+  octave_value& elem (octave_idx_type n)
     {
       static Matrix empty_matrix;
 
@@ -154,7 +154,7 @@ private:
       return data[n];
     }
 
-  octave_value elem (int n) const
+  octave_value elem (octave_idx_type n) const
     {
 #if defined (BOUNDS_CHECKING)
       return data.at (n);

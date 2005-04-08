@@ -1012,7 +1012,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
   return *this;
 }
 
-int
+octave_idx_type
 octave_value::rows (void) const
 {
   dim_vector dv = dims ();
@@ -1020,7 +1020,7 @@ octave_value::rows (void) const
   return (dv.length () > 0) ? dv(0) : -1;
 }
 
-int
+octave_idx_type
 octave_value::columns (void) const
 {
   dim_vector dv = dims ();
@@ -1028,7 +1028,7 @@ octave_value::columns (void) const
   return (dv.length () > 1) ? dv(1) : -1;
 }
 
-int
+octave_idx_type
 octave_value::length (void) const
 {
   int retval = 0;
@@ -1158,13 +1158,13 @@ octave_value::column_vector_value (bool force_string_conv,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nc == 1)
     {
       retval.resize (nr);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	retval (i) = m (i, 0);
     }
   else
@@ -1187,13 +1187,13 @@ octave_value::complex_column_vector_value (bool force_string_conv,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nc == 1)
     {
       retval.resize (nr);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	retval (i) = m (i, 0);
     }
   else
@@ -1216,13 +1216,13 @@ octave_value::row_vector_value (bool force_string_conv,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nr == 1)
     {
       retval.resize (nc);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	retval (i) = m (0, i);
     }
   else
@@ -1245,13 +1245,13 @@ octave_value::complex_row_vector_value (bool force_string_conv,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nr == 1)
     {
       retval.resize (nc);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	retval (i) = m (0, i);
     }
   else
@@ -1276,19 +1276,19 @@ octave_value::vector_value (bool force_string_conv,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nr == 1)
     {
       retval.resize (nc);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	retval (i) = m (0, i);
     }
   else if (nc == 1)
     {
       retval.resize (nr);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	retval (i) = m (i, 0);
     }
   else if (nr > 0 && nc > 0)
@@ -1298,9 +1298,9 @@ octave_value::vector_value (bool force_string_conv,
 	gripe_implicit_conversion (type_name (), "real vector");
 
       retval.resize (nr * nc);
-      int k = 0;
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      octave_idx_type k = 0;
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
 
@@ -1327,13 +1327,13 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nr == 1)
     {
       retval.resize (nc);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	{
 	  OCTAVE_QUIT;
 
@@ -1351,7 +1351,7 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
   else if (nc == 1)
     {
       retval.resize (nr);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 
@@ -1373,10 +1373,10 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
 	gripe_implicit_conversion (type_name (), "real vector");
 
       retval.resize (nr * nc);
-      int k = 0;
-      for (int j = 0; j < nc; j++)
+      octave_idx_type k = 0;
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
 	      OCTAVE_QUIT;
 
@@ -1412,13 +1412,13 @@ octave_value::complex_vector_value (bool force_string_conv,
   if (error_state)
     return retval;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nr == 1)
     {
       retval.resize (nc);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	{
 	  OCTAVE_QUIT;
 	  retval (i) = m (0, i);
@@ -1427,7 +1427,7 @@ octave_value::complex_vector_value (bool force_string_conv,
   else if (nc == 1)
     {
       retval.resize (nr);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
 	  retval (i) = m (i, 0);
@@ -1440,9 +1440,9 @@ octave_value::complex_vector_value (bool force_string_conv,
 	gripe_implicit_conversion (type_name (), "complex vector");
 
       retval.resize (nr * nc);
-      int k = 0;
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
+      octave_idx_type k = 0;
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
 	    retval (k++) = m (i, j);

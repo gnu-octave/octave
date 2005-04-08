@@ -33,13 +33,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqpf, DGEQPF) (const int&, const int&, double*,
-			     const int&, int*, double*, double*, int&);
+  F77_FUNC (dgeqpf, DGEQPF) (const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, octave_idx_type*, double*, double*, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (dorgqr, DORGQR) (const int&, const int&, const int&,
-			     double*, const int&, double*, double*,
-			     const int&, int&);
+  F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     double*, const octave_idx_type&, double*, double*,
+			     const octave_idx_type&, octave_idx_type&);
 }
 
 // It would be best to share some of this code with QR class...
@@ -55,8 +55,8 @@ QRP::init (const Matrix& a, QR::type qr_type)
 {
   assert (qr_type != QR::raw);
 
-  int m = a.rows ();
-  int n = a.cols ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = a.cols ();
 
   if (m == 0 || n == 0)
     {
@@ -64,15 +64,15 @@ QRP::init (const Matrix& a, QR::type qr_type)
       return;
     }
 
-  int min_mn = m < n ? m : n;
+  octave_idx_type min_mn = m < n ? m : n;
   Array<double> tau (min_mn);
   double *ptau = tau.fortran_vec ();
 
-  int lwork = 3*n > 32*m ? 3*n : 32*m;
+  octave_idx_type lwork = 3*n > 32*m ? 3*n : 32*m;
   Array<double> work (lwork);
   double *pwork = work.fortran_vec ();
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   Matrix A_fact = a;
   if (m > n && qr_type != QR::economy)
@@ -80,8 +80,8 @@ QRP::init (const Matrix& a, QR::type qr_type)
 
   double *tmp_data = A_fact.fortran_vec ();
 
-  Array<int> jpvt (n, 0);
-  int *pjpvt = jpvt.fortran_vec ();
+  Array<octave_idx_type> jpvt (n, 0);
+  octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
   // Code to enforce a certain permutation could go here...
 
@@ -97,27 +97,27 @@ QRP::init (const Matrix& a, QR::type qr_type)
       if (qr_type == QR::economy)
 	{
 	  p.resize (1, n, 0.0);
-	  for (int j = 0; j < n; j++)
+	  for (octave_idx_type j = 0; j < n; j++)
 	    p.elem (0, j) = jpvt.elem (j);
 	}
       else
 	{
 	  p.resize (n, n, 0.0);
-	  for (int j = 0; j < n; j++)
+	  for (octave_idx_type j = 0; j < n; j++)
 	    p.elem (jpvt.elem (j) - 1, j) = 1.0;
 	}
 
-      int n2 = (qr_type == QR::economy) ? min_mn : m;
+      octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
 
       if (qr_type == QR::economy && m > n)
 	r.resize (n, n, 0.0);
       else
 	r.resize (m, n, 0.0);
 
-      for (int j = 0; j < n; j++)
+      for (octave_idx_type j = 0; j < n; j++)
 	{
-	  int limit = j < min_mn-1 ? j : min_mn-1;
-	  for (int i = 0; i <= limit; i++)
+	  octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
+	  for (octave_idx_type i = 0; i <= limit; i++)
 	    r.elem (i, j) = A_fact.elem (i, j);
 	}
 

@@ -49,20 +49,20 @@ extern "C"
   F77_FUNC (dgenunf, DGENUNF) (const double&, const double&, double&);
 
   F77_RET_T
-  F77_FUNC (setall, SETALL) (const int&, const int&);
+  F77_FUNC (setall, SETALL) (const octave_idx_type&, const octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (getsd, GETSD) (int&, int&);
+  F77_FUNC (getsd, GETSD) (octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (setsd, SETSD) (const int&, const int&);
+  F77_FUNC (setsd, SETSD) (const octave_idx_type&, const octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (setcgn, SETCGN) (const int&);
+  F77_FUNC (setcgn, SETCGN) (const octave_idx_type&);
 }
 
-static int
-force_to_fit_range (int i, int lo, int hi)
+static octave_idx_type
+force_to_fit_range (octave_idx_type i, octave_idx_type lo, octave_idx_type hi)
 {
   assert (hi > lo && lo >= 0 && hi > lo);
 
@@ -90,8 +90,8 @@ do_initialization (void)
   int minute = tm.min() + 1;
   int second = tm.sec() + 1;
 
-  int s0 = tm.mday() * hour * minute * second;
-  int s1 = hour * minute * second;
+  octave_idx_type s0 = tm.mday() * hour * minute * second;
+  octave_idx_type s1 = hour * minute * second;
 
   s0 = force_to_fit_range (s0, 1, 2147483563);
   s1 = force_to_fit_range (s1, 1, 2147483399);
@@ -113,7 +113,7 @@ octave_rand::seed (void)
 {
   maybe_initialize ();
 
-  union d2i { double d; int i[2]; };
+  union d2i { double d; octave_idx_type i[2]; };
   union d2i u;
   F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
   return u.d;
@@ -124,7 +124,7 @@ octave_rand::seed (double s)
 {
   maybe_initialize ();
 
-  union d2i { double d; int i[2]; };
+  union d2i { double d; octave_idx_type i[2]; };
   union d2i u;
   u.d = s;
   int i0 = force_to_fit_range (u.i[0], 1, 2147483563);
@@ -208,8 +208,8 @@ octave_rand::scalar (void)
   do \
     { \
       double val; \
-      for (volatile int j = 0; j < nc; j++) \
-	for (volatile int i = 0; i < nr; i++) \
+      for (volatile octave_idx_type j = 0; j < nc; j++) \
+	for (volatile octave_idx_type i = 0; i < nr; i++) \
 	  { \
 	    OCTAVE_QUIT; \
 	    F77_FUNC (f, F) (0.0, 1.0, val); \
@@ -219,7 +219,7 @@ octave_rand::scalar (void)
   while (0)
 
 Matrix
-octave_rand::matrix (int n, int m)
+octave_rand::matrix (octave_idx_type n, octave_idx_type m)
 {
   maybe_initialize ();
 
@@ -257,7 +257,7 @@ octave_rand::matrix (int n, int m)
   do \
     { \
       double val; \
-      for (volatile int i = 0; i < len; i++) \
+      for (volatile octave_idx_type i = 0; i < len; i++) \
 	{ \
 	  OCTAVE_QUIT; \
 	  F77_FUNC (f, F) (0.0, 1.0, val); \
@@ -277,7 +277,7 @@ octave_rand::nd_array (const dim_vector& dims)
     {
       retval.resize (dims);
 
-      int len = retval.length ();
+      octave_idx_type len = retval.length ();
 
       switch (current_distribution)
 	{
@@ -302,7 +302,7 @@ octave_rand::nd_array (const dim_vector& dims)
   do \
     { \
       double val; \
-      for (volatile int i = 0; i < n; i++) \
+      for (volatile octave_idx_type i = 0; i < n; i++) \
 	{ \
 	  OCTAVE_QUIT; \
 	  F77_FUNC (f, F) (0.0, 1.0, val); \
@@ -312,7 +312,7 @@ octave_rand::nd_array (const dim_vector& dims)
   while (0)
 
 Array<double>
-octave_rand::vector (int n)
+octave_rand::vector (octave_idx_type n)
 {
   maybe_initialize ();
 

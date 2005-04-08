@@ -72,17 +72,16 @@ public:
   ComplexNDArray prod (int dim = -1) const;
   ComplexNDArray sum (int dim = -1) const;
   ComplexNDArray sumsq (int dim = -1) const;
-  ComplexNDArray concat (const ComplexNDArray& rb, const Array<int>& ra_idx);
-  ComplexNDArray concat (const NDArray& rb, const Array<int>& ra_idx);
+  ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  ComplexNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   ComplexNDArray max (int dim = 0) const;
-  ComplexNDArray max (ArrayN<int>& index, int dim = 0) const;
+  ComplexNDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
   ComplexNDArray min (int dim = 0) const;
-  ComplexNDArray min (ArrayN<int>& index, int dim = 0) const;
-
-  ComplexNDArray& insert (const NDArray& a, int r, int c);
-  ComplexNDArray& insert (const ComplexNDArray& a, int r, int c);
-  ComplexNDArray& insert (const ComplexNDArray& a, const Array<int>& ra_idx);
+  ComplexNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  ComplexNDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
+  ComplexNDArray& insert (const ComplexNDArray& a, octave_idx_type r, octave_idx_type c);
+  ComplexNDArray& insert (const ComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
   
   NDArray abs (void) const;
 
@@ -99,11 +98,11 @@ public:
 
   ComplexNDArray squeeze (void) const { return MArrayN<Complex>::squeeze (); }
 
-  static void increment_index (Array<int>& ra_idx,
+  static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension = 0);
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions);
 
   // i/o

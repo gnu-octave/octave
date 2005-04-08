@@ -49,7 +49,7 @@ public:
   // Derived classes must provide a function to actually do the
   // minimization.
 
-  virtual ColumnVector do_minimize (double& objf, int& inform,
+  virtual ColumnVector do_minimize (double& objf, octave_idx_type& inform,
 				    ColumnVector& lambda) = 0;
 
   // Lots of ways to call the single function and optionally set and
@@ -58,25 +58,25 @@ public:
   virtual ColumnVector minimize (void)
     {
       double objf;
-      int inform;
+      octave_idx_type inform;
       ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
   virtual ColumnVector minimize (double& objf)
     {
-      int inform;
+      octave_idx_type inform;
       ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
-  virtual ColumnVector minimize (double& objf, int& inform)
+  virtual ColumnVector minimize (double& objf, octave_idx_type& inform)
     {
       ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
-  virtual ColumnVector minimize (double& objf, int& inform,
+  virtual ColumnVector minimize (double& objf, octave_idx_type& inform,
 				 ColumnVector& lambda)
     {
       return do_minimize (objf, inform, lambda);
@@ -86,7 +86,7 @@ public:
     {
       x = x0;
       double objf;
-      int inform;
+      octave_idx_type inform;
       ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
@@ -94,13 +94,13 @@ public:
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf)
     {
       x = x0;
-      int inform;
+      octave_idx_type inform;
       ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf,
-				 int& inform)
+				 octave_idx_type& inform)
     {
       x = x0;
       ColumnVector lambda;
@@ -108,13 +108,13 @@ public:
     }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf,
-				 int& inform, ColumnVector& lambda)
+				 octave_idx_type& inform, ColumnVector& lambda)
     {
       x = x0;
       return do_minimize (objf, inform, lambda);
     }
 
-  int size (void) const { return x.capacity (); }
+  octave_idx_type size (void) const { return x.capacity (); }
 
 protected:
 

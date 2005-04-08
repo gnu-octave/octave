@@ -62,30 +62,30 @@ public:
 
   ColumnVector states (void) const { return x; }
 
-  int size (void) const { return x.capacity (); }
+  octave_idx_type size (void) const { return x.capacity (); }
 
   ColumnVector solve (void)
     {
-      int info;
+      octave_idx_type info;
       return solve (info);
     }
 
   ColumnVector solve (const ColumnVector& xvec)
     {
       set_states (xvec);
-      int info;
+      octave_idx_type info;
       return solve (info);
     }
 
-  ColumnVector solve (const ColumnVector& xvec, int& info)
+  ColumnVector solve (const ColumnVector& xvec, octave_idx_type& info)
     {
       set_states (xvec);
       return solve (info);
     }
 
-  ColumnVector solve (int& info);
+  ColumnVector solve (octave_idx_type& info);
 
-  int solution_state (void) const { return solution_status; }
+  octave_idx_type solution_state (void) const { return solution_status; }
 
   bool solution_ok (void) const { return solution_status == 1; }
 
@@ -94,7 +94,7 @@ public:
 private:
 
   ColumnVector x;
-  int solution_status;
+  octave_idx_type solution_status;
 
   void error (const char* msg);
 };

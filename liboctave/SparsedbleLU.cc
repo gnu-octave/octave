@@ -47,8 +47,8 @@ extern "C" {
 SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 {
 #ifdef HAVE_UMFPACK
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
@@ -85,8 +85,8 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 
   umfpack_di_report_control (control);
 
-  const int *Ap = a.cidx ();
-  const int *Ai = a.ridx ();
+  const octave_idx_type *Ap = a.cidx ();
+  const octave_idx_type *Ai = a.ridx ();
   const double *Ax = a.data ();
 
   umfpack_di_report_matrix (nr, nc, Ap, Ai, Ax, 1, control);
@@ -151,21 +151,25 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 	      int n_inner = (nr < nc ? nr : nc);
 
 	      if (lnz < 1)
-		Lfact = SparseMatrix (n_inner, nr, 1);
+		Lfact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nr,
+				      static_cast<octave_idx_type> (1));
 	      else
-		Lfact = SparseMatrix (n_inner, nr, lnz);
+		Lfact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nr,
+				      static_cast<octave_idx_type> (lnz));
 
-	      int *Ltp = Lfact.cidx ();
-	      int *Ltj = Lfact.ridx ();
+	      octave_idx_type *Ltp = Lfact.cidx ();
+	      octave_idx_type *Ltj = Lfact.ridx ();
 	      double *Ltx = Lfact.data ();
 
 	      if (unz < 1)
-		Ufact = SparseMatrix (n_inner, nc, 1);
+		Ufact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nc,
+				      static_cast<octave_idx_type> (1));
 	      else
-		Ufact = SparseMatrix (n_inner, nc, unz);
+		Ufact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nc,
+				      static_cast<octave_idx_type> (unz));
 
-	      int *Up = Ufact.cidx ();
-	      int *Uj = Ufact.ridx ();
+	      octave_idx_type *Up = Ufact.cidx ();
+	      octave_idx_type *Uj = Ufact.ridx ();
 	      double *Ux = Ufact.data ();
 
 	      P.resize (nr);
@@ -216,8 +220,8 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 		    double piv_thres, bool FixedQ)
 {
 #ifdef HAVE_UMFPACK
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
@@ -258,8 +262,8 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 
   umfpack_di_report_control (control);
 
-  const int *Ap = a.cidx ();
-  const int *Ai = a.ridx ();
+  const octave_idx_type *Ap = a.cidx ();
+  const octave_idx_type *Ai = a.ridx ();
   const double *Ax = a.data ();
 
   umfpack_di_report_matrix (nr, nc, Ap, Ai, Ax, 1, control);
@@ -334,21 +338,25 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 	      int n_inner = (nr < nc ? nr : nc);
 
 	      if (lnz < 1)
-		Lfact = SparseMatrix (n_inner, nr, 1);
+		Lfact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nr,
+				      static_cast<octave_idx_type> (1));
 	      else
-		Lfact = SparseMatrix (n_inner, nr, lnz);
+		Lfact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nr,
+				      static_cast<octave_idx_type> (lnz));
 
-	      int *Ltp = Lfact.cidx ();
-	      int *Ltj = Lfact.ridx ();
+	      octave_idx_type *Ltp = Lfact.cidx ();
+	      octave_idx_type *Ltj = Lfact.ridx ();
 	      double *Ltx = Lfact.data ();
 
 	      if (unz < 1)
-		Ufact = SparseMatrix (n_inner, nc, 1);
+		Ufact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nc,
+				      static_cast<octave_idx_type> (1));
 	      else
-		Ufact = SparseMatrix (n_inner, nc, unz);
+		Ufact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nc,
+				      static_cast<octave_idx_type> (unz));
 
-	      int *Up = Ufact.cidx ();
-	      int *Uj = Ufact.ridx ();
+	      octave_idx_type *Up = Ufact.cidx ();
+	      octave_idx_type *Uj = Ufact.ridx ();
 	      double *Ux = Ufact.data ();
 
 	      P.resize (nr);

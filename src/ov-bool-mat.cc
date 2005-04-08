@@ -76,8 +76,8 @@ octave_bool_matrix::try_narrowing_conversion (void)
     {
       boolMatrix bm = matrix.matrix_value ();
 
-      int nr = bm.rows ();
-      int nc = bm.cols ();
+      octave_idx_type nr = bm.rows ();
+      octave_idx_type nc = bm.cols ();
 
       if (nr == 1 && nc == 1)
 	retval = new octave_bool (bm (0, 0));
@@ -160,7 +160,7 @@ octave_bool_matrix::save_ascii (std::ostream& os, bool& /* infnan_warned */,
       NDArray tmp = array_value ();
       os << "# ndims: " << d.length () << "\n";
 
-      for (int i=0; i < d.length (); i++)
+      for (int i = 0; i < d.length (); i++)
 	os << " " << d (i);
 
       os << "\n" << tmp;
@@ -191,13 +191,13 @@ octave_bool_matrix::load_ascii (std::istream& is)
   keywords[1] = "rows";
 
   std::string kw;
-  int val = 0;
+  octave_idx_type val = 0;
 
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
 	{
-	  int mdims = val;
+	  int mdims = static_cast<int> (val);
 
 	  if (mdims >= 0)
 	    {
@@ -217,7 +217,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
 		}
 
 	      boolNDArray btmp (dv);
-	      for (int i = 0; i < btmp.nelem (); i++)
+	      for (octave_idx_type i = 0; i < btmp.nelem (); i++)
 		btmp.elem (i) = (tmp.elem (i) != 0.);
 
 	      matrix = btmp;
@@ -230,8 +230,8 @@ octave_bool_matrix::load_ascii (std::istream& is)
 	}
       else if (kw == "rows")
 	{
-	  int nr = val;
-	  int nc = 0;
+	  octave_idx_type nr = val;
+	  octave_idx_type nc = 0;
 
 	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
 	    {
@@ -245,9 +245,9 @@ octave_bool_matrix::load_ascii (std::istream& is)
 		      success = false;
 		    }
 
-		  boolMatrix btmp (nr,nc);
-		  for (int j = 0; j < nc; j++)
-		    for (int i = 0; i < nr; i++)
+		  boolMatrix btmp (nr, nc);
+		  for (octave_idx_type j = 0; j < nc; j++)
+		    for (octave_idx_type i = 0; i < nr; i++)
 		      btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
 
 		  matrix = btmp;
@@ -286,7 +286,7 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
   // Use negative value for ndims to differentiate with old format!!
   FOUR_BYTE_INT tmp = - d.length();
   os.write (X_CAST (char *, &tmp), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i = 0; i < d.length (); i++)
     {
       tmp = d(i);
       os.write (X_CAST (char *, &tmp), 4);
@@ -294,10 +294,10 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
   boolNDArray m = bool_array_value ();
   bool *mtmp = m.fortran_vec ();
-  int nel = m.nelem ();
+  octave_idx_type nel = m.nelem ();
   OCTAVE_LOCAL_BUFFER (char, htmp, nel);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     htmp[i] = (mtmp[i] ? 1 : 0);
 
   os.write (htmp, nel);
@@ -346,13 +346,13 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
       dv(0) = 1;
     }
 
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (char, htmp, nel);
   if (! is.read (htmp, nel))
     return false;
   boolNDArray m(dv);
   bool *mtmp = m.fortran_vec ();
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     mtmp[i] = (htmp[i] ? 1 : 0);
   matrix = m;
 
@@ -392,11 +392,11 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-  int nel = m.nelem ();
+  octave_idx_type nel = m.nelem ();
   bool *mtmp = m.fortran_vec ();
   hbool_t htmp[nel];
   
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     htmp[i] = mtmp[i];
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
@@ -451,7 +451,7 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 	dv(j) = hdims[i];
     }
 
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   hbool_t htmp[nel];
   if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, 
 	       H5P_DEFAULT, htmp) >= 0) 
@@ -459,7 +459,7 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
       retval = true;
 
       boolNDArray btmp (dv);
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	  btmp.elem (i) = htmp[i];
 
       matrix = btmp;

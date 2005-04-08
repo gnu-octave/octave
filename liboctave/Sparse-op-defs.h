@@ -45,13 +45,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   R \
   F (const M& m, const S& s) \
   { \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     R r (nr, nc, (0.0 OP s)); \
  \
-    for (int j = 0; j < nc; j++) \
-      for (int i = m.cidx (j); i < m.cidx (j+1); i++) \
+    for (octave_idx_type j = 0; j < nc; j++) \
+      for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
         r.elem (m.ridx (i), j) = m.data (i) OP s; \
     return r; \
   }
@@ -60,18 +60,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   R \
   F (const M& m, const S& s) \
   { \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
-    int nz = m.nnz (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
+    octave_idx_type nz = m.nnz (); \
  \
     R r (nr, nc, nz); \
  \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       { \
 	r.data(i) = m.data(i) OP s; \
 	r.ridx(i) = m.ridx(i); \
       } \
-    for (int i = 0; i < nc + 1; i++) \
+    for (octave_idx_type i = 0; i < nc + 1; i++) \
       r.cidx(i) = m.cidx(i); \
     \
     r.maybe_compress (true); \
@@ -101,27 +101,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   F (const M& m, const S& s) \
   { \
     /* Count num of non-zero elements */ \
-    int nel = 0; \
-    int nz = m.nnz (); \
+    octave_idx_type nel = 0; \
+    octave_idx_type nz = m.nnz (); \
     if (MC (MZ) OP SC (s))   \
       nel += m.numel() - nz; \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       if (MC (m.data (i)) OP SC (s)) \
         nel++;	\
     \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
     SparseBoolMatrix r (nr, nc, nel); \
     \
     if (nr > 0 && nc > 0) \
       { \
 	if (MC (MZ) OP SC (s))	\
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = 0; i < nr; i++) \
+		for (octave_idx_type i = 0; i < nr; i++) \
 		  { \
 		    bool el =  MC (m.elem(i, j)) OP SC (s); \
 		    if (el) \
@@ -135,11 +135,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  } \
 	else \
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = m.cidx(j); i < m.cidx(j+1); i++) \
+		for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
 		  { \
 		    bool el =  MC (m.data(i)) OP SC (s); \
 		    if (el) \
@@ -176,27 +176,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   F (const M& m, const S& s) \
   { \
     /* Count num of non-zero elements */ \
-    int nel = 0; \
-    int nz = m.nnz (); \
+    octave_idx_type nel = 0; \
+    octave_idx_type nz = m.nnz (); \
     if (LHS_ZERO OP (s != RHS_ZERO)) \
       nel += m.numel() - nz; \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       if ((m.data(i) != LHS_ZERO) OP (s != RHS_ZERO))\
         nel++;	\
     \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
     SparseBoolMatrix r (nr, nc, nel); \
     \
     if (nr > 0 && nc > 0) \
       { \
 	if (LHS_ZERO OP (s != RHS_ZERO)) \
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = 0; i < nr; i++) \
+		for (octave_idx_type i = 0; i < nr; i++) \
 		  { \
 		    bool el = (m.elem(i, j) != LHS_ZERO) OP (s != RHS_ZERO); \
 		    if (el) \
@@ -210,11 +210,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  } \
 	else \
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = m.cidx(j); i < m.cidx(j+1); i++) \
+		for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
 		  { \
 		    bool el = (m.data(i) != LHS_ZERO) OP (s != RHS_ZERO); \
 		    if (el) \
@@ -254,13 +254,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   R \
   F (const S& s, const M& m) \
   { \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
  \
     R r (nr, nc, (s OP 0.0)); \
  \
-    for (int j = 0; j < nc; j++) \
-      for (int i = m.cidx (j); i < m.cidx (j+1); i++) \
+    for (octave_idx_type j = 0; j < nc; j++) \
+      for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
         r.elem (m.ridx (i), j) = s OP m.data (i); \
  \
     return r; \
@@ -270,18 +270,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   R \
   F (const S& s, const M& m) \
   { \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
-    int nz = m.nnz (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
+    octave_idx_type nz = m.nnz (); \
  \
     R r (nr, nc, nz); \
  \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       { \
 	r.data(i) = s OP m.data(i); \
 	r.ridx(i) = m.ridx(i); \
       } \
-    for (int i = 0; i < nc + 1; i++) \
+    for (octave_idx_type i = 0; i < nc + 1; i++) \
       r.cidx(i) = m.cidx(i); \
  \
     r.maybe_compress(true); \
@@ -311,27 +311,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   F (const S& s, const M& m) \
   { \
     /* Count num of non-zero elements */ \
-    int nel = 0; \
-    int nz = m.nnz (); \
+    octave_idx_type nel = 0; \
+    octave_idx_type nz = m.nnz (); \
     if (SC (s) OP MC (MZ))   \
       nel += m.numel() - nz; \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       if (SC (s) OP MC (m.data (i))) \
         nel++;	\
     \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
     SparseBoolMatrix r (nr, nc, nel); \
     \
     if (nr > 0 && nc > 0) \
       { \
 	if (SC (s) OP MC (MZ))\
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = 0; i < nr; i++) \
+		for (octave_idx_type i = 0; i < nr; i++) \
 		  { \
 		    bool el = SC (s) OP MC (m.elem(i, j)); \
 		    if (el) \
@@ -345,11 +345,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  } \
 	else \
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = m.cidx(j); i < m.cidx(j+1); i++) \
+		for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
 		  { \
 		    bool el =  SC (s) OP MC (m.data(i)); \
 		    if (el) \
@@ -386,27 +386,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   F (const S& s, const M& m) \
   { \
     /* Count num of non-zero elements */ \
-    int nel = 0; \
-    int nz = m.nnz (); \
+    octave_idx_type nel = 0; \
+    octave_idx_type nz = m.nnz (); \
     if ((s != LHS_ZERO) OP  RHS_ZERO) \
       nel += m.numel() - nz; \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       if ((s != LHS_ZERO) OP m.data(i) != RHS_ZERO) \
         nel++;	\
     \
-    int nr = m.rows (); \
-    int nc = m.cols (); \
+    octave_idx_type nr = m.rows (); \
+    octave_idx_type nc = m.cols (); \
     SparseBoolMatrix r (nr, nc, nel); \
     \
     if (nr > 0 && nc > 0) \
       { \
 	if ((s != LHS_ZERO) OP RHS_ZERO) \
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = 0; i < nr; i++) \
+		for (octave_idx_type i = 0; i < nr; i++) \
 		  { \
 		    bool el = (s != LHS_ZERO) OP (m.elem(i, j) != RHS_ZERO); \
 		    if (el) \
@@ -420,11 +420,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  } \
 	else \
 	  { \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < nc; j++) \
+	    for (octave_idx_type j = 0; j < nc; j++) \
 	      { \
-		for (int i = m.cidx(j); i < m.cidx(j+1); i++) \
+		for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
 		  { \
 		    bool el = (s != LHS_ZERO) OP (m.data(i) != RHS_ZERO); \
 		    if (el) \
@@ -466,11 +466,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -478,16 +478,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       { \
 	r = R (m1_nr, m1_nc, (m1.nnz () + m2.nnz ())); \
         \
-        int jx = 0; \
+        octave_idx_type jx = 0; \
         r.cidx (0) = 0; \
-        for (int i = 0 ; i < m1_nc ; i++) \
+        for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            int  ja = m1.cidx(i); \
-            int  ja_max = m1.cidx(i+1); \
+            octave_idx_type  ja = m1.cidx(i); \
+            octave_idx_type  ja_max = m1.cidx(i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            int  jb = m2.cidx(i); \
-            int  jb_max = m2.cidx(i+1); \
+            octave_idx_type  jb = m2.cidx(i); \
+            octave_idx_type  jb_max = m2.cidx(i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
@@ -540,11 +540,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -552,16 +552,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       { \
         r = R (m1_nr, m1_nc, (m1.nnz () > m2.nnz () ? m1.nnz () : m2.nnz ())); \
         \
-        int jx = 0; \
+        octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \
-        for (int i = 0 ; i < m1_nc ; i++) \
+        for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            int  ja = m1.cidx(i); \
-            int  ja_max = m1.cidx(i+1); \
+            octave_idx_type  ja = m1.cidx(i); \
+            octave_idx_type  ja_max = m1.cidx(i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            int  jb = m2.cidx(i); \
-            int  jb_max = m2.cidx(i+1); \
+            octave_idx_type  jb = m2.cidx(i); \
+            octave_idx_type  jb_max = m2.cidx(i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
@@ -604,11 +604,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -618,14 +618,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         /* XXX FIXME XXX Kludge... Always double/Complex, so Complex () */ \
         r = R (m1_nr, m1_nc, (Complex () OP Complex ())); \
         \
-        for (int i = 0 ; i < m1_nc ; i++) \
+        for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            int  ja = m1.cidx(i); \
-            int  ja_max = m1.cidx(i+1); \
+            octave_idx_type  ja = m1.cidx(i); \
+            octave_idx_type  ja_max = m1.cidx(i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            int  jb = m2.cidx(i); \
-            int  jb_max = m2.cidx(i+1); \
+            octave_idx_type  jb = m2.cidx(i); \
+            octave_idx_type  jb_max = m2.cidx(i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
@@ -691,30 +691,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     SparseBoolMatrix r; \
     \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
     \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
 	    /* Count num of non-zero elements */ \
-	    int nel = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if (C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j))) \
 		  nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
             \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
 	      { \
-	        for (int i = 0; i < m1_nr; i++) \
+	        for (octave_idx_type i = 0; i < m1_nr; i++) \
 		  { \
 		    bool el = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
 		    if (el) \
@@ -757,31 +757,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     SparseBoolMatrix r; \
     \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
     \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
 	    /* Count num of non-zero elements */ \
-	    int nel = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if ((m1.elem(i, j) != LHS_ZERO) \
 		    OP (m2.elem(i, j) != RHS_ZERO)) \
 		  nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
             \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
 	      { \
-	        for (int i = 0; i < m1_nr; i++) \
+	        for (octave_idx_type i = 0; i < m1_nr; i++) \
 		  { \
 		    bool el = (m1.elem(i, j) != LHS_ZERO) \
 		      OP (m2.elem(i, j) != RHS_ZERO);	  \
@@ -829,11 +829,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -841,8 +841,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       { \
         r = R (m1_nr, m1_nc); \
         \
-        for (int j = 0; j < m1_nc; j++) \
-	  for (int i = 0; i < m1_nr; i++) \
+        for (octave_idx_type j = 0; j < m1_nc; j++) \
+	  for (octave_idx_type i = 0; i < m1_nr; i++) \
 	    r.elem (i, j) = m1.elem (i, j) OP m2.elem (i, j); \
       } \
     return r; \
@@ -854,30 +854,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
 	/* Count num of non-zero elements */ \
-	int nel = 0; \
-	for (int j = 0; j < m1_nc; j++) \
-	  for (int i = 0; i < m1_nr; i++) \
+	octave_idx_type nel = 0; \
+	for (octave_idx_type j = 0; j < m1_nc; j++) \
+	  for (octave_idx_type i = 0; i < m1_nr; i++) \
 	    if ((m1.elem(i, j) OP m2.elem(i, j)) != ZERO) \
 	      nel++; \
 	\
         r = R (m1_nr, m1_nc, nel); \
         \
-	int ii = 0; \
+	octave_idx_type ii = 0; \
 	r.cidx (0) = 0; \
-        for (int j = 0 ; j < m1_nc ; j++) \
+        for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
           { \
-	    for (int i = 0 ; i < m1_nr ; i++)	\
+	    for (octave_idx_type i = 0 ; i < m1_nr ; i++)	\
 	      {	\
 	        if ((m1.elem(i, j) OP m2.elem(i, j)) != ZERO) \
 		  { \
@@ -917,30 +917,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     SparseBoolMatrix r; \
     \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
     \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
 	    /* Count num of non-zero elements */ \
-	    int nel = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if (C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j))) \
 		  nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
             \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
 	      { \
-	        for (int i = 0; i < m1_nr; i++) \
+	        for (octave_idx_type i = 0; i < m1_nr; i++) \
 		  { \
 		    bool el = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
 		    if (el) \
@@ -983,31 +983,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     SparseBoolMatrix r; \
     \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
     \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
 	    /* Count num of non-zero elements */ \
-	    int nel = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if ((m1.elem(i, j) != LHS_ZERO) \
 		    OP (m2.elem(i, j) != RHS_ZERO)) \
 		  nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
             \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
 	      { \
-	        for (int i = 0; i < m1_nr; i++) \
+	        for (octave_idx_type i = 0; i < m1_nr; i++) \
 		  { \
 		    bool el = (m1.elem(i, j) != LHS_ZERO) \
 		      OP (m2.elem(i, j) != RHS_ZERO);	  \
@@ -1055,11 +1055,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -1067,8 +1067,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       { \
         r = R (m1_nr, m1_nc); \
         \
-        for (int j = 0; j < m1_nc; j++) \
-	  for (int i = 0; i < m1_nr; i++) \
+        for (octave_idx_type j = 0; j < m1_nc; j++) \
+	  for (octave_idx_type i = 0; i < m1_nr; i++) \
 	    r.elem (i, j) = m1.elem (i, j) OP m2.elem (i, j); \
       } \
     return r; \
@@ -1080,30 +1080,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     R r; \
  \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
  \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
 	/* Count num of non-zero elements */ \
-	int nel = 0; \
-	for (int j = 0; j < m1_nc; j++) \
-	  for (int i = 0; i < m1_nr; i++) \
+	octave_idx_type nel = 0; \
+	for (octave_idx_type j = 0; j < m1_nc; j++) \
+	  for (octave_idx_type i = 0; i < m1_nr; i++) \
 	    if ((m1.elem(i, j) OP m2.elem(i, j)) != ZERO) \
 	      nel++; \
 	\
         r = R (m1_nr, m1_nc, nel); \
         \
-	int ii = 0; \
+	octave_idx_type ii = 0; \
 	r.cidx (0) = 0; \
-        for (int j = 0 ; j < m1_nc ; j++) \
+        for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
           { \
-	    for (int i = 0 ; i < m1_nr ; i++)	\
+	    for (octave_idx_type i = 0 ; i < m1_nr ; i++)	\
 	      {	\
 	        if ((m1.elem(i, j) OP m2.elem(i, j)) != ZERO) \
 		  { \
@@ -1143,30 +1143,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     SparseBoolMatrix r; \
     \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
     \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
 	    /* Count num of non-zero elements */ \
-	    int nel = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if (C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j))) \
 		  nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
             \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
 	      { \
-	        for (int i = 0; i < m1_nr; i++) \
+	        for (octave_idx_type i = 0; i < m1_nr; i++) \
 		  { \
 		    bool el = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
 		    if (el) \
@@ -1209,31 +1209,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   { \
     SparseBoolMatrix r; \
     \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
+    octave_idx_type m1_nr = m1.rows (); \
+    octave_idx_type m1_nc = m1.cols (); \
     \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
+    octave_idx_type m2_nr = m2.rows (); \
+    octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
 	    /* Count num of non-zero elements */ \
-	    int nel = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
-	      for (int i = 0; i < m1_nr; i++) \
+	    octave_idx_type nel = 0; \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
+	      for (octave_idx_type i = 0; i < m1_nr; i++) \
 		if ((m1.elem(i, j) != LHS_ZERO) \
 		    OP (m2.elem(i, j) != RHS_ZERO)) \
 		  nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
             \
-	    int ii = 0; \
+	    octave_idx_type ii = 0; \
 	    r.cidx (0) = 0; \
-	    for (int j = 0; j < m1_nc; j++) \
+	    for (octave_idx_type j = 0; j < m1_nc; j++) \
 	      { \
-	        for (int i = 0; i < m1_nr; i++) \
+	        for (octave_idx_type i = 0; i < m1_nr; i++) \
 		  { \
 		    bool el = (m1.elem(i, j) != LHS_ZERO) \
 		      OP (m2.elem(i, j) != RHS_ZERO);	  \
@@ -1271,8 +1271,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define SPARSE_CUMSUM(RET_TYPE, ELT_TYPE, FCN)	\
  \
-  int nr = rows (); \
-  int nc = cols (); \
+  octave_idx_type nr = rows (); \
+  octave_idx_type nc = cols (); \
  \
   RET_TYPE retval; \
  \
@@ -1283,11 +1283,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         retval = transpose (). FCN (0) .transpose (); \
       else \
 	{ \
-          int nel = 0; \
-	  for (int i = 0; i < nc; i++) \
+          octave_idx_type nel = 0; \
+	  for (octave_idx_type i = 0; i < nc; i++) \
             { \
               ELT_TYPE t = ELT_TYPE (); \
-	      for (int j = cidx (i); j < cidx (i+1); j++)	\
+	      for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)	\
                 { \
                   t += data(j); \
                   if (t != ELT_TYPE ()) \
@@ -1299,18 +1299,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	    } \
 	  retval = RET_TYPE (nr, nc, nel); \
           retval.cidx(0) = 0; \
-	  int ii = 0; \
-	  for (int i = 0; i < nc; i++) \
+	  octave_idx_type ii = 0; \
+	  for (octave_idx_type i = 0; i < nc; i++) \
             { \
               ELT_TYPE t = ELT_TYPE (); \
-	      for (int j = cidx (i); j < cidx (i+1); j++)	\
+	      for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)	\
                 { \
                   t += data(j); \
                   if (t != ELT_TYPE ()) \
                     { \
                       if (j == cidx(i+1) - 1) \
                         { \
-                          for (int k = ridx(j); k < nr; k++) \
+                          for (octave_idx_type k = ridx(j); k < nr; k++) \
                             { \
                                retval.data (ii) = t; \
                                retval.ridx (ii++) = k; \
@@ -1318,7 +1318,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         } \
 		      else \
 			{ \
-                          for (int k = ridx(j); k < ridx(j+1); k++) \
+                          for (octave_idx_type k = ridx(j); k < ridx(j+1); k++) \
                             { \
                                retval.data (ii) = t; \
                                retval.ridx (ii++) = k; \
@@ -1338,8 +1338,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define SPARSE_CUMPROD(RET_TYPE, ELT_TYPE, FCN)	\
  \
-  int nr = rows (); \
-  int nc = cols (); \
+  octave_idx_type nr = rows (); \
+  octave_idx_type nc = cols (); \
  \
   RET_TYPE retval; \
  \
@@ -1350,11 +1350,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         retval = transpose (). FCN (0) .transpose (); \
       else \
 	{ \
-          int nel = 0; \
-	  for (int i = 0; i < nc; i++) \
+          octave_idx_type nel = 0; \
+	  for (octave_idx_type i = 0; i < nc; i++) \
             { \
-	      int jj = 0; \
-	      for (int j = cidx (i); j < cidx (i+1); j++) \
+	      octave_idx_type jj = 0; \
+	      for (octave_idx_type j = cidx (i); j < cidx (i+1); j++) \
                 { \
 		  if (jj == ridx(j)) \
                     { \
@@ -1367,12 +1367,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	    } \
 	  retval = RET_TYPE (nr, nc, nel); \
           retval.cidx(0) = 0; \
-	  int ii = 0; \
-	  for (int i = 0; i < nc; i++) \
+	  octave_idx_type ii = 0; \
+	  for (octave_idx_type i = 0; i < nc; i++) \
             { \
               ELT_TYPE t = ELT_TYPE (1.); \
-	      int jj = 0; \
-	      for (int j = cidx (i); j < cidx (i+1); j++) \
+	      octave_idx_type jj = 0; \
+	      for (octave_idx_type j = cidx (i); j < cidx (i+1); j++) \
                 { \
 		  if (jj == ridx(j)) \
                     { \
@@ -1395,8 +1395,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SPARSE_BASE_REDUCTION_OP(RET_TYPE, EL_TYPE, ROW_EXPR, COL_EXPR, \
 			         INIT_VAL, MT_RESULT) \
  \
-  int nr = rows (); \
-  int nc = cols (); \
+  octave_idx_type nr = rows (); \
+  octave_idx_type nc = cols (); \
  \
   RET_TYPE retval; \
  \
@@ -1406,23 +1406,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	{ \
 	  OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nr); \
           \
-	  for (int i = 0; i < nr; i++) \
+	  for (octave_idx_type i = 0; i < nr; i++) \
 	    { \
 	      tmp[i] = INIT_VAL; \
-	      for (int j = 0; j < nc; j++) \
+	      for (octave_idx_type j = 0; j < nc; j++) \
 		{ \
 		  ROW_EXPR; \
 		} \
 	    } \
-	  int nel = 0; \
-	  for (int i = 0; i < nr; i++) \
+	  octave_idx_type nel = 0; \
+	  for (octave_idx_type i = 0; i < nr; i++) \
 	    if (tmp[i] != EL_TYPE ())  \
 	      nel++ ; \
-	  retval = RET_TYPE (nr, 1, nel); \
+	  retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nel); \
 	  retval.cidx(0) = 0; \
 	  retval.cidx(1) = nel; \
 	  nel = 0; \
-	  for (int i = 0; i < nr; i++) \
+	  for (octave_idx_type i = 0; i < nr; i++) \
 	    if (tmp[i] != EL_TYPE ())  \
 	      { \
 		retval.data(nel) = tmp[i]; \
@@ -1433,22 +1433,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	{ \
 	  OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nc); \
           \
-	  for (int j = 0; j < nc; j++) \
+	  for (octave_idx_type j = 0; j < nc; j++) \
 	    { \
 	      tmp[j] = INIT_VAL; \
-	      for (int i = 0; i < nr; i++) \
+	      for (octave_idx_type i = 0; i < nr; i++) \
 		{ \
 		  COL_EXPR; \
 		} \
 	    } \
-	  int nel = 0; \
-	  for (int i = 0; i < nc; i++) \
+	  octave_idx_type nel = 0; \
+	  for (octave_idx_type i = 0; i < nc; i++) \
 	    if (tmp[i] != EL_TYPE ())  \
 	      nel++ ; \
-	  retval = RET_TYPE (1, nc, nel); \
+	  retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nel); \
 	  retval.cidx(0) = 0; \
 	  nel = 0; \
-	  for (int i = 0; i < nc; i++) \
+	  for (octave_idx_type i = 0; i < nc; i++) \
 	    if (tmp[i] != EL_TYPE ())  \
 	      { \
 		retval.data(nel) = tmp[i]; \
@@ -1461,7 +1461,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1))) \
     { \
-      retval = RET_TYPE (1, 1, 1); \
+      retval = RET_TYPE (static_cast<octave_idx_type> (1), \
+                         static_cast<octave_idx_type> (1), \
+                         static_cast<octave_idx_type> (1)); \
       retval.cidx(0) = 0; \
       retval.cidx(1) = 1; \
       retval.ridx(0) = 0; \
@@ -1469,9 +1471,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   else if (nr == 0 && (dim == 0 || dim == -1)) \
     { \
-      retval = RET_TYPE (1, nc, nc); \
+      retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nc); \
       retval.cidx (0) = 0; \
-      for (int i = 0; i < nc ; i++) \
+      for (octave_idx_type i = 0; i < nc ; i++) \
         { \
           retval.ridx (i) = 0; \
           retval.cidx (i+1) = i; \
@@ -1480,10 +1482,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   else if (nc == 0 && dim == 1) \
     { \
-      retval = RET_TYPE (nr, 1, nr); \
+      retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nr); \
       retval.cidx(0) = 0; \
       retval.cidx(1) = nr; \
-      for (int i = 0; i < nr; i++) \
+      for (octave_idx_type i = 0; i < nr; i++) \
 	{ \
 	  retval.ridx(i) = i; \
 	  retval.data(i) = MT_RESULT; \
@@ -1531,11 +1533,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SPARSE_ANY_OP(DIM) SPARSE_ANY_ALL_OP (DIM, false, !=, true)
 
 #define SPARSE_SPARSE_MUL( RET_TYPE, EL_TYPE ) \
-  int nr = m.rows (); \
-  int nc = m.cols (); \
+  octave_idx_type nr = m.rows (); \
+  octave_idx_type nc = m.cols (); \
   \
-  int a_nr = a.rows (); \
-  int a_nc = a.cols (); \
+  octave_idx_type a_nr = a.rows (); \
+  octave_idx_type a_nc = a.cols (); \
   \
   if (nc != a_nr) \
     { \
@@ -1546,17 +1548,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     { \
       OCTAVE_LOCAL_BUFFER (EL_TYPE, Xcol, nr); \
       \
-      int nel = 0; \
+      octave_idx_type nel = 0; \
       \
-      for (int i = 0; i < a_nc; i++) \
+      for (octave_idx_type i = 0; i < a_nc; i++) \
         { \
           OCTAVE_QUIT; \
-          for (int k = 0; k < nr; k++) \
+          for (octave_idx_type k = 0; k < nr; k++) \
 	    Xcol[k]= 0.; \
-          for (int j = a.cidx(i); j < a.cidx(i+1); j++) \
+          for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
             { \
-              int  col = a.ridx(j); \
-              for (int k = m.cidx(col) ; k < m.cidx(col+1); k++) \
+              octave_idx_type  col = a.ridx(j); \
+              for (octave_idx_type k = m.cidx(col) ; k < m.cidx(col+1); k++) \
 		if (Xcol[m.ridx(k)] == 0.) \
                   { \
 		    Xcol[m.ridx(k)] = 1.; \
@@ -1571,22 +1573,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	{  \
 	  RET_TYPE retval (nr, a_nc, nel); \
 	  \
-	  int ii = 0; \
+	  octave_idx_type ii = 0; \
 	  \
 	  retval.cidx(0) = 0; \
-	  for (int i = 0; i < a_nc ; i++) \
+	  for (octave_idx_type i = 0; i < a_nc ; i++) \
 	    { \
               OCTAVE_QUIT; \
-	      for (int k = 0; k < nr; k++) \
+	      for (octave_idx_type k = 0; k < nr; k++) \
 		Xcol[k]= 0.; \
-	      for (int j = a.cidx(i); j < a.cidx(i+1); j++) \
+	      for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
 		{ \
-                  int col = a.ridx(j); \
+                  octave_idx_type col = a.ridx(j); \
                   EL_TYPE tmpval = a.data(j); \
-		  for (int k = m.cidx(col) ; k < m.cidx(col+1); k++) \
+		  for (octave_idx_type k = m.cidx(col) ; k < m.cidx(col+1); k++) \
 		    Xcol[m.ridx(k)] += tmpval * m.data(k); \
 		} \
-	      for (int k = 0; k < nr; k++) \
+	      for (octave_idx_type k = 0; k < nr; k++) \
 		{ \
 		  if (Xcol[k] !=0. ) \
 		    { \

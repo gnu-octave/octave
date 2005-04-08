@@ -204,7 +204,7 @@ public:
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
   int write (octave_stream& os, int block_size,
-	     oct_data_conv::data_type output_type, int skip,
+	     oct_data_conv::data_type output_type, octave_idx_type skip,
 	     oct_mach_info::float_format flt_fmt) const
     {
       return os.write (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (),

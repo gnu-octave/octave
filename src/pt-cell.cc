@@ -46,8 +46,8 @@ tree_cell::rvalue (void)
 
   MAYBE_DO_BREAKPOINT;
 
-  int nr = length ();
-  int nc = -1;
+  octave_idx_type nr = length ();
+  octave_idx_type nc = -1;
 
   Cell val;
 
@@ -67,7 +67,7 @@ tree_cell::rvalue (void)
 	}
       else
 	{
-	  int this_nc = row.length ();
+	  octave_idx_type this_nc = row.length ();
 
 	  if (nc != this_nc)
 	    {
@@ -76,7 +76,7 @@ tree_cell::rvalue (void)
 	    }
 	}
 
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	val(i,j) = row(j);
 
       i++;

@@ -64,21 +64,21 @@ public:
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  charNDArray concat (const charNDArray& rb, const Array<int>& ra_idx);
-  charNDArray concat (const NDArray& rb, const Array<int>& ra_idx);
+  charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  charNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  charNDArray& insert (const charNDArray& a, int r, int c);
-  charNDArray& insert (const charNDArray& a, const Array<int>& ra_idx);
+  charNDArray& insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);
+  charNDArray& insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
   
   charMatrix matrix_value (void) const;
 
   charNDArray squeeze (void) const { return ArrayN<char>::squeeze (); }
 
-  static void increment_index (Array<int>& ra_idx,
+  static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension = 0);
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions);
 
   // i/o

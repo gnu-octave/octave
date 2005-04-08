@@ -125,7 +125,7 @@ DEFCONSTFUN (__end__, , ,
 	{
 	case -1:
 	  {
-	    int numel = dv.numel ();
+	    octave_idx_type numel = dv.numel ();
 
 	    if (numel < 0)
 	      {

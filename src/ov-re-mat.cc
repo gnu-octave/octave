@@ -152,9 +152,9 @@ octave_matrix::char_array_value (bool) const
 {
   charNDArray retval (dims ());
 
-  int nel = numel ();
+  octave_idx_type nel = numel ();
   
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     retval.elem (i) = static_cast<char>(matrix.elem (i));
 
   return retval;
@@ -180,9 +180,9 @@ octave_matrix::streamoff_array_value (void) const
 {
   streamoff_array retval (dims ());
 
-  int nel = numel ();
+  octave_idx_type nel = numel ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       double d = matrix(i);
 
@@ -216,7 +216,7 @@ octave_matrix::convert_to_str_internal (bool, bool) const
 	  
       bool warned = false;
 
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	{
 	  OCTAVE_QUIT;
 
@@ -258,15 +258,15 @@ octave_matrix::convert_to_str_internal (bool, bool) const
 static Matrix
 strip_infnan (const Matrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   Matrix retval (nr, nc);
 
-  int k = 0;
-  for (int i = 0; i < nr; i++)
+  octave_idx_type k = 0;
+  for (octave_idx_type i = 0; i < nr; i++)
     {
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
 	  double d = m (i, j);
 	  if (xisnan (d))
@@ -348,13 +348,13 @@ octave_matrix::load_ascii (std::istream& is)
   keywords[1] = "rows";
 
   std::string kw;
-  int val = 0;
+  octave_idx_type val = 0;
 
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
 	{
-	  int mdims = val;
+	  int mdims = static_cast<int> (val);
 
 	  if (mdims >= 0)
 	    {
@@ -382,8 +382,8 @@ octave_matrix::load_ascii (std::istream& is)
 	}
       else if (kw == "rows")
 	{
-	  int nr = val;
-	  int nc = 0;
+	  octave_idx_type nr = val;
+	  octave_idx_type nc = 0;
 
 	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
 	    {
@@ -433,7 +433,7 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   // Use negative value for ndims to differentiate with old format!!
   FOUR_BYTE_INT tmp = - d.length();
   os.write (X_CAST (char *, &tmp), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i = 0; i < d.length (); i++)
     {
       tmp = d(i);
       os.write (X_CAST (char *, &tmp), 4);
@@ -524,7 +524,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 	return false;
       Matrix m (nr, nc);
       double *re = m.fortran_vec ();
-      int len = nr * nc;
+      octave_idx_type len = nr * nc;
       read_doubles (is, re, X_CAST (save_type, tmp), len, swap, fmt);
       if (error_state || ! is)
 	return false;

@@ -40,13 +40,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const int&, const int&, const double&,
-			   const double*, const int&, const double*,
-			   const int&, const double&, double*, const int&
+			   const octave_idx_type&, const octave_idx_type&, const double&,
+			   const double*, const octave_idx_type&, const double*,
+			   const octave_idx_type&, const double&, double*, const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL);
 
-  double F77_FUNC (ddot, DDOT) (const int&, const double*, const int&,
-				const double*, const int&);
+  double F77_FUNC (ddot, DDOT) (const octave_idx_type&, const double*, const octave_idx_type&,
+				const double*, const octave_idx_type&);
 }
 
 // Row Vector class.
@@ -54,7 +54,7 @@ extern "C"
 bool
 RowVector::operator == (const RowVector& a) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (len != a.length ())
     return 0;
   return mx_inline_equal (data (), a.data (), len);
@@ -67,9 +67,9 @@ RowVector::operator != (const RowVector& a) const
 }
 
 RowVector&
-RowVector::insert (const RowVector& a, int c)
+RowVector::insert (const RowVector& a, octave_idx_type c)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (c < 0 || c + a_len > length ())
     {
@@ -81,7 +81,7 @@ RowVector::insert (const RowVector& a, int c)
     {
       make_unique ();
 
-      for (int i = 0; i < a_len; i++)
+      for (octave_idx_type i = 0; i < a_len; i++)
 	xelem (c+i) = a.elem (i);
     }
 
@@ -91,13 +91,13 @@ RowVector::insert (const RowVector& a, int c)
 RowVector&
 RowVector::fill (double val)
 {
-  int len = length ();
+  octave_idx_type len = length ();
 
   if (len > 0)
     {
       make_unique ();
 
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
 	xelem (i) = val;
     }
 
@@ -105,9 +105,9 @@ RowVector::fill (double val)
 }
 
 RowVector&
-RowVector::fill (double val, int c1, int c2)
+RowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 {
-  int len = length ();
+  octave_idx_type len = length ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
@@ -115,13 +115,13 @@ RowVector::fill (double val, int c1, int c2)
       return *this;
     }
 
-  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
   if (c2 >= c1)
     {
       make_unique ();
 
-      for (int i = c1; i <= c2; i++)
+      for (octave_idx_type i = c1; i <= c2; i++)
 	xelem (i) = val;
     }
 
@@ -131,8 +131,8 @@ RowVector::fill (double val, int c1, int c2)
 RowVector
 RowVector::append (const RowVector& a) const
 {
-  int len = length ();
-  int nc_insert = len;
+  octave_idx_type len = length ();
+  octave_idx_type nc_insert = len;
   RowVector retval (len + a.length ());
   retval.insert (*this, 0);
   retval.insert (a, nc_insert);
@@ -148,7 +148,7 @@ RowVector::transpose (void) const
 RowVector
 real (const ComplexRowVector& a)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   RowVector retval;
   if (a_len > 0)
     retval = RowVector (mx_inline_real_dup (a.data (), a_len), a_len);
@@ -158,7 +158,7 @@ real (const ComplexRowVector& a)
 RowVector
 imag (const ComplexRowVector& a)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   RowVector retval;
   if (a_len > 0)
     retval = RowVector (mx_inline_imag_dup (a.data (), a_len), a_len);
@@ -166,26 +166,26 @@ imag (const ComplexRowVector& a)
 }
 
 RowVector
-RowVector::extract (int c1, int c2) const
+RowVector::extract (octave_idx_type c1, octave_idx_type c2) const
 {
-  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
-  int new_c = c2 - c1 + 1;
+  octave_idx_type new_c = c2 - c1 + 1;
 
   RowVector result (new_c);
 
-  for (int i = 0; i < new_c; i++)
+  for (octave_idx_type i = 0; i < new_c; i++)
     result.xelem (i) = elem (c1+i);
 
   return result;
 }
 
 RowVector
-RowVector::extract_n (int r1, int n) const
+RowVector::extract_n (octave_idx_type r1, octave_idx_type n) const
 {
   RowVector result (n);
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     result.xelem (i) = elem (r1+i);
 
   return result;
@@ -198,10 +198,10 @@ operator * (const RowVector& v, const Matrix& a)
 {
   RowVector retval;
 
-  int len = v.length ();
+  octave_idx_type len = v.length ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (a_nr != len)
     gripe_nonconformant ("operator *", 1, len, a_nr, a_nc);
@@ -213,7 +213,7 @@ operator * (const RowVector& v, const Matrix& a)
 	{
 	  // Transpose A to form A'*x == (x'*A)'
 
-	  int ld = a_nr;
+	  octave_idx_type ld = a_nr;
 
 	  retval.resize (a_nc);
 	  double *y = retval.fortran_vec ();
@@ -246,7 +246,7 @@ RowVector::apply (d_d_Mapper f)
 {
   double *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     d[i] = f (d[i]);
 
   return *this;
@@ -255,13 +255,13 @@ RowVector::apply (d_d_Mapper f)
 double
 RowVector::min (void) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (len == 0)
     return 0;
 
   double res = elem (0);
 
-  for (int i = 1; i < len; i++)
+  for (octave_idx_type i = 1; i < len; i++)
     if (elem (i) < res)
       res = elem (i);
 
@@ -271,13 +271,13 @@ RowVector::min (void) const
 double
 RowVector::max (void) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (len == 0)
     return 0;
 
   double res = elem (0);
 
-  for (int i = 1; i < len; i++)
+  for (octave_idx_type i = 1; i < len; i++)
     if (elem (i) > res)
       res = elem (i);
 
@@ -289,7 +289,7 @@ operator << (std::ostream& os, const RowVector& a)
 {
 //  int field_width = os.precision () + 7;
 
-  for (int i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.length (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;
 }
@@ -297,14 +297,14 @@ operator << (std::ostream& os, const RowVector& a)
 std::istream&
 operator >> (std::istream& is, RowVector& a)
 {
-  int len = a.length();
+  octave_idx_type len = a.length();
 
   if (len < 1)
     is.clear (std::ios::badbit);
   else
     {
       double tmp;
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
         {
           is >> tmp;
           if (is)
@@ -319,7 +319,7 @@ operator >> (std::istream& is, RowVector& a)
 // other operations
 
 RowVector
-linspace (double x1, double x2, int n)
+linspace (double x1, double x2, octave_idx_type n)
 {
   RowVector retval;
 
@@ -328,7 +328,7 @@ linspace (double x1, double x2, int n)
       retval.resize (n);
       double delta = (x2 - x1) / (n - 1);
       retval.elem (0) = x1;
-      for (int i = 1; i < n-1; i++)
+      for (octave_idx_type i = 1; i < n-1; i++)
 	retval.elem (i) = x1 + i * delta;
       retval.elem (n-1) = x2;
     }
@@ -357,9 +357,9 @@ operator * (const RowVector& v, const ColumnVector& a)
 {
   double retval = 0.0;
 
-  int len = v.length ();
+  octave_idx_type len = v.length ();
 
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
 
   if (len != a_len)
     gripe_nonconformant ("operator *", len, a_len);

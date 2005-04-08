@@ -42,7 +42,7 @@ public:
 
   MSparse (void) : Sparse<T> () { }
 
-  MSparse (int n, int m) : Sparse<T> (n, m) { }
+  MSparse (octave_idx_type n, octave_idx_type m) : Sparse<T> (n, m) { }
 
   MSparse (const MSparse<T>& a) : Sparse<T> (a) { }
 
@@ -50,19 +50,19 @@ public:
 
   MSparse (const Sparse<T>& a) : Sparse<T> (a) { }
 
-  MSparse (const Array<T> a, const Array<int>& r, 
-	   const Array<int>& c, int nr = -1, 
-	   int nc = -1, bool sum_terms = true)
+  MSparse (const Array<T> a, const Array<octave_idx_type>& r, 
+	   const Array<octave_idx_type>& c, octave_idx_type nr = -1, 
+	   octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<T> (a, r, c, nr, nc, sum_terms) { }
 
   MSparse (const Array<T> a, const Array<double>& r, 
-	   const Array<double>& c, int nr = -1, 
-	   int nc = -1, bool sum_terms = true)
+	   const Array<double>& c, octave_idx_type nr = -1, 
+	   octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<T> (a, r, c, nr, nc, sum_terms) { }
 
-  explicit MSparse (int r, int c, T val) : Sparse<T> (r, c, val) { }
+  explicit MSparse (octave_idx_type r, octave_idx_type c, T val) : Sparse<T> (r, c, val) { }
 
-  MSparse (int r, int c, int num_nz) : Sparse<T> (r, c, num_nz) { }
+  MSparse (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz) : Sparse<T> (r, c, num_nz) { }
 
   ~MSparse (void) { }
 
@@ -72,7 +72,7 @@ public:
       return *this;
     }
 
-  MSparse<T>& insert (const Sparse<T>& a, int r, int c)
+  MSparse<T>& insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   {
     Sparse<T>::insert (a, r, c);
     return *this;
@@ -94,10 +94,10 @@ public:
   MSparse<T> reshape (const dim_vector& new_dims) const
     { return Sparse<T>::reshape (new_dims); }
      
-  MSparse<T> permute (const Array<int>& vec, bool inv = false) const
+  MSparse<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const
     { return Sparse<T>::permute (vec, inv); }
 
-  MSparse<T> ipermute (const Array<int>& vec) const
+  MSparse<T> ipermute (const Array<octave_idx_type>& vec) const
     { return Sparse<T>::ipermute (vec); }
 
 

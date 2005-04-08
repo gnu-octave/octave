@@ -173,17 +173,17 @@ private:
     size_t byte_size (void) const
       { return definition.byte_size (); };
 
-    int numel (void) const
+    octave_idx_type numel (void) const
       { return definition.numel (); };
 
-    int capacity (void) const
+    octave_idx_type capacity (void) const
       { return definition.capacity (); };
 
     dim_vector dims (void) const 
       { return definition.dims (); }
 
-    int rows (void) const { return definition.rows (); }
-    int columns (void) const { return definition.columns (); }
+    octave_idx_type rows (void) const { return definition.rows (); }
+    octave_idx_type columns (void) const { return definition.columns (); }
 
     std::string type_name (void) const { return definition.type_name (); }
 
@@ -380,10 +380,10 @@ public:
   size_t byte_size (void) const
     { return definition->byte_size (); };
 
-  int numel (void) const
+  octave_idx_type numel (void) const
     { return definition->numel (); };
 
-  int capacity (void) const
+  octave_idx_type capacity (void) const
     { return definition->capacity (); };
 
   dim_vector dims (void) const { return definition->dims (); }
@@ -394,8 +394,8 @@ public:
 
   std::string make_dimensions_string (int print_dims) const;
 
-  int rows (void) const { return definition->rows (); }
-  int columns (void) const { return definition->columns (); }
+  octave_idx_type rows (void) const { return definition->rows (); }
+  octave_idx_type columns (void) const { return definition->columns (); }
 
   std::string type_name (void) const { return definition->type_name (); }
 

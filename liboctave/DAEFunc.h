@@ -23,6 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_DAEFunc_h)
 #define octave_DAEFunc_h 1
 
+#include "oct-types.h"
+
 class Matrix;
 class ColumnVector;
 
@@ -33,7 +35,7 @@ public:
 
   typedef ColumnVector (*DAERHSFunc) (const ColumnVector& x,
 				      const ColumnVector& xdot,
-				      double t, int& ires);
+				      double t, octave_idx_type& ires);
 
   // This is really the form used by DASSL:
   //

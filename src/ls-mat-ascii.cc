@@ -108,7 +108,7 @@ get_mat_data_input_line (std::istream& is)
 }
 
 static void
-get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, int& nc)
+get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx_type& nr, octave_idx_type& nc)
 {
   std::streampos pos = is.tellg ();
 
@@ -138,7 +138,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 	  beg = NPOS;
 	}
 
-      int tmp_nc = 0;
+      octave_idx_type tmp_nc = 0;
 
       while (beg != NPOS)
 	{
@@ -228,8 +228,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
   if (valid_identifier (varname))
     {
-      int nr = 0;
-      int nc = 0;
+      octave_idx_type nr = 0;
+      octave_idx_type nc = 0;
 
       int total_count = 0;
 
@@ -246,7 +246,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	  else
 	    {
 	      double d;
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  std::string buf = get_mat_data_input_line (is);
 
@@ -256,7 +256,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 		  std::istrstream tmp_stream (buf.c_str ());
 #endif
 
-		  for (int j = 0; j < nc; j++)
+		  for (octave_idx_type j = 0; j < nc; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -305,7 +305,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	      if (is.eof ())
 		is.clear ();
 
-	      int expected = nr * nc;
+	      octave_idx_type expected = nr * nc;
 
 	      if (expected == total_count)
 		{

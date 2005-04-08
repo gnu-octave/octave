@@ -56,10 +56,10 @@ template <class T>
 MArray<T>&
 operator += (MArray<T>& a, const MArray<T>& b)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   if (l > 0)
     {
-      int bl = b.length ();
+      octave_idx_type bl = b.length ();
       if (l != bl)
 	gripe_nonconformant ("operator +=", l, bl);
       else
@@ -72,10 +72,10 @@ template <class T>
 MArray<T>&
 operator -= (MArray<T>& a, const MArray<T>& b)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   if (l > 0)
     {
-      int bl = b.length ();
+      octave_idx_type bl = b.length ();
       if (l != bl)
 	gripe_nonconformant ("operator -=", l, bl);
       else
@@ -93,7 +93,7 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   { \
     MArray<T> result (a.length ()); \
     T *r = result.fortran_vec (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     const T *v = a.data (); \
     DO_VS_OP (r, l, v, OP, s); \
     return result; \
@@ -113,7 +113,7 @@ MARRAY_AS_OP (/)
   { \
     MArray<T> result (a.length ()); \
     T *r = result.fortran_vec (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     const T *v = a.data (); \
     DO_SV_OP (r, l, s, OP, v); \
     return result; \
@@ -131,8 +131,8 @@ MARRAY_SA_OP(/)
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
-    int l = a.length (); \
-    int bl = b.length (); \
+    octave_idx_type l = a.length (); \
+    octave_idx_type bl = b.length (); \
     if (l != bl) \
       { \
 	gripe_nonconformant (#FCN, l, bl); \
@@ -166,7 +166,7 @@ template <class T>
 MArray<T>
 operator - (const MArray<T>& a)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   MArray<T> result (l);
   T *r = result.fortran_vec ();
   const T *x = a.data ();

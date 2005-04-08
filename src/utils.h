@@ -46,7 +46,7 @@ keyword_almost_match (const char * const *std, int *min_len,
 		      const std::string& s, int min_toks_to_match,
 		      int max_toks);
 
-extern int empty_arg (const char *name, int nr, int nc);
+extern int empty_arg (const char *name, octave_idx_type nr, octave_idx_type nc);
 
 extern std::string
 search_path_for_file (const std::string&, const string_vector&);
@@ -75,13 +75,13 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 extern void
 get_dimensions (const octave_value& a, const octave_value& b,
-		const char *warn_for, int& nr, int& nc);
+		const char *warn_for, octave_idx_type& nr, octave_idx_type& nc);
 
 extern void
 get_dimensions (const octave_value& a,
-		const char *warn_for, int& nr, int& nc);
+		const char *warn_for, octave_idx_type& nr, octave_idx_type& nc);
 
-extern Matrix identity_matrix (int nr, int nc);
+extern Matrix identity_matrix (octave_idx_type nr, octave_idx_type nc);
 
 extern int
 octave_format (std::ostream& os, const char *fmt, ...);

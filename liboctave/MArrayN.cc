@@ -57,7 +57,7 @@ template <class T>
 MArrayN<T>&
 operator += (MArrayN<T>& a, const MArrayN<T>& b)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
 
   if (l > 0)
     {
@@ -77,7 +77,7 @@ template <class T>
 MArrayN<T>&
 operator -= (MArrayN<T>& a, const MArrayN<T>& b)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
 
   if (l > 0)
     {
@@ -101,7 +101,7 @@ operator -= (MArrayN<T>& a, const MArrayN<T>& b)
     { \
       MArrayN<T> result (a.dims ()); \
       T *r = result.fortran_vec (); \
-      int l = a.length (); \
+      octave_idx_type l = a.length (); \
       const T *v = a.data (); \
       DO_VS_OP (r, l, v, OP, s); \
       return result; \
@@ -121,7 +121,7 @@ MARRAYN_NDS_OP (/)
   { \
     MArrayN<T> result (a.dims ()); \
     T *r = result.fortran_vec (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     const T *v = a.data (); \
     DO_SV_OP (r, l, s, OP, v); \
     return result; \
@@ -160,7 +160,7 @@ if (a_dims.length () != b_dims.length ()) \
    } \
  if (any_dims_zero) \
    return MArrayN<T> (a_dims); \
- int l = a.length (); \
+ octave_idx_type l = a.length (); \
  MArrayN<T> result (a_dims); \
  T* r = result.fortran_vec (); \
  const T *x = a.data (); \
@@ -185,7 +185,7 @@ template <class T>
 MArrayN<T>
 operator - (const MArrayN<T>& a)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   MArrayN<T> result (a.dims ());
   T *r = result.fortran_vec ();
   const T *x = a.data ();

@@ -73,14 +73,14 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   octave_value arg_b = args(1);
   octave_value arg_c = args(2);
 
-  int a_nr = arg_a.rows ();
-  int a_nc = arg_a.columns ();
+  octave_idx_type a_nr = arg_a.rows ();
+  octave_idx_type a_nc = arg_a.columns ();
 
-  int b_nr = arg_b.rows ();
-  int b_nc = arg_b.columns ();
+  octave_idx_type b_nr = arg_b.rows ();
+  octave_idx_type b_nc = arg_b.columns ();
 
-  int c_nr = arg_c.rows ();
-  int c_nc = arg_c.columns ();
+  octave_idx_type c_nr = arg_c.rows ();
+  octave_idx_type c_nc = arg_c.columns ();
 
   int arg_a_is_empty = empty_arg ("syl", a_nr, a_nc);
   int arg_b_is_empty = empty_arg ("syl", b_nr, b_nc);

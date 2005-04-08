@@ -242,11 +242,11 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
     { \
       int ndims = dv.length (); \
       Array<idx_vector> idx; \
-      int steps = dv.numel () / dv (0); \
-      idx.resize (ndims, idx_vector (1)); \
+      octave_idx_type steps = dv.numel () / dv (0); \
+      idx.resize (ndims, idx_vector (static_cast<octave_idx_type> (1))); \
       idx (0) = idx_vector (':'); \
  \
-      for (int i = 0; i < steps; i++) \
+      for (octave_idx_type i = 0; i < steps; i++) \
 	{ \
 	  MAYBE_DO_BREAKPOINT; \
  \
@@ -266,7 +266,7 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 	      if (idx(j)(0) < dv(j)) \
 		break; \
 	      else \
-		idx(j) = idx_vector (1); \
+		idx(j) = idx_vector (static_cast<octave_idx_type> (1)); \
 	    } \
 	} \
     } \
@@ -305,11 +305,11 @@ tree_simple_for_command::eval (void)
       {
 	Range rng = rhs.range_value ();
 
-	int steps = rng.nelem ();
+	octave_idx_type steps = rng.nelem ();
 	double b = rng.base ();
 	double increment = rng.inc ();
 
-	for (int i = 0; i < steps; i++)
+	for (octave_idx_type i = 0; i < steps; i++)
 	  {
 	    MAYBE_DO_BREAKPOINT;
 
@@ -336,8 +336,8 @@ tree_simple_for_command::eval (void)
     else if (rhs.is_string ())
       {
 	charMatrix chm_tmp = rhs.char_matrix_value ();
-	int nr = chm_tmp.rows ();
-	int steps = chm_tmp.columns ();
+	octave_idx_type nr = chm_tmp.rows ();
+	octave_idx_type steps = chm_tmp.columns ();
 
 	if (error_state)
 	  goto cleanup;
@@ -346,7 +346,7 @@ tree_simple_for_command::eval (void)
 	  DO_LOOP (chm_tmp (0, i));
 	else
 	  {
-	    for (int i = 0; i < steps; i++)
+	    for (octave_idx_type i = 0; i < steps; i++)
 	      {
 		MAYBE_DO_BREAKPOINT;
 
@@ -521,7 +521,7 @@ tree_complex_for_command::eval (void)
 
 	  Cell val_lst = tmp_val.contents (q);
 
-	  int n = tmp_val.numel ();
+	  octave_idx_type n = tmp_val.numel ();
 
 	  octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
 

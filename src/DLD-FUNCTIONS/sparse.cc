@@ -194,7 +194,7 @@ which case they are expanded to all have the same length\n\
      }
    else 
      {
-       int m = 1, n = 1;
+       octave_idx_type m = 1, n = 1;
        if (nargin == 2) 
 	 {
 	   m = args(0).int_value();
@@ -271,7 +271,7 @@ which case they are expanded to all have the same length\n\
 		 return retval;
 
 	       // Confirm that i,j,s all have the same number of elements
-	       int ns;
+	       octave_idx_type ns;
 	       if (use_complex) 
 		 ns = coefAC.length();
 	       else if (use_bool) 
@@ -279,9 +279,9 @@ which case they are expanded to all have the same length\n\
 	       else 
 		 ns = coefA.length();
 
-	       int ni = ridxA.length();
-	       int nj = cidxA.length();
-	       int nnz = (ni > nj ? ni : nj);
+	       octave_idx_type ni = ridxA.length();
+	       octave_idx_type nj = cidxA.length();
+	       octave_idx_type nnz = (ni > nj ? ni : nj);
 	       if ((ns != 1 && ns != nnz) ||
 		   (ni != 1 && ni != nnz) ||
 		   (nj != 1 && nj != nnz)) 
@@ -292,8 +292,8 @@ which case they are expanded to all have the same length\n\
 
 	       if (nargin == 3 || nargin == 4) 
 		 {
-		   m = static_cast<int> (ridxA.max());
-		   n = static_cast<int> (cidxA.max());
+		   m = static_cast<octave_idx_type> (ridxA.max());
+		   n = static_cast<octave_idx_type> (cidxA.max());
 
 		   // if args(3) is not string, then ignore the value
 		   // otherwise check for summation or unique
@@ -433,9 +433,9 @@ returns number of non zero elements in SM\n\
   else if (args(0).type_name () == "complex matrix") 
     {
       const ComplexMatrix M = args(0).complex_matrix_value();
-      int nnz = 0;
-      for( int j = 0; j < M.cols(); j++)
-	for( int i = 0; i < M.rows(); i++)
+      octave_idx_type nnz = 0;
+      for( octave_idx_type j = 0; j < M.cols(); j++)
+	for( octave_idx_type i = 0; i < M.rows(); i++)
 	  if (M (i, j) != 0.) 
 	    nnz++;
       retval = (double) nnz;
@@ -443,9 +443,9 @@ returns number of non zero elements in SM\n\
   else if (args(0).type_name () == "matrix") 
     {
       const Matrix M = args(0).matrix_value();
-      int nnz = 0;
-      for( int j = 0; j < M.cols(); j++)
-	for( int i = 0; i < M.rows(); i++)
+      octave_idx_type nnz = 0;
+      for( octave_idx_type j = 0; j < M.cols(); j++)
+	for( octave_idx_type i = 0; i < M.rows(); i++)
 	  if (M (i, j) != 0.) 
 	    nnz++;
       retval = (double) nnz;
@@ -453,9 +453,9 @@ returns number of non zero elements in SM\n\
   else if (args(0).type_name () == "string") 
     {
       const charMatrix M = args(0).char_matrix_value();
-      int nnz = 0;
-      for( int j = 0; j < M.cols(); j++)
-	for( int i = 0; i < M.rows(); i++)
+      octave_idx_type nnz = 0;
+      for( octave_idx_type j = 0; j < M.cols(); j++)
+	for( octave_idx_type i = 0; i < M.rows(); i++)
 	  if (M (i, j) != 0) 
 	    nnz++;
       retval = (double) nnz;
@@ -512,18 +512,18 @@ static octave_value_list
 sparse_find (const SparseMatrix& v)
 {
   octave_value_list retval;
-  int nnz = v.nnz ();
+  octave_idx_type nnz = v.nnz ();
   dim_vector dv = v.dims ();
-  int nr = dv(0);
-  int nc = dv (1);
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv (1);
 
   ColumnVector I (nnz), J (nnz);
   ColumnVector S (nnz);
 
-  for (int i = 0, cx = 0; i < nc; i++) 
+  for (octave_idx_type i = 0, cx = 0; i < nc; i++) 
     {
       OCTAVE_QUIT;
-      for (int j = v.cidx(i); j < v.cidx(i+1); j++ ) 
+      for (octave_idx_type j = v.cidx(i); j < v.cidx(i+1); j++ ) 
 	{
 	  I (cx) = static_cast<double> (v.ridx(j) + 1);
 	  J (cx) = static_cast<double> (i + 1);
@@ -553,18 +553,18 @@ static octave_value_list
 sparse_find (const SparseComplexMatrix& v)
 {
   octave_value_list retval;
-  int nnz = v.nnz ();
+  octave_idx_type nnz = v.nnz ();
   dim_vector dv = v.dims ();
-  int nr = dv(0);
-  int nc = dv (1);
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv (1);
 
   ColumnVector I (nnz), J (nnz);
   ComplexColumnVector S (nnz);
 
-  for (int i = 0, cx = 0; i < nc; i++) 
+  for (octave_idx_type i = 0, cx = 0; i < nc; i++) 
     {
       OCTAVE_QUIT;
-      for (int j = v.cidx(i); j < v.cidx(i+1); j++ ) 
+      for (octave_idx_type j = v.cidx(i); j < v.cidx(i+1); j++ ) 
 	{
 	  I (cx) = static_cast<double> (v.ridx(j) + 1);
 	  J (cx) = static_cast<double> (i + 1);
@@ -594,18 +594,18 @@ static octave_value_list
 sparse_find (const SparseBoolMatrix& v)
 {
   octave_value_list retval;
-  int nnz = v.nnz ();
+  octave_idx_type nnz = v.nnz ();
   dim_vector dv = v.dims ();
-  int nr = dv(0);
-  int nc = dv (1);
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv (1);
 
   ColumnVector I (nnz), J (nnz);
   ColumnVector S (nnz);
 
-  for (int i = 0, cx = 0; i < nc; i++) 
+  for (octave_idx_type i = 0, cx = 0; i < nc; i++) 
     {
       OCTAVE_QUIT;
-      for (int j = v.cidx(i); j < v.cidx(i+1); j++ ) 
+      for (octave_idx_type j = v.cidx(i); j < v.cidx(i+1); j++ ) 
 	{
 	  I (cx) = static_cast<double> (v.ridx(j) + 1);
 	  J (cx) = static_cast<double> (i + 1);
@@ -865,7 +865,7 @@ real.\n\
     } \
   else if (single_arg && nargout == 2) \
     { \
-      Array2<int> index; \
+      Array2<octave_idx_type> index; \
  \
       if (arg1.type_id () == octave_sparse_matrix::static_type_id ()) \
 	retval(0) = arg1.sparse_matrix_value () .FCN (index, dim); \
@@ -875,7 +875,7 @@ real.\n\
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
  \
-      int len = index.numel (); \
+      octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
 	{ \
@@ -883,10 +883,10 @@ real.\n\
  \
 	  NDArray idx (index.dims ()); \
  \
-	  for (int i = 0; i < len; i++) \
+	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
 	      OCTAVE_QUIT; \
-	      int tmp = index.elem (i) + 1; \
+	      octave_idx_type tmp = index.elem (i) + 1; \
 	      idx.elem (i) = (tmp <= 0) \
 		? nan_val : static_cast<double> (tmp); \
 	    } \
@@ -1155,20 +1155,20 @@ make_spdiag (const octave_value& a, const octave_value& b)
   if (a.is_complex_type ())
     {
       SparseComplexMatrix m = a.sparse_complex_matrix_value ();
-      int k = b.nint_value(true);
+      octave_idx_type k = b.nint_value(true);
 
       if (error_state) 
 	return retval;
 
-      int nr = m.rows ();
-      int nc = m.columns ();
+      octave_idx_type nr = m.rows ();
+      octave_idx_type nc = m.columns ();
 	
       if (nr == 0 || nc == 0)
 	retval = m;
       else if (nr == 1 || nc == 1) 
 	{
-	  int roff = 0;
-	  int coff = 0;
+	  octave_idx_type roff = 0;
+	  octave_idx_type coff = 0;
 	  if (k > 0) 
 	    {
 	      roff = 0;
@@ -1183,34 +1183,34 @@ make_spdiag (const octave_value& a, const octave_value& b)
 
 	  if (nr == 1) 
 	    {
-	      int n = nc + k;
-	      int nz = m.nnz ();
+	      octave_idx_type n = nc + k;
+	      octave_idx_type nz = m.nnz ();
 	      SparseComplexMatrix r (n, n, nz);
-	      for (int i = 0; i < coff+1; i++)
+	      for (octave_idx_type i = 0; i < coff+1; i++)
 		r.xcidx (i) = 0;
-	      for (int j = 0; j < nc; j++)
+	      for (octave_idx_type j = 0; j < nc; j++)
 		{
-		  for (int i = m.cidx(j); i < m.cidx(j+1); i++)
+		  for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
 		    {
 		      r.xdata (i) = m.data (i);
 		      r.xridx (i) = j + roff;
 		    }
 		  r.xcidx (j+coff+1) = m.cidx(j+1);
 		}
-	      for (int i = nc+coff+1; i < n+1; i++)
+	      for (octave_idx_type i = nc+coff+1; i < n+1; i++)
 		r.xcidx (i) = nz;
 	      retval = r;
 	    } 
 	  else 
 	    {
-	      int n = nr + k;
-	      int nz = m.nnz ();
-	      int ii = 0;
-	      int ir = m.ridx(0);
+	      octave_idx_type n = nr + k;
+	      octave_idx_type nz = m.nnz ();
+	      octave_idx_type ii = 0;
+	      octave_idx_type ir = m.ridx(0);
 	      SparseComplexMatrix r (n, n, nz);
-	      for (int i = 0; i < coff+1; i++)
+	      for (octave_idx_type i = 0; i < coff+1; i++)
 		r.xcidx (i) = 0;
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  if (ir == i)
 		    {
@@ -1221,7 +1221,7 @@ make_spdiag (const octave_value& a, const octave_value& b)
 		    }
 		  r.xcidx (i+coff+1) = ii;
 		}
-	      for (int i = nr+coff+1; i < n+1; i++)
+	      for (octave_idx_type i = nr+coff+1; i < n+1; i++)
 		r.xcidx (i) = nz;
 	      retval = r;
 	    }
@@ -1238,20 +1238,20 @@ make_spdiag (const octave_value& a, const octave_value& b)
     {
       SparseMatrix m = a.sparse_matrix_value ();
 
-      int k = b.nint_value(true);
+      octave_idx_type k = b.nint_value(true);
 
       if (error_state) 
 	return retval;
 
-      int nr = m.rows ();
-      int nc = m.columns ();
+      octave_idx_type nr = m.rows ();
+      octave_idx_type nc = m.columns ();
 	
       if (nr == 0 || nc == 0)
 	retval = m;
       else if (nr == 1 || nc == 1) 
 	{
-	  int roff = 0;
-	  int coff = 0;
+	  octave_idx_type roff = 0;
+	  octave_idx_type coff = 0;
 	  if (k > 0) 
 	    {
 	      roff = 0;
@@ -1266,35 +1266,35 @@ make_spdiag (const octave_value& a, const octave_value& b)
 
 	  if (nr == 1) 
 	    {
-	      int n = nc + k;
-	      int nz = m.nnz ();
+	      octave_idx_type n = nc + k;
+	      octave_idx_type nz = m.nnz ();
 	      SparseMatrix r (n, n, nz);
 
-	      for (int i = 0; i < coff+1; i++)
+	      for (octave_idx_type i = 0; i < coff+1; i++)
 		r.xcidx (i) = 0;
-	      for (int j = 0; j < nc; j++)
+	      for (octave_idx_type j = 0; j < nc; j++)
 		{
-		  for (int i = m.cidx(j); i < m.cidx(j+1); i++)
+		  for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
 		    {
 		      r.xdata (i) = m.data (i);
 		      r.xridx (i) = j + roff;
 		    }
 		  r.xcidx (j+coff+1) = m.cidx(j+1);
 		}
-	      for (int i = nc+coff+1; i < n+1; i++)
+	      for (octave_idx_type i = nc+coff+1; i < n+1; i++)
 		r.xcidx (i) = nz;
 	      retval = r;
 	    } 
 	  else 
 	    {
-	      int n = nr + k;
-	      int nz = m.nnz ();
-	      int ii = 0;
-	      int ir = m.ridx(0);
+	      octave_idx_type n = nr + k;
+	      octave_idx_type nz = m.nnz ();
+	      octave_idx_type ii = 0;
+	      octave_idx_type ir = m.ridx(0);
 	      SparseMatrix r (n, n, nz);
-	      for (int i = 0; i < coff+1; i++)
+	      for (octave_idx_type i = 0; i < coff+1; i++)
 		r.xcidx (i) = 0;
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  if (ir == i)
 		    {
@@ -1305,7 +1305,7 @@ make_spdiag (const octave_value& a, const octave_value& b)
 		    }
 		  r.xcidx (i+coff+1) = ii;
 		}
-	      for (int i = nr+coff+1; i < n+1; i++)
+	      for (octave_idx_type i = nr+coff+1; i < n+1; i++)
 		r.xcidx (i) = nz;
 	      retval = r;
 	    }

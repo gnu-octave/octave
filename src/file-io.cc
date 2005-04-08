@@ -1038,7 +1038,7 @@ conversions is returned in @var{count}\n\
 		{
 		  std::string fmt = args(1).string_value ();
 
-		  int count = 0;
+		  octave_idx_type count = 0;
 
 		  Array<double> size = (nargin == 3)
 		    ? args(2).vector_value ()
@@ -1126,7 +1126,7 @@ string is treated as an end-of-file condition.\n\
 		    {
 		      std::string fmt = args(1).string_value ();
 
-		      int count = 0;
+		      octave_idx_type count = 0;
 
 		      Array<double> size = (nargin == 3)
 			? args(2).vector_value ()
@@ -1186,7 +1186,7 @@ programs.\n\
 static octave_value
 do_fread (octave_stream& os, const octave_value& size_arg,
 	  const octave_value& prec_arg, const octave_value& skip_arg,
-	  const octave_value& arch_arg, int& count)
+	  const octave_value& arch_arg, octave_idx_type& count)
 {
   octave_value retval;
 
@@ -1448,7 +1448,7 @@ values read is returned in @code{count}\n\
 	  if (nargin > idx)
 	    arch = args(idx++);
 
-	  int count = -1;
+	  octave_idx_type count = -1;
 
 	  octave_value tmp = do_fread (os, size, prec, skip, arch, count);
 

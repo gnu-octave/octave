@@ -41,15 +41,15 @@ MDiagArray2 : public DiagArray2<T>
 {
 protected:
 
-  MDiagArray2 (T *d, int r, int c) : DiagArray2<T> (d, r, c) { }
+  MDiagArray2 (T *d, octave_idx_type r, octave_idx_type c) : DiagArray2<T> (d, r, c) { }
 
 public:
   
   MDiagArray2 (void) : DiagArray2<T> () { }
 
-  MDiagArray2 (int r, int c) : DiagArray2<T> (r, c) { }
+  MDiagArray2 (octave_idx_type r, octave_idx_type c) : DiagArray2<T> (r, c) { }
 
-  MDiagArray2 (int r, int c, const T& val) : DiagArray2<T> (r, c, val) { }
+  MDiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) : DiagArray2<T> (r, c, val) { }
 
   MDiagArray2 (const MDiagArray2<T>& a) : DiagArray2<T> (a) { }
 
@@ -67,14 +67,14 @@ public:
 
   operator MArray2<T> () const
     {
-      int nr = DiagArray2<T>::dim1 ();
-      int nc = DiagArray2<T>::dim2 ();
+      octave_idx_type nr = DiagArray2<T>::dim1 ();
+      octave_idx_type nc = DiagArray2<T>::dim2 ();
 
       MArray2<T> retval (nr, nc,  T (0));
 
-      int len = nr < nc ? nr : nc;
+      octave_idx_type len = nr < nc ? nr : nc;
 
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
 	retval.xelem (i, i) = this->xelem (i, i);
 
       return retval;

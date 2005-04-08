@@ -74,11 +74,11 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 	    {
 	      if (xisnan (val(i,0)))
 		error ("%s: NaN is invalid as a dimension", fcn);
-	      else if (NINT (val(i,0)) < 0)
+	      else if (NINTbig (val(i,0)) < 0)
 		error ("%s: all dimension must be greater than zero", fcn);
 	      else
 		{
-		  dims(i) = NINT(val(i,0));
+		  dims(i) = NINTbig(val(i,0));
 		}
 	    }
 	}

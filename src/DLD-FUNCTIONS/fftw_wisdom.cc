@@ -103,7 +103,7 @@ Octave.\n\
       if (nargin != 1)
 	{
 	  double dval = args (1).double_value ();
-	  if (NINT (dval) != 0)
+	  if (NINTbig (dval) != 0)
 	    overwrite = true;
 	}
 
@@ -150,21 +150,21 @@ Octave.\n\
       OSSTREAM cmd_buf; 
       cmd_buf << Vfftw_wisdom_prog << " -n -o \"" << name << "\"";
 
-      for (int k = 0; k < m.rows (); k++)
+      for (octave_idx_type k = 0; k < m.rows (); k++)
 	{
 	  bool first = true;
 
 	  cmd_buf << " ";
 
 	  // Note reversal of dimensions for column major storage in FFTW
-	  for (int j = m.columns()-1; j >= 0; j--)
-	    if (NINT(m(k,j)) > 0)
+	  for (octave_idx_type j = m.columns()-1; j >= 0; j--)
+	    if (NINTbig(m(k,j)) > 0)
 	      {
 		if (first)
 		  first = false;
 		else
 		  cmd_buf << "x";
-		cmd_buf << NINT(m(k,j)) ;
+		cmd_buf << NINTbig(m(k,j)) ;
 	      }
 	} 
 

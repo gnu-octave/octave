@@ -37,9 +37,9 @@ SparseType::SparseType (const SparseType &a) : typ (a.typ),
 { 
   if (nperm != 0)
     {
-      row_perm = new int [nperm];
-      col_perm = new int [nperm];
-      for (int i = 0; i < nperm; i++)
+      row_perm = new octave_idx_type [nperm];
+      col_perm = new octave_idx_type [nperm];
+      for (octave_idx_type i = 0; i < nperm; i++)
 	{
 	  row_perm[i] = a.row_perm[i];
 	  col_perm[i] = a.col_perm[i];
@@ -49,9 +49,9 @@ SparseType::SparseType (const SparseType &a) : typ (a.typ),
 
 SparseType::SparseType (const SparseMatrix &a)
 {
-  int nrows = a.rows ();
-  int ncols = a.cols ();
-  int nnz = a.nnz ();
+  octave_idx_type nrows = a.rows ();
+  octave_idx_type ncols = a.cols ();
+  octave_idx_type nnz = a.nnz ();
 
   nperm = 0;
 
@@ -66,7 +66,7 @@ SparseType::SparseType (const SparseMatrix &a)
       if (nnz == ncols)
 	{
 	  matrix_type tmp_typ = SparseType::Diagonal;
-	  int i;
+	  octave_idx_type i;
 	  // Maybe the matrix is diagonal
 	  for (i = 0; i < ncols; i++)
 	    {
@@ -86,12 +86,12 @@ SparseType::SparseType (const SparseMatrix &a)
 	    {
 	      bool found [ncols];
 
-	      for (int j = 0; j < i; j++)
+	      for (octave_idx_type j = 0; j < i; j++)
 		found [j] = true;
-	      for (int j = i; j < ncols; j++)
+	      for (octave_idx_type j = i; j < ncols; j++)
 		found [j] = false;
 	      
-	      for (int j = i; j < ncols; j++)
+	      for (octave_idx_type j = i; j < ncols; j++)
 		{
 		  if ((a.cidx(j+1) != a.cidx(j) + 1) || found [a.ridx(j)])
 		    {
@@ -110,10 +110,10 @@ SparseType::SparseType (const SparseMatrix &a)
 	  bool singular = false;
 	  upper_band = 0;
 	  lower_band = 0;
-	  for (int j = 0; j < ncols; j++)
+	  for (octave_idx_type j = 0; j < ncols; j++)
 	    {
 	      bool zero_on_diagonal = true;
-	      for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 		if (a.ridx(i) == j)
 		  {
 		    zero_on_diagonal = false;
@@ -128,8 +128,8 @@ SparseType::SparseType (const SparseMatrix &a)
 
 	      if (a.cidx(j+1) - a.cidx(j) > 0)
 		{
-		  int ru = a.ridx(a.cidx(j));
-		  int rl = a.ridx(a.cidx(j+1)-1);
+		  octave_idx_type ru = a.ridx(a.cidx(j));
+		  octave_idx_type rl = a.ridx(a.cidx(j+1)-1);
 
 		  if (j - ru > upper_band)
 		    upper_band = j - ru;
@@ -154,7 +154,7 @@ SparseType::SparseType (const SparseMatrix &a)
 		  else
 		    typ = SparseType::Banded;
 
-		  int nnz_in_band = (upper_band + lower_band + 1) * nrows -
+		  octave_idx_type nnz_in_band = (upper_band + lower_band + 1) * nrows -
 		    (1 + upper_band) * upper_band / 2 -
 		    (1 + lower_band) * lower_band / 2;
 		  if (nnz_in_band == nnz)
@@ -189,13 +189,13 @@ SparseType::SparseType (const SparseMatrix &a)
 	  // definite..
 	  bool is_herm = true;
 
-	  for (int j = 0; j < ncols; j++)
+	  for (octave_idx_type j = 0; j < ncols; j++)
 	    {
 	      bool diag_positive = false;
 
-	      for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 		{
-		  int ri = a.ridx(i);
+		  octave_idx_type ri = a.ridx(i);
 
 		  if (ri == j)
 		    {
@@ -208,7 +208,7 @@ SparseType::SparseType (const SparseMatrix &a)
 		    {
 		      bool found = false;
 
-		      for (int k = a.cidx(ri); k < a.cidx(ri+1); k++)
+		      for (octave_idx_type k = a.cidx(ri); k < a.cidx(ri+1); k++)
 			{
 			  if (a.ridx(k) == j)
 			    {
@@ -248,9 +248,9 @@ SparseType::SparseType (const SparseMatrix &a)
 
 SparseType::SparseType (const SparseComplexMatrix &a)
 {
-  int nrows = a.rows ();
-  int ncols = a.cols ();
-  int nnz = a.nnz ();
+  octave_idx_type nrows = a.rows ();
+  octave_idx_type ncols = a.cols ();
+  octave_idx_type nnz = a.nnz ();
 
   nperm = 0;
 
@@ -265,7 +265,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
       if (nnz == ncols)
 	{
 	  matrix_type tmp_typ = SparseType::Diagonal;
-	  int i;
+	  octave_idx_type i;
 	  // Maybe the matrix is diagonal
 	  for (i = 0; i < ncols; i++)
 	    {
@@ -285,12 +285,12 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	    {
 	      bool found [ncols];
 
-	      for (int j = 0; j < i; j++)
+	      for (octave_idx_type j = 0; j < i; j++)
 		found [j] = true;
-	      for (int j = i; j < ncols; j++)
+	      for (octave_idx_type j = i; j < ncols; j++)
 		found [j] = false;
 	      
-	      for (int j = i; j < ncols; j++)
+	      for (octave_idx_type j = i; j < ncols; j++)
 		{
 		  if ((a.cidx(j+1) != a.cidx(j) + 1) || found [a.ridx(j)])
 		    {
@@ -309,10 +309,10 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	  bool singular = false;
 	  upper_band = 0;
 	  lower_band = 0;
-	  for (int j = 0; j < ncols; j++)
+	  for (octave_idx_type j = 0; j < ncols; j++)
 	    {
 	      bool zero_on_diagonal = true;
-	      for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 		if (a.ridx(i) == j)
 		  {
 		    zero_on_diagonal = false;
@@ -327,8 +327,8 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 
 	      if (a.cidx(j+1) - a.cidx(j) > 0)
 		{
-		  int ru = a.ridx(a.cidx(j));
-		  int rl = a.ridx(a.cidx(j+1)-1);
+		  octave_idx_type ru = a.ridx(a.cidx(j));
+		  octave_idx_type rl = a.ridx(a.cidx(j+1)-1);
 
 		  if (j - ru > upper_band)
 		    upper_band = j - ru;
@@ -353,7 +353,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 		  else
 		    typ = SparseType::Banded;
 
-		  int nnz_in_band = (upper_band + lower_band + 1) * nrows -
+		  octave_idx_type nnz_in_band = (upper_band + lower_band + 1) * nrows -
 		    (1 + upper_band) * upper_band / 2 -
 		    (1 + lower_band) * lower_band / 2;
 		  if (nnz_in_band == nnz)
@@ -388,13 +388,13 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	  // definite..
 	  bool is_herm = true;
 
-	  for (int j = 0; j < ncols; j++)
+	  for (octave_idx_type j = 0; j < ncols; j++)
 	    {
 	      bool diag_positive = false;
 
-	      for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+	      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 		{
-		  int ri = a.ridx(i);
+		  octave_idx_type ri = a.ridx(i);
 
 		  if (ri == j)
 		    {
@@ -407,7 +407,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 		    {
 		      bool found = false;
 
-		      for (int k = a.cidx(ri); k < a.cidx(ri+1); k++)
+		      for (octave_idx_type k = a.cidx(ri); k < a.cidx(ri+1); k++)
 			{
 			  if (a.ridx(k) == j)
 			    {
@@ -469,9 +469,9 @@ SparseType::operator = (const SparseType& a)
 
       if (nperm != 0)
 	{
-	  row_perm = new int [nperm];
-	  col_perm = new int [nperm];
-	  for (int i = 0; i < nperm; i++)
+	  row_perm = new octave_idx_type [nperm];
+	  col_perm = new octave_idx_type [nperm];
+	  for (octave_idx_type i = 0; i < nperm; i++)
 	    {
 	      row_perm[i] = a.row_perm[i];
 	      col_perm[i] = a.col_perm[i];
@@ -511,9 +511,9 @@ SparseType::type (const SparseMatrix &a)
 
   if (nperm != 0)
     {
-      row_perm = new int [nperm];
-      col_perm = new int [nperm];
-      for (int i = 0; i < nperm; i++)
+      row_perm = new octave_idx_type [nperm];
+      col_perm = new octave_idx_type [nperm];
+      for (octave_idx_type i = 0; i < nperm; i++)
 	{
 	  row_perm[i] = tmp_typ.row_perm[i];
 	  col_perm[i] = tmp_typ.col_perm[i];
@@ -552,9 +552,9 @@ SparseType::type (const SparseComplexMatrix &a)
 
   if (nperm != 0)
     {
-      row_perm = new int [nperm];
-      col_perm = new int [nperm];
-      for (int i = 0; i < nperm; i++)
+      row_perm = new octave_idx_type [nperm];
+      col_perm = new octave_idx_type [nperm];
+      for (octave_idx_type i = 0; i < nperm; i++)
 	{
 	  row_perm[i] = tmp_typ.row_perm[i];
 	  col_perm[i] = tmp_typ.col_perm[i];
@@ -648,12 +648,12 @@ SparseType::mark_as_unsymmetric (void)
 }
 
 void
-SparseType::mark_as_permuted (const int np, const int *pr, const int *pc)
+SparseType::mark_as_permuted (const octave_idx_type np, const octave_idx_type *pr, const octave_idx_type *pc)
 {
   nperm = np;
-  row_perm = new int [nperm];
-  col_perm = new int [nperm];
-  for (int i = 0; i < nperm; i++)
+  row_perm = new octave_idx_type [nperm];
+  col_perm = new octave_idx_type [nperm];
+  for (octave_idx_type i = 0; i < nperm; i++)
     {
       row_perm[i] = pr[i];
       col_perm[i] = pc[i];

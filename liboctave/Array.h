@@ -59,16 +59,16 @@ protected:
   public:
 
     T *data;
-    int len;
+    octave_idx_type len;
     int count;
 
-    ArrayRep (T *d, int l) : data (d), len (l), count (1) { }
+    ArrayRep (T *d, octave_idx_type l) : data (d), len (l), count (1) { }
 
     ArrayRep (void) : data (0), len (0), count (1) { }
 
-    explicit ArrayRep (int n) : data (new T [n]), len (n), count (1) { }
+    explicit ArrayRep (octave_idx_type n) : data (new T [n]), len (n), count (1) { }
 
-    explicit ArrayRep (int n, const T& val)
+    explicit ArrayRep (octave_idx_type n, const T& val)
       : data (new T [n]), len (n), count (1)
       {
 	fill (val);
@@ -77,23 +77,23 @@ protected:
     ArrayRep (const ArrayRep& a)
       : data (new T [a.len]), len (a.len), count (1)
       {
-        for (int i = 0; i < len; i++)
+        for (octave_idx_type i = 0; i < len; i++)
 	  data[i] = a.data[i];
       }
  
     ~ArrayRep (void) { delete [] data; }
 
-    int length (void) const { return len; }
+    octave_idx_type length (void) const { return len; }
 
     void fill (const T& val)
       {
-	for (int i = 0; i < len; i++)
+	for (octave_idx_type i = 0; i < len; i++)
 	  data[i] = val;
       }
 
-    T& elem (int n) { return data[n]; }
+    T& elem (octave_idx_type n) { return data[n]; }
 
-    T elem (int n) const { return data[n]; }
+    T elem (octave_idx_type n) const { return data[n]; }
 
     void qsort (int (*compare) (const void *, const void *))
       {
@@ -143,7 +143,7 @@ protected:
   idx_vector *idx;
   int idx_count;
 
-  Array (T *d, int n)
+  Array (T *d, octave_idx_type n)
     : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n),
       idx (0), idx_count (0) { }
 
@@ -179,11 +179,11 @@ public:
     : rep (nil_rep ()), dimensions (),
       idx (0), idx_count (0) { rep->count++; }
 
-  explicit Array (int n)
+  explicit Array (octave_idx_type n)
     : rep (new typename Array<T>::ArrayRep (n)), dimensions (n),
       idx (0), idx_count (0) { }
 
-  explicit Array (int n, const T& val)
+  explicit Array (octave_idx_type n, const T& val)
     : rep (new typename Array<T>::ArrayRep (n)), dimensions (n),
       idx (0), idx_count (0)
     {
@@ -243,19 +243,19 @@ public:
 
   void fill (const T& val) { make_unique (val); }
 
-  int capacity (void) const { return rep->length (); }
-  int length (void) const { return capacity (); }
-  int nelem (void) const { return capacity (); }
-  int numel (void) const { return nelem (); }
+  octave_idx_type capacity (void) const { return rep->length (); }
+  octave_idx_type length (void) const { return capacity (); }
+  octave_idx_type nelem (void) const { return capacity (); }
+  octave_idx_type numel (void) const { return nelem (); }
 
-  int dim1 (void) const { return dimensions(0); }
-  int dim2 (void) const { return dimensions(1); }
-  int dim3 (void) const { return dimensions(2); }
+  octave_idx_type dim1 (void) const { return dimensions(0); }
+  octave_idx_type dim2 (void) const { return dimensions(1); }
+  octave_idx_type dim3 (void) const { return dimensions(2); }
 
-  int rows (void) const { return dim1 (); }
-  int cols (void) const { return dim2 (); }
-  int columns (void) const { return dim2 (); }
-  int pages (void) const { return dim3 (); }
+  octave_idx_type rows (void) const { return dim1 (); }
+  octave_idx_type cols (void) const { return dim2 (); }
+  octave_idx_type columns (void) const { return dim2 (); }
+  octave_idx_type pages (void) const { return dim3 (); }
 
   size_t byte_size (void) const { return numel () * sizeof (T); }
 
@@ -266,34 +266,34 @@ public:
   void chop_trailing_singletons (void) 
   { dimensions.chop_trailing_singletons (); }
   
-  static int get_size (int r, int c);
-  static int get_size (int r, int c, int p);
-  static int get_size (const dim_vector& dv);
+  static octave_idx_type get_size (octave_idx_type r, octave_idx_type c);
+  static octave_idx_type get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p);
+  static octave_idx_type get_size (const dim_vector& dv);
 
-  int compute_index (const Array<int>& ra_idx) const;
+  octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
-  T range_error (const char *fcn, int n) const;
-  T& range_error (const char *fcn, int n);
+  T range_error (const char *fcn, octave_idx_type n) const;
+  T& range_error (const char *fcn, octave_idx_type n);
 
-  T range_error (const char *fcn, int i, int j) const;
-  T& range_error (const char *fcn, int i, int j);
+  T range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const;
+  T& range_error (const char *fcn, octave_idx_type i, octave_idx_type j);
 
-  T range_error (const char *fcn, int i, int j, int k) const;
-  T& range_error (const char *fcn, int i, int j, int k);
+  T range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k) const;
+  T& range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k);
 
   T range_error (const char *fcn, const Array<int>& ra_idx) const;
   T& range_error (const char *fcn, const Array<int>& ra_idx);
 
   // No checking, even for multiple references, ever.
 
-  T& xelem (int n) { return rep->elem (n); }
-  T xelem (int n) const { return rep->elem (n); }
+  T& xelem (octave_idx_type n) { return rep->elem (n); }
+  T xelem (octave_idx_type n) const { return rep->elem (n); }
 
-  T& xelem (int i, int j) { return xelem (dim1()*j+i); }
-  T xelem (int i, int j) const { return xelem (dim1()*j+i); }
+  T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1()*j+i); }
+  T xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1()*j+i); }
 
-  T& xelem (int i, int j, int k) { return xelem (i, dim2()*k+j); }
-  T xelem (int i, int j, int k) const { return xelem (i, dim2()*k+j); }
+  T& xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return xelem (i, dim2()*k+j); }
+  T xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return xelem (i, dim2()*k+j); }
 
   T& xelem (const Array<int>& ra_idx)
     { return xelem (compute_index (ra_idx)); }
@@ -305,7 +305,7 @@ public:
   // unnecessarily force a copy, but that is not so easy, and I see no
   // clean way to do it.
 
-  T& checkelem (int n)
+  T& checkelem (octave_idx_type n)
     {
       if (n < 0 || n >= rep->length ())
 	return range_error ("T& Array<T>::checkelem", n);
@@ -316,7 +316,7 @@ public:
 	}
     }
 
-  T& checkelem (int i, int j)
+  T& checkelem (octave_idx_type i, octave_idx_type j)
     {
       if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
 	return range_error ("T& Array<T>::checkelem", i, j);
@@ -324,7 +324,7 @@ public:
 	return elem (dim1()*j+i);
     }
 
-  T& checkelem (int i, int j, int k)
+  T& checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
     {
       if (i < 0 || j < 0 || k < 0 || i >= dim1 () || j >= dim2 () || k >= dim3 ())
 	return range_error ("T& Array<T>::checkelem", i, j, k);
@@ -334,7 +334,7 @@ public:
 
   T& checkelem (const Array<int>& ra_idx)
     {
-      int i = compute_index (ra_idx);
+      octave_idx_type i = compute_index (ra_idx);
 
       if (i < 0)
 	return range_error ("T& Array<T>::checkelem", ra_idx);
@@ -342,32 +342,32 @@ public:
 	return elem (i);
     }
 
-  T& elem (int n)
+  T& elem (octave_idx_type n)
     {
       make_unique ();
       return xelem (n);
     }
 
-  T& elem (int i, int j) { return elem (dim1()*j+i); }
+  T& elem (octave_idx_type i, octave_idx_type j) { return elem (dim1()*j+i); }
 
-  T& elem (int i, int j, int k) { return elem (i, dim2()*k+j); }
+  T& elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, dim2()*k+j); }
 
   T& elem (const Array<int>& ra_idx)
     { return Array<T>::elem (compute_index (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
-  T& operator () (int n) { return checkelem (n); }
-  T& operator () (int i, int j) { return checkelem (i, j); }
-  T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
+  T& operator () (octave_idx_type n) { return checkelem (n); }
+  T& operator () (octave_idx_type i, octave_idx_type j) { return checkelem (i, j); }
+  T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return checkelem (i, j, k); }
   T& operator () (const Array<int>& ra_idx) { return checkelem (ra_idx); }
 #else
-  T& operator () (int n) { return elem (n); }
-  T& operator () (int i, int j) { return elem (i, j); }
-  T& operator () (int i, int j, int k) { return elem (i, j, k); }
+  T& operator () (octave_idx_type n) { return elem (n); }
+  T& operator () (octave_idx_type i, octave_idx_type j) { return elem (i, j); }
+  T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, j, k); }
   T& operator () (const Array<int>& ra_idx) { return elem (ra_idx); }
 #endif
 
-  T checkelem (int n) const
+  T checkelem (octave_idx_type n) const
     {
       if (n < 0 || n >= rep->length ())
 	return range_error ("T Array<T>::checkelem", n);
@@ -375,7 +375,7 @@ public:
 	return xelem (n);
     }
 
-  T checkelem (int i, int j) const
+  T checkelem (octave_idx_type i, octave_idx_type j) const
     {
       if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
 	return range_error ("T Array<T>::checkelem", i, j);
@@ -383,7 +383,7 @@ public:
 	return elem (dim1()*j+i);
     }
 
-  T checkelem (int i, int j, int k) const
+  T checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const
     {
       if (i < 0 || j < 0 || k < 0 || i >= dim1 () || j >= dim2 () || k >= dim3 ())
 	return range_error ("T Array<T>::checkelem", i, j, k);
@@ -393,7 +393,7 @@ public:
 
   T checkelem (const Array<int>& ra_idx) const
     {
-      int i = compute_index (ra_idx);
+      octave_idx_type i = compute_index (ra_idx);
 
       if (i < 0)
 	return range_error ("T Array<T>::checkelem", ra_idx);
@@ -401,35 +401,35 @@ public:
 	return Array<T>::elem (i);
     }
 
-  T elem (int n) const { return xelem (n); }
+  T elem (octave_idx_type n) const { return xelem (n); }
 
-  T elem (int i, int j) const { return elem (dim1()*j+i); }
+  T elem (octave_idx_type i, octave_idx_type j) const { return elem (dim1()*j+i); }
 
-  T elem (int i, int j, int k) const { return elem (i, dim2()*k+j); }
+  T elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return elem (i, dim2()*k+j); }
 
   T elem (const Array<int>& ra_idx) const
     { return Array<T>::elem (compute_index (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
-  T operator () (int n) const { return checkelem (n); }
-  T operator () (int i, int j) const { return checkelem (i, j); }
-  T operator () (int i, int j, int k) const { return checkelem (i, j, k); }
+  T operator () (octave_idx_type n) const { return checkelem (n); }
+  T operator () (octave_idx_type i, octave_idx_type j) const { return checkelem (i, j); }
+  T operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return checkelem (i, j, k); }
   T operator () (const Array<int>& ra_idx) const { return checkelem (ra_idx); }
 #else
-  T operator () (int n) const { return elem (n); }
-  T operator () (int i, int j) const { return elem (i, j); }
-  T operator () (int i, int j, int k) const { return elem (i, j, k); }
+  T operator () (octave_idx_type n) const { return elem (n); }
+  T operator () (octave_idx_type i, octave_idx_type j) const { return elem (i, j); }
+  T operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return elem (i, j, k); }
   T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
   Array<T> reshape (const dim_vector& new_dims) const;
 
-  Array<T> permute (const Array<int>& vec, bool inv = false) const;
-  Array<T> ipermute (const Array<int>& vec) const
+  Array<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const;
+  Array<T> ipermute (const Array<octave_idx_type>& vec) const
     { return permute (vec, true); }
 
-  void resize_no_fill (int n);
-  void resize_and_fill (int n, const T& val);
+  void resize_no_fill (octave_idx_type n);
+  void resize_and_fill (octave_idx_type n, const T& val);
 
   // !!! WARNING !!! -- the following resize_no_fill and
   // resize_and_fill functions are public because template friends
@@ -439,11 +439,11 @@ public:
 
   // protected:
 
-  void resize_no_fill (int r, int c);
-  void resize_and_fill (int r, int c, const T& val);
+  void resize_no_fill (octave_idx_type r, octave_idx_type c);
+  void resize_and_fill (octave_idx_type r, octave_idx_type c, const T& val);
 
-  void resize_no_fill (int r, int c, int p);
-  void resize_and_fill (int r, int c, int p, const T& val);
+  void resize_no_fill (octave_idx_type r, octave_idx_type c, octave_idx_type p);
+  void resize_and_fill (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val);
 
   void resize_no_fill (const dim_vector& dv);
   void resize_and_fill (const dim_vector& dv, const T& val);
@@ -459,11 +459,11 @@ public:
   void resize (const dim_vector& dv, const T& val)
     { resize_and_fill (dv, val); }
 
-  Array<T>& insert (const Array<T>& a, int r, int c);
-  Array<T>& insert2 (const Array<T>& a, int r, int c);
-  Array<T>& insertN (const Array<T>& a, int r, int c);
+  Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
+  Array<T>& insert2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
+  Array<T>& insertN (const Array<T>& a, octave_idx_type r, octave_idx_type c);
 
-  Array<T>& insert (const Array<T>& a, const Array<int>& idx);
+  Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
 
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 

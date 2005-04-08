@@ -53,7 +53,7 @@ gripe_nonconformant (void)
 }
 
 void
-gripe_nonconformant (int r1, int c1, int r2, int c2)
+gripe_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
 {
   error ("nonconformant matrices (op1 is %dx%d, op2 is %dx%d)",
 	 r1, c1, r2, c2);

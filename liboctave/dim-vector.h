@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "lo-sstream.h"
+#include "oct-types.h"
 
 class
 dim_vector
@@ -37,25 +38,25 @@ protected:
   {
   public:
 
-    int *dims;
+    octave_idx_type *dims;
     int ndims;
     int count;
 
     dim_vector_rep (void) : dims (0), ndims (0), count (1) { }
 
-    dim_vector_rep (int n) : dims (new int [1]), ndims (1), count (1)
+    dim_vector_rep (octave_idx_type n) : dims (new octave_idx_type [1]), ndims (1), count (1)
     {
       dims[0] = n;
     }
 
-    dim_vector_rep (int r, int c) : dims (new int [2]), ndims (2), count (1)
+    dim_vector_rep (octave_idx_type r, octave_idx_type c) : dims (new octave_idx_type [2]), ndims (2), count (1)
     {
       dims[0] = r;
       dims[1] = c;
     }
 
-    dim_vector_rep (int r, int c, int p)
-      : dims (new int [3]), ndims (3), count (1)
+    dim_vector_rep (octave_idx_type r, octave_idx_type c, octave_idx_type p)
+      : dims (new octave_idx_type [3]), ndims (3), count (1)
     {
       dims[0] = r;
       dims[1] = c;
@@ -63,7 +64,7 @@ protected:
     }
 
     dim_vector_rep (const dim_vector_rep& dv)
-      : dims (dv.ndims > 0 ? new int [dv.ndims] : 0),
+      : dims (dv.ndims > 0 ? new octave_idx_type [dv.ndims] : 0),
 	ndims (dv.ndims > 0 ? dv.ndims : 0), count (1)
     {
       if (dims)
@@ -73,8 +74,8 @@ protected:
 	}
     }
 
-    dim_vector_rep (int n, const dim_vector_rep *dv, int fill_value = 0)
-      : dims ((dv && n > 0) ? new int [n] : 0),
+    dim_vector_rep (octave_idx_type n, const dim_vector_rep *dv, int fill_value = 0)
+      : dims ((dv && n > 0) ? new octave_idx_type [n] : 0),
 	ndims (n > 0 ? n : 0), count (1)
     {
       if (dims)
@@ -95,13 +96,13 @@ protected:
 
     int length (void) const { return ndims; }
 
-    int& elem (int i)
+    octave_idx_type& elem (int i)
     {
       assert (i >= 0 && i < ndims);
       return dims[i];
     }
 
-    int elem (int i) const
+    octave_idx_type elem (int i) const
     {
       assert (i >= 0 && i < ndims);
       return dims[i];
@@ -150,13 +151,13 @@ public:
   explicit dim_vector (void)
     : rep (nil_rep ()) { rep->count++; }
 
-  explicit dim_vector (int n)
+  explicit dim_vector (octave_idx_type n)
     : rep (new dim_vector_rep (n)) { }
 
-  explicit dim_vector (int r, int c)
+  explicit dim_vector (octave_idx_type r, octave_idx_type c)
     : rep (new dim_vector_rep (r, c)) { }
 
-  explicit dim_vector (int r, int c, int p)
+  explicit dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p)
     : rep (new dim_vector_rep (r, c, p)) { }
 
   dim_vector (const dim_vector& dv)
@@ -184,13 +185,13 @@ public:
 
   int length (void) const { return rep->length (); }
 
-  int& elem (int i) { make_unique (); return rep->elem (i); }
+  octave_idx_type& elem (int i) { make_unique (); return rep->elem (i); }
 
-  int elem (int i) const { return rep->elem (i); }
+  octave_idx_type elem (int i) const { return rep->elem (i); }
 
-  int& operator () (int i) { return elem (i); }
+  octave_idx_type& operator () (int i) { return elem (i); }
 
-  int operator () (int i) const { return elem (i); }
+  octave_idx_type operator () (int i) const { return elem (i); }
 
   void resize (int n, int fill_value = 0)
   {
@@ -282,11 +283,11 @@ public:
   // vector would have, NOT the number of dimensions (elements in the
   // dimension vector).
 
-  int numel (void) const
+  octave_idx_type numel (void) const
   {
     int n_dims = length ();
 
-    int retval = n_dims > 0 ? elem (0) : 0;
+    octave_idx_type retval = n_dims > 0 ? elem (0) : 0;
 
     for (int i = 1; i < n_dims; i++)
       retval *= elem (i);
@@ -330,7 +331,7 @@ public:
 		// The original dimension vector had a leading
 		// singleton dimension.
 
-		int tmp = new_dims(0);
+		octave_idx_type tmp = new_dims(0);
 	
 		new_dims.resize (2);
 

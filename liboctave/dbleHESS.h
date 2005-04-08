@@ -36,7 +36,7 @@ public:
 
   HESS (const Matrix& a) { init (a); }
 
-  HESS (const Matrix& a, int& info) { info = init (a); }
+  HESS (const Matrix& a, octave_idx_type& info) { info = init (a); }
 
   HESS (const HESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
@@ -64,7 +64,7 @@ private:
   Matrix hess_mat;
   Matrix unitary_hess_mat;
 
-  int init (const Matrix& a);
+  octave_idx_type init (const Matrix& a);
 };
 
 #endif

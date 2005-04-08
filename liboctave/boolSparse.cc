@@ -38,21 +38,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 bool
 SparseBoolMatrix::operator == (const SparseBoolMatrix& a) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  int nz = nnz ();
-  int nr_a = a.rows ();
-  int nc_a = a.cols ();
-  int nz_a = a.nnz ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type nz = nnz ();
+  octave_idx_type nr_a = a.rows ();
+  octave_idx_type nc_a = a.cols ();
+  octave_idx_type nz_a = a.nnz ();
 
   if (nr != nr_a || nc != nc_a || nz != nz_a)
     return false;
 
-  for (int i = 0; i < nc + 1; i++)
+  for (octave_idx_type i = 0; i < nc + 1; i++)
     if (cidx(i) != a.cidx(i))
 	return false;
 
-  for (int i = 0; i < nz; i++)
+  for (octave_idx_type i = 0; i < nz; i++)
     if (data(i) != a.data(i) || ridx(i) != a.ridx(i))
       return false;
 
@@ -66,14 +66,14 @@ SparseBoolMatrix::operator != (const SparseBoolMatrix& a) const
 }
 
 SparseBoolMatrix&
-SparseBoolMatrix::insert (const SparseBoolMatrix& a, int r, int c)
+SparseBoolMatrix::insert (const SparseBoolMatrix& a, octave_idx_type r, octave_idx_type c)
 {
   Sparse<bool>::insert (a, r, c);
   return *this;
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::concat (const SparseBoolMatrix& rb, const Array<int>& ra_idx)
+SparseBoolMatrix::concat (const SparseBoolMatrix& rb, const Array<octave_idx_type>& ra_idx)
 {
   // Don't use numel to avoid all possiblity of an overflow
   if (rb.rows () > 0 && rb.cols () > 0)
@@ -86,18 +86,18 @@ SparseBoolMatrix::concat (const SparseBoolMatrix& rb, const Array<int>& ra_idx)
 SparseBoolMatrix
 SparseBoolMatrix::operator ! (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  int nz1 = nnz ();
-  int nz2 = nr*nc - nz1;
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type nz1 = nnz ();
+  octave_idx_type nz2 = nr*nc - nz1;
    
   SparseBoolMatrix r (nr, nc, nz2);
    
-  int ii = 0;
-  int jj = 0;
-  for (int i = 0; i < nc; i++)
+  octave_idx_type ii = 0;
+  octave_idx_type jj = 0;
+  for (octave_idx_type i = 0; i < nc; i++)
     {
-      for (int j = 0; j < nr; j++)
+      for (octave_idx_type j = 0; j < nr; j++)
 	{
 	  if (jj < cidx(i+1) && ridx(jj) == j)
 	    jj++;
@@ -133,12 +133,12 @@ SparseBoolMatrix::any (int dim) const
 boolMatrix
 SparseBoolMatrix::matrix_value (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   boolMatrix retval (nr, nc, false);
-  for (int j = 0; j < nc; j++)
-    for (int i = cidx(j); i < cidx(j+1); i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
       retval.elem (ridx(i), j) = data (i);
 
   return retval;
@@ -147,14 +147,14 @@ SparseBoolMatrix::matrix_value (void) const
 std::ostream&
 operator << (std::ostream& os, const SparseBoolMatrix& a)
 {
-  int nc = a.cols ();
+  octave_idx_type nc = a.cols ();
 
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
-   for (int j = 0; j < nc; j++)  
+   for (octave_idx_type j = 0; j < nc; j++)  
      {
        OCTAVE_QUIT;
-       for (int i = a.cidx(j); i < a.cidx(j+1); i++)
+       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
 	 os << a.ridx(i) + 1 << " "  << j + 1 << " " << a.data(i) << "\n";
      }
    
@@ -164,20 +164,20 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
 std::istream&
 operator >> (std::istream& is, SparseBoolMatrix& a)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
-  int nz = a.nnz ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+  octave_idx_type nz = a.nnz ();
 
   if (nr < 1 || nc < 1)
     is.clear (std::ios::badbit);
   else
     {
-      int itmp, jtmp, jold = 0;
+      octave_idx_type itmp, jtmp, jold = 0;
       bool tmp;
-      int ii = 0;
+      octave_idx_type ii = 0;
        
       a.cidx (0) = 0;
-      for (int i = 0; i < nz; i++)
+      for (octave_idx_type i = 0; i < nz; i++)
 	{
 	  is >> itmp;
 	  itmp--;
@@ -188,7 +188,7 @@ operator >> (std::istream& is, SparseBoolMatrix& a)
 	    {
 	      if (jold != jtmp)
 		{
-		  for (int j = jold; j < jtmp; j++)
+		  for (octave_idx_type j = jold; j < jtmp; j++)
 		    a.cidx(j+1) = ii;
 		  
 		  jold = jtmp;
@@ -200,7 +200,7 @@ operator >> (std::istream& is, SparseBoolMatrix& a)
 	    goto done;
 	}
 
-      for (int j = jold; j < nc; j++)
+      for (octave_idx_type j = jold; j < nc; j++)
 	a.cidx(j+1) = ii;
     }
 
@@ -240,13 +240,13 @@ SparseBoolMatrix::reshape (const dim_vector& new_dims) const
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::permute (const Array<int>& vec, bool inv) const
+SparseBoolMatrix::permute (const Array<octave_idx_type>& vec, bool inv) const
 {
   return Sparse<bool>::permute (vec, inv);
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::ipermute (const Array<int>& vec) const
+SparseBoolMatrix::ipermute (const Array<octave_idx_type>& vec) const
 {
   return Sparse<bool>::ipermute (vec);
 }

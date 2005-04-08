@@ -34,9 +34,9 @@ public:
 
   ColumnVector (void) : MArray<double> () { }
 
-  explicit ColumnVector (int n) : MArray<double> (n) { }
+  explicit ColumnVector (octave_idx_type n) : MArray<double> (n) { }
 
-  ColumnVector (int n, double val) : MArray<double> (n, val) { }
+  ColumnVector (octave_idx_type n, double val) : MArray<double> (n, val) { }
 
   ColumnVector (const ColumnVector& a) : MArray<double> (a) { }
 
@@ -53,10 +53,10 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  ColumnVector& insert (const ColumnVector& a, int r);
+  ColumnVector& insert (const ColumnVector& a, octave_idx_type r);
 
   ColumnVector& fill (double val);
-  ColumnVector& fill (double val, int r1, int r2);
+  ColumnVector& fill (double val, octave_idx_type r1, octave_idx_type r2);
 
   ColumnVector stack (const ColumnVector& a) const;
 
@@ -67,9 +67,9 @@ public:
 
   // resize is the destructive equivalent for this one
 
-  ColumnVector extract (int r1, int r2) const;
+  ColumnVector extract (octave_idx_type r1, octave_idx_type r2) const;
 
-  ColumnVector extract_n (int r1, int n) const;
+  ColumnVector extract_n (octave_idx_type r1, octave_idx_type n) const;
 
   // matrix by column vector -> column vector operations
 
@@ -95,7 +95,7 @@ public:
 
 private:
 
-  ColumnVector (double *d, int l) : MArray<double> (d, l) { }
+  ColumnVector (double *d, octave_idx_type l) : MArray<double> (d, l) { }
 };
 
 MARRAY_FORWARD_DEFS (MArray, ColumnVector, double)

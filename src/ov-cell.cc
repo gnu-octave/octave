@@ -79,11 +79,11 @@ octave_cell::subsref (const std::string& type,
 	      retval(0) = tcell(0,0);
 	    else
 	      {
-		int n = tcell.numel ();
+		octave_idx_type n = tcell.numel ();
 
 		octave_value_list lst (n, octave_value ());
 
-		for (int i = 0; i < n; i++)
+		for (octave_idx_type i = 0; i < n; i++)
 		  {
 		    OCTAVE_QUIT;
 		    lst(i) = tcell(i);
@@ -253,7 +253,7 @@ octave_cell::byte_size (void) const
 {
   size_t retval = 0;
 
-  for (int i = 0; i < numel (); i++)
+  for (octave_idx_type i = 0; i < numel (); i++)
     retval += matrix(i).byte_size ();
 
   return retval;
@@ -264,21 +264,21 @@ octave_cell::list_value (void) const
 {
   octave_value_list retval;
 
-  int nr = rows ();
-  int nc = columns ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = columns ();
 
   if (nr == 1 && nc > 0)
     {
       retval.resize (nc);
 
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	retval(i) = matrix(0,i);
     }
   else if (nc == 1 && nr > 0)
     {
       retval.resize (nr);
 
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	retval(i) = matrix(i,0);
     }
   else
@@ -292,16 +292,16 @@ octave_cell::all_strings (bool pad, bool) const
 {
   string_vector retval;
 
-  int nr = rows ();
-  int nc = columns ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = columns ();
 
   int n_elts = 0;
 
-  int max_len = 0;
+  octave_idx_type max_len = 0;
 
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  string_vector s = matrix(i,j).all_strings ();
 
@@ -310,7 +310,7 @@ octave_cell::all_strings (bool pad, bool) const
 
 	  n_elts += s.length ();
 
-	  int s_max_len = s.max_length ();
+	  octave_idx_type s_max_len = s.max_length ();
 
 	  if (s_max_len > max_len)
 	    max_len = s_max_len;
@@ -319,17 +319,17 @@ octave_cell::all_strings (bool pad, bool) const
 
   retval.resize (n_elts);
 
-  int k = 0;
+  octave_idx_type k = 0;
 
-  for (int j = 0; j < nc; j++)
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  string_vector s = matrix(i,j).all_strings ();
 
 	  int n = s.length ();
 
-	  for (int ii = 0; ii < n; ii++)
+	  for (octave_idx_type ii = 0; ii < n; ii++)
 	    {
 	      std::string t = s[ii];
 	      int t_len = t.length ();
@@ -364,8 +364,8 @@ octave_cell::print_raw (std::ostream& os, bool) const
 
   if (nd == 2)
     {
-      int nr = rows ();
-      int nc = columns ();
+      octave_idx_type nr = rows ();
+      octave_idx_type nc = columns ();
 
       if (nr > 0 && nc > 0)
 	{
@@ -375,9 +375,9 @@ octave_cell::print_raw (std::ostream& os, bool) const
 
 	  increment_indent_level ();
 
-	  for (int j = 0; j < nc; j++)
+	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  OCTAVE_QUIT;
 
@@ -426,13 +426,13 @@ octave_cell::save_ascii (std::ostream& os, bool& infnan_warned,
     {
       os << "# ndims: " << d.length () << "\n";
       
-      for (int i=0; i < d.length (); i++)
+      for (int i = 0; i < d.length (); i++)
 	os << " " << d (i);
       os << "\n";
 
       Cell tmp = cell_value ();
       
-      for (int i = 0; i < d.numel (); i++)
+      for (octave_idx_type i = 0; i < d.numel (); i++)
 	{
 	  octave_value o_val = tmp.elem (i);
 
@@ -453,9 +453,9 @@ octave_cell::save_ascii (std::ostream& os, bool& infnan_warned,
 
       Cell tmp = cell_value ();
       
-      for (int j = 0; j < tmp.cols (); j++)
+      for (octave_idx_type j = 0; j < tmp.cols (); j++)
 	{
-	  for (int i = 0; i < tmp.rows (); i++)
+	  for (octave_idx_type i = 0; i < tmp.rows (); i++)
 	    {
 	      octave_value o_val = tmp.elem (i, j);
 
@@ -486,13 +486,13 @@ octave_cell::load_ascii (std::istream& is)
   keywords[1] = "rows";
 
   std::string kw;
-  int val = 0;
+  octave_idx_type val = 0;
 
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
 	{
-	  int mdims = val;
+	  int mdims = static_cast<int> (val);
 
 	  if (mdims >= 0)
 	    {
@@ -504,7 +504,7 @@ octave_cell::load_ascii (std::istream& is)
 
 	      Cell tmp(dv);
 
-	      for (int i = 0; i < dv.numel (); i++)
+	      for (octave_idx_type i = 0; i < dv.numel (); i++)
 		{
 		  octave_value t2;
 		  bool dummy;
@@ -542,8 +542,8 @@ octave_cell::load_ascii (std::istream& is)
 	}
       else if (kw == "rows")
 	{
-	  int nr = val;
-	  int nc = 0;
+	  octave_idx_type nr = val;
+	  octave_idx_type nc = 0;
 
 	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
 	    {
@@ -551,9 +551,9 @@ octave_cell::load_ascii (std::istream& is)
 		{
 		  Cell tmp (nr, nc);
 
-		  for (int j = 0; j < nc; j++)
+		  for (octave_idx_type j = 0; j < nc; j++)
 		    {
-		      for (int i = 0; i < nr; i++)
+		      for (octave_idx_type i = 0; i < nr; i++)
 			{
 			  octave_value t2;
 			  bool dummy;
@@ -619,7 +619,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
   // Use negative value for ndims
   FOUR_BYTE_INT di = - d.length();
   os.write (X_CAST (char *, &di), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i = 0; i < d.length (); i++)
     {
       di = d(i);
       os.write (X_CAST (char *, &di), 4);
@@ -627,7 +627,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
   
   Cell tmp = cell_value ();
       
-  for (int i = 0; i < d.numel (); i++)
+  for (octave_idx_type i = 0; i < d.numel (); i++)
     {
       octave_value o_val = tmp.elem (i);
 
@@ -681,10 +681,10 @@ octave_cell::load_binary (std::istream& is, bool swap,
       dv(0) = 1;
     }
 
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   Cell tmp(dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       octave_value t2;
       bool dummy;
@@ -778,7 +778,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 
   Cell tmp = cell_value ();
   
-  for (int i = 0; i < dv.numel (); i++)
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
       char s[20];
       sprintf (s, "_%d", i);
@@ -867,7 +867,7 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
   H5Gclose (group_id);
 #endif
 
-  for (int i = 0; i < dv.numel (); i++)
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
 
 #ifdef HAVE_H5GGET_NUM_OBJS
@@ -1089,7 +1089,7 @@ cell array will have a dimension vector corresponding to\n\
 
 	  string_vector keys = m.keys ();
 
-	  int fields_numel = keys.length ();
+	  octave_idx_type fields_numel = keys.length ();
 
 	  // The resulting dim_vector should have dimensions:
 	  // [numel(fields) size(struct)]
@@ -1113,12 +1113,12 @@ cell array will have a dimension vector corresponding to\n\
 	  // ra_idx(0) will both contain fields_numel for each call to
 	  // increment_index and j for each assignment.
 
-	  Array<int> ra_idx (result_dv.length (), 0);
+	  Array<octave_idx_type> ra_idx (result_dv.length (), 0);
 	  ra_idx(0) = fields_numel;
 
-	  for (int i = 0; i < m_dv.numel (); i++)
+	  for (octave_idx_type i = 0; i < m_dv.numel (); i++)
 	    {
-	      for (int j = 0; j < fields_numel; j++)
+	      for (octave_idx_type j = 0; j < fields_numel; j++)
 		{
 		  ra_idx(0) = j;
 

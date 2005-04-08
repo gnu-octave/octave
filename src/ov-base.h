@@ -92,9 +92,9 @@ public:
 
   dim_vector dims (void) const { return dim_vector (-1, -1); }
 
-  int numel (void) const { return dims ().numel (); }
+  octave_idx_type numel (void) const { return dims ().numel (); }
 
-  int capacity (void) const { return numel (); }
+  octave_idx_type capacity (void) const { return numel (); }
 
   size_t byte_size (void) const { return 0; }
 

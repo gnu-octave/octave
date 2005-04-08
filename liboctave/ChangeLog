@@ -1,3 +1,58 @@
+2005-04-08  John W. Eaton  <jwe@octave.org>
+
+	* Initial merge of 64-bit changes from Clinton Chee:
+
+	2005-04-07  John W. Eaton  <jwe@octave.org>
+
+	* MArray-i.cc, Array-i.cc: Instantiate Array<long> and MArray<long>.
+
+	* CSparse.cc, CSparse.h, MSparse.cc, MSparse.h, Sparse-op-defs.h,
+	Sparse.cc, Sparse.h, SparseCmplxLU.cc, SparseType.cc,
+	SparseType.h, SparsedbleLU.cc, boolSparse.cc, boolSparse.h,
+	dSparse.cc, dSparse.h, sparse-base-lu.cc:
+	Use octave_idx_type instead of int where needed.
+
+	2005-03-31  Clinton Chee  <chee@parallel.hpc.unsw.edu.au>
+
+	* Array-util.cc, Array-util.h, Array.cc,Array.h, Array2.h,
+	Array3.h, ArrayN.cc, ArrayN.h, Bounds.cc, Bounds.h, CColVector.cc,
+	CColVector.h, CDiagMatrix.cc, CDiagMatrix.h, CMatrix.cc,
+	CMatrix.h, CNDArray.cc, CNDArray.h, CRowVector.cc, CRowVector.h,
+	CmplxAEPBAL.cc, CmplxAEPBAL.h, CmplxCHOL.cc, CmplxCHOL.h,
+	CmplxHESS.cc, CmplxHESS.h, CmplxLU.cc, CmplxQR.cc, CmplxQRP.cc,
+	CmplxSCHUR.cc, CmplxSCHUR.h, CmplxSVD.cc, CmplxSVD.h, CollocWt.cc,
+	CollocWt.h, DAEFunc.h, DASPK-opts.in,DASPK.cc,DASPK.h,
+	DASRT-opts.in, DASRT.cc, DASRT.h, DASSL-opts.in, DASSL.cc,
+	DASSL.h, DiagArray2.cc, DiagArray2.h, EIG.cc, EIG.h, FEGrid.cc,
+	FEGrid.h, LPsolve.cc, LPsolve.h, LSODE-opts.in, LSODE.cc, LSODE.h,
+	MArray-defs.h, MArray.cc, MArray.h, MArray2.cc, MArray2.h,
+	MArrayN.cc, MDiagArray2.cc, MDiagArray2.h, NLConst.h, NLEqn.cc,
+	NLEqn.h, Quad.cc, Quad.h, Range.cc,Range.cc, Range.h, base-de.h,
+	base-lu.cc, base-lu.h, base-min.h, boolMatrix.cc, boolMatrix.h,
+	boolNDArray.cc, boolNDArray.h, chMatrix.cc, chMatrix.h,
+	chNDArray.cc, chNDArray.h, dColVector.cc, dColVector.h,
+	dDiagMatrix.cc, dDiagMatrix.h, dMatrix.cc, dMatrix.h,
+	dNDArray.cc,dNDArray.cc, dNDArray.h, dRowVector.cc, dRowVector.h,
+	dbleAEPBAL.cc, dbleAEPBAL.h, dbleCHOL.cc, dbleCHOL.h, dbleHESS.cc,
+	dbleHESS.h, dbleLU.cc, dbleQR.cc, dbleQRP.cc, dbleSCHUR.cc,
+	dbleSCHUR.h, dbleSVD.cc, dbleSVD.h, dim-vector.h, idx-vector.cc,
+	idx-vector.h, intNDArray.cc, intNDArray.h, lo-specfun.cc,
+	lo-specfun.h, mach-info.cc, mx-inlines.cc, oct-fftw.cc,
+	oct-fftw.h, oct-rand.cc, oct-rand.h, so-array.cc, so-array.h,
+	str-vec.cc, str-vec.h:
+	Use octave_idx_type instead of int where needed.
+
+	2005-04-01  John W. Eaton  <jwe@octave.org>
+
+	* dim-vector.h, lo-utils.h: Include oct-types.h.
+
+	* oct-types.h.in: New file.
+
+	2005-03-31  Clinton Chee  <chee@parallel.hpc.unsw.edu.au>
+
+	* lo-utils.cc (NINTbig): New function.
+	* lo-utils.h: Provide decl.
+
 2005-04-06  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in: Link to UMFPACK_LIBS.

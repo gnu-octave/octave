@@ -56,17 +56,17 @@ template <class T>
 MArray2<T>&
 operator += (MArray2<T>& a, const MArray2<T>& b)
 {
-  int r = a.rows ();
-  int c = a.cols ();
-  int br = b.rows ();
-  int bc = b.cols ();
+  octave_idx_type r = a.rows ();
+  octave_idx_type c = a.cols ();
+  octave_idx_type br = b.rows ();
+  octave_idx_type bc = b.cols ();
   if (r != br || c != bc)
     gripe_nonconformant ("operator +=", r, c, br, bc);
   else
     {
       if (r > 0 && c > 0)
 	{
-	  int l = a.length ();
+	  octave_idx_type l = a.length ();
 	  DO_VV_OP2 (T, a, +=, b);
 	}
     }
@@ -77,17 +77,17 @@ template <class T>
 MArray2<T>&
 operator -= (MArray2<T>& a, const MArray2<T>& b)
 {
-  int r = a.rows ();
-  int c = a.cols ();
-  int br = b.rows ();
-  int bc = b.cols ();
+  octave_idx_type r = a.rows ();
+  octave_idx_type c = a.cols ();
+  octave_idx_type br = b.rows ();
+  octave_idx_type bc = b.cols ();
   if (r != br || c != bc)
     gripe_nonconformant ("operator -=", r, c, br, bc);
   else
     {
       if (r > 0 && c > 0)
 	{
-	  int l = a.length ();
+	  octave_idx_type l = a.length ();
 	  DO_VV_OP2 (T, a, -=, b);
 	}
     }
@@ -103,7 +103,7 @@ operator -= (MArray2<T>& a, const MArray2<T>& b)
   { \
     MArray2<T> result (a.rows (), a.cols ()); \
     T *r = result.fortran_vec (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     const T *v = a.data (); \
     DO_VS_OP (r, l, v, OP, s); \
     return result; \
@@ -123,7 +123,7 @@ MARRAY_A2S_OP (/)
   { \
     MArray2<T> result (a.rows (), a.cols ()); \
     T *r = result.fortran_vec (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     const T *v = a.data (); \
     DO_SV_OP (r, l, s, OP, v); \
     return result; \
@@ -141,10 +141,10 @@ MARRAY_SA2_OP (/)
   MArray2<T> \
   FCN (const MArray2<T>& a, const MArray2<T>& b) \
   { \
-    int a_nr = a.rows (); \
-    int a_nc = a.cols (); \
-    int b_nr = b.rows (); \
-    int b_nc = b.cols (); \
+    octave_idx_type a_nr = a.rows (); \
+    octave_idx_type a_nc = a.cols (); \
+    octave_idx_type b_nr = b.rows (); \
+    octave_idx_type b_nc = b.cols (); \
     if (a_nr != b_nr || a_nc != b_nc) \
       { \
         gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
@@ -152,7 +152,7 @@ MARRAY_SA2_OP (/)
       } \
     if (a_nr == 0 || a_nc == 0) \
       return MArray2<T> (a_nr, a_nc); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     MArray2<T> result (a_nr, a_nc); \
     T *r = result.fortran_vec (); \
     const T *x = a.data (); \
@@ -179,7 +179,7 @@ template <class T>
 MArray2<T>
 operator - (const MArray2<T>& a)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   MArray2<T> result (a.rows (), a.cols ());
   T *r = result.fortran_vec ();
   const T *x = a.data ();

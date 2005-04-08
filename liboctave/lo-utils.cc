@@ -46,6 +46,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Convert X to the nearest integer value.  Should not pass NaN to
 // this function.
 
+// Sometimes you need a large integer, but not always.
+// XXX FIXME-64 XXX -- INT_MAX and INT_MIN are probably not right here.
+
+octave_idx_type
+NINTbig (double x)
+{
+  if (x > INT_MAX)
+    return INT_MAX;
+  else if (x < INT_MIN)
+    return INT_MIN;
+  else
+    return static_cast<octave_idx_type> ((x > 0) ? (x + 0.5) : (x - 0.5));
+}
+
 int
 NINT (double x)
 {

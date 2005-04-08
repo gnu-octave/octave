@@ -68,11 +68,11 @@ Octave_map::stringfield (const std::string& k,
 string_vector
 Octave_map::keys (void) const
 {
-  int len = length ();
+  octave_idx_type len = length ();
 
   string_vector names (len);
 
-  int i = 0;
+  octave_idx_type i = 0;
   for (const_iterator p = begin (); p != end (); p++)
     names[i++] = key (p);
 
@@ -97,10 +97,10 @@ Octave_map::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
-int
+octave_idx_type
 Octave_map::numel (void) const
 {
-  int retval;
+  octave_idx_type retval;
 
   if (empty ())
     retval = 0;
@@ -137,7 +137,7 @@ Octave_map::resize (const dim_vector& dv) const
 }
 
 Octave_map
-Octave_map::concat (const Octave_map& rb, const Array<int>& ra_idx)
+Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
 {
   Octave_map retval;
 
@@ -171,12 +171,12 @@ equiv_keys (const Octave_map& a, const Octave_map& b)
   string_vector a_keys = a.keys().qsort ();
   string_vector b_keys = b.keys().qsort ();
 
-  int a_len = a_keys.length ();
-  int b_len = b_keys.length ();
+  octave_idx_type a_len = a_keys.length ();
+  octave_idx_type b_len = b_keys.length ();
 
   if (a_len == b_len)
     {
-      for (int i = 0; i < a_len; i++)
+      for (octave_idx_type i = 0; i < a_len; i++)
 	{
 	  if (a_keys[i] != b_keys[i])
 	    return retval;
@@ -195,9 +195,9 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
 
   if (! t_keys.empty ())
     {
-      int len = t_keys.length ();
+      octave_idx_type len = t_keys.length ();
 
-      for (int i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < len; i++)
 	{
 	  std::string k = t_keys[i];
 
@@ -220,25 +220,25 @@ common_size (const dim_vector& a, const dim_vector& b)
 {
   dim_vector retval;
 
-  int a_len = a.length ();
-  int b_len = b.length ();
+  octave_idx_type a_len = a.length ();
+  octave_idx_type b_len = b.length ();
 
-  int new_len = std::max (a_len, b_len);
-  int min_len = std::min (a_len, b_len);
+  octave_idx_type new_len = std::max (a_len, b_len);
+  octave_idx_type min_len = std::min (a_len, b_len);
 
   retval.resize (new_len);
 
-  for (int i = 0; i < min_len; i++)
+  for (octave_idx_type i = 0; i < min_len; i++)
     retval(i) = std::max (a(i), b(i));
 
   if (a_len < b_len)
     {
-      for (int i = min_len; i < b_len; i++)
+      for (octave_idx_type i = min_len; i < b_len; i++)
 	retval(i) = b(i);
     }
   else if (a_len > b_len)
     {
-      for (int i = min_len; i < a_len; i++)
+      for (octave_idx_type i = min_len; i < a_len; i++)
 	retval(i) = a(i);
     }
 

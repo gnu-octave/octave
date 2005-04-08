@@ -36,7 +36,7 @@ public:
 
   CHOL (const Matrix& a) { init (a); }
 
-  CHOL (const Matrix& a, int& info) { info = init (a); }
+  CHOL (const Matrix& a, octave_idx_type& info) { info = init (a); }
 
   CHOL (const CHOL& a) : chol_mat (a.chol_mat) { }
 
@@ -56,7 +56,7 @@ private:
 
   Matrix chol_mat;
 
-  int init (const Matrix& a);
+  octave_idx_type init (const Matrix& a);
 };
 
 #endif

@@ -35,7 +35,7 @@ public:
   Bounds (void)
     : lb (), ub () { }
 
-  Bounds (int n)
+  Bounds (octave_idx_type n)
     : lb (n, 0.0), ub (n, 0.0) { }
 
   Bounds (const ColumnVector l, const ColumnVector u)
@@ -63,7 +63,7 @@ public:
 
   ~Bounds (void) { }
 
-  Bounds& resize (int n)
+  Bounds& resize (octave_idx_type n)
     {
       lb.resize (n);
       ub.resize (n);
@@ -71,15 +71,15 @@ public:
       return *this;
     }
 
-  double lower_bound (int index) const { return lb.elem (index); }
-  double upper_bound (int index) const { return ub.elem (index); }
+  double lower_bound (octave_idx_type index) const { return lb.elem (index); }
+  double upper_bound (octave_idx_type index) const { return ub.elem (index); }
 
   ColumnVector lower_bounds (void) const { return lb; }
   ColumnVector upper_bounds (void) const { return ub; }
 
-  int size (void) const { return lb.capacity (); }
+  octave_idx_type size (void) const { return lb.capacity (); }
 
-  Bounds& set_bound (int index, double low, double high)
+  Bounds& set_bound (octave_idx_type index, double low, double high)
     {
       lb.elem (index) = low;
       ub.elem (index) = high;
@@ -95,13 +95,13 @@ public:
 
   Bounds& set_bounds (const ColumnVector lb, const ColumnVector ub);
 
-  Bounds& set_lower_bound (int index, double low)
+  Bounds& set_lower_bound (octave_idx_type index, double low)
     {
       lb.elem (index) = low;
       return *this;
     }
 
-  Bounds& set_upper_bound (int index, double high)
+  Bounds& set_upper_bound (octave_idx_type index, double high)
     {
       ub.elem (index) = high;
       return *this;

@@ -295,7 +295,9 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
       swap_bytes<4> (&nz);
     }
 
-  SparseComplexMatrix m (nr, nc, nz);
+  SparseComplexMatrix m (static_cast<octave_idx_type> (nr),
+			 static_cast<octave_idx_type> (nc),
+			 static_cast<octave_idx_type> (nz));
 
   for (int i = 0; i < nc+1; i++) 
     {
@@ -626,7 +628,9 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Dclose (data_hid);
 
-  SparseComplexMatrix m (nr, nc, nz);
+  SparseComplexMatrix m (static_cast<octave_idx_type> (nr),
+			 static_cast<octave_idx_type> (nc),
+			 static_cast<octave_idx_type> (nz));
 
   data_hid = H5Dopen (group_hid, "cidx");
   space_hid = H5Dget_space (data_hid);

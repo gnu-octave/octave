@@ -51,8 +51,8 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
   octave_value arg = args(0);
 
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   int arg_is_empty = empty_arg ("inverse", nr, nc);
 
@@ -73,7 +73,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
       if (! error_state)
 	{
-	  int info;
+	  octave_idx_type info;
 	  double rcond = 0.0;
 
 	  Matrix result = m.inverse (info, rcond, 1);
@@ -96,7 +96,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
       if (! error_state)
 	{
-	  int info;
+	  octave_idx_type info;
 	  double rcond = 0.0;
 
 	  ComplexMatrix result = m.inverse (info, rcond, 1);

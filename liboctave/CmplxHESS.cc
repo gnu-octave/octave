@@ -32,34 +32,34 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const int&, Complex*, const int&,
-			     int&, int&, double*, int&
+			     const octave_idx_type&, Complex*, const octave_idx_type&,
+			     octave_idx_type&, octave_idx_type&, double*, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
  
   F77_RET_T
-  F77_FUNC (zgehrd, ZGEHRD) (const int&, const int&, const int&,
-			     Complex*, const int&, Complex*,
-			     Complex*, const int&, int&);
+  F77_FUNC (zgehrd, ZGEHRD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     Complex*, const octave_idx_type&, Complex*,
+			     Complex*, const octave_idx_type&, octave_idx_type&);
  
   F77_RET_T
-  F77_FUNC (zunghr, ZUNGHR) (const int&, const int&, const int&,
-			     Complex*, const int&, Complex*,
-			     Complex*, const int&, int&);
+  F77_FUNC (zunghr, ZUNGHR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     Complex*, const octave_idx_type&, Complex*,
+			     Complex*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, const int&, double*,
-			     const int&, Complex*, const int&, int&
+			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 }
 
-int
+octave_idx_type
 ComplexHESS::init (const ComplexMatrix& a)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
     {
@@ -71,11 +71,11 @@ ComplexHESS::init (const ComplexMatrix& a)
   char job = 'N';
   char side = 'R';
 
-  int n = a_nc;
-  int lwork = 32 * n;
-  int info;
-  int ilo;
-  int ihi;
+  octave_idx_type n = a_nc;
+  octave_idx_type lwork = 32 * n;
+  octave_idx_type info;
+  octave_idx_type ilo;
+  octave_idx_type ihi;
 
   hess_mat = a;
   Complex *h = hess_mat.fortran_vec ();
@@ -130,8 +130,8 @@ ComplexHESS::init (const ComplexMatrix& a)
 		  // please let me know!
 
 		  if (n > 2)
-		    for (int j = 0; j < a_nc; j++)
-		      for (int i = j+2; i < a_nr; i++)
+		    for (octave_idx_type j = 0; j < a_nc; j++)
+		      for (octave_idx_type i = j+2; i < a_nr; i++)
 			hess_mat.elem (i, j) = 0;
 		}
 	    }

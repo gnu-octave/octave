@@ -128,8 +128,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
   octave_value arg = args(0);
 
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   if (nr == 0 || nc == 0)
     {

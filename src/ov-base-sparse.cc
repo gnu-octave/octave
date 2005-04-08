@@ -47,7 +47,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 {
   octave_value retval;
 
-  int n_idx = idx.length ();
+  octave_idx_type n_idx = idx.length ();
 
   int nd = matrix.ndims ();
 
@@ -84,7 +84,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 	  {
 	    Array<idx_vector> idx_vec (n_idx);
 
-	    for (int i = 0; i < n_idx; i++)
+	    for (octave_idx_type i = 0; i < n_idx; i++)
 	      {
 		idx_vec(i) = idx(i).index_vector ();
 
@@ -181,9 +181,9 @@ template <class T>
 void 
 octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
 {
-  int len = idx.length ();
+  octave_idx_type len = idx.length ();
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     matrix.set_index (idx(i).index_vector ());
 
   ::assign (matrix, rhs);
@@ -196,8 +196,8 @@ octave_base_sparse<T>::is_true (void) const
 {
   bool retval = false;
   dim_vector dv = matrix.dims ();
-  int nel = dv.numel ();
-  int nz = nnz ();
+  octave_idx_type nel = dv.numel ();
+  octave_idx_type nz = nnz ();
 
   if (nz == nel && nel > 0)
     {
@@ -241,9 +241,9 @@ void
 octave_base_sparse<T>::print_raw (std::ostream& os,
 				      bool pr_as_read_syntax) const
 {
-  int nr = matrix.rows ();
-  int nc = matrix.cols ();
-  int nz = nonzero ();
+  octave_idx_type nr = matrix.rows ();
+  octave_idx_type nc = matrix.cols ();
+  octave_idx_type nz = nonzero ();
 
   os << "Compressed Column Sparse (rows=" << nr <<
     ", cols=" << nc <<
@@ -254,10 +254,10 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
 
   if (nz != 0)
     {
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
 	  OCTAVE_QUIT;
-	  for (int i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
+	  for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
 	    {
 	      os << "\n";
 	      os << "  (" << matrix.ridx(i)+1 <<
@@ -290,9 +290,9 @@ template <class T>
 bool 
 octave_base_sparse<T>::load_ascii (std::istream& is)
 {
-  int nz = 0;
-  int nr = 0;
-  int nc = 0;
+  octave_idx_type nz = 0;
+  octave_idx_type nr = 0;
+  octave_idx_type nc = 0;
   bool success = true;
 
   if (extract_keyword (is, "nnz", nz, true) &&

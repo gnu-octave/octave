@@ -278,8 +278,8 @@ $S$.\n\
       return retval;
     }
 
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   int arg_is_empty = empty_arg ("schur", nr, nc);
 

@@ -32,11 +32,11 @@ octave_fftw
 {
 public:
   static int fft (const double *in, Complex *out, size_t npts, 
-		  size_t nsamples = 1, int stride = 1, int dist = -1);
+		  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
   static int fft (const Complex *in, Complex *out, size_t npts, 
-		  size_t nsamples = 1, int stride = 1, int dist = -1);
+		  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
   static int ifft (const Complex *in, Complex *out, size_t npts,
-		   size_t nsamples = 1, int stride = 1, int dist = -1);
+		   size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
 
   static int fftNd (const double*, Complex*, const int, const dim_vector &);
   static int fftNd (const Complex*, Complex*, const int, 

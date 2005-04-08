@@ -35,33 +35,33 @@ extern "C"
 			     F77_CONST_CHAR_ARG_DECL,
 			     ComplexSCHUR::select_function,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, Complex*, const int&, int&,
-			     Complex*, Complex*, const int&, double&,
-			     double&, Complex*, const int&, double*, int*,
-			     int&
+			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&,
+			     Complex*, Complex*, const octave_idx_type&, double&,
+			     double&, Complex*, const octave_idx_type&, double*, octave_idx_type*,
+			     octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 }
 
-static int
+static octave_idx_type
 select_ana (const Complex& a)
 {
   return a.real () < 0.0;
 }
 
-static int
+static octave_idx_type
 select_dig (const Complex& a)
 {
   return (abs (a) < 1.0);
 }
 
-int
+octave_idx_type
 ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord, 
 		    bool calc_unitary)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
     {
@@ -94,10 +94,10 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
   else
     selector = 0;
 
-  int n = a_nc;
-  int lwork = 8 * n;
-  int info;
-  int sdim;
+  octave_idx_type n = a_nc;
+  octave_idx_type lwork = 8 * n;
+  octave_idx_type info;
+  octave_idx_type sdim;
   double rconde;
   double rcondv;
 
@@ -118,8 +118,8 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
   Complex *pwork = work.fortran_vec ();
 
   // BWORK is not referenced for non-ordered Schur.
-  Array<int> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
-  int *pbwork = bwork.fortran_vec ();
+  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
+  octave_idx_type *pbwork = bwork.fortran_vec ();
 
   F77_XFCN (zgeesx, ZGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
 			     F77_CONST_CHAR_ARG2 (&sort, 1),

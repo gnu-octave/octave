@@ -70,16 +70,16 @@ Polynomial Approximation}.\n\
       return retval;
     }
 
-  int ncol = NINT (tmp);
+  octave_idx_type ncol = NINTbig (tmp);
   if (ncol < 0)
     {
       error ("colloc: first argument must be non-negative");
       return retval;
     }
 
-  int ntot = ncol;
-  int left = 0;
-  int right = 0;
+  octave_idx_type ntot = ncol;
+  octave_idx_type left = 0;
+  octave_idx_type right = 0;
 
   for (int i = 1; i < nargin; i++)
     {

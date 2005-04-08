@@ -46,7 +46,7 @@ charNDArray::any (int dim) const
 }
 
 charNDArray
-charNDArray::concat (const charNDArray& rb, const Array<int>& ra_idx)
+charNDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -54,15 +54,15 @@ charNDArray::concat (const charNDArray& rb, const Array<int>& ra_idx)
 }
 
 charNDArray
-charNDArray::concat (const NDArray& rb, const Array<int>& ra_idx)
+charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   charNDArray tmp (rb.dims ());
-  int nel = rb.numel ();
+  octave_idx_type nel = rb.numel ();
 
   if (rb.numel () == 0)
     return *this;
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       double d = rb.elem (i);
 
@@ -74,7 +74,7 @@ charNDArray::concat (const NDArray& rb, const Array<int>& ra_idx)
 	}
       else
 	{
-	  int ival = NINT (d);
+	  octave_idx_type ival = NINTbig (d);
 
 	  if (ival < 0 || ival > UCHAR_MAX)
 	    // XXX FIXME XXX -- is there something
@@ -90,14 +90,14 @@ charNDArray::concat (const NDArray& rb, const Array<int>& ra_idx)
 }
 
 charNDArray&
-charNDArray::insert (const charNDArray& a, int r, int c)
+charNDArray::insert (const charNDArray& a, octave_idx_type r, octave_idx_type c)
 {
   Array<char>::insert (a, r, c);
   return *this;
 }
 
 charNDArray&
-charNDArray::insert (const charNDArray& a, const Array<int>& ra_idx)
+charNDArray::insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<char>::insert (a, ra_idx);
   return *this;
@@ -131,15 +131,15 @@ charNDArray::matrix_value (void) const
 }
 
 void
-charNDArray::increment_index (Array<int>& ra_idx,
+charNDArray::increment_index (Array<octave_idx_type>& ra_idx,
 			      const dim_vector& dimensions,
 			      int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
-int 
-charNDArray::compute_index (Array<int>& ra_idx,
+octave_idx_type 
+charNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);

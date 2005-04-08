@@ -32,13 +32,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Cell::Cell (const string_vector& sv)
   : ArrayN<octave_value> ()
 {
-  int n = sv.length ();
+  octave_idx_type n = sv.length ();
 
   if (n > 0)
     {
       resize (dim_vector (n, 1));
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	elem(i,0) = sv[i];
     }
 }
@@ -48,7 +48,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 {
   Cell retval;
 
-  int n = idx_arg.length ();
+  octave_idx_type n = idx_arg.length ();
 
   switch (n)
     {
@@ -79,7 +79,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
       {
 	Array<idx_vector> iv (n);
 
-	for (int i = 0; i < n; i++)
+	for (octave_idx_type i = 0; i < n; i++)
 	  {
 	    iv(i) = idx_arg(i).index_vector ();
 
@@ -101,7 +101,7 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 	      const octave_value& fill_val)
 
 {
-  for (int i = 0; i < idx_arg.length (); i++)
+  for (octave_idx_type i = 0; i < idx_arg.length (); i++)
     set_index (idx_arg(i).index_vector ());
 
   ::assign (*this, rhs, fill_val);
@@ -110,20 +110,20 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 }
 
 Cell
-Cell::concat (const Cell& rb, const Array<int>& ra_idx)
+Cell::concat (const Cell& rb, const Array<octave_idx_type>& ra_idx)
 {
   return insert (rb, ra_idx);
 }
 
 Cell&
-Cell::insert (const Cell& a, int r, int c)
+Cell::insert (const Cell& a, octave_idx_type r, octave_idx_type c)
 {
   Array<octave_value>::insert (a, r, c);
   return *this;
 }
 
 Cell&
-Cell::insert (const Cell& a, const Array<int>& ra_idx)
+Cell::insert (const Cell& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<octave_value>::insert (a, ra_idx);
   return *this;

@@ -66,7 +66,7 @@ private:
   ComplexMatrix balanced_mat;
   ComplexMatrix balancing_mat;
 
-  int init (const ComplexMatrix& a, const std::string& balance_job);
+  octave_idx_type init (const ComplexMatrix& a, const std::string& balance_job);
 };
 
 #endif

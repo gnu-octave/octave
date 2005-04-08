@@ -32,15 +32,15 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL,
-			     const int&, Complex*, const int&, int&
+			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
 }
 
-int
+octave_idx_type
 ComplexCHOL::init (const ComplexMatrix& a)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
     {
@@ -49,8 +49,8 @@ ComplexCHOL::init (const ComplexMatrix& a)
       return -1;
     }
 
-  int n = a_nc;
-  int info;
+  octave_idx_type n = a_nc;
+  octave_idx_type info;
 
   chol_mat = a;
   Complex *h = chol_mat.fortran_vec ();
@@ -66,8 +66,8 @@ ComplexCHOL::init (const ComplexMatrix& a)
       // faster for that matter :-)), please let me know!
 
       if (n > 1)
-	for (int j = 0; j < a_nc; j++)
-	  for (int i = j+1; i < a_nr; i++)
+	for (octave_idx_type j = 0; j < a_nc; j++)
+	  for (octave_idx_type i = j+1; i < a_nr; i++)
 	    chol_mat.elem (i, j) = 0.0;
     }
 

@@ -49,7 +49,7 @@ Range
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
-  int nelem (void) const { return rng_nelem; }
+  octave_idx_type nelem (void) const { return rng_nelem; }
 
   bool all_elements_are_ints (void) const;
 
@@ -98,11 +98,11 @@ Range
   double rng_limit;
   double rng_inc;
 
-  int rng_nelem;
+  octave_idx_type rng_nelem;
 
   mutable Matrix cache;
 
-  int nelem_internal (void) const;
+  octave_idx_type nelem_internal (void) const;
 
   void clear_cache (void) const { cache.resize (0, 0); }
 };

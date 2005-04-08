@@ -56,7 +56,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
-  int n_rows = -1;
+  octave_idx_type n_rows = -1;
   
   if (nargin > 1)
     {
@@ -65,7 +65,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 	error ("%s: NaN is invalid as the N_ROWS", fcn);
       else
 	{
-	  n_rows = NINT (dval);
+	  n_rows = NINTbig (dval);
 	  if (n_rows < 0)
 	    error ("%s: number of rows must be greater than zero", fcn);
 	}
@@ -74,7 +74,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
   if (error_state)
     return retval;
 
-  int n_cols = -1;
+  octave_idx_type n_cols = -1;
   if (nargin > 2)
     {
       double dval = args(2).double_value ();
@@ -82,7 +82,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 	error ("%s: NaN is invalid as the N_COLS", fcn);
       else
 	{
-	  n_cols = NINT (dval);
+	  n_cols = NINTbig (dval);
 	  if (n_cols < 0)
 	    error ("%s: number of columns must be greater than zero", fcn);
 	}

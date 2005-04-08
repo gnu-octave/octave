@@ -64,7 +64,7 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<int>& ra_idx,
 			    const dim_vector& dimensions);
 
   static std::streamoff resize_fill_value (void) { return 0; }

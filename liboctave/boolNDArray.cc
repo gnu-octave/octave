@@ -37,7 +37,7 @@ boolNDArray::operator ! (void) const
 {
   boolNDArray b (dims ());
 
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     b.elem (i) = ! elem (i);
 
   return b;
@@ -58,7 +58,7 @@ boolNDArray::any (int dim) const
 }
 
 boolNDArray
-boolNDArray::concat (const boolNDArray& rb, const Array<int>& ra_idx)
+boolNDArray::concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -66,14 +66,14 @@ boolNDArray::concat (const boolNDArray& rb, const Array<int>& ra_idx)
 }
 
 boolNDArray&
-boolNDArray::insert (const boolNDArray& a, int r, int c)
+boolNDArray::insert (const boolNDArray& a, octave_idx_type r, octave_idx_type c)
 {
   Array<bool>::insert (a, r, c);
   return *this;
 }
 
 boolNDArray&
-boolNDArray::insert (const boolNDArray& a, const Array<int>& ra_idx)
+boolNDArray::insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<bool>::insert (a, ra_idx);
   return *this;
@@ -109,15 +109,15 @@ boolNDArray::matrix_value (void) const
 }
 
 void
-boolNDArray::increment_index (Array<int>& ra_idx,
+boolNDArray::increment_index (Array<octave_idx_type>& ra_idx,
 			      const dim_vector& dimensions,
 			      int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
-int
-boolNDArray::compute_index (Array<int>& ra_idx,
+octave_idx_type
+boolNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);

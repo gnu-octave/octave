@@ -113,16 +113,16 @@ maybe_add_or_del_packages (const string_vector& a,
 
   input_from_startup_file = true;
 
-  int a_len = a.length ();
-  int b_len = b.length ();
+  octave_idx_type a_len = a.length ();
+  octave_idx_type b_len = b.length ();
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     {
       std::string a_dir = a[i];
 
       bool found = false;
 
-      for (int j = 0; j < b_len; j++)
+      for (octave_idx_type j = 0; j < b_len; j++)
 	{
 	  if (b[j] == a_dir)
 	    {
@@ -183,7 +183,7 @@ subst_octave_home (const std::string& s)
 
   if (Voctave_home != prefix)
     {
-      int len = prefix.length ();
+      octave_idx_type len = prefix.length ();
       size_t start = 0;
       while ((start = retval.find (prefix, start)) != NPOS)
 	{

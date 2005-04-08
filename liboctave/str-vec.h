@@ -35,7 +35,7 @@ public:
 
   string_vector (void) : Array<std::string> () { }
 
-  explicit string_vector (int n) : Array<std::string> (n) { }
+  explicit string_vector (octave_idx_type n) : Array<std::string> (n) { }
 
   string_vector (const char *s) : Array<std::string> (1, s) { }
 
@@ -45,7 +45,7 @@ public:
 
   string_vector (const char * const *s);
 
-  string_vector (const char * const *s, int n);
+  string_vector (const char * const *s, octave_idx_type n);
 
   string_vector& operator = (const string_vector& s)
   {
@@ -59,14 +59,14 @@ public:
 
   int empty (void) const { return length () == 0; }
 
-  int max_length (void) const
+  octave_idx_type max_length (void) const
   {
-    int n = length ();
-    int longest = 0;
+    octave_idx_type n = length ();
+    octave_idx_type longest = 0;
 
-    for (int i = 0; i < n; i++)
+    for (octave_idx_type i = 0; i < n; i++)
       {
-	int tmp = elem(i).length ();
+	octave_idx_type tmp = elem(i).length ();
 
 	if (tmp > longest)
 	  longest = tmp;
@@ -75,9 +75,9 @@ public:
     return longest;
   }
 
-  std::string& operator[] (int i) { return Array<std::string>::elem (i); }
+  std::string& operator[] (octave_idx_type i) { return Array<std::string>::elem (i); }
 
-  std::string operator[] (int i) const { return Array<std::string>::elem (i); }
+  std::string operator[] (octave_idx_type i) const { return Array<std::string>::elem (i); }
 
   static int compare (const void *a_arg, const void *b_arg);
 

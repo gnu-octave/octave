@@ -31,14 +31,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zgeqrf, ZGEQRF) (const int&, const int&, Complex*,
-			     const int&, Complex*, Complex*,
-			     const int&, int&); 
+  F77_FUNC (zgeqrf, ZGEQRF) (const octave_idx_type&, const octave_idx_type&, Complex*,
+			     const octave_idx_type&, Complex*, Complex*,
+			     const octave_idx_type&, octave_idx_type&); 
 
   F77_RET_T
-  F77_FUNC (zungqr, ZUNGQR) (const int&, const int&, const int&,
-			     Complex*, const int&, Complex*,
-			     Complex*, const int&, int&);
+  F77_FUNC (zungqr, ZUNGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     Complex*, const octave_idx_type&, Complex*,
+			     Complex*, const octave_idx_type&, octave_idx_type&);
 }
 
 ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
@@ -50,8 +50,8 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
 void
 ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 {
-  int m = a.rows ();
-  int n = a.cols ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = a.cols ();
 
   if (m == 0 || n == 0)
     {
@@ -60,16 +60,16 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
       return;
     }
 
-  int min_mn = m < n ? m : n;
+  octave_idx_type min_mn = m < n ? m : n;
 
   Array<Complex> tau (min_mn);
   Complex *ptau = tau.fortran_vec ();
 
-  int lwork = 32*n;
+  octave_idx_type lwork = 32*n;
   Array<Complex> work (lwork);
   Complex *pwork = work.fortran_vec ();
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   ComplexMatrix A_fact;
   if (m > n && qr_type != QR::economy)
@@ -90,10 +90,10 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
     {
       if (qr_type == QR::raw)
 	{
-	  for (int j = 0; j < min_mn; j++)
+	  for (octave_idx_type j = 0; j < min_mn; j++)
 	    {
-	      int limit = j < min_mn - 1 ? j : min_mn - 1;
-	      for (int i = limit + 1; i < m; i++)
+	      octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
+	      for (octave_idx_type i = limit + 1; i < m; i++)
 		A_fact.elem (i, j) *= tau.elem (j);
 	    }
 
@@ -104,17 +104,17 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 	}
       else
 	{
-	  int n2 = (qr_type == QR::economy) ? min_mn : m;
+	  octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
 
 	  if (qr_type == QR::economy && m > n)
 	    r.resize (n, n, 0.0);
 	  else
 	    r.resize (m, n, 0.0);
 
-	  for (int j = 0; j < n; j++)
+	  for (octave_idx_type j = 0; j < n; j++)
 	    {
-	      int limit = j < min_mn-1 ? j : min_mn-1;
-	      for (int i = 0; i <= limit; i++)
+	      octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
+	      for (octave_idx_type i = 0; i <= limit; i++)
 		r.elem (i, j) = A_fact.elem (i, j);
 	    }
 

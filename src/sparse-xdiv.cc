@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sparse-xdiv.h"
 
 static inline bool
-result_ok (int info)
+result_ok (octave_idx_type info)
 {
 #ifdef HAVE_LSSOLVE
   return (info != -2 && info != -1);
@@ -57,13 +57,13 @@ template <class T1, class T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b)
 {
-  int a_nr = a.rows ();
-  int b_nr = b.rows ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type b_nr = b.rows ();
 
   if (a_nr != b_nr)
     {
-      int a_nc = a.cols ();
-      int b_nc = b.cols ();
+      octave_idx_type a_nc = a.cols ();
+      octave_idx_type b_nc = b.cols ();
 
       gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
       return false;
@@ -88,13 +88,13 @@ template <class T1, class T2>
 bool
 mx_div_conform (const T1& a, const T2& b)
 {
-  int a_nc = a.cols ();
-  int b_nc = b.cols ();
+  octave_idx_type a_nc = a.cols ();
+  octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nc)
     {
-      int a_nr = a.rows ();
-      int b_nr = b.rows ();
+      octave_idx_type a_nr = a.rows ();
+      octave_idx_type b_nr = b.rows ();
 
       gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
       return false;
@@ -134,7 +134,7 @@ xdiv (const Matrix& a, const SparseMatrix& b)
   Matrix atmp = a.transpose ();
   SparseMatrix btmp = b.transpose ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -146,7 +146,7 @@ xdiv (const Matrix& a, const SparseMatrix& b)
 	return Matrix (result.transpose ());
     }
 
-  int rank;
+  octave_idx_type rank;
   Matrix result = btmp.lssolve (atmp, info, rank);
 
   return result.transpose ();
@@ -162,7 +162,7 @@ xdiv (const Matrix& a, const SparseComplexMatrix& b)
   Matrix atmp = a.transpose ();
   SparseComplexMatrix btmp = b.hermitian ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -174,7 +174,7 @@ xdiv (const Matrix& a, const SparseComplexMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -190,7 +190,7 @@ xdiv (const ComplexMatrix& a, const SparseMatrix& b)
   ComplexMatrix atmp = a.hermitian ();
   SparseMatrix btmp = b.transpose ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -202,7 +202,7 @@ xdiv (const ComplexMatrix& a, const SparseMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -218,7 +218,7 @@ xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b)
   ComplexMatrix atmp = a.hermitian ();
   SparseComplexMatrix btmp = b.hermitian ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -230,7 +230,7 @@ xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -246,7 +246,7 @@ xdiv (const SparseMatrix& a, const SparseMatrix& b)
   SparseMatrix atmp = a.transpose ();
   SparseMatrix btmp = b.transpose ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -258,7 +258,7 @@ xdiv (const SparseMatrix& a, const SparseMatrix& b)
 	return SparseMatrix (result.transpose ());
     }
 
-  int rank;
+  octave_idx_type rank;
   SparseMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.transpose ();
@@ -274,7 +274,7 @@ xdiv (const SparseMatrix& a, const SparseComplexMatrix& b)
   SparseMatrix atmp = a.transpose ();
   SparseComplexMatrix btmp = b.hermitian ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -286,7 +286,7 @@ xdiv (const SparseMatrix& a, const SparseComplexMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   SparseComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -302,7 +302,7 @@ xdiv (const SparseComplexMatrix& a, const SparseMatrix& b)
   SparseComplexMatrix atmp = a.hermitian ();
   SparseMatrix btmp = b.transpose ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -314,7 +314,7 @@ xdiv (const SparseComplexMatrix& a, const SparseMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   SparseComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -330,7 +330,7 @@ xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
   SparseComplexMatrix atmp = a.hermitian ();
   SparseComplexMatrix btmp = b.hermitian ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -342,7 +342,7 @@ xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   SparseComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -360,8 +360,8 @@ xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 Matrix
 x_el_div (double a, const SparseMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   Matrix result;
   if (a == 0.)
@@ -372,8 +372,8 @@ x_el_div (double a, const SparseMatrix& b)
     result = Matrix (nr, nc, -octave_Inf);
 
 
-  for (int j = 0; j < nc; j++)
-    for (int i = b.cidx(j); i < b.cidx(j+1); i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
 	OCTAVE_QUIT;
 	result.elem (b.ridx(i), j) = a / b.data (i);
@@ -385,13 +385,13 @@ x_el_div (double a, const SparseMatrix& b)
 ComplexMatrix
 x_el_div (double a, const SparseComplexMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   ComplexMatrix  result (nr, nc, Complex(octave_NaN, octave_NaN));
 
-  for (int j = 0; j < nc; j++)
-    for (int i = b.cidx(j); i < b.cidx(j+1); i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
 	OCTAVE_QUIT;
 	result.elem (b.ridx(i), j) = a / b.data (i);
@@ -403,13 +403,13 @@ x_el_div (double a, const SparseComplexMatrix& b)
 ComplexMatrix
 x_el_div (const Complex a, const SparseMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   ComplexMatrix result (nr, nc, (a / 0.0));
 
-  for (int j = 0; j < nc; j++)
-    for (int i = b.cidx(j); i < b.cidx(j+1); i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
 	OCTAVE_QUIT;
 	result.elem (b.ridx(i), j) = a / b.data (i);
@@ -421,13 +421,13 @@ x_el_div (const Complex a, const SparseMatrix& b)
 ComplexMatrix
 x_el_div (const Complex a, const SparseComplexMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.cols ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
 
   ComplexMatrix result (nr, nc, (a / 0.0));
 
-  for (int j = 0; j < nc; j++)
-    for (int i = b.cidx(j); i < b.cidx(j+1); i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
       {
 	OCTAVE_QUIT;
 	result.elem (b.ridx(i), j) = a / b.data (i);
@@ -456,7 +456,7 @@ xleftdiv (const SparseMatrix& a, const Matrix& b)
   if (! mx_leftdiv_conform (a, b))
     return Matrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -468,7 +468,7 @@ xleftdiv (const SparseMatrix& a, const Matrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -479,7 +479,7 @@ xleftdiv (const SparseMatrix& a, const ComplexMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -491,7 +491,7 @@ xleftdiv (const SparseMatrix& a, const ComplexMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -502,7 +502,7 @@ xleftdiv (const SparseMatrix& a, const SparseMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return SparseMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -514,7 +514,7 @@ xleftdiv (const SparseMatrix& a, const SparseMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -525,7 +525,7 @@ xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return SparseComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -537,7 +537,7 @@ xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -548,7 +548,7 @@ xleftdiv (const SparseComplexMatrix& a, const Matrix& b)
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -560,7 +560,7 @@ xleftdiv (const SparseComplexMatrix& a, const Matrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -571,7 +571,7 @@ xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -583,7 +583,7 @@ xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -594,7 +594,7 @@ xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return SparseComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -606,7 +606,7 @@ xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -617,7 +617,7 @@ xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return SparseComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -629,7 +629,7 @@ xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 

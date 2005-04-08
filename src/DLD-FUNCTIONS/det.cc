@@ -82,7 +82,7 @@ of the reciprocal condition number if requested.\n\
 	  // Always compute rcond, so we can detect numerically
 	  // singular matrices.
 
-	  int info;
+	  octave_idx_type info;
 	  double rcond = 0.0;
 	  DET det = m.determinant (info, rcond);
 	  retval(1) = rcond;
@@ -100,7 +100,7 @@ of the reciprocal condition number if requested.\n\
 	  // Always compute rcond, so we can detect numerically
 	  // singular matrices.
 
-	  int info;
+	  octave_idx_type info;
 	  double rcond = 0.0;
 	  ComplexDET det = m.determinant (info, rcond);
 	  retval(1) = rcond;

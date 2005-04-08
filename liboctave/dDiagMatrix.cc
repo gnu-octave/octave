@@ -53,13 +53,13 @@ DiagMatrix::operator != (const DiagMatrix& a) const
 DiagMatrix&
 DiagMatrix::fill (double val)
 {
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     elem (i, i) = val;
   return *this;
 }
 
 DiagMatrix&
-DiagMatrix::fill (double val, int beg, int end)
+DiagMatrix::fill (double val, octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -67,7 +67,7 @@ DiagMatrix::fill (double val, int beg, int end)
       return *this;
     }
 
-  for (int i = beg; i <= end; i++)
+  for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
 
   return *this;
@@ -76,14 +76,14 @@ DiagMatrix::fill (double val, int beg, int end)
 DiagMatrix&
 DiagMatrix::fill (const ColumnVector& a)
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (a.length () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
 
   return *this;
@@ -92,46 +92,46 @@ DiagMatrix::fill (const ColumnVector& a)
 DiagMatrix&
 DiagMatrix::fill (const RowVector& a)
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (a.length () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
 
   return *this;
 }
 
 DiagMatrix&
-DiagMatrix::fill (const ColumnVector& a, int beg)
+DiagMatrix::fill (const ColumnVector& a, octave_idx_type beg)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
 
   return *this;
 }
 
 DiagMatrix&
-DiagMatrix::fill (const RowVector& a, int beg)
+DiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
 
   return *this;
@@ -147,7 +147,7 @@ DiagMatrix
 real (const ComplexDiagMatrix& a)
 {
   DiagMatrix retval;
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (a_len > 0)
     retval = DiagMatrix (mx_inline_real_dup (a.data (), a_len), a.rows (),
 			 a.cols ());
@@ -158,7 +158,7 @@ DiagMatrix
 imag (const ComplexDiagMatrix& a)
 {
   DiagMatrix retval;
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (a_len > 0)
     retval = DiagMatrix (mx_inline_imag_dup (a.data (), a_len), a.rows (),
 			 a.cols ());
@@ -166,18 +166,18 @@ imag (const ComplexDiagMatrix& a)
 }
 
 Matrix
-DiagMatrix::extract (int r1, int c1, int r2, int c2) const
+DiagMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
 {
-  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
+  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
-  int new_r = r2 - r1 + 1;
-  int new_c = c2 - c1 + 1;
+  octave_idx_type new_r = r2 - r1 + 1;
+  octave_idx_type new_c = c2 - c1 + 1;
 
   Matrix result (new_r, new_c);
 
-  for (int j = 0; j < new_c; j++)
-    for (int i = 0; i < new_r; i++)
+  for (octave_idx_type j = 0; j < new_c; j++)
+    for (octave_idx_type i = 0; i < new_r; i++)
       result.elem (i, j) = elem (r1+i, c1+j);
 
   return result;
@@ -186,10 +186,10 @@ DiagMatrix::extract (int r1, int c1, int r2, int c2) const
 // extract row or column i.
 
 RowVector
-DiagMatrix::row (int i) const
+DiagMatrix::row (octave_idx_type i) const
 {
-  int r = rows ();
-  int c = cols ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
   if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
@@ -214,7 +214,7 @@ DiagMatrix::row (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return row (0);
+    return row (static_cast<octave_idx_type>(0));
   else if (c == 'l' || c == 'L')
     return row (rows () - 1);
   else
@@ -225,10 +225,10 @@ DiagMatrix::row (char *s) const
 }
 
 ColumnVector
-DiagMatrix::column (int i) const
+DiagMatrix::column (octave_idx_type i) const
 {
-  int r = rows ();
-  int c = cols ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
   if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
@@ -253,7 +253,7 @@ DiagMatrix::column (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return column (0);
+    return column (static_cast<octave_idx_type>(0));
   else if (c == 'l' || c == 'L')
     return column (cols () - 1);
   else
@@ -273,9 +273,9 @@ DiagMatrix::inverse (void) const
 DiagMatrix
 DiagMatrix::inverse (int &info) const
 {
-  int r = rows ();
-  int c = cols ();
-  int len = length ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
+  octave_idx_type len = length ();
   if (r != c)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -285,7 +285,7 @@ DiagMatrix::inverse (int &info) const
   DiagMatrix retval (r, c);
 
   info = 0;
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     {
       if (elem (i, i) == 0.0)
 	{
@@ -306,11 +306,11 @@ DiagMatrix::inverse (int &info) const
 DiagMatrix
 operator * (const DiagMatrix& a, const DiagMatrix& b)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
     {
@@ -323,9 +323,9 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
 
   DiagMatrix c (a_nr, b_nc);
 
-  int len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     {
       double a_element = a.elem (i, i);
       double b_element = b.elem (i, i);
@@ -354,10 +354,10 @@ DiagMatrix::diag (void) const
 // Could be optimized...
 
 ColumnVector
-DiagMatrix::diag (int k) const
+DiagMatrix::diag (octave_idx_type k) const
 {
-  int nnr = rows ();
-  int nnc = cols ();
+  octave_idx_type nnr = rows ();
+  octave_idx_type nnc = cols ();
   if (k > 0)
     nnc -= k;
   else if (k < 0)
@@ -367,23 +367,23 @@ DiagMatrix::diag (int k) const
 
   if (nnr > 0 && nnc > 0)
     {
-      int ndiag = (nnr < nnc) ? nnr : nnc;
+      octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
 
       d.resize (ndiag);
 
       if (k > 0)
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i+k);
 	}
       else if ( k < 0)
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i-k, i);
 	}
       else
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i);
 	}
     }
@@ -399,9 +399,9 @@ operator << (std::ostream& os, const DiagMatrix& a)
 {
 //  int field_width = os.precision () + 7;
 
-  for (int i = 0; i < a.rows (); i++)
+  for (octave_idx_type i = 0; i < a.rows (); i++)
     {
-      for (int j = 0; j < a.cols (); j++)
+      for (octave_idx_type j = 0; j < a.cols (); j++)
 	{
 	  if (i == j)
 	    os << " " /* setw (field_width) */ << a.elem (i, i);

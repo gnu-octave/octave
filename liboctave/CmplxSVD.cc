@@ -33,10 +33,10 @@ extern "C"
   F77_RET_T
   F77_FUNC (zgesvd, ZGESVD) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, Complex*,
-			     const int&, double*, Complex*, const int&,
-			     Complex*, const int&, Complex*, const int&,
-			     double*, int&
+			     const octave_idx_type&, const octave_idx_type&, Complex*,
+			     const octave_idx_type&, double*, Complex*, const octave_idx_type&,
+			     Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
+			     double*, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 }
@@ -67,27 +67,27 @@ ComplexSVD::right_singular_matrix (void) const
     return right_sm;
 }
 
-int
+octave_idx_type
 ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 {
-  int info;
+  octave_idx_type info;
 
-  int m = a.rows ();
-  int n = a.cols ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = a.cols ();
 
   ComplexMatrix atmp = a;
   Complex *tmp_data = atmp.fortran_vec ();
 
-  int min_mn = m < n ? m : n;
-  int max_mn = m > n ? m : n;
+  octave_idx_type min_mn = m < n ? m : n;
+  octave_idx_type max_mn = m > n ? m : n;
 
   char jobu = 'A';
   char jobv = 'A';
 
-  int ncol_u = m;
-  int nrow_vt = n;
-  int nrow_s = m;
-  int ncol_s = n;
+  octave_idx_type ncol_u = m;
+  octave_idx_type nrow_vt = n;
+  octave_idx_type nrow_s = m;
+  octave_idx_type ncol_s = n;
 
   switch (svd_type)
     {
@@ -130,13 +130,13 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   Complex *vt = right_sm.fortran_vec ();
 
-  int lrwork = 5*max_mn;
+  octave_idx_type lrwork = 5*max_mn;
 
   Array<double> rwork (lrwork);
 
   // Ask ZGESVD what the dimension of WORK should be.
 
-  int lwork = -1;
+  octave_idx_type lwork = -1;
 
   Array<Complex> work (1);
 
@@ -152,7 +152,7 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
   else
     {
-      lwork = static_cast<int> (work(0).real ());
+      lwork = static_cast<octave_idx_type> (work(0).real ());
       work.resize (lwork);
 
       F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),

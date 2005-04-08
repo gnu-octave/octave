@@ -30,22 +30,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 #include "quit.h"
 
-typedef int (*hybrd1_fcn_ptr) (int*, double*, double*, int*);
+typedef octave_idx_type (*hybrd1_fcn_ptr) (octave_idx_type*, double*, double*, octave_idx_type*);
 
-typedef int (*hybrj1_fcn_ptr) (int*, double*, double*, double*, int*, int*);
+typedef octave_idx_type (*hybrj1_fcn_ptr) (octave_idx_type*, double*, double*, double*, octave_idx_type*, octave_idx_type*);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (hybrd1, HYBRD1) (hybrd1_fcn_ptr, const int&, double*,
-			     double*, const double&, int&, double*,
-			     const int&);
+  F77_FUNC (hybrd1, HYBRD1) (hybrd1_fcn_ptr, const octave_idx_type&, double*,
+			     double*, const double&, octave_idx_type&, double*,
+			     const octave_idx_type&);
 
 
   F77_RET_T
-  F77_FUNC (hybrj1, HYBRJ1) (hybrj1_fcn_ptr, const int&, double*,
-			     double*, double*, const int&, const
-			     double&, int&, double*, const int&);
+  F77_FUNC (hybrj1, HYBRJ1) (hybrj1_fcn_ptr, const octave_idx_type&, double*,
+			     double*, double*, const octave_idx_type&, const
+			     double&, octave_idx_type&, double*, const octave_idx_type&);
 }
 
 static NLFunc::nonlinear_fcn user_fun;
@@ -61,16 +61,16 @@ NLEqn::error (const char* msg)
 
 // Other operations
 
-int
-hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
+octave_idx_type
+hybrd1_fcn (octave_idx_type *n, double *x, double *fvec, octave_idx_type *iflag)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  int nn = *n;
+  octave_idx_type nn = *n;
   ColumnVector tmp_f (nn);
   ColumnVector tmp_x (nn);
 
-  for (int i = 0; i < nn; i++)
+  for (octave_idx_type i = 0; i < nn; i++)
     tmp_x.elem (i) = x[i];
 
   tmp_f = (*user_fun) (tmp_x);
@@ -79,7 +79,7 @@ hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
     *iflag = -1;
   else
     {
-      for (int i = 0; i < nn; i++)
+      for (octave_idx_type i = 0; i < nn; i++)
 	fvec[i] = tmp_f.elem (i);
     }
 
@@ -88,19 +88,19 @@ hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
   return 0;
 }
 
-int
-hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
-	    int *ldfjac, int *iflag)
+octave_idx_type
+hybrj1_fcn (octave_idx_type *n, double *x, double *fvec, double *fjac,
+	    octave_idx_type *ldfjac, octave_idx_type *iflag)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  int nn = *n;
+  octave_idx_type nn = *n;
   ColumnVector tmp_x (nn);
 
-  for (int i = 0; i < nn; i++)
+  for (octave_idx_type i = 0; i < nn; i++)
     tmp_x.elem (i) = x[i];
 
-  int flag = *iflag;
+  octave_idx_type flag = *iflag;
   if (flag == 1)
     {
       ColumnVector tmp_f (nn);
@@ -111,7 +111,7 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 	*iflag = -1;
       else
 	{
-	  for (int i = 0; i < nn; i++)
+	  for (octave_idx_type i = 0; i < nn; i++)
 	    fvec[i] = tmp_f.elem (i);
 	}
     }
@@ -125,9 +125,9 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 	*iflag = -1;
       else
 	{
-	  int ld = *ldfjac;
-	  for (int j = 0; j < nn; j++)
-	    for (int i = 0; i < nn; i++)
+	  octave_idx_type ld = *ldfjac;
+	  for (octave_idx_type j = 0; j < nn; j++)
+	    for (octave_idx_type i = 0; i < nn; i++)
 	      fjac[j*ld+i] = tmp_fj.elem (i, j);
 	}
     }
@@ -138,11 +138,11 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 }
 
 ColumnVector
-NLEqn::solve (int& info)
+NLEqn::solve (octave_idx_type& info)
 {
   ColumnVector retval;
 
-  int n = x.capacity ();
+  octave_idx_type n = x.capacity ();
 
   if (n == 0)
     {
@@ -163,7 +163,7 @@ NLEqn::solve (int& info)
       Array<double> fvec (n);
       double *pfvec = fvec.fortran_vec ();
 
-      int lwa = (n*(n+13))/2;
+      octave_idx_type lwa = (n*(n+13))/2;
       Array<double> wa (lwa);
       double *pwa = wa.fortran_vec ();
 
@@ -183,7 +183,7 @@ NLEqn::solve (int& info)
       Array<double> fvec (n);
       double *pfvec = fvec.fortran_vec ();
 
-      int lwa = (n*(3*n+13))/2;
+      octave_idx_type lwa = (n*(3*n+13))/2;
       Array<double> wa (lwa);
       double *pwa = wa.fortran_vec ();
 
@@ -206,7 +206,7 @@ NLEqn::error_message (void) const
 
   std::string prefix;
 
-  int info = solution_status;
+  octave_idx_type info = solution_status;
   if (info < 0)
     info = -info;
 

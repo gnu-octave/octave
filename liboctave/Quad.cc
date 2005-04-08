@@ -38,25 +38,25 @@ static integrand_fcn user_fcn;
 // function, and the user wants us to quit.
 int quad_integration_error = 0;
 
-typedef int (*quad_fcn_ptr) (double*, int&, double*);
+typedef octave_idx_type (*quad_fcn_ptr) (double*, int&, double*);
 			      
 extern "C"
 {
   F77_RET_T
   F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const double&, const double&,
-			   const int&, const double*, const double&,
-			   const double&, double&, double&, int&,
-			   int&, const int&, const int&, int&, int*,
+			   const octave_idx_type&, const double*, const double&,
+			   const double&, double&, double&, octave_idx_type&,
+			   octave_idx_type&, const octave_idx_type&, const octave_idx_type&, octave_idx_type&, octave_idx_type*,
 			   double*);
 
   F77_RET_T
-  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&, const int&,
+  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&, const octave_idx_type&,
 			   const double&, const double&, double&,
-			   double&, int&, int&, const int&,
-			   const int&, int&, int*, double*); 
+			   double&, octave_idx_type&, octave_idx_type&, const octave_idx_type&,
+			   const octave_idx_type&, octave_idx_type&, octave_idx_type*, double*); 
 }
 
-static int
+static octave_idx_type
 user_function (double *x, int& ierr, double *result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
@@ -86,22 +86,22 @@ user_function (double *x, int& ierr, double *result)
 }
 
 double
-DefQuad::do_integrate (int& ier, int& neval, double& abserr)
+DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
 {
-  int npts = singularities.capacity () + 2;
+  octave_idx_type npts = singularities.capacity () + 2;
   double *points = singularities.fortran_vec ();
   double result = 0.0;
 
-  int leniw = 183*npts - 122;
-  Array<int> iwork (leniw);
-  int *piwork = iwork.fortran_vec ();
+  octave_idx_type leniw = 183*npts - 122;
+  Array<octave_idx_type> iwork (leniw);
+  octave_idx_type *piwork = iwork.fortran_vec ();
 
-  int lenw = 2*leniw - npts;
+  octave_idx_type lenw = 2*leniw - npts;
   Array<double> work (lenw);
   double *pwork = work.fortran_vec ();
 
   user_fcn = f;
-  int last;
+  octave_idx_type last;
 
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
@@ -118,22 +118,22 @@ DefQuad::do_integrate (int& ier, int& neval, double& abserr)
 }
 
 double
-IndefQuad::do_integrate (int& ier, int& neval, double& abserr)
+IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
 {
   double result = 0.0;
 
-  int leniw = 128;
-  Array<int> iwork (leniw);
-  int *piwork = iwork.fortran_vec ();
+  octave_idx_type leniw = 128;
+  Array<octave_idx_type> iwork (leniw);
+  octave_idx_type *piwork = iwork.fortran_vec ();
 
-  int lenw = 8*leniw;
+  octave_idx_type lenw = 8*leniw;
   Array<double> work (lenw);
   double *pwork = work.fortran_vec ();
 
   user_fcn = f;
-  int last;
+  octave_idx_type last;
 
-  int inf;
+  octave_idx_type inf;
   switch (type)
     {
     case bound_to_inf:

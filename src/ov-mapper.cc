@@ -43,9 +43,9 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mapper,
 static bool
 any_element_less_than (const NDArray& a, double val)
 {
-  int len = a.length ();
+  octave_idx_type len = a.length ();
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     {
       OCTAVE_QUIT;
 
@@ -59,9 +59,9 @@ any_element_less_than (const NDArray& a, double val)
 static bool
 any_element_greater_than (const NDArray& a, double val)
 {
-  int len = a.length ();
+  octave_idx_type len = a.length ();
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     {
       OCTAVE_QUIT;
 
@@ -80,11 +80,11 @@ any_element_greater_than (const NDArray& a, double val)
 #define MAPPER_LOOP_2(T, F, M, CONV, R) \
   do \
     { \
-      int len = M.length (); \
+      octave_idx_type len = M.length (); \
  \
       T result (M.dims ()); \
  \
-      for (int i = 0; i < len; i++) \
+      for (octave_idx_type i = 0; i < len; i++) \
 	{ \
           OCTAVE_QUIT; \
  \

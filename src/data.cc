@@ -118,13 +118,13 @@ typedef double (*d_dd_fcn) (double, double);
 static Matrix
 map_d_m (d_dd_fcn f, double x, const Matrix& y)
 {
-  int nr = y.rows ();
-  int nc = y.columns ();
+  octave_idx_type nr = y.rows ();
+  octave_idx_type nc = y.columns ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	retval (i, j) = f (x, y (i, j));
@@ -136,13 +136,13 @@ map_d_m (d_dd_fcn f, double x, const Matrix& y)
 static Matrix
 map_m_d (d_dd_fcn f, const Matrix& x, double y)
 {
-  int nr = x.rows ();
-  int nc = x.columns ();
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.columns ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	retval (i, j) = f (x (i, j), y);
@@ -154,18 +154,18 @@ map_m_d (d_dd_fcn f, const Matrix& x, double y)
 static Matrix
 map_m_m (d_dd_fcn f, const Matrix& x, const Matrix& y)
 {
-  int x_nr = x.rows ();
-  int x_nc = x.columns ();
+  octave_idx_type x_nr = x.rows ();
+  octave_idx_type x_nc = x.columns ();
 
-  int y_nr = y.rows ();
-  int y_nc = y.columns ();
+  octave_idx_type y_nr = y.rows ();
+  octave_idx_type y_nc = y.columns ();
 
   assert (x_nr == y_nr && x_nc == y_nc);
 
   Matrix retval (x_nr, x_nc);
 
-  for (int j = 0; j < x_nc; j++)
-    for (int i = 0; i < x_nr; i++)
+  for (octave_idx_type j = 0; j < x_nc; j++)
+    for (octave_idx_type i = 0; i < x_nr; i++)
       {
 	OCTAVE_QUIT;
 	retval (i, j) = f (x (i, j), y (i, j));
@@ -190,11 +190,11 @@ and @var{x}.  The result is in range -pi to pi.\n\
       octave_value arg_y = args(0);
       octave_value arg_x = args(1);
 
-      int y_nr = arg_y.rows ();
-      int y_nc = arg_y.columns ();
+      octave_idx_type y_nr = arg_y.rows ();
+      octave_idx_type y_nc = arg_y.columns ();
 
-      int x_nr = arg_x.rows ();
-      int x_nc = arg_x.columns ();
+      octave_idx_type x_nr = arg_x.rows ();
+      octave_idx_type x_nc = arg_x.columns ();
 
       int arg_y_empty = empty_arg ("atan2", y_nr, y_nc);
       int arg_x_empty = empty_arg ("atan2", x_nr, x_nc);
@@ -204,8 +204,8 @@ and @var{x}.  The result is in range -pi to pi.\n\
       else if (arg_y_empty || arg_x_empty)
 	return retval;
 
-      int y_is_scalar = (y_nr == 1 && y_nc == 1);
-      int x_is_scalar = (x_nr == 1 && x_nc == 1);
+      octave_idx_type y_is_scalar = (y_nr == 1 && y_nc == 1);
+      octave_idx_type x_is_scalar = (x_nr == 1 && x_nc == 1);
 
       if (y_is_scalar && x_is_scalar)
 	{
@@ -281,11 +281,11 @@ sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
       octave_value arg_x = args(0);
       octave_value arg_y = args(1);
 
-      int y_nr = arg_y.rows ();
-      int y_nc = arg_y.columns ();
+      octave_idx_type y_nr = arg_y.rows ();
+      octave_idx_type y_nc = arg_y.columns ();
 
-      int x_nr = arg_x.rows ();
-      int x_nc = arg_x.columns ();
+      octave_idx_type x_nr = arg_x.rows ();
+      octave_idx_type x_nc = arg_x.columns ();
 
       int arg_y_empty = empty_arg ("fmod", y_nr, y_nc);
       int arg_x_empty = empty_arg ("fmod", x_nr, x_nc);
@@ -295,8 +295,8 @@ sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
       else if (arg_y_empty || arg_x_empty)
 	return retval;
 
-      int y_is_scalar = (y_nr == 1 && y_nc == 1);
-      int x_is_scalar = (x_nr == 1 && x_nc == 1);
+      octave_idx_type y_is_scalar = (y_nr == 1 && y_nc == 1);
+      octave_idx_type x_is_scalar = (x_nr == 1 && x_nc == 1);
 
       if (y_is_scalar && x_is_scalar)
 	{
@@ -433,16 +433,16 @@ same orientation as @var{x}.\n\
 // some template functions or macros.
 
 static octave_value
-make_diag (const Matrix& v, int k)
+make_diag (const Matrix& v, octave_idx_type k)
 {
-  int nr = v.rows ();
-  int nc = v.columns ();
+  octave_idx_type nr = v.rows ();
+  octave_idx_type nc = v.columns ();
   assert (nc == 1 || nr == 1);
 
   octave_value retval;
 
-  int roff = 0;
-  int coff = 0;
+  octave_idx_type roff = 0;
+  octave_idx_type coff = 0;
   if (k > 0)
     {
       roff = 0;
@@ -456,17 +456,17 @@ make_diag (const Matrix& v, int k)
 
   if (nr == 1)
     {
-      int n = nc + std::abs (k);
+      octave_idx_type n = nc + std::abs (k);
       Matrix m (n, n, 0.0);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	m (i+roff, i+coff) = v (0, i);
       retval = m;
     }
   else
     {
-      int n = nr + std::abs (k);
+      octave_idx_type n = nr + std::abs (k);
       Matrix m (n, n, 0.0);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	m (i+roff, i+coff) = v (i, 0);
       retval = m;
     }
@@ -475,16 +475,16 @@ make_diag (const Matrix& v, int k)
 }
 
 static octave_value
-make_diag (const ComplexMatrix& v, int k)
+make_diag (const ComplexMatrix& v, octave_idx_type k)
 {
-  int nr = v.rows ();
-  int nc = v.columns ();
+  octave_idx_type nr = v.rows ();
+  octave_idx_type nc = v.columns ();
   assert (nc == 1 || nr == 1);
 
   octave_value retval;
 
-  int roff = 0;
-  int coff = 0;
+  octave_idx_type roff = 0;
+  octave_idx_type coff = 0;
   if (k > 0)
     {
       roff = 0;
@@ -498,17 +498,17 @@ make_diag (const ComplexMatrix& v, int k)
 
   if (nr == 1)
     {
-      int n = nc + std::abs (k);
+      octave_idx_type n = nc + std::abs (k);
       ComplexMatrix m (n, n, 0.0);
-      for (int i = 0; i < nc; i++)
+      for (octave_idx_type i = 0; i < nc; i++)
 	m (i+roff, i+coff) = v (0, i);
       retval = m;
     }
   else
     {
-      int n = nr + std::abs (k);
+      octave_idx_type n = nr + std::abs (k);
       ComplexMatrix m (n, n, 0.0);
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	m (i+roff, i+coff) = v (i, 0);
       retval = m;
     }
@@ -527,8 +527,8 @@ make_diag (const octave_value& arg)
 
       if (! error_state)
 	{
-	  int nr = m.rows ();
-	  int nc = m.columns ();
+	  octave_idx_type nr = m.rows ();
+	  octave_idx_type nc = m.columns ();
 
 	  if (nr == 0 || nc == 0)
 	    retval = Matrix ();
@@ -550,8 +550,8 @@ make_diag (const octave_value& arg)
 
       if (! error_state)
 	{
-	  int nr = cm.rows ();
-	  int nc = cm.columns ();
+	  octave_idx_type nr = cm.rows ();
+	  octave_idx_type nc = cm.columns ();
 
 	  if (nr == 0 || nc == 0)
 	    retval = Matrix ();
@@ -578,7 +578,7 @@ make_diag (const octave_value& a, const octave_value& b)
 {
   octave_value retval;
 
-  int k = b.int_value ();
+  octave_idx_type k = b.int_value ();
 
   if (error_state)
     {
@@ -592,8 +592,8 @@ make_diag (const octave_value& a, const octave_value& b)
 
       if (! error_state)
 	{
-	  int nr = m.rows ();
-	  int nc = m.columns ();
+	  octave_idx_type nr = m.rows ();
+	  octave_idx_type nc = m.columns ();
 
 	  if (nr == 1 || nc == 1)
 	    retval = make_diag (m, k);
@@ -612,8 +612,8 @@ make_diag (const octave_value& a, const octave_value& b)
 
       if (! error_state)
 	{
-	  int nr = cm.rows ();
-	  int nc = cm.columns ();
+	  octave_idx_type nr = cm.rows ();
+	  octave_idx_type nc = cm.columns ();
 
 	  if (nr == 1 || nc == 1)
 	    retval = make_diag (cm, k);
@@ -688,7 +688,7 @@ do_cat (const octave_value_list& args, std::string fname)
 
   if (n_args > 2)
     {
-      int dim = args(0).int_value () - 1;
+      octave_idx_type dim = args(0).int_value () - 1;
 
       if (error_state)
 	{
@@ -1057,7 +1057,7 @@ returns the number of columns in the given matrix.\n\
     }
   else if (nargin == 2 && nargout < 2)
     {
-      int nd = args(1).int_value (true);
+      octave_idx_type nd = args(1).int_value (true);
 
       if (error_state)
 	error ("size: expecting scalar as second argument");
@@ -1582,7 +1582,7 @@ is equivalent to calling it with an argument of 1.\n\
 
     case 1:
       {
-	int nr, nc;
+	octave_idx_type nr, nc;
 	get_dimensions (args(0), "eye", nr, nc);
 
 	if (! error_state)
@@ -1592,7 +1592,7 @@ is equivalent to calling it with an argument of 1.\n\
 
     case 2:
       {
-	int nr, nc;
+	octave_idx_type nr, nc;
 	get_dimensions (args(0), args(1), "eye", nr, nc);
 
 	if (! error_state)
@@ -1791,7 +1791,7 @@ by an empty argument.\n\
 
   new_dims.resize (n);
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     new_dims(i) = new_size(i);
 
   octave_value arg = args(0);

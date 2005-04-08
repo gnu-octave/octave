@@ -44,7 +44,7 @@ public:
 
   SVD (const Matrix& a, type svd_type = SVD::std) { init (a, svd_type); }
 
-  SVD (const Matrix& a, int& info, type svd_type = SVD::std)
+  SVD (const Matrix& a, octave_idx_type& info, type svd_type = SVD::std)
     {
       info = init (a, svd_type);
     }
@@ -84,7 +84,7 @@ private:
   Matrix left_sm;
   Matrix right_sm;
 
-  int init (const Matrix& a, type svd_type = std);
+  octave_idx_type init (const Matrix& a, type svd_type = std);
 };
 
 #endif

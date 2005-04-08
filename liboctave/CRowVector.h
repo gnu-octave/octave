@@ -36,9 +36,9 @@ public:
 
   ComplexRowVector (void) : MArray<Complex> () { }
 
-  explicit ComplexRowVector (int n) : MArray<Complex> (n) { }
+  explicit ComplexRowVector (octave_idx_type n) : MArray<Complex> (n) { }
 
-  ComplexRowVector (int n, const Complex& val) : MArray<Complex> (n, val) { }
+  ComplexRowVector (octave_idx_type n, const Complex& val) : MArray<Complex> (n, val) { }
 
   ComplexRowVector (const ComplexRowVector& a) : MArray<Complex> (a) { }
 
@@ -57,13 +57,13 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  ComplexRowVector& insert (const RowVector& a, int c);
-  ComplexRowVector& insert (const ComplexRowVector& a, int c);
+  ComplexRowVector& insert (const RowVector& a, octave_idx_type c);
+  ComplexRowVector& insert (const ComplexRowVector& a, octave_idx_type c);
 
   ComplexRowVector& fill (double val);
   ComplexRowVector& fill (const Complex& val);
-  ComplexRowVector& fill (double val, int c1, int c2);
-  ComplexRowVector& fill (const Complex& val, int c1, int c2);
+  ComplexRowVector& fill (double val, octave_idx_type c1, octave_idx_type c2);
+  ComplexRowVector& fill (const Complex& val, octave_idx_type c1, octave_idx_type c2);
 
   ComplexRowVector append (const RowVector& a) const;
   ComplexRowVector append (const ComplexRowVector& a) const;
@@ -75,9 +75,9 @@ public:
 
   // resize is the destructive equivalent for this one
 
-  ComplexRowVector extract (int c1, int c2) const;
+  ComplexRowVector extract (octave_idx_type c1, octave_idx_type c2) const;
 
-  ComplexRowVector extract_n (int c1, int n) const;
+  ComplexRowVector extract_n (octave_idx_type c1, octave_idx_type n) const;
 
   // row vector by row vector -> row vector operations
 
@@ -109,7 +109,7 @@ public:
 
 private:
 
-  ComplexRowVector (Complex *d, int l) : MArray<Complex> (d, l) { }
+  ComplexRowVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, l) { }
 };
 
 // row vector by column vector -> scalar
@@ -120,7 +120,7 @@ Complex operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
 
 // other operations
 
-ComplexRowVector linspace (const Complex& x1, const Complex& x2, int n);
+ComplexRowVector linspace (const Complex& x1, const Complex& x2, octave_idx_type n);
 
 MARRAY_FORWARD_DEFS (MArray, ComplexRowVector, Complex)
 

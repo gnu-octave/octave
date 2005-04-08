@@ -37,32 +37,32 @@ extern "C"
 			     F77_CONST_CHAR_ARG_DECL,
 			     SCHUR::select_function,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, double*, const int&, int&,
-			     double*, double*, double*, const int&,
-			     double&, double&, double*, const int&,
-			     int*, const int&, int*, int&
+			     const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&,
+			     double*, double*, double*, const octave_idx_type&,
+			     double&, double&, double*, const octave_idx_type&,
+			     octave_idx_type*, const octave_idx_type&, octave_idx_type*, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 }
 
-static int
+static octave_idx_type
 select_ana (const double& a, const double&)
 {
    return (a < 0.0);
 }
 
-static int
+static octave_idx_type
 select_dig (const double& a, const double& b)
 {
   return (hypot (a, b) < 1.0);
 }
 
-int
+octave_idx_type
 SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
     {
@@ -94,11 +94,11 @@ SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
   else
     selector = 0;
 
-  int n = a_nc;
-  int lwork = 8 * n;
-  int liwork = 1;
-  int info;
-  int sdim;
+  octave_idx_type n = a_nc;
+  octave_idx_type lwork = 8 * n;
+  octave_idx_type liwork = 1;
+  octave_idx_type info;
+  octave_idx_type sdim;
   double rconde;
   double rcondv;
 
@@ -120,11 +120,11 @@ SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
   double *pwork = work.fortran_vec ();
 
   // BWORK is not referenced for the non-ordered Schur routine.
-  Array<int> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
-  int *pbwork = bwork.fortran_vec ();
+  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n);
+  octave_idx_type *pbwork = bwork.fortran_vec ();
 
-  Array<int> iwork (liwork);
-  int *piwork = iwork.fortran_vec ();
+  Array<octave_idx_type> iwork (liwork);
+  octave_idx_type *piwork = iwork.fortran_vec ();
 
   F77_XFCN (dgeesx, DGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
 			     F77_CONST_CHAR_ARG2 (&sort, 1),

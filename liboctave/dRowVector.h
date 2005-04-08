@@ -34,9 +34,9 @@ public:
 
   RowVector (void) : MArray<double> () { }
 
-  explicit RowVector (int n) : MArray<double> (n) { }
+  explicit RowVector (octave_idx_type n) : MArray<double> (n) { }
 
-  RowVector (int n, double val) : MArray<double> (n, val) { }
+  RowVector (octave_idx_type n, double val) : MArray<double> (n, val) { }
 
   RowVector (const RowVector& a) : MArray<double> (a) { }
 
@@ -53,10 +53,10 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  RowVector& insert (const RowVector& a, int c);
+  RowVector& insert (const RowVector& a, octave_idx_type c);
 
   RowVector& fill (double val);
-  RowVector& fill (double val, int c1, int c2);
+  RowVector& fill (double val, octave_idx_type c1, octave_idx_type c2);
 
   RowVector append (const RowVector& a) const;
 
@@ -67,9 +67,9 @@ public:
 
   // resize is the destructive equivalent for this one
 
-  RowVector extract (int c1, int c2) const;
+  RowVector extract (octave_idx_type c1, octave_idx_type c2) const;
 
-  RowVector extract_n (int c1, int n) const;
+  RowVector extract_n (octave_idx_type c1, octave_idx_type n) const;
 
   // row vector by matrix -> row vector
 
@@ -91,7 +91,7 @@ public:
 
 private:
 
-  RowVector (double *d, int l) : MArray<double> (d, l) { }
+  RowVector (double *d, octave_idx_type l) : MArray<double> (d, l) { }
 };
 
 // row vector by column vector -> scalar
@@ -102,7 +102,7 @@ Complex operator * (const RowVector& a, const ComplexColumnVector& b);
 
 // other operations
 
-RowVector linspace (double x1, double x2, int n);
+RowVector linspace (double x1, double x2, octave_idx_type n);
 
 MARRAY_FORWARD_DEFS (MArray, RowVector, double)
 

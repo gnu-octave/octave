@@ -29,11 +29,11 @@ template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 p_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr (void) const
 {
-  int nr = Lfact.rows ();
+  octave_idx_type nr = Lfact.rows ();
 
   p_type Pout (nr, nr, nr);
 
-  for (int i = 0; i < nr; i++)
+  for (octave_idx_type i = 0; i < nr; i++)
     {
       Pout.cidx (i) = i;
       Pout.ridx (P (i)) = i;
@@ -48,11 +48,11 @@ template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 p_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc (void) const
 {
-  int nc = Ufact.cols ();
+  octave_idx_type nc = Ufact.cols ();
 
   p_type Pout (nc, nc, nc);
 
-  for (int i = 0; i < nc; i++)
+  for (octave_idx_type i = 0; i < nc; i++)
     {
       Pout.cidx (i) = i;
       Pout.ridx (i) = Q (i);

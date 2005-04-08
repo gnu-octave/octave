@@ -1,3 +1,26 @@
+2005-04-08  John W. Eaton  <jwe@octave.org>
+
+	* Initial merge of 64-bit changes from Clinton Chee:
+
+	2005-04-07  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (--enable-64): Make default disabled.
+
+	2005-04-06  John W. Eaton  <jwe@octave.org>
+
+	* mk-opts.pl (emit_show_function, emit_set_functions,
+	emit_print_function): Also accept "octave_idx_type" and
+	"Array<octave_idx_type>".
+
+	2005-04-01  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (USE_64_BIT_IDX_T): Substitute value.
+	(do-subst-config-vals): Add to list of substitutions.
+
+	* configure.in (AC_CONFIG_FILES): Perform substitutions on
+	liboctave/oct-types.h too.
+	Handle --enable-64.
+
 2005-04-06  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Split the HDF5 and zlib detection code, so that zlib 

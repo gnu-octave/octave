@@ -40,24 +40,24 @@ Array3 : public Array<T>
 {
 protected:
 
-  static int get_size (int r, int c, int p)
+  static octave_idx_type get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p)
     { return Array<T>::get_size (r, c, p); }
 
-  Array3 (T *d, int r, int c, int p) : Array<T> (d, dim_vector (r, c, p)) { }
+  Array3 (T *d, octave_idx_type r, octave_idx_type c, octave_idx_type p) : Array<T> (d, dim_vector (r, c, p)) { }
 
 public:
 
   Array3 (void) : Array<T> (dim_vector (0, 0, 0)) { }
 
-  Array3 (int r, int c, int p) : Array<T> (dim_vector (r, c, p)) { }
+  Array3 (octave_idx_type r, octave_idx_type c, octave_idx_type p) : Array<T> (dim_vector (r, c, p)) { }
 
-  Array3 (int r, int c, int p, const T& val)
+  Array3 (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
     : Array<T> (dim_vector (r, c, p), val) { }
 
   Array3 (const Array3<T>& a)
     : Array<T> (a, a.dims ()) { }
 
-  Array3 (const Array<T>& a, int r, int c, int p)
+  Array3 (const Array<T>& a, octave_idx_type r, octave_idx_type c, octave_idx_type p)
     : Array<T> (a, dim_vector (r, c, p)) { }
 
   ~Array3 (void) { }
@@ -70,9 +70,9 @@ public:
       return *this;
     }
 
-  void resize (int r, int c, int p) { this->resize_no_fill (r, c, p); }
+  void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p) { this->resize_no_fill (r, c, p); }
 
-  void resize (int r, int c, int p, const T& val)
+  void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
     { this->resize_and_fill (r, c, p, val); }
 };
 

@@ -66,7 +66,7 @@ private:
   Matrix balanced_mat;
   Matrix balancing_mat;
 
-  int init (const Matrix& a, const std::string& balance_job);
+  octave_idx_type init (const Matrix& a, const std::string& balance_job);
 };
 
 #endif

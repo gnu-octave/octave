@@ -93,7 +93,7 @@ Restrict the maximum order of the solution method.  If using the Adams
 method, this option must be between 1 and 12.  Otherwise, it must be
 between 1 and 5, inclusive.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "-1"
   SET_EXPR = "val"
 END_OPTION
@@ -124,7 +124,7 @@ OPTION
   DOC_ITEM
 Maximum number of steps allowed (default is 100000).
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "100000"
   SET_EXPR = "val"
 END_OPTION

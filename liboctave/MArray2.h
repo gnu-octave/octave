@@ -40,15 +40,15 @@ MArray2 : public Array2<T>
 {
 protected:
 
-  MArray2 (T *d, int n, int m) : Array2<T> (d, n, m) { }
+  MArray2 (T *d, octave_idx_type n, octave_idx_type m) : Array2<T> (d, n, m) { }
 
 public:
 
   MArray2 (void) : Array2<T> () { }
 
-  MArray2 (int n, int m) : Array2<T> (n, m) { }
+  MArray2 (octave_idx_type n, octave_idx_type m) : Array2<T> (n, m) { }
 
-  MArray2 (int n, int m, const T& val) : Array2<T> (n, m, val) { }
+  MArray2 (octave_idx_type n, octave_idx_type m, const T& val) : Array2<T> (n, m, val) { }
 
   MArray2 (const MArray2<T>& a) : Array2<T> (a) { }
 
@@ -62,7 +62,7 @@ public:
       return *this;
     }
 
-  MArray2<T>& insert (const Array2<T>& a, int r, int c)
+  MArray2<T>& insert (const Array2<T>& a, octave_idx_type r, octave_idx_type c)
   {
     Array2<T>::insert (a, r, c);
     return *this;

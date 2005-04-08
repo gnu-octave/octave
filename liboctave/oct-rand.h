@@ -53,14 +53,14 @@ octave_rand
 
   // Return a matrix of numbers from the sequence, filled in column
   // major order.
-  static Matrix matrix (int r, int c);
+  static Matrix matrix (octave_idx_type r, octave_idx_type c);
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
   static NDArray nd_array (const dim_vector& dims);
 
   // Return an array of numbers from the sequence.
-  static Array<double> vector (int n);
+  static Array<double> vector (octave_idx_type n);
 };
 
 #endif

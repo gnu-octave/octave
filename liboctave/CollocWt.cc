@@ -33,12 +33,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (jcobi, JCOBI) (int&, int&, int&, int&, double&,
+  F77_FUNC (jcobi, JCOBI) (octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&, double&,
 			   double&, double*, double*, double*,
 			   double*);
 
   F77_RET_T
-  F77_FUNC (dfopr, DFOPR) (int&, int&, int&, int&, int&, int&,
+  F77_FUNC (dfopr, DFOPR) (octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&,
 			   double*, double*, double*, double*,
 			   double*);
 }
@@ -91,7 +91,7 @@ CollocWt::init (void)
       return;
     }
 
-  int nt = n + inc_left + inc_right;
+  octave_idx_type nt = n + inc_left + inc_right;
 
   if (nt < 0)
     {
@@ -125,29 +125,29 @@ CollocWt::init (void)
   F77_FUNC (jcobi, JCOBI) (nt, n, inc_left, inc_right, Alpha, Beta,
 			  pdif1, pdif2, pdif3, pr);
 
-  int id;
+  octave_idx_type id;
 
   // First derivative weights.
 
   id = 1;
-  for (int i = 1; i <= nt; i++)
+  for (octave_idx_type i = 1; i <= nt; i++)
     {
       F77_FUNC (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, pdif1,
 			      pdif2, pdif3, pr, pvect); 
 
-      for (int j = 0; j < nt; j++)
+      for (octave_idx_type j = 0; j < nt; j++)
 	A (i-1, j) = vect.elem (j);
     }
 
   // Second derivative weights.
 
   id = 2;
-  for (int i = 1; i <= nt; i++)
+  for (octave_idx_type i = 1; i <= nt; i++)
     {
       F77_FUNC (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, pdif1,
 			      pdif2, pdif3, pr, pvect); 
 
-      for (int j = 0; j < nt; j++)
+      for (octave_idx_type j = 0; j < nt; j++)
 	B (i-1, j) = vect.elem (j);
     }
 

@@ -40,7 +40,7 @@ public:
 		bool calc_unitary = true)
     : schur_mat (), unitary_mat () { init (a, ord, calc_unitary); }
 
-  ComplexSCHUR (const ComplexMatrix& a, const std::string& ord, int& info,
+  ComplexSCHUR (const ComplexMatrix& a, const std::string& ord, octave_idx_type& info,
 		bool calc_unitary = true)
     : schur_mat (), unitary_mat () { info = init (a, ord, calc_unitary); }
 
@@ -65,7 +65,7 @@ public:
 
   friend std::ostream& operator << (std::ostream& os, const ComplexSCHUR& a);
 
-  typedef int (*select_function) (const Complex&);
+  typedef octave_idx_type (*select_function) (const Complex&);
 
 private:
 
@@ -74,7 +74,7 @@ private:
 
   select_function selector;
 
-  int init (const ComplexMatrix& a, const std::string& ord, bool calc_unitary);
+  octave_idx_type init (const ComplexMatrix& a, const std::string& ord, bool calc_unitary);
 };
 
 #endif

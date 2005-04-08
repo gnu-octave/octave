@@ -33,29 +33,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-sstream.h"
 #include "quit.h"
 
-typedef int (*lsode_fcn_ptr) (const int&, const double&, double*,
-			      double*, int&);
+typedef octave_idx_type (*lsode_fcn_ptr) (const octave_idx_type&, const double&, double*,
+			      double*, octave_idx_type&);
 
-typedef int (*lsode_jac_ptr) (const int&, const double&, double*,
-			      const int&, const int&, double*, const
-			      int&);
+typedef octave_idx_type (*lsode_jac_ptr) (const octave_idx_type&, const double&, double*,
+			      const octave_idx_type&, const octave_idx_type&, double*, const
+			      octave_idx_type&);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, int&, double*, double&,
-			     double&, int&, double&, const double*, int&,
-			     int&, int&, double*, int&, int*, int&,
-			     lsode_jac_ptr, int&);
+  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, octave_idx_type&, double*, double&,
+			     double&, octave_idx_type&, double&, const double*, octave_idx_type&,
+			     octave_idx_type&, octave_idx_type&, double*, octave_idx_type&, octave_idx_type*, octave_idx_type&,
+			     lsode_jac_ptr, octave_idx_type&);
 }
 
 static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
 
-static int
-lsode_f (const int& neq, const double& time, double *,
-	 double *deriv, int& ierr) 
+static octave_idx_type
+lsode_f (const octave_idx_type& neq, const double& time, double *,
+	 double *deriv, octave_idx_type& ierr) 
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -71,7 +71,7 @@ lsode_f (const int& neq, const double& time, double *,
     ierr = -1;
   else
     {
-      for (int i = 0; i < neq; i++)
+      for (octave_idx_type i = 0; i < neq; i++)
 	deriv [i] = tmp_deriv.elem (i);
     }
 
@@ -80,9 +80,9 @@ lsode_f (const int& neq, const double& time, double *,
   return 0;
 }
 
-static int
-lsode_j (const int& neq, const double& time, double *,
-	 const int&, const int&, double *pd, const int& nrowpd)
+static octave_idx_type
+lsode_j (const octave_idx_type& neq, const double& time, double *,
+	 const octave_idx_type&, const octave_idx_type&, double *pd, const octave_idx_type& nrowpd)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -94,8 +94,8 @@ lsode_j (const int& neq, const double& time, double *,
 
   tmp_jac = (*user_jac) (*tmp_x, time);
 
-  for (int j = 0; j < neq; j++)
-    for (int i = 0; i < neq; i++)
+  for (octave_idx_type j = 0; j < neq; j++)
+    for (octave_idx_type i = 0; i < neq; i++)
       pd [nrowpd * j + i] = tmp_jac (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -108,7 +108,7 @@ LSODE::do_integrate (double tout)
 {
   ColumnVector retval;
 
-  static int nn = 0;
+  static octave_idx_type nn = 0;
 
   if (! initialized || restart || ODEFunc::reset || LSODE_options::reset)
     {
@@ -118,11 +118,11 @@ LSODE::do_integrate (double tout)
 
       istate = 1;
 
-      int n = size ();
+      octave_idx_type n = size ();
 
       nn = n;
 
-      int max_maxord = 0;
+      octave_idx_type max_maxord = 0;
 
       if (integration_method () == "stiff")
 	{
@@ -166,12 +166,12 @@ LSODE::do_integrate (double tout)
 
       iwork.resize (liw);
 
-      for (int i = 4; i < 9; i++)
+      for (octave_idx_type i = 4; i < 9; i++)
 	iwork(i) = 0;
 
       rwork.resize (lrw);
 
-      for (int i = 4; i < 9; i++)
+      for (octave_idx_type i = 4; i < 9; i++)
 	rwork(i) = 0;
 
       if (stop_time_set)
@@ -221,7 +221,7 @@ LSODE::do_integrate (double tout)
       rel_tol = relative_tolerance ();
       abs_tol = absolute_tolerance ();
 
-      int abs_tol_len = abs_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.length ();
 
       if (abs_tol_len == 1)
 	itol = 1;
@@ -257,7 +257,7 @@ LSODE::do_integrate (double tout)
 	  iopt = 1;
 	}
 
-      int sl = step_limit ();
+      octave_idx_type sl = step_limit ();
       if (sl > 0)
 	{
 	  iwork(5) = sl;
@@ -384,24 +384,24 @@ LSODE::do_integrate (const ColumnVector& tout)
 {
   Matrix retval;
 
-  int n_out = tout.capacity ();
-  int n = size ();
+  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	retval.elem (0, i) = x.elem (i);
 
-      for (int j = 1; j < n_out; j++)
+      for (octave_idx_type j = 1; j < n_out; j++)
 	{
 	  ColumnVector x_next = do_integrate (tout.elem (j));
 
 	  if (integration_error)
 	    return retval;
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    retval.elem (j, i) = x_next.elem (i);
 	}
     }
@@ -414,22 +414,22 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   Matrix retval;
 
-  int n_out = tout.capacity ();
-  int n = size ();
+  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	retval.elem (0, i) = x.elem (i);
 
-      int n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.capacity ();
 
       if (n_crit > 0)
 	{
-	  int i_crit = 0;
-	  int i_out = 1;
+	  octave_idx_type i_crit = 0;
+	  octave_idx_type i_out = 1;
 	  double next_crit = tcrit.elem (0);
 	  double next_out;
 	  while (i_out < n_out)
@@ -440,7 +440,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 	      if (i_crit < n_crit)
 		next_crit = tcrit.elem (i_crit);
 
-	      int save_output;
+	      octave_idx_type save_output;
 	      double t_out;
 
 	      if (next_crit == next_out)
@@ -485,7 +485,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
 	      if (save_output)
 		{
-		  for (int i = 0; i < n; i++)
+		  for (octave_idx_type i = 0; i < n; i++)
 		    retval.elem (i_out-1, i) = x_next.elem (i);
 		}
 

@@ -45,7 +45,7 @@ FEGrid::nel_error (void) const
 
 // Constructors
 
-FEGrid::FEGrid (int nel, double width)
+FEGrid::FEGrid (octave_idx_type nel, double width)
 {
   if (nel < 1)
     {
@@ -55,11 +55,11 @@ FEGrid::FEGrid (int nel, double width)
 
   elem.resize (nel+1);
 
-  for (int i = 0; i <= nel; i++)
+  for (octave_idx_type i = 0; i <= nel; i++)
     elem.elem (i) = i * width;
 }
 
-FEGrid::FEGrid (int nel, double l, double r)
+FEGrid::FEGrid (octave_idx_type nel, double l, double r)
 {
   if (nel < 1)
     {
@@ -71,13 +71,13 @@ FEGrid::FEGrid (int nel, double l, double r)
 
   double width = (r - l) / nel;
 
-  for (int i = 0; i <= nel; i++)
+  for (octave_idx_type i = 0; i <= nel; i++)
     elem.elem (i) = i * width + l;
 
   check_grid ();
 }
 
-int
+octave_idx_type
 FEGrid::element (double x) const
 {
   if (! in_bounds (x))
@@ -86,8 +86,8 @@ FEGrid::element (double x) const
       return -1;
     }
 
-  int nel = elem.capacity () - 1;
-  for (int i = 1; i <= nel; i++)
+  octave_idx_type nel = elem.capacity () - 1;
+  for (octave_idx_type i = 1; i <= nel; i++)
     {
       if (x >= elem.elem (i-1) && x <= elem.elem (i))
 	return i;
@@ -99,14 +99,14 @@ FEGrid::element (double x) const
 void
 FEGrid::check_grid (void) const
 {
-  int nel = elem.capacity () - 1;
+  octave_idx_type nel = elem.capacity () - 1;
   if (nel < 1)
     {
       nel_error ();
       return;
     }
 
-  for (int i = 1; i <= nel; i++)
+  for (octave_idx_type i = 1; i <= nel; i++)
     {
       if (elem.elem (i-1) > elem.elem (i))
 	{

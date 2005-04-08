@@ -41,11 +41,11 @@ template <class T>
 MDiagArray2<T>&
 operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
 {
-  int r = a.rows ();
-  int c = a.cols ();
+  octave_idx_type r = a.rows ();
+  octave_idx_type c = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (r != b_nr || c != b_nc)
     {
@@ -54,7 +54,7 @@ operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
     }
   else
     {
-      int l = a.length ();
+      octave_idx_type l = a.length ();
       DO_VV_OP2 (T, a, +=, b);
     }
   return a;
@@ -64,11 +64,11 @@ template <class T>
 MDiagArray2<T>&
 operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
 {
-  int r = a.rows ();
-  int c = a.cols ();
+  octave_idx_type r = a.rows ();
+  octave_idx_type c = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (r != b_nr || c != b_nc)
     {
@@ -77,7 +77,7 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
     }
   else
     {
-      int l = a.length ();
+      octave_idx_type l = a.length ();
       DO_VV_OP2 (T, a, -=, b);
     }
   return a;
@@ -92,7 +92,7 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   { \
     MDiagArray2<T> result (a.rows (), a.cols ()); \
     T *r = result.fortran_vec (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     const T *v = a.data (); \
     DO_VS_OP (r, l, v, OP, s); \
     return result; \
@@ -109,7 +109,7 @@ operator * (const T& s, const MDiagArray2<T>& a)
 {
   MDiagArray2<T> result (a.rows (), a.cols ()); \
   T *r = result.fortran_vec (); \
-  int l = a.length (); \
+  octave_idx_type l = a.length (); \
   const T *v = a.data (); \
   DO_SV_OP (r, l, s, *, v); \
   return result; \
@@ -122,10 +122,10 @@ operator * (const T& s, const MDiagArray2<T>& a)
   MDiagArray2<T> \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
-    int a_nr = a.rows (); \
-    int a_nc = a.cols (); \
-    int b_nr = b.rows (); \
-    int b_nc = b.cols (); \
+    octave_idx_type a_nr = a.rows (); \
+    octave_idx_type a_nc = a.cols (); \
+    octave_idx_type b_nr = b.rows (); \
+    octave_idx_type b_nc = b.cols (); \
     if (a_nr != b_nr || a_nc != b_nc) \
       { \
         gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
@@ -133,7 +133,7 @@ operator * (const T& s, const MDiagArray2<T>& a)
       } \
     if (a_nc == 0 || a_nr == 0) \
       return MDiagArray2<T> (); \
-    int l = a.length (); \
+    octave_idx_type l = a.length (); \
     MDiagArray2<T> result (a_nr, a_nc); \
     T *r = result.fortran_vec (); \
     const T *x = a.data (); \
@@ -159,7 +159,7 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   MDiagArray2<T> result (a.rows (), a.cols ());
   T *r = result.fortran_vec ();
   const T *x = a.data ();

@@ -131,7 +131,7 @@ octave_range::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  int nel = range.nelem ();
+  octave_idx_type nel = range.nelem ();
 
   if (nel > 0)
     {
@@ -191,7 +191,7 @@ octave_range::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  int nel = range.nelem ();
+  octave_idx_type nel = range.nelem ();
 
   if (nel > 0)
     {
@@ -233,7 +233,7 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
 {
   bool retval = false;
 
-  int n = range.nelem ();
+  octave_idx_type n = range.nelem ();
 
   indent (os);
 

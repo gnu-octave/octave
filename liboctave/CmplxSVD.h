@@ -41,7 +41,7 @@ public:
       init (a, svd_type);
     }
 
-  ComplexSVD (const ComplexMatrix& a, int& info,
+  ComplexSVD (const ComplexMatrix& a, octave_idx_type& info,
 	      SVD::type svd_type = SVD::std)
     {
       info = init (a, svd_type);
@@ -81,7 +81,7 @@ private:
   ComplexMatrix left_sm;
   ComplexMatrix right_sm;
 
-  int init (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
+  octave_idx_type init (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
 };
 
 #endif

@@ -68,10 +68,10 @@ operator -= (streamoff_array& a, const std::streamoff& s)
 streamoff_array&
 operator += (streamoff_array& a, const streamoff_array& b)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   if (l > 0)
     {
-      int bl = b.length ();
+      octave_idx_type bl = b.length ();
       if (l != bl)
 	gripe_nonconformant ("operator +=", l, bl);
       else
@@ -83,10 +83,10 @@ operator += (streamoff_array& a, const streamoff_array& b)
 streamoff_array&
 operator -= (streamoff_array& a, const streamoff_array& b)
 {
-  int l = a.length ();
+  octave_idx_type l = a.length ();
   if (l > 0)
     {
-      int bl = b.length ();
+      octave_idx_type bl = b.length ();
       if (l != bl)
 	gripe_nonconformant ("operator -=", l, bl);
       else
@@ -95,7 +95,7 @@ operator -= (streamoff_array& a, const streamoff_array& b)
   return a;
 }
 
-int
+octave_idx_type
 streamoff_array::compute_index (Array<int>& ra_idx,
 				const dim_vector& dimensions)
 {

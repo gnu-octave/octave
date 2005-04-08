@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.cc"
 
 INSTANTIATE_ARRAY_AND_ASSIGN (int);
+INSTANTIATE_ARRAY_AND_ASSIGN (long);
 
 INSTANTIATE_ARRAY_ASSIGN (int, short);
 INSTANTIATE_ARRAY_ASSIGN (int, char);

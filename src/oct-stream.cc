@@ -112,7 +112,7 @@ get_size (double d, const std::string& who)
 }
 
 static void
-get_size (const Array<double>& size, int& nr, int& nc, bool& one_elt_size_spec,
+get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc, bool& one_elt_size_spec,
 	  const std::string& who)
 {
   nr = -1;
@@ -123,7 +123,7 @@ get_size (const Array<double>& size, int& nr, int& nc, bool& one_elt_size_spec,
   double dnr = -1.0;
   double dnc = -1.0;
 
-  int sz_len = size.length ();
+  octave_idx_type sz_len = size.length ();
 
   if (sz_len == 1)
     {
@@ -234,9 +234,9 @@ scanf_format_list::scanf_format_list (const std::string& s)
 
 scanf_format_list::~scanf_format_list (void)
 {
-  int n = list.length ();
+  octave_idx_type n = list.length ();
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
       scanf_format_elt *elt = list(i);
       delete elt;
@@ -963,7 +963,7 @@ octave_base_stream::clearerr (void)
 // are those that define is).
 
 std::string
-octave_base_stream::do_gets (int max_len, bool& err,
+octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 			     bool strip_newline, const std::string& who)
 {
   std::string retval;
@@ -1028,13 +1028,13 @@ octave_base_stream::do_gets (int max_len, bool& err,
 }
 
 std::string
-octave_base_stream::getl (int max_len, bool& err, const std::string& who)
+octave_base_stream::getl (octave_idx_type max_len, bool& err, const std::string& who)
 {
   return do_gets (max_len, err, true, who);
 }
 
 std::string
-octave_base_stream::gets (int max_len, bool& err, const std::string& who)
+octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string& who)
 {
   return do_gets (max_len, err, false, who);
 }
@@ -1325,8 +1325,8 @@ octave_scan (std::istream&, const scanf_format_elt&, double*);
 template <class T>
 void
 do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
-	       T valptr, Matrix& mval, double *data, int& idx,
-	       int& conversion_count, int nr, int max_size,
+	       T valptr, Matrix& mval, double *data, octave_idx_type& idx,
+	       octave_idx_type& conversion_count, octave_idx_type nr, octave_idx_type max_size,
 	       bool discard) 
 {
   OCTAVE_SCAN (is, fmt, valptr);
@@ -1355,37 +1355,37 @@ do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, int*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, long int*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, short int*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, unsigned int*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, unsigned long int*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, unsigned short int*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 #if 0
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, float*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 #endif
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
-	       Matrix&, double*, int&, int&, int, int, bool);
+	       Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
 
 #define DO_WHITESPACE_CONVERSION() \
   do \
@@ -1595,14 +1595,14 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 
 octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
-			      int nr, int nc, bool one_elt_size_spec,
-			      int& conversion_count, const std::string& who)
+			      octave_idx_type nr, octave_idx_type nc, bool one_elt_size_spec,
+			      octave_idx_type& conversion_count, const std::string& who)
 {
   conversion_count = 0;
 
   int nconv = fmt_list.num_conversions ();
 
-  int data_index = 0;
+  octave_idx_type data_index = 0;
 
   octave_value retval = Matrix ();
 
@@ -1620,11 +1620,11 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
   Matrix mval;
   double *data = 0;
-  int max_size = 0;
-  int max_conv = 0;
+  octave_idx_type max_size = 0;
+  octave_idx_type max_conv = 0;
 
-  int final_nr = 0;
-  int final_nc = 0;
+  octave_idx_type final_nr = 0;
+  octave_idx_type final_nc = 0;
 
   if (all_char_conv)
     {
@@ -1956,7 +1956,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 octave_value
 octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
-			   int& conversion_count, const std::string& who)
+			   octave_idx_type& conversion_count, const std::string& who)
 {
   octave_value retval = Matrix ();
 
@@ -1972,8 +1972,8 @@ octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
 	::error ("%s: invalid format specified", who.c_str ());
       else
 	{
-	int nr = -1;
-	int nc = -1;
+	octave_idx_type nr = -1;
+	octave_idx_type nc = -1;
 
 	bool one_elt_size_spec;
 
@@ -2170,7 +2170,7 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
 
 	  bool quit = false;
 
-	  for (int i = 0; i < len; i++)
+	  for (octave_idx_type i = 0; i < len; i++)
 	    {
 	      octave_value tmp;
 
@@ -2378,15 +2378,15 @@ printf_value_cache::string_value (void)
 
 	  charMatrix chm = tval.char_matrix_value ();
 
-	  int nr = chm.rows ();
-	  int nc = chm.columns ();
+	  octave_idx_type nr = chm.rows ();
+	  octave_idx_type nc = chm.columns ();
 
 	  int k = 0;
 
 	  retval.resize (nr * nc, '\0');
 
-	  for (int j = 0; j < nc; j++)
-	    for (int i = 0; i < nr; i++)
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = 0; i < nr; i++)
 	      retval[k++] = chm(i,j);
 	}
 
@@ -2771,7 +2771,7 @@ octave_stream::flush (void)
 }
 
 std::string
-octave_stream::getl (int max_len, bool& err, const std::string& who)
+octave_stream::getl (octave_idx_type max_len, bool& err, const std::string& who)
 {
   std::string retval;
 
@@ -2805,7 +2805,7 @@ octave_stream::getl (const octave_value& tc_max_len, bool& err,
 }
 
 std::string
-octave_stream::gets (int max_len, bool& err, const std::string& who)
+octave_stream::gets (octave_idx_type max_len, bool& err, const std::string& who)
 {
   std::string retval;
 
@@ -2987,9 +2987,9 @@ octave_stream::close (void)
 
 template <class RET_T, class READ_T>
 octave_value
-do_read (octave_stream& strm, int nr, int nc, int block_size,
-	 int skip, bool do_float_fmt_conv,
-	 oct_mach_info::float_format from_flt_fmt, int& count)
+do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx_type block_size,
+	 octave_idx_type skip, bool do_float_fmt_conv,
+	 oct_mach_info::float_format from_flt_fmt, octave_idx_type& count)
 {
   octave_value retval;
 
@@ -3002,10 +3002,10 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
 
   typename octave_array_type_traits<RET_T>::element_type *dat = 0;
 
-  int max_size = 0;
+  octave_idx_type max_size = 0;
 
-  int final_nr = 0;
-  int final_nc = 1;
+  octave_idx_type final_nr = 0;
+  octave_idx_type final_nc = 1;
 
   if (nr > 0)
     {
@@ -3052,7 +3052,7 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
     {
       std::istream& is = *isp;
 
-      int elts_read = 0;
+      octave_idx_type elts_read = 0;
 
       for (;;)
 	{
@@ -3150,8 +3150,8 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
 
 #define DO_READ_VAL_TEMPLATE(RET_T, READ_T) \
   template octave_value \
-  do_read<RET_T, READ_T> (octave_stream&, int, int, int, int, bool, \
-			  oct_mach_info::float_format, int&)
+  do_read<RET_T, READ_T> (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool, \
+			  oct_mach_info::float_format, octave_idx_type&)
 
 // XXX FIXME XXX -- should we only have float if it is a different
 // size from double?
@@ -3183,8 +3183,8 @@ INSTANTIATE_DO_READ (uint64NDArray);
 INSTANTIATE_DO_READ (NDArray);
 INSTANTIATE_DO_READ (charNDArray);
 
-typedef octave_value (*read_fptr) (octave_stream&, int, int, int, int, bool,
-				   oct_mach_info::float_format ffmt, int&);
+typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool,
+				   oct_mach_info::float_format ffmt, octave_idx_type&);
 
 INSTANTIATE_ARRAY (read_fptr);
 template class Array2<read_fptr>;
@@ -3206,11 +3206,11 @@ template class Array2<read_fptr>;
   read_fptr_table(R,oct_data_conv::dt_logical) = do_read<VAL_T, unsigned char>
 
 octave_value
-octave_stream::read (const Array<double>& size, int block_size,
+octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 		     oct_data_conv::data_type input_type,
 		     oct_data_conv::data_type output_type,
-		     int skip, oct_mach_info::float_format ffmt,
-		     int& char_count)
+		     octave_idx_type skip, oct_mach_info::float_format ffmt,
+		     octave_idx_type& char_count)
 {
   static bool initialized = false;
 
@@ -3249,8 +3249,8 @@ octave_stream::read (const Array<double>& size, int block_size,
 
       char_count = 0;
 
-      int nr = -1;
-      int nc = -1;
+      octave_idx_type nr = -1;
+      octave_idx_type nc = -1;
 
       bool ignore;
 
@@ -3295,12 +3295,12 @@ octave_stream::read (const Array<double>& size, int block_size,
   return retval;
 }
 
-int
-octave_stream::write (const octave_value& data, int block_size,
-		      oct_data_conv::data_type output_type, int skip,
+octave_idx_type
+octave_stream::write (const octave_value& data, octave_idx_type block_size,
+		      oct_data_conv::data_type output_type, octave_idx_type skip,
 		      oct_mach_info::float_format flt_fmt)
 {
-  int retval = -1;
+  octave_idx_type retval = -1;
 
   if (stream_ok ("fwrite"))
     {
@@ -3309,7 +3309,7 @@ octave_stream::write (const octave_value& data, int block_size,
 	  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
 	    flt_fmt = float_format ();
 
-	  int status = data.write (*this, block_size, output_type,
+	  octave_idx_type status = data.write (*this, block_size, output_type,
 				   skip, flt_fmt);
 
 	  if (status < 0)
@@ -3435,20 +3435,20 @@ do_write (std::ostream& os, const T& val, oct_data_conv::data_type output_type,
 }
 
 template <class T>
-int
-octave_stream::write (const Array<T>& data, int block_size,
+octave_idx_type
+octave_stream::write (const Array<T>& data, octave_idx_type block_size,
 		      oct_data_conv::data_type output_type,
-		      int skip, oct_mach_info::float_format flt_fmt)
+		      octave_idx_type skip, oct_mach_info::float_format flt_fmt)
 {
-  int retval = -1;
+  octave_idx_type retval = -1;
 
   bool status = true;
 
-  int count = 0;
+  octave_idx_type count = 0;
 
   const T *d = data.data ();
 
-  int n = data.length ();
+  octave_idx_type n = data.length ();
 
   oct_mach_info::float_format native_flt_fmt
     = oct_mach_info::float_format ();
@@ -3466,7 +3466,7 @@ octave_stream::write (const Array<T>& data, int block_size,
   else
     swap = (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
       std::ostream *osp = output_stream ();
 
@@ -3516,64 +3516,64 @@ octave_stream::write (const Array<T>& data, int block_size,
   return retval;
 }
 
-template int
-octave_stream::write (const Array<char>&, int,
+template octave_idx_type
+octave_stream::write (const Array<char>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<bool>&, int,
+template octave_idx_type
+octave_stream::write (const Array<bool>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<double>&, int,
+template octave_idx_type
+octave_stream::write (const Array<double>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_int8>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_int8>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_uint8>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_uint8>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_int16>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_int16>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_uint16>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_uint16>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_int32>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_int32>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_uint32>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_uint32>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_int64>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_int64>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
-template int
-octave_stream::write (const Array<octave_uint64>&, int,
+template octave_idx_type
+octave_stream::write (const Array<octave_uint64>&, octave_idx_type,
 		      oct_data_conv::data_type,
-		      int, oct_mach_info::float_format);
+		      octave_idx_type, oct_mach_info::float_format);
 
 octave_value
 octave_stream::scanf (const std::string& fmt, const Array<double>& size,
-		      int& count, const std::string& who)
+		      octave_idx_type& count, const std::string& who)
 {
   octave_value retval;
 

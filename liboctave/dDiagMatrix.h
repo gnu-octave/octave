@@ -40,9 +40,9 @@ public:
 
   DiagMatrix (void) : MDiagArray2<double> () { }
 
-  DiagMatrix (int r, int c) : MDiagArray2<double> (r, c) { }
+  DiagMatrix (octave_idx_type r, octave_idx_type c) : MDiagArray2<double> (r, c) { }
 
-  DiagMatrix (int r, int c, double val) : MDiagArray2<double> (r, c, val) { }
+  DiagMatrix (octave_idx_type r, octave_idx_type c, double val) : MDiagArray2<double> (r, c, val) { }
 
   DiagMatrix (const DiagMatrix& a) : MDiagArray2<double> (a) { }
 
@@ -62,11 +62,11 @@ public:
   bool operator != (const DiagMatrix& a) const;
 
   DiagMatrix& fill (double val);
-  DiagMatrix& fill (double val, int beg, int end);
+  DiagMatrix& fill (double val, octave_idx_type beg, octave_idx_type end);
   DiagMatrix& fill (const ColumnVector& a);
   DiagMatrix& fill (const RowVector& a);
-  DiagMatrix& fill (const ColumnVector& a, int beg);
-  DiagMatrix& fill (const RowVector& a, int beg);
+  DiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
+  DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
 
   DiagMatrix transpose (void) const;
 
@@ -75,14 +75,14 @@ public:
 
   // resize is the destructive analog for this one
 
-  Matrix extract (int r1, int c1, int r2, int c2) const;
+  Matrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i.
 
-  RowVector row (int i) const;
+  RowVector row (octave_idx_type i) const;
   RowVector row (char *s) const;
 
-  ColumnVector column (int i) const;
+  ColumnVector column (octave_idx_type i) const;
   ColumnVector column (char *s) const;
 
   DiagMatrix inverse (void) const;
@@ -91,7 +91,7 @@ public:
   // other operations
 
   ColumnVector diag (void) const;
-  ColumnVector diag (int k) const;
+  ColumnVector diag (octave_idx_type k) const;
 
   // i/o
 
@@ -99,7 +99,7 @@ public:
 
 private:
 
-  DiagMatrix (double *d, int nr, int nc) : MDiagArray2<double> (d, nr, nc) { }
+  DiagMatrix (double *d, octave_idx_type nr, octave_idx_type nc) : MDiagArray2<double> (d, nr, nc) { }
 };
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations

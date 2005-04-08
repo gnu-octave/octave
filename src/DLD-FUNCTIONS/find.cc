@@ -39,11 +39,11 @@ find_nonzero_elem_idx (const T& nda, int nargout)
 {
   octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
-  int count = 0;
+  octave_idx_type count = 0;
 
-  int nel = nda.nelem ();
+  octave_idx_type nel = nda.nelem ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
 
@@ -55,8 +55,8 @@ find_nonzero_elem_idx (const T& nda, int nargout)
   // the overall indices to be returned.  But see below for scalar
   // case...
 
-  int result_nr = count;
-  int result_nc = 1;
+  octave_idx_type result_nr = count;
+  octave_idx_type result_nc = 1;
 
   bool scalar_arg = false;
 
@@ -79,12 +79,12 @@ find_nonzero_elem_idx (const T& nda, int nargout)
     {
       count = 0;
 
-      int nr = nda.rows ();
+      octave_idx_type nr = nda.rows ();
 
-      int i = 0;
-      int j = 0;
+      octave_idx_type i = 0;
+      octave_idx_type j = 0;
 
-      for (int k = 0; k < nel; k++)
+      for (octave_idx_type k = 0; k < nel; k++)
 	{
 	  OCTAVE_QUIT;
 

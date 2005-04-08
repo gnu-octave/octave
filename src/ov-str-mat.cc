@@ -83,7 +83,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 {
   octave_value retval;
 
-  int len = idx.length ();
+  octave_idx_type len = idx.length ();
 
   switch (len)
     {
@@ -112,7 +112,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
       {
 	Array<idx_vector> idx_vec (len);
 
-	for (int i = 0; i < len; i++)
+	for (octave_idx_type i = 0; i < len; i++)
 	  idx_vec(i) = idx(i).index_vector ();
 
 	if (! error_state)
@@ -129,14 +129,14 @@ void
 octave_char_matrix_str::assign (const octave_value_list& idx,
 				const charMatrix& rhs)
 {
-  int len = idx.length ();
+  octave_idx_type len = idx.length ();
 
   // XXX FIXME XXX
   charMatrix tmp = rhs;
   if (tmp.rows () == 1 && tmp.columns () == 0)
     tmp.resize (0, 0);    
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     matrix.set_index (idx(i).index_vector ());
 
   ::assign (matrix, tmp, Vstring_fill_char);
@@ -211,11 +211,11 @@ octave_char_matrix_str::all_strings (bool, bool) const
     {
       charMatrix chm = matrix.matrix_value ();
 
-      int n = chm.rows ();
+      octave_idx_type n = chm.rows ();
 
       retval.resize (n);
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	retval[i] = chm.row_as_string (i, true);
     }
   else
@@ -269,9 +269,9 @@ octave_char_matrix_str::save_ascii (std::ostream& os,
       // Keep this case, rather than use generic code above for
       // backward compatiability. Makes load_ascii much more complex!!
       charMatrix chm = char_matrix_value ();
-      int elements = chm.rows ();
+      octave_idx_type elements = chm.rows ();
       os << "# elements: " << elements << "\n";
-      for (int i = 0; i < elements; i++)
+      for (octave_idx_type i = 0; i < elements; i++)
 	{
 	  unsigned len = chm.cols ();
 	  os << "# length: " << len << "\n";

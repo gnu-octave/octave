@@ -37,7 +37,7 @@ intNDArray<T>::operator ! (void) const
 {
   boolNDArray b (this->dims ());
 
-  for (int i = 0; i < this->length (); i++)
+  for (octave_idx_type i = 0; i < this->length (); i++)
     b.elem (i) = ! this->elem (i);
 
   return b;
@@ -61,7 +61,7 @@ intNDArray<T>::any (int dim) const
 
 template <class T>
 void
-intNDArray<T>::increment_index (Array<int>& ra_idx,
+intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension)
 {
@@ -69,8 +69,8 @@ intNDArray<T>::increment_index (Array<int>& ra_idx,
 }
 
 template <class T>
-int 
-intNDArray<T>::compute_index (Array<int>& ra_idx,
+octave_idx_type 
+intNDArray<T>::compute_index (Array<octave_idx_type>& ra_idx,
 			      const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
@@ -78,7 +78,7 @@ intNDArray<T>::compute_index (Array<int>& ra_idx,
 
 template <class T>
 intNDArray<T>
-intNDArray<T>::concat (const intNDArray<T>& rb, const Array<int>& ra_idx)
+intNDArray<T>::concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0);
     insert (rb, ra_idx);
@@ -87,7 +87,7 @@ intNDArray<T>::concat (const intNDArray<T>& rb, const Array<int>& ra_idx)
 
 template <class T>
 intNDArray<T>&
-intNDArray<T>::insert (const intNDArray<T>& a, int r, int c)
+intNDArray<T>::insert (const intNDArray<T>& a, octave_idx_type r, octave_idx_type c)
 {
   Array<T>::insert (a, r, c);
   return *this;
@@ -95,7 +95,7 @@ intNDArray<T>::insert (const intNDArray<T>& a, int r, int c)
 
 template <class T>
 intNDArray<T>&
-intNDArray<T>::insert (const intNDArray<T>& a, const Array<int>& ra_idx)
+intNDArray<T>::insert (const intNDArray<T>& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<T>::insert (a, ra_idx);
   return *this;
@@ -107,9 +107,9 @@ template <class T>
 std::ostream&
 operator << (std::ostream& os, const intNDArray<T>& a)
 {
-  int nel = a.nelem ();
+  octave_idx_type nel = a.nelem ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     os << " " << a.elem (i) << "\n";
 
   return os;
@@ -119,7 +119,7 @@ template <class T>
 std::istream&
 operator >> (std::istream& is, intNDArray<T>& a)
 {
-  int nel = a.nelem ();
+  octave_idx_type nel = a.nelem ();
 
   if (nel < 1 )
     is.clear (std::ios::badbit);
@@ -127,7 +127,7 @@ operator >> (std::istream& is, intNDArray<T>& a)
     {
       T tmp;
 
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	{
 	  is >> tmp;
 

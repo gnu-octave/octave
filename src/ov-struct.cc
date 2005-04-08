@@ -402,7 +402,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      int n = map.numel ();
+      octave_idx_type n = map.numel ();
 
       if (n > 1 && print_keys_only)
 	{
@@ -733,12 +733,13 @@ cell2struct_check_args (const dim_vector& c_dv, const dim_vector& f_dv,
 }
 
 static void
-cell2struct_construct_idx (Array<int>& ra_idx1, const Array<int>& ra_idx2,
-			   int dim, int fill_value)
+cell2struct_construct_idx (Array<octave_idx_type>& ra_idx1,
+			   const Array<octave_idx_type>& ra_idx2,
+			   octave_idx_type dim, octave_idx_type fill_value)
 {
-  int iidx = 0;
+  octave_idx_type iidx = 0;
 
-  for (int idx = 0; idx < ra_idx1.length (); idx++)
+  for (octave_idx_type idx = 0; idx < ra_idx1.length (); idx++)
     {
       if (idx == dim)
 	ra_idx1.elem (idx) = fill_value;
@@ -800,7 +801,7 @@ A(1)\n\
 	      // XXX FIX ME XXX --  int_value () should print out the
 	      // conversions it does to be Matlab compatible.
 
-	      int dim = args(2).int_value () - 1;
+	      octave_idx_type dim = args(2).int_value () - 1;
 
 	      if (! error_state)
 		{
@@ -810,7 +811,7 @@ A(1)\n\
 		  if (cell2struct_check_args (c_dv, field_dv, field_is_cell,
 					      dim))
 		    {
-		      int c_dv_length = c_dv.length ();
+		      octave_idx_type c_dv_length = c_dv.length ();
 
 		      // Dimension vector for the Cell arrays to be
 		      // put into the structure.
@@ -824,9 +825,9 @@ A(1)\n\
 		      else
 			value_dv.resize (c_dv_length - 1);
 
-		      int idx_tmp = 0;
+		      octave_idx_type idx_tmp = 0;
 
-		      for (int i = 0; i < c_dv_length; i++)
+		      for (octave_idx_type i = 0; i < c_dv_length; i++)
 			{
 			  if (i != dim)
 			    value_dv.elem (idx_tmp++) = c_dv.elem (i);
@@ -842,7 +843,7 @@ A(1)\n\
 		      // field is a character array the number of
 		      // elements is equals the number of rows.
 
-		      int field_numel
+		      octave_idx_type field_numel
 			= field_is_cell ? field_dv.numel (): field_dv(0);
 
 		      // For matlab compatibility.
@@ -850,7 +851,7 @@ A(1)\n\
 		      if (field_numel == 0)
 			map.reshape (dim_vector (0, 1));
 
-		      for (int i = 0; i < field_numel; i++)
+		      for (octave_idx_type i = 0; i < field_numel; i++)
 			{
 			  // Construct cell array which goes into the
 			  // structure together with the appropriate
@@ -858,10 +859,10 @@ A(1)\n\
 
 			  Cell c_value (value_dv);
 
-			  Array<int> value_idx (value_dv.length (), 0);
-			  Array<int> c_idx (c_dv_length, 0);
+			  Array<octave_idx_type> value_idx (value_dv.length (), 0);
+			  Array<octave_idx_type> c_idx (c_dv_length, 0);
 
-			  for (int j = 0; j < value_dv.numel (); j++)
+			  for (octave_idx_type j = 0; j < value_dv.numel (); j++)
 			    {
 			      // Need to do this to construct the
 			      // appropriate idx for getting elements
@@ -1003,7 +1004,7 @@ octave_struct::save_ascii (std::ostream& os, bool& infnan_warned,
 bool 
 octave_struct::load_ascii (std::istream& is)
 {
-  int len = 0;
+  octave_idx_type len = 0;
   bool success = true;
 
   if (extract_keyword (is, "length", len) && len >= 0)
@@ -1012,7 +1013,7 @@ octave_struct::load_ascii (std::istream& is)
 	{
 	  Octave_map m (map);
 
-	  for (int j = 0; j < len; j++)
+	  for (octave_idx_type j = 0; j < len; j++)
 	    {
 	      octave_value t2;
 	      bool dummy;
@@ -1088,7 +1089,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
     {
       Octave_map m (map);
 
-      for (int j = 0; j < len; j++)
+      for (octave_idx_type j = 0; j < len; j++)
 	{
 	  octave_value t2;
 	  bool dummy;

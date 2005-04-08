@@ -140,10 +140,10 @@ public:
       delete rep;
   }
 
-  int rows (void)
+  octave_idx_type rows (void)
   { return (rep->dv.length () > 0 ? rep->dv(0) : 0); }
 
-  int cols (void)
+  octave_idx_type cols (void)
   { return (rep->dv.length () > 1 ? rep->dv(1) : 0); }
 
   dim_vector dims (void) { return rep->dv; }
@@ -171,8 +171,8 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 						 const octave_value& val,
 						 bool& first_elem)
 {
-  int this_elt_nr = val.rows ();
-  int this_elt_nc = val.columns ();
+  octave_idx_type this_elt_nr = val.rows ();
+  octave_idx_type this_elt_nc = val.columns ();
 
   dim_vector this_elt_dv = val.dims ();
 
@@ -272,7 +272,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	    {
 	      octave_value_list tlst = tmp.list_value ();
 
-	      for (int i = 0; i < tlst.length (); i++)
+	      for (octave_idx_type i = 0; i < tlst.length (); i++)
 		{
 		  if (! do_init_element (elt, tlst(i), first_elem))
 		    goto done;
@@ -333,8 +333,8 @@ public:
 
   ~tm_const (void) { }
 
-  int rows (void) const { return (dv.length () > 0 ? dv.elem (0) : 0); }
-  int cols (void) const { return (dv.length () > 1 ? dv.elem (1) : 0); }
+  octave_idx_type rows (void) const { return (dv.length () > 0 ? dv.elem (0) : 0); }
+  octave_idx_type cols (void) const { return (dv.length () > 1 ? dv.elem (1) : 0); }
 
   dim_vector dims (void) const { return dv; }
 
@@ -409,8 +409,8 @@ tm_const::init (const tree_matrix& tm)
 	{
 	  tm_row_const elt = *p;
 
-	  int this_elt_nr = elt.rows ();
-	  int this_elt_nc = elt.cols ();
+	  octave_idx_type this_elt_nr = elt.rows ();
+	  octave_idx_type this_elt_nc = elt.cols ();
 
 	  dim_vector this_elt_dv = elt.dims ();
 

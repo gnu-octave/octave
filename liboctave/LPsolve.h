@@ -60,7 +60,7 @@ public:
 
   ~LPsolve (void) { }
 
-  ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
+  ColumnVector do_minimize (double& objf, octave_idx_type& inform, ColumnVector& lambda);
 };
 
 #endif

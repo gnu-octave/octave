@@ -69,11 +69,11 @@ private:
 	}
       else
 	{
-	  data = new int [len];
+	  data = new octave_idx_type [len];
 
 	  bool conversion_error = false;
 
-	  for (int i = 0; i < len; i++)
+	  for (octave_idx_type i = 0; i < len; i++)
 	    data[i] = tree_to_mat_idx (inda.elem (i), conversion_error);
 
 	  if (conversion_error)
@@ -87,7 +87,7 @@ private:
 
     idx_vector_rep (double d);
 
-    idx_vector_rep (int i);
+    idx_vector_rep (octave_idx_type i);
 
     idx_vector_rep (char c);
 
@@ -101,7 +101,7 @@ private:
 	frozen (0), colon_equiv_checked (0), colon_equiv (0),
 	orig_dims (1, 1)
     {
-      data = new int [len];
+      data = new octave_idx_type [len];
 
       data[0] = tree_to_mat_idx (i);
 
@@ -118,51 +118,52 @@ private:
 
     int ok (void) { return initialized; }
 
-    int capacity (void) const { return len; }
-    int length (int colon_len) const { return colon ? colon_len : len; }
+    octave_idx_type capacity (void) const { return len; }
+    octave_idx_type length (octave_idx_type colon_len) const { return colon ? colon_len : len; }
 
-    int elem (int n) const { return colon ? n : data[n]; }
+    octave_idx_type elem (octave_idx_type n) const { return colon ? n : data[n]; }
 
-    int checkelem (int n) const;
-    int operator () (int n) const { return checkelem (n); }
+    octave_idx_type checkelem (octave_idx_type n) const;
+    octave_idx_type operator () (octave_idx_type n) const { return checkelem (n); }
 
-    int max (void) const { return max_val; }
-    int min (void) const { return min_val; }
+    octave_idx_type max (void) const { return max_val; }
+    octave_idx_type min (void) const { return min_val; }
 
     int one_zero_only (void) const { return one_zero; }
-    int zeros_count (void) const { return num_zeros; }
-    int ones_count (void) const { return num_ones; }
+    octave_idx_type zeros_count (void) const { return num_zeros; }
+    octave_idx_type ones_count (void) const { return num_ones; }
 
     int is_colon (void) const { return colon; }
-    int is_colon_equiv (int n, int sort_uniq);
+    int is_colon_equiv (octave_idx_type n, int sort_uniq);
 
     void sort (bool uniq);
 
-    int orig_rows (void) const { return orig_dims(0); }
-    int orig_columns (void) const { return orig_dims(1); }
+    octave_idx_type orig_rows (void) const { return orig_dims(0); }
+    octave_idx_type orig_columns (void) const { return orig_dims(1); }
 
     dim_vector orig_dimensions (void) const { return orig_dims; }
 
     // other stuff
 
-    void shorten (int n); // Unsafe.  Avoid at all cost.
+    void shorten (octave_idx_type n); // Unsafe.  Avoid at all cost.
 
-    int freeze (int z_len, const char *tag, bool resize_ok, bool warn_resize);
+    octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok, bool warn_resize);
 
     // i/o
 
     std::ostream& print (std::ostream& os) const;
 
-    int *data;
-    int len;
-    int num_zeros;
-    int num_ones;
-    int max_val;
-    int min_val;
+    octave_idx_type *data;
+    octave_idx_type len;
+    octave_idx_type num_zeros;
+    octave_idx_type num_ones;
+    octave_idx_type max_val;
+    octave_idx_type min_val;
 
     int count;
-    int frozen_at_z_len;
-    int frozen_len;
+
+    octave_idx_type frozen_at_z_len;
+    octave_idx_type frozen_len;
 
     unsigned int colon : 1;
     unsigned int one_zero : 1;
@@ -175,13 +176,13 @@ private:
  
     void init_state (void);
 
-    void maybe_convert_one_zero_to_idx (int z_len);
+    void maybe_convert_one_zero_to_idx (octave_idx_type z_len);
 
-    int tree_to_mat_idx (double x, bool& conversion_error);
+    octave_idx_type tree_to_mat_idx (double x, bool& conversion_error);
 
-    int tree_to_mat_idx (int i) { return i - 1; }
+    octave_idx_type tree_to_mat_idx (octave_idx_type i) { return i - 1; }
 
-    template <class U> int tree_to_mat_idx (const octave_int<U>& i)
+    template <class U> octave_idx_type tree_to_mat_idx (const octave_int<U>& i)
       { return i.value () - 1; }
   };
 
@@ -200,7 +201,7 @@ public:
 
   idx_vector (double d) : rep (new idx_vector_rep (d)) { }
 
-  idx_vector (int i) : rep (new idx_vector_rep (i)) { }
+  idx_vector (octave_idx_type i) : rep (new idx_vector_rep (i)) { }
 
   idx_vector (char c) : rep (new idx_vector_rep (c)) { }
 
@@ -234,28 +235,28 @@ public:
 
   operator bool () const { return rep->ok (); }
 
-  int capacity (void) const { return rep->capacity (); }
-  int length (int cl) const { return rep->length (cl); }
+  octave_idx_type capacity (void) const { return rep->capacity (); }
+  octave_idx_type length (octave_idx_type cl) const { return rep->length (cl); }
 
-  int elem (int n) const { return rep->elem (n); }
-  int checkelem (int n) const { return rep->checkelem (n); }
-  int operator () (int n) const { return rep->operator () (n); }
+  octave_idx_type elem (octave_idx_type n) const { return rep->elem (n); }
+  octave_idx_type checkelem (octave_idx_type n) const { return rep->checkelem (n); }
+  octave_idx_type operator () (octave_idx_type n) const { return rep->operator () (n); }
 
-  int max (void) const { return rep->max (); }
-  int min (void) const { return rep->min (); }
+  octave_idx_type max (void) const { return rep->max (); }
+  octave_idx_type min (void) const { return rep->min (); }
 
   int one_zero_only (void) const { return rep->one_zero_only (); }
-  int zeros_count (void) const { return rep->zeros_count (); }
-  int ones_count (void) const { return rep->ones_count (); }
+  octave_idx_type zeros_count (void) const { return rep->zeros_count (); }
+  octave_idx_type ones_count (void) const { return rep->ones_count (); }
 
   int is_colon (void) const { return rep->is_colon (); }
-  int is_colon_equiv (int n, int sort_uniq = 0) const
+  int is_colon_equiv (octave_idx_type n, int sort_uniq = 0) const
     { return rep->is_colon_equiv (n, sort_uniq); }
 
   void sort (bool uniq = false) { rep->sort (uniq); }
 
-  int orig_rows (void) const { return rep->orig_rows (); }
-  int orig_columns (void) const { return rep->orig_columns (); }
+  octave_idx_type orig_rows (void) const { return rep->orig_rows (); }
+  octave_idx_type orig_columns (void) const { return rep->orig_columns (); }
 
   dim_vector orig_dimensions (void) const { return rep->orig_dimensions (); }
 
@@ -263,11 +264,11 @@ public:
     { return (! is_colon () && orig_dimensions().any_zero ()); }
 
   // Unsafe.  Avoid at all cost.
-  void shorten (int n) { rep->shorten (n); }
+  void shorten (octave_idx_type n) { rep->shorten (n); }
 
   // i/o
 
-  int freeze (int z_len, const char *tag, bool resize_ok = false,
+  octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok = false,
 	      bool warn_resize = false)
     { return rep->freeze (z_len, tag, resize_ok, warn_resize); }
 
@@ -276,7 +277,7 @@ public:
   friend std::ostream& operator << (std::ostream& os, const idx_vector& a)
     { return a.print (os); }
 
-  void maybe_convert_one_zero_to_idx (int z_len)
+  void maybe_convert_one_zero_to_idx (octave_idx_type z_len)
     { rep->maybe_convert_one_zero_to_idx (z_len); }
 
 private:

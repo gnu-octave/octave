@@ -38,9 +38,9 @@ public:
   FEGrid (const ColumnVector& elbnds)
     : elem (elbnds) { check_grid (); }
 
-  FEGrid (int nel, double width);
+  FEGrid (octave_idx_type nel, double width);
 
-  FEGrid (int nel, double left, double right);
+  FEGrid (octave_idx_type nel, double left, double right);
 
   FEGrid (const FEGrid& a)
     : elem (a.elem) { }
@@ -55,7 +55,7 @@ public:
 
   ~FEGrid (void) { }
 
-  int element (double x) const;
+  octave_idx_type element (double x) const;
 
   double left (void) const { return elem.elem (0); }
 

@@ -78,7 +78,7 @@ OPTION
 Restrict the maximum order of the solution method.  This option must
 be between 1 and 5, inclusive.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "-1"
   SET_EXPR = "val"
 END_OPTION
@@ -100,7 +100,7 @@ OPTION
 Maximum number of integration steps to attempt on a single call to the
 underlying Fortran code.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "-1"
   SET_EXPR = "(val >= 0) ? val : -1"
 END_OPTION

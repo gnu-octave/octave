@@ -37,9 +37,9 @@ public:
 
   ComplexColumnVector (void) : MArray<Complex> () { }
 
-  explicit ComplexColumnVector (int n) : MArray<Complex> (n) { }
+  explicit ComplexColumnVector (octave_idx_type n) : MArray<Complex> (n) { }
 
-  ComplexColumnVector (int n, const Complex& val)
+  ComplexColumnVector (octave_idx_type n, const Complex& val)
     : MArray<Complex> (n, val) { }
 
   ComplexColumnVector (const ComplexColumnVector& a) : MArray<Complex> (a) { }
@@ -59,13 +59,13 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  ComplexColumnVector& insert (const ColumnVector& a, int r);
-  ComplexColumnVector& insert (const ComplexColumnVector& a, int r);
+  ComplexColumnVector& insert (const ColumnVector& a, octave_idx_type r);
+  ComplexColumnVector& insert (const ComplexColumnVector& a, octave_idx_type r);
 
   ComplexColumnVector& fill (double val);
   ComplexColumnVector& fill (const Complex& val);
-  ComplexColumnVector& fill (double val, int r1, int r2);
-  ComplexColumnVector& fill (const Complex& val, int r1, int r2);
+  ComplexColumnVector& fill (double val, octave_idx_type r1, octave_idx_type r2);
+  ComplexColumnVector& fill (const Complex& val, octave_idx_type r1, octave_idx_type r2);
 
   ComplexColumnVector stack (const ColumnVector& a) const;
   ComplexColumnVector stack (const ComplexColumnVector& a) const;
@@ -77,9 +77,9 @@ public:
 
   // resize is the destructive equivalent for this one
 
-  ComplexColumnVector extract (int r1, int r2) const;
+  ComplexColumnVector extract (octave_idx_type r1, octave_idx_type r2) const;
 
-  ComplexColumnVector extract_n (int r1, int n) const;
+  ComplexColumnVector extract_n (octave_idx_type r1, octave_idx_type n) const;
 
   // column vector by column vector -> column vector operations
 
@@ -127,7 +127,7 @@ public:
 
 private:
 
-  ComplexColumnVector (Complex *d, int l) : MArray<Complex> (d, l) { }
+  ComplexColumnVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, l) { }
 };
 
 MARRAY_FORWARD_DEFS (MArray, ComplexColumnVector, Complex)

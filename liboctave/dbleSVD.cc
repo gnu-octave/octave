@@ -34,10 +34,10 @@ extern "C"
   F77_RET_T
   F77_FUNC (dgesvd, DGESVD) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int&, const int&, double*,
-			     const int&, double*, double*,
-			     const int&, double*, const int&,
-			     double*, const int&, int&
+			     const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, double*, double*,
+			     const octave_idx_type&, double*, const octave_idx_type&,
+			     double*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 }
@@ -68,26 +68,26 @@ SVD::right_singular_matrix (void) const
     return right_sm;
 }
 
-int
+octave_idx_type
 SVD::init (const Matrix& a, SVD::type svd_type)
 {
-  int info;
+  octave_idx_type info;
 
-  int m = a.rows ();
-  int n = a.cols ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = a.cols ();
 
   Matrix atmp = a;
   double *tmp_data = atmp.fortran_vec ();
 
-  int min_mn = m < n ? m : n;
+  octave_idx_type min_mn = m < n ? m : n;
 
   char jobu = 'A';
   char jobv = 'A';
 
-  int ncol_u = m;
-  int nrow_vt = n;
-  int nrow_s = m;
-  int ncol_s = n;
+  octave_idx_type ncol_u = m;
+  octave_idx_type nrow_vt = n;
+  octave_idx_type nrow_s = m;
+  octave_idx_type ncol_s = n;
 
   switch (svd_type)
     {
@@ -132,7 +132,7 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   // Ask DGESVD what the dimension of WORK should be.
 
-  int lwork = -1;
+  octave_idx_type lwork = -1;
 
   Array<double> work (1);
 
@@ -147,7 +147,7 @@ SVD::init (const Matrix& a, SVD::type svd_type)
     (*current_liboctave_error_handler) ("unrecoverable error in dgesvd");
   else
     {
-      lwork = static_cast<int> (work(0));
+      lwork = static_cast<octave_idx_type> (work(0));
       work.resize (lwork);
 
       F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),

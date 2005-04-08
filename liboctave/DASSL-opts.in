@@ -68,7 +68,7 @@ If nonzero, @code{dassl} will attempt to compute a consistent set of intial
 conditions.  This is generally not reliable, so it is best to provide
 a consistent set and leave this option set to zero.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -82,7 +82,7 @@ value.  However, it is probably best to try leaving this option set to
 zero first, and only setting it to a nonzero value if that doesn't
 work very well.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -106,7 +106,7 @@ OPTION
 Restrict the maximum order of the solution method.  This option must
 be between 1 and 5, inclusive.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "-1"
   SET_EXPR = "val"
 END_OPTION
@@ -128,7 +128,7 @@ OPTION
 Maximum number of integration steps to attempt on a single call to the
 underlying Fortran code.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "-1"
   SET_EXPR = "(val >= 0) ? val : -1"
 END_OPTION

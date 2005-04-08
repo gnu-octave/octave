@@ -44,29 +44,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL, const int& N,
-			     double* A, const int& LDA, double* B,
-			     const int& LDB, int& ILO, int& IHI,
+  F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
+			     double* A, const octave_idx_type& LDA, double* B,
+			     const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
 			     double* LSCALE, double* RSCALE,
-			     double* WORK, int& INFO
+			     double* WORK, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
-			     const int& N, const int& ILO,
-			     const int& IHI, const double* LSCALE,
-			     const double* RSCALE, int& M, double* V,
-			     const int& LDV, int& INFO
+			     const octave_idx_type& N, const octave_idx_type& ILO,
+			     const octave_idx_type& IHI, const double* LSCALE,
+			     const double* RSCALE, octave_idx_type& M, double* V,
+			     const octave_idx_type& LDV, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL, const int& N,
-			     Complex* A, const int& LDA, Complex* B,
-			     const int& LDB, int& ILO, int& IHI,
+  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
+			     Complex* A, const octave_idx_type& LDA, Complex* B,
+			     const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
 			     double* LSCALE, double* RSCALE,
-			     double* WORK, int& INFO
+			     double* WORK, octave_idx_type& INFO
 			     F77_CHAR_ARG_LEN_DECL);
 }
 
@@ -128,9 +128,9 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   std::string bal_job;
 
   // problem dimension
-  int nn = args(0).rows ();
+  octave_idx_type nn = args(0).rows ();
 
-  int arg_is_empty = empty_arg ("balance", nn, args(0).columns());
+  octave_idx_type arg_is_empty = empty_arg ("balance", nn, args(0).columns());
 
   if (arg_is_empty < 0)
     return retval;
@@ -230,11 +230,11 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       // Both matrices loaded, now let's check what kind of arithmetic:
       // first, declare variables used in both the real and complex case
 
-      int ilo, ihi, info;
+      octave_idx_type ilo, ihi, info;
       RowVector lscale(nn), rscale(nn), work(6*nn);
       char job = bal_job[0];
 
-      static int complex_case
+      static octave_idx_type complex_case
 	= (args(0).is_complex_type () || args(1).is_complex_type ());
 
       // now balance
@@ -282,8 +282,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
       Matrix Pl(nn,nn), Pr(nn,nn);
 
-      for (int ii = 0; ii < nn; ii++)
-	for (int jj = 0; jj < nn; jj++)
+      for (octave_idx_type ii = 0; ii < nn; ii++)
+	for (octave_idx_type jj = 0; jj < nn; jj++)
 	  {
 	    OCTAVE_QUIT;
 

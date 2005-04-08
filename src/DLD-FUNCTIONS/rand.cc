@@ -99,8 +99,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 	      {
 		dims.resize (2);
 
-		dims(0) = NINT (tmp.double_value ());
-		dims(1) = NINT (tmp.double_value ());
+		dims(0) = NINTbig (tmp.double_value ());
+		dims(1) = NINTbig (tmp.double_value ());
 
 		if (! error_state)
 		  goto gen_matrix;
@@ -112,19 +112,19 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 	    if (r.all_elements_are_ints ())
 	      {
-		int n = r.nelem ();
+		octave_idx_type n = r.nelem ();
 
 		dims.resize (n);
 
-		int base = NINT (r.base ());
-		int incr = NINT (r.inc ());
-		int lim = NINT (r.limit ());
+		octave_idx_type base = NINTbig (r.base ());
+		octave_idx_type incr = NINTbig (r.inc ());
+		octave_idx_type lim = NINTbig (r.limit ());
 
 		if (base < 0 || lim < 0)
 		  error ("%s: all dimensions must be nonnegative", fcn);
 		else
 		  {
-		    for (int i = 0; i < n; i++)
+		    for (octave_idx_type i = 0; i < n; i++)
 		      {
 			dims(i) = base;
 			base += incr;
@@ -143,13 +143,13 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 	    if (! error_state)
 	      {
-		int len = iv.length ();
+		octave_idx_type len = iv.length ();
 
 		dims.resize (len);
 
-		for (int i = 0; i < len; i++)
+		for (octave_idx_type i = 0; i < len; i++)
 		  {
-		    int elt = iv(i);
+		    octave_idx_type elt = iv(i);
 
 		    if (elt < 0)
 		      {
@@ -197,7 +197,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
 	    for (int i = 0; i < nargin; i++)
 	      {
-		dims(i) = args(i).int_value ();
+		dims(i) = (octave_idx_type)args(i).int_value ();
 
 		if (error_state)
 		  {

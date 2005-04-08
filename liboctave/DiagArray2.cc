@@ -37,14 +37,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template <class T>
 T
-DiagArray2<T>::elem (int r, int c) const
+DiagArray2<T>::elem (octave_idx_type r, octave_idx_type c) const
 {
   return (r == c) ? Array<T>::xelem (r) : T (0);
 }
 
 template <class T>
 T
-DiagArray2<T>::checkelem (int r, int c) const
+DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
 {
   if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
     {
@@ -56,7 +56,7 @@ DiagArray2<T>::checkelem (int r, int c) const
 
 template <class T>
 T
-DiagArray2<T>::operator () (int r, int c) const
+DiagArray2<T>::operator () (octave_idx_type r, octave_idx_type c) const
 {
   if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
     {
@@ -68,7 +68,7 @@ DiagArray2<T>::operator () (int r, int c) const
 
 template <class T>
 T&
-DiagArray2<T>::xelem (int r, int c)
+DiagArray2<T>::xelem (octave_idx_type r, octave_idx_type c)
 {
   static T foo (0);
   return (r == c) ? Array<T>::xelem (r) : foo;
@@ -76,14 +76,14 @@ DiagArray2<T>::xelem (int r, int c)
 
 template <class T>
 T
-DiagArray2<T>::xelem (int r, int c) const
+DiagArray2<T>::xelem (octave_idx_type r, octave_idx_type c) const
 {
   return (r == c) ? Array<T>::xelem (r) : T (0);
 }
 
 template <class T>
 void
-DiagArray2<T>::resize (int r, int c)
+DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c)
 {
   if (r < 0 || c < 0)
     {
@@ -96,9 +96,9 @@ DiagArray2<T>::resize (int r, int c)
 
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = this->data ();
-  int old_len = this->length ();
+  octave_idx_type old_len = this->length ();
 
-  int new_len = r < c ? r : c;
+  octave_idx_type new_len = r < c ? r : c;
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
@@ -106,9 +106,9 @@ DiagArray2<T>::resize (int r, int c)
 
   if (old_data && old_len > 0)
     {
-      int min_len = old_len < new_len ? old_len : new_len;
+      octave_idx_type min_len = old_len < new_len ? old_len : new_len;
 
-      for (int i = 0; i < min_len; i++)
+      for (octave_idx_type i = 0; i < min_len; i++)
 	xelem (i, i) = old_data[i];
     }
 
@@ -118,7 +118,7 @@ DiagArray2<T>::resize (int r, int c)
 
 template <class T>
 void
-DiagArray2<T>::resize (int r, int c, const T& val)
+DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c, const T& val)
 {
   if (r < 0 || c < 0)
     {
@@ -131,23 +131,23 @@ DiagArray2<T>::resize (int r, int c, const T& val)
 
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = this->data ();
-  int old_len = this->length ();
+  octave_idx_type old_len = this->length ();
 
-  int new_len = r < c ? r : c;
+  octave_idx_type new_len = r < c ? r : c;
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
   this->dimensions = dim_vector (r, c);
 
-  int min_len = old_len < new_len ? old_len : new_len;
+  octave_idx_type min_len = old_len < new_len ? old_len : new_len;
 
   if (old_data && old_len > 0)
     {
-      for (int i = 0; i < min_len; i++)
+      for (octave_idx_type i = 0; i < min_len; i++)
 	xelem (i, i) = old_data[i];
     }
 
-  for (int i = min_len; i < new_len; i++)
+  for (octave_idx_type i = min_len; i < new_len; i++)
     xelem (i, i) = val;
 
   if (--old_rep->count <= 0)

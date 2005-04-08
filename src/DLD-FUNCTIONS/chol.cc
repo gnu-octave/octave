@@ -64,8 +64,8 @@ r' * r = a.\n\
 
   octave_value arg = args(0);
     
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   int arg_is_empty = empty_arg ("chol", nr, nc);
 
@@ -80,7 +80,7 @@ r' * r = a.\n\
 
       if (! error_state)
 	{
-	  int info;
+	  octave_idx_type info;
 	  CHOL fact (m, info);
 	  if (nargout == 2 || info == 0)
 	    {
@@ -97,7 +97,7 @@ r' * r = a.\n\
 
       if (! error_state)
 	{
-	  int info;
+	  octave_idx_type info;
 	  ComplexCHOL fact (m, info);
 	  if (nargout == 2 || info == 0)
 	    {

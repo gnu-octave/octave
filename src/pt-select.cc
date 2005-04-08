@@ -152,9 +152,9 @@ tree_switch_case::label_matches (const octave_value& val)
 	{
 	  Cell cell (label_value.cell_value ());
 
-	  for (int i = 0; i < cell.rows (); i++)
+	  for (octave_idx_type i = 0; i < cell.rows (); i++)
 	    {
-	      for (int j = 0; j < cell.columns (); j++)
+	      for (octave_idx_type j = 0; j < cell.columns (); j++)
 		{
 		  bool match = equal (val, cell(i,j));
 

@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "lo-sstream.h"
 #include "str-vec.h"
 
 // Flag for cell elements
@@ -42,15 +43,6 @@ extern std::string
 extract_keyword (std::istream& is, const char *keyword, 
 		 const bool next_only = false);
 
-extern  bool
-extract_keyword (std::istream& is, const char *keyword, int& value,
-		 const bool next_only = false);
-
-extern  bool
-extract_keyword (std::istream& is, const string_vector& keywords,
-		 std::string& keyword, int& value,
-		 const bool next_only = false);
-
 extern std::string
 read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		 octave_value& tc, int count);
@@ -64,6 +56,129 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
 extern bool
 save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 			      const std::string& name);
+
+// Match KEYWORD on stream IS, placing the associated value in VALUE,
+// returning TRUE if successful and FALSE otherwise.
+//
+// Input should look something like:
+//
+//  [%#][ \t]*keyword[ \t]*int-value.*\n
+
+template <class T>
+bool
+extract_keyword (std::istream& is, const char *keyword, T& value, 
+		 const bool next_only = false)
+{
+  bool status = false;
+  value = 0;
+
+  char c;
+  while (is.get (c))
+    {
+      if (c == '%' || c == '#')
+	{
+	  OSSTREAM buf;
+
+	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
+	    ; // Skip whitespace and comment characters.
+
+	  if (isalpha (c))
+	    buf << c;
+
+	  while (is.get (c) && isalpha (c))
+	    buf << c;
+
+	  buf << OSSTREAM_ENDS;
+	  const char *tmp = OSSTREAM_C_STR (buf);
+	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
+	  OSSTREAM_FREEZE (buf);
+
+	  if (match)
+	    {
+	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
+		; // Skip whitespace and the colon.
+
+	      is.putback (c);
+	      if (c != '\n')
+		is >> value;
+	      if (is)
+		status = true;
+	      while (is.get (c) && c != '\n')
+		; // Skip to beginning of next line;
+	      break;
+	    }
+	  else if (next_only)
+	    break;
+	}
+    }
+  return status;
+}
+
+// Match one of the elements in KEYWORDS on stream IS, placing the
+// matched keyword in KW and the associated value in VALUE,
+// returning TRUE if successful and FALSE otherwise.
+//
+// Input should look something like:
+//
+//  [%#][ \t]*keyword[ \t]*int-value.*\n
+
+template <class T>
+bool
+extract_keyword (std::istream& is, const string_vector& keywords,
+		 std::string& kw, T& value, const bool next_only = false)
+{
+  bool status = false;
+  kw = "";
+  value = 0;
+
+  char c;
+  while (is.get (c))
+    {
+      if (c == '%' || c == '#')
+	{
+	  OSSTREAM buf;
+
+	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
+	    ; // Skip whitespace and comment characters.
+
+	  if (isalpha (c))
+	    buf << c;
+
+	  while (is.get (c) && isalpha (c))
+	    buf << c;
+
+	  buf << OSSTREAM_ENDS;
+	  std::string tmp = OSSTREAM_STR (buf);
+	  OSSTREAM_FREEZE (buf);
+
+	  for (int i = 0; i < keywords.length (); i++)
+	    {
+	      int match = (tmp == keywords[i]);
+
+	      if (match)
+		{
+		  kw = keywords[i];
+
+		  while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
+		    ; // Skip whitespace and the colon.
+
+		  is.putback (c);
+		  if (c != '\n')
+		    is >> value;
+		  if (is)
+		    status = true;
+		  while (is.get (c) && c != '\n')
+		    ; // Skip to beginning of next line;
+		  return status;
+		}
+	    }
+
+	  if (next_only)
+	    break;
+	}
+    }
+  return status;
+}
 
 #endif
 

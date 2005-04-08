@@ -54,7 +54,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
-  int n_points = -1;
+  octave_idx_type n_points = -1;
   int dim = -1;
   
   if (nargin > 1)
@@ -66,7 +66,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 	    error ("%s: NaN is invalid as the N_POINTS", fcn);
 	  else
 	    {
-	      n_points = NINT (dval);
+	      n_points = NINTbig (dval);
 	      if (n_points < 0)
 		error ("%s: number of points must be greater than zero", fcn);
 	    }
@@ -84,19 +84,20 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       else if (dval < 1 || dval > dims.length ())
 	error ("%s: invalid dimension along which to perform fft", fcn);
       else
+	// to be safe, cast it back to int since dim is an int
 	dim = NINT (dval) - 1;
     }
 
   if (error_state)
     return retval;
 
-  for (int i = 0; i < dims.length (); i++)
+  for (octave_idx_type i = 0; i < dims.length (); i++)
     if (dims(i) < 0)
       return retval;
 
   if (dim < 0)
     {
-      for (int i = 0; i < dims.length (); i++)
+      for (octave_idx_type i = 0; i < dims.length (); i++)
 	if ( dims(i) > 1)
 	  {
 	    dim = i;

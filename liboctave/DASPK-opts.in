@@ -83,7 +83,7 @@ If this option is set to a nonzero value, you must also set the
 @code{\"algebraic variables\"} option to declare which variables in the
 problem are algebraic.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -94,7 +94,7 @@ OPTION
 Set to a nonzero value to use the initial condition heuristics options
 described below.
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -153,7 +153,7 @@ OPTION
 Set this option to a nonzero value to display detailed information
 about the initial condition calculation (default is 0).
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -165,7 +165,7 @@ Set to a nonzero value to exclude algebraic variables from the error
 test.  You must also set the @code{\"algebraic variables\"} option to
 declare which variables in the problem are algebraic (default is 0).
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -182,7 +182,7 @@ This option is required by the
 @code{compute consistent initial condition\"} and
 @code{\"exclude algebraic variables from error test\"} options.
   END_DOC_ITEM
-  TYPE = "Array<int>"
+  TYPE = "Array<octave_idx_type>"
   SET_ARG_TYPE = const $TYPE&
   INIT_BODY
     $OPTVAR.resize (1);
@@ -214,7 +214,7 @@ option (default is 0).
 @item To enforce both options 1 and 2.
 @end enumerate
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
@@ -243,14 +243,14 @@ Greater than zero.
 This option only has an effect if the
 @code{\"enforce inequality constraints\"} option is nonzero.
   END_DOC_ITEM
-  TYPE = "Array<int>"
+  TYPE = "Array<octave_idx_type>"
   SET_ARG_TYPE = const $TYPE&
   INIT_BODY
     $OPTVAR.resize (1);
     $OPTVAR(0) = 0;
   END_INIT_BODY
   SET_CODE
-    void set_$OPT (int val)
+    void set_$OPT (octave_idx_type val)
       {
         $OPTVAR.resize (1);
         $OPTVAR(0) = val;
@@ -282,7 +282,7 @@ OPTION
 Restrict the maximum order of the solution method.  This option must
 be between 1 and 5, inclusive (default is 5).
   END_DOC_ITEM
-  TYPE = "int"
+  TYPE = "octave_idx_type"
   INIT_VALUE = "5"
   SET_EXPR = "val"
 END_OPTION

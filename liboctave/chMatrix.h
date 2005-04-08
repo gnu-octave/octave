@@ -38,8 +38,8 @@ friend class ComplexMatrix;
 public:
 
   charMatrix (void) : MArray2<char> () { }
-  charMatrix (int r, int c) : MArray2<char> (r, c) { }
-  charMatrix (int r, int c, char val) : MArray2<char> (r, c, val) { }
+  charMatrix (octave_idx_type r, octave_idx_type c) : MArray2<char> (r, c) { }
+  charMatrix (octave_idx_type r, octave_idx_type c, char val) : MArray2<char> (r, c, val) { }
   charMatrix (const MArray2<char>& a) : MArray2<char> (a) { }
   charMatrix (const charMatrix& a) : MArray2<char> (a) { }
   charMatrix (char c);
@@ -60,14 +60,14 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  charMatrix& insert (const char *s, int r, int c);
-  charMatrix& insert (const charMatrix& a, int r, int c);
+  charMatrix& insert (const char *s, octave_idx_type r, octave_idx_type c);
+  charMatrix& insert (const charMatrix& a, octave_idx_type r, octave_idx_type c);
 
-  std::string row_as_string (int, bool strip_ws = false, bool raw = false) const;
+  std::string row_as_string (octave_idx_type, bool strip_ws = false, bool raw = false) const;
 
   // resize is the destructive equivalent for this one
 
-  charMatrix extract (int r1, int c1, int r2, int c2) const;
+  charMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;
@@ -83,7 +83,7 @@ public:
 
 private:
 
-  charMatrix (char *ch, int r, int c) : MArray2<char> (ch, r, c) { }
+  charMatrix (char *ch, octave_idx_type r, octave_idx_type c) : MArray2<char> (ch, r, c) { }
 };
 
 #endif

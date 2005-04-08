@@ -37,19 +37,19 @@ public:
     : n (0), inc_left (0), inc_right (0), lb (0.0), rb (1.0),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt (int nc, int il, int ir)
+  CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt (int nc, int il, int ir, double l, double rr)
+  CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir, double l, double rr)
     : n (nc), inc_left (il), inc_right (ir), lb (l), rb (rr),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt (int nc, double a, double b, int il, int ir)
+  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il, octave_idx_type ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
       Alpha (a), Beta (b), initialized (0) { }
 
-  CollocWt (int nc, double a, double b, int il, int ir,
+  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il, octave_idx_type ir,
 		      double ll, double rr)  
     : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
       Alpha (a), Beta (b), r (), q (), A (), B (), initialized (0) { }
@@ -80,7 +80,7 @@ public:
 
   ~CollocWt (void) { }
 
-  CollocWt& resize (int nc)
+  CollocWt& resize (octave_idx_type nc)
     {
       n = nc;
       initialized = 0;
@@ -133,10 +133,10 @@ public:
       return *this;
     }
 
-  int ncol (void) const { return n; }
+  octave_idx_type ncol (void) const { return n; }
 
-  int left_included (void) const { return inc_left; }
-  int right_included (void) const { return inc_right; }
+  octave_idx_type left_included (void) const { return inc_left; }
+  octave_idx_type right_included (void) const { return inc_right; }
 
   double left (void) const { return lb; }
   double right (void) const { return rb; }
@@ -159,10 +159,10 @@ public:
 
 protected:
 
-  int n;
+  octave_idx_type n;
 
-  int inc_left;
-  int inc_right;
+  octave_idx_type inc_left;
+  octave_idx_type inc_right;
 
   double lb;
   double rb;

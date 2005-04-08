@@ -79,15 +79,15 @@ enum bessel_type
   while (0)
 
 static inline Matrix
-int_array2_to_matrix (const Array2<int>& a)
+int_array2_to_matrix (const Array2<octave_idx_type>& a)
 {
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   Matrix retval (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 
@@ -148,7 +148,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		  if (! error_state)
 		    {
-		      int ierr;
+		      octave_idx_type ierr;
 		      octave_value result;
 
 		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -167,7 +167,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		  if (! error_state)
 		    {
-		      ArrayN<int> ierr;
+		      ArrayN<octave_idx_type> ierr;
 		      octave_value result;
 
 		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -203,7 +203,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		  if (! error_state)
 		    {
-		      Array2<int> ierr;
+		      Array2<octave_idx_type> ierr;
 		      octave_value result;
 
 		      DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
@@ -231,7 +231,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		      if (! error_state)
 			{
-			  ArrayN<int> ierr;
+			  ArrayN<octave_idx_type> ierr;
 			  octave_value result;
 
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -250,7 +250,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 		      if (! error_state)
 			{
-			  ArrayN<int> ierr;
+			  ArrayN<octave_idx_type> ierr;
 			  octave_value result;
 			  
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
@@ -379,7 +379,7 @@ See besselj.\n\
     }
   else if (nargin == 3 || nargin == 4)
     {
-      int kind = args(1).int_value ();
+      octave_idx_type kind = args(1).int_value ();
 
       if (! error_state)
 	{
@@ -481,7 +481,7 @@ return @code{NaN}\n\
 
 	  if (! error_state)
 	    {
-	      ArrayN<int> ierr;
+	      ArrayN<octave_idx_type> ierr;
 	      octave_value result;
 
 	      if (kind > 1)

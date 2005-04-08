@@ -51,7 +51,7 @@ boolMatrix::operator != (const boolMatrix& a) const
 }
 
 boolMatrix&
-boolMatrix::insert (const boolMatrix& a, int r, int c)
+boolMatrix::insert (const boolMatrix& a, octave_idx_type r, octave_idx_type c)
 {
   Array2<bool>::insert (a, r, c);
   return *this;
@@ -62,13 +62,13 @@ boolMatrix::insert (const boolMatrix& a, int r, int c)
 boolMatrix
 boolMatrix::operator ! (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   boolMatrix b (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       b.elem (i, j) = ! elem (i, j);
 
   return b;

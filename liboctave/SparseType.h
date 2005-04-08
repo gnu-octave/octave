@@ -99,9 +99,9 @@ public:
 
   void info (void) const;
 
-  int * triangular_row_perm (void) const { return row_perm; }
+  octave_idx_type * triangular_row_perm (void) const { return row_perm; }
 
-  int * triangular_col_perm (void) const { return col_perm; }
+  octave_idx_type * triangular_col_perm (void) const { return col_perm; }
 
   void invaldate_type (void) { typ = Unknown; }
 
@@ -113,7 +113,7 @@ public:
 
   void mark_as_tridiagonal (void) {typ = Tridiagonal; }
 
-  void mark_as_banded (const int ku, const int kl)
+  void mark_as_banded (const octave_idx_type ku, const octave_idx_type kl)
     { typ = Banded; upper_band = ku; lower_band = kl; }
 
   void mark_as_full (void) { typ = Full; }
@@ -128,7 +128,7 @@ public:
 
   void mark_as_unsymmetric (void);
 
-  void mark_as_permuted (const int np, const int *pr, const int *pc);
+  void mark_as_permuted (const octave_idx_type np, const octave_idx_type *pr, const octave_idx_type *pc);
 
   void mark_as_unpermuted (void);
 
@@ -138,12 +138,12 @@ private:
   matrix_type typ;
   double sp_bandden;
   double bandden;
-  int upper_band;
-  int lower_band;
+  octave_idx_type upper_band;
+  octave_idx_type lower_band;
   bool dense;
-  int nperm;
-  int *row_perm;
-  int *col_perm;
+  octave_idx_type nperm;
+  octave_idx_type *row_perm;
+  octave_idx_type *col_perm;
 };
 
 #endif

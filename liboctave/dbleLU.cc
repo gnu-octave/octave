@@ -40,30 +40,30 @@ template class base_lu <Matrix, double, Matrix, double>;
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*,
-			     const int&, int*, int&);
+  F77_FUNC (dgetrf, DGETRF) (const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, octave_idx_type*, octave_idx_type&);
 }
 
 LU::LU (const Matrix& a)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-  int mn = (a_nr < a_nc ? a_nr : a_nc);
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
+  octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
 
   ipvt.resize (mn);
-  int *pipvt = ipvt.fortran_vec ();
+  octave_idx_type *pipvt = ipvt.fortran_vec ();
 
   a_fact = a;
   double *tmp_data = a_fact.fortran_vec ();
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   F77_XFCN (dgetrf, DGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
   else
-    ipvt -= 1;
+    ipvt -= static_cast<octave_idx_type> (1);
 }
 
 /*

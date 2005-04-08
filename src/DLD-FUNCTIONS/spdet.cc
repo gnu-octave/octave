@@ -57,8 +57,8 @@ an estimate of the reciprocal condition number if requested.\n\
 
   octave_value arg = args(0);
     
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   if (nr == 0 && nc == 0)
     {
@@ -87,7 +87,7 @@ an estimate of the reciprocal condition number if requested.\n\
 	  // Always compute rcond, so we can detect numerically
 	  // singular matrices.
 
-	  int info;
+	  octave_idx_type info;
 	  double rcond = 0.0;
 	  DET det = m.determinant (info, rcond);
 	  retval(1) = rcond;
@@ -105,7 +105,7 @@ an estimate of the reciprocal condition number if requested.\n\
 	  // Always compute rcond, so we can detect numerically
 	  // singular matrices.
 
-	  int info;
+	  octave_idx_type info;
 	  double rcond = 0.0;
 	  ComplexDET det = m.determinant (info, rcond);
 	  retval(1) = rcond;

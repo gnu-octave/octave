@@ -53,10 +53,10 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 {
   MArrayN<T> y;
 
-  int a_len  = a.length ();
-  int b_len  = b.length ();
+  octave_idx_type a_len  = a.length ();
+  octave_idx_type b_len  = b.length ();
 
-  int ab_len = a_len > b_len ? a_len : b_len;
+  octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
   b.resize (ab_len, 0.0);
   if (a_len > 1)
@@ -77,10 +77,10 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
       return y;
     }
 
-  int x_len = x_dims(dim);
+  octave_idx_type x_len = x_dims(dim);
 
   dim_vector si_dims = si.dims ();
-  int si_len = si_dims(0);
+  octave_idx_type si_len = si_dims(0);
 
   if (si_len != ab_len - 1)
     {
@@ -94,8 +94,8 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
       return y;
     }
 
-  int si_dim = 0;
-  for (int i = 0; i < x_dims.length (); i++)
+  octave_idx_type si_dim = 0;
+  for (octave_idx_type i = 0; i < x_dims.length (); i++)
     {
       if (i == dim)
 	continue;
@@ -125,15 +125,15 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
   for (int i = 0; i < dim; i++)
     x_stride *= x_dims(i);
 
-  int x_num = x_dims.numel () / x_len;
-  for (int num = 0; num < x_num; num++)
+  octave_idx_type x_num = x_dims.numel () / x_len;
+  for (octave_idx_type num = 0; num < x_num; num++)
     {
-      int x_offset;
+      octave_idx_type x_offset;
       if (x_stride == 1)
 	x_offset = num * x_len;
       else
 	{
-	  int x_offset2 = 0;
+	  octave_idx_type x_offset2 = 0;
 	  x_offset = num;
 	  while (x_offset >= x_stride)
 	    {
@@ -142,7 +142,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 	    }
 	  x_offset += x_offset2 * x_stride * x_len;
 	}
-      int si_offset = num * si_len;
+      octave_idx_type si_offset = num * si_len;
 
       if (a_len > 1)
 	{
@@ -155,13 +155,13 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 
 	  psi += si_offset;
 
-	  for (int i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+	  for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
 	    {
 	      py[idx] = psi[0] + pb[0] * px[idx];
 
 	      if (si_len > 0)
 		{
-		  for (int j = 0; j < si_len - 1; j++)
+		  for (octave_idx_type j = 0; j < si_len - 1; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -188,13 +188,13 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 
 	  psi += si_offset;
 
-	  for (int i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+	  for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
 	    {
 	      py[idx] = psi[0] + pb[0] * px[idx];
 
 	      if (si_len > 1)
 		{
-		  for (int j = 0; j < si_len - 1; j++)
+		  for (octave_idx_type j = 0; j < si_len - 1; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -249,10 +249,10 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
 	return MArrayN<T> ();
       }
 
-  int a_len = a.length ();
-  int b_len = b.length ();
+  octave_idx_type a_len = a.length ();
+  octave_idx_type b_len = b.length ();
 
-  int si_len = (a_len > b_len ? a_len : b_len) - 1;
+  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
   dim_vector si_dims = x.dims ();
   for (int i = dim; i > 0; i--)
     si_dims(i) = si_dims(i-1);
@@ -412,10 +412,10 @@ $$\n\
 
 	  if (nargin == 3 || args(3).is_empty ())
 	    {
-	      int a_len = a.length ();
-	      int b_len = b.length ();
+	      octave_idx_type a_len = a.length ();
+	      octave_idx_type b_len = b.length ();
 
-	      int si_len = (a_len > b_len ? a_len : b_len) - 1;
+	      octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
 	      dim_vector si_dims = x.dims ();
 	      for (int i = dim; i > 0; i--)
@@ -469,10 +469,10 @@ $$\n\
 
 	  if (nargin == 3 || args(3).is_empty ())
 	    {
-	      int a_len = a.length ();
-	      int b_len = b.length ();
+	      octave_idx_type a_len = a.length ();
+	      octave_idx_type b_len = b.length ();
 
-	      int si_len = (a_len > b_len ? a_len : b_len) - 1;
+	      octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
 	      dim_vector si_dims = x.dims ();
 	      for (int i = dim; i > 0; i--)

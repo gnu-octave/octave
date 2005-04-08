@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ComplexDiagMatrix::ComplexDiagMatrix (const DiagMatrix& a)
   : MDiagArray2<Complex> (a.rows (), a.cols ())
 {
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
@@ -60,7 +60,7 @@ ComplexDiagMatrix::operator != (const ComplexDiagMatrix& a) const
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (double val)
 {
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     elem (i, i) = val;
   return *this;
 }
@@ -68,13 +68,13 @@ ComplexDiagMatrix::fill (double val)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const Complex& val)
 {
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     elem (i, i) = val;
   return *this;
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (double val, int beg, int end)
+ComplexDiagMatrix::fill (double val, octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -82,14 +82,14 @@ ComplexDiagMatrix::fill (double val, int beg, int end)
       return *this;
     }
 
-  for (int i = beg; i <= end; i++)
+  for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
 
   return *this;
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const Complex& val, int beg, int end)
+ComplexDiagMatrix::fill (const Complex& val, octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -97,7 +97,7 @@ ComplexDiagMatrix::fill (const Complex& val, int beg, int end)
       return *this;
     }
 
-  for (int i = beg; i <= end; i++)
+  for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
 
   return *this;
@@ -106,14 +106,14 @@ ComplexDiagMatrix::fill (const Complex& val, int beg, int end)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ColumnVector& a)
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (a.length () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
 
   return *this;
@@ -122,14 +122,14 @@ ComplexDiagMatrix::fill (const ColumnVector& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexColumnVector& a)
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (a.length () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
 
   return *this;
@@ -138,14 +138,14 @@ ComplexDiagMatrix::fill (const ComplexColumnVector& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const RowVector& a)
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (a.length () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
 
   return *this;
@@ -154,78 +154,78 @@ ComplexDiagMatrix::fill (const RowVector& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexRowVector& a)
 {
-  int len = length ();
+  octave_idx_type len = length ();
   if (a.length () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
 
   return *this;
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const ColumnVector& a, int beg)
+ComplexDiagMatrix::fill (const ColumnVector& a, octave_idx_type beg)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
 
   return *this;
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const ComplexColumnVector& a, int beg)
+ComplexDiagMatrix::fill (const ComplexColumnVector& a, octave_idx_type beg)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
 
   return *this;
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const RowVector& a, int beg)
+ComplexDiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
 
   return *this;
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const ComplexRowVector& a, int beg)
+ComplexDiagMatrix::fill (const ComplexRowVector& a, octave_idx_type beg)
 {
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
     }
 
-  for (int i = 0; i < a_len; i++)
+  for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
 
   return *this;
@@ -249,7 +249,7 @@ ComplexDiagMatrix
 conj (const ComplexDiagMatrix& a)
 {
   ComplexDiagMatrix retval;
-  int a_len = a.length ();
+  octave_idx_type a_len = a.length ();
   if (a_len > 0)
     retval = ComplexDiagMatrix (mx_inline_conj_dup (a.data (), a_len),
 				a.rows (), a.cols ());
@@ -259,18 +259,18 @@ conj (const ComplexDiagMatrix& a)
 // resize is the destructive analog for this one
 
 ComplexMatrix
-ComplexDiagMatrix::extract (int r1, int c1, int r2, int c2) const
+ComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
 {
-  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
+  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
-  int new_r = r2 - r1 + 1;
-  int new_c = c2 - c1 + 1;
+  octave_idx_type new_r = r2 - r1 + 1;
+  octave_idx_type new_c = c2 - c1 + 1;
 
   ComplexMatrix result (new_r, new_c);
 
-  for (int j = 0; j < new_c; j++)
-    for (int i = 0; i < new_r; i++)
+  for (octave_idx_type j = 0; j < new_c; j++)
+    for (octave_idx_type i = 0; i < new_r; i++)
       result.elem (i, j) = elem (r1+i, c1+j);
 
   return result;
@@ -279,10 +279,10 @@ ComplexDiagMatrix::extract (int r1, int c1, int r2, int c2) const
 // extract row or column i.
 
 ComplexRowVector
-ComplexDiagMatrix::row (int i) const
+ComplexDiagMatrix::row (octave_idx_type i) const
 {
-  int r = rows ();
-  int c = cols ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
   if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
@@ -307,7 +307,7 @@ ComplexDiagMatrix::row (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return row (0);
+    return row (static_cast<octave_idx_type>(0));
   else if (c == 'l' || c == 'L')
     return row (rows () - 1);
   else
@@ -318,10 +318,10 @@ ComplexDiagMatrix::row (char *s) const
 }
 
 ComplexColumnVector
-ComplexDiagMatrix::column (int i) const
+ComplexDiagMatrix::column (octave_idx_type i) const
 {
-  int r = rows ();
-  int c = cols ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
   if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
@@ -346,7 +346,7 @@ ComplexDiagMatrix::column (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return column (0);
+    return column (static_cast<octave_idx_type>(0));
   else if (c == 'l' || c == 'L')
     return column (cols () - 1);
   else
@@ -366,8 +366,8 @@ ComplexDiagMatrix::inverse (void) const
 ComplexDiagMatrix
 ComplexDiagMatrix::inverse (int& info) const
 {
-  int r = rows ();
-  int c = cols ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
   if (r != c)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -377,7 +377,7 @@ ComplexDiagMatrix::inverse (int& info) const
   ComplexDiagMatrix retval (r, c);
 
   info = 0;
-  for (int i = 0; i < length (); i++)
+  for (octave_idx_type i = 0; i < length (); i++)
     {
       if (elem (i, i) == 0.0)
 	{
@@ -396,11 +396,11 @@ ComplexDiagMatrix::inverse (int& info) const
 ComplexDiagMatrix&
 ComplexDiagMatrix::operator += (const DiagMatrix& a)
 {
-  int r = rows ();
-  int c = cols ();
+  octave_idx_type r = rows ();
+  octave_idx_type c = cols ();
 
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
   if (r != a_nr || c != a_nc)
     {
@@ -420,11 +420,11 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
 ComplexDiagMatrix
 operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
     {
@@ -437,9 +437,9 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  int len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     {
       Complex a_element = a.elem (i, i);
       double b_element = b.elem (i, i);
@@ -460,11 +460,11 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 ComplexDiagMatrix
 operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
 
-  int b_nr = b.rows ();
-  int b_nc = b.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
     {
@@ -477,9 +477,9 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  int len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     {
       double a_element = a.elem (i, i);
       Complex b_element = b.elem (i, i);
@@ -508,10 +508,10 @@ ComplexDiagMatrix::diag (void) const
 // Could be optimized...
 
 ComplexColumnVector
-ComplexDiagMatrix::diag (int k) const
+ComplexDiagMatrix::diag (octave_idx_type k) const
 {
-  int nnr = rows ();
-  int nnc = cols ();
+  octave_idx_type nnr = rows ();
+  octave_idx_type nnc = cols ();
   if (k > 0)
     nnc -= k;
   else if (k < 0)
@@ -521,23 +521,23 @@ ComplexDiagMatrix::diag (int k) const
 
   if (nnr > 0 && nnc > 0)
     {
-      int ndiag = (nnr < nnc) ? nnr : nnc;
+      octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
 
       d.resize (ndiag);
 
       if (k > 0)
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i+k);
 	}
       else if ( k < 0)
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i-k, i);
 	}
       else
 	{
-	  for (int i = 0; i < ndiag; i++)
+	  for (octave_idx_type i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i);
 	}
     }
@@ -555,9 +555,9 @@ operator << (std::ostream& os, const ComplexDiagMatrix& a)
 {
   Complex ZERO (0.0);
 //  int field_width = os.precision () + 7;
-  for (int i = 0; i < a.rows (); i++)
+  for (octave_idx_type i = 0; i < a.rows (); i++)
     {
-      for (int j = 0; j < a.cols (); j++)
+      for (octave_idx_type j = 0; j < a.cols (); j++)
 	{
 	  if (i == j)
 	    os << " " /* setw (field_width) */ << a.elem (i, i);

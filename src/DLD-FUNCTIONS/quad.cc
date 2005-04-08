@@ -230,8 +230,8 @@ parameters for @code{quad}.\n\
 	  indef_type = IndefQuad::bound_to_inf;
 	}
 
-      int ier = 0;
-      int nfun = 0;
+      octave_idx_type ier = 0;
+      octave_idx_type nfun = 0;
       double abserr = 0.0;
       double val = 0.0;
       bool have_sing = false;

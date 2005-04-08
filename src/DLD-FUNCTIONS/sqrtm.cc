@@ -50,8 +50,8 @@ frobnorm (const ComplexMatrix& A)
 {
   double sum = 0;
 
-  for (int i = 0; i < A.rows (); i++)
-    for (int j = 0; j < A.columns (); j++)
+  for (octave_idx_type i = 0; i < A.rows (); i++)
+    for (octave_idx_type j = 0; j < A.columns (); j++)
       sum += real (A(i,j) * conj (A(i,j)));
 
   return sqrt (sum);
@@ -61,8 +61,8 @@ static double
 frobnorm (const Matrix& A)
 {
   double sum = 0;
-  for (int i = 0; i < A.rows (); i++)
-    for (int j = 0; j < A.columns (); j++)
+  for (octave_idx_type i = 0; i < A.rows (); i++)
+    for (octave_idx_type j = 0; j < A.columns (); j++)
       sum += A(i,j) * A(i,j);
 
   return sqrt (sum);
@@ -72,24 +72,24 @@ frobnorm (const Matrix& A)
 static ComplexMatrix
 sqrtm_from_schur (const ComplexMatrix& U, const ComplexMatrix& T)
 {
-  const int n = U.rows ();
+  const octave_idx_type n = U.rows ();
 
   ComplexMatrix R (n, n, 0.0);
 
-  for (int j = 0; j < n; j++)
+  for (octave_idx_type j = 0; j < n; j++)
     R(j,j) = sqrt (T(j,j));
 
   const double fudge = sqrt (DBL_MIN);
 
-  for (int p = 0; p < n-1; p++)
+  for (octave_idx_type p = 0; p < n-1; p++)
     {
-      for (int i = 0; i < n-(p+1); i++)
+      for (octave_idx_type i = 0; i < n-(p+1); i++)
 	{
-	  const int j = i + p + 1;
+	  const octave_idx_type j = i + p + 1;
 
 	  Complex s = T(i,j);
 
-	  for (int k = i+1; k < j; k++)
+	  for (octave_idx_type k = i+1; k < j; k++)
 	    s -= R(i,k) * R(k,j);
 
 	  // dividing
@@ -129,8 +129,8 @@ Manchester, England, January 1999.\n\
 
   octave_value arg = args(0);
 
-  int n = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type n = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   int arg_is_empty = empty_arg ("sqrtm", n, nc);
 
@@ -196,8 +196,8 @@ Manchester, England, January 1999.\n\
 	  // Check for minimal imaginary part
 	  double normX = 0.0;
 	  double imagX = 0.0;
-	  for (int i = 0; i < n; i++)
-	    for (int j = 0; j < n; j++)
+	  for (octave_idx_type i = 0; i < n; i++)
+	    for (octave_idx_type j = 0; j < n; j++)
 	      {
 		imagX = getmax (imagX, imag (X(i,j)));
 		normX = getmax (normX, abs (X(i,j)));
@@ -219,7 +219,7 @@ Manchester, England, January 1999.\n\
 
 	  // Find min diagonal
 	  minT = lo_ieee_inf_value ();
-	  for (int i=0; i < n; i++)
+	  for (octave_idx_type i=0; i < n; i++)
 	    minT = getmin(minT, abs(T(i,i)));
 	}
       else
@@ -246,7 +246,7 @@ Manchester, England, January 1999.\n\
 	    err = lo_ieee_inf_value ();
 
 	  minT = lo_ieee_inf_value ();
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    minT = getmin (minT, abs (T(i,i)));
 	}
 

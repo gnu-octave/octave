@@ -40,15 +40,15 @@ MArray : public Array<T>
 {
 protected:
 
-  MArray (T *d, int l) : Array<T> (d, l) { }
+  MArray (T *d, octave_idx_type l) : Array<T> (d, l) { }
 
 public:
   
   MArray (void) : Array<T> () { }
 
-  explicit MArray (int n) : Array<T> (n) { }
+  explicit MArray (octave_idx_type n) : Array<T> (n) { }
 
-  MArray (int n, const T& val) : Array<T> (n, val) { }
+  MArray (octave_idx_type n, const T& val) : Array<T> (n, val) { }
 
   MArray (const MArray<T>& a) : Array<T> (a) { }
 

@@ -31,12 +31,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqrf, DGEQRF) (const int&, const int&, double*, const int&,
-			     double*, double*, const int&, int&); 
+  F77_FUNC (dgeqrf, DGEQRF) (const octave_idx_type&, const octave_idx_type&, double*, const octave_idx_type&,
+			     double*, double*, const octave_idx_type&, octave_idx_type&); 
 
   F77_RET_T
-  F77_FUNC (dorgqr, DORGQR) (const int&, const int&, const int&, double*,
-			     const int&, double*, double*, const int&, int&);
+  F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
+			     const octave_idx_type&, double*, double*, const octave_idx_type&, octave_idx_type&);
 }
 
 QR::QR (const Matrix& a, QR::type qr_type)
@@ -48,8 +48,8 @@ QR::QR (const Matrix& a, QR::type qr_type)
 void
 QR::init (const Matrix& a, QR::type qr_type)
 {
-  int m = a.rows ();
-  int n = a.cols ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = a.cols ();
 
   if (m == 0 || n == 0)
     {
@@ -57,15 +57,15 @@ QR::init (const Matrix& a, QR::type qr_type)
       return;
     }
 
-  int min_mn = m < n ? m : n;
+  octave_idx_type min_mn = m < n ? m : n;
   Array<double> tau (min_mn);
   double *ptau = tau.fortran_vec ();
 
-  int lwork = 32*n;
+  octave_idx_type lwork = 32*n;
   Array<double> work (lwork);
   double *pwork = work.fortran_vec ();
 
-  int info = 0;
+  octave_idx_type info = 0;
 
   Matrix A_fact = a;
   if (m > n && qr_type != QR::economy)
@@ -81,10 +81,10 @@ QR::init (const Matrix& a, QR::type qr_type)
     {
       if (qr_type == QR::raw)
 	{
-	  for (int j = 0; j < min_mn; j++)
+	  for (octave_idx_type j = 0; j < min_mn; j++)
 	    {
-	      int limit = j < min_mn - 1 ? j : min_mn - 1;
-	      for (int i = limit + 1; i < m; i++)
+	      octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
+	      for (octave_idx_type i = limit + 1; i < m; i++)
 		A_fact.elem (i, j) *= tau.elem (j);
 	    }
 
@@ -95,17 +95,17 @@ QR::init (const Matrix& a, QR::type qr_type)
 	}
       else
 	{
-	  int n2 = (qr_type == QR::economy) ? min_mn : m;
+	  octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
 
 	  if (qr_type == QR::economy && m > n)
 	    r.resize (n, n, 0.0);
 	  else
 	    r.resize (m, n, 0.0);
 
-	  for (int j = 0; j < n; j++)
+	  for (octave_idx_type j = 0; j < n; j++)
 	    {
-	      int limit = j < min_mn-1 ? j : min_mn-1;
-	      for (int i = 0; i <= limit; i++)
+	      octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
+	      for (octave_idx_type i = 0; i <= limit; i++)
 		r.elem (i, j) = tmp_data[m*j+i];
 	    }
 

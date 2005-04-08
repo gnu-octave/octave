@@ -108,7 +108,7 @@ public:
       return *this;
     }
 
-  ArrayN<T>& insert (const ArrayN<T>& a, int r, int c)
+  ArrayN<T>& insert (const ArrayN<T>& a, octave_idx_type r, octave_idx_type c)
   {
     Array<T>::insert (a, r, c);
     return *this;

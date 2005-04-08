@@ -41,11 +41,11 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
 {
     MSparse<T> r;
 
-    int a_nr = a.rows ();
-    int a_nc = a.cols ();
+    octave_idx_type a_nr = a.rows ();
+    octave_idx_type a_nc = a.cols ();
 
-    int b_nr = b.rows ();
-    int b_nc = b.cols ();
+    octave_idx_type b_nr = b.rows ();
+    octave_idx_type b_nc = b.cols ();
 
     if (a_nr != b_nr || a_nc != b_nc)
       gripe_nonconformant ("operator +=" , a_nr, a_nc, b_nr, b_nc);
@@ -53,15 +53,15 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
       {
         r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
        
-        int jx = 0;
-        for (int i = 0 ; i < a_nc ; i++)
+        octave_idx_type jx = 0;
+        for (octave_idx_type i = 0 ; i < a_nc ; i++)
           {
-            int  ja = a.cidx(i);
-            int  ja_max = a.cidx(i+1);
+            octave_idx_type  ja = a.cidx(i);
+            octave_idx_type  ja_max = a.cidx(i+1);
             bool ja_lt_max= ja < ja_max;
            
-            int  jb = b.cidx(i);
-            int  jb_max = b.cidx(i+1);
+            octave_idx_type  jb = b.cidx(i);
+            octave_idx_type  jb_max = b.cidx(i+1);
             bool jb_lt_max = jb < jb_max;
            
             while (ja_lt_max || jb_lt_max )
@@ -114,11 +114,11 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
 {
     MSparse<T> r;
 
-    int a_nr = a.rows ();
-    int a_nc = a.cols ();
+    octave_idx_type a_nr = a.rows ();
+    octave_idx_type a_nc = a.cols ();
 
-    int b_nr = b.rows ();
-    int b_nc = b.cols ();
+    octave_idx_type b_nr = b.rows ();
+    octave_idx_type b_nc = b.cols ();
 
     if (a_nr != b_nr || a_nc != b_nc)
       gripe_nonconformant ("operator -=" , a_nr, a_nc, b_nr, b_nc);
@@ -126,15 +126,15 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
       {
         r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
        
-        int jx = 0;
-        for (int i = 0 ; i < a_nc ; i++)
+        octave_idx_type jx = 0;
+        for (octave_idx_type i = 0 ; i < a_nc ; i++)
           {
-            int  ja = a.cidx(i);
-            int  ja_max = a.cidx(i+1);
+            octave_idx_type  ja = a.cidx(i);
+            octave_idx_type  ja_max = a.cidx(i+1);
             bool ja_lt_max= ja < ja_max;
            
-            int  jb = b.cidx(i);
-            int  jb_max = b.cidx(i+1);
+            octave_idx_type  jb = b.cidx(i);
+            octave_idx_type  jb_max = b.cidx(i+1);
             bool jb_lt_max = jb < jb_max;
            
             while (ja_lt_max || jb_lt_max )
@@ -188,13 +188,13 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
   MArray2<T> \
   operator OP (const MSparse<T>& a, const T& s) \
   { \
-    int nr = a.rows (); \
-    int nc = a.cols (); \
+    octave_idx_type nr = a.rows (); \
+    octave_idx_type nc = a.cols (); \
  \
     MArray2<T> r (nr, nc, (0.0 OP s));	\
  \
-    for (int j = 0; j < nc; j++) \
-      for (int i = a.cidx(j); i < a.cidx(j+1); i++)	\
+    for (octave_idx_type j = 0; j < nc; j++) \
+      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)	\
         r.elem (a.ridx (i), j) = a.data (i) OP s;	\
     return r; \
   }
@@ -204,18 +204,18 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
   MSparse<T> \
   operator OP (const MSparse<T>& a, const T& s) \
   { \
-    int nr = a.rows (); \
-    int nc = a.cols (); \
-    int nz = a.nnz (); \
+    octave_idx_type nr = a.rows (); \
+    octave_idx_type nc = a.cols (); \
+    octave_idx_type nz = a.nnz (); \
  \
     MSparse<T> r (nr, nc, nz); \
  \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       { \
 	r.data(i) = a.data(i) OP s; \
 	r.ridx(i) = a.ridx(i); \
       } \
-    for (int i = 0; i < nc + 1; i++) \
+    for (octave_idx_type i = 0; i < nc + 1; i++) \
       r.cidx(i) = a.cidx(i); \
     r.maybe_compress (true); \
     return r; \
@@ -234,13 +234,13 @@ SPARSE_A2S_OP_2 (/)
   MArray2<T> \
   operator OP (const T& s, const MSparse<T>& a) \
   { \
-    int nr = a.rows (); \
-    int nc = a.cols (); \
+    octave_idx_type nr = a.rows (); \
+    octave_idx_type nc = a.cols (); \
  \
     MArray2<T> r (nr, nc, (s OP 0.0));	\
  \
-    for (int j = 0; j < nc; j++) \
-      for (int i = a.cidx(j); i < a.cidx(j+1); i++)	\
+    for (octave_idx_type j = 0; j < nc; j++) \
+      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)	\
         r.elem (a.ridx (i), j) = s OP a.data (i);	\
     return r; \
   }
@@ -250,18 +250,18 @@ SPARSE_A2S_OP_2 (/)
   MSparse<T> \
   operator OP (const T& s, const MSparse<T>& a) \
   { \
-    int nr = a.rows (); \
-    int nc = a.cols (); \
-    int nz = a.nnz (); \
+    octave_idx_type nr = a.rows (); \
+    octave_idx_type nc = a.cols (); \
+    octave_idx_type nz = a.nnz (); \
  \
     MSparse<T> r (nr, nc, nz); \
  \
-    for (int i = 0; i < nz; i++) \
+    for (octave_idx_type i = 0; i < nz; i++) \
       { \
 	r.data(i) = s OP a.data(i); \
 	r.ridx(i) = a.ridx(i); \
       } \
-    for (int i = 0; i < nc + 1; i++) \
+    for (octave_idx_type i = 0; i < nc + 1; i++) \
       r.cidx(i) = a.cidx(i); \
     r.maybe_compress (true); \
     return r; \
@@ -281,11 +281,11 @@ SPARSE_SA2_OP_2 (/)
   { \
     MSparse<T> r; \
  \
-    int a_nr = a.rows (); \
-    int a_nc = a.cols (); \
+    octave_idx_type a_nr = a.rows (); \
+    octave_idx_type a_nc = a.cols (); \
  \
-    int b_nr = b.rows (); \
-    int b_nc = b.cols (); \
+    octave_idx_type b_nr = b.rows (); \
+    octave_idx_type b_nc = b.cols (); \
  \
     if (a_nr != b_nr || a_nc != b_nc) \
       gripe_nonconformant ("operator " # OP, a_nr, a_nc, b_nr, b_nc); \
@@ -293,16 +293,16 @@ SPARSE_SA2_OP_2 (/)
       { \
         r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ())); \
         \
-        int jx = 0; \
+        octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \
-        for (int i = 0 ; i < a_nc ; i++) \
+        for (octave_idx_type i = 0 ; i < a_nc ; i++) \
           { \
-            int  ja = a.cidx(i); \
-            int  ja_max = a.cidx(i+1); \
+            octave_idx_type  ja = a.cidx(i); \
+            octave_idx_type  ja_max = a.cidx(i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            int  jb = b.cidx(i); \
-            int  jb_max = b.cidx(i+1); \
+            octave_idx_type  jb = b.cidx(i); \
+            octave_idx_type  jb_max = b.cidx(i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
@@ -356,11 +356,11 @@ SPARSE_SA2_OP_2 (/)
   { \
     MSparse<T> r; \
  \
-    int a_nr = a.rows (); \
-    int a_nc = a.cols (); \
+    octave_idx_type a_nr = a.rows (); \
+    octave_idx_type a_nc = a.cols (); \
  \
-    int b_nr = b.rows (); \
-    int b_nc = b.cols (); \
+    octave_idx_type b_nr = b.rows (); \
+    octave_idx_type b_nc = b.cols (); \
  \
     if (a_nr != b_nr || a_nc != b_nc) \
       gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
@@ -368,16 +368,16 @@ SPARSE_SA2_OP_2 (/)
       { \
         r = MSparse<T> (a_nr, a_nc, (a.nnz() > b.nnz() ? a.nnz() : b.nnz())); \
         \
-        int jx = 0; \
+        octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \
-        for (int i = 0 ; i < a_nc ; i++) \
+        for (octave_idx_type i = 0 ; i < a_nc ; i++) \
           { \
-            int  ja = a.cidx(i); \
-            int  ja_max = a.cidx(i+1); \
+            octave_idx_type  ja = a.cidx(i); \
+            octave_idx_type  ja_max = a.cidx(i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            int  jb = b.cidx(i); \
-            int  jb_max = b.cidx(i+1); \
+            octave_idx_type  jb = b.cidx(i); \
+            octave_idx_type  jb_max = b.cidx(i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
@@ -422,11 +422,11 @@ SPARSE_SA2_OP_2 (/)
     MSparse<T> r; \
     T Zero = T (); \
  \
-    int a_nr = a.rows (); \
-    int a_nc = a.cols (); \
+    octave_idx_type a_nr = a.rows (); \
+    octave_idx_type a_nc = a.cols (); \
  \
-    int b_nr = b.rows (); \
-    int b_nc = b.cols (); \
+    octave_idx_type b_nr = b.rows (); \
+    octave_idx_type b_nc = b.cols (); \
  \
     if (a_nr != b_nr || a_nc != b_nc) \
       gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
@@ -434,14 +434,14 @@ SPARSE_SA2_OP_2 (/)
       { \
         r = MSparse<T>( a_nr, a_nc, (Zero OP Zero)); \
         \
-        for (int i = 0 ; i < a_nc ; i++) \
+        for (octave_idx_type i = 0 ; i < a_nc ; i++) \
           { \
-            int  ja = a.cidx(i); \
-            int  ja_max = a.cidx(i+1); \
+            octave_idx_type  ja = a.cidx(i); \
+            octave_idx_type  ja_max = a.cidx(i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            int  jb = b.cidx(i); \
-            int  jb_max = b.cidx(i+1); \
+            octave_idx_type  jb = b.cidx(i); \
+            octave_idx_type  jb_max = b.cidx(i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
@@ -493,8 +493,8 @@ MSparse<T>
 operator - (const MSparse<T>& a)
 {
   MSparse<T> retval (a);
-  int nz = a.nnz ();
-  for (int i = 0; i < nz; i++)
+  octave_idx_type nz = a.nnz ();
+  for (octave_idx_type i = 0; i < nz; i++)
     retval.data(i) = - retval.data(i);
   return retval;
 }

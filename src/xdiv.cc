@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 
 static inline bool
-result_ok (int info)
+result_ok (octave_idx_type info)
 {
   assert (info != -1);
 
@@ -56,13 +56,13 @@ template <class T1, class T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b)
 {
-  int a_nr = a.rows ();
-  int b_nr = b.rows ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type b_nr = b.rows ();
 
   if (a_nr != b_nr)
     {
-      int a_nc = a.cols ();
-      int b_nc = b.cols ();
+      octave_idx_type a_nc = a.cols ();
+      octave_idx_type b_nc = b.cols ();
 
       gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
       return false;
@@ -83,13 +83,13 @@ template <class T1, class T2>
 bool
 mx_div_conform (const T1& a, const T2& b)
 {
-  int a_nc = a.cols ();
-  int b_nc = b.cols ();
+  octave_idx_type a_nc = a.cols ();
+  octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nc)
     {
-      int a_nr = a.rows ();
-      int b_nr = b.rows ();
+      octave_idx_type a_nr = a.rows ();
+      octave_idx_type b_nr = b.rows ();
 
       gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
       return false;
@@ -125,7 +125,7 @@ xdiv (const Matrix& a, const Matrix& b)
   Matrix atmp = a.transpose ();
   Matrix btmp = b.transpose ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -137,7 +137,7 @@ xdiv (const Matrix& a, const Matrix& b)
 	return Matrix (result.transpose ());
     }
 
-  int rank;
+  octave_idx_type rank;
   Matrix result = btmp.lssolve (atmp, info, rank);
 
   return result.transpose ();
@@ -153,7 +153,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
   Matrix atmp = a.transpose ();
   ComplexMatrix btmp = b.hermitian ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -165,7 +165,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -181,7 +181,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
   ComplexMatrix atmp = a.hermitian ();
   Matrix btmp = b.transpose ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -193,7 +193,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -209,7 +209,7 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
   ComplexMatrix atmp = a.hermitian ();
   ComplexMatrix btmp = b.hermitian ();
 
-  int info;
+  octave_idx_type info;
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
@@ -221,7 +221,7 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 	return result.hermitian ();
     }
 
-  int rank;
+  octave_idx_type rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
   return result.hermitian ();
@@ -239,13 +239,13 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 Matrix
 x_el_div (double a, const Matrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.columns ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.columns ();
 
   Matrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = a / b (i, j);
@@ -257,13 +257,13 @@ x_el_div (double a, const Matrix& b)
 ComplexMatrix
 x_el_div (double a, const ComplexMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.columns ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.columns ();
 
   ComplexMatrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = a / b (i, j);
@@ -275,13 +275,13 @@ x_el_div (double a, const ComplexMatrix& b)
 ComplexMatrix
 x_el_div (const Complex a, const Matrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.columns ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.columns ();
 
   ComplexMatrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = a / b (i, j);
@@ -293,13 +293,13 @@ x_el_div (const Complex a, const Matrix& b)
 ComplexMatrix
 x_el_div (const Complex a, const ComplexMatrix& b)
 {
-  int nr = b.rows ();
-  int nc = b.columns ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.columns ();
 
   ComplexMatrix result (nr, nc);
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
 	result (i, j) = a / b (i, j);
@@ -322,7 +322,7 @@ x_el_div (double a, const NDArray& b)
 {
   NDArray result (b.dims ());
 
-  for (int i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.length (); i++)
     {
       OCTAVE_QUIT;
       result (i) = a / b (i);
@@ -336,7 +336,7 @@ x_el_div (double a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (int i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.length (); i++)
     {
       OCTAVE_QUIT;
       result (i) = a / b (i);
@@ -350,7 +350,7 @@ x_el_div (const Complex a, const NDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (int i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.length (); i++)
     {
       OCTAVE_QUIT;
       result (i) = a / b (i);
@@ -364,7 +364,7 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (int i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.length (); i++)
     {
       OCTAVE_QUIT;
       result (i) = a / b (i);
@@ -389,7 +389,7 @@ xleftdiv (const Matrix& a, const Matrix& b)
   if (! mx_leftdiv_conform (a, b))
     return Matrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -401,7 +401,7 @@ xleftdiv (const Matrix& a, const Matrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -412,7 +412,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -424,7 +424,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -435,7 +435,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -447,7 +447,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 
@@ -458,7 +458,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
-  int info;
+  octave_idx_type info;
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
@@ -470,7 +470,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 	return result;
     }
 
-  int rank;
+  octave_idx_type rank;
   return a.lssolve (b, info, rank);
 }
 

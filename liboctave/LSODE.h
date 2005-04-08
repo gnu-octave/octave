@@ -52,16 +52,16 @@ private:
 
   bool initialized;
 
-  int method_flag;
-  int maxord;
-  int itask;
-  int iopt;
-  int itol;
+  octave_idx_type method_flag;
+  octave_idx_type maxord;
+  octave_idx_type itask;
+  octave_idx_type iopt;
+  octave_idx_type itol;
 
-  int liw;
-  int lrw;
+  octave_idx_type liw;
+  octave_idx_type lrw;
 
-  Array<int> iwork;
+  Array<octave_idx_type> iwork;
   Array<double> rwork;
 
   double rel_tol;
@@ -70,7 +70,7 @@ private:
 
   double *px;
   double *pabs_tol;
-  int *piwork;
+  octave_idx_type *piwork;
   double *prwork;
 };
 

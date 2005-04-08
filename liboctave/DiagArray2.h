@@ -51,15 +51,15 @@ DiagArray2 : public Array<T>
 {
 private:
 
-  T get (int i) { return Array<T>::xelem (i); }
+  T get (octave_idx_type i) { return Array<T>::xelem (i); }
 
-  void set (const T& val, int i) { Array<T>::xelem (i) = val; }
+  void set (const T& val, octave_idx_type i) { Array<T>::xelem (i) = val; }
 
   class Proxy
   {
   public:
 
-    Proxy (DiagArray2<T> *ref, int r, int c)
+    Proxy (DiagArray2<T> *ref, octave_idx_type r, octave_idx_type c)
       : i (r), j (c), object (ref) { } 
 
     const Proxy& operator = (const T& val) const
@@ -95,8 +95,8 @@ private:
 
     T *operator& () const { assert (0); return (T *) 0; }
 
-    int i;
-    int j;
+    octave_idx_type i;
+    octave_idx_type j;
 
     DiagArray2<T> *object;
 
@@ -106,17 +106,17 @@ friend class Proxy;
 
 protected:
 
-  DiagArray2 (T *d, int r, int c) : Array<T> (d, r < c ? r : c)
+  DiagArray2 (T *d, octave_idx_type r, octave_idx_type c) : Array<T> (d, r < c ? r : c)
     { Array<T>::dimensions = dim_vector (r, c); }
 
 public:
 
   DiagArray2 (void) : Array<T> (dim_vector (0, 0)) { }
 
-  DiagArray2 (int r, int c) : Array<T> (r < c ? r : c)
+  DiagArray2 (octave_idx_type r, octave_idx_type c) : Array<T> (r < c ? r : c)
     { this->dimensions = dim_vector (r, c); }
 
-  DiagArray2 (int r, int c, const T& val) : Array<T> (r < c ? r : c)
+  DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) : Array<T> (r < c ? r : c)
     {
       this->dimensions = dim_vector (r, c);
 
@@ -139,12 +139,12 @@ public:
       return *this;
     }
 
-  Proxy elem (int r, int c)
+  Proxy elem (octave_idx_type r, octave_idx_type c)
     {
       return Proxy (this, r, c);
     }
 
-  Proxy checkelem (int r, int c)
+  Proxy checkelem (octave_idx_type r, octave_idx_type c)
     {
       if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
 	{
@@ -155,7 +155,7 @@ public:
 	return Proxy (this, r, c);
     }
 
-  Proxy operator () (int r, int c)
+  Proxy operator () (octave_idx_type r, octave_idx_type c)
     {
       if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
 	{
@@ -166,17 +166,17 @@ public:
 	return Proxy (this, r, c);
   }
 
-  T elem (int r, int c) const;
-  T checkelem (int r, int c) const;
-  T operator () (int r, int c) const;
+  T elem (octave_idx_type r, octave_idx_type c) const;
+  T checkelem (octave_idx_type r, octave_idx_type c) const;
+  T operator () (octave_idx_type r, octave_idx_type c) const;
 
   // No checking.
 
-  T& xelem (int r, int c);
-  T xelem (int r, int c) const;
+  T& xelem (octave_idx_type r, octave_idx_type c);
+  T xelem (octave_idx_type r, octave_idx_type c) const;
 
-  void resize (int n, int m);
-  void resize (int n, int m, const T& val);
+  void resize (octave_idx_type n, octave_idx_type m);
+  void resize (octave_idx_type n, octave_idx_type m, const T& val);
 
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
 };

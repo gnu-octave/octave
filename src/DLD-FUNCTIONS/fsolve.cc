@@ -56,8 +56,8 @@ static bool warned_jac_imaginary = false;
 // Is this a recursive call?
 static int call_depth = 0;
 
-int
-hybrd_info_to_fsolve_info (int info)
+octave_idx_type
+hybrd_info_to_fsolve_info (octave_idx_type info)
 {
   switch (info)
     {
@@ -95,7 +95,7 @@ fsolve_user_function (const ColumnVector& x)
 {
   ColumnVector retval;
 
-  int n = x.length ();
+  octave_idx_type n = x.length ();
 
   octave_value_list args;
   args.resize (1);
@@ -103,7 +103,7 @@ fsolve_user_function (const ColumnVector& x)
   if (n > 1)
     {
       Matrix m (n, 1);
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	m (i, 0) = x (i);
       octave_value vars (m);
       args(0) = vars;
@@ -144,7 +144,7 @@ fsolve_user_jacobian (const ColumnVector& x)
 {
   Matrix retval;
 
-  int n = x.length ();
+  octave_idx_type n = x.length ();
 
   octave_value_list args;
   args.resize (1);
@@ -152,7 +152,7 @@ fsolve_user_jacobian (const ColumnVector& x)
   if (n > 1)
     {
       Matrix m (n, 1);
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	m(i,0) = x(i);
       octave_value vars (m);
       args(0) = vars;
@@ -316,7 +316,7 @@ parameters for @code{fsolve}.\n\
       NLEqn nleqn (x, nleqn_fcn);
       nleqn.set_options (fsolve_opts);
 
-      int info;
+      octave_idx_type info;
       ColumnVector soln = nleqn.solve (info);
 
       if (! error_state)

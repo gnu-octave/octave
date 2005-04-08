@@ -64,7 +64,7 @@ public:
 
   friend std::ostream& operator << (std::ostream& os, const SCHUR& a);
 
-  typedef int (*select_function) (const double&, const double&);
+  typedef octave_idx_type (*select_function) (const double&, const double&);
 
 private:
 
@@ -73,7 +73,7 @@ private:
 
   select_function selector;
 
-  int init (const Matrix& a, const std::string& ord, bool calc_unitary);
+  octave_idx_type init (const Matrix& a, const std::string& ord, bool calc_unitary);
 };
 
 #endif

@@ -34,8 +34,8 @@ boolMatrix : public Array2<bool>
 public:
 
   boolMatrix (void) : Array2<bool> () { }
-  boolMatrix (int r, int c) : Array2<bool> (r, c) { }
-  boolMatrix (int r, int c, bool val) : Array2<bool> (r, c, val) { }
+  boolMatrix (octave_idx_type r, octave_idx_type c) : Array2<bool> (r, c) { }
+  boolMatrix (octave_idx_type r, octave_idx_type c, bool val) : Array2<bool> (r, c, val) { }
   boolMatrix (const Array2<bool>& a) : Array2<bool> (a) { }
   boolMatrix (const boolMatrix& a) : Array2<bool> (a) { }
 
@@ -52,7 +52,7 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  boolMatrix& insert (const boolMatrix& a, int r, int c);
+  boolMatrix& insert (const boolMatrix& a, octave_idx_type r, octave_idx_type c);
 
   // unary operations
 
@@ -74,7 +74,7 @@ public:
 
 private:
 
-  boolMatrix (bool *b, int r, int c) : Array2<bool> (b, r, c) { }
+  boolMatrix (bool *b, octave_idx_type r, octave_idx_type c) : Array2<bool> (b, r, c) { }
 };
 
 MM_CMP_OP_DECLS (boolMatrix, boolMatrix)

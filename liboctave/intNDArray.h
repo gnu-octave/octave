@@ -72,16 +72,16 @@ public:
   intNDArray transpose (void) const
     { return intNDArray<T> (MArrayN<T>::transpose ()); }
 
-  intNDArray concat (const intNDArray<T>& rb, const Array<int>& ra_idx);
+  intNDArray concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx);
 
-  intNDArray& insert (const intNDArray<T>& a, int r, int c);
-  intNDArray& insert (const intNDArray<T>& a, const Array<int>& ra_idx);
+  intNDArray& insert (const intNDArray<T>& a, octave_idx_type r, octave_idx_type c);
+  intNDArray& insert (const intNDArray<T>& a, const Array<octave_idx_type>& ra_idx);
 
-  static void increment_index (Array<int>& ra_idx,
+  static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension = 0);
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions);
 
   static T resize_fill_value (void) { return 0; }

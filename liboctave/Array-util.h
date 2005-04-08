@@ -30,31 +30,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "idx-vector.h"
 #include "lo-error.h"
 
-extern bool index_in_bounds (const Array<int>& ra_idx,
+extern bool index_in_bounds (const Array<octave_idx_type>& ra_idx,
 			     const dim_vector& dimensions);
 
-extern void increment_index (Array<int>& ra_idx,
+extern void increment_index (Array<octave_idx_type>& ra_idx,
 			     const dim_vector& dimensions,
 			     int start_dimension = 0);
 
-extern int get_scalar_idx (Array<int>& idx, dim_vector& dims);
+extern octave_idx_type get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims);
 
-extern int num_ones (const Array<int>& ra_idx);
+extern octave_idx_type num_ones (const Array<octave_idx_type>& ra_idx);
 
 extern bool is_scalar (const dim_vector& dim);
 
-extern bool any_ones (const Array<int>& arr);
+extern bool any_ones (const Array<octave_idx_type>& arr);
 
-extern int compute_index (const Array<int>& ra_idx, const dim_vector& dims);
+extern octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);
 
-extern Array<int> conv_to_int_array (const Array<idx_vector>& a);
+extern Array<octave_idx_type> conv_to_int_array (const Array<idx_vector>& a);
 
-extern Array<idx_vector> conv_to_array (const idx_vector *tmp, const int len);
+extern Array<idx_vector> conv_to_array (const idx_vector *tmp, const octave_idx_type len);
 
 extern dim_vector freeze (Array<idx_vector>& ra_idx,
 			  const dim_vector& dimensions, int resize_ok);
 
-extern bool vector_equivalent (const Array<int>& ra_idx);
+extern bool vector_equivalent (const Array<octave_idx_type>& ra_idx);
 
 extern bool all_ok (const Array<idx_vector>& ra_idx);
 
@@ -63,23 +63,23 @@ extern bool any_orig_empty (const Array<idx_vector>& ra_idx);
 extern bool all_colon_equiv (const Array<idx_vector>& ra_idx,
 			     const dim_vector& frozen_lengths);
 
-extern bool is_in (int num, const idx_vector& idx);
+extern bool is_in (octave_idx_type num, const idx_vector& idx);
 
-extern int how_many_lgt (const int num, idx_vector& idxv);
+extern octave_idx_type how_many_lgt (const octave_idx_type num, idx_vector& idxv);
 
-extern bool all_ones (const Array<int>& arr);
+extern bool all_ones (const Array<octave_idx_type>& arr);
 
-extern Array<int> get_elt_idx (const Array<idx_vector>& ra_idx,
-			       const Array<int>& result_idx);
+extern Array<octave_idx_type> get_elt_idx (const Array<idx_vector>& ra_idx,
+			       const Array<octave_idx_type>& result_idx);
 
-extern Array<int> get_ra_idx (int idx, const dim_vector& dims);
+extern Array<octave_idx_type> get_ra_idx (octave_idx_type idx, const dim_vector& dims);
 
 extern dim_vector short_freeze (Array<idx_vector>& ra_idx,
 				const dim_vector& dimensions,
 				int resize_ok);
 
-extern Array<int> calc_permutated_idx (const Array<int>& old_idx, 
-				       const Array<int>& perm_vec, bool inv);
+extern Array<octave_idx_type> calc_permutated_idx (const Array<octave_idx_type>& old_idx, 
+				       const Array<octave_idx_type>& perm_vec, bool inv);
 
 extern void gripe_nonconformant (const char *op, int op1_len, int op2_len);
 

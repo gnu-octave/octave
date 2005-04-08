@@ -33,31 +33,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-sstream.h"
 #include "quit.h"
 
-typedef int (*dassl_fcn_ptr) (const double&, const double*, const double*,
-			      double*, int&, double*, int*);
+typedef octave_idx_type (*dassl_fcn_ptr) (const double&, const double*, const double*,
+			      double*, octave_idx_type&, double*, octave_idx_type*);
 
-typedef int (*dassl_jac_ptr) (const double&, const double*, const double*,
-			      double*, const double&, double*, int*);
+typedef octave_idx_type (*dassl_jac_ptr) (const double&, const double*, const double*,
+			      double*, const double&, double*, octave_idx_type*);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
-			     double*, double*, double&, const int*,
-			     const double*, const double*, int&,
-			     double*, const int&, int*, const int&,
-			     const double*, const int*,
+  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const octave_idx_type&, double&,
+			     double*, double*, double&, const octave_idx_type*,
+			     const double*, const double*, octave_idx_type&,
+			     double*, const octave_idx_type&, octave_idx_type*, const octave_idx_type&,
+			     const double*, const octave_idx_type*,
 			     dassl_jac_ptr);
 }
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
 
-static int nn;
+static octave_idx_type nn;
 
-static int
+static octave_idx_type
 ddassl_f (const double& time, const double *state, const double *deriv,
-	  double *delta, int& ires, double *, int *)
+	  double *delta, octave_idx_type& ires, double *, octave_idx_type *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -67,7 +67,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_delta (nn);
 
-  for (int i = 0; i < nn; i++)
+  for (octave_idx_type i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv [i];
       tmp_state.elem (i) = state [i];
@@ -81,7 +81,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 	ires = -2;
       else
 	{
-	  for (int i = 0; i < nn; i++)
+	  for (octave_idx_type i = 0; i < nn; i++)
 	    delta [i] = tmp_delta.elem (i);
 	}
     }
@@ -91,9 +91,9 @@ ddassl_f (const double& time, const double *state, const double *deriv,
   return 0;
 }
 
-static int
+static octave_idx_type
 ddassl_j (const double& time, const double *state, const double *deriv,
-	  double *pd, const double& cj, double *, int *)
+	  double *pd, const double& cj, double *, octave_idx_type *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -102,7 +102,7 @@ ddassl_j (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  for (int i = 0; i < nn; i++)
+  for (octave_idx_type i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv [i];
       tmp_state.elem (i) = state [i];
@@ -110,8 +110,8 @@ ddassl_j (const double& time, const double *state, const double *deriv,
 
   Matrix tmp_pd = user_jac (tmp_state, tmp_deriv, time, cj);
 
-  for (int j = 0; j < nn; j++)
-    for (int i = 0; i < nn; i++)
+  for (octave_idx_type j = 0; j < nn; j++)
+    for (octave_idx_type i = 0; i < nn; i++)
       pd [nn * j + i] = tmp_pd.elem (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -132,12 +132,12 @@ DASSL::do_integrate (double tout)
 
       info.resize (15);
 
-      for (int i = 0; i < 15; i++)
+      for (octave_idx_type i = 0; i < 15; i++)
 	info(i) = 0;
 
       pinfo = info.fortran_vec ();
 
-      int n = size ();
+      octave_idx_type n = size ();
 
       liw = 21 + n;
       lrw = 40 + 9*n + n*n;
@@ -172,7 +172,7 @@ DASSL::do_integrate (double tout)
 
       if (user_fun)
 	{
-	  int ires = 0;
+	  octave_idx_type ires = 0;
 
 	  ColumnVector res = (*user_fun) (x, xdot, t, ires);
 
@@ -226,7 +226,7 @@ DASSL::do_integrate (double tout)
       else
 	info(11) = 0;
 
-      int maxord = maximum_order ();
+      octave_idx_type maxord = maximum_order ();
       if (maxord >= 0)
 	{
 	  if (maxord > 0 && maxord < 6)
@@ -243,17 +243,17 @@ DASSL::do_integrate (double tout)
 	    }
 	}
 
-      int enc = enforce_nonnegativity_constraints ();
+      octave_idx_type enc = enforce_nonnegativity_constraints ();
       info(9) = enc ? 1 : 0;
 
-      int ccic = compute_consistent_initial_condition ();
+      octave_idx_type ccic = compute_consistent_initial_condition ();
       info(10) = ccic ? 1 : 0;
 
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      int abs_tol_len = abs_tol.length ();
-      int rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.length ();
+      octave_idx_type rel_tol_len = rel_tol.length ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
 	{
@@ -279,7 +279,7 @@ DASSL::do_integrate (double tout)
     }
 
   static double *dummy = 0;
-  static int *idummy = 0;
+  static octave_idx_type *idummy = 0;
 
   F77_XFCN (ddassl, DDASSL, (ddassl_f, nn, t, px, pxdot, tout, pinfo,
 			     prel_tol, pabs_tol, istate, prwork, lrw,
@@ -354,28 +354,28 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
 
-  int n_out = tout.capacity ();
-  int n = size ();
+  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  retval.elem (0, i) = x.elem (i);
 	  xdot_out.elem (0, i) = xdot.elem (i);
 	}
 
-      for (int j = 1; j < n_out; j++)
+      for (octave_idx_type j = 1; j < n_out; j++)
 	{
 	  ColumnVector x_next = do_integrate (tout.elem (j));
 
 	  if (integration_error)
 	    return retval;
 
-	  for (int i = 0; i < n; i++)
+	  for (octave_idx_type i = 0; i < n; i++)
 	    {
 	      retval.elem (j, i) = x_next.elem (i);
 	      xdot_out.elem (j, i) = xdot.elem (i);
@@ -399,26 +399,26 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 {
   Matrix retval;
 
-  int n_out = tout.capacity ();
-  int n = size ();
+  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  retval.elem (0, i) = x.elem (i);
 	  xdot_out.elem (0, i) = xdot.elem (i);
 	}
 
-      int n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.capacity ();
 
       if (n_crit > 0)
 	{
-	  int i_crit = 0;
-	  int i_out = 1;
+	  octave_idx_type i_crit = 0;
+	  octave_idx_type i_out = 1;
 	  double next_crit = tcrit.elem (0);
 	  double next_out;
 	  while (i_out < n_out)
@@ -474,7 +474,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 
 	      if (save_output)
 		{
-		  for (int i = 0; i < n; i++)
+		  for (octave_idx_type i = 0; i < n; i++)
 		    {
 		      retval.elem (i_out-1, i) = x_next.elem (i);
 		      xdot_out.elem (i_out-1, i) = xdot.elem (i);

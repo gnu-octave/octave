@@ -227,13 +227,13 @@ static float_format *curr_imag_fmt = 0;
 static double
 pr_max_internal (const Matrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   double result = -DBL_MAX;
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	double val = m(i,j);
 	if (xisinf (val) || octave_is_NaN_or_NA (val))
@@ -249,13 +249,13 @@ pr_max_internal (const Matrix& m)
 static double
 pr_min_internal (const Matrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   double result = DBL_MAX;
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
       {
 	double val = m(i,j);
 	if (xisinf (val) || octave_is_NaN_or_NA (val))
@@ -1263,7 +1263,7 @@ pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
 }
 
 static void
-print_empty_matrix (std::ostream& os, int nr, int nc, bool pr_as_read_syntax)
+print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc, bool pr_as_read_syntax)
 {
   assert (nr == 0 || nc == 0);
 
@@ -1318,8 +1318,8 @@ pr_scale_header (std::ostream& os, double scale)
 }
 
 static void
-pr_col_num_header (std::ostream& os, int total_width, int max_width,
-		   int lim, int col, int extra_indent)
+pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
+		   octave_idx_type lim, octave_idx_type col, int extra_indent)
 {
   if (total_width > max_width && Vsplit_long_rows)
     {
@@ -1331,7 +1331,7 @@ pr_col_num_header (std::ostream& os, int total_width, int max_width,
 	    os << "\n\n";
 	}
 
-      int num_cols = lim - col;
+      octave_idx_type num_cols = lim - col;
 
       os << std::setw (extra_indent) << "";
 
@@ -1381,16 +1381,16 @@ void
 octave_print_internal (std::ostream& os, const Matrix& m,
 		       bool pr_as_read_syntax, int extra_indent)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  for (int j = 0; j < nc; j++)
+	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
 	      OCTAVE_QUIT;
 
@@ -1407,8 +1407,8 @@ octave_print_internal (std::ostream& os, const Matrix& m,
       double scale = 1.0;
       set_format (m, fw, scale);
       int column_width = fw + 2;
-      int total_width = nc * column_width;
-      int max_width = command_editor::terminal_cols ();
+      octave_idx_type total_width = nc * column_width;
+      octave_idx_type max_width = command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
 	max_width -= 4;
@@ -1431,7 +1431,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 	  return;
 	}
 
-      int inc = nc;
+      octave_idx_type inc = nc;
       if (total_width > max_width && Vsplit_long_rows)
 	{
 	  inc = max_width / column_width;
@@ -1441,14 +1441,14 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
       if (pr_as_read_syntax)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      int col = 0;
+	      octave_idx_type col = 0;
 	      while (col < nc)
 		{
-		  int lim = col + inc < nc ? col + inc : nc;
+		  octave_idx_type lim = col + inc < nc ? col + inc : nc;
 
-		  for (int j = col; j < lim; j++)
+		  for (octave_idx_type j = col; j < lim; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -1483,18 +1483,18 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 	{
 	  pr_scale_header (os, scale);
 
-	  for (int col = 0; col < nc; col += inc)
+	  for (octave_idx_type col = 0; col < nc; col += inc)
 	    {
-	      int lim = col + inc < nc ? col + inc : nc;
+	      octave_idx_type lim = col + inc < nc ? col + inc : nc;
 
 	      pr_col_num_header (os, total_width, max_width, lim, col,
 				 extra_indent);
 
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  os << std::setw (extra_indent) << "";
 
-		  for (int j = col; j < lim; j++)
+		  for (octave_idx_type j = col; j < lim; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -1523,17 +1523,17 @@ octave_print_internal (std::ostream& os, const Matrix& m,
  \
           dim_vector dims = nda.dims (); \
  \
-          Array<int> ra_idx (ndims, 0); \
+          Array<octave_idx_type> ra_idx (ndims, 0); \
  \
-          int m = 1; \
+          octave_idx_type m = 1; \
  \
           for (int i = 2; i < ndims; i++) \
             m *= dims(i); \
  \
-          int nr = dims(0); \
-          int nc = dims(1); \
+          octave_idx_type nr = dims(0); \
+          octave_idx_type nc = dims(1); \
  \
-          for (int i = 0; i < m; i++) \
+          for (octave_idx_type i = 0; i < m; i++) \
             { \
 	      OCTAVE_QUIT; \
  \
@@ -1642,16 +1642,16 @@ void
 octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		       bool pr_as_read_syntax, int extra_indent)
 {
-  int nr = cm.rows ();
-  int nc = cm.columns ();
+  octave_idx_type nr = cm.rows ();
+  octave_idx_type nc = cm.columns ();
 
  if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
-      for (int i = 0; i < nr; i++)
+      for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  for (int j = 0; j < nc; j++)
+	  for (octave_idx_type j = 0; j < nc; j++)
 	    {
 	      OCTAVE_QUIT;
 
@@ -1669,8 +1669,8 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
       set_format (cm, r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
       column_width += (bank_format || hex_format|| bit_format) ? 2 : 7;
-      int total_width = nc * column_width;
-      int max_width = command_editor::terminal_cols ();
+      octave_idx_type total_width = nc * column_width;
+      octave_idx_type max_width = command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
 	max_width -= 4;
@@ -1693,7 +1693,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 	  return;
 	}
 
-      int inc = nc;
+      octave_idx_type inc = nc;
       if (total_width > max_width && Vsplit_long_rows)
 	{
 	  inc = max_width / column_width;
@@ -1703,14 +1703,14 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
       if (pr_as_read_syntax)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
-	      int col = 0;
+	      octave_idx_type col = 0;
 	      while (col < nc)
 		{
-		  int lim = col + inc < nc ? col + inc : nc;
+		  octave_idx_type lim = col + inc < nc ? col + inc : nc;
 
-		  for (int j = col; j < lim; j++)
+		  for (octave_idx_type j = col; j < lim; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -1745,18 +1745,18 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 	{
 	  pr_scale_header (os, scale);
 
-	  for (int col = 0; col < nc; col += inc)
+	  for (octave_idx_type col = 0; col < nc; col += inc)
 	    {
-	      int lim = col + inc < nc ? col + inc : nc;
+	      octave_idx_type lim = col + inc < nc ? col + inc : nc;
 
 	      pr_col_num_header (os, total_width, max_width, lim, col,
 				 extra_indent);
 
-	      for (int i = 0; i < nr; i++)
+	      for (octave_idx_type i = 0; i < nr; i++)
 		{
 		  os << std::setw (extra_indent) << "";
 
-		  for (int j = col; j < lim; j++)
+		  for (octave_idx_type j = col; j < lim; j++)
 		    {
 		      OCTAVE_QUIT;
 
@@ -1798,11 +1798,11 @@ octave_print_internal (std::ostream& os, const Range& r,
   double base = r.base ();
   double increment = r.inc ();
   double limit = r.limit ();
-  int num_elem = r.nelem ();
+  octave_idx_type num_elem = r.nelem ();
 
   if (plus_format && ! pr_as_read_syntax)
     {
-      for (int i = 0; i < num_elem; i++)
+      for (octave_idx_type i = 0; i < num_elem; i++)
 	{
 	  OCTAVE_QUIT;
 
@@ -1841,8 +1841,8 @@ octave_print_internal (std::ostream& os, const Range& r,
       else
 	{
 	  int column_width = fw + 2;
-	  int total_width = num_elem * column_width;
-	  int max_width = command_editor::terminal_cols ();
+	  octave_idx_type total_width = num_elem * column_width;
+	  octave_idx_type max_width = command_editor::terminal_cols ();
 
 	  if (free_format)
 	    {
@@ -1850,7 +1850,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 	      return;
 	    }
 
-	  int inc = num_elem;
+	  octave_idx_type inc = num_elem;
 	  if (total_width > max_width && Vsplit_long_rows)
 	    {
 	      inc = max_width / column_width;
@@ -1865,17 +1865,17 @@ octave_print_internal (std::ostream& os, const Range& r,
 
 	  pr_scale_header (os, scale);
 
-	  int col = 0;
+	  octave_idx_type col = 0;
 	  while (col < num_elem)
 	    {
-	      int lim = col + inc < num_elem ? col + inc : num_elem;
+	      octave_idx_type lim = col + inc < num_elem ? col + inc : num_elem;
 
 	      pr_col_num_header (os, total_width, max_width, lim, col,
 				 extra_indent);
 
 	      os << std::setw (extra_indent) << "";
 
-	      for (int i = col; i < lim; i++)
+	      for (octave_idx_type i = col; i < lim; i++)
 		{
 		  OCTAVE_QUIT;
 
@@ -1940,14 +1940,14 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 {
   if (pr_as_string)
     {
-      int nstr = chm.rows ();
+      octave_idx_type nstr = chm.rows ();
 
       if (pr_as_read_syntax && nstr > 1)
 	os << "[ ";
 
       if (nstr != 0)
 	{
-	  for (int i = 0; i < nstr; i++)
+	  for (octave_idx_type i = 0; i < nstr; i++)
 	    {
 	      OCTAVE_QUIT;
 
@@ -2026,17 +2026,17 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 
       dim_vector dims = nda.dims ();
 
-      Array<int> ra_idx (ndims, 0);
+      Array<octave_idx_type> ra_idx (ndims, 0);
 
-      int m = 1;
+      octave_idx_type m = 1;
 
       for (int i = 2; i < ndims; i++)
 	m *= dims(i);
 
-      int nr = dims(0);
-      int nc = dims(1);
+      octave_idx_type nr = dims(0);
+      octave_idx_type nc = dims(1);
 
-      for (int i = 0; i < m; i++)
+      for (octave_idx_type i = 0; i < m; i++)
 	{
 	  std::string nm = "ans";
 
@@ -2076,14 +2076,14 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 	  // XXX FIXME XXX -- need to do some more work to put these
 	  // in neatly aligned columns...
 
-	  int n_rows = page.rows ();
-	  int n_cols = page.cols ();
+	  octave_idx_type n_rows = page.rows ();
+	  octave_idx_type n_cols = page.cols ();
 
 	  os << nm << " =\n\n";
 
-	  for (int ii = 0; ii < n_rows; ii++)
+	  for (octave_idx_type ii = 0; ii < n_rows; ii++)
 	    {
-	      for (int jj = 0; jj < n_cols; jj++)
+	      for (octave_idx_type jj = 0; jj < n_cols; jj++)
 		os << "  " << page(ii,jj);
 
 	      os << "\n";
@@ -2187,19 +2187,19 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
     {
       int ndims = nda.ndims ();
 
-      Array<int> ra_idx (ndims, 0);
+      Array<octave_idx_type> ra_idx (ndims, 0);
 
       dim_vector dims = nda.dims ();
 
-      int m = 1;
+      octave_idx_type m = 1;
 
       for (int i = 2; i < ndims; i++)
 	m *= dims(i);
 
-      int nr = dims(0);
-      int nc = dims(1);
+      octave_idx_type nr = dims(0);
+      octave_idx_type nc = dims(1);
 
-      for (int i = 0; i < m; i++)
+      for (octave_idx_type i = 0; i < m; i++)
 	{
 	  if (m > 1)
 	    {
@@ -2236,9 +2236,9 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 
 	  Array2<T> page (nda.index (idx), nr, nc);
 
-	  for (int ii = 0; ii < nr; ii++)
+	  for (octave_idx_type ii = 0; ii < nr; ii++)
 	    {
-	      for (int jj = 0; jj < nc; jj++)
+	      for (octave_idx_type jj = 0; jj < nc; jj++)
 		{
 		  OCTAVE_QUIT;
 
@@ -2262,15 +2262,15 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 
       dim_vector dims = nda.dims ();
 
-      Array<int> ra_idx (ndims, 0);
+      Array<octave_idx_type> ra_idx (ndims, 0);
 
-      int m = 1;
+      octave_idx_type m = 1;
 
       for (int i = 2; i < ndims; i++)
 	m *= dims(i);
 
-      int nr = dims(0);
-      int nc = dims(1);
+      octave_idx_type nr = dims(0);
+      octave_idx_type nc = dims(1);
 
       int fw = 0;
       if (hex_format)
@@ -2282,7 +2282,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	  bool isneg = false;
 	  int digits = 0;
 
-	  for (int i = 0; i < dims.numel (); i++)
+	  for (octave_idx_type i = 0; i < dims.numel (); i++)
 	    {
 	      int new_digits = static_cast<int> 
 		(floor (log10 (double (abs (nda(i).value ()))) + 1.0));
@@ -2298,9 +2298,9 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	}
 
       int column_width = fw + (bank_format ? 5 : 2);
-      int total_width = nc * column_width;
+      octave_idx_type total_width = nc * column_width;
       int max_width = command_editor::terminal_cols () - extra_indent;
-      int inc = nc;
+      octave_idx_type inc = nc;
       if (total_width > max_width && Vsplit_long_rows)
 	{
 	  inc = max_width / column_width;
@@ -2308,7 +2308,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	    inc++;
 	}
 
-      for (int i = 0; i < m; i++)
+      for (octave_idx_type i = 0; i < m; i++)
 	{
 	  if (m > 1)
 	    {
@@ -2350,9 +2350,9 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	      if (pr_as_read_syntax)
 		os << "[\n";
 
-	      for (int ii = 0; ii < nr; ii++)
+	      for (octave_idx_type ii = 0; ii < nr; ii++)
 		{
-		  for (int jj = 0; jj < nc; jj++)
+		  for (octave_idx_type jj = 0; jj < nc; jj++)
 		    {
 		      OCTAVE_QUIT;
 		      os << "  ";
@@ -2366,21 +2366,21 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	    }
 	  else
 	    {
-	      int n_rows = page.rows ();
-	      int n_cols = page.cols ();
+	      octave_idx_type n_rows = page.rows ();
+	      octave_idx_type n_cols = page.cols ();
 
-	      for (int col = 0; col < n_cols; col += inc)
+	      for (octave_idx_type col = 0; col < n_cols; col += inc)
 		{
-		  int lim = col + inc < n_cols ? col + inc : n_cols;
+		  octave_idx_type lim = col + inc < n_cols ? col + inc : n_cols;
 
 		  pr_col_num_header (os, total_width, max_width, lim, col,
 				     extra_indent);
 
-		  for (int ii = 0; ii < n_rows; ii++)
+		  for (octave_idx_type ii = 0; ii < n_rows; ii++)
 		    {
 		      os << std::setw (extra_indent) << "";
 		      
-		      for (int jj = col; jj < lim; jj++)
+		      for (octave_idx_type jj = col; jj < lim; jj++)
 			{
 			  OCTAVE_QUIT;
 			  os << "  ";

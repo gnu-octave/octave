@@ -41,8 +41,8 @@ Range::all_elements_are_ints (void) const
   // will also be an integer, even if the limit is not.
 
   return (! (xisnan (rng_base) || xisnan (rng_inc))
-	  && NINT (rng_base) == rng_base
-	  && NINT (rng_inc) == rng_inc);
+	  && NINTbig (rng_base) == rng_base
+	  && NINTbig (rng_inc) == rng_inc);
 }
 
 Matrix
@@ -53,7 +53,7 @@ Range::matrix_value (void) const
       cache.resize (1, rng_nelem);
       double b = rng_base;
       double increment = rng_inc;
-      for (int i = 0; i < rng_nelem; i++)
+      for (octave_idx_type i = 0; i < rng_nelem; i++)
 	cache(i) = b + i * increment;
 
       // On some machines (x86 with extended precision floating point
@@ -134,9 +134,9 @@ operator << (std::ostream& os, const Range& a)
 {
   double b = a.base ();
   double increment = a.inc ();
-  int num_elem = a.nelem ();
+  octave_idx_type num_elem = a.nelem ();
 
-  for (int i = 0; i < num_elem-1; i++)
+  for (octave_idx_type i = 0; i < num_elem-1; i++)
     os << b + i * increment << " ";
 
   // Prevent overshoot.  See comment in the matrix_value method
@@ -247,10 +247,10 @@ teq (double u, double v, double ct = 3.0 * DBL_EPSILON)
   return fabs (u - v) < ((tu > tv ? tu : tv) * ct);
 }
 
-int
+octave_idx_type
 Range::nelem_internal (void) const
 {
-  int retval = -1;
+  octave_idx_type retval = -1;
 
   if (rng_inc == 0
       || (rng_limit > rng_base && rng_inc < 0)
@@ -264,7 +264,7 @@ Range::nelem_internal (void) const
 
       double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 
-      int n_elt = (tmp > 0.0 ? static_cast<int> (tmp) : 0);
+      octave_idx_type n_elt = (tmp > 0.0 ? static_cast<octave_idx_type> (tmp) : 0);
 
       // If the final element that we would compute for the range is
       // equal to the limit of the range, or is an adjacent floating

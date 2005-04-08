@@ -57,11 +57,11 @@ public:
   octave_fftw_planner (void);
 
   fftw_plan create_plan (int dir, const int rank, const dim_vector dims, 
-			 int howmany, int stride, int dist, 
+			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
 			 const Complex *in, Complex *out);
 
   fftw_plan create_plan (const int rank, const dim_vector dims, 
-			 int howmany, int stride, int dist, 
+			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
 			 const double *in, Complex *out);
 
 private:
@@ -74,16 +74,16 @@ private:
   fftw_plan plan[2];
 
   // dist
-  int d[2];
+  octave_idx_type d[2];
 
   // stride
-  int s[2];
+  octave_idx_type s[2];
 
   // rank
   int r[2];
 
   // howmany
-  int h[2];
+  octave_idx_type h[2];
 
   // dims
   dim_vector n[2];
@@ -95,16 +95,16 @@ private:
   fftw_plan rplan;
 
   // dist
-  int rd;
+  octave_idx_type rd;
 
   // stride
-  int rs;
+  octave_idx_type rs;
 
   // rank
   int rr;
 
   // howmany
-  int rh;
+  octave_idx_type rh;
 
   // dims
   dim_vector rn;
@@ -136,8 +136,8 @@ octave_fftw_planner::octave_fftw_planner (void)
 
 fftw_plan
 octave_fftw_planner::create_plan (int dir, const int rank,
-				  const dim_vector dims, int howmany,
-				  int stride, int dist, 
+				  const dim_vector dims, octave_idx_type howmany,
+				  octave_idx_type stride, octave_idx_type dist, 
 				  const Complex *in, Complex *out)
 {
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
@@ -207,7 +207,7 @@ octave_fftw_planner::create_plan (int dir, const int rank,
  
 fftw_plan
 octave_fftw_planner::create_plan (const int rank, const dim_vector dims, 
-				  int howmany, int stride, int dist, 
+				  octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
 				  const double *in, Complex *out)
 {
   fftw_plan *cur_plan_p = &rplan;
@@ -274,7 +274,7 @@ static octave_fftw_planner fftw_planner;
 
 static inline void
 convert_packcomplex_1d (Complex *out, size_t nr, size_t nc,
-			int stride, int dist)
+			octave_idx_type stride, octave_idx_type dist)
 {
   OCTAVE_QUIT;
 
@@ -351,7 +351,7 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
 
 int
 octave_fftw::fft (const double *in, Complex *out, size_t npts, 
-		  size_t nsamples, int stride, int dist)
+		  size_t nsamples, octave_idx_type stride, octave_idx_type dist)
 {
   dist = (dist < 0 ? npts : dist);
 
@@ -371,7 +371,7 @@ octave_fftw::fft (const double *in, Complex *out, size_t npts,
 
 int
 octave_fftw::fft (const Complex *in, Complex *out, size_t npts, 
-		  size_t nsamples, int stride, int dist)
+		  size_t nsamples, octave_idx_type stride, octave_idx_type dist)
 {
   dist = (dist < 0 ? npts : dist);
 
@@ -388,7 +388,7 @@ octave_fftw::fft (const Complex *in, Complex *out, size_t npts,
 
 int
 octave_fftw::ifft (const Complex *in, Complex *out, size_t npts, 
-		   size_t nsamples, int stride, int dist)
+		   size_t nsamples, octave_idx_type stride, octave_idx_type dist)
 {
   dist = (dist < 0 ? npts : dist);
 
@@ -412,14 +412,14 @@ int
 octave_fftw::fftNd (const double *in, Complex *out, const int rank, 
 		    const dim_vector &dv)
 {
-  int dist = 1;
+  octave_idx_type dist = 1;
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 
   // Fool with the position of the start of the output matrix, so that
   // creating other half of the matrix won't cause cache problems.
 
-  int offset = (dv.numel () / dv(0)) * ((dv(0) - 1) / 2); 
+  octave_idx_type offset = (dv.numel () / dv(0)) * ((dv(0) - 1) / 2); 
   
   fftw_plan plan = fftw_planner.create_plan (rank, dv, 1, 1, dist,
 					     in, out + offset);
@@ -438,7 +438,7 @@ int
 octave_fftw::fftNd (const Complex *in, Complex *out, const int rank, 
 		    const dim_vector &dv)
 {
-  int dist = 1;
+  octave_idx_type dist = 1;
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 
@@ -456,7 +456,7 @@ int
 octave_fftw::ifftNd (const Complex *in, Complex *out, const int rank, 
 		     const dim_vector &dv)
 {
-  int dist = 1;
+  octave_idx_type dist = 1;
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 

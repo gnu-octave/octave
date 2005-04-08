@@ -41,11 +41,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list", "cs-list");
 octave_cs_list::octave_cs_list (const Cell& c)
   : octave_base_value (), lst ()
 {
-  int n = c.length ();
+  octave_idx_type n = c.length ();
 
   lst.resize (n);
 
-  for (int i = 0; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     lst(i) = c(i);
 }
 
@@ -60,7 +60,7 @@ octave_cs_list::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_cs_list_print");
 
-  int n = lst.length ();
+  octave_idx_type n = lst.length ();
 
   if (n > 0)
     {
@@ -70,7 +70,7 @@ octave_cs_list::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  OSSTREAM buf;
 	  buf << "[" << i+1 << "]" << OSSTREAM_ENDS;

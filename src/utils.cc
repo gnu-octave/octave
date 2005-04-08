@@ -229,7 +229,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
 // should be considered fatal; return 1 if this is ok.
 
 int
-empty_arg (const char * /* name */, int nr, int nc)
+empty_arg (const char * /* name */, octave_idx_type nr, octave_idx_type nc)
 {
   return (nr == 0 || nc == 0);
 }
@@ -755,7 +755,7 @@ check_preference (const std::string& var)
 }
 
 static void
-check_dimensions (int& nr, int& nc, const char *warnfor)
+check_dimensions (octave_idx_type& nr, octave_idx_type& nc, const char *warnfor)
 {
   if (nr < 0 || nc < 0)
     {
@@ -798,8 +798,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
     }
   else
     {
-      int nr = a.rows ();
-      int nc = a.columns ();
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.columns ();
 
       if (nr == 1 || nc == 1)
         {
@@ -808,9 +808,9 @@ get_dimensions (const octave_value& a, const char *warn_for,
           if (error_state)
             return;
 
-          int n = v.length ();
+          octave_idx_type n = v.length ();
           dim.resize (n);
-          for (int i = 0; i < n; i++)
+          for (octave_idx_type i = 0; i < n; i++)
             dim(i) = static_cast<int> (fix (v(i)));
         }
       else
@@ -824,7 +824,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 void
 get_dimensions (const octave_value& a, const char *warn_for,
-		int& nr, int& nc)
+		octave_idx_type& nr, octave_idx_type& nc)
 {
   if (a.is_scalar_type ())
     {
@@ -842,8 +842,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
 	  if (error_state)
 	    return;
 
-	  nr = static_cast<int> (fix (v (0)));
-	  nc = static_cast<int> (fix (v (1)));
+	  nr = static_cast<octave_idx_type> (fix (v (0)));
+	  nc = static_cast<octave_idx_type> (fix (v (1)));
 	}
       else
 	error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
@@ -855,7 +855,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 void
 get_dimensions (const octave_value& a, const octave_value& b,
-		const char *warn_for, int& nr, int& nc)
+		const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
   nr = a.is_empty () ? 0 : a.int_value ();
   nc = b.is_empty () ? 0 : b.int_value ();
@@ -867,15 +867,15 @@ get_dimensions (const octave_value& a, const octave_value& b,
 }
 
 Matrix
-identity_matrix (int nr, int nc)
+identity_matrix (octave_idx_type nr, octave_idx_type nc)
 {
   Matrix m (nr, nc, 0.0);
 
   if (nr > 0 && nc > 0)
     {
-      int n = std::min (nr, nc);
+      octave_idx_type n = std::min (nr, nc);
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	m (i, i) = 1.0;
     }
 

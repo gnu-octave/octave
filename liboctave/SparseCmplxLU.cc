@@ -48,8 +48,8 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 				  double piv_thres)
 {
 #ifdef HAVE_UMFPACK
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
@@ -85,8 +85,8 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
   umfpack_zi_report_control (control);
 
-  const int *Ap = a.cidx ();
-  const int *Ai = a.ridx ();
+  const octave_idx_type *Ap = a.cidx ();
+  const octave_idx_type *Ai = a.ridx ();
   const Complex *Ax = a.data ();
 
   umfpack_zi_report_matrix (nr, nc, Ap, Ai, X_CAST (const double *, Ax), 
@@ -153,21 +153,24 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	      int n_inner = (nr < nc ? nr : nc);
 
 	      if (lnz < 1)
-		Lfact = SparseComplexMatrix (n_inner, nr, 1);
+		Lfact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nr,
+					     static_cast<octave_idx_type> (1));
 	      else
-		Lfact = SparseComplexMatrix (n_inner, nr, lnz);
+		Lfact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nr,
+					     static_cast<octave_idx_type> (lnz));
 
-	      int *Ltp = Lfact.cidx ();
-	      int *Ltj = Lfact.ridx ();
+	      octave_idx_type *Ltp = Lfact.cidx ();
+	      octave_idx_type *Ltj = Lfact.ridx ();
 	      Complex *Ltx = Lfact.data ();
 
 	      if (unz < 1)
-		Ufact = SparseComplexMatrix (n_inner, nc, 1);
+		Ufact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nc,
+					     static_cast<octave_idx_type> (1));
 	      else
-		Ufact = SparseComplexMatrix (n_inner, nc, unz);
+		Ufact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nc, unz);
 
-	      int *Up = Ufact.cidx ();
-	      int *Uj = Ufact.ridx ();
+	      octave_idx_type *Up = Ufact.cidx ();
+	      octave_idx_type *Uj = Ufact.ridx ();
 	      Complex *Ux = Ufact.data ();
 	      
 	      P.resize (nr);
@@ -223,8 +226,8 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 				  double piv_thres, bool FixedQ)
 {
 #ifdef HAVE_UMFPACK
-  int nr = a.rows ();
-  int nc = a.cols ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
 
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
@@ -265,8 +268,8 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
   umfpack_zi_report_control (control);
 
-  const int *Ap = a.cidx ();
-  const int *Ai = a.ridx ();
+  const octave_idx_type *Ap = a.cidx ();
+  const octave_idx_type *Ai = a.ridx ();
   const Complex *Ax = a.data ();
 
   umfpack_zi_report_matrix (nr, nc, Ap, Ai, X_CAST (const double *, Ax), NULL,
@@ -342,21 +345,24 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	      int n_inner = (nr < nc ? nr : nc);
 
 	      if (lnz < 1)
-		Lfact = SparseComplexMatrix (n_inner, nr, 1);
+		Lfact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nr,
+					     static_cast<octave_idx_type> (1));
 	      else
-		Lfact = SparseComplexMatrix (n_inner, nr, lnz);
+		Lfact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nr,
+					     static_cast<octave_idx_type> (lnz));
 
-	      int *Ltp = Lfact.cidx ();
-	      int *Ltj = Lfact.ridx ();
+	      octave_idx_type *Ltp = Lfact.cidx ();
+	      octave_idx_type *Ltj = Lfact.ridx ();
 	      Complex *Ltx = Lfact.data ();
 
 	      if (unz < 1)
-		Ufact = SparseComplexMatrix (n_inner, nc, 1);
+		Ufact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nc,
+					     static_cast<octave_idx_type> (1));
 	      else
-		Ufact = SparseComplexMatrix (n_inner, nc, unz);
+		Ufact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nc, unz);
 
-	      int *Up = Ufact.cidx ();
-	      int *Uj = Ufact.ridx ();
+	      octave_idx_type *Up = Ufact.cidx ();
+	      octave_idx_type *Uj = Ufact.ridx ();
 	      Complex *Ux = Ufact.data ();
 	      
 	      P.resize (nr);

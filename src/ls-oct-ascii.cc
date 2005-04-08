@@ -74,15 +74,15 @@ static int Vsave_precision;
 static Matrix
 strip_infnan (const Matrix& m)
 {
-  int nr = m.rows ();
-  int nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
 
   Matrix retval (nr, nc);
 
-  int k = 0;
-  for (int i = 0; i < nr; i++)
+  octave_idx_type k = 0;
+  for (octave_idx_type i = 0; i < nr; i++)
     {
-      for (int j = 0; j < nc; j++)
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
 	  double d = m (i, j);
 	  if (xisnan (d))
@@ -176,127 +176,6 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
     }
 
   return retval;
-}
-
-// Match KEYWORD on stream IS, placing the associated value in VALUE,
-// returning TRUE if successful and FALSE otherwise.
-//
-// Input should look something like:
-//
-//  [%#][ \t]*keyword[ \t]*int-value.*\n
-
-bool
-extract_keyword (std::istream& is, const char *keyword, int& value, 
-		 const bool next_only)
-{
-  bool status = false;
-  value = 0;
-
-  char c;
-  while (is.get (c))
-    {
-      if (c == '%' || c == '#')
-	{
-	  OSSTREAM buf;
-
-	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
-	    ; // Skip whitespace and comment characters.
-
-	  if (isalpha (c))
-	    buf << c;
-
-	  while (is.get (c) && isalpha (c))
-	    buf << c;
-
-	  buf << OSSTREAM_ENDS;
-	  const char *tmp = OSSTREAM_C_STR (buf);
-	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
-	  OSSTREAM_FREEZE (buf);
-
-	  if (match)
-	    {
-	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
-		; // Skip whitespace and the colon.
-
-	      is.putback (c);
-	      if (c != '\n')
-		is >> value;
-	      if (is)
-		status = true;
-	      while (is.get (c) && c != '\n')
-		; // Skip to beginning of next line;
-	      break;
-	    }
-	  else if (next_only)
-	    break;
-	}
-    }
-  return status;
-}
-
-// Match one of the elements in KEYWORDS on stream IS, placing the
-// matched keyword in KW and the associated value in VALUE,
-// returning TRUE if successful and FALSE otherwise.
-//
-// Input should look something like:
-//
-//  [%#][ \t]*keyword[ \t]*int-value.*\n
-
-bool
-extract_keyword (std::istream& is, const string_vector& keywords,
-		 std::string& kw, int& value, const bool next_only)
-{
-  bool status = false;
-  kw = "";
-  value = 0;
-
-  char c;
-  while (is.get (c))
-    {
-      if (c == '%' || c == '#')
-	{
-	  OSSTREAM buf;
-
-	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
-	    ; // Skip whitespace and comment characters.
-
-	  if (isalpha (c))
-	    buf << c;
-
-	  while (is.get (c) && isalpha (c))
-	    buf << c;
-
-	  buf << OSSTREAM_ENDS;
-	  std::string tmp = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
-
-	  for (int i = 0; i < keywords.length (); i++)
-	    {
-	      int match = (tmp == keywords[i]);
-
-	      if (match)
-		{
-		  kw = keywords[i];
-
-		  while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
-		    ; // Skip whitespace and the colon.
-
-		  is.putback (c);
-		  if (c != '\n')
-		    is >> value;
-		  if (is)
-		    status = true;
-		  while (is.get (c) && c != '\n')
-		    ; // Skip to beginning of next line;
-		  return status;
-		}
-	    }
-
-	  if (next_only)
-	    break;
-	}
-    }
-  return status;
 }
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
@@ -523,8 +402,8 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 {
   bool fail = false;
 
-  int nr = tc.rows ();
-  int nc = tc.columns ();
+  octave_idx_type nr = tc.rows ();
+  octave_idx_type nc = tc.columns ();
 
   if (tc.is_real_matrix ())
     {
@@ -535,7 +414,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 
       if (parametric)
 	{
-	  int extras = nc % 3;
+	  octave_idx_type extras = nc % 3;
 	  if (extras)
 	    warning ("ignoring last %d columns", extras);
 
@@ -543,7 +422,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 	  tmp = strip_infnan (tmp);
 	  nr = tmp.rows ();
 
-	  for (int i = 0; i < nc-extras; i += 3)
+	  for (octave_idx_type i = 0; i < nc-extras; i += 3)
 	    {
 	      os << tmp.extract (0, i, nr-1, i+2);
 	      if (i+3 < nc-extras)
@@ -556,7 +435,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 	  tmp = strip_infnan (tmp);
 	  nr = tmp.rows ();
 
-	  for (int i = 0; i < nc; i++)
+	  for (octave_idx_type i = 0; i < nc; i++)
 	    {
 	      os << tmp.extract (0, i, nr-1, i);
 	      if (i+1 < nc)

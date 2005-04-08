@@ -100,8 +100,8 @@ public:
   idx_vector index_vector (void) const { return idx_vector (range); }
 
   dim_vector dims (void) const
-    {
-      int n = range.nelem ();
+    { 
+      octave_idx_type n = range.nelem ();
       return dim_vector (n > 0, n);
     }
 
@@ -129,14 +129,14 @@ public:
     {
       double b = range.base ();
       return (range.nelem () == 1
-	      && ! xisnan (b) && D_NINT (b) == b && NINT (b) == 1);
+	      && ! xisnan (b) && D_NINT (b) == b && NINTbig (b) == 1);
     }
 
   bool valid_as_zero_index (void) const
     {
       double b = range.base ();
       return (range.nelem () == 1
-	      && ! xisnan (b) && D_NINT (b) == b && NINT (b) == 0);
+	      && ! xisnan (b) && D_NINT (b) == b && NINTbig (b) == 0);
     }
 
   bool is_numeric_type (void) const { return true; }

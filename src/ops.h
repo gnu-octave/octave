@@ -70,13 +70,13 @@ extern void install_ops (void);
   yt yn = get_y;
 
 #define BOOL_OP2(x) \
-  int nr = x.rows (); \
-  int nc = x.columns ();
+  octave_idx_type nr = x.rows (); \
+  octave_idx_type nc = x.columns ();
 
 #define BOOL_OP3(test) \
   boolMatrix retval (nr, nc); \
-  for (int j = 0; j < nc; j++) \
-    for (int i = 0; i < nr; i++) \
+  for (octave_idx_type j = 0; j < nc; j++) \
+    for (octave_idx_type i = 0; i < nr; i++) \
       retval (i, j) = test; \
   return retval;
 
@@ -107,10 +107,10 @@ extern void install_ops (void);
   do \
     { \
       BOOL_OP1 (m1t, m1n, get_m1, m2t, m2n, get_m2) \
-      int m1_nr = m1n.rows (); \
-      int m1_nc = m1n.cols (); \
-      int m2_nr = m2n.rows (); \
-      int m2_nc = m2n.cols (); \
+      octave_idx_type m1_nr = m1n.rows (); \
+      octave_idx_type m1_nc = m1n.cols (); \
+      octave_idx_type m2_nr = m2n.rows (); \
+      octave_idx_type m2_nc = m2n.cols (); \
       if (m1_nr == m2_nr && m1_nc == m2_nc) \
 	{ \
 	  if (m1_nr == 0 && m1_nc == 0) \

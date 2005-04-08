@@ -157,18 +157,15 @@ tags::
 TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-clean mostlyclean::
-	rm -f *.$(LIBEXT) *.o
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
+clean mostlyclean distclean::
+	rm -f libcruft.$(LIBEXT) $(CRUFT_OBJ)
+	rm -f libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT)
 
-distclean::
-	rm -f *.$(LIBEXT) *.o Makefile Makerules so_locations
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
+distclean maintainer-clean::
+	rm -f Makefile Makerules so_locations
 
 maintainer-clean::
-	rm -f *.$(LIBEXT) *.o configure Makefile Makerules 
-	rm -f so_locations tags TAGS
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
+	rm -f tags TAGS
 
 dist:
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done

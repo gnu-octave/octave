@@ -1,3 +1,8 @@
+2005-04-08  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (clean, distclean, maintainer-clean):
+	Avoid duplication in rules.
+
 2005-03-28  John W. Eaton  <jwe@octave.org>
 
 	* plot/contour.m, plot/mesh.m: Continue to use __gnuplot_raw__ for

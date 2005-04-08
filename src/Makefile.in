@@ -249,7 +249,7 @@ OCT_LINK_DEPS = \
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
-	octave.cc parse.cc lex.cc y.tab.h \
+	octave.cc parse.cc lex.cc y.tab.h gplot.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
 all: octave$(EXEEXT) stamp-oct-links PKG_ADD DOCSTRINGS
@@ -466,10 +466,13 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
-	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o stmp-pic gendoc$(EXEEXT)
+	rm -f liboctinterp.$(LIBEXT)
+	rm -f liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
+	rm -f $(OBJECTS) $(MAKEDEPS) $(DEF_FILES) $(VAR_FILES) $(OCT_FILES)
+	rm -f $(PICOBJ) stmp-pic gendoc$(EXEEXT)
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
+	rm -f PKG_ADD
 	-rmdir pic
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean: clean
@@ -483,7 +486,7 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h $(OPT_HANDLERS)
+	rm -f oct-gperf.h gplot.cc $(OPT_HANDLERS)
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h

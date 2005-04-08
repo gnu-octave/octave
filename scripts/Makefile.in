@@ -74,19 +74,14 @@ tags::
 TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-clean::
+clean distclean maintainer-clean::
 	rm -f gethelp$(BUILD_EXEEXT)
 
-distclean::
-	rm -f gethelp$(BUILD_EXEEXT)
+distclean maintainer-clean::
 	rm -f Makefile config.log config.status DOCSTRINGS
-	-rm -rf autom4te.cache
 
 maintainer-clean::
-	rm -f gethelp$(BUILD_EXEEXT)
-	rm -f Makefile config.log config.status DOCSTRINGS
 	rm -f tags TAGS configure
-	-rm -rf autom4te.cache
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts

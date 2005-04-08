@@ -305,10 +305,9 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f *.$(LIBEXT) *.o *.d pic/*.o
+	rm -f liboctave.$(LIBEXT) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT)
+	rm -f  $(OBJECTS) $(MAKEDEPS) $(LIBOCTAVE_PICOBJ) stmp-pic
 	-rmdir pic
-	rm -f stmp-pic
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean: clean

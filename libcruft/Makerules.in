@@ -76,30 +76,17 @@ tags: $(SOURCES)
 TAGS: $(SOURCES)
 	etags $(SOURCES)
 
-clean::
-	rm -f *.d *.a *.o pic/*.o
+clean mostlyclean distclean maintainer-clean::
+	rm -f $(MAKEDEPS) $(CRUFT_OBJ) $(CRUFT_PICOBJ)
 	-rmdir pic
 	rm -f stmp-pic
-.PHONY: clean
+.PHONY: clean mostlyclean
 
-mostlyclean::
-	rm -f *.d *.o pic/*.o
-	-rmdir pic
-	rm -f stmp-pic
-.PHONY: mostlyclean
-
-distclean::
-	rm -f *.d *.a *.o pic/*.o
-	-rmdir pic
-	rm -f stmp-pic
+distclean maintainer-clean::
 	rm -f Makefile
 .PHONY: distclean
 	
 maintainer-clean::
-	rm -f *.d *.a *.o pic/*.o
-	-rmdir pic
-	rm -f stmp-pic
-	rm -f Makefile
 	rm -f tags TAGS
 .PHONY: maintainer-clean
 

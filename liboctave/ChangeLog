@@ -1,5 +1,7 @@
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (clean): Use exact filenames instead of *.xxx.
+
 	* Initial merge of 64-bit changes from Clinton Chee:
 
 	2005-04-07  John W. Eaton  <jwe@octave.org>

@@ -1,5 +1,10 @@
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
+	* octMakefile.in (maintainer-clean distclean):
+	Remove install-octave from the list of files to remove.
+	(install-octave.in): Delete file.
+	(DISTFILES): Remove it from the list.
+
 	* Initial merge of 64-bit changes from Clinton Chee:
 
 	2005-04-07  John W. Eaton  <jwe@octave.org>

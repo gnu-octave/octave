@@ -28,7 +28,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
 	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
-	octave-config.in install-octave.in mk-opts.pl mkinstalldirs \
+	octave-config.in mk-opts.pl mkinstalldirs \
 	mkoctfile.in ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
@@ -136,7 +136,7 @@ clean mostlyclean distclean maintainer-clean::
 
 maintainer-clean distclean::
 	rm -f octMakefile Makefile Makeconf Makefrag.f77 Makerules.f77
-	rm -f octave-bug octave-config mk-oct-links mkoctfile install-octave
+	rm -f octave-bug octave-config mk-oct-links mkoctfile
 	rm -f config.cache config.h config.log config.status
 	rm -rf autom4te.cache
 

@@ -1,3 +1,8 @@
+2005-04-10  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: include oct-types in INCLUDES so that it is 
+	installed
+	
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (clean): Use exact filenames instead of *.xxx.

@@ -550,55 +550,69 @@ octave_value::octave_value (const boolNDArray& bnda)
   maybe_mutate ();
 }
 
-octave_value::octave_value (char c)
-  : rep (new octave_char_matrix_str (c))
+octave_value::octave_value (char c, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (c)
+	 : new octave_char_matrix_sq_str (c))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const char *s)
-  : rep (new octave_char_matrix_str (s))
+octave_value::octave_value (const char *s, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (s)
+	 : new octave_char_matrix_sq_str (s))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const std::string& s)
-  : rep (new octave_char_matrix_str (s))
+octave_value::octave_value (const std::string& s, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (s)
+	 : new octave_char_matrix_sq_str (s))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const string_vector& s)
-  : rep (new octave_char_matrix_str (s))
+octave_value::octave_value (const string_vector& s, char type)
+  : rep (type == '"'
+	 ? new octave_char_matrix_dq_str (s)
+	 : new octave_char_matrix_sq_str (s))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charMatrix& chm, bool is_str)
+octave_value::octave_value (const charMatrix& chm, bool is_str, char type)
   : rep (is_str
-	 ? new octave_char_matrix_str (chm)
+	 ? (type == '"'
+	    ? new octave_char_matrix_dq_str (chm)
+	    : new octave_char_matrix_sq_str (chm))
 	 : new octave_char_matrix (chm))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charNDArray& chm, bool is_str)
+octave_value::octave_value (const charNDArray& chm, bool is_str, char type)
   : rep (is_str
-	 ? new octave_char_matrix_str (chm)
+	 ? (type == '"'
+	    ? new octave_char_matrix_dq_str (chm)
+	    : new octave_char_matrix_sq_str (chm))
 	 : new octave_char_matrix (chm))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<char>& chm, bool is_str)
+octave_value::octave_value (const ArrayN<char>& chm, bool is_str, char type)
   : rep (is_str
-	 ? new octave_char_matrix_str (chm)
+	 ? (type == '"'
+	    ? new octave_char_matrix_dq_str (chm)
+	    : new octave_char_matrix_sq_str (chm))
 	 : new octave_char_matrix (chm))
 {
   rep->count = 1;
@@ -1458,9 +1472,9 @@ octave_value::complex_vector_value (bool force_string_conv,
 }
 
 octave_value
-octave_value::convert_to_str (bool pad, bool force) const
+octave_value::convert_to_str (bool pad, bool force, char type) const
 {
-  octave_value retval = convert_to_str_internal (pad, force);
+  octave_value retval = convert_to_str_internal (pad, force, type);
 
   if (! force && is_numeric_type () && Vwarn_num_to_str)
     gripe_implicit_conversion (type_name (), retval.type_name ());
@@ -2180,6 +2194,7 @@ install_types (void)
   octave_bool_matrix::register_type ();
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
+  octave_char_matrix_sq_str::register_type ();
   octave_int8_scalar::register_type ();
   octave_int16_scalar::register_type ();
   octave_int32_scalar::register_type ();

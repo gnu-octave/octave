@@ -120,7 +120,7 @@ public:
   SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
     { return matrix; }
 
-  octave_value convert_to_str_internal (bool pad, bool force) const;
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 

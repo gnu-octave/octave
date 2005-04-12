@@ -63,7 +63,7 @@ public:
 
   string_vector fcn_arg_names (void) const { return ifargs; }
 
-  octave_value convert_to_str_internal (bool, bool) const;
+  octave_value convert_to_str_internal (bool, bool, char) const;
 
   bool save_ascii (std::ostream& os, bool& infnan_warned,
 		 bool strip_nan_and_inf);

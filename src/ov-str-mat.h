@@ -149,6 +149,54 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
+typedef octave_char_matrix_str octave_char_matrix_dq_str;
+
+class
+octave_char_matrix_sq_str : public octave_char_matrix_str
+{
+public:
+
+  octave_char_matrix_sq_str (void)
+    : octave_char_matrix_str () { }
+
+  octave_char_matrix_sq_str (const charMatrix& chm)
+    : octave_char_matrix_str (chm) { }
+
+  octave_char_matrix_sq_str (const charNDArray& chm)
+    : octave_char_matrix_str (chm) { }
+
+  octave_char_matrix_sq_str (char c)
+    : octave_char_matrix_str (c) { }
+
+  octave_char_matrix_sq_str (const char *s)
+    : octave_char_matrix_str (s) { }
+
+  octave_char_matrix_sq_str (const std::string& s)
+    : octave_char_matrix_str (s) { }
+
+  octave_char_matrix_sq_str (const string_vector& s)
+    : octave_char_matrix_str (s) { }
+
+  octave_char_matrix_sq_str (const octave_char_matrix_str& chm)
+    : octave_char_matrix_str (chm) { }
+
+  octave_char_matrix_sq_str (const octave_char_matrix_sq_str& chms)
+    : octave_char_matrix_str (chms) { }
+
+  ~octave_char_matrix_sq_str (void) { }
+
+  octave_value *clone (void) const { return new octave_char_matrix_sq_str (*this); }
+  octave_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
+
+  bool is_sq_string (void) const { return true; }
+
+private:
+
+  DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+};
+
 #endif
 
 /*

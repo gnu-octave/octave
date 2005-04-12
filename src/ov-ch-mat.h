@@ -114,8 +114,8 @@ public:
   charNDArray char_array_value (bool = false) const
     { return matrix; }
 
-  octave_value convert_to_str_internal (bool, bool) const
-    { return octave_value (matrix, true); }
+  octave_value convert_to_str_internal (bool, bool, char type) const
+    { return octave_value (matrix, true, type); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

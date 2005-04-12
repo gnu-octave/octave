@@ -372,7 +372,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 	tc = order ? re.transpose () : re;
 
       if (type == 1)
-	tc = tc.convert_to_str ();
+	tc = tc.convert_to_str (false, true, '\'');
 
       return retval;
     }

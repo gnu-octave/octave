@@ -106,7 +106,7 @@ octave_scalar::streamoff_array_value (void) const
 }
 
 octave_value
-octave_scalar::convert_to_str_internal (bool, bool) const
+octave_scalar::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
 
@@ -125,7 +125,7 @@ octave_scalar::convert_to_str_internal (bool, bool) const
 	  ::warning ("range error for conversion to character value");
 	}
 
-      retval = octave_value (std::string (1, static_cast<char> (ival)));
+      retval = octave_value (std::string (1, static_cast<char> (ival)), type);
     }
 
   return retval;

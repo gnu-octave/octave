@@ -1948,7 +1948,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
       retval = mval;
 
       if (all_char_conv)
-	retval = retval.convert_to_str ();
+	retval = retval.convert_to_str (false, true);
     }
 
   return retval;
@@ -3583,6 +3583,31 @@ octave_stream::scanf (const std::string& fmt, const Array<double>& size,
   return retval;
 }
 
+octave_value
+octave_stream::scanf (const octave_value& fmt, const Array<double>& size,
+		      int& count, const std::string& who)
+{
+  octave_value retval = Matrix ();
+
+  if (fmt.is_string ())
+    {
+      std::string sfmt = fmt.string_value ();
+
+      if (fmt.is_sq_string ())
+	sfmt = do_string_escapes (sfmt);
+
+      retval = scanf (sfmt, size, count, who);
+    }
+  else
+    {
+      // Note that this is not ::error () !
+
+      error (who + ": format must be a string");
+    }
+
+  return retval;
+}
+
 octave_value_list
 octave_stream::oscanf (const std::string& fmt, const std::string& who)
 {
@@ -3590,6 +3615,30 @@ octave_stream::oscanf (const std::string& fmt, const std::string& who)
 
   if (stream_ok (who))
     retval = rep->oscanf (fmt, who);
+
+  return retval;
+}
+
+octave_value_list
+octave_stream::oscanf (const octave_value& fmt, const std::string& who)
+{
+  octave_value_list retval;
+
+  if (fmt.is_string ())
+    {
+      std::string sfmt = fmt.string_value ();
+
+      if (fmt.is_sq_string ())
+	sfmt = do_string_escapes (sfmt);
+
+      retval = oscanf (sfmt, who);
+    }
+  else
+    {
+      // Note that this is not ::error () !
+
+      error (who + ": format must be a string");
+    }
 
   return retval;
 }
@@ -3602,6 +3651,31 @@ octave_stream::printf (const std::string& fmt, const octave_value_list& args,
 
   if (stream_ok (who))
     retval = rep->printf (fmt, args, who);
+
+  return retval;
+}
+
+int
+octave_stream::printf (const octave_value& fmt, const octave_value_list& args,
+		       const std::string& who)
+{
+  int retval = 0;
+
+  if (fmt.is_string ())
+    {
+      std::string sfmt = fmt.string_value ();
+
+      if (fmt.is_sq_string ())
+	sfmt = do_string_escapes (sfmt);
+
+      retval = printf (sfmt, args, who);
+    }
+  else
+    {
+      // Note that this is not ::error () !
+
+      error (who + ": format must be a string");
+    }
 
   return retval;
 }
@@ -3627,7 +3701,7 @@ octave_stream::puts (const octave_value& tc_s, const std::string& who)
   if (tc_s.is_string ())
     {
       std::string s = tc_s.string_value ();      
-      retval = rep->puts (s, who);
+      retval = puts (s, who);
     }
   else
     {

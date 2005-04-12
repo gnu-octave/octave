@@ -321,7 +321,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <COMMAND_START>[\;\,] {
     if (lexer_flags.doing_rawcommand)
-      TOK_PUSH_AND_RETURN (yytext, STRING);
+      TOK_PUSH_AND_RETURN (yytext, SQ_STRING);
 
     BEGIN (INITIAL);
 
@@ -338,7 +338,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
     std::string tok = strip_trailing_whitespace (yytext);
-    TOK_PUSH_AND_RETURN (tok, STRING);
+    TOK_PUSH_AND_RETURN (tok, SQ_STRING);
   }
 
 %{
@@ -1983,7 +1983,7 @@ handle_string (char delim, int text_style)
 		  std::string s;  
 		  yyunput (c, yytext);
 		  buf << OSSTREAM_ENDS;
-		  if (lexer_flags.doing_rawcommand)
+		  if (lexer_flags.doing_rawcommand || delim == '\'')
 		    s = OSSTREAM_STR (buf);
 		  else
 		    s = do_string_escapes (OSSTREAM_STR(buf));
@@ -2005,7 +2005,7 @@ handle_string (char delim, int text_style)
 		  else if (delim == '\'')
 		    gripe_single_quote_string ();
 
-		  return STRING;
+		  return delim == '"' ? DQ_STRING : SQ_STRING;
 		}
 	    }
 	}

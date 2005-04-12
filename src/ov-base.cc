@@ -194,7 +194,7 @@ octave_base_value::resize (const dim_vector&) const
 }
 
 octave_value
-octave_base_value::convert_to_str_internal (bool, bool) const
+octave_base_value::convert_to_str_internal (bool, bool, char) const
 {
   gripe_wrong_type_arg ("octave_base_value::convert_to_str_internal ()",
 			type_name ());

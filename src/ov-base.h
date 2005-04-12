@@ -124,6 +124,8 @@ public:
 
   bool is_string (void) const { return false; }
 
+  bool is_sq_string (void) const { return false; }
+
   bool is_range (void) const { return false; }
 
   bool is_map (void) const { return false; }
@@ -286,7 +288,7 @@ public:
 
   octave_value_list list_value (void) const;
 
-  octave_value convert_to_str_internal (bool pad, bool force) const;
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   void convert_to_row_or_column_vector (void);
 

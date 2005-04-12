@@ -208,13 +208,16 @@ public:
   octave_value (bool b);
   octave_value (const boolMatrix& bm);
   octave_value (const boolNDArray& bnda);
-  octave_value (char c);
-  octave_value (const char *s);
-  octave_value (const std::string& s);
-  octave_value (const string_vector& s);
-  octave_value (const charMatrix& chm, bool is_string = false);
-  octave_value (const charNDArray& chnda, bool is_string = false);
-  octave_value (const ArrayN<char>& chnda, bool is_string = false);
+  octave_value (char c, char type = '"');
+  octave_value (const char *s, char type = '"');
+  octave_value (const std::string& s, char type = '"');
+  octave_value (const string_vector& s, char type = '"');
+  octave_value (const charMatrix& chm, bool is_string = false,
+		char type = '"');
+  octave_value (const charNDArray& chnda, bool is_string = false,
+		char type = '"');
+  octave_value (const ArrayN<char>& chnda, bool is_string = false,
+		char type = '"');
   octave_value (const SparseMatrix& m, const SparseType& t = SparseType ());
   octave_value (const SparseComplexMatrix& m, 
 		const SparseType& t = SparseType ());
@@ -424,6 +427,9 @@ public:
 
   virtual bool is_string (void) const
     { return rep->is_string (); }
+
+  virtual bool is_sq_string (void) const
+    { return rep->is_sq_string (); }
 
   virtual bool is_range (void) const
     { return rep->is_range (); }
@@ -697,10 +703,12 @@ public:
   // class wants a certain kind of constant, he should simply ask for
   // it, and we should convert it if possible.
 
-  octave_value convert_to_str (bool pad = false, bool force = false) const;
+  octave_value convert_to_str (bool pad = false, bool force = false,
+			       char type = '"') const;
 
-  virtual octave_value convert_to_str_internal (bool pad, bool force) const
-    { return rep->convert_to_str_internal (pad, force); }
+  virtual octave_value
+  convert_to_str_internal (bool pad, bool force, char type) const
+    { return rep->convert_to_str_internal (pad, force, type); }
 
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }

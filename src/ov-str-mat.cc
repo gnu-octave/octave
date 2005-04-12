@@ -48,8 +48,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ls-utils.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
+DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_sq_str);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string", "char");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

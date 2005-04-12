@@ -1,3 +1,51 @@
+2005-04-12  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (Ffprintf, Fprintf, Fsprintf):
+	Pass octave_value to octave_stream::printf for FMT.
+	(Fscanf, Fsscanf): Likewise, for octave_stream::scanf and
+	octave_stream::oscanf.
+
+	* oct-stream.cc, oct-stream.h (octave_stream::printf,
+	octave_stream::scanf, octave_stream::oscanf): New versions that
+	accept an octave_value for FMT.
+	(octave_stream::puts): New version that accepts octave_value for
+	value to print.
+	(octave_base_stream::do_scanf): If all_char_conv, force
+	conversion to string to avoid warning.
+
+	* ov-str-mat.h, ov-str-mat.cc (octave_char_matrix_sq_str): New class.
+	(octave_char_matrix_dq_str): New typedef.
+
+	* ov.h, ov.cc: All string constructors now take type argument.
+
+	* ov.cc (install_types): Register octave_char_matrix_sq_str.
+
+	* ov.h (octave_value::convert_to_str): New arg, type.
+	(octave_value::convert_to_str_internal): Likewise.
+	Change all derived classes.
+
+	* ov.h (octave_value::is_sq_string): New predicate.
+
+	* octave.gperf (__FILE__): Now a DQ_STRING.
+
+	* ls-mat4.cc (read_mat_binary_data): Force sq strings here.
+	* ls-mat5.cc (read_mat5_binary_element): And here.
+
+	* lex.l (<COMMAND_START>[\;\,]): Return SQ_STRING, not STRING.
+	(<COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}*): Likewise.
+	(handle_string): Type of string to return depends on delimeter.
+
+	* parse.y (DQ_STRING, SQ_STRING): New token types.
+	(STRING): Delete token type.
+	(string): New non-terminal.
+	(constant): Recognize string here instead of STRING.
+	(word_list): Likewise.
+	(opt_sep): Handle DQ_STRING and SQ_STRING.
+
+	* OPERATORS/op-str-m.cc, OPERATORS/op-str-s.cc,
+	OPERATORS/op-str-str.cc: Define operators for both sq and dq
+	strings.
+
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (clean): Use exact filenames instead of *.xxx.

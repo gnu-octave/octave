@@ -776,8 +776,6 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 	{
 	  if (args(fmt_n).is_string ())
 	    {
-	      std::string fmt = args(fmt_n).string_value ();
-
 	      octave_value_list tmp_args;
 
 	      if (nargin > 1 + fmt_n)
@@ -788,7 +786,7 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 		    tmp_args(i-fmt_n-1) = args(i);
 		}
 
-	      result = os.printf (fmt, tmp_args, who);
+	      result = os.printf (args(fmt_n), tmp_args, who);
 	    }
 	  else
 	    ::error ("%s: format must be a string", who.c_str ());
@@ -825,8 +823,6 @@ Return the number of characters printed.\n\
     {
       if (args(0).is_string ())
 	{
-	  std::string fmt = args(0).string_value ();
-
 	  octave_value_list tmp_args;
 
 	  if (nargin > 1)
@@ -837,7 +833,7 @@ Return the number of characters printed.\n\
 		tmp_args(i-1) = args(i);
 	    }
 
-	  result = stdout_stream.printf (fmt, tmp_args, who);
+	  result = stdout_stream.printf (args(0), tmp_args, who);
 	}
       else
 	::error ("%s: format must be a string", who.c_str ());
@@ -929,8 +925,6 @@ converted.\n\
 	{
 	  if (args(0).is_string ())
 	    {
-	      std::string fmt = args(0).string_value ();
-
 	      octave_value_list tmp_args;
 
 	      if (nargin > 1)
@@ -941,7 +935,7 @@ converted.\n\
 		    tmp_args(i-1) = args(i);
 		}
 
-	      retval(2) = os.printf (fmt, tmp_args, who);
+	      retval(2) = os.printf (args(0), tmp_args, who);
 	      retval(1) = os.error ();
 	      retval(0) = ostr->str ();
 	    }
@@ -1014,11 +1008,7 @@ conversions is returned in @var{count}\n\
       if (! error_state)
 	{
 	  if (args(1).is_string ())
-	    {
-	      std::string fmt = args(1).string_value ();
-
-	      retval = os.oscanf (fmt, who);
-	    }
+	    retval = os.oscanf (args(1), who);
 	  else
 	    ::error ("%s: format must be a string", who.c_str ());
 	}
@@ -1036,8 +1026,6 @@ conversions is returned in @var{count}\n\
 	    {
 	      if (args(1).is_string ())
 		{
-		  std::string fmt = args(1).string_value ();
-
 		  octave_idx_type count = 0;
 
 		  Array<double> size = (nargin == 3)
@@ -1046,7 +1034,7 @@ conversions is returned in @var{count}\n\
 
 		  if (! error_state)
 		    {
-		      octave_value tmp = os.scanf (fmt, size, count, who);
+		      octave_value tmp = os.scanf (args(1), size, count, who);
 
 		      retval(1) = count;
 		      retval(0) = tmp;
@@ -1090,11 +1078,7 @@ string is treated as an end-of-file condition.\n\
 	  if (os.is_valid ())
 	    {
 	      if (args(1).is_string ())
-		{
-		  std::string fmt = args(1).string_value ();
-
-		  retval = os.oscanf (fmt, who);
-		}
+		retval = os.oscanf (args(1), who);
 	      else
 		::error ("%s: format must be a string", who.c_str ());
 	    }
@@ -1124,15 +1108,13 @@ string is treated as an end-of-file condition.\n\
 		{
 		  if (args(1).is_string ())
 		    {
-		      std::string fmt = args(1).string_value ();
-
 		      octave_idx_type count = 0;
 
 		      Array<double> size = (nargin == 3)
 			? args(2).vector_value ()
 			: Array<double> (1, lo_ieee_inf_value ());
 
-		      octave_value tmp = os.scanf (fmt, size, count, who);
+		      octave_value tmp = os.scanf (args(1), size, count, who);
 
 		      // XXX FIXME XXX -- is this the right thing to do?
 		      // Extract error message first, because getting

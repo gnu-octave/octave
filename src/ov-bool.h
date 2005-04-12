@@ -111,7 +111,7 @@ public:
   octave_value resize (const dim_vector& dv) const
     { boolNDArray retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
 
-  octave_value convert_to_str_internal (bool pad, bool force) const;
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   bool save_ascii (std::ostream& os, bool& infnan_warned,
 		 bool strip_nan_and_inf);

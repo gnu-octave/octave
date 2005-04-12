@@ -36,7 +36,9 @@ DEFASSIGNOP (assign, char_matrix_str, octave_scalar)
 {
   CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_scalar&);
 
-  octave_value tmp = v2.convert_to_str_internal (false, false);
+  octave_value tmp
+    = v2.convert_to_str_internal (false, false,
+ 				  a1.is_sq_string () ? '\'' : '"');
 
   if (! error_state)
     v1.assign (idx, tmp.char_matrix_value ());
@@ -51,8 +53,9 @@ DEFCATOP (str_s, char_matrix_str, scalar)
   if (Vwarn_num_to_str)
     gripe_implicit_conversion (v2.type_name (), v1.type_name ());
 
-  return octave_value (v1.char_array_value (). concat (v2.array_value (), 
-			       ra_idx), true);
+  return octave_value (v1.char_array_value (). concat (v2.array_value (),
+						       ra_idx),
+		       true, a1.is_sq_string () ? '\'' : '"');
 }
 
 DEFCATOP (s_str, scalar, char_matrix_str)
@@ -63,16 +66,21 @@ DEFCATOP (s_str, scalar, char_matrix_str)
     gripe_implicit_conversion (v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (), 
-			       ra_idx), true);
+						  ra_idx),
+		       true, a2.is_sq_string () ? '\'' : '"');
 }
 
 void
 install_str_s_ops (void)
 {
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_scalar, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_scalar, assign);
 
   INSTALL_CATOP (octave_char_matrix_str, octave_scalar, str_s);
+  INSTALL_CATOP (octave_char_matrix_sq_str, octave_scalar, str_s);
+
   INSTALL_CATOP (octave_scalar, octave_char_matrix_str, s_str);
+  INSTALL_CATOP (octave_scalar, octave_char_matrix_sq_str, s_str);
 }
 
 /*

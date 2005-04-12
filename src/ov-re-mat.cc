@@ -199,7 +199,7 @@ octave_matrix::streamoff_array_value (void) const
 }
 
 octave_value
-octave_matrix::convert_to_str_internal (bool, bool) const
+octave_matrix::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
   dim_vector dv = dims ();
@@ -208,7 +208,7 @@ octave_matrix::convert_to_str_internal (bool, bool) const
   if (nel == 0)
     {
       char s = '\0';
-      retval = octave_value (&s);
+      retval = octave_value (&s, type);
     }
   else
     {
@@ -249,7 +249,7 @@ octave_matrix::convert_to_str_internal (bool, bool) const
 	    }
 	}
 
-      retval = octave_value (chm, 1);
+      retval = octave_value (chm, true, type);
     }
 
   return retval;

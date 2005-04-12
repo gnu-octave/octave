@@ -525,10 +525,19 @@ public:
   octave_value scanf (const std::string& fmt, const Array<double>& size,
 		      octave_idx_type& count, const std::string& who /* = "scanf" */);
 
+  octave_value scanf (const octave_value& fmt, const Array<double>& size,
+		      int& count, const std::string& who /* = "scanf" */);
+
   octave_value_list oscanf (const std::string& fmt,
 			    const std::string& who /* = "scanf" */);
 
+  octave_value_list oscanf (const octave_value& fmt,
+			    const std::string& who /* = "scanf" */);
+
   int printf (const std::string& fmt, const octave_value_list& args,
+	      const std::string& who /* = "printf" */);
+
+  int printf (const octave_value& fmt, const octave_value_list& args,
 	      const std::string& who /* = "printf" */);
 
   int puts (const std::string& s, const std::string& who /* = "puts" */);

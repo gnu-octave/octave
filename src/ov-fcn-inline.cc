@@ -560,9 +560,9 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 octave_value
-octave_fcn_inline::convert_to_str_internal (bool, bool) const
+octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 {
-  return octave_value (fcn_text ());
+  return octave_value (fcn_text (), type);
 }
 
 DEFUN (inline, args, ,

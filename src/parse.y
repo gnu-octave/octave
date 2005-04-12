@@ -406,7 +406,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> STRUCT_ELT
 %token <tok_val> NAME
 %token <tok_val> END
-%token <tok_val> STRING
+%token <tok_val> DQ_STRING SQ_STRING
 %token <tok_val> FOR WHILE DO UNTIL
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
@@ -425,7 +425,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <comment_type> stash_comment function_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
-%type <tree_constant_type> constant magic_colon anon_fcn_handle
+%type <tree_constant_type> string constant magic_colon anon_fcn_handle
 %type <tree_fcn_handle_type> fcn_handle
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
@@ -578,12 +578,18 @@ identifier	: NAME
 		  }
 		;
 
+string		: DQ_STRING
+		  { $$ = make_constant (DQ_STRING, $1); }
+		| SQ_STRING
+		  { $$ = make_constant (SQ_STRING, $1); }
+		;
+
 constant	: NUM
 		  { $$ = make_constant (NUM, $1); }
 		| IMAG_NUM
 		  { $$ = make_constant (IMAG_NUM, $1); }
-		| STRING
-		  { $$ = make_constant (STRING, $1); }
+		| string
+		  { $$ = $1; }
 		;
 
 in_matrix_or_assign_lhs
@@ -894,15 +900,11 @@ word_list_cmd	: identifier word_list
 		  { $$ = make_index_expression ($1, $2, '('); }
 		;
 
-word_list	: STRING 
+word_list	: string
+		  { $$ = new tree_argument_list ($1); }
+		| word_list string
 		  {
-		    tree_constant *tmp = make_constant (STRING, $1);
-		    $$ = new tree_argument_list (tmp);
-		  }
-		| word_list STRING
-		  {
-		    tree_constant *tmp = make_constant (STRING, $2);
-		    $1->append (tmp);
+		    $1->append ($2);
 		    $$ = $1;
 		  }
 		;
@@ -1764,9 +1766,10 @@ make_constant (int op, token *tok_val)
       }
       break;
 
-    case STRING:
+    case DQ_STRING:
+    case SQ_STRING:
       {
-	octave_value tmp (tok_val->text ());
+	octave_value tmp (tok_val->text (), op == DQ_STRING ? '"' : '\'');
 	retval = new tree_constant (tmp, l, c);
       }
       break;

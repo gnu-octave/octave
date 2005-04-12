@@ -117,7 +117,7 @@ public:
   SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
   { return SparseBoolMatrix (matrix.matrix_value ()); }
 
-  octave_value convert_to_str_internal (bool pad, bool force) const;
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

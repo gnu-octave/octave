@@ -223,117 +223,113 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
 SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a, 
 				  const ColumnVector& Qinit, 
-				  double piv_thres, bool FixedQ)
+				  double piv_thres, bool FixedQ,
+				  double droptol, bool milu, bool udiag)
 {
 #ifdef HAVE_UMFPACK
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  // Setup the control parameters
-  Matrix Control (UMFPACK_CONTROL, 1);
-  double *control = Control.fortran_vec ();
-  umfpack_zi_defaults (control);
-
-  double tmp = Voctave_sparse_controls.get_key ("spumoni");
-  if (!xisnan (tmp))
-    Control (UMFPACK_PRL) = tmp;
-  if (piv_thres >= 0.)
-    {
-      piv_thres = (piv_thres > 1. ? 1. : piv_thres);
-      Control (UMFPACK_SYM_PIVOT_TOLERANCE) = piv_thres;
-      Control (UMFPACK_PIVOT_TOLERANCE) = piv_thres;
-    }
+  if (milu)
+    (*current_liboctave_error_handler) 
+      ("Modified incomplete LU not implemented");   
   else
     {
-      tmp = Voctave_sparse_controls.get_key ("piv_tol");
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
+
+      // Setup the control parameters
+      Matrix Control (UMFPACK_CONTROL, 1);
+      double *control = Control.fortran_vec ();
+      umfpack_zi_defaults (control);
+
+      double tmp = Voctave_sparse_controls.get_key ("spumoni");
       if (!xisnan (tmp))
+	Control (UMFPACK_PRL) = tmp;
+      if (piv_thres >= 0.)
 	{
-	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
-	  Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+	  piv_thres = (piv_thres > 1. ? 1. : piv_thres);
+	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = piv_thres;
+	  Control (UMFPACK_PIVOT_TOLERANCE) = piv_thres;
 	}
-    }
+      else
+	{
+	  tmp = Voctave_sparse_controls.get_key ("piv_tol");
+	  if (!xisnan (tmp))
+	    {
+	      Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
+	      Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+	    }
+	}
 
-  // Set whether we are allowed to modify Q or not
-  if (FixedQ)
-    Control (UMFPACK_FIXQ) = 1.0;
-  else
-    {
-      tmp = Voctave_sparse_controls.get_key ("autoamd");
-      if (!xisnan (tmp))
-	Control (UMFPACK_FIXQ) = tmp;
-    }
+      if (droptol >= 0.)
+	Control (UMFPACK_DROPTOL) = droptol;
 
-  // Turn-off UMFPACK scaling for LU 
-  Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
+      // Set whether we are allowed to modify Q or not
+      if (FixedQ)
+	Control (UMFPACK_FIXQ) = 1.0;
+      else
+	{
+	  tmp = Voctave_sparse_controls.get_key ("autoamd");
+	  if (!xisnan (tmp))
+	    Control (UMFPACK_FIXQ) = tmp;
+	}
 
-  umfpack_zi_report_control (control);
+      // Turn-off UMFPACK scaling for LU 
+      Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
 
-  const octave_idx_type *Ap = a.cidx ();
-  const octave_idx_type *Ai = a.ridx ();
-  const Complex *Ax = a.data ();
+      umfpack_zi_report_control (control);
 
-  umfpack_zi_report_matrix (nr, nc, Ap, Ai, X_CAST (const double *, Ax), NULL,
-			    1, control);
+      const octave_idx_type *Ap = a.cidx ();
+      const octave_idx_type *Ai = a.ridx ();
+      const Complex *Ax = a.data ();
 
-  void *Symbolic;
-  Matrix Info (1, UMFPACK_INFO);
-  double *info = Info.fortran_vec ();
-  int status;
+      umfpack_zi_report_matrix (nr, nc, Ap, Ai, 
+				X_CAST (const double *, Ax), NULL,
+				1, control);
 
-  // Null loop so that qinit is imediately deallocated when not needed
-  do {
-    OCTAVE_LOCAL_BUFFER (int, qinit, nc);
+      void *Symbolic;
+      Matrix Info (1, UMFPACK_INFO);
+      double *info = Info.fortran_vec ();
+      int status;
 
-    for (int i = 0; i < nc; i++)
-      qinit [i] = static_cast<int> (Qinit (i));
+      // Null loop so that qinit is imediately deallocated when not
+      // needed
+      do {
+	OCTAVE_LOCAL_BUFFER (int, qinit, nc);
 
-    status = umfpack_zi_qsymbolic (nr, nc, Ap, Ai, X_CAST (const double *, Ax),
-				   NULL, qinit, &Symbolic, control, info);
-  } while (0);
+	for (int i = 0; i < nc; i++)
+	  qinit [i] = static_cast<int> (Qinit (i));
 
-  if (status < 0)
-    {
-      (*current_liboctave_error_handler) 
-	    ("SparseComplexLU::SparseComplexLU symbolic factorization failed");
-
-      umfpack_zi_report_status (control, status);
-      umfpack_zi_report_info (control, info);
-
-      umfpack_zi_free_symbolic (&Symbolic) ;
-    }
-  else
-    {
-      umfpack_zi_report_symbolic (Symbolic, control);
-
-      void *Numeric;
-      status = umfpack_zi_numeric (Ap, Ai, X_CAST (const double *, Ax), NULL,
-				   Symbolic, &Numeric, control, info) ;
-      umfpack_zi_free_symbolic (&Symbolic) ;
-
-      cond = Info (UMFPACK_RCOND);
+	status = umfpack_zi_qsymbolic (nr, nc, Ap, Ai, 
+				       X_CAST (const double *, Ax),
+				       NULL, qinit, &Symbolic, control, 
+				       info);
+      } while (0);
 
       if (status < 0)
 	{
 	  (*current_liboctave_error_handler) 
-	    ("SparseComplexLU::SparseComplexLU numeric factorization failed");
+	    ("SparseComplexLU::SparseComplexLU symbolic factorization failed");
 
 	  umfpack_zi_report_status (control, status);
 	  umfpack_zi_report_info (control, info);
 
-	  umfpack_zi_free_numeric (&Numeric);
+	  umfpack_zi_free_symbolic (&Symbolic) ;
 	}
       else
 	{
-	  umfpack_zi_report_numeric (Numeric, control);
+	  umfpack_zi_report_symbolic (Symbolic, control);
 
-	  int lnz, unz, ignore1, ignore2, ignore3;
-	  status = umfpack_zi_get_lunz (&lnz, &unz, &ignore1, &ignore2,
-					&ignore3, Numeric) ;
-	  
+	  void *Numeric;
+	  status = umfpack_zi_numeric (Ap, Ai, 
+				       X_CAST (const double *, Ax), NULL,
+				       Symbolic, &Numeric, control, info) ;
+	  umfpack_zi_free_symbolic (&Symbolic) ;
+
+	  cond = Info (UMFPACK_RCOND);
+
 	  if (status < 0)
 	    {
 	      (*current_liboctave_error_handler) 
-		("SparseComplexLU::SparseComplexLU extracting LU factors failed");
+		("SparseComplexLU::SparseComplexLU numeric factorization failed");
 
 	      umfpack_zi_report_status (control, status);
 	      umfpack_zi_report_info (control, info);
@@ -342,71 +338,102 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	    }
 	  else
 	    {
-	      int n_inner = (nr < nc ? nr : nc);
+	      umfpack_zi_report_numeric (Numeric, control);
 
-	      if (lnz < 1)
-		Lfact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nr,
-					     static_cast<octave_idx_type> (1));
-	      else
-		Lfact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nr,
-					     static_cast<octave_idx_type> (lnz));
-
-	      octave_idx_type *Ltp = Lfact.cidx ();
-	      octave_idx_type *Ltj = Lfact.ridx ();
-	      Complex *Ltx = Lfact.data ();
-
-	      if (unz < 1)
-		Ufact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nc,
-					     static_cast<octave_idx_type> (1));
-	      else
-		Ufact = SparseComplexMatrix (static_cast<octave_idx_type> (n_inner), nc, unz);
-
-	      octave_idx_type *Up = Ufact.cidx ();
-	      octave_idx_type *Uj = Ufact.ridx ();
-	      Complex *Ux = Ufact.data ();
-	      
-	      P.resize (nr);
-	      int *p = P.fortran_vec ();
-
-	      Q.resize (nc);
-	      int *q = Q.fortran_vec ();
-
-	      int do_recip;
-	      status = umfpack_zi_get_numeric (Ltp, Ltj, X_CAST (double *, Ltx),
-					       NULL, Up, Uj,
-					       X_CAST (double *, Ux), NULL, p, 
-					       q, NULL, NULL, &do_recip,
-					       NULL, Numeric) ;
-
-	      umfpack_zi_free_numeric (&Numeric) ;
-
-	      if (status < 0 || do_recip)
+	      int lnz, unz, ignore1, ignore2, ignore3;
+	      status = umfpack_zi_get_lunz (&lnz, &unz, &ignore1, 
+					    &ignore2, &ignore3, Numeric);
+	  
+	      if (status < 0)
 		{
 		  (*current_liboctave_error_handler) 
 		    ("SparseComplexLU::SparseComplexLU extracting LU factors failed");
 
 		  umfpack_zi_report_status (control, status);
+		  umfpack_zi_report_info (control, info);
+
+		  umfpack_zi_free_numeric (&Numeric);
 		}
 	      else
 		{
-		  Lfact = Lfact.transpose ();
+		  int n_inner = (nr < nc ? nr : nc);
 
-		  umfpack_zi_report_matrix (nr, n_inner, Lfact.cidx (), 
-					    Lfact.ridx (), 
-					    X_CAST (double *, Lfact.data()), 
-					    NULL, 1, control);
+		  if (lnz < 1)
+		    Lfact = SparseComplexMatrix 
+		      (static_cast<octave_idx_type> (n_inner), nr,
+		       static_cast<octave_idx_type> (1));
+		  else
+		    Lfact = SparseComplexMatrix 
+		      (static_cast<octave_idx_type> (n_inner), nr,
+		       static_cast<octave_idx_type> (lnz));
 
-		  umfpack_zi_report_matrix (n_inner, nc, Ufact.cidx (), 
-					    Ufact.ridx (), 
-					    X_CAST (double *, Ufact.data()), 
-					    NULL, 1, control);
-		  umfpack_zi_report_perm (nr, p, control);
-		  umfpack_zi_report_perm (nc, q, control);
+		  octave_idx_type *Ltp = Lfact.cidx ();
+		  octave_idx_type *Ltj = Lfact.ridx ();
+		  Complex *Ltx = Lfact.data ();
+
+		  if (unz < 1)
+		    Ufact = SparseComplexMatrix 
+		      (static_cast<octave_idx_type> (n_inner), nc,
+		       static_cast<octave_idx_type> (1));
+		  else
+		    Ufact = SparseComplexMatrix 
+		      (static_cast<octave_idx_type> (n_inner), nc, unz);
+
+		  octave_idx_type *Up = Ufact.cidx ();
+		  octave_idx_type *Uj = Ufact.ridx ();
+		  Complex *Ux = Ufact.data ();
+	      
+		  P.resize (nr);
+		  int *p = P.fortran_vec ();
+
+		  Q.resize (nc);
+		  int *q = Q.fortran_vec ();
+
+		  int do_recip;
+		  status = 
+		    umfpack_zi_get_numeric (Ltp, Ltj, 
+					    X_CAST (double *, Ltx),
+					    NULL, Up, Uj,
+					    X_CAST (double *, Ux), 
+					    NULL, p, q, NULL, NULL, 
+					    &do_recip, NULL, Numeric) ;
+
+		  umfpack_zi_free_numeric (&Numeric) ;
+
+		  if (status < 0 || do_recip)
+		    {
+		      (*current_liboctave_error_handler) 
+			("SparseComplexLU::SparseComplexLU extracting LU factors failed");
+
+		      umfpack_zi_report_status (control, status);
+		    }
+		  else
+		    {
+		      Lfact = Lfact.transpose ();
+
+		      umfpack_zi_report_matrix (nr, n_inner, 
+						Lfact.cidx (), 
+						Lfact.ridx (), 
+						X_CAST (double *, Lfact.data()), 
+						NULL, 1, control);
+
+		      umfpack_zi_report_matrix (n_inner, nc, 
+						Ufact.cidx (), 
+						Ufact.ridx (), 
+						X_CAST (double *, Ufact.data()), 
+						NULL, 1, control);
+		      umfpack_zi_report_perm (nr, p, control);
+		      umfpack_zi_report_perm (nc, q, control);
+		    }
+
+		  umfpack_zi_report_info (control, info);
 		}
-
-	      umfpack_zi_report_info (control, info);
 	    }
 	}
+
+      if (udiag)
+	(*current_liboctave_error_handler) 
+	  ("Option udiag of incomplete LU not implemented");   
     }
 #else
   (*current_liboctave_error_handler) ("UMFPACK not installed");

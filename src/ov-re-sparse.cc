@@ -47,6 +47,19 @@ DEFINE_OCTAVE_ALLOCATOR (octave_sparse_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix", "sparse");
 
+idx_vector
+octave_sparse_matrix::index_vector (void) const
+{
+  if (matrix.numel () == matrix.nonzero ())
+    return idx_vector (array_value ());
+  else
+    {
+      std::string nm = type_name ();
+      error ("%s type invalid as index value", nm.c_str ());
+      return idx_vector ();
+    }
+}
+
 octave_value *
 octave_sparse_matrix::try_narrowing_conversion (void)
 {
@@ -146,11 +159,11 @@ streamoff_array
 octave_sparse_matrix::streamoff_array_value (void) const
 {
   streamoff_array retval (dims ());
-  int nc = matrix.cols ();
-  int nr = matrix.rows ();
+  octave_idx_type nc = matrix.cols ();
+  octave_idx_type nr = matrix.rows ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = matrix.cidx(i); i < matrix.cidx(i+1); i++)
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
       {
 	double d = matrix.data(i);
 
@@ -165,6 +178,67 @@ octave_sparse_matrix::streamoff_array_value (void) const
 	    break;
 	  }
       }
+
+  return retval;
+}
+
+octave_value
+octave_sparse_matrix::convert_to_str_internal (bool, bool) const
+{
+  octave_value retval;
+  dim_vector dv = dims ();
+  octave_idx_type nel = dv.numel ();
+
+  if (nel == 0)
+    {
+      char s = '\0';
+      retval = octave_value (&s);
+    }
+  else
+    {
+      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nc = matrix.cols ();
+      charNDArray chm (dv, static_cast<char> (0));
+	  
+      bool warned = false;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = matrix.cidx(j); 
+	     i < matrix.cidx(j+1); i++)
+	  {
+	    OCTAVE_QUIT;
+
+	    double d = matrix.data (i);
+
+	      if (xisnan (d))
+		{
+		  ::error ("invalid conversion from NaN to character");
+		  return retval;
+		}
+	      else
+		{
+		  int ival = NINT (d);
+
+		  if (ival < 0 || ival > UCHAR_MAX)
+		    {
+		      // XXX FIXME XXX -- is there something
+		      // better we could do?
+
+		      ival = 0;
+
+		      if (! warned)
+			{
+			  ::warning ("range error for conversion to character value");
+			  warned = true;
+			}
+		    }
+
+		  chm (matrix.ridx(i) + j * nr) = 
+		    static_cast<char> (ival);
+		}
+	  }
+      retval = octave_value (chm, 1);
+    }
 
   return retval;
 }

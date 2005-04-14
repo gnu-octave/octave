@@ -82,8 +82,8 @@ be square.\n\
 
   octave_value arg = args(0);
 
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   int arg_is_empty = empty_arg ("splu", nr, nc);
 
@@ -114,21 +114,21 @@ be square.\n\
 	    thres = tmp (0);
 	  else if (dv(0) == 1 || dv(1) == 1)
 	    {
-	      int nel = tmp.numel ();
+	      octave_idx_type nel = tmp.numel ();
 	      Qinit.resize (nel);
-	      for (int i = 0; i < nel; i++)
+	      for (octave_idx_type i = 0; i < nel; i++)
 		Qinit (i) = tmp (i) - 1;
 	      have_Qinit = true;
 	    }
 	  else
 	    {
-	      int t_nc = tmp.cols ();
+	      octave_idx_type t_nc = tmp.cols ();
 	      
 	      if (tmp.nnz () != t_nc)
 		error ("splu: Not a valid permutation matrix");
 	      else
 		{
-		  for (int i = 0; i < t_nc + 1; i++)
+		  for (octave_idx_type i = 0; i < t_nc + 1; i++)
 		    if (tmp.cidx(i) != i)
 		      {
 			error ("splu: Not a valid permutation matrix");
@@ -138,7 +138,7 @@ be square.\n\
 		  
 	      if (!error_state)
 		{
-		  for (int i = 0; i < t_nc; i++)
+		  for (octave_idx_type i = 0; i < t_nc; i++)
 		    if (tmp.data (i) != 1.)
 		      {
 			error ("splu: Not a valid permutation matrix");
@@ -168,9 +168,9 @@ be square.\n\
 	    thres = tmp (0);
 	  else if (dv(0) == 1 || dv(1) == 1)
 	    {
-	      int nel = tmp.numel ();
+	      octave_idx_type nel = tmp.numel ();
 	      Qinit.resize (nel);
-	      for (int i = 0; i < nel; i++)
+	      for (octave_idx_type i = 0; i < nel; i++)
 		Qinit (i) = tmp (i) - 1;
 	      have_Qinit = true;
 	    }
@@ -178,13 +178,13 @@ be square.\n\
 	    {
 	      SparseMatrix tmp2 (tmp);
 
-	      int t_nc = tmp2.cols ();
+	      octave_idx_type t_nc = tmp2.cols ();
 	      
 	      if (tmp2.nnz () != t_nc)
 		error ("splu: Not a valid permutation matrix");
 	      else
 		{
-		  for (int i = 0; i < t_nc + 1; i++)
+		  for (octave_idx_type i = 0; i < t_nc + 1; i++)
 		    if (tmp2.cidx(i) != i)
 		      {
 			error ("splu: Not a valid permutation matrix");
@@ -194,7 +194,7 @@ be square.\n\
 		  
 	      if (!error_state)
 		{
-		  for (int i = 0; i < t_nc; i++)
+		  for (octave_idx_type i = 0; i < t_nc; i++)
 		    if (tmp2.data (i) != 1.)
 		      {
 			error ("splu: Not a valid permutation matrix");
@@ -219,9 +219,9 @@ be square.\n\
 
       if (nargout < 4 && ! have_Qinit)
 	{
-	  int m_nc = m.cols ();
+	  octave_idx_type m_nc = m.cols ();
 	  Qinit.resize (m_nc);
-	  for (int i = 0; i < m_nc; i++)
+	  for (octave_idx_type i = 0; i < m_nc; i++)
 	    Qinit (i) = i;
 	}
 
@@ -291,9 +291,9 @@ be square.\n\
 
       if (nargout < 4 && ! have_Qinit)
 	{
-	  int m_nc = m.cols ();
+	  octave_idx_type m_nc = m.cols ();
 	  Qinit.resize (m_nc);
-	  for (int i = 0; i < m_nc; i++)
+	  for (octave_idx_type i = 0; i < m_nc; i++)
 	    Qinit (i) = i;
 	}
 

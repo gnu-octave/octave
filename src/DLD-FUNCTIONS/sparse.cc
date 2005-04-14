@@ -139,7 +139,8 @@ which case they are expanded to all have the same length\n\
    if (nargin == 2 && ! args(0).is_scalar_type() && args(1).is_scalar_type())
        mutate = (args(1).double_value() != 0.);
 
-   if (nargin == 1 || (nargin == 2 && mutate)) 
+   if (nargin == 1 || (nargin == 2 && ! args(0).is_scalar_type() && 
+		       args(1).is_scalar_type()))
      {
        octave_value arg = args (0);
 

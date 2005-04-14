@@ -36,7 +36,8 @@ public:
   SparseLU (const SparseMatrix& a, double piv_thres = -1.0);
 
   SparseLU (const SparseMatrix& a, const ColumnVector& Qinit, 
-	    double piv_thres = -1.0, bool FixedQ = false);
+	    double piv_thres = -1.0, bool FixedQ = false,
+	    double droptol = -1., bool milu = false, bool udiag = false);
 
   SparseLU (const SparseLU& a) 
     : sparse_base_lu <SparseMatrix, double, SparseMatrix, double> (a) { }

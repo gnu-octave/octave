@@ -82,9 +82,9 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-#if 0
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
-#endif
+  // XXX FIXME XXX Adapt idx_vector to allow sparse logical indexing!!
+  idx_vector index_vector (void) const 
+    { return idx_vector (bool_array_value ()); }
 
   bool is_bool_matrix (void) const { return true; }
 

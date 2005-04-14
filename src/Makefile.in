@@ -50,7 +50,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc colamd.cc \
 	lpsolve.cc lsode.cc lu.cc minmax.cc pinv.cc qr.cc \
 	quad.cc qz.cc rand.cc schur.cc sort.cc sparse.cc spdet.cc \
 	splu.cc spparms.cc sqrtm.cc svd.cc syl.cc time.cc gplot.l \
-	__glpk__.cc
+	__glpk__.cc luinc.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 

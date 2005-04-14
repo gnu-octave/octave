@@ -116,22 +116,13 @@ Sparse Matrices:
   * Once dmperm is implemented, use the technique to detect permuted
     triangular matrices. Test the permuted triangular matrix solver code
 
-  * Accelerate the copying of the data from a sparse matrix to a banded matrix
-    in the solvers, that takes a significant portion of the computation time 
-    for narrow matrices. This is not obvious, due to the treatment of zero
-    elements in the matrix. Maybe current solution is optimal.
-
-  * Perhaps split the overly long ::solve functions up, either by the type 
-    of solver, or seperate factorization functions, so that they can be 
-    reused in each of 4 different ::solve functions.
-
   * Sparse inverse function, based on Andy's code from octave-forge.
 
   * Implement fourth argument to the sprand and sprandn that the leading
     brand implements.
 
-  * Mapper functions such as real, imag, abs, etc need to be treated, either
-    with a dispatch or by changing the mapper function code.
+  * Sparse logical indexing in idx_vector class so that something like
+    "a=sprandn(1e6,1e6,1e-6); a(a<1) = 0" won't cause a memory overflow.
 
   * Write the rest of the sparse docs
 

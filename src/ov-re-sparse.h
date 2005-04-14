@@ -81,9 +81,7 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-#if 0
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
-#endif
+  idx_vector index_vector (void) const;
 
   bool is_real_matrix (void) const { return true; }
 
@@ -113,6 +111,8 @@ public:
     { return SparseComplexMatrix (matrix); }
 
   streamoff_array streamoff_array_value (void) const;
+
+  octave_value convert_to_str_internal (bool pad, bool force) const;
 
 #if 0
   int write (octave_stream& os, int block_size,

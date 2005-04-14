@@ -132,6 +132,8 @@ public:
 
   void mark_as_unpermuted (void);
 
+  SparseType transpose (void) const;
+
 private:
   void type (int new_typ) { typ = static_cast<matrix_type>(new_typ); }
 

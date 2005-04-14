@@ -57,6 +57,25 @@ any_element_less_than (const NDArray& a, double val)
 }
 
 static bool
+any_element_less_than (const SparseMatrix& a, double val)
+{
+  octave_idx_type len = a.nonzero ();
+
+  if (val > 0. && len != a.numel ())
+    return true;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (a.data(i) < val)
+	return true;
+    }
+
+  return false;
+}
+
+static bool
 any_element_greater_than (const NDArray& a, double val)
 {
   octave_idx_type len = a.length ();
@@ -66,6 +85,25 @@ any_element_greater_than (const NDArray& a, double val)
       OCTAVE_QUIT;
 
       if (a(i) > val)
+	return true;
+    }
+
+  return false;
+}
+
+static bool
+any_element_greater_than (const SparseMatrix& a, double val)
+{
+  octave_idx_type len = a.nonzero ();
+
+  if (val < 0. && len != a.numel ())
+    return true;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (a.data(i) > val)
 	return true;
     }
 
@@ -104,6 +142,72 @@ any_element_greater_than (const NDArray& a, double val)
 #define MAPPER_LOOP(T, F, M) \
   MAPPER_LOOP_1 (T, F, M, )
 
+#define SPARSE_MAPPER_LOOP_2(T, ET, F, M, CONV, R) \
+  do \
+    { \
+      ET f_zero = CONV (F (0.)); \
+      \
+      if (f_zero != 0.) \
+	{ \
+	  octave_idx_type nr = M.rows (); \
+	  octave_idx_type nc = M.cols (); \
+	  \
+	  T result (nr, nc, f_zero); \
+	  \
+	  for (octave_idx_type j = 0; j < nc; j++) \
+	    for (octave_idx_type i = M.cidx(j); i < M.cidx (j+1); i++) \
+	      { \
+		OCTAVE_QUIT; \
+	        result.elem (M.ridx (i), j) = CONV (F (M.data(i))); \
+		\
+		if (error_state) \
+		  return retval; \
+	      } \
+	  \
+	  result.maybe_compress (true);	\
+          retval = R; \
+	} \
+      else \
+	{ \
+	  octave_idx_type nnz = M.nonzero (); \
+	  octave_idx_type nr = M.rows (); \
+	  octave_idx_type nc = M.cols (); \
+	  \
+	  T result (nr, nc, nnz); \
+	  ET zero = ET (0.); \
+	  octave_idx_type ii = 0; \
+	  result.cidx (ii) = 0; \
+	  \
+	  for (octave_idx_type j = 0; j < nc; j++) \
+	    { \
+	      for (octave_idx_type i = M.cidx(j); i < M.cidx (j+1); i++) \
+		{ \
+		  ET val = CONV (F (M.data (i))); \
+		  if (val != zero) \
+		    { \
+		      result.data (ii) = val; \
+		      result.ridx (ii++) = M.ridx (i); \
+		    } \
+		  OCTAVE_QUIT; \
+		  \
+		  if (error_state) \
+		    return retval; \
+		} \
+	      result.cidx (j+1) = ii; \
+	    } \
+	  \
+	  result.maybe_compress (false); \
+          retval = R; \
+	} \
+    } \
+  while (0)
+
+#define SPARSE_MAPPER_LOOP_1(T, ET, F, M, CONV)	\
+  SPARSE_MAPPER_LOOP_2 (T, ET, F, M, CONV, result)
+
+#define SPARSE_MAPPER_LOOP(T, ET, F, M) \
+  SPARSE_MAPPER_LOOP_1 (T, ET, F, M, )
+
 octave_value
 octave_mapper::apply (const octave_value& arg) const
 {
@@ -132,6 +236,32 @@ octave_mapper::apply (const octave_value& arg) const
 	    retval = d_d_map_fcn (d);
 	  else if (d_b_map_fcn)
 	    retval = d_b_map_fcn (d);
+	  else
+	    error ("%s: unable to handle real arguments",
+		   name().c_str ());
+	}
+      else if (arg.class_name () == "sparse")
+	{
+	  const SparseMatrix m = arg.sparse_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  if (can_ret_cmplx_for_real
+	      && (any_element_less_than (m, lower_limit)
+		  || any_element_greater_than (m, upper_limit)))
+	    {
+	      if (c_c_map_fcn)
+		SPARSE_MAPPER_LOOP (SparseComplexMatrix, Complex, 
+				    c_c_map_fcn, m);
+	      else
+		error ("%s: unable to handle real arguments",
+		       name().c_str ());
+	    }
+	  else if (d_d_map_fcn)
+	    SPARSE_MAPPER_LOOP (SparseMatrix, double, d_d_map_fcn, m);
+	  else if (d_b_map_fcn)
+	    SPARSE_MAPPER_LOOP (SparseBoolMatrix, bool, d_b_map_fcn, m);
 	  else
 	    error ("%s: unable to handle real arguments",
 		   name().c_str ());
@@ -174,6 +304,25 @@ octave_mapper::apply (const octave_value& arg) const
 	    retval = c_c_map_fcn (c);
 	  else if (c_b_map_fcn)
 	    retval = c_b_map_fcn (c);
+	  else
+	    error ("%s: unable to handle complex arguments",
+		   name().c_str ());
+	}
+      else if (arg.class_name () == "sparse")
+	{
+	  SparseComplexMatrix cm = arg.sparse_complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  if (d_c_map_fcn)
+	    SPARSE_MAPPER_LOOP (SparseMatrix, double, d_c_map_fcn, cm);
+	  else if (c_c_map_fcn)
+	    SPARSE_MAPPER_LOOP (SparseComplexMatrix, Complex, 
+				c_c_map_fcn, cm);
+	  else if (c_b_map_fcn)
+	    SPARSE_MAPPER_LOOP (SparseBoolMatrix, bool, 
+				c_b_map_fcn, cm);
 	  else
 	    error ("%s: unable to handle complex arguments",
 		   name().c_str ());

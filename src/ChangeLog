@@ -1,3 +1,27 @@
+2005-04-14  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: Add luinc.cc to DLD_XSRC.
+	* DLD-FUNCTIONS/luinc.cc: New file for incomplete LU factorization.
+
+	* ov-bool-sparse.h (index_vector): New function.
+	* ov-re-sparse.cc (index_vector): Ditto.
+	* ov-re-sparse.h (index_vector): Definition.
+
+	* ov.mapper (any_element_less_than, any_element_greater_than):
+	New versions for SparseMatrix
+	(SPARSE_MAPPER_LOOP_2, SPARSE_MAPPER_LOOP_1, SPARSE_MAPPER_LOOP):
+	New macros.
+	(apply): Add special cases for sparse arguments to the mapper
+	functions
+
+	* ov-re-sparse.cc (streamoff_array_value): Use octave_idx_type.
+	(convert_to_str_internal): New function.
+	* ov-re-sparse.h (convert_to_str_internal): Definition.
+	
+	* DLD-FUNCTIONS/sparse.cc (Fsparse): More care for nargin=2 case.
+
+	* DLD-FUNCTIONS/splu.cc (Fsplu): Use octave_idx_type.
+	
 2005-04-14  John W. Eaton  <jwe@octave.org>
 
 	* strfns.cc (Fchar): If arg is a dq string, return a dq string.

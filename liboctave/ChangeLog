@@ -1,3 +1,13 @@
+2005-04-14  David Bateman  <dbateman@free.fr>
+
+	* SparseCmplxLU.cc: Add flags for incomplete factorization.
+	* SparsedbleLU.cc: Ditto.
+	* SparseCmplxLU.h: Definition.
+	* SparsedbleLU.h: ditto.
+
+	* SparseType.cc (transpose): New function.
+	* SparseType.h (transpose): Definition.
+	
 2005-04-11  John W. Eaton  <jwe@octave.org>
 
 	* lo-specfun.cc: Use F77_XFCN instead of F77_FUNC for calls to

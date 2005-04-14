@@ -688,6 +688,37 @@ SparseType::mark_as_unpermuted (void)
     typ = SparseType::Lower;
 }
 
+SparseType
+SparseType::transpose (void) const
+{
+  SparseType retval (*this);
+  if (typ == SparseType::Upper)
+    retval.typ = Lower;
+  else if (typ == SparseType::Permuted_Upper)
+    {
+      int *tmp = retval.row_perm;
+      retval.row_perm = retval.col_perm;
+      retval.col_perm = tmp;
+      retval.typ = Lower;
+    }
+  else if (typ == SparseType::Lower)
+    retval.typ = Upper;
+  else if (typ == SparseType::Permuted_Upper)
+    {
+      int *tmp = retval.row_perm;
+      retval.row_perm = retval.col_perm;
+      retval.col_perm = tmp;
+      retval.typ = Upper;
+    }
+  else if (typ == SparseType::Banded)
+    {
+      retval.upper_band = lower_band;
+      retval.lower_band = upper_band;
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

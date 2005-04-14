@@ -38,7 +38,9 @@ public:
   SparseComplexLU (const SparseComplexMatrix& a, double piv_thres = -1);
 
   SparseComplexLU (const SparseComplexMatrix& a, const ColumnVector& Qinit,
-		   double piv_thres = -1, bool FixedQ = false);
+		   double piv_thres = -1, bool FixedQ = false,
+		   double droptol = -1., bool milu = false,
+		   bool udiag = false);
 
   SparseComplexLU (const SparseComplexLU& a) 
     : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a) { }

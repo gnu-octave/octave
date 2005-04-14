@@ -44,6 +44,9 @@ static bool Vwarn_empty_list_elements;
 // The character to fill with when creating string arrays.
 char Vstring_fill_char = ' ';
 
+// Warn if concatenating double and single quoted strings.
+char Vwarn_string_concat = true;
+
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
 // other matrices, variables, and functions.
@@ -61,14 +64,13 @@ private:
   public:
 
     tm_row_const_rep (void)
-      : count (1), dv (),
-	all_str (false), some_str (false), is_cmplx (false),
-	all_mt (true), ok (false) { }
+      : count (1), dv (), all_str (false),
+	all_sq_str (false), all_dq_str (false),
+	some_str (false), is_cmplx (false), all_mt (true), ok (false) { }
 
     tm_row_const_rep (const tree_argument_list& row)
-      : count (1), dv (),
-	all_str (false), some_str (false), is_cmplx (false),
-	all_mt (true), ok (false)
+      : count (1), dv (), all_str (false), all_sq_str (false),
+	some_str (false), is_cmplx (false), all_mt (true), ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -78,6 +80,8 @@ private:
     dim_vector dv;
 
     bool all_str;
+    bool all_sq_str;
+    bool all_dq_str;
     bool some_str;
     bool is_cmplx;
     bool all_mt;
@@ -149,6 +153,8 @@ public:
   dim_vector dims (void) { return rep->dv; }
 
   bool all_strings_p (void) const { return rep->all_str; }
+  bool all_sq_strings_p (void) const { return rep->all_sq_str; }
+  bool all_dq_strings_p (void) const { return rep->all_dq_str; }
   bool some_strings_p (void) const { return rep->some_str; }
   bool complex_p (void) const { return rep->is_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
@@ -240,6 +246,12 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (all_str && ! val.is_string ())
     all_str = false;
 
+  if (all_sq_str && ! val.is_sq_string ())
+    all_sq_str = false;
+
+  if (all_dq_str && ! val.is_dq_string ())
+    all_dq_str = false;
+
   if (! some_str && val.is_string ())
     some_str = true;
 
@@ -253,6 +265,8 @@ void
 tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 {
   all_str = true;
+  all_sq_str = true;
+  all_dq_str = true;
 
   bool first_elem = true;
 
@@ -327,8 +341,8 @@ tm_const : public octave_base_list<tm_row_const>
 public:
 
   tm_const (const tree_matrix& tm)
-    : dv (), all_str (false), some_str (false), is_cmplx (false),
-      all_mt (true), ok (false)
+    : dv (), all_str (false), all_sq_str (false), all_dq_str (false),
+      some_str (false), is_cmplx (false), all_mt (true), ok (false)
       { init (tm); }
 
   ~tm_const (void) { }
@@ -339,6 +353,8 @@ public:
   dim_vector dims (void) const { return dv; }
 
   bool all_strings_p (void) const { return all_str; }
+  bool all_sq_strings_p (void) const { return all_sq_str; }
+  bool all_dq_strings_p (void) const { return all_dq_str; }
   bool some_strings_p (void) const { return some_str; }
   bool complex_p (void) const { return is_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
@@ -350,6 +366,8 @@ private:
   dim_vector dv;
 
   bool all_str;
+  bool all_sq_str;
+  bool all_dq_str;
   bool some_str;
   bool is_cmplx;
   bool all_mt;
@@ -369,6 +387,8 @@ void
 tm_const::init (const tree_matrix& tm)
 {
   all_str = true;
+  all_sq_str = true;
+  all_dq_str = true;
 
   bool first_elem = true;
 
@@ -387,6 +407,12 @@ tm_const::init (const tree_matrix& tm)
 	{
 	  if (all_str && ! tmp.all_strings_p ())
 	    all_str = false;
+
+	  if (all_sq_str && ! tmp.all_sq_strings_p ())
+	    all_sq_str = false;
+
+	  if (all_dq_str && ! tmp.all_dq_strings_p ())
+	    all_dq_str = false;
 
 	  if (! some_str && tmp.some_strings_p ())
 	    some_str = true;
@@ -542,12 +568,21 @@ tree_matrix::rvalue (int nargout)
   return retval;
 }
 
+static void
+maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
+{
+  if (Vwarn_string_concat && ! (all_dq_strings_p || all_sq_strings_p))
+    ::warning ("concatenation of different character string types may have unintended consequences");
+}
+
 octave_value
 tree_matrix::rvalue (void)
 {
   octave_value retval;
 
   bool all_strings_p = false;
+  bool all_sq_strings_p = false;
+  bool all_dq_strings_p = false;
   bool all_empty_p = false;
   bool frc_str_conv = false;
 
@@ -557,6 +592,8 @@ tree_matrix::rvalue (void)
     {
       dim_vector dv = tmp.dims ();
       all_strings_p = tmp.all_strings_p ();
+      all_sq_strings_p = tmp.all_sq_strings_p ();
+      all_dq_strings_p = tmp.all_dq_strings_p ();
       all_empty_p = tmp.all_empty_p ();
       frc_str_conv = tmp.some_strings_p ();
 
@@ -586,10 +623,17 @@ tree_matrix::rvalue (void)
 
       octave_value ctmp;
       if (all_strings_p)
-	if (all_empty_p)
-	  ctmp = octave_value (charNDArray (), true);
-	else
-	  ctmp = octave_value (charNDArray (dv, Vstring_fill_char), true);
+	{
+	  char type = all_sq_strings_p ? '\'' : '"';
+
+	  maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+
+	  if (all_empty_p)
+	    ctmp = octave_value (charNDArray (), true, type);
+	  else
+	    ctmp = octave_value (charNDArray (dv, Vstring_fill_char),
+				 true, type);
+	}
       else
 	{
 	  // Find the first non-empty object
@@ -658,6 +702,14 @@ warn_empty_list_elements (void)
 }
 
 static int
+warn_string_concat (void)
+{
+  Vwarn_string_concat = check_preference ("warn_string_concat");
+
+  return 0;
+}
+
+static int
 string_fill_char (void)
 {
   int status = 0;
@@ -716,6 +768,14 @@ a = [1, [], 3, [], 5]\n\
 \n\
 @noindent\n\
 The default value is 0.\n\
+@end defvr");
+
+  DEFVAR (warn_string_concat, true, warn_string_concat,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_string_concat\n\
+If the value of @code{warn_string_concat} is nonzero, print a\n\
+warning when concatenating a mixture of double and single quoted strings.\n\
+The default value is 1.\n\
 @end defvr");
 
 }

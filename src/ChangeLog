@@ -1,3 +1,22 @@
+2005-04-14  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (Vwarn_string_concat): New static variable.
+	(symbols_of_pt_mat): DEFVAR it.
+	(warn_string_concat): New function.
+	(maybe_warn_string_concat): New function.
+	(tree_matrix::rvalue): If all args are single quoted strings,
+	create a single quoted string object.  If all args are strings
+	(any type), create a double quoted string object.  If a mixture of
+	string types, maybe warn.
+	(class tm_row_const, class tm_row_const_rep, class tm_const):
+	Note whether all values are double or single quoted strings.
+
+	* ov.h (octave_value::is_dq_string): New function.
+
+2005-04-13  John W. Eaton  <jwe@octave.org>
+
+	* strfns.cc (Fchar): Create sq_string objects here.
+
 2005-04-12  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (Ffprintf, Fprintf, Fsprintf):

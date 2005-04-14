@@ -431,6 +431,9 @@ public:
   virtual bool is_sq_string (void) const
     { return rep->is_sq_string (); }
 
+  bool is_dq_string (void) const
+    { return rep->is_string () && ! rep->is_sq_string (); }
+
   virtual bool is_range (void) const
     { return rep->is_range (); }
 

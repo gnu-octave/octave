@@ -68,7 +68,8 @@ of the string array have the same length.\n\
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = args(0).convert_to_str (true, true, '\'');
+    retval = args(0).convert_to_str (true, true,
+				     args(0).is_dq_string () ? '"' : '\'');
   else if (nargin > 1)
     {
       int n_elts = 0;

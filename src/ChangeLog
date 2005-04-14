@@ -1,5 +1,7 @@
 2005-04-14  John W. Eaton  <jwe@octave.org>
 
+	* strfns.cc (Fchar): If arg is a dq string, return a dq string.
+
 	* pt-mat.cc (Vwarn_string_concat): New static variable.
 	(symbols_of_pt_mat): DEFVAR it.
 	(warn_string_concat): New function.

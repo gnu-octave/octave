@@ -96,11 +96,10 @@ static std::string Voctave_core_file_name;
 
 // The default output format.  May be one of "binary", "text",
 // "mat-binary", or "hdf5".
-static std::string Vdefault_save_format;
+static std::string Vdefault_save_options;
 
-// The output format for Octave core files.  May be one of "binary",
-// "text", "mat-binary", or "hdf5".
-static std::string Voctave_core_file_format;
+// The output format for Octave core files.
+static std::string Voctave_core_file_options;
 
 // The format string for the comment line at the top of text-format
 // save files.  Passed to strftime.  Should begin with `#' and contain
@@ -1072,26 +1071,112 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
   return saved;
 }
 
-static load_save_format
-get_save_format (const std::string& fmt,
-		 load_save_format fallback_format = LS_ASCII)
+static int
+parse_save_options (const string_vector &argv, int argc, 
+		    load_save_format &format, bool &append,
+		    bool &save_as_floats, bool &save_builtins,
+		    bool &use_zlib, int start_arg)
 {
-  load_save_format retval = fallback_format;
+  int i;
+  for (i = start_arg; i < argc; i++)
+    {
+      if (argv[i] == "-append")
+	{
+	  append = true;
+	}
+      else if (argv[i] == "-ascii" || argv[i] == "-a")
+	{
+	  warning ("the meaning of this option will change in a future");
+	  warning ("version of Octave to be compatible with @sc{Matlab}.");
+	  warning ("To keep the meaning of your code the same across");
+	  warning ("this change, use the -text option instead.");
 
-  if (fmt == "binary")
-    retval = LS_BINARY;
-  else if (fmt == "mat-binary" || fmt =="mat_binary")
-    retval = LS_MAT5_BINARY;
-  else if (fmt == "mat7-binary" || fmt =="mat7_binary")
-    retval = LS_MAT7_BINARY;
-  else if (fmt == "mat4-binary" || fmt =="mat4_binary")
-    retval = LS_MAT_BINARY;
+	  format = LS_ASCII;
+	}
+      else if (argv[i] == "-text" || argv[i] == "-t")
+	{
+	  format = LS_ASCII;
+	}
+      else if (argv[i] == "-binary" || argv[i] == "-b")
+	{
+	  format = LS_BINARY;
+	}
+      else if (argv[i] == "-hdf5" || argv[i] == "-h")
+	{
 #ifdef HAVE_HDF5
-  else if (fmt == "hdf5")
-    retval = LS_HDF5;
-#endif /* HAVE_HDF5 */
-      
-  return retval;
+	  format = LS_HDF5;
+#else /* ! HAVE_HDF5 */
+	  error ("save: octave executable was not linked with HDF5 library");
+#endif /* ! HAVE_HDF5 */
+	}
+      else if (argv[i] == "-mat-binary" || argv[i] == "-mat" 
+	       || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6"
+	       || argv[i] == "-V6")
+	{
+	  format = LS_MAT5_BINARY;
+	}
+#ifdef HAVE_ZLIB
+      else if (argv[i] == "-mat7-binary" || argv[i] == "-7" 
+	       || argv[i] == "-v7" || argv[i] == "-V7")
+	{
+	  format = LS_MAT7_BINARY;
+	}
+#endif
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-V4"
+	       || argv[i] == "-v4" || argv[i] == "-4")
+	{
+	  format = LS_MAT_BINARY;
+	}
+      else if (argv[i] == "-float-binary" || argv[i] == "-f")
+	{
+	  format = LS_BINARY;
+	  save_as_floats = true;
+	}
+      else if (argv[i] == "-float-hdf5")
+	{
+#ifdef HAVE_HDF5
+	  format = LS_HDF5;
+	  save_as_floats = true;
+#else /* ! HAVE_HDF5 */
+	  error ("save: octave executable was not linked with HDF5 library");
+#endif /* ! HAVE_HDF5 */
+	}
+      else if (argv[i] == "-save-builtins")
+	{
+	  save_builtins = true;
+	}
+#ifdef HAVE_ZLIB
+      else if (argv[i] == "-zip" || argv[i] == "-z")
+	{
+	  use_zlib  = true;
+	}
+#endif
+      else
+	break;
+    }
+
+  return i;
+}
+
+static int
+parse_save_options (const std::string &arg, load_save_format &format, 
+		    bool &append, bool &save_as_floats, 
+		    bool &save_builtins, bool &use_zlib, int start_arg)
+{
+  ISSTREAM is (arg);
+  std::string str;
+  int argc = 0;
+  string_vector argv;
+  
+  while (!is.eof ())
+    {
+      is >> str;
+      argv.append (str);
+      argc++;
+    }
+
+  return parse_save_options (argv, argc, format, append, save_as_floats, 
+			     save_builtins, use_zlib, start_arg);
 }
 
 void
@@ -1200,8 +1285,9 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
     }
 }
 
-void
-dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt)
+static void
+dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
+		  bool save_as_floats)
 {
   write_header (os, fmt);
 
@@ -1226,7 +1312,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt)
 	    {
 	      double tc_size = tc.byte_size () / 1024;
 
-	      // XXX FIXME XXX -- maybe we should try to throw out hte
+	      // XXX FIXME XXX -- maybe we should try to throw out the
 	      // largest first...
 
 	      if (Voctave_core_file_limit < 0
@@ -1239,7 +1325,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt)
 
 		  int global = sr->is_linked_to_global ();
 
-		  do_save (os, tc, name, help, global, fmt, false,
+		  do_save (os, tc, name, help, global, fmt, save_as_floats,
 			   infnan_warned);
 
 		  if (error_state)
@@ -1263,10 +1349,21 @@ dump_octave_core (void)
 
       message (0, "attempting to save variables to `%s'...", fname);
 
-      load_save_format format
-	= get_save_format (Voctave_core_file_format, LS_BINARY);
+      load_save_format format = LS_BINARY;
 
-      std::ios::openmode mode = std::ios::out|std::ios::trunc;
+      bool save_builtins = false;
+
+      bool save_as_floats = false;
+
+      bool append = false;
+
+      bool use_zlib = false;
+
+      // Note save_builtins is ignored
+      parse_save_options (Voctave_core_file_options, format, append, 
+			  save_as_floats, save_builtins, use_zlib, 0);
+  
+      std::ios::openmode mode = std::ios::out;
 
       if (format == LS_BINARY
 #ifdef HAVE_HDF5
@@ -1277,6 +1374,8 @@ dump_octave_core (void)
 	  || format == LS_MAT7_BINARY)
 	mode |= std::ios::binary;
 
+      mode |= append ? std::ios::ate : std::ios::trunc;
+
 #ifdef HAVE_HDF5
       if (format == LS_HDF5)
 	{
@@ -1284,7 +1383,7 @@ dump_octave_core (void)
 
 	  if (file.file_id >= 0)
 	    {
-	      dump_octave_core (file, fname, format);
+	      dump_octave_core (file, fname, format, save_as_floats);
 
 	      file.close ();
 	    }
@@ -1296,16 +1395,34 @@ dump_octave_core (void)
 	// don't insert any commands here!  The open brace below must
 	// go with the else above!
 	{
-	  std::ofstream file (fname, mode);
-	  
-	  if (file)
+#ifdef HAVE_ZLIB
+	  if (use_zlib)
 	    {
-	      dump_octave_core (file, fname, format);
+	      gzofstream file (fname, mode);
 
-	      file.close ();
+	      if (file)
+		{
+		  dump_octave_core (file, fname, format, save_as_floats);
+
+		  file.close ();
+		}
+	      else
+		warning ("unable to open `%s' for writing...", fname);
 	    }
 	  else
-	    warning ("unable to open `%s' for writing...", fname);
+#endif
+	    {
+	      std::ofstream file (fname, mode);
+	  
+	      if (file)
+		{
+		  dump_octave_core (file, fname, format, save_as_floats);
+
+		  file.close ();
+		}
+	      else
+		warning ("unable to open `%s' for writing...", fname);
+	    }
 	}
     }
 }
@@ -1327,7 +1444,7 @@ output to your terminal.  If no variable names are listed, Octave saves\n\
 all the variables in the current scope.  Valid options for the\n\
 @code{save} command are listed in the following table.  Options that\n\
 modify the output format override the format specified by the built-in\n\
-variable @code{default_save_format}.\n\
+variable @code{default_save_options}.\n\
 \n\
 @table @code\n\
 @item -ascii\n\
@@ -1356,7 +1473,7 @@ HAVE_ZLIB_HELP_STRING
 
 "\n\
 @item -V6\n\
-@item -v6\n\
+@itemx -v6\n\
 @itemx -6\n\
 @itemx -mat\n\
 @itemx -mat-binary\n\
@@ -1446,91 +1563,20 @@ the file @file{data} in Octave's binary format.\n\
 
   bool save_as_floats = false;
 
-  load_save_format format = get_save_format (Vdefault_save_format);
+  load_save_format format = LS_ASCII;
 
   bool append = false;
 
   bool use_zlib = false;
 
-  int i;
-  for (i = 1; i < argc; i++)
-    {
-      if (argv[i] == "-append")
-	{
-	  append = true;
-	}
-      else if (argv[i] == "-ascii" || argv[i] == "-a")
-	{
-	  warning ("the meaning of this option will change in a future");
-	  warning ("version of Octave to be compatible with @sc{Matlab}.");
-	  warning ("To keep the meaning of your code the same across");
-	  warning ("this change, use the -text option instead.");
+  parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
+		      save_builtins, use_zlib, 0);
+  
+  int i = parse_save_options (argv, argc, format, append, save_as_floats, 
+			      save_builtins, use_zlib, 1);
 
-	  format = LS_ASCII;
-	}
-      else if (argv[i] == "-text" || argv[i] == "-t")
-	{
-	  format = LS_ASCII;
-	}
-      else if (argv[i] == "-binary" || argv[i] == "-b")
-	{
-	  format = LS_BINARY;
-	}
-      else if (argv[i] == "-hdf5" || argv[i] == "-h")
-	{
-#ifdef HAVE_HDF5
-	  format = LS_HDF5;
-#else /* ! HAVE_HDF5 */
-	  error ("save: octave executable was not linked with HDF5 library");
-	  return retval;
-#endif /* ! HAVE_HDF5 */
-	}
-      else if (argv[i] == "-mat-binary" || argv[i] == "-mat" 
-	       || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6"
-	       || argv[i] == "-V6")
-	{
-	  format = LS_MAT5_BINARY;
-	}
-#ifdef HAVE_ZLIB
-      else if (argv[i] == "-mat7-binary" || argv[i] == "-7" 
-	       || argv[i] == "-v7" || argv[i] == "-V7")
-	{
-	  format = LS_MAT7_BINARY;
-	}
-#endif
-      else if (argv[i] == "-mat4-binary" || argv[i] == "-V4"
-	       || argv[i] == "-v4" || argv[i] == "-4")
-	{
-	  format = LS_MAT_BINARY;
-	}
-      else if (argv[i] == "-float-binary" || argv[i] == "-f")
-	{
-	  format = LS_BINARY;
-	  save_as_floats = true;
-	}
-      else if (argv[i] == "-float-hdf5")
-	{
-#ifdef HAVE_HDF5
-	  format = LS_HDF5;
-	  save_as_floats = true;
-#else /* ! HAVE_HDF5 */
-	  error ("save: octave executable was not linked with HDF5 library");
-	  return retval;
-#endif /* ! HAVE_HDF5 */
-	}
-      else if (argv[i] == "-save-builtins")
-	{
-	  save_builtins = true;
-	}
-#ifdef HAVE_ZLIB
-      else if (argv[i] == "-zip" || argv[i] == "-z")
-	{
-	  use_zlib  = true;
-	}
-#endif
-      else
-	break;
-    }
+  if (error_state)
+    return retval;
 
   if (i == argc)
     {
@@ -1674,19 +1720,19 @@ crash_dumps_octave_core (void)
 }
 
 static int
-default_save_format (void)
+default_save_options (void)
 {
   int status = 0;
 
-  std::string s = builtin_string_variable ("default_save_format");
+  std::string s = builtin_string_variable ("default_save_options");
 
   if (s.empty ())
     {
-      gripe_invalid_value_specified ("default_save_format");
+      gripe_invalid_value_specified ("default_save_options");
       status = -1;
     }
   else
-    Vdefault_save_format = s;
+    Vdefault_save_options = s;
 
   return status;
 }
@@ -1726,19 +1772,19 @@ octave_core_file_name (void)
 }
 
 static int
-octave_core_file_format (void)
+octave_core_file_options (void)
 {
   int status = 0;
 
-  std::string s = builtin_string_variable ("octave_core_file_format");
+  std::string s = builtin_string_variable ("octave_core_file_options");
 
   if (s.empty ())
     {
-      gripe_invalid_value_specified ("octave_core_file_format");
+      gripe_invalid_value_specified ("octave_core_file_options");
       status = -1;
     }
   else
-    Voctave_core_file_format = s;
+    Voctave_core_file_options = s;
 
   return status;
 }
@@ -1782,16 +1828,17 @@ symbols_of_load_save (void)
 If this variable is set to a nonzero value, Octave tries to save all\n\
 current variables the the file \"octave-core\" if it crashes or receives a\n\
 hangup, terminate or similar signal.  The default value is 1.\n\
-@seealso{octave_core_file_limit, octave_core_file_name, and octave_core_file_format}\n\
+@seealso{octave_core_file_limit, octave_core_file_name, and octave_core_file_options}\n\
 @end defvr");
 
-  DEFVAR (default_save_format, "ascii", default_save_format,
+  DEFVAR (default_save_options, "-text", default_save_options,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} default_save_format\n\
-This variable specifies the default format for the @code{save} command.\n\
-It should have one of the following values: @code{\"ascii\"},\n\
-@code{\"binary\"}, @code{float-binary}, or @code{\"mat-binary\"}.  The\n\
-initial default save format is Octave's text format.\n\
+@defvr {Built-in Variable} default_save_options\n\
+This variable specifies the default options for the @code{save} command,\n\
+and is used to define the default format. Typical values include,\n\
+@code{\"-ascii\"}, @code{\"-ascii -zip\"}. For other possible options\n\
+see the @code{save} command. The initial value of this variable is\n\
+@code{-ascii}.\n\
 @end defvr");
 
   DEFVAR (octave_core_file_limit, -1.0, octave_core_file_limit,
@@ -1799,12 +1846,12 @@ initial default save format is Octave's text format.\n\
 @defvr {Built-in Variable} octave_core_file_limit\n\
 The maximum amount of memory (in kilobytes) of the top-level workspace\n\
 that Octave will attempt to write when saving data to the\n\
-@var{octave_core_file_name}.  If @var{octave_core_file_format} is a\n\
+@var{octave_core_file_name}.  If @var{octave_core_file_options} flags a\n\
 binary format, then @var{octave_core_file_limit} will be approximately\n\
 the maximum size of the file.  If a text file format is used, then the\n\
 file could be much larger than the limit.\n\
 The default value is -1 (unlimited)\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_format}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_options}\n\
 @end defvr");
 
   DEFVAR (octave_core_file_name, "octave-core", octave_core_file_name,
@@ -1812,17 +1859,17 @@ The default value is -1 (unlimited)\n\
 @defvr {Built-in Variable} octave_core_file_name\n\
 The name of the file used for saving data from the top-level workspace\n\
 when Octave aborts.  The default value is @code{\"octave-core\"}\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_format}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_options}\n\
 @end defvr");
 
-  DEFVAR (octave_core_file_format, "binary", octave_core_file_format,
+  DEFVAR (octave_core_file_options, "-binary", octave_core_file_options,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} octave_core_file_format\n\
+@defvr {Built-in Variable} octave_core_file_options\n\
 If Octave aborts, it attempts to save the contents of the top-level\n\
-workspace in a file using this format.  The value of\n\
-@code{octave_core_file_format} should have one of the following values:\n\
-@code{\"ascii\"}, @code{\"binary\"}, @code{float-binary}, or\n\
-@code{\"mat-binary\"}.  The default value is Octave's binary format.\n\
+workspace in a file using this variable to define the format. The value of\n\
+@code{octave_core_file_options} should follow the same format as the options\n\
+that may be used with @code{save}. The default value is Octave's binary\n\
+format.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_limit}\n\
 @end defvr");
 

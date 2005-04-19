@@ -1,5 +1,27 @@
 2005-04-14  David Bateman  <dbateman@free.fr>
 
+	* load-save.cc (Vdefault_save_format, Voctave_core_file_format): 
+	Delete.
+	(Vdefault_save_options, Voctave_core_file_options): New variables.
+	(get_save_format): Delete function.
+	(static int parse_save_options (const string_vector&, ...),
+	static int parse_save_options (const std::string&, ...)): New 
+	functions to parse the save options.
+	(dump_octave_core (std::ostream&, ..): Modify call and code to allow
+	save_as_floats to be used.
+	(dump_octave_core (void)): Modify to parse save options.
+	(Fsave): Split parsing of options, and default formats.
+	(static int default_save_format (void)): Delete function and DEFVAR.
+	(static int default_save_options (void)): New function. DEFVAR it.
+	(static int octave_core_file_format (void)): Delete function and 
+	DEFVAR.
+	(static int octave_core_file_options (void)): New function. DEFVAR it.
+	
+	* octave.cc (default_save_format): Delete binding
+	(default_save_options): New bindings
+
+2005-04-14  David Bateman  <dbateman@free.fr>
+
 	* Makefile.in: Add luinc.cc to DLD_XSRC.
 	* DLD-FUNCTIONS/luinc.cc: New file for incomplete LU factorization.
 

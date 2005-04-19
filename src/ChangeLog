@@ -1,3 +1,8 @@
+2005-04-19  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (Fsystem): Move enum exec_type declaration to file
+	scope and rename system_exec_type.  Change all uses.
+
 2005-04-14  David Bateman  <dbateman@free.fr>
 
 	* load-save.cc (Vdefault_save_format, Voctave_core_file_format):

@@ -297,7 +297,7 @@ Default value: 0.
 
 Default value: @code{" "}.
 
-@item default_save_format
+@item default_save_options
 @xref{Simple File I/O}.
 
 Default value: @code{"ascii"}.

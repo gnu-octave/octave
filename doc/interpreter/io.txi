@@ -124,7 +124,7 @@ carriage return.
 The @code{save} and @code{load} commands allow data to be written to and
 read from disk files in various formats.  The default format of files
 written by the @code{save} command can be controlled using the built-in
-variables @code{default_save_format} and @code{save_precision}.
+variables @code{default_save_options} and @code{save_precision}.
 
 Note that Octave cannot yet save or load structure variables or any
 user-defined types.
@@ -141,7 +141,9 @@ unexpectedly.
 
 @DOCSTRING(sigterm_dumps_octave_core)
 
-@DOCSTRING(default_save_format)
+@DOCSTRING(default_save_options)
+
+@DOCSTRING(octave_core_file_options)
 
 @DOCSTRING(save_precision)
 

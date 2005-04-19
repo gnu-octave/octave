@@ -1,3 +1,8 @@
+2005-04-14  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in: Only perform link step if we have some object files.
+	If only -v or --version is supplied, print version info and exit.
+
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (maintainer-clean distclean):

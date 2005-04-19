@@ -1,3 +1,7 @@
+2005-04-19  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assignN): Don't crash if the index list is empty.
+
 2005-04-14  David Bateman  <dbateman@free.fr>
 
 	* SparseCmplxLU.cc: Add flags for incomplete factorization.

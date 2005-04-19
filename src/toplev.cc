@@ -382,6 +382,8 @@ run_command_and_return_output (const std::string& cmd_str)
   return retval;
 }
 
+enum system_exec_type { et_sync, et_async };
+
 DEFUN (system, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})\n\
@@ -436,9 +438,7 @@ variable @code{status} to the integer @samp{2}.\n\
 
       std::string cmd_str = args(0).string_value ();
 
-      enum exec_type { sync, async };
-
-      exec_type type = sync;
+      system_exec_type type = et_sync;
 
       if (! error_state)
 	{
@@ -449,9 +449,9 @@ variable @code{status} to the integer @samp{2}.\n\
 	      if (! error_state)
 		{
 		  if (type_str == "sync")
-		    type = sync;
+		    type = et_sync;
 		  else if (type_str == "async")
-		    type = async;
+		    type = et_async;
 		  else
 		    error ("system: third arg must be \"sync\" or \"async\"");
 		}
@@ -464,7 +464,7 @@ variable @code{status} to the integer @samp{2}.\n\
 
       if (! error_state)
 	{
-	  if (type == async)
+	  if (type == et_async)
 	    {
 #ifdef HAVE_FORK
 	      pid_t pid = fork ();

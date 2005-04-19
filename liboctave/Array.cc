@@ -2907,6 +2907,13 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       lhs.maybe_delete_elements (idx, rfv);
     }
+  else if (n_idx == 0)
+    {
+      (*current_liboctave_error_handler)
+	("invalid number of indices for matrix expression");
+
+      retval = 0;
+    }
   else if (n_idx == 1)
     {
       idx_vector iidx = idx(0);

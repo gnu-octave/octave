@@ -7,6 +7,8 @@
 
 set -e
 
+OCTAVE_VERSION="%OCTAVE_CONF_VERSION%"
+
 # Default values for these variables are filled in when Octave is
 # compiled. 
 
@@ -63,6 +65,8 @@ set -e
 
 usage_msg="usage: mkoctfile [options] file ..."
 
+version_msg="mkoctfile, version $OCTAVE_VERSION"
+
 cfiles=
 ccfiles=
 f77files=
@@ -85,6 +89,15 @@ compile=true
 if [ $# -eq 0 ]; then
   echo $usage_msg 1>&2
   exit 1
+fi
+
+if [ $# -eq 1 ]; then
+  case "$1" in
+    -v | --version)
+      echo $version_msg 1>&2
+      exit 0
+    ;;
+  esac
 fi
 
 while [ $# -gt 0 ]; do
@@ -404,7 +417,7 @@ fi
 
 # Link all the object files.
 
-if $link; then
+if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
       cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS"

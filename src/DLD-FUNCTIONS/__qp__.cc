@@ -45,7 +45,7 @@ ABS (double x)
 }
 
 static Matrix
-null (const Matrix& A, int& rank)
+null (const Matrix& A, octave_idx_type& rank)
 {
   Matrix retval;
 
@@ -61,16 +61,16 @@ null (const Matrix& A, int& rank)
 
       Matrix V = A_svd.right_singular_matrix ();
 
-      int A_nr = A.rows ();
-      int A_nc = A.cols ();
+      octave_idx_type A_nr = A.rows ();
+      octave_idx_type A_nc = A.cols ();
 
-      int tmp = A_nr > A_nc ? A_nr : A_nc;
+      octave_idx_type tmp = A_nr > A_nc ? A_nr : A_nc;
 
       double tol = tmp * s(0) * DBL_EPSILON;
 
-      int n = s.length ();
+      octave_idx_type n = s.length ();
 
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	{
 	  if (s(i) > tol)
 	    rank++;
@@ -90,13 +90,13 @@ cholinv (const Matrix& R)
 {
   // R should be the result of calling chol on a symmetric positive
   // definite matrix.
-  int n = R.rows ();
+  octave_idx_type n = R.rows ();
   Matrix L = R.transpose ();
   ColumnVector d = L.diag ();
   ColumnVector tmp (n);
-  for (int k = 0; k < n; k++)
+  for (octave_idx_type k = 0; k < n; k++)
     {
-      for (int j = 0; j < n; j++)
+      for (octave_idx_type j = 0; j < n; j++)
 	L(j,k) = L(j,k) / d(k);
       tmp(k) = 1.0/(d(k)*d(k));
     }
@@ -119,17 +119,17 @@ qp (const Matrix& H, const ColumnVector& q,
   double rtol = sqrt (DBL_EPSILON);
 
   // Problem dimension.
-  int n = x.length ();
+  octave_idx_type n = x.length ();
 
   // Dimension of constraints.
-  int n_eq = beq.length ();
-  int n_in = bin.length ();
+  octave_idx_type n_eq = beq.length ();
+  octave_idx_type n_in = bin.length ();
 
   // Filling the current active set.
 
-  int n_act = n_eq;
+  octave_idx_type n_act = n_eq;
 
-  int n_tot = n_eq + n_in;
+  octave_idx_type n_tot = n_eq + n_in;
 
   // Equality constraints come first.  We won't check the sign of the
   // Lagrange multiplier for those.
@@ -142,7 +142,7 @@ qp (const Matrix& H, const ColumnVector& q,
     {
       ColumnVector res = Ain*x - bin;
 
-      for (int i = 0; i < n_in; i++)
+      for (octave_idx_type i = 0; i < n_in; i++)
 	{
 	  res(i) /= (1.0 + ABS (bin(i)));
 
@@ -162,8 +162,8 @@ qp (const Matrix& H, const ColumnVector& q,
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
   Matrix eigenvecH = real (eigH.eigenvectors ());
   double minReal = eigenvalH.min ();
-  int indminR = 0;
-  for (int i = 0; i < n; i++)
+  octave_idx_type indminR = 0;
+  for (octave_idx_type i = 0; i < n; i++)
     {
       if (minReal == eigenvalH(i))
 	{
@@ -239,11 +239,11 @@ qp (const Matrix& H, const ColumnVector& q,
 
 	  // Computing the null space.
 
-	  int rank;
+	  octave_idx_type rank;
 
 	  Matrix Z = null (Aact, rank);
 
-	  int dimZ = n - rank;
+	  octave_idx_type dimZ = n - rank;
 
 	  // XXX FIXME XXX -- still remain to handle the case of
 	  // non-full rank active set matrix.
@@ -255,7 +255,7 @@ qp (const Matrix& H, const ColumnVector& q,
 	  Matrix Zt = Z.transpose ();
 	  Matrix rH = Zt * H * Z;
 
-	  int pR = 0;
+	  octave_idx_type pR = 0;
 
 	  if (dimZ > 0)
 	    {
@@ -301,7 +301,7 @@ qp (const Matrix& H, const ColumnVector& q,
 	      Matrix eigenvecrH = real (eigrH.eigenvectors ());
 	      double mRrH = eigenvalrH.min ();
 	      indminR = 0;
-	      for (int i = 0; i < n; i++)
+	      for (octave_idx_type i = 0; i < n; i++)
 		{
 		  if (mRrH == eigenvalH(i))
 		    {
@@ -322,7 +322,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
       // Checking the step-size.
       ColumnVector abs_p (n);
-      for (int i = 0; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
 	abs_p(i) = ABS (p(i));
       double max_p = abs_p.max ();
 
@@ -345,7 +345,7 @@ qp (const Matrix& H, const ColumnVector& q,
 		{
 		  lambda_tmp.resize (n_in, 0.0);
 
-		  for (int i = n_act-n_eq; i < n_in; i++)
+		  for (octave_idx_type i = n_act-n_eq; i < n_in; i++)
 		    lambda_tmp(i) = 0;
 		}
 
@@ -359,8 +359,8 @@ qp (const Matrix& H, const ColumnVector& q,
 		}
 	      else
 		{
-		  int which_eig = 0;
-		  for (int i = 0; i < n_act; i++)
+		  octave_idx_type which_eig = 0;
+		  for (octave_idx_type i = 0; i < n_act; i++)
 		    {
 		      if (lambda_tmp(i) == min_lambda)
 			{
@@ -372,10 +372,10 @@ qp (const Matrix& H, const ColumnVector& q,
 		  // At least one multiplier is negative, we
 		  // remove it from the set.
 
-		  for (int i = which_eig; i < n_act - n_eq; i++)
+		  for (octave_idx_type i = which_eig; i < n_act - n_eq; i++)
 		    {
 		      Wact(i) = Wact(i+1);
-		      for (int j = 0; j < n; j++)
+		      for (octave_idx_type j = 0; j < n; j++)
 			Aact(n_eq+i,j) = Aact(n_eq+i+1,j);
 		      bact(n_eq+i) = bact(n_eq+i+1);
 		    }
@@ -402,13 +402,13 @@ qp (const Matrix& H, const ColumnVector& q,
 	      // Some constraints were not active.  Checking if
 	      // there is a blocking constraint.
 	      alpha = 1.0;
-	      int is_block = -1;
+	      octave_idx_type is_block = -1;
 
-	      for (int i = 0; i < n_in; i++)
+	      for (octave_idx_type i = 0; i < n_in; i++)
 		{
 		  bool found = false;
 
-		  for (int j = 0; j < n_act-n_eq; j++)
+		  for (octave_idx_type j = 0; j < n_act-n_eq; j++)
 		    {
 		      if (Wact(j) == i)
 			{
@@ -476,12 +476,12 @@ qp (const Matrix& H, const ColumnVector& q,
 
   lambda.resize (n_tot);
   lambda.fill (0.0);
-  for (int i = 0; i < n_eq; i++)
+  for (octave_idx_type i = 0; i < n_eq; i++)
     lambda(i) = lambda_tmp(i);
 
-  for (int i = n_eq; i < n_tot; i++)
+  for (octave_idx_type i = n_eq; i < n_tot; i++)
     {
-      for (int j = 0; j < n_act-n_eq; j++)
+      for (octave_idx_type j = 0; j < n_act-n_eq; j++)
 	{
 	  if (Wact(j) == i)
 	    {

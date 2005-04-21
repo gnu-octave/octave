@@ -3,6 +3,8 @@
 	* version.h (OCTAVE_VERSION): Now 2.9.2.
 	(OCTAVE_API_VERSION): Now api-v15.
 
+	* DLD-FUNCTIONS/__qp__.cc (qp): Use octave_idx_type where needed.
+
 	* DLD-FUNCTIONS/__qp__.cc: New file.
 	* Makefile.in (DLD_XSRC): Add it to the list.
 

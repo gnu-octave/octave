@@ -1,3 +1,7 @@
+2005-04-21  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (DISTFILES): Include oct-types.h.in in the list.
+
 2005-04-19  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assignN): Don't crash if the index list is empty.

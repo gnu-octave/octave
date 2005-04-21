@@ -518,7 +518,7 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 	@$(top_srcdir)/move-if-change $@-t $@
 
 parse.cc : parse.y
-	@echo "expect 12 shift/reduce conflicts"
+	@echo "expect 14 shift/reduce conflicts"
 	$(YACC) $(YFLAGS) $<
 	@$(top_srcdir)/move-if-change y.tab.c $(@F)
 

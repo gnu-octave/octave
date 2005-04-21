@@ -419,7 +419,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
 %token FCN VARARGIN VARARGOUT ALL_VA_ARGS
-%token USING TITLE WITH AXES COLON OPEN_BRACE CLOSE_BRACE CLEAR
+%token CLOSE_BRACE
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg

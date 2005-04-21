@@ -3,6 +3,11 @@
 	* version.h (OCTAVE_VERSION): Now 2.9.2.
 	(OCTAVE_API_VERSION): Now api-v15.
 
+	* Makefile.in (parse.cc): Expect 14 shift/reduce conflicts.
+
+	* parse.y (USING TITLE WITH AXES COLON OPEN_BRACE CLEAR):
+	Delete unused tokens.
+
 	* DLD-FUNCTIONS/__qp__.cc (qp): Use octave_idx_type where needed.
 
 	* DLD-FUNCTIONS/__qp__.cc: New file.

@@ -286,7 +286,7 @@ SNLCMT	({SNL}|{COMMENT})
 NOT	((\~)|(\!))
 POW     ((\*\*)|(\^))
 EPOW    (\.{POW})
-IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
+IDENT	([_$a-zA-Z][_$a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%

@@ -83,11 +83,11 @@ static int Vwarn_neg_dim_as_zero;
 bool
 valid_identifier (const char *s)
 {
-  if (! s || ! (isalpha (*s) || *s == '_'))
+  if (! s || ! (isalpha (*s) || *s == '_' || *s == '$'))
      return false;
 
   while (*++s != '\0')
-    if (! (isalnum (*s) || *s == '_'))
+    if (! (isalnum (*s) || *s == '_' || *s == '$'))
       return false;
 
   return true;

@@ -1,3 +1,13 @@
+2005-04-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__qp__.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
+2005-04-20  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (IDENT): Allow $ in identifiers.
+	* utils.cc (valid_identifier): Likewise.
+
 2005-04-19  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (Fsystem): Move enum exec_type declaration to file

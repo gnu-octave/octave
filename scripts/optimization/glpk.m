@@ -232,7 +232,7 @@
 ## percentage of @code{tolbnd} or @code{toldj}).
 ## 
 ## @item tolbnd (@code{LPX_K_TOLBND}, default: 10e-7)
-## Relative tolerance used to check ifthe current basic solution is primal
+## Relative tolerance used to check if the current basic solution is primal
 ## feasible.  It is not recommended that you change this parameter unless you
 ## have a detailed understanding of its purpose.
 ## 
@@ -246,7 +246,7 @@
 ## simplex table.  It is not recommended that you change this parameter unless you
 ## have a detailed understanding of its purpose.
 ## 
-## @item objll (@code{LPX_K_OBJLL)}, default: -DBL_MAX	
+## @item objll (@code{LPX_K_OBJLL}, default: -DBL_MAX)
 ## Lower limit of the objective function.  If on the phase II the objective
 ## function reaches this limit and continues decreasing, the solver stops
 ## the search.  This parameter is used in the dual simplex method only.
@@ -268,7 +268,7 @@
 ## output. Non-positive value means no delay.
 ## 
 ## @item tolint (@code{LPX_K_TOLINT}, default: 10e-5)
-## Relative tolerance used to check ifthe current basic solution is integer
+## Relative tolerance used to check if the current basic solution is integer
 ## feasible.  It is not recommended that you change this parameter unless
 ## you have a detailed understanding of its purpose.
 ## 
@@ -477,7 +477,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
   ## 7) Vector with the type of variables
 
   if (nargin > 6)
-    if isempty (vartype)
+    if (isempty (vartype))
       vartype = repmat ("C", nx, 1);
     elseif (! ischar (vartype) || all (size (vartype) > 1)
 	    || length (vartype) != nx)
@@ -492,7 +492,23 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     vartype = repmat ("C", nx, 1);
   endif
 
-  ## 8) Parameters vector
+  ## 8) Sense of optimization
+
+  if (nargin > 7)
+    if (isempty (sense))
+      sense = 1;
+    elseif (ischar (sense) || all (size (sense) > 1) || ! isreal (sense))
+      error ("SENSE must be an integer value");
+    elseif (sense >= 0)
+      sense = 1;
+    else
+      sense = -1;
+    endif
+  else
+    sense = 1;
+  endif
+
+  ## 9) Parameters vector
 
   if (nargin > 8)
     if (! isstruct (param))

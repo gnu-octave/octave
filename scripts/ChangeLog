@@ -1,3 +1,9 @@
+2005-04-21  John W. Eaton  <jwe@octave.org>
+
+	* optimization/glpk.m: Handle SENSE argument.
+
+	* optimization/qp.m, optimization/sqp.m: New files.
+
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (clean, distclean, maintainer-clean):

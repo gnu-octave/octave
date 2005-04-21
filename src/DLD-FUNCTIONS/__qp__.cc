@@ -20,15 +20,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <cfloat>
 
-#include <iostream>
+#include "dbleCHOL.h"
+#include "dbleSVD.h"
+#include "mx-m-dm.h"
+#include "EIG.h"
 
-#include <octave/oct.h>
-#include <octave/parse.h>
-#include <octave/EIG.h>
-#include <octave/dbleCHOL.h>
-#include <octave/dbleSVD.h>
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "oct-obj.h"
+#include "pr-output.h"
+#include "utils.h"
 
 static inline double
 ABS (double x)
@@ -248,8 +256,6 @@ qp (const Matrix& H, const ColumnVector& q,
 	  Matrix rH = Zt * H * Z;
 
 	  int pR = 0;
-
-	  Matrix tR;
 
 	  if (dimZ > 0)
 	    {

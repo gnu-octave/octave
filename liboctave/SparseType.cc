@@ -696,7 +696,7 @@ SparseType::transpose (void) const
     retval.typ = Lower;
   else if (typ == SparseType::Permuted_Upper)
     {
-      int *tmp = retval.row_perm;
+      octave_idx_type *tmp = retval.row_perm;
       retval.row_perm = retval.col_perm;
       retval.col_perm = tmp;
       retval.typ = Lower;
@@ -705,7 +705,7 @@ SparseType::transpose (void) const
     retval.typ = Upper;
   else if (typ == SparseType::Permuted_Upper)
     {
-      int *tmp = retval.row_perm;
+      octave_idx_type *tmp = retval.row_perm;
       retval.row_perm = retval.col_perm;
       retval.col_perm = tmp;
       retval.typ = Upper;

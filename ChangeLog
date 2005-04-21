@@ -1,3 +1,7 @@
+2005-04-21  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_CONFIG_FILES): Remove install-octave from the list.
+
 2005-04-14  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in: Only perform link step if we have some object files.

@@ -573,6 +573,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       goto skip_ahead;
 
     case mxSPARSE_CLASS:
+#if SIZEOF_INT != SIZEOF_OCTAVE_IDX_TYPE
+      warning ("load: sparse objects are not implemented");
+      goto skip_ahead;
+#else
       {
 	int nr = dims(0);
 	int nc = dims(1);
@@ -695,6 +699,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  tc = sm;
       }
       break;
+#endif
 
     case mxFUNCTION_CLASS:
       warning ("load: function handles are not implemented");

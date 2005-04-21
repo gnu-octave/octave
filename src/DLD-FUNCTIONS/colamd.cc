@@ -39,6 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
+
 // External COLAMD functions in C
 extern "C" {
 #include "COLAMD/colamd.h"
@@ -188,6 +190,8 @@ void coletree (const int *ridx, const int *colbeg, int *colend,
     }
 }
 
+#endif
+
 DEFUN_DLD (colamd, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} colamd (@var{s})\n\
@@ -256,6 +260,9 @@ Ng, Oak Ridge National Laboratory. (see\n\
 @seealso{colperm, symamd}")
 {
   octave_value_list retval;
+
+#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
+
   int nargin = args.length ();
   int spumoni = 0;
  
@@ -393,6 +400,12 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	}
     }
 
+#else
+
+  error ("colamd: not available in this version of Octave");
+
+#endif
+
   return retval;
 }
 
@@ -461,6 +474,9 @@ Ng, Oak Ridge National Laboratory. (see\n\
 @seealso{colperm, colamd}")
 {
   octave_value_list retval;
+
+#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
+
   int nargin = args.length ();
   int spumoni = 0;
  
@@ -580,6 +596,12 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	}
     }
 
+#else
+
+  error ("symamd: not available in this version of Octave");
+
+#endif
+
   return retval;
 }
 
@@ -600,6 +622,9 @@ permutations on the tree.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
+
   int nargin = args.length ();
 
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
@@ -704,6 +729,12 @@ permutations on the tree.\n\
 	  retval (1) = postorder;
 	}
     }
+
+#else
+
+  error ("etree: not available in this version of Octave");
+
+#endif
 
   return retval;
 }

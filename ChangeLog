@@ -1,6 +1,7 @@
 2005-04-21  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_CONFIG_FILES): Remove install-octave from the list.
+	(AH_BOTTOM): Define SIZEOF_OCTAVE_IDX_TYPE.
 
 2005-04-14  John W. Eaton  <jwe@octave.org>
 

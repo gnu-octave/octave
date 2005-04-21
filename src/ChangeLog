@@ -1,4 +1,10 @@
-2005-04-21  John W. Eaton  <jwe@octave.org>
+2005-04-21  John W Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (read_mat5_binary_element): Only read sparse matrix
+	values if sizeof (int) == sizeof (octave_idx_type).
+
+	* DLD-FUNCTIONS/colamd.cc: These functions only work if
+	sizeof (int) == sizeof (octave_idx_type).
 
 	* version.h (OCTAVE_VERSION): Now 2.9.2.
 	(OCTAVE_API_VERSION): Now api-v15.

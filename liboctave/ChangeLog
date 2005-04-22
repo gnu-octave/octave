@@ -1,3 +1,8 @@
+2005-04-22  John W. Eaton  <jwe@octave.org>
+
+	* oct-rl-edit.c (octave_rl_set_terminal_name): Don't cast away
+	const here now that rl_terminal_name is declared const char*.
+
 2005-04-21  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (DISTFILES): Include oct-types.h.in in the list.

@@ -520,7 +520,7 @@ default_pager (void)
 	  std::string lessflags = octave_env::getenv ("LESS");
 	  if (lessflags.empty ())
 	    pager_binary.append
-	      (" -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
+	      (" -X -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
 	}
     }
 #endif

@@ -1,5 +1,10 @@
 2005-04-22  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.2.
+	(OCTAVE_API_VERSION): Now api-v15.
+
+	* pager.cc (default_pager): Also append -X.
+
 	* DLD-FUNCTIONS/dispatch.cc (Fdispatch): Dispatch help on "string"
 	and "sq_string" types.
 	(dispatch_record): Add extra space to force new paragraph after
@@ -13,9 +18,6 @@
 
 	* DLD-FUNCTIONS/colamd.cc: These functions only work if
 	sizeof (int) == sizeof (octave_idx_type).
-
-	* version.h (OCTAVE_VERSION): Now 2.9.2.
-	(OCTAVE_API_VERSION): Now api-v15.
 
 	* Makefile.in (parse.cc): Expect 14 shift/reduce conflicts.
 

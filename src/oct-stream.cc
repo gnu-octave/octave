@@ -3585,7 +3585,7 @@ octave_stream::scanf (const std::string& fmt, const Array<double>& size,
 
 octave_value
 octave_stream::scanf (const octave_value& fmt, const Array<double>& size,
-		      int& count, const std::string& who)
+		      octave_idx_type& count, const std::string& who)
 {
   octave_value retval = Matrix ();
 

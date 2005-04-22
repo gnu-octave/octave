@@ -526,7 +526,7 @@ public:
 		      octave_idx_type& count, const std::string& who /* = "scanf" */);
 
   octave_value scanf (const octave_value& fmt, const Array<double>& size,
-		      int& count, const std::string& who /* = "scanf" */);
+		      octave_idx_type& count, const std::string& who /* = "scanf" */);
 
   octave_value_list oscanf (const std::string& fmt,
 			    const std::string& who /* = "scanf" */);

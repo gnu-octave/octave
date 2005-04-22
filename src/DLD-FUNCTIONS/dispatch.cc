@@ -435,7 +435,7 @@ dispatch_record (const std::string &f, const std::string &n,
       // std::cout << "iscommand('"<<f<<"')=" << iscommand << std::endl;
       if (iscommand)
 	sr->mark_as_command();
-      sr->document (basedoc + "\n\nOverloaded function\n");
+      sr->document (basedoc + "\n\n@noindent\nOverloaded function:\n");
       sr->make_eternal (); // XXX FIXME XXX why??
       sr->mark_as_static ();
       sr->protect ();
@@ -466,7 +466,7 @@ dispatch_record (const std::string &f, const std::string &n,
       xrep.add (t, n);
 
       if (! sr->help().empty ())
-	sr->document (sr->help() + "\n   " + n + "(" + t + ",...)");
+	sr->document (sr->help() + "\n" + n + " (" + t + ", ...)\n");
     }
 }
 
@@ -520,6 +520,7 @@ for @var{f}\n\
       register_type = false;
       fbi_sym_tab->lookup("dispatch")->mark_as_static ();
       dispatch_record ("help", "dispatch_help", "string");
+      dispatch_record ("help", "dispatch_help", "sq_string");
     }
 
   dispatch_record (f, n, t);

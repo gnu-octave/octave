@@ -1,3 +1,11 @@
+2005-04-22  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/dispatch.cc (Fdispatch): Dispatch help on "string"
+	and "sq_string" types.
+	(dispatch_record): Add extra space to force new paragraph after
+	each dispatched function name if we are formatting with Texinfo.
+	Force noindent of preceding "Overloaded function:" tag.
+
 2005-04-21  John W Eaton  <jwe@octave.org>
 
 	* ls-mat5.cc (read_mat5_binary_element): Only read sparse matrix

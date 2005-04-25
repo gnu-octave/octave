@@ -142,8 +142,10 @@ string_vector::c_str_vec (void) const
 void
 string_vector::delete_c_str_vec (const char * const *v)
 {
-  while (*v)
-    delete [] *v;
+  const char * const *p = v;
+
+  while (*p)
+    delete [] *p++;
 
   delete [] v;
 }

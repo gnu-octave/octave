@@ -1,3 +1,8 @@
+2005-04-25  John W. Eaton  <jwe@octave.org>
+
+	* str-vec.cc (string_vector::delete_c_str_vec): Correctly free
+	array and its contents.
+
 2005-04-22  John W. Eaton  <jwe@octave.org>
 
 	* oct-rl-edit.c (octave_rl_set_terminal_name): Don't cast away

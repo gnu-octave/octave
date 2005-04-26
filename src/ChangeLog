@@ -1,3 +1,18 @@
+2005-04-25  John W. Eaton  <jwe@octave.org>
+
+	* oct-hist.cc (default_history_file, default_history_size): Now static.
+	* oct-hist.h: Delete decls.
+
+	* oct-hist.cc (default_history_timestamp_format,
+	default_history_timestamp_format): New functions.
+	(Vdefault_history_timestamp_format): New variable.
+	(symbols_of_oct_hist): DEFVAR it.
+	(octave_history_write_timestamp): New function.
+	* oct-hist.h (octave_history_write_timestamp): Provide decl.
+	* toplev.cc (): call octave_history_write_timestamp here.
+	* octave.cc (maximum_braindamage):
+	Bind history_timestamp_format_string here.
+
 2005-04-22  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.2.

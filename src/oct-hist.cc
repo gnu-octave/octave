@@ -53,6 +53,7 @@ Software Foundation, Inc.
 #include "file-ops.h"
 #include "lo-mappers.h"
 #include "oct-env.h"
+#include "oct-time.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -80,31 +81,17 @@ static std::string Vhistory_file;
 // The number of lines to keep in the history file.
 static int Vhistory_size;
 
+// The format of the timestamp marker written to the history file when
+// Octave exits.
+static std::string Vhistory_timestamp_format_string;
+
 // TRUE if we are saving history.
 bool Vsaving_history = true;
 
 // Get some default values, possibly reading them from the
 // environment.
 
-int
-default_history_size (void)
-{
-  int size = 1024;
-
-  std::string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
-
-  if (! env_size.empty ())
-    {
-      int val;
-
-      if (sscanf (env_size.c_str (), "%d", &val) == 1)
-	size = val > 0 ? val : 0;
-    }
-
-  return size;
-}
-
-std::string
+static std::string
 default_history_file (void)
 {
   std::string file;
@@ -136,6 +123,35 @@ default_history_file (void)
     }
 
   return file;
+}
+
+static int
+default_history_size (void)
+{
+  int size = 1024;
+
+  std::string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
+
+  if (! env_size.empty ())
+    {
+      int val;
+
+      if (sscanf (env_size.c_str (), "%d", &val) == 1)
+	size = val > 0 ? val : 0;
+    }
+
+  return size;
+}
+
+static std::string
+default_history_timestamp_format (void)
+{
+  return
+    std::string ("# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
+    + octave_env::get_user_name ()
+    + std::string ("@")
+    + octave_env::get_host_name ()
+    + std::string (">");
 }
 
 // Display, save, or load history.  Stolen and modified from bash.
@@ -533,6 +549,17 @@ do_run_history (int argc, const string_vector& argv)
   unlink (name.c_str ());
 }
 
+void
+octave_history_write_timestamp (void)
+{
+  octave_localtime now;
+
+  std::string timestamp = now.strftime (Vhistory_timestamp_format_string);
+
+  if (! timestamp.empty ())
+    command_history::add (timestamp);
+}
+
 DEFCMD (edit_history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} edit_history options\n\
@@ -688,6 +715,24 @@ history_file (void)
 }
 
 static int
+history_timestamp_format_string (void)
+{
+  int status = 0;
+
+  octave_value v = builtin_any_variable ("history_timestamp_format_string");
+
+  if (v.is_string ())
+    Vhistory_timestamp_format_string = v.string_value ();
+  else
+    {
+      gripe_invalid_value_specified ("history_timestamp_format_string");
+      status = -1;
+    }
+
+  return status;
+}
+
+static int
 saving_history (void)
 {
   Vsaving_history = check_preference ("saving_history");
@@ -716,6 +761,21 @@ overridden by the environment variable @code{OCTAVE_HISTFILE}.\n\
 This variable specifies how many entries to store in the history file.\n\
 The default value is @code{1024}, but may be overridden by the\n\
 environment variable @code{OCTAVE_HISTSIZE}.\n\
+@end defvr");
+
+  DEFVAR (history_timestamp_format_string,
+	  default_history_timestamp_format (),
+	  history_timestamp_format_string,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} history_timestamp_format_string\n\
+This variable specifies the the format string for the comment line\n\
+that is written to the history file when Octave exits.  The format\n\
+string is passed to @code{strftime}.  The default value is\n\
+\n\
+@example\n\
+\"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
+@end example\n\
+@seealso{strftime}\n\
 @end defvr");
 
   DEFVAR (saving_history, true, saving_history,

@@ -545,6 +545,8 @@ do_octave_atexit (void)
       // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
       raw_mode (0);
 
+      octave_history_write_timestamp ();
+
       command_history::clean_up_and_save ();
 
       close_files ();
@@ -553,7 +555,7 @@ do_octave_atexit (void)
 
       flush_octave_stdout ();
 
-      if (!quitting_gracefully && (interactive || forced_interactive))
+      if (! quitting_gracefully && (interactive || forced_interactive))
 	std::cout << "\n";
     }
 }

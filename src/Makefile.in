@@ -226,11 +226,11 @@ DEFVAR_PATTERN = "^[ \t]*DEF(VAR|CONS(T|TX))[ \t]*\\("
 
 VAR_4 := $(addprefix $(srcdir)/, $(SOURCES))
 VAR_3 := $(notdir $(shell egrep -l $(DEFVAR_PATTERN) $(VAR_4)))
-VAR_2 := $(patsubst %.y, %, $(VAR_3))
-VAR_1 := $(patsubst %.l, %, $(VAR_2))
-VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
+VAR_2 := $(patsubst %.y, %.df, $(VAR_3))
+VAR_1 := $(patsubst %.l, %.df, $(VAR_2))
+VAR_FILES := $(patsubst %.cc, %.df, $(VAR_1))
 
-DOC_FILES := $(sort $(DEF_FILES) $(patsubst %, %.df, $(VAR_FILES)))
+DOC_FILES := $(sort $(DEF_FILES) $(VAR_FILES))
 
 OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
   -L$(TOPDIR)/src $(RLD_FLAG)
@@ -466,10 +466,13 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
+	if [ -n "$(OCT_FILES)" ]; then \
+	  $(srcdir)/mk-oct-links --delete . $(DLD_DEF_FILES); \
+	fi
 	rm -f liboctinterp.$(LIBEXT)
 	rm -f liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
-	rm -f $(OBJECTS) $(MAKEDEPS) $(DEF_FILES) $(VAR_FILES) $(OCT_FILES)
-	rm -f $(PICOBJ) stmp-pic gendoc$(EXEEXT)
+	rm -f $(OBJECTS) $(MAKEDEPS) $(DOC_FILES) $(OCT_FILES)
+	rm -f $(PICOBJ) $(DLD_PICOBJ) stmp-pic gendoc$(EXEEXT)
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
 	rm -f PKG_ADD
 	-rmdir pic

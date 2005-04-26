@@ -14,7 +14,8 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{retval}, @var{pc}, @var{pf}] =} hinfsyn_chk (@var{a}, @var{b1}, @var{b2}, @var{c1}, @var{c2}, @var{d12}, @var{d21}, @var{g}, @var{ptol})

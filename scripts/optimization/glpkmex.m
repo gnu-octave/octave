@@ -14,8 +14,8 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-## 02111-1307, USA.
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{sense}, @var{c}, @var{a}, @var{b}, @var{ctype}, @var{lb}, @var{ub}, @var{vartype}, @var{param}, @var{lpsolver}, @var{save_pb})

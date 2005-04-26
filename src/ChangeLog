@@ -1,3 +1,14 @@
+2005-04-26  John W. Eaton  <jwe@octave.org>
+
+	* mkbuiltins (VAR_FILES): Expect $(VAR_FILES) to have .df suffix.
+
+	* Makefile.in (clean): Also remove $(DLD_PICOBJ).
+	Use mk-oct-links --delete to remove links to .oct files. 
+	Remove $(DOC_FILES) not $(DEF_FILES) and $(VAR_FILES).
+
+	* mk-oct-links (mk-oct-links): Handle --delete option.
+	Rename -p option to be --print.  Skip nonexistent .df files.
+
 2005-04-25  John W. Eaton  <jwe@octave.org>
 
 	* oct-hist.cc (default_history_file, default_history_size): Now static.

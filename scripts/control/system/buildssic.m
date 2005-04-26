@@ -14,7 +14,8 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301 USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} buildssic (@var{clst}, @var{ulst}, @var{olst}, @var{ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})

@@ -1,5 +1,14 @@
 2005-04-27  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/gplot.l (gnuplot_init): New function to handle
+	initialization.  If builtin variables have already been installed,
+	simply update our cached values.
+	(F__gnuplot_init__): Call gnuplot_init to do all the real work.
+	(Fclearplot, Fcloseplot, Fhold, Fishold, Fpurge_tmp_files,
+	F__gnuplot_raw__, F__gnuplot_set__, F__gnuplot_plot__,
+	F__gnuplot_splot__, F__gnuplot_replot__, Fgplot, Fgsplot, Fgraw,
+	Fgset, Fgshow): Call gnuplot_init before doing anything.
+
 	* parse.y: (safe_fclose): Delete comment list to avoid memory leak.
 	(parse_and_execute (FILE *)): Also save and restore global_command.
 

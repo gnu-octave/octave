@@ -94,6 +94,8 @@ static int handle_string (char delim);
 
 static inline bool can_be_plotkw (void);
 
+static void gnuplot_init (void);
+
 static bool gpt_quote_is_transpose;
 static bool gpt_allow_plotkw;
 static int gpt_parens;
@@ -1136,6 +1138,8 @@ Clear the plot window and any titles or axis labels.  The name\n\
 {
   octave_value_list retval;
 
+  gnuplot_init ();
+
   send_to_plot_stream ("clear\n");
 
   // XXX FIXME XXX -- instead of just clearing these things, it would
@@ -1164,7 +1168,15 @@ this will close the plot window.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  gnuplot_init ();
+
+  parametric_plot = false;
+
+  set_global_value ("__multiplot_mode__", 0.0);
+
   close_plot_stream ();
+
   return retval;
 }
 
@@ -1187,6 +1199,8 @@ off, and @code{hold} with no arguments toggles the current hold state.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  gnuplot_init ();
 
   int argc = args.length () + 1;
 
@@ -1225,6 +1239,8 @@ Return 1 if the next line will be added to the current plot, or 0 if\n\
 the plot device will be cleared before drawing the next line.\n\
 @end deftypefn")
 {
+  gnuplot_init ();
+
   return octave_value (! clear_before_plotting);
 }
 
@@ -1243,7 +1259,11 @@ files to hold the plot data.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  gnuplot_init ();
+
   cleanup_tmp_files ();
+
   return retval;
 }
 
@@ -1254,6 +1274,8 @@ Send @var{string} directly to gnuplot subprocess.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  gnuplot_init ();
 
   if (args.length () == 1 && args(0).is_string ())
     {
@@ -1282,6 +1304,8 @@ Set plotting options for gnuplot\n\
 @end deffn")
 {
   octave_value_list retval;
+
+  gnuplot_init ();
 
   int argc = args.length () + 1;
 
@@ -1337,6 +1361,8 @@ Show plotting options.\n\
 {
   octave_value_list retval;
 
+  gnuplot_init ();
+
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("show");
@@ -1364,6 +1390,8 @@ Show plotting options.\n\
 DEFUN_DLD (__gnuplot_plot__, args, ,
   "Plot with gnuplot.\n")
 {
+  gnuplot_init ();
+
   doplot ("plot", args);
   return octave_value_list ();
 }
@@ -1371,6 +1399,8 @@ DEFUN_DLD (__gnuplot_plot__, args, ,
 DEFUN_DLD (__gnuplot_splot__, args, ,
   "Plot with gnuplot.\n")
 {
+  gnuplot_init ();
+
   doplot ("splot", args);
   return octave_value_list ();
 }
@@ -1378,6 +1408,8 @@ DEFUN_DLD (__gnuplot_splot__, args, ,
 DEFUN_DLD (__gnuplot_replot__, args, ,
   "Plot with gnuplot.\n")
 {
+  gnuplot_init ();
+
   doplot ("replot", args);
   return octave_value_list ();
 }
@@ -1412,30 +1444,40 @@ DEFUN_DLD (__gnuplot_replot__, args, ,
 DEFUN_DLD (gplot, args, ,
   "")
 {
+  gnuplot_init ();
+
   DEPRECATED_BODY (gplot, __gnuplot_plot__);
 }
 
 DEFUN_DLD (gsplot, args, ,
   "")
 {
+  gnuplot_init ();
+
   DEPRECATED_BODY (gsplot, __gnuplot_splot__);
 }
 
 DEFUN_DLD (graw, args, ,
   "")
 {
+  gnuplot_init ();
+
   DEPRECATED_BODY (graw, __gnuplot_raw__);
 }
 
 DEFUN_DLD (gset, args, ,
   "")
 {
+  gnuplot_init ();
+
   DEPRECATED_BODY (gset, __gnuplot_set__);
 }
 
 DEFUN_DLD (gshow, args, ,
   "")
 {
+  gnuplot_init ();
+
   DEPRECATED_BODY (gshow, __gnuplot_show__);
 }
 
@@ -1527,21 +1569,20 @@ gnuplot_has_frames (void)
   return 0;
 }
 
-DEFUN_DLD (__gnuplot_init__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} __gnuplot_init__ ()\n\
-@end deftypefn")
+static void
+gnuplot_init (void)
 {
-  octave_value_list retval;
-
   static bool gnuplot_initialized = false;
 
   if (gnuplot_initialized)
-    return retval;
+    return;
 
   gnuplot_initialized = true;
 
-  DEFVAR (automatic_replot, true, automatic_replot,
+  if (is_builtin_variable ("automatic_replot"))
+    automatic_replot ();
+  else
+    DEFVAR (automatic_replot, true, automatic_replot,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} automatic_replot\n\
 You can tell Octave to redisplay the plot each time anything about it\n\
@@ -1551,49 +1592,76 @@ inefficient, especially for large plots, the default value is 1 for\n\
 compatibility with Matlab.\n\
 @end defvr");
 
-  DEFVAR (gnuplot_binary, GNUPLOT_BINARY, gnuplot_binary,
+  if (is_builtin_variable ("gnuplot_binary"))
+    gnuplot_binary ();
+  else
+    DEFVAR (gnuplot_binary, GNUPLOT_BINARY, gnuplot_binary,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_binary\n\
 The name of the program invoked by the plot command.  The default value\n\
 is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_plot, "pl", gnuplot_command_plot,
+  if (is_builtin_variable ("gnuplot_command_plot"))
+    gnuplot_command_plot ();
+  else
+    DEFVAR (gnuplot_command_plot, "pl", gnuplot_command_plot,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_plot\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_replot, "rep", gnuplot_command_replot,
+  if (is_builtin_variable ("gnuplot_command_replot"))
+    gnuplot_command_replot ();
+  else
+    DEFVAR (gnuplot_command_replot, "rep", gnuplot_command_replot,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_replot\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_splot, "sp", gnuplot_command_splot,
+  if (is_builtin_variable ("gnuplot_command_splot"))
+    gnuplot_command_splot ();
+  else
+    DEFVAR (gnuplot_command_splot, "sp", gnuplot_command_splot,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_splot\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_using, "u", gnuplot_command_using,
+  if (is_builtin_variable ("gnuplot_command_using"))
+    gnuplot_command_using ();
+  else
+    DEFVAR (gnuplot_command_using, "u", gnuplot_command_using,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_using\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_with, "w", gnuplot_command_with,
+  if (is_builtin_variable ("gnuplot_command_with"))
+    gnuplot_command_with ();
+  else
+    DEFVAR (gnuplot_command_with, "w", gnuplot_command_with,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_with\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_axes, "ax", gnuplot_command_axes,
+  if (is_builtin_variable ("gnuplot_command_axes"))
+    gnuplot_command_axes ();
+  else
+    DEFVAR (gnuplot_command_axes, "ax", gnuplot_command_axes,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_axes\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_title, "t", gnuplot_command_title,
+  if (is_builtin_variable ("gnuplot_command_title"))
+    gnuplot_command_title ();
+  else
+    DEFVAR (gnuplot_command_title, "t", gnuplot_command_title,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_title\n\
 @end defvr");
 
-  DEFVAR (gnuplot_command_end, "\n", gnuplot_command_end,
+  if (is_builtin_variable ("gnuplot_command_end"))
+    gnuplot_command_end ();
+  else
+    DEFVAR (gnuplot_command_end, "\n", gnuplot_command_end,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_command_end\n\
 @end defvr");
@@ -1604,7 +1672,10 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
   bool with_frames = false;
 #endif
 
-  DEFVAR (gnuplot_has_frames, with_frames, gnuplot_has_frames,
+  if (is_builtin_variable ("gnuplot_has_frames"))
+    gnuplot_has_frames ();
+  else
+    DEFVAR (gnuplot_has_frames, with_frames, gnuplot_has_frames,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} gnuplot_has_frames\n\
 If the value of this variable is nonzero, Octave assumes that your copy\n\
@@ -1613,6 +1684,17 @@ of gnuplot has support for multiple frames that is included in recent\n\
 can be changed in your startup script or at the command line in case\n\
 configure got it wrong, or if you upgrade your gnuplot installation.\n\
 @end defvr");
+
+}
+
+DEFUN_DLD (__gnuplot_init__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} __gnuplot_init__ ()\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  gnuplot_init ();
 
   return retval;
 }

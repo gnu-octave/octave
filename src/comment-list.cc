@@ -58,7 +58,6 @@ octave_comment_buffer::append (const std::string& s,
     instance->do_append (s, t);
 }
 
-
 octave_comment_list *
 octave_comment_buffer::get_comment (void)
 {

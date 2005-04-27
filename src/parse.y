@@ -2919,7 +2919,9 @@ safe_fclose (void *f)
   // statement, possibly from the command line or another file, which
   // can be quite confusing).
 
-  octave_comment_buffer::get_comment ();
+  octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
+  delete tc;
 
   if (f)
     fclose (static_cast<FILE *> (f));

@@ -1,3 +1,7 @@
+2005-04-27  John W. Eaton  <jwe@octave.org>
+
+	* parse.y: (safe_fclose): Delete comment list to avoid memory leak.
+
 2005-04-26  John W. Eaton  <jwe@octave.org>
 
 	* mkbuiltins (VAR_FILES): Expect $(VAR_FILES) to have .df suffix.

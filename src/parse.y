@@ -2845,6 +2845,8 @@ parse_and_execute (FILE *f)
 {
   unwind_protect::begin_frame ("parse_and_execute");
 
+  unwind_protect_ptr (global_command);
+
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (f);
 

@@ -1,6 +1,7 @@
 2005-04-27  John W. Eaton  <jwe@octave.org>
 
 	* parse.y: (safe_fclose): Delete comment list to avoid memory leak.
+	(parse_and_execute (FILE *)): Also save and restore global_command.
 
 2005-04-26  John W. Eaton  <jwe@octave.org>
 

@@ -1,3 +1,7 @@
+2005-04-27  John W. Eaton  <jwe@octave.org>
+
+	* optimization/qp.m: Define n_in after removing -Inf bounds from Ain.
+
 2005-04-21  John W. Eaton  <jwe@octave.org>
 
 	* optimization/glpk.m: Handle SENSE argument.

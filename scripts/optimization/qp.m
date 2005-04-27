@@ -166,7 +166,6 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
 	endif
       endif
     endif
-    n_in = length (bin);
 
     ## Now we should have the following QP:
     ##
@@ -179,6 +178,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     idx = isinf (bin) & bin < 0;
     bin(idx) = [];
     Ain(idx,:) = [];
+
+    n_in = length (bin);
 
     ## Check if the initial guess is feasible.
     rtol = sqrt (eps);

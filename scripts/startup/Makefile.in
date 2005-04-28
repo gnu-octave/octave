@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = octaverc # *.m
+SOURCES = main-rcfile local-rcfile inputrc # *.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
@@ -34,14 +34,19 @@ install install-strip:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
 	if test -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/octaverc; then true; \
 	else \
-	  $(INSTALL_DATA) $(srcdir)/octaverc \
+	  $(INSTALL_DATA) $(srcdir)/main-rcfile \
 	    $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/octaverc; \
+	fi
+	if test -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/inputrc; then true; \
+	else \
+	  $(INSTALL_DATA) $(srcdir)/inputrc \
+	    $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/inputrc; \
 	fi
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(localfcnfiledir)/$(script_sub_dir)
 	if test -f $(DESTDIR)$(localfcnfiledir)/$(script_sub_dir)/octaverc; \
 	then true; \
 	else \
-	  $(INSTALL_DATA) $(srcdir)/octaverc \
+	  $(INSTALL_DATA) $(srcdir)/local-rcfile \
 	    $(DESTDIR)$(localfcnfiledir)/$(script_sub_dir)/octaverc; \
 	fi
 #	for f in $(FCN_FILES_NO_DIR); do \

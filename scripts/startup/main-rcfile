@@ -1,0 +1,11 @@
+## System-wide startup file for Octave.
+##
+## This file should contain any commands that should be executed each
+## time Octave starts for every user at this site.
+
+## Configure readline using the file inputrc in the Octave startup
+## directory.
+
+read_readline_init_file (sprintf ("%s%s%s",
+				  octave_config_info ("startupfiledir"),
+				  filesep, "inputrc"));

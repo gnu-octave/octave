@@ -1,3 +1,24 @@
+2005-04-28  toni saarela  <toni.saarela@helsinki.fi>
+
+	* statistics/tests/anova.m: Compute total_mean as mean of all
+	data, not mean of group_mean.
+
+2005-04-28  John W. Eaton  <jwe@octave.org>
+
+	* startup/local-rcfile: New file.
+	* startup/main-rcfile: Rename from startup/octaverc.
+	* startup/Makefile.in (SOURCES): Add inputrc to the list.
+	(install install-strip): Install main-rcfile in $(fcnfiledir)/startup.
+	Install local-rcfile in $(localfcnfiledir)/startup.
+
+2005-04-28  Keith Goodman  <kwgoodman@gmail.com>
+
+	* startup/inputrc: New file.
+	* startup/octaverc: Configure readline using inputrc from
+	startupfiledir.
+	* startup/Makefile.in (install, install-strip): Install octaverc
+	in $(fcnfiledir)/startup.
+
 2005-04-27  John W. Eaton  <jwe@octave.org>
 
 	* optimization/qp.m: Define n_in after removing -Inf bounds from Ain.

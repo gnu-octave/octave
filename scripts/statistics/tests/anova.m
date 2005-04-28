@@ -80,7 +80,7 @@ function [pval, f, df_b, df_w] = anova (y, g)
 
   endif
 
-  total_mean = mean (group_mean);
+  total_mean = mean (y);
   SSB = sum (group_count .* (group_mean - total_mean) .^ 2);
   SST = sumsq (reshape (y, n, 1) - total_mean);
   SSW = SST - SSB;

@@ -20,26 +20,28 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} imshow (@var{i})
 ## @deftypefnx {Function File} {} imshow (@var{x}, @var{map})
-## @deftypefnx {Function File} {} imshow (@var{x}, @var{n})
 ## @deftypefnx {Function File} {} imshow (@var{i}, @var{n})
 ## @deftypefnx {Function File} {} imshow (@var{r}, @var{g}, @var{b})
 ## Display an image.
 ##
-## @code{imshow (@var{x})} displays an intensity image, estimating the 
-## number of gray levels.
+## @code{imshow (@var{x})} displays an image @var{x}.
+## The numerical class of the image determines its bit-depth: 1 for
+## @code{logical}, 8 for @code{uint8} and @code{logical}, and 16 for
+## @code{double} or @code{uint16}.  If @var{x} has dimensions MxNx3, the
+## three matrices represent the red, green and blue components of the
+## image.
 ##
 ## @code{imshow (@var{x}, @var{map})} displays an indexed image using the
 ## specified colormap.
 ##
-## @code{imshow (@var{i}, @var{N})} displays a gray scale intensity image of
+## @code{imshow (@var{i}, @var{n})} displays a gray scale intensity image of
 ## N levels.
 ##
 ## @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
 ##
-## The string @code{truesize} can always be used as an optional
-## final argument to prevent automatic zooming of the image.
+## The character string @code{"truesize"} can always be used as an
+## optional final argument to prevent automatic zooming of the image.
 ## @end deftypefn
-##
 ## @seealso{image, imagesc, colormap, gray2ind, and rgb2ind}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -63,57 +65,89 @@ function imshow (varargin)
   if (mvars < 1 || mvars > 3)
     usage (usage_str);
   endif
-  
-  ## All except imshow (r, g, b)
-
-  if (mvars != 3)
-    I = varargin{1};
-    if (iscomplex (I))
-      warning ("imshow: displaying real part of complex image");
-      I = real (I);
-    endif      
-    if (max (I(:)) <= 1)
-      ## image in [0-1]; scale to [0-255]
-      I = I * 255;
-      M = gray (256);
-    endif
+    
+  ## Determine image depth
+  imclass = class (varargin{1});
+  s = __im_numeric_limits__ (imclass);
+  if (!isfield (s, "max"))
+    error ("imshow: cannot handle image class '%s'", imclass);
   endif
 
-  if (mvars == 1)
-    ## imshow (x)
-    ## Grayscale image [0-N] -- estimate gray levels.
-    N = 2 ^ ceil (log2 (max (I(:))));
-    if (N <= 65536)
-      M = gray (N);
-    else
-      M = gray (256);
-      I = I / max (I(:)) * 255;
+  ## Maximum bit-depth is 16
+  if (s.max > 65535)
+    s.max = 65535;
+  endif
+
+  imdepth = log (s.max+1) / log (2);
+  if (imdepth - floor (imdepth) != 0)
+    error ("imshow: cannot determine image colour depth");
+  endif
+  
+  ## Remove complex parts of arguments
+  realwarning = false;
+  for i = 1:mvars
+    if (iscomplex (varargin{i}))
+      if (!realwarning)
+        warning ("imshow: displaying real part of complex image");
+        realwarning = true;
+      endif
+      varargin{i} = real (varargin{i});
     endif
-  elseif (mvars == 2)
-    ## imshow (x, map) or imshow (x, N)
+  endfor
+  
+  ## Pack r,g,b image into ND-matrix if necessary
+  if (mvars == 3)
+    I = [];
+    try
+      I = cat (3, varargin{1:3});
+    catch
+      error ("imshow: r, g and b matrix dimensions must agree");
+    end_try_catch
+  else
+    I = varargin{1};
+  endif
+  I = double (I);
+  
+  ## Is the image specified as MxNx3 colour?
+  iscolour = false;
+  if (size (I,3) == 3)
+    iscolour = true;
+  endif
+
+  ## Is the image indexed?
+  isindexed = false;
+  if (mvars == 2)
+    isindexed = true;
+    if (iscolour)
+      error ("imshow: cannot provide colour image and colourmap");
+    endif
+  endif
+  
+  ## Scale images of class "double" appropriately
+  if (!isindexed)
+    if (strcmp (imclass, "double") == 1)
+      if (max (I(:)) <= 1)
+        ## image in [0-1]; scale to [0 - 2^imdepth]
+        I = I * 2^imdepth;
+      else
+        ## image outside [0-1]; this is unexpected: scale to [0 - 2^imdepth]
+        I = I / max (I(:)) * 2^imdepth;
+      endif
+    endif
+  endif
+  
+  ## Generate colour map
+  if (isindexed)
     M = varargin{2};
     if (isscalar (M))
       M = gray (M);
     endif
-  elseif (mvars == 3)
-    ## imshow (r, g, b)
-    r = varargin{1};
-    g = varargin{2};
-    b = varargin{3};
-    tmp = [r; g; b];
-    if (iscomplex (tmp))
-	warning ("imshow: displaying real part of complex rgb image");
-	r = real (r);
-	g = real (g);
-	b = real (b);
-    endif    
-    if (max (tmp(:)) > 1)
-      ## Normalise to [0-1].
-      r = r / 255;
-      g = g / 255;
-      b = b / 255;
-    endif
-    [I, M] = rgb2ind (r, g, b);
+  elseif (iscolour)
+    I = I / 2^imdepth;
+    [I, M] = rgb2ind (I(:,:,1), I(:,:,2), I(:,:,3));
+  else
+    I = I+1; ## index into colourmap
+    M = gray (2^imdepth);
   endif
   
   ## Check for "truesize".
@@ -127,6 +161,23 @@ function imshow (varargin)
   colormap (M);
   image (I, zoom);
 
+endfunction
+
+function s = __im_numeric_limits__ (cname)  
+  s = struct ();
+  switch (cname)
+    case ("double")
+      s.max = realmax;
+    case ("char")
+      s.max = 255;
+    case ("logical")
+      s.max = 1;
+    otherwise
+      try
+        s.max = double (intmax (cname));
+      catch
+      end_try_catch
+  endswitch 
 endfunction
 
 %!error imshow ()                           # no arguments
@@ -143,4 +194,17 @@ endfunction
 
 %!demo
 %!  [I, M] = loadimage ("default.img");
-%!  imshow(I, M);
+%!  imshow (I, M);
+
+%!demo
+%!  [I, M] = loadimage ("default.img");
+%!  imshow (I, I*0.5, I*0.8);
+
+%!demo
+%!  [I, M] = loadimage ("default.img");
+%!  X = [];
+%!  X = cat (3, X, I*0.8);
+%!  X = cat (3, X, I*0.8);
+%!  X = cat (3, X, I);
+%!  imshow (X);
+

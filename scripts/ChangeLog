@@ -1,3 +1,8 @@
+2005-04-28  Stefan van der Walt  <stefan@sun.ac.za>
+
+	* image/imshow.m: Handle various image depths and 3d RGB images.
+	(__im_numeric_limits__): New internal function.
+
 2005-04-28  toni saarela  <toni.saarela@helsinki.fi>
 
 	* statistics/tests/anova.m: Compute total_mean as mean of all

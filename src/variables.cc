@@ -979,6 +979,52 @@ same_file (const std::string& f, const std::string& g)
 // symbol definition?
 
 static bool
+function_out_of_date_internal (octave_function *fcn)
+{
+  bool retval = false;
+
+  if (fcn)
+    {
+      std::string ff = fcn->fcn_file_name ();
+
+      if (! (ff.empty ()
+	     || (Vignore_function_time_stamp
+		 && fcn->is_system_fcn_file ())))
+	{
+	  if (fcn->time_checked () < Vlast_prompt_time)
+	    {
+	      time_t tp = fcn->time_parsed ();
+
+	      std::string nm = fcn->name ();
+
+	      string_vector names (2);
+
+	      names[0] = nm + ".oct";
+	      names[1] = nm + ".m";
+
+	      std::string file = octave_env::make_absolute
+		(Vload_path_dir_path.find_first_of (names),
+		 octave_env::getcwd ());
+
+	      if (same_file (file, ff))
+		{
+		  fcn->mark_fcn_file_up_to_date (octave_time ());
+
+		  file_stat fs (ff);
+
+		  if (fs && fs.is_newer (tp))
+		    retval = true;
+		}
+	      else
+		retval = true;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+static bool
 symbol_out_of_date (symbol_record *sr)
 {
   bool retval = false;
@@ -989,44 +1035,19 @@ symbol_out_of_date (symbol_record *sr)
 
       octave_function *tmp = ans.function_value (true);
 
-      if (tmp)
-	{
-	  std::string ff = tmp->fcn_file_name ();
-
-	  if (! (ff.empty ()
-		 || (Vignore_function_time_stamp
-		     && tmp->is_system_fcn_file ())))
-	    {
-	      if (tmp->time_checked () < Vlast_prompt_time)
-		{
-		  time_t tp = tmp->time_parsed ();
-
-		  std::string nm = tmp->name ();
-
-		  string_vector names (2);
-
-		  names[0] = nm + ".oct";
-		  names[1] = nm + ".m";
-
-		  std::string file = octave_env::make_absolute
-		    (Vload_path_dir_path.find_first_of (names),
-		     octave_env::getcwd ());
-
-		  if (same_file (file, ff))
-		    {
-		      tmp->mark_fcn_file_up_to_date (octave_time ());
-
-		      file_stat fs (ff);
-
-		      if (fs && fs.is_newer (tp))
-			retval = true;
-		    }
-		  else
-		    retval = true;
-		}
-	    }
-	}
+      retval = function_out_of_date_internal (tmp);
     }
+
+  return retval;
+}
+
+bool
+function_out_of_date (octave_function *fcn)
+{
+  bool retval = false;
+
+  if (Vignore_function_time_stamp != 2)
+    retval = function_out_of_date_internal (fcn);
 
   return retval;
 }

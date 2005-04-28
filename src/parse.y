@@ -3332,11 +3332,9 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 }
 
 bool
-load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
+load_fcn_from_file (const std::string& nm, bool exec_script)
 {
   bool script_file_executed = false;
-
-  std::string nm = sym_rec->name ();
 
   string_vector names (2);
 
@@ -3375,6 +3373,12 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
     }
 
   return script_file_executed;
+}
+
+bool
+load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
+{
+  return load_fcn_from_file (sym_rec->name (), exec_script);
 }
 
 void

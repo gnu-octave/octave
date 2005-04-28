@@ -1,5 +1,13 @@
 2005-04-27  John W. Eaton  <jwe@octave.org>
 
+	* ov-fcn-handle.cc (octave_fcn_handle::subsref): check to see if
+	function is out of date.
+
+	* variables.cc (symbol_out_of_date (octave_fucntion *)): New function.
+	(function_out_of_date): New function.
+	* parse.y (load_fcn_from_file (const std::string&, bool)):
+	New function.
+
 	* DLD-FUNCTIONS/gplot.l (gnuplot_init): New function to handle
 	initialization.  If builtin variables have already been installed,
 	simply update our cached values.

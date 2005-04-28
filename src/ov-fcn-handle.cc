@@ -68,7 +68,26 @@ octave_fcn_handle::subsref (const std::string& type,
     case '(':
       {
 	octave_function *f = function_value ();
-	retval = f->subsref (type, idx, nargout);
+
+	// XXX FIXME XXX -- need to check to see if the function has a
+	// new definition.  The following does not work for function
+	// handles that refer to subfunctions or functions defined on
+	// the command line.
+	//
+	// if (function_out_of_date (f))
+	//   {
+	//     octave_value tmp = lookup_function (fcn_name ());
+	//
+	//     octave_function *ftmp = tmp.function_value (true);
+	//
+	//     if (ftmp)
+	//       f = ftmp;
+	//   }
+
+	if (f)
+	  retval = f->subsref (type, idx, nargout);
+	else
+	  error ("invalid function handle");
       }
       break;
 

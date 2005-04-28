@@ -95,6 +95,9 @@ parse_and_execute (const std::string& s, bool verbose = false,
 extern std::string get_help_from_file (const std::string& f);
 
 extern bool
+load_fcn_from_file (const std::string& nm, bool exec_script);
+
+extern bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
 extern void

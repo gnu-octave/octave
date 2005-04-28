@@ -82,6 +82,8 @@ symbol_exist (const std::string& name, const std::string& type = "any");
 extern std::string
 unique_symbol_name (const std::string& basename);
 
+extern bool function_out_of_date (octave_function *fcn);
+
 extern bool lookup (symbol_record *s, bool exec_script = true);
 
 extern symbol_record *

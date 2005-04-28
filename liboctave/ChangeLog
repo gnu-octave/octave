@@ -2198,7 +2198,7 @@
 
 	* dMatrix.cc (Matrix::inverse, Matrix::determinant, Matrix::solve):
 	Use Lapack instead of Linpack.
-	* Cmatrix.cc (ComplexMatrix::inverse, ComplexMatrix::determinant,
+	* CMatrix.cc (ComplexMatrix::inverse, ComplexMatrix::determinant,
 	ComplexMatrix::solve): Likewise.
 
 	* dMatrix.cc (Matrix::determinant, Matrix::inverse): New arg,

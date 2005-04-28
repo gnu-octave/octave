@@ -1,5 +1,3 @@
-#define STD_OCTAVE std
-
 // Matrix manipulations.
 /*
 
@@ -999,7 +997,7 @@ ComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force,
 	  return retval;
 	}
 
-      lwork = static_cast<octave_idx_type> (STD_OCTAVE::real(z(0)));
+      lwork = static_cast<octave_idx_type> (std::real(z(0)));
       lwork = (lwork <  2 *nc ? 2*nc : lwork);
       z.resize (lwork);
       Complex *pz = z.fortran_vec ();
@@ -1508,12 +1506,12 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
 		      if (ipvt(i) != (i+1)) d[0] = -d[0];
 		      d[0] = d[0] * atmp(i,i);
 		      if (d[0] == 0.) break;
-		      while (STD_OCTAVE::abs(d[0]) < 1.) 
+		      while (std::abs(d[0]) < 1.) 
 			{
 			  d[0] = 10. * d[0];
 			  d[1] = d[1] - 1.0;
 			}
-		      while (STD_OCTAVE::abs(d[0]) >= 10.) 
+		      while (std::abs(d[0]) >= 10.) 
 			{
 			  d[0] = 0.1 * d[0];
 			  d[1] = d[1] + 1.0;
@@ -1920,7 +1918,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_id
 	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
-	  lwork = static_cast<octave_idx_type> (STD_OCTAVE::real (work(0)));
+	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
 	  work.resize (lwork);
 
 	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
@@ -2033,7 +2031,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
-	  lwork = static_cast<int> (STD_OCTAVE::real (work(0)));
+	  lwork = static_cast<int> (std::real (work(0)));
 	  work.resize (lwork);
 
 	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
@@ -2529,7 +2527,7 @@ ComplexMatrix::all_elements_are_real (void) const
     {
       for (octave_idx_type i = 0; i < nr; i++)
 	{
-	  double ip = STD_OCTAVE::imag (elem (i, j));
+	  double ip = std::imag (elem (i, j));
 
 	  if (ip != 0.0 || lo_ieee_signbit (ip))
 	    return false;
@@ -2553,8 +2551,8 @@ ComplexMatrix::all_integers (double& max_val, double& min_val) const
     {
       Complex val = elem (0, 0);
 
-      double r_val = STD_OCTAVE::real (val);
-      double i_val = STD_OCTAVE::imag (val);
+      double r_val = std::real (val);
+      double i_val = std::imag (val);
 
       max_val = r_val;
       min_val = r_val;
@@ -2573,8 +2571,8 @@ ComplexMatrix::all_integers (double& max_val, double& min_val) const
       {
 	Complex val = elem (i, j);
 
-	double r_val = STD_OCTAVE::real (val);
-	double i_val = STD_OCTAVE::imag (val);
+	double r_val = std::real (val);
+	double i_val = std::imag (val);
 
 	if (r_val > max_val)
 	  max_val = r_val;
@@ -2606,8 +2604,8 @@ ComplexMatrix::too_large_for_float (void) const
       {
 	Complex val = elem (i, j);
 
-	double r_val = STD_OCTAVE::real (val);
-	double i_val = STD_OCTAVE::imag (val);
+	double r_val = std::real (val);
+	double i_val = std::imag (val);
 
 	if (r_val > FLT_MAX
 	    || i_val > FLT_MAX
@@ -2684,7 +2682,7 @@ Matrix ComplexMatrix::abs (void) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
-      retval (i, j) = STD_OCTAVE::abs (elem (i, j));
+      retval (i, j) = std::abs (elem (i, j));
 
   return retval;
 }
@@ -2745,7 +2743,7 @@ ComplexMatrix::row_is_real_only (octave_idx_type i) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      if (STD_OCTAVE::imag (elem (i, j)) != 0.0)
+      if (std::imag (elem (i, j)) != 0.0)
 	{
 	  retval = false;
 	  break;
@@ -2764,7 +2762,7 @@ ComplexMatrix::column_is_real_only (octave_idx_type j) const
 
   for (octave_idx_type i = 0; i < nr; i++)
     {
-      if (STD_OCTAVE::imag (elem (i, j)) != 0.0)
+      if (std::imag (elem (i, j)) != 0.0)
 	{
 	  retval = false;
 	  break;
@@ -2810,7 +2808,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
 	      if (! octave_is_NaN_or_NA (tmp_min))
 		{
-		  abs_min = real_only ? STD_OCTAVE::real (tmp_min) : STD_OCTAVE::abs (tmp_min);
+		  abs_min = real_only ? std::real (tmp_min) : std::abs (tmp_min);
 		  break;
 		}
 	    }
@@ -2822,7 +2820,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
 
-	      double abs_tmp = real_only ? STD_OCTAVE::real (tmp) : STD_OCTAVE::abs (tmp);
+	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
 
 	      if (abs_tmp < abs_min)
 		{
@@ -2884,7 +2882,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
 	      if (! octave_is_NaN_or_NA (tmp_max))
 		{
-		  abs_max = real_only ? STD_OCTAVE::real (tmp_max) : STD_OCTAVE::abs (tmp_max);
+		  abs_max = real_only ? std::real (tmp_max) : std::abs (tmp_max);
 		  break;
 		}
 	    }
@@ -2896,7 +2894,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
 
-	      double abs_tmp = real_only ? STD_OCTAVE::real (tmp) : STD_OCTAVE::abs (tmp);
+	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
 
 	      if (abs_tmp > abs_max)
 		{
@@ -2958,7 +2956,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
 	      if (! octave_is_NaN_or_NA (tmp_min))
 		{
-		  abs_min = real_only ? STD_OCTAVE::real (tmp_min) : STD_OCTAVE::abs (tmp_min);
+		  abs_min = real_only ? std::real (tmp_min) : std::abs (tmp_min);
 		  break;
 		}
 	    }
@@ -2970,7 +2968,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
 
-	      double abs_tmp = real_only ? STD_OCTAVE::real (tmp) : STD_OCTAVE::abs (tmp);
+	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
 
 	      if (abs_tmp < abs_min)
 		{
@@ -3032,7 +3030,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
 	      if (! octave_is_NaN_or_NA (tmp_max))
 		{
-		  abs_max = real_only ? STD_OCTAVE::real (tmp_max) : STD_OCTAVE::abs (tmp_max);
+		  abs_max = real_only ? std::real (tmp_max) : std::abs (tmp_max);
 		  break;
 		}
 	    }
@@ -3044,7 +3042,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 	      if (octave_is_NaN_or_NA (tmp))
 		continue;
 
-	      double abs_tmp = real_only ? STD_OCTAVE::real (tmp) : STD_OCTAVE::abs (tmp);
+	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
 
 	      if (abs_tmp > abs_max)
 		{
@@ -3313,7 +3311,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
-	  if (STD_OCTAVE::imag (a (i, j)) != 0.0 || STD_OCTAVE::imag (b (i, j)) != 0.0)
+	  if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
 	    {
 	      columns_are_real_only = 0;
 	      break;
@@ -3323,7 +3321,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       if (columns_are_real_only)
 	{
 	  for (octave_idx_type i = 0; i < nr; i++)
-	    result (i, j) = xmin (STD_OCTAVE::real (a (i, j)), STD_OCTAVE::real (b (i, j)));
+	    result (i, j) = xmin (std::real (a (i, j)), std::real (b (i, j)));
 	}
       else
 	{
@@ -3401,7 +3399,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
 	{
 	  OCTAVE_QUIT;
-	  if (STD_OCTAVE::imag (a (i, j)) != 0.0 || STD_OCTAVE::imag (b (i, j)) != 0.0)
+	  if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
 	    {
 	      columns_are_real_only = 0;
 	      break;
@@ -3413,7 +3411,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 	  for (octave_idx_type i = 0; i < nr; i++)
 	    {
 	      OCTAVE_QUIT;
-	      result (i, j) = xmax (STD_OCTAVE::real (a (i, j)), STD_OCTAVE::real (b (i, j)));
+	      result (i, j) = xmax (std::real (a (i, j)), std::real (b (i, j)));
 	    }
 	}
       else
@@ -3429,13 +3427,13 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
-MS_CMP_OPS(ComplexMatrix, STD_OCTAVE::real, Complex, STD_OCTAVE::real)
+MS_CMP_OPS(ComplexMatrix, std::real, Complex, std::real)
 MS_BOOL_OPS(ComplexMatrix, Complex, 0.0)
 
-SM_CMP_OPS(Complex, STD_OCTAVE::real, ComplexMatrix, STD_OCTAVE::real)
+SM_CMP_OPS(Complex, std::real, ComplexMatrix, std::real)
 SM_BOOL_OPS(Complex, ComplexMatrix, 0.0)
 
-MM_CMP_OPS(ComplexMatrix, STD_OCTAVE::real, ComplexMatrix, STD_OCTAVE::real)
+MM_CMP_OPS(ComplexMatrix, std::real, ComplexMatrix, std::real)
 MM_BOOL_OPS(ComplexMatrix, ComplexMatrix, 0.0)
 
 /*

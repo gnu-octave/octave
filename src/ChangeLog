@@ -1,7 +1,8 @@
 2005-04-27  John W. Eaton  <jwe@octave.org>
 
-	* ov-fcn-handle.cc (octave_fcn_handle::subsref): check to see if
-	function is out of date.
+	* ov-fcn-handle.cc (octave_fcn_handle::subsref):
+	Check whether function referenced by handle is out of date.
+	(Ffunctions): Tag nameless user function as "command-line".
 
 	* variables.cc (symbol_out_of_date (octave_fucntion *)): New function.
 	(function_out_of_date): New function.

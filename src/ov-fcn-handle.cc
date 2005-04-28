@@ -629,6 +629,8 @@ Return a struct containing information about the function handle\n\
 		{
 		  if (fh_nm == "@<anonymous>")
 		    m.assign ("file", "none");
+		  else if (fcn->is_user_function ())
+		    m.assign ("file", "command-line function");
 		  else
 		    m.assign ("file", "built-in function");
 		}

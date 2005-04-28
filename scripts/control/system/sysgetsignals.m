@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{stname}, @var{inname}, @var{outname}, @var{yd}] =} sysgetsignals (@var{sys})
-## @deftypefnx{Function File} {@var{siglist} =} sysgetsignals (@var{sys}, @var{sigid})
-## @deftypefnx{Function File} {@var{signame} =} sysgetsignals (@var{sys}, @var{sigid}, @var{signum}, @var{strflg})
+## @deftypefnx {Function File} {@var{siglist} =} sysgetsignals (@var{sys}, @var{sigid})
+## @deftypefnx {Function File} {@var{signame} =} sysgetsignals (@var{sys}, @var{sigid}, @var{signum}, @var{strflg})
 ## Get signal names from a system
 ##
 ## @strong{Inputs}

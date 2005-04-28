@@ -24,7 +24,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 AC_INIT
 AC_REVISION()
 AC_PREREQ(2.52)
-AC_CONFIG_SRCDIR([startup/octaverc])
+AC_CONFIG_SRCDIR([startup/inputrc])
 
 AC_PROG_INSTALL
 

@@ -1,3 +1,8 @@
+2005-04-28  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_CONFIG_SRCDIR): Look for startup/inputrc, not
+	startup/octaverc.
+
 2005-04-28  Stefan van der Walt  <stefan@sun.ac.za>
 
 	* image/imshow.m: Handle various image depths and 3d RGB images.

@@ -1,3 +1,8 @@
+2005-04-29  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (maybe_warn_interface_change): Delete function.
+	(fopen_mode_to_ios_mode): Don't call it.
+
 2005-04-27  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-handle.cc (octave_fcn_handle::subsref):

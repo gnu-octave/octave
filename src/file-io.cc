@@ -125,21 +125,6 @@ cleanup_tmp_files (void)
     }
 }
 
-static void
-maybe_warn_interface_change (const std::string& mode)
-{
-  static bool warned = false;
-
-  if (! warned
-      && (mode == "r" || mode == "w" || mode == "a"
-	  || mode == "r+" || mode == "w+" || mode == "a+")
-      && ! is_globally_visible ("__disable_fopen_interface_change_warning__"))
-    {
-      warned = true;
-      warning ("fopen: default open mode is now binary");
-    }
-}
-
 static std::ios::openmode
 fopen_mode_to_ios_mode (const std::string& mode)
 {
@@ -148,8 +133,6 @@ fopen_mode_to_ios_mode (const std::string& mode)
   if (! mode.empty ())
     {
       // Could probably be faster, but does it really matter?
-
-      maybe_warn_interface_change (mode);
 
       if (mode == "rt")
 	retval = std::ios::in;

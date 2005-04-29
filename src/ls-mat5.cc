@@ -441,6 +441,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 		      X_CAST (Bytef *, inbuf), element_length) !=  Z_MEM_ERROR)
 	{
 	  // Why should I have to initialize outbuf as I'll just overwrite!!
+	  if (swap)
+	    swap_bytes<4> (tmp, 2);
+
 	  destLen = tmp[1] + 8;
 	  std::string outbuf (destLen, ' '); 
 

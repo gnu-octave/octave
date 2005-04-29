@@ -113,8 +113,8 @@ Sparse Matrices:
   * QR factorization functions, also for use in lssolve functions. Write
     svds function based on this. Write sprank function based on svds.
 
-  * Once dmperm is implemented, use the technique to detect permuted
-    triangular matrices. Test the permuted triangular matrix solver code
+  * Once dmperm is implemented, perhaps use the technique to detect permuted
+    triangular matrices with permutations in both rows and cols.
 
   * Sparse inverse function, based on Andy's code from octave-forge.
 
@@ -160,7 +160,8 @@ Sparse Matrices:
     way to treat this but a complete rewrite of the sparse assignment
     functions...
 
-  * Port the sparse testing code into the DejaGNU testing code.
+  * Port the sparse testing code into the DejaGNU testing code. Add tests
+    for spkron, matrix_type, luinc..
 
   * Treat the dispatching of the splu, spdet, functions, etc within octave
     itself. This either means that classes need implementing or at the

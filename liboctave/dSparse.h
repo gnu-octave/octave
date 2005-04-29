@@ -404,6 +404,12 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseMatrix, SparseMatrix)
 
 SPARSE_FORWARD_DEFS (MSparse, SparseMatrix, Matrix, double)
 
+#ifdef UMFPACK_LONG_IDX
+#define UMFPACK_DNAME(name) umfpack_dl_ ## name
+#else
+#define UMFPACK_DNAME(name) umfpack_di_ ## name
+#endif
+
 #endif
 
 /*

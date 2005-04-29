@@ -1,3 +1,7 @@
+2005-04-29  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Add UMFPACK_LONG_IDX
+
 2005-04-21  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_CONFIG_FILES): Remove install-octave from the list.

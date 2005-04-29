@@ -54,7 +54,7 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
   double *control = Control.fortran_vec ();
-  umfpack_di_defaults (control);
+  UMFPACK_DNAME (defaults) (control);
 
   double tmp = Voctave_sparse_controls.get_key ("spumoni");
   if (!xisnan (tmp))
@@ -84,18 +84,18 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
   // Turn-off UMFPACK scaling for LU 
   Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
 
-  umfpack_di_report_control (control);
+  UMFPACK_DNAME (report_control) (control);
 
   const octave_idx_type *Ap = a.cidx ();
   const octave_idx_type *Ai = a.ridx ();
   const double *Ax = a.data ();
 
-  umfpack_di_report_matrix (nr, nc, Ap, Ai, Ax, 1, control);
+  UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
 
   void *Symbolic;
   Matrix Info (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = umfpack_di_qsymbolic (nr, nc, Ap, Ai, Ax, NULL,
+  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, NULL,
 				     &Symbolic, control, info);
 
   if (status < 0)
@@ -103,19 +103,19 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
       (*current_liboctave_error_handler) 
 	    ("SparseLU::SparseLU symbolic factorization failed");
 
-      umfpack_di_report_status (control, status);
-      umfpack_di_report_info (control, info);
+      UMFPACK_DNAME (report_status) (control, status);
+      UMFPACK_DNAME (report_info) (control, info);
 
-      umfpack_di_free_symbolic (&Symbolic) ;
+      UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
     }
   else
     {
-      umfpack_di_report_symbolic (Symbolic, control);
+      UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
       void *Numeric;
-      status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric,
-				   control, info) ;
-      umfpack_di_free_symbolic (&Symbolic) ;
+      status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic, 
+				   &Numeric, control, info) ;
+      UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
       cond = Info (UMFPACK_RCOND);
 
@@ -124,91 +124,89 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 	  (*current_liboctave_error_handler) 
 	    ("SparseLU::SparseLU numeric factorization failed");
 
-	  umfpack_di_report_status (control, status);
-	  umfpack_di_report_info (control, info);
+	  UMFPACK_DNAME (report_status) (control, status);
+	  UMFPACK_DNAME (report_info) (control, info);
 
-	  umfpack_di_free_numeric (&Numeric);
+	  UMFPACK_DNAME (free_numeric) (&Numeric);
 	}
       else
 	{
-	  umfpack_di_report_numeric (Numeric, control);
+	  UMFPACK_DNAME (report_numeric) (Numeric, control);
 
-	  int lnz, unz, ignore1, ignore2, ignore3;
-	  status = umfpack_di_get_lunz (&lnz, &unz, &ignore1, &ignore2,
-					&ignore3, Numeric) ;
+	  octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
+	  status = UMFPACK_DNAME (get_lunz) (&lnz, &unz, &ignore1,
+					&ignore2, &ignore3, Numeric) ;
 	  
 	  if (status < 0)
 	    {
 	      (*current_liboctave_error_handler) 
 		("SparseLU::SparseLU extracting LU factors failed");
 
-	      umfpack_di_report_status (control, status);
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_status) (control, status);
+	      UMFPACK_DNAME (report_info) (control, info);
 
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 	  else
 	    {
-	      int n_inner = (nr < nc ? nr : nc);
+	      octave_idx_type n_inner = (nr < nc ? nr : nc);
 
 	      if (lnz < 1)
-		Lfact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nr,
+		Lfact = SparseMatrix (n_inner, nr,
 				      static_cast<octave_idx_type> (1));
 	      else
-		Lfact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nr,
-				      static_cast<octave_idx_type> (lnz));
+		Lfact = SparseMatrix (n_inner, nr, lnz);
 
 	      octave_idx_type *Ltp = Lfact.cidx ();
 	      octave_idx_type *Ltj = Lfact.ridx ();
 	      double *Ltx = Lfact.data ();
 
 	      if (unz < 1)
-		Ufact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nc,
+		Ufact = SparseMatrix (n_inner, nc,
 				      static_cast<octave_idx_type> (1));
 	      else
-		Ufact = SparseMatrix (static_cast<octave_idx_type> (n_inner), nc,
-				      static_cast<octave_idx_type> (unz));
+		Ufact = SparseMatrix (n_inner, nc, unz);
 
 	      octave_idx_type *Up = Ufact.cidx ();
 	      octave_idx_type *Uj = Ufact.ridx ();
 	      double *Ux = Ufact.data ();
 
 	      P.resize (nr);
-	      int *p = P.fortran_vec ();
+	      octave_idx_type *p = P.fortran_vec ();
 
 	      Q.resize (nc);
-	      int *q = Q.fortran_vec ();
+	      octave_idx_type *q = Q.fortran_vec ();
 
-	      int do_recip;
-	      status = umfpack_di_get_numeric (Ltp, Ltj, Ltx, Up, Uj,
-					       Ux, p, q, (double *) NULL,
+	      octave_idx_type do_recip;
+	      status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj, Ltx,
+					       Up, Uj, Ux, p, q, (double *) NULL,
 					       &do_recip, (double *) NULL, 
 					       Numeric) ;
 
-	      umfpack_di_free_numeric (&Numeric) ;
+	      UMFPACK_DNAME (free_numeric) (&Numeric) ;
 
 	      if (status < 0 || do_recip)
 		{
 		  (*current_liboctave_error_handler) 
 		    ("SparseLU::SparseLU extracting LU factors failed");
 
-		  umfpack_di_report_status (control, status);
+		  UMFPACK_DNAME (report_status) (control, status);
 		}
 	      else
 		{
 		  Lfact = Lfact.transpose ();
 
-		  umfpack_di_report_matrix (nr, n_inner, Lfact.cidx (), 
-					    Lfact.ridx (), Lfact.data (),
-					    1, control);
-		  umfpack_di_report_matrix (n_inner, nc, Ufact.cidx (), 
-					    Ufact.ridx (), Ufact.data (),
-					    1, control);
-		  umfpack_di_report_perm (nr, p, control);
-		  umfpack_di_report_perm (nc, q, control);
+		  UMFPACK_DNAME (report_matrix) (nr, n_inner, 
+					    Lfact.cidx (), Lfact.ridx (),
+					    Lfact.data (), 1, control);
+		  UMFPACK_DNAME (report_matrix) (n_inner, nc, 
+					    Ufact.cidx (), Ufact.ridx (),
+					    Ufact.data (), 1, control);
+		  UMFPACK_DNAME (report_perm) (nr, p, control);
+		  UMFPACK_DNAME (report_perm) (nc, q, control);
 		}
 
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_info) (control, info);
 	    }
 	}
     }
@@ -233,7 +231,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       // Setup the control parameters
       Matrix Control (UMFPACK_CONTROL, 1);
       double *control = Control.fortran_vec ();
-      umfpack_di_defaults (control);
+      UMFPACK_DNAME (defaults) (control);
 
       double tmp = Voctave_sparse_controls.get_key ("spumoni");
       if (!xisnan (tmp))
@@ -271,13 +269,14 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       // Turn-off UMFPACK scaling for LU 
       Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
 
-      umfpack_di_report_control (control);
+      UMFPACK_DNAME (report_control) (control);
 
       const octave_idx_type *Ap = a.cidx ();
       const octave_idx_type *Ai = a.ridx ();
       const double *Ax = a.data ();
 
-      umfpack_di_report_matrix (nr, nc, Ap, Ai, Ax, 1, control);
+      UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, 
+						     control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
@@ -286,13 +285,13 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 
       // Null loop so that qinit is imediately deallocated when not needed
       do {
-	OCTAVE_LOCAL_BUFFER (int, qinit, nc);
+	OCTAVE_LOCAL_BUFFER (octave_idx_type, qinit, nc);
 
-	for (int i = 0; i < nc; i++)
-	  qinit [i] = static_cast<int> (Qinit (i));
+	for (octave_idx_type i = 0; i < nc; i++)
+	  qinit [i] = static_cast<octave_idx_type> (Qinit (i));
 
-	status = umfpack_di_qsymbolic (nr, nc, Ap, Ai, Ax, qinit,
-				       &Symbolic, control, info);
+	status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 
+				       qinit, &Symbolic, control, info);
       } while (0);
 
       if (status < 0)
@@ -300,19 +299,19 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 	  (*current_liboctave_error_handler) 
 	    ("SparseLU::SparseLU symbolic factorization failed");
 
-	  umfpack_di_report_status (control, status);
-	  umfpack_di_report_info (control, info);
+	  UMFPACK_DNAME (report_status) (control, status);
+	  UMFPACK_DNAME (report_info) (control, info);
 
-	  umfpack_di_free_symbolic (&Symbolic) ;
+	  UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 	}
       else
 	{
-	  umfpack_di_report_symbolic (Symbolic, control);
+	  UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
 	  void *Numeric;
-	  status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric,
-				       control, info) ;
-	  umfpack_di_free_symbolic (&Symbolic) ;
+	  status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
+				       &Numeric, control, info) ;
+	  UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
 	  cond = Info (UMFPACK_RCOND);
 
@@ -321,100 +320,94 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 	      (*current_liboctave_error_handler) 
 		("SparseLU::SparseLU numeric factorization failed");
 
-	      umfpack_di_report_status (control, status);
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_status) (control, status);
+	      UMFPACK_DNAME (report_info) (control, info);
 
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 	  else
 	    {
-	      umfpack_di_report_numeric (Numeric, control);
+	      UMFPACK_DNAME (report_numeric) (Numeric, control);
 
-	      int lnz, unz, ignore1, ignore2, ignore3;
-	      status = umfpack_di_get_lunz (&lnz, &unz, &ignore1, &ignore2,
-					    &ignore3, Numeric) ;
+	      octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
+	      status = UMFPACK_DNAME (get_lunz) (&lnz, &unz, &ignore1, &ignore2,
+						 &ignore3, Numeric) ;
 	  
 	      if (status < 0)
 		{
 		  (*current_liboctave_error_handler) 
 		    ("SparseLU::SparseLU extracting LU factors failed");
 
-		  umfpack_di_report_status (control, status);
-		  umfpack_di_report_info (control, info);
+		  UMFPACK_DNAME (report_status) (control, status);
+		  UMFPACK_DNAME (report_info) (control, info);
 
-		  umfpack_di_free_numeric (&Numeric);
+		  UMFPACK_DNAME (free_numeric) (&Numeric);
 		}
 	      else
 		{
-		  int n_inner = (nr < nc ? nr : nc);
+		  octave_idx_type n_inner = (nr < nc ? nr : nc);
 
 		  if (lnz < 1)
-		    Lfact = SparseMatrix 
-		      (static_cast<octave_idx_type> (n_inner), nr,
-		       static_cast<octave_idx_type> (1));
+		    Lfact = SparseMatrix (n_inner, nr,
+					  static_cast<octave_idx_type> (1));
 		  else
-		    Lfact = SparseMatrix 
-		      (static_cast<octave_idx_type> (n_inner), nr,
-		       static_cast<octave_idx_type> (lnz));
+		    Lfact = SparseMatrix (n_inner, nr, lnz);
 
 		  octave_idx_type *Ltp = Lfact.cidx ();
 		  octave_idx_type *Ltj = Lfact.ridx ();
 		  double *Ltx = Lfact.data ();
 
 		  if (unz < 1)
-		    Ufact = SparseMatrix 
-		      (static_cast<octave_idx_type> (n_inner), nc,
-		       static_cast<octave_idx_type> (1));
+		    Ufact = SparseMatrix (n_inner, nc,
+					  static_cast<octave_idx_type> (1));
 		  else
-		    Ufact = SparseMatrix 
-		      (static_cast<octave_idx_type> (n_inner), nc,
-		       static_cast<octave_idx_type> (unz));
+		    Ufact = SparseMatrix (n_inner, nc, unz);
 
 		  octave_idx_type *Up = Ufact.cidx ();
 		  octave_idx_type *Uj = Ufact.ridx ();
 		  double *Ux = Ufact.data ();
 
 		  P.resize (nr);
-		  int *p = P.fortran_vec ();
+		  octave_idx_type *p = P.fortran_vec ();
 
 		  Q.resize (nc);
-		  int *q = Q.fortran_vec ();
+		  octave_idx_type *q = Q.fortran_vec ();
 
-		  int do_recip;
-		  status = umfpack_di_get_numeric (Ltp, Ltj, Ltx, Up, Uj,
-						   Ux, p, q, 
+		  octave_idx_type do_recip;
+		  status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj,
+						   Ltx, Up, Uj, Ux, p, q, 
 						   (double *) NULL,
 						   &do_recip, 
 						   (double *) NULL, 
 						   Numeric) ;
 
-		  umfpack_di_free_numeric (&Numeric) ;
+		  UMFPACK_DNAME (free_numeric) (&Numeric) ;
 
 		  if (status < 0 || do_recip)
 		    {
 		      (*current_liboctave_error_handler) 
 			("SparseLU::SparseLU extracting LU factors failed");
 
-		      umfpack_di_report_status (control, status);
+		      UMFPACK_DNAME (report_status) (control, status);
 		    }
 		  else
 		    {
 		      Lfact = Lfact.transpose ();
-		      umfpack_di_report_matrix (nr, n_inner, 
+		      UMFPACK_DNAME (report_matrix) (nr, n_inner, 
 						Lfact.cidx (), 
 						Lfact.ridx (), 
 						Lfact.data (),
 						1, control);
-		      umfpack_di_report_matrix (n_inner, nc, 
+		      UMFPACK_DNAME (report_matrix) (n_inner, nc, 
 						Ufact.cidx (), 
 						Ufact.ridx (), 
 						Ufact.data (),
 						1, control);
-		      umfpack_di_report_perm (nr, p, control);
-		      umfpack_di_report_perm (nc, q, control);
+		      UMFPACK_DNAME (report_perm) (nr, p, control);
+		      UMFPACK_DNAME (report_perm) (nc, q, control);
 		    }
 
-		  umfpack_di_report_info (control, info);
+		  UMFPACK_DNAME (report_info) (control, info);
 		}
 	    }
 	}

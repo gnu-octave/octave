@@ -249,7 +249,7 @@ octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
-					oct_mach_info::float_format fmt)
+					oct_mach_info::float_format /* fmt */)
 {
   FOUR_BYTE_INT nz, nc, nr, tmp;
   if (! is.read (X_CAST (char *, &tmp), 4))
@@ -596,7 +596,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nc + 1 || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nc + 1 || 
+      static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -631,7 +632,7 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nz || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nz || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -666,7 +667,7 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nz || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nz || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);

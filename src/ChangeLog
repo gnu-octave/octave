@@ -1,3 +1,44 @@
+2005-04-29  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: Add matrix_type.cc and spkron.cc to DLD_XSRC
+
+	* ls.mat.cc (read_mat5_binary_element): Allow for endian change for 
+	compressed data elements.
+
+	* ov-base-sparse.cc (assign): Invalidate matrix type.
+
+	* ov-base-sparse.cc (SparseType sparse_type (void), 
+	SparseType sparse_type (const SparseType&): Functions to read and set
+	sparse matrix type.
+
+	* ov-bool-sparse.cc (load_binary): Remove third argument
+	(load_hdf5): Cast hsize_t comparisions with int to avoid warning
+	* ov-cx-sparse.cc (load_hdf5): ditto
+	* ov-re-sparse.cc (load_hdf5): ditto
+
+	* ov-re-sparse.cc (convert_to_str_internal): Add third argument for string
+	type.
+	* ov-re-sparse.h (convert_to_str_internal): Adject declaration.
+
+	* sparse-xdiv.cc (xdiv, xleftdiv): Pass SparseType as third argument, use
+	it and return it to allow caching of type.
+	* sparse-xdiv.h (xdiv, xleftdiv): Change declarations for third argument
+	of type SparseType.
+
+	* DLD-FUNCTIONS/luinc.cc (Fluinc): use type_name and not class_name to
+	test for real/complex sparse matrices. Set matrix type
+
+	* DLD-FUNCTIONS/splu.cc (Fsplu): Set matrix type.
+
+	* OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc, OPERATORS/op-cs-scm.cc, 
+	OPERATORS/op-cs-sm.cc, OPERATORS/op-m-scm.cc, OPERATORS/op-m-sm.cc, 
+	OPERATORS/op-s-scm.cc, OPERATORS/op-s-sm.cc, OPERATORS/op-scm-cm.cc, 
+	OPERATORS/op-scm-cs.cc, OPERATORS/op-scm-m.cc, OPERATORS/op-scm-s.cc, 
+	OPERATORS/op-scm-scm.cc, OPERATORS/op-scm-sm.cc, OPERATORS/op-sm-cm.cc, 
+	OPERATORS/op-sm-cs.cc, OPERATORS/op-sm-m.cc, OPERATORS/op-sm-s.cc, 
+	OPERATORS/op-sm-scm.cc, OPERATORS/op-sm-sm.cc (div, ldiv): Pass and
+	recache SparseType wirh xdiv/xleftdiv.
+
 2005-04-29  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (maybe_warn_interface_change): Delete function.

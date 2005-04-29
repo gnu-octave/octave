@@ -423,6 +423,12 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix)
 
 SPARSE_FORWARD_DEFS (MSparse, SparseComplexMatrix, ComplexMatrix, Complex)
 
+#ifdef UMFPACK_LONG_IDX
+#define UMFPACK_ZNAME(name) umfpack_zl_ ## name
+#else
+#define UMFPACK_ZNAME(name) umfpack_zi_ ## name
+#endif
+
 #endif
 
 /*

@@ -415,9 +415,10 @@ WRITE ME
 
 @sc{Octave} includes a poly-morphic solver for sparse matrices, where 
 the exact solver used to factorize the matrix, depends on the properties
-of the sparse matrix, itself. As the cost of determining the matrix type
-is small relative to the cost of factorizing the matrix itself, the matrix
-type is re-determined each time it is used in a linear equation.
+of the sparse matrix, itself. The cost of determining the matrix type
+is small relative to the cost of factorizing the matrix itself, but in any
+case the matrix type is cached once it is calculated, so that it is not
+re-determined each time it is used in a linear equation.
 
 The selection tree for how the linear equation is solve is
 
@@ -456,11 +457,9 @@ continue, else goto 4b.
 @item If the matrix is upper or lower triangular perform a sparse forward
 or backward subsitution, and goto 9
 
-@item If the matrix is a permuted upper or lower triangular matrix, perform
-a sparse forward or backward subsitution, and goto 9
-
-FIXME: Detection of permuted triangular matrices not written yet, and so
-       the code itself is not tested either
+@item If the matrix is a upper triangular matrix with column permutations
+or lower triangular matrix with row permutations, perform a sparse forward 
+or backward subsitution, and goto 9
 
 @item If the matrix is hermitian with a real positive diagonal, attempt
 sparse Cholesky factorization.
@@ -493,6 +492,12 @@ not calculated for banded matrices, and therefore unless the factorization
 is exactly singular, these numerical instabilities won't be detected.
 In cases where, this might be a problem the user is recommended to disable
 the banded solvers as above, at a significant cost in terms of speed.
+
+The user can force the type of the matrix with the @code{matrix_type}
+function. This overcomes the cost of discovering the type of the matrix.
+However, it should be noted incorrectly identifying the type of the matrix
+will lead to unpredictable results, and so @code{matrix_type} should be
+use dwith care.
 
 @node Iterative Techniques, Oct-Files, Sparse Linear Algebra, Sparse Matrices
 @section Iterative Techniques applied to sparse matrices
@@ -965,7 +970,7 @@ Column approximate minimum degree permutation.
 @item colperm
 Returns the column permutations such that the columns of `S (:, P)' are ordered in terms of increase number of non-zero elements.
 @item dmperm
-Perfrom a Deulmage-Mendelsohn permutation on the sparse matrix S.
+Perform a Deulmage-Mendelsohn permutation on the sparse matrix S.
 @item symamd
 For a symmetric positive definite matrix S, returns the permutation vector p such that `S (P, P)' tends to have a sparser Cholesky factor than S.
 @item symrcm
@@ -979,12 +984,16 @@ Returns the Reverse Cuthill McKee reordering of the sparse matrix S.
 @emph{Not implemented}
 @item eigs
 @emph{Not implemented}
+@item matrix_type
+Identify the matrix type or mark a matrix as a particular type.
 @item normest
 @emph{Not implemented}
 @item spdet
 Compute the determinant of sparse matrix A using UMFPACK.
 @item spinv
 Compute the inverse of the square matrix A.
+@item spkron
+Form the kronecker product of two sparse matrices.
 @item splu
 Compute the LU decomposition of the sparse matrix A, using subroutines from UMFPACK.
 @item sprank
@@ -1066,6 +1075,8 @@ Return a sparse matrix with M rows and N columns whose elements are taken from t
 		matrix.
 * luinc::	Produce the incomplete LU factorization of the sparse 
 		A.
+* matrix_type:: Identify the matrix type or mark a matrix as a particular
+		type.
 * nnz:: 	returns number of non zero elements in SM See also: sparse
 * nonzeros::	Returns a vector of the non-zero values of the sparse
 		matrix S
@@ -1089,6 +1100,7 @@ Return a sparse matrix with M rows and N columns whose elements are taken from t
 * spfun::	Compute `f(X)' for the non-zero values of X This results in
 		a sparse matrix with the same structure as X.
 * spinv::	Compute the inverse of the square matrix A.
+* spkron::	Form the kronecker product of two sparse matrices.
 * splu::	Compute the LU decomposition of the sparse matrix A, using
 		subroutines from UMFPACK.
 * spmax::	For a vector argument, return the maximum value.
@@ -1147,12 +1159,17 @@ Return a sparse matrix with M rows and N columns whose elements are taken from t
 
 @DOCSTRING(issparse)
 
-@node luinc, nnz, issparse, Function Reference
+@node luinc, matrix_type, issparse, Function Reference
 @subsubsection luinc
 
 @DOCSTRING(luinc)
 
-@node nnz, nonzeros, luinc, Function Reference
+@node matrix_type, nnz, luinc, Function Reference
+@subsubsection matrix_type
+
+@DOCSTRING(matrix_type)
+
+@node nnz, nonzeros, matrix_type, Function Reference
 @subsubsection nnz
 
 @DOCSTRING(nnz)
@@ -1227,12 +1244,17 @@ Return a sparse matrix with M rows and N columns whose elements are taken from t
 
 @DOCSTRING(spfun)
 
-@node spinv, splu, spfun, Function Reference
+@node spinv, spkron, spfun, Function Reference
 @subsubsection spinv
 
 @DOCSTRING(spinv)
 
-@node splu, spmax, spinv, Function Reference
+@node spkron, splu, spinv, Function Reference
+@subsubsection spkron
+
+@DOCSTRING(spkron)
+
+@node splu, spmax, spkron, Function Reference
 @subsubsection splu
 
 @DOCSTRING(splu)

@@ -184,7 +184,7 @@ octave_sparse_matrix::streamoff_array_value (void) const
 }
 
 octave_value
-octave_sparse_matrix::convert_to_str_internal (bool, bool) const
+octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
   dim_vector dv = dims ();
@@ -193,7 +193,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool) const
   if (nel == 0)
     {
       char s = '\0';
-      retval = octave_value (&s);
+      retval = octave_value (&s, type);
     }
   else
     {
@@ -238,7 +238,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool) const
 		    static_cast<char> (ival);
 		}
 	  }
-      retval = octave_value (chm, 1);
+      retval = octave_value (chm, true, type);
     }
 
   return retval;
@@ -368,7 +368,8 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &tmp), 1))
     return false;
   
-  read_doubles (is, m.xdata(), X_CAST (save_type, tmp), nz, swap, fmt);
+  double *re = m.xdata ();
+  read_doubles (is, re, X_CAST (save_type, tmp), nz, swap, fmt);
 
   if (error_state || ! is)
     return false;
@@ -678,7 +679,8 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nc + 1 || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nc + 1 || 
+      static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -713,7 +715,7 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nz || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nz || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -748,7 +750,7 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nz || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nz || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);

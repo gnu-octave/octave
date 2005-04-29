@@ -106,7 +106,7 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zptsv, ZPTSV) (const octave_idx_type&, const octave_idx_type&, Complex*, Complex*,
+  F77_FUNC (zptsv, ZPTSV) (const octave_idx_type&, const octave_idx_type&, double*, Complex*,
 			   Complex*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
@@ -735,7 +735,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
       // Setup the control parameters
       Matrix Control (UMFPACK_CONTROL, 1);
       double *control = Control.fortran_vec ();
-      umfpack_di_defaults (control);
+      UMFPACK_DNAME (defaults) (control);
 
       double tmp = Voctave_sparse_controls.get_key ("spumoni");
       if (!xisnan (tmp))
@@ -756,38 +756,38 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
       // Turn-off UMFPACK scaling for LU 
       Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
 
-      umfpack_di_report_control (control);
+      UMFPACK_DNAME (report_control) (control);
 
       const octave_idx_type *Ap = cidx ();
       const octave_idx_type *Ai = ridx ();
       const double *Ax = data ();
 
-      umfpack_di_report_matrix (nr, nc, Ap, Ai, Ax, 1, control);
+      UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = umfpack_di_qsymbolic (nr, nc, Ap, Ai, Ax, NULL,
-					 &Symbolic, control, info);
+      int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, 
+					 Ax, NULL, &Symbolic, control, info);
 
       if (status < 0)
 	{
 	  (*current_liboctave_error_handler) 
 	    ("SparseMatrix::determinant symbolic factorization failed");
 
-	  umfpack_di_report_status (control, status);
-	  umfpack_di_report_info (control, info);
+	  UMFPACK_DNAME (report_status) (control, status);
+	  UMFPACK_DNAME (report_info) (control, info);
 
-	  umfpack_di_free_symbolic (&Symbolic) ;
+	  UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 	}
       else
 	{
-	  umfpack_di_report_symbolic (Symbolic, control);
+	  UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
 	  void *Numeric;
-	  status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric,
-				       control, info) ;
-	  umfpack_di_free_symbolic (&Symbolic) ;
+	  status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic, 
+				       &Numeric, control, info) ;
+	  UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
 	  rcond = Info (UMFPACK_RCOND);
 
@@ -796,29 +796,29 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 	      (*current_liboctave_error_handler) 
 		("SparseMatrix::determinant numeric factorization failed");
 
-	      umfpack_di_report_status (control, status);
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_status) (control, status);
+	      UMFPACK_DNAME (report_info) (control, info);
 
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 	  else
 	    {
-	      umfpack_di_report_numeric (Numeric, control);
+	      UMFPACK_DNAME (report_numeric) (Numeric, control);
 
 	      double d[2];
 
-	      status = umfpack_di_get_determinant (&d[0], &d[1], Numeric,
-						   info);
+	      status = UMFPACK_DNAME (get_determinant) (&d[0],
+						   &d[1], Numeric, info);
 
 	      if (status < 0)
 		{
 		  (*current_liboctave_error_handler) 
 		    ("SparseMatrix::determinant error calculating determinant");
 		  
-		  umfpack_di_report_status (control, status);
-		  umfpack_di_report_info (control, info);
+		  UMFPACK_DNAME (report_status) (control, status);
+		  UMFPACK_DNAME (report_info) (control, info);
 
-		  umfpack_di_free_numeric (&Numeric);
+		  UMFPACK_DNAME (free_numeric) (&Numeric);
 		}
 	      else
 		retval = DET (d);
@@ -1131,13 +1131,9 @@ SparseMatrix::utsolve (SparseType &mattype, const Matrix& b, octave_idx_type& er
 
 	  if (typ == SparseType::Permuted_Upper)
 	    {
-	      retval.resize (b.rows (), b.cols ());
+	      retval.resize (nr, b_cols);
+	      octave_idx_type *perm = mattype.triangular_perm ();
 	      OCTAVE_LOCAL_BUFFER (double, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
-
-		(*current_liboctave_warning_handler)
-		  ("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
 
 	      for (octave_idx_type j = 0; j < b_cols; j++)
 		{
@@ -1146,28 +1142,29 @@ SparseMatrix::utsolve (SparseType &mattype, const Matrix& b, octave_idx_type& er
 
 		  for (octave_idx_type k = nr-1; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      octave_idx_type kidx = perm[k];
+
+		      if (work[k] != 0.)
 			{
-			  if (ridx(cidx(iidx+1)-1) != iidx)
+			  if (ridx(cidx(kidx+1)-1) != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
+			  double tmp = work[k] / data(cidx(kidx+1)-1);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(kidx); 
+			       i < cidx(kidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      octave_idx_type iidx = ridx(i);
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    retval (i, j) = work[p_perm[i]];
+		    retval (perm[i], j) = work[i];
 		}
 
 	      // Calculation of 1-norm of inv(*this)
@@ -1176,19 +1173,19 @@ SparseMatrix::utsolve (SparseType &mattype, const Matrix& b, octave_idx_type& er
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = j; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
+		      octave_idx_type iidx = perm[k];
 
-		      if (work[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
+			  double tmp = work[k] / data(cidx(iidx+1)-1);
+			  work[k] = tmp;
 			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
+			      octave_idx_type idx2 = ridx(i);
 			      work[idx2] = work[idx2] - tmp * data(i);
 			    }
 			}
@@ -1347,12 +1344,12 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 
 	  if (typ == SparseType::Permuted_Upper)
 	    {
+	      octave_idx_type *perm = mattype.triangular_perm ();
 	      OCTAVE_LOCAL_BUFFER (double, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
 
-	      (*current_liboctave_warning_handler)
-		("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
+	      for (octave_idx_type i = 0; i < nr; i++)
+		rperm[perm[i]] = i;
 
 	      for (octave_idx_type j = 0; j < b_nc; j++)
 		{
@@ -1363,22 +1360,23 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 
 		  for (octave_idx_type k = nr-1; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      octave_idx_type kidx = perm[k];
+
+		      if (work[k] != 0.)
 			{
-			  if (ridx(cidx(iidx+1)-1) != iidx)
+			  if (ridx(cidx(kidx+1)-1) != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
+			  double tmp = work[k] / data(cidx(kidx+1)-1);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(kidx); 
+			       i < cidx(kidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      octave_idx_type iidx = ridx(i);
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
@@ -1399,10 +1397,10 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[p_perm[i]] != 0.)
+		    if (work[rperm[i]] != 0.)
 		      {
 			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[p_perm[i]];
+			retval.xdata(ii++) = work[rperm[i]];
 		      }
 		  retval.xcidx(j+1) = ii;
 		}
@@ -1415,19 +1413,19 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = j; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
+		      octave_idx_type iidx = perm[k];
 
-		      if (work[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
+			  double tmp = work[k] / data(cidx(iidx+1)-1);
+			  work[k] = tmp;
 			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
+			      octave_idx_type idx2 = ridx(i);
 			      work[idx2] = work[idx2] - tmp * data(i);
 			    }
 			}
@@ -1603,75 +1601,71 @@ SparseMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_t
 
 	  if (typ == SparseType::Permuted_Upper)
 	    {
-	      retval.resize (b.rows (), b.cols ());
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
-
-	      (*current_liboctave_warning_handler)
-		("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      retval.resize (nr, b_nc);
+	      octave_idx_type *perm = mattype.triangular_perm ();
+	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nr);
 
 	      for (octave_idx_type j = 0; j < b_nc; j++)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
+		    cwork[i] = b(i,j);
 
 		  for (octave_idx_type k = nr-1; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      octave_idx_type kidx = perm[k];
+
+		      if (cwork[k] != 0.)
 			{
-			  if (ridx(cidx(iidx+1)-1) != iidx)
+			  if (ridx(cidx(kidx+1)-1) != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  Complex tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
+			  Complex tmp = cwork[k] / data(cidx(kidx+1)-1);
+			  cwork[k] = tmp;
+			  for (octave_idx_type i = cidx(kidx); 
+			       i < cidx(kidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      octave_idx_type iidx = ridx(i);
+			      cwork[iidx] = cwork[iidx] - tmp * data(i);
 			    }
 			}
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    retval (i, j) = work[p_perm[i]];
-
+		    retval (perm[i], j) = cwork[i];
 		}
 
 	      // Calculation of 1-norm of inv(*this)
-	      OCTAVE_LOCAL_BUFFER (double, work2, nr);
+	      OCTAVE_LOCAL_BUFFER (double, work, nr);
 	      for (octave_idx_type i = 0; i < nr; i++)
-		work2[i] = 0.;
+		work[i] = 0.;
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work2[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = j; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
+		      octave_idx_type iidx = perm[k];
 
-		      if (work2[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work2[iidx] / data(cidx(iidx+1)-1);
-			  work2[iidx] = tmp;
+			  double tmp = work[k] / data(cidx(iidx+1)-1);
+			  work[k] = tmp;
 			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work2[idx2] = work2[idx2] - tmp * data(i);
+			      octave_idx_type idx2 = ridx(i);
+			      work[idx2] = work[idx2] - tmp * data(i);
 			    }
 			}
 		    }
 		  double atmp = 0;
 		  for (octave_idx_type i = 0; i < j+1; i++)
 		    {
-		      atmp += fabs(work2[i]);
-		      work2[i] = 0.;
+		      atmp += fabs(work[i]);
+		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
 		    ainvnorm = atmp;
@@ -1822,38 +1816,39 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  if (typ == SparseType::Permuted_Upper)
 	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
+	      octave_idx_type *perm = mattype.triangular_perm ();
+	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nr);
 
-	      (*current_liboctave_warning_handler)
-		("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
+	      for (octave_idx_type i = 0; i < nr; i++)
+		rperm[perm[i]] = i;
 
 	      for (octave_idx_type j = 0; j < b_nc; j++)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = 0.;
+		    cwork[i] = 0.;
 		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+		    cwork[b.ridx(i)] = b.data(i);
 
 		  for (octave_idx_type k = nr-1; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      octave_idx_type kidx = perm[k];
+
+		      if (cwork[k] != 0.)
 			{
-			  if (ridx(cidx(iidx+1)-1) != iidx)
+			  if (ridx(cidx(kidx+1)-1) != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  Complex tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
+			  Complex tmp = cwork[k] / data(cidx(kidx+1)-1);
+			  cwork[k] = tmp;
+			  for (octave_idx_type i = cidx(kidx); 
+			       i < cidx(kidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      octave_idx_type iidx = ridx(i);
+			      cwork[iidx] = cwork[iidx] - tmp * data(i);
 			    }
 			}
 		    }
@@ -1862,7 +1857,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  // retval if needed
 		  octave_idx_type new_nnz = 0;
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[i] != 0.)
+		    if (cwork[i] != 0.)
 		      new_nnz++;
 
 		  if (ii + new_nnz > x_nz)
@@ -1874,45 +1869,45 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[p_perm[i]] != 0.)
+		    if (cwork[rperm[i]] != 0.)
 		      {
 			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[p_perm[i]];
+			retval.xdata(ii++) = cwork[rperm[i]];
 		      }
 		  retval.xcidx(j+1) = ii;
 		}
 
 	      retval.maybe_compress ();
 
-	      OCTAVE_LOCAL_BUFFER (double, work2, nr);
 	      // Calculation of 1-norm of inv(*this)
+	      OCTAVE_LOCAL_BUFFER (double, work, nr);
 	      for (octave_idx_type i = 0; i < nr; i++)
-		work2[i] = 0.;
+		work[i] = 0.;
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work2[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = j; k >= 0; k--)
 		    {
-		      octave_idx_type iidx = q_perm[k];
+		      octave_idx_type iidx = perm[k];
 
-		      if (work2[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work2[iidx] / data(cidx(iidx+1)-1);
-			  work2[iidx] = tmp;
+			  double tmp = work[k] / data(cidx(iidx+1)-1);
+			  work[k] = tmp;
 			  for (octave_idx_type i = cidx(iidx); i < cidx(iidx+1)-1; i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work2[idx2] = work2[idx2] - tmp * data(i);
+			      octave_idx_type idx2 = ridx(i);
+			      work[idx2] = work[idx2] - tmp * data(i);
 			    }
 			}
 		    }
 		  double atmp = 0;
 		  for (octave_idx_type i = 0; i < j+1; i++)
 		    {
-		      atmp += fabs(work2[i]);
-		      work2[i] = 0.;
+		      atmp += fabs(work[i]);
+		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
 		    ainvnorm = atmp;
@@ -2084,42 +2079,48 @@ SparseMatrix::ltsolve (SparseType &mattype, const Matrix& b, octave_idx_type& er
 	    {
 	      retval.resize (b.rows (), b.cols ());
 	      OCTAVE_LOCAL_BUFFER (double, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
-
-		(*current_liboctave_warning_handler)
-		  ("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      octave_idx_type *perm = mattype.triangular_perm ();
 
 	      for (octave_idx_type j = 0; j < b_cols; j++)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
+		    work[perm[i]] = b(i,j);
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  if (ridx(cidx(iidx)) != iidx)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  if (minr != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  double tmp = work[k] / data(mini);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    retval (i, j) = work[p_perm[i]];
-
+		    retval (i, j) = work[i];
 		}
 
 	      // Calculation of 1-norm of inv(*this)
@@ -2128,25 +2129,37 @@ SparseMatrix::ltsolve (SparseType &mattype, const Matrix& b, octave_idx_type& er
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-
-		      if (work[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  double tmp = work[k] / data(mini);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = work[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
+
 		  double atmp = 0;
-		  for (octave_idx_type i = 0; i < j+1; i++)
+		  for (octave_idx_type i = j; i < nr; i++)
 		    {
 		      atmp += fabs(work[i]);
 		      work[i] = 0.;
@@ -2302,37 +2315,44 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 	  if (typ == SparseType::Permuted_Lower)
 	    {
 	      OCTAVE_LOCAL_BUFFER (double, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
-
-		(*current_liboctave_warning_handler)
-		  ("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      octave_idx_type *perm = mattype.triangular_perm ();
 
 	      for (octave_idx_type j = 0; j < b_nc; j++)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
 		    work[i] = 0.;
 		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+		    work[perm[b.ridx(i)]] = b.data(i);
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  if (ridx(cidx(iidx)) != iidx)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  if (minr != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  double tmp = work[k] / data(mini);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
@@ -2353,10 +2373,10 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[p_perm[i]] != 0.)
+		    if (work[i] != 0.)
 		      {
 			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[p_perm[i]];
+			retval.xdata(ii++) = work[i];
 		      }
 		  retval.xcidx(j+1) = ii;
 		}
@@ -2369,25 +2389,37 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-
-		      if (work[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  double tmp = work[k] / data(mini);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = work[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
+
 		  double atmp = 0;
-		  for (octave_idx_type i = 0; i < j+1; i++)
+		  for (octave_idx_type i = j; i < nr; i++)
 		    {
 		      atmp += fabs(work[i]);
 		      work[i] = 0.;
@@ -2561,74 +2593,92 @@ SparseMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_t
 	  if (typ == SparseType::Permuted_Lower)
 	    {
 	      retval.resize (b.rows (), b.cols ());
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
-
-	      (*current_liboctave_warning_handler)
-		("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nr);
+	      octave_idx_type *perm = mattype.triangular_perm ();
 
 	      for (octave_idx_type j = 0; j < b_nc; j++)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
+		    cwork[perm[i]] = b(i,j);
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      if (cwork[k] != 0.)
 			{
-			  if (ridx(cidx(iidx)) != iidx)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  if (minr != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  Complex tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  Complex tmp = cwork[k] / data(mini);
+			  cwork[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      cwork[iidx] = cwork[iidx] - tmp * data(i);
 			    }
 			}
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    retval (i, j) = work[p_perm[i]];
-
+		    retval (i, j) = cwork[i];
 		}
 
 	      // Calculation of 1-norm of inv(*this)
-	      OCTAVE_LOCAL_BUFFER (double, work2, nr);
+	      OCTAVE_LOCAL_BUFFER (double, work, nr);
 	      for (octave_idx_type i = 0; i < nr; i++)
-		work2[i] = 0.;
+		work[i] = 0.;
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work2[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-
-		      if (work2[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work2[iidx] / data(cidx(iidx+1)-1);
-			  work2[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  double tmp = work[k] / data(mini);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work2[idx2] = work2[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
+
 		  double atmp = 0;
-		  for (octave_idx_type i = 0; i < j+1; i++)
+		  for (octave_idx_type i = j; i < nr; i++)
 		    {
-		      atmp += fabs(work2[i]);
-		      work2[i] = 0.;
+		      atmp += fabs(work[i]);
+		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
 		    ainvnorm = atmp;
@@ -2781,38 +2831,45 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  if (typ == SparseType::Permuted_Lower)
 	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-	      octave_idx_type *p_perm = mattype.triangular_row_perm ();
-	      octave_idx_type *q_perm = mattype.triangular_col_perm ();
-
-	      (*current_liboctave_warning_handler)
-		("SparseMatrix::solve XXX FIXME XXX permuted triangular code not tested");
+	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nr);
+	      octave_idx_type *perm = mattype.triangular_perm ();
 
 	      for (octave_idx_type j = 0; j < b_nc; j++)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = 0.;
+		    cwork[i] = 0.;
 		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+		    cwork[perm[b.ridx(i)]] = b.data(i);
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-		      if (work[iidx] != 0.)
+		      if (cwork[k] != 0.)
 			{
-			  if (ridx(cidx(iidx)) != iidx)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  if (minr != k)
 			    {
 			      err = -2;
 			      goto triangular_error;
 			    }			    
 
-			  Complex tmp = work[iidx] / data(cidx(iidx+1)-1);
-			  work[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  Complex tmp = cwork[k] / data(mini);
+			  cwork[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work[idx2] = 
-				work[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      cwork[iidx] = cwork[iidx] - tmp * data(i);
 			    }
 			}
 		    }
@@ -2821,7 +2878,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  // retval if needed
 		  octave_idx_type new_nnz = 0;
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[i] != 0.)
+		    if (cwork[i] != 0.)
 		      new_nnz++;
 
 		  if (ii + new_nnz > x_nz)
@@ -2833,10 +2890,10 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		    }
 
 		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[p_perm[i]] != 0.)
+		    if (cwork[i] != 0.)
 		      {
 			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[p_perm[i]];
+			retval.xdata(ii++) = cwork[i];
 		      }
 		  retval.xcidx(j+1) = ii;
 		}
@@ -2844,34 +2901,46 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	      retval.maybe_compress ();
 
 	      // Calculation of 1-norm of inv(*this)
-	      OCTAVE_LOCAL_BUFFER (double, work2, nr);
+	      OCTAVE_LOCAL_BUFFER (double, work, nr);
 	      for (octave_idx_type i = 0; i < nr; i++)
-		work2[i] = 0.;
+		work[i] = 0.;
 
 	      for (octave_idx_type j = 0; j < nr; j++)
 		{
-		  work2[q_perm[j]] = 1.;
+		  work[j] = 1.;
 
 		  for (octave_idx_type k = 0; k < nr; k++)
 		    {
-		      octave_idx_type iidx = q_perm[k];
-
-		      if (work2[iidx] != 0.)
+		      if (work[k] != 0.)
 			{
-			  double tmp = work2[iidx] / data(cidx(iidx+1)-1);
-			  work2[iidx] = tmp;
-			  for (octave_idx_type i = cidx(iidx)+1; i < cidx(iidx+1); i++)
+			  octave_idx_type minr = nr;
+			  octave_idx_type mini = 0;
+
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+			    if (perm[ridx(i)] < minr)
+			      {
+				minr = perm[ridx(i)];
+				mini = i;
+			      }
+
+			  double tmp = work[k] / data(mini);
+			  work[k] = tmp;
+			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
 			    {
-			      octave_idx_type idx2 = q_perm[ridx(i)];
-			      work2[idx2] = work2[idx2] - tmp * data(i);
+			      if (i == mini)
+				continue;
+
+			      octave_idx_type iidx = perm[ridx(i)];
+			      work[iidx] = work[iidx] - tmp * data(i);
 			    }
 			}
 		    }
+
 		  double atmp = 0;
-		  for (octave_idx_type i = 0; i < j+1; i++)
+		  for (octave_idx_type i = j; i < nr; i++)
 		    {
-		      atmp += fabs(work2[i]);
-		      work2[i] = 0.;
+		      atmp += fabs(work[i]);
+		      work[i] = 0.;
 		    }
 		  if (atmp > ainvnorm)
 		    ainvnorm = atmp;
@@ -3115,7 +3184,7 @@ SparseMatrix::trisolve (SparseType &mattype, const Matrix& b, octave_idx_type& e
 		    else if (ridx(i) == j + 1)
 		      DL[j] = data(i);
 		    else if (ridx(i) == j - 1)
-		      DU[j] = data(i);
+		      DU[j-1] = data(i);
 		  }
 	    }
 
@@ -3211,7 +3280,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseMatrix& b, octave_idx_t
 		    else if (ridx(i) == j + 1)
 		      DL[j] = data(i);
 		    else if (ridx(i) == j - 1)
-		      DU[j] = data(i);
+		      DU[j-1] = data(i);
 		  }
 	    }
 
@@ -3319,10 +3388,9 @@ SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_
       volatile int typ = mattype.type ();
       mattype.info ();
       
-      // Note can't treat symmetric case as there is no dpttrf function
       if (typ == SparseType::Tridiagonal_Hermitian)
 	{
-	  OCTAVE_LOCAL_BUFFER (Complex, D, nr);
+	  OCTAVE_LOCAL_BUFFER (double, D, nr);
 	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
 
 	  if (mattype.is_dense ())
@@ -3416,7 +3484,7 @@ SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_
 		    else if (ridx(i) == j + 1)
 		      DL[j] = data(i);
 		    else if (ridx(i) == j - 1)
-		      DU[j] = data(i);
+		      DU[j-1] = data(i);
 		  }
 	    }
 
@@ -3516,7 +3584,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
 		    else if (ridx(i) == j + 1)
 		      DL[j] = data(i);
 		    else if (ridx(i) == j - 1)
-		      DU[j] = data(i);
+		      DU[j-1] = data(i);
 		  }
 	    }
 
@@ -3563,7 +3631,6 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
 			  Bx[i] = std::real (c);
 			  Bz[i] = std::imag (c);
 			}
-
 
 		      F77_XFCN (dgttrs, DGTTRS, 
 				(F77_CONST_CHAR_ARG2 (&job, 1),
@@ -4682,7 +4749,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
   // Setup the control parameters
   Control = Matrix (UMFPACK_CONTROL, 1);
   double *control = Control.fortran_vec ();
-  umfpack_di_defaults (control);
+  UMFPACK_DNAME (defaults) (control);
 
   double tmp = Voctave_sparse_controls.get_key ("spumoni");
   if (!xisnan (tmp))
@@ -4699,7 +4766,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
   if (!xisnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
-  umfpack_di_report_control (control);
+  UMFPACK_DNAME (report_control) (control);
 
   const octave_idx_type *Ap = cidx ();
   const octave_idx_type *Ai = ridx ();
@@ -4707,12 +4774,12 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  umfpack_di_report_matrix (nr, nc, Ap, Ai, Ax, 1, control);
+  UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
 
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = umfpack_di_qsymbolic (nr, nc, Ap, Ai, Ax, NULL,
+  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, NULL,
 				     &Symbolic, control, info);
 
   if (status < 0)
@@ -4721,18 +4788,18 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
 	("SparseMatrix::solve symbolic factorization failed");
       err = -1;
 
-      umfpack_di_report_status (control, status);
-      umfpack_di_report_info (control, info);
+      UMFPACK_DNAME (report_status) (control, status);
+      UMFPACK_DNAME (report_info) (control, info);
 
-      umfpack_di_free_symbolic (&Symbolic) ;
+      UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
     }
   else
     {
-      umfpack_di_report_symbolic (Symbolic, control);
+      UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
-      status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric,
-				   control, info) ;
-      umfpack_di_free_symbolic (&Symbolic) ;
+      status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
+				   &Numeric, control, info) ;
+      UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
 #ifdef HAVE_LSSOLVE
       rcond = Info (UMFPACK_RCOND);
@@ -4741,7 +4808,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
       if (status == UMFPACK_WARNING_singular_matrix || 
 	  rcond_plus_one == 1.0 || xisnan (rcond))
 	{
-	  umfpack_di_report_numeric (Numeric, control);
+	  UMFPACK_DNAME (report_numeric) (Numeric, control);
 
 	  err = -2;
 
@@ -4760,19 +4827,19 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
 	    (*current_liboctave_error_handler) 
 	      ("SparseMatrix::solve numeric factorization failed");
 
-	    umfpack_di_report_status (control, status);
-	    umfpack_di_report_info (control, info);
+	    UMFPACK_DNAME (report_status) (control, status);
+	    UMFPACK_DNAME (report_info) (control, info);
 	      
 	    err = -1;
 	  }
 	else
 	  {
-	    umfpack_di_report_numeric (Numeric, control);
+	    UMFPACK_DNAME (report_numeric) (Numeric, control);
 	  }
     }
 
   if (err != 0)
-    umfpack_di_free_numeric (&Numeric);
+    UMFPACK_DNAME (free_numeric) (&Numeric);
 
 #else
   (*current_liboctave_error_handler) ("UMFPACK not installed");
@@ -4836,15 +4903,15 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
 
 	      for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
 		{
-		  status = umfpack_di_solve (UMFPACK_A, Ap, Ai, Ax, 
-					     &result[iidx], &Bx[iidx],
+		  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap, 
+					     Ai, Ax, &result[iidx], &Bx[iidx],
 					     Numeric, control, info);
 		  if (status < 0)
 		    {
 		      (*current_liboctave_error_handler) 
 			("SparseMatrix::solve solve failed");
 
-		      umfpack_di_report_status (control, status);
+		      UMFPACK_DNAME (report_status) (control, status);
 		      
 		      err = -1;
 		  
@@ -4871,9 +4938,9 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
 		}
 #endif
 		
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_info) (control, info);
 		
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 #else
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
@@ -4951,15 +5018,15 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 		  for (octave_idx_type i = 0; i < b_nr; i++)
 		    Bx[i] = b.elem (i, j);
 
-		  status = umfpack_di_solve (UMFPACK_A, Ap, Ai, Ax, Xx,
-					     Bx, Numeric, control, 
+		  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap, 
+					     Ai, Ax, Xx, Bx, Numeric, control, 
 					     info);
 		  if (status < 0)
 		    {
 		      (*current_liboctave_error_handler) 
 			("SparseMatrix::solve solve failed");
 
-		      umfpack_di_report_status (control, status);
+		      UMFPACK_DNAME (report_status) (control, status);
 		  
 		      err = -1;
 
@@ -5007,9 +5074,9 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 		}
 #endif
 
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_info) (control, info);
 
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 #else
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
@@ -5088,11 +5155,11 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_ty
 		      Bz[i] = std::imag (c);
 		    }
 
-		  status = umfpack_di_solve (UMFPACK_A, Ap, Ai, Ax, 
-					     Xx, Bx, Numeric, control, 
+		  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap, 
+					     Ai, Ax, Xx, Bx, Numeric, control, 
 					     info);
-		  int status2 = umfpack_di_solve (UMFPACK_A, Ap, Ai, 
-						  Ax, Xz, Bz, Numeric, 
+		  int status2 = UMFPACK_DNAME (solve) (UMFPACK_A,
+						  Ap, Ai, Ax, Xz, Bz, Numeric, 
 						  control, info) ;
 
 		  if (status < 0 || status2 < 0)
@@ -5100,7 +5167,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_ty
 		      (*current_liboctave_error_handler) 
 			("SparseMatrix::solve solve failed");
 
-		      umfpack_di_report_status (control, status);
+		      UMFPACK_DNAME (report_status) (control, status);
 		      
 		      err = -1;
 
@@ -5130,9 +5197,9 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_ty
 		}
 #endif
 
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_info) (control, info);
 
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 #else
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
@@ -5217,11 +5284,11 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		      Bz[i] = std::imag (c);
 		    }
 
-		  status = umfpack_di_solve (UMFPACK_A, Ap, Ai, Ax, Xx,
-					     Bx, Numeric, control, 
+		  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
+					     Ai, Ax, Xx, Bx, Numeric, control, 
 					     info);
-		  int status2 = umfpack_di_solve (UMFPACK_A, Ap, Ai, 
-						  Ax, Xz, Bz, Numeric, 
+		  int status2 = UMFPACK_DNAME (solve) (UMFPACK_A,
+						  Ap, Ai, Ax, Xz, Bz, Numeric, 
 						  control, info) ;
 
 		  if (status < 0 || status2 < 0)
@@ -5229,7 +5296,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		      (*current_liboctave_error_handler) 
 			("SparseMatrix::solve solve failed");
 
-		      umfpack_di_report_status (control, status);
+		      UMFPACK_DNAME (report_status) (control, status);
 		      
 		      err = -1;
 
@@ -5277,9 +5344,9 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		}
 #endif
 
-	      umfpack_di_report_info (control, info);
+	      UMFPACK_DNAME (report_info) (control, info);
 
-	      umfpack_di_free_numeric (&Numeric);
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 #else
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
@@ -5319,7 +5386,7 @@ SparseMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_type& err,
 		     double& rcond, 
 		     solve_singularity_handler sing_handler) const
 {
-  int typ = mattype.type ();
+  int typ = mattype.type (false);
 
   if (typ == SparseType::Unknown)
     typ = mattype.type (*this);
@@ -5373,7 +5440,7 @@ SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b,
 		     octave_idx_type& err, double& rcond,
 		     solve_singularity_handler sing_handler) const
 {
-  int typ = mattype.type ();
+  int typ = mattype.type (false);
 
   if (typ == SparseType::Unknown)
     typ = mattype.type (*this);
@@ -5427,7 +5494,7 @@ SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b,
 		     octave_idx_type& err, double& rcond, 
 		     solve_singularity_handler sing_handler) const
 {
-  int typ = mattype.type ();
+  int typ = mattype.type (false);
 
   if (typ == SparseType::Unknown)
     typ = mattype.type (*this);
@@ -5481,7 +5548,7 @@ SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
 		     octave_idx_type& err, double& rcond,
 		     solve_singularity_handler sing_handler) const
 {
-  int typ = mattype.type ();
+  int typ = mattype.type (false);
 
   if (typ == SparseType::Unknown)
     typ = mattype.type (*this);

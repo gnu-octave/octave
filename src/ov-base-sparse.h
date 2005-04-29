@@ -117,6 +117,10 @@ octave_base_sparse : public octave_base_value
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
+  SparseType sparse_type (void) const { return typ; }
+  SparseType sparse_type (const SparseType& _typ) 
+    { SparseType ret = typ; typ = _typ; return ret; }
+
   bool is_matrix_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }

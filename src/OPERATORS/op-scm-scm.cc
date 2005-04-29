@@ -57,15 +57,17 @@ DEFUNOP_OP (uminus, sparse_complex_matrix, -)
 DEFUNOP (transpose, sparse_complex_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_complex_matrix&);
-
-  return octave_value (v.sparse_complex_matrix_value().transpose ());
+  return octave_value 
+    (v.sparse_complex_matrix_value().transpose (),
+     v.sparse_type ().transpose ());
 }
 
 DEFUNOP (hermitian, sparse_complex_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_complex_matrix&);
-
-  return octave_value (v.sparse_complex_matrix_value().hermitian ());
+  return octave_value 
+    (v.sparse_complex_matrix_value().hermitian (),
+     v.sparse_type ().transpose ());
 }
 
 #if 0
@@ -91,7 +93,17 @@ DEFBINOP_OP (sub, sparse_complex_matrix, sparse_complex_matrix, -)
 
 DEFBINOP_OP (mul, sparse_complex_matrix, sparse_complex_matrix, *)
 
-DEFBINOP_FN (div, sparse_complex_matrix, sparse_complex_matrix, xdiv)
+DEFBINOP (div, sparse_complex_matrix, sparse_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, 
+		   octave_sparse_complex_matrix&);
+  SparseType typ = v2.sparse_type ();
+  SparseComplexMatrix ret = xdiv (v1.sparse_complex_matrix_value (), 
+				  v2.sparse_complex_matrix_value (), typ);
+  
+  v2.sparse_type (typ);
+  return ret;
+}
 
 DEFBINOPX (pow, sparse_complex_matrix, sparse_complex_matrix)
 {
@@ -99,7 +111,18 @@ DEFBINOPX (pow, sparse_complex_matrix, sparse_complex_matrix)
   return octave_value ();
 }
 
-DEFBINOP_FN (ldiv, sparse_complex_matrix, sparse_complex_matrix, xleftdiv)
+DEFBINOP (ldiv, sparse_complex_matrix, sparse_complex_matrix)
+{
+  CAST_BINOP_ARGS (octave_sparse_complex_matrix&, 
+		   const octave_sparse_complex_matrix&);
+  SparseType typ = v1.sparse_type ();
+
+  SparseComplexMatrix ret = xleftdiv (v1.sparse_complex_matrix_value (), 
+				      v2.sparse_complex_matrix_value (), typ);
+
+  v1.sparse_type (typ);
+  return ret;
+}
 
 DEFBINOP_FN (lt, sparse_complex_matrix, sparse_complex_matrix, mx_el_lt)
 DEFBINOP_FN (le, sparse_complex_matrix, sparse_complex_matrix, mx_el_le)

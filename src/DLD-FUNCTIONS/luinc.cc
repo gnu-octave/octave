@@ -30,6 +30,7 @@ Boston, MA 02110-1301, USA.
 #include "utils.h"
 #include "oct-map.h"
 
+#include "SparseType.h"
 #include "SparseCmplxLU.h"
 #include "SparsedbleLU.h"
 #include "ov-re-sparse.h"
@@ -146,9 +147,10 @@ are the same as for @dfn{lu}.\n\
 
       if (!error_state)
 	{
-	  if (args(0).class_name () == "sparse") 
+	  if (args(0).type_name () == "sparse matrix") 
 	    {
 	      SparseMatrix sm = args(0).sparse_matrix_value ();
+	      octave_idx_type sm_nr = sm.rows ();
 	      octave_idx_type sm_nc = sm.cols ();
 	      ColumnVector Qinit (sm_nc);
 
@@ -168,8 +170,11 @@ are the same as for @dfn{lu}.\n\
 
 			SparseMatrix P = fact.Pr ();
 			SparseMatrix L = P.transpose () * fact.L ();
-			retval(1) = fact.U ();
-			retval(0) = L;
+			retval(1) = octave_value (fact.U (),
+				  SparseType (SparseType::Upper));
+			retval(0) = octave_value (L, SparseType 
+						  (SparseType::Permuted_Lower, 
+						   sm_nr, fact.row_perm ()));
 		      }
 		      break;
 
@@ -179,8 +184,10 @@ are the same as for @dfn{lu}.\n\
 				       milu, udiag);
 
 			retval(2) = fact.Pr ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = octave_value (fact.U (),
+				  SparseType (SparseType::Upper));
+			retval(0) = octave_value (fact.L (),
+				  SparseType (SparseType::Lower));
 		      }
 		      break;
 
@@ -192,17 +199,20 @@ are the same as for @dfn{lu}.\n\
 
 			retval(3) = fact.Pc ();
 			retval(2) = fact.Pr ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = octave_value (fact.U (),
+				  SparseType (SparseType::Upper));
+			retval(0) = octave_value (fact.L (),
+				  SparseType (SparseType::Lower));
 		      }
 		      break;
 		    }
 		}
 	    }
-	  else if (args(0).class_name () == "sparse complex") 
+	  else if (args(0).type_name () == "sparse complex matrix") 
 	    {
 	      SparseComplexMatrix sm = 
 		args(0).sparse_complex_matrix_value ();
+	      octave_idx_type sm_nr = sm.rows ();
 	      octave_idx_type sm_nc = sm.cols ();
 	      ColumnVector Qinit (sm_nc);
 
@@ -222,8 +232,11 @@ are the same as for @dfn{lu}.\n\
 
 			SparseMatrix P = fact.Pr ();
 			SparseComplexMatrix L = P.transpose () * fact.L ();
-			retval(1) = fact.U ();
-			retval(0) = L;
+			retval(1) = octave_value (fact.U (),
+				  SparseType (SparseType::Upper));
+			retval(0) = octave_value (L, SparseType 
+						  (SparseType::Permuted_Lower, 
+						   sm_nr, fact.row_perm ()));
 		      }
 		      break;
 
@@ -233,8 +246,10 @@ are the same as for @dfn{lu}.\n\
 					      droptol, milu, udiag);
 
 			retval(2) = fact.Pr ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = octave_value (fact.U (),
+				  SparseType (SparseType::Upper));
+			retval(0) = octave_value (fact.L (),
+				  SparseType (SparseType::Lower));
 		      }
 		      break;
 
@@ -246,8 +261,10 @@ are the same as for @dfn{lu}.\n\
 
 			retval(3) = fact.Pc ();
 			retval(2) = fact.Pr ();
-			retval(1) = fact.U ();
-			retval(0) = fact.L ();
+			retval(1) = octave_value (fact.U (),
+				  SparseType (SparseType::Upper));
+			retval(0) = octave_value (fact.L (),
+				  SparseType (SparseType::Lower));
 		      }
 		      break;
 		    }

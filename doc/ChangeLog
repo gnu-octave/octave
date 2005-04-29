@@ -1,3 +1,8 @@
+2005-04-29  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Add matrix_type, spkron, and document changes
+	in solve code
+
 2005-03-14  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Add luinc function.

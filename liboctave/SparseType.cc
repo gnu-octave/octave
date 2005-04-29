@@ -24,12 +24,19 @@ Boston, MA 02110-1301, USA.
 #include <config.h>
 #endif
 
+#include <vector>
+
 #include "SparseType.h"
 #include "dSparse.h"
 #include "CSparse.h"
 #include "oct-spparms.h"
 
 // XXX FIXME XXX There is a large code duplication here
+
+SparseType::SparseType (void) : typ (SparseType::Unknown), nperm (0)
+{
+  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
+} 
 
 SparseType::SparseType (const SparseType &a) : typ (a.typ), 
     sp_bandden (a.sp_bandden), bandden (a.bandden), 
@@ -38,13 +45,9 @@ SparseType::SparseType (const SparseType &a) : typ (a.typ),
 { 
   if (nperm != 0)
     {
-      row_perm = new octave_idx_type [nperm];
-      col_perm = new octave_idx_type [nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
-	{
-	  row_perm[i] = a.row_perm[i];
-	  col_perm[i] = a.col_perm[i];
-	}
+	perm[i] = a.perm[i];
     }
 }
 
@@ -53,6 +56,10 @@ SparseType::SparseType (const SparseMatrix &a)
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
   octave_idx_type nnz = a.nnz ();
+
+  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+    (*current_liboctave_warning_handler) 
+      ("Calculating Sparse Matrix Type");
 
   nperm = 0;
 
@@ -177,8 +184,76 @@ SparseType::SparseType (const SparseMatrix &a)
 	      // Search for a permuted triangular matrix, and test if
 	      // permutation is singular
 
-	      // XXX FIXME XXX Write this test based on dmperm
-	      
+	      // XXX FIXME XXX Perhaps this should be based on a dmperm algorithm
+	      bool found = false;
+
+	      nperm = nrows;
+	      perm = new octave_idx_type [nperm];
+
+	      for (octave_idx_type i = 0; i < nperm; i++)
+		{
+		  found = false;
+
+		  for (octave_idx_type j = 0; j < ncols; j++)
+		    {
+
+		      if ((a.cidx(j+1) - a.cidx(j)) > 0 && 
+			  a.ridx(a.cidx(j+1)-1) == i)
+			{
+			  perm [i] = j;
+			  found = true;
+			  break;
+			}
+		    }
+
+		  if (!found)
+		    break;
+		}
+
+	      if (found)
+		typ = SparseType::Permuted_Upper;
+	      else
+		{
+		  OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nperm);
+
+		  for (octave_idx_type i = 0; i < nperm; i++)
+		    {
+		      perm [i] = -1;
+		      tmp [i] = -1;
+		    }
+
+		  for (octave_idx_type j = 0; j < ncols; j++)
+		    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+		      perm [a.ridx(i)] = j;
+  
+		  found = true;
+		  for (octave_idx_type i = 0; i < nperm; i++)
+		    if (perm[i] == -1)
+		      {
+			found = false;
+			break;
+		      }
+		    else
+		      {
+			tmp[perm[i]] = 1;
+		      }
+
+		  if (found)
+		    for (octave_idx_type i = 0; i < nperm; i++)
+		      if (tmp[i] == -1)
+			{
+			  found = false;
+			  break;
+			}
+
+		  if (found)
+		    typ = SparseType::Permuted_Lower;
+		  else
+		    {
+		      delete [] perm;
+		      nperm = 0;
+		    }
+		}
 	    }
 	}
 
@@ -253,6 +328,10 @@ SparseType::SparseType (const SparseComplexMatrix &a)
   octave_idx_type ncols = a.cols ();
   octave_idx_type nnz = a.nnz ();
 
+  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+    (*current_liboctave_warning_handler) 
+      ("Calculating Sparse Matrix Type");
+
   nperm = 0;
 
   if (nrows != ncols)
@@ -376,8 +455,76 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	      // Search for a permuted triangular matrix, and test if
 	      // permutation is singular
 
-	      // XXX FIXME XXX Write this test based on dmperm
-	      
+	      // XXX FIXME XXX Perhaps this should be based on a dmperm algorithm
+	      bool found = false;
+
+	      nperm = nrows;
+	      perm = new octave_idx_type [nperm];
+
+	      for (octave_idx_type i = 0; i < nperm; i++)
+		{
+		  found = false;
+
+		  for (octave_idx_type j = 0; j < ncols; j++)
+		    {
+
+		      if ((a.cidx(j+1) - a.cidx(j)) > 0 && 
+			  a.ridx(a.cidx(j+1)-1) == i)
+			{
+			  perm [i] = j;
+			  found = true;
+			  break;
+			}
+		    }
+
+		  if (!found)
+		    break;
+		}
+
+	      if (found)
+		typ = SparseType::Permuted_Upper;
+	      else
+		{
+		  OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nperm);
+
+		  for (octave_idx_type i = 0; i < nperm; i++)
+		    {
+		      perm [i] = -1;
+		      tmp [i] = -1;
+		    }
+
+		  for (octave_idx_type j = 0; j < ncols; j++)
+		    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+		      perm [a.ridx(i)] = j;
+  
+		  found = true;
+		  for (octave_idx_type i = 0; i < nperm; i++)
+		    if (perm[i] == -1)
+		      {
+			found = false;
+			break;
+		      }
+		    else
+		      {
+			tmp[perm[i]] = 1;
+		      }
+
+		  if (found)
+		    for (octave_idx_type i = 0; i < nperm; i++)
+		      if (tmp[i] == -1)
+			{
+			  found = false;
+			  break;
+			}
+
+		  if (found)
+		    typ = SparseType::Permuted_Lower;
+		  else
+		    {
+		      delete [] perm;
+		      nperm = 0;
+		    }
+		}
 	    }
 	}
 
@@ -446,12 +593,59 @@ SparseType::SparseType (const SparseComplexMatrix &a)
     }
 }
 
+SparseType::SparseType (const matrix_type t) : typ (SparseType::Unknown), 
+					       nperm (0)
+{
+  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
+
+  if (t == SparseType::Full || t == SparseType::Diagonal ||
+      t == SparseType::Permuted_Diagonal || t == SparseType::Upper ||
+      t == SparseType::Lower || t == SparseType::Tridiagonal ||
+      t == SparseType::Tridiagonal_Hermitian || t == SparseType::Rectangular)
+    typ = t;
+  else
+    (*current_liboctave_warning_handler) ("Invalid sparse matrix type");
+}
+
+SparseType::SparseType (const matrix_type t, const octave_idx_type np,
+			const octave_idx_type *p) : typ (SparseType::Unknown), 
+					       nperm (0)
+{
+  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
+
+  if (t == SparseType::Permuted_Upper || t == SparseType::Permuted_Lower)
+    {
+      typ = t;
+      nperm = np;
+      perm = new octave_idx_type [nperm];
+      for (octave_idx_type i = 0; i < nperm; i++)
+	perm[i] = p[i];
+    }
+  else
+    (*current_liboctave_warning_handler) ("Invalid sparse matrix type");
+}
+
+SparseType::SparseType (const matrix_type t, const octave_idx_type ku,
+			const octave_idx_type kl) : typ (SparseType::Unknown), 
+					       nperm (0)
+{
+  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
+
+  if (t == SparseType::Banded || t == SparseType::Banded_Hermitian)
+    {
+      typ = t;
+      upper_band = ku;
+      lower_band = kl;
+    }
+  else
+    (*current_liboctave_warning_handler) ("Invalid sparse matrix type"); 
+}
+
 SparseType::~SparseType (void) 
 { 
   if (nperm != 0)
     {
-      delete [] row_perm; 
-      delete [] col_perm; 
+      delete [] perm; 
     }
 }
 
@@ -470,17 +664,37 @@ SparseType::operator = (const SparseType& a)
 
       if (nperm != 0)
 	{
-	  row_perm = new octave_idx_type [nperm];
-	  col_perm = new octave_idx_type [nperm];
+	  perm = new octave_idx_type [nperm];
 	  for (octave_idx_type i = 0; i < nperm; i++)
-	    {
-	      row_perm[i] = a.row_perm[i];
-	      col_perm[i] = a.col_perm[i];
-	    }
+	    perm[i] = a.perm[i];
+	}
     }
 
-    }
   return *this;
+}
+
+int
+SparseType::type (bool quiet)
+{
+  if (typ != SparseType::Unknown && 
+      sp_bandden == Voctave_sparse_controls.get_key ("bandden"))
+    {
+      if (!quiet &&
+	  Voctave_sparse_controls.get_key ("spumoni") != 0.)
+  	(*current_liboctave_warning_handler) 
+  	  ("Using Cached Sparse Matrix Type");
+      
+      return typ;
+    }
+
+  if (typ != SparseType::Unknown && 
+      Voctave_sparse_controls.get_key ("spumoni") != 0.)
+    (*current_liboctave_warning_handler) 
+      ("Invalidating Sparse Matrix Type");
+
+  typ = SparseType::Unknown;
+
+  return typ;
 }
 
 int
@@ -496,11 +710,6 @@ SparseType::type (const SparseMatrix &a)
       return typ;
     }
 
-  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
-    (*current_liboctave_warning_handler) 
-      ("Calculating Sparse Matrix Type");
-
-
   SparseType tmp_typ (a);
   typ = tmp_typ.typ;
   sp_bandden = tmp_typ.sp_bandden;
@@ -512,13 +721,9 @@ SparseType::type (const SparseMatrix &a)
 
   if (nperm != 0)
     {
-      row_perm = new octave_idx_type [nperm];
-      col_perm = new octave_idx_type [nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
-	{
-	  row_perm[i] = tmp_typ.row_perm[i];
-	  col_perm[i] = tmp_typ.col_perm[i];
-	}
+	perm[i] = tmp_typ.perm[i];
     }
 
   return typ;
@@ -537,11 +742,6 @@ SparseType::type (const SparseComplexMatrix &a)
       return typ;
     }
 
-  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
-    (*current_liboctave_warning_handler) 
-      ("Calculating Sparse Matrix Type");
-
-
   SparseType tmp_typ (a);
   typ = tmp_typ.typ;
   sp_bandden = tmp_typ.sp_bandden;
@@ -553,13 +753,9 @@ SparseType::type (const SparseComplexMatrix &a)
 
   if (nperm != 0)
     {
-      row_perm = new octave_idx_type [nperm];
-      col_perm = new octave_idx_type [nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
-	{
-	  row_perm[i] = tmp_typ.row_perm[i];
-	  col_perm[i] = tmp_typ.col_perm[i];
-	}
+	perm[i] = tmp_typ.perm[i];
     }
 
   return typ;
@@ -593,11 +789,11 @@ SparseType::info (void) const
 	  ("Permuted Lower Triangular Sparse Matrix");
       else if (typ == SparseType::Banded)
 	(*current_liboctave_warning_handler) 
-	  ("Banded Sparse Matrix %g-1-%g (Density %g)", lower_band, 
+	  ("Banded Sparse Matrix %d-1-%d (Density %f)", lower_band, 
 	   upper_band, bandden);
       else if (typ == SparseType::Banded_Hermitian)
 	(*current_liboctave_warning_handler) 
-	  ("Banded Hermitian/Symmetric Sparse Matrix %g-1-%g (Density %g)", 
+	  ("Banded Hermitian/Symmetric Sparse Matrix %d-1-%d (Density %f)", 
 	   lower_band, upper_band, bandden);
       else if (typ == SparseType::Hermitian)
 	(*current_liboctave_warning_handler) 
@@ -649,16 +845,12 @@ SparseType::mark_as_unsymmetric (void)
 }
 
 void
-SparseType::mark_as_permuted (const octave_idx_type np, const octave_idx_type *pr, const octave_idx_type *pc)
+SparseType::mark_as_permuted (const octave_idx_type np, const octave_idx_type *p)
 {
   nperm = np;
-  row_perm = new octave_idx_type [nperm];
-  col_perm = new octave_idx_type [nperm];
+  perm = new octave_idx_type [nperm];
   for (octave_idx_type i = 0; i < nperm; i++)
-    {
-      row_perm[i] = pr[i];
-      col_perm[i] = pc[i];
-    }
+    perm[i] = p[i];
 
   if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
     typ = SparseType::Permuted_Diagonal;
@@ -677,8 +869,7 @@ SparseType::mark_as_unpermuted (void)
   if (nperm)
     {
       nperm = 0;
-      delete [] row_perm;
-      delete [] col_perm;
+      delete [] perm;
     }
 
   if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
@@ -694,23 +885,13 @@ SparseType::transpose (void) const
 {
   SparseType retval (*this);
   if (typ == SparseType::Upper)
-    retval.typ = Lower;
+    retval.typ = SparseType::Lower;
   else if (typ == SparseType::Permuted_Upper)
-    {
-      octave_idx_type *tmp = retval.row_perm;
-      retval.row_perm = retval.col_perm;
-      retval.col_perm = tmp;
-      retval.typ = Lower;
-    }
+    retval.typ = SparseType::Permuted_Lower;
   else if (typ == SparseType::Lower)
     retval.typ = Upper;
-  else if (typ == SparseType::Permuted_Upper)
-    {
-      octave_idx_type *tmp = retval.row_perm;
-      retval.row_perm = retval.col_perm;
-      retval.col_perm = tmp;
-      retval.typ = Upper;
-    }
+  else if (typ == SparseType::Permuted_Lower)
+    retval.typ = Permuted_Upper;
   else if (typ == SparseType::Banded)
     {
       retval.upper_band = lower_band;

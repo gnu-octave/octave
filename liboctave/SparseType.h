@@ -47,7 +47,7 @@ public:
     Rectangular
   };
 
-  SparseType (void) : typ (Unknown), nperm (0) { }
+  SparseType (void);
     
   SparseType (const SparseType &a);
 
@@ -55,11 +55,19 @@ public:
 
   SparseType (const SparseComplexMatrix &a);
 
+  SparseType (const matrix_type t);
+
+  SparseType (const matrix_type t, const octave_idx_type np,
+	      const octave_idx_type *p);
+
+  SparseType (const matrix_type t, const octave_idx_type ku, 
+	      const octave_idx_type kl);
+
   ~SparseType (void);
 
   SparseType& operator = (const SparseType& a);
 
-  int type (void) const { return typ; }
+  int type (bool quiet = true);
 
   int type (const SparseMatrix &a);
 
@@ -100,13 +108,13 @@ public:
 
   void info (void) const;
 
-  octave_idx_type * triangular_row_perm (void) const { return row_perm; }
+  octave_idx_type * triangular_perm (void) const { return perm; }
 
-  octave_idx_type * triangular_col_perm (void) const { return col_perm; }
-
-  void invaldate_type (void) { typ = Unknown; }
+  void invalidate_type (void) { typ = Unknown; }
 
   void mark_as_diagonal (void) { typ = Diagonal; }
+
+  void mark_as_permuted_diagonal (void) { typ = Permuted_Diagonal; }
 
   void mark_as_upper_triangular (void) { typ = Upper; }
 
@@ -129,7 +137,7 @@ public:
 
   void mark_as_unsymmetric (void);
 
-  void mark_as_permuted (const octave_idx_type np, const octave_idx_type *pr, const octave_idx_type *pc);
+  void mark_as_permuted (const octave_idx_type np, const octave_idx_type *p);
 
   void mark_as_unpermuted (void);
 
@@ -145,8 +153,7 @@ private:
   octave_idx_type lower_band;
   bool dense;
   octave_idx_type nperm;
-  octave_idx_type *row_perm;
-  octave_idx_type *col_perm;
+  octave_idx_type *perm;
 };
 
 #endif

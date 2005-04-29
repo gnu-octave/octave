@@ -188,6 +188,9 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
     matrix.set_index (idx(i).index_vector ());
 
   ::assign (matrix, rhs);
+
+  // Invalidate matrix type.
+  typ.invalidate_type ();
 }
 
 

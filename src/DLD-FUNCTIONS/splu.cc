@@ -239,11 +239,14 @@ be square.\n\
 		SparseMatrix P = fact.Pr ();
 		SparseMatrix L = P.transpose () * fact.L ();
 		if (have_Qinit)
-		  retval(1) = fact.U () * fact.Pc ().transpose ();
+		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
+		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
 		else
-		  retval(1) = fact.U ();
+		  retval(1) = octave_value (fact.U (), 
+					    SparseType (SparseType::Upper));
 
-		retval(0) = L;
+		retval(0) = octave_value (L,
+		  SparseType (SparseType::Permuted_Lower, nr, fact.row_perm ()));
 	      }
 	      break;
 
@@ -253,10 +256,14 @@ be square.\n\
 
 		retval(2) = fact.Pr ();
 		if (have_Qinit)
-		  retval(1) = fact.U () * fact.Pc ().transpose ();
+		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
+		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
 		else
-		  retval(1) = fact.U ();
-		retval(0) = fact.L ();
+		  retval(1) = octave_value (fact.U (), 
+					    SparseType (SparseType::Upper));
+
+		retval(0) = octave_value (fact.L (), 
+					  SparseType (SparseType::Lower));
 	      }
 	      break;
 
@@ -269,8 +276,10 @@ be square.\n\
 
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
-		    retval(1) = fact.U ();
-		    retval(0) = fact.L ();
+		    retval(1) = octave_value (fact.U (), 
+					      SparseType (SparseType::Upper));
+		    retval(0) = octave_value (fact.L (), 
+					      SparseType (SparseType::Lower));
 		  }
 		else
 		  {
@@ -278,8 +287,10 @@ be square.\n\
 
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
-		    retval(1) = fact.U ();
-		    retval(0) = fact.L ();
+		    retval(1) = octave_value (fact.U (), 
+					      SparseType (SparseType::Upper));
+		    retval(0) = octave_value (fact.L (), 
+					      SparseType (SparseType::Lower));
 		  }
 	      }
 	      break;
@@ -312,10 +323,14 @@ be square.\n\
 		SparseComplexMatrix L = P.transpose () * fact.L ();
 
 		if (have_Qinit)
-		  retval(1) = fact.U () * fact.Pc ().transpose ();
+		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
+		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
 		else
-		  retval(1) = fact.U ();
-		retval(0) = L;
+		  retval(1) = octave_value (fact.U (), 
+					    SparseType (SparseType::Upper));
+
+		retval(0) = octave_value (L,
+		  SparseType (SparseType::Permuted_Lower, nr, fact.row_perm ()));
 	      }
 	      break;
 
@@ -325,10 +340,14 @@ be square.\n\
 
 		retval(2) = fact.Pr ();
 		if (have_Qinit)
-		  retval(1) = fact.U () * fact.Pc ().transpose ();
+		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
+		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
 		else
-		  retval(1) = fact.U ();
-		retval(0) = fact.L ();
+		  retval(1) = octave_value (fact.U (), 
+					    SparseType (SparseType::Upper));
+
+		retval(0) = octave_value (fact.L (), 
+					  SparseType (SparseType::Lower));
 	      }
 	      break;
 
@@ -338,11 +357,13 @@ be square.\n\
 		if (have_Qinit)
 		  {
 		    SparseComplexLU fact (m, Qinit, thres, false);
-
+		    
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
-		    retval(1) = fact.U ();
-		    retval(0) = fact.L ();
+		    retval(1) = octave_value (fact.U (), 
+					      SparseType (SparseType::Upper));
+		    retval(0) = octave_value (fact.L (), 
+					      SparseType (SparseType::Lower));
 		  }
 		else
 		  {
@@ -350,8 +371,10 @@ be square.\n\
 
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
-		    retval(1) = fact.U ();
-		    retval(0) = fact.L ();
+		    retval(1) = octave_value (fact.U (), 
+					      SparseType (SparseType::Upper));
+		    retval(0) = octave_value (fact.L (), 
+					      SparseType (SparseType::Lower));
 		  }
 	      }
 	      break;

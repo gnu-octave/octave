@@ -60,9 +60,9 @@ public:
 
   p_type Pr (void) const;
 
-  MArray<int> row_perm (void) const { return P; }
+  const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
 
-  MArray<int> col_perm (void) const { return Q; }
+  const octave_idx_type * col_perm (void) const { return Q.fortran_vec (); }
 
   double rcond (void) const { return cond; }
 
@@ -73,8 +73,8 @@ protected:
 
   double cond;
 
-  MArray<int> P;
-  MArray<int> Q;
+  MArray<octave_idx_type> P;
+  MArray<octave_idx_type> Q;
 };
 
 #endif

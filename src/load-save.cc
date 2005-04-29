@@ -1151,6 +1151,10 @@ parse_save_options (const string_vector &argv, int argc,
 	{
 	  use_zlib  = true;
 	}
+      else if (argv[i] == "-nozip" || argv[i] == "-nz")
+	{
+	  use_zlib  = false;
+	}
 #endif
       else
 	break;
@@ -1507,7 +1511,13 @@ Octave does not save built-in variables.\n\
 @itemx -z\n\
 Use the gzip algorithm to compress the file. This works equally on files that\n\
 are compressed with gzip outside of octave, and gzip can equally be used to\n\
-convert the files for backward compatibility"
+convert the files for backward compatibility."
+
+HAVE_ZLIB_HELP_STRING
+
+"@item -nozip\n\
+@itemx -nz\n\
+Disable the use of the file compression."
 
 HAVE_ZLIB_HELP_STRING
 

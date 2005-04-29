@@ -113,7 +113,7 @@ public:
 
   streamoff_array streamoff_array_value (void) const;
 
-  octave_value convert_to_str_internal (bool pad, bool force) const;
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
 #if 0
   int write (octave_stream& os, int block_size,

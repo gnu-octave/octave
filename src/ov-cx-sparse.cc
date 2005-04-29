@@ -650,7 +650,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nc + 1 || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nc + 1 || 
+      static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -685,7 +686,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nz || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nz || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -732,7 +733,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  if (hdims[0] != nz || hdims[1] != 1)
+  if (static_cast<int> (hdims[0]) != nz || static_cast<int> (hdims[1]) != 1)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);

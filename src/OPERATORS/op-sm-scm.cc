@@ -44,7 +44,16 @@ DEFBINOP_OP (sub, sparse_matrix, sparse_complex_matrix, -)
 
 DEFBINOP_OP (mul, sparse_matrix, sparse_complex_matrix, *)
 
-DEFBINOP_FN (div, sparse_matrix, sparse_complex_matrix, xdiv)
+DEFBINOP (div, sparse_matrix, sparse_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, octave_sparse_complex_matrix&);
+  SparseType typ = v2.sparse_type ();
+  SparseComplexMatrix ret = xdiv (v1.sparse_matrix_value (), 
+				  v2.sparse_complex_matrix_value (), typ);
+  
+  v2.sparse_type (typ);
+  return ret;
+}
 
 DEFBINOPX (pow, sparse_matrix, sparse_complex_matrix)
 {
@@ -52,7 +61,17 @@ DEFBINOPX (pow, sparse_matrix, sparse_complex_matrix)
   return octave_value ();
 }
 
-DEFBINOP_FN (ldiv, sparse_matrix, sparse_complex_matrix, xleftdiv)
+DEFBINOP (ldiv, sparse_matrix, sparse_complex_matrix)
+{
+  CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_sparse_complex_matrix&);
+  SparseType typ = v1.sparse_type ();
+
+  SparseComplexMatrix ret = xleftdiv (v1.sparse_matrix_value (), 
+				      v2.sparse_complex_matrix_value (), typ);
+
+  v1.sparse_type (typ);
+  return ret;
+}
 
 DEFBINOP_FN (lt, sparse_matrix, sparse_complex_matrix, mx_el_lt)
 DEFBINOP_FN (le, sparse_matrix, sparse_complex_matrix, mx_el_le)

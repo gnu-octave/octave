@@ -168,7 +168,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
 	oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \
-	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stdstrm.cc \
+	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc \
 	oct-stream.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strcasecmp.c \

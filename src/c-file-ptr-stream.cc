@@ -190,9 +190,158 @@ c_file_ptr_buf::close (void)
   return retval;
 }
 
+#ifdef HAVE_ZLIB
+
+c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
+{
+  close ();
+}
+
+// XXX FIXME XXX -- I'm sure there is room for improvement here...
+
+c_zfile_ptr_buf::int_type
+c_zfile_ptr_buf::overflow (int_type c)
+{
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+  if (f)
+    return (c != traits_type::eof ()) ? gzputc (f, c) : flush ();
+  else
+    return traits_type::not_eof (c);
+#else
+  if (f)
+    return (c != EOF) ? gzputc (f, c) : flush ();
+  else
+    return EOF;
+#endif
+}
+
+c_zfile_ptr_buf::int_type
+c_zfile_ptr_buf::underflow_common (bool bump)
+{
+  if (f)
+    {
+      int_type c = gzgetc (f);
+
+      if (! bump
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+	  && c != traits_type::eof ())
+#else
+	  && c != EOF)
+#endif
+	gzungetc (c, f);
+
+      return c;
+    }
+  else
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+    return traits_type::eof ();
+#else
+    return EOF;
+#endif
+}
+
+c_zfile_ptr_buf::int_type
+c_zfile_ptr_buf::pbackfail (int_type c)
+{
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+  return (c != traits_type::eof () && f) ? gzungetc (c, f) : 
+    traits_type::not_eof (c);
+#else
+  return (c != EOF && f) ? gzungetc (c, f) : EOF;
+#endif
+}
+
+std::streamsize
+c_zfile_ptr_buf::xsputn (const char* s, std::streamsize n)
+{
+  if (f)
+    return gzwrite (f, s, n);
+  else
+    return 0;
+}
+
+std::streamsize
+c_zfile_ptr_buf::xsgetn (char *s, std::streamsize n)
+{
+  if (f)
+    return gzread (f, s, n);
+  else
+    return 0;
+}
+
+std::streampos
+c_zfile_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
+			 std::ios::openmode)
+{
+  // XXX FIXME XXX
+#if 0
+  if (f)
+    {
+      gzseek (f, offset, seekdir_to_whence (dir));
+
+      return gztell (f);
+    }
+  else
+    return 0;
+#endif
+  return -1;
+}
+
+std::streampos
+c_zfile_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
+{
+  // XXX FIXME XXX
+#if 0  
+  if (f)
+    {
+      gzseek (f, offset, SEEK_SET);
+
+      return gztell (f);
+    }
+  else
+    return 0;
+#endif
+  return -1;
+}
+
+int
+c_zfile_ptr_buf::sync (void)
+{
+  flush ();
+
+  return 0;
+}
+
+int
+c_zfile_ptr_buf::flush (void)
+{
+  // XXX FIXME XXX -- do we need something more complex here, passing
+  // something other than 0 for the second argument to gzflush and
+  // checking the return value, etc.?
+
+  return f ? gzflush (f, 0) : EOF;
+}
+
+int
+c_zfile_ptr_buf::close (void)
+{
+  int retval = -1;
+
+  flush ();
+
+  if (f)
+    {
+      retval = cf (f);
+      f = 0;
+    }
+
+  return retval;
+}
+
+#endif
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***
 */
-

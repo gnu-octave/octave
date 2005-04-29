@@ -27,39 +27,39 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-stream.h"
 #include "c-file-ptr-stream.h"
 
+template <typename BUF_T, typename STREAM_T, typename FILE_T>
 class
-octave_stdiostream : public octave_base_stream
+octave_tstdiostream : public octave_base_stream
 {
 public:
 
-  octave_stdiostream (const std::string& n, FILE *f = 0,
-		      std::ios::openmode m = std::ios::in|std::ios::out,
-		      oct_mach_info::float_format ff
-		        = oct_mach_info::native_float_format (),
-		      c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
-    : octave_base_stream (m, ff), nm (n), md (m), s(0)
-  {
-    if (f)
-      s = new io_c_file_ptr_stream (f, cf);
-  }
+  octave_tstdiostream (const std::string& n, FILE_T f = 0,
+		       std::ios::openmode m = std::ios::in|std::ios::out,
+		       oct_mach_info::float_format ff
+		         = oct_mach_info::native_float_format (),
+		       typename BUF_T::close_fcn cf = BUF_T::fclose)
+    : octave_base_stream (m, ff), nm (n), md (m),
+      s(f ? new STREAM_T (f, cf) : 0)
+  { }
 
   static octave_stream
-  create (const std::string& n, FILE *f = 0,
+  create (const std::string& n, FILE_T f = 0,
 	  std::ios::openmode m = std::ios::in|std::ios::out,
 	  oct_mach_info::float_format ff
 	    = oct_mach_info::native_float_format (),
-	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
+	  typename BUF_T::close_fcn cf = BUF_T::fclose)
   {
-    return octave_stream (new octave_stdiostream (n, f, m, ff, cf));
+    return octave_stream (new octave_tstdiostream (n, f, m, ff, cf));
   }
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (long offset, int origin);
+  int seek (long offset, int origin)
+    { return s ? s->seek (offset, origin) : -1; }
 
   // Return current stream position.
 
-  long tell (void);
+  long tell (void) { return s ? s->tell () : -1; }
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -74,8 +74,8 @@ public:
   std::ostream *output_stream (void) { return (md & std::ios::out) ? s : 0; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
-  c_file_ptr_buf *rdbuf (void) const
-    { return s ? (const_cast<io_c_file_ptr_stream *> (s))->rdbuf () : 0; }
+  BUF_T *rdbuf (void) const
+    { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
 
   bool bad (void) const { return s ? s->bad () : true; }
 
@@ -89,18 +89,26 @@ protected:
 
   std::ios::openmode md;
 
-  io_c_file_ptr_stream *s;
+  STREAM_T *s;
 
-  ~octave_stdiostream (void) { delete s; }
+  ~octave_tstdiostream (void) { delete s; }
 
 private:
 
   // No copying!
 
-  octave_stdiostream (const octave_stdiostream&);
+  octave_tstdiostream (const octave_tstdiostream&);
 
-  octave_stdiostream& operator = (const octave_stdiostream&);
+  octave_tstdiostream& operator = (const octave_tstdiostream&);
 };
+
+typedef octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *> octave_stdiostream;
+
+#ifdef HAVE_ZLIB
+
+typedef octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile> octave_zstdiostream;
+
+#endif
 
 #endif
 

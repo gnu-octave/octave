@@ -1,3 +1,21 @@
+2005-04-29  John W. Eaton  <jwe@octave.org>
+
+	* c-file-ptr-stream.h (c_file_ptr_stream): New template class,
+	converted from i_c_file_ptr_stream.
+	(i_c_file_ptr_stream, o_c_file_ptr_stream, io_c_file_ptr_stream):
+	Now typedefs.
+	(i_c_zfile_ptr_stream, o_c_zfile_ptr_stream, io_c_zfile_ptr_stream):
+	New typedefs.
+	* c-file-ptr-stream.h, c-file-ptr-stream.cc (c_zfile_ptr_buf):
+	New class.
+
+	* oct-stdstrm.h (class octave_tstdiostream): New template class,
+	converted from octave_stdiostream.
+	(octave_stdiostream): Now a typedef.
+	[HAVE_ZLIB] (octave_zstdiostream): New a typedef.
+	* oct-stdstrm.cc: Delete.
+	* Makefile.in (DIST_SRC): Remove it from the list.
+
 2005-04-29  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in: Add matrix_type.cc and spkron.cc to DLD_XSRC

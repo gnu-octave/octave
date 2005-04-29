@@ -53,6 +53,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_ZLIB_H
+#include <zlib.h>
+#endif
+
 #include "error.h"
 #include "file-ops.h"
 #include "lo-ieee.h"
@@ -126,42 +130,58 @@ cleanup_tmp_files (void)
 }
 
 static std::ios::openmode
-fopen_mode_to_ios_mode (const std::string& mode)
+fopen_mode_to_ios_mode (const std::string& mode_arg)
 {
   std::ios::openmode retval = std::ios::in;
 
-  if (! mode.empty ())
+  if (! mode_arg.empty ())
     {
       // Could probably be faster, but does it really matter?
 
-      if (mode == "rt")
-	retval = std::ios::in;
-      else if (mode == "wt")
-	retval = std::ios::out | std::ios::trunc;
-      else if (mode == "at")
-	retval = std::ios::out | std::ios::app;
-      else if (mode == "r+t")
-	retval = std::ios::in | std::ios::out;
-      else if (mode == "w+t")
-	retval = std::ios::in | std::ios::out | std::ios::trunc;
-      else if (mode == "a+t")
-	retval = std::ios::in | std::ios::out | std::ios::ate;
-      else if (mode == "rb" || mode == "r")
-	retval = std::ios::in | std::ios::binary;
-      else if (mode == "wb" || mode == "w")
-	retval = std::ios::out | std::ios::trunc | std::ios::binary;
-      else if (mode == "ab" || mode == "a")
-	retval = std::ios::out | std::ios::app | std::ios::binary;
-      else if (mode == "r+b" || mode == "r+")
-	retval = std::ios::in | std::ios::out | std::ios::binary;
-      else if (mode == "w+b" || mode == "w+")
-	retval = (std::ios::in | std::ios::out | std::ios::trunc
-		  | std::ios::binary);
-      else if (mode == "a+b" || mode == "a+")
-	retval = (std::ios::in | std::ios::out | std::ios::ate
-		  | std::ios::binary);
-      else
-	::error ("invalid mode specified");
+      std::string mode = mode_arg;
+
+      size_t pos = mode.find ('z');
+
+      if (pos != NPOS)
+	{
+#if defined (HAVE_ZLIB)
+	  mode.erase (pos, 1);
+#else
+	  error ("this version of Octave does not support gzipped files");
+#endif
+	}
+
+      if (! error_state)
+	{
+	  if (mode == "rt")
+	    retval = std::ios::in;
+	  else if (mode == "wt")
+	    retval = std::ios::out | std::ios::trunc;
+	  else if (mode == "at")
+	    retval = std::ios::out | std::ios::app;
+	  else if (mode == "r+t")
+	    retval = std::ios::in | std::ios::out;
+	  else if (mode == "w+t")
+	    retval = std::ios::in | std::ios::out | std::ios::trunc;
+	  else if (mode == "a+t")
+	    retval = std::ios::in | std::ios::out | std::ios::ate;
+	  else if (mode == "rb" || mode == "r")
+	    retval = std::ios::in | std::ios::binary;
+	  else if (mode == "wb" || mode == "w")
+	    retval = std::ios::out | std::ios::trunc | std::ios::binary;
+	  else if (mode == "ab" || mode == "a")
+	    retval = std::ios::out | std::ios::app | std::ios::binary;
+	  else if (mode == "r+b" || mode == "r+")
+	    retval = std::ios::in | std::ios::out | std::ios::binary;
+	  else if (mode == "w+b" || mode == "w+")
+	    retval = (std::ios::in | std::ios::out | std::ios::trunc
+		      | std::ios::binary);
+	  else if (mode == "a+b" || mode == "a+")
+	    retval = (std::ios::in | std::ios::out | std::ios::ate
+		      | std::ios::binary);
+	  else
+	    ::error ("invalid mode specified");
+	}
     }
 
   return retval;
@@ -386,15 +406,39 @@ do_stream_open (const std::string& name, const std::string& mode,
 
       if (! error_state)
 	{
-	  FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
+#if defined (HAVE_ZLIB)
+	  std::string tmode = mode;
 
-	  retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+	  size_t pos = tmode.find ('z');
 
-	  if (! fptr)
+	  if (pos != NPOS)
 	    {
-	      using namespace std;
-	      retval.error (::strerror (errno));
+	      tmode.erase (pos, 1);
+
+	      gzFile fptr = ::gzopen (name.c_str (), tmode.c_str ());
+
+	      if (fptr)
+		retval = octave_zstdiostream::create (name, fptr, md, flt_fmt);
+	      else
+		{
+		  using namespace std;
+		  retval.error (::strerror (errno));
+		}
 	    }
+	  else
+#endif
+	    {
+	      FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
+
+	      if (fptr)
+		retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+	      else
+		{
+		  using namespace std;
+		  retval.error (::strerror (errno));
+		}
+	    }
+
 	}
     }
 
@@ -501,6 +545,10 @@ mode reading and writing automatically converts linefeeds to the\n\
 appropriate line end character for the system (carriage-return linefeed\n\
 on Windows, carriage-returnn on Macintosh).  The default if no mode is\n\
 specified is binary mode.\n\
+\n\
+Additionally, you may append a \"z\" to the mode string to open a\n\
+gzipped file for reading or writing.  For this to be successful, you\n\
+must also open the file in binary mode.\n\
 \n\
 The parameter @var{arch} is a string specifying the default data format\n\
 for the file.  Valid values for @var{arch} are:\n\

@@ -702,7 +702,7 @@ Force Octave to assume the file is in Octave's text format.\n\
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  warning ("the meaning of this option will change in a future");
-	  warning ("version of Octave to be compatible with @sc{Matlab}.");
+	  warning ("version of Octave to be compatible with Matlab.");
 	  warning ("To keep the meaning of your code the same across");
 	  warning ("this change, use the -text option instead.");
 
@@ -1088,7 +1088,7 @@ parse_save_options (const string_vector &argv, int argc,
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  warning ("the meaning of this option will change in a future");
-	  warning ("version of Octave to be compatible with @sc{Matlab}.");
+	  warning ("version of Octave to be compatible with Matlab.");
 	  warning ("To keep the meaning of your code the same across");
 	  warning ("this change, use the -text option instead.");
 

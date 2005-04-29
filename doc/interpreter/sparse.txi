@@ -73,7 +73,7 @@ triplets, with two elements being the of the position in the array
 (rows and column) and the third being the data itself. This is conceptually
 easy to grasp, but requires more storage than is strictly needed.
 
-The storage technique used within @sc{Octave} is compressed column
+The storage technique used within Octave is compressed column
 format.  In this format the position of each element in a row and the
 data are stored as previously. However, if we assume that all elements
 in the same column are stored adjacent in the computers memory, then
@@ -136,10 +136,10 @@ and column assumed to start as zero. Thus the number of elements in the
 It should be noted that compressed row formats are equally possible. However,
 in the context of mixed operations between mixed sparse and dense matrices,
 it makes sense that the elements of the sparse matrices are in the same
-order as the dense matrices. @sc{Octave} stores dense matrices in column
+order as the dense matrices. Octave stores dense matrices in column
 major ordering, and so sparse matrices are equally stored in this manner.
 
-A further constraint on the sparse matrix storage used by @sc{Octave} is that 
+A further constraint on the sparse matrix storage used by Octave is that 
 all elements in the rows are stored in increasing order of their row
 index. This makes certain operations, later be faster. However, it imposes
 the need to sort the elements on the creation of sparse matrices. Having
@@ -222,7 +222,7 @@ vector of the same size containing the data to be stored. For example
 
 creates an @var{r}-by-@var{c} sparse matrix with a random distribution of
 2 elements per row. The elements of the vectors do not need to be sorted in
-any particular order as @sc{Octave} will store them prior to storing the
+any particular order as Octave will store them prior to storing the
 data. However, per sorting the data will make teh creation of the sparse
 matrix faster.
 
@@ -253,7 +253,7 @@ for j = 1:c
 endfor
 @end example
 
-It should be noted, that due to the way that the @sc{Octave}
+It should be noted, that due to the way that the Octave
 assignment functions are written that the assignment will reallocate
 the memory used by the sparse matrix at each iteration. Therefore the
 @dfn{spalloc} function ignores the @var{nz} argument and does not
@@ -319,7 +319,7 @@ example @code{(fliplr(speye(3)) + speye(3)) - speye(3)} gives a full
 matrix when it should give a sparse one. In general, where such cases 
 occur, they impose only a small memory penalty.
 
-There is however one known case where this behaviour of @sc{Octave}'s
+There is however one known case where this behaviour of Octave's
 sparse matrices will cause a problem. That is in the handling of the
 @dfn{diag} function. Whether @dfn{diag} returns a sparse or full matrix
 depending on the type of its input arguments. So 
@@ -413,7 +413,7 @@ WRITE ME
 @node Sparse Linear Algebra, Iterative Techniques, Graph Theory, Sparse Matrices
 @section Linear Algebra on Sparse Matrices
 
-@sc{Octave} includes a poly-morphic solver for sparse matrices, where 
+Octave includes a poly-morphic solver for sparse matrices, where 
 the exact solver used to factorize the matrix, depends on the properties
 of the sparse matrix, itself. The cost of determining the matrix type
 is small relative to the cost of factorizing the matrix itself, but in any
@@ -507,7 +507,7 @@ WRITE ME
 @node Oct-Files, License, Iterative Techniques, Sparse Matrices
 @section Using Sparse Matrices in Oct-files
 
-An oct-file is a means of writing an @sc{Octave} function in a compilable
+An oct-file is a means of writing an Octave function in a compilable
 language like C++, rather than as a script file. This results in a
 significant acceleration in the code.  It is not the purpose of this
 section to discuss how to write an oct-file, or discuss what they
@@ -535,18 +535,18 @@ A boolen sparse matrix class
 
 All of these classes inherit from the @code{Sparse<T>} template class,
 and so all have similar capabilities and usage. The @code{Sparse<T>}
-class was based on @sc{Octave} @code{Array<T>} class, and so users familar
-with @sc{Octave}'s Array classes will be comfortable with the use of
+class was based on Octave @code{Array<T>} class, and so users familar
+with Octave's Array classes will be comfortable with the use of
 the sparse classes.
 
 The sparse classes will not be entirely described in this section, due
 to their similar with the existing Array classes. However, there are a
 few differences due the different nature of sparse objects, and these
 will be described. Firstly, although it is fundamentally possible to
-have N-dimensional sparse objects, the @sc{Octave} sparse classes do
+have N-dimensional sparse objects, the Octave sparse classes do
 not allow them at this time. So all operations of the sparse classes
 must be 2-dimensional.  This means that in fact @code{SparseMatrix} is
-similar to @sc{Octave}'s @code{Matrix} class rather than its
+similar to Octave's @code{Matrix} class rather than its
 @code{NDArray} class.
 
 @menu
@@ -581,7 +581,7 @@ it won't overflow.
 
 Extreme care must be take with the elem method and the "()" operator,
 which perform basically the same function. The reason is that if a
-sparse object is non-const, then @sc{Octave} will assume that a
+sparse object is non-const, then Octave will assume that a
 request for a zero element in a sparse matrix is in fact a request 
 to create this element so it can be filled. Therefore a piece of
 code like
@@ -619,7 +619,7 @@ Finally, as the sparse types aren't just represented as a contiguous
 block of memory, the @code{fortran_vec} method of the @code{Array<T>}
 is not available. It is however replaced by three seperate methods
 @code{ridx}, @code{cidx} and @code{data}, that access the raw compressed
-column format that the @sc{Octave} sparse matrices are stored in.
+column format that the Octave sparse matrices are stored in.
 Additionally, these methods can be used in a manner similar to @code{elem},
 to allow the matrix to be accessed or filled. However, in that case it is
 up to the user to repect the sparse matrix compressed column format
@@ -815,7 +815,7 @@ should be avoided.
 @subsection Using Sparse Matrices in Oct-Files
 
 Most of the same operators and functions on sparse matrices that are
-available from the @sc{Octave} are equally available with oct-files.
+available from the Octave are equally available with oct-files.
 The basic means of extracting a sparse matrix from an @code{octave_value}
 and returning them as an @code{octave_value}, can be seen in the
 following example
@@ -840,7 +840,7 @@ The conversion to an octave-value is handled by the sparse
 @node License, Function Reference, Oct-Files, Sparse Matrices
 @section Licensing of Third Party Software
 
-There are several third party software packages used by the @sc{Octave}
+There are several third party software packages used by the Octave
 sparse matrix.
 
 @table @asis

@@ -475,8 +475,8 @@ returns number of non zero elements in SM\n\
 DEFUN_DLD (nzmax, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{scalar} =} nzmax (@var{SM})\n\
-Returns the amount of storage allocated to the sparse matrix @var{SM}.\n\
-Note that @sc{Octave} tends to crop unused memory at the first oppurtunity\n\
+Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
+Note that Octave tends to crop unused memory at the first oppurtunity\n\
 for sparse objects. There are some cases of user created sparse objects\n\
 where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},\n\
 but in general they will give the same result.\n\

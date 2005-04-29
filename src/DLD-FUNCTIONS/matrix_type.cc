@@ -87,7 +87,7 @@ The matrix is assumed to be singular and will be treated with a minimum norm sol
 \n\
 Note that the matrix type will be discovered automatically on the first attempt to\n\
 solve a linear equation involving @var{a}. Therefore @code{matrix_type} is only\n\
-useful to give @sc{Octave} hints of the matrix type. Incorrectly defining the\n\
+useful to give Octave hints of the matrix type. Incorrectly defining the\n\
 matrix type will result in incorrect results from solutions of linear equations,\n\
 and so it is entirely the responsibility of the user to correctly indentify the\n\
 matrix type.\n\

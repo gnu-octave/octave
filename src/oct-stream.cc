@@ -1411,7 +1411,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
       while (i < n && is && (c = is.get ()) != EOF) \
 	{ \
-	  if (c == fmt[i]) \
+	  if (c == static_cast<unsigned char> (fmt[i])) \
 	    { \
 	      i++; \
 	      continue; \

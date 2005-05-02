@@ -1,3 +1,11 @@
+2005-05-02  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.h (Octave_map::seek, Octave_map::contents): New
+	non-const versions.
+	* oct-map.cc (Octave_map::assign (const octave_value_list&,
+	const std::string&, const Cell&)): For clarity, always resize to
+	new_dims.
+
 2005-05-02  David Bateman  <dbateman@free.fr>
 
 	* ov-re-sparse.cc, ov-cx-sparse.cc (load_binary): read save_type into

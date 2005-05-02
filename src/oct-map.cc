@@ -31,6 +31,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-map.h"
 #include "utils.h"
 
+Cell&
+Octave_map::contents (const std::string& k)
+{
+  return map[k];
+}
+
 Cell
 Octave_map::contents (const std::string& k) const
 {
@@ -271,7 +277,7 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
       else if (new_dims != curr_dims)
 	{
 	  for (iterator p = begin (); p != end (); p++)
-	    contents(p).resize (rhs_dims, fill_value);
+	    contents(p).resize (new_dims, fill_value);
 	}
 
       dimensions = new_dims;

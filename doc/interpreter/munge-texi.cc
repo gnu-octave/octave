@@ -74,12 +74,35 @@ extract_docstring (std::istream& is)
 }
 
 static void
+skip_comments (std::ifstream& is)
+{
+  int c;
+
+  bool in_comment = false;
+
+  while ((c = is.get ()) != EOF)
+    {
+      if (c == '#')
+	in_comment = true;
+      else if (c == '\n')
+	in_comment = false;
+      else if (! (in_comment || ::isspace (c)))
+	{
+	  is.putback (c);
+	  break;
+	}
+    }
+}
+
+static void
 process_doc_file (const std::string& fname)
 {
   std::ifstream infile (fname.c_str ());
 
   if (infile)
     {
+      skip_comments (infile);
+
       if (infile.get () != doc_delim)
 	fatal ("invalid doc file format");
 

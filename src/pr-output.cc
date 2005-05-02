@@ -1897,9 +1897,6 @@ octave_print_internal (std::ostream& os, const Range& r,
 		}
 
 	      col += inc;
-
-	      if (col < num_elem)
-		os << "\n";
 	    }
 	}
     }

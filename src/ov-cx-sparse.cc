@@ -271,6 +271,8 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 				   oct_mach_info::float_format fmt)
 {
   FOUR_BYTE_INT nz, nc, nr, tmp;
+  char ctmp;
+
   if (! is.read (X_CAST (char *, &tmp), 4))
     return false;
 
@@ -320,10 +322,10 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
       m.ridx(i) = tmp;
     }
 
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (X_CAST (char *, &ctmp), 1))
     return false;
   
-  read_doubles (is, X_CAST(double *, m.data()), X_CAST (save_type, tmp), 
+  read_doubles (is, X_CAST(double *, m.data()), X_CAST (save_type, ctmp), 
 		2 * nz, swap, fmt);
 
   if (error_state || ! is)

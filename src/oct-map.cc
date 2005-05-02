@@ -274,7 +274,8 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
 	{
 	  tmp.resize (new_dims, fill_value);
 	}
-      else if (new_dims != curr_dims)
+
+      if (new_dims != curr_dims)
 	{
 	  for (iterator p = begin (); p != end (); p++)
 	    contents(p).resize (new_dims, fill_value);

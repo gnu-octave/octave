@@ -846,7 +846,7 @@ symbols_of_toplev (void)
 {
   DEFCONST (argv, ,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} argv\n\
+@defvr {Built-in Constant} argv\n\
 The command line arguments passed to Octave are available in this\n\
 variable.  For example, if you invoked Octave using the command\n\
 \n\
@@ -866,8 +866,8 @@ for an example of how to create an executable Octave script.\n\
   DEFCONST (program_invocation_name,
 	    octave_env::get_program_invocation_name (),
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} program_invocation_name\n\
-@defvrx {Built-in Variable} program_name\n\
+@defvr {Built-in Constant} program_invocation_name\n\
+@defvrx {Built-in Constant} program_name\n\
 When Octave starts, the value of the built-in variable\n\
 @code{program_invocation_name} is automatically set to the name that was\n\
 typed at the shell prompt to run Octave, and the value of\n\
@@ -886,22 +886,8 @@ how to create an executable Octave script.\n\
 
   DEFCONST (program_name, octave_env::get_program_name (),
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} program_invocation_name\n\
-@defvrx {Built-in Variable} program_name\n\
-When Octave starts, the value of the built-in variable\n\
-@code{program_invocation_name} is automatically set to the name that was\n\
-typed at the shell prompt to run Octave, and the value of\n\
-@code{program_name} is automatically set to the final component of\n\
-@code{program_invocation_name}.  For example, if you typed\n\
-@samp{@value{OCTAVEHOME}/bin/octave} to start Octave,\n\
-@code{program_invocation_name} would have the value\n\
-@code{\"@value{OCTAVEHOME}/bin/octave\"}, and @code{program_name} would\n\
-have the value @code{\"octave\"}.\n\
-\n\
-If executing a script from the command line (e.g., @code{octave foo.m})\n\
-or using an executable Octave script, the program name is set to the\n\
-name of the script.  @xref{Executable Octave Programs}, for an example of\n\
-how to create an executable Octave script.\n\
+@defvr {Built-in Variable} program_name\n\
+See: program_invocation_name.\n\
 @end defvr");
 
 }

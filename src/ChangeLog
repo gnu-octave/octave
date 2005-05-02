@@ -1,5 +1,14 @@
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
+	* mkgendoc (main): Print header message.
+
+2005-05-02  Bill Denney  <denney@seas.upenn.edu>
+
+	* data.cc, defaults.cc, DLD-FUNCTIONS/qz.cc, file-io.cc,
+	sighandlers.cc, syscalls.cc: Docstring fixes.
+
+2005-05-02  John W. Eaton  <jwe@octave.org>
+
 	* pr-output.cc (octave_print_internal (std::ostream&,
 	const Range&, bool, int)): Don't print newline at end of broken
 	rows (that is handled by pr_col_num_header).

@@ -714,13 +714,13 @@ files.\n\
 
   DEFCONST (OCTAVE_HOME, Voctave_home,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} OCTAVE_HOME\n\
+@defvr {Built-in Constant} OCTAVE_HOME\n\
 The name of the top-level Octave installation directory.\n\
 @end defvr");
 
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} OCTAVE_VERSION\n\
+@defvr {Built-in Constant} OCTAVE_VERSION\n\
 The version number of Octave, as a string.\n\
 @end defvr");
 

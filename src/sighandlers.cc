@@ -928,7 +928,7 @@ terminate signal.  The default value is 1.\n\
 
   DEFCONST (SIG, make_sig_struct (),
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} SIG\n\
+@defvr {Built-in Constant} SIG\n\
 Structure of Unix signal names and their defined values.\n\
 @end defvr");
 }

@@ -9,6 +9,13 @@ else
 fi
 
 if test -f gethelp; then
+  cat << EOF
+### DO NOT EDIT!
+###
+### This file is generated automatically from the Octave sources.
+### Edit those files instead and run make to update this file.
+
+EOF
   find $d -name '*.m' | \
     sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/^ *@/@/'," | \
     /bin/sh

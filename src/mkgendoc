@@ -83,6 +83,13 @@ cat << \EOF
 int
 main (void)
 {
+  std::cout
+    << "### DO NOT EDIT!\n"
+    << "###\n"
+    << "### This file is generated automatically from the Octave sources.\n"
+    << "### Edit those files instead and run make to update this file.\n"
+    << std::endl;
+
 EOF
 
 for file in $DOC_FILES; do

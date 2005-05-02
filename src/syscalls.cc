@@ -984,104 +984,117 @@ symbols_of_syscalls (void)
 #if defined (F_DUPFD)
   DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, F_DUPFD,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} F_DUPFD\n\
+@defvr {Built-in Constant} F_DUPFD\n\
 Request to @code{fcntl} to return a duplicate file descriptor.\n\
+@seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end defvr");
 #endif
 
 #if defined (F_GETFD)
   DEFCONSTX ("F_GETFD", SBV_F_GETFD, F_GETFD,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} F_GETFD\n\
+@defvr {Built-in Constant} F_GETFD\n\
 Request to @code{fcntl} to return the file descriptor flags.\n\
+@seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end defvr");
 #endif
 
 #if defined (F_GETFL)
   DEFCONSTX ("F_GETFL", SBV_F_GETFL, F_GETFL,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} F_GETFL\n\
+@defvr {Built-in Constant} F_GETFL\n\
 Request to @code{fcntl} to return the file status flags.\n\
+@seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}\n\
 @end defvr");
 #endif
 
 #if defined (F_SETFD)
   DEFCONSTX ("F_SETFD", SBV_F_SETFD, F_SETFD,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} F_SETFD\n\
+@defvr {Built-in Constant} F_SETFD\n\
 Request to @code{fcntl} to set the file descriptor flags.\n\
+@seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}\n\
 @end defvr");
 #endif
 
 #if defined (F_SETFL)
   DEFCONSTX ("F_SETFL", SBV_F_SETFL, F_SETFL,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} F_SETFL\n\
+@defvr {Built-in Constant} F_SETFL\n\
 Request to @code{fcntl} to set the file status flags.\n\
+@seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}\n\
 @end defvr");
 #endif
 
 #if defined (O_APPEND)
   DEFCONSTX ("O_APPEND", SBV_O_APPEND, O_APPEND,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_APPEND\n\
+@defvr {Built-in Constant} O_APPEND\n\
 File status flag, append on each write.\n\
+@seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_ASYNC)
   DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, O_ASYNC,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_ASYNC\n\
+@defvr {Built-in Constant} O_ASYNC\n\
 File status flag, asynchronous I/O.\n\
+@seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_CREAT)
   DEFCONSTX ("O_CREAT", SBV_O_CREAT, O_CREAT,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_CREAT\n\
+@defvr {Built-in Constant} O_CREAT\n\
 File status flag, create file if it does not exist.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_EXCL)
   DEFCONSTX ("O_EXCL", SBV_O_EXCL, O_EXCL,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_EXCL\n\
+@defvr {Built-in Constant} O_EXCL\n\
 File status flag, file locking.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_NONBLOCK)
   DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, O_NONBLOCK,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_NONBLOCK\n\
+@defvr {Built-in Constant} O_NONBLOCK\n\
 File status flag, non-blocking I/O.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_RDONLY)
   DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, O_RDONLY,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_RDONLY\n\
+@defvr {Built-in Constant} O_RDONLY\n\
 File status flag, file opened for reading only.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_RDWR)
   DEFCONSTX ("O_RDWR", SBV_O_RDWR, O_RDWR,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_RDWR\n\
+@defvr {Built-in Constant} O_RDWR\n\
 File status flag, file open for both reading and writing.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_SYNC)
   DEFCONSTX ("O_SYNC", SBV_O_SYNC, O_SYNC,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_SYNC\n\
+@defvr {Built-in Constant} O_SYNC\n\
 File status flag, file opened for synchronous I/O.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
@@ -1090,14 +1103,16 @@ File status flag, file opened for synchronous I/O.\n\
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_TRUNC\n\
 File status flag, if file exists, truncate it when writing.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}\n\
 @end defvr");
 #endif
 
 #if defined (O_WRONLY)
   DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, O_WRONLY,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_WRONLY\n\
+@defvr {Built-in Constant} O_WRONLY\n\
 File status flag, file opened for writing only.\n\
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}\n\
 @end defvr");
 #endif
 

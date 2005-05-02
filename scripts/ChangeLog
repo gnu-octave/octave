@@ -1,3 +1,7 @@
+2005-05-02  John W. Eaton  <jwe@octave.org>
+
+	* mkdoc: Print header message.
+
 2005-04-28  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_CONFIG_SRCDIR): Look for startup/inputrc, not

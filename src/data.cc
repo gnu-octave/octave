@@ -1826,10 +1826,10 @@ symbols_of_data (void)
 {
 
 #define IMAGINARY_DOC_STRING "-*- texinfo -*-\n\
-@defvr {Built-in Variable} I\n\
-@defvrx {Built-in Variable} J\n\
-@defvrx {Built-in Variable} i\n\
-@defvrx {Built-in Variable} j\n\
+@defvr {Built-in Constant} I\n\
+@defvrx {Built-in Constant} J\n\
+@defvrx {Built-in Constant} i\n\
+@defvrx {Built-in Constant} j\n\
 A pure imaginary number, defined as\n\
 @iftex\n\
 @tex\n\
@@ -1846,15 +1846,15 @@ values @xref{Status of Variables}.\n\
 @end defvr"
 
 #define INFINITY_DOC_STRING "-*- texinfo -*-\n\
-@defvr {Built-in Variable} Inf\n\
-@defvrx {Built-in Variable} inf\n\
+@defvr {Built-in Constant} Inf\n\
+@defvrx {Built-in Constant} inf\n\
 Infinity.  This is the result of an operation like 1/0, or an operation\n\
 that results in a floating point overflow.\n\
 @end defvr"
 
 #define NAN_DOC_STRING "-*- texinfo -*-\n\
-@defvr {Built-in Variable} NaN\n\
-@defvrx {Built-in Variable} nan\n\
+@defvr {Built-in Constant} NaN\n\
+@defvrx {Built-in Constant} nan\n\
 Not a number.  This is the result of an operation like\n\
 @iftex\n\
 @tex\n\
@@ -1882,7 +1882,7 @@ find NaN values, you must use the @code{isnan} function.\n\
 
   DEFCONST (NA, lo_ieee_na_value (),
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} NA\n\
+@defvr {Built-in Constant} NA\n\
 Missing value.\n\
 @end defvr");
 
@@ -1897,7 +1897,7 @@ Missing value.\n\
 
   DEFCONST (e, e_val,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} e\n\
+@defvr {Built-in Constant} e\n\
 The base of natural logarithms.  The constant\n\
 @iftex\n\
 @tex\n\
@@ -1920,7 +1920,7 @@ The base of natural logarithms.  The constant\n\
 
   DEFCONST (eps, DBL_EPSILON,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} eps\n\
+@defvr {Built-in Constant} eps\n\
 The machine precision.  More precisely, @code{eps} is the largest\n\
 relative spacing between any two adjacent numbers in the machine's\n\
 floating point system.  This number is obviously system-dependent.  On\n\
@@ -1938,8 +1938,9 @@ is approximately\n\
 
   DEFCONST (false, false,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} false\n\
+@defvr {Built-in Constant} false\n\
 Logical false value.\n\
+@seealso{true}\n\
 @end defvr");
 
   DEFCONST (i, Complex (0.0, 1.0),
@@ -1962,14 +1963,14 @@ Logical false value.\n\
 
   DEFCONST (pi, pi_val,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} pi\n\
+@defvr {Built-in Constant} pi\n\
 The ratio of the circumference of a circle to its diameter.\n\
 Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
 @end defvr");
 
   DEFCONST (realmax, DBL_MAX,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} realmax\n\
+@defvr {Built-in Constant} realmax\n\
 The largest floating point number that is representable.  The actual\n\
 value is system-dependent.  On machines that support 64-bit IEEE\n\
 floating point arithmetic, @code{realmax} is approximately\n\
@@ -1977,6 +1978,7 @@ floating point arithmetic, @code{realmax} is approximately\n\
  1.7977e+308\n\
 @end ifinfo\n\
 @iftex\n\
+@seealso{realmin}\n\
 @tex\n\
  $1.7977\\times10^{308}$.\n\
 @end tex\n\
@@ -1985,7 +1987,7 @@ floating point arithmetic, @code{realmax} is approximately\n\
 
   DEFCONST (realmin, DBL_MIN,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} realmin\n\
+@defvr {Built-in Constant} realmin\n\
 The smallest normalized floating point number that is representable.\n\
 The actual value is system-dependent.  On machines that support\n\
 64-bit IEEE floating point arithmetic, @code{realmin} is approximately\n\
@@ -1997,12 +1999,14 @@ The actual value is system-dependent.  On machines that support\n\
  $2.2251\\times10^{-308}$.\n\
 @end tex\n\
 @end iftex\n\
+@seealso{realmax}\n\
 @end defvr");
 
   DEFCONST (true, true,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} true\n\
+@defvr {Built-in Constant} true\n\
 Logical true value.\n\
+@seealso{false}\n\
 @end defvr");
 
 }

@@ -1751,7 +1751,7 @@ directory for temporary files is used.  Since the named file is not\n\
 opened, by @code{tmpnam}, it is possible (though relatively unlikely)\n\
 that it will not be available by the time your program attempts to open it.\n\
 @end deftypefn\n\
-@seealso{tmpfile, mkstemp, and P_tmpdir}")
+@seealso{tmpfile, mkstemp, P_tmpdir}")
 {
   octave_value retval;
 
@@ -1794,7 +1794,7 @@ If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
 string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
 system-dependent error message.\n\
 @end deftypefn\n\
-@seealso{tmpnam, mkstemp, and P_tmpdir}")
+@seealso{tmpnam, mkstemp, P_tmpdir}")
 {
   octave_value_list retval;
 
@@ -1854,7 +1854,7 @@ the file, and and @var{msg} is an empty string.  Otherwise, @var{fid}\n\
 is -1, @var{name} is empty, and @var{msg} contains a system-dependent\n\
 error message.\n\
 @end deftypefn\n\
-@seealso{tmpfile, tmpnam, and P_tmpdir}")
+@seealso{tmpfile, tmpnam, P_tmpdir}")
 {
   octave_value_list retval;
 
@@ -2014,7 +2014,7 @@ symbols_of_file_io (void)
 
   DEFCONSTX ("P_tmpdir", SBV_P_tmpdir, P_tmpdir,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} P_tmpdir\n\
+@defvr {Built-in Constant} P_tmpdir\n\
 The default name of the directory for temporary files on this system.\n\
 The value of this variable is system dependent.\n\
 @end defvr");
@@ -2024,9 +2024,9 @@ The value of this variable is system dependent.\n\
 
   DEFCONSTX ("SEEK_SET", SBV_SEEK_SET, -1,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} SEEK_SET\n\
-@defvrx {Built-in Variable} SEEK_CUR\n\
-@defvrx {Built-in Variable} SEEK_END\n\
+@defvr {Built-in Constant} SEEK_SET\n\
+@defvrx {Built-in Constant} SEEK_CUR\n\
+@defvrx {Built-in Constant} SEEK_END\n\
 These variables may be used as the optional third argument for the\n\
 function @code{fseek}.\n\
 \n\
@@ -2044,37 +2044,40 @@ used with fseek to position file relative to the end.\n\
 
   DEFCONSTX ("SEEK_CUR", SBV_SEEK_CUR, 0,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} SEEK_CUR\n\
+@defvr {Built-in Constant} SEEK_CUR\n\
 See SEEK_SET.\n\
 @end defvr");
 
   DEFCONSTX ("SEEK_END", SBV_SEEK_END, 1,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} SEEK_END\n\
+@defvr {Built-in Constant} SEEK_END\n\
 See SEEK_SET.\n\
 @end defvr");
 
   DEFCONSTX ("stdin", SBV_stdin, stdin_file,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} stdin\n\
+@defvr {Built-in Constant} stdin\n\
 The standard input stream (file id 0).  When Octave is used\n\
 interactively, this is filtered through the command line editing\n\
 functions.\n\
+@seealso{stdout, stderr}\n\
 @end defvr");
 
   DEFCONSTX ("stdout", SBV_stdout, stdout_file,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} stdout\n\
+@defvr {Built-in Constant} stdout\n\
 The standard output stream (file id 1).  Data written to the\n\
 standard output is normally filtered through the pager.\n\
+@seealso{stdin, stderr}\n\
 @end defvr");
 
   DEFCONSTX ("stderr", SBV_stderr, stderr_file,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} stderr\n\
+@defvr {Built-in Constant} stderr\n\
 The standard error stream (file id 2).  Even if paging is turned on,\n\
 the standard error is not sent to the pager.  It is useful for error\n\
 messages and prompts.\n\
+@seealso{stdin, stdout}\n\
 @end defvr");
 
 }

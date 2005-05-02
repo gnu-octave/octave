@@ -235,16 +235,22 @@ DOC_FILES := $(sort $(DEF_FILES) $(VAR_FILES))
 OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
   -L$(TOPDIR)/src $(RLD_FLAG)
 
-OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
-  $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
-  $(LIBPLPLOT) $(LIBDLFCN)
+if ($(ENABLE_DYNAMIC_LINKING), true)
+  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
+    $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+    $(LIBPLPLOT) $(LIBDLFCN)
+else
+  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
+    $(GLPK_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+    $(LIBPLPLOT) $(LIBDLFCN)
+endif
 
 OCTINTERP_LINK_DEPS = \
   -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
 
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
-  -L. $(LIBOCTINTERP) $(BLAS_LIBS) $(FFTW_LIBS) $(UMFPACK_LIBS) $(LIBS) $(FLIBS)
+  -L. $(LIBOCTINTERP) $(UMFPACK_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
@@ -310,7 +316,7 @@ octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	main.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
-	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(UMFPACK_LIBS) $(LIBS) $(FLIBS)
+	$(LEXLIB) $(UMFPACK_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.475 $)
+AC_REVISION($Revision: 1.476 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -713,16 +713,16 @@ if test "$with_umfpack" = "yes"; then
   if test "$have_umfpack_header" = yes; then
     AC_CHECK_LIB(amd, amd_postorder, [
       AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-        UMFPACK_LIBS="-lamd -lumfpack"; with_umfpack=yes], [
+        UMFPACK_LIBS="-lumfpack -lamd"; with_umfpack=yes], [
 	  ## Invalidate the cache.
 	  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
 	  AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-            UMFPACK_LIBS="-lamd -lumfpack"; with_umfpack=yes], [
+            UMFPACK_LIBS="-lumfpack -lamd"; with_umfpack=yes], [
 
 	    ## Invalidate the cache.
 	    $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
 	    AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-              UMFPACK_LIBS="-lamd -lumfpack -lcblas"; with_umfpack=yes], [], -lamd -lcblas $BLAS_LIBS)], -lamd $BLAS_LIBS $FLIBS)]), -lamd])
+              UMFPACK_LIBS="-lumfpack -lamd -lcblas"; with_umfpack=yes], [], -lamd -lcblas $BLAS_LIBS)], -lamd $BLAS_LIBS $FLIBS)]), -lamd])
     if test "$with_umfpack" = yes; then
       # For now the code needed for this is not in umfpack, will add
       # a test later that will probably have to be based on version

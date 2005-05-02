@@ -1,36 +1,43 @@
+2005-05-02  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): List $(UMFPACK_LIBS) ahead of $(BLAS_LIBS).
+	From Dmitri A. Sergatskov <dasergatskov@gmail.com>.
+
 2005-04-29  David Bateman  <dbateman@free.fr>
 
-	* dSparse.cc (trisolve): Diagonal passed to lapack zptsv is type double.
-	Correct indexing for upper diagonal elements for sparse tridiagonal.
+	* dSparse.cc (trisolve): Diagonal passed to lapack zptsv is type
+	double.  Correct indexing for upper diagonal elements for sparse
+	tridiagonal.
 	* CSparse.cc (trisolve): ditto.
 
-	* CSparse.h (UMFPACK_ZNAME): Define macro to pick version of UMFPACK for
-	64-bit.
+	* CSparse.h (UMFPACK_ZNAME): Define macro to pick version of
+	UMFPACK for 64-bit.
 	* CSparse.cc (UMFPACK_ZNAME): Replace all umfpack_zi_* with 
 	UMFPACK_ZNAME(*).
 	* SparseCmplxLU.cc (UMFPACK_ZNAME): ditto
 
-	* dSparse.h (UMFPACK_DNAME): Define macro to pick version of UMFPACK for
-	64-bit.
+	* dSparse.h (UMFPACK_DNAME): Define macro to pick version of
+	UMFPACK for 64-bit.
 	* dSparse.cc (UMFPACK_DNAME): Replace all umfpack_di_* with 
 	UMFPACK_DNAME(*).
 	* SparsedbleLU.cc (UMFPACK_DNAME): ditto
 
-	* dSparse.cc (ltsolve, utsolve): Correct permuted upper/lower triangular
-	back/forward substitution code.
+	* dSparse.cc (ltsolve, utsolve): Correct permuted upper/lower
+	triangular back/forward substitution code.
 	* CSparse.cc (ltsolve, utsolve): ditto.
 
-	* dSparse.cc (solve): Use mattype.type (false) to force messaging from
-	spparms("spumoni",1).
+	* dSparse.cc (solve): Use mattype.type (false) to force messaging
+	from spparms("spumoni",1).
 	* CSparse.cc (solve): ditto
 
-	* SparseType.cc (SparseType(void)): Print info for spparms("spumoni",1).
+	* SparseType.cc (SparseType(void)): Print info for
+	spparms("spumoni",1).
 	(SparseType(const matrix_type), SparseType(const matrix_type, const
 	octave_idx_type, const octave_idx_type*), SparseType(const matrix_type,
 	const octave_idx_type, const octave_idx_type)): New constructors.
 	(SparseType (const SparseMatrix&), SparseType (SparseComplexMatrix&)):
-	Detect row permuted lower triangular and column permuted upper triangular
-	matrices. Remove one of the permutation vectors..
+	Detect row permuted lower triangular and column permuted upper
+	triangular matrices. Remove one of the permutation vectors..
 
 	* SparseType.h: Simplify the permutation code.
 	(SparseType(const matrix_type), SparseType

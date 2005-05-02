@@ -1,3 +1,8 @@
+2005-05-02  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_ARG_WITH(umfpack)): List -lumfpack ahead of -lamd.
+	From Dmitri A. Sergatskov <dasergatskov@gmail.com>.
+
 2005-04-29  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Add UMFPACK_LONG_IDX

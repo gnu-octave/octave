@@ -1,5 +1,13 @@
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (octave$(EXEEXT)): List $(UMFPACK_LIBS) ahead of
+	$(BLAS_LIBS).
+	(OCTAVE_LIBS): Include $(GLPK_LIBS) in the list if dynamic linking
+	is not enabled.
+	From Dmitri A. Sergatskov <dasergatskov@gmail.com>.
+
+2005-05-02  John W. Eaton  <jwe@octave.org>
+
 	* oct-map.h, oct-map.cc (Octave_map::seek, Octave_map::contents):
 	New non-const versions.
 	(Octave_map::assign (const octave_value_list&,

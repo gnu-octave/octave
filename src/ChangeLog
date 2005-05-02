@@ -1,8 +1,9 @@
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (octave_print_internal (std::ostream&,
-	const Range&, bool, int)): Don't print newline at end of rows.
-	That is handled by pr_col_num_header.
+	const Range&, bool, int)): Don't print newline at end of broken
+	rows (that is handled by pr_col_num_header).
+	From Keith Goodman <kwgoodman@gmail.com>.
 
 	* Makefile.in (octave$(EXEEXT)): List $(UMFPACK_LIBS) ahead of
 	$(BLAS_LIBS).

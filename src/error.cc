@@ -702,12 +702,18 @@ argument, set the last error message to @var{msg}.\n\
 
   int argc = args.length () + 1;
 
-  string_vector argv = args.make_argv ("lasterr");
+  if (argc == 1 || argc == 2)
+    {
+      string_vector argv = args.make_argv ("lasterr");
 
-  if (argc == 1)
-    retval(0) = Vlast_error_message;
-  else if (argc == 2)
-    Vlast_error_message = argv(1);
+      if (! error_state)
+	{
+	  if (argc == 1)
+	    retval(0) = Vlast_error_message;
+	  else
+	    Vlast_error_message = argv(1);
+	}
+    }
   else
     print_usage ("lasterr");
 

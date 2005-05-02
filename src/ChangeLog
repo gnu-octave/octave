@@ -1,5 +1,8 @@
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Flasterr): Don't access argv if an error occurs when
+	creating it.
+
 	* mkgendoc (main): Print header message.
 
 2005-05-02  Bill Denney  <denney@seas.upenn.edu>

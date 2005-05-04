@@ -1,3 +1,8 @@
+2005-05-04  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc (gnu_readline::do_readline): Extract const char*
+	from prompt outside of INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE block.
+
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (LINK_DEPS): List $(UMFPACK_LIBS) ahead of $(BLAS_LIBS).

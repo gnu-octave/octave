@@ -715,7 +715,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	FOUR_BYTE_INT fn_type;
 	FOUR_BYTE_INT fn_len;
 	FOUR_BYTE_INT field_name_length;
-	int i;
 
 	// field name length subelement -- actually the maximum length
 	// of a field name.  The Matlab docs promise this will always
@@ -742,7 +741,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	int n_fields = fn_len/field_name_length;
+	octave_idx_type n_fields = fn_len/field_name_length;
 
 	fn_len = PAD (fn_len);
 
@@ -751,40 +750,30 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	if (! is.read (elname, fn_len))
 	  goto data_read_error;
 
-	int n;
-	if (dims(0) == 1)
-	  n = dims(1);
-	else if (dims(1) == 1)
-	  n = dims(0);
-	else
-	  {
-	    error ("load: can only handle one-dimensional structure arrays");
-	    goto data_read_error;
-	  }
+	std::vector<Cell> elt (n_fields);
 
-	Cell field_elts (n_fields, n);
+	for (octave_idx_type i = 0; i < n_fields; i++)
+	  elt[i] = Cell (dims);
+
+	octave_idx_type n = dims.numel ();
 
 	// fields subelements
-	for (int j = 0; j < n; j++)
+	for (octave_idx_type j = 0; j < n; j++)
 	  {
-	    for (i = 0; i < n_fields; i++)
+	    for (octave_idx_type i = 0; i < n_fields; i++)
 	      {
 		octave_value fieldtc;
 		read_mat5_binary_element (is, filename, swap, global, fieldtc);
-		field_elts(i,j) = fieldtc;
+		elt[i](j) = fieldtc;
 	      }
+
 	  }
 
-	for (int j = n_fields-1; j >= 0; j--)
+	for (octave_idx_type i = 0; i < n_fields; i++)
 	  {
-	    const char *key = elname + j*field_name_length;
+	    const char *key = elname + i*field_name_length;
 
-	    Cell c (dim_vector (n, 1));
-
-	    for (int k = n-1; k >=0; k--)
-	      c(k) = field_elts(j,k);
-
-	    m.assign (key, c);
+	    m.assign (key, elt[i]);
 	  }
 
 	tc = m;

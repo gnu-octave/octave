@@ -1,3 +1,12 @@
+2005-05-04  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (read_mat5_binary_element): Implement reading of N-d
+	structure arrays.
+
+	* ov-struct.cc (octave_struct::load_hdf5,
+	octave_struct::load_binary, octave_struct::load_ascii): Assign
+	cell_value to map slot, not octave_value containing the cell.
+
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
 	* error.cc (Flasterr): Don't access argv if an error occurs when

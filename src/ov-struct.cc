@@ -1026,7 +1026,15 @@ octave_struct::load_ascii (std::istream& is)
 	      if (!is)
 		break;
 
-	      m.assign (nm, t2);
+	      Cell tcell = t2.cell_value ();
+
+	      if (error_state)
+		{
+		  error ("load: internal error loading struct elements");
+		  return false;
+		}
+
+	      m.assign (nm, tcell);
 	    }
 
 	  if (is) 
@@ -1103,7 +1111,15 @@ octave_struct::load_binary (std::istream& is, bool swap,
 	  if (!is)
 	    break;
 
-	  m.assign (nm, t2);
+	  Cell tcell = t2.cell_value ();
+
+	  if (error_state)
+	    {
+	      error ("load: internal error loading struct elements");
+	      return false;
+	    }
+
+	  m.assign (nm, tcell);
 	}
 
       if (is) 
@@ -1179,7 +1195,15 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
 				hdf5_read_next_data, &dsub)) > 0)
 #endif
     {
-      m.assign (dsub.name, dsub.tc);
+      Cell tcell = dsub.tc.cell_value ();
+
+      if (error_state)
+	{
+	  error ("load: internal error loading struct elements");
+	  return false;
+	}
+
+      m.assign (dsub.name, tcell);
 
       if (have_h5giterate_bug)
 	current_item++;  // H5Giterate returned the last index processed

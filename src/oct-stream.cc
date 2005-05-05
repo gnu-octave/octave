@@ -1469,7 +1469,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
   delete [] tbuf
 
 // For a `%s' format, skip initial whitespace and then read until the
-// next whitespace character.
+// next whitespace character or until WIDTH characters have been read.
 #define BEGIN_S_CONVERSION() \
   int width = elt->width; \
  \
@@ -1478,19 +1478,46 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
   do \
     { \
       if (width) \
-	{ \
-	  char *tbuf = new char [width+1]; \
+        { \
+          char *tbuf = new char [width+1]; \
  \
-	  OCTAVE_SCAN (is, *elt, tbuf); \
+          int c = EOF; \
  \
-	  tbuf[width] = '\0'; \
+          int n = 0; \
+ \
+          while (is && (c = is.get ()) != EOF) \
+            { \
+              if (! isspace (c)) \
+                { \
+                  tbuf[n++] = static_cast<char> (c); \
+                  break; \
+                } \
+            } \
+ \
+          while (is && n < width && (c = is.get ()) != EOF) \
+            { \
+              if (isspace (c)) \
+                { \
+                  is.putback (c); \
+                  break; \
+                } \
+              else \
+                tbuf[n++] = static_cast<char> (c); \
+            } \
+ \
+          tbuf[n] = '\0'; \
+ \
+          if (n > 0 && c == EOF) \
+            is.clear (); \
+ \
           tmp = tbuf; \
+ \
           delete [] tbuf; \
-	} \
+        } \
       else \
-	{ \
-	  is >> std::ws >> tmp; \
-	} \
+        { \
+          is >> std::ws >> tmp; \
+        } \
     } \
   while (0)
 

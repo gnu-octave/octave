@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.476 $)
+AC_REVISION($Revision: 1.477 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -416,7 +416,7 @@ fi
 ZLIB_LIBS=
 WITH_ZLIB=false
 if test -n "$zlib_lib"; then
-  AC_CHECK_LIB($zlib_lib, deflate, [
+  AC_CHECK_LIB($zlib_lib, gzclearerr, [
       AC_CHECK_HEADERS(zlib.h, [
 	WITH_ZLIB=true
         ZLIB_LIBS="-l$zlib_lib"

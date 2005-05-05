@@ -1,3 +1,8 @@
+2005-05-04  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_CHECK_LIB($zlib_lib, ...)): Check for
+	gzclearerr instead of deflate.
+
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_ARG_WITH(umfpack)): List -lumfpack ahead of -lamd.

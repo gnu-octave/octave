@@ -137,7 +137,8 @@ ambiguous", },
     "Addition operator.", },
 
   { "++",
-    "Increment operator.  As in C, may be applied as a prefix or postfix operator.", },
+    "Increment operator.  As in C, may be applied as a prefix or postfix\n\
+operator.", },
 
   { ",",
     "Array index, function argument, or command separator.", },
@@ -146,7 +147,8 @@ ambiguous", },
     "Subtraction or unary negation operator.", },
 
   { "--",
-    "Decrement operator.  As in C, may be applied as a prefix or postfix operator.", },
+    "Decrement operator.  As in C, may be applied as a prefix or postfix\n\
+operator.", },
 
   { ".'",
     "Matrix transpose operator.  For complex matrices, computes the\n\
@@ -323,10 +325,12 @@ body of the loop is executed at least once.",},
     "Begin the cleanup section of an unwind_protect block.", }, 
 
   { "varargin",
-    "Pass an arbitrary number of arguments into a function.",},
+    "Pass an arbitrary number of arguments into a function.  See also\n\
+varargout, nargin, and nargout.",},
 
   { "varargout",
-    "Pass an arbitrary number of arguments out of a function.",},
+    "Pass an arbitrary number of arguments out of a function.  See also\n\
+varargin, nargin, and nargout.",},
 
   { "while",
     "Begin a while loop.", },

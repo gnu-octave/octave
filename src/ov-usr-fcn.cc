@@ -600,6 +600,8 @@ At the top level, return the number of command line arguments passed to\n\
 Octave.  If called with the optional argument @var{fcn_name}, return the\n\
 maximum number of arguments the named function can accept, or -1 if the\n\
 function accepts a variable number of arguments.\n\
+\n\
+@seealso{nargout, varargin, and varargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -672,6 +674,8 @@ will cause @code{nargout} to return 2 inside the function\n\
 @code{f}.\n\
 \n\
 At the top level, @code{nargout} is undefined.\n\
+\n\
+@seealso{nargin, varargin, and varargout}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -1,5 +1,13 @@
 2005-05-06  John W. Eaton  <jwe@octave.org>
 
+	* ov-struct.cc (octave_struct::save_ascii,
+	octave_struct::save_binary, octave_sruct::save_hdf5):
+	Always save cell array.
+
+	* DLD-FUNCTIONS/__qp__.cc (qp): Use chol2inv to compute inverse
+	from Cholesky factors.
+	(cholinv): Delete.
+
 	* DLD-FUNCTIONS/chol.cc (Fcholinv): New function.
 	(Fchol2inv): New function.
 

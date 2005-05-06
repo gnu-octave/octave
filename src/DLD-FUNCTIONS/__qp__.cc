@@ -86,26 +86,6 @@ null (const Matrix& A, octave_idx_type& rank)
   return retval;
 }
 
-static Matrix
-cholinv (const Matrix& R)
-{
-  // R should be the result of calling chol on a symmetric positive
-  // definite matrix.
-  octave_idx_type n = R.rows ();
-  Matrix L = R.transpose ();
-  ColumnVector d = L.diag ();
-  ColumnVector tmp (n);
-  for (octave_idx_type k = 0; k < n; k++)
-    {
-      for (octave_idx_type j = 0; j < n; j++)
-	L(j,k) = L(j,k) / d(k);
-      tmp(k) = 1.0/(d(k)*d(k));
-    }
-  DiagMatrix Dinv (tmp);
-  Matrix invL = L.inverse ();
-  return invL.transpose () * Dinv * invL;
-}
-
 static int
 qp (const Matrix& H, const ColumnVector& q,
     const Matrix& Aeq, const ColumnVector& beq,
@@ -208,7 +188,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
 	      R = cholH.chol_matrix ();
 
-	      Matrix Hinv = cholinv (R);
+	      Matrix Hinv = chol2inv (R);
 
 	      // Computing the unconstrained step.
 	      // p = -Hinv * g;
@@ -278,7 +258,7 @@ qp (const Matrix& H, const ColumnVector& q,
 		{
 		  // Using the Cholesky factorization to invert rH
 
-		  Matrix rHinv = cholinv (R);
+		  Matrix rHinv = chol2inv (R);
 
 		  ColumnVector pz = -rHinv * Zt * g;
 

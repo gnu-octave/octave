@@ -181,10 +181,12 @@ symmetric positive definite matrix @var{a}.\n\
 
 DEFUN_DLD (chol2inv, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} chol2inv (@var{r})\n\
+@deftypefn {Loadable Function} {} chol2inv (@var{u})\n\
 Invert a symmetric, positive definite square matrix from its Cholesky\n\
-decomposition, @var{r}.  Note that no check is performed to ensure\n\
-that @var{r} is actually a Cholesky factor.\n\
+decomposition, @var{u}.  Note that @var{u} should be an upper-triangular\n\
+matrix with positive diagonal elements.  @code{chol2inv (@var{u})}\n\
+provides @code{inv (@var{u}'*@var{u})} but it is much faster than\n\
+using @code{inv}.\n\
 @seealso{chol, cholinv}\n\
 @end deftypefn")
 {

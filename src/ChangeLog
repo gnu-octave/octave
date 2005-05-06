@@ -3,6 +3,8 @@
 	* ov-struct.cc (octave_struct::save_ascii,
 	octave_struct::save_binary, octave_sruct::save_hdf5):
 	Always save cell array.
+	(octave_struct::load_ascii, octave_struct::load_binary,
+	octave_sruct::load_hdf5): Try to read old-style files correctly.
 
 	* DLD-FUNCTIONS/__qp__.cc (qp): Use chol2inv to compute inverse
 	from Cholesky factors.

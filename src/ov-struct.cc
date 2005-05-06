@@ -1025,7 +1025,8 @@ octave_struct::load_ascii (std::istream& is)
 	      if (!is)
 		break;
 
-	      Cell tcell = t2.cell_value ();
+	      // Try for some backward compatibility...
+	      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
 
 	      if (error_state)
 		{
@@ -1109,7 +1110,8 @@ octave_struct::load_binary (std::istream& is, bool swap,
 	  if (!is)
 	    break;
 
-	  Cell tcell = t2.cell_value ();
+	  // Try for some backward compatibility...
+	  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
 
 	  if (error_state)
 	    {
@@ -1192,7 +1194,10 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
 				hdf5_read_next_data, &dsub)) > 0)
 #endif
     {
-      Cell tcell = dsub.tc.cell_value ();
+      octave_value t2 = dsub.tc;
+
+      // Try for some backward compatibility...
+      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
 
       if (error_state)
 	{

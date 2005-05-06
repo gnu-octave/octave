@@ -1,3 +1,17 @@
+2005-05-06  John W. Eaton  <jwe@octave.org>
+
+	* dbleCHOL.cc (CHOL::init): Use xelem instead of elem for indexing
+	chol_mat.
+	(chol2mat_internal, chol2mat, CHOL::inverse): New functions.
+	* dbleCHOL.h (chol2mat_internal, chol2mat, CHOL::inverse):
+	Provide decls.
+
+	* CmplxChol.cc (ComplexCHOL::init): Use xelem instead of elem for
+	indexing chol_mat.
+	(chol2mat_internal, chol2mat, ComplexCHOL::inverse): New functions.
+	* CmplxCHOL.h (chol2mat_internal, chol2mat, CmplxCHOL::inverse):
+	Provide decls.
+
 2005-05-05  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::permute): Call chop_trailing_singletons on

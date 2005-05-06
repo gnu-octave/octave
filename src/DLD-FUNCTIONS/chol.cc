@@ -51,6 +51,7 @@ $ R^T R = A $.\n\
 r' * r = a.\n\
 @end example\n\
 @end ifinfo\n\
+@seealso{cholinv, chol2inv}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -113,6 +114,115 @@ r' * r = a.\n\
     {
       gripe_wrong_type_arg ("chol", arg);
     }
+
+  return retval;
+}
+
+DEFUN_DLD (cholinv, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} cholinv (@var{a})\n\
+Use the Cholesky factorization to compute the inverse of of the\n\
+symmetric positive definite matrix @var{a}.\n\
+@seealso{chol, chol2inv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      octave_value arg = args(0);
+    
+      octave_idx_type nr = arg.rows ();
+      octave_idx_type nc = arg.columns ();
+
+      if (nr == 0 || nc == 0)
+	retval = Matrix ();
+      else
+	{
+	  if (arg.is_real_type ())
+	    {
+	      Matrix m = arg.matrix_value ();
+
+	      if (! error_state)
+		{
+		  octave_idx_type info;
+		  CHOL chol (m, info);
+		  if (info == 0)
+		    retval = chol.inverse ();
+		  else
+		    error ("cholinv: matrix not positive definite");
+		}
+	    }
+	  else if (arg.is_complex_type ())
+	    {
+	      ComplexMatrix m = arg.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  octave_idx_type info;
+		  ComplexCHOL chol (m, info);
+		  if (info == 0)
+		    retval = chol.inverse ();
+		  else
+		    error ("cholinv: matrix not positive definite");
+		}
+	    }
+	  else
+	    gripe_wrong_type_arg ("chol", arg);
+	}
+    }
+  else
+    print_usage ("chol");
+
+  return retval;
+}
+
+DEFUN_DLD (chol2inv, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} chol2inv (@var{r})\n\
+Invert a symmetric, positive definite square matrix from its Cholesky\n\
+decomposition, @var{r}.  Note that no check is performed to ensure\n\
+that @var{r} is actually a Cholesky factor.\n\
+@seealso{chol, cholinv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      octave_value arg = args(0);
+    
+      octave_idx_type nr = arg.rows ();
+      octave_idx_type nc = arg.columns ();
+
+      if (nr == 0 || nc == 0)
+	retval = Matrix ();
+      else
+	{
+	  if (arg.is_real_type ())
+	    {
+	      Matrix r = arg.matrix_value ();
+
+	      if (! error_state)
+		retval = chol2inv (r);
+	    }
+	  else if (arg.is_complex_type ())
+	    {
+	      ComplexMatrix r = arg.complex_matrix_value ();
+
+	      if (! error_state)
+		retval = chol2inv (r);
+	    }
+	  else
+	    gripe_wrong_type_arg ("chol2inv", arg);
+	}
+    }
+  else
+    print_usage ("chol2inv");
 
   return retval;
 }

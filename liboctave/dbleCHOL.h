@@ -51,6 +51,9 @@ public:
 
   Matrix chol_matrix (void) const { return chol_mat; }
 
+  // Compute the inverse of a matrix using the Cholesky factorization.
+  Matrix inverse (void) const;
+
   friend std::ostream& operator << (std::ostream& os, const CHOL& a);
 
 private:
@@ -59,6 +62,8 @@ private:
 
   octave_idx_type init (const Matrix& a);
 };
+
+Matrix chol2inv (const Matrix& r);
 
 #endif
 

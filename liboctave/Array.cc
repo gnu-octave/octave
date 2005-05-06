@@ -496,7 +496,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec, bool inv) const
       increment_index (old_idx, dv);
     }
 
-  chop_trailing_singletons ();
+  retval.chop_trailing_singletons ();
 
   return retval;
 }

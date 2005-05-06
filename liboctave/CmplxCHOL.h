@@ -53,10 +53,9 @@ public:
       return *this;
     }
 
-  ComplexMatrix chol_matrix (void) const
-    {
-      return chol_mat;
-    }
+  ComplexMatrix chol_matrix (void) const { return chol_mat; }
+
+  ComplexMatrix inverse (void) const;
 
   friend std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 
@@ -66,6 +65,8 @@ private:
 
   octave_idx_type init (const ComplexMatrix& a);
 };
+
+ComplexMatrix chol2inv (const ComplexMatrix& r);
 
 #endif
 

@@ -1,3 +1,8 @@
+2005-05-06  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/chol.cc (Fcholinv): New function.
+	(Fchol2inv): New function.
+
 2005-05-05  Keith Goodman  <kwgoodman@gmail.com>
 
 	* ov-usr-fcn.cc	(Fnargout, Fnargin): Update doc strings.

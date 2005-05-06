@@ -1,3 +1,8 @@
+2005-05-06  John W. Eaton  <jwe@octave.org>
+
+	* lapack/dpotri.f, lapack/dlauum.f, lapack/dlauu2.f,
+	lapack/zpotri.f, lapack/zlauum.f, lapack/zlauu2.f: New files.
+
 2005-04-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in, Makerules.in (clean, distclean, maintainer-clean):

@@ -95,11 +95,8 @@ tree_try_catch_command::eval (void)
   
   MAYBE_DO_BREAKPOINT;
 
-  if (catch_code)
-    {
-      unwind_protect_int (buffer_error_messages);
-      buffer_error_messages++;
-    }
+  unwind_protect_int (buffer_error_messages);
+  buffer_error_messages++;
 
   unwind_protect::add (do_catch_code, catch_code);
 
@@ -122,8 +119,7 @@ tree_try_catch_command::eval (void)
       unwind_protect::discard ();
 
       // For restoring buffer_error_messages.
-      if (catch_code)
-	unwind_protect::run ();
+      unwind_protect::run ();
 
       // Also clear the frame marker.
       unwind_protect::discard ();

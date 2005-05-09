@@ -1116,6 +1116,11 @@ except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
 		    if (! ($$ = make_try_command ($1, $4, $8, $9, $2, $6)))
 		      ABORT_PARSE;
 		  }
+		| TRY stash_comment opt_sep opt_list END
+		  {
+		    if (! ($$ = make_try_command ($1, $4, 0, $5, $2, 0)))
+		      ABORT_PARSE;
+		  }
 		;
 
 // ===========================================

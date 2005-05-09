@@ -1,3 +1,10 @@
+2005-05-09  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (except_command): Make catch clause optional in try
+	statements.
+	* pt-except.cc (tree_try_catch_command::eval):
+	Always buffer error messages.
+
 2005-05-06  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::save_ascii,

@@ -360,7 +360,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    COUNT_TOK_AND_RETURN (handle_close_bracket (spc_gobbled, ']'));
+    int tok_to_return = handle_close_bracket (spc_gobbled, ']');
+    if (spc_gobbled)
+      yyunput (' ', yytext);
+    COUNT_TOK_AND_RETURN (tok_to_return);
   }
 
 <MATRIX_START>{SNLCMT}*\}{S}* {
@@ -369,7 +372,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    COUNT_TOK_AND_RETURN (handle_close_bracket (spc_gobbled, '}'));
+    int tok_to_return = handle_close_bracket (spc_gobbled, '}');
+    if (spc_gobbled)
+      yyunput (' ', yytext);
+    COUNT_TOK_AND_RETURN (tok_to_return);
   }
 
 %{
@@ -2288,6 +2294,8 @@ handle_identifier (void)
   int c1 = yyinput ();
 
   bool next_tok_is_paren = (c1 == '(');
+
+  bool next_tok_is_struct_ref = (c1 == '.');
 
   bool next_tok_is_eq = false;
   if (c1 == '=')

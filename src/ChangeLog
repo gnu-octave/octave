@@ -1,3 +1,9 @@
+2005-05-10  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (<MATRIX_START>{SNLCMT}*\]{S}*): If whitespace was gobbled,
+	unput SPC before returning the token.
+	(<MATRIX_START>{SNLCMT}*\}{S}*): Likewise.
+
 2005-05-09  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (except_command): Make catch clause optional in try

@@ -817,11 +817,11 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 		  
 		  UMFPACK_DNAME (report_status) (control, status);
 		  UMFPACK_DNAME (report_info) (control, info);
-
-		  UMFPACK_DNAME (free_numeric) (&Numeric);
 		}
 	      else
 		retval = DET (d);
+
+	      UMFPACK_DNAME (free_numeric) (&Numeric);
 	    }
 	}
     }

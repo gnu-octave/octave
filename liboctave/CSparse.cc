@@ -738,11 +738,11 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int calc_
 		  
 		  UMFPACK_ZNAME (report_status) (control, status);
 		  UMFPACK_ZNAME (report_info) (control, info);
-		  
-		  UMFPACK_ZNAME (free_numeric) (&Numeric);
 		}
 	      else
 		retval = ComplexDET (d);
+		  
+	      UMFPACK_ZNAME (free_numeric) (&Numeric);
 	    }
 	}
     }

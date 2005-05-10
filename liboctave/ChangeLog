@@ -1,3 +1,9 @@
+2005-05-10  David Bateman <dbateman@free.fr>
+
+	* dSparse.cc (determinant): Free numeric factorization after
+	sucessful calculation.
+	* CSparse.cc (determinant): ditto.
+
 2005-05-06  John W. Eaton  <jwe@octave.org>
 
 	* dbleCHOL.cc (CHOL::init): Use xelem instead of elem for indexing

@@ -40,16 +40,13 @@ function polar (x1, x2, fmt)
   __gnuplot_raw__ ("set nopolar;\n");
 
   if (nargin == 3)
-    if (isstr (fmt))
-      fmt = __pltopt__ ("polar", fmt);
-    else
+    if (! isstr (fmt))
       error ("polar: third argument must be a string");
     endif
     __plr2__ (x1, x2, fmt);
   elseif (nargin == 2)
     if (isstr (x2))
-      fmt = __pltopt__ ("polar", x2);
-      __plr1__ (x1, fmt);
+      __plr1__ (x1, x2);
     else
       fmt = "";
       __plr2__ (x1, x2, fmt);

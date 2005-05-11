@@ -1,3 +1,7 @@
+2005-05-11  John W. Eaton  <jwe@octave.org>
+
+	* config/unix.exp: Start Octave with -H.
+
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/arith/prod-4.m, octave.test/arith/sum-4.m:

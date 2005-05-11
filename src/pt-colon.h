@@ -75,7 +75,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  void eval_error (const std::string& s = std::string ());
+  void eval_error (const std::string& s = std::string ()) const;
 
   tree_expression *base (void) { return op_base; }
 
@@ -96,6 +96,14 @@ private:
   tree_expression *op_increment;
 
   bool save_base;
+
+  octave_value
+  make_range (const Matrix& m_base, const Matrix& m_limit,
+	      const Matrix& m_increment, bool result_is_str) const;
+
+  octave_value
+  make_range (const octave_value& ov_base, const octave_value& ov_limit,
+	      const octave_value& ov_increment) const;
 
   // No copying!
 

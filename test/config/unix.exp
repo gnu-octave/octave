@@ -81,7 +81,7 @@ proc octave_interactive_start { } {
 # the timeout period at a minute for the real tests.
 
   set timeout 60
-  spawn $OCTAVE -f -q $OSPATH
+  spawn $OCTAVE -f -q -H $OSPATH
 
   set timeout 5
   expect {
@@ -132,8 +132,8 @@ proc octave_start { src_file } {
 
 # Can't seem to get 2>&1 to work without using /bin/sh -c ""...
 
-  send_log "EXEC: $OCTAVE -f -q $OSPATH $src_file\n"
-  catch "exec /bin/sh -c \"$OCTAVE -f -q $OSPATH $src_file 2>&1\"" oct_output
+  send_log "EXEC: $OCTAVE -f -q -H $OSPATH $src_file\n"
+  catch "exec /bin/sh -c \"$OCTAVE -f -q -H $OSPATH $src_file 2>&1\"" oct_output
 }
 
 # do_test -- run a test given by the file $src_code.

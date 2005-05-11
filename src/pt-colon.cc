@@ -82,6 +82,73 @@ tree_colon_expression::rvalue (int nargout)
 }
 
 octave_value
+tree_colon_expression::make_range (const Matrix& m_base,
+				   const Matrix& m_limit,
+				   const Matrix& m_increment,
+				   bool result_is_str, bool dq_str) const
+{
+  octave_value retval;
+
+  bool base_empty = m_base.is_empty ();
+  bool limit_empty = m_limit.is_empty ();
+  bool increment_empty = m_increment.is_empty ();
+
+  if ((base_empty || m_base.numel () == 1)
+      && (limit_empty || m_limit.numel () == 1)
+      && (increment_empty || m_increment.numel () == 1))
+    {
+      if (base_empty || limit_empty || increment_empty)
+	retval = Range ();
+      else
+	{
+	  retval = Range (m_base(0), m_limit(0), m_increment(0));
+
+	  if (result_is_str)
+	    retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+	}
+    }
+  else
+    eval_error ("colon expression values must be scalars or empty matrices");
+
+  return retval;
+}
+
+octave_value
+tree_colon_expression::make_range (const octave_value& ov_base,
+				   const octave_value& ov_limit,
+				   const octave_value& ov_increment) const
+{
+  octave_value retval;
+
+  bool result_is_str = (ov_base.is_string () && ov_limit.is_string ());
+  bool dq_str = (ov_base.is_dq_string () || ov_limit.is_dq_string ());
+
+  Matrix m_base = ov_base.matrix_value (true);
+
+  if (error_state)
+    eval_error ("invalid base value in colon expression");
+  else
+    {
+      Matrix m_limit = ov_limit.matrix_value (true);
+
+      if (error_state)
+	eval_error ("invalid limit value in colon expression");
+      else
+	{
+	  Matrix m_increment = ov_increment.matrix_value (true);
+
+	  if (error_state)
+	    eval_error ("invalid increment value in colon expression");
+	  else
+	    retval = make_range (m_base, m_limit, m_increment,
+				 result_is_str, dq_str);
+	}
+    }
+
+  return retval;
+}
+
+octave_value
 tree_colon_expression::rvalue (void)
 {
   octave_value retval;
@@ -91,72 +158,38 @@ tree_colon_expression::rvalue (void)
   if (error_state || ! op_base || ! op_limit)
     return retval;
 
-  octave_value tmp = op_base->rvalue ();
+  octave_value ov_base = op_base->rvalue ();
 
-  if (error_state || tmp.is_undefined ())
+  if (error_state || ov_base.is_undefined ())
+    eval_error ("invalid base value in colon expression");
+  else
     {
-      eval_error ("invalid value in colon expression");
-      return retval;
-    }
+      octave_value ov_limit = op_limit->rvalue ();
 
-  double xbase = tmp.double_value ();
-
-  if (error_state)
-    {
-      eval_error ("colon expression elements must be scalars");
-      return retval;
-    }
-
-  tmp = op_limit->rvalue ();
-
-  if (error_state || tmp.is_undefined ())
-    {
-      eval_error ("invalid value in colon expression");
-      return retval;
-    }
-
-  double xlimit = tmp.double_value ();
-
-  if (error_state)
-    {
-      eval_error ("colon expression elements must be scalars");
-      return retval;
-    }
-
-  double xinc = 1.0;
-
-  if (op_increment)
-    {
-      tmp = op_increment->rvalue ();
-
-      if (error_state || tmp.is_undefined ())
+      if (error_state || ov_limit.is_undefined ())
+	eval_error ("invalid limit value in colon expression");
+      else
 	{
-	  eval_error ("invalid value in colon expression");
-	  return retval;
+	  octave_value ov_increment = 1.0;
+
+	  if (op_increment)
+	    {
+	      ov_increment = op_increment->rvalue ();
+
+	      if (error_state || ov_increment.is_undefined ())
+		eval_error ("invalid increment value in colon expression");
+	    }
+
+	  if (! error_state)
+	    retval = make_range (ov_base, ov_limit, ov_increment);
 	}
-
-      xinc = tmp.double_value ();
-
-      if (error_state)
-	{
-	  eval_error ("colon expression elements must be scalars");
-	  return retval;
-	}
-    }
-
-  retval = octave_value (xbase, xlimit, xinc);
-
-  if (error_state)
-    {
-      retval = octave_value ();
-      eval_error ();
     }
 
   return retval;
 }
 
 void
-tree_colon_expression::eval_error (const std::string& s)
+tree_colon_expression::eval_error (const std::string& s) const
 {
   if (! s.empty ())
     ::error ("%s", s.c_str ());

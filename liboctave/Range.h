@@ -33,7 +33,7 @@ Range
  public:
 
   Range (void)
-    : rng_base (-1), rng_limit (-1), rng_inc (-1), rng_nelem (-1), cache () { }
+    : rng_base (0), rng_limit (0), rng_inc (0), rng_nelem (0), cache (1, 0) { }
 
   Range (const Range& r)
     : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),

@@ -2295,8 +2295,6 @@ handle_identifier (void)
 
   bool next_tok_is_paren = (c1 == '(');
 
-  bool next_tok_is_struct_ref = (c1 == '.');
-
   bool next_tok_is_eq = false;
   if (c1 == '=')
     {

@@ -99,7 +99,8 @@ private:
 
   octave_value
   make_range (const Matrix& m_base, const Matrix& m_limit,
-	      const Matrix& m_increment, bool result_is_str) const;
+	      const Matrix& m_increment, bool result_is_str,
+	      bool dq_str) const;
 
   octave_value
   make_range (const octave_value& ov_base, const octave_value& ov_limit,

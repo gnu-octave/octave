@@ -1,5 +1,8 @@
 2005-05-11  John W. Eaton  <jwe@octave.org>
 
+	* strings/findstr.m: Allow non-string arguments for compatiblity.
+	From Tom Holroyd <tomh@kurage.nimh.nih.gov>.
+
 	* plot/polar.m: Don't call __pltopt__ here.
 
 2005-05-02  John W. Eaton  <jwe@octave.org>

@@ -44,8 +44,8 @@ function v = findstr (s, t, overlap)
     usage ("findstr (s, t, overlap)");
   endif
 
-  if (! isstr (s) || ! isstr (t) || all (size (s) > 1) || all (size (t) > 1))
-    error ("findstr: expecting first two arguments to be strings");
+  if (all (size (s) > 1) || all (size (t) > 1))
+    error ("findstr: arguments must have only one non-singleton dimension");
   endif
 
   if (nargin == 2)

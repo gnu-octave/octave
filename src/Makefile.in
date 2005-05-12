@@ -545,9 +545,14 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
-	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash \
-	  $< | $(SED) 's,lookup\[,gperf_lookup[,' > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 \
+	  || (rm -f $@-t1; exit 1)
+	@$(SED) 's,lookup\[,gperf_lookup[,' $@-t1 > $@-t2 || rm -f $@-t2
+	@if [ -s $@-t2 ]; then \
+	  $(top_srcdir)/move-if-change $@-t2 $@; \
+	else \
+	  exit 1; \
+	fi
 
 # How to make a .oct file from a .o file:
 

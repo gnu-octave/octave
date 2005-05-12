@@ -1,3 +1,8 @@
+2005-05-12  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (oct-gperf.h): Try harder to cause Make to exit here
+	if gperf is missing or fails to create a valid file.
+
 2005-05-10  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (<MATRIX_START>{SNLCMT}*\]{S}*): If whitespace was gobbled,

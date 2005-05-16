@@ -336,7 +336,9 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  // What integer type do we really have..
 	  std::string int_typ;
 #ifdef HAVE_H5T_GET_NATIVE_TYPE
-	  // XXX FIXME XX test this code and activated with an autoconf test!!
+	  // XXX FIXME XX test this code and activated with an autoconf 
+	  // test!! It is also incorrect for 64-bit indexing!!
+	  
 	  switch (H5Tget_native_type (type_id, H5T_DIR_ASCEND))
 	    {
 	    case H5T_NATIVE_CHAR:
@@ -623,7 +625,7 @@ int
 save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
 {
   hsize_t sz = d.length ();
-  int dims[sz];
+  octave_idx_type dims[sz];
   bool empty = false;
   hid_t space_hid = -1, data_hid = -1;
   int retval;
@@ -640,7 +642,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
   space_hid = H5Screate_simple (1, &sz, (hsize_t *) 0);
   if (space_hid < 0) return space_hid;
 
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_INT, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid, 
 			H5P_DEFAULT);
   if (data_hid < 0)
     {
@@ -648,7 +650,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
       return data_hid;
     }
   
-  retval = H5Dwrite (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL,
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
 		     H5P_DEFAULT, (void*) dims) >= 0;
 
   H5Dclose (data_hid);
@@ -674,10 +676,11 @@ load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d)
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t space_id = H5Dget_space (data_hid);
   H5Sget_simple_extent_dims (space_id, &hdims, &maxdims);
-  int dims[hdims];
   int retval;
 
-  retval = H5Dread (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, 
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, hdims);
+
+  retval = H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, 
 		    H5P_DEFAULT, (void *) dims);
   if (retval >= 0)
     {

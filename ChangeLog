@@ -1,3 +1,7 @@
+2005-05-16  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Change UMFPACK_LONG_IDX to IDX_TYPE_LONG.
+
 2005-05-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_CHECK_LIB($zlib_lib, ...)): Check for

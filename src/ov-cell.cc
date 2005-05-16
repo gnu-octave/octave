@@ -748,13 +748,13 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (int, hdims, rank);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (hsize_t i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_INT, space_hid, 
+  size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid, 
 			H5P_DEFAULT);
   if (size_hid < 0) 
     {
@@ -763,7 +763,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       return false;
     }
 
-  if (! H5Dwrite (size_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL,
+  if (! H5Dwrite (size_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
 		  H5P_DEFAULT, hdims) < 0)
     {
       H5Dclose (size_hid);
@@ -834,9 +834,9 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
 
   dv.resize (hdims[0]);
 
-  OCTAVE_LOCAL_BUFFER (int, tmp, hdims[0]);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, hdims[0]);
   
-  if (H5Dread (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, 
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, 
 	       H5P_DEFAULT, tmp) < 0)
     {
       H5Dclose (data_hid);

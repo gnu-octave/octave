@@ -114,6 +114,7 @@ read_mat5_binary_data (std::istream& is, double *data,
       read_doubles (is, data, LS_CHAR, count, swap, flt_fmt);
       break;
 
+    case miUTF8:
     case miUINT8:
       read_doubles (is, data, LS_U_CHAR, count, swap, flt_fmt);
       break;
@@ -905,10 +906,47 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  }
 	else
 	  {
-	    tc = re;
-
 	    if (arrayclass == mxCHAR_CLASS)
-	      tc = tc.convert_to_str (false, true, '\'');
+	      {
+		if (type == miUTF16 || type == miUTF32)
+		  {
+		    error ("load: can not read Unicode UTF16 and UTF32 encoded characters");
+		    goto data_read_error;
+		  }
+		else if (type == miUTF8)
+		  {
+		    // Search for multi-byte encoded UTF8 characters and
+		    // replace with 0x3F for '?'... Give the user a warning
+
+		    bool utf8_multi_byte = false;
+		    for (int i = 0; i < n; i++)
+		      {
+			unsigned char a = static_cast<char> (re(i));
+			if (a > 0x7f)
+			  utf8_multi_byte = true;
+			else
+			  i++;
+		      }
+		    
+		    if (utf8_multi_byte)
+		      {
+			warning ("load: can not read multi-byte encoded UTF8 characters.");
+			warning ("      Replacing unreadable characters with '?'.");
+			for (int i = 0; i < n; i++)
+			  {
+			    unsigned char a = static_cast<char> (re(i));
+			    if (a > 0x7f)
+			      re(i) = 0x3F;
+			  }
+		      }
+		  }
+		tc = re;
+		tc = tc.convert_to_str (false, true, '\'');
+	      }
+	    else
+	      tc = re;
+
+	    tc = tc.convert_to_str (false, true, '\'');
 	  }
       }
     }
@@ -1436,9 +1474,10 @@ save_mat5_binary_element (std::ostream& os,
 	{
 	  OSSTREAM_FREEZE (buf);
       
-	  // destLen must be 0.1% larger than source buffer + 12 bytes
+	  // destLen must be at least 0.1% larger than source buffer 
+	  // + 12 bytes. Reality is it must be larger again than that.
 	  uLongf srcLen = OSSTREAM_STR (buf).length ();
-	  uLongf destLen = srcLen * 1001 / 1000 + 12; 
+	  uLongf destLen = srcLen * 101 / 100 + 12; 
 	  OCTAVE_LOCAL_BUFFER (char, out_buf, destLen);
 
 	  if (compress (X_CAST (Bytef *, out_buf), &destLen, 

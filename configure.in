@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.477 $)
+AC_REVISION($Revision: 1.478 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -160,7 +160,7 @@ if $USE_64_BIT_IDX_T; then
       OCTAVE_IDX_TYPE=int
     elif test $ac_cv_sizeof_long -eq 8; then
       OCTAVE_IDX_TYPE=long
-      AC_DEFINE(UMFPACK_LONG_IDX, 1, [Define to 1 to use long int versions of UMFPACK])
+      AC_DEFINE(IDX_TYPE_LONG, 1, [Define to 1 if octave index type is long])
     else
       AC_MSG_WARN([no suitable type found for octave_idx_type so disabling 64-bit features])    
       USE_64_BIT_IDX_T=false

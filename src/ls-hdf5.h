@@ -173,6 +173,12 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
 		const std::string& name, const std::string& doc,
 		bool mark_as_global, bool save_as_floats);
 
+#ifdef IDX_TYPE_LONG
+#define H5T_NATIVE_IDX H5T_NATIVE_LONG
+#else
+#define H5T_NATIVE_IDX H5T_NATIVE_INT
+#endif
+
 #endif
 
 #endif

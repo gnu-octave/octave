@@ -1,3 +1,8 @@
+2005-05-16  David Bateman  <dbateman@free.fr>
+
+	* dSparse.h: Change UMFPACK_LONG_IDX to IDX_TYPE_LONG.
+	* CSparse.h: ditto.
+
 2005-05-10  David Bateman <dbateman@free.fr>
 
 	* dSparse.cc (determinant): Free numeric factorization after

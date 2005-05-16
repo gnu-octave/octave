@@ -1151,10 +1151,6 @@ parse_save_options (const string_vector &argv, int argc,
 	{
 	  use_zlib  = true;
 	}
-      else if (argv[i] == "-nozip" || argv[i] == "-nz")
-	{
-	  use_zlib  = false;
-	}
 #endif
       else
 	break;
@@ -1515,12 +1511,6 @@ convert the files for backward compatibility."
 
 HAVE_ZLIB_HELP_STRING
 
-"@item -nozip\n\
-@itemx -nz\n\
-Disable the use of the file compression."
-
-HAVE_ZLIB_HELP_STRING
-
 "@end table\n\
 \n\
 The list of variables to save may include wildcard patterns containing\n\
@@ -1580,11 +1570,19 @@ the file @file{data} in Octave's binary format.\n\
 
   bool use_zlib = false;
 
-  parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
-		      save_builtins, use_zlib, 0);
-  
+  load_save_format user_file_format = LS_UNKNOWN;
+  bool dummy;
+
+  // Get user file format
+  parse_save_options (argv, argc, user_file_format, dummy, 
+		      dummy, dummy, dummy, 1);
+
+  if (user_file_format == LS_UNKNOWN)
+    parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
+			save_builtins, use_zlib, 0);
+
   int i = parse_save_options (argv, argc, format, append, save_as_floats, 
-			      save_builtins, use_zlib, 1);
+			  save_builtins, use_zlib, 1);
 
   if (error_state)
     return retval;

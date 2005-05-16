@@ -1,3 +1,25 @@
+2005-05-16  David Bateman  <dbateman@free.fr>
+
+	* ls-mat.cc (save_mat5_binary_element): Increase size of 
+	compression buffer.
+	(load_mat5_binary_element): Allow ASCII encoded as UTF8,
+	and give error messages for multi-byte UTF8 and UTF16 and UTF32
+	encodings.
+
+	* ls-hdf5.h (H5T_NATIVE_IDX): New macro defining native indexing
+	type for HDF5 files
+
+	* ls-hdf5.cc (save_hdf5_empty, load_hdf5_empty): Use 
+	H5T_NATIVE_IDX to allow 64-bit indexing.
+	* ov-bool-sparse.cc (save_hdf5, load_hdf5): ditto.
+	* ov-re-sparse.cc (save_hdf5, load_hdf5): ditto.
+	* ov-cx-sparse.cc (save_hdf5, load_hdf5): ditto.
+	* ov-cell.cc (save_hdf5, load_hdf5): ditto.
+
+	* load-save.cc (parse_save_options): Remove -nozip option.
+	(Fsave): If user defines file format, ignore completely the default
+	file format options.
+	
 2005-05-12  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (oct-gperf.h): Try harder to cause Make to exit here

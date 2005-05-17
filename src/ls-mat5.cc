@@ -921,11 +921,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 		    bool utf8_multi_byte = false;
 		    for (int i = 0; i < n; i++)
 		      {
-			unsigned char a = static_cast<char> (re(i));
+			unsigned char a = static_cast<unsigned char> (re(i));
 			if (a > 0x7f)
 			  utf8_multi_byte = true;
-			else
-			  i++;
 		      }
 		    
 		    if (utf8_multi_byte)
@@ -934,9 +932,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 			warning ("      Replacing unreadable characters with '?'.");
 			for (int i = 0; i < n; i++)
 			  {
-			    unsigned char a = static_cast<char> (re(i));
+			    unsigned char a = static_cast<unsigned char> (re(i));
 			    if (a > 0x7f)
-			      re(i) = 0x3F;
+			      re(i) = '?';
 			  }
 		      }
 		  }

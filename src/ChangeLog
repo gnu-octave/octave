@@ -1,5 +1,8 @@
 2005-05-18  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.3
+	(OCTAVE_API_VERSION): Now api-v16.
+
 	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):
 	Make spacing of output consistent with other parts of Octave.
 

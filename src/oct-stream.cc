@@ -3860,10 +3860,10 @@ octave_stream_list::instance_ok (void)
   return retval;
 }
 
-octave_value
+int
 octave_stream_list::insert (const octave_stream& os)
 {
-  return (instance_ok ()) ? instance->do_insert (os) : octave_value (-1.0);
+  return (instance_ok ()) ? instance->do_insert (os) : -1;
 }
 
 octave_stream
@@ -3928,7 +3928,7 @@ octave_stream_list::get_file_number (const octave_value& fid)
   return (instance_ok ()) ? instance->do_get_file_number (fid) : -1;
 }
 
-octave_value
+int
 octave_stream_list::do_insert (const octave_stream& os)
 {
   octave_value retval;
@@ -3962,7 +3962,7 @@ octave_stream_list::do_insert (const octave_stream& os)
       curr_len++;
     }
 
-  return octave_value (os, stream_number);
+  return stream_number;
 }
 
 static void

@@ -631,7 +631,7 @@ public:
 
   static bool instance_ok (void);
 
-  static octave_value insert (const octave_stream& os);
+  static int insert (const octave_stream& os);
 
   static octave_stream
   lookup (int fid, const std::string& who = std::string ());
@@ -662,7 +662,7 @@ private:
 
   static octave_stream_list *instance;
 
-  octave_value do_insert (const octave_stream& os);
+  int do_insert (const octave_stream& os);
 
   octave_stream do_lookup (int fid, const std::string& who = std::string ()) const;
   octave_stream do_lookup (const octave_value& fid,

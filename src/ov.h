@@ -243,7 +243,6 @@ public:
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
-  octave_value (const octave_stream& s, int n);
   octave_value (const streamoff_array& off);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
@@ -440,9 +439,6 @@ public:
 
   virtual bool is_map (void) const
     { return rep->is_map (); }
-
-  virtual bool is_stream (void) const
-    { return rep->is_stream (); }
 
   virtual bool is_streamoff (void) const
     { return rep->is_streamoff (); }
@@ -660,10 +656,6 @@ public:
 
   virtual string_vector map_keys (void) const
     { return rep->map_keys (); }
-
-  virtual octave_stream stream_value (void) const;
-
-  virtual int stream_number (void) const;
 
   virtual std::streamoff streamoff_value (void) const;
 

@@ -131,8 +131,6 @@ public:
 
   bool is_map (void) const { return false; }
 
-  bool is_stream (void) const { return false; }
-
   bool is_streamoff (void) const { return false; }
 
   bool is_cs_list (void) const { return false; }
@@ -270,10 +268,6 @@ public:
   Octave_map map_value (void) const;
 
   string_vector map_keys (void) const;
-
-  octave_stream stream_value (void) const;
-
-  int stream_number (void) const;
 
   std::streamoff streamoff_value (void) const;
 

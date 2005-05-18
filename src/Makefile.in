@@ -76,7 +76,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-struct.h ov-scalar.h ov-range.h ov-complex.h ov-va-args.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-streamoff.h ov-str-mat.h ov-bool-mat.h ov-bool.h \
-	ov-file.h ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
+	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
 	ov-mapper.h ov-usr-fcn.h ov-fcn-handle.h ov-fcn-inline.h \
 	ov-typeinfo.h ov-type-conv.h \
 	$(OV_INTTYPE_INC)
@@ -115,9 +115,8 @@ INTTYPE_OP_XSRC := op-int-concat.cc op-int-conv.cc op-double-conv.cc \
 	op-ui8-ui8.cc op-ui16-ui16.cc op-ui32-ui32.cc op-ui64-ui64.cc
 
 SPARSE_OP_XSRC := op-bm-sbm.cc op-b-sbm.cc op-cm-scm.cc op-cm-sm.cc \
-	op-cs-scm.cc op-cs-sm.cc op-fil-sbm.cc op-fil-scm.cc \
-	op-fil-sm.cc op-m-scm.cc op-m-sm.cc op-sbm-b.cc op-sbm-bm.cc \
-	op-sbm-sbm.cc op-scm-cm.cc op-scm-cs.cc op-scm-m.cc \
+	op-cs-scm.cc op-cs-sm.cc op-m-scm.cc op-m-sm.cc op-sbm-b.cc \
+	op-sbm-bm.cc op-sbm-sbm.cc op-scm-cm.cc op-scm-cs.cc op-scm-m.cc \
 	op-scm-s.cc op-scm-scm.cc op-scm-sm.cc op-sm-cm.cc \
 	op-sm-cs.cc op-sm-m.cc op-sm-s.cc op-sm-scm.cc op-sm-sm.cc \
 	op-s-scm.cc op-s-sm.cc
@@ -125,9 +124,7 @@ SPARSE_OP_XSRC := op-bm-sbm.cc op-b-sbm.cc op-cm-scm.cc op-cm-sm.cc \
 OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 	op-cell.cc op-chm.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
 	op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
-	op-cs-s.cc op-fil-b.cc op-fil-bm.cc op-fil-cm.cc \
-	op-fil-cs.cc op-fil-m.cc op-fil-s.cc op-fil-lis.cc \
-	op-fil-rec.cc op-fil-str.cc op-list.cc op-m-cm.cc \
+	op-cs-s.cc op-list.cc op-m-cm.cc \
 	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
 	op-s-cs.cc op-s-m.cc op-s-s.cc op-str-m.cc \
 	op-str-s.cc op-str-str.cc op-streamoff.cc op-struct.cc \
@@ -149,7 +146,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-cs-list.cc ov-list.cc ov-re-mat.cc ov-cx-mat.cc \
 	ov-range.cc ov-scalar.cc ov-complex.cc ov-str-mat.cc \
 	ov-streamoff.cc ov-struct.cc ov-va-args.cc \
-	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov-cell.cc \
+	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
 	ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc ov-typeinfo.cc \
 	$(OV_INTTYPE_SRC) \

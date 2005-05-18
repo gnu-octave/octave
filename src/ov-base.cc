@@ -632,14 +632,6 @@ octave_base_value::map_keys (void) const
   return retval;
 }
 
-octave_stream
-octave_base_value::stream_value (void) const
-{
-  octave_stream retval;
-  gripe_wrong_type_arg ("octave_base_value::stream_value()", type_name ());
-  return retval;
-}
-
 std::streamoff
 octave_base_value::streamoff_value (void) const
 {
@@ -654,14 +646,6 @@ octave_base_value::streamoff_array_value (void) const
   streamoff_array retval;
   gripe_wrong_type_arg ("octave_base_value::streamoff_array_value()",
 			type_name ());
-  return retval;
-}
-
-int
-octave_base_value::stream_number (void) const
-{
-  int retval = -1;
-  gripe_wrong_type_arg ("octave_base_value::stream_number()", type_name ());
   return retval;
 }
 

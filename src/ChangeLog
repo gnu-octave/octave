@@ -1,3 +1,29 @@
+2005-05-17  John W. Eaton  <jwe@octave.org>
+
+	* ov.cc (install_types): Don't call octave_stream::register_type.
+	* ov.h, ov.cc (octave_value::octave_value (const octave_stream&,
+	int): Delete constructor.
+	(octave_value::is_stream, octave_value::stream_value,
+	octave_value::stream_number): Delete functions.
+	* ov-base.h (octave_base_value::is_stream): Delete function.
+	* ov-base.h, ov-base.cc (octave_base_value::stream_value,
+	octave_base_value::stream_number): Delete functions.
+	* file-io.cc (Fisstream): Delete function.
+	* op-file.h, op-file.cc, OPERATORS/op-fil-sbm.cc,
+	OPERATORS/op-fil-scm.cc, OPERATORS/op-fil-sm.cc,
+	* OPERATORS/op-fil-b.cc, OPERATORS/op-fil-bm.cc,
+	OPERATORS/op-fil-cm.cc, OPERATORS/op-fil-cs.cc,
+	OPERATORS/op-fil-m.cc, OPERATORS/op-fil-s.cc,
+	OPERATORS/op-fil-lis.cc, OPERATORS/op-fil-rec.cc,
+	OPERATORS/op-fil-str.cc: Delete files.
+	* Makefile.in (OP_XSRC, SPARSE_OP_XSRC): Delete op-fil-*.cc from
+	the lists.
+	(OV_INCLUDES): Delete op-file.h from the list.
+	(OV_SRC): Delete op-file.cc from the list.
+	* oct-stream.cc, oct-stream.h (octave_stream_list::insert,
+	octave_stream_list::do_insert): Return stream number instead of
+	octave_value.
+
 2005-05-16  David Bateman  <dbateman@free.fr>
 
 	* ls-mat.cc (save_mat5_binary_element): Increase size of 

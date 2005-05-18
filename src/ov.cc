@@ -773,12 +773,6 @@ octave_value::octave_value (const Octave_map& m)
   rep->count = 1;
 }
 
-octave_value::octave_value (const octave_stream& s, int n)
-  : rep (new octave_file (s, n))
-{
-  rep->count = 1;
-}
-
 octave_value::octave_value (const streamoff_array& off)
   : rep (new octave_streamoff (off))
 {
@@ -1106,18 +1100,6 @@ Octave_map
 octave_value::map_value (void) const
 {
   return rep->map_value ();
-}
-
-octave_stream
-octave_value::stream_value (void) const
-{
-  return rep->stream_value ();
-}
-
-int
-octave_value::stream_number (void) const
-{
-  return rep->stream_number ();
 }
 
 std::streamoff
@@ -2216,7 +2198,6 @@ install_types (void)
   octave_sparse_matrix::register_type ();
   octave_sparse_complex_matrix::register_type ();
   octave_struct::register_type ();
-  octave_file::register_type ();
   octave_list::register_type ();
   octave_cs_list::register_type ();
   octave_all_va_args::register_type ();

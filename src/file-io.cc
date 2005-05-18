@@ -187,22 +187,6 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
   return retval;
 }
 
-DEFUN (isstream, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isstream (@var{x})\n\
-Return true if @var{x} is a stream object.  Otherwise, return false.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_stream ();
-  else
-    print_usage ("isstream");
-
-  return retval;
-}
-
 DEFUN (fclose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fclose (@var{fid})\n\
@@ -481,7 +465,7 @@ DEFUN (fopen, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})\n\
 @deftypefnx {Built-in Function} {@var{fid_list} =} fopen (\"all\")\n\
-@deftypefnx {Built-in Function} {@var{file} =} fopen (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})\n\
 The first form of the @code{fopen} function opens the named file with\n\
 the specified mode (read-write, read-only, etc.) and architecture\n\
 interpretation (IEEE big endian, IEEE little endian, etc.), and returns\n\
@@ -495,8 +479,8 @@ The second form of the @code{fopen} function returns a vector of file ids\n\
 corresponding to all the currently open files, excluding the\n\
 @code{stdin}, @code{stdout}, and @code{stderr} streams.\n\
 \n\
-The third form of the @code{fopen} function returns the name of a\n\
-currently open file given its file id.\n\
+The third form of the @code{fopen} function returns information about the\n\
+open file given its file id.\n\
 \n\
 For example,\n\
 \n\

@@ -38,6 +38,7 @@ function retval = num2str (x, arg)
 
   if (isstr (x))
     retval = x;
+    return;
   endif
 
   if (iscomplex (x))

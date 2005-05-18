@@ -1,3 +1,7 @@
+2005-05-18  John W. Eaton  <jwe@octave.org>
+
+	* general/num2str.m: Return early if X is a character string.
+
 2005-05-11  John W. Eaton  <jwe@octave.org>
 
 	* strings/findstr.m: Allow non-string arguments for compatiblity.

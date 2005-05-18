@@ -1,3 +1,11 @@
+2005-05-18  John W. Eaton  <jwe@octave.org>
+
+	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):
+	Make spacing of output consistent with other parts of Octave.
+
+	* DLD-FUNCTIONS/rand.cc (do_rand): Chop trailing singelton
+	dimensions before generating array.
+
 2005-05-17  John W. Eaton  <jwe@octave.org>
 
 	* ov.cc (install_types): Don't call octave_stream::register_type.

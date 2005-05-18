@@ -219,6 +219,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 
  gen_matrix:
 
+  dims.chop_trailing_singletons ();
+
   return octave_rand::nd_array (dims);
 }
 

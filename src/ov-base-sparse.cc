@@ -243,15 +243,19 @@ octave_base_sparse<T>::print_info (std::ostream& os,
 template <class T>
 void
 octave_base_sparse<T>::print_raw (std::ostream& os,
-				      bool pr_as_read_syntax) const
+				  bool pr_as_read_syntax) const
 {
   octave_idx_type nr = matrix.rows ();
   octave_idx_type nc = matrix.cols ();
   octave_idx_type nz = nonzero ();
 
-  os << "Compressed Column Sparse (rows=" << nr <<
-    ", cols=" << nc <<
-    ", nnz=" << nz << ")";
+  // XXX FIXME XXX -- this should probably all be handled by a
+  // separate octave_print_internal function that can handle format
+  // compact, loose, etc.
+
+  os << "Compressed Column Sparse (rows = " << nr
+     << ", cols = " << nc
+     << ", nnz = " << nz << ")\n";
 
   // add one to the printed indices to go from
   //  zero-based to one-based arrays
@@ -261,12 +265,20 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
       for (octave_idx_type j = 0; j < nc; j++)
 	{
 	  OCTAVE_QUIT;
+
+	  // XXX FIXME XXX -- is there an easy way to get the max row
+	  // and column indices so we can set the width appropriately
+	  // and line up the columns here?  Similarly, we should look
+	  // at all the nonzero values and display them with the same
+	  // formatting rules that apply to columns of a matrix.
+
 	  for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
 	    {
 	      os << "\n";
 	      os << "  (" << matrix.ridx(i)+1 <<
-		" , "  << j+1 << ") -> ";
-	      octave_print_internal( os, matrix.data(i), pr_as_read_syntax);
+		", "  << j+1 << ") -> ";
+
+	      octave_print_internal (os, matrix.data(i), pr_as_read_syntax);
 	    }
 	}
     }

@@ -1,5 +1,8 @@
 2005-05-18  John W. Eaton  <jwe@octave.org>
 
+	* pt-colon.cc (tree_colon_expression::make_range): Don't require
+	scalars values as range components.
+
 	* version.h (OCTAVE_VERSION): Now 2.9.3
 	(OCTAVE_API_VERSION): Now api-v16.
 

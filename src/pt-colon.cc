@@ -93,22 +93,15 @@ tree_colon_expression::make_range (const Matrix& m_base,
   bool limit_empty = m_limit.is_empty ();
   bool increment_empty = m_increment.is_empty ();
 
-  if ((base_empty || m_base.numel () == 1)
-      && (limit_empty || m_limit.numel () == 1)
-      && (increment_empty || m_increment.numel () == 1))
-    {
-      if (base_empty || limit_empty || increment_empty)
-	retval = Range ();
-      else
-	{
-	  retval = Range (m_base(0), m_limit(0), m_increment(0));
-
-	  if (result_is_str)
-	    retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
-	}
-    }
+  if (base_empty || limit_empty || increment_empty)
+    retval = Range ();
   else
-    eval_error ("colon expression values must be scalars or empty matrices");
+    {
+      retval = Range (m_base(0), m_limit(0), m_increment(0));
+
+      if (result_is_str)
+	retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+    }
 
   return retval;
 }

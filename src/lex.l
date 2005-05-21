@@ -1945,7 +1945,7 @@ handle_string (char delim, int text_style)
 
       if (c == '\\')
 	{
-	  if (escape_pending)
+	  if (delim == '\'' || escape_pending)
 	    {
 	      buf << static_cast<char> (c);
 	      escape_pending = 0;
@@ -1964,7 +1964,7 @@ handle_string (char delim, int text_style)
 	}
       else if (c == '.')
 	{
-	  if (! have_ellipsis_continuation (false))
+	  if (delim == '\'' || ! have_ellipsis_continuation (false))
 	    buf << static_cast<char> (c);
 	}
       else if (c == '\n')

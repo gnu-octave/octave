@@ -1,3 +1,8 @@
+2005-05-21  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (handle_string): If single-quote string, \ and . have no
+	special meaning.
+
 2005-05-18  John W. Eaton  <jwe@octave.org>
 
 	* pt-colon.cc (tree_colon_expression::make_range): Don't require

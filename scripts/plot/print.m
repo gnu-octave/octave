@@ -99,25 +99,17 @@
 
 function print (varargin)
 
-  ## take care of the settings we had before
-  origterm = gget ("terminal");
-  origout = gget ("output");
-  ## End of line trmination for __gnuplot_raw__ command strings.
-  endl = ";\n";
-  _automatic_replot = automatic_replot;
-
-  ## take care of the default terminal settings to restore them.
-  terminal_default = "";
-  
-  orientation = orient;
+  orientation = "landscape"; ## orient;
   use_color = 0; # 0=default, -1=mono, +1=color
   force_solid = 0; # 0=default, -1=dashed, +1=solid
-  fontsize = font = name = devopt = printer = "";
-  
-  va_arg_cnt = 1;
+  fontsize = "";
+  font = "";
+  name = "";
+  devopt = "";
+  printer = "";
 
   for i = 1:nargin
-    arg = nth (varargin, va_arg_cnt++);
+    arg = varargin{i};
     if (isstr (arg))
       if (strcmp (arg, "-color"))
 	use_color = 1;
@@ -156,16 +148,16 @@ function print (varargin)
   doprint = isempty (name);
   if (doprint)
     if (isempty (devopt))
-      printname = [ tmpnam, ".ps" ]; 
+      printname = strcat (tmpnam, ".ps");
     else
-      printname = [ tmpnam, ".", devopt ];
+      printname = strcat (tmpnam, ".", devopt);
     endif
     name = printname;
   endif
 
   if (isempty (devopt))
     dot = rindex (name, ".");
-    if (dot == 0) 
+    if (dot == 0)
       error ("print: no format specified");
     else
       dev = tolower (name(dot+1:end));
@@ -181,86 +173,76 @@ function print (varargin)
   endif
 
   ## check if we have to use convert
-  dev_list = [" aifm corel fig png pbm dxf mf hpgl", ...
-	      " ps ps2 psc psc2 eps eps2 epsc epsc2 " ];
+  dev_list = {"aifm" "corel" "fig" "png" "pbm" "dxf" "mf" "hpgl", ...
+	      "ps" "ps2" "psc" "psc2" "eps" "eps2" "epsc" "epsc2"};
   convertname = "";
-  if (isempty (findstr (dev_list , [ " ", dev, " " ]))
+  idx = cellidx (dev_list, dev);
+  if (! idx)
     if (! isempty (devopt))
-      convertname = [ devopt ":" name ];
+      convertname = strcat (devopt, ":", name);
     else
       convertname = name;
     endif
     dev = "epsc";
-    name = [ tmpnam, ".eps" ];
+    name = strcat (tmpnam, ".eps");
   endif
-  
+
   unwind_protect
-    automatic_replot = 0;
 
     if (strcmp (dev, "ps") || strcmp (dev, "ps2") ...
 	|| strcmp (dev, "psc")  || strcmp (dev, "psc2")
 	|| strcmp (dev, "epsc") || strcmp (dev, "epsc2")
 	|| strcmp (dev, "eps")  || strcmp (dev, "eps2"))
       ## Various postscript options
-      ## XXX FIXME XXX -- Do we need this? DAS
-      ##__gnuplot_set__ term postscript
-      terminal_default = gget ("terminal");
-      
       if (dev(1) == "e")
 	options = "eps ";
       else
-	options = [ orientation, " " ];
+	options = strcat (orientation, " ");
       endif
-      options = [ options, "enhanced " ];
-      
+      options = strcat (options, "enhanced ");
+
       if (any (dev == "c") || use_color > 0)
         if (force_solid < 0)
-	  options = [ options, "color dashed " ];
+	  options = strcat (options, "color dashed ");
 	else
-          options = [ options, "color solid " ];
+          options = strcat (options, "color solid ");
         endif
       else
         if (force_solid > 0)
-	  options = [ options, "mono solid " ];
+	  options = strcat (options, "mono solid ");
 	else
-	  options = [ options, "mono dashed " ];
+	  options = strcat (options, "mono dashed ");
         endif
       endif
 
       if (! isempty (font))
-	options = [ options, "\"", font, "\" " ];
+	options = strcat (options, "\"", font, "\" ");
       endif
       if (! isempty (fontsize))
-	options = [ options, " ", fontsize ];
+	options = strcat (options, " ", fontsize);
       endif
 
-      __gnuplot_raw__ (["set term postscript ", options, endl]);
+      __gnuplot_raw__ (sprintf ("set terminal postscript %s;\n", options));
 
 
     elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
       ## Adobe Illustrator, CorelDraw
-      ## FIXME: Do we need it? DAS
-      ## eval(sprintf ("__gnuplot_set__ term %s", dev));
-      terminal_default = gget ("terminal");
       if (use_color >= 0)
 	options = " color";
       else
 	options = " mono";
       endif
       if (! isempty (font))
-	options = [ options, " \"" , font, "\"" ];
+	options = strcat (options, " \"", font, "\"");
       endif
       if (! isempty (fontsize))
-	options = [ options, " ", fontsize ];
+	options = strcat (options, " ", fontsize);
       endif
 
-      __gnuplot_raw__ (["set term ", dev, " ", options, endl]);
+      __gnuplot_raw__ (sprintf ("set terminal %s %s;\n", dev, options));
 
     elseif (strcmp (dev, "fig"))
       ## XFig
-      ## FIXME: Do we need it? DAS
-      ## __gnuplot_set__ term fig
-      terminal_default = gget ("terminal");
       options = orientation;
       if (use_color >= 0)
 	options = " color";
@@ -268,15 +250,12 @@ function print (varargin)
 	options = " mono";
       endif
       if (! isempty (fontsize))
-	options = [ options, " fontsize ", fontsize ];
+	options = strcat (options, " fontsize ", fontsize);
       endif
-      __gnuplot_raw__ (["set term fig ", options, endl]);
+      __gnuplot_raw__ (sprintf ("set terminal fig %s;\n", options));
 
     elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
       ## Portable network graphics, PBMplus
-      ## FIXME: Do we need it? DAS
-      ## eval(sprintf ("__gnuplot_set__ term %s", dev));
-      terminal_default = gget ("terminal");
 
       ## XXX FIXME XXX -- New PNG interface takes color as "xRRGGBB"
       ## where x is the literal character 'x' and 'RRGGBB' are the red,
@@ -290,40 +269,30 @@ function print (varargin)
       ##else
       ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
       ##endif
-      
-      __gnuplot_raw__ ("set term png large;\n")
- 
+
+      __gnuplot_raw__ ("set terminal png large;\n")
+
     elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
       ## AutoCad DXF, METAFONT, HPGL
-      __gnuplot_raw__ (["set terminal ", dev, endl]);
+      __gnuplot_raw__ (sprintf ("set terminal %s;\n", dev));
     endif
-    
+
     ## Gnuplot expects " around output file name
 
-    __gnuplot_raw__ (["set output \"", name, "\"", endl]);
+    __gnuplot_raw__ (sprintf ("set output \"%s\";\n", name));
     __gnuplot_replot__
-    
+
   unwind_protect_cleanup
 
     ## Restore init state
-    if (! isempty (terminal_default))
-      __gnuplot_raw__ (["set terminal ", terminal_default, endl]);
-    endif
-    __gnuplot_raw__ (["set terminal ", origterm, endl]);
-    if (isempty (origout))
-      __gnuplot_raw__ ("set output;\n")
-    else
-    ## Gnuplot expects " around output file name
-      __gnuplot_raw__ (["set output \"", origout, "\"", endl]);
-    end
+    __gnuplot_raw__ ("set terminal pop;\n");
+    __gnuplot_raw__ ("set output;\n")
     __gnuplot_replot__
-    
-    automatic_replot = _automatic_replot ;
 
   end_unwind_protect
 
   if (! isempty (convertname))
-    command = [ "convert '", name, "' '", convertname, "'" ];
+    command = sprintf ("convert '%s' '%s'", name, convertname);
     [output, errcode] = system (command);
     unlink (name);
     if (errcode)
@@ -337,5 +306,5 @@ function print (varargin)
     system (sprintf ("lpr %s '%s'", printer, printname));
     unlink (printname);
   endif
-  
+
 endfunction

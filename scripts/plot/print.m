@@ -99,7 +99,7 @@
 
 function print (varargin)
 
-  orientation = "landscape"; ## orient;
+  orientation = orient ();
   use_color = 0; # 0=default, -1=mono, +1=color
   force_solid = 0; # 0=default, -1=dashed, +1=solid
   fontsize = "";

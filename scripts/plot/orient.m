@@ -1,44 +1,48 @@
 ## Copyright (C) 2001 Paul Kienzle
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This file is part of Octave.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.
 
-## orient("landscape"|"portrait")
-##    Set default print orientation
-##
-## ret = orient
-##    Return default print orientation
+## -*- texinfo -*-
+## @deftypefn {Function File} {} orient (@var{orientation})
+## Set default print orientation.  Valid values for @var{orientation}
+## include @code{"landscape"} and @code{"portrait"}.  If called with no
+## arguments, return the default print orientation.
+## @end deftypefn
 
-function ret = orient(orientation)
+## Author: Paul Kienzle
+## Adapted-By: jwe
 
-  static __print_orientation = "landscape";
+## PKG_ADD: mark_as_command orient
+
+function retval = orient (orientation)
+
+  static __print_orientation__ = "landscape";
 
   if (nargin == 0)
-    ret = __print_orientation;
-
+    retval = __print_orientation__;
   elseif (nargin == 1)
-
-    if strcmp(orientation,"landscape") || strcmp(orientation,"portrait")
-      __print_orientation = orientation;
+    if (strcmp (orientation, "landscape") || strcmp (orientation, "portrait"))
+      __print_orientation__ = orientation;
     else
       error ("orient: unknown orientation");
     endif
-
   else
-
-    usage("orient(['portrait' | 'landscape'])  OR  ret=orient");
-
+    usage("orient ([\"portrait\"|\"landscape\"])  OR  ret = orient ()");
   endif
 
 endfunction

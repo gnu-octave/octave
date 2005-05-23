@@ -86,10 +86,11 @@ mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 {
   octave_value retval;
 
-  if (m.length () < 1)
-    return ArrayN<T> ();
-
   dim_vector dv = m.dims ();
+
+  if (m.length () < 1)
+    return ArrayN<T> (dv);
+
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
   octave_idx_type stride = 1;
@@ -147,14 +148,15 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 {
   octave_value_list retval;
 
+  dim_vector dv = m.dims ();
+
   if (m.length () < 1)
     {
-      retval(1) = NDArray ();
-      retval(0) = ArrayN<T> ();
+      retval(1) = NDArray (dv);
+      retval(0) = ArrayN<T> (dv);
       return retval;
     }
 
-  dim_vector dv = m.dims ();
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
   octave_idx_type stride = 1;
@@ -299,10 +301,11 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 {
   octave_value retval;
 
-  if (m.length () < 1)
-    return ArrayN<double> ();
-
   dim_vector dv = m.dims ();
+
+  if (m.length () < 1)
+    return ArrayN<double> (dv);
+
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
   octave_idx_type stride = 1;
@@ -436,14 +439,15 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 {
   octave_value_list retval;
 
+  dim_vector dv = m.dims ();
+
   if (m.length () < 1)
     {
-      retval(1) = ArrayN<double> ();
-      retval(0) = NDArray ();
+      retval(1) = ArrayN<double> (dv);
+      retval(0) = NDArray (dv);
       return retval;
     }
 
-  dim_vector dv = m.dims ();
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
   octave_idx_type stride = 1;

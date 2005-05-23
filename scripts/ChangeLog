@@ -1,3 +1,17 @@
+2005-05-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/orient.m: New file.  Adapt to Octave coding style.
+	Texinfoize doc string.
+
+	* plot/print.m: New file.  Adapt to Octave coding style. Include
+	PKG_ADD command.  Use set terminal consistently	throughout.  Use
+	set terminal push/pop and unconditionally set output to screen
+	when done to avoid requiring gget.  Use a cell array for dev_list
+	and cellidx to search for items in the list.  Delete local
+	variable endl.  Don't set and restore automatic_replot.  Use {}
+	instead of nth to index varargin.  Delete local variable
+	va_arg_cnt.
+
 2005-05-18  John W. Eaton  <jwe@octave.org>
 
 	* general/num2str.m: Return early if X is a character string.

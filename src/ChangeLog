@@ -1,8 +1,11 @@
 2005-05-23  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/sort.cc (mx_sort, mx_sort_indexed): Return
+	appropriately sized empty values for empty args.
+
 	* debug.cc (Fdbwhere, get_user_function): Look at
 	curr_caller_function, not curr_function, since function is now set
-	inside mapper, built-in (and thereford dld) functions too.
+	inside mapper, built-in (and therefore dld) functions too.
 
 2005-05-21  John W. Eaton  <jwe@octave.org>
 

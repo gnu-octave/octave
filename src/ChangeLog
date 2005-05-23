@@ -1,5 +1,8 @@
 2005-05-23  John W. Eaton  <jwe@octave.org>
 
+	* load-save.cc (gripe_file_open): New function.
+	(get_file_format, Fload, Fsave): Use it.
+
 	* DLD-FUNCTIONS/sort.cc (mx_sort, mx_sort_indexed): Return
 	appropriately sized empty values for empty args.
 

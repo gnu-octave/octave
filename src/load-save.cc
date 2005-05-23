@@ -107,6 +107,17 @@ static std::string Voctave_core_file_options;
 // no newline characters.
 static std::string Vsave_header_format_string;
 
+static void
+gripe_file_open (const std::string& fcn, const std::string& file)
+{
+  if (fcn == "load")
+    error ("%s: unable to open input file `%s'", fcn.c_str (), file.c_str ());
+  else if (fcn == "save")
+    error ("%s: unable to open output file `%s'", fcn.c_str (), file.c_str ());
+  else
+    error ("%s: unable to open file `%s'", fcn.c_str (), file.c_str ());
+}
+
 // XXX FIXME XXX -- shouldn't this be implemented in terms of other
 // functions that are already available?
 
@@ -285,7 +296,7 @@ read_binary_file_header (std::istream& is, bool& swap,
   else
     {
       if (! quiet)
-	error ("load: can't read binary file");
+	error ("load: unable to read read binary file");
       return -1;
     }
 	
@@ -418,7 +429,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 #endif
     }
   else
-    error ("load: couldn't open input file `%s'", orig_fname.c_str ());
+    gripe_file_open ("load", orig_fname);
 
   return retval;
 }
@@ -800,7 +811,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 	    file_mat_exist.close ();
 	  else
 	    {
-	      error ("load: nonexistent file: `%s'", orig_fname.c_str ());
+	      gripe_file_open ("load", orig_fname);
 	      return retval;
 	    }
 	}
@@ -824,8 +835,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 	      hdf5_file.close ();
 	    }
 	  else
-	    error ("load: couldn't open input file `%s'",
-		   orig_fname.c_str ());
+	    gripe_file_open ("load", orig_fname);
 	}
       else
 #endif /* HAVE_HDF5 */
@@ -878,8 +888,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 		  file.close ();
 		}
 	      else
-		error ("load: couldn't open input file `%s'",
-		       orig_fname.c_str ());
+		gripe_file_open ("load", orig_fname);
 	    }
 	  else
 #endif
@@ -913,7 +922,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 		  file.close ();
 		}
 	      else
-		error ("load: couldn't open input file `%s'",
+		error ("load: unable open input file `%s'",
 		       orig_fname.c_str ());
 	    }
 	}
@@ -1659,7 +1668,7 @@ the file @file{data} in Octave's binary format.\n\
 	  }
 	else
 	  {
-	    error ("save: couldn't open output file `%s'", fname.c_str ());
+	    gripe_file_open ("save", fname);
 	    return retval;
 	  }
 	}
@@ -1686,8 +1695,7 @@ the file @file{data} in Octave's binary format.\n\
 		}
 	      else
 		{
-		  error ("save: couldn't open output file `%s'", 
-			 fname.c_str ());
+		  gripe_file_open ("save", fname);
 		  return retval;
 		}
 	    }
@@ -1709,8 +1717,7 @@ the file @file{data} in Octave's binary format.\n\
 		}
 	      else
 		{
-		  error ("save: couldn't open output file `%s'", 
-			 fname.c_str ());
+		  gripe_file_open ("save", fname);
 		  return retval;
 		}
 	    }

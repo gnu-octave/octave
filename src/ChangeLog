@@ -1,4 +1,17 @@
+2005-05-23  John W. Eaton  <jwe@octave.org>
+
+	* debug.cc (Fdbwhere, get_user_function): Look at
+	curr_caller_function, not curr_function, since function is now set
+	inside mapper, built-in (and thereford dld) functions too.
+
 2005-05-21  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc, pr-output.h (Vprint_empty_dimensions): Now extern.
+	* ov-cell.cc (octave_cell::print_raw): Conditionally print
+	dimensions of empty 2-d cell arrays.
+
+	* DLD-FUNCTIONS/sort.cc (mx_sort, mx_sort_indexed): Return empty
+	values for empty args.
 
 	* lex.l (handle_string): If single-quote string, \ and . have no
 	special meaning.

@@ -70,9 +70,9 @@ static int Voutput_max_field_width;
 // routines.
 static int Voutput_precision;
 
-// TRUE means that the dimensions of empty matrices should be printed
+// TRUE means that the dimensions of empty objects should be printed
 // like this: x = [](2x0).
-static bool Vprint_empty_dimensions;
+bool Vprint_empty_dimensions;
 
 // TRUE means that the rows of big matrices should be split into
 // smaller slices that fit on the screen.

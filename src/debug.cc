@@ -74,8 +74,8 @@ get_user_function (std::string str = "")
 	    }
 	}
     }
-  else if (curr_function && curr_function->is_user_function ())
-    dbg_fcn = dynamic_cast<octave_user_function *> (curr_function);
+  else if (curr_caller_function && curr_caller_function->is_user_function ())
+    dbg_fcn = dynamic_cast<octave_user_function *> (curr_caller_function);
 
   return dbg_fcn;
 }
@@ -285,8 +285,8 @@ Show where we are in the code\n\
 
   octave_user_function *dbg_fcn = 0;
 
-  if (curr_function && curr_function->is_user_function ())
-    dbg_fcn = dynamic_cast<octave_user_function *> (curr_function);
+  if (curr_caller_function && curr_caller_function->is_user_function ())
+    dbg_fcn = dynamic_cast<octave_user_function *> (curr_caller_function);
 
   if (dbg_fcn)
     {

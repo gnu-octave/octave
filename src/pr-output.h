@@ -125,6 +125,10 @@ octave_print_internal (std::ostream& os, const Cell& cell,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);
 
+// TRUE means that the dimensions of empty objects should be printed
+// like this: x = [](2x0).
+extern bool Vprint_empty_dimensions;
+
 #endif
 
 /*

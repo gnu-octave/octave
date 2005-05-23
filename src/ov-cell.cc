@@ -28,6 +28,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <iostream>
 #include <vector>
 
+#include "Array-util.h"
+#include "byte-swap.h"
 #include "lo-sstream.h"
 #include "lo-utils.h"
 #include "quit.h"
@@ -42,9 +44,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-base-mat.cc"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
-#include "Array-util.h"
+#include "pr-output.h"
+#include "ov-scalar.h"
 
-#include "byte-swap.h"
 #include "ls-oct-ascii.h"
 #include "ls-oct-binary.h"
 #include "ls-hdf5.h"
@@ -402,7 +404,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
       else
 	{
 	  os << "{}";
-	  if (nr > 0 || nc > 0)
+	  if (Vprint_empty_dimensions)
 	    os << "(" << nr << "x" << nc << ")";
 	  os << "\n";
 	}

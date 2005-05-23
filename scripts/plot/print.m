@@ -222,7 +222,7 @@ function print (varargin)
 	options = strcat (options, " ", fontsize);
       endif
 
-      __gnuplot_raw__ (sprintf ("set terminal postscript %s;\n", options));
+      __gnuplot_raw__ (sprintf ("set terminal postscript %s push;\n", options));
 
 
     elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
@@ -239,7 +239,7 @@ function print (varargin)
 	options = strcat (options, " ", fontsize);
       endif
 
-      __gnuplot_raw__ (sprintf ("set terminal %s %s;\n", dev, options));
+      __gnuplot_raw__ (sprintf ("set terminal %s %s push;\n", dev, options));
 
     elseif (strcmp (dev, "fig"))
       ## XFig
@@ -252,7 +252,7 @@ function print (varargin)
       if (! isempty (fontsize))
 	options = strcat (options, " fontsize ", fontsize);
       endif
-      __gnuplot_raw__ (sprintf ("set terminal fig %s;\n", options));
+      __gnuplot_raw__ (sprintf ("set terminal fig %s push;\n", options));
 
     elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
       ## Portable network graphics, PBMplus
@@ -270,11 +270,11 @@ function print (varargin)
       ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
       ##endif
 
-      __gnuplot_raw__ ("set terminal png large;\n")
+      __gnuplot_raw__ ("set terminal png large push;\n")
 
     elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
       ## AutoCad DXF, METAFONT, HPGL
-      __gnuplot_raw__ (sprintf ("set terminal %s;\n", dev));
+      __gnuplot_raw__ (sprintf ("set terminal %s push;\n", dev));
     endif
 
     ## Gnuplot expects " around output file name

@@ -1,5 +1,8 @@
 2005-05-24  John W. Eaton  <jwe@octave.org>
 
+	* strings/strncmp.m: New file, from Tom Holroyd
+	<tomh@kurage.nimh.nih.gov>.
+
 	* strings/strcmp.m: Return logical values in all cases.
 
 2005-05-23  John W. Eaton  <jwe@octave.org>

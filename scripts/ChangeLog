@@ -1,3 +1,7 @@
+2005-05-24  John W. Eaton  <jwe@octave.org>
+
+	* strings/strcmp.m: Return logical values in all cases.
+
 2005-05-23  John W. Eaton  <jwe@octave.org>
 
 	* plot/orient.m: New file.  Adapt to Octave coding style.

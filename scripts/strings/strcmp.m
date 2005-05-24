@@ -19,11 +19,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
-## Compares two strings, returning 1 if they are the same, and 0 otherwise.
+## Compares two strings, returning true if they are the same, and false
+## otherwise.
 ##
 ## @strong{Caution:}  For compatibility with @sc{Matlab}, Octave's strcmp
-## function returns 1 if the strings are equal, and 0 otherwise.  This is
-## just the opposite of the corresponding C library function.
+## function returns true if the strings are equal, and false otherwise.
+## This is just the opposite of the corresponding C library function.
 ## @end deftypefn
 
 ## Author: jwe
@@ -34,7 +35,7 @@ function retval = strcmp (s1, s2)
     usage ("strcmp (s, t)");
   endif
 
-  retval = 0;
+  retval = false;
 
   if (isstr (s1))
     [r1, c1] = size (s1);
@@ -42,7 +43,7 @@ function retval = strcmp (s1, s2)
       [r2, c2] = size (s2);
       if (r1 == r2 && c1 == c2)
 	if (c1 == 0)
-          retval = 1;
+          retval = true;
 	else
           retval = all (all (s1 == s2));
 	endif
@@ -52,7 +53,7 @@ function retval = strcmp (s1, s2)
       if (r1 == 1)
 	t2 = s2(:);
 	n = length (t2);
-	retval = zeros (n, 1);
+	retval = zeros (n, 1, "logical");
 	for i = 1:n
 	  retval(i) = strcmp (s1, t2{i});
 	endfor
@@ -60,7 +61,7 @@ function retval = strcmp (s1, s2)
       elseif (r1 > 1)
 	if (r2 == 1 && c2 == 1)
 	  t2 = s2{1};
-	  retval = zeros (r1, 1);
+	  retval = zeros (r1, 1, "logical");
 	  for i = 1:r1
 	    retval(i) = strcmp (deblank (s1(i,:)), t2);
 	  endfor
@@ -68,7 +69,7 @@ function retval = strcmp (s1, s2)
 	  t2 = s2(:);
 	  n = length (t2);
 	  if (n == r1)
-	    retval = zeros (n, 1);
+	    retval = zeros (n, 1, "logical");
 	    for i = 1:n
 	      retval(i) = strcmp (deblank (s1(i,:)), t2{i});
 	    endfor
@@ -84,7 +85,7 @@ function retval = strcmp (s1, s2)
       if (r2 == 1)
 	t1 = s1(:);
 	n = length (t1);
-	retval = zeros (n, 1);
+	retval = zeros (n, 1, "logical");
 	for i = 1:n
 	  retval(i) = strcmp (t1{i}, s2);
 	endfor
@@ -92,7 +93,7 @@ function retval = strcmp (s1, s2)
       elseif (r2 > 1)
 	if (r1 == 1 && c1 == 1)
 	  t1 = s1{1};
-	  retval = zeros (r2, 1);
+	  retval = zeros (r2, 1, "logical");
 	  for i = 1:r2
 	    retval(i) = strcmp (t1, deblank (s2(i,:)));
 	  endfor
@@ -100,7 +101,7 @@ function retval = strcmp (s1, s2)
 	  t1 = s1(:);
 	  n = length (t1);
 	  if (n == r2)
-	    retval = zeros (n, 1);
+	    retval = zeros (n, 1, "logical");
 	    for i = 1:n
 	      retval(i) = strcmp (t1{i}, deblank (s2(i,:)));
 	    endfor
@@ -114,7 +115,7 @@ function retval = strcmp (s1, s2)
 	t1 = s1{:};
 	t2 = s2(:);
 	n = length (t2);
-	retval = zeros (n, 1);
+	retval = zeros (n, 1, "logical");
 	for i = 1:n
 	  retval(i) = strcmp (t1, t2{i});
 	endfor
@@ -123,7 +124,7 @@ function retval = strcmp (s1, s2)
 	t1 = s1(:);
 	t2 = s2{:};
 	n = length (t1);
-	retval = zeros (n, 1);
+	retval = zeros (n, 1, "logical");
 	for i = 1:n
 	  retval(i) = strcmp (t1{i}, t2);
 	endfor

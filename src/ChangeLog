@@ -1,5 +1,11 @@
 2005-05-23  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc (Ffopen): Don't fail with internal error message if
+	we fail to create a valid stream object.
+	(do_stream_open (const std::string&, const std::string&,
+	const std::string&, int&): Always create octave_stream object,
+	even if file pointer returne from fopen is 0.
+
 	* load-save.cc (gripe_file_open): New function.
 	(get_file_format, Fload, Fsave): Use it.
 

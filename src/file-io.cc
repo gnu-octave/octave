@@ -414,9 +414,9 @@ do_stream_open (const std::string& name, const std::string& mode,
 	    {
 	      FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
 
-	      if (fptr)
-		retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
-	      else
+	      retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+
+	      if (! fptr)
 		{
 		  using namespace std;
 		  retval.error (::strerror (errno));
@@ -608,23 +608,18 @@ however, conversions are currently only supported for @samp{native}\n\
 
       octave_stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
 
-      if (os.is_valid ())
+      if (os && ! error_state)
 	{
-	  if (os && ! error_state)
-	    {
-	      retval(1) = "";
-	      retval(0) = octave_stream_list::insert (os);
-	    }
-	  else
-	    {
-	      int error_number = 0;
-
-	      retval(1) = os.error (false, error_number);
-	      retval(0) = -1.0;
-	    }
+	  retval(1) = "";
+	  retval(0) = octave_stream_list::insert (os);
 	}
       else
-	error ("fopen: internal error");
+	{
+	  int error_number = 0;
+
+	  retval(1) = os.error (false, error_number);
+	  retval(0) = -1.0;
+	}
     }
   else
     print_usage ("fopen");

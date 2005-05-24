@@ -39,7 +39,7 @@ public:
 		         = oct_mach_info::native_float_format (),
 		       typename BUF_T::close_fcn cf = BUF_T::fclose)
     : octave_base_stream (m, ff), nm (n), md (m),
-      s(f ? new STREAM_T (f, cf) : 0)
+      s (f ? new STREAM_T (f, cf) : 0)
   { }
 
   static octave_stream

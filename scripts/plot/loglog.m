@@ -36,8 +36,8 @@ function loglog (varargin)
   ## no way to determine their current values.
 
   __gnuplot_raw__ ("set logscale x;\n");
-  __gnuplot_raw__ ("logscale y;\n");
-  __gnuplot_raw__ ("nopolar;\n");
+  __gnuplot_raw__ ("set logscale y;\n");
+  __gnuplot_raw__ ("set nopolar;\n");
 
   __plt__ ("loglog", varargin{:});
 

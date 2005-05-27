@@ -1,4 +1,10 @@
+2005-05-27  "Dmitri A. Sergatskov"  <dasergatskov@gmail.com>
+
+	* plot/loglog.m: Fix set commands.
+
 2005-05-24  John W. Eaton  <jwe@octave.org>
+
+	* statistics/tests/anova.m: Use mean (y(:)) to compute total_mean.
 
 	* strings/strncmp.m: New file, from Tom Holroyd
 	<tomh@kurage.nimh.nih.gov>.

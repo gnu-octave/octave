@@ -1,3 +1,8 @@
+2005-05-30  David Bateman <dbateman@free.fr>
+
+	* ls-mat5.cc (read_mat5_binary_element): Don't convert to string
+	if matrix is not of type mxCHAR_CLASS.
+
 2005-05-23  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (Ffopen): Don't fail with internal error message if

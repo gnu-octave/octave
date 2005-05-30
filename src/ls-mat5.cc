@@ -943,8 +943,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 	    else
 	      tc = re;
-
-	    tc = tc.convert_to_str (false, true, '\'');
 	  }
       }
     }

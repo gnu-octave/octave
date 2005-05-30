@@ -22,7 +22,7 @@
 ## This function is provided for compatibility with the old @sc{Matlab}
 ## interface to the GNU GLPK library.  For Octave code, you should use
 ## the @code{glpk} function instead.
-## @end deftypefn.
+## @end deftypefn
 
 function [xopt, fopt, status, extra] = glpkmex (varargin)
 

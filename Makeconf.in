@@ -504,7 +504,7 @@ $(SED) < $< > $@-t \
   -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEDIR%;\"${localoctfiledir}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
-  -e "s;%OCTAVE_LOCALSTARTUPFILEDIR%;\"${localstartupfile}\";" \
+  -e "s;%OCTAVE_LOCALSTARTUPFILEDIR%;\"${localstartupfiledir}\";" \
   -e "s;%OCTAVE_LOCALVERARCHLIBDIR%;\"${localverarchlibdir}\";" \
   -e "s;%OCTAVE_LOCALVERFCNFILEDIR%;\"${localverfcnfiledir}\";" \
   -e "s;%OCTAVE_LOCALVEROCTFILEDIR%;\"${localveroctfiledir}\";" \

@@ -1,3 +1,8 @@
+2005-06-02  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-subst-default-vals): Substitute
+	${localstartupfiledir}, not ${localstartupfile} (which is undefined).
+
 2005-05-16  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Change UMFPACK_LONG_IDX to IDX_TYPE_LONG.

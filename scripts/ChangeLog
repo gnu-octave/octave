@@ -1,3 +1,7 @@
+2005-05-18  Ben Barrowes  <barrowes@alum.mit.edu>
+
+	* plot/meshgrid.m: Handles 3 input arguments.
+
 2005-06-02  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* signal/freqz.m: Use correct calculations when given a vector of
@@ -207,37 +211,37 @@
 	(BINDISTSUBDIRS): Delete variable.
 	* scripts/control/Makefile.in: Likewise.
 
-	* scripts/audio/Makefile.in (bin-dist): Delete target.
+	* audio/Makefile.in (bin-dist): Delete target.
 	(BINDISTFILES): Delete variable.
-	* scripts/control/base/Makefile.in: Likewise.
-	* scripts/control/hinf/Makefile.in: Likewise.
-	* scripts/control/obsolete/Makefile.in: Likewise.
-	* scripts/control/system/Makefile.in: Likewise.
-	* scripts/control/util/Makefile.in: Likewise.
-	* scripts/deprecated/Makefile.in: Likewise.
-	* scripts/elfun/Makefile.in: Likewise.
-	* scripts/finance/Makefile.in: Likewise.
-	* scripts/general/Makefile.in: Likewise.
-	* scripts/image/Makefile.in: Likewise.
-	* scripts/sparse/Makefile.in: Likewise.
-	* scripts/io/Makefile.in: Likewise.
-	* scripts/plot/Makefile.in: Likewise.
-	* scripts/Makefile.in: Likewise.
-	* scripts/miscellaneous/Makefile.in: Likewise.
-	* scripts/linear-algebra/Makefile.in: Likewise.
-	* scripts/polynomial/Makefile.in: Likewise.
-	* scripts/quaternion/Makefile.in: Likewise.
-	* scripts/set/Makefile.in: Likewise.
-	* scripts/signal/Makefile.in: Likewise.
-	* scripts/specfun/Makefile.in: Likewise.
-	* scripts/special-matrix/Makefile.in: Likewise.
-	* scripts/startup/Makefile.in: Likewise.
-	* scripts/statistics/base/Makefile.in: Likewise.
-	* scripts/statistics/distributions/Makefile.in: Likewise.
-	* scripts/statistics/models/Makefile.in: Likewise.
-	* scripts/statistics/tests/Makefile.in: Likewise.
-	* scripts/strings/Makefile.in: Likewise.
-	* scripts/time/Makefile.in: Likewise.
+	* control/base/Makefile.in: Likewise.
+	* control/hinf/Makefile.in: Likewise.
+	* control/obsolete/Makefile.in: Likewise.
+	* control/system/Makefile.in: Likewise.
+	* control/util/Makefile.in: Likewise.
+	* deprecated/Makefile.in: Likewise.
+	* elfun/Makefile.in: Likewise.
+	* finance/Makefile.in: Likewise.
+	* general/Makefile.in: Likewise.
+	* image/Makefile.in: Likewise.
+	* sparse/Makefile.in: Likewise.
+	* io/Makefile.in: Likewise.
+	* plot/Makefile.in: Likewise.
+	* Makefile.in: Likewise.
+	* miscellaneous/Makefile.in: Likewise.
+	* linear-algebra/Makefile.in: Likewise.
+	* polynomial/Makefile.in: Likewise.
+	* quaternion/Makefile.in: Likewise.
+	* set/Makefile.in: Likewise.
+	* signal/Makefile.in: Likewise.
+	* specfun/Makefile.in: Likewise.
+	* special-matrix/Makefile.in: Likewise.
+	* startup/Makefile.in: Likewise.
+	* statistics/base/Makefile.in: Likewise.
+	* statistics/distributions/Makefile.in: Likewise.
+	* statistics/models/Makefile.in: Likewise.
+	* statistics/tests/Makefile.in: Likewise.
+	* strings/Makefile.in: Likewise.
+	* time/Makefile.in: Likewise.
 
 2005-03-08  John W. Eaton  <jwe@octave.org>
 
@@ -682,7 +686,7 @@
 
 2004-04-21  David Bateman  <dbateman@free.fr>
 
-	* scripts/elfun/lcm.m: Make N-d aware.
+	* elfun/lcm.m: Make N-d aware.
 
 	* general/diff.m: Make the code N-d array aware.  Allow an
 	optional argument to define the dimension along which to perform
@@ -704,7 +708,7 @@
 	array aware and and optional argument for the dimension along
 	which to operate.
 
-	* scripts/signal/unwrap.m: Make N-d array aware and fix optional
+	* signal/unwrap.m: Make N-d array aware and fix optional
 	argument for the dimension to be consistent with other N-d array
 	functions.
 
@@ -1591,7 +1595,7 @@
 
 2002-04-24  Bill Lash  <lash@tellabs.com>
 
-	* scripts/signal/unwrap.m: New file.
+	* signal/unwrap.m: New file.
 
 2002-04-23  Paul Kienzle  <pkienzle@users.sf.net>
 
@@ -1602,7 +1606,7 @@
 
 	* strings/deblank.m: Trim \0 as well as blank.
 
-	* scripts/freqz.m: Evaluate a specific range of frequencies
+	* freqz.m: Evaluate a specific range of frequencies
 	expressed in radians or Hz relative to a supplied sample rate.
 
 2002-04-04  Paul Kienzle  <pkienzle@users.sf.net>
@@ -2848,12 +2852,12 @@ Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
 
 1999-11-02  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
-	* scripts/audio/lin2mu.m: Texinfoize doc string.
-	* scripts/audio/loadaudio.m: Ditto.
-	* scripts/audio/mu2lin.m: Ditto.
-	* scripts/audio/playaudio.m: Ditto.
-	* scripts/audio/record.m: Ditto.
-	* scripts/audio/saveaudio.m: Ditto.
+	* audio/lin2mu.m: Texinfoize doc string.
+	* audio/loadaudio.m: Ditto.
+	* audio/mu2lin.m: Ditto.
+	* audio/playaudio.m: Ditto.
+	* audio/record.m: Ditto.
+	* audio/saveaudio.m: Ditto.
 
 1999-10-26  Ben Sapp  <bsapp@nua.lampf.lanl.gov>
 
@@ -4308,6 +4312,6 @@ Sun Feb 26 22:18:22 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
 Fri Feb 24 10:36:01 1995  John Eaton  <jwe@schoch.che.utexas.edu>
 
-	* scripts/image/saveimage.m: Fix typo.
+	* image/saveimage.m: Fix typo.
 
 See ChangeLog.1 in the top level directory for earlier changes.

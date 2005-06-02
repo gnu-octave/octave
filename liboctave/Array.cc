@@ -3027,14 +3027,24 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		  if (k < rhs_dims.length ())
 		    new_dims(i) = rhs_dims(k++);
 		  else
-		    {
-		      (*current_liboctave_error_handler)
-			("A(IDX-LIST) = RHS: A previously undefined and more colons in IDX-LIST than dimensions for RHS");
-		      return retval;
-		    }
+		    new_dims(i) = 1;
 		}
 	      else
-		new_dims(i) = idx(i).max () + 1;
+		{
+		  octave_idx_type nelem = idx(i).capacity ();
+
+		  if (nelem >= 1
+		      && k < rhs_dims.length () && nelem == rhs_dims(k))
+		    k++;
+		  else if (nelem != 1)
+		    {
+		      (*current_liboctave_error_handler)
+			("A(IDX-LIST) = RHS: mismatched index and RHS dimension");
+		      return retval;
+		    }
+
+		  new_dims(i) = idx(i).max () + 1;
+		}
 	    }
 	}
       else

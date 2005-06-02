@@ -14,8 +14,8 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA.
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
@@ -70,7 +70,7 @@
 
 ## Author: jwe ???
 
-function [h_r, w_r] = freqz (b, a, n, region, Fs)
+function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   if (nargin < 1 || nargin > 5)
     usage ("[h, w] = freqz (b, a, n [, \"whole\"] [, Fs])");
@@ -90,6 +90,9 @@ function [h_r, w_r] = freqz (b, a, n, region, Fs)
     endif
   endif
 
+  if (isempty (b))
+    b = 1;
+  endif
   if (isempty (a)) 
     a = 1; 
   endif
@@ -111,56 +114,65 @@ function [h_r, w_r] = freqz (b, a, n, region, Fs)
     endif
   endif
 
-  la = length (a);
-  a = reshape (a, 1, la);
-  lb = length (b);
-  b = reshape (b, 1, lb);
-  k = max ([la, lb]);
+  a = a(:).';
+  b = b(:).';
 
-  if (! isscalar (n))
-    if (nargin == 4) ## Fs was specified
-      w = 2*pi*n/Fs;
-    else
-      w = n;
+  if (! isscalar (n)) ## Explicit frequency vector given
+    w = f = n;
+    if (nargin == 4)  ## Sampling rate Fs was specified
+      w = 2*pi*f/Fs;
     endif
-    n = length (n);
-    extent = 0;
+    hb = polyval (fliplr(b), exp(-j*w));
+    ha = polyval (fliplr(a), exp(-j*w));
   elseif (strcmp (region, "whole"))
-    w = 2 * pi * (0:n-1) / n;
-    extent = n;
+    f = Fs * (0:n-1) / n;
+    ## polyval(fliplr(P),exp(-jw)) is O(p n) and fft(x) is O(n log(n)),
+    ## where p is the order of the the polynomial P.  For small p it
+    ## would be faster to use polyval but in practice the overhead for
+    ## polyval is much higher and the little bit of time saved isn't
+    ## worth the extra code.
+    hb = fft (postpad (b, n));
+    ha = fft (postpad (a, n));
   else
-    w = pi * (0:n-1) / n;
-    extent = 2 * n;
+    f = Fs/2 * (0:n-1) / n;
+    hb = fft (postpad (b, 2*n))(1:n);
+    ha = fft (postpad (a, 2*n))(1:n);
   endif
 
-  if (length (b) == 1)
-    if (length (a) == 1)
-      hb = b * ones (1, n);
-    else
-      hb = b;
-    endif
-  elseif (extent >= k) 
-    hb = fft (postpad (b, extent));
-    hb = hb(1:n);
-  else
-    hb = polyval (postpad (b, k), exp (j*w));
-  endif
-  if (length (a) == 1)
-    ha = a;
-  elseif (extent >= k)
-    ha = fft (postpad (a, extent));
-    ha = ha(1:n);
-  else
-    ha = polyval (postpad (a, k), exp (j*w));
-  endif
   h = hb ./ ha;
-  w = Fs * w / (2*pi);
 
   if (nargout != 0), # return values and don't plot
     h_r = h;
-    w_r = w;
+    f_r = f;
   else             # plot and don't return values
-    freqz_plot (w, h);
+    freqz_plot (f, h);
   end
 
 endfunction
+
+%!test # correct values and fft-polyval consistency
+%! # butterworth filter, order 2, cutoff pi/2 radians
+%! b = [0.292893218813452  0.585786437626905  0.292893218813452];
+%! a = [1  0  0.171572875253810];
+%! [h,w] = freqz(b,a,32);
+%! assert(h(1),1,10*eps);
+%! assert(abs(h(17)).^2,0.5,10*eps);
+%! assert(h,freqz(b,a,w),10*eps); # fft should be consistent with polyval
+
+%!test # whole-half consistency
+%! b = [1 1 1]/3; # 3-sample average
+%! [h,w] = freqz(b,1,32,'whole');
+%! assert(h(2:16),conj(h(32:-1:18)),20*eps);
+%! [h2,w2] = freqz(b,1,16,'half');
+%! assert(h(1:16),h2,20*eps);
+%! assert(w(1:16),w2,20*eps);
+
+%!test # Sampling frequency properly interpreted
+%! b = [1 1 1]/3;
+%! [h,f] = freqz(b,1,16,320);
+%! assert(f,[0:15]*10,10*eps);
+%! [h2,f2] = freqz(b,1,[0:15]*10,320);
+%! assert(f2,[0:15]*10,10*eps);
+%! assert(h,h2,20*eps);
+%! [h3,f3] = freqz(b,1,32,'whole',320);
+%! assert(f3,[0:31]*10,10*eps);

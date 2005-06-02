@@ -1,3 +1,10 @@
+2005-06-02  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* signal/freqz.m: Use correct calculations when given a vector of
+	frequencies.  Improve accuracy of returned frequency vector.
+	Improve speed for medium length filters (at a slight cost for slow
+	filters).  Add test cases.
+
 2005-05-27  "Dmitri A. Sergatskov"  <dasergatskov@gmail.com>
 
 	* plot/loglog.m: Fix set commands.

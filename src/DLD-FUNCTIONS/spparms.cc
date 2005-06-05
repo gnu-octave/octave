@@ -52,17 +52,17 @@ keys are one of the strings\n\
 @item spumoni\n\
 Printing level of debugging information of the solvers (default 0)\n\
 @item ths_rel\n\
-?? (default 1)\n\
+Included for compatiability. Bot used. (default 1)\n\
 @item ths_abs\n\
-?? (default 1)\n\
+Included for compatiability. Bot used. (default 1)\n\
 @item exact_d\n\
-?? (default 0)\n\
+Included for compatiability. Bot used. (default 0)\n\
 @item supernd\n\
-?? (default 3)\n\
+Included for compatiability. Not used. (default 3)\n\
 @item rreduce\n\
-?? (default 3)\n\
+Included for compatiability. Not used. (default 3)\n\
 @item wh_frac\n\
-?? (default 0.5)\n\
+Inluded for compatiability. Not used. (default 0.5)\n\
 @item autommd\n\
 Flag whether the LU/QR and the '\\' and '/' operators will automatically\n\
 use the sparsity preserving mmd functions (default 1)\n\
@@ -100,7 +100,7 @@ time.\n\
 	  retval (1) = Voctave_sparse_controls.get_vals ();
 	}
       else
-	error ("spparms: too many outpu arguments"); 
+	error ("spparms: too many output arguments"); 
     }
   else if (nargin == 1)
     {

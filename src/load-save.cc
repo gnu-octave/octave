@@ -1516,7 +1516,7 @@ Octave does not save built-in variables.\n\
 @itemx -z\n\
 Use the gzip algorithm to compress the file. This works equally on files that\n\
 are compressed with gzip outside of octave, and gzip can equally be used to\n\
-convert the files for backward compatibility."
+convert the files for backward compatibility.\n"
 
 HAVE_ZLIB_HELP_STRING
 

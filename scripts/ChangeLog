@@ -1,6 +1,6 @@
-2005-05-18  Ben Barrowes  <barrowes@alum.mit.edu>
+2005-06-02  Ben Barrowes  <barrowes@alum.mit.edu>
 
-	* plot/meshgrid.m: Handles 3 input arguments.
+	* plot/meshgrid.m: Handle 3 input arguments.
 
 2005-06-02  Paul Kienzle  <pkienzle@users.sf.net>
 
@@ -12,6 +12,10 @@
 2005-05-27  "Dmitri A. Sergatskov"  <dasergatskov@gmail.com>
 
 	* plot/loglog.m: Fix set commands.
+
+2005-05-25  John W. Eaton  <jwe@octave.org>
+
+	* plot/sombrero.m: Default n to 41 if nargin == 0.
 
 2005-05-24  John W. Eaton  <jwe@octave.org>
 

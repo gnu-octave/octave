@@ -424,7 +424,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   if (read_mat5_tag (is, swap, type, element_length))
     return retval;			// EOF
 
-#if HAVE_ZLIB
+#ifdef HAVE_ZLIB
   if (type == miCOMPRESSED)
     {
       // If C++ allowed us direct access to the file descriptor of an ifstream 

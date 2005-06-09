@@ -401,7 +401,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
     {
       retval = get_file_format (file);
       file.close ();
-#if HAVE_ZLIB
+#ifdef HAVE_ZLIB
       if (retval == LS_UNKNOWN && check_gzip_magic (fname))	
 	{
 	  gzifstream gzfile (fname.c_str ());

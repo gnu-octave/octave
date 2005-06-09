@@ -1338,7 +1338,9 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
   if (tc.is_string ())
     {
       charMatrix chm = tc.char_matrix_value ();
-      ret += 8 + PAD (2 * chm.rows () * chm.cols ());
+      ret += 8;
+      if (chm.nelem () > 1)
+	ret += PAD (2 * chm.rows () * chm.cols ());
     }
   else if (cname == "sparse")
     {

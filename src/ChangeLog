@@ -1,3 +1,8 @@
+2005-06-09  David Bateman <dbateman@free.fr>
+
+	* ls-mat5.cc (save_mat5_element_length): 1 element strings will be
+	saved in a compressed format, so calculate the length accordingly.
+
 2005-05-30  David Bateman <dbateman@free.fr>
 
 	* ls-mat5.cc (read_mat5_binary_element): Don't convert to string

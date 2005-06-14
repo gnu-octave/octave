@@ -2114,9 +2114,8 @@ Matrix::too_large_for_float (void) const
     {
       double val = elem (i);
 
-      if (! octave_is_NaN_or_NA (val)
-	  && ! xisinf (val)
-	  && (val > FLT_MAX || val < FLT_MIN))
+      if (! (octave_is_NaN_or_NA (val) || xisinf (val))
+	  && fabs (val) > FLT_MAX)
 	return true;
     }
 

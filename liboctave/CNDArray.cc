@@ -594,10 +594,10 @@ ComplexNDArray::too_large_for_float (void) const
       double r_val = std::real (val);
       double i_val = std::imag (val);
 
-      if (r_val > FLT_MAX
-	  || i_val > FLT_MAX
-	  || r_val < FLT_MIN
-	  || i_val < FLT_MIN)
+      if ((! (octave_is_NaN_or_NA (r_val) || xisinf (r_val))
+	   && fabs (r_val) > FLT_MAX)
+	  || (! (octave_is_NaN_or_NA (i_val) || xisinf (i_val))
+	      && fabs (i_val) > FLT_MAX))
 	return true;
     }
 

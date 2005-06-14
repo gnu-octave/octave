@@ -1,3 +1,8 @@
+2005-06-14  David Bateman  <dbateman@free.fr>
+
+    * dMatrix.cc (Matrix::too_large_for_float): Special case NaN and NA values.
+    * CMatrix.cc (ComplexMatrix::too_large_for_float): Ditto.
+
 2005-06-02  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assignN): Try harder to correctly resize previously

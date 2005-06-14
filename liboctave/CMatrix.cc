@@ -2608,8 +2608,10 @@ ComplexMatrix::too_large_for_float (void) const
 	double i_val = std::imag (val);
 
 	if ((! octave_is_NaN_or_NA (r_val)
+	     && ! xisinf (r_val)
 	     && (r_val > FLT_MAX || r_val < FLT_MIN))
 	    || (! octave_is_NaN_or_NA (i_val)
+		&& ! xisinf (i_val)
 		&& (i_val > FLT_MAX || i_val < FLT_MIN)))
 	  return true;
       }

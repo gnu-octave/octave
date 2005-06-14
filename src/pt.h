@@ -68,7 +68,7 @@ public:
   // If true, stop executing at the next possible point.
   static bool break_next;
   
-  // The line where dbg_next was executed.
+  // The line where dbnext was executed.
   static int last_line; 
 
   // The function where the last breakpoint occurred.

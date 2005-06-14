@@ -37,7 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // If true, stop executing at the next possible point.
 bool tree::break_next = false;
 
-// The line where dbg_next was executed.
+// The line where dbnext was executed.
 int tree::last_line = 0;
 
 // The function where the last breakpoint occurred.

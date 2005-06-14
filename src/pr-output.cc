@@ -237,7 +237,7 @@ pr_max_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
 	double val = m(i,j);
-	if (xisinf (val) || octave_is_NaN_or_NA (val))
+	if (xisinf (val) || xisnan (val))
 	  continue;
 
 	if (val > result)
@@ -370,7 +370,7 @@ set_format (double d, int& fw)
 
   bool sign = (d < 0.0);
 
-  bool inf_or_nan = (xisinf (d) || xisnan (d));
+  bool inf_or_nan = (xisinf (d) || octave_is_NaN_or_NA (d));
 
   bool int_only = (! inf_or_nan && D_NINT (d) == d);
 

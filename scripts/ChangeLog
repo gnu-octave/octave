@@ -1,3 +1,8 @@
+2005-06-14  John W. Eaton  <jwe@octave.org>
+
+	* general/isvector.m: Handle N-d arrays.
+	From Bill Denney <denney@seas.upenn.edu>.
+
 2005-06-02  Ben Barrowes  <barrowes@alum.mit.edu>
 
 	* plot/meshgrid.m: Handle 3 input arguments.

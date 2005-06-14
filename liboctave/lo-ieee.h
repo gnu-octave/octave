@@ -37,6 +37,9 @@ extern double octave_NA;
 /* Octave's idea of not a number.  */
 extern double octave_NaN;
 
+/* XXX FIXME XXX -- this code assumes that a double has twice the
+   number of bits as an int */
+
 extern int lo_ieee_hw;
 extern int lo_ieee_lw;
 

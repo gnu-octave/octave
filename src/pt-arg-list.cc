@@ -145,11 +145,7 @@ DEFCONSTFUN (__end__, , ,
 	    if (index_position < dv.length ())
 	      retval = dv(index_position);
 	    else
-	      {
-		std::string dv_str = dv.str ();
-		::error ("invalid use of end: (index %d, dims %s)",
-			 index_position+1, dv_str.c_str ());
-	      }
+	      retval = 1;
 	  }
 	  break;
 	}

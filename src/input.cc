@@ -624,11 +624,11 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	  if (match_sans_spaces_semi ("exit", input_buf)
 	      || match_sans_spaces_semi ("quit", input_buf)
 	      || match_sans_spaces_semi ("return", input_buf)
-	      || match_sans_spaces_semi ("dbg_cont", input_buf))
+	      || match_sans_spaces_semi ("dbcont", input_buf))
 	    {
 	      return retval;
 	    }
-	  else if (match_sans_spaces_semi ("dbg_step", input_buf))
+	  else if (match_sans_spaces_semi ("dbstep", input_buf))
 	    {
 	      tree::break_next = true;
 
@@ -638,7 +638,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
 	      return retval;
 	    }
-	  else if (match_sans_spaces_semi ("dbg_next", input_buf))
+	  else if (match_sans_spaces_semi ("dbnext", input_buf))
 	    {
 	      tree::break_next = true;
 

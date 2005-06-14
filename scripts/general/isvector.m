@@ -31,10 +31,7 @@ function retval = isvector (x)
   retval = 0;
 
   if (nargin == 1)
-    if (ismatrix (x))
-      [nr, nc] = size (x);
-      retval = ((nr == 1 && nc >= 1) || (nc == 1 && nr >= 1));
-    endif
+    retval = (ismatrix (x) && ! isempty (x) && prod (size (x)) == length (x));
   else
     usage ("isvector (x)");
   endif

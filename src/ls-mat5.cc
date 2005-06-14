@@ -1243,7 +1243,8 @@ save_mat5_array_length (const double* val, int nel, bool save_as_floats)
 	    {
 	      double tmp = val [i];
 
-	      if (tmp > FLT_MAX || tmp < FLT_MIN)
+	      if (! (octave_is_NaN_or_NA (tmp) || xisinf (tmp))
+		  && fabs (tmp) > FLT_MAX)
 		{
 		  too_large_for_float = true;
 		  break;

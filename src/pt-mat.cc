@@ -46,7 +46,7 @@ static bool Vwarn_empty_list_elements;
 char Vstring_fill_char = ' ';
 
 // Warn if concatenating double and single quoted strings.
-char Vwarn_string_concat = true;
+char Vwarn_string_concat = false;
 
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
@@ -771,7 +771,7 @@ a = [1, [], 3, [], 5]\n\
 The default value is 0.\n\
 @end defvr");
 
-  DEFVAR (warn_string_concat, true, warn_string_concat,
+  DEFVAR (warn_string_concat, false, warn_string_concat,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_string_concat\n\
 If the value of @code{warn_string_concat} is nonzero, print a\n\

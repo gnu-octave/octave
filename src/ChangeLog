@@ -1,5 +1,8 @@
 2005-06-14  John W. Eaton  <jwe@octave.org>
 
+	* pt-mat.cc (Vwarn_string_concat): Default value now false.
+	(symbols_of_pt_mat): Change initial value here as well.
+
 	* ls-mat5.cc, mappers.cc, oct-stream.cc, pr-output.cc: Change all
 	uses of octave_is_NaN_or_NA to xisnan.
 

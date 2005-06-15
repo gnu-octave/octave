@@ -394,6 +394,7 @@ Clear the terminal screen and move the cursor to the upper left corner.\n\
 @end deftypefn")
 {
   command_editor::clear_screen ();
+  std::cout.flush ();
 
   return octave_value_list ();
 }

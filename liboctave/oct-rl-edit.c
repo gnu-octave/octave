@@ -80,8 +80,9 @@ octave_rl_enable_paren_matching (int val)
    interrupts... */
 
 static void
-no_redisplay (void)
+flush_stdout (void)
 {
+  fflush (stdout);
 }
 
 void
@@ -91,7 +92,7 @@ octave_rl_clear_screen (void)
   int ignore2 = 0;
 
   rl_voidfunc_t *saved_redisplay_function = rl_redisplay_function;
-  rl_redisplay_function = no_redisplay;
+  rl_redisplay_function = flush_stdout;
 
   rl_clear_screen (ignore1, ignore2);
 

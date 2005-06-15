@@ -1,3 +1,8 @@
+2005-06-15  John W. Eaton  <jwe@octave.org>
+
+	* sysdep.cc (Fclc): Flush stdout stream before and after call to
+	command_editor::clear_screen.
+
 2005-06-14  John W. Eaton  <jwe@octave.org>
 
 	* pt-mat.cc (Vwarn_string_concat): Default value now false.

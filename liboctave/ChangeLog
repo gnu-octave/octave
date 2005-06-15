@@ -1,5 +1,9 @@
 2005-06-15  John W. Eaton  <jwe@octave.org>
 
+	* oct-rl-edit.c (flush_stdout): Rename from no_redisplay.
+	Flush stdout here.
+	(octave_rl_clear_screen): Set rl_redisplay_function to flush_stdout.
+
 	* Array.h (Array::resize): Change int args to octave_idx_type.
 
 2005-06-14  John W. Eaton  <jwe@octave.org>

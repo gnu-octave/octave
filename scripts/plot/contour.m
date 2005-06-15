@@ -25,8 +25,7 @@
 ## before this will be very useful.
 ## @end deftypefn
 ##
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, ylabel, and title}
+## @seealso{plot, mesh, meshgrid}
 
 ## Author: jwe
 

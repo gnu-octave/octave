@@ -30,8 +30,7 @@
 ## then it is assumed to be the same as @var{x}.
 ## @end deftypefn
 ##
-## @seealso{sombrero, plot, semilogx, semilogy, loglog, polar, mesh,
-## meshdom, contour, bar, stairs, replot, xlabel, ylabel, and title}
+## @seealso{mesh, contour}
 
 ## Author: jwe
 

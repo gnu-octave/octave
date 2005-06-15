@@ -1,3 +1,7 @@
+2005-06-14  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AH_BOTTOM): Also define GCC_ATTR_DEPRECATED.
+
 2005-06-02  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-subst-default-vals): Substitute

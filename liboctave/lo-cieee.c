@@ -85,7 +85,7 @@ int
 lo_ieee_isnan (double x)
 {
 #if defined (HAVE_ISNAN)
-  return isnan (x) ? ! lo_ieee_is_NA (x) : 0;
+  return isnan (x);
 #else
   return 0;
 #endif
@@ -95,11 +95,11 @@ int
 lo_ieee_finite (double x)
 {
 #if defined (HAVE_FINITE)
-  return finite (x) != 0 && ! lo_ieee_is_NaN_or_NA (x);
+  return finite (x) != 0 && ! lo_ieee_isnan (x);
 #elif defined (HAVE_ISINF)
-  return (! isinf (x) && ! lo_ieee_is_NaN_or_NA (x));
+  return (! isinf (x) && ! lo_ieee_isnan (x));
 #else
-  return ! lo_ieee_is_NaN_or_NA (x);
+  return ! lo_ieee_isnan (x);
 #endif
 }
 
@@ -109,7 +109,7 @@ lo_ieee_isinf (double x)
 #if defined (HAVE_ISINF)
   return isinf (x);
 #elif defined (HAVE_FINITE)
-  return (! (finite (x) || lo_ieee_is_NaN_or_NA (x)));
+  return (! (finite (x) || lo_ieee_isnan (x)));
 #else
   return 0;
 #endif
@@ -130,10 +130,7 @@ lo_ieee_is_NA (double x)
 int
 lo_ieee_is_NaN_or_NA (double x)
 {
-  /* Although NA really is an IEEE NaN value, lo_ieee_isnan pretends
-     it is not, so we much check both...  */
-
-  return lo_ieee_isnan (x) || lo_ieee_is_NA (x);
+  return lo_ieee_isnan (x);
 }
 
 double

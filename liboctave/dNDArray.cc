@@ -589,7 +589,7 @@ NDArray::too_large_for_float (void) const
     {
       double val = elem (i);
 
-      if (! (octave_is_NaN_or_NA (val) || xisinf (val))
+      if (! (xisnan (val) || xisinf (val))
 	  && fabs (val) > FLT_MAX)
 	return true;
     }
@@ -694,7 +694,7 @@ NDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  tmp_max = elem (idx_j * x_stride + x_offset);
 	  
-	  if (! octave_is_NaN_or_NA (tmp_max))
+	  if (! xisnan (tmp_max))
 	    break;
 	}
 
@@ -702,7 +702,7 @@ NDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  double tmp = elem (j * x_stride + x_offset);
 
-	  if (octave_is_NaN_or_NA (tmp))
+	  if (xisnan (tmp))
 	    continue;
 	  else if (tmp > tmp_max)
 	    {
@@ -712,7 +712,7 @@ NDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	}
 
       result.elem (i) = tmp_max;
-      idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
+      idx_arg.elem (i) = xisnan (tmp_max) ? 0 : idx_j;
     }
 
   return result;
@@ -769,7 +769,7 @@ NDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  tmp_min = elem (idx_j * x_stride + x_offset);
 	  
-	  if (! octave_is_NaN_or_NA (tmp_min))
+	  if (! xisnan (tmp_min))
 	    break;
 	}
 
@@ -777,7 +777,7 @@ NDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  double tmp = elem (j * x_stride + x_offset);
 
-	  if (octave_is_NaN_or_NA (tmp))
+	  if (xisnan (tmp))
 	    continue;
 	  else if (tmp < tmp_min)
 	    {
@@ -787,7 +787,7 @@ NDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	}
 
       result.elem (i) = tmp_min;
-      idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
+      idx_arg.elem (i) = xisnan (tmp_min) ? 0 : idx_j;
     }
 
   return result;

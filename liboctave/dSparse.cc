@@ -226,9 +226,9 @@ SparseMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 	    {
 	      double tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
-	      else if (octave_is_NaN_or_NA (tmp_max) || tmp > tmp_max)
+	      else if (xisnan (tmp_max) || tmp > tmp_max)
 		{
 		  idx_j = ridx (i);
 		  tmp_max = tmp;
@@ -236,7 +236,7 @@ SparseMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 
 	    }
 
- 	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
+ 	  idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_j;
 	  if (tmp_max != 0.)
 	    nel++;
 	}
@@ -290,7 +290,7 @@ SparseMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 	      octave_idx_type ix = idx_arg.elem (ir);
 	      double tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (ix == -1 || tmp > elem (ir, ix))
 		idx_arg.elem (ir) = j;
@@ -372,9 +372,9 @@ SparseMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
 	    {
 	      double tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
-	      else if (octave_is_NaN_or_NA (tmp_min) || tmp < tmp_min)
+	      else if (xisnan (tmp_min) || tmp < tmp_min)
 		{
 		  idx_j = ridx (i);
 		  tmp_min = tmp;
@@ -382,7 +382,7 @@ SparseMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
 
 	    }
 
- 	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
+ 	  idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_j;
 	  if (tmp_min != 0.)
 	    nel++;
 	}
@@ -436,7 +436,7 @@ SparseMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
 	      octave_idx_type ix = idx_arg.elem (ir);
 	      double tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (ix == -1 || tmp < elem (ir, ix))
 		idx_arg.elem (ir) = j;

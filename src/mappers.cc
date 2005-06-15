@@ -465,7 +465,7 @@ Return 1 for characters that are lower case letters.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
 Return 1 for elements of @var{x} that are NA (missing) values and zero\n\
-otherwise. For example,\n\
+otherwise.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -475,31 +475,16 @@ is_NA ([13, Inf, NA, NaN])\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (is_nan_or_na, 0, octave_is_NaN_or_NA,
-		octave_is_NaN_or_NA, 0, 0, 0, 0.0, 0.0, 0, 0,
-    "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} is_nan_or_na (@var{x})\n\
-Return 1 for elements of @var{x} that are NaN or NA (missing) values\n\
-and zero otherwise. For example,\n\
-\n\
-@example\n\
-@group\n\
-is_NAN_or_NA ([13, Inf, NA, NaN])\n\
-     @result{} [ 0, 0, 1, 1 ]\n\
-@end group\n\
-@end example\n\
-@end deftypefn");
-
   DEFUN_MAPPER (isnan, 0, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
 Return 1 for elements of @var{x} that are NaN values and zero\n\
-otherwise. For example,\n\
+otherwise.  NA values are also considered NaN values.  For example,\n\
 \n\
 @example\n\
 @group\n\
 isnan ([13, Inf, NA, NaN])\n\
-     @result{} [ 0, 0, 0, 1 ]\n\
+     @result{} [ 0, 0, 1, 1 ]\n\
 @end group\n\
 @end example\n\
 @end deftypefn");

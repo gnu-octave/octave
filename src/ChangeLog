@@ -1,7 +1,12 @@
+2005-06-14  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc, mappers.cc, oct-stream.cc, pr-output.cc: Change all
+	uses of octave_is_NaN_or_NA to xisnan.
+
 2005-06-14  Keith Goodman  <kwgoodman@gmail.com>
 
-	* input.cc (get_user_input): Renamed debug commands to dbnext, dbstep,
-	and dbcont.
+	* input.cc (get_user_input): Renamed debug commands to dbnext,
+	dbstep, and dbcont.
 	* pt.cc: Renamed dbg_next to dbnext in comment string.
 	* pt.h: Renamed dbg_next to dbnext in comment string.
 

@@ -594,9 +594,9 @@ ComplexNDArray::too_large_for_float (void) const
       double r_val = std::real (val);
       double i_val = std::imag (val);
 
-      if ((! (octave_is_NaN_or_NA (r_val) || xisinf (r_val))
+      if ((! (xisnan (r_val) || xisinf (r_val))
 	   && fabs (r_val) > FLT_MAX)
-	  || (! (octave_is_NaN_or_NA (i_val) || xisinf (i_val))
+	  || (! (xisnan (i_val) || xisinf (i_val))
 	      && fabs (i_val) > FLT_MAX))
 	return true;
     }
@@ -735,7 +735,7 @@ ComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  tmp_max = elem (idx_j * x_stride + x_offset);
 	  
-	  if (! octave_is_NaN_or_NA (tmp_max))
+	  if (! xisnan (tmp_max))
 	    {
 	      abs_max = std::abs(tmp_max);
 	      break;
@@ -746,7 +746,7 @@ ComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  Complex tmp = elem (j * x_stride + x_offset);
 
-	  if (octave_is_NaN_or_NA (tmp))
+	  if (xisnan (tmp))
 	    continue;
 
 	  double abs_tmp = std::abs (tmp);
@@ -759,7 +759,7 @@ ComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	    }
 	}
 
-      if (octave_is_NaN_or_NA (tmp_max))
+      if (xisnan (tmp_max))
 	{
 	  result.elem (i) = Complex_NaN_result;
 	  idx_arg.elem (i) = 0;
@@ -827,7 +827,7 @@ ComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  tmp_min = elem (idx_j * x_stride + x_offset);
 	  
-	  if (! octave_is_NaN_or_NA (tmp_min))
+	  if (! xisnan (tmp_min))
 	    {
 	      abs_min = std::abs(tmp_min);
 	      break;
@@ -838,7 +838,7 @@ ComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	{
 	  Complex tmp = elem (j * x_stride + x_offset);
 
-	  if (octave_is_NaN_or_NA (tmp))
+	  if (xisnan (tmp))
 	    continue;
 
 	  double abs_tmp = std::abs (tmp);
@@ -851,7 +851,7 @@ ComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, int dim) const
 	    }
 	}
 
-      if (octave_is_NaN_or_NA (tmp_min))
+      if (xisnan (tmp_min))
 	{
 	  result.elem (i) = Complex_NaN_result;
 	  idx_arg.elem (i) = 0;

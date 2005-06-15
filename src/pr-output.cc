@@ -259,7 +259,7 @@ pr_min_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
 	double val = m(i,j);
-	if (xisinf (val) || octave_is_NaN_or_NA (val))
+	if (xisinf (val) || xisnan (val))
 	  continue;
 
 	if (val < result)
@@ -370,7 +370,7 @@ set_format (double d, int& fw)
 
   bool sign = (d < 0.0);
 
-  bool inf_or_nan = (xisinf (d) || octave_is_NaN_or_NA (d));
+  bool inf_or_nan = (xisinf (d) || xisnan (d));
 
   bool int_only = (! inf_or_nan && D_NINT (d) == d);
 
@@ -2959,7 +2959,7 @@ output_max_field_width (void)
 {
   double val;
   if (builtin_real_scalar_variable ("output_max_field_width", val)
-      && ! octave_is_NaN_or_NA (val))
+      && ! xisnan (val))
     {
       int ival = NINT (val);
       if (ival > 0 && ival == val)
@@ -2977,7 +2977,7 @@ output_precision (void)
 {
   double val;
   if (builtin_real_scalar_variable ("output_precision", val)
-      && ! octave_is_NaN_or_NA (val))
+      && ! xisnan (val))
     {
       int ival = NINT (val);
       if (ival >= 0 && ival == val)

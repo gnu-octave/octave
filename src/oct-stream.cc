@@ -70,7 +70,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 
   if (! error_state)
     {
-      if (! lo_ieee_is_NaN_or_NA (dval))
+      if (! lo_ieee_isnan (dval))
 	{
 	  int ival = NINT (dval);
 
@@ -93,7 +93,7 @@ get_size (double d, const std::string& who)
 {
   int retval = -1;
 
-  if (! lo_ieee_is_NaN_or_NA (d))
+  if (! lo_ieee_isnan (d))
     {
       if (! xisinf (d))
 	{
@@ -2558,7 +2558,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
 		  if (val_cache)
 		    {
-		      if (lo_ieee_is_NaN_or_NA (val) || xisinf (val)
+		      if (lo_ieee_isnan (val) || xisinf (val)
 			  || ((val > INT_MAX || val < INT_MIN)
 			      && (elt->type == 'd'
 				  || elt->type == 'i'
@@ -2570,7 +2570,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			{
 			  std::string tfmt = fmt;
 
-			  if (lo_ieee_is_NaN_or_NA (val) || xisinf (val))
+			  if (lo_ieee_isnan (val) || xisinf (val))
 			    {
 			      tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
 

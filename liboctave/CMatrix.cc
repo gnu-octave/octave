@@ -2607,9 +2607,9 @@ ComplexMatrix::too_large_for_float (void) const
 	double r_val = std::real (val);
 	double i_val = std::imag (val);
 
-	if ((! (octave_is_NaN_or_NA (r_val) || xisinf (r_val))
+	if ((! (xisnan (r_val) || xisinf (r_val))
 	     && fabs (r_val) > FLT_MAX)
-	    || (! (octave_is_NaN_or_NA (i_val) || xisinf (i_val))
+	    || (! (xisnan (i_val) || xisinf (i_val))
 		&& fabs (i_val) > FLT_MAX))
 	  return true;
       }
@@ -2806,7 +2806,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_min = elem (i, idx_j);
 
-	      if (! octave_is_NaN_or_NA (tmp_min))
+	      if (! xisnan (tmp_min))
 		{
 		  abs_min = real_only ? std::real (tmp_min) : std::abs (tmp_min);
 		  break;
@@ -2817,7 +2817,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      Complex tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 
 	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -2830,7 +2830,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 		}
 	    }
 
-	  if (octave_is_NaN_or_NA (tmp_min))
+	  if (xisnan (tmp_min))
 	    {
 	      result.elem (i) = Complex_NaN_result;
 	      idx_arg.elem (i) = 0;
@@ -2880,7 +2880,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_max = elem (i, idx_j);
 
-	      if (! octave_is_NaN_or_NA (tmp_max))
+	      if (! xisnan (tmp_max))
 		{
 		  abs_max = real_only ? std::real (tmp_max) : std::abs (tmp_max);
 		  break;
@@ -2891,7 +2891,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      Complex tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 
 	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -2904,7 +2904,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 		}
 	    }
 
-	  if (octave_is_NaN_or_NA (tmp_max))
+	  if (xisnan (tmp_max))
 	    {
 	      result.elem (i) = Complex_NaN_result;
 	      idx_arg.elem (i) = 0;
@@ -2954,7 +2954,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_min = elem (idx_i, j);
 
-	      if (! octave_is_NaN_or_NA (tmp_min))
+	      if (! xisnan (tmp_min))
 		{
 		  abs_min = real_only ? std::real (tmp_min) : std::abs (tmp_min);
 		  break;
@@ -2965,7 +2965,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      Complex tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 
 	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -2978,7 +2978,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 		}
 	    }
 
-	  if (octave_is_NaN_or_NA (tmp_min))
+	  if (xisnan (tmp_min))
 	    {
 	      result.elem (j) = Complex_NaN_result;
 	      idx_arg.elem (j) = 0;
@@ -3028,7 +3028,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_max = elem (idx_i, j);
 
-	      if (! octave_is_NaN_or_NA (tmp_max))
+	      if (! xisnan (tmp_max))
 		{
 		  abs_max = real_only ? std::real (tmp_max) : std::abs (tmp_max);
 		  break;
@@ -3039,7 +3039,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      Complex tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 
 	      double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3052,7 +3052,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 		}
 	    }
 
-	  if (octave_is_NaN_or_NA (tmp_max))
+	  if (xisnan (tmp_max))
 	    {
 	      result.elem (j) = Complex_NaN_result;
 	      idx_arg.elem (j) = 0;

@@ -129,7 +129,7 @@ octave_is_NA (double x)
 bool
 octave_is_NaN_or_NA (double x)
 {
-  return lo_ieee_is_NaN_or_NA (x);
+  return lo_ieee_isnan (x);
 }
 
 // (double, double) -> double mappers.
@@ -145,9 +145,9 @@ xmin (double x, double y)
   if (y <= x)
     return y;
 
-  if (octave_is_NaN_or_NA (x) && ! octave_is_NaN_or_NA (y))
+  if (xisnan (x) && ! xisnan (y))
     return y;
-  else if (octave_is_NaN_or_NA (y) && ! octave_is_NaN_or_NA (x))
+  else if (xisnan (y) && ! xisnan (x))
     return x;
   else if (octave_is_NA (x) || octave_is_NA (y))
     return octave_NA;
@@ -164,9 +164,9 @@ xmax (double x, double y)
   if (y >= x)
     return y;
 
-  if (octave_is_NaN_or_NA (x) && ! octave_is_NaN_or_NA (y))
+  if (xisnan (x) && ! xisnan (y))
     return y;
-  else if (octave_is_NaN_or_NA (y) && ! octave_is_NaN_or_NA (x))
+  else if (xisnan (y) && ! xisnan (x))
     return x;
   else if (octave_is_NA (x) || octave_is_NA (y))
     return octave_NA;
@@ -262,8 +262,8 @@ xfinite (const Complex& x)
   double rx = real (x);
   double ix = imag (x);
 
-  return (xfinite (rx) && ! octave_is_NaN_or_NA (rx)
-	  && xfinite (ix) && ! octave_is_NaN_or_NA (ix));
+  return (xfinite (rx) && ! xisnan (rx)
+	  && xfinite (ix) && ! xisnan (ix));
 }
 
 bool
@@ -281,7 +281,7 @@ octave_is_NA (const Complex& x)
 bool
 octave_is_NaN_or_NA (const Complex& x)
 {
-  return (octave_is_NaN_or_NA (real (x)) || octave_is_NaN_or_NA (imag (x)));
+  return (xisnan (real (x)) || xisnan (imag (x)));
 }
 
 // (complex, complex) -> complex mappers.

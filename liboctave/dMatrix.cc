@@ -2114,7 +2114,7 @@ Matrix::too_large_for_float (void) const
     {
       double val = elem (i);
 
-      if (! (octave_is_NaN_or_NA (val) || xisinf (val))
+      if (! (xisnan (val) || xisinf (val))
 	  && fabs (val) > FLT_MAX)
 	return true;
     }
@@ -2270,7 +2270,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_min = elem (i, idx_j);
 
-	      if (! octave_is_NaN_or_NA (tmp_min))
+	      if (! xisnan (tmp_min))
 		break;
 	    }
 
@@ -2278,7 +2278,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      double tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (tmp < tmp_min)
 		{
@@ -2288,7 +2288,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
 	    }
 
 	  result.elem (i) = tmp_min;
-	  idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
+	  idx_arg.elem (i) = xisnan (tmp_min) ? 0 : idx_j;
         }
     }
 
@@ -2325,7 +2325,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_max = elem (i, idx_j);
 
-	      if (! octave_is_NaN_or_NA (tmp_max))
+	      if (! xisnan (tmp_max))
 		break;
 	    }
 
@@ -2333,7 +2333,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      double tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (tmp > tmp_max)
 		{
@@ -2343,7 +2343,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
 	    }
 
 	  result.elem (i) = tmp_max;
-	  idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
+	  idx_arg.elem (i) = xisnan (tmp_max) ? 0 : idx_j;
         }
     }
 
@@ -2380,7 +2380,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_min = elem (idx_i, j);
 
-	      if (! octave_is_NaN_or_NA (tmp_min))
+	      if (! xisnan (tmp_min))
 		break;
 	    }
 
@@ -2388,7 +2388,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
 	    {
 	      double tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (tmp < tmp_min)
 		{
@@ -2398,7 +2398,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
 	    }
 
 	  result.elem (j) = tmp_min;
-	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_i;
+	  idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_i;
         }
     }
 
@@ -2435,7 +2435,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      tmp_max = elem (idx_i, j);
 
-	      if (! octave_is_NaN_or_NA (tmp_max))
+	      if (! xisnan (tmp_max))
 		break;
 	    }
 
@@ -2443,7 +2443,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
 	    {
 	      double tmp = elem (i, j);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (tmp > tmp_max)
 		{
@@ -2453,7 +2453,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
 	    }
 
 	  result.elem (j) = tmp_max;
-	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_i;
+	  idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_i;
         }
     }
 

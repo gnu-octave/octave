@@ -39,7 +39,7 @@ extern bool xfinite (double x);
 extern bool xisinf (double x);
 
 extern bool octave_is_NA (double x);
-extern bool octave_is_NaN_or_NA (double x);
+extern bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
 
 extern double xmin (double x, double y);
 extern double xmax (double x, double y);

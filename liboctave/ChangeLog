@@ -1,5 +1,15 @@
 2005-06-14  John W. Eaton  <jwe@octave.org>
 
+	* CMatrix.cc, CNDArray.cc, CSparse.cc, dMatrix.cc, dNDArray.cc,
+	dSparse.cc, lo-cieee.c, lo-mappers.cc: Change all uses of
+	octave_is_NaN_or_NA to xisnan.
+
+	* lo-mappers.h (octave_is_NaN_or_NA): Mark with GCC_ATTR_DEPRECATED.
+	* lo-ieee.h (lo_ieee_is_NaN_or_NA): Likewise.
+
+	* lo-cieee.c (lo_ieee_is_NaN_or_NA): Now just a wrapper for
+	lo_ieee_isnan.
+
 	* dMatrix.cc (Matrix::too_large_for_float): Only check if abs
 	value is greater than FLT_MAX.
 	* CMatrix.cc (ComplexMatrix::too_large_for_float): Ditto.

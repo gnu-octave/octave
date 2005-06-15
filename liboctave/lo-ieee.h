@@ -64,7 +64,7 @@ extern int lo_ieee_finite (double x);
 extern int lo_ieee_isinf (double x);
 
 extern int lo_ieee_is_NA (double);
-extern int lo_ieee_is_NaN_or_NA (double);
+extern int lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
 
 extern double lo_ieee_inf_value (void);
 extern double lo_ieee_na_value (void);

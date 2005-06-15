@@ -235,12 +235,12 @@ SparseComplexMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 	    {
 	      Complex tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 
 	      double abs_tmp = std::abs (tmp);
 
-	      if (octave_is_NaN_or_NA (abs_max) || abs_tmp > abs_max)
+	      if (xisnan (abs_max) || abs_tmp > abs_max)
 		{
 		  idx_j = ridx (i);
 		  tmp_max = tmp;
@@ -248,7 +248,7 @@ SparseComplexMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 		}
 	    }
 
- 	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
+ 	  idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_j;
 	  if (abs_max != 0.)
 	    nel++;
 	}
@@ -301,7 +301,7 @@ SparseComplexMatrix::max (Array2<octave_idx_type>& idx_arg, int dim) const
 	      octave_idx_type ix = idx_arg.elem (ir);
 	      Complex tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (ix == -1 || std::abs(tmp) > std::abs(elem (ir, ix)))
 		idx_arg.elem (ir) = j;
@@ -387,12 +387,12 @@ SparseComplexMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
 	    {
 	      Complex tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 
 	      double abs_tmp = std::abs (tmp);
 
-	      if (octave_is_NaN_or_NA (abs_min) || abs_tmp < abs_min)
+	      if (xisnan (abs_min) || abs_tmp < abs_min)
 		{
 		  idx_j = ridx (i);
 		  tmp_min = tmp;
@@ -400,7 +400,7 @@ SparseComplexMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
 		}
 	    }
 
- 	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
+ 	  idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_j;
 	  if (abs_min != 0.)
 	    nel++;
 	}
@@ -453,7 +453,7 @@ SparseComplexMatrix::min (Array2<octave_idx_type>& idx_arg, int dim) const
 	      octave_idx_type ix = idx_arg.elem (ir);
 	      Complex tmp = data (i);
 
-	      if (octave_is_NaN_or_NA (tmp))
+	      if (xisnan (tmp))
 		continue;
 	      else if (ix == -1 || std::abs(tmp) < std::abs(elem (ir, ix)))
 		idx_arg.elem (ir) = j;

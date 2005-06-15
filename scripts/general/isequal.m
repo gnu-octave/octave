@@ -28,7 +28,7 @@
 
 function t = isequal (x, varargin)
 
-  if (nargin != 2)
+  if (nargin < 2)
     usage ("isequal (x, y, ...)");
   endif
 

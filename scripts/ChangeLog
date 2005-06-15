@@ -1,3 +1,7 @@
+2005-06-15  Tom Holroyd  <tomh@kurage.nimh.nih.gov>
+
+	* general/isequal.m: Correct nargin check.
+
 2005-06-14  John W. Eaton  <jwe@octave.org>
 
 	* general/isvector.m: Handle N-d arrays.

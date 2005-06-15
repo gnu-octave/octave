@@ -451,9 +451,9 @@ public:
 
 public:
 
-  void resize (int n) { resize_no_fill (n); }
+  void resize (octave_idx_type n) { resize_no_fill (n); }
 
-  void resize (int n, const T& val) { resize_and_fill (n, val); }
+  void resize (octave_idx_type n, const T& val) { resize_and_fill (n, val); }
 
   void resize (const dim_vector& dv) { resize_no_fill (dv); }
 

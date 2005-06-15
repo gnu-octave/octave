@@ -1,3 +1,7 @@
+2005-06-15  John W. Eaton  <jwe@octave.org>
+
+	* Array.h (Array::resize): Change int args to octave_idx_type.
+
 2005-06-14  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc, CNDArray.cc, CSparse.cc, dMatrix.cc, dNDArray.cc,

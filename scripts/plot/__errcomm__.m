@@ -33,7 +33,7 @@
 function __errcomm__ (caller, varargin)
 
   if (nargin < 3)
-    usage ("%s (x,y,dy,'fmt',...)", caller);
+    usage ("%s (x, y, dy, \"fmt\", ...)", caller);
   endif
 
   nargs = length (varargin);

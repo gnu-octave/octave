@@ -48,6 +48,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "gripes.h"
 #include "help.h"
+#include "input.h"
 #include "oct-obj.h"
 #include "ov.h"
 #include "parse.h"
@@ -572,7 +573,7 @@ loadpath (void)
       gripe_invalid_value_specified ("LOADPATH");
       status = -1;
     }
-  else
+  else if (Vload_path != s)
     {
       // I'm not sure whether this causes more problems that it
       // solves...
@@ -581,6 +582,16 @@ loadpath (void)
       //	warning ("LOADPATH will ignore default load path");
 
       Vload_path = s;
+
+      // By resetting the last prompt time variable, we will force
+      // checks for out of date symbols even if the change to LOADPATH
+      // and subsequent function calls happen between prompts.
+
+      // XXX FIXME XXX -- maybe we should rename
+      // Vlast_prompt_time_stamp since the new usage doesn't really
+      // fit with the current name?
+
+      Vlast_prompt_time.stamp ();
 
       update_load_path_dir_path ();
     }

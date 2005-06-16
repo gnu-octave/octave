@@ -1,3 +1,7 @@
+2005-06-15  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/polyfit.m: Force return value to be a row vector.
+
 2005-06-15  Tom Holroyd  <tomh@kurage.nimh.nih.gov>
 
 	* general/isequal.m: Correct nargin check.

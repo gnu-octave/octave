@@ -34,7 +34,7 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function __errplot__ (fstr,a1,a2,a3,a4,a5,a6)
+function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   if (nargin < 3 || nargin > 7) # at least three data arguments needed
     usage ("__errplot__ (fmt, arg1, ...)");

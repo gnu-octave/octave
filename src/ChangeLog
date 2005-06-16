@@ -1,7 +1,7 @@
-2005-06-15  John W. Eaton  <jwe@octave.org>
+2005-06-16  John W. Eaton  <jwe@octave.org>
 
-	* sysdep.cc (Fclc): Flush stdout stream before and after call to
-	command_editor::clear_screen.
+	* defaults.cc (loadpath): Don't do anything if value is unchanged.
+	If loadpath changes, also update Vlast_prompt_time.
 
 2005-06-14  John W. Eaton  <jwe@octave.org>
 

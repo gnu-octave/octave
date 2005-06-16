@@ -68,7 +68,8 @@ function __plt__ (caller, varargin)
 	endif
       elseif (x_set)
 	if (y_set)
-	  [data{j}, fmtstr] = __plt2__ (x, y, "");
+	  fmt = __pltopt__ (caller, "");
+	  [data{j}, fmtstr] = __plt2__ (x, y, fmt);
 	  have_data = true;
 	  x = next_arg;
 	  y_set = false;

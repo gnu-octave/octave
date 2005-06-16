@@ -99,4 +99,8 @@ function [p, s, mu] = polyfit (x, y, n)
 
   endif
 
+  ## Return value should be a row vector.
+
+  p = p.';
+
 endfunction

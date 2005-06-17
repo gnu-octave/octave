@@ -662,6 +662,12 @@ symbol_record::print_symbol_info_line (std::ostream& os,
 void
 symbol_record::print_info (std::ostream& os, const std::string& prefix) const
 {
+  os << prefix << "formal param:      " << formal_param << "\n"
+     << prefix << "linked to global:  " << linked_to_global << "\n"
+     << prefix << "tagged static:     " << tagged_static << "\n"
+     << prefix << "can hide function: " << can_hide_function << "\n"
+     << prefix << "visible:           " << visible << "\n";
+
   if (definition)
     definition->print_info (os, prefix);
   else
@@ -1154,7 +1160,7 @@ symbol_table::symbol_list (const string_vector& pats,
 
       while (ptr)
 	{
-	  if (true || ptr->is_visible ())
+	  if (ptr->is_visible ())
 	    {
 	      assert (count < n);
 
@@ -1167,7 +1173,7 @@ symbol_table::symbol_list (const string_vector& pats,
 	      if ((type & my_type) && (scope & my_scope) && (matches_patterns (my_name, pats)))
 		symbols(count++) = ptr;
 	    }
-	      
+
 	  ptr = ptr->next ();
 	}
     }

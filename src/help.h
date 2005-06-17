@@ -31,6 +31,8 @@ class string_vector;
 
 extern string_vector make_name_list (void);
 
+extern std::string extract_help_from_dispatch (const std::string&);
+
 extern void display_help_text (std::ostream&, const std::string&);
 
 extern void additional_help_message (std::ostream&);

@@ -41,6 +41,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "symtab.h"
 #include "variables.h"
 
+// XXX FIXME XXX -- this function could probably share some code with
+// the help functions.
+
 void
 print_usage (const std::string& nm, bool just_usage)
 {
@@ -55,6 +58,8 @@ print_usage (const std::string& nm, bool just_usage)
 	  OSSTREAM buf;
 
 	  buf << "\n*** " << nm << ":\n\n";
+
+	  h = extract_help_from_dispatch (nm) + h;
 
 	  display_help_text (buf, h);
 

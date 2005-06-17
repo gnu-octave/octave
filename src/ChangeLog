@@ -1,5 +1,20 @@
 2005-06-17  John W. Eaton  <jwe@octave.org>
 
+	* help.cc (help_from_list, help_from_symbol_table, 
+	help_from_file): New arg, symbol_found.
+	(builtin_help): Use symbol_found arg to determine whether help
+	text is empty or symbol is not available.
+
+	* symtab.cc (symbol_record::print_info): Print more info.
+
+	* DLD-FUNCTIONS/dispatch.cc (Fdispatch_help): Delete.
+	(dispatch_record): Don't prepend "<>" to help text.
+	(Fdispatch): Don't setup dispatched help.
+
+	* help.cc (extract_help_from_dispatch): New function.
+	(help_from_symbol_table): Use it.
+	* defun.cc (print_usage): Use it.
+
 	* toplev.cc (octave_config_info): Include localapifcnfiledir and
 	localapioctfiledir in the list.
 
@@ -18,11 +33,9 @@
 	(symbol_out_of_date): Also check for symbol using full function
 	file name.
 
-	* symtab.h (symbol_record::symbol_def::visible): New data member.
-	(symbol_record::symbol_def::hide, symbol_record::symbol_def::show,
-	symbol_record::symbol_def::is_visible): New functions.
+	* symtab.h (symbol_record::visible): New data member.
 	(symbol_record::hide, symbol_record::show, symbol_record::is_visible):
-	New functions.
+	New functions. 
 
 	* symtab.h (symbol_record::maybe_delete_def): New private function.
 	* symtab.cc (symbol_record::clear, symbol_record::alias,

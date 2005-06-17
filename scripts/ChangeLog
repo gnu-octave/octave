@@ -1,3 +1,7 @@
+2005-06-17  Keith Goodman  <kwgoodman@gmail.com>
+
+	* miscellaneous/tic.m: Fix doc string.
+
 2005-06-15  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/polyfit.m: Force return value to be a row vector.

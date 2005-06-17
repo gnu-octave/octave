@@ -610,7 +610,7 @@ help_from_info (const string_vector& argv, int idx, int argc)
 		}
 	      else
 		{
-		  message ("help", "sorry, `%s' is not indexed in the manual",
+		  message ("help", "`%s' is not indexed in the manual",
 			   argv[i].c_str ());
 		}
 	    }
@@ -719,35 +719,99 @@ display_help_text (std::ostream& os, const std::string& msg)
 
 static bool
 help_from_list (std::ostream& os, const help_list *list,
-		const std::string& nm, int usage)
+		const std::string& nm, int usage, bool& symbol_found)
 {
+  bool retval = false;
+
   const char *name;
 
   while ((name = list->name) != 0)
     {
       if (strcmp (name, nm.c_str ()) == 0)
 	{
-	  if (usage)
-	    os << "\nusage: ";
-	  else
+	  symbol_found = true;
+
+	  std::string h = list->help;
+
+	  if (h.length () > 0)
 	    {
-	      os << "\n*** " << nm << ":\n\n";
+	      if (usage)
+		os << "\nusage: ";
+	      else
+		os << "\n*** " << nm << ":\n\n";
+
+	      display_help_text (os, h);
+
+	      os << "\n";
+
+	      retval = true;
 	    }
-
-	  display_help_text (os, list->help);
-
-	  os << "\n";
-
-	  return true;
+	  break;
 	}
       list++;
     }
 
-  return false;
+  return retval;;
+}
+
+std::string
+extract_help_from_dispatch (const std::string& nm)
+{
+  std::string retval;
+
+  symbol_record *builtin = fbi_sym_tab->lookup ("builtin:" + nm, 0);
+
+  if (builtin)
+    {
+      // Check that builtin is up to date.
+ 
+      // Don't try to fight octave's function name handling
+      // mechanism.  Instead, move dispatch record out of the way,
+      // and restore the builtin to its original name.
+      symbol_record *dispatch = fbi_sym_tab->lookup (nm, 0);
+
+      if (dispatch)
+	{
+	  dispatch->unprotect ();
+
+	  fbi_sym_tab->rename (nm, "dispatch:" + nm);
+	  fbi_sym_tab->rename ("builtin:" + nm, nm);
+
+	  // Check for updates to builtin function; ignore errors
+	  // that appear (they interfere with renaming), and remove
+	  // the updated name from the current symbol table.  XXX
+	  // FIXME XXX check that updating a function updates it in
+	  // all contexts --- it may be that it is updated only in the
+	  // current symbol table, and not the caller.  I believe this
+	  // won't be a problem because the caller will go through the
+	  // same logic and end up with the newer version.
+
+	  octave_function *f = is_valid_function (nm);
+
+	  if (f)
+	    retval = builtin->help ();
+
+	  curr_sym_tab->clear_function (nm);
+
+	  // Move the builtin function out of the way and restore the
+	  // dispatch fuction.  XXX FIXME XXX what if builtin wants to
+	  // protect itself?
+
+	  fbi_sym_tab->rename (nm, "builtin:" + nm);
+	  fbi_sym_tab->rename ("dispatch:" + nm, nm);
+
+	  dispatch->protect ();
+	}
+      else
+	error ("failed to find dispatch record for `builtin:%s'", nm.c_str ());
+    }
+
+  return retval;
 }
 
 static bool
-help_from_symbol_table (std::ostream& os, const std::string& nm)
+help_from_symbol_table (std::ostream& os, const std::string& nm,
+			bool& symbol_found)
 {
   bool retval = false;
 
@@ -755,12 +819,15 @@ help_from_symbol_table (std::ostream& os, const std::string& nm)
 
   if (sym_rec && sym_rec->is_defined ())
     {
+      symbol_found = true;
+
       std::string h = sym_rec->help ();
 
       if (h.length () > 0)
 	{
 	  sym_rec->which (os);
 	  os << "\n";
+	  h = extract_help_from_dispatch (nm) + h;
 	  display_help_text (os, h);
 	  os << "\n";
 	  retval = true;
@@ -771,20 +838,25 @@ help_from_symbol_table (std::ostream& os, const std::string& nm)
 }
 
 static bool
-help_from_file (std::ostream& os, const std::string& nm)
+help_from_file (std::ostream& os, const std::string& nm, bool& symbol_found)
 {
   bool retval = false;
 
-  std::string path = fcn_file_in_path (nm);
+  std::string file = fcn_file_in_path (nm);
 
-  std::string h = get_help_from_file (path);
-
-  if (! h.empty ())
+  if (file.length () > 0)
     {
-      os << nm << " is the file: " << path << "\n\n";
-      display_help_text (os, h);
-      os << "\n";
-      retval = true;
+      symbol_found = true;
+
+      std::string h = get_help_from_file (file);
+
+      if (h.length () > 0)
+	{
+	  os << nm << " is the file: " << file << "\n\n";
+	  display_help_text (os, h);
+	  os << "\n";
+	  retval = true;
+	}
     }
 
   return retval;
@@ -798,20 +870,28 @@ builtin_help (int argc, const string_vector& argv)
 
   for (int i = 1; i < argc; i++)
     {
-      if (help_from_list (octave_stdout, op_help_list, argv[i], 0))
+      bool symbol_found = false;
+
+      if (help_from_list (octave_stdout, op_help_list, argv[i], 0,
+			  symbol_found))
 	continue;
 
-      if (help_from_list (octave_stdout, kw_help_list, argv[i], 0))
+      if (help_from_list (octave_stdout, kw_help_list, argv[i], 0,
+			  symbol_found))
 	continue;
 
-      if (help_from_symbol_table (octave_stdout, argv[i]))
+      if (help_from_symbol_table (octave_stdout, argv[i], symbol_found))
 	continue;
 
-      if (help_from_file (octave_stdout, argv[i]))
+      if (help_from_file (octave_stdout, argv[i], symbol_found))
 	continue;
 
-      octave_stdout << "\nhelp: sorry, `" << argv[i]
-		    << "' is not documented\n"; 
+      if (symbol_found)
+	octave_stdout << "\nhelp: `" << argv[i]
+		      << "' is not documented\n"; 
+      else
+	octave_stdout << "\nhelp: `" << argv[i]
+		      << "' not found\n"; 
     }
 
   additional_help_message (octave_stdout);

@@ -32,6 +32,10 @@
 ## will set the variable @code{elapsed_time} to the number of seconds since
 ## the most recent call to the function @code{tic}.
 ##
+## Nested timing with @code{tic} and @code{toc} is not supported.
+## Therefore @code{toc} will always return the elapsed time from the most
+## recent call to @code{tic}.
+##
 ## If you are more interested in the CPU time that your process used, you
 ## should use the @code{cputime} function instead.  The @code{tic} and
 ## @code{toc} functions report the actual wall clock time that elapsed

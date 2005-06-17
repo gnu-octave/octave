@@ -90,7 +90,7 @@ private:
     symbol_def (const octave_value& val = octave_value (),
 		unsigned int sym_type = 0)
       : symbol_type (sym_type), eternal (0), read_only (0), help_string (),
-	definition (val), visible (true), count (1) { }
+	definition (val), count (1) { }
 
     ~symbol_def (void) { }
 
@@ -209,10 +209,6 @@ private:
 
     void make_eternal (void) { eternal = 1; }
 
-    void hide (void) { visible = false; }
-    void show (void) { visible = true; }
-    bool is_visible (void) const { return visible; }
-
     octave_value& def (void) { return definition; }
 
     std::string help (void) const { return help_string; }
@@ -244,9 +240,6 @@ private:
     // The value of this definition.  See ov.h and related files.
     octave_value definition;
 
-    // Should this symbol show up in listings?
-    bool visible;
-
     // Reference count.
     int count;
 
@@ -265,16 +258,18 @@ public:
   typedef int (*change_function) (void);
 
   symbol_record (void)
-    : formal_param (0), linked_to_global (0), tagged_static (0),
-      can_hide_function (1), nm (), chg_fcn (0),
+    : formal_param (false), linked_to_global (false),
+      tagged_static (false), can_hide_function (true),
+      visible (true), nm (), chg_fcn (0),
       definition (new symbol_def ()), next_elem (0) { }
 
   // XXX FIXME XXX -- kluge alert!  We obviously need a better way of
   // handling allow_shadow!
 
   symbol_record (const std::string& n, symbol_record *nxt)
-    : formal_param (0), linked_to_global (0), tagged_static (0),
-      can_hide_function (n != "__end__"), nm (n), chg_fcn (0),
+    : formal_param (false), linked_to_global (false),
+      tagged_static (false), can_hide_function (n != "__end__"),
+      visible (true), nm (n), chg_fcn (0),
       definition (new symbol_def ()), next_elem (nxt) { }
 
   ~symbol_record (void)
@@ -356,9 +351,9 @@ public:
 
   void make_eternal (void) { definition->make_eternal (); }
 
-  void hide (void) { definition->hide (); }
-  void show (void) { definition->show (); }
-  bool is_visible (void) const { return definition->is_visible  (); }
+  void hide (void) { visible = false; }
+  void show (void) { visible = true; }
+  bool is_visible (void) const { return visible; }
 
   void set_change_function (change_function f) { chg_fcn = f; }
 
@@ -444,6 +439,7 @@ private:
   unsigned int linked_to_global : 1;
   unsigned int tagged_static : 1;
   unsigned int can_hide_function : 1;
+  unsigned int visible : 1;
 
   std::string nm;
   change_function chg_fcn;

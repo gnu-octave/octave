@@ -218,7 +218,7 @@ builtin (const std::string& base)
       // Move the builtin function out of the way and restore the
       // dispatch fuction.
       // XXX FIXME XXX what if builtin wants to protect itself?
-      symbol_record *found=fbi_sym_tab->lookup (base, 0);
+      symbol_record *found = fbi_sym_tab->lookup (base, 0);
       bool readonly = found->is_read_only ();
       found->unprotect ();
       fbi_sym_tab->rename (base, "builtin:" + base);
@@ -245,7 +245,6 @@ any_arg_is_magic_colon (const octave_value_list& args)
 
   return false;
 }
-
 
 octave_value_list
 octave_dispatch::do_multi_index_op (int nargout, const octave_value_list& args)
@@ -331,51 +330,6 @@ some other function for the given type signature.\n\
   return retval;
 }
 
-DEFUN_DLD (dispatch_help, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dispatch_help (@var{name}, @dots{})\n\
-Delayed loading of help messages for dispatched functions.\n\
-@end deftypefn\n\
-@seealso{builtin, dispatch}")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  for (int i = 0; i < nargin; i++)
-    {
-      if (args(i).is_string ())
-	{
-	  const std::string name (args(i).string_value ());
-
-	  if (error_state)
-	    return retval;
-
-	  symbol_record *sr = fbi_sym_tab->lookup (name, false);
-
-	  if (sr)
-	    {
-	      std::string help = sr->help ();
-
-	      if (help[0] == '<' && help[1] == '>'
-		  && sr->def().type_id () == octave_dispatch::static_type_id ())
-		{
-		  builtin (name);
-
-		  symbol_record *builtin_record
-		    = fbi_sym_tab->lookup ("builtin:" + name, 0);
-
-		  help.replace (0, 2, builtin_record->help ());
-
-		  sr->document (help);
-		}
-	    }
-	}
-    }
-
-  return feval ("builtin:help", args, nargout);
-}
-
 static void
 dispatch_record (const std::string &f, const std::string &n, 
 		 const std::string &t)
@@ -406,10 +360,10 @@ dispatch_record (const std::string &f, const std::string &n,
       else 
         fbi_sym_tab->rename (f, "builtin:" + f);
 
-      std::string basedoc ("<>"); 
-
-      if (! sr->help().empty ())
-	basedoc = sr->help ();
+      // It would be good to hide the builtin:XXX name, but since the
+      // new XXX name in the symbol table is set to BUILTIN_FUNCTION,
+      // things don't work quite the way we would like.
+      // sr->hide ();
 
       // Problem:  when a function is first called a new record
       // is created for it in the current symbol table, so calling
@@ -436,7 +390,7 @@ dispatch_record (const std::string &f, const std::string &n,
       // std::cout << "iscommand('"<<f<<"')=" << iscommand << std::endl;
       if (iscommand)
 	sr->mark_as_command();
-      sr->document (basedoc + "\n\n@noindent\nOverloaded function:\n");
+      sr->document ("\n\n@noindent\nOverloaded function:\n");
       sr->make_eternal (); // XXX FIXME XXX why??
       sr->mark_as_static ();
       sr->protect ();
@@ -520,8 +474,6 @@ for @var{f}\n\
       octave_dispatch::register_type ();
       register_type = false;
       fbi_sym_tab->lookup("dispatch")->mark_as_static ();
-      dispatch_record ("help", "dispatch_help", "string");
-      dispatch_record ("help", "dispatch_help", "sq_string");
     }
 
   dispatch_record (f, n, t);

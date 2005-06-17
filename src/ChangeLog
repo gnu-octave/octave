@@ -1,5 +1,8 @@
 2005-06-17  John W. Eaton  <jwe@octave.org>
 
+	* toplev.cc (octave_config_info): Include localapifcnfiledir and
+	localapioctfiledir in the list.
+
 	* symtab.h (symbol_record::alias): New arg, mark_to_clear.
 	(symbol_record::aliases_to_clear): New data member.
 	(symbol_record::push_alias_to_clear): New function.

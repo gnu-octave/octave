@@ -90,7 +90,7 @@ private:
     symbol_def (const octave_value& val = octave_value (),
 		unsigned int sym_type = 0)
       : symbol_type (sym_type), eternal (0), read_only (0), help_string (),
-	definition (val), count (1) { }
+	definition (val), visible (true), count (1) { }
 
     ~symbol_def (void) { }
 
@@ -209,6 +209,10 @@ private:
 
     void make_eternal (void) { eternal = 1; }
 
+    void hide (void) { visible = false; }
+    void show (void) { visible = true; }
+    bool is_visible (void) const { return visible; }
+
     octave_value& def (void) { return definition; }
 
     std::string help (void) const { return help_string; }
@@ -239,6 +243,9 @@ private:
 
     // The value of this definition.  See ov.h and related files.
     octave_value definition;
+
+    // Should this symbol show up in listings?
+    bool visible;
 
     // Reference count.
     int count;
@@ -349,6 +356,10 @@ public:
 
   void make_eternal (void) { definition->make_eternal (); }
 
+  void hide (void) { definition->hide (); }
+  void show (void) { definition->show (); }
+  bool is_visible (void) const { return definition->is_visible  (); }
+
   void set_change_function (change_function f) { chg_fcn = f; }
 
   void define (const octave_value& v, unsigned int sym_type = USER_VARIABLE);
@@ -363,7 +374,7 @@ public:
 
   void clear (void);
 
-  void alias (symbol_record *s);
+  void alias (symbol_record *s, bool mark_to_clear = false);
 
   void mark_as_formal_parameter (void);
   bool is_formal_parameter (void) const { return formal_param; }
@@ -444,9 +455,20 @@ private:
   std::stack <symbol_def *> context;
   std::stack <unsigned int> global_link_context;
 
+  std::stack <symbol_record *> aliases_to_clear;
+
+  void push_alias_to_clear (symbol_record *s)
+    { aliases_to_clear.push (s); }
+
   bool read_only_error (const char *action);
 
   void link_to_builtin_variable (void);
+
+  void maybe_delete_def (void)
+    {
+      if (--definition->count <= 0)
+        delete definition;
+    }
 
   // No copying!
 

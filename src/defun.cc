@@ -154,8 +154,14 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
   sym_rec->unprotect ();
   sym_rec->define (new octave_dld_function (f, shl, name, doc), t);
   sym_rec->document (doc);
-  sym_rec->make_eternal ();
-  sym_rec->protect ();
+
+  // Also insert the full name in the symbol table.  This way, we can
+  // properly cope with changes to LOADPATH.
+
+  symbol_record *full_sr = fbi_sym_tab->lookup (shl.file_name (), true);
+
+  full_sr->alias (sym_rec, true);
+  full_sr->hide ();
 }
 
 void

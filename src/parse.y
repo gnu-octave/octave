@@ -2567,7 +2567,10 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       fcn->stash_symtab_ptr (sr);
 
       if (lexer_flags.parsing_nested_function)
-        fcn->mark_as_nested_function ();
+        {
+          fcn->mark_as_nested_function ();
+	  sr->hide ();
+	}
     }
   else
     panic_impossible ();
@@ -2578,6 +2581,18 @@ frob_function (const std::string& fname, octave_user_function *fcn)
     {
       sr->document (help_buf.top ());
       help_buf.pop ();
+    }
+
+  // Also insert the full name in the symbol table.  This way, we can
+  // properly cope with changes to LOADPATH.
+
+  if (reading_fcn_file)
+    {
+      symbol_record *full_sr
+        = fbi_sym_tab->lookup (curr_fcn_file_full_name, true);
+
+      full_sr->alias (sr, true);
+      full_sr->hide ();
     }
 
   if (lexer_flags.parsing_nested_function < 0)

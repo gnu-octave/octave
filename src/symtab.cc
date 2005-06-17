@@ -248,12 +248,11 @@ symbol_record::define (octave_function *f, unsigned int sym_type)
 
   if (! read_only_error ("redefine"))
     {
+      maybe_delete_def ();
+
       octave_value tmp (f);
 
-      if (! definition)
-	definition = new symbol_def (tmp, sym_type);
-      else
-	definition->define (tmp, sym_type);
+      definition = new symbol_def (tmp, sym_type);
 
       retval = true;
     }
@@ -268,8 +267,14 @@ symbol_record::clear (void)
     {
       if (! tagged_static)
 	{
-	  if (--definition->count <= 0)
-	    delete definition;
+	  while (! aliases_to_clear.empty ())
+	    {
+	      symbol_record *sr = aliases_to_clear.top ();
+	      aliases_to_clear.pop ();
+	      sr->clear ();
+	    }
+
+	  maybe_delete_def ();
 
 	  definition = new symbol_def ();
 	}
@@ -280,14 +285,16 @@ symbol_record::clear (void)
 }
 
 void
-symbol_record::alias (symbol_record *s)
+symbol_record::alias (symbol_record *s, bool mark_to_clear)
 {
   chg_fcn = s->chg_fcn;
 
-  if (--definition->count <= 0)
-    delete definition;
+  maybe_delete_def ();
 
-  definition = (s->definition);
+  if (mark_to_clear)
+    s->push_alias_to_clear (this);
+
+  definition = s->definition;
 
   definition->count++;
 }
@@ -402,8 +409,7 @@ symbol_record::pop_context (void)
 
   if (! context.empty ())
     {
-      if (--definition->count <= 0)
-	delete definition;
+      maybe_delete_def ();
 
       definition = context.top ();
       context.pop ();
@@ -868,6 +874,7 @@ symbol_table::clear (const std::string& nm)
       if (ptr->name () == nm)
 	{
 	  ptr->clear ();
+
 	  return true;
 	}
       ptr = ptr->next ();
@@ -1147,17 +1154,20 @@ symbol_table::symbol_list (const string_vector& pats,
 
       while (ptr)
 	{
-	  assert (count < n);
+	  if (true || ptr->is_visible ())
+	    {
+	      assert (count < n);
 
-	  unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	      unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
 
-	  unsigned int my_type = ptr->type ();
+	      unsigned int my_type = ptr->type ();
 
-	  std::string my_name = ptr->name ();
+	      std::string my_name = ptr->name ();
 
-	  if ((type & my_type) && (scope & my_scope) && (matches_patterns (my_name, pats)))
-	    symbols(count++) = ptr;
-
+	      if ((type & my_type) && (scope & my_scope) && (matches_patterns (my_name, pats)))
+		symbols(count++) = ptr;
+	    }
+	      
 	  ptr = ptr->next ();
 	}
     }

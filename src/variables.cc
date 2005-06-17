@@ -975,79 +975,107 @@ same_file (const std::string& f, const std::string& g)
   return (f_fs.ino () == g_fs.ino () && f_fs.dev () == g_fs.dev ());
 }
 
-// Is there a corresponding function file that is newer than the
-// symbol definition?
-
 static bool
-function_out_of_date_internal (octave_function *fcn)
+fcn_out_of_date (octave_function *fcn, const std::string& ff, time_t tp)
 {
   bool retval = false;
 
-  if (fcn)
+  fcn->mark_fcn_file_up_to_date (octave_time ());
+
+  if (! (Vignore_function_time_stamp == 2
+	 || (Vignore_function_time_stamp && fcn->is_system_fcn_file ())))
     {
-      std::string ff = fcn->fcn_file_name ();
+      file_stat fs (ff);
 
-      if (! (ff.empty ()
-	     || (Vignore_function_time_stamp
-		 && fcn->is_system_fcn_file ())))
-	{
-	  if (fcn->time_checked () < Vlast_prompt_time)
-	    {
-	      time_t tp = fcn->time_parsed ();
-
-	      std::string nm = fcn->name ();
-
-	      string_vector names (2);
-
-	      names[0] = nm + ".oct";
-	      names[1] = nm + ".m";
-
-	      std::string file = octave_env::make_absolute
-		(Vload_path_dir_path.find_first_of (names),
-		 octave_env::getcwd ());
-
-	      if (same_file (file, ff))
-		{
-		  fcn->mark_fcn_file_up_to_date (octave_time ());
-
-		  file_stat fs (ff);
-
-		  if (fs && fs.is_newer (tp))
-		    retval = true;
-		}
-	      else
-		retval = true;
-	    }
-	}
+      if (fs && fs.is_newer (tp))
+	retval = true;
     }
 
   return retval;
 }
+
+// Is there a corresponding function file that is newer than the
+// symbol definition?
 
 static bool
 symbol_out_of_date (symbol_record *sr)
 {
   bool retval = false;
 
-  if (Vignore_function_time_stamp != 2 && sr)
+  if (sr)
     {
       octave_value ans = sr->def ();
 
-      octave_function *tmp = ans.function_value (true);
+      octave_function *fcn = ans.function_value (true);
 
-      retval = function_out_of_date_internal (tmp);
+      if (fcn)
+	{
+	  std::string ff = fcn->fcn_file_name ();
+
+	  if (! ff.empty ())
+	    {
+	      if (fcn->time_checked () < Vlast_prompt_time)
+		{
+		  time_t tp = fcn->time_parsed ();
+
+		  std::string nm = fcn->name ();
+
+		  string_vector names (2);
+
+		  names[0] = nm + ".oct";
+		  names[1] = nm + ".m";
+
+		  std::string file = octave_env::make_absolute
+		    (Vload_path_dir_path.find_first_of (names),
+		     octave_env::getcwd ());
+
+		  if (same_file (file, ff))
+		    {
+		      retval = fcn_out_of_date (fcn, ff, tp);
+		    }
+		  else
+		    {
+		      // Check the full function name.  Maybe we alrady
+		      // parsed it.
+
+		      symbol_record *full_sr = fbi_sym_tab->lookup (file);
+
+		      if (full_sr)
+			{
+			  octave_value v = full_sr->def ();
+
+			  if (v.is_function ())
+			    {
+			      // OK, swap the aliases around.
+
+			      // XXX FIXME XXX -- this is a bit
+			      // tricky, so maybe some refactoring is
+			      // in order here too...
+
+			      symbol_record *short_sr = fbi_sym_tab->lookup (nm);
+
+			      if (short_sr)
+				short_sr->alias (full_sr);
+
+			      // Make local symbol table entry point
+			      // to correct global function too.
+
+			      sr->alias (full_sr);
+
+			      fcn = v.function_value ();
+
+			      retval = fcn_out_of_date (fcn, file, tp);
+			    }
+			  else
+			    retval = true;
+			}
+		      else
+			retval = true;
+		    }
+		}
+	    }
+	}
     }
-
-  return retval;
-}
-
-bool
-function_out_of_date (octave_function *fcn)
-{
-  bool retval = false;
-
-  if (Vignore_function_time_stamp != 2)
-    retval = function_out_of_date_internal (fcn);
 
   return retval;
 }

@@ -67,6 +67,7 @@ std::string Varch_lib_dir;
 std::string Vlocal_arch_lib_dir;
 std::string Vlocal_ver_arch_lib_dir;
 std::string Vfcn_file_dir;
+std::string Voct_file_dir;
 
 // The default path that will be searched for programs that we
 // execute (in addition to the user-specified --exec-path).
@@ -248,6 +249,12 @@ set_default_fcn_file_dir (void)
 }
 
 static void
+set_default_oct_file_dir (void)
+{
+  Voct_file_dir = subst_octave_home (OCTAVE_OCTFILEDIR);
+}
+
+static void
 set_default_bin_dir (void)
 {
   Vbin_dir = subst_octave_home (OCTAVE_BINDIR);
@@ -403,6 +410,8 @@ install_defaults (void)
   set_default_local_ver_arch_lib_dir ();
 
   set_default_fcn_file_dir ();
+
+  set_default_oct_file_dir ();
 
   set_default_bin_dir ();
 

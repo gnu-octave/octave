@@ -1,4 +1,51 @@
+2005-06-17  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h (symbol_record::alias): New arg, mark_to_clear.
+	(symbol_record::aliases_to_clear): New data member.
+	(symbol_record::push_alias_to_clear): New function.
+	* symtab.cc (symbol_record::alias): If mark_to_clear is true, push
+	this pointer on aliases_to_clear stack for s.
+	(symbol_record::clear): Also clear aliases_to_clear_stack.
+
+	* defun.cc (install_dld_function): Create full file name alias in
+	fbi_sym_tab and hide it from view.
+	Don't call protect or make_eternal on sym_rec.
+
+	* variables.cc (fcn_out_of_date): New function.
+	(symbol_out_of_date): Also check for symbol using full function
+	file name.
+
+	* symtab.h (symbol_record::symbol_def::visible): New data member.
+	(symbol_record::symbol_def::hide, symbol_record::symbol_def::show,
+	symbol_record::symbol_def::is_visible): New functions.
+	(symbol_record::hide, symbol_record::show, symbol_record::is_visible):
+	New functions.
+
+	* symtab.h (symbol_record::maybe_delete_def): New private function.
+	* symtab.cc (symbol_record::clear, symbol_record::alias,
+	symbol_record::pop_context,
+	symbol_record::define (octave_function *, unsigned int)): Use it.
+	(symbol_table::symbol_list): Only include visible symbols in list.
+
+	* parse.y (frob_function): Hide nested function names.
+
+	* parse.y (frob_function): Create full file name alias in
+	fbi_sym_tab and hide it from view.
+	* defun.cc (install_dld_function): Likewise.
+
 2005-06-16  John W. Eaton  <jwe@octave.org>
+
+	* ov-dld-fcn.cc (octave_dld_function): Check Voct_file_dir to see
+	if function is system file, Vfcn_file_dir.
+	* defaults.cc (set_default_oct_file_dir): New function.
+	(install_defaults): Call it.
+	(Voct_file_dir): New global variable.
+	* defaults.h.in (Voct_file_dir): Provide decl.
+
+	* variables.cc (function_out_of_date_internal): Use
+	Vignore_function_time_stamp only to avoid calling stat.
+	(symbol_out_of_date): Don't check Vignore_function_time_stamp here.
+	(function_out_of_date): Rename from function_out_of_date_internal.
 
 	* defaults.cc (loadpath): Don't do anything if value is unchanged.
 	If loadpath changes, also update Vlast_prompt_time.

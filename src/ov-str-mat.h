@@ -85,7 +85,8 @@ public:
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok)
+    { return do_index_op_internal (idx, resize_ok); }
 
   void assign (const octave_value_list& idx, const charMatrix& rhs);
 
@@ -143,6 +144,11 @@ public:
 	     oct_mach_info::float_format flt_fmt) const
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
+protected:
+
+  octave_value do_index_op_internal (const octave_value_list& idx,
+				     int resize_ok, char type = '"');
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR
@@ -190,6 +196,9 @@ public:
   octave_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
 
   bool is_sq_string (void) const { return true; }
+
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok)
+    { return do_index_op_internal (idx, resize_ok, '\''); }
 
 private:
 

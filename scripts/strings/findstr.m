@@ -117,7 +117,11 @@ function v = findstr (s, t, overlap)
       v = v(find (keep));
     endif
   endif
-  
+
+  if (isempty (v))
+    v = [];
+  endif
+
   ## Always return a column vector, because that's what the old one did
   if (rows (v) > 1) 
     v = v.';

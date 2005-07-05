@@ -1478,6 +1478,10 @@ end_error (const char *type, token::end_tok_type ettype, int l, int c)
       error (fmt, type, "endwhile", l, c); 
       break;
 
+    case token::try_catch_end:
+      error (fmt, type, "end_try_catch", l, c); 
+      break;
+
     case token::unwind_protect_end:
       error (fmt, type, "end_unwind_protect", l, c); 
       break;

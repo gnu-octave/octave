@@ -1,3 +1,15 @@
+2005-07-05  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):
+	Rename from char_matrix_str::do_index_op.  New arg, type.
+	ov-str-mat.h (octave_char_matrix_str::do_index_op): Define using
+	do_index_op_internal.
+	(octave_char_matrix_sq_str::do_index_op): New function.
+
+2005-07-01  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (end_error): Also handle end_try_catch case.
+
 2005-06-17  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (help_from_list, help_from_symbol_table, 

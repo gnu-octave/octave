@@ -81,8 +81,8 @@ octave_char_matrix_str::numeric_conversion_function (void) const
 }
 
 octave_value
-octave_char_matrix_str::do_index_op (const octave_value_list& idx,
-				     int resize_ok)
+octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
+					      int resize_ok, char type)
 {
   octave_value retval;
 
@@ -97,7 +97,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 
 	if (! error_state)
 	  retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-				 true);
+				 true, type);
       }
       break;
 
@@ -107,7 +107,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 
 	if (! error_state)
 	  retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
-				 true);
+				 true, type);
       }
       break;
 
@@ -120,7 +120,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 
 	if (! error_state)
 	  retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-				 true);
+				 true, type);
       }
       break;
     }

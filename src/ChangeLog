@@ -1,3 +1,13 @@
+2005-07-05  Antoine Moreau  <antoine.moreau@univ-bpclermont.fr>
+
+	* DLD-FUNCTIONS/betainc.cc (Fbetainc): Fix doc string to match
+	function definition..
+
+2005-07-05  Mats Jansson  <mats.e.jansson@home.se>
+
+         * file-io.cc (Fmkstemp): Check if second argument is true
+         before marking file for deletion.
+
 2005-07-05  John W. Eaton  <jwe@octave.org>
 
 	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):

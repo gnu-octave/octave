@@ -1881,7 +1881,7 @@ error message.\n\
 		      retval(1) = nm;
 		      retval(0) = octave_stream_list::insert (s);
 
-		      if (nargin == 2)
+		      if (nargin == 2 && args(1).is_true ())
 			mark_for_deletion (nm);
 		    }
 		  else

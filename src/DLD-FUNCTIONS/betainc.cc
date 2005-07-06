@@ -40,7 +40,7 @@ Return the incomplete Beta function,\n\
 @iftex\n\
 @tex\n\
 $$\n\
- \\betainc (x, a, b) = B (a, b)^{-1} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
+ \\beta (x, a, b) = B (a, b)^{-1} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
 $$\n\
 @end tex\n\
 @end iftex\n\

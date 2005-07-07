@@ -1143,9 +1143,9 @@ template std::istream&
 octave_scan (std::istream&, const scanf_format_elt&, float*);
 #endif
 
-template <>
+template<>
 std::istream&
-octave_scan (std::istream& is, const scanf_format_elt& fmt, double* valptr)
+octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
 {
   double& ref = *valptr;
 
@@ -1317,9 +1317,6 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, double* valptr)
 
   return is;
 }
-
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, double*);
 
 #endif
 

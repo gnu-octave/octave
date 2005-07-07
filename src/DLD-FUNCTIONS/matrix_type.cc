@@ -22,6 +22,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <algorithm>
+
 #include "ov.h"
 #include "defun-dld.h"
 #include "error.h"
@@ -177,8 +179,8 @@ matrix type.\n\
 	      else
 		{
 		  // Use STL function to convert to lower case
-		  transform (str_typ.begin (), str_typ.end (), str_typ.begin (), 
-			     tolower);
+		  std::transform (str_typ.begin (), str_typ.end (),
+				  str_typ.begin (), std::tolower);
 
 		  if (str_typ == "diagonal")
 		    mattyp.mark_as_diagonal ();

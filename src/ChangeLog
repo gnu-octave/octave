@@ -1,3 +1,12 @@
+2005-07-07  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_scan): Delete explicit instantiation of
+	octave_scan<double> since a specialization is provided.
+
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Include
+	<algorithm>, for std::transform decl.  Use std qualifier for
+	transform and tolower.
+
 2005-07-05  Antoine Moreau  <antoine.moreau@univ-bpclermont.fr>
 
 	* DLD-FUNCTIONS/betainc.cc (Fbetainc): Fix doc string to match

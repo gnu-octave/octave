@@ -1,3 +1,8 @@
+2005-07-07  John W. Eaton  <jwe@octave.org>
+
+	* dSparse.cc (SparseMatrix::factorize): Initialize Numeric to 0.
+	* CSparse.cc (SparseComplexMatrix::factorize:) Likewise.
+
 2005-06-15  John W. Eaton  <jwe@octave.org>
 
 	* oct-rl-edit.c (flush_stdout): Rename from no_redisplay.

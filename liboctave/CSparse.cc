@@ -4522,7 +4522,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Con
 				solve_singularity_handler sing_handler) const
 {
   // The return values
-  void *Numeric;
+  void *Numeric = 0;
   err = 0;
 
 #ifdef HAVE_UMFPACK

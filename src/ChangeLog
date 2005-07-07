@@ -1,5 +1,7 @@
 2005-07-07  John W. Eaton  <jwe@octave.org>
 
+	* pr-output.cc (pr_plus_format): Delete "static" from template decl.
+
 	* oct-stream.cc (octave_scan): Delete explicit instantiation of
 	octave_scan<double> since a specialization is provided.
 

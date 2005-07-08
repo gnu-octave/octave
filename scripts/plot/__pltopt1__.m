@@ -218,10 +218,10 @@ function fmt = __pltopt1__ (caller, opt)
   elseif (set_steps)
     fmt = strcat (fmt, " ", STEPS);
   elseif (set_yerrbars)
-    if(set_xerrbars)
-        fmt = strcat (fmt, " ", XYERRORBARS);
+    if (set_xerrbars)
+      fmt = strcat (fmt, " ", XYERRORBARS);
     else
-        fmt = strcat (fmt, " ", YERRORBARS);
+      fmt = strcat (fmt, " ", YERRORBARS);
     endif
   elseif (set_xerrbars)
     fmt = strcat (fmt, " ", XERRORBARS);

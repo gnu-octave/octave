@@ -55,9 +55,9 @@ function retval = dec2base (n, base, len)
   endif
 
   if (prod (size (n)) != length (n))
-    error ("dec2base: cannot convert matrices.");
+    n = n(:);
   elseif (any (n < 0 | n != fix (n)))
-    error ("dec2base: can only convert non-negative integers.")
+    error ("dec2base: can only convert non-negative integers")
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -65,10 +65,10 @@ function retval = dec2base (n, base, len)
     symbols = base;
     base = length (symbols);
     if any (diff (sort (toascii (symbols))) == 0)
-      error ("dec2base: symbols representing digits must be unique.");
+      error ("dec2base: symbols representing digits must be unique");
     endif
   elseif (! isscalar (base))
-    error ("dec2base: cannot convert from several bases at once.");
+    error ("dec2base: cannot convert from several bases at once");
   elseif (base < 2 || base > length (symbols))
     error ("dec2base: base must be between 2 and 36 or a string of symbols");
   endif

@@ -1,3 +1,8 @@
+2005-07-08  John W. Eaton  <jwe@octave.org>
+
+	* statistics/distributions/weibrnd.m: Rename from weibull_rnd.m.
+	* deprecated/weibull_rnd.m: New file.
+
 2005-07-08  cctsim  <cctsim@yahoo.co.uk>
 
 	* strings/dec2base.m: Allow matrix arguments.

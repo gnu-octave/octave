@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_rnd (@var{alpha}, @var{sigma}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} weibull_rnd (@var{alpha}, @var{sigma}, @var{sz})
+## @deftypefn {Function File} {} weibrnd (@var{alpha}, @var{sigma}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} weibrnd (@var{alpha}, @var{sigma}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## Weibull distribution with parameters @var{alpha} and @var{sigma}
 ## which must be scalar or of size @var{r} by @var{c}. Or if @var{sz}
@@ -32,23 +32,23 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the Weibull distribution
 
-function rnd = weibull_rnd (shape, scale, r, c)
+function rnd = weibrnd (shape, scale, r, c)
 
   if (nargin > 1)
     if (!isscalar(shape) || !isscalar(scale)) 
       [retval, shape, scale] = common_size (shape, scale);
       if (retval > 0)
-	error ("weibull_rnd: shape and scale must be of common size or scalar");
+	error ("weibrnd: shape and scale must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("weibull_rnd: r must be a positive integer");
+      error ("weibrnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("weibull_rnd: c must be a positive integer");
+      error ("weibrnd: c must be a positive integer");
     endif
     sz = [r, c];
 
@@ -63,18 +63,18 @@ function rnd = weibull_rnd (shape, scale, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("weibull_rnd: r must be a postive integer or vector");
+      error ("weibrnd: r must be a postive integer or vector");
     endif
 
     if (any (size (scale) != 1) && 
 	((length (size (scale)) != length (sz)) ||
 	 any (size (scale) != sz)))
-      error ("weibull_rnd: shape and scale must be scalar or of size sz");
+      error ("weibrnd: shape and scale must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(shape);
   else
-    usage ("weibull_rnd (alpha, sigma, r, c)");
+    usage ("weibrnd (alpha, sigma, r, c)");
   endif
 
   if (isscalar (shape) && isscalar (scale))
@@ -93,3 +93,4 @@ function rnd = weibull_rnd (shape, scale, r, c)
   endif
 
 endfunction
+

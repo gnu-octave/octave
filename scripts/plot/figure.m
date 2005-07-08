@@ -29,6 +29,8 @@
 
 function f = figure (n)
 
+  __plot_globals__;
+
   static figure_list = create_set (0);
   static figure_called = 0;
 
@@ -37,6 +39,8 @@ function f = figure (n)
   else
     f = n;
   endif
+
+  __current_figure__ = f;
 
   if (nargin < 2)
     if (gnuplot_has_frames)

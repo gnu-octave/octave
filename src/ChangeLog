@@ -1,3 +1,9 @@
+2005-07-08  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (Fhold, Fishold): Delete.
+	(clear_before_plotting): Delete static variable.
+	Delete PKG_ADD line for hold.
+
 2005-07-07  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (pr_plus_format): Delete "static" from template decl.

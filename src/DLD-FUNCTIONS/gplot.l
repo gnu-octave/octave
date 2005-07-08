@@ -15,8 +15,6 @@
 
 // PKG_ADD: mark_as_command ("gshow");
 
-// PKG_ADD: mark_as_command ("hold");
-
 // PKG_ADD: mark_as_command ("set");
 // PKG_ADD: mark_as_command ("show");
 
@@ -259,9 +257,6 @@ static bool parametric_plot = false;
 
 // The gnuplot terminal type.
 static std::string gnuplot_terminal_type;
-
-// Should the graph window be cleared before plotting the next line?
-static bool clear_before_plotting = true;
 
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
@@ -877,24 +872,14 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
   else if (caller == "plot")
     {
       ndim = 2;
-      if (clear_before_plotting || plot_line_count == 0)
-	{
-	  plot_line_count = 0;
-	  outstr += Vgnuplot_command_plot + " ";
-	}
-      else
-	outstr += Vgnuplot_command_replot + " ";
+      plot_line_count = 0;
+      outstr += Vgnuplot_command_plot + " ";
     }
   else if (caller == "splot")
     {
       ndim = 3;
-      if (clear_before_plotting || plot_line_count == 0)
-	{
-	  plot_line_count = 0;
-	  outstr += Vgnuplot_command_splot + " ";
-	}
-      else
-	outstr += Vgnuplot_command_replot + " ";
+      plot_line_count = 0;
+      outstr += Vgnuplot_command_splot + " ";
     }
   else
     throw gpt_parse_error ("unknown plot command");
@@ -1178,70 +1163,6 @@ this will close the plot window.\n\
   close_plot_stream ();
 
   return retval;
-}
-
-DEFUN_DLD (hold, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} hold @var{args}\n\
-Tell Octave to `hold' the current data on the plot when executing\n\
-subsequent plotting commands.  This allows you to execute a series of\n\
-plot commands and have all the lines end up on the same figure.  The\n\
-default is for each new plot command to clear the plot device first.\n\
-For example, the command\n\
-\n\
-@example\n\
-hold on\n\
-@end example\n\
-\n\
-@noindent\n\
-turns the hold state on.  An argument of @code{off} turns the hold state\n\
-off, and @code{hold} with no arguments toggles the current hold state.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("hold");
-
-  if (error_state)
-    return retval;
-
-  switch (argc)
-    {
-    case 1:
-      clear_before_plotting = ! clear_before_plotting;
-      break;
-
-    case 2:
-      if (argv[1] == "on")
-	clear_before_plotting = false;
-      else if (argv[1] == "off")
-	clear_before_plotting = true;
-      else
-	print_usage ("hold");
-      break;
-
-    default:
-      print_usage ("hold");
-      break;
-    }
-
-  return retval;
-}
-
-DEFUN_DLD (ishold, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ishold\n\
-Return 1 if the next line will be added to the current plot, or 0 if\n\
-the plot device will be cleared before drawing the next line.\n\
-@end deftypefn")
-{
-  gnuplot_init ();
-
-  return octave_value (! clear_before_plotting);
 }
 
 DEFUN_DLD (purge_tmp_files, , ,

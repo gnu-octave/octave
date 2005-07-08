@@ -36,9 +36,13 @@
 
 function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
+  __plot_globals__;
+
   if (nargin < 3 || nargin > 7) # at least three data arguments needed
     usage ("__errplot__ (fmt, arg1, ...)");
   endif
+
+  j = __plot_data_offset__(__current_figure__);
 
   fmt = __pltopt__ ("__errplot__", fstr);
 
@@ -67,8 +71,23 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 	       a1(:,i)-a3(:,i), a1(:,i)+a4(:,i), ...
 	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
     endswitch
-    cmd = sprintf ("__gnuplot_plot__ tmp %s", ifmt);
-    eval (cmd);
-endfor
+
+    __plot_data__{__current_figure__}{j} = tmp;
+
+    __plot_command__{__current_figure__} \
+	= sprintf ("%s%s __plot_data__{__current_figure__}{%d} %s",
+		   __plot_command__{__current_figure__},
+		   __plot_command_sep__, j, ifmt);
+    __plot_command_sep__ = ",\\\n";
+
+    j++;
+
+  endfor
+
+  __plot_data_offset__(__current_figure__) = j;
+
+  if (! isempty (__plot_command__{__current_figure__}))
+    eval (__plot_command__{__current_figure__});
+  endif
 
 endfunction

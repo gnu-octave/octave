@@ -180,7 +180,7 @@ matrix type.\n\
 		{
 		  // Use STL function to convert to lower case
 		  std::transform (str_typ.begin (), str_typ.end (),
-				  str_typ.begin (), std::tolower);
+				  str_typ.begin (), tolower);
 
 		  if (str_typ == "diagonal")
 		    mattyp.mark_as_diagonal ();

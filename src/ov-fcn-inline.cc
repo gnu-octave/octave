@@ -810,13 +810,26 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 
   if (nargin == 1)
     {
-      octave_fcn_inline* old = args(0).fcn_inline_value (true);
+      std::string old_func;
+      octave_fcn_inline* old = 0;
+      bool func_is_string = true;
 
-      if (old)
+      if (args(0).is_string ())
+	old_func = args(0).string_value ();
+      else
 	{
-	  std::string old_func = old->fcn_text ();
-	  std::string new_func;
+	  old = args(0).fcn_inline_value (true);
+	  func_is_string = false;
 
+	  if (old)
+	    old_func = old->fcn_text ();
+	  else
+	    error ("vectorize: must be a string or inline function");
+	}
+
+      if (! error_state)
+	{
+	  std::string new_func;
 	  size_t i = 0;
 
 	  while (i < old_func.length ())
@@ -840,10 +853,12 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 	      i++;
 	    }
 
-	  retval = octave_value (new octave_fcn_inline (new_func, old->fcn_arg_names ()));
+	  if (func_is_string)
+	    retval = octave_value (new_func);
+	  else
+	    retval = octave_value (new octave_fcn_inline 
+				   (new_func, old->fcn_arg_names ()));
 	}
-      else
-	error ("vectorize: must be an inline function");
     }
   else
     print_usage ("vectorize");

@@ -1,3 +1,7 @@
+2005-07-11  David Bateman  <dbateman@free.fr>
+
+	* ov-fc-inline.cc (Fvectorize): Allow string arguments
+
 2005-07-08  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/gplot.l (Fhold, Fishold): Delete.

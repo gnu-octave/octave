@@ -140,21 +140,21 @@ you would like to help improve Octave in this area, please contact
 @node Distributions
 @section Distributions
 
-@DOCSTRING(beta_cdf)
+@DOCSTRING(betacdf)
 
-@DOCSTRING(beta_inv)
+@DOCSTRING(betainv)
 
-@DOCSTRING(beta_pdf)
+@DOCSTRING(betapdf)
 
-@DOCSTRING(beta_rnd)
+@DOCSTRING(betarnd)
 
-@DOCSTRING(binomial_cdf)
+@DOCSTRING(binocdf)
 
-@DOCSTRING(binomial_inv)
+@DOCSTRING(binoinv)
 
-@DOCSTRING(binomial_pdf)
+@DOCSTRING(binopdf)
 
-@DOCSTRING(binomial_rnd)
+@DOCSTRING(binornd)
 
 @DOCSTRING(cauchy_cdf)
 
@@ -164,13 +164,13 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(cauchy_rnd)
 
-@DOCSTRING(chisquare_cdf)
+@DOCSTRING(chi2cdf)
 
-@DOCSTRING(chisquare_inv)
+@DOCSTRING(chi2inv)
 
-@DOCSTRING(chisquare_pdf)
+@DOCSTRING(chi2pdf)
 
-@DOCSTRING(chisquare_rnd)
+@DOCSTRING(chi2rnd)
 
 @DOCSTRING(discrete_cdf)
 
@@ -188,45 +188,45 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(empirical_rnd)
 
-@DOCSTRING(exponential_cdf)
+@DOCSTRING(expcdf)
 
-@DOCSTRING(exponential_inv)
+@DOCSTRING(expinv)
 
-@DOCSTRING(exponential_pdf)
+@DOCSTRING(exppdf)
 
-@DOCSTRING(exponential_rnd)
+@DOCSTRING(exprnd)
 
-@DOCSTRING(f_cdf)
+@DOCSTRING(fcdf)
 
-@DOCSTRING(f_inv)
+@DOCSTRING(finv)
 
-@DOCSTRING(f_pdf)
+@DOCSTRING(fpdf)
 
-@DOCSTRING(f_rnd)
+@DOCSTRING(frnd)
 
-@DOCSTRING(gamma_cdf)
+@DOCSTRING(gamcdf)
 
-@DOCSTRING(gamma_inv)
+@DOCSTRING(gaminv)
 
-@DOCSTRING(gamma_pdf)
+@DOCSTRING(gampdf)
 
-@DOCSTRING(gamma_rnd)
+@DOCSTRING(gamrnd)
 
-@DOCSTRING(geometric_cdf)
+@DOCSTRING(geocdf)
 
-@DOCSTRING(geometric_inv)
+@DOCSTRING(geoinv)
 
-@DOCSTRING(geometric_pdf)
+@DOCSTRING(geopdf)
 
-@DOCSTRING(geometric_rnd)
+@DOCSTRING(geornd)
 
-@DOCSTRING(hypergeometric_cdf)
+@DOCSTRING(hygecdf)
 
-@DOCSTRING(hypergeometric_inv)
+@DOCSTRING(hygeinv)
 
-@DOCSTRING(hypergeometric_pdf)
+@DOCSTRING(hygepdf)
 
-@DOCSTRING(hypergeometric_rnd)
+@DOCSTRING(hygernd)
 
 @DOCSTRING(kolmogorov_smirnov_cdf)
 
@@ -246,21 +246,21 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(logistic_rnd)
 
-@DOCSTRING(lognormal_cdf)
+@DOCSTRING(logncdf)
 
-@DOCSTRING(lognormal_inv)
+@DOCSTRING(logninv)
 
-@DOCSTRING(lognormal_pdf)
+@DOCSTRING(lognpdf)
 
-@DOCSTRING(lognormal_rnd)
+@DOCSTRING(lognrnd)
 
-@DOCSTRING(normal_cdf)
+@DOCSTRING(normcdf)
 
-@DOCSTRING(normal_inv)
+@DOCSTRING(norminv)
 
-@DOCSTRING(normal_pdf)
+@DOCSTRING(normpdf)
 
-@DOCSTRING(normal_rnd)
+@DOCSTRING(normrnd)
 
 @DOCSTRING(pascal_cdf)
 
@@ -270,13 +270,13 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(pascal_rnd)
 
-@DOCSTRING(poisson_cdf)
+@DOCSTRING(poisscdf)
 
-@DOCSTRING(poisson_inv)
+@DOCSTRING(poissinv)
 
-@DOCSTRING(poisson_pdf)
+@DOCSTRING(poisspdf)
 
-@DOCSTRING(poisson_rnd)
+@DOCSTRING(poissrnd)
 
 @DOCSTRING(stdnormal_cdf)
 
@@ -286,28 +286,28 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(stdnormal_rnd)
 
-@DOCSTRING(t_cdf)
+@DOCSTRING(tcdf)
 
-@DOCSTRING(t_inv)
+@DOCSTRING(tinv)
 
-@DOCSTRING(t_pdf)
+@DOCSTRING(tpdf)
 
-@DOCSTRING(t_rnd)
+@DOCSTRING(trnd)
 
-@DOCSTRING(uniform_cdf)
+@DOCSTRING(unifcdf)
 
-@DOCSTRING(uniform_inv)
+@DOCSTRING(unifinv)
 
-@DOCSTRING(uniform_pdf)
+@DOCSTRING(unifpdf)
 
-@DOCSTRING(uniform_rnd)
+@DOCSTRING(unifrnd)
 
-@DOCSTRING(weibull_cdf)
+@DOCSTRING(weibcdf)
 
-@DOCSTRING(weibull_inv)
+@DOCSTRING(weibinv)
 
-@DOCSTRING(weibull_pdf)
+@DOCSTRING(weibpdf)
 
 @DOCSTRING(weibull_rnd)
 
-@DOCSTRING(wiener_rnd)
+@DOCSTRING(wienrnd)

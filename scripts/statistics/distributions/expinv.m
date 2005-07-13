@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} exponential_inv (@var{x}, @var{lambda})
+## @deftypefn {Function File} {} expinv (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the exponential distribution with parameter
 ## @var{lambda}.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the exponential distribution
 
-function inv = exponential_inv (x, l)
+function inv = expinv (x, l)
 
   if (nargin != 2)
-    usage ("exponential_inv (x, lambda)");
+    usage ("expinv (x, lambda)");
   endif
 
   if (!isscalar (x) && !isscalar(l))
     [retval, x, l] = common_size (x, l);
     if (retval > 0)
-      error ("exponential_inv: x and lambda must be of common size or scalar");
+      error ("expinv: x and lambda must be of common size or scalar");
     endif
   endif
 
@@ -70,3 +70,4 @@ function inv = exponential_inv (x, l)
   endif
 
 endfunction
+

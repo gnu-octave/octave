@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} geometric_cdf (@var{x}, @var{p})
+## @deftypefn {Function File} {} geocdf (@var{x}, @var{p})
 ## For each element of @var{x}, compute the CDF at @var{x} of the
 ## geometric distribution with parameter @var{p}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the geometric distribution
 
-function cdf = geometric_cdf (x, p)
+function cdf = geocdf (x, p)
 
   if (nargin != 2)
-    usage ("geometric_cdf (x, p)");
+    usage ("geocdf (x, p)");
   endif
 
   if (!isscalar (x) && !isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
-      error ("geometric_cdf: x and p must be of common size or scalar");
+      error ("geocdf: x and p must be of common size or scalar");
     endif
   endif
 

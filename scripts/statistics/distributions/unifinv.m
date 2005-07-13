@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} uniform_inv (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} unifinv (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the uniform distribution on [@var{a}, @var{b}].
 ##
@@ -28,10 +28,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the uniform distribution
 
-function inv = uniform_inv (x, a, b)
+function inv = unifinv (x, a, b)
 
   if (nargin != 1 && nargin != 3)
-    usage ("uniform_inv (x, a, b)");
+    usage ("unifinv (x, a, b)");
   endif
 
   if (nargin == 1)

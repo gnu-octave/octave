@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_pdf (@var{x}, @var{alpha}, @var{sigma})
+## @deftypefn {Function File} {} weibpdf (@var{x}, @var{alpha}, @var{sigma})
 ## Compute the probability density function (PDF) at @var{x} of the
 ## Weibull distribution with shape parameter @var{alpha} and scale
 ## parameter @var{sigma} which is given by
@@ -34,16 +34,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the Weibull distribution
 
-function pdf = weibull_pdf (x, shape, scale)
+function pdf = weibpdf (x, shape, scale)
 
   if (nargin != 3)
-    usage ("weibull_pdf (x, alpha, sigma)");
+    usage ("weibpdf (x, alpha, sigma)");
   endif
 
   if (!isscalar (shape) || !isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
-      error ("weibull_pdf: x, alpha and sigma must be of common size or scalar");
+      error ("weibpdf: x, alpha and sigma must be of common size or scalar");
     endif
   endif
 

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binomial_pdf (@var{x}, @var{n}, @var{p})
+## @deftypefn {Function File} {} binopdf (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the binomial distribution with parameters @var{n}
 ## and @var{p}.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the binomial distribution
 
-function pdf = binomial_pdf (x, n, p)
+function pdf = binopdf (x, n, p)
 
   if (nargin != 3)
-    usage ("binomial_pdf (x, n, p)");
+    usage ("binopdf (x, n, p)");
   endif
 
   if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("binomial_pdf: x, n and p must be of common size or scalar");
+      error ("binopdf: x, n and p must be of common size or scalar");
     endif
   endif
 

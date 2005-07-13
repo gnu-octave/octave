@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normal_rnd (@var{m}, @var{v}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} normal_rnd (@var{m}, @var{v}, @var{sz})
+## @deftypefn {Function File} {} normrnd (@var{m}, @var{v}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} normrnd (@var{m}, @var{v}, @var{sz})
 ## Return an @var{r} by @var{c}  or @code{size (@var{sz})} matrix of
 ## random samples from the normal distribution with parameters @var{m} 
 ## and @var{v}.  Both @var{m} and @var{v} must be scalar or of size 
@@ -32,29 +32,29 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the normal distribution
 
-function rnd = normal_rnd (m, v, r, c)
+function rnd = normrnd (m, v, r, c)
 
   if (nargin > 1)
     if (!isscalar(m) || !isscalar(v)) 
       [retval, m, v] = common_size (m, v);
       if (retval > 0)
-	error ("normal_rnd: m and v must be of common size or scalar");
+	error ("normrnd: m and v must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("normal_rnd: r must be a positive integer");
+      error ("normrnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("normal_rnd: c must be a positive integer");
+      error ("normrnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (m) != 1)
 	&& (length (size (m)) != length (sz) || any (size (m) != sz)))
-      error ("normal_rnd: m and v must be scalar or of size [r, c]");
+      error ("normrnd: m and v must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -62,17 +62,17 @@ function rnd = normal_rnd (m, v, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("normal_rnd: r must be a postive integer or vector");
+      error ("normrnd: r must be a postive integer or vector");
     endif
 
     if (any (size (m) != 1)
 	&& (length (size (m)) != length (sz) || any (size (m) != sz)))
-      error ("normal_rnd: m and v must be scalar or of size sz");
+      error ("normrnd: m and v must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(m);
   else
-    usage ("normal_rnd (m, v, r, c)");
+    usage ("normrnd (m, v, r, c)");
   endif
 
   if (isscalar (m) && isscalar (v))

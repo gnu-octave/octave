@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binomial_rnd (@var{n}, @var{p}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} binomial_rnd (@var{n}, @var{p}, @var{sz})
+## @deftypefn {Function File} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, @var{sz})
 ## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of 
 ## random samples from the binomial distribution with parameters @var{n}
 ## and @var{p}.  Both @var{n} and @var{p} must be scalar or of size
@@ -32,29 +32,29 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the binomial distribution
 
-function rnd = binomial_rnd (n, p, r, c)
+function rnd = binornd (n, p, r, c)
 
   if (nargin > 1)
     if (!isscalar(n) || !isscalar(p)) 
       [retval, n, p] = common_size (n, p);
       if (retval > 0)
-	error ("binomial_rnd: n and p must be of common size or scalar");
+	error ("binornd: n and p must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("binomial_rnd: r must be a positive integer");
+      error ("binornd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("binomial_rnd: c must be a positive integer");
+      error ("binornd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (n) != 1)
 	&& (length (size (n)) != length (sz) ||	any (size (n) != sz)))
-      error ("binomial_rnd: n and must be scalar or of size [r, c]");
+      error ("binornd: n and must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -62,17 +62,17 @@ function rnd = binomial_rnd (n, p, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("binomial_rnd: r must be a postive integer or vector");
+      error ("binornd: r must be a postive integer or vector");
     endif
 
     if (any (size (n) != 1)
 	&& (length (size (n)) != length (sz) || any (size (n) != sz)))
-      error ("binomial_rnd: n and must be scalar or of size sz");
+      error ("binornd: n and must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(n);
   else
-    usage ("binomial_rnd (n, p, r, c)");
+    usage ("binornd (n, p, r, c)");
   endif
 
   if (isscalar (n) && isscalar (p))

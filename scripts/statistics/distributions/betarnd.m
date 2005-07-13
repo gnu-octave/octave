@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} beta_rnd (@var{a}, @var{b}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} beta_rnd (@var{a}, @var{b}, @var{sz})
+## @deftypefn {Function File} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} betarnd (@var{a}, @var{b}, @var{sz})
 ## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of 
 ## random samples from the Beta distribution with parameters @var{a} and
 ## @var{b}.  Both @var{a} and @var{b} must be scalar or of size @var{r}
@@ -32,29 +32,29 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the Beta distribution
 
-function rnd = beta_rnd (a, b, r, c)
+function rnd = betarnd (a, b, r, c)
 
   if (nargin > 1)
     if (!isscalar(a) || !isscalar(b)) 
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
-	error ("beta_rnd: a and b must be of common size or scalar");
+	error ("betarnd: a and b must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("beta_rnd: r must be a positive integer");
+      error ("betarnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("beta_rnd: c must be a positive integer");
+      error ("betarnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (a) != 1)
 	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("beta_rnd: a and b must be scalar or of size [r,c]");
+      error ("betarnd: a and b must be scalar or of size [r,c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -62,24 +62,24 @@ function rnd = beta_rnd (a, b, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("beta_rnd: r must be a postive integer or vector");
+      error ("betarnd: r must be a postive integer or vector");
     endif
 
     if (any (size (a) != 1)
 	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("beta_rnd: a and b must be scalar or of size sz");
+      error ("betarnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("beta_rnd (a, b, r, c)");
+    usage ("betarnd (a, b, r, c)");
   endif
 
   if (isscalar(a) && isscalar(b))
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
       rnd = NaN * ones (sz);
     else
-      rnd = beta_inv (rand(sz), a, b);
+      rnd = betainv (rand(sz), a, b);
     endif
   else
     rnd = zeros (sz);
@@ -91,7 +91,7 @@ function rnd = beta_rnd (a, b, r, c)
 
     k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));
     if (any (k))
-      rnd(k) = beta_inv (rand (size (k)), a(k), b(k));
+      rnd(k) = betainv (rand (size (k)), a(k), b(k));
     endif
   endif
 

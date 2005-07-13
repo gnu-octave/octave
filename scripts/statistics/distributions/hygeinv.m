@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hypergeometric_inv (@var{x}, @var{m}, @var{t}, @var{n})
+## @deftypefn {Function File} {} hygeinv (@var{x}, @var{m}, @var{t}, @var{n})
 ## For each element of @var{x}, compute the quantile at @var{x} of the
 ## hypergeometric distribution with parameters @var{m}, @var{t}, and
 ## @var{n}.
@@ -30,21 +30,21 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the hypergeometric distribution
 
-function inv = hypergeometric_inv (x, m, t, n)
+function inv = hygeinv (x, m, t, n)
 
   if (nargin != 4)
-    usage ("hypergeometric_inv (x, m, t, n)");
+    usage ("hygeinv (x, m, t, n)");
   endif
 
   if (!isscalar (m) || !isscalar (t) || !isscalar (n))
-    error ("hypergeometrix_inv: m, t and n must all be positive integers");
+    error ("hygeinv: m, t and n must all be positive integers");
   endif
 
   if ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
       (t != round (t)) | (n != round (n)) | (m > t) | (n > t))
     inv = NaN * ones (size (x))
   else
-    inv = discrete_inv (x, 0 : n, hypergeometric_pdf (0 : n, m, t, n));
+    inv = discrete_inv (x, 0 : n, hygepdf (0 : n, m, t, n));
   endif
 
 endfunction

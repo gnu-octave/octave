@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normal_inv (@var{x}, @var{m}, @var{v})
+## @deftypefn {Function File} {} norminv (@var{x}, @var{m}, @var{v})
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the normal distribution with mean @var{m} and
 ## variance @var{v}.
@@ -29,10 +29,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the normal distribution
 
-function inv = normal_inv (x, m, v)
+function inv = norminv (x, m, v)
 
   if (nargin != 1 && nargin != 3)
-    usage ("normal_inv (x, m, v)");
+    usage ("norminv (x, m, v)");
   endif
 
   if (nargin == 1)
@@ -43,7 +43,7 @@ function inv = normal_inv (x, m, v)
   if (!isscalar (m) || !isscalar(v))
     [retval, x, m, v] = common_size (x, m, v);
     if (retval > 0)
-      error ("normal_inv: x, m and v must be of common size or scalars");
+      error ("norminv: x, m and v must be of common size or scalars");
     endif
   endif
 

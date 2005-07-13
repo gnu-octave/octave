@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} exponential_rnd (@var{lambda}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} exponential_rnd (@var{lambda}, @var{sz})
+## @deftypefn {Function File} {} exprnd (@var{lambda}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} exprnd (@var{lambda}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## exponential distribution with parameter @var{lambda}, which must be a
 ## scalar or of size @var{r} by @var{c}. Or if @var{sz} is a vector, 
@@ -32,20 +32,20 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the exponential distribution
 
-function rnd = exponential_rnd (l, r, c)
+function rnd = exprnd (l, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("exponential_rnd: r must be a positive integer");
+      error ("exprnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("exponential_rnd: c must be a positive integer");
+      error ("exprnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (l) != 1) && 
 	((length (size (nl)) != length (sz)) || any (size (l) != sz)))
-      error ("exponential_rnd: lambda must be scalar or of size [r, c]");
+      error ("exprnd: lambda must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -53,17 +53,17 @@ function rnd = exponential_rnd (l, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("exponential_rnd: r must be a postive integer or vector");
+      error ("exprnd: r must be a postive integer or vector");
     endif
 
     if (any (size (l) != 1) && 
 	((length (size (l)) != length (sz)) || any (size (l) != sz)))
-      error ("exponential_rnd: lambda must be scalar or of size sz");
+      error ("exprnd: lambda must be scalar or of size sz");
     endif
   elseif (nargin == 1)
     sz = size (l);
   else
-    usage ("exponential_rnd (lambda, r, c)");
+    usage ("exprnd (lambda, r, c)");
   endif
 
 

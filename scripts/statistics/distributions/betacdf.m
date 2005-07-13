@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} beta_cdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} betacdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, returns the CDF at @var{x} of the beta
 ## distribution with parameters @var{a} and @var{b}, i.e.,
 ## PROB (beta (@var{a}, @var{b}) <= @var{x}).
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the Beta distribution
 
-function cdf = beta_cdf (x, a, b)
+function cdf = betacdf (x, a, b)
 
   if (nargin != 3)
-    usage ("beta_cdf (a, b, x)");
+    usage ("betacdf (a, b, x)");
   endif
 
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("beta_cdf: x, a and b must be of common size or scalar");
+      error ("betacdf: x, a and b must be of common size or scalar");
     endif
   endif
 

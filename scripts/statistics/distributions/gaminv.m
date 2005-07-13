@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gamma_inv (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} gaminv (@var{x}, @var{a}, @var{b})
 ## For each component of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the Gamma distribution with parameters @var{a}
 ## and @var{b}. 
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the Gamma distribution
 
-function inv = gamma_inv (x, a, b)
+function inv = gaminv (x, a, b)
 
   if (nargin != 3)
-    usage ("gamma_inv (x, a, b)");
+    usage ("gaminv (x, a, b)");
   endif
 
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("gamma_inv: x, a and b must be of common size or scalars");
+      error ("gaminv: x, a and b must be of common size or scalars");
     endif
   endif
 
@@ -70,7 +70,7 @@ function inv = gamma_inv (x, a, b)
 
     y_old = y;
     for i = 1 : 100
-      h     = (gamma_cdf (y_old, a, b) - x) ./ gamma_pdf (y_old, a, b);
+      h     = (gamcdf (y_old, a, b) - x) ./ gampdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= eps);
       if (any (ind))

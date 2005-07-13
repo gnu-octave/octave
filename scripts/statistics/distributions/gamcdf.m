@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gamma_cdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} gamcdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the Gamma distribution with parameters
 ## @var{a} and @var{b}.
@@ -27,16 +27,16 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the Gamma distribution
 
-function cdf = gamma_cdf (x, a, b)
+function cdf = gamcdf (x, a, b)
 
   if (nargin != 3)
-    usage ("gamma_cdf (x, a, b)");
+    usage ("gamcdf (x, a, b)");
   endif
 
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("gamma_cdf: x, a and b must be of common size or scalars");
+      error ("gamcdf: x, a and b must be of common size or scalars");
     endif
   endif
 

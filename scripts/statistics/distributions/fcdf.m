@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} f_cdf (@var{x}, @var{m}, @var{n})
+## @deftypefn {Function File} {} fcdf (@var{x}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the CDF at @var{x} of the F
 ## distribution with @var{m} and @var{n} degrees of freedom, i.e.,
 ## PROB (F (@var{m}, @var{n}) <= @var{x}). 
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the F distribution
 
-function cdf = f_cdf (x, m, n)
+function cdf = fcdf (x, m, n)
 
   if (nargin != 3)
-    usage ("f_cdf (x, m, n)");
+    usage ("fcdf (x, m, n)");
   endif
 
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("f_cdf: x, m and n must be of common size or scalar");
+      error ("fcdf: x, m and n must be of common size or scalar");
     endif
   endif
 

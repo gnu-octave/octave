@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} geometric_pdf (@var{x}, @var{p})
+## @deftypefn {Function File} {} geopdf (@var{x}, @var{p})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the geometric distribution with parameter @var{p}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the geometric distribution
 
-function pdf = geometric_pdf (x, p)
+function pdf = geopdf (x, p)
 
   if (nargin != 2)
-    usage ("geometric_pdf (x, p)");
+    usage ("geopdf (x, p)");
   endif
 
   if (!isscalar (x) && !isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
-      error ("geometric_pdf: x and p must be of common size or scalar");
+      error ("geopdf: x and p must be of common size or scalar");
     endif
   endif
 

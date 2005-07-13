@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} beta_inv (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} betainv (@var{x}, @var{a}, @var{b})
 ## For each component of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the Beta distribution with parameters @var{a}
 ## and @var{b}.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the Beta distribution
 
-function inv = beta_inv (x, a, b)
+function inv = betainv (x, a, b)
 
   if (nargin != 3)
-    usage ("beta_inv (x, a, b)");
+    usage ("betainv (x, a, b)");
   endif
 
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("beta_inv: x, a and b must be of common size or scalars");
+      error ("betainv: x, a and b must be of common size or scalars");
     endif
   endif
   
@@ -74,7 +74,7 @@ function inv = beta_inv (x, a, b)
 
     y_old = y;
     for i = 1 : 10000
-      h     = (beta_cdf (y_old, a, b) - x) ./ beta_pdf (y_old, a, b);
+      h     = (betacdf (y_old, a, b) - x) ./ betapdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= eps);
       if (any (ind))

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normal_cdf (@var{x}, @var{m}, @var{v})
+## @deftypefn {Function File} {} normcdf (@var{x}, @var{m}, @var{v})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the normal distribution with mean
 ## @var{m} and variance @var{v}.
@@ -29,10 +29,10 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the normal distribution
 
-function cdf = normal_cdf (x, m, v)
+function cdf = normcdf (x, m, v)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("normal_cdf (x, m, v)");
+    usage ("normcdf (x, m, v)");
   endif
 
   if (nargin == 1)
@@ -43,7 +43,7 @@ function cdf = normal_cdf (x, m, v)
   if (!isscalar (m) || !isscalar(v))
     [retval, x, m, v] = common_size (x, m, v);
     if (retval > 0)
-      error ("normal_cdf: x, m and v must be of common size or scalar");
+      error ("normcdf: x, m and v must be of common size or scalar");
     endif
   endif
 

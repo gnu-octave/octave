@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_cdf (@var{x}, @var{alpha}, @var{sigma})
+## @deftypefn {Function File} {} weibcdf (@var{x}, @var{alpha}, @var{sigma})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## Weibull distribution with shape parameter @var{alpha} and scale
 ## parameter @var{sigma}, which is
@@ -34,16 +34,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the Weibull distribution
 
-function cdf = weibull_cdf (x, shape, scale)
+function cdf = weibcdf (x, shape, scale)
 
   if (nargin != 3)
-    usage ("weibull_cdf (x, alpha, sigma)");
+    usage ("weibcdf (x, alpha, sigma)");
   endif
 
   if (!isscalar (shape) || !isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
-      error ("weibull_cdf: x, alpha and sigma must be of common size or scalar");
+      error ("weibcdf: x, alpha and sigma must be of common size or scalar");
     endif
   endif
 

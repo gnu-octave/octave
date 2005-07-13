@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} f_rnd (@var{m}, @var{n}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} f_rnd (@var{m}, @var{n}, @var{sz})
+## @deftypefn {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the F
 ## distribution with @var{m} and @var{n} degrees of freedom.  Both
 ## @var{m} and @var{n} must be scalar or of size @var{r} by @var{c}.
@@ -33,13 +33,13 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the F distribution
 
-function rnd = f_rnd (m, n, r, c)
+function rnd = frnd (m, n, r, c)
 
   if (nargin > 1)
     if (!isscalar(m) || !isscalar(n)) 
       [retval, m, n] = common_size (m, n);
       if (retval > 0)
-	error ("f_rnd: m and n must be of common size or scalar");
+	error ("frnd: m and n must be of common size or scalar");
       endif
     endif
   endif
@@ -47,16 +47,16 @@ function rnd = f_rnd (m, n, r, c)
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("f_rnd: r must be a positive integer");
+      error ("frnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("f_rnd: c must be a positive integer");
+      error ("frnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (m) != 1) && 
 	((length (size (m)) != length (sz)) || any (size (m) != sz)))
-      error ("f_rnd: m and n must be scalar or of size [r,c]");
+      error ("frnd: m and n must be scalar or of size [r,c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -64,17 +64,17 @@ function rnd = f_rnd (m, n, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("f_rnd: r must be a postive integer or vector");
+      error ("frnd: r must be a postive integer or vector");
     endif
 
     if (any (size (m) != 1) && 
 	((length (size (m)) != length (sz)) || any (size (m) != sz)))
-      error ("f_rnd: m and n must be scalar or of size sz");
+      error ("frnd: m and n must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("f_rnd (m, n, r, c)");
+    usage ("frnd (m, n, r, c)");
   endif
 
 
@@ -96,7 +96,7 @@ function rnd = f_rnd (m, n, r, c)
     k = find ((m > 0) & (m < Inf) &
               (n > 0) & (n < Inf));
     if (any (k))
-      rnd(k) = f_inv (rand (size (k)), m(k), n(k));
+      rnd(k) = finv (rand (size (k)), m(k), n(k));
     endif
   endif
 

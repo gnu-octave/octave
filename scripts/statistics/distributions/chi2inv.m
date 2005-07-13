@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chisquare_inv (@var{x}, @var{n})
+## @deftypefn {Function File} {} chi2inv (@var{x}, @var{n})
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the chisquare distribution with @var{n} degrees of
 ## freedom.
@@ -27,19 +27,19 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: Quantile function of the chi-square distribution
 
-function inv = chisquare_inv (x, n)
+function inv = chi2inv (x, n)
 
   if (nargin != 2)
-    usage ("chisquare_inv (x, n)");
+    usage ("chi2inv (x, n)");
   endif
 
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("chisquare_inv: x and n must be of common size or scalar");
+      error ("chi2inv: x and n must be of common size or scalar");
     endif
   endif
 
-  inv = gamma_inv (x, n / 2, 1 / 2);
+  inv = gaminv (x, n / 2, 1 / 2);
 
 endfunction

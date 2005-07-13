@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} beta_pdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} betapdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, returns the PDF at @var{x} of the beta
 ## distribution with parameters @var{a} and @var{b}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the Beta distribution
 
-function pdf = beta_pdf (x, a, b)
+function pdf = betapdf (x, a, b)
 
   if (nargin != 3)
-    usage ("beta_pdf (a, b, x)");
+    usage ("betapdf (a, b, x)");
   endif
   
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("beta_pdf: x, a and b must be of common size or scalar");
+      error ("betapdf: x, a and b must be of common size or scalar");
     endif
   endif
 

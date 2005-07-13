@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_inv (@var{x}, @var{lambda}, @var{alpha})
+## @deftypefn {Function File} {} weibinv (@var{x}, @var{lambda}, @var{alpha})
 ## Compute the quantile (the inverse of the CDF) at @var{x} of the
 ## Weibull distribution with shape parameter @var{alpha} and scale
 ## parameter @var{sigma}.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the Weibull distribution
 
-function inv = weibull_inv (x, shape, scale)
+function inv = weibinv (x, shape, scale)
 
   if (nargin != 3)
-    usage ("weibull_inv (x, alpha, sigma)");
+    usage ("weibinv (x, alpha, sigma)");
   endif
 
   if (!isscalar (shape) || !isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
-      error ("weibull_inv: x, alpha and sigma must be of common size or scalar");
+      error ("weibinv: x, alpha and sigma must be of common size or scalar");
     endif
   endif
 

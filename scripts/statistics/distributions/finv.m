@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} f_inv (@var{x}, @var{m}, @var{n})
+## @deftypefn {Function File} {} finv (@var{x}, @var{m}, @var{n})
 ## For each component of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the F distribution with parameters @var{m} and
 ## @var{n}.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the F distribution
 
-function inv = f_inv (x, m, n)
+function inv = finv (x, m, n)
 
   if (nargin != 3)
-    usage ("f_inv (x, m, n)");
+    usage ("finv (x, m, n)");
   endif
 
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("f_inv: x, m and n must be of common size or scalar");
+      error ("finv: x, m and n must be of common size or scalar");
     endif
   endif
 
@@ -56,9 +56,9 @@ function inv = f_inv (x, m, n)
   k = find ((x > 0) & (x < 1) & (m > 0) & (n > 0));
   if (any (k))
     if (isscalar (m) && isscalar (n))
-      inv(k) = ((1 ./ beta_inv (1 - x(k), n / 2, m / 2) - 1) .* n ./ m);
+      inv(k) = ((1 ./ betainv (1 - x(k), n / 2, m / 2) - 1) .* n ./ m);
     else
-      inv(k) = ((1 ./ beta_inv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
+      inv(k) = ((1 ./ betainv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
 		.* n(k) ./ m(k));
     endif
   endif

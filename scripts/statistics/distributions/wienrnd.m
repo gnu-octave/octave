@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wiener_rnd (@var{t}, @var{d}, @var{n})
+## @deftypefn {Function File} {} wienrnd (@var{t}, @var{d}, @var{n})
 ## Return a simulated realization of the @var{d}-dimensional Wiener Process
 ## on the interval [0, @var{t}].  If @var{d} is omitted, @var{d} = 1 is
 ## used. The first column of the return matrix contains time, the
@@ -32,7 +32,7 @@
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Simulate a Wiener process
 
-function retval = wiener_rnd (t, d, n)
+function retval = wienrnd (t, d, n)
 
   if (nargin == 1)
     d = 1;
@@ -40,11 +40,11 @@ function retval = wiener_rnd (t, d, n)
   elseif (nargin == 2)
     n = 1000;
   elseif (nargin > 3)
-    usage ("wiener_rnd (t, d, n)");
+    usage ("wienrnd (t, d, n)");
   endif
 
   if (!isscalar (t) || !isscalar (d) || !isscalar (n))
-    error ("wiener_rnd: t, d and n must all be positive integers");
+    error ("wienrnd: t, d and n must all be positive integers");
   endif
 
   retval = randn (n * t, d);

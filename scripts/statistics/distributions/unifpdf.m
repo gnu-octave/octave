@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} uniform_pdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} unifpdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the PDF at @var{x} of the uniform
 ## distribution on [@var{a}, @var{b}].
 ##
@@ -28,10 +28,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the uniform distribution
 
-function pdf = uniform_pdf (x, a, b)
+function pdf = unifpdf (x, a, b)
 
   if (nargin != 1 && nargin != 3)
-    usage ("uniform_pdf (x, a, b)");
+    usage ("unifpdf (x, a, b)");
   endif
 
   if (nargin == 1)
@@ -42,7 +42,7 @@ function pdf = uniform_pdf (x, a, b)
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("uniform_pdf: x, a and b must be of common size or scalars");
+      error ("unifpdf: x, a and b must be of common size or scalars");
     endif
   endif
 

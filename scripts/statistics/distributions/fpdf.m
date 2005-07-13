@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} f_pdf (@var{x}, @var{m}, @var{n})
+## @deftypefn {Function File} {} fpdf (@var{x}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the F distribution with @var{m} and @var{n}
 ## degrees of freedom.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the F distribution
 
-function pdf = f_pdf (x, m, n)
+function pdf = fpdf (x, m, n)
 
   if (nargin != 3)
-    usage ("f_pdf (x, m, n)");
+    usage ("fpdf (x, m, n)");
   endif
 
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("f_pdf: x, m and n must be of common size or scalar");
+      error ("fpdf: x, m and n must be of common size or scalar");
     endif
   endif
 

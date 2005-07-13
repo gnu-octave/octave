@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lognormal_pdf (@var{x}, @var{a}, @var{v})
+## @deftypefn {Function File} {} lognpdf (@var{x}, @var{a}, @var{v})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the lognormal distribution with parameters
 ## @var{a} and @var{v}.  If a random variable follows this distribution,
@@ -31,10 +31,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the log normal distribution
 
-function pdf = lognormal_pdf (x, a, v)
+function pdf = lognpdf (x, a, v)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("lognormal_pdf (x, a, v)");
+    usage ("lognpdf (x, a, v)");
   endif
 
   if (nargin == 1)
@@ -50,7 +50,7 @@ function pdf = lognormal_pdf (x, a, v)
   if (!isscalar (a) || !isscalar (v))
     [retval, x, a, v] = common_size (x, a, v);
     if (retval > 0)
-      error ("lognormal_pdf: x, a and v must be of common size or scalars");
+      error ("lognpdf: x, a and v must be of common size or scalars");
     endif
   endif
 
@@ -64,9 +64,9 @@ function pdf = lognormal_pdf (x, a, v)
   k = find ((x > 0) & (x < Inf) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if (any (k))
     if (isscalar (a) && isscalar (v))
-      pdf(k) = normal_pdf (log (x(k)), log (a), v) ./ x(k);
+      pdf(k) = normpdf (log (x(k)), log (a), v) ./ x(k);
     else
-      pdf(k) = normal_pdf (log (x(k)), log (a(k)), v(k)) ./ x(k);
+      pdf(k) = normpdf (log (x(k)), log (a(k)), v(k)) ./ x(k);
   endif
   endif
 

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} t_cdf (@var{x}, @var{n})
+## @deftypefn {Function File} {} tcdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the CDF at @var{x} of the
 ## t (Student) distribution with @var{n} degrees of freedom, i.e.,
 ## PROB (t(@var{n}) <= @var{x}).
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the t distribution
 
-function cdf = t_cdf (x, n)
+function cdf = tcdf (x, n)
 
   if (nargin != 2)
-    usage ("t_cdf (x, n)");
+    usage ("tcdf (x, n)");
   endif
 
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("t_cdf: x and n must be of common size or scalar");
+      error ("tcdf: x and n must be of common size or scalar");
     endif
   endif
 

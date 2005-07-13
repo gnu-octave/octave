@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lognormal_inv (@var{x}, @var{a}, @var{v})
+## @deftypefn {Function File} {} logninv (@var{x}, @var{a}, @var{v})
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the lognormal distribution with parameters @var{a}
 ## and @var{v}.  If a random variable follows this distribution, its
@@ -31,10 +31,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the log normal distribution
 
-function inv = lognormal_inv (x, a, v)
+function inv = logninv (x, a, v)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("lognormal_inv (x, a, v)");
+    usage ("logninv (x, a, v)");
   endif
 
   if (nargin == 1)
@@ -50,7 +50,7 @@ function inv = lognormal_inv (x, a, v)
   if (!isscalar (a) || !isscalar (v))
     [retval, x, a, v] = common_size (x, a, v);
     if (retval > 0)
-      error ("lognormal_inv: x, a and v must be of common size or scalars");
+      error ("logninv: x, a and v must be of common size or scalars");
     endif
   endif
 

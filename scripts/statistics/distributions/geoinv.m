@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} geometric_inv (@var{x}, @var{p})
+## @deftypefn {Function File} {} geoinv (@var{x}, @var{p})
 ## For each element of @var{x}, compute the quantile at @var{x} of the
 ## geometric distribution with parameter @var{p}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the geometric distribution
 
-function inv = geometric_inv (x, p)
+function inv = geoinv (x, p)
 
   if (nargin != 2)
-    usage ("geometric_inv (x, p)");
+    usage ("geoinv (x, p)");
   endif
 
   if (!isscalar (x) && !isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
-      error ("geometric_inv: x and p must be of common size or scalar");
+      error ("geoinv: x and p must be of common size or scalar");
     endif
   endif
 

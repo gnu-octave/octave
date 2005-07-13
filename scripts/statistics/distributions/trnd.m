@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} t_rnd (@var{n}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} t_rnd (@var{n}, @var{sz})
+## @deftypefn {Function File} {} trnd (@var{n}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} trnd (@var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the t
 ## (Student) distribution with @var{n} degrees of freedom.  @var{n} must
 ## be a scalar or of size @var{r} by @var{c}. Or if @var{sz} is a
@@ -32,20 +32,20 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the t distribution
 
-function rnd = t_rnd (n, r, c)
+function rnd = trnd (n, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("t_rnd: r must be a positive integer");
+      error ("trnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("t_rnd: c must be a positive integer");
+      error ("trnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (n) != 1) && 
 	((length (size (n)) != length (sz)) || any (size (n) != sz)))
-      error ("t_rnd: n must be scalar or of size sz");
+      error ("trnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -53,17 +53,17 @@ function rnd = t_rnd (n, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("t_rnd: r must be a postive integer or vector");
+      error ("trnd: r must be a postive integer or vector");
     endif
 
     if (any (size (n) != 1) && 
 	((length (size (n)) != length (sz)) || any (size (n) != sz)))
-      error ("t_rnd: n must be scalar or of size sz");
+      error ("trnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 1)
     sz = size (n);
   else
-    usage ("t_rnd (n, r, c)");
+    usage ("trnd (n, r, c)");
   endif
 
   if (isscalar (n))

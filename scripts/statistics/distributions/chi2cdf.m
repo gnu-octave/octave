@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chisquare_cdf (@var{x}, @var{n})
+## @deftypefn {Function File} {} chi2cdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the chisquare distribution with @var{n}
 ## degrees of freedom.
@@ -27,19 +27,19 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the chi-square distribution
 
-function cdf = chisquare_cdf (x, n)
+function cdf = chi2cdf (x, n)
 
   if (nargin != 2)
-    usage ("chisquare_cdf (x, n)");
+    usage ("chi2cdf (x, n)");
   endif
 
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("chisquare_cdf: x and n must be of common size or scalar");
+      error ("chi2cdf: x and n must be of common size or scalar");
     endif
   endif
 
-  cdf = gamma_cdf (x, n / 2, 1 / 2);
+  cdf = gamcdf (x, n / 2, 1 / 2);
 
 endfunction

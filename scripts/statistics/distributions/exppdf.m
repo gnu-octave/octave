@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} exponential_pdf (@var{x}, @var{lambda})
+## @deftypefn {Function File} {} exppdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) of the exponential distribution with parameter @var{lambda}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the exponential distribution
 
-function pdf = exponential_pdf (x, l)
+function pdf = exppdf (x, l)
 
   if (nargin != 2)
-    usage ("exponential_pdf (x, lambda)");
+    usage ("exppdf (x, lambda)");
   endif
 
   if (!isscalar (x) && !isscalar(l))
     [retval, x, l] = common_size (x, l);
     if (retval > 0)
-      error ("exponential_pdf: x and lambda must be of common size or scalar");
+      error ("exppdf: x and lambda must be of common size or scalar");
     endif
   endif
 

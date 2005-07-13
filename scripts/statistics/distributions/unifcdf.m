@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} uniform_cdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {} unifcdf (@var{x}, @var{a}, @var{b})
 ## Return the CDF at @var{x} of the uniform distribution on [@var{a},
 ## @var{b}], i.e., PROB (uniform (@var{a}, @var{b}) <= x).
 ##
@@ -28,10 +28,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the uniform distribution
 
-function cdf = uniform_cdf (x, a, b)
+function cdf = unifcdf (x, a, b)
 
   if (nargin != 1 && nargin != 3)
-    usage ("uniform_cdf (x, a, b)");
+    usage ("unifcdf (x, a, b)");
   endif
 
   if (nargin == 1)
@@ -42,7 +42,7 @@ function cdf = uniform_cdf (x, a, b)
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("uniform_cdf: x, a and b must be of common size or scalar");
+      error ("unifcdf: x, a and b must be of common size or scalar");
     endif
   endif
 

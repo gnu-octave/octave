@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poisson_inv (@var{x}, @var{lambda})
+## @deftypefn {Function File} {} poissinv (@var{x}, @var{lambda})
 ## For each component of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the Poisson distribution with parameter
 ## @var{lambda}.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the Poisson distribution
 
-function inv = poisson_inv (x, l)
+function inv = poissinv (x, l)
 
   if (nargin != 2)
-    usage ("poisson_inv (x, lambda)");
+    usage ("poissinv (x, lambda)");
   endif
 
   if (!isscalar (l))
     [retval, x, l] = common_size (x, l);
     if (retval > 0)
-      error ("poisson_inv: x and lambda must be of common size or scalar");
+      error ("poissinv: x and lambda must be of common size or scalar");
     endif
   endif
 

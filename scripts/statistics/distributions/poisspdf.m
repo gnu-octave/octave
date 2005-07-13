@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poisson_pdf (@var{x}, @var{lambda})
+## @deftypefn {Function File} {} poisspdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the poisson distribution with parameter @var{lambda}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the Poisson distribution
 
-function pdf = poisson_pdf (x, l)
+function pdf = poisspdf (x, l)
 
   if (nargin != 2)
-    usage ("poisson_pdf (x, lambda)");
+    usage ("poisspdf (x, lambda)");
   endif
 
   if (!isscalar (l))
     [retval, x, l] = common_size (x, l);
     if (retval > 0)
-      error ("poisson_pdf: x and lambda must be of common size or scalar");
+      error ("poisspdf: x and lambda must be of common size or scalar");
     endif
   endif
 

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binomial_inv (@var{x}, @var{n}, @var{p})
+## @deftypefn {Function File} {} binoinv (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the quantile at @var{x} of the
 ## binomial distribution with parameters @var{n} and @var{p}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the binomial distribution
 
-function inv = binomial_inv (x, n, p)
+function inv = binoinv (x, n, p)
 
   if (nargin != 3)
-    usage ("binomial_inv (x, n, p)");
+    usage ("binoinv (x, n, p)");
   endif
 
   if (!isscalar (n) || !isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("binomial_inv: x, n and p must be of common size or scalars");
+      error ("binoinv: x, n and p must be of common size or scalars");
     endif
   endif
   
@@ -52,12 +52,12 @@ function inv = binomial_inv (x, n, p)
 	    & (p >= 0) & (p <= 1));
   if (any (k))
     if (isscalar (n) && isscalar (p))
-      cdf = binomial_pdf (0, n, p) * ones (size(k));
+      cdf = binopdf (0, n, p) * ones (size(k));
       while (any (inv(k) < n))
 	m = find (cdf < x(k));
 	if (any (m))
           inv(k(m)) = inv(k(m)) + 1;
-          cdf(m) = cdf(m) + binomial_pdf (inv(k(m)), n, p);
+          cdf(m) = cdf(m) + binopdf (inv(k(m)), n, p);
 	else
           break;
 	endif
@@ -68,7 +68,7 @@ function inv = binomial_inv (x, n, p)
 	m = find (cdf < x(k));
 	if (any (m))
           inv(k(m)) = inv(k(m)) + 1;
-          cdf(m) = cdf(m) + binomial_pdf (inv(k(m)), n(k(m)), p(k(m)));
+          cdf(m) = cdf(m) + binopdf (inv(k(m)), n(k(m)), p(k(m)));
 	else
           break;
 	endif

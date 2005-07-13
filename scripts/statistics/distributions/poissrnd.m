@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poisson_rnd (@var{lambda}, @var{r}, @var{c})
+## @deftypefn {Function File} {} poissrnd (@var{lambda}, @var{r}, @var{c})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## Poisson distribution with parameter @var{lambda}, which must be a 
 ## scalar or of size @var{r} by @var{c}.
@@ -30,20 +30,20 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the Poisson distribution
 
-function rnd = poisson_rnd (l, r, c)
+function rnd = poissrnd (l, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("poisson_rnd: r must be a positive integer");
+      error ("poissrnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("poisson_rnd: c must be a positive integer");
+      error ("poissrnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (l) != 1) && 
 	((length (size (l)) != length (sz)) || any (size (l) != sz)))
-      error ("poisson_rnd: lambda must be scalar or of size [r, c]");
+      error ("poissrnd: lambda must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -51,17 +51,17 @@ function rnd = poisson_rnd (l, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("poisson_rnd: r must be a postive integer or vector");
+      error ("poissrnd: r must be a postive integer or vector");
     endif
 
     if (any (size (l) != 1) && 
 	((length (size (l)) != length (sz)) || any (size (l) != sz)))
-      error ("poisson_rnd: lambda must be scalar or of size sz");
+      error ("poissrnd: lambda must be scalar or of size sz");
     endif
   elseif (nargin == 1)
     sz = size (l);
   else
-    usage ("poisson_rnd (lambda, r, c)");
+    usage ("poissrnd (lambda, r, c)");
   endif
 
   if (isscalar (l))

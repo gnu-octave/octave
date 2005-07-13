@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} t_inv (@var{x}, @var{n})
+## @deftypefn {Function File} {} tinv (@var{x}, @var{n})
 ## For each component of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the t (Student) distribution with parameter
 ## @var{n}.
@@ -31,16 +31,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Quantile function of the t distribution
 
-function inv = t_inv (x, n)
+function inv = tinv (x, n)
 
   if (nargin != 2)
-    usage ("t_inv (x, n)");
+    usage ("tinv (x, n)");
   endif
 
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("t_inv: x and n must be of common size or scalar");
+      error ("tinv: x and n must be of common size or scalar");
     endif
   endif
 

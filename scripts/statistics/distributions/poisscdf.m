@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poisson_cdf (@var{x}, @var{lambda})
+## @deftypefn {Function File} {} poisscdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the Poisson distribution with parameter
 ## lambda.
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the Poisson distribution
 
-function cdf = poisson_cdf (x, l)
+function cdf = poisscdf (x, l)
 
   if (nargin != 2)
-    usage ("poisson_cdf (x, lambda)");
+    usage ("poisscdf (x, lambda)");
   endif
 
   if (!isscalar (l))
     [retval, x, l] = common_size (x, l);
     if (retval > 0)
-      error ("poisson_cdf: x and lambda must be of common size or scalar");
+      error ("poisscdf: x and lambda must be of common size or scalar");
     endif
   endif
 

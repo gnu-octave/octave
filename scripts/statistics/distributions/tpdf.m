@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} t_pdf (@var{x}, @var{n})
+## @deftypefn {Function File} {} tpdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the @var{t} (Student) distribution with @var{n}
 ## degrees of freedom. 
@@ -27,16 +27,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the t distribution
 
-function pdf = t_pdf (x, n)
+function pdf = tpdf (x, n)
 
   if (nargin != 2)
-    usage ("t_pdf (x, n)");
+    usage ("tpdf (x, n)");
   endif
 
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("t_pdf: x and n must be of common size or scalar");
+      error ("tpdf: x and n must be of common size or scalar");
     endif
   endif
 

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lognormal_cdf (@var{x}, @var{a}, @var{v})
+## @deftypefn {Function File} {} logncdf (@var{x}, @var{a}, @var{v})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the lognormal distribution with
 ## parameters @var{a} and @var{v}.  If a random variable follows this
@@ -31,10 +31,10 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the log normal distribution
 
-function cdf = lognormal_cdf (x, a, v)
+function cdf = logncdf (x, a, v)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("lognormal_cdf (x, a, v)");
+    usage ("logncdf (x, a, v)");
   endif
 
   if (nargin == 1)
@@ -50,7 +50,7 @@ function cdf = lognormal_cdf (x, a, v)
   if (!isscalar (a) || !isscalar (v))
     [retval, x, a, v] = common_size (x, a, v);
     if (retval > 0)
-      error ("lognormal_cdf: x, a and v must be of common size or scalars");
+      error ("logncdf: x, a and v must be of common size or scalars");
     endif
   endif
 

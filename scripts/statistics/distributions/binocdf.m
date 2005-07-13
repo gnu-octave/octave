@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binomial_cdf (@var{x}, @var{n}, @var{p})
+## @deftypefn {Function File} {} binocdf (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the CDF at @var{x} of the
 ## binomial distribution with parameters @var{n} and @var{p}.
 ## @end deftypefn
@@ -26,16 +26,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the binomial distribution
 
-function cdf = binomial_cdf (x, n, p)
+function cdf = binocdf (x, n, p)
 
   if (nargin != 3)
-    usage ("binomial_cdf (x, n, p)");
+    usage ("binocdf (x, n, p)");
   endif
 
   if (!isscalar (n) || !isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("binomial_cdf: x, n and p must be of common size or scalar");
+      error ("binocdf: x, n and p must be of common size or scalar");
     endif
   endif
 

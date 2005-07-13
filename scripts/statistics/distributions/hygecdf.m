@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hypergeometric_cdf (@var{x}, @var{m}, @var{t}, @var{n})
+## @deftypefn {Function File} {} hygecdf (@var{x}, @var{m}, @var{t}, @var{n})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## hypergeometric distribution with parameters @var{m}, @var{t}, and
 ## @var{n}.  This is the probability of obtaining not more than @var{x}
@@ -33,21 +33,21 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the hypergeometric distribution
 
-function cdf = hypergeometric_cdf (x, m, t, n)
+function cdf = hygecdf (x, m, t, n)
 
   if (nargin != 4)
-    usage ("hypergeometric_cdf (x, m, t, n)");
+    usage ("hygecdf (x, m, t, n)");
   endif
 
   if (!isscalar (m) || !isscalar (t) || !isscalar (n))
-    error ("hypergeometric_cdf: m, t and n must all be positive integers");
+    error ("hygecdf: m, t and n must all be positive integers");
   endif
 
   if ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
       (t != round (t)) | (n != round (n)) | (m > t) | (n > t))
     cdf = NaN * ones (size (x))
   else
-    cdf = discrete_cdf (x, 0 : n, hypergeometric_pdf (0 : n, m, t, n));
+    cdf = discrete_cdf (x, 0 : n, hygepdf (0 : n, m, t, n));
   endif
 
 endfunction

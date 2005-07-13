@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lognormal_rnd (@var{a}, @var{v}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} lognormal_rnd (@var{a}, @var{v}, @var{sz})
+## @deftypefn {Function File} {} lognrnd (@var{a}, @var{v}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} lognrnd (@var{a}, @var{v}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## lognormal distribution with parameters @var{a} and @var{v}. Both
 ## @var{a} and @var{v} must be scalar or of size @var{r} by @var{c}.
@@ -32,29 +32,29 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the log normal distribution
 
-function rnd = lognormal_rnd (a, v, r, c)
+function rnd = lognrnd (a, v, r, c)
 
   if (nargin > 1)
     if (!isscalar(a) || !isscalar(v)) 
       [retval, a, v] = common_size (a, v);
       if (retval > 0)
-	error ("lognormal_rnd: a and v must be of common size or scalar");
+	error ("lognrnd: a and v must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("lognormal_rnd: r must be a positive integer");
+      error ("lognrnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("lognormal_rnd: c must be a positive integer");
+      error ("lognrnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (a) != 1) && 
 	((length (size (a)) != length (sz)) || any (size (a) != sz)))
-      error ("lognormal_rnd: a and b must be scalar or of size [r, c]");
+      error ("lognrnd: a and b must be scalar or of size [r, c]");
     endif
 
   elseif (nargin == 3)
@@ -63,17 +63,17 @@ function rnd = lognormal_rnd (a, v, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("lognormal_rnd: r must be a postive integer or vector");
+      error ("lognrnd: r must be a postive integer or vector");
     endif
 
     if (any (size (a) != 1) && 
 	((length (size (a)) != length (sz)) || any (size (a) != sz)))
-      error ("lognormal_rnd: a and b must be scalar or of size sz");
+      error ("lognrnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("lognormal_rnd (a, v, r, c)");
+    usage ("lognrnd (a, v, r, c)");
   endif
 
   if (isscalar (a) && isscalar (v))

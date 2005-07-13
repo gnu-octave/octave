@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} exponential_cdf (@var{x}, @var{lambda})
+## @deftypefn {Function File} {} expcdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the exponential distribution with
 ## parameter @var{lambda}.
@@ -29,16 +29,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: CDF of the exponential distribution
 
-function cdf = exponential_cdf (x, l)
+function cdf = expcdf (x, l)
 
   if (nargin != 2)
-    usage ("exponential_cdf (x, lambda)");
+    usage ("expcdf (x, lambda)");
   endif
 
   if (!isscalar (x) && !isscalar(l))
     [retval, x, l] = common_size (x, l);
     if (retval > 0)
-      error ("exponential_cdf: x and lambda must be of common size or scalar");
+      error ("expcdf: x and lambda must be of common size or scalar");
     endif
   endif
 

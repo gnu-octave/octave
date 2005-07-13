@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gamma_rnd (@var{a}, @var{b}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} gamma_rnd (@var{a}, @var{b}, @var{sz})
+## @deftypefn {Function File} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{sz})
 ## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
 ## random samples from the Gamma distribution with parameters @var{a}
 ## and @var{b}.  Both @var{a} and @var{b} must be scalar or of size 
@@ -32,29 +32,29 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the Gamma distribution
 
-function rnd = gamma_rnd (a, b, r, c)
+function rnd = gamrnd (a, b, r, c)
 
   if (nargin > 1)
     if (!isscalar(a) || !isscalar(b)) 
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
-	error ("gamma_rnd: a and b must be of common size or scalar");
+	error ("gamrnd: a and b must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("gamma_rnd: r must be a positive integer");
+      error ("gamrnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("gamma_rnd: c must be a positive integer");
+      error ("gamrnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (a) != 1)
 	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("gamma_rnd: a and b must be scalar or of size [r, c]");
+      error ("gamrnd: a and b must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -62,17 +62,17 @@ function rnd = gamma_rnd (a, b, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("uniform_rnd: r must be a postive integer or vector");
+      error ("gamrnd: r must be a postive integer or vector");
     endif
 
     if (any (size (a) != 1)
 	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("gamma_rnd: a and b must be scalar or of size sz");
+      error ("gamrnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("gamma_rnd (a, b, r, c)");
+    usage ("gamrnd (a, b, r, c)");
   endif
 
   rnd = zeros (sz);
@@ -81,7 +81,7 @@ function rnd = gamma_rnd (a, b, r, c)
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
       rnd = NaN * ones (sz);
     else
-      rnd =  gamma_inv (rand (sz), a, b);
+      rnd =  gaminv (rand (sz), a, b);
     endif
   else 
     k = find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf));
@@ -90,7 +90,7 @@ function rnd = gamma_rnd (a, b, r, c)
     endif
     k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));
     if (any (k))
-      rnd(k) = gamma_inv (rand (size (k)), a(k), b(k));
+      rnd(k) = gaminv (rand (size (k)), a(k), b(k));
     endif
   endif
 

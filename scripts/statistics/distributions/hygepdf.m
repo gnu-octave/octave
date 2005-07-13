@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hypergeometric_pdf (@var{x}, @var{m}, @var{t}, @var{n})
+## @deftypefn {Function File} {} hygepdf (@var{x}, @var{m}, @var{t}, @var{n})
 ## Compute the probability density function (PDF) at @var{x} of the
 ## hypergeometric distribution with parameters @var{m}, @var{t}, and
 ## @var{n}. This is the probability of obtaining @var{x} marked items
@@ -31,16 +31,16 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: PDF of the hypergeometric distribution
 
-function pdf = hypergeometric_pdf (x, m, t, n)
+function pdf = hygepdf (x, m, t, n)
 
   if (nargin != 4)
-    usage ("hypergeometric_pdf (x, m, t, n)");
+    usage ("hygepdf (x, m, t, n)");
   endif
 
   if (!isscalar (m) || !isscalar (t) || !isscalar (n))
     [retval, x, m, t, n] = common_size (x, m, t, n);
     if (retval > 0)
-      error ("hypergeometric_pdf: x, m, t, and n must be of common size or scalar");
+      error ("hygepdf: x, m, t, and n must be of common size or scalar");
     endif
   endif
 

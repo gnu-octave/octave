@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} uniform_rnd (@var{a}, @var{b}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} uniform_rnd (@var{a}, @var{b}, @var{sz})
+## @deftypefn {Function File} {} unifrnd (@var{a}, @var{b}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{sz})
 ## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
 ## random samples from the uniform distribution on [@var{a}, @var{b}]. 
 ## Both @var{a} and @var{b} must be scalar or of size @var{r} by @var{c}.
@@ -31,29 +31,29 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Random deviates from the uniform distribution
 
-function rnd = uniform_rnd (a, b, r, c)
+function rnd = unifrnd (a, b, r, c)
 
   if (nargin > 1)
     if (!isscalar(a) || !isscalar(b)) 
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
-	error ("uniform_rnd: a and b must be of common size or scalar");
+	error ("unifrnd: a and b must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("uniform_rnd: r must be a positive integer");
+      error ("unifrnd: r must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("uniform_rnd: c must be a positive integer");
+      error ("unifrnd: c must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (a) != 1)
 	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("uniform_rnd: a and b must be scalar or of size [r, c]");
+      error ("unifrnd: a and b must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -61,17 +61,17 @@ function rnd = uniform_rnd (a, b, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("uniform_rnd: r must be a postive integer or vector");
+      error ("unifrnd: r must be a postive integer or vector");
     endif
 
     if (any (size (a) != 1)
 	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("uniform_rnd: a and b must be scalar or of size sz");
+      error ("unifrnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("uniform_rnd (a, b, r, c)");
+    usage ("unifrnd (a, b, r, c)");
   endif
 
   if (isscalar(a) && isscalar(b))

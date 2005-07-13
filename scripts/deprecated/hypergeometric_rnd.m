@@ -33,9 +33,15 @@
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
-## function rnd = hypergeometric_rnd (N, m, t, n)
-function rnd = hypergeometric_rnd (varargin)
+function rnd = hypergeometric_rnd (N, m, t, n)
 
-  rnd = hygernd (varargin{:});
+  switch (nargin)
+    case 3
+      rnd = hygernd (m, t, N);
+    case 4
+      rnd = hygernd (m, t, N, n);
+    otherwise
+      usage ("rnd = hypergeometric_rnd (N, m, t, n)");
+  endswitch
 
 endfunction

@@ -1,3 +1,95 @@
+2005-07-13  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/hypergeometric_rnd.m: Preserve compatibility with old
+	versions of Octave.
+
+2005-07-13  Ben Barrowes  <barrowes@alum.mit.edu>
+
+	* statistics/distributions/betacdf.m: Rename from beta_cdf.m.
+	* statistics/distributions/betainv.m: Rename from beta_inv.m.
+	* statistics/distributions/betapdf.m: Rename from beta_pdf.m.
+	* statistics/distributions/betarnd.m: Rename from beta_rnd.m.
+	* statistics/distributions/binocdf.m: Rename from binomial_cdf.m.
+	* statistics/distributions/binoinv.m: Rename from binomial_inv.m.
+	* statistics/distributions/binopdf.m: Rename from binomial_pdf.m.
+	* statistics/distributions/binornd.m: Rename from binomial_rnd.m.
+	* statistics/distributions/chi2cdf.m: Rename from chisquare_cdf.m.
+	* statistics/distributions/chi2inv.m: Rename from chisquare_inv.m.
+	* statistics/distributions/chi2pdf.m: Rename from chisquare_pdf.m.
+	* statistics/distributions/chi2rnd.m: Rename from chisquare_rnd.m.
+	* statistics/distributions/expcdf.m: Rename from exponential_cdf.m.
+	* statistics/distributions/expinv.m: Rename from exponential_inv.m.
+	* statistics/distributions/exppdf.m: Rename from exponential_pdf.m.
+	* statistics/distributions/exprnd.m: Rename from exponential_rnd.m.
+	* statistics/distributions/fcdf.m: Rename from f_cdf.m.
+	* statistics/distributions/finv.m: Rename from f_inv.m.
+	* statistics/distributions/fpdf.m: Rename from f_pdf.m.
+	* statistics/distributions/frnd.m: Rename from f_rnd.m.
+	* statistics/distributions/gamcdf.m: Rename from gamma_cdf.m.
+	* statistics/distributions/gaminv.m: Rename from gamma_inv.m.
+	* statistics/distributions/gampdf.m: Rename from gamma_pdf.m.
+	* statistics/distributions/gamrnd.m: Rename from gamma_rnd.m.
+	* statistics/distributions/geocdf.m: Rename from geometric_cdf.m.
+	* statistics/distributions/geoinv.m: Rename from geometric_inv.m.
+	* statistics/distributions/geopdf.m: Rename from geometric_pdf.m.
+	* statistics/distributions/geornd.m: Rename from geometric_rnd.m.
+	* statistics/distributions/hygecdf.m: Rename from hypergeometric_cdf.m.
+	* statistics/distributions/hygeinv.m: Rename from hypergeometric_inv.m.
+	* statistics/distributions/hygepdf.m: Rename from hypergeometric_pdf.m.
+	* statistics/distributions/hygernd.m: Rename from hypergeometric_rnd.m.
+	* statistics/distributions/logncdf.m: Rename from lognormal_cdf.m.
+	* statistics/distributions/logninv.m: Rename from lognormal_inv.m.
+	* statistics/distributions/lognpdf.m: Rename from lognormal_pdf.m.
+	* statistics/distributions/lognrnd.m: Rename from lognormal_rnd.m.
+	* statistics/distributions/normcdf.m: Rename from normal_cdf.m.
+	* statistics/distributions/norminv.m: Rename from normal_inv.m.
+	* statistics/distributions/normpdf.m: Rename from normal_pdf.m.
+	* statistics/distributions/normrnd.m: Rename from normal_rnd.m.
+	* statistics/distributions/poisscdf.m: Rename from poisson_cdf.m.
+	* statistics/distributions/poissinv.m: Rename from poisson_inv.m.
+	* statistics/distributions/poisspdf.m: Rename from poisson_pdf.m.
+	* statistics/distributions/poissrnd.m: Rename from poisson_rnd.m.
+	* statistics/distributions/tcdf.m: Rename from t_cdf.m.
+	* statistics/distributions/tinv.m: Rename from t_inv.m.
+	* statistics/distributions/tpdf.m: Rename from t_pdf.m.
+	* statistics/distributions/trnd.m: Rename from t_rnd.m.
+	* statistics/distributions/unifcdf.m: Rename from uniform_cdf.m.
+	* statistics/distributions/unifinv.m: Rename from uniform_inv.m.
+	* statistics/distributions/unifpdf.m: Rename from uniform_pdf.m.
+	* statistics/distributions/unifrnd.m: Rename from uniform_rnd.m.
+	* statistics/distributions/weibcdf.m: Rename from weibull_cdf.m.
+	* statistics/distributions/weibinv.m: Rename from weibull_inv.m.
+	* statistics/distributions/weibpdf.m: Rename from weibull_pdf.m.
+	* statistics/distributions/wienrnd.m: Rename from wiener_rnd.m.
+
+	* deprecated/beta_cdf.m, deprecated/beta_inv.m,
+	deprecated/beta_pdf.m, deprecated/beta_rnd.m,
+	deprecated/binomial_cdf.m, deprecated/binomial_inv.m,
+	deprecated/binomial_pdf.m, deprecated/binomial_rnd.m,
+	deprecated/chisquare_cdf.m, deprecated/chisquare_inv.m,
+	deprecated/chisquare_pdf.m, deprecated/chisquare_rnd.m,
+	deprecated/exponential_cdf.m, deprecated/exponential_inv.m,
+	deprecated/exponential_pdf.m, deprecated/exponential_rnd.m,
+	deprecated/f_cdf.m, deprecated/f_inv.m, deprecated/f_pdf.m,
+	deprecated/f_rnd.m, deprecated/gamma_cdf.m,
+	deprecated/gamma_inv.m, deprecated/gamma_pdf.m,
+	deprecated/gamma_rnd.m, deprecated/geometric_cdf.m,
+	deprecated/geometric_inv.m, deprecated/geometric_pdf.m,
+	deprecated/geometric_rnd.m, deprecated/hypergeometric_cdf.m,
+	deprecated/hypergeometric_inv.m, deprecated/hypergeometric_pdf.m,
+	deprecated/hypergeometric_rnd.m, deprecated/lognormal_cdf.m,
+	deprecated/lognormal_inv.m, deprecated/lognormal_pdf.m,
+	deprecated/lognormal_rnd.m, deprecated/normal_cdf.m,
+	deprecated/normal_inv.m, deprecated/normal_pdf.m,
+	deprecated/normal_rnd.m, deprecated/poisson_cdf.m,
+	deprecated/poisson_inv.m, deprecated/poisson_pdf.m,
+	deprecated/poisson_rnd.m, deprecated/t_cdf.m, deprecated/t_inv.m,
+	deprecated/t_pdf.m, deprecated/t_rnd.m, deprecated/uniform_cdf.m,
+	deprecated/uniform_inv.m, deprecated/uniform_pdf.m,
+	deprecated/uniform_rnd.m, deprecated/weibull_cdf.m,
+	deprecated/weibull_inv.m, deprecated/weibull_pdf.m,
+	deprecated/wiener_rnd.m: New files.
+
 2005-07-08  John W. Eaton  <jwe@octave.org>
 
 	* statistics/distributions/weibrnd.m: Rename from weibull_rnd.m.

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.479 $)
+AC_REVISION($Revision: 1.480 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -850,7 +850,7 @@ case "$canonical_host_type" in
     SHLEXT=dll
     SHLLIB=dll.a
     SHLBIN=dll
-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import"
+    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
     SHLLINKEXT=.dll
     SONAME_FLAGS='-Wl,--out-implib=$@.a'
     library_path_var=PATH

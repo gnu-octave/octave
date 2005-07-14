@@ -1,3 +1,8 @@
+2005-07-14  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (SH_LDFLAGS): Add -Wl,--enable-auto-image-base for
+	Cygwin and MinGW.
+
 2005-06-14  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AH_BOTTOM): Also define GCC_ATTR_DEPRECATED.

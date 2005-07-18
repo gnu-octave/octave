@@ -1,3 +1,9 @@
+2005-07-18  John W. Eaton  <jwe@octave.org>
+
+	* strfns.cc (Fstrcmp): New function from Soren Hauberg
+	<soren@hauberg.org> and Tom Holroyd <tomh@kurage.nimh.nih.gov>.
+	Adapt to Octave conventions.
+
 2005-07-11  David Bateman  <dbateman@free.fr>
 
 	* ov-fc-inline.cc (Fvectorize): Allow string arguments

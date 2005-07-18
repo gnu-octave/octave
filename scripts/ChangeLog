@@ -1,3 +1,7 @@
+2005-07-18  John W. Eaton  <jwe@octave.org>
+
+	* strings/strcmp.m: Delete.
+
 2005-07-13  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/hypergeometric_rnd.m: Preserve compatibility with old

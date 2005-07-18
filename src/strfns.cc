@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "dMatrix.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -153,179 +154,211 @@ function returns 1 if the strings are equal, and 0 otherwise.  This is\n\
 just the opposite of the corresponding C library function.\n\
 @end deftypefn")
 {
-  if (args.length () != 2)
+  octave_value retval;
+
+  if (args.length () == 2)
     {
-      usage ("strcmp (S, T)");
-      return octave_value();
-    }
+      bool s1_string = args(0).is_string ();
+      bool s1_cell = args(0).is_cell ();
+      bool s2_string = args(1).is_string ();
+      bool s2_cell = args(1).is_cell ();
 
-  octave_value retval = false;
-
-  bool s1_string = args(0).is_string ();
-  bool s1_cell = args(0).is_cell ();
-  bool s2_string = args(1).is_string ();
-  bool s2_cell = args(1).is_cell ();
-
-  if (s1_string && s2_string) // must match exactly in all dimensions
-    {
-      const dim_vector dv1 = args(0).dims ();
-      const dim_vector dv2 = args(1).dims ();
-
-      if (dv1.length () == dv2.length ())
+      if (s1_string && s2_string)
 	{
-	  for (int i = 0; i < dv1.length (); i++)
-	    if (dv1(i) != dv2(i))
-	      return retval;
+	  // Must match exactly in all dimensions.
 
-	  if (dv1(0) == 0)
-	    retval = true;
+	  const dim_vector dv1 = args(0).dims ();
+	  const dim_vector dv2 = args(1).dims ();
+
+	  if (dv1.length () == dv2.length ())
+	    {
+	      for (int i = 0; i < dv1.length (); i++)
+		{
+		  if (dv1(i) != dv2(i))
+		    {
+		      retval = false;
+		      return retval;
+		    }
+		}
+
+	      if (dv1(0) == 0)
+		retval = true;
+	      else
+		{
+		  charNDArray s1 = args(0).char_array_value ();
+		  charNDArray s2 = args(1).char_array_value ();
+
+		  for (int i = 0; i < dv1.numel (); i++)
+		    {
+		      if (s1(i) != s2(i))
+			{
+			  retval = false;
+			  return retval;
+			}
+		    }
+
+		  retval = true;
+		}
+	    }
+	}
+      else if ((s1_string && s2_cell) || (s1_cell && s2_string))
+	{
+	  string_vector str;
+	  Cell cell;
+	  int r;
+
+	  if (s1_string)
+	    {
+	      str = args(0).all_strings ();
+	      r = args(0).rows ();
+	      cell = args(1).cell_value ();
+	    }
 	  else
 	    {
-	      charNDArray s1 = args(0).char_array_value ();
-	      charNDArray s2 = args(1).char_array_value ();
-
-	      for (int i = 0; i < dv1.numel (); i++)
-		if (s1(i) != s2(i))
-		  return retval;
-
-	      retval = true;
+	      str = args(1).all_strings ();
+	      r = args(1).rows ();
+	      cell = args(0).cell_value ();
 	    }
-	}
-    }
-  else if ((s1_string && s2_cell) || (s1_cell && s2_string))
-    {
-      string_vector str;
-      Cell cell;
-      int r;
 
-      if (s1_string)
-	{
-	  str = args(0).all_strings ();
-	  r = args(0).rows ();
-	  cell = args(1).cell_value ();
-	}
-      else
-	{
-	  str = args(1).all_strings ();
-	  r = args(1).rows ();
-	  cell = args(0).cell_value ();
-	}
-
-      if (r == 1) // broadcast the string
-	{
-	  boolNDArray output (cell.dimensions);
-
-	  for (int i = 0; i < cell.length (); i++)
-	    if (cell(i).is_string ())
-	      output(i) = (cell(i).string_value () == str[0]);
-	    else
-	      output(i) = false;
-
-	  retval = octave_value (output);
-	}
-      else if (r > 1)
-	{
-	  if (cell.length () == 1) // broadcast the cell
+	  if (r == 1)
 	    {
-	      const dim_vector& dv = dim_vector (r, 1);
-	      boolNDArray output (dv);
+	      // Broadcast the string.
 
-	      if (cell(0).is_string ())
-		{
-		  const string str2 = cell(0).string_value ();
-
-		  for (int i = 0; i < r; i++)
-		    output(i) = (str[i] == str2);
-		}
-	      else
-		{
-		  for (int i = 0; i < r; i++)
-		    output(i) = false;
-		}
-
-	      retval = octave_value (output);
-	    }
-	  else // must match in all dimensions
-	    {
 	      boolNDArray output (cell.dimensions);
 
-	      if (cell.length () == r)
-		{
-		  for (int i = 0; i < r; i++)
-		    if (cell(i).is_string ())
-		      output(i) = (str[i] == cell(i).string_value ());
-		    else
-		      output(i) = false;
-		  retval = octave_value (output);
-		}
+	      for (int i = 0; i < cell.length (); i++)
+		if (cell(i).is_string ())
+		  output(i) = (cell(i).string_value () == str[0]);
+		else
+		  output(i) = false;
+
+	      retval = output;
 	    }
-	}
-    }
-  else if (s1_cell && s2_cell)
-    {
-      Cell cell1;
-      Cell cell2;
-
-      int r1 = args(0).numel ();
-      int r2;
-
-      if (r1 == 1) // make the singleton cell2
-	{
-	  cell1 = args(1).cell_value ();
-	  cell2 = args(0).cell_value ();
-	  r1 = cell1.length ();
-	  r2 = 1;
-	}
-      else
-	{
-	  cell1 = args(0).cell_value ();
-	  cell2 = args(1).cell_value ();
-	  r2 = cell2.length ();
-	}
-
-      const dim_vector size1 = cell1.dimensions;
-      const dim_vector size2 = cell2.dimensions;
-
-      boolNDArray output (size1);
-      
-      if (r2 == 1) // broadcast cell2
-	if (! cell2(0).is_string ())
-	  for (int i = 0; i < r1; i++)
-	    output(i) = false;
-	else
-	  {
-	    const string str2 = cell2(0).string_value ();
-
-	    for (int i = 0; i < r1; i++)
-	      if (cell1(i).is_string ())
+	  else if (r > 1)
+	    {
+	      if (cell.length () == 1)
 		{
-		  const string str1 = cell1(i).string_value ();
-		  output(i) = (str1 == str2);
+		  // Broadcast the cell.
+
+		  const dim_vector dv (r, 1);
+		  boolNDArray output (dv);
+
+		  if (cell(0).is_string ())
+		    {
+		      const std::string str2 = cell(0).string_value ();
+
+		      for (int i = 0; i < r; i++)
+			output(i) = (str[i] == str2);
+		    }
+		  else
+		    {
+		      for (int i = 0; i < r; i++)
+			output(i) = false;
+		    }
+
+		  retval = output;
 		}
 	      else
-		output(i) = false;
-	  }
-      else
-	{
-	  if (size1 != size2)
-	    {
-	      error ("strcmp: nonconformant cell arrays");
-	      return octave_value ();
-	    }
-      
-	  for (int i = 0; i < r1; i++)
-	    if (cell1(i).is_string () && cell2(i).is_string ())
-	      {
-		const string str1 = cell1(i).string_value ();
-		const string str2 = cell2(i).string_value ();
-		output(i) = (str1 == str2);
-	      }
-	    else
-	      output(i) = false;
-	}
+		{
+		  // Must match in all dimensions.
 
-      retval = octave_value (output);
+		  boolNDArray output (cell.dimensions);
+
+		  if (cell.length () == r)
+		    {
+		      for (int i = 0; i < r; i++)
+			if (cell(i).is_string ())
+			  output(i) = (str[i] == cell(i).string_value ());
+			else
+			  output(i) = false;
+
+		      retval = output;
+		    }
+		  else
+		    retval = false;
+		}
+	    }
+	}
+      else if (s1_cell && s2_cell)
+	{
+	  Cell cell1;
+	  Cell cell2;
+
+	  int r1 = args(0).numel ();
+	  int r2;
+
+	  if (r1 == 1)
+	    {
+	      // Make the singleton cell2.
+
+	      cell1 = args(1).cell_value ();
+	      cell2 = args(0).cell_value ();
+	      r1 = cell1.length ();
+	      r2 = 1;
+	    }
+	  else
+	    {
+	      cell1 = args(0).cell_value ();
+	      cell2 = args(1).cell_value ();
+	      r2 = cell2.length ();
+	    }
+
+	  const dim_vector size1 = cell1.dimensions;
+	  const dim_vector size2 = cell2.dimensions;
+
+	  boolNDArray output (size1);
+
+	  if (r2 == 1)
+	    {
+	      // Broadcast cell2.
+
+	      if (! cell2(0).is_string ())
+		{
+		  for (int i = 0; i < r1; i++)
+		    output(i) = false;
+		}
+	      else
+		{
+		  const std::string str2 = cell2(0).string_value ();
+
+		  for (int i = 0; i < r1; i++)
+		    {
+		      if (cell1(i).is_string ())
+			{
+			  const std::string str1 = cell1(i).string_value ();
+			  output(i) = (str1 == str2);
+			}
+		      else
+			output(i) = false;
+		    }
+		}
+	    }
+	  else
+	    {
+	      if (size1 != size2)
+		{
+		  error ("strcmp: nonconformant cell arrays");
+		  return retval;
+		}
+
+	      for (int i = 0; i < r1; i++)
+		{
+		  if (cell1(i).is_string () && cell2(i).is_string ())
+		    {
+		      const std::string str1 = cell1(i).string_value ();
+		      const std::string str2 = cell2(i).string_value ();
+		      output(i) = (str1 == str2);
+		    }
+		  else
+		    output(i) = false;
+		}
+	    }
+
+	  retval = output;
+	}
     }
+  else
+    print_usage ("strcmp");
 
   return retval;
 }

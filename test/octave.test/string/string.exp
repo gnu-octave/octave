@@ -267,11 +267,11 @@ set prog_output "^ans = 1"
 do_test strcmp-1.m
 
 set test strcmp-2
-set prog_output "^usage:.*"
+set prog_output "\n... strcmp:.*"
 do_test strcmp-2.m
 
 set test strcmp-3
-set prog_output "^usage:.*"
+set prog_output "\n... strcmp:.*"
 do_test strcmp-3.m
 
 set test bin2dec-1

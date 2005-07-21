@@ -590,7 +590,7 @@ Compute the sine of each element of @var{x}.\n\
   DEFUN_MAPPER (sinh, 0, 0, 0, sinh, 0, std::sinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
-Compute the inverse hyperbolic sine of each element of @var{x}.\n\
+Compute the hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, std::sqrt, 0.0, octave_Inf, 0, 1,

@@ -175,7 +175,7 @@ OCTAVE_US_S_FTR_FCNS (unsigned long long)
   inline T2 \
   octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2&) \
   { \
-    return x < 0 ? 0 : x; \
+    return x <= 0 ? 0 : x; \
   }
 
 #define OCTAVE_S_US_FTR_FCNS(T) \

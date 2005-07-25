@@ -1,3 +1,8 @@
+2005-07-25   Erik de Castro Lopo  <erikd@zip.com.au>
+
+	* oct-inttypes.h (OCTAVE_S_US_FTR): Compare <= 0 instead of < 0 to
+	avoid warnings for unsigned types.
+
 2005-07-07  John W. Eaton  <jwe@octave.org>
 
 	* dSparse.cc (SparseMatrix::factorize): Initialize Numeric to 0.

@@ -443,8 +443,8 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 
   if (m.length () < 1)
     {
-      retval(1) = ArrayN<double> (dv);
-      retval(0) = NDArray (dv);
+      retval(1) = NDArray (dv);
+      retval(0) = ArrayN<double> (dv);
       return retval;
     }
 

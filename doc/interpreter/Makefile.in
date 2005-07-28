@@ -35,7 +35,7 @@ MAIN_TEXINFO := $(srcdir)/octave.texi
 
 SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 
-TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO)
+TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 
 FORMATTED = octave.dvi octave.ps octave.pdf \
 	octave.info octave.info-[0-9]* \
@@ -59,7 +59,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps octave.pdf octave_toc.html
+all: octave.info octave.dvi octave.ps octave.pdf HTML/index.html
 .PHONY: all
 
 $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
@@ -82,21 +82,17 @@ scripts-DOCSTRINGS:
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
-octave.info: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
+octave.info: $(TEXINFO)
 	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $<
 
-octave.dvi: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
-	  export TEXINPUTS; \
-	  $(TEXI2DVI) $<
+octave.dvi: $(TEXINFO)
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
 
 octave.ps: octave.dvi
-	-dvips -o octave.ps octave.dvi
+	-dvips -o $@ $<
 
-octave.pdf: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
-	  export TEXINPUTS; \
-	  $(TEXI2PDF) $<
+octave.pdf: $(TEXINFO)
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -112,10 +108,8 @@ octave.pdf: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 	  -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-# These option forms are supported by texi2html 1.65 and probably also
-# more recent versions.
-octave_toc.html: $(MAIN_TEXINFO) $(SUB_TEXINFO)
-	-texi2html -expandinfo -split_chapter -I . -I $(srcdir)/.. $<
+HTML/index.html: $(TEXINFO)
+	-$(MAKEINFO) --html --output=HTML -I . -I $(srcdir)/.. $<
 
 check: all
 .PHONY: check
@@ -190,6 +184,7 @@ distclean: clean
 
 maintainer-clean: distclean clean-texi
 	rm -f tags TAGS $(FORMATTED)
+	rm -rf HTML
 .PHONY: maintainer-clean
 
 clean-texi:

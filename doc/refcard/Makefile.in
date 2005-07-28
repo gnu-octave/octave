@@ -29,37 +29,31 @@ DISTFILES := Makefile.in $(TEX) $(FORMATTED)
 all: $(FORMATTED)
 
 refcard-a4.dvi: refcard-a4.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
-	  tex $(srcdir)/refcard-a4.tex
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
 
 refcard-a4.ps: refcard-a4.dvi
-	-dvips -T 297mm,210mm -o refcard-a4.ps refcard-a4.dvi
+	-dvips -T 297mm,210mm -o $@ $<
 
 refcard-a4.pdf: refcard-a4.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
-	  pdftex $(srcdir)/refcard-a4.tex
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
 
 refcard-legal.dvi: refcard-legal.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
-	  tex $(srcdir)/refcard-legal.tex
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
 
 refcard-legal.ps: refcard-legal.dvi
-	-dvips -T 14in,8.5in -o refcard-legal.ps refcard-legal.dvi
+	-dvips -T 14in,8.5in -o $@ $<
 
 refcard-legal.pdf: refcard-legal.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
-	  pdftex $(srcdir)/refcard-legal.tex
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
 
 refcard-letter.dvi: refcard-letter.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
-	  tex $(srcdir)/refcard-letter.tex
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
 
 refcard-letter.ps: refcard-letter.dvi
-	-dvips -T 11in,8.5in -o refcard-letter.ps refcard-letter.dvi
+	-dvips -T 11in,8.5in -o $@ $<
 
 refcard-letter.pdf: refcard-letter.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
-	  pdftex $(srcdir)/refcard-letter.tex
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall

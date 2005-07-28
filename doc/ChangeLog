@@ -1,3 +1,8 @@
+2005-07-28  John W. Eaton  <jwe@octave.org>
+
+	* faq/Makefile.in, interpreter/Makefile.in, liboctave/Makefile.in:
+	Use makeinfo instead of texi2html to generate HTML.
+
 2005-05-02  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/munge-texi.cc (skip_comments): New function.

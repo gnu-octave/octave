@@ -34,29 +34,23 @@ SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf Octave-FAQ_toc.html
+all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf HTML/index.html
 .PHONY: all
 
-Octave-FAQ.info: Octave-FAQ.texi
-	-$(MAKEINFO) -I$(srcdir) $(srcdir)/Octave-FAQ.texi
+Octave-FAQ.info: $(TEXINFO)
+	-$(MAKEINFO) -I$(srcdir) $<
 
-Octave-FAQ.dvi: Octave-FAQ.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
-	  export TEXINPUTS; \
-	  $(TEXI2DVI) $(srcdir)/Octave-FAQ.texi
+Octave-FAQ.dvi: $(TEXINFO)
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
 
-Octave-FAQ.ps: Octave-FAQ.dvi
-	-dvips -o Octave-FAQ.ps Octave-FAQ.dvi
+Octave-FAQ.ps: $(TEXINFO)
+	-dvips -o $@ $<
 
-Octave-FAQ.pdf: Octave-FAQ.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
-	  export TEXINPUTS; \
-	  $(TEXI2PDF) $(srcdir)/Octave-FAQ.texi
+Octave-FAQ.pdf: $(TEXINFO)
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
 
-# These option forms are supported by texi2html 1.65 and probably also
-# more recent versions.
-Octave-FAQ_toc.html:
-	-texi2html -expandinfo -split_chapter $(srcdir)/Octave-FAQ.texi
+HTML/index.html: $(TEXINFO)
+	-$(MAKEINFO) --html --output=HTML $<
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall
@@ -84,7 +78,7 @@ distclean: clean
 maintainer-clean: distclean
 	rm -f tags TAGS Octave-FAQ.info Octave-FAQ.info-*
 	rm -f Octave-FAQ.dvi Octave-FAQ.ps
-	rm -f Octave-FAQ*.html
+	rm -rf HTML
 .PHONY: maintainer-clean
 
 dist: all

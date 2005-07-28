@@ -16,12 +16,12 @@
 @page
 @end titlepage
 
-@ifinfo
+@ifnottex
 @node Top
 @top
 @unnumbered Preface
 @cindex FAQ for Octave, latest version
-@end ifinfo
+@end ifnottex
 
 This is a list of frequently asked questions (FAQ) for Octave users.
 

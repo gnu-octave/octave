@@ -35,7 +35,7 @@
 
 @settitle Octave C++ Classes
 
-@ifinfo
+@ifnottex
 
 Copyright (C) 1996, 1997 John W. Eaton.
 
@@ -58,7 +58,7 @@ a permission notice identical to this one.
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for
 modified versions.
-@end ifinfo
+@end ifnottex
 
 @titlepage
 @title{Octave C++ Classes}
@@ -87,14 +87,14 @@ into another language, under the same conditions as for modified versions.
 
 @contents
 
-@ifinfo
+@ifnottex
 @node Top, Acknowledgements, (dir), (dir)
 @top
 
 This manual documents how to use, install and port Octave's C++ class
 library, and how to report bugs.  It corresponds to Octave version
 @value{VERSION}.
-@end ifinfo
+@end ifnottex
 
 @c ------------------------------------------------------------------------
 

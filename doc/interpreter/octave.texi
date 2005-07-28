@@ -48,7 +48,7 @@ END-INFO-DIR-ENTRY
 
 @settitle GNU Octave
 
-@ifinfo
+@ifnottex
 
 Copyright (C) 1996, 1997 John W. Eaton.
 
@@ -71,7 +71,7 @@ a permission notice identical to this one.
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for
 modified versions.
-@end ifinfo
+@end ifnottex
 
 @titlepage
 @title GNU Octave
@@ -106,14 +106,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 @contents
 
-@ifinfo
+@ifnottex
 @node Top
 @top
 
 This manual documents how to run, install and port GNU Octave, as well
 as its new features and incompatibilities, and how to report bugs.
 It corresponds to GNU Octave version @value{VERSION}.
-@end ifinfo
+@end ifnottex
 
 @menu
 * Preface::                     

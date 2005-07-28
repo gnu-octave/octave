@@ -115,6 +115,8 @@ as its new features and incompatibilities, and how to report bugs.
 It corresponds to GNU Octave version @value{VERSION}.
 @end ifnottex
 
+@c ------------------------------------------------------------------------
+
 @menu
 * Preface::                     
 * Introduction::                A brief introduction to Octave.
@@ -495,6 +497,8 @@ Grammar
 
 @end detailmenu
 @end menu
+
+@c ------------------------------------------------------------------------
 
 @include preface.texi
 @include intro.texi

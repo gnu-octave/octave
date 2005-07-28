@@ -142,6 +142,8 @@ Quadrature
 * Collocation Weights::         
 @end menu
 
+@c ------------------------------------------------------------------------
+
 @include preface.texi
 @include gpl.texi
 @include intro.texi

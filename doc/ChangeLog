@@ -1,3 +1,9 @@
+2005-07-29  John W. Eaton  <jwe@octave.org>
+
+	* faq/Makefile.in (HTML/index.html): Pass --ifinfo to makeinfo.
+	* interpreter/Makefile.in (HTML/index.html): Likewise.
+	* liboctave/Makefile.in (HTML/index.html): Likewise.
+
 2005-07-28  John W. Eaton  <jwe@octave.org>
 
 	* faq/Makefile.in, interpreter/Makefile.in, liboctave/Makefile.in:

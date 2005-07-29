@@ -50,7 +50,7 @@ Octave-FAQ.pdf: $(TEXINFO)
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
 
 HTML/index.html: $(TEXINFO)
-	-$(MAKEINFO) --html --output=HTML $<
+	-$(MAKEINFO) --html --ifinfo --output=HTML $<
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall

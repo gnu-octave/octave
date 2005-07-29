@@ -109,7 +109,7 @@ octave.pdf: $(TEXINFO)
 	mv BUGS ../../BUGS
 
 HTML/index.html: $(TEXINFO)
-	-$(MAKEINFO) --html --output=HTML -I . -I $(srcdir)/.. $<
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I . -I $(srcdir)/.. $<
 
 check: all
 .PHONY: check

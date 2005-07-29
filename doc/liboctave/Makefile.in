@@ -58,7 +58,7 @@ liboctave.pdf: $(TEXINFO)
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
 
 HTML/index.html: $(TEXINFO)
-	-$(MAKEINFO) --html --output=HTML -I $(srcdir)/.. $<
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I $(srcdir)/.. $<
 
 check:
 .PHONY: check

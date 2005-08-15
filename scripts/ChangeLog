@@ -1,3 +1,7 @@
+2005-08-15  John W. Eaton  <jwe@octave.org>
+
+	* strings/strcat.m: Allow single argument.
+
 2005-07-18  John W. Eaton  <jwe@octave.org>
 
 	* strings/strcmp.m: Delete.

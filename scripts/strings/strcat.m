@@ -35,7 +35,7 @@
 
 function st = strcat (s, t, varargin)
 
-  if (nargin > 1)
+  if (nargin > 0)
     save_warn_empty_list_elements = warn_empty_list_elements;
     unwind_protect
       warn_empty_list_elements = 0;

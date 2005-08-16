@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} computer ()
+## @deftypefn {Function File} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
 ## Print or return a string of the form @var{cpu}-@var{vendor}-@var{os}
 ## that identifies the kind of computer Octave is running on.  If invoked
 ## with an output argument, the value is returned instead of printed.  For
@@ -33,9 +33,16 @@
 ##      @result{} x = "i586-pc-linux-gnu"
 ## @end group
 ## @end example
+##
+## If two output arguments are requested, also return the maximum number
+## of elements for an array.
+##
+## If three output arguments are requested, also return the byte order
+## of the current system as a character (@code{"B"} for big-endian or
+## @code{"L"} for little-endian).
 ## @end deftypefn
 
-function retval = computer ()
+function [c, maxsize, endian] = computer ()
 
   if (nargin != 0)
     warning ("computer: ignoring extra arguments");
@@ -50,7 +57,19 @@ function retval = computer ()
   if (nargout == 0)
     printf ("%s\n", msg);
   else
-    retval = msg;
+    c = msg;
+    if (strcmp (octave_config_info ("USE_64_BIT_IDX_T"), "true"))
+      maxsize = 2^63-1;
+    else
+      maxsize = 2^31-1;
+    endif
+    if (octave_config_info ("words_big_endian"))
+      endian = "B";
+    elseif (octave_config_info ("words_little_endian"))
+      endian = "L";
+    else
+      endian = "?";
+    endif      
   endif
 
 endfunction

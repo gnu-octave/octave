@@ -32,7 +32,7 @@
 ##
 ## @seealso{pv, nper, and rate}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Amount of periodic payment needed to amortize a loan
 
 function p = pmt (r, n, a, l, m)

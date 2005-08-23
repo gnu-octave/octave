@@ -1,6 +1,6 @@
 #!/bin/sh
 # info-emacs-info
-# Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/07/01
+# Written by Kurt Hornik <Kurt.Hornik@wu-wien.ac.at> on 1996/07/01
 # Make Octave's `help -i' use Emacs info.
 # Requires a running Emacs and gnuserv.
 cmd="(Info-find-node \"$2\" \"Top\")"

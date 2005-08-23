@@ -25,7 +25,7 @@
 ## Default values are @var{a} = 0, @var{b} = 1.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the uniform distribution
 
 function inv = uniform_inv (varargin)

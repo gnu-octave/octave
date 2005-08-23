@@ -29,7 +29,7 @@
 ## the common size of @var{n} and @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the binomial distribution
 
 function rnd = binornd (n, p, r, c)

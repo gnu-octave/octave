@@ -1,5 +1,5 @@
 @c Copyright (C) 1996, 1997 John W. Eaton
-@c Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/17.
+@c Written by Kurt Hornik <Kurt.Hornik@wu-wien.ac.at> on 1996/05/17.
 @c Last updated by KH on 1997/07/31.
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
@@ -25,7 +25,7 @@ All functionality is provided by the Emacs Lisp package EOS (for ``Emacs
 Octave Support'').  This chapter describes how to set up and use this
 package.
 
-Please contact <Kurt.Hornik@@ci.tuwien.ac.at> if you have any questions
+Please contact <Kurt.Hornik@@wu-wien.ac.at> if you have any questions
 or suggestions on using EOS.
 
 @menu

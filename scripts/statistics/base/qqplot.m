@@ -42,7 +42,7 @@
 ## If no output arguments are given, the data are plotted directly.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Perform a QQ-plot (quantile plot)
 
 function [q, s] = qqplot (x, dist, varargin)

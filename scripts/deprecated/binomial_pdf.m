@@ -24,7 +24,7 @@
 ## and @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the binomial distribution
 
 function pdf = binomial_pdf (varargin)

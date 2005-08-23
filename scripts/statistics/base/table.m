@@ -26,7 +26,7 @@
 ## Currently, only 1- and 2-dimensional tables are supported.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Cross tabulation
 
 function [t, v, w] = table (x, y)

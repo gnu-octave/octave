@@ -24,7 +24,7 @@
 ## parameter @var{sigma}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Weibull distribution
 
 function inv = weibinv (x, shape, scale)

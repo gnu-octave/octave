@@ -28,7 +28,7 @@
 ## and the quantiles of the standard normal distribution are used
 ## directly.
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the t distribution
 
 function inv = t_inv (varargin)

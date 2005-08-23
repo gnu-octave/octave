@@ -28,7 +28,7 @@
 ## the optional argument @var{n} is specified, an N-point FFT is used.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 3 September 1994
 ## Adapted-By: jwe
 

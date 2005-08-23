@@ -23,7 +23,7 @@
 ## inverse of the CDF) at @var{x} of the standard normal distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the standard normal distribution
 
 function inv = stdnormal_inv (x)

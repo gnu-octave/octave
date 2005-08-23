@@ -58,7 +58,7 @@
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Adapted-by: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-by: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test for zero correlation
 
 function t = cor_test (X, Y, ALTERNATIVE, METHOD)

@@ -27,7 +27,7 @@
 ## distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Pascal (negative binomial) distribution
 
 function cdf = pascal_cdf (x, n, p)

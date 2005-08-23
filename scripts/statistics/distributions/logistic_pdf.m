@@ -23,7 +23,7 @@
 ## logistic distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the logistic distribution
 
 function pdf = logistic_pdf (x)

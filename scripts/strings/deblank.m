@@ -24,7 +24,7 @@
 ## length of longest string.
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
 function t = deblank (s)

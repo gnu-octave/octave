@@ -26,7 +26,7 @@
 ## If @var{x} is a vector, treat it as a column vector.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute basic statistics
 
 function S = statistics (X, dim)

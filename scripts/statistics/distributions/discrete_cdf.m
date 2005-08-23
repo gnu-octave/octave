@@ -24,7 +24,7 @@
 ## assumes the values in v with probabilities @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of a discrete distribution
 
 function cdf = discrete_cdf (x, v, p)

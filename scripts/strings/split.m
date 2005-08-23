@@ -31,7 +31,7 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
 function m = split (s, t)

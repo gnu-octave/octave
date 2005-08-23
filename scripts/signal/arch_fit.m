@@ -46,7 +46,7 @@
 ## @math{b0} for the scoring algorithm.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Fit an ARCH regression model
 
 function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)

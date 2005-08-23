@@ -35,7 +35,7 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Kruskal-Wallis test
 
 function [pval, k, df] = kruskal_wallis_test (varargin)

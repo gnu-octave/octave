@@ -27,7 +27,7 @@
 ## then operate along this dimension.
 ## @end deftypefn
 
-## Author KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Interquartile range
 
 function y = iqr (x, dim)

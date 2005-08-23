@@ -23,7 +23,7 @@
 ## distribution at @var{x}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the standard normal distribution
 
 function cdf = stdnormal_cdf (x)

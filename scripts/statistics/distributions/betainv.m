@@ -24,7 +24,7 @@
 ## and @var{b}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Beta distribution
 
 function inv = betainv (x, a, b)

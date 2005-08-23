@@ -31,7 +31,7 @@
 ## for @var{x} > 0.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Weibull distribution
 
 function pdf = weibpdf (x, shape, scale)

@@ -23,7 +23,7 @@
 ## distribution with parameters @var{a} and @var{b}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Beta distribution
 
 function pdf = betapdf (x, a, b)

@@ -30,7 +30,7 @@
 ## @strong{Caution:}  This function does not work for arrays of strings.
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
 function n = rindex (s, t)

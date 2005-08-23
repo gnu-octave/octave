@@ -26,7 +26,7 @@
 ## Default values are @var{m} = 0, @var{v} = 1.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the normal distribution
 
 function inv = norminv (x, m, v)

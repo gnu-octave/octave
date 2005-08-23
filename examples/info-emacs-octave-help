@@ -1,6 +1,6 @@
 #!/bin/sh
 # info-emacs-octave-help
-# Written by KH <Kurt.Hornik@ci.tuwien.ac.at> on 1996/07/01
+# Written by KH <Kurt.Hornik@wu-wien.ac.at> on 1996/07/01
 # Updated by KH on 1997/03/04
 # Make Octave's `help -i' use Emacs octave-help.
 # Requires a running Emacs and gnuserv.

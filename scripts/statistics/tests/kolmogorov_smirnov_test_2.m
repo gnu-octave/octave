@@ -43,7 +43,7 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Two-sample Kolmogorov-Smirnov test
 
 function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)

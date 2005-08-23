@@ -42,7 +42,7 @@
 ## printed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: One-way analysis of variance (ANOVA)
 
 function [pval, f, df_b, df_w] = anova (y, g)

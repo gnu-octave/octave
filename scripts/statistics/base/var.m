@@ -39,7 +39,7 @@
 ## variance is calculated.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute variance
 
 function y = var (x, opt, dim)

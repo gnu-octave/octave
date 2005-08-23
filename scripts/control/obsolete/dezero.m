@@ -22,7 +22,7 @@
 ## Remove trailing blank entries and all zero entries from the string s.
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
 ## Adapted from deblank by A. S. Hodel (a.s.hodel@eng.auburn.edu)

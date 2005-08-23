@@ -27,7 +27,7 @@
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the hypergeometric distribution
 
 function inv = hygeinv (x, m, t, n)

@@ -30,7 +30,7 @@
 ## @var{sz}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from a discrete distribution
 
 function rnd = discrete_rnd (v, p, r, c)

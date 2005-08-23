@@ -40,7 +40,7 @@
 ## If no output arguments are given, the data are plotted directly.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Perform a PP-plot (probability plot)
 
 function [p, y] = ppplot (x, dist, varargin)

@@ -26,7 +26,7 @@
 ## The arguments can be of common size or scalar.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the exponential distribution
 
 function cdf = exponential_cdf (varargin)

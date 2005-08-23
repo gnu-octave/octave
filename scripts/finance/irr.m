@@ -27,7 +27,7 @@
 ##
 ## @seealso{npv, pv, and rate}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Internal rate of return of an investment
 
 function r = irr (p, i)

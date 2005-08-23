@@ -27,7 +27,7 @@
 ## not 5 percent).
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Present value of an investment that pays off at the end
 
 function v = pvl (r, n, p)

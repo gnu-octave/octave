@@ -29,7 +29,7 @@
 ## the common size of @var{m} and @var{v}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the normal distribution
 
 function rnd = normal_rnd (varargin)

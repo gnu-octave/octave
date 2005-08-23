@@ -26,7 +26,7 @@
 ## operation along this dimension
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Center by subtracting means
 
 function retval = center (x, varargin)

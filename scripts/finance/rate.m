@@ -32,7 +32,7 @@
 ##
 ## @seealso{pv, pmt, nper, and npv}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Rate of return of an investment
 
 function r = rate (n, p, v, l, m)

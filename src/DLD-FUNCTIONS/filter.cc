@@ -23,7 +23,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Based on Tony Richardson's filter.m.
 //
-// Originally translated to C++ by KH (Kurt.Hornik@ci.tuwien.ac.at)
+// Originally translated to C++ by KH (Kurt.Hornik@wu-wien.ac.at)
 // with help from Fritz Leisch and Andreas Weingessel on Oct 20, 1994.
 //
 // Rewritten to use templates to handle both real and complex cases by

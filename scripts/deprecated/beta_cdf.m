@@ -24,7 +24,7 @@
 ## PROB (beta (@var{a}, @var{b}) <= @var{x}).
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Beta distribution
 
 function cdf = beta_cdf (varargin)

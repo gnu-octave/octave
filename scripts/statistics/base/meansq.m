@@ -26,7 +26,7 @@
 ## mean squared of the values along this dimension
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute mean square
 
 function y = meansq (x, varargin)

@@ -34,7 +34,7 @@
 ##
 ## @seealso{pow2}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 7 October 1994
 ## Adapted-By: jwe
 

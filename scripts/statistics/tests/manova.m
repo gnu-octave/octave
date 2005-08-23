@@ -38,7 +38,7 @@
 ## (Currently NOT because the f_cdf respectively betai code is too bad.)
 
 ## Author: TF <Thomas.Fuereder@ci.tuwien.ac.at>
-## Adapted-By: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: One-way multivariate analysis of variance (MANOVA)
 
 function manova (Y, g)

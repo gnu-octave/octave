@@ -24,7 +24,7 @@
 ## random numbers from the standard normal distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the standard normal distribution
 
 function rnd = stdnormal_rnd (r, c)

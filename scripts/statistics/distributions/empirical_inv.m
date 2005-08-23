@@ -24,7 +24,7 @@
 ## univariate sample @var{data}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the empirical distribution
 
 function inv = empirical_inv (x, data)

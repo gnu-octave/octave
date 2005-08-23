@@ -41,7 +41,7 @@
 ## This implementation is still incomplete---for small sample sizes,
 ## the normal approximation is rather bad ...
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Mann-Whitney U-test
 
 function [pval, z] = u_test (x, y, alt)

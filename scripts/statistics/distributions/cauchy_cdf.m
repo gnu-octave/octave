@@ -25,7 +25,7 @@
 ## values are @var{lambda} = 0, @var{sigma} = 1. 
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Cauchy distribution
 
 function cdf = cauchy_cdf (x, location, scale)

@@ -26,7 +26,7 @@
 ## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})}.
 ## @end deftypefn
 
-## Author: Kurt Hornik <hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <hornik@wu-wien.ac.at>
 ## Created: March 1993
 ## Adapted-By: jwe
 

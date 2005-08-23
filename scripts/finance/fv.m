@@ -34,7 +34,7 @@
 ## not 5 percent).
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Future value of an investment
 
 function v = fv (r, n, p, l, m)

@@ -23,7 +23,7 @@
 ## (PDF) of the exponential distribution with parameter @var{lambda}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the exponential distribution
 
 function pdf = exppdf (x, l)

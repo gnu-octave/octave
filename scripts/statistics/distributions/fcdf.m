@@ -24,7 +24,7 @@
 ## PROB (F (@var{m}, @var{n}) <= @var{x}). 
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the F distribution
 
 function cdf = fcdf (x, m, n)

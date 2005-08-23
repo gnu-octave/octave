@@ -24,7 +24,7 @@
 ## the values in @var{v} with probabilities @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: pDF of a discrete distribution
 
 function pdf = discrete_pdf (x, v, p)

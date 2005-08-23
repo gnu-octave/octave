@@ -29,7 +29,7 @@
 ## @var{dim}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute range
 
 function y = range (x, varargin)

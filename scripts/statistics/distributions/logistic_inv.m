@@ -23,7 +23,7 @@
 ## the CDF) at @var{x} of the logistic distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the logistic distribution
 
 function inv = logistic_inv (x)

@@ -34,7 +34,7 @@
 ##
 ## @seealso{irr and pv}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Net present value of a series of payments
 
 function v = npv (r, p, i)

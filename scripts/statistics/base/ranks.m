@@ -27,7 +27,7 @@
 ## given, operate along this dimension.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute ranks
 
 ## This code was rather ugly, since it didn't use sort due to the

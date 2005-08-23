@@ -23,7 +23,7 @@
 ## @code{diag (@var{a}) * @var{b}} (but computed much more efficiently).
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Rescale the rows of a matrix
 
 function M = dmult (a, B)

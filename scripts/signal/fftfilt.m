@@ -29,7 +29,7 @@
 ## If @var{x} is a matrix, filter each column of the matrix.
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 3 September 1994
 ## Adapted-By: jwe
 

@@ -25,7 +25,7 @@
 ## @var{lambda} = 0, @var{sigma} = 1. 
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Cauchy distribution
 
 function inv = cauchy_inv (x, location, scale)

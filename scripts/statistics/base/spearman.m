@@ -36,7 +36,7 @@
 ## asymptotically normally distributed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Spearman's rank correlation rho
 
 function rho = spearman (x, y)

@@ -30,7 +30,7 @@
 ## the common size of @var{m} and @var{n}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the F distribution
 
 function rnd = f_rnd (varargin)

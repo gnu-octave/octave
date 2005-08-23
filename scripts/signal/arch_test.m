@@ -63,7 +63,7 @@
 ## If no output argument is given, the @math{p}-value is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test for conditional heteroscedascity
 
 function [pval, lm] = arch_test (y, X, p)

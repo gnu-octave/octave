@@ -24,7 +24,7 @@
 ## degrees of freedom. 
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the t distribution
 
 function pdf = t_pdf (varargin)

@@ -39,7 +39,7 @@
 ## along with some information.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test for mean of a normal sample with known variance
 
 function [pval, z] = z_test (x, m, v, alt)

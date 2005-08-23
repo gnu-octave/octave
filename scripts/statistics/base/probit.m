@@ -23,7 +23,7 @@
 ## standard normal distribution) of @var{p}.
 ## @end deftypefn
 
-## Written by KH <Kurt.Hornik@ci.tuwien.ac.at> on 1995/02/04
+## Written by KH <Kurt.Hornik@wu-wien.ac.at> on 1995/02/04
 ## Description: Probit transformation
 
 function y = probit (p)

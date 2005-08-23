@@ -35,7 +35,7 @@
 ##
 ## @seealso{pv, pmt, rate, and npv}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Number of payments needed for amortizing a loan
 
 function n = nper (r, p, a, l, m)

@@ -35,7 +35,7 @@
 ## the dimension defiend by @var{dim}.
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 15 October 1994
 ## Adapted-By: jwe
 

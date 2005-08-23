@@ -29,7 +29,7 @@
 ## @var{sz}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Bootstrap samples from the empirical distribution
 
 function rnd = empirical_rnd (data, r, c)

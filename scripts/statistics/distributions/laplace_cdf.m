@@ -23,7 +23,7 @@
 ## function (CDF) at @var{x} of the Laplace distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Laplace distribution
 
 function cdf = laplace_cdf (x)

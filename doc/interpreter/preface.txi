@@ -119,7 +119,7 @@ of functions including @code{expm}, @code{qzval}, @code{qzhess},
 @code{syl}, @code{lyap}, and @code{balance}.
 
 @item
-Kurt Hornik @email{Kurt.Hornik@@ci.tuwien.ac.at} provided the
+Kurt Hornik @email{Kurt.Hornik@@wu-wien.ac.at} provided the
 @code{corrcoef}, @code{cov}, @code{fftconv}, @code{fftfilt}, @code{gcd},
 @code{lcd}, @code{kurtosis}, @code{null}, @code{orth}, @code{poly},
 @code{polyfit}, @code{roots}, and @code{skewness} functions, supplied

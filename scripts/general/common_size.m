@@ -39,7 +39,7 @@
 ## be scalars or of common size.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 15 October 1994
 ## Adapted-By: jwe
 

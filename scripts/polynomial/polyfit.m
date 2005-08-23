@@ -53,7 +53,7 @@
 ## @end table
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 13 December 1994
 ## Adapted-By: jwe
 

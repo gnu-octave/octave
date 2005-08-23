@@ -26,7 +26,7 @@
 ## with one argument, compute @code{cov (@var{x}, @var{x})}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute covariances
 
 function c = cov (x, y)

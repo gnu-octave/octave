@@ -34,7 +34,7 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Chi-square test for homogeneity
 
 function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)

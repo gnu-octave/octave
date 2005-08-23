@@ -29,7 +29,7 @@
 ## the size of @var{lambda}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the exponential distribution
 
 function rnd = exponential_rnd (varargin)

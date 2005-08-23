@@ -29,7 +29,7 @@
 ## the common size of @var{a} and @var{b}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Beta distribution
 
 function rnd = betarnd (a, b, r, c)

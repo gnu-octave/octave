@@ -39,7 +39,7 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Student's one-sample t test
 
 function [pval, t, df] = t_test (x, m, alt)

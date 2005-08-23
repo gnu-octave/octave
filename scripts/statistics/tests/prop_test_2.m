@@ -38,7 +38,7 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compare two proportions
 
 function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)

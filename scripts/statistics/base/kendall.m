@@ -64,7 +64,7 @@
 ## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Kendall's rank correlation tau
 
 function tau = kendall (x, y)

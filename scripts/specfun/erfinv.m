@@ -24,7 +24,7 @@
 ##
 ## @seealso{erf and erfc}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 27 September 1994
 ## Adapted-By: jwe
 

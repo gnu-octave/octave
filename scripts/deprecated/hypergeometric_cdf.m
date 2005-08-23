@@ -30,7 +30,7 @@
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the hypergeometric distribution
 
 function cdf = hypergeometric_cdf (varargin)

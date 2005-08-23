@@ -23,7 +23,7 @@
 ## (PDF) at @var{x} of the geometric distribution with parameter @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the geometric distribution
 
 function pdf = geopdf (x, p)

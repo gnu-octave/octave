@@ -32,7 +32,7 @@
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Bartlett test for homogeneity of variances
 
 function [pval, chisq, df] = bartlett_test (varargin)

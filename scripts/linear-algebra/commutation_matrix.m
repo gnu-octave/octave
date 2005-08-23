@@ -80,7 +80,7 @@
 ## applications in statistics and econometrics.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 8 May 1995
 ## Adapted-By: jwe
 

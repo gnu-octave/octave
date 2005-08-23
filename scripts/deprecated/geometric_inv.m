@@ -23,7 +23,7 @@
 ## geometric distribution with parameter @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the geometric distribution
 
 function inv = geometric_inv (varargin)

@@ -35,7 +35,7 @@
 ##
 ## @seealso{pmt, nper, rate, and npv}
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Present value of an investment
 
 function v = pv (r, n, p, l, m)

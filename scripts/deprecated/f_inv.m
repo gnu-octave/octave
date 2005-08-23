@@ -24,7 +24,7 @@
 ## @var{n}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the F distribution
 
 function inv = f_inv (varargin)

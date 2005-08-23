@@ -40,7 +40,7 @@
 ## the series should be evaluated;  the default is @var{tol} = @code{eps}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Kolmogorov-Smirnov distribution
 
 function cdf = kolmogorov_smirnov_cdf (x, tol)

@@ -32,7 +32,7 @@
 ## the common size of @var{alpha} and @var{sigma}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Weibull distribution
 
 function rnd = weibull_rnd (varargin)

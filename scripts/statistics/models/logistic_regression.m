@@ -77,7 +77,7 @@
 ## 1992.
 
 ## Author: Gordon K Smyth <gks@maths.uq.oz.au>,
-## Adapted-By: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Ordinal logistic regression
 
 ## Uses the auxiliary functions logistic_regression_derivatives and

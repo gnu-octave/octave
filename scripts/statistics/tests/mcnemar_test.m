@@ -32,7 +32,7 @@
 ## If no output argument is given, the p-value of the test is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: McNemar's test for symmetry
 
 function [pval, chisq, df] = mcnemar_test (x)

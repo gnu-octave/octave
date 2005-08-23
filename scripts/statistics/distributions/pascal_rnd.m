@@ -29,7 +29,7 @@
 ## create a matrix of size @var{sz}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Pascal distribution
 
 function rnd = pascal_rnd (n, p, r, c)

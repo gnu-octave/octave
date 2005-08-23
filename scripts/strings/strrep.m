@@ -28,7 +28,7 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 11 November 1994
 ## Adapted-By: jwe
 

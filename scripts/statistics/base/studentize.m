@@ -27,7 +27,7 @@
 ## along this dimension.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Subtract mean and divide by standard deviation
 
 function t = studentize (x, dim)

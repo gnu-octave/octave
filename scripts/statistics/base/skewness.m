@@ -40,7 +40,7 @@
 ## @var{dim} argument is given, operate along this dimension.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 29 July 1994
 ## Adapted-By: jwe
 

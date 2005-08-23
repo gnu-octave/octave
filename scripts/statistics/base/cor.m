@@ -29,7 +29,7 @@
 ## @code{cor (@var{x})} is equivalent to @code{cor (@var{x}, @var{x})}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute correlations
 
 function retval = cor (x, y)

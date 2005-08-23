@@ -25,7 +25,7 @@
 ## is true, but not if both @var{x} and @var{y} are true.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 16 September 1994
 ## Adapted-By: jwe
 

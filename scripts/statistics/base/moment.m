@@ -42,7 +42,7 @@
 ## Can easily be made to work for continuous distributions (using quad)
 ## as well, but how does the general case work?
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute moments
 
 function m = moment (x, p, opt1, opt2)

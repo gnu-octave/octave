@@ -26,7 +26,7 @@
 ## whose roots are the elements of @var{x}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@neuro.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 24 December 1993
 ## Adapted-By: jwe
 

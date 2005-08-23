@@ -23,7 +23,7 @@
 ## logistic distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the logistic distribution
 
 function cdf = logistic_cdf (x)

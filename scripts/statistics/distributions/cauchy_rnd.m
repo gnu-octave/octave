@@ -28,7 +28,7 @@
 ## the common size of @var{lambda} and @var{sigma}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Cauchy distribution
 
 function rnd = cauchy_rnd (l, scale, r, c)

@@ -23,7 +23,7 @@
 ## (PDF) at @var{x} of the Laplace distribution.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Laplace distribution
 
 function pdf = laplace_pdf (x)

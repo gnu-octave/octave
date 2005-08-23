@@ -28,7 +28,7 @@
 ## Default values are @var{a} = 1, @var{v} = 1.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the log normal distribution
 
 function cdf = logncdf (x, a, v)

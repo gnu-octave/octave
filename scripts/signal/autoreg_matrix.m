@@ -27,7 +27,7 @@
 ## in autoregressions.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Design matrix for autoregressions
 
 function X = autoreg_matrix (y, k)

@@ -23,7 +23,7 @@
 ## (PDF) at @var{x} of the poisson distribution with parameter @var{lambda}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Poisson distribution
 
 function pdf = poisspdf (x, l)

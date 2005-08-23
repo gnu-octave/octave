@@ -32,7 +32,7 @@
 ## @var{breaks} are labelled by @code{NaN}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Cut data into intervals
 
 function group = cut (X, BREAKS)

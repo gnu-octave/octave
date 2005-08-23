@@ -24,7 +24,7 @@
 ## PROB (t(@var{n}) <= @var{x}).
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the t distribution
 
 function cdf = tcdf (x, n)

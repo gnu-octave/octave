@@ -1,3 +1,10 @@
+2005-08-25  David Bateman <dbateman@free.fr>
+
+        * OPERATORS/op-sm-m.cc, OPERATORS/op-sm-cm.cc, OPERATORS/op-scm-m.cc,
+	OPERATORS/op-scm-cm.cc, OPERATORS/op-m-sm.cc, OPERATORS/op-m-scm.cc,
+	OPERATORS/op-cm-sm.cc, OPERATORS/op-cm-scm.cc: Use mixed matrix/sparse
+	multiply operator rather than casting sparse to matrix.
+
 2005-07-18  John W. Eaton  <jwe@octave.org>
 
 	* strfns.cc (Fstrcmp): New function from Soren Hauberg

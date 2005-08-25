@@ -1,3 +1,12 @@
+2005-08-25  David Bateman <dbateman@free.fr>
+
+	* Sparse-op-defs.h (FULL_SPARSE_MUL, SPARSE_FULL_MUL): Macro for
+	mixed sparse/full multiply.
+	* dSparse.cc (operator *), CSparse.cc (operator *): New operators for
+	mixed sparse/full multiply.
+	* dSparse.h (operator *), CSparse.h (operator *): Declaration of
+	mixed sparse/full multiply operators.
+
 2005-07-25   Erik de Castro Lopo  <erikd@zip.com.au>
 
 	* oct-inttypes.h (OCTAVE_S_US_FTR): Compare <= 0 instead of < 0 to

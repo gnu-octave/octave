@@ -1603,6 +1603,67 @@ Boston, MA 02110-1301, USA.
 	} \
     }
 
+#define SPARSE_FULL_MUL( RET_TYPE, EL_TYPE ) \
+  octave_idx_type nr = m.rows (); \
+  octave_idx_type nc = m.cols (); \
+  \
+  octave_idx_type a_nr = a.rows (); \
+  octave_idx_type a_nc = a.cols (); \
+  \
+  if (nc != a_nr) \
+    { \
+      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
+      return RET_TYPE (); \
+    } \
+  else \
+    { \
+      RET_TYPE retval (nr, a_nc, EL_TYPE ()); \
+      \
+      for (octave_idx_type i = 0; i < a_nc ; i++) \
+	{ \
+	  for (octave_idx_type j = 0; j < a_nr; j++) \
+	    { \
+              OCTAVE_QUIT; \
+	      \
+              EL_TYPE tmpval = a.elem(j,i); \
+	      for (octave_idx_type k = m.cidx(j) ; k < m.cidx(j+1); k++) \
+	        retval.elem (m.ridx(k),i) += tmpval * m.data(k); \
+	    } \
+        } \
+      return retval; \
+    }
+
+#define FULL_SPARSE_MUL( RET_TYPE, EL_TYPE ) \
+  octave_idx_type nr = m.rows (); \
+  octave_idx_type nc = m.cols (); \
+  \
+  octave_idx_type a_nr = a.rows (); \
+  octave_idx_type a_nc = a.cols (); \
+  \
+  if (nc != a_nr) \
+    { \
+      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
+      return RET_TYPE (); \
+    } \
+  else \
+    { \
+      RET_TYPE retval (nr, a_nc, EL_TYPE ()); \
+      \
+      for (octave_idx_type i = 0; i < a_nc ; i++) \
+	{ \
+	   for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+	     { \
+	        octave_idx_type col = a.ridx(j); \
+	        EL_TYPE tmpval = a.data(j); \
+                OCTAVE_QUIT; \
+	        \
+	        for (octave_idx_type k = 0 ; k < nr; k++) \
+	          retval.elem (k,i) += tmpval * m.elem(k,col); \
+	    } \
+        } \
+      return retval; \
+    }
+
 #endif
 
 /*

@@ -43,15 +43,7 @@ Boston, MA 02110-1301, USA.
 DEFBINOP_OP (add, sparse_matrix, complex_matrix, +)
 DEFBINOP_OP (sub, sparse_matrix, complex_matrix, -)
 
-DEFBINOP (mul, sparse_matrix, complex_matrix)
-{
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, 
-		   const octave_complex_matrix&);
-  
-  Matrix tmp (v1.matrix_value ());
-
-  return octave_value ( tmp * v2.complex_matrix_value());
-}
+DEFBINOP_OP (mul, sparse_matrix, complex_matrix, *)
 
 DEFBINOP (div, sparse_matrix, complex_matrix)
 {

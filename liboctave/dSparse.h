@@ -384,6 +384,10 @@ public:
 
 extern SparseMatrix operator * (const SparseMatrix& a, 
 				const SparseMatrix& b);
+extern Matrix operator * (const Matrix& a, 
+				const SparseMatrix& b);
+extern Matrix operator * (const SparseMatrix& a, 
+				const Matrix& b);
 
 extern SparseMatrix min (double d, const SparseMatrix& m);
 extern SparseMatrix min (const SparseMatrix& m, double d);

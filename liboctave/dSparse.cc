@@ -6478,10 +6478,30 @@ SparseMatrix
 operator * (const SparseMatrix& m, const SparseMatrix& a)
 {
 #ifdef HAVE_SPARSE_BLAS
-  // XXX FIXME XXX Isn't there a sparse BLAS ??
+  // XXX FIXME XXX Isn't there a sparse BLAS ?? Is it faster??
 #else
   // Use Andy's sparse matrix multiply function
   SPARSE_SPARSE_MUL (SparseMatrix, double);
+#endif
+}
+
+Matrix
+operator * (const Matrix& m, const SparseMatrix& a)
+{
+#ifdef HAVE_SPARSE_BLAS
+  // XXX FIXME XXX Isn't there a sparse BLAS ?? Is it faster??
+#else
+  FULL_SPARSE_MUL (Matrix, double);
+#endif
+}
+
+Matrix
+operator * (const SparseMatrix& m, const Matrix& a)
+{
+#ifdef HAVE_SPARSE_BLAS
+  // XXX FIXME XXX Isn't there a sparse BLAS ?? Is it faster??
+#else
+  SPARSE_FULL_MUL (Matrix, double);
 #endif
 }
 

@@ -398,6 +398,20 @@ extern SparseComplexMatrix operator * (const SparseComplexMatrix&,
 extern SparseComplexMatrix operator * (const SparseComplexMatrix&, 
 				       const SparseComplexMatrix&);
 
+extern ComplexMatrix operator * (const Matrix&,        
+				       const SparseComplexMatrix&);
+extern ComplexMatrix operator * (const ComplexMatrix&, 
+				       const SparseMatrix&);
+extern ComplexMatrix operator * (const ComplexMatrix&, 
+				       const SparseComplexMatrix&);
+
+extern ComplexMatrix operator * (const SparseMatrix&,        
+				       const ComplexMatrix&);
+extern ComplexMatrix operator * (const SparseComplexMatrix&, 
+				       const Matrix&);
+extern ComplexMatrix operator * (const SparseComplexMatrix&, 
+				       const ComplexMatrix&);
+
 extern SparseComplexMatrix min (const Complex& c, 
 				const SparseComplexMatrix& m);
 extern SparseComplexMatrix min (const SparseComplexMatrix& m, 

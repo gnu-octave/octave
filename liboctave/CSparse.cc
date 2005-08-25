@@ -6361,6 +6361,54 @@ operator * (const SparseComplexMatrix& m, const SparseComplexMatrix& a)
 #endif
 }
 
+ComplexMatrix
+operator * (const ComplexMatrix& m, const SparseMatrix& a)
+{
+  SparseComplexMatrix tmp (a);
+  return m * tmp;
+}
+
+ComplexMatrix
+operator * (const Matrix& m, const SparseComplexMatrix& a)
+{
+  ComplexMatrix tmp (m);
+  return tmp * a;
+}
+
+ComplexMatrix
+operator * (const ComplexMatrix& m, const SparseComplexMatrix& a)
+{
+#ifdef HAVE_SPARSE_BLAS
+  // XXX FIXME XXX Isn't there a sparse BLAS ??
+#else
+  FULL_SPARSE_MUL (ComplexMatrix, Complex);
+#endif
+}
+
+ComplexMatrix
+operator * (const SparseComplexMatrix& m, const Matrix& a)
+{
+  ComplexMatrix tmp (a);
+  return m * tmp;
+}
+
+ComplexMatrix
+operator * (const SparseMatrix& m, const ComplexMatrix& a)
+{
+  SparseComplexMatrix tmp (m);
+  return tmp * a;
+}
+
+ComplexMatrix
+operator * (const SparseComplexMatrix& m, const ComplexMatrix& a)
+{
+#ifdef HAVE_SPARSE_BLAS
+  // XXX FIXME XXX Isn't there a sparse BLAS ??
+#else
+  SPARSE_FULL_MUL (ComplexMatrix, Complex);
+#endif
+}
+
 // XXX FIXME XXX -- it would be nice to share code among the min/max
 // functions below.
 

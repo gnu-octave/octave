@@ -1,1 +1,1 @@
-fopen ("foo", "w", "noodle")
+fopen ("foo", "wb", "noodle")

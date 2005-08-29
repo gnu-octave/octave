@@ -43,7 +43,7 @@ function bug_report ()
     prefs = tmpnam ();
 
     if (! isempty (prefs))
-      fid = fopen (prefs, "w");
+      fid = fopen (prefs, "wt");
       if (fid > 0)
         dump_prefs (fid);
         fclose (fid);

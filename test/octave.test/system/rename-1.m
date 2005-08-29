@@ -1,6 +1,6 @@
 from = tmpnam ();
 to = tmpnam ();
-id = fopen (from, "w");
+id = fopen (from, "wb");
 if (id > 0 && fclose (id) == 0)
   [s, e] = stat (from);
   if (! e)

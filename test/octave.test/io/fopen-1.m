@@ -4,11 +4,19 @@ status = 1;
 
 for i = 1:6
   arch = deblank (arch_list (i,:));
-  for j = 1:2
+  for j = 1:6
     if (j == 1)
       mode_list = ["w"; "r"; "a"];
-    else
+    elseif (j == 2)
       mode_list = ["w+"; "r+"; "a+"];
+    elseif (j == 3)
+      mode_list = ["wb"; "rb"; "ab"];
+    elseif (j == 4)
+      mode_list = ["w+b"; "r+b"; "a+b"];
+    elseif (j == 5)
+      mode_list = ["wt"; "rt"; "at"];
+    elseif (j == 6)
+      mode_list = ["w+t"; "r+t"; "a+t"];
     endif
     nm = tmpnam ();
     for k = 1:3

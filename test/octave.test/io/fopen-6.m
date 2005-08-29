@@ -1,1 +1,1 @@
-fopen ("foo", "w", "native", 1)
+fopen ("foo", "wb", "native", 1)

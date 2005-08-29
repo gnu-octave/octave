@@ -186,7 +186,7 @@ function saveimage (filename, img, img_form, map)
         tmp(i,:) = sum (bwimg(8*(i-1)+1:8*i,:) .* b);
       endfor
 
-      fid = fopen (filename, "w");
+      fid = fopen (filename, "wb");
       fprintf (fid, "P4\n%s\n%d %d\n", tagline, img_nr, img_nc);
       fwrite (fid, tmp, "char");
       fprintf (fid, "\n");
@@ -194,7 +194,7 @@ function saveimage (filename, img, img_form, map)
 
     elseif (grey)
 
-      fid = fopen (filename, "w");
+      fid = fopen (filename, "wb");
       fprintf (fid, "P5\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);
       fwrite (fid, map(img), "uchar");
       fprintf (fid, "\n");
@@ -216,7 +216,7 @@ function saveimage (filename, img, img_form, map)
       tmap = map(map_idx);
       tmp(img_idx--) = tmap(img);
 
-      fid = fopen (filename, "w");
+      fid = fopen (filename, "wb");
       fprintf (fid, "P6\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);
       fwrite (fid, tmp, "uchar");
       fprintf (fid, "\n");
@@ -266,7 +266,7 @@ function saveimage (filename, img, img_form, map)
     urx = llx + fix (scols + 0.5);
     ury = lly + fix (srows + 0.5);
 
-    fid = fopen (filename, "w");
+    fid = fopen (filename, "wb");
 
     fprintf (fid, "%%!PS-Adobe-2.0 EPSF-2.0\n");
     fprintf (fid, "%%%%Creator: Octave %s (saveimage.m)\n", OCTAVE_VERSION);

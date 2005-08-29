@@ -1,3 +1,9 @@
+2005-08-29  Bill Denney <denney@seas.upenn.edu>
+
+	* image/saveimage.m: Open output file in binary mode.
+
+	* miscellaneous/bug_report.m: Open prefs file in text mode.
+
 2005-08-16  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/computer.m: Handle optional maxsize and endian
@@ -66,7 +72,7 @@
 	* statistics/distributions/tinv.m: Rename from t_inv.m.
 	* statistics/distributions/tpdf.m: Rename from t_pdf.m.
 	* statistics/distributions/trnd.m: Rename from t_rnd.m.
-	* statistics/distributions/unifcdf.m: Rename from uniform_cdf.m.
+	* statistics/distributions/unifcdf.m: Rename from unifoxorm_cdf.m.
 	* statistics/distributions/unifinv.m: Rename from uniform_inv.m.
 	* statistics/distributions/unifpdf.m: Rename from uniform_pdf.m.
 	* statistics/distributions/unifrnd.m: Rename from uniform_rnd.m.

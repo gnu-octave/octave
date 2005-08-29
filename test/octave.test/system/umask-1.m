@@ -1,13 +1,13 @@
 umask (0);
 nm = tmpnam ();
-id = fopen (nm, "w");
+id = fopen (nm, "wb");
 s1 = stat (nm);
 fclose (id);
 unlink (nm);
 
 umask (777);
 nm = tmpnam ();
-id = fopen (nm, "w");
+id = fopen (nm, "wb");
 s2 = stat (nm);
 fclose (id);
 unlink (nm);

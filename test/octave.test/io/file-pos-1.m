@@ -1,16 +1,16 @@
 nm = tmpnam ();
-id = fopen (nm, "w");
+id = fopen (nm, "wb");
 if (id > 0)
   fprintf (id, "%d\n", 1:100);
   fclose (id);
-  id = fopen (nm, "r");
+  id = fopen (nm, "rb");
   if (id > 0)
     for i = 1:101
       fgets (id);
     endfor
     if (feof (id))
       fclose (id);
-      id = fopen (nm, "r");
+      id = fopen (nm, "rb");
       pos_one = ftell (id);
       s_one = fgets (id);
       for i = 1:48

@@ -1,1 +1,0 @@
-strcat ("err")

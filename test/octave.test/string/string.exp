@@ -158,10 +158,6 @@ set test strcat-3
 set prog_output "^error:.*"
 do_test strcat-3.m
 
-set test strcat-4
-set prog_output "^usage:.*"
-do_test strcat-4.m
-
 set test str2mat-1
 set prog_output "^ans = 1"
 do_test str2mat-1.m

@@ -1,3 +1,9 @@
+2005-08-30  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (octave_struct::load_ascii,
+	octave_struct::load_binary, octave_struct::load_hdf5): Try harder
+	to read old-style files correctly.
+
 2005-08-25  David Bateman <dbateman@free.fr>
 
         * OPERATORS/op-sm-m.cc, OPERATORS/op-sm-cm.cc, OPERATORS/op-scm-m.cc,

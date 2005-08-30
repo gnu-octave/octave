@@ -1026,15 +1026,20 @@ octave_struct::load_ascii (std::istream& is)
 		break;
 
 	      // Try for some backward compatibility...
-	      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-	      if (error_state)
+	      if (t2.is_cell () && t2.length() > 1)
+		m.assign (nm, t2);
+	      else
 		{
-		  error ("load: internal error loading struct elements");
-		  return false;
-		}
+		  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
 
-	      m.assign (nm, tcell);
+		  if (error_state)
+		    {
+		      error ("load: internal error loading struct elements");
+		      return false;
+		    }
+
+		  m.assign (nm, tcell);
+		}
 	    }
 
 	  if (is) 
@@ -1111,15 +1116,20 @@ octave_struct::load_binary (std::istream& is, bool swap,
 	    break;
 
 	  // Try for some backward compatibility...
-	  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-	  if (error_state)
+	  if (t2.is_cell () && t2.length() > 1)
+	    m.assign (nm, t2);
+	  else
 	    {
-	      error ("load: internal error loading struct elements");
-	      return false;
-	    }
+	      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
+ 
+	      if (error_state)
+		{
+		  error ("load: internal error loading struct elements");
+		  return false;
+		}
 
-	  m.assign (nm, tcell);
+	      m.assign (nm, tcell);
+	    }
 	}
 
       if (is) 
@@ -1197,15 +1207,20 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
       octave_value t2 = dsub.tc;
 
       // Try for some backward compatibility...
-      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-      if (error_state)
+      if (t2.is_cell () && t2.length() > 1)
+	m.assign (dsub.name, t2);
+      else
 	{
-	  error ("load: internal error loading struct elements");
-	  return false;
-	}
+	  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
+ 
+	  if (error_state)
+	    {
+	      error ("load: internal error loading struct elements");
+	      return false;
+	    }
 
-      m.assign (dsub.name, tcell);
+	  m.assign (dsub.name, tcell);
+	}
 
       if (have_h5giterate_bug)
 	current_item++;  // H5Giterate returned the last index processed

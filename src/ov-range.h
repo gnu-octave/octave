@@ -114,6 +114,9 @@ public:
   octave_value reshape (const dim_vector& new_dims) const
     { return NDArray (array_value().reshape (new_dims)); }
 
+  octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return NDArray (array_value().permute (vec, inv)); }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

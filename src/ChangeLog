@@ -1,5 +1,7 @@
 2005-08-30  John W. Eaton  <jwe@octave.org>
 
+	* ov-range.h (octave_range::permute): New function.
+
 	* ov-struct.cc (octave_struct::load_ascii,
 	octave_struct::load_binary, octave_struct::load_hdf5): Try harder
 	to read old-style files correctly.

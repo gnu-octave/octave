@@ -23,16 +23,15 @@
 ## For matrix arguments, return a row vector contaning the variance for
 ## each column.
 ##
-## The argument @var{opt} determines the type of normalization to use. Valid 
-## values are
+## The argument @var{opt} determines the type of normalization to use.
+## Valid values are
 ##
 ## @table @asis 
 ## @item 0:
-##   normalizes with N-1, provides the square root of best unbiased estimator
-##   of the variance [default]
+## Normalizes with N-1, provides the best unbiased estimator of the
+## variance [default].
 ## @item 1:
-##   normalizes with N, this provides the square root of the second moment
-##   around the mean
+## Normalizes with N, this provides the second moment around the mean.
 ## @end table
 ##
 ## The third argument @var{dim} determines the dimension along which the 

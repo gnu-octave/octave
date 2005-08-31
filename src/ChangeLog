@@ -1,3 +1,11 @@
+2005-08-31  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.cc (Octave_map::index): Don't crash if index list is empty.
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):
+	Likewise. 
+
+	* oct-map.h (Octave_map::ndims): New function.
+
 2005-08-30  John W. Eaton  <jwe@octave.org>
 
 	* ov-range.h (octave_range::permute): New function.

@@ -336,15 +336,21 @@ Octave_map::index (const octave_value_list& idx)
 {
   Octave_map retval;
 
-  for (iterator p = begin (); p != end (); p++)
+  if (idx.length () > 0)
     {
-      Cell tmp = contents(p).index (idx);
+      for (iterator p = begin (); p != end (); p++)
+	{
+	  Cell tmp = contents(p).index (idx);
 
-      if (error_state)
-	break;
+	  if (error_state)
+	    break;
 
-      retval.assign (key(p), tmp);
+	  retval.assign (key(p), tmp);
+	}
     }
+  else
+    error ("invalid number of indices (= 0) for %d-dimensional struct array",
+	   ndims ());
 
   return error_state ? Octave_map () : retval;
 }

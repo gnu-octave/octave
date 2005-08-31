@@ -1,3 +1,9 @@
+2005-08-31  Daniel  <durbano@shbano.com>
+
+	* special-matrix/invhilb.m, statistics/base/iqr.m,
+	control/system/is_controllable.m, set/ismember.m: Doc fixes.
+	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
+
 2005-08-29  Bill Denney <denney@seas.upenn.edu>
 
 	* image/saveimage.m: Open output file in binary mode.

@@ -121,6 +121,8 @@ Octave_map
 
   dim_vector dims (void) const { return dimensions; }
 
+  int ndims (void) const { return dimensions.length (); }
+
   Octave_map reshape (const dim_vector& new_dims) const;
 
   Octave_map resize (const dim_vector& dv) const;

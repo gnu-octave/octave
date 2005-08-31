@@ -111,6 +111,10 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
       }
       break;
 
+    case 0:
+      error ("invalid number of indices (= 0) for %d-dimensional character array", matrix.ndims ());
+      break;
+
     default:
       {
 	Array<idx_vector> idx_vec (len);

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} invhilb (@var{n})
 ## Return the inverse of a Hilbert matrix of order @var{n}.  This can be 
-## computed computed exactly using
+## computed exactly using
 ## @tex
 ## $$\eqalign{
 ##   A_{ij} &= -1^{i+j} (i+j-1)

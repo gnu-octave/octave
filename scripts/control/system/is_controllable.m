@@ -30,7 +30,7 @@
 ## @itemx b
 ## @var{n} by @var{n}, @var{n} by @var{m} matrices, respectively
 ## @item tol
-## optional roundoff paramter.  default value: @code{10*eps}
+## optional roundoff parameter.  Default value: @code{10*eps}
 ## @end table
 ##
 ## @strong{Outputs}

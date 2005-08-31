@@ -23,7 +23,7 @@
 ## difference between the upper and lower quartile, of the input data.
 ##
 ## If @var{x} is a matrix, do the above for first non singleton
-## dimension of @var{x}.. If the option @var{dim} argument is given,
+## dimension of @var{x}. If the option @var{dim} argument is given,
 ## then operate along this dimension.
 ## @end deftypefn
 

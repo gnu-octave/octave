@@ -1,3 +1,8 @@
+2005-08-31  Pascal A. Dupuis  <Pascal.Dupuis@esat.kuleuven.be>
+
+	* emacs/octave-inf.el (inferior-octave-startup): Call
+	inferior-octave-resync-dirs here.
+
 2005-07-14  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (SH_LDFLAGS): Add -Wl,--enable-auto-image-base for

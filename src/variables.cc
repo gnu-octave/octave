@@ -1008,7 +1008,12 @@ symbol_out_of_date (symbol_record *sr)
 
       octave_function *fcn = ans.function_value (true);
 
-      if (fcn)
+      // No need to check nested functions.  They can only be executed
+      // from within the parent function the contains them.  Parent
+      // and nested functions will be updated simultaneously when we
+      // check the parent.
+
+      if (fcn && ! fcn->is_nested_function ())
 	{
 	  std::string ff = fcn->fcn_file_name ();
 

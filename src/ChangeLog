@@ -1,3 +1,7 @@
+2005-09-01  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_out_of_date): Don't check nested functions.
+
 2005-08-31  John W. Eaton  <jwe@octave.org>
 
 	* oct-map.cc (Octave_map::index): Don't crash if index list is empty.

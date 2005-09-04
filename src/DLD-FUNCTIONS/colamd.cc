@@ -40,36 +40,43 @@ Boston, MA 02110-1301, USA.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
-
 // External COLAMD functions in C
 extern "C" {
 #include "COLAMD/colamd.h"
 }
 
+#ifdef IDX_TYPE_LONG
+#define COLAMD_NAME(name) colamd_l ## name
+#define SYMAMD_NAME(name) symamd_l ## name
+#else
+#define COLAMD_NAME(name) colamd ## name
+#define SYMAMD_NAME(name) symamd ## name
+#endif
+
 // The symmetric column elimination tree code take from the Davis LDL code. 
 // Copyright given elsewhere in this file.
 static 
-void symetree (const int *ridx, const int *cidx, int *Parent, int *P, int n)
+void symetree (const octave_idx_type *ridx, const octave_idx_type *cidx, 
+	       octave_idx_type *Parent, octave_idx_type *P, octave_idx_type n)
 {
-  OCTAVE_LOCAL_BUFFER (int, Flag, n);
-  OCTAVE_LOCAL_BUFFER (int, Pinv, (P ? n : 0));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Flag, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Pinv, (P ? n : 0));
   if (P)
     // If P is present then compute Pinv, the inverse of P
-    for (int k = 0 ; k < n ; k++)
+    for (octave_idx_type k = 0 ; k < n ; k++)
       Pinv [P [k]] = k ;
 
-  for (int k = 0 ; k < n ; k++)
+  for (octave_idx_type k = 0 ; k < n ; k++)
     {
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
       Parent [k] = n ;	              // parent of k is not yet known 
       Flag [k] = k ;		      // mark node k as visited 
-      int kk = (P) ? (P [k]) : (k) ;  // kth original, or permuted, column
-      int p2 = cidx [kk+1] ;
-      for (int p = cidx [kk] ; p < p2 ; p++)
+      octave_idx_type kk = (P) ? (P [k]) : (k) ;  // kth original, or permuted, column
+      octave_idx_type p2 = cidx [kk+1] ;
+      for (octave_idx_type p = cidx [kk] ; p < p2 ; p++)
 	{
 	  // A (i,k) is nonzero (original or permuted A)
-	  int i = (Pinv) ? (Pinv [ridx [p]]) : (ridx [p]) ;
+	  octave_idx_type i = (Pinv) ? (Pinv [ridx [p]]) : (ridx [p]) ;
 	  if (i < k)
 	    {
 	      // follow path from i to root of etree, stop at flagged node 
@@ -87,23 +94,23 @@ void symetree (const int *ridx, const int *cidx, int *Parent, int *P, int n)
 
 // The elimination tree post-ordering code below is taken from SuperLU
 static inline
-int make_set (int i, int *pp)
+octave_idx_type make_set (octave_idx_type i, octave_idx_type *pp)
 {
   pp[i] = i;
   return i;
 }
 
 static inline
-int link (int s, int t, int *pp)
+octave_idx_type link (octave_idx_type s, octave_idx_type t, octave_idx_type *pp)
 {
   pp[s] = t;
   return t;
 }
 
 static inline
-int find (int i, int *pp)
+octave_idx_type find (octave_idx_type i, octave_idx_type *pp)
 {
-  register int p, gp;
+  register octave_idx_type p, gp;
     
   p = pp[i];
   gp = pp[p];
@@ -117,9 +124,11 @@ int find (int i, int *pp)
 }
 
 static
-int etdfs (int v, int *first_kid, int *next_kid, int *post, int postnum)
+octave_idx_type etdfs (octave_idx_type v, octave_idx_type *first_kid, 
+		       octave_idx_type *next_kid, octave_idx_type *post, 
+		       octave_idx_type postnum)
 {
-  for (int w = first_kid[v]; w != -1; w = next_kid[w]) {
+  for (octave_idx_type w = first_kid[v]; w != -1; w = next_kid[w]) {
     postnum = etdfs (w, first_kid, next_kid, post, postnum);
   }
   post[postnum++] = v;
@@ -128,17 +137,17 @@ int etdfs (int v, int *first_kid, int *next_kid, int *post, int postnum)
 }
 
 static
-void TreePostorder(int n, int *parent, int *post)
+void TreePostorder(octave_idx_type n, octave_idx_type *parent, octave_idx_type *post)
 {
   // Allocate storage for working arrays and results
-  OCTAVE_LOCAL_BUFFER (int, first_kid, n+1);
-  OCTAVE_LOCAL_BUFFER (int, next_kid, n+1);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, first_kid, n+1);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, next_kid, n+1);
 
   // Set up structure describing children
-  for (int v = 0; v <= n; first_kid[v++] = -1);
-  for (int v = n-1; v >= 0; v--) 
+  for (octave_idx_type v = 0; v <= n; first_kid[v++] = -1);
+  for (octave_idx_type v = n-1; v >= 0; v--) 
     {
-      int dad = parent[v];
+      octave_idx_type dad = parent[v];
       next_kid[v] = first_kid[dad];
       first_kid[dad] = v;
     }
@@ -148,19 +157,20 @@ void TreePostorder(int n, int *parent, int *post)
 }
 
 static 
-void coletree (const int *ridx, const int *colbeg, int *colend, 
-	       int *parent, int nr, int nc)
+void coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
+	       octave_idx_type *colend, octave_idx_type *parent, 
+	       octave_idx_type nr, octave_idx_type nc)
 {
-  OCTAVE_LOCAL_BUFFER (int, root, nc);
-  OCTAVE_LOCAL_BUFFER (int, pp, nc);
-  OCTAVE_LOCAL_BUFFER (int, firstcol, nr);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, root, nc);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, pp, nc);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, firstcol, nr);
 
   // Compute firstcol[row] = first nonzero column in row
-  for (int row = 0; row < nr; firstcol[row++] = nc);
-  for (int col = 0; col < nc; col++) 
-    for (int p = colbeg[col]; p < colend[col]; p++) 
+  for (octave_idx_type row = 0; row < nr; firstcol[row++] = nc);
+  for (octave_idx_type col = 0; col < nc; col++) 
+    for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
       {
-	int row = ridx[p];
+	octave_idx_type row = ridx[p];
 	if (firstcol[row] > col)
 	  firstcol[row] = col;
       }
@@ -169,18 +179,18 @@ void coletree (const int *ridx, const int *colbeg, int *colend,
   // except use (firstcol[r],c) in place of an edge (r,c) of A.
   // Thus each row clique in A'*A is replaced by a star
   // centered at its first vertex, which has the same fill.
-  for (int col = 0; col < nc; col++) 
+  for (octave_idx_type col = 0; col < nc; col++) 
     {
-      int cset = make_set (col, pp);
+      octave_idx_type cset = make_set (col, pp);
       root[cset] = col;
       parent[col] = nc; 
-      for (int p = colbeg[col]; p < colend[col]; p++) 
+      for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
 	{
-	  int row = firstcol[ridx[p]];
+	  octave_idx_type row = firstcol[ridx[p]];
 	  if (row >= col) 
 	    continue;
-	  int rset = find (row, pp);
-	  int rroot = root[rset];
+	  octave_idx_type rset = find (row, pp);
+	  octave_idx_type rroot = root[rset];
 	  if (rroot != col) 
 	    {
 	      parent[rroot] = col;
@@ -190,8 +200,6 @@ void coletree (const int *ridx, const int *colbeg, int *colend,
 	}
     }
 }
-
-#endif
 
 DEFUN_DLD (colamd, args, nargout,
     "-*- texinfo -*-\n\
@@ -208,14 +216,15 @@ The Cholesky factorization of @code{@var{s} (:,@var{p})' * @var{s}\n\
 (:,@var{p})} also tends to be sparser than that of @code{@var{s}' *\n\
 @var{s}}.\n\
 \n\
-@var{knobs} is an optional two-element input vector. If @var{s} is\n\
-m-by-n, then rows with more than @code{(@var{knobs} (1)) * @var{n}}\n\
-entries are ignored.  Columns with more than @code{(@var{knobs} (2)) *\n\
-@var{m}} entries are removed prior to ordering, and ordered last in the\n\
-output permutation @var{p}. If the knobs parameter is not present, then\n\
-0.5 is used instead, for both @code{@var{knobs} (1)} and\n\
-@code{@var{knobs} (2)}. @code{@var{knobs} (3)} controls the printing of\n\
-statistics and error messages.\n\
+@var{knobs} is an optional one- to three-element input vector.  If @var{s} is\n\
+m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))} entries\n\
+are ignored. Columns with more than @code{max(16,knobs(2)*sqrt(min(m,n)))}\n\
+entries are removed prior to ordering, and ordered last in the output\n\
+permutation @var{p}. Only completely dense rows or columns are removed\n\
+if @code{@var{knobs} (1)} and @code{@var{knobs} (2)} are < 0, respectively.\n\
+If @code{@var{knobs} (3)} is nonzero, @var{stats} and @var{knobs} are\n\
+printed.  The default is @code{@var{knobs} = [10 10 0]}.  Note that\n\
+@var{knobs} differs from earlier versions of colamd\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{s}. Ordering\n\
@@ -261,9 +270,6 @@ Ng, Oak Ridge National Laboratory. (see\n\
 @seealso{colperm, symamd}")
 {
   octave_value_list retval;
-
-#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
-
   int nargin = args.length ();
   int spumoni = 0;
  
@@ -272,8 +278,8 @@ Ng, Oak Ridge National Laboratory. (see\n\
   else
     {
       // Get knobs
-      OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
-      colamd_set_defaults (knobs);
+      OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);      
+      COLAMD_NAME (_set_defaults) (knobs);
 
       // Check for user-passed knobs
       if (nargin == 2)
@@ -282,24 +288,45 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	  int nel_User_knobs = User_knobs.length ();
 	  
 	  if (nel_User_knobs > 0) 
-	    knobs [COLAMD_DENSE_ROW] = User_knobs (COLAMD_DENSE_ROW);
+	    knobs [COLAMD_DENSE_ROW] = User_knobs (0);
 	  if (nel_User_knobs > 1) 
-	    knobs [COLAMD_DENSE_COL] = User_knobs (COLAMD_DENSE_COL) ;
+	    knobs [COLAMD_DENSE_COL] = User_knobs (1) ;
 	  if (nel_User_knobs > 2) 
 	    spumoni = (int) User_knobs (2);
-	}
 
-      // print knob settings if spumoni is set
-      if (spumoni > 0)
-	{
-	  octave_stdout << "colamd: dense row fraction: " 
-			<< knobs [COLAMD_DENSE_ROW] << std::endl;
-	  octave_stdout << "colamd: dense col fraction: " 
-			<< knobs [COLAMD_DENSE_COL] << std::endl;
+	  // print knob settings if spumoni is set
+	  if (spumoni)
+	    {
+
+	      octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION << "."
+			    <<  COLAMD_SUB_VERSION << ", " << COLAMD_DATE << ":\n";
+
+	      if (knobs [COLAMD_DENSE_ROW] >= 0)
+		octave_stdout << "knobs(1): " << User_knobs (0) 
+			      << ", rows with > max(16,"
+			      << knobs [COLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
+			      << " entries removed\n";
+	      else
+		octave_stdout << "knobs(1): " << User_knobs (0)
+			      << ", only completely dense rows removed\n";
+
+	      if (knobs [COLAMD_DENSE_COL] >= 0)
+		octave_stdout << "knobs(2): " << User_knobs (1) 
+			      << ", cols with > max(16,"
+			      << knobs [COLAMD_DENSE_COL] << "*sqrt(size(A)))"
+			      << " entries removed\n";
+	      else
+		octave_stdout << "knobs(2): " << User_knobs (1)
+			      << ", only completely dense columns removed\n";
+
+	      octave_stdout << "knobs(3): " << User_knobs (2) 
+			    << ", statistics and knobs printed\n";
+
+	    }
 	}
       
-      int n_row, n_col, nnz;
-      int *ridx, *cidx;
+      octave_idx_type n_row, n_col, nnz;
+      octave_idx_type *ridx, *cidx;
       SparseComplexMatrix scm;
       SparseMatrix sm;
 
@@ -340,30 +367,30 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	}
 
       // Allocate workspace for colamd
-      OCTAVE_LOCAL_BUFFER (int, p, n_col+1);
-      for (int i = 0; i < n_col+1; i++)
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
+      for (octave_idx_type i = 0; i < n_col+1; i++)
 	p[i] = cidx [i];
 
-      int Alen = colamd_recommended (nnz, n_row, n_col);
-      OCTAVE_LOCAL_BUFFER (int, A, Alen);
-      for (int i = 0; i < nnz; i++)
+      octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
+      for (octave_idx_type i = 0; i < nnz; i++)
 	A[i] = ridx [i];
 
       // Order the columns (destroys A)
-      OCTAVE_LOCAL_BUFFER (int, stats, COLAMD_STATS);
-      if (!colamd (n_row, n_col, Alen, A, p, knobs, stats))
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
+      if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
 	{
-	  colamd_report (stats) ;
+	  COLAMD_NAME (_report) (stats) ;
 	  error ("colamd: internal error!");
 	  return retval;
 	}
 
       // column elimination tree post-ordering (reuse variables)
-      OCTAVE_LOCAL_BUFFER (int, colbeg, n_col + 1);
-      OCTAVE_LOCAL_BUFFER (int, colend, n_col + 1);
-      OCTAVE_LOCAL_BUFFER (int, etree, n_col + 1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, colbeg, n_col + 1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, colend, n_col + 1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
 
-      for (int i = 0; i < n_col; i++)
+      for (octave_idx_type i = 0; i < n_col; i++)
 	{
 	  colbeg[i] = cidx[p[i]];
 	  colend[i] = cidx[p[i]+1];
@@ -376,20 +403,20 @@ Ng, Oak Ridge National Laboratory. (see\n\
 
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
-      for (int i = 0; i < n_col; i++)
+      for (octave_idx_type i = 0; i < n_col; i++)
 	out_perm(i) = p [colbeg [i]] + 1;
 
       retval (0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
-	colamd_report (stats) ;
+	COLAMD_NAME (_report) (stats) ;
 
       // Return the stats vector
       if (nargout == 2)
 	{
 	  NDArray out_stats (dim_vector (1, COLAMD_STATS));
-	  for (int i = 0 ; i < COLAMD_STATS ; i++)
+	  for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
 	    out_stats (i) = stats [i] ;
 	  retval(1) = out_stats;
 
@@ -400,12 +427,6 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	  out_stats (COLAMD_INFO2) ++ ; 
 	}
     }
-
-#else
-
-  error ("colamd: not available in this version of Octave");
-
-#endif
 
   return retval;
 }
@@ -424,12 +445,13 @@ symmetric indefinite matrices too. The matrix @var{s} is assumed to be\n\
 symmetric; only the strictly lower triangular part is referenced. @var{s}\n\
 must be square.\n\
 \n\
-@var{knobs} is an optional input argument. If @var{s} is n-by-n, then\n\
-rows and columns with more than @code{@var{knobs} (1) * @var{n}} entries\n\
-are removed prior to ordering, and ordered last in the output permutation\n\
-@var{p}. If the @var{knobs} parameter is not present, then the default of\n\
-0.5 is used instead. @code{@var{knobs} (2)} controls the printing of\n\
-statistics and error messages.\n\
+@var{knobs} is an optional one- to two-element input vector.  If @var{s} is\n\
+n-by-n, then rows and columns with more than\n\
+@code{max(16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
+and ordered last in the output permutation @var{p}. No rows/columns are\n\
+removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,\n\
+@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs} \n\
+= [10 0]}.  Note that @var{knobs} differs from earlier versions of symamd.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{s}. Ordering\n\
@@ -475,9 +497,6 @@ Ng, Oak Ridge National Laboratory. (see\n\
 @seealso{colperm, colamd}")
 {
   octave_value_list retval;
-
-#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
-
   int nargin = args.length ();
   int spumoni = 0;
  
@@ -487,7 +506,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
     {
       // Get knobs
       OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
-      colamd_set_defaults (knobs);
+      COLAMD_NAME (_set_defaults) (knobs);
 
       // Check for user-passed knobs
       if (nargin == 2)
@@ -506,8 +525,8 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	octave_stdout << "symamd: dense row/col fraction: " 
 		      << knobs [COLAMD_DENSE_ROW] << std::endl;
       
-      int n_row, n_col, nnz;
-      int *ridx, *cidx;
+      octave_idx_type n_row, n_col, nnz;
+      octave_idx_type *ridx, *cidx;
       SparseMatrix sm;
       SparseComplexMatrix scm;
 
@@ -553,39 +572,39 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	}
 
       // Allocate workspace for symamd
-      OCTAVE_LOCAL_BUFFER (int, perm, n_col+1);
-      OCTAVE_LOCAL_BUFFER (int, stats, COLAMD_STATS);
-      if (!symamd (n_col, ridx, cidx, perm, knobs, stats, &calloc, &free))
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
+      if (!SYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats, &calloc, &free))
 	{
-	  symamd_report (stats) ;
+	  SYMAMD_NAME (_report) (stats) ;
 	  error ("symamd: internal error!") ;
 	  return retval;
 	}
 
       // column elimination tree post-ordering
-      OCTAVE_LOCAL_BUFFER (int, etree, n_col + 1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
       symetree (ridx, cidx, etree, perm, n_col);
 
       // Calculate the tree post-ordering
-      OCTAVE_LOCAL_BUFFER (int, post, n_col + 1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, post, n_col + 1);
       TreePostorder (n_col, etree, post);
 
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
-      for (int i = 0; i < n_col; i++)
+      for (octave_idx_type i = 0; i < n_col; i++)
 	out_perm(i) = perm [post [i]] + 1;
 
       retval (0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
-	symamd_report (stats) ;
+	SYMAMD_NAME (_report) (stats) ;
 
       // Return the stats vector
       if (nargout == 2)
 	{
 	  NDArray out_stats (dim_vector (1, COLAMD_STATS));
-	  for (int i = 0 ; i < COLAMD_STATS ; i++)
+	  for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
 	    out_stats (i) = stats [i] ;
 	  retval(1) = out_stats;
 
@@ -596,12 +615,6 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	  out_stats (COLAMD_INFO2) ++ ; 
 	}
     }
-
-#else
-
-  error ("symamd: not available in this version of Octave");
-
-#endif
 
   return retval;
 }
@@ -624,16 +637,14 @@ permutations on the tree.\n\
 {
   octave_value_list retval;
 
-#if SIZEOF_INT == SIZEOF_OCTAVE_IDX_TYPE
-
   int nargin = args.length ();
 
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
     usage ("etree: incorrect number of input and/or output arguments");
   else
     {
-      int n_row, n_col, nnz;
-      int *ridx, *cidx;
+      octave_idx_type n_row, n_col, nnz;
+      octave_idx_type *ridx, *cidx;
       bool is_sym = true;
       SparseMatrix sm;
       SparseComplexMatrix scm;
@@ -680,7 +691,7 @@ permutations on the tree.\n\
 	  }
 
       // column elimination tree post-ordering (reuse variables)
-      OCTAVE_LOCAL_BUFFER (int, etree, n_col + 1);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
       
 
       if (is_sym)
@@ -694,10 +705,10 @@ permutations on the tree.\n\
 	}
       else
 	{
-	  OCTAVE_LOCAL_BUFFER (int, colbeg, n_col);
-	  OCTAVE_LOCAL_BUFFER (int, colend, n_col);
+	  OCTAVE_LOCAL_BUFFER (octave_idx_type, colbeg, n_col);
+	  OCTAVE_LOCAL_BUFFER (octave_idx_type, colend, n_col);
 
-	  for (int i = 0; i < n_col; i++)
+	  for (octave_idx_type i = 0; i < n_col; i++)
 	    {
 	      colbeg[i] = cidx[i];
 	      colend[i] = cidx[i+1];
@@ -707,7 +718,7 @@ permutations on the tree.\n\
 	}
 
       NDArray tree (dim_vector (1, n_col));
-      for (int i = 0; i < n_col; i++)
+      for (octave_idx_type i = 0; i < n_col; i++)
 	// We flag a root with n_col while Matlab does it with zero
 	// Convert for matlab compatiable output
 	if (etree[i] == n_col)
@@ -720,22 +731,16 @@ permutations on the tree.\n\
       if (nargout == 2)
 	{
 	  // Calculate the tree post-ordering
-	  OCTAVE_LOCAL_BUFFER (int, post, n_col + 1);
+	  OCTAVE_LOCAL_BUFFER (octave_idx_type, post, n_col + 1);
 	  TreePostorder (n_col, etree, post);
 
 	  NDArray postorder (dim_vector (1, n_col));
-	  for (int i = 0; i < n_col; i++)
+	  for (octave_idx_type i = 0; i < n_col; i++)
 	    postorder (i) = post[i] + 1;
 
 	  retval (1) = postorder;
 	}
     }
-
-#else
-
-  error ("etree: not available in this version of Octave");
-
-#endif
 
   return retval;
 }

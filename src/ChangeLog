@@ -1,3 +1,10 @@
+2005-09-04  David Bateman <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/colamd.c (COLAMD_NAME, SYMAMD_NAME): New macros
+	(symetree, make_set, link, finf, etdfs, TreePostorder, coletree,
+	Fcolamd, Fsymamd, Fetree): Update for 64-bit indexing and colamd
+	versin 2.4.
+
 2005-09-01  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_out_of_date): Don't check nested functions.

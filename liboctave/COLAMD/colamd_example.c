@@ -2,7 +2,8 @@
 /* === colamd and symamd example ============================================ */
 /* ========================================================================== */
 
-/*
+/* COLAMD Version 2.4.
+
     colamd example of use, to order the columns of a 5-by-4 matrix with
     11 nonzero entries in the following nonzero pattern, with default knobs.
 
@@ -24,8 +25,6 @@
 
     (where x denotes a nonzero value).
 
-    September 8, 2003.  Version 2.3.
-
     See http://www.cise.ufl.edu/research/sparse/colamd/ (the colamd.c file)
     for the routines this program calls, and for the License.
 */
@@ -38,12 +37,12 @@
 #define A_NNZ 11
 #define A_NROW 5
 #define A_NCOL 4
-#define ALEN (COLAMD_RECOMMENDED (A_NNZ, A_NCOL, A_NROW))
+#define ALEN 150
 
 #define B_NNZ 4
 #define B_N 5
 
-int main (int argc, char **argv)
+int main (void)
 {
 
     /* ====================================================================== */

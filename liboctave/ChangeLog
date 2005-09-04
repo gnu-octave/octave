@@ -1,3 +1,9 @@
+2005-09-04  David Bateman <dbateman@free.fr>
+
+	* COLAMD: Update version of colamd to v2.4.
+	* COLAMD.files: Add colamd_global.c to COLAMD_SRC and second build of 
+	colamd.c for long version.
+
 2005-08-25  David Bateman <dbateman@free.fr>
 
 	* Sparse-op-defs.h (FULL_SPARSE_MUL, SPARSE_FULL_MUL): Macro for

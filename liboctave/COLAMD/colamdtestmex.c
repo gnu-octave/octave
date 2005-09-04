@@ -2,7 +2,8 @@
 /* === colamdtest mexFunction =============================================== */
 /* ========================================================================== */
 
-/*
+/* COLAMD Version 2.4.
+ 
     This MATLAB mexFunction is for testing only.  It is not meant for
     production use.  See colamdmex.c instead.
 
@@ -10,28 +11,11 @@
 
 	[ P, stats ] = colamdtest (A, knobs) ;
 
-    Returns a permutation vector P such that the LU factorization of A (:,P)
-    tends to be sparser than that of A.  The Cholesky factorization of
-    (A (:,P))'*(A (:,P)) will also tend to be sparser than that of A'*A.
-    This routine provides the same functionality as COLMMD, but is much faster
-    and returns a better permutation vector.  Note that the COLMMD m-file in
-    MATLAB 5.2 also performs a column elimination tree post-ordering.  This
-    mexFunction does not do this post-ordering.  This mexFunction is a
-    replacement for the p = sparsfun ('colmmd', A) operation.
+    See colamd.m for a description.  knobs is required.
 
-    The knobs and stats vectors are optional:
-
-	knobs (1)	rows with more than (knobs (1))*n_col entries
-			are removed prior to ordering.  If knobs is not present,
-			then the default is used (0.5).
-
-	knobs (2)	columns with more than (knobs (2))*n_row entries
-			are removed prior to ordering, and placed last in the
-			column permutation.  If knobs is not present,
-			then the default is used (0.5).
-
-	knobs (3)	print level, similar to spparms ('spumoni')
-
+	knobs (1)	dense row control
+	knobs (2)	dense column control
+	knobs (3)	spumoni
 	knobs (4)	for testing only.  Controls the workspace used by
 			colamd.
 
@@ -39,42 +23,12 @@
 			jumbled prior to calling colamd, to test its error
 			handling capability.
 
-	stats (1)	the number of dense (or empty) rows ignored
-
-	stats (2)	the number of dense (or empty) columms.  These
-			are ordered last, in their natural order.
-
-	stats (3)	the number of garbage collections performed.
-
-	stats (4)	return status:
-
-			0:  matrix is a valid MATLAB matrix.
-
-			1:  matrix has duplicate entries or unsorted columns.
-			    This should not occur in a valid MATLAB matrix,
-			    but the ordering proceeded anyway by sorting the
-			    row indices in each column and by ignoring the
-			    duplicate row indices in each column.  See
-			    stats (5:7) for more information.
-
-	stats (5)	highest numbered column that is unsorted or has
-			duplicate entries (zero if none)
-
-	stats (6)	last seen duplicate or unsorted row index
-			(zero if none)
-
-	stats (7)	number of duplicate or unsorted row indices
-
     Authors:
 
 	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (davis@cise.ufl.edu), University of Florida.  The algorithm was
+	Davis (davis at cise.ufl.edu), University of Florida.  The algorithm was
 	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
 	Ng, Oak Ridge National Laboratory.
-
-    Date:
-
-	September 8, 2003.  Version 2.3.
 
     Acknowledgements:
 
@@ -83,8 +37,7 @@
 
     Notice:
 
-	Copyright (c) 1998-2003 by the University of Florida.
-	All Rights Reserved.
+	Copyright (c) 1998-2005, Timothy A. Davis, All Rights Reserved.
 
 	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
 	file) for the License.
@@ -157,6 +110,8 @@ void mexFunction
     int *stats ;
     stats = stats2 ;
 
+    colamd_printf = mexPrintf ;	/* COLAMD printf routine */
+
     /* === Check inputs ===================================================== */
 
     if (nrhs < 1 || nrhs > 2 || nlhs < 0 || nlhs > 2)
@@ -170,7 +125,7 @@ void mexFunction
 	mexErrMsgTxt ("colamdtest: knobs are required") ;
     }
     /* for testing we require all 5 knobs */
-    if (mxGetNumberOfElements (prhs [1]) < 5)
+    if (mxGetNumberOfElements (prhs [1]) != 5)
     {
 	mexErrMsgTxt ("colamd: must have all 5 knobs for testing") ;
     }
@@ -185,18 +140,38 @@ void mexFunction
     {
 	in_knobs = mxGetPr (prhs [1]) ;
 	i = mxGetNumberOfElements (prhs [1]) ;
-	if (i > 0) knobs [COLAMD_DENSE_ROW] = in_knobs [COLAMD_DENSE_ROW] ;
-	if (i > 1) knobs [COLAMD_DENSE_COL] = in_knobs [COLAMD_DENSE_COL] ;
+	if (i > 0) knobs [COLAMD_DENSE_ROW] = in_knobs [0] ;
+	if (i > 1) knobs [COLAMD_DENSE_COL] = in_knobs [1] ;
 	if (i > 2) spumoni = (int) in_knobs [2] ;
     }
 
     /* print knob settings if spumoni is set */
-    if (spumoni > 0)
+    if (spumoni)
     {
-	mexPrintf ("colamd: dense row fraction: %f\n",
-	    knobs [COLAMD_DENSE_ROW]) ;
-	mexPrintf ("colamd: dense col fraction: %f\n",
-	    knobs [COLAMD_DENSE_COL]) ;
+	mexPrintf ("\ncolamd version %d.%d, %s:\n",
+	    COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_DATE) ;
+	if (knobs [COLAMD_DENSE_ROW] >= 0)
+	{
+	    mexPrintf ("knobs(1): %g, rows with > max(16,%g*sqrt(size(A,2)))"
+		" entries removed\n", in_knobs [0], knobs [COLAMD_DENSE_ROW]) ;
+	}
+	else
+	{
+	    mexPrintf ("knobs(1): %g, only completely dense rows removed\n",
+		in_knobs [0]) ;
+	}
+	if (knobs [COLAMD_DENSE_COL] >= 0)
+	{
+	    mexPrintf ("knobs(2): %g, cols with > max(16,%g*sqrt(min(size(A)))"
+		" entries removed\n", in_knobs [1], knobs [COLAMD_DENSE_COL]) ;
+	}
+	else
+	{
+	    mexPrintf ("knobs(2): %g, only completely dense columns removed\n",
+		in_knobs [1]) ;
+	}
+	mexPrintf ("knobs(3): %g, statistics and knobs printed\n",
+	    in_knobs [2]) ;
     }
 
     /* === If A is full, convert to a sparse matrix ========================= */

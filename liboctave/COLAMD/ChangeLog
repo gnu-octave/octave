@@ -1,3 +1,31 @@
+Changes from Version 2.3 to 2.4 (Aug 30, 2005)
+
+	* Makefile now relies on ../UFconfig/UFconfig.mk
+
+	* changed the dense row/col detection.  The meaning of the knobs
+	    has thus changed.
+
+	* added an option to turn off aggressive absorption.  It was
+	    always on in versions 2.3 and earlier.
+
+	* added a #define'd version number
+
+	* added a function pointer (colamd_printf) for COLAMD's printing.
+
+	* added a -DNPRINT option, to turn off printing at compile-time.
+
+	* added a check for integer overflow in colamd_recommended
+
+	* minor changes to allow for more simpler 100% test coverage
+
+	* bug fix.  If symamd v2.3 fails to allocate its copy of the input
+	    matrix, then it erroneously frees a calloc'd workspace twice.
+	    This bug has no effect on the MATLAB symamd mexFunction, since
+	    mxCalloc terminates the mexFunction if it fails to allocate
+	    memory.  Similarly, UMFPACK is not affected because it does not
+	    use symamd.  The bug has no affect on the colamd ordering
+	    routine in v2.3.
+
     Changes from Version 2.2 to 2.3 (Sept. 8, 2003)
 
 	* removed the call to the MATLAB spparms ('spumoni') function.
@@ -38,7 +66,7 @@
 	No bugs were found in version 1.1.  These changes merely add new
 	functionality.
 
-    	* added the COLAMD_RECOMMENDED (nnz, n_row, n_col) macro.
+	* added the COLAMD_RECOMMENDED (nnz, n_row, n_col) macro.
 
 	* moved the output statistics, from A, to a separate output argument.
 		The arguments changed for the C-callable routines.

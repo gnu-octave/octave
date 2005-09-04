@@ -14,15 +14,16 @@
 %
 % For a description of the methods used, see the colamd.c file.
 %
-% September 8, 2003.  Version 2.3.
+% COLAMD Version 2.4.
 % http://www.cise.ufl.edu/research/sparse/colamd/
 %
+
+% Minor changes:  in MATLAB 7, symmmd and colmmd are flagged as "obsolete".
+% This demo checks if they exist, so it should still work when they are removed.
 
 %-------------------------------------------------------------------------------
 % Print the introduction, the help info, and compile the mexFunctions
 %-------------------------------------------------------------------------------
-
-more on
 
 fprintf (1, '\n-----------------------------------------------------------\n') ;
 fprintf (1, 'Colamd/symamd demo.') ;
@@ -38,15 +39,6 @@ fprintf (1, '\n-----------------------------------------------------------\n') ;
 fprintf (1, 'Symamd help information:') ;
 fprintf (1, '\n-----------------------------------------------------------\n') ;
 help symamd ;
-
-fprintf (1, '\n-----------------------------------------------------------\n') ;
-fprintf (1, 'colamd and symamd mexFunctions will now be compiled.') ;
-fprintf (1, '\n-----------------------------------------------------------\n') ;
-s = input ('\n\nHit any key (or type ''n'' to skip compilation): ', 's') ;
-if (~strcmp (s, 'n'))
-    disp ('mex -O colamdmex.c colamd.c') ; mex -O colamdmex.c colamd.c
-    disp ('mex -O symamdmex.c colamd.c') ; mex -O symamdmex.c colamd.c
-end
 
 %-------------------------------------------------------------------------------
 % Solving Ax=b
@@ -77,6 +69,7 @@ x = Q * (U \ (L \ (P * b))) ;
 fprintf (1, '\nFlop count for [L,U,P] = lu (A*Q):          %d\n', fl) ;
 fprintf (1, 'residual:                                     %e\n', norm (A*x-b));
 
+try
 fprintf (1, '\n\nSolving via lu (PAQ = LU), where Q is from colmmd:\n') ;
 q = colmmd (A) ;
 I = speye (n) ;
@@ -86,6 +79,9 @@ fl = luflops (L, U) ;
 x = Q * (U \ (L \ (P * b))) ;
 fprintf (1, '\nFlop count for [L,U,P] = lu (A*Q):          %d\n', fl) ;
 fprintf (1, 'residual:                                     %e\n', norm (A*x-b));
+catch
+fprintf (1, 'colmmd is obsolete\n') ;
+end
 
 fprintf (1, '\n\nSolving via lu (PA = LU), without regard for sparsity:\n') ;
 [L,U,P] = lu (A) ;
@@ -123,6 +119,7 @@ fprintf (1, 'colamd ordering quality: \n') ;
 fprintf (1, 'nz in Cholesky factors of A(:,p)''A(:,p):  %d\n', sum (lnz)) ;
 fprintf (1, 'flop count for Cholesky of A(:,p)''A(:,p): %d\n', sum (lnz.^2)) ;
 
+try
 tic ;
 p = colmmd (A) ;
 t = toc ;
@@ -131,6 +128,9 @@ fprintf (1, '\n\nColmmd run time:                          %f\n', t) ;
 fprintf (1, 'colmmd ordering quality: \n') ;
 fprintf (1, 'nz in Cholesky factors of A(:,p)''A(:,p):  %d\n', sum (lnz)) ;
 fprintf (1, 'flop count for Cholesky of A(:,p)''A(:,p): %d\n', sum (lnz.^2)) ;
+catch
+fprintf (1, 'colmmd is obsolete\n') ;
+end
 
 %-------------------------------------------------------------------------------
 % Large demo for symamd
@@ -157,6 +157,7 @@ fprintf (1, 'symamd ordering quality: \n') ;
 fprintf (1, 'nz in Cholesky factors of A(p,p):  %d\n', sum (lnz)) ;
 fprintf (1, 'flop count for Cholesky of A(p,p): %d\n', sum (lnz.^2)) ;
 
+try
 tic ;
 p = symmmd (A) ;
 t = toc ;
@@ -165,6 +166,6 @@ fprintf (1, '\n\nSymmmd run time:                   %f\n', t) ;
 fprintf (1, 'symmmd ordering quality: \n') ;
 fprintf (1, 'nz in Cholesky factors of A(p,p):  %d\n', sum (lnz)) ;
 fprintf (1, 'flop count for Cholesky of A(p,p): %d\n', sum (lnz.^2)) ;
-
-more off
-
+catch
+fprintf (1, 'symmmd is obsolete\n') ;
+end

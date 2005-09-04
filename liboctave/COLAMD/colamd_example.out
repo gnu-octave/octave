@@ -14,15 +14,16 @@ Column 2, with 4 entries:
 Column 3, with 2 entries:
     row 1
     row 3
-colamd: OK.  
-colamd: number of dense or empty rows ignored:           1
-colamd: number of dense or empty columns ignored:        2
+
+colamd version 2.4, Aug. 30, 2005: OK.  
+colamd: number of dense or empty rows ignored:           0
+colamd: number of dense or empty columns ignored:        0
 colamd: number of garbage collections performed:         0
 colamd column ordering:
 1st column: 1
-2nd column: 3
-3rd column: 0
-4th column: 2
+2nd column: 0
+3rd column: 2
+4th column: 3
 
 
 symamd 5-by-5 input matrix:
@@ -36,7 +37,8 @@ Column 2, with 0 entries:
 Column 3, with 1 entries:
     row 4
 Column 4, with 0 entries:
-symamd: OK.  
+
+symamd version 2.4, Aug. 30, 2005: OK.  
 symamd: number of dense or empty rows ignored:           0
 symamd: number of dense or empty columns ignored:        0
 symamd: number of garbage collections performed:         0

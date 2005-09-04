@@ -1,25 +1,71 @@
 function [p, stats] = symamd (S, knobs)
 %SYMAMD Symmetric approximate minimum degree permutation.
-%    P = SYMAMD (S) for a symmetric positive definite matrix S, returns the
+%    P = SYMAMD(S) for a symmetric positive definite matrix S, returns the
 %    permutation vector p such that S(p,p) tends to have a sparser Cholesky
 %    factor than S.  Sometimes SYMAMD works well for symmetric indefinite
-%    matrices too.  SYMAMD tends to be faster than SYMMMD and tends to return
-%    a better ordering.  The matrix S is assumed to be symmetric; only the
+%    matrices too.  The matrix S is assumed to be symmetric; only the
 %    strictly lower triangular part is referenced.   S must be square.
+%    Note that p = amd(S) is much faster and generates comparable orderings.
+%    The ordering is followed by an elimination tree post-ordering.
 %
-%    See also COLMMD, COLPERM, SPPARMS, COLAMD, SYMMMD, SYMRCM.
+%    See also AMD, CCOLAMD, CSYMAMD, COLAMD, COLPERM, SYMRCM.
 %
 %    Usage:  P = symamd (S)
-%            P = symamd (S, knobs)
-%            [P, stats] = symamd (S)
 %            [P, stats] = symamd (S, knobs)
 %
-%    knobs is an optional input argument.  If S is n-by-n, then rows and
-%    columns with more than knobs(1)*n entries are removed prior to ordering,
-%    and ordered last in the output permutation P. If the knobs parameter is not
-%    present, then the default of 0.5 is used instead.  knobs (2) controls the
-%    printing of statistics and error messages.
+%    knobs is an optional one- to two-element input vector.  If S is n-by-n,
+%    then rows and columns with more than max(16,knobs(1)*sqrt(n)) entries are
+%    removed prior to ordering, and ordered last in the output permutation P.
+%    No rows/columns are removed if knobs(1)<0.  If knobs(2) is nonzero, stats
+%    and knobs are printed.  The default is knobs = [10 0].  Note that knobs
+%    differs from earlier versions of symamd.
 %
+%    Type the command "type symamd" for a description of the optional stats
+%    output and for the copyright information.
+%
+%    Authors: S. Larimore and T. Davis, University of Florida.  Developed in
+%       collaboration with J. Gilbert and E. Ng.  Version 2.4.
+%
+%    Acknowledgements: This work was supported by the National Science
+%       Foundation, under grants DMS-9504974 and DMS-9803599.
+
+%    Notice:
+%
+%	Copyright (c) 1998-2005, Timothy A. Davis, All Rights Reserved.
+%
+%       See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
+%       file) for the License.
+%
+%    Availability:
+%
+%       The colamd, symamd, amd, ccolamd, and csymamd are available at
+%       http://www.cise.ufl.edu/research/sparse
+
+%-------------------------------------------------------------------------------
+% perform the symamd ordering:
+%-------------------------------------------------------------------------------
+
+if (nargout <= 1 && nargin == 1)
+    p = symamdmex (S) ;
+elseif (nargout <= 1 && nargin == 2)
+    p = symamdmex (S, knobs) ;
+elseif (nargout == 2 && nargin == 1)
+    [p, stats] = symamdmex (S) ;
+elseif (nargout == 2 && nargin == 2)
+    [p, stats] = symamdmex (S, knobs) ;
+else
+    error('MATLAB:symamd:WrongInputOrOutputNumber',...
+           'symamd:  incorrect number of input and/or output arguments.') ;
+end
+
+%-------------------------------------------------------------------------------
+% symmetric elimination tree post-ordering:
+%-------------------------------------------------------------------------------
+
+[ignore, q] = sparsfun ('symetree', S (p,p)) ;
+p = p (q) ;
+
+
 %    stats is an optional 20-element output vector that provides data about the
 %    ordering and the validity of the input matrix S.  Ordering statistics are
 %    in stats (1:3).  stats (1) = stats (2) is the number of dense or empty
@@ -50,59 +96,3 @@ function [p, stats] = symamd (S, knobs)
 %
 %    stats (8:20) is always zero in the current version of SYMAMD (reserved
 %    for future use).
-%
-%    The ordering is followed by a column elimination tree post-ordering.
-%
-%    Authors:
-%
-%	The authors of the code itself are Stefan I. Larimore and Timothy A.
-%	Davis (davis@cise.ufl.edu), University of Florida.  The algorithm was
-%	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
-%	Ng, Oak Ridge National Laboratory.
-%
-%    Date:
-%
-%	September 8, 2003.  Version 2.3.
-%
-%    Acknowledgements:
-%
-%	This work was supported by the National Science Foundation, under
-%	grants DMS-9504974 and DMS-9803599.
-
-%    Notice:
-%	Copyright (c) 1998-2003 by the University of Florida.
-%	All Rights Reserved.
-%
-%	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
-%	file) for the License.
-%
-%    Availability:
-%
-%	The colamd/symamd library is available at
-%
-%	    http://www.cise.ufl.edu/research/sparse/colamd/
-%
-
-%-------------------------------------------------------------------------------
-% perform the symamd ordering:
-%-------------------------------------------------------------------------------
-
-if (nargout <= 1 & nargin == 1)
-    p = symamdmex (S) ;
-elseif (nargout <= 1 & nargin == 2)
-    p = symamdmex (S, knobs) ;
-elseif (nargout == 2 & nargin == 1)
-    [p, stats] = symamdmex (S) ;
-elseif (nargout == 2 & nargin == 2)
-    [p, stats] = symamdmex (S, knobs) ;
-else
-    error ('symamd:  incorrect number of input and/or output arguments') ;
-end
-
-%-------------------------------------------------------------------------------
-% symmetric elimination tree post-ordering:
-%-------------------------------------------------------------------------------
-
-[ignore, q] = sparsfun ('symetree', S (p,p)) ;
-p = p (q) ;
-

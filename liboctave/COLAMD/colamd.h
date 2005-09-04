@@ -2,20 +2,17 @@
 /* === colamd/symamd prototypes and definitions ============================= */
 /* ========================================================================== */
 
-/*
+/* COLAMD Version 2.4
+
     You must include this file (colamd.h) in any routine that uses colamd,
     symamd, or the related macros and definitions.
 
     Authors:
 
 	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (davis@cise.ufl.edu), University of Florida.  The algorithm was
+	Davis (davis at cise.ufl.edu), University of Florida.  The algorithm was
 	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
 	Ng, Oak Ridge National Laboratory.
-
-    Date:
-
-	September 8, 2003.  Version 2.3.
 
     Acknowledgements:
 
@@ -24,8 +21,7 @@
 
     Notice:
 
-	Copyright (c) 1998-2003 by the University of Florida.
-	All Rights Reserved.
+	Copyright (c) 1998-2005, Timothy A. Davis, All Rights Reserved.
 
 	THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY
 	EXPRESSED OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
@@ -52,11 +48,45 @@
 #ifndef COLAMD_H
 #define COLAMD_H
 
+/* make it easy for C++ programs to include COLAMD */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* ========================================================================== */
 /* === Include files ======================================================== */
 /* ========================================================================== */
 
 #include <stdlib.h>
+
+/* ========================================================================== */
+/* === COLAMD version ======================================================= */
+/* ========================================================================== */
+
+/* COLAMD Version 2.4 and later will include the following definitions.
+ * As an example, to test if the version you are using is 2.4 or later:
+ *
+ * #ifdef COLAMD_VERSION
+ *	if (COLAMD_VERSION >= COLAMD_VERSION_CODE (2,4)) ...
+ * #endif
+ *
+ * This also works during compile-time:
+ *
+ *  #if defined(COLAMD_VERSION) && (COLAMD_VERSION >= COLAMD_VERSION_CODE (2,4))
+ *    printf ("This is version 2.4 or later\n") ;
+ *  #else
+ *    printf ("This is an early version\n") ;
+ *  #endif
+ *
+ * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
+ */
+
+#define COLAMD_DATE "Aug. 30, 2005"
+#define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define COLAMD_MAIN_VERSION 2
+#define COLAMD_SUB_VERSION 4
+#define COLAMD_VERSION \
+	COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
 
 /* ========================================================================== */
 /* === Knob and statistics definitions ====================================== */
@@ -73,6 +103,9 @@
 
 /* knobs [1] and stats [1]: dense column knob and output statistic. */
 #define COLAMD_DENSE_COL 1
+
+/* knobs [2]: aggressive absorption */
+#define COLAMD_AGGRESSIVE 2
 
 /* stats [2]: memory defragmentation count output statistic */
 #define COLAMD_DEFRAG_COUNT 2
@@ -100,94 +133,6 @@
 #define COLAMD_ERROR_out_of_memory		(-10)
 #define COLAMD_ERROR_internal_error		(-999)
 
-/* ========================================================================== */
-/* === Row and Column structures ============================================ */
-/* ========================================================================== */
-
-/* User code that makes use of the colamd/symamd routines need not directly */
-/* reference these structures.  They are used only for the COLAMD_RECOMMENDED */
-/* macro. */
-
-typedef struct Colamd_Col_struct
-{
-    int start ;		/* index for A of first row in this column, or DEAD */
-			/* if column is dead */
-    int length ;	/* number of rows in this column */
-    union
-    {
-	int thickness ;	/* number of original columns represented by this */
-			/* col, if the column is alive */
-	int parent ;	/* parent in parent tree super-column structure, if */
-			/* the column is dead */
-    } shared1 ;
-    union
-    {
-	int score ;	/* the score used to maintain heap, if col is alive */
-	int order ;	/* pivot ordering of this column, if col is dead */
-    } shared2 ;
-    union
-    {
-	int headhash ;	/* head of a hash bucket, if col is at the head of */
-			/* a degree list */
-	int hash ;	/* hash value, if col is not in a degree list */
-	int prev ;	/* previous column in degree list, if col is in a */
-			/* degree list (but not at the head of a degree list) */
-    } shared3 ;
-    union
-    {
-	int degree_next ;	/* next column, if col is in a degree list */
-	int hash_next ;		/* next column, if col is in a hash list */
-    } shared4 ;
-
-} Colamd_Col ;
-
-typedef struct Colamd_Row_struct
-{
-    int start ;		/* index for A of first col in this row */
-    int length ;	/* number of principal columns in this row */
-    union
-    {
-	int degree ;	/* number of principal & non-principal columns in row */
-	int p ;		/* used as a row pointer in init_rows_cols () */
-    } shared1 ;
-    union
-    {
-	int mark ;	/* for computing set differences and marking dead rows*/
-	int first_column ;/* first column in row (used in garbage collection) */
-    } shared2 ;
-
-} Colamd_Row ;
-
-/* ========================================================================== */
-/* === Colamd recommended memory size ======================================= */
-/* ========================================================================== */
-
-/*
-    The recommended length Alen of the array A passed to colamd is given by
-    the COLAMD_RECOMMENDED (nnz, n_row, n_col) macro.  It returns -1 if any
-    argument is negative.  2*nnz space is required for the row and column
-    indices of the matrix. COLAMD_C (n_col) + COLAMD_R (n_row) space is
-    required for the Col and Row arrays, respectively, which are internal to
-    colamd.  An additional n_col space is the minimal amount of "elbow room",
-    and nnz/5 more space is recommended for run time efficiency.
-
-    This macro is not needed when using symamd.
-
-    Explicit typecast to int added Sept. 23, 2002, COLAMD version 2.2, to avoid
-    gcc -pedantic warning messages.
-*/
-
-#define COLAMD_C(n_col) ((int) (((n_col) + 1) * sizeof (Colamd_Col) / sizeof (int)))
-#define COLAMD_R(n_row) ((int) (((n_row) + 1) * sizeof (Colamd_Row) / sizeof (int)))
-
-#define COLAMD_RECOMMENDED(nnz, n_row, n_col)                                 \
-(                                                                             \
-((nnz) < 0 || (n_row) < 0 || (n_col) < 0)                                     \
-?                                                                             \
-    (-1)                                                                      \
-:                                                                             \
-    (2 * (nnz) + COLAMD_C (n_col) + COLAMD_R (n_row) + (n_col) + ((nnz) / 5)) \
-)
 
 /* ========================================================================== */
 /* === Prototypes of user-callable routines ================================= */
@@ -201,7 +146,20 @@ int colamd_recommended		/* returns recommended value of Alen, */
     int n_col			/* number of columns in A */
 ) ;
 
+long colamd_l_recommended	/* returns recommended value of Alen, */
+				/* or (-1) if input arguments are erroneous */
+(
+    long nnz,			/* nonzeros in A */
+    long n_row,			/* number of rows in A */
+    long n_col			/* number of columns in A */
+) ;
+
 void colamd_set_defaults	/* sets default parameters */
+(				/* knobs argument is modified on output */
+    double knobs [COLAMD_KNOBS]	/* parameter settings for colamd */
+) ;
+
+void colamd_l_set_defaults	/* sets default parameters */
 (				/* knobs argument is modified on output */
     double knobs [COLAMD_KNOBS]	/* parameter settings for colamd */
 ) ;
@@ -215,6 +173,17 @@ int colamd			/* returns (1) if successful, (0) otherwise*/
     int p [],			/* column pointers of A, of size n_col+1 */
     double knobs [COLAMD_KNOBS],/* parameter settings for colamd */
     int stats [COLAMD_STATS]	/* colamd output statistics and error codes */
+) ;
+
+long colamd_l			/* returns (1) if successful, (0) otherwise*/
+(				/* A and p arguments are modified on output */
+    long n_row,			/* number of rows in A */
+    long n_col,			/* number of columns in A */
+    long Alen,			/* size of the array A */
+    long A [],			/* row indices of A, of size Alen */
+    long p [],			/* column pointers of A, of size n_col+1 */
+    double knobs [COLAMD_KNOBS],/* parameter settings for colamd */
+    long stats [COLAMD_STATS]	/* colamd output statistics and error codes */
 ) ;
 
 int symamd				/* return (1) if OK, (0) otherwise */
@@ -233,14 +202,46 @@ int symamd				/* return (1) if OK, (0) otherwise */
     					/* mxFree (for MATLAB mexFunction) */
 ) ;
 
+long symamd_l				/* return (1) if OK, (0) otherwise */
+(
+    long n,				/* number of rows and columns of A */
+    long A [],				/* row indices of A */
+    long p [],				/* column pointers of A */
+    long perm [],			/* output permutation, size n_col+1 */
+    double knobs [COLAMD_KNOBS],	/* parameters (uses defaults if NULL) */
+    long stats [COLAMD_STATS],		/* output statistics and error codes */
+    void * (*allocate) (size_t, size_t),
+    					/* pointer to calloc (ANSI C) or */
+					/* mxCalloc (for MATLAB mexFunction) */
+    void (*release) (void *)
+    					/* pointer to free (ANSI C) or */
+    					/* mxFree (for MATLAB mexFunction) */
+) ;
+
 void colamd_report
 (
     int stats [COLAMD_STATS]
+) ;
+
+void colamd_l_report
+(
+    long stats [COLAMD_STATS]
 ) ;
 
 void symamd_report
 (
     int stats [COLAMD_STATS]
 ) ;
+
+void symamd_l_report
+(
+    long stats [COLAMD_STATS]
+) ;
+
+extern int (*colamd_printf) (const char *, ...) ;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* COLAMD_H */

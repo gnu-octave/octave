@@ -1,23 +1,17 @@
-function colamd_test (spumoni)
+function colamd_test
 %
-% colamd_test (spumoni)
+% colamd_test
 %
 % COLAMD and SYMAMD testing function.  Here we try to give colamd and symamd
 % every possible type of matrix and erroneous input that they may encounter. 
 % We want either a valid permutation returned or we want them to fail
-% gracefully.  If the optional spumoni argument is present, additional
-% diagnostic messages are printed during the test:
-%
-% spumoni:
-%   0: very little, just a progress meter (default)
-%   1: lots
-%   2: far too much
+% gracefully.
 %
 % You are prompted as to whether or not the colamd and symand routines and
 % the test mexFunctions are to be compiled.
 %
 % Tim Davis
-% September 8, 2003.  Version 2.3.
+% COLAMD Version 2.4.
 % http://www.cise.ufl.edu/research/sparse/colamd/
 
 help colamd_test
@@ -55,31 +49,34 @@ fprintf ('\nStarting the tests.  Please be patient.\n') ;
 
 rand ('state', 0) ;
 randn ('state', 0) ;
-if (nargin < 1)
-    spumoni = 0 ;
-end
-old = spparms ('spumoni') ;
-spparms ('spumoni', spumoni) ;
+
+A = sprandn (500,500,0.4) ;
+
+p = colamd (A, [10 10 1]) ; check_perm (p, A) ;
+p = colamd (A, [2  7  1]) ; check_perm (p, A) ;
+p = symamd (A, [10 1]) ; check_perm (p, A) ;
+p = symamd (A, [7  1]) ; check_perm (p, A) ;
+p = symamd (A, [4  1]) ; check_perm (p, A) ;
 
 
 fprintf ('Null matrices') ;
 A = zeros (0,0) ;
 A = sparse (A) ;
 
-[p, stats] = colamd (A, [.5 .5 spumoni]) ;
+[p, stats] = colamd (A, [10 10 0]) ;
 check_perm (p, A) ;
 
-[p, stats] = symamd (A, [.5 spumoni]) ;
+[p, stats] = symamd (A, [10 0]) ;
 check_perm (p, A) ;
 
 A = zeros (0, 100) ;
 A = sparse (A) ;
-[p, stats] = colamd (A, [.5 .5 spumoni]) ;
+[p, stats] = colamd (A, [10 10 0]) ;
 check_perm (p, A) ;
 
 A = zeros (100, 0) ;
 A = sparse (A) ;
-[p, stats] = colamd (A, [.5 .5 spumoni]) ;
+[p, stats] = colamd (A, [10 10 0]) ;
 check_perm (p, A) ;
 fprintf (' OK\n') ;
 
@@ -92,20 +89,19 @@ for trial = 1:20
     A = rand_matrix (1000, 1000, 1, 10, 20) ;
     [m n] = size (A) ;
 
+    for tol = [0:.1:2 3:20 1e6]
 
-    for tol = [0 0.001 0.005 0.01:0.01:0.10 0.5:.1:1]
-
-	[p, stats] = colamd (A, [tol tol spumoni]) ;
+	[p, stats] = colamd (A, [tol tol 0]) ;
 	check_perm (p, A) ;
 
 	B = A + A' ;
-	[p, stats] = symamd (B, [tol spumoni]) ;
+	[p, stats] = symamd (B, [tol 0]) ;
 	check_perm (p, A) ;
 
-	[p, stats] = colamd (A, [tol 1 spumoni]) ;
+	[p, stats] = colamd (A, [tol 1 0]) ;
 	check_perm (p, A) ;
 
-	[p, stats] = colamd (A, [1 tol spumoni]) ;
+	[p, stats] = colamd (A, [1 tol 0]) ;
 	check_perm (p, A) ;
 
 	fprintf ('.') ;
@@ -142,31 +138,31 @@ for trial = 1:30
 
     for err = 1:13
 
-        p = Tcolamd (A, [1 1 spumoni 0 err]) ;
+        p = Tcolamd (A, [n n 0 0 err]) ;
         if p ~= -1 
 	    check_perm (p, A) ;
 	end
 
 	if (err == 1)
 	    % check different (valid) input args to colamd
-	    p = Acolamd (A, spumoni) ;
+	    p = Acolamd (A) ;
 
-	    p2 = Acolamd (A, spumoni, [.5 .5 spumoni 0 0]) ;
+	    p2 = Acolamd (A, [10 10 0 0 0]) ;
 	    if (any (p ~= p2))
 		error ('colamd: mismatch 1!') ;
 	    end
-	    [p2 stats] = Acolamd (A, spumoni) ;
+	    [p2 stats] = Acolamd (A) ;
 	    if (any (p ~= p2))
 		error ('colamd: mismatch 2!') ;
 	    end
-	    [p2 stats] = Acolamd (A, spumoni, [.5 .5 spumoni 0 0]) ;
+	    [p2 stats] = Acolamd (A, [10 10 0 0 0]) ;
 	    if (any (p ~= p2))
 		error ('colamd: mismatch 3!') ;
 	    end
 	end
 
 	B = A'*A ;
-        p = Tsymamd (B, [1 spumoni err]) ;
+        p = Tsymamd (B, [n 0 err]) ;
         if p ~= -1 
 	    check_perm (p, A) ;
 	end
@@ -174,17 +170,17 @@ for trial = 1:30
 	if (err == 1)
 
 	    % check different (valid) input args to symamd
-	    p = Asymamd (B, spumoni) ;
+	    p = Asymamd (B) ;
 	    check_perm (p, A) ;
-	    p2 = Asymamd (B, spumoni, [.5 spumoni 0]) ;
+	    p2 = Asymamd (B, [10 0 0]) ;
 	    if (any (p ~= p2))
 		error ('symamd: mismatch 1!') ;
 	    end
-	    [p2 stats] = Asymamd (B, spumoni) ;
+	    [p2 stats] = Asymamd (B) ;
 	    if (any (p ~= p2))
 		error ('symamd: mismatch 2!') ;
 	    end
-	    [p2 stats] = Asymamd (B, spumoni, [.5 spumoni 0]) ;
+	    [p2 stats] = Asymamd (B, [10 0 0]) ;
 	    if (any (p ~= p2))
 		error ('symamd: mismatch 3!') ;
 	    end
@@ -213,12 +209,17 @@ for trial = 1:400
     A (:, null_col) = 0 ;
 
     % Order the matrix and make sure that the null columns are ordered last.
-    [p, stats] = colamd (A, [1 1 spumoni]) ;
+    [p, stats] = colamd (A, [1e6 1e6 0]) ;
     check_perm (p, A) ;
 
-    if (stats (2) ~= 5)
-	error ('colamd: wrong number of null columns') ;
-    end
+%    if (stats (2) ~= 5)
+%	stats (2)
+%	error ('colamd: wrong number of null columns') ;
+%    end
+
+    % find all null columns in A
+    null_col = find (sum (spones (A), 1) == 0) ;
+    nnull = length (null_col) ;
     if (any (null_col ~= p ((n-4):n)))
 	error ('colamd: Null cols are not ordered last in natural order') ;
     end
@@ -246,7 +247,7 @@ for trial = 1:400
     A (null_col, :) = 0 ;
 
     % Order the matrix and make sure that the null rows/cols are ordered last.
-    [p,stats] = symamd (A, [1 spumoni]) ;
+    [p,stats] = symamd (A, [10 0]) ;
     check_perm (p, A) ;
 
     % find actual number of null rows and columns
@@ -282,7 +283,7 @@ for trial = 1:400
     null_row = sort (null_row (1:5)) ;
     A (null_row, :) = 0 ;
 
-    p = colamd (A, [.5 .5 spumoni]) ;
+    p = colamd (A, [10 10 0]) ;
     check_perm (p, A) ;
     if (stats (1) ~= 5)
 	error ('colamd: wrong number of null rows') ;
@@ -293,25 +294,20 @@ fprintf (' OK\n') ;
 
 
 fprintf ('\ncolamd and symamd:  all tests passed\n\n') ;
-spparms ('spumoni', old) ;
 
 %-------------------------------------------------------------------------------
 % Acolamd:  compare colamd and Tcolamd results
 %-------------------------------------------------------------------------------
 
-function [p,stats] = Acolamd (S, spumoni, knobs)
-
-if (nargin < 2)
-    spumoni = 0 ;
-end
+function [p,stats] = Acolamd (S, knobs)
 
 if (nargin < 3)
     if (nargout == 1)
 	[p] = colamd (S) ;
-	[p1] = Tcolamd (S, [.5 .5 spumoni 0 0]) ;
+	[p1] = Tcolamd (S, [10 10 0 0 0]) ;
     else
 	[p, stats] = colamd (S) ;
-	[p1, stats1] = Tcolamd (S, [.5 .5 spumoni 0 0]) ;
+	[p1, stats1] = Tcolamd (S, [10 10 0 0 0]) ;
     end
 else
     if (nargout == 1)
@@ -335,19 +331,15 @@ end
 % Asymamd:  compare symamd and Tsymamd results
 %-------------------------------------------------------------------------------
 
-function [p,stats] = Asymamd (S, spumoni, knobs)
-
-if (nargin < 2)
-    spumoni = 0 ;
-end
+function [p,stats] = Asymamd (S, knobs)
 
 if (nargin < 3)
     if (nargout == 1)
 	[p] = symamd (S) ;
-	[p1] = Tsymamd (S, [.5 spumoni 0]) ;
+	[p1] = Tsymamd (S, [10 0 0]) ;
     else
 	[p, stats] = symamd (S) ;
-	[p1, stats1] = Tsymamd (S, [.5 spumoni 0]) ;
+	[p1, stats1] = Tsymamd (S, [10 0 0]) ;
     end
 else
     if (nargout == 1)
@@ -518,4 +510,3 @@ if (p (1) ~= -1)
     p = p (q) ;
     check_perm (p, S) ;
 end
-

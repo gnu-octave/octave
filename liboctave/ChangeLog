@@ -1,3 +1,9 @@
+2005-09-07  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc (command_editor::do_decode_prompt_string):  Update
+	based on current code in Bash.  Handle a few more escape
+	sequences.  Do a better job of decoding \W.
+
 2005-09-04  David Bateman <dbateman@free.fr>
 
 	* COLAMD: Update version of colamd to v2.4.

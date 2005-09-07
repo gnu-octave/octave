@@ -199,11 +199,11 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 
   const char *p = prompt.c_str ();
 
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  // BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   line = ::octave_rl_readline (p);
 
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  // END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   if (line)
     {
@@ -849,19 +849,28 @@ command_editor::filename_completion_desired (bool arg)
 // Return a string which will be printed as a prompt.  The string may
 // contain special characters which are decoded as follows: 
 //   
-//	\t	the time
+//	\a	bell (ascii 07)
 //	\d	the date
+//	\e	escape (ascii 033)
+//	\h	the hostname up to the first `.'
+//	\H	the hostname
 //	\n	CRLF
+//	\r	CR
 //	\s	the name of the shell (program)
+//	\t	the time
+//	\T	the time in 12-hour hh:mm:ss format
+//	\@	the time in 12-hour hh:mm am/pm format
+//	\A	the time in 24-hour hh:mm format
+//	\u	your username
 //	\w	the current working directory
 //	\W	the last element of PWD
-//	\u	your username
-//	\h	the hostname
-//	\#	the command number of this command
 //	\!	the history number of this command
+//	\#	the command number of this command
 //	\$	a $ or a # if you are root
-//	\<octal> character code in octal
+//	\nnn    character code nnn in octal
 //	\\	a backslash
+//	\[	begin a sequence of non-printing chars
+//	\]	end a sequence of non-printing chars
 
 std::string
 command_editor::do_decode_prompt_string (const std::string& s)
@@ -907,22 +916,47 @@ command_editor::do_decode_prompt_string (const std::string& s)
 		c = 0;
 		goto add_string;
 	      }
-	  
-	    case 't':
+
+	    case 'a':
+	      {
+		temp = '\a';
+
+		goto add_string;
+	      }
+
+	    case 'e':
+	      {
+		temp = '\033';
+
+		goto add_string;
+	      }
+
+	    case 'r':
+	      {
+		temp = '\r';
+
+		goto add_string;
+	      }
+
 	    case 'd':
+	    case 't':
+	    case 'T':
+	    case '@':
+	    case 'A':
 	      // Make the current time/date into a string.
 	      {
-		octave_time now;
+		octave_localtime now;
 
-		temp = now.ctime ();
-
-		if (c == 't')
-		  {
-		    temp = temp.substr (11);
-		    temp.resize (8);
-		  }
-		else
-		  temp.resize (10);
+		if (c == 'd')
+		  temp = now.strftime ("%a %b %d");
+		else if (c == 't')
+		  temp = now.strftime ("%H:%M:%S");
+		else if (c == 'T')
+		  temp = now.strftime ("%I:%M:%S");
+		else if (c == '@')
+		  temp = now.strftime ("%I:%M %p");
+		else if (c == 'A')
+		  temp = now.strftime ("%H:%M");
 
 		goto add_string;
 	      }
@@ -941,25 +975,30 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
 		goto add_string;
 	      }
-	
+
 	    case 'w':
 	    case 'W':
 	      {
 		temp = octave_env::getcwd ();
 
-		if (c == 'W')
-		  {
-		    size_t pos = temp.rfind ('/');
+		std::string home_dir = octave_env::get_home_directory ();
 
-		    if (pos != NPOS && pos != 0)
-		      temp = temp.substr (pos + 1);
+		if (c == 'W' && (home_dir.empty () || temp != home_dir))
+		  {
+		    if (temp != "/" && temp != "//")
+		      {
+			size_t pos = temp.rfind ('/');
+
+			if (pos != NPOS && pos != 0)
+			  temp = temp.substr (pos + 1);
+		      }
 		  }
 		else
 		  temp = octave_env::polite_directory_format (temp);
 
 		goto add_string;
 	      }
-      
+
 	    case 'u':
 	      {
 		temp = octave_env::get_user_name ();

@@ -66,7 +66,7 @@ function y = mean (x, opt1, opt2)
     opt = "a";
     need_dim = 1;
   elseif (nargin == 2)
-    if (isstr (opt1))
+    if (ischar (opt1))
       opt = opt1;
       need_dim = 1;
     else
@@ -74,10 +74,10 @@ function y = mean (x, opt1, opt2)
       opt = "a";
     endif
   elseif (nargin == 3)
-    if (isstr (opt1))
+    if (ischar (opt1))
       opt = opt1;
       dim = opt2;
-    elseif (isstr (opt2))
+    elseif (ischar (opt2))
       opt = opt2;
       dim = opt1;
     else

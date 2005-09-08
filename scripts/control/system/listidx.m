@@ -41,7 +41,7 @@ if(nargin != 2)
   usage("idxvec = listidx(listvar,strlist)");
 endif
 
-if(isstr(strlist))
+if(ischar(strlist))
   tmp = strlist;
   strlist = list();
   for kk=1:rows(tmp)
@@ -49,7 +49,7 @@ if(isstr(strlist))
   endfor
 endif
 
-if(isstr(listvar))
+if(ischar(listvar))
   tmp = listvar;
   listvar = list();
   for kk=1:rows(tmp)

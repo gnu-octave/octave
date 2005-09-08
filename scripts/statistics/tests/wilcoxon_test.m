@@ -70,7 +70,7 @@ function [pval, z] = wilcoxon_test (x, y, alt)
     alt = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error("wilcoxon_test: alt must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

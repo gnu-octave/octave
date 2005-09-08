@@ -41,7 +41,7 @@ function n = rindex (s, t)
     usage ("rindex (s, t)");
   endif
 
-  if (!isstr (s) || !isstr (t) || all (size (s) > 1) || all (size (t) > 1) )
+  if (!ischar (s) || !ischar (t) || all (size (s) > 1) || all (size (t) > 1) )
     error ("rindex: expecting string arguments");
   endif
 

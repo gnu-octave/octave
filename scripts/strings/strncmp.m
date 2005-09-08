@@ -39,9 +39,9 @@ function retval = strncmp (s1, s2, n)
 
   retval = false;
 
-  if (isstr (s1))
+  if (ischar (s1))
     [r1, c1] = size (s1);
-    if (isstr (s2))
+    if (ischar (s2))
       [r2, c2] = size (s2);
       if (r1 == r2 && c1 == c2)
 	if (c1 == 0)
@@ -102,7 +102,7 @@ function retval = strncmp (s1, s2, n)
     endif
   elseif (iscellstr (s1))
     [r1, c1] = size (s1);
-    if (isstr (s2))
+    if (ischar (s2))
       retval = strncmp (s2, s1, n, "logical");
     elseif (iscellstr (s2))
       [r2, c2] = size (s2);

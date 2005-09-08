@@ -64,7 +64,7 @@ function [pval, b, n] = sign_test (x, y, alt)
     alt  = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error ("sign_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

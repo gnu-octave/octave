@@ -101,13 +101,13 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
     error("sys must be a system data structure");
   elseif (isempty(opt))
     opt = "out";
-  elseif( ! isstr(opt)  )
+  elseif( ! ischar(opt)  )
     error("opt must be a string");
   elseif( ! (strcmp(opt,"out") + strcmp(opt,"yd") + ...
     strcmp(opt,"in") + strcmp(opt,"st") ) )
     error("opt must be one of [], ""out"", ""yd"", ""in"", or ""st""");
   elseif(nargin == 4)
-    if(is_signal_list(sig_idx) | isstr(sig_idx))
+    if(is_signal_list(sig_idx) | ischar(sig_idx))
       ## convert to vector of indices
       if(opt == "yd")
         sig_idx = sysidx(sys,"out",sig_idx);
@@ -137,7 +137,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
       names = {names};
     endif
     if( (!is_signal_list(names)) & (!isempty(names)) )
-      if(isstr(names{1}))
+      if(ischar(names{1}))
         warning("syssetsignals(opt=%s): converting string matrix \"names\" to a cell array of strings",opt);
         tmpstr = names{1};
         for ii=1:rows(tmpstr)

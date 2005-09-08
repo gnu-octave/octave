@@ -93,7 +93,7 @@ function saveimage (filename, img, img_form, map)
 
   if (nargin < 3)
     img_form = "img";
-  elseif (! isstr (img_form))
+  elseif (! ischar (img_form))
     error ("image format specification must be a string");
   elseif (! (strcmp (img_form, "img")
              || strcmp (img_form, "ppm")
@@ -105,7 +105,7 @@ function saveimage (filename, img, img_form, map)
     warning ("image variable is not a matrix");
   endif
 
-  if (! isstr (filename))
+  if (! ischar (filename))
     error ("file name must be a string");
   endif
 

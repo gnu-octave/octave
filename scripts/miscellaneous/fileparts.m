@@ -26,7 +26,7 @@
 function [directory, name, extension, version] = fileparts (filename)
 
   if (nargin == 1)
-    if (isstr (filename))
+    if (ischar (filename))
       ds = rindex (filename, filesep);
       es = rindex (filename, ".");
       ## These can be the same if they are both 0 (no dir or ext).

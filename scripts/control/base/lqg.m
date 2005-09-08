@@ -99,7 +99,7 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
   endif
 
   ## check for names of signals
-  if(is_signal_list(input_list) | isstr(input_list))
+  if(is_signal_list(input_list) | ischar(input_list))
     input_list = sysidx(sys,"in",input_list);
   endif
 

@@ -153,7 +153,7 @@ function imshow (varargin)
   ## Check for "truesize".
   zoom = [];
   for i = mvars+1:nargin
-    if (isstr (varargin{i}) && strcmp (varargin{i}, "truesize"))
+    if (ischar (varargin{i}) && strcmp (varargin{i}, "truesize"))
       zoom = 1;
     endif
   endfor

@@ -59,7 +59,7 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   if (nargin == 2)
     alt = "!=";
   else
-    if (! isstr (alt))
+    if (! ischar (alt))
       error ("kolmogorov_smirnov_test_2: alt must be a string");
     endif
   endif

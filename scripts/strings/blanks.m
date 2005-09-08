@@ -32,7 +32,7 @@ function s = blanks (n)
   endif
 
   if (isscalar (n) && n == round (n))
-    s = setstr (ones (1, n) * toascii (" "));
+    s = char (ones (1, n) * toascii (" "));
   else
     error ("blanks: n must be a non-negative integer");
   endif

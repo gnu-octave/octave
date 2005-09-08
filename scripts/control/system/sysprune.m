@@ -73,10 +73,10 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   if(isempty(state_idx)) state_idx = 1:(nn+nz); endif
 
   ## check for signal names
-  if(is_signal_list(output_idx) | isstr(output_idx))
+  if(is_signal_list(output_idx) | ischar(output_idx))
     output_idx = sysidx(sys,"out",output_idx);
   endif
-  if(is_signal_list(input_idx) | isstr(input_idx))
+  if(is_signal_list(input_idx) | ischar(input_idx))
     input_idx = sysidx(sys,"in",input_idx);
   endif
 

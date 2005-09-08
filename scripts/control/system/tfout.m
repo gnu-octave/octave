@@ -45,7 +45,7 @@ function tfout (num, denom, x)
 
     if (nargin == 2)
       x = "s";
-    elseif( ! isstr(x) )
+    elseif( ! ischar(x) )
       error("tfout: third argument must be a string");
     endif
 

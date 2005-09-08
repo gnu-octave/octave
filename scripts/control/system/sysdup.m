@@ -74,10 +74,10 @@ function retsys = sysdup (Asys, output_list, input_list)
   [aa,bb,cc,dd] = sys2ss(Asys);
 
   ## check for signal names
-  if(is_signal_list(input_list) | isstr(input_list))
+  if(is_signal_list(input_list) | ischar(input_list))
     input_list = sysidx(Asys,"in",input_list);
   endif
-  if(is_signal_list(output_list) | isstr(output_list))
+  if(is_signal_list(output_list) | ischar(output_list))
     output_list = sysidx(Asys,"out",output_list);
   endif
 

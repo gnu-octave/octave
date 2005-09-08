@@ -55,7 +55,7 @@ function [y, i, j] = unique (x, r)
     return;
   endif
 
-  if (isstr (x))
+  if (ischar (x))
     y = toascii (y);
   endif
 
@@ -95,8 +95,8 @@ function [y, i, j] = unique (x, r)
   endif
   i(idx) = [];
 
-  if (isstr (x))
-    y = setstr (y);
+  if (ischar (x))
+    y = char (y);
   endif
 
 endfunction

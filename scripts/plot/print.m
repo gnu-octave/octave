@@ -110,7 +110,7 @@ function print (varargin)
 
   for i = 1:nargin
     arg = varargin{i};
-    if (isstr (arg))
+    if (ischar (arg))
       if (strcmp (arg, "-color"))
 	use_color = 1;
       elseif (strcmp (arg, "-mono"))

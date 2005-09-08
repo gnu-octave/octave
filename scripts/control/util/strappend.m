@@ -28,7 +28,7 @@ function retval = strappend (strlist, suffix);
     usage ("retval = strappend (strlist, suffix)");
   elseif (! is_signal_list (strlist))
     error ("strlist must be a list of strings (see is_signal_list)");
-  elseif (! (isstr (suffix) && rows (suffix) == 1))
+  elseif (! (ischar (suffix) && rows (suffix) == 1))
     error ("suffix must be a single string");
   endif
 

@@ -33,7 +33,7 @@ function h = title (text)
     usage ("title (text)");
   endif
 
-  if (isstr (text))
+  if (ischar (text))
     __gnuplot_raw__ (sprintf ("set title \"%s\";\n",
 			      undo_string_escapes (text)));
     if (automatic_replot)

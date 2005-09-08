@@ -41,7 +41,7 @@ function prompt (str)
     usage ("prompt ([str])");
   elseif (nargin == 0)
     str = "\n ---- Press a key to continue ---";
-  elseif (! isstr (str) )
+  elseif (! ischar (str) )
     error ("prompt: input must be a string");
   endif
 

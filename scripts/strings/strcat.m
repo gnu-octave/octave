@@ -39,7 +39,7 @@ function st = strcat (s, varargin)
     save_warn_empty_list_elements = warn_empty_list_elements;
     unwind_protect
       warn_empty_list_elements = 0;
-      if (isstr (s))
+      if (ischar (s))
         tmpst = s;
       else
         error ("strcat: all arguments must be strings");
@@ -48,7 +48,7 @@ function st = strcat (s, varargin)
       k = 1;
       while (n--)
         tmp = varargin{k++};
-        if (isstr (tmp))
+        if (ischar (tmp))
           tmpst = [tmpst, tmp];
         else
           error ("strcat: all arguments must be strings");

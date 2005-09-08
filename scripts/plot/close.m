@@ -40,7 +40,7 @@ function retval = close (arg1, arg2)
     endif
     closeplot;
   elseif (nargin == 1)
-    if (isstr (arg1))
+    if (ischar (arg1))
       if (strcmp (arg1, "all"))
 	closeplot;
       else
@@ -56,8 +56,8 @@ function retval = close (arg1, arg2)
       endif
     endif
   elseif (nargin == 2
-	  && isstr (arg1) && strcmp (arg1, "all")
-	  && isstr (arg2) && strcmp (arg2, "hidden"))
+	  && ischar (arg1) && strcmp (arg1, "all")
+	  && ischar (arg2) && strcmp (arg2, "hidden"))
     closeplot;
   else
     usage ("close [all]");

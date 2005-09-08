@@ -36,7 +36,7 @@ function t = dezero (s)
 
   if (nargin != 1)
     usage ("dezero (s)");
-  elseif (isstr (s))
+  elseif (ischar (s))
 
     [nr, nc] = size (s);
     len = nr * nc;
@@ -49,7 +49,7 @@ function t = dezero (s)
 
       ## need to remove zeros first, then call deblank
       s = toascii (s);
-      t = deblank(setstr(s(find(s != 0) )));
+      t = deblank(char(s(find(s != 0) )));
     endif
 
   else

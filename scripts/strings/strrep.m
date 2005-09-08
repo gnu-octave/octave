@@ -38,7 +38,7 @@ function t = strrep (s, x, y)
     usage ("strrep (s, x, y)");
   endif
 
-  if (! (isstr (s) && isstr (x) && isstr (y)))
+  if (! (ischar (s) && ischar (x) && ischar (y)))
     error ("strrep: all arguments must be strings");
   endif
 
@@ -84,7 +84,7 @@ function t = strrep (s, x, y)
     repeat = [1:length(x)]' * ones (1, length (ind));
     delete = ones (length (x), 1) * ind + repeat - 1;
     t(delete) = [];
-    t = setstr (t);
+    t = char (t);
   endif
 
 endfunction

@@ -106,8 +106,8 @@ function old_names = __syschnamesl__ (olist, old_names, inames, listname)
   endif
 
   ## just in case it's not a string anymore
-  if( !isstr(old_names) )
-    old_names = setstr(old_names);
+  if( !ischar(old_names) )
+    old_names = char(old_names);
   endif
 
   ## disp("__syschnamesl__: exit, old_names=")

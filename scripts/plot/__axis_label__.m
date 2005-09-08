@@ -29,7 +29,7 @@ function h = __axis_label__ (caller, text)
   if (nargin == 0)
     usage ("__axis_label__ (caller, text)");
   elseif (nargin == 2)
-    if (isstr (text))
+    if (ischar (text))
       __gnuplot_raw__ (sprintf ("set %s \"%s\";\n", caller,
 				undo_string_escapes (text)));
       if (automatic_replot)

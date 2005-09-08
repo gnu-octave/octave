@@ -84,7 +84,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     region = Fs = [];
   elseif (nargin == 4)
     Fs = [];
-    if (! isstr (region) && ! isempty (region))
+    if (! ischar (region) && ! isempty (region))
       Fs = region; 
       region = [];
     endif

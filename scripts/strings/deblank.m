@@ -33,7 +33,7 @@ function t = deblank (s)
     usage ("deblank (s)");
   endif
 
-  if (isstr (s))
+  if (ischar (s))
 
     k = find (! isspace (s) & s != "\0");
     if (isempty (s) || isempty (k))

@@ -1,3 +1,47 @@
+2005-09-07  Bill Denney  <denney@seas.upenn.edu>
+
+	* audio/playaudio.m, control/base/__bodquist__.m,
+	control/base/lqg.m, control/obsolete/dezero.m,
+	control/system/__syschnamesl__.m, control/system/__sysconcat__.m,
+	control/system/c2d.m, control/system/cellidx.m,
+	control/system/d2c.m, control/system/dmr2d.m,
+	control/system/is_signal_list.m, control/system/listidx.m,
+	control/system/ss.m, control/system/sysappend.m,
+	control/system/sysconnect.m, control/system/sysdup.m,
+	control/system/sysgetsignals.m, control/system/sysidx.m,
+	control/system/sysprune.m, control/system/syssetsignals.m,
+	control/system/tfout.m, control/system/zpout.m,
+	control/util/prompt.m, control/util/sortcom.m,
+	control/util/strappend.m, finance/fv.m, finance/nper.m,
+	finance/pmt.m, finance/pv.m, finance/rate.m, general/diff.m,
+	general/num2str.m, general/repmat.m, general/sortrows.m,
+	general/strerror.m, image/colormap.m, image/imshow.m,
+	image/loadimage.m, image/saveimage.m, linear-algebra/norm.m,
+	miscellaneous/fileparts.m, miscellaneous/popen2.m,
+	plot/__axis_label__.m, plot/__errcomm__.m, plot/__plt1__.m,
+	plot/__plt2__.m, plot/__plt__.m, plot/__pltopt1__.m,
+	plot/__pltopt__.m, plot/axis.m, plot/bottom_title.m, plot/close.m,
+	plot/grid.m, plot/hist.m, plot/plot_border.m, plot/polar.m,
+	plot/print.m, plot/title.m, plot/top_title.m,
+	polynomial/polyout.m, set/unique.m, signal/freqz.m, signal/stft.m,
+	statistics/base/mean.m, statistics/base/moment.m,
+	statistics/tests/cor_test.m,
+	statistics/tests/kolmogorov_smirnov_test.m,
+	statistics/tests/kolmogorov_smirnov_test_2.m,
+	statistics/tests/prop_test_2.m, statistics/tests/sign_test.m,
+	statistics/tests/t_test.m, statistics/tests/t_test_2.m,
+	statistics/tests/t_test_regression.m, statistics/tests/u_test.m,
+	statistics/tests/var_test.m, statistics/tests/welch_test.m,
+	statistics/tests/wilcoxon_test.m, statistics/tests/z_test.m,
+	statistics/tests/z_test_2.m, strings/base2dec.m, strings/blanks.m,
+	strings/deblank.m, strings/dec2base.m, strings/index.m,
+	strings/rindex.m, strings/split.m, strings/str2mat.m,
+	strings/str2num.m, strings/strcat.m, strings/strcmpi.m,
+	strings/strncmp.m, strings/strrep.m, strings/substr.m:
+	Avoid deprecated functions.  Use ischar instead of isstr.  Use
+	isvector instead of is_vector.  Use isstruct instead of
+	is_struct.  Use char instead of setstr.
+
 2005-08-31  Daniel  <durbano@shbano.com>
 
 	* special-matrix/invhilb.m, statistics/base/iqr.m,

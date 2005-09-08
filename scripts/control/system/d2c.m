@@ -73,7 +73,7 @@ function csys = d2c (sys, opt)
   elseif(nargin == 1)
     opt = "log";
     tol = 1e-12;
-  elseif(isstr(opt))   # all remaining cases are for nargin == 2
+  elseif(ischar(opt))   # all remaining cases are for nargin == 2
     tol = 1e-12;
     if( !(strcmp(opt,"log") | strcmp(opt,"bi") ) )
       error(["d2c: invalid opt passed=",opt]);

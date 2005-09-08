@@ -48,7 +48,7 @@ function t = substr (s, offset, len)
     usage ("substr (s, offset, len)");
   endif
 
-  if (isstr (s))
+  if (ischar (s))
     nc = columns (s);
     if (abs (offset) > 0 && abs (offset) <= nc)
       if (offset > 0)

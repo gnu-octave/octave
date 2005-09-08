@@ -49,7 +49,7 @@ function zpout (zer, pol, k, x)
 
     if (nargin == 3)
       x = "s";
-    elseif( ! isstr(x) )
+    elseif( ! ischar(x) )
       error("zpout: third argument must be a string");
     endif
 

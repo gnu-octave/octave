@@ -60,7 +60,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
     alt  = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error ("var_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

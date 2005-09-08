@@ -44,8 +44,8 @@ function retval = str2mat (varargin)
   nc = zeros (nargin, 1);
   for k = 1 : nargin
     s = varargin{k};
-    if (! isstr (s))
-      s = setstr (s);
+    if (! ischar (s))
+      s = char (s);
     endif
     [nr(k), nc(k)] = size (s);
   endfor
@@ -59,13 +59,13 @@ function retval = str2mat (varargin)
   retval_nr = sum (nr);
   retval_nc = max (nc);
 
-  retval = setstr (ones (retval_nr, retval_nc) * toascii (" "));
+  retval = char (ones (retval_nr, retval_nc) * toascii (" "));
 
   row_offset = 0;
   for k = 1 : nargin
     s = varargin{k};
-    if (! isstr (s))
-      s = setstr (s);
+    if (! ischar (s))
+      s = char (s);
     endif
     if (nc(k) > 0)
       retval ((row_offset + 1) : (row_offset + nr(k)), 1:nc(k)) = s;

@@ -40,7 +40,7 @@ if(nargin != 2)
   usage("idxvec = cellidx(listvar,strlist)");
 endif
 
-if(isstr(strlist))
+if(ischar(strlist))
   tmp = strlist;
   strlist = {};
   for kk=1:rows(tmp)
@@ -48,7 +48,7 @@ if(isstr(strlist))
   endfor
 endif
 
-if(isstr(listvar))
+if(ischar(listvar))
   tmp = listvar;
   listvar = {};
   for kk=1:rows(tmp)

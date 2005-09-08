@@ -107,12 +107,12 @@ function dsys = c2d (sys, opt, T)
     error("sys must be a system data structure");
   elseif (nargin == 1)
     opt = "ex";
-  elseif (nargin == 2 & !isstr(opt) )
+  elseif (nargin == 2 & !ischar(opt) )
     T = opt;
     opt = "ex";
   endif
 
-  if (! isstr (opt))
+  if (! ischar (opt))
     error ("expecting option as a string");
   endif
 

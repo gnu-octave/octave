@@ -87,7 +87,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   
   endif
 
-  if(is_signal_list(idx) | isstr(idx))
+  if(is_signal_list(idx) | ischar(idx))
     idx = sysidx(sys,"st",idx);
 
   elseif (!(isvector(idx) | isempty(idx)))

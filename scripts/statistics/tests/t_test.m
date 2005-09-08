@@ -64,7 +64,7 @@ function [pval, t, df] = t_test (x, m, alt)
     alt  = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error ("t_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

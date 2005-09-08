@@ -65,7 +65,7 @@ function fmt = __pltopt1__ (caller, opt)
     usage ("__pltopt1__ (caller, opt)");
   endif
 
-  if (! isstr (opt))
+  if (! ischar (opt))
     error ("__pltopt1__: argument must be a string");
   endif
 

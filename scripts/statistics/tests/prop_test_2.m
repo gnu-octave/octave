@@ -61,7 +61,7 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
     alt  = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error ("prop_test_2: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

@@ -59,10 +59,10 @@ function v = fv (r, n, p, l, m)
 
   if (nargin > 3)
     if (nargin == 5)
-      if (! isstr (m))
+      if (! ischar (m))
         error ("fv: `method' must be a string");
       endif
-    elseif isstr (l)
+    elseif ischar (l)
       m = l;
       l = 0;
     else

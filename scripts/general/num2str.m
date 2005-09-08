@@ -36,14 +36,14 @@ function retval = num2str (x, arg)
     usage ("num2str (x) or num2str (x, precision) or num2str (x, fmt)");
   endif
 
-  if (isstr (x))
+  if (ischar (x))
     retval = x;
     return;
   endif
 
   if (iscomplex (x))
     if (nargin == 2)
-      if (isstr (arg))
+      if (ischar (arg))
 	fmt = strcat (arg, "%-+", arg(2:end), "i");
       else
 	if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))
@@ -106,7 +106,7 @@ function retval = num2str (x, arg)
     retval = split (tmp, "\n");
   else
     if (nargin == 2)
-      if (isstr (arg))
+      if (ischar (arg))
 	fmt = arg;
       else
 	if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))

@@ -31,7 +31,7 @@ function idxvec = sysidx (sys, sigtype, signamelist)
     usage ("idxvec = sysidx (sys, sigtype, signamelist)");
   elseif (! isstruct (sys))
     error ("sys must be a system data structure");
-  elseif (! isstr (sigtype))
+  elseif (! ischar (sigtype))
     error ("sigtype must be a string");
   elseif (rows (sigtype) != 1)
     [nr, nc] = size (sigtype);

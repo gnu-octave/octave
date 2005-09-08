@@ -69,7 +69,7 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
       endif
     endif
   elseif (nargin == 5)
-    if (isstr (w_type))
+    if (ischar (w_type))
       if (strcmp (w_type, "hanning"))
         w_type = 1;
       elseif (strcmp (w_type, "hamming"))

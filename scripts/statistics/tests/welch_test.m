@@ -66,7 +66,7 @@ function [pval, t, df] = welch_test (x, y, alt)
     alt  = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error ("welch_test: alt must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

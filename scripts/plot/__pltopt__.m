@@ -111,7 +111,7 @@
 
 function fmt = __pltopt__ (caller, opt)
 
-  if (! isstr (opt))
+  if (! ischar (opt))
     usage ("__pltopt__ (caller, opt)");
   endif
 

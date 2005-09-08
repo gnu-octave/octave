@@ -160,7 +160,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
     inname = sysgetsignals(sys,"in");
     outname = sysgetsignals(sys,"out");
     yd = sysgetsignals(sys,"yd");
-  elseif(!(isstr(sigid) & min(size(sigid)) == 1))
+  elseif(!(ischar(sigid) & min(size(sigid)) == 1))
     error(sprintf("sigid(%dx%d) must be a string)",rows(sigid),columns(sigid)));
   else
     if(strcmp("st",sigid))         stname = sys.stname;
@@ -172,7 +172,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
         sigid));
     endif
     if(nargin >= 3)
-      if( is_signal_list(signum) | isstr(signum) )
+      if( is_signal_list(signum) | ischar(signum) )
         signum = cellidx(stname,signum);
       end
       if(max(signum) > length(stname))

@@ -59,7 +59,7 @@ function __errcomm__ (caller, varargin)
       data{ndata} = a;
       while (k <= nargs)
 	a = varargin{k++};
-	if (isstr (a))
+	if (ischar (a))
 	  __errplot__ (a, data{1:ndata});
 	  break;
 	elseif (isvector (a))
@@ -79,7 +79,7 @@ function __errcomm__ (caller, varargin)
       endwhile
     endwhile
 
-    if (! isstr (a))
+    if (! ischar (a))
       __errplot__ ("~", data{1:ndata});
     endif
   unwind_protect_cleanup

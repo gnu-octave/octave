@@ -61,7 +61,7 @@ function retval = dec2base (n, base, len)
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  if (isstr (base))
+  if (ischar (base))
     symbols = base;
     base = length (symbols);
     if any (diff (sort (toascii (symbols))) == 0)

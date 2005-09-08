@@ -74,10 +74,10 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
     if (isempty(inputs))
       inputs = 1:mm;                    # use all inputs
       warning([rname,": outputs specified but not inputs"]);
-    elseif(is_signal_list(inputs) | isstr(inputs))
+    elseif(is_signal_list(inputs) | ischar(inputs))
       inputs = sysidx(sys,"in",inputs);
     endif
-    if(is_signal_list(outputs) | isstr(outputs))
+    if(is_signal_list(outputs) | ischar(outputs))
       outputs = sysidx(sys,"out",outputs);
     end
     sys = sysprune(sys,outputs,inputs);

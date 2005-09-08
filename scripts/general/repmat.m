@@ -52,8 +52,8 @@ function x = repmat (a, m, n)
   endif
 
   if (numel (a) == 1)
-    if (isstr (a))
-      x = setstr (toascii (a) * ones (idx));
+    if (ischar (a))
+      x = char (toascii (a) * ones (idx));
     else
       if (strcmp (class (a), "double"))
 	## This is faster with octave for double/Complex
@@ -67,8 +67,8 @@ function x = repmat (a, m, n)
       endif
     endif
   elseif (ndims (a) == 2 && length (idx) < 3)
-    if (isstr (a))
-      x = setstr (kron (ones (idx), toascii (a)));
+    if (ischar (a))
+      x = char (kron (ones (idx), toascii (a)));
     elseif (strcmp (class(a), "double")) 
       x = kron (ones (idx), a);
     else

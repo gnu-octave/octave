@@ -66,7 +66,7 @@ function [pval, z] = z_test (x, m, v, alt)
     alt = "!=";
   endif
 
-  if (! isstr (alt))
+  if (! ischar (alt))
     error ("z_test: alt must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

@@ -37,7 +37,7 @@
 function m = split (s, t)
 
   if (nargin == 2)
-    if (isstr (s) && isstr (t))
+    if (ischar (s) && ischar (t))
 
       l_s = length (s);
       l_t = length (t);

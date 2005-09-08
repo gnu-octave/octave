@@ -78,7 +78,7 @@ function retval = norm (x, p)
   if (rows (x) == 1 || columns (x) == 1)
 
     if (nargin == 2)
-      if (isstr (p))
+      if (ischar (p))
         if (strcmp (p, "fro"))
 	  retval = sqrt (sum (abs (x) .^ 2));
         elseif (strcmp (p, "inf"))
@@ -102,7 +102,7 @@ function retval = norm (x, p)
   else
 
     if (nargin == 2)
-      if (isstr (p))
+      if (ischar (p))
         if (strcmp (p, "fro"))
 	  retval = sqrt (sum (sum (abs (x) .^ 2)));
         elseif (strcmp (p, "inf"))

@@ -53,11 +53,11 @@ function n = nper (r, p, a, l, m)
   endif
 
   if (nargin == 5)
-    if (! isstr (m))
+    if (! ischar (m))
       error ("nper: `method' must be a string");
     endif
   elseif (nargin == 4)
-    if (isstr (l))
+    if (ischar (l))
       m = l;
       l = 0;
     else

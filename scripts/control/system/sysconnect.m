@@ -96,10 +96,10 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   endif
 
   ## convert signal names to indices
-  if(is_signal_list(input_list) | isstr(input_list))
+  if(is_signal_list(input_list) | ischar(input_list))
     input_list = sysidx(sys,"in",input_list);
   endif
-  if(is_signal_list(output_list) | isstr(output_list))
+  if(is_signal_list(output_list) | ischar(output_list))
     output_list = sysidx(sys,"out",output_list);
   endif
 

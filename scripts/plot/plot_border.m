@@ -68,7 +68,7 @@ function plot_border (varargin)
 
     arg = varargin{k++};
 
-    if (! isstr (arg))
+    if (! ischar (arg))
       error ("plot_border: input not a string");
     endif
 

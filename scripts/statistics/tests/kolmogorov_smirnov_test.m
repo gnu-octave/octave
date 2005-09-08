@@ -72,7 +72,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
     args = "";
     for k = 1 : (nargin-2);
       tmp  = varargin{k};
-      if isstr (tmp)
+      if ischar (tmp)
         alt = tmp;
       else
         args = sprintf ("%s, %g", args, tmp);

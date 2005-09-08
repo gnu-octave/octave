@@ -48,7 +48,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
     r   = 0;
     alt = "!=";
   elseif (nargin == 4)
-    if (isstr (r))
+    if (ischar (r))
       alt = r;
       r   = 0;
     else
@@ -60,7 +60,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
 
   if (! isscalar (r))
     error ("t_test_regression: r must be a scalar");
-  elseif (! isstr (alt))
+  elseif (! ischar (alt))
     error ("t_test_regression: alt must be a string");
   endif
 

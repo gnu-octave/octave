@@ -218,7 +218,7 @@ function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
   ## check for continuous states
   if( (nargin < 6) & (tsam == 0) )               n = na;
   elseif(nargin < 6)                             n = 0;
-  elseif((!ismatrix(n)) | isstr(n))
+  elseif((!ismatrix(n)) | ischar(n))
     error("Parameter n is not a numerical value.");
   elseif( (!isscalar(n)) | (n < 0 ) | (n != round(n)) )
     if(isscalar(n))     error("invalid value of n=%d,%e",n,n);
@@ -229,7 +229,7 @@ function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
   ## check for num discrete states
   if( (nargin < 7) & (tsam == 0))               nz = 0;
   elseif(nargin < 7)                            nz = na - n;
-  elseif((!ismatrix(nz)) | isstr(nz))
+  elseif((!ismatrix(nz)) | ischar(nz))
     error("Parameter nz is not a numerical value.");
   elseif( (!isscalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
     if(isscalar(nz))

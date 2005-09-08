@@ -54,7 +54,7 @@ function y = polyout (c, x)
 
   if (nargin == 1)
     x = "s";
-  elseif (! isstr(x))
+  elseif (! ischar(x))
     error("polyout: second argument must be a string");
   endif
 

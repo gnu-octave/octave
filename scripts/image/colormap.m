@@ -47,7 +47,7 @@ function cmap = colormap (map)
 
   if (nargin == 1)
 
-    if (isstr (map))
+    if (ischar (map))
       if (strcmp (map, "default"))
         map = gray ();
       else

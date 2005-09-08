@@ -111,7 +111,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
     if(Bm != Am)
       ## construct new signal names
       if(nargin >= 6)   # new names were passed
-	if(!isstr(inname))
+	if(!ischar(inname))
 	  error("inname must be a string");
 	elseif(rows(inname) != (Bm - Am))
 	  error(sprintf("%d new inputs requested; inname(%dx%d)", ...
@@ -144,7 +144,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 
       ## construct new signal names, output classification
       if(nargin >= 5)  # new names were passed
-	if(!isstr(outname))
+	if(!ischar(outname))
 	  error("outname must be a string");
 	elseif(rows(outname) != (Bp - Ap))
 	  error(sprintf("%d new outputs requested; outname(%dx%d)", ...

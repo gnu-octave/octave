@@ -34,7 +34,7 @@
 ## [in, out, pid] = popen2 ("sort", "-nr");
 ## fputs (in, "these\nare\nsome\nstrings\n");
 ## fclose (in);
-## while (isstr (s = fgets (out)))
+## while (ischar (s = fgets (out)))
 ##   fputs (stdout, s);
 ## endwhile
 ## fclose (out);
@@ -60,7 +60,7 @@ function [in, out, pid] = popen2 (command, args)
       args = "";
     endif
 
-    if (isstr (command))
+    if (ischar (command))
 
       [stdin_pipe, stdin_status] = pipe ();
       [stdout_pipe, stdout_status] = pipe ();

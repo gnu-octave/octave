@@ -31,7 +31,7 @@ function bottom_title (text)
     usage ("bottom_title (text)");
   endif
 
-  if (isstr (text))
+  if (ischar (text))
     __gnuplot_raw__ ("set top_title;\n");
     __gnuplot_raw__ ("set title;\n");
     __gnuplot_raw__ (sprintf ("set bottom_title \"%s\";\n",

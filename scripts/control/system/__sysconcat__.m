@@ -2,10 +2,10 @@ function c = __sysconcat__(a,b)
   # c = __sysconcat__(a,b)
   # cell array replacement for append, used by control systems toolbox
 
-  if(isstr(a))
+  if(ischar(a))
     a = {a};
   endif
-  if(isstr(b))
+  if(ischar(b))
     b = {b};
   endif
 

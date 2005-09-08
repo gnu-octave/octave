@@ -50,7 +50,7 @@ function __plt__ (caller, varargin)
 
       have_data = false;
 
-      if (isstr (next_arg))
+      if (ischar (next_arg))
 	if (x_set)
 	  fmt = __pltopt__ (caller, next_arg);
 	  if (y_set)

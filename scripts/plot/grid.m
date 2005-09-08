@@ -41,7 +41,7 @@ function grid (x)
     __gnuplot_raw__ ("set grid;\n");
     do_replot = true;
   elseif (nargin == 1)
-    if (isstr (x))
+    if (ischar (x))
       if (strcmp ("off", x))
         __gnuplot_raw__ ("set nogrid;\n");
 	do_replot = true;

@@ -61,7 +61,7 @@ function [yy, idx] = sortcom (xx, opt)
 
   if(nargin == 1)         opt = "re";
   else
-    if (!isstr(opt))
+    if (!ischar(opt))
       error("sortcom: second argument must be a string");
     endif
   endif

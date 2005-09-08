@@ -33,7 +33,7 @@
 function status = strcmpi(s1, s2)
 
   if (nargin == 2)
-    status = (isstr (s1) && isstr(s2) && strcmp (upper (s1), upper (s2)));
+    status = (ischar (s1) && ischar(s2) && strcmp (upper (s1), upper (s2)));
   else
     usage ("strcmpi (s, t)");
   endif

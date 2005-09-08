@@ -41,7 +41,7 @@ function n = index (s, t)
     usage ("index (s, t)");
   endif
   
-  if (!isstr (s) || !isstr (t) || all (size (s) > 1) || all (size (t) > 1) )
+  if (!ischar (s) || !ischar (t) || all (size (s) > 1) || all (size (t) > 1) )
     error ("index: expecting string arguments");
   endif
 

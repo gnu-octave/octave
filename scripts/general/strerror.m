@@ -33,7 +33,7 @@ function msg = strerror (name, err)
     usage ("strerror (name, err)");
   endif
 
-  if (! isstr (name))
+  if (! ischar (name))
     error ("strerror: first argument must be a string");
   endif
 

@@ -134,7 +134,7 @@ function curr_axis = axis (ax, varargin)
       curr_axis = __current_axis__;
     endif
 
-  elseif (isstr (ax))
+  elseif (ischar (ax))
     ax = tolower (ax);
     len = length (ax);
 

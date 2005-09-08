@@ -33,7 +33,7 @@ function [data, fmtstr] = __plt1__ (x1, fmt)
     fmt = "";
   endif
 
-  if (! isstr (fmt))
+  if (! ischar (fmt))
     error ("__plt1__: fmt must be a string");
   endif
 

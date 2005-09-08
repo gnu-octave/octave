@@ -29,7 +29,7 @@ function flg = is_signal_list (mylist)
   end
   if (flg)
     for ii = 1:length (mylist)
-      if (! (isstr (mylist{ii}) && rows (mylist{ii}) == 1))
+      if (! (ischar (mylist{ii}) && rows (mylist{ii}) == 1))
 	flg = 0;
       endif
     endfor

@@ -85,7 +85,7 @@ function x = diff (x, k, dim)
     endif
   endif
 
-  if (isstr (x))
+  if (ischar (x))
     error ("diff: symbolic differentiation not (yet) supported");
   endif
 

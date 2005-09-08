@@ -50,7 +50,7 @@ function [nn, xx] = hist (y, x, norm)
     usage ("[nn, xx] = hist (y, x, norm)");
   endif
 
-  arg_is_vector = is_vector (y);
+  arg_is_vector = isvector (y);
 
   if (rows (y) == 1)
     y = y(:);

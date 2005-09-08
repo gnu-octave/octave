@@ -34,7 +34,7 @@ function playaudio (name, ext)
 
   usage_msg = "playaudio (name, ext)  or  playaudio (X)";
 
-  if (nargin == 1 && isvector (name) && ! isstr (name))
+  if (nargin == 1 && isvector (name) && ! ischar (name))
     ## play a vector
     [nr, nc] = size (name);
     if (nc != 1)
@@ -55,7 +55,7 @@ function playaudio (name, ext)
     unwind_protect_cleanup
       unlink (file);
     end_unwind_protect
-  elseif (nargin >= 1 && isstr (name))
+  elseif (nargin >= 1 && ischar (name))
     ## play a file
     if (nargin == 1)
       name = [name, ".lin"];

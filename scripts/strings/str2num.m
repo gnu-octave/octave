@@ -26,13 +26,13 @@
 
 function m = str2num (s)
 
-  if (nargin == 1 && isstr (s))
+  if (nargin == 1 && ischar (s))
     [nr, nc] = size (s);
     sep = ";";
     sep = sep (ones (nr, 1), 1);
     s = sprintf ("m = [%s];", reshape ([s, sep]', 1, nr * (nc + 1)));
     eval (s, "m = [];");
-    if (isstr (m))
+    if (ischar (m))
       m = [];
     endif
   else

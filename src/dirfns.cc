@@ -551,10 +551,11 @@ system-dependent error message.\n\
 DEFUN (glob, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
-Given an array of strings in @var{pattern}, return a cell array of file\n\
-names that match any of them, or an empty cell array if no patterns match.\n\
-Tilde expansion is performed on each of the patterns before looking for\n\
-matching file names.  For example,\n\
+Given an array of strings (as a char array or a cell array) in\n\
+@var{pattern}, return a cell array of file names that match any of\n\
+them, or an empty cell array if no patterns match.  Tilde expansion\n\
+is performed on each of the patterns before looking for matching file\n\
+names.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -562,7 +563,8 @@ glob (\"/vm*\")\n\
      @result{} \"/vmlinuz\"\n\
 @end group\n\
 @end example\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{ls,dir}")
 {
   octave_value retval;
 

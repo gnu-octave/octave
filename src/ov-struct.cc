@@ -519,11 +519,16 @@ array with the specified field names.\n\
 
   int nargin = args.length ();
 
-  // struct([]) returns an empty struct.
-  // XXX FIXME XXX should struct() also create an empty struct?
+  // struct ([]) returns an empty struct.
+
+  // struct (empty_matrix) returns an empty struct with the same
+  // dimensions as the empty matrix.
+
+  // Note that struct () creates a 1x1 struct with no fields for
+  // compatibility with Matlab.
 
   if (nargin == 1 && args(0).is_empty () && args(0).is_real_matrix ())
-    return octave_value (Octave_map ());
+    return octave_value (Octave_map (args(0).dims ()));
     
   // Check for "field", VALUE pairs.
 

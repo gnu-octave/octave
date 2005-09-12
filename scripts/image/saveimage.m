@@ -188,7 +188,7 @@ function saveimage (filename, img, img_form, map)
 
       fid = fopen (filename, "wb");
       fprintf (fid, "P4\n%s\n%d %d\n", tagline, img_nr, img_nc);
-      fwrite (fid, tmp, "char");
+      fwrite (fid, tmp, "uchar");
       fprintf (fid, "\n");
       fclose (fid);
 

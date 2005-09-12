@@ -1,3 +1,8 @@
+2005-09-12  Stefan van der Walt <stefan@sun.ac.za>
+
+	* saveimage.m: Do not ignore most significant bit when writing
+	black and white images to file.
+
 2005-09-07  Bill Denney  <denney@seas.upenn.edu>
 
 	* audio/playaudio.m, control/base/__bodquist__.m,

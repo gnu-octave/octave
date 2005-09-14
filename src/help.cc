@@ -66,6 +66,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
+#include "quit.h"
 
 // Name of the info file specified on command line.
 // (--info-file file)
@@ -1128,6 +1129,622 @@ function file, the full name of the file is also displayed.\n\
 	}
       else
 	print_usage (argv[0]);
+    }
+
+  return retval;
+}
+
+// XXX FIXME XXX 
+// This function attempts to find the first sentence of a help string, though
+// given that the user can create the help in an arbitrary format, your
+// success might vary.. it works much better with help string formated in
+// texinfo. Using regex might make this function much simpler.
+
+std::string 
+first_help_sentence (const std::string& h, bool short_sentence = true)
+{
+  size_t pos = 0;
+
+  if (looks_like_texinfo (h, pos))
+    {
+      // Get the parsed help string.
+      pos = 0;
+      OSSTREAM os;
+      display_help_text (os, h);
+      std::string h2 = os.str ();
+
+      while (1)
+	{
+	  // Skip leading whitespace and get new line
+	  pos = h2.find_first_not_of ("\n\t ", pos);
+
+	  if (pos == NPOS)
+	    break;
+
+	  size_t new_pos = h2.find_first_of ('\n', pos);
+	  std::string line = h2.substr (pos, new_pos-pos);
+
+	  // Skip lines starting in "-"
+	  if (line.find_first_of ('-') == 0)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  break;
+	}
+
+      if (pos == NPOS)
+	return std::string ();
+
+      // At start of real text. Get first line with the sentence
+      size_t new_pos = h2.find_first_of ('\n', pos);
+      std::string line = h2.substr (pos, new_pos-pos);
+      size_t dot_pos;
+
+      while ((dot_pos = line.find_first_of ('.')) == NPOS)
+	{
+	  // Trim trailing blanks on line
+	  line.substr (0, line.find_last_not_of ("\n\t ") + 1);
+
+	  // Append next line
+	  size_t tmp_pos = h2.find_first_not_of ("\n\t ", new_pos + 1);
+	  if (tmp_pos == NPOS || h2.substr (tmp_pos, 1) == "\n")
+	    break;
+
+	  new_pos = h2.find_first_of ('\n', tmp_pos);
+	  std::string next = h2.substr (tmp_pos, new_pos-tmp_pos);
+
+	  if (short_sentence)
+	    {
+	      if ((tmp_pos = next.find_first_of ('.')) != NPOS)
+		{
+		  line = line + " " + next;
+		  dot_pos = line.find_first_of ('.');
+		}
+	      break;
+	    }
+	  else
+	    line = line + " " + next;
+	}
+
+      if (dot_pos == NPOS)
+	return line;
+      else
+	return line.substr (0, dot_pos + 1);
+    }
+  else
+    {
+      std::string _upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      std::string _lower = "abcdefghijklmnopqrstuvwxyz";
+      std::string _alpha = _upper + _lower + "_";
+      std::string _alphanum = _alpha + "1234567890";
+      pos = 0;
+
+      while (1)
+	{
+	  // Skip leading whitespace and get new line
+	  pos = h.find_first_not_of ("\n\t ", pos);
+
+	  if (pos == NPOS)
+	    break;
+
+	  size_t new_pos = h.find_first_of ('\n', pos);
+	  std::string line = h.substr (pos, new_pos-pos);
+
+	  // Make a lower case copy to simplify some tests
+	  std::string lower = line;
+	  transform (lower.begin (), lower.end (), lower.begin (), tolower);
+
+	  // Skip lines starting in "-" or "Usage"
+	  if (lower.find_first_of ('-') == 0
+	      || lower.substr (0, 5) == "usage")
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  size_t line_pos = 0;
+	  size_t tmp_pos = 0;
+
+	  // chop " blah : "
+	  tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
+					     (_alphanum, line_pos));
+	  if (tmp_pos != NPOS && line.substr (tmp_pos, 1) == ":")
+	    line_pos = line.find_first_not_of ("\t ", tmp_pos + 1);
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " function "
+	  if (lower.substr (line_pos, 8) == "function")
+	    line_pos =  line.find_first_not_of ("\t ", line_pos + 8);
+	  
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " [a,b] = "
+	  if (line.substr (line_pos, 1) == "[")
+	    {
+	      tmp_pos = line.find_first_not_of 
+		("\t ", line.find_first_of ("]", line_pos) + 1);
+
+	      if (tmp_pos != NPOS && line.substr (tmp_pos, 1) == "=")
+		line_pos = line.find_first_not_of ("\t ",tmp_pos + 1);
+	    }
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " a = "
+	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
+	    {
+	      tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
+						(_alphanum, line_pos));
+	      if (tmp_pos != NPOS && line.substr (tmp_pos, 1) == "=")
+		line_pos = line.find_first_not_of ("\t ", tmp_pos + 1);
+	    }
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " f(x) "
+	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
+	    {
+	      tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
+						(_alphanum, line_pos));
+	      if (tmp_pos != NPOS && line.substr (tmp_pos, 1) == "(")
+		line_pos = line.find_first_not_of ("\t ", line.find_first_of 
+						   (")", tmp_pos) + 1);
+	    }
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " ; "
+	  if (line.substr (line_pos, 1) == ":"
+	      || line.substr (line_pos, 1) == ";")
+	    line_pos = line.find_first_not_of ("\t ", line_pos + 1);
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " BLAH "
+	  if (line.length () > line_pos + 2
+	      && line.find_first_of (_upper, line_pos) == line_pos
+	      && line.find_first_of (_upper, line_pos+1) == line_pos + 1)
+	    line_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
+			(_upper + "0123456789_", line_pos));
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " blah --- "
+	  tmp_pos = line.find_first_not_of ("\t ", line.find_first_not_of 
+					     (_alphanum, line_pos));
+	  if (tmp_pos != NPOS && line.substr (tmp_pos, 1) == "-")
+	    {
+	      tmp_pos = line.find_first_not_of ("-", tmp_pos);
+	      if (line.substr (tmp_pos, 1) == " "
+		  || line.substr (tmp_pos, 1) == "\t")
+		line_pos = line.find_first_not_of ("\t ", tmp_pos);
+	    }
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " blah <TAB> "
+	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
+	    {
+	      tmp_pos = line.find_first_not_of (" ", line.find_first_not_of 
+						(_alphanum, line_pos));
+	      if (tmp_pos != NPOS && line.substr (tmp_pos, 1) == "\t")
+		line_pos = line.find_first_not_of ("\t ", line.find_first_of 
+						   (")", tmp_pos) + 1);
+	    }
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // chop " blah  "
+	  if (line.find_first_not_of (_alpha, line_pos) != line_pos)
+	    {
+	      tmp_pos = line.find_first_not_of (_alphanum, line_pos);
+
+	      if (tmp_pos != NPOS
+		  && (line.substr (tmp_pos, 2) == "\t\t"
+		      || line.substr (tmp_pos, 2) == "\t "
+		      || line.substr (tmp_pos, 2) == " \t"
+		      || line.substr (tmp_pos, 2) == " "))
+		line_pos = line.find_first_not_of ("\t ", tmp_pos);
+	    }
+
+	  if (line_pos == NPOS)
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // skip blah \n or \n blah
+	  // skip blank line
+	  // skip "# !/usr/bin/octave"
+	  if ((line.substr (line_pos , 2) == "or"
+	       && line.find_first_not_of ("\n\t ", line_pos + 2) == NPOS)
+	      || line.find_first_not_of ("\n\t ", line_pos) == NPOS
+	      || line.substr (line_pos, 2) == "!/")
+	    {
+	      pos = new_pos + 1;
+	      continue;
+	    }
+
+	  // Got the start of first sentence, break.
+	  pos = pos + line_pos;
+	  break;
+	}
+
+      if (pos == NPOS)
+	return std::string ();
+
+      // At start of real text. Get first line with the sentence
+      size_t new_pos = h.find_first_of ('\n', pos);
+      std::string line = h.substr (pos, new_pos-pos);
+      size_t dot_pos;
+
+      while ((dot_pos = line.find_first_of ('.')) == NPOS)
+	{
+	  // Trim trailing blanks on line
+	  line = line.substr (0, line.find_last_not_of ("\n\t ") + 1);
+
+	  // Append next line
+	  size_t tmp_pos = h.find_first_not_of ("\t ", new_pos + 1);
+	  if (tmp_pos == NPOS || h.substr (tmp_pos, 1) == "\n")
+	    break;
+
+	  new_pos = h.find_first_of ('\n', tmp_pos);
+	  std::string next = h.substr (tmp_pos, new_pos-tmp_pos);
+
+	  if (short_sentence)
+	    {
+	      // Only add the next line if it terminates the sentence, then break
+	      if ((tmp_pos = next.find_first_of ('.')) != NPOS)
+		{
+		  line = line + " " + next;
+		  dot_pos = line.find_first_of ('.');
+		}
+	      break;
+	    }
+	  else
+	    line = line + " " + next;
+	}
+
+      if (dot_pos == NPOS)
+	return line;
+      else
+	return line.substr (0, dot_pos + 1);
+    }
+}
+
+static void
+print_lookfor (const std::string& name, const std::string& line)
+{
+  const size_t deflen = 20;
+
+  size_t max_width = command_editor::terminal_cols () - deflen;
+  if (max_width < deflen)
+    max_width = deflen;
+
+  size_t name_len = name.length ();
+
+  size_t width = max_width;
+  if (name_len > deflen)
+    {
+      width = command_editor::terminal_cols () - name_len;
+      if (width < deflen)
+	width = deflen;
+    }
+
+  size_t pad_len = deflen > name_len ? deflen - name_len + 1 : 1;
+  octave_stdout << name << std::string (pad_len, ' ');
+
+  size_t pos = 0;
+
+  while (1)
+    {
+      size_t new_pos = line.find_first_of ("\n\t ", pos);
+      size_t end_pos = new_pos;
+
+      if (line.length () - pos < width)
+	new_pos = end_pos = NPOS;
+      else
+	while (new_pos != NPOS && new_pos - pos < width)
+	  {
+	    end_pos = new_pos;
+	    new_pos = line.find_first_of ("\n\t ", new_pos + 1);
+	  }
+
+      octave_stdout << line.substr (pos, end_pos-pos) << std::endl;
+		  
+      if (end_pos == NPOS)
+	break;
+
+      pos = end_pos + 1;
+      width = max_width;
+      octave_stdout << std::string (deflen + 1, ' ');
+    }
+}
+
+DEFCMD (lookfor, args, nargout, 
+  "-*- texinfo -*-\n\
+@deffn {Command} lookfor @var{str}\n\
+@deffnx {Command} lookfor -all @var{str}\n\
+@deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor (@var{str})\n\
+@deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor ('-all', @var{str})\n\
+Search for the string @var{str} in all of the functions found in\n\
+@var{LOADPATH}. By default @code{lookfor} searchs for @var{str} in the\n\
+first sentence of the help string of each function found. The entire\n\
+help string of each function found of @var{LOADPATH} can be search if\n\
+the '-all' argument is supplied. All searches are case insensitive.\n\
+\n\
+Called with no output arguments, @code{lookfor} prints the list of matching\n\
+functions to the terminal. Otherwise the output arguments @var{fun} and\n\
+@var{helpstring} define the matching functions and the first sentence of\n\
+each of their help strings.\n\
+\n\
+Note that the ability of @code{lookfor} to correctly identify the first\n\
+sentence of the help of the functions is dependent on the format of the\n\
+functions help. All of the functions in octave itself will correctly\n\
+find the first sentence, but the same can not be guaranteed for other\n\
+functions. Therefore the use of the '-all' argument might be necessary\n\
+to find related functions that are not part of octave.\n\
+@end deffn\n\
+@seealso{which, help}")
+{
+  octave_value_list retval;
+  int nargin = args.length ();
+  bool first_sentence_only = true;
+
+  if (nargin != 1 && nargin != 2)
+    {
+      usage ("lookfor");
+      return retval;
+    }
+
+  string_vector ret[2];
+
+  std::string txt;
+
+  if (args(0).is_string ())
+    {
+      txt = args(0).string_value ();
+
+      if (nargin == 2)
+	{
+	  if (args(1).is_string ())
+	    {
+	      std::string tmp = args(1).string_value ();
+
+	      if (txt.substr(0,1) == "-")
+		{
+		  txt = tmp;
+		  tmp = args(0).string_value ();
+		}
+
+	      if (tmp == "-all")
+		first_sentence_only = false;
+	      else
+		error ("lookfor: unrecognized option argument");
+	    }
+	  else
+	    error ("lookfor: arguments must be a string");
+	}
+    }
+  else
+    error ("lookfor: argument must be a string");
+
+  if (!error_state)
+    {
+      // All tests in lower case
+      transform (txt.begin (), txt.end (), txt.begin (), tolower);
+
+      help_list *ptr = keyword_help ();
+      while (ptr->name)
+	{
+	  std::string name = ptr->name;
+	  std::string h = ptr->help;
+
+	  std::string s;
+	  if (first_sentence_only)
+	    s = first_help_sentence (h);
+	  else
+	    s = h;
+	      
+	  transform (s.begin (), s.end (), s.begin (), tolower);
+
+	  if (s.length () > 0 && s.find (txt) != NPOS)
+	    {
+	      if (nargout)
+		{
+		  ret[0].append (name);
+		  ret[1].append (first_help_sentence (h));
+		}
+	      else
+		print_lookfor (name, first_help_sentence (h));
+	    }
+
+	  OCTAVE_QUIT;
+
+	  ptr++;
+	}
+
+      ptr = operator_help ();
+      while (ptr->name)
+	{
+	  std::string name = ptr->name;
+	  std::string h = ptr->help;
+
+	  std::string s;
+	  if (first_sentence_only)
+	    s = first_help_sentence (h);
+	  else
+	    s = h;
+	      
+	  transform (s.begin (), s.end (), s.begin (), tolower);
+
+	  if (s.length () > 0 && s.find (txt) != NPOS)
+	    {
+	      if (nargout)
+		{
+		  ret[0].append (name);
+		  ret[1].append (first_help_sentence (h));
+		}
+	      else
+		print_lookfor (name, first_help_sentence (h));
+	    }
+
+	  OCTAVE_QUIT;
+
+	  ptr++;
+	}
+
+      // Check the symbol record table
+      string_vector names
+	= fbi_sym_tab->name_list (string_vector (), true);
+
+      for (octave_idx_type i = 0; i < names.length (); i++)
+	{
+	  std::string name = names (i);
+
+	  OCTAVE_QUIT;
+
+	  symbol_record *sr = lookup_by_name (name, 0);
+	  if (sr && sr->is_defined ())
+	    {
+	      std::string h = sr->help ();
+	      std::string s;
+	      if (first_sentence_only)
+		s = first_help_sentence (h);
+	      else
+		s = h;
+	      
+	      transform (s.begin (), s.end (), s.begin (), tolower);
+
+	      if (s.length () > 0 && s.find (txt) != NPOS)
+		{
+		  if (nargout)
+		    {
+		      ret[0].append (name);
+		      ret[1].append (first_help_sentence (h));
+		    }
+		  else
+		    print_lookfor (name, first_help_sentence (h));
+		}
+	    }
+	}
+
+      string_vector dirs = Vload_path_dir_path.all_directories ();
+
+      int len = dirs.length ();
+
+      for (int i = 0; i < len; i++)
+	{
+	  names = octave_fcn_file_name_cache::list (dirs[i]);
+
+	  if (! names.empty ())
+	    {
+	      for (int j = 0; j < names.length (); j++)
+		{
+		  std::string name = names (j);
+
+		  OCTAVE_QUIT;
+
+		  // Strip extension
+		  size_t l = name.length ();
+		  if (l > 4 && name.substr (l-4) == ".oct")
+		    name = name.substr (0, l - 4);
+		  else if (l > 2 && name.substr (l-2) == ".m")
+		    name = name.substr (0, l - 2);
+		  else
+		    continue;
+
+		  // Check if already in symbol table
+		  symbol_record *sr = fbi_sym_tab->lookup (name);
+
+		  if (!sr)
+		    {
+		      // Check if this version is first in the path
+		      string_vector tmp (2);
+		      tmp(0) = name + ".oct";
+		      tmp(1) = name + ".m";
+		      std::string file_name = 
+			Vload_path_dir_path.find_first_of (tmp);
+
+
+		      if (file_name == dirs[i] + tmp(0)
+			  || file_name == dirs[i] + tmp(1))
+			{
+			  std::string h = get_help_from_file (file_name);
+
+			  std::string s;
+			  if (first_sentence_only)
+			    s = first_help_sentence (h);
+			  else
+			    s = h;
+
+			  transform (s.begin (), s.end (), s.begin (), tolower);
+
+			  if (s.length () > 0 && s.find (txt) != NPOS)
+			    {
+			      if (nargout)
+				{
+				  ret[0].append (name);
+				  ret[1].append (first_help_sentence (h));
+				}
+			      else
+				print_lookfor (name, first_help_sentence (h));
+			    }
+			}
+		    }
+		}
+	    }
+	}
+
+
+      if (nargout != 0)
+	{
+	  retval (1) = ret[1];
+	  retval (0) = ret[0];
+	}
+    }
+  else
+    {
+      error ("lookfor: argument must be a string");
     }
 
   return retval;

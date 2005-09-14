@@ -1,3 +1,8 @@
+2005-09-14  David Bateman  <dbateman@free.fr>
+
+	* help.cc (Flookfor, print_lookfor, first_help_sentence):
+	New functions.
+
 2005-09-07  Bill Denney  <denney@seas.upenn.edu>
 
 	* dirfns.cc (Fglob): Doc fix.
@@ -7,7 +12,7 @@
 	* ov-struct.cc (Fstruct): Allow struct (zeros (0, N)) to create a
 	0xN struct array.
 
-2005-09-04  David Bateman <dbateman@free.fr>
+2005-09-04  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/colamd.c (COLAMD_NAME, SYMAMD_NAME): New macros
 	(symetree, make_set, link, finf, etdfs, TreePostorder, coletree,
@@ -34,7 +39,7 @@
 	octave_struct::load_binary, octave_struct::load_hdf5): Try harder
 	to read old-style files correctly.
 
-2005-08-25  David Bateman <dbateman@free.fr>
+2005-08-25  David Bateman  <dbateman@free.fr>
 
         * OPERATORS/op-sm-m.cc, OPERATORS/op-sm-cm.cc, OPERATORS/op-scm-m.cc,
 	OPERATORS/op-scm-cm.cc, OPERATORS/op-m-sm.cc, OPERATORS/op-m-scm.cc,

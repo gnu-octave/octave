@@ -160,11 +160,11 @@ If called with two arguments, @var{n} is expected to be an integer\n\
 specifying the number of elements of @var{a} to use, or an empty\n\
 matrix to specify that its value should be ignored. If @var{n} is\n\
 larger than the dimension along which the FFT is calculated, then\n\
-@var{a} is resized and padded with zeros. Otherwise, if@var{n} is\n\
+@var{a} is resized and padded with zeros. Otherwise, if @var{n} is\n\
 smaller than the dimension along which the FFT is calculated, then\n\
 @var{a} is truncated.\n\
 \n\
-If called with three agruments, @var{dim} is an integer specifying the\n\
+If called with three arguments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the FFT is performed\n\
 @end deftypefn\n\
 @seealso {ifft, fft2, fftn, fftw_wisdom}")

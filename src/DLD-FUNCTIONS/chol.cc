@@ -121,7 +121,7 @@ r' * r = a.\n\
 DEFUN_DLD (cholinv, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cholinv (@var{a})\n\
-Use the Cholesky factorization to compute the inverse of of the\n\
+Use the Cholesky factorization to compute the inverse of the\n\
 symmetric positive definite matrix @var{a}.\n\
 @seealso{chol, chol2inv}\n\
 @end deftypefn")

@@ -62,7 +62,7 @@
 *
 *  E       (input/output) DOUBLE PRECISION array, dimension (N)
 *          On entry, the elements of E contain the
-*          offdiagonal elements of of the bidiagonal matrix whose SVD
+*          offdiagonal elements of the bidiagonal matrix whose SVD
 *          is desired. On normal exit (INFO = 0), E is destroyed.
 *          If the algorithm does not converge (INFO > 0), D and E
 *          will contain the diagonal and superdiagonal elements of a

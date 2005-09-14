@@ -73,7 +73,7 @@ c = fftn (rand ([102, 103, 105]));\n\
 \n\
 calculates the wisdom necessary to accelerate the 103, 102x102 and\n\
 the 102x103x105 FFTs. Note that calculated wisdom will be lost when\n\
-when restarting Octave. However, if it is saved as discussed above, it\n\
+restarting Octave. However, if it is saved as discussed above, it\n\
 can be reloaded. Also, any system-wide wisdom file that has been found\n\
 will also be used. Saved wisdom files should not be used on different\n\
 platforms since they will not be efficient and the point of calculating\n\

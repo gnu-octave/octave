@@ -1,3 +1,10 @@
+2005-09-14  Daniel  <durbano@shbano.com>
+
+	* DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/chol.cc,
+	DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fftw_wisdom.cc, utils.cc:
+	Doc string fixes.
+	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
+
 2005-09-14  David Bateman  <dbateman@free.fr>
 
 	* help.cc (Flookfor, print_lookfor, first_help_sentence):

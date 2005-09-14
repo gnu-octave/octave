@@ -1,3 +1,10 @@
+2005-09-14  Daniel  <durbano@shbano.com>
+
+	* statistics/tests/bartlett_test.m, linear-algebra/cross.m,
+	statistics/distributions/discrete_cdf.m, general/fliplr.m:
+	Doc string fixes.
+	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
+
 2005-09-12  Stefan van der Walt <stefan@sun.ac.za>
 
 	* saveimage.m: Do not ignore most significant bit when writing

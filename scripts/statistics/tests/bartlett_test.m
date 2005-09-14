@@ -23,7 +23,7 @@
 ## vectors @var{x1}, @var{x2}, @dots{}, @var{xk}, where @var{k} > 1.
 ##
 ## Under the null of equal variances, the test statistic @var{chisq}
-## approximately ollows a chi-square distribution with @var{df} degrees of
+## approximately follows a chi-square distribution with @var{df} degrees of
 ## freedom.
 ##
 ## The p-value (1 minus the CDF of this distribution at @var{chisq}) is

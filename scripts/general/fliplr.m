@@ -30,7 +30,7 @@
 ## @end group
 ## @end example
 ##
-## Note that @code{fliplr} only workw with 2-D arrays.  To flip N-d arrays
+## Note that @code{fliplr} only work with 2-D arrays.  To flip N-d arrays
 ## use @code{flipdim} instead.
 ## @end deftypefn
 ##

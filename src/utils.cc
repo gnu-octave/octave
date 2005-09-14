@@ -279,11 +279,11 @@ DEFUN (file_in_loadpath, args, ,
 @deftypefn {Built-in Function} {} file_in_loadpath (@var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
-Return the absolute name name of @var{file} if it can be found in\n\
+Return the absolute name of @var{file} if it can be found in\n\
 the list of directories specified by @code{LOADPATH}.\n\
 If no file is found, return an empty matrix.\n\
 \n\
-If the first argument is a cell array of of strings, search each\n\
+If the first argument is a cell array of strings, search each\n\
 directory of the loadpath for element of the cell array and return\n\
 the first that matches.\n\
 \n\
@@ -337,7 +337,7 @@ DEFUN (file_in_path, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
-Return the absolute name name of @var{file} if it can be found in\n\
+Return the absolute name of @var{file} if it can be found in\n\
 @var{path}.  The value of @var{path} should be a colon-separated list of\n\
 directories in the format described for the built-in variable\n\
 @code{LOADPATH}.  If no file is found, return an empty matrix.\n\
@@ -348,7 +348,7 @@ file_in_path (LOADPATH, \"nargchk.m\")\n\
      @result{} \"@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m\"\n\
 @end example\n\
 \n\
-If the second argument is a cell array of of strings, search each\n\
+If the second argument is a cell array of strings, search each\n\
 directory of the path for element of the cell array and return\n\
 the first that matches.\n\
 \n\

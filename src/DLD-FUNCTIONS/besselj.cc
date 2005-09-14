@@ -445,7 +445,7 @@ Loss of significance by argument reduction results in less than half\n\
 Complete loss of significance by argument reduction, return @code{NaN}.\n\
 @item\n\
 Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}\n\
+return @code{NaN}.\n\
 @end enumerate\n\
 @end deftypefn")
 {

@@ -49,7 +49,6 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## @var{m} (@var{n} by @var{n}) satisfies
 ## @example
 ##  a m a' - m + b*b' = 0
 ## @end example

@@ -56,7 +56,9 @@ octave_complex::try_narrowing_conversion (void)
 {
   octave_value *retval = 0;
 
-  if (imag (scalar) == 0.0)
+  double im = std::imag (scalar);
+
+  if (im == 0.0 && ! lo_ieee_signbit (im))
     retval = new octave_scalar (real (scalar));
 
   return retval;

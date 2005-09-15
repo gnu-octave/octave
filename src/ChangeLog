@@ -1,3 +1,10 @@
+2005-09-14  John W. Eaton  <jwe@octave.org>
+
+	* ov-complex.cc (octave_complex::try_narrowing_conversion):
+	Don't drop -0i.
+	* ov-cx-mat.cc (octave_complex_matrix::try_narrowing_conversion):
+	Likewise.
+
 2005-09-14  Daniel  <durbano@shbano.com>
 
 	* DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/chol.cc,

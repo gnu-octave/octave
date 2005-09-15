@@ -74,7 +74,9 @@ octave_complex_matrix::try_narrowing_conversion (void)
 	{
 	  Complex c = matrix (0, 0);
 
-	  if (std::imag (c) == 0.0)
+	  double im = std::imag (c);
+
+	  if (im == 0.0 && ! lo_ieee_signbit (im))
 	    retval = new octave_scalar (std::real (c));
 	  else
 	    retval = new octave_complex (c);

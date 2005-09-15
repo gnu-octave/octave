@@ -47,6 +47,8 @@ extern int dlclose (void *);
 #endif
 #elif defined (HAVE_SHL_LOAD_API)
 #include <dl.h>
+#elif defined (HAVE_LOADLIBRARY_API)
+#include <windows.h>
 #endif
 }
 
@@ -495,6 +497,11 @@ octave_w32_shlib::open (const std::string& f, bool warn_future)
       ("shared library %s is already open", file.c_str ());
 }
 
+extern "C"
+{
+  void * octave_w32_search (HINSTANCE handle, const char * name);
+}
+
 void *
 octave_w32_shlib::search (const std::string& name,
 			  octave_shlib::name_mangler mangler)
@@ -508,8 +515,7 @@ octave_w32_shlib::search (const std::string& name,
       if (mangler)
 	sym_name = mangler (name);
 
-      function
-	= static_cast<void *> (GetProcAddress (handle, sym_name.c_str ()));
+      function = octave_w32_library_search (handle, sym_name.c_str ());
 
       if (function)
 	add_to_fcn_names (name);

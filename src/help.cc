@@ -672,7 +672,9 @@ display_help_text (std::ostream& os, const std::string& msg)
 	  << " --no-headers"
 	  << " --force"
 	  << " --output \"" << tmp_file_name << "\""
+#if !defined (__MINGW32__)
 	  << " > /dev/null 2>&1"
+#endif
 	  << OSSTREAM_ENDS;
 
       oprocstream filter (OSSTREAM_STR (buf));

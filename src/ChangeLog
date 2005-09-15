@@ -1,3 +1,53 @@
+2005-09-15  John W. Eaton  <jwe@octave.org>
+
+	* sysdep.h [__MINGW32__]: Move to definition of waitpid sysdep.h.
+
+	* sysdep.cc, sighandlers.cc: Rename all win32_ symbols to w32.
+
+	* sysdep.cc (w32_set_quiet_shutdown): New function.
+	* sysdep.h: Provide decl.
+	* sysdep.cc (MINGW_signal_cleanup): Use it.
+	* sighandlers.cc (octave_catch_interrupts): Use it.
+
+	* sysdep.h: Provide decl.
+	(MINGW_SIGNAL_CLEANUP): New macro.
+	(USE_W32_SIGINT): Move definition here.
+	* sighandlers.cc: From here.
+
+	* DLD-FUNCTIONS/cellfun.cc (Fnum2cell): Use print_usage, not usage.
+	* DLD-FUNCTIONS/colamd.cc (Fcolamd, Fsymamd, Fetree): Likewise.
+	(Fcolamd, Fsymamd) [! HAVE_COLAMD]: Return empty octave_value_list
+	object.
+
+	* sysdep.cc (sysdep_cleanup): New function.
+	Move w32 clean up code here.
+	* toplev.cc (clean_up_and_exit): From here.
+	Call sysdep_cleanup here.
+
+2005-09-15  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (DLD_XSRC): Add ccolamd.cc
+	(OCTAVE_LIBS): Add LIBGLOB.
+	(OCT_LINK_DEPST, octave): Add AMD, COLAMD, CCOLAMD and CHOLMOD 
+	libraries.
+	* default.cc (set_default_exec_path, set_default_path,
+	maybe_add_default_load_path, LOADPATH): Use SEPCHAR_STR and SEPCHAR.
+	* help.cc (display_help_text): Exclude /dev/null on mingw.
+	* oct-procbuf.cc (W32POPEN, W32PCLOSE): Macros for cygwin/mingw.
+	(octave_procbuf::open, octave_probuf::close): Use them.
+	* sighandler.cc (user_abort): New function with core of old
+	sigint_handler.
+	(sigint_handler): Simplify and specialize for w32.
+	(w32_sigint_handler): W32 version of sigint handler.
+	(octave_catch_interrupts): Initialize w32 siginit handler.
+	* sysdep.cc (MINGW_init): New function.
+	(sysdep_init): Use it.
+	* toplev.cc (clean_up_and_exit): Clean w32 signalling shutdown.
+	* DLD-FUNCTIONS/cellfun.cc (Fnum2cell): New function.
+	* DLD-FUNCTIONS/colamd.cc (Fcolamd, Fsymamd): Allow conditional build.
+	Include oct-sparse.h rather than colamd.h.
+	* DLD-FUNCTIONS/ccolamd.cc: New file with Fccolamd a Fcsymamd.
+	
 2005-09-14  John W. Eaton  <jwe@octave.org>
 
 	* ov-complex.cc (octave_complex::try_narrowing_conversion):

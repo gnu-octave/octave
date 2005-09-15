@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "defun-dld.h"
 #include "parse.h"
 #include "variables.h"
+#include "ov-colon.h"
 
 DEFUN_DLD (cellfun, args, ,
   " -*- texinfo -*-\n\
@@ -237,6 +238,94 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
 
 	  if (! fcn_name.empty ())
 	    clear_function (fcn_name);
+	}
+    }
+
+  return retval;
+}
+
+DEFUN_DLD (num2cell, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{c} =} num2cell (@var{m})\n\
+@deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{d})\n\
+Convert to matrix @var{m} into a cell array. If @var{d} is defined the\n\
+value @var{c} is of dimension 1 in this dimension and the elements of\n\
+@var{m} are placed in slices in @var{c}.\n\
+@end deftypefn\n\
+@seealso{mat2cell}") 
+{
+  int nargin =  args.length();
+  octave_value retval;
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ("num2cell");
+  else
+    {
+      dim_vector dv = args(0).dims ();
+      Array<int> sings;
+
+      if (nargin == 2)
+	{
+	  ColumnVector dsings = ColumnVector (args(1).vector_value 
+						  (false, true));
+	  sings.resize (dsings.length());
+
+	  if (!error_state)
+	    for (int i = 0; i < dsings.length(); i++)
+	      if (dsings(i) > dv.length() || dsings(i) < 1 ||
+		  D_NINT(dsings(i)) != dsings(i))
+		{
+		  error ("invalid dimension specified");
+		  break;
+		}
+	      else
+		sings(i) = NINT(dsings(i)) - 1;
+	}
+
+      if (! error_state)
+	{
+	  Array<bool> idx_colon (dv.length());
+	  dim_vector new_dv (dv);
+	  octave_value_list lst (new_dv.length(), octave_value());
+
+	  for (int i = 0; i < dv.length(); i++)
+	    {
+	      idx_colon(i) = false;
+	      for (int j = 0; j < sings.length(); j++)
+		{
+		  if (sings(j) == i)
+		    {
+		      new_dv(i) = 1;
+		      idx_colon(i) = true;
+		      lst(i) = octave_value (octave_value::magic_colon_t); 
+		      break;
+		    }
+		}
+	    }
+
+	  Cell ret (new_dv);
+	  octave_idx_type nel = new_dv.numel();
+	  octave_idx_type ntot = 1;
+
+	  for (int j = 0; j < new_dv.length()-1; j++)
+	    ntot *= new_dv(j);
+
+	  for (octave_idx_type i = 0; i <  nel; i++)
+	    {
+	      octave_idx_type n = ntot;
+	      octave_idx_type ii = i;
+	      for (int j = new_dv.length() - 1; j >= 0 ; j--)
+		{
+		  if (! idx_colon(j))
+		    lst (j) = ii/n + 1;
+		  ii = ii % n;
+		  if (j != 0)
+		    n /= new_dv(j-1);
+		}
+	      ret(i) = args(0).do_index_op(lst, 0);
+	    }
+
+	  retval = ret;
 	}
     }
 

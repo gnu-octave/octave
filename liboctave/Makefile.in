@@ -10,7 +10,7 @@ TOPDIR = ..
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-VPATH = @srcdir@:@srcdir@/COLAMD
+VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
@@ -19,11 +19,9 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 LINK_DEPS = \
-  -L../libcruft -L../glob -L. $(RLD_FLAG) \
+  -L../libcruft -L. $(RLD_FLAG) \
   $(LIBCRUFT) $(UMFPACK_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) \
-  $(LIBS) $(FLIBS)
-
-include $(srcdir)/COLAMD.files
+  $(LIBGLOB) $(LIBS) $(FLIBS)
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-flags.h Array-util.h ArrayN-idx.h MArray-defs.h \
@@ -67,9 +65,9 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-inttypes.h \
 	oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h \
 	oct-shlib.h oct-sort.h oct-spparms.h oct-syscalls.h \
-	oct-time.h oct-types.h pathlen.h pathsearch.h prog-args.h \
-	so-array.h sparse-sort.h statdefs.h str-vec.h sun-utils.h \
-	sysdir.h systime.h syswait.h \
+	oct-sparse.h oct-time.h oct-types.h pathlen.h pathsearch.h \
+	 prog-args.h so-array.h sparse-sort.h statdefs.h str-vec.h \
+	sun-utils.h sysdir.h systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \
@@ -152,19 +150,16 @@ EXTRAS := mx-inlines.cc kpse.cc intNDArray.cc
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
 DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
-	sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
-	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA) \
-	$(COLAMD_EXTRAS)
+	sparse-mk-ops.awk sparse-mx-ops oct-sparse.h.in oct-types.h.in \
+	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)
 
 # Complete directory trees to distribute.
-DISTDIRS := COLAMD
+DISTDIRS :=
 
-MAKEDEPS_2 := $(SOURCES) $(COLAMD_SRC)
-MAKEDEPS_1 := $(patsubst %.cc, %.d, $(MAKEDEPS_2))
+MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
 LIBOCTAVE_OBJECTS := \
-	$(COLAMD_OBJ) \
 	$(LIBOCTAVE_CXX_SOURCES:.cc=.o) \
 	$(LIBOCTAVE_C_SOURCES:.c=.o) \
 	$(LIBOCT_READLINE_CXX_SOURCES:.cc=.o) \
@@ -266,7 +261,7 @@ install-lib:
 	  $(INSTALL) \
 	    liboctave.$(SHLLIB) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB_VER); \
 	  rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
-	  $(LN_S) liboctave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) liboctave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \

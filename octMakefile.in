@@ -21,7 +21,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in \
 	configure configure.in config.guess config.sub aclocal.m4 \
-	acx_blas.m4 acx_lapack.m4 config.h.in install-sh autogen.sh
+	acx_blas.m4 acx_lapack.m4 acx_include_dirs.m4 config.h.in \
+	install-sh autogen.sh
 
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS \

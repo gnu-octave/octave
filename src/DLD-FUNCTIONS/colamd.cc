@@ -40,10 +40,7 @@ Boston, MA 02110-1301, USA.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-// External COLAMD functions in C
-extern "C" {
-#include "COLAMD/colamd.h"
-}
+#include "oct-sparse.h"
 
 #ifdef IDX_TYPE_LONG
 #define COLAMD_NAME(name) colamd_l ## name
@@ -270,11 +267,14 @@ Ng, Oak Ridge National Laboratory. (see\n\
 @seealso{colperm, symamd}")
 {
   octave_value_list retval;
+
+#ifdef HAVE_COLAMD
+
   int nargin = args.length ();
   int spumoni = 0;
  
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
-    usage ("colamd: incorrect number of input and/or output arguments");
+    print_usage ("colamd");
   else
     {
       // Get knobs
@@ -428,6 +428,12 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	}
     }
 
+#else
+
+  error ("colamd: not available in this version of Octave");
+
+#endif
+
   return retval;
 }
 
@@ -497,11 +503,14 @@ Ng, Oak Ridge National Laboratory. (see\n\
 @seealso{colperm, colamd}")
 {
   octave_value_list retval;
+
+#ifdef HAVE_COLAMD
+
   int nargin = args.length ();
   int spumoni = 0;
  
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
-    usage ("symamd: incorrect number of input and/or output arguments");
+    print_usage ("symamd");
   else
     {
       // Get knobs
@@ -616,6 +625,12 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	}
     }
 
+#else
+
+  error ("symamd: not available in this version of Octave");
+
+#endif
+
   return retval;
 }
 
@@ -640,7 +655,7 @@ permutations on the tree.\n\
   int nargin = args.length ();
 
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
-    usage ("etree: incorrect number of input and/or output arguments");
+    print_usage ("etree");
   else
     {
       octave_idx_type n_row, n_col, nnz;

@@ -214,6 +214,8 @@ clean_up_and_exit (int retval)
 {
   do_octave_atexit ();
 
+  sysdep_cleanup ();
+
   exit (retval == EOF ? 0 : retval);
 }
 

@@ -60,6 +60,10 @@ extern Complex octave_read_complex (std::istream& is);
 extern void octave_write_double (std::ostream& os, double dval);
 extern void octave_write_complex (std::ostream& os, const Complex& cval);
 
+#ifdef HAVE_LOADLIBRARY_API
+#include <windows.h>
+extern "C" void * octave_w32_library_search (HINSTANCE handle, const char *name);
+#endif
 #endif
 
 /*

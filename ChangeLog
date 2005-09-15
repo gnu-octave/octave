@@ -1,3 +1,36 @@
+2005-09-15  John W. Eaton  <jwe@octave.org>
+
+	* oct-sparse.h.in: Move to liboctave.
+	* octMakefile.in (CONF_DISTFILES): Delete it from the list.
+	(maintainer-clean, distclean, install, install-strip, uninstall):
+	Omit rules for oct-sparse.h.
+	* configure.in: Substitute liboctave/oct-sparse.h, not oct-sparse.h.
+
+2005-09-15  David Bateman  <dbateman@free.fr>
+
+	* acx_include_dirs.m4 (AC_CHECK_HEADER_IN_DIRS): Define new macro.
+	* oct-sparse.h.in: New AC_CONFIG_FILE.
+	* configure.in: (AC_CHECK_HEADER_IN_DIRS): Use macro.
+	(AMD_LIBS, COLAMD_LIBS, CCOLAMD_LIBS, CHOLMOD_LIBS): Probe for
+	these sparse library in addition to UMFPACK.
+	(UMFPACK_INCLUDE, AMD_INCLUDE, COLAMD_INCLUDE, CCOLAMD_INCLUDE):
+	AC_SUBST into oct-sparse.h.
+	(LIBGLOB): Probe for external glob/fnmatch, define LIBGLOB.
+	(sepchar): Define path seperation character in system dependent 
+	manner. Use it with OCTAVE_SET_DEFAULT.
+	(SEPCHAR, SEPCHAR_STR): Dpend on sepchar.
+	(DL_LDFLAGS): Define for cygwin and mingw.
+	(-lwsock32): Add to LIBS.
+	(loadlibrary_api): Set for mingw/cygwin and autoconf test appears
+	broken.
+	* Makeconf.in: Don't use ";" as sed seperation to avoid confusion
+	with sepchar.
+	(LIBGLOB, AMD_LIBS, COLAMD_LIBS, CCOLAMD_LIBS, CHOLMOD_LIBS, 
+	sepchar): Substitute.
+	* octMakefile.in: (CONF_DISTFILES): Add acx_include_dirs.m4 and
+	oct-sparse.h.in
+	(oct-sparse.h): Include in install and clean directives
+
 2005-08-31  Pascal A. Dupuis  <Pascal.Dupuis@esat.kuleuven.be>
 
 	* emacs/octave-inf.el (inferior-octave-startup): Call

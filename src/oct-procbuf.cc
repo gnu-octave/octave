@@ -54,15 +54,23 @@ static int Vkluge_procbuf_delay = 0;
 
 static octave_procbuf *octave_procbuf_list = 0;
 
+#if defined (__CYGWIN32__)
+#define W32POPEN popen
+#define W32PCLOSE pclose
+#elif defined (__MINGW32__)
+#define W32POPEN _popen
+#define W32PCLOSE _pclose
+#endif
+
 octave_procbuf *
 octave_procbuf::open (const char *command, int mode)
 {
-#if defined (__CYGWIN32__)
+#if defined (__CYGWIN32__) || defined (__MINGW32__)
 
   if (is_open ()) 
     return 0;
 
-  f = popen (command, (mode & std::ios::in) ? "r" : "w");
+  f = ::W32POPEN (command, (mode & std::ios::in) ? "r" : "w");
 
   if (! f)
     return 0;
@@ -166,11 +174,13 @@ octave_procbuf::open (const char *command, int mode)
 octave_procbuf *
 octave_procbuf::close (void)
 {
-#if defined (__CYGWIN32__)
+
+
+#if defined (__CYGWIN32__) || defined (__MINGW32__)
 
   if (f)
     {
-      wstatus = ::pclose (f);
+      wstatus = ::W32PCLOSE (f);
       f = 0;
     }
 

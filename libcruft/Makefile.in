@@ -128,7 +128,8 @@ install::
 	  $(INSTALL) \
 	    libcruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER); \
 	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB); \
-	  $(LN_S) libcruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir); \
+	  $(LN_S) libcruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \

@@ -38,12 +38,7 @@ Boston, MA 02110-1301, USA.
 
 template class sparse_base_lu <SparseMatrix, double, SparseMatrix, double>;
 
-#ifdef HAVE_UMFPACK
-// Include the UMFPACK functions
-extern "C" {
-#include <umfpack/umfpack.h>
-}
-#endif
+#include "oct-sparse.h"
 
 SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 {

@@ -114,17 +114,21 @@ octave_signal_handler (void)
 
 	  switch (i)
 	    {
+#ifdef SIGCHLD
 	    case SIGCHLD:
 	      octave_child_list::reap ();
 	      break;
+#endif
 
 	    case SIGFPE:
 	      std::cerr << "warning: floating point exception -- trying to return to prompt" << std::endl;
 	      break;
 
+#ifdef SIGPIPE
 	    case SIGPIPE:
 	      std::cerr << "warning: broken pipe -- some output may be lost" << std::endl;
 	      break;
+#endif
 	    }
 	}
     }
@@ -143,6 +147,9 @@ my_friendly_exit (const char *sig_name, int sig_number,
 #endif
 
       std::cerr << "panic: attempted clean up apparently failed -- aborting...\n";
+
+      MINGW_SIGNAL_CLEANUP ();
+
       abort ();
     }
   else
@@ -155,7 +162,11 @@ my_friendly_exit (const char *sig_name, int sig_number,
 	dump_octave_core ();
 
       if (sig_number < 0)
-	exit (1);
+	{
+	  MINGW_SIGNAL_CLEANUP ();
+
+	  exit (1);
+	}
       else
 	{
 	  octave_set_signal_handler (sig_number, SIG_DFL);
@@ -343,13 +354,9 @@ sigwinch_handler (int /* sig */)
 // use the value of sig, instead of just assuming that it is called
 // for SIGINT only.
 
-static RETSIGTYPE
-sigint_handler (int sig)
+static
+void user_abort(const char *sig_name, int sig_number)
 {
-  MAYBE_ACK_SIGNAL (sig);
-
-  MAYBE_REINSTALL_SIGHANDLER (sig, sigint_handler);
-
   if (! octave_initialized)
     exit (1);
 
@@ -361,7 +368,7 @@ sigint_handler (int sig)
 	    {
 	      octave_debug_on_interrupt_state = true;
 
-	      SIGHANDLER_RETURN (0);
+	      return;
 	    }
 	  else
 	    // Clear the flag and do normal interrupt stuff.
@@ -386,9 +393,27 @@ sigint_handler (int sig)
 	    std::cerr << "Press Control-C again to abort." << std::endl;
 
 	  if (octave_interrupt_state >= 3)
-	    my_friendly_exit (sys_siglist[sig], sig, true);
+	    my_friendly_exit (sig_name, sig_number, true);
 	}
     }
+
+}
+
+static RETSIGTYPE
+sigint_handler (int sig)
+{
+  MAYBE_ACK_SIGNAL (sig);
+
+  MAYBE_REINSTALL_SIGHANDLER (sig, sigint_handler);
+
+#ifdef USE_W32_SIGINT
+  if (w32_in_main_thread ())
+    user_abort (sys_siglist[sig], sig);
+  else
+    w32_raise (sig);
+#else
+  user_abort (sys_siglist[sig], sig);
+#endif
 
   SIGHANDLER_RETURN (0);
 }
@@ -414,6 +439,60 @@ sigpipe_handler (int /* sig */)
 }
 #endif /* defined(SIGPIPE) */
 
+#ifdef USE_W32_SIGINT
+static BOOL CALLBACK
+w32_sigint_handler (DWORD sig)
+{
+  const char *sig_name;
+
+  switch(sig)
+    {
+      case CTRL_BREAK_EVENT:   
+	sig_name = "Ctrl-Break"; 
+	break;
+      case CTRL_C_EVENT:
+	sig_name = "Ctrl-C";
+	break;
+      case CTRL_CLOSE_EVENT:
+	sig_name = "close console";
+	break;
+      case CTRL_LOGOFF_EVENT:
+	sig_name = "logoff";
+	break;
+      case CTRL_SHUTDOWN_EVENT:
+	sig_name = "shutdown";
+	break;
+      default:
+	sig_name = "unknown console event";
+	break;
+    }
+
+  switch(sig)
+    {
+      case CTRL_BREAK_EVENT:
+      case CTRL_C_EVENT:
+	w32_raise (SIGINT);
+        break;
+
+      case CTRL_CLOSE_EVENT:
+      case CTRL_LOGOFF_EVENT:
+      case CTRL_SHUTDOWN_EVENT:
+      default:
+        // We should do the following:
+        //    clean_up_and_exit (0);
+        // We can't because we aren't running in the normal Octave thread.
+	user_abort(sig_name, sig);
+        break;
+    }
+
+  // Return TRUE if the event was handled, or FALSE if another handler 
+  // should be called.
+  // XXX FIXME XXX check that windows terminates the thread.
+  return TRUE;
+}
+#endif /* w32_sigint_handler */
+
+
 octave_interrupt_handler
 octave_catch_interrupts (void)
 {
@@ -425,6 +504,22 @@ octave_catch_interrupts (void)
 
 #ifdef SIGBREAK
   retval.brk_handler = octave_set_signal_handler (SIGBREAK, sigint_handler);
+#endif
+
+#ifdef USE_W32_SIGINT
+
+  // Intercept windows console control events.
+  // Note that the windows console signal handlers chain, so if 
+  // install_signal_handlers is called more than once in the same program,
+  // then first call the following to avoid duplicates:
+  //
+  //   SetConsoleCtrlHandler (w32_sigint_handler, FALSE);
+
+  if (! SetConsoleCtrlHandler (w32_sigint_handler, TRUE))
+    error ("SetConsoleCtrlHandler failed with %ld\n", GetLastError ());
+
+  w32_set_quiet_shutdown ();
+
 #endif
 
   return retval;
@@ -592,6 +687,7 @@ install_signal_handlers (void)
 #ifdef SIGXFSZ
   octave_set_signal_handler (SIGXFSZ, generic_sig_handler);
 #endif
+
 }
 
 static Octave_map

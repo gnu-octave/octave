@@ -31,9 +31,28 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 extern void sysdep_init (void);
 
+extern void sysdep_cleanup (void);
+
 extern void raw_mode (bool, bool wait = true);
 
 extern int octave_kbhit (bool wait = true);
+
+extern void w32_set_quiet_shutdown (void);
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+extern void MINGW_signal_cleanup (void);
+#define USE_W32_SIGINT 1
+#define MINGW_SIGNAL_CLEANUP() MINGW_signal_cleanup ()
+#else
+#define MINGW_SIGNAL_CLEANUP() do { } while (0)
+#endif
+
+#if defined (__MINGW32__)
+#include <process.h>
+#define waitpid(a, b, c) _cwait (b, a, c)
+// action argument is ignored for _cwait, so arbitrary definition
+#define WNOHANG 0
+#endif
 
 #endif
 

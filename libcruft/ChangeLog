@@ -1,3 +1,23 @@
+2005-09-15  John W. Eaton  <jwe@octave.org>
+
+	* misc/quit.h Rename all win32_ symbols to w32.  Change all uses.
+
+2005-09-15  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (LN_S): Change to DESTDIR before LN_S to avoid
+	lack of symlinks under mingw.
+	* misc/cquit.c (w32_thread_setjmp_mutex, win32_signal_context,
+	win32_signal_to_raise, win32_main_thread_id, win32_main_thread,
+	win32_restore_thread): New static variables.
+	(win32_in_main_thread): Returns 1 if in main thread for win32.
+	(win32_reset_context): Reset context (longjmp style) for win32.
+	(win32_raise_in_main): Raise signal in main thread for win32.
+	(win32_raise): Raise signal for win32.
+	(win32_raise_final): Clean up win32 signalling.
+	(win32_sigint_init): Initialize win32 signalling.
+	* quit.h (win32_sigint_init, win32_raise_final, win32_raise,
+	win32_in_main_thread): Declaration.
+	
 2005-09-14  Daniel  <durbano@shbano.com>
 
 	* lapack/zbdsqr.f: Fix typo in docs.

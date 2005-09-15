@@ -34,6 +34,17 @@ extern "C" {
 #include <signal.h>
 #include <setjmp.h>
 
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+#include <windows.h>
+
+extern void w32_sigint_init (void);   /* setup */
+extern void w32_raise_final (void);   /* tear down */
+extern void w32_raise (int sig);      /* raise signal in main thread */
+extern int w32_in_main_thread (void); /* return true if in main thread */
+
+#endif
+
 #if defined (OCTAVE_HAVE_SIG_JUMP)
 
 typedef sigjmp_buf octave_jmp_buf;

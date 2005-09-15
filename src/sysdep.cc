@@ -75,6 +75,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "quit.h"
 
 #include "defun.h"
 #include "error.h"
@@ -101,6 +102,39 @@ BSD_init (void)
 #endif
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
 #endif
+}
+#endif
+
+void
+w32_set_quiet_shutdown (void)
+{
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+  // Let the user close the console window or shutdown without the
+  // pesky dialog.
+  //
+  // XXX FIXME XXX -- should this be user configurable?
+  SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
+#endif
+}
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+void
+MINGW_signal_cleanup (void)
+{
+  w32_set_quiet_shutdown (void);
+
+  w32_raise_final ():
+}
+#endif
+
+#if defined (__MINGW32__)
+static void
+MINGW_init (void)
+{
+  // Init mutex to protect setjmp/longjmp and get main thread context
+  w32_sigint_init ();
+
+  w32_set_quiet_shutdown ();
 }
 #endif
 
@@ -199,6 +233,8 @@ sysdep_init (void)
   BSD_init ();
 #elif defined (__CYGWIN__)
   CYGWIN_init ();
+#elif defined (__MINGW32__)
+  MINGW_init ();
 #elif defined (NeXT)
   NeXT_init ();
 #elif defined (__EMX__)
@@ -208,6 +244,12 @@ sysdep_init (void)
 #endif
 
   octave_ieee_init ();
+}
+
+void
+sysdep_cleanup (void)
+{
+  MINGW_SIGNAL_CLEANUP ();
 }
 
 // Set terminal in raw mode.  From less-177.

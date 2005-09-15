@@ -132,7 +132,10 @@ extern "C" {
 
 /* What separates elements in environment variable path lists?  */
 #ifndef ENV_SEP
-#ifdef DOSISH
+#if defined (SEPCHAR) && defined (SEPCHAR_STR)
+#define ENV_SEP SEPCHAR
+#define ENV_SEP_STRING SEPCHAR_STR
+#elif defined (DOSISH)
 #define ENV_SEP ';'
 #define ENV_SEP_STRING ";"
 #else

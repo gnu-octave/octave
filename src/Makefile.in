@@ -42,8 +42,8 @@ endif
 OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc Quad-opts.cc
 
-DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc colamd.cc \
-	colloc.cc daspk.cc dasrt.cc dassl.cc det.cc dispatch.cc \
+DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc ccolamd.cc \
+	colamd.cc colloc.cc daspk.cc dasrt.cc dassl.cc det.cc dispatch.cc \
 	eig.cc expm.cc fft.cc fft2.cc fftn.cc fftw_wisdom.cc \
 	filter.cc find.cc fsolve.cc gammainc.cc gcd.cc getgrent.cc \
 	getpwent.cc getrusage.cc givens.cc hess.cc inv.cc kron.cc \
@@ -235,11 +235,11 @@ OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
     $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
-    $(LIBPLPLOT) $(LIBDLFCN)
+    $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 else
   OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
     $(GLPK_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
-    $(LIBPLPLOT) $(LIBDLFCN)
+    $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 endif
 
 OCTINTERP_LINK_DEPS = \
@@ -247,7 +247,8 @@ OCTINTERP_LINK_DEPS = \
 
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
-  -L. $(LIBOCTINTERP) $(UMFPACK_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+  -L. $(LIBOCTINTERP) $(UMFPACK_LIBS) $(AMD_LIBS) $(COLAMD_LIBS) \
+   $(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
@@ -313,7 +314,9 @@ octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	main.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
-	$(LEXLIB) $(UMFPACK_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+	$(LEXLIB) $(UMFPACK_LIBS) $(AMD_LIBS) $(COLAMD_LIBS) \
+	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) \
+	$(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \
@@ -395,7 +398,7 @@ install-bin:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
 	$(INSTALL_PROGRAM) octave$(EXEEXT) $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
-	$(LN_S) octave-$(version)$(EXEEXT) $(DESTDIR)$(bindir)/octave$(EXEEXT)
+	cd $(DESTDIR)$(bindir) ; $(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
 .PHONY: install-bin
 
 install-oct: PKG_ADD
@@ -423,7 +426,7 @@ install-lib:
 	  $(INSTALL) liboctinterp.$(SHLLIB) \
 	    $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB_VER); \
 	  rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
-	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
+	  (cd $(DESTDIR)$(octlibdir) ; $(LN_S) liboctinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \

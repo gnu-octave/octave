@@ -96,6 +96,16 @@ octave_gethostname (char *name, int namelen)
   return gethostname (name, namelen);
 }
 
+#ifdef HAVE_LOADLIBRARY_API
+#include <windows.h>
+
+/* Need this since in C++ can't cast from int(*)() to void* */
+void * octave_w32_library_search (HINSTANCE handle, const char * name)
+{
+  return (GetProcAddress (handle, name));
+}
+#endif
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -41,13 +41,7 @@ Boston, MA 02110-1301, USA.
 #include "oct-spparms.h"
 #include "SparsedbleLU.h"
 #include "SparseType.h"
-
-#ifdef HAVE_UMFPACK
-// External UMFPACK functions in C
-extern "C" {
-#include <umfpack/umfpack.h>
-}
-#endif
+#include "oct-sparse.h"
 
 // Fortran functions we call.
 extern "C"

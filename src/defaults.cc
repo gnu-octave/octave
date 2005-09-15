@@ -281,7 +281,7 @@ set_default_exec_path (void)
 
       if (! shell_path.empty ())
 	{
-	  Vexec_path = std::string (":");
+	  Vexec_path = std::string (SEPCHAR_STR);
 	  Vexec_path.append (shell_path);
 	}
     }
@@ -296,7 +296,7 @@ set_default_path (void)
 
   std::string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path.empty () ? std::string (":") : oct_path;
+  Vload_path = oct_path.empty () ? std::string (SEPCHAR_STR) : oct_path;
 
   update_load_path_dir_path ();
 }
@@ -379,7 +379,8 @@ maybe_add_default_load_path (const std::string& pathstring)
       size_t pos = 0;
       do
 	{
-	  pos = retval.find ("::");
+	  pos = retval.find (std::string (SEPCHAR_STR) + 
+			     std::string (SEPCHAR_STR));
 
 	  if (pos != NPOS)
 	    retval.insert (pos+1, Vdefault_load_path);
@@ -587,7 +588,8 @@ loadpath (void)
       // I'm not sure whether this causes more problems that it
       // solves...
       //      if (! (s[0] == ':' || s[s.length () - 1] == ':'
-      //	     || s.find ("::") != NPOS))
+      //	     || s.find (std::string (SEPCHAR_STR) + 
+      //                        std::string (SEPCHAR_STR)) != NPOS))
       //	warning ("LOADPATH will ignore default load path");
 
       Vload_path = s;
@@ -697,8 +699,10 @@ overrides the environment variable @code{OCTAVE_PATH}.  @xref{Installation}.\n\
 @code{LOADPATH} is now handled in the same way as @TeX{} handles\n\
 @code{TEXINPUTS}.  Leading, trailing, or doubled colons that appear in\n\
 @code{LOADPATH} are replaced by the value of @code{DEFAULT_LOADPATH}.\n\
-The default value of @code{LOADPATH} is @code{\":\"}, which tells Octave\n\
-to search in the directories specified by @code{DEFAULT_LOADPATH}.\n\
+The default value of @code{LOADPATH} is @code{\"\n"
+SEPCHAR_STR
+"\"}, which tells Octave to search in the directories specified by\n\
+@code{DEFAULT_LOADPATH}.\n\
 \n\
 In addition, if any path element ends in @samp{//}, that directory and\n\
 all subdirectories it contains are searched recursively for function\n\

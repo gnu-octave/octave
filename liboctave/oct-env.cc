@@ -367,6 +367,12 @@ octave_env::do_get_home_directory (void) const
 {
   std::string hd = do_getenv ("HOME");
 
+#if defined (__MINGW32__)
+  // Maybe we are started directly from cmd.exe
+  if (hd.empty ())
+    hd = do_getenv ("HOMEPATH");
+#endif
+
   if (hd.empty ())
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());

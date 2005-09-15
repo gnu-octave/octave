@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.480 $)
+AC_REVISION($Revision: 1.481 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -44,6 +44,30 @@ AC_AIX
 AC_MINIX
 AC_ISC_POSIX
 
+### Path separator.
+sepchar=:
+AC_ARG_WITH(sepchar,
+  [AC_HELP_STRING([--with-sepchar=<char>],
+	[use <char> as the path separation character])])
+case $with_sepchar in
+  yes | "")
+    case "$canonical_host_type" in
+      *-*-mingw*)
+	sepchar=';'
+        ;;
+      esac
+    ;;
+  no)
+    AC_MSG_ERROR([You are required to define a path separation character])
+    ;;
+  *)
+    sepchar=$with_sepchar
+    ;;
+esac
+AC_SUBST(sepchar)
+AC_DEFINE_UNQUOTED(SEPCHAR, ['$sepchar'], [Define this to be the path separator for your system, as a character constant.])
+AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"], [Define this to the path separator, as a string.])
+
 ### some defaults
 
 OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
@@ -56,7 +80,7 @@ OCTAVE_SET_DEFAULT(localapifcnfiledir,
   '$(datadir)/octave/site/$(apiversion)/m')
 OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
 OCTAVE_SET_DEFAULT(localfcnfilepath,
-  '$(localverfcnfiledir)//:$(localapifcnfiledir)//:$(localfcnfiledir)//')
+  '$(localverfcnfiledir)//$(sepchar)$(localapifcnfiledir)//$(sepchar)$(localfcnfiledir)//')
 OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
 OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
@@ -73,21 +97,16 @@ OCTAVE_SET_DEFAULT(localapioctfiledir,
 OCTAVE_SET_DEFAULT(localveroctfiledir,
   '$(libexecdir)/octave/$(version)/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localoctfilepath,
-  '$(localveroctfiledir)//:$(localapioctfiledir)//:$(localoctfiledir)//')
+  '$(localveroctfiledir)//$(sepchar)$(localapioctfiledir)//$(sepchar)$(localoctfiledir)//')
 OCTAVE_SET_DEFAULT(fcnfilepath,
-  '.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir)//:$(fcnfiledir)//')
+  '.$(sepchar)$(localoctfilepath)$(sepchar)$(localfcnfilepath)$(sepchar)$(octfiledir)//$(sepchar)$(fcnfiledir)//')
 OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
-OCTAVE_SET_DEFAULT(imagepath, '.:$(imagedir)//')
+OCTAVE_SET_DEFAULT(imagepath, '.$(sepchar)$(imagedir)//')
 
 ### Make configure args available for other uses.
 
 config_opts=$ac_configure_args
 AC_SUBST(config_opts)
-
-### Path separator.
-
-AC_DEFINE(SEPCHAR, [':'], Define this to be the path separator for your system, as a character constant.])
-AC_DEFINE(SEPCHAR_STR, [":"], [Define this to the path separator, as a string.])
 
 ### Allow the user to force us to use f2c.
 
@@ -692,37 +711,43 @@ AC_SUBST_FILE(f77_rules_frag)
 
 sinclude(acx_blas.m4)
 sinclude(acx_lapack.m4)
+sinclude(acx_include_dirs.m4)
 ACX_BLAS([], [BLAS_DIR="blas"])
 ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
 AC_SUBST(BLAS_DIR)
 AC_SUBST(LAPACK_DIR)
 
+# Check for AMD library
+AMD_LIBS=
+AC_SUBST(AMD_LIBS)
+AC_CHECK_LIB(amd, amd_postorder, [AMD_LIBS="-lamd"; with_amd=yes],[with_amd=no])
+
 # Check for UMFPACK library.
 
 UMFPACK_LIBS=
 AC_SUBST(UMFPACK_LIBS)
+UMFPACK_INCLUDE=umfpack.h
+AC_SUBST(UMFPACK_INCLUDE)
 
 AC_ARG_WITH(umfpack,
   [  --without-umfpack       don't use UMFPACK, disable some sparse functionality],
   with_umfpack=$withval, with_umfpack=yes)
 
-if test "$with_umfpack" = "yes"; then
-  have_umfpack_header=no
+if test "$with_umfpack" = "yes" && test "$with_amd" = "yes"; then
   with_umfpack=no
-  AC_CHECK_HEADER(umfpack/umfpack.h, [have_umfpack_header=yes; break])
-  if test "$have_umfpack_header" = yes; then
-    AC_CHECK_LIB(amd, amd_postorder, [
+  ACX_CHECK_HEADER_IN_DIRS(umfpack.h, [umfpack ufsparse],[
       AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-        UMFPACK_LIBS="-lumfpack -lamd"; with_umfpack=yes], [
+        UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
 	  ## Invalidate the cache.
 	  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
 	  AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-            UMFPACK_LIBS="-lumfpack -lamd"; with_umfpack=yes], [
+            UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
 
 	    ## Invalidate the cache.
 	    $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
 	    AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-              UMFPACK_LIBS="-lumfpack -lamd -lcblas"; with_umfpack=yes], [], -lamd -lcblas $BLAS_LIBS)], -lamd $BLAS_LIBS $FLIBS)]), -lamd])
+              UMFPACK_LIBS="-lumfpack -lcblas"; with_umfpack=yes], [], $AMD_LIBS -lcblas $BLAS_LIBS)], $AMD_LIBS $BLAS_LIBS $FLIBS)], $AMD_LIBS)
+
     if test "$with_umfpack" = yes; then
       # For now the code needed for this is not in umfpack, will add
       # a test later that will probably have to be based on version
@@ -730,17 +755,102 @@ if test "$with_umfpack" = "yes"; then
       # compile time.
       with_umfpack_split=no
     fi
-  fi
+
+    if test "$with_umfpack" = yes; then
+      AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
+      if test x"$acx_include_dir" != x; then
+	UMFPACK_INCLUDE=$acx_include_dir/umfpack.h
+      fi
+      if test "$with_umfpack_split" = yes; then
+        AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
+      fi
+    else
+      warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
+    fi],[
+  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."])
 fi
 
-if test "$with_umfpack" = yes; then
-  AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
-  if test "$with_umfpack_split" = yes; then
-    AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
-  fi
-else
-  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
-fi
+COLAMD_LIBS=
+AC_SUBST(COLAMD_LIBS)
+COLAMD_INCLUDE=colamd.h
+AC_SUBST(COLAMD_INCLUDE)
+
+AC_ARG_WITH(colamd,
+  [  --without-colamd       don't use COLAMD, disable some sparse functionality],
+  with_colamd=$withval, with_colamd=yes)
+
+if test "$with_colamd" = "yes"; then
+  with_colamd=no
+  ACX_CHECK_HEADER_IN_DIRS(colamd.h, [umfpack ufsparse],[
+    AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
+
+    if test "$with_colamd" = yes; then
+      if test x"$acx_include_dir" != x; then
+        COLAMD_INCLUDE=$acx_include_dir/colamd.h
+      fi
+      AC_DEFINE(HAVE_COLAMD, 1, [Define if the COLAMD library is used.])
+    else
+      warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
+    fi],[
+      warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."])
+fi 
+
+CCOLAMD_LIBS=
+AC_SUBST(CCOLAMD_LIBS)
+CCOLAMD_INCLUDE=ccolamd.h
+AC_SUBST(CCOLAMD_INCLUDE)
+
+AC_ARG_WITH(ccolamd,
+  [  --without-ccolamd       don't use CCOLAMD, disable some sparse functionality],
+  with_ccolamd=$withval, with_ccolamd=yes)
+
+if test "$with_ccolamd" = "yes"; then
+  with_ccolamd=no
+  ACX_CHECK_HEADER_IN_DIRS(ccolamd.h, [umfpack ufsparse],[
+    AC_CHECK_LIB(ccolamd, ccolamd, [CCOLAMD_LIBS="-lccolamd"; with_ccolamd=yes])
+
+    if test "$with_ccolamd" = yes; then
+      if test x"$acx_include_dir" != x; then
+        CCOLAMD_INCLUDE=$acx_include_dir/ccolamd.h
+      fi
+      AC_DEFINE(HAVE_CCOLAMD, 1, [Define if the CCOLAMD library is used.])
+    else
+      warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
+    fi],[
+      warn_colamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."])
+fi 
+
+CHOLMOD_LIBS=
+AC_SUBST(CHOLMOD_LIBS)
+CHOLMOD_INCLUDE=cholmod.h
+AC_SUBST(CHOLMOD_INCLUDE)
+
+AC_ARG_WITH(cholmod,
+  [  --without-cholmod       don't use CHOLMOD, disable some sparse functionality],
+  with_cholmod=$withval, with_cholmod=yes)
+
+if test "$with_cholmod" = "yes" && test "$with_colamd" = "yes" &&
+	test "$with_ccolamd" = "yes" && test "$with_amd" = "yes"; then
+  with_cholmod=no
+  ACX_CHECK_HEADER_IN_DIRS(cholmod.h, [umfpack ufsparse],[
+    AC_CHECK_LIB(metis, METIS_NodeND, [
+      AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod -lmetis"; 
+	with_cholmod=yes], [
+        AC_CHECK_LIB(cholmod_start, cholmod, [CHOLMOD_LIBS="-lcholmod -cblas -lmetis"; 
+	  with_cholmod=yes], [],
+          AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)],
+	$AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)])
+
+    if test "$with_cholmod" = yes; then
+      if test x"$acx_include_dir" != x; then
+        CHOLMOD_INCLUDE=$acx_include_dir/cholmod.h
+      fi
+      AC_DEFINE(HAVE_CHOLMOD, 1, [Define if the CHOLMOD library is used.])
+    else
+      warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
+    fi],[
+      warn_colamd="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."])
+fi 
 
 ### Handle shared library options.
 
@@ -844,6 +954,7 @@ case "$canonical_host_type" in
     library_path_var=DYLD_LIBRARY_PATH	
   ;;
   *-*-cygwin* | *-*-mingw*)
+    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     CXXPICFLAG=
     CPICFLAG=
     FPICFLAG=
@@ -990,6 +1101,7 @@ AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 case "$canonical_host_type" in
   *-*-cygwin* | *-*-mingw*)
    AC_CHECK_LIB(wsock32, gethostname)
+   LIBS="$LIBS -lwsock32"
   ;;
 esac
 
@@ -1055,6 +1167,8 @@ have_termios_h=no
 AC_CHECK_HEADERS($TERMIOS_H, have_termios_h=yes)
 AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
+AC_CHECK_HEADERS(glob.h, have_glob_h=yes, have_glob_h=no)
+AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
 AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
 
 ### I'm told that termios.h is broken on NeXT systems.
@@ -1074,6 +1188,23 @@ if test "$have_termios_h" = yes \
   true
 else
   AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
+fi
+
+LIBGLOB=
+AC_SUBST(LIBGLOB)
+if test "$have_fnmatch_h" = yes && test "$have_glob_h" = yes; then
+  AC_CHECK_FUNCS(fnmatch, have_fnmatch=yes, [
+    AC_CHECK_LIB(glob, fnmatch, [have_fnmatch=yes; LIBGLOB=-lglob],
+      have_fnmatch=no)])
+  AC_CHECK_FUNCS(glob, have_glob=yes, [
+    AC_CHECK_LIB(glob, glob, [have_glob=yes; LIBGLOB=-lglob],
+      have_glob=no)])
+
+  if test "$have_fnmatch" != yes || test "$have_glob" != yes; then
+    AC_MSG_ERROR([You are required to have fnmatch and glob])
+  fi
+else
+  AC_MSG_ERROR([You are required to have fnmatch.h and glob.h])
 fi
 
 ### Checks for functions and variables.
@@ -1145,6 +1276,15 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 	fi
       fi
     fi
+  fi
+
+  ## autoconf test for LoadLibrary appears broken. Bypass for cygwin/mingw 
+  if !($dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api); then
+    case "$canonical_host_type" in
+      *-*-cygwin* | *-*-mingw*)
+       loadlibrary_api=true;
+      ;;
+    esac
   fi
 
   if $dlopen_api; then
@@ -1585,11 +1725,11 @@ typedef int sig_atomic_t;
 
 ### Do the substitutions in all the Makefiles.
 
-AC_CONFIG_FILES([Makefile octMakefile Makeconf \
-  test/Makefile dlfcn/Makefile \
-  doc/Makefile doc/faq/Makefile doc/interpreter/Makefile \
-  doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile \
-  examples/Makefile liboctave/Makefile liboctave/oct-types.h \
+AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile \
+  dlfcn/Makefile doc/Makefile doc/faq/Makefile \
+  doc/interpreter/Makefile doc/liboctave/Makefile \
+  doc/refcard/Makefile emacs/Makefile examples/Makefile \
+  liboctave/Makefile liboctave/oct-sparse.h liboctave/oct-types.h \
   src/Makefile libcruft/Makefile libcruft/Makerules \
   libcruft/amos/Makefile libcruft/blas/Makefile \
   libcruft/daspk/Makefile libcruft/dasrt/Makefile 
@@ -1626,6 +1766,9 @@ Octave is now configured for $canonical_host_type
   FFTW libraries:       $FFTW_LIBS
   GLPK libraries:       $GLPK_LIBS
   UMFPACK libraries:    $UMFPACK_LIBS
+  COLAMD libraries:     $COLAMD_LIBS
+  CCOLAMD libraries:    $CCOLAMD_LIBS
+  CHOLMOD libraries:    $CHOLMOD_LIBS
   HDF5 libraries:       $HDF5_LIBS
   MPI libraries:        $MPI_LIBS
   LIBS:                 $LIBS
@@ -1714,6 +1857,21 @@ fi
 
 if test -n "$warn_umfpack"; then
   AC_MSG_WARN($warn_umfpack)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_colamd"; then
+  AC_MSG_WARN($warn_colamd)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_ccolamd"; then
+  AC_MSG_WARN($warn_ccolamd)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_cholmod"; then
+  AC_MSG_WARN($warn_cholmod)
   warn_msg_printed=true
 fi
 

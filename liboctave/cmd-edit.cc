@@ -163,13 +163,13 @@ gnu_readline::gnu_readline ()
 
   do_blink_matching_paren (true);
 
-  /* Bind operate-and-get-next. */
+  // Bind operate-and-get-next.
 
   octave_rl_add_defun ("operate-and-get-next",
 		       gnu_readline::operate_and_get_next,
 		       octave_rl_ctrl ('O'));
 
-  /* And the history search functions. */
+  // And the history search functions.
 
   octave_rl_add_defun ("history-search-backward",
 		       gnu_readline::history_search_backward,
@@ -199,11 +199,11 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 
   const char *p = prompt.c_str ();
 
-  // BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   line = ::octave_rl_readline (p);
 
-  // END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   if (line)
     {

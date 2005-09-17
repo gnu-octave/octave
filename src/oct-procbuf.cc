@@ -39,7 +39,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "oct-procbuf.h"
-#include "syswait.h"
+#include "oct-syscalls.h"
 #include "variables.h"
 
 #include "defun.h"
@@ -214,7 +214,7 @@ octave_procbuf::close (void)
 
 	  do
 	    {
-	      wait_pid = ::waitpid (proc_pid, &wstatus, 0);
+	      wait_pid = octave_syscalls::waitpid (proc_pid, &wstatus, 0);
 	    }
 	  while (wait_pid == -1 && errno == EINTR);
 	}

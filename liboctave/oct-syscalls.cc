@@ -46,9 +46,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <signal.h>
 
+#include "lo-utils.h"
 #include "oct-syscalls.h"
 #include "str-vec.h"
-#include "syswait.h"
 
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
@@ -299,23 +299,22 @@ octave_syscalls::pipe (int *fildes, std::string& msg)
 }
 
 pid_t
-octave_syscalls::waitpid (pid_t pid, int options)
+octave_syscalls::waitpid (pid_t pid, int *status, int options)
 {
   std::string msg;
-  return waitpid (pid, options, msg);
+  return waitpid (pid, status, options, msg);
 }
 
 pid_t
-octave_syscalls::waitpid (pid_t pid, int options, std::string& msg)
+octave_syscalls::waitpid (pid_t pid, int *status, int options,
+			  std::string& msg)
 {
   msg = std::string ();
 
-  int status = -1;
-
 #if defined (HAVE_WAITPID)
-  status = ::waitpid (pid, 0, options);
+  pid_t retval = ::octave_waitpid (pid, status, options);
 
-  if (status < 0)
+  if (retval < 0)
     {
       using namespace std;
       msg = ::strerror (errno);
@@ -324,7 +323,7 @@ octave_syscalls::waitpid (pid_t pid, int options, std::string& msg)
   msg = NOT_SUPPORTED ("waitpid");
 #endif
 
-  return status;
+  return retval;
 }
 
 int

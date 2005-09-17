@@ -47,13 +47,6 @@ extern void MINGW_signal_cleanup (void);
 #define MINGW_SIGNAL_CLEANUP() do { } while (0)
 #endif
 
-#if defined (__MINGW32__)
-#include <process.h>
-#define waitpid(a, b, c) _cwait (b, a, c)
-// action argument is ignored for _cwait, so arbitrary definition
-#define WNOHANG 0
-#endif
-
 #endif
 
 /*

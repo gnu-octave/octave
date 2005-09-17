@@ -38,6 +38,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include "cmd-edit.h"
+#include "oct-syscalls.h"
 #include "quit.h"
 
 #include "defun.h"
@@ -951,7 +952,7 @@ OCL_REP::wait (void)
 	{
 	  int status;
 
-	  if (waitpid (pid, &status, WNOHANG) > 0)
+	  if (octave_syscalls::waitpid (pid, &status, WNOHANG) > 0)
 	    {
 	      oc.have_status = 1;
 

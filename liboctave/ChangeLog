@@ -1,3 +1,19 @@
+2005-09-16  John W. Eaton  <jwe@octave.org>
+
+	* oct-syscalls.cc: Include lo-utils.h here.
+	(octave_syscalls::waitpid): Call octave_waitpid here.
+
+	* lo-cutils.c (octave_waitpid): New function.
+	* lo-utils.h: Provide decl.  Include syswait.h here, not in
+	oct-syscalls.cc
+	
+
+	* syswait.h [__MINGW32__]: Define WAITPID here instead of defining
+	waitpid in src/sysdep.h.  Make this header C-compatible.
+
+	* oct-syscalls.cc (octave_syscalls::waitpid): New arg, status.
+	Change all uses.
+
 2005-09-15  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (MAKEDEPS_2): Omit unnecessary variable.

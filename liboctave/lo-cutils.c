@@ -51,6 +51,8 @@ Software Foundation, Inc.
 #include <string.h>
 #include <time.h>
 
+#include "syswait.h"
+
 void
 octave_qsort (void *base, size_t n, size_t size,
 	      int (*cmp) (const void *, const void *))
@@ -100,11 +102,18 @@ octave_gethostname (char *name, int namelen)
 #include <windows.h>
 
 /* Need this since in C++ can't cast from int(*)() to void* */
-void * octave_w32_library_search (HINSTANCE handle, const char * name)
+void *
+octave_w32_library_search (HINSTANCE handle, const char * name)
 {
   return (GetProcAddress (handle, name));
 }
 #endif
+
+pid_t
+octave_waitpid (pid_t pid, int *status, int options)
+{
+  return WAITPID (pid, status, options);
+}
 
 /*
 ;;; Local Variables: ***

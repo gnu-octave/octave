@@ -24,7 +24,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_syswait_h)
 #define octave_syswait_h 1
 
-// This mess suggested by the autoconf manual.
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* This mess suggested by the autoconf manual.  */
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -40,17 +44,17 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #if defined (NeXT)
 #define HAVE_WAITPID 1
-#define waitpid(a, b, c) \
+#define WAITPID(a, b, c) \
   wait4 ((a) == -1 ? 0 : (a), (union wait *)(b), c, 0)
 
-// Use the defaults below
+/* Use the defaults below.  */
 #undef WIFEXITED
 #undef WEXITSTATUS
 #undef WIFSIGNALLED
 #endif
 
-// NeXT has sys/wait.h, but it is not compatible with POSIX.1, so we
-// try to define waitpid in terms of wait4.
+/* NeXT has sys/wait.h, but it is not compatible with POSIX.1, so we
+   try to define waitpid in terms of wait4.  */
 
 #if defined (NeXT)
 #include <sys/wait.h>
@@ -69,6 +73,20 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #ifndef WIFSIGNALLED
 #define WIFSIGNALLED(stat_val) \
   (((stat_val) & 0177) != 0177 && ((stat_val) & 0177) != 0)
+#endif
+
+#if defined (__MINGW32__)
+#define HAVE_WAITPID 1
+#include <process.h>
+#define WAITPID(a, b, c) _cwait (b, a, c)
+/* Action argument is ignored for _cwait, so arbitrary definition.  */
+#define WNOHANG 0
+#else
+#define WAITPID(a, b, c) waitpid (a, b, c)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

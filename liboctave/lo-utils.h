@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-cmplx.h"
 #include "oct-types.h"
+#include "syswait.h"
 
 extern octave_idx_type NINTbig (double x);
 extern int NINT (double x);
@@ -65,6 +66,8 @@ extern void octave_write_complex (std::ostream& os, const Complex& cval);
 extern "C" void * octave_w32_library_search (HINSTANCE handle, const char *name);
 #endif
 #endif
+
+extern "C" pid_t octave_waitpid (pid_t pid, int *status, int options);
 
 /*
 ;;; Local Variables: ***

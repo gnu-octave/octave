@@ -57,7 +57,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "sysdep.h"
-#include "syswait.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -857,7 +856,7 @@ system-dependent error message.\n\
 
 DEFUN (waitpid, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} waitpid (@var{pid}, @var{options})\n\
+@deftypefn {Built-in Function} {[@var{pid}, @var{status}, @var{msg}] =} waitpid (@var{pid}, @var{options})\n\
 Wait for process @var{pid} to terminate.  The @var{pid} argument can be:\n\
 \n\
 @table @asis\n\
@@ -872,33 +871,38 @@ the Octave interpreter process.\n\
 Wait for termination of the child process with ID @var{pid}.\n\
 @end table\n\
 \n\
-The @var{options} argument can be:\n\
+The @var{options} argument can be a bitwise OR of zero or more of\n\
+the following constants:\n\
 \n\
-@table @asis\n\
+@table @code\n\
 @item 0\n\
 Wait until signal is received or a child process exits (this is the\n\
 default if the @var{options} argument is missing).\n\
 \n\
-@item 1\n\
+@item WNOHANG\n\
 Do not hang if status is not immediately available.\n\
 \n\
-@item 2\n\
+@item WUNTRACED\n\
 Report the status of any child processes that are stopped, and whose\n\
 status has not yet been reported since they stopped.\n\
 \n\
-@item 3\n\
-Implies both 1 and 2.\n\
+@item WCONTINUED\n\
+Return if a stopped child has been resumed by delivery of @code{SIGCONT}.\n\
+This value may not be meaningful on all systems.\n\
 @end table\n\
 \n\
 If the returned value of @var{pid} is greater than 0, it is the process\n\
 ID of the child process that exited.  If an error occurs, @var{pid} will\n\
 be less than zero and @var{msg} will contain a system-dependent error\n\
-message.\n\
+message.  The value of @var{status} contains additional system-depenent\n\
+information about the subprocess that exited.\n\
+@seealso{WNOHANG, WUNTRACED, WCONTINUED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
+  retval(2) = std::string ();
+  retval(1) = 0;
   retval(0) = -1;
 
   int nargin = args.length ();
@@ -912,33 +916,252 @@ message.\n\
 	  int options = 0;
 
 	  if (args.length () == 2)
-	    {
-	      options = args(1).int_value (true);
-
-	      if (! error_state)
-		{
-		  if (options < 0 || options > 3)
-		    error ("waitpid: invalid OPTIONS value specified");
-		}
-	      else
-		error ("waitpid: OPTIONS must be in integer");
-	    }
+	    options = args(1).int_value (true);
 
 	  if (! error_state)
 	    {
 	      std::string msg;
 
-	      pid_t status = octave_syscalls::waitpid (pid, options, msg);
+	      int status = 0;
 
-	      retval(0) = status;
-	      retval(1) = msg;
+	      pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
+
+	      retval(0) = result;
+	      retval(1) = status;
+	      retval(2) = msg;
 	    }
+	  else
+	    error ("waitpid: OPTIONS must be an integer");
 	}
       else
 	error ("waitpid: PID must be an integer value");
     }
   else
     print_usage ("waitpid");
+
+  return retval;
+}
+
+DEFUNX ("WIFEXITED", FWIFEXITED, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WIFEXITED (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return true if the\n\
+child terminated normally.\n\
+@seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
+@end deftypefn\n")
+{
+  octave_value retval = 0.0;
+
+#if defined (WIFEXITED)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WIFEXITED (status);
+      else
+	error ("WIFEXITED: expecting integer argument");
+    }
+#else
+  warning ("WIFEXITED always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WEXITSTATUS", FWEXITSTATUS, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WEXITSTATUS (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return the exit\n\
+status of the child.  This function should only be employed if\n\
+@code{WIFEXITED} returned true.\n\
+@seealso{waitpid, WIFEXITED, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WEXITSTATUS)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WEXITSTATUS (status);
+      else
+	error ("WEXITSTATUS: expecting integer argument");
+    }
+#else
+  warning ("WEXITSTATUS always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WIFSIGNALED (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return true if the\n\
+child process was terminated by a signal.\n\
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WIFSIGNALED)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WIFSIGNALED (status);
+      else
+	error ("WIFSIGNALED: expecting integer argument");
+    }
+#else
+  warning ("WIFSIGNALED always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WTERMSIG (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return the number of\n\
+the signal that caused the child process to terminate. This function\n\
+should only be employed if @code{WIFSIGNALED} returned true.\n\
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WTERMSIG)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WTERMSIG (status);
+      else
+	error ("WTERMSIG: expecting integer argument");
+    }
+#else
+  warning ("WTERMSIG always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WCOREDUMP (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return true if the\n\
+child produced a core dump.  This function should only be employed if\n\
+@code{WIFSIGNALED} returned true.  The macro used to implement this\n\
+function is not specified in POSIX.1-2001 and is not available on some\n\
+Unix implementations (e.g., AIX, SunOS).\n\
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WCOREDUMP)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WCOREDUMP (status);
+      else
+	error ("WCOREDUMP: expecting integer argument");
+    }
+#else
+  warning ("WCOREDUMP always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WIFSTOPPED", FWIFSTOPPED, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WIFSTOPPED (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return true if the\n\
+child process was stopped by delivery of a signal; this is only\n\
+possible if the call was done using @code{WUNTRACED} or when the child\n\
+is being traced (see ptrace(2)).\n\
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WSTOPSIG, WIFCONTINUED}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WIFSTOPPED)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WIFSTOPPED (status);
+      else
+	error ("WIFSTOPPED: expecting integer argument");
+    }
+#else
+  warning ("WIFSTOPPED always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WSTOPSIG", FWSTOPSIG, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WSTOPSIG (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return the number of\n\
+the signal which caused the child to stop.  This function should only\n\
+be employed if @code{WIFSTOPPED} returned true.\n\
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WIFCONTINUED}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WSTOPSIG)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WSTOPSIG (status);
+      else
+	error ("WSTOPSIG: expecting integer argument");
+    }
+#else
+  warning ("WSTOPSIG always returns false in this version of Octave")
+#endif
+
+  return retval;
+}
+
+DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WIFCONTINUED (@var{status})\n\
+Given @var{status} from a call to @code{waitpid}, return true if the\n\
+child process was resumed by delivery of @code{SIGCONT}.\n\
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG}\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+#if defined (WIFCONTINUED)
+  if (args.length () == 1)
+    {
+      int status = args(0).int_value ();
+
+      if (! error_state)
+	retval = WIFCONTINUED (status);
+      else
+	error ("WIFCONTINUED: expecting integer argument");
+    }
+#else
+  warning ("WIFCONTINUED always returns false in this version of Octave")
+#endif
 
   return retval;
 }
@@ -1115,6 +1338,39 @@ File status flag, file opened for writing only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}\n\
 @end defvr");
 #endif
+
+#if !defined (WNOHANG)
+#define WNOHANG 0
+#endif
+
+  DEFCONSTX ("WNOHANG", SBV_WNOHANG, WNOHANG,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Constant} WNOHANG\n\
+Option value for @code{waitpid}.\n\
+@seealso{waitpid, WUNTRACED, WCONTINUE}\n\
+@end defvr");
+
+#if !defined (WUNTRACED)
+#define WUNTRACED 0
+#endif
+
+  DEFCONSTX ("WUNTRACED", SBV_WUNTRACED, WUNTRACED,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Constant} WUNTRACED\n\
+Option value for @code{waitpid}.\n\
+@seealso{waitpid, WNOHANG, WCONTINUE}\n\
+@end defvr");
+
+#if !defined (WCONTINUE)
+#define WCONTINUE 0
+#endif
+
+  DEFCONSTX ("WCONTINUE", SBV_WCONTINUE, WCONTINUE,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Constant} WCONINTUE\n\
+Option value for @code{waitpid}.\n\
+@seealso{waitpid, WNOHANG, WUNTRACED}\n\
+@end defvr");
 
 }
 

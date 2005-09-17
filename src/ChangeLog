@@ -1,3 +1,18 @@
+2005-09-16  John W. Eaton  <jwe@octave.org>
+
+	* syscalls.cc (Fwaitpid): Doc fix.  Expect WNOHANG, WUNTRACED,
+	WCONTINUED as args instad of int values.
+	Return values are now [pid, status, msg] instad of [pid, msg].
+	(WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP,
+	WIFSTOPPED, WSTOPSIG, WIFCONTINUED): New functions.
+	(symbols_of_syscalls): DEFCONST WNOHANG, WUNTRACED, and WCONTINUE.
+
+	* oct-procbuf.cc (octave_procbuf::close): Call octave_syscalls::waitpid
+	here instead of calling waitpid directly.
+	* sighandlers.cc (OCL_REP::wait): Likewise.
+	
+	* sysdep.h [__MINGW32__]: Don't define waitpid here.
+
 2005-09-15  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.h [__MINGW32__]: Move to definition of waitpid sysdep.h.

@@ -247,8 +247,8 @@ OCTINTERP_LINK_DEPS = \
 
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
-  -L. $(LIBOCTINTERP) $(UMFPACK_LIBS) $(AMD_LIBS) $(COLAMD_LIBS) \
-   $(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+  -L. $(LIBOCTINTERP) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) \
+   $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \

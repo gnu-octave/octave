@@ -121,9 +121,9 @@ w32_set_quiet_shutdown (void)
 void
 MINGW_signal_cleanup (void)
 {
-  w32_set_quiet_shutdown (void);
+  w32_set_quiet_shutdown ();
 
-  w32_raise_final ():
+  w32_raise_final ();
 }
 #endif
 

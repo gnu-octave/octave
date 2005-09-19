@@ -1018,7 +1018,7 @@ child process was terminated by a signal.\n\
 	error ("WIFSIGNALED: expecting integer argument");
     }
 #else
-  warning ("WIFSIGNALED always returns false in this version of Octave")
+  warning ("WIFSIGNALED always returns false in this version of Octave");
 #endif
 
   return retval;
@@ -1046,7 +1046,7 @@ should only be employed if @code{WIFSIGNALED} returned true.\n\
 	error ("WTERMSIG: expecting integer argument");
     }
 #else
-  warning ("WTERMSIG always returns false in this version of Octave")
+  warning ("WTERMSIG always returns false in this version of Octave");
 #endif
 
   return retval;
@@ -1076,7 +1076,7 @@ Unix implementations (e.g., AIX, SunOS).\n\
 	error ("WCOREDUMP: expecting integer argument");
     }
 #else
-  warning ("WCOREDUMP always returns false in this version of Octave")
+  warning ("WCOREDUMP always returns false in this version of Octave");
 #endif
 
   return retval;
@@ -1105,7 +1105,7 @@ is being traced (see ptrace(2)).\n\
 	error ("WIFSTOPPED: expecting integer argument");
     }
 #else
-  warning ("WIFSTOPPED always returns false in this version of Octave")
+  warning ("WIFSTOPPED always returns false in this version of Octave");
 #endif
 
   return retval;
@@ -1133,7 +1133,7 @@ be employed if @code{WIFSTOPPED} returned true.\n\
 	error ("WSTOPSIG: expecting integer argument");
     }
 #else
-  warning ("WSTOPSIG always returns false in this version of Octave")
+  warning ("WSTOPSIG always returns false in this version of Octave");
 #endif
 
   return retval;
@@ -1160,7 +1160,7 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
 	error ("WIFCONTINUED: expecting integer argument");
     }
 #else
-  warning ("WIFCONTINUED always returns false in this version of Octave")
+  warning ("WIFCONTINUED always returns false in this version of Octave");
 #endif
 
   return retval;

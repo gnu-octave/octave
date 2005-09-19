@@ -1,3 +1,13 @@
+2005-09-19  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (OCT_LINK_DEPS): Include UFsparse libraries.
+
+	* DLD_FUNCTIONS/__glpk__.cc (F__glpk__): Replace isinf with
+	xisinf. Allow sparse matrices as second argument.
+
+	* syscalls.cc: Typos.
+	* sysdep.cc: Typos.
+
 2005-09-16  John W. Eaton  <jwe@octave.org>
 
 	* syscalls.cc (Fwaitpid): Doc fix.  Expect WNOHANG, WUNTRACED,

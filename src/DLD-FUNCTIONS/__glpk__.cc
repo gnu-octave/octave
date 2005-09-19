@@ -442,69 +442,76 @@ You should be using using the @code{glpk} function instead.\n\
     }
 
   double *c = C.fortran_vec ();
+  Array<int> rn;
+  Array<int> cn;
+  ColumnVector a;
+  int mrowsA;
+  volatile int nz = 0;
 
   //-- 2nd Input. A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
-  // if(!mxIsSparse(A_IN)){
-  Matrix A (args(1).matrix_value ()); // get the matrix
-
-  if (error_state)
+  if( args(1).class_name () != "sparse")
     {
-      error ("__glpk__: invalid value of A");
-      return retval;
-    }
+      Matrix A (args(1).matrix_value ()); // get the matrix
 
-  int mrowsA = A.rows ();
-  Array<int> rn (mrowsA*mrowsc+1);
-  Array<int> cn (mrowsA*mrowsc+1);
-  ColumnVector a (mrowsA*mrowsc+1, 0.0);
-
-  volatile int nz = 0;
-  for (int i = 0; i < mrowsA; i++)
-    {
-      for (int j = 0; j < mrowsc; j++)
+      if (error_state)
 	{
-	  if (A(i,j) != 0)
+	  error ("__glpk__: invalid value of A");
+	  return retval;
+	}
+
+      mrowsA = A.rows ();
+      rn.resize (mrowsA*mrowsc+1);
+      cn.resize (mrowsA*mrowsc+1);
+      a.resize (mrowsA*mrowsc+1, 0.0);
+
+      for (int i = 0; i < mrowsA; i++)
+	{
+	  for (int j = 0; j < mrowsc; j++)
 	    {
-	      nz++;
-	      rn(nz) = i + 1;
-	      cn(nz) = j + 1;
-	      a(nz) = A(i,j);
+	      if (A(i,j) != 0)
+		{
+		  nz++;
+		  rn(nz) = i + 1;
+		  cn(nz) = j + 1;
+		  a(nz) = A(i,j);
+		}
 	    }
 	}
-    }
 
-// DON'T DELETE THIS PART... REPRESENTS THE SPARSE MATRICES MANIPULATION
-//	  }else{
-//	    int i,j;
-//	    int *jc,*ir;
-//	    double *pr;
-//	    int nelc,count,row;
-//
-//	    /* NOTE: nnz is the actual number of nonzeros and is stored as the
-//       last element of the jc array where the size of the jc array is the
-//       number of columns + 1 */
-//	    nz = *(mxGetJc(A_IN) + mrowsc);
-//	    jc = mxGetJc(A_IN);
-//	    ir = mxGetIr(A_IN);
-//	    pr = mxGetPr(A_IN);
-//
-//       rn=(int *)calloc(nz+1,sizeof(int));
-//	    cn=(int *)calloc(nz+1,sizeof(int));
-//	    a=(double *)calloc(nz+1,sizeof(double));
-//
-//       count=0; row=0;
-//	    for(i=1;i<=mrowsc;i++){
-//	      nelc=jc[i]-jc[i-1];
-//	      for(j=0;j<nelc;j++){
-//		      count++;
-//		      rn[count]=ir[row]+1;
-//		      cn[count]=i;
-//		      a[count]=pr[row];
-//		      row++;
-//	      }
-//	    }
-//	  }
+    }
+  else
+    {
+      SparseMatrix A (args(1).matrix_value ()); // get the sparse matrix
+
+      if (error_state)
+	{
+	  error ("__glpk__: invalid value of A");
+	  return retval;
+	}
+
+      mrowsA = A.rows ();
+      octave_idx_type Anc = A.cols ();
+      octave_idx_type Anz = A.nnz ();
+      rn.resize (Anz+1);
+      cn.resize (Anz+1);
+      a.resize (Anz+1, 0.0);
+
+      if (Anc != mrowsc)
+	{
+	  error ("__glpk__: invalid value of A");
+	  return retval;
+	}
+
+      for (octave_idx_type j = 0; j < Anc; j++)
+	for (octave_idx_type i = A.cidx(j); i < A.cidx(j+1); i++)
+	  {
+	    nz++;
+	    rn(nz) = A.ridx(i) + 1;
+	    cn(nz) = j + 1;
+	    a(nz) = A(i,j);
+	  }
+    }
 
   //-- 3rd Input. A column array containing the right-hand side value
   //	           for each constraint in the constraint matrix.
@@ -534,7 +541,7 @@ You should be using using the @code{glpk} function instead.\n\
   Array<int> freeLB (mrowsc);
   for (int i = 0; i < mrowsc; i++)
      {
-       if (isinf (lb[i]))
+       if (xisinf (lb[i]))
 	 {
 	   freeLB(i) = 1;
 	   lb[i] = -octave_Inf;
@@ -558,7 +565,7 @@ You should be using using the @code{glpk} function instead.\n\
   Array<int> freeUB (mrowsc);
   for (int i = 0; i < mrowsc; i++)
     {
-      if (isinf (ub[i]))
+      if (xisinf (ub[i]))
 	{
 	  freeUB(i) = 1;
 	  ub[i] = octave_Inf;

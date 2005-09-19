@@ -3,6 +3,8 @@
 	* oct-env.cc (octave_env::do_get_home_directory):
 	Also check HOMEDRIVE under mingw.
 
+	* Makefile.in (LINK_DEPS): Include UFsparse libraries.
+
 2005-09-16  John W. Eaton  <jwe@octave.org>
 
 	* oct-syscalls.cc: Include lo-utils.h here.

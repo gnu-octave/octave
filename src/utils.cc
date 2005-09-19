@@ -356,7 +356,7 @@ If the third optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
 \n\
-Note that @code{file_in_path} does not expand leading, trailing, 
+Note that @code{file_in_path} does not expand leading, trailing,\n\
 or doubled colons the way that @code{file_in_loadpath} does.  See\n\
 also @xref{LOADPATH}, for an explanation of how colon expansion\n\
 is applied to @code{LOADPATH}.\n\

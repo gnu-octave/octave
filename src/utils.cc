@@ -291,7 +291,7 @@ If the second optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
 @end deftypefn\n\
-@seealso{file_in_path}")
+@seealso{file_in_path, LOADPATH}")
 {
   octave_value retval;
 
@@ -344,8 +344,8 @@ directories in the format described for the built-in variable\n\
 For example,\n\
 \n\
 @example\n\
-file_in_path (LOADPATH, \"nargchk.m\")\n\
-     @result{} \"@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m\"\n\
+file_in_path (EXEC_PATH, \"sh\")\n\
+     @result{} \"/bin/sh\"\n\
 @end example\n\
 \n\
 If the second argument is a cell array of strings, search each\n\
@@ -355,6 +355,11 @@ the first that matches.\n\
 If the third optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
+\n\
+Note that @code{file_in_path} does not expand leading, trailing, 
+or doubled colons the way that @code{file_in_loadpath} does.  See\n\
+also @xref{LOADPATH}, for an explanation of how colon expansion\n\
+is applied to @code{LOADPATH}.\n\
 @seealso{file_in_loadpath}\n\
 @end deftypefn")
 {

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} laplace_rnd (@var{r}, @var{c})
 ## @deftypefnx {Function File} {} laplace_rnd (@var{sz});
 ## Return an @var{r} by @var{c} matrix of random numbers from the
-## Laplace distribution. Or is @var{sz} is a vector, create a matrix of
+## Laplace distribution.  Or if @var{sz} is a vector, create a matrix of
 ## @var{sz}.
 ## @end deftypefn
 

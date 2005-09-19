@@ -1,3 +1,8 @@
+2005-09-19  Rafael Laboissiere  <rafael@debian.org>
+
+	* interpreter/octave-config.1: Use bold instead of italics to
+	markup command name.
+
 2005-07-29  John W. Eaton  <jwe@octave.org>
 
 	* faq/Makefile.in (HTML/index.html): Pass --ifinfo to makeinfo.

@@ -625,7 +625,7 @@ Valid options for @code{load} are listed in the following table.\n\
 @table @code\n\
 @item -force\n\
 The @samp{-force} option is accepted but ignored for backward\n\
-compatiability. Octave now overwrites variables currently in memeory with\n\
+compatiability. Octave now overwrites variables currently in memory with\n\
 the same name as those found in the file.\n\
 \n\
 @item -ascii\n\

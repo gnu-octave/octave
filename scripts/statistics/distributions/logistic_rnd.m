@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} logistic_rnd (@var{r}, @var{c})
 ## @deftypefnx {Function File} {} logistic_rnd (@var{sz})
 ## Return an @var{r} by @var{c} matrix of random numbers from the
-## logistic distribution. Or is @var{sz} is a vector, create a matrix of
+## logistic distribution. Or if @var{sz} is a vector, create a matrix of
 ## @var{sz}.
 ## @end deftypefn
 

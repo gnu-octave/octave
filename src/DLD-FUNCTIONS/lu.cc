@@ -67,7 +67,7 @@ p =\n\
   1  0\n\
 @end example\n\
 \n\
-The matrix is not required to be square..\n\
+The matrix is not required to be square.\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -1,3 +1,8 @@
+2005-09-19  David Bateman  <dbateman@free.fr>
+
+	* octMakefile.in (LN_S): Change to DESTDIR before LN_S to avoid
+	lack of symlinks under mingw.
+
 2005-09-15  John W. Eaton  <jwe@octave.org>
 
 	* oct-sparse.h.in: Move to liboctave.

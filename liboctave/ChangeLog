@@ -1,3 +1,8 @@
+2005-09-19  David Bateman  <dbateman@free.fr>
+
+	* oct-env.cc (octave_env::do_get_home_directory):
+	Also check HOMEDRIVE under mingw.
+
 2005-09-16  John W. Eaton  <jwe@octave.org>
 
 	* oct-syscalls.cc: Include lo-utils.h here.

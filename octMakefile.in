@@ -98,14 +98,14 @@ install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 	rm -f $(DESTDIR)$(bindir)/octave-bug
 	$(INSTALL_SCRIPT) octave-bug $(DESTDIR)$(bindir)/octave-bug-$(version)
-	$(LN_S) octave-bug-$(version) $(DESTDIR)$(bindir)/octave-bug
+	(cd $(DESTDIR)$(bindir); $(LN_S) octave-bug-$(version) $(DESTDIR)$(bindir)/octave-bug)
 	rm -f $(DESTDIR)$(bindir)/octave-config
 	$(INSTALL_SCRIPT) \
 	  octave-config $(DESTDIR)$(bindir)/octave-config-$(version)
-	$(LN_S) octave-config-$(version) $(DESTDIR)$(bindir)/octave-config
+	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version) $(DESTDIR)$(bindir)/octave-config)
 	rm -f $(DESTDIR)$(bindir)/mkoctfile
 	$(INSTALL_SCRIPT) mkoctfile $(DESTDIR)$(bindir)/mkoctfile-$(version)
-	$(LN_S) mkoctfile-$(version) $(DESTDIR)$(bindir)/mkoctfile
+	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version) $(DESTDIR)$(bindir)/mkoctfile)
 	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
 
 uninstall::

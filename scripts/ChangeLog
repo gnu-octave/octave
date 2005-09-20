@@ -1,3 +1,7 @@
+2005-09-20  "Orestes Mas"  <orestes@tsc.upc.edu>
+
+	* control/base/rlocus.m: Doc fix.
+
 2005-09-20  John W. Eaton  <jwe@octave.org>
 
 	* general/isvector.m: Improve compatibility.

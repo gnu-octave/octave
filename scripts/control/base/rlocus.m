@@ -18,9 +18,9 @@
 ## 02110-1301 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{rldata}, @var{k}] =} rlocus (@var{sys}[, @var{increment}, @var{min_k}, @var{max_k}])
+## @deftypefn {Function File} {[@var{rldata}, @var{k_break}, @var{rlpol}, @var{gvec}, @var{real_ax_pts}] =} rlocus (@var{sys}[, @var{increment}, @var{min_k}, @var{max_k}])
 ##
-## Displays root locus plot of the specified @acronym{SISO} system.
+## Display root locus plot of the specified @acronym{SISO} system.
 ## @example
 ## @group
 ##        -----   ---     --------
@@ -49,8 +49,15 @@
 ## @table @var 
 ## @item rldata
 ## Data points plotted: in column 1 real values, in column 2 the imaginary values.
-## @item k
+## @item k_break
 ## Gains for real axis break points.
+## @item rlpol
+## Closed-loop roots for each gain value: 1 locus branch per row; 1 pole
+## set per column
+## @item gvec
+## Gains vector
+## @item real_ax_pts
+## Real axis breakpoints
 ## @end table
 ## @end deftypefn
 

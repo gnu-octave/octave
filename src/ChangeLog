@@ -1,3 +1,8 @@
+2005-09-19  John W. Eaton  <jwe@octave.org>
+
+	* pt-bp.cc (tree_breakpoint::visit_index_expression):
+	Avoid dereferencing invalid pointer.
+
 2005-09-19  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (OCT_LINK_DEPS): Include UFsparse libraries.

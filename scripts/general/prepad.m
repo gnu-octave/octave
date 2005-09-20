@@ -70,10 +70,12 @@ function y = prepad (x, l, c, dim)
     endif
   endif
 
-  if (! ismatrix (x))
-    error ("first argument must be a vector or matrix");
-  elseif (! isscalar (l) || l < 0)
+  if (! isscalar (l) || l < 0)
     error ("second argument must be a positive scaler");
+  endif
+
+  if (dim > nd)
+    sz(nd+1:dim) = 1;
   endif
 
   d = sz (dim);

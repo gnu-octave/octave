@@ -363,7 +363,8 @@ tree_breakpoint::visit_index_expression (tree_index_expression& cmd)
 	{
 	  tree_argument_list *elt = *p;
 
-	  elt->accept (*this);
+	  if (elt)
+	    elt->accept (*this);
 	}
     }
 }

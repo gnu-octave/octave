@@ -1,3 +1,11 @@
+2005-09-20  John W. Eaton  <jwe@octave.org>
+
+	* general/isvector.m: Improve compatibility.
+
+	* general/postpad.m: Allow first argument to be a scalar.
+	Allow padding to extend dimensionality.
+	* general/prepad.m: Likewise.
+
 2005-09-14  Daniel  <durbano@shbano.com>
 
 	* statistics/tests/bartlett_test.m, linear-algebra/cross.m,

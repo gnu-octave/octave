@@ -19,15 +19,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} deblank (@var{s})
-## Removes the trailing blanks and nulls from the string @var{s}.
-## If @var{s} is a matrix, @var{deblank} trims each row to the 
-## length of longest string.
+## Remove trailing blanks and nulls from @var{s}.  If @var{s}
+## is a matrix, @var{deblank} trims each row to the length of longest
+## string.  If @var{s} is a cell array, operate recursively on each
+## element of the cell array.
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
-function t = deblank (s)
+function s = deblank (s)
 
   if (nargin != 1)
     usage ("deblank (s)");
@@ -37,10 +38,16 @@ function t = deblank (s)
 
     k = find (! isspace (s) & s != "\0");
     if (isempty (s) || isempty (k))
-      t = "";
+      s = "";
     else
-      t = s(:,1:ceil (max (k) / rows (s)));
+      s = s(:,1:ceil (max (k) / rows (s)));
     endif
+
+  elseif (iscell(s))
+
+    for i = 1:numel (s)
+      s{i} = deblank (s{i});
+    endfor
 
   else
     error ("deblank: expecting string argument");

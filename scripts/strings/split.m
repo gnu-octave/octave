@@ -18,10 +18,13 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} split (@var{s}, @var{t})
+## @deftypefn {Function File} {} split (@var{s}, @var{t}, @var{n})
 ## Divides the string @var{s} into pieces separated by @var{t}, returning
 ## the result in a string array (padded with blanks to form a valid
-## matrix).  For example,
+## matrix).  If the optional input @var{n} is supplied, split @var{s}
+## into at most @var{n} different pieces.
+##
+## For example,
 ##
 ## @example
 ## split ("Test string", "t")
@@ -29,14 +32,24 @@
 ##         " s  "
 ##         "ring"
 ## @end example
+##
+## @example
+## split ("Test string", "t", 2)
+##      @result{} "Tes    "
+##         " string"
+## @end example
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
-function m = split (s, t)
+function m = split (s, t, n)
 
-  if (nargin == 2)
+  if (nargin == 2 || nargin == 3)
+    if (nargin == 2)
+      n = length (s);
+    endif
+
     if (ischar (s) && ischar (t))
 
       l_s = length (s);
@@ -60,6 +73,8 @@ function m = split (s, t)
       if (length (ind) == 0)
 	m = s;
 	return;
+      elseif (n - 1 < length(ind))
+	ind = ind(1:n-1)
       endif
       ind2 = [1, ind+l_t];
       ind  = [ind, l_s+1];
@@ -80,7 +95,7 @@ function m = split (s, t)
       error ("split: both s and t must be strings");
     endif
   else
-    usage ("split (s, t)");
+    usage ("split (s, t, n)");
   endif
 
 endfunction

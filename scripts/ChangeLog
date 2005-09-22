@@ -1,3 +1,12 @@
+2005-09-22  Bill Denney  <denney@seas.upenn.edu>
+
+	* strings/deblank.m: Handle cell arrays.
+	* strings/split.m: New argument, N, to limit number of splits.
+
+2005-09-22  Miroslaw Kwasniak  <mirek@zind.ikem.pwr.wroc.pl>
+
+	* plot/__pltopt1__.m: Handle plot colors "w" and "k" separately.
+
 2005-09-20  "Orestes Mas"  <orestes@tsc.upc.edu>
 
 	* control/base/rlocus.m: Doc fix.

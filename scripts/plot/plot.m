@@ -104,9 +104,9 @@
 ## valid in combination with the @code{@@} or @code{-@@} specifiers.
 ##
 ## @item @var{c}
-## If @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
-## @code{"c"}, or @code{"w"}, it is interpreted as the plot color (red,
-## green, blue, magenta, cyan, or white).
+## If @var{c} is one of @code{"k"}, @code{"r"}, @code{"g"}, @code{"b"},
+## @code{"m"}, @code{"c"}, or @code{"w"}, it is interpreted as the plot
+## color (black, red, green, blue, magenta, cyan, or white).
 ##
 ## @item ";title;"
 ## Here @code{"title"} is the label for the key.

@@ -205,9 +205,16 @@ function [r, p, k, e] = residue (b, a, toler)
   p = roots (a);
   lp = length (p);
 
+
+  ## Determine if the poles are (effectively) zero.
+  index = find (abs (p) < toler);
+  if (length (index) != 0)
+    p (index) = 0;
+  endif
+
   ## Determine if the poles are (effectively) real.
 
-  index = find (abs (imag (p) ./ real (p)) < toler);
+  index = find (abs(p)>=toler && ( abs(imag(p)) ./ abs(p) < toler ));
   if (length (index) != 0)
     p (index) = real (p (index));
   endif

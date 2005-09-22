@@ -1,3 +1,12 @@
+2005-09-22  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/residue.m: Use logical indexing instead of find..
+
+2005-09-22  Julius Smith  <jos@ccrma.stanford.edu>
+
+	* polynomial/residue.m: Avoid division by zero for pure imaginary
+	and zero poles.
+
 2005-09-22  Bill Denney  <denney@seas.upenn.edu>
 
 	* strings/deblank.m: Handle cell arrays.

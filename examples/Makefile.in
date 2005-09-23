@@ -21,16 +21,23 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SCRIPTS = info-emacs-info info-emacs-octave-help
 
-SOURCES = hello.cc oregonator.m oregonator.cc make_int.cc
+SOURCES = hello.cc oregonator.m oregonator.cc make_int.cc octave.desktop.in
 
-DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS)
+DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS) octave.desktop
 
 SUBDIRS = 
 
 DISTSUBDIRS = 
 
-all:
+all: octave.desktop
 .PHONY: all
+
+octave.desktop: octave.desktop.in Makefile ../Makeconf
+	echo "making $@ from $<"
+	$(SED) < $< > $@-t \
+	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
+	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
+	$(top_srcdir)/move-if-change $@-t $@
 
 install install-strip:
 	for f in $(SCRIPTS); do \

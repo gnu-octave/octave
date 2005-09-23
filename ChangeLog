@@ -1,3 +1,10 @@
+2005-09-23  John W. Eaton  <jwe@octave.org>
+
+	* octave.desktop.in: New file.  From Soren Hauberg <soren@hauberg.org>.
+	* examples/Makefile.in (SOURCES): Add it to the list.
+	(octave.desktop): New target.
+	(all): Depend on octave.desktop.
+
 2005-09-22  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_PROG_PERL): New macro.

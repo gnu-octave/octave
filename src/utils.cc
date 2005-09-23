@@ -40,11 +40,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
-// Include setjmp.h, not csetjmp since the latter might only define
-// the ANSI standard C interface.
-
-#include <setjmp.h>
-
 #include "quit.h"
 
 #include "dir-ops.h"
@@ -64,6 +59,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
+#include "oct-errno.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "pager.h"
@@ -691,29 +687,65 @@ DEFUN (find_first_of_in_loadpath, args, , "")
   return retval;
 }
 
-
-// #if 0
-
-// Octave could use some way to access the value of ERRNO, but this is
-// probably not the best interface, so don't depend on it...
-
-DEFUN (ERRNO, args, ,
+DEFUNX ("errno", Ferrno, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{system_error_number}} errno ()\n\
-Return the current value of the system-dependent variable errno.\n\
+@deftypefn {Built-in Function} {@var{err} =} errno ()\n\
+@deftypefnx {Built-in Function} {@var{err} =} errno (@var{val})\n\
+@deftypefnx {Built-in Function} {@var{err} =} errno (@var{name})\n\
+Return the current value of the system-dependent variable errno,\n\
+set its value to @var{val} and return the previous value, or return\n\
+the named error code given @var{name} as a character string, or -1\n\
+if @var{name} is not found.\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = errno;
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      if (args(0).is_string ())
+	{
+	  std::string nm = args(0).string_value ();
+
+	  if (! error_state)
+	    retval = octave_errno::lookup (nm);
+	  else
+	    error ("errno: expecting character string argument");
+	}
+      else
+	{
+	  int val = args(0).int_value ();
+
+	  if (! error_state)
+	    retval = octave_errno::set (val);
+	  else
+	    error ("errno: expecting integer argument");
+	}
+    }
+  else if (nargin == 0)
+    retval = octave_errno::get ();
   else
     print_usage ("errno");
 
   return retval;
 }
 
-// #endif
+DEFUN (errno_list, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} errno_list ()\n\
+Return a structure containing the system-dependent errno values.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = octave_errno::list ();
+  else
+    print_usage ("errno_list");
+
+  return retval;
+}
 
 static void
 warn_old_style_preference (bool val, const std::string& sval)

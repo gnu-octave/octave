@@ -95,7 +95,7 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	error.h file-io.h fn-cache.h gripes.h help.h input.h \
 	lex.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
-	oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
+	oct-errno.h oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h zfstream.h \
 	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h \
 	parse.h pr-output.h procstream.h sighandlers.h siglist.h \
@@ -179,13 +179,15 @@ SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
 EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc 
 
+EXTRA_OBJECTS := oct-errno.o octave.o builtins.o ops.o
+
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(EXTRAS)
 
 OBJECTS_4 := $(notdir $(SOURCES))
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
 OBJECTS_2 := $(patsubst %.y, %.o, $(OBJECTS_3))
 OBJECTS_1 := $(patsubst %.c, %.o, $(OBJECTS_2))
-OBJECTS := $(patsubst %.cc, %.o, $(OBJECTS_1)) octave.o builtins.o ops.o
+OBJECTS := $(patsubst %.cc, %.o, $(OBJECTS_1)) $(EXTRA_OBJECTS)
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CXXPICFLAG
@@ -252,7 +254,7 @@ OCT_LINK_DEPS = \
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
-	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
+	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h gplot.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
@@ -523,7 +525,7 @@ conf-dist:
 
 $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
-	@perl $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
+	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
 parse.cc : parse.y
@@ -542,6 +544,19 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 
 oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 	@$(do-subst-config-vals)
+
+oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
+	@echo "making $@ from $<"
+	if test -n "$(PERL)"; then \
+	  $(PERL) -e 'foreach $$key (keys(%!)) { $$x .= "#if defined ($$key)\n    { \"$$key\", $$key, },\n#endif\n"; }; while (<>) { s/^ *\@SYSDEP_ERRNO_LIST\@/$$x/; print; }' $< > $@.t; \
+	else \
+	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@.t; \
+	fi
+	@if [ -s $@.t ]; then \
+	  $(top_srcdir)/move-if-change $@.t $@; \
+	else \
+	  exit 1; \
+	fi
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"

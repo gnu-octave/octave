@@ -807,6 +807,14 @@ fi
 AC_SUBST([SED], $octave_cv_path_sed)
 AC_MSG_RESULT([$SED])
 ])
+dnl
+dnl Find Perl.
+dnl
+dnl OCTAVE_PROG_PERL
+AC_DEFUN(OCTAVE_PROG_PERL,
+[AC_CHECK_PROG(PERL, ${ac_tool_prefix}perl, ${ac_tool_prefix}perl, [])
+  AC_SUBST(PERL)
+])
 # OCTAVE_IEEE754_DATA_FORMAT
 # --------------
 # Check for IEEE 754 data format.

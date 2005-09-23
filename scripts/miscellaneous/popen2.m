@@ -34,9 +34,19 @@
 ## [in, out, pid] = popen2 ("sort", "-nr");
 ## fputs (in, "these\nare\nsome\nstrings\n");
 ## fclose (in);
-## while (ischar (s = fgets (out)))
-##   fputs (stdout, s);
-## endwhile
+## EAGAIN = errno ("EAGAIN");
+## done = false;
+## do
+##   s = fgets (out);
+##   if (ischar (s))
+##     fputs (stdout, s);
+##   elseif (errno () == EAGAIN)
+##     sleep (0.1);
+##     fclear (out);
+##   else
+##     done = true;
+##   endif
+## until (done)
 ## fclose (out);
 ##      @print{} are
 ##      @print{} some

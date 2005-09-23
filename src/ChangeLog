@@ -1,3 +1,17 @@
+2005-09-23  John W. Eaton  <jwe@octave.org>
+
+	* utils.cc (Ferrno_list): New function.
+
+	* oct-errno.h, oct-errno.cc.in: New files.
+	* Makefile.in: Add them to the appropriate lists.
+	(oct-errno.cc): New rule.
+	($(OPT_HANDLERS)): Use $(PERL) instead of just perl.
+
+	* utils.cc: Include oct-errno.h.
+	(Ferrno): Rename from FERRNO.  Allow errno to be set.  Allow
+	lookups of errno codes by name and access to structure containing
+	all errno names and codes.
+
 2005-09-19  John W. Eaton  <jwe@octave.org>
 
 	* pt-bp.cc (tree_breakpoint::visit_index_expression):

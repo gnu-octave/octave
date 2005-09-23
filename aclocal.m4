@@ -812,12 +812,20 @@ dnl Find Perl.
 dnl
 dnl OCTAVE_PROG_PERL
 AC_DEFUN(OCTAVE_PROG_PERL,
-[AC_CHECK_PROG(PERL, ${ac_tool_prefix}perl, ${ac_tool_prefix}perl, [])
+[AC_CHECK_PROG(PERL, perl, perl, [])
   AC_SUBST(PERL)
 ])
-# OCTAVE_IEEE754_DATA_FORMAT
-# --------------
-# Check for IEEE 754 data format.
+dnl
+dnl Find desktop-file-install.
+dnl
+dnl OCTAVE_PROG_DESKTOP_FILE_INSTALL
+AC_DEFUN(OCTAVE_PROG_DESKTOP_FILE_INSTALL,
+[AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install, desktop-file-install, [])
+  AC_SUBST(DESKTOP_FILE_INSTALL)
+])
+dnl
+dnl Check for IEEE 754 data format.
+dnl
 AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT],
 [AC_MSG_CHECKING([for IEEE 754 data format])
 AC_CACHE_VAL(octave_cv_ieee754_data_format,

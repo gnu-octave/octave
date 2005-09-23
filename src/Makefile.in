@@ -547,7 +547,7 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 
 oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	@echo "making $@ from $<"
-	if test -n "$(PERL)"; then \
+	@if test -n "$(PERL)"; then \
 	  $(PERL) -e 'foreach $$key (keys(%!)) { $$x .= "#if defined ($$key)\n    { \"$$key\", $$key, },\n#endif\n"; }; while (<>) { s/^ *\@SYSDEP_ERRNO_LIST\@/$$x/; print; }' $< > $@.t; \
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@.t; \

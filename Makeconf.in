@@ -17,6 +17,8 @@ export SED
 
 PERL = @PERL@
 
+DESKTOP_FILE_INSTALL = @DESKTOP_FILE_INSTALL@
+
 # A shell command to extract the version number from version.h.
 getversion = $(SED) -e '/OCTAVE_VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
 

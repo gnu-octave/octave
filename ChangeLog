@@ -1,5 +1,11 @@
 2005-09-23  John W. Eaton  <jwe@octave.org>
 
+	* examples/Makefile.in (install install-strip):
+	Conditionally install octave.desktop.
+	* aclocal.m4 (OCTAVE_PROG_DESKTOP_FILE_INSTALL): New macro
+	* configure.in: Use it.
+	* Makeconf.in: Substitute DESKTOP_FILE_INSTALL.
+
 	* octave.desktop.in: New file.  From Soren Hauberg <soren@hauberg.org>.
 	* examples/Makefile.in (SOURCES): Add it to the list.
 	(octave.desktop): New target.

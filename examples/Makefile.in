@@ -40,6 +40,9 @@ octave.desktop: octave.desktop.in Makefile ../Makeconf
 	$(top_srcdir)/move-if-change $@-t $@
 
 install install-strip:
+	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
+	  $(DESKTOP_FILE_INSTALL) --vendor www.octave.org octave.desktop; \
+	fi
 	for f in $(SCRIPTS); do \
 	  $(INSTALL_SCRIPT) $(srcdir)/$$f $(DESTDIR)$(archlibdir)/$$f; \
 	done

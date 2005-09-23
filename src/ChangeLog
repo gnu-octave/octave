@@ -1,5 +1,8 @@
 2005-09-23  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (load_fcn_from_file): Don't look in path if file is
+	absolute and has .oct or .m extension.
+
 	* utils.cc (Ferrno_list): New function.
 
 	* oct-errno.h, oct-errno.cc.in: New files.

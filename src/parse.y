@@ -3362,12 +3362,25 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
 
   string_vector names (2);
 
-  names[0] = nm + ".oct";
-  names[1] = nm + ".m";
+  int nm_len = nm.length ();
 
-  std::string file
-   = octave_env::make_absolute (Vload_path_dir_path.find_first_of (names),
-                                octave_env::getcwd ());
+  std::string file;
+
+  if (octave_env::absolute_pathname (nm)
+      && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
+	  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
+    {
+      file = nm;
+    }
+  else
+    {
+      names[0] = nm + ".oct";
+      names[1] = nm + ".m";
+
+      file
+	= octave_env::make_absolute (Vload_path_dir_path.find_first_of (names),
+				     octave_env::getcwd ());
+    }
 
   int len = file.length ();
 

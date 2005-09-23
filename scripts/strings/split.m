@@ -74,7 +74,7 @@ function m = split (s, t, n)
 	m = s;
 	return;
       elseif (n - 1 < length(ind))
-	ind = ind(1:n-1)
+	ind = ind(1:n-1);
       endif
       ind2 = [1, ind+l_t];
       ind  = [ind, l_s+1];

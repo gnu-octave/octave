@@ -231,8 +231,12 @@ set prog_output "^usage:.*"
 do_test split-2.m
 
 set test split-3
-set prog_output "^usage:.*"
+set prog_output "^ans = 1"
 do_test split-3.m
+
+set test split-4
+set prog_output "^usage:.*"
+do_test split-4.m
 
 set test strrep-1
 set prog_output "^ans = 1"

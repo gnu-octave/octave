@@ -2,6 +2,10 @@
 
 	* examples/Makefile.in (install install-strip):
 	Conditionally install octave.desktop.
+	(IMAGE_FILES, IMAGE_FILES_NO_DIR): New macros.
+	(DISTFILES): Include IMAGE_FILES in list.
+	(install install-strip): Install image file.
+
 	* aclocal.m4 (OCTAVE_PROG_DESKTOP_FILE_INSTALL): New macro
 	* configure.in: Use it.
 	* Makeconf.in: Substitute DESKTOP_FILE_INSTALL.

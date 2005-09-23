@@ -23,7 +23,10 @@ SCRIPTS = info-emacs-info info-emacs-octave-help
 
 SOURCES = hello.cc oregonator.m oregonator.cc make_int.cc octave.desktop.in
 
-DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS) octave.desktop
+IMAGE_FILES = $(srcdir)/octave-sombrero.png
+IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
+
+DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS) $(IMAGE_FILES) octave.desktop
 
 SUBDIRS = 
 
@@ -40,6 +43,11 @@ octave.desktop: octave.desktop.in Makefile ../Makeconf
 	$(top_srcdir)/move-if-change $@-t $@
 
 install install-strip:
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(imagedir)
+	for f in $(IMAGE_FILES_NO_DIR); do \
+	  rm -f $(DESTDIR)$(imagedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
+	done
 	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --vendor www.octave.org octave.desktop; \
 	fi

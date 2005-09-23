@@ -1,3 +1,7 @@
+2005-09-23  John W. Eaton  <jwe@octave.org>
+
+	* misc/machar.c: Restore test code.
+
 2005-09-15  John W. Eaton  <jwe@octave.org>
 
 	* misc/quit.h Rename all win32_ symbols to w32.  Change all uses.

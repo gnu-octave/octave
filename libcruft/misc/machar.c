@@ -4,7 +4,9 @@
 
 #include <float.h>
 
+#ifndef TEST
 #include "f77-fcn.h"
+#endif
 
 /*
 
@@ -364,6 +366,8 @@ rmachar(int *ibeta, int *it, int *irnd, int *ngrd, int *machep,
 
 }
 
+#ifndef TEST
+
 F77_RET_T
 F77_FUNC (machar, MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
 			   REAL *eps, REAL *log10_ibeta)
@@ -390,3 +394,79 @@ F77_FUNC (machar, MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
 
   F77_RETURN (0)
 }
+
+#else
+
+
+/*
+
+This program prints hardware-determined double-precision machine
+constants obtained from rmachar.  Dmachar is a C translation of the
+Fortran routine MACHAR from W. J. Cody, "MACHAR: A subroutine to
+dynamically determine machine parameters".  TOMS (14), 1988.
+
+Descriptions of the machine constants are given in the prologue
+comments in rmachar.
+
+Subprograms called
+
+  rmachar
+
+Original driver: Richard Bartels, October 16, 1985
+
+Modified by: W. J. Cody
+	     July 26, 1988
+ 
+*/
+int
+main (void)
+{
+
+  int ibeta, iexp, irnd, it, machep, maxexp, minexp, negep, ngrd;
+
+  int i;
+
+  REAL eps, epsneg, xmax, xmin;
+
+  union wjc
+  {
+    long int jj[REALSIZE];
+    REAL xbig;
+  } uval;
+
+  rmachar  (&ibeta, &it, &irnd, &ngrd, &machep, &negep, &iexp,
+	    &minexp, &maxexp, &eps, &epsneg, &xmin, &xmax);
+
+  printf (PREC);
+  printf (" precision MACHAR constants\n");
+  printf ("ibeta  = %d\n", ibeta);
+  printf ("it     = %d\n", it);
+  printf ("irnd   = %d\n", irnd);
+  printf ("ngrd   = %d\n", ngrd);
+  printf ("machep = %d\n", machep);
+  printf ("negep  = %d\n", negep);
+  printf ("iexp   = %d\n", iexp);
+  printf ("minexp = %d\n", minexp);
+  printf ("maxexp = %d\n", maxexp);
+
+#define DISPLAY(s, x) \
+  do \
+    { \
+      uval.xbig = x ; \
+      printf (s); \
+      printf (" %24.16e ", (double) x) ; \
+      for (i = 0; i < REALSIZE; i++) \
+	printf (" %9X ", uval.jj[i]) ; \
+      printf ("\n"); \
+    } \
+  while (0)
+			
+  DISPLAY ("eps   ", eps);
+  DISPLAY ("epsneg", epsneg);
+  DISPLAY ("xmin  ", xmin);
+  DISPLAY ("xmax  ", xmax);
+
+  return 0;
+}
+
+#endif

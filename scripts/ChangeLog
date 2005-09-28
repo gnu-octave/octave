@@ -1,3 +1,7 @@
+2005-09-28  John W. Eaton  <jwe@octave.org>
+
+	* statistics/base/unidrnd.m: New function.
+
 2005-09-27  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/dir.m: Filename never includes directory part.

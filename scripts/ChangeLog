@@ -1,3 +1,7 @@
+2005-09-27  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/dir.m: Filename never includes directory part.
+
 2005-09-22  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/residue.m: Use logical indexing instead of find..

@@ -96,6 +96,8 @@ function retval = dir (file)
 		  endif
 		endfor
 	      else
+		[dummy, fn, ext] = fileparts (fn);
+		fn = strcat (fn, ext);
 		info.name = fn;
 		info.date = strftime ("%d-%b-%Y %T", localtime (st.mtime));
 		info.bytes = st.size;

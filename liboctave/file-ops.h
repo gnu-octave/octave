@@ -56,6 +56,9 @@ file_ops
   static int rmdir (const std::string&);
   static int rmdir (const std::string&, std::string&);
 
+  static int recursive_rmdir (const std::string&);
+  static int recursive_rmdir (const std::string&, std::string&);
+
   static std::string canonicalize_file_name (const std::string&);
   static std::string canonicalize_file_name (const std::string&, std::string&);
 

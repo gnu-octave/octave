@@ -41,10 +41,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#include "dir-ops.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
 #include "pathlen.h"
+#include "quit.h"
 #include "statdefs.h"
 #include "str-vec.h"
 
@@ -308,6 +311,80 @@ file_ops::rmdir (const std::string& name, std::string& msg)
 #else
   msg = NOT_SUPPORTED ("rmdir");
 #endif
+
+  return status;
+}
+
+// And a version that works recursively.
+
+int
+file_ops::recursive_rmdir (const std::string& name)
+{
+  std::string msg;
+  return recursive_rmdir (name, msg);
+}
+
+int
+file_ops::recursive_rmdir (const std::string& name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = 0;
+
+  dir_entry dir (name);
+
+  if (dir)
+    {
+      string_vector dirlist = dir.read ();
+
+      for (octave_idx_type i = 0; i < dirlist.length (); i++)
+	{
+	  OCTAVE_QUIT;
+
+	  std::string nm = dirlist[i];
+
+	  // Skip current directory and parent.
+	  if (nm == "." || nm == "..")
+	    continue;
+
+	  std::string fullnm = name + file_ops::dir_sep_str + nm;
+
+	  // Get info about the file.  Don't follow links.
+	  file_stat fs (fullnm, false);
+
+	  if (fs)
+	    {
+	      if (fs.is_dir ())
+		{
+		  status = recursive_rmdir (fullnm, msg);
+
+		  if (status < 0)
+		    break;
+		}
+	      else
+		{
+		  status = unlink (fullnm, msg);
+
+		  if (status < 0)
+		    break;
+		}
+	    }
+	  else
+	    {
+	      msg = fs.error ();
+	      break;
+	    }
+	}
+
+      if (status >= 0)
+	status = file_ops::rmdir (name, msg);
+    }
+  else
+    {
+      status = -1;
+
+      msg = dir.error ();
+    }
 
   return status;
 }

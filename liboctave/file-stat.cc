@@ -53,68 +53,110 @@ lstat (const char *name, struct stat *buf)
 bool
 file_stat::is_blk (void) const
 {
-#ifdef S_ISBLK
-  return S_ISBLK (fs_mode);
-#else
-  return false;
-#endif
+  return is_blk (fs_mode);
 }
 
 bool
 file_stat::is_chr (void) const
 {
-#ifdef S_ISCHR
-  return S_ISCHR (fs_mode);
-#else
-  return false;
-#endif
+  return is_chr (fs_mode);
 }
 
 bool
 file_stat::is_dir (void) const
 { 
-#ifdef S_ISDIR
-  return S_ISDIR (fs_mode);
-#else
-  return false;
-#endif
+  return is_dir (fs_mode);
 }
 
 bool
 file_stat::is_fifo (void) const
 { 
-#ifdef S_ISFIFO
-  return S_ISFIFO (fs_mode);
-#else
-  return false;
-#endif
+  return is_fifo (fs_mode);
 }
 
 bool
 file_stat::is_lnk (void) const
 { 
-#ifdef S_ISLNK
-  return S_ISLNK (fs_mode);
-#else
-  return false;
-#endif
+  return is_lnk (fs_mode);
 }
 
 bool
 file_stat::is_reg (void) const
 { 
-#ifdef S_ISREG
-  return S_ISREG (fs_mode);
+  return is_reg (fs_mode);
+}
+
+bool
+file_stat::is_sock (void) const
+{ 
+  return is_sock (fs_mode);
+}
+
+bool
+file_stat::is_blk (mode_t mode)
+{
+#ifdef S_ISBLK
+  return S_ISBLK (mode);
 #else
   return false;
 #endif
 }
 
 bool
-file_stat::is_sock (void) const
+file_stat::is_chr (mode_t mode)
+{
+#ifdef S_ISCHR
+  return S_ISCHR (mode);
+#else
+  return false;
+#endif
+}
+
+bool
+file_stat::is_dir (mode_t mode)
+{ 
+#ifdef S_ISDIR
+  return S_ISDIR (mode);
+#else
+  return false;
+#endif
+}
+
+bool
+file_stat::is_fifo (mode_t mode)
+{ 
+#ifdef S_ISFIFO
+  return S_ISFIFO (mode);
+#else
+  return false;
+#endif
+}
+
+bool
+file_stat::is_lnk (mode_t mode)
+{ 
+#ifdef S_ISLNK
+  return S_ISLNK (mode);
+#else
+  return false;
+#endif
+}
+
+bool
+file_stat::is_reg (mode_t mode)
+{ 
+#ifdef S_ISREG
+  return S_ISREG (mode);
+#else
+  return false;
+#endif
+}
+
+bool
+file_stat::is_sock (mode_t mode)
 { 
 #ifdef S_ISSOCK
-  return S_ISSOCK (fs_mode);
+  return S_ISSOCK (mode);
 #else
   return false;
 #endif

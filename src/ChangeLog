@@ -1,3 +1,24 @@
+2005-09-29  John W. Eaton  <jwe@octave.org>
+
+	* syscalls.cc (mk_stat_map): Store mode too.
+	(FS_ISREG, FS_ISDIR, FS_ISCHR, FS_ISBLK, FS_ISFIFO, FS_ISLNK,
+	FS_ISSOCK): New functions.
+	(Fstat): Fix docstring.
+
+2005-09-28  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (printf_value_cache::double_value): Force
+	character strings to be converted to ASCII equivalents.
+
+	* data.cc (Fcomplex): New function.
+
+	* ov-type-conv.h (OCTAVE_TYPE_CONV_BODY3): Return arg unchanged if
+	class name is same as name of conversion.
+
+	* dirfns.cc (Frmdir, Fmkdir): For compatibility, return true for
+	success and false for failure.  Return third value, msgid.
+	(Frmdir): Handle second arg for recursive behavior.
+
 2005-09-23  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (load_fcn_from_file): Don't look in path if file is

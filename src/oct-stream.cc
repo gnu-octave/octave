@@ -2323,7 +2323,9 @@ printf_value_cache::double_value (void)
 	{
 	  octave_value tmp_val = values (val_idx);
 
-	  curr_val = tmp_val.array_value ();
+	  // Force string conversion here for compatibility.
+
+	  curr_val = tmp_val.array_value (true);
 
 	  if (! error_state)
 	    {

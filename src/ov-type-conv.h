@@ -35,7 +35,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  \
       int t_result = MATRIX_RESULT_T::static_type_id (); \
  \
-      if (t_arg != t_result) \
+      if (t_arg == t_result || arg.class_name () == #NAME) \
+	{ \
+	  retval = arg; \
+	} \
+      else \
         { \
           type_conv_fcn cf \
 	    = octave_value_typeinfo::lookup_type_conv_op (t_arg, t_result); \
@@ -62,8 +66,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 	      gripe_invalid_conversion (arg_tname, result_tname); \
 	    } \
 	} \
-      else \
-        retval = arg; \
     } \
   else \
     print_usage (#NAME); \

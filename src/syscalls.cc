@@ -67,6 +67,7 @@ mk_stat_map (const file_stat& fs)
 
   m.assign ("dev", static_cast<double> (fs.dev ()));
   m.assign ("ino", fs.ino ());
+  m.assign ("mode", fs.mode ());
   m.assign ("modestr", fs.mode_as_string ());
   m.assign ("nlink", fs.nlink ());
   m.assign ("uid", fs.uid ());
@@ -711,6 +712,12 @@ ID of device containing a directory entry for this file.\n\
 @item ino\n\
 File number of the file.\n\
 \n\
+@item mode\n\
+File mode, as an integer.  Use the functions @code{S_ISREG},\n\
+@code{S_ISDIR}, @code{S_ISCHR}, @code{S_ISBLK}, @code{S_ISFIFO},\n\
+@code{S_ISLNK}, or @code{S_ISSOCK} to extract information from this\n\
+value.\n\
+\n\
 @item modestr\n\
 File mode, as a string of ten letters or dashes as would be returned by\n\
 @kbd{ls -l}.\n\
@@ -775,6 +782,7 @@ For example,\n\
           gid = 6\n\
           nlink = 1\n\
           blocks = 768\n\
+          mode = -rw-r--r--\n\
           modestr = -rw-r--r--\n\
           ino = 9316\n\
           dev = 2049\n\
@@ -811,6 +819,179 @@ For example,\n\
     }
   else
     print_usage ("stat");
+
+  return retval;
+}
+
+DEFUNX ("S_ISREG", FS_ISREG, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISREG (@var{mode})\n\
+Return true if @var{mode} corresponds to a regular file.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_reg (static_cast<mode_t> (mode));
+      else
+	error ("S_ISREG: invalid mode value");
+    }
+  else
+    print_usage ("S_ISREG");
+
+  return retval;
+}
+
+DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISDIR (@var{mode})\n\
+Return true if @var{mode} corresponds to a directory.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_dir (static_cast<mode_t> (mode));
+      else
+	error ("S_ISDIR: invalid mode value");
+    }
+  else
+    print_usage ("S_ISDIR");
+
+  return retval;
+}
+
+DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISCHR (@var{mode})\n\
+Return true if @var{mode} corresponds to a character devicey.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_chr (static_cast<mode_t> (mode));
+      else
+	error ("S_ISCHR: invalid mode value");
+    }
+  else
+    print_usage ("S_ISCHR");
+
+  return retval;
+}
+
+DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISBLK (@var{mode})\n\
+Return true if @var{mode} corresponds to a block device.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_blk (static_cast<mode_t> (mode));
+      else
+	error ("S_ISBLK: invalid mode value");
+    }
+  else
+    print_usage ("S_ISBLK");
+
+  return retval;
+}
+
+DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISFIFO (@var{mode})\n\
+Return true if @var{mode} corresponds to a fifo.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_fifo (static_cast<mode_t> (mode));
+      else
+	error ("S_ISFIFO: invalid mode value");
+    }
+  else
+    print_usage ("S_ISFIFO");
+
+  return retval;
+}
+
+DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISLNK (@var{mode})\n\
+Return true if @var{mode} corresponds to a symbolic link.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_lnk (static_cast<mode_t> (mode));
+      else
+	error ("S_ISLNK: invalid mode value");
+    }
+  else
+    print_usage ("S_ISLNK");
+
+  return retval;
+}
+
+DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} S_ISSOCK (@var{mode})\n\
+@seealso{stat, lstat}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      double mode = args(0).double_value ();
+
+      if (! error_state)
+	retval = file_stat::is_sock (static_cast<mode_t> (mode));
+      else
+	error ("S_ISSOCK: invalid mode value");
+    }
+  else
+    print_usage ("S_ISSOCK");
 
   return retval;
 }

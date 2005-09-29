@@ -284,23 +284,25 @@ system-dependent error message.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- should probably also allow second arg to specify
-// mode.
+// XXX FIXME XXX -- should maybe also allow second arg to specify
+// mode?  OTOH, that might cause trouble with compatibility later...
 
 DEFUN (mkdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkdir (@var{dir})\n\
+@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
 Create a directory named @var{dir}.\n\
 \n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
+If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
+character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
+system-dependent error message, and @var{msgid} contains a unique\n\
+message identifier.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
+  retval(2) = std::string ();
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = false;
 
   if (args.length () == 1)
     {
@@ -315,10 +317,13 @@ system-dependent error message.\n\
 	  int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
 					0777, msg);
 
-	  retval(0) = status;
-
 	  if (status < 0)
-	    retval(1) = msg;
+	    {
+	      retval(2) = "mkdir";
+	      retval(1) = msg;
+	    }
+	  else
+	    retval(0) = true;
 	}
     }
   else
@@ -329,20 +334,28 @@ system-dependent error message.\n\
 
 DEFUN (rmdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rmdir (@var{dir})\n\
+@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\
 Remove the directory named @var{dir}.\n\
 \n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
+If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
+character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
+system-dependent error message, and @var{msgid} contains a unique\n\
+message identifier.\n\
+\n\
+If the optional second parameter is suplied, recursively remove all\n\
+subdirectories as well.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
+  retval(2) = std::string ();
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = false;
 
-  if (args.length () == 1)
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
     {
       std::string dirname = args(0).string_value ();
 
@@ -352,12 +365,19 @@ system-dependent error message.\n\
 	{
 	  std::string msg;
 
-	  int status = file_ops::rmdir (file_ops::tilde_expand (dirname), msg);
+	  std::string fulldir = file_ops::tilde_expand (dirname);
 
-	  retval(0) = status;
+	  int status = (nargin == 1)
+	    ? file_ops::rmdir (fulldir, msg)
+	    : file_ops::recursive_rmdir (fulldir, msg);
 
 	  if (status < 0)
-	    retval(1) = msg;
+	    {
+	      retval(2) = "rmdir";
+	      retval(1) = msg;
+	    }
+	  else
+	    retval(0) = true;
 	}
     }
   else

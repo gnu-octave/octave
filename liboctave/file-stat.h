@@ -85,6 +85,14 @@ public:
   bool is_reg (void) const;
   bool is_sock (void) const;
 
+  static bool is_blk (mode_t mode);
+  static bool is_chr (mode_t mode);
+  static bool is_dir (mode_t mode);
+  static bool is_fifo (mode_t mode);
+  static bool is_lnk (mode_t mode);
+  static bool is_reg (mode_t mode);
+  static bool is_sock (mode_t mode);
+
   ino_t ino (void) const { return fs_ino; }
   dev_t dev (void) const { return fs_dev; }
 
@@ -110,6 +118,8 @@ public:
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   long blocks (void) const { return fs_blocks; }
 #endif
+
+  mode_t mode (void) const { return fs_mode; }
 
   std::string mode_as_string (void) const;
 

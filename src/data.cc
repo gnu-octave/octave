@@ -38,6 +38,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "gripes.h"
 #include "ov.h"
+#include "ov-complex.h"
+#include "ov-cx-mat.h"
 #include "variables.h"
 #include "oct-obj.h"
 #include "utils.h"
@@ -1148,6 +1150,127 @@ Return true if @var{x} is a complex-valued numeric object.\n\
 
   return retval;
 }
+
+// XXX FIXME XXX -- perhaps this should be implemented with an
+// octave_value member function?
+
+DEFUN (complex, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} complex (@var{val})\n\
+@deftypefnx {Built-in Function} {} complex (@var{re}, @var{im})\n\
+Convert @var{x} to a complex value.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_complex_type ())
+	retval = arg;
+      else
+	{
+	  if (arg.numel () == 1)
+	    {
+	      Complex val = arg.complex_value ();
+
+	      if (! error_state)
+		retval = octave_value (new octave_complex (val));
+	    }
+	  else
+	    {
+	      ComplexNDArray val = arg.complex_array_value ();
+
+	      if (! error_state)
+		retval = octave_value (new octave_complex_matrix (val));
+	    }
+
+	  if (error_state)
+	    error ("complex: invalid conversion");
+	}
+    }
+  else if (nargin == 2)
+    {
+      octave_value re = args(0);
+      octave_value im = args(1);
+
+      if (re.numel () == 1)
+	{
+	  double re_val = re.double_value ();
+
+	  if (im.numel () == 1)
+	    {
+	      double im_val = im.double_value ();
+
+	      if (! error_state)
+		retval = octave_value (new octave_complex (Complex (re_val, im_val)));
+	    }
+	  else
+	    {
+	      const NDArray im_val = im.array_value ();
+
+	      if (! error_state)
+		{
+		  ComplexNDArray result (im_val.dims (), Complex ());
+
+		  for (octave_idx_type i = 0; i < im_val.numel (); i++)
+		    result.xelem (i) = Complex (re_val, im_val(i));
+
+		  retval = octave_value (new octave_complex_matrix (result));
+		}
+	    }
+	}
+      else
+	{
+	  const NDArray re_val = re.array_value ();
+
+	  if (im.numel () == 1)
+	    {
+	      double im_val = im.double_value ();
+
+	      if (! error_state)
+		{
+		  ComplexNDArray result (re_val.dims (), Complex ());
+
+		  for (octave_idx_type i = 0; i < re_val.numel (); i++)
+		    result.xelem (i) = Complex (re_val(i), im_val);
+
+		  retval = octave_value (new octave_complex_matrix (result));
+		}
+	    }
+	  else
+	    {
+	      const NDArray im_val = im.array_value ();
+
+	      if (! error_state)
+		{
+		  if (re_val.dims () == im_val.dims ())
+		    {
+		      ComplexNDArray result (re_val.dims (), Complex ());
+
+		      for (octave_idx_type i = 0; i < re_val.numel (); i++)
+			result.xelem (i) = Complex (re_val(i), im_val(i));
+
+		      retval = octave_value (new octave_complex_matrix (result));
+		    }
+		  else
+		    error ("complex: dimension mismatch");
+		}
+	    }
+	}
+
+      if (error_state)
+	error ("complex: invalid conversion");
+    }
+  else
+    print_usage ("complex");
+
+  return retval;
+}
+
 
 DEFUN (isreal, args, ,
   "-*- texinfo -*-\n\

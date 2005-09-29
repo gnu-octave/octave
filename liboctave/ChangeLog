@@ -1,3 +1,17 @@
+2005-09-29  John W. Eaton  <jwe@octave.org>
+
+	* file-stat.h (file_stat::mode): New function.
+
+	* file-stat.cc (file_stat::is_blk, file_stat::is_chr,
+	file_stat::is_dir, file_stat::is_fifo, file_stat::is_lnk,
+	file_stat::is_reg, file_stat::is_sock): New static functions.
+	* file-stat.h: Provide decls.
+
+2005-09-28  John W. Eaton  <jwe@octave.org>
+
+	* file-ops.cc (file_ops::recursive_rmdir): New function.
+	* file-ops.h: Provide decl.
+
 2005-09-19  David Bateman  <dbateman@free.fr>
 
 	* oct-env.cc (octave_env::do_get_home_directory):

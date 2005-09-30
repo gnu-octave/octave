@@ -1,3 +1,8 @@
+2005-09-30  John W. Eaton  <jwe@octave.org>
+
+	* ov.cc (octave_value::~octave_value): No need to set rep to zero
+	after deleting.
+
 2005-09-29  John W. Eaton  <jwe@octave.org>
 
 	* syscalls.cc (mk_stat_map): Store mode too.

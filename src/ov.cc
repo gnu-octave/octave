@@ -416,26 +416,18 @@ octave_value::octave_value (double d)
 }
 
 octave_value::octave_value (const Cell& c, bool is_csl)
-  : rep (0)
+  : rep (is_csl
+	 ? dynamic_cast<octave_value *> (new octave_cs_list (c))
+	 : dynamic_cast<octave_value *> (new octave_cell (c)))
 {
-  if (is_csl)
-    rep = new octave_cs_list (c);
-  else
-    rep = new octave_cell (c);
-
   rep->count = 1;
 }
 
 octave_value::octave_value (const ArrayN<octave_value>& a, bool is_csl)
-  : rep (0)
+  : rep (is_csl
+	 ? dynamic_cast<octave_value *> (new octave_cs_list (Cell (a)))
+	 : dynamic_cast<octave_value *> (new octave_cell (Cell (a))))
 {
-  Cell c (a);
-
-  if (is_csl)
-    rep = new octave_cs_list (c);
-  else
-    rep = new octave_cell (c);
-
   rep->count = 1;
 }
 
@@ -779,13 +771,10 @@ octave_value::octave_value (const streamoff_array& off)
 }
 
 octave_value::octave_value (const octave_value_list& l, bool is_csl)
-  : rep (0)
+  : rep (is_csl
+	 ? dynamic_cast<octave_value *> (new octave_cs_list (l))
+	 : dynamic_cast<octave_value *> (new octave_list (l)))
 {
-  if (is_csl)
-    rep = new octave_cs_list (l);
-  else
-    rep = new octave_list (l);
-
   rep->count = 1;
 }
 
@@ -815,10 +804,7 @@ octave_value::~octave_value (void)
 #endif
 
   if (rep && --rep->count == 0)
-    {
-      delete rep;
-      rep = 0;
-    }
+    delete rep;
 }
 
 octave_value *

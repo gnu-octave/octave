@@ -80,7 +80,7 @@
 ## @item t
 ## sampling time; required if @var{sys} is purely continuous.
 ## 
-## @strong{Note:} if the second argument is not a string, @code{c2d()}
+## @strong{Note} if the second argument is not a string, @code{c2d()}
 ## assumes that the second argument is @var{t} and performs 
 ## appropriate argument checks.
 ## @end table

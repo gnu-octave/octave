@@ -354,7 +354,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 \n\
 Note that @code{file_in_path} does not expand leading, trailing,\n\
 or doubled colons the way that @code{file_in_loadpath} does.  See\n\
-also @xref{Summary of Built-in Variables}, for an explanation of\n\
+also @xref{Function Files, LOADPATH}, for an explanation of\n\
 how colon expansion is applied to @code{LOADPATH}.\n\
 @seealso{file_in_loadpath}\n\
 @end deftypefn")

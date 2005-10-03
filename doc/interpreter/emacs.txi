@@ -458,10 +458,9 @@ to your @file{.emacs} file.  You could also swap the roles of @kbd{C-a}
 this hook.
 
 @quotation
-@strong{Note:}
-If you set your Octave prompts to something different from the defaults,
-make sure that @code{inferior-octave-prompt} matches them.
-Otherwise, @emph{nothing} will work, because Emacs will have no idea
+@strong{Note} that if you set your Octave prompts to something different
+from the defaults, make sure that @code{inferior-octave-prompt} matches
+them.  Otherwise, @emph{nothing} will work, because Emacs will not know
 when Octave is waiting for input, or done sending output.
 @end quotation
 

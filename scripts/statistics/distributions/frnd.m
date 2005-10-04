@@ -80,7 +80,7 @@ function rnd = frnd (m, n, r, c)
 
   if (isscalar (m) && isscalar (n))
     if ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
-      rnd =  f_inv (rand (sz), m, n);
+      rnd =  finv (rand (sz), m, n);
     else
       rnd = NaN * ones (sz);
     endif

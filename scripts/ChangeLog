@@ -1,3 +1,10 @@
+2005-10-04  Rafael Laboissiere  <rafael@debian.org>
+
+	* binoinv.m, chi2pdf.m, frnd.m, poissinv.m, tinv.m, trnd.m,
+	weibrnd.m: Removed calls and references to deprecated _pdf and
+	_inv functions.
+	* chi2pdf.m: Fixed typos in the documentation.
+
 2005-09-28  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/single.m: New function.

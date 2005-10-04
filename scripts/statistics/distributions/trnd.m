@@ -70,7 +70,7 @@ function rnd = trnd (n, r, c)
     if (!(n > 0) || !(n < Inf))
       rnd = NaN * ones (sz);
     elseif ((n > 0) && (n < Inf))
-      rnd = t_inv (rand (sz), n);
+      rnd = tinv (rand (sz), n);
     else
       rnd = zeros (size (n));
     endif
@@ -84,7 +84,7 @@ function rnd = trnd (n, r, c)
 
     k = find ((n > 0) & (n < Inf));
     if (any (k))
-      rnd(k) = t_inv (rand (size (k)), n(k));
+      rnd(k) = tinv (rand (size (k)), n(k));
     endif
   endif
 

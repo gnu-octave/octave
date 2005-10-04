@@ -20,26 +20,26 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} chisquare_pdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the chisquare distribution with @var{k} degrees
+## (PDF) at @var{x} of the chisquare distribution with @var{n} degrees
 ## of freedom.
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
-## Description: PDF of the chi-sqaure distribution
+## Description: PDF of the chi-square distribution
 
-function pdf = chisquare_pdf (x, n)
+function pdf = chi2pdf (x, n)
 
   if (nargin != 2)
-    usage ("chisquare_pdf (x, n)");
+    usage ("chi2pdf (x, n)");
   endif
 
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("chisquare_pdf: x and n must be of common size or scalar");
+      error ("chi2pdf: x and n must be of common size or scalar");
     endif
   endif
 
-  pdf = gamma_pdf (x, n / 2, 1 / 2);
+  pdf = gampdf (x, n / 2, 1 / 2);
 
 endfunction

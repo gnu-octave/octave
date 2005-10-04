@@ -64,9 +64,9 @@ function inv = poissinv (x, l)
       if (any (m))
         inv(k(m)) = inv(k(m)) + 1;
 	if (isscalar (l))
-          cdf(m) = cdf(m) + poisson_pdf (inv(k(m)), l);
+          cdf(m) = cdf(m) + poisspdf (inv(k(m)), l);
 	else
-          cdf(m) = cdf(m) + poisson_pdf (inv(k(m)), l(k(m)));
+          cdf(m) = cdf(m) + poisspdf (inv(k(m)), l(k(m)));
 	endif
       else
         break;

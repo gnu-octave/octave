@@ -63,7 +63,7 @@ function inv = binoinv (x, n, p)
 	endif
       endwhile
     else 
-      cdf = binomial_pdf (0, n(k), p(k));
+      cdf = binopdf (0, n(k), p(k));
       while (any (inv(k) < n(k)))
 	m = find (cdf < x(k));
 	if (any (m))

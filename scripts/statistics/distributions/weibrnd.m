@@ -55,7 +55,7 @@ function rnd = weibrnd (shape, scale, r, c)
     if (any (size (scale) != 1) && 
 	((length (size (scale)) != length (sz)) ||
 	 any (size (scale) != sz)))
-      error ("weilbull_rnd: shape and scale must be scalar or of size [r, c]");
+      error ("weibrnd: shape and scale must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))

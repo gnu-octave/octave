@@ -225,7 +225,7 @@ of @math{(A - s B)}.\n\
 @item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}\n\
 \n\
 Computes qz decomposition, generalized eigenvectors, and \n\
-        generalized eigenvalues of @math{(A - sB)}\n\
+generalized eigenvalues of @math{(A - sB)}\n\
 @iftex\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\
@@ -236,9 +236,11 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @ifinfo\n\
 @example\n\
 @group\n\
-        A*V = B*V*diag(lambda)\n\
-        W'*A = diag(lambda)*W'*B\n\
-        AA = Q'*A*Z, BB = Q'*B*Z\n\
+\n\
+    A*V = B*V*diag(lambda)\n\
+    W'*A = diag(lambda)*W'*B\n\
+    AA = Q'*A*Z, BB = Q'*B*Z\n\
+\n\
 @end group\n\
 @end example\n\
 @end ifinfo\n\
@@ -247,36 +249,36 @@ with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 @item @code{[AA,BB,Z@{, lambda@}] = qz(A,B,opt)}\n\
 \n\
 As in form [2], but allows ordering of generalized eigenpairs\n\
-        for (e.g.) solution of discrete time algebraic Riccati equations.\n\
-        Form 3 is not available for complex matrices, and does not compute\n\
-        the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
+for (e.g.) solution of discrete time algebraic Riccati equations.\n\
+Form 3 is not available for complex matrices, and does not compute\n\
+the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
 @table @var\n\
 @item opt\n\
- for ordering eigenvalues of the GEP pencil.  The leading  block\n\
-             of the revised pencil contains all eigenvalues that satisfy:\n\
+for ordering eigenvalues of the GEP pencil.  The leading  block\n\
+of the revised pencil contains all eigenvalues that satisfy:\n\
 @table @code\n\
 @item \"N\"\n\
- = unordered (default) \n\
+= unordered (default) \n\
 \n\
 @item \"S\"\n\
 = small: leading block has all |lambda| <=1 \n\
 \n\
 @item \"B\"\n\
- = big: leading block has all |lambda >= 1 \n\
+= big: leading block has all |lambda| >= 1 \n\
 \n\
 @item \"-\"\n\
- = negative real part: leading  block has all eigenvalues\n\
-                  in the open left half-plant\n\
+= negative real part: leading block has all eigenvalues\n\
+in the open left half-plane\n\
 \n\
 @item \"+\"\n\
- = nonnegative real part:  leading block has all eigenvalues\n\
-                  in the closed right half-plane\n\
+= nonnegative real part: leading block has all eigenvalues\n\
+in the closed right half-plane\n\
 @end  table\n\
 @end table\n\
 @end enumerate\n\
 \n\
 Note: qz performs permutation balancing, but not scaling (see balance).\n\
-      Order of output arguments was selected for compatibility with MATLAB\n\
+Order of output arguments was selected for compatibility with MATLAB\n\
 \n\
 @seealso{balance, dare, eig, schur}\n\
 @end deftypefn")

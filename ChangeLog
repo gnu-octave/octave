@@ -1,3 +1,7 @@
+2005-10-05  David Bateman  <dbateman@free.fr>
+
+	 mkoctfile.in: allow -idirafter argument.
+
 2005-09-23  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (install install-strip):

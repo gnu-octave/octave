@@ -557,7 +557,11 @@ try_info (const std::string& nm)
 
   OSSTREAM cmd_buf;
 
+#if __MINGW32__
+  cmd_buf << Vinfo_prog << " --file \"" << Vinfo_file << "\"";
+#else
   cmd_buf << "\"" << Vinfo_prog << "\" --file \"" << Vinfo_file << "\"";
+#endif
 
   std::string directory_name = Vinfo_file;
   size_t pos = directory_name.rfind ('/');

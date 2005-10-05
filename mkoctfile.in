@@ -132,6 +132,8 @@ Options:
 
   -IDIR                   Add -IDIR to compile commands.
 
+  -idirafter DIR          Add -idirafter DIR to compile commands.
+
   -DDEF                   Add -DDEF to compile commands.
 
   -lLIB                   Add library LIB to link command.
@@ -193,6 +195,14 @@ EOF
     ;;
     -I*)
       incflags="$incflags $1"
+    ;;
+    -idirafter)
+      shift
+      if [ $# -gt 0 ]; then
+        incflags="$incflags -idirafter $1"
+      else
+        echo "mkoctfile: include directory name misisng name missing" 1>&2
+      fi
     ;;
     -D*)
       defs="$defs $1"

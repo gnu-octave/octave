@@ -1,3 +1,7 @@
+2005-10-05  David Bateman  <dbateman@free.fr>
+
+	* help.cc (try_info): format in command string for mingw.
+
 2005-09-30  John W. Eaton  <jwe@octave.org>
 
 	* ov.cc (octave_value::~octave_value): No need to set rep to zero

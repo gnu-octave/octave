@@ -828,12 +828,17 @@ symbol_exist (const std::string& name, const std::string& type)
     {
       if (! retval)
 	{
-	  string_vector names (2);
+	  std::string file_name = lookup_autoload (name);
 
-	  names(0) = name + ".oct";
-	  names(1) = name + ".m";
+	  if (file_name.empty ())
+	    {
+	      string_vector names (2);
 
-	  std::string file_name = Vload_path_dir_path.find_first_of (names);
+	      names(0) = name + ".oct";
+	      names(1) = name + ".m";
+
+	      file_name = Vload_path_dir_path.find_first_of (names);
+	    }
 
 	  size_t len = file_name.length ();
 

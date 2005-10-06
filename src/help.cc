@@ -849,21 +849,13 @@ help_from_file (std::ostream& os, const std::string& nm, bool& symbol_found)
 {
   bool retval = false;
 
-  std::string file = fcn_file_in_path (nm);
+  std::string h = get_help_from_file (nm, symbol_found, true);
 
-  if (file.length () > 0)
+  if (h.length () > 0)
     {
-      symbol_found = true;
-
-      std::string h = get_help_from_file (file);
-
-      if (h.length () > 0)
-	{
-	  os << nm << " is the file: " << file << "\n\n";
-	  display_help_text (os, h);
-	  os << "\n";
-	  retval = true;
-	}
+      display_help_text (os, h);
+      os << "\n";
+      retval = true;
     }
 
   return retval;
@@ -1715,7 +1707,10 @@ to find related functions that are not part of octave.\n\
 		      if (file_name == dirs[i] + tmp(0)
 			  || file_name == dirs[i] + tmp(1))
 			{
-			  std::string h = get_help_from_file (file_name);
+			  bool symbol_found;
+
+			  std::string h
+			    = get_help_from_file (file_name, symbol_found);
 
 			  std::string s;
 			  if (first_sentence_only)

@@ -39,6 +39,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cstdlib>
 #endif
 
+#include <map>
+
 #include "Cell.h"
 #include "Matrix.h"
 #include "cmd-edit.h"
@@ -145,6 +147,12 @@ std::stack<symbol_table*> symtab_context;
 // Name of parent function when parsing function files that might
 // contain nested functions.
 std::string parent_function_name;
+
+// TRUE means we are in the process of autoloading a function.
+static bool autoloading = false;
+
+// List of autoloads (function -> file mapping).
+static std::map<std::string, std::string> autoload_map;
 
 // Forward declarations for some functions defined at the bottom of
 // the file.
@@ -2510,9 +2518,9 @@ frob_function (const std::string& fname, octave_user_function *fcn)
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
 
-  if (reading_fcn_file)
+  if (reading_fcn_file || autoloading)
     {
-      if (! lexer_flags.parsing_nested_function
+      if (! (lexer_flags.parsing_nested_function || autoloading)
           && curr_fcn_file_name != id_name)
 	{
 	  if (Vwarn_function_name_clash)
@@ -3167,19 +3175,27 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 }
 
 std::string
-get_help_from_file (const std::string& path)
+get_help_from_file (const std::string& nm, bool& symbol_found,
+		    bool include_file_info)
 {
   std::string retval;
 
-  if (! path.empty ())
+  std::string file = fcn_file_in_path (nm);
+
+  if (! file.empty ())
     {
-      FILE *fptr = fopen (path.c_str (), "r");
+      symbol_found = true;
+
+      FILE *fptr = fopen (file.c_str (), "r");
 
       if (fptr)
 	{
 	  unwind_protect::add (safe_fclose, (void *) fptr);
 
 	  retval = gobble_leading_white_space (fptr, true, true, false);
+
+	  if (! retval.empty () && include_file_info)
+	    retval = nm + " is the file: " + file + "\n\n" + retval;
 
 	  unwind_protect::run ();
 	}
@@ -3355,9 +3371,19 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
   return script_file_executed;
 }
 
+std::string
+lookup_autoload (const std::string& nm)
+{
+  return
+    octave_env::make_absolute (Vload_path_dir_path.find (autoload_map[nm]),
+			       octave_env::getcwd ());
+}
+
 bool
 load_fcn_from_file (const std::string& nm, bool exec_script)
 {
+  unwind_protect::begin_frame ("load_fcn_from_file");
+
   bool script_file_executed = false;
 
   string_vector names (2);
@@ -3374,12 +3400,23 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
     }
   else
     {
-      names[0] = nm + ".oct";
-      names[1] = nm + ".m";
+      file = lookup_autoload (nm);
 
-      file
-	= octave_env::make_absolute (Vload_path_dir_path.find_first_of (names),
-				     octave_env::getcwd ());
+      if (! file.empty ())
+	{
+	  unwind_protect_bool (autoloading);
+
+	  autoloading = true;
+	  exec_script = true;
+	}
+      else
+	{
+	  names[0] = nm + ".oct";
+	  names[1] = nm + ".m";
+
+	  file = octave_env::make_absolute (Vload_path_dir_path.find_first_of (names),
+					    octave_env::getcwd ());
+	}
     }
 
   int len = file.length ();
@@ -3393,21 +3430,27 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
     {
       // These are needed by yyparse.
 
-      unwind_protect::begin_frame ("load_fcn_from_file");
-
       unwind_protect_str (curr_fcn_file_name);
       unwind_protect_str (curr_fcn_file_full_name);
 
       curr_fcn_file_name = nm;
       curr_fcn_file_full_name = file;
 
-      script_file_executed = parse_fcn_file (file, exec_script);
+      script_file_executed = parse_fcn_file (file, exec_script, autoloading);
 
-      if (! (error_state || script_file_executed))
-	force_link_to_function (nm);
-
-      unwind_protect::run_frame ("load_fcn_from_file");
+      if (! error_state)
+	{
+	  if (autoloading)
+	    {
+	      script_file_executed = false;
+	      force_link_to_function (nm);
+	    }
+	  else if (! script_file_executed)
+	    force_link_to_function (nm);
+	}
     }
+
+  unwind_protect::run_frame ("load_fcn_from_file");
 
   return script_file_executed;
 }
@@ -3416,6 +3459,29 @@ bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 {
   return load_fcn_from_file (sym_rec->name (), exec_script);
+}
+
+DEFCMD (autoload, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
+Define @var{function} to autoload from @var{file}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      string_vector argv = args.make_argv ("autoload");
+
+      if (! error_state)
+	autoload_map[argv[1]] = argv[2];
+    }
+  else
+    print_usage ("autoload");
+
+  return retval;
 }
 
 void

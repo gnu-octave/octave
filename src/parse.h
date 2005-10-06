@@ -92,7 +92,11 @@ extern void
 parse_and_execute (const std::string& s, bool verbose = false,
 		   const char *warn_for = 0);
 
-extern std::string get_help_from_file (const std::string& f);
+extern std::string
+get_help_from_file (const std::string& nm, bool& symbol_found,
+		    bool include_file_info = false);
+
+extern std::string lookup_autoload (const std::string& nm);
 
 extern bool
 load_fcn_from_file (const std::string& nm, bool exec_script);

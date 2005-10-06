@@ -1,3 +1,14 @@
+2005-10-05  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_exist): Chekck for autoloaded functions.
+
+	* parse.y (Fautoload): New function.
+	(autoloading, autoload_map): New static variables.
+	(load_fcn_from_file, frob_function): Handle autoloading.
+	(lookup_autoload): New function.
+	(get_help_from_file): New args, symbol_found and include_file_info.
+	Change all callers.
+
 2005-10-05  David Bateman  <dbateman@free.fr>
 
 	* help.cc (try_info): format in command string for mingw.

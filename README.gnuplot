@@ -1,13 +1,20 @@
-Octave works best with recent beta releases of gnuplot 3.6, which are
-available from ftp://cmpc1.phys.soton.ac.uk.
+Octave works best with recent beta releases of gnuplot 4.0, which are
+available from http://www.gnuplot.info.
 
-Among other things, gnuplot 3.6beta supports unlimited length input
-lines, multiple plots within a single window, and multiple plot
-windows.
+Hint: Under X11, please put
+
+  set mouse
+
+into your $HOME/.gnuplot file so that you may manipulate the plot
+window using the mouse (see the gnuplot FAQ for more details).
+
+Note that this is not necessary for the current development version of
+gnuplot 4.1.
+
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Thu Jan 29 03:19:27 1998
+Mon Oct 10 15:25:03 2005

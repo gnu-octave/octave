@@ -236,7 +236,7 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
 static std::string Vgnuplot_binary;
 
 // Append -title "Figure NN" to the gnuplot command?
-static bool Vgnuplot_use_title_option;
+static bool Vgnuplot_use_title_option = octave_env::have_x11_display ();
 
 // Gnuplot command strings that we use.
 static std::string Vgnuplot_command_plot;

@@ -60,6 +60,8 @@ public:
 
   static void putenv (const std::string& name, const std::string& value);
 
+  static bool have_x11_display (void);
+
   static bool chdir (const std::string& newdir);
 
   static void set_program_name (const std::string& s);

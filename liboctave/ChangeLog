@@ -1,3 +1,8 @@
+2005-10-12  John W. Eaton  <jwe@octave.org>
+
+	* oct-env.cc (octave_env::have_x11_display): New function.
+	* oct-env.h: Provide decl.
+
 2005-09-29  John W. Eaton  <jwe@octave.org>
 
 	* file-stat.h (file_stat::mode): New function.

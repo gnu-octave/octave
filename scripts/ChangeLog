@@ -1,3 +1,7 @@
+2005-10-12  John W. Eaton  <jwe@octave.org>
+
+	* plot/figure.m: Handle __current_figure__, not gnuplot details.
+
 2005-10-04  Rafael Laboissiere  <rafael@debian.org>
 
 	* binoinv.m, chi2pdf.m, frnd.m, poissinv.m, tinv.m, trnd.m,

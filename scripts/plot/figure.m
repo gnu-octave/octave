@@ -40,24 +40,13 @@ function f = figure (n)
     f = n;
   endif
 
-  __current_figure__ = f;
-
   if (nargin < 2)
-    if (gnuplot_has_frames)
-      gnuterm = getenv ("GNUTERM");
-      if (isempty (gnuterm) && ! isempty ("DISPLAY"))
-	gnuterm = "x11";
-      endif
-      if (! isempty (gnuterm))
-        oneplot ();
-        figure_list = union (figure_list, f);
-        eval (sprintf ("__gnuplot_set__ term %s %d;\n", gnuterm, f));
-      else
-        error ("figure: requires GNUTERM (Aqua) or DISPLAY (X11)");
-      endif
+    if (isnumeric (f) && f > 0 && round (f) == f)
+      __current_figure__ = f;
     else
-      error ("figure: gnuplot doesn't appear to support this feature");
+      error ("figure: expecting positive integer");
     endif
+    figure_list = union (figure_list, f);
   elseif (rem (nargin, 2) == 0)
     if (! figure_called)
       figure_called = 1;

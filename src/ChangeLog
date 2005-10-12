@@ -1,3 +1,11 @@
+2005-10-12  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l: Major cleanup.
+	Built-in variable gnuplot_has_frames no longer necessary.
+	(gnuplot): New class to manage multiple gnuplot processes.
+	(handle_string): Delete.  It was only used for the case of
+	__gnuplot_plot__ "file", which is no longer allowed.
+
 2005-10-05  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_exist): Chekck for autoloaded functions.

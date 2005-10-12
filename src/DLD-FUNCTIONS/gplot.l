@@ -26,6 +26,7 @@
 #include <config.h>
 #endif
 
+#include <map>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -38,6 +39,7 @@
 #endif
 
 #include "file-ops.h"
+#include "oct-env.h"
 
 #include "defun-dld.h"
 #include "file-io.h"
@@ -86,24 +88,15 @@ public:
   std::string msg;
 };
 
-static int is_plot_keyword (const std::string& s);
-
-static int handle_string (char delim);
-
-static inline bool can_be_plotkw (void);
-
-static void gnuplot_init (void);
-
 static bool gpt_quote_is_transpose;
 static bool gpt_allow_plotkw;
 static int gpt_parens;
 static int gpt_brackets;
 static int gpt_braces;
 
-static int send_to_plot_stream (const std::string& cmd);
+static bool can_be_plotkw (void);
 
-// needed by handle_string
-static char string_buf[256];
+static int is_plot_keyword (const std::string& s);
 
 %}
 
@@ -181,16 +174,13 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
       {
         gpt_quote_is_transpose = true;
         gpt_allow_plotkw = true;
-        return handle_string ('\'');
+        warning ("unknown token = \"%s\" in plot command", yytext);
+        return OTHER;
       }
     }
 
-"\"" {
-    return handle_string ('"');
-    }
-
 {IDENT} {
-    int itok;
+    int itok = 0;
     if (can_be_plotkw () && (itok = is_plot_keyword (yytext)))
       {
         gpt_quote_is_transpose = false;
@@ -198,9 +188,7 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
         return itok;
       }
     else if (std::string (yytext) == "function")
-      {
-        throw gpt_parse_error ("The 'function' keyword is not allowed in plot commands.");
-      }
+      throw gpt_parse_error ("function keyword not allowed in plot commands");
     else
       {
         gpt_quote_is_transpose = true;
@@ -239,27 +227,16 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
 
 %%
 
-// If TRUE, a replot command is issued automatically each time a plot
-// changes in some way.
-static bool Vautomatic_replot;
+// ------------------------------------------------------------
+// Interface to external gnuplot process(es), including gnuplot
+// command parser.
+// ------------------------------------------------------------
 
 // The name of the shell command to execute to start gnuplot.
 static std::string Vgnuplot_binary;
 
-// TRUE if gnuplot appears to support multiple plot windows with X11.
-static bool Vgnuplot_has_frames;
-
-// The number of lines we've plotted so far.
-static int plot_line_count = 0;
-
-// Is this a parametric plot?  Makes a difference for 3D plotting.
-static bool parametric_plot = false;
-
-// The gnuplot terminal type.
-static std::string gnuplot_terminal_type;
-
-// Pipe to gnuplot.
-static oprocstream *plot_stream = 0;
+// Append -title "Figure NN" to the gnuplot command?
+static bool Vgnuplot_use_title_option;
 
 // Gnuplot command strings that we use.
 static std::string Vgnuplot_command_plot;
@@ -271,186 +248,13 @@ static std::string Vgnuplot_command_axes;
 static std::string Vgnuplot_command_title;
 static std::string Vgnuplot_command_end;
 
-// (almost) copy-paste code from pt-plot.cc
-
-static std::string
-save_in_tmp_file (const octave_value& t, int ndim = 2, bool parametric = false)
-{
-  std::string name = file_ops::tempnam ("", "oct-");
-
-  if (! name.empty ())
-    {
-      std::ofstream file (name.c_str ());
-
-      if (file)
-	{
-	  switch (ndim)
-	    {
-	    case 2:
-	      save_ascii_data_for_plotting (file, t, name);
-	      break;
-
-	    case 3:
-	      save_three_d (file, t, parametric);
-	      break;
-
-	    default:
-	      gripe_2_or_3_dim_plot ();
-	      break;
-	    }
-	}
-      else
-	{
-	  error ("couldn't open temporary output file `%s'", name.c_str ());
-	  name.resize (0);
-	}
-    }
-
-  return name;
-}
-
-static void
-close_plot_stream (bool remove_from_child_list = true)
-{
-  if (plot_stream)
-    {
-      if (remove_from_child_list)
-	octave_child_list::remove (plot_stream->pid ());
-
-      send_to_plot_stream ("\nquit\n");
-
-      delete plot_stream;
-      plot_stream = 0;
-    }
-
-  plot_line_count = 0;
-}
-
-static bool
-plot_stream_event_handler (pid_t pid, int status)
-{
-  bool retval = false;
-
-  if (pid > 0)
-    {
-      if (WIFEXITED (status) || WIFSIGNALLED (status))
-	{
-	  close_plot_stream (false);
-
-	  warning ("connection to external plotter (pid = %d) lost --", pid);
-	  warning ("please try your plot command(s) again");
-
-	  // Request removal of this PID from the list of child
-	  // processes.
-
-	  retval = true;
-	}
-    }
-
-  return retval;
-}
-
-static void
-open_plot_stream (void)
-{
-  static bool initialized = false;
-
-  if (plot_stream && ! *plot_stream)
-    {
-      delete plot_stream;
-      plot_stream = 0;
-    }
-
-  if (! plot_stream)
-    {
-      initialized = false;
-
-      plot_line_count = 0;
-
-      std::string plot_prog;
-
-      if (Vgnuplot_binary.empty ())
-	plot_prog = "gnuplot";
-      else
-        plot_prog = "\"" + Vgnuplot_binary + "\"";
-
-      // XXX FIXME XXX -- I'm not sure this is the right thing to do,
-      // but without it, C-c at the octave prompt will kill gnuplot...
-
-#if defined (HAVE_POSIX_SIGNALS)
-      sigset_t set, oset;
-      sigemptyset (&set);
-      sigaddset (&set, SIGINT);
-      sigprocmask (SIG_BLOCK, &set, &oset);
-#else
-     volatile octave_interrupt_handler old_interrupt_handler
-	= octave_ignore_interrupts ();
-#endif
-
-      plot_stream = new oprocstream (plot_prog.c_str ());
-
-      if (plot_stream)
-	{
-	  if (! *plot_stream)
-	    {
-	      delete plot_stream;
-	      plot_stream = 0;
-
-	      error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());
-	    }
-	  else
-    	    octave_child_list::insert (plot_stream->pid (),
-				       plot_stream_event_handler);
-	}
-      else
-	error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());
-
-#if defined (HAVE_POSIX_SIGNALS)
-      sigprocmask (SIG_SETMASK, &oset, 0);
-#else
-      octave_set_interrupt_handler (old_interrupt_handler);
-#endif
-    }
-
-  if (! error_state && plot_stream && *plot_stream && ! initialized)
-    {
-      initialized = true;
-
-      *plot_stream << "set style data lines\n";
-
-      if (! gnuplot_terminal_type.empty ())
-	*plot_stream << "set term " << gnuplot_terminal_type
-		     << Vgnuplot_command_end << "\n";
-    }
-}
-
-static int
-send_to_plot_stream (const std::string& cmd)
-{
-  if (! (plot_stream && *plot_stream))
-    {
-      open_plot_stream ();
-
-      if (error_state)
-	return -1;
-    }
-
-  int replot_len = Vgnuplot_command_replot.length ();
-
-  bool is_replot = (Vgnuplot_command_replot == cmd.substr (0, replot_len));
-
-  if (! (plot_line_count == 0 && is_replot))
-    {
-      *plot_stream << cmd;
-
-      plot_stream->flush ();
-    }
-
-  return 0;
-}
+// If TRUE, a replot command is issued automatically each time a plot
+// changes in some way.
+static bool Vautomatic_replot;
 
 // Check if the parser state is such that a plot keyword can occur.
-static inline bool
+
+static bool
 can_be_plotkw (void)
 {
     return (gpt_allow_plotkw
@@ -459,8 +263,98 @@ can_be_plotkw (void)
 	    && (gpt_parens == 0));
 }
 
+// Check to see if a character string matches any one of the plot
+// option keywords.  Don't match abbreviations for clear, since that's
+// not a gnuplot keyword (users will probably only expect to be able
+// to abbreviate actual gnuplot keywords).
+
+static int
+is_plot_keyword (const std::string& s)
+{
+  if (almost_match ("title", s, 1))
+    return TITLE;
+  else if (almost_match ("using", s, 1))
+    return USING;
+  else if (almost_match ("with", s, 1))
+    return WITH;
+  else if (almost_match ("axes", s, 2) || almost_match ("axis", s, 2))
+    return AXES;
+  else if ("clear" == s)
+    return CLEAR;
+  else
+    return 0;
+}
+
+// This is used to handle single-quote delimited strings.  Kludge alert.
+
+static int
+handle_string (char delim)
+{
+  static char *buf = 0;
+
+  int c;
+  bool escape_pending = false;
+
+  std::string strbuf (1, static_cast<char> (delim));
+
+  while ((c = yyinput ()) != EOF)
+    {
+      if (c == '\\')
+	{
+	  if (escape_pending)
+	    {
+	      strbuf += static_cast<char> (c);
+	      escape_pending = false;
+	    }
+	  else
+	    {
+		strbuf += static_cast<char> (c);
+		escape_pending = true;
+	    }
+	  continue;
+	}
+      else if (c == '\n')
+	{
+	  error ("unterminated string constant");
+	  break;
+	}
+      else if (c == delim)
+	{
+	  if (escape_pending)
+	    strbuf += static_cast<char> (c);
+	  else
+	    {
+	      c = yyinput ();
+
+	      if (c == delim)
+		{
+		  strbuf += static_cast<char> (c);
+		  strbuf += static_cast<char> (c);
+		}
+	      else
+		{
+		  yyunput (c, yytext);
+		  strbuf += static_cast<char> (delim);
+		  delete [] buf;
+		  yytext = strsave (strbuf.c_str ());
+		  return STRING;
+		}
+	    }
+	}
+      else
+	strbuf += static_cast<char> (c);
+
+      escape_pending = false;
+    }
+
+  throw gpt_parse_error ("unterminated string");
+
+  return 0;
+}
+
 // (Probably not necessesary, but current Matlab style plot functions
 // break without this (they emit too short gnuplot commands))
+
 static std::string
 plot_style_token (const std::string& s)
 {
@@ -505,124 +399,27 @@ plot_style_token (const std::string& s)
   return retval;
 }
 
-// This is used to handle single-quote delimited strings. Kludge alert.
-static int
-handle_string (char delim)
-{
-  int c;
-  char *pos = string_buf;
-  int escape_pending = 0;
-
-  *pos++ = static_cast<char> (delim);
-  while ((c = yyinput ()) != EOF)
-    {
-      if (c == '\\')
-	{
-	  if (escape_pending)
-	    {
-	      *pos++ = static_cast<char> (c);
-	      escape_pending = 0;
-	    }
-	  else
-	    {
-		*pos++ = static_cast<char> (c);
-		escape_pending = 1;
-	    }
-	  continue;
-	}
-      else if (c == '\n')
-	{
-	  error ("unterminated string constant");
-	  break;
-	}
-      else if (c == delim)
-	{
-	  if (escape_pending)
-	    *pos++ = static_cast<char> (c);
-	  else
-	    {
-	      c = yyinput ();
-	      if (c == delim)
-		{
-		  *pos++ = static_cast<char> (c);
-		  *pos++ = static_cast<char> (c);
-		}
-	      else
-		{
-		  yyunput (c, yytext);
-		  *pos++ = static_cast<char> (delim);
-		  *pos++ = '\0';
-		  yytext = string_buf;
-		  return STRING;
-		}
-	    }
-	}
-      else
-	{
-	  *pos++ = static_cast<char> (c);
-	}
-
-      escape_pending = 0;
-    }
-
-  throw gpt_parse_error ("Unterminated string?");
-
-  return 0;
-}
-
-// Check to see if a character string matches any one of the plot
-// option keywords.  Don't match abbreviations for clear, since that's
-// not a gnuplot keyword (users will probably only expect to be able
-// to abbreviate actual gnuplot keywords).
-
-static int
-is_plot_keyword (const std::string& s)
-{
-  const char *t = s.c_str ();
-  if (almost_match ("title", t, 1))
-    {
-      return TITLE;
-    }
-  else if (almost_match ("using", t, 1))
-    {
-      return USING;
-    }
-  else if (almost_match ("with", t, 1))
-    {
-      return WITH;
-    }
-  else if (almost_match ("axes", t, 2) || almost_match ("axis", t, 2))
-    {
-      return AXES;
-    }
-  else if (strcmp ("clear", t) == 0)
-    {
-      return CLEAR;
-    }
-  else
-    {
-      return 0;
-    }
-}
-
 // Some predicates on tokens
 
 // Return true for ":".
-static inline bool
+
+static bool
 colonp (const int tok)
 {
   return (tok == COLON);
 }
 
 // Return TRUE for "]".
-static inline bool
+
+static bool
 endbracketp (const int tok)
 {
   return (tok == END_BRACKET);
 }
 
 // Return TRUE for plot token, comma or end of input.
-static inline bool
+
+static bool
 plottok_or_end_p (const int tok)
 {
   return (tok == TITLE
@@ -635,7 +432,8 @@ plottok_or_end_p (const int tok)
 }
 
 // Equivalent to (colonp (tok) || plottok_or_end_p (tok)).
-static inline bool
+
+static bool
 colon_plottok_or_end_p (const int tok)
 {
   return (tok == COLON || plottok_or_end_p (tok));
@@ -643,6 +441,7 @@ colon_plottok_or_end_p (const int tok)
 
 // read until test is true and delimiters are balanced, or end of input.
 // Return the last token in lasttok
+
 static std::string
 read_until (pred test, int& lasttok) throw (gpt_parse_error)
 {
@@ -708,6 +507,7 @@ read_until (pred test, int& lasttok) throw (gpt_parse_error)
 }
 
 // Eval the two expressions giving limits of range and print it.
+
 static std::string
 printrange (std::string starts, std::string ends)
 {
@@ -746,45 +546,9 @@ printrange (std::string starts, std::string ends)
 
 // Handle plot parameters.
 
-// Title has one string expression which is evaluated and printed to the
-// gnuplot command string.
-static std::string
-handle_title (int& lasttok)
-{
-  int tok;
-  std::string retstr = Vgnuplot_command_title + " ";
-  std::string title_expr_str;
-
-  title_expr_str += read_until (plottok_or_end_p, tok);
-
-  int status;
-  octave_value tmp_data = eval_string (title_expr_str, true, status);
-
-  if (status != 0 || ! tmp_data.is_defined ())
-    throw gpt_parse_error ();
-
-  OSSTREAM tmp_buf;
-  if (tmp_data.is_string ())
-    {
-      tmp_buf << '"';
-      tmp_data.print_raw (tmp_buf);
-      tmp_buf << '"' << OSSTREAM_ENDS;
-    }
-  else
-    {
-      warning ("line title must be a string");
-      tmp_buf << '"' << "line " << plot_line_count << '"';
-    }
-
-  retstr += OSSTREAM_STR (tmp_buf);
-
-  lasttok = tok;
-
-  return retstr;
-}
-
 // Parse, evaluate and print colon separated expressions in the using
 // plot parameter. The use of trailing format string is not supported.
+
 static std::string
 handle_using (int& lasttok)
 {
@@ -820,6 +584,7 @@ handle_using (int& lasttok)
 }
 
 // Presently just passes the linewidth, pointtype etc. tokens as they are.
+
 static std::string
 handle_style (int& lasttok)
 {
@@ -847,16 +612,562 @@ handle_style (int& lasttok)
 }
 
 // Axes has only one qualifier keyword, which is not evaluated.
+
 static std::string
 handle_axes (int& lasttok)
 {
   return Vgnuplot_command_axes + " " + read_until (plottok_or_end_p, lasttok);
 }
 
-// Parse and evaluate parameter string and pass it to gnuplot pipe.
-static int
-makeplot (std::string caller, std::string args) throw (gpt_parse_error)
+static std::string
+save_in_tmp_file (const octave_value& t, int ndim = 2, bool parametric = false)
 {
+  std::string name = file_ops::tempnam ("", "oct-");
+
+  if (! name.empty ())
+    {
+      std::ofstream file (name.c_str ());
+
+      if (file)
+	{
+	  switch (ndim)
+	    {
+	    case 2:
+	      save_ascii_data_for_plotting (file, t, name);
+	      break;
+
+	    case 3:
+	      save_three_d (file, t, parametric);
+	      break;
+
+	    default:
+	      gripe_2_or_3_dim_plot ();
+	      break;
+	    }
+	}
+      else
+	{
+	  error ("couldn't open temporary output file `%s'", name.c_str ());
+	  name.resize (0);
+	}
+    }
+
+  return name;
+}
+
+static int
+get_current_figure (void)
+{
+  int retval = 1;
+
+  octave_value cf = get_global_value ("__current_figure__", true);
+
+  if (cf.is_defined ())
+    retval = cf.int_value ();
+  else
+    set_global_value ("__current_figure__", retval);
+
+  return retval;
+}
+
+class
+gnuplot
+{
+protected:
+
+  gnuplot (void)
+    : plot_line_count (0), parametric_plot (false), 
+      use_title_option (Vgnuplot_use_title_option),
+      gnuplot_exe (Vgnuplot_binary),
+      gnuplot_terminal_type (), plot_stream ()
+  { }
+
+public:
+
+  ~gnuplot (void) { }
+
+  static bool have_instance (void);
+
+  static bool ensure_instance (void);
+
+  static bool ensure_plot_stream (void);
+
+  static void open (void);
+
+  static void close (void);
+
+  static bool plot_stream_event_handler (pid_t pid, int status);
+
+  static void init (void)
+  {
+    if (ensure_instance ())
+      instance->do_init ();
+  }
+
+  static void send (const std::string& cmd)
+  {
+    if (ensure_plot_stream ())
+      instance->do_send (cmd);
+  }
+
+  static void send_raw (const std::string& cmd)
+  {
+    if (ensure_plot_stream ())
+      instance->do_send_raw (cmd);
+  }
+
+  static void clear (void)
+  {
+    if (ensure_plot_stream ())
+      instance->do_clear ();
+  }
+
+  static void set (const string_vector& argv)
+  {
+    if (ensure_plot_stream ())
+      instance->do_set (argv);
+  }
+
+  static void show (const string_vector& argv)
+  {
+    if (ensure_plot_stream ())
+      instance->do_show (argv);
+  }
+
+  // XXX FIXME XXX -- should only remove tmp files associated with
+  // gnuplot?
+  static void cleanup_tmp_files (void) { ::cleanup_tmp_files (); }
+
+  static void plot (const string_vector& argv)
+  {
+    if (ensure_plot_stream ())
+      instance->do_plot (argv);
+  }
+
+private:
+
+  static gnuplot *instance;
+
+  static std::map<int, gnuplot *> instance_map;
+
+  // The number of lines we've plotted so far.
+  int plot_line_count;
+
+  // Is this a parametric plot?  Makes a difference for 3D plotting.
+  bool parametric_plot;
+
+  // Should we append '-title "TITLE"' to the gnuplot command?
+  bool use_title_option;
+
+  // The executable program to run.
+  std::string gnuplot_exe;
+
+  // The gnuplot terminal type.
+  std::string gnuplot_terminal_type;
+
+  // Pipe to gnuplot.
+  oprocstream *plot_stream;
+
+  pid_t pid (void) const;
+
+  static gnuplot *lookup_by_pid (pid_t pid);
+
+  void do_open (void);
+
+  void do_close (void);
+
+  void delete_plot_stream (void);
+
+  void reset_plot_stream (void);
+
+  void do_send (const std::string& cmd);
+
+  void do_send_raw (const std::string& cmd);
+
+  void do_clear (void);
+
+  void do_set (const string_vector& argv);
+
+  void do_show (const string_vector& argv);
+
+  void do_plot (const string_vector& argv);
+
+  void do_init (void);
+
+  std::string
+  makeplot (std::string caller, std::string args) throw (gpt_parse_error);
+
+  std::string gnuplot::handle_title (int& lasttok);
+};
+
+gnuplot *gnuplot::instance = 0;
+
+std::map<int, gnuplot *> gnuplot::instance_map;
+
+bool
+gnuplot::have_instance (void)
+{
+  int current_figure = get_current_figure ();
+
+  if (instance_map.find (current_figure) != instance_map.end ())
+    {
+      instance = instance_map[current_figure];
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+gnuplot::ensure_instance (void)
+{
+  if (! have_instance ())
+    {
+      instance = new gnuplot ();
+
+      if (! instance)
+	{
+	  ::error ("unable to create gnuplot object!");
+
+	  return false;
+	}
+      else
+	instance_map[get_current_figure ()] = instance;
+    }
+
+  return true;
+}
+
+bool
+gnuplot::ensure_plot_stream (void)
+{
+  if (ensure_instance ())
+    {
+      instance->do_open ();
+
+      if (error_state)
+	return false;
+    }
+
+  return true;
+}
+
+void
+gnuplot::close (void)
+{
+  if (have_instance ())
+    {
+      instance->do_close ();
+
+      instance_map.erase (get_current_figure ());
+    }
+}
+
+pid_t
+gnuplot::pid (void) const
+{
+  return plot_stream ? plot_stream->pid () : -1;
+}
+
+gnuplot *
+gnuplot::lookup_by_pid (pid_t pid)
+{
+  gnuplot *retval = 0;
+
+  for (std::map<int, gnuplot *>::const_iterator p = instance_map.begin ();
+       p != instance_map.end ();
+       p++)
+    {
+      gnuplot *elt = p->second;
+
+      if (elt && elt->pid () == pid)
+	{
+	  retval = elt;
+	  break;
+	}
+    }
+
+  return retval;
+}
+
+void
+gnuplot::do_open (void)
+{
+  static bool initialized = false;
+
+  if (plot_stream && ! *plot_stream)
+    do_close ();
+
+  if (! plot_stream)
+    {
+      initialized = false;
+
+      plot_line_count = 0;
+
+      std::string cmd;
+
+      if (gnuplot_exe.empty ())
+	cmd = "gnuplot";
+      else
+        cmd = "\"" + gnuplot_exe + "\"";
+
+      // XXX FIXME XXX -- I'm not sure this is the right thing to do,
+      // but without it, C-c at the octave prompt will kill gnuplot...
+
+#if defined (HAVE_POSIX_SIGNALS)
+      sigset_t nset, oset;
+      sigemptyset (&nset);
+      sigaddset (&nset, SIGINT);
+      sigprocmask (SIG_BLOCK, &nset, &oset);
+#else
+      volatile octave_interrupt_handler old_interrupt_handler
+	= octave_ignore_interrupts ();
+#endif
+
+      if (use_title_option)
+	{
+	  OSSTREAM buf;
+
+	  buf << cmd
+	      << " -title \"Figure " << get_current_figure () << "\""
+	      << OSSTREAM_ENDS;
+
+	  cmd = OSSTREAM_STR (buf);
+
+	  OSSTREAM_FREEZE (buf);
+	}
+
+      plot_stream = new oprocstream (cmd.c_str ());
+
+      if (plot_stream && *plot_stream)
+	octave_child_list::insert (plot_stream->pid (),
+				   plot_stream_event_handler);
+      else
+	{
+	  delete_plot_stream ();
+
+	  error ("plot: unable to open pipe to `%s'", cmd.c_str ());
+	}
+
+#if defined (HAVE_POSIX_SIGNALS)
+      sigprocmask (SIG_SETMASK, &oset, 0);
+#else
+      octave_set_interrupt_handler (old_interrupt_handler);
+#endif
+    }
+
+  if (! error_state && plot_stream && *plot_stream && ! initialized)
+    {
+      initialized = true;
+
+      do_send_raw ("set style data lines\n");
+
+      if (! gnuplot_terminal_type.empty ())
+	do_send_raw ("set term " + gnuplot_terminal_type
+		     + Vgnuplot_command_end + "\n");
+    }
+}
+
+void
+gnuplot::delete_plot_stream (void)
+{
+  do_send_raw ("\nquit\n");
+
+  delete plot_stream;
+  plot_stream = 0;
+}
+
+void
+gnuplot::reset_plot_stream (void)
+{
+  delete_plot_stream ();
+
+  plot_line_count = 0;
+  parametric_plot = false;
+}
+
+void
+gnuplot::do_close (void)
+{
+  if (plot_stream)
+    {
+      octave_child_list::remove (plot_stream->pid ());
+
+      delete_plot_stream ();
+    }
+
+  plot_line_count = 0;
+}
+
+bool
+gnuplot::plot_stream_event_handler (pid_t pid, int status)
+{
+  bool retval = false;
+
+  if (pid > 0)
+    {
+      if (WIFEXITED (status) || WIFSIGNALLED (status))
+	{
+	  gnuplot *plotter = gnuplot::lookup_by_pid (pid);
+
+	  // We should only print a warning or request removal of the
+	  // process from the child list if the process died
+	  // unexpectedly.  If do_close is responsible for
+	  // gnuplot's death, then plotter will be 0 here and we don't
+	  // need to do anything.
+
+	  if (plotter)
+	    {
+	      plotter->reset_plot_stream ();
+
+	      warning ("connection to external plotter (pid = %d) lost --", pid);
+	      // Request removal of this PID from the list of child
+	      // processes.
+
+	      retval = true;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+void
+gnuplot::do_send (const std::string& cmd)
+{
+  int replot_len = Vgnuplot_command_replot.length ();
+
+  bool is_replot = (Vgnuplot_command_replot == cmd.substr (0, replot_len));
+
+  if (! (plot_line_count == 0 && is_replot))
+    do_send_raw (cmd);
+}
+
+void
+gnuplot::do_send_raw (const std::string& cmd)
+{
+  if (plot_stream && *plot_stream)
+    {
+      *plot_stream << cmd;
+
+      plot_stream->flush ();
+    }
+}
+
+void
+gnuplot::do_clear (void)
+{
+  do_send_raw ("clear\n");
+
+  // XXX FIXME XXX -- instead of just clearing these things, it would
+  // be nice if we could reset things to a user-specified default
+  // state.
+
+  do_send_raw ("set title\n");
+  do_send_raw ("set xlabel\n");
+  do_send_raw ("set ylabel\n");
+  do_send_raw ("set nogrid\n");
+  do_send_raw ("set nolabel\n");
+
+  // This makes a simple `replot' not work after a `clearplot' command
+  // has been issued.
+
+  plot_line_count = 0;
+}
+
+void
+gnuplot::do_set (const string_vector& argv)
+{
+  int argc = argv.length ();
+
+  OSSTREAM plot_buf;
+
+  if (argc > 1)
+    {
+      if (almost_match ("parametric", argv[1], 3))
+	parametric_plot = true;
+      else if (almost_match ("noparametric", argv[1], 5))
+	parametric_plot = false;
+      else if (almost_match ("term", argv[1], 1))
+	{
+	  gnuplot_terminal_type = "";
+	  OSSTREAM buf;
+	  int i;
+	  for (i = 2; i < argc-1; i++)
+	    buf << argv[i] << " ";
+	  if (i < argc)
+	    buf << argv[i];
+	  buf << Vgnuplot_command_end << OSSTREAM_ENDS;
+	  gnuplot_terminal_type = OSSTREAM_STR (buf);
+	  OSSTREAM_FREEZE (buf);
+	}
+    }
+
+  int i;
+  for (i = 0; i < argc-1; i++)
+    plot_buf << argv[i] << " ";
+
+  if (i < argc)
+    plot_buf << argv[i];
+
+  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
+
+  do_send_raw (OSSTREAM_STR (plot_buf));
+
+  OSSTREAM_FREEZE (plot_buf);
+}
+
+void
+gnuplot::do_show (const string_vector& argv)
+{
+  int argc = argv.length ();
+
+  OSSTREAM plot_buf;
+
+  int i;
+  for (i = 0; i < argc-1; i++)
+    plot_buf << argv[i] << " ";
+  if (i < argc)
+    plot_buf << argv[i];
+
+  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
+
+  do_send (OSSTREAM_STR (plot_buf));
+
+  OSSTREAM_FREEZE (plot_buf);
+}
+
+void
+gnuplot::do_plot (const string_vector& argv)
+{
+  std::string s;
+
+  for (int i = 1; i < argv.length (); i++)
+    s += argv[i] + " ";
+
+  try
+    {
+      std::string cmd = makeplot (argv[0], s);
+
+      do_send (cmd);
+    }
+  catch (gpt_parse_error& e)
+    {
+      if (e.msg.empty ())
+	error ("could not parse plot command");
+      else
+	error (e.msg.c_str ());
+    }
+}
+
+// Parse and evaluate parameter string and pass it to gnuplot pipe.
+
+std::string
+gnuplot::makeplot (std::string caller, std::string args)
+  throw (gpt_parse_error)
+{
+  std::string retval;
+
   YY_BUFFER_STATE bstate;
 
   bstate = yy_scan_string (args.c_str ());
@@ -928,68 +1239,57 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
         }
 
       if (plottok_or_end_p (tok))
-	return 1;
+	return std::string ();
       else
 	{
 	  std::string file;
 	  plot_line_count++;
 
-	  if (tok == STRING)
+	  std::string plot_expr_str;
+	  plot_expr_str += std::string (yytext) + " ";
+	  plot_expr_str += read_until (plottok_or_end_p, tok);
+
+	  int status = 0;
+	  octave_value tmp_data = eval_string (plot_expr_str,
+					       true, status);
+
+	  if (status != 0 || ! tmp_data.is_defined ())
+	    throw gpt_parse_error ();
+
+	  OSSTREAM tmp_buf;
+	  tmp_data.print_raw (tmp_buf);
+	  tmp_buf << OSSTREAM_ENDS;
+
+	  if (tmp_data.is_string ())
 	    {
-	      file = file_ops::tilde_expand (std::string (yytext));
+	      file = file_ops::tilde_expand (tmp_data.string_value ());
 	      // XXX FIXME XXX -- perhaps should check if the file exists?
 	      outstr += file + " ";
-	      // Discard junk after the string.
-	      read_until (plottok_or_end_p, tok);
-            }
+	    }
 	  else
 	    {
-	      std::string plot_expr_str;
-	      plot_expr_str += std::string (yytext) + " ";
-	      plot_expr_str += read_until (plottok_or_end_p, tok);
-
-	      int status = 0;
-	      octave_value tmp_data = eval_string (plot_expr_str,
-						   true, status);
-
-	      if (status != 0 || ! tmp_data.is_defined ())
-		throw gpt_parse_error ();
-
-	      OSSTREAM tmp_buf;
-	      tmp_data.print_raw (tmp_buf);
-	      tmp_buf << OSSTREAM_ENDS;
-
-	      if (tmp_data.is_string ())
+	      switch (ndim)
 		{
-		  file = file_ops::tilde_expand (tmp_data.string_value ());
-		  // XXX FIXME XXX -- perhaps should check if the file exists?
-		  outstr += file + " ";
+		case 2:
+		  file = save_in_tmp_file (tmp_data, ndim);
+		  break;
+
+		case 3:
+		  file = save_in_tmp_file (tmp_data, ndim,
+					   parametric_plot);
+		  break;
+
+		default:
+		  gripe_2_or_3_dim_plot ();
+		  break;
 		}
-	      else
+
+	      if (file.length () > 0)
 		{
-		  switch (ndim)
-		    {
-		    case 2:
-		      file = save_in_tmp_file (tmp_data, ndim);
-		      break;
-
-		    case 3:
-		      file = save_in_tmp_file (tmp_data, ndim,
-					       parametric_plot);
-		      break;
-
-		    default:
-		      gripe_2_or_3_dim_plot ();
-		      break;
-		    }
-
-		  if (file.length () > 0)
-		    {
-		      mark_for_deletion (file);
-		      outstr += "'" + file + "' ";
-		    }
+		  mark_for_deletion (file);
+		  outstr += "'" + file + "' ";
 		}
-            }
+	    }
         }
 
       std::string title_str;
@@ -1081,325 +1381,45 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
 
   outstr += Vgnuplot_command_end;
 
-  // Terrible kludge, but line count is destroyed when plot stream
-  // is opened for the first time.
-  int linesave = plot_line_count;
-  send_to_plot_stream (outstr);
-  plot_line_count = linesave;
-
-  return 1;
+  return outstr;
 }
 
-static void
-doplot (std::string caller, octave_value_list args)
+// Title has one string expression which is evaluated and printed to the
+// gnuplot command string.
+
+std::string
+gnuplot::handle_title (int& lasttok)
 {
-  std::string s;
-  int i = 0;
+  int tok;
+  std::string retstr = Vgnuplot_command_title + " ";
+  std::string title_expr_str;
 
-  while (i < args.length ())
-    s += args (i++).string_value () + " ";
+  title_expr_str += read_until (plottok_or_end_p, tok);
 
-  try
+  int status;
+  octave_value tmp_data = eval_string (title_expr_str, true, status);
+
+  if (status != 0 || ! tmp_data.is_defined ())
+    throw gpt_parse_error ();
+
+  OSSTREAM tmp_buf;
+  if (tmp_data.is_string ())
     {
-      makeplot (caller, s);
-    }
-  catch (gpt_parse_error e)
-    {
-      if (e.msg.empty ())
-	error ("could not parse plot command");
-      else
-	error (e.msg.c_str ());
-    }
-}
-
-DEFUN_DLD (clearplot, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} clearplot\n\
-@deftypefnx {Built-in Function} {} clg\n\
-Clear the plot window and any titles or axis labels.  The name\n\
-@code{clg} is aliased to @code{clearplot} for compatibility with\n\
-@sc{Matlab}.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  send_to_plot_stream ("clear\n");
-
-  // XXX FIXME XXX -- instead of just clearing these things, it would
-  // be nice if we could reset things to a user-specified default
-  // state.
-
-  send_to_plot_stream ("set title\n");
-  send_to_plot_stream ("set xlabel\n");
-  send_to_plot_stream ("set ylabel\n");
-  send_to_plot_stream ("set nogrid\n");
-  send_to_plot_stream ("set nolabel\n");
-
-  // This makes a simple `replot' not work after a `clearplot' command
-  // has been issued.
-
-  plot_line_count = 0;
-
-  return retval;
-}
-
-DEFUN_DLD (closeplot, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} closeplot\n\
-Close stream to the @code{gnuplot} subprocess.  If you are using X11,\n\
-this will close the plot window.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  parametric_plot = false;
-
-  set_global_value ("__multiplot_mode__", 0.0);
-
-  close_plot_stream ();
-
-  return retval;
-}
-
-DEFUN_DLD (purge_tmp_files, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} purge_tmp_files\n\
-Delete the temporary files created by the plotting commands.\n\
-\n\
-Octave creates temporary data files for @code{gnuplot} and then sends\n\
-commands to @code{gnuplot} through a pipe.  Octave will delete the\n\
-temporary files on exit, but if you are doing a lot of plotting you may\n\
-want to clean up in the middle of a session.\n\
-\n\
-A future version of Octave will eliminate the need to use temporary\n\
-files to hold the plot data.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  cleanup_tmp_files ();
-
-  return retval;
-}
-
-DEFUN_DLD (__gnuplot_raw__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __gnuplot_raw__ (@var{string})\n\
-Send @var{string} directly to gnuplot subprocess.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  if (args.length () == 1 && args(0).is_string ())
-    {
-      std::string cmd = args(0).string_value ();
-
-      if (! (plot_stream && *plot_stream))
-	open_plot_stream ();
-
-      if (! error_state)
-	{
-	  *plot_stream << cmd;
-
-	  plot_stream->flush ();
-	}
+      tmp_buf << '"';
+      tmp_data.print_raw (tmp_buf);
+      tmp_buf << '"' << OSSTREAM_ENDS;
     }
   else
-    print_usage ("raw");
-
-  return retval;
-}
-
-DEFUN_DLD (__gnuplot_set__, args, ,
-  "-*- texinfo -*-\n\
-@deffn {Command} __gnuplot_set__ options\n\
-Set plotting options for gnuplot\n\
-@end deffn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("set");
-
-  if (error_state)
-    return retval;
-
-  OSSTREAM plot_buf;
-
-  if (argc > 1)
     {
-      if (almost_match ("parametric", argv[1], 3))
-	parametric_plot = true;
-      else if (almost_match ("noparametric", argv[1], 5))
-	parametric_plot = false;
-      else if (almost_match ("term", argv[1], 1))
-	{
-	  gnuplot_terminal_type = "";
-	  OSSTREAM buf;
-	  int i;
-	  for (i = 2; i < argc-1; i++)
-	    buf << argv[i] << " ";
-	  if (i < argc)
-	    buf << argv[i];
-	  buf << Vgnuplot_command_end << OSSTREAM_ENDS;
-	  gnuplot_terminal_type = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
-	}
+      warning ("line title must be a string");
+      tmp_buf << '"' << "line " << plot_line_count << '"';
     }
 
-  int i;
-  for (i = 0; i < argc-1; i++)
-    plot_buf << argv[i] << " ";
+  retstr += OSSTREAM_STR (tmp_buf);
 
-  if (i < argc)
-    plot_buf << argv[i];
+  lasttok = tok;
 
-  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
-
-  send_to_plot_stream (OSSTREAM_STR (plot_buf));
-
-  OSSTREAM_FREEZE (plot_buf);
-
-  return retval;
-}
-
-DEFUN_DLD (__gnuplot_show__, args, ,
-  "-*- texinfo -*-\n\
-@deffn {Command} __gnuplot_show__ options\n\
-Show plotting options.\n\
-@end deffn")
-{
-  octave_value_list retval;
-
-  gnuplot_init ();
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("show");
-
-  if (error_state)
-    return retval;
-
-  OSSTREAM plot_buf;
-
-  int i;
-  for (i = 0; i < argc-1; i++)
-    plot_buf << argv[i] << " ";
-  if (i < argc)
-    plot_buf << argv[i];
-
-  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
-
-  send_to_plot_stream (OSSTREAM_STR (plot_buf));
-
-  OSSTREAM_FREEZE (plot_buf);
-
-  return retval;
-}
-
-DEFUN_DLD (__gnuplot_plot__, args, ,
-  "Plot with gnuplot.\n")
-{
-  gnuplot_init ();
-
-  doplot ("plot", args);
-  return octave_value_list ();
-}
-
-DEFUN_DLD (__gnuplot_splot__, args, ,
-  "Plot with gnuplot.\n")
-{
-  gnuplot_init ();
-
-  doplot ("splot", args);
-  return octave_value_list ();
-}
-
-DEFUN_DLD (__gnuplot_replot__, args, ,
-  "Plot with gnuplot.\n")
-{
-  gnuplot_init ();
-
-  doplot ("replot", args);
-  return octave_value_list ();
-}
-
-// Deprecated functions.
-
-#define WARN_DEPRECATED(FOLD, FNEW) \
-  do \
-    { \
-      static bool warned = false; \
-      if (! warned) \
-	{ \
-	  warned = true; \
-	  warning (#FOLD " is deprecated and will be removed from a future"); \
-	  warning ("version of Octave."); \
-	  warning ("You should use the higher-level plot functions"); \
-	  warning ("(\"plot\", \"mesh\", \"semilogx\", etc.) instead"); \
-	  warning ("of the low-level plotting commands."); \
-	  warning ("If you absolutely must use this function, use the"); \
-	  warning ("internal version " #FNEW " instead."); \
-	} \
-    } \
-  while (0)
-    
-#define DEPRECATED_BODY(FOLD, FNEW) \
-  WARN_DEPRECATED (FOLD, FNEW); \
-  return feval (#FNEW, args)
-
-// We can't further simplify this by putting the DEFUN_DLD in a macro
-// because then the mk-oct-links script will fail.
-
-DEFUN_DLD (gplot, args, ,
-  "")
-{
-  gnuplot_init ();
-
-  DEPRECATED_BODY (gplot, __gnuplot_plot__);
-}
-
-DEFUN_DLD (gsplot, args, ,
-  "")
-{
-  gnuplot_init ();
-
-  DEPRECATED_BODY (gsplot, __gnuplot_splot__);
-}
-
-DEFUN_DLD (graw, args, ,
-  "")
-{
-  gnuplot_init ();
-
-  DEPRECATED_BODY (graw, __gnuplot_raw__);
-}
-
-DEFUN_DLD (gset, args, ,
-  "")
-{
-  gnuplot_init ();
-
-  DEPRECATED_BODY (gset, __gnuplot_set__);
-}
-
-DEFUN_DLD (gshow, args, ,
-  "")
-{
-  gnuplot_init ();
-
-  DEPRECATED_BODY (gshow, __gnuplot_show__);
+  return retstr;
 }
 
 static int
@@ -1483,15 +1503,15 @@ gnuplot_command_end (void)
 }
 
 static int
-gnuplot_has_frames (void)
+gnuplot_use_title_option (void)
 {
-  Vgnuplot_has_frames = check_preference ("gnuplot_has_frames");
+  Vgnuplot_use_title_option = check_preference ("gnuplot_use_title_option");
 
   return 0;
 }
 
-static void
-gnuplot_init (void)
+void
+gnuplot::do_init (void)
 {
   static bool gnuplot_initialized = false;
 
@@ -1587,35 +1607,217 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @defvr {Built-in Variable} gnuplot_command_end\n\
 @end defvr");
 
-#if defined (GNUPLOT_HAS_FRAMES)
-  bool with_frames = true;
-#else
-  bool with_frames = false;
-#endif
-
-  if (is_builtin_variable ("gnuplot_has_frames"))
-    gnuplot_has_frames ();
+  if (is_builtin_variable ("gnuplot_use_title_option"))
+    gnuplot_use_title_option ();
   else
-    DEFVAR (gnuplot_has_frames, with_frames, gnuplot_has_frames,
+    DEFVAR (gnuplot_use_title_option, octave_env::have_x11_display (),
+	    gnuplot_use_title_option,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} gnuplot_has_frames\n\
-If the value of this variable is nonzero, Octave assumes that your copy\n\
-of gnuplot has support for multiple frames that is included in recent\n\
-3.6beta releases.  Its initial value is determined by configure, but it\n\
-can be changed in your startup script or at the command line in case\n\
-configure got it wrong, or if you upgrade your gnuplot installation.\n\
+@defvr {Built-in Variable} gnuplot_use_title_option\n\
+If nonzero, append @samp{-title \"Figure NN\"} to the gnuplot command.\n\
 @end defvr");
 
 }
+
+// -----------------------
+// User-callable functions
+// -----------------------
 
 DEFUN_DLD (__gnuplot_init__, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} __gnuplot_init__ ()\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  gnuplot::init ();
 
-  gnuplot_init ();
-
-  return retval;
+  return octave_value_list ();
 }
+
+DEFUN_DLD (clearplot, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} clearplot\n\
+@deftypefnx {Built-in Function} {} clg\n\
+Clear the plot window and any titles or axis labels.  The name\n\
+@code{clg} is aliased to @code{clearplot} for compatibility with\n\
+@sc{Matlab}.\n\
+@end deftypefn")
+{
+  gnuplot::clear ();
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (closeplot, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} closeplot\n\
+Close stream to the @code{gnuplot} subprocess.  If you are using X11,\n\
+this will close the plot window.\n\
+@end deftypefn")
+{
+  gnuplot::close ();
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (purge_tmp_files, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} purge_tmp_files\n\
+Delete the temporary files created by the plotting commands.\n\
+\n\
+Octave creates temporary data files for @code{gnuplot} and then sends\n\
+commands to @code{gnuplot} through a pipe.  Octave will delete the\n\
+temporary files on exit, but if you are doing a lot of plotting you may\n\
+want to clean up in the middle of a session.\n\
+\n\
+A future version of Octave will eliminate the need to use temporary\n\
+files to hold the plot data.\n\
+@end deftypefn")
+{
+  gnuplot::cleanup_tmp_files ();
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_raw__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __gnuplot_raw__ (@var{string})\n\
+Send @var{string} directly to gnuplot subprocess.\n\
+@end deftypefn")
+{
+  if (args.length () == 1 && args(0).is_string ())
+    {
+      std::string cmd = args(0).string_value ();
+
+      gnuplot::send_raw (cmd);
+    }
+  else
+    print_usage ("raw");
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_set__, args, ,
+  "-*- texinfo -*-\n\
+@deffn {Command} __gnuplot_set__ options\n\
+Set plotting options for gnuplot\n\
+@end deffn")
+{
+  string_vector argv = args.make_argv ("set");
+
+  if (! error_state)
+    gnuplot::set (argv);
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_show__, args, ,
+  "-*- texinfo -*-\n\
+@deffn {Command} __gnuplot_show__ options\n\
+Show plotting options.\n\
+@end deffn")
+{
+  string_vector argv = args.make_argv ("show");
+
+  if (! error_state)
+    gnuplot::show (argv);
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_plot__, args, ,
+  "Plot with gnuplot.\n")
+{
+  string_vector argv = args.make_argv ("plot");
+
+  if (! error_state)
+    gnuplot::plot (argv);
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_splot__, args, ,
+  "Plot with gnuplot.\n")
+{
+  string_vector argv = args.make_argv ("splot");
+
+  if (! error_state)
+    gnuplot::plot (argv);
+
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_replot__, args, ,
+  "Plot with gnuplot.\n")
+{
+  string_vector argv = args.make_argv ("replot");
+
+  if (! error_state)
+    gnuplot::plot (argv);
+
+  return octave_value_list ();
+}
+
+// --------------------
+// Deprecated functions
+// --------------------
+
+#define WARN_DEPRECATED(FOLD, FNEW) \
+  do \
+    { \
+      static bool warned = false; \
+      if (! warned) \
+	{ \
+	  warned = true; \
+	  warning (#FOLD " is deprecated and will be removed from a future"); \
+	  warning ("version of Octave."); \
+	  warning ("You should use the higher-level plot functions"); \
+	  warning ("(\"plot\", \"mesh\", \"semilogx\", etc.) instead"); \
+	  warning ("of the low-level plotting commands."); \
+	  warning ("If you absolutely must use this function, use the"); \
+	  warning ("internal version " #FNEW " instead."); \
+	} \
+    } \
+  while (0)
+    
+#define DEPRECATED_BODY(FOLD, FNEW) \
+  WARN_DEPRECATED (FOLD, FNEW); \
+  return feval (#FNEW, args)
+
+// We can't further simplify this by putting the DEFUN_DLD in a macro
+// because then the mk-oct-links script will fail.
+
+DEFUN_DLD (gplot, args, ,
+  "")
+{
+  DEPRECATED_BODY (gplot, __gnuplot_plot__);
+}
+
+DEFUN_DLD (gsplot, args, ,
+  "")
+{
+  DEPRECATED_BODY (gsplot, __gnuplot_splot__);
+}
+
+DEFUN_DLD (graw, args, ,
+  "")
+{
+  DEPRECATED_BODY (graw, __gnuplot_raw__);
+}
+
+DEFUN_DLD (gset, args, ,
+  "")
+{
+  DEPRECATED_BODY (gset, __gnuplot_set__);
+}
+
+DEFUN_DLD (gshow, args, ,
+  "")
+{
+  DEPRECATED_BODY (gshow, __gnuplot_show__);
+}
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

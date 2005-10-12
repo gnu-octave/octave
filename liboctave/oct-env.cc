@@ -191,6 +191,14 @@ octave_env::putenv (const std::string& name, const std::string& value)
 }
 
 bool
+octave_env::have_x11_display (void)
+{
+  std::string display = getenv ("DISPLAY");
+
+  return ! display.empty ();
+}
+
+bool
 octave_env::chdir (const std::string& newdir)
 {
   return (instance_ok ())

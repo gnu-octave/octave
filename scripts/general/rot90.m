@@ -40,9 +40,7 @@
 ## @example
 ## @group
 ## rot90 ([1, 2; 3, 4], -1)
-## @equiv{}
 ## rot90 ([1, 2; 3, 4], 3)
-## @equiv{}
 ## rot90 ([1, 2; 3, 4], 7)
 ## @end group
 ## @end example

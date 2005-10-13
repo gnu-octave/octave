@@ -1,3 +1,23 @@
+2005-10-13  John W. Eaton  <jwe@octave.org>
+
+	* plot/__plt__.m, plot/__errplot__.m, plot/replot.m:
+	If in multiplot mode, clear plot before issuing new plot command.
+
+	* plot/__setup_plot__.m: New function.
+	* plot/__plt__.m, plot__errplot__.m: Use it.
+	Handle multiplot data and offsets here.
+
+	* plot/__plot_globals__.m: Also keep track of multiplot options.
+	Move initialization to __setup_plot__.m.
+
+	* plot/subplot.m: Multiplot globals now in __plot_globals__.m.
+	Don't reset gnuplot_command_replot.
+
+	* plot/replot.m: Handle multiplot data and offsets here.
+	* plot__axis_label__.m, plot/axis.m, plot/grid.m,
+	plot/plot_border.m, plot/plot.m, plot/plot_title.m,
+	plot/top_title.m: Call replot, not __gnuplot_replot__.
+
 2005-10-12  John W. Eaton  <jwe@octave.org>
 
 	* plot/figure.m: Handle __current_figure__, not gnuplot details.

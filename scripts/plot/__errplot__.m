@@ -38,11 +38,13 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   __plot_globals__;
 
+  __setup_plot__;
+
   if (nargin < 3 || nargin > 7) # at least three data arguments needed
     usage ("__errplot__ (fmt, arg1, ...)");
   endif
 
-  j = __plot_data_offset__(__current_figure__);
+  j = __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__);
 
   fmt = __pltopt__ ("__errplot__", fstr);
 
@@ -72,11 +74,11 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
     endswitch
 
-    __plot_data__{__current_figure__}{j} = tmp;
+    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j} = tmp;
 
-    __plot_command__{__current_figure__} \
-	= sprintf ("%s%s __plot_data__{__current_figure__}{%d} %s",
-		   __plot_command__{__current_figure__},
+    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
+	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s",
+		   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
 		   __plot_command_sep__, j, ifmt);
     __plot_command_sep__ = ",\\\n";
 
@@ -84,10 +86,13 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   endfor
 
-  __plot_data_offset__(__current_figure__) = j;
+  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = j;
 
-  if (! isempty (__plot_command__{__current_figure__}))
-    eval (__plot_command__{__current_figure__});
+  if (! isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
+      if (__multiplot_mode__)
+	__gnuplot_raw__ ("clear\n");
+      endif
+    eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
   endif
 
 endfunction

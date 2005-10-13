@@ -111,8 +111,7 @@ function plot_border (varargin)
   endif
 
   if (automatic_replot)
-    ## No semicolon (see replot.m).
-    __gnuplot_replot__
+    replot ();
   endif
 
 endfunction

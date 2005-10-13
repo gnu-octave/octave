@@ -17,26 +17,16 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} replot ()
-## Refressh the plot window.
-## @end deftypefn
-
-## Author: jwe
-
-function replot ()
-
-  __plot_globals__;
-
-  if (nargin == 0)
-    if (! isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
-      if (__multiplot_mode__)
-	__gnuplot_raw__ ("clear\n");
-      endif
-      eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
-    endif
+if (ishold ())
+  if (isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
+    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "__gnuplot_plot__";
+    __plot_command_sep__ = "";
   else
-    usage ("replot ()");
+    __plot_command_sep__ = ",\\\n";
   endif
-
-endfunction
+else
+  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "__gnuplot_plot__";
+  __plot_command_sep__ = "";
+  __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
+endif

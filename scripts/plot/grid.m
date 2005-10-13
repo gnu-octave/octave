@@ -59,8 +59,7 @@ function grid (x)
   endif
 
   if (do_replot && automatic_replot)
-    ## No semicolon (see replot.m).
-    __gnuplot_replot__
+    replot ();
   endif
 
 endfunction

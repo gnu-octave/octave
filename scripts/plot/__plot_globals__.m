@@ -19,6 +19,29 @@
 
 ## This is a script file shared by __plt__ and __errplot__.
 
+## global variables to keep track of multiplot options
+
+global __multiplot_mode__ = 0;
+global __multiplot_xsize__;
+global __multiplot_ysize__;
+global __multiplot_xn__;
+global __multiplot_yn__;
+global __multiplot_xi__;
+global __multiplot_yi__;
+global __multiplot_scale__;
+
+if (isempty (__multiplot_scale__))
+  __multiplot_scale__ = [1, 1];
+endif
+
+if (isempty (__multiplot_xi__))
+  __multiplot_xi__ = 1;
+endif
+
+if (isempty (__multiplot_yi__))
+  __multiplot_yi__ = 1;
+endif
+
 global __current_figure__;
 global __plot_data_offset__;
 global __plot_command__;
@@ -29,29 +52,18 @@ if (isempty (__current_figure__))
   __current_figure__ = 1;
 endif
 
-if (length (__plot_data_offset__) < __current_figure__)
-  __plot_data_offset__(__current_figure__) = 1;
+if (length (__plot_data_offset__) < __current_figure__
+    || any (size (__plot_data_offset__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+
+  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
 endif
 
-if (length (__plot_command__) < __current_figure__)
-  __plot_command__{__current_figure__} = "";
+if (length (__plot_command__) < __current_figure__
+    || any (size (__plot_command__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "";
 endif
 
-if (length (__plot_data__) < __current_figure__)
-  __plot_data__{__current_figure__} = [];
-endif
-
-if (ishold ())
-  if (isempty (__plot_command__{__current_figure__}))
-    __plot_command__{__current_figure__} = "__gnuplot_plot__";
-    __plot_command_sep__ = "";
-  else
-    gp_cmd = __plot_command__{__current_figure__};
-    __plot_command_sep__ = ",\\\n";
-  endif
-else
-  __plot_command__{__current_figure__} = "__gnuplot_plot__";
-  __plot_command_sep__ = "";
-  __plot_data__{__current_figure__} = [];
-  __plot_data_offset__(__current_figure__) = 1;
+if (length (__plot_data__) < __current_figure__
+    || any (size (__plot_data__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+  __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
 endif

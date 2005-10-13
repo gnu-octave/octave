@@ -33,8 +33,7 @@ function h = __axis_label__ (caller, text)
       __gnuplot_raw__ (sprintf ("set %s \"%s\";\n", caller,
 				undo_string_escapes (text)));
       if (automatic_replot)
-	## No semicolon (see replot.m).
-	__gnuplot_replot__
+	replot ();
       endif
     else
       error ("%s: text must be a string", caller);

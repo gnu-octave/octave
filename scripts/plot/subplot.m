@@ -82,20 +82,7 @@
 
 function subplot (rows, columns, index)
 
-  ## global variables to keep track of multiplot options
-
-  global __multiplot_mode__ = 0;
-  global __multiplot_xsize__;
-  global __multiplot_ysize__;
-  global __multiplot_xn__;
-  global __multiplot_yn__;
-  global __multiplot_xi__;
-  global __multiplot_yi__;
-  global __multiplot_scale__;
-
-  if (isempty (__multiplot_scale__))
-    __multiplot_scale__ = [1, 1];
-  endif
+  __plot_globals__;
 
   if (nargin != 3 && nargin != 1)
     usage ("subplot (rows, columns, index) or subplot (rcn)");
@@ -154,8 +141,6 @@ function subplot (rows, columns, index)
       __multiplot_yn__ = rows;
       __multiplot_xsize__ = __multiplot_scale__(1) ./ columns;
       __multiplot_ysize__ = __multiplot_scale__(2) ./ rows;
-
-      gnuplot_command_replot = "cle;rep";
 
       __gnuplot_raw__ ("set multiplot;\n");
 

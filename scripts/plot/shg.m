@@ -36,6 +36,6 @@ function shg ()
     warning ("shg: ignoring extra arguments");
   endif
 
-  __gnuplot_replot__ 
+  replot ();
 
 endfunction

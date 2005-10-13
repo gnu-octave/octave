@@ -27,12 +27,14 @@ function __plt__ (caller, varargin)
 
   __plot_globals__;
 
+  __setup_plot__;
+
   nargs = nargin ();
 
   if (nargs > 1)
 
     k = 1;
-    j = __plot_data_offset__(__current_figure__);
+    j = __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__);
 
     x_set = false;
     y_set = false;
@@ -54,9 +56,9 @@ function __plt__ (caller, varargin)
 	if (x_set)
 	  fmt = __pltopt__ (caller, next_arg);
 	  if (y_set)
-	    [__plot_data__{__current_figure__}{j}, fmtstr] = __plt2__ (x, y, fmt);
+	    [__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}, fmtstr] = __plt2__ (x, y, fmt);
 	  else
-	    [__plot_data__{__current_figure__}{j}, fmtstr] = __plt1__ (x, fmt);
+	    [__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}, fmtstr] = __plt1__ (x, fmt);
 	  endif
 	  have_data = true;
 	  x_set = false;
@@ -67,7 +69,7 @@ function __plt__ (caller, varargin)
       elseif (x_set)
 	if (y_set)
 	  fmt = __pltopt__ (caller, "");
-	  [__plot_data__{__current_figure__}{j}, fmtstr] = __plt2__ (x, y, fmt);
+	  [__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}, fmtstr] = __plt2__ (x, y, fmt);
 	  have_data = true;
 	  x = next_arg;
 	  y_set = false;
@@ -81,18 +83,18 @@ function __plt__ (caller, varargin)
       endif
 
       if (have_data)
-	if (iscell (__plot_data__{__current_figure__}{j}))
-	  for i = 1:length (__plot_data__{__current_figure__}{j})
-	    __plot_command__{__current_figure__} \
-		= sprintf ("%s%s __plot_data__{__current_figure__}{%d}{%d} %s",
-			   __plot_command__{__current_figure__},
+	if (iscell (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}))
+	  for i = 1:length (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j})
+	    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
+		= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}{%d} %s",
+			   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
 			   __plot_command_sep__, j, i, fmtstr{i});
 	    __plot_command_sep__ = ",\\\n";
 	  endfor
 	else
-	  __plot_command__{__current_figure__} \
-	    = sprintf ("%s%s __plot_data__{__current_figure__}{%d} %s",
-		       __plot_command__{__current_figure__},
+	  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
+	    = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s",
+		       __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
 		       __plot_command_sep__, j, fmtstr);
 	  __plot_command_sep__ = ",\\\n";
 	endif
@@ -101,10 +103,13 @@ function __plt__ (caller, varargin)
 
     endwhile
 
-    __plot_data_offset__(__current_figure__) = j;
+    __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = j;
 
-    if (! isempty (__plot_command__{__current_figure__}))
-      eval (__plot_command__{__current_figure__});
+    if (! isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
+      if (__multiplot_mode__)
+	__gnuplot_raw__ ("clear\n");
+      endif
+      eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
     endif
 
   else

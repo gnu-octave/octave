@@ -1,3 +1,8 @@
+2005-10-13  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (F__gnuplot_raw__):
+	Call print_usage with correct function name.
+
 2005-10-12  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/gplot.l: Major cleanup.

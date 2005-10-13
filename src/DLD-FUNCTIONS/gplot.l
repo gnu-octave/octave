@@ -1,3 +1,26 @@
+/*
+
+Copyright (C) 2004 John W. Eaton and Teemu Ikonen
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octavee; see the file COPYING.  If not, write to the Free
+Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301, USA.
+
+*/
+
 %option prefix="gpt"
 %option noyywrap
 
@@ -283,73 +306,6 @@ is_plot_keyword (const std::string& s)
     return CLEAR;
   else
     return 0;
-}
-
-// This is used to handle single-quote delimited strings.  Kludge alert.
-
-static int
-handle_string (char delim)
-{
-  static char *buf = 0;
-
-  int c;
-  bool escape_pending = false;
-
-  std::string strbuf (1, static_cast<char> (delim));
-
-  while ((c = yyinput ()) != EOF)
-    {
-      if (c == '\\')
-	{
-	  if (escape_pending)
-	    {
-	      strbuf += static_cast<char> (c);
-	      escape_pending = false;
-	    }
-	  else
-	    {
-		strbuf += static_cast<char> (c);
-		escape_pending = true;
-	    }
-	  continue;
-	}
-      else if (c == '\n')
-	{
-	  error ("unterminated string constant");
-	  break;
-	}
-      else if (c == delim)
-	{
-	  if (escape_pending)
-	    strbuf += static_cast<char> (c);
-	  else
-	    {
-	      c = yyinput ();
-
-	      if (c == delim)
-		{
-		  strbuf += static_cast<char> (c);
-		  strbuf += static_cast<char> (c);
-		}
-	      else
-		{
-		  yyunput (c, yytext);
-		  strbuf += static_cast<char> (delim);
-		  delete [] buf;
-		  yytext = strsave (strbuf.c_str ());
-		  return STRING;
-		}
-	    }
-	}
-      else
-	strbuf += static_cast<char> (c);
-
-      escape_pending = false;
-    }
-
-  throw gpt_parse_error ("unterminated string");
-
-  return 0;
 }
 
 // (Probably not necessesary, but current Matlab style plot functions

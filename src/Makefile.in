@@ -548,9 +548,9 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	@echo "making $@ from $<"
 	@if test -n "$(PERL)"; then \
-	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@.t;
+	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@.t; \
 	elif test -n "$(PYTHON)"; then \
-	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@.t;
+	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@.t; \
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@.t; \
 	fi

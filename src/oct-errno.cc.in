@@ -271,7 +271,7 @@ octave_errno::octave_errno (void)
 
     // Others (duplicates are OK).
 
-    @SYSDEP_ERRNO_LIST@
+@SYSDEP_ERRNO_LIST@
 
     { 0, 0, },
   };

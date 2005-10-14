@@ -816,6 +816,14 @@ AC_DEFUN(OCTAVE_PROG_PERL,
   AC_SUBST(PERL)
 ])
 dnl
+dnl Find Python.
+dnl
+dnl OCTAVE_PROG_PYTHON
+AC_DEFUN(OCTAVE_PROG_PYTHON,
+[AC_CHECK_PROG(PYTHON, python, python, [])
+  AC_SUBST(PYTHON)
+])
+dnl
 dnl Find desktop-file-install.
 dnl
 dnl OCTAVE_PROG_DESKTOP_FILE_INSTALL

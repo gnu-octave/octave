@@ -1,3 +1,9 @@
+2005-10-14  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_PROG_PYTHON): New macro.
+	* configure.in: Use it.
+	* Makeconf.in (PYTHON): Substitute it.
+
 2005-10-05  David Bateman  <dbateman@free.fr>
 
 	 mkoctfile.in: allow -idirafter argument.

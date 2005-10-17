@@ -208,7 +208,7 @@ set prog_output "\n... rmdir:.*"
 do_test rmdir-1.m
 
 set test rmdir-2
-set prog_output "\n... rmdir:.*"
+set prog_output "ans = 0"
 do_test rmdir-2.m
 
 set test umask-1

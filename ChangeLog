@@ -1,3 +1,11 @@
+2005-10-17  Paul Kienzle <pkienzle@users.sf.net>
+
+	* octave.test/system/system.exp: rmdir no longer prints a
+	message if the directory does not exist.
+
+	* octave.test/system/mk-rm-dir-1.m: mkdir/rmdir return 1
+	on success and 0 on failure.
+
 2005-10-17  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (F77_FFLOAT_STORE_FLAG):

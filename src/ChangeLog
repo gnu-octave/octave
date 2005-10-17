@@ -1,3 +1,7 @@
+2005-10-17  Keith Goodman  <kwgoodman@gmail.com>
+
+	* DLD-FUNCTIONS/sort.cc: Doc string fix.
+	
 2005-10-17  John W. Eaton  <jwe@octave.org>
 
 	* oct-conf.h.in (OCTAVE_CONF_F77_FLOAT_STORE_FLAG): Substitute

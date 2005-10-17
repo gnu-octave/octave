@@ -683,9 +683,8 @@ DEFUN_DLD (sort, args, nargout,
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
-Return a copy of @var{x} with the elements elements arranged in\n\
-increasing order.  For matrices, @code{sort} orders the elements in each\n\
-column.\n\
+Return a copy of @var{x} with the elements arranged in increasing\n\
+order.  For matrices, @code{sort} orders the elements in each column.\n\
 \n\
 For example,\n\
 \n\
@@ -723,7 +722,7 @@ For equal elements, the indices are such that the equal elements are listed\n\
 in the order that appeared in the original list.\n\
 \n\
 The @code{sort} function may also be used to sort strings and cell arrays\n\
-of strings, it which case the dictionary order of the strings is used.\n\
+of strings, in which case the dictionary order of the strings is used.\n\
 \n\
 The algorithm used in @code{sort} is optimized for the sorting of partially\n\
 ordered lists.\n\

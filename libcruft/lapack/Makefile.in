@@ -16,4 +16,6 @@ EXTERNAL_DISTFILES = $(DISTFILES)
 
 include $(TOPDIR)/Makeconf
 
+dlamc1.o pic/dlamc1.o: FFLAGS += $(F77_FLOAT_STORE_FLAG)
+
 include ../Makerules

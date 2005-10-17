@@ -1,3 +1,8 @@
+2005-10-17  John W. Eaton  <jwe@octave.org>
+
+	* oct-conf.h.in (OCTAVE_CONF_F77_FLOAT_STORE_FLAG): Substitute
+	OCTAVE_CONF_F77_FLOAT_STORE_FLAG here.
+
 2005-10-14  John W. Eaton  <jwe@octave.org>
 
 	* mk-errno-list: New script.

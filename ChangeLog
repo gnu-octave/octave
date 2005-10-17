@@ -1,3 +1,11 @@
+2005-10-17  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (F77_FFLOAT_STORE_FLAG):
+	Check for -ffloat-store option for Fortran compiler and set
+	F77_FLOAT_STORE_FLAG if it works.
+	* Makeconf.in: Substitute it here.
+	(do-subst-config-vals): Substitute OCTAVE_CONF_F77_FLOAT_STORE_FLAG.
+
 2005-10-14  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_PROG_PYTHON): New macro.

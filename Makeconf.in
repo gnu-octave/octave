@@ -92,6 +92,7 @@ F77 = @F77@
 FFLAGS = @FFLAGS@
 FPICFLAG = @FPICFLAG@
 ALL_FFLAGS = $(FFLAGS)
+F77_FLOAT_STORE_FLAG = @F77_FLOAT_STORE_FLAG@
 
 # cc and associated flags.
 
@@ -440,6 +441,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_F2C%|\"${F2C}\"|" \
   -e "s|%OCTAVE_CONF_F2CFLAGS%|\"${F2CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_F77%|\"${F77}\"|" \
+  -e "s|%OCTAVE_CONF_F77_FLOAT_STORE_FLAG%|\"${F77_FLOAT_STORE_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_FC%|\"${FC}\"|" \
   -e "s|%OCTAVE_CONF_FFLAGS%|\"${FFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW_LIBS%|\"${FFTW_LIBS}\"|" \

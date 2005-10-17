@@ -129,6 +129,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_CONF_F77 %OCTAVE_CONF_F77%
 #endif
 
+#ifndef OCTAVE_CONF_F77_FLOAT_STORE_FLAG
+#define OCTAVE_CONF_F77_FLOAT_STORE_FLAG %OCTAVE_CONF_F77_FLOAT_STORE_FLAG%
+#endif
+
 #ifndef OCTAVE_CONF_FC
 #define OCTAVE_CONF_FC %OCTAVE_CONF_FC%
 #endif

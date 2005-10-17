@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.484 $)
+AC_REVISION($Revision: 1.485 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -705,6 +705,12 @@ fi
 FC=$F77
 AC_SUBST(FC)
 AC_SUBST_FILE(f77_rules_frag)
+
+OCTAVE_F77_FLAG(-ffloat-store, [
+AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
+F77_FLOAT_STORE_FLAG=-ffloat-store
+AC_SUBST(F77_FLOAT_STORE_FLAG)
+])
 
 ### Checks for BLAS and LAPACK libraries:
 # (Build subdirectories of libcruft if they aren't found on the system.)

@@ -1,3 +1,8 @@
+2005-10-17  John W. Eaton  <jwe@octave.org>
+
+	* lapack/Makefile.in (dlamc1.o pic/dlamc1.o):
+	Add $(F77_FLOAT_STORE_FLAG) to FFLAGS.
+
 2005-09-23  John W. Eaton  <jwe@octave.org>
 
 	* misc/machar.c: Restore test code.

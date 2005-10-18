@@ -753,7 +753,7 @@ private:
   std::string
   makeplot (std::string caller, std::string args) throw (gpt_parse_error);
 
-  std::string gnuplot::handle_title (int& lasttok);
+  std::string handle_title (int& lasttok);
 };
 
 gnuplot *gnuplot::instance = 0;

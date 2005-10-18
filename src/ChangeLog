@@ -1,3 +1,8 @@
+2005-10-18  Arno J. Klaassen  <arno@heho.snv.jussieu.fr>
+
+	* DLD-FUNCTIONS/gplot.l (gnuplot::handle_title):
+	Omit class name from declaration.
+
 2005-10-17  Keith Goodman  <kwgoodman@gmail.com>
 
 	* DLD-FUNCTIONS/sort.cc: Doc string fix.

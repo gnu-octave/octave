@@ -29,10 +29,10 @@
 function retval = randperm (n)
 
   if (nargin == 1 && isscalar (n) && floor (n) == n)
-    if (n > 0)
+    if (n >= 0)
       [junk, retval] = sort (rand (1, n));
     else
-      error ("randperm: argument must be positive");
+      error ("randperm: argument must be non-negative");
     endif
   else
     usage ("randperm (n)");

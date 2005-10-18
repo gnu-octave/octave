@@ -76,8 +76,7 @@ tree_continue_command::accept (tree_walker& tw)
 
 // Return.
 
-// Nonzero means we're returning from a function.  Global because it
-// is also needed in tree-expr.cc.
+// Nonzero means we're returning from a function.
 int tree_return_command::returning = 0;
 
 void

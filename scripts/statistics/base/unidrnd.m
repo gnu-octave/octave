@@ -37,7 +37,7 @@ function retval = unidrnd (n, varargin)
   if (nargin == 1)
     dims = size (n);
   elseif (nargin == 2)
-    if (rows (varargin{1}) == 1 && columns (varargin{1} > 1))
+    if (rows (varargin{1}) == 1 && columns (varargin{1}) > 1)
       dims = varargin{1};
     else
       error ("unidrnd: invalid dimension vector");

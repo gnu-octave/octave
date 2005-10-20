@@ -1,3 +1,27 @@
+2005-10-20  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (tm_row_const::all_real): New data member.
+	(tm_row_const::all_real_p): New function.
+	(tm_row_const::tm_row_const_rep::all_real): New data member.
+	(tm_row_const::tm_row_const_rep::all_real_p): New function.
+	(tm_row_const::tm_row_const_rep::init): Set all_real and all_cmplx
+	to true here.
+	(tm_row_const::all_cmplx): Rename from is_cmplx.
+	(tm_row_const::all_complex_p): Rename from complex_p.
+	(tm_row_const::tm_row_const_rep::all_cmplx): Rename from is_cmplx.
+	(tm_row_const::tm_row_const_rep::all_complex_p): Rename from complex_p.
+	(tm_row_const::tm_row_const_rep::init): Set all_real and all_cmplx
+	to true here.
+	(SINGLE_TYPE_CONCAT): New macro.
+	(tree_matrix::rvalue): Use it for single type cases.
+
+	* pt-mat.cc: Sprinkle with OCTAVE_QUIT.
+
+2005-10-18  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (octave_main): If not embedded, call clean_up_and_exit
+	instead of return to exit function.
+
 2005-10-18  Arno J. Klaassen  <arno@heho.snv.jussieu.fr>
 
 	* DLD-FUNCTIONS/gplot.l (gnuplot::handle_title):

@@ -645,7 +645,7 @@ octave_main (int argc, char **argv, int embedded)
       int parse_status = execute_eval_option_code (code_to_eval);
 
       if (! (persist || remaining_args > 0))
-	return (parse_status || error_state ? 1 : 0);
+	clean_up_and_exit (parse_status || error_state ? 1 : 0);
     }
 
   if (remaining_args > 0)
@@ -658,7 +658,7 @@ octave_main (int argc, char **argv, int embedded)
       execute_command_line_file (argv[last_arg_idx]);
 
       if (! persist)
-	return (error_state ? 1 : 0);
+	clean_up_and_exit (error_state ? 1 : 0);
     }
 
   // Avoid counting commands executed from startup files.
@@ -684,7 +684,13 @@ octave_main (int argc, char **argv, int embedded)
     }
 
   if (embedded)
-    return 1;
+    {
+      // XXX FIXME XXX -- do we need to do any cleanup here before
+      // returning?  If we don't, what will happen to Octave functions
+      // that have been registered to execute with atexit, for example?
+
+      return 1;
+    }
 
   int retval = main_loop ();
 

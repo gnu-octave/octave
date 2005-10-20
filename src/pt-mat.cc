@@ -27,6 +27,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 
+#include "quit.h"
+
 #include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
@@ -67,11 +69,13 @@ private:
     tm_row_const_rep (void)
       : count (1), dv (), all_str (false),
 	all_sq_str (false), all_dq_str (false),
-	some_str (false), is_cmplx (false), all_mt (true), ok (false) { }
+	some_str (false), all_real (false), all_cmplx (false),
+	all_mt (true), ok (false) { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (), all_str (false), all_sq_str (false),
-	some_str (false), is_cmplx (false), all_mt (true), ok (false)
+	some_str (false), all_real (false), all_cmplx (false),
+	all_mt (true), ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -84,7 +88,8 @@ private:
     bool all_sq_str;
     bool all_dq_str;
     bool some_str;
-    bool is_cmplx;
+    bool all_real;
+    bool all_cmplx;
     bool all_mt;
 
     bool ok;
@@ -157,7 +162,8 @@ public:
   bool all_sq_strings_p (void) const { return rep->all_sq_str; }
   bool all_dq_strings_p (void) const { return rep->all_dq_str; }
   bool some_strings_p (void) const { return rep->some_str; }
-  bool complex_p (void) const { return rep->is_cmplx; }
+  bool all_real_p (void) const { return rep->all_real; }
+  bool all_complex_p (void) const { return rep->all_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
 
   operator bool () const { return (rep && rep->ok); }
@@ -183,7 +189,7 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 
   dim_vector this_elt_dv = val.dims ();
 
-  if (!this_elt_dv.all_zero ())
+  if (! this_elt_dv.all_zero ())
     {
       all_mt = false;
 
@@ -256,8 +262,11 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (! some_str && val.is_string ())
     some_str = true;
 
-  if (! is_cmplx && val.is_complex_type ())
-    is_cmplx = true;
+  if (all_real && ! val.is_real_type ())
+    all_real = false;
+
+  if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
+    all_cmplx = false;
 
   return true;
 }
@@ -268,6 +277,8 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
   all_str = true;
   all_sq_str = true;
   all_dq_str = true;
+  all_real = true;
+  all_cmplx = true;
 
   bool first_elem = true;
 
@@ -275,6 +286,8 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
        p != row.end ();
        p++)
     {
+      OCTAVE_QUIT;
+
       tree_expression *elt = *p;
 
       octave_value tmp = elt->rvalue ();
@@ -289,6 +302,8 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
 	      for (octave_idx_type i = 0; i < tlst.length (); i++)
 		{
+		  OCTAVE_QUIT;
+
 		  if (! do_init_element (elt, tlst(i), first_elem))
 		    goto done;
 		}
@@ -343,7 +358,8 @@ public:
 
   tm_const (const tree_matrix& tm)
     : dv (), all_str (false), all_sq_str (false), all_dq_str (false),
-      some_str (false), is_cmplx (false), all_mt (true), ok (false)
+      some_str (false), all_real (false), all_cmplx (false),
+      all_mt (true), ok (false)
       { init (tm); }
 
   ~tm_const (void) { }
@@ -357,7 +373,8 @@ public:
   bool all_sq_strings_p (void) const { return all_sq_str; }
   bool all_dq_strings_p (void) const { return all_dq_str; }
   bool some_strings_p (void) const { return some_str; }
-  bool complex_p (void) const { return is_cmplx; }
+  bool all_real_p (void) const { return all_real; }
+  bool all_complex_p (void) const { return all_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
 
   operator bool () const { return ok; }
@@ -370,7 +387,8 @@ private:
   bool all_sq_str;
   bool all_dq_str;
   bool some_str;
-  bool is_cmplx;
+  bool all_real;
+  bool all_cmplx;
   bool all_mt;
 
   bool ok;
@@ -390,6 +408,8 @@ tm_const::init (const tree_matrix& tm)
   all_str = true;
   all_sq_str = true;
   all_dq_str = true;
+  all_real = true;
+  all_cmplx = true;
 
   bool first_elem = true;
 
@@ -400,6 +420,8 @@ tm_const::init (const tree_matrix& tm)
 
   for (tree_matrix::const_iterator p = tm.begin (); p != tm.end (); p++)
     {
+      OCTAVE_QUIT;
+
       tree_argument_list *elt = *p;
 
       tm_row_const tmp (*elt);
@@ -418,8 +440,11 @@ tm_const::init (const tree_matrix& tm)
 	  if (! some_str && tmp.some_strings_p ())
 	    some_str = true;
 
-	  if (! is_cmplx && tmp.complex_p ())
-	    is_cmplx = true;
+	  if (all_real && ! tmp.all_real_p ())
+	    all_real = false;
+
+	  if (all_cmplx && ! tmp.all_complex_p ())
+	    all_cmplx = false;
 
 	  if (all_mt && ! tmp.all_empty_p ())
 	    all_mt = false;
@@ -434,6 +459,8 @@ tm_const::init (const tree_matrix& tm)
     {
       for (iterator p = begin (); p != end (); p++)
 	{
+	  OCTAVE_QUIT;
+
 	  tm_row_const elt = *p;
 
 	  octave_idx_type this_elt_nr = elt.rows ();
@@ -531,6 +558,8 @@ tree_matrix::has_magic_end (void) const
 {
   for (const_iterator p = begin (); p != end (); p++)
     {
+      OCTAVE_QUIT;
+
       tree_argument_list *elt = *p;
 
       if (elt && elt->has_magic_end ())
@@ -545,6 +574,8 @@ tree_matrix::all_elements_are_constant (void) const
 {
   for (const_iterator p = begin (); p != end (); p++)
     {
+      OCTAVE_QUIT;
+
       tree_argument_list *elt = *p;
 
       if (! elt->all_elements_are_constant ())
@@ -576,6 +607,45 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
     ::warning ("concatenation of different character string types may have unintended consequences");
 }
 
+#define SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
+  do \
+    { \
+      int dv_len = dv.length (); \
+      Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 0); \
+ \
+      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++) \
+	{ \
+          OCTAVE_QUIT; \
+ \
+	  tm_row_const row = *p; \
+ \
+	  for (tm_row_const::iterator q = row.begin (); \
+	       q != row.end (); \
+	       q++) \
+	    { \
+	      OCTAVE_QUIT; \
+ \
+	      TYPE ra = q->EXTRACTOR (); \
+ \
+	      if (! error_state) \
+		{ \
+		  result.insert (ra, ra_idx); \
+ \
+		  if (! error_state) \
+		    ra_idx(1) += ra.columns (); \
+		  else \
+		    goto done; \
+		} \
+	      else \
+		goto done; \
+	    } \
+ \
+	  ra_idx(0) += row.rows (); \
+	  ra_idx(1) = 0; \
+	} \
+    } \
+ while (0)
+
 octave_value
 tree_matrix::rvalue (void)
 {
@@ -585,6 +655,8 @@ tree_matrix::rvalue (void)
   bool all_sq_strings_p = false;
   bool all_dq_strings_p = false;
   bool all_empty_p = false;
+  bool all_real_p = false;
+  bool all_complex_p = false;
   bool frc_str_conv = false;
 
   tm_const tmp (*this);
@@ -596,55 +668,76 @@ tree_matrix::rvalue (void)
       all_sq_strings_p = tmp.all_sq_strings_p ();
       all_dq_strings_p = tmp.all_dq_strings_p ();
       all_empty_p = tmp.all_empty_p ();
+      all_real_p = tmp.all_real_p ();
+      all_complex_p = tmp.all_complex_p ();
       frc_str_conv = tmp.some_strings_p ();
 
-      // XXX FIXME XX
-      // The previous version of this code obtained the return type and 
-      // initialized an array of the correct type. However the return type
-      // is now built-up from the return types of do_cat_op. Should we special
-      // case the situation where there are only NDArray and ComplexNDArray
-      // elements, or things like boolMatrix that widen to them, and do the
-      // correct initialization? How to do this? Will it be faster? Check against
-      // version 2.1.57
+      // Try to speed up the common cases.
 
-
-      // The line below might seem crazy, since we take a copy
-      // of the first argument, resize it to be empty and then resize
-      // it to be full. This is done since it means that there is no
-      // recopying of data, as would happen if we used a single resize.
-      // It should be noted that resize operation is also significantly 
-      // slower than the do_cat_op function, so it makes sense to have an
-      // empty matrix and copy all data.
-      //
-      // We might also start with a empty octave_value using
-      //    ctmp = octave_value_typeinfo::lookup_type
-      //          (tmp.begin() -> begin() -> type_name());
-      // and then directly resize. However, for some types there might be
-      // some additional setup needed, and so this should be avoided.
-
-      octave_value ctmp;
       if (all_strings_p)
 	{
 	  char type = all_sq_strings_p ? '\'' : '"';
 
 	  maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
-	  if (all_empty_p)
-	    ctmp = octave_value (charNDArray (), true, type);
-	  else
-	    ctmp = octave_value (charNDArray (dv, Vstring_fill_char),
-				 true, type);
+	  charNDArray result (dv, Vstring_fill_char);
+
+	  SINGLE_TYPE_CONCAT (charNDArray, char_array_value);
+
+	  retval = octave_value (result, true, type);
+	}
+      else if (all_real_p)
+	{
+	  NDArray result (dv);
+
+	  SINGLE_TYPE_CONCAT (NDArray, array_value);
+
+	  retval = result;
+	}
+      else if (all_complex_p)
+	{
+	  ComplexNDArray result (dv);
+
+	  SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
+
+	  retval = result;
 	}
       else
 	{
+	  // The line below might seem crazy, since we take a copy of
+	  // the first argument, resize it to be empty and then resize
+	  // it to be full. This is done since it means that there is
+	  // no recopying of data, as would happen if we used a single
+	  // resize.  It should be noted that resize operation is also
+	  // significantly slower than the do_cat_op function, so it
+	  // makes sense to have an empty matrix and copy all data.
+	  //
+	  // We might also start with a empty octave_value using
+	  //
+	  //    ctmp = octave_value_typeinfo::lookup_type
+	  //          (tmp.begin() -> begin() -> type_name());
+	  //
+	  // and then directly resize. However, for some types there
+	  // might be some additional setup needed, and so this should
+	  // be avoided.
+
+	  octave_value ctmp;
+
 	  // Find the first non-empty object
+
 	  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 	    {
+	      OCTAVE_QUIT;
+
 	      tm_row_const row = *p;
+
 	      for (tm_row_const::iterator q = row.begin (); 
 		   q != row.end (); q++)
 		{
+		  OCTAVE_QUIT;
+
 		  ctmp = *q;
+
 		  if (! ctmp.all_zero_dims ())
 		    goto found_non_empty;
 		}
@@ -653,35 +746,50 @@ tree_matrix::rvalue (void)
 	  ctmp = (*(tmp.begin() -> begin()));
 
 	found_non_empty:
+
 	  if (! all_empty_p)
 	    ctmp = ctmp.resize (dim_vector (0,0)).resize (dv);
-	}
 
-      if (error_state)
-	goto done;
-
-      // Now, extract the values from the individual elements and
-      // insert them in the result matrix.
-      int dv_len = dv.length ();
-      Array<int> ra_idx (dv_len > 1 ? dv_len : 2, 0);
-      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
-	{
-	  tm_row_const row = *p;
-	  for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
+	  if (! error_state)
 	    {
-	      octave_value elt = *q;
+	      // Now, extract the values from the individual elements and
+	      // insert them in the result matrix.
 
-	      ctmp = do_cat_op (ctmp, elt, ra_idx);
-	      if (error_state)
-		goto done;
-	      ra_idx (1) += elt.columns ();
+	      int dv_len = dv.length ();
+	      Array<int> ra_idx (dv_len > 1 ? dv_len : 2, 0);
+
+	      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+		{
+		  OCTAVE_QUIT;
+
+		  tm_row_const row = *p;
+
+		  for (tm_row_const::iterator q = row.begin ();
+		       q != row.end ();
+		       q++)
+		    {
+		      OCTAVE_QUIT;
+
+		      octave_value elt = *q;
+
+		      ctmp = do_cat_op (ctmp, elt, ra_idx);
+
+		      if (error_state)
+			goto done;
+
+		      ra_idx (1) += elt.columns ();
+		    }
+
+		  ra_idx (0) += row.rows ();
+		  ra_idx (1) = 0;
+		}
+
+	      retval = ctmp;
+
+	      if (frc_str_conv && ! retval.is_string ())
+		retval = retval.convert_to_str ();
 	    }
-	  ra_idx (0) += row.rows ();
-	  ra_idx (1) = 0;
 	}
-      retval = ctmp;
-      if (frc_str_conv && ! retval.is_string ())
-	retval = retval.convert_to_str ();
     }
 
 done:

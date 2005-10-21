@@ -6,7 +6,7 @@ dnl and in the sub-directories specified by DIR-LIST.
 dnl
 dnl This macro requires autoconf 2.50 or later.
 dnl
-dnl @version $Id: acx_include_dirs.m4,v 1.2 2005-09-15 19:52:50 jwe Exp $
+dnl @version $Id: acx_include_dirs.m4,v 1.3 2005-10-21 12:30:29 jwe Exp $
 dnl @author David Bateman <dbateman@free.fr>
 dnl
 AC_DEFUN([ACX_CHECK_HEADER_IN_DIRS], [
@@ -26,10 +26,21 @@ fi
 
 # Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
 if test x"$acx_include_ok" = xyes; then
-  acx_header=HEADER_`echo $1 | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+  acx_header=HEADER_`echo $1 | sed -e 's/[[^a-zA-Z0-9_]]/_/g' \
     -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
-  ifelse([$3],,AC_DEFINE(${acx_header},$acx_include_dir/$1,[$5]),[$3])
+  acx_header_name_for_variable=`echo $1 | sed -e 's/[[^a-zA-Z0-9_]]/_/g'`
+  eval acx_${acx_header_name_for_variable}_include_dir=$acx_include_dir
+  if test -n "$acx_include_dir"; then
+    eval acx_${acx_header_name_for_variable}_include_file=$acx_include_dir/$1
+  else
+    eval acx_${acx_header_name_for_variable}_include_file=$1
+  fi
+  ifelse([$3],,AC_DEFINE(${acx_header},
+    [`eval echo '${'acx_${acx_header_name_for_variable}_include_file'}'`/$1],
+    [$5]),[$3])
+ifelse([$4],,,[
 else
   $4
+])
 fi
 ])dnl ACX_CHECK_HEADER_IN_DIRS

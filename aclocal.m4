@@ -860,3 +860,57 @@ if test "$octave_cv_ieee754_data_format" = yes; then
   AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define if your system uses IEEE 754 data format.])
 fi
 ])
+dnl
+dnl Check for UMFPACK seperately split complex matrix and RHS. Note
+dnl that as umfpack.h can be in three different places, rather than
+dnl include it, just declare the functions needed.
+dnl
+dnl Assumes that
+dnl
+dnl   ACX_CHECK_HEADER_IN_DIRS(umfpack.h, [umfpack ufsparse])
+dnl
+dnl has already been called.
+dnl
+AC_DEFUN([OCTAVE_UMFPACK_SEPERATE_SPLIT],
+[AC_MSG_CHECKING([for UMFPACK seperate complex matrix and rhs split])
+AC_CACHE_VAL(octave_cv_umfpack_seperate_split,
+[AC_TRY_RUN([
+#include <stdlib.h>
+#include <$acx_umfpack_h_include_file>
+int n = 5;
+int Ap[] = {0, 2, 5, 9, 10, 12};
+int Ai[]  = {0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4};
+double Ax[] = {2., 0., 3., 0., 3., 0., -1., 0., 4., 0., 4., 0., 
+	      -3., 0., 1., 0., 2., 0., 2., 0., 6., 0., 1., 0.};
+double br[] = {8., 45., -3., 3., 19.};
+double bi[] = {0., 0., 0., 0., 0.};
+int main (void)
+{
+  double *null = (double *) NULL ;
+  double *x = (double *)malloc (2 * n * sizeof(double));
+  int i ;
+  void *Symbolic, *Numeric ;
+  (void) umfpack_zi_symbolic (n, n, Ap, Ai, Ax, null, &Symbolic, null, null) ;
+  (void) umfpack_zi_numeric (Ap, Ai, Ax, null, Symbolic, &Numeric, null, null) ;
+  umfpack_zi_free_symbolic (&Symbolic) ;
+  (void) umfpack_zi_solve (0, Ap, Ai, Ax, null, x, null, br, bi, 
+		Numeric, null, null) ;
+  umfpack_zi_free_numeric (&Numeric) ;
+  for (i = 0; i < n; i++, x+=2) 
+    if (fabs(*x - i - 1.) > 1.e-13)
+      return (1);
+  return (0) ;
+}
+],
+  octave_cv_umfpack_seperate_split=yes,
+  octave_cv_umfpack_seperate_split=no,
+  octave_cv_umfpack_seperate_split=no)])
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$octave_cv_umfpack_seperate_split assumed for cross compilation])
+else
+  AC_MSG_RESULT($octave_cv_umfpack_seperate_split)
+fi
+if test "$octave_cv_umfpack_seperate_split" = yes; then
+  AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
+fi
+])

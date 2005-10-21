@@ -121,6 +121,9 @@ static bool can_be_plotkw (void);
 
 static int is_plot_keyword (const std::string& s);
 
+static int handle_string (char delim);
+static std::string strbuf;
+
 %}
 
 D	[0-9]
@@ -197,9 +200,12 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
       {
         gpt_quote_is_transpose = true;
         gpt_allow_plotkw = true;
-        warning ("unknown token = \"%s\" in plot command", yytext);
-        return OTHER;
+        return handle_string ('\'');
       }
+    }
+
+"\"" {
+    return handle_string ('"');
     }
 
 {IDENT} {
@@ -306,6 +312,69 @@ is_plot_keyword (const std::string& s)
     return CLEAR;
   else
     return 0;
+}
+
+// This is used to handle character strings.  Kludge alert.
+
+static int
+handle_string (char delim)
+{
+  int c;
+  bool escape_pending = false;
+
+  strbuf = std::string (1, delim);
+
+  while ((c = yyinput ()) != EOF)
+    {
+      if (c == '\\')
+	{
+	  if (escape_pending)
+	    {
+	      strbuf += static_cast<char> (c);
+	      escape_pending = false;
+	    }
+	  else
+	    {
+	      strbuf += static_cast<char> (c);
+	      escape_pending = true;
+	    }
+	  continue;
+	}
+      else if (c == '\n')
+	{
+	  error ("unterminated string constant");
+	  break;
+	}
+      else if (c == delim)
+	{
+	  if (escape_pending)
+	    strbuf += static_cast<char> (c);
+	  else
+	    {
+	      c = yyinput ();
+
+	      if (c == delim)
+		{
+		  strbuf += static_cast<char> (c);
+		  strbuf += static_cast<char> (c);
+		}
+	      else
+		{
+		  yyunput (c, yytext);
+		  strbuf += static_cast<char> (delim);
+		  return STRING;
+		}
+	    }
+	}
+      else
+	strbuf += static_cast<char> (c);
+
+      escape_pending = false;
+    }
+
+  throw gpt_parse_error ("unterminated string");
+
+  return 0;
 }
 
 // (Probably not necessesary, but current Matlab style plot functions
@@ -446,7 +515,7 @@ read_until (pred test, int& lasttok) throw (gpt_parse_error)
 	  break;
         }
 
-      s += std::string (yytext) + " ";
+      s += (tok == STRING ? strbuf : std::string (yytext)) + " ";
 
       tok = gptlex ();
     }

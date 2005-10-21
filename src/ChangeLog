@@ -1,3 +1,9 @@
+2005-10-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (read_until): Special case STRING.
+	(handle_string): Restore function.
+	("'", "\""): Call handle string when matching these tokens..
+
 2005-10-20  John W. Eaton  <jwe@octave.org>
 
 	* pt-mat.cc (tm_row_const::all_real): New data member.

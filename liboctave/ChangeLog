@@ -1,3 +1,45 @@
+2005-10-23  David Bateman  <dbateman@free.fr>
+	
+	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Check whether trailing zero
+	elements need to be removed.
+	
+	* oct-sparse.h.in: Include metis headers and some macros for long/int
+	versions of cholmod.
+	
+	* CSparse.cc (tinverse): New private function for the inversion of
+	an upper triangular matrix.
+	(dinverse): ditto for diagonal matrices.
+	(inverse): Add SparseType as an argument. Implement matrix inverse
+	using tinverse and dinverse.
+	(fsolve): Use cholmod to implement Cholesky solver.
+	* CSparse.h (tinverse, dinverse): Declarations
+	(inverse): Alter declaration to include SparseType.
+
+	* dSparse.cc (tinverse, dinverse, inverse, fsolve): ditto.
+	* dSparse.h (tinverse, dinverse, inverse): ditto.
+
+	* SparseType.cc: Fix complex constructor for hermitian matrices.
+	
+	* sparse-util.cc: New file for sparse utility functions.
+	* sparse-util.h: New file with declarations of sparse utility 
+	functions.
+
+	* sparse-base-chol.cc: New file with sparse cholesky class based
+	on cholmod.
+	* sparse-base-chol.h: New file with declaration of sparse cholesky
+	class based on cholmod.
+
+	* SparseCmplxCHOL.cc: Instantiate sparse cholesky class for Complex.
+	* SparseCmplxCHOL.h: Declaration of sparse cholesky class.
+
+	* SparsedbleCHOL.cc: ditto.
+	* SparsedbleCHOL.h: ditto.
+
+	* Makefile.in (MATRIX_INC): Include sparse-base-chol.h.
+	(INCLUDES): Include sparse-util.h
+	(TEMPLATE_SRC): Include sparse-base-chol.cc
+	(MATRIX_SRC): Include SparseCmplxCHOL.cc and SparsedbleCHOL.cc
+	
 2005-10-12  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::have_x11_display): New function.

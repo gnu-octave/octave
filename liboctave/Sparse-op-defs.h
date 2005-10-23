@@ -1599,6 +1599,7 @@ Boston, MA 02110-1301, USA.
 		} \
 	      retval.cidx(i+1) = ii; \
 	    } \
+	  retval.maybe_compress (); \
 	  return retval; \
 	} \
     }

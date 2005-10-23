@@ -171,8 +171,8 @@ matrix type.\n\
 	      // XXX FIXME, why do I have to explicitly call the constructor?
 	      SparseType mattyp = SparseType ();
 
-	      int nl = 0;
-	      int nu = 0;
+	      octave_idx_type nl = 0;
+	      octave_idx_type nu = 0;
 	      
 	      if (error_state)
 		error ("Matrix type must be a string");
@@ -238,7 +238,7 @@ matrix type.\n\
 			    error ("matrix_type: Invalid permutation vector");
 			  else
 			    {
-			      int len = perm.length ();
+			      octave_idx_type len = perm.length ();
 			      dim_vector dv = args(0).dims ();
 			      
 			      if (len != dv(0))
@@ -247,8 +247,8 @@ matrix type.\n\
 				{
 				  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-				  for (int i = 0; i < len; i++)
-				    p[i] = (int) (perm (i)); 
+				  for (octave_idx_type i = 0; i < len; i++)
+				    p[i] = (octave_idx_type) (perm (i)) - 1; 
 
 				  if (str_typ == "upper")
 				    mattyp.mark_as_permuted (len, p);

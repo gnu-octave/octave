@@ -35,8 +35,9 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
 	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
 	boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
-	Sparse.h sparse-base-lu.h SparseCmplxLU.h \
-	SparsedbleLU.h Sparse-op-defs.h SparseType.h \
+	Sparse.h sparse-base-lu.h SparseCmplxLU.h SparsedbleLU.h \
+	sparse-base-chol.h SparseCmplxCHOL.h SparsedbleCHOL.h \
+	Sparse-op-defs.h SparseType.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
 	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \
 	intNDArray.h
@@ -66,8 +67,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h \
 	oct-shlib.h oct-sort.h oct-spparms.h oct-syscalls.h \
 	oct-sparse.h oct-time.h oct-types.h pathlen.h pathsearch.h \
-	 prog-args.h so-array.h sparse-sort.h statdefs.h str-vec.h \
-	sun-utils.h sysdir.h systime.h syswait.h \
+	prog-args.h so-array.h sparse-sort.h statdefs.h str-vec.h \
+	sparse-util.h sun-utils.h sysdir.h systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \
@@ -76,7 +77,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 
 TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MArrayN.cc MDiagArray2.cc \
-	base-lu.cc oct-sort.cc sparse-base-lu.cc
+	base-lu.cc oct-sort.cc sparse-base-lu.cc sparse-base-chol.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	Array-s.cc Array-so.cc Array-str.cc Array-idx-vec.cc \
@@ -94,7 +95,7 @@ MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
 	dbleDET.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
 	dbleSCHUR.cc dbleSVD.cc boolSparse.cc CSparse.cc dSparse.cc \
 	MSparse.cc Sparse.cc SparseCmplxLU.cc SparsedbleLU.cc \
-	SparseType.cc \
+	SparseCmplxCHOL.cc SparsedbleCHOL.cc SparseType.cc \
 	int8NDArray.cc uint8NDArray.cc int16NDArray.cc uint16NDArray.cc \
 	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc 
 
@@ -113,7 +114,7 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	lo-utils.cc mach-info.cc oct-alloc.cc oct-env.cc \
 	oct-fftw.cc oct-group.cc oct-passwd.cc oct-rand.cc oct-shlib.cc \
 	oct-spparms.cc oct-syscalls.cc oct-time.cc prog-args.cc \
-	so-array.cc sparse-sort.cc str-vec.cc \
+	so-array.cc sparse-sort.cc sparse-util.cc str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \

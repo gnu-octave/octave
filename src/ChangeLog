@@ -1,3 +1,21 @@
+2005-10-23  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (DLD_XSRC): Add spchol.cc.
+	* sparse-xpow.cc (xpow): Change call to sparse inverse to include
+	SparseType.
+	* DLD-FUNCTIONS/colamd.c (Fsymbfact): Remove.
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): 64-bit fixes and fix
+	for permutation of upper/lower triangular matrices.
+	* DLD-FUNCTIONS/splu.cc (Fspinv): Implemtation of sparse inverse 
+	function.
+	* DLD-FUNCTIONS/spchol.cc (sparse_chol): Static function for core of 
+	the sparse cholesky factorization.
+	(Fspchol): New function for sparse cholesky factorization R'R.
+	(Fsplchol): New function for sparse cholesky factorization LL'.
+	(Fspcholinv): New cholesky inverse function.
+	(Fspchol2inv): New cholesky inverse function.
+	(Fsymbfact): Implementation of symbolic factorization using cholmod.
+
 2005-10-21  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/gplot.l (read_until): Special case STRING.

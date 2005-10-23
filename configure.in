@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.486 $)
+AC_REVISION($Revision: 1.487 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -823,6 +823,8 @@ CHOLMOD_LIBS=
 AC_SUBST(CHOLMOD_LIBS)
 CHOLMOD_INCLUDE=cholmod.h
 AC_SUBST(CHOLMOD_INCLUDE)
+METIS_INCLUDE=metis.h
+AC_SUBST(METIS_INCLUDE)
 
 AC_ARG_WITH(cholmod,
   [  --without-cholmod       don't use CHOLMOD, disable some sparse functionality],
@@ -832,18 +834,35 @@ if test "$with_cholmod" = "yes" && test "$with_colamd" = "yes" &&
 	test "$with_ccolamd" = "yes" && test "$with_amd" = "yes"; then
   with_cholmod=no
   ACX_CHECK_HEADER_IN_DIRS(cholmod.h, [umfpack ufsparse],[
-    AC_CHECK_LIB(metis, METIS_NodeND, [
+    if test x"$acx_include_dir" != x; then
+      CHOLMOD_INCLUDE=$acx_include_dir/cholmod.h
+    fi
+
+    ACX_CHECK_HEADER_IN_DIRS(metis.h, [metis umfpack ufsparse],[
+      AC_CHECK_LIB(metis, METIS_NodeND, with_metis=yes, with_metis=no)],
+      with_metis=no)
+
+    if test "$with_metis" = yes; then
+      if test x"$acx_include_dir" != x; then
+        METIS_INCLUDE=$acx_include_dir/metis.h
+      fi
+      AC_DEFINE(HAVE_METIS, 1, [Define if the METIS library is used.])
       AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod -lmetis"; 
 	with_cholmod=yes], [
-        AC_CHECK_LIB(cholmod_start, cholmod, [CHOLMOD_LIBS="-lcholmod -cblas -lmetis"; 
-	  with_cholmod=yes], [],
+        AC_CHECK_LIB(cholmod_start, cholmod, 
+	  [CHOLMOD_LIBS="-lcholmod -cblas -lmetis"; with_cholmod=yes], [],
           AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)],
-	$AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)])
+	$AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)
+    else
+      AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod"; 
+	with_cholmod=yes], [
+        AC_CHECK_LIB(cholmod_start, cholmod, [CHOLMOD_LIBS="-lcholmod -cblas"; 
+	  with_cholmod=yes], [],
+          AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)],
+	$AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)
+    fi
 
     if test "$with_cholmod" = yes; then
-      if test x"$acx_include_dir" != x; then
-        CHOLMOD_INCLUDE=$acx_include_dir/cholmod.h
-      fi
       AC_DEFINE(HAVE_CHOLMOD, 1, [Define if the CHOLMOD library is used.])
     else
       warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."

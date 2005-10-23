@@ -71,7 +71,7 @@ are set to their defaults.\n\
 \n\
 @table @code\n\
 @item @var{knobs}(1)\n\
-if nonzero, the ordering is optimized for @code{lu(S(:,p)).  It will be a\n\
+if nonzero, the ordering is optimized for @code{lu(S(:,p))}. It will be a\n\
 poor ordering for @code{chol(@var{s}(:,@var{p})'*@var{s}(:,@var{p}))}. This\n\
 is the most important knob for ccolamd.\n\
 \n\
@@ -100,7 +100,7 @@ by all columns in set 2, and so on.  @code{@var{cmember} = ones(1,n)} if\n\
 not present or empty.  @code{ccolamd (@var{s},[],1:n)} returns @code{1:n}\n\
 \n\
 @code{@var{p} = ccolamd(@var{s})} is about the same as @code{@var{p} =\n\
-colamd(@var{s}). @var{knobs} and its default values differ. @code{colamd}\n\
+colamd(@var{s})}. @var{knobs} and its default values differ. @code{colamd}\n\
 always does aggressive absorption, and it finds an ordering suitable for\n\
 both @code{lu(@var{s}(:,@var{p}))} and @code{chol(@var{S}(:,@var{p})'*\n\
 @var{s}(:,@var{p}))}; it cannot optimize its ordering for @code{lu(@var{s}\n\

@@ -388,7 +388,6 @@ Sparse Matrices
 * Sparse Linear Algebra::
 * Iterative Techniques::
 * Oct-Files::
-* License::
 * Function Reference::
 
 Quadrature

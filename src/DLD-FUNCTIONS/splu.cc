@@ -398,23 +398,102 @@ be square.\n\
 DEFUN_DLD (spinv, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } spinv (@var{a}, @var{Q})\n\
-@deftypefnx {Loadable Function} {[@var{x}, @var{rcond}, @var{Q}] = } spinv (@var{a}, @var{Q})\n\
-Compute the inverse of the square matrix @var{a}.  Return an estimate\n\
+Compute the inverse of the sparse square matrix @var{a}.  Return an estimate\n\
 of the reciprocal condition number if requested, otherwise warn of an\n\
 ill-conditioned matrix if the reciprocal condition number is small.\n\
+This function takes advantage of the sparsity of the matrix to accelerate\n\
+the calculation of the inverse.\n\
 \n\
-An optional second input argument @var{Q} is the optional pre-ordering of\n\
-the matrix, such that @code{@var{x} = inv (@var{a} (:, @var{Q}))}. @var{Q}\n\
-can equally be a matrix, in which case @code{@var{x} = inv (@var{a} *\n\
-@var{Q}))}.\n\
-\n\
-If a third output argument is given then the permuations to achieve a sparse\n\
-inverse are returned. It is not required that the return column permutations\n\
-@var{Q} and the same as the user supplied permutations\n\
+In general @var{x} will be a full matrix, and so if possible forming the\n\
+inverse of a sparse matrix should be avoided. It is significantly more\n\
+accurate and faster to do @code{@var{y} = @var{a} \\ @var{b}}, rather\n\
+than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
 @end deftypefn")
 {
-  error ("spinv: not implemented yet");
-  return octave_value ();
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    {
+      print_usage ("inv");
+      return retval;
+    }
+
+  octave_value arg = args(0);
+  const octave_value& rep = arg.get_rep ();
+
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
+
+  int arg_is_empty = empty_arg ("spinverse", nr, nc);
+
+  if (arg_is_empty < 0)
+    return retval;
+  else if (arg_is_empty > 0)
+    return octave_value (Matrix ());
+
+  if (nr != nc)
+    {
+      gripe_square_matrix_required ("spinverse");
+      return retval;
+    }
+
+  if (arg.is_real_type ())
+    {
+      
+      SparseMatrix m = arg.sparse_matrix_value ();      
+
+      if (! error_state)
+	{
+	  octave_idx_type info;
+	  double rcond = 0.0;
+	  SparseType mattyp = ((octave_sparse_matrix &)rep).sparse_type ();
+	  SparseMatrix result = m.inverse (mattyp, info, rcond, 1);
+	  ((octave_sparse_matrix &)(arg.get_rep())).sparse_type (mattyp);
+
+	  if (nargout > 1)
+	    retval(1) = rcond;
+
+	  retval(0) = result;
+
+	  volatile double xrcond = rcond;
+	  xrcond += 1.0;
+	  if (nargout < 2 && (info == -1 || xrcond == 1.0))
+	    warning ("spinverse: matrix singular to machine precision,\
+ rcond = %g", rcond);
+	}
+    }
+  else if (arg.is_complex_type ())
+    {
+      SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+
+      if (! error_state)
+	{
+	  octave_idx_type info;
+	  double rcond = 0.0;
+
+	  SparseType mattyp = 
+	    ((octave_sparse_complex_matrix &)rep).sparse_type ();
+	  SparseComplexMatrix result = m.inverse (mattyp, info, rcond, 1);
+	  ((octave_sparse_matrix &)rep).sparse_type (mattyp);
+
+	  if (nargout > 1)
+	    retval(1) = rcond;
+
+	  retval(0) = result;
+
+	  volatile double xrcond = rcond;
+	  xrcond += 1.0;
+	  if (nargout < 2 && (info == -1 || xrcond == 1.0))
+	    warning ("spinverse: matrix singular to machine precision,\
+ rcond = %g", rcond);
+	}
+    }
+  else
+    gripe_wrong_type_arg ("spinverse", arg);
+
+  return retval;
 }
 
 /*

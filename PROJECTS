@@ -107,16 +107,11 @@ Numerical:
 Sparse Matrices:
 ---------------
 
-  * Sparse Cholesky factorization for Fchol function and also for the 
-    in built polymorphic solvers.
-
   * QR factorization functions, also for use in lssolve functions. Write
     svds function based on this. Write sprank function based on svds.
 
   * Once dmperm is implemented, perhaps use the technique to detect permuted
     triangular matrices with permutations in both rows and cols.
-
-  * Sparse inverse function, based on Andy's code from octave-forge.
 
   * Implement fourth argument to the sprand and sprandn that the leading
     brand implements.
@@ -163,17 +158,12 @@ Sparse Matrices:
   * Port the sparse testing code into the DejaGNU testing code. Add tests
     for spkron, matrix_type, luinc..
 
-  * Treat the dispatching of the splu, spdet, functions, etc within octave
-    itself. This either means that classes need implementing or at the
-    minimum the octave-forge dispatch function is implemented within octave
-
   * Other missing Functions
       - eigs
-      - dmperm      Tim Davis is apparently working on something
+      - dmperm      Use Tim Davis' BTF code when available
       - symmmd      Superseded by symamd
       - colmmd      Superseded by colamd
       - sprandsym
-      - symbfact
       - etreeplot
       - treeplot
       - gplot

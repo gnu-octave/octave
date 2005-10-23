@@ -760,17 +760,6 @@ permutations on the tree.\n\
   return retval;
 }
 
-DEFUN_DLD (symbfact, args, nargout,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}]} = symbfact (@var{s}, @var{typ})\n\
-\n\
-Performs a symbolic factorization analysis on the sparse matrix @var{s}.\n\
-@end deftypefn")
-{
-  error ("symbfact: not implemented yet");
-  return octave_value ();
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

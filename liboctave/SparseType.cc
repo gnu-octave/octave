@@ -112,7 +112,7 @@ SparseType::SparseType (const SparseMatrix &a)
 	  typ = tmp_typ;
 	}
 
-      if (typ == Full)
+      if (typ == SparseType::Full)
 	{
 	  // Search for banded, upper and lower triangular matrices
 	  bool singular = false;
@@ -179,7 +179,7 @@ SparseType::SparseType (const SparseMatrix &a)
 		maybe_hermitian = true;
 	    }
 
-	  if (typ == Full)
+	  if (typ == SparseType::Full)
 	    {
 	      // Search for a permuted triangular matrix, and test if
 	      // permutation is singular
@@ -288,7 +288,7 @@ SparseType::SparseType (const SparseMatrix &a)
 			{
 			  if (a.ridx(k) == j)
 			    {
-			      if (a.data(i) == conj (a.data(k)))
+			      if (a.data(i) == a.data(k))
 				found = true;
 			      break;
 			    }
@@ -559,7 +559,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 			{
 			  if (a.ridx(k) == j)
 			    {
-			      if (a.data(i) == a.data(k))
+			      if (a.data(i) == conj(a.data(k)))
 				found = true;
 			      break;
 			    }

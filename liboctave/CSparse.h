@@ -120,9 +120,22 @@ public:
 
   friend SparseComplexMatrix conj (const SparseComplexMatrix& a);
 
+private:
+  SparseComplexMatrix dinverse (SparseType &mattyp, octave_idx_type& info, 
+				double& rcond, const bool force = false, 
+				const bool calccond = true) const;
+
+  SparseComplexMatrix tinverse (SparseType &mattyp, octave_idx_type& info, 
+				double& rcond, const bool force = false, 
+				const bool calccond = true) const;
+
+public:
   SparseComplexMatrix inverse (void) const;
-  SparseComplexMatrix inverse (octave_idx_type& info) const;
-  SparseComplexMatrix inverse (octave_idx_type& info, double& rcond, int force = 0,
+  SparseComplexMatrix inverse (SparseType& mattype) const;
+  SparseComplexMatrix inverse (SparseType& mattype, 
+			       octave_idx_type& info) const;
+  SparseComplexMatrix inverse (SparseType& mattype, octave_idx_type& info, 
+			       double& rcond, int force = 0, 
 			       int calc_cond = 1) const;
 
   ComplexDET determinant (void) const;

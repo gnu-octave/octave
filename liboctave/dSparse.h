@@ -112,11 +112,23 @@ SparseMatrix : public MSparse<double>
     { 
       return MSparse<double>::transpose (); 
     }
+  SparseMatrix hermitian (void) const { return transpose (); }
 
+private:
+  SparseMatrix dinverse (SparseType &mattyp, octave_idx_type& info, 
+			 double& rcond, const bool force = false, 
+			 const bool calccond = true) const;
+
+  SparseMatrix tinverse (SparseType &mattyp, octave_idx_type& info, 
+			 double& rcond, const bool force = false, 
+			 const bool calccond = true) const;
+
+public:
   SparseMatrix inverse (void) const;
-  SparseMatrix inverse (octave_idx_type& info) const;
-  SparseMatrix inverse (octave_idx_type& info, double& rcond, int force = 0, 
-		        int calc_cond = 1) const;
+  SparseMatrix inverse (SparseType& mattype) const;
+  SparseMatrix inverse (SparseType& mattype, octave_idx_type& info) const;
+  SparseMatrix inverse (SparseType& mattype, octave_idx_type& info, 
+		        double& rcond, int force = 0, int calc_cond = 1) const;
 
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;

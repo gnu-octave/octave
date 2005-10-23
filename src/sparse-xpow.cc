@@ -90,8 +90,9 @@ xpow (const SparseMatrix& a, double b)
 
 		  octave_idx_type info;
 		  double rcond = 0.0;
+		  SparseType mattyp (a);
 
-		  atmp = a.inverse (info, rcond, 1);
+		  atmp = a.inverse (mattyp, info, rcond, 1);
 
 		  if (info == -1)
 		    warning ("inverse: matrix singular to machine\
@@ -162,8 +163,9 @@ xpow (const SparseComplexMatrix& a, double b)
 
 		  octave_idx_type info;
 		  double rcond = 0.0;
+		  SparseType mattyp (a);
 
-		  atmp = a.inverse (info, rcond, 1);
+		  atmp = a.inverse (mattyp, info, rcond, 1);
 
 		  if (info == -1)
 		    warning ("inverse: matrix singular to machine\

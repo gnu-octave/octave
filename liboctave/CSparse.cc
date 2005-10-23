@@ -41,6 +41,8 @@ Boston, MA 02110-1301, USA.
 #include "oct-spparms.h"
 #include "SparseCmplxLU.h"
 #include "oct-sparse.h"
+#include "sparse-util.h"
+#include "SparseCmplxCHOL.h"
 
 // Fortran functions we call.
 extern "C"
@@ -585,24 +587,378 @@ SparseComplexMatrix::inverse (void) const
 {
   octave_idx_type info;
   double rcond;
-  return inverse (info, rcond, 0, 0);
+  SparseType mattype (*this);
+  return inverse (mattype, info, rcond, 0, 0);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::inverse (octave_idx_type& info) const
+SparseComplexMatrix::inverse (SparseType& mattype) const
+{
+  octave_idx_type info;
+  double rcond;
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+SparseComplexMatrix
+SparseComplexMatrix::inverse (SparseType& mattype, octave_idx_type& info) const
 {
   double rcond;
-  return inverse (info, rcond, 0, 0);
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+SparseComplexMatrix 
+SparseComplexMatrix::dinverse (SparseType &mattyp, octave_idx_type& info, 
+			double& rcond, const bool force,
+			const bool calccond) const
+{
+  SparseComplexMatrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  info = 0;
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
+  else
+    {
+      // Print spparms("spumoni") info if requested
+      int typ = mattyp.type ();
+      mattyp.info ();
+
+      if (typ == SparseType::Diagonal ||
+	  typ == SparseType::Permuted_Diagonal)
+	{
+	  if (typ == SparseType::Permuted_Diagonal)
+	    retval = transpose();
+	  else
+	    retval = *this;
+	      
+	  // Force make_unique to be called
+	  Complex *v = retval.data();
+
+	  if (calccond)
+	    {
+	      double dmax = 0., dmin = octave_Inf; 
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  double tmp = std::abs(v[i]);
+		  if (tmp > dmax)
+		    dmax = tmp;
+		  if (tmp < dmin)
+		    dmin = tmp;
+		}
+	      rcond = dmin / dmax;
+	    }
+
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    v[i] = 1.0 / v[i];
+	}
+      else
+	(*current_liboctave_error_handler) ("incorrect matrix type");
+    }
+
+  return retval;
+}
+
+SparseComplexMatrix 
+SparseComplexMatrix::tinverse (SparseType &mattyp, octave_idx_type& info, 
+			       double& rcond, const bool force, 
+			       const bool calccond) const
+{
+  SparseComplexMatrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  info = 0;
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
+  else
+    {
+      // Print spparms("spumoni") info if requested
+      int typ = mattyp.type ();
+      mattyp.info ();
+
+      if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper ||
+	  typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+	{
+	  double anorm = 0.;
+	  double ainvnorm = 0.;
+
+	  if (calccond)
+	    {
+	      // Calculate the 1-norm of matrix for rcond calculation
+	      for (octave_idx_type j = 0; j < nr; j++)
+		{
+		  double atmp = 0.;
+		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+		    atmp += std::abs(data(i));
+		  if (atmp > anorm)
+		    anorm = atmp;
+		}
+	    }
+
+	  if (typ == SparseType::Upper || typ == SparseType::Lower)
+	    {
+	      octave_idx_type nz = nnz();
+	      octave_idx_type cx = 0;
+	      octave_idx_type nz2 = nz;
+	      retval = SparseComplexMatrix (nr, nc, nz2);
+
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  OCTAVE_QUIT;
+		  // place the 1 in the identity position
+		  octave_idx_type cx_colstart = cx;
+	  
+		  if (cx == nz2)
+		    {
+		      nz2 *= 2;
+		      retval.change_capacity (nz2);
+		    }
+
+		  retval.xcidx(i) = cx;
+		  retval.xridx(cx) = i;
+		  retval.xdata(cx) = 1.0;
+		  cx++;
+
+		  // iterate accross columns of input matrix
+		  for (octave_idx_type j = i+1; j < nr; j++) 
+		    {
+		      Complex v = 0.;
+		      // iterate to calculate sum
+		      octave_idx_type colXp = retval.xcidx(i);
+		      octave_idx_type colUp = cidx(j);
+		      octave_idx_type rpX, rpU;
+		      do
+			{
+			  OCTAVE_QUIT;
+			  rpX = retval.xridx(colXp);
+			  rpU = ridx(colUp);
+
+			  if (rpX < rpU) 
+			    colXp++;
+			  else if (rpX > rpU) 
+			    colUp++;
+			  else 
+			    {
+			      v -= retval.xdata(colXp) * data(colUp);
+			      colXp++;
+			      colUp++;
+			    }
+			} while ((rpX<j) && (rpU<j) && 
+				 (colXp<cx) && (colUp<nz));
+
+		      // get A(m,m)
+		      colUp = cidx(j+1) - 1;
+		      Complex pivot = data(colUp);
+		      if (pivot == 0.) 
+			(*current_liboctave_error_handler) 
+			  ("division by zero");
+
+		      if (v != 0.)
+			{
+			  if (cx == nz2)
+			    {
+			      nz2 *= 2;
+			      retval.change_capacity (nz2);
+			    }
+
+			  retval.xridx(cx) = j;
+			  retval.xdata(cx) = v / pivot;
+			  cx++;
+			}
+		    }
+
+		  // get A(m,m)
+		  octave_idx_type colUp = cidx(i+1) - 1;
+		  Complex pivot = data(colUp);
+		  if (pivot == 0.) 
+		    (*current_liboctave_error_handler) ("division by zero");
+
+		  if (pivot != 1.0)
+		    for (octave_idx_type j = cx_colstart; j < cx; j++)
+		      retval.xdata(j) /= pivot;
+		}
+	      retval.xcidx(nr) = cx;
+	      retval.maybe_compress ();
+	    }
+	  else
+	    {
+	      octave_idx_type nz = nnz();
+	      octave_idx_type cx = 0;
+	      octave_idx_type nz2 = nz;
+	      retval = SparseComplexMatrix (nr, nc, nz2);
+
+	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
+	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
+
+	      octave_idx_type *perm = mattyp.triangular_perm();
+	      if (typ == SparseType::Permuted_Upper)
+		{
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    rperm[perm[i]] = i;
+		}
+	      else
+		{
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    rperm[i] = perm[i];
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    perm[rperm[i]] = i;
+		}
+
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  OCTAVE_QUIT;
+		  octave_idx_type iidx = rperm[i];
+
+		  for (octave_idx_type j = 0; j < nr; j++)
+		    work[j] = 0.;
+
+		  // place the 1 in the identity position
+		  work[iidx] = 1.0;
+
+		  // iterate accross columns of input matrix
+		  for (octave_idx_type j = iidx+1; j < nr; j++) 
+		    {
+		      Complex v = 0.;
+		      octave_idx_type jidx = perm[j];
+		      // iterate to calculate sum
+		      for (octave_idx_type k = cidx(jidx); 
+			   k < cidx(jidx+1); k++)
+			{
+			  OCTAVE_QUIT;
+			  v -= work[ridx(k)] * data(k);
+			}
+
+		      // get A(m,m)
+		      Complex pivot = data(cidx(jidx+1) - 1);
+		      if (pivot == 0.) 
+			(*current_liboctave_error_handler) 
+			  ("division by zero");
+
+		      work[j] = v / pivot;
+		    }
+
+		  // get A(m,m)
+		  octave_idx_type colUp = cidx(perm[iidx]+1) - 1;
+		  Complex pivot = data(colUp);
+		  if (pivot == 0.) 
+		    (*current_liboctave_error_handler) 
+		      ("division by zero");
+
+		  octave_idx_type new_cx = cx;
+		  for (octave_idx_type j = iidx; j < nr; j++)
+		    if (work[j] != 0.0)
+		      {
+			new_cx++;
+			if (pivot != 1.0)
+			  work[j] /= pivot;
+		      }
+
+		  if (cx < new_cx)
+		    {
+		      nz2 = (2*nz2 < new_cx ? new_cx : 2*nz2);
+		      retval.change_capacity (nz2);
+		    }
+
+		  retval.xcidx(i) = cx;
+		  for (octave_idx_type j = iidx; j < nr; j++)
+		    if (work[j] != 0.)
+		      {
+			retval.xridx(cx) = j;
+			retval.xdata(cx++) = work[j];
+		      }
+		}
+
+	      retval.xcidx(nr) = cx;
+	      retval.maybe_compress ();
+	    }
+
+	  if (calccond)
+	    {
+	      // Calculate the 1-norm of inverse matrix for rcond calculation
+	      for (octave_idx_type j = 0; j < nr; j++)
+		{
+		  double atmp = 0.;
+		  for (octave_idx_type i = retval.cidx(j); 
+		       i < retval.cidx(j+1); i++)
+		    atmp += std::abs(retval.data(i));
+		  if (atmp > ainvnorm)
+		    ainvnorm = atmp;
+		}
+
+	      rcond = 1. / ainvnorm / anorm;     
+	    }
+	}
+      else
+	(*current_liboctave_error_handler) ("incorrect matrix type");
+    }
+
+  return retval;
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force, 
-			int calc_cond) const
+SparseComplexMatrix::inverse (SparseType& mattype, octave_idx_type& info, 
+			      double& rcond, int force, int calc_cond) const
 {
-  info = -1;
-  (*current_liboctave_error_handler) 
-    ("SparseComplexMatrix::inverse not implemented yet");
-  return SparseComplexMatrix ();
+  int typ = mattype.type (false);
+  SparseComplexMatrix ret;
+
+  if (typ == SparseType::Unknown)
+    typ = mattype.type (*this);
+
+  if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
+    ret = dinverse (mattype, info, rcond, true, calc_cond);
+  else if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+    ret = tinverse (mattype, info, rcond, true, calc_cond).transpose();
+  else if (typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+    ret = transpose().tinverse (mattype, info, rcond, true, calc_cond);
+  else if (typ != SparseType::Rectangular)
+    {
+      if (mattype.is_hermitian())
+	{
+	  SparseType tmp_typ (SparseType::Upper);
+	  SparseComplexCHOL fact (*this, info, false);
+	  rcond = fact.rcond();
+	  if (info == 0)
+	    {
+	      double rcond2;
+	      SparseMatrix Q = fact.Q();
+	      SparseComplexMatrix InvL = fact.L().transpose().
+		tinverse(tmp_typ, info, rcond2, true, false);
+	      ret = Q * InvL.hermitian() * InvL * Q.transpose();
+	    }
+	  else
+	    {
+	      // Matrix is either singular or not positive definite
+	      mattype.mark_as_unsymmetric ();
+	      typ = SparseType::Full;
+	    }
+	}
+
+      if (!mattype.is_hermitian())
+	{
+	  octave_idx_type n = rows();
+	  ColumnVector Qinit(n);
+	  for (octave_idx_type i = 0; i < n; i++)
+	    Qinit(i) = i;
+
+	  SparseType tmp_typ (SparseType::Upper);
+	  SparseComplexLU fact (*this, Qinit, -1.0, false);
+	  rcond = fact.rcond();
+	  double rcond2;
+	  SparseComplexMatrix InvL = fact.L().transpose().
+	    tinverse(tmp_typ, info, rcond2, true, false);
+	  SparseComplexMatrix InvU = fact.U().
+	    tinverse(tmp_typ, info, rcond2, true, false).transpose();
+	  ret = fact.Pc().transpose() * InvU * InvL * fact.Pr();
+	}
+    }
+  else
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
+
+  return ret;
 }
 
 ComplexDET
@@ -4646,14 +5002,152 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_ty
 
       if (typ == SparseType::Hermitian)
 	{
-	  // XXX FIXME XXX Write the cholesky solver and only fall
-	  // through if cholesky factorization fails
+#ifdef HAVE_CHOLMOD
+	  cholmod_common Common;
+	  cholmod_common *cm = &Common;
 
+	  // Setup initial parameters
+	  CHOLMOD_NAME(start) (cm);
+	  cm->prefer_zomplex = FALSE;
+
+	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  if (spu == 0.)
+	    {
+	      cm->print = -1;
+	      cm->print_function = NULL;
+	    }
+	  else
+	    {
+	      cm->print = (int)spu + 2;
+	      cm->print_function =&SparseCholPrint;
+	    }
+
+	  cm->error_handler = &SparseCholError;
+	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
+	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+
+#ifdef HAVE_METIS
+	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
+	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
+	  // which mxMalloc's a huge block of memory (and then immediately 
+	  // mxFree's it) before calling METIS
+	  cm->metis_memory = 2.0;
+
+#if defined(METIS_VERSION)
+#if (METIS_VERSION >= METIS_VER(4,0,2))
+	  // METIS 4.0.2 uses function pointers for malloc and free
+	  METIS_malloc = cm->malloc_memory;
+	  METIS_free   = cm->free_memory;
+	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
+	  // will safely terminate the mexFunction and free any workspace
+	  // without killing all of octave.
+	  cm->metis_memory   = 0.0;
+#endif
+#endif
+#endif
+
+	  cm->final_ll = TRUE;
+
+	  cholmod_sparse Astore;
+	  cholmod_sparse *A = &Astore;
+	  double dummy;
+	  A->nrow = nr;
+	  A->ncol = nc;
+
+	  A->p = cidx();
+	  A->i = ridx();
+	  A->nzmax = nonzero();
+	  A->packed = TRUE;
+	  A->sorted = TRUE;
+	  A->nz = NULL;
+#ifdef IDX_TYPE_LONG
+	  A->itype = CHOLMOD_LONG;
+#else
+	  A->itype = CHOLMOD_INT;
+#endif
+	  A->dtype = CHOLMOD_DOUBLE;
+	  A->stype = 1;
+	  A->xtype = CHOLMOD_COMPLEX;
+
+	  if (nr < 1)
+	    A->x = &dummy;
+	  else
+	    A->x = data();
+
+	  cholmod_dense Bstore;
+	  cholmod_dense *B = &Bstore;
+	  B->nrow = b.rows();
+	  B->ncol = b.cols();
+	  B->d = B->nrow;
+	  B->nzmax = B->nrow * B->ncol;
+	  B->dtype = CHOLMOD_DOUBLE;
+	  B->xtype = CHOLMOD_REAL;
+	  if (nc < 1 || b.cols() < 1)
+	    B->x = &dummy;
+	  else
+	    // We won't alter it, honest :-)
+	    B->x = const_cast<double *>(b.fortran_vec());
+
+	  cholmod_factor *L;
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  L = CHOLMOD_NAME(analyze) (A, cm);
+	  CHOLMOD_NAME(factorize) (A, L, cm);
+	  rcond = CHOLMOD_NAME(rcond)(L, cm);
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	  if (rcond == 0.0)
+	    {
+	      // Either its indefinite or singular. Try UMFPACK
+	      mattype.mark_as_unsymmetric ();
+	      typ = SparseType::Full;
+	    }
+	  else
+	    {
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
+		{
+		  err = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+		       rcond);
+	      
+#ifdef HAVE_LSSOLVE
+		  return retval;
+#endif
+		}
+
+	      cholmod_dense *X;
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	      retval.resize (b.rows (), b.cols());
+	      for (octave_idx_type j = 0; j < b.cols(); j++)
+		{
+		  octave_idx_type jr = j * b.rows();
+		  for (octave_idx_type i = 0; i < b.rows(); i++)
+		    retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
+		}
+
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      CHOLMOD_NAME(free_dense) (&X, cm);
+	      CHOLMOD_NAME(free_factor) (&L, cm);
+	      CHOLMOD_NAME(finish) (cm);
+	      CHOLMOD_NAME(print_common) (" ", cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	    }
+#else
 	  (*current_liboctave_warning_handler)
-	    ("SparseMatrix::solve XXX FIXME XXX Cholesky code not done");
+	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
 	  typ = SparseType::Full;
+#endif
 	}
 
       if (typ == SparseType::Full)
@@ -4772,19 +5266,173 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      int typ = mattype.type ();
+      volatile int typ = mattype.type ();
       mattype.info ();
 
       if (typ == SparseType::Hermitian)
 	{
-	  // XXX FIXME XXX Write the cholesky solver and only fall
-	  // through if cholesky factorization fails
+#ifdef HAVE_CHOLMOD
+	  cholmod_common Common;
+	  cholmod_common *cm = &Common;
 
+	  // Setup initial parameters
+	  CHOLMOD_NAME(start) (cm);
+	  cm->prefer_zomplex = FALSE;
+
+	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  if (spu == 0.)
+	    {
+	      cm->print = -1;
+	      cm->print_function = NULL;
+	    }
+	  else
+	    {
+	      cm->print = (int)spu + 2;
+	      cm->print_function =&SparseCholPrint;
+	    }
+
+	  cm->error_handler = &SparseCholError;
+	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
+	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+
+#ifdef HAVE_METIS
+	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
+	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
+	  // which mxMalloc's a huge block of memory (and then immediately 
+	  // mxFree's it) before calling METIS
+	  cm->metis_memory = 2.0;
+
+#if defined(METIS_VERSION)
+#if (METIS_VERSION >= METIS_VER(4,0,2))
+	  // METIS 4.0.2 uses function pointers for malloc and free
+	  METIS_malloc = cm->malloc_memory;
+	  METIS_free   = cm->free_memory;
+	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
+	  // will safely terminate the mexFunction and free any workspace
+	  // without killing all of octave.
+	  cm->metis_memory   = 0.0;
+#endif
+#endif
+#endif
+
+	  cm->final_ll = TRUE;
+
+	  cholmod_sparse Astore;
+	  cholmod_sparse *A = &Astore;
+	  double dummy;
+	  A->nrow = nr;
+	  A->ncol = nc;
+
+	  A->p = cidx();
+	  A->i = ridx();
+	  A->nzmax = nonzero();
+	  A->packed = TRUE;
+	  A->sorted = TRUE;
+	  A->nz = NULL;
+#ifdef IDX_TYPE_LONG
+	  A->itype = CHOLMOD_LONG;
+#else
+	  A->itype = CHOLMOD_INT;
+#endif
+	  A->dtype = CHOLMOD_DOUBLE;
+	  A->stype = 1;
+	  A->xtype = CHOLMOD_COMPLEX;
+
+	  if (nr < 1)
+	    A->x = &dummy;
+	  else
+	    A->x = data();
+
+	  cholmod_sparse Bstore;
+	  cholmod_sparse *B = &Bstore;
+	  B->nrow = b.rows();
+	  B->ncol = b.cols();
+	  B->p = b.cidx();
+	  B->i = b.ridx();
+	  B->nzmax = b.nonzero();
+	  B->packed = TRUE;
+	  B->sorted = TRUE;
+	  B->nz = NULL;
+#ifdef IDX_TYPE_LONG
+	  B->itype = CHOLMOD_LONG;
+#else
+	  B->itype = CHOLMOD_INT;
+#endif
+	  B->dtype = CHOLMOD_DOUBLE;
+	  B->stype = 0;
+	  B->xtype = CHOLMOD_REAL;
+
+	  if (b.rows() < 1 || b.cols() < 1)
+	    B->x = &dummy;
+	  else
+	    B->x = b.data();
+
+	  cholmod_factor *L;
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  L = CHOLMOD_NAME(analyze) (A, cm);
+	  CHOLMOD_NAME(factorize) (A, L, cm);
+	  rcond = CHOLMOD_NAME(rcond)(L, cm);
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	  if (rcond == 0.0)
+	    {
+	      // Either its indefinite or singular. Try UMFPACK
+	      mattype.mark_as_unsymmetric ();
+	      typ = SparseType::Full;
+	    }
+	  else
+	    {
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
+		{
+		  err = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+		       rcond);
+	      
+#ifdef HAVE_LSSOLVE
+		  return retval;
+#endif
+		}
+
+	      cholmod_sparse *X;
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	      retval = SparseComplexMatrix 
+		(static_cast<octave_idx_type>(X->nrow), 
+		 static_cast<octave_idx_type>(X->ncol),
+		 static_cast<octave_idx_type>(X->nzmax));
+	      for (octave_idx_type j = 0; 
+		   j <= static_cast<octave_idx_type>(X->ncol); j++)
+		retval.xcidx(j) = static_cast<octave_idx_type *>(X->p)[j];
+	      for (octave_idx_type j = 0; 
+		   j < static_cast<octave_idx_type>(X->nzmax); j++)
+		{
+		  retval.xridx(j) = static_cast<octave_idx_type *>(X->i)[j];
+		  retval.xdata(j) = static_cast<Complex *>(X->x)[j];
+		}
+
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      CHOLMOD_NAME(free_sparse) (&X, cm);
+	      CHOLMOD_NAME(free_factor) (&L, cm);
+	      CHOLMOD_NAME(finish) (cm);
+	      CHOLMOD_NAME(print_common) (" ", cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	    }
+#else
 	  (*current_liboctave_warning_handler)
-	    ("SparseMatrix::solve XXX FIXME XXX Cholesky code not done");
+	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
 	  typ = SparseType::Full;
+#endif
 	}
 
       if (typ == SparseType::Full)
@@ -4932,19 +5580,157 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      int typ = mattype.type ();
+      volatile int typ = mattype.type ();
       mattype.info ();
 
       if (typ == SparseType::Hermitian)
 	{
-	  // XXX FIXME XXX Write the cholesky solver and only fall
-	  // through if cholesky factorization fails
+#ifdef HAVE_CHOLMOD
+	  cholmod_common Common;
+	  cholmod_common *cm = &Common;
 
+	  // Setup initial parameters
+	  CHOLMOD_NAME(start) (cm);
+	  cm->prefer_zomplex = FALSE;
+
+	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  if (spu == 0.)
+	    {
+	      cm->print = -1;
+	      cm->print_function = NULL;
+	    }
+	  else
+	    {
+	      cm->print = (int)spu + 2;
+	      cm->print_function =&SparseCholPrint;
+	    }
+
+	  cm->error_handler = &SparseCholError;
+	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
+	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+
+#ifdef HAVE_METIS
+	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
+	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
+	  // which mxMalloc's a huge block of memory (and then immediately 
+	  // mxFree's it) before calling METIS
+	  cm->metis_memory = 2.0;
+
+#if defined(METIS_VERSION)
+#if (METIS_VERSION >= METIS_VER(4,0,2))
+	  // METIS 4.0.2 uses function pointers for malloc and free
+	  METIS_malloc = cm->malloc_memory;
+	  METIS_free   = cm->free_memory;
+	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
+	  // will safely terminate the mexFunction and free any workspace
+	  // without killing all of octave.
+	  cm->metis_memory   = 0.0;
+#endif
+#endif
+#endif
+
+	  cm->final_ll = TRUE;
+
+	  cholmod_sparse Astore;
+	  cholmod_sparse *A = &Astore;
+	  double dummy;
+	  A->nrow = nr;
+	  A->ncol = nc;
+
+	  A->p = cidx();
+	  A->i = ridx();
+	  A->nzmax = nonzero();
+	  A->packed = TRUE;
+	  A->sorted = TRUE;
+	  A->nz = NULL;
+#ifdef IDX_TYPE_LONG
+	  A->itype = CHOLMOD_LONG;
+#else
+	  A->itype = CHOLMOD_INT;
+#endif
+	  A->dtype = CHOLMOD_DOUBLE;
+	  A->stype = 1;
+	  A->xtype = CHOLMOD_COMPLEX;
+
+	  if (nr < 1)
+	    A->x = &dummy;
+	  else
+	    A->x = data();
+
+	  cholmod_dense Bstore;
+	  cholmod_dense *B = &Bstore;
+	  B->nrow = b.rows();
+	  B->ncol = b.cols();
+	  B->d = B->nrow;
+	  B->nzmax = B->nrow * B->ncol;
+	  B->dtype = CHOLMOD_DOUBLE;
+	  B->xtype = CHOLMOD_COMPLEX;
+	  if (nc < 1 || b.cols() < 1)
+	    B->x = &dummy;
+	  else
+	    // We won't alter it, honest :-)
+	    B->x = const_cast<Complex *>(b.fortran_vec());
+
+	  cholmod_factor *L;
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  L = CHOLMOD_NAME(analyze) (A, cm);
+	  CHOLMOD_NAME(factorize) (A, L, cm);
+	  rcond = CHOLMOD_NAME(rcond)(L, cm);
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	  if (rcond == 0.0)
+	    {
+	      // Either its indefinite or singular. Try UMFPACK
+	      mattype.mark_as_unsymmetric ();
+	      typ = SparseType::Full;
+	    }
+	  else
+	    {
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
+		{
+		  err = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+		       rcond);
+	      
+#ifdef HAVE_LSSOLVE
+		  return retval;
+#endif
+		}
+
+	      cholmod_dense *X;
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	      retval.resize (b.rows (), b.cols());
+	      for (octave_idx_type j = 0; j < b.cols(); j++)
+		{
+		  octave_idx_type jr = j * b.rows();
+		  for (octave_idx_type i = 0; i < b.rows(); i++)
+		    retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
+		}
+
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      CHOLMOD_NAME(free_dense) (&X, cm);
+	      CHOLMOD_NAME(free_factor) (&L, cm);
+	      CHOLMOD_NAME(finish) (cm);
+	      CHOLMOD_NAME(print_common) (" ", cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	    }
+#else
 	  (*current_liboctave_warning_handler)
-	    ("SparseMatrix::solve XXX FIXME XXX Cholesky code not done");
+	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
 	  typ = SparseType::Full;
+#endif
 	}
 
       if (typ == SparseType::Full)
@@ -5041,19 +5827,173 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      int typ = mattype.type ();
+      volatile int typ = mattype.type ();
       mattype.info ();
 
       if (typ == SparseType::Hermitian)
 	{
-	  // XXX FIXME XXX Write the cholesky solver and only fall
-	  // through if cholesky factorization fails
+#ifdef HAVE_CHOLMOD
+	  cholmod_common Common;
+	  cholmod_common *cm = &Common;
 
+	  // Setup initial parameters
+	  CHOLMOD_NAME(start) (cm);
+	  cm->prefer_zomplex = FALSE;
+
+	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  if (spu == 0.)
+	    {
+	      cm->print = -1;
+	      cm->print_function = NULL;
+	    }
+	  else
+	    {
+	      cm->print = (int)spu + 2;
+	      cm->print_function =&SparseCholPrint;
+	    }
+
+	  cm->error_handler = &SparseCholError;
+	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
+	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+
+#ifdef HAVE_METIS
+	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
+	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
+	  // which mxMalloc's a huge block of memory (and then immediately 
+	  // mxFree's it) before calling METIS
+	  cm->metis_memory = 2.0;
+
+#if defined(METIS_VERSION)
+#if (METIS_VERSION >= METIS_VER(4,0,2))
+	  // METIS 4.0.2 uses function pointers for malloc and free
+	  METIS_malloc = cm->malloc_memory;
+	  METIS_free   = cm->free_memory;
+	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
+	  // will safely terminate the mexFunction and free any workspace
+	  // without killing all of octave.
+	  cm->metis_memory   = 0.0;
+#endif
+#endif
+#endif
+
+	  cm->final_ll = TRUE;
+
+	  cholmod_sparse Astore;
+	  cholmod_sparse *A = &Astore;
+	  double dummy;
+	  A->nrow = nr;
+	  A->ncol = nc;
+
+	  A->p = cidx();
+	  A->i = ridx();
+	  A->nzmax = nonzero();
+	  A->packed = TRUE;
+	  A->sorted = TRUE;
+	  A->nz = NULL;
+#ifdef IDX_TYPE_LONG
+	  A->itype = CHOLMOD_LONG;
+#else
+	  A->itype = CHOLMOD_INT;
+#endif
+	  A->dtype = CHOLMOD_DOUBLE;
+	  A->stype = 1;
+	  A->xtype = CHOLMOD_COMPLEX;
+
+	  if (nr < 1)
+	    A->x = &dummy;
+	  else
+	    A->x = data();
+
+	  cholmod_sparse Bstore;
+	  cholmod_sparse *B = &Bstore;
+	  B->nrow = b.rows();
+	  B->ncol = b.cols();
+	  B->p = b.cidx();
+	  B->i = b.ridx();
+	  B->nzmax = b.nonzero();
+	  B->packed = TRUE;
+	  B->sorted = TRUE;
+	  B->nz = NULL;
+#ifdef IDX_TYPE_LONG
+	  B->itype = CHOLMOD_LONG;
+#else
+	  B->itype = CHOLMOD_INT;
+#endif
+	  B->dtype = CHOLMOD_DOUBLE;
+	  B->stype = 0;
+	  B->xtype = CHOLMOD_COMPLEX;
+
+	  if (b.rows() < 1 || b.cols() < 1)
+	    B->x = &dummy;
+	  else
+	    B->x = b.data();
+
+	  cholmod_factor *L;
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  L = CHOLMOD_NAME(analyze) (A, cm);
+	  CHOLMOD_NAME(factorize) (A, L, cm);
+	  rcond = CHOLMOD_NAME(rcond)(L, cm);
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	  if (rcond == 0.0)
+	    {
+	      // Either its indefinite or singular. Try UMFPACK
+	      mattype.mark_as_unsymmetric ();
+	      typ = SparseType::Full;
+	    }
+	  else
+	    {
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
+		{
+		  err = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+		       rcond);
+	      
+#ifdef HAVE_LSSOLVE
+		  return retval;
+#endif
+		}
+
+	      cholmod_sparse *X;
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	      retval = SparseComplexMatrix 
+		(static_cast<octave_idx_type>(X->nrow), 
+		 static_cast<octave_idx_type>(X->ncol),
+		 static_cast<octave_idx_type>(X->nzmax));
+	      for (octave_idx_type j = 0; 
+		   j <= static_cast<octave_idx_type>(X->ncol); j++)
+		retval.xcidx(j) = static_cast<octave_idx_type *>(X->p)[j];
+	      for (octave_idx_type j = 0; 
+		   j < static_cast<octave_idx_type>(X->nzmax); j++)
+		{
+		  retval.xridx(j) = static_cast<octave_idx_type *>(X->i)[j];
+		  retval.xdata(j) = static_cast<Complex *>(X->x)[j];
+		}
+
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      CHOLMOD_NAME(free_sparse) (&X, cm);
+	      CHOLMOD_NAME(free_factor) (&L, cm);
+	      CHOLMOD_NAME(finish) (cm);
+	      CHOLMOD_NAME(print_common) (" ", cm);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	    }
+#else
 	  (*current_liboctave_warning_handler)
-	    ("SparseMatrix::solve XXX FIXME XXX Cholesky code not done");
+	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
 	  typ = SparseType::Full;
+#endif
 	}
 
       if (typ == SparseType::Full)

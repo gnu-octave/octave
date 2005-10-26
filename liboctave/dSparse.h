@@ -394,6 +394,13 @@ public:
   friend std::istream& operator >> (std::istream& is, SparseMatrix& a);
 };
 
+// Publish externally used friend functions.
+
+extern SparseMatrix real (const SparseComplexMatrix& a);
+extern SparseMatrix imag (const SparseComplexMatrix& a);
+
+// Other operators.
+
 extern SparseMatrix operator * (const SparseMatrix& a, 
 				const SparseMatrix& b);
 extern Matrix operator * (const Matrix& a, 

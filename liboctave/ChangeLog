@@ -3,6 +3,10 @@
 	Changes for GCC 4.1, tip from Arno J. Klaassen
 	<arno@heho.snv.jussieu.fr>:
 
+	* dSparse.h (real (const SparseComplexMatrix&)): 
+	Publish externally used friend function.
+	(imag (const SparseComplexMatrix&)): Likewise.
+
 	* dColVector.h (real (const ComplexColumnVector&)):
 	Publish externally used friend function.
 	(imag (const ComplexColumnVector&)): Likewise.

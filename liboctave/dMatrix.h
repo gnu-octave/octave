@@ -177,10 +177,6 @@ public:
 
   boolMatrix operator ! (void) const;
 
-  // column vector by row vector -> matrix operations
-
-  friend Matrix operator * (const ColumnVector& a, const RowVector& b);
-
   // other operations
 
   Matrix map (d_d_Mapper f) const;
@@ -230,6 +226,17 @@ private:
 
   Matrix (double *d, octave_idx_type r, octave_idx_type c) : MArray2<double> (d, r, c) { }
 };
+
+// Publish externally used friend functions.
+
+extern Matrix real (const ComplexMatrix& a);
+extern Matrix imag (const ComplexMatrix& a);
+
+// column vector by row vector -> matrix operations
+
+extern Matrix operator * (const ColumnVector& a, const RowVector& b);
+
+// Other functions.
 
 extern Matrix Givens (double, double);
 

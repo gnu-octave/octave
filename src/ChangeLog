@@ -1,3 +1,13 @@
+2005-10-26  John W. Eaton  <jwe@octave.org>
+
+	Changes for GCC 4.1, tip from Arno J. Klaassen
+	<arno@heho.snv.jussieu.fr>:
+
+	* ov.h (do_unary_op (octave_value::unary_op, const octave_value&)):
+	Publish externally used friend function.
+	(do_unary_op (octave_value::unary_op, const octave_value&,
+	const octave_value&)): Likewise.
+
 2005-10-25  David Bateman  <dbateman@free.fr>
 
 	* data.cc (do_cat): called with 2 args, should return args(1) 

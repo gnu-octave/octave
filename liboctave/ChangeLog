@@ -1,3 +1,27 @@
+2005-10-26  John W. Eaton  <jwe@octave.org>
+
+	Changes for GCC 4.1, tip from Arno J. Klaassen
+	<arno@heho.snv.jussieu.fr>:
+
+	* dColVector.h (real (const ComplexColumnVector&)):
+	Publish externally used friend function.
+	(imag (const ComplexColumnVector&)): Likewise.
+
+	* dNDArray.h (real (const ComplexNDArray&)):
+	Publish externally used friend function.
+	(imag (const ComplexNDArray&)): Likewise.
+
+	* dMatrix.h (operator * (const ComplexMatrix&)): 
+	Move decl outside class.  No need to be friend.
+	(real (const ComplexMatrix&)): Publish externally used friend function.
+	(imag (const ComplexMatrix&)): Likewise.
+
+	* CMatrix.h: (operator * (const ColumnVector&, const
+	ComplexRowVector&)): Move decl outside class.  No need to be friend.
+	(operator * (const ComplexColumnVector&, const RowVector&)): Likewise.
+	(operator * (const ComplexColumnVector&, const ComplexRowVector& b)):
+	Likewise.
+
 2005-10-23  David Bateman  <dbateman@free.fr>
 	
 	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Check whether trailing zero

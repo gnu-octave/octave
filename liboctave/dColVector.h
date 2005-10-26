@@ -99,6 +99,11 @@ private:
   ColumnVector (double *d, octave_idx_type l) : MArray<double> (d, l) { }
 };
 
+// Publish externally used friend functions.
+
+extern ColumnVector real (const ComplexColumnVector& a);
+extern ColumnVector imag (const ComplexColumnVector& a);
+
 MARRAY_FORWARD_DEFS (MArray, ColumnVector, double)
 
 #endif

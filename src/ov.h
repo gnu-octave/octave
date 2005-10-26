@@ -833,6 +833,15 @@ private:
   octave_value *nil_rep (void) const;
 };
 
+// Publish externally used friend functions.
+
+extern octave_value
+do_unary_op (octave_value::unary_op op, const octave_value& a);
+
+extern octave_value
+do_binary_op (octave_value::binary_op op,
+	      const octave_value& a, const octave_value& b);
+
 #define OV_UNOP_FN(name) \
   inline octave_value \
   name (const octave_value& a) \

@@ -200,17 +200,6 @@ public:
 
   ComplexMatrix expm (void) const;
 
-  // column vector by row vector -> matrix operations
-
-  friend ComplexMatrix operator * (const ColumnVector& a,
-				   const ComplexRowVector& b);
-
-  friend ComplexMatrix operator * (const ComplexColumnVector& a,
-				   const RowVector& b);
-
-  friend ComplexMatrix operator * (const ComplexColumnVector& a,
-				   const ComplexRowVector& b);
-
   // matrix by diagonal matrix -> matrix operations
 
   ComplexMatrix& operator += (const DiagMatrix& a);
@@ -281,10 +270,22 @@ private:
   ComplexMatrix (Complex *d, octave_idx_type r, octave_idx_type c) : MArray2<Complex> (d, r, c) { }
 };
 
-ComplexMatrix Givens (const Complex&, const Complex&);
+// column vector by row vector -> matrix operations
 
-ComplexMatrix Sylvester (const ComplexMatrix&, const ComplexMatrix&,
-			 const ComplexMatrix&);
+extern ComplexMatrix
+operator * (const ColumnVector& a, const ComplexRowVector& b);
+
+extern ComplexMatrix
+operator * (const ComplexColumnVector& a, const RowVector& b);
+
+extern ComplexMatrix
+operator * (const ComplexColumnVector& a, const ComplexRowVector& b);
+
+extern ComplexMatrix
+Givens (const Complex&, const Complex&);
+
+extern ComplexMatrix
+Sylvester (const ComplexMatrix&, const ComplexMatrix&, const ComplexMatrix&);
 
 extern ComplexMatrix operator * (const Matrix&,        const ComplexMatrix&);
 extern ComplexMatrix operator * (const ComplexMatrix&, const Matrix&);

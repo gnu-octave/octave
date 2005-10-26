@@ -127,6 +127,11 @@ private:
   NDArray (double *d, const dim_vector& dv) : MArrayN<double> (d, dv) { }
 };
 
+// Publish externally used friend functions.
+
+extern NDArray real (const ComplexNDArray& a);
+extern NDArray imag (const ComplexNDArray& a);
+
 extern NDArray min (double d, const NDArray& m);
 extern NDArray min (const NDArray& m, double d);
 extern NDArray min (const NDArray& a, const NDArray& b);

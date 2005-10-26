@@ -1,3 +1,8 @@
+2005-10-26  Arno J. Klaassen  <arno@heho.snv.jussieu.fr>
+
+	* configure.in [*-*-freebsd*] (SH_LDFLAGS): Properly quote.
+	(RLD_FLAG): Set.
+
 2005-10-23  David Bateman  <dbateman@free.fr>
 
 	* configure.in (OCTAVE_UMFPACK_SEPERATE_SPLIT): Check for metis 

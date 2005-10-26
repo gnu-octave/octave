@@ -480,7 +480,8 @@ variable @code{status} to the integer @samp{2}.\n\
 		  // XXX FIXME XXX -- should probably replace this
 		  // call with something portable.
 
-		  execl ("/bin/sh", "sh", "-c", cmd_str.c_str (), 0);
+		  execl ("/bin/sh", "sh", "-c", cmd_str.c_str (),
+			 static_cast<void *> (0));
 
 		  panic_impossible ();
 		}

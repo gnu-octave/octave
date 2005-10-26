@@ -1,5 +1,9 @@
 2005-10-26  John W. Eaton  <jwe@octave.org>
 
+	* oct-procbuf.cc (octave_procbuf::open): Cast 0 to void * to avoid
+	new g++ warning.
+	* toplev.cc (Fsystem): Likewise.
+
 	Changes for GCC 4.1, tip from Arno J. Klaassen
 	<arno@heho.snv.jussieu.fr>:
 

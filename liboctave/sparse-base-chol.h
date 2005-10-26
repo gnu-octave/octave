@@ -38,9 +38,12 @@ protected:
   class sparse_base_chol_rep
   {
   public:
+#ifdef HAVE_CHOLMOD
     sparse_base_chol_rep (void) : count (1), Lsparse (NULL), 
 				  is_pd (false), minor_p (0) { }
-
+#else
+    sparse_base_chol_rep (void) : count (1), is_pd (false), minor_p (0) { }
+#endif
     sparse_base_chol_rep (const chol_type& a, 
 			  const bool natural) : count (1)
       { init (a, natural); }
@@ -49,15 +52,14 @@ protected:
 			  const bool natural) : count (1)
       { info = init (a, natural); }
 
-#ifndef HAVE_CHOLMOD
-    ~sparse_base_chol_rep (void) { }
-#else
+#ifdef HAVE_CHOLMOD
     ~sparse_base_chol_rep (void) 
       { CHOLMOD_NAME(free_sparse) (&Lsparse, &Common); }
-#endif
 
     cholmod_sparse * L (void) const { return Lsparse; }
-
+#else
+    ~sparse_base_chol_rep (void) { }
+#endif
     octave_idx_type P (void) const 
       { return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ? 
 		0 : minor_p + 1); }
@@ -73,10 +75,11 @@ protected:
     int count;
 
   private:
+#ifdef HAVE_CHOLMOD
     cholmod_sparse *Lsparse;
 
     cholmod_common Common;
-
+#endif
     bool is_pd;
 
     octave_idx_type minor_p;

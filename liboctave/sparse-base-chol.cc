@@ -32,6 +32,7 @@ Boston, MA 02110-1301, USA.
 #include "quit.h"
 #include "SparseType.h"
 
+#ifdef HAVE_CHOLMOD
 // Can't use CHOLMOD_NAME(drop)(0.0, S, cm). It doesn't treat complex matrices
 template <class chol_type, class chol_elt, class p_type>
 void 
@@ -73,6 +74,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
     }
   Sp [ncol] = pdest;
 }
+#endif
 
 template <class chol_type, class chol_elt, class p_type>
 octave_idx_type

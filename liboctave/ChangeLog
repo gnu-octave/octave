@@ -1,3 +1,8 @@
+2005-10-26  David Bateman  <dbateman@free.fr>
+
+	* sparse-base-chol.h: Include cholmod specific code in HAVE_CHOLMOD
+	* sparse-base-chol.cc: ditto.
+
 2005-10-26  John W. Eaton  <jwe@octave.org>
 
 	Changes for GCC 4.1, tip from Arno J. Klaassen

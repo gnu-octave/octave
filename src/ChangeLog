@@ -1,5 +1,7 @@
 2005-10-27  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Declare mrowsA volatile.
+
 	* pt-mat.cc (tm_row_const::tm_row_const_rep::tm_row_const_rep):
 	Ensure that we always have at least two dimensions here.
 	(tm_const::tm_const): Likewise.

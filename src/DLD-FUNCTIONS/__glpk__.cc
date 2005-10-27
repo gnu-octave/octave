@@ -445,7 +445,7 @@ You should be using using the @code{glpk} function instead.\n\
   Array<int> rn;
   Array<int> cn;
   ColumnVector a;
-  int mrowsA;
+  volatile int mrowsA;
   volatile int nz = 0;
 
   //-- 2nd Input. A matrix containing the constraints coefficients.

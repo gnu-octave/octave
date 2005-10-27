@@ -3164,7 +3164,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
 
       if (retval != 0)
-	lhs.resize (final_lhs_dims);
+	lhs = lhs.reshape (final_lhs_dims);
     }
 
   if (retval != 0)

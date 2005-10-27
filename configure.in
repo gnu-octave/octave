@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.488 $)
+AC_REVISION($Revision: 1.489 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -741,18 +741,18 @@ AC_ARG_WITH(umfpack,
 
 if test "$with_umfpack" = "yes" && test "$with_amd" = "yes"; then
   with_umfpack=no
-  ACX_CHECK_HEADER_IN_DIRS(umfpack.h, [umfpack ufsparse],[
-      AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-        UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
+  AC_CHECK_HEADERS([ufsparse/umfpack.h umfpack/umfpack.h umfpack.h], [
+    AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
+      UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
+        ## Invalidate the cache.
+	$as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+	AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
+          UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
+
 	  ## Invalidate the cache.
 	  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
 	  AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-            UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
-
-	    ## Invalidate the cache.
-	    $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
-	    AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-              UMFPACK_LIBS="-lumfpack -lcblas"; with_umfpack=yes], [], $AMD_LIBS -lcblas $BLAS_LIBS)], $AMD_LIBS $BLAS_LIBS $FLIBS)], $AMD_LIBS)
+            UMFPACK_LIBS="-lumfpack -lcblas"; with_umfpack=yes], [], $AMD_LIBS -lcblas $BLAS_LIBS)], $AMD_LIBS $BLAS_LIBS $FLIBS)], $AMD_LIBS)
 
     if test "$with_umfpack" = yes; then
       AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
@@ -765,7 +765,8 @@ if test "$with_umfpack" = "yes" && test "$with_amd" = "yes"; then
       LIBS=$OLD_LIBS
     else
       warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
-    fi],[
+    fi
+    break], [
   warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."])
 fi
 
@@ -780,7 +781,7 @@ AC_ARG_WITH(colamd,
 
 if test "$with_colamd" = "yes"; then
   with_colamd=no
-  ACX_CHECK_HEADER_IN_DIRS(colamd.h, [umfpack ufsparse],[
+  AC_CHECK_HEADERS([ufsparse/colamd.h umfpack/colamd.h colamd.h], [
     AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
 
     if test "$with_colamd" = yes; then
@@ -790,7 +791,8 @@ if test "$with_colamd" = "yes"; then
       AC_DEFINE(HAVE_COLAMD, 1, [Define if the COLAMD library is used.])
     else
       warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
-    fi],[
+    fi
+    break], [
       warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."])
 fi 
 
@@ -805,7 +807,7 @@ AC_ARG_WITH(ccolamd,
 
 if test "$with_ccolamd" = "yes"; then
   with_ccolamd=no
-  ACX_CHECK_HEADER_IN_DIRS(ccolamd.h, [umfpack ufsparse],[
+  AC_CHECK_HEADERS([ufsparse/ccolamd.h umfpack/ccolamd.h ccolamd.h], [
     AC_CHECK_LIB(ccolamd, ccolamd, [CCOLAMD_LIBS="-lccolamd"; with_ccolamd=yes])
 
     if test "$with_ccolamd" = yes; then
@@ -815,7 +817,8 @@ if test "$with_ccolamd" = "yes"; then
       AC_DEFINE(HAVE_CCOLAMD, 1, [Define if the CCOLAMD library is used.])
     else
       warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
-    fi],[
+    fi
+    break], [
       warn_colamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."])
 fi 
 
@@ -833,13 +836,14 @@ AC_ARG_WITH(cholmod,
 if test "$with_cholmod" = "yes" && test "$with_colamd" = "yes" &&
 	test "$with_ccolamd" = "yes" && test "$with_amd" = "yes"; then
   with_cholmod=no
-  ACX_CHECK_HEADER_IN_DIRS(cholmod.h, [umfpack ufsparse],[
+  AC_CHECK_HEADERS([ufsparse/cholmod.h umfpack/cholmod.h cholmod.h], [
     if test x"$acx_include_dir" != x; then
       CHOLMOD_INCLUDE=$acx_include_dir/cholmod.h
     fi
 
-    ACX_CHECK_HEADER_IN_DIRS(metis.h, [metis umfpack ufsparse],[
-      AC_CHECK_LIB(metis, METIS_NodeND, with_metis=yes, with_metis=no)],
+    AC_CHECK_HEADERS([metis/metis.h ufsparse/metis.h umfpack/metis.h metis.h], [
+      AC_CHECK_LIB(metis, METIS_NodeND, with_metis=yes, with_metis=no)
+      break],
       with_metis=no)
 
     if test "$with_metis" = yes; then
@@ -866,7 +870,8 @@ if test "$with_cholmod" = "yes" && test "$with_colamd" = "yes" &&
       AC_DEFINE(HAVE_CHOLMOD, 1, [Define if the CHOLMOD library is used.])
     else
       warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
-    fi],[
+    fi
+    break], [
       warn_colamd="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."])
 fi 
 
@@ -1752,7 +1757,7 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile \
   dlfcn/Makefile doc/Makefile doc/faq/Makefile \
   doc/interpreter/Makefile doc/liboctave/Makefile \
   doc/refcard/Makefile emacs/Makefile examples/Makefile \
-  liboctave/Makefile liboctave/oct-sparse.h liboctave/oct-types.h \
+  liboctave/Makefile liboctave/oct-types.h \
   src/Makefile libcruft/Makefile libcruft/Makerules \
   libcruft/amos/Makefile libcruft/blas/Makefile \
   libcruft/daspk/Makefile libcruft/dasrt/Makefile 

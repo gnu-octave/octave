@@ -865,18 +865,20 @@ dnl Check for UMFPACK seperately split complex matrix and RHS. Note
 dnl that as umfpack.h can be in three different places, rather than
 dnl include it, just declare the functions needed.
 dnl
-dnl Assumes that
-dnl
-dnl   ACX_CHECK_HEADER_IN_DIRS(umfpack.h, [umfpack ufsparse])
-dnl
-dnl has already been called.
+dnl Assumes that the check for umfpack has already been performed.
 dnl
 AC_DEFUN([OCTAVE_UMFPACK_SEPERATE_SPLIT],
 [AC_MSG_CHECKING([for UMFPACK seperate complex matrix and rhs split])
 AC_CACHE_VAL(octave_cv_umfpack_seperate_split,
 [AC_TRY_RUN([
 #include <stdlib.h>
-#include <$acx_umfpack_h_include_file>
+#if defined (HAVE_UFSPARSE_UMFPACK_h)
+#include <ufsparse/umfpack.h>
+#elif defined (HAVE_UMFPACK_UMFPACK_H)
+#include <umfpack/umfpack.h>
+#elif defined (HAVE_UMFPACK_H)
+#include <umfpack.h>
+#endif
 int n = 5;
 int Ap[] = {0, 2, 5, 9, 10, 12};
 int Ai[]  = {0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4};

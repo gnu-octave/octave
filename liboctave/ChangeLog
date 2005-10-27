@@ -1,3 +1,8 @@
+2005-10-26  John W. Eaton  <jwe@octave.org>
+
+	* oct-sparse.h: New file.
+	* oct-sparse.h.in: Delete.
+
 2005-10-26  David Bateman  <dbateman@free.fr>
 
 	* sparse-base-chol.h: Include cholmod specific code in HAVE_CHOLMOD

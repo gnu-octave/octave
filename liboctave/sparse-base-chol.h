@@ -35,15 +35,13 @@ class
 sparse_base_chol
 {
 protected:
+#ifdef HAVE_CHOLMOD
   class sparse_base_chol_rep
   {
   public:
-#ifdef HAVE_CHOLMOD
     sparse_base_chol_rep (void) : count (1), Lsparse (NULL), 
 				  is_pd (false), minor_p (0) { }
-#else
-    sparse_base_chol_rep (void) : count (1), is_pd (false), minor_p (0) { }
-#endif
+
     sparse_base_chol_rep (const chol_type& a, 
 			  const bool natural) : count (1)
       { init (a, natural); }
@@ -52,14 +50,11 @@ protected:
 			  const bool natural) : count (1)
       { info = init (a, natural); }
 
-#ifdef HAVE_CHOLMOD
     ~sparse_base_chol_rep (void) 
       { CHOLMOD_NAME(free_sparse) (&Lsparse, &Common); }
 
     cholmod_sparse * L (void) const { return Lsparse; }
-#else
-    ~sparse_base_chol_rep (void) { }
-#endif
+
     octave_idx_type P (void) const 
       { return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ? 
 		0 : minor_p + 1); }
@@ -75,11 +70,10 @@ protected:
     int count;
 
   private:
-#ifdef HAVE_CHOLMOD
     cholmod_sparse *Lsparse;
 
     cholmod_common Common;
-#endif
+
     bool is_pd;
 
     octave_idx_type minor_p;
@@ -95,6 +89,49 @@ protected:
     // No assignment
     sparse_base_chol_rep& operator = (const sparse_base_chol_rep& a);
   };
+#else
+  class sparse_base_chol_rep
+  {
+  public:
+    sparse_base_chol_rep (void) : count (1), is_pd (false), minor_p (0) { }
+
+    sparse_base_chol_rep (const chol_type& a, 
+			  const bool natural) : count (1)
+      { init (a, natural); }
+
+    sparse_base_chol_rep (const chol_type& a, octave_idx_type& info, 
+			  const bool natural) : count (1)
+      { info = init (a, natural); }
+
+    ~sparse_base_chol_rep (void) { }
+
+    octave_idx_type P (void) const { return 0; }
+
+    ColumnVector perm (void) const { return perms + 1; }
+
+    p_type Q (void) const;
+
+    bool is_positive_definite (void) const { return is_pd; }
+
+    double rcond (void) const { return cond; }
+
+    int count;
+
+  private:
+    bool is_pd;
+
+    octave_idx_type minor_p;
+
+    ColumnVector perms;
+
+    double cond;
+
+    octave_idx_type init (const chol_type& a, bool natural = true);
+
+    // No assignment
+    sparse_base_chol_rep& operator = (const sparse_base_chol_rep& a);
+  };
+#endif
 
  private:
   sparse_base_chol_rep *rep;

@@ -1,3 +1,13 @@
+2005-10-26  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_UMFPACK_SEPERATE_SPLIT):
+	Use new method of finding umfpack.h.
+	* configure.in: Use AC_CHECK_HEADERS instead of
+	ACX_CHECK_HEADER_IN_DIRS.
+	(AC_CONFIG_FILES): Delete liboctave/oct-sparse.h from the list.
+
+	* acx_include_dirs.m4: Delete.
+
 2005-10-26  Arno J. Klaassen  <arno@heho.snv.jussieu.fr>
 
 	* configure.in [*-*-freebsd*] (SH_LDFLAGS): Properly quote.

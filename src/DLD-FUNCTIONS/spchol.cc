@@ -392,6 +392,8 @@ factorization as determined by @var{typ}.\n\
       return retval;
     }
 
+#ifdef HAVE_CHOLMOD
+
   cholmod_common Common;
   cholmod_common *cm = &Common;
   CHOLMOD_NAME(start) (cm);
@@ -660,7 +662,11 @@ factorization as determined by @var{typ}.\n\
       retval(0) = tmp;
     }
 
- symbfact_error:  
+ symbfact_error:
+#else
+  error ("symbfact: not available in this version of Octave");
+#endif
+
   return retval;
 }
 

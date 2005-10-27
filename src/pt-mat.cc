@@ -67,13 +67,13 @@ private:
   public:
 
     tm_row_const_rep (void)
-      : count (1), dv (), all_str (false),
+      : count (1), dv (0, 0), all_str (false),
 	all_sq_str (false), all_dq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
 	all_mt (true), ok (false) { }
 
     tm_row_const_rep (const tree_argument_list& row)
-      : count (1), dv (), all_str (false), all_sq_str (false),
+      : count (1), dv (0, 0), all_str (false), all_sq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
 	all_mt (true), ok (false)
     { init (row); }
@@ -150,11 +150,8 @@ public:
       delete rep;
   }
 
-  octave_idx_type rows (void)
-  { return (rep->dv.length () > 0 ? rep->dv(0) : 0); }
-
-  octave_idx_type cols (void)
-  { return (rep->dv.length () > 1 ? rep->dv(1) : 0); }
+  octave_idx_type rows (void) { return rep->dv(0); }
+  octave_idx_type cols (void) { return rep->dv(1); }
 
   dim_vector dims (void) { return rep->dv; }
 
@@ -357,15 +354,15 @@ tm_const : public octave_base_list<tm_row_const>
 public:
 
   tm_const (const tree_matrix& tm)
-    : dv (), all_str (false), all_sq_str (false), all_dq_str (false),
+    : dv (0, 0), all_str (false), all_sq_str (false), all_dq_str (false),
       some_str (false), all_real (false), all_cmplx (false),
       all_mt (true), ok (false)
       { init (tm); }
 
   ~tm_const (void) { }
 
-  octave_idx_type rows (void) const { return (dv.length () > 0 ? dv.elem (0) : 0); }
-  octave_idx_type cols (void) const { return (dv.length () > 1 ? dv.elem (1) : 0); }
+  octave_idx_type rows (void) const { return dv.elem (0); }
+  octave_idx_type cols (void) const { return dv.elem (1); }
 
   dim_vector dims (void) const { return dv; }
 

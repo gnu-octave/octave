@@ -1,3 +1,11 @@
+2005-10-27  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::tm_row_const_rep):
+	Ensure that we always have at least two dimensions here.
+	(tm_const::tm_const): Likewise.
+	(tm_const::rows, tm_const::columns): Simplify.
+	(tm_row_const::rows, tm_row_const::columns)): Simplify.
+
 2005-10-26  John W. Eaton  <jwe@octave.org>
 
 	* oct-procbuf.cc (octave_procbuf::open): Cast 0 to void * to avoid

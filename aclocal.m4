@@ -510,7 +510,7 @@ else
       AC_MSG_RESULT([no])
     fi
   else
-    warn_gnuplot="yes"
+    warn_gnuplot=yes
 
     GNUPLOT_BINARY="$gp_default"
 

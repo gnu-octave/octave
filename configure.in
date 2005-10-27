@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.489 $)
+AC_REVISION($Revision: 1.491 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -495,7 +495,7 @@ AC_ARG_WITH(fftw,
   [  --without-fftw          use included fftpack instead of installed fftw],
   with_fftw=$withval, with_fftw=yes)
 
-if test "$with_fftw" = "yes"; then
+if test "$with_fftw" = yes; then
   have_fftw3_header=no
   with_fftw3=no
   AC_CHECK_HEADER(fftw3.h, [have_fftw3_header=yes; break])
@@ -717,7 +717,6 @@ AC_SUBST(F77_FLOAT_STORE_FLAG)
 
 sinclude(acx_blas.m4)
 sinclude(acx_lapack.m4)
-sinclude(acx_include_dirs.m4)
 ACX_BLAS([], [BLAS_DIR="blas"])
 ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
 AC_SUBST(BLAS_DIR)
@@ -732,14 +731,13 @@ AC_CHECK_LIB(amd, amd_postorder, [AMD_LIBS="-lamd"; with_amd=yes],[with_amd=no])
 
 UMFPACK_LIBS=
 AC_SUBST(UMFPACK_LIBS)
-UMFPACK_INCLUDE=umfpack.h
-AC_SUBST(UMFPACK_INCLUDE)
 
 AC_ARG_WITH(umfpack,
   [  --without-umfpack       don't use UMFPACK, disable some sparse functionality],
   with_umfpack=$withval, with_umfpack=yes)
 
-if test "$with_umfpack" = "yes" && test "$with_amd" = "yes"; then
+if test "$with_umfpack" = yes && test "$with_amd" = yes; then
+  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
   with_umfpack=no
   AC_CHECK_HEADERS([ufsparse/umfpack.h umfpack/umfpack.h umfpack.h], [
     AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
@@ -756,100 +754,83 @@ if test "$with_umfpack" = "yes" && test "$with_amd" = "yes"; then
 
     if test "$with_umfpack" = yes; then
       AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
-      if test x"$acx_include_dir" != x; then
-	UMFPACK_INCLUDE=$acx_include_dir/umfpack.h
-      fi
       OLD_LIBS=$LIBS
       LIBS="$LIBS $UMFPACK_LIBS $AMD_LIBS $BLAS_LIBS $FLIBS"
       OCTAVE_UMFPACK_SEPERATE_SPLIT
       LIBS=$OLD_LIBS
-    else
-      warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
+      warn_umfpack=
     fi
-    break], [
-  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."])
+    break])
+fi
+
+if test -n "$warn_umfpack"; then
+  AC_MSG_WARN($warn_umfpack)
 fi
 
 COLAMD_LIBS=
 AC_SUBST(COLAMD_LIBS)
-COLAMD_INCLUDE=colamd.h
-AC_SUBST(COLAMD_INCLUDE)
 
 AC_ARG_WITH(colamd,
-  [  --without-colamd       don't use COLAMD, disable some sparse functionality],
+  [  --without-colamd        don't use COLAMD, disable some sparse functionality],
   with_colamd=$withval, with_colamd=yes)
 
-if test "$with_colamd" = "yes"; then
+if test "$with_colamd" = yes; then
+  warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
   with_colamd=no
   AC_CHECK_HEADERS([ufsparse/colamd.h umfpack/colamd.h colamd.h], [
     AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
-
     if test "$with_colamd" = yes; then
-      if test x"$acx_include_dir" != x; then
-        COLAMD_INCLUDE=$acx_include_dir/colamd.h
-      fi
       AC_DEFINE(HAVE_COLAMD, 1, [Define if the COLAMD library is used.])
-    else
-      warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
+      warn_colamd=
     fi
-    break], [
-      warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."])
+    break])
 fi 
+
+if test -n "$warn_colamd"; then
+  AC_MSG_WARN($warn_colamd)
+fi
 
 CCOLAMD_LIBS=
 AC_SUBST(CCOLAMD_LIBS)
-CCOLAMD_INCLUDE=ccolamd.h
-AC_SUBST(CCOLAMD_INCLUDE)
 
 AC_ARG_WITH(ccolamd,
   [  --without-ccolamd       don't use CCOLAMD, disable some sparse functionality],
   with_ccolamd=$withval, with_ccolamd=yes)
 
-if test "$with_ccolamd" = "yes"; then
+if test "$with_ccolamd" = yes; then
+  warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
   with_ccolamd=no
   AC_CHECK_HEADERS([ufsparse/ccolamd.h umfpack/ccolamd.h ccolamd.h], [
     AC_CHECK_LIB(ccolamd, ccolamd, [CCOLAMD_LIBS="-lccolamd"; with_ccolamd=yes])
-
     if test "$with_ccolamd" = yes; then
-      if test x"$acx_include_dir" != x; then
-        CCOLAMD_INCLUDE=$acx_include_dir/ccolamd.h
-      fi
       AC_DEFINE(HAVE_CCOLAMD, 1, [Define if the CCOLAMD library is used.])
-    else
-      warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
+      warn_ccolamd=
     fi
-    break], [
-      warn_colamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."])
+    break])
 fi 
+
+if test -n "$warn_ccolamd"; then
+  AC_MSG_WARN($warn_colamd)
+fi
 
 CHOLMOD_LIBS=
 AC_SUBST(CHOLMOD_LIBS)
-CHOLMOD_INCLUDE=cholmod.h
-AC_SUBST(CHOLMOD_INCLUDE)
-METIS_INCLUDE=metis.h
-AC_SUBST(METIS_INCLUDE)
 
 AC_ARG_WITH(cholmod,
   [  --without-cholmod       don't use CHOLMOD, disable some sparse functionality],
   with_cholmod=$withval, with_cholmod=yes)
 
-if test "$with_cholmod" = "yes" && test "$with_colamd" = "yes" &&
-	test "$with_ccolamd" = "yes" && test "$with_amd" = "yes"; then
+if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
+	test "$with_ccolamd" = yes && test "$with_amd" = yes; then
+  warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
   with_cholmod=no
   AC_CHECK_HEADERS([ufsparse/cholmod.h umfpack/cholmod.h cholmod.h], [
-    if test x"$acx_include_dir" != x; then
-      CHOLMOD_INCLUDE=$acx_include_dir/cholmod.h
-    fi
-
     AC_CHECK_HEADERS([metis/metis.h ufsparse/metis.h umfpack/metis.h metis.h], [
       AC_CHECK_LIB(metis, METIS_NodeND, with_metis=yes, with_metis=no)
       break],
       with_metis=no)
 
     if test "$with_metis" = yes; then
-      if test x"$acx_include_dir" != x; then
-        METIS_INCLUDE=$acx_include_dir/metis.h
-      fi
       AC_DEFINE(HAVE_METIS, 1, [Define if the METIS library is used.])
       AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod -lmetis"; 
 	with_cholmod=yes], [
@@ -868,12 +849,14 @@ if test "$with_cholmod" = "yes" && test "$with_colamd" = "yes" &&
 
     if test "$with_cholmod" = yes; then
       AC_DEFINE(HAVE_CHOLMOD, 1, [Define if the CHOLMOD library is used.])
-    else
-      warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
+      warn_cholmod=
     fi
-    break], [
-      warn_colamd="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."])
+    break])
 fi 
+
+if test -n "$warn_cholmod"; then
+  AC_MSG_WARN($warn_cholmod)
+fi
 
 ### Handle shared library options.
 

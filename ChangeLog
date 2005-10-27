@@ -1,5 +1,11 @@
 2005-10-26  John W. Eaton  <jwe@octave.org>
 
+	* configure.in, aclocal.m4: Don't quote "yes".
+
+	* configure.in: Print warning messages for umfpack, colamd,
+	ccolamd, and cholmod as we are searching.  Avoid multiple
+	definitions of message strings.
+
 	* aclocal.m4 (OCTAVE_UMFPACK_SEPERATE_SPLIT):
 	Use new method of finding umfpack.h.
 	* configure.in: Use AC_CHECK_HEADERS instead of

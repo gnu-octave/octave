@@ -36,7 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 DEFUN_DLD (gammainc, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
-Computes the incomplete gamma function,\n\
+Compute the normalized incomplete gamma function,\n\
 @iftex\n\
 @tex\n\
 $$\n\
@@ -53,7 +53,10 @@ gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
                   gamma (a)    /\n\
                             t=0\n\
 @end smallexample\n\
+\n\
 @end ifinfo\n\
+with the limiting value of 1 as @var{x} approaches infinity.\n\
+The standard notation is @math{P(a,x)}, e.g. Abramowitz and Stegun (6.5.1).\n\
 \n\
 If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned\n\
 for each element of @var{x} and vice versa.\n\

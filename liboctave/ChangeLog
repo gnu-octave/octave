@@ -1,3 +1,10 @@
+2005-10-29  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::indexN): Simplify.  Delete separate special
+	case for "vector_equivalent".
+
+	* Array-util.cc (vector_equivalent): Arg is now dim_vector.
+
 2005-10-28  John W. Eaton  <jwe@octave.org>
 
 	* oct-sparse.h: Fix typo in HAVE_UFSPARSE_UMFPACK_H.

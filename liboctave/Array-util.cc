@@ -219,15 +219,15 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 }
 
 bool
-vector_equivalent (const Array<octave_idx_type>& ra_idx)
+vector_equivalent (const dim_vector& dv)
 {
-  octave_idx_type n = ra_idx.length ();
+  int n = dv.length ();
 
   bool found_first = false;
 
-  for (octave_idx_type i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     {
-      if (ra_idx(i) != 1)
+      if (dv(i) != 1)
         {
 	  if (! found_first)
 	    found_first = true;

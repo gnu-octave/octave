@@ -2158,9 +2158,11 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
 
-  int n_dims = dims().length ();
+  dim_vector dv = dims ();
 
-  octave_idx_type orig_len = dims().numel ();
+  int n_dims = dv.length ();
+
+  octave_idx_type orig_len = dv.numel ();
 
   dim_vector idx_orig_dims = ra_idx.orig_dimensions ();
 
@@ -2170,90 +2172,40 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
       retval = Array<T> (*this, dim_vector (orig_len, 1));
     }
-  else if (length () == 1)
-    {
-      // Only one element in array.
-
-      Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
-
-      octave_idx_type len = tmp.length ();
-
-      if (len != 0)
-	{
-	  if (len >= idx_orig_dims.numel ())
-	    retval = Array<T> (tmp, idx_orig_dims);
-	}
-      else
-	retval = Array<T> (tmp, dim_vector (0, 0));
-    }
-  else if (vector_equivalent (dims ()))
-    {
-      // We're getting elements from a vector equivalent i.e. (1x4x1).
-
-      Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
-
-      octave_idx_type len = tmp.length ();
-
-      if (len == 0)
-	{
-	  if (idx_orig_dims.any_zero ())
-	    retval = Array<T> (idx_orig_dims);
-	  else
-	    {
-	      dim_vector new_dims;
-
-	      new_dims.resize (n_dims);
-
-	      for (int i = 0; i < n_dims; i++)
-	        {
-		  if ((dims ())(i) == 1)
-		    new_dims(i) = 1;
-		}
-
-	      new_dims.chop_trailing_singletons ();
-
-	      retval = Array<T> (new_dims);
-	    }
-	}
-      else
-	{
-	  if (vector_equivalent (idx_orig_dims))
-	    {
-	      // Array<int> index (n_dims, len);
-	      dim_vector new_dims;
-
-	      new_dims.resize (n_dims);
-
-	      for (int i = 0; i < n_dims; i++)
-	        {
-		  if ((dims ())(i) == 1)
-		    new_dims(i) = 1;
-	        }
-
-	      new_dims.chop_trailing_singletons ();
-
-	      retval = Array<T> (tmp, new_dims);
-	    }
-	  else if (tmp.length () >= idx_orig_dims.numel ())
-	    retval = Array<T> (tmp, idx_orig_dims);
-
-	  (*current_liboctave_error_handler)
-	    ("I do not know what to do here yet!");
-	}
-    }
   else
     {
-      if (liboctave_wfi_flag
+      bool vec_equiv = vector_equivalent (dv);
+
+      if (! vec_equiv
+	  && liboctave_wfi_flag
 	  && ! (ra_idx.is_colon ()
-		|| (ra_idx.one_zero_only () && idx_orig_dims == dims ())))
+		|| (ra_idx.one_zero_only () && idx_orig_dims == dv)))
 	(*current_liboctave_warning_handler)
 	  ("single index used for N-d array");
 
-      ra_idx.freeze (orig_len, "nd-array", resize_ok);
+      octave_idx_type frozen_len
+	= ra_idx.freeze (orig_len, "nd-array", resize_ok);
 
       if (ra_idx)
 	{
-	  dim_vector result_dims (idx_orig_dims);
+	  dim_vector result_dims;
+
+	  if (vec_equiv)
+	    {
+	      result_dims = dv;
+
+	      for (int i = 0; i < n_dims; i++)
+		{
+		  if (result_dims(i) != 1)
+		    {
+		      // All but this dim should be one.
+		      result_dims(i) = frozen_len;
+		      break;
+		    }
+		}
+	    }
+	  else
+	    result_dims = idx_orig_dims;
 
 	  if (ra_idx.one_zero_only ())
 	    {
@@ -2283,7 +2235,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	        retval.elem (iidx) = rfv;
 	      else
 	        {
-		  Array<int> temp = get_ra_idx (ii, dims ());
+		  Array<int> temp = get_ra_idx (ii, dv);
 
 		  retval.elem (iidx) = elem (temp);
 		}

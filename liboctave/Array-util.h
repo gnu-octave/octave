@@ -55,7 +55,7 @@ extern Array<idx_vector> conv_to_array (const idx_vector *tmp, const octave_idx_
 extern dim_vector freeze (Array<idx_vector>& ra_idx,
 			  const dim_vector& dimensions, int resize_ok);
 
-extern bool vector_equivalent (const Array<octave_idx_type>& ra_idx);
+extern bool vector_equivalent (const dim_vector& dv);
 
 extern bool all_ok (const Array<idx_vector>& ra_idx);
 

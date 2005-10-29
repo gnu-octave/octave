@@ -356,39 +356,23 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 #define MX_ND_ANY_EXPR elem (iter_idx) != 0
 
 #define MX_ND_ALL_EVAL(TEST_EXPR) \
- if (TEST_EXPR) \
-   { \
-     if (dim > -1) \
-       iter_idx (dim) = 0; \
-     retval (iter_idx) = 0; \
-     break; \
-   } \
- else \
-   { \
-     if (dim > -1) \
-       iter_idx (dim) = 0; \
-     retval (iter_idx) = 1; \
-   } \
+ if (retval(result_idx) && (TEST_EXPR)) \
+   retval(result_idx) = 0;
 
 #define MX_ND_ANY_EVAL(TEST_EXPR) \
- if (TEST_EXPR) \
-   { \
-     if (dim > -1) \
-       iter_idx (dim) = 0; \
-     retval (iter_idx) = 1; \
-     break; \
-   } 
+ if (retval(result_idx) || (TEST_EXPR)) \
+   retval(result_idx) = 1;
  
-#define MX_ND_REDUCTION(EVAL_EXPR, END_EXPR, VAL, ACC_DECL, \
-                        RET_TYPE) \
+#define MX_ND_REDUCTION(EVAL_EXPR, INIT_VAL, RET_TYPE) \
  \
   RET_TYPE retval; \
  \
   dim_vector dv = this->dims (); \
+  int nd = this->ndims (); \
  \
   int empty = true; \
  \
-  for (int i = 0; i < dv.length (); i++) \
+  for (int i = 0; i < nd; i++) \
     { \
       if (dv(i) > 0) \
         { \
@@ -400,88 +384,89 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   if (empty) \
     { \
       dim_vector retval_dv (1, 1); \
-      retval.resize (retval_dv, VAL); \
+      retval.resize (retval_dv, INIT_VAL); \
       return retval; \
     } \
  \
-  if (dim == -1) /* We need to find first non-singleton dim */ \
+  /* We need to find first non-singleton dim.  */ \
+ \
+  if (dim == -1) \
     { \
-      for (int i = 0; i < dv.length (); i++) \
+      dim = 0; \
+ \
+      for (int i = 0; i < nd; i++) \
         { \
-	  if (dv (i) != 1) \
+	  if (dv(i) != 1) \
 	    { \
 	      dim = i; \
 	      break; \
 	    } \
         } \
+    } \
+  else if (dim >= nd) \
+    { \
+      /* One more than the number of dimensions will yield the same \
+	 result as N more, so there is no point in creating an \
+	 unnecesarily large dimension vector padded with ones. \
+	 Remember that dim is in the range of 0:nd-1.  */ \
  \
-      if (dim == -1) \
-       	dim = 0; \
+      dim = nd++; \
+      dv.resize (nd, 1); \
     } \
  \
-  int squeezed = 0; \
+  /* The strategy here is to loop over all the elements once, \
+     adjusting the index into the result array so that we do the right \
+     thing with respect to the DIM argument.  */ \
  \
-  for (int i = 0; i < dv.length (); i++) \
+  octave_idx_type result_offset = 0; \
+ \
+  Array<octave_idx_type> tsz (nd, 1); \
+  for (int i = 1; i < nd; i++) \
+    tsz(i) = tsz(i-1)*dv(i-1); \
+ \
+  octave_idx_type reset_at = tsz(dim); \
+  octave_idx_type offset_increment_ctr = 1; \
+  octave_idx_type result_ctr = 1; \
+ \
+  octave_idx_type result_offset_increment_point = 1; \
+  for (int i = 0; i <= dim; i++) \
+     result_offset_increment_point *= dv(i); \
+ \
+  octave_idx_type result_offset_increment_amount = 1; \
+  for (int i = 0; i <= dim-1; i++) \
+     result_offset_increment_amount *= dv(i); \
+ \
+  dv(dim) = 1; \
+ \
+  retval.resize (dv, INIT_VAL); \
+ \
+  octave_idx_type result_idx = 0; \
+ \
+  octave_idx_type num_iter = this->numel (); \
+ \
+  for (octave_idx_type iter_idx = 0; iter_idx < num_iter; iter_idx++) \
     { \
-      if (dv(i) == 0) \
+      EVAL_EXPR; \
+ \
+      if (result_ctr == reset_at) \
         { \
-          squeezed = 1;\
-	  break;\
+	  result_idx = result_offset; \
+	  result_ctr = 1; \
         } \
-    } \
- \
-  if (squeezed) \
-    { \
-      dv(dim) = 1; \
- \
-      retval.resize (dv, VAL); \
- \
-      return retval; \
-    } \
- \
-  /*  Length of Dimension */ \
-  octave_idx_type dim_length = 1; \
- \
-  /* dim = -1 means from here that the user specified a */ \
-  /* dimension which is larger that the number of dimensions */ \
-  /* of the array */ \
- \
-  if (dim >= dv.length ()) \
-    dim = -1; \
-  else \
-    dim_length = dv(dim); \
- \
-  if (dim > -1) \
-    dv(dim) = 1; \
- \
-  /* This finds the number of elements in retval */ \
-  octave_idx_type num_iter = (this->numel () / dim_length); \
- \
-  /* Make sure retval has correct dimensions */ \
-  retval.resize (dv, VAL); \
- \
-  Array<octave_idx_type> iter_idx (dv.length (), 0); \
- \
-  /* Filling in values.         */ \
-  /* First loop finds new index */ \
- \
-  for (octave_idx_type j = 0; j < num_iter; j++) \
-    { \
-      ACC_DECL;\
-      for (octave_idx_type i = 0; i < dim_length; i++) \
+      else \
 	{ \
-	  if (dim > -1) \
-	    iter_idx(dim) = i; \
+	  result_ctr++; \
+	  result_idx++; \
+         } \
  \
-	  EVAL_EXPR; \
+      if (offset_increment_ctr == result_offset_increment_point) \
+        { \
+	  result_offset += result_offset_increment_amount; \
+	  result_idx = result_offset; \
+	  offset_increment_ctr = 1; \
 	} \
- \
-      if (dim > -1) \
-        iter_idx (dim) = 0; \
- \
-      END_EXPR;\
- \
-      increment_index (iter_idx, dv); \
+      else \
+	offset_increment_ctr++; \
     } \
  \
   retval.chop_trailing_singletons (); \
@@ -489,15 +474,13 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   return retval
 
 #define MX_ND_REAL_OP_REDUCTION(ASN_EXPR, INIT_VAL) \
-  MX_ND_REDUCTION (acc ASN_EXPR, retval.elem (iter_idx) = acc, \
-                   INIT_VAL, double acc = INIT_VAL, NDArray)
+  MX_ND_REDUCTION (retval(result_idx) ASN_EXPR, INIT_VAL, NDArray)
 
 #define MX_ND_COMPLEX_OP_REDUCTION(ASN_EXPR, INIT_VAL) \
-  MX_ND_REDUCTION (acc ASN_EXPR, retval.elem (iter_idx) = acc, \
-                   INIT_VAL, Complex acc = INIT_VAL, ComplexNDArray)
+  MX_ND_REDUCTION (retval(result_idx) ASN_EXPR, INIT_VAL, ComplexNDArray)
 
 #define MX_ND_ANY_ALL_REDUCTION(EVAL_EXPR, VAL) \
-  MX_ND_REDUCTION (EVAL_EXPR, , VAL, , boolNDArray)
+  MX_ND_REDUCTION (EVAL_EXPR, VAL, boolNDArray)
 
 #define MX_ND_CUMULATIVE_OP(RET_TYPE, ACC_TYPE, VAL, OP) \
   RET_TYPE retval; \

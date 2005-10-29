@@ -1,5 +1,8 @@
 2005-10-29  John W. Eaton  <jwe@octave.org>
 
+	* mx-inlines.cc (MX_ND_REDUCTION): Avoid increment_index to speed
+	things up.  Simplify.
+
 	* Array.cc (Array<T>::indexN): Simplify.  Delete separate special
 	case for "vector_equivalent".
 

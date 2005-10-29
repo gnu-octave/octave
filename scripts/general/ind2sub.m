@@ -66,7 +66,7 @@ function varargout = ind2sub (dims, ind)
 	error ("ind2sub: expecting integer-valued index argument");
       endif
     else
-      error ("sub2ind: expecting dims to be an integer vector");
+      error ("ind2sub: expecting dims to be an integer vector");
     endif
   else
     usage ("ind2sub (dims, ind)");

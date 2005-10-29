@@ -44,7 +44,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
   chol_elt *Sx;
   octave_idx_type pdest, k, ncol, p, pend;
 
-  if (S == NULL)
+  if (! S)
     return;
 
   Sp = static_cast<octave_idx_type *>(S->p);
@@ -97,13 +97,13 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
 
   // Setup initial parameters
   CHOLMOD_NAME(start) (cm);
-  cm->prefer_zomplex = FALSE;
+  cm->prefer_zomplex = false;
 
   double spu = Voctave_sparse_controls.get_key ("spumoni");
   if (spu == 0.)
     {
       cm->print = -1;
-      cm->print_function = NULL;
+      cm->print_function = 0;
     }
   else
     {
@@ -135,12 +135,12 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
 #endif
 #endif
 
-  cm->final_asis = FALSE;
-  cm->final_super = FALSE;
-  cm->final_ll = TRUE;
-  cm->final_pack = TRUE;
-  cm->final_monotonic = TRUE;
-  cm->final_resymbol = FALSE;
+  cm->final_asis = false;
+  cm->final_super = false;
+  cm->final_ll = true;
+  cm->final_pack = true;
+  cm->final_monotonic = true;
+  cm->final_resymbol = false;
 
   cholmod_sparse A;
   cholmod_sparse *ac = &A;
@@ -151,9 +151,9 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   ac->p = a.cidx();
   ac->i = a.ridx();
   ac->nzmax = a.nonzero();
-  ac->packed = TRUE;
-  ac->sorted = TRUE;
-  ac->nz = NULL;
+  ac->packed = true;
+  ac->sorted = true;
+  ac->nz = 0;
 #ifdef IDX_TYPE_LONG
   ac->itype = CHOLMOD_LONG;
 #else
@@ -177,7 +177,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
     {
       cm->nmethods = 1 ;
       cm->method [0].ordering = CHOLMOD_NATURAL ;
-      cm->postorder = FALSE ;
+      cm->postorder = false ;
     }
 
   cholmod_factor *Lfactor;

@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 extern "C" {
 #endif
 
-#if defined (HAVE_UFSPARSE_UMFPACK_h)
+#if defined (HAVE_UFSPARSE_UMFPACK_H)
 #include <ufsparse/umfpack.h>
 #elif defined (HAVE_UMFPACK_UMFPACK_H)
 #include <umfpack/umfpack.h>

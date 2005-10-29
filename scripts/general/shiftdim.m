@@ -51,34 +51,38 @@
 
 function [y, ns]  = shiftdim (x, n)
 
-  if (nargin == 1)
-    ## Find the first singleton dimension.
-    nd = ndims (x);
-    orig_dims = size (x);
-    ns  = 1;
-    while (ns < nd + 1 && orig_dims(ns) == 1)
-      ns = ns + 1;
-    endwhile
-    if (ns > nd)
-      ns = 1;
-    endif
-    y = reshape (x, orig_dims(ns:end));
-    ns = ns - 1;
-  elseif (nargin == 2)
-    if (! isscalar (n) && floor (n) != n)
-      error ("shiftdim: n must be an scalar integer");
-    endif
-    if (n < 0)
-      orig_dims = size (x);
-      singleton_dims = ones (1, -n);
-      y = reshape (x, [singleton_dims, orig_dims]);
-    elseif (n > 0)
-      ndims = length (size (x));
-      y = permute (x, [n+1:ndims, 1:n]);
-    else
-      y = x;
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     usage ("shiftdim (x, n) or [b, ns] = shiftdim (x)");
   endif
+
+  nd = ndims (x);
+  orig_dims = size (x);
+
+  if (nargin == 1)
+    ## Find the first singleton dimension.
+    n = 0;
+    while (n < nd && orig_dims(n+1) == 1)
+      n++;
+    endwhile
+  endif
+
+  if (! isscalar (n) || floor (n) != n)
+    error ("shiftdim: n must be a scalar integer");
+  endif
+
+  if (n >= nd)
+    n = rem (n, nd);
+  endif
+
+  if (n < 0)
+    singleton_dims = ones (1, -n);
+    y = reshape (x, [singleton_dims, orig_dims]);
+  elseif (n > 0)
+    y = reshape (x, [orig_dims(n+1:nd), orig_dims(1:n)]);
+  else
+    y = x;
+  endif
+
+  ns = n;
+
 endfunction

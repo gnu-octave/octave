@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.491 $)
+AC_REVISION($Revision: 1.492 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -836,14 +836,14 @@ if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
 	with_cholmod=yes], [
         AC_CHECK_LIB(cholmod_start, cholmod, 
 	  [CHOLMOD_LIBS="-lcholmod -cblas -lmetis"; with_cholmod=yes], [],
-          AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)],
+          $AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)],
 	$AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS -lmetis)
     else
       AC_CHECK_LIB(cholmod, cholmod_start, [CHOLMOD_LIBS="-lcholmod"; 
 	with_cholmod=yes], [
         AC_CHECK_LIB(cholmod_start, cholmod, [CHOLMOD_LIBS="-lcholmod -cblas"; 
 	  with_cholmod=yes], [],
-          AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)],
+          $AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)],
 	$AMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $BLAS_LIBS $FLIBS)
     fi
 

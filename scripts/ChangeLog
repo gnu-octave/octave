@@ -1,3 +1,10 @@
+2005-10-28  John W. Eaton  <jwe@octave.org>
+
+	* general/shiftdim.m: Compatibility fix for row vectors.
+	Correct check for non-scalar non-integer shift.  For positive
+	N, shift is remainder of N and number of dims.  Always return NS.
+	Simplify.
+
 2005-10-18  Keith Goodman  <kwgoodman@gmail.com>
 
 	* general/randperm.m: Improve compatibility by allowing input

@@ -522,8 +522,8 @@ Return 1 for characters that are hexadecimal digits.\n\
 
   DEFUN_MAPPER (lgamma, 0, 0, 0, xlgamma, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} lgamma (@var{a}, @var{x})\n\
-@deftypefnx {Mapping Function} {} gammaln (@var{a}, @var{x})\n\
+@deftypefn {Mapping Function} {} lgamma (@var{x})\n\
+@deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
 Return the natural logarithm of the gamma function.\n\
 @end deftypefn\n\
 @seealso{gamma and gammai}");

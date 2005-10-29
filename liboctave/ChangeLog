@@ -1,3 +1,11 @@
+2005-10-28  John W. Eaton  <jwe@octave.org>
+
+	* oct-sparse.h: Fix typo in HAVE_UFSPARSE_UMFPACK_H.
+	From Quentin Spencer <qspencer@ieee.org>.
+
+	* sparse-base-chol.cc: Use C++ true/false instead of
+	preprocessor defined TRUE/FALSE.  Use 0 instead of NULL.
+
 2005-10-27  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assignN): Reshape to final size instead of resizing.

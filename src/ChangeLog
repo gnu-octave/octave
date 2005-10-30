@@ -1,3 +1,14 @@
+2005-10-30  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (gnuplot::set_gnuplot_exe,
+	gnuplot::do_set_gnuplot_exe): New functions.
+	(gnuplot_binary): Call gnuplot::set_gnuplot_exe here.
+
+	* DLD-FUNCTIONS/gplot.l (gnuplot::set_gnuplot_use_title_option,
+	gnuplot::do_set_gnuplot_use_title_option): New functions.
+	(gnuplot_use_title_option):
+	Call gnuplot::set_gnuplot_use_title_option here.
+
 2005-10-27  James R. Van Zandt  <jrvz@comcast.net>
 
 	* mappers.cc: Doc fix for lgamma.

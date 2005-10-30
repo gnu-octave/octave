@@ -759,6 +759,18 @@ public:
       instance->do_show (argv);
   }
 
+  static void set_gnuplot_exe (const std::string& exe)
+  {
+    if (ensure_instance ())
+      instance->do_set_gnuplot_exe (exe);
+  }
+
+  static void set_gnuplot_use_title_option (bool opt)
+  {
+    if (ensure_instance ())
+      instance->do_set_gnuplot_use_title_option (opt);
+  }
+
   // XXX FIXME XXX -- should only remove tmp files associated with
   // gnuplot?
   static void cleanup_tmp_files (void) { ::cleanup_tmp_files (); }
@@ -814,6 +826,10 @@ private:
   void do_set (const string_vector& argv);
 
   void do_show (const string_vector& argv);
+
+  void do_set_gnuplot_exe (const std::string& exe) { gnuplot_exe = exe; }
+
+  void do_set_gnuplot_use_title_option (bool opt) { use_title_option = opt; }
 
   void do_plot (const string_vector& argv);
 
@@ -1476,7 +1492,12 @@ set_string_var (std::string& var, const char *nm)
 static int
 gnuplot_binary (void)
 {
-  return set_string_var (Vgnuplot_binary, "gnuplot_binary");
+  int status = set_string_var (Vgnuplot_binary, "gnuplot_binary");
+
+  if (status == 0)
+    gnuplot::set_gnuplot_exe (Vgnuplot_binary);
+
+  return status;
 }
 
 static int
@@ -1531,6 +1552,8 @@ static int
 gnuplot_use_title_option (void)
 {
   Vgnuplot_use_title_option = check_preference ("gnuplot_use_title_option");
+
+  gnuplot::set_gnuplot_use_title_option (Vgnuplot_use_title_option);
 
   return 0;
 }

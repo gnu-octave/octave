@@ -90,6 +90,30 @@
 ## @end table
 ##
 ## The filename and options can be given in any order.
+##
+## @strong{Note}, the print function does not work with gnuplot's
+## muplitplot mode.  This problem is a known bug, and it will be fixed
+## in a future version of Octave, but there is no simple fix (or it
+## would have been fixed long ago).  You can work around the bug by
+## setting the terminal type and output yourself, then executing the
+## multiplot plotting commands.  For example
+##
+## @example
+## @group
+## __gnuplot_set__ terminal postscript
+## __gnuplot_set__ output "foo.ps"
+## subplot (2, 1, 1);
+## sombrero (21);
+## subplot (2, 1, 2);
+## sombrero (41);
+## oneplot
+## __gnuplot_set__ terminal x11
+## __gnuplot_set__ output
+## @end group
+## @end example
+##
+## will save both figures on a single page in the PostScript file
+## @file{foo.ps}.
 ## @end deftypefn
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>

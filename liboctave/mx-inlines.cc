@@ -437,11 +437,11 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   for (octave_idx_type result_idx = 0; result_idx < nel; result_idx++) \
     { \
-      OCTAVE_QUIT;
+      OCTAVE_QUIT; \
  \
       for (octave_idx_type j = 0; j < n_elts; j++) \
 	{ \
-          OCTAVE_QUIT;
+          OCTAVE_QUIT; \
  \
 	  EVAL_EXPR; \
  \

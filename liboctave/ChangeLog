@@ -1,3 +1,8 @@
+2005-10-30  John W. Eaton  <jwe@octave.org>
+
+	* mx-inlines.cc (MX_ND_REDUCTION): Iterate in direction of DIM.
+	(MX_ND_CUMULATIVE_OP): Likewise.
+
 2005-10-29  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (MX_ND_REDUCTION): Avoid increment_index to speed

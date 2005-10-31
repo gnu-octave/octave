@@ -34,7 +34,7 @@ class
 ComplexNDArray : public MArrayN<Complex>
 {
 public:
-  
+
   ComplexNDArray (void) : MArrayN<Complex> () { }
 
   ComplexNDArray (const dim_vector& dv) : MArrayN<Complex> (dv) { }

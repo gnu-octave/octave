@@ -34,7 +34,7 @@ class
 charNDArray : public MArrayN<char>
 {
 public:
-  
+
   charNDArray (void) : MArrayN<char> () { }
 
   charNDArray (dim_vector& dv) : MArrayN<char> (dv) { }

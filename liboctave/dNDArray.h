@@ -35,7 +35,7 @@ class
 NDArray : public MArrayN<double>
 {
 public:
-  
+
   NDArray (void) : MArrayN<double> () { }
 
   NDArray (const dim_vector& dv) : MArrayN<double> (dv) { }

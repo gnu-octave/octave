@@ -36,7 +36,7 @@ class
 boolNDArray : public ArrayN<bool>
 {
 public:
-  
+
   boolNDArray (void) : ArrayN<bool> () { }
 
   boolNDArray (const dim_vector& dv) : ArrayN<bool> (dv) { }

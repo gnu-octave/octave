@@ -405,68 +405,62 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
     } \
   else if (dim >= nd) \
     { \
-      /* One more than the number of dimensions will yield the same \
-	 result as N more, so there is no point in creating an \
-	 unnecesarily large dimension vector padded with ones. \
-	 Remember that dim is in the range of 0:nd-1.  */ \
- \
       dim = nd++; \
       dv.resize (nd, 1); \
     } \
  \
-  /* The strategy here is to loop over all the elements once, \
-     adjusting the index into the result array so that we do the right \
-     thing with respect to the DIM argument.  */ \
+  /* R = op (A, DIM) \
  \
-  octave_idx_type result_offset = 0; \
+     The strategy here is to access the elements of A along the \
+     dimension  specified by DIM.  This means that we loop over each \
+     element of R and adjust the index into A as needed.  */ \
  \
-  Array<octave_idx_type> tsz (nd, 1); \
+  Array<octave_idx_type> cp_sz (nd, 1); \
   for (int i = 1; i < nd; i++) \
-    tsz(i) = tsz(i-1)*dv(i-1); \
+    cp_sz(i) = cp_sz(i-1)*dv(i-1); \
  \
-  octave_idx_type reset_at = tsz(dim); \
-  octave_idx_type offset_increment_ctr = 1; \
-  octave_idx_type result_ctr = 1; \
- \
-  octave_idx_type result_offset_increment_point = 1; \
-  for (int i = 0; i <= dim; i++) \
-     result_offset_increment_point *= dv(i); \
- \
-  octave_idx_type result_offset_increment_amount = 1; \
-  for (int i = 0; i <= dim-1; i++) \
-     result_offset_increment_amount *= dv(i); \
+  octave_idx_type reset_at = cp_sz(dim); \
+  octave_idx_type base_incr = cp_sz(dim+1); \
+  octave_idx_type incr = cp_sz(dim); \
+  octave_idx_type base = 0; \
+  octave_idx_type next_base = base + base_incr; \
+  octave_idx_type iter_idx = base; \
+  octave_idx_type n_elts = dv(dim); \
  \
   dv(dim) = 1; \
  \
   retval.resize (dv, INIT_VAL); \
  \
-  octave_idx_type result_idx = 0; \
+  octave_idx_type nel = dv.numel (); \
  \
-  octave_idx_type num_iter = this->numel (); \
+  octave_idx_type k = 1; \
  \
-  for (octave_idx_type iter_idx = 0; iter_idx < num_iter; iter_idx++) \
+  for (octave_idx_type result_idx = 0; result_idx < nel; result_idx++) \
     { \
-      EVAL_EXPR; \
+      OCTAVE_QUIT;
  \
-      if (result_ctr == reset_at) \
+      for (octave_idx_type j = 0; j < n_elts; j++) \
+	{ \
+          OCTAVE_QUIT;
+ \
+	  EVAL_EXPR; \
+ \
+	  iter_idx += incr; \
+	} \
+ \
+      if (k == reset_at) \
         { \
-	  result_idx = result_offset; \
-	  result_ctr = 1; \
+	  base = next_base; \
+	  next_base += base_incr; \
+	  iter_idx = base; \
+	  k = 1; \
         } \
       else \
 	{ \
-	  result_ctr++; \
-	  result_idx++; \
+	  base++; \
+	  iter_idx = base; \
+	  k++; \
          } \
- \
-      if (offset_increment_ctr == result_offset_increment_point) \
-        { \
-	  result_offset += result_offset_increment_amount; \
-	  result_idx = result_offset; \
-	  offset_increment_ctr = 1; \
-	} \
-      else \
-	offset_increment_ctr++; \
     } \
  \
   retval.chop_trailing_singletons (); \
@@ -482,22 +476,16 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 #define MX_ND_ANY_ALL_REDUCTION(EVAL_EXPR, VAL) \
   MX_ND_REDUCTION (EVAL_EXPR, VAL, boolNDArray)
 
-#define MX_ND_CUMULATIVE_OP(RET_TYPE, ACC_TYPE, VAL, OP) \
+#define MX_ND_CUMULATIVE_OP(RET_TYPE, ACC_TYPE, INIT_VAL, OP) \
+ \
   RET_TYPE retval; \
  \
   dim_vector dv = this->dims (); \
+  int nd = this->ndims (); \
  \
   int empty = true; \
  \
-  /* If dim is larger then number of dims, return array as is */ \
-  if (dim >= dv.length ()) \
-    { \
-      retval = RET_TYPE (*this); \
-      return retval; \
-    } \
- \
-  /* Check if all dims are empty */ \
-  for (int i = 0; i < dv.length (); i++) \
+  for (int i = 0; i < nd; i++) \
     { \
       if (dv(i) > 0) \
         { \
@@ -508,87 +496,97 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   if (empty) \
     { \
-      retval.resize (dv); \
+      dim_vector retval_dv (1, 1); \
+      retval.resize (retval_dv, INIT_VAL); \
       return retval; \
     } \
  \
-  /* We need to find first non-singleton dim */ \
+  /* We need to find first non-singleton dim.  */ \
+ \
   if (dim == -1) \
     { \
-      for (int i = 0; i < dv.length (); i++) \
+      dim = 0; \
+ \
+      for (int i = 0; i < nd; i++) \
         { \
-	  if (dv (i) != 1) \
+	  if (dv(i) != 1) \
 	    { \
 	      dim = i; \
 	      break; \
 	    } \
         } \
- \
-      if (dim == -1) \
-       	dim = 0; \
     } \
- \
-  /* Check to see if we have an empty array */ \
-  /* ie 1x2x0x3.                            */ \
-  int squeezed = 0; \
- \
-  for (int i = 0; i < dv.length (); i++) \
+  else if (dim >= nd) \
     { \
-      if (dv(i) == 0) \
-        { \
-          squeezed = 1; \
-	  break; \
-        } \
+      dim = nd++; \
+      dv.resize (nd, 1); \
     } \
  \
-  if (squeezed) \
-    {  \
-      retval.resize (dv); \
-      return retval; \
-    } \
+  /* R = op (A, DIM) \
  \
-  /* Make sure retval has correct dimensions */ \
-  retval.resize (dv, VAL); \
+     The strategy here is to access the elements of A along the \
+     dimension  specified by DIM.  This means that we loop over each \
+     element of R and adjust the index into A as needed.  */ \
  \
-  /*  Length of Dimension */ \
-  octave_idx_type dim_length = 1; \
+  Array<octave_idx_type> cp_sz (nd, 1); \
+  for (int i = 1; i < nd; i++) \
+    cp_sz(i) = cp_sz(i-1)*dv(i-1); \
  \
-  dim_length = dv (dim); \
+  octave_idx_type reset_at = cp_sz(dim); \
+  octave_idx_type base_incr = cp_sz(dim+1); \
+  octave_idx_type incr = cp_sz(dim); \
+  octave_idx_type base = 0; \
+  octave_idx_type next_base = base + base_incr; \
+  octave_idx_type iter_idx = base; \
+  octave_idx_type n_elts = dv(dim); \
  \
-  dv (dim) = 1; \
+  retval.resize (dv, INIT_VAL); \
  \
-  /* This finds the number of elements in retval */ \
-  octave_idx_type num_iter = (this->numel () / dim_length); \
+  octave_idx_type nel = dv.numel () / n_elts; \
  \
-  Array<octave_idx_type> iter_idx (dv.length (), 0); \
+  octave_idx_type k = 1; \
  \
-  /* Filling in values.         */ \
-  /* First loop finds new index */ \
- \
-  for (octave_idx_type j = 0; j < num_iter; j++) \
+  for (octave_idx_type i = 0; i < nel; i++) \
     { \
-      for (octave_idx_type i = 0; i < dim_length; i++) \
+      OCTAVE_QUIT; \
+ \
+      ACC_TYPE prev_val = INIT_VAL; \
+ \
+      for (octave_idx_type j = 0; j < n_elts; j++) \
 	{ \
-	  if (i > 0) \
+          OCTAVE_QUIT; \
+ \
+	  if (j == 0) \
 	    { \
-	      iter_idx (dim) = i - 1; \
- \
-	      ACC_TYPE prev_sum = retval (iter_idx); \
- \
-	      iter_idx (dim) = i; \
-	      \
-	      retval (iter_idx) = elem (iter_idx) OP prev_sum; \
+	      retval(iter_idx) = elem (iter_idx); \
+	      prev_val = retval(iter_idx); \
 	    } \
 	  else \
-	    retval (iter_idx) = elem (iter_idx); \
+	    { \
+	      prev_val = prev_val OP elem (iter_idx); \
+	      retval(iter_idx) = prev_val; \
+	    } \
+ \
+	  iter_idx += incr; \
 	} \
  \
-      if (dim > -1) \
-        iter_idx (dim) = 0; \
- \
-      increment_index (iter_idx, dv); \
+      if (k == reset_at) \
+        { \
+	  base = next_base; \
+	  next_base += base_incr; \
+	  iter_idx = base; \
+	  k = 1; \
+        } \
+      else \
+	{ \
+	  base++; \
+	  iter_idx = base; \
+	  k++; \
+         } \
     } \
-\
+ \
+  retval.chop_trailing_singletons (); \
+ \
   return retval
 
 #endif

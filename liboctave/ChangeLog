@@ -1,3 +1,8 @@
+2005-10-31  David Bateman  <dbateman@free.fr>
+
+	* dSparse.cc, CSparse.cc: Use C++ true/false instead of
+	preprocessor defined TRUE/FALSE.
+
 2005-10-30  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (MX_ND_REDUCTION): Iterate in direction of DIM.

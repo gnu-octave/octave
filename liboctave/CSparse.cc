@@ -5008,7 +5008,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_ty
 
 	  // Setup initial parameters
 	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = FALSE;
+	  cm->prefer_zomplex = false;
 
 	  double spu = Voctave_sparse_controls.get_key ("spumoni");
 	  if (spu == 0.)
@@ -5045,8 +5045,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_ty
 #endif
 #endif
 #endif
-
-	  cm->final_ll = TRUE;
+	  cm->final_ll = true;
 
 	  cholmod_sparse Astore;
 	  cholmod_sparse *A = &Astore;
@@ -5057,8 +5056,8 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_ty
 	  A->p = cidx();
 	  A->i = ridx();
 	  A->nzmax = nonzero();
-	  A->packed = TRUE;
-	  A->sorted = TRUE;
+	  A->packed = true;
+	  A->sorted = true;
 	  A->nz = NULL;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
@@ -5277,7 +5276,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 
 	  // Setup initial parameters
 	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = FALSE;
+	  cm->prefer_zomplex = false;
 
 	  double spu = Voctave_sparse_controls.get_key ("spumoni");
 	  if (spu == 0.)
@@ -5315,7 +5314,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 #endif
 #endif
 
-	  cm->final_ll = TRUE;
+	  cm->final_ll = true;
 
 	  cholmod_sparse Astore;
 	  cholmod_sparse *A = &Astore;
@@ -5326,8 +5325,8 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	  A->p = cidx();
 	  A->i = ridx();
 	  A->nzmax = nonzero();
-	  A->packed = TRUE;
-	  A->sorted = TRUE;
+	  A->packed = true;
+	  A->sorted = true;
 	  A->nz = NULL;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
@@ -5350,8 +5349,8 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	  B->p = b.cidx();
 	  B->i = b.ridx();
 	  B->nzmax = b.nonzero();
-	  B->packed = TRUE;
-	  B->sorted = TRUE;
+	  B->packed = true;
+	  B->sorted = true;
 	  B->nz = NULL;
 #ifdef IDX_TYPE_LONG
 	  B->itype = CHOLMOD_LONG;
@@ -5591,7 +5590,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 
 	  // Setup initial parameters
 	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = FALSE;
+	  cm->prefer_zomplex = false;
 
 	  double spu = Voctave_sparse_controls.get_key ("spumoni");
 	  if (spu == 0.)
@@ -5629,7 +5628,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 #endif
 #endif
 
-	  cm->final_ll = TRUE;
+	  cm->final_ll = true;
 
 	  cholmod_sparse Astore;
 	  cholmod_sparse *A = &Astore;
@@ -5640,8 +5639,8 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 	  A->p = cidx();
 	  A->i = ridx();
 	  A->nzmax = nonzero();
-	  A->packed = TRUE;
-	  A->sorted = TRUE;
+	  A->packed = true;
+	  A->sorted = true;
 	  A->nz = NULL;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
@@ -5838,7 +5837,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  // Setup initial parameters
 	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = FALSE;
+	  cm->prefer_zomplex = false;
 
 	  double spu = Voctave_sparse_controls.get_key ("spumoni");
 	  if (spu == 0.)
@@ -5876,7 +5875,7 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 #endif
 #endif
 
-	  cm->final_ll = TRUE;
+	  cm->final_ll = true;
 
 	  cholmod_sparse Astore;
 	  cholmod_sparse *A = &Astore;
@@ -5887,8 +5886,8 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  A->p = cidx();
 	  A->i = ridx();
 	  A->nzmax = nonzero();
-	  A->packed = TRUE;
-	  A->sorted = TRUE;
+	  A->packed = true;
+	  A->sorted = true;
 	  A->nz = NULL;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
@@ -5911,8 +5910,8 @@ SparseComplexMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  B->p = b.cidx();
 	  B->i = b.ridx();
 	  B->nzmax = b.nonzero();
-	  B->packed = TRUE;
-	  B->sorted = TRUE;
+	  B->packed = true;
+	  B->sorted = true;
 	  B->nz = NULL;
 #ifdef IDX_TYPE_LONG
 	  B->itype = CHOLMOD_LONG;

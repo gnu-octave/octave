@@ -1,3 +1,7 @@
+2005-11-01  John W. Eaton  <jwe@octave.org>
+
+	* ranlib/ignbin.f, ranlib/ignpoi.f: Avoid arithmetic IF statements.
+
 2005-10-17  John W. Eaton  <jwe@octave.org>
 
 	* lapack/Makefile.in (dlamc1.o pic/dlamc1.o):

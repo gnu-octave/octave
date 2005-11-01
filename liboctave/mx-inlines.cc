@@ -26,6 +26,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <cstddef>
 
+#include "quit.h"
+
 #include "oct-cmplx.h"
 
 #define VS_OP_FCN(F, OP) \

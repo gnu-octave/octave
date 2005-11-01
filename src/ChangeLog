@@ -1,3 +1,15 @@
+2005-11-01  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (oct-gperf.h): Avoid extra temporary file.
+	(distclean): Delete oct-errno.cc here.
+	From Quentin Spencer  <qspencer@ieee.org>.
+
+2005-11-01  Quentin Spencer  <qspencer@ieee.org>
+
+	* DLD-FUNCTIONS/spchol.cc: Use C++ true/false instead of
+	preprocessor defined TRUE/FALSE.
+	* Makefile.in (DISTFILES): Add mk-errno-list to the list.
+
 2005-10-30  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/gplot.l (gnuplot::set_gnuplot_exe,

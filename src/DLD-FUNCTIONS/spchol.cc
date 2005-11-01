@@ -437,8 +437,8 @@ factorization as determined by @var{typ}.\n\
   double dummy;
   cholmod_sparse Astore;
   cholmod_sparse *A = &Astore;
-  A->packed = TRUE;
-  A->sorted = TRUE;
+  A->packed = true;
+  A->sorted = true;
   A->nz = NULL;
 #ifdef IDX_TYPE_LONG
   A->itype = CHOLMOD_LONG;
@@ -478,7 +478,7 @@ factorization as determined by @var{typ}.\n\
   else
     gripe_wrong_type_arg ("symbfact", arg(0));
 
-  octave_idx_type coletree = FALSE;
+  octave_idx_type coletree = false;
   octave_idx_type n = A->nrow;
 
   if (nargin > 1)
@@ -491,7 +491,7 @@ factorization as determined by @var{typ}.\n\
       else if (ch == 'c')
 	{
 	  n = A->ncol;
-	  coletree = TRUE;
+	  coletree = true;
 	  A->stype = 0;
 	}
       else if (ch == 's')
@@ -600,7 +600,7 @@ factorization as determined by @var{typ}.\n\
 	    W [j] = L.xcidx(j);
 
 	  // get workspace for computing one row of L
-	  cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, FALSE, TRUE, 
+	  cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true, 
 						       0, CHOLMOD_PATTERN, cm);
 	  octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
 	  octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);

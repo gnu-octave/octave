@@ -1,3 +1,9 @@
+2005-11-01  John W. Eaton  <jwe@octave.org>
+
+	* liboctave/Makefile.in (maintainer-clean): Also remove liboctave.pdf
+	* faq/Makefile.in (maintainer-clean): Also remove Octave-FAQ.pdf.
+	From Quentin Spencer <qspencer@ieee.org>.
+
 2005-10-23  David Bateman  <dbateman@free.fr>
 
 	* sparse.txi: Updates for new ufsparse licensing, new functions and

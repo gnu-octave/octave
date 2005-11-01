@@ -1,3 +1,14 @@
+2005-11-01  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (distclean, maintainer-clean):
+	Also remove octave.desktop.
+	From Quentin Spencer <qspencer@ieee.org>.
+
+2005-11-01  Quentin Spencer  <qspencer@ieee.org>
+
+	* octMakefile.in (CONF_DISTFILES): Delete acx_include_dirs.m4 from
+	the list.
+
 2005-10-28  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (AC_ARG_WITH(cholmod, ...)): Fix typo.

@@ -310,7 +310,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations stamp-prereq $(OPTS_INC)
+	rm -f Makefile so_locations stamp-prereq oct-types.h $(OPTS_INC)
 	rm -f mx-ops.h $(MX_OP_INC) $(VX_OP_INC) $(MX_OP_SRC) $(VX_OP_SRC)
 	rm -f $(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC)
 .PHONY: distclean

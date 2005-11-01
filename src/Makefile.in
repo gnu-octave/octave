@@ -253,7 +253,7 @@ OCT_LINK_DEPS = \
    $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
-	DOCSTRINGS mkbuiltins mk-oct-links \
+	DOCSTRINGS mkbuiltins mk-errno-list mk-oct-links \
 	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h gplot.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
@@ -350,8 +350,8 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 PKG_ADD: $(DLD_SRC)
 	$(SED) -n -e 's,^//* *PKG_ADD: *,,p' \
 	          -e 's,^/\* *PKG_ADD: *\(.*\) \*/$$,\1,p' \
-	  $(addprefix $(srcdir)/, $(DLD_SRC)) > PKG_ADD.t
-	mv PKG_ADD.t PKG_ADD
+	  $(addprefix $(srcdir)/, $(DLD_SRC)) > PKG_ADD-t
+	mv PKG_ADD-t PKG_ADD
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	./gendoc > $@-t
@@ -490,7 +490,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave$(EXEEXT) .fname so_locations
+	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
 	rm -f stamp-prereq stamp-liboctave-prereq stamp-oct-links
 	rm -f doc-files gendoc.cc DOCSTRINGS
 .PHONY: distclean
@@ -548,25 +548,25 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	@echo "making $@ from $<"
 	@if test -n "$(PERL)"; then \
-	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@.t; \
+	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
-	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@.t; \
+	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
 	else \
-	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@.t; \
+	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi
-	@if [ -s $@.t ]; then \
-	  $(top_srcdir)/move-if-change $@.t $@; \
+	@if [ -s $@-t ]; then \
+	  $(top_srcdir)/move-if-change $@-t $@; \
 	else \
 	  exit 1; \
 	fi
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
-	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 \
-	  || (rm -f $@-t1; exit 1)
-	@$(SED) 's,lookup\[,gperf_lookup[,' $@-t1 > $@-t2 || rm -f $@-t2
-	@if [ -s $@-t2 ]; then \
-	  $(top_srcdir)/move-if-change $@-t2 $@; \
+	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< | \
+	  $(SED) 's,lookup\[,gperf_lookup[,' > $@-t \
+	  || (rm -f $@-t; exit 1)
+	@if [ -s $@-t ]; then \
+	  $(top_srcdir)/move-if-change $@-t $@; \
 	else \
 	  exit 1; \
 	fi

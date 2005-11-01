@@ -1,3 +1,9 @@
+2005-11-01  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (distclean, maintainer-clean):
+	Also remove autom4te.cache directory.
+	From Quentin Spencer  <qspencer@ieee.org>.
+
 2005-10-28  John W. Eaton  <jwe@octave.org>
 
 	* general/shiftdim.m: Compatibility fix for row vectors.

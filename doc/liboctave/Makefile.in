@@ -93,7 +93,7 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS liboctave.info liboctave.info-*
-	rm -f liboctave.dvi liboctave.ps
+	rm -f liboctave.dvi liboctave.ps liboctave.pdf
 	rm -rf HTML
 .PHONY: maintainer-clean
 

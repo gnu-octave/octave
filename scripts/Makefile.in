@@ -79,6 +79,7 @@ clean distclean maintainer-clean::
 
 distclean maintainer-clean::
 	rm -f Makefile config.log config.status DOCSTRINGS
+	rm -rf autom4te.cache
 
 maintainer-clean::
 	rm -f tags TAGS configure

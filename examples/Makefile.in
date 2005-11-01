@@ -73,7 +73,7 @@ distclean:
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS
+	rm -f tags TAGS octave.desktop
 .PHONY: maintainer-clean
 
 dist:

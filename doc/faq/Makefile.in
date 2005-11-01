@@ -77,7 +77,7 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS Octave-FAQ.info Octave-FAQ.info-*
-	rm -f Octave-FAQ.dvi Octave-FAQ.ps
+	rm -f Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf
 	rm -rf HTML
 .PHONY: maintainer-clean
 

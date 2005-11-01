@@ -1,3 +1,8 @@
+2005-11-01  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (distclean): Also remove oct-types.h.
+	From Quentin Spencer <qspencer@ieee.org>.
+
 2005-10-31  David Bateman  <dbateman@free.fr>
 
 	* dSparse.cc, CSparse.cc: Use C++ true/false instead of

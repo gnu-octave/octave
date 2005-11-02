@@ -178,7 +178,7 @@ C     ..
 C     .. Executable Statements ..
       IF (pp.NE.psave) GO TO 10
       IF (n.NE.nsave) GO TO 20
-      IF (xnp-30.0.LT.0.0) GOTO 150
+      IF (xnp-30.0.LT.0.0) GO TO 150
       GO TO 30
 C
 C*****SETUP, PERFORM ONLY WHEN PARAMETERS CHANGE
@@ -273,7 +273,7 @@ C
       DO 110 i = ix1,m
           f = f/ (g/i-r)
   110 CONTINUE
-  120 IF (v-f.LE.0) GOTO 170
+  120 IF (v-f.LE.0) GO TO 170
       GO TO 30
 C
 C     SQUEEZING USING UPPER AND LOWER BOUNDS ON ALOG(F(X))
@@ -300,7 +300,7 @@ C
      +    140./f2)/f2)/f2)/f2)/f1/166320.+ (13860.- (462.- (132.- (99.-
      +    140./z2)/z2)/z2)/z2)/z/166320.+ (13860.- (462.- (132.- (99.-
      +    140./x2)/x2)/x2)/x2)/x1/166320.+ (13860.- (462.- (132.- (99.-
-     +    140./w2)/w2)/w2)/w2)/w/166320. .LE. 0.)) GO TO 170
+     +    140./w2)/w2)/w2)/w2)/w/166320.) .LE. 0.) GO TO 170
       GO TO 30
 C
 C     INVERSE CDF LOGIC FOR MEAN LESS THAN 30

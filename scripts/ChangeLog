@@ -1,3 +1,7 @@
+2005-11-07  Keith Goodman  <kwgoodman@gmail.com>
+
+	* set/unique.m: Doc string fix.
+
 2005-11-01  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (distclean, maintainer-clean):

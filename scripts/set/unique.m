@@ -29,7 +29,7 @@
 ## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] = } unique (@var{x})
 ##
 ## Return index vectors @var{i} and @var{j} such that @code{x(i)==y} and
-## @code{y(i)==x}.
+## @code{y(j)==x}.
 ##
 ## @end deftypefn
 ## @seealso{union, intersect, setdiff, setxor, ismember}

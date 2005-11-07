@@ -154,7 +154,7 @@ function returns 1 if the strings are equal, and 0 otherwise.  This is\n\
 just the opposite of the corresponding C library function.\n\
 @end deftypefn")
 {
-  octave_value retval = false;
+  octave_value retval;
 
   if (args.length () == 2)
     {
@@ -356,6 +356,8 @@ just the opposite of the corresponding C library function.\n\
 
 	  retval = output;
 	}
+      else
+	retval = false;
     }
   else
     print_usage ("strcmp");

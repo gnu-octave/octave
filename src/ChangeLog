@@ -1,6 +1,7 @@
 2005-11-07  John W. Eaton  <jwe@octave.org>
 
-	* strfns.cc (Fstrcmp): Initialize retval to false.
+	* strfns.cc (Fstrcmp): If args are not strings or cell arrays of
+	strings, return false.
 
 2005-11-01  John W. Eaton  <jwe@octave.org>
 

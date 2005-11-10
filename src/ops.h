@@ -334,14 +334,24 @@ extern void install_ops (void);
   CATOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
-    return octave_value (v1.t1 ## _value (). f (v2.t2 ## _value (), ra_idx)); \
+    return octave_value (v1.t1 ## _value () . f (v2.t2 ## _value (), ra_idx)); \
   }
 
 #define DEFNDCATOP_FN(name, t1, t2, e1, e2, f) \
   CATOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
-    return octave_value (v1.e1 ## _value (). f (v2.e2 ## _value (), ra_idx)); \
+    return octave_value (v1.e1 ## _value () . f (v2.e2 ## _value (), ra_idx)); \
+  }
+
+#define DEFNDCHARCATOP_FN(name, t1, t2, f) \
+  CATOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+ \
+    return octave_value (v1.char_array_value () . f (v2.char_array_value (), ra_idx), \
+			 true, ((a1.is_sq_string () || a2.is_sq_string ()) \
+				? '\'' : '"')); \
   }
 
 // For compatibility, the second arg is always converted to the type

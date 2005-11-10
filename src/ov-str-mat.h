@@ -93,6 +93,16 @@ public:
   octave_value reshape (const dim_vector& new_dims) const
     { return octave_value (charNDArray (matrix.reshape (new_dims)), true); }
 
+  octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return octave_value (charNDArray (matrix.permute (vec, inv)), true); }
+
+  octave_value resize (const dim_vector& dv) const
+    {
+      charNDArray retval (matrix);
+      retval.resize (dv);
+      return octave_value (retval, true);
+    }
+
   bool is_string (void) const { return true; }
 
   bool is_real_type (void) const { return false; }
@@ -194,6 +204,19 @@ public:
 
   octave_value *clone (void) const { return new octave_char_matrix_sq_str (*this); }
   octave_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
+
+  octave_value reshape (const dim_vector& new_dims) const
+    { return octave_value (charNDArray (matrix.reshape (new_dims)), true, '\''); }
+
+  octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return octave_value (charNDArray (matrix.permute (vec, inv)), true, '\''); }
+
+  octave_value resize (const dim_vector& dv) const
+    {
+      charNDArray retval (matrix);
+      retval.resize (dv);
+      return octave_value (retval, true, '\'');
+    }
 
   bool is_sq_string (void) const { return true; }
 

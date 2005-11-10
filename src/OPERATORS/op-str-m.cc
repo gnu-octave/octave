@@ -47,29 +47,9 @@ DEFASSIGNOP (assign, char_matrix_str, octave_matrix)
   return octave_value ();
 }
 
-DEFCATOP (str_m, char_matrix_str, matrix)
-{
-  CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_matrix&);
+DEFNDCHARCATOP_FN (str_m, char_matrix_str, matrix, concat)
 
-  if (Vwarn_num_to_str)
-    gripe_implicit_conversion (v2.type_name (), v1.type_name ());
-
-  return octave_value (v1.char_array_value (). concat (v2.array_value (), 
-						       ra_idx),
-		       true, a1.is_sq_string () ? '\'' : '"');
-}
-
-DEFCATOP (m_str, matrix, char_matrix_str)
-{
-  CAST_BINOP_ARGS (octave_matrix&, const octave_char_matrix_str&);
-
-  if (Vwarn_num_to_str)
-    gripe_implicit_conversion (v1.type_name (), v2.type_name ());
-
-  return octave_value (v1.array_value (). concat (v2.char_array_value (), 
-						  ra_idx),
-		       true, a2.is_sq_string () ? '\'' : '"');
-}
+DEFNDCHARCATOP_FN (m_str, matrix, char_matrix_str, concat)
 
 void
 install_str_m_ops (void)

@@ -83,6 +83,38 @@ public:
 
   bool is_true (void) const { return scalar; }
 
+  int8NDArray
+  int8_array_value (void) const
+    { return int8NDArray (dim_vector (1, 1), scalar); }
+
+  int16NDArray
+  int16_array_value (void) const
+    { return int16NDArray (dim_vector (1, 1), scalar); }
+
+  int32NDArray
+  int32_array_value (void) const
+    { return int32NDArray (dim_vector (1, 1), scalar); }
+
+  int64NDArray
+  int64_array_value (void) const
+    { return int64NDArray (dim_vector (1, 1), scalar); }
+
+  uint8NDArray
+  uint8_array_value (void) const
+    { return uint8NDArray (dim_vector (1, 1), scalar); }
+
+  uint16NDArray
+  uint16_array_value (void) const
+    { return uint16NDArray (dim_vector (1, 1), scalar); }
+
+  uint32NDArray
+  uint32_array_value (void) const
+    { return uint32NDArray (dim_vector (1, 1), scalar); }
+
+  uint64NDArray
+  uint64_array_value (void) const
+    { return uint64NDArray (dim_vector (1, 1), scalar); }
+
   double double_value (bool = false) const { return scalar; }
 
   double scalar_value (bool = false) const { return scalar; }
@@ -100,6 +132,14 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
+
+  charNDArray
+  char_array_value (bool = false) const
+  {
+    charNDArray retval (dim_vector (1, 1));
+    retval(0) = static_cast<char> (scalar);
+    return retval;
+  }
 
   bool bool_value (void) const { return scalar; }
 

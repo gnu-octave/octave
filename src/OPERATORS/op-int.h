@@ -59,6 +59,29 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_scalar, TYPE ## _ ## double ## _m_s) \
   INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_matrix, TYPE ## _ ## double ## _m_m)
 
+// For compatibility, concatenation with a character always returns a
+// character.
+
+#define OCTAVE_CHAR_INT_CONCAT_FN(TYPE) \
+  DEFNDCHARCATOP_FN (char ## _ ## TYPE ## _m_s, char_matrix, TYPE ## _scalar, concat) \
+  DEFNDCHARCATOP_FN (char ## _ ## TYPE ## _m_m, char_matrix, TYPE ## _matrix, concat)
+
+#define OCTAVE_INSTALL_CHAR_INT_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_char_matrix_str, octave_ ## TYPE ## _scalar, char ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP (octave_char_matrix_str, octave_ ## TYPE ## _matrix, char ## _ ## TYPE ## _m_m) \
+  INSTALL_CATOP (octave_char_matrix_sq_str, octave_ ## TYPE ## _scalar, char ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP (octave_char_matrix_sq_str, octave_ ## TYPE ## _matrix, char ## _ ## TYPE ## _m_m)
+
+#define OCTAVE_INT_CHAR_CONCAT_FN(TYPE) \
+  DEFNDCHARCATOP_FN (TYPE ## _ ## char ## _s_m, TYPE ## _scalar, char_matrix, concat) \
+  DEFNDCHARCATOP_FN (TYPE ## _ ## char ## _m_m, TYPE ## _matrix, char_matrix, concat)
+
+#define OCTAVE_INSTALL_INT_CHAR_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_char_matrix_str, TYPE ## _ ## char ## _s_m) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_char_matrix_str, TYPE ## _ ## char ## _m_m) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_char_matrix_sq_str, TYPE ## _ ## char ## _s_m) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_char_matrix_sq_str, TYPE ## _ ## char ## _m_m)
+
 #define OCTAVE_CONCAT_FN(TYPE) \
   DEFNDCATOP_FN (TYPE ## _s_s, TYPE ## _scalar, TYPE ## _scalar, TYPE ## _array, TYPE ## _array, concat) \
   DEFNDCATOP_FN (TYPE ## _s_m, TYPE ## _scalar, TYPE ## _matrix, TYPE ## _array, TYPE ## _array, concat) \

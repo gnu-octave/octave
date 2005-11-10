@@ -58,9 +58,29 @@ public:
   octave_value *empty_clone (void) const
     { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
-  OCTAVE_INT_NDARRAY_T
-  OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
-    { return matrix; }
+  int8NDArray
+  int8_array_value (void) const { return int8NDArray (matrix); }
+
+  int16NDArray
+  int16_array_value (void) const { return int16NDArray (matrix); }
+
+  int32NDArray
+  int32_array_value (void) const { return int32NDArray (matrix); }
+
+  int64NDArray
+  int64_array_value (void) const { return int64NDArray (matrix); }
+
+  uint8NDArray
+  uint8_array_value (void) const { return uint8NDArray (matrix); }
+
+  uint16NDArray
+  uint16_array_value (void) const { return uint16NDArray (matrix); }
+
+  uint32NDArray
+  uint32_array_value (void) const { return uint32NDArray (matrix); }
+
+  uint64NDArray
+  uint64_array_value (void) const { return uint64NDArray (matrix); }
 
   double
   double_value (bool = false) const
@@ -103,6 +123,19 @@ public:
         retval(i) = Complex (double (matrix(i)));
       return retval;
     }
+
+  charNDArray
+  char_array_value (bool = false) const
+  {
+    charNDArray retval (dims ());
+
+    octave_idx_type nel = numel ();
+  
+    for (octave_idx_type i = 0; i < nel; i++)
+      retval(i) = static_cast<char>(matrix(i));
+
+    return retval;
+  }
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
 
@@ -166,13 +199,61 @@ public:
       return retval;
     }
 
-  OCTAVE_INT_T
-  OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION (void) const
-    { return scalar; }
+  octave_int8
+  int8_scalar_value (void) const { return octave_int8 (scalar); }
 
-  OCTAVE_INT_NDARRAY_T
-  OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
-    { return OCTAVE_INT_NDARRAY_T (dim_vector (1, 1), scalar); }
+  octave_int16
+  int16_scalar_value (void) const { return octave_int16 (scalar); }
+
+  octave_int32
+  int32_scalar_value (void) const { return octave_int32 (scalar); }
+
+  octave_int64
+  int64_scalar_value (void) const { return octave_int64 (scalar); }
+
+  octave_uint8
+  uint8_scalar_value (void) const { return octave_uint8 (scalar); }
+
+  octave_uint16
+  uint16_scalar_value (void) const { return octave_uint16 (scalar); }
+
+  octave_uint32
+  uint32_scalar_value (void) const { return octave_uint32 (scalar); }
+
+  octave_uint64
+  uint64_scalar_value (void) const { return octave_uint64 (scalar); }
+
+  int8NDArray
+  int8_array_value (void) const
+    { return int8NDArray (dim_vector (1, 1), scalar); }
+
+  int16NDArray
+  int16_array_value (void) const
+    { return int16NDArray (dim_vector (1, 1), scalar); }
+
+  int32NDArray
+  int32_array_value (void) const
+    { return int32NDArray (dim_vector (1, 1), scalar); }
+
+  int64NDArray
+  int64_array_value (void) const
+    { return int64NDArray (dim_vector (1, 1), scalar); }
+
+  uint8NDArray
+  uint8_array_value (void) const
+    { return uint8NDArray (dim_vector (1, 1), scalar); }
+
+  uint16NDArray
+  uint16_array_value (void) const
+    { return uint16NDArray (dim_vector (1, 1), scalar); }
+
+  uint32NDArray
+  uint32_array_value (void) const
+    { return uint32NDArray (dim_vector (1, 1), scalar); }
+
+  uint64NDArray
+  uint64_array_value (void) const
+    { return uint64NDArray (dim_vector (1, 1), scalar); }
 
   octave_value resize (const dim_vector& dv) const
     {
@@ -189,7 +270,7 @@ public:
   NDArray
   array_value (bool = false) const
     { 
-      NDArray retval (dim_vector (1,1)); 
+      NDArray retval (dim_vector (1, 1)); 
       retval(0) = double (scalar);
       return retval;
     }
@@ -197,10 +278,18 @@ public:
   ComplexNDArray
   complex_array_value (bool = false) const
     { 
-      ComplexNDArray retval (dim_vector (1,1)); 
+      ComplexNDArray retval (dim_vector (1, 1));
       retval(0) = Complex (double (scalar));
       return retval;
     }
+
+  charNDArray
+  char_array_value (bool = false) const
+  {
+    charNDArray retval (dim_vector (1, 1));
+    retval(0) = static_cast<char>(scalar);
+    return retval;
+  }
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

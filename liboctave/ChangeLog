@@ -1,3 +1,8 @@
+2005-11-09  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int::operator char (void) const):
+	New conversion op.
+
 2005-11-01  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (distclean): Also remove oct-types.h.

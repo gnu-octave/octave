@@ -1,3 +1,47 @@
+2005-11-10  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.h (octave_char_matrix_str::permute,
+	octave_char_matrix_str::resize): New functions.
+	(octave_char_matrix_sq_str::reshape,
+	octave_char_matrix_sq_str::permute,
+	octave_char_matrix_sq_str::resize): New functions.
+
+	* OPERATORS/op-str-str.cc, OPERATORS/op-str-s.cc,
+	OPERATORS/op-str-m.cc: Use DEFNDCHARCATOP_FN.
+
+	* data.cc (do_cat): No need to handle character arrays specially here.
+
+	* ops.h (DEFNDCHARCATOP_FN): New macro.
+	* OPERATORS/op-int.h (OCTAVE_INT_CHAR_CONCAT_FN, 
+	OCTAVE_CHAR_INT_CONCAT_FN, OCTAVE_INSTALL_INT_CHAR_CONCAT_FN,
+	OCTAVE_INSTALL_CHAR_INT_CONCAT_FN): New macros.
+	* OPERATORS/op-int-concat.cc: Use them do define char/int op functions.
+	(install_int_concat_ops): Install char/int concat ops.
+
+	* ov-scalar.h (class octave_scalar): Provide extractors
+	for all int array types and char array type.
+
+2005-11-09  John W. Eaton  <jwe@octave.org>
+
+	* ov-bool-mat.h (class octave_bool_matrix): Provide extractors
+	for all int array types and char array type.
+	* ov-bool.h (class octave_bool): Likewise.
+
+	* ov-intx.h (class OCTAVE_VALUE_INT_MATRIX_T): Provide extractors
+	for all int array types and char array type.
+	(class OCTAVE_VALUE_INT_SCALAR_T): Provide extractors for all int
+	scalar and array types and char array type.
+
+	* pt-mat.cc (tm_const::class_nm): New data member.
+	(tm_const::tm_const): Initialize it.
+	(tm_const::class_name): New function.
+	(tm_row_const::tm_row_const_rep::class_nm): New data member.
+	(tm_row_const::tm_row_const_rep::tm_row_const_rep): Initialize it.
+	(tm_row_const::class_name): New function.
+	(get_concat_class): New function.
+	(tm_row_const::tm_row_const_rep::do_init_element): Use it.
+	(tm_const::init): Use it.
+
 2005-11-07  John W. Eaton  <jwe@octave.org>
 
 	* strfns.cc (Fstrcmp): If args are not strings or cell arrays of

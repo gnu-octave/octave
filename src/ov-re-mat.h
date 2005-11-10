@@ -91,6 +91,30 @@ public:
 
   bool valid_as_scalar_index (void) const;
 
+  int8NDArray
+  int8_array_value (void) const { return int8NDArray (matrix); }
+
+  int16NDArray
+  int16_array_value (void) const { return int16NDArray (matrix); }
+
+  int32NDArray
+  int32_array_value (void) const { return int32NDArray (matrix); }
+
+  int64NDArray
+  int64_array_value (void) const { return int64NDArray (matrix); }
+
+  uint8NDArray
+  uint8_array_value (void) const { return uint8NDArray (matrix); }
+
+  uint16NDArray
+  uint16_array_value (void) const { return uint16NDArray (matrix); }
+
+  uint32NDArray
+  uint32_array_value (void) const { return uint32NDArray (matrix); }
+
+  uint64NDArray
+  uint64_array_value (void) const { return uint64NDArray (matrix); }
+
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const

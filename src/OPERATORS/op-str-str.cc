@@ -115,15 +115,7 @@ DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
   return octave_value ();
 }
 
-DEFCATOP (str_str, char_matrix_str, char_matrix_str)
-{
-  CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_char_matrix_str&);
-  return octave_value (v1.char_array_value (). concat (v2.char_array_value (), 
-						       ra_idx),
-		       true,
-		       (a1.is_sq_string () && a2.is_sq_string ()
-			? '\'' : '"'));
-}
+DEFNDCHARCATOP_FN (str_str, char_matrix_str, char_matrix_str, concat)
 
 void
 install_str_str_ops (void)

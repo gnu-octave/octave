@@ -731,34 +731,25 @@ do_cat (const octave_value_list& args, std::string fname)
 	  //   tmp = octave_value_typeinfo::lookup_type (args(1).type_name());
 	  // and then directly resize. However, for some types there might be
 	  // some additional setup needed, and so this should be avoided.
+
 	  octave_value tmp;
-          bool any_strings = false;
-          bool all_strings = true;
-	  bool first_non_empty_arg = true;
+
           for (int i = 1; i < n_args; i++)
-	    if (! args (i).all_zero_dims ())
-	      {
-		if (first_non_empty_arg)
-		  {
-		    first_non_empty_arg = false;
-		    tmp = args (i);
-		  }
+	    {
+	      if (! args (i).all_zero_dims ())
+		{
+		  tmp = args (i);
+		  break;
+		}
+	    }
 
-		if (args(i).is_string ())
-		  any_strings = true;
-		else
-		  all_strings = false;
-	      }
-
-	  if (all_strings)
-	    tmp = octave_value (charNDArray (dv, Vstring_fill_char), true);
-	  else
-	    tmp = tmp.resize (dim_vector (0,0)).resize (dv);
+	  tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
 	  if (error_state)
 	    return retval;
 
 	  Array<int> ra_idx (dv.length (), 0);
+
 	  for (int i = 1; i < n_args; i++)
 	    {
 	      tmp = do_cat_op (tmp, args (i), ra_idx);
@@ -767,15 +758,14 @@ do_cat (const octave_value_list& args, std::string fname)
 		return retval;
 
 	      dim_vector dv_tmp = args (i).dims ();
+
 	      ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1);
 	    }
 
-          if (any_strings && !all_strings)
-            retval = tmp.convert_to_str ();
-          else
-	    retval = tmp;
+	  retval = tmp;
 	}
-      else print_usage (fname);
+      else
+	error ("%s: invalid dimension argument", fname.c_str ());
     }
   else
     print_usage (fname);

@@ -70,12 +70,15 @@ private:
       : count (1), dv (0, 0), all_str (false),
 	all_sq_str (false), all_dq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
-	all_mt (true), ok (false) { }
+	all_mt (true), class_nm (octave_base_value::static_class_name ()),
+	ok (false)
+    { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (0, 0), all_str (false), all_sq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
-	all_mt (true), ok (false)
+	all_mt (true), class_nm (octave_base_value::static_class_name ()),
+	ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -91,6 +94,8 @@ private:
     bool all_real;
     bool all_cmplx;
     bool all_mt;
+
+    std::string class_nm;
 
     bool ok;
 
@@ -163,6 +168,8 @@ public:
   bool all_complex_p (void) const { return rep->all_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
 
+  std::string class_name (void) const { return rep->class_nm; }
+
   operator bool () const { return (rep && rep->ok); }
 
   iterator begin (void) { return rep->begin (); }
@@ -176,6 +183,69 @@ private:
   tm_row_const_rep *rep;
 };
 
+static std::string
+get_concat_class (const std::string& c1, const std::string& c2)
+{
+  std::string retval = octave_base_value::static_class_name ();
+
+  if (c1 == c2)
+    retval = c1;
+  else
+    {
+      bool c1_is_int = (c1 == "int8" || c1 == "uint8"
+			|| c1 == "int16" || c1 == "uint16"
+			|| c1 == "int32" || c1 == "uint32"
+			|| c1 == "int64" || c1 == "uint64");
+      bool c2_is_int = (c2 == "int8" || c2 == "uint8"
+			|| c2 == "int16" || c2 == "uint16"
+			|| c2 == "int32" || c2 == "uint32"
+			|| c2 == "int64" || c2 == "uint64");
+
+      bool c1_is_char = (c1 == "char");
+      bool c2_is_char = (c2 == "char");
+
+      bool c1_is_double = (c1 == "double");
+      bool c2_is_double = (c2 == "double");
+
+      bool c1_is_single = (c1 == "single");
+      bool c2_is_single = (c2 == "single");
+
+      bool c1_is_logical = (c1 == "logical");
+      bool c2_is_logical = (c2 == "logical");
+
+      bool c1_is_built_in_type
+	= (c1_is_int || c1_is_char || c1_is_double || c1_is_single
+	   || c1_is_logical);
+
+      bool c2_is_built_in_type
+	= (c2_is_int || c2_is_char ||  c2_is_double || c2_is_single
+	   || c2_is_logical);
+
+      // Order is important here...
+
+      if (c1_is_char && c2_is_built_in_type)
+	retval = c1;
+      else if (c2_is_char && c1_is_built_in_type)
+	retval = c2;
+      else if (c1_is_int && c2_is_built_in_type)
+	retval = c1;
+      else if (c2_is_int && c1_is_built_in_type)
+	retval = c2;
+      else if (c1_is_single && c2_is_built_in_type)
+	retval = c1;
+      else if (c2_is_single && c1_is_built_in_type)
+	retval = c2;
+      else if (c1_is_double && c2_is_built_in_type)
+	retval = c1;
+      else if (c2_is_double && c1_is_built_in_type)
+	retval = c2;
+      else if (c1_is_logical && c2_is_logical)
+	retval = c1;
+    }
+
+  return retval;    
+}
+
 bool
 tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 						 const octave_value& val,
@@ -183,6 +253,8 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 {
   octave_idx_type this_elt_nr = val.rows ();
   octave_idx_type this_elt_nc = val.columns ();
+
+  std::string this_elt_class_nm = val.class_name ();
 
   dim_vector this_elt_dv = val.dims ();
 
@@ -194,6 +266,8 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 	{
 	  first_elem = false;
 
+	  class_nm = this_elt_class_nm;
+
 	  dv.resize (this_elt_dv.length ());
 	  for (int i = 2; i < dv.length (); i++)
 	    dv.elem (i) = this_elt_dv.elem (i);
@@ -204,6 +278,8 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 	}
       else
 	{
+	  class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
 	  int len = (this_elt_dv.length () < dv.length ()
 		     ? this_elt_dv.length () : dv.length ());
 
@@ -356,8 +432,9 @@ public:
   tm_const (const tree_matrix& tm)
     : dv (0, 0), all_str (false), all_sq_str (false), all_dq_str (false),
       some_str (false), all_real (false), all_cmplx (false),
-      all_mt (true), ok (false)
-      { init (tm); }
+      all_mt (true), class_nm (octave_base_value::static_class_name ()),
+      ok (false)
+  { init (tm); }
 
   ~tm_const (void) { }
 
@@ -374,6 +451,8 @@ public:
   bool all_complex_p (void) const { return all_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
 
+  std::string class_name (void) const { return class_nm; }
+
   operator bool () const { return ok; }
 
 private:
@@ -387,6 +466,8 @@ private:
   bool all_real;
   bool all_cmplx;
   bool all_mt;
+
+  std::string class_nm;
 
   bool ok;
 
@@ -463,6 +544,8 @@ tm_const::init (const tree_matrix& tm)
 	  octave_idx_type this_elt_nr = elt.rows ();
 	  octave_idx_type this_elt_nc = elt.cols ();
 
+	  std::string this_elt_class_nm = elt.class_name ();
+
 	  dim_vector this_elt_dv = elt.dims ();
 
 	  if (!this_elt_dv.all_zero ())
@@ -472,6 +555,8 @@ tm_const::init (const tree_matrix& tm)
 	      if (first_elem)
 		{
 		  first_elem = false;
+
+		  class_nm = this_elt_class_nm;
 
 		  dv.resize (this_elt_dv.length ());
 		  for (int i = 2; i < dv.length (); i++)
@@ -483,11 +568,15 @@ tm_const::init (const tree_matrix& tm)
 		}
 	      else if (all_str)
 		{
+		  class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
 		  if (this_elt_nc > cols ())
 		    dv.elem (1) = this_elt_nc;
 		}
 	      else
 		{
+		  class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
 		  bool get_out = false;
 		  int len = (this_elt_dv.length () < dv.length ()
 			     ? this_elt_dv.length () : dv.length ());
@@ -643,6 +732,17 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
     } \
  while (0)
 
+#define DO_SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
+  do \
+    { \
+      TYPE result (dv); \
+ \
+      SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR); \
+ \
+      retval = result; \
+    } \
+  while (0)
+
 octave_value
 tree_matrix::rvalue (void)
 {
@@ -671,7 +771,19 @@ tree_matrix::rvalue (void)
 
       // Try to speed up the common cases.
 
-      if (all_strings_p)
+      std::string result_type = tmp.class_name ();
+
+      if (result_type == "double")
+	{
+	  if (all_real_p)
+	    DO_SINGLE_TYPE_CONCAT (NDArray, array_value);
+	  else
+	    DO_SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
+	}
+#if 0
+      else if (result_type == "single")
+#endif
+      else if (result_type == "char")
 	{
 	  char type = all_sq_strings_p ? '\'' : '"';
 
@@ -683,22 +795,24 @@ tree_matrix::rvalue (void)
 
 	  retval = octave_value (result, true, type);
 	}
-      else if (all_real_p)
-	{
-	  NDArray result (dv);
-
-	  SINGLE_TYPE_CONCAT (NDArray, array_value);
-
-	  retval = result;
-	}
-      else if (all_complex_p)
-	{
-	  ComplexNDArray result (dv);
-
-	  SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
-
-	  retval = result;
-	}
+      else if (result_type == "logical")
+	DO_SINGLE_TYPE_CONCAT (boolNDArray, bool_array_value);
+      else if (result_type == "int8")
+	DO_SINGLE_TYPE_CONCAT (int8NDArray, int8_array_value);
+      else if (result_type == "int16")
+	DO_SINGLE_TYPE_CONCAT (int16NDArray, int16_array_value);
+      else if (result_type == "int32")
+	DO_SINGLE_TYPE_CONCAT (int32NDArray, int32_array_value);
+      else if (result_type == "int64")
+	DO_SINGLE_TYPE_CONCAT (int64NDArray, int64_array_value);
+      else if (result_type == "uint8")
+	DO_SINGLE_TYPE_CONCAT (uint8NDArray, uint8_array_value);
+      else if (result_type == "uint16")
+	DO_SINGLE_TYPE_CONCAT (uint16NDArray, uint16_array_value);
+      else if (result_type == "uint32")
+	DO_SINGLE_TYPE_CONCAT (uint32NDArray, uint32_array_value);
+      else if (result_type == "uint64")
+	DO_SINGLE_TYPE_CONCAT (uint64NDArray, uint64_array_value);
       else
 	{
 	  // The line below might seem crazy, since we take a copy of

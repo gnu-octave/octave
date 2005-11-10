@@ -117,7 +117,7 @@ DEFCATOP (s_sm, scalar, sparse_matrix)
 {
   CAST_BINOP_ARGS (octave_scalar&, const octave_sparse_matrix&);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
-  return octave_value (tmp. concat (v2.sparse_matrix_value (), ra_idx));
+  return octave_value (tmp.concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCONV (sparse_matrix_conv, scalar, sparse_matrix)

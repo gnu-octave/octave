@@ -2221,10 +2221,6 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
 	  octave_idx_type n = result_dims.numel ();
 
-	  int r_dims = result_dims.length ();
-
-	  Array<octave_idx_type> iidx (r_dims, 0);
-
 	  octave_idx_type k = 0;
 
 	  for (octave_idx_type i = 0; i < n; i++)
@@ -2232,15 +2228,9 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	      octave_idx_type ii = ra_idx.elem (k++);
 
 	      if (ii >= orig_len)
-	        retval.elem (iidx) = rfv;
+	        retval.elem (i) = rfv;
 	      else
-	        {
-		  Array<int> temp = get_ra_idx (ii, dv);
-
-		  retval.elem (iidx) = elem (temp);
-		}
-	      if (i != n - 1)
-		increment_index (iidx, result_dims);
+		retval.elem (i) = elem (ii);
 	    }
 	}
     }

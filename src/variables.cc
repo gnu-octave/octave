@@ -1030,14 +1030,35 @@ symbol_out_of_date (symbol_record *sr)
 
 		  std::string nm = fcn->name ();
 
+		  // XXX FIXME XXX -- the following code is repeated
+		  // in load_fcn_from_file in parse.y.
+
 		  string_vector names (2);
 
-		  names[0] = nm + ".oct";
-		  names[1] = nm + ".m";
+		  int nm_len = nm.length ();
 
-		  std::string file = octave_env::make_absolute
-		    (Vload_path_dir_path.find_first_of (names),
-		     octave_env::getcwd ());
+		  std::string file;
+
+		  if (octave_env::absolute_pathname (nm)
+		      && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
+			  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
+		    {
+		      file = nm;
+		    }
+		  else
+		    {
+		      file = lookup_autoload (nm);
+
+		      if (file.empty ())
+			{
+			  names[0] = nm + ".oct";
+			  names[1] = nm + ".m";
+
+			  file = octave_env::make_absolute
+			    (Vload_path_dir_path.find_first_of (names),
+			     octave_env::getcwd ());
+			}
+		    }
 
 		  if (same_file (file, ff))
 		    {

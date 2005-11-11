@@ -116,9 +116,9 @@ sparse_chol (const octave_value_list& args, const int nargout,
   return retval;
 }
 
-// PKG_ADD: dispatch ("chol", "spchol", "sparse matrix")
-// PKG_ADD: dispatch ("chol", "spchol", "sparse complex matrix")
-// PKG_ADD: dispatch ("chol", "spchol", "sparse bool matrix")
+// PKG_ADD: dispatch ("chol", "spchol", "sparse matrix");
+// PKG_ADD: dispatch ("chol", "spchol", "sparse complex matrix");
+// PKG_ADD: dispatch ("chol", "spchol", "sparse bool matrix");
 DEFUN_DLD (spchol, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{r} =} spchol (@var{a})\n\
@@ -164,9 +164,9 @@ Note that @code{splchol} factorizations is faster and use less memory.\n\
   return sparse_chol (args, nargout, "spchol", false);
 }
 
-// PKG_ADD: dispatch ("lchol", "splchol", "sparse matrix")
-// PKG_ADD: dispatch ("lchol", "splchol", "sparse complex matrix")
-// PKG_ADD: dispatch ("lchol", "splchol", "sparse bool matrix")
+// PKG_ADD: dispatch ("lchol", "splchol", "sparse matrix");
+// PKG_ADD: dispatch ("lchol", "splchol", "sparse complex matrix");
+// PKG_ADD: dispatch ("lchol", "splchol", "sparse bool matrix");
 DEFUN_DLD (splchol, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{l} =} splchol (@var{a})\n\
@@ -214,9 +214,9 @@ than @code{spchol}. @code{splchol(@var{a})} is equivalent to\n\
   return sparse_chol (args, nargout, "splchol", true);
 }
 
-// PKG_ADD: dispatch ("cholinv", "spcholinv", "sparse matrix")
-// PKG_ADD: dispatch ("cholinv", "spcholinv", "sparse complex matrix")
-// PKG_ADD: dispatch ("cholinv", "spcholinv", "sparse bool matrix")
+// PKG_ADD: dispatch ("cholinv", "spcholinv", "sparse matrix");
+// PKG_ADD: dispatch ("cholinv", "spcholinv", "sparse complex matrix");
+// PKG_ADD: dispatch ("cholinv", "spcholinv", "sparse bool matrix");
 DEFUN_DLD (spcholinv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} spcholinv (@var{a})\n\
@@ -278,9 +278,9 @@ sparse symmetric positive definite matrix @var{a}.\n\
   return retval;
 }
 
-// PKG_ADD: dispatch ("chol2inv", "spchol2inv", "sparse matrix")
-// PKG_ADD: dispatch ("chol2inv", "spchol2inv", "sparse complex matrix")
-// PKG_ADD: dispatch ("chol2inv", "spchol2inv", "sparse bool matrix")
+// PKG_ADD: dispatch ("chol2inv", "spchol2inv", "sparse matrix");
+// PKG_ADD: dispatch ("chol2inv", "spchol2inv", "sparse complex matrix");
+// PKG_ADD: dispatch ("chol2inv", "spchol2inv", "sparse bool matrix");
 DEFUN_DLD (spchol2inv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} spchol2inv (@var{u})\n\

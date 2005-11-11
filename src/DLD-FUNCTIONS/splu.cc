@@ -35,9 +35,9 @@ Boston, MA 02110-1301, USA.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-// PKG_ADD: dispatch ("lu", "splu", "sparse matrix")
-// PKG_ADD: dispatch ("lu", "splu", "sparse complex matrix")
-// PKG_ADD: dispatch ("lu", "splu", "sparse bool matrix")
+// PKG_ADD: dispatch ("lu", "splu", "sparse matrix");
+// PKG_ADD: dispatch ("lu", "splu", "sparse complex matrix");
+// PKG_ADD: dispatch ("lu", "splu", "sparse bool matrix");
 DEFUN_DLD (splu, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{l}, @var{u}] =} splu (@var{a})\n\
@@ -389,12 +389,12 @@ be square.\n\
   return retval;
 }
 
-// PKG_ADD: dispatch ("inv", "spinv", "sparse matrix")
-// PKG_ADD: dispatch ("inv", "spinv", "sparse complex matrix")
-// PKG_ADD: dispatch ("inv", "spinv", "sparse bool matrix")
-// PKG_ADD: dispatch ("inverse", "spinv", "sparse matrix")
-// PKG_ADD: dispatch ("inverse", "spinv", "sparse complex matrix")
-// PKG_ADD: dispatch ("inverse", "spinv", "sparse bool matrix")
+// PKG_ADD: dispatch ("inv", "spinv", "sparse matrix");
+// PKG_ADD: dispatch ("inv", "spinv", "sparse complex matrix");
+// PKG_ADD: dispatch ("inv", "spinv", "sparse bool matrix");
+// PKG_ADD: dispatch ("inverse", "spinv", "sparse matrix");
+// PKG_ADD: dispatch ("inverse", "spinv", "sparse complex matrix");
+// PKG_ADD: dispatch ("inverse", "spinv", "sparse bool matrix");
 DEFUN_DLD (spinv, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } spinv (@var{a}, @var{Q})\n\

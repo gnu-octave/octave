@@ -633,9 +633,9 @@ sparse_find (const SparseBoolMatrix& v)
   return retval;
 }
 
-// PKG_ADD: dispatch ("find", "spfind", "sparse matrix")
-// PKG_ADD: dispatch ("find", "spfind", "sparse complex matrix")
-// PKG_ADD: dispatch ("find", "spfind", "sparse bool matrix")
+// PKG_ADD: dispatch ("find", "spfind", "sparse matrix");
+// PKG_ADD: dispatch ("find", "spfind", "sparse complex matrix");
+// PKG_ADD: dispatch ("find", "spfind", "sparse bool matrix");
 DEFUN_DLD (spfind, args, nargout ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[...] =} spfind (...)\n\

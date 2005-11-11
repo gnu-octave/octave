@@ -1,3 +1,22 @@
+2005-11-11  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_out_of_date): Check for autoloads here too.
+
+	* Makefile.in (PKG_ADD): Depend on $(DLD_DEF_FILES), not $(DLD_SRC).
+	(%.df : %.cc): Also insert PKG_ADD commands in .df files.
+	(install-oct): Generate PKG_ADD file for install directory here.
+	Don't depend on PKG-ADD. No need to make .oct file links.
+	(clean): No need to delete links.
+	(stamp-oct-links): Delete target.
+	(distclean): No need to remove stamp-oct-links.
+	(all): Depend on $(OCT_FILES), not stamp-oct-links.
+
+	* mk-pkg-add: New file.
+	* Makefile.in (DISTFILES): Add it to the list.
+
+	* mk-oct-links: Delete.
+	* Makefile.in (DISTFILES): Remove it from the list.
+
 2005-11-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-str-mat.h (octave_char_matrix_str::permute,

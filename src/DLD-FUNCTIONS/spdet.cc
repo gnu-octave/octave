@@ -36,9 +36,9 @@ Boston, MA 02110-1301, USA.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-// PKG_ADD: dispatch ("det", "spdet", "sparse matrix")
-// PKG_ADD: dispatch ("det", "spdet", "sparse complex matrix")
-// PKG_ADD: dispatch ("det", "spdet", "sparse bool matrix")
+// PKG_ADD: dispatch ("det", "spdet", "sparse matrix");
+// PKG_ADD: dispatch ("det", "spdet", "sparse complex matrix");
+// PKG_ADD: dispatch ("det", "spdet", "sparse bool matrix");
 DEFUN_DLD (spdet, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } spdet (@var{a})\n\

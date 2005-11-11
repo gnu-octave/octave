@@ -23,8 +23,9 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
 %.df : %.cc
 	@echo making $@ from $<
-	@$(CXXCPP) $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_BUILTINS $< \
-	  | $(srcdir)/mkdefs > $@-t
+	@(egrep '^(///*|/\*) *PKG_ADD:' $< ; \
+	  $(CXXCPP) $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_BUILTINS $< \
+	    | $(srcdir)/mkdefs) > $@-t
 	@mv $@-t $@
 
 # How to make a .oct file from a .o file:
@@ -253,12 +254,12 @@ OCT_LINK_DEPS = \
    $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
-	DOCSTRINGS mkbuiltins mk-errno-list mk-oct-links \
+	DOCSTRINGS mkbuiltins mk-errno-list mk-pkg-add \
 	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h gplot.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
-all: octave$(EXEEXT) stamp-oct-links PKG_ADD DOCSTRINGS
+all: octave$(EXEEXT) $(OCT_FILES) PKG_ADD DOCSTRINGS
 .PHONY: all
 
 objects: $(OBJECTS)
@@ -301,12 +302,6 @@ liboctinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
-stamp-oct-links: $(OCT_FILES)
-	if [ -n "$(OCT_FILES)" ]; then \
-	  $(srcdir)/mk-oct-links . $(DLD_DEF_FILES); \
-	fi
-	touch stamp-oct-links
-
 stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc gplot.cc $(OPT_HANDLERS)
 	touch stamp-prereq
 
@@ -347,10 +342,8 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(srcdir)/mkbuiltins def-files var-files > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
-PKG_ADD: $(DLD_SRC)
-	$(SED) -n -e 's,^//* *PKG_ADD: *,,p' \
-	          -e 's,^/\* *PKG_ADD: *\(.*\) \*/$$,\1,p' \
-	  $(addprefix $(srcdir)/, $(DLD_SRC)) > PKG_ADD-t
+PKG_ADD: $(DLD_DEF_FILES)
+	$(srcdir)/mk-pkg-add --prefix $(shell pwd) $(DLD_DEF_FILES) > PKG_ADD-t
 	mv PKG_ADD-t PKG_ADD
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
@@ -403,15 +396,14 @@ install-bin:
 	cd $(DESTDIR)$(bindir) ; $(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
 .PHONY: install-bin
 
-install-oct: PKG_ADD
+install-oct:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
-	$(INSTALL_DATA) PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD
 	if [ -n "$(OCT_FILES)" ]; then \
 	  xfiles="$(OCT_FILES)"; \
 	  for f in $$xfiles; do \
 	    $(INSTALL_PROGRAM) $$f $(DESTDIR)$(octfiledir)/$$f; \
 	  done; \
-	  $(srcdir)/mk-oct-links $(DESTDIR)$(octfiledir) $(DLD_DEF_FILES); \
+	  $(srcdir)/mk-pkg-add --prefix $(octfiledir) $(DLD_DEF_FILES) > $(DESTDIR)$(octfiledir)/PKG_ADD
 	fi
 .PHONY: install-oct
 
@@ -474,9 +466,6 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
-	if [ -n "$(OCT_FILES)" ]; then \
-	  $(srcdir)/mk-oct-links --delete . $(DLD_DEF_FILES); \
-	fi
 	rm -f liboctinterp.$(LIBEXT)
 	rm -f liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
 	rm -f $(OBJECTS) $(MAKEDEPS) $(DOC_FILES) $(OCT_FILES)
@@ -491,7 +480,7 @@ mostlyclean: clean
 
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
-	rm -f stamp-prereq stamp-liboctave-prereq stamp-oct-links
+	rm -f stamp-prereq stamp-liboctave-prereq
 	rm -f doc-files gendoc.cc DOCSTRINGS
 .PHONY: distclean
 

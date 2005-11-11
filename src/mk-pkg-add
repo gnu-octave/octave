@@ -12,21 +12,17 @@
 
 SED=${SED:-'sed'}
 
-print_only=false
-delete_links=false
-if [ $1 = "--print" -o $1 = "-p" ]; then
-  print_only=true
+if [ $1 = "--prefix" ]; then
   shift
-elif [ $1 = "--delete" ]; then
-  delete_links=true
+  prefix="$1"
   shift
 fi
 
-links_dir=$1
-shift
-
 for f in "$@"; do
   if [ -f $f ]; then
+
+    ## Compute and print the autoloads.
+  
     base=`basename $f | $SED 's/\.df$//'`
     fcns=`grep '^ *XDEFUN_DLD_INTERNAL' $f |\
 	  $SED -e 's/XDEFUN_DLD_INTERNAL *( *//' -e 's/ *,.*$//' |\
@@ -36,17 +32,21 @@ for f in "$@"; do
 	if [ "$n" = "$base" ]; then
 	  true
 	else
-	  if $print_only; then
-	    echo $base.oct $n.oct
-	  elif $delete_links; then
-	    rm -f $links_dir/$n.oct
+          if [ -n "$prefix" ]; then
+	    echo "autoload (\"$n\", \"$prefix/$base.oct\");"
 	  else
-	    echo "creating link $n.oct -> $base.oct"
-	    ( cd $links_dir; rm -f $n.oct; ln $base.oct $n.oct )
+	    echo "autoload (\"$n\", \"$base.oct\");"
 	  fi
 	fi
       done
     fi
+
+    ## Process PKG_ADD directives after autoloads so that all
+    ## necessary functions can be found before they are used.
+
+    $SED -n -e 's,^//* *PKG_ADD: *,,p' \
+            -e 's,^/\* *PKG_ADD: *\(.*\) *\*/ *$,\1,p' $f
+
   fi
 done
 

@@ -79,9 +79,9 @@ kron (const Sparse<double>&, const Sparse<double>&, Sparse<double>&);
 template void
 kron (const Sparse<Complex>&, const Sparse<Complex>&, Sparse<Complex>&);
 
-// PKG_ADD: dispatch ("kron", "spkron", "sparse matrix")
-// PKG_ADD: dispatch ("kron", "spkron", "sparse complex matrix")
-// PKG_ADD: dispatch ("kron", "spkron", "sparse bool matrix")
+// PKG_ADD: dispatch ("kron", "spkron", "sparse matrix");
+// PKG_ADD: dispatch ("kron", "spkron", "sparse complex matrix");
+// PKG_ADD: dispatch ("kron", "spkron", "sparse bool matrix");
 DEFUN_DLD (spkron, args,  nargout, "-*- texinfo -*-\n\
 @deftypefn {Function File} {} spkron (@var{a}, @var{b})\n\
 Form the kronecker product of two sparse matrices. This is defined\n\

@@ -1,5 +1,8 @@
 2005-11-11  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.4
+	(OCTAVE_API_VERSION): Now api-v17.
+
 	* variables.cc (symbol_out_of_date): Check for autoloads here too.
 
 	* Makefile.in (PKG_ADD): Depend on $(DLD_DEF_FILES), not $(DLD_SRC).

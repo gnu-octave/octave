@@ -1,5 +1,7 @@
 2005-11-11  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (install-oct): Fix thinko in previous change.
+
 	* version.h (OCTAVE_VERSION): Now 2.9.4
 	(OCTAVE_API_VERSION): Now api-v17.
 

@@ -398,12 +398,12 @@ install-bin:
 
 install-oct:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
+	$(srcdir)/mk-pkg-add --prefix $(octfiledir) $(DLD_DEF_FILES) > $(DESTDIR)$(octfiledir)/PKG_ADD
 	if [ -n "$(OCT_FILES)" ]; then \
 	  xfiles="$(OCT_FILES)"; \
 	  for f in $$xfiles; do \
 	    $(INSTALL_PROGRAM) $$f $(DESTDIR)$(octfiledir)/$$f; \
 	  done; \
-	  $(srcdir)/mk-pkg-add --prefix $(octfiledir) $(DLD_DEF_FILES) > $(DESTDIR)$(octfiledir)/PKG_ADD
 	fi
 .PHONY: install-oct
 

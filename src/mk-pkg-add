@@ -1,21 +1,25 @@
 #! /bin/sh -e
 
-# Create additional links to .oct files that define more than one
-# function.
-
-# If the first arg is --print, only print the links we need to make.
-
-# The first non-option arg is taken as the directory where the .oct
-# files are installed.  The remaining arguments should be the list of
-# .df files corresponding to the source files that were used to
-# create the .oct files.
-
 SED=${SED:-'sed'}
 
+install=false
 if [ $1 = "--prefix" ]; then
   shift
   prefix="$1"
   shift
+elif [ $1 = "--install" ]; then
+  install=true
+  shift
+fi
+
+if [ $# -gt 0 ]; then
+  if $install; then
+    cat <<EOF
+__octfiledir__ = strrep (octave_config_info ("octfiledir"),
+                         octave_config_info ("prefix"),
+                         OCTAVE_HOME);
+EOF
+  fi
 fi
 
 for f in "$@"; do
@@ -33,7 +37,9 @@ for f in "$@"; do
 	  true
 	else
           if [ -n "$prefix" ]; then
-	    echo "autoload (\"$n\", \"$prefix/$base.oct\");"
+	    echo "autoload (\"$n\", strcat (\"$prefix\", filesep, \"$base.oct\"));"
+          elif $install; then
+            echo "autoload (\"$n\", strcat (__octfiledir__, filesep, \"$base.oct\"));"
 	  else
 	    echo "autoload (\"$n\", \"$base.oct\");"
 	  fi

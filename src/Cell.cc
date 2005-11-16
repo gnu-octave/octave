@@ -53,6 +53,10 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
   switch (n)
     {
+    case 0:
+      retval = *this;
+      break;
+
     case 1:
       {
 	idx_vector i = idx_arg(0).index_vector ();

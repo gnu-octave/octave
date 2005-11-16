@@ -343,8 +343,12 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(top_srcdir)/move-if-change $@-t $@
 
 PKG_ADD: $(DLD_DEF_FILES)
-	$(srcdir)/mk-pkg-add --prefix $(shell pwd) $(DLD_DEF_FILES) > PKG_ADD-t
-	mv PKG_ADD-t PKG_ADD
+	$(srcdir)/mk-pkg-add --prefix $(shell pwd) $(DLD_DEF_FILES) > $@-t
+	mv $@-t $@
+
+PKG_ADD.inst: $(srcdir)/mk-pkg-add $(DLD_DEF_FILES)
+	$(srcdir)/mk-pkg-add --install $(DLD_DEF_FILES) > $@-t
+	mv $@-t $@
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	./gendoc > $@-t
@@ -396,9 +400,9 @@ install-bin:
 	cd $(DESTDIR)$(bindir) ; $(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
 .PHONY: install-bin
 
-install-oct:
+install-oct: PKG_ADD.inst
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
-	$(srcdir)/mk-pkg-add --prefix $(octfiledir) $(DLD_DEF_FILES) > $(DESTDIR)$(octfiledir)/PKG_ADD
+	$(INSTALL_DATA) PKG_ADD.inst $(DESTDIR)$(octfiledir)/PKG_ADD
 	if [ -n "$(OCT_FILES)" ]; then \
 	  xfiles="$(OCT_FILES)"; \
 	  for f in $$xfiles; do \
@@ -472,6 +476,7 @@ clean:
 	rm -f $(PICOBJ) $(DLD_PICOBJ) stmp-pic gendoc$(EXEEXT)
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
 	rm -f PKG_ADD
+	rm -f PKG_ADD.inst
 	-rmdir pic
 .PHONY: clean
 

@@ -1,3 +1,19 @@
+2005-11-16  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (PKG_ADD.inst): New target.
+	(install): Dependo on it.
+	(clean): Remove it.
+
+	* mk-pkg-add: New option --install.  Don't use --prefix option.
+	Delete obsolete comments.
+
+	* Cell.cc (Cell::index): Indexing with () is a no-op, not an error.
+	* oct-map.cc (Octave_map::index): Likewise.
+	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op): Likewise.
+	* ov-base-sparse.cc (octave_base_sparse<T>::do_index_op): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):
+	Likewise.
+
 2005-11-11  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (install-oct): Fix thinko in previous change.

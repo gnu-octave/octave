@@ -1,3 +1,7 @@
+2005-11-15  John W. Eaton  <jwe@octave.org>
+
+	* general/shiftdim.m: Doc fix.
+
 2005-11-07  Keith Goodman  <kwgoodman@gmail.com>
 
 	* set/unique.m: Doc string fix.

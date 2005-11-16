@@ -90,15 +90,8 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
   switch (len)
     {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
-
-	if (! error_state)
-	  retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-				 true, type);
-      }
+    case 0:
+      retval = octave_value (matrix, true, type);
       break;
 
     case 1:
@@ -111,8 +104,15 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
       }
       break;
 
-    case 0:
-      error ("invalid number of indices (= 0) for %d-dimensional character array", matrix.ndims ());
+    case 2:
+      {
+	idx_vector i = idx (0).index_vector ();
+	idx_vector j = idx (1).index_vector ();
+
+	if (! error_state)
+	  retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
+				 true, type);
+      }
       break;
 
     default:

@@ -349,10 +349,9 @@ Octave_map::index (const octave_value_list& idx)
 	}
     }
   else
-    error ("invalid number of indices (= 0) for %d-dimensional struct array",
-	   ndims ());
+    retval = *this;
 
-  return error_state ? Octave_map () : retval;
+  return retval;
 }
 
 /*

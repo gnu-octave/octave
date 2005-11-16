@@ -799,12 +799,18 @@ octave_value::octave_value (octave_value *new_rep, int cnt)
 octave_value::~octave_value (void)
 {
 #if defined (MDEBUG)
-  std::cerr << "~octave_value: rep: " << rep
-	    << " rep->count: " << rep->count << "\n";
+  if (rep)
+    std::cerr << "~octave_value: rep: " << rep
+	      << " rep->count: " << rep->count << std::endl;
+  else
+    std::cerr << "~octave_value: rep is 0!" << std::endl;
 #endif
 
   if (rep && --rep->count == 0)
-    delete rep;
+    {
+      delete rep;
+      rep = 0;
+    }
 }
 
 octave_value *

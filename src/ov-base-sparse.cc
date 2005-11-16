@@ -55,7 +55,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
   switch (n_idx)
     {
     case 0:
-      error ("invalid number of indices (= 0) for %d-dimensional array", nd);
+      retval = matrix;
       break;
 
     case 1:

@@ -74,7 +74,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     } \
  \
   int dim; \
-  dim_vector dv = ((const octave_complex_matrix&) arg1) .dims (); \
+  dim_vector dv = arg1.dims (); \
   if (error_state) \
     { \
       gripe_wrong_type_arg (#FCN, arg1);  \

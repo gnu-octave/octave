@@ -1,7 +1,12 @@
+2005-11-17  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/minmax.cc (MINMAX_BODY): Don't cast arg1 to
+	const octave_complex_matrix&.
+
 2005-11-16  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (PKG_ADD.inst): New target.
-	(install): Dependo on it.
+	(install-oct): Depend on it.
 	(clean): Remove it.
 
 	* mk-pkg-add: New option --install.  Don't use --prefix option.

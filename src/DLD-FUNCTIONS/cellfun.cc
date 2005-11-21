@@ -38,24 +38,24 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 DEFUN_DLD (cellfun, args, ,
   " -*- texinfo -*-\n\
 @deftypefn {Lodable Function} {} cellfun (@var{name}, @var{c})\n\
-@deftypefnx {Lodable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
 @deftypefnx {Lodable Function} {} cellfun (\"size\", @var{c}, @var{k})\n\
+@deftypefnx {Lodable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
 @deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
-@var{c}.  Elements in cell_array are passed on to the named function\n\
+@var{c}.  Elements in @var{c} are passed on to the named function\n\
 individually.  The function @var{name} can be one of the functions\n\
 \n\
 @table @code\n\
 @item isempty\n\
-Return 1 when for non empty elements and 0 for others.\n\
+Return 1 for empty elements.\n\
 @item islogical\n\
 Return 1 for logical elements.\n\
 @item isreal\n\
 Return 1 for real elements.\n\
 @item length\n\
 Return a vector of the lengths of cell elements.\n\
-@item dims\n\
+@item ndims\n\
 Return the number of dimensions of each element.\n\
 @item prodofsize\n\
 Return the product of dimensions of each element.\n\
@@ -78,7 +78,8 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
 @end group\n\
 @end example\n\
 \n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{isempty, islogical, isreal, length, ndims, numel, size, isclass}")
 {
   octave_value retval;
 
@@ -106,13 +107,13 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
     name = args(0).string_value ();
   else
     {
-      error ("cellfun: first argument must be a string");
+      error ("cellfun: first argument must be a string or function handle");
       return retval;
     }	
 
   if (! args(1).is_cell ())
     {
-      error ("cellfun: second argument must be a cell");
+      error ("cellfun: second argument must be a cell array");
 
       return retval;
     }
@@ -125,7 +126,7 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
     {      
       boolNDArray result (f_args.dims ());
       for (int count = 0; count < k ; count++)
-        result(count) = f_args.elem(count).is_empty();
+        result(count) = f_args.elem(count).is_empty ();
       retval = result;
     }
   else if (name == "islogical")
@@ -146,21 +147,21 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
     {
       NDArray result (f_args.dims ());
       for (int  count= 0; count < k ; count++)
-        result(count) = double (f_args.elem(count).numel ());
+        result(count) = double (f_args.elem(count).length ());
       retval = result;
     }
   else if (name == "ndims")
     {
       NDArray result (f_args.dims ());
       for (int count = 0; count < k ; count++)
-        result(count) = double ((f_args.elem(count).dims ()).numel ());
+        result(count) = double (f_args.elem(count).ndims ());
       retval = result;
     }
   else if (name == "prodofsize")
     {
       NDArray result (f_args.dims ());
       for (int count = 0; count < k ; count++)
-        result(count) = double ((f_args.elem(count).dims ()).numel ());
+        result(count) = double (f_args.elem(count).numel ());
       retval = result;
     }
   else if (name == "size")
@@ -187,7 +188,7 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
             }
         }
       else
-        error ("Not enough argument for size");
+        error ("not enough arguments for `size'");
     }
   else if (name == "isclass")
     {
@@ -201,7 +202,7 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
           retval = result;
         }
       else
-        error ("Not enough argument for isclass");
+        error ("not enough arguments for `isclass'");
     }
   else 
     {

@@ -26,7 +26,7 @@ SOURCES = hello.cc oregonator.m oregonator.cc make_int.cc octave.desktop.in
 IMAGE_FILES = $(srcdir)/octave-sombrero.png
 IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
 
-DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS) $(IMAGE_FILES) octave.desktop
+DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS) $(IMAGE_FILES)
 
 SUBDIRS = 
 
@@ -69,11 +69,11 @@ clean mostlyclean:
 .PHONY: clean mostlyclean
 
 distclean:
-	rm -f Makefile
+	rm -f Makefile octave.desktop
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS octave.desktop
+	rm -f tags TAGS
 .PHONY: maintainer-clean
 
 dist:

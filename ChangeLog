@@ -1,3 +1,9 @@
+2005-11-21  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (DISTFILES): Don't include octave.desktop here.
+	(distclean): Remove octave.desktop here.
+	(maintainer-clean): Not here.
+
 2005-11-01  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (distclean, maintainer-clean):

@@ -1106,6 +1106,12 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 {
   if (fmt)
     {
+      // Unless explicitly asked for, always print in big-endian
+      // format for hex and bit formats.
+      //
+      //   {bit,hex}_format == 1: print big-endian
+      //   {bit,hex}_format == 2: print native
+
       if (hex_format)
 	{
 	  equiv tmp;
@@ -1150,9 +1156,6 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 	{
 	  equiv tmp;
 	  tmp.d = d;
-
-	  // Unless explicitly asked for, always print in big-endian
-	  // format.
 
 	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
 	  // formats and not for Cray?
@@ -2125,6 +2128,12 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
   size_t sz = d.byte_size();
   const unsigned char * tmpi = d.iptr();
 
+  // Unless explicitly asked for, always print in big-endian
+  // format for hex and bit formats.
+  //
+  //   {bit,hex}_format == 1: print big-endian
+  //   {bit,hex}_format == 2: print native
+
   if (hex_format)
     {
       char ofill = os.fill ('0');
@@ -2148,15 +2157,23 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
   else if (bit_format)
     {
-      if (bit_format > 1 || oct_mach_info::words_big_endian ())
+      if (oct_mach_info::words_big_endian ())
 	{
 	  for (size_t i = 0; i < sz; i++)
-	    PRINT_CHAR_BITS_SWAPPED (os, tmpi[i]);
+	    PRINT_CHAR_BITS (os, tmpi[i]);
 	}
       else
 	{
-	  for (int i = sz - 1; i >= 0; i--)
-	    PRINT_CHAR_BITS (os, tmpi[i]);
+	  if (bit_format > 1)
+	    {
+	      for (size_t i = 0; i < sz; i++)
+		PRINT_CHAR_BITS_SWAPPED (os, tmpi[i]);
+	    }
+	  else
+	    {
+	      for (int i = sz - 1; i >= 0; i--)
+		PRINT_CHAR_BITS (os, tmpi[i]);
+	    }
 	}
     }
   else

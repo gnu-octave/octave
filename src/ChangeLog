@@ -1,3 +1,15 @@
+2005-11-21  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (pr_int): Fix thinko in byte-swapping for bit format.
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun):
+	Use C++ static_cast instead of C-style casts.
+
+2005-11-21  William Poetra Yoga H <williampoetra@yahoo.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun):
+	Docstring and error message fixes.
+
 2005-11-17  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/minmax.cc (MINMAX_BODY): Don't cast arg1 to

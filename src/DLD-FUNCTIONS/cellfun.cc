@@ -147,21 +147,21 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
     {
       NDArray result (f_args.dims ());
       for (int  count= 0; count < k ; count++)
-        result(count) = double (f_args.elem(count).length ());
+        result(count) = static_cast<double> (f_args.elem(count).length ());
       retval = result;
     }
   else if (name == "ndims")
     {
       NDArray result (f_args.dims ());
       for (int count = 0; count < k ; count++)
-        result(count) = double (f_args.elem(count).ndims ());
+        result(count) = static_cast<double> (f_args.elem(count).ndims ());
       retval = result;
     }
   else if (name == "prodofsize")
     {
       NDArray result (f_args.dims ());
       for (int count = 0; count < k ; count++)
-        result(count) = double (f_args.elem(count).numel ());
+        result(count) = static_cast<double> (f_args.elem(count).numel ());
       retval = result;
     }
   else if (name == "size")
@@ -180,7 +180,7 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
                 {
                   dim_vector dv = f_args.elem(count).dims ();
                   if (d < dv.length ())
-	            result(count) = double (dv(d));
+	            result(count) = static_cast<double> (dv(d));
                   else
 	            result(count) = 1.0;
                 }

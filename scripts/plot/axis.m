@@ -247,15 +247,15 @@ function curr_axis = axis (ax, varargin)
     __current_axis__ = reshape (ax, 1, len);
 
     if (len > 1)
-      __gnuplot_raw__ (sprintf ("set xrange [%g:%g];\n", ax(1), ax(2)));
+      __gnuplot_raw__ (sprintf ("set xrange [%.16g:%.16g];\n", ax(1), ax(2)));
     endif
 
     if (len > 3)
-      __gnuplot_raw__ (sprintf ("set yrange [%g:%g];\n", ax(3), ax(4)));
+      __gnuplot_raw__ (sprintf ("set yrange [%.16g:%.16g];\n", ax(3), ax(4)));
     endif
 
     if (len > 5)
-      __gnuplot_raw__ (sprintf ("set zrange [%g:%g];\n", ax(5), ax(6)));
+      __gnuplot_raw__ (sprintf ("set zrange [%.16g:%.16g];\n", ax(5), ax(6)));
     endif
 
   else

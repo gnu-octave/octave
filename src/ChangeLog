@@ -1,3 +1,7 @@
+2005-11-28  John W. Eaton  <jwe@octave.org>
+
+	* syscalls.cc (Funame): New function.
+
 2005-11-21  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (pr_int): Fix thinko in byte-swapping for bit format.

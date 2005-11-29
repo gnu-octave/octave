@@ -47,6 +47,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-syscalls.h"
+#include "oct-uname.h"
 
 #include "defun.h"
 #include "error.h"
@@ -992,6 +993,53 @@ DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
     }
   else
     print_usage ("S_ISSOCK");
+
+  return retval;
+}
+
+DEFUN (uname, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()\n\
+Return system information in the structure.  For example,\n\
+\n\
+@example\n\
+@group\n\
+uname ()\n\
+     @result{} @{\n\
+           sysname = \n\
+           nodename = \n\
+           release = \n\
+           version = \n\
+           machine = \n\
+         @}\n\
+@end group\n\
+@end example\n\
+\n\
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 0)
+    {
+      octave_uname sysinfo;
+
+      Octave_map m;
+
+      m.assign ("sysname", sysinfo.sysname ());
+      m.assign ("nodename", sysinfo.nodename ());
+      m.assign ("release", sysinfo.release ());
+      m.assign ("version", sysinfo.version ());
+      m.assign ("machine", sysinfo.machine ());
+
+      retval(2) = sysinfo.message ();
+      retval(1) = sysinfo.error ();
+      retval(0) = m;
+    }
+  else
+    print_usage ("uname");
 
   return retval;
 }

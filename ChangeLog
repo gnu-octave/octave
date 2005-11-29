@@ -1,3 +1,7 @@
+2005-11-28  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for uname.
+
 2005-11-21  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (DISTFILES): Don't include octave.desktop here.

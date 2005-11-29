@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.492 $)
+AC_REVISION($Revision: 1.493 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1224,8 +1224,8 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   readlink rename resolvepath rindex rmdir round select setgrent \
   setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
   sigsuspend stat strcasecmp strdup strerror strftime stricmp \
-  strncasecmp strnicmp strptime symlink tempnam umask unlink usleep \
-  vfprintf vsprintf vsnprintf waitpid)
+  strncasecmp strnicmp strptime symlink tempnam umask uname unlink \
+  usleep vfprintf vsprintf vsnprintf waitpid)
 
 OCTAVE_SMART_PUTENV
 

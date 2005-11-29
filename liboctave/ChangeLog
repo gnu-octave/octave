@@ -1,3 +1,8 @@
+2005-11-29  John W. Eaton  <jwe@octave.org>
+
+	* oct-uname.h, oct-uname.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2005-11-11  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::indexN): Simplify.

@@ -33,19 +33,20 @@ function ver ()
     usage ("ver");
   endif
 
-  octave_license = "GNU General Public License, Version 2";
+  octave_license = license ();
 
-  if (isunix)
-    os_string = system ("uname -srvm")(1:end-1);
-  elseif (ispc)
-    os_string = "Microsoft Windows";
-  else
+  [unm, status] = uname ();
+
+  if (status < 0)
     os_string = "unknown";
+  else
+    os_string = sprintf ("%s %s %s %s", unm.sysname, unm.release,
+			 unm.version, unm.machine);
   endif
 
   hbar(1:70) = "-";
   ver_line1 = "GNU Octave Version ";
-  ver_line2 = "GNU Octave License ";
+  ver_line2 = "GNU Octave License: ";
   ver_line3 = "Operating System: ";
 
   ver_desc = sprintf ("%s\n%s%s\n%s%s\n%s%s\n%s\n", hbar, ver_line1, version,
@@ -59,9 +60,9 @@ function ver ()
                                            - length (octave_forge_name)
                                            - length (octave_forge_version)),
                                    octave_forge_version);
+    ver_desc = strcat (ver_desc, octave_forge_string);
   endif
 
-  ver_desc = strcat (ver_desc, octave_forge_string);
-  disp (ver_desc);
+  puts (ver_desc);
 
 endfunction

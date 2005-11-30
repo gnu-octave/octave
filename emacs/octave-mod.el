@@ -203,6 +203,9 @@ parenthetical grouping.")
 
 (defvar inferior-octave-process nil)
 
+(defvar octave-xemacs-p
+  (string-match "XEmacs\\|Lucid" emacs-version))
+
 (defvar octave-mode-map nil
   "Keymap used in Octave mode.")
 (if octave-mode-map
@@ -219,6 +222,8 @@ parenthetical grouping.")
     (define-key map "\M-\C-a" 'octave-beginning-of-defun)
     (define-key map "\M-\C-e" 'octave-end-of-defun)
     (define-key map "\M-\C-h" 'octave-mark-defun)
+    (if octave-xemacs-p
+        (define-key map [(meta backspace)] 'backward-kill-word))
     (define-key map "\M-\C-q" 'octave-indent-defun)
     (define-key map "\C-c;" 'octave-comment-region)
     (define-key map "\C-c:" 'octave-uncomment-region)
@@ -637,9 +642,6 @@ the end keyword."
       nil
     (delete-horizontal-space)
     (insert (concat " " octave-continuation-string))))
-
-(defvar octave-xemacs-p
-  (string-match "XEmacs\\|Lucid" emacs-version))
 
 ;;; Comments
 (defun octave-comment-region (beg end &optional arg)

@@ -1,3 +1,15 @@
+2005-11-29  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/ver.m: Use new uname built-in function instead of
+	calling system.  Only append octave_forge_string if
+	OCTAVE_FORGE_VERSION exists.  Use puts instead of disp.
+	Call license instead of hard-coding license info here.
+
+	* miscellaneous/license.m: Use persistent instead of global for
+	__octave_licenses__.  Use puts instad of disp.
+	Use getuid and getpwuid instead of calling unix ("id -un").
+	If nargout = 1, return license info instead of printing usage message.
+
 2005-11-29  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* miscellaneous/ver.m: New file.

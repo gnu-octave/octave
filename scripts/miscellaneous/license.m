@@ -19,38 +19,22 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} license
-## @deftypefnx {Function File} {} license ("inuse")
-## @deftypefnx {Function File} {@var{retval}} = license ("inuse")
-## @deftypefnx {Function File} {@var{retval}} = license ("test", @var{feature})
-## @deftypefnx {Function File} {} license ("test", @var{feature}, @var{toggle})
-## @deftypefnx {Function File} {@var{retval}} = license ("checkout", @var{feature})
 ## Display the license of Octave.
 ##
-## @itemize
+## @deftypefnx {Function File} {} license ("inuse")
+## Display a list of packages currently being used.
 ##
-## @item
-## @code{license} displays the license of Octave (GNU GPL v2).
+## @deftypefnx {Function File} {@var{retval}} = license ("inuse")
+## Return a structure containing the fields @code{feature} and @code{user}.
 ##
-## @item
-## @code{license ("inuse")} also displays a list of products currently
-## being used.
+## @deftypefnx {Function File} {@var{retval}} = license ("test", @var{feature})
+## Return 1 if a license exists for the product identified by the string
+## @var{feature} and 0 otherwise.  The argument @var{feature} is case
+## insensitive and only the first 27 characters are checked.
 ##
-## @item
-## @code{@var{retval} = license ("inuse")} returns a structure which has
-## two fields: @code{feature} is the product name ("Octave") and
-## @code{user} is the current username (only works on Unix systems; on
-## Windows systems it contains "octave_user").
-##
-## @item
-## @code{@var{retval} = license ("test", @var{feature})} returns 1 if a
-## license exists for the product identified by the string @var{feature}
-## and 0 otherwise. @var{feature} is case insensitive and only the first
-## 27 characters are checked.
-##
-## @item
-## @code{license ("test", @var{feature}, @var{toggle})} enables or disables
-## license testing for @var{feature}, depending on @var{toggle}, which
-## can be one of:
+## @deftypefnx {Function File} {} license ("test", @var{feature}, @var{toggle})
+## Enable or disable license testing for @var{feature}, depending on
+## @var{toggle}, which may be one of:
 ##
 ## @table @samp
 ## @item "enable"
@@ -60,12 +44,11 @@
 ## Future tests for the specified license of @var{feature} return 0.
 ## @end table
 ##
-## @item
-## @code{@var{retval} = license ("checkout", @var{feature})} checks out
-## a license for @var{feature}, returning 1 on success and 0 on failure.
+## @deftypefnx {Function File} {@var{retval}} = license ("checkout", @var{feature})
+## Check out a license for @var{feature}, returning 1 on success and 0
+## on failure.
 ##
-## @end itemize
-##
+## This function is provided for compatibility with @sc{Matlab}.
 ## @end deftypefn
 ## @seealso{ver, version}
 
@@ -73,7 +56,7 @@
 
 function retval = license (varargin)
 
-  global __octave_licenses__
+  persistent __octave_licenses__;
 
   if (isempty (__octave_licenses__))
     __octave_licenses__ = cell ();
@@ -97,26 +80,24 @@ function retval = license (varargin)
 
   if (nin == 0)
 
-    if (nout == 0)
-
-      found = false;
-      for p = 1:nr_licenses
-        if (strcmp (__octave_licenses__{p,1}, "Octave"))
-          found = true;
-          break;
-        endif
-      endfor
-
-      if (found)
-        disp (__octave_licenses__{p,2});
-      else
-        disp ("unknown");
+    found = false;
+    for p = 1:nr_licenses
+      if (strcmp (__octave_licenses__{p,1}, "Octave"))
+        found = true;
+        break;
       endif
+    endfor
 
+    if (found)
+      result = __octave_licenses__{p,2};
     else
+      result = "unknown";
+    endif
 
-      usage ("license");
-
+    if (nout == 0)
+      printf ("%s\n", result);
+    else
+      retval = result;
     endif
 
   elseif (nin == 1)
@@ -128,7 +109,7 @@ function retval = license (varargin)
       endif
 
       for p = 1:nr_licenses
-        disp (__octave_licenses__{p,1});
+        printf ("%s\n", __octave_licenses__{p,1});
       endfor
 
     else
@@ -137,15 +118,11 @@ function retval = license (varargin)
         usage ("retval = license (\"inuse\")");
       endif
 
-      if (isunix)
-        [t, username] = unix ("id -un");
-        if (t == 0)
-          username = username(1:end-1);
-        else
-          username = "octave_user";
-        endif
+      pw = getpwuid (getuid ());
+      if (isstruct (pw))
+	username = pw.name;
       else
-        username = "octave_user";
+	username = "octave_user";
       endif
 
       retval(1:nr_licenses) = struct ("feature", "", "user", "");

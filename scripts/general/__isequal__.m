@@ -15,9 +15,8 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal},
-## @var{x1}, @var{x2}, ...)
-## Return true if @var{x1}, @var{x2}, ... are all equal and
+## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
+## Return true if @var{x1}, @var{x2}, @dots{} are all equal and
 ## @var{nans_compare_equal} evaluates to false.
 ##
 ## If @var{nans_compare_equal} evaluates to true, then assume NaN == NaN.

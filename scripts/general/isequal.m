@@ -17,19 +17,19 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, ...)
-## Return true if all of @var{x1}, @var{x2}, ... are equal.
+## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, @dots{})
+## Return true if all of @var{x1}, @var{x2}, @dots{} are equal.
 ## @end deftypefn
 ##
 ## @seealso{isequalwithequalnans}
 
-function tf = isequal (x, varargin)
+function retval = isequal (x, varargin)
 
-  if (nargin < 2)
+  if (nargin > 1)
+    retval = __isequal__ (0, x, varargin{:});
+  else
     usage ("isequal (x1, x2, ...)");
-  end
-
-  tf = __isequal__ (0, x, varargin{:});
+  endif
 
 endfunction
 

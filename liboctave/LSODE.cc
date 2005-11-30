@@ -134,8 +134,8 @@ LSODE::do_integrate (double tout)
 	  else
 	    method_flag = 22;
 
-	  liw = 20 + n;
-	  lrw = 22 + n * (9 + n);
+	  liw = 20 + n + 10000;
+	  lrw = 22 + n * (9 + n) + 10000;
 	}
       else
 	{
@@ -148,6 +148,16 @@ LSODE::do_integrate (double tout)
 	}
 
       maxord = maximum_order ();
+
+      iwork.resize (liw);
+
+      for (octave_idx_type i = 4; i < 9; i++)
+	iwork(i) = 0;
+
+      rwork.resize (lrw);
+
+      for (octave_idx_type i = 4; i < 9; i++)
+	rwork(i) = 0;
 
       if (maxord >= 0)
 	{
@@ -164,16 +174,6 @@ LSODE::do_integrate (double tout)
 	      return retval;
 	    }
 	}
-
-      iwork.resize (liw);
-
-      for (octave_idx_type i = 4; i < 9; i++)
-	iwork(i) = 0;
-
-      rwork.resize (lrw);
-
-      for (octave_idx_type i = 4; i < 9; i++)
-	rwork(i) = 0;
 
       if (stop_time_set)
 	{

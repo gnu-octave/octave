@@ -1,3 +1,8 @@
+2005-11-30  John W. Eaton  <jwe@octave.org>
+
+	* LSODE.cc (LSODE::do_integrate (double)): Resize iwork and rwork
+	before setting any values in either array.
+
 2005-11-29  John W. Eaton  <jwe@octave.org>
 
 	* oct-uname.h, oct-uname.cc: New files.

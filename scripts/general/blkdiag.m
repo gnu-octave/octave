@@ -32,22 +32,21 @@ function retval = blkdiag (varargin)
     usage ("blkdiag (a, b, c, ...)");
   endif
 
-  # isnumeric is not an option for cellfun
   if (! all (cell2mat (cellfun (@isnumeric, varargin))))
-    error ("all of the arguments to blkdiag must be numeric");
+    error ("blkdiag: all arguments must be numeric");
   endif
 
-  # ndims is, so it's used here for speed
-  # note: trailing singletons are automatically (correctly) ignored
-  if (! all (cellfun ("ndims", varargin) == 2))
+  ## Note: trailing singletons are automatically (correctly) ignored.
+  if (! all (cellfun (@ndims, varargin) == 2))
     error ("all of the arguments to blkdiag must be two-dimensional matrices");
   endif
 
-  # ignore empty matrices
-  notempty = ! cellfun ("isempty", varargin);
+  ## Ignore empty matrices.
+  notempty = ! cellfun (@isempty, varargin);
   varargin = varargin(notempty);
 
-  # size is, but it's a bit different from calling size directly
+  ## size is an option for cellfun, but it's a bit different from
+  ## calling size directly.
   csz = cumsum ([0 0; (cell2mat (cellfun (@size, varargin')))], 1);
   retval = zeros (csz(end,:));
   for p = 1:(length (notempty(notempty)))

@@ -46,17 +46,15 @@ install install-strip:
 	for f in $(SCRIPTS); do \
 	  $(INSTALL_SCRIPT) $(srcdir)/$$f $(DESTDIR)$(archlibdir)/$$f; \
 	done
-#
-# Don't do this by default, or maybe at all.
-#
-#	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(imagedir)
-#	for f in $(IMAGE_FILES_NO_DIR); do \
-#	  rm -f $(DESTDIR)$(imagedir)/$$f; \
-#	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
-#	done
-#	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-#	  $(DESKTOP_FILE_INSTALL) --vendor www.octave.org octave.desktop; \
-#	fi
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(imagedir)
+	for f in $(IMAGE_FILES_NO_DIR); do \
+	  rm -f $(DESTDIR)$(imagedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
+	done
+	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
+	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
+	    --vendor www.octave.org octave.desktop;
+	fi
 .PHONY: install install-strip
 
 tags:

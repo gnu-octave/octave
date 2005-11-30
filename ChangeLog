@@ -1,3 +1,8 @@
+2005-11-30  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (install install-strip): Install images and
+	desktop file.
+
 2005-11-29  Rafael Laboissiere  <rafael@debian.org>
 
 	* emacs/octave-mod.el: Ensure that key bindings for 

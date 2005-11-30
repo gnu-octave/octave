@@ -18,28 +18,34 @@
 ## 02110-1301 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{a}, @var{v}, @var{k}, @var{eps1}, @var{pflg});
-## construct orthogonal basis U of block Krylov subspace;
-##  [v a*v a^2*v ... a^(k+1)*v];
-## method used: householder reflections to guard against loss of
-## orthogonality
-## eps1: threshhold for 0 (default: 1e-12)
-## pflg: flag to use row pivoting  (improves numerical behavior)
-##   0 [default]: no pivoting; prints a warning message if trivial
-##                null space is corrupted
-##   1          : pivoting performed
+## @deftypefn {Function File} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{a}, @var{v}, @var{k}, @var{eps1}, @var{pflg})
+## Construct an orthogonal basis @var{u} of block Krylov subspace
 ##
-## outputs:
-##   u: orthogonal basis of block krylov subspace
-##   h: Hessenberg matrix; if v is a vector then a u = u h
-##      otherwise h is meaningless
-##  nu: dimension of span of krylov subspace (based on eps1)
-## if b is a vector and k > m-1, krylov returns h = the Hessenberg
-## decompostion of a.
+## @example
+## [v a*v a^2*v ... a^(k+1)*v]
+## @end example
+##
+## @noindent
+## Using Householder reflections to guard against loss of orthogonality.
+##
+## If @var{v} is a vector, then @var{h} contains the Hessenberg matrix
+## such that @code{a*u == u*h}.  Otherwise, @var{h} is meaningless.
+##
+## The value of @var{nu} is the dimension of the span of the krylov
+## subspace (based on @var{eps1}).
+##
+## If @var{b} is a vector and @var{k} is greater than @var{m-1}, then
+## @var{h} contains the Hessenberg decompostion of @var{a}.
+##
+## The optional parameter @var{eps1} is the threshold for zero.  The
+## default value is 1e-12.
+##
+## If the optional parameter @var{pflg} is nonzero, row pivoting is used
+## to improve numerical behavior.  The default value is 0.
 ##
 ## Reference: Hodel and Misra, "Partial Pivoting in the Computation of
-##     Krylov Subspaces", to be submitted to Linear Algebra and its
-##     Applications
+## Krylov Subspaces", to be submitted to Linear Algebra and its
+## Applications
 ## @end deftypefn
 
 ## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>

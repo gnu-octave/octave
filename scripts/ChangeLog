@@ -1,3 +1,8 @@
+2005-11-30  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/krylov.m: Format doc string.
+	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
+
 2005-11-23  William Poetra Yoga Hadisoeseno  <williampoetra@yahoo.com>
 
 	* general/blkdiag.m: Import from octave-forge.

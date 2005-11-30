@@ -92,11 +92,11 @@ $A$ (and $S$)\n\
 are the diagonal elements of\n\
 @iftex\n\
 @tex\n\
-$S$\n\
+$S$.\n\
 @end tex\n\
 @end iftex\n\
 @ifinfo\n\
-@code{s}\n\
+@code{s}.\n\
 @end ifinfo\n\
 If the matrix\n\
 @iftex\n\

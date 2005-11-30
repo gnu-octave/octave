@@ -1,4 +1,7 @@
-2005-11-26  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+2005-11-23  William Poetra Yoga Hadisoeseno  <williampoetra@yahoo.com>
+
+	* general/blkdiag.m: Import from octave-forge.
+	Ignore empty matrices in the input.  Add tests.
 
 	* general/isequal.m, general/isequalwithequalnans.m:
 	New wrapper scripts for general/__isequal__.m.

@@ -1,3 +1,10 @@
+2005-11-26  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+
+	* general/isequal.m, general/isequalwithequalnans.m:
+	New wrapper scripts for general/__isequal__.m.
+	* general/__isequal__.m: Rename from general/isequal.m.
+	New arg, nans_compare_equal.
+
 2005-11-29  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/ver.m: Use new uname built-in function instead of

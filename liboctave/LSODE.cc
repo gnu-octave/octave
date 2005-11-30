@@ -134,8 +134,8 @@ LSODE::do_integrate (double tout)
 	  else
 	    method_flag = 22;
 
-	  liw = 20 + n + 10000;
-	  lrw = 22 + n * (9 + n) + 10000;
+	  liw = 20 + n;
+	  lrw = 22 + n * (9 + n);
 	}
       else
 	{

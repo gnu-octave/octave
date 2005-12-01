@@ -1,3 +1,9 @@
+2005-12-01  John W. Eaton  <jwe@octave.org>
+
+	* general/columns.m: Use size (x, 2) instead of [nr, nc] = size (x).
+	* general/rows.m: Use size (x, 1) instead of [nr, nc] = size (x).
+	From William Poetra Yoga Hadisoeseno <williampoetra@yahoo.com>.
+
 2005-11-30  John W. Eaton  <jwe@octave.org>
 
 	* linear-algebra/krylov.m: Format doc string.

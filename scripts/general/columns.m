@@ -32,6 +32,6 @@ function nc = columns (x)
     usage ("columns (x)");
   endif
 
-  [nr, nc] = size (x);
+  nc = size (x, 2);
 
 endfunction

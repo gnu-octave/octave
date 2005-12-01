@@ -32,6 +32,6 @@ function nr = rows (x)
     usage ("rows (x)");
   endif
 
-  [nr, nc] = size (x);
+  nr = size (x, 1);
 
 endfunction

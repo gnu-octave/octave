@@ -1,6 +1,6 @@
 2005-12-05  John W. Eaton  <jwe@octave.org>
 
-	* plot/axis.m: Add "## PKG_ADD: mark_as_command grid" line.
+	* plot/axis.m: Add "## PKG_ADD: mark_as_command axis" line.
 
 2005-12-02  John W. Eaton  <jwe@octave.org>
 

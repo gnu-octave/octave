@@ -113,7 +113,7 @@
 
 ## Author: jwe
 
-## PKG_ADD: mark_as_command grid
+## PKG_ADD: mark_as_command axis
 
 function curr_axis = axis (ax, varargin)
 

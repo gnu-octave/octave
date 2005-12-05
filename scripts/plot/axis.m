@@ -113,6 +113,8 @@
 
 ## Author: jwe
 
+## PKG_ADD: mark_as_command grid
+
 function curr_axis = axis (ax, varargin)
 
   ## This may not be correct if someone has used the gnuplot interface

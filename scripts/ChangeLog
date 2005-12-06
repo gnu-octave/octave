@@ -1,3 +1,7 @@
+2005-12-06  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/dir.m: Return Nx1 instead of 1xN struct array.
+
 2005-12-05  John W. Eaton  <jwe@octave.org>
 
 	* plot/axis.m: Add "## PKG_ADD: mark_as_command axis" line.

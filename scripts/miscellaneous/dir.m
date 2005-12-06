@@ -120,7 +120,7 @@ function retval = dir (file)
 	  off = 1;
 	  for i = 1:nf
 	    tlen = len(i);
-	    file_list(off:off+tlen-1) = finfo{i};
+	    file_list(off:off+tlen-1,1) = finfo{i};
 	    off += tlen;
 	  endfor
 	endif

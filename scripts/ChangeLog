@@ -1,3 +1,7 @@
+2005-12-06  Michael Zeising  <michael@michaels-website.de>
+
+	* audio/wavread.m, audio/wavwrite.m: New files.
+
 2005-12-06  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/dir.m: Return Nx1 instead of 1xN struct array.

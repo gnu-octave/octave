@@ -36,21 +36,27 @@
 ## Author: Michael Zeising <michael.zeising@stud.uni-erlangen.de>
 ## Created: 06 December 2005
 
-function wavwrite (filename, y, samplesPerSec, bitsPerSample)
+function wavwrite (filename, y, samples_per_sec, bits_per_sample)
+
   BYTEORDER = "ieee-le";
   
-  # parse arguments
-  if (exist ("samplesPerSec","var") < 1)
-    warning ("wavwrite: sample rate set to 8000 Hz")
-    samplesPerSec = 8000;
+  if (nargin < 2 || nargin > 4)
+    usage ("wavwrite (filename, y, samples_per_sec, bits_per_sample)");
   endif
-  if (exist ("bitsPerSample","var") < 1)
-    warning ("wavwrite: sample resolution set to 16-bit")
-    bitsPerSample = 16;
+
+  ## parse arguments
+  if (nargin < 3)
+    warning ("wavwrite: sample rate set to 8000 Hz");
+    samples_per_sec = 8000;
+  endif
+
+  if (nargin < 4)
+    warning ("wavwrite: sample resolution set to 16-bit");
+    bits_per_sample = 16;
   endif
   
-  # determine sample format
-  switch bitsPerSample
+  ## determine sample format
+  switch (bits_per_sample)
     case 8  
       format = "int8";
     case 16 
@@ -58,57 +64,80 @@ function wavwrite (filename, y, samplesPerSec, bitsPerSample)
     case 32 
       format = "int32";
     otherwise
-      fclose (fid);
       error ("wavread: sample resolution not supported");
   endswitch
   
-  # calculate filesize
+  ## calculate filesize
   channels = size(y)(2);
   n = size(y)(1);
+
+  ## size of data chunk
+  ck_size = n*channels*(bits_per_sample/8);
   
-  ckSize = n*channels*(bitsPerSample/8);       # size of data chunk
-  
-  # open file for writing binary
+  ## open file for writing binary
+
+  if (! ischar (filename))
+    error ("wavwrite: expecting filename to be a character string");
+  endif
+    
   [fid, msg] = fopen (filename, "wb");
   if (fid < 0)
     error ("wavwrite: %s", msg)
   endif
   
-  # write RIFF/WAVE header
+  ## write RIFF/WAVE header
   c = 0;
-  c += fwrite (fid, "RIFF",        "uchar");
-  c += fwrite (fid, ckSize + 36,   "ulong", 0, BYTEORDER);   # file size - 8
-  c += fwrite (fid, "WAVEfmt ",    "uchar");
-  c += fwrite (fid, 16,            "ulong", 0, BYTEORDER);   # size of fmt chunk
-  c += fwrite (fid, 0x0001,        "short", 0, BYTEORDER);   # sample format code (PCM)
-  c += fwrite (fid, channels,      "short", 0, BYTEORDER);   # channels
-  c += fwrite (fid, samplesPerSec, "ulong", 0, BYTEORDER);   # sample rate
-  c += fwrite (fid, samplesPerSec*channels*bitsPerSample/8, "ulong", 0, BYTEORDER);   # bytes per second
-  c += fwrite (fid, channels*bitsPerSample/8,               "short", 0, BYTEORDER);   # block align
-  c += fwrite (fid, bitsPerSample, "short", 0, BYTEORDER);   # bits/sample
-  c += fwrite (fid, "data",        "uchar");
-  c += fwrite (fid, ckSize,        "ulong", 0, BYTEORDER);   # size of data chunk
+  c += fwrite (fid, "RIFF", "uchar");
+
+  ## file size - 8
+  c += fwrite (fid, ck_size + 36, "ulong", 0, BYTEORDER);
+  c += fwrite (fid, "WAVEfmt ", "uchar");
+
+  ## size of fmt chunk
+  c += fwrite (fid, 16, "ulong", 0, BYTEORDER);
+
+  ## sample format code (PCM)
+  c += fwrite (fid, 0x0001, "short", 0, BYTEORDER);
+
+  ## channels
+  c += fwrite (fid, channels, "short", 0, BYTEORDER);
+
+  ## sample rate
+  c += fwrite (fid, samples_per_sec, "ulong", 0, BYTEORDER);
+
+  ## bytes per second
+  bps = samples_per_sec*channels*bits_per_sample/8;
+  c += fwrite (fid, bps, "ulong", 0, BYTEORDER);
+
+  ## block align
+  c += fwrite (fid, channels*bits_per_sample/8, "short", 0, BYTEORDER);
+
+  c += fwrite (fid, bits_per_sample, "short", 0, BYTEORDER);   
+  c += fwrite (fid, "data", "uchar");
+  c += fwrite (fid, ck_size, "ulong", 0, BYTEORDER);
   
   if (c < 25)
     fclose (fid);
-    error ("wavread: writing to file failed")
+    error ("wavread: writing to file failed");
   endif
   
-  # scale samples
-  switch bitsPerSample
+  ## scale samples
+  switch (bits_per_sample)
     case 8
       y = floor (y*127 + 127);
-    case {16,32}
-      y = floor (y*((2 ** bitsPerSample) / 2 - 1));
+    case {16, 32}
+      y = floor (y*((2 ** bits_per_sample) / 2 - 1));
   endswitch
   
-  # interleave samples
-  l = n*channels;
-  for (i = 1:channels)
-    yi(i:channels:l) = y(:,i);
-  endfor
+  ## interleave samples
+  ## l = n*channels;
+  ## for i = 1:channels
+  ##  yi(i:channels:l) = y(:,i);
+  ## endfor
+
+  yi = reshape (y', n*channels, 1);
   
-  # write to file
+  ## write to file
   c = fwrite (fid, yi, format, 0, BYTEORDER);
   
   fclose (fid);

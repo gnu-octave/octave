@@ -37,6 +37,22 @@ extern void usage (const char *fmt, ...);
 extern void warning (const char *fmt, ...);
 extern void error (const char *fmt, ...);
 extern void parse_error (const char *fmt, ...);
+
+extern void
+message_with_id (const char *id, const char *name, const char *fmt, ...);
+
+extern void
+usage_with_id (const char *id, const char *fmt, ...);
+
+extern void
+warning_with_id (const char *id, const char *fmt, ...);
+
+extern void
+error_with_id (const char *id, const char *fmt, ...);
+
+extern void
+parse_error_with_id (const char *id, const char *fmt, ...);
+
 extern void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 // Helper function for print_usage defined in defun.cc.

@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "input.h"
 #include "pager.h"
 #include "oct-obj.h"
+#include "oct-map.h"
 #include "utils.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
@@ -59,19 +60,27 @@ static bool Vdebug_on_error;
 // is encountered.
 static bool Vdebug_on_warning;
 
+// TRUE means that Octave will try to display a stack trace when a
+// warning is encountered.
+static bool Vbacktrace_on_warning = false;
+
+// TRUE means that Octave will print a verbose warning.  Currently unused.
+static bool Vverbose_warning;
+
+// A structure containing (most of) the current state of warnings.
+static Octave_map warning_options;
+
 // The text of the last error message.
 static std::string Vlast_error_message;
 
 // The text of the last warning message.
 static std::string Vlast_warning_message;
 
-// The warning frequency for Matlab handle graphics backwards
-// compatibility warnings (currently not used).
-static std::string Vwarning_frequency = "once";
+// The last warning message id.
+static std::string Vlast_warning_id;
 
-// The current warning state.  Valid values are "on", "off",
-// "backtrace", or "debug".
-std::string Vwarning_option = "backtrace";
+// The last error message id.
+static std::string Vlast_error_id;
 
 // Current error state.
 //
@@ -116,10 +125,19 @@ reset_error_handler (void)
   discard_error_messages = false;
 }
 
+static void
+init_warning_options (const std::string& state = "on")
+{
+  warning_options.clear ();
+
+  warning_options.assign ("identifier", "all");
+  warning_options.assign ("state", state);
+}
+
 // Warning messages are never buffered.
 
 static void
-vwarning (const char *name, const char *fmt, va_list args)
+vwarning (const char *name, const char *id, const char *fmt, va_list args)
 {
   if (discard_warning_messages)
     return;
@@ -146,6 +164,8 @@ vwarning (const char *name, const char *fmt, va_list args)
   if (! warning_state)
     {
       // This is the first warning in a possible series.
+
+      Vlast_warning_id = id;
       Vlast_warning_message = msg_string;
     }
 
@@ -156,7 +176,7 @@ vwarning (const char *name, const char *fmt, va_list args)
 
 static void
 verror (bool save_last_error, std::ostream& os,
-	const char *name, const char *fmt, va_list args)
+	const char *name, const char *id, const char *fmt, va_list args)
 {
   if (discard_error_messages)
     return;
@@ -189,6 +209,8 @@ verror (bool save_last_error, std::ostream& os,
   if (! error_state && save_last_error)
     {
       // This is the first error in a possible series.
+
+      Vlast_error_id = id;
       Vlast_error_message = msg_string;
     }
 
@@ -227,7 +249,8 @@ verror (bool save_last_error, std::ostream& os,
 // just set the error state.
 
 static void
-error_1 (std::ostream& os, const char *name, const char *fmt, va_list args)
+error_1 (std::ostream& os, const char *name, const char *id,
+	 const char *fmt, va_list args)
 {
   if (error_state != -2)
     {
@@ -242,14 +265,14 @@ error_1 (std::ostream& os, const char *name, const char *fmt, va_list args)
 		    {
 		      char *tmp_fmt = strsave (fmt);
 		      tmp_fmt[len - 1] = '\0';
-		      verror (true, os, name, tmp_fmt, args);
+		      verror (true, os, name, id, tmp_fmt, args);
 		      delete [] tmp_fmt;
 		    }
 
 		  error_state = -2;
 		}
 	      else
-		verror (true, os, name, fmt, args);
+		verror (true, os, name, id, fmt, args);
 	    }
 	}
       else
@@ -265,8 +288,24 @@ message (const char *name, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (false, std::cerr, name, fmt, args);
+  verror (false, std::cerr, name, "", fmt, args);
   va_end (args);
+}
+
+void
+message_with_id (const char *name, const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror (false, std::cerr, name, id, fmt, args);
+  va_end (args);
+}
+
+void
+usage_1 (const char *id, const char *fmt, va_list args)
+{
+  verror (true, std::cerr, "usage", id, fmt, args);
+  error_state = -1;
 }
 
 void
@@ -274,8 +313,16 @@ usage (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (true, std::cerr, "usage", fmt, args);
-  error_state = -1;
+  usage_1 ("", fmt, args);
+  va_end (args);
+}
+
+void
+usage_with_id (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  usage_1 (id, fmt, args);
   va_end (args);
 }
 
@@ -293,12 +340,12 @@ pr_where_2 (const char *fmt, va_list args)
 		{
 		  char *tmp_fmt = strsave (fmt);
 		  tmp_fmt[len - 1] = '\0';
-		  verror (false, std::cerr, 0, tmp_fmt, args);
+		  verror (false, std::cerr, 0, "", tmp_fmt, args);
 		  delete [] tmp_fmt;
 		}
 	    }
 	  else
-	    verror (false, std::cerr, 0, fmt, args);
+	    verror (false, std::cerr, 0, "", fmt, args);
 	}
     }
   else
@@ -387,21 +434,113 @@ pr_where (const char *name, bool print_code = true)
     }
 }
 
-void
-warning (const char *fmt, ...)
+static int
+check_state (const std::string& state)
 {
-  if (Vwarning_option != "off")
+  // -1: not found
+  //  0: found, "off"
+  //  1: found, "on"
+  //  2: found, "error"
+
+  if (state == "off")
+    return 0;
+  else if (state == "on")
+    return 1;
+  else if (state == "error")
+    return 2;
+  else
+    return -1;
+}
+
+// For given warning ID, return 0 if warnings are disabled, 1 if
+// enabled, and 2 if this ID should be an error instead of a warning.
+
+static int
+warning_enabled (const std::string& id)
+{
+  int retval = 0;
+
+  int all_state = -1;
+  int id_state = -1;
+
+  octave_idx_type nel = warning_options.numel ();
+
+  if (nel > 0)
+    {
+      Cell identifier = warning_options.contents ("identifier");
+      Cell state = warning_options.contents ("state");
+
+      bool all_found = false;
+      bool id_found = false;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+	{
+	  octave_value ov = identifier(i);
+	  std::string ovs = ov.string_value ();
+
+	  if (! all_found && ovs == "all")
+	    {
+	      all_state = check_state (state(i).string_value ());
+
+	      if (all_state >= 0)
+		all_found = true;
+	    }
+
+	  if (! id_found && ovs == id)
+	    {
+	      id_state = check_state (state(i).string_value ());
+
+	      if (id_state >= 0)
+		id_found = true;
+	    }
+
+	  if (all_found && id_found)
+	    break;
+	}
+
+    }
+
+  if (all_state == -1)
+    panic_impossible ();
+
+  if (all_state == 0)
+    {
+      if (id_state >= 0)
+	retval = id_state;
+    }
+  else if (all_state == 1)
+    {
+      if (id_state == 0 || id_state == 2)
+	retval = id_state;
+      else
+	retval = all_state;
+    }
+  else if (all_state == 2)
+    retval = 2;
+
+  return retval;
+}
+
+static void
+warning_1 (const char *id, const char *fmt, va_list args)
+{
+  int warn_opt = warning_enabled (id);
+
+  if (warn_opt == 2)
+    {
+      // Handle this warning as an error.
+
+      error (id, fmt, args);
+    }
+  else if (warn_opt == 1)
     {
       if (curr_sym_tab != top_level_sym_tab
-	  && Vwarning_option == "backtrace"
+	  && Vbacktrace_on_warning
 	  && ! warning_state
 	  && ! discard_warning_messages)
 	pr_where ("warning", false);
 
-      va_list args;
-      va_start (args, fmt);
-      vwarning ("warning", fmt, args);
-      va_end (args);
+      vwarning ("warning", id, fmt, args);
 
       warning_state = 1;
 
@@ -419,14 +558,29 @@ warning (const char *fmt, ...)
 }
 
 void
-error (const char *fmt, ...)
+warning (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  warning_1 ("", fmt, args);
+  va_end (args);
+}
+
+void
+warning_with_id (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  warning_1 (id, fmt, args);
+  va_end (args);
+}
+
+static void
+error_2 (const char *id, const char *fmt, va_list args)
 {
   int init_state = error_state;
 
-  va_list args;
-  va_start (args, fmt);
-  error_1 (std::cerr, "error", fmt, args);
-  va_end (args);
+  error_1 (std::cerr, "error", id, fmt, args);
 
   if ((interactive || forced_interactive)
       && Vdebug_on_error && init_state == 0 && curr_function)
@@ -445,11 +599,38 @@ error (const char *fmt, ...)
 }
 
 void
+error (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_2 ("", fmt, args);
+  va_end (args);
+}
+
+void
+error_with_id (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_2 (id, fmt, args);
+  va_end (args);
+}
+
+void
 parse_error (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (std::cerr, 0, fmt, args);
+  error_1 (std::cerr, 0, "", fmt, args);
+  va_end (args);
+}
+
+void
+parse_error_with_id (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_1 (std::cerr, 0, id, fmt, args);
   va_end (args);
 }
 
@@ -460,7 +641,7 @@ panic (const char *fmt, ...)
   va_start (args, fmt);
   buffer_error_messages = 0;
   discard_error_messages = false;
-  verror (false, std::cerr, "panic", fmt, args);
+  verror (false, std::cerr, "panic", "", fmt, args);
   va_end (args);
   abort ();
 }
@@ -470,7 +651,7 @@ defun_usage_message_1 (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (octave_stdout, 0, fmt, args);
+  error_1 (octave_stdout, 0, "", fmt, args);
   va_end (args);
 }
 
@@ -480,12 +661,13 @@ defun_usage_message (const std::string& msg)
   defun_usage_message_1 ("%s", msg.c_str ());
 }
 
-typedef void (*error_fun)(const char *, ...);
+typedef void (*error_fun)(const char *, const char *, ...);
 
 extern octave_value_list Fsprintf (const octave_value_list&, int);
 
 static std::string
-handle_message (error_fun f, const char *msg, const octave_value_list& args)
+handle_message (error_fun f, const char *id, const char *msg,
+		const octave_value_list& args)
 {
   std::string retval;
 
@@ -529,14 +711,14 @@ handle_message (error_fun f, const char *msg, const octave_value_list& args)
 	{
 	  char *tmp_msg = strsave (msg);
 	  tmp_msg[len - 1] = '\0';
-	  f ("%s\n", tmp_msg);
+	  f (id, "%s\n", tmp_msg);
 	  retval = tmp_msg;
 	  delete [] tmp_msg;
 	}
     }
   else
     {
-      f ("%s", msg);
+      f (id, "%s", msg);
       retval = msg;
     }
 
@@ -599,33 +781,15 @@ error: nargin != 1\n\
 @end example\n\
 @end deftypefn")
 {
+  // XXX FIXME XXX -- need to extract and pass message id to
+  // handle_message.
+
   octave_value_list retval;
-  handle_message (error, "unspecified error", args);
+  handle_message (error_with_id, "", "unspecified error", args);
   return retval;
 }
 
-static inline octave_value_list
-set_warning_option (const std::string& state,
-		    const std::string& frequency, int nargout)
-{
-  octave_value_list retval;
-
-  if (nargout > 1)
-    retval(1) = Vwarning_frequency;
-
-  if (nargout >= 0)
-    retval(0) = Vwarning_option;
-
-  if (! state.empty ())
-    Vwarning_option = state;
-    
-  if (! frequency.empty ())
-    Vwarning_frequency = frequency;
-    
-  return retval;
-}
-
-DEFUN (warning, args, nargout,
+DEFCMD (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warning (@var{msg})\n\
 Print a warning message @var{msg} prefixed by the string @samp{warning: }.  \n\
@@ -635,84 +799,279 @@ of an unusual condition, but only when it makes sense for your program\n\
 to go on.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
+  int argc = nargin + 1;
 
   bool done = false;
 
-  if (args.all_strings_p ())
+  if (argc > 1 && args.all_strings_p ())
     {
       string_vector argv = args.make_argv ("warning");
 
       if (! error_state)
 	{
-	  if (argc == 1)
-	    {
-	      retval = set_warning_option ("", "", nargout);
-	      done = true;
-	    }
-	  else if (argc == 2)
-	    {
-	      std::string arg = argv(1);
+	  std::string arg1 = argv(1);
+	  std::string arg2 = "all";
 
-	      if (arg == "on" || arg == "off" || arg == "backtrace")
+	  if (argc == 3)
+	    arg2 = argv(2);
+
+	  if (arg1 == "on" || arg1 == "off" || arg1 == "error")
+	    {
+	      Octave_map old_warning_options = warning_options;
+
+	      if (arg2 == "all")
 		{
-		  retval = set_warning_option (arg, "", nargout);
+		  Octave_map tmp;
+
+		  tmp.assign ("identifier", arg2);
+		  tmp.assign ("state", arg1);
+
+		  warning_options = tmp;
+
 		  done = true;
 		}
-	      else if (arg == "once" || arg == "always")
+	      else if (arg2 == "backtrace")
 		{
-		  retval = set_warning_option ("", arg, nargout);
+		  if (arg1 != "error")
+		    {
+		      Vbacktrace_on_warning = (arg1 == "on");
+		      done = true;
+		    }
+		}
+	      else if (arg2 == "debug")
+		{
+		  if (arg1 != "error")
+		    {
+		      bind_builtin_variable ("debug_on_warning", arg1 == "on");
+		      done = true;
+		    }
+		}
+	      else if (arg2 == "verbose")
+		{
+		  if (arg1 != "error")
+		    {
+		      Vverbose_warning = (arg1 == "on");
+		      done = true;
+		    }
+		}
+	      else
+		{
+		  if (arg2 == "last")
+		    arg2 = Vlast_warning_id;
+
+		  if (arg2 == "all")
+		    init_warning_options (arg1);
+		  else
+		    {
+		      Cell ident = warning_options.contents ("identifier");
+		      Cell state = warning_options.contents ("state");
+
+		      octave_idx_type nel = ident.numel ();
+
+		      bool found = false;
+
+		      for (octave_idx_type i = 0; i < nel; i++)
+			{
+			  if (ident(i).string_value () == arg2)
+			    {
+			      // XXX FIXME XXX -- if state for "all" is
+			      // same as arg1, we can simply remove the
+			      // item from the list.
+
+			      state(i) = arg1;
+			      warning_options.assign ("state", state);
+			      found = true;
+			      break;
+			    }
+			}
+
+		      if (! found)
+			{
+			  // XXX FIXME XXX -- if state for "all" is
+			  // same as arg1, we don't need to do anything.
+
+			  ident.resize (dim_vector (1, nel+1));
+			  state.resize (dim_vector (1, nel+1));
+
+			  ident(nel) = arg2;
+			  state(nel) = arg1;
+
+			  warning_options.clear ();
+
+			  warning_options.assign ("identifier", ident);
+			  warning_options.assign ("state", state);
+			}
+		    }
+
 		  done = true;
 		}
-	      else if (arg == "debug")
+
+	      if (done && nargout > 0)
+		retval = warning_options;
+	    }
+	  else if (arg1 == "query")
+	    {
+	      if (arg2 == "all")
+		retval = warning_options;
+	      else if (arg2 == "backtrace" || arg2 == "debug"
+		       || arg2 == "verbose")
 		{
-		  bind_builtin_variable ("debug_on_warning", true);
-		  retval = set_warning_option ("", "", nargout);
-		  done = true;
+		  Octave_map tmp;
+		  tmp.assign ("identifier", arg2);
+		  if (arg2 == "backtrace")
+		    tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
+		  else if (arg2 == "debug")
+		    tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
+		  else
+		    tmp.assign ("state", Vverbose_warning ? "on" : "off");
 		}
+	      else
+		{
+		  if (arg2 == "last")
+		    arg2 = Vlast_warning_id;
+
+		  Cell ident = warning_options.contents ("identifier");
+		  Cell state = warning_options.contents ("state");
+
+		  octave_idx_type nel = ident.numel ();
+
+		  bool found = false;
+		  
+		  std::string val;
+
+		  for (octave_idx_type i = 0; i < nel; i++)
+		    {
+		      if (ident(i).string_value () == arg2)
+			{
+			  val = state(i).string_value ();
+			  found = true;
+			  break;
+			}
+		    }
+
+		  if (found)
+		    {
+		      Octave_map tmp;
+
+		      tmp.assign ("identifier", arg2);
+		      tmp.assign ("state", val);
+
+		      retval = tmp;
+		    }
+		  else
+		    error ("warning: invalid warning tag `%s'", arg2.c_str ());
+		}
+
+	      done = true;
 	    }
 	}
     }
-
-  if (! done)
+  else if (argc == 1)
     {
+      retval = warning_options;
+
+      done = true;
+    }
+  else if (argc == 2)
+    {
+      octave_value arg = args(0);
+
+      Octave_map old_warning_options = warning_options;
+
+      if (arg.is_map ())
+	{
+	  Octave_map m = arg.map_value ();
+
+	  if (m.contains ("identifier") && m.contains ("state"))
+	    warning ("warning: setting state with structure not implemented");
+	  else
+	    error ("warning: expecting structure with fields `identifier' and `state'");
+
+	  done = true;
+
+	  if (nargout > 0)
+	    retval = old_warning_options;
+	}
+    }
+
+  if (! (error_state || done))
+    {
+      octave_value_list nargs = args;
+
+      std::string id;
+
+      if (nargin > 1)
+	{
+	  std::string arg1 = args(0).string_value ();
+
+	  if (! error_state)
+	    {
+	      if (arg1.find ('%') == NPOS)
+		{
+		  id = arg1;
+
+		  nargs.resize (nargin-1);
+
+		  for (int i = 1; i < nargin; i++)
+		    nargs(i-1) = args(i);
+		}
+	    }
+	  else
+	    return retval;
+	}
+
+      // handle_message.
+
       std::string prev_msg = Vlast_warning_message;
 
-      std::string curr_msg
-	= handle_message (warning, "unspecified warning", args);
+      std::string curr_msg = handle_message (warning_with_id, id.c_str (),
+					     "unspecified warning", nargs);
 
       if (nargout > 0)
-	retval(0) = Vlast_warning_message;
+	retval = prev_msg;
     }
 
   return retval;
 }
 
-DEFUN (lasterr, args, ,
+DEFUN (lasterr, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} lasterr ()\n\
-@deftypefnx {Built-in Function} {} lasterr (@var{msg})\n\
+@deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lasterr (@var{msg}, @var{msgid})\n\
 Without any arguments, return the last error message.  With one\n\
-argument, set the last error message to @var{msg}.\n\
+argument, set the last error message to @var{msg}.  With two arguments,\n\
+also set the last message identifier.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int argc = args.length () + 1;
 
-  if (argc == 1 || argc == 2)
+  if (argc < 4)
     {
       string_vector argv = args.make_argv ("lasterr");
 
       if (! error_state)
 	{
-	  if (argc == 1)
-	    retval(0) = Vlast_error_message;
-	  else
+	  std::string prev_error_id = Vlast_error_id;
+	  std::string prev_error_message = Vlast_error_message;
+
+	  if (argc > 2)
+	    Vlast_error_id = argv(2);
+
+	  if (argc > 1)
 	    Vlast_error_message = argv(1);
+
+	  if (argc == 1 || nargout > 0)
+	    {
+	      retval(1) = prev_error_id;
+	      retval(0) = prev_error_message;
+	    }
 	}
+      else
+	error ("lastwarn: expecting arguments to be character strings");
     }
   else
     print_usage ("lasterr");
@@ -724,24 +1083,42 @@ argument, set the last error message to @var{msg}.\n\
 DEFALIAS (error_text, lasterr);
 DEFALIAS (__error_text__, lasterr);
 
-DEFUN (lastwarn, args, ,
+DEFUN (lastwarn, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} lastwarn ()\n\
-@deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
+@deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn (@var{msg}, @var{msgid})\n\
 Without any arguments, return the last warning message.  With one\n\
-argument, set the last warning message to @var{msg}.\n\
+argument, set the last warning message to @var{msg}.  With two arguments,\n\
+also set the last message identifier.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int argc = args.length () + 1;
 
-  string_vector argv = args.make_argv ("lastwarn");
+  if (argc < 4)
+    {
+      string_vector argv = args.make_argv ("lastwarn");
 
-  if (argc == 1)
-    retval(0) = Vlast_warning_message;
-  else if (argc == 2)
-    Vlast_warning_message = argv(1);
+      if (! error_state)
+	{
+	  std::string prev_warning_id = Vlast_warning_id;
+	  std::string prev_warning_message = Vlast_warning_message;
+
+	  if (argc > 2)
+	    Vlast_warning_id = argv(2);
+
+	  if (argc > 1)
+	    Vlast_warning_message = argv(1);
+
+	  if (argc == 1 || nargout > 0)
+	    {
+	      retval(1) = prev_warning_id;
+	      retval(0) = prev_warning_message;
+	    }
+	}
+      else
+	error ("lastwarn: expecting arguments to be character strings");
+    }
   else
     print_usage ("lastwarn");
 
@@ -778,7 +1155,7 @@ to check for the proper number of arguments.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  handle_message (usage, "unknown", args);
+  handle_message (usage_with_id, "", "unknown", args);
   return retval;
 }
 
@@ -809,6 +1186,8 @@ debug_on_warning (void)
 void
 symbols_of_error (void)
 {
+  init_warning_options ();
+
   DEFVAR (beep_on_error, false, beep_on_error,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} beep_on_error\n\

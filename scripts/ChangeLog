@@ -1,3 +1,8 @@
+2005-12-06  John W. Eaton  <jwe@octave.org>
+
+	* audio/wavread.m, audio/wavwrite.m: Adapt to Octave coding style.
+	Avoid for loop in interleave/deinterleave steps.
+
 2005-12-06  Michael Zeising  <michael@michaels-website.de>
 
 	* audio/wavread.m, audio/wavwrite.m: New files.

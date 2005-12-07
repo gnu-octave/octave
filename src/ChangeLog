@@ -1,3 +1,25 @@
+2005-12-07  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (Vbacktrace_on_warning, warning_options,
+	Vlast_warning_id, Vlast_error_id): New file-scope variables.
+	(Vwarning_frequency, Vwarning_option): Delete unused variables.
+	(set_warning_option): Delete unused function.
+	(Fwarning): Update for compatibility.  Use DEFCMD, not DEFUN.
+	(warning_enabled, check_state): New functions.
+	(warning (const char *fmt, ...)): Use it.
+	(init_warning_options): New function.
+	(symbols_of_error): Call it.
+	(vwarning, Flastwarn): Handle Vlast_warning_id.  Improve compatibility.
+	(handle_message): New arg, ID.  Change all callers.
+	(vwarning, verror, error_1): New arg, ID.  Change all callers.
+	(verror, Flasterr): Handle Vlast_error_id.  Improve compatibility.
+
+	* error.cc (message_with_id, usage_with_id, warning_with_id,
+	error_with_id, parse_error_with_id): New functions.
+	(error_2, warning_1, usage_1): New functions.
+	* error.h (message_with_id, usage_with_id, warning_with_id,
+	error_with_id, parse_error_with_id): Provide decls.
+
 2005-11-30  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/schur.cc (Fschur): Doc string fix.

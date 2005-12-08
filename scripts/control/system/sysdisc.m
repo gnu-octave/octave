@@ -40,66 +40,58 @@
 
 function [dsys, Adc, Cdc] = sysdisc (sys)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
+  if (nargin != 1)
+    usage("[dsys,Adc,Cdc] = sysdisc(sys)");
+  elseif (!isstruct(sys))
+    error("sys must be in system data structure form");
+  endif
 
-    if (nargin != 1)
-      usage("[dsys,Adc,Cdc] = sysdisc(sys)");
-    elseif (!isstruct(sys))
-      error("sys must be in system data structure form");
-    endif
+  sys = sysupdate (sys, "ss");
+  [n_tot, st_c, st_d, y_c, y_d] = __syscont_disc__ (sys);        # get ranges
 
-    sys = sysupdate (sys, "ss");
-    [n_tot, st_c, st_d, y_c, y_d] = __syscont_disc__ (sys);        # get ranges
+  ## assume there's nothing there; build partitions as appropriate
+  Add = Adc = Bdd = Cdd = Cdc = Ddd = [];
 
-    ## assume there's nothing there; build partitions as appropriate
-    Add = Adc = Bdd = Cdd = Cdc = Ddd = [];
+  if(isempty(st_d) & isempty(y_d))
+    error("sysdisc: expecting discrete states and/or continous outputs");
+  elseif (isempty(st_d))
+    warning("sysdisc: no discrete states");
+  elseif(isempty(y_d))
+    warning("sysdisc: no discrete outputs");
+  endif
 
-    if(isempty(st_d) & isempty(y_d))
-      error("sysdisc: expecting discrete states and/or continous outputs");
-    elseif (isempty(st_d))
-      warning("sysdisc: no discrete states");
-    elseif(isempty(y_d))
-      warning("sysdisc: no discrete outputs");
-    endif
-
-    [aa,bb,cc,dd] = sys2ss(sys);
-    if(!isempty(st_d) )
-      Add = aa( st_d , st_d);
-      stname = sysgetsignals(sys,"st",st_d);
-      Bdd = bb( st_d , :);
-      if(!isempty(st_c))
+  [aa,bb,cc,dd] = sys2ss(sys);
+  if(!isempty(st_d) )
+    Add = aa( st_d , st_d);
+    stname = sysgetsignals(sys,"st",st_d);
+    Bdd = bb( st_d , :);
+    if(!isempty(st_c))
 	Adc = aa( st_d , st_c);
-      endif
-      if(!isempty(y_d))
-	Cdd = cc(y_d , st_d);
-      endif
-    else
-      stname = [];
     endif
     if(!isempty(y_d))
-      Ddd = dd(y_d , :);
-      outname = sysgetsignals(sys,"out",y_d);
-      if(!isempty(st_c))
+	Cdd = cc(y_d , st_d);
+    endif
+  else
+    stname = [];
+  endif
+  if(!isempty(y_d))
+    Ddd = dd(y_d , :);
+    outname = sysgetsignals(sys,"out",y_d);
+    if(!isempty(st_c))
 	Cdc = cc(y_d , st_c);
-      endif
-    else
-      outname=[];
     endif
-    inname = sysgetsignals(sys,"in");
-    outlist = 1:rows(outname);
+  else
+    outname=[];
+  endif
+  inname = sysgetsignals(sys,"in");
+  outlist = 1:rows(outname);
 
-    if(!isempty(outname))
-      tsam = sysgettsam(sys);
-      [nc,nz] = sysdimensions(sys);
-      dsys = ss(Add,Bdd,Cdd,Ddd,tsam,0,nz,stname,inname,outname,outlist);
-    else
-      dsys=[];
-    endif
-
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
+  if(!isempty(outname))
+    tsam = sysgettsam(sys);
+    [nc,nz] = sysdimensions(sys);
+    dsys = ss(Add,Bdd,Cdd,Ddd,tsam,0,nz,stname,inname,outname,outlist);
+  else
+    dsys=[];
+  endif
 
 endfunction

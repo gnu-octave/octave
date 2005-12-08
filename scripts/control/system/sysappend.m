@@ -82,120 +82,112 @@
 
 function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
+  ## check input arguments
+  if ( (nargin < 2) | (nargin > 7) | (!isstruct(sys)))
+    usage("retsys = sysappend(sys,b,c[,d,outname,inname,yd]) ");
+  elseif(!isstruct(sys))
+    error("sys must be a system data structure");
+  endif
 
-    ## check input arguments
-    if ( (nargin < 2) | (nargin > 7) | (!isstruct(sys)))
-      usage("retsys = sysappend(sys,b,c[,d,outname,inname,yd]) ");
-    elseif(!isstruct(sys))
-      error("sys must be a system data structure");
-    endif
+  ## default system type must be state space form
+  [Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,Ayd] = sys2ss(sys);
+  [Ann,Anz,Am,Ap] = sysdimensions(sys);
 
-    ## default system type must be state space form
-    [Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,Ayd] = sys2ss(sys);
-    [Ann,Anz,Am,Ap] = sysdimensions(sys);
+  ## default c
+  if(nargin < 3)      c = [];                                endif
 
-    ## default c
-    if(nargin < 3)      c = [];                                endif
+  ## default d
+  if(nargin < 4)     make_d = 1;
+  elseif(isempty(d)) make_d = 1;
+  else               make_d = 0;                             endif
+  if(make_d)         d = zeros(rows(c)+Ap,columns(b) + Am);  endif
 
-    ## default d
-    if(nargin < 4)     make_d = 1;
-    elseif(isempty(d)) make_d = 1;
-    else               make_d = 0;                             endif
-    if(make_d)         d = zeros(rows(c)+Ap,columns(b) + Am);  endif
-
-    ## Append new input(s) if any
-    Bm = max(columns(d),columns(b)+Am);
-    if(Bm != Am)
-      ## construct new signal names
-      if(nargin >= 6)   # new names were passed
+  ## Append new input(s) if any
+  Bm = max(columns(d),columns(b)+Am);
+  if(Bm != Am)
+    ## construct new signal names
+    if(nargin >= 6)   # new names were passed
 	if(!ischar(inname))
 	  error("inname must be a string");
 	elseif(rows(inname) != (Bm - Am))
 	  error(sprintf("%d new inputs requested; inname(%dx%d)", ...
 	    (Bm-Am),rows(inname),columns(inname)));
 	endif
-      else
+    else
 	inname = __sysdefioname__(Bm,"u",(Am+1));
-      endif
-
-      if(Am)
-        Ain = __sysconcat__(Ain,inname);
-      else
-        Ain = inname;
-      endif
-
-      ## default b matrix
-      if(isempty(b))     b  = zeros(Ann+Anz,(Bm-Am));
-      elseif(rows(b) != Ann+Anz | columns(b) != (Bm-Am))
-	  error(sprintf("b(%dx%d); should be (%dx%d)", rows(b), columns(b), ...
-	    (Ann+Anz), (Bm-Am)));
-      endif
-
-      ## append new b matrix
-      Ab = [Ab,b];
     endif
 
-    ## Append new output(s) if any
-    Bp = max(rows(d),rows(c)+Ap);
-    if(Bp != Ap)
+    if(Am)
+      Ain = __sysconcat__(Ain,inname);
+    else
+      Ain = inname;
+    endif
 
-      ## construct new signal names, output classification
-      if(nargin >= 5)  # new names were passed
+    ## default b matrix
+    if(isempty(b))     b  = zeros(Ann+Anz,(Bm-Am));
+    elseif(rows(b) != Ann+Anz | columns(b) != (Bm-Am))
+	  error(sprintf("b(%dx%d); should be (%dx%d)", rows(b), columns(b), ...
+	    (Ann+Anz), (Bm-Am)));
+    endif
+
+    ## append new b matrix
+    Ab = [Ab,b];
+  endif
+
+  ## Append new output(s) if any
+  Bp = max(rows(d),rows(c)+Ap);
+  if(Bp != Ap)
+
+    ## construct new signal names, output classification
+    if(nargin >= 5)  # new names were passed
 	if(!ischar(outname))
 	  error("outname must be a string");
 	elseif(rows(outname) != (Bp - Ap))
 	  error(sprintf("%d new outputs requested; outname(%dx%d)", ...
 	    (Bp-Ap),rows(outname),columns(outname)));
 	endif
-      else
+    else
 	outname = __sysdefioname__(Bp,"y",(Ap+1));
-      endif
-      if(Ap)   Aout = __sysconcat__(Aout,outname);
-      else     Aout = outname;                endif
+    endif
+    if(Ap)   Aout = __sysconcat__(Aout,outname);
+    else     Aout = outname;                endif
 
-      ## construct new yd entries
-      if(nargin == 7)
+    ## construct new yd entries
+    if(nargin == 7)
 	if(!isvector(yd))
 	  error(sprintf("yd(%dx%d) must be a vector",rows(yd),columns(yd)))
 	elseif(rows(c) != length(yd) & rows(d) != length(yd))
 	  error(sprintf("length(yd) = %d; c(%dx%d), d(%dx%d); mismatch", ...
 	    length(yd), rows(c), columns(c),rows(d),columns(d)));
 	endif
-      else
+    else
 	## default yd values
 	yd = ones(1,Bp)*( (Ats > 0) & (Ann == 0)  & isempty(find(Ayd == 0)) ) ;
-      endif
-      Ayd = [vec(Ayd);vec(yd)];
+    endif
+    Ayd = [vec(Ayd);vec(yd)];
 
-      ## default c matrix
-      if(isempty(c))      c = zeros((Bp-Ap),Ann+Anz);
-      elseif(columns(c) != Ann+Anz | rows(c) != (Bp-Ap))
+    ## default c matrix
+    if(isempty(c))      c = zeros((Bp-Ap),Ann+Anz);
+    elseif(columns(c) != Ann+Anz | rows(c) != (Bp-Ap))
 	  error(sprintf("c(%dx%d); should be (%dx%d)", rows(c), columns(c), ...
 	    (Bp-Ap), (Ann+Anz) ));
-      endif
-
-      ## append new c matrix
-      Ac = [Ac;c];
     endif
 
-    ## check d matrix
-    if(isempty(d)) d = zeros(Bp,Bm);
-    elseif(rows(d) != Bp | columns(d) != Bm)
-      error(sprintf("d(%dx%d) should be (%dx%d)",rows(d), columns(d), Bp, Bp));
-    endif
+    ## append new c matrix
+    Ac = [Ac;c];
+  endif
 
-    ## Splice in original D matrix
-    if(Am & Ap)          d(1:Ap, 1:Am) = Ad;       endif
-    Ad = d;
+  ## check d matrix
+  if(isempty(d)) d = zeros(Bp,Bm);
+  elseif(rows(d) != Bp | columns(d) != Bm)
+    error(sprintf("d(%dx%d) should be (%dx%d)",rows(d), columns(d), Bp, Bp));
+  endif
 
-    ## construct return system
-    retsys = ss(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
+  ## Splice in original D matrix
+  if(Am & Ap)          d(1:Ap, 1:Am) = Ad;       endif
+  Ad = d;
 
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
+  ## construct return system
+  retsys = ss(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
 
 endfunction

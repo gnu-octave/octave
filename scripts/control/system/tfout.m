@@ -31,37 +31,30 @@
 
 function tfout (num, denom, x)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
+  if (nargin < 2 ) | (nargin > 3) | (nargout != 0 )
+    usage("tfout(num,denom[,x])");
+  endif
 
-    if (nargin < 2 ) | (nargin > 3) | (nargout != 0 )
-      usage("tfout(num,denom[,x])");
-    endif
+  if ( (!isvector(num)) | (!isvector(denom)) )
+    error("tfout: first two argument must be vectors");
+  endif
 
-    if ( (!isvector(num)) | (!isvector(denom)) )
-      error("tfout: first two argument must be vectors");
-    endif
+  if (nargin == 2)
+    x = "s";
+  elseif( ! ischar(x) )
+    error("tfout: third argument must be a string");
+  endif
 
-    if (nargin == 2)
-      x = "s";
-    elseif( ! ischar(x) )
-      error("tfout: third argument must be a string");
-    endif
-
-    numstring = polyout(num,x);
-    denomstring = polyout(denom,x);
-    len = max(length(numstring),length(denomstring));
-    if(len > 0)
-      y = strrep(blanks(len)," ","-");
-      disp(numstring)
-      disp(y)
-      disp(denomstring)
-    else
-      error ("tfout: empty transfer function")
-    end
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
+  numstring = polyout(num,x);
+  denomstring = polyout(denom,x);
+  len = max(length(numstring),length(denomstring));
+  if(len > 0)
+    y = strrep(blanks(len)," ","-");
+    disp(numstring)
+    disp(y)
+    disp(denomstring)
+  else
+    error ("tfout: empty transfer function")
+  end
 
 endfunction

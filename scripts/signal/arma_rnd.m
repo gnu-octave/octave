@@ -42,46 +42,38 @@
 
 function x = arma_rnd (a, b, v, t, n)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
-
-    if (nargin == 4)
-      n = 100;
-    elseif (nargin == 5)
-      if (!isscalar (t))
-        error ("arma_rnd: n must be a scalar");
-      endif
-    else
-      usage ("arma_rnd (a, b, v, t, n)");
-    endif
-
-    if ((min (size (a)) > 1) || (min (size (b)) > 1))
-      error ("arma_rnd: a and b must not be matrices");
-    endif
-
+  if (nargin == 4)
+    n = 100;
+  elseif (nargin == 5)
     if (!isscalar (t))
-      error ("arma_rnd: t must be a scalar");
+      error ("arma_rnd: n must be a scalar");
     endif
+  else
+    usage ("arma_rnd (a, b, v, t, n)");
+  endif
 
-    ar = length (a);
-    br = length (b);
+  if ((min (size (a)) > 1) || (min (size (b)) > 1))
+    error ("arma_rnd: a and b must not be matrices");
+  endif
 
-    a = reshape (a, ar, 1);
-    b = reshape (b, br, 1);
+  if (!isscalar (t))
+    error ("arma_rnd: t must be a scalar");
+  endif
 
-    a = [1; -a];                        # apply our notational convention
-    b = [1; b];
+  ar = length (a);
+  br = length (b);
 
-    n = min (n, ar + br);
+  a = reshape (a, ar, 1);
+  b = reshape (b, br, 1);
 
-    e = sqrt (v) * randn (t + n, 1);
+  a = [1; -a];                        # apply our notational convention
+  b = [1; b];
 
-    x = filter (b, a, e);
-    x = x(n + 1 : t + n);
+  n = min (n, ar + br);
 
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
+  e = sqrt (v) * randn (t + n, 1);
+
+  x = filter (b, a, e);
+  x = x(n + 1 : t + n);
 
 endfunction

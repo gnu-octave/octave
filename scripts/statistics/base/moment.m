@@ -75,7 +75,7 @@ function m = moment (x, p, opt1, opt2)
       usage ("moment: expecting opt to be a string");
     endif
   else
-    usage ("moment (x, p, dim, opt) or moment (x, p, dim, opt)");
+    usage ("moment (x, p, dim, opt)");
   endif
 
   if (need_dim)
@@ -94,21 +94,15 @@ function m = moment (x, p, opt1, opt2)
     error ("moment: x must not be empty");
   endif
 
-  tmp = warn_str_to_num;
-  unwind_protect
-    warn_str_to_num = 0;
-    if any (opt == "c")
-      rng = ones(1, length (sz));
-      rng (dim) = sz (dim);
-      x = x - repmat (sum (x, dim), rng) / n;
-    endif
-    if any (opt == "a")
-      x = abs (x);
-    endif
-  unwind_protect_cleanup
-    warn_str_to_num = tmp;
-  end_unwind_protect
+  if any (opt == "c")
+    rng = ones (1, length (sz));
+    rng(dim) = sz(dim);
+    x = x - repmat (sum (x, dim), rng) / n;
+  endif
+  if any (opt == "a")
+    x = abs (x);
+  endif
 
-  m = sum(x .^ p, dim) / n;
+  m = sum (x .^ p, dim) / n;
 
 endfunction

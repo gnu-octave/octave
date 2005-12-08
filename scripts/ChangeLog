@@ -1,3 +1,25 @@
+2005-12-07  John W. Eaton  <jwe@octave.org>
+
+	* statistics/base/moment.m: Don't save and restore warn_str_to_num.
+
+	* sparse/spdiags.m: Don't save and restore warn_fortran_indexing.
+	* strings/strjust.m: Likewise.
+
+	* general/shift.m: Don't save and restore warn_empty_list_elements.
+	* signal/arma_rnd.m: Likewise.
+	* strings/strcat.m: Likewise.
+	* control/base/__freqresp__.m: Likewise.
+	* control/base/place.m: Likewise.
+	* control/base/pzmap.m: Likewise.
+	* control/base/pzmap.m: Likewise.
+	* control/system/sysappend.m: Likewise.
+	* control/system/syscont.m: Likewise.
+	* control/system/sysdisc.m: Likewise.
+	* control/system/sysgroup.m: Likewise.
+	* control/system/tfout.m: Likewise.
+	* control/system/zpout.m: Likewise.
+	* control/util/__outlist__.m: Likewise.
+
 2005-12-06  John W. Eaton  <jwe@octave.org>
 
 	* audio/wavread.m, audio/wavwrite.m: Adapt to Octave coding style.

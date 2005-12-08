@@ -31,82 +31,74 @@
 
 function zpout (zer, pol, k, x)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
+  if (nargin < 3 ) | (nargin > 4) | (nargout != 0 )
+    usage("zpout(zer,pol,k[,x])");
+  endif
 
-    if (nargin < 3 ) | (nargin > 4) | (nargout != 0 )
-      usage("zpout(zer,pol,k[,x])");
-    endif
+  if( !(isvector(zer) | isempty(zer)) | !(isvector(pol) | isempty(pol)) )
+    error("zer, pol must be vectors or empty");
+  endif
 
-    if( !(isvector(zer) | isempty(zer)) | !(isvector(pol) | isempty(pol)) )
-      error("zer, pol must be vectors or empty");
-    endif
+  if(!isscalar(k))
+    error("zpout: argument k must be a scalar.")
+  endif
 
-    if(!isscalar(k))
-      error("zpout: argument k must be a scalar.")
-    endif
+  if (nargin == 3)
+    x = "s";
+  elseif( ! ischar(x) )
+    error("zpout: third argument must be a string");
+  endif
 
-    if (nargin == 3)
-      x = "s";
-    elseif( ! ischar(x) )
-      error("zpout: third argument must be a string");
-    endif
+  numstring = num2str(k);
 
-    numstring = num2str(k);
-
-    if(length(zer))
-      ## find roots at z,s = 0
-      nzr = sum(zer == 0);
-      if(nzr)
+  if(length(zer))
+    ## find roots at z,s = 0
+    nzr = sum(zer == 0);
+    if(nzr)
 	if(nzr > 1)
 	  numstring = [numstring,sprintf(" %s^%d",x,nzr)];
 	else
 	  numstring = [numstring,sprintf(" %s",x)];
 	endif
-      endif
-      zer = sortcom(-zer);
-      for ii=1:length(zer)
+    endif
+    zer = sortcom(-zer);
+    for ii=1:length(zer)
 	if(zer(ii) != 0)
 	  numstring = [numstring,sprintf(" (%s %s)",x,com2str(zer(ii),1) ) ];
 	endif
-      endfor
-    endif
+    endfor
+  endif
 
-    if(length(pol))
-      ## find roots at z,s = 0
-      nzr = sum(pol == 0);
-      if(nzr)
+  if(length(pol))
+    ## find roots at z,s = 0
+    nzr = sum(pol == 0);
+    if(nzr)
 	if(nzr > 1)
 	  denomstring = [sprintf("%s^%d",x,nzr)];
 	else
 	  denomstring = [sprintf("%s",x)];
 	endif
-      else
+    else
 	denomstring = " ";
-      endif
-      pol = sortcom(-pol);
-      for ii=1:length(pol)
+    endif
+    pol = sortcom(-pol);
+    for ii=1:length(pol)
 	if(pol(ii) != 0)
 	  denomstring = [denomstring,sprintf(" (%s %s)",x,com2str(pol(ii),1))];
 	endif
-      endfor
-    endif
+    endfor
+  endif
 
-    len = max(length(numstring),length(denomstring));
-    if(len > 0)
-      y = strrep(blanks(len)," ","-");
-      disp(numstring)
-      if(length(denomstring))
+  len = max(length(numstring),length(denomstring));
+  if(len > 0)
+    y = strrep(blanks(len)," ","-");
+    disp(numstring)
+    if(length(denomstring))
 	disp(y)
 	disp(denomstring)
-      endif
-    else
-      error ("zpout: empty transfer function")
-    end
-
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
+    endif
+  else
+    error ("zpout: empty transfer function")
+  end
 
 endfunction

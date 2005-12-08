@@ -51,7 +51,7 @@ function y = shift (x, b, dim)
       error ("shift: dim must be an integer and valid dimension");
     endif
   else
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension
     dim  = 1;
     while (dim < nd + 1 && sz (dim) == 1)
       dim = dim + 1;
@@ -67,25 +67,18 @@ function y = shift (x, b, dim)
 
   d = sz (dim);
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
+  idx = cell ();
+  for i = 1:nd
+    idx {i} = 1:sz(i);
+  endfor
+  if (b >= 0)
+    b = rem (b, d);
+    idx {dim} = [d-b+1:d, 1:d-b];
+  elseif (b < 0)
+    b = rem (abs (b), d);
+    idx {dim} = [b+1:d, 1:b];
+  endif
+  y = x (idx {:});
 
-    idx = cell ();
-    for i = 1:nd
-      idx {i} = 1:sz(i);
-    endfor
-    if (b >= 0)
-      b = rem (b, d);
-      idx {dim} = [d-b+1:d, 1:d-b];
-    elseif (b < 0)
-      b = rem (abs (b), d);
-      idx {dim} = [b+1:d, 1:b];
-    endif
-    y = x (idx {:});
-
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
 
 endfunction

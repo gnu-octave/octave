@@ -39,59 +39,51 @@
 
 function [zer, pol]=pzmap (sys)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
+  if(nargin != 1)
+    usage("pzmap(sys) or [zer,pol] = pzmap(sys)");
+  elseif (!isstruct(sys));
+    error("sys must be in system format");
+  endif
 
-    if(nargin != 1)
-      usage("pzmap(sys) or [zer,pol] = pzmap(sys)");
-    elseif (!isstruct(sys));
-      error("sys must be in system format");
-    endif
+  [zer,pol] = sys2zp(sys);
 
-    [zer,pol] = sys2zp(sys);
+  ## force to column vectors, split into real, imaginary parts
+  zerdata = poldata = [];
+  if(length(zer))
+    zer = reshape(zer,length(zer),1);
+    zerdata = [real(zer(:,1)), imag(zer(:,1))];
+  endif
+  if(length(pol))
+    pol = reshape(pol,length(pol),1);
+    poldata = [real(pol(:,1)), imag(pol(:,1))];
+  endif
 
-    ## force to column vectors, split into real, imaginary parts
-    zerdata = poldata = [];
-    if(length(zer))
-      zer = reshape(zer,length(zer),1);
-      zerdata = [real(zer(:,1)), imag(zer(:,1))];
-    endif
-    if(length(pol))
-      pol = reshape(pol,length(pol),1);
-      poldata = [real(pol(:,1)), imag(pol(:,1))];
-    endif
+  ## determine continuous or discrete plane
+  vars = "sz";
+  varstr = vars(is_digital(sys) + 1);
 
-    ## determine continuous or discrete plane
-    vars = "sz";
-    varstr = vars(is_digital(sys) + 1);
-
-    ## Plot the data
-    __gnuplot_set__ nologscale xy;
-    if(is_siso(sys))
-      title(sprintf("Pole-zero map from %s to %s", ...
+  ## Plot the data
+  __gnuplot_set__ nologscale xy;
+  if(is_siso(sys))
+    title(sprintf("Pole-zero map from %s to %s", ...
 	 sysgetsignals(sys,"in",1,1), sysgetsignals(sys,"out",1,1) ));
-    endif
-    xlabel(["Re(",varstr,")"]);
-    ylabel(["Im(",varstr,")"]);
-    grid;
+  endif
+  xlabel(["Re(",varstr,")"]);
+  ylabel(["Im(",varstr,")"]);
+  grid;
 
-    ## compute axis limits
-    axis(axis2dlim([zerdata;poldata]));
-    grid
-    ## finally, plot the data
-    if(length(zer) == 0)
-      plot(poldata(:,1), poldata(:,2),"@12 ;poles (no zeros);");
-    elseif(length(pol) == 0)
-      plot(zerdata(:,1), zerdata(:,2),"@31 ;zeros (no poles);");
-    else
-      plot(zerdata(:,1), zerdata(:,2),"@31 ;zeros;", ...
+  ## compute axis limits
+  axis(axis2dlim([zerdata;poldata]));
+  grid
+  ## finally, plot the data
+  if(length(zer) == 0)
+    plot(poldata(:,1), poldata(:,2),"@12 ;poles (no zeros);");
+  elseif(length(pol) == 0)
+    plot(zerdata(:,1), zerdata(:,2),"@31 ;zeros (no poles);");
+  else
+    plot(zerdata(:,1), zerdata(:,2),"@31 ;zeros;", ...
 	poldata(:,1), poldata(:,2),"@12 ;poles;");
-    endif
-    replot
-
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
+  endif
+  replot
 
 endfunction

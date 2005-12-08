@@ -37,38 +37,30 @@ function x = strjust (x, just)
 
   just = tolower (just);
 
-  wfi = warn_fortran_indexing;
-  unwind_protect
-    warn_fortran_indexing = 0;
+  ## convert nulls to blanks
+  idx = find (toascii (x) == 0);
+  if (! isempty (idx))
+    x(idx) = " ";
+  endif
 
-    ## convert nulls to blanks
-    idx = find (toascii (x) == 0);
-    if (! isempty (idx))
-      x(idx) = " ";
-    endif
-
-    ## For all cases, left, right and center, the algorithm is the same.
-    ## Find the number of blanks at the left/right end to determine the
-    ## shift, rotate the row index by using mod with that shift, then
-    ## translate the shifted row index into an array index.
-    [nr, nc] = size (x);
-    idx = (x' != " ");
-    if (strcmp (just, "right"))
-      [N, hi] = max (cumsum (idx));
-      shift = hi;
-    elseif (strcmp (just, "left"))
-      [N, lo] = max (cumsum (flipud (idx)));
-      shift = (nc - lo);
-    else
-      [N, hi] = max (cumsum (idx));
-      [N, lo] = max (cumsum (flipud (idx)));
-      shift = ceil (nc - (lo-hi)/2);
-    endif
-    idx = rem (ones(nr,1)*[0:nc-1] + shift'*ones(1,nc), nc);
-    x = x (idx*nr + [1:nr]'*ones(1,nc));
-
-  unwind_protect_cleanup
-    warn_fortran_indexing = wfi;
-  end_unwind_protect
+  ## For all cases, left, right and center, the algorithm is the same.
+  ## Find the number of blanks at the left/right end to determine the
+  ## shift, rotate the row index by using mod with that shift, then
+  ## translate the shifted row index into an array index.
+  [nr, nc] = size (x);
+  idx = (x' != " ");
+  if (strcmp (just, "right"))
+    [N, hi] = max (cumsum (idx));
+    shift = hi;
+  elseif (strcmp (just, "left"))
+    [N, lo] = max (cumsum (flipud (idx)));
+    shift = (nc - lo);
+  else
+    [N, hi] = max (cumsum (idx));
+    [N, lo] = max (cumsum (flipud (idx)));
+    shift = ceil (nc - (lo-hi)/2);
+  endif
+  idx = rem (ones(nr,1)*[0:nc-1] + shift'*ones(1,nc), nc);
+  x = x (idx*nr + [1:nr]'*ones(1,nc));
 
 endfunction

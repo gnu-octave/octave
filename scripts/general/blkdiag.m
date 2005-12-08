@@ -37,7 +37,7 @@ function retval = blkdiag (varargin)
   endif
 
   ## Note: trailing singletons are automatically (correctly) ignored.
-  if (! all (cellfun (@ndims, varargin) == 2))
+  if (! all (cellfun ("ndims", varargin) == 2))
     error ("all of the arguments to blkdiag must be two-dimensional matrices");
   endif
 

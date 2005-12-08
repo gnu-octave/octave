@@ -238,20 +238,25 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
     } \
   while (0)
 
-#define DO_ND_LOOP(arg) \
+#define DO_ND_LOOP(TYPE, ARG) \
   do \
     { \
-      int ndims = dv.length (); \
-      Array<idx_vector> idx; \
-      octave_idx_type steps = dv.numel () / dv (0); \
-      idx.resize (ndims, idx_vector (static_cast<octave_idx_type> (1))); \
-      idx (0) = idx_vector (':'); \
+      octave_idx_type steps = dv(1); \
  \
       for (octave_idx_type i = 0; i < steps; i++) \
 	{ \
 	  MAYBE_DO_BREAKPOINT; \
  \
-	  octave_value val (arg.index(idx)); \
+          TYPE tmp; \
+ \
+          int nr = ARG.rows (); \
+ \
+	  tmp.resize (dim_vector (nr, 1)); \
+ \
+	  for (int j = 0; j < nr; j++) \
+	    tmp.xelem (j) = ARG.xelem (j, i); \
+ \
+          octave_value val (tmp); \
  \
 	  bool quit = false; \
  \
@@ -261,14 +266,6 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 	  if (quit) \
 	    break; \
  \
-	  for (int j = 1; j < ndims; j++) \
-	    { \
-	      idx(j) = idx_vector (idx(j)(0) + 2); \
-	      if (idx(j)(0) < dv(j)) \
-		break; \
-	      else \
-		idx(j) = idx_vector (static_cast<octave_idx_type> (1)); \
-	    } \
 	} \
     } \
   while (0)
@@ -382,12 +379,27 @@ tree_simple_for_command::eval (void)
 	if (error_state)
 	  goto cleanup;
 
-	if (dv.numel () > 0)
+	// XXX FIXME XXX -- maybe we need a function for this?
+	int ndims = dv.length ();
+	for (int i = 2; i < ndims; i++)
+	  dv(1) *= dv(i);
+
+	if (dv(1) > 0)
 	  {
 	    if (rhs.is_real_type ())
-	      DO_ND_LOOP(m_tmp);
+	      {
+		if (ndims > 2)
+		  m_tmp = m_tmp.reshape (dv);
+
+		DO_ND_LOOP(NDArray, m_tmp);
+	      }
 	    else
-	      DO_ND_LOOP(cm_tmp);
+	      {
+		if (ndims > 2)
+		  cm_tmp = cm_tmp.reshape (dv);
+
+		DO_ND_LOOP(ComplexNDArray, cm_tmp);
+	      }
 	  }
       }
     else if (rhs.is_map ())
@@ -419,8 +431,18 @@ tree_simple_for_command::eval (void)
 
 	dim_vector dv = c_tmp.dims ();
 
-	if (dv.numel () > 0)
-	  DO_ND_LOOP(c_tmp);
+	// XXX FIXME XXX -- maybe we need a function for this?
+	int ndims = dv.length ();
+	for (int i = 2; i < ndims; i++)
+	  dv(1) *= dv(i);
+
+	if (dv(1) > 0)
+	  {
+	    if (ndims > 2)
+	      c_tmp = c_tmp.reshape (dv);
+
+	    DO_ND_LOOP(Cell, c_tmp);
+	  }
       }
     else
       {

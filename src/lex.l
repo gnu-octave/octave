@@ -275,7 +275,7 @@ static void gripe_matlab_incompatible_operator (const std::string& op);
 
 D	[0-9]
 S	[ \t]
-NL	((\n)|(\r\n))
+NL	((\n)|(\r)|(\r\n))
 SNL	({S}|{NL})
 EL	(\.\.\.)
 BS	(\\)

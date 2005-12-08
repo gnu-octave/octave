@@ -115,6 +115,31 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 }
 
 Cell
+Cell::column (octave_idx_type i) const
+{
+  Cell retval;
+
+  if (ndims () < 3)
+    {
+      if (i < 0 || i >= cols ())
+	error ("invalid column selection");
+      else
+	{
+	  octave_idx_type nr = rows ();
+
+	  retval.resize (dim_vector (nr, 1));
+
+	  for (octave_idx_type j = 0; j < nr; j++)
+	    retval.xelem (j) = elem (j, i);
+	}
+    }
+  else
+    error ("Cell::column: requires 2-d cell array");
+
+  return retval;
+}
+
+Cell
 Cell::concat (const Cell& rb, const Array<octave_idx_type>& ra_idx)
 {
   return insert (rb, ra_idx);

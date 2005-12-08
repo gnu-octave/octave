@@ -1,4 +1,13 @@
+2005-12-08  John W. Eaton  <jwe@octave.org>
+
+	* Cell.cc (Cell::column): New function.
+	* pt-loop.cc (DO_ND_LOOP): Simplify.
+	(simple_for_loop_command::eval): Correctly handle N-d numeric and
+	cell arrays when only the first dimension is 0.
+
 2005-12-07  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (NL): Also accept '\r'.
 
 	* error.cc (Vbacktrace_on_warning, warning_options,
 	Vlast_warning_id, Vlast_error_id): New file-scope variables.

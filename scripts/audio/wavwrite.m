@@ -58,7 +58,7 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
   ## determine sample format
   switch (bits_per_sample)
     case 8  
-      format = "int8";
+      format = "uint8";
     case 16 
       format = "int16";
     case 32 
@@ -121,21 +121,18 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
     error ("wavread: writing to file failed");
   endif
   
+  ## interleave samples
+  yi = reshape (y', n*channels, 1);
+  
   ## scale samples
   switch (bits_per_sample)
     case 8
-      y = floor (y*127 + 127);
-    case {16, 32}
-      y = floor (y*((2 ** bits_per_sample) / 2 - 1));
+      yi = round (yi*127.5 + 127.5);
+    case 16
+      yi = floor (yi*32767.5);
+    case 32
+      yi = floor (yi*2147483647.5);
   endswitch
-  
-  ## interleave samples
-  ## l = n*channels;
-  ## for i = 1:channels
-  ##  yi(i:channels:l) = y(:,i);
-  ## endfor
-
-  yi = reshape (y', n*channels, 1);
   
   ## write to file
   c = fwrite (fid, yi, format, 0, BYTEORDER);

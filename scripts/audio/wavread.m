@@ -36,6 +36,7 @@
 ## @deftypefnx {Function File} {[@var{samples}, @var{channels}]} = wavread (@var{filename}, "size")
 ## Return the number of samples (@var{n}) and channels (@var{ch})
 ## instead of the audio data.
+##
 ## @end deftypefn
 ##
 ## @seealso{wavwrite}
@@ -47,24 +48,20 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
 
   FORMAT_PCM        = 0x0001;   # PCM (8/16/32 bit)
   FORMAT_IEEE_FLOAT = 0x0003;   # IEEE float (32/64 bit)
-  FORMAT_ALAW       = 0x0006;   # 8-bit ITU-T G.711 A-law   (not yet supported)
-  FORMAT_MULAW      = 0x0007;   # 8-bit ITU-T G.711 µ-law   (not yet supported)
-  FORMAT_IMA_ADPCM  = 0x0011;   # IMA/ADPCM 4:1 compression (not yet supported)
   BYTEORDER         = "ieee-le";
 
   if (nargin < 1 || nargin > 2)
     usage ("wavread (filename, param)");
   endif
 
-  # open file for binary reading
-
   if (! ischar (filename))
     error ("wavwrite: expecting filename to be a character string");
   endif
 
+  # open file for binary reading
   [fid, msg] = fopen (filename, "rb");
   if (fid < 0)
-    error ("wavread: %s", msg)
+    error ("wavread: %s", msg);
   endif
   
   ## check for RIFF/WAVE header
@@ -130,7 +127,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   if (format_tag == FORMAT_PCM)
     switch bits_per_sample
       case 8
-        format = "int8";
+        format = "uint8";
       case 16 
         format = "int16";
       case 32 
@@ -175,27 +172,23 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     endif
   endif
   
-  ## read samples
+  ## read samples and close file
   [yi, n] = fread (fid, length, format, 0, BYTEORDER);
-  
   fclose (fid);
   
   if (format_tag == FORMAT_PCM)
     ## normalize samples
     switch (bits_per_sample)
       case 8
-        yi = (yi - 127)/127;      # 8-bit samples are unsigned
-      case {16, 32}
-        yi = yi/((2 ** bits_per_sample) / 2 - 1);
+        yi = (yi - 127.5)/127.5;
+      case 16
+        yi = yi/32768;
+      case 32
+        yi = yi/2147483648;
     endswitch
   endif
   
   ## deinterleave
-  ## y = [];
-  ## for i = 1:channels
-  ##   y = [y, yi(i:channels:n)];
-  ## endfor
-
   nr = numel (yi) / channels;
   y = reshape (yi, channels, nr)';
   

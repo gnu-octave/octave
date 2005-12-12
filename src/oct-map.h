@@ -123,6 +123,8 @@ Octave_map
 
   int ndims (void) const { return dimensions.length (); }
 
+  Octave_map transpose (void) const;
+
   Octave_map reshape (const dim_vector& new_dims) const;
 
   Octave_map resize (const dim_vector& dv) const;

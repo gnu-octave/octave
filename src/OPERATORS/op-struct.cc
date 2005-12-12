@@ -34,11 +34,27 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // struct ops.
 
+DEFUNOP (transpose, cell)
+{
+  CAST_UNOP_ARG (const octave_struct&);
+
+  if (v.ndims () > 2)
+    {
+      error ("transpose not defined for N-d objects");
+      return octave_value ();
+    }
+  else
+    return octave_value (v.map_value().transpose ());
+}
+
 DEFNDCATOP_FN (struct_struct, struct, struct, map, map, concat)
 
 void
 install_struct_ops (void)
 {
+  INSTALL_UNOP (op_transpose, octave_struct, transpose);
+  INSTALL_UNOP (op_hermitian, octave_struct, transpose);
+
   INSTALL_CATOP (octave_struct, octave_struct, struct_struct);
 }
 

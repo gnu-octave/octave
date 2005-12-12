@@ -1,3 +1,11 @@
+2005-12-12  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-struct.cc (transpose): New function.
+	(install_struct_ops): Install it.
+
+	* oct-map.cc (Octave_map::transpose): New function.
+	* oct-map.h: Provide decl.
+
 2005-12-08  John W. Eaton  <jwe@octave.org>
 
 	* Cell.cc (Cell::column): New function.

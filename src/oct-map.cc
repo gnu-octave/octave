@@ -87,6 +87,20 @@ Octave_map::keys (void) const
 }
 
 Octave_map
+Octave_map::transpose (void) const
+{
+  assert (ndims () == 2);
+  dim_vector dv = dims ();
+
+  Octave_map retval (dim_vector (dv(1), dv(0)));
+
+  for (const_iterator p = begin (); p != end (); p++)
+    retval.assign (key(p), Cell (contents(p).transpose ()));
+
+  return retval;
+}
+
+Octave_map
 Octave_map::reshape (const dim_vector& new_dims) const
 {
   Octave_map retval;

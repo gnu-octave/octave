@@ -1,3 +1,10 @@
+2005-12-13  John W. Eaton  <jwe@octave.org>
+
+	* general/blkdiag.m: Use "isempty" instead of @isempty.
+
+	* control/system/ss.m: Doc fix.
+	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
+
 2005-12-12  Michael Zeising  <michael@michaels-website.de>
 
 	* audio/wavread.m, audio/wavwrite.m: 

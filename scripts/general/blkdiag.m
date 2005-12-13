@@ -42,7 +42,7 @@ function retval = blkdiag (varargin)
   endif
 
   ## Ignore empty matrices.
-  notempty = ! cellfun (@isempty, varargin);
+  notempty = ! cellfun ("isempty", varargin);
   varargin = varargin(notempty);
 
   ## size is an option for cellfun, but it's a bit different from

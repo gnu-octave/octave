@@ -17,35 +17,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gplot (@var{a}, @var{xy})
-## @deftypefnx {Function File} {} gplot (@var{a}, @var{xy}, @var{LineSpec})
+## @deftypefnx {Function File} {} gplot (@var{a}, @var{xy}, @var{line_style})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}] =} gplot (@var{a}, @var{xy})
-## Plots a graph defined by @var{A} and @var{xy} in the graph theory sense.
-## @var{A} is the adjacency matrix of the array to be plotted and @var{xy} is a
-## @var{n}-by-2 matrix containing the coordinates of the nodes of the graph.
+## Plot a graph defined by @var{A} and @var{xy} in the graph theory
+## sense.  @var{A} is the adjacency matrix of the array to be plotted
+## and @var{xy} is an @var{n}-by-2 matrix containing the coordinates of
+## the nodes of the graph.
 ##
-## If defined, @var{LineStyle} defines the output style for the plot. Called 
-## with no output arguments the graph is plotted directly. Called with output
-## arguments the coordinates of the plot are returned in @var{x} and @var{y}, 
-## rather than being plotted.
+## The optional parameter @var{line_style} defines the output style for
+## the plot.  Called with no output arguments the graph is plotted
+## directly.  Otherwise, return the coordinates of the plot in @var{x}
+## and @var{y}.
 ## @end deftypefn
-## @seealso{treeplot,etreeplot,spy}
+## @seealso{treeplot, etreeplot, spy}
 
-function [x, y] = gplot (A, xy, LineStyle)
+function [x, y] = gplot (A, xy, line_style)
 
   if (nargin < 2 || nargin > 3 || nargout > 2)
-    error ("gplot: wrong number of input/output arguments");
+    usage ("gplot (a, xy, line_style)");
   endif
 
   if (nargin == 2)
-    LineStyle = "1;;";
+    line_style = "1;;";
   endif
 
-  [i,j] = find(A);
+  [i, j] = find (A);
   xcoord = [xy(i,1), xy(j,1), NaN * ones(length(i),1)]'(:);
   ycoord = [xy(i,2), xy(j,2), NaN * ones(length(i),1)]'(:);
 
   if (nargout == 0)
-    plot(xcoord,ycoord,LineStyle); 
+    plot (xcoord, ycoord, line_style); 
   else
     x = xcoord;
     y = ycoord;

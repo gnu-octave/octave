@@ -16,14 +16,15 @@
 ## 02110-1301  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} etreeplot (@var{Tree})
-## @deftypefnx {Function File} {} etreeplot (@var{Tree}, @var{NodeStyle}, @var{EdgeStyle})
-## Plots the elimination tree of the matrix @var{s} or @code{@var{s}+@var{s}'}
-## if @var{s} in non-symmetric. The  optional parameters @var{LineStyle} and 
-## @var{EdgeStyle} define the output style.
+## @deftypefn {Function File} {} etreeplot (@var{tree})
+## @deftypefnx {Function File} {} etreeplot (@var{tree}, @var{node_style}, @var{edge_style})
+## Plot the elimination tree of the matrix @var{s} or
+## @code{@var{s}+@var{s}'}  if @var{s} in non-symmetric.  The optional
+## parameters @var{line_style} and @var{edge_style} define the output
+## style.
 ## @end deftypefn
 ## @seealso{treeplot,gplot}
 
 function etreeplot (s, varargin)
-  treeplot (etree (s+s'), varargin{:})
+  treeplot (etree (s+s'), varargin{:});
 endfunction

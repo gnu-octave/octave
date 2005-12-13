@@ -58,7 +58,7 @@
 ## default (@var{inname} = [] on input): @code{u_n}
 ##
 ## @item outname
-## cell array of strings of input signal names
+## cell array of strings of output signal names
 ##
 ## default (@var{outname} = [] on input): @code{y_n}
 ##

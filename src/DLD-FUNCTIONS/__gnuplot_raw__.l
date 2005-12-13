@@ -30,16 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // PKG_ADD: mark_as_rawcommand ("__gnuplot_splot__");
 // PKG_ADD: mark_as_rawcommand ("__gnuplot_replot__");
 
-// PKG_ADD: mark_as_rawcommand ("gplot");
-// PKG_ADD: mark_as_rawcommand ("gset");
-// PKG_ADD: mark_as_rawcommand ("gsplot");
-
 // PKG_ADD: mark_as_command ("__gnuplot_show__");
-
-// PKG_ADD: mark_as_command ("gshow");
-
-// PKG_ADD: mark_as_command ("set");
-// PKG_ADD: mark_as_command ("show");
 
 // PKG_ADD: __gnuplot_init__ ();
 
@@ -1803,65 +1794,6 @@ DEFUN_DLD (__gnuplot_replot__, args, ,
     gnuplot::plot (argv);
 
   return octave_value_list ();
-}
-
-// --------------------
-// Deprecated functions
-// --------------------
-
-#define WARN_DEPRECATED(FOLD, FNEW) \
-  do \
-    { \
-      static bool warned = false; \
-      if (! warned) \
-	{ \
-	  warned = true; \
-	  warning (#FOLD " is deprecated and will be removed from a future"); \
-	  warning ("version of Octave."); \
-	  warning ("You should use the higher-level plot functions"); \
-	  warning ("(\"plot\", \"mesh\", \"semilogx\", etc.) instead"); \
-	  warning ("of the low-level plotting commands."); \
-	  warning ("If you absolutely must use this function, use the"); \
-	  warning ("internal version " #FNEW " instead."); \
-	} \
-    } \
-  while (0)
-    
-#define DEPRECATED_BODY(FOLD, FNEW) \
-  WARN_DEPRECATED (FOLD, FNEW); \
-  return feval (#FNEW, args)
-
-// We can't further simplify this by putting the DEFUN_DLD in a macro
-// because then the mk-oct-links script will fail.
-
-DEFUN_DLD (gplot, args, ,
-  "")
-{
-  DEPRECATED_BODY (gplot, __gnuplot_plot__);
-}
-
-DEFUN_DLD (gsplot, args, ,
-  "")
-{
-  DEPRECATED_BODY (gsplot, __gnuplot_splot__);
-}
-
-DEFUN_DLD (graw, args, ,
-  "")
-{
-  DEPRECATED_BODY (graw, __gnuplot_raw__);
-}
-
-DEFUN_DLD (gset, args, ,
-  "")
-{
-  DEPRECATED_BODY (gset, __gnuplot_set__);
-}
-
-DEFUN_DLD (gshow, args, ,
-  "")
-{
-  DEPRECATED_BODY (gshow, __gnuplot_show__);
 }
 
 /*

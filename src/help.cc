@@ -286,12 +286,6 @@ body of the loop is executed at least once.",},
   { "global",
     "Declare variables to have global scope.", },
 
-  { "gplot",
-    "Produce 2-D plots using gnuplot-like command syntax.", },
-
-  { "gsplot",
-    "Produce 3-D plots using gnuplot-like command syntax.", },
-
   { "if",
     "-*- texinfo -*-\n\
 @deffn Keyword if (@var{cond}) @dots{} endif\n\

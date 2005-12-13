@@ -51,7 +51,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc ccolamd.cc \
 	lpsolve.cc lsode.cc lu.cc luinc.cc matrix_type.cc minmax.cc \
 	pinv.cc qr.cc quad.cc qz.cc rand.cc schur.cc sort.cc sparse.cc \
 	spchol.cc spdet.cc spkron.cc splu.cc spparms.cc sqrtm.cc svd.cc \
-	syl.cc time.cc gplot.l __glpk__.cc __qp__.cc
+	syl.cc time.cc __gnuplot_raw__.l __glpk__.cc __qp__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
@@ -256,7 +256,7 @@ OCT_LINK_DEPS = \
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-errno-list mk-pkg-add \
 	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf oct-gperf.h \
-	octave.cc parse.cc lex.cc y.tab.h gplot.cc \
+	octave.cc parse.cc lex.cc y.tab.h __gnuplot_raw__.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
 all: octave$(EXEEXT) $(OCT_FILES) PKG_ADD DOCSTRINGS
@@ -302,7 +302,7 @@ liboctinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
-stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc gplot.cc $(OPT_HANDLERS)
+stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc __gnuplot_raw__.cc $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
@@ -491,7 +491,7 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h gplot.cc $(OPT_HANDLERS)
+	rm -f oct-gperf.h __gnuplot_raw__.cc $(OPT_HANDLERS)
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h
@@ -530,7 +530,7 @@ parse.cc : parse.y
 lex.cc : lex.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
-gplot.cc : DLD-FUNCTIONS/gplot.l
+__gnuplot_raw__.cc : DLD-FUNCTIONS/__gnuplot_raw__.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
 defaults.h: defaults.h.in ../Makeconf Makefile

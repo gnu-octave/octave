@@ -389,7 +389,7 @@ save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 {
   bool infnan_warned = true;
 
-  return save_ascii_data (os, t, name, infnan_warned, true, false, 0);
+  return save_ascii_data (os, t, name, infnan_warned, false, false, 0);
 }
 
 // Maybe this should be a static function in tree-plot.cc?
@@ -420,7 +420,6 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 	    warning ("ignoring last %d columns", extras);
 
 	  Matrix tmp = tc.matrix_value ();
-	  tmp = strip_infnan (tmp);
 	  nr = tmp.rows ();
 
 	  for (octave_idx_type i = 0; i < nc-extras; i += 3)
@@ -433,7 +432,6 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
       else
 	{
 	  Matrix tmp = tc.matrix_value ();
-	  tmp = strip_infnan (tmp);
 	  nr = tmp.rows ();
 
 	  for (octave_idx_type i = 0; i < nc; i++)

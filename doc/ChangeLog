@@ -1,3 +1,8 @@
+2005-12-13  David Bateman <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Add new gplot, etreeplot and treeplot
+	functions.
+
 2005-11-01  John W. Eaton  <jwe@octave.org>
 
 	* liboctave/Makefile.in (maintainer-clean): Also remove liboctave.pdf

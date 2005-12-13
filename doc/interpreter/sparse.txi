@@ -890,13 +890,14 @@ Plot the sparsity pattern of the sparse matrix X
 @item etree
 Returns the elimination tree for the matrix S.
 @item etreeplot
-@emph{Not implemented}
+Plots the elimination tree of the matrix @var{s} or @code{@var{s}+@var{s}'}
+if @var{s} in non-symmetric.
 @item gplot
-@emph{Not implemented}
+Plots a graph defined by @var{A} and @var{xy} in the graph theory sense.
 @item treelayout
 @emph{Not implemented}
 @item treeplot
-@emph{Not implemented}
+Produces a graph of a tree or forest.
 @end table
 @subsubsection Sparse matrix reordering
 @table @asis
@@ -1020,8 +1021,12 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 * dmperm::	Perfrom a Deulmage-Mendelsohn permutation on the sparse
 		matrix S.
 * etree::	Returns the elimination tree for the matrix S.
+* etreeplot::   Plots the elimination tree of the matrix @var{s} or 
+		@code{@var{s}+@var{s}'} if @var{s} in non-symmetric.
 * full::	returns a full storage matrix from a sparse one See also:
 		sparse
+* gplot::	Plots a graph defined by @var{A} and @var{xy} in the graph 
+		theory sense.
 * issparse::	Return 1 if the value of the expression EXPR is a sparse
 		matrix.
 * luinc::	Produce the incomplete LU factorization of the sparse 
@@ -1084,6 +1089,7 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 		matrix S.
 * symrcm::	Returns the Reverse Cuthill McKee reordering of the sparse
 		matrix S.
+* treeplot::	Produces a graph of a tree or forest.
 @end menu
 
 @node colamd, ccolamd, , Function Reference
@@ -1111,17 +1117,27 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 
 @DOCSTRING(dmperm)
 
-@node etree, full, dmperm, Function Reference
+@node etree, etreeplot, dmperm, Function Reference
 @subsubsection etree
 
 @DOCSTRING(etree)
 
-@node full, issparse, etree, Function Reference
+@node etreeplot, full, etree, Function Reference
+@subsubsection etreeplot
+
+@DOCSTRING(etreeplot)
+
+@node full, gplot, etreeplot, Function Reference
 @subsubsection full
 
 @DOCSTRING(full)
 
-@node issparse, luinc, full, Function Reference
+@node gplot, issparse, full, Function Reference
+@subsubsection gplot
+
+@DOCSTRING(gplot)
+
+@node issparse, luinc, gplot, Function Reference
 @subsubsection issparse
 
 @DOCSTRING(issparse)
@@ -1311,10 +1327,15 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 
 @DOCSTRING(symbfact)
 
-@node symrcm, , symbfact, Function Reference
+@node symrcm, treeplot, symbfact, Function Reference
 @subsubsection symrcm
 
 @DOCSTRING(symrcm)
+
+@node treeplot, ,symrcm, Function Reference
+@subsubsection treeplot
+
+@DOCSTRING(treeplot)
 
 @c Local Variables: ***
 @c Mode: texinfo ***

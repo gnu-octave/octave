@@ -1,3 +1,8 @@
+2005-12-13  Ivana Varekova <varekova@redhat.com>
+
+	* sparse/treeplot.m, sparse/etreeplot.m, sparse/gplot.m:
+	New graph theory functions.
+
 2005-12-13  John W. Eaton  <jwe@octave.org>
 
 	* general/blkdiag.m: Use "isempty" instead of @isempty.

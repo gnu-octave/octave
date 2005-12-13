@@ -1,3 +1,14 @@
+2005-12-13  David Bateman <dbateman@free.fr>
+
+	* Makefile.in: Change references to gplot.l to __gnuplot_raw__.l.
+	* DLD-FUNCTIONS/__gnuplot_raw__.l: Rename from DLD-FUNCTIONS/gplot.l.
+	Remove all references to deprecated gplot, gsplot, graw, gset and
+	gshow functions.
+	* help.cc (static help_list keywords[]): Remove gsplot and gplot.
+
+	* ls-oct-ascii.cc (save_three_d):  Don't strip Inf or NaN.
+	(save_ascii_data_for_plotting): Ditto.
+
 2005-12-13  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_stream_list::do_insert): Check open state

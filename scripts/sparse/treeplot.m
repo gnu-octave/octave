@@ -132,7 +132,7 @@ function treeplot (Tree, NodeS, EdgeS)
       axis ([0.5 LeftMost+0.5 Max-0.5 NodNumber-0.5], "nolabel");  ## set axis and graph size 
       
       plot (XCoordinate,YCoordinate,NodeStyle);           ## plot grah nodes 
-      hold on;
+      hold ("on");
       
       Skelet = [Skelet; 0];     ## helping command - usable for plotting edges
       
@@ -148,7 +148,7 @@ function treeplot (Tree, NodeS, EdgeS)
 	      YCoordinate(Skelet(istart:istop)), EdgeStyle)
       endfor
       
-      hold off;
+      hold ("off");
       
     endif
   endif

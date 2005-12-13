@@ -1,3 +1,8 @@
+2005-12-13  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_stream_list::do_insert): Check open state
+	of stream in list instead of whether stream state is OK.
+
 2005-12-12  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-struct.cc (transpose): New function.

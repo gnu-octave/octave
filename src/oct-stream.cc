@@ -3941,7 +3941,7 @@ octave_stream_list::do_insert (const octave_stream& os)
     {
       octave_stream tmp = list(i);
 
-      if (! tmp)
+      if (! tmp.is_open ())
 	{
 	  list(i) = os;
 	  stream_number = i;

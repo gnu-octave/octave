@@ -3833,12 +3833,6 @@ octave_stream::mode_as_string (int mode)
   return retval;
 }
 
-void
-octave_stream::invalid_stream_error (const std::string& who) const
-{
-  ::error ("%s: attempt to use invalid I/O stream", who.c_str ());
-}
-
 octave_stream_list *octave_stream_list::instance = 0;
 
 bool

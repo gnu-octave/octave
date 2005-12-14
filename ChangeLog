@@ -1,3 +1,8 @@
+2005-12-13  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (install install-strip): Fix typo.
+	From William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>.
+
 2005-12-05  Kurt Hornik  <Kurt.Hornik@wu-wien.ac.at>
 
 	* emacs/octave-inf.el (inferior-octave-startup):

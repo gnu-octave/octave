@@ -1,3 +1,7 @@
+2005-12-13  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+
+	* cell/cell2mat.m: New file, from octave-forge.
+
 2005-12-13  Ivana Varekova <varekova@redhat.com>
 
 	* sparse/treeplot.m, sparse/etreeplot.m, sparse/gplot.m:

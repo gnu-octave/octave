@@ -53,7 +53,7 @@ install install-strip:
 	done
 	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor www.octave.org octave.desktop;
+	    --vendor www.octave.org octave.desktop; \
 	fi
 .PHONY: install install-strip
 

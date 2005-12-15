@@ -114,19 +114,19 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     endif
   endif
 
-  a = a(:).';
-  b = b(:).';
+  a = a(:);
+  b = b(:);
 
   if (! isscalar (n)) ## Explicit frequency vector given
     w = f = n;
     if (nargin == 4)  ## Sampling rate Fs was specified
       w = 2*pi*f/Fs;
     endif
-    hb = polyval (fliplr(b), exp(-j*w));
-    ha = polyval (fliplr(a), exp(-j*w));
+    hb = polyval (fliplr(b), exp(j*w));
+    ha = polyval (fliplr(a), exp(j*w));
   elseif (strcmp (region, "whole"))
-    f = Fs * (0:n-1) / n;
-    ## polyval(fliplr(P),exp(-jw)) is O(p n) and fft(x) is O(n log(n)),
+    f = Fs * (0:n-1)' / n;
+    ## polyval(fliplr(P),exp(jw)) is O(p n) and fft(x) is O(n log(n)),
     ## where p is the order of the the polynomial P.  For small p it
     ## would be faster to use polyval but in practice the overhead for
     ## polyval is much higher and the little bit of time saved isn't
@@ -134,7 +134,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     hb = fft (postpad (b, n));
     ha = fft (postpad (a, n));
   else
-    f = Fs/2 * (0:n-1) / n;
+    f = Fs/2 * (0:n-1)' / n;
     hb = fft (postpad (b, 2*n))(1:n);
     ha = fft (postpad (a, 2*n))(1:n);
   endif
@@ -170,9 +170,9 @@ endfunction
 %!test # Sampling frequency properly interpreted
 %! b = [1 1 1]/3;
 %! [h,f] = freqz(b,1,16,320);
-%! assert(f,[0:15]*10,10*eps);
+%! assert(f,[0:15]'*10,10*eps);
 %! [h2,f2] = freqz(b,1,[0:15]*10,320);
 %! assert(f2,[0:15]*10,10*eps);
-%! assert(h,h2,20*eps);
+%! assert(h,h2',20*eps);
 %! [h3,f3] = freqz(b,1,32,'whole',320);
-%! assert(f3,[0:31]*10,10*eps);
+%! assert(f3,[0:31]'*10,10*eps);

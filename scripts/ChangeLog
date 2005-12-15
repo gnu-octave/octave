@@ -1,3 +1,14 @@
+2005-12-14  David Bateman  <dbateman@free.fr>
+
+	* miscellaneous/dir.m: Transpose sub-assignment for cleanness.
+
+	* general/__isequal__.m: Remove reference to getfield.
+
+	* plot/hist.m: Update test code for row/column discrepencies.
+	* signal/freqz.m: Alter output row/column for matlab compatibility.
+	Update the test code for this.
+	* sparse/spstats.m: Fix small bug in the dimension of output.
+
 2005-12-13  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* cell/cell2mat.m: New file, from octave-forge.
@@ -1191,11 +1202,11 @@
 
 	* statistics/distributions/discrete_rnd.m: New argument formats to
 	allow creating arbitrary matrices, compatiable with the other 
-	*_rnd.m functions. Maintain compatiablity with previous format.
+	*_rnd.m functions. Maintain compatibility with previous format.
 
 	* statistics/distributions/empirical_rnd.m: New argument formats
 	to allow creating arbitrary matrices, compatiable with the other
-	*_rnd.m functions. Maintain compatiablity with previous
+	*_rnd.m functions. Maintain compatibility with previous
 	format.  Allow N-d arrays.
 
 	* statistics/distributions/hypergeometric_cdf.m,

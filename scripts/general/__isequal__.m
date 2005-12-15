@@ -66,8 +66,13 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     for argn = 1:l_v
       y = varargin{argn};
       for [v, k] = x
+	if (iscell (k))
+	  fld = y (k{:});
+	else
+	  fld = y.(k);
+	endif
         t = t && struct_contains (y, k) \
-              && __isequal__ (nans_compare_equal, v, getfield (y, k));
+              && __isequal__ (nans_compare_equal, v, fld);
       endfor
       if (!t)
         return;

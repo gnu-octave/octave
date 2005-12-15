@@ -27,7 +27,7 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	op-idx.txi optim.txi plot.txi poly.txi preface.txi \
 	quad.txi quaternion.txi set.txi signal.txi sparse.txi stats.txi \
 	stmt.txi stream.txi strings.txi struct.txi system.txi \
-	tips.txi var.txi vr-idx.txi
+	testfun.txi tips.txi var.txi vr-idx.txi
 
 SOURCES := $(SUB_SOURCE)
 

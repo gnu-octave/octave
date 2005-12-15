@@ -485,12 +485,12 @@ for @var{f}\n\
 
 %!test # builtin function replacement
 %! dispatch('sin','length','string')
-%! assert(sin('abc'),3)
+%! assert(sin("abc"),3)
 %! assert(sin(0),0,10*eps); 
 %!test # 'any' function
 %! dispatch('sin','exp','any')
 %! assert(sin(0),1,eps);
-%! assert(sin('abc'),3);
+%! assert(sin("abc"),3);
 %!test # 'builtin' function
 %! assert(builtin('sin',0),0,eps);
 %! builtin('eval','x=1;');
@@ -502,25 +502,25 @@ for @var{f}\n\
 %!test # oct-file replacement
 %! dispatch('fft','length','string')
 %! assert(fft([1,1]),[2,0]);
-%! assert(fft('abc'),3)
+%! assert(fft("abc"),3)
 %! dispatch('fft','string');
 %!test # m-file replacement
 %! dispatch('hamming','length','string')
 %! assert(hamming(1),1)
-%! assert(hamming('abc'),3)
+%! assert(hamming("abc"),3)
 %! dispatch('hamming','string')
 
 %!test # override preloaded builtin
 %! evalin('base','cos(1);');
 %! dispatch('cos','length','string')
-%! evalin('base',"assert(cos('abc'),3)");
-%! evalin('base',"assert(cos(0),1,eps)");
+%! evalin('base','assert(cos("abc"),3)');
+%! evalin('base','assert(cos(0),1,eps)');
 %! dispatch('cos','string')
 %!test # override pre-loaded oct-file
 %! evalin('base','qr(1);');
 %! dispatch('qr','length','string')
-%! evalin('base',"assert(qr('abc'),3)");
-%! evalin('base',"assert(qr(1),1)");
+%! evalin('base','assert(qr("abc"),3)');
+%! evalin('base','assert(qr(1),1)');
 %! dispatch('qr','string');
 %!test # override pre-loaded m-file
 %! evalin('base','hanning(1);');
@@ -536,11 +536,11 @@ in the current directory!  I don't want them installed accidentally.
 %! system("echo 'function a=dispatch_x(a)'>dispatch_x.m");
 %! dispatch('dispatch_x','length','string')
 %! assert(dispatch_x(3),3)
-%! assert(dispatch_x('a'),1)
+%! assert(dispatch_x("a"),1)
 %! pause(1);
 %! system("echo 'function a=dispatch_x(a),++a;'>dispatch_x.m");
 %! assert(dispatch_x(3),4)
-%! assert(dispatch_x('a'),1)
+%! assert(dispatch_x("a"),1)
 %!test 
 %! system("rm dispatch_x.m");
 

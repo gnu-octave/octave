@@ -1,3 +1,10 @@
+2005-12-14  David Bateman  <dbateman@free.fr>
+
+	* interpreter/testfun.txi: New test/demo documentation.
+	* interpreter/strings.txi: Include regexp/regexi docstrings.
+	* interpreter/octave.texi: Include test/demo appendix.
+	* interpreter/Makefile.in (SUB_SOURCE): Include test.txi.
+
 2005-12-13  David Bateman <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Add new gplot, etreeplot and treeplot

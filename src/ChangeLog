@@ -1,3 +1,26 @@
+2005-12-14  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_stream::invalid_stream_error): Delete.
+	* oct-stream.h (octave_stream::stream_ok): Don't fail with error.
+
+2005-12-14  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc: New file.
+
+	* DLD-FUNCTIONS/dispatch.cc: Update tests for string/sq_string 
+	differences.
+
+	* error.cc (Vquiet_warning): New variable.
+	(vwarning): Use Vquiet_warning to prevent warning output.
+	(Fwarning): Include "quiet" option to Fwarning function.
+	Assign retval when using "query".  Typo in error message.
+	(Flastwarn): Clear warning_state when using Flastwarn to probe warning
+	message.
+
+	* ov-struct.cc: Update Fstruct tests for change in error output.
+
+	* Makefile.in: Include regexp when needed with appropriate libraries.
+
 2005-12-13  David Bateman <dbateman@free.fr>
 
 	* Makefile.in: Change references to gplot.l to __gnuplot_raw__.l.

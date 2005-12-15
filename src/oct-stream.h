@@ -603,10 +603,7 @@ private:
 	    rep->clear ();
 	}
       else
-	{
-	  retval = false;
-	  invalid_stream_error (who);
-	}
+	retval = false;
 
       return retval;
     }

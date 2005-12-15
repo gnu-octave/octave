@@ -67,6 +67,10 @@ static bool Vbacktrace_on_warning = false;
 // TRUE means that Octave will print a verbose warning.  Currently unused.
 static bool Vverbose_warning;
 
+// TRUE means that Octave will print no warnings, but lastwarn will be 
+//updated
+static bool Vquiet_warning = false;
+
 // A structure containing (most of) the current state of warnings.
 static Octave_map warning_options;
 
@@ -169,9 +173,12 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
       Vlast_warning_message = msg_string;
     }
 
-  octave_diary << msg_string;
+  if (! Vquiet_warning)
+    {
+      octave_diary << msg_string;
 
-  std::cerr << msg_string;
+      std::cerr << msg_string;
+    }
 }
 
 static void
@@ -857,6 +864,14 @@ to go on.\n\
 		      done = true;
 		    }
 		}
+	      else if (arg2 == "quiet")
+		{
+		  if (arg1 != "error")
+		    {
+		      Vquiet_warning = (arg1 == "on");
+		      done = true;
+		    }
+		}
 	      else
 		{
 		  if (arg2 == "last")
@@ -917,7 +932,7 @@ to go on.\n\
 	      if (arg2 == "all")
 		retval = warning_options;
 	      else if (arg2 == "backtrace" || arg2 == "debug"
-		       || arg2 == "verbose")
+		       || arg2 == "verbose" || arg2 == "quiet")
 		{
 		  Octave_map tmp;
 		  tmp.assign ("identifier", arg2);
@@ -925,8 +940,12 @@ to go on.\n\
 		    tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
 		  else if (arg2 == "debug")
 		    tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
-		  else
+		  else if (arg2 == "verbose")
 		    tmp.assign ("state", Vverbose_warning ? "on" : "off");
+		  else
+		    tmp.assign ("state", Vquiet_warning ? "on" : "off");
+
+		  retval = tmp;
 		}
 	      else
 		{
@@ -1071,7 +1090,7 @@ also set the last message identifier.\n\
 	    }
 	}
       else
-	error ("lastwarn: expecting arguments to be character strings");
+	error ("lasterr: expecting arguments to be character strings");
     }
   else
     print_usage ("lasterr");
@@ -1112,6 +1131,7 @@ also set the last message identifier.\n\
 
 	  if (argc == 1 || nargout > 0)
 	    {
+	      warning_state = 0;
 	      retval(1) = prev_warning_id;
 	      retval(0) = prev_warning_message;
 	    }

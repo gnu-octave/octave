@@ -162,6 +162,10 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(substr)
 
+@DOCSTRING(regexp)
+
+@DOCSTRING(regexpi)
+
 @node String Conversions
 @section String Conversions
 

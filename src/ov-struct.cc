@@ -498,8 +498,8 @@ scalar (const dim_vector& dims)
 %!assert(isstruct(x));
 %!assert(isempty(fieldnames(x)));
 %!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
-%!fail("struct(1,2,3,4)","struct expects alternating 'field',value pairs");
-%!fail("struct('1',2,'3')","struct expects alternating 'field',value pairs");
+%!fail("struct(1,2,3,4)","struct expects alternating \"field\", VALUE pairs");
+%!fail("struct('1',2,'3')","struct expects alternating \"field\", VALUE pairs");
 */
 
 DEFUN (struct, args, ,

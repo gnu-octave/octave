@@ -154,6 +154,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Audio Processing::            
 * Quaternions::                 
 * System Utilities::            
+* Test and Demo Functions::
 * Tips::                        
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
@@ -454,6 +455,11 @@ System Utilities
 * Group Database Functions::    
 * System Information::          
 
+Test and Demo Functions
+
+* Test Functions::
+* Demonstration Functions::
+
 Tips and Standards
 
 * Style Tips::                  Writing clean and robust programs.
@@ -546,6 +552,7 @@ Grammar
 @c for them, and there appears to be no way to go back to the original
 @c set of indices once a redirection has taken place.
 
+@include testfun.texi
 @include tips.texi
 @include bugs.texi
 @include install.texi

@@ -49,9 +49,10 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc ccolamd.cc \
 	filter.cc find.cc fsolve.cc gammainc.cc gcd.cc getgrent.cc \
 	getpwent.cc getrusage.cc givens.cc hess.cc inv.cc kron.cc \
 	lpsolve.cc lsode.cc lu.cc luinc.cc matrix_type.cc minmax.cc \
-	pinv.cc qr.cc quad.cc qz.cc rand.cc schur.cc sort.cc sparse.cc \
-	spchol.cc spdet.cc spkron.cc splu.cc spparms.cc sqrtm.cc svd.cc \
-	syl.cc time.cc __gnuplot_raw__.l __glpk__.cc __qp__.cc
+	pinv.cc qr.cc quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc \
+	sparse.cc spchol.cc spdet.cc spkron.cc splu.cc spparms.cc \
+	sqrtm.cc svd.cc syl.cc time.cc \
+	__gnuplot_raw__.l __glpk__.cc __qp__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
@@ -241,7 +242,7 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
     $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 else
   OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
-    $(GLPK_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+    $(GLPK_LIBS) $(REGEX_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
     $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 endif
 
@@ -569,9 +570,13 @@ oct-gperf.h: octave.gperf
 
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   ifdef CXXPICFLAG
+    regexp.oct : pic/regexp.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
     __glpk__.oct : pic/__glpk__.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
   else
+    regexp.oct : regexp.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
     __glpk__.oct : __glpk__.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
   endif

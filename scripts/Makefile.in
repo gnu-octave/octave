@@ -32,7 +32,7 @@ DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
 SUBDIRS = audio control deprecated elfun finance general image io \
 	linear-algebra miscellaneous optimization plot polynomial \
 	quaternion set signal sparse specfun special-matrix startup \
-	statistics strings testfun time
+	statistics strings time
 
 DISTSUBDIRS = $(SUBDIRS)
 

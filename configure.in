@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.493 $)
+AC_REVISION($Revision: 1.494 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -417,6 +417,37 @@ case "$canonical_host_type" in
     AC_CHECK_LIB(m, sin)
   ;;
 esac
+
+### Check for pcre/regex library.
+AC_SUBST(REGEX_LIBS)
+WITH_PCRE_CONFIG=no
+AC_CHECK_HEADER(pcre.h, WITH_PCRE=yes, WITH_PCRE=no)
+if test $WITH_PCRE = no ; then
+  AC_CHECK_PROG(WITH_PCRE_CONFIG, pcre-config, yes, no)
+  if test $WITH_PCRE_CONFIG = yes ; then
+    WITH_PCRE=yes
+  fi
+fi
+if test $WITH_PCRE = yes ; then
+  AC_CHECK_LIB(pcre, pcre_compile, WITH_PCRE=yes, WITH_PCRE=no)
+  if test $WITH_PCRE = yes ; then
+    AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE is available.])
+    if test $WITH_PCRE_CONFIG = yes ; then
+      REGEX_LIBS=`pcre-config --cflags --libs`
+    else
+      REGEX_LIBS="-lpcre"
+    fi
+  fi
+fi
+AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
+  AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
+if test $WITH_REGEX = yes ; then
+  AC_DEFINE(HAVE_REGEX, 1, [Define if regex is available.])
+  if test $HAVE_PCRE = no ; then
+    AC_CHECK_FUNCS(regexec, REGEX_LIBS= , [
+      AC_CHECK_LIB(regex, regexec, REGEX_LIBS="-lregex")])
+  fi
+fi
 
 ### Check for ZLIB library.
 

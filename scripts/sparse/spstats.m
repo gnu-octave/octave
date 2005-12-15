@@ -10,7 +10,7 @@
 ## is the mean of the non-zeros in each column, and @var{var} is the  
 ## variance of the non-zeros in each column.
 ##
-## Called with two output arguments, if @var{s} is the data and @var{j}
+## Called with two input arguments, if @var{s} is the data and @var{j}
 ## is the bin number for the data, compute the stats for each bin.  In 
 ## this case, bins can contain data values of zero, whereas with 
 ## @code{spstats (@var{s})} the zeros may disappear.
@@ -21,14 +21,14 @@ function [count,mean,var] = spstats(S,j)
     usage("[count, mean, var] = spstats(S)  OR  spstats(x,j)");
   endif
 
-  [n, m] = size (S);
   if nargin == 1
-    [i,j,v] = spfind (S);
+    [i,j,v] = find (S);
   else
     v = S;    
     i = 1:length (v);
     S = sparse (i, j, v);
   endif 
+  [n, m] = size (S);
 
   count = spsum (sparse (i, j, 1, n, m));
   if (nargout > 1) 

@@ -139,8 +139,8 @@ endfunction
 %!  assert(nn, [2,1,1]);
 %!test
 %!  [nn,xx]=hist([1:4]',3);
-%!  assert(xx, [1.5,2.5,3.5]');
-%!  assert(nn, [2,1,1]');
+%!  assert(xx, [1.5,2.5,3.5]);
+%!  assert(nn, [2,1,1]);
 %!test
 %!  [nn,xx]=hist([[1:4]',[1:4]'],3);
 %!  assert(xx, [[1.5,2.5,3.5]',[1.5,2.5,3.5]']);

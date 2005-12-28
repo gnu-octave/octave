@@ -1547,24 +1547,26 @@ Boston, MA 02110-1301, USA.
     } \
   else \
     { \
-      OCTAVE_LOCAL_BUFFER (EL_TYPE, Xcol, nr); \
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr); \
+      for (octave_idx_type i = 0; i < nr; i++) \
+	w[i] = 0; \
       \
       octave_idx_type nel = 0; \
       \
       for (octave_idx_type i = 0; i < a_nc; i++) \
         { \
-          OCTAVE_QUIT; \
-          for (octave_idx_type k = 0; k < nr; k++) \
-	    Xcol[k]= 0.; \
           for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
             { \
               octave_idx_type  col = a.ridx(j); \
               for (octave_idx_type k = m.cidx(col) ; k < m.cidx(col+1); k++) \
-		if (Xcol[m.ridx(k)] == 0.) \
-                  { \
-		    Xcol[m.ridx(k)] = 1.; \
-		    nel++; \
-		  } \
+		{ \
+		  OCTAVE_QUIT; \
+		  if (w[m.ridx(k)] < i + 1) \
+                    { \
+		      w[m.ridx(k)] = i + 1; \
+		      nel++; \
+		    } \
+		} \
 	    } \
 	} \
       \
@@ -1572,34 +1574,41 @@ Boston, MA 02110-1301, USA.
 	return RET_TYPE (nr, a_nc); \
       else \
 	{  \
+          for (octave_idx_type i = 0; i < nr; i++) \
+	    w[i] = 0; \
+	  \
+          OCTAVE_LOCAL_BUFFER (EL_TYPE, Xcol, nr); \
+          \
 	  RET_TYPE retval (nr, a_nc, nel); \
 	  \
 	  octave_idx_type ii = 0; \
 	  \
-	  retval.cidx(0) = 0; \
+	  retval.xcidx(0) = 0; \
 	  for (octave_idx_type i = 0; i < a_nc ; i++) \
 	    { \
-              OCTAVE_QUIT; \
-	      for (octave_idx_type k = 0; k < nr; k++) \
-		Xcol[k]= 0.; \
 	      for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
 		{ \
                   octave_idx_type col = a.ridx(j); \
                   EL_TYPE tmpval = a.data(j); \
 		  for (octave_idx_type k = m.cidx(col) ; k < m.cidx(col+1); k++) \
-		    Xcol[m.ridx(k)] += tmpval * m.data(k); \
-		} \
-	      for (octave_idx_type k = 0; k < nr; k++) \
-		{ \
-		  if (Xcol[k] !=0. ) \
 		    { \
-		      retval.ridx (ii) = k; \
-		      retval.data (ii++) = Xcol[k]; \
+                      OCTAVE_QUIT; \
+		      octave_idx_type row = m.ridx(k); \
+		      if (w[row] < i + 1) \
+		        { \
+		          w[row] = i + 1; \
+		          retval.xridx(ii++) = row; \
+		          Xcol[row] = tmpval * m.data(k); \
+		        } \
+		      else \
+		        Xcol[row] += tmpval * m.data(k); \
 		    } \
 		} \
-	      retval.cidx(i+1) = ii; \
+	      retval.xcidx(i+1) = ii; \
+	      for (octave_idx_type k = retval.xcidx(i); k < retval.xcidx(i+1); k++) \
+		retval.xdata(k) = Xcol[retval.xridx(k)]; \
 	    } \
-	  retval.maybe_compress (); \
+	  retval.maybe_compress (true); \
 	  return retval; \
 	} \
     }

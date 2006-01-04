@@ -45,6 +45,8 @@ Boston, MA 02110-1301, USA.
 #include "sparse-util.h"
 #include "SparsedbleCHOL.h"
 
+#include "oct-sort.h"
+
 // Fortran functions we call.
 extern "C"
 {

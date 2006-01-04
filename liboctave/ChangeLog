@@ -1,7 +1,18 @@
+2006-01-04  David Bateman  <dbateman@free.fr>
+
+	* Spars-op-defs.h (SPARSE_SPARSE_MUL): Previous change resulted in
+	elements not being sorted in return matrix. Sort them, and make
+	solver select between two algorithms to further improve the 
+	performance.
+	* dSparse.cc: include oct-sort.h.
+	* CSparse.cc: ditto.
+	* sparse-sort.cc: Instantiate octave_sort<octave_idx_type>.
+	
 2005-12-28  David Bateman  <dbateman@free.fr>
 
-	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Improved algorithm that is faster in
-	all cases, and significantly so for low density or small oder problems.
+	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Improved algorithm that is
+	faster in all cases, and significantly so for low density or small 
+	order problems.
 
 2005-11-30  John W. Eaton  <jwe@octave.org>
 

@@ -50,6 +50,9 @@ octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i,
 // Instantiate the sparse sorting class
 template class octave_sort<octave_sparse_sort_idxl *>;
 
+// Instantiate the sorting class of octave_idx_type, need in MUL macro
+template class octave_sort<octave_idx_type>;
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

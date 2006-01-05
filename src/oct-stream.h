@@ -591,8 +591,6 @@ private:
   // The actual representation of this stream.
   octave_base_stream *rep;
 
-  void invalid_stream_error (const std::string& who) const;
-
   bool stream_ok (const std::string& who, bool clear = true) const
     {
       bool retval = true;

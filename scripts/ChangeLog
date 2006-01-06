@@ -1,5 +1,11 @@
 2005-12-14  David Bateman  <dbateman@free.fr>
 
+	* testfun/assert.m, testfun/fail.m, testfun/test.m, testfun/demo.m,
+	testfun/speed.m, testfun/example.m, Makefile.in: New files.
+
+	* Makefile.in (SUBDIRS): Include testfun.
+	* configure.in (AC_CONFIG_FILES): Include testfun/Makefile.
+
 	* miscellaneous/dir.m: Transpose sub-assignment for cleanness.
 
 	* general/__isequal__.m: Remove reference to getfield.

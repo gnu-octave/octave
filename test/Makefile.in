@@ -14,15 +14,13 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
-SOURCES =
+SOURCES = $(wildcard $(srcdir)/test_*.m)
 
-DISTFILES = Makefile.in $(SOURCES) ChangeLog
-
-SUBDIRS =
+DISTFILES = ChangeLog Makefile.in build_sparse_tests.sh fntests.m $(SOURCES)
 
 OCTAVE_BINARY = ../src/octave
 
-OCTAVE_SCRIPT_PATH = .:$(TOPDIR)/src//:$(srcdir)/../scripts//
+OCTAVE_SCRIPT_PATH = .//:$(TOPDIR)/src//:$(srcdir):$(srcdir)/../scripts//
 
 ifeq ($(SHARED_LIBS), true)
   OCTAVE_LD_LIBRARY_PATH = `pwd`/../src:`pwd`/../liboctave:`pwd`/../libcruft
@@ -34,25 +32,16 @@ ifeq ($(SHARED_LIBS), true)
   SET_LD_LIBRARY_PATH = @library_path_var@="$(XLD_LIBRARY_PATH)"
 endif
 
-# Complete directory trees to distribute.
-DISTDIRS = config octave.test
-
 all: check
 .PHONY: all
 
-check:
-	@if test -n "$(RUNTEST)"; then \
-	  $(SET_LD_LIBRARY_PATH) $(RUNTEST) \
-	    OCTAVE="$(OCTAVE_BINARY)" \
-	    OCTAVE_SCRIPT_PATH="$(OCTAVE_SCRIPT_PATH)" \
-	    --tool octave --srcdir $(srcdir) $(RUNTEST_FLAGS) $(testsuite); \
-	else \
-	  echo "***"; \
-	  echo "*** Sorry, I can't run tests without DejaGnu"; \
-	  echo "***"; \
-	fi
-
+check: test_sparse.m
+	$(SET_LD_LIBRARY_PATH) $(OCTAVE_BINARY) \
+	  -f -q -H -p $(OCTAVE_SCRIPT_PATH) $(srcdir)/fntests.m $(srcdir)
 .PHONY: check
+
+test_sparse.m: build_sparse_tests.sh
+	$(srcdir)/build_sparse_tests.sh
 
 install install-strip: all
 .PHONY: install install-strip
@@ -67,7 +56,7 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f  octave.log octave.sum
+	rm -f fntests.log
 .PHONY: clean
 
 mostlyclean:
@@ -83,5 +72,4 @@ maintainer-clean: distclean
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/test
-	for dir in $(DISTDIRS); do ln -s ../../test/$$dir ../`cat ../.fname`/test; done
 .PHONY: dist

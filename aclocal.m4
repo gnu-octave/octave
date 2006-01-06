@@ -535,24 +535,6 @@ AC_DEFINE_UNQUOTED(GNUPLOT_BINARY, "$GNUPLOT_BINARY", [Name of gnuplot program.]
 AC_DEFINE_UNQUOTED(GNUPLOT_HAS_FRAMES, $GNUPLOT_HAS_FRAMES, [Define if your gnuplot program supports multiple plot windows.])
 ])
 dnl
-dnl Is DejaGNU installed?
-dnl
-dnl OCTAVE_PROG_RUNTEST
-AC_DEFUN(OCTAVE_PROG_RUNTEST,
-[if test "$cross_compiling" = yes; then
-  RUNTEST=runtest
-  AC_MSG_RESULT(assuming $RUNTEST exists on $canonical_host_type host)
-  AC_SUBST(RUNTEST)
-else
-  AC_CHECK_PROG(RUNTEST, runtest, runtest, [])
-  if test -z "$RUNTEST"; then
-    warn_runtest="I didn't find runtest -- install DejaGNU if you want to run \`make check'"
-    AC_MSG_WARN($warn_runtest)
-  fi
-  AC_SUBST(RUNTEST)
-fi
-])
-dnl
 dnl Is gperf installed?
 dnl
 dnl OCTAVE_PROG_GPERF

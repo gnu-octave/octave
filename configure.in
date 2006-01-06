@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.494 $)
+AC_REVISION($Revision: 1.495 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1544,7 +1544,6 @@ OCTAVE_PROG_BISON
 AC_PROG_LN_S
 
 OCTAVE_PROG_NM
-OCTAVE_PROG_RUNTEST
 
 AC_PROG_INSTALL
 INSTALL_SCRIPT='${INSTALL}'
@@ -1889,11 +1888,6 @@ fi
 
 if test -n "$warn_less"; then
   AC_MSG_WARN($warn_less)
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_runtest"; then
-  AC_MSG_WARN($warn_runtest)
   warn_msg_printed=true
 fi
 

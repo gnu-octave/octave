@@ -1,5 +1,8 @@
 2005-12-14  David Bateman  <dbateman@free.fr>
 
+	* Makeconf.in: Remove OCTAVE_PROG_RUNTEST.
+	* alocal.m4: Remove OCTAVE_PROG_RUNTEST.
+
 	* Makeconf.in: New tests of regex and pcre.
 
 2005-12-13  John W. Eaton  <jwe@octave.org>

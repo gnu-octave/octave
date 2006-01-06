@@ -1,3 +1,31 @@
+2005-12-14  David Bateman  <dbateman@free.fr>
+
+	* build_sparse_tests.sh: New script to build sparse matrix tests.
+	* fntests.m: New script to run the octave test code, with "make check".
+	* Makefile.in (DISTDIRS): Delete.
+	(dist): Simplify.
+	(OCTAVE_SCRIPT_PATH): Include . and $(srcdir).
+	(check): Run tests with fntest.m instead of runtest.
+	(test_sparse.m): New target.
+	(clean): Remove fntests.log instead of octave.log and octave.sum.
+	
+	* tests/test_args.m, tests/test_infnan.m, tests/test_set.m,
+	tests/test_arith.m, tests/test_io.m, tests/test_signal.m,
+	tests/test_audio.m, tests/test_linalg.m, tests/test_sparse.m,
+	tests/test_contin.m, tests/test_logical-wfi-f.m, tests/test_stats.m,
+	tests/test_control.m, tests/test_logical-wfi-t.m, tests/test_string.m,
+	tests/test_diffeq.m, tests/test_matrix.m, tests/test_struct.m,
+	tests/test_error.m, tests/test_nonlin.m, tests/test_switch.m,
+	tests/test_eval-catch.m, tests/test_number.m, tests/test_system.m,
+	tests/test_eval.m, tests/test_optim.m, tests/test_transpose.m,
+	tests/test_for.m, tests/test_plot.m, tests/test_try.m,
+	tests/test_global.m, tests/test_poly.m, tests/test_unix.m,
+	tests/test_if.m, tests/test_prefer.m, tests/test_unwind.m,
+	tests/test_image.m, tests/test_quad.m, tests/test_while.m,
+	tests/test_index-wfi-f.m, tests/test_recursion.m,
+	tests/test_index-wfi-t.m, tests/test_return.m: Initial of conversion 
+	of DejaGnu tests to test/assert infrastructure.
+
 2005-05-11  John W. Eaton  <jwe@octave.org>
 
 	* config/unix.exp: Start Octave with -H.

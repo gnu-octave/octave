@@ -514,7 +514,7 @@ static octave_value_list
 sparse_find (const SparseMatrix& v)
 {
   octave_value_list retval;
-  octave_idx_type nnz = v.nnz ();
+  octave_idx_type nnz = v.nonzero ();
   dim_vector dv = v.dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv (1);
@@ -555,7 +555,7 @@ static octave_value_list
 sparse_find (const SparseComplexMatrix& v)
 {
   octave_value_list retval;
-  octave_idx_type nnz = v.nnz ();
+  octave_idx_type nnz = v.nonzero ();
   dim_vector dv = v.dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv (1);
@@ -596,7 +596,7 @@ static octave_value_list
 sparse_find (const SparseBoolMatrix& v)
 {
   octave_value_list retval;
-  octave_idx_type nnz = v.nnz ();
+  octave_idx_type nnz = v.nonzero ();
   dim_vector dv = v.dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv (1);

@@ -1,3 +1,9 @@
+2006-01-10  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sparse.cc (sparse_find): Use Sparse<T>::nonzero() 
+	rather than Sparse<T>::nnz(), due to possibility of overallocation
+	of memory.
+
 2005-12-14  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_stream::invalid_stream_error): Delete.

@@ -31,6 +31,10 @@
 	rather than Sparse<T>::nnz(), due to possibility of overallocation
 	of memory.
 
+2006-01-06  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.cc (Octave_map::transpose): Avoid GCC 3.3.x parse error.
+
 2005-12-14  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_stream::invalid_stream_error): Delete.

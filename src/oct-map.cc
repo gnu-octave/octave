@@ -90,9 +90,15 @@ Octave_map
 Octave_map::transpose (void) const
 {
   assert (ndims () == 2);
+
   dim_vector dv = dims ();
 
-  Octave_map retval (dim_vector (dv(1), dv(0)));
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
+
+  dim_vector new_dims (nc, nr);
+
+  Octave_map retval (new_dims);
 
   for (const_iterator p = begin (); p != end (); p++)
     retval.assign (key(p), Cell (contents(p).transpose ()));

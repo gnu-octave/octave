@@ -133,6 +133,8 @@ Octave_map
 
   Octave_map concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx);
 
+  Octave_map& maybe_delete_elements (const octave_value_list& idx);
+
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 
   Octave_map& assign (const octave_value_list& idx, const std::string& k,

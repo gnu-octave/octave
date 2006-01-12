@@ -133,9 +133,12 @@ octave_struct::subsref (const std::string& type,
 
     case '.':
       {
-	Cell t = dotref (idx.front ());
+	if (map.numel() > 0)
+	  {
+	    Cell t = dotref (idx.front ());
 
-	retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+	    retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+	  }
       }
       break;
 
@@ -307,19 +310,36 @@ octave_struct::subsasgn (const std::string& type,
 	      }
 	    else
 	      {
-		Octave_map rhs_map = t_rhs.map_value ();
-
-		if (! error_state)
+		if (t_rhs.is_map())
 		  {
-		    map.assign (idx.front (), rhs_map);
+		    Octave_map rhs_map = t_rhs.map_value ();
 
 		    if (! error_state)
-		      retval = octave_value (this, count + 1);
+		      {
+			map.assign (idx.front (), rhs_map);
+
+			if (! error_state)
+			  retval = octave_value (this, count + 1);
+			else
+			  gripe_failed_assignment ();
+		      }
 		    else
-		      gripe_failed_assignment ();
+		      error ("invalid structure assignment");
 		  }
 		else
-		  error ("invalid structure assignment");
+		  {
+		    if (t_rhs.is_empty()) 
+		      {
+			map.maybe_delete_elements (idx.front());
+
+			if (! error_state)
+			  retval = octave_value (this, count + 1);
+			else
+			  gripe_failed_assignment ();
+		      }
+		    else
+		      error ("invalid structure assignment");
+		  }
 	      }
 	  }
 	  break;
@@ -393,7 +413,8 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
   if (Vstruct_levels_to_print >= 0)
     {
-      bool print_keys_only = (Vstruct_levels_to_print == 0);
+      bool print_keys_only = (Vstruct_levels_to_print == 0 || 
+			      map.numel() == 0);
 
       Vstruct_levels_to_print--;
 
@@ -403,7 +424,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      octave_idx_type n = map.numel ();
+      octave_idx_type n = map_keys().length();
 
       if (n > 1 && print_keys_only)
 	{
@@ -482,12 +503,12 @@ scalar (const dim_vector& dims)
   return dims.length () == 2 && dims (0) == 1 && dims (1) == 1;
 }
 
-// XXX FIXME XXX -- move these tests to the test directory?
 /*
 %!shared x
 %! x(1).a=1; x(2).a=2; x(1).b=3; x(2).b=3;
 %!assert(struct('a',1,'b',3),x(1))
-%!assert(struct('a',{},'b',{}),x([]))
+%!assert(isempty(x([])))
+%!assert(isempty(struct('a',{},'b',{})))
 %!assert(struct('a',{1,2},'b',{3,3}),x)
 %!assert(struct('a',{1,2},'b',3),x)
 %!assert(struct('a',{1,2},'b',{3}),x)

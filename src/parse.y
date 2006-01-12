@@ -3379,6 +3379,34 @@ lookup_autoload (const std::string& nm)
 			       octave_env::getcwd ());
 }
 
+string_vector 
+autoloaded_functions (void)
+{
+  string_vector names (autoload_map.size());
+
+  octave_idx_type i = 0;
+  std::map<std::string, std::string>::const_iterator p;
+  for (p = std::map<std::string, std::string>::iterator (autoload_map.begin ()); 
+       p != std::map<std::string, std::string>::iterator (autoload_map.end ()); p++)
+    names[i++] = p->first;
+
+  return names;
+}
+
+string_vector
+reverse_lookup_autoload (const std::string& nm)
+{
+  string_vector names;
+
+  std::map<std::string, std::string>::const_iterator p;
+  for (p = std::map<std::string, std::string>::iterator (autoload_map.begin ()); 
+       p != std::map<std::string, std::string>::iterator (autoload_map.end ()); p++)
+    if (nm == p->second)
+      names.append (p->first);
+
+  return names;
+}
+
 bool
 load_fcn_from_file (const std::string& nm, bool exec_script)
 {

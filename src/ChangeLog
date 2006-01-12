@@ -1,3 +1,30 @@
+2006-01-12  David Bateman  <dbateman@free.fr>
+
+	* help.cc (make_name_list): Add autoload functions to list of
+	available completions.
+	(simple_help): Add autoloaded functions to functions listed
+	(first_help_sentence): Avoid issue with single line help string 
+	that is not terminated in \n.
+	(Flookfor): Check for string match in the keyword/function, etc
+	name. Also look for string match in help of autoloaded functions.
+	Load oct-files to be able to access their help string.
+	* parse.y (string_vector autoloaded_functions (void)): New
+	function to list all autloaded functions.
+	(string_vector reverse_lookup_autoload (const std::string& nm)):
+	Reverse lookup function to match file to autoloaded functions.
+	* parse.h (autoloaded_functions, reverse_lookup_autoload): 
+	Declaration. 
+	
+	* oct-map.cc (maybe_delete_elements): New function.
+	* oct-map.h (maybe_delete_elements): Declare it.
+	* ov-struct.cc (octave_struct::subsref): Handle indexing empty
+	structure.
+	(octave_struct::subsasgn): If rhs is [], delete elements.
+	(octave_struct::print_raw): Handle printing empty structure. 	
+
+	* ls-mat5.cc (read_mat5_binary_element): Allow reading of sparse
+	elements when nnz doesn't equal nzmax. 
+	
 2006-01-10  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sparse.cc (sparse_find): Use Sparse<T>::nonzero() 

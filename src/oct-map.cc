@@ -210,6 +210,31 @@ equiv_keys (const Octave_map& a, const Octave_map& b)
 }
 
 Octave_map&
+Octave_map::maybe_delete_elements (const octave_value_list& idx)
+{
+  string_vector t_keys = keys();
+  octave_idx_type len = t_keys.length ();
+
+  if (len > 0)
+    {
+      for (octave_idx_type i = 0; i < len; i++)
+	{
+	  std::string k = t_keys[i];
+
+	  map[k] = contents (k).assign (idx, Cell());
+
+	  if (error_state)
+	    break;
+	}
+
+      if (!error_state)
+	dimensions = contents(t_keys[0]).dims();
+    }
+
+  return *this;
+}
+
+Octave_map&
 Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
 {
   string_vector t_keys = empty () ? rhs.keys () : equiv_keys (*this, rhs);

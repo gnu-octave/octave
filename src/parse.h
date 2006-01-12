@@ -98,6 +98,10 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 
 extern std::string lookup_autoload (const std::string& nm);
 
+extern string_vector autoloaded_functions (void);
+
+extern string_vector reverse_lookup_autoload (const std::string& nm);
+
 extern bool
 load_fcn_from_file (const std::string& nm, bool exec_script);
 

@@ -407,7 +407,10 @@ make_name_list (void)
   string_vector ffl = octave_fcn_file_name_cache::list_no_suffix ();
   int ffl_len = ffl.length ();
 
-  int total_len = key_len + fbi_len + glb_len + top_len + lcl_len + ffl_len;
+  string_vector afl = autoloaded_functions ();
+  int afl_len = afl.length ();
+
+  int total_len = key_len + fbi_len + glb_len + top_len + lcl_len + ffl_len + afl_len;
 
   string_vector list (total_len);
 
@@ -432,6 +435,9 @@ make_name_list (void)
 
   for (i = 0; i < ffl_len; i++)
     list[j++] = ffl[i];
+
+  for (i = 0; i < afl_len; i++)
+    list[j++] = afl[i];
 
   return list;
 }
@@ -541,6 +547,17 @@ simple_help (void)
 
 	  names.list_in_columns (octave_stdout);
 	}
+    }
+
+  string_vector autoloaded = autoloaded_functions ();
+
+  if (! autoloaded.empty ())
+    {
+      octave_stdout << "\n*** autoloaded functions:\n\n";
+
+      autoloaded.qsort ();
+
+      autoloaded.list_in_columns (octave_stdout);
     }
 }
 
@@ -1138,8 +1155,8 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
   size_t pos = 0;
 
   if (looks_like_texinfo (h, pos))
-    {
-      // Get the parsed help string.
+    { 
+     // Get the parsed help string.
       pos = 0;
       OSSTREAM os;
       display_help_text (os, h);
@@ -1232,7 +1249,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  if (lower.find_first_of ('-') == 0
 	      || lower.substr (0, 5) == "usage")
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1247,7 +1264,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1257,7 +1274,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	  
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1273,7 +1290,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1304,7 +1321,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1315,7 +1332,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1328,7 +1345,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1345,7 +1362,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1361,7 +1378,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1380,7 +1397,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  if (line_pos == NPOS)
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1392,7 +1409,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	      || line.find_first_not_of ("\n\t ", line_pos) == NPOS
 	      || line.substr (line_pos, 2) == "!/")
 	    {
-	      pos = new_pos + 1;
+	      pos = (new_pos == NPOS ? NPOS : new_pos + 1);
 	      continue;
 	    }
 
@@ -1571,15 +1588,7 @@ to find related functions that are not part of octave.\n\
 	  std::string name = ptr->name;
 	  std::string h = ptr->help;
 
-	  std::string s;
-	  if (first_sentence_only)
-	    s = first_help_sentence (h);
-	  else
-	    s = h;
-	      
-	  transform (s.begin (), s.end (), s.begin (), tolower);
-
-	  if (s.length () > 0 && s.find (txt) != NPOS)
+	  if (name.find (txt) != NPOS)
 	    {
 	      if (nargout)
 		{
@@ -1588,6 +1597,28 @@ to find related functions that are not part of octave.\n\
 		}
 	      else
 		print_lookfor (name, first_help_sentence (h));
+	    }
+	  else
+	    {
+	      std::string s;
+
+	      if (first_sentence_only)
+		s = first_help_sentence (h);
+	      else
+		s = h;
+	      
+	      transform (s.begin (), s.end (), s.begin (), tolower);
+
+	      if (s.length () > 0 && s.find (txt) != NPOS)
+		{
+		  if (nargout)
+		    {
+		      ret[0].append (name);
+		      ret[1].append (first_help_sentence (h));
+		    }
+		  else
+		    print_lookfor (name, first_help_sentence (h));
+		}
 	    }
 
 	  OCTAVE_QUIT;
@@ -1601,15 +1632,7 @@ to find related functions that are not part of octave.\n\
 	  std::string name = ptr->name;
 	  std::string h = ptr->help;
 
-	  std::string s;
-	  if (first_sentence_only)
-	    s = first_help_sentence (h);
-	  else
-	    s = h;
-	      
-	  transform (s.begin (), s.end (), s.begin (), tolower);
-
-	  if (s.length () > 0 && s.find (txt) != NPOS)
+	  if (name.find (txt) != NPOS)
 	    {
 	      if (nargout)
 		{
@@ -1618,6 +1641,27 @@ to find related functions that are not part of octave.\n\
 		}
 	      else
 		print_lookfor (name, first_help_sentence (h));
+	    }
+	  else
+	    {
+	      std::string s;
+	      if (first_sentence_only)
+		s = first_help_sentence (h);
+	      else
+		s = h;
+	      
+	      transform (s.begin (), s.end (), s.begin (), tolower);
+
+	      if (s.length () > 0 && s.find (txt) != NPOS)
+		{
+		  if (nargout)
+		    {
+		      ret[0].append (name);
+		      ret[1].append (first_help_sentence (h));
+		    }
+		  else
+		    print_lookfor (name, first_help_sentence (h));
+		}
 	    }
 
 	  OCTAVE_QUIT;
@@ -1639,15 +1683,8 @@ to find related functions that are not part of octave.\n\
 	  if (sr && sr->is_defined ())
 	    {
 	      std::string h = sr->help ();
-	      std::string s;
-	      if (first_sentence_only)
-		s = first_help_sentence (h);
-	      else
-		s = h;
-	      
-	      transform (s.begin (), s.end (), s.begin (), tolower);
 
-	      if (s.length () > 0 && s.find (txt) != NPOS)
+	      if (name.find (txt) != NPOS)
 		{
 		  if (nargout)
 		    {
@@ -1656,6 +1693,28 @@ to find related functions that are not part of octave.\n\
 		    }
 		  else
 		    print_lookfor (name, first_help_sentence (h));
+		}
+	      else
+		{
+		  std::string s;
+
+		  if (first_sentence_only)
+		    s = first_help_sentence (h);
+		  else
+		    s = h;
+	      
+		  transform (s.begin (), s.end (), s.begin (), tolower);
+
+		  if (s.length () > 0 && s.find (txt) != NPOS)
+		    {
+		      if (nargout)
+			{
+			  ret[0].append (name);
+			  ret[1].append (first_help_sentence (h));
+			}
+		      else
+			print_lookfor (name, first_help_sentence (h));
+		    }
 		}
 	    }
 	}
@@ -1697,24 +1756,24 @@ to find related functions that are not part of octave.\n\
 		      std::string file_name = 
 			Vload_path_dir_path.find_first_of (tmp);
 
-
 		      if (file_name == dirs[i] + tmp(0)
 			  || file_name == dirs[i] + tmp(1))
 			{
 			  bool symbol_found;
 
-			  std::string h
-			    = get_help_from_file (file_name, symbol_found);
+			  std::string h;
+			  if (file_name == dirs[i] + tmp(0))
+			    {
+			      // oct-file. Must load to get help
+			      sr = lookup_by_name (name, false);
 
-			  std::string s;
-			  if (first_sentence_only)
-			    s = first_help_sentence (h);
+			      if (sr && sr->is_defined ())
+				h = sr->help ();
+			    }
 			  else
-			    s = h;
+			    h = get_help_from_file (file_name, symbol_found);
 
-			  transform (s.begin (), s.end (), s.begin (), tolower);
-
-			  if (s.length () > 0 && s.find (txt) != NPOS)
+			  if (name.find (txt) != NPOS)
 			    {
 			      if (nargout)
 				{
@@ -1724,12 +1783,90 @@ to find related functions that are not part of octave.\n\
 			      else
 				print_lookfor (name, first_help_sentence (h));
 			    }
+			  else
+			    {
+			      std::string s;
+			      if (first_sentence_only)
+				s = first_help_sentence (h);
+			      else
+				s = h;
+
+			      transform (s.begin (), s.end (), s.begin (), tolower);
+
+			      if (s.length () > 0 && s.find (txt) != NPOS)
+				{
+				  if (nargout)
+				    {
+				      ret[0].append (name);
+				      ret[1].append (first_help_sentence (h));
+				    }
+				  else
+				    print_lookfor (name, first_help_sentence (h));
+				}
+			    }
+			}
+		    }
+
+		  // Check if this function has autoloaded functions attached to it
+		  std::string file_name = Vload_path_dir_path.find_first_of (names(j));
+		  string_vector autoload_fcns = reverse_lookup_autoload (file_name);
+
+		  if (! autoload_fcns.empty ())
+		    {
+		      for (int k = 0; k < autoload_fcns.length (); k++)
+			{
+			  std::string aname = autoload_fcns (k);
+
+			  // Check if already in symbol table
+			  sr = fbi_sym_tab->lookup (aname);
+
+			  if (!sr)
+			    {
+			      // Must load to get help
+			      sr = lookup_by_name (name, false);
+
+			      std::string h;
+			      if (sr && sr->is_defined ())
+				h = sr->help ();
+
+			      if (aname.find (txt) != NPOS)
+				{
+				  if (nargout)
+				    {
+				      ret[0].append (aname);
+				      ret[1].append (first_help_sentence (h));
+				    }
+				  else
+				    print_lookfor (aname, first_help_sentence (h));
+				}
+			      else
+				{
+				  std::string s;
+				  if (first_sentence_only)
+				    s = first_help_sentence (h);
+				  else
+				    s = h;
+
+				  transform (s.begin (), s.end (), s.begin (), 
+					     tolower);
+
+				  if (s.length () > 0 && s.find (txt) != NPOS)
+				    {
+				      if (nargout)
+					{
+					  ret[0].append (aname);
+					  ret[1].append (first_help_sentence (h));
+					}
+				      else
+					print_lookfor (aname, first_help_sentence (h));
+				    }
+				}
+			    }
 			}
 		    }
 		}
 	    }
 	}
-
 
       if (nargout != 0)
 	{

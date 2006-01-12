@@ -41,15 +41,12 @@ function retval = blkdiag (varargin)
     error ("all of the arguments to blkdiag must be two-dimensional matrices");
   endif
 
-  ## Ignore empty matrices.
-  notempty = ! cellfun ("isempty", varargin);
-  varargin = varargin(notempty);
-
   ## size is an option for cellfun, but it's a bit different from
   ## calling size directly.
   csz = cumsum ([0 0; (cell2mat (cellfun (@size, varargin')))], 1);
   retval = zeros (csz(end,:));
-  for p = 1:(length (notempty(notempty)))
+
+  for p = 1:nargin
     retval((csz(p,1)+1):csz(p+1,1),(csz(p,2)+1):csz(p+1,2)) = varargin{p};
   endfor
 

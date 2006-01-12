@@ -403,7 +403,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   bool imag;
   bool logicalvar;
   enum arrayclasstype arrayclass;
-  FOUR_BYTE_INT nnz;
+  FOUR_BYTE_INT nzmax;
   FOUR_BYTE_INT flags;
   dim_vector dims;
   int len;
@@ -495,7 +495,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   global = (flags & 0x0400) != 0; // global variable?
   logicalvar = (flags & 0x0200) != 0; // boolean ?
   arrayclass = (arrayclasstype)(flags & 0xff);
-  read_int (is, swap, nnz);	// number of non-zero in sparse
+  read_int (is, swap, nzmax);	// max number of non-zero in sparse
   
   // dimensions array subelement
   {
@@ -587,7 +587,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	int nc = dims(1);
 	SparseMatrix sm;
 	SparseComplexMatrix scm;
-	NDArray re;
 	int *ridx;
 	int *cidx;
 	double *data;
@@ -597,17 +596,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  {
 	    scm = SparseComplexMatrix (static_cast<octave_idx_type> (nr),
 				       static_cast<octave_idx_type> (nc),
-				       static_cast<octave_idx_type> (nnz));
+				       static_cast<octave_idx_type> (nzmax));
 	    ridx = scm.ridx ();
 	    cidx = scm.cidx ();
-	    re = NDArray (dim_vector (static_cast<int> (nnz)));
-	    data = re.fortran_vec ();
+	    data = 0;
 	  }
 	else
 	  {
 	    sm = SparseMatrix (static_cast<octave_idx_type> (nr),
 			       static_cast<octave_idx_type> (nc),
-			       static_cast<octave_idx_type> (nnz));
+			       static_cast<octave_idx_type> (nzmax));
 	    ridx = sm.ridx ();
 	    cidx = sm.cidx ();
 	    data = sm.data ();
@@ -624,7 +622,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	tmp_pos = is.tellg ();
 
-	read_mat5_integer_data (is, ridx, nnz, swap,
+	read_mat5_integer_data (is, ridx, nzmax, swap,
 				(enum mat5_data_type) type);
 
 	if (! is || error_state)
@@ -660,6 +658,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  {
 	    error ("load: reading sparse matrix data for `%s'", retval.c_str ());
 	    goto data_read_error;
+	  }
+
+	FOUR_BYTE_INT nnz = cidx[nc];
+	NDArray re;
+	if (imag)
+	  {
+	    re = NDArray (dim_vector (static_cast<int> (nnz)));
+	    data = re.fortran_vec ();
 	  }
 
 	tmp_pos = is.tellg ();

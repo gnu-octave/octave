@@ -81,7 +81,7 @@ function retval = dir (file)
 		  tfn = lst{j};
 		  ## The lstat call seems to be the bottleneck for large
 		  ## directories.
-		  [st, err, msg] = lstat (strcat (fn, "/", tfn));
+		  [st, err, msg] = lstat (strcat (fn, filesep, tfn));
 		  if (err < 0)
 		    warning ("dir: stat failed for %s (%s)", tfn, msg);
 		  else

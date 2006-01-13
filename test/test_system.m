@@ -217,7 +217,7 @@
 
 %% test/octave.test/system/readdir-1.m
 %!test
-%! [files, status, msg] = readdir ("/");
+%! [files, status, msg] = readdir (filesep);
 %! assert(iscell (files) && status == 0 && msg == "");
 
 %% test/octave.test/system/readdir-2.m
@@ -274,7 +274,7 @@
 
 %% test/octave.test/system/stat-1.m
 %!test
-%! [s, err, msg] = stat ("/");
+%! [s, err, msg] = stat (filesep);
 %! assert((err == 0
 %! && isstruct (s)
 %! && struct_contains (s, "dev")
@@ -297,7 +297,7 @@
 
 %% test/octave.test/system/lstat-1.m
 %!test
-%! [s, err, msg] = lstat ("/");
+%! [s, err, msg] = lstat (filesep);
 %! assert((err == 0
 %! && isstruct (s)
 %! && struct_contains (s, "dev")
@@ -319,7 +319,7 @@
 %!error <... lstat:.*> lstat ("foo", 1);
 
 %% test/octave.test/system/glob-1.m
-%!assert(iscell (glob ("/*")));
+%!assert(iscell (glob ([filesep "*"])));
 
 %% test/octave.test/system/glob-2.m
 %!error <... glob:*> glob ();

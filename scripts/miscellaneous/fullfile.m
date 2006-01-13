@@ -29,15 +29,15 @@ function filename = fullfile (varargin)
     if (length (filename) < 1)
       filename = ".";
     endif
-    if (strcmp (filename(end), "/"))
+    if (strcmp (filename(end), filesep))
       filename(end) = "";
     endif
     for i = 2:nargin
       tmp = varargin{i};
-      if (strcmp (tmp(1), "/"))
+      if (strcmp (tmp(1), filesep))
 	tmp(1) = "";
       endif
-      if (i < nargin && strcmp (tmp(end), "/"))
+      if (i < nargin && strcmp (tmp(end), filesep))
 	tmp(end) = "";
       endif
       filename = strcat (filename, filesep, tmp);

@@ -1,3 +1,7 @@
+2006-01-13  Bill Denney  <bill@givebillmoney.com>
+
+	* test_system.m: Use filesep instead of "/" where needed.
+
 2005-12-14  David Bateman  <dbateman@free.fr>
 
 	* build_sparse_tests.sh: New script to build sparse matrix tests.

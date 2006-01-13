@@ -32,8 +32,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // PKG_ADD: mark_as_command ("__gnuplot_show__");
 
-// PKG_ADD: __gnuplot_init__ ();
-
 // PKG_ADD: atexit ("closeplot");
 
 #ifdef HAVE_CONFIG_H
@@ -696,7 +694,7 @@ protected:
       use_title_option (Vgnuplot_use_title_option),
       gnuplot_exe (Vgnuplot_binary),
       gnuplot_terminal_type (), plot_stream ()
-  { }
+  { do_init (); }
 
 public:
 
@@ -712,13 +710,9 @@ public:
 
   static void close (void);
 
-  static bool plot_stream_event_handler (pid_t pid, int status);
+  static void close_all (void);
 
-  static void init (void)
-  {
-    if (ensure_instance ())
-      instance->do_init ();
-  }
+  static bool plot_stream_event_handler (pid_t pid, int status);
 
   static void send (const std::string& cmd)
   {
@@ -892,6 +886,19 @@ gnuplot::close (void)
       instance->do_close ();
 
       instance_map.erase (get_current_figure ());
+    }
+}
+
+void
+gnuplot::close_all (void)
+{
+  for (std::map<int, gnuplot *>::const_iterator p = instance_map.begin ();
+       p != instance_map.end ();
+       p++)
+    {
+      gnuplot *elt = p->second;
+
+      elt->do_close ();
     }
 }
 
@@ -1454,6 +1461,19 @@ gnuplot::handle_title (int& lasttok)
   return retstr;
 }
 
+// The static instance of this class is here so that
+// gnuplot::close_all will be called when the .oct file is unloaded.
+
+class
+gnuplot_X
+{
+public:
+  gnuplot_X (void) { }
+  ~gnuplot_X (void) { gnuplot::close_all (); }
+};
+
+static gnuplot_X X;
+
 static int
 automatic_replot (void)
 {
@@ -1661,16 +1681,6 @@ If nonzero, append @samp{-title \"Figure NN\"} to the gnuplot command.\n\
 // -----------------------
 // User-callable functions
 // -----------------------
-
-DEFUN_DLD (__gnuplot_init__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} __gnuplot_init__ ()\n\
-@end deftypefn")
-{
-  gnuplot::init ();
-
-  return octave_value_list ();
-}
 
 DEFUN_DLD (clearplot, , ,
   "-*- texinfo -*-\n\

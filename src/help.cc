@@ -661,6 +661,8 @@ display_help_text (std::ostream& os, const std::string& msg)
 
   if (looks_like_texinfo (msg, pos))
     {
+      os.flush ();
+
       std::string tmp_file_name = file_ops::tempnam ("", "");
 
       int cols = command_editor::terminal_cols ();
@@ -687,9 +689,6 @@ display_help_text (std::ostream& os, const std::string& msg)
 	  << " --no-headers"
 	  << " --force"
 	  << " --output \"" << tmp_file_name << "\""
-#if !defined (__MINGW32__)
-	  << " > /dev/null 2>&1"
-#endif
 	  << OSSTREAM_ENDS;
 
       oprocstream filter (OSSTREAM_STR (buf));
@@ -722,8 +721,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 	    {
 	      warning ("help: Texinfo formatting filter exited abnormally");
 	      warning ("help: raw Texinfo source of help text follows...");
-
-	      os << "\n" << msg;
+	      warning ("help:\n\n%s\n\n", msg.c_str ());
 	    }
 
 	  file_ops::unlink (tmp_file_name);

@@ -1693,6 +1693,12 @@ Clear the plot window and any titles or axis labels.  The name\n\
 {
   gnuplot::clear ();
 
+  octave_value_list args;
+
+  args(0) = "off";
+
+  feval ("hold", args);
+
   return octave_value_list ();
 }
 

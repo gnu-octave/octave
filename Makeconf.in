@@ -538,6 +538,15 @@ $(SED) < $< > $@-t \
 $(top_srcdir)/move-if-change $@-t $@
 endef
 
+define do-mkpkgadd
+$(top_srcdir)/mkpkgadd $(srcdir) > PKG_ADD.t
+if [ -n "`cat PKG_ADD.t`" ]; then \
+  mv PKG_ADD.t PKG_ADD ; \
+else \
+  rm -f PKG_ADD.t ; \
+fi
+endef
+
 define do-script-install
 $(top_srcdir)/mkinstalldirs \
   $(addprefix $(DESTDIR), $(fcnfiledir)/$(script_sub_dir))

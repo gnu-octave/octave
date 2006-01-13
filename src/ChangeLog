@@ -1,5 +1,14 @@
 2006-01-13  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__gnuplot_raw__.l (Fclearplot): For compatibility,
+	also turn off hold state for current figure.
+
+2006-01-13  Bill Denney  <bill@givebillmoney.com>
+
+ 	* dirfns.cc: Add @seealso{} to docstrings.
+
+2006-01-13  John W. Eaton  <jwe@octave.org>
+
 	* help.cc (display_help_text): Use warning() to print raw Texinfo
 	source.  Don't redirect error output for makeinfo process.
 

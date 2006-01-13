@@ -1,3 +1,7 @@
+2006-01-13  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-mkpkgadd): New macro.
+
 2005-12-14  David Bateman  <dbateman@free.fr>
 
 	* Makeconf.in: Remove OCTAVE_PROG_RUNTEST.

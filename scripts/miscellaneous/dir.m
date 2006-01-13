@@ -39,9 +39,10 @@
 ## If @var{directory} is not a directory, return information about the
 ## named file.
 ## @var{filename}.
+##
+## @seealso{ls, stat, readdir, glob, filesep}
 ## @end deftypefn
 ##
-## @seealso{stat}
 
 ## Author: jwe
 

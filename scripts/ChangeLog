@@ -1,5 +1,27 @@
 2006-01-13  John W. Eaton  <jwe@octave.org>
 
+	* audio/Makefile.in, control/base/Makefile.in,
+	control/hinf/Makefile.in, control/obsolete/Makefile.in,
+	control/system/Makefile.in, control/util/Makefile.in,
+	deprecated/Makefile.in, elfun/Makefile.in, finance/Makefile.in,
+	general/Makefile.in, image/Makefile.in, io/Makefile.in,
+	linear-algebra/Makefile.in, miscellaneous/Makefile.in,
+	optimization/Makefile.in, plot/Makefile.in,
+	polynomial/Makefile.in, quaternion/Makefile.in, set/Makefile.in,
+	signal/Makefile.in, sparse/Makefile.in, specfun/Makefile.in,
+	special-matrix/Makefile.in, startup/Makefile.in,
+	statistics/base/Makefile.in, statistics/distributions/Makefile.in,
+	statistics/models/Makefile.in, statistics/tests/Makefile.in,
+	strings/Makefile.in, time/Makefile.in, testfun/Makefile.in:
+	(all): Depend on PKG_ADD.
+	(PKG_ADD): New target.
+
+2006-01-13  Bill Denney  <bill@givebillmoney.com>
+
+ 	* miscellaneous/dir.m: Add @seealso{} to docstring.
+
+2006-01-13  John W. Eaton  <jwe@octave.org>
+
 	* time/etime.m: Move here from miscellaneous/etime.m.
 	* time/is_leap_year.m: Move here from miscellaneous/is_leap_year.m.
 

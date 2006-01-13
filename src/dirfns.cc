@@ -101,6 +101,7 @@ cd ~/octave\n\
 Changes the current working directory to @file{~/octave}.  If the\n\
 directory does not exist, an error message is printed and the working\n\
 directory is not changed.\n\
+@seealso{mkdir, rmdir, dir}\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -158,6 +159,7 @@ ls -l\n\
 The @code{dir} and @code{ls} commands are implemented by calling your\n\
 system's directory listing command, so the available options may vary\n\
 from system to system.\n\
+@seealso{dir, stat, readdir, glob, filesep}\n\
 @end deffn")
 {
   octave_value retval;
@@ -220,6 +222,7 @@ DEFUN (pwd, , nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} pwd ()\n\
 Return the current working directory.\n\
+@seealso{dir, ls}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -248,6 +251,7 @@ strings.  If an error occurs, return an empty cell array in @var{files}.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{dir, glob}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -296,6 +300,7 @@ If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
 character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
 system-dependent error message, and @var{msgid} contains a unique\n\
 message identifier.\n\
+@seealso{rmdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -345,6 +350,7 @@ message identifier.\n\
 \n\
 If the optional second parameter is suplied, recursively remove all\n\
 subdirectories as well.\n\
+@seealso{mkdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -394,6 +400,7 @@ Create a new link (also known as a hard link) to an existing file.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{symlink}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -440,6 +447,7 @@ Create a symbolic link @var{new} which contains the string @var{old}.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{link, readlink}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -487,6 +495,7 @@ If successful, @var{result} contains the contents of the symbolic link\n\
 @var{symlink}, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{link, symlink}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -530,6 +539,7 @@ Change the name of file @var{old} to @var{new}.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{ls, dir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -583,8 +593,8 @@ glob (\"/vm*\")\n\
      @result{} \"/vmlinuz\"\n\
 @end group\n\
 @end example\n\
-@end deftypefn\n\
-@seealso{ls,dir}")
+@seealso{dir, ls, stat, readdir}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -661,6 +671,7 @@ symbols_of_dirfns (void)
 @defvr {Built-in Variable} filesep\n\
 The character used to separate directory names.  The value\n\
 of this variable is system dependent.\n\
+@seealso{dir, ls}\n\
 @end defvr");
 
 }

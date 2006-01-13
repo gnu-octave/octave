@@ -29,7 +29,7 @@ DISTFILES = Makefile.in $(SOURCES) $(EXTRAS)
 FCN_FILES = $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-all:
+all: PKG_ADD
 .PHONY: all
 
 install install-strip:
@@ -42,6 +42,10 @@ uninstall:
 
 clean:
 .PHONY: clean
+
+PKG_ADD: $(FCN_FILES)
+	@echo "making PKG_ADD"
+	@$(do-mkpkgadd)
 
 tags: $(SOURCES)
 	ctags $(SOURCES)

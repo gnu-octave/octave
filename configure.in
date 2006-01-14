@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.495 $)
+AC_REVISION($Revision: 1.496 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1277,7 +1277,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
   ### Check for dyld first since OS X can have a non-standard libdl	
 
-  AC_CHECK_HEADER(Mach-O/dyld.h)  
+  AC_CHECK_HEADER(mach-o/dyld.h)  
   if test "$ac_cv_header_Mach_O_dyld_h" = yes; then
     dyld_api=true
   else 

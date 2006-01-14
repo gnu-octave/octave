@@ -1,5 +1,8 @@
 2006-01-13  John W. Eaton  <jwe@octave.org>
 
+	* ov-struct.cc (octave_struct::print_raw): Correctly print scalar
+	structs and empty struct arrays.
+
 	* DLD-FUNCTIONS/__gnuplot_raw__.l (Fclearplot): For compatibility,
 	also turn off hold state for current figure.
 

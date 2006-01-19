@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.496 $)
+AC_REVISION($Revision: 1.497 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -443,7 +443,7 @@ AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
   AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
 if test $WITH_REGEX = yes ; then
   AC_DEFINE(HAVE_REGEX, 1, [Define if regex is available.])
-  if test $HAVE_PCRE = no ; then
+  if test $WITH_PCRE = no ; then
     AC_CHECK_FUNCS(regexec, REGEX_LIBS= , [
       AC_CHECK_LIB(regex, regexec, REGEX_LIBS="-lregex")])
   fi

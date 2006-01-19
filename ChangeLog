@@ -1,3 +1,7 @@
+2006-01-19  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Use $WITH_PCRE instead of $HAVE_PCRE in shell test.
+
 2006-01-14  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for mach-o/dyld.h, not Mach-O/dyld.h.

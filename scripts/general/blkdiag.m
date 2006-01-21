@@ -60,7 +60,7 @@ endfunction
 # tests involving empty matrices
 %!assert(blkdiag([],[],[]),[])
 %!assert(blkdiag([],[1,2;3,4],[],5,[]),[1,2,0;3,4,0;0,0,5])
-%!assert(blkdiag(zeros(1,0,1),[1,2,3],1,0,5,zeros(0,1,1)),[1,2,3,0,0,0;0,0,0,1,0,0;0,0,0,0,0,0;0,0,0,0,0,5]);
+%!assert(blkdiag(zeros(1,0,1),[1,2,3],1,0,5,zeros(0,1,1)),[0,0,0,0,0,0,0;1,2,3,0,0,0,0;0,0,0,1,0,0,0;0,0,0,0,0,0,0;0,0,0,0,0,5,0]);
 # sanity checks
 %!test
 %! A = rand (round (rand (1, 2) * 10));

@@ -482,7 +482,7 @@ You should be using using the @code{glpk} function instead.\n\
     }
   else
     {
-      SparseMatrix A (args(1).matrix_value ()); // get the sparse matrix
+      SparseMatrix A = args(1).sparse_matrix_value (); // get the sparse matrix
 
       if (error_state)
 	{
@@ -509,7 +509,7 @@ You should be using using the @code{glpk} function instead.\n\
 	    nz++;
 	    rn(nz) = A.ridx(i) + 1;
 	    cn(nz) = j + 1;
-	    a(nz) = A(i,j);
+	    a(nz) = A.data(i);
 	  }
     }
 

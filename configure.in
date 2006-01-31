@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.497 $)
+AC_REVISION($Revision: 1.498 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -841,7 +841,7 @@ if test "$with_ccolamd" = yes; then
 fi 
 
 if test -n "$warn_ccolamd"; then
-  AC_MSG_WARN($warn_colamd)
+  AC_MSG_WARN($warn_ccolamd)
 fi
 
 CHOLMOD_LIBS=

@@ -772,6 +772,7 @@ gen_select_tests() {
 %!assert(sparse(as(idx),true),sparse(af(idx),true));
 %!assert(as(idx),sparse(af(idx),true));
 %!assert(as(idx'),sparse(af(idx'),true));
+%!assert(as(flipud(idx(:))),sparse(af(flipud(idx(:))),true))
 %!assert(as([idx,idx]),sparse(af([idx,idx]),true));
 %!error(as(reshape([idx;idx],[1,length(idx),2])));
 
@@ -780,6 +781,33 @@ gen_select_tests() {
 %!assert(as(ridx,:), sparse(af(ridx,:),true))
 %!assert(as(:,cidx), sparse(af(:,cidx),true))
 %!assert(as(:,:), sparse(af(:,:),true))
+%!assert(as((size(as,1):-1:1),:),sparse(af((size(af,1):-1:1),:),true))
+%!assert(as(:,(size(as,2):-1:1)),sparse(af(:,(size(af,2):-1:1)),true))
+
+%% Assignment test
+%!test
+%! ts=as;ts(:,:)=ts(fliplr(1:size(as,1)),:);
+%! tf=af;tf(:,:)=tf(fliplr(1:size(af,1)),:);
+%! assert(ts,sparse(tf,true));
+%!test
+%! ts=as;ts(fliplr(1:size(as,1)),:)=ts;
+%! tf=af;tf(fliplr(1:size(af,1)),:)=tf;
+%! assert(ts,sparse(tf,true));
+%!test
+%! ts=as;ts(:,fliplr(1:size(as,2)))=ts;
+%! tf=af;tf(:,fliplr(1:size(af,2)))=tf;
+%! assert(ts,sparse(tf,true));
+%!test
+%! ts(fliplr(1:size(as,1)))=as(:,1);tf(fliplr(1:size(af,1)))=af(:,1);
+%! assert(ts,sparse(tf,true));
+
+%% Deletion tests
+%!test
+%! ts=as;ts(1,:)=[];tf=af;tf(1,:)=[];
+%! assert(ts,sparse(tf,true));
+%!test
+%! ts=as;ts(:,1)=[];tf=af;tf(:,1)=[];
+%! assert(ts,sparse(tf,true));
 
 %% Test 'end' keyword
 %!assert(as(end),af(end))

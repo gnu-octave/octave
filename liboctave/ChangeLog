@@ -1,3 +1,18 @@
+2006-01-21  David Bateman  <dbateman@free.fr>
+
+        * sparse-sort.cc (bool octave_sparse_sidxl_comp): 64-bit fix.
+        (bool octave_idx_vector_comp): New function.
+        (template class octave_sort<octave_idx_vector_sort *>): Instantiate
+        indexed idx_vector sorting function.
+        * sparse-sort.h (class octave_sparse_sort_idxl): 64-bit fix.
+        (class octave_idx_vector_sort): New class for indexed idx_vector
+        sorting.
+        (bool octave_idx_vector_comp): Declaration.
+        * Sparse.cc (int assign1(Sparse<LT>&, Sparse<RT>&)): Treat cases of
+        unordered LHS indexes in assignment using new octave_idx_vector_sort
+        class.
+        (int assign(Sparse<LT>&, Sparse<RT>&)): ditto.
+
 2006-01-30  John W. Eaton  <jwe@octave.org>
 
 	* so-array.h (streamoff_array::nnz): New funtion.

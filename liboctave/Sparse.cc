@@ -1938,7 +1938,8 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
   octave_idx_type nc = lhs.cols ();
   octave_idx_type nz = lhs.nnz ();
 
-  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true, liboctave_wrore_flag);
+  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true, 
+				      liboctave_wrore_flag);
 
   if (n != 0)
     {
@@ -1953,6 +1954,43 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	{
 	  octave_idx_type new_nnz = lhs.nnz ();
 
+	  OCTAVE_LOCAL_BUFFER (octave_idx_type, rhs_idx, n);
+	  if (! lhs_idx.is_colon ())
+	    {
+	      // Ok here we have to be careful with the indexing,
+	      // to treat cases like "a([3,2,1]) = b", and still 
+	      // handle the need for strict sorting of the sparse 
+	      // elements.
+	      OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort *, sidx, n);
+	      OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort, sidxX, n);
+
+	      for (octave_idx_type i = 0; i < n; i++)
+		{
+		  sidx[i] = &sidxX[i];
+		  sidx[i]->i = lhs_idx.elem(i);
+		  sidx[i]->idx = i;
+		}
+			  
+	      OCTAVE_QUIT;
+	      octave_sort<octave_idx_vector_sort *> 
+		sort (octave_idx_vector_comp);
+
+	      sort.sort (sidx, n);
+
+	      intNDArray<octave_idx_type> new_idx (dim_vector (n,1));
+
+	      for (octave_idx_type i = 0; i < n; i++)
+		{
+		  new_idx.xelem(i) = sidx[i]->i + 1;
+		  rhs_idx[i] = sidx[i]->idx;
+		}
+
+	      lhs_idx = idx_vector (new_idx);
+	    }
+	  else
+	    for (octave_idx_type i = 0; i < n; i++)
+	      rhs_idx[i] = i;
+
 	  // First count the number of non-zero elements
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
@@ -1961,7 +1999,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	      octave_idx_type ii = lhs_idx.elem (i);
 	      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
 		new_nnz--;
-	      if (rhs.elem(i) != RT ())
+	      if (rhs.elem(rhs_idx[i]) != RT ())
 		new_nnz++;
 	    }
 
@@ -1992,7 +2030,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		    }
 		  else
 		    {
-		      RT rtmp = rhs.elem (j);
+		      RT rtmp = rhs.elem (rhs_idx[j]);
 		      if (rtmp != RT ())
 			{
 			  tmp.xdata (kk) = rtmp;
@@ -2031,6 +2069,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      while (ic <= ii)
 			tmp.xcidx (ic++) = kk;
 		      tmp.xdata (kk) = c_lhs.data (i);
+		      tmp.xridx (kk++) = 0;
 		      i++;
 		      while (ii < nc && c_lhs.cidx(ii+1) <= i)
 			ii++;
@@ -2040,9 +2079,12 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      while (ic <= jj)
 			tmp.xcidx (ic++) = kk;
 
-		      RT rtmp = rhs.elem (j);
+		      RT rtmp = rhs.elem (rhs_idx[j]);
 		      if (rtmp != RT ())
-			tmp.xdata (kk) = rtmp;
+			{
+			  tmp.xdata (kk) = rtmp;
+			  tmp.xridx (kk++) = 0;
+			}
 		      if (ii == jj)
 			{
 			  i++;
@@ -2053,7 +2095,6 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      if (j < n)
 			jj = lhs_idx.elem(j);
 		    }
-		  tmp.xridx (kk++) = 0;
 		}
 
 	      for (octave_idx_type iidx = ic; iidx < max_idx+1; iidx++)
@@ -2067,6 +2108,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	  octave_idx_type new_nnz = lhs.nnz ();
 	  RT scalar = rhs.elem (0);
 	  bool scalar_non_zero = (scalar != RT ());
+	  lhs_idx.sort (true);
 
 	  // First count the number of non-zero elements
 	  if (scalar != RT ())
@@ -2260,12 +2302,10 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
   if (n_idx == 2)
     {
-      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true, liboctave_wrore_flag);
-      idx_i.sort (true);
-
-      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true, liboctave_wrore_flag);
-      idx_j.sort (true);
-
+      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true, 
+					liboctave_wrore_flag);
+      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true, 
+					liboctave_wrore_flag);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -2291,14 +2331,17 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 		  if (n > 0 && m > 0)
 		    {
+		      idx_i.sort (true);
+		      idx_j.sort (true);
+
 		      octave_idx_type max_row_idx = idx_i_is_colon ? rhs_nr : 
 			idx_i.max () + 1;
 		      octave_idx_type max_col_idx = idx_j_is_colon ? rhs_nc : 
 			idx_j.max () + 1;
-		      octave_idx_type new_nr = max_row_idx > lhs_nr ? max_row_idx : 
-			lhs_nr;
-		      octave_idx_type new_nc = max_col_idx > lhs_nc ? max_col_idx : 
-			lhs_nc;
+		      octave_idx_type new_nr = max_row_idx > lhs_nr ? 
+			max_row_idx : lhs_nr;
+		      octave_idx_type new_nc = max_col_idx > lhs_nc ? 
+			max_col_idx : lhs_nc;
 		      RT scalar = rhs.elem (0, 0);
 
 		      // Count the number of non-zero terms
@@ -2399,10 +2442,88 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			idx_i.max () + 1;
 		      octave_idx_type max_col_idx = idx_j_is_colon ? rhs_nc : 
 			idx_j.max () + 1;
-		      octave_idx_type new_nr = max_row_idx > lhs_nr ? max_row_idx : 
-			lhs_nr;
-		      octave_idx_type new_nc = max_col_idx > lhs_nc ? max_col_idx : 
-			lhs_nc;
+		      octave_idx_type new_nr = max_row_idx > lhs_nr ?
+			max_row_idx : lhs_nr;
+		      octave_idx_type new_nc = max_col_idx > lhs_nc ? 
+			max_col_idx : lhs_nc;
+
+		      OCTAVE_LOCAL_BUFFER (octave_idx_type, rhs_idx_i, n);
+		      if (! idx_i.is_colon ())
+			{
+			  // Ok here we have to be careful with the indexing,
+			  // to treat cases like "a([3,2,1],:) = b", and still 
+			  // handle the need for strict sorting of the sparse 
+			  // elements.
+			  OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort *,
+					       sidx, n);
+			  OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort,
+					       sidxX, n);
+
+			  for (octave_idx_type i = 0; i < n; i++)
+			    {
+			      sidx[i] = &sidxX[i];
+			      sidx[i]->i = idx_i.elem(i);
+			      sidx[i]->idx = i;
+			    }
+			  
+			  OCTAVE_QUIT;
+			  octave_sort<octave_idx_vector_sort *> 
+			    sort (octave_idx_vector_comp);
+
+			  sort.sort (sidx, n);
+
+			  intNDArray<octave_idx_type> new_idx (dim_vector (n,1));
+
+			  for (octave_idx_type i = 0; i < n; i++)
+			    {
+			      new_idx.xelem(i) = sidx[i]->i + 1;
+			      rhs_idx_i[i] = sidx[i]->idx;
+			    }
+
+			  idx_i = idx_vector (new_idx);
+			}
+		      else
+			for (octave_idx_type i = 0; i < n; i++)
+			  rhs_idx_i[i] = i;
+
+		      OCTAVE_LOCAL_BUFFER (octave_idx_type, rhs_idx_j, m);
+		      if (! idx_j.is_colon ())
+			{
+			  // Ok here we have to be careful with the indexing,
+			  // to treat cases like "a([3,2,1],:) = b", and still 
+			  // handle the need for strict sorting of the sparse 
+			  // elements.
+			  OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort *,
+					       sidx, m);
+			  OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort,
+					       sidxX, m);
+
+			  for (octave_idx_type i = 0; i < m; i++)
+			    {
+			      sidx[i] = &sidxX[i];
+			      sidx[i]->i = idx_j.elem(i);
+			      sidx[i]->idx = i;
+			    }
+			  
+			  OCTAVE_QUIT;
+			  octave_sort<octave_idx_vector_sort *> 
+			    sort (octave_idx_vector_comp);
+
+			  sort.sort (sidx, m);
+
+			  intNDArray<octave_idx_type> new_idx (dim_vector (m,1));
+
+			  for (octave_idx_type i = 0; i < m; i++)
+			    {
+			      new_idx.xelem(i) = sidx[i]->i + 1;
+			      rhs_idx_j[i] = sidx[i]->idx;
+			    }
+
+			  idx_j = idx_vector (new_idx);
+			}
+		      else
+			for (octave_idx_type i = 0; i < m; i++)
+			  rhs_idx_j[i] = i;
 
 		      // Count the number of non-zero terms
 		      octave_idx_type new_nnz = lhs.nnz ();
@@ -2430,7 +2551,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 				    }
 				}
 			      
-			      if (rhs.elem(i,j) != RT ())
+			      if (rhs.elem(rhs_idx_i[i],rhs_idx_j[j]) != RT ())
 				new_nnz++;
 			    }
 			}
@@ -2453,7 +2574,8 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 				  if (iii < n && ii == i)
 				    {
-				      RT rtmp = rhs.elem (iii, jji);
+				      RT rtmp = rhs.elem (rhs_idx_i[iii], 
+							  rhs_idx_j[jji]);
 				      if (rtmp != RT ())
 					{
 					  stmp.data(kk) = rtmp;
@@ -2529,8 +2651,8 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	{
 	  octave_idx_type lhs_len = lhs.length ();
 
-	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true, liboctave_wrore_flag);
-	  idx_i.sort (true);
+	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true, 
+					    liboctave_wrore_flag);
 
 	  if (idx_i)
 	    {
@@ -2570,7 +2692,6 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
       else if (lhs_nr == 1)
 	{
 	  idx_i.freeze (lhs_nc, "vector", true, liboctave_wrore_flag);
-	  idx_i.sort (true);
 
 	  if (idx_i)
 	    {
@@ -2584,7 +2705,6 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
       else if (lhs_nc == 1)
 	{
 	  idx_i.freeze (lhs_nr, "vector", true, liboctave_wrore_flag);
-	  idx_i.sort (true);
 
 	  if (idx_i)
 	    {
@@ -2608,7 +2728,6 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	  octave_idx_type lhs_len = lhs.length ();
 
 	  octave_idx_type len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
-	  idx_i.sort (true);
 
 	  if (idx_i)
 	    {
@@ -2628,6 +2747,45 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	      else if (len == rhs_nr * rhs_nc)
 		{
 		  octave_idx_type new_nnz = lhs_nz;
+		  OCTAVE_LOCAL_BUFFER (octave_idx_type, rhs_idx, len);
+		  
+		  if (! idx_i.is_colon ())
+		    {
+		      // Ok here we have to be careful with the indexing, to
+		      // treat cases like "a([3,2,1]) = b", and still handle
+		      // the need for strict sorting of the sparse elements.
+
+		      OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort *, sidx, 
+					   len);
+		      OCTAVE_LOCAL_BUFFER (octave_idx_vector_sort, sidxX, 
+					   len);
+
+		      for (octave_idx_type i = 0; i < len; i++)
+			{
+			  sidx[i] = &sidxX[i];
+			  sidx[i]->i = idx_i.elem(i);
+			  sidx[i]->idx = i;
+			}
+
+		      OCTAVE_QUIT;
+		      octave_sort<octave_idx_vector_sort *> 
+			sort (octave_idx_vector_comp);
+
+		      sort.sort (sidx, len);
+
+		      intNDArray<octave_idx_type> new_idx (dim_vector (len,1));
+
+		      for (octave_idx_type i = 0; i < len; i++)
+			{
+			  new_idx.xelem(i) = sidx[i]->i + 1;
+			  rhs_idx[i] = sidx[i]->idx;
+			}
+
+		      idx_i = idx_vector (new_idx);
+		    }
+		  else
+		    for (octave_idx_type i = 0; i < len; i++)
+		      rhs_idx[i] = i;
 
 		  // First count the number of non-zero elements
 		  for (octave_idx_type i = 0; i < len; i++)
@@ -2637,7 +2795,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      octave_idx_type ii = idx_i.elem (i);
 		      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
 			new_nnz--;
-		      if (rhs.elem(i) != RT ())
+		      if (rhs.elem(rhs_idx[i]) != RT ())
 			new_nnz++;
 		    }
 
@@ -2679,7 +2837,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			{
 			  while (kc <= jc)
 			    stmp.xcidx (kc++) = kk;
-			  RT rtmp = rhs.elem (j);
+			  RT rtmp = rhs.elem (rhs_idx[j]);
 			  if (rtmp != RT ())
 			    {
 			      stmp.xdata (kk) = rtmp;
@@ -2704,8 +2862,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		    }
 
 		  for (octave_idx_type iidx = kc; iidx < lhs_nc+1; iidx++)
-		    stmp.xcidx(iidx) = kk;
-		  
+		    stmp.xcidx(iidx) = kk; 
 
 		  lhs = stmp;
 		}
@@ -2713,6 +2870,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		{
 		  RT scalar = rhs.elem (0, 0);
 		  octave_idx_type new_nnz = lhs_nz;
+		  idx_i.sort (true);
 
 		  // First count the number of non-zero elements
 		  if (scalar != RT ())

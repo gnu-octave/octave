@@ -39,7 +39,7 @@ bool
 octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i, 
 			  octave_sparse_sort_idxl* j)
 {
-  int tmp = i->c - j->c;
+  octave_idx_type tmp = i->c - j->c;
   if (tmp < 0)
     return true;
   else if (tmp > 0)
@@ -49,6 +49,18 @@ octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i,
 
 // Instantiate the sparse sorting class
 template class octave_sort<octave_sparse_sort_idxl *>;
+
+// Need to know the original order of the sorted indexes in
+// sparse assignments, and this class does that
+bool
+octave_idx_vector_comp (octave_idx_vector_sort* i,
+			octave_idx_vector_sort* j)
+{
+  return (i->i < j->i);
+}
+
+// Instantiate the sparse index sorting class
+template class octave_sort<octave_idx_vector_sort *>;
 
 // Instantiate the sorting class of octave_idx_type, need in MUL macro
 template class octave_sort<octave_idx_type>;

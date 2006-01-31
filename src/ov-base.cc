@@ -173,6 +173,13 @@ octave_base_value::subsasgn (const std::string& type,
   return retval;
 }
 
+octave_idx_type
+octave_base_value::nnz (void) const
+{
+  gripe_wrong_type_arg ("octave_base_value::nnz ()", type_name ());
+  return -1;
+}
+
 octave_value
 octave_base_value::reshape (const dim_vector&) const
 {

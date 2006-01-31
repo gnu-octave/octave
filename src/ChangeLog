@@ -1,3 +1,22 @@
+2006-01-30  John W. Eaton  <jwe@octave.org>
+
+	* gripes.cc (gripe_wrong_type_arg (const char*, const char*, bool)):
+	New function.
+	(gripe_wrong_type_arg (const char*, const std::string&, bool)):
+	Define using const char*, const char*, bool version.
+	(gripe_wrong_type_arg (const char*, const octave_value&, bool)):
+	Define using const char*, const std::string&, bool version.
+
+	* ov.h (octave_value::nnz): New function.
+	* ov-base.cc (octave_base_value::nnz): New function.
+	* ov-base.h: Provide decl.
+	* ov-base-mat.h (octave_base_matrix<MT>::nnz): New function.
+	* ov-base-scalar.h (octave_base_scalar<MT>::nnz): New function.
+	* Cell.cc (Cell::nnz): New function.
+	* Cell.h: Provide decl.
+	* data.cc (Fnnz): New function.	
+	* DLD-FUNCTIONS/sparse.cc (Fnnz): Delete.
+
 2006-01-13  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::print_raw): Correctly print scalar

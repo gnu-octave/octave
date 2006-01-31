@@ -124,12 +124,18 @@ gripe_data_conversion (const char *from, const char *to)
 }
 
 void
-gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
+gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 {
   if (is_error)
-    error ("%s: wrong type argument `%s'", name, s.c_str ());
+    error ("%s: wrong type argument `%s'", name, s);
   else
-    warning ("%s: wrong type argument `%s'", name, s.c_str ());
+    warning ("%s: wrong type argument `%s'", name, s);
+}
+
+void
+gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
+{
+  gripe_wrong_type_arg (name, s.c_str (), is_error);
 }
 
 void
@@ -138,10 +144,7 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 {
   std::string type = tc.type_name ();
 
-  if (is_error)
-    error ("%s: wrong type argument `%s'", name, type.c_str ());
-  else
-    warning ("%s: wrong type argument `%s'", name, type.c_str ());
+  gripe_wrong_type_arg (name, type, is_error);
 }
 
 void

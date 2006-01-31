@@ -62,6 +62,23 @@ public:
   streamoff_array squeeze (void) const
     { return ArrayN<std::streamoff>::squeeze (); }
 
+  octave_idx_type nnz (void) const
+    {
+      octave_idx_type retval = 0;
+
+      const std::streamoff *d = this->data ();
+
+      octave_idx_type nel = this->numel ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
+	{
+	  if (d[i])
+	    retval++;
+	}
+
+      return retval;
+    }
+
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 

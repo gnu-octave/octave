@@ -99,6 +99,8 @@ public:
 
   size_t byte_size (void) const { return 0; }
 
+  octave_idx_type nnz (void) const;
+
   octave_value reshape (const dim_vector&) const;
 
   octave_value permute (const Array<int>& vec, bool = false) const;

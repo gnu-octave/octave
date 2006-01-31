@@ -1077,6 +1077,23 @@ returns the number of columns in the given matrix.\n\
   return retval;
 }
 
+DEFUN (nnz, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{scalar} =} nnz (@var{a})\n\
+returns number of non zero elements in @var{a}.\n\
+@seealso{sparse}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).nnz ();
+  else
+    print_usage ("nnz");
+
+  return retval;
+}
+
 DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\

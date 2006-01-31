@@ -94,6 +94,8 @@ public:
 
   dim_vector dims (void) const { return matrix.dims (); }
 
+  octave_idx_type nnz (void) const { return matrix.nnz (); }
+
   octave_value reshape (const dim_vector& new_dims) const
     { return MT (matrix.reshape (new_dims)); }
 

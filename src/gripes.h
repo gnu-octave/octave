@@ -76,6 +76,10 @@ extern void
 gripe_data_conversion (const char *from, const char *to);
 
 extern void
+gripe_wrong_type_arg (const char *name, const char *s,
+		      bool is_error = true);
+
+extern void
 gripe_wrong_type_arg (const char *name, const std::string& s,
 		      bool is_error = true);
 

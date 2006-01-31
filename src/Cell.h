@@ -90,6 +90,8 @@ public:
   Cell reshape (const dim_vector& new_dims) const
     { return ArrayN<octave_value>::reshape (new_dims); }
 
+  octave_idx_type nnz (void) const;
+
   Cell column (octave_idx_type i) const;
 
   // XXX FIXME XXX

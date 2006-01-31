@@ -1,3 +1,10 @@
+2006-01-30  John W. Eaton  <jwe@octave.org>
+
+	* so-array.h (streamoff_array::nnz): New funtion.
+	* boolNDArray.h (boolNDArray::nnz): New function.
+	* MArrayN.h (MArrayN<T>::nnz): New function.
+	* MArray.h (MArray<T>::nnz): New function.
+
 2006-01-04  David Bateman  <dbateman@free.fr>
 
 	* Spars-op-defs.h (SPARSE_SPARSE_MUL): Previous change resulted in

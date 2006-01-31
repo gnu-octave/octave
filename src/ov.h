@@ -376,6 +376,8 @@ public:
   virtual size_t byte_size (void) const
     { return rep->byte_size (); }
 
+  virtual octave_idx_type nnz (void) const { return rep->nnz (); }
+
   virtual octave_value reshape (const dim_vector& dv) const
     { return rep->reshape (dv); }
 

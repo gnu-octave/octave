@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "Cell.h"
 #include "error.h"
+#include "gripes.h"
 
 Cell::Cell (const string_vector& sv)
   : ArrayN<octave_value> ()
@@ -112,6 +113,13 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
   ::assign (*this, rhs, fill_val);
 
   return *this;
+}
+
+octave_idx_type
+Cell::nnz (void) const
+{
+  gripe_wrong_type_arg ("nnz", "cell array");
+  return -1;
 }
 
 Cell

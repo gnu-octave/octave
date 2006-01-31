@@ -1094,6 +1094,27 @@ returns number of non zero elements in @var{a}.\n\
   return retval;
 }
 
+DEFUN (nzmax, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{scalar} =} nzmax (@var{SM})\n\
+Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
+Note that Octave tends to crop unused memory at the first oppurtunity\n\
+for sparse objects. There are some cases of user created sparse objects\n\
+where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},\n\
+but in general they will give the same result.\n\
+@seealso{sparse, spalloc}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length() == 1)
+    retval = args(0).nzmax ();
+  else
+    print_usage ("nzmax");
+
+  return retval;
+}
+
 DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\

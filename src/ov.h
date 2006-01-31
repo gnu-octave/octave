@@ -378,6 +378,8 @@ public:
 
   virtual octave_idx_type nnz (void) const { return rep->nnz (); }
 
+  virtual octave_idx_type nzmax (void) const { return rep->nzmax (); }
+
   virtual octave_value reshape (const dim_vector& dv) const
     { return rep->reshape (dv); }
 

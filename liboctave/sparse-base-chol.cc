@@ -150,7 +150,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
 
   ac->p = a.cidx();
   ac->i = a.ridx();
-  ac->nzmax = a.nonzero();
+  ac->nzmax = a.nnz();
   ac->packed = true;
   ac->sorted = true;
   ac->nz = 0;

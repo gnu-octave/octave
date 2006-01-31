@@ -101,6 +101,8 @@ public:
 
   octave_idx_type nnz (void) const;
 
+  octave_idx_type nzmax (void) const;
+
   octave_value reshape (const dim_vector&) const;
 
   octave_value permute (const Array<int>& vec, bool = false) const;

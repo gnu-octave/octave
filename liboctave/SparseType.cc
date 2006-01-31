@@ -55,7 +55,7 @@ SparseType::SparseType (const SparseMatrix &a)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
-  octave_idx_type nnz = a.nnz ();
+  octave_idx_type nnz = a.nzmax ();
 
   if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 
@@ -326,7 +326,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
-  octave_idx_type nnz = a.nnz ();
+  octave_idx_type nnz = a.nzmax ();
 
   if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 

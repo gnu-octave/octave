@@ -1,3 +1,11 @@
+2006-01-31  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.h (Sparse<T>::nzmax): New function.
+	(Sparse<T>::nnz): Rename from nonzero.
+	Change all uses of old nnz function to be nzmax.  Change all uses
+	of nonzero to be nnz.
+	(Sparse<T>::nzmx): Rename from nnz (data member).  Change all uses.
+
 2006-01-21  David Bateman  <dbateman@free.fr>
 
         * sparse-sort.cc (bool octave_sparse_sidxl_comp): 64-bit fix.

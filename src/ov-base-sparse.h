@@ -76,7 +76,8 @@ octave_base_sparse : public octave_base_value
     { return new octave_base_sparse (); }
 
   octave_idx_type nnz (void) const { return matrix.nnz (); }
-  octave_idx_type nonzero (void) const { return matrix.nonzero (); }
+
+  octave_idx_type nzmax (void) const { return matrix.nzmax (); }
 
   size_t byte_size (void) const { return matrix.byte_size (); }
 

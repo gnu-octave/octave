@@ -60,7 +60,7 @@ any_element_less_than (const NDArray& a, double val)
 static bool
 any_element_less_than (const SparseMatrix& a, double val)
 {
-  octave_idx_type len = a.nonzero ();
+  octave_idx_type len = a.nnz ();
 
   if (val > 0. && len != a.numel ())
     return true;
@@ -95,7 +95,7 @@ any_element_greater_than (const NDArray& a, double val)
 static bool
 any_element_greater_than (const SparseMatrix& a, double val)
 {
-  octave_idx_type len = a.nonzero ();
+  octave_idx_type len = a.nnz ();
 
   if (val < 0. && len != a.numel ())
     return true;
@@ -170,7 +170,7 @@ any_element_greater_than (const SparseMatrix& a, double val)
 	} \
       else \
 	{ \
-	  octave_idx_type nnz = M.nonzero (); \
+	  octave_idx_type nnz = M.nnz (); \
 	  octave_idx_type nr = M.rows (); \
 	  octave_idx_type nc = M.cols (); \
 	  \

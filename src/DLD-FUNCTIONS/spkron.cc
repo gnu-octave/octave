@@ -50,7 +50,7 @@ kron (const Sparse<T>& A, const Sparse<T>& B, Sparse<T>& C)
 {
   octave_idx_type idx = 0;
   C = Sparse<T> (A.rows () * B.rows (), A.columns () * B.columns (), 
-		 A.nnz () * B.nnz ());
+		 A.nzmax () * B.nzmax ());
 
   C.cidx (0) = 0;
 

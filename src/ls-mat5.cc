@@ -1355,7 +1355,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 	{
 	  SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
 	  int nc = m.cols ();
-	  int nnz = m.nnz ();
+	  int nnz = m.nzmax ();
 
 	  ret += 16 + PAD (nnz * sizeof (int)) + PAD ((nc + 1) * sizeof (int)) +
 	    save_mat5_array_length (m.data (), m.nelem (), save_as_floats);
@@ -1364,7 +1364,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 	{
 	  SparseMatrix m = tc.sparse_matrix_value ();
 	  int nc = m.cols ();
-	  int nnz = m.nnz ();
+	  int nnz = m.nzmax ();
 
 	  ret += 16 + PAD (nnz * sizeof (int)) + PAD ((nc + 1) * sizeof (int)) +
 	    save_mat5_array_length (m.data (), m.nelem (), save_as_floats);
@@ -1543,12 +1543,12 @@ save_mat5_binary_element (std::ostream& os,
       if (tc.is_complex_type ())
 	{
 	  SparseComplexMatrix scm = tc.sparse_complex_matrix_value ();
-	  nnz = scm.nnz ();
+	  nnz = scm.nzmax ();
 	}
       else
 	{
 	  SparseMatrix sm = tc.sparse_matrix_value ();
-	  nnz = sm.nnz ();
+	  nnz = sm.nzmax ();
 	}
     }
   else if (tc.is_real_scalar ())

@@ -125,7 +125,7 @@ be square.\n\
 	    {
 	      octave_idx_type t_nc = tmp.cols ();
 	      
-	      if (tmp.nnz () != t_nc)
+	      if (tmp.nzmax () != t_nc)
 		error ("splu: Not a valid permutation matrix");
 	      else
 		{
@@ -181,7 +181,7 @@ be square.\n\
 
 	      octave_idx_type t_nc = tmp2.cols ();
 	      
-	      if (tmp2.nnz () != t_nc)
+	      if (tmp2.nzmax () != t_nc)
 		error ("splu: Not a valid permutation matrix");
 	      else
 		{

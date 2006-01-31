@@ -50,7 +50,7 @@ Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 {
   octave_idx_type i;
 
-  if (nnz > 0)
+  if (nzmx > 0)
     {
       for (i = c[_c]; i < c[_c + 1]; i++)
 	if (r[i] == _r)
@@ -60,7 +60,7 @@ Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 
       // Ok, If we've gotten here, we're in trouble.. Have to create a 
       // new element in the sparse array. This' gonna be slow!!!
-      if (c[ncols+1] == nnz)
+      if (c[ncols+1] == nzmx)
 	{
 	  (*current_liboctave_error_handler)
 	    ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
@@ -97,7 +97,7 @@ template <class T>
 T
 Sparse<T>::SparseRep::celem (octave_idx_type _r, octave_idx_type _c) const
 {
-  if (nnz > 0)
+  if (nzmx > 0)
     for (octave_idx_type i = c[_c]; i < c[_c + 1]; i++)
       if (r[i] == _r)
 	return d[i];
@@ -108,11 +108,11 @@ template <class T>
 void
 Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
 {
-  octave_idx_type ndel = nnz - c[ncols];
+  octave_idx_type ndel = nzmx - c[ncols];
   octave_idx_type nzero = 0;
 
   if (remove_zeros)
-    for (octave_idx_type i = 0; i < nnz - ndel; i++)
+    for (octave_idx_type i = 0; i < nzmx - ndel; i++)
       if (d[i] == T ())
 	nzero++;
 
@@ -121,26 +121,26 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
 
   if (!nzero)
     {
-      octave_idx_type new_nnz = nnz - ndel;
+      octave_idx_type new_nzmx = nzmx - ndel;
 
-      T *new_data = new T [new_nnz];
-      for (octave_idx_type i = 0; i < new_nnz; i++)
+      T *new_data = new T [new_nzmx];
+      for (octave_idx_type i = 0; i < new_nzmx; i++)
 	new_data[i] = d[i];
       delete [] d;
       d = new_data;
 
-      octave_idx_type *new_ridx = new octave_idx_type [new_nnz];
-      for (octave_idx_type i = 0; i < new_nnz; i++)
+      octave_idx_type *new_ridx = new octave_idx_type [new_nzmx];
+      for (octave_idx_type i = 0; i < new_nzmx; i++)
 	new_ridx[i] = r[i];
       delete [] r;
       r = new_ridx;
     }
   else
     {
-      octave_idx_type new_nnz = nnz - ndel - nzero;
+      octave_idx_type new_nzmx = nzmx - ndel - nzero;
 
-      T *new_data = new T [new_nnz];
-      octave_idx_type *new_ridx = new octave_idx_type [new_nnz];
+      T *new_data = new T [new_nzmx];
+      octave_idx_type *new_ridx = new octave_idx_type [new_nzmx];
 
       octave_idx_type ii = 0;
       octave_idx_type ic = 0;
@@ -163,37 +163,37 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
       r = new_ridx;
     }
 
-  nnz -= ndel + nzero;
+  nzmx -= ndel + nzero;
 }
 
 template <class T>
 void
 Sparse<T>::SparseRep::change_length (octave_idx_type nz)
 {
-  if (nz != nnz)
+  if (nz != nzmx)
     {
-      octave_idx_type min_nnz = (nz < nnz ? nz : nnz);
+      octave_idx_type min_nzmx = (nz < nzmx ? nz : nzmx);
 
       octave_idx_type * new_ridx = new octave_idx_type [nz];
-      for (octave_idx_type i = 0; i < min_nnz; i++)
+      for (octave_idx_type i = 0; i < min_nzmx; i++)
 	new_ridx[i] = r[i];
 
       delete [] r;
       r = new_ridx;
 
       T * new_data = new T [nz];
-      for (octave_idx_type i = 0; i < min_nnz; i++)
+      for (octave_idx_type i = 0; i < min_nzmx; i++)
 	new_data[i] = d[i];
 
       delete [] d;
       d = new_data;
 
-      if (nz < nnz)
+      if (nz < nzmx)
 	for (octave_idx_type i = 0; i <= ncols; i++)
 	  if (c[i] > nz)
 	    c[i] = nz;
 
-      nnz = nz;
+      nzmx = nz;
     }
 }
 
@@ -202,13 +202,13 @@ template <class U>
 Sparse<T>::Sparse (const Sparse<U>& a)
   : dimensions (a.dimensions), idx (0), idx_count (0)
 {
-  if (a.nnz () == 0)
+  if (a.nzmax () == 0)
     rep = new typename Sparse<T>::SparseRep (rows (), cols());
   else
     {
-      rep = new typename Sparse<T>::SparseRep (rows (), cols (), a.nnz ());
+      rep = new typename Sparse<T>::SparseRep (rows (), cols (), a.nzmax ());
       
-      octave_idx_type nz = nnz ();
+      octave_idx_type nz = nzmax ();
       octave_idx_type nc = cols ();
       for (octave_idx_type i = 0; i < nz; i++)
 	{
@@ -267,13 +267,13 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
   else
     {
       dim_vector old_dims = a.dims();
-      octave_idx_type new_nnz = a.nnz ();
+      octave_idx_type new_nzmx = a.nzmax ();
       octave_idx_type new_nr = dv (0);
       octave_idx_type new_nc = dv (1);
       octave_idx_type old_nr = old_dims (0);
       octave_idx_type old_nc = old_dims (1);
 
-      rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nnz);
+      rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmx);
 
       octave_idx_type kk = 0;
       xcidx(0) = 0;
@@ -290,7 +290,7 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
 	    xridx(j) = ii;
 	  }
       for (octave_idx_type k = kk; k < new_nc; k++)
-	xcidx(k+1) = new_nnz;
+	xcidx(k+1) = new_nzmx;
     }
 }
 
@@ -318,17 +318,17 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<octave_idx_type>& r,
     }
   else
     {
-      octave_idx_type max_nnz = (r_len > c_len ? r_len : c_len);
+      octave_idx_type max_nzmx = (r_len > c_len ? r_len : c_len);
 
-      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl *, sidx, max_nnz);
-      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl, sidxX, max_nnz);
+      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl *, sidx, max_nzmx);
+      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl, sidxX, max_nzmx);
 
-      for (octave_idx_type i = 0; i < max_nnz; i++)
+      for (octave_idx_type i = 0; i < max_nzmx; i++)
 	sidx[i] = &sidxX[i];
 
-      octave_idx_type actual_nnz = 0;
+      octave_idx_type actual_nzmx = 0;
       OCTAVE_QUIT;
-      for (octave_idx_type i = 0; i < max_nnz; i++) 
+      for (octave_idx_type i = 0; i < max_nzmx; i++) 
 	{
 	  octave_idx_type rowidx =  (ri_scalar ? r(0) : r(i));
 	  octave_idx_type colidx = (ci_scalar ? c(0) : c(i));
@@ -337,10 +337,10 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<octave_idx_type>& r,
 	    {
 	      if ( a (cf_scalar ? 0 : i ) != T ()) 
 		{
-		  sidx[actual_nnz]->r = rowidx;
-		  sidx[actual_nnz]->c = colidx;
-		  sidx[actual_nnz]->idx = i;
-		  actual_nnz++;	
+		  sidx[actual_nzmx]->r = rowidx;
+		  sidx[actual_nzmx]->c = colidx;
+		  sidx[actual_nzmx]->idx = i;
+		  actual_nzmx++;	
 		}
 	    }
 	  else 
@@ -354,7 +354,7 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<octave_idx_type>& r,
 	    }
 	}
   
-      if (actual_nnz == 0)
+      if (actual_nzmx == 0)
 	rep = new typename Sparse<T>::SparseRep (nr, nc);
       else
 	{
@@ -362,23 +362,23 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<octave_idx_type>& r,
 	  octave_sort<octave_sparse_sort_idxl *> 
 	    sort (octave_sparse_sidxl_comp);
 
-	  sort.sort (sidx, actual_nnz);
+	  sort.sort (sidx, actual_nzmx);
 	  OCTAVE_QUIT;
 
 	  // Now count the unique non-zero values
-	  octave_idx_type real_nnz = 1;
-	  for (octave_idx_type i = 1; i < actual_nnz; i++) 
+	  octave_idx_type real_nzmx = 1;
+	  for (octave_idx_type i = 1; i < actual_nzmx; i++) 
 	    if (sidx[i-1]->r != sidx[i]->r || sidx[i-1]->c != sidx[i]->c) 
-	      real_nnz++;
+	      real_nzmx++;
 
-	  rep = new typename Sparse<T>::SparseRep (nr, nc, real_nnz);
+	  rep = new typename Sparse<T>::SparseRep (nr, nc, real_nzmx);
 
 	  octave_idx_type cx = 0;
 	  octave_idx_type prev_rval = -1;
 	  octave_idx_type prev_cval = -1;
 	  octave_idx_type ii = -1;
 	  xcidx (0) = 0;
-	  for (octave_idx_type i = 0; i < actual_nnz; i++) 
+	  for (octave_idx_type i = 0; i < actual_nzmx; i++) 
 	    {
 	      OCTAVE_QUIT;
 	      octave_idx_type iidx = sidx[i]->idx;
@@ -435,18 +435,18 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<double>& r,
     }
   else
     {
-      octave_idx_type max_nnz = (r_len > c_len ? r_len : c_len);
+      octave_idx_type max_nzmx = (r_len > c_len ? r_len : c_len);
   
-      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl *, sidx, max_nnz);
-      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl, sidxX, max_nnz);
+      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl *, sidx, max_nzmx);
+      OCTAVE_LOCAL_BUFFER (octave_sparse_sort_idxl, sidxX, max_nzmx);
 
-      for (octave_idx_type i = 0; i < max_nnz; i++)
+      for (octave_idx_type i = 0; i < max_nzmx; i++)
 	sidx[i] = &sidxX[i];
 
-      octave_idx_type actual_nnz = 0;
+      octave_idx_type actual_nzmx = 0;
       OCTAVE_QUIT;
 
-      for (octave_idx_type i = 0; i < max_nnz; i++) 
+      for (octave_idx_type i = 0; i < max_nzmx; i++) 
 	{
 	  octave_idx_type rowidx = static_cast<octave_idx_type> (ri_scalar ? r(0) : r(i));
 	  octave_idx_type colidx = static_cast<octave_idx_type> (ci_scalar ? c(0) : c(i));
@@ -455,10 +455,10 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<double>& r,
 	    {
 	      if ( a (cf_scalar ? 0 : i ) != T ()) 
 		{
-		  sidx[actual_nnz]->r = rowidx;
-		  sidx[actual_nnz]->c = colidx;
-		  sidx[actual_nnz]->idx = i;
-		  actual_nnz++;	
+		  sidx[actual_nzmx]->r = rowidx;
+		  sidx[actual_nzmx]->c = colidx;
+		  sidx[actual_nzmx]->idx = i;
+		  actual_nzmx++;	
 		}
 	    }
 	  else 
@@ -472,7 +472,7 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<double>& r,
 	    }
 	}
 
-      if (actual_nnz == 0)
+      if (actual_nzmx == 0)
 	rep = new typename Sparse<T>::SparseRep (nr, nc);
       else
 	{
@@ -480,23 +480,23 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<double>& r,
 	  octave_sort<octave_sparse_sort_idxl *> 
 	    sort (octave_sparse_sidxl_comp);
 
-	  sort.sort (sidx, actual_nnz);
+	  sort.sort (sidx, actual_nzmx);
 	  OCTAVE_QUIT;
 
 	  // Now count the unique non-zero values
-	  octave_idx_type real_nnz = 1;
-	  for (octave_idx_type i = 1; i < actual_nnz; i++) 
+	  octave_idx_type real_nzmx = 1;
+	  for (octave_idx_type i = 1; i < actual_nzmx; i++) 
 	    if (sidx[i-1]->r != sidx[i]->r || sidx[i-1]->c != sidx[i]->c) 
-	      real_nnz++;
+	      real_nzmx++;
 
-	  rep = new typename Sparse<T>::SparseRep (nr, nc, real_nnz);
+	  rep = new typename Sparse<T>::SparseRep (nr, nc, real_nzmx);
 
 	  octave_idx_type cx = 0;
 	  octave_idx_type prev_rval = -1;
 	  octave_idx_type prev_cval = -1;
 	  octave_idx_type ii = -1;
 	  xcidx (0) = 0;
-	  for (octave_idx_type i = 0; i < actual_nnz; i++) 
+	  for (octave_idx_type i = 0; i < actual_nzmx; i++) 
 	    {
 	      OCTAVE_QUIT;
 	      octave_idx_type iidx = sidx[i]->idx;
@@ -537,14 +537,14 @@ Sparse<T>::Sparse (const Array2<T>& a)
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
   octave_idx_type len = a.length ();
-  octave_idx_type new_nnz = 0;
+  octave_idx_type new_nzmx = 0;
 
   // First count the number of non-zero terms
   for (octave_idx_type i = 0; i < len; i++)
     if (a(i) != T ())
-      new_nnz++;
+      new_nzmx++;
 
-  rep = new typename Sparse<T>::SparseRep (nr, nc, new_nnz);
+  rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
 
   octave_idx_type ii = 0;
   xcidx(0) = 0;
@@ -572,14 +572,14 @@ Sparse<T>::Sparse (const Array<T>& a)
       octave_idx_type nr = rows ();
       octave_idx_type nc = cols ();
       octave_idx_type len = a.length ();
-      octave_idx_type new_nnz = 0;
+      octave_idx_type new_nzmx = 0;
 
       // First count the number of non-zero terms
       for (octave_idx_type i = 0; i < len; i++)
 	if (a(i) != T ())
-	  new_nnz++;
+	  new_nzmx++;
 
-      rep = new typename Sparse<T>::SparseRep (nr, nc, new_nnz);
+      rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
 
       octave_idx_type ii = 0;
       xcidx(0) = 0;
@@ -731,12 +731,12 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
     {
       if (dimensions.numel () == new_dims.numel ())
 	{
-	  octave_idx_type new_nnz = nnz ();
+	  octave_idx_type new_nzmx = nzmax ();
 	  octave_idx_type new_nr = new_dims (0);
 	  octave_idx_type new_nc = new_dims (1);
 	  octave_idx_type old_nr = rows ();
 	  octave_idx_type old_nc = cols ();
-	  retval = Sparse<T> (new_nr, new_nc, new_nnz);
+	  retval = Sparse<T> (new_nr, new_nc, new_nzmx);
 
 	  octave_idx_type kk = 0;
 	  retval.xcidx(0) = 0;
@@ -753,7 +753,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 		retval.xridx(j) = ii;
 	      }
 	  for (octave_idx_type k = kk; k < new_nc; k++)
-	    retval.xcidx(k+1) = new_nnz;
+	    retval.xcidx(k+1) = new_nzmx;
 	}
       else
 	(*current_liboctave_error_handler) ("reshape: size mismatch");
@@ -846,7 +846,7 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
   octave_idx_type nc = cols ();
   octave_idx_type nr = rows ();
 
-  if (nnz () == 0 || r == 0 || c == 0)
+  if (nzmax () == 0 || r == 0 || c == 0)
     // Special case of redimensioning to/from a sparse matrix with 
     // no elements
     rep = new typename Sparse<T>::SparseRep (r, c);
@@ -935,7 +935,7 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
     }
 
   // First count the number of elements in the final array
-  octave_idx_type nel = cidx(c) + a.nnz ();
+  octave_idx_type nel = cidx(c) + a.nzmax ();
 
   if (c + a_cols < nc)
     nel += cidx(nc) - cidx(c + a_cols);
@@ -1025,7 +1025,7 @@ Sparse<T>::transpose (void) const
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
   Sparse<T> retval (nc, nr, nz);
 
   retval.cidx(0) = 0;
@@ -1123,7 +1123,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
   if (num_to_delete != 0)
     {
       octave_idx_type new_n = n;
-      octave_idx_type new_nnz = nnz ();
+      octave_idx_type new_nzmx = nzmax ();
 
       octave_idx_type iidx = 0;
 
@@ -1139,7 +1139,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
 	      new_n--;
 
 	      if (tmp.elem (i) != T ())
-		new_nnz--;
+		new_nzmx--;
 
 	      if (iidx == num_to_delete)
 		break;
@@ -1151,9 +1151,9 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
 	  rep->count--;
 
 	  if (nr == 1)
-	    rep = new typename Sparse<T>::SparseRep (1, new_n, new_nnz);
+	    rep = new typename Sparse<T>::SparseRep (1, new_n, new_nzmx);
 	  else
-	    rep = new typename Sparse<T>::SparseRep (new_n, 1, new_nnz);
+	    rep = new typename Sparse<T>::SparseRep (new_n, 1, new_nzmx);
 
 	  octave_idx_type ii = 0;
 	  octave_idx_type jj = 0;
@@ -1196,7 +1196,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
 	  else
 	    {
 	      cidx(0) = 0;
-	      cidx(1) = new_nnz;
+	      cidx(1) = new_nzmx;
 	      dimensions(0) = new_n;
 	      dimensions(1) = 1;
 	    }
@@ -1268,7 +1268,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	      else
 		{
 		  octave_idx_type new_nc = nc;
-		  octave_idx_type new_nnz = nnz ();
+		  octave_idx_type new_nzmx = nzmax ();
 
 		  octave_idx_type iidx = 0;
 
@@ -1281,7 +1281,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			  iidx++;
 			  new_nc--;
 			  
-			  new_nnz -= cidx(j+1) - cidx(j);
+			  new_nzmx -= cidx(j+1) - cidx(j);
 
 			  if (iidx == num_to_delete)
 			    break;
@@ -1293,7 +1293,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      const Sparse<T> tmp (*this);
 		      --rep->count;
 		      rep = new typename Sparse<T>::SparseRep (nr, new_nc, 
-							       new_nnz);
+							       new_nzmx);
 		      octave_idx_type ii = 0;
 		      octave_idx_type jj = 0;
 		      iidx = 0;
@@ -1343,7 +1343,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	      else
 		{
 		  octave_idx_type new_nr = nr;
-		  octave_idx_type new_nnz = nnz ();
+		  octave_idx_type new_nzmx = nzmax ();
 
 		  octave_idx_type iidx = 0;
 
@@ -1356,9 +1356,9 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			  iidx++;
 			  new_nr--;
 			  
-			  for (octave_idx_type j = 0; j < nnz (); j++)
+			  for (octave_idx_type j = 0; j < nzmax (); j++)
 			    if (ridx(j) == i)
-			      new_nnz--;
+			      new_nzmx--;
 
 			  if (iidx == num_to_delete)
 			    break;
@@ -1370,7 +1370,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      const Sparse<T> tmp (*this);
 		      --rep->count;
 		      rep = new typename Sparse<T>::SparseRep (new_nr, nc, 
-							       new_nnz);
+							       new_nzmx);
 
 		      octave_idx_type jj = 0;
 		      cidx(0) = 0;
@@ -1464,7 +1464,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
 
   octave_idx_type orig_len = nr * nc;
 
@@ -1572,7 +1572,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       else
 	{
 
-	  octave_idx_type new_nnz = 0;
+	  octave_idx_type new_nzmx = 0;
 	  if (nr == 1)
 	    for (octave_idx_type i = 0; i < n; i++)
 	      {
@@ -1581,7 +1581,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 		octave_idx_type ii = idx_arg.elem (i);
 		if (ii < len)
 		  if (cidx(ii) != cidx(ii+1))
-		    new_nnz++;
+		    new_nzmx++;
 	      }
 	  else
 	    for (octave_idx_type i = 0; i < n; i++)
@@ -1593,7 +1593,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 		      OCTAVE_QUIT;
 
 		      if (ridx(j) == ii)
-			new_nnz++;
+			new_nzmx++;
 		      if (ridx(j) >= ii)
 			break;
 		    }
@@ -1604,7 +1604,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 	    {
 	      if (nr == 1)
 		{
-		  retval = Sparse<T> (1, n, new_nnz);
+		  retval = Sparse<T> (1, n, new_nzmx);
 		  octave_idx_type jj = 0;
 		  retval.xcidx(0) = 0;
 		  for (octave_idx_type i = 0; i < n; i++)
@@ -1623,9 +1623,9 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 		}
 	      else
 		{
-		  retval = Sparse<T> (n, 1, new_nnz);
+		  retval = Sparse<T> (n, 1, new_nzmx);
 		  retval.xcidx(0) = 0;
-		  retval.xcidx(1) = new_nnz;
+		  retval.xcidx(1) = new_nzmx;
 		  octave_idx_type jj = 0;
 		  for (octave_idx_type i = 0; i < n; i++)
 		    {
@@ -1661,7 +1661,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 		  new_nc = 1;
 		}
 
-	      retval = Sparse<T> (new_nr, new_nc, new_nnz);
+	      retval = Sparse<T> (new_nr, new_nc, new_nzmx);
 
 	      if (nr == 1)
 		{
@@ -1737,7 +1737,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 	  else
 	    {
 	      // Count number of non-zero elements
-	      octave_idx_type new_nnz = 0;
+	      octave_idx_type new_nzmx = 0;
 	      octave_idx_type kk = 0;
 	      for (octave_idx_type j = 0; j < result_nc; j++)
 		{
@@ -1753,7 +1753,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 			  for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
 			    {
 			      if (ridx(k) == fr)
-				new_nnz++;
+				new_nzmx++;
 			      if (ridx(k) >= fr)
 				break;
 			    }
@@ -1761,7 +1761,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 		    }
 		}
 	      
-	      retval = Sparse<T> (result_nr, result_nc, new_nnz);
+	      retval = Sparse<T> (result_nr, result_nc, new_nzmx);
 
 	      kk = 0;
 	      octave_idx_type jj = 0;
@@ -1826,7 +1826,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
       else
 	{
 	  // First count the number of non-zero elements
-	  octave_idx_type new_nnz = 0;
+	  octave_idx_type new_nzmx = 0;
 	  for (octave_idx_type j = 0; j < m; j++)
 	    {
 	      octave_idx_type jj = idx_j.elem (j);
@@ -1840,7 +1840,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		      for (octave_idx_type k = cidx(jj); k < cidx(jj+1); k++)
 			{
 			  if (ridx(k) == ii)
-			    new_nnz++;
+			    new_nzmx++;
 			  if (ridx(k) >= ii)
 			    break;
 			}
@@ -1848,7 +1848,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		}
 	    }
 
-	  retval = Sparse<T> (n, m, new_nnz);
+	  retval = Sparse<T> (n, m, new_nzmx);
 
 	  octave_idx_type kk = 0;
 	  retval.xcidx(0) = 0;
@@ -1936,7 +1936,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
   octave_idx_type nr = lhs.rows ();
   octave_idx_type nc = lhs.cols ();
-  octave_idx_type nz = lhs.nnz ();
+  octave_idx_type nz = lhs.nzmax ();
 
   octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true, 
 				      liboctave_wrore_flag);
@@ -1952,7 +1952,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
       if (rhs_len == n)
 	{
-	  octave_idx_type new_nnz = lhs.nnz ();
+	  octave_idx_type new_nzmx = lhs.nzmax ();
 
 	  OCTAVE_LOCAL_BUFFER (octave_idx_type, rhs_idx, n);
 	  if (! lhs_idx.is_colon ())
@@ -1998,16 +1998,16 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	      octave_idx_type ii = lhs_idx.elem (i);
 	      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
-		new_nnz--;
+		new_nzmx--;
 	      if (rhs.elem(rhs_idx[i]) != RT ())
-		new_nnz++;
+		new_nzmx++;
 	    }
 
 	  if (nr > 1)
 	    {
-	      Sparse<LT> tmp (max_idx, 1, new_nnz);
+	      Sparse<LT> tmp (max_idx, 1, new_nzmx);
 	      tmp.cidx(0) = 0;
-	      tmp.cidx(1) = tmp.nnz ();
+	      tmp.cidx(1) = tmp.nzmax ();
 
 	      octave_idx_type i = 0;
 	      octave_idx_type ii = 0;
@@ -2049,7 +2049,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    }
 	  else
 	    {
-	      Sparse<LT> tmp (1, max_idx, new_nnz);
+	      Sparse<LT> tmp (1, max_idx, new_nzmx);
 
 	      octave_idx_type i = 0;
 	      octave_idx_type ii = 0;
@@ -2105,28 +2105,28 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	}
       else if (rhs_len == 1)
 	{
-	  octave_idx_type new_nnz = lhs.nnz ();
+	  octave_idx_type new_nzmx = lhs.nzmax ();
 	  RT scalar = rhs.elem (0);
 	  bool scalar_non_zero = (scalar != RT ());
 	  lhs_idx.sort (true);
 
 	  // First count the number of non-zero elements
 	  if (scalar != RT ())
-	    new_nnz += n;
+	    new_nzmx += n;
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
 	      OCTAVE_QUIT;
 
 	      octave_idx_type ii = lhs_idx.elem (i);
 	      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
-		new_nnz--;
+		new_nzmx--;
 	    }
 
 	  if (nr > 1)
 	    {
-	      Sparse<LT> tmp (max_idx, 1, new_nnz);
+	      Sparse<LT> tmp (max_idx, 1, new_nzmx);
 	      tmp.cidx(0) = 0;
-	      tmp.cidx(1) = tmp.nnz ();
+	      tmp.cidx(1) = tmp.nzmax ();
 
 	      octave_idx_type i = 0;
 	      octave_idx_type ii = 0;
@@ -2167,7 +2167,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    }
 	  else
 	    {
-	      Sparse<LT> tmp (1, max_idx, new_nnz);
+	      Sparse<LT> tmp (1, max_idx, new_nzmx);
 
 	      octave_idx_type i = 0;
 	      octave_idx_type ii = 0;
@@ -2229,8 +2229,8 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
       if (lhs_len == 0)
 	{
 
-	  octave_idx_type new_nnz = rhs.nnz ();
-	  Sparse<LT> tmp (1, rhs_len, new_nnz);
+	  octave_idx_type new_nzmx = rhs.nzmax ();
+	  Sparse<LT> tmp (1, rhs_len, new_nzmx);
 
 	  octave_idx_type ii = 0;
 	  octave_idx_type jj = 0;
@@ -2277,7 +2277,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
   octave_idx_type lhs_nr = lhs.rows ();
   octave_idx_type lhs_nc = lhs.cols ();
-  octave_idx_type lhs_nz = lhs.nnz ();
+  octave_idx_type lhs_nz = lhs.nzmax ();
 
   octave_idx_type rhs_nr = rhs.rows ();
   octave_idx_type rhs_nc = rhs.cols ();
@@ -2345,7 +2345,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      RT scalar = rhs.elem (0, 0);
 
 		      // Count the number of non-zero terms
-		      octave_idx_type new_nnz = lhs.nnz ();
+		      octave_idx_type new_nzmx = lhs.nzmax ();
 		      for (octave_idx_type j = 0; j < m; j++)
 			{
 			  octave_idx_type jj = idx_j.elem (j);
@@ -2363,7 +2363,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 					   k < lhs.cidx(jj+1); k++)
 					{
 					  if (lhs.ridx(k) == ii)
-					    new_nnz--;
+					    new_nzmx--;
 					  if (lhs.ridx(k) >= ii)
 					    break;
 					}
@@ -2373,9 +2373,9 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			}
 
 		      if (scalar != RT())
-			new_nnz += m * n;
+			new_nzmx += m * n;
 
-		      Sparse<LT> stmp (new_nr, new_nc, new_nnz);
+		      Sparse<LT> stmp (new_nr, new_nc, new_nzmx);
 
 		      octave_idx_type jji = 0;
 		      octave_idx_type jj = idx_j.elem (jji);
@@ -2526,7 +2526,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			  rhs_idx_j[i] = i;
 
 		      // Count the number of non-zero terms
-		      octave_idx_type new_nnz = lhs.nnz ();
+		      octave_idx_type new_nzmx = lhs.nzmax ();
 		      for (octave_idx_type j = 0; j < m; j++)
 			{
 			  octave_idx_type jj = idx_j.elem (j);
@@ -2544,7 +2544,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 					   k < lhs.cidx(jj+1); k++)
 					{
 					  if (lhs.ridx(k) == ii)
-					    new_nnz--;
+					    new_nzmx--;
 					  if (lhs.ridx(k) >= ii)
 					    break;
 					}
@@ -2552,11 +2552,11 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 				}
 			      
 			      if (rhs.elem(rhs_idx_i[i],rhs_idx_j[j]) != RT ())
-				new_nnz++;
+				new_nzmx++;
 			    }
 			}
 
-		      Sparse<LT> stmp (new_nr, new_nc, new_nnz);
+		      Sparse<LT> stmp (new_nr, new_nc, new_nzmx);
 
 		      octave_idx_type jji = 0;
 		      octave_idx_type jj = idx_j.elem (jji);
@@ -2746,7 +2746,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		}
 	      else if (len == rhs_nr * rhs_nc)
 		{
-		  octave_idx_type new_nnz = lhs_nz;
+		  octave_idx_type new_nzmx = lhs_nz;
 		  OCTAVE_LOCAL_BUFFER (octave_idx_type, rhs_idx, len);
 		  
 		  if (! idx_i.is_colon ())
@@ -2794,12 +2794,12 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      
 		      octave_idx_type ii = idx_i.elem (i);
 		      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
-			new_nnz--;
+			new_nzmx--;
 		      if (rhs.elem(rhs_idx[i]) != RT ())
-			new_nnz++;
+			new_nzmx++;
 		    }
 
-		  Sparse<LT> stmp (lhs_nr, lhs_nc, new_nnz);
+		  Sparse<LT> stmp (lhs_nr, lhs_nc, new_nzmx);
 
 		  octave_idx_type i = 0;
 		  octave_idx_type ii = 0;
@@ -2869,21 +2869,21 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	      else if (rhs_nr == 1 && rhs_nc == 1)
 		{
 		  RT scalar = rhs.elem (0, 0);
-		  octave_idx_type new_nnz = lhs_nz;
+		  octave_idx_type new_nzmx = lhs_nz;
 		  idx_i.sort (true);
 
 		  // First count the number of non-zero elements
 		  if (scalar != RT ())
-		    new_nnz += len;
+		    new_nzmx += len;
 		  for (octave_idx_type i = 0; i < len; i++)
 		    {
 		      OCTAVE_QUIT;
 		      octave_idx_type ii = idx_i.elem (i);
 		      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
-			new_nnz--;
+			new_nzmx--;
 		    }
 
-		  Sparse<LT> stmp (lhs_nr, lhs_nc, new_nnz);
+		  Sparse<LT> stmp (lhs_nr, lhs_nc, new_nzmx);
 
 		  octave_idx_type i = 0;
 		  octave_idx_type ii = 0;
@@ -2978,7 +2978,7 @@ void
 Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "rep address: " << rep << "\n"
-     << prefix << "rep->nnz:    " << rep->nnz << "\n"
+     << prefix << "rep->nzmx:   " << rep->nzmx  << "\n"
      << prefix << "rep->nrows:  " << rep->nrows << "\n"
      << prefix << "rep->ncols:  " << rep->ncols << "\n"
      << prefix << "rep->data:   " << static_cast<void *> (rep->d) << "\n"

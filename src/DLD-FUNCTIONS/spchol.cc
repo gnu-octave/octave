@@ -456,7 +456,7 @@ factorization as determined by @var{typ}.\n\
       A->ncol = a.cols();
       A->p = a.cidx();
       A->i = a.ridx();
-      A->nzmax = a.nonzero();
+      A->nzmax = a.nnz();
       A->xtype = CHOLMOD_REAL;
 
       if (a.rows() > 0 && a.cols() > 0)
@@ -469,7 +469,7 @@ factorization as determined by @var{typ}.\n\
       A->ncol = a.cols();
       A->p = a.cidx();
       A->i = a.ridx();
-      A->nzmax = a.nonzero();
+      A->nzmax = a.nnz();
       A->xtype = CHOLMOD_COMPLEX;
 
       if (a.rows() > 0 && a.cols() > 0)

@@ -63,7 +63,7 @@ Boston, MA 02110-1301, USA.
   { \
     octave_idx_type nr = m.rows (); \
     octave_idx_type nc = m.cols (); \
-    octave_idx_type nz = m.nnz (); \
+    octave_idx_type nz = m.nzmax (); \
  \
     R r (nr, nc, nz); \
  \
@@ -103,7 +103,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nnz (); \
+    octave_idx_type nz = m.nzmax (); \
     if (MC (MZ) OP SC (s))   \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -178,7 +178,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nnz (); \
+    octave_idx_type nz = m.nzmax (); \
     if (LHS_ZERO OP (s != RHS_ZERO)) \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -273,7 +273,7 @@ Boston, MA 02110-1301, USA.
   { \
     octave_idx_type nr = m.rows (); \
     octave_idx_type nc = m.cols (); \
-    octave_idx_type nz = m.nnz (); \
+    octave_idx_type nz = m.nzmax (); \
  \
     R r (nr, nc, nz); \
  \
@@ -313,7 +313,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nnz (); \
+    octave_idx_type nz = m.nzmax (); \
     if (SC (s) OP MC (MZ))   \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -388,7 +388,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nnz (); \
+    octave_idx_type nz = m.nzmax (); \
     if ((s != LHS_ZERO) OP  RHS_ZERO) \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -477,7 +477,7 @@ Boston, MA 02110-1301, USA.
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
-	r = R (m1_nr, m1_nc, (m1.nnz () + m2.nnz ())); \
+	r = R (m1_nr, m1_nc, (m1.nzmax () + m2.nzmax ())); \
         \
         octave_idx_type jx = 0; \
         r.cidx (0) = 0; \
@@ -551,7 +551,7 @@ Boston, MA 02110-1301, USA.
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
-        r = R (m1_nr, m1_nc, (m1.nnz () > m2.nnz () ? m1.nnz () : m2.nnz ())); \
+        r = R (m1_nr, m1_nc, (m1.nzmax () > m2.nzmax () ? m1.nzmax () : m2.nzmax ())); \
         \
         octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \

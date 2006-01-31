@@ -180,6 +180,13 @@ octave_base_value::nnz (void) const
   return -1;
 }
 
+octave_idx_type
+octave_base_value::nzmax (void) const
+{
+  gripe_wrong_type_arg ("octave_base_value::nzmax ()", type_name ());
+  return -1;
+}
+
 octave_value
 octave_base_value::reshape (const dim_vector&) const
 {

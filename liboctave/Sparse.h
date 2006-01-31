@@ -55,22 +55,22 @@ protected:
     T *d;
     octave_idx_type *r;
     octave_idx_type *c;
-    octave_idx_type nnz;
+    octave_idx_type nzmx;
     octave_idx_type nrows;
     octave_idx_type ncols;
     int count;
 
-    SparseRep (void) : d (0), r (0), c (new octave_idx_type [1]), nnz (0), nrows (0),
+    SparseRep (void) : d (0), r (0), c (new octave_idx_type [1]), nzmx (0), nrows (0),
 		       ncols (0), count (1) { c[0] = 0; }
 
-    SparseRep (octave_idx_type n) : d (0), r (0), c (new octave_idx_type [n+1]), nnz (0), nrows (n),
+    SparseRep (octave_idx_type n) : d (0), r (0), c (new octave_idx_type [n+1]), nzmx (0), nrows (n),
       ncols (n), count (1)
       { 
 	for (octave_idx_type i = 0; i < n + 1; i++)
 	  c[i] = 0;
       }
 
-    SparseRep (octave_idx_type nr, octave_idx_type nc) : d (0), r (0), c (new octave_idx_type [nc+1]), nnz (0), 
+    SparseRep (octave_idx_type nr, octave_idx_type nc) : d (0), r (0), c (new octave_idx_type [nc+1]), nzmx (0), 
       nrows (nr), ncols (nc), count (1)
       { 
 	for (octave_idx_type i = 0; i < nc + 1; i++)
@@ -78,7 +78,7 @@ protected:
       }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz) : d (new T [nz]), 
-      r (new octave_idx_type [nz]), c (new octave_idx_type [nc+1]), nnz (nz), nrows (nr), 
+      r (new octave_idx_type [nz]), c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr), 
       ncols (nc), count (1)
       { 
 	for (octave_idx_type i = 0; i < nc + 1; i++)
@@ -86,10 +86,10 @@ protected:
       }
 
     SparseRep (const SparseRep& a)
-      : d (new T [a.nnz]), r (new octave_idx_type [a.nnz]), c (new octave_idx_type [a.ncols + 1]), 
-      nnz (a.nnz), nrows (a.nrows), ncols (a.ncols), count (1)
+      : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]), 
+      nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
       {
-	for (octave_idx_type i = 0; i < nnz; i++)
+	for (octave_idx_type i = 0; i < nzmx; i++)
 	  {
 	    d[i] = a.d[i];
 	    r[i] = a.r[i];
@@ -100,9 +100,9 @@ protected:
  
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
 
-    octave_idx_type length (void) const { return nnz; }
+    octave_idx_type length (void) const { return nzmx; }
 
-    octave_idx_type nonzero (void) const { return c [ncols]; }
+    octave_idx_type nnz (void) const { return c [ncols]; }
 
     T& elem (octave_idx_type _r, octave_idx_type _c);
 
@@ -238,11 +238,12 @@ public:
       return *this;
     }
 
-  // Note that capacity and nnz are the amount of storage for non-zero
-  // elements, while nonzero is the actual number of non-zero terms
-  octave_idx_type capacity (void) const { return rep->length (); }
-  octave_idx_type nnz (void) const { return capacity (); }
-  octave_idx_type nonzero (void) const { return rep->nonzero (); }
+  // Note that nzmax and capacity are the amount of storage for
+  // non-zero elements, while nnz is the actual number of non-zero
+  // terms.
+  octave_idx_type nzmax (void) const { return rep->length (); }
+  octave_idx_type capacity (void) const { return nzmax (); }
+  octave_idx_type nnz (void) const { return rep->nnz (); }
 
   // Paranoid number of elements test for case of dims = (-1,-1)
   octave_idx_type numel (void) const 

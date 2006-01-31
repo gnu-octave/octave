@@ -306,7 +306,7 @@ elem_xpow (const SparseMatrix& a, double b)
 
   octave_value retval;
 
-  octave_idx_type nz = a.nnz ();
+  octave_idx_type nz = a.nzmax ();
 
   if (b <= 0.0)
     {
@@ -492,7 +492,7 @@ elem_xpow (const SparseMatrix& a, const Complex& b)
     retval = octave_value (NDArray (a.dims (), 1));
   else
     {
-      octave_idx_type nz = a.nnz ();
+      octave_idx_type nz = a.nzmax ();
       SparseComplexMatrix result (a);
       
       for (octave_idx_type i = 0; i < nz; i++)
@@ -635,7 +635,7 @@ elem_xpow (const SparseComplexMatrix& a, double b)
     }
   else
     {
-      octave_idx_type nz = a.nnz ();
+      octave_idx_type nz = a.nzmax ();
 
       SparseComplexMatrix result (a);
   
@@ -728,7 +728,7 @@ elem_xpow (const SparseComplexMatrix& a, const Complex& b)
   else
     {
 
-      octave_idx_type nz = a.nnz ();
+      octave_idx_type nz = a.nzmax ();
 
       SparseComplexMatrix result (a);
 

@@ -201,7 +201,7 @@ octave_base_sparse<T>::is_true (void) const
   bool retval = false;
   dim_vector dv = matrix.dims ();
   octave_idx_type nel = dv.numel ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
 
   if (nz == nel && nel > 0)
     {
@@ -247,7 +247,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
 {
   octave_idx_type nr = matrix.rows ();
   octave_idx_type nc = matrix.cols ();
-  octave_idx_type nz = nonzero ();
+  octave_idx_type nz = nnz ();
 
   // XXX FIXME XXX -- this should probably all be handled by a
   // separate octave_print_internal function that can handle format
@@ -293,7 +293,7 @@ octave_base_sparse<T>::save_ascii (std::ostream& os, bool&, bool)
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 
-  os << "# nnz: "      << nnz () << "\n";
+  os << "# nnz: "      << nzmax () << "\n";
   os << "# rows: "     << dv (0) << "\n";
   os << "# columns: "  << dv (1) << "\n";
 

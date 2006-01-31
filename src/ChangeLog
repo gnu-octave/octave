@@ -1,3 +1,12 @@
+2006-01-31  John W. Eaton  <jwe@octave.org>
+
+	* ov-base-sparse.h (octave_base_sparse<T>::nzmax): New function.
+	* ov.h (octave_value::nzmax): New function.
+	* ov-base.cc (octave_base_value::nzmax): New function.
+	* ov-base.h: Provide decl.
+	* data.cc (Fnzmax): New function.
+	* DLD-FUNCTIONS/sparse.cc (Fnzmax): Delete.
+
 2006-01-31  Kim Hansen  <kim@i9.dk>
 
 	* __glpk__.cc (F_glpk__): Fix for sparse matrices.

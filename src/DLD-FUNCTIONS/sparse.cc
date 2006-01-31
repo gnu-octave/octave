@@ -404,49 +404,11 @@ DEFUN_DLD (full, args, ,
   return retval;
 }
 
-DEFUN_DLD (nzmax, args, ,
-   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{scalar} =} nzmax (@var{SM})\n\
-Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
-Note that Octave tends to crop unused memory at the first oppurtunity\n\
-for sparse objects. There are some cases of user created sparse objects\n\
-where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},\n\
-but in general they will give the same result.\n\
-@seealso{sparse, spalloc}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length() < 1) 
-    {
-      print_usage ("nzmax");
-      return retval;
-    }
-
-  if (args(0).class_name () == "sparse") 
-    {
-      // XXX FIXME XXX should nnz be a method of octave_base_value so that the
-      // below can be replaced with "retval = (double) (args(0).nz ());"
-      const octave_value& rep = args(0).get_rep ();
-
-      if (args(0).type_name () == "sparse matrix")
-	retval = (double) ((const octave_sparse_matrix&) rep) .nnz ();
-      else if (args(0).type_name () == "sparse complex matrix")
-	retval = (double) ((const octave_sparse_complex_matrix&) rep) .nnz ();
-      else if (args(0).type_name () == "sparse bool matrix")
-	retval = (double) ((const octave_sparse_bool_matrix&) rep) .nnz ();
-    }
-  else
-    error ("nzmax: argument must be a sparse matrix");
-
-  return retval;
-}
-
 static octave_value_list
 sparse_find (const SparseMatrix& v)
 {
   octave_value_list retval;
-  octave_idx_type nnz = v.nonzero ();
+  octave_idx_type nnz = v.nnz ();
   dim_vector dv = v.dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv (1);
@@ -487,7 +449,7 @@ static octave_value_list
 sparse_find (const SparseComplexMatrix& v)
 {
   octave_value_list retval;
-  octave_idx_type nnz = v.nonzero ();
+  octave_idx_type nnz = v.nnz ();
   dim_vector dv = v.dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv (1);
@@ -528,7 +490,7 @@ static octave_value_list
 sparse_find (const SparseBoolMatrix& v)
 {
   octave_value_list retval;
-  octave_idx_type nnz = v.nonzero ();
+  octave_idx_type nnz = v.nnz ();
   dim_vector dv = v.dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv (1);
@@ -1118,7 +1080,7 @@ make_spdiag (const octave_value& a, const octave_value& b)
 	  if (nr == 1) 
 	    {
 	      octave_idx_type n = nc + k;
-	      octave_idx_type nz = m.nnz ();
+	      octave_idx_type nz = m.nzmax ();
 	      SparseComplexMatrix r (n, n, nz);
 	      for (octave_idx_type i = 0; i < coff+1; i++)
 		r.xcidx (i) = 0;
@@ -1138,7 +1100,7 @@ make_spdiag (const octave_value& a, const octave_value& b)
 	  else 
 	    {
 	      octave_idx_type n = nr + k;
-	      octave_idx_type nz = m.nnz ();
+	      octave_idx_type nz = m.nzmax ();
 	      octave_idx_type ii = 0;
 	      octave_idx_type ir = m.ridx(0);
 	      SparseComplexMatrix r (n, n, nz);
@@ -1201,7 +1163,7 @@ make_spdiag (const octave_value& a, const octave_value& b)
 	  if (nr == 1) 
 	    {
 	      octave_idx_type n = nc + k;
-	      octave_idx_type nz = m.nnz ();
+	      octave_idx_type nz = m.nzmax ();
 	      SparseMatrix r (n, n, nz);
 
 	      for (octave_idx_type i = 0; i < coff+1; i++)
@@ -1222,7 +1184,7 @@ make_spdiag (const octave_value& a, const octave_value& b)
 	  else 
 	    {
 	      octave_idx_type n = nr + k;
-	      octave_idx_type nz = m.nnz ();
+	      octave_idx_type nz = m.nzmax ();
 	      octave_idx_type ii = 0;
 	      octave_idx_type ir = m.ridx(0);
 	      SparseMatrix r (n, n, nz);

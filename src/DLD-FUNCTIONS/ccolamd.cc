@@ -218,7 +218,7 @@ colamd, symamd, and other related orderings.\n\
 	      scm = args(0). sparse_complex_matrix_value ();
 	      n_row = scm.rows ();
 	      n_col = scm.cols ();
-	      nnz = scm.nnz ();
+	      nnz = scm.nzmax ();
 	      ridx = scm.xridx ();
 	      cidx = scm.xcidx ();
 	    }
@@ -228,7 +228,7 @@ colamd, symamd, and other related orderings.\n\
 
 	      n_row = sm.rows ();
 	      n_col = sm.cols ();
-	      nnz = sm.nnz ();
+	      nnz = sm.nzmax ();
 	      ridx = sm.xridx ();
 	      cidx = sm.xcidx ();
 	    }
@@ -242,7 +242,7 @@ colamd, symamd, and other related orderings.\n\
 
 	  n_row = sm.rows ();
 	  n_col = sm.cols ();
-	  nnz = sm.nnz ();
+	  nnz = sm.nzmax ();
 	  ridx = sm.xridx ();
 	  cidx = sm.xcidx ();
 	}
@@ -454,7 +454,7 @@ colamd, symamd, and other related orderings.\n\
 	      scm = args(0).sparse_complex_matrix_value ();
 	      n_row = scm.rows ();
 	      n_col = scm.cols ();
-	      nnz = scm.nnz ();
+	      nnz = scm.nzmax ();
 	      ridx = scm.xridx ();
 	      cidx = scm.xcidx ();
 	    }
@@ -463,7 +463,7 @@ colamd, symamd, and other related orderings.\n\
 	      sm = args(0).sparse_matrix_value ();
 	      n_row = sm.rows ();
 	      n_col = sm.cols ();
-	      nnz = sm.nnz ();
+	      nnz = sm.nzmax ();
 	      ridx = sm.xridx ();
 	      cidx = sm.xcidx ();
 	    }
@@ -477,7 +477,7 @@ colamd, symamd, and other related orderings.\n\
 	  
 	  n_row = sm.rows ();
 	  n_col = sm.cols ();
-	  nnz = sm.nnz ();
+	  nnz = sm.nzmax ();
 	  ridx = sm.xridx ();
 	  cidx = sm.xcidx ();
 	}

@@ -114,10 +114,10 @@ extern "C"
 }
 
 SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
-  : MSparse<double> (a.rows (), a.cols (), a.nnz ())
+  : MSparse<double> (a.rows (), a.cols (), a.nzmax ())
 {
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
     cidx (i) = a.cidx (i);
@@ -134,10 +134,10 @@ SparseMatrix::operator == (const SparseMatrix& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
   octave_idx_type nr_a = a.rows ();
   octave_idx_type nc_a = a.cols ();
-  octave_idx_type nz_a = a.nnz ();
+  octave_idx_type nz_a = a.nzmax ();
 
   if (nr != nr_a || nc != nc_a || nz != nz_a)
     return false;
@@ -497,7 +497,7 @@ real (const SparseComplexMatrix& a)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
-  octave_idx_type nz = a.nnz ();
+  octave_idx_type nz = a.nzmax ();
   SparseMatrix r (nr, nc, nz);
 
   for (octave_idx_type i = 0; i < nc +1; i++)
@@ -517,7 +517,7 @@ imag (const SparseComplexMatrix& a)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
-  octave_idx_type nz = a.nnz ();
+  octave_idx_type nz = a.nzmax ();
   SparseMatrix r (nr, nc, nz);
 
   for (octave_idx_type i = 0; i < nc +1; i++)
@@ -559,7 +559,7 @@ atan2 (const SparseMatrix& x, const double& y)
 {
   octave_idx_type nr = x.rows ();
   octave_idx_type nc = x.cols ();
-  octave_idx_type nz = x.nnz ();
+  octave_idx_type nz = x.nzmax ();
 
   SparseMatrix retval (nr, nc, nz);
 
@@ -612,7 +612,7 @@ atan2 (const SparseMatrix& x, const SparseMatrix& y)
 	gripe_nonconformant ("atan2", x_nr, x_nc, y_nr, y_nc);
       else
 	{
-	  r = SparseMatrix (x_nr, x_nc, (x.nnz () + y.nnz ()));
+	  r = SparseMatrix (x_nr, x_nc, (x.nzmax () + y.nzmax ()));
        
 	  octave_idx_type jx = 0;
 	  r.cidx (0) = 0;
@@ -789,7 +789,7 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
 
 	  if (typ == SparseType::Upper || typ == SparseType::Lower)
 	    {
-	      octave_idx_type nz = nnz();
+	      octave_idx_type nz = nzmax ();
 	      octave_idx_type cx = 0;
 	      octave_idx_type nz2 = nz;
 	      retval = SparseMatrix (nr, nc, nz2);
@@ -874,7 +874,7 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
 	    }
 	  else
 	    {
-	      octave_idx_type nz = nnz();
+	      octave_idx_type nz = nzmax ();
 	      octave_idx_type cx = 0;
 	      octave_idx_type nz2 = nz;
 	      retval = SparseMatrix (nr, nc, nz2);
@@ -1259,7 +1259,7 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 	{
 	  octave_idx_type b_nr = b.rows ();
 	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
+	  octave_idx_type b_nz = b.nzmax ();
 	  retval = SparseMatrix (b_nr, b_nc, b_nz);
 
 	  retval.xcidx(0) = 0;
@@ -1389,7 +1389,7 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	{
 	  octave_idx_type b_nr = b.rows ();
 	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
+	  octave_idx_type b_nz = b.nzmax ();
 	  retval = SparseComplexMatrix (b_nr, b_nc, b_nz);
 
 	  retval.xcidx(0) = 0;
@@ -1689,7 +1689,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 
 	  octave_idx_type b_nr = b.rows ();
 	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
+	  octave_idx_type b_nz = b.nzmax ();
 	  retval = SparseMatrix (b_nr, b_nc, b_nz);
 	  retval.xcidx(0) = 0;
 	  octave_idx_type ii = 0;
@@ -2161,7 +2161,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  octave_idx_type b_nr = b.rows ();
 	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
+	  octave_idx_type b_nz = b.nzmax ();
 	  retval = SparseComplexMatrix (b_nr, b_nc, b_nz);
 	  retval.xcidx(0) = 0;
 	  octave_idx_type ii = 0;
@@ -2659,7 +2659,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_ty
 
 	  octave_idx_type b_nr = b.rows ();
 	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
+	  octave_idx_type b_nz = b.nzmax ();
 	  retval = SparseMatrix (b_nr, b_nc, b_nz);
 	  retval.xcidx(0) = 0;
 	  octave_idx_type ii = 0;
@@ -3176,7 +3176,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  octave_idx_type b_nr = b.rows ();
 	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
+	  octave_idx_type b_nz = b.nzmax ();
 	  retval = SparseComplexMatrix (b_nr, b_nc, b_nz);
 	  retval.xcidx(0) = 0;
 	  octave_idx_type ii = 0;
@@ -3659,7 +3659,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseMatrix& b, octave_idx_t
 	      else 
 		{
 		  char job = 'N';
-		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type x_nz = b.nzmax ();
 		  octave_idx_type b_nc = b.cols ();
 		  retval = SparseMatrix (nr, b_nc, x_nz);
 		  retval.xcidx(0) = 0;
@@ -3970,7 +3970,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 		  // Take a first guess that the number of non-zero terms
 		  // will be as many as in b
-		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type x_nz = b.nzmax ();
 		  volatile octave_idx_type ii = 0;
 		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
@@ -4384,7 +4384,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 
 		  // Take a first guess that the number of non-zero terms
 		  // will be as many as in b
-		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type x_nz = b.nzmax ();
 		  volatile octave_idx_type ii = 0;
 		  retval = SparseMatrix (b_nr, b_nc, x_nz);
 
@@ -4490,7 +4490,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 	      else 
 		{
 		  char job = 'N';
-		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type x_nz = b.nzmax ();
 		  octave_idx_type b_nc = b.cols ();
 		  retval = SparseMatrix (nr, b_nc, x_nz);
 		  retval.xcidx(0) = 0;
@@ -4865,7 +4865,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 		  // Take a first guess that the number of non-zero terms
 		  // will be as many as in b
-		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type x_nz = b.nzmax ();
 		  volatile octave_idx_type ii = 0;
 		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
@@ -5005,7 +5005,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	      else 
 		{
 		  char job = 'N';
-		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type x_nz = b.nzmax ();
 		  octave_idx_type b_nc = b.cols ();
 		  retval = SparseComplexMatrix (nr, b_nc, x_nz);
 		  retval.xcidx(0) = 0;
@@ -5277,7 +5277,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
 
 	  A->p = cidx();
 	  A->i = ridx();
-	  A->nzmax = nonzero();
+	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
 	  A->nz = NULL;
@@ -5519,7 +5519,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 
 	  A->p = cidx();
 	  A->i = ridx();
-	  A->nzmax = nonzero();
+	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
 	  A->nz = NULL;
@@ -5543,7 +5543,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 	  B->ncol = b.cols();
 	  B->p = b.cidx();
 	  B->i = b.ridx();
-	  B->nzmax = b.nonzero();
+	  B->nzmax = b.nnz();
 	  B->packed = true;
 	  B->sorted = true;
 	  B->nz = NULL;
@@ -5651,7 +5651,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 
 	      // Take a first guess that the number of non-zero terms
 	      // will be as many as in b
-	      octave_idx_type x_nz = b.nnz ();
+	      octave_idx_type x_nz = b.nzmax ();
 	      octave_idx_type ii = 0;
 	      retval = SparseMatrix (b_nr, b_nc, x_nz);
 
@@ -5808,7 +5808,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_ty
 
 	  A->p = cidx();
 	  A->i = ridx();
-	  A->nzmax = nonzero();
+	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
 	  A->nz = NULL;
@@ -6070,7 +6070,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  A->p = cidx();
 	  A->i = ridx();
-	  A->nzmax = nonzero();
+	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
 	  A->nz = NULL;
@@ -6094,7 +6094,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  B->ncol = b.cols();
 	  B->p = b.cidx();
 	  B->i = b.ridx();
-	  B->nzmax = b.nonzero();
+	  B->nzmax = b.nnz();
 	  B->packed = true;
 	  B->sorted = true;
 	  B->nz = NULL;
@@ -6203,7 +6203,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	      // Take a first guess that the number of non-zero terms
 	      // will be as many as in b
-	      octave_idx_type x_nz = b.nnz ();
+	      octave_idx_type x_nz = b.nzmax ();
 	      octave_idx_type ii = 0;
 	      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
@@ -6894,7 +6894,7 @@ SparseMatrix::map (d_d_Mapper f) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
   bool f_zero = (f(0.0) == 0.0);
 
   // Count number of non-zero elements
@@ -6944,7 +6944,7 @@ SparseMatrix::map (b_d_Mapper f) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
   bool f_zero = f(0.0);
 
   // Count number of non-zero elements
@@ -6999,7 +6999,7 @@ SparseMatrix::apply (d_d_Mapper f)
 bool
 SparseMatrix::any_element_is_negative (bool neg_zero) const
 {
-  octave_idx_type nel = nnz ();
+  octave_idx_type nel = nzmax ();
 
   if (neg_zero)
     {
@@ -7020,7 +7020,7 @@ SparseMatrix::any_element_is_negative (bool neg_zero) const
 bool
 SparseMatrix::any_element_is_inf_or_nan (void) const
 {
-  octave_idx_type nel = nnz ();
+  octave_idx_type nel = nzmax ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -7035,7 +7035,7 @@ SparseMatrix::any_element_is_inf_or_nan (void) const
 bool
 SparseMatrix::all_elements_are_int_or_inf_or_nan (void) const
 {
-  octave_idx_type nel = nnz ();
+  octave_idx_type nel = nzmax ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -7055,7 +7055,7 @@ SparseMatrix::all_elements_are_int_or_inf_or_nan (void) const
 bool
 SparseMatrix::all_integers (double& max_val, double& min_val) const
 {
-  octave_idx_type nel = nnz ();
+  octave_idx_type nel = nzmax ();
 
   if (nel == 0)
     return false;
@@ -7083,7 +7083,7 @@ SparseMatrix::all_integers (double& max_val, double& min_val) const
 bool
 SparseMatrix::too_large_for_float (void) const
 {
-  octave_idx_type nel = nnz ();
+  octave_idx_type nel = nzmax ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -7101,7 +7101,7 @@ SparseMatrix::operator ! (void) const
 { 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz1 = nnz ();
+  octave_idx_type nz1 = nzmax ();
   octave_idx_type nz2 = nr*nc - nz1;
    
   SparseBoolMatrix r (nr, nc, nz2);
@@ -7187,7 +7187,7 @@ SparseMatrix::sumsq (int dim) const
 SparseMatrix
 SparseMatrix::abs (void) const
 {
-  octave_idx_type nz = nnz ();
+  octave_idx_type nz = nzmax ();
 
   SparseMatrix retval (*this);
 
@@ -7322,7 +7322,7 @@ operator >> (std::istream& is, SparseMatrix& a)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
-  octave_idx_type nz = a.nnz ();
+  octave_idx_type nz = a.nzmax ();
 
   if (nr < 1 || nc < 1)
     is.clear (std::ios::badbit);
@@ -7528,7 +7528,7 @@ min (const SparseMatrix& a, const SparseMatrix& b)
 	gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
       else
 	{
-	  r = SparseMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
+	  r = SparseMatrix (a_nr, a_nc, (a.nzmax () + b.nzmax ()));
        
 	  octave_idx_type jx = 0;
 	  r.cidx (0) = 0;
@@ -7678,7 +7678,7 @@ max (const SparseMatrix& a, const SparseMatrix& b)
 	gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
       else
 	{
-	  r = SparseMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
+	  r = SparseMatrix (a_nr, a_nc, (a.nzmax () + b.nzmax ()));
        
 	  octave_idx_type jx = 0;
 	  r.cidx (0) = 0;

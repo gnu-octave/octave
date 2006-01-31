@@ -492,7 +492,7 @@ You should be using using the @code{glpk} function instead.\n\
 
       mrowsA = A.rows ();
       octave_idx_type Anc = A.cols ();
-      octave_idx_type Anz = A.nnz ();
+      octave_idx_type Anz = A.nzmax ();
       rn.resize (Anz+1);
       cn.resize (Anz+1);
       a.resize (Anz+1, 0.0);

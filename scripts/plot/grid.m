@@ -46,7 +46,7 @@ function grid (x)
         __gnuplot_raw__ ("set nogrid;\n");
 	do_replot = true;
       elseif (strcmp ("on", x))
-        __gnuplot_raw__ ("set grid");
+        __gnuplot_raw__ ("set grid;\n");
 	do_replot = true;
       else
 	usage (usage_msg);

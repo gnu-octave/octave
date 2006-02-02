@@ -1,3 +1,11 @@
+2006-02-02  John W. Eaton  <jwe@octave.org>
+
+	* plot/grid.m: Append ";\n" to "set grid" command.
+
+2006-02-02  A S Hodel  <hodelas@auburn.edu>
+
+	* control/base/rlocus.m: Don't atttempt to plot rlzer if it is empty.
+
 2006-01-13  John W. Eaton  <jwe@octave.org>
 
 	* audio/Makefile.in, control/base/Makefile.in,

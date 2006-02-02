@@ -74,7 +74,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
 
   ## Convert the input to a transfer function if necessary
 
-  [num,den] = sys2tf(sys)               # extract numerator/denom polyomials
+  [num,den] = sys2tf(sys);               # extract numerator/denom polyomials
   lnum = length(num);      lden = length(den);
   if(lden < 2)
     error(sprintf("length of derivative=%d, doesn't make sense",lden));
@@ -217,9 +217,14 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
         inname{1}, outname{1},gvec(1),gvec(ngain)));
     ylabel("Imag. axis");
 
-    plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...
-        real(olpol),imag(olpol),"x2;open loop poles;", ...
-        real(rlzer),imag(rlzer),"o3;zeros;");
+    if(isempty(rlzer))
+      plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...
+           real(olpol),imag(olpol),"x2;open loop poles;");
+    else
+      plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...
+           real(olpol),imag(olpol),"x2;open loop poles;", ...
+           real(rlzer),imag(rlzer),"o3;zeros;");
+    endif
     rldata = [];
   endif
 endfunction

@@ -1,3 +1,7 @@
+2006-02-04  David Bateman  <dbateman@free.fr>
+
+	* COLAMD: Remove all files, as now unused.
+
 2006-01-31  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.h (Sparse<T>::nzmax): New function.

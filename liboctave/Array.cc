@@ -549,6 +549,8 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
       for (octave_idx_type j = 0; j < nr_new; j++)
 	{
+	  OCTAVE_QUIT;
+
 	  retval(k++) = elem(iidx);
 	  iidx += incr;
 	}

@@ -451,25 +451,6 @@ short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
   return retval;
 }
 
-Array<octave_idx_type>
-calc_permutated_idx (const Array<octave_idx_type>& old_idx, 
-		     const Array<octave_idx_type>& perm_vec, bool inv)
-{
-  octave_idx_type n_el = old_idx.length ();
-
-  Array<octave_idx_type> retval (n_el);
-
-  for (octave_idx_type i = 0; i < n_el; i++)
-    {
-      if (inv)
-	retval(perm_vec(i)) = old_idx(i);
-      else
-	retval(i) = old_idx(perm_vec(i));
-    }
-
-  return retval;
-}
-
 void
 gripe_nonconformant (const char *op, int op1_len, int op2_len)
 {

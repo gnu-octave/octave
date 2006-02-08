@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <climits>
 
 #include <iostream>
+#include <vector>
 
 #include "Array.h"
 #include "Array-flags.h"
@@ -423,11 +424,29 @@ Array<T>::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
+struct
+permute_vector
+{
+  octave_idx_type pidx;
+  octave_idx_type iidx;
+};
+
+static int
+permute_vector_compare (const void *a, const void *b)
+{
+  const permute_vector *pva = static_cast<const permute_vector *> (a);
+  const permute_vector *pvb = static_cast<const permute_vector *> (b);
+
+  return pva->pidx > pvb->pidx;
+}
+
 template <class T>
 Array<T>
-Array<T>::permute (const Array<octave_idx_type>& perm_vec, bool inv) const
+Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 {
   Array<T> retval;
+
+  Array<octave_idx_type> perm_vec = perm_vec_arg;
 
   dim_vector dv = dims ();
   dim_vector dv_new;
@@ -442,8 +461,6 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec, bool inv) const
 
   // Append singleton dimensions as needed.
   dv.resize (perm_vec_len, 1);
-
-  const Array<T> tmp = reshape (dv);
 
   // Need this array to check for identical elements in permutation array.
   Array<bool> checked (perm_vec_len, false);
@@ -476,24 +493,76 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec, bool inv) const
       dv_new(i) = dv(perm_elt);
     }
 
+  int nd = dv.length ();
+
+  // XXX FIXME XXX -- it would be nice to have a sort method in the
+  // Array class that also returns the sort indices.
+
+  if (inv)
+    {
+      OCTAVE_LOCAL_BUFFER (permute_vector, pvec, nd);
+
+      for (int i = 0; i < nd; i++)
+	{
+	  pvec[i].pidx = perm_vec(i);
+	  pvec[i].iidx = i;
+	}
+
+      octave_qsort (pvec, static_cast<size_t> (nd),
+		    sizeof (permute_vector), permute_vector_compare);
+
+      for (int i = 0; i < nd; i++)
+	{
+	  perm_vec(i) = pvec[i].iidx;
+	  dv_new(i) = dv(perm_vec(i));
+	}
+    }
+
   retval.resize (dv_new);
 
-  // Index array to the original array.
-  Array<octave_idx_type> old_idx (perm_vec_len, 0);
+  Array<octave_idx_type> cp (nd+1, 1);
+  for (octave_idx_type i = 1; i < nd+1; i++)
+    cp(i) = cp(i-1) * dv(i-1);
 
-  // Number of elements in Array (should be the same for
-  // both the permuted array and original array).
-  octave_idx_type n = retval.length ();
+  octave_idx_type incr = cp(perm_vec(0));
 
-  // Permute array.
+  Array<octave_idx_type> base_delta (nd-1, 0);
+  Array<octave_idx_type> base_delta_max (nd-1);
+  Array<octave_idx_type> base_incr (nd-1);
+  for (octave_idx_type i = 0; i < nd-1; i++)
+    {
+      base_delta_max(i) = dv_new(i+1);
+      base_incr(i) = cp(perm_vec(i+1));
+    }
+
+  octave_idx_type nr_new = dv_new(0);
+  octave_idx_type nel_new = dv_new.numel ();
+  octave_idx_type n = nel_new / nr_new;
+
+  octave_idx_type k = 0;
+
   for (octave_idx_type i = 0; i < n; i++)
     {
-      // Get the idx of permuted array.
-      Array<octave_idx_type> new_idx = calc_permutated_idx (old_idx, perm_vec, inv);
+      octave_idx_type iidx = 0;
+      for (octave_idx_type kk = 0; kk < nd-1; kk++)
+	iidx += base_delta(kk) * base_incr(kk);
 
-      retval.elem (new_idx) = tmp.elem (old_idx);
+      for (octave_idx_type j = 0; j < nr_new; j++)
+	{
+	  retval(k++) = elem(iidx);
+	  iidx += incr;
+	}
 
-      increment_index (old_idx, dv);
+      base_delta(0)++;
+
+      for (octave_idx_type kk = 0; kk < nd-2; kk++)
+	{
+	  if (base_delta(kk) == base_delta_max(kk))
+	    {
+	      base_delta(kk) = 0;
+	      base_delta(kk+1)++;
+	    }
+	}
     }
 
   retval.chop_trailing_singletons ();

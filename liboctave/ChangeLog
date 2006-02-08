@@ -1,3 +1,11 @@
+2006-02-08  John W. Eaton  <jwe@octave.org>
+
+	* Array-util.h (calc_permutated_idx): Delete.
+	* Array.cc (permute_vector): New data structure.
+	(permute_vector_compare): New function.
+	(Array<T>::permute): Rewrite to avoid calc_permutated_index for
+	improved performance.
+
 2006-02-04  David Bateman  <dbateman@free.fr>
 
 	* COLAMD: Remove all files, as now unused.

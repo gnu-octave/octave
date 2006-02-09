@@ -1,3 +1,10 @@
+2006-02-08  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (frob_function): Clear ID_NAME from top_level symbol
+	table if we are defining a function at the top-level and a
+	function with the same name is already in the top-level symbol
+	table.
+
 2006-01-31  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-sparse.h (octave_base_sparse<T>::nzmax): New function.

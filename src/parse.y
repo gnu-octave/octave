@@ -2572,6 +2572,28 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
   curr_sym_tab->clear (id_name);
 
+  if (! lexer_flags.parsing_nested_function
+      && symtab_context.top () == top_level_sym_tab)
+    {
+      symbol_record *sr = top_level_sym_tab->lookup (id_name);
+
+      // Only clear the existing name if it is already defined as a
+      // function.  If there is already a variable defined with the
+      // same name as a the current function, it will continue to
+      // shadow this name until the variable is cleared.  This means
+      // that for something like the following at the command line,
+      //
+      //   f = 13;
+      //   function f () 7, end
+      //   f
+      //
+      // F will still refer to the variable F (with value 13) rather
+      // than the function F, until the variable F is cleared.
+
+      if (sr && sr->is_function ())
+	top_level_sym_tab->clear (id_name);
+    }
+
   symbol_record *sr = fbi_sym_tab->lookup (id_name, true);
 
   if (sr)

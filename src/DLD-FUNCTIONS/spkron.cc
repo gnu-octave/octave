@@ -138,3 +138,16 @@ kron (1:4, ones (3, 1))\n\
 
   return retval;
 }
+
+/*
+
+%!assert(spkron(spdiag([1,2,3]),spdiag([1,2,3])),sparse(kron(diag([1,2,3]),diag([1,2,3]))))
+%!assert(spkron(spdiag([1i,2,3]),spdiag([1i,2,3])),sparse(kron(diag([1i,2,3]),diag([1i,2,3]))))
+
+*/
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

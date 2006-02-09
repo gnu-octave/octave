@@ -1,3 +1,15 @@
+2006-02-09  David Bateman  <dbateman@free.fr>
+
+        * DLD-FUNCTIONS/spqr.cc: New file for sparse QR and dmperm based on
+        CSparse.
+        * DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): dintinguish between
+        rectangular and singular matrices. Add tests.
+        * DLD-FUNCTIONS/luinc.cc: Add tests.
+        * DLD-FUNCTIONS/spkron.cc: Ditto.
+        * Makefile.in (DLD_XSRC): Add spqr.cc.
+        (OCT_LINK_DEPS): Add CSSPARSE_LIBS.
+        * sparse-xdiv.h: Remove conditio of lssolve.
+
 2006-02-08  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (frob_function): Clear ID_NAME from top_level symbol

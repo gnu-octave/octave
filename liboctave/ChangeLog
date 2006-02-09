@@ -1,3 +1,20 @@
+2006-02-09  David Bateman  <dbateman@free.fr>
+
+        * SparseQR.cc: new file for real sparse QR class.
+        * SparseQR.h: declaration.
+        * SparseCmplxQR.cc: new file for complex sparse QR class.
+        * SparseCmplxQR.h: declaration.
+        * dSparse.cc (dinverse,tinverse,inverse): Remove unused input args.
+        (factorize, fsolve): Enable code code lssolve.
+        (lssolve): disable unused args, write based in above sparse QR class.
+        * CSparse.cc (dinverse,tinverse,inverse): Remove unused input args.
+        (factorize, fsolve): Enable code code lssolve.
+        (lssolve): disable unused args, write based in above sparse QR class.
+        * oct-sparse.h: fix location of colamd, ccolamd and metis headers.
+        Include CXSparse headers.
+        * Makefile.in (MATRIX_INC): Include SparseQR.h and SparseCmplxQR.h.
+        (MATRIX_SRC): Include SparseQR.cc and SparseCmplxQR.cc.
+
 2006-02-08  John W. Eaton  <jwe@octave.org>
 
 	* Array-util.h (calc_permutated_idx): Delete.

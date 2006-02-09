@@ -1,3 +1,9 @@
+2006-02-09  David Bateman  <dbateman@free.fr>
+
+        * configure.in: Fix for probe of colamd, cccolamd and metis. New test
+        for the presence of cxsparse.
+        Makeconf.in: Include CXSPARSE_LIBS.
+
 2006-01-19  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Use $WITH_PCRE instead of $HAVE_PCRE in shell test.

@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} [@var{x}, @var{y}] = pol2cart (@var{theta}, @var{r})
-## @deftypefnx {Function File} {} [@var{x}, @var{y}, @var{z}] = pol2cart (@var{theta}, @var{r}, @var{z})
+## @deftypefn {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
 ## Transform polar or cylindrical to cartesian coordinates.
 ## @var{theta}, @var{r} (and @var{z}) must be of same shape.
 ## @var{theta} describes the angle relative to the x - axis.

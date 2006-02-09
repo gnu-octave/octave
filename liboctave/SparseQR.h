@@ -1,0 +1,142 @@
+/*
+
+Copyright (C) 2005 David Bateman
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; see the file COPYING.  If not, write to the
+Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA 02110-1301, USA.
+
+*/
+
+#if !defined (sparse_QR_h)
+#define sparse_QR_h 1
+
+#include <iostream>
+
+#include "dMatrix.h"
+#include "CMatrix.h"
+#include "dSparse.h"
+#include "CSparse.h"
+#include "oct-sparse.h"
+
+#ifdef IDX_TYPE_LONG
+#define CXSPARSE_DNAME(name) name ## _dl
+#else
+#define CXSPARSE_DNAME(name) name ## _di
+#endif
+
+class
+SparseQR
+{
+protected:
+  class SparseQR_rep
+  {
+  public:
+    SparseQR_rep (const SparseMatrix& a, int order);
+
+    ~SparseQR_rep (void);
+#ifdef HAVE_CXSPARSE
+    bool ok (void) const { return (N && S); }
+#else
+    bool ok (void) const { return false; }
+#endif
+    SparseMatrix V (void) const;
+
+    ColumnVector Pinv (void) const;
+
+    ColumnVector P (void) const;
+
+    SparseMatrix R (const bool econ) const;
+
+    Matrix C (const Matrix &b) const;
+
+    int count;
+
+    octave_idx_type nrows;
+#ifdef HAVE_CXSPARSE
+    CXSPARSE_DNAME (css) *S;
+
+    CXSPARSE_DNAME (csn) *N;
+#endif
+  };
+private:
+  SparseQR_rep *rep;
+
+public:  
+  SparseQR (void) : rep (new SparseQR_rep (SparseMatrix(), -1)) { }
+
+  SparseQR (const SparseMatrix& a, int order = -1) : 
+    rep (new SparseQR_rep (a, order)) { }
+
+  SparseQR (const SparseQR& a) : rep (a.rep) { rep->count++; }
+
+  ~SparseQR (void)
+    {
+      if (--rep->count <= 0)
+	delete rep;
+    }
+
+  SparseQR& operator = (const SparseQR& a)
+    {
+      if (this != &a)
+	{
+	  if (--rep->count <= 0)
+	    delete rep;
+
+	  rep = a.rep;
+	  rep->count++;
+	}
+      return *this;
+    }
+
+  bool ok (void) const { return rep->ok(); }
+
+  SparseMatrix V (void) const { return rep->V(); }
+
+  ColumnVector Pinv (void) const { return rep->P(); }
+
+  ColumnVector P (void) const { return rep->P(); }
+
+  SparseMatrix R (const bool econ = false) const { return rep->R(econ); }
+
+  Matrix C (const Matrix &b) const { return rep->C(b); }
+
+  friend Matrix qrsolve (const SparseMatrix &a, const Matrix &b, 
+			 octave_idx_type &info);
+
+  friend SparseMatrix qrsolve (const SparseMatrix &a, const SparseMatrix &b,
+			 octave_idx_type &info);
+
+  friend ComplexMatrix qrsolve (const SparseMatrix &a, const ComplexMatrix &b,
+				octave_idx_type &info);
+
+  friend SparseComplexMatrix qrsolve (const SparseMatrix &a, 
+				      const SparseComplexMatrix &b,
+				      octave_idx_type &info);
+
+protected:
+#ifdef HAVE_CXSPARSE
+  CXSPARSE_DNAME (css) * S (void) { return rep->S; }
+
+  CXSPARSE_DNAME (csn) * N (void) { return rep->N; }
+#endif
+};
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

@@ -28,7 +28,11 @@ function retval = triu (x, k)
 
   if (nargin > 0)
     [nr, nc] = size (x);
-    retval = zeros (nr, nc, class (x));
+    if (isa (x, "sparse"))
+      retval = sparse (nr, nc);
+    else
+      retval = zeros (nr, nc, class (x));
+    endif
   endif
 
   if (nargin == 1)

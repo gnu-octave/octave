@@ -107,14 +107,11 @@ Numerical:
 Sparse Matrices:
 ---------------
 
-  * QR factorization functions, also for use in lssolve functions. Write
-    svds function based on this. Write sprank function based on svds.
+  * Improve QR factorization functions, using idea based on CSPARSE
+    cs_dmsol.m 
 
-  * Once dmperm is implemented, perhaps use the technique to detect permuted
-    triangular matrices with permutations in both rows and cols.
-
-  * Implement fourth argument to the sprand and sprandn that the leading
-    brand implements.
+  * Implement fourth argument to the sprand and sprandn, and addition
+    arguments to sprandsym that the leading brand implements.
 
   * Sparse logical indexing in idx_vector class so that something like
     "a=sprandn(1e6,1e6,1e-6); a(a<1) = 0" won't cause a memory overflow.
@@ -122,13 +119,13 @@ Sparse Matrices:
   * Write the rest of the sparse docs
 
   * The algo in TOMS 582 is perfect for symrcm function. However, this is
-    under  the ACM license and can't be used in a GPL program.
+    under the ACM license and can't be used in a GPL program.
 
     An alternative is that PETSC is GPL compatiable and has a symrcm 
     implemented from the original SPARSPAK. Its not clear that this is
     legal to me as I have found no clarification of the original license
     of SPARSPAK. As PETSC has had this code for over 10 years without
-    problem, we can perhaps assume that there is no issues. Maybe need
+    problem, we can perhaps assume that there are no issues. Maybe need
     to contact PETSC people or the SPARSPAK people at uni of waterloo
     to check issues.
 
@@ -155,18 +152,10 @@ Sparse Matrices:
     way to treat this but a complete rewrite of the sparse assignment
     functions...
 
-  * Port the sparse testing code into the DejaGNU testing code. Add tests
-    for spkron, matrix_type, luinc..
-
   * Other missing Functions
       - eigs
-      - dmperm      Use Tim Davis' BTF code when available
       - symmmd      Superseded by symamd
       - colmmd      Superseded by colamd
-      - sprandsym
-      - etreeplot
-      - treeplot
-      - gplot
       - treelayout
       - cholinc
       - condest

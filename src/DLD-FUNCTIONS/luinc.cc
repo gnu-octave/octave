@@ -279,6 +279,28 @@ are the same as for @dfn{lu}.\n\
 }
 
 /*
+
+%!test
+%! a=sparse([1,2,0,0;0,1,2,0;1e-14,0,3,0;0,0,0,1]);
+%! [l,u]=luinc(a,1e-10);
+%! assert(l*u, sparse([1,2,0,0;0,1,2,0;0,0,3,0;0,0,0,1]),1e-10);
+%! opts.droptol=1e-10;
+%! [l,u]=luinc(a,opts);
+%! assert(l*u, sparse([1,2,0,0;0,1,2,0;0,0,3,0;0,0,0,1]),1e-10);
+
+%!test
+%! a=sparse([1i,2,0,0;0,1,2,0;1e-14,0,3,0;0,0,0,1]);
+%! [l,u]=luinc(a,1e-10);
+%! assert(l*u, sparse([1i,2,0,0;0,1,2,0;0,0,3,0;0,0,0,1]),1e-10);
+%! opts.droptol=1e-10;
+%! [l,u]=luinc(a,opts);
+%! assert(l*u, sparse([1i,2,0,0;0,1,2,0;0,0,3,0;0,0,0,1]),1e-10);
+
+%!error splu(sparse([1i,2,0,0;0,1,2,0;1e-14,0,3,0;0,0,0,1]));
+
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

@@ -51,7 +51,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc ccolamd.cc \
 	lpsolve.cc lsode.cc lu.cc luinc.cc matrix_type.cc minmax.cc \
 	pinv.cc qr.cc quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc \
 	sparse.cc spchol.cc spdet.cc spkron.cc splu.cc spparms.cc \
-	sqrtm.cc svd.cc syl.cc time.cc \
+	spqr.cc sqrtm.cc svd.cc syl.cc time.cc \
 	__gnuplot_raw__.l __glpk__.cc __qp__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
@@ -252,7 +252,8 @@ OCTINTERP_LINK_DEPS = \
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
   -L. $(LIBOCTINTERP) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) \
-   $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+   $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
+   $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-errno-list mk-pkg-add \
@@ -313,7 +314,7 @@ octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(UMFPACK_LIBS) $(AMD_LIBS) $(COLAMD_LIBS) \
-	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(BLAS_LIBS) \
+	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
 	$(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic

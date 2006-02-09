@@ -44,6 +44,7 @@ Boston, MA 02110-1301, USA.
 #include "oct-sparse.h"
 #include "sparse-util.h"
 #include "SparsedbleCHOL.h"
+#include "SparseQR.h"
 
 #include "oct-sort.h"
 
@@ -697,7 +698,7 @@ SparseMatrix::inverse (SparseType& mattype, octave_idx_type& info) const
 
 SparseMatrix 
 SparseMatrix::dinverse (SparseType &mattyp, octave_idx_type& info, 
-			double& rcond, const bool force, 
+			double& rcond, const bool, 
 			const bool calccond) const
 {
   SparseMatrix retval;
@@ -751,7 +752,7 @@ SparseMatrix::dinverse (SparseType &mattyp, octave_idx_type& info,
 
 SparseMatrix 
 SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info, 
-			double& rcond, const bool force, 
+			double& rcond, const bool, 
 			const bool calccond) const
 {
   SparseMatrix retval;
@@ -989,7 +990,7 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
 
 SparseMatrix
 SparseMatrix::inverse (SparseType &mattype, octave_idx_type& info, 
-		       double& rcond, int force, int calc_cond) const
+		       double& rcond, int, int calc_cond) const
 {
   int typ = mattype.type (false);
   SparseMatrix ret;
@@ -5154,7 +5155,6 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
 				   &Numeric, control, info) ;
       UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
-#ifdef HAVE_LSSOLVE
       rcond = Info (UMFPACK_RCOND);
       volatile double rcond_plus_one = rcond + 1.0;
 
@@ -5173,9 +5173,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control, M
 	       rcond);
 
 	}
-      else
-#endif 
-	if (status < 0)
+      else if (status < 0)
 	  {
 	    (*current_liboctave_error_handler) 
 	      ("SparseMatrix::solve numeric factorization failed");
@@ -5337,9 +5335,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
 		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
 		       rcond);
 	      
-#ifdef HAVE_LSSOLVE
 		  return retval;
-#endif
 		}
 
 	      cholmod_dense *X;
@@ -5410,25 +5406,6 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
 		    }
 		}
 
-#ifndef HAVE_LSSOLVE
-	      rcond = Info (UMFPACK_RCOND);
-	      volatile double rcond_plus_one = rcond + 1.0;
-
-	      if (status == UMFPACK_WARNING_singular_matrix || 
-		  rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
-
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-	      
-		}
-#endif
-		
 	      UMFPACK_DNAME (report_info) (control, info);
 		
 	      UMFPACK_DNAME (free_numeric) (&Numeric);
@@ -5589,9 +5566,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
 		       rcond);
 	      
-#ifdef HAVE_LSSOLVE
 		  return retval;
-#endif
 		}
 
 	      cholmod_sparse *X;
@@ -5698,25 +5673,6 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b, octave_idx_typ
 		}
 
 	      retval.maybe_compress ();
-
-#ifndef HAVE_LSSOLVE
-	      rcond = Info (UMFPACK_RCOND);
-	      volatile double rcond_plus_one = rcond + 1.0;
-
-	      if (status == UMFPACK_WARNING_singular_matrix || 
-		  rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
-	      
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-
-		}
-#endif
 
 	      UMFPACK_DNAME (report_info) (control, info);
 
@@ -5868,9 +5824,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_ty
 		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
 		       rcond);
 	      
-#ifdef HAVE_LSSOLVE
 		  return retval;
-#endif
 		}
 
 	      cholmod_dense *X;
@@ -5959,25 +5913,6 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, octave_idx_ty
 		  for (octave_idx_type i = 0; i < b_nr; i++)
 		    retval (i, j) = Complex (Xx[i], Xz[i]);
 		}
-
-#ifndef HAVE_LSSOLVE
-	      rcond = Info (UMFPACK_RCOND);
-	      volatile double rcond_plus_one = rcond + 1.0;
-
-	      if (status == UMFPACK_WARNING_singular_matrix || 
-		  rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
-
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-
-		}
-#endif
 
 	      UMFPACK_DNAME (report_info) (control, info);
 
@@ -6140,9 +6075,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
 		       rcond);
 	      
-#ifdef HAVE_LSSOLVE
 		  return retval;
-#endif
 		}
 
 	      cholmod_sparse *X;
@@ -6260,25 +6193,6 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		}
 
 	      retval.maybe_compress ();
-
-#ifndef HAVE_LSSOLVE
-	      rcond = Info (UMFPACK_RCOND);
-	      volatile double rcond_plus_one = rcond + 1.0;
-
-	      if (status == UMFPACK_WARNING_singular_matrix || 
-		  rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
-
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-
-		}
-#endif
 
 	      UMFPACK_DNAME (report_info) (control, info);
 
@@ -6761,12 +6675,9 @@ SparseMatrix::lssolve (const Matrix& b, octave_idx_type& info) const
 }
 
 Matrix
-SparseMatrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) const
+SparseMatrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type&) const
 {
-  info = -1;
-  (*current_liboctave_error_handler) 
-    ("SparseMatrix::lssolve not implemented yet");
-  return Matrix ();
+  return qrsolve (*this, b, info);
 }
 
 SparseMatrix
@@ -6785,12 +6696,9 @@ SparseMatrix::lssolve (const SparseMatrix& b, octave_idx_type& info) const
 }
 
 SparseMatrix
-SparseMatrix::lssolve (const SparseMatrix& b, octave_idx_type& info, octave_idx_type& rank) const
+SparseMatrix::lssolve (const SparseMatrix& b, octave_idx_type& info, octave_idx_type&) const
 {
-  info = -1;
-  (*current_liboctave_error_handler) 
-    ("SparseMatrix::lssolve not implemented yet");
-  return SparseMatrix ();
+  return qrsolve (*this, b, info);
 }
 
 ComplexMatrix
@@ -6809,12 +6717,9 @@ SparseMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info) const
 }
 
 ComplexMatrix
-SparseMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_idx_type& rank) const
+SparseMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_idx_type&) const
 {
-  info = -1;
-  (*current_liboctave_error_handler) 
-    ("SparseMatrix::lssolve not implemented yet");
-  return ComplexMatrix ();
+  return qrsolve (*this, b, info);
 }
 
 SparseComplexMatrix
@@ -6834,12 +6739,9 @@ SparseMatrix::lssolve (const SparseComplexMatrix& b, octave_idx_type& info) cons
 
 SparseComplexMatrix
 SparseMatrix::lssolve (const SparseComplexMatrix& b, octave_idx_type& info, 
-		       octave_idx_type& rank) const
+		       octave_idx_type&) const
 {
-  info = -1;
-  (*current_liboctave_error_handler) 
-    ("SparseMatrix::lssolve not implemented yet");
-  return SparseComplexMatrix ();
+  return qrsolve (*this, b, info);
 }
 
 ColumnVector

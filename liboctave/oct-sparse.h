@@ -42,26 +42,24 @@ extern "C" {
 
 #if defined (HAVE_UFSPARSE_COLAMD_H)
 #include <ufsparse/colamd.h>
-#elif defined (HAVE_UMFPACK_COLAMD_H)
-#include <umfpack/colamd.h>
+#elif defined (HAVE_COLAMD_COLAMD_H)
+#include <colamd/colamd.h>
 #elif defined (HAVE_COLAMD_H)
 #include <colamd.h>
 #endif
 
 #if defined (HAVE_UFSPARSE_CCOLAMD_H)
 #include <ufsparse/ccolamd.h>
-#elif defined (HAVE_UMFPACK_CCOLAMD_H)
-#include <umfpack/ccolamd.h>
+#elif defined (HAVE_CCOLAMD_CCOLAMD_H)
+#include <ccolamd/ccolamd.h>
 #elif defined (HAVE_CCOLAMD_H)
 #include <ccolamd.h>
 #endif
 
-#if defined (HAVE_METIS_METIS_H)
-#include <metis/metis.h>
-#elif defined (HAVE_UFSPARSE_METIS_H)
+#if defined (HAVE_UFSPARSE_METIS_H)
 #include <ufsparse/metis.h>
-#elif defined (HAVE_UMFPACK_METIS_H)
-#include <umfpack/metis.h>
+#elif defined (HAVE_METIS_METIS_H)
+#include <metis/metis.h>
 #elif defined (HAVE_METIS_H)
 #include <metis.h>
 #endif
@@ -69,9 +67,17 @@ extern "C" {
 #if defined (HAVE_UFSPARSE_CHOLMOD_H)
 #include <ufsparse/cholmod.h>
 #elif defined (HAVE_UMFPACK_CHOLMOD_H)
-#include <umfpack/cholmod.h>
+#include <cholmod/cholmod.h>
 #elif defined (HAVE_CHOLMOD_H)
 #include <cholmod.h>
+#endif
+
+#if defined (HAVE_UFSPARSE_CXS_H)
+#include <ufsparse/cxs.h>
+#elif defined (HAVE_CXSPARSE_CXS_H)
+#include <cxsparse/cxs.h>
+#elif defined (HAVE_CXS_H)
+#include <cxs.h>
 #endif
 
 #if (defined (HAVE_UFSPARSE_CHOLMOD_H) \

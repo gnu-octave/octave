@@ -157,6 +157,13 @@ matrix type.\n\
 		retval = octave_value ("Tridiagonal Positive Definite");
 	      else if (typ == SparseType::Hermitian)
 		retval = octave_value ("Positive Definite");
+	      else if (typ == SparseType::Rectangular)
+		{
+		  if (args(0).rows() == args(0).columns())
+		    retval = octave_value ("Singular");
+		  else
+		    retval = octave_value ("Rectangular");
+		}
 	      else if (typ == SparseType::Full)
 		retval = octave_value ("Full");
 	      else
@@ -282,6 +289,66 @@ matrix type.\n\
 
   return retval;
 }
+
+/*
+ 
+%!assert(matrix_type(speye(10,10)),"Diagonal");
+%!assert(matrix_type(speye(10,10)([2:10,1],:)),"Permuted Diagonal");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]]),"Upper");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]](:,[2,1,3:11])),"Permuted Upper");
+%!assert(matrix_type([speye(10,10),sparse(10,1);1,sparse(1,9),1]),"Lower");
+%!assert(matrix_type([speye(10,10),sparse(10,1);1,sparse(1,9),1]([2,1,3:11],:)),"Permuted Lower");
+%!test
+%! bnd=spparms("bandden");
+%! spparms("bandden",0.5);
+%! a = spdiags(randn(10,3),[-1,0,1],10,10);
+%! assert(matrix_type(a),"Tridiagonal");
+%! assert(matrix_type(abs(a')+abs(a)),"Tridiagonal Positive Definite");
+%! spparms("bandden",bnd);
+%!test
+%! bnd=spparms("bandden");
+%! spparms("bandden",0.5);
+%! a = spdiags(randn(10,4),[-2:1],10,10);
+%! assert(matrix_type(a),"Banded");
+%! assert(matrix_type(a'*a),"Banded Positive Definite");
+%! spparms("bandden",bnd);
+%!test
+%! a=[speye(10,10),[sparse(9,1);1];-1,sparse(1,9),1];
+%! assert(matrix_type(a),"Full");
+%! assert(matrix_type(a'*a),"Positive Definite");
+%!assert(matrix_type(speye(10,11)),"Rectangular");
+
+%!assert(matrix_type(1i*speye(10,10)),"Diagonal");
+%!assert(matrix_type(1i*speye(10,10)([2:10,1],:)),"Permuted Diagonal");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1i;sparse(9,1);1]]),"Upper");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1i;sparse(9,1);1]](:,[2,1,3:11])),"Permuted Upper");
+%!assert(matrix_type([speye(10,10),sparse(10,1);1i,sparse(1,9),1]),"Lower");
+%!assert(matrix_type([speye(10,10),sparse(10,1);1i,sparse(1,9),1]([2,1,3:11],:)),"Permuted Lower");
+%!test
+%! bnd=spparms("bandden");
+%! spparms("bandden",0.5);
+%! assert(matrix_type(spdiags(1i*randn(10,3),[-1,0,1],10,10)),"Tridiagonal");
+%! a = 1i*randn(9,1);a=[[a;0],ones(10,1),[0;-a]];
+%! assert(matrix_type(spdiags(a,[-1,0,1],10,10)),"Tridiagonal Positive Definite");
+%! spparms("bandden",bnd);
+%!test
+%! bnd=spparms("bandden");
+%! spparms("bandden",0.5);
+%! assert(matrix_type(spdiags(1i*randn(10,4),[-2:1],10,10)),"Banded");
+%! a = 1i*randn(9,2);a=[[a;[0,0]],ones(10,1),[[0;-a(:,2)],[0;0;-a(1:8,1)]]];
+%! assert(matrix_type(spdiags(a,[-2:2],10,10)),"Banded Positive Definite");
+%! spparms("bandden",bnd);
+%!test
+%! a=[speye(10,10),[sparse(9,1);1i];-1,sparse(1,9),1];
+%! assert(matrix_type(a),"Full");
+%! assert(matrix_type(a'*a),"Positive Definite");
+%!assert(matrix_type(speye(10,11)),"Rectangular");
+
+%!test
+%! a = matrix_type(spdiags(randn(10,3),[-1,0,1],10,10),"Singular");
+%! assert(matrix_type(a),"Singular");
+
+*/
 
 /*
 ;;; Local Variables: ***

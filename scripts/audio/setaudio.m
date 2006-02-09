@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} setaudio ([@var{w_type} [, @var{value}]])
+## @deftypefn {Function File} {} setaudio ([@var{w_type} [, @var{value}]])
 ## Execute the shell command @samp{mixer [@var{w_type} [, @var{value}]]}
 ## @end deftypefn
 

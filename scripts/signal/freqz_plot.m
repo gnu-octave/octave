@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} freqz_plot (@var{w}, @var{h})
+## @deftypefn {Function File} {} freqz_plot (@var{w}, @var{h})
 ## Plot the pass band, stop band and phase response of @var{h}.
 ## @end deftypefn
 

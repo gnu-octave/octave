@@ -914,6 +914,26 @@ cat >>$TESTS <<EOF
 %!assert(sparse(tcs\xs),sparse(tcf\xf),1e-10);
 
 EOF
+
+cat >>$TESTS <<EOF
+%% QR solver tests
+
+%!function f(a, sz, feps)
+%! b = randn(sz); x = a \b; 
+%! assert (a * x, b, feps);
+%! b = randn(sz)+1i*randn(sz); x = a \ b;  
+%! assert (a * x, b, feps);
+%! b = sprandn(sz(1),sz(2),0.2); x = a \b;
+%! assert (sparse(a * x), b, feps);
+%! b = sprandn(sz(1),sz(2),0.2)+1i*sprandn(sz(1),sz(2),0.2); x = a \b; 
+%! assert (sparse(a * x), b, feps);
+%!test
+%! a = alpha*sprandn(10,11,0.2)+speye(10,11); f(a,[10,2],1e-10);
+%! ## Test this by forcing matrix_type
+%! a = alpha*sprandn(10,10,0.2)+speye(10,10); matrix_type(a, "Singular");
+%! f(a,[10,2],1e-10);
+
+EOF
 }
 
 

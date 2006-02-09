@@ -1,3 +1,15 @@
+2006-02-09  David Bateman  <dbateman@free.fr>
+
+        * general/triu.m: Minimum change to allow sparse matrix. More needed
+        for arbitrary user type.
+        * general/tril.m: ditto.
+        * sparse/sprand.m : Doc fix.
+        * sparse/sprandn.m: Ditto.
+        * sparse/sprandsym.m: New function.
+        * audio/setaudio.m, general/cart2pol.m, general/cart2sph.m,
+        general/pol2cart.m, general/sph2cart.m, signal/freqz_plot.m:
+        Update for syntax error for latest texinfo.tex file.
+
 2006-02-02  John W. Eaton  <jwe@octave.org>
 
 	* plot/grid.m: Append ";\n" to "set grid" command.

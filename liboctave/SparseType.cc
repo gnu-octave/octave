@@ -806,7 +806,7 @@ SparseType::info (void) const
 	  ("Hermitian/Symmetric Tridiagonal Sparse Matrix");
       else if (typ == SparseType::Rectangular)
 	(*current_liboctave_warning_handler) 
-	  ("Rectangular Sparse Matrix");
+	  ("Rectangular/Singular Sparse Matrix");
       else if (typ == SparseType::Full)
 	(*current_liboctave_warning_handler) 
 	  ("Full Sparse Matrix");

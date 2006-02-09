@@ -39,12 +39,7 @@ Boston, MA 02110-1301, USA.
 static inline bool
 result_ok (octave_idx_type info)
 {
-#ifdef HAVE_LSSOLVE
   return (info != -2 && info != -1);
-#else
-  // If the matrix is singular, who cares as we don't have QR based solver yet
-  return (info != -1);
-#endif
 }
 
 static void

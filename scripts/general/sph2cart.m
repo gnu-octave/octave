@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} [@var{x}, @var{y}, @var{z}] = sph2cart (@var{theta}, @var{phi}, @var{r})
+## @deftypefn {Function File} {[@var{x}, @var{y}, @var{z}] =} sph2cart (@var{theta}, @var{phi}, @var{r})
 ## Transform spherical to cartesian coordinates.
 ## @var{x}, @var{y} and @var{z} must be of same shape.
 ## @var{theta} describes the angle relative to the x-axis.

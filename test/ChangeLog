@@ -1,3 +1,7 @@
+2006-02-09  David Bateman  <dbateman@free.fr>
+
+        * test/build_sparse_tests.sh: Add tests for sparse QR solvers.
+
 2006-01-21  David Bateman  <dbateman@free.fr>
 
         * build_sparsetest.sh: Add new un-ordered indexing, assignment and

@@ -449,7 +449,7 @@ oct_file_in_path (const std::string& name)
   
   if (len > 0)
     {
-      if (len > 2 && name [len - 4] == '.' && name [len - 3] == 'o'
+      if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'o'
 	  && name [len - 2] == 'c' && name [len - 1] == 't')
 	retval = file_in_path (name, "");
       else

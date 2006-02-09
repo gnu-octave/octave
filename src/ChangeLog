@@ -1,3 +1,8 @@
+2006-02-09  John W. Eaton  <jwe@octave.org>
+
+	* utils.cc (oct_file_in_path): Check len > 4, not len > 2.
+	From Larrie Carr <larrie@telus.net>.
+
 2006-02-09  David Bateman  <dbateman@free.fr>
 
         * DLD-FUNCTIONS/spqr.cc: New file for sparse QR and dmperm based on

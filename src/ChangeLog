@@ -1,3 +1,14 @@
+2006-02-10  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (\[{S}*): Maybe set lexer_flags.looking_at_return_list or
+	lexer_flags.looking_at_matrix_or_assign_lhs here.
+	* parse.y 
+	(return_list_beg): Don't use in_return_list here.
+	(assign_lhs, matrix): Don't use in_matrix_or_assign_lhs here.
+	(in_matrix_or_assign_lhs, in_return_list): Delete unused macros.
+	(matrix): Clear lexer_flags.looking_at_matrix_or_assign_lhs in all
+	cases.
+
 2006-02-09  John W. Eaton  <jwe@octave.org>
 
 	* utils.cc (oct_file_in_path): Check len > 4, not len > 2.

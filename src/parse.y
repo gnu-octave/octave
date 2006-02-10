@@ -601,18 +601,19 @@ constant	: NUM
 		  { $$ = $1; }
 		;
 
-in_matrix_or_assign_lhs
-		: // empty
-		  { lexer_flags.looking_at_matrix_or_assign_lhs = true; }
-		;
-
 matrix		: '[' ']'
-		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| '[' ';' ']'
-		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| '[' in_matrix_or_assign_lhs matrix_rows ']'
 		  {
-		    $$ = finish_matrix ($3);
+		    $$ = new tree_constant (octave_value (Matrix ()));
+		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		  }
+		| '[' ';' ']'
+		  {
+		    $$ = new tree_constant (octave_value (Matrix ()));
+		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		  }
+		| '[' matrix_rows ']'
+		  {
+		    $$ = finish_matrix ($2);
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
 		  }
 		;
@@ -866,9 +867,9 @@ simple_expr	: colon_expr
 
 assign_lhs	: simple_expr
 		  { $$ = new tree_argument_list ($1); }
-		| '[' in_matrix_or_assign_lhs arg_list CLOSE_BRACE
+		| '[' arg_list CLOSE_BRACE
 		  {
-		    $$ = $3;
+		    $$ = $2;
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
 		  }
 		;
@@ -1147,10 +1148,6 @@ local_symtab	: // empty
 		  { curr_sym_tab = tmp_local_sym_tab; }
 		;
 
-in_return_list	: // empty
-		  { lexer_flags.looking_at_return_list = true; }
-		;
-
 // ===========================
 // List of function parameters
 // ===========================
@@ -1223,7 +1220,7 @@ param_list2	: identifier
 // List of function return value names
 // ===================================
 
-return_list_beg	: '[' in_return_list local_symtab
+return_list_beg	: '[' local_symtab
 		;
 
 return_list	: return_list_beg return_list_end

@@ -484,6 +484,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
 
+    if (lexer_flags.defining_func && ! lexer_flags.parsed_function_name)
+      lexer_flags.looking_at_return_list = true;
+    else
+      lexer_flags.looking_at_matrix_or_assign_lhs = true;
+
     promptflag--;
     eat_whitespace ();
 

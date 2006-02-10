@@ -529,8 +529,8 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
      The strategy here is to access the elements of A along the \
      dimension  specified by DIM.  This means that we loop over each \
      element of R and adjust the index into A as needed.  Store the \
-     cummulative product of all dimensions of A in CP.  The last \
-     element of CP is the total number of elements of A.  */ \
+     cummulative product of all dimensions of A in CP_SZ.  The last \
+     element of CP_SZ is the total number of elements of A.  */ \
  \
   Array<octave_idx_type> cp_sz (nd+1, 1); \
   for (int i = 1; i <= nd; i++) \

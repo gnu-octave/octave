@@ -24,16 +24,13 @@ Boston, MA 02110-1301, USA.
 #include <config.h>
 #endif
 
-#if HAVE_CXSPARSE
-#include <cxsparse/cxs.h>
-#endif
-
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "oct-obj.h"
 #include "utils.h"
 
+#include "oct-sparse.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 #include "SparseQR.h"

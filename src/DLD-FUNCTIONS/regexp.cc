@@ -631,7 +631,7 @@ matches to the first match.\n\
 
 %!test
 %! ## This test is expected to fail if PCRE is not installed
-%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
 %!   [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
 %!   assert (s,1)
 %!   assert (e,10)
@@ -650,7 +650,7 @@ matches to the first match.\n\
 
 %!test
 %! ## This test is expected to fail if PCRE is not installed
-%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
 %!   [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %!   assert (s,1)
 %!   assert (e,10)
@@ -669,7 +669,7 @@ matches to the first match.\n\
 
 %!test
 %! ## This test is expected to fail if PCRE is not installed
-%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
 %!   [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
 %!   assert (size(t), [1,2]);
 %!   assert (t{1}{1},'John');
@@ -770,7 +770,7 @@ if there are none. See @code{regexp} for more details\n\
 
 %!test
 %! ## This test is expected to fail if PCRE is not installed
-%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
 %!   [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
 %!   assert (s,1)
 %!   assert (e,10)
@@ -789,7 +789,7 @@ if there are none. See @code{regexp} for more details\n\
 
 %!test
 %! ## This test is expected to fail if PCRE is not installed
-%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
 %!   [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %!   assert (s,1)
 %!   assert (e,10)

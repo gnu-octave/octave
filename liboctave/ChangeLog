@@ -1,8 +1,10 @@
 2006-02-13  John W. Eaton  <jwe@octave.org>
 
-	* kpse.cc (kpse_path_iterator::operator =): Declare as private
-	function but don't define to prevent attempts to use assignment
-	operator.
+	* kpse.cc (kpse_path_iterator::next): Reverse order of tests in
+	while loop condition.
+	(kpse_path_iterator::operator =): Declare as private function but
+	don't define to prevent attempts to use assignment operator.
+	Don't define ST_NLINK_TRICK for Cygwin systems.
 
 2006-02-10  John W. Eaton  <jwe@octave.org>
 

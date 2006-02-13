@@ -73,8 +73,9 @@ extern "C" {
 
 /* If you want to find subdirectories in a directory with non-Unix
    semantics (specifically, if a directory with no subdirectories does
-   not have exactly two links), define this.  */
-#if !defined (DOSISH) || defined(__DJGPP__)
+   not have exactly two links), define this.  Cygwin systems do not
+   have Unix semantics for network mapped drives.  */
+#if defined(__DJGPP__) || ! (defined (DOSISH) || defined (__CYGWIN__))
 /* Surprise!  DJGPP returns st_nlink exactly like on Unix.  */
 #define ST_NLINK_TRICK
 #endif /* either not DOSISH or __DJGPP__ */
@@ -465,7 +466,7 @@ private:
       b = e + 1;
 
       /* Skip any consecutive colons.  */
-      while (kpse_is_env_sep (path[b]) && b < len)
+      while (b < len && kpse_is_env_sep (path[b]))
 	b++;
 
       if (b >= len)

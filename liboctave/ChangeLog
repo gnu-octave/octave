@@ -1,3 +1,9 @@
+2006-02-13  John W. Eaton  <jwe@octave.org>
+
+	* kpse.cc (kpse_path_iterator::operator =): Declare as private
+	function but don't define to prevent attempts to use assignment
+	operator.
+
 2006-02-10  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (MX_ND_REDUCTION): Store in cummulative

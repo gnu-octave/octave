@@ -473,6 +473,9 @@ private:
       else
 	set_end ();
     }
+
+  // No assignment.
+  kpse_path_iterator& operator = (const kpse_path_iterator&);
 };
 
 /* Here's the simple one, when a program just wants a value.  */

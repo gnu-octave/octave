@@ -1,3 +1,8 @@
+2006-02-13  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (LINK_DEPS): Add missing dependencies on colamd,
+	ccolamd and cxsparse 
+
 2006-02-13  John W. Eaton  <jwe@octave.org>
 
 	* kpse.cc (kpse_path_iterator::next): Reverse order of tests in

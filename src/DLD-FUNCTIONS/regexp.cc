@@ -93,20 +93,10 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	  nopts--;
 	}
 #ifdef HAVE_PCRE
-      // XXX FIXME XXX named tokens still broken. Disable for now
-#if 0
       else if (str.find("start", 0) && str.find("end", 0) &&
 	       str.find("tokenextents", 0) && str.find("match", 0) &&
 	       str.find("tokens", 0) && str.find("names", 0))
 	error ("%s: unrecognized option", nm.c_str());
-#else
-      else if (str.find("names", 0) == 0)
-	error ("%s: named tokens not implemented in this version", nm.c_str());
-      else if (str.find("start", 0) && str.find("end", 0) &&
-	       str.find("tokenextents", 0) && str.find("match", 0) &&
-	       str.find("tokens", 0))
-	error ("%s: unrecognized option", nm.c_str());
-#endif
 #else
       else if (str.find("names", 0) == 0)
 	error ("%s: named tokens not implemented in this version", nm.c_str());
@@ -129,19 +119,70 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       // a syntax "(?<name>...)", so fix that here. Also an expression like
       // "(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)" should
       // be perfectly legal, while pcre does not allow the same named token
-      // name of both sides of the alternative. Also fix that here by replacing
-      // duplicate name tokens by dummy names, and dealing with the dummy names
-      // later.
+      // name on both sides of the alternative. Also fix that here by replacing
+      // name tokens by dummy names, and dealing with the dummy names later.
       
+      size_t pos = 0;
+      size_t new_pos;
+      string_vector named;
+      int nnames = 0;
+      int inames = 0;
+      OSSTREAM buf;
+      Array<int> named_idx;
 
+      while ((new_pos = pattern.find ("(?<",pos)) != NPOS)
+	{
+	  size_t tmp_pos = pattern.find_first_of ('>',new_pos);
 
+	  if (tmp_pos == NPOS)
+	    {
+	      error ("syntax error in pattern");
+	      break;
+	    }
+
+	  std::string tmp_name = pattern.substr(new_pos+3,tmp_pos-new_pos-3);
+	  bool found = false;
+
+	  for (int i = 0; i < nnames; i++)
+	    if (named(i) == tmp_name)
+	      {
+		named_idx.resize(inames+1);
+		named_idx(inames) = i;
+		found = true;
+		break;
+	      }
+	  if (! found)
+	    {
+	      named_idx.resize(inames+1);
+	      named_idx(inames) = nnames;
+	      named.append(tmp_name);
+	      nnames++;
+	    }
+
+	  if (new_pos - pos > 0)
+	    buf << pattern.substr(pos,new_pos-pos);
+	  if (inames < 10)
+	    buf << "(?P<n00" << inames++;
+	  else if (inames < 100)
+	    buf << "(?P<n0" << inames++;
+	  else
+	    buf << "(?P<n" << inames++;
+	  pos = tmp_pos;
+	}
+
+      buf << pattern.substr(pos) << OSSTREAM_ENDS;
+
+      if (error_state)
+	return retval;
 
       // Compile expression
       pcre *re;
       const char *err;
       int erroffset;
-      re = pcre_compile(pattern.c_str(), (case_insensitive ? PCRE_CASELESS : 0),
+      re = pcre_compile(OSSTREAM_C_STR(buf), 
+			(case_insensitive ? PCRE_CASELESS : 0),
 			&err, &erroffset, NULL);
+      OSSTREAM_FREEZE (buf);
     
       if (re == NULL) {
 	error("%s: %s at position %d of expression", nm.c_str(), 
@@ -163,18 +204,16 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 
       OCTAVE_LOCAL_BUFFER(int, ovector, (subpatterns+1)*3);
       OCTAVE_LOCAL_BUFFER(int, nidx, namecount);
-      string_vector names (namecount);
 
       for (int i = 0; i < namecount; i++)
 	{
 	  // Index of subpattern in first two bytes MSB first of name.
-	  // Extract name and index.
+	  // Extract index.
 	  nidx[i] = ((int)nametable[i*nameentrysize]) << 8 |
 	    (int)nametable[i*nameentrysize+1];
-	  names(i) = std::string((&(nametable[i*nameentrysize+2])));
 	}
 
-      Cell named_tokens(dim_vector(namecount,1));
+      Cell named_tokens(dim_vector(nnames,1));
 
       while(true)
 	{
@@ -193,6 +232,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	    break;
 	  else
 	    {
+	      int pos_match = 0;
 	      s.resize (dim_vector(1, sz+1));
 	      s(sz) = double (ovector[0]+1);
 	      e.resize (dim_vector(1, sz+1));
@@ -201,9 +241,13 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	      Matrix mat_te(matches-1,2);
 	      for (int i = 1; i < matches; i++)
 		{
-		  mat_te(i-1,0) = double (ovector[2*i]+1);
-		  mat_te(i-1,1) = double (ovector[2*i+1]);
+		  if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+		    {
+		      mat_te(pos_match,0) = double (ovector[2*i]+1);
+		      mat_te(pos_match++,1) = double (ovector[2*i+1]);
+		    }
 		}
+	      mat_te.resize(pos_match,2);
 	      te(sz) = mat_te;
 
 	      const char **listptr;
@@ -221,19 +265,32 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	      m(sz) =  std::string(*listptr);
 
 	      t.resize (dim_vector(1, sz+1));
-	      Cell cell_t (dim_vector(1,matches-1));
+	      Cell cell_t (dim_vector(1,pos_match));
+	      pos_match = 0;
 	      for (int i = 1; i < matches; i++)
-		cell_t(i-1) = std::string(*(listptr+i));
+		if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+		  cell_t(pos_match++) = std::string(*(listptr+i));
 	      t(sz) = cell_t;
 
-	      for (int i = 0; i < namecount; i++)
-		{
-		  Cell tmp = named_tokens(i);
-		  tmp.resize(dim_vector(1,sz+1));
-		  tmp(sz) = 
-		    std::string(*(listptr+nidx[i]));
-		  named_tokens(i) = tmp;
-		}
+	      if (namecount > 0)
+		for (int i = 1; i < matches; i++)
+		  {
+		    if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)	
+		      {
+			if (sz == 0)
+			  {
+			    named_tokens(named_idx(i-1)) = 
+			      std::string(*(listptr+nidx[i-1]));
+			  }
+			else
+			  {
+			    Cell tmp = named_tokens(named_idx(i-1));
+			    tmp.resize(dim_vector(1,sz+1));
+			    tmp(sz) = std::string(*(listptr+nidx[i-1]));
+			    named_tokens(named_idx(i-1)) = tmp;
+			  }
+		      }
+		  }
 
 	      pcre_free_substring_list(listptr);
 
@@ -245,8 +302,8 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	    }
 	}
 
-      for (int i = 0; i < namecount; i++)
-	nmap.assign (names(i), named_tokens(i));
+      for (int i = 0; i < nnames; i++)
+	nmap.assign (named(i), named_tokens(i));
 
       pcre_free(re);
 #else
@@ -572,41 +629,59 @@ matches to the first match.\n\
 %! ## Matlab gives [1,0] here but that seems wrong.
 %! assert (size(t), [1,1])
 
-## XXX FIXME XXX Disable test for now as PCRE version not written
-%!#test
+%!test
 %! ## This test is expected to fail if PCRE is not installed
-%! [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'short test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'short')
-%! assert (t{1}{2},'test')
-%! assert (size(nm), [1,1])
-%! assert (isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1','word2'})
-%! assert (nm.word1,'short')
-%! assert (nm.word2,'test')
+%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%!   [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
+%!   assert (s,1)
+%!   assert (e,10)
+%!   assert (size(te), [1,1])
+%!   assert (te{1}, [1 5; 7, 10])
+%!   assert (m{1},'short test')
+%!   assert (size(t),[1,1])
+%!   assert (t{1}{1},'short')
+%!   assert (t{1}{2},'test')
+%!   assert (size(nm), [1,1])
+%!   assert (!isempty(fieldnames(nm)))
+%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
+%!   assert (nm.word1,'short')
+%!   assert (nm.word2,'test')
+%! endif
 
-## XXX FIXME XXX Disable test for now as PCRE version not written
-%!#test
+%!test
 %! ## This test is expected to fail if PCRE is not installed
-%! [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'short test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'short')
-%! assert (t{1}{2},'test')
-%! assert (size(nm), [1,1])
-%! assert (isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1','word2'})
-%! assert (nm.word1,'short')
-%! assert (nm.word2,'test')
+%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%!   [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%!   assert (s,1)
+%!   assert (e,10)
+%!   assert (size(te), [1,1])
+%!   assert (te{1}, [1 5; 7, 10])
+%!   assert (m{1},'short test')
+%!   assert (size(t),[1,1])
+%!   assert (t{1}{1},'short')
+%!   assert (t{1}{2},'test')
+%!   assert (size(nm), [1,1])
+%!   assert (!isempty(fieldnames(nm)))
+%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
+%!   assert (nm.word1,'short')
+%!   assert (nm.word2,'test')
+%! endif
+
+%!test
+%! ## This test is expected to fail if PCRE is not installed
+%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%!   [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
+%!   assert (size(t), [1,2]);
+%!   assert (t{1}{1},'John');
+%!   assert (t{1}{2},'Davis');
+%!   assert (t{2}{1},'Rogers');
+%!   assert (t{2}{2},'James');
+%!   assert (size(nm), [1,1]);
+%!   assert (nm.first{1},'John');
+%!   assert (nm.first{2},'James');
+%!   assert (nm.last{1},'Davis');
+%!   assert (nm.last{2},'Rogers');
+%! endif
 
 %!error regexp('string', 'tri', 'BadArg');
 %!error regexp('string');
@@ -693,41 +768,43 @@ if there are none. See @code{regexp} for more details\n\
 %! ## Matlab gives [1,0] here but that seems wrong.
 %! assert (size(t), [1,1])
 
-## XXX FIXME XXX Disable test for now as PCRE version not written
-%!#test
+%!test
 %! ## This test is expected to fail if PCRE is not installed
-%! [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'ShoRt Test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'ShoRt')
-%! assert (t{1}{2},'Test')
-%! assert (size(nm), [1,1])
-%! assert (isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1','word2'})
-%! assert (nm.word1,'ShoRt')
-%! assert (nm.word2,'Test')
+%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%!   [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
+%!   assert (s,1)
+%!   assert (e,10)
+%!   assert (size(te), [1,1])
+%!   assert (te{1}, [1 5; 7, 10])
+%!   assert (m{1},'ShoRt Test')
+%!   assert (size(t),[1,1])
+%!   assert (t{1}{1},'ShoRt')
+%!   assert (t{1}{2},'Test')
+%!   assert (size(nm), [1,1])
+%!   assert (!isempty(fieldnames(nm)))
+%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
+%!   assert (nm.word1,'ShoRt')
+%!   assert (nm.word2,'Test')
+%! endif
 
-## XXX FIXME XXX Disable test for now as PCRE version not written
-%!#test
+%!test
 %! ## This test is expected to fail if PCRE is not installed
-%! [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'ShoRt Test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'ShoRt')
-%! assert (t{1}{2},'Test')
-%! assert (size(nm), [1,1])
-%! assert (isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1','word2'})
-%! assert (nm.word1,'ShoRt')
-%! assert (nm.word2,'Test')
+%! if (strfind(octave_config_info ("DEFS"),"HAVE_PCRE"))
+%!   [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%!   assert (s,1)
+%!   assert (e,10)
+%!   assert (size(te), [1,1])
+%!   assert (te{1}, [1 5; 7, 10])
+%!   assert (m{1},'ShoRt Test')
+%!   assert (size(t),[1,1])
+%!   assert (t{1}{1},'ShoRt')
+%!   assert (t{1}{2},'Test')
+%!   assert (size(nm), [1,1])
+%!   assert (!isempty(fieldnames(nm)))
+%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
+%!   assert (nm.word1,'ShoRt')
+%!   assert (nm.word2,'Test')
+%! endif
 
 %!error regexpi('string', 'tri', 'BadArg');
 %!error regexpi('string');

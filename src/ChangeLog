@@ -1,3 +1,8 @@
+2006-02-13  David Bateman  <dbateman@free.fr>
+
+	* DLD_FUNCTIONS/regexp.cc (octregexp): Add matlab compatiable
+	named tokens. Update the tests
+
 2006-02-10  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (\[{S}*): Maybe set lexer_flags.looking_at_return_list or

@@ -23,6 +23,8 @@
 ## the CDF) at @var{x} of the Gamma distribution with parameters @var{a}
 ## and @var{b}. 
 ## @end deftypefn
+##
+## @seealso{gamma, gammaln, gammainc, gampdf, gamcdf, gamrnd}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Gamma distribution

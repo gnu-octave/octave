@@ -300,7 +300,11 @@ Begin an if block.\n\
     "The default statement in a switch block.", },
 
   { "persistent",
-    "Declare variables as persistent.", },
+    "Declare variables as persistent.  A variable that has been declared\n\
+persistent within a function will retain its contents in memory between\n\
+subsequent calls to the same function.  The difference between persistent\n\
+variables and global variables is that persistent variables are local in scope\n\
+to a particular function and are not visible elsewhere.", },
 
   { "replot",
     "Replot a graphic.", },

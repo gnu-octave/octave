@@ -23,6 +23,8 @@
 ## (PDF) at @var{x} of the Gamma distribution with parameters @var{a}
 ## and @var{b}.
 ## @end deftypefn
+##
+## @seealso{gamma, gammaln, gammainc, gamcdf, gaminv, gamrnd}
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: PDF of the Gamma distribution

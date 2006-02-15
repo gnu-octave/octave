@@ -1,3 +1,10 @@
+2006-02-15  Keith Goodman  <kwgoodman@gmail.com>
+ 
+ 	* statistics/distributions/gamcdf.m: Doc fix.
+ 	* statistics/distributions/gaminv.m: Doc fix.
+ 	* statistics/distributions/gampdf.m: Doc fix.
+ 	* statistics/distributions/gamrnd.m: Doc fix.
+
 2006-02-09  David Bateman  <dbateman@free.fr>
 
         * general/triu.m: Minimum change to allow sparse matrix. More needed

@@ -61,6 +61,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
+#include "oct-map.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "toplev.h"
@@ -3393,9 +3394,17 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 std::string
 lookup_autoload (const std::string& nm)
 {
-  return
-    octave_env::make_absolute (Vload_path_dir_path.find (autoload_map[nm]),
-			       octave_env::getcwd ());
+  std::string retval;
+
+  typedef std::map<std::string, std::string>::const_iterator am_iter;
+
+  am_iter p = autoload_map.find (nm);
+
+  if (p != autoload_map.end ())
+    retval = octave_env::make_absolute (Vload_path_dir_path.find (p->second),
+					octave_env::getcwd ());
+
+  return retval;
 }
 
 string_vector 
@@ -3404,9 +3413,8 @@ autoloaded_functions (void)
   string_vector names (autoload_map.size());
 
   octave_idx_type i = 0;
-  std::map<std::string, std::string>::const_iterator p;
-  for (p = std::map<std::string, std::string>::iterator (autoload_map.begin ()); 
-       p != std::map<std::string, std::string>::iterator (autoload_map.end ()); p++)
+  typedef std::map<std::string, std::string>::const_iterator am_iter;
+  for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
     names[i++] = p->first;
 
   return names;
@@ -3417,9 +3425,8 @@ reverse_lookup_autoload (const std::string& nm)
 {
   string_vector names;
 
-  std::map<std::string, std::string>::const_iterator p;
-  for (p = std::map<std::string, std::string>::iterator (autoload_map.begin ()); 
-       p != std::map<std::string, std::string>::iterator (autoload_map.end ()); p++)
+  typedef std::map<std::string, std::string>::const_iterator am_iter;
+  for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
     if (nm == p->second)
       names.append (p->first);
 
@@ -3512,13 +3519,38 @@ DEFCMD (autoload, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
 Define @var{function} to autoload from @var{file}.\n\
+\n\
+With no arguments, return a structure with information about all\n\
+currently autoloaded functions.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2)
+  if (nargin == 0)
+    {
+      Cell func_names (dim_vector (autoload_map.size ()), 1);
+      Cell file_names (dim_vector (autoload_map.size ()), 1);
+
+      octave_idx_type i = 0;
+      typedef std::map<std::string, std::string>::const_iterator am_iter;
+      for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
+	{
+	  func_names(i) = p->first;
+	  file_names(i) = p->second;
+
+	  i++;
+	}
+
+      Octave_map m;
+
+      m.assign ("function", func_names);
+      m.assign ("file", file_names);
+
+      retval = m;
+    }
+  else if (nargin == 2)
     {
       string_vector argv = args.make_argv ("autoload");
 

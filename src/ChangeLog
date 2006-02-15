@@ -1,3 +1,8 @@
+2006-02-15  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Fautoload): Return struct array of autoload info if
+	nargin == 0.
+
 2006-02-15  Keith Goodman  <kwgoodman@gmail.com>
 
 	* help.cc (keywords): Doc string fix.

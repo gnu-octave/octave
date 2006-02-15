@@ -198,7 +198,7 @@ function print (varargin)
 
   ## check if we have to use convert
   dev_list = {"aifm" "corel" "fig" "png" "pbm" "dxf" "mf" "hpgl", ...
-	      "ps" "ps2" "psc" "psc2" "eps" "eps2" "epsc" "epsc2"};
+	      "ps" "ps2" "psc" "psc2" "eps" "eps2" "epsc" "epsc2" "emf"};
   convertname = "";
   idx = cellidx (dev_list, dev);
   if (! idx)
@@ -280,6 +280,26 @@ function print (varargin)
       endif
       __gnuplot_raw__ ("set terminal push;\n");
       __gnuplot_raw__ (sprintf ("set terminal fig %s;\n", options));
+
+    elseif (strcmp (dev, "emf"))
+      ## Enhanced Metafile format
+      options = " ";
+      if (use_color >= 0)
+	options = " color";
+      else
+	options = " mono";
+      endif
+      if (force_solid >= 0)
+	options = strcat (options, " solid");
+      endif
+      if (! isempty (font))
+	options = strcat (options, " \"", font, "\"");
+      endif
+      if (! isempty (fontsize))
+	options = strcat (options, " ", fontsize);
+      endif
+      __gnuplot_raw__ ("set terminal push;\n");
+      __gnuplot_raw__ (sprintf ("set terminal emf %s;\n", options));
 
     elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
       ## Portable network graphics, PBMplus

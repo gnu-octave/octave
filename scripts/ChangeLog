@@ -1,3 +1,12 @@
+2006-02-15  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
+
+	* plot/print.m: Accept emf device option to support Enhanced
+	Metafile format.
+
+2006-02-15  A S Hodel  <hodelas@auburn.edu>
+
+	* control/base/lqe.m: Doc fix.
+
 2006-02-15  Keith Goodman  <kwgoodman@gmail.com>
  
  	* statistics/distributions/gamcdf.m: Doc fix.

@@ -1,3 +1,7 @@
+2006-02-15  John W. Eaton  <jwe@octave.org>
+
+	* getopt.c: Use __CYGWIN__ instead of __CYGWIN32__.
+
 2006-02-13  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (LINK_DEPS): Add missing dependencies on colamd,

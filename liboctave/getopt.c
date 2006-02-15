@@ -79,7 +79,7 @@
 #endif
 #endif
 
-#if defined (WIN32) && !defined (__CYGWIN32__)
+#if defined (WIN32) && !defined (__CYGWIN__)
 /* It's not Unix, really.  See?  Capital letters.  */
 #include <stdlib.h>
 #include <windows.h>

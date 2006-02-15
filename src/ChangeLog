@@ -1,3 +1,7 @@
+2006-02-15  John W. Eaton  <jwe@octave.org>
+
+	* oct-procbuf.cc (close): Use __CYGWIN__ instead of __CYGWIN32__.
+
 2006-02-13  David Bateman  <dbateman@free.fr>
 
 	* DLD_FUNCTIONS/regexp.cc (octregexp): Add matlab compatiable
@@ -49,7 +53,7 @@
 
 2006-01-31  Kim Hansen  <kim@i9.dk>
 
-	* __glpk__.cc (F_glpk__): Fix for sparse matrices.
+	* __glpk__.cc (F__glpk__): Fix for sparse matrices.
 
 2006-01-30  John W. Eaton  <jwe@octave.org>
 

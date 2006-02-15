@@ -73,9 +73,8 @@ extern "C" {
 
 /* If you want to find subdirectories in a directory with non-Unix
    semantics (specifically, if a directory with no subdirectories does
-   not have exactly two links), define this.  Cygwin systems do not
-   have Unix semantics for network mapped drives.  */
-#if defined(__DJGPP__) || ! (defined (DOSISH) || defined (__CYGWIN__))
+   not have exactly two links), define this.  */
+#if defined(__DJGPP__) || ! defined (DOSISH)
 /* Surprise!  DJGPP returns st_nlink exactly like on Unix.  */
 #define ST_NLINK_TRICK
 #endif /* either not DOSISH or __DJGPP__ */
@@ -2274,7 +2273,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
                  some such, we can still find subdirectories, even if it
                  is much slower.  */
 #ifdef ST_NLINK_TRICK
-              if (links > 2)
+              if (links != 2)
 #endif /* not ST_NLINK_TRICK */
                 /* All criteria are met; find subdirectories.  */
                 do_subdir (str_list_ptr, name, potential_len, post);

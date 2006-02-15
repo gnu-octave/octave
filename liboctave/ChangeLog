@@ -1,5 +1,8 @@
 2006-02-15  John W. Eaton  <jwe@octave.org>
 
+	* kpse.cc: Do define ST_NLINK_TRICK for Cygwin systems.
+	(do_subdir) [ST_NLINK_TRICK]: Check links != 2 instead of links > 2. 
+
 	* getopt.c: Use __CYGWIN__ instead of __CYGWIN32__.
 
 2006-02-13  David Bateman  <dbateman@free.fr>

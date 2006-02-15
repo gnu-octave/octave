@@ -24,10 +24,10 @@
 ## @iftex
 ## @tex
 ## $$
-##  {dx\over dt} = A x + B u
+##  {dx\over dt} = A x + G u
 ## $$
 ## $$
-##  y = C x + D u
+##  y = C x + v
 ## $$
 ## @end tex
 ## @end iftex
@@ -35,10 +35,10 @@
 ##
 ## @example
 ## dx
-## -- = a x + b u
+## -- = A x + G u
 ## dt
 ##
-## y = c x + d u
+## y = C x + v
 ## @end example
 ##
 ## @end ifinfo

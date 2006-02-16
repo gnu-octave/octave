@@ -1,3 +1,7 @@
+2006-02-16  Bill Denney <denney@seas.upenn.edu>
+
+ 	* axis.m: Catch limits that are the same and return an error.
+
 2006-02-15  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
 
 	* plot/print.m: Accept emf device option to support Enhanced

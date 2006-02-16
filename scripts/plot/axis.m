@@ -246,6 +246,12 @@ function curr_axis = axis (ax, varargin)
       error ("axis: expecting vector with 2, 4, or 6 elements");
     endif
 
+    for i = 1:2:len
+      if (ax(i) == ax(i+1))
+	error ("axis: limits(%d) cannot equal limits(%d)", i, i+1);
+      endif
+    endfor
+
     __current_axis__ = reshape (ax, 1, len);
 
     if (len > 1)

@@ -8,9 +8,7 @@ FTP:
   ----                          ---------
   ftp.eos.hokudai.ac.jp         /pub/GNU/misc/octave
   ftp.math.uni-hamburg.de       /pub/soft/math/octave
-  ftp.task.gda.pl               /pub/software/octave
   ftp.u-aizu.ac.jp              /pub/SciEng/numanal/Octave
-  mirror.aarnet.edu.au          /pub/octave
   neacm.fe.up.pt                /pub/octave
 
 HTTP:
@@ -18,14 +16,14 @@ HTTP:
   url
   ---
   http://neacm.fe.up.pt/pub/octave
+  http://octave.oss-mirror.org
+  http://octave.linux-mirror.org
 
-The latest Octave sources may also be found on the official Free
-Software Foundation ftp site, ftp://ftp.gnu.org/pub/gnu/octave, which is
-also mirrored on many sites around the world.
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical & Biological Engineering
 
-Thu Jun  3 14:37:06 2004
+Mon Feb 20 11:51:09 2006
+

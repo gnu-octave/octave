@@ -1,3 +1,17 @@
+2006-02-20  David Bateman  <dbateman@free.fr>
+
+	* dSparse.cc (dsolve, utsolve, ltsolve): Remove restriction that 
+	matrix must be square in diagonal, permuted diagonal, triangular
+	and permuted triangular back/forward substitution code. Change
+	ambiguous use of no. rows and columns.
+	* CSParse.cc (dsolve, utsolve, ltsolve): ditto.
+	* SparseType.cc (SparseType::SparseType(const SparseMatrix&),
+	SparseType::SparseType(const SparseComplexMatrix&)): Recognize
+	rectangular diagonal, permuted diagonal, triangular and permuted
+	triangular matrices.
+	* Sparse.cc (Sparse<T>::Sparse (octave_idx_type, octave_idx_type, T)):
+	Treat case where third argument is zero.
+
 2006-02-15  John W. Eaton  <jwe@octave.org>
 
 	* kpse.cc: Do define ST_NLINK_TRICK for Cygwin systems.

@@ -41,6 +41,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov.h"
 #include "variables.h"
 
+#include "ov-re-sparse.h"
+#include "ov-cx-sparse.h"
+
 // If TRUE, print a warning message for empty elements in a matrix list.
 static bool Vwarn_empty_list_elements;
 
@@ -70,15 +73,15 @@ private:
       : count (1), dv (0, 0), all_str (false),
 	all_sq_str (false), all_dq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
-	all_mt (true), class_nm (octave_base_value::static_class_name ()),
-	ok (false)
+	all_mt (true), any_sparse (false),
+	class_nm (octave_base_value::static_class_name ()), ok (false)
     { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (0, 0), all_str (false), all_sq_str (false),
 	some_str (false), all_real (false), all_cmplx (false),
-	all_mt (true), class_nm (octave_base_value::static_class_name ()),
-	ok (false)
+	all_mt (true), any_sparse (false),
+	class_nm (octave_base_value::static_class_name ()), ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -94,6 +97,7 @@ private:
     bool all_real;
     bool all_cmplx;
     bool all_mt;
+    bool any_sparse;
 
     std::string class_nm;
 
@@ -167,6 +171,7 @@ public:
   bool all_real_p (void) const { return rep->all_real; }
   bool all_complex_p (void) const { return rep->all_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
+  bool any_sparse_p (void) const { return rep->any_sparse; }
 
   std::string class_name (void) const { return rep->class_nm; }
 
@@ -341,6 +346,9 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
     all_cmplx = false;
 
+  if (!any_sparse && val.class_name() == "sparse")
+    any_sparse = true;
+
   return true;
 }
 
@@ -352,6 +360,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
   all_dq_str = true;
   all_real = true;
   all_cmplx = true;
+  any_sparse = false;
 
   bool first_elem = true;
 
@@ -432,8 +441,8 @@ public:
   tm_const (const tree_matrix& tm)
     : dv (0, 0), all_str (false), all_sq_str (false), all_dq_str (false),
       some_str (false), all_real (false), all_cmplx (false),
-      all_mt (true), class_nm (octave_base_value::static_class_name ()),
-      ok (false)
+      all_mt (true), any_sparse (false),
+      class_nm (octave_base_value::static_class_name ()), ok (false)
   { init (tm); }
 
   ~tm_const (void) { }
@@ -450,6 +459,7 @@ public:
   bool all_real_p (void) const { return all_real; }
   bool all_complex_p (void) const { return all_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
+  bool any_sparse_p (void) const { return any_sparse; }
 
   std::string class_name (void) const { return class_nm; }
 
@@ -466,6 +476,7 @@ private:
   bool all_real;
   bool all_cmplx;
   bool all_mt;
+  bool any_sparse;
 
   std::string class_nm;
 
@@ -488,6 +499,7 @@ tm_const::init (const tree_matrix& tm)
   all_dq_str = true;
   all_real = true;
   all_cmplx = true;
+  any_sparse = false;
 
   bool first_elem = true;
 
@@ -526,6 +538,9 @@ tm_const::init (const tree_matrix& tm)
 
 	  if (all_mt && ! tmp.all_empty_p ())
 	    all_mt = false;
+
+	  if (!any_sparse && tmp.any_sparse_p ())
+	    any_sparse = true;
 
 	  append (tmp);
 	}
@@ -754,6 +769,7 @@ tree_matrix::rvalue (void)
   bool all_empty_p = false;
   bool all_real_p = false;
   bool all_complex_p = false;
+  bool any_sparse_p = false;
   bool frc_str_conv = false;
 
   tm_const tmp (*this);
@@ -767,6 +783,7 @@ tree_matrix::rvalue (void)
       all_empty_p = tmp.all_empty_p ();
       all_real_p = tmp.all_real_p ();
       all_complex_p = tmp.all_complex_p ();
+      any_sparse_p = tmp.any_sparse_p ();
       frc_str_conv = tmp.some_strings_p ();
 
       // Try to speed up the common cases.
@@ -836,30 +853,42 @@ tree_matrix::rvalue (void)
 
 	  // Find the first non-empty object
 
-	  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+	  if (any_sparse_p)
 	    {
-	      OCTAVE_QUIT;
-
-	      tm_row_const row = *p;
-
-	      for (tm_row_const::iterator q = row.begin (); 
-		   q != row.end (); q++)
+	      // Start with sparse matrix to avoid issues memory issues
+	      // with things like [ones(1,4),sprandn(1e8,4,1e-4)]
+	      if (all_real_p)
+		ctmp = octave_sparse_matrix ().resize (dv); 
+	      else
+		ctmp = octave_sparse_complex_matrix ().resize (dv); 
+	    }
+	  else
+	    {
+	      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 		{
 		  OCTAVE_QUIT;
 
-		  ctmp = *q;
+		  tm_row_const row = *p;
 
-		  if (! ctmp.all_zero_dims ())
-		    goto found_non_empty;
+		  for (tm_row_const::iterator q = row.begin (); 
+		       q != row.end (); q++)
+		    {
+		      OCTAVE_QUIT;
+
+		      ctmp = *q;
+
+		      if (! ctmp.all_zero_dims ())
+			goto found_non_empty;
+		    }
 		}
+
+	      ctmp = (*(tmp.begin() -> begin()));
+
+	    found_non_empty:
+
+	      if (! all_empty_p)
+		ctmp = ctmp.resize (dim_vector (0,0)).resize (dv);
 	    }
-
-	  ctmp = (*(tmp.begin() -> begin()));
-
-	found_non_empty:
-
-	  if (! all_empty_p)
-	    ctmp = ctmp.resize (dim_vector (0,0)).resize (dv);
 
 	  if (! error_state)
 	    {

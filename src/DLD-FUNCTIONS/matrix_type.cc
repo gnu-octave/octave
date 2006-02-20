@@ -316,7 +316,19 @@ matrix type.\n\
 %! a=[speye(10,10),[sparse(9,1);1];-1,sparse(1,9),1];
 %! assert(matrix_type(a),"Full");
 %! assert(matrix_type(a'*a),"Positive Definite");
-%!assert(matrix_type(speye(10,11)),"Rectangular");
+%!assert(matrix_type(speye(10,11)),"Diagonal");
+%!assert(matrix_type(speye(10,11)([2:10,1],:)),"Permuted Diagonal");
+%!assert(matrix_type(speye(11,10)),"Diagonal");
+%!assert(matrix_type(speye(11,10)([2:11,1],:)),"Permuted Diagonal");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]]),"Upper");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]](:,[2,1,3:12])),"Permuted Upper");
+%!assert(matrix_type([speye(11,9),[1;sparse(8,1);1;0]]),"Upper");
+%!assert(matrix_type([speye(11,9),[1;sparse(8,1);1;0]](:,[2,1,3:10])),"Permuted Upper");
+%!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]),"Lower");
+%!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]([2,1,3:12],:)),"Permuted Lower");
+%!assert(matrix_type([speye(9,11);[1,sparse(1,8),1,0]]),"Lower");
+%!assert(matrix_type([speye(9,11);[1,sparse(1,8),1,0]]([2,1,3:10],:)),"Permuted Lower");
+%!assert(matrix_type(spdiags(randn(10,4),[-2:1],10,9)),"Rectangular")
 
 %!assert(matrix_type(1i*speye(10,10)),"Diagonal");
 %!assert(matrix_type(1i*speye(10,10)([2:10,1],:)),"Permuted Diagonal");
@@ -342,7 +354,19 @@ matrix type.\n\
 %! a=[speye(10,10),[sparse(9,1);1i];-1,sparse(1,9),1];
 %! assert(matrix_type(a),"Full");
 %! assert(matrix_type(a'*a),"Positive Definite");
-%!assert(matrix_type(speye(10,11)),"Rectangular");
+%!assert(matrix_type(1i*speye(10,11)),"Diagonal");
+%!assert(matrix_type(1i*speye(10,11)([2:10,1],:)),"Permuted Diagonal");
+%!assert(matrix_type(1i*speye(11,10)),"Diagonal");
+%!assert(matrix_type(1i*speye(11,10)([2:11,1],:)),"Permuted Diagonal");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]),"Upper");
+%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])),"Permuted Upper");
+%!assert(matrix_type([speye(11,9),[1i;sparse(8,1);1i;0]]),"Upper");
+%!assert(matrix_type([speye(11,9),[1i;sparse(8,1);1i;0]](:,[2,1,3:10])),"Permuted Upper");
+%!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]),"Lower");
+%!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)),"Permuted Lower");
+%!assert(matrix_type([speye(9,11);[1i,sparse(1,8),1i,0]]),"Lower");
+%!assert(matrix_type([speye(9,11);[1i,sparse(1,8),1i,0]]([2,1,3:10],:)),"Permuted Lower");
+%!assert(matrix_type(1i*spdiags(randn(10,4),[-2:1],10,9)),"Rectangular")
 
 %!test
 %! a = matrix_type(spdiags(randn(10,3),[-1,0,1],10,10),"Singular");

@@ -222,20 +222,29 @@ Sparse<T>::Sparse (const Sparse<U>& a)
 
 template <class T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
-  : rep (new typename Sparse<T>::SparseRep (nr, nc, nr*nc)),
-    dimensions (dim_vector (nr, nc)), idx (0), idx_count (0)
+  : dimensions (dim_vector (nr, nc)), idx (0), idx_count (0)
 { 
-
-  octave_idx_type ii = 0;
-  xcidx (0) = 0;
-  for (octave_idx_type j = 0; j < nc; j++)
+  if (val != T ())
     {
-      for (octave_idx_type i = 0; i < nr; i++)
+      rep = new typename Sparse<T>::SparseRep (nr, nc, nr*nc);
+
+      octave_idx_type ii = 0;
+      xcidx (0) = 0;
+      for (octave_idx_type j = 0; j < nc; j++)
 	{
-	  xdata (ii) = val;
-	  xridx (ii++) = i;
-	} 
-      xcidx (j+1) = ii;
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    {
+	      xdata (ii) = val;
+	      xridx (ii++) = i;
+	    } 
+	  xcidx (j+1) = ii;
+	}
+    }
+  else
+    {
+      rep = new typename Sparse<T>::SparseRep (nr, nc, 0);
+      for (octave_idx_type j = 0; j < nc+1; j++)
+	xcidx(j) = 0;
     }
 }
 

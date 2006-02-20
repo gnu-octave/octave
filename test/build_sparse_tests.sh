@@ -858,10 +858,6 @@ EOF
 # =============================================================
 # Specific solver tests for matrices that will test all of the solver
 # code. Uses alpha and beta
-#
-# Note these tests can still fail with a singular matrix, as sprandn
-# is used and QR solvers not implemented. However, that should happen
-# rarely
 gen_solver_tests() {
 
 if $preset; then
@@ -929,9 +925,89 @@ cat >>$TESTS <<EOF
 %! assert (sparse(a * x), b, feps);
 %!test
 %! a = alpha*sprandn(10,11,0.2)+speye(10,11); f(a,[10,2],1e-10);
-%! ## Test this by forcing matrix_type
+%! ## Test this by forcing matrix_type, as can't get a certain 
+%! ## result for over-determined systems.
 %! a = alpha*sprandn(10,10,0.2)+speye(10,10); matrix_type(a, "Singular");
 %! f(a,[10,2],1e-10);
+
+%% Rectanguar solver tests that don't use QR
+
+%!test
+%! ds = alpha * spdiags([1:11]',0,10,11);
+%! df = full(ds);
+%! xf = beta * ones(10,1);
+%! xs = speye(10,10);
+%!assert(ds\xf,df\xf,100*eps)
+%!assert(ds\xs,sparse(df\xs,true),100*eps)
+%!test
+%! pds = ds([2,1,3:10],:);
+%! pdf = full(pds);
+%!assert(pds\xf,pdf\xf,100*eps)
+%!assert(pds\xs,sparse(pdf\xs,true),100*eps)
+%!test
+%! ds = alpha * spdiags([1:11]',0,11,10);
+%! df = full(ds);
+%! xf = beta * ones(11,1);
+%! xs = speye(11,11);
+%!assert(ds\xf,df\xf,100*eps)
+%!assert(ds\xs,sparse(df\xs,true),100*eps)
+%!test
+%! pds = ds([2,1,3:11],:);
+%! pdf = full(pds);
+%!assert(pds\xf,pdf\xf,100*eps)
+%!assert(pds\xs,sparse(pdf\xs,true),100*eps)
+%!test
+%! us = alpha*[[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]];
+%!assert(us*(us\xf),xf,100*eps)
+%!assert(us*(us\xs),xs,100*eps)
+%!test
+%! pus = us(:,[2,1,3:12]);
+%!assert(pus*(pus\xf),xf,100*eps)
+%!assert(pus*(pus\xs),xs,100*eps)
+%!test
+%! us = alpha*[speye(11,9),[1;sparse(8,1);1;0]];
+%!test
+%! [c,r] = spqr (us, xf);
+%! assert(us\xf,r\c,100*eps)
+%!test
+%! [c,r] = spqr (us, xs);
+%! assert(us\xs,r\c,100*eps)
+%!test
+%! pus = us(:,[1:8,10,9]);
+%!test
+%! [c,r] = spqr (pus, xf);
+%! assert(pus\xf,r\c,100*eps)
+%!test
+%! [c,r] = spqr (pus, xs);
+%! assert(pus\xs,r\c,100*eps)
+%!test
+%! ls = alpha*[speye(9,11);[1,sparse(1,8),1,0]];
+%! xf = beta * ones(10,1);
+%! xs = speye(10,10);
+%!assert(ls*(ls\xf),xf,100*eps)
+%!assert(ls*(ls\xs),xs,100*eps)
+%!test
+%! pls = ls([1:8,10,9],:);
+%!assert(pls*(pls\xf),xf,100*eps)
+%!assert(pls*(pls\xs),xs,100*eps)
+%!test
+%! ls = alpha*[speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]];
+%! xf = beta * ones(12,1);
+%! xs = speye(12,12);
+%!test
+%! [c,r] = spqr (ls, xf);
+%! assert(ls\xf,r\c,100*eps)
+%!test
+%! [c,r] = spqr (ls, xs);
+%! assert(ls\xs,r\c,100*eps)
+%!test
+%! pls = ls(:,[1:8,10,9]);
+%!test
+%! [c,r] = spqr (pls, xf);
+%! assert(pls\xf,r\c,100*eps)
+%!test
+%! [c,r] = spqr (pls, xs);
+%! assert(pls\xs,r\c,100*eps)
 
 EOF
 }

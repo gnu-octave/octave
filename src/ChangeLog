@@ -1,3 +1,16 @@
+2006-02-20  David Bateman  <dbateman@free.fr>
+
+	* pt-mat.cc (class tm_row_const): Add any_sparse bool variable.
+	(tm_row_const::tm_row_const_rep::do_init_element): Initialize
+	any_sparse variable if any matrice is sparse.
+	(class tm_const): Add any_sparse bool variable.
+	(tm_const::init): Initialize any_sparse variable.
+	(tree_matrix::rvalue): If any matrix is sparse use sparse matrix
+	as initial matrix for concatenation
+	* DLD-FUNCTIONS/matrix_type.cc: Add tests for new rectangular
+	diagonal, permuted diagonal, triangular and permuted triangular
+	matrices
+
 2006-02-20  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (__builtin_delete, __builtin_new): Use std::cerr for

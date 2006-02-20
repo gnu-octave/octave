@@ -193,7 +193,7 @@ main_loop (void)
       catch (octave_interrupt_exception)
 	{
 	  recover_from_exception ();
-	  std::cout << "\n";
+	  octave_stdout << "\n";
 	}
       catch (std::bad_alloc)
 	{
@@ -561,7 +561,14 @@ do_octave_atexit (void)
       flush_octave_stdout ();
 
       if (! quitting_gracefully && (interactive || forced_interactive))
-	std::cout << "\n";
+	{
+	  octave_stdout << "\n";
+
+	  // Yes, we want this to be separate from the call to
+	  // flush_octave_stdout above.
+
+	  flush_octave_stdout ();
+	}
     }
 }
 
@@ -830,7 +837,7 @@ __builtin_new (size_t sz)
     }
 
   if (debug_new_delete)
-    std::cout << "__builtin_new: " << p << std::endl;
+    std::cerr << "__builtin_new: " << p << std::endl;
 
   return p;
 }
@@ -839,7 +846,7 @@ void
 __builtin_delete (void *ptr)
 {
   if (debug_new_delete)
-    std::cout << "__builtin_delete: " << ptr << std::endl;
+    std::cerr << "__builtin_delete: " << ptr << std::endl;
 
   if (ptr)
     free (ptr);

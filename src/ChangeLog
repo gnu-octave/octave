@@ -1,3 +1,9 @@
+2006-02-20  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (__builtin_delete, __builtin_new): Use std::cerr for
+	messages instead of std::cout.
+	(main_loop, do_octave_atexit): Use octave_stdout, not std::cout.
+
 2006-02-15  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (Fautoload): Return struct array of autoload info if

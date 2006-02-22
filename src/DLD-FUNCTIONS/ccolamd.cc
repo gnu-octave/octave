@@ -211,7 +211,7 @@ colamd, symamd, and other related orderings.\n\
       SparseComplexMatrix scm;
       SparseMatrix sm;
 
-      if (args(0).class_name () == "sparse")
+      if (args(0).is_sparse_type ())
 	{
 	  if (args(0).is_complex_type ())
 	    {
@@ -447,7 +447,7 @@ colamd, symamd, and other related orderings.\n\
       SparseMatrix sm;
       SparseComplexMatrix scm;
 
-      if (args(0).class_name () == "sparse")
+      if (args(0).is_sparse_type ())
 	{
 	  if (args(0).is_complex_type ())
 	    {

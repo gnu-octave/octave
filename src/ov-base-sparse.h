@@ -126,6 +126,8 @@ octave_base_sparse : public octave_base_value
 
   bool is_numeric_type (void) const { return true; }
 
+  bool is_sparse_type (void) const { return true; }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

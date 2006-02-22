@@ -163,6 +163,8 @@ public:
 
   bool is_numeric_type (void) const { return false; }
 
+  bool is_sparse_type (void) const { return false; }
+
   bool valid_as_scalar_index (void) const { return false; }
 
   bool valid_as_zero_index (void) const { return false; }

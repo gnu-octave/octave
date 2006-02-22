@@ -41,7 +41,7 @@ Boston, MA 02110-1301, USA.
 static bool
 is_sparse (const octave_value& arg)
 {
-  return (arg.class_name () == "sparse");
+  return (arg.is_sparse_type ());
 }
 
 DEFUN_DLD (issparse, args, ,
@@ -385,7 +385,7 @@ DEFUN_DLD (full, args, ,
      return retval;
   }
 
-  if (args(0).class_name () == "sparse")
+  if (args(0).is_sparse_type ())
     {
       if (args(0).type_name () == "sparse matrix") 
 	retval = args(0).matrix_value ();
@@ -563,7 +563,7 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 
    octave_value arg = args(0);
 
-   if (arg.class_name () == "sparse")
+   if (arg.is_sparse_type ())
      {
        if (arg.type_name () == "sparse matrix")
 	 retval = sparse_find (args(0).sparse_matrix_value ());

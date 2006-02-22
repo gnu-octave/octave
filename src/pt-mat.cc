@@ -346,7 +346,7 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
     all_cmplx = false;
 
-  if (!any_sparse && val.class_name() == "sparse")
+  if (!any_sparse && val.is_sparse_type ())
     any_sparse = true;
 
   return true;

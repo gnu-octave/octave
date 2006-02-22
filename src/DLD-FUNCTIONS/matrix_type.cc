@@ -104,7 +104,7 @@ matrix type.\n\
     error ("matrix_type: incorrect number of arguments");
   else
     {
-      if (args(0).class_name () == "sparse") 
+      if (args(0).is_sparse_type ())
 	{
 	  if (nargin == 1)
 	    {

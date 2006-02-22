@@ -1,5 +1,16 @@
 2006-02-20  David Bateman  <dbateman@free.fr>
 
+	* ov.h (virtual bool is_sparse_type (bool)): New virtual function
+	* ov-base.h (bool is_sparse_type (bool)): New function
+	* ov-base-sparse.h (bool is_sparse_type (bool)): New function
+	* DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTION/colamd.cc, 
+	DLD-FUNCTIONS/__glpk__.cc, DLD-FUNCTIONS/splu.cc,
+	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/matrix_type.cc, pt-mat.cc:
+	Replace us of 'arg.class_name () == "sparse"' with
+	'arg.is_sparse_type ()'
+	
+2006-02-20  David Bateman  <dbateman@free.fr>
+	
 	* pt-mat.cc (class tm_row_const): Add any_sparse bool variable.
 	(tm_row_const::tm_row_const_rep::do_init_element): Initialize
 	any_sparse variable if any matrice is sparse.

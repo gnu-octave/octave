@@ -330,7 +330,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
       SparseComplexMatrix scm;
       SparseMatrix sm;
 
-      if (args(0).class_name () == "sparse")
+      if (args(0).is_sparse_type ())
 	{
 	  if (args(0).is_complex_type ())
 	    {
@@ -539,7 +539,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
       SparseMatrix sm;
       SparseComplexMatrix scm;
 
-      if (args(0).class_name () == "sparse")
+      if (args(0).is_sparse_type ())
 	{
 	  if (args(0).is_complex_type ())
 	    {
@@ -664,7 +664,7 @@ permutations on the tree.\n\
       SparseMatrix sm;
       SparseComplexMatrix scm;
 
-      if (args(0).class_name () == "sparse")
+      if (args(0).is_sparse_type ())
 	{
 	  if (args(0).is_complex_type ())
 	    {

@@ -99,7 +99,7 @@ be square.\n\
 
   for (int k = 1; k < nargin; k++)
     {
-      if (args(k).class_name () == "sparse") 
+      if (args(k).is_sparse_type ())
 	{
 	  SparseMatrix tmp = args (k).sparse_matrix_value ();
 	  

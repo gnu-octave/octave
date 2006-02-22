@@ -450,37 +450,7 @@ You should be using using the @code{glpk} function instead.\n\
 
   //-- 2nd Input. A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
-  if( args(1).class_name () != "sparse")
-    {
-      Matrix A (args(1).matrix_value ()); // get the matrix
-
-      if (error_state)
-	{
-	  error ("__glpk__: invalid value of A");
-	  return retval;
-	}
-
-      mrowsA = A.rows ();
-      rn.resize (mrowsA*mrowsc+1);
-      cn.resize (mrowsA*mrowsc+1);
-      a.resize (mrowsA*mrowsc+1, 0.0);
-
-      for (int i = 0; i < mrowsA; i++)
-	{
-	  for (int j = 0; j < mrowsc; j++)
-	    {
-	      if (A(i,j) != 0)
-		{
-		  nz++;
-		  rn(nz) = i + 1;
-		  cn(nz) = j + 1;
-		  a(nz) = A(i,j);
-		}
-	    }
-	}
-
-    }
-  else
+  if (args(1).is_sparse_type ())
     {
       SparseMatrix A = args(1).sparse_matrix_value (); // get the sparse matrix
 
@@ -511,6 +481,36 @@ You should be using using the @code{glpk} function instead.\n\
 	    cn(nz) = j + 1;
 	    a(nz) = A.data(i);
 	  }
+    }
+  else
+    {
+      Matrix A (args(1).matrix_value ()); // get the matrix
+
+      if (error_state)
+	{
+	  error ("__glpk__: invalid value of A");
+	  return retval;
+	}
+
+      mrowsA = A.rows ();
+      rn.resize (mrowsA*mrowsc+1);
+      cn.resize (mrowsA*mrowsc+1);
+      a.resize (mrowsA*mrowsc+1, 0.0);
+
+      for (int i = 0; i < mrowsA; i++)
+	{
+	  for (int j = 0; j < mrowsc; j++)
+	    {
+	      if (A(i,j) != 0)
+		{
+		  nz++;
+		  rn(nz) = i + 1;
+		  cn(nz) = j + 1;
+		  a(nz) = A(i,j);
+		}
+	    }
+	}
+
     }
 
   //-- 3rd Input. A column array containing the right-hand side value

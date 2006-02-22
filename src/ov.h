@@ -487,6 +487,9 @@ public:
   virtual bool is_numeric_type (void) const
     { return rep->is_numeric_type (); }
 
+  virtual bool is_sparse_type (void) const
+    { return rep->is_sparse_type (); }
+
   virtual bool valid_as_scalar_index (void) const
     { return rep->valid_as_scalar_index (); }
 

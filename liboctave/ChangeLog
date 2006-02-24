@@ -1,3 +1,9 @@
+2006-02-24  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assignN): Clear index before reshaping.
+
+	* Array.h (Array<T>::operator =): Don't set idx to 0 if copying self.
+
 2006-02-20  David Bateman  <dbateman@free.fr>
 
 	* dSparse.cc (dsolve, utsolve, ltsolve): Remove restriction that 

@@ -3176,6 +3176,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	}
 
+      lhs.clear_index ();
+
       if (retval != 0)
 	lhs = lhs.reshape (final_lhs_dims);
     }

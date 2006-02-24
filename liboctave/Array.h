@@ -234,10 +234,10 @@ public:
 	  rep->count++;
 
 	  dimensions = a.dimensions;
-	}
 
-      idx_count = 0;
-      idx = 0;
+	  idx_count = 0;
+	  idx = 0;
+	}
 
       return *this;
     }

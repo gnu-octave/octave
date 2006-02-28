@@ -34,9 +34,15 @@ function secs = toc ()
 
   if (__tic_toc_timestamp__ < 0)
     warning ("toc called before timer set");
-    secs = [];
+    secs0 = [];
   else
-    secs = etime (clock (), __tic_toc_timestamp__);
+    secs0 = etime (clock (), __tic_toc_timestamp__);
   endif
+  
+  if (nargout != 0)
+    secs = secs0;
+  else
+    printf ("Elapsed time is %f seconds.\n", secs0);
+  endif  
 
 endfunction

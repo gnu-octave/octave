@@ -1,3 +1,13 @@
+2006-02-27  John W. Eaton  <jwe@octave.org>
+
+	* time/tic.m: Move here from miscellaneous/tic.m.
+	* time/toc.m: Move here from miscellaneous/toc.m.
+
+2006-02-26  Keith Goodman  <kwgoodman@gmail.com>
+ 
+ 	* miscellaneous/toc.m: Display "Elapsed time is X seconds" if user
+	does not assign output of toc to a variable.
+
 2006-02-16  Bill Denney <denney@seas.upenn.edu>
 
  	* axis.m: Catch limits that are the same and return an error.

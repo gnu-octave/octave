@@ -28,6 +28,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-cmplx.h"
 
+// XXX FIXME XXX -- we could use templates here; compare with dbleDET.h
+
 class
 ComplexDET
 {
@@ -36,30 +38,41 @@ friend class SparseComplexMatrix;
 
 public:
 
-  ComplexDET (void) { }
+  ComplexDET (void) : c2 (0), c10 (0), e2 (0), e10 (0), base2 (false) { }
 
   ComplexDET (const ComplexDET& a)
-    {
-      det[0] = a.det[0];
-      det[1] = a.det[1];
-    }
+    : c2 (a.c2), c10 (a.c10), e2 (a.e2), e10 (a.e10), base2 (a.base2)
+    { }
 
   ComplexDET& operator = (const ComplexDET& a)
     {
       if (this != &a)
 	{
-	  det[0] = a.det[0];
-	  det[1] = a.det[1];
+	  c2 = a.c2;
+	  e2 = a.e2;
+
+	  c10 = a.c10;
+	  e10 = a.e10;
+
+	  base2 = a.base2;
 	}
       return *this;
     }
 
-  int value_will_overflow (void) const;
-  int value_will_underflow (void) const;
+  bool value_will_overflow (void) const;
+  bool value_will_underflow (void) const;
 
-  Complex coefficient (void) const;
+  // These two functions were originally defined in base 10, so we are
+  // preserving that interface here.
 
-  int exponent (void) const;
+  Complex coefficient (void) const { return coefficient10 (); }
+  int exponent (void) const { return exponent10 (); }
+
+  Complex coefficient10 (void) const { return c10; }
+  int exponent10 (void) const { return e10; }
+
+  Complex coefficient2 (void) const { return c2; }
+  int exponent2 (void) const { return e2; }
 
   Complex value (void) const;
 
@@ -67,13 +80,35 @@ public:
 
 private:
 
-  ComplexDET (const Complex *d)
+  // Constructed this way, we assume base 2.
+
+  ComplexDET (const Complex& c, int e)
+    : c2 (c), c10 (0), e2 (e), e10 (0), base2 (true)
     {
-      det[0] = d[0];
-      det[1] = d[1];
+      initialize10 ();
     }
 
-  Complex det [2];
+  // Original interface had only this constructor and it was assumed
+  // to be base 10, so we are preserving that interface here.
+
+  ComplexDET (const Complex *d)
+    : c2 (0), c10 (d[0]), e2 (0), e10 (static_cast<int> (d[1].real ())),
+      base2 (false)
+    {
+      initialize2 ();
+    }
+
+  void initialize2 (void);
+  void initialize10 (void);
+
+  Complex c2;
+  Complex c10;
+
+  int e2;
+  int e10;
+
+  // TRUE means the original values were provided in base 2.
+  bool base2;
 };
 
 #endif

@@ -30,34 +30,50 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "dbleDET.h"
 
-int
+bool
 DET::value_will_overflow (void) const
 {
-  return det[1] + 1 > log10 (DBL_MAX) ? 1 : 0;
+  return base2
+    ? (e2 + 1 > log2 (DBL_MAX) ? 1 : 0)
+    : (e10 + 1 > log10 (DBL_MAX) ? 1 : 0);
 }
 
-int
+bool
 DET::value_will_underflow (void) const
 {
-  return det[1] - 1 < log10 (DBL_MIN) ? 1 : 0;
+  return base2
+    ? (e2 - 1 < log2 (DBL_MIN) ? 1 : 0)
+    : (e10 - 1 < log10 (DBL_MIN) ? 1 : 0);
 }
 
-double
-DET::coefficient (void) const
+void
+DET::initialize10 (void)
 {
-  return det[0];
+  if (c2 != 0.0)
+    {
+      double etmp = e2 / log2 (10);
+      e10 = static_cast<int> (round (etmp));
+      etmp -= e10;
+      c10 = c2 * pow (10.0, etmp);
+    }
 }
 
-int
-DET::exponent (void) const
+void
+DET::initialize2 (void)
 {
-  return (int) det[1];
+  if (c10 != 0.0)
+    {
+      double etmp = e10 / log10 (2);
+      e2 = static_cast<int> (round (etmp));
+      etmp -= e2;
+      c2 = c10 * exp2 (etmp);
+    }
 }
 
 double
 DET::value (void) const
 {
-  return det[0] * pow (10.0, det[1]);
+  return base2 ? c2 * exp2 (e2) : c10 * pow (10.0, e10);
 }
 
 /*

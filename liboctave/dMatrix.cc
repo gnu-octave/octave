@@ -1102,10 +1102,7 @@ Matrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
 
   if (nr == 0 || nc == 0)
     {
-      double d[2];
-      d[0] = 1.0;
-      d[1] = 0.0;
-      retval = DET (d);
+      retval = DET (1.0, 0);
     }
   else
     {
@@ -1163,24 +1160,33 @@ Matrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
 		} 
 	      else 
 		{
-		  double d[2] = { 1., 0.};
-		  for (octave_idx_type i=0; i<nc; i++) 
+		  double c = 1.0;
+		  int e = 0;
+
+		  for (octave_idx_type i = 0; i < nc; i++) 
 		    {
-		      if (ipvt(i) != (i+1)) d[0] = -d[0];
-		      d[0] *= atmp(i,i);
-		      if (d[0] == 0.) break;
-		      while (fabs(d[0]) < 1.) 
+		      if (ipvt(i) != (i+1))
+			c = -c;
+
+		      c *= atmp(i,i);
+
+		      if (c == 0.0)
+			break;
+
+		      while (fabs (c) < 0.5)
 			{
-			  d[0] = 10. * d[0];
-			  d[1] = d[1] - 1.0;
+			  c *= 2.0;
+			  e--;
 			}
-		      while (fabs(d[0]) >= 10.) 
+
+		      while (fabs (c) >= 2.0)
 			{
-			  d[0] = 0.1 * d[0];
-			  d[1] = d[1] + 1.0;
+			  c /= 2.0;
+			  e++;
 			}
 		    }
-		  retval = DET (d);
+
+		  retval = DET (c, e);
 		}
 	    }
 	}

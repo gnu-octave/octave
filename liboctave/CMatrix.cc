@@ -1439,10 +1439,7 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
 
   if (nr == 0 || nc == 0)
     {
-      Complex d[2];
-      d[0] = 1.0;
-      d[1] = 0.0;
-      retval = ComplexDET (d);
+      retval = ComplexDET (1.0, 0);
     }
   else
     {
@@ -1500,24 +1497,33 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
 		} 
 	      else 
 		{
-		  Complex d[2] = { 1., 0.};
-		  for (octave_idx_type i=0; i<nc; i++) 
+		  Complex c = 1.0;
+		  int e = 0;
+
+		  for (octave_idx_type i = 0; i < nc; i++) 
 		    {
-		      if (ipvt(i) != (i+1)) d[0] = -d[0];
-		      d[0] = d[0] * atmp(i,i);
-		      if (d[0] == 0.) break;
-		      while (std::abs(d[0]) < 1.) 
+		      if (ipvt(i) != (i+1))
+			c = -c;
+
+		      c *= atmp(i,i);
+
+		      if (c == 0.0)
+			break;
+
+		      while (std::abs(c) < 0.5)
 			{
-			  d[0] = 10. * d[0];
-			  d[1] = d[1] - 1.0;
+			  c *= 2.0;
+			  e--;
 			}
-		      while (std::abs(d[0]) >= 10.) 
+
+		      while (std::abs(c) >= 2.0)
 			{
-			  d[0] = 0.1 * d[0];
-			  d[1] = d[1] + 1.0;
+			  c /= 2.0;
+			  e++;
 			}
 		    }
-		  retval = ComplexDET (d);
+
+		  retval = ComplexDET (c, e);
 		}
 	    }
 	}

@@ -25,40 +25,58 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include <cassert>
 #include <cfloat>
 #include <cmath>
 
 #include "CmplxDET.h"
+#include "lo-mappers.h"
 #include "oct-cmplx.h"
 
-int
+bool
 ComplexDET::value_will_overflow (void) const
 {
-  return det[1].real () + 1 > log10 (DBL_MAX) ? 1 : 0;
+  return base2
+    ? (e2 + 1 > log2 (DBL_MAX) ? 1 : 0)
+    : (e10 + 1 > log10 (DBL_MAX) ? 1 : 0);
 }
 
-int
+bool
 ComplexDET::value_will_underflow (void) const
 {
-  return det[1].real () - 1 < log10 (DBL_MIN) ? 1 : 0;
+  return base2
+    ? (e2 - 1 < log2 (DBL_MIN) ? 1 : 0)
+    : (e10 - 1 < log10 (DBL_MIN) ? 1 : 0);
 }
 
-Complex
-ComplexDET::coefficient (void) const
+void
+ComplexDET::initialize10 (void)
 {
-  return det[0];
+  if (c2 != 0.0)
+    {
+      double etmp = e2 / log2 (10);
+      e10 = static_cast<int> (round (etmp));
+      etmp -= e10;
+      c10 = c2 * pow (10.0, etmp);
+    }
 }
 
-int
-ComplexDET::exponent (void) const
+void
+ComplexDET::initialize2 (void)
 {
-  return (int) (det[1].real ());
+  if (c10 != 0.0)
+    {
+      double etmp = e10 / log10 (2);
+      e2 = static_cast<int> (round (etmp));
+      etmp -= e2;
+      c2 = c10 * exp2 (etmp);
+    }
 }
 
 Complex
 ComplexDET::value (void) const
 {
-  return det[0] * pow (10.0, det[1].real ());
+  return base2 ? c2 * exp2 (e2) : c10 * pow (10.0, e10);
 }
 
 /*

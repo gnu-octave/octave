@@ -1,3 +1,8 @@
+2006-03-02  Kurt Hornik  <Kurt.Hornik@wu-wien.ac.at>
+
+	* emacs/octave-mod.el (octave-indent-for-comment): Make the code
+	match the comments.
+
 2006-03-02  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (ALL_SUBDIRS): Delete.

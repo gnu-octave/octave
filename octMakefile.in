@@ -36,9 +36,7 @@ DISTDIRS = # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ \
-	libcruft liboctave scripts doc examples
-
-ALL_SUBDIRS = $(SUBDIRS) src
+	libcruft liboctave src scripts doc examples
 
 # Subdirectories in which to run `make all'.
 INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
@@ -47,7 +45,7 @@ INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS_1 = $(sort $(ALL_SUBDIRS) dlfcn test emacs)
+DISTSUBDIRS_1 = $(sort $(SUBDIRS) dlfcn test emacs)
 DISTSUBDIRS = $(filter-out $(DISTDIRS), $(DISTSUBDIRS_1))
 
 # Subdirectories in which to run clean targets.
@@ -58,12 +56,18 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(shell echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}') \
   $(shell echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}')
 
-all: octave-bug octave-config mkoctfile src
+SHELL_SCRIPTS = octave-bug octave-config mkoctfile
+
+all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS))
 .PHONY: all
 
-src: $(SUBDIRS)
+src: liboctave
+
+liboctave: libcruft
+
+$(SUBDIRS):
 	$(MAKE) -C $@ all
-.PHONY: src
+.PHONY: $(SUBDIRS)
 
 octave-bug: octave-bug.in Makeconf octMakefile
 	@$(do-subst-config-vals)
@@ -76,10 +80,6 @@ octave-config: octave-config.in Makeconf octMakefile
 mkoctfile: mkoctfile.in Makeconf octMakefile
 	@$(do-subst-config-vals)
 	chmod a+rx $@
-
-$(SUBDIRS):
-	$(MAKE) -C $@ all
-.PHONY: $(SUBDIRS)
 
 check:
 	$(MAKE) -C test check

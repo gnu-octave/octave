@@ -1,3 +1,7 @@
+2006-03-02  John W. Eaton  <jwe@octave.org>
+
+	* texinfo.tex: Update to 2004-11-25.16 version from Texinfo 4.8.
+
 2005-12-14  David Bateman  <dbateman@free.fr>
 
 	* interpreter/testfun.txi: New test/demo documentation.

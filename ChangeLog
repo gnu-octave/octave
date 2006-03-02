@@ -1,3 +1,13 @@
+2006-03-02  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (ALL_SUBDIRS): Delete.
+	(SUBDIRS): Include src here.
+	(SHELL_SCRIPTS): New variable.
+	(all): Depend on $(SHELL_SCRIPTS) and $(SUBDIRS) with libcruft and
+	liboctave filtered out.
+	(src): Depend on liboctave.
+	(liboctave): Depend on libcruft.
+
 2006-02-09  David Bateman  <dbateman@free.fr>
 
         * configure.in: Fix for probe of colamd, cccolamd and metis. New test

@@ -291,7 +291,7 @@ system-dependent error message.\n\
 // XXX FIXME XXX -- should maybe also allow second arg to specify
 // mode?  OTOH, that might cause trouble with compatibility later...
 
-DEFUN (mkdir, args, ,
+DEFCMD (mkdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
 Create a directory named @var{dir}.\n\
@@ -337,7 +337,7 @@ message identifier.\n\
   return retval;
 }
 
-DEFUN (rmdir, args, ,
+DEFCMD (rmdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\

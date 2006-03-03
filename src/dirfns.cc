@@ -373,9 +373,15 @@ subdirectories as well.\n\
 
 	  std::string fulldir = file_ops::tilde_expand (dirname);
 
-	  int status = (nargin == 1)
-	    ? file_ops::rmdir (fulldir, msg)
-	    : file_ops::recursive_rmdir (fulldir, msg);
+	  if (nargin == 2)
+	    {
+	      if (args(1).string_value () == "s")
+		status = file_ops::recursive_rmdir (fulldir, msg);
+	      else
+		error ("rmdir: expecting second argument to be \"s\"");
+	    }
+	  else
+	    status = file_ops::rmdir (fulldir, msg)
 
 	  if (status < 0)
 	    {

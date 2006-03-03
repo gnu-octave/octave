@@ -1,3 +1,7 @@
+2006-03-03  John W. Eaton  <jwe@octave.org>
+
+	* dirfns.cc (Frmdir): Require second arg to be "s".
+
 2006-03-02  John W. Eaton  <jwe@octave.org>
 
 	* dirfns.cc (Fmkdir, Frmdir): Now commands.

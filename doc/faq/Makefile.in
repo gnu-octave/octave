@@ -43,7 +43,7 @@ Octave-FAQ.info: $(TEXINFO)
 Octave-FAQ.dvi: $(TEXINFO)
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
 
-Octave-FAQ.ps: $(TEXINFO)
+Octave-FAQ.ps: Octave-FAQ.dvi
 	-dvips -o $@ $<
 
 Octave-FAQ.pdf: $(TEXINFO)

@@ -88,6 +88,8 @@ extern std::string gnu_readline (const std::string& s, bool force_readline = fal
 
 extern void initialize_command_input (void);
 
+extern bool octave_yes_or_no (const std::string& prompt);
+
 extern octave_value do_keyboard (const octave_value_list& args = octave_value_list ());
 
 extern std::string Vps4;

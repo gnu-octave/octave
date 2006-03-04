@@ -53,6 +53,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dirfns.h"
 #include "error.h"
 #include "gripes.h"
+#include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "procstream.h"
@@ -61,6 +62,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+
+// TRUE means we ask for confirmation before recursively removing a
+// directory tree.
+static bool Vconfirm_recursive_rmdir = true;
 
 // XXX FIXME XXX -- changing the plotter directory should be handled
 // by registering a function for octave_env::chdir to call so that
@@ -350,7 +355,7 @@ message identifier.\n\
 \n\
 If the optional second parameter is suplied, recursively remove all\n\
 subdirectories as well.\n\
-@seealso{mkdir}\n\
+@seealso{mkdir, confirm_recursive_rmdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -369,19 +374,32 @@ subdirectories as well.\n\
 	gripe_wrong_type_arg ("rmdir", args(0));
       else
 	{
-	  std::string msg;
-
 	  std::string fulldir = file_ops::tilde_expand (dirname);
+	  int status = -1;
+	  std::string msg;
 
 	  if (nargin == 2)
 	    {
 	      if (args(1).string_value () == "s")
-		status = file_ops::recursive_rmdir (fulldir, msg);
+		{
+		  bool doit = true;
+
+		  if (interactive && Vconfirm_recursive_rmdir)
+		    {
+		      std::string prompt
+			= "remove entire contents of " + fulldir + "? ";
+
+		      doit = octave_yes_or_no (prompt);
+		    }
+
+		  if (doit)
+		    status = file_ops::recursive_rmdir (fulldir, msg);
+		}
 	      else
 		error ("rmdir: expecting second argument to be \"s\"");
 	    }
 	  else
-	    status = file_ops::rmdir (fulldir, msg)
+	    status = file_ops::rmdir (fulldir, msg);
 
 	  if (status < 0)
 	    {
@@ -669,9 +687,25 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
   return retval;
 }
 
+static int
+confirm_recursive_rmdir (void)
+{
+  Vconfirm_recursive_rmdir = check_preference ("confirm_recursive_rmdir");
+
+  return 0;
+}
+
 void
 symbols_of_dirfns (void)
 {
+  DEFVAR (confirm_recursive_rmdir, true, confirm_recursive_rmdir,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} confirm_recursive_rmdir\n\
+If the value of @code{confirm_recursive_rmdir} is nonzero, Octave\n\
+will ask for confirmation before recursively removing a directory tree.\n\
+The default value is 0.\n\
+@end defvr");
+
   DEFCONST (filesep, file_ops::dir_sep_str,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} filesep\n\

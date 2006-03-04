@@ -1,6 +1,14 @@
 2006-03-03  John W. Eaton  <jwe@octave.org>
 
-	* dirfns.cc (Frmdir): Require second arg to be "s".
+	* dirfns.cc (Vconfirm_recursive_rmdir): New static variable.
+	(symbols_of_dirfns): DEFVAR it.
+	(confirm_recursive_rmdir): New function.
+	(Frmdir): Maybe ask for confirmation for recursive removal.
+	Require second arg to be "s".
+
+	* input.cc (octave_yes_or_no): New function.
+	(Fyes_or_no): New function.
+	* input.h (octave_yes_or_no): Provide decl.
 
 2006-03-02  John W. Eaton  <jwe@octave.org>
 

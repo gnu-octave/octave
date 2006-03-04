@@ -737,6 +737,61 @@ the screen before your prompt.  @xref{Input and Output}.\n\
   return retval;
 }
 
+bool
+octave_yes_or_no (const std::string& prompt)
+{
+  std::string prompt_string = prompt + "(yes or no) ";
+
+  while (1)
+    {
+      std::string input_buf = gnu_readline (prompt_string);
+
+      if (input_buf == "yes")
+	return true;
+      else if (input_buf == "no")
+	return false;
+      else
+	message (0, "Please answer yes or no.");
+    }
+}
+
+DEFUN (yes_or_no, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} yes_or_no (@var{prompt})\n\
+Ask the user a yes-or-no question.  Return 1 if the answer is yes.\n\
+Takes one argument, which is the string to display to ask the\n\
+question.  It should end in a space; @samp{yes-or-no-p} adds\n\
+@samp{(yes or no) } to it.  The user must confirm the answer with\n\
+RET and can edit it until it has been confirmed.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0 || nargin == 1)
+    {
+      std::string prompt;
+
+      if (nargin == 1)
+	{
+	  prompt = args(0).string_value ();
+
+	  if (error_state)
+	    {
+	      error ("yes_or_no: expecting argument to be character string");
+	      return retval;
+	    }
+	}
+
+      retval = octave_yes_or_no (prompt);
+    }
+  else
+    print_usage ("yes_or_no");
+
+  return retval;
+}
+
 static void
 restore_command_history (void *)
 {

@@ -450,7 +450,7 @@ void
 additional_help_message (std::ostream& os)
 {
   if (! Vsuppress_verbose_help_message)
-    os << "\n\
+    os << "\
 Additional help for built-in functions, operators, and variables\n\
 is available in the on-line version of the manual.  Use the command\n\
 `help -i <topic>' to search the manual index.\n\
@@ -845,10 +845,13 @@ help_from_symbol_table (std::ostream& os, const std::string& nm,
 
       if (h.length () > 0)
 	{
-	  sym_rec->which (os);
-	  os << "\n";
 	  h = extract_help_from_dispatch (nm) + h;
 	  display_help_text (os, h);
+	  if (! Vsuppress_verbose_help_message)
+	    {
+	      sym_rec->which (os);
+	      os << "\n";
+	    }
 	  os << "\n";
 	  retval = true;
 	}

@@ -1,3 +1,9 @@
+2006-03-04  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (additional_help_message): Don't print "\n" before message.
+	(help_from_symbol_table): If Vsuppress_verbose_help_message is
+	true, don't print which info.
+
 2006-03-03  John W. Eaton  <jwe@octave.org>
 
 	* dirfns.cc (Vconfirm_recursive_rmdir): New static variable.

@@ -28,12 +28,9 @@
 ##
 ## @strong{See} @command{is_stabilizable} for detailed description of
 ## arguments and computational method.
-##
-##
-## @end deftypefn
-##
 ## @seealso{is_stabilizable, size, rows, columns, length, ismatrix,
-## isscalar, and isvector}
+## isscalar, isvector}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

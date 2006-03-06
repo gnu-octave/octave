@@ -21,8 +21,8 @@
 ## @deftypefn {Function File} {} ismember (@var{A}, @var{S})
 ## Return a matrix the same shape as @var{A} which has 1 if
 ## @code{A(i,j)} is in @var{S} or 0 if it isn't.
-## @end deftypefn
 ## @seealso{unique, union, intersection, setxor, setdiff}
+## @end deftypefn
 
 ## Author: Paul Kienzle
 ## Adapted-by: jwe

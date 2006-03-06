@@ -31,9 +31,8 @@
 ##
 ## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
 ## not 5 percent).
+## @seealso{pv, pmt, rate, npv}
 ## @end deftypefn
-##
-## @seealso{pv, pmt, rate, and npv}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Number of payments needed for amortizing a loan

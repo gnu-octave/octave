@@ -22,8 +22,8 @@
 ## Return the elements in @var{a} but not in @var{b}, sorted in
 ## ascending order.  If @var{a} and @var{b} are both column vectors
 ## return a column vector, otherwise return a row vector.
-## @end deftypefn
 ## @seealso{unique, union, intersect, setxor, ismember}
+## @end deftypefn
 
 ## Author: Paul Kienzle
 ## Adapted-by: jwe

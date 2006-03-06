@@ -48,9 +48,8 @@
 ## Due to the difficulty of defining an axis about which to rotate the 
 ## matrix @code{rot90} only work with 2-D arrays.  To rotate N-d arrays
 ## use @code{rotdim} instead.
+## @seealso{rotdim, flipud, fliplr, flipdim}
 ## @end deftypefn
-##
-## @seealso{rotdim, flipud, fliplr and flipdim}
 
 ## Author: jwe
 

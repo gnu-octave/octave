@@ -23,9 +23,8 @@
 ##  @var{c}, @var{d} are compatible, otherwise @var{retval} = 0 with an
 ##  appropriate diagnostic message printed to the screen.  The matrices
 ##  @var{b}, @var{c}, or @var{d} may be omitted.
-## @end deftypefn
-##
 ## @seealso{abcddim}
+## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: November 4, 1997

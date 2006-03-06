@@ -26,10 +26,9 @@
 ## In the HSV space each color is represented by their hue, saturation
 ## and value (brightness).  Value gives the amount of light in the color.
 ## Hue describes the dominant wavelegth. 
-## Saturation is the amount of Hue mixed into the color. 
-## @end deftypefn
-##
+## Saturation is the amount of Hue mixed into the color.
 ## @seealso{hsv2rgb}
+## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe

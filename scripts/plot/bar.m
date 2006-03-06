@@ -41,10 +41,9 @@
 ##
 ## @noindent
 ## are equivalent.
-## @end deftypefn
-##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## stairs, replot, xlabel, ylabel, and title}
+## stairs, replot, xlabel, ylabel, title}
+## @end deftypefn
 
 ## Author: jwe
 

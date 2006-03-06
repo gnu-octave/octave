@@ -21,10 +21,9 @@
 ## @deftypefn {Function File} {} gaminv (@var{x}, @var{a}, @var{b})
 ## For each component of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the Gamma distribution with parameters @var{a}
-## and @var{b}. 
-## @end deftypefn
-##
+## and @var{b}.
 ## @seealso{gamma, gammaln, gammainc, gampdf, gamcdf, gamrnd}
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Gamma distribution

@@ -34,9 +34,8 @@
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum
 ## values for the respective axes, or as values for each row and column
 ## of the matrix @var{A}.  At present they are ignored.
+## @seealso{image, imshow}
 ## @end deftypefn
-##
-## @seealso{image and imshow}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

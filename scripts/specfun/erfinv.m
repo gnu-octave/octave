@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} erfinv (@var{z})
 ## Computes the inverse of the error function.
+## @seealso{erf, erfc}
 ## @end deftypefn
-##
-## @seealso{erf and erfc}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 27 September 1994

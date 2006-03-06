@@ -22,9 +22,8 @@
 ##
 ## Extract @acronym{FIR} data from system data structure; see @command{fir2sys} for
 ## parameter descriptions.
-## @end deftypefn
-##
 ## @seealso{fir2sys}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: July 1996

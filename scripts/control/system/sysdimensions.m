@@ -63,9 +63,8 @@
 ## discrete.
 ## @math{yd(ii) = 0} if output @var{ii} is continous
 ## @end table
+## @seealso{sysgetsignals, sysgettsam}
 ## @end deftypefn
-##
-## @seealso{sysgetsignals and sysgettsam}
 
 function [n, nz, m, p, yd] = sysdimensions (sys, opt)
 

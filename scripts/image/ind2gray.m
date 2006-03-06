@@ -22,9 +22,8 @@
 ## Convert an Octave indexed image to a gray scale intensity image.
 ## If @var{map} is omitted, the current colormap is used to determine the
 ## intensities.
+## @seealso{gray2ind, rgb2ntsc, image, colormap}
 ## @end deftypefn
-##
-## @seealso{gray2ind, rgb2ntsc, image, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

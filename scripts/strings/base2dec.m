@@ -40,10 +40,8 @@
 ## base2dec ("yyyzx", "xyz")
 ##      @result{} 123
 ## @end example
-##
-## @end deftypefn
-##
 ## @seealso{dec2base, dec2bin, bin2dec, hex2dec, dec2hex}
+## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

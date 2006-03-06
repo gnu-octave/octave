@@ -41,8 +41,8 @@
 ##
 ## The character string @code{"truesize"} can always be used as an
 ## optional final argument to prevent automatic zooming of the image.
+## @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 ## @end deftypefn
-## @seealso{image, imagesc, colormap, gray2ind, and rgb2ind}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

@@ -162,10 +162,9 @@
 ##
 ## This will plot the cosine and sine functions and label them accordingly
 ## in the key.
-## @end deftypefn
-##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, replot, xlabel, ylabel, and title}
+## bar, stairs, errorbar, replot, xlabel, ylabel, title}
+## @end deftypefn
 
 ## Author: jwe
 

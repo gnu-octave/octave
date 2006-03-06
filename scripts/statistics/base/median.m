@@ -42,9 +42,8 @@
 ## @end ifinfo
 ## If @var{x} is a matrix, compute the median value for each
 ## column and return them in a row vector.
+## @seealso{std, mean}
 ## @end deftypefn
-##
-## @seealso{std and mean}
 
 ## Author: jwe
 

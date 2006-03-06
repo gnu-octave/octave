@@ -20,9 +20,8 @@
 ## @var{nans_compare_equal} evaluates to false.
 ##
 ## If @var{nans_compare_equal} evaluates to true, then assume NaN == NaN.
-## @end deftypefn
-##
 ## @seealso{isequal, isequalwithequalnans}
+## @end deftypefn
 
 ## Modified by: William Poetra Yoga Hadisoeseno
 

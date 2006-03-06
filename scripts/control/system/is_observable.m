@@ -29,9 +29,8 @@
 ##
 ## See @command{is_controllable} for detailed description of arguments
 ## and default values.
+## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector}
 ## @end deftypefn
-##
-## @seealso{size, rows, columns, length, ismatrix, isscalar, and isvector}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

@@ -24,9 +24,8 @@
 ## complex systems from simple systems with @command{buildssic}.
 ## Watch out if you are forming sampled systems since @command{ugain}
 ## does not contain a sampling period.
+## @seealso{hinfdemo, jet707}
 ## @end deftypefn
-##
-## @seealso{hinfdemo and jet707}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: April 1998

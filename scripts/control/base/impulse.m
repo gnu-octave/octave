@@ -46,9 +46,8 @@
 ## @item t
 ## Times of the impulse response.
 ## @end table
-## @end deftypefn
-##
 ## @seealso{step, __stepimp__}
+## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: October 2, 1997

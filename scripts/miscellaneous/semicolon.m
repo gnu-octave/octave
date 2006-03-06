@@ -20,6 +20,5 @@
 ## -*- texinfo -*-
 ## @deffn {Operator} ;
 ## Array row or command separator.
-## @end deffn
-##
 ## @seealso{comma}
+## @end deffn

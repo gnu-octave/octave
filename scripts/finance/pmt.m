@@ -28,9 +28,8 @@
 ## The optional argument @var{method} may be used to specify whether
 ## payments are made at the end (@var{"e"}, default) or at the beginning
 ## (@var{"b"}) of each period.
+## @seealso{pv, nper, rate}
 ## @end deftypefn
-##
-## @seealso{pv, nper, and rate}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Amount of periodic payment needed to amortize a loan

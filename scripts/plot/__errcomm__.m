@@ -21,10 +21,8 @@
 ## @deftypefn {Function File} {} __errcomm__ (@var{args})
 ## Common argument handling code for all error plots (errorbar, loglogerr,
 ## semilogyerr, semilogxerr).
-##
-## @end deftypefn
-##
 ## @seealso{errorbar, semilogxerr, semilogyerr, loglogerr, __pltopt__}
+## @end deftypefn
 
 ## Created: 20.02.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

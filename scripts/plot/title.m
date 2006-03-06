@@ -20,10 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} title (@var{string})
 ## Specify a title for a plot.
-## @end deftypefn
-##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, and ylabel}
+## bar, stairs, replot, xlabel, ylabel}
+## @end deftypefn
 
 ## Author: jwe
 

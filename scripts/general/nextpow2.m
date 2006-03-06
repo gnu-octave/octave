@@ -30,9 +30,8 @@
 ## @end ifinfo
 ##
 ## If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
-## @end deftypefn
-##
 ## @seealso{pow2}
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 7 October 1994

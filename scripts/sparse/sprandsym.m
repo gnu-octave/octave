@@ -29,8 +29,8 @@
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero in its lower
 ## triangular part.
-## @end deftypefn
 ## @seealso{sprand, sprandn}
+## @end deftypefn
 
 function S = sprandsym(n,d)
   if nargin == 1

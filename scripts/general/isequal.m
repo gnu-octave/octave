@@ -19,9 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, @dots{})
 ## Return true if all of @var{x1}, @var{x2}, @dots{} are equal.
-## @end deftypefn
-##
 ## @seealso{isequalwithequalnans}
+## @end deftypefn
 
 function retval = isequal (x, varargin)
 

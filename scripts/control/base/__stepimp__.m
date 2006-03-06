@@ -28,9 +28,8 @@
 ## Limited argument checking; ``do not attempt to do this at home''.
 ## Used internally in @command{impulse}, @command{step}. Use @command{step}
 ## or @command{impulse} instead.
-## @end deftypefn
-##
 ## @seealso{step, impulse}
+## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: October 2, 1997

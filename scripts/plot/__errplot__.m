@@ -25,11 +25,9 @@
 ## __errplot__ (@var{arg1}, @var{arg2}, ..., @var{fmt})
 ## @end example
 ##
-## @end deftypefn
-##
-## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
+## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
 ## bar, stairs, errorbar, replot, xlabel, ylabel, and title}
-
+## @end deftypefn
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting

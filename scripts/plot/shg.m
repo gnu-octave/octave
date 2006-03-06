@@ -22,11 +22,9 @@
 ##
 ## Show the graph window.  Currently, this is the same as executing
 ## replot.
-##
-## @end deftypefn
-##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, and ylabel}
+## bar, stairs, replot, xlabel, ylabel}
+## @end deftypefn
 
 ## Author: jwe
 

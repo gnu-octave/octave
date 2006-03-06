@@ -49,9 +49,8 @@
 ## rotdim ([1, 2; 3, 4], 7, [1, 2])
 ## @end group
 ## @end example
+## @seealso{rot90, flipud, fliplr, flipdim}
 ## @end deftypefn
-##
-## @seealso{rot90, flipud, fliplr and flipdim}
 
 function y = rotdim (x, k, plane)
   

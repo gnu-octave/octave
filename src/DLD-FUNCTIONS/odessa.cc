@@ -403,8 +403,8 @@ other than 2 and @var{msg} will contain additional information.\n\
 \n\
 You can use the function @code{odessa_options} to set optional\n\
 parameters for @code{odessa}.\n\
-@end deftypefn\n\
-@seealso{daspk, dassl, dasrt, lsode}")
+@seealso{daspk, dassl, dasrt, lsode}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -22,10 +22,9 @@
 ## Return 1 if @var{x} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{x} is symmetric
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
-## is omitted, use a tolerance equal to 100 times the machine precision.  
-## @end deftypefn
-##
+## is omitted, use a tolerance equal to 100 times the machine precision.
 ## @seealso{issymmetric}
+## @end deftypefn
 
 ## Author: Gabriele Pannocchia <g.pannocchia@ing.unipi.it>
 ## Created: November 2003

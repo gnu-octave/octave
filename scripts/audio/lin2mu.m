@@ -24,9 +24,9 @@
 ## floating point values in the range -1<=@var{x}<=1 if @var{n} is 0.  
 ## If @var{n} is not specified it defaults to 0, 8 or 16 depending on 
 ## the range values in @var{x}.
+## @seealso{mu2lin, loadaudio, saveaudio, playaudio, setaudio, record}
 ## @end deftypefn
-##
-## @seealso{mu2lin, loadaudio, saveaudio, playaudio, setaudio, and record}
+
 
 ## Author: Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

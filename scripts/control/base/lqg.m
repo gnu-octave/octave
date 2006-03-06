@@ -61,9 +61,8 @@
 ## @item    es
 ## Controller poles.
 ## @end table
+## @seealso{h2syn, lqe, lqr}
 ## @end deftypefn
-##
-## @seealso{h2syn, lqe, and lqr}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1995

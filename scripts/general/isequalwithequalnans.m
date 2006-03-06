@@ -20,9 +20,8 @@
 ## @deftypefn {Function File} {} isequalwithequalnans (@var{x1}, @var{x2}, @dots{})
 ## Assuming NaN == NaN, return true if all of @var{x1}, @var{x2}, @dots{}
 ## are equal.
-## @end deftypefn
-##
 ## @seealso{isequal}
+## @end deftypefn
 
 function retval = isequalwithequalnans (x, varargin)
 

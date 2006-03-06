@@ -23,9 +23,8 @@
 ## Make a contour plot of the three-dimensional surface described by
 ## @var{z}.  Someone needs to improve @code{gnuplot}'s contour routines
 ## before this will be very useful.
-## @end deftypefn
-##
 ## @seealso{plot, mesh, meshgrid}
+## @end deftypefn
 
 ## Author: jwe
 

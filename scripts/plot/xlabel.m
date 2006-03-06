@@ -24,10 +24,9 @@
 ## Specify x, y, and z axis labels for the plot.  If you already have a plot
 ## displayed, use the command @code{replot} to redisplay it with the new
 ## labels.
-## @end deftypefn
-##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, ylabel, and title}
+## bar, stairs, replot, ylabel, title}
+## @end deftypefn
 
 ## Author: jwe
 

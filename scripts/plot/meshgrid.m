@@ -28,9 +28,8 @@
 ## of a mesh.  The rows of @var{xx} are copies of @var{x}, and the
 ## columns of @var{yy} are copies of @var{y}.  If @var{y} is omitted,
 ## then it is assumed to be the same as @var{x}.
-## @end deftypefn
-##
 ## @seealso{mesh, contour}
+## @end deftypefn
 
 ## Author: jwe
 

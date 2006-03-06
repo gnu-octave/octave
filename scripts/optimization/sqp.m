@@ -162,8 +162,8 @@
 ## allowed iterations is currently fixed at 100---edit @file{sqp.m} to
 ## increase this value).
 ## @end table
-## @end deftypefn
 ## @seealso{qp}
+## @end deftypefn
 
 function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)
 

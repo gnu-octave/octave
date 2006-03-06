@@ -15,8 +15,8 @@
 ##
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero.
-## @end deftypefn
 ## @seealso{sprand}
+## @end deftypefn
 
 ## This program is public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

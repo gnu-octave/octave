@@ -84,8 +84,8 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 For backward compatiability with previous versions of this function, when\n\
 all arguments are scalr, a single return argument @var{v1} containing\n\
 all of the values of @var{v1}, @var{...} is acceptable.\n\
-@end deftypefn\n\
-@seealso{lcm, min, max, ceil, and floor}")
+@seealso{lcm, min, max, ceil, floor}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

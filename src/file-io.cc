@@ -192,8 +192,8 @@ DEFUN (fclose, args, ,
 @deftypefn {Built-in Function} {} fclose (@var{fid})\n\
 Closes the specified file.  If successful, @code{fclose} returns 0,\n\
 otherwise, it returns -1.\n\
-@end deftypefn\n\
-@seealso{fopen, fseek, ftell}")
+@seealso{fopen, fseek, ftell}\n\
+@end deftypefn")
 {
   octave_value retval = -1;
 
@@ -242,8 +242,8 @@ stream before calling @code{input}.\n\
 \n\
 @code{fflush} returns 0 on success and an OS dependent error value\n\
 (@minus{}1 on unix) on error.\n\
-@end deftypefn\n\
-@seealso{fopen, fclose}")
+@seealso{fopen, fclose}\n\
+@end deftypefn")
 {
   octave_value retval = -1;
 
@@ -286,8 +286,8 @@ If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
-@end deftypefn\n\
-@seealso{fread, fscanf}")
+@seealso{fread, fscanf}\n\
+@end deftypefn")
 {
   static std::string who = "fgetl";
 
@@ -335,8 +335,8 @@ If @var{len} is omitted, @code{fgets} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
-@end deftypefn\n\
-@seealso{fread, fscanf}")
+@seealso{fread, fscanf}\n\
+@end deftypefn")
 {
   static std::string who = "fgets";
 
@@ -560,8 +560,8 @@ Cray floating format.\n\
 @noindent\n\
 however, conversions are currently only supported for @samp{native}\n\
 @samp{ieee-be}, and @samp{ieee-le} formats.\n\
-@end deftypefn\n\
-@seealso{fclose, fread, fseek}")
+@seealso{fclose, fread, fseek}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -702,8 +702,8 @@ file) or strings \"cof\", \"bof\" or \"eof\". If @var{origin} is omitted,\n\
 by @code{ftell} (in which case @var{origin} must be @code{SEEK_SET}).\n\
 \n\
 Return 0 on success and -1 on error.\n\
-@end deftypefn\n\
-@seealso{ftell, fopen, fclose}")
+@seealso{ftell, fopen, fclose}\n\
+@end deftypefn")
 {
   octave_value retval = -1;
 
@@ -732,8 +732,8 @@ DEFUN (ftell, args, ,
 @deftypefn {Built-in Function} {} ftell (@var{fid})\n\
 Return the position of the file pointer as the number of characters\n\
 from the beginning of the file @var{fid}.\n\
-@end deftypefn\n\
-@seealso{fseek, fopen, fclose}")
+@seealso{fseek, fopen, fclose}\n\
+@end deftypefn")
 {
   octave_value retval = -1;
 
@@ -757,8 +757,8 @@ DEFUN (fprintf, args, nargout,
 @deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
 This function is just like @code{printf}, except that the output is\n\
 written to the stream @var{fid} instead of @code{stdout}.\n\
-@end deftypefn\n\
-@seealso{printf, sprintf, fread, fscanf, fopen, fclose}")
+@seealso{printf, sprintf, fread, fscanf, fopen, fclose}\n\
+@end deftypefn")
 {
   static std::string who = "fprintf";
 
@@ -819,8 +819,8 @@ Print optional arguments under the control of the template string\n\
 @var{template} to the stream @code{stdout}.\n\
 \n\
 Return the number of characters printed.\n\
-@end deftypefn\n\
-@seealso{fprintf, sprintf, scanf}")
+@seealso{fprintf, sprintf, scanf}\n\
+@end deftypefn")
 {
   static std::string who = "printf";
 
@@ -913,8 +913,8 @@ string.  Unlike the C library function, which requires you to provide a\n\
 suitably sized string as an argument, Octave's @code{sprintf} function\n\
 returns the string, automatically sized to hold all of the items\n\
 converted.\n\
-@end deftypefn\n\
-@seealso{printf, fprintf, sscanf}")
+@seealso{printf, fprintf, sscanf}\n\
+@end deftypefn")
 {
   static std::string who = "sprintf";
 
@@ -1003,8 +1003,8 @@ with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
 conversions is returned in @var{count}\n\
-@end deftypefn\n\
-@seealso{scanf, sscanf, fread, fprintf}")
+@seealso{scanf, sscanf, fread, fprintf}\n\
+@end deftypefn")
 {
   static std::string who = "fscanf";
 
@@ -1069,8 +1069,8 @@ DEFUN (sscanf, args, ,
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.\n\
-@end deftypefn\n\
-@seealso{fscanf, scanf, sprintf}")
+@seealso{fscanf, scanf, sprintf}\n\
+@end deftypefn")
 {
   static std::string who = "sscanf";
 
@@ -1162,8 +1162,8 @@ This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\
 programs.\n\
-@end deftypefn\n\
-@seealso{fscanf, sscanf, printf}")
+@seealso{fscanf, sscanf, printf}\n\
+@end deftypefn")
 {
   int nargin = args.length ();
 
@@ -1406,8 +1406,8 @@ Conversions are currently only supported for @code{\"ieee-be\"} and\n\
 \n\
 The data read from the file is returned in @var{val}, and the number of\n\
 values read is returned in @code{count}\n\
-@end deftypefn\n\
-@seealso{fwrite, fopen, fclose}")
+@seealso{fwrite, fopen, fclose}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1518,8 +1518,8 @@ optional, and are interpreted as described for @code{fread}.\n\
 \n\
 The behavior of @code{fwrite} is undefined if the values in @var{data}\n\
 are too large to fit in the specified precision.\n\
-@end deftypefn\n\
-@seealso{fread, fopen, fclose}")
+@seealso{fread, fopen, fclose}\n\
+@end deftypefn")
 {
   octave_value retval = -1;
 
@@ -1560,8 +1560,8 @@ Return 1 if an end-of-file condition has been encountered for a given\n\
 file and 0 otherwise.  Note that it will only return 1 if the end of the\n\
 file has already been encountered, not if the next read operation will\n\
 result in an end-of-file condition.\n\
-@end deftypefn\n\
-@seealso{fread, fopen, fclose}")
+@seealso{fread, fopen, fclose}\n\
+@end deftypefn")
 {
   octave_value retval = -1;
 
@@ -1729,8 +1729,8 @@ is used.  If @var{dir} is provided, it must exist, otherwise the default\n\
 directory for temporary files is used.  Since the named file is not\n\
 opened, by @code{tmpnam}, it is possible (though relatively unlikely)\n\
 that it will not be available by the time your program attempts to open it.\n\
-@end deftypefn\n\
-@seealso{tmpfile, mkstemp, P_tmpdir}")
+@seealso{tmpfile, mkstemp, P_tmpdir}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -1772,8 +1772,8 @@ exits.\n\
 If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
 string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
 system-dependent error message.\n\
-@end deftypefn\n\
-@seealso{tmpnam, mkstemp, P_tmpdir}")
+@seealso{tmpnam, mkstemp, P_tmpdir}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1832,8 +1832,8 @@ If successful, @var{fid} is a valid file ID, @var{name} is the name of\n\
 the file, and and @var{msg} is an empty string.  Otherwise, @var{fid}\n\
 is -1, @var{name} is empty, and @var{msg} contains a system-dependent\n\
 error message.\n\
-@end deftypefn\n\
-@seealso{tmpfile, tmpnam, P_tmpdir}")
+@seealso{tmpfile, tmpnam, P_tmpdir}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

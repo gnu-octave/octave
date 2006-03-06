@@ -37,10 +37,9 @@
 ## stable if eig(a) is in the open LHP (default)
 ## @end table
 ## @end table
-## @end deftypefn
-##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
-## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
+## is_observable, is_stabilizable, is_detectable, krylov, krylovb}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

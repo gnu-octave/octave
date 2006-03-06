@@ -61,10 +61,8 @@
 ## Compare this with the numerical calculation of @code{inverse (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
 ## finite precision of your computer's floating point arithmetic.
-##
+## @seealso{hankel, vander, sylvester_matrix, hilb, toeplitz}
 ## @end deftypefn
-##
-## @seealso{hankel, vander, sylvester_matrix, hilb, and toeplitz}
 
 ## Author: Dirk Laurie <dlaurie@na-net.ornl.gov>
 

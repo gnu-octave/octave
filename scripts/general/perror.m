@@ -23,9 +23,8 @@
 ## error number @var{num}.  This function is intended to be used to print
 ## useful error messages for those functions that return numeric error
 ## codes.
-## @end deftypefn
-##
 ## @seealso{strerror}
+## @end deftypefn
 
 ## Author: jwe
 

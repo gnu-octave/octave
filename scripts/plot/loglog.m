@@ -22,10 +22,9 @@
 ## Make a two-dimensional plot using log scales for both axes.  See the
 ## description of @code{plot} for a description of the arguments that
 ## @code{loglog} will accept.
-## @end deftypefn
-##
 ## @seealso{plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-## replot, xlabel, ylabel, and title}
+## replot, xlabel, ylabel, title}
+## @end deftypefn
 
 ## Author: jwe
 

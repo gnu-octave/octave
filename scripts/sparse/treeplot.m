@@ -22,8 +22,8 @@
 ## predecessors, optional parametres @var{LineStyle} and @var{EdgeStyle}
 ## define the output style. The complexity of the algorithm is O(n) in
 ## terms of is time and memory requirements.
+## @seealso{etreeplot, gplot}
 ## @end deftypefn
-## @seealso{etreeplot,gplot}
 
 function treeplot (Tree, NodeS, EdgeS)
 

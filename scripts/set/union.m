@@ -28,9 +28,8 @@
 ##      @result{} [ 1, 2, 3, 4, 5 ]
 ## @end group
 ## @end example
+## @seealso{create_set, intersection, complement}
 ## @end deftypefn
-##
-## @seealso{create_set, intersection, and complement}
 
 ## Author: jwe
 

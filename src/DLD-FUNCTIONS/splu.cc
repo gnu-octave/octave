@@ -68,8 +68,8 @@ lower triangular matrices, such that @code{@var{a} = @var{l} * @var{u}}.\n\
 With two or three output arguments, if a user-defined @var{Q} is given,\n\
 then @code{@var{u} * @var{Q}'} is returned. The matrix is not required to\n\
 be square.\n\
-@end deftypefn\n\
-@seealso{sparse, spinv, colamd, symamd}")
+@seealso{sparse, spinv, colamd, symamd}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

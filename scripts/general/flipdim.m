@@ -29,9 +29,8 @@
 ##          4  3
 ## @end group
 ## @end example
+## @seealso{fliplr, flipud, rot90, rotdim}
 ## @end deftypefn
-##
-## @seealso{fliplr, flipud, rot90 and rotdim}
 
 ## Author: David Bateman
 

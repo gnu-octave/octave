@@ -28,8 +28,8 @@
 ## various examples.
 ##
 ## See @code{demo} for a complete explanation.
-## @end deftypefn
 ## @seealso{demo, test}
+## @end deftypefn
 
 ## PKG_ADD: mark_as_command example
 

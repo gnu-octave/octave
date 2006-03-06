@@ -77,9 +77,8 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
 @result{} ans = @{\"foo\", \"bar\", \"foobar\"@}\n\
 @end group\n\
 @end example\n\
-\n\
-@end deftypefn\n\
-@seealso{isempty, islogical, isreal, length, ndims, numel, size, isclass}")
+@seealso{isempty, islogical, isreal, length, ndims, numel, size, isclass}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -252,8 +251,8 @@ DEFUN_DLD (num2cell, args, ,
 Convert to matrix @var{m} into a cell array. If @var{d} is defined the\n\
 value @var{c} is of dimension 1 in this dimension and the elements of\n\
 @var{m} are placed in slices in @var{c}.\n\
-@end deftypefn\n\
-@seealso{mat2cell}") 
+@seealso{mat2cell}\n\
+@end deftypefn") 
 {
   int nargin =  args.length();
   octave_value retval;

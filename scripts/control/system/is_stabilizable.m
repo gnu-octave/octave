@@ -35,10 +35,9 @@
 ## @var{dflg}!=0
 ## @end ifinfo
 ## assume that discrete-time matrices (a,b) are supplied.
-## @end deftypefn
-##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
 ## is_observable, is_stabilizable, is_detectable}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

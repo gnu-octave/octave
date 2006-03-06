@@ -22,9 +22,8 @@
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the Gamma distribution with parameters
 ## @var{a} and @var{b}.
-## @end deftypefn
-##
 ## @seealso{gamma, gammaln, gammainc, gampdf, gaminv, gamrnd}
+## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the Gamma distribution

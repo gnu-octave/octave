@@ -21,10 +21,9 @@
 ## @deftypefn {Function File} {} polyreduce (@var{c})
 ## Reduces a polynomial coefficient vector to a minimum number of terms by
 ## stripping off any leading zeros.
-## @end deftypefn
-##
 ## @seealso{poly, roots, conv, deconv, residue, filter, polyval,
-## polyvalm, polyderiv, and polyinteg}
+## polyvalm, polyderiv, polyinteg}
+## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994

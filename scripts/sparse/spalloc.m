@@ -36,8 +36,8 @@
 ##
 ## will reallocate memory at each step. It is therefore vitally important
 ## that code like this is vectorized as much as possible.
-## @end deftypefn
 ## @seealso{sparse, nzmax}
+## @end deftypefn
 
 function s = spalloc (r, c, nz)
   s = sparse (r, c);

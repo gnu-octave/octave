@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isscalar (@var{a})
 ## Return 1 if @var{a} is a scalar.  Otherwise, return 0.
+## @seealso{size, rows, columns, length, isscalar, ismatrix}
 ## @end deftypefn
-##
-## @seealso{size, rows, columns, length, isscalar, and ismatrix}
 
 ## Author: jwe
 

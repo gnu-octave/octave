@@ -30,9 +30,8 @@
 ##
 ## Return index vectors @var{i} and @var{j} such that @code{x(i)==y} and
 ## @code{y(j)==x}.
-##
-## @end deftypefn
 ## @seealso{union, intersect, setdiff, setxor, ismember}
+## @end deftypefn
 
 function [y, i, j] = unique (x, r)
 

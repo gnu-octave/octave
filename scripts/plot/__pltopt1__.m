@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __pltopt1__ (@var{caller}, @var{opt})
 ## Really decode plot option strings.
-## @end deftypefn
-##
 ## @seealso{__pltopt__}
+## @end deftypefn
 
 ## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
 ## Adapted-By: jwe

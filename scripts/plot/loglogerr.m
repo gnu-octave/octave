@@ -32,11 +32,9 @@
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
 ## format defined by @var{fmt}. See errorbar for available formats and 
 ## additional information.
-##
-## @end deftypefn
-##
 ## @seealso{errorbar, semilogxerr, semilogyerr, polar, mesh, contour, 
-## __pltopt__, bar, stairs, replot, xlabel, ylabel, and title}
+## __pltopt__, bar, stairs, replot, xlabel, ylabel, title}
+## @end deftypefn
 
 ## Created: 20.2.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

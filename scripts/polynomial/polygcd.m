@@ -33,10 +33,9 @@
 ## polygcd (poly(1:8), poly(3:12)) - poly(3:8)
 ##          deconv (poly(1:8), polygcd (poly(1:8), poly(3:12))) - poly(1:2)
 ## @end example
-## @end deftypefn
-##
 ## @seealso{poly, polyinteg, polyderiv, polyreduce, roots, conv, deconv,
 ## residue, filter, polyval, and polyvalm}
+## @end deftypefn
 
 function x = polygcd (b, a, tol)
 

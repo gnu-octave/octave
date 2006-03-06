@@ -69,10 +69,8 @@
 ##  See also: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
 ##  Algebraic Riccati Equations}, Mathematics of Control, Signals and
 ##  Systems, Vol 5, no 2 (1992), pp 165--194.
-##
+## @seealso{balance, are}
 ## @end deftypefn
-##
-## @seealso{balance and are}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

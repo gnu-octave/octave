@@ -21,9 +21,8 @@
 ## @deftypefn {Function File} {} issquare (@var{x})
 ## If @var{x} is a square matrix, then return the dimension of @var{x}.
 ## Otherwise, return 0.
+## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector}
 ## @end deftypefn
-##
-## @seealso{size, rows, columns, length, ismatrix, isscalar, and isvector}
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993

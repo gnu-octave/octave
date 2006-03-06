@@ -23,9 +23,8 @@
 ## from an initial investment @var{i} (i.e., the solution of
 ## @code{npv (r, p) = i}.  If the second argument is omitted, a value of
 ## 0 is used.
+## @seealso{npv, pv, rate}
 ## @end deftypefn
-##
-## @seealso{npv, pv, and rate}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Internal rate of return of an investment

@@ -115,8 +115,8 @@ Compute the matrix square root of the square matrix @var{a}.\n\
 Ref: Nicholas J. Higham. A new sqrtm for MATLAB. Numerical Analysis\n\
 Report No. 336, Manchester Centre for Computational Mathematics,\n\
 Manchester, England, January 1999.\n\
-@end deftypefn\n\
-@seealso{expm, logm, and funm}")
+@seealso{expm, logm, funm}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

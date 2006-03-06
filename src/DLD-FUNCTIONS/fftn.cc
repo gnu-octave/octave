@@ -130,8 +130,8 @@ smaller than the corresponding dimension, then the dimension is\n\
 truncated prior to performing the FFT. Otherwise if an element\n\
 of @var{size} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
-@end deftypefn\n\
-@seealso {ifftn, fft, fft2, fftw_wisdom}")
+@seealso {ifftn, fft, fft2, fftw_wisdom}\n\
+@end deftypefn")
 {
   return do_fftn (args, "fftn", 0);
 }
@@ -147,8 +147,8 @@ smaller than the corresponding dimension, then the dimension is\n\
 truncated prior to performing the inverse FFT. Otherwise if an element\n\
 of @var{size} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
-@end deftypefn\n\
-@seealso {fftn, ifft, ifft2, fftw_wisdom}")
+@seealso {fftn, ifft, ifft2, fftw_wisdom}\n\
+@end deftypefn")
 {
   return do_fftn (args, "ifftn", 1);
 }

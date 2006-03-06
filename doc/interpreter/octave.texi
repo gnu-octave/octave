@@ -11,6 +11,9 @@
 @c each group of functions and variables).
 
 @macro seealso {args}
+@sp 1
+@noindent
+See also: \args\.
 @end macro
 
 @ifinfo

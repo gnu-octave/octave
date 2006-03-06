@@ -41,9 +41,8 @@
 ##
 ## The optional third argument, @var{len}, specifies the minimum
 ## number of digits in the result.
-## @end deftypefn
-##
 ## @seealso{base2dec, dec2bin, bin2dec, hex2dec, dec2hex}
+## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

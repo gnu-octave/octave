@@ -260,8 +260,8 @@ DEFUN (bitand, args, ,
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of nonnegative integers.\n\
 @var{x}, @var{y} must be in range [0..bitmax]\n\
-@end deftypefn\n\
-@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}")
+@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
+@end deftypefn")
 {
   BITOP (&, "bitand");
 }
@@ -271,8 +271,8 @@ DEFUN (bitor, args, ,
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
 Return the bitwise OR of nonnegative integers.\n\
 @var{x}, @var{y} must be in range [0..bitmax]\n\
-@end deftypefn\n\
-@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}")
+@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
+@end deftypefn")
 {
   BITOP (|, "bitor");
 }
@@ -282,8 +282,8 @@ DEFUN (bitxor, args, ,
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
 Return the bitwise XOR of nonnegative integers.\n\
 @var{x}, @var{y} must be in range [0..bitmax]\n\
-@end deftypefn\n\
-@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}")
+@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
+@end deftypefn")
 {
   BITOP (^, "bitxor");
 }
@@ -404,8 +404,8 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 bitshift ([1, 10], 2, [3,4])\n\
 @result{} 4  8\n\
 @end example\n\
-@end deftypefn\n\
-@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitmax}")
+@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitmax}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -516,7 +516,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{uint32}.\n\
-@seealso{intmin,bitmax}\n\
+@seealso{intmin, bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -579,7 +579,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{uint32}.\n\
-@seealso{intmax,bitmax}\n\
+@seealso{intmax, bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;

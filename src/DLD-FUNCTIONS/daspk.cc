@@ -266,8 +266,8 @@ less than zero and @var{msg} will contain additional information.\n\
 \n\
 You can use the function @code{daspk_options} to set optional\n\
 parameters for @code{daspk}.\n\
-@end deftypefn\n\
-@seealso{dassl}")
+@seealso{dassl}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

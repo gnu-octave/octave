@@ -28,9 +28,8 @@
 ##      @result{} 5
 ## @end group
 ## @end example
+## @seealso{create_set, union, intersection}
 ## @end deftypefn
-##
-## @seealso{create_set, union, and intersection}
 
 ## Author: jwe
 

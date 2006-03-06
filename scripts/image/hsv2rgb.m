@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} @var{rgb_map} = hsv2rgb (@var{hsv_map})
 ## Transform a colormap from the hsv space to the rgb space. 
-## @end deftypefn
-##
 ## @seealso{rgb2hsv}
+## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe

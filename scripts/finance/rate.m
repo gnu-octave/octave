@@ -28,9 +28,8 @@
 ## The optional string argument @var{method} may be used to specify
 ## whether payments are made at the end (@code{"e"}, default) or at the
 ## beginning (@code{"b"}) of each period.
+## @seealso{pv, pmt, nper, npv}
 ## @end deftypefn
-##
-## @seealso{pv, pmt, nper, and npv}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Rate of return of an investment

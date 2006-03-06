@@ -22,10 +22,9 @@
 ## For two-dimensional plotting, force the display of a grid on the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
 ## omitted, @code{"on"} is assumed.
-## @end deftypefn
-##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, ylabel, and title}
+## bar, stairs, replot, xlabel, ylabel, title}
+## @end deftypefn
 
 ## Author: jwe
 

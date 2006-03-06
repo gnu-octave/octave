@@ -1075,8 +1075,8 @@ Create a new cell array from the objects stored in the struct object.\n\
 If @var{f} is the number of fields in the structure, the resulting\n\
 cell array will have a dimension vector corresponding to\n\
 @code{[@var{F} size(@var{S})]}.\n\
-@end deftypefn\n\
-@seealso{cell2struct, fieldnames}")
+@seealso{cell2struct, fieldnames}\n\
+@end deftypefn")
 {
   octave_value retval;
 

@@ -28,9 +28,8 @@
 ## @ifinfo
 ## n = 2^k.
 ## @end ifinfo
+## @seealso{hankel, vander, hilb, invhilb, toeplitz}
 ## @end deftypefn
-##
-## @seealso{hankel, vander, hilb, invhilb, and toeplitz}
 
 ## Author: jwe
 

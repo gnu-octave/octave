@@ -22,9 +22,8 @@
 ## Compute the (two-norm) condition number of a matrix. @code{cond (a)} is
 ## defined as @code{norm (a) * norm (inv (a))}, and is computed via a
 ## singular value decomposition.
+## @seealso{norm, svd, rank}
 ## @end deftypefn
-##
-## @seealso{norm, svd, and rank}
 
 ## Author: jwe
 

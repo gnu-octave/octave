@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isvector (@var{a})
 ## Return 1 if @var{a} is a vector.  Otherwise, return 0.
+## @seealso{size, rows, columns, length, isscalar, ismatrix}
 ## @end deftypefn
-##
-## @seealso{size, rows, columns, length, isscalar, and ismatrix}
 
 ## Author: jwe
 

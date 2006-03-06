@@ -39,9 +39,8 @@
 ## Absolute error @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})} 
 ## will be used when tolerance is negative or when the expected value is zero.
 ## @end table
-##
-## @end deftypefn
 ## @seealso{test}
+## @end deftypefn
 
 ## TODO: Output throttling: don't print out the entire 100x100 matrix,
 ## TODO: but instead give a summary; don't print out the whole list, just

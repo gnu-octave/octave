@@ -27,9 +27,8 @@
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the common size of @var{a} and @var{b}.
-## @end deftypefn
-##
 ## @seealso{gamma, gammaln, gammainc, gampdf, gamcdf, gaminv}
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Gamma distribution

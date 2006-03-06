@@ -22,8 +22,8 @@
 ## @code{@var{s}+@var{s}'}  if @var{s} in non-symmetric.  The optional
 ## parameters @var{line_style} and @var{edge_style} define the output
 ## style.
+## @seealso{treeplot, gplot}
 ## @end deftypefn
-## @seealso{treeplot,gplot}
 
 function etreeplot (s, varargin)
   treeplot (etree (s+s'), varargin{:});

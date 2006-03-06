@@ -24,9 +24,8 @@
 ## @var{theta}, @var{r} (and @var{z}) must be of same shape.
 ## @var{theta} describes the angle relative to the x - axis.
 ## @var{r} is the distance to the z - axis (0, 0, z).
-## @end deftypefn
-##
 ## @seealso{cart2pol, cart2sph, sph2cart}
+## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe

@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} columns (@var{a})
 ## Return the number of columns of @var{a}.
+## @seealso{size, rows, length, isscalar, isvector, ismatrix}
 ## @end deftypefn
-##
-## @seealso{size, rows, length, isscalar, isvector, and ismatrix}
 
 ## Author: jwe
 

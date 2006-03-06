@@ -70,9 +70,8 @@ as\n\
 [@var{c},@var{r}] = spqr (@var{a},@var{b})\n\
 @var{x} = @var{r} \\ @var{c}\n\
 @end example\n\
-\n\
-@end deftypefn\n\
-@seealso{spchol, qr}")
+@seealso{spchol, qr}\n\
+@end deftypefn")
 {
   int nargin = args.length ();
   octave_value_list retval;
@@ -246,8 +245,8 @@ of the blocks. If @var{s} is square then @code{@var{r} == @var{s}}.\n\
 The method used is described in: A. Pothen & C.-J. Fan. Computing the block\n\
 triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 16(4):303-324, 1990.\n\
-@end deftypefn\n\
-@seealso{colamd,ccolamd}")
+@seealso{colamd, ccolamd}\n\
+@end deftypefn")
 {
   int nargin = args.length();
   octave_value_list retval;

@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} lower (@var{s})
 ## Transform all letters in the string @var{s} to lower case.
-## @end deftypefn
-##
 ## @seealso{tolower}
+## @end deftypefn
 
 ## Author: jwe
 

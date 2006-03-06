@@ -24,9 +24,8 @@
 ## @var{bps} determine the encoding and the number of bits per sample used
 ## in the audio file (see @code{loadaudio});  defaults are @file{lin} and
 ## 8, respectively.
+## @seealso{lin2mu, mu2lin, loadaudio, playaudio, setaudio, record}
 ## @end deftypefn
-##
-## @seealso{lin2mu, mu2lin, loadaudio, playaudio, setaudio, and record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 5 September 1994

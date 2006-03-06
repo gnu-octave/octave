@@ -103,9 +103,8 @@
 ##   5    cyan      cyan        dot long dash  triangle    filled square
 ##   6    brown     yellow      dot short dash  "*"         "o"
 ## @end example
-## @end deftypefn
-##
 ## @seealso{__pltopt1__}
+## @end deftypefn
 
 ## Author: jwe
 

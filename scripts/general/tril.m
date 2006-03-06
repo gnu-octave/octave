@@ -59,9 +59,8 @@
 ##          1  1  1
 ## @end group
 ## @end example
+## @seealso{triu, diag}
 ## @end deftypefn
-##
-## @seealso{triu and diag}
 
 ## Author: jwe
 

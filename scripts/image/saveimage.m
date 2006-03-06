@@ -42,9 +42,8 @@
 ## image is a gray scale image (the entries within each row of the colormap
 ## are equal) the gray scale ppm and PostScript image formats are used,
 ## otherwise the full color formats are used.
+## @seealso{loadimage, save, load, colormap}
 ## @end deftypefn
-##
-## @seealso{loadimage, save, load, and colormap}
 
 ## The conversion to PostScript is based on pbmtolps.c, which was
 ## written by

@@ -22,8 +22,8 @@
 ## @code{ver} displays a header containing the current Octave version
 ## number, license string and operating system, followed by the version
 ## number for octave-forge, if installed.
-## @end deftypefn
 ## @seealso{license, version}
+## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 

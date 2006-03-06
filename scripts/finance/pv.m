@@ -31,9 +31,8 @@
 ##
 ## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
 ## not 5 percent).
+## @seealso{pmt, nper, rate, npv}
 ## @end deftypefn
-##
-## @seealso{pmt, nper, rate, and npv}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Present value of an investment

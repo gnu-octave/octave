@@ -25,9 +25,8 @@
 ## If @var{p} is a system, @var{tsam} must not be specified.
 ## If @var{p} is a matrix and @var{tsam} is specified, eigenvalues
 ## of @var{p} are assumed to be in @var{z}-domain.
-## @end deftypefn
-##
 ## @seealso{eig}
+## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: September 29, 1997.

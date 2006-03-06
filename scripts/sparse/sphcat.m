@@ -18,9 +18,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} sphcat (@var{a1}, @var{a2}, @dots{}, @var{aN})
 ## Return the horizontal concatenation of sparse matrices. This function
-## is obselete and @code{horzcat} should be used
-## @end deftypefn
+## is obselete and @code{horzcat} should be used.
 ## @seealso {spvcat, vertcat, horzcat, cat}
+## @end deftypefn
 
 function y = sphcat (varargin)
 

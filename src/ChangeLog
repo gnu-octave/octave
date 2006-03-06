@@ -1,3 +1,20 @@
+2006-03-06  Keith Goodman  <kwgoodman@gmail.com>
+ 
+	* bitfcns.cc, data.cc, debug.cc, file-io.cc, help.cc,
+	load-save.cc, mappers.cc, ov-cell.cc, ov-fcn-inline.cc,
+	ov-struct.cc, ov-usr-fcn.cc, ov.cc, pr-output.cc, utils.cc,
+	variables.cc, DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/daspk.cc,
+	DLD-FUNCTIONS/dasrt.cc, DLD-FUNCTIONS/dassl.cc,
+	DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc,
+	DLD-FUNCTIONS/fftn.cc, DLD-FUNCTIONS/fftw_wisdom.cc,
+	DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/gcd.cc,
+	DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/odessa.cc,
+	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spchol.cc,
+	DLD-FUNCTIONS/splu.cc, DLD-FUNCTIONS/spqr.cc,
+	DLD-FUNCTIONS/sqrtm.cc:
+	Move @seealso inside @defXXX macro.  Remove "and" from @seealso.
+
 2006-03-04  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (additional_help_message): Don't print "\n" before message.

@@ -2540,8 +2540,8 @@ Note that the output from @code{disp} always ends with a newline.\n\
 \n\
 If an output value is requested, @code{disp} prints nothing and\n\
 returns the formatted output in a string.\n\
-@end deftypefn\n\
-@seealso{fdisp}")
+@seealso{fdisp}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -2580,8 +2580,8 @@ fdisp (stdout, \"The value of pi is:\"), fdisp (stdout, pi)\n\
 \n\
 @noindent\n\
 Note that the output from @code{fdisp} always ends with a newline.\n\
-@end deftypefn\n\
-@seealso{disp}")
+@seealso{disp}\n\
+@end deftypefn")
 {
   octave_value retval;
 

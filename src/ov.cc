@@ -2207,8 +2207,8 @@ DEFUN (cast, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cast (@var{val}, @var{type})\n\
 Convert @var{val} to the new data type @var{type}.\n\
-@end deftypefn\n\
-@seealso{class, typeinfo}")
+@seealso{class, typeinfo}\n\
+@end deftypefn")
 {
   octave_value retval;
 

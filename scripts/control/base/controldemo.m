@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} controldemo ()
 ## Control Systems Toolbox demo.
-## @end deftypefn
-##
 ## @seealso{Demo programs: bddemo, frdemo, analdemo, moddmeo, rldemo}
+## @end deftypefn
 
 ## Author: David Clem
 ## Created: August 15, 1994

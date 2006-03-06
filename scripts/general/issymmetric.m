@@ -22,10 +22,9 @@
 ## If @var{x} is symmetric within the tolerance specified by @var{tol},
 ## then return the dimension of @var{x}.  Otherwise, return 0.  If
 ## @var{tol} is omitted, use a tolerance equal to the machine precision.
-## @end deftypefn
-##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar,
-## issquare, and isvector}
+## issquare, isvector}
+## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993

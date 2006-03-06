@@ -36,10 +36,8 @@
 ## @deftypefnx {Function File} {[@var{samples}, @var{channels}]} = wavread (@var{filename}, "size")
 ## Return the number of samples (@var{n}) and channels (@var{ch})
 ## instead of the audio data.
-##
-## @end deftypefn
-##
 ## @seealso{wavwrite}
+## @end deftypefn
 
 ## Author: Michael Zeising <michael.zeising@stud.uni-erlangen.de>
 ## Created: 06 December 2005

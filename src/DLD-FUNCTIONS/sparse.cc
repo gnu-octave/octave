@@ -620,8 +620,8 @@ DEFUN_DLD (spprod, args, ,
 @deftypefn {Loadable Function} {@var{y} =} spprod (@var{x},@var{dim})\n\
 Product of elements along dimension @var{dim}.  If @var{dim} is omitted,\n\
 it defaults to 1 (column-wise products).\n\
-@end deftypefn\n\
-@seealso{spsum, spsumsq}")
+@seealso{spsum, spsumsq}\n\
+@end deftypefn")
 {
   SPARSE_DIM_ARG_BODY (spprod, prod);
 }
@@ -634,8 +634,8 @@ DEFUN_DLD (spcumprod, args, ,
 @deftypefn {Loadable Function} {@var{y} =} spcumprod (@var{x},@var{dim})\n\
 Cumulative product of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise cumulative products).\n\
-@end deftypefn\n\
-@seealso{spcumsum}")
+@seealso{spcumsum}\n\
+@end deftypefn")
 {
   SPARSE_DIM_ARG_BODY (spcumprod, cumprod);
 }
@@ -648,8 +648,8 @@ DEFUN_DLD (spsum, args, ,
 @deftypefn {Loadable Function} {@var{y} =} spsum (@var{x},@var{dim})\n\
 Sum of elements along dimension @var{dim}.  If @var{dim} is omitted, it\n\
 defaults to 1 (column-wise sum).\n\
-@end deftypefn\n\
-@seealso{spprod, spsumsq}")
+@seealso{spprod, spsumsq}\n\
+@end deftypefn")
 {
   SPARSE_DIM_ARG_BODY (spsum, sum);
 }
@@ -662,8 +662,8 @@ DEFUN_DLD (spcumsum, args, ,
 @deftypefn {Loadable Function} {@var{y} =} spcumsum (@var{x},@var{dim})\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise cumulative sums).\n\
-@end deftypefn\n\
-@seealso{spcumprod}")
+@seealso{spcumprod}\n\
+@end deftypefn")
 {
   SPARSE_DIM_ARG_BODY (spcumsum, cumsum);
 }
@@ -682,8 +682,8 @@ spsum (x .* spconj (x), dim)\n\
 @end example\n\
 but it uses less memory and avoids calling @code{spconj} if @var{x} is\n\
 real.\n\
-@end deftypefn\n\
-@seealso{spprod, spsum}")
+@seealso{spprod, spsum}\n\
+@end deftypefn")
 {
   SPARSE_DIM_ARG_BODY (spsumsq, sumsq);
 }
@@ -1240,9 +1240,8 @@ Compressed Column Sparse (rows=4, cols=4, nnz=3)\n\
   (2 , 3) -> 2\n\
   (3 , 4) -> 3\n\
 @end example\n\
-\n\
-@end deftypefn\n\
-@seealso{diag}")
+@seealso{diag}\n\
+@end deftypefn")
 {
   octave_value retval;
 

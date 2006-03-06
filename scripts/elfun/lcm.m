@@ -34,9 +34,8 @@
 ## @end example
 ##
 ## All elements must be the same size or scalar.
+## @seealso{gcd, min, max, ceil, floor}
 ## @end deftypefn
-##
-## @seealso{gcd, min, max, ceil, and floor}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 16 September 1994

@@ -286,8 +286,8 @@ the first that matches.\n\
 If the second optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@end deftypefn\n\
-@seealso{file_in_path, LOADPATH}")
+@seealso{file_in_path, LOADPATH}\n\
+@end deftypefn")
 {
   octave_value retval;
 

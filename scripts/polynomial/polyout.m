@@ -33,10 +33,9 @@
 ##  and return it as a string or write it to the screen (if
 ##  @var{nargout} is zero).
 ##  @var{x} defaults to the string @code{"s"}.
-## @end deftypefn
-##
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
 ## filter, polyderiv, and polyinteg}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: May 1995

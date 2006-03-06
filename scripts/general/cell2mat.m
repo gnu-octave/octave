@@ -20,9 +20,8 @@
 ## elements of @var{c} into a hyperrectangle.  Elements of @var{c} must
 ## be numeric, logical or char, and @code{cat} must be able to
 ## concatenate them together.
-## @end deftypefn
-##
 ## @seealso{mat2cell, num2cell}
+## @end deftypefn
 
 function m = cell2mat (c)
 

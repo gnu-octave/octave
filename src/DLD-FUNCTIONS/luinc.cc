@@ -89,8 +89,8 @@ range are ignored.\n\
 \n\
 All other fields in @var{opts} are ignored. The outputs from @dfn{luinc}\n\
 are the same as for @dfn{lu}.\n\
-@end deftypefn\n\
-@seealso{sparse, lu, cholinc}")
+@seealso{sparse, lu, cholinc}\n\
+@end deftypefn")
 {
   int nargin = args.length ();
   octave_value_list retval;

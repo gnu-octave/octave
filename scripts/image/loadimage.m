@@ -21,9 +21,8 @@
 ## @deftypefn {Function File} {[@var{x}, @var{map}] =} loadimage (@var{file})
 ## Load an image file and it's associated color map from the specified
 ## @var{file}.  The image must be stored in Octave's image format.
+## @seealso{saveimage, load, save}
 ## @end deftypefn
-##
-## @seealso{saveimage, load, and save}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

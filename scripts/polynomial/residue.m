@@ -99,9 +99,8 @@
 ##    s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
 ## @end example
 ## @end ifinfo
-## @end deftypefn
-##
 ## @seealso{poly, roots, conv, deconv, polyval, polyderiv, and polyinteg}
+## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994

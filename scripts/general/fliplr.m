@@ -32,9 +32,8 @@
 ##
 ## Note that @code{fliplr} only work with 2-D arrays.  To flip N-d arrays
 ## use @code{flipdim} instead.
+## @seealso{flipud, flipdim, rot90, rotdim}
 ## @end deftypefn
-##
-## @seealso{flipud, flipdim, rot90 and rotdim}
 
 ## Author: jwe
 

@@ -31,9 +31,8 @@
 ##
 ## If @var{s} is a string matrix, returns a column vector of converted
 ## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
-## @end deftypefn
-##
 ## @seealso{dec2hex, base2dec, dec2base, bin2dec, dec2bin}
+## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

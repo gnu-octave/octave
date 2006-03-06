@@ -584,8 +584,8 @@ they are the names of the arguments of the function.\n\
 \n\
 If the second argument is an integer @var{n}, the arguments are\n\
 @code{\"x\"}, @code{\"P1\"}, @dots{}, @code{\"P@var{N}\"}.\n\
-@end deftypefn\n\
-@seealso{argnames, formula, vectorize}")
+@seealso{argnames, formula, vectorize}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -737,8 +737,8 @@ DEFUN (formula, args, ,
 Return a character string representing the inline function @var{fun}.\n\
 Note that @code{char (@var{fun})} is equivalent to\n\
 @code{formula (@var{fun})}.\n\
-@end deftypefn\n\
-@seealso{argnames, inline, vectorize}")
+@seealso{argnames, inline, vectorize}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -764,8 +764,8 @@ DEFUN (argnames, args, ,
 @deftypefn {Built-in Function} {} argnames (@var{fun})\n\
 Return a cell array of character strings containing the names of\n\
 the arguments of the inline function @var{fun}.\n\
-@end deftypefn\n\
-@seealso{argnames, inline, formula, vectorize}")
+@seealso{argnames, inline, formula, vectorize}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -801,8 +801,7 @@ DEFUN (vectorize, args, ,
 Create a vectorized version of the inline function @var{fun}\n\
 by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 @code{.*}, @code{./}, etc.\n\
-@end deftypefn\n\
-@seealso{argnames, inline, formula, vectorize}")
+@end deftypefn")
 {
   octave_value retval;
 

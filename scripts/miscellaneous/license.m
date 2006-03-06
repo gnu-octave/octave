@@ -49,8 +49,8 @@
 ## on failure.
 ##
 ## This function is provided for compatibility with @sc{Matlab}.
-## @end deftypefn
 ## @seealso{ver, version}
+## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 

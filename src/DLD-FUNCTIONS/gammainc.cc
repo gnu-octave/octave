@@ -63,8 +63,8 @@ for each element of @var{x} and vice versa.\n\
 \n\
 If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 @var{a} must agree, and @var{gammainc} is applied element-by-element.\n\
-@end deftypefn\n\
-@seealso{gamma and lgamma}")
+@seealso{gamma, lgamma}\n\
+@end deftypefn")
 {
   octave_value retval;
 

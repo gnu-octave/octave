@@ -28,9 +28,8 @@
 ##      @result{} [ 1, 2, 3, 4 ]
 ## @end group
 ## @end example
+## @seealso{union, intersection, complement}
 ## @end deftypefn
-##
-## @seealso{union, intersection, and complement}
 
 ## Author: jwe
 

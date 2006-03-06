@@ -58,10 +58,8 @@
 ## Otherwise @code{abcddim} returns @var{n} = @var{m} = @var{p} = @minus{}1.
 ##
 ## Note: n = 0 (pure gain block) is returned without warning.
-##
-## @end deftypefn
-##
 ## @seealso{is_abcd}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993.

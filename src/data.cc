@@ -778,8 +778,8 @@ DEFUN (horzcat, args, ,
 @deftypefn {Built-in Function} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
 Return the horizontal concatenation of N-d array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 2.\n\
-@end deftypefn\n\
-@seealso{cat and vertcat}")
+@seealso{cat, vertcat}\n\
+@end deftypefn")
 {
   octave_value_list args_tmp = args;
   
@@ -797,8 +797,8 @@ DEFUN (vertcat, args, ,
 @deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
 Return the vertical concatenation of N-d array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 1.\n\
-@end deftypefn\n\
-@seealso{cat and horzcat}")
+@seealso{cat, horzcat}\n\
+@end deftypefn")
 {
   octave_value_list args_tmp = args;
   
@@ -856,9 +856,8 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
      0 0\n\
 @end group\n\
 @end example\n\
-\n\
-@end deftypefn\n\
-@seealso{horzcat and vertcat}")
+@seealso{horzcat, vertcat}\n\
+@end deftypefn")
 {
   return do_cat (args, "cat");
 }
@@ -897,9 +896,8 @@ DEFUN (permute, args, ,
 Return the generalized transpose for an N-d array object @var{a}.\n\
 The permutation vector @var{perm} must contain the elements\n\
 @code{1:ndims(a)} (in any order, but each element must appear just once).\n\
-\n\
-@end deftypefn\n\
-@seealso{ipermute}")
+@seealso{ipermute}\n\
+@end deftypefn")
 {
   return do_permute (args, false, "permute");
 }
@@ -913,9 +911,8 @@ The inverse of the @code{permute} function.  The expression\n\
 ipermute (permute (a, perm), perm)\n\
 @end example\n\
 returns the original array @var{a}.\n\
-\n\
-@end deftypefn\n\
-@seealso{permute}")
+@seealso{permute}\n\
+@end deftypefn")
 {
   return do_permute (args, true, "ipermute");
 }

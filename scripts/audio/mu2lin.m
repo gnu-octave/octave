@@ -23,9 +23,8 @@
 ## unsigned integers.  Linear values use @var{n}-bit signed integers
 ## or floating point values in the range -1<=y<=1 if @var{n} is 0.  If
 ## @var{n} is not specified it defaults to 8.
+## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, record}
 ## @end deftypefn
-##
-## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, and record}
 
 ## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 18 October 1994

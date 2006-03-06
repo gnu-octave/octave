@@ -19,9 +19,8 @@
 ## Build a block diagonal matrix from @var{a}, @var{b}, @var{c}, ... .
 ## All the arguments must be numeric and are two-dimensional matrices or
 ## scalars.
-## @end deftypefn
-##
 ## @seealso{diag, horzcat, vertcat}
+## @end deftypefn
 
 ## Author: Daniel Calvelo
 ## Modified by: William Poetra Yoga Hadisoeseno

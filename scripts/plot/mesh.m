@@ -25,9 +25,8 @@
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
-## @end deftypefn
-##
 ## @seealso{meshgrid, contour}
+## @end deftypefn
 
 ## Author: jwe
 

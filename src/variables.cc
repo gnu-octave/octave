@@ -145,8 +145,8 @@ DEFCMD (mark_as_command, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mark_as_command (@var{name})\n\
 Enter @var{name} into the list of commands.\n\
-@end deftypefn\n\
-@seealso{unmark_command, iscommand}")
+@seealso{unmark_command, iscommand}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -179,8 +179,8 @@ DEFCMD (unmark_command, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} unmark_command (@var{name})\n\
 Remove @var{name} from the list of commands.\n\
-@end deftypefn\n\
-@seealso{mark_as_command, iscommand}")
+@seealso{mark_as_command, iscommand}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -238,8 +238,8 @@ DEFCMD (iscommand, args, ,
 Return true if @var{name} is a command style function.  If @var{name}\n\
 is omitted, return a list of identifiers which are marked as commands with\n\
 mark_as_command.\n\
-@end deftypefn\n\
-@seealso{mark_as_command, unmark_command}")
+@seealso{mark_as_command, unmark_command}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -311,8 +311,8 @@ and escapes they had when input). However, comments and continuations\n\
 are handled as usual, you cannot pass a token starting with a comment\n\
 character ('#' or '%') to your function, and the last token cannot be\n\
 a continuation token ('\\' or '...').\n\
-@end deftypefn\n\
-@seealso{unmark_rawcommand, israwcommand, iscommand, mark_as_command}")
+@seealso{unmark_rawcommand, israwcommand, iscommand, mark_as_command}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -347,8 +347,8 @@ DEFCMD (unmark_rawcommand, args, ,
 Remove @var{name} from the list of raw input commands.\n\
 Note that this does not remove @var{name} from the list of command style\n\
 functions.\n\
-@end deftypefn\n\
-@seealso{mark_as_rawcommand, israwcommand, iscommand, unmark_command}")
+@seealso{mark_as_rawcommand, israwcommand, iscommand, unmark_command}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -406,8 +406,8 @@ DEFCMD (israwcommand, args, ,
 Return true if @var{name} is a raw input command function.\n\
 If @var{name} is omitted, return a list of identifiers which are marked as\n\
 raw input commands with mark_as_rawcommand.\n\
-@end deftypefn\n\
-@seealso{mark_as_rawcommand, unmark_rawcommand}")
+@seealso{mark_as_rawcommand, unmark_rawcommand}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -1830,8 +1830,8 @@ DEFCMD (mlock, args, ,
 @deftypefn {Built-in Function} {} mlock (@var{name})\n\
 Lock the named function into memory.  If no function is named\n\
 then lock in the current function.\n\
-@end deftypefn\n\
-@seealso{munlock, mislocked, and persistent}")
+@seealso{munlock, mislocked, persistent}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1862,8 +1862,8 @@ DEFCMD (munlock, args, ,
 @deftypefn {Built-in Function} {} munlock (@var{fcn})\n\
 Unlock the named function.  If no function is named\n\
 then unlock the current function.\n\
-@end deftypefn\n\
-@seealso{mlock, mislocked, and persistent}")
+@seealso{mlock, mislocked, persistent}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1895,8 +1895,8 @@ DEFCMD (mislocked, args, ,
 @deftypefn {Built-in Function} {} mislocked (@var{fcn})\n\
 Return true if the named function is locked.  If no function is named\n\
 then return true if the current function is locked.\n\
-@end deftypefn\n\
-@seealso{mlock, munlock, and persistent}")
+@seealso{mlock, munlock, persistent}\n\
+@end deftypefn")
 {
   octave_value retval;
 

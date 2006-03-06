@@ -1844,7 +1844,7 @@ symbols_of_load_save (void)
 If this variable is set to a nonzero value, Octave tries to save all\n\
 current variables the the file \"octave-core\" if it crashes or receives a\n\
 hangup, terminate or similar signal.  The default value is 1.\n\
-@seealso{octave_core_file_limit, octave_core_file_name, and octave_core_file_options}\n\
+@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
 @end defvr");
 
   DEFVAR (default_save_options, "-text", default_save_options,
@@ -1867,7 +1867,7 @@ binary format, then @var{octave_core_file_limit} will be approximately\n\
 the maximum size of the file.  If a text file format is used, then the\n\
 file could be much larger than the limit.\n\
 The default value is -1 (unlimited)\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_options}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end defvr");
 
   DEFVAR (octave_core_file_name, "octave-core", octave_core_file_name,
@@ -1875,7 +1875,7 @@ The default value is -1 (unlimited)\n\
 @defvr {Built-in Variable} octave_core_file_name\n\
 The name of the file used for saving data from the top-level workspace\n\
 when Octave aborts.  The default value is @code{\"octave-core\"}\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_options}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end defvr");
 
   DEFVAR (octave_core_file_options, "-binary", octave_core_file_options,
@@ -1886,7 +1886,7 @@ workspace in a file using this variable to define the format. The value of\n\
 @code{octave_core_file_options} should follow the same format as the options\n\
 that may be used with @code{save}. The default value is Octave's binary\n\
 format.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_limit}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
 @end defvr");
 
   DEFVAR (save_header_format_string, default_save_header_format (),

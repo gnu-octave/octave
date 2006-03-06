@@ -961,8 +961,8 @@ DEFUN (rmfield, args, ,
 Remove field @var{f} from the structure @var{s}.  If @var{f} is a\n\
 cell array of character strings or a character array, remove the\n\
 named fields.\n\
-@end deftypefn\n\
-@seealso{cellstr, iscellstr, and setfield")
+@seealso{cellstr, iscellstr, setfield}\n\
+@end deftypefn")
 {
   octave_value retval;
 

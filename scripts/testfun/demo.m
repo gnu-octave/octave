@@ -66,9 +66,8 @@
 ##   %!  f(3)
 ##   %! endif
 ## @end example
-##
-## @end deftypefn
 ## @seealso{test, example}
+## @end deftypefn
 
 ## TODO: modify subplot so that gnuplot_has_multiplot == 0 causes it to
 ## TODO: use the current figure window but pause if not plotting in the

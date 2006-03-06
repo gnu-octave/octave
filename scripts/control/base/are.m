@@ -60,10 +60,8 @@
 ## Laub's Schur method (@acronym{IEEE} Transactions on
 ## Automatic Control, 1979) is applied to the appropriate Hamiltonian
 ## matrix.
-##
+## @seealso{balance, dare}
 ## @end deftypefn
-##
-## @seealso{balance and dare}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

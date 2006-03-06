@@ -131,9 +131,8 @@ by the National Science Foundation (DMS-9504974, DMS-9803599, CCR-0203270),\n\
 and a grant from Sandia National Lab.  See\n\
 @url{http://www.cise.ufl.edu/research/sparse} for ccolamd, csymamd, amd,\n\
 colamd, symamd, and other related orderings.\n\
-\n\
-@end deftypefn\n\
-@seealso{colamd, csymamd}")
+@seealso{colamd, csymamd}\n\
+@end deftypefn")
 {
 #ifdef HAVE_CCOLAMD
   octave_value_list retval;
@@ -384,9 +383,8 @@ by the National Science Foundation (DMS-9504974, DMS-9803599, CCR-0203270),\n\
 and a grant from Sandia National Lab.  See\n\
 @url{http://www.cise.ufl.edu/research/sparse} for ccolamd, csymamd, amd,\n\
 colamd, symamd, and other related orderings.\n\
-\n\
-@end deftypefn\n\
-@seealso{symamd, ccolamd}")
+@seealso{symamd, ccolamd}\n\
+@end deftypefn")
 {
 #if HAVE_CCOLAMD
   octave_value_list retval;

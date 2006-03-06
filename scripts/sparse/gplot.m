@@ -28,8 +28,8 @@
 ## the plot.  Called with no output arguments the graph is plotted
 ## directly.  Otherwise, return the coordinates of the plot in @var{x}
 ## and @var{y}.
-## @end deftypefn
 ## @seealso{treeplot, etreeplot, spy}
+## @end deftypefn
 
 function [x, y] = gplot (A, xy, line_style)
 

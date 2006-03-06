@@ -158,8 +158,8 @@ r' * r = q * a * q'.\n\
 @end ifinfo\n\
 \n\
 Note that @code{splchol} factorizations is faster and use less memory.\n\
-@end deftypefn\n\
-@seealso{spcholinv, spchol2inv, splchol}")
+@seealso{spcholinv, spchol2inv, splchol}\n\
+@end deftypefn")
 {
   return sparse_chol (args, nargout, "spchol", false);
 }
@@ -208,8 +208,8 @@ r * r' = a (q, q).\n\
 Note that @code{splchol} factorizations is faster and use less memory\n\
 than @code{spchol}. @code{splchol(@var{a})} is equivalent to\n\
 @code{spchol(@var{a})'}.\n\
-@end deftypefn\n\
-@seealso{spcholinv, spchol2inv, splchol}")
+@seealso{spcholinv, spchol2inv, splchol}\n\
+@end deftypefn")
 {
   return sparse_chol (args, nargout, "splchol", true);
 }

@@ -58,9 +58,8 @@
 ## 10^base and 10^pi,
 ## @end ifinfo
 ## in order to  be compatible with the corresponding @sc{Matlab} function.
-## @end deftypefn
-##
 ## @seealso{linspace}
+## @end deftypefn
 
 ## Author: jwe
 

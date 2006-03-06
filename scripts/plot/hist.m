@@ -38,9 +38,8 @@
 ##
 ## With two output arguments, produce the values @var{nn} and @var{xx} such
 ## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
-## @end deftypefn
-##
 ## @seealso{bar}
+## @end deftypefn
 
 ## Author: jwe
 

@@ -48,9 +48,8 @@
 ##
 ## Conversion to @command{tf} or @command{zp} exits with an error if the system is
 ## mixed continuous/digital.
+## @seealso{tf, ss, zp, sysout, sys2ss, sys2tf, sys2zp}
 ## @end deftypefn
-##
-## @seealso{tf, ss, zp, sysout, sys2ss, sys2tf, and sys2zp}
 
 ## Author: John Ingram <ingraje@eng.auburn.edu>
 ## Created: July 9, 1996

@@ -263,8 +263,8 @@ Davis (davis@@cise.ufl.edu), University of Florida.  The algorithm was\n\
 developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
 Ng, Oak Ridge National Laboratory. (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
-@end deftypefn\n\
-@seealso{colperm, symamd}")
+@seealso{colperm, symamd}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -499,8 +499,8 @@ Davis (davis@@cise.ufl.edu), University of Florida.  The algorithm was\n\
 developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
 Ng, Oak Ridge National Laboratory. (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
-@end deftypefn\n\
-@seealso{colperm, colamd}")
+@seealso{colperm, colamd}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

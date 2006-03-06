@@ -30,9 +30,8 @@
 ##
 ## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
 ## not 5 percent).
+## @seealso{irr, pv}
 ## @end deftypefn
-##
-## @seealso{irr and pv}
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Net present value of a series of payments

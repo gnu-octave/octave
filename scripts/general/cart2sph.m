@@ -24,9 +24,8 @@
 ## @var{theta} describes the angle relative to the x - axis.
 ## @var{phi} is the angle relative to the xy - plane.
 ## @var{r} is the distance to the origin (0, 0, 0).
-## @end deftypefn
-##
 ## @seealso{pol2cart, cart2pol, sph2cart}
+## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe

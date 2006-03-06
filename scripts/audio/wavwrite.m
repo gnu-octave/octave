@@ -28,10 +28,8 @@
 ##
 ## @deftypefnx {Function File} {} wavwrite(@var{filename}, @var{y}, @var{fs}, @var{bits})
 ## Set the sample rate to @var{fs} Hz and resolution to @var{bits} bits.
-##
-## @end deftypefn
-##
 ## @seealso{wavread}
+## @end deftypefn
 
 ## Author: Michael Zeising <michael.zeising@stud.uni-erlangen.de>
 ## Created: 06 December 2005

@@ -21,10 +21,9 @@
 ## @deftypefn {Function File} {} zpout (@var{zer}, @var{pol}, @var{k}, @var{x})
 ## print formatted zero-pole form to the screen.
 ## @var{x} defaults to the string @code{"s"}
-## @end deftypefn
-##
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
-## filter, polyderiv, polyinteg, and polyout}
+## filter, polyderiv, polyinteg, polyout}
+## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: June 1995

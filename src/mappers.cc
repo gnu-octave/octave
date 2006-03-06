@@ -279,8 +279,8 @@ $\\bar{z} = x - iy$.\n\
 @ifinfo\n\
 @code{conj (@var{z})} = @var{x} - @var{i}@var{y}.\n\
 @end ifinfo\n\
-@end deftypefn\n\
-@seealso{real and imag}");
+@seealso{real, imag}\n\
+@end deftypefn\n\");
 
   DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, std::cos, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
@@ -315,8 +315,8 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
                      t=0\n\
 @end smallexample\n\
 @end ifinfo\n\
-@end deftypefn\n\
-@seealso{erfc and erfinv}");
+@seealso{erfc, erfinv}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (erfc, 0, 0, 0, erfc, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
@@ -330,9 +330,8 @@ $1 - {\\rm erf} (z)$.\n\
 @ifinfo\n\
 @code{1 - erf (@var{z})}.\n\
 @end ifinfo\n\
-@end deftypefn\n\
-\n\
-@seealso{erf and erfinv}");
+@seealso{erf, erfinv}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (exp, 0, 0, 0, exp, 0, std::exp, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
@@ -390,17 +389,15 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
          t=0\n\
 @end example\n\
 @end ifinfo\n\
-@end deftypefn\n\
-\n\
-@seealso{gammai and lgamma}");
+@seealso{gammai, lgamma}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (imag, 0, 0, 0, imag, ximag, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} imag (@var{z})\n\
 Return the imaginary part of @var{z} as a real number.\n\
-@end deftypefn\n\
-\n\
-@seealso{real and conj}");
+@seealso{real, conj}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isalnum, xisalnum, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
@@ -525,38 +522,38 @@ Return 1 for characters that are hexadecimal digits.\n\
 @deftypefn {Mapping Function} {} lgamma (@var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
 Return the natural logarithm of the gamma function.\n\
-@end deftypefn\n\
-@seealso{gamma and gammai}");
+@seealso{gamma, gammai}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (log, 0, 0, 0, log, 0, std::log, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm for each element of @var{x}.  To compute the\n\
 matrix logarithm, see @ref{Linear Algebra}.\n\
-@end deftypefn\n\
-@seealso{log2, log10, logspace, and exp}");
+@seealso{log2, log10, logspace, exp}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, std::log10, 0.0, octave_Inf, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm for each element of @var{x}.\n\
-@end deftypefn\n\
-@seealso{log, log2, logspace, and exp}");
+@seealso{log, log2, logspace, exp}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (real, 0, 0, 0, real, xreal, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
 Return the real part of @var{z}.\n\
-@end deftypefn\n\
-@seealso{imag and conj}");
+@seealso{imag, conj}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (round, 0, 0, 0, xround, 0, xround, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 @code{round (real (@var{x})) + round (imag (@var{x})) * I}.\n\
-@end deftypefn\n\
-@seealso{rem}");
+@seealso{rem}\n\
+@end deftypefn");
 
   DEFUN_MAPPER (sign, 0, 0, 0, signum, 0, signum, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\

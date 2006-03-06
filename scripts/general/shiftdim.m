@@ -45,9 +45,8 @@
 ##      @result{} ns = 1
 ## @end group
 ## @end example
-## @end deftypefn
-##
 ## @seealso {reshape, permute, ipermute, circshift, squeeze}
+## @end deftypefn
 
 function [y, ns]  = shiftdim (x, n)
 

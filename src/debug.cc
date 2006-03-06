@@ -94,9 +94,8 @@ Line you would like the breakpoint to be set on\n\
 @end table\n\
 \n\
 The rline returned is the real line that the breakpoint was set at.\n\
-\n\
-@end deftypefn\n\
-@seealso{dbclear, dbstatus, dbnext}")
+@seealso{dbclear, dbstatus, dbnext}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -163,8 +162,8 @@ Line where you would like to remove the the breakpoint\n\
 @end table\n\
 No checking is done to make sure that the line you requested is really\n\
 a breakpoint.   If you get the wrong line nothing will happen.\n\
-@end deftypefn\n\
-@seealso{dbstop, dbstatus, dbwhere}")
+@seealso{dbstop, dbstatus, dbwhere}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -225,8 +224,8 @@ breakpoints set.\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out.\n\
 @end table\n\
-@end deftypefn\n\
-@seealso{dbclear, dbwhere}")
+@seealso{dbclear, dbwhere}\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -278,8 +277,8 @@ DEFCMD (dbwhere, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbwhere ()\n\
 Show where we are in the code\n\
-@end deftypefn\n\
-@seealso{dbclear, dbstatus, dbstop}")
+@seealso{dbclear, dbstatus, dbstop}\n\
+@end deftypefn\")
 {
   octave_value retval;
 
@@ -356,8 +355,8 @@ DEFCMD (dbtype, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbtype ()\n\
 List script file with line numbers.\n\
-@end deftypefn\n\
-@seealso{dbclear, dbstatus, dbstop}")
+@seealso{dbclear, dbstatus, dbstop}\n\
+@end deftypefn")
 {
   octave_value retval;
   octave_user_function *dbg_fcn;

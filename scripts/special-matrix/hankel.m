@@ -43,9 +43,8 @@
 ## @end group
 ## @end example
 ## @end ifinfo
+## @seealso{vander, sylvester_matrix, hilb, invhilb, toeplitz}
 ## @end deftypefn
-##
-## @seealso{vander, sylvester_matrix, hilb, invhilb, and toeplitz}
 
 ## Author: jwe
 

@@ -20,9 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} puts (@var{string})
 ## Produce a beep from the speaker (or visual bell).
+## @seealso{puts, fputs, printf, fprintf}
 ## @end deftypefn
-##
-## @seealso{puts, fputs, printf and fprintf}
 
 ## Author: jwe
 

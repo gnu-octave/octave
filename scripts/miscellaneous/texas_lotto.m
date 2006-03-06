@@ -21,9 +21,8 @@
 ## @deftypefn {Function File} {} texas_lotto ()
 ## Pick 6 unique numbers between 1 and 50 that are guaranteed to win
 ## the Texas Lotto.
-## @end deftypefn
-##
 ## @seealso{rand}
+## @end deftypefn
 
 ## Author: jwe
 

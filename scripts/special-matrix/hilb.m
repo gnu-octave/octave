@@ -42,9 +42,8 @@
 ## H (i, j) = 1 / (i + j - 1)
 ## @end example
 ## @end ifinfo
+## @seealso{hankel, vander, sylvester_matrix, invhilb, toeplitz}
 ## @end deftypefn
-##
-## @seealso{hankel, vander, sylvester_matrix, invhilb, and toeplitz}
 
 ## Author: jwe
 

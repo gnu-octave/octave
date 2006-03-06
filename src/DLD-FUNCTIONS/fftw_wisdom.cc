@@ -82,8 +82,8 @@ the wisdom is lost.\n\
 Note that the program @code{fftw-wisdom} supplied with FFTW can equally\n\
 be used to create a file containing wisdom that can be imported into\n\
 Octave.\n\
-@end deftypefn\n\
-@seealso {fft, ifft, fft2, ifft2, fftn, ifftn}")
+@seealso{fft, ifft, fft2, ifft2, fftn, ifftn}\n\
+@end deftypefn")
 {
   octave_value retval;
 

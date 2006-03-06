@@ -64,9 +64,8 @@
 ##
 ## If the second argument is 'explain', then @var{name} is ignored and an
 ## explanation of the line markers used is written to the file @var{fid}.
-##
-## @end deftypefn
 ## @seealso{error, assert, fail, demo, example}
+## @end deftypefn
 
 ## TODO: * Consider using keyword fail rather then error?  This allows us
 ## TODO: to make a functional form of error blocks, which means we

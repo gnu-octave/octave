@@ -364,7 +364,7 @@ Last two digits of year (00-99).\n\
 @item %Y\n\
 Year (1970-).\n\
 @end table\n\
-@end deftypefn\n")
+@end deftypefn")
 {
   octave_value retval;
 

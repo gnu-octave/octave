@@ -266,8 +266,8 @@ other than 2 and @var{msg} will contain additional information.\n\
 \n\
 You can use the function @code{lsode_options} to set optional\n\
 parameters for @code{lsode}.\n\
-@end deftypefn\n\
-@seealso{daspk, dassl, dasrt, odessa}")
+@seealso{daspk, dassl, dasrt, odessa}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

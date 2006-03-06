@@ -1177,7 +1177,7 @@ DEFUNX ("WIFEXITED", FWIFEXITED, args, ,
 Given @var{status} from a call to @code{waitpid}, return true if the\n\
 child terminated normally.\n\
 @seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
-@end deftypefn\n")
+@end deftypefn")
 {
   octave_value retval = 0.0;
 

@@ -292,8 +292,8 @@ DEFUN_DLD (builtin, args, nargout,
 @deftypefn {Loadable Function} {[@dots{}]} builtin (@var{f}, @dots{})\n\
 Call the base function @var{f} even if @var{f} is overloaded to\n\
 some other function for the given type signature.\n\
-@end deftypefn\n\
-@seealso{dispatch}")
+@seealso{dispatch}\n\
+@end deftypefn")
 {
   octave_value_list retval; 
 
@@ -438,9 +438,9 @@ matches.  The original function @var{f} is accessible using\n\
 If @var{r} is omitted, clear dispatch function associated with @var{type}.\n\
 \n\
 If both @var{r} and @var{type} are omitted, list dispatch functions\n\
-for @var{f}\n\
-@end deftypefn\n\
-@seealso{builtin}") 
+for @var{f}.\n\
+@seealso{builtin}\n\
+@end deftypefn")
 {
   octave_value retval;
   int nargin = args.length ();

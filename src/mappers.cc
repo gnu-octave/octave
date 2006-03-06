@@ -280,7 +280,7 @@ $\\bar{z} = x - iy$.\n\
 @code{conj (@var{z})} = @var{x} - @var{i}@var{y}.\n\
 @end ifinfo\n\
 @seealso{real, imag}\n\
-@end deftypefn\n\");
+@end deftypefn");
 
   DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, std::cos, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\

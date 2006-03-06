@@ -1002,7 +1002,7 @@ DEFUN_DLD (spatan2, args, ,
 @deftypefn {Loadable Function} {} spatan2 (@var{y}, @var{x})\n\
 Compute atan (Y / X) for corresponding sparse matrix elements of Y and X.\n\
 The result is in range -pi to pi.\n\
-@end deftypefn\n")
+@end deftypefn")
 {
   octave_value retval;
   int nargin = args.length ();

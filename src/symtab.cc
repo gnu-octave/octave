@@ -1833,7 +1833,7 @@ dimensions whatsoever.\n\
 balance specifies the offset for printing of the dimensions string.\n\
 \n\
 Default format is \"  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\\n\".\n\
-@end defvr\n");
+@end defvr");
 }
 
 /*

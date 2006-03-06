@@ -293,8 +293,8 @@ body of the loop is executed at least once.",},
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
 Begin an if block.\n\
-@end deffn\n\
-@seealso{switch}", },
+@seealso{switch}\n\
+@end deffn", },
 
   { "otherwise",
     "The default statement in a switch block.", },

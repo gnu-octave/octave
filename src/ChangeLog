@@ -1,3 +1,7 @@
+2006-03-06  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (display_help_text): Force linebreak with @sp.
+
 2006-03-06  Keith Goodman  <kwgoodman@gmail.com>
  
 	* bitfcns.cc, data.cc, debug.cc, file-io.cc, help.cc,

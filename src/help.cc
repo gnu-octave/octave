@@ -702,7 +702,7 @@ display_help_text (std::ostream& os, const std::string& msg)
       if (filter && filter.is_open ())
 	{
 	  filter << "@macro seealso {args}\n"
-		 << "\n"
+		 << "@sp 1\n"
 		 << "@noindent\n"
 		 << "See also: \\args\\.\n"
                  << "@end macro\n";

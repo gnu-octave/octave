@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 1996-2005 John W. Eaton
+Copyright (C) 1992, 1993, 1994, 1994, 1996, 1997, 1998, 1999, 2000,
+2001, 2002, 2003, 2004, 2005, 2006  John W. Eaton
 
 This file is part of Octave.
 
@@ -29,7 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_API_VERSION "api-v17"
 
 #define OCTAVE_COPYRIGHT \
-  "Copyright (C) 2005 John W. Eaton."
+  "Copyright (C) 2006 John W. Eaton."
 
 #define OCTAVE_NAME_AND_VERSION \
   "GNU Octave, version " OCTAVE_VERSION " (" OCTAVE_CANONICAL_HOST_TYPE ")"

@@ -278,7 +278,7 @@ DEFCMD (dbwhere, , ,
 @deftypefn {Loadable Function} {} dbwhere ()\n\
 Show where we are in the code\n\
 @seealso{dbclear, dbstatus, dbstop}\n\
-@end deftypefn\")
+@end deftypefn")
 {
   octave_value retval;
 

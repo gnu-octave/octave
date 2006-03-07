@@ -2,10 +2,10 @@
 @chapter Nonlinear Functions
 @cindex nonlinear functions
 
-@deftypefn  {} {}NLFunc (void)
-@deftypefnx  {} {}NLFunc (const @var{nonlinear_fcn})
-@deftypefnx  {} {}NLFunc (const @var{nonlinear_fcn}, const @var{jacobian_fcn})
-@deftypefnx  {} {}NLFunc (const NLFunc &@var{a})
+@deftypefn  {} {} NLFunc (void)
+@deftypefnx  {} {} NLFunc (const @var{nonlinear_fcn})
+@deftypefnx  {} {} NLFunc (const @var{nonlinear_fcn}, const @var{jacobian_fcn})
+@deftypefnx  {} {} NLFunc (const NLFunc &@var{a})
 @end deftypefn
 
 @deftypefn {} NLFunc& {operator =} (const NLFunc &@var{a})

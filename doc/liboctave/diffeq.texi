@@ -2,8 +2,8 @@
 @chapter Ordinary Differential Equations
 @cindex ODE
 
-@deftypefn  {} {}ODE_options (void)
-@deftypefnx  {} {}ODE_options (const ODE_options &@var{opt})
+@deftypefn  {} {} ODE_options (void)
+@deftypefnx  {} {} ODE_options (const ODE_options &@var{opt})
 @end deftypefn
 
 @deftypefn {} ODE_options& {operator =} (const ODE_options &@var{opt})
@@ -40,9 +40,9 @@
 @deftypefnx {} double relative_tolerance (void)
 @end deftypefn
 
-@deftypefn  {} {}ODE (void)
-@deftypefnx  {} {}ODE (int @var{n})
-@deftypefnx  {} {}ODE (const ColumnVector &@var{state}, double @var{time}, const ODEFunc &@var{f})
+@deftypefn  {} {} ODE (void)
+@deftypefnx  {} {} ODE (int @var{n})
+@deftypefnx  {} {} ODE (const ColumnVector &@var{state}, double @var{time}, const ODEFunc &@var{f})
 @end deftypefn
 
 @deftypefn {} {virtual int} size (void) const

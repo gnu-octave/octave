@@ -3,9 +3,9 @@
 @cindex matrix factorizations
 @cindex factorizations
 
-@deftypefn  {} {}AEPBALANCE (void)
-@deftypefnx  {} {}AEPBALANCE (const Matrix &@var{a}, const char *@var{balance_job})
-@deftypefnx  {} {}AEPBALANCE (const AEPBALANCE &@var{a})
+@deftypefn  {} {} AEPBALANCE (void)
+@deftypefnx  {} {} AEPBALANCE (const Matrix &@var{a}, const char *@var{balance_job})
+@deftypefnx  {} {} AEPBALANCE (const AEPBALANCE &@var{a})
 @end deftypefn
 
 @deftypefn {} AEPBALANCE& {operator =} (const AEPBALANCE &@var{a})
@@ -18,9 +18,9 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const AEPBALANCE &@var{a})
 @end deftypefn
 
-@deftypefn {} ComplexAEPBALANCE (void)
-@deftypefnx {} ComplexAEPBALANCE (const ComplexMatrix &@var{a}, const char *@var{balance_job})
-@deftypefnx {} ComplexAEPBALANCE (const ComplexAEPBALANCE &@var{a})
+@deftypefn {} {} ComplexAEPBALANCE (void)
+@deftypefnx {} {} ComplexAEPBALANCE (const ComplexMatrix &@var{a}, const char *@var{balance_job})
+@deftypefnx {} {} ComplexAEPBALANCE (const ComplexAEPBALANCE &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexAEPBALANCE& {operator =} (const ComplexAEPBALANCE &@var{a})
@@ -33,8 +33,8 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexAEPBALANCE &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}DET (void)
-@deftypefnx  {} {}DET (const DET &@var{a})
+@deftypefn  {} {} DET (void)
+@deftypefnx  {} {} DET (const DET &@var{a})
 @end deftypefn
 
 @deftypefn {} DET& {operator =} (const DET &@var{a})
@@ -52,8 +52,8 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const DET &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexDET (void)
-@deftypefnx  {} {}ComplexDET (const ComplexDET &@var{a})
+@deftypefn  {} {} ComplexDET (void)
+@deftypefnx  {} {} ComplexDET (const ComplexDET &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexDET& {operator =} (const ComplexDET &@var{a})
@@ -71,9 +71,9 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexDET &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}GEPBALANCE (void)
-@deftypefnx  {} {}GEPBALANCE (const Matrix &@var{a}, const Matrix &, const char *@var{balance_job})
-@deftypefnx  {} {}GEPBALANCE (const GEPBALANCE &@var{a})
+@deftypefn  {} {} GEPBALANCE (void)
+@deftypefnx  {} {} GEPBALANCE (const Matrix &@var{a}, const Matrix &, const char *@var{balance_job})
+@deftypefnx  {} {} GEPBALANCE (const GEPBALANCE &@var{a})
 @end deftypefn
 
 @deftypefn {} GEPBALANCE& {operator =} (const GEPBALANCE &@var{a})
@@ -88,10 +88,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const GEPBALANCE &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}CHOL (void)
-@deftypefnx  {} {}CHOL (const Matrix &@var{a})
-@deftypefnx  {} {}CHOL (const Matrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}CHOL (const CHOL &@var{a})
+@deftypefn  {} {} CHOL (void)
+@deftypefnx  {} {} CHOL (const Matrix &@var{a})
+@deftypefnx  {} {} CHOL (const Matrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} CHOL (const CHOL &@var{a})
 @end deftypefn
 
 @deftypefn {} CHOL& {operator =} (const CHOL &@var{a})
@@ -103,10 +103,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const CHOL &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexCHOL (void)
-@deftypefnx  {} {}ComplexCHOL (const ComplexMatrix &@var{a})
-@deftypefnx  {} {}ComplexCHOL (const ComplexMatrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}ComplexCHOL (const ComplexCHOL &@var{a})
+@deftypefn  {} {} ComplexCHOL (void)
+@deftypefnx  {} {} ComplexCHOL (const ComplexMatrix &@var{a})
+@deftypefnx  {} {} ComplexCHOL (const ComplexMatrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} ComplexCHOL (const ComplexCHOL &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexCHOL& {operator =} (const ComplexCHOL &@var{a})
@@ -118,10 +118,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexCHOL &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}HESS (void)
-@deftypefnx  {} {}HESS (const Matrix &@var{a})
-@deftypefnx  {} {}HESS (const Matrix&a, int &@var{info})
-@deftypefnx  {} {}HESS (const HESS &@var{a})
+@deftypefn  {} {} HESS (void)
+@deftypefnx  {} {} HESS (const Matrix &@var{a})
+@deftypefnx  {} {} HESS (const Matrix&a, int &@var{info})
+@deftypefnx  {} {} HESS (const HESS &@var{a})
 @end deftypefn
 
 @deftypefn {} HESS& {operator =} (const HESS &@var{a})
@@ -134,10 +134,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const HESS &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexHESS (void)
-@deftypefnx  {} {}ComplexHESS (const ComplexMatrix &@var{a})
-@deftypefnx  {} {}ComplexHESS (const ComplexMatrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}ComplexHESS (const ComplexHESS &@var{a})
+@deftypefn  {} {} ComplexHESS (void)
+@deftypefnx  {} {} ComplexHESS (const ComplexMatrix &@var{a})
+@deftypefnx  {} {} ComplexHESS (const ComplexMatrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} ComplexHESS (const ComplexHESS &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexHESS& {operator =} (const ComplexHESS &@var{a})
@@ -150,10 +150,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexHESS &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}SCHUR (void)
-@deftypefnx  {} {}SCHUR (const Matrix &@var{a}, const char *@var{ord})
-@deftypefnx  {} {}SCHUR (const Matrix &@var{a}, const char *@var{ord}, int &@var{info})
-@deftypefnx  {} {}SCHUR (const SCHUR &@var{a}, const char *@var{ord})
+@deftypefn  {} {} SCHUR (void)
+@deftypefnx  {} {} SCHUR (const Matrix &@var{a}, const char *@var{ord})
+@deftypefnx  {} {} SCHUR (const Matrix &@var{a}, const char *@var{ord}, int &@var{info})
+@deftypefnx  {} {} SCHUR (const SCHUR &@var{a}, const char *@var{ord})
 @end deftypefn
 
 @deftypefn {} SCHUR& {operator =} (const SCHUR &@var{a})
@@ -166,10 +166,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const SCHUR &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexSCHUR (void)
-@deftypefnx  {} {}ComplexSCHUR (const ComplexMatrix &@var{a}, const char *@var{ord})
-@deftypefnx  {} {}ComplexSCHUR (const ComplexMatrix &@var{a}, const char *@var{ord}, int &@var{info})
-@deftypefnx  {} {}ComplexSCHUR (const ComplexSCHUR &@var{a}, const char *@var{ord})
+@deftypefn  {} {} ComplexSCHUR (void)
+@deftypefnx  {} {} ComplexSCHUR (const ComplexMatrix &@var{a}, const char *@var{ord})
+@deftypefnx  {} {} ComplexSCHUR (const ComplexMatrix &@var{a}, const char *@var{ord}, int &@var{info})
+@deftypefnx  {} {} ComplexSCHUR (const ComplexSCHUR &@var{a}, const char *@var{ord})
 @end deftypefn
 
 @deftypefn {} ComplexSCHUR& {operator =} (const ComplexSCHUR &@var{a})
@@ -182,10 +182,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexSCHUR &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}SVD (void)
-@deftypefnx  {} {}SVD (const Matrix &@var{a})
-@deftypefnx  {} {}SVD (const Matrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}SVD (const SVD &@var{a})
+@deftypefn  {} {} SVD (void)
+@deftypefnx  {} {} SVD (const Matrix &@var{a})
+@deftypefnx  {} {} SVD (const Matrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} SVD (const SVD &@var{a})
 @end deftypefn
 
 @deftypefn {} SVD& {operator =} (const SVD &@var{a})
@@ -199,10 +199,10 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const SVD &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexSVD (void)
-@deftypefnx  {} {}ComplexSVD (const ComplexMatrix &@var{a})
-@deftypefnx  {} {}ComplexSVD (const ComplexMatrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}ComplexSVD (const ComplexSVD &@var{a})
+@deftypefn  {} {} ComplexSVD (void)
+@deftypefnx  {} {} ComplexSVD (const ComplexMatrix &@var{a})
+@deftypefnx  {} {} ComplexSVD (const ComplexMatrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} ComplexSVD (const ComplexSVD &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexSVD& {operator =} (const ComplexSVD &@var{a})
@@ -216,12 +216,12 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexSVD &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}EIG (void)
-@deftypefnx  {} {}EIG (const Matrix &@var{a})
-@deftypefnx  {} {}EIG (const Matrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}EIG (const ComplexMatrix &@var{a})
-@deftypefnx  {} {}EIG (const ComplexMatrix &@var{a}, int &@var{info})
-@deftypefnx  {} {}EIG (const EIG &@var{a})
+@deftypefn  {} {} EIG (void)
+@deftypefnx  {} {} EIG (const Matrix &@var{a})
+@deftypefnx  {} {} EIG (const Matrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} EIG (const ComplexMatrix &@var{a})
+@deftypefnx  {} {} EIG (const ComplexMatrix &@var{a}, int &@var{info})
+@deftypefnx  {} {} EIG (const EIG &@var{a})
 @end deftypefn
 
 @deftypefn {} EIG& {operator =} (const EIG &@var{a})
@@ -236,9 +236,9 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const EIG &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}LU (void)
-@deftypefnx  {} {}LU (const Matrix &@var{a})
-@deftypefnx  {} {}LU (const LU &@var{a})
+@deftypefn  {} {} LU (void)
+@deftypefnx  {} {} LU (const Matrix &@var{a})
+@deftypefnx  {} {} LU (const LU &@var{a})
 @end deftypefn
 
 @deftypefn {} LU& {operator =} (const LU &@var{a})
@@ -252,9 +252,9 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const LU &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexLU (void)
-@deftypefnx  {} {}ComplexLU (const ComplexMatrix &@var{a})
-@deftypefnx  {} {}ComplexLU (const ComplexLU &@var{a})
+@deftypefn  {} {} ComplexLU (void)
+@deftypefnx  {} {} ComplexLU (const ComplexMatrix &@var{a})
+@deftypefnx  {} {} ComplexLU (const ComplexLU &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexLU& {operator =} (const ComplexLU &@var{a})
@@ -268,9 +268,9 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexLU &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}QR (void)
-@deftypefnx  {} {}QR (const Matrix &@var{A})
-@deftypefnx  {} {}QR (const QR &@var{a})
+@deftypefn  {} {} QR (void)
+@deftypefnx  {} {} QR (const Matrix &@var{A})
+@deftypefnx  {} {} QR (const QR &@var{a})
 @end deftypefn
 
 @deftypefn {} QR& {operator =} (const QR &@var{a})
@@ -283,9 +283,9 @@
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const QR &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexQR (void)
-@deftypefnx  {} {}ComplexQR (const ComplexMatrix &@var{A})
-@deftypefnx  {} {}ComplexQR (const ComplexQR &@var{a})
+@deftypefn  {} {} ComplexQR (void)
+@deftypefnx  {} {} ComplexQR (const ComplexMatrix &@var{A})
+@deftypefnx  {} {} ComplexQR (const ComplexQR &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexQR& {operator =} (const ComplexQR &@var{a})

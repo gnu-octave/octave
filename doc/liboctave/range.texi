@@ -2,10 +2,10 @@
 @chapter Ranges
 @cindex ranges
 
-@deftypefn  {} {}Range (void)
-@deftypefnx  {} {}Range (const Range &@var{r})
-@deftypefnx  {} {}Range (double @var{b}, double @var{l})
-@deftypefnx  {} {}Range (double @var{b}, double @var{l}, double @var{i})
+@deftypefn  {} {} Range (void)
+@deftypefnx  {} {} Range (const Range &@var{r})
+@deftypefnx  {} {} Range (double @var{b}, double @var{l})
+@deftypefnx  {} {} Range (double @var{b}, double @var{l}, double @var{i})
 @end deftypefn
 
 @deftypefn {} double base (void) const

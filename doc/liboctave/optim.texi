@@ -15,10 +15,10 @@
 @section Objective Functions
 @cindex objective functions
 
-@deftypefn  {} {}Objective (void)
-@deftypefnx  {} {}Objective (const @var{objective_fcn})
-@deftypefnx  {} {}Objective (const @var{objective_fcn}, const @var{gradient_fcn})
-@deftypefnx  {} {}Objective (const Objective &@var{a})
+@deftypefn  {} {} Objective (void)
+@deftypefnx  {} {} Objective (const @var{objective_fcn})
+@deftypefnx  {} {} Objective (const @var{objective_fcn}, const @var{gradient_fcn})
+@deftypefnx  {} {} Objective (const Objective &@var{a})
 @end deftypefn
 
 @deftypefn {} Objective& {operator =} (const Objective &@var{a})
@@ -42,10 +42,10 @@
 @section Bounds
 @cindex bounds
 
-@deftypefn  {} {}Bounds (void)
-@deftypefnx  {} {}Bounds (int @var{n})
-@deftypefnx  {} {}Bounds (const ColumnVector @var{lb}, const ColumnVector @var{ub})
-@deftypefnx  {} {}Bounds (const Bounds &@var{a})
+@deftypefn  {} {} Bounds (void)
+@deftypefnx  {} {} Bounds (int @var{n})
+@deftypefnx  {} {} Bounds (const ColumnVector @var{lb}, const ColumnVector @var{ub})
+@deftypefnx  {} {} Bounds (const Bounds &@var{a})
 @end deftypefn
 
 @deftypefn {} Bounds& {operator =} (const Bounds &@var{a})
@@ -93,12 +93,12 @@
 @section Linear Constraints
 @cindex linear Constraints
 
-@deftypefn  {} {}LinConst (void)
-@deftypefnx  {} {}LinConst (int @var{nclin}, int @var{nx})
-@deftypefnx  {} {}LinConst (int @var{nclin_eq}, int @var{nclin_ineq}, int @var{nx})
-@deftypefnx  {} {}LinConst (const ColumnVector &@var{lb}, const Matrix &@var{A}, const ColumnVector &@var{ub})
-@deftypefnx  {} {}LinConst (const Matrix &@var{A_eq}, const ColumnVector &@var{b_eq}, const Matrix &@var{A_ineq}, const ColumnVector &@var{b_ineq})
-@deftypefnx  {} {}LinConst (const LinConst &@var{a})
+@deftypefn  {} {} LinConst (void)
+@deftypefnx  {} {} LinConst (int @var{nclin}, int @var{nx})
+@deftypefnx  {} {} LinConst (int @var{nclin_eq}, int @var{nclin_ineq}, int @var{nx})
+@deftypefnx  {} {} LinConst (const ColumnVector &@var{lb}, const Matrix &@var{A}, const ColumnVector &@var{ub})
+@deftypefnx  {} {} LinConst (const Matrix &@var{A_eq}, const ColumnVector &@var{b_eq}, const Matrix &@var{A_ineq}, const ColumnVector &@var{b_ineq})
+@deftypefnx  {} {} LinConst (const LinConst &@var{a})
 @end deftypefn
 
 @deftypefn {} LinConst& {operator =} (const LinConst &@var{a})
@@ -130,10 +130,10 @@
 @section Nonlinear Constraints
 @cindex nonlinear Constraints
 
-@deftypefn  {} {}NLConst (void)
-@deftypefnx  {} {}NLConst (int @var{n})
-@deftypefnx  {} {}NLConst (const ColumnVector @var{lb}, const NLFunc @var{f}, const ColumnVector @var{ub})
-@deftypefnx  {} {}NLConst (const NLConst &@var{a})
+@deftypefn  {} {} NLConst (void)
+@deftypefnx  {} {} NLConst (int @var{n})
+@deftypefnx  {} {} NLConst (const ColumnVector @var{lb}, const NLFunc @var{f}, const ColumnVector @var{ub})
+@deftypefnx  {} {} NLConst (const NLConst &@var{a})
 @end deftypefn
 
 @deftypefn {} NLConst& {operator =} (const NLConst &@var{a})
@@ -144,15 +144,15 @@
 @cindex QP
 @cindex quadratic programming
 
-@deftypefn  {} {}QP (void)
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const LinConst &@var{lc})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const LinConst &@var{lc})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b}, const LinConst &@var{lc})
-@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefn  {} {} QP (void)
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const LinConst &@var{lc})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const LinConst &@var{lc})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {} QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b}, const LinConst &@var{lc})
 @end deftypefn
 
 @deftypefn {} {virtual ColumnVector} minimize (void)
@@ -177,15 +177,15 @@
 @cindex NLP
 @cindex nonlinear programming
 
-@deftypefn  {} {}NLP (void)
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc}, const NLConst &@var{nlc})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc}, const NLConst &@var{nlc})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const NLConst &@var{nlc})
-@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const NLConst &@var{nlc})
+@deftypefn  {} {} NLP (void)
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc}, const NLConst &@var{nlc})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc}, const NLConst &@var{nlc})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const NLConst &@var{nlc})
+@deftypefnx  {} {} NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const NLConst &@var{nlc})
 @end deftypefn
 
 @deftypefn {} NLP& {operator =} (const NLP &@var{a})

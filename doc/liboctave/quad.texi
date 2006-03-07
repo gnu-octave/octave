@@ -4,8 +4,8 @@
 @cindex numerical integration
 @cindex integration
 
-@deftypefn  {} {}Quad (integrand_fcn @var{fcn})
-@deftypefnx  {} {}Quad (integrand_fcn @var{fcn}, double @var{abs}, double @var{rel})
+@deftypefn  {} {} Quad (integrand_fcn @var{fcn})
+@deftypefnx  {} {} Quad (integrand_fcn @var{fcn}, double @var{abs}, double @var{rel})
 @end deftypefn
 
 @deftypefn {} {virtual double} integrate (void)
@@ -14,8 +14,8 @@
 @deftypefnx {} {virtual double} integrate (int &@var{ier}, int &@var{neval}, double &@var{abserr}) = 0
 @end deftypefn
 
-@deftypefn {} Quad_options (void)
-@deftypefnx {} Quad_options (const Quad_options &@var{opt})
+@deftypefn {} {} Quad_options (void)
+@deftypefnx {} {} Quad_options (const Quad_options &@var{opt})
 @end deftypefn
 
 @deftypefn {} Quad_options& {operator =} (const Quad_options &@var{opt})
@@ -40,19 +40,19 @@
 @deftypefnx {} double relative_tolerance (void)
 @end deftypefn
 
-@deftypefn  {} {}DefQuad (integrand_fcn @var{fcn})
-@deftypefnx  {} {}DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul})
-@deftypefnx  {} {}DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul}, double @var{abs}, double @var{rel})
-@deftypefnx  {} {}DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul}, const ColumnVector &@var{sing})
-@deftypefnx  {} {}DefQuad (integrand_fcn @var{fcn}, const ColumnVector &@var{sing}, double @var{abs}, double @var{rel})
-@deftypefnx  {} {}DefQuad (integrand_fcn @var{fcn}, const ColumnVector &@var{sing})
-@deftypefnx  {} {}DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul}, const ColumnVector &@var{sing}, double @var{abs}, double @var{rel})
+@deftypefn  {} {} DefQuad (integrand_fcn @var{fcn})
+@deftypefnx  {} {} DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul})
+@deftypefnx  {} {} DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul}, double @var{abs}, double @var{rel})
+@deftypefnx  {} {} DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul}, const ColumnVector &@var{sing})
+@deftypefnx  {} {} DefQuad (integrand_fcn @var{fcn}, const ColumnVector &@var{sing}, double @var{abs}, double @var{rel})
+@deftypefnx  {} {} DefQuad (integrand_fcn @var{fcn}, const ColumnVector &@var{sing})
+@deftypefnx  {} {} DefQuad (integrand_fcn @var{fcn}, double @var{ll}, double @var{ul}, const ColumnVector &@var{sing}, double @var{abs}, double @var{rel})
 @end deftypefn
 
-@deftypefn  {} {}IndefQuad (integrand_fcn @var{fcn})
-@deftypefnx  {} {}IndefQuad (integrand_fcn @var{fcn}, double @var{b}, IntegralType @var{t})
-@deftypefnx  {} {}IndefQuad (integrand_fcn @var{fcn}, double @var{b}, IntegralType @var{t}, double @var{abs}, double @var{rel})
-@deftypefnx  {} {}IndefQuad (integrand_fcn @var{fcn}, double @var{abs}, double @var{rel})
+@deftypefn  {} {} IndefQuad (integrand_fcn @var{fcn})
+@deftypefnx  {} {} IndefQuad (integrand_fcn @var{fcn}, double @var{b}, IntegralType @var{t})
+@deftypefnx  {} {} IndefQuad (integrand_fcn @var{fcn}, double @var{b}, IntegralType @var{t}, double @var{abs}, double @var{rel})
+@deftypefnx  {} {} IndefQuad (integrand_fcn @var{fcn}, double @var{abs}, double @var{rel})
 @end deftypefn
 
 @menu
@@ -64,12 +64,12 @@
 @cindex orthogonal collocation
 @cindex collocation weights
 
-@deftypefn  {} {}CollocWt (void)
-@deftypefnx  {} {}CollocWt (int @var{n}, int @var{inc_l}, int @var{inc_r})
-@deftypefnx  {} {}CollocWt (int @var{n}, int @var{inc_l}, int @var{inc_r}, double @var{l}, double @var{r})
-@deftypefnx  {} {}CollocWt (int @var{n}, double @var{a}, double @var{b}, int @var{inc_l}, int @var{inc_r})
-@deftypefnx  {} {}CollocWt (int @var{n}, int @var{inc_l}, int @var{inc_r}, double @var{l}, double @var{r})
-@deftypefnx  {} {}CollocWt (const CollocWt&)
+@deftypefn  {} {} CollocWt (void)
+@deftypefnx  {} {} CollocWt (int @var{n}, int @var{inc_l}, int @var{inc_r})
+@deftypefnx  {} {} CollocWt (int @var{n}, int @var{inc_l}, int @var{inc_r}, double @var{l}, double @var{r})
+@deftypefnx  {} {} CollocWt (int @var{n}, double @var{a}, double @var{b}, int @var{inc_l}, int @var{inc_r})
+@deftypefnx  {} {} CollocWt (int @var{n}, int @var{inc_l}, int @var{inc_r}, double @var{l}, double @var{r})
+@deftypefnx  {} {} CollocWt (const CollocWt&)
 @end deftypefn
 
 @deftypefn {} CollocWt& {operator =} (const CollocWt&)

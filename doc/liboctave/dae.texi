@@ -2,10 +2,10 @@
 @chapter Differential Algebraic Equations
 @cindex DAE
 
-@deftypefn  {} {}DAE (void)
-@deftypefnx  {} {}DAE (int @var{n})
-@deftypefnx  {} {}DAE (const ColumnVector &@var{x}, double @var{time}, DAEFunc &@var{f})
-@deftypefnx  {} {}DAE (const ColumnVector &@var{x}, ColumnVector &@var{xdot}, double @var{time}, DAEFunc &@var{f})
+@deftypefn  {} {} DAE (void)
+@deftypefnx  {} {} DAE (int @var{n})
+@deftypefnx  {} {} DAE (const ColumnVector &@var{x}, double @var{time}, DAEFunc &@var{f})
+@deftypefnx  {} {} DAE (const ColumnVector &@var{x}, ColumnVector &@var{xdot}, double @var{time}, DAEFunc &@var{f})
 @end deftypefn
 
 @deftypefn {} ColumnVector deriv (void)

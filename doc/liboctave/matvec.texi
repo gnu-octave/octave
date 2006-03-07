@@ -112,13 +112,13 @@ Unary MDiagArray ops.
 @cindex matrix manipulations
 @cindex vector manipulations
 
-@deftypefn  {} {}Matrix (void)
-@deftypefnx  {} {}Matrix (int @var{r}, int @var{c})
-@deftypefnx  {} {}Matrix (int @var{r}, int @var{c}, double @var{val})
-@deftypefnx  {} {}Matrix (const Array2<double> &@var{a})
-@deftypefnx  {} {}Matrix (const Matrix &@var{a})
-@deftypefnx  {} {}Matrix (const DiagArray<double> &@var{a})
-@deftypefnx  {} {}Matrix (const DiagMatrix &@var{a})
+@deftypefn  {} {} Matrix (void)
+@deftypefnx  {} {} Matrix (int @var{r}, int @var{c})
+@deftypefnx  {} {} Matrix (int @var{r}, int @var{c}, double @var{val})
+@deftypefnx  {} {} Matrix (const Array2<double> &@var{a})
+@deftypefnx  {} {} Matrix (const Matrix &@var{a})
+@deftypefnx  {} {} Matrix (const DiagArray<double> &@var{a})
+@deftypefnx  {} {} Matrix (const DiagMatrix &@var{a})
 @end deftypefn
 
 @deftypefn {} Matrix& {operator =} (const Matrix &@var{a})
@@ -306,11 +306,11 @@ Unary MDiagArray ops.
 @deftypefnx {} {istream&} {operator >>} (istream &@var{is}, Matrix &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ColumnVector (void)
-@deftypefnx  {} {}ColumnVector (int @var{n})
-@deftypefnx  {} {}ColumnVector (int @var{n}, double @var{val})
-@deftypefnx  {} {}ColumnVector (const Array<double> &@var{a})
-@deftypefnx  {} {}ColumnVector (const ColumnVector &@var{a})
+@deftypefn  {} {} ColumnVector (void)
+@deftypefnx  {} {} ColumnVector (int @var{n})
+@deftypefnx  {} {} ColumnVector (int @var{n}, double @var{val})
+@deftypefnx  {} {} ColumnVector (const Array<double> &@var{a})
+@deftypefnx  {} {} ColumnVector (const ColumnVector &@var{a})
 @end deftypefn
 
 @deftypefn {} ColumnVector& {operator =} (const ColumnVector &@var{a})
@@ -381,11 +381,11 @@ Unary MDiagArray ops.
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ColumnVector &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}RowVector (void)
-@deftypefnx  {} {}RowVector (int @var{n})
-@deftypefnx  {} {}RowVector (int @var{n}, double @var{val})
-@deftypefnx  {} {}RowVector (const Array<double> &@var{a})
-@deftypefnx  {} {}RowVector (const RowVector &@var{a})
+@deftypefn  {} {} RowVector (void)
+@deftypefnx  {} {} RowVector (int @var{n})
+@deftypefnx  {} {} RowVector (int @var{n}, double @var{val})
+@deftypefnx  {} {} RowVector (const Array<double> &@var{a})
+@deftypefnx  {} {} RowVector (const RowVector &@var{a})
 @end deftypefn
 
 @deftypefn {} RowVector& {operator =} (const RowVector &@var{a})
@@ -458,15 +458,15 @@ Unary MDiagArray ops.
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const RowVector &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}DiagMatrix (void)
-@deftypefnx  {} {}DiagMatrix (int @var{n})
-@deftypefnx  {} {}DiagMatrix (int @var{n}, double @var{val})
-@deftypefnx  {} {}DiagMatrix (int @var{r}, int @var{c})
-@deftypefnx  {} {}DiagMatrix (int @var{r}, int @var{c}, double @var{val})
-@deftypefnx  {} {}DiagMatrix (const RowVector &@var{a})
-@deftypefnx  {} {}DiagMatrix (const ColumnVector &@var{a})
-@deftypefnx  {} {}DiagMatrix (const DiagArray<double> &@var{a})
-@deftypefnx  {} {}DiagMatrix (const DiagMatrix &@var{a})
+@deftypefn  {} {} DiagMatrix (void)
+@deftypefnx  {} {} DiagMatrix (int @var{n})
+@deftypefnx  {} {} DiagMatrix (int @var{n}, double @var{val})
+@deftypefnx  {} {} DiagMatrix (int @var{r}, int @var{c})
+@deftypefnx  {} {} DiagMatrix (int @var{r}, int @var{c}, double @var{val})
+@deftypefnx  {} {} DiagMatrix (const RowVector &@var{a})
+@deftypefnx  {} {} DiagMatrix (const ColumnVector &@var{a})
+@deftypefnx  {} {} DiagMatrix (const DiagArray<double> &@var{a})
+@deftypefnx  {} {} DiagMatrix (const DiagMatrix &@var{a})
 @end deftypefn
 
 @deftypefn {} DiagMatrix& {operator =} (const DiagMatrix &@var{a})
@@ -559,15 +559,15 @@ Unary MDiagArray ops.
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const DiagMatrix &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexMatrix (void)
-@deftypefnx  {} {}ComplexMatrix (int @var{r}, int @var{c})
-@deftypefnx  {} {}ComplexMatrix (int @var{r}, int @var{c}, const Complex &@var{val})
-@deftypefnx  {} {}ComplexMatrix (const Matrix &@var{a})
-@deftypefnx  {} {}ComplexMatrix (const Array2<Complex> &@var{a})
-@deftypefnx  {} {}ComplexMatrix (const ComplexMatrix &@var{a})
-@deftypefnx  {} {}ComplexMatrix (const DiagMatrix &@var{a})
-@deftypefnx  {} {}ComplexMatrix (const DiagArray<Complex> &@var{a})
-@deftypefnx  {} {}ComplexMatrix (const ComplexDiagMatrix &@var{a})
+@deftypefn  {} {} ComplexMatrix (void)
+@deftypefnx  {} {} ComplexMatrix (int @var{r}, int @var{c})
+@deftypefnx  {} {} ComplexMatrix (int @var{r}, int @var{c}, const Complex &@var{val})
+@deftypefnx  {} {} ComplexMatrix (const Matrix &@var{a})
+@deftypefnx  {} {} ComplexMatrix (const Array2<Complex> &@var{a})
+@deftypefnx  {} {} ComplexMatrix (const ComplexMatrix &@var{a})
+@deftypefnx  {} {} ComplexMatrix (const DiagMatrix &@var{a})
+@deftypefnx  {} {} ComplexMatrix (const DiagArray<Complex> &@var{a})
+@deftypefnx  {} {} ComplexMatrix (const ComplexDiagMatrix &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexMatrix& {operator =} (const ComplexMatrix &@var{a})
@@ -776,12 +776,12 @@ Unary MDiagArray ops.
 @deftypefnx {} {istream&} {operator >>} (istream &@var{is}, ComplexMatrix &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexColumnVector (void)
-@deftypefnx  {} {}ComplexColumnVector (int @var{n})
-@deftypefnx  {} {}ComplexColumnVector (int @var{n}, const Complex &@var{val})
-@deftypefnx  {} {}ComplexColumnVector (const ColumnVector &@var{a})
-@deftypefnx  {} {}ComplexColumnVector (const Array<Complex> &@var{a})
-@deftypefnx  {} {}ComplexColumnVector (const ComplexColumnVector &@var{a})
+@deftypefn  {} {} ComplexColumnVector (void)
+@deftypefnx  {} {} ComplexColumnVector (int @var{n})
+@deftypefnx  {} {} ComplexColumnVector (int @var{n}, const Complex &@var{val})
+@deftypefnx  {} {} ComplexColumnVector (const ColumnVector &@var{a})
+@deftypefnx  {} {} ComplexColumnVector (const Array<Complex> &@var{a})
+@deftypefnx  {} {} ComplexColumnVector (const ComplexColumnVector &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexColumnVector& {operator =} (const ComplexColumnVector &@var{a})
@@ -859,12 +859,12 @@ Unary MDiagArray ops.
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexColumnVector &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexRowVector (void)
-@deftypefnx  {} {}ComplexRowVector (int @var{n})
-@deftypefnx  {} {}ComplexRowVector (int @var{n}, const Complex &@var{val})
-@deftypefnx  {} {}ComplexRowVector (const RowVector &@var{a})
-@deftypefnx  {} {}ComplexRowVector (const Array<Complex> &@var{a})
-@deftypefnx  {} {}ComplexRowVector (const ComplexRowVector &@var{a})
+@deftypefn  {} {} ComplexRowVector (void)
+@deftypefnx  {} {} ComplexRowVector (int @var{n})
+@deftypefnx  {} {} ComplexRowVector (int @var{n}, const Complex &@var{val})
+@deftypefnx  {} {} ComplexRowVector (const RowVector &@var{a})
+@deftypefnx  {} {} ComplexRowVector (const Array<Complex> &@var{a})
+@deftypefnx  {} {} ComplexRowVector (const ComplexRowVector &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexRowVector& {operator =} (const ComplexRowVector &@var{a})
@@ -948,18 +948,18 @@ Unary MDiagArray ops.
 @deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const ComplexRowVector &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}ComplexDiagMatrix (void)
-@deftypefnx  {} {}ComplexDiagMatrix (int @var{n})
-@deftypefnx  {} {}ComplexDiagMatrix (int @var{n}, const Complex &@var{val})
-@deftypefnx  {} {}ComplexDiagMatrix (int @var{r}, int @var{c})
-@deftypefnx  {} {}ComplexDiagMatrix (int @var{r}, int @var{c}, const Complex &@var{val})
-@deftypefnx  {} {}ComplexDiagMatrix (const RowVector &@var{a})
-@deftypefnx  {} {}ComplexDiagMatrix (const ComplexRowVector &@var{a})
-@deftypefnx  {} {}ComplexDiagMatrix (const ColumnVector &@var{a})
-@deftypefnx  {} {}ComplexDiagMatrix (const ComplexColumnVector &@var{a})
-@deftypefnx  {} {}ComplexDiagMatrix (const DiagMatrix &@var{a})
-@deftypefnx  {} {}ComplexDiagMatrix (const DiagArray<Complex> &@var{a})
-@deftypefnx  {} {}ComplexDiagMatrix (const ComplexDiagMatrix &@var{a})
+@deftypefn  {} {} ComplexDiagMatrix (void)
+@deftypefnx  {} {} ComplexDiagMatrix (int @var{n})
+@deftypefnx  {} {} ComplexDiagMatrix (int @var{n}, const Complex &@var{val})
+@deftypefnx  {} {} ComplexDiagMatrix (int @var{r}, int @var{c})
+@deftypefnx  {} {} ComplexDiagMatrix (int @var{r}, int @var{c}, const Complex &@var{val})
+@deftypefnx  {} {} ComplexDiagMatrix (const RowVector &@var{a})
+@deftypefnx  {} {} ComplexDiagMatrix (const ComplexRowVector &@var{a})
+@deftypefnx  {} {} ComplexDiagMatrix (const ColumnVector &@var{a})
+@deftypefnx  {} {} ComplexDiagMatrix (const ComplexColumnVector &@var{a})
+@deftypefnx  {} {} ComplexDiagMatrix (const DiagMatrix &@var{a})
+@deftypefnx  {} {} ComplexDiagMatrix (const DiagArray<Complex> &@var{a})
+@deftypefnx  {} {} ComplexDiagMatrix (const ComplexDiagMatrix &@var{a})
 @end deftypefn
 
 @deftypefn {} ComplexDiagMatrix& {operator =} (const ComplexDiagMatrix &@var{a})

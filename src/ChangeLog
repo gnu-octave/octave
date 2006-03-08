@@ -1,3 +1,11 @@
+2006-03-08  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_stream::stream_ok): Move definition here,
+	from oct-stream.h.  New arg, warn.  If warn is true and stream is
+	invalid, print warning.
+	(octave_stream::error): Always avoid warning message from
+	stream_ok.  Return "invalid stream object" if stream is not ok.
+
 2006-03-08  David Bateman  <dbateman@free.fr>
 
 	* ov-mapper.cc (SPARSE_MAPPER_LOOP_2): Change nnz to nz to remove 

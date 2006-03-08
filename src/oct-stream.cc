@@ -3754,9 +3754,9 @@ octave_stream::eof (void) const
 std::string
 octave_stream::error (bool clear, int& err_num)
 {
-  std::string retval;
+  std::string retval = "invalid stream object";
 
-  if (stream_ok ("ferror", false))
+  if (stream_ok ("ferror", false, false))
     retval = rep->error (clear, err_num);
 
   return retval;
@@ -3829,6 +3829,27 @@ octave_stream::mode_as_string (int mode)
   else if (in_mode == (std::ios::in | std::ios::out | std::ios::ate
 		       | std::ios::binary))
     retval = "a+b";
+
+  return retval;
+}
+
+bool
+octave_stream::stream_ok (const std::string& who, bool clear, bool warn) const
+{
+  bool retval = true;
+
+  if (rep)
+    {
+      if (clear)
+	rep->clear ();
+    }
+  else
+    {
+      if (warn)
+	::warning ("%s: attempt to use invalid I/O stream", who.c_str ());
+
+      retval = false;
+    }
 
   return retval;
 }

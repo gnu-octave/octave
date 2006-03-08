@@ -86,34 +86,34 @@ scripts-DOCSTRINGS:
 	@$(top_srcdir)/move-if-change $@.t $@
 
 octave.info: stamp-txt $(TEXINFO)
-	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
+	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 octave.dvi: stamp-eps $(TEXINFO)
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
 octave.pdf: stamp-pdf $(TEXINFO)
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
 	-$(MAKEINFO) -D INSTALLONLY \
 	  --no-validate --no-headers --no-split --output INSTALL \
-	  -I$(srcdir) -I$(srcdir)/.. $<
+	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
 	mv INSTALL ../../INSTALL.OCTAVE
 
 ../../BUGS: bugs.texi
 	rm -f BUGS
 	-$(MAKEINFO) -D BUGSONLY \
 	  --no-validate --no-headers --no-split --output BUGS \
-	  -I$(srcdir) -I$(srcdir)/.. $<
+	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
 HTML/index.html: stamp-png $(TEXINFO)
 	$(INSTALL_DATA) *.png ./HTML
-	-$(MAKEINFO) --html --ifinfo --output=HTML -I . -I $(srcdir)/.. $(MAIN_TEXINFO)
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 check: all
 .PHONY: check

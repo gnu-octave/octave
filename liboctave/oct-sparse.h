@@ -72,12 +72,12 @@ extern "C" {
 #include <cholmod.h>
 #endif
 
-#if defined (HAVE_UFSPARSE_CXS_H)
-#include <ufsparse/cxs.h>
-#elif defined (HAVE_CXSPARSE_CXS_H)
-#include <cxsparse/cxs.h>
-#elif defined (HAVE_CXS_H)
-#include <cxs.h>
+#if defined (HAVE_UFSPARSE_CS_H)
+#include <ufsparse/cs.h>
+#elif defined (HAVE_CXSPARSE_CS_H)
+#include <cxsparse/cs.h>
+#elif defined (HAVE_CS_H)
+#include <cs.h>
 #endif
 
 #if (defined (HAVE_UFSPARSE_CHOLMOD_H) \

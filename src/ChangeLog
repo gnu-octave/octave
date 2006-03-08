@@ -1,3 +1,9 @@
+2006-03-08  David Bateman  <dbateman@free.fr>
+
+	* ov-mapper.cc (SPARSE_MAPPER_LOOP_2): Change nnz to nz to remove 
+	shadowed variable warning.
+	* DLD-FUNCTIONS/spqr.cc: Update for new upstream CXSPARSE release.
+
 2006-03-06  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (display_help_text): Force linebreak with @sp.

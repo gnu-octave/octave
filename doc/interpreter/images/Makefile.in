@@ -1,0 +1,68 @@
+TOPDIR = ../../..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+SOURCES = $(wildcard *.m)
+
+FUNCTIONS = $(SOURCES:.m=)
+
+DISTFILES = Makefile.in $(SOURCES)
+
+OCTAVE_BINARY = $(TOPDIR)/src/octave
+
+OCTAVE_SCRIPT_PATH = .//:$(TOPDIR)/src//:$(TOPDIR)/scripts//
+
+ifeq ($(SHARED_LIBS), true)
+  OCTAVE_LD_LIBRARY_PATH = $(TOPDIR)/src:$(TOPDIR)/liboctave:$(TOPDIR)/libcruft
+  ifeq ($(@library_path_var@),)
+    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH)
+  else
+    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH):$(@library_path_var@)
+  endif
+  SET_LD_LIBRARY_PATH = @library_path_var@="$(XLD_LIBRARY_PATH)"
+endif
+
+all: png eps pdf txt
+.PHONY: all
+
+png eps pdf txt:
+	for F in $(FUNCTIONS); do \
+	  $(SET_LD_LIBRARY_PATH) $(OCTAVE_BINARY) \
+	    -f -q -H -p $(OCTAVE_SCRIPT_PATH) --eval "$$F ('../','$@')"; \
+	done
+.PHONY: png eps pdf txt
+
+install install-strip:
+
+.PHONY: install install-strip
+
+uninstall:
+.PHONY: uninstall
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+clean:
+.PHONY: clean
+
+mostlyclean:
+.PHONY: mostlyclean
+
+distclean: clean
+	rm -f Makefile
+.PHONY: distclean
+
+maintainer-clean: distclean
+	rm -f tags TAGS
+.PHONY: maintainer-clean
+
+dist:
+	ln $(DISTFILES) ../../../`cat ../../../.fname`/doc/interpreter/images
+.PHONY: dist

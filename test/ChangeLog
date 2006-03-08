@@ -1,3 +1,7 @@
+2006-03-08  David Bateman  <dbateman@free.fr>
+
+	* test_system.m: Fix recursive rmdir test for recent change.
+
 2006-02-20  David Bateman  <dbateman@free.fr>
 
 	* build_spase_tests.sh: Add tests for ldiv tests for rectangular

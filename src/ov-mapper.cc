@@ -170,11 +170,11 @@ any_element_greater_than (const SparseMatrix& a, double val)
 	} \
       else \
 	{ \
-	  octave_idx_type nnz = M.nnz (); \
+	  octave_idx_type nz = M.nnz (); \
 	  octave_idx_type nr = M.rows (); \
 	  octave_idx_type nc = M.cols (); \
 	  \
-	  T result (nr, nc, nnz); \
+	  T result (nr, nc, nz); \
 	  ET zero = ET (0.); \
 	  octave_idx_type ii = 0; \
 	  result.cidx (ii) = 0; \

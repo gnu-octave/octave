@@ -388,9 +388,9 @@ Linear Algebra
 Sparse Matrices
 
 * Basics::
-* Graph Theory::
 * Sparse Linear Algebra::
 * Iterative Techniques::
+* Real Life Example::
 * Oct-Files::
 * Function Reference::
 

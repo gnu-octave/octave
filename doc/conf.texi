@@ -1,7 +1,0 @@
-@c Copyright (C) 1996, 1997 John W. Eaton
-@c This is part of the Octave manual.
-@c For copying conditions, see the file gpl.texi.
-
-@set VERSION 2.1.x
-@set OCTAVEHOME /usr/local
-@set TARGETHOSTTYPE i586-pc-linux-gnu

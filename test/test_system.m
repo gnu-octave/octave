@@ -245,7 +245,11 @@
 %!error <... rmdir:.*> rmdir ();
 
 %% test/octave.test/system/rmdir-2.m
-%!assert(!rmdir ("foo", 1));
+%!test
+%! crr = confirm_recursive_rmdir;
+%! confirm_recursive_rmdir = 0;
+%! assert(!rmdir ("foo", "s"));
+%! confirm_recursive_rmdir = crr;
 
 %% XXX FIXME XXX This test messes up the path it seems!! Why?
 %% test/octave.test/system/umask-1.m

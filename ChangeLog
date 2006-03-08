@@ -1,3 +1,11 @@
+2006-03-08  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Update the test for CXSPARSE for new upstream release.
+	(OCTAVE_VERSION, OCTAVE_HOSTTYPE, OCTAVE_HOME,TEXINFO_UMFPACK, 
+	TEXINFO_COLAMD, TEXINFO_CHOLMOD): New variables for texinfo 
+	documentation.
+	(AC_CONFIG_FILES): Add doc/conf.texi and doc/interpreter/images/Makefile.
+	
 2006-03-02  Kurt Hornik  <Kurt.Hornik@wu-wien.ac.at>
 
 	* emacs/octave-mod.el (octave-indent-for-comment): Make the code

@@ -1034,21 +1034,31 @@ Sparse<T>::transpose (void) const
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nzmax ();
+  octave_idx_type nz = nnz ();
   Sparse<T> retval (nc, nr, nz);
 
-  retval.cidx(0) = 0;
-  for (octave_idx_type i = 0, iidx = 0; i < nr; i++)
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr + 1);
+  for (octave_idx_type i = 0; i < nr; i++)
+    w[i] = 0;
+  for (octave_idx_type i = 0; i < nz; i++)
+    w[ridx(i)]++;
+  nz = 0;
+  for (octave_idx_type i = 0; i < nr; i++)
     {
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
-	  if (ridx(k) == i)
-	    {
-	      retval.data(iidx) = data(k);
-	      retval.ridx(iidx++) = j;
-	    }
-      retval.cidx(i+1) = iidx;
+      retval.xcidx(i) = nz;
+      nz += w[i];
+      w[i] = retval.xcidx(i);
     }
+  retval.xcidx(nr) = nz;
+  w[nr] = nz;
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
+      {
+	octave_idx_type q = w [ridx(k)]++;
+	retval.xridx (q) = j;
+	retval.xdata (q) = data (k);
+      }
 
   return retval;
 }

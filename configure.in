@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.500 $)
+AC_REVISION($Revision: 1.501 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -418,6 +418,17 @@ case "$canonical_host_type" in
   ;;
 esac
 
+### Extract versioning information from src/version.h, etc
+AC_MSG_CHECKING(for octave version)
+OCTAVE_VERSION=`cat src/version.h | grep "^#define OCTAVE_VERSION" | \
+  sed -e 's/^.*OCTAVE_VERSION \"//' -e 's/\"//'`
+AC_MSG_RESULT($OCTAVE_VERSION)
+AC_SUBST(OCTAVE_VERSION)
+OCTAVE_HOME=$prefix
+AC_SUBST(OCTAVE_HOME)
+OCTAVE_HOSTTYPE=$canonical_host_type
+AC_SUBST(OCTAVE_HOSTTYPE)
+
 ### Check for pcre/regex library.
 AC_SUBST(REGEX_LIBS)
 WITH_PCRE_CONFIG=no
@@ -789,6 +800,7 @@ if test "$with_umfpack" = yes && test "$with_amd" = yes; then
       LIBS="$LIBS $UMFPACK_LIBS $AMD_LIBS $BLAS_LIBS $FLIBS"
       OCTAVE_UMFPACK_SEPERATE_SPLIT
       LIBS=$OLD_LIBS
+      TEXINFO_UMFPACK="@set HAVE_UMFPACK"
       warn_umfpack=
     fi
     break])
@@ -797,6 +809,7 @@ fi
 if test -n "$warn_umfpack"; then
   AC_MSG_WARN($warn_umfpack)
 fi
+AC_SUBST(TEXINFO_UMFPACK)
 
 COLAMD_LIBS=
 AC_SUBST(COLAMD_LIBS)
@@ -812,6 +825,7 @@ if test "$with_colamd" = yes; then
     AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
     if test "$with_colamd" = yes; then
       AC_DEFINE(HAVE_COLAMD, 1, [Define if the COLAMD library is used.])
+      TEXINFO_COLAMD="@set HAVE_COLAMD"
       warn_colamd=
     fi
     break])
@@ -820,6 +834,7 @@ fi
 if test -n "$warn_colamd"; then
   AC_MSG_WARN($warn_colamd)
 fi
+AC_SUBST(TEXINFO_COLAMD)
 
 CCOLAMD_LIBS=
 AC_SUBST(CCOLAMD_LIBS)
@@ -880,6 +895,7 @@ if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
 
     if test "$with_cholmod" = yes; then
       AC_DEFINE(HAVE_CHOLMOD, 1, [Define if the CHOLMOD library is used.])
+      TEXINFO_CHOLMOD="@set HAVE_CHOLMOD"
       warn_cholmod=
     fi
     break])
@@ -888,19 +904,20 @@ fi
 if test -n "$warn_cholmod"; then
   AC_MSG_WARN($warn_cholmod)
 fi
+AC_SUBST(TEXINFO_CHOLMOD)
 
 CXSPARSE_LIBS=
 AC_SUBST(CXSPARSE_LIBS)
 
 AC_ARG_WITH(cxsparse,
-  [  --without-cxsparse        don't use CXSparse, disable some sparse functionality],
+  [  --without-cxsparse       don't use CXSparse, disable some sparse functionality],
   with_cxsparse=$withval, with_cxsparse=yes)
 
 if test "$with_cxsparse" = yes; then
   warn_cxsparse="CXSparse not found. This will result in some lack of functionality for sparse matrices."
   with_cxsparse=no
-  AC_CHECK_HEADERS([ufsparse/cxs.h cxsparse/cxs.h cxs.h], [
-    AC_CHECK_LIB(cxsparse, cs_sqr_di, [CXSPARSE_LIBS="-lcxsparse"; with_cxsparse=yes])
+  AC_CHECK_HEADERS([ufsparse/cs.h cxsparse/cs.h cs.h], [
+    AC_CHECK_LIB(cxsparse, cs_di_sqr, [CXSPARSE_LIBS="-lcxsparse"; with_cxsparse=yes])
     if test "$with_cxsparse" = yes; then
       AC_DEFINE(HAVE_CXSPARSE, 1, [Define if the CXSparse library is used.])
       warn_cxsparse=
@@ -1790,10 +1807,10 @@ typedef int sig_atomic_t;
 ### Do the substitutions in all the Makefiles.
 
 AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile \
-  dlfcn/Makefile doc/Makefile doc/faq/Makefile \
-  doc/interpreter/Makefile doc/liboctave/Makefile \
-  doc/refcard/Makefile emacs/Makefile examples/Makefile \
-  liboctave/Makefile liboctave/oct-types.h \
+  dlfcn/Makefile doc/Makefile doc/conf.texi doc/faq/Makefile \
+  doc/interpreter/Makefile doc/interpreter/images/Makefile \
+  doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile \
+  examples/Makefile liboctave/Makefile liboctave/oct-types.h \
   src/Makefile libcruft/Makefile libcruft/Makerules \
   libcruft/amos/Makefile libcruft/blas/Makefile \
   libcruft/daspk/Makefile libcruft/dasrt/Makefile 

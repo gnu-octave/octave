@@ -18,6 +18,9 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
+IMAGEDIR = images
+STAMPS = stamp-png stamp-eps stamp-pdf stamp-txt
+
 SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	container.txi control.txi cp-idx.txi data.txi \
 	debug.txi diffeq.txi emacs.txi errors.txi eval.txi \
@@ -82,17 +85,17 @@ scripts-DOCSTRINGS:
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
-octave.info: $(TEXINFO)
-	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $<
+octave.info: stamp-txt $(TEXINFO)
+	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-octave.dvi: $(TEXINFO)
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
+octave.dvi: stamp-eps $(TEXINFO)
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
-octave.pdf: $(TEXINFO)
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
+octave.pdf: stamp-pdf $(TEXINFO)
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -108,11 +111,32 @@ octave.pdf: $(TEXINFO)
 	  -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-HTML/index.html: $(TEXINFO)
-	-$(MAKEINFO) --html --ifinfo --output=HTML -I . -I $(srcdir)/.. $<
+HTML/index.html: stamp-png $(TEXINFO)
+	$(INSTALL_DATA) *.png ./HTML
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I . -I $(srcdir)/.. $(MAIN_TEXINFO)
 
 check: all
 .PHONY: check
+
+stamp-png:
+	make -C $(IMAGEDIR) png
+	touch $@
+
+stamp-eps:
+	make -C $(IMAGEDIR) eps
+	touch $@
+
+stamp-pdf: stamp-eps
+	for F in $(wildcard *.eps); do \
+	  G=`basename $$F .eps`.pdf; \
+	  gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite \
+	    -sOutputFile=$$G $$F; \
+	done
+	touch $@
+
+stamp-txt:
+	make -C $(IMAGEDIR) txt
+	touch $@
 
 install install-strip: all
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir)
@@ -175,7 +199,8 @@ mostlyclean clean:
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi$(BUILD_EXEEXT) munge-texi.o
+	munge-texi$(BUILD_EXEEXT) munge-texi.o $(STAMPS) \
+	*.eps *.png *.txt *.pdf
 .PHONY: mostlyclean clean
 
 distclean: clean

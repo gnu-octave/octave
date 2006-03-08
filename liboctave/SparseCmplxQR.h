@@ -31,9 +31,9 @@ Boston, MA 02110-1301, USA.
 #include "oct-sparse.h"
 
 #ifdef IDX_TYPE_LONG
-#define CXSPARSE_ZNAME(name) name ## _cl
+#define CXSPARSE_ZNAME(name) cs_cl ## name
 #else
-#define CXSPARSE_ZNAME(name) name ## _ci
+#define CXSPARSE_ZNAME(name) cs_ci ## name
 #endif
 
 class
@@ -65,9 +65,9 @@ protected:
 
     octave_idx_type nrows;
 #ifdef HAVE_CXSPARSE
-    CXSPARSE_ZNAME (css) *S;
+    CXSPARSE_ZNAME (s) *S;
 
-    CXSPARSE_ZNAME (csn) *N;
+    CXSPARSE_ZNAME (n) *N;
 #endif
   };
 private:
@@ -131,9 +131,9 @@ public:
 
 protected:
 #ifdef HAVE_CXSPARSE
-  CXSPARSE_ZNAME (css) * S (void) { return rep->S; }
+  CXSPARSE_ZNAME (s) * S (void) { return rep->S; }
 
-  CXSPARSE_ZNAME (csn) * N (void) { return rep->N; }
+  CXSPARSE_ZNAME (n) * N (void) { return rep->N; }
 #endif
 };
 

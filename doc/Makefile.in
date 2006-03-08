@@ -20,7 +20,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-DISTFILES = Makefile.in ChangeLog conf.texi texinfo.tex 
+DISTFILES = Makefile.in ChangeLog conf.texi.in texinfo.tex 
 
 SUBDIRS = faq interpreter liboctave refcard
 

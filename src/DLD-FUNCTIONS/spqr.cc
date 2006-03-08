@@ -37,9 +37,9 @@ Boston, MA 02110-1301, USA.
 #include "SparseCmplxQR.h"
 
 #ifdef IDX_TYPE_LONG
-#define CSSPARSE_NAME(name) name ## _dl
+#define CXSPARSE_NAME(name) cs_dl ## name
 #else
-#define CSSPARSE_NAME(name) name ## _di
+#define CXSPARSE_NAME(name) cs_di ## name
 #endif
 
 // PKG_ADD: dispatch ("qr", "spqr", "sparse matrix");
@@ -229,7 +229,7 @@ put_int (octave_idx_type *p, octave_idx_type n)
 DEFUN_DLD (dmperm, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} dmperm (@var{s})\n\
-@deftypefnx {Loadable Function} {[@var{p}. @var{q}. @var{r}, @var{s}] =} dmperm (@var{s})\n\
+@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{s}] =} dmperm (@var{s})\n\
 \n\
 @cindex Dulmage-Mendelsohn decomposition\n\
 Perform a Deulmage-Mendelsohn permutation on the sparse matrix @var{s}.\n\
@@ -263,7 +263,7 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
   octave_idx_type nc = arg.columns ();
   SparseMatrix m;
   SparseComplexMatrix cm;
-  CSSPARSE_NAME (cs) csm;
+  CXSPARSE_NAME () csm;
   csm.m = nr;
   csm.n = nc;
   csm.x = NULL;
@@ -288,20 +288,20 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
     {
       if (nargout <= 1)
 	{
-	  octave_idx_type *jmatch = CSSPARSE_NAME (cs_maxtrans) (&csm);
+	  octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm);
 	  retval(0) = put_int (jmatch + nr, nc);
-	  CSSPARSE_NAME (cs_free) (jmatch);
+	  CXSPARSE_NAME (_free) (jmatch);
 	}
       else
 	{
-	  CSSPARSE_NAME (csd) *dm = CSSPARSE_NAME(cs_dmperm) (&csm);
+	  CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm);
 	  //retval(5) = put_int (dm->rr, 5);
 	  //retval(4) = put_int (dm->cc, 5);
 	  retval(3) = put_int (dm->S, dm->nb+1);
 	  retval(2) = put_int (dm->R, dm->nb+1);
 	  retval(1) = put_int (dm->Q, nc);
 	  retval(0) = put_int (dm->P, nr);
-	  CSSPARSE_NAME (cs_dfree) (dm);
+	  CXSPARSE_NAME (_dfree) (dm);
 	}
     }
 #else

@@ -1,0 +1,10 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@set VERSION @OCTAVE_VERSION@
+@set OCTAVEHOME @OCTAVE_HOME@
+@set TARGETHOSTTYPE @OCTAVE_HOSTTYPE@
+@TEXINFO_COLAMD@
+@TEXINFO_CHOLMOD@
+@TEXINFO_UMFPACK@

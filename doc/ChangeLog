@@ -1,3 +1,16 @@
+2006-03-08  David Bateman  <dbateman@free.fr>
+
+	* conf.texi: Remove.
+	* conf.texi.in: New file, for autoconf'ed version of conf.texi.
+	* Makefile.in: replace conf.texi with conf.texi.in in DISTFILES
+	* interpreter/Makefile.in: build in subdir IMAGEDIR, add stamps for
+	image files. Copy png-files to HTML directory. Build pdf files from
+	eps files using epsffit, gs, grep, basename, head and awk.
+	* octave.texi: Update sparse sub-sections.
+	* sparse.txi: Updates for current state of sparse code.
+	* interpreter/images/Makefile.in: New file.
+	* interpreter/images/sparseimages.m: New file to build sparse images.
+
 2006-03-07  David Bateman  <dbateman@free.fr>
 
 	* liboctave/dae.texi, liboctave/factor.texi, liboctave/nleqn.texi,

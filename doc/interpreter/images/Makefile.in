@@ -6,15 +6,15 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
-SOURCES = $(wildcard *.m)
+SOURCES = $(wildcard $(srcdir)/*.m)
 
-FUNCTIONS = $(SOURCES:.m=)
+FUNCTIONS = $(patsubst %.m, %, $(notdir $(SOURCES)))
 
 DISTFILES = Makefile.in $(SOURCES)
 
 OCTAVE_BINARY = $(TOPDIR)/src/octave
 
-OCTAVE_SCRIPT_PATH = .//:$(TOPDIR)/src//:$(TOPDIR)/scripts//
+OCTAVE_SCRIPT_PATH = .//:$(srcdir)//:$(TOPDIR)/src//:$(top_srcdir)/scripts//
 
 ifeq ($(SHARED_LIBS), true)
   OCTAVE_LD_LIBRARY_PATH = $(TOPDIR)/src:$(TOPDIR)/liboctave:$(TOPDIR)/libcruft
@@ -26,15 +26,15 @@ ifeq ($(SHARED_LIBS), true)
   SET_LD_LIBRARY_PATH = @library_path_var@="$(XLD_LIBRARY_PATH)"
 endif
 
-all: png eps pdf txt
+all: png eps txt
 .PHONY: all
 
-png eps pdf txt:
+png eps txt:
 	for F in $(FUNCTIONS); do \
 	  $(SET_LD_LIBRARY_PATH) $(OCTAVE_BINARY) \
 	    -f -q -H -p $(OCTAVE_SCRIPT_PATH) --eval "$$F ('../','$@')"; \
 	done
-.PHONY: png eps pdf txt
+.PHONY: png eps txt
 
 install install-strip:
 

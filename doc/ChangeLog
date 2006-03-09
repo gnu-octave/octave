@@ -1,3 +1,11 @@
+2006-03-09  David Bateman  <dbateman@free.fr>
+
+	* interpreter/Makefile.in: Change order of commands in HTML/index.html
+	target. Respawn make for stamp-pdf target so that $(wildcard *.eps) is
+	reinterpreted.
+	* interpreter/sparse.txi: Isolate conditionally built targets in
+	"@ifset ... @end ifset".
+
 2006-03-08  David Bateman  <dbateman@free.fr>
 
 	* conf.texi: Remove.

@@ -112,8 +112,8 @@ octave.pdf: stamp-pdf $(TEXINFO)
 	mv BUGS ../../BUGS
 
 HTML/index.html: stamp-png $(TEXINFO)
-	$(INSTALL_DATA) *.png ./HTML
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir)/.. $(MAIN_TEXINFO)
+	$(INSTALL_DATA) *.png ./HTML
 
 check: all
 .PHONY: check
@@ -127,6 +127,9 @@ stamp-eps:
 	touch $@
 
 stamp-pdf: stamp-eps
+	make -C ./ real-pdf
+
+real-pdf:
 	for F in $(wildcard *.eps); do \
 	  G=`basename $$F .eps`.pdf; \
 	  gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite \

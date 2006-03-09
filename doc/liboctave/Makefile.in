@@ -46,19 +46,19 @@ all: liboctave.info liboctave.dvi liboctave.ps liboctave.pdf HTML/index.html
 .PHONY: all
 
 liboctave.info: $(TEXINFO)
-	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $<
+	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $<
 
 liboctave.dvi: $(TEXINFO)
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
 
 liboctave.ps: liboctave.dvi
 	-dvips -o $@ $<
 
 liboctave.pdf: $(TEXINFO)
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
 
 HTML/index.html: $(TEXINFO)
-	-$(MAKEINFO) --html --ifinfo --output=HTML -I $(srcdir)/.. $<
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir)/.. $<
 
 check:
 .PHONY: check

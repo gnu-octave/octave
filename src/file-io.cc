@@ -816,9 +816,13 @@ DEFUN (printf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} printf (@var{template}, @dots{})\n\
 Print optional arguments under the control of the template string\n\
-@var{template} to the stream @code{stdout}.\n\
+@var{template} to the stream @code{stdout} and return the number of\n\
+characters printed.\n\
+@ifclear OCTAVE_MANUAL\n\
 \n\
-Return the number of characters printed.\n\
+See the Formatted Output section of the GNU Octave manual for a\n\
+complete description of the syntax of the template string.\n\
+@end ifclear\n\
 @seealso{fprintf, sprintf, scanf}\n\
 @end deftypefn")
 {
@@ -1003,6 +1007,11 @@ with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
 conversions is returned in @var{count}\n\
+@ifclear OCTAVE_MANUAL\n\
+\n\
+See the Formatted Input section of the GNU Octave manual for a\n\
+complete description of the syntax of the template string.\n\
+@end ifclear\n\
 @seealso{scanf, sscanf, fread, fprintf}\n\
 @end deftypefn")
 {

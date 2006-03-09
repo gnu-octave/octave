@@ -167,8 +167,8 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
 	oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \
-	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc \
-	oct-stream.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
+	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stream.cc \
+	octave.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strcasecmp.c \
 	strncase.c strfns.cc symtab.cc syscalls.cc sysdep.cc \
@@ -201,7 +201,7 @@ endif
 
 # Ugh.
 
-DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc ops.cc octave.cc main.c
+DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc ops.cc main.c
 DEP_4 := $(notdir $(DEP_5))
 DEP_3 := $(patsubst %.l, %.cc, $(DEP_4))
 DEP_2 := $(patsubst %.y, %.cc, $(DEP_3))
@@ -257,8 +257,8 @@ OCT_LINK_DEPS = \
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-errno-list mk-pkg-add \
-	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf oct-gperf.h \
-	octave.cc parse.cc lex.cc y.tab.h __gnuplot_raw__.cc \
+	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf \
+	oct-gperf.h parse.cc lex.cc y.tab.h __gnuplot_raw__.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
 all: octave$(EXEEXT) $(OCT_FILES) PKG_ADD DOCSTRINGS

@@ -263,7 +263,7 @@
 	Call license instead of hard-coding license info here.
 
 	* miscellaneous/license.m: Use persistent instead of global for
-	__octave_licenses__.  Use puts instad of disp.
+	__octave_licenses__.  Use puts instead of disp.
 	Use getuid and getpwuid instead of calling unix ("id -un").
 	If nargout = 1, return license info instead of printing usage message.
 
@@ -718,7 +718,7 @@
 	plot/polar.m, plot/semilogxerr.m, plot/semilogx.m,
 	plot/semilogyerr.m, plot/semilogy.m, plot/shg.m, plot/subplot.m,
 	plot/subwindow.m, plot/title.m, plot/top_title.m:
-	Use __gnuplot_raw__ instad of __gnuplot_set__.
+	Use __gnuplot_raw__ instead of __gnuplot_set__.
 
 	* plot/replot.m: Use __gnuplot_replot__, not __greplot__.
 

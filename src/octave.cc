@@ -60,6 +60,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lex.h"
 #include "octave.h"
 #include "oct-hist.h"
+#include "oct-map.h"
 #include "oct-obj.h"
 #include "ops.h"
 #include "toplev.h"
@@ -207,6 +208,46 @@ initialize_pathsearch (void)
   if (odb.empty ())
     odb = Vdata_dir + file_ops::dir_sep_str + "octave:"
       + Vlibexec_dir + file_ops::dir_sep_str + "octave";
+}
+
+DEFUN (__version_info__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {retval =} __version_info__ (@var{name}, @var{version}, @var{date})\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  static Octave_map vinfo;
+
+  int nargin = args.length ();
+
+  if (nargin == 3)
+    {
+      octave_value idx (vinfo.numel () + 1);
+
+      vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
+      vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
+      vinfo.assign (idx, "Release", Cell (octave_value (args (1))));
+      vinfo.assign (idx, "Date", Cell (octave_value (args (2))));
+    }
+  else if (nargin == 0)
+    retval = vinfo;
+  else
+    print_usage ("__version_info__");
+
+  return retval;
+}
+
+static void
+initialize_version_info (void)
+{
+  octave_value_list args;
+
+  args(2) = OCTAVE_RELEASE_DATE;
+  args(1) = OCTAVE_VERSION;
+  args(0) = "GNU Octave";
+
+  F__version_info__ (args, 0);
 }
 
 // Initialize by reading startup files.
@@ -609,6 +650,8 @@ octave_main (int argc, char **argv, int embedded)
     maximum_braindamage ();
 
   octave_interpreter_ready = true;
+
+  initialize_version_info ();
 
   execute_default_pkg_add_files ();
 

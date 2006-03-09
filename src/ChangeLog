@@ -1,3 +1,17 @@
+2006-03-09  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (DIST_SRC): Include octave.cc here.
+	(DISTFILES, DEP_5): Not here.
+
+	* octave.cc (F__version_info__): New function.
+	(initialize_version_info): New function.
+	(octave_main): Call initialize_version_info just before reading
+	init files.
+
+	* version.h (OCTAVE_RELEASE_DATE): New macro.
+
+	* ov-fcn-handle.h (octave_fcn_handle::dims): New function.
+
 2006-03-08  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_stream::stream_ok): Move definition here,

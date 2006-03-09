@@ -72,6 +72,8 @@ public:
 
   bool is_function_handle (void) const { return true; }
 
+  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
+
   octave_function *function_value (bool = false)
     { return fcn.function_value (); }
 

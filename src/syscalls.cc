@@ -1006,11 +1006,11 @@ Return system information in the structure.  For example,\n\
 @group\n\
 uname ()\n\
      @result{} @{\n\
-           sysname = \n\
-           nodename = \n\
-           release = \n\
-           version = \n\
-           machine = \n\
+           sysname = x86_64\n\
+           nodename = segfault\n\
+           release = 2.6.15-1-amd64-k8-smp\n\
+           version = Linux\n\
+           machine = #2 SMP Thu Feb 23 04:57:49 UTC 2006\n\
          @}\n\
 @end group\n\
 @end example\n\

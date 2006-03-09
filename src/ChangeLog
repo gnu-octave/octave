@@ -1,5 +1,7 @@
 2006-03-09  John W. Eaton  <jwe@octave.org>
 
+	* toplev.cc: Include api_version in the list.
+
 	* Makefile.in (DIST_SRC): Include octave.cc here.
 	(DISTFILES, DEP_5): Not here.
 

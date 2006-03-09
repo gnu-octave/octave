@@ -710,6 +710,7 @@ specified option.\n\
       "XTRA_CXXFLAGS", OCTAVE_CONF_XTRA_CXXFLAGS,
       "YACC", OCTAVE_CONF_YACC,
       "YFLAGS", OCTAVE_CONF_YFLAGS,
+      "api_version", OCTAVE_API_VERSION,
       "archlibdir", OCTAVE_ARCHLIBDIR,
       "bindir", OCTAVE_BINDIR,
       "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE,

@@ -15,8 +15,8 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} blkdiag (@var{a}, @var{b}, @var{c}, ...)
-## Build a block diagonal matrix from @var{a}, @var{b}, @var{c}, ... .
+## @deftypefn {Function File} {} blkdiag (@var{a}, @var{b}, @var{c}, @dots{})
+## Build a block diagonal matrix from @var{a}, @var{b}, @var{c}, @dots{}.
 ## All the arguments must be numeric and are two-dimensional matrices or
 ## scalars.
 ## @seealso{diag, horzcat, vertcat}
@@ -37,7 +37,7 @@ function retval = blkdiag (varargin)
 
   ## Note: trailing singletons are automatically (correctly) ignored.
   if (! all (cellfun ("ndims", varargin) == 2))
-    error ("all of the arguments to blkdiag must be two-dimensional matrices");
+    error ("blkdiag: all arguments must be two-dimensional matrices");
   endif
 
   ## size is an option for cellfun, but it's a bit different from

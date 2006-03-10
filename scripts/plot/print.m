@@ -342,7 +342,7 @@ function print (varargin)
 
   if (! isempty (convertname))
     command = sprintf ("convert '%s' '%s'", name, convertname);
-    [output, errcode] = system (command);
+    [errcode, output] = system (command);
     unlink (name);
     if (errcode)
       error ("print: could not convert");

@@ -1086,7 +1086,7 @@ symbol_table::subsymbol_list (const string_vector& pats,
 
   int n = size ();
 
-  Array<symbol_record *> subsymbols (n);
+  Array<symbol_record *> subsymbols (dim_vector (n, 1));
   int pats_length = pats.length ();
 
   if (n == 0)
@@ -1136,7 +1136,7 @@ symbol_table::subsymbol_list (const string_vector& pats,
 	}
     }
 
-  subsymbols.resize (count);
+  subsymbols.resize (dim_vector (count, 1));
 
   return subsymbols;
 }
@@ -1149,7 +1149,7 @@ symbol_table::symbol_list (const string_vector& pats,
 
   int n = size ();
 
-  Array<symbol_record *> symbols (n);
+  Array<symbol_record *> symbols (dim_vector (n, 1));
 
   if (n == 0)
     return symbols;
@@ -1178,7 +1178,7 @@ symbol_table::symbol_list (const string_vector& pats,
 	}
     }
 
-  symbols.resize (count);
+  symbols.resize (dim_vector (count, 1));
 
   return symbols;
 }
@@ -1324,8 +1324,8 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
   int len = symbols.length (), i;
 
   std::string param_string = "benpst";
-  Array<int> param_length(param_string.length ());
-  Array<std::string> param_names(param_string.length ());
+  Array<int> param_length (dim_vector (param_string.length (), 1));
+  Array<std::string> param_names (dim_vector (param_string.length (), 1));
   size_t pos_b, pos_t, pos_e, pos_n, pos_p, pos_s;
 
   pos_b = param_string.find ('b'); // Bytes
@@ -1547,7 +1547,7 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
       int sym_len = xsymbols.length (), subsym_len = xsubsymbols.length (),
 	len = sym_len + subsym_len;
  
-      Array<symbol_record *> symbols (len);
+      Array<symbol_record *> symbols (dim_vector (len, 1));
 
       if (len > 0)
 	{
@@ -1616,7 +1616,7 @@ symbol_table::glob (const std::string& pat, unsigned int type,
 
   int n = size ();
 
-  Array<symbol_record *> symbols (n);
+  Array<symbol_record *> symbols (dim_vector (n, 1));
 
   if (n == 0)
     return symbols;
@@ -1645,7 +1645,7 @@ symbol_table::glob (const std::string& pat, unsigned int type,
 	}
     }
 
-  symbols.resize (count);
+  symbols.resize (dim_vector (count, 1));
 
   return symbols;
 }

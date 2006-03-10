@@ -1,4 +1,27 @@
+2006-03-10  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_table::glob, symbol_table::symbol_list,
+	symbol_table::subsymbol_list): Force result to be a column
+	vector.
+
+	* oct-stream.h (octave_stream::stream_ok): Undo previous change.
+	Eliminate who parameter.  Change all callers.
+
+	* variables.cc (do_who): Return more info in structure array for
+	verbose output.
+	* symtab.h (symbol_record::size, symbol_record::class_name,
+	symbol_record::is_sparse_type, symbol_record::is_complex_type,
+	symbol_record::size, symbol_record::symbol_def::class_name,
+	symbol_record::symbol_def::is_sparse_type,
+	symbol_record::symbol_def::is_complex_type): New functions.
+	* ov.h (octave_value::size): New function.
+
 2006-03-09  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (run_command_and_return_output): Swap output and
+	status for compatibility.
+
+	* Makefile.in (defaults.h, oct-conf.h): Force updates.
 
 	* defaults.h.in (OCTAVE_RELEASE): New macro.
 

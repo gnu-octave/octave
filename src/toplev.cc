@@ -372,8 +372,8 @@ run_command_and_return_output (const std::string& cmd_str)
 
 	  output_buf << OSSTREAM_ENDS;
 
-	  retval(1) = (double) cmd_status;
-	  retval(0) = OSSTREAM_STR (output_buf);
+	  retval(0) = (double) cmd_status;
+	  retval(1) = OSSTREAM_STR (output_buf);
 
 	  OSSTREAM_FREEZE (output_buf);
 	}
@@ -417,9 +417,9 @@ or\n\
 printf (\"%s\n\", system (cmd, 1));\n\
 @end example\n\
 \n\
-The @code{system} function can return two values.  The first is any\n\
-output from the command that was written to the standard output stream,\n\
-and the second is the output status of the command.  For example,\n\
+The @code{system} function can return two values.  The first is the\n\
+exit status of the command and the second is any output from the\n\
+command that was written to the standard output stream.  For example,\n\
 \n\
 @example\n\
 [output, status] = system (\"echo foo; exit 2\");\n\

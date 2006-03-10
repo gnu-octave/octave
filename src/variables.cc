@@ -1457,6 +1457,21 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
   return retval;
 }
 
+// XXX FIXME XXX -- this function is duplicated in symtab.cc with the
+// name maybe_list_cmp_fcn.
+
+static int
+symbol_record_name_compare (const void *a_arg, const void *b_arg)
+{
+  const symbol_record *a = *(X_CAST (const symbol_record **, a_arg));
+  const symbol_record *b = *(X_CAST (const symbol_record **, b_arg));
+
+  std::string a_nm = a->name ();
+  std::string b_nm = b->name ();
+
+  return a_nm.compare (b_nm);
+}
+
 static octave_value
 do_who (int argc, const string_vector& argv, int return_list)
 {
@@ -1518,58 +1533,141 @@ do_who (int argc, const string_vector& argv, int return_list)
 
   if (return_list)
     {
-      string_vector names;
+      // XXX FIXME XXX -- maybe symbol_list should return a std::list
+      // object instead of an Array.
+
+      dim_vector dv (0, 0);
+
+      Array<symbol_record *> s1 (dv);
+      Array<symbol_record *> s2 (dv);
+      Array<symbol_record *> s3 (dv);
+      Array<symbol_record *> s4 (dv);
+      Array<symbol_record *> s5 (dv);
+      Array<symbol_record *> s6 (dv);
+      Array<symbol_record *> s7 (dv);
 
       if (show_builtins)
 	{
-	  names.append (fbi_sym_tab->name_list
-			(pats, true, symbol_record::BUILTIN_CONSTANT,
-			 SYMTAB_ALL_SCOPES));
+	  s1 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_CONSTANT,
+					 SYMTAB_ALL_SCOPES);
 
-	  names.append (fbi_sym_tab->name_list
-			(pats, true, symbol_record::BUILTIN_VARIABLE,
-			 SYMTAB_ALL_SCOPES));
+	  s2 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_VARIABLE,
+					 SYMTAB_ALL_SCOPES);
 
-	  names.append (fbi_sym_tab->name_list
-			(pats, true, symbol_record::BUILTIN_FUNCTION,
-			 SYMTAB_ALL_SCOPES));
+	  s3 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_FUNCTION,
+					 SYMTAB_ALL_SCOPES);
 	}
 
       if (show_functions)
 	{
-	  names.append (fbi_sym_tab->name_list
-			(pats, true, symbol_record::DLD_FUNCTION,
-			 SYMTAB_ALL_SCOPES));
+	  s4 = fbi_sym_tab->symbol_list (pats, symbol_record::DLD_FUNCTION,
+					 SYMTAB_ALL_SCOPES);
 
-	  names.append (fbi_sym_tab->name_list
-			(pats, true, symbol_record::USER_FUNCTION,
-			 SYMTAB_ALL_SCOPES));
+	  s5 = fbi_sym_tab->symbol_list (pats, symbol_record::USER_FUNCTION,
+					 SYMTAB_ALL_SCOPES);
 	}
 
       if (show_variables)
 	{
-	  names.append (curr_sym_tab->name_list
-			(pats, true, symbol_record::USER_VARIABLE,
-			 SYMTAB_LOCAL_SCOPE));
+	  s6 = curr_sym_tab->symbol_list (pats, symbol_record::USER_VARIABLE,
+					  SYMTAB_LOCAL_SCOPE);
 
-	  names.append (curr_sym_tab->name_list
-			(pats, true, symbol_record::USER_VARIABLE,
-			 SYMTAB_GLOBAL_SCOPE));
+	  s7 = curr_sym_tab->symbol_list (pats, symbol_record::USER_VARIABLE,
+					  SYMTAB_GLOBAL_SCOPE);
 	}
+
+      octave_idx_type s1_len = s1.length ();
+      octave_idx_type s2_len = s2.length ();
+      octave_idx_type s3_len = s3.length ();
+      octave_idx_type s4_len = s4.length ();
+      octave_idx_type s5_len = s5.length ();
+      octave_idx_type s6_len = s6.length ();
+      octave_idx_type s7_len = s7.length ();
+
+      octave_idx_type symbols_len
+	= s1_len + s2_len + s3_len + s4_len + s5_len + s6_len + s7_len;
+
+      Array<symbol_record *> symbols (dim_vector (symbols_len, 1));
+
+      octave_idx_type k = 0;
+
+      symbols.insert (s1, k, 0);
+      k += s1_len;
+      symbols.insert (s2, k, 0);
+      k += s2_len;
+      symbols.insert (s3, k, 0);
+      k += s3_len;
+      symbols.insert (s4, k, 0);
+      k += s4_len;
+      symbols.insert (s5, k, 0);
+      k += s5_len;
+      symbols.insert (s6, k, 0);
+      k += s6_len;
+      symbols.insert (s7, k, 0);
+
+      symbols.qsort (symbol_record_name_compare);
 
       if (show_verbose)
 	{
-	  int len = names.length ();
+	  Array<octave_value> name_info (symbols_len, 1);
+	  Array<octave_value> size_info (symbols_len, 1);
+	  Array<octave_value> bytes_info (symbols_len, 1);
+	  Array<octave_value> class_info (symbols_len, 1);
+	  Array<octave_value> global_info (symbols_len, 1);
+	  Array<octave_value> sparse_info (symbols_len, 1);
+	  Array<octave_value> complex_info (symbols_len, 1);
+	  Array<octave_value> nesting_info (symbols_len, 1);
 
-	  octave_value_list ovl (len, octave_value ());
+	  for (octave_idx_type j = 0; j < symbols_len; j++)
+	    {
+	      symbol_record *sr = symbols(j);
 
-	  for (int j = 0; j < len; j++)
-	    ovl(j) = names(j);
+	      Octave_map ni;
 
-	  retval = Octave_map ("name", ovl);
+	      std::string caller_function_name;
+	      if (curr_caller_function)
+		caller_function_name = curr_caller_function->name ();
+
+	      ni.assign ("function", caller_function_name);
+	      ni.assign ("level", 1);
+
+	      name_info(j) = sr->name ();
+	      size_info(j) = sr->size ();
+	      bytes_info(j) = sr->byte_size ();
+	      class_info(j) = sr->class_name ();
+	      global_info(j) = sr->is_linked_to_global ();
+	      sparse_info(j) = sr->is_sparse_type ();
+	      complex_info(j) = sr->is_complex_type ();
+	      nesting_info(j) = ni;
+	    }
+
+	  Octave_map info;
+
+	  info.assign ("name", name_info);
+	  info.assign ("size", size_info);
+	  info.assign ("bytes", bytes_info);
+	  info.assign ("class", class_info);
+	  info.assign ("global", global_info);
+	  info.assign ("sparse", sparse_info);
+	  info.assign ("complex", complex_info);
+	  info.assign ("nesting", nesting_info);
+
+	  retval = info;
 	}
       else
-	retval = Cell (names);
+	{
+	  string_vector names;
+
+	  if (symbols_len > 0)
+	    {
+	      names.resize (symbols_len);
+
+	      for (octave_idx_type j = 0; j < symbols_len; j++)
+		names[j] = symbols(j)->name ();
+	    }
+
+	  retval = Cell (names);
+	}
     }
   else
     {

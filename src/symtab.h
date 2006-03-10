@@ -171,6 +171,18 @@ private:
     bool is_matrix_type (void) const 
       { return definition.is_matrix_type (); }
 
+    bool is_sparse_type (void) const
+      { return definition.is_sparse_type (); }
+
+    bool is_complex_type (void) const
+      { return definition.is_complex_type (); }
+
+    std::string class_name (void) const
+      { return definition.class_name (); }
+
+    Matrix size (void) const
+      { return definition.size (); }
+
     size_t byte_size (void) const
       { return definition.byte_size (); };
 
@@ -383,6 +395,18 @@ public:
 
   bool is_matrix_type (void) const 
     { return definition->is_matrix_type (); }
+
+  bool is_sparse_type (void) const
+    { return definition->is_sparse_type (); }
+
+  bool is_complex_type (void) const
+    { return definition->is_complex_type (); }
+
+  std::string class_name (void) const
+    { return definition->class_name (); }
+
+  Matrix size (void) const
+    { return definition->size (); }
 
   size_t byte_size (void) const
     { return definition->byte_size (); };

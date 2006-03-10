@@ -1081,6 +1081,21 @@ octave_value::ndims (void) const
    return n_dims;
 }
 
+Matrix
+octave_value::size (void) const
+{
+  dim_vector dv = dims ();
+
+  int n_dims = dv.length ();
+
+  Matrix retval (1, n_dims);
+
+  while (n_dims--)
+    retval(n_dims) = dv(n_dims);
+
+  return retval;
+}
+
 Cell
 octave_value::cell_value (void) const
 {

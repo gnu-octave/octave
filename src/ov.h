@@ -373,6 +373,8 @@ public:
   virtual octave_idx_type capacity (void) const
     { return rep->capacity (); }
 
+  Matrix size (void) const;
+
   virtual size_t byte_size (void) const
     { return rep->byte_size (); }
 

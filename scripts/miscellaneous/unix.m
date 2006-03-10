@@ -36,7 +36,7 @@ function [status, text] = unix (cmd, echo_arg)
   if (nargin < 1 || nargin > 2)
     usage ( "[status, text] = unix (cmd, '-echo')");
   elseif (isunix ())
-    [text, status] = system (cmd);
+    [status, text] = system (cmd);
     if (nargin > 1 || nargout == 0)
       printf ("%s\n", text);
     endif

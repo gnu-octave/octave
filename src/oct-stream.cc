@@ -2791,7 +2791,7 @@ octave_stream::flush (void)
 {
   int retval = -1;
 
-  if (stream_ok ("fflush"))
+  if (stream_ok ())
     retval = rep->flush ();
 
   return retval;
@@ -2802,7 +2802,7 @@ octave_stream::getl (octave_idx_type max_len, bool& err, const std::string& who)
 {
   std::string retval;
 
-  if (stream_ok (who))
+  if (stream_ok ())
     retval = rep->getl (max_len, err, who);
 
   return retval;
@@ -2836,7 +2836,7 @@ octave_stream::gets (octave_idx_type max_len, bool& err, const std::string& who)
 {
   std::string retval;
 
-  if (stream_ok (who))
+  if (stream_ok ())
     retval = rep->gets (max_len, err, who);
 
   return retval;
@@ -2870,7 +2870,7 @@ octave_stream::seek (long offset, int origin)
 {
   int status = -1;
 
-  if (stream_ok ("fseek"))
+  if (stream_ok ())
     {
       clearerr ();
 
@@ -2977,7 +2977,7 @@ octave_stream::tell (void)
 {
   long retval = -1;
 
-  if (stream_ok ("tell"))
+  if (stream_ok ())
     retval = rep->tell ();
 
   return retval;
@@ -2988,7 +2988,7 @@ octave_stream::rewind (void)
 {
   int retval = -1;
 
-  if (stream_ok ("frewind"))
+  if (stream_ok ())
     retval = rep->rewind ();
 
   return retval;
@@ -2999,7 +2999,7 @@ octave_stream::is_open (void) const
 {
   bool retval = false;
 
-  if (stream_ok ("is_open"))
+  if (stream_ok ())
     retval = rep->is_open ();
 
   return retval;
@@ -3008,7 +3008,7 @@ octave_stream::is_open (void) const
 void
 octave_stream::close (void)
 {
-  if (stream_ok ("close"))
+  if (stream_ok ())
     rep->close ();
 }
 
@@ -3266,7 +3266,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
   octave_value retval;
 
-  if (stream_ok ("fread"))
+  if (stream_ok ())
     {
       // XXX FIXME XXX -- we may eventually want to make this extensible.
 
@@ -3329,7 +3329,7 @@ octave_stream::write (const octave_value& data, octave_idx_type block_size,
 {
   octave_idx_type retval = -1;
 
-  if (stream_ok ("fwrite"))
+  if (stream_ok ())
     {
       if (! error_state)
 	{
@@ -3604,7 +3604,7 @@ octave_stream::scanf (const std::string& fmt, const Array<double>& size,
 {
   octave_value retval;
 
-  if (stream_ok (who))
+  if (stream_ok ())
     retval = rep->scanf (fmt, size, count, who);
 
   return retval;
@@ -3640,7 +3640,7 @@ octave_stream::oscanf (const std::string& fmt, const std::string& who)
 {
   octave_value_list retval;
 
-  if (stream_ok (who))
+  if (stream_ok ())
     retval = rep->oscanf (fmt, who);
 
   return retval;
@@ -3676,7 +3676,7 @@ octave_stream::printf (const std::string& fmt, const octave_value_list& args,
 {
   int retval = -1;
 
-  if (stream_ok (who))
+  if (stream_ok ())
     retval = rep->printf (fmt, args, who);
 
   return retval;
@@ -3712,7 +3712,7 @@ octave_stream::puts (const std::string& s, const std::string& who)
 {
   int retval = -1;
 
-  if (stream_ok (who))
+  if (stream_ok ())
     retval = rep->puts (s, who);
 
   return retval;
@@ -3745,7 +3745,7 @@ octave_stream::eof (void) const
 {
   int retval = -1;
 
-  if (stream_ok ("feof"))
+  if (stream_ok ())
     retval = rep->eof ();
 
   return retval;
@@ -3756,7 +3756,7 @@ octave_stream::error (bool clear, int& err_num)
 {
   std::string retval = "invalid stream object";
 
-  if (stream_ok ("ferror", false, false))
+  if (stream_ok (false))
     retval = rep->error (clear, err_num);
 
   return retval;
@@ -3767,7 +3767,7 @@ octave_stream::name (void) const
 {
   std::string retval;
 
-  if (stream_ok ("name"))
+  if (stream_ok ())
     retval = rep->name ();
 
   return retval;
@@ -3778,7 +3778,7 @@ octave_stream::mode (void) const
 {
   int retval = 0;
 
-  if (stream_ok ("mode"))
+  if (stream_ok ())
     retval = rep->mode ();
 
   return retval;
@@ -3789,7 +3789,7 @@ octave_stream::float_format (void) const
 {
   oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
 
-  if (stream_ok ("float_format"))
+  if (stream_ok ())
     retval = rep->float_format ();
 
   return retval;
@@ -3829,27 +3829,6 @@ octave_stream::mode_as_string (int mode)
   else if (in_mode == (std::ios::in | std::ios::out | std::ios::ate
 		       | std::ios::binary))
     retval = "a+b";
-
-  return retval;
-}
-
-bool
-octave_stream::stream_ok (const std::string& who, bool clear, bool warn) const
-{
-  bool retval = true;
-
-  if (rep)
-    {
-      if (clear)
-	rep->clear ();
-    }
-  else
-    {
-      if (warn)
-	::warning ("%s: attempt to use invalid I/O stream", who.c_str ());
-
-      retval = false;
-    }
 
   return retval;
 }

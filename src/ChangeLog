@@ -1,5 +1,7 @@
 2006-03-10  John W. Eaton  <jwe@octave.org>
 
+	* xpow.cc (elem_xpow): Only use complex pow if really necessary.
+
 	* symtab.cc (symbol_table::glob, symbol_table::symbol_list,
 	symbol_table::subsymbol_list): Force result to be a column
 	vector.

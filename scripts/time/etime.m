@@ -42,32 +42,18 @@ function secs = etime (t1, t0)
     usage ("etime (t1, t0)");
   endif
 
-  if (isvector (t1) && length (t1) == 6 && isvector (t0) && length (t0) == 6)
+  [d1, s1] = datenum (t1);
+  [d0, s0] = datenum (t0);
 
-    if (t1 (1) != t0 (1))
-      error ("etime: can't handle timings over year boundaries yet");
-    endif
-
-    ## XXX FIXME XXX -- could check here to ensure that t1 and t0 really do
-    ## make sense as vectors returned from clock().
-
-    days_in_months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    if (is_leap_year (t1 (1)))
-      days_in_months (2) = days_in_months (2) + 1;
-    endif
-
-    d1 = sum (days_in_months (1:(t1 (2) - 1))) + t1 (3);
-    d0 = sum (days_in_months (1:(t0 (2) - 1))) + t0 (3);
-
-    s1 = 86400 * d1 + 3600 * t1 (4) + 60 * t1 (5) + t1 (6);
-    s0 = 86400 * d0 + 3600 * t0 (4) + 60 * t0 (5) + t0 (6);
-
-    secs = s1 - s0;
-
-  else
-    error ("etime: args are not 6-element vectors");
-  endif
-
+  secs = s1 - s0;
 
 endfunction
+
+%!assert(etime([1900,12,31,23,59,59],[1901,1,1,0,0,0]),-1)
+%!assert(etime([1900,2,28,23,59,59],[1900,3,1,0,0,0]),-1)
+%!assert(etime([2000,2,28,23,59,59],[2000,3,1,0,0,0]),-86401)
+%!assert(etime([1996,2,28,23,59,59],[1996,3,1,0,0,0]),-86401)
+%!test
+%!  t1 = [1900,12,31,23,59,59; 1900,2,28,23,59,59];
+%!  t2 = [1901,1,1,0,0,0; 1900,3,1,0,0,0];
+%!  assert(etime(t2, t1), [1;1]);

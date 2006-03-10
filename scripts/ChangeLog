@@ -1,3 +1,8 @@
+2006-03-10  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* time/etime.m: Use datenum to support times spanning year boundaries.
+	* time/datenum.m: New function to compute day number from time.
+
 2006-03-09  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/unix.m, plot/print.m:

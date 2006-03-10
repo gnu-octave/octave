@@ -535,11 +535,20 @@ lex.cc : lex.l
 __gnuplot_raw__.cc : DLD-FUNCTIONS/__gnuplot_raw__.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
-defaults.h: defaults.h.in ../Makeconf Makefile
+## We want to force an update of defaults.h and oct-conf.h every
+## time make is run because some values may come from the command
+## line or the environment.  The substitution rules use move-if-change,
+## so this should not cause trouble if the file already exists and the
+## newly generated file is not different.
+
+defaults.h: defaults.h.in ../Makeconf Makefile FORCE
 	@$(do-subst-default-vals)
 
-oct-conf.h: oct-conf.h.in ../Makeconf Makefile
+oct-conf.h: oct-conf.h.in ../Makeconf Makefile FORCE
 	@$(do-subst-config-vals)
+
+FORCE:
+.PHONY: FORCE
 
 oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	@echo "making $@ from $<"

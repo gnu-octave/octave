@@ -1,5 +1,10 @@
 2006-03-09  John W. Eaton  <jwe@octave.org>
 
+	* defaults.h.in (OCTAVE_RELEASE): New macro.
+
+	* octave.cc (F__version_info__): New arg, release.
+	(initialize_version_info): Pass release arg to F__version_info__.
+
 	* toplev.cc: Include api_version in the list.
 
 	* Makefile.in (DIST_SRC): Include octave.cc here.

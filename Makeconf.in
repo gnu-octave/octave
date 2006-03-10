@@ -30,7 +30,7 @@ getapiversion = $(SED) -e '/OCTAVE_API_VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e 
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
 version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
 version := $(shell $(getversion) $(version_file))
-apiversion := $(shell $(getapiversion) $(version_file))
+api_version := $(shell $(getapiversion) $(version_file))
 
 #### Start of system configuration section. ####
 
@@ -534,7 +534,8 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
   -e "s|%OCTAVE_STARTUPFILEDIR%|\"${startupfiledir}\"|" \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
-  -e "s|%OCTAVE_API_VERSION%|\"${apiversion}\"|" \
+  -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
+  -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"
 $(top_srcdir)/move-if-change $@-t $@
 endef

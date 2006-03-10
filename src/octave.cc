@@ -212,7 +212,7 @@ initialize_pathsearch (void)
 
 DEFUN (__version_info__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {retval =} __version_info__ (@var{name}, @var{version}, @var{date})\n\
+@deftypefn {Function File} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -221,14 +221,14 @@ DEFUN (__version_info__, args, ,
 
   int nargin = args.length ();
 
-  if (nargin == 3)
+  if (nargin == 4)
     {
       octave_value idx (vinfo.numel () + 1);
 
       vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
       vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
-      vinfo.assign (idx, "Release", Cell (octave_value (args (1))));
-      vinfo.assign (idx, "Date", Cell (octave_value (args (2))));
+      vinfo.assign (idx, "Release", Cell (octave_value (args (2))));
+      vinfo.assign (idx, "Date", Cell (octave_value (args (3))));
     }
   else if (nargin == 0)
     retval = vinfo;
@@ -243,7 +243,8 @@ initialize_version_info (void)
 {
   octave_value_list args;
 
-  args(2) = OCTAVE_RELEASE_DATE;
+  args(3) = OCTAVE_RELEASE_DATE;
+  args(2) = OCTAVE_RELEASE;
   args(1) = OCTAVE_VERSION;
   args(0) = "GNU Octave";
 

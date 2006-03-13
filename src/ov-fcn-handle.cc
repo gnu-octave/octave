@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
+#include "input.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-handle.h"
@@ -56,6 +57,18 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 				     "function handle",
 				     "function handle");
 
+void
+octave_fcn_handle::reload_warning (const std::string& fcn_type) const
+{
+  if (warn_reload)
+    {
+      warn_reload = false;
+
+      warning ("reloading %s functions referenced by function handles is not implemented",
+	       fcn_type.c_str ());
+    }
+}
+
 octave_value_list
 octave_fcn_handle::subsref (const std::string& type,
 			    const std::list<octave_value_list>& idx,
@@ -69,20 +82,35 @@ octave_fcn_handle::subsref (const std::string& type,
       {
 	octave_function *f = function_value ();
 
-	// XXX FIXME XXX -- need to check to see if the function has a
-	// new definition.  The following does not work for function
-	// handles that refer to subfunctions or functions defined on
-	// the command line.
-	//
-	// if (function_out_of_date (f))
-	//   {
-	//     octave_value tmp = lookup_function (fcn_name ());
-	//
-	//     octave_function *ftmp = tmp.function_value (true);
-	//
-	//     if (ftmp)
-	//       f = ftmp;
-	//   }
+	if (f && f->time_checked () < Vlast_prompt_time)
+	  {
+	    std::string ff_nm = f->fcn_file_name ();
+
+	    time_t tp = f->time_parsed ();
+
+	    if (ff_nm.empty ())
+	      {
+		// XXX FIXME XXX -- need to handle inline and
+		// command-line functions here.
+	      }
+	    else
+	      {
+		if (fcn_out_of_date (f, ff_nm, tp))
+		  {
+		    // XXX FIXME XXX -- there is currently no way to
+		    // parse a .m file or reload a .oct file that
+		    // leaves the fbi symbol table untouched.  We need
+		    // a function that will parse the file and return
+		    // a pointer to the new function definition
+		    // without altering the symbol table.
+
+		    if (f->is_nested_function ())
+		      reload_warning ("nested");
+		    else
+		      reload_warning ("functions");
+		  }
+	      }
+	  }
 
 	if (f)
 	  retval = f->subsref (type, idx, nargout);

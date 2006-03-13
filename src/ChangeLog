@@ -1,3 +1,10 @@
+2006-03-13  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (fcn_out_of_date): No longer static.
+	* ov-fcn-handle.cc (warn_reload): New function.
+	(octave_fcn_handle::subsref): Implement basic logic for updating
+	when pointed-to function changes.
+
 2006-03-10  John W. Eaton  <jwe@octave.org>
 
 	* xpow.cc (elem_xpow): Only use complex pow if really necessary.

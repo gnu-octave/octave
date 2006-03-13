@@ -41,16 +41,17 @@ octave_fcn_handle : public octave_base_value
 {
 public:
   octave_fcn_handle (void)
-    : fcn (), nm () { }
+    : warn_reload (true), fcn (), nm () { }
 
   octave_fcn_handle (const std::string& n)
-    : fcn (), nm (n) { }
+    : warn_reload (true), fcn (), nm (n) { }
 
   octave_fcn_handle (const octave_value& f,  const std::string& n)
-    : fcn (f), nm (n) { }
+    : warn_reload (true), fcn (f), nm (n) { }
 
   octave_fcn_handle (const octave_fcn_handle& fh)
-    : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm) { }
+    : octave_base_value (fh), warn_reload (fh.warn_reload),
+      fcn (fh.fcn), nm (fh.nm) { }
 
   ~octave_fcn_handle (void) { }
 
@@ -108,6 +109,13 @@ private:
   DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+
+  // If TRUE, print a warning if the pointed-to fucntion is out of
+  // date.  This variable may be removed when updating is properly
+  // implemented.
+  mutable bool warn_reload;
+
+  void reload_warning (const std::string& fcn_type) const;
 
 protected:
 

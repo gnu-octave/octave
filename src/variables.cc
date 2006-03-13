@@ -980,7 +980,7 @@ same_file (const std::string& f, const std::string& g)
   return (f_fs.ino () == g_fs.ino () && f_fs.dev () == g_fs.dev ());
 }
 
-static bool
+bool
 fcn_out_of_date (octave_function *fcn, const std::string& ff, time_t tp)
 {
   bool retval = false;

@@ -1229,6 +1229,50 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 }
 
 /*
+%!# a ^ b  for real/complex scalar/matrix
+%!assert (0^-.5, Inf);            # case 1
+
+%!# a .^ b  for real/complex scalar/matrix
+%!shared a, b, ai, bi
+%! a = [0,1];   ai = [0,1i];
+%! b = [-.5,1]; bi = [-.5,1i];
+%!assert ([0.^b](1), Inf)         # case 1
+%!assert ([0.^bi](1), Inf)        # case 2
+%!assert ([a.^-.5](1), Inf)       # case 3   
+%!assert ([a.^b](1), Inf)         # case 4
+%!# matrix.^complex               # case 5
+%!assert ([a.^bi](1), Inf)        # case 6
+%!# complex.^matrix               # case 7
+%!# complex.^complexmatrix        # case 8
+%!assert ([ai.^-.5](1), Inf)      # case 9
+%!assert ([ai.^b](1), Inf)        # case 10
+%!# complexmatrix.^complex        # case 11
+%!assert ([ai.^bi](1), Inf)       # case 12
+
+%!# a .^ b  for real/complex scalar/ndarray
+%!shared a, b, ai, bi
+%! a = ones(1,1,2); ai = ones(1,1,2)*1i;
+%! b = ones(1,1,2); bi = ones(1,1,2)*1i;   
+%! a(1,1,1) = 0; ai(1,1,1) = 0;
+%! b(1,1,1) = -.5; bi(1,1,1) = -.5;
+%!assert ([0.^b](1), Inf)         # case 1
+%!assert ([0.^bi](1), Inf)        # case 2
+%!assert ([a.^-.5](1), Inf)       # case 3   
+%!assert ([a.^b](1), Inf)         # case 4
+%!# matrix.^complex               # case 5
+%!assert ([a.^bi](1), Inf)        # case 6
+%!# complex.^matrix               # case 7
+%!# complex.^complexmatrix        # case 8
+%!assert ([ai.^-.5](1), Inf)      # case 9
+%!assert ([ai.^b](1), Inf)        # case 10
+%!# complexmatrix.^complex        # case 11
+%!assert ([ai.^bi](1), Inf)       # case 12
+
+%!# I don't think sparse is an issue since 
+%!# it ignores zeros in the base.
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

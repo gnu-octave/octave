@@ -1,3 +1,7 @@
+2006-03-14  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* xpow.cc: New tests.
+
 2006-03-13  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (fcn_out_of_date): No longer static.

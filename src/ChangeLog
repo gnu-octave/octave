@@ -1,3 +1,11 @@
+2006-03-14  Bill Denney  <bill@givebillmoney.com>
+
+         * load-save.cc (Fload, Fsave): Update docstring for functional form.
+
+2006-03-14  John W. Eaton  <jwe@octave.org>
+
+	* xpow.cc (elem_xpow): Undo previous change.
+
 2006-03-14  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* xpow.cc: New tests.

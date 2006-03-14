@@ -600,6 +600,16 @@ variables saved in the file @file{data}, use the command\n\
 load data\n\
 @end example\n\
 \n\
+If load is invoked using the functional form\n\
+\n\
+@example\n\
+load (\"-text\", \"file.txt\", \"a\")\n\
+@end example\n\
+\n\
+@noindent\n\
+then the @var{options}, @var{file}, and variable name arguments\n\
+(@var{v1}, @dots{}) must be specified as character strings.\n\
+\n\
 If a variable that is not marked as global is loaded from a file when a\n\
 global symbol with the same name already exists, it is loaded in the\n\
 global symbol table.  Also, if a variable is marked as global in a file\n\
@@ -1447,7 +1457,7 @@ the zlib library."
 
 DEFCMD (save, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} save options file v1 v2 @dots{}\n\
+@deffn {Command} save options file @var{v1} @var{v2} @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{} in the file\n\
 @var{file}.  The special filename @samp{-} can be used to write the\n\
 output to your terminal.  If no variable names are listed, Octave saves\n\
@@ -1455,6 +1465,16 @@ all the variables in the current scope.  Valid options for the\n\
 @code{save} command are listed in the following table.  Options that\n\
 modify the output format override the format specified by the built-in\n\
 variable @code{default_save_options}.\n\
+\n\
+If save is invoked using the functional form\n\
+\n\
+@example\n\
+save (\"-text\", \"file.txt\", \"a\")\n\
+@end example\n\
+\n\
+@noindent\n\
+then the @var{options}, @var{file}, and variable name arguments\n\
+(@var{vname1}, @dots{}) must be specified as character strings.\n\
 \n\
 @table @code\n\
 @item -ascii\n\

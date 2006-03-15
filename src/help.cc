@@ -929,6 +929,7 @@ GNU Info browser at this node in the on-line version of the manual.\n\
 \n\
 Once the GNU Info browser is running, help for using it is available\n\
 using the command @kbd{C-h}.\n\
+@seealso{which, lookfor}\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -1116,6 +1117,7 @@ DEFCMD (which, args, nargout,
 @deffn {Command} which name @dots{}\n\
 Display the type of each @var{name}.  If @var{name} is defined from a\n\
 function file, the full name of the file is also displayed.\n\
+@seealso{help, lookfor}\n\
 @end deffn")
 {
   octave_value_list retval;
@@ -1537,7 +1539,7 @@ functions help. All of the functions in octave itself will correctly\n\
 find the first sentence, but the same can not be guaranteed for other\n\
 functions. Therefore the use of the '-all' argument might be necessary\n\
 to find related functions that are not part of octave.\n\
-@seealso{which, help}\n\
+@seealso{help, which}\n\
 @end deffn")
 {
   octave_value_list retval;

@@ -34,7 +34,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 class octave_value;
 
-extern void print_usage (const std::string& nm, bool just_usage = false);
+extern void print_usage (const std::string& nm, bool just_usage = false,
+			 const std::string& extra_msg = std::string ());
 
 extern void check_version (const std::string& version, const std::string& fcn);
 

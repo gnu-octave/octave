@@ -1,7 +1,7 @@
 %% Automatically generated from DejaGNU files
 
 %% test/octave.test/eval/eval-1.m
-%!test
+%!#test
 %! x = 1;
 %! assert(eval ("x"),1);
 
@@ -12,7 +12,7 @@
 
 %% test/octave.test/eval/eval-3.m
 %!test
-%! x = 1
+%! x = 1;
 %! assert(eval ("x;"),1);
 
 %% XXX FIXME XXX
@@ -36,7 +36,7 @@
 %! assert(f,2);
 
 %% test/octave.test/eval/eval-7.m
-%!test
+%!#test
 %! eval ("x = 1");
 %! assert(x,1);
 
@@ -51,6 +51,7 @@
 %! assert(x,1);
 
 %% test/octave.test/eval/eval-10.m
+%!#test
 %! eval ("x = 1")
 %! assert(x,1);
 

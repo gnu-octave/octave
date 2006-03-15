@@ -31,7 +31,14 @@ function [dp, dn] = runtestdir (fid, d);
     if (length(nm) > 5 && strcmp(nm(1:5),"test_") && 
 	strcmp(nm((end-1):end),".m"))
       [p,n] = test(nm(1:(end-2)),"quiet",fid);
-      printf("  %s -> passes %d of %d\n",nm,p,n);
+      filler = repmat (".", 1, 40-length(nm));
+      printf("  %s %s PASS %4d/%-4d",nm,filler,p,n);
+      nfail = n - p;
+      if (nfail > 0)
+	printf (" FAIL %d\n", nfail);
+      else
+	printf ("\n");
+      endif
       dp +=p;
       dn += n;
     endif
@@ -52,7 +59,7 @@ function y = hastests (f)
   fclose(fid);
 endfunction
 
-function [dp, dn] = runtestscript (fid, d, ident);
+function [dp, dn] = runtestscript (fid, d);
   global topsrcdir
   lst = dir(d);
   dp = dn = 0;
@@ -60,7 +67,7 @@ function [dp, dn] = runtestscript (fid, d, ident);
     nm = lst(i).name;
     if (lst(i).isdir && !strcmp(nm,".") && !strcmp(nm,"..") && 
 	!strcmp(nm,"CVS"))
-      [p, n] = runtestscript (fid, [d, "/",nm], [ident,"  "]);
+      [p, n] = runtestscript (fid, [d, "/",nm]);
       dp += p;
       dn += n;
     endif
@@ -78,9 +85,16 @@ function [dp, dn] = runtestscript (fid, d, ident);
       endif
     endif
   endfor 
-  printf("%s%s -> passes %d of %d tests\n", ident,
-	 strrep (d, topsrcdir, "..."), dp, dn);
-##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
+  tmpnm = strrep (d, [topsrcdir,"/"], "");
+  filler = repmat (".", 1, 40-length(tmpnm));
+  printf("  %s %s PASS %4d/%-4d", tmpnm, filler, dp, dn);
+  nfail = dn - dp;
+  if (nfail > 0)
+    printf (" FAIL %d\n", nfail);
+  else
+    printf ("\n");
+  endif
+  ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
 endfunction
 
 function printf_assert(varargin)
@@ -111,25 +125,22 @@ try
   endif
   test("","explain",fid);
   dp=dn=0;
-  printf("\nIntegrated test scripts\n");
+  printf("\nIntegrated test scripts:\n\n");
   for i=1:length(fundirs)
-    [p,n] = runtestscript(fid,fundirs{i}," ");
+    [p,n] = runtestscript(fid,fundirs{i});
     dp+=p;
     dn+=n;
   endfor
-  printf("\nFixed test scripts\n");
+  printf("\nFixed test scripts:\n\n");
   for i=1:length(testdirs)
     [p, n] = runtestdir (fid, testdirs{i});
     dp+=p;
     dn+=n;
   endfor
-  printf("---> passes %d out of %d tests",dp,dn); 
-  if dp==dn 
-    printf("\n---> success"); 
-  endif;
-  disp("");
-  printf("see fntests.log for details");
-  disp("");
+  printf("\nSummary:\n\n  PASS %6d\n", dp);
+  nfail = dn - dp;
+  printf ("  FAIL %6d\n", nfail);
+  printf("\nSee fntests.log for details.\n");
   fclose(fid);
   page_screen_output = pso;
   warning(warn_state.state,"quiet");

@@ -477,9 +477,8 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %left ':'
 %left '-' '+' EPLUS EMINUS
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
-%left QUOTE TRANSPOSE
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
-%left POW EPOW
+%left POW EPOW QUOTE TRANSPOSE
 %left '(' '.' '{'
 
 // Where to start.

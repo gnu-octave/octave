@@ -45,7 +45,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // the help functions.
 
 void
-print_usage (const std::string& nm, bool just_usage)
+print_usage (const std::string& nm, bool just_usage,
+	     const std::string& extra_msg)
 {
   symbol_record *sym_rec = fbi_sym_tab->lookup (nm);
 
@@ -63,7 +64,7 @@ print_usage (const std::string& nm, bool just_usage)
 
 	  display_help_text (buf, h);
 
-	  buf << "\n";
+	  buf << extra_msg << "\n";
 
 	  if (! just_usage)
 	    additional_help_message (buf);

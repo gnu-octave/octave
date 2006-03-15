@@ -18,18 +18,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hex2dec (@var{s})
+## @deftypefn {Function File} {} bin2dec (@var{s})
 ## Return the decimal number corresponding to the binary number stored
 ## in the string @var{s}.  For example,
 ##
 ## @example
-## hex2dec ("1110")
+## bin2dec ("1110")
 ##      @result{} 14
 ## @end example
 ##
 ## If @var{s} is a string matrix, returns a column vector of converted
 ## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
-## @seealso{dec2hex, base2dec, dec2base, bin2dec, dec2bin}
+## @seealso{dec2hex, base2dec, dec2base, hex2dec, dec2bin}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>

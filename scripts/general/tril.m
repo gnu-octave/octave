@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} tril (@var{a}, @var{k})
 ## @deftypefnx {Function File} {} triu (@var{a}, @var{k})
-## Return a new matrix formed by extracting extract the lower (@code{tril})
+## Return a new matrix formed by extracting the lower (@code{tril})
 ## or upper (@code{triu}) triangular part of the matrix @var{a}, and
 ## setting all other elements to zero.  The second argument is optional,
 ## and specifies how many diagonals above or below the main diagonal should

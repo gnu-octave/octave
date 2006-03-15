@@ -1,3 +1,7 @@
+2006-03-15  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/residue.m: Use & instead of && to generate arg for find.
+
 2006-03-14  Keith Goodman  <kwgoodman@gmail.com>
 
 	* strings/bin2dec.m: Doc fix.

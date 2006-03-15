@@ -210,7 +210,7 @@ function [r, p, k, e] = residue (b, a, toler)
 
   ## Determine if the poles are (effectively) real.
 
-  index = (abs (p) >= toler && (abs (imag (p)) ./ abs (p) < toler));
+  index = (abs (p) >= toler & (abs (imag (p)) ./ abs (p) < toler));
   p(index) = real (p(index));
 
   ## Find the direct term if there is one.
@@ -228,7 +228,6 @@ function [r, p, k, e] = residue (b, a, toler)
     e = 1;
     return;
   endif
-
 
   ## We need to determine the number and multiplicity of the roots.
   ##

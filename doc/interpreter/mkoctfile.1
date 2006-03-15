@@ -41,15 +41,26 @@ Output file name; default extension is .oct.
 .B \-p VAR|\-\-print VAR
 Print configuration variable VAR.  Recognized variables are:
 .RS
-    CPPFLAGS    CPICFLAG
-    INCFLAGS    CXX
-    F2C         CXXFLAGS
-    F2CFLAGS    CXXPICFLAG
-    F77         XTRA_CFLAGS
-    FFLAGS      XTRA_CXXFLAGS
-    FPICFLAG    SHLEXT
-    CC          SH_LD
-    CFLAGS      SH_LDFLAGS
+    ALL_CFLAGS                FFTW_LIBS     
+    ALL_CXXFLAGS              FLIBS       
+    ALL_FFLAGS                FPICFLAG      
+    ALL_LDFLAGS               INCFLAGS      
+    BLAS_LIBS                 LDFLAGS             
+    CC                        LD_CXX              
+    CFLAGS                    LD_STATIC_FLAG
+    CPICFLAG                  LFLAGS              
+    CPPFLAGS                  LIBCRUFT      
+    CXX                       LIBOCTAVE     
+    CXXFLAGS                  LIBOCTINTERP  
+    CXXPICFLAG                LIBREADLINE   
+    DEPEND_EXTRA_SED_PATTERN  LIBS        
+    DEPEND_FLAGS              OCTAVE_LIBS   
+    DL_LD                     RDYNAMIC_FLAG 
+    DL_LDFLAGS                RLD_FLAG      
+    F2C                       SED         
+    F2CFLAGS                  XTRA_CFLAGS   
+    F77                       XTRA_CXXFLAGS 
+    FFLAGS
 .RE
 .TP 8
 .B \-s|--strip

@@ -155,24 +155,26 @@ Options:
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-                            CPPFLAGS      CPICFLAG
-                            INCFLAGS      CXX
-                            F2C           CXXFLAGS
-                            F2CFLAGS      CXXPICFLAG
-                            F77           XTRA_CFLAGS
-                            FFLAGS        XTRA_CXXFLAGS
-                            FPICFLAG      SHLEXT
-                            CC            DL_LD
-                            CFLAGS        DL_LDFLAGS
-
-                            LD_CXX        LFLAGS
-                            LDFLAGS       LD_STATIC_FLAG
-                            RLD_FLAG      RDYNAMIC_FLAG
-
-                            LIBOCTAVE     LIBCRUFT
-                            LIBOCTINTERP  OCTAVE_LIBS
-                            BLAS_LIBS     FFTW_LIBS
-                            LIBS          FLIBS
+			    ALL_CFLAGS                FFTW_LIBS     
+			    ALL_CXXFLAGS              FLIBS       
+			    ALL_FFLAGS                FPICFLAG      
+			    ALL_LDFLAGS               INCFLAGS      
+			    BLAS_LIBS                 LDFLAGS             
+			    CC                        LD_CXX              
+			    CFLAGS                    LD_STATIC_FLAG
+			    CPICFLAG                  LFLAGS              
+			    CPPFLAGS                  LIBCRUFT      
+			    CXX                       LIBOCTAVE     
+			    CXXFLAGS                  LIBOCTINTERP  
+			    CXXPICFLAG                LIBREADLINE   
+			    DEPEND_EXTRA_SED_PATTERN  LIBS        
+			    DEPEND_FLAGS              OCTAVE_LIBS   
+			    DL_LD                     RDYNAMIC_FLAG 
+			    DL_LDFLAGS                RLD_FLAG      
+			    F2C                       SED         
+			    F2CFLAGS                  XTRA_CFLAGS   
+			    F77                       XTRA_CXXFLAGS 
+			    FFLAGS
 
   --link-stand-alone      Link a stand-alone executable file.
 

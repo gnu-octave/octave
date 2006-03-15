@@ -1,3 +1,8 @@
+2006-03-15  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/doc.m: New file.
+	From Soren Hauberg <soren@hauberg.org>.
+
 2006-03-15  Keith Goodman  <kwgoodman@gmail.com>
 
 	* miscellaneous/mkoctfile.m: New file.

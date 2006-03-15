@@ -1,3 +1,12 @@
+2006-03-15  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (help_from_info): Simplify.
+	(try_info): Use feval to call doc instead of executing info program.
+	(additional_help_message): Point users to doc instead of help -i.
+	From Soren Hauberg <soren@hauberg.org>.
+
+	* toplev.cc (Fsystem): Return output if nargout > 1, not 0.
+
 2006-03-14  Keith Goodman  <kwgoodman@gmail.com>
 
 	* help.cc (Fhelp, Fwhich, Flookfor): Doc string fix.

@@ -453,7 +453,7 @@ additional_help_message (std::ostream& os)
     os << "\
 Additional help for built-in functions, operators, and variables\n\
 is available in the on-line version of the manual.  Use the command\n\
-`help -i <topic>' to search the manual index.\n\
+`doc <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\
 at http://www.octave.org and via the help@octave.org\n\
@@ -568,45 +568,18 @@ simple_help (void)
 static int
 try_info (const std::string& nm)
 {
-  int status = 0;
+  int retval = -1;
 
-  OSSTREAM cmd_buf;
+  warning ("please use `doc' instead of `help -i'");
 
-#if __MINGW32__
-  cmd_buf << Vinfo_prog << " --file \"" << Vinfo_file << "\"";
-#else
-  cmd_buf << "\"" << Vinfo_prog << "\" --file \"" << Vinfo_file << "\"";
-#endif
+  octave_value_list args;
+  args(0) = nm;
+  octave_value_list result = feval ("doc", args, 1);
 
-  std::string directory_name = Vinfo_file;
-  size_t pos = directory_name.rfind ('/');
+  if (result.length () > 0)
+    retval = result(0).int_value ();
 
-  if (pos != NPOS)
-    {
-      directory_name.resize (pos + 1);
-      cmd_buf << " --directory \"" << directory_name << "\"";
-    }
-
-  if (nm.length () > 0)
-    cmd_buf << " --index-search " << nm;
-
-  cmd_buf << OSSTREAM_ENDS;
-
-  volatile octave_interrupt_handler old_interrupt_handler
-    = octave_ignore_interrupts ();
-
-  status = system (OSSTREAM_C_STR (cmd_buf));
-
-  OSSTREAM_FREEZE (cmd_buf);
-
-  octave_set_interrupt_handler (old_interrupt_handler);
-
-  if (WIFEXITED (status))
-    status = WEXITSTATUS (status);
-  else
-    status = 127;
-
-  return status;
+  return retval;
 }
 
 static void
@@ -620,20 +593,11 @@ help_from_info (const string_vector& argv, int idx, int argc)
 	{
 	  int status = try_info (argv[i]);
 
-	  if (status)
-	    {
-	      if (status == 127)
-		{
-		  error ("help: unable to find info");
-		  error ("help: you need info 2.18 or later (texinfo 3.12)");
-		  break;
-		}
-	      else
-		{
-		  message ("help", "`%s' is not indexed in the manual",
-			   argv[i].c_str ());
-		}
-	    }
+	  if (status == 127)
+	    break;
+	  else if (status != 0)
+	    message ("help", "`%s' is not indexed in the manual",
+		     argv[i].c_str ());
 	}
     }
 }
@@ -929,7 +893,7 @@ GNU Info browser at this node in the on-line version of the manual.\n\
 \n\
 Once the GNU Info browser is running, help for using it is available\n\
 using the command @kbd{C-h}.\n\
-@seealso{which, lookfor}\n\
+@seealso{doc, which, lookfor}\n\
 @end deffn")
 {
   octave_value_list retval;

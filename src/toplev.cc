@@ -438,7 +438,7 @@ variable @code{status} to the integer @samp{2}.\n\
 
   if (nargin > 0 && nargin < 4)
     {
-      bool return_output = (nargout > 0 || nargin > 1);
+      bool return_output = (nargout > 1 || nargin > 1);
 
       std::string cmd_str = args(0).string_value ();
 

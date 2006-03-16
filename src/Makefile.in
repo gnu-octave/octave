@@ -52,7 +52,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc ccolamd.cc \
 	pinv.cc qr.cc quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc \
 	sparse.cc spchol.cc spdet.cc spkron.cc splu.cc spparms.cc \
 	spqr.cc sqrtm.cc svd.cc syl.cc time.cc \
-	__gnuplot_raw__.l __glpk__.cc __qp__.cc
+	__glpk__.cc __qp__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
@@ -173,7 +173,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strcasecmp.c \
 	strncase.c strfns.cc symtab.cc syscalls.cc sysdep.cc \
 	token.cc toplev.cc unwind-prot.cc utils.cc variables.cc \
-	xdiv.cc xpow.cc \
+	xdiv.cc xpow.cc __gnuplot_raw__.l \
 	$(OV_SRC) \
 	$(PT_SRC)
 
@@ -532,7 +532,7 @@ parse.cc : parse.y
 lex.cc : lex.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
-__gnuplot_raw__.cc : DLD-FUNCTIONS/__gnuplot_raw__.l
+__gnuplot_raw__.cc : __gnuplot_raw__.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
 ## We want to force an update of defaults.h and oct-conf.h every

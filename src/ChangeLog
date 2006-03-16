@@ -1,5 +1,11 @@
 2006-03-16  John W. Eaton  <jwe@octave.org>
 
+	* __gnuplot_raw__.l: Move here from DLD-FUNCTIONS/__gnuplot_raw__.l.
+	* Makefile.in (DLD_XSRC): Delete __gnuplot_raw__.l from the list.
+	(DIST_SRC): Include __gnuplot_raw__.l in the list.
+	(__gnuplot_raw__.cc): Depend on __gnuplot_raw__.l, not
+	DLD-FUNCTIONS/__gnuplot_raw__.l
+
 	* ls-oct-ascii.h (extract_keyword): Use std::string compare method
 	instead of strncmp.
 	* ls-oct-ascii.cc (extract_keyword): Likewise. 

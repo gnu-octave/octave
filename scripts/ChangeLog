@@ -1,3 +1,7 @@
+2006-03-16  John W. Eaton  <jwe@octave.org>
+
+	* general/rows.m, general/columns.m: Delete.
+
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* strings/strcmpi.m: Simplify.

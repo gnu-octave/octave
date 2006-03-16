@@ -1112,6 +1112,40 @@ but in general they will give the same result.\n\
   return retval;
 }
 
+DEFUN (rows, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} rows (@var{a})\n\
+Return the number of rows of @var{a}.\n\
+@seealso{size, columns, length, isscalar, isvector, ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).rows ();
+  else
+    print_usage ("rows");
+
+  return retval;
+}
+
+DEFUN (columns, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} columns (@var{a})\n\
+Return the number of columns of @var{a}.\n\
+@seealso{size, rows, length, isscalar, isvector, and ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).columns ();
+  else
+    print_usage ("columns");
+
+  return retval;
+}
+
 DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\

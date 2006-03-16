@@ -1,5 +1,7 @@
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
+	* src/data.cc (Frows, Fcolumns): New functions.
+
 	* DLD-FUNCTIONS/time.cc (Fstrptime, Fstrftime): Fix docstring.
 
 	* strfns.cc (Fstrcmp): Fixed docstring.

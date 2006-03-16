@@ -63,14 +63,14 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
     if(!isempty(pol)) cpol = pol(iip);
     else              cpol = [];                endif
   endif
-
-  if(max(size(iip)) + max(size(iiz)) )
-    wmin = floor(log10(min(abs([cpol,czer]))));
-    wmax = ceil(log10(max(abs([cpol,czer]))));
-  else
+  
+  if (isempty (iip) && isempty (iiz))
     ## no poles/zeros away from omega = 0; pick defaults
     wmin = -1;
     wmax = 3;
+  else
+    wmin = floor(log10(min(abs([cpol,czer]))));
+    wmax = ceil(log10(max(abs([cpol,czer]))));
   endif
 
   ## expand to show the entirety of the "interesting" portion of the plot

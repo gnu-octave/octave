@@ -1,3 +1,7 @@
+2006-03-16  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+
+	* strings/strfind.m: New file.
+
 2006-03-16  John W. Eaton  <jwe@octave.org>
 
 	* general/rows.m, general/columns.m: Delete.
@@ -6,7 +10,7 @@
 
 	* strings/strcmpi.m: Simplify.
 	* strings/strncmpi.m: Import from octave-forge, simplify.
-	* strings/strtrunc.m: New function.
+	* strings/strtrunc.m: New file.
 
 	* strings/lower.m, strings/upper.m: Handle cellstr arguments.
 

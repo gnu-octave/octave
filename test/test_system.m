@@ -468,6 +468,7 @@
 %% test/octave.test/system/getpwent-1.m
 %!test
 %! s = getpwent ();
+%! endpwent (); 
 %! assert((isstruct (s)
 %! && struct_contains (s, "name")
 %! && struct_contains (s, "passwd")
@@ -484,7 +485,7 @@
 %!test
 %! x = getpwent ();
 %! y = getpwuid (x.uid);
-%! 
+%! endpwent (); 
 %! assert(strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/getpwuid-2.m
@@ -497,7 +498,7 @@
 %!test
 %! x = getpwent ();
 %! y = getpwnam (x.name);
-%! 
+%! endpwent (); 
 %! assert(strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/getpwnam-2.m
@@ -511,7 +512,7 @@
 %! x = getpwent ();
 %! setpwent ();
 %! y = getpwent ();
-%! 
+%! endpwent (); 
 %! assert(strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/setpwent-2.m
@@ -523,6 +524,7 @@
 %% test/octave.test/system/getgrent-1.m
 %!test
 %! x = getgrent ();
+%! endgrent ();
 %! assert((isstruct (x)
 %! && struct_contains (x, "name")
 %! && struct_contains (x, "passwd")
@@ -536,7 +538,7 @@
 %!test
 %! x = getgrent ();
 %! y = getgrgid (x.gid);
-%! 
+%! endgrent ();
 %! assert(strcmp (x.name, y.name) && x.gid == y.gid);
 
 %% test/octave.test/system/getgrgid-2.m
@@ -549,7 +551,7 @@
 %!test
 %! x = getgrent ();
 %! y = getgrnam (x.name);
-%! 
+%! endgrent ();
 %! assert(strcmp (x.name, y.name) && x.gid == y.gid);
 
 %% test/octave.test/system/getgrnam-2.m
@@ -563,7 +565,7 @@
 %! x = getgrent ();
 %! setgrent ();
 %! y = getgrent ();
-%! 
+%! endgrent ();
 %! assert(strcmp (x.name, y.name) && x.gid == y.gid);
 
 %% test/octave.test/system/setgrent-2.m

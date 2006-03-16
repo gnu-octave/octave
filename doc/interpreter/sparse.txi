@@ -745,16 +745,23 @@ divided by the number of non-zero values in the matrix. The banded matrix
 solvers can be entirely disabled by using @dfn{spparms} to set @code{bandden}
 to 1 (i.e. @code{spparms ("bandden", 1)}).
 
-All of the solvers above, expect the banded solvers, calculate an
-estimate of the condition number. This can be used to detect numerical
-stability problems in the solution and force a minimum norm solution
-to be used. However, for narrow banded matrices, the cost of
-calculating the condition number is significant, and can in fact exceed
-the cost of factoring the matrix. Therefore the condition number is
-not calculated for banded matrices, and therefore unless the factorization
-is exactly singular, these numerical instabilities won't be detected.
-In cases where, this might be a problem the user is recommended to disable
-the banded solvers as above, at a significant cost in terms of speed.
+The QR solver factorizes the problem with a Dulmage-Mendhelsohn, to
+seperate the problem into blocks that can be treated as over-determined,
+multiple well determined blocks, and a final over-determined block. For
+matrices with blocks of strongly connectted nodes this is a big win as
+LU decomposition can be used for many blocks. It also significantly
+improves the chance of finding a solution to over-determined problems
+rather than just returning a vector of @dfn{NaN}'s.
+
+All of the solvers above, can calculate an estimate of the condition
+number. This can be used to detect numerical stability problems in the
+solution and force a minimum norm solution to be used. However, for
+narrow banded, triangular or diagonal matrices, the cost of
+calculating the condition number is significant, and can in fact
+exceed the cost of factoring the matrix. Therefore the condition
+number is not calculated in these case, and octave relies on simplier
+techniques to detect sinular matrices or the underlying LAPACK code in
+the case of banded matrices.
 
 The user can force the type of the matrix with the @code{matrix_type}
 function. This overcomes the cost of discovering the type of the matrix.

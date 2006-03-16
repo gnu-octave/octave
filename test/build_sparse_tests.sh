@@ -935,7 +935,7 @@ cat >>$TESTS <<EOF
 %!test
 %! ds = alpha * spdiags([1:11]',0,10,11);
 %! df = full(ds);
-%! xf = beta * ones(10,1);
+%! xf = beta * ones(10,2);
 %! xs = speye(10,10);
 %!assert(ds\xf,df\xf,100*eps)
 %!assert(ds\xs,sparse(df\xs,true),100*eps)
@@ -947,7 +947,7 @@ cat >>$TESTS <<EOF
 %!test
 %! ds = alpha * spdiags([1:11]',0,11,10);
 %! df = full(ds);
-%! xf = beta * ones(11,1);
+%! xf = beta * ones(11,2);
 %! xs = speye(11,11);
 %!assert(ds\xf,df\xf,100*eps)
 %!assert(ds\xs,sparse(df\xs,true),100*eps)
@@ -971,18 +971,21 @@ cat >>$TESTS <<EOF
 %! assert(us\xf,r\c,100*eps)
 %!test
 %! [c,r] = spqr (us, xs);
+%! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(us\xs,r\c,100*eps)
 %!test
 %! pus = us(:,[1:8,10,9]);
 %!test
 %! [c,r] = spqr (pus, xf);
+%! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xf,r\c,100*eps)
 %!test
 %! [c,r] = spqr (pus, xs);
+%! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xs,r\c,100*eps)
 %!test
 %! ls = alpha*[speye(9,11);[1,sparse(1,8),1,0]];
-%! xf = beta * ones(10,1);
+%! xf = beta * ones(10,2);
 %! xs = speye(10,10);
 %!assert(ls*(ls\xf),xf,100*eps)
 %!assert(ls*(ls\xs),xs,100*eps)
@@ -992,21 +995,24 @@ cat >>$TESTS <<EOF
 %!assert(pls*(pls\xs),xs,100*eps)
 %!test
 %! ls = alpha*[speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]];
-%! xf = beta * ones(12,1);
+%! xf = beta * ones(12,2);
 %! xs = speye(12,12);
 %!test
 %! [c,r] = spqr (ls, xf);
 %! assert(ls\xf,r\c,100*eps)
 %!test
 %! [c,r] = spqr (ls, xs);
+%! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(ls\xs,r\c,100*eps)
 %!test
 %! pls = ls(:,[1:8,10,9]);
 %!test
 %! [c,r] = spqr (pls, xf);
+%! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xf,r\c,100*eps)
 %!test
 %! [c,r] = spqr (pls, xs);
+%! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xs,r\c,100*eps)
 
 EOF

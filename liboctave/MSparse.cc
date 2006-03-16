@@ -52,7 +52,7 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
       gripe_nonconformant ("operator +=" , a_nr, a_nc, b_nr, b_nc);
     else
       {
-        r = MSparse<T> (a_nr, a_nc, (a.nzmax () + b.nzmax ()));
+        r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
        
         octave_idx_type jx = 0;
         for (octave_idx_type i = 0 ; i < a_nc ; i++)
@@ -125,7 +125,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
       gripe_nonconformant ("operator -=" , a_nr, a_nc, b_nr, b_nc);
     else
       {
-        r = MSparse<T> (a_nr, a_nc, (a.nzmax () + b.nzmax ()));
+        r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
        
         octave_idx_type jx = 0;
         for (octave_idx_type i = 0 ; i < a_nc ; i++)
@@ -207,7 +207,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
   { \
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
-    octave_idx_type nz = a.nzmax (); \
+    octave_idx_type nz = a.nnz (); \
  \
     MSparse<T> r (nr, nc, nz); \
  \
@@ -253,7 +253,7 @@ SPARSE_A2S_OP_2 (/)
   { \
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
-    octave_idx_type nz = a.nzmax (); \
+    octave_idx_type nz = a.nnz (); \
  \
     MSparse<T> r (nr, nc, nz); \
  \
@@ -292,7 +292,7 @@ SPARSE_SA2_OP_2 (/)
       gripe_nonconformant ("operator " # OP, a_nr, a_nc, b_nr, b_nc); \
     else \
       { \
-        r = MSparse<T> (a_nr, a_nc, (a.nzmax () + b.nzmax ())); \
+        r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ())); \
         \
         octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \
@@ -367,7 +367,7 @@ SPARSE_SA2_OP_2 (/)
       gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
     else \
       { \
-        r = MSparse<T> (a_nr, a_nc, (a.nzmax () > b.nzmax () ? a.nzmax () : b.nzmax ())); \
+        r = MSparse<T> (a_nr, a_nc, (a.nnz () > b.nnz () ? a.nnz () : b.nnz ())); \
         \
         octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \
@@ -494,7 +494,7 @@ MSparse<T>
 operator - (const MSparse<T>& a)
 {
   MSparse<T> retval (a);
-  octave_idx_type nz = a.nzmax ();
+  octave_idx_type nz = a.nnz ();
   for (octave_idx_type i = 0; i < nz; i++)
     retval.data(i) = - retval.data(i);
   return retval;

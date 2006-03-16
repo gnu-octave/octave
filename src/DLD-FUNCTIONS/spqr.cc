@@ -114,6 +114,8 @@ as\n\
 		    {
 		      retval(1) = q.R (economy);
 		      retval(0) = q.C (args(1).complex_matrix_value ());
+		      if (args(0).rows() < args(0).columns())
+			warning ("spqr: non minimum norm solution for under-determined problem");
 		    }
 		  else
 		    retval(0) = q.R (economy);
@@ -128,6 +130,8 @@ as\n\
 		    {
 		      retval(1) = q.R (economy);
 		      retval(0) = q.C (args(1).matrix_value ());
+		      if (args(0).rows() < args(0).columns())
+			warning ("spqr: non minimum norm solution for under-determined problem");
 		    }
 		  else
 		    retval(0) = q.R (economy);

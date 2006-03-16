@@ -1,3 +1,9 @@
+2006-03-16  David Bateman  <dbateman@free.fr>
+
+	* interpreter/images/sparseimages.m: set terminal type to dummy to
+	direct output to terminal rather than X11.
+	* interpreter/sparse.txi: Update docs for new QR solvers.
+	
 2006-03-09  David Bateman  <dbateman@free.fr>
 
 	* interpreter/Makefile.in: Change order of commands in HTML/index.html

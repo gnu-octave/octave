@@ -607,6 +607,9 @@ endfunction
 
 %!error test("test", 'bogus');           # test without pattern
 
+%!test
+%! lastwarn();            # clear last warning just in case
+
 %!warning <warning message> warning('warning message')
 
 %!## test of shared variables

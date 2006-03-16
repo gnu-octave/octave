@@ -1,3 +1,53 @@
+2006-03-16  David Bateman  <dbateman@free.fr>
+
+	* CSparse.cc: Change use of nzmax to nnz to allow automatic
+	reduction of matrix size, except for a couple of cases where nzmax
+	is needed.
+	(zpbcon): Correct declaration of lapack zpbcon function.
+	(dsolve, utsolve, ltsolve, trisolve, bsolve, factorize, fsolve): Add
+	an argument to allow the calculation of condition number to be
+	optional.
+	(bsolve): Add code for the calculation of the condition number
+	using zpbcon and zgbcon.
+	(dsolve): Bug fix for rectangular matrices with sparse RHS.
+	(utsolve, ltsolve, trisolve, bsolve, fsolve): Mark matrix type as
+	singular if singularity is detected.
+	(solve): Use optional argument to disable calculation of
+	condition number for all but fsolve, for speed. Add code to 
+	allow rectnagular matrices or matrices identified as singular
+	to be treated.
+	(lssolve): delete.
+	(operator *): Don't recast real matrices as complex, but
+	rather use the macro directly on the real data.
+	* dSparse.cc: ditto.
+	* CSparse.h (dsolve, utsolve, ltsolve, trisolve, bsolve,
+	fsolve, factorize): Update declaration for new argument to
+	calculate the condition number.
+	(lssolve): delete.
+	* dSparse.h: ditto.
+	* Msparse.h: Change use of nxmax to nnz to allow automatic
+	reduction of matrix size, except for a couple of cases where
+	nzmax is needed.
+	* Sparse.cc: Change use of nxmax to nnz to allow automatic
+	reduction of matrix size, except for a couple of cases where
+	nzmax is needed.
+	(Sparse<T>::index (idx_vector&, idx_vector&, int) const):
+	Special case strict permutations for speed.
+	* Sparse-op-defs.h: Change use of nxmax to nnz to allow automatic
+	reduction of matrix size, except for a couple of cases where
+	nzmax is needed.
+	(SPARSE_SPARSE_MUL, SPARSE_FULL_MUL, FULL_SPARSE_MUL): Update
+	macros to allow mixed complex/real arguments.
+	* SparseCmplxQR.cc (OCTAVE_C99_ZERO): New macro for C99 zero
+        value.
+	(qrsolve): Use it to zero temporary buffers used bt CXSPARSE.
+	* SparseType.cc (SparseType::SparseType ()): Correct detection
+	of permutated triangular matrices to avoid seg-faults. Disable
+	detection of underdetermined lower and over-determined upper
+	matrix due to problems with non minimum norm solutions.
+	* sparse-dmsolve.cc: New file for Dulmage-Mendelsohn solver.
+	* Makefile.in: add sparse-dmsolve.cc to targets.
+
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* oct-time.cc (octave_strptime::init): Return useful character count.

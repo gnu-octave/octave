@@ -118,8 +118,13 @@ matrix type.\n\
 
 		  if (mattyp.is_unknown ())
 		    {
-		      mattyp = SparseType (args(0).sparse_complex_matrix_value ());
-		      ((octave_sparse_complex_matrix &)rep).sparse_type (mattyp);
+		      SparseComplexMatrix m = 
+			args(0).sparse_complex_matrix_value ();
+		      if (!error_state)
+			{
+			  mattyp = SparseType (m);
+			    ((octave_sparse_complex_matrix &)rep).sparse_type (mattyp);
+			}
 		    }
 		}
 	      else
@@ -128,8 +133,12 @@ matrix type.\n\
 
 		  if (mattyp.is_unknown ())
 		    {
-		      mattyp = SparseType (args(0).sparse_matrix_value ());
-		      ((octave_sparse_matrix &)rep).sparse_type (mattyp);
+		      SparseMatrix m = args(0).sparse_matrix_value ();
+		      if (!error_state)
+			{
+			  mattyp = SparseType (m);
+			  ((octave_sparse_matrix &)rep).sparse_type (mattyp);
+			}
 		    }
 		}
 
@@ -291,6 +300,11 @@ matrix type.\n\
 }
 
 /*
+
+## XXX FIXME XXX
+## Disable tests for lower under-determined and upper over-determined 
+## matrices and this detection is disabled in SparseType due to issues
+## of non minimum norm solution being found.
  
 %!assert(matrix_type(speye(10,10)),"Diagonal");
 %!assert(matrix_type(speye(10,10)([2:10,1],:)),"Permuted Diagonal");
@@ -320,12 +334,12 @@ matrix type.\n\
 %!assert(matrix_type(speye(10,11)([2:10,1],:)),"Permuted Diagonal");
 %!assert(matrix_type(speye(11,10)),"Diagonal");
 %!assert(matrix_type(speye(11,10)([2:11,1],:)),"Permuted Diagonal");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]]),"Upper");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]](:,[2,1,3:12])),"Permuted Upper");
+%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]]),"Upper");
+%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]](:,[2,1,3:12])),"Permuted Upper");
 %!assert(matrix_type([speye(11,9),[1;sparse(8,1);1;0]]),"Upper");
 %!assert(matrix_type([speye(11,9),[1;sparse(8,1);1;0]](:,[2,1,3:10])),"Permuted Upper");
-%!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]),"Lower");
-%!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]([2,1,3:12],:)),"Permuted Lower");
+%#!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]),"Lower");
+%#!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]([2,1,3:12],:)),"Permuted Lower");
 %!assert(matrix_type([speye(9,11);[1,sparse(1,8),1,0]]),"Lower");
 %!assert(matrix_type([speye(9,11);[1,sparse(1,8),1,0]]([2,1,3:10],:)),"Permuted Lower");
 %!assert(matrix_type(spdiags(randn(10,4),[-2:1],10,9)),"Rectangular")
@@ -358,12 +372,12 @@ matrix type.\n\
 %!assert(matrix_type(1i*speye(10,11)([2:10,1],:)),"Permuted Diagonal");
 %!assert(matrix_type(1i*speye(11,10)),"Diagonal");
 %!assert(matrix_type(1i*speye(11,10)([2:11,1],:)),"Permuted Diagonal");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]),"Upper");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])),"Permuted Upper");
+%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]),"Upper");
+%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])),"Permuted Upper");
 %!assert(matrix_type([speye(11,9),[1i;sparse(8,1);1i;0]]),"Upper");
 %!assert(matrix_type([speye(11,9),[1i;sparse(8,1);1i;0]](:,[2,1,3:10])),"Permuted Upper");
-%!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]),"Lower");
-%!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)),"Permuted Lower");
+%#!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]),"Lower");
+%#!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)),"Permuted Lower");
 %!assert(matrix_type([speye(9,11);[1i,sparse(1,8),1i,0]]),"Lower");
 %!assert(matrix_type([speye(9,11);[1i,sparse(1,8),1i,0]]([2,1,3:10],:)),"Permuted Lower");
 %!assert(matrix_type(1i*spdiags(randn(10,4),[-2:1],10,9)),"Rectangular")

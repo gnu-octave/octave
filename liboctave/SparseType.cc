@@ -192,7 +192,10 @@ SparseType::SparseType (const SparseMatrix &a)
 	  bool found = false;
 
 	  nperm = ncols;
-	  perm = new octave_idx_type [nperm];
+	  perm = new octave_idx_type [ncols];
+
+	  for (octave_idx_type i = 0; i < ncols; i++)
+	    perm [i] = -1;
 
 	  for (octave_idx_type i = 0; i < nm; i++)
 	    {
@@ -200,9 +203,8 @@ SparseType::SparseType (const SparseMatrix &a)
 
 	      for (octave_idx_type j = 0; j < ncols; j++)
 		{
-
 		  if ((a.cidx(j+1) - a.cidx(j)) > 0 && 
-		      a.ridx(a.cidx(j+1)-1) == i)
+		      (a.ridx(a.cidx(j+1)-1) == i))
 		    {
 		      perm [i] = j;
 		      found = true;
@@ -215,15 +217,24 @@ SparseType::SparseType (const SparseMatrix &a)
 	    }
 
 	  if (found)
-	    typ = SparseType::Permuted_Upper;
-	  else
 	    {
-	      delete [] perm;
+	      typ = SparseType::Permuted_Upper;
+	      if (ncols > nrows)
+		{
+		  octave_idx_type k = nrows;
+		  for (octave_idx_type i = 0; i < ncols; i++)
+		    if (perm [i] == -1)
+		      perm[i] = k++;
+		}
+	    }
+	  else if (a.cidx(nm) == a.cidx(ncols))
+	    {
 	      nperm = nrows;
-	      perm = new octave_idx_type [nperm];
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nperm);
+	      delete [] perm;
+	      perm = new octave_idx_type [nrows];
+	      OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nrows);
 
-	      for (octave_idx_type i = 0; i < nperm; i++)
+	      for (octave_idx_type i = 0; i < nrows; i++)
 		{
 		  perm [i] = -1;
 		  tmp [i] = -1;
@@ -231,10 +242,10 @@ SparseType::SparseType (const SparseMatrix &a)
 
 	      for (octave_idx_type j = 0; j < ncols; j++)
 		for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
-		  perm [a.ridx(i)] = j;
-  
+		    perm [a.ridx(i)] = j;
+
 	      found = true;
-	      for (octave_idx_type i = 0; i < nperm; i++)
+	      for (octave_idx_type i = 0; i < nm; i++)
 		if (perm[i] == -1)
 		  {
 		    found = false;
@@ -246,12 +257,24 @@ SparseType::SparseType (const SparseMatrix &a)
 		  }
 
 	      if (found)
-		for (octave_idx_type i = 0; i < nm; i++)
-		  if (tmp[i] == -1)
+		{
+		  octave_idx_type k = ncols;
+		  for (octave_idx_type i = 0; i < nrows; i++)
 		    {
-		      found = false;
-		      break;
+		      if (tmp[i] == -1)
+			{
+			  if (k < nrows)
+			    {
+			      perm[k++] = i;
+			    }
+			  else
+			    {
+			      found = false;
+			      break;
+			    }
+			}
 		    }
+		}
 
 	      if (found)
 		typ = SparseType::Permuted_Lower;
@@ -261,6 +284,27 @@ SparseType::SparseType (const SparseMatrix &a)
 		  nperm = 0;
 		}
 	    }
+	  else
+	    {
+	      delete [] perm;
+	      nperm = 0;
+	    }
+	}
+
+      // XXX FIXME XXX
+      // Disable lower under-determined and upper over-determined problems
+      // as being detected, and force to treat as singular. As this seems
+      // to cause issues
+      if (((typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+	   && nrows > ncols) ||
+	  ((typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+	   && nrows < ncols))
+	{
+	  typ = SparseType::Rectangular;
+	  if (typ == SparseType::Permuted_Upper ||
+	      typ == SparseType::Permuted_Lower)
+	    delete [] perm;
+	  nperm = 0;
 	}
 
       if (typ == SparseType::Full && ncols != nrows)
@@ -473,7 +517,10 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	  bool found = false;
 
 	  nperm = ncols;
-	  perm = new octave_idx_type [nperm];
+	  perm = new octave_idx_type [ncols];
+
+	  for (octave_idx_type i = 0; i < ncols; i++)
+	    perm [i] = -1;
 
 	  for (octave_idx_type i = 0; i < nm; i++)
 	    {
@@ -481,9 +528,8 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 
 	      for (octave_idx_type j = 0; j < ncols; j++)
 		{
-
 		  if ((a.cidx(j+1) - a.cidx(j)) > 0 && 
-		      a.ridx(a.cidx(j+1)-1) == i)
+		      (a.ridx(a.cidx(j+1)-1) == i))
 		    {
 		      perm [i] = j;
 		      found = true;
@@ -496,15 +542,24 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	    }
 
 	  if (found)
-	    typ = SparseType::Permuted_Upper;
-	  else
 	    {
-	      delete [] perm;
+	      typ = SparseType::Permuted_Upper;
+	      if (ncols > nrows)
+		{
+		  octave_idx_type k = nrows;
+		  for (octave_idx_type i = 0; i < ncols; i++)
+		    if (perm [i] == -1)
+		      perm[i] = k++;
+		}
+	    }
+	  else if (a.cidx(nm) == a.cidx(ncols))
+	    {
 	      nperm = nrows;
-	      perm = new octave_idx_type [nperm];
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nperm);
+	      delete [] perm;
+	      perm = new octave_idx_type [nrows];
+	      OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nrows);
 
-	      for (octave_idx_type i = 0; i < nperm; i++)
+	      for (octave_idx_type i = 0; i < nrows; i++)
 		{
 		  perm [i] = -1;
 		  tmp [i] = -1;
@@ -512,10 +567,10 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 
 	      for (octave_idx_type j = 0; j < ncols; j++)
 		for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
-		  perm [a.ridx(i)] = j;
-  
+		    perm [a.ridx(i)] = j;
+
 	      found = true;
-	      for (octave_idx_type i = 0; i < nperm; i++)
+	      for (octave_idx_type i = 0; i < nm; i++)
 		if (perm[i] == -1)
 		  {
 		    found = false;
@@ -527,12 +582,24 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 		  }
 
 	      if (found)
-		for (octave_idx_type i = 0; i < nm; i++)
-		  if (tmp[i] == -1)
+		{
+		  octave_idx_type k = ncols;
+		  for (octave_idx_type i = 0; i < nrows; i++)
 		    {
-		      found = false;
-		      break;
+		      if (tmp[i] == -1)
+			{
+			  if (k < nrows)
+			    {
+			      perm[k++] = i;
+			    }
+			  else
+			    {
+			      found = false;
+			      break;
+			    }
+			}
 		    }
+		}
 
 	      if (found)
 		typ = SparseType::Permuted_Lower;
@@ -542,6 +609,27 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 		  nperm = 0;
 		}
 	    }
+	  else
+	    {
+	      delete [] perm;
+	      nperm = 0;
+	    }
+	}
+
+      // XXX FIXME XXX
+      // Disable lower under-determined and upper over-determined problems
+      // as being detected, and force to treat as singular. As this seems
+      // to cause issues
+      if (((typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+	   && nrows > ncols) ||
+	  ((typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+	   && nrows < ncols))
+	{
+	  typ = SparseType::Rectangular;
+	  if (typ == SparseType::Permuted_Upper ||
+	      typ == SparseType::Permuted_Lower)
+	    delete [] perm;
+	  nperm = 0;
 	}
 
       if (typ == SparseType::Full && ncols != nrows)

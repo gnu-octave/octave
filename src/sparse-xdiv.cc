@@ -36,12 +36,6 @@ Boston, MA 02110-1301, USA.
 #include "oct-spparms.h"
 #include "sparse-xdiv.h"
 
-static inline bool
-result_ok (octave_idx_type info)
-{
-  return (info != -2 && info != -1);
-}
-
 static void
 solve_singularity_warning (double rcond)
 {
@@ -132,24 +126,11 @@ xdiv (const Matrix& a, const SparseMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  Matrix result = btmp.solve (btyp, atmp, info, rcond, 
+			      solve_singularity_warning);
 
-      Matrix result = btmp.solve (btyp, atmp, info, rcond, 
-				  solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return Matrix (result.transpose ());
-	}
-    }
-
-  octave_idx_type rank;
-  Matrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.transpose ();
 }
 
@@ -165,24 +146,11 @@ xdiv (const Matrix& a, const SparseComplexMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  ComplexMatrix result
+    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
 
-      ComplexMatrix result
-	= btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return result.hermitian ();
-	}
-    }
-
-  octave_idx_type rank;
-  ComplexMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.hermitian ();
 }
 
@@ -198,24 +166,11 @@ xdiv (const ComplexMatrix& a, const SparseMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  ComplexMatrix result
+    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
 
-      ComplexMatrix result
-	= btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return result.hermitian ();
-	}
-    }
-
-  octave_idx_type rank;
-  ComplexMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.hermitian ();
 }
 
@@ -231,24 +186,11 @@ xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  ComplexMatrix result
+    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
 
-      ComplexMatrix result
-	= btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return result.hermitian ();
-	}
-    }
-
-  octave_idx_type rank;
-  ComplexMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.hermitian ();
 }
 
@@ -264,24 +206,11 @@ xdiv (const SparseMatrix& a, const SparseMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  SparseMatrix result = btmp.solve (btyp, atmp, info, rcond, 
+				    solve_singularity_warning);
 
-      SparseMatrix result = btmp.solve (btyp, atmp, info, rcond, 
-					solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return SparseMatrix (result.transpose ());
-	}
-    }
-
-  octave_idx_type rank;
-  SparseMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.transpose ();
 }
 
@@ -297,24 +226,11 @@ xdiv (const SparseMatrix& a, const SparseComplexMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  SparseComplexMatrix result
+    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
 
-      SparseComplexMatrix result
-	= btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return result.hermitian ();
-	}
-    }
-
-  octave_idx_type rank;
-  SparseComplexMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.hermitian ();
 }
 
@@ -330,24 +246,11 @@ xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, SparseType &typ)
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  SparseComplexMatrix result
+    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
 
-      SparseComplexMatrix result
-	= btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return result.hermitian ();
-	}
-    }
-
-  octave_idx_type rank;
-  SparseComplexMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.hermitian ();
 }
 
@@ -363,24 +266,11 @@ xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, SparseType &ty
   SparseType btyp = typ.transpose ();
 
   octave_idx_type info;
-  if (btmp.rows () == btmp.columns ())
-    {
-      double rcond = 0.0;
+  double rcond = 0.0;
+  SparseComplexMatrix result
+    = btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
 
-      SparseComplexMatrix result
-	= btmp.solve (btyp, atmp, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	{
-	  typ = btyp.transpose ();
-	  return result.hermitian ();
-	}
-    }
-
-  octave_idx_type rank;
-  SparseComplexMatrix result = btmp.lssolve (atmp, info, rank);
   typ = btyp.transpose ();
-
   return result.hermitian ();
 }
 
@@ -493,19 +383,8 @@ xleftdiv (const SparseMatrix& a, const Matrix& b, SparseType &typ)
     return Matrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      Matrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 2 -*-
@@ -516,19 +395,8 @@ xleftdiv (const SparseMatrix& a, const ComplexMatrix& b, SparseType &typ)
     return ComplexMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      ComplexMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 3 -*-
@@ -539,19 +407,8 @@ xleftdiv (const SparseMatrix& a, const SparseMatrix& b, SparseType &typ)
     return SparseMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      SparseMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 4 -*-
@@ -562,19 +419,8 @@ xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b, SparseType &typ)
     return SparseComplexMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      SparseComplexMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 5 -*-
@@ -585,19 +431,8 @@ xleftdiv (const SparseComplexMatrix& a, const Matrix& b, SparseType &typ)
     return ComplexMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      ComplexMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 6 -*-
@@ -608,19 +443,8 @@ xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b, SparseType &typ)
     return ComplexMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      ComplexMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 7 -*-
@@ -631,19 +455,8 @@ xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, SparseType &typ)
     return SparseComplexMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      SparseComplexMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 // -*- 8 -*-
@@ -655,19 +468,8 @@ xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
     return SparseComplexMatrix ();
 
   octave_idx_type info;
-  if (a.rows () == a.columns ())
-    {
-      double rcond = 0.0;
-
-      SparseComplexMatrix result
-	= a.solve (typ, b, info, rcond, solve_singularity_warning);
-
-      if (result_ok (info))
-	return result;
-    }
-
-  octave_idx_type rank;
-  return a.lssolve (b, info, rank);
+  double rcond = 0.0;
+  return a.solve (typ, b, info, rcond, solve_singularity_warning);
 }
 
 /*

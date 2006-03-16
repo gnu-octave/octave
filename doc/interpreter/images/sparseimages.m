@@ -1,4 +1,13 @@
 function sparseimages(dirc,typ)
+  ## XXX FIXME XXX 
+  ## How do we set terminal and direct the output to /dev/null without
+  ## gnuplot? Note that due to replot in print.m, the redirection to
+  ## /dev/null effectively doesn't work at the moment.
+  __gnuplot_set__ term dumb
+  [status, dummy] = fileattrib("/dev/null");
+  if (status)
+    __gnuplot_set__ output '/dev/null'
+  endif
   plot(1) # FIXME bypass 2.9.4 bug!!
   if (strcmp(typ,"txt"))
     txtimages(15,dirc,typ);

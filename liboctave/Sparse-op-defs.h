@@ -63,7 +63,7 @@ Boston, MA 02110-1301, USA.
   { \
     octave_idx_type nr = m.rows (); \
     octave_idx_type nc = m.cols (); \
-    octave_idx_type nz = m.nzmax (); \
+    octave_idx_type nz = m.nnz (); \
  \
     R r (nr, nc, nz); \
  \
@@ -103,7 +103,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nzmax (); \
+    octave_idx_type nz = m.nnz (); \
     if (MC (MZ) OP SC (s))   \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -178,7 +178,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nzmax (); \
+    octave_idx_type nz = m.nnz (); \
     if (LHS_ZERO OP (s != RHS_ZERO)) \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -273,7 +273,7 @@ Boston, MA 02110-1301, USA.
   { \
     octave_idx_type nr = m.rows (); \
     octave_idx_type nc = m.cols (); \
-    octave_idx_type nz = m.nzmax (); \
+    octave_idx_type nz = m.nnz (); \
  \
     R r (nr, nc, nz); \
  \
@@ -313,7 +313,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nzmax (); \
+    octave_idx_type nz = m.nnz (); \
     if (SC (s) OP MC (MZ))   \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -388,7 +388,7 @@ Boston, MA 02110-1301, USA.
   { \
     /* Count num of non-zero elements */ \
     octave_idx_type nel = 0; \
-    octave_idx_type nz = m.nzmax (); \
+    octave_idx_type nz = m.nnz (); \
     if ((s != LHS_ZERO) OP  RHS_ZERO) \
       nel += m.numel() - nz; \
     for (octave_idx_type i = 0; i < nz; i++) \
@@ -477,7 +477,7 @@ Boston, MA 02110-1301, USA.
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
-	r = R (m1_nr, m1_nc, (m1.nzmax () + m2.nzmax ())); \
+	r = R (m1_nr, m1_nc, (m1.nnz () + m2.nnz ())); \
         \
         octave_idx_type jx = 0; \
         r.cidx (0) = 0; \
@@ -551,7 +551,7 @@ Boston, MA 02110-1301, USA.
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
-        r = R (m1_nr, m1_nc, (m1.nzmax () > m2.nzmax () ? m1.nzmax () : m2.nzmax ())); \
+        r = R (m1_nr, m1_nc, (m1.nnz () > m2.nnz () ? m1.nnz () : m2.nnz ())); \
         \
         octave_idx_type jx = 0; \
 	r.cidx (0) = 0; \
@@ -1533,7 +1533,7 @@ Boston, MA 02110-1301, USA.
 
 #define SPARSE_ANY_OP(DIM) SPARSE_ANY_ALL_OP (DIM, false, !=, true)
 
-#define SPARSE_SPARSE_MUL( RET_TYPE, EL_TYPE ) \
+#define SPARSE_SPARSE_MUL( RET_TYPE, RET_EL_TYPE, EL_TYPE ) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -1577,7 +1577,7 @@ Boston, MA 02110-1301, USA.
           for (octave_idx_type i = 0; i < nr; i++) \
 	    w[i] = 0; \
 	  \
-          OCTAVE_LOCAL_BUFFER (EL_TYPE, Xcol, nr); \
+          OCTAVE_LOCAL_BUFFER (RET_EL_TYPE, Xcol, nr); \
           \
 	  RET_TYPE retval (nr, a_nc, nel); \
 	  octave_idx_type ii = 0; \
@@ -1663,7 +1663,7 @@ Boston, MA 02110-1301, USA.
 	} \
     }
 
-#define SPARSE_FULL_MUL( RET_TYPE, EL_TYPE ) \
+#define SPARSE_FULL_MUL( RET_TYPE, EL_TYPE, ZERO ) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -1677,7 +1677,7 @@ Boston, MA 02110-1301, USA.
     } \
   else \
     { \
-      RET_TYPE retval (nr, a_nc, EL_TYPE ()); \
+      RET_TYPE retval (nr, a_nc, ZERO); \
       \
       for (octave_idx_type i = 0; i < a_nc ; i++) \
 	{ \
@@ -1693,7 +1693,7 @@ Boston, MA 02110-1301, USA.
       return retval; \
     }
 
-#define FULL_SPARSE_MUL( RET_TYPE, EL_TYPE ) \
+#define FULL_SPARSE_MUL( RET_TYPE, EL_TYPE, ZERO ) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -1707,7 +1707,7 @@ Boston, MA 02110-1301, USA.
     } \
   else \
     { \
-      RET_TYPE retval (nr, a_nc, EL_TYPE ()); \
+      RET_TYPE retval (nr, a_nc, ZERO); \
       \
       for (octave_idx_type i = 0; i < a_nc ; i++) \
 	{ \

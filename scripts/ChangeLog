@@ -1,3 +1,11 @@
+2006-03-16  David Bateman  <dbateman@free.fr>
+
+	* testfun/test.m: Clear last warning before warning test to avoid
+	issues with previously set warnings.
+	* build_sparse_test.sh: Tests for multiple RHS for rectanguar
+	sparse matrices. Force matrix type from spqr solution to be
+	singular to force QR solvers to be used for assert.
+
 2006-03-16  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* strings/strfind.m: New file.

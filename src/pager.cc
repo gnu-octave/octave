@@ -504,6 +504,21 @@ toggles the current state.\n\
   return retval;
 }
 
+DEFUN (terminal_size, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} terminal_size ()\n\
+Return a two-element row vector containing the current size of the\n\
+terminal window in characters (rows and columns).\n\
+@end deftypefn")
+{
+  RowVector size (2, 0.0);
+
+  size(0) = command_editor::terminal_rows ();
+  size(1) = command_editor::terminal_cols ();
+
+  return octave_value (size);
+}
+
 static std::string
 default_pager (void)
 {

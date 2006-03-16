@@ -37,7 +37,9 @@
 function retval = strncmpi (s1, s2, n)
 
   if (nargin == 3)
-    retval = strcmp (tolower (strtrunc (s1, n)), tolower (strtrunc (s2, n)));
+    ## Note that we don't use tolower here because we need to be able to
+    ## handle cell arrays of strings.
+    retval = strcmp (lower (strtrunc (s1, n)), lower (strtrunc (s2, n)));
   else
     usage ("strncmpi (s1, s2, n)");
   endif

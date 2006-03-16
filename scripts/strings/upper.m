@@ -19,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} upper (@var{s})
-## Transform all letters in the string @var{s} to upper case.
-## @seealso{toupper}
+## Transform all letters in the character string (or cell array of
+## character strings) @var{s} to upper case.
+## @seealso{lower, tolower, toupper}
 ## @end deftypefn
 
 ## Author: jwe
@@ -31,6 +32,15 @@ function retval = upper (s)
     usage ("upper (s)");
   endif
 
-  retval = toupper (s);
+  if (ischar (s))
+    retval = toupper (s);
+  elseif (iscellstr (s))
+    retval = cell (size (s));
+    for i = 1:(numel (s))
+      retval{i} = toupper(s{i});
+    endfor
+  else
+    error ("upper: `s' must be a string or cell array of strings");
+  endif
 
 endfunction

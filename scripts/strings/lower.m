@@ -19,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} lower (@var{s})
-## Transform all letters in the string @var{s} to lower case.
-## @seealso{tolower}
+## Transform all letters in the character string (or cell array of
+## character strings) @var{s} to lower case.
+## @seealso{upper, tolower, toupper}
 ## @end deftypefn
 
 ## Author: jwe
@@ -31,6 +32,15 @@ function retval = lower (s)
     usage ("lower (s)");
   endif
 
-  retval = tolower (s);
+  if (ischar (s))
+    retval = tolower (s);
+  elseif (iscellstr (s))
+    retval = cell (size (s));
+    for i = 1:(numel (s))
+      retval{i} = tolower(s{i});
+    endfor
+  else
+    error ("lower: `s' must be a string or cell array of strings");
+  endif
 
 endfunction

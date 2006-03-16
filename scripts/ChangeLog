@@ -4,6 +4,8 @@
 	* strings/strncmpi.m: Import from octave-forge, simplify.
 	* strings/strtrunc.m: New function.
 
+	* strings/lower.m, strings/upper.m: Handle cellstr arguments.
+
 2006-03-15  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/doc.m: New file.

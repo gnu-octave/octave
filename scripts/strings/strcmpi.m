@@ -40,7 +40,9 @@
 function retval = strcmpi (s1, s2)
 
   if (nargin == 2)
-    retval = strcmp (tolower (s1), tolower (s2));
+    ## Note that we don't use tolower here because we need to be able to
+    ## handle cell arrays of strings.
+    retval = strcmp (lower (s1), lower (s2));
   else
     usage ("strcmpi (s1, s2)");
   endif

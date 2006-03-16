@@ -53,7 +53,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "oct-env.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "file-io.h"
 #include "gripes.h"
 #include "load-save.h"
@@ -1572,6 +1572,12 @@ gnuplot_use_title_option (void)
 void
 gnuplot::do_init (void)
 {
+  // Do nothing.
+}
+
+void
+symbols_of___gnuplot_raw__ (void)
+{
   static bool gnuplot_initialized = false;
 
   if (gnuplot_initialized)
@@ -1682,7 +1688,7 @@ If nonzero, append @samp{-title \"Figure NN\"} to the gnuplot command.\n\
 // User-callable functions
 // -----------------------
 
-DEFUN_DLD (clearplot, , ,
+DEFUN (clearplot, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} clearplot\n\
 @deftypefnx {Built-in Function} {} clg\n\
@@ -1702,7 +1708,7 @@ Clear the plot window and any titles or axis labels.  The name\n\
   return octave_value_list ();
 }
 
-DEFUN_DLD (closeplot, , ,
+DEFUN (closeplot, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} closeplot\n\
 Close stream to the @code{gnuplot} subprocess.  If you are using X11,\n\
@@ -1714,7 +1720,7 @@ this will close the plot window.\n\
   return octave_value_list ();
 }
 
-DEFUN_DLD (purge_tmp_files, , ,
+DEFUN (purge_tmp_files, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} purge_tmp_files\n\
 Delete the temporary files created by the plotting commands.\n\
@@ -1733,7 +1739,7 @@ files to hold the plot data.\n\
   return octave_value_list ();
 }
 
-DEFUN_DLD (__gnuplot_raw__, args, ,
+DEFUN (__gnuplot_raw__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __gnuplot_raw__ (@var{string})\n\
 Send @var{string} directly to gnuplot subprocess.\n\
@@ -1751,7 +1757,7 @@ Send @var{string} directly to gnuplot subprocess.\n\
   return octave_value_list ();
 }
 
-DEFUN_DLD (__gnuplot_set__, args, ,
+DEFUN (__gnuplot_set__, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} __gnuplot_set__ options\n\
 Set plotting options for gnuplot\n\
@@ -1765,7 +1771,7 @@ Set plotting options for gnuplot\n\
   return octave_value_list ();
 }
 
-DEFUN_DLD (__gnuplot_show__, args, ,
+DEFUN (__gnuplot_show__, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} __gnuplot_show__ options\n\
 Show plotting options.\n\
@@ -1779,7 +1785,7 @@ Show plotting options.\n\
   return octave_value_list ();
 }
 
-DEFUN_DLD (__gnuplot_plot__, args, ,
+DEFUN (__gnuplot_plot__, args, ,
   "Plot with gnuplot.\n")
 {
   string_vector argv = args.make_argv ("plot");
@@ -1790,7 +1796,7 @@ DEFUN_DLD (__gnuplot_plot__, args, ,
   return octave_value_list ();
 }
 
-DEFUN_DLD (__gnuplot_splot__, args, ,
+DEFUN (__gnuplot_splot__, args, ,
   "Plot with gnuplot.\n")
 {
   string_vector argv = args.make_argv ("splot");
@@ -1801,7 +1807,7 @@ DEFUN_DLD (__gnuplot_splot__, args, ,
   return octave_value_list ();
 }
 
-DEFUN_DLD (__gnuplot_replot__, args, ,
+DEFUN (__gnuplot_replot__, args, ,
   "Plot with gnuplot.\n")
 {
   string_vector argv = args.make_argv ("replot");

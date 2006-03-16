@@ -16,6 +16,10 @@
 2006-03-16  John W. Eaton  <jwe@octave.org>
 
 	* __gnuplot_raw__.l: Move here from DLD-FUNCTIONS/__gnuplot_raw__.l.
+	Use DEFUN, not DEFUN_DLD.  Include defun.h, not defun-dld.h.
+	(gnuplot::do_init):Move guts to symbols_of___gnuplot_raw__.
+	(symbols_of___gnuplot_raw__): New function.
+
 	* Makefile.in (DLD_XSRC): Delete __gnuplot_raw__.l from the list.
 	(DIST_SRC): Include __gnuplot_raw__.l in the list.
 	(__gnuplot_raw__.cc): Depend on __gnuplot_raw__.l, not

@@ -1,3 +1,9 @@
+2006-03-16  John W. Eaton  <jwe@octave.org>
+
+	* ls-oct-ascii.h (extract_keyword): Use std::string compare method
+	instead of strncmp.
+	* ls-oct-ascii.cc (extract_keyword): Likewise. 
+
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* src/data.cc (Frows, Fcolumns): New functions.

@@ -90,8 +90,8 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
 	    buf << c;
 
 	  buf << OSSTREAM_ENDS;
-	  const char *tmp = OSSTREAM_C_STR (buf);
-	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
+	  std::string tmp = OSSTREAM_STR (buf);
+	  bool match = (tmp.compare (0, strlen (keyword), keyword) == 0);
 	  OSSTREAM_FREEZE (buf);
 
 	  if (match)

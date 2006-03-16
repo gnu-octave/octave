@@ -40,10 +40,27 @@ elements of a matrix or vector.
 Indices may be scalars, vectors, ranges, or the special operator
 @samp{:}, which may be used to select entire rows or columns.
 
-Vectors are indexed using a single expression.  Matrices may be
-indexed using one or two indices (a warning is issued if a single
-index is used unless the value of the built-in variable
-@code{warn_fortran_indexing} is zero).
+Vectors are indexed using a single index expression.  Matrices may be
+indexed using one or two indices.  When using a single index
+expression, the elements of the matrix are taken in column-first order;
+the dimensions of the output match those of the index expression.  For
+example,
+@example
+a (2)       # a scalar
+a (1:2)     # a row vector
+a ([1; 2])  # a column vector
+@end example
+
+As a special case, when a colon is used as a single index, the output
+is a column vector containing all the elements of the vector or matrix.
+For example
+@example
+a (:)       # a column vector
+@end example
+
+A warning is issued when using a single expression to index a matrix,
+unless the value of the built-in variable @code{warn_fortran_indexing}
+is zero.
 
 @DOCSTRING(warn_fortran_indexing)
 

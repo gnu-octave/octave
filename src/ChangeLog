@@ -1,3 +1,7 @@
+2006-03-16  Bill Denney  <bill@givebillmoney.com>
+
+	* DLD-FUNCTIONS/time.cc: Improve @seealso entries in doc strings.
+
 2006-03-16  John W. Eaton  <jwe@octave.org>
 
 	* __gnuplot_raw__.l (F__gnuplot_show__): Temporarily use DEFCMD

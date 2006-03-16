@@ -83,6 +83,7 @@ Return the current time as the number of seconds since the epoch.  The\n\
 epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
 1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the\n\
 value returned by @code{time} was 856163706.\n\
+@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -119,6 +120,7 @@ gmtime (time ())\n\
          @}\n\
 @end group\n\
 @end example\n\
+@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -160,6 +162,7 @@ localtime (time ())\n\
          @}\n\
 @end group\n\
 @end example\n\
+@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -189,6 +192,7 @@ mktime (localtime (time ())\n\
      @result{} 856163706\n\
 @end group\n\
 @end example\n\
+@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -365,7 +369,7 @@ Last two digits of year (00-99).\n\
 @item %Y\n\
 Year (1970-).\n\
 @end table\n\
-@seealso{strptime, localtime, time}\n\
+@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -408,7 +412,7 @@ the control of the format string @var{fmt}.\n\
 If @var{fmt} fails to match, @var{nchars} is 0; otherwise it is set to the\n\
 position of last matched character plus 1. Always check for this unless\n\
 you're absolutely sure the date string will be parsed correctly.\n\
-@seealso{strftime, localtime, time}\n\
+@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
   octave_value_list retval;

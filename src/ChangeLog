@@ -1,3 +1,7 @@
+2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+
+	* src/strfns.cc: Fixed help message.
+
 2006-03-15  John W. Eaton  <jwe@octave.org>
 
 	* pager.cc (Fterminal_size): New function.

@@ -149,9 +149,17 @@ DEFUN (strcmp, args, ,
 @deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})\n\
 Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 and 0 otherwise.\n\
-@strong{Caution:}  For compatibility with @sc{Matlab}, Octave's strcmp\n\
-function returns 1 if the strings are equal, and 0 otherwise.  This is\n\
-just the opposite of the corresponding C library function.\n\
+\n\
+If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
+of the same size is returned, containing the values described above for\n\
+every member of the cell array. The other argument may also be a cell\n\
+array of strings (of the same size or with only one element), char matrix\n\
+or character string.\n\
+\n\
+@strong{Caution:} For compatibility with @sc{Matlab}, Octave's strcmp\n\
+function returns 1 if the character strings are equal, and 0 otherwise.\n\
+This is just the opposite of the corresponding C library function.\n\
+@seealso{strcmpi, strncmp, strncmpi}\n\
 @end deftypefn")
 {
   octave_value retval;

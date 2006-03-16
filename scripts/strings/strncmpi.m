@@ -18,9 +18,9 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strcmpi (@var{s1}, @var{s2})
-## Ignoring case, return 1 if the character strings @var{s1} and @var{s2}
-## are the same, and 0 otherwise.
+## @deftypefn {Function File} {} strncmpi (@var{s1}, @var{s2}, @var{n})
+## Ignoring case, return 1 if the first @var{n} characters of character
+## strings @var{s1} and @var{s2} are the same, and 0 otherwise.
 ##
 ## If either @var{s1} or @var{s2} is a cell array of strings, then an array
 ## of the same size is returned, containing the values described above for
@@ -28,21 +28,18 @@
 ## array of strings (of the same size or with only one element), char matrix
 ## or character string.
 ##
-## @strong{Caution:} For compatibility with @sc{Matlab}, Octave's strcmpi
+## @strong{Caution:} For compatibility with @sc{Matlab}, Octave's strncmpi
 ## function returns 1 if the character strings are equal, and 0 otherwise.
 ## This is just the opposite of the corresponding C library function.
-## @seealso{strcmp, strncmp, strncmpi}
+## @seealso{strcmp, strcmpi, strncmp}
 ## @end deftypefn
 
-## Author: Bill Lash <lash@tellabs.com>
-## Adapted-by: jwe
+function retval = strncmpi (s1, s2, n)
 
-function retval = strcmpi (s1, s2)
-
-  if (nargin == 2)
-    retval = strcmp (tolower (s1), tolower (s2));
+  if (nargin == 3)
+    retval = strcmp (tolower (strtrunc (s1, n)), tolower (strtrunc (s2, n)));
   else
-    usage ("strcmpi (s1, s2)");
+    usage ("strncmpi (s1, s2, n)");
   endif
 
 endfunction

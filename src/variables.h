@@ -48,6 +48,12 @@ extern void initialize_symbol_tables (void);
 
 extern bool is_builtin_variable (const std::string&);
 extern bool is_command_name (const std::string&);
+
+// The next three are here temporarily...
+extern bool is_marked_as_rawcommand (const std::string& s);
+extern void mark_as_rawcommand (const std::string& s);
+extern void unmark_rawcommand (const std::string& s);
+
 extern bool is_rawcommand_name (const std::string&);
 extern bool is_mapper_function_name (const std::string&);
 extern bool is_builtin_function_name (const std::string&);

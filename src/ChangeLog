@@ -1,3 +1,15 @@
+2006-03-16  John W. Eaton  <jwe@octave.org>
+
+	* __gnuplot_raw__.l (F__gnuplot_show__): Temporarily use DEFCMD
+	instead of DEFUN.
+	(symbols_of___gnuplot_raw__): Temporarily ark __gnuplot_plot__,
+	__gnuplot_set__, __gnuplot_splot__, and __gnuplot_replot__ as raw
+	commands.
+
+	* variables.cc (is_marked_as_rawcommand, unmark_rawcommand,
+	mark_as_rawcommand): Temporarily not static.
+	* variables.h: Temporarily Provide decls.
+
 2006-03-16  David Bateman  <dbateman@free.fr>
 
 	* sparse-xdiv.cc (result_ok): delete.

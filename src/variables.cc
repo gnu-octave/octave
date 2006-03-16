@@ -276,20 +276,20 @@ mark_as_command.\n\
 
 static std::set <std::string> rawcommand_set;
 
-static inline bool
+bool
 is_marked_as_rawcommand (const std::string& s)
 {
   return rawcommand_set.find (s) != rawcommand_set.end ();
 }
 
-static inline void
+void
 mark_as_rawcommand (const std::string& s)
 {
   command_set.insert (s);    
   rawcommand_set.insert (s);
 }
 
-static inline void
+void
 unmark_rawcommand (const std::string& s)
 {
   rawcommand_set.erase (s);

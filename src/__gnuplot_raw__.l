@@ -1585,6 +1585,12 @@ symbols_of___gnuplot_raw__ (void)
 
   gnuplot_initialized = true;
 
+  // This is temporary.
+  mark_as_rawcommand ("__gnuplot_plot__");
+  mark_as_rawcommand ("__gnuplot_set__");
+  mark_as_rawcommand ("__gnuplot_splot__");
+  mark_as_rawcommand ("__gnuplot_replot__");
+
   if (is_builtin_variable ("automatic_replot"))
     automatic_replot ();
   else
@@ -1771,7 +1777,7 @@ Set plotting options for gnuplot\n\
   return octave_value_list ();
 }
 
-DEFUN (__gnuplot_show__, args, ,
+DEFCMD (__gnuplot_show__, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} __gnuplot_show__ options\n\
 Show plotting options.\n\

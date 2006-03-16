@@ -59,7 +59,7 @@
 ## @end deftypefn
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
-## Author: Paul Kienzle
+## Author: pkienzle <pkienzle@users.sf.net>
 
 function [days, secs] = datenum (Y, M, D, h, m, s)
 

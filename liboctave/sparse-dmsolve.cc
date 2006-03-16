@@ -363,6 +363,7 @@ template <class RT, class ST, class T>
 RT
 dmsolve (const ST &a, const T &b, octave_idx_type &info)
 {
+#ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
   octave_idx_type b_nr = b.rows ();
@@ -464,6 +465,9 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       CXSPARSE_DNAME (_dfree) (dm);
     }
   return retval;
+#else
+  return RT ();
+#endif
 }
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)

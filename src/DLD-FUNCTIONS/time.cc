@@ -217,8 +217,9 @@ mktime (localtime (time ())\n\
 
 DEFUN_DLD (strftime, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} strftime (@var{tm_struct})\n\
-Format a time structure in a flexible way using @samp{%} substitutions\n\
+@deftypefn {Loadable Function} {} strftime (@var{fmt}, @var{tm_struct})\n\
+Format the time structure @var{tm_struct} in a flexible way using the\n\
+format string @var{fmt} that contains @samp{%} substitutions\n\
 similar to those in @code{printf}.  Except where noted, substituted\n\
 fields have a fixed size; numeric fields are padded if necessary.\n\
 Padding is with zeros by default; for fields that display a single\n\
@@ -364,6 +365,7 @@ Last two digits of year (00-99).\n\
 @item %Y\n\
 Year (1970-).\n\
 @end table\n\
+@seealso{strptime, localtime, time}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -400,8 +402,13 @@ Year (1970-).\n\
 DEFUN_DLD (strptime, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})\n\
-Convert the string @var{str} to a time structure under the control of\n\
-the format @var{fmt}.\n\
+Convert the string @var{str} to the time structure @var{tm_struct} under\n\
+the control of the format string @var{fmt}.\n\
+\n\
+If @var{fmt} fails to match, @var{nchars} is 0; otherwise it is set to the\n\
+position of last matched character plus 1. Always check for this unless\n\
+you're absolutely sure the date string will be parsed correctly.\n\
+@seealso{strftime, localtime, time}\n\
 @end deftypefn")
 {
   octave_value_list retval;

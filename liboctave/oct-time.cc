@@ -347,7 +347,10 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   char *q = oct_strptime (p, fmt.c_str (), &t);
 
-  nchars = p - q;
+  if (q)
+    nchars = q - p + 1;
+  else
+    nchars = 0;
 
   delete [] p;
 

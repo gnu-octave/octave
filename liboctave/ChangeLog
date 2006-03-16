@@ -1,3 +1,7 @@
+2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+
+	* oct-time.cc (octave_strptime::init): Return useful character count.
+
 2006-03-08  David Bateman  <dbateman@free.fr>
 
 	* SparseCmplxQR.cc: Updates for new upstream CXSPARSE release. Fix for

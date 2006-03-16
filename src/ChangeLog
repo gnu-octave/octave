@@ -1,6 +1,8 @@
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
-	* src/strfns.cc: Fixed help message.
+	* DLD-FUNCTIONS/time.cc (Fstrptime, Fstrftime): Fix docstring.
+
+	* strfns.cc (Fstrcmp): Fixed docstring.
 
 2006-03-15  John W. Eaton  <jwe@octave.org>
 

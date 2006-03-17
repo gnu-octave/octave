@@ -1,3 +1,7 @@
+2006-03-16  Bill Denney  <bill@givebillmoney.com>
+
+	* miscellaneous/dir.m: Improve compatibility.
+
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* time/calendar.m, time/datestr.m, time/datevec.m, time/eomday.m,

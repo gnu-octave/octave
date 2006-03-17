@@ -1,5 +1,10 @@
 2006-03-17  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/hypergeometric_rnd.m: Update interface to match
+	current 2.1.x version.
+
+	* deprecated/t_rnd.m: Call trnd, not t_rnd.
+
 	* miscellaneous/dir.m: Use readdir instead of glob.
 	Special case for "." to avoid globbing.  Use list_in_columns.
 	Eliminate unused variables len and finfo.

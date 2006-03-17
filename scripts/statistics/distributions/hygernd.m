@@ -18,16 +18,11 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygernd (@var{n_size}, @var{m}, @var{t}, @var{n})
-## @deftypefnx {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
+## @deftypefn {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{sz})
-## Generate a row vector containing a random sample of size @var{n_size}
-## from the hypergeometric distribution with parameters @var{m}, @var{t},
+## Return an @var{r} by @var{c} matrix of random samples from the
+## hypergeometric distribution with parameters @var{m}, @var{t},
 ## and @var{n}.
-##
-## If  @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
-## @var{sz}.
 ##
 ## The parameters @var{m}, @var{t}, and @var{n} must positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.

@@ -34,6 +34,6 @@
 
 function rnd = t_rnd (varargin)
 
- rnd =  t_rnd (varargin{:});
+ rnd =  trnd (varargin{:});
 
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 1995, 1996, 1997  Kurt Hornik
+## Copyright (C) 2006 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,17 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_inv (@var{x}, @var{lambda}, @var{alpha})
+## @deftypefn {Function File} {} weibull_inv (@var{x}, @var{shape}, @var{scale})
 ## Compute the quantile (the inverse of the CDF) at @var{x} of the
-## Weibull distribution with shape parameter @var{alpha} and scale
-## parameter @var{sigma}.
+## Weibull distribution with shape parameter @var{scale} and scale
+## parameter @var{shape}.
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Quantile function of the Weibull distribution
 
 function inv = weibull_inv (varargin)
 
- inv =  weibinv (varargin{:});
+  if (nargin == 2)
+    varargin{3} = varargin{2};
+    varargin{2} = 1;
+  elseif (nargin > 2)
+    tmp = varargin{3};
+    varargin{3} = varargin{2};
+    varargin{2} = tmp;
+  endif
+
+  inv = wblinv (varargin{:});
 
 endfunction

@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_rnd (@var{shape}, @var{scale}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} weibull_rnd (@var{shape}, @var{scale}, @var{sz})
+## @deftypefn {Function File} {} weibrnd (@var{scale}, @var{shape}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} weibrnd (@var{scale}, @var{shape}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## Weibull distribution with parameters @var{scale} and @var{shape}
 ## which must be scalar or of size @var{r} by @var{c}. Or if @var{sz}
@@ -29,13 +29,7 @@
 ## the common size of @var{alpha} and @var{sigma}.
 ## @end deftypefn
 
-function rnd = weibull_rnd (varargin)
-
-  if (nargin > 1)
-    tmp = varargin{2};
-    varargin{2} = varargin{1};
-    varargin{1} = tmp;
-  endif
+function rnd = weibrnd (varargin)
 
   rnd = wblrnd (varargin{:});
 

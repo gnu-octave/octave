@@ -1,9 +1,25 @@
 2006-03-17  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/weibcdf.m, deprecated/weibinv.m,
+	deprecated/weibpdf.m, deprecated/weibrnd.m: New functions.
+
+	* deprecated/weibull_cdf.m, deprecated/weibull_inv.m,
+	deprecated/weibull_pdf.m, deprecated/weibull_rnd.m:
+	Call new wbl functions to do the real work.
+	Swap args and provide default values as necessary to preserve
+	compatibility with old version of Octave.
+
+	* statistics/distributions/wblcdf.m: Rename from weibcdf.m.
+	statistics/distributions/wblinv.m: Rename from weibinv.m.
+	statistics/distributions/wblpdf.m: Rename from weibpdf.m.
+	statistics/distributions/wblrnd.m: Rename from weibrnd.m.
+	Swap scale and shape args for compatibility.
+
 	* deprecated/lognormal_cdf.m, deprecated/lognormal_inv.m,
 	deprecated/lognormal_pdf.m, deprecated/lognormal_rnd.m:
 	Preserve compatibility with old versions of Octave given new
 	definitions of logncdf, logninv, lognpdf, and lognrnd.
+
 	* statistics/distributions/logncdf.m,
 	statistics/distributions/logninv.m,
 	statistics/distributions/lognpdf.m,

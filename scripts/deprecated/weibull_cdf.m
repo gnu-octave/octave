@@ -1,4 +1,4 @@
-## Copyright (C) 1995, 1996, 1997  Kurt Hornik
+## Copyright (C) 2006 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,24 +18,30 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_cdf (@var{x}, @var{alpha}, @var{sigma})
+## @deftypefn {Function File} {} weibull_cdf (@var{x}, @var{shape}, @var{scale})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
-## Weibull distribution with shape parameter @var{alpha} and scale
-## parameter @var{sigma}, which is
+## Weibull distribution with shape parameter @var{scale} and scale
+## parameter @var{shape}, which is
 ##
 ## @example
-## 1 - exp(-(x/sigma)^alpha)
+## 1 - exp(-(x/shape)^scale)
 ## @end example
 ##
 ## @noindent
 ## for @var{x} >= 0.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: CDF of the Weibull distribution
-
 function cdf = weibull_cdf (varargin)
 
- cdf =  weibcdf (varargin{:});
+  if (nargin == 2)
+    varargin{3} = varargin{2};
+    varargin{2} = 1;
+  elseif (nargin > 2)
+    tmp = varargin{3};
+    varargin{3} = varargin{2};
+    varargin{2} = tmp;
+  endif
+
+  cdf = wblcdf (varargin{:});
 
 endfunction

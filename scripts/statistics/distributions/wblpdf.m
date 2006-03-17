@@ -18,49 +18,62 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibinv (@var{x}, @var{lambda}, @var{alpha})
-## Compute the quantile (the inverse of the CDF) at @var{x} of the
-## Weibull distribution with shape parameter @var{alpha} and scale
-## parameter @var{sigma}.
+## @deftypefn {Function File} {} wblpdf (@var{x}, @var{scale}, @var{shape})
+## Compute the probability density function (PDF) at @var{x} of the
+## Weibull distribution with shape parameter @var{scale} and scale
+## parameter @var{shape} which is given by
+##
+## @example
+##    scale * shape^(-scale) * x^(scale-1) * exp(-(x/shape)^scale)
+## @end example
+##
+## @noindent
+## for @var{x} > 0.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Quantile function of the Weibull distribution
+## Description: PDF of the Weibull distribution
 
-function inv = weibinv (x, shape, scale)
+function pdf = wblpdf (x, scale, shape)
 
-  if (nargin != 3)
-    usage ("weibinv (x, alpha, sigma)");
+  if (nargin < 1 || nargin > 3)
+    usage ("wblpdf (x, scale, shape)");
+  endif
+
+  if (nargin < 3)
+    shape = 1;
+  endif
+
+  if (nargin < 2)
+    scale = 1;
   endif
 
   if (!isscalar (shape) || !isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
-      error ("weibinv: x, alpha and sigma must be of common size or scalar");
+      error ("wblpdf: x, scale and shape must be of common size or scalar");
     endif
   endif
 
-  inv = NaN * ones (size (x));
-
+  pdf = NaN * ones (size (x));
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
-  k = find ((x == 0) & ok);
+  k = find ((x > -Inf) & (x <= 0) & ok);
   if (any (k))
-    inv(k) = -Inf;
+    pdf(k) = 0;
   endif
 
-  k = find ((x > 0) & (x < 1) & ok);
+  k = find ((x > 0) & (x < Inf) & ok);
   if (any (k))
     if (isscalar (shape) && isscalar (scale))
-      inv(k) = scale * (- log (1 - x(k))) .^ (1 / shape);
+      pdf(k) = (shape .* (scale .^ -shape)
+		.* (x(k) .^ (shape - 1))
+		.* exp(- (x(k) / scale) .^ shape));
     else
-      inv(k) = scale(k) .* (- log (1 - x(k))) .^ (1 ./ shape(k));
+      pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
+		.* (x(k) .^ (shape(k) - 1))
+		.* exp(- (x(k) ./ scale(k)) .^ shape(k)));
     endif
-  endif
-
-  k = find ((x == 1) & ok);
-  if (any (k))
-    inv(k) = Inf;
   endif
 
 endfunction

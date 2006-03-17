@@ -18,56 +18,57 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibcdf (@var{x}, @var{alpha}, @var{sigma})
-## Compute the cumulative distribution function (CDF) at @var{x} of the
-## Weibull distribution with shape parameter @var{alpha} and scale
-## parameter @var{sigma}, which is
-##
-## @example
-## 1 - exp(-(x/sigma)^alpha)
-## @end example
-##
-## @noindent
-## for @var{x} >= 0.
+## @deftypefn {Function File} {} wblinv (@var{x}, @var{scale}, @var{shape})
+## Compute the quantile (the inverse of the CDF) at @var{x} of the
+## Weibull distribution with shape parameter @var{scale} and scale
+## parameter @var{shape}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: CDF of the Weibull distribution
+## Description: Quantile function of the Weibull distribution
 
-function cdf = weibcdf (x, shape, scale)
+function inv = wblinv (x, scale, shape)
 
-  if (nargin != 3)
-    usage ("weibcdf (x, alpha, sigma)");
+  if (nargin < 1 || nargin > 3)
+    usage ("wblinv (x, scale, shape)");
+  endif
+
+  if (nargin < 3)
+    shape = 1;
+  endif
+
+  if (nargin < 2)
+    scale = 1;
   endif
 
   if (!isscalar (shape) || !isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
-      error ("weibcdf: x, alpha and sigma must be of common size or scalar");
+      error ("wblinv: x, scale and shape must be of common size or scalar");
     endif
   endif
 
-  cdf = NaN * ones (size (x));
+  inv = NaN * ones (size (x));
 
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
-  k = find ((x <= 0) & ok);
+  k = find ((x == 0) & ok);
   if (any (k))
-    cdf(k) = 0;
+    inv(k) = -Inf;
   endif
 
-  k = find ((x > 0) & (x < Inf) & ok);
+  k = find ((x > 0) & (x < 1) & ok);
   if (any (k))
     if (isscalar (shape) && isscalar (scale))
-      cdf(k) = 1 - exp (- (x(k) / scale) .^ shape);
+      inv(k) = scale * (- log (1 - x(k))) .^ (1 / shape);
     else
-      cdf(k) = 1 - exp (- (x(k) ./ scale(k)) .^ shape(k));
+      inv(k) = scale(k) .* (- log (1 - x(k))) .^ (1 ./ shape(k));
     endif
   endif
 
-  k = find ((x == Inf) & ok);
+  k = find ((x == 1) & ok);
   if (any (k))
-    cdf(k) = 1;
+    inv(k) = Inf;
   endif
 
 endfunction

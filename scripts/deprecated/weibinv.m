@@ -18,26 +18,14 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} weibull_rnd (@var{shape}, @var{scale}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} weibull_rnd (@var{shape}, @var{scale}, @var{sz})
-## Return an @var{r} by @var{c} matrix of random samples from the
-## Weibull distribution with parameters @var{scale} and @var{shape}
-## which must be scalar or of size @var{r} by @var{c}. Or if @var{sz}
-## is a vector return a matrix of size @var{sz}.
-##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{alpha} and @var{sigma}.
+## @deftypefn {Function File} {} weibinv (@var{x}, @var{scale}, @var{shape})
+## Compute the quantile (the inverse of the CDF) at @var{x} of the
+## Weibull distribution with shape parameter @var{scale} and scale
+## parameter @var{shape}.
 ## @end deftypefn
 
-function rnd = weibull_rnd (varargin)
+function inv = weibinv (varargin)
 
-  if (nargin > 1)
-    tmp = varargin{2};
-    varargin{2} = varargin{1};
-    varargin{1} = tmp;
-  endif
-
-  rnd = wblrnd (varargin{:});
+  inv = wblinv (varargin{:});
 
 endfunction
-

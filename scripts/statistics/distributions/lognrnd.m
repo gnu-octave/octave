@@ -1,3 +1,4 @@
+
 ## Copyright (C) 1995, 1996, 1997  Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,27 +19,27 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lognrnd (@var{a}, @var{v}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} lognrnd (@var{a}, @var{v}, @var{sz})
+## @deftypefn {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
-## lognormal distribution with parameters @var{a} and @var{v}. Both
-## @var{a} and @var{v} must be scalar or of size @var{r} by @var{c}.
+## lognormal distribution with parameters @var{mu} and @var{sigma}. Both
+## @var{mu} and @var{sigma} must be scalar or of size @var{r} by @var{c}.
 ## Or if @var{sz} is a vector, create a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{a} and @var{v}.
+## the common size of @var{mu} and @var{sigma}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the log normal distribution
 
-function rnd = lognrnd (a, v, r, c)
+function rnd = lognrnd (mu, sigma, r, c)
 
   if (nargin > 1)
-    if (!isscalar(a) || !isscalar(v)) 
-      [retval, a, v] = common_size (a, v);
+    if (!isscalar(mu) || !isscalar(sigma)) 
+      [retval, mu, sigma] = common_size (mu, sigma);
       if (retval > 0)
-	error ("lognrnd: a and v must be of common size or scalar");
+	error ("lognrnd: mu and sigma must be of common size or scalar");
       endif
     endif
   endif
@@ -52,9 +53,9 @@ function rnd = lognrnd (a, v, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (a) != 1) && 
-	((length (size (a)) != length (sz)) || any (size (a) != sz)))
-      error ("lognrnd: a and b must be scalar or of size [r, c]");
+    if (any (size (mu) != 1) && 
+	((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
+      error ("lognrnd: mu and sigma must be scalar or of size [r, c]");
     endif
 
   elseif (nargin == 3)
@@ -66,34 +67,34 @@ function rnd = lognrnd (a, v, r, c)
       error ("lognrnd: r must be a postive integer or vector");
     endif
 
-    if (any (size (a) != 1) && 
-	((length (size (a)) != length (sz)) || any (size (a) != sz)))
-      error ("lognrnd: a and b must be scalar or of size sz");
+    if (any (size (mu) != 1) && 
+	((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
+      error ("lognrnd: mu and sigma must be scalar or of size sz");
     endif
   elseif (nargin == 2)
-    sz = size(a);
+    sz = size(mu);
   else
-    usage ("lognrnd (a, v, r, c)");
+    usage ("lognrnd (mu, sigma, r, c)");
   endif
 
-  if (isscalar (a) && isscalar (v))
-    if  (!(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf))
+  if (isscalar (mu) && isscalar (sigma))
+    if  (!(mu > 0) | !(mu < Inf) | !(sigma > 0) | !(sigma < Inf))
       rnd = NaN * ones (sz);
-    elseif find ((a > 0) & (a < Inf) & (v > 0) & (v < Inf));
-      rnd = a * exp (sqrt (v) .* randn (sz));
+    elseif find ((mu > 0) & (mu < Inf) & (sigma > 0) & (sigma < Inf));
+      rnd = exp (mu) * exp (sigma .* randn (sz));
     else
       rnd = zeros (sz);
     endif
   else
     rnd = zeros (sz);
-    k = find (!(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf));
+    k = find (!(mu > 0) | !(mu < Inf) | !(sigma > 0) | !(sigma < Inf));
     if (any (k))
       rnd(k) = NaN * ones (1, length (k));
     endif
 
-    k = find ((a > 0) & (a < Inf) & (v > 0) & (v < Inf));
+    k = find ((mu > 0) & (mu < Inf) & (sigma > 0) & (sigma < Inf));
     if (any (k))
-      rnd(k) = a(k) .* exp (sqrt (v(k)) .* randn (1, length (k)));
+      rnd(k) = exp (mu(k)) .* exp (sigma(k) .* randn (1, length (k)));
     endif
   endif
 

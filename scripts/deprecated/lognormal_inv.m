@@ -33,6 +33,22 @@
 
 function inv = lognormal_inv (varargin)
 
- inv =  logninv (varargin{:});
+  if (nargin > 1)
+    a = varargin{2};
+    idx = a >= 0;
+    a(idx) = log (a(idx));
+    a(!idx) = NaN;
+    varargin{2} = a;
+  endif
+
+  if (nargin > 2)
+    v = varargin{3};
+    idx = v >= 0;
+    v(idx) = sqrt (v(idx));
+    v(!idx) = NaN;
+    varargin{3} = v;
+  endif
+
+  inv = logninv (varargin{:});
 
 endfunction

@@ -18,60 +18,60 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} logncdf (@var{x}, @var{a}, @var{v})
+## @deftypefn {Function File} {} logncdf (@var{x}, @var{mu}, @var{sigma})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the lognormal distribution with
-## parameters @var{a} and @var{v}.  If a random variable follows this
+## parameters @var{mu} and @var{sigma}.  If a random variable follows this
 ## distribution, its logarithm is normally distributed with mean
-## @code{log (@var{a})} and variance @var{v}.
+## @var{mu} and standard deviation @var{sigma}.
 ##
-## Default values are @var{a} = 1, @var{v} = 1.
+## Default values are @var{mu} = 1, @var{sigma} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the log normal distribution
 
-function cdf = logncdf (x, a, v)
+function cdf = logncdf (x, mu, sigma)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("logncdf (x, a, v)");
+    usage ("logncdf (x, mu, sigma)");
   endif
 
   if (nargin == 1)
-    a = 1;
-    v = 1;
+    mu = 0;
+    sigma = 1;
   endif
 
   ## The following "straightforward" implementation unfortunately does
   ## not work (because exp (Inf) -> NaN etc):
-  ## cdf = normal_cdf (log (x), log (a), v);
+  ## cdf = normal_cdf (log (x), log (mu), sigma);
   ## Hence ...
 
-  if (!isscalar (a) || !isscalar (v))
-    [retval, x, a, v] = common_size (x, a, v);
+  if (!isscalar (mu) || !isscalar (sigma))
+    [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
-      error ("logncdf: x, a and v must be of common size or scalars");
+      error ("logncdf: x, mu and sigma must be of common size or scalars");
     endif
   endif
 
   cdf = zeros (size (x));
 
-  k = find (isnan (x) | !(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf));
+  k = find (isnan (x) | !(sigma > 0) | !(sigma < Inf));
   if (any (k))
     cdf(k) = NaN;
   endif
 
-  k = find ((x == Inf) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
+  k = find ((x == Inf) & (sigma > 0) & (sigma < Inf));
   if (any (k))
     cdf(k) = 1;
   endif
 
-  k = find ((x > 0) & (x < Inf) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
+  k = find ((x > 0) & (x < Inf) & (sigma > 0) & (sigma < Inf));
   if (any (k))
-    if (isscalar (a) && isscalar (v))
-      cdf(k) = stdnormal_cdf ((log (x(k)) - log (a)) / sqrt (v));
+    if (isscalar (mu) && isscalar (sigma))
+      cdf(k) = stdnormal_cdf ((log (x(k)) - mu) / sigma);
     else
-      cdf(k) = stdnormal_cdf ((log (x(k)) - log (a(k))) ./ sqrt (v(k)));
+      cdf(k) = stdnormal_cdf ((log (x(k)) - mu(k)) ./ sigma(k));
     endif
   endif
 

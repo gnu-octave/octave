@@ -1,5 +1,15 @@
 2006-03-17  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/lognormal_cdf.m, deprecated/lognormal_inv.m,
+	deprecated/lognormal_pdf.m, deprecated/lognormal_rnd.m:
+	Preserve compatibility with old versions of Octave given new
+	definitions of logncdf, logninv, lognpdf, and lognrnd.
+	* statistics/distributions/logncdf.m,
+	statistics/distributions/logninv.m,
+	statistics/distributions/lognpdf.m,
+	statistics/distributions/lognrnd.m: Compatibility fixes.
+	From Ben Barrowes  <barrowes@alum.mit.edu>
+
 	* deprecated/hypergeometric_rnd.m: Update interface to match
 	current 2.1.x version.
 

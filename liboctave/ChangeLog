@@ -1,3 +1,7 @@
+2006-03-17  John W. Eaton  <jwe@octave.org>
+
+	* str-vec.cc (vector::list_in_columns): New optional arg, width.
+
 2006-03-16  David Bateman  <dbateman@free.fr>
 
 	* CSparse.cc: Change use of nzmax to nnz to allow automatic

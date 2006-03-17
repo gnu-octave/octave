@@ -154,7 +154,7 @@ string_vector::delete_c_str_vec (const char * const *v)
 // Format a list in neat columns.
 
 std::ostream&
-string_vector::list_in_columns (std::ostream& os) const
+string_vector::list_in_columns (std::ostream& os, int width) const
 {
   // Compute the maximum name length.
 
@@ -174,7 +174,9 @@ string_vector::list_in_columns (std::ostream& os) const
 
   // Calculate the maximum number of columns that will fit.
 
-  octave_idx_type line_length = command_editor::terminal_cols ();
+  octave_idx_type line_length
+    = (width <= 0) ? command_editor::terminal_cols () : width;
+
   octave_idx_type nc = line_length / max_name_length;
   if (nc == 0)
     nc = 1;

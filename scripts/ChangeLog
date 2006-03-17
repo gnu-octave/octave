@@ -1,3 +1,9 @@
+2006-03-17  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/dir.m: Use readdir instead of glob.
+	Special case for "." to avoid globbing.  Use list_in_columns.
+	Eliminate unused variables len and finfo.
+
 2006-03-16  Bill Denney  <bill@givebillmoney.com>
 
 	* miscellaneous/dir.m: Improve compatibility.

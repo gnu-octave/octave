@@ -51,43 +51,50 @@
 function retval = dir (file)
 
   if (nargin == 0)
-    file = '.';
+    file = ".";
   elseif (nargin > 1)
     usage ("dir (file)");
   endif
 
-  ## prep the retval
-  info = struct(zeros(0,1));
+  ## Prep the retval.
+  info = struct (zeros (0, 1));
 
   if (ischar (file))
-    if (strcmp(file, '*'))
-      file = '.';
+    if (strcmp (file, "*"))
+      file = ".";
     endif
-    flst = glob (file);
-    nf = length (flst);
+    if (strcmp (file, "."))
+      flst = {"."};
+      nf = 1;
+    else
+      flst = glob (file);
+      nf = length (flst);
+    endif
 
-    ## determine the file list for the case where a directory is
-    ## specified and that directory should be recursed into.
-    if ((nf == 1) && strcmp(file, flist{1}))
-      [st, err, msg] = lstat(flst{1});
+    ## Determine the file list for the case where a single directory is
+    ## specified.
+    if (nf == 1)
+      fn = flst{1};
+      [st, err, msg] = lstat (fn);
       if (err < 0)
-	warning("dir: nonexistent file \"%s\"", flst{i});
+	warning ("dir: `lstat (%s)' failed: %s", fn, msg);
 	nf = 0;
       elseif (st.modestr(1) == "d")
-	flst = glob ([flst{1} filesep '*']);
-	nf = length(flst);
+	flst = readdir (flst{1});
+	nf = length (flst);
+	for i = 1:nf
+	  flst{i} = fullfile (fn, flst{i});
+	endfor
       endif
     endif
 
-    if (length(flst) > 0)
-      len = zeros (nf, 1);
-      finfo = cell (nf, 1);
+    if (length (flst) > 0)
       ## Collect results.
       for i = nf:-1:1
 	fn = flst{i};
 	[st, err, msg] = lstat (fn);
 	if (err < 0)
-	  warning ("dir: nonexistent file \"%s\"", fn);
+	  warning ("dir: `lstat (%s)' failed: %s", fn, msg);
 	else
 	  [dummy, fn, ext] = fileparts (fn);
 	  fn = strcat (fn, ext);
@@ -98,26 +105,21 @@ function retval = dir (file)
 	  info(i).statinfo = st;
 	endif
       endfor
-
     endif
+
   else
     error ("dir: expecting directory or filename to be a char array");
   endif
 
-  ## return the output arguements
+  ## Return the output arguments.
   if (nargout > 0)
-    ## Return the requested structure
+    ## Return the requested structure.
     retval = info;
+  elseif (length (info) > 0)
+    ## Print the structure to the screen.
+    printf ("%s", list_in_columns ({info.name}));
   else
-    if (length(info) > 0)
-      ## Print the structure to the screen
-      ## XXX FIXME XXX -- need a way to neatly list these in columns.
-      for i = 1:length(info)
-	printf ("  %s\n", info(i).name);
-      endfor
-    else
-      warning("dir: nonexistent file \"%s\"", file);
-    endif
+    warning ("dir: nonexistent file `%s'", file);
   endif
 
 endfunction

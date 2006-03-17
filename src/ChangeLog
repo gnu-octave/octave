@@ -1,3 +1,7 @@
+2006-03-17  John W. Eaton  <jwe@octave.org>
+
+	* strfns.cc (F__list_in_columns__): New function.
+
 2006-03-16  Bill Denney  <bill@givebillmoney.com>
 
 	* DLD-FUNCTIONS/time.cc: Improve @seealso entries in doc strings.

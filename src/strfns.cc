@@ -373,6 +373,56 @@ This is just the opposite of the corresponding C library function.\n\
   return retval;
 }
 
+DEFUN (list_in_columns, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width})\n\
+Return a string containing the elements of @var{arg} listed in\n\
+columns with an overall maximum width of @var{width}.  The argument\n\
+@var{arg} must be a cell array of character strings or a character array.\n\
+If @var{width} is not specified, the width of the terminal screen is used.\n\
+@seealso{terminal_size}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      string_vector s = args(0).all_strings ();
+
+      if (! error_state)
+	{
+	  OSSTREAM buf;
+
+	  if (nargin == 1)
+	    // Let list_in_columns query terminal width.
+	    s.list_in_columns (buf);
+	  else
+	    {
+	      int width = args(1).int_value ();
+
+	      if (! error_state)
+		s.list_in_columns (buf, width);
+	      else
+		error ("list_in_columns: expecting width to be an integer");
+	    }
+
+	  buf << OSSTREAM_ENDS;
+
+	  retval = OSSTREAM_STR (buf);
+
+	  OSSTREAM_FREEZE (buf);
+	}
+      else
+	error ("list_in_columns: expecting cellstr or char array");
+    }
+  else
+    print_usage ("list_in_columns");
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

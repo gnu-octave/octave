@@ -1,3 +1,8 @@
+2006-03-20  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/mkoctfile.m: Use version-specific name of
+	mkoctfile.  Use fullfile to construct file name.
+
 2006-03-20  Keith Goodman  <kwgoodman@gmail.com>
 
 	* miscellaneous/mkoctfile.m: Make it possible to call mkoctfile

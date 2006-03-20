@@ -105,19 +105,20 @@
 
 function mkoctfile (varargin)
 
-  mkoctpath = strcat (octave_config_info.bindir, filesep, "mkoctfile");
-  
-  options = "";
+  bindir = octave_config_info ("bindir");
+
+  shell_script = fullfile (bindir, sprintf ("mkoctfile-%s", OCTAVE_VERSION));
+
+  cmd = shell_script;
   for i = 1:nargin
-    options = strcat (options, " ", varargin{i});
+    cmd = strcat (cmd, " ", varargin{i});
   endfor
   
-  cmd = strcat (mkoctpath, options);
-   
   status = system (cmd);
 
   if (status == 127)
-    warning ("unable to find mkoctfile in expected location: %s", mkoctpath);
+    warning ("unable to find mkoctfile in expected location: `%s'",
+	     shell_script);
   elseif (status != 0)
     warning ("mkoctfile exited with failure status");
   endif

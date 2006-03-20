@@ -339,7 +339,7 @@ less than zero and @var{msg} will contain additional information.\n\
 \n\
 You can use the function @code{dasrt_options} to set optional\n\
 parameters for @code{dasrt}.\n\
-@seealso{daspk, dasrt, lsode, odessa}\n\
+@seealso{daspk, dasrt, lsode}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -175,10 +175,9 @@
 	DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc,
 	DLD-FUNCTIONS/fftn.cc, DLD-FUNCTIONS/fftw_wisdom.cc,
 	DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/gcd.cc,
-	DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/odessa.cc,
-	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spchol.cc,
-	DLD-FUNCTIONS/splu.cc, DLD-FUNCTIONS/spqr.cc,
-	DLD-FUNCTIONS/sqrtm.cc:
+	DLD-FUNCTIONS/luinc.cc,	DLD-FUNCTIONS/sparse.cc,
+	DLD-FUNCTIONS/spchol.cc, DLD-FUNCTIONS/splu.cc,
+	DLD-FUNCTIONS/spqr.cc, DLD-FUNCTIONS/sqrtm.cc:
 	Move @seealso inside @defXXX macro.  Remove "and" from @seealso.
 
 2006-03-04  John W. Eaton  <jwe@octave.org>

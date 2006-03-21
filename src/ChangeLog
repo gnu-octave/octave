@@ -1,3 +1,9 @@
+2006-03-21  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.5.
+	(OCTAVE_API_VERSION): Now api-v18.
+	(OCTAVE_RELEASE_DATE): Now 2006-03-20.
+
 2006-03-21  David bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/getrusage.cc (Fgetrusage): Use GetProcessTimes for
@@ -15,7 +21,7 @@
 
 	* __gnuplot_raw__.l (F__gnuplot_show__): Temporarily use DEFCMD
 	instead of DEFUN.
-	(symbols_of___gnuplot_raw__): Temporarily ark __gnuplot_plot__,
+	(symbols_of___gnuplot_raw__): Temporarily mark __gnuplot_plot__,
 	__gnuplot_set__, __gnuplot_splot__, and __gnuplot_replot__ as raw
 	commands.
 

@@ -47,6 +47,7 @@ FORMATTED = octave.dvi octave.ps octave.pdf \
 MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
+# XXX FIXME XXX -- need to include generated figures here...
 DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
   $(SOURCES) $(TEXINFO) $(FORMATTED)
 
@@ -119,26 +120,25 @@ check: all
 .PHONY: check
 
 stamp-png:
-	make -C $(IMAGEDIR) png
+##	make -C $(IMAGEDIR) png
 	touch $@
 
 stamp-eps:
-	make -C $(IMAGEDIR) eps
+##	make -C $(IMAGEDIR) eps
 	touch $@
 
-stamp-pdf: stamp-eps
-	make -C ./ real-pdf
-
-real-pdf:
-	for F in $(wildcard *.eps); do \
-	  G=`basename $$F .eps`.pdf; \
-	  gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite \
-	    -sOutputFile=$$G $$F; \
-	done
+stamp-pdf: real-pdf
 	touch $@
+
+real-pdf: stamp-eps
+##	for F in $(wildcard *.eps); do \
+##	  G=`basename $$F .eps`.pdf; \
+##	  gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite \
+##	    -sOutputFile=$$G $$F; \
+##	done
 
 stamp-txt:
-	make -C $(IMAGEDIR) txt
+##	make -C $(IMAGEDIR) txt
 	touch $@
 
 install install-strip: all

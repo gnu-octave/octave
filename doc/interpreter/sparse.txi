@@ -327,10 +327,11 @@ There are several graphical means of finding out information about
 sparse matrices. The first is the @dfn{spy} command, which displays
 the structure of the non-zero elements of the
 matrix. @xref{fig:spmatrix}, for an exaple of the use of
-@dfn{spy}.More advanced graphical information can be obtained with the
+@dfn{spy}.  More advanced graphical information can be obtained with the
 @dfn{treeplot}, @dfn{etreeplot} and @dfn{gplot} commands.
 
 @float Figure,fig:spmatrix
+@ifset INCLUDE_FIGURES
 @ifinfo
 @example
 @include spmatrix.txt
@@ -339,6 +340,7 @@ matrix. @xref{fig:spmatrix}, for an exaple of the use of
 @ifset htmltex
 @image{spmatrix,8cm}
 @end ifset
+@end ifest
 @caption{Structure of simple sparse matrix.}
 @end float
 
@@ -367,7 +369,9 @@ the nodes are given in the n-by-2 matrix @code{xy}.
 @xref{fig:gplot}.
 
 @float Figure,fig:gplot
+@ifset INCLUDE_FIGURES
 @image{gplot,8cm}
+@end ifset
 @caption{Simple use of the @dfn{gplot} command.}
 @end float
 @end ifset
@@ -579,6 +583,7 @@ also available.
 positive definite matrix.
 
 @float Figure,fig:simplematrix
+@ifset INCLUDE_FIGURES
 @ifinfo
 @example
 @include spmatrix.txt
@@ -586,6 +591,7 @@ positive definite matrix.
 @end ifinfo
 @ifset htmltex
 @image{spmatrix,8cm}
+@end ifset
 @end ifset
 @caption{Structure of simple sparse matrix.}
 @end float
@@ -644,6 +650,7 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 @ifset HAVE_CHOLMOD
 @ifset HAVE_COLAMD
 @float Figure,fig:simplechol
+@ifset INCLUDE_FIGURES
 @ifinfo
 @example
 @include spchol.txt
@@ -652,10 +659,12 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 @ifset htmltex
 @image{spchol,8cm}
 @end ifset
+@end ifset
 @caption{Structure of the un-permuted Cholesky factorization of the above matrix.}
 @end float
 
 @float Figure,fig:simplecholperm
+@ifset INCLUDE_FIGURES
 @ifinfo
 @example
 @include spcholperm.txt
@@ -663,6 +672,7 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 @end ifinfo
 @ifset htmltex
 @image{spcholperm,8cm}
+@end ifset
 @end ifset
 @caption{Structure of the permuted Cholesky factorization of the above matrix.}
 @end float
@@ -1031,7 +1041,9 @@ value in the z-axis for each simplex vertex.
 @ifset HAVE_UMFPACK
 @ifset HAVE_COLAMD
 @float Figure,fig:femmodel
+@ifset INCLUDE_FIGURES
 @image{grid,8cm}
+@end ifset
 @caption{Example finite element model the showing triangular elements. 
 The height of each vertex corresponds to the solution value.}
 @end float

@@ -1,3 +1,12 @@
+2006-03-21  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/sparse.txi: Temporarily omit figures.
+	* interpreter/Makefile.in: Temporarily omit actions for making figures.
+
+	* interpreter/Makefile.in (real-pdf): Depend on stamp-eps
+	(stamp-pdf): Depend on real-pdf.  Touch stamp-pdf here.
+	(real-pdf): Not here.
+
 2006-03-16  David Bateman  <dbateman@free.fr>
 
 	* interpreter/images/sparseimages.m: set terminal type to dummy to

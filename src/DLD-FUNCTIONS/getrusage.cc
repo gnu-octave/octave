@@ -35,6 +35,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <sys/resource.h>
 #endif
 
+#if defined (__MINGW32__)
+#include <windows.h>
+#endif
+
 #if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
 
 #if defined (HAVE_SYS_PARAM_H)
@@ -133,6 +137,7 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   Octave_map m;
   Octave_map tv_tmp;
 
+  // XXX FIXME XX -- maybe encapsulate all of this in a liboctave class
 #if defined (HAVE_GETRUSAGE)
 
   struct rusage ru;
@@ -191,6 +196,20 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
   m.assign ("stime", octave_value (tv_tmp));
 
+#elif defined (__MINGW32__)
+  HANDLE hProcess = GetCurrentProcess ();
+  FILETIME ftCreation, ftExit, ftUser, ftKernel;
+  GetProcessTimes (hProcess, &ftCreation, &ftExit, &ftKernel, &ftUser);
+
+  EIGHT_BYTE_INT itmp = *(reinterpret_cast<EIGHT_BYTE_INT *> (&ftUser));
+  tv_tmp.assign ("sec", static_cast<double> (itmp / 10000000U));
+  tv_tmp.assign ("usec", static_cast<double> (itmp % 10000000U) / 10.);
+  m.assign ("utime", octave_value (tv_tmp));
+
+  itmp = *(reinterpret_cast<EIGHT_BYTE_INT *> (&ftKernel));
+  tv_tmp.assign ("sec", static_cast<double> (itmp / 10000000U));
+  tv_tmp.assign ("usec", static_cast<double> (itmp % 10000000U) / 10.);
+  m.assign ("stime", octave_value (tv_tmp));
 #else
 
   tv_tmp.assign ("sec", 0);

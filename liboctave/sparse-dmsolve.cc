@@ -395,7 +395,6 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 	pinv [p [i]] = i;
       RT btmp;
       dmsolve_permute (btmp, b, pinv);
-      SparseType mtyp (SparseType::Full);
       info = 0;
       retval.resize (nc, b_nc);
 
@@ -431,8 +430,9 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 	  RT btmp2 = dmsolve_extract (btmp, NULL, NULL, dm->rr [1], dm->rr [2], 
 				      0, b_nc);
 	  double rcond = 0.0;
+	  SparseType mtyp (SparseType::Full);
 	  RT mtmp = m.solve (mtyp, btmp2, info, rcond, 
-			     solve_singularity_warning);	
+			     solve_singularity_warning, false);	
 	  if (info != 0)
 	    {
 	      info = 0;

@@ -1,3 +1,14 @@
+2006-03-21  David Bateman  <dbateman@free.fr>
+
+	    * dSparse.cc (solve): Add argument singular_fallback, to allow
+	    fallback to QR solvers to be optional.
+	    * CSparse.cc (solve): ditto.
+	    * dSparse.h (solve): update declaration for new argument.
+	    * CSparse.h (solve): ditto.
+	    * sparse-dmsolve.cc (dmsolve): Use singular_fallback argument
+	    to bypass QR solvers when solving the well determined part of
+	    the problem.
+
 2006-03-17  John W. Eaton  <jwe@octave.org>
 
 	* str-vec.cc (vector::list_in_columns): New optional arg, width.

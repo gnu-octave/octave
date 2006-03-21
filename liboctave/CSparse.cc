@@ -6717,16 +6717,17 @@ SparseComplexMatrix::solve (SparseType &mattype, const Matrix& b,
 }
 
 ComplexMatrix
-SparseComplexMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_type& info, 
-			    double& rcond) const
+SparseComplexMatrix::solve (SparseType &mattype, const Matrix& b,
+			    octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexMatrix
-SparseComplexMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_type& err, 
-			    double& rcond, 
-			    solve_singularity_handler sing_handler) const
+SparseComplexMatrix::solve (SparseType &mattype, const Matrix& b,
+			    octave_idx_type& err, double& rcond, 
+			    solve_singularity_handler sing_handler,
+			    bool singular_fallback) const
 {
   ComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6753,7 +6754,7 @@ SparseComplexMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_typ
       return ComplexMatrix ();
     }
 
-  if (mattype.type(false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type(false) == SparseType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -6793,7 +6794,8 @@ SparseComplexMatrix::solve (SparseType &mattype, const SparseMatrix& b,
 SparseComplexMatrix
 SparseComplexMatrix::solve (SparseType &mattype, const SparseMatrix& b, 
 			    octave_idx_type& err, double& rcond,
-			    solve_singularity_handler sing_handler) const
+			    solve_singularity_handler sing_handler,
+			    bool singular_fallback) const
 {
   SparseComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6820,7 +6822,7 @@ SparseComplexMatrix::solve (SparseType &mattype, const SparseMatrix& b,
       return SparseComplexMatrix ();
     }
 
-  if (mattype.type(false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type(false) == SparseType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -6852,15 +6854,16 @@ SparseComplexMatrix::solve (SparseType &mattype, const ComplexMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::solve (SparseType &mattype, const ComplexMatrix& b, 
-		     octave_idx_type& info, double& rcond) const
+			    octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexMatrix
 SparseComplexMatrix::solve (SparseType &mattype, const ComplexMatrix& b, 
-		     octave_idx_type& err, double& rcond, 
-		     solve_singularity_handler sing_handler) const
+			    octave_idx_type& err, double& rcond, 
+			    solve_singularity_handler sing_handler,
+			    bool singular_fallback) const
 {
   ComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6887,7 +6890,7 @@ SparseComplexMatrix::solve (SparseType &mattype, const ComplexMatrix& b,
       return ComplexMatrix ();
     }
 
-  if (mattype.type(false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type(false) == SparseType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -6912,7 +6915,7 @@ SparseComplexMatrix::solve (SparseType &mattype,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b, 
-		     octave_idx_type& info) const
+			    octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
@@ -6920,7 +6923,7 @@ SparseComplexMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
-		     octave_idx_type& info, double& rcond) const
+			    octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
@@ -6928,7 +6931,8 @@ SparseComplexMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
 SparseComplexMatrix
 SparseComplexMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b, 
 			    octave_idx_type& err, double& rcond,
-			    solve_singularity_handler sing_handler) const
+			    solve_singularity_handler sing_handler,
+			    bool singular_fallback) const
 {
   SparseComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6955,7 +6959,7 @@ SparseComplexMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
       return SparseComplexMatrix ();
     }
 
-  if (mattype.type(false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type(false) == SparseType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE

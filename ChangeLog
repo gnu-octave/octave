@@ -1,3 +1,8 @@
+2006-03-21  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Only print warnings for missing functionality in
+	summary message.
+
 2006-03-14  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl (emit_print_function): Buffer extra message here and

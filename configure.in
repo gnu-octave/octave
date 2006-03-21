@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.501 $)
+AC_REVISION($Revision: 1.502 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -778,8 +778,8 @@ AC_ARG_WITH(umfpack,
   [  --without-umfpack       don't use UMFPACK, disable some sparse functionality],
   with_umfpack=$withval, with_umfpack=yes)
 
+warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
 if test "$with_umfpack" = yes && test "$with_amd" = yes; then
-  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
   with_umfpack=no
   AC_CHECK_HEADERS([ufsparse/umfpack.h umfpack/umfpack.h umfpack.h], [
     AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
@@ -806,9 +806,6 @@ if test "$with_umfpack" = yes && test "$with_amd" = yes; then
     break])
 fi
 
-if test -n "$warn_umfpack"; then
-  AC_MSG_WARN($warn_umfpack)
-fi
 AC_SUBST(TEXINFO_UMFPACK)
 
 COLAMD_LIBS=
@@ -818,8 +815,8 @@ AC_ARG_WITH(colamd,
   [  --without-colamd        don't use COLAMD, disable some sparse functionality],
   with_colamd=$withval, with_colamd=yes)
 
+warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_colamd" = yes; then
-  warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
   with_colamd=no
   AC_CHECK_HEADERS([ufsparse/colamd.h colamd/colamd.h colamd.h], [
     AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
@@ -831,9 +828,6 @@ if test "$with_colamd" = yes; then
     break])
 fi 
 
-if test -n "$warn_colamd"; then
-  AC_MSG_WARN($warn_colamd)
-fi
 AC_SUBST(TEXINFO_COLAMD)
 
 CCOLAMD_LIBS=
@@ -843,8 +837,8 @@ AC_ARG_WITH(ccolamd,
   [  --without-ccolamd       don't use CCOLAMD, disable some sparse functionality],
   with_ccolamd=$withval, with_ccolamd=yes)
 
+warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_ccolamd" = yes; then
-  warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
   with_ccolamd=no
   AC_CHECK_HEADERS([ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h], [
     AC_CHECK_LIB(ccolamd, ccolamd, [CCOLAMD_LIBS="-lccolamd"; with_ccolamd=yes])
@@ -855,10 +849,6 @@ if test "$with_ccolamd" = yes; then
     break])
 fi 
 
-if test -n "$warn_ccolamd"; then
-  AC_MSG_WARN($warn_ccolamd)
-fi
-
 CHOLMOD_LIBS=
 AC_SUBST(CHOLMOD_LIBS)
 
@@ -866,9 +856,9 @@ AC_ARG_WITH(cholmod,
   [  --without-cholmod       don't use CHOLMOD, disable some sparse functionality],
   with_cholmod=$withval, with_cholmod=yes)
 
+warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
 	test "$with_ccolamd" = yes && test "$with_amd" = yes; then
-  warn_cholmod="CHOLMOD not found. This will result in some lack of functionality for sparse matrices."
   with_cholmod=no
   AC_CHECK_HEADERS([ufsparse/cholmod.h cholmod/cholmod.h cholmod.h], [
     AC_CHECK_HEADERS([ufsparse/metis.h metis/metis.h metis.h], [
@@ -901,9 +891,6 @@ if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
     break])
 fi 
 
-if test -n "$warn_cholmod"; then
-  AC_MSG_WARN($warn_cholmod)
-fi
 AC_SUBST(TEXINFO_CHOLMOD)
 
 CXSPARSE_LIBS=
@@ -913,8 +900,8 @@ AC_ARG_WITH(cxsparse,
   [  --without-cxsparse       don't use CXSparse, disable some sparse functionality],
   with_cxsparse=$withval, with_cxsparse=yes)
 
+warn_cxsparse="CXSparse not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_cxsparse" = yes; then
-  warn_cxsparse="CXSparse not found. This will result in some lack of functionality for sparse matrices."
   with_cxsparse=no
   AC_CHECK_HEADERS([ufsparse/cs.h cxsparse/cs.h cs.h], [
     AC_CHECK_LIB(cxsparse, cs_di_sqr, [CXSPARSE_LIBS="-lcxsparse"; with_cxsparse=yes])
@@ -923,10 +910,6 @@ if test "$with_cxsparse" = yes; then
       warn_cxsparse=
     fi
     break])
-fi
-
-if test -n "$warn_cxsparse"; then
-  AC_MSG_WARN($warn_cxsparse)
 fi
 
 ### Handle shared library options.
@@ -1949,6 +1932,11 @@ fi
 
 if test -n "$warn_cholmod"; then
   AC_MSG_WARN($warn_cholmod)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_cxsparse"; then
+  AC_MSG_WARN($warn_cxsparse)
   warn_msg_printed=true
 fi
 

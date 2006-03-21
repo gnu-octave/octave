@@ -1,3 +1,8 @@
+2006-03-21  David bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/getrusage.cc (Fgetrusage): Use GetProcessTimes for
+	MinGW to obtain user and system times.
+
 2006-03-17  John W. Eaton  <jwe@octave.org>
 
 	* strfns.cc (F__list_in_columns__): New function.

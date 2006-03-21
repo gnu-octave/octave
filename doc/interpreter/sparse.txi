@@ -340,7 +340,7 @@ matrix. @xref{fig:spmatrix}, for an exaple of the use of
 @ifset htmltex
 @image{spmatrix,8cm}
 @end ifset
-@end ifest
+@end ifset
 @caption{Structure of simple sparse matrix.}
 @end float
 

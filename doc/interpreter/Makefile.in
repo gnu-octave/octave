@@ -114,7 +114,7 @@ octave.pdf: stamp-pdf $(TEXINFO)
 
 HTML/index.html: stamp-png $(TEXINFO)
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir)/.. $(MAIN_TEXINFO)
-	$(INSTALL_DATA) *.png ./HTML
+##	$(INSTALL_DATA) *.png ./HTML
 
 check: all
 .PHONY: check

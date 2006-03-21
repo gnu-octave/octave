@@ -1,3 +1,8 @@
+2006-03-21  John W. Eaton  <jwe@octave.org>
+
+	* misc/f77-fcn.h (F77_XFCN): Save octave_interrupt_immediately and
+	restore it if an exception occurs that causes a longjmp.
+
 2005-11-01  John W. Eaton  <jwe@octave.org>
 
 	* ranlib/ignbin.f, ranlib/ignpoi.f: Avoid arithmetic IF statements.

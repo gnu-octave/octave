@@ -54,9 +54,11 @@ extern "C" {
     { \
       octave_jmp_buf saved_context; \
       f77_exception_encountered = 0; \
+      sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
       octave_save_current_context ((char *) saved_context); \
       if (octave_set_current_context) \
 	{ \
+	  octave_interrupt_immediately = saved_octave_interrupt_immediately; \
           octave_restore_current_context ((char *) saved_context); \
 	  if (f77_exception_encountered) \
 	    F77_XFCN_ERROR (f, F); \

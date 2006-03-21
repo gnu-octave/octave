@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-ieee.h"
 #include "lo-specfun.h"
 #include "mx-inlines.cc"
+#include "lo-mappers.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -160,7 +161,13 @@ double
 xgamma (double x)
 {
   double result;
-  F77_XFCN (xdgamma, XDGAMMA, (x, result));
+
+  if (xisnan (x))
+    result = x;
+  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
+    result = octave_Inf;
+  else
+    F77_XFCN (xdgamma, XDGAMMA, (x, result));
   return result;
 }
 
@@ -170,9 +177,10 @@ xlgamma (double x)
   double result;
   double sgngam;
 
-  if (x <= 0)
-    (*current_liboctave_error_handler)
-      ("xlgamma: argument must be nonnegative");
+  if (xisnan (x))
+    result = x;
+  else if (x <= 0 || xisinf (x))
+    result = octave_Inf;
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 

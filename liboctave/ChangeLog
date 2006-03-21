@@ -5,8 +5,8 @@
 
 2006-03-21  David Bateman  <dbateman@free.fr>
 
-	* lo-specfun.cc (xlgamma): Require arg strictly greater than 0.
-	Use F77_XFCN instead of F77_FUNC for call to dlgams.
+	* lo-specfun.cc (xlgamma, xgamma): Trap special values.
+	(xlgamma): Use F77_XFCN instead of F77_FUNC for call to dlgams.
 
 	* dSparse.cc (solve): Add argument singular_fallback, to allow
 	fallback to QR solvers to be optional.

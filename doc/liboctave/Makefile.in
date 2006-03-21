@@ -30,10 +30,11 @@ SUB_TEXINFO = \
 
 TEXINFO = $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 
-FORMATTED = liboctave.dvi liboctave.ps liboctave.pdf \
-	liboctave.info liboctave*.html
+FORMATTED = liboctave.dvi liboctave.ps liboctave.pdf liboctave.info
 
 DISTFILES = Makefile.in gpl.texi $(TEXINFO) $(FORMATTED)
+
+DISTDIRS = HTML
 
 SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 
@@ -99,4 +100,5 @@ maintainer-clean: distclean
 
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/liboctave
+	for dir in $(DISTDIRS); do ln -s ../../../doc/liboctave/$$dir ../../`cat ../../.fname`/doc/liboctave/$$dir; done
 .PHONY: dist

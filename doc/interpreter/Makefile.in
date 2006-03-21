@@ -41,8 +41,7 @@ SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 
 FORMATTED = octave.dvi octave.ps octave.pdf \
-	octave.info octave.info-[0-9]* \
-	octave.html octave_*.html
+	octave.info octave.info-[0-9]*
 
 MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
@@ -50,6 +49,10 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 # XXX FIXME XXX -- need to include generated figures here...
 DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
   $(SOURCES) $(TEXINFO) $(FORMATTED)
+
+DISTDIRS = HTML
+
+DISTSUBDIRS = $(IMAGEDIR)
 
 # Look for version.h to get version information.
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
@@ -221,4 +224,6 @@ clean-texi:
 
 dist: clean-texi all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
+	for dir in $(DISTDIRS); do ln -s ../../../doc/interpreter/$$dir ../../`cat ../../.fname`/doc/interpreter/$$dir; done
+	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/doc/interpreter/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

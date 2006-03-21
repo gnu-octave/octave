@@ -22,10 +22,11 @@ SOURCES =
 
 TEXINFO := Octave-FAQ.texi
 
-FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf \
-	Octave-FAQ*.html
+FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf
 
 DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
+
+DISTDIRS := HTML
 
 SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
@@ -83,4 +84,5 @@ maintainer-clean: distclean
 
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
+	for dir in $(DISTDIRS); do ln -s ../../../doc/faq/$$dir ../../`cat ../../.fname`/doc/faq/$$dir; done
 .PHONY: dist

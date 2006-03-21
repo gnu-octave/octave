@@ -1,7 +1,21 @@
 2006-03-21  John W. Eaton  <jwe@octave.org>
 
+	* liboctave/Makefile.in (FORMATTED): Omit .html files here.
+	(DISTDIRS): New variable.
+	(dist): Handle $(DISTDIRS) here.
+
+	* faq/Makefile.in (FORMATTED): Omit .html files here.
+	(DISTDIRS): New variable.
+	(dist): Handle $(DISTDIRS) here.
+
+	* interpreter/Makefile.in (FORMATTED): Omit .html files here.
+	(DISTDIRS): New variable.
+	(dist): Handle $(DISTDIRS) here.
+
 	* interpreter/sparse.txi: Temporarily omit figures.
 	* interpreter/Makefile.in: Temporarily omit actions for making figures.
+	(DISTSUBDIRS): New macro.
+	(dist): Recurse into $(DISTSUBDIRS) here.
 
 	* interpreter/Makefile.in (real-pdf): Depend on stamp-eps
 	(stamp-pdf): Depend on real-pdf.  Touch stamp-pdf here.

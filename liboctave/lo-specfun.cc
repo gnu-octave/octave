@@ -170,11 +170,11 @@ xlgamma (double x)
   double result;
   double sgngam;
 
-  if (x < 0)
+  if (x <= 0)
     (*current_liboctave_error_handler)
       ("xlgamma: argument must be nonnegative");
-
-  F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
+  else
+    F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 
   return result;
 }
@@ -947,7 +947,7 @@ double
 betainc (double x, double a, double b)
 {
   double retval;
-  F77_FUNC (xdbetai, XDBETAI) (x, a, b, retval);
+  F77_XFCN (xdbetai, XDBETAI, (x, a, b, retval));
   return retval;
 }
 

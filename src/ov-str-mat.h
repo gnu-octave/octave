@@ -125,7 +125,7 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const;
 
-  string_vector all_strings (bool pad = false, bool force = false) const;
+  string_vector all_strings (void) const;
 
   std::string string_value (bool force = false) const;
 

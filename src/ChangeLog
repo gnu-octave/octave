@@ -4,6 +4,16 @@
 	(OCTAVE_API_VERSION): Now api-v18.
 	(OCTAVE_RELEASE_DATE): Now 2006-03-20.
 
+	* ov-cell.h (octave_cell::convert_to_str_internal):
+	Ignore pad and force args.
+	* ov-cell.cc (octave_cell::all_strings): Delete args.  Never pad.
+	* ov-base.cc (octave_base_value::all_strings): Delete args.
+	Always force string conversion, never pad.
+	* ov-str-mat.cc (octave_char_matrix_str::all_strings):
+	Delete args.  Don't strip whitespace.
+	* ov.h, ov-base.h, ov-cell.h, ov-str-mat.h: Fix all_strings decls.
+	* strfns.cc (Fchar): No args for all_strings.
+
 2006-03-21  David bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/getrusage.cc (Fgetrusage): Use GetProcessTimes for

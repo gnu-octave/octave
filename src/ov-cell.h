@@ -101,10 +101,10 @@ public:
 
   octave_value_list list_value (void) const;
 
-  octave_value convert_to_str_internal (bool pad, bool force, char type) const
-    { return octave_value (all_strings (pad, force), type); }
+  octave_value convert_to_str_internal (bool, bool, char type) const
+    { return octave_value (all_strings (), type); }
 
-  string_vector all_strings (bool pad = false, bool force = false) const;
+  string_vector all_strings (void) const;
 
   bool print_as_scalar (void) const;
 

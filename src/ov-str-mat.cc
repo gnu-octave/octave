@@ -210,7 +210,7 @@ octave_char_matrix_str::complex_array_value (bool force_string_conv) const
 }
 
 string_vector
-octave_char_matrix_str::all_strings (bool, bool) const
+octave_char_matrix_str::all_strings (void) const
 {
   string_vector retval;
 
@@ -223,7 +223,7 @@ octave_char_matrix_str::all_strings (bool, bool) const
       retval.resize (n);
 
       for (octave_idx_type i = 0; i < n; i++)
-	retval[i] = chm.row_as_string (i, true);
+	retval[i] = chm.row_as_string (i);
     }
   else
     error ("invalid conversion of charNDArray to string_vector");

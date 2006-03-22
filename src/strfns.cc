@@ -80,7 +80,7 @@ of the string array have the same length.\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args(i).all_strings (false, true);
+	  string_vector s = args(i).all_strings ();
 
 	  if (error_state)
 	    {
@@ -102,7 +102,7 @@ of the string array have the same length.\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args(i).all_strings (false, true);
+	  string_vector s = args(i).all_strings ();
 
 	  int n = s.length ();
 

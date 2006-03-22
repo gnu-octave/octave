@@ -291,7 +291,7 @@ octave_cell::list_value (void) const
 }
 
 string_vector
-octave_cell::all_strings (bool pad, bool) const
+octave_cell::all_strings (void) const
 {
   string_vector retval;
 
@@ -333,15 +333,7 @@ octave_cell::all_strings (bool pad, bool) const
 	  int n = s.length ();
 
 	  for (octave_idx_type ii = 0; ii < n; ii++)
-	    {
-	      std::string t = s[ii];
-	      int t_len = t.length ();
-
-	      if (pad && max_len > t_len)
-		t += std::string (max_len - t_len, ' ');
-
-	      retval[k++] = t;
-	    }
+	    retval[k++] = s[ii];
 	}
     }
 

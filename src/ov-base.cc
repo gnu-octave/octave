@@ -597,11 +597,11 @@ octave_base_value::uint64_array_value (void) const
 }
 
 string_vector
-octave_base_value::all_strings (bool pad, bool force) const
+octave_base_value::all_strings (void) const
 {
   string_vector retval;
 
-  octave_value tmp = convert_to_str (pad, force);
+  octave_value tmp = convert_to_str (false, true);
 
   if (! error_state)
     retval = tmp.all_strings ();

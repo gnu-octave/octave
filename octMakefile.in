@@ -148,7 +148,7 @@ maintainer-clean::
 dist-info-files: INSTALL.OCTAVE BUGS
 .PHONY: dist-info-files
 
-dist: dist-info-files
+dist: all dist-info-files
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`

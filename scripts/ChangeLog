@@ -1,3 +1,7 @@
+2006-03-22  John W. Eaton  <jwe@octave.org>
+
+	* plot/print.m: Don't replot after popping terminal setting.
+
 2006-03-20  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/mkoctfile.m: Use version-specific name of

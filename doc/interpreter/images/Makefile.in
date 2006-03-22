@@ -6,11 +6,16 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
-SOURCES = $(wildcard $(srcdir)/*.m)
+SOURCES = sparseimages.m
 
-FUNCTIONS = $(patsubst %.m, %, $(notdir $(SOURCES)))
+SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
+SPARSEIMAGES = \
+  $(addsuffix .eps, $(SPARSEIMAGES_1)) \
+  $(addsuffix .png, $(SPARSEIMAGES_1)) \
+  $(addsuffix .txt, $(SPARSEIMAGES_1))
+IMAGES += $(SPARSEIMAGES) $(addsuffix .pdf, $(SPARSEIMAGES_1))
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = Makefile.in $(SOURCES) $(IMAGES)
 
 OCTAVE_BINARY = $(TOPDIR)/src/octave
 
@@ -26,18 +31,21 @@ ifeq ($(SHARED_LIBS), true)
   SET_LD_LIBRARY_PATH = @library_path_var@="$(XLD_LIBRARY_PATH)"
 endif
 
-all: png eps txt
+all: $(IMAGES)
 .PHONY: all
 
-png eps txt:
-	for F in $(FUNCTIONS); do \
-	  $(SET_LD_LIBRARY_PATH) $(OCTAVE_BINARY) \
-	    -f -q -H -p $(OCTAVE_SCRIPT_PATH) --eval "$$F ('../','$@')"; \
-	done
-.PHONY: png eps txt
+define run-octave
+  $(SET_LD_LIBRARY_PATH) $(OCTAVE_BINARY) -f -q -H -p $(OCTAVE_SCRIPT_PATH) \
+    --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))')"
+endef
+
+$(SPARSEIMAGES): sparseimages.m
+	$(run-octave)
+
+%.pdf : %.eps
+	if [ -f $< ] ; then gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
 
 install install-strip:
-
 .PHONY: install install-strip
 
 uninstall:
@@ -61,6 +69,7 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS
+	rm -f $(IMAGES)
 .PHONY: maintainer-clean
 
 dist:

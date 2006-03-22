@@ -1,62 +1,90 @@
-function sparseimages(dirc,typ)
-  ## XXX FIXME XXX 
-  ## How do we set terminal and direct the output to /dev/null without
-  ## gnuplot? Note that due to replot in print.m, the redirection to
-  ## /dev/null effectively doesn't work at the moment.
+function sparseimages(nm,typ)
+  if (strcmp(typ,"txt"))
+    txtimages(nm,15,typ);
+  else
+    otherimages(nm,200,typ);
+    if (strcmp (nm, "gplot"))
+      gplotimages("gplot",typ);
+    endif
+    if (strcmp (nm, "grid"))
+      femimages("grid",typ);
+    endif
+  endif
+  ## Kluge to give gnuplot enough time to process last figure before we
+  ## exit.  Otherwise, Octave will delete the temporary data files when
+  ## it exits and gnuplot will fail...
+  sleep (1);
+endfunction
+
+## Use this function before plotting commands and after every call to
+## print since print() resets output to stdout (unfortunately, gnpulot
+## can't pop output as it can the terminal type).
+function bury_output ()
+  automatic_replot = false;
   __gnuplot_set__ term dumb
   [status, dummy] = fileattrib("/dev/null");
   if (status)
     __gnuplot_set__ output '/dev/null'
   endif
-  plot(1) # FIXME bypass 2.9.4 bug!!
-  if (strcmp(typ,"txt"))
-    txtimages(15,dirc,typ);
-  else
-    otherimages(200,dirc,typ);
-    gplotimages("gplot",dirc,typ);
-    femimages("grid",dirc,typ);
-  endif
 endfunction
 
-function gplotimages(nm,dirc,typ)
+function gplotimages(nm,typ)
+  bury_output ();
   A = sparse([2,6,1,3,2,4,3,5,4,6,1,5],
 	     [1,1,2,2,3,3,4,4,5,5,6,6],1,6,6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
   gplot(A,xy)
-  print(strcat(dirc,filesep,nm,".",typ),strcat("-d",typ))
+  print(strcat(nm,".",typ),strcat("-d",typ))
+  bury_output ();
 endfunction
 
-function txtimages(n,dirc,typ)
+function txtimages(nm,n,typ)
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
-  printsparse(a,strcat(dirc,filesep,"spmatrix.",typ));
+  if (strcmp (nm, "spmatrix"))
+    printsparse(a,strcat("spmatrix.",typ));
+  endif
   if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
     r1 = chol(a);
-    printsparse(r1,strcat(dirc,filesep,"spchol.",typ));
+    if (strcmp (nm, "spchol"))
+      printsparse(r1,strcat("spchol.",typ));
+    endif
     [r2,p2,q2]=chol(a);
-    printsparse(r2,strcat(dirc,filesep,"spcholperm.",typ));
-    printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
+    if (strcmp (nm, "spcholperm"))
+      printsparse(r2,strcat("spcholperm.",typ));
+    endif
+    ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
   endif
 endfunction
 
-function otherimages(n,dirc,typ)
+function otherimages(nm,n,typ)
+  bury_output ();
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
   spy(a);
   axis("ij")
-  print(strcat(dirc,filesep,"spmatrix.",typ),strcat("-d",typ))
+  if (strcmp (nm, "spmatrix"))
+    print(strcat("spmatrix.",typ),strcat("-d",typ))
+    bury_output ();
+  endif
   if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
     r1 = chol(a);
     spy(r1);
     axis("ij")
-    print(strcat(dirc,filesep,"spchol.",typ),strcat("-d",typ))
+    if (strcmp (nm, "spchol"))
+      print(strcat("spchol.",typ),strcat("-d",typ))
+      bury_output ();
+    endif
     [r2,p2,q2]=chol(a);
     spy(r2);
     axis("ij")
-    print(strcat(dirc,filesep,"spcholperm.",typ),strcat("-d",typ))
-    printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
+    if (strcmp (nm, "spcholperm"))
+      print(strcat("spcholperm.",typ),strcat("-d",typ))
+      bury_output ();
+    endif
+    ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     axis("xy")
   endif
 endfunction
@@ -98,7 +126,8 @@ function printsparse(a,nm)
   fclose(fid);
 endfunction
 
-function femimages (nm,dirc,typ)
+function femimages (nm,typ)
+  bury_output ();
   if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")) &&
       !isempty(findstr(octave_config_info ("DEFS"),"HAVE_UMFPACK")))
@@ -178,7 +207,8 @@ function femimages (nm,dirc,typ)
       tmp = [([xelems; NaN*ones(1,sz)])(:), ([yelems; NaN*ones(1,sz)])(:), ([velems; NaN*ones(1,sz)])(:)];
       __gnuplot_splot__(tmp);
       __gnuplot_raw__ ("set view 80,10;\n")
-      print(strcat(dirc,filesep,nm,".",typ),strcat("-d",typ))
+      print(strcat(nm,".",typ),strcat("-d",typ))
+      bury_output ();
     unwind_protect_cleanup
       __gnuplot_set__ noparametric; 
     end_unwind_protect

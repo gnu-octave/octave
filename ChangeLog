@@ -1,3 +1,13 @@
+2006-03-22  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in: (TEXINFO_COLAMD, TEXINFO_CHOLMOD, TEXINFO_UMFPACK):
+	Substitute here.
+	(do-subst-texinfo-vals): New macro definition.
+
+	* configure.in: Don't substitute OCTAVE_VERSION, OCTAVE_HOSTTYPE,
+	or OCTAVE_HOME.
+	(AC_CONFIG_FILES): Remove doc/conf.texi from the list.
+
 2006-03-21  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Only print warnings for missing functionality in

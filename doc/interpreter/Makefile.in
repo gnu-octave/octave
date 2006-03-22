@@ -19,7 +19,6 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 IMAGEDIR = images
-STAMPS = stamp-png stamp-eps stamp-pdf stamp-txt
 
 SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	container.txi control.txi cp-idx.txi data.txi \
@@ -89,17 +88,21 @@ scripts-DOCSTRINGS:
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
-octave.info: stamp-txt $(TEXINFO)
-	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
+stamp-images:
+	$(MAKE) -C images
+	touch $@
 
-octave.dvi: stamp-eps $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
+octave.info: stamp-images $(TEXINFO)
+	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. -I$(IMAGEDIR) $(MAIN_TEXINFO)
+
+octave.dvi: stamp-images $(TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(IMAGEDIR):$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
-octave.pdf: stamp-pdf $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
+octave.pdf: stamp-images $(TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(IMAGEDIR):$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -115,34 +118,18 @@ octave.pdf: stamp-pdf $(TEXINFO)
 	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-HTML/index.html: stamp-png $(TEXINFO)
-	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir)/.. $(MAIN_TEXINFO)
-##	$(INSTALL_DATA) *.png ./HTML
+HTML/index.html: html-figs $(TEXINFO)
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. -I$(IMAGEDIR) $(MAIN_TEXINFO)
+
+html-figs: stamp-images html-dir
+	$(INSTALL_DATA) images/*.png HTML
+.PHONY: html-figs
+
+html-dir:
+	if [ -d HTML ]; then true; else mkdir HTML; fi
 
 check: all
 .PHONY: check
-
-stamp-png:
-##	make -C $(IMAGEDIR) png
-	touch $@
-
-stamp-eps:
-##	make -C $(IMAGEDIR) eps
-	touch $@
-
-stamp-pdf: real-pdf
-	touch $@
-
-real-pdf: stamp-eps
-##	for F in $(wildcard *.eps); do \
-##	  G=`basename $$F .eps`.pdf; \
-##	  gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite \
-##	    -sOutputFile=$$G $$F; \
-##	done
-
-stamp-txt:
-##	make -C $(IMAGEDIR) txt
-	touch $@
 
 install install-strip: all
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir)
@@ -199,21 +186,20 @@ TAGS: $(SOURCES)
 spell: $(SPELL)
 .PHONY: spell
 
-mostlyclean clean:
+mostlyclean clean::
 	rm -f octave.cp octave.fn octave.in \
 	octave.ky octave.op octave.pg octave.rd octave.tp octave.vr \
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi$(BUILD_EXEEXT) munge-texi.o $(STAMPS) \
-	*.eps *.png *.txt *.pdf
+	munge-texi$(BUILD_EXEEXT) munge-texi.o \
 .PHONY: mostlyclean clean
 
-distclean: clean
+distclean:: clean
 	rm -f Makefile 
 .PHONY: distclean
 
-maintainer-clean: distclean clean-texi
+maintainer-clean:: distclean clean-texi
 	rm -f tags TAGS $(FORMATTED)
 	rm -rf HTML
 .PHONY: maintainer-clean

@@ -20,14 +20,17 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-DISTFILES = Makefile.in ChangeLog conf.texi.in texinfo.tex 
+DISTFILES = Makefile.in ChangeLog conf.texi.in conf.texi texinfo.tex 
 
 SUBDIRS = faq interpreter liboctave refcard
 
 DISTSUBDIRS = $(SUBDIRS)
 
-all: $(SUBDIRS)
+all: conf.texi $(SUBDIRS)
 .PHONY: all
+
+conf.texi: conf.texi.in $(TOPDIR)/Makeconf
+	@$(do-subst-texinfo-vals)
 
 ../BUGS ../INSTALL.OCTAVE:
 	$(MAKE) -C interpreter ../$@
@@ -57,7 +60,7 @@ distclean::
 maintainer-clean::
 	rm -f tags TAGS Makefile
 
-dist:
+dist: conf.texi
 	ln $(DISTFILES) ../`cat ../.fname`/doc
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

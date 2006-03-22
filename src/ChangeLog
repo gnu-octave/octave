@@ -1,8 +1,10 @@
-2006-03-21  John W. Eaton  <jwe@octave.org>
+2006-03-22  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.5.
 	(OCTAVE_API_VERSION): Now api-v18.
-	(OCTAVE_RELEASE_DATE): Now 2006-03-20.
+	(OCTAVE_RELEASE_DATE): Now 2006-03-22.
+
+2006-03-21  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.h (octave_cell::convert_to_str_internal):
 	Ignore pad and force args.

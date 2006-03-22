@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.502 $)
+AC_REVISION($Revision: 1.503 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -417,17 +417,6 @@ case "$canonical_host_type" in
     AC_CHECK_LIB(m, sin)
   ;;
 esac
-
-### Extract versioning information from src/version.h, etc
-AC_MSG_CHECKING(for octave version)
-OCTAVE_VERSION=`cat src/version.h | grep "^#define OCTAVE_VERSION" | \
-  sed -e 's/^.*OCTAVE_VERSION \"//' -e 's/\"//'`
-AC_MSG_RESULT($OCTAVE_VERSION)
-AC_SUBST(OCTAVE_VERSION)
-OCTAVE_HOME=$prefix
-AC_SUBST(OCTAVE_HOME)
-OCTAVE_HOSTTYPE=$canonical_host_type
-AC_SUBST(OCTAVE_HOSTTYPE)
 
 ### Check for pcre/regex library.
 AC_SUBST(REGEX_LIBS)
@@ -1790,7 +1779,7 @@ typedef int sig_atomic_t;
 ### Do the substitutions in all the Makefiles.
 
 AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile \
-  dlfcn/Makefile doc/Makefile doc/conf.texi doc/faq/Makefile \
+  dlfcn/Makefile doc/Makefile doc/faq/Makefile \
   doc/interpreter/Makefile doc/interpreter/images/Makefile \
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile \
   examples/Makefile liboctave/Makefile liboctave/oct-types.h \

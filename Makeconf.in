@@ -205,6 +205,10 @@ LIBS = @LIBS@
 
 USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
 
+TEXINFO_COLAMD = @TEXINFO_COLAMD@
+TEXINFO_CHOLMOD = @TEXINFO_CHOLMOD@
+TEXINFO_UMFPACK = @TEXINFO_UMFPACK@
+
 # The arguments passed to configure.
 config_opts = @config_opts@
 
@@ -537,6 +541,19 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
   -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"
+$(top_srcdir)/move-if-change $@-t $@
+endef
+
+define do-subst-texinfo-vals
+echo "making $@ from $<"
+$(SED) < $< \
+  -e "s|%CANONICAL_HOST_TYPE%|${canonical_host_type}|" \
+  -e "s|%OCTAVE_HOME%|${prefix}|" \
+  -e "s|%OCTAVE_VERSION%|${version}|" \
+  -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
+  -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
+  -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" | \
+  $(SED)  -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
 $(top_srcdir)/move-if-change $@-t $@
 endef
 

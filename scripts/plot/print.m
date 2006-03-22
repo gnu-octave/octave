@@ -336,7 +336,6 @@ function print (varargin)
     ## Restore init state
     __gnuplot_raw__ ("set terminal pop;\n");
     __gnuplot_raw__ ("set output;\n")
-    __gnuplot_replot__
 
   end_unwind_protect
 

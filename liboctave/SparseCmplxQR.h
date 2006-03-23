@@ -137,6 +137,23 @@ protected:
 #endif
 };
 
+
+// Publish externally used friend functions.
+
+extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
+			      octave_idx_type &info);
+
+extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
+				    const SparseMatrix &b,
+				    octave_idx_type &info);
+
+extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
+			      const ComplexMatrix &b,
+			      octave_idx_type &info);
+
+extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
+				    const SparseComplexMatrix &b,
+				    octave_idx_type &info);
 #endif
 
 /*

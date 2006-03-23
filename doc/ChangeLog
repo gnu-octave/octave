@@ -1,7 +1,7 @@
 2006-03-22  John W. Eaton  <jwe@octave.org>
 
-	* interpreter/sparse.txi: Always use @image to include image files.
-
+	* interpreter/sparse.txi: Undo previous change.
+	Always use @image to include image files.
 	* interpreter/Makefile.in: Eliminate stamp files.
 	(clean, mostlyclean, distclean, maintainer-clean): Now
 	double-colon targets.
@@ -9,14 +9,13 @@
 	(octave.info, octave.dvi, octave.pdf, HTML/index.html): Depend on it.
 	* interpreter/images/Makefile.in: Explicitly list images to be
 	created and their dependencies.
-	* interpreter/images/sparseimages.m: Delete dirc arg.
-	Sleep for 1 second before returning from main function.
+	* interpreter/images/sparseimages.m (sparseimage): Delete dirc arg.
+	Sleep for 1 second before returning.
+	(txtimages): Also create gplot.txt and grid.txt.
 	(sparseimages): Don't redirect output here.
 	New arg, nm.  Only output a single figure at a time.
 	(bury_output): New function.  Use it before plotting commands and
 	after every print function.
-
-	* interpreter/sparse.txi: Undo previous change.
 	* Makefile.in (conf.texi): New target.
 	(DISTFILES): Include conf.texi in the list.
 	(all, dist): Depend on conf.texi.

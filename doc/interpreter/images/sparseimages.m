@@ -41,6 +41,13 @@ endfunction
 function txtimages(nm,n,typ)
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
+  if (strcmp (nm, "gplot") || strcmp (nm, "grid"))
+    fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fputs (fid, "+---------------------------------+\n");
+    fputs (fid, "| Image unavailable in text mode. |\n");
+    fputs (fid, "+---------------------------------+\n");
+    fclose (fid);
+  endif
   if (strcmp (nm, "spmatrix"))
     printsparse(a,strcat("spmatrix.",typ));
   endif

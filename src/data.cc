@@ -689,8 +689,10 @@ do_cat (const octave_value_list& args, std::string fname)
 
   int n_args = args.length (); 
 
-  if (n_args == 2)
-      retval = args(1);
+  if (n_args == 1)
+    retval = Matrix ();
+  else if (n_args == 2)
+    retval = args(1);
   else if (n_args > 2)
     {
       octave_idx_type dim = args(0).int_value () - 1;

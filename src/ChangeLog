@@ -1,3 +1,7 @@
+2005-10-25  David Bateman  <dbateman@free.fr>
+
+        * data.cc (do_cat): With 1 arg, return [](0x0) for compatibility.
+
 2006-03-23  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.5+.

@@ -651,8 +651,8 @@ public:
   virtual uint64NDArray uint64_array_value (void) const
     { return rep->uint64_array_value (); }
 
-  virtual string_vector all_strings (void) const
-    { return rep->all_strings (); }
+  virtual string_vector all_strings (bool pad = false) const
+    { return rep->all_strings (pad); }
 
   virtual std::string string_value (bool force = false) const
     { return rep->string_value (force); }

@@ -265,7 +265,7 @@ public:
 
   uint64NDArray uint64_array_value (void) const;
 
-  string_vector all_strings (void) const;
+  string_vector all_strings (bool pad = false) const;
 
   std::string string_value (bool force = false) const;
 

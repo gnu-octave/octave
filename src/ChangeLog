@@ -1,3 +1,14 @@
+2006-03-24  John W. Eaton  <jwe@octave.org>
+
+	* ov-cell.h (octave_cell::convert_to_str_internal):
+	Undo previous change for pad arg.
+	* ov-cell.cc (octave_cell::all_strings): Reinstate pad arg, pass
+	it on to all_strings.
+	* ov.h (octave_value::all_strings): Reinstate pad arg.
+	* ov-base.cc (octave_base_value::all_strings): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::all_strings): Likewise.
+	* ov.h, ov-base.h, ov-cell.h, ov-str-mat.h: Fix all_strings decls.
+
 2005-10-25  David Bateman  <dbateman@free.fr>
 
         * data.cc (do_cat): With 1 arg, return [](0x0) for compatibility.

@@ -559,27 +559,6 @@ Matrix::row (octave_idx_type i) const
   return retval;
 }
 
-RowVector
-Matrix::row (char *s) const
-{
-  if (! s)
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return RowVector ();
-    }
-
-  char c = *s;
-  if (c == 'f' || c == 'F')
-    return row ( static_cast<octave_idx_type>(0) );
-  else if (c == 'l' || c == 'L')
-    return row (rows () - 1);
-  else
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return RowVector ();
-    }
-}
-
 ColumnVector
 Matrix::column (octave_idx_type i) const
 {
@@ -595,27 +574,6 @@ Matrix::column (octave_idx_type i) const
     retval.xelem (j) = elem (j, i);
 
   return retval;
-}
-
-ColumnVector
-Matrix::column (char *s) const
-{
-  if (! s)
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector ();
-    }
-
-  char c = *s;
-  if (c == 'f' || c == 'F')
-    return column (static_cast<octave_idx_type> (0));
-  else if (c == 'l' || c == 'L')
-    return column (cols () - 1);
-  else
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector ();
-    }
 }
 
 Matrix

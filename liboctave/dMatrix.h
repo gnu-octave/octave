@@ -102,10 +102,8 @@ public:
   // extract row or column i.
 
   RowVector row (octave_idx_type i) const;
-  RowVector row (char *s) const;
 
   ColumnVector column (octave_idx_type i) const;
-  ColumnVector column (char *s) const;
 
   Matrix inverse (void) const;
   Matrix inverse (octave_idx_type& info) const;

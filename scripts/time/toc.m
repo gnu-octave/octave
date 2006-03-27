@@ -37,12 +37,11 @@ function secs = toc ()
     secs0 = [];
   else
     secs0 = etime (clock (), __tic_toc_timestamp__);
+    if (nargout != 0)
+      secs = secs0;
+    else
+      printf ("Elapsed time is %f seconds.\n", secs0);
+    endif  
   endif
-  
-  if (nargout != 0)
-    secs = secs0;
-  else
-    printf ("Elapsed time is %f seconds.\n", secs0);
-  endif  
 
 endfunction

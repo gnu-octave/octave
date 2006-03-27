@@ -536,9 +536,13 @@ octave_list::save_ascii (std::ostream& os, bool& infnan_warned,
   for (int i = 0; i < lst.length (); ++i)
     {
       // should we use lst.name_tags () to label the elements?
-      char s[20];
-      sprintf (s, "_%d", i);
-      bool b = save_ascii_data (os, lst (i), s, infnan_warned, 
+
+      OSSTREAM buf;
+      buf << "_" << i << OSSTREAM_ENDS;
+      std::string s = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
+
+      bool b = save_ascii_data (os, lst (i), s.c_str (), infnan_warned, 
 				strip_nan_and_inf, 0, 0);
       
       if (! b)
@@ -607,11 +611,15 @@ octave_list::save_binary (std::ostream& os, bool& save_as_floats)
   for (int i = 0; i < lst.length (); i++)
     {
       // should we use lst.name_tags () to label the elements?
-      char s[20];
-      sprintf (s, "_%d", i);
+
+      OSSTREAM buf;
+      buf << "_" << i << OSSTREAM_ENDS;
+      std::string s = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
 
       // Recurse to print sub-value.
-      bool b = save_binary_data (os, lst(i), s, "", 0, save_as_floats);
+      bool b = save_binary_data (os, lst(i), s.c_str (), "", 0,
+				 save_as_floats);
 	      
       if (! b)
 	return false;
@@ -683,9 +691,13 @@ octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   for (octave_idx_type i = 0; i < lst.length (); ++i)
     {
       // should we use lst.name_tags () to label the elements?
-      char s[20];
-      sprintf (s, "_%d", i);
-      bool retval2 = add_hdf5_data (data_hid, lst (i), s, "",
+
+      OSSTREAM buf;
+      buf << "_" << i << OSSTREAM_ENDS;
+      std::string s = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
+
+      bool retval2 = add_hdf5_data (data_hid, lst (i), s.c_str (), "",
 				    false, save_as_floats);
       if (! retval2)
 	break;

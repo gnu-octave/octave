@@ -1,3 +1,14 @@
+2006-03-24  John W. Eaton  <jwe@octave.org>
+
+	* dSparse.cc (SparseMatrix::bsolve): Integer work vector is
+	Array<octave_idx_type>, so fortran_vec returns pointer to
+	octave_idx_type, not pointer to int.
+
+	* CMatrix.cc, CMatrix.h (ComplexMatrix::row (char*),
+	ComplexMatrix::column (char*)): Delete.
+	* dMatrix.cc, dMatrix.h (Matrix::row (char*),
+	Matrix::column (char*)): Delete.
+
 2006-03-21  David Bateman  <dbateman@free.fr>
 
 	* SparseQR.h: Publish externally used friends.

@@ -1,3 +1,8 @@
+2006-03-24  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/images/sparseimages.m:
+	Avoid some unnecessary calculations.
+
 2006-03-22  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/sparse.txi: Undo previous change.

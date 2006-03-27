@@ -130,10 +130,8 @@ public:
   // extract row or column i.
 
   ComplexRowVector row (octave_idx_type i) const;
-  ComplexRowVector row (char *s) const;
 
   ComplexColumnVector column (octave_idx_type i) const;
-  ComplexColumnVector column (char *s) const;
 
   ComplexMatrix inverse (void) const;
   ComplexMatrix inverse (octave_idx_type& info) const;

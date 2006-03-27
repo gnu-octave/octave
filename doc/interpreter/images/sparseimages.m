@@ -2,12 +2,12 @@ function sparseimages(nm,typ)
   if (strcmp(typ,"txt"))
     txtimages(nm,15,typ);
   else
-    otherimages(nm,200,typ);
     if (strcmp (nm, "gplot"))
       gplotimages("gplot",typ);
-    endif
-    if (strcmp (nm, "grid"))
+    elseif (strcmp (nm, "grid"))
       femimages("grid",typ);
+    else
+      otherimages(nm,200,typ);
     endif
   endif
   ## Kluge to give gnuplot enough time to process last figure before we
@@ -47,21 +47,20 @@ function txtimages(nm,n,typ)
     fputs (fid, "| Image unavailable in text mode. |\n");
     fputs (fid, "+---------------------------------+\n");
     fclose (fid);
-  endif
-  if (strcmp (nm, "spmatrix"))
+  elseif (strcmp (nm, "spmatrix"))
     printsparse(a,strcat("spmatrix.",typ));
-  endif
-  if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-      !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
-    r1 = chol(a);
-    if (strcmp (nm, "spchol"))
-      printsparse(r1,strcat("spchol.",typ));
+  else
+    if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
+	!isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
+      if (strcmp (nm, "spchol"))
+	r1 = chol(a);
+	printsparse(r1,strcat("spchol.",typ));
+      elseif (strcmp (nm, "spcholperm"))
+	[r2,p2,q2]=chol(a);
+	printsparse(r2,strcat("spcholperm.",typ));
+      endif
+      ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
-    [r2,p2,q2]=chol(a);
-    if (strcmp (nm, "spcholperm"))
-      printsparse(r2,strcat("spcholperm.",typ));
-    endif
-    ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
   endif
 endfunction
 
@@ -69,30 +68,29 @@ function otherimages(nm,n,typ)
   bury_output ();
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
-  spy(a);
-  axis("ij")
   if (strcmp (nm, "spmatrix"))
+    spy(a);
+    axis("ij")
     print(strcat("spmatrix.",typ),strcat("-d",typ))
     bury_output ();
-  endif
-  if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-      !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
-    r1 = chol(a);
-    spy(r1);
-    axis("ij")
-    if (strcmp (nm, "spchol"))
-      print(strcat("spchol.",typ),strcat("-d",typ))
-      bury_output ();
-    endif
-    [r2,p2,q2]=chol(a);
-    spy(r2);
-    axis("ij")
-    if (strcmp (nm, "spcholperm"))
-      print(strcat("spcholperm.",typ),strcat("-d",typ))
-      bury_output ();
-    endif
-    ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
-    axis("xy")
+  else
+    if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
+	!isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
+      if (strcmp (nm, "spchol"))
+	r1 = chol(a);
+	spy(r1);
+	axis("ij")
+	print(strcat("spchol.",typ),strcat("-d",typ))
+	bury_output ();
+      elseif (strcmp (nm, "spcholperm"))
+	[r2,p2,q2]=chol(a);
+	spy(r2);
+	axis("ij")
+	print(strcat("spcholperm.",typ),strcat("-d",typ))
+	bury_output ();
+      endif
+      ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
+      axis("xy")
   endif
 endfunction
 

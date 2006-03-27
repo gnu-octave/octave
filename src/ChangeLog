@@ -1,5 +1,13 @@
 2006-03-24  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/spchol.cc (Fsymbfact): Use CHOLMOD_NAME to select
+	proper version of row_subtree function.
+
+	* ov-cell.cc (octave_cell::save_hdf5): Use OSSTREAM instead of
+	fixed character buffer and sprintf.
+	* ov-list.cc (octave_list::save_hdf5, octave_list::save_ascii,
+	octave_list::save_binary): Likewise.
+
 	* ov-cell.h (octave_cell::convert_to_str_internal):
 	Undo previous change for pad arg.
 	* ov-cell.cc (octave_cell::all_strings): Reinstate pad arg, pass

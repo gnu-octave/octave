@@ -783,10 +783,12 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   
   for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
-      char s[20];
-      sprintf (s, "_%d", i);
+      OSSTREAM buf;
+      buf << "_" << i << OSSTREAM_ENDS;
+      std::string s = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
 
-      if (! add_hdf5_data(data_hid, tmp.elem (i), s, "", false,
+      if (! add_hdf5_data(data_hid, tmp.elem (i), s.c_str (), "", false,
 			  save_as_floats))
 	{
 	  H5Gclose (data_hid);

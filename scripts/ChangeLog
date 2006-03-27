@@ -1,3 +1,12 @@
+2006-03-27  Don Bindner  <dbindner@truman.edu>
+
+	* plot/meshgrid.m: If nargout == 3 and vectors are supplied,
+	return 3d matrices.
+
+2006-03-27  Keith Goodman  <kwgoodman@gmail.com>
+
+	* time/toc.m: Don't print "Elapsed time..." if tic has not been set.
+
 2006-03-22  John W. Eaton  <jwe@octave.org>
 
 	* plot/print.m: Don't replot after popping terminal setting.

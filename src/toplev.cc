@@ -422,7 +422,7 @@ exit status of the command and the second is any output from the\n\
 command that was written to the standard output stream.  For example,\n\
 \n\
 @example\n\
-[output, status] = system (\"echo foo; exit 2\");\n\
+[status, output] = system (\"echo foo; exit 2\");\n\
 @end example\n\
 \n\
 @noindent\n\

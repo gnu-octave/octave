@@ -607,7 +607,7 @@ factorization as determined by @var{typ}.\n\
 	  for (octave_idx_type k = 0 ; k < n ; k++)
 	    {
 	      // get the kth row of L and store in the columns of L
-	      cholmod_row_subtree (A1, A2, k, Parent, R, cm) ;
+	      CHOLMOD_NAME (row_subtree) (A1, A2, k, Parent, R, cm) ;
 	      for (octave_idx_type p = 0 ; p < Rp [1] ; p++)
 		L.xridx (W [Ri [p]]++) = k ;
 

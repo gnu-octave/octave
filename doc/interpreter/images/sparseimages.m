@@ -90,7 +90,7 @@ function otherimages(nm,n,typ)
 	bury_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
-      axis("xy")
+    endif
   endif
 endfunction
 

@@ -1,3 +1,8 @@
+2006-03-27  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/images/sparseimages.m: Fix missing endif.  Omit
+	unnecessary call to axis.
+
 2006-03-24  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/images/sparseimages.m:

@@ -31,7 +31,7 @@ function retval = isvector (x)
 
   if (nargin == 1)
     sz = size (x);
-    retval = (isnumeric (x) && ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
+    retval = (ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
   else
     usage ("isvector (x)");
   endif

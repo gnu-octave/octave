@@ -1,3 +1,13 @@
+2006-03-28  John W. Eaton  <jwe@octave.org>
+
+	* general/isscalar.m: Only require that all dimensions are 1 for
+	compatiblity.
+
+2006-03-28  Bill Denney  <bill@givebillmoney.com>
+
+	* general/isvector.m: Allow non-numeric objects to be vectors for
+	compatibility.
+
 2006-03-28  Keith Goodman  <kwgoodman@gmail.com>
 
 	* plot/__errplot__.m: Doc string fix.

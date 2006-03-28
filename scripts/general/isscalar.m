@@ -27,13 +27,8 @@
 
 function retval = isscalar (x)
 
-  retval = 0;
-
   if (nargin == 1)
-    if (ismatrix (x))
-      [nr, nc] = size (x);
-      retval = (nr == 1 && nc == 1);
-    endif
+    retval = prod (size (x)) == 1;
   else
     usage ("isscalar (x)");
   endif

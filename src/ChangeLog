@@ -1,3 +1,8 @@
+2006-03-28  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/matrix_type.cc: Update copyright notice and FSF
+	address.
+
 2006-03-24  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/spchol.cc (Fsymbfact): Use CHOLMOD_NAME to select

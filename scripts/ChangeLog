@@ -1,3 +1,13 @@
+2006-03-28  Keith Goodman  <kwgoodman@gmail.com>
+
+	* plot/__errplot__.m: Doc string fix.
+
+	* miscellaneous/doc.m: Mark as command.
+
+	* general/isequal.m, general/__isequal__.m, general/cell2mat.m,
+	general/isequalwithequalnans.m, general/blkdiag.m,
+	strings/strfind.m, miscellaneous/doc.m: Update FSF address.
+	
 2006-03-27  Don Bindner  <dbindner@truman.edu>
 
 	* plot/meshgrid.m: If nargout == 3 and vectors are supplied,

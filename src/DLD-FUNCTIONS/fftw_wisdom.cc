@@ -108,18 +108,28 @@ Octave.\n\
 	    overwrite = true;
 	}
 
+      std::string str = args(0).string_value ();
       std::string wisdom = octave_env::make_absolute
-	(Vload_path_dir_path.find_first_of (args(0).string_value ()),
-	 octave_env::getcwd ());
+	(Vload_path_dir_path.find_first_of (str), octave_env::getcwd ());
 
       // XXX FIXME XXX -- should probably protect FILE* resources with
       // auto_ptr or similar...
 
       if (wisdom.empty () || overwrite)
 	{
-	  FILE *ofile = fopen (wisdom.c_str (), "wb");
-	  fftw_export_wisdom_to_file (ofile);
-	  fclose (ofile);
+	  if (str.empty ())
+	    error ("fftw_wisdom: can not save to file");
+	  else
+	    {
+	      FILE *ofile = fopen (str.c_str (), "wb");
+	      if (! ofile)
+		error ("fftw_wisdom: can not save to file %s", str.c_str());
+	      else
+		{
+		  fftw_export_wisdom_to_file (ofile);
+		  fclose (ofile);
+		}
+	    }
 	}
       else
 	{

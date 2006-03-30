@@ -1,3 +1,8 @@
+2006-03-30  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/fftw_wisdom.cc: Don't attempt to save wisdom to
+	an empty filename or invalid filename.
+
 2006-03-28  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/matrix_type.cc: Update copyright notice and FSF

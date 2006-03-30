@@ -969,6 +969,7 @@ DEFUN (numel, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} numel (@var{a})\n\
 Returns the number of elements in the object @var{a}.\n\
+@seealso{size}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1022,6 +1023,7 @@ size ([1, 2; 3, 4; 5, 6], 2)\n\
 \n\
 @noindent\n\
 returns the number of columns in the given matrix.\n\
+@seealso{numel}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1118,7 +1120,7 @@ DEFUN (rows, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rows (@var{a})\n\
 Return the number of rows of @var{a}.\n\
-@seealso{size, columns, length, isscalar, isvector, ismatrix}\n\
+@seealso{size, numel, columns, length, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1135,7 +1137,7 @@ DEFUN (columns, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} columns (@var{a})\n\
 Return the number of columns of @var{a}.\n\
-@seealso{size, rows, length, isscalar, isvector, and ismatrix}\n\
+@seealso{size, numel, rows, length, isscalar, isvector, and ismatrix}\n\
 @end deftypefn")
 {
   octave_value retval;

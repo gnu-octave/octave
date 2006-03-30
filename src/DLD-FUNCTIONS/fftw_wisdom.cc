@@ -39,6 +39,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-env.h"
 #include "oct-obj.h"
 #include "sighandlers.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 DEFUN_DLD (fftw_wisdom, args, ,

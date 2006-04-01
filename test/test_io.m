@@ -304,6 +304,7 @@
 %!         fclose (id);
 %!       endif
 %!     endfor
+%!     unlink (nm);
 %!     if (status == 0)
 %!       break;
 %!     endif

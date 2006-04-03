@@ -1,3 +1,8 @@
+2006-04-03  David Bateman  <dbateman@free.fr>
+
+	* plot/grid.m: Cache the state of the grid to allow toggling.
+	Accept keyword "minor" for minor grid.
+
 2006-03-28  John W. Eaton  <jwe@octave.org>
 
 	* general/isscalar.m: Only require that all dimensions are 1 for

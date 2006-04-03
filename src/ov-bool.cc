@@ -103,6 +103,25 @@ octave_bool::do_index_op (const octave_value_list& idx, int resize_ok)
   return retval;
 }
 
+octave_value 
+octave_bool::resize (const dim_vector& dv, bool fill) const
+{ 
+  if (fill)
+    {
+      boolNDArray retval (dv, false); 
+      if (dv.numel()) 
+	retval(0) = scalar; 
+      return retval; 
+    }
+  else
+    {
+      boolNDArray retval (dv); 
+      if (dv.numel()) 
+	retval(0) = scalar; 
+      return retval; 
+    }
+}
+
 octave_value
 octave_bool::convert_to_str_internal (bool, bool, char type) const
 {

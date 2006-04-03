@@ -106,6 +106,29 @@ octave_scalar::streamoff_array_value (void) const
   return retval;
 }
 
+octave_value 
+octave_scalar::resize (const dim_vector& dv, bool fill) const
+{
+  if (fill)
+    {
+      NDArray retval (dv, NDArray::resize_fill_value());
+
+      if (dv.numel ())
+	retval(0) = scalar;
+
+      return retval;
+    }
+  else
+    {
+      NDArray retval (dv);
+
+      if (dv.numel ())
+	retval(0) = scalar;
+
+      return retval;
+    }
+}
+
 octave_value
 octave_scalar::convert_to_str_internal (bool, bool, char type) const
 {

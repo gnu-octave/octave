@@ -102,8 +102,7 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const
     { return MT (matrix.permute (vec, inv)); }
 
-  octave_value resize (const dim_vector& dv) const
-    { MT retval (matrix); retval.resize (dv); return retval; }
+  octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }

@@ -107,7 +107,7 @@ public:
 
   octave_value permute (const Array<int>& vec, bool = false) const;
 
-  octave_value resize (const dim_vector&) const;
+  octave_value resize (const dim_vector&, bool fill = false) const;
 
   bool is_defined (void) const { return false; }
 

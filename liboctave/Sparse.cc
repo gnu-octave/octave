@@ -851,7 +851,8 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  typename Sparse<T>::SparseRep *old_rep = Sparse<T>::rep;
+  typename Sparse<T>::SparseRep *old_rep = rep;
+
   octave_idx_type nc = cols ();
   octave_idx_type nr = rows ();
 
@@ -866,35 +867,35 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
       if (r >= nr)
 	{
 	  if (c > nc)
-	    n = cidx(nc);
+	    n = xcidx(nc);
 	  else
-	    n = cidx(c);
+	    n = xcidx(c);
 
 	  tmpval = Sparse<T> (r, c, n);
 
 	  if (c > nc)
 	    {
 	      for (octave_idx_type i = 0; i < nc; i++)
-		tmpval.cidx(i) = cidx(i);
+		tmpval.cidx(i) = xcidx(i);
 	      for (octave_idx_type i = nc+2; i < c; i++)
 		tmpval.cidx(i) = tmpval.cidx(i-1);
 	    }
 	  else if (c <= nc)
 	    for (octave_idx_type i = 0; i < c; i++)
-	      tmpval.cidx(i) = cidx(i);
+	      tmpval.cidx(i) = xcidx(i);
 	  
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
-	      tmpval.data(i) = data(i);
-	      tmpval.ridx(i) = ridx(i);
+	      tmpval.data(i) = xdata(i);
+	      tmpval.ridx(i) = xridx(i);
 	    }
 	}
       else
 	{
 	  // Count how many non zero terms before we do anything
 	  for (octave_idx_type i = 0; i < c; i++)
-	    for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
-	      if (ridx(j) < r)
+	    for (octave_idx_type j = xcidx(i); j < xcidx(i+1); j++)
+	      if (xridx(j) < r)
 		n++;
 
 	  if (n)
@@ -905,11 +906,11 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
 	      tmpval.cidx(0);
 	      for (octave_idx_type i = 0, ii = 0; i < c; i++)
 		{
-		  for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
-		    if (ridx(j) < r)
+		  for (octave_idx_type j = xcidx(i); j < xcidx(i+1); j++)
+		    if (xridx(j) < r)
 		      {
-			tmpval.data(ii) = data(j);
-			tmpval.ridx(ii++) = ridx(j);
+			tmpval.data(ii) = xdata(j);
+			tmpval.ridx(ii++) = xridx(j);
 		      }
 		  tmpval.cidx(i+1) = ii;
 		}

@@ -149,6 +149,17 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
   ::assign (matrix, tmp, Vstring_fill_char);
 }
 
+octave_value 
+octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
+{
+  charNDArray retval (matrix);
+  if (fill)
+    retval.resize (dv, charNDArray::resize_fill_value());
+  else
+    retval.resize (dv);
+  return octave_value (retval, true);
+}
+
 bool
 octave_char_matrix_str::valid_as_scalar_index (void) const
 {

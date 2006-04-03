@@ -51,7 +51,7 @@
 function retval = hankel (c, r)
 
   if (nargin == 1)
-    r = zeros (size (c));
+    r = resize (resize (c, 0), size(c));
   elseif (nargin != 2)
     usage ("hankel (c, r)");
   endif
@@ -84,7 +84,7 @@ function retval = hankel (c, r)
 
   ## This should probably be done with the colon operator...
 
-  retval = zeros (nr, nc);
+  retval = resize (resize (c, 0), nr, nc);
 
   for i = 1:min (nr, nc)
     retval (1:nr-i+1, i) = c (i:nr);
@@ -100,3 +100,9 @@ function retval = hankel (c, r)
   endfor
 
 endfunction
+
+%!assert(hankel(1:3),[1,2,3;2,3,0;3,0,0])
+%!assert(hankel(1),[1]);
+%!assert(hankel(1:3,3:6),[1,2,3,4;2,3,4,5;3,4,5,6]);
+%!assert(hankel(1:3,3:4),[1,2;2,3;3,4]);
+%!assert(hankel(1:3,4:6),[1,2,3;2,3,5;3,5,6]);

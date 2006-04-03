@@ -202,6 +202,18 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 }
 
 template <class MT>
+octave_value
+octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
+{
+  MT retval (matrix); 
+  if (fill)
+    retval.resize (dv, 0);
+  else
+    retval.resize (dv); 
+  return retval;
+}
+
+template <class MT>
 bool
 octave_base_matrix<MT>::is_true (void) const
 {

@@ -1,5 +1,13 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
+	* data.cc (Fresize): New function.
+	* oct-map.cc, ov-base-mat.cc, ov-base-sparse.cc, ov-base.cc,
+	ov-bool.cc, ov-complex.cc, ov-range.cc, ov-scalar.cc,
+	ov-str-mat.cc (resize): Add boolean fill argument.
+	* oct-map.h, ov-base-mat.h, ov-base-sparse.h, ov-base.h,
+	ov-bool.h, ov-complex.h, ov-intx.h, ov-range.h, ov-scalar.h,
+	ov-str-mat.h, ov.h (resize): Ditto.
+	
 	* DLD-FUNCTIONS/rand.cc (do_rand): Additional argument for
         gamma and poisson distributions.  Change "state" and "seed"
         arguments so that they choose between generators.

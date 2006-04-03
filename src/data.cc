@@ -1863,6 +1863,57 @@ The @code{linspace} function always returns a row vector.\n\
   return retval;
 }
 
+DEFUN (resize, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} resize (@var{x}, @var{m})\n\
+@deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})\n\
+Resize @var{x} to be dimension @var{m}-by-@var{n} where @var{m}\n\
+and @var{n} are scalar. If @var{n} is not supplied, then resize @var{x}\n\
+to be dimension @var{m}-by-@var{m} if @var{m} is scalar, or if\n\
+@var{m} is a vector, then the values of this vector respresent the\n\
+dimensions of the resized matrix.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      Array<double> vec = args(1).vector_value ();
+      int ndim = vec.length ();
+      if (ndim == 1)
+	{
+	  octave_idx_type m = static_cast<octave_idx_type> (vec(0));
+	  retval = args(0);
+	  retval = retval.resize (dim_vector (m, m), true);
+	}
+      else
+	{
+	  dim_vector dv;
+	  dv.resize (ndim);
+	  for (int i = 0; i < ndim; i++)
+	    dv(i) = static_cast<octave_idx_type> (vec(i));
+	  retval = args(0);
+	  retval = retval.resize (dv, true);
+	}
+    }
+  else if (nargin == 3)
+    {
+      octave_idx_type m = static_cast<octave_idx_type> 
+	(args(1).scalar_value());
+      octave_idx_type n = static_cast<octave_idx_type> 
+	(args(2).scalar_value());
+      if (!error_state)
+	{
+	  retval = args(0);
+	  retval = retval.resize (dim_vector (m, n), true);
+	}
+    }
+  else
+    print_usage ("resize");
+  return retval;
+}
+
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\

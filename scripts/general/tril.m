@@ -68,11 +68,7 @@ function retval = tril (x, k)
 
   if (nargin > 0)
     [nr, nc] = size (x);
-    if (isa (x, "sparse"))
-      retval = sparse (nr, nc);
-    else
-      retval = zeros (nr, nc, class (x));
-    endif
+    retval = resize (resize (x, 0), nr, nc);
   endif
 
   if (nargin == 1)

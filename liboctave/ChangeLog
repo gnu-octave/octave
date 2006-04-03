@@ -1,5 +1,8 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
+	* Sparse.cc (Sparse<T>::resize): Use xcidx rather than cdix, etc
+	to avoid copy of original matrix.
+
 	* Makefile.in (INCLUDES): Add randgamma.h, randpoisson.h and
         randmtzig.h to the list.
 	(LIBOCTAVE_C_SOURCES): Add randgamma.c, randpoisson.c and

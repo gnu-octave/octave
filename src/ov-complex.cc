@@ -149,6 +149,29 @@ octave_complex::complex_array_value (bool /* force_conversion */) const
   return ComplexNDArray (dim_vector (1, 1), scalar);
 }
 
+octave_value 
+octave_complex::resize (const dim_vector& dv, bool fill) const
+{
+  if (fill)
+    {
+      ComplexNDArray retval (dv, ComplexNDArray::resize_fill_value ());
+
+      if (dv.numel ())
+	retval(0) = scalar;
+
+      return retval;
+    }
+  else
+    {
+      ComplexNDArray retval (dv);
+
+      if (dv.numel ())
+	retval(0) = scalar;
+
+      return retval;
+    }
+}
+
 bool 
 octave_complex::save_ascii (std::ostream& os, bool& infnan_warned, 
 			    bool strip_nan_and_inf)

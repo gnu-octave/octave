@@ -112,8 +112,7 @@ octave_base_sparse : public octave_base_value
   octave_value permute (const Array<int>& vec, bool inv = false) const
     { return T (matrix.permute (vec, inv)); }
 
-  octave_value resize (const dim_vector& dv) const
-    { T retval (matrix); retval.resize (dv); return retval; }
+  octave_value resize (const dim_vector& dv, bool = false) const;
 
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }

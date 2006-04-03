@@ -40,6 +40,7 @@ Boston, MA 02110-1301, USA.
 
 #include "boolSparse.h"
 #include "ov-base-sparse.h"
+#include "pager.h"
 
 template <class T>
 octave_value
@@ -193,6 +194,14 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
   typ.invalidate_type ();
 }
 
+template <class T>
+octave_value 
+octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
+{ 
+  T retval (matrix); 
+  retval.resize (dv); 
+  return retval; 
+}
 
 template <class T>
 bool 

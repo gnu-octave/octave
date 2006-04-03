@@ -106,8 +106,8 @@ public:
       return dim_vector (n > 0, n);
     }
 
-  octave_value resize (const dim_vector& dv) const
-    { NDArray retval = array_value (); retval.resize (dv); return retval; }
+  octave_value resize (const dim_vector& dv, bool fill = false) const;
+
 
   size_t byte_size (void) const { return 3 * sizeof (double); }
 

@@ -97,7 +97,7 @@ function retval = toeplitz (c, r)
   nc = length (r);
   nr = length (c);
 
-  retval = zeros (nr, nc);
+  retval = resize (resize (c, 0), nr, nc);
 
   for i = 1:min (nc, nr)
     retval (i:nr, i) = c (1:nr-i+1);

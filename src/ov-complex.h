@@ -101,15 +101,7 @@ public:
 
   NDArray array_value (bool = false) const;
 
-  octave_value resize (const dim_vector& dv) const
-    {
-      ComplexNDArray retval (dv);
-
-      if (dv.numel ())
-	retval(0) = scalar;
-
-      return retval;
-    }
+  octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   Complex complex_value (bool = false) const;
 

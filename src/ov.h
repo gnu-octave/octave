@@ -391,8 +391,8 @@ public:
   octave_value ipermute (const Array<int>& vec) const
     { return rep->permute (vec, true); }
 
-  virtual octave_value resize (const dim_vector& dv) const
-     { return rep->resize (dv);}
+  virtual octave_value resize (const dim_vector& dv, bool fill = false) const
+     { return rep->resize (dv, fill);}
 
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of

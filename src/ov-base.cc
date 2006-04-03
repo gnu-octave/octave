@@ -202,7 +202,7 @@ octave_base_value::permute (const Array<int>&, bool) const
 }
 
 octave_value
-octave_base_value::resize (const dim_vector&) const
+octave_base_value::resize (const dim_vector&, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::resize ()", type_name ());
   return octave_value ();

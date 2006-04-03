@@ -96,12 +96,7 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const
     { return octave_value (charNDArray (matrix.permute (vec, inv)), true); }
 
-  octave_value resize (const dim_vector& dv) const
-    {
-      charNDArray retval (matrix);
-      retval.resize (dv);
-      return octave_value (retval, true);
-    }
+  octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   bool is_string (void) const { return true; }
 

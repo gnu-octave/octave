@@ -208,6 +208,17 @@ octave_range::complex_value (bool) const
   return retval;
 }
 
+octave_value 
+octave_range::resize (const dim_vector& dv, bool fill) const
+{ 
+  NDArray retval = array_value (); 
+  if (fill)
+    retval.resize (dv, NDArray::resize_fill_value());
+  else
+    retval.resize (dv); 
+  return retval; 
+}
+
 octave_value
 octave_range::convert_to_str_internal (bool pad, bool force, char type) const
 {

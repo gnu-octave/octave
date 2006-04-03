@@ -255,12 +255,22 @@ public:
   uint64_array_value (void) const
     { return uint64NDArray (dim_vector (1, 1), scalar); }
 
-  octave_value resize (const dim_vector& dv) const
+  octave_value resize (const dim_vector& dv, bool fill = false) const
     {
-      OCTAVE_INT_NDARRAY_T retval (dv);
-      if (dv.numel())
-	retval(0) = scalar;
-      return retval;
+      if (fill)
+	{
+	  OCTAVE_INT_NDARRAY_T retval (dv, 0);
+	  if (dv.numel())
+	    retval(0) = scalar;
+	  return retval;
+	}
+      else
+	{
+	  OCTAVE_INT_NDARRAY_T retval (dv);
+	  if (dv.numel())
+	    retval(0) = scalar;
+	  return retval;
+	}
     }
 
   double double_value (bool = false) const { return double (scalar); }

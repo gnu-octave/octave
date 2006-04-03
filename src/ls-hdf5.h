@@ -67,7 +67,7 @@ public:
 	}
     }
 
-  void open (const char *name, int mode, int prot = 0)
+  void open (const char *name, int mode, int)
     {
       clear ();
 

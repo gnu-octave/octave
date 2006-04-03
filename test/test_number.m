@@ -55,12 +55,12 @@
 %% test/octave.test/number/isvector-5.m
 %!test
 %! warn_str_to_num = 0;
-%! assert(!(isvector ("t")));
+%! assert((isvector ("t")));
 
 %% test/octave.test/number/isvector-6.m
 %!test
 %! warn_str_to_num = 0;
-%! assert(!(isvector ("test")));
+%! assert((isvector ("test")));
 
 %% test/octave.test/number/isvector-7.m
 %!assert(!(isvector (["test"; "ing"])));
@@ -68,7 +68,7 @@
 %% test/octave.test/number/isvector-8.m
 %!test
 %! s.a = 1;
-%! assert(!(isvector (s)));
+%! assert((isvector (s)));
 
 %% test/octave.test/number/isvector-9.m
 %!error isvector ();
@@ -91,7 +91,7 @@
 %% test/octave.test/number/isscalar-5.m
 %!test
 %! warn_str_to_num = 0;
-%! assert(!(isscalar ("t")));
+%! assert((isscalar ("t")));
 
 %% test/octave.test/number/isscalar-6.m
 %!assert(!(isscalar ("test")));
@@ -102,7 +102,7 @@
 %% test/octave.test/number/isscalar-8.m
 %!test
 %! s.a = 1;
-%! assert(!(isscalar (s)));
+%! assert((isscalar (s)));
 
 %% test/octave.test/number/isscalar-9.m
 %!error isscalar ();

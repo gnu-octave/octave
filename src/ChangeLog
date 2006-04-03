@@ -1,3 +1,7 @@
+2006-04-03  David Bateman  <dbateman@free.fr>
+
+	* ls-hdf5.h (hdf5_fstreambase::open): Remove unused arg prot.
+
 2006-03-30  Bill Denney  <denney@seas.upenn.edu>
 
  	* data.cc: Include numel in @seealso.

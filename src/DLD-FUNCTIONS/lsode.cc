@@ -38,6 +38,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
+#include "ov-cell.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "unwind-prot.h"
@@ -191,9 +192,10 @@ of @var{t} should be @math{t_0} and should correspond to the initial\n\
 state of the system @var{x_0}, so that the first row of the output\n\
 is @var{x_0}.\n\
 \n\
-The first argument, @var{fcn}, is a string that names the function to\n\
-call to compute the vector of right hand sides for the set of equations.\n\
-The function must have the form\n\
+The first argument, @var{fcn}, is a string, or cell array of strings,\n\
+inline or function handles, that names the function to call to compute\n\
+the vector of right hand sides for the set of equations. The function\n\
+must have the form\n\
 \n\
 @example\n\
 @var{xdot} = f (@var{x}, @var{t})\n\
@@ -286,48 +288,117 @@ parameters for @code{lsode}.\n\
 
   if (nargin > 2 && nargin < 5 && nargout < 4)
     {
+      std::string fcn_name, fname, jac_name, jname;
       lsode_fcn = 0;
       lsode_jac = 0;
 
       octave_value f_arg = args(0);
 
-      switch (f_arg.rows ())
+      if (f_arg.is_cell ())
+  	{
+	  Cell c = f_arg.cell_value ();
+	  if (c.length() == 1)
+	    f_arg = c(0);
+	  else if (c.length() == 2)
+	    {
+	      if (c(0).is_function_handle () || c(0).is_inline_function ())
+		lsode_fcn = c(0).function_value ();
+	      else
+		{
+		  fcn_name = unique_symbol_name ("__lsode_fcn__");
+		  fname = "function y = ";
+		  fname.append (fcn_name);
+		  fname.append (" (x, t) y = ");
+		  lsode_fcn = extract_function
+		    (c(0), "lsode", fcn_name, fname, "; endfunction");
+		}
+	      
+	      if (lsode_fcn)
+		{
+		  if (c(1).is_function_handle () || c(1).is_inline_function ())
+		    lsode_jac = c(1).function_value ();
+		  else
+		    {
+			jac_name = unique_symbol_name ("__lsode_jac__");
+			jname = "function jac = ";
+			jname.append(jac_name);
+			jname.append (" (x, t) jac = ");
+			lsode_jac = extract_function
+			  (c(1), "lsode", jac_name, jname, "; endfunction");
+
+		      if (!lsode_jac)
+			{
+			  if (fcn_name.length())
+			    clear_function (fcn_name);
+			  lsode_fcn = 0;
+			}
+		    }
+		}
+	    }
+	  else
+	    LSODE_ABORT1 ("incorrect number of elements in cell array");
+	}
+
+      if (!lsode_fcn && ! f_arg.is_cell())
 	{
-	case 1:
-	  lsode_fcn = extract_function
-	    (f_arg, "lsode", "__lsode_fcn__",
-	     "function xdot = __lsode_fcn__ (x, t) xdot = ",
-	     "; endfunction");
-	  break;
+	  if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+	    lsode_fcn = f_arg.function_value ();
+	  else
+	    {
+	      switch (f_arg.rows ())
+		{
+		case 1:
+		  do
+		    {
+		      fcn_name = unique_symbol_name ("__lsode_fcn__");
+		      fname = "function y = ";
+		      fname.append (fcn_name);
+		      fname.append (" (x, t) y = ");
+		      lsode_fcn = extract_function
+			(f_arg, "lsode", fcn_name, fname, "; endfunction");
+		    }
+		  while (0);
+		  break;
 
-	case 2:
-	  {
-	    string_vector tmp = f_arg.all_strings ();
-
-	    if (! error_state)
-	      {
-		lsode_fcn = extract_function
-		  (tmp(0), "lsode", "__lsode_fcn__",
-		   "function xdot = __lsode_fcn__ (x, t) xdot = ",
-		   "; endfunction");
-
-		if (lsode_fcn)
+		case 2:
 		  {
-		    lsode_jac = extract_function
-		      (tmp(1), "lsode", "__lsode_jac__",
-		       "function jac = __lsode_jac__ (x, t) jac = ",
-		       "; endfunction");
+		    string_vector tmp = f_arg.all_strings ();
 
-		    if (! lsode_jac)
-		      lsode_fcn = 0;
+		    if (! error_state)
+		      {
+			fcn_name = unique_symbol_name ("__lsode_fcn__");
+			fname = "function y = ";
+			fname.append (fcn_name);
+			fname.append (" (x, t) y = ");
+			lsode_fcn = extract_function
+			  (tmp(0), "lsode", fcn_name, fname, "; endfunction");
+
+			if (lsode_fcn)
+			  {
+			    jac_name = unique_symbol_name ("__lsode_jac__");
+			    jname = "function jac = ";
+			    jname.append(jac_name);
+			    jname.append (" (x, t) jac = ");
+			    lsode_jac = extract_function
+			      (tmp(1), "lsode", jac_name, jname,
+			      "; endfunction");
+
+			    if (!lsode_jac)
+			      {
+				if (fcn_name.length())
+				  clear_function (fcn_name);
+				lsode_fcn = 0;
+			      }
+			  }
+		      }
 		  }
-	      }
-	  }
-	  break;
+		  break;
 
-	default:
-	  LSODE_ABORT1
-	    ("first arg should be a string or 2-element string array");
+		default:
+		  LSODE_ABORT1
+		    ("first arg should be a string or 2-element string array");
+		}
+	    }
 	}
 
       if (error_state || ! lsode_fcn)
@@ -371,6 +442,11 @@ parameters for @code{lsode}.\n\
 	output = ode.integrate (out_times, crit_times);
       else
 	output = ode.integrate (out_times);
+
+      if (fcn_name.length())
+	clear_function (fcn_name);
+      if (jac_name.length())
+	clear_function (jac_name);
 
       if (! error_state)
 	{

@@ -36,6 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
+#include "ov-cell.h"
 #include "pager.h"
 #include "parse.h"
 #include "unwind-prot.h"
@@ -249,9 +250,9 @@ integration.  If the stopping condition is met, the vector\n\
 @var{t_out} will be the point at which the stopping condition was met,\n\
 and may not correspond to any element of the vector @var{t}.\n\
 \n\
-The first argument, @var{fcn}, is a string that names the function to\n\
-call to compute the vector of residuals for the set of equations.\n\
-It must have the form\n\
+The first argument, @var{fcn}, is a string, or cell array of strings or\n\
+inline or function handles, that names the function to call to compute\n\
+the vector of residuals for the set of equations. It must have the form\n\
 \n\
 @example\n\
 @var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
@@ -261,9 +262,9 @@ It must have the form\n\
 in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
 scalar.\n\
 \n\
-If @var{fcn} is a two-element string array, the first element names\n\
-the function @math{f} described above, and the second element names\n\
-a function to compute the modified Jacobian\n\
+If @var{fcn} is a two-element string array, or two element cell array,\n\
+the first element names the function @math{f} described above, and the\n\
+second element names a function to compute the modified Jacobian\n\
 \n\
 @tex\n\
 $$\n\
@@ -367,6 +368,7 @@ parameters for @code{dasrt}.\n\
       return retval;
     }
 
+  std::string fcn_name, fname, jac_name, jname;
   dasrt_f = 0;
   dasrt_j = 0;
   dasrt_cf = 0;
@@ -377,43 +379,102 @@ parameters for @code{dasrt}.\n\
 
   octave_value f_arg = args(0);
 
-  switch (f_arg.rows ())
+  if (f_arg.is_cell ())
     {
-    case 1:
-      dasrt_f = extract_function
-	(args(0), "dasrt", "__dasrt_fcn__",
-	 "function res = __dasrt_fcn__ (x, xdot, t) res = ",
-	 "; endfunction");
-      break;
+      Cell c = f_arg.cell_value ();
+      if (c.length() == 1)
+	f_arg = c(0);
+      else if (c.length() == 2)
+	{
+	  if (c(0).is_function_handle () || c(0).is_inline_function ())
+	    dasrt_f = c(0).function_value ();
+	  else
+	    {
+	      fcn_name = unique_symbol_name ("__dasrt_fcn__");
+	      fname = "function y = ";
+	      fname.append (fcn_name);
+	      fname.append (" (x, xdot, t) y = ");
+	      dasrt_f = extract_function
+		(c(0), "dasrt", fcn_name, fname, "; endfunction");
+	    }
+
+	  if (dasrt_f)
+	    {
+	      if (c(1).is_function_handle () || c(1).is_inline_function ())
+		dasrt_j = c(1).function_value ();
+	      else
+		{
+		  jac_name = unique_symbol_name ("__dasrt_jac__");
+		  jname = "function jac = ";
+		  jname.append(jac_name);
+		  jname.append (" (x, xdot, t, cj) jac = ");
+		  dasrt_j = extract_function
+		    (c(1), "dasrt", jac_name, jname, "; endfunction");
+
+		  if (!dasrt_j)
+		    {
+		      if (fcn_name.length())
+			clear_function (fcn_name);
+		      dasrt_f = 0;
+		    }
+		}
+	    }
+	}
+      else
+	DASRT_ABORT1 ("incorrect number of elements in cell array");
+    }
+
+  if (!dasrt_f && ! f_arg.is_cell())
+    {
+      if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+	dasrt_f = f_arg.function_value ();
+      else
+	{
+	  switch (f_arg.rows ())
+	    {
+	    case 1:
+	      fcn_name = unique_symbol_name ("__dasrt_fcn__");
+	      fname = "function y = ";
+	      fname.append (fcn_name);
+	      fname.append (" (x, xdot, t) y = ");
+	      dasrt_f = extract_function
+		(f_arg, "dasrt", fcn_name, fname, "; endfunction");
+	      break;
       
-    case 2:
-      {
-	string_vector tmp = args(0).all_strings ();
-	
-	if (! error_state)
-	  {
-	    dasrt_f = extract_function
-	      (tmp(0), "dasrt", "__dasrt_fcn__",
-	       "function res = __dasrt_fcn__ (x, xdot, t) res = ",
-	       "; endfunction");
-	    
-	    if (dasrt_f)
+	    case 2:
 	      {
-		dasrt_j = extract_function
-		  (tmp(1), "dasrt", "__dasrt_jac__",
-		   "function jac = __dasrt_jac__ (x, xdot, t, cj) jac = ",
-		   "; endfunction");
-		
-		if (! dasrt_j)
-		  dasrt_f = 0;
+		string_vector tmp = args(0).all_strings ();
+	
+		if (! error_state)
+		  {
+		    fcn_name = unique_symbol_name ("__dasrt_fcn__");
+		    fname = "function y = ";
+		    fname.append (fcn_name);
+		    fname.append (" (x, xdot, t) y = ");
+		    dasrt_f = extract_function
+		      (tmp(0), "dasrt", fcn_name, fname, "; endfunction");
+	    
+		    if (dasrt_f)
+		      {
+			jac_name = unique_symbol_name ("__dasrt_jac__");
+			jname = "function jac = ";
+			jname.append(jac_name);
+			jname.append (" (x, xdot, t, cj) jac = ");
+			dasrt_j = extract_function
+			  (tmp(1), "dasrt", jac_name, jname, "; endfunction");
+
+			if (! dasrt_j)
+			  dasrt_f = 0;
+		      }
+		  }
 	      }
-	  }
-      }
-      break;
+	      break;
       
-    default:
-      DASRT_ABORT1
-	("first arg should be a string or 2-element string array");
+	    default:
+	      DASRT_ABORT1
+		("first arg should be a string or 2-element string array");
+	    }
+	}
     }
   
   if (error_state || (! dasrt_f))
@@ -423,10 +484,20 @@ parameters for @code{dasrt}.\n\
   
   argp++;
   
-  if (args(1).is_string ())
+  if (args(1).is_function_handle() || args(1).is_inline_function())
+    {
+      dasrt_cf = args(1).function_value();
+
+      if (! dasrt_cf)
+	DASRT_ABORT1 ("expecting function name as argument 2");
+
+      argp++;
+
+      func.set_constraint_function (dasrt_user_cf);
+    }
+  else if (args(1).is_string ())
     {
       dasrt_cf = is_valid_function (args(1), "dasrt", true);
-
       if (! dasrt_cf)
 	DASRT_ABORT1 ("expecting function name as argument 2");
 
@@ -482,6 +553,11 @@ parameters for @code{dasrt}.\n\
     output = dae.integrate (out_times, crit_times);
   else
     output = dae.integrate (out_times);
+
+  if (fcn_name.length())
+    clear_function (fcn_name);
+  if (jac_name.length())
+    clear_function (jac_name);
 
   if (! error_state)
     {

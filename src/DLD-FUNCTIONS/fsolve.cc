@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
+#include "ov-cell.h"
 #include "pager.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -220,10 +221,11 @@ Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
 and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
 equations such that @code{f(@var{x}) == 0}.\n\
 \n\
-If @var{fcn} is a two-element string array, the first element names\n\
-the function @math{f} described above, and the second element names\n\
-a function of the form @code{j (@var{x})} to compute the Jacobian\n\
-matrix with elements\n\
+If @var{fcn} is a two-element string array, or a two element cell array\n\
+containing either the function name or inline or function handle. The\n\
+first element names the function @math{f} described above, and the second\n\
+element names a function of the form @code{j (@var{x})} to compute the\n\
+Jacobian matrix with elements\n\
 @tex\n\
 $$ J = {\\partial f_i \\over \\partial x_j} $$\n\
 @end tex\n\
@@ -257,43 +259,112 @@ parameters for @code{fsolve}.\n\
 
   if (nargin == 2 && nargout < 4)
     {
+      std::string fcn_name, fname, jac_name, jname;
       fsolve_fcn = 0;
       fsolve_jac = 0;
 
       octave_value f_arg = args(0);
 
-      switch (f_arg.rows ())
+      if (f_arg.is_cell ())
+  	{
+	  Cell c = f_arg.cell_value ();
+	  if (c.length() == 1)
+	    f_arg = c(0);
+	  else if (c.length() == 2)
+	    {
+	      if (c(0).is_function_handle () || c(0).is_inline_function ())
+		fsolve_fcn = c(0).function_value ();
+	      else
+		{
+		  fcn_name = unique_symbol_name ("__fsolve_fcn__");
+		  fname = "function y = ";
+		  fname.append (fcn_name);
+		  fname.append (" (x) y = ");
+		  fsolve_fcn = extract_function
+		    (c(0), "fsolve", fcn_name, fname, "; endfunction");
+		}
+	      
+	      if (fsolve_fcn)
+		{
+		  if (c(1).is_function_handle () || c(1).is_inline_function ())
+		    fsolve_jac = c(1).function_value ();
+		  else
+		    {
+		      jac_name = unique_symbol_name ("__fsolve_jac__");
+		      jname = "function y = ";
+		      jname.append (jac_name);
+		      jname.append (" (x) jac = ");
+		      fsolve_jac = extract_function
+			(c(1), "fsolve", jac_name, jname, "; endfunction");
+
+		      if (!fsolve_jac)
+			{
+			  if (fcn_name.length())
+			    clear_function (fcn_name);
+			  fsolve_fcn = 0;
+			}
+		    }
+		}
+	    }
+	  else
+	    FSOLVE_ABORT1 ("incorrect number of elements in cell array");
+	}
+
+      if (!fsolve_fcn && ! f_arg.is_cell())
 	{
-	case 1:
-	  fsolve_fcn = extract_function
-	    (f_arg, "fsolve", "__fsolve_fcn__",
-	     "function y = __fsolve_fcn__ (x) y = ",
-	     "; endfunction");
-	  break;
+	  if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+	    fsolve_fcn = f_arg.function_value ();
+	  else
+	    {
+	      switch (f_arg.rows ())
+		{
+		case 1:
+		  do
+		    {
+		      fcn_name = unique_symbol_name ("__fsolve_fcn__");
+		      fname = "function y = ";
+		      fname.append (fcn_name);
+		      fname.append (" (x) y = ");
+		      fsolve_fcn = extract_function
+			(f_arg, "fsolve", fcn_name, fname, "; endfunction");
+		    }
+		  while (0);
+		  break;
 
-	case 2:
-	  {
-	    string_vector tmp = f_arg.all_strings ();
-
-	    if (! error_state)
-	      {
-		fsolve_fcn = extract_function
-		  (tmp(0), "fsolve", "__fsolve_fcn__",
-		   "function y = __fsolve_fcn__ (x) y = ",
-		   "; endfunction");
-
-		if (fsolve_fcn)
+		case 2:
 		  {
-		    fsolve_jac = extract_function
-		      (tmp(1), "fsolve", "__fsolve_jac__",
-		       "function jac = __fsolve_jac__ (x) jac = ",
-		       "; endfunction");
+		    string_vector tmp = f_arg.all_strings ();
 
-		    if (! fsolve_jac)
-		      fsolve_fcn = 0;
+		    if (! error_state)
+		      {
+			fcn_name = unique_symbol_name ("__fsolve_fcn__");
+			fname = "function y = ";
+			fname.append (fcn_name);
+			fname.append (" (x) y = ");
+			fsolve_fcn = extract_function
+			  (tmp(0), "fsolve", fcn_name, fname, "; endfunction");
+
+			if (fsolve_fcn)
+			  {
+			    jac_name = unique_symbol_name ("__fsolve_jac__");
+			    jname = "function y = ";
+			    jname.append (jac_name);
+			    jname.append (" (x) jac = ");
+			    fsolve_jac = extract_function
+			      (tmp(1), "fsolve", jac_name, jname, 
+			       "; endfunction");
+
+			    if (!fsolve_jac)
+			      {
+				if (fcn_name.length())
+				  clear_function (fcn_name);
+				fsolve_fcn = 0;
+			      }
+			  }
+		      }
 		  }
-	      }
-	  }
+		}
+	    }
 	}
 
       if (error_state || ! fsolve_fcn)
@@ -319,6 +390,11 @@ parameters for @code{fsolve}.\n\
 
       octave_idx_type info;
       ColumnVector soln = nleqn.solve (info);
+
+      if (fcn_name.length())
+	clear_function (fcn_name);
+      if (jac_name.length())
+	clear_function (jac_name);
 
       if (! error_state)
 	{

@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
+#include "ov-cell.h"
 #include "pager.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -205,9 +206,10 @@ system @var{x_0} and its derivative @var{xdot_0}, so that the first\n\
 row of the output @var{x} is @var{x_0} and the first row\n\
 of the output @var{xdot} is @var{xdot_0}.\n\
 \n\
-The first argument, @var{fcn}, is a string that names the function to\n\
-call to compute the vector of residuals for the set of equations.\n\
-It must have the form\n\
+The first argument, @var{fcn}, is a string or a two element cell array\n\
+of strings, inline or function handle, that names the function, to call\n\
+to compute the vector of residuals for the set of equations. It must\n\
+have the form\n\
 \n\
 @example\n\
 @var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
@@ -286,43 +288,112 @@ parameters for @code{daspk}.\n\
 
   if (nargin > 3 && nargin < 6)
     {
+      std::string fcn_name, fname, jac_name, jname;
       daspk_fcn = 0;
       daspk_jac = 0;
 
       octave_value f_arg = args(0);
 
-      switch (f_arg.rows ())
+      if (f_arg.is_cell ())
+  	{
+	  Cell c = f_arg.cell_value ();
+	  if (c.length() == 1)
+	    f_arg = c(0);
+	  else if (c.length() == 2)
+	    {
+	      if (c(0).is_function_handle () || c(0).is_inline_function ())
+		daspk_fcn = c(0).function_value ();
+	      else
+		{
+		  fcn_name = unique_symbol_name ("__daspk_fcn__");
+		  fname = "function y = ";
+		  fname.append (fcn_name);
+		  fname.append (" (x, xdot, t) y = ");
+		  daspk_fcn = extract_function
+		    (c(0), "daspk", fcn_name, fname, "; endfunction");
+		}
+	      
+	      if (daspk_fcn)
+		{
+		  if (c(1).is_function_handle () || c(1).is_inline_function ())
+		    daspk_jac = c(1).function_value ();
+		  else
+		    {
+		      jac_name = unique_symbol_name ("__daspk_jac__");
+		      jname = "function jac = ";
+		      jname.append(jac_name);
+		      jname.append (" (x, xdot, t, cj) jac = ");
+		      daspk_jac = extract_function
+			(c(1), "daspk", jac_name, jname, "; endfunction");
+
+		      if (!daspk_jac)
+			{
+			  if (fcn_name.length())
+			    clear_function (fcn_name);
+			  daspk_fcn = 0;
+			}
+		    }
+		}
+	    }
+	  else
+	    DASPK_ABORT1 ("incorrect number of elements in cell array");
+	}
+
+      if (!daspk_fcn && ! f_arg.is_cell())
 	{
-	case 1:
-	  daspk_fcn = extract_function
-	    (args(0), "daspk", "__daspk_fcn__",
-	     "function res = __daspk_fcn__ (x, xdot, t) res = ",
-	     "; endfunction");
-	  break;
+	  if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+	    daspk_fcn = f_arg.function_value ();
+	  else
+	    {
+	      switch (f_arg.rows ())
+		{
+		case 1:
+		  do
+		    {
+		      fcn_name = unique_symbol_name ("__daspk_fcn__");
+		      fname = "function y = ";
+		      fname.append (fcn_name);
+		      fname.append (" (x, xdot, t) y = ");
+		      daspk_fcn = extract_function
+			(f_arg, "daspk", fcn_name, fname, "; endfunction");
+		    }
+		  while (0);
+		  break;
 
-	case 2:
-	  {
-	    string_vector tmp = f_arg.all_strings ();
-
-	    if (! error_state)
-	      {
-		daspk_fcn = extract_function
-		  (tmp(0), "daspk", "__daspk_fcn__",
-		   "function res = __daspk_fcn__ (x, xdot, t) res = ",
-		   "; endfunction");
-
-		if (daspk_fcn)
+		case 2:
 		  {
-		    daspk_jac = extract_function
-		      (tmp(1), "daspk", "__daspk_jac__",
-		       "function jac = __daspk_jac__ (x, xdot, t, cj) jac = ",
-		       "; endfunction");
+		    string_vector tmp = f_arg.all_strings ();
 
-		    if (! daspk_jac)
-		      daspk_fcn = 0;
+		    if (! error_state)
+		      {
+			fcn_name = unique_symbol_name ("__daspk_fcn__");
+			fname = "function y = ";
+			fname.append (fcn_name);
+			fname.append (" (x, xdot, t) y = ");
+			daspk_fcn = extract_function
+			  (tmp(0), "daspk", fcn_name, fname, "; endfunction");
+
+			if (daspk_fcn)
+			  {
+			    jac_name = unique_symbol_name ("__daspk_jac__");
+			    jname = "function jac = ";
+			    jname.append(jac_name);
+			    jname.append (" (x, xdot, t, cj) jac = ");
+			    daspk_jac = extract_function
+			      (tmp(1), "daspk", jac_name, jname,
+			       "; endfunction");
+
+			    if (!daspk_jac)
+			      {
+				if (fcn_name.length())
+				  clear_function (fcn_name);
+				daspk_fcn = 0;
+			      }
+			  }
+		      }
 		  }
-	      }
-	  }
+		}
+	    }
 	}
 
       if (error_state || ! daspk_fcn)
@@ -374,6 +445,11 @@ parameters for @code{daspk}.\n\
 	output = dae.integrate (out_times, deriv_output, crit_times);
       else
 	output = dae.integrate (out_times, deriv_output);
+
+      if (fcn_name.length())
+	clear_function (fcn_name);
+      if (jac_name.length())
+	clear_function (jac_name);
 
       if (! error_state)
 	{

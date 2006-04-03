@@ -1,5 +1,13 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/daspk.cc (Fdaspk): Allow functions to be passed
+	using function handles, inline functions, and cell arrays of
+	strings, inline and function handles.
+	* DLD-FUNCTIONS/dasrtk.cc (Fdasrt): Likewise.
+	* DLD-FUNCTIONS/dassl.cc (Fdassl): Likewise.
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Likewise.
+	* DLD-FUNCTIONS/lsode.cc (Flsode):  Likewise.
+
 	* ls-hdf5.h (hdf5_fstreambase::open): Remove unused arg prot.
 
 2006-03-30  Bill Denney  <denney@seas.upenn.edu>

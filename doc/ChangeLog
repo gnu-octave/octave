@@ -1,3 +1,8 @@
+2006-04-03  David Bateman  <dbateman@free.fr>
+
+	* interpreter/matrix.txi: Add rande, randp, randg and update
+          for different random generator behavior.
+
 2006-03-28  John W. Eaton  <jwe@octave.org>
 
 	* texinfo.tex: Update FSF address.

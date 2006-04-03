@@ -143,8 +143,15 @@ a (i, :)
 
 @DOCSTRING(randn)
 
-The @code{rand} and @code{randn} functions use separate generators.
-This ensures that
+@DOCSTRING(rande)
+
+@DOCSTRING(randp)
+
+@DOCSTRING(randg)
+
+The new random generators all use a common Mersenne Twister generator,
+and so the state of only one of the generators needs to be reset.
+The old generator function use separate generators. This ensures that
 
 @example
 @group

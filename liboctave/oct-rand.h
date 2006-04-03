@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <string>
 
+#include "dColVector.h"
 #include "dMatrix.h"
 #include "dNDArray.h"
 
@@ -38,6 +39,12 @@ octave_rand
   // Set the seed.
   static void seed (double s);
 
+  // Return the current state.
+  static ColumnVector state (void);
+
+  // Set the current state/
+  static void state (const ColumnVector &s);
+  
   // Return the current distribution.
   static std::string distribution (void);
 
@@ -49,19 +56,25 @@ octave_rand
 
   static void normal_distribution (void);
 
+  static void exponential_distribution (void);
+
+  static void poisson_distribution (void);
+
+  static void gamma_distribution (void);
+
   // Return the next number from the sequence.
-  static double scalar (void);
+  static double scalar (double a = 1.);
 
   // Return a matrix of numbers from the sequence, filled in column
   // major order.
-  static Matrix matrix (octave_idx_type r, octave_idx_type c);
+  static Matrix matrix (octave_idx_type r, octave_idx_type c, double a = 1.);
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
-  static NDArray nd_array (const dim_vector& dims);
+  static NDArray nd_array (const dim_vector& dims, double a = 1.);
 
   // Return an array of numbers from the sequence.
-  static Array<double> vector (octave_idx_type n);
+  static Array<double> vector (octave_idx_type n, double a = 1.);
 };
 
 #endif

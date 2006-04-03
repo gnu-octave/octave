@@ -1,3 +1,32 @@
+2006-04-03  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (INCLUDES): Add randgamma.h, randpoisson.h and
+        randmtzig.h to the list.
+	(LIBOCTAVE_C_SOURCES): Add randgamma.c, randpoisson.c and
+        randmtzig.c to the list.
+	* oct-rand.cc (do_old_initialization): Rename from do_initialization.
+	(use_old_generators): New variable.
+	(old_initialized): Rename from initialized.
+	(new_initialized): New variable.
+	(oct_init_by_entropy): New function.
+	(maybe_initialize): Initialize new or old generator depending on
+	value of use_old_generators.
+	(octave_rand::state): New functions.
+	(octave_rand::distribution): Add gamma, exponential and poisson
+	distributions.
+	(octave_rand::exponential_distribution,
+	octave_rand::poisson_distribution,
+	octave_rand::gamma_distribution): New methods to select
+        exponential, poisson or gamma distribution.
+	(octave_rand::scalar, octave_rand::matrix, octave_rand::nd_array,
+	octave_rand::vector): Add new distributions.
+	* oct-rand.h: Provide decls for new functions.
+	(octave_rand::matrix, octave_rand::scalar, octave_rand::
+	(octave_rand::scalar, octave_rand::matrix, octave_rand::nd_array,
+	octave_rand::vector): New arg A, for gamma and poisson distributions.
+	* randpoisson.c, randpoisson.h, randgamma.c, randmtzig.c,
+        randmtzig.h: New files.
+
 2006-03-24  John W. Eaton  <jwe@octave.org>
 
 	* dSparse.cc (SparseMatrix::bsolve): Integer work vector is

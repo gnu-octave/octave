@@ -8,3 +8,18 @@
       result = genunf (real (low), real (high))
       return
       end
+      subroutine dgenexp (av, result)
+      double precision av, result
+      result = genexp (real (av))
+      return
+      end
+      subroutine dgengam (a, r, result)
+      double precision a, r, result
+      result = gengam (real (a), real (r))
+      return
+      end
+      subroutine dignpoi (mu, result)
+      double precision mu, result
+      result = ignpoi (real (mu))
+      return
+      end

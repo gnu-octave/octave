@@ -1,3 +1,7 @@
+2006-04-03  David Bateman  <dbateman@free.fr>
+
+	* ranlib/wrap.f (dgenexp, dgengam, dignpoi): New functions.
+
 2006-03-21  John W. Eaton  <jwe@octave.org>
 
 	* misc/f77-fcn.h (F77_XFCN): Save octave_interrupt_immediately and

@@ -69,8 +69,9 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h \
 	oct-shlib.h oct-sort.h oct-spparms.h oct-syscalls.h \
 	oct-sparse.h oct-time.h oct-types.h oct-uname.h \
-	pathlen.h pathsearch.h \
-	prog-args.h so-array.h sparse-sort.h statdefs.h str-vec.h \
+	pathlen.h pathsearch.h prog-args.h \
+	randgamma.h randmtzig.h randpoisson.h \
+	so-array.h sparse-sort.h statdefs.h str-vec.h \
 	sparse-util.h sun-utils.h sysdir.h systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
@@ -128,7 +129,8 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	$(SPARSE_MX_OP_SRC)
 
 LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
-	lo-cieee.c lo-cutils.c mkdir.c oct-getopt.c rename.c \
+	lo-cieee.c lo-cutils.c mkdir.c oct-getopt.c \
+	randgamma.c randmtzig.c randpoisson.c rename.c \
 	rmdir.c strftime.c strptime.c tempname.c tempnam.c
 
 LIBOCTAVE_SOURCES := $(LIBOCTAVE_CXX_SOURCES) $(LIBOCTAVE_C_SOURCES)

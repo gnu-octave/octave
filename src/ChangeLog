@@ -1,5 +1,12 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/rand.cc (do_rand): Additional argument for
+        gamma and poisson distributions.  Change "state" and "seed"
+        arguments so that they choose between generators.
+	Add, poisson, gamma and exponential generators.
+	(Frand, Frandn): Update docs for new generators, add tests.
+	(Frande, Frandp, Frandg): New generators, with test code.
+
 	* DLD-FUNCTIONS/daspk.cc (Fdaspk): Allow functions to be passed
 	using function handles, inline functions, and cell arrays of
 	strings, inline and function handles.

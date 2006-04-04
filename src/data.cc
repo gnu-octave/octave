@@ -1863,6 +1863,9 @@ The @code{linspace} function always returns a row vector.\n\
   return retval;
 }
 
+// XXX FIXME XXX -- should accept dimensions as separate args for N-d
+// arrays as well as 1-d and 2-d arrays.
+
 DEFUN (resize, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} resize (@var{x}, @var{m})\n\
@@ -1913,6 +1916,8 @@ dimensions of the resized matrix.\n\
     print_usage ("resize");
   return retval;
 }
+
+// XXX FIXME XXX -- should use octave_idx_type for dimensions.
 
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\

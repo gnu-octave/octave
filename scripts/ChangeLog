@@ -1,3 +1,8 @@
+2006-04-04  Bob Weigel  <rweigel@gmu.edu>
+
+        * scripts/set/unique.m: Properly handle single column input when
+	"rows" is specified.
+
 2006-04-04  John W. Eaton  <jwe@octave.org>
 
 	* path/setpath.m: New file.

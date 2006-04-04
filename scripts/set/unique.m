@@ -58,7 +58,7 @@ function [y, i, j] = unique (x, r)
     y = toascii (y);
   endif
 
-  if (nargin == 2)
+  if (nargin == 2 && size (y, 2) > 1)
     [y, i] = sortrows (y);
     if (iscell (y))
       match = cellfun ("size", y(1:n-1,:), 1) == cellfun ("size", y(2:n,:), 1);

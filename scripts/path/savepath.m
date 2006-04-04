@@ -38,7 +38,7 @@ function varargout = savepath (savefile)
   endstring   = "## End savepath auto-created section";
 
   if (nargin == 0)
-    savefile = "~/.octaverc";
+    savefile = tilde_expand ("~/.octaverc");
   endif
 
   ## parse the file if it exists to see if we should replace a section
@@ -76,7 +76,7 @@ function varargout = savepath (savefile)
   endif
 
   if (startline > endline || (startline > 0 && endline == 0))
-    error ("savepath: unable to parse file, %s. There was probably a start line without an end line or end without start.", savefile);
+    error ("savepath: unable to parse file, %s", savefile);
   endif
 
   ## put the path into a cell array

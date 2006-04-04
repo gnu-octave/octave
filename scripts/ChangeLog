@@ -1,3 +1,12 @@
+2006-04-04  John W. Eaton  <jwe@octave.org>
+
+	* path/Makefile.in, path/addpath.m, path/rmpath.m, path/savepath.m:
+	New files, adapted from Octave Forge by Keith Goodman
+	<kwgoodman@gmail.com>.
+	* path: New directory.
+	* Makefile.in (SUBDIRS): Add it to the list.
+	* configure.in (AC_CONFIG_FILES): Include path/Makefile here.
+
 2006-04-02  David Bateman  <dbateman@free.fr>
 
 	* general/tril.m, general.triu.m:

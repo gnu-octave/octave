@@ -17,7 +17,7 @@
 ## Based on code Copyright (C) 2000 Etienne Grossmann 
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} addpath(@var{dir1}, @dots{})
+## @deftypefn {Function File} {} addpath (@var{dir1}, @dots{})
 ## Prepend @var{dir1}, @dots{} to the current @code{LOADPATH}.
 ## If the directory is already in the path, it is moved to the specified
 ## location, prepending by default.
@@ -33,13 +33,13 @@
 ## BUG: This function can't add directories called @samp{-end} or
 ## @samp{-begin} (case insensitively).
 ##
-## @seealso{LOADPATH, rmpath, savepath}
+## @seealso{LOADPATH, rmpath, savepath, setpath}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
 ## Modified-By: Bill Denney <bill@givebillmoney.com>
 
-##PKGADD: mark_as_command addpath
+## PKGADD: mark_as_command addpath
 
 function ret = addpath (varargin)
 

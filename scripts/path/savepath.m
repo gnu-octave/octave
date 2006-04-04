@@ -25,10 +25,12 @@
 ##
 ## It will return 0 if it was successful.
 ##
-## @seealso{LOADPATH, addpath, rmpath}
+## @seealso{LOADPATH, addpath, rmpath, setpath}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@givebillmoney.com>
+
+##PKGADD: mark_as_command savepath
 
 function varargout = savepath (savefile)
 
@@ -79,9 +81,6 @@ function varargout = savepath (savefile)
     error ("savepath: unable to parse file, %s", savefile);
   endif
 
-  ## put the path into a cell array
-  pathlines = { beginstring, ["  LOADPATH=\"", LOADPATH, "\";"], endstring };
-
   ## put the current savepath lines into the file
   if (isempty (filelines)
       || (startline == 1 && endline == length (filelines)))
@@ -111,9 +110,10 @@ function varargout = savepath (savefile)
   for i = 1:length (pre)
     fprintf (fid, "%s\n", pre{i})
   endfor
-  for i = 1:length (pathlines)
-    fprintf (fid, "%s\n", pathlines{i});
-  endfor
+
+  fprintf (fid, "%s\n  setpath (\"%s\");\n%s\n",
+	   beginstring, LOADPATH, endstring);
+
   for i = 1:length (post)
     fprintf (fid, "%s\n", post{i});
   endfor

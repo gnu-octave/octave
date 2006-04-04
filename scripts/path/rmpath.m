@@ -18,12 +18,12 @@
 ## @deftypefn {Function File} {} rmpath (@var{dir1}, @dots{})
 ## Remove @var{dir1}, @dots{} from the current @code{LOADPATH}.
 ##
-## @seealso{LOADPATH, addpath, savepath}
+## @seealso{LOADPATH, addpath, savepath, setpath}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
 
-##PKGADD: mark_as_command rmpath
+## PKGADD: mark_as_command rmpath
 
 function ret = rmpath (varargin)
 

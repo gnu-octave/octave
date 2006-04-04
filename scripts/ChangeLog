@@ -1,5 +1,9 @@
 2006-04-04  John W. Eaton  <jwe@octave.org>
 
+	* path/setpath.m: New file.
+	* path/savepath.m: Use setpath to set path instead of assigning
+	directly to LOADPATH.
+
 	* path/Makefile.in, path/addpath.m, path/rmpath.m, path/savepath.m:
 	New files, adapted from Octave Forge by Keith Goodman
 	<kwgoodman@gmail.com>.

@@ -17,26 +17,27 @@
 ## Based on code Copyright (C) 2000 Etienne Grossmann 
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} addpath(dir1, ...)
-## Prepends @code{dir1}, @code{...} to the current @code{LOADPATH}.
-## If the directory is already in the path, it will place it where you
-## specify in the path (defaulting to prepending it).
+## @deftypefn {Function File} {} addpath(@var{dir1}, @dots{})
+## Prepend @var{dir1}, @dots{} to the current @code{LOADPATH}.
+## If the directory is already in the path, it is moved to the specified
+## location, prepending by default.
 ## 
 ## @example
-## addpath(dir1,'-end',dir2,'-begin',dir3,'-END',dir4,'-BEGIN',dir5)
-## @result{} Prepends dir1, dir3 and dir5 and appends dir2 and dir4. 
+## addpath (dir1, "-end", dir2, "-begin", dir3, "-END", dir4, "-BEGIN", dir5)
+## @result{} Prepend dir1, dir3 and dir5 and append dir2 and dir4. 
 ## @end example
 ##
 ## An error will be returned if the string is not a directory, the
 ## directory doesn't exist or you don't have read access to it.
 ##
-## BUG: This function can't add directories called @code{-end} or
-## @code{-begin} (case insensitively).
+## BUG: This function can't add directories called @samp{-end} or
+## @samp{-begin} (case insensitively).
+##
+## @seealso{LOADPATH, rmpath, savepath}
 ## @end deftypefn
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
-## Modified-By:   Bill Denney <bill@givebillmoney.com>
-## Last modified: June 2005
+## Author: Etienne Grossmann <etienne@cs.uky.edu>
+## Modified-By: Bill Denney <bill@givebillmoney.com>
 
 ##PKGADD: mark_as_command addpath
 
@@ -49,13 +50,13 @@ function ret = addpath (varargin)
     path = LOADPATH;
   endif
 
-  dir = '';
+  dir = "";
   if (length (varargin) > 0)
     append = 0;
     switch varargin{end}
-    case { 0, '0', '-begin', '-BEGIN' }
+    case { 0, "0", "-begin", "-BEGIN" }
       varargin = varargin(1:end-1);
-    case { 1, '1', '-end', '-END' }
+    case { 1, "1", "-end", "-END" }
       varargin = varargin(1:end-1);
       append = 1;
     endswitch
@@ -68,15 +69,15 @@ function ret = addpath (varargin)
       p = varargin{arg};
       if (nargout == 0 && ! isempty (p))
         [s, err, m] = stat (p);
-        if (err ~= 0)
+        if (err != 0)
           warning ("addpath %s : %s\n", p, m);
           continue;
         elseif (index (s.modestr, "d") != 1)
           warning ("addpath %s : not a directory (mode=%s)\n", p, s.modestr);
           continue;
-        elseif ! ((s.modestr(8) == 'r') || ...
-	       ((getgid == s.gid) && (s.modestr(5) == 'r')) || ...
-	       ((getuid == s.uid) && (s.modestr(2) == 'r')))
+        elseif (! (s.modestr(8) == "r"
+		   || (getgid == s.gid && s.modestr(5) == "r")
+		   || (getuid == s.uid && s.modestr(2) == "r")))
           warning ("addpath %s : not readable (mode=%s)\n", p, s.modestr);
           continue;
         endif
@@ -90,7 +91,7 @@ function ret = addpath (varargin)
       if (isempty (path) && ! isempty (dir))
         path = dir;
       else
-        if strcmp (path, ':'), path = ''; end
+        if strcmp (path, ":"), path = ""; end
           if append
             path = sprintf ("%s:%s", path, dir);
           else

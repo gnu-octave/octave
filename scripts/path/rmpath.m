@@ -15,16 +15,13 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rmpath(dir1, ...)
-## Removes dir1,... from the current LOADPATH.
-## 
-## newpath = rmpath(path, dir1, ...)
-## 
-## Removes dir1,... from path.
+## @deftypefn {Function File} {} rmpath (@var{dir1}, @dots{})
+## Remove @var{dir1}, @dots{} from the current @code{LOADPATH}.
+##
+## @seealso{LOADPATH, addpath, savepath}
 ## @end deftypefn
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
-## Last modified: June 2005
+## Author: Etienne Grossmann <etienne@cs.uky.edu>
 
 ##PKGADD: mark_as_command rmpath
 
@@ -41,19 +38,19 @@ function ret = rmpath (varargin)
     p = varargin{arg};
     lp = length (p);
 
-    ## '' is the system path
-    if (lp==0)
+    ## "" is the system path
+    if (lp == 0)
       strip_system_path = 1;
     endif
 
-    ## strip '...:p:...' -> '...:...'
+    ## strip "...:p:..." -> "...:..."
     lo = 0 ;
     while (lo != length (path))	# Loop while I can substitute
       lo = length (path);
       path = strrep (path, sprintf(":%s:", p), ":");
     endwhile
 
-    ## strip 'p:...' and '...:p' -> '...'
+    ## strip "p:..." and "...:p" -> "..."
     if (length (path) > lp+1 && strcmp (path(1:lp+1), sprintf ("%s:", p)))
       path = path(lp+2:end);
     endif
@@ -61,20 +58,22 @@ function ret = rmpath (varargin)
       path = path(1:end-lp-1);
     endif
 
-    ## strip 'p:' and ':p' -> ':'
-    if (length (path) == lp+1 && (strcmp (path, sprintf("%s:", p)) || strcmp (path, sprintf (":%s", p))))
-      path = ':';
+    ## strip "p:" and ":p" -> ":"
+    if (length (path) == lp+1
+	&& (strcmp (path, sprintf ("%s:", p))
+	    || strcmp (path, sprintf (":%s", p))))
+      path = ":";
     endif
 
-    ## strip 'p' -> ''
+    ## strip "p" -> ""
     if (length (path) == lp && strcmp (path, p))
-      path = '';
+      path = "";
     endif
 
   endfor
 
-  if (strip_system_path && strcmp (path, ':'))
-    path = '';
+  if (strip_system_path && strcmp (path, ":"))
+    path = "";
   endif
 
   if (nargout > 0)

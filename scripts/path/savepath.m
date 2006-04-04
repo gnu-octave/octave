@@ -25,7 +25,7 @@
 ##
 ## It will return 0 if it was successful.
 ##
-## @seealso{LOADPATH,addpath,rmpath}
+## @seealso{LOADPATH, addpath, rmpath}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@givebillmoney.com>
@@ -37,17 +37,17 @@ function varargout = savepath (savefile)
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
 
-  if nargin == 0
-    savefile = fullfile (getenv ("HOME"), strcat (filesep,  ".octaverc"));
+  if (nargin == 0)
+    savefile = "~/.octaverc";
   endif
 
-  %% parse the file if it exists to see if we should replace a section
-  %% or create a section
+  ## parse the file if it exists to see if we should replace a section
+  ## or create a section
   startline = 0;
   endline = 0;
   filelines = {};
   if (exist (savefile) == 2)
-    %% read in all lines of the file
+    ## read in all lines of the file
     [fid, msg] = fopen (savefile, "rt");
     if (fid < 0)
       error ("savepath: could not open savefile, %s: %s", savefile, msg);
@@ -56,12 +56,12 @@ function varargout = savepath (savefile)
     while (linenum >= 0)
       result = fgetl (fid);
       if (isnumeric (result))
-        %% end at the end of file
+        ## end at the end of file
         linenum = -1;
       else
         linenum = linenum + 1;
         filelines{linenum} = result;
-        %% find the first and last lines if they exist in the file
+        ## find the first and last lines if they exist in the file
         if (strcmp (result, beginstring))
           startline = linenum;
         elseif (strcmp (result, endstring))
@@ -75,20 +75,20 @@ function varargout = savepath (savefile)
     endif
   endif
 
-  if (startline > endline) || ((startline > 0) && (endline == 0))
+  if (startline > endline || (startline > 0 && endline == 0))
     error ("savepath: unable to parse file, %s. There was probably a start line without an end line or end without start.", savefile);
   endif
 
-  %% put the path into a cell array
+  ## put the path into a cell array
   pathlines = { beginstring, ["  LOADPATH=\"", LOADPATH, "\";"], endstring };
 
-  %% put the current savepath lines into the file
-  if (isempty(filelines)) || ...
-	((startline == 1) && (endline == length(filelines)))
-    %% savepath is the entire file
+  ## put the current savepath lines into the file
+  if (isempty (filelines)
+      || (startline == 1 && endline == length (filelines)))
+    ## savepath is the entire file
     pre = post = {};
   elseif (endline == 0)
-    %% drop the savepath statements at the end of the file
+    ## drop the savepath statements at the end of the file
     pre = filelines;
     post = {};
   elseif (startline == 1)
@@ -98,12 +98,12 @@ function varargout = savepath (savefile)
     pre = filelines(1:startline-1);
     post = {};
   else
-    %% insert in the middle
+    ## insert in the middle
     pre = filelines(1:startline-1);
     post = filelines(endline+1:end);
   endif
 
-  %% write the results
+  ## write the results
   [fid, msg] = fopen (savefile, "wt");
   if (fid < 0)
     error ("savepath: unable to open file for writing, %s, %s", savefile, msg);

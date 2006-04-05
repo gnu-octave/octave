@@ -1123,6 +1123,8 @@ function file, the full name of the file is also displayed.\n\
 std::string 
 first_help_sentence (const std::string& h, bool short_sentence = true)
 {
+  std::string retval;
+
   size_t pos = 0;
 
   if (looks_like_texinfo (h, pos))
@@ -1155,7 +1157,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	}
 
       if (pos == NPOS)
-	return std::string ();
+	return retval;
 
       // At start of real text. Get first line with the sentence
       size_t new_pos = h2.find_first_of ('\n', pos);
@@ -1189,9 +1191,9 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	}
 
       if (dot_pos == NPOS)
-	return line;
+	retval = line;
       else
-	return line.substr (0, dot_pos + 1);
+	retval = line.substr (0, dot_pos + 1);
     }
   else
     {
@@ -1390,7 +1392,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	}
 
       if (pos == NPOS)
-	return std::string ();
+	return retval;
 
       // At start of real text. Get first line with the sentence
       size_t new_pos = h.find_first_of ('\n', pos);
@@ -1425,10 +1427,12 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 	}
 
       if (dot_pos == NPOS)
-	return line;
+	retval = line;
       else
-	return line.substr (0, dot_pos + 1);
+	retval = line.substr (0, dot_pos + 1);
     }
+
+  return retval;
 }
 
 static void
@@ -1651,7 +1655,8 @@ to find related functions that are not part of octave.\n\
 	  OCTAVE_QUIT;
 
 	  symbol_record *sr = lookup_by_name (name, 0);
-	  if (sr && sr->is_defined ())
+	  if (sr && sr->is_defined ()
+	      && sr->type_name () != "overloaded function")
 	    {
 	      std::string h = sr->help ();
 
@@ -1794,7 +1799,7 @@ to find related functions that are not part of octave.\n\
 			  if (!sr)
 			    {
 			      // Must load to get help
-			      sr = lookup_by_name (name, false);
+			      sr = lookup_by_name (aname, false);
 
 			      std::string h;
 			      if (sr && sr->is_defined ())

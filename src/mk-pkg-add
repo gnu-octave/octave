@@ -2,26 +2,6 @@
 
 SED=${SED:-'sed'}
 
-install=false
-if [ $1 = "--prefix" ]; then
-  shift
-  prefix="$1"
-  shift
-elif [ $1 = "--install" ]; then
-  install=true
-  shift
-fi
-
-if [ $# -gt 0 ]; then
-  if $install; then
-    cat <<EOF
-__octfiledir__ = strrep (octave_config_info ("octfiledir"),
-                         octave_config_info ("prefix"),
-                         OCTAVE_HOME);
-EOF
-  fi
-fi
-
 for f in "$@"; do
   if [ -f $f ]; then
 
@@ -36,13 +16,7 @@ for f in "$@"; do
 	if [ "$n" = "$base" ]; then
 	  true
 	else
-          if [ -n "$prefix" ]; then
-	    echo "autoload (\"$n\", strcat (\"$prefix\", filesep, \"$base.oct\"));"
-          elif $install; then
-            echo "autoload (\"$n\", strcat (__octfiledir__, filesep, \"$base.oct\"));"
-	  else
-	    echo "autoload (\"$n\", \"$base.oct\");"
-	  fi
+          echo "autoload (\"$n\", fullfile (fileparts (mfilename (\"fullpath\")), \"$base.oct\"));"
 	fi
       done
     fi

@@ -3584,6 +3584,68 @@ source_file (const std::string file_name)
   unwind_protect::run_frame ("source_file");
 }
 
+DEFUN (mfilename, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mfilename ()\n\
+@deftypefnx {Built-in Function} {} mfilename (@code{\"fullpath\"})\n\
+@deftypefnx {Built-in Function} {} mfilename (@code{\"fullpathext\"})\n\
+Return the name of the currently executing file.  At the top-level,\n\
+return the empty string.  Given the argument @code{\"fullpath\"},\n\
+include the directory part of the file name, but not the extension.\n\
+Given the argument @code{\"fullpathext\"}, include the directory part\n\
+of the file name and the extension.\n\
+@end deftypfn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    {
+      print_usage ("mfilename");
+      return retval;
+    }
+
+  std::string arg;
+
+  if (nargin == 1)
+    {
+      arg = args(0).string_value ();
+
+      if (error_state)
+	{
+	  error ("mfilename: expecting argument to be a character string");
+	  return retval;
+	}
+    }
+
+  std::string fname;
+
+  if (curr_caller_function)
+    fname = curr_caller_function->fcn_file_name ();
+
+  if (arg == "fullpathext")
+    retval = fname;
+  else
+    {
+      size_t pos = fname.rfind ('.');
+
+      fname = (pos != NPOS) ? fname.substr (0, pos) : fname;
+
+      if (arg == "fullpath")
+	retval = fname;
+      else
+	{
+	  pos = fname.rfind (file_ops::dir_sep_char);
+
+	  retval = (pos != NPOS) ? fname.substr (pos+1) : fname;
+	}
+    }
+
+  return retval;
+}
+
+
 DEFUN (source, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} source (@var{file})\n\

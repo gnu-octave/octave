@@ -1,3 +1,14 @@
+2006-04-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (mk-pkg-add): Use mfilename to simplify.
+	(PKG_ADD): Don't pass --prefix arg to mk-pkg-add.
+	(PKG_ADD.inst): Delete target.
+	(clean): Don't remove PKG_ADD.inst.
+	(install-oct): Don't depend on PKG_ADD.inst.  Install PKG_ADD, not
+	PKG_ADD.inst.
+
+	* parse.y (Fmfilename): New function.
+
 2006-04-04  David Bateman  <dbateman@free.fr>
 
 	* help.cc (Flookfor): Skip overloaded functions.  Lookup help text

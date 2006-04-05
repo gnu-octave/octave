@@ -56,11 +56,15 @@ function __plt__ (caller, varargin)
 	if (x_set)
 	  fmt = __pltopt__ (caller, next_arg);
 	  if (y_set)
-	    [__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}, fmtstr] = __plt2__ (x, y, fmt);
+	    [tdata, tfmtstr] = __plt2__ (x, y, fmt);
 	  else
-	    [__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}, fmtstr] = __plt1__ (x, fmt);
+	    [tdata, tfmtstr] = __plt1__ (x, fmt);
 	  endif
-	  have_data = true;
+	  if (! isempty (tdata))
+	    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j} = tdata;
+	    fmtstr = tfmtstr;
+	    have_data = true;
+	  endif
 	  x_set = false;
 	  y_set = false;
 	else
@@ -69,8 +73,12 @@ function __plt__ (caller, varargin)
       elseif (x_set)
 	if (y_set)
 	  fmt = __pltopt__ (caller, "");
-	  [__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}, fmtstr] = __plt2__ (x, y, fmt);
-	  have_data = true;
+	  [tdata, tfmtstr] = __plt2__ (x, y, fmt);
+	  if (! isempty (tdata))
+	    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j} = tdata;
+	    fmtstr = tfmtstr;
+	    have_data = true;
+	  endif
 	  x = next_arg;
 	  y_set = false;
 	else
@@ -105,10 +113,10 @@ function __plt__ (caller, varargin)
 
     __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = j;
 
-    if (! isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
-      if (__multiplot_mode__)
-	__gnuplot_raw__ ("clear\n");
-      endif
+    if (__multiplot_mode__)
+      __gnuplot_raw__ ("clear\n");
+    endif
+    if (! strcmp (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}, "__gnuplot_plot__"))
       eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
     endif
 

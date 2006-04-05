@@ -1,3 +1,10 @@
+2006-04-05  John W. Eaton  <jwe@octave.org>
+
+	* plot/__plt2__.m: Return data = [] and fmtstr = "" if x1 and x2
+	are both empty.
+	* plot/__plt__.m: Ignore empty data and format strings returned
+	from __plt1__ or __plt2__.
+
 2006-04-04  Bob Weigel  <rweigel@gmu.edu>
 
         * scripts/set/unique.m: Properly handle single column input when

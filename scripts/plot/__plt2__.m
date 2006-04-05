@@ -67,6 +67,9 @@ function [data, fmtstr] = __plt2__ (x1, x2, fmt)
     else
       error ("__plt2__: invalid data for plotting");
     endif
+  elseif (isempty (x1) && isempty (x2))
+    data = [];
+    fmtstr = "";
   else
     error ("__plt2__: invalid data for plotting");
   endif

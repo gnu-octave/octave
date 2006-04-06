@@ -1,3 +1,7 @@
+2006-04-06  Keith Goodman  <kwgoodman@gmail.com>
+
+	* miscellaneous/mkoctfile.m: Doc string fix.
+
 2006-04-05  John W. Eaton  <jwe@octave.org>
 
 	* plot/__plt2__.m: Return data = [] and fmtstr = "" if x1 and x2

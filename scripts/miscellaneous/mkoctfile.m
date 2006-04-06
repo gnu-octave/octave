@@ -79,6 +79,9 @@
 ##    FFLAGS
 ## @end example
 ##
+## @item --link-stand-alone
+## Link a stand-alone executable file.
+##
 ## @item -s|--strip
 ## Strip the output file.
 ##

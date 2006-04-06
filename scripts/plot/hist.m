@@ -97,7 +97,7 @@ function [nn, xx] = hist (y, x, norm)
     for i = 1:n-1
       chist(i+1,:) = sum (y <= cutoff(i));
     endfor
-    chist(n+1,:) = rows (y);
+    chist(n+1,:) = sum (! isnan (y));
   else
     ## The following algorithm works fastest for n greater than about 30.
     ## Put cutoff elements between boundaries, integrate over all
@@ -107,7 +107,7 @@ function [nn, xx] = hist (y, x, norm)
     chist = cumsum (idx <= len);
     t1 = zeros (1, columns (y));
     t2 = reshape (chist(idx > len), size (cutoff));
-    t3 = chist(end,:);
+    t3 = chist(end,:) - sum (isnan (y));
     chist = [t1; t2; t3];
   endif
 
@@ -140,6 +140,10 @@ endfunction
 %!  [nn,xx]=hist([1:4]',3);
 %!  assert(xx, [1.5,2.5,3.5]);
 %!  assert(nn, [2,1,1]);
+%!test
+%!  [nn,xx]=hist([1 1 1 NaN NaN NaN 2 2 3],[1 2 3]);
+%!  assert(xx, [1,2,3]);
+%!  assert(nn, [3,2,1]);
 %!test
 %!  [nn,xx]=hist([[1:4]',[1:4]'],3);
 %!  assert(xx, [[1.5,2.5,3.5]',[1.5,2.5,3.5]']);

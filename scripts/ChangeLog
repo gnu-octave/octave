@@ -1,3 +1,7 @@
+2006-04-06  Olli Saarela  <olli.saarela@kcl.fi>
+
+	* plot/hist.m: Ignore NaN in inputs.
+
 2006-04-06  Keith Goodman  <kwgoodman@gmail.com>
 
 	* miscellaneous/mkoctfile.m: Doc string fix.

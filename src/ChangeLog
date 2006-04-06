@@ -1,7 +1,10 @@
 2006-04-06  John W. Eaton  <jwe@octave.org>
 
-	* parse.y (Fmfilename): If no function is on the call stack check
-	to see whether we are reading a script file.
+	* parse.y (parse_and_execute, parse_fcn_file):
+	Create octave_script_function object and push it on the call stack. 
+
+	* parse.y (Fmfilename): Check for script or user function file on
+	call stack.
 
 	* ov-builtin.cc (octave_builtin::do_multi_index_op):
 	Use octave_call_stack instead of curr_function to save pointer to
@@ -34,11 +37,14 @@
 	* parse.y (Fmfilename): Likewise.  Check for scripting language
 	caller, not any calling function.
 
-2006-04-05  John W. Eaton  <jwe@octave.org>
+	* ov-usr-fcn.h (octave_user_script): New class.
+	* ov-fcn.h (octave_function::is_user_script): New virtual function.
 
 	* toplev.h, toplev.cc (octave_call_stack): New class.
 
 	* debug.cc (Fdbwhere): Use get_user_function here.
+
+2006-04-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (mk-pkg-add): Use mfilename to simplify.
 	(PKG_ADD): Don't pass --prefix arg to mk-pkg-add.

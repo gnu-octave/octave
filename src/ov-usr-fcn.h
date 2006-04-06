@@ -44,7 +44,47 @@ class tree_walker;
 class symbol_table;
 class symbol_record;
 
-// Builtin functions.
+// Scripts.
+
+class
+octave_user_script : public octave_function
+{
+public:
+
+  octave_user_script (void) { }
+
+  octave_user_script (const std::string& fnm, const std::string& nm,
+		      const std::string& ds)
+    : octave_function (nm, ds), file_name (fnm) { }
+
+  ~octave_user_script (void) { }
+
+  // Scripts and user functions are both considered "scripts" because
+  // they are written in Octave's scripting language.
+
+  bool is_user_script (void) const { return true; }
+
+  void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
+
+  std::string fcn_file_name (void) const { return file_name; }
+
+private:
+
+  // The name of the file we parsed
+  std::string file_name;
+
+  // No copying!
+
+  octave_user_script (const octave_user_script& f);
+
+  octave_user_script& operator = (const octave_user_script& f);
+
+  DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+};
+
+// User-defined functions.
 
 class
 octave_user_function : public octave_function

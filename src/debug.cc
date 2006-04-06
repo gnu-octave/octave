@@ -59,7 +59,7 @@ get_user_function (std::string fname = "")
   octave_user_function *dbg_fcn = 0;
 
   if (fname == "")
-    dbg_fcn = octave_call_stack::caller_script ();
+    dbg_fcn = octave_call_stack::caller_user_function ();
   else
     {
       symbol_record *ptr = curr_sym_tab->lookup (fname);

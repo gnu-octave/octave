@@ -2997,6 +2997,10 @@ parse_and_execute (const std::string& s, bool verbose, const char *warn_for)
     {
       unwind_protect::add (safe_fclose, f);
 
+      octave_user_script *script = new octave_user_script (s, s, "");
+      octave_call_stack::push (script);
+      unwind_protect::add (octave_call_stack::unwind_pop_script, 0);
+
       unwind_protect_int (input_line_number);
       unwind_protect_int (current_input_column);
 
@@ -3377,6 +3381,10 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
 	  bind_builtin_variable ("current_script_file_name", ff);
 
+	  octave_user_script *script = new octave_user_script (ff, ff, "");
+	  octave_call_stack::push (script);
+	  unwind_protect::add (octave_call_stack::unwind_pop_script, 0);
+
 	  parse_and_execute (ffile);
 
 	  script_file_executed = true;
@@ -3619,29 +3627,9 @@ of the file name and the extension.\n\
 	}
     }
 
-  // XXX FIXME XXX -- the logic below fails for the following
-  // situation, because script files are not functions that can be
-  // entered into the call stack.
-  //
-  // foo.m:
-  // -----
-  //   function foo ()
-  //     bar;
-  //
-  // bar.m:
-  // -----
-  //   mfilename ();
-  //
-  // foo ()
-  //    ==> foo
-  //
-  // though it should report "bar".  Perhaps we need a dummy function
-  // object that can be used for scripts to at least hold file names
-  // and some other information so we could store it on the call stack.
-
   std::string fname;
 
-  octave_user_function *fcn = octave_call_stack::caller_script ();
+  octave_function *fcn = octave_call_stack::caller_user_script_or_function ();
 
   if (fcn)
     {
@@ -3650,8 +3638,6 @@ of the file name and the extension.\n\
       if (fname.empty ())
         fname = fcn->name ();
     }
-  else if (reading_script_file)
-    fname = curr_fcn_file_full_name;
 
   if (arg == "fullpathext")
     retval = fname;

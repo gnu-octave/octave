@@ -109,8 +109,27 @@ octave_call_stack::do_caller (void)
   return retval;
 }
 
+octave_user_script *
+octave_call_stack::do_caller_user_script (void)
+{
+  octave_user_script *retval = 0;
+
+  for (iterator p = cs.begin (); p != cs.end (); p++)
+    {
+      octave_function *f = *p;
+
+      if (f && f->is_user_script ())
+	{
+	  retval = dynamic_cast<octave_user_script *> (f);
+	  break;
+	}
+    }
+
+  return retval;
+}
+
 octave_user_function *
-octave_call_stack::do_caller_script (void)
+octave_call_stack::do_caller_user_function (void)
 {
   octave_user_function *retval = 0;
 
@@ -126,6 +145,34 @@ octave_call_stack::do_caller_script (void)
     }
 
   return retval;
+}
+
+octave_function *
+octave_call_stack::do_caller_user_script_or_function (void)
+{
+  octave_function *retval = 0;
+
+  for (iterator p = cs.begin (); p != cs.end (); p++)
+    {
+      octave_function *f = *p;
+
+      if (f && (f->is_user_script () || f->is_user_function ()))
+	{
+	  retval = f;
+	  break;
+	}
+    }
+
+  return retval;
+}
+
+void
+octave_call_stack::unwind_pop_script (void *)
+{
+  octave_function *f = top ();
+  pop ();
+  assert (f && f->is_user_script ());
+  delete f;
 }
 
 static void

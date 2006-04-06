@@ -1946,7 +1946,7 @@ then lock in the current function.\n\
     }
   else if (args.length () == 0)
     {
-      octave_user_function *fcn = octave_call_stack::caller_script ();
+      octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
         mlock (fcn->name ());
@@ -1980,7 +1980,7 @@ then unlock the current function.\n\
     }
   else if (args.length () == 0)
     {
-      octave_user_function *fcn = octave_call_stack::caller_script ();
+      octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
         mlock (fcn->name ());
@@ -2015,7 +2015,7 @@ then return true if the current function is locked.\n\
     }
   else if (args.length () == 0)
     {
-      octave_user_function *fcn = octave_call_stack::caller_script ();
+      octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
         retval = mislocked (fcn->name ());

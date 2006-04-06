@@ -59,6 +59,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 				     "user-defined function",
 				     "user-defined function");
 
+DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
+
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
+				     "user-defined script",
+				     "user-defined script");
+
 // Ugh.  This really needs to be simplified (code/data?
 // extrinsic/intrinsic state?).
 
@@ -746,7 +752,7 @@ has not been declared to take a variable number of parameters.\n\
 
   if (nargin == 0)
     {
-      octave_function *fcn = octave_call_stack::caller_script ();
+      octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
 	{
@@ -790,7 +796,7 @@ that has not been declared to take a variable number of parameters.\n\
 
   if (nargin == 0)
     {
-      octave_function *fcn = octave_call_stack::caller_script ();
+      octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
 	{
@@ -836,7 +842,7 @@ been declared to return an unspecified number of output arguments.\n\
 
   if (nargin == 1)
     {
-      octave_function *fcn = octave_call_stack::caller_script ();
+      octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
 	{

@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 class octave_value;
 class octave_value_list;
 class octave_function;
-class octave_user_function;
+class octave_user_script;
 class tree_statement_list;
 class charMatrix;
 
@@ -86,10 +86,7 @@ public:
   }
 
   // Current function (top of stack).
-  static octave_function *current (void)
-  {
-    return instance_ok () ? instance->do_current (): 0;
-  }
+  static octave_function *current (void) { return top (); }
 
   // Caller function, may be built-in.
   static octave_function *caller (void)
@@ -97,16 +94,33 @@ public:
     return instance_ok () ? instance->do_caller (): 0;
   }
 
-  // First scripting language function on the stack.
-  static octave_user_function *caller_script (void)
+  // First script on the stack.
+  static octave_user_script *caller_script (void)
   {
-    return instance_ok () ? instance->do_caller_script (): 0;
+    return instance_ok () ? instance->do_caller_user_script (): 0;
+  }
+
+  // First user-defined function on the stack.
+  static octave_user_function *caller_user_function (void)
+  {
+    return instance_ok () ? instance->do_caller_user_function (): 0;
+  }
+
+  // First user-defined function on the stack.
+  static octave_function *caller_user_script_or_function (void)
+  {
+    return instance_ok () ? instance->do_caller_user_script_or_function (): 0;
   }
 
   static void push (octave_function *f)
   {
     if (instance_ok ())
       instance->do_push (f);
+  }
+
+  static octave_function *top (void)
+  {
+    return instance_ok () ? instance->do_top (): 0;
   }
 
   static void pop (void)
@@ -118,6 +132,10 @@ public:
   // A function for popping the top of the call stack that is suitable
   // for use as an unwind_protect handler.
   static void unwind_pop (void *) { pop (); }
+
+  // A function for popping an octave_user_script from the top of the
+  // call stack that is suitable for use as an unwind_protect handler.
+  static void unwind_pop_script (void *);
 
   static void clear (void)
   {
@@ -132,13 +150,17 @@ private:
 
   static octave_call_stack *instance;
 
-  octave_function *do_current (void) { return cs.empty () ? 0 : cs.front (); }
-
   octave_function *do_caller (void);
 
-  octave_user_function *do_caller_script (void);
+  octave_user_script *do_caller_user_script (void);
+
+  octave_user_function *do_caller_user_function (void);
+
+  octave_function *do_caller_user_script_or_function (void);
 
   void do_push (octave_function *f) { cs.push_front (f); }
+
+  octave_function *do_top (void) { return cs.empty () ? 0 : cs.front (); }
 
   void do_pop (void)
   {

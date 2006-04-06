@@ -70,6 +70,8 @@ public:
 
   virtual bool is_nested_function (void) const { return false; }
 
+  virtual bool is_user_script (void) const { return false; }
+
   virtual bool is_user_function (void) const { return false; }
 
   virtual bool takes_varargs (void) const { return false; }

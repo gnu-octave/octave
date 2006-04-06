@@ -545,18 +545,20 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
   std::string nm;
   int line = -1;
 
-  // We look at curr_caller_function because curr_function is always
-  // "keyboard".
-
-  if (debug && curr_caller_function)
+  if (debug)
     {
-      nm = curr_caller_function->fcn_file_name ();
+      octave_user_function *caller = octave_call_stack::caller_script ();
 
-      if (nm.empty ())
-	nm = curr_caller_function->name ();
+      if (caller)
+	{
+	  nm = caller->fcn_file_name ();
 
-      if (curr_statement)
-	line = curr_statement->line ();
+	  if (nm.empty ())
+	    nm = caller->name ();
+
+	  if (curr_statement)
+	    line = curr_statement->line ();
+	}
     }
 
   OSSTREAM buf;
@@ -634,7 +636,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
 	      tree::last_line = 0;
 
-	      tree::break_function = curr_function;
+	      tree::break_function = octave_call_stack::current ();
 
 	      return retval;
 	    }
@@ -644,7 +646,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
 	      tree::last_line = curr_statement->line ();
 
-	      tree::break_function = curr_function;
+	      tree::break_function = octave_call_stack::current ();
 
 	      return retval;
 	    }

@@ -3619,10 +3619,39 @@ of the file name and the extension.\n\
 	}
     }
 
+  // XXX FIXME XXX -- the logic below fails for the following
+  // situation, because script files are not functions that can be
+  // entered into the call stack.
+  //
+  // foo.m:
+  // -----
+  //   function foo ()
+  //     bar;
+  //
+  // bar.m:
+  // -----
+  //   mfilename ();
+  //
+  // foo ()
+  //    ==> foo
+  //
+  // though it should report "bar".  Perhaps we need a dummy function
+  // object that can be used for scripts to at least hold file names
+  // and some other information so we could store it on the call stack.
+
   std::string fname;
 
-  if (curr_caller_function)
-    fname = curr_caller_function->fcn_file_name ();
+  octave_user_function *fcn = octave_call_stack::caller_script ();
+
+  if (fcn)
+    {
+      fname = fcn->fcn_file_name ();
+
+      if (fname.empty ())
+        fname = fcn->name ();
+    }
+  else if (reading_script_file)
+    fname = curr_fcn_file_full_name;
 
   if (arg == "fullpathext")
     retval = fname;

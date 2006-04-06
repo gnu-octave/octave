@@ -90,14 +90,43 @@ bool octave_initialized = false;
 // Current command to execute.
 tree_statement_list *global_command = 0;
 
-// Pointer to function that is currently being evaluated.
-octave_function *curr_function = 0;
-
-// Pointer to caller of curr_function.
-octave_function *curr_caller_function = 0;
-
 // Pointer to parent function that is currently being evaluated.
 octave_function *curr_parent_function = 0;
+
+octave_call_stack *octave_call_stack::instance = 0;
+
+octave_function *
+octave_call_stack::do_caller (void)
+{
+  octave_function *retval = 0;
+
+  if (cs.size () > 1)
+    {
+      iterator p = cs.begin ();
+      retval = *++p;
+    }
+
+  return retval;
+}
+
+octave_user_function *
+octave_call_stack::do_caller_script (void)
+{
+  octave_user_function *retval = 0;
+
+  for (iterator p = cs.begin (); p != cs.end (); p++)
+    {
+      octave_function *f = *p;
+
+      if (f && f->is_user_function ())
+	{
+	  retval = dynamic_cast<octave_user_function *> (f);
+	  break;
+	}
+    }
+
+  return retval;
+}
 
 static void
 recover_from_exception (void)

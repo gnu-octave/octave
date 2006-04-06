@@ -1625,8 +1625,10 @@ do_who (int argc, const string_vector& argv, int return_list)
 	      Octave_map ni;
 
 	      std::string caller_function_name;
-	      if (curr_caller_function)
-		caller_function_name = curr_caller_function->name ();
+
+	      octave_function *caller = octave_call_stack::caller ();
+	      if (caller)
+		caller_function_name = caller->name ();
 
 	      ni.assign ("function", caller_function_name);
 	      ni.assign ("level", 1);
@@ -1944,8 +1946,10 @@ then lock in the current function.\n\
     }
   else if (args.length () == 0)
     {
-      if (curr_function)
-        mlock (curr_function->name ());
+      octave_user_function *fcn = octave_call_stack::caller_script ();
+
+      if (fcn)
+        mlock (fcn->name ());
       else
         error ("mlock: invalid use outside a function");
     }
@@ -1976,8 +1980,10 @@ then unlock the current function.\n\
     }
   else if (args.length () == 0)
     {
-      if (curr_function)
-        mlock (curr_function->name ());
+      octave_user_function *fcn = octave_call_stack::caller_script ();
+
+      if (fcn)
+        mlock (fcn->name ());
       else
         error ("munlock: invalid use outside a function");
     }
@@ -2009,8 +2015,10 @@ then return true if the current function is locked.\n\
     }
   else if (args.length () == 0)
     {
-      if (curr_function)
-        retval = mislocked (curr_function->name ());
+      octave_user_function *fcn = octave_call_stack::caller_script ();
+
+      if (fcn)
+        retval = mislocked (fcn->name ());
       else
         error ("mislocked: invalid use outside a function");
     }

@@ -111,11 +111,9 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
     {
       unwind_protect::begin_frame ("builtin_func_eval");
 
-      unwind_protect_ptr (curr_function);
-      unwind_protect_ptr (curr_caller_function);
+      octave_call_stack::push (this);
 
-      curr_caller_function = curr_function;
-      curr_function = this;
+      unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
       retval = (*f) (args, nargout);
 

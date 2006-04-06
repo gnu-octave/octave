@@ -1,4 +1,44 @@
+2006-04-06  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Fmfilename): If no function is on the call stack check
+	to see whether we are reading a script file.
+
+	* ov-builtin.cc (octave_builtin::do_multi_index_op):
+	Use octave_call_stack instead of curr_function to save pointer to
+	current function.
+	* ov-mapper.cc (octave_mapper::do_multi_index_op): Likewise.
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op): Likewise.
+
+	* pt-bp.h (MAYBE_DO_BREAKPOINT): Use octave_call_stack instead of
+	curr_function to get pointer to current function.
+	* pt-arg-list.cc (list::convert_to_const_vector): Likewise.
+	* variables.cc (Fmlock, Fmunlock, Fmislocked): Likewise.
+	* input.cc (get_user_input): Likewise.
+	* error.cc (warning_1, error_2): Likewise.  Only enter debug mode
+	if there is a scripting language caller.
+	* ov-usr-fcn.cc (Fva_arg, Fva_start, Fvr_val): Likewise.  Check
+	scripting language caller, not current function.
+
+	* toplev.cc (curr_caller_function, curr_function): Delete.
+	* toplev.h: Delete decls.
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Don't protect and set curr_caller_function.
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Likewise.
+	* ov-mapper.cc (octave_mapper::do_multi_index_op): Likewise.
+
+	* variables.cc (do_who): Use octave_call_stack instead of
+	curr_caller_function to get pointer to calling function.
+	* input.cc (get_user_input): Likewise.
+	* error.cc (pr_where): Likewise.  No need for curr_function now.
+	* parse.y (Fmfilename): Likewise.  Check for scripting language
+	caller, not any calling function.
+
 2006-04-05  John W. Eaton  <jwe@octave.org>
+
+	* toplev.h, toplev.cc (octave_call_stack): New class.
+
+	* debug.cc (Fdbwhere): Use get_user_function here.
 
 	* Makefile.in (mk-pkg-add): Use mfilename to simplify.
 	(PKG_ADD): Don't pass --prefix arg to mk-pkg-add.

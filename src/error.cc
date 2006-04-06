@@ -378,27 +378,19 @@ pr_where (const char *name, bool print_code = true)
       int l = -1;
       int c = -1;
 
-      octave_function *fcn = curr_function;
+      octave_user_function *fcn = octave_call_stack::caller_script ();
 
       if (fcn)
 	{
-	  nm = fcn->name ();
+	  nm = fcn->fcn_file_name ();
 
-	  if (nm == "error" || nm == "warning")
-	    fcn = curr_caller_function;
+	  if (nm.empty ())
+	    nm = fcn->name ();
 
-	  if (fcn)
+	  if (curr_statement)
 	    {
-	      nm = fcn->fcn_file_name ();
-
-	      if (nm.empty ())
-		nm = fcn->name ();
-
-	      if (curr_statement)
-		{
-		  l = curr_statement->line ();
-		  c = curr_statement->column ();
-		}
+	      l = curr_statement->line ();
+	      c = curr_statement->column ();
 	    }
 	}
 
@@ -552,7 +544,8 @@ warning_1 (const char *id, const char *fmt, va_list args)
       warning_state = 1;
 
       if ((interactive || forced_interactive)
-	  && Vdebug_on_warning && curr_function)
+	  && Vdebug_on_warning
+	  && octave_call_stack::caller_script ())
 	{
 	  unwind_protect_bool (Vdebug_on_warning);
 	  Vdebug_on_warning = false;
@@ -590,7 +583,8 @@ error_2 (const char *id, const char *fmt, va_list args)
   error_1 (std::cerr, "error", id, fmt, args);
 
   if ((interactive || forced_interactive)
-      && Vdebug_on_error && init_state == 0 && curr_function)
+      && Vdebug_on_error && init_state == 0
+      && octave_call_stack::caller_script ())
     {
       unwind_protect_bool (Vdebug_on_error);
       Vdebug_on_error = false;

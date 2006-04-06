@@ -49,14 +49,20 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "unwind-prot.h"
 #include "variables.h"
 
+// Return a pointer to the user-defined function FNAME.  If FNAME is
+// empty, search backward for the first user-defined function in the
+// current call stack.
+
 static octave_user_function *
-get_user_function (std::string str = "")
+get_user_function (std::string fname = "")
 {
   octave_user_function *dbg_fcn = 0;
 
-  if (str.compare (""))
+  if (fname == "")
+    dbg_fcn = octave_call_stack::caller_script ();
+  else
     {
-      symbol_record *ptr = curr_sym_tab->lookup (str);
+      symbol_record *ptr = curr_sym_tab->lookup (fname);
 
       if (ptr && ptr->is_user_function ())
 	{
@@ -65,7 +71,7 @@ get_user_function (std::string str = "")
 	}
       else
 	{
-	  ptr = lookup_by_name (str, false);
+	  ptr = lookup_by_name (fname, false);
 	
 	  if (ptr && ptr->is_user_function ())
 	    {
@@ -74,8 +80,6 @@ get_user_function (std::string str = "")
 	    }
 	}
     }
-  else if (curr_caller_function && curr_caller_function->is_user_function ())
-    dbg_fcn = dynamic_cast<octave_user_function *> (curr_caller_function);
 
   return dbg_fcn;
 }
@@ -282,10 +286,7 @@ Show where we are in the code\n\
 {
   octave_value retval;
 
-  octave_user_function *dbg_fcn = 0;
-
-  if (curr_caller_function && curr_caller_function->is_user_function ())
-    dbg_fcn = dynamic_cast<octave_user_function *> (curr_caller_function);
+  octave_user_function *dbg_fcn = get_user_function ();
 
   if (dbg_fcn)
     {

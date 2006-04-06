@@ -393,13 +393,12 @@ octave_user_function::do_multi_index_op (int nargout,
   unwind_protect_ptr (curr_sym_tab);
   curr_sym_tab = sym_tab;
 
-  unwind_protect_ptr (curr_function);
-  unwind_protect_ptr (curr_caller_function);
   unwind_protect_ptr (curr_caller_statement);
-
   curr_caller_statement = curr_statement;
-  curr_caller_function = curr_function;
-  curr_function = this;
+
+  octave_call_stack::push (this);
+
+  unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
   if (! is_nested_function ())
     {
@@ -747,10 +746,12 @@ has not been declared to take a variable number of parameters.\n\
 
   if (nargin == 0)
     {
-      if (curr_function)
+      octave_function *fcn = octave_call_stack::caller_script ();
+
+      if (fcn)
 	{
-	  if (curr_function->takes_varargs ())
-	    retval = curr_function->octave_va_arg ();
+	  if (fcn->takes_varargs ())
+	    retval = fcn->octave_va_arg ();
 	  else
 	    {
 	      ::error ("va_arg only valid within function taking variable");
@@ -789,10 +790,12 @@ that has not been declared to take a variable number of parameters.\n\
 
   if (nargin == 0)
     {
-      if (curr_function)
+      octave_function *fcn = octave_call_stack::caller_script ();
+
+      if (fcn)
 	{
-	  if (curr_function->takes_varargs ())
-	    curr_function->octave_va_start ();
+	  if (fcn->takes_varargs ())
+	    fcn->octave_va_start ();
 	  else
 	    {
 	      ::error ("va_start only valid within function taking variable");
@@ -833,12 +836,14 @@ been declared to return an unspecified number of output arguments.\n\
 
   if (nargin == 1)
     {
-      if (curr_function)
+      octave_function *fcn = octave_call_stack::caller_script ();
+
+      if (fcn)
 	{
-	  if (curr_function->has_varargout ())
+	  if (fcn->has_varargout ())
 	    ::error ("vr_val and varargout cannot both be used in the same function");
-	  else if (curr_function->takes_var_return ())
-	    curr_function->octave_vr_val (args(0));
+	  else if (fcn->takes_var_return ())
+	    fcn->octave_vr_val (args(0));
 	  else
 	    {
 	      ::error ("vr_val only valid within function declared to");

@@ -213,10 +213,12 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 	    {
 	      if (tmp.is_all_va_args ())
 		{
-		  if (curr_function)
+		  octave_function *fcn = octave_call_stack::current ();
+
+		  if (fcn)
 		    {
 		      octave_value_list tva;
-		      tva = curr_function->octave_all_va_args ();
+		      tva = fcn->octave_all_va_args ();
 		      int n = tva.length ();
 		      args_len += n - 1;
 		      args.resize (args_len);

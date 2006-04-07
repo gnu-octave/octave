@@ -1426,7 +1426,7 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 }
 
 static octave_value
-fill_matrix (const octave_value_list& args, double val, const char *fcn)
+fill_matrix (const octave_value_list& args, int val, const char *fcn)
 {
   octave_value retval;
 
@@ -1542,6 +1542,213 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
   return retval;
 }
 
+static octave_value
+fill_matrix (const octave_value_list& args, double val, const char *fcn)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  oct_data_conv::data_type dt = oct_data_conv::dt_double;
+
+  dim_vector dims (1, 1);
+  
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      std::string nm = args(nargin-1).string_value ();
+      nargin--;
+
+      dt = oct_data_conv::string_to_data_type (nm);
+
+      if (error_state)
+	return retval;
+    }
+
+  switch (nargin)
+    {
+    case 0:
+      break;
+
+    case 1:
+      get_dimensions (args(0), fcn, dims);
+      break;
+
+    default:
+      {
+	dims.resize (nargin);
+
+	for (int i = 0; i < nargin; i++)
+	  {
+	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+
+	    if (error_state)
+	      {
+		error ("%s: expecting scalar integer arguments", fcn);
+		break;
+	      }
+	  }
+      }
+      break;
+    }
+
+  if (! error_state)
+    {
+      dims.chop_trailing_singletons ();
+
+      check_dimensions (dims, fcn);
+
+      // Note that automatic narrowing will handle conversion from
+      // NDArray to scalar.
+
+      if (! error_state)
+	{
+	  switch (dt)
+	    {
+	    case oct_data_conv::dt_single: // XXX FIXME XXX
+	    case oct_data_conv::dt_double:
+	      retval = NDArray (dims, val);
+	      break;
+
+	    default:
+	      error ("%s: invalid class name", fcn);
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+static octave_value
+fill_matrix (const octave_value_list& args, const Complex& val,
+	     const char *fcn)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  oct_data_conv::data_type dt = oct_data_conv::dt_double;
+
+  dim_vector dims (1, 1);
+  
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      std::string nm = args(nargin-1).string_value ();
+      nargin--;
+
+      dt = oct_data_conv::string_to_data_type (nm);
+
+      if (error_state)
+	return retval;
+    }
+
+  switch (nargin)
+    {
+    case 0:
+      break;
+
+    case 1:
+      get_dimensions (args(0), fcn, dims);
+      break;
+
+    default:
+      {
+	dims.resize (nargin);
+
+	for (int i = 0; i < nargin; i++)
+	  {
+	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+
+	    if (error_state)
+	      {
+		error ("%s: expecting scalar integer arguments", fcn);
+		break;
+	      }
+	  }
+      }
+      break;
+    }
+
+  if (! error_state)
+    {
+      dims.chop_trailing_singletons ();
+
+      check_dimensions (dims, fcn);
+
+      // Note that automatic narrowing will handle conversion from
+      // NDArray to scalar.
+
+      if (! error_state)
+	{
+	  switch (dt)
+	    {
+	    case oct_data_conv::dt_single: // XXX FIXME XXX
+	    case oct_data_conv::dt_double:
+	      retval = ComplexNDArray (dims, val);
+	      break;
+
+	    default:
+	      error ("%s: invalid class name", fcn);
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+static octave_value
+fill_matrix (const octave_value_list& args, bool val, const char *fcn)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  dim_vector dims (1, 1);
+  
+  switch (nargin)
+    {
+    case 0:
+      break;
+
+    case 1:
+      get_dimensions (args(0), fcn, dims);
+      break;
+
+    default:
+      {
+	dims.resize (nargin);
+
+	for (int i = 0; i < nargin; i++)
+	  {
+	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+
+	    if (error_state)
+	      {
+		error ("%s: expecting scalar integer arguments", fcn);
+		break;
+	      }
+	  }
+      }
+      break;
+    }
+
+  if (! error_state)
+    {
+      dims.chop_trailing_singletons ();
+
+      check_dimensions (dims, fcn);
+
+      // Note that automatic narrowing will handle conversion from
+      // NDArray to scalar.
+
+      if (! error_state)
+	retval = boolNDArray (dims, val);
+    }
+
+  return retval;
+}
+
 DEFUN (ones, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ones (@var{x})\n\
@@ -1559,14 +1766,14 @@ val_matrix = val * ones (n, m)\n\
 @end example\n\
 \n\
 The optional argument @var{class}, allows @code{ones} to return an array of\n\
-the specified type, like\n\
+the specified type, for example\n\
 \n\
 @example\n\
 val = ones (n,m, \"uint8\")\n\
 @end example\n\
 @end deftypefn")
 {
-  return fill_matrix (args, 1.0, "ones");
+  return fill_matrix (args, 1, "ones");
 }
 
 DEFUN (zeros, args, ,
@@ -1579,14 +1786,256 @@ Return a matrix or N-dimensional array whose elements are all 0.\n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
 \n\
 The optional argument @var{class}, allows @code{zeros} to return an array of\n\
-the specified type, like\n\
+the specified type, for example\n\
 \n\
 @example\n\
 val = zeros (n,m, \"uint8\")\n\
 @end example\n\
 @end deftypefn")
 {
-  return fill_matrix (args, 0.0, "zeros");
+  return fill_matrix (args, 0, "zeros");
+}
+
+DEFUN (Inf, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} Inf (@var{x})\n\
+@deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} Inf (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all Infinity.\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
+The optional argument @var{class} may be either @samp{\"single\"} or\n\
+@samp{\"double\"}  The default is @samp{\"double\"}.\n\
+@end deftypefn")
+{
+  return fill_matrix (args, lo_ieee_inf_value (), "Inf");
+}
+
+DEFALIAS (inf, Inf);
+
+DEFUN (NaN, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} NaN (@var{x})\n\
+@deftypefnx {Built-in Function} {} NaN (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} NaN (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} NaN (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all NaN\n\
+(Not a Number).  The value NaN is the result of an operation like\n\
+@iftex\n\
+@tex\n\
+$0/0$, or $\\infty - \\infty$,\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+0/0, or @samp{Inf - Inf},\n\
+@end ifinfo\n\
+or any operation with a NaN.\n\
+\n\
+Note that NaN always compares not equal to NaN.  This behavior is\n\
+specified by the IEEE standard for floating point arithmetic.  To\n\
+find NaN values, you must use the @code{isnan} function.\n\
+\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
+The optional argument @var{class} may be either @samp{\"single\"} or\n\
+@samp{\"double\"}  The default is @samp{\"double\"}.\n\
+@end deftypefn")
+{
+  return fill_matrix (args, lo_ieee_nan_value (), "NaN");
+}
+
+DEFALIAS (nan, NaN);
+
+DEFUN (e, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} e (@var{x})\n\
+@deftypefnx {Built-in Function} {} e (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} e (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} e (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all equal\n\
+to the base of natural logarithms.  The constant\n\
+@iftex\n\
+@tex\n\
+ $e$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+ @var{e}\n\
+@end ifinfo\n\
+ satisfies the equation\n\
+@iftex\n\
+@tex\n\
+ $\\log (e) = 1$.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+ @code{log} (@var{e}) = 1.\n\
+@end ifinfo\n\
+@end deftypefn")
+{
+#if defined (M_E)
+  double e_val = M_E;
+#else
+  double e_val = exp (1.0);
+#endif
+
+  return fill_matrix (args, e_val, "e");
+}
+
+DEFUN (eps, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} eps (@var{x})\n\
+@deftypefnx {Built-in Function} {} eps (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} eps (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} eps (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all eps,\n\
+the machine precision.  More precisely, @code{eps} is the largest\n\
+relative spacing between any two adjacent numbers in the machine's\n\
+floating point system.  This number is obviously system-dependent.  On\n\
+machines that support 64 bit IEEE floating point arithmetic, @code{eps}\n\
+is approximately\n\
+@ifinfo\n\
+ 2.2204e-16.\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $2.2204\\times10^{-16}$.\n\
+@end tex\n\
+@end iftex\n\
+@end deftypefn")
+{
+  return fill_matrix (args, DBL_EPSILON, "eps");
+}
+
+DEFUN (pi, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} pi (@var{x})\n\
+@deftypefnx {Built-in Function} {} pi (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} pi (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} pi (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all equal\n\
+to the ratio of the circumference of a circle to its diameter.\n\
+Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
+@end deftypefn")
+{
+#if defined (M_PI)
+  double pi_val = M_PI;
+#else
+  double pi_val = 4.0 * atan (1.0);
+#endif
+
+  return fill_matrix (args, pi_val, "pi");
+}
+
+DEFUN (realmax, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} realmax (@var{x})\n\
+@deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} realmax (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all equal\n\
+to the largest floating point number that is representable.  The actual\n\
+value is system-dependent.  On machines that support 64-bit IEEE\n\
+floating point arithmetic, @code{realmax} is approximately\n\
+@ifinfo\n\
+ 1.7977e+308\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $1.7977\\times10^{308}$.\n\
+@end tex\n\
+@end iftex\n\
+@seealso{realmin}\n\
+@end deftypefn")
+{
+  return fill_matrix (args, DBL_MAX, "realmax");
+}
+
+DEFUN (realmin, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} realmin (@var{x})\n\
+@deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} realmin (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all equal\n\
+to the smallest normalized floating point number that is representable.\n\
+The actual value is system-dependent.  On machines that support\n\
+64-bit IEEE floating point arithmetic, @code{realmin} is approximately\n\
+@ifinfo\n\
+ 2.2251e-308\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $2.2251\\times10^{-308}$.\n\
+@end tex\n\
+@end iftex\n\
+@seealso{realmax}\n\
+@end deftypefn")
+{
+  return fill_matrix (args, DBL_MIN, "realmin");
+}
+
+DEFUN (I, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} I (@var{x})\n\
+@deftypefnx {Built-in Function} {} I (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} I (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} I (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all equal\n\
+to the pure imaginary unit, defined as\n\
+@iftex\n\
+@tex\n\
+  $\\sqrt{-1}$.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+  @code{sqrt (-1)}.\n\
+@end ifinfo\n\
+Since I (also i, J, and J) is a function, you can use the name(s) for\n\
+other purposes.\n\
+@end deftypefn")
+{
+  return fill_matrix (args, Complex (0.0, 1.0), "I");
+}
+
+DEFALIAS (i, I);
+DEFALIAS (J, I);
+DEFALIAS (j, I);
+
+DEFUN (NA, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} NA (@var{x})\n\
+@deftypefnx {Built-in Function} {} NA (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} NA (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} NA (@dots{}, @var{class})\n\
+Return a matrix or N-dimensional array whose elements are all equal\n\
+to the special constant used to designate missing values.\n\
+@end deftypefn")
+{
+  return fill_matrix (args, lo_ieee_na_value (), "NA");
+}
+
+DEFUN (false, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} false (@var{x})\n\
+@deftypefnx {Built-in Function} {} false (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} false (@var{n}, @var{m}, @var{k}, @dots{})\n\
+Return a matrix or N-dimensional array whose elements are all logical 0.\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
+@end deftypefn")
+{
+  return fill_matrix (args, false, "false");
+}
+
+DEFUN (true, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} true (@var{x})\n\
+@deftypefnx {Built-in Function} {} true (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} true (@var{n}, @var{m}, @var{k}, @dots{})\n\
+Return a matrix or N-dimensional array whose elements are all logical 1.\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
+@end deftypefn")
+{
+  return fill_matrix (args, true, "true");
 }
 
 template <class MT>
@@ -2063,196 +2512,6 @@ Remove singleton dimensions from @var{x} and return the result.\n\
     print_usage ("squeeze");    
 
   return retval;
-}
-
-void
-symbols_of_data (void)
-{
-
-#define IMAGINARY_DOC_STRING "-*- texinfo -*-\n\
-@defvr {Built-in Constant} I\n\
-@defvrx {Built-in Constant} J\n\
-@defvrx {Built-in Constant} i\n\
-@defvrx {Built-in Constant} j\n\
-A pure imaginary number, defined as\n\
-@iftex\n\
-@tex\n\
-  $\\sqrt{-1}$.\n\
-@end tex\n\
-@end iftex\n\
-@ifinfo\n\
-  @code{sqrt (-1)}.\n\
-@end ifinfo\n\
-These built-in variables behave like functions so you can use the names\n\
-for other purposes.  If you use them as variables and assign values to\n\
-them and then clear them, they once again assume their special predefined\n\
-values @xref{Status of Variables}.\n\
-@end defvr"
-
-#define INFINITY_DOC_STRING "-*- texinfo -*-\n\
-@defvr {Built-in Constant} Inf\n\
-@defvrx {Built-in Constant} inf\n\
-Infinity.  This is the result of an operation like 1/0, or an operation\n\
-that results in a floating point overflow.\n\
-@end defvr"
-
-#define NAN_DOC_STRING "-*- texinfo -*-\n\
-@defvr {Built-in Constant} NaN\n\
-@defvrx {Built-in Constant} nan\n\
-Not a number.  This is the result of an operation like\n\
-@iftex\n\
-@tex\n\
-$0/0$, or $\\infty - \\infty$,\n\
-@end tex\n\
-@end iftex\n\
-@ifinfo\n\
-0/0, or @samp{Inf - Inf},\n\
-@end ifinfo\n\
-or any operation with a NaN.\n\
-\n\
-Note that NaN always compares not equal to NaN.  This behavior is\n\
-specified by the IEEE standard for floating point arithmetic.  To\n\
-find NaN values, you must use the @code{isnan} function.\n\
-@end defvr"
-
-  DEFCONST (I, Complex (0.0, 1.0),
-    IMAGINARY_DOC_STRING);
-
-  DEFCONST (Inf, lo_ieee_inf_value (),
-    INFINITY_DOC_STRING);
-
-  DEFCONST (J, Complex (0.0, 1.0),
-    IMAGINARY_DOC_STRING);
-
-  DEFCONST (NA, lo_ieee_na_value (),
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} NA\n\
-Missing value.\n\
-@end defvr");
-
-  DEFCONST (NaN, lo_ieee_nan_value (),
-    NAN_DOC_STRING);
-
-#if defined (M_E)
-  double e_val = M_E;
-#else
-  double e_val = exp (1.0);
-#endif
-
-  DEFCONST (e, e_val,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} e\n\
-The base of natural logarithms.  The constant\n\
-@iftex\n\
-@tex\n\
- $e$\n\
-@end tex\n\
-@end iftex\n\
-@ifinfo\n\
- @var{e}\n\
-@end ifinfo\n\
- satisfies the equation\n\
-@iftex\n\
-@tex\n\
- $\\log (e) = 1$.\n\
-@end tex\n\
-@end iftex\n\
-@ifinfo\n\
- @code{log} (@var{e}) = 1.\n\
-@end ifinfo\n\
-@end defvr");
-
-  DEFCONST (eps, DBL_EPSILON,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} eps\n\
-The machine precision.  More precisely, @code{eps} is the largest\n\
-relative spacing between any two adjacent numbers in the machine's\n\
-floating point system.  This number is obviously system-dependent.  On\n\
-machines that support 64 bit IEEE floating point arithmetic, @code{eps}\n\
-is approximately\n\
-@ifinfo\n\
- 2.2204e-16.\n\
-@end ifinfo\n\
-@iftex\n\
-@tex\n\
- $2.2204\\times10^{-16}$.\n\
-@end tex\n\
-@end iftex\n\
-@end defvr");
-
-  DEFCONST (false, false,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} false\n\
-Logical false value.\n\
-@seealso{true}\n\
-@end defvr");
-
-  DEFCONST (i, Complex (0.0, 1.0),
-    IMAGINARY_DOC_STRING);
-
-  DEFCONST (inf, lo_ieee_inf_value (),
-    INFINITY_DOC_STRING);
-
-  DEFCONST (j, Complex (0.0, 1.0),
-    IMAGINARY_DOC_STRING);
-
-  DEFCONST (nan, lo_ieee_nan_value (),
-    NAN_DOC_STRING);
-
-#if defined (M_PI)
-  double pi_val = M_PI;
-#else
-  double pi_val = 4.0 * atan (1.0);
-#endif
-
-  DEFCONST (pi, pi_val,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} pi\n\
-The ratio of the circumference of a circle to its diameter.\n\
-Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
-@end defvr");
-
-  DEFCONST (realmax, DBL_MAX,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} realmax\n\
-The largest floating point number that is representable.  The actual\n\
-value is system-dependent.  On machines that support 64-bit IEEE\n\
-floating point arithmetic, @code{realmax} is approximately\n\
-@ifinfo\n\
- 1.7977e+308\n\
-@end ifinfo\n\
-@iftex\n\
-@seealso{realmin}\n\
-@tex\n\
- $1.7977\\times10^{308}$.\n\
-@end tex\n\
-@end iftex\n\
-@end defvr");
-
-  DEFCONST (realmin, DBL_MIN,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} realmin\n\
-The smallest normalized floating point number that is representable.\n\
-The actual value is system-dependent.  On machines that support\n\
-64-bit IEEE floating point arithmetic, @code{realmin} is approximately\n\
-@ifinfo\n\
- 2.2251e-308\n\
-@end ifinfo\n\
-@iftex\n\
-@tex\n\
- $2.2251\\times10^{-308}$.\n\
-@end tex\n\
-@end iftex\n\
-@seealso{realmax}\n\
-@end defvr");
-
-  DEFCONST (true, true,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} true\n\
-Logical true value.\n\
-@seealso{false}\n\
-@end defvr");
-
 }
 
 /*

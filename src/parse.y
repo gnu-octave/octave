@@ -3643,18 +3643,18 @@ of the file name and the extension.\n\
     retval = fname;
   else
     {
-      size_t pos = fname.rfind ('.');
+      size_t dpos = fname.rfind (file_ops::dir_sep_char);
+      size_t epos = fname.rfind ('.');
 
-      fname = (pos != NPOS) ? fname.substr (0, pos) : fname;
+      if (epos <= dpos)
+        epos = NPOS;
+
+      fname = (epos != NPOS) ? fname.substr (0, epos) : fname;
 
       if (arg == "fullpath")
 	retval = fname;
       else
-	{
-	  pos = fname.rfind (file_ops::dir_sep_char);
-
-	  retval = (pos != NPOS) ? fname.substr (pos+1) : fname;
-	}
+        retval = (dpos != NPOS) ? fname.substr (dpos+1) : fname;
     }
 
   return retval;

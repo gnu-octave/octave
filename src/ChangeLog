@@ -1,3 +1,15 @@
+2006-04-07  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Fmfilename): Don't let filenames like ../foo fake us out.
+
+	* data.cc (fill_matrix): Create separate versions for int, bool,
+	and double, and Complex values.
+	(FInf, FNaN, Fe, Feps, Fpi, Frealmax, Frealmin, FI, FNA, Ffalse,
+	Ftrue): New functions to replace DEFCONST and DEFCONSTX macros in
+	symbols_of_data.  Provide i, J, and j aliases for I.
+	Provide nan alias for NaN.  Provide inf alias for Inf.
+	(symbols_of_data): Delete.
+
 2006-04-06  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (parse_and_execute, parse_fcn_file):

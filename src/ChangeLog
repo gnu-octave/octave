@@ -1,5 +1,9 @@
 2006-04-07  John W. Eaton  <jwe@octave.org>
 
+	* pr-output.cc (pr_max_internal, pr_min_internal):
+	Return 0 if all values are Inf or NaN.
+	Always leave space for sign when printing Inf or NaN values.
+
 	* parse.y (Fmfilename): Don't let filenames like ../foo fake us out.
 
 	* data.cc (fill_matrix): Create separate versions for int, bool,

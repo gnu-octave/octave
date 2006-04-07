@@ -233,6 +233,8 @@ pr_max_internal (const Matrix& m)
 
   double result = -DBL_MAX;
 
+  bool all_inf_or_nan = true;
+
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
@@ -240,9 +242,14 @@ pr_max_internal (const Matrix& m)
 	if (xisinf (val) || xisnan (val))
 	  continue;
 
+	all_inf_or_nan = false;
+
 	if (val > result)
 	  result = val;
       }
+
+  if (all_inf_or_nan)
+    result = 0.0;
 
   return result;
 }
@@ -255,6 +262,8 @@ pr_min_internal (const Matrix& m)
 
   double result = DBL_MAX;
 
+  bool all_inf_or_nan = true;
+
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
@@ -262,9 +271,14 @@ pr_min_internal (const Matrix& m)
 	if (xisinf (val) || xisnan (val))
 	  continue;
 
+	all_inf_or_nan = false;
+
 	if (val < result)
 	  result = val;
       }
+
+  if (all_inf_or_nan)
+    result = 0.0;
 
   return result;
 }
@@ -285,9 +299,8 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
   if (bank_format)
     {
       fw = digits < 0 ? 4 : digits + 3;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
       rd = 2;
     }
   else if (hex_format)
@@ -303,9 +316,8 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
   else if (inf_or_nan || int_only)
     {
       fw = digits;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
       rd = fw;
     }
   else
@@ -324,9 +336,8 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
 	}
 
       fw = ld + 1 + rd;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
     }
 
   if (! (bank_format || hex_format || bit_format)
@@ -341,9 +352,8 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
 	    exp_field++;
 
 	  fw = 2 + prec + exp_field;
-	  if (inf_or_nan && fw < 3)
-	    fw = 3;
-	  fw += sign;
+	  if (inf_or_nan && fw < 4)
+	    fw = 4;
 
 	  fmt = float_format (fw, prec - 1, std::ios::scientific);
 	}
@@ -403,9 +413,8 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = digits <= 0 ? 4 : digits + 3;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
       rd = 2;
     }
   else if (hex_format)
@@ -422,17 +431,15 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
     {
       rd = prec;
       fw = rd + 2;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
     }
   else if (int_or_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = digits <= 0 ? 1 : digits;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
       rd = fw;
     }
   else
@@ -469,9 +476,8 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       rd = rd_max > rd_min ? rd_max : rd_min;
 
       fw = ld + 1 + rd;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+      if (inf_or_nan && fw < 4)
+	fw = 4;
     }
 
   if (! (bank_format || hex_format || bit_format)
@@ -488,9 +494,8 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 	    exp_field++;
 
 	  fw = 2 + prec + exp_field;
-	  if (inf_or_nan && fw < 3)
-	    fw = 3;
-	  fw += sign;
+	  if (inf_or_nan && fw < 4)
+	    fw = 4;
 
 	  fmt = float_format (fw, prec - 1, std::ios::scientific);
 	}
@@ -561,9 +566,8 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
       int digits = r_x;
       i_fw = 0;
       r_fw = digits <= 0 ? 4 : digits + 3;
-      if (inf_or_nan && r_fw < 3)
-	r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && r_fw < 4)
+	r_fw = 4;
       rd = 2;
     }
   else if (hex_format)
@@ -582,9 +586,8 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
     {
       int digits = x_max > x_min ? x_max : x_min;
       i_fw = r_fw = digits <= 0 ? 1 : digits;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && i_fw < 4)
+	i_fw = r_fw = 4;
       rd = r_fw;
     }
   else
@@ -621,9 +624,8 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
       rd = rd_max > rd_min ? rd_max : rd_min;
 
       i_fw = r_fw = ld + 1 + rd;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && i_fw < 4)
+	i_fw = r_fw = 4;
     }
 
   if (! (bank_format || hex_format || bit_format)
@@ -641,9 +643,8 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
 	    exp_field++;
 
 	  i_fw = r_fw = 1 + prec + exp_field;
-	  if (inf_or_nan && i_fw < 3)
-	    i_fw = r_fw = 3;
-	  r_fw += sign;
+	  if (inf_or_nan && i_fw < 4)
+	    i_fw = r_fw = 4;
 
 	  r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
 	  i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
@@ -738,9 +739,8 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       int digits = r_x_max > r_x_min ? r_x_max : r_x_min;
       i_fw = 0;
       r_fw = digits <= 0 ? 4 : digits + 3;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && i_fw < 4)
+	i_fw = r_fw = 4;
       rd = 2;
     }
   else if (hex_format)
@@ -759,17 +759,15 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
     {
       rd = prec;
       i_fw = r_fw = rd + 2;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && i_fw < 4)
+	i_fw = r_fw = 4;
     }
   else if (int_or_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
       i_fw = r_fw = digits <= 0 ? 1 : digits;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && i_fw < 4)
+	i_fw = r_fw = 4;
       rd = r_fw;
     }
   else
@@ -806,9 +804,8 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       rd = rd_max > rd_min ? rd_max : rd_min;
 
       i_fw = r_fw = ld + 1 + rd;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+      if (inf_or_nan && i_fw < 4)
+	i_fw = r_fw = 4;
     }
 
   if (! (bank_format || hex_format || bit_format)
@@ -828,9 +825,8 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 	    exp_field++;
 
 	  i_fw = r_fw = 1 + prec + exp_field;
-	  if (inf_or_nan && i_fw < 3)
-	    i_fw = r_fw = 3;
-	  r_fw += sign;
+	  if (inf_or_nan && i_fw < 4)
+	    i_fw = r_fw = 4;
 
 	  r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
 	  i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);

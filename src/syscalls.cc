@@ -1426,181 +1426,276 @@ Return the canonical name of file @var{name}.\n\
   return retval;
 }
 
+static octave_value
+const_value (const char *nm, const octave_value_list& args, int val)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = val;
+  else
+    print_usage (nm);
+
+  return retval;
+}
+
 #if !defined (O_NONBLOCK) && defined (O_NDELAY)
 #define O_NONBLOCK O_NDELAY
 #endif
 
-void
-symbols_of_syscalls (void)
-{
 #if defined (F_DUPFD)
-  DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, F_DUPFD,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} F_DUPFD\n\
-Request to @code{fcntl} to return a duplicate file descriptor.\n\
+DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} F_DUPFD ()\n\
+Return the value required to request that @code{fcntl} return a\n\
+duplicate file descriptor.\n\
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("F_DUPFD", args, F_DUPFD);
+}
 #endif
 
 #if defined (F_GETFD)
-  DEFCONSTX ("F_GETFD", SBV_F_GETFD, F_GETFD,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} F_GETFD\n\
-Request to @code{fcntl} to return the file descriptor flags.\n\
+DEFUNX ("F_GETFD", FF_GETFD, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} F_GETFD ()\n\
+Return the value required to request that @code{fcntl} to return the\n\
+file descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("F_GETFD", args, F_GETFD);
+}
 #endif
 
 #if defined (F_GETFL)
-  DEFCONSTX ("F_GETFL", SBV_F_GETFL, F_GETFL,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} F_GETFL\n\
-Request to @code{fcntl} to return the file status flags.\n\
+DEFUNX ("F_GETFL", FF_GETFL, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} F_GETFL ()\n\
+Return the value required to request that @code{fcntl} to return the\n\
+file status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("F_GETFL", args, F_GETFL);
+}
 #endif
 
 #if defined (F_SETFD)
-  DEFCONSTX ("F_SETFD", SBV_F_SETFD, F_SETFD,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} F_SETFD\n\
-Request to @code{fcntl} to set the file descriptor flags.\n\
+DEFUNX ("F_SETFD", FF_SETFD, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} F_SETFD ()\n\
+Return the value required to request that @code{fcntl} to set the file\n\
+descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("F_SETFD", args, F_SETFD);
+}
 #endif
 
 #if defined (F_SETFL)
-  DEFCONSTX ("F_SETFL", SBV_F_SETFL, F_SETFL,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} F_SETFL\n\
-Request to @code{fcntl} to set the file status flags.\n\
+DEFUNX ("F_SETFL", FF_SETFL, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} F_SETFL ()\n\
+Return the value required to request that @code{fcntl} to set the file\n\
+status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("F_SETFL", args, F_SETFL);
+}
 #endif
 
 #if defined (O_APPEND)
-  DEFCONSTX ("O_APPEND", SBV_O_APPEND, O_APPEND,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_APPEND\n\
-File status flag, append on each write.\n\
+DEFUNX ("O_APPEND", FO_APPEND, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_APPEND ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate each write operation appends,\n\
+or that may be passed to @code{fcntl} to set the write mode to append.\
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_APPEND", args, O_APPEND);
+}
 #endif
 
 #if defined (O_ASYNC)
-  DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, O_ASYNC,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_ASYNC\n\
-File status flag, asynchronous I/O.\n\
+DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_ASYNC ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate asynchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_ASYNC", args, O_ASYNC);
+}
 #endif
 
 #if defined (O_CREAT)
-  DEFCONSTX ("O_CREAT", SBV_O_CREAT, O_CREAT,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_CREAT\n\
-File status flag, create file if it does not exist.\n\
+DEFUNX ("O_CREAT", FO_CREAT, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_CREAT ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that a file should be\n\
+created if it does not exist.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_CREAT", args, O_CREAT);
+}
 #endif
 
 #if defined (O_EXCL)
-  DEFCONSTX ("O_EXCL", SBV_O_EXCL, O_EXCL,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_EXCL\n\
-File status flag, file locking.\n\
+DEFUNX ("O_EXCL", FO_EXCL, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_EXCL ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that file locking is used.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_EXCL", args, O_EXCL);
+}
 #endif
 
 #if defined (O_NONBLOCK)
-  DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, O_NONBLOCK,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_NONBLOCK\n\
-File status flag, non-blocking I/O.\n\
+DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_NONBLOCK ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that non-blocking I/O is in use,\n\
+or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_NONBLOCK", args, O_NONBLOCK);
+}
 #endif
 
 #if defined (O_RDONLY)
-  DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, O_RDONLY,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_RDONLY\n\
-File status flag, file opened for reading only.\n\
+DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_RDONLY ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that a file is open for\n\
+reading only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_RDONLY", args, O_RDONLY);
+}
 #endif
 
 #if defined (O_RDWR)
-  DEFCONSTX ("O_RDWR", SBV_O_RDWR, O_RDWR,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_RDWR\n\
-File status flag, file open for both reading and writing.\n\
+DEFUNX ("O_RDWR", FO_RDWR, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_RDWR ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that a file is open for both\n\
+reading and writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_RDWR", args, O_RDWR);
+}
 #endif
 
 #if defined (O_SYNC)
-  DEFCONSTX ("O_SYNC", SBV_O_SYNC, O_SYNC,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_SYNC\n\
-File status flag, file opened for synchronous I/O.\n\
+DEFUNX ("O_SYNC", FO_SYNC, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_SYNC ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that a file is open for\n\
+synchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_SYNC", args, O_SYNC);
+}
 #endif
 
 #if defined (O_TRUNC)
-  DEFCONSTX ("O_TRUNC", SBV_O_TRUNC, O_TRUNC,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} O_TRUNC\n\
-File status flag, if file exists, truncate it when writing.\n\
+DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Variable} O_TRUNC ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that if file exists, it should\n\
+be truncated when writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_TRUNC", args, O_TRUNC);
+}
 #endif
 
 #if defined (O_WRONLY)
-  DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, O_WRONLY,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} O_WRONLY\n\
-File status flag, file opened for writing only.\n\
+DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_WRONLY ()\n\
+Return the numerical value of the file status flag that may be\n\
+returned by @code{fcntl} to indicate that a file is open for\n\
+writing only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("O_WRONLY", args, O_WRONLY);
+}
 #endif
 
 #if !defined (WNOHANG)
 #define WNOHANG 0
 #endif
 
-  DEFCONSTX ("WNOHANG", SBV_WNOHANG, WNOHANG,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} WNOHANG\n\
-Option value for @code{waitpid}.\n\
+DEFUNX ("WNOHANG", FWNOHANG, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WNOHANG ()\n\
+Return the numerical value of the option argument that may be\n\
+passed to @code{waitpid} to indicate that it should return its\n\
+status immediately instead of waiting for a process to exit.\n\
 @seealso{waitpid, WUNTRACED, WCONTINUE}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("WNOHANG", args, WNOHANG);
+}
 
 #if !defined (WUNTRACED)
 #define WUNTRACED 0
 #endif
 
-  DEFCONSTX ("WUNTRACED", SBV_WUNTRACED, WUNTRACED,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} WUNTRACED\n\
-Option value for @code{waitpid}.\n\
+DEFUNX ("WUNTRACED", FWUNTRACED, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} WUNTRACED ()\n\
+Return the numerical value of the option argument that may be\n\
+passed to @code{waitpid} to indicate that it should also return\n\
+if the child process has stopped but is not traced via the\n\
+@code{ptrace} system call\n\
 @seealso{waitpid, WNOHANG, WCONTINUE}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("WUNTRACED", args, WUNTRACED);
+}
 
 #if !defined (WCONTINUE)
 #define WCONTINUE 0
 #endif
 
-  DEFCONSTX ("WCONTINUE", SBV_WCONTINUE, WCONTINUE,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} WCONINTUE\n\
-Option value for @code{waitpid}.\n\
+DEFUNX ("WCONTINUE", FWCONTINUE, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} WCONINTUE ()\n\
+Return the numerical value of the option argument that may be\n\
+passed to @code{waitpid} to indicate that it should also return\n\
+if a stopped child has been resumed by delivery of a @code{SIGCONT}\n\
+signal.\n\
 @seealso{waitpid, WNOHANG, WUNTRACED}\n\
-@end defvr");
-
+@end deftypefn")
+{
+  return const_value ("WCONTINUE", args, WCONTINUE);
 }
 
 /*

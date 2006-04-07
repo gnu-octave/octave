@@ -742,12 +742,24 @@ files.\n\
 The name of the top-level Octave installation directory.\n\
 @end defvr");
 
-  DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} OCTAVE_VERSION\n\
-The version number of Octave, as a string.\n\
-@end defvr");
+}
 
+DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
+Return the version number of Octave, as a string.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = OCTAVE_VERSION;
+  else
+    print_usage ("OCTAVE_VERSION");
+
+  return retval;
 }
 
 /*

@@ -1,5 +1,22 @@
 2006-04-07  John W. Eaton  <jwe@octave.org>
 
+	* defaults.cc (FOCTAVE_VERSION): New function to replace
+	corresponding DEFCONSTX macro in symbols_of_defaults.
+
+	* file-io.cc (FP_tmpdir, FSEEK_SET, FSEEK_CUR, FSEEK_END, Fstdin,
+	Fstdout, Fstderr): New functions to replace DEFCONSTX macros in
+	symbols_of_file_io.
+	(const_value): New static function.
+	(symbols_of_file_io): Delete.
+
+	* syscalls.cc (FF_DUPFD, FF_GETFD, FF_GETFL, FF_SETFD, FF_SETFL,
+	FO_APPEND, FO_ASYNC, FO_CREAT, FO_EXCL, FO_NONBLOCK, FO_RDONLY,
+	FO_RDWR, FO_SYNC, FO_TRUNC, FO_WRONLY, FWNOHANG, FWUNTRACED,
+	FWCONTINUE): New functions to replace DEFCONSTX macros in
+	symbols_of_syscalls.
+	(const_value): New static function.
+	(symbols_of_syscalls): Delete.
+
 	* pr-output.cc (pr_max_internal, pr_min_internal):
 	Return 0 if all values are Inf or NaN.
 	Always leave space for sign when printing Inf or NaN values.

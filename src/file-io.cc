@@ -1993,31 +1993,54 @@ interpreted as an octal number); otherwise an error message is printed.\n\
   return retval;
 }
 
-void
-symbols_of_file_io (void)
+static octave_value
+const_value (const char *nm, const octave_value_list& args, int val)
 {
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = val;
+  else
+    print_usage (nm);
+
+  return retval;
+}
+
 #if ! defined (P_tmpdir)
 #define P_tmpdir "/tmp"
 #endif
 
-  DEFCONSTX ("P_tmpdir", SBV_P_tmpdir, P_tmpdir,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} P_tmpdir\n\
-The default name of the directory for temporary files on this system.\n\
-The value of this variable is system dependent.\n\
-@end defvr");
+DEFUNX ("P_tmpdir", FP_tmpdir, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} P_tmpdir ()\n\
+Return the default name of the directory for temporary files on\n\
+this system.  The name of this directory is system dependent.\n\
+@end deftypefn")
+{
+  octave_value retval;
 
-  // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
-  // this way for Matlab compatibility.
+  int nargin = args.length ();
 
-  DEFCONSTX ("SEEK_SET", SBV_SEEK_SET, -1,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} SEEK_SET\n\
-@defvrx {Built-in Constant} SEEK_CUR\n\
-@defvrx {Built-in Constant} SEEK_END\n\
-These variables may be used as the optional third argument for the\n\
-function @code{fseek}.\n\
-\n\
+  if (nargin == 0)
+    retval = P_tmpdir;
+  else
+    print_usage ("P_tmpdir");
+
+  return retval;
+}
+
+// NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
+// this way for Matlab compatibility.
+
+DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} SEEK_SET ()\n\
+@deftypefnx {Built-in Function} {} SEEK_CUR ()\n\
+@deftypefnx {Built-in Function} {} SEEK_END ()\n\
+Return the value required to request that @code{fseek} perform\n\
+one of the following actions:\n\
 @table @code\n\
 @item SEEK_SET\n\
 Position file relative to the beginning.\n\
@@ -2026,48 +2049,80 @@ Position file relative to the beginning.\n\
 Position file relative to the current position.\n\
 \n\
 @item SEEK_END\n\
-used with fseek to position file relative to the end.\n\
+Position file relative to the end.\n\
 @end table\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("SEEK_SET", args, -1);
+}
 
-  DEFCONSTX ("SEEK_CUR", SBV_SEEK_CUR, 0,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} SEEK_CUR\n\
+DEFUNX ("SEEK_CUR", FSEEK_CUR, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} SEEK_CUR ()\n\
 See SEEK_SET.\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("SEEK_CUR", args, 0);
+}
 
-  DEFCONSTX ("SEEK_END", SBV_SEEK_END, 1,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} SEEK_END\n\
+DEFUNX ("SEEK_END", FSEEK_END, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} SEEK_END ()\n\
 See SEEK_SET.\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("SEEK_END", args, 1);
+}
 
-  DEFCONSTX ("stdin", SBV_stdin, stdin_file,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} stdin\n\
-The standard input stream (file id 0).  When Octave is used\n\
-interactively, this is filtered through the command line editing\n\
-functions.\n\
+static octave_value
+const_value (const char *nm, const octave_value_list& args,
+	     const octave_value& val)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = val;
+  else
+    print_usage (nm);
+
+  return retval;
+}
+
+DEFUNX ("stdin", Fstdin, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} stdin ()\n\
+Return the numeric value corresponding to the standard input stream.\n\
+When Octave is used interactively, this is filtered through the command\n\
+line editing functions.\n\
 @seealso{stdout, stderr}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("stdin", args, stdin_file);
+}
 
-  DEFCONSTX ("stdout", SBV_stdout, stdout_file,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} stdout\n\
-The standard output stream (file id 1).  Data written to the\n\
-standard output is normally filtered through the pager.\n\
+DEFUNX ("stdout", Fstdout, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} stdout ()\n\
+Return the numeric value corresponding to the standard output stream.\n\
+Data written to the standard output is normally filtered through the pager.\n\
 @seealso{stdin, stderr}\n\
-@end defvr");
+@end deftypefn")
+{
+  return const_value ("stdout", args, stdout_file);
+}
 
-  DEFCONSTX ("stderr", SBV_stderr, stderr_file,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} stderr\n\
-The standard error stream (file id 2).  Even if paging is turned on,\n\
-the standard error is not sent to the pager.  It is useful for error\n\
-messages and prompts.\n\
+DEFUNX ("stderr", Fstderr, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} stderr ()\n\
+Return the numeric value corresponding to the standard error stream.\n\
+Even if paging is turned on, the standard error is not sent to the\n\
+pager.  It is useful for error messages and prompts.\n\
 @seealso{stdin, stdout}\n\
-@end defvr");
-
+@end deftypefn")
+{
+  return const_value ("stderr", args, stderr_file);
 }
 
 /*

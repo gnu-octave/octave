@@ -1,3 +1,10 @@
+2006-04-11  John W. Eaton  <jwe@octave.org>
+
+	* test_system.m, test_struct.m, test_string.m, test_quad.m,
+	test_number.m, test_nonlin.m, test_matrix.m, test_linalg.m,
+	test_io.m, test_diffeq.m, test_arith.m: Update for new usage
+	message format.
+
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* test_number.m: Reverse sense of isscalar and isvector tests

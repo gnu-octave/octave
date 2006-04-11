@@ -141,10 +141,10 @@
 %! assert(!(ischar (s)));
 
 %% test/octave.test/string/ischar-10.m
-%!error <... ischar:.*> ischar ();
+%!error <Invalid call to ischar.*> ischar ();
 
 %% test/octave.test/string/ischar-11.m
-%!error <... ischar:.*> ischar ("test", 1);
+%!error <Invalid call to ischar.*> ischar ("test", 1);
 
 %% test/octave.test/string/blanks-1.m
 %!assert(strcmp (blanks (3), "   "));
@@ -159,7 +159,7 @@
 %!assert(strcmp (char ([65, 83, 67, 73, 73]), "ASCII"));
 
 %% test/octave.test/string/char-2.m
-%!error <... char:.*> char ();
+%!error <Invalid call to char.*> char ();
 
 %% test/octave.test/string/char-3.m
 %!test
@@ -281,10 +281,10 @@
 %!assert(strcmp ("foobar", "foobar") && strcmp ("fooba", "foobar") == 0);
 
 %% test/octave.test/string/strcmp-2.m
-%!error <... strcmp:.*> strcmp ();
+%!error <Invalid call to strcmp.*> strcmp ();
 
 %% test/octave.test/string/strcmp-3.m
-%!error <... strcmp:.*> strcmp ("foo", "bar", 3);
+%!error <Invalid call to strcmp.*> strcmp ("foo", "bar", 3);
 
 %% test/octave.test/string/bin2dec-1.m
 %!assert(bin2dec ("1110") == 14);
@@ -343,10 +343,10 @@
 %! "abc\\a\\b\\n\\r\\t\\v\\f123"));
 
 %% test/octave.test/string/undo_string_escapes-2.m
-%!error <... undo_string_escapes:.*> undo_string_escapes ();
+%!error <Invalid call to undo_string_escapes.*> undo_string_escapes ();
 
 %% test/octave.test/string/undo_string_escapes-3.m
-%!error <... undo_string_escapes:.*> undo_string_escapes ("string", 2);
+%!error <Invalid call to undo_string_escapes.*> undo_string_escapes ("string", 2);
 
 %% test/octave.test/string/toascii-1.m
 %!test

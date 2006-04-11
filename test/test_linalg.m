@@ -16,10 +16,10 @@
 %!assert(det ([1, 2; 3, 4]) == -2);
 
 %% test/octave.test/linalg/det-2.m
-%!error <... det:.*> det ();
+%!error <Invalid call to det.*> det ();
 
 %% test/octave.test/linalg/det-3.m
-%!error <... det:.*> det (1, 2);
+%!error <Invalid call to det.*> det (1, 2);
 
 %% test/octave.test/linalg/det-4.m
 %!error det ([1, 2; 3, 4; 5, 6]);
@@ -35,10 +35,10 @@
 %! && (abs (v - [-x, x; x, x]) < sqrt (eps))));
 
 %% test/octave.test/linalg/eig-3.m
-%!error <... eig:.*> eig ();
+%!error <Invalid call to eig.*> eig ();
 
 %% test/octave.test/linalg/eig-4.m
-%!error <... eig:.*> eig ([1, 2; 3, 4], 2);
+%!error <Invalid call to eig.*> eig ([1, 2; 3, 4], 2);
 
 %% test/octave.test/linalg/eig-5.m
 %!error eig ([1, 2; 3, 4; 5, 6]);
@@ -67,20 +67,20 @@
 %! assert(all (all (expm (arg) == result)));
 
 %% test/octave.test/linalg/expm-4.m
-%!error <expm:> expm();
+%!error <Invalid call to expm.*> expm();
 
 %% test/octave.test/linalg/expm-5.m
-%!error <expm:> expm(1,2);
+%!error <Invalid call to expm.*> expm(1,2);
 
 %% test/octave.test/linalg/expm-6.m
 %% test/octave.test/linalg/inv-1.m
 %!assert(all (all (abs (inv ([1, 2; 3, 4]) - [-2, 1; 1.5, -0.5]) < sqrt (eps))));
 
 %% test/octave.test/linalg/inv-2.m
-%!error <... inv:.*> inv ();
+%!error <Invalid call to inv.*> inv ();
 
 %% test/octave.test/linalg/inv-3.m
-%!error <... inv:.*> inv ([1, 2; 3, 4], 2);
+%!error <Invalid call to inv.*> inv ([1, 2; 3, 4], 2);
 
 %% test/octave.test/linalg/inv-4.m
 %!error inv ([1, 2; 3, 4; 5, 6]);
@@ -112,10 +112,10 @@
 %!error chol ([1, 2; 3, 4; 5, 6]);
 
 %% test/octave.test/linalg/chol-4.m
-%!error <... chol:.*> chol ();
+%!error <Invalid call to chol.*> chol ();
 
 %% test/octave.test/linalg/chol-5.m
-%!error <... chol:.*> chol (1, 2);
+%!error <Invalid call to chol.*> chol (1, 2);
 
 %% test/octave.test/linalg/hess-1.m
 %!test
@@ -124,10 +124,10 @@
 %! assert(size (p) == [3, 3] && size (h) == [3, 3] && abs (a - p * h * p') < sqrt (eps));
 
 %% test/octave.test/linalg/hess-2.m
-%!error <... hess:.*> hess ();
+%!error <Invalid call to hess.*> hess ();
 
 %% test/octave.test/linalg/hess-3.m
-%!error <... hess:.*> hess ([1, 2; 3, 4], 2);
+%!error <Invalid call to hess.*> hess ([1, 2; 3, 4], 2);
 
 %% test/octave.test/linalg/hess-4.m
 %!error hess ([1, 2; 3, 4; 5, 6]);
@@ -149,10 +149,10 @@
 %! && abs (p - [0, 1; 1, 0]) < sqrt (eps)));
 
 %% test/octave.test/linalg/lu-4.m
-%!error <... lu:.*> lu ();
+%!error <Invalid call to lu.*> lu ();
 
 %% test/octave.test/linalg/lu-5.m
-%!error <... lu:.*> lu ([1, 2; 3, 4], 2);
+%!error <Invalid call to lu.*> lu ([1, 2; 3, 4], 2);
 
 %% test/octave.test/linalg/lu-6.m
 %!test
@@ -214,10 +214,10 @@
 %! && abs (a(:,pe) - qe * re) < sqrt (eps)));
 
 %% test/octave.test/linalg/qr-5.m
-%!error <... qr:.*> qr ();
+%!error <Invalid call to qr.*> qr ();
 
 %% test/octave.test/linalg/qr-6.m
-%!error <... qr:.*> qr ([1, 2; 3, 4], 0, 2);
+%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
 
 %% test/octave.test/linalg/qr-7.m
 %!function retval = testqr (q, r, a, p)
@@ -302,7 +302,7 @@
 %! assert(size (u) == [3, 3] && size (s) == [3, 3] && abs (s - u' * a * u) < sqrt (eps));
 
 %% test/octave.test/linalg/schur-2.m
-%!error <... schur:.*> schur ();
+%!error <Invalid call to schur.*> schur ();
 
 %% test/octave.test/linalg/schur-3.m
 %!test
@@ -352,13 +352,13 @@
 %! && abs (a - u * s * v') < sqrt (eps)));
 
 %% test/octave.test/linalg/svd-7.m
-%!error <... svd:.*> svd ();
+%!error <Invalid call to svd.*> svd ();
 
 %% test/octave.test/linalg/svd-8.m
-%!error <... svd:.*> svd ([1, 2; 4, 5], 2, 3);
+%!error <Invalid call to svd.*> svd ([1, 2; 4, 5], 2, 3);
 
 %% test/octave.test/linalg/svd-9.m
-%!error <... svd:.*> [u, v] = svd ([1, 2; 3, 4]);
+%!error <Invalid call to svd.*> [u, v] = svd ([1, 2; 3, 4]);
 
 %% test/octave.test/linalg/syl-1.m
 %!test
@@ -366,10 +366,10 @@
 %! assert(all (all (abs (x - [-1/2, -2/3; -2/3, -1/2]) < sqrt (eps))));
 
 %% test/octave.test/linalg/syl-2.m
-%!error <... syl:.*> syl ();
+%!error <Invalid call to syl.*> syl ();
 
 %% test/octave.test/linalg/syl-3.m
-%!error <... syl:.*> syl (1, 2, 3, 4);
+%!error <Invalid call to syl.*> syl (1, 2, 3, 4);
 
 %% test/octave.test/linalg/syl-4.m
 %!error syl ([1, 2; 3, 4], [1, 2, 3; 4, 5, 6], [4, 3]);

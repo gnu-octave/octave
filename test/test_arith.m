@@ -27,13 +27,13 @@
 %! assert(all(abs(v1-v2)<sqrt(eps)) && all(abs(v3-v4)<sqrt(eps)));
 
 %% test/octave.test/arith/betainc-2.m
-%!error <... betainc:.*> betainc();
+%!error <Invalid call to betainc.*> betainc();
 
 %% test/octave.test/arith/betainc-3.m
-%!error <... betainc:.*> betainc(1);
+%!error <Invalid call to betainc.*> betainc(1);
 
 %% test/octave.test/arith/betainc-4.m
-%!error <... betainc:.*> betainc(1,2);
+%!error <Invalid call to betainc.*> betainc(1,2);
 
 %% test/octave.test/arith/ceil-1.m
 %!assert(all (ceil ([2, 1.1, -1.1, -1]) == [2, 2, -1, -1]));
@@ -124,7 +124,7 @@
 %! && gcd ([200, 300, 50, 35]) == 5));
 
 %% test/octave.test/arith/gcd-2.m
-%!error <... gcd:.*> gcd ();
+%!error <Invalid call to gcd.*> gcd ();
 
 %% test/octave.test/arith/gcd-3.m
 %!test
@@ -149,10 +149,10 @@
 %!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
 
 %% test/octave.test/arith/max-3.m
-%!error <... max:.*> max ();
+%!error <Invalid call to max.*> max ();
 
 %% test/octave.test/arith/max-4.m
-%!error <... max:.*> max (1, 2, 3, 4);
+%!error <Invalid call to max.*> max (1, 2, 3, 4);
 
 %% test/octave.test/arith/min-1.m
 %!assert(min ([1, 4, 2, 3]) == 1 && min ([1; -10; 5; -2]) == -10);
@@ -161,10 +161,10 @@
 %!assert(all (min ([4, i; -2, 2]) == [-2, i]));
 
 %% test/octave.test/arith/min-3.m
-%!error <... min:.*> min ();
+%!error <Invalid call to min.*> min ();
 
 %% test/octave.test/arith/min-4.m
-%!error <... min:.*> min (1, 2, 3, 4);
+%!error <Invalid call to min.*> min (1, 2, 3, 4);
 
 %% test/octave.test/arith/pow2-1.m
 %!test
@@ -684,10 +684,10 @@
 %! );
 
 %% test/octave.test/arith/atan2-2.m
-%!error <... atan2:.*> atan2 ();
+%!error <Invalid call to atan2.*> atan2 ();
 
 %% test/octave.test/arith/atan2-3.m
-%!error <... atan2:.*> atan2 (1, 2, 3);
+%!error <Invalid call to atan2.*> atan2 (1, 2, 3);
 
 %% test/octave.test/arith/sum-1.m
 %!assert((sum ([1, 2, 3]) == 6 && sum ([-1; -2; -3]) == -6
@@ -697,7 +697,7 @@
 %!assert(all (all (sum ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]) == [2+2i, 4+4i, 6+6i])));
 
 %% test/octave.test/arith/sum-3.m
-%!error <... sum:.*> sum ();
+%!error <Invalid call to sum.*> sum ();
 
 %% test/octave.test/arith/sum-4.m
 %!assert((all (sum ([1, 2; 3, 4], 1) == [4, 6])
@@ -724,7 +724,7 @@
 %! == [-1+i, -8+8i, -27+27i])));
 
 %% test/octave.test/arith/prod-3.m
-%!error <... prod:.*> prod ();
+%!error <Invalid call to prod.*> prod ();
 
 %% test/octave.test/arith/prod-4.m
 %!assert((all (prod ([1, 2; 3, 4], 1) == [3, 8])
@@ -751,7 +751,7 @@
 %! == [1, 2, 3; 1+i, 2+2i, 3+3i; 2+2i, 4+4i, 6+6i])));
 
 %% test/octave.test/arith/cumsum-3.m
-%!error <... cumsum:.*> cumsum ();
+%!error <Invalid call to cumsum.*> cumsum ();
 
 %% test/octave.test/arith/cumsum-4.m
 %!assert((all (cumsum ([1, 2; 3, 4], 1) == [1, 2; 4, 6])
@@ -766,7 +766,7 @@
 %! == [1, 2, 3; i, 4i, 9i; -1+i, -8+8i, -27+27i])));
 
 %% test/octave.test/arith/cumprod-3.m
-%!error <... cumprod:.*> cumprod ();
+%!error <Invalid call to cumprod.*> cumprod ();
 
 %% test/octave.test/arith/cumprod-4.m
 %!assert((all (cumprod ([2, 3; 4, 5], 1) == [2, 3; 8, 15])
@@ -779,7 +779,7 @@
 %!assert(all (all (sumsq ([1, 2, 3; 2, 3, 4; 4i, 6i, 2]) == [21, 49, 29])));
 
 %% test/octave.test/arith/sumsq-3.m
-%!error <... sumsq:.*> sumsq ();
+%!error <Invalid call to sumsq.*> sumsq ();
 
 %% test/octave.test/arith/sumsq-4.m
 %!assert((all (sumsq ([1, 2; 3, 4], 1) == [10, 20])

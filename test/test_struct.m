@@ -13,12 +13,12 @@
 %! assert(iscell (c) && strcmp (c{1}, "b"));
 
 %% test/octave.test/struct/fieldnames-3.m
-%!error <... fieldnames:.*> fieldnames ();
+%!error <Invalid call to fieldnames.*> fieldnames ();
 
 %% test/octave.test/struct/fieldnames-4.m
 %!test
 %! s.a = 1;
-%! fail("fieldnames (s, 1)","eldnames:.*");
+%! fail("fieldnames (s, 1)","Invalid call to fieldnames.*");
 
 %% test/octave.test/struct/fieldnames-5.m
 %!error fieldnames (1);
@@ -36,13 +36,13 @@
 %! assert(!(isfield (s, "b")));
 
 %% test/octave.test/struct/isfield-3.m
-%!error <... isfield:.*> isfield ();
+%!error <Invalid call to isfield.*> isfield ();
 
 %% test/octave.test/struct/isfield-4.m
 %!test
 %! s.aaa = 1;
 %! s.a = 2;
-%! fail("isfield (s, 'a', 3);","field:.*");
+%! fail("isfield (s, 'a', 3);","Invalid call to isfield.*");
 
 %% test/octave.test/struct/isfield-5.m
 %!assert(isfield (1, "m") == 0);
@@ -84,10 +84,10 @@
 %! assert(isstruct (s.a));
 
 %% test/octave.test/struct/isstruct-10.m
-%!error <... isstruct:.*> isstruct ();
+%!error <Invalid call to isstruct.*> isstruct ();
 
 %% test/octave.test/struct/isstruct-11.m
 %!test
 %! s.a = 1;
-%! fail("isstruct (s, 1)","struct:.*");
+%! fail("isstruct (s, 1)","Invalid call to isstruct.*");
 

@@ -10,10 +10,10 @@
 %! && all (x, 2) == [0; 1; 1]));
 
 %% test/octave.test/matrix/all-2.m
-%!error <... all:.*> all ();
+%!error <Invalid call to all.*> all ();
 
 %% test/octave.test/matrix/all-3.m
-%!error <... all:.*> all (1, 2, 3);
+%!error <Invalid call to all.*> all (1, 2, 3);
 
 %% test/octave.test/matrix/any-1.m
 %!test
@@ -25,10 +25,10 @@
 %! && any (x, 2) == [0; 0; 1]));
 
 %% test/octave.test/matrix/any-2.m
-%!error <... any:.*> any ();
+%!error <Invalid call to any.*> any ();
 
 %% test/octave.test/matrix/any-3.m
-%!error <... any:.*> any (1, 2, 3);
+%!error <Invalid call to any.*> any (1, 2, 3);
 
 %% test/octave.test/matrix/diff-1.m
 %!assert((diff ([1, 2, 3, 4]) == [1, 1, 1]
@@ -61,10 +61,10 @@
 %! assert(i == [3; 2; 1] && j == [1; 2; 3] && v == [-1; 3; 2]);
 
 %% test/octave.test/matrix/find-3.m
-%!error <... find:.*> find ();
+%!error <Invalid call to find.*> find ();
 
 %% test/octave.test/matrix/find-4.m
-%!error <... find:.*> find (1, 2);
+%!error <Invalid call to find.*> find (1, 2);
 
 %% test/octave.test/matrix/fliplr-1.m
 %!assert((fliplr ([1, 2; 3, 4]) == [2, 1; 4, 3]
@@ -120,7 +120,7 @@
 %! fail("reshape (s, 2, 3)");
 
 %% test/octave.test/matrix/reshape-3.m
-%!error <... reshape:.*> reshape ();
+%!error <Invalid call to reshape.*> reshape ();
 
 %% test/octave.test/matrix/reshape-4.m
 %!error reshape (1, 2, 3, 4);
@@ -155,10 +155,10 @@
 %! assert(sort (a) == s && xs == s && xi == i);
 
 %% test/octave.test/matrix/sort-2.m
-%!error <... sort:.*> sort ();
+%!error <Invalid call to sort.*> sort ();
 
 %% test/octave.test/matrix/sort-3.m
-%!error <... sort:.*> sort (1, 2, 3, 4);
+%!error <Invalid call to sort.*> sort (1, 2, 3, 4);
 
 %% test/octave.test/matrix/tril-1.m
 %!test
@@ -230,7 +230,7 @@
 %! && eye (2, 3) == i23 && eye (3, 2) == i23'));
 
 %% test/octave.test/matrix/eye-2.m
-%!error <... eye:.*> eye (1, 2, 3);
+%!error <Invalid call to eye.*> eye (1, 2, 3);
 
 %% test/octave.test/matrix/ones-1.m
 %!test
@@ -309,10 +309,10 @@
 %! && diag (d0) == d && diag (d1, 1) == d && diag (dm1, -1) == d));
 
 %% test/octave.test/matrix/diag-2.m
-%!error <... diag:.*> diag ();
+%!error <Invalid call to diag.*> diag ();
 
 %% test/octave.test/matrix/diag-3.m
-%!error <... diag:.*> diag (1, 2, 3);
+%!error <Invalid call to diag.*> diag (1, 2, 3);
 
 %% test/octave.test/matrix/linspace-1.m
 %!test
@@ -329,10 +329,10 @@
 %! assert(all (linspace ([1, 2; 3, 4], 5, 6) == linspace (1, 5, 6)));
 
 %% test/octave.test/matrix/linspace-3.m
-%!error <... linspace:.*> linspace ();
+%!error <Invalid call to linspace.*> linspace ();
 
 %% test/octave.test/matrix/linspace-4.m
-%!error <... linspace:.*> linspace (1, 2, 3, 4);
+%!error <Invalid call to linspace.*> linspace (1, 2, 3, 4);
 
 %% test/octave.test/matrix/linspace-5.m
 %!test

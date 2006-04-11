@@ -35,10 +35,10 @@
 %! assert(!(ismatrix (s)));
 
 %% test/octave.test/number/ismatrix-9.m
-%!error <... ismatrix:.*> ismatrix ();
+%!error <Invalid call to ismatrix.*> ismatrix ();
 
 %% test/octave.test/number/ismatrix-10.m
-%!error <... ismatrix:.*> ismatrix ([1, 2; 3, 4], 2);
+%!error <Invalid call to ismatrix.*> ismatrix ([1, 2; 3, 4], 2);
 
 %% test/octave.test/number/isvector-1.m
 %!assert(isvector (1));

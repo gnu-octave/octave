@@ -81,8 +81,8 @@
 %! assert(fsolve_options ("tolerance") == eps);
 
 %% test/octave.test/nonlin/fsolve_options-2.m
-%!error <... fsolve_options:.*> fsolve_options ();
+%!error <Invalid call to fsolve_options.*> fsolve_options ();
 
 %% test/octave.test/nonlin/fsolve_options-3.m
-%!error <... fsolve_options:.*> fsolve_options ("foo", 1, 2);
+%!error <Invalid call to fsolve_options.*> fsolve_options ("foo", 1, 2);
 

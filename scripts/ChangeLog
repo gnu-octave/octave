@@ -1,3 +1,8 @@
+2006-04-10  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/dir.m: Ensure that returned structure array is
+	Nx1, not 1xN.
+
 2006-04-06  Olli Saarela  <olli.saarela@kcl.fi>
 
 	* plot/hist.m: Ignore NaN in inputs.

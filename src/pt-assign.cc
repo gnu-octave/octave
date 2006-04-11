@@ -93,6 +93,11 @@ tree_simple_assignment::rvalue (void)
 	      error ("value on right hand side of assignment is undefined");
 	      eval_error ();
 	    }
+	  else if (rhs_val.is_cs_list ())
+	    {
+	      error ("invalid assignment of comma-separated list");
+	      eval_error ();
+	    }
 	  else
 	    {
 	      octave_lvalue ult = lhs->lvalue ();
@@ -218,6 +223,7 @@ tree_multi_assignment::rvalue (int)
 	{
 	  error ("value on right hand side of assignment is undefined");
 	  eval_error ();
+	  return retval;
 	}
       else
 	{
@@ -231,9 +237,9 @@ tree_multi_assignment::rvalue (int)
 
 	      if (tmp.is_cs_list ())
 		{
-		  rhs_val = tmp.list_value ();
-
-		  n = rhs_val.length ();
+		  error ("invalid assignment of comma-separated list");
+		  eval_error ();
+		  return retval;
 		}
 	    }
 
@@ -250,7 +256,10 @@ tree_multi_assignment::rvalue (int)
 		  octave_lvalue ult = lhs_elt->lvalue ();
 
 		  if (error_state)
-		    eval_error ();
+		    {
+		      eval_error ();
+		      break;
+		    }
 		  else if (k < n)
 		    {
 		      ult.assign (etype, rhs_val(k));
@@ -267,7 +276,10 @@ tree_multi_assignment::rvalue (int)
 		    error ("element number %d undefined in return list", k+1);
 
 		  if (error_state)
-		    eval_error ();
+		    {
+		      eval_error ();
+		      break;
+		    }
 		  else if (print_result ())
 		    {
 		      if (Vprint_rhs_assign_val)

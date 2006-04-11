@@ -1,3 +1,9 @@
+2006-04-11  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (tree_simple_assignment::rvalue,
+	tree_multi_assignment::rvalue):
+	Error if RHS is a comma-separated list.
+
 2006-04-07  John W. Eaton  <jwe@octave.org>
 
 	* defaults.cc (FOCTAVE_VERSION): New function to replace

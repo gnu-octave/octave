@@ -58,7 +58,7 @@ print_usage (const std::string& nm, bool just_usage,
 	{
 	  OSSTREAM buf;
 
-	  buf << "\n*** " << nm << ":\n\n";
+	  buf << "\nInvalid call to " << nm << ".  Correct usage is:\n\n";
 
 	  h = extract_help_from_dispatch (nm) + h;
 

@@ -98,11 +98,11 @@ function retval = dir (file)
 	else
 	  [dummy, fn, ext] = fileparts (fn);
 	  fn = strcat (fn, ext);
-	  info(i).name = fn;
-	  info(i).date = strftime ("%d-%b-%Y %T", localtime (st.mtime));
-	  info(i).bytes = st.size;
-	  info(i).isdir = st.modestr(1) == "d";
-	  info(i).statinfo = st;
+	  info(i,1).name = fn;
+	  info(i,1).date = strftime ("%d-%b-%Y %T", localtime (st.mtime));
+	  info(i,1).bytes = st.size;
+	  info(i,1).isdir = st.modestr(1) == "d";
+	  info(i,1).statinfo = st;
 	endif
       endfor
     endif

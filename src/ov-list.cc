@@ -133,10 +133,21 @@ octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
     {
       idx_vector i = idx (0).index_vector ();
 
-      retval = octave_list (data.index (i, resize_ok));
+      Cell tcell = data.index (i, resize_ok);
+
+      octave_value_list result;
+
+      octave_idx_type n = tcell.numel ();
+
+      result.resize (n);
+
+      for (octave_idx_type i = 0; i < n; i++)
+	result(i) = tcell(i);
+
+      retval = result;
     }
   else
-    error ("lists may only be indexed by a single scalar");
+    error ("only one index allowed for lists");
 
   return retval;
 }
@@ -571,7 +582,7 @@ octave_list::load_ascii (std::istream& is)
 
 	      // recurse to read list elements
 	      std::string nm
-		= read_ascii_data (is, std::string (), dummy, t2, count);
+		= read_ascii_data (is, std::string (), dummy, t2, j);
 
 	      if (!is)
 		break;

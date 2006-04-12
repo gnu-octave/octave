@@ -1,5 +1,11 @@
 2006-04-12  John W. Eaton  <jwe@octave.org>
 
+	* ov-struct.cc (struct_levels_to_print): Move here from ov.cc.
+	(Vstruct-levels_to_print): Likewise.  Now static.
+	(symbols_of_ov_struct): New function.  Move DEFVAR for
+	struct_levels_to_print here from symbols_of_ov in ov.cc.
+	* ov.h (Vstruct-levels_to_print): Delete decl.
+
 	* gripes.cc (warn_divide_by_zero): Move here from ov.cc.
 	(Vwarn_divide_by_zero): Likewise.  Now static.
 	(symbols_of_gripes): New function.  Move DEFVAR for

@@ -975,9 +975,6 @@ extern int Vwarn_imag_to_real;
 // If TRUE, print the name along with the value.
 extern bool Vprint_answer_id_name;
 
-// How many levels of structure elements should we print?
-extern int Vstruct_levels_to_print;
-
 // If TRUE, print a warning when a matrix is resized by an indexed
 // assignment with indices outside the current bounds.
 extern bool Vwarn_resize_on_range_error;

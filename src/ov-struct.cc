@@ -49,6 +49,9 @@ DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
 
+// How many levels of structure elements should we print?
+static int Vstruct_levels_to_print;
+
 Cell
 octave_struct::dotref (const octave_value_list& idx)
 {
@@ -1046,7 +1049,7 @@ octave_struct::load_ascii (std::istream& is)
 
 	      // recurse to read cell elements
 	      std::string nm
-		= read_ascii_data (is, std::string (), dummy, t2, count);
+		= read_ascii_data (is, std::string (), dummy, t2, j);
 
 	      if (!is)
 		break;
@@ -1262,6 +1265,35 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
 }
 
 #endif
+
+static int
+struct_levels_to_print (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival == val)
+	{
+	  Vstruct_levels_to_print = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("struct_levels_to_print");
+  return -1;
+}
+
+void
+symbols_of_ov_struct (void)
+{
+  DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} struct_levels_to_print\n\
+You can tell Octave how many structure levels to display by setting the\n\
+built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
+@end defvr");
+}
 
 /*
 ;;; Local Variables: ***

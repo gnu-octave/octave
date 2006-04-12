@@ -110,9 +110,6 @@ int Vwarn_str_to_num;
 // If TRUE, print the name along with the value.
 bool Vprint_answer_id_name;
 
-// How many levels of structure elements should we print?
-int Vstruct_levels_to_print;
-
 // If TRUE, print a warning when a matrix is resized by an indexed
 // assignment with indices outside the current bounds.
 bool Vwarn_resize_on_range_error;
@@ -2310,24 +2307,6 @@ silent_functions (void)
   return 0;
 }
 
-static int
-struct_levels_to_print (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival == val)
-	{
-	  Vstruct_levels_to_print = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("struct_levels_to_print");
-  return -1;
-}
-
 void
 symbols_of_ov (void)
 {
@@ -2358,13 +2337,6 @@ endfunction\n\
 @noindent\n\
 is executed, Octave will either print @samp{ans = 4} or nothing\n\
 depending on the value of @code{silent_functions}.\n\
-@end defvr");
-
-  DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} struct_levels_to_print\n\
-You can tell Octave how many structure levels to display by setting the\n\
-built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
 @end defvr");
 
   DEFVAR (warn_fortran_indexing, false, warn_fortran_indexing,

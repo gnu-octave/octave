@@ -113,9 +113,6 @@ bool Vprint_answer_id_name;
 // How many levels of structure elements should we print?
 int Vstruct_levels_to_print;
 
-// Allow divide by zero errors to be suppressed.
-bool Vwarn_divide_by_zero;
-
 // If TRUE, print a warning when a matrix is resized by an indexed
 // assignment with indices outside the current bounds.
 bool Vwarn_resize_on_range_error;
@@ -2331,14 +2328,6 @@ struct_levels_to_print (void)
   return -1;
 }
 
-static int
-warn_divide_by_zero (void)
-{
-  Vwarn_divide_by_zero = check_preference ("warn_divide_by_zero");
-
-  return 0;
-}
-
 void
 symbols_of_ov (void)
 {
@@ -2376,14 +2365,6 @@ depending on the value of @code{silent_functions}.\n\
 @defvr {Built-in Variable} struct_levels_to_print\n\
 You can tell Octave how many structure levels to display by setting the\n\
 built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
-@end defvr");
-
-  DEFVAR (warn_divide_by_zero, true, warn_divide_by_zero,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_divide_by_zero\n\
-If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
-is issued when Octave encounters a division by zero.  If the value is\n\
-0, the warning is omitted.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (warn_fortran_indexing, false, warn_fortran_indexing,

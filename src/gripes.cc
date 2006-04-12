@@ -25,9 +25,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include "defun.h"
 #include "error.h"
 #include "gripes.h"
 #include "oct-obj.h"
+#include "utils.h"
+
+// Allow divide by zero errors to be suppressed.
+bool Vwarn_divide_by_zero;
 
 void
 gripe_not_supported (const char *fcn)
@@ -178,6 +183,26 @@ gripe_divide_by_zero (void)
 {
   if (Vwarn_divide_by_zero)
     warning ("division by zero");
+}
+
+static int
+warn_divide_by_zero (void)
+{
+  Vwarn_divide_by_zero = check_preference ("warn_divide_by_zero");
+
+  return 0;
+}
+
+void
+symbols_of_gripes (void)
+{
+  DEFVAR (warn_divide_by_zero, true, warn_divide_by_zero,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_divide_by_zero\n\
+If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
+is issued when Octave encounters a division by zero.  If the value is\n\
+0, the warning is omitted.  The default value is 1.\n\
+@end defvr");
 }
 
 /*

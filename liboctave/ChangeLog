@@ -1,3 +1,8 @@
+2006-04-12  Rafael Laboissiere  <rafael@debian.org>
+
+	* ArrayN.h (ArrayN::ArrayN): Qualify fill with Array<T> base class.
+	* DiagArray2.h (DiagArray2::DiagArray2): Likewise.
+
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (Sparse<T>::resize): Use xcidx rather than cdix, etc

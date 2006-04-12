@@ -121,7 +121,7 @@ public:
     {
       this->dimensions = dim_vector (r, c);
 
-      fill (val);
+      Array<T>::fill (val);
     }
 
   DiagArray2 (const Array<T>& a) : Array<T> (a)

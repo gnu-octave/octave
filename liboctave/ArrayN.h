@@ -59,7 +59,7 @@ public:
   ArrayN (const dim_vector& dv) : Array<T> (dv) { }
 
   ArrayN (const dim_vector& dv, const T& val)
-    : Array<T> (dv) { fill (val); }
+    : Array<T> (dv) { Array<T>::fill (val); }
 
   template <class U>
   explicit ArrayN (const Array2<U>& a) : Array<T> (a, a.dims ()) { }

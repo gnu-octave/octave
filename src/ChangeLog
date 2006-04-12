@@ -1,3 +1,8 @@
+2006-04-12  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc (do_load): Declare count octave_idx_type, not int.
+	* ls-oct-ascii.cc, ls-oct-ascii.h (read_ascii_data): Likewise.
+
 2006-04-11  John W. Eaton  <jwe@octave.org>
 
 	* pt-assign.cc (tree_simple_assignment::rvalue,

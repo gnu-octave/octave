@@ -272,7 +272,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 
 std::string
 read_ascii_data (std::istream& is, const std::string& filename, bool& global,
-		 octave_value& tc, int count)
+		 octave_value& tc, octave_idx_type count)
 {
   // Read name for this entry or break on EOF.
 

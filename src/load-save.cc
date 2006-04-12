@@ -446,7 +446,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
   OSSTREAM output_buf;
 
-  int count = 0;
+  octave_idx_type count = 0;
 
   for (;;)
     {

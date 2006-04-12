@@ -962,13 +962,6 @@ extern bool Vwarn_fortran_indexing;
 // to a character string?
 extern bool Vwarn_num_to_str;
 
-// If TRUE, warn for operations like
-//
-//   octave> 'abc' + 0
-//   97 98 99
-//
-extern int Vwarn_str_to_num;
-
 // Should we warn about conversions from complex to real?
 extern int Vwarn_imag_to_real;
 

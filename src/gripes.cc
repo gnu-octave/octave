@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 
 // Allow divide by zero errors to be suppressed.
-bool Vwarn_divide_by_zero;
+static bool Vwarn_divide_by_zero;
 
 void
 gripe_not_supported (const char *fcn)

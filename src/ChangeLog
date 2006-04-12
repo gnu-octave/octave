@@ -1,5 +1,11 @@
 2006-04-12  John W. Eaton  <jwe@octave.org>
 
+	* ov-str-mat.cc (warn_str_to_num): Move here, from ov.cc.
+	(Vwarn_str_to_num): Likewise.  Now static.
+	(symbols_of_ov_str_mat): New function.  Move DEFVAR for
+	warn_str_to_num here from symbols_of_ov in ov.cc.
+	* ov.h (Vwarn_str_to_num): Delete decl.
+
 	* ov-struct.cc (octave_struct::load_ascii): Pass loop counter, not
 	count, to read_ascii.
 	* ov-list.cc (octave_list::load_ascii): Likewise.

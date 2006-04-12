@@ -100,13 +100,6 @@ int Vwarn_imag_to_real;
 // to a character string?
 bool Vwarn_num_to_str;
 
-// If TRUE, warn for operations like
-//
-//   octave> 'abc' + 0
-//   97 98 99
-//
-int Vwarn_str_to_num;
-
 // If TRUE, print the name along with the value.
 bool Vprint_answer_id_name;
 
@@ -2273,14 +2266,6 @@ warn_num_to_str (void)
 }
 
 static int
-warn_str_to_num (void)
-{
-  Vwarn_str_to_num = check_preference ("warn_str_to_num");
-
-  return 0;
-}
-
-static int
 print_answer_id_name (void)
 {
   Vprint_answer_id_name = check_preference ("print_answer_id_name");
@@ -2381,21 +2366,6 @@ warning when a matrix is resized by an indexed assignment with\n\
 indices outside the current bounds.  The default value is 0.\n\
 @end defvr");
 
-  DEFVAR (warn_str_to_num, false, warn_str_to_num,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_str_to_num\n\
-If the value of @code{warn_str_to_num} is nonzero, a warning is printed\n\
-for implicit conversions of strings to their numeric ASCII equivalents.\n\
-For example,\n\
-@example\n\
-@group\n\
-\"abc\" + 0\n\
-     @result{} 97 98 99\n\
-@end group\n\
-@end example\n\
-elicits a warning if @code{warn_str_to_num} is nonzero.  The default\n\
-value is 0.\n\
-@end defvr");
 }
 
 /*

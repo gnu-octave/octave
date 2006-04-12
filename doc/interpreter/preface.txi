@@ -267,8 +267,12 @@ Advanced Technology Program under Grant No. 003658-078.
 Noel Bell, Senior Engineer, Texaco Chemical Company, Austin Texas.
 
 @item
+John A. Turner, Group Leader, Continuum Dynamics (CCS-2), Los Alamos
+National Laboratory, for registering the @url{octave.org} domain name.
+
+@item
 James B. Rawlings, Professor, University of Wisconsin-Madison,
-Department of Chemical Engineering.
+Department of Chemical and Biological Engineering.
 
 @item
 Richard Stallman, for writing GNU.

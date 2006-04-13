@@ -71,8 +71,8 @@ octave_base_sparse : public octave_base_value
 
   ~octave_base_sparse (void) { }
 
-  octave_value *clone (void) const { return new octave_base_sparse (*this); }
-  octave_value *empty_clone (void) const 
+  octave_base_value *clone (void) const { return new octave_base_sparse (*this); }
+  octave_base_value *empty_clone (void) const 
     { return new octave_base_sparse (); }
 
   octave_idx_type nnz (void) const { return matrix.nnz (); }

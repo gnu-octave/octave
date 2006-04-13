@@ -58,10 +58,10 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_matrix);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix,
 				     "complex matrix", "double");
 
-octave_value *
+octave_base_value *
 octave_complex_matrix::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  octave_base_value *retval = 0;
 
   if (matrix.ndims () == 2)
     {

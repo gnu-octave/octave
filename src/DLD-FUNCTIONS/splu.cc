@@ -421,7 +421,7 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
     }
 
   octave_value arg = args(0);
-  const octave_value& rep = arg.get_rep ();
+  const octave_base_value& rep = arg.get_rep ();
 
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();

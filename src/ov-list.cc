@@ -131,9 +131,9 @@ octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
 
   if (idx.length () == 1)
     {
-      idx_vector i = idx (0).index_vector ();
+      idx_vector iidx = idx (0).index_vector ();
 
-      Cell tcell = data.index (i, resize_ok);
+      Cell tcell = data.index (iidx, resize_ok);
 
       octave_value_list result;
 
@@ -213,7 +213,8 @@ octave_list::subsasgn (const std::string& type,
 
 	    ::assign (data, Cell (t_rhs), Cell::resize_fill_value ());
 
-	    retval = octave_value (this, count + 1);
+	    count++;
+	    retval = octave_value (this);
 	  }
 	  break;
 

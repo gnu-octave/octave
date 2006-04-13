@@ -61,8 +61,8 @@ public:
 
   ~octave_struct (void) { }
 
-  octave_value *clone (void) const { return new octave_struct (*this); }
-  octave_value *empty_clone (void) const { return new octave_struct (); }
+  octave_base_value *clone (void) const { return new octave_struct (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_struct (); }
 
   Cell dotref (const octave_value_list& idx);
 

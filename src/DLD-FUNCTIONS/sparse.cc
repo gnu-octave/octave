@@ -722,7 +722,7 @@ real.\n\
     } \
  \
   int dim; \
-  dim_vector dv = ((const octave_sparse_matrix&) arg1) .dims (); \
+  dim_vector dv = arg1.dims (); \
   if (error_state) \
     { \
       gripe_wrong_type_arg (#FCN, arg1);  \

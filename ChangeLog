@@ -1,3 +1,7 @@
+2006-04-12  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: If using g++, also add -Wold-style-cast to CXXFLAGS.
+
 2006-03-28  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Don't check for MPI libraries.

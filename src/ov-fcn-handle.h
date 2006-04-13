@@ -55,8 +55,8 @@ public:
 
   ~octave_fcn_handle (void) { }
 
-  octave_value *clone (void) const { return new octave_fcn_handle (*this); }
-  octave_value *empty_clone (void) const { return new octave_fcn_handle (); }
+  octave_base_value *clone (void) const { return new octave_fcn_handle (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_fcn_handle (); }
 
   octave_value subsref (const std::string&,
 			const std::list<octave_value_list>&)

@@ -57,8 +57,8 @@ public:
 
   ~octave_streamoff (void) { }
 
-  octave_value *clone (void) const { return new octave_streamoff (*this); }
-  octave_value *empty_clone (void) const { return new octave_streamoff (); }
+  octave_base_value *clone (void) const { return new octave_streamoff (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_streamoff (); }
 
   bool is_defined (void) const { return true; }
 

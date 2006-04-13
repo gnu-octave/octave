@@ -60,12 +60,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string", "ch
 //   octave> 'abc' + 0
 //   97 98 99
 //
-static bool Vwarn_str_to_num;
+static int Vwarn_str_to_num;
 
-static octave_value *
-default_numeric_conversion_function (const octave_value& a)
+static octave_base_value *
+default_numeric_conversion_function (const octave_base_value& a)
 {
-  octave_value *retval = 0;
+  octave_base_value *retval = 0;
 
   CAST_CONV_ARG (const octave_char_matrix_str&);
 
@@ -82,7 +82,7 @@ default_numeric_conversion_function (const octave_value& a)
   return retval;
 }
 
-type_conv_fcn
+octave_base_value::type_conv_fcn
 octave_char_matrix_str::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;
@@ -791,7 +791,6 @@ elicits a warning if @code{warn_str_to_num} is nonzero.  The default\n\
 value is 0.\n\
 @end defvr");
 }
-
 
 /*
 ;;; Local Variables: ***

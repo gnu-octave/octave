@@ -50,15 +50,15 @@ DEFINE_OCTAVE_ALLOCATOR (octave_bool);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool", "logical");
 
-static octave_value *
-default_numeric_conversion_function (const octave_value& a)
+static octave_base_value *
+default_numeric_conversion_function (const octave_base_value& a)
 {
   CAST_CONV_ARG (const octave_bool&);
 
   return new octave_scalar (v.bool_value ());
 }
 
-type_conv_fcn
+octave_base_value::type_conv_fcn
 octave_bool::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;

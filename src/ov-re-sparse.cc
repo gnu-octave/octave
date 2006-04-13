@@ -61,10 +61,10 @@ octave_sparse_matrix::index_vector (void) const
     }
 }
 
-octave_value *
+octave_base_value *
 octave_sparse_matrix::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  octave_base_value *retval = 0;
 
   // Don't use numel, since it can overflow for very large matrices
   // Note that for the second test, this means it becomes approximative

@@ -41,12 +41,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 	} \
       else \
         { \
-          type_conv_fcn cf \
+          octave_base_value::type_conv_fcn cf \
 	    = octave_value_typeinfo::lookup_type_conv_op (t_arg, t_result); \
  \
           if (cf) \
 	    { \
-	      octave_value *tmp (cf (*(arg.internal_rep ()))); \
+	      octave_base_value *tmp (cf (*(arg.internal_rep ()))); \
  \
 	      if (tmp) \
 		{ \

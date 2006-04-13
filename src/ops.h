@@ -148,7 +148,13 @@ extern void install_ops (void);
 
 #define ASSIGNOPDECL(name) \
   static octave_value \
-  oct_assignop_ ## name (octave_value& a1, \
+  oct_assignop_ ## name (octave_base_value& a1, \
+			 const octave_value_list& idx, \
+			 const octave_base_value& a2)
+
+#define ASSIGNANYOPDECL(name) \
+  static octave_value \
+  oct_assignop_ ## name (octave_base_value& a1, \
 			 const octave_value_list& idx, \
 			 const octave_value& a2)
 
@@ -174,7 +180,7 @@ extern void install_ops (void);
   }
 
 #define DEFASSIGNANYOP_FN(name, t1, f) \
-  ASSIGNOPDECL (name) \
+  ASSIGNANYOPDECL (name) \
   { \
     octave_ ## t1& v1 = DYNAMIC_CAST (octave_ ## t1&, a1); \
  \
@@ -183,12 +189,12 @@ extern void install_ops (void);
   }
 
 #define CONVDECL(name) \
-  static octave_value * \
-  oct_conv_ ## name (const octave_value& a)
+  static octave_base_value * \
+  oct_conv_ ## name (const octave_base_value& a)
 
 #define CONVDECLX(name) \
-  static octave_value * \
-  oct_conv_ ## name (const octave_value&)
+  static octave_base_value * \
+  oct_conv_ ## name (const octave_base_value&)
 
 #define DEFCONV(name, a_dummy, b_dummy) \
   CONVDECL (name)
@@ -223,7 +229,7 @@ extern void install_ops (void);
 
 #define UNOPDECL(name, a) \
   static octave_value \
-  oct_unop_ ## name (const octave_value& a)
+  oct_unop_ ## name (const octave_base_value& a)
 
 #define DEFUNOPX(name, t) \
   UNOPDECL (name, , )
@@ -263,7 +269,7 @@ extern void install_ops (void);
 
 #define DEFNCUNOP_METHOD(name, t, method) \
   static void \
-  oct_unop_ ## name (octave_value& a) \
+  oct_unop_ ## name (octave_base_value& a) \
   { \
     CAST_UNOP_ARG (octave_ ## t&); \
     v.method (); \
@@ -271,7 +277,7 @@ extern void install_ops (void);
 
 #define BINOPDECL(name, a1, a2) \
   static octave_value \
-  oct_binop_ ## name (const octave_value& a1, const octave_value& a2)
+  oct_binop_ ## name (const octave_base_value& a1, const octave_base_value& a2)
 
 #define DEFBINOPX(name, t1, t2) \
   BINOPDECL (name, , )
@@ -319,7 +325,7 @@ extern void install_ops (void);
 
 #define CATOPDECL(name, a1, a2)	\
   static octave_value \
-  oct_catop_ ## name (octave_value& a1, const octave_value& a2, \
+  oct_catop_ ## name (octave_base_value& a1, const octave_base_value& a2, \
 		      const Array<int>& ra_idx)
 
 #define DEFCATOPX(name, t1, t2)	\

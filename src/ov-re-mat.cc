@@ -67,10 +67,10 @@ DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix", "double");
 
-octave_value *
+octave_base_value *
 octave_matrix::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  octave_base_value *retval = 0;
 
   if (matrix.nelem () == 1)
     retval = new octave_scalar (matrix (0));

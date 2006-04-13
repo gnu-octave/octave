@@ -49,24 +49,24 @@ DEFINE_OCTAVE_ALLOCATOR (octave_sparse_bool_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix, "sparse bool matrix", "sparse");
 
-static octave_value *
-default_numeric_conversion_function (const octave_value& a)
+static octave_base_value *
+default_numeric_conversion_function (const octave_base_value& a)
 {
   CAST_CONV_ARG (const octave_sparse_bool_matrix&);
 
   return new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
 }
 
-type_conv_fcn
+octave_base_value::type_conv_fcn
 octave_sparse_bool_matrix::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;
 }
 
-octave_value *
+octave_base_value *
 octave_sparse_bool_matrix::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  octave_base_value *retval = 0;
 
   // Don't use numel, since it can overflow for very large matrices
   // Note that for the second test, this means it becomes approximative

@@ -76,12 +76,12 @@ public:
 
   ~octave_sparse_bool_matrix (void) { }
 
-  octave_value *clone (void) const { return new octave_sparse_bool_matrix (*this); }
-  octave_value *empty_clone (void) const { return new octave_sparse_bool_matrix (); }
+  octave_base_value *clone (void) const { return new octave_sparse_bool_matrix (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_sparse_bool_matrix (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value *try_narrowing_conversion (void);
+  octave_base_value *try_narrowing_conversion (void);
 
   // XXX FIXME XXX Adapt idx_vector to allow sparse logical indexing!!
   idx_vector index_vector (void) const 

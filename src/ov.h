@@ -54,41 +54,11 @@ class octave_fcn_inline;
 class octave_value_list;
 class octave_lvalue;
 
+#include "ov-base.h"
+
 // Constants.
 
-// This just provides a way to avoid infinite recursion when building
-// octave_value objects.
-
-class
-octave_xvalue
-{
-public:
-
-  octave_xvalue (void) { }
-};
-
 class octave_value;
-
-// XXX FIXME XXX -- these should probably really be inside the scope
-// of the octave_value class, but the cygwin32 beta16 version of g++
-// can't handle that.
-
-typedef octave_value (*unary_op_fcn)
-  (const octave_value&);
-
-typedef void (*non_const_unary_op_fcn)
-  (octave_value&);
-
-typedef octave_value (*binary_op_fcn)
-  (const octave_value&, const octave_value&);
-
-typedef octave_value (*cat_op_fcn)
-  (octave_value&, const octave_value&, const Array<int>& ra_idx);
-
-typedef octave_value (*assign_op_fcn)
-  (octave_value&, const octave_value_list&, const octave_value&);
-
-typedef octave_value * (*type_conv_fcn) (const octave_value&);
 
 class
 octave_value
@@ -248,7 +218,7 @@ public:
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);
 
-  octave_value (octave_value *new_rep, int count = 1);
+  octave_value (octave_base_value *new_rep);
 
   // Copy constructor.
 
@@ -260,15 +230,15 @@ public:
 
   // This should only be called for derived types.
 
-  virtual octave_value *clone (void) const;
+  octave_base_value *clone (void) const;
 
-  virtual octave_value *empty_clone (void) const
+  octave_base_value *empty_clone (void) const
     { return rep->empty_clone (); }
 
   // Delete the representation of this constant if the count drops to
   // zero.
 
-  virtual ~octave_value (void);
+  ~octave_value (void);
 
   void make_unique (void)
     {
@@ -298,25 +268,25 @@ public:
 
   int get_count (void) const { return rep->count; }
 
-  virtual type_conv_fcn numeric_conversion_function (void) const
+  octave_base_value::type_conv_fcn numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }
 
   void maybe_mutate (void);
 
-  virtual octave_value squeeze (void) const
+  octave_value squeeze (void) const
     { return rep->squeeze (); }
 
-  virtual octave_value *try_narrowing_conversion (void)
+  octave_base_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
   octave_value single_subsref (const std::string& type,
 			       const octave_value_list& idx);
 
-  virtual octave_value subsref (const std::string& type,
+  octave_value subsref (const std::string& type,
 				const std::list<octave_value_list>& idx)
     { return rep->subsref (type, idx); }
 
-  virtual octave_value_list subsref (const std::string& type,
+  octave_value_list subsref (const std::string& type,
 				     const std::list<octave_value_list>& idx,
     				     int nargout);
 
@@ -329,17 +299,17 @@ public:
 				  std::list<octave_value_list>& idx,
 				  size_t skip = 1);
 
-  virtual octave_value do_index_op (const octave_value_list& idx,
+  octave_value do_index_op (const octave_value_list& idx,
 				    int resize_ok)
     { return rep->do_index_op (idx, resize_ok); }
 
   octave_value do_index_op (const octave_value_list& idx)
     { return do_index_op (idx, 0); }
 
-  virtual octave_value_list
+  octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);
 
-  virtual octave_value subsasgn (const std::string& type,
+  octave_value subsasgn (const std::string& type,
 				 const std::list<octave_value_list>& idx,
 				 const octave_value& rhs);
 
@@ -349,335 +319,335 @@ public:
 
   const octave_value& assign (assign_op, const octave_value& rhs);
 
-  virtual idx_vector index_vector (void) const
+  idx_vector index_vector (void) const
     { return rep->index_vector (); }
 
   // Size.
 
-  virtual dim_vector dims (void) const
+  dim_vector dims (void) const
     { return rep->dims (); }
 
-  octave_idx_type rows (void) const;
+  octave_idx_type rows (void) const { return rep->rows (); }
 
-  octave_idx_type columns (void) const;
+  octave_idx_type columns (void) const { return rep->columns (); }
 
   octave_idx_type length (void) const;
 
-  int ndims (void) const;
+  int ndims (void) const { return rep->ndims (); }
 
   bool all_zero_dims (void) const { return dims().all_zero (); }
 
-  virtual octave_idx_type numel (void) const
+  octave_idx_type numel (void) const
     { return rep->numel (); }
 
-  virtual octave_idx_type capacity (void) const
+  octave_idx_type capacity (void) const
     { return rep->capacity (); }
 
   Matrix size (void) const;
 
-  virtual size_t byte_size (void) const
+  size_t byte_size (void) const
     { return rep->byte_size (); }
 
-  virtual octave_idx_type nnz (void) const { return rep->nnz (); }
+  octave_idx_type nnz (void) const { return rep->nnz (); }
 
-  virtual octave_idx_type nzmax (void) const { return rep->nzmax (); }
+  octave_idx_type nzmax (void) const { return rep->nzmax (); }
 
-  virtual octave_value reshape (const dim_vector& dv) const
+  octave_value reshape (const dim_vector& dv) const
     { return rep->reshape (dv); }
 
-  virtual octave_value permute (const Array<int>& vec, bool inv = false) const
+  octave_value permute (const Array<int>& vec, bool inv = false) const
     { return rep->permute (vec, inv); }
 
   octave_value ipermute (const Array<int>& vec) const
     { return rep->permute (vec, true); }
 
-  virtual octave_value resize (const dim_vector& dv, bool fill = false) const
-     { return rep->resize (dv, fill);}
+  octave_value resize (const dim_vector& dv, bool fill = false) const
+    { return rep->resize (dv, fill);}
 
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().
 
-  virtual bool is_defined (void) const
+  bool is_defined (void) const
     { return rep->is_defined (); }
 
   bool is_undefined (void) const
     { return ! is_defined (); }
 
   bool is_empty (void) const
-    { return numel () == 0; }
+    { return rep->is_empty (); }
 
-  virtual bool is_cell (void) const
+  bool is_cell (void) const
     { return rep->is_cell (); }
 
-  virtual bool is_real_scalar (void) const
+  bool is_real_scalar (void) const
     { return rep->is_real_scalar (); }
 
-  virtual bool is_real_matrix (void) const
+  bool is_real_matrix (void) const
     { return rep->is_real_matrix (); }
 
-  virtual bool is_real_nd_array (void) const
+  bool is_real_nd_array (void) const
     { return rep->is_real_nd_array (); }
 
-  virtual bool is_complex_scalar (void) const
+  bool is_complex_scalar (void) const
     { return rep->is_complex_scalar (); }
 
-  virtual bool is_complex_matrix (void) const
+  bool is_complex_matrix (void) const
     { return rep->is_complex_matrix (); }
 
-  virtual bool is_bool_matrix (void) const
+  bool is_bool_matrix (void) const
     { return rep->is_bool_matrix (); }
 
-  virtual bool is_char_matrix (void) const
+  bool is_char_matrix (void) const
     { return rep->is_char_matrix (); }
 
-  virtual bool is_string (void) const
+  bool is_string (void) const
     { return rep->is_string (); }
 
-  virtual bool is_sq_string (void) const
+  bool is_sq_string (void) const
     { return rep->is_sq_string (); }
 
   bool is_dq_string (void) const
     { return rep->is_string () && ! rep->is_sq_string (); }
 
-  virtual bool is_range (void) const
+  bool is_range (void) const
     { return rep->is_range (); }
 
-  virtual bool is_map (void) const
+  bool is_map (void) const
     { return rep->is_map (); }
 
-  virtual bool is_streamoff (void) const
+  bool is_streamoff (void) const
     { return rep->is_streamoff (); }
 
-  virtual bool is_cs_list (void) const
+  bool is_cs_list (void) const
     { return rep->is_cs_list (); }
 
-  virtual bool is_list (void) const
+  bool is_list (void) const
     { return rep->is_list (); }
 
-  virtual bool is_magic_colon (void) const
+  bool is_magic_colon (void) const
     { return rep->is_magic_colon (); }
 
-  virtual bool is_all_va_args (void) const
+  bool is_all_va_args (void) const
     { return rep->is_all_va_args (); }
 
   // Are any or all of the elements in this constant nonzero?
 
-  virtual octave_value all (int dim = 0) const
+  octave_value all (int dim = 0) const
     { return rep->all (dim); }
 
-  virtual octave_value any (int dim = 0) const
+  octave_value any (int dim = 0) const
     { return rep->any (dim); }
 
   // Other type stuff.
 
-  virtual bool is_bool_type (void) const
+  bool is_bool_type (void) const
     { return rep->is_bool_type (); }
 
-  virtual bool is_real_type (void) const
+  bool is_real_type (void) const
     { return rep->is_real_type (); }
 
-  virtual bool is_complex_type (void) const
+  bool is_complex_type (void) const
     { return rep->is_complex_type (); }
 
-  virtual bool is_scalar_type (void) const
+  bool is_scalar_type (void) const
     { return rep->is_scalar_type (); }
 
-  virtual bool is_matrix_type (void) const
+  bool is_matrix_type (void) const
     { return rep->is_matrix_type (); }
 
-  virtual bool is_numeric_type (void) const
+  bool is_numeric_type (void) const
     { return rep->is_numeric_type (); }
 
-  virtual bool is_sparse_type (void) const
+  bool is_sparse_type (void) const
     { return rep->is_sparse_type (); }
 
-  virtual bool valid_as_scalar_index (void) const
+  bool valid_as_scalar_index (void) const
     { return rep->valid_as_scalar_index (); }
 
-  virtual bool valid_as_zero_index (void) const
+  bool valid_as_zero_index (void) const
     { return rep->valid_as_zero_index (); }
 
   // Does this constant correspond to a truth value?
 
-  virtual bool is_true (void) const
+  bool is_true (void) const
     { return rep->is_true (); }
 
   // Are the dimensions of this constant zero by zero?
 
-  virtual bool is_zero_by_zero (void) const
-    { return rep->is_zero_by_zero (); }
+  bool is_zero_by_zero (void) const
+    { return (rows () == 0 && columns () == 0); }
 
-  virtual bool is_constant (void) const
+  bool is_constant (void) const
     { return rep->is_constant (); }
 
-  virtual bool is_function_handle (void) const
+  bool is_function_handle (void) const
     { return rep->is_function_handle (); }
 
-  virtual bool is_inline_function (void) const
+  bool is_inline_function (void) const
     { return rep->is_inline_function (); }
 
-  virtual bool is_function (void) const
+  bool is_function (void) const
     { return rep->is_function (); }
 
-  virtual bool is_builtin_function (void) const
+  bool is_builtin_function (void) const
     { return rep->is_builtin_function (); }
 
-  virtual bool is_dld_function (void) const
+  bool is_dld_function (void) const
     { return rep->is_dld_function (); }
 
   // Values.
 
   octave_value eval (void) { return *this; }
 
-  virtual short int
+  short int
   short_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->short_value (req_int, frc_str_conv); }
 
-  virtual unsigned short int
+  unsigned short int
   ushort_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->ushort_value (req_int, frc_str_conv); }
 
-  virtual int int_value (bool req_int = false, bool frc_str_conv = false) const
+  int int_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->int_value (req_int, frc_str_conv); }
 
-  virtual unsigned int
+  unsigned int
   uint_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->uint_value (req_int, frc_str_conv); }
 
-  virtual int nint_value (bool frc_str_conv = false) const
+  int nint_value (bool frc_str_conv = false) const
     { return rep->nint_value (frc_str_conv); }
 
-  virtual long int
+  long int
   long_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->long_value (req_int, frc_str_conv); }
 
-  virtual unsigned long int
+  unsigned long int
   ulong_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->ulong_value (req_int, frc_str_conv); }
 
-  virtual double double_value (bool frc_str_conv = false) const
+  double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
 
-  virtual double scalar_value (bool frc_str_conv = false) const
+  double scalar_value (bool frc_str_conv = false) const
     { return rep->scalar_value (frc_str_conv); }
 
-  virtual Cell cell_value (void) const;
+  Cell cell_value (void) const;
 
-  virtual Matrix matrix_value (bool frc_str_conv = false) const
+  Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
 
-  virtual NDArray array_value (bool frc_str_conv = false) const
+  NDArray array_value (bool frc_str_conv = false) const
     { return rep->array_value (frc_str_conv); }
 
-  virtual Complex complex_value (bool frc_str_conv = false) const
+  Complex complex_value (bool frc_str_conv = false) const
     { return rep->complex_value (frc_str_conv); }
 
-  virtual ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const
+  ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const
     { return rep->complex_matrix_value (frc_str_conv); }
 
-  virtual ComplexNDArray complex_array_value (bool frc_str_conv = false) const
+  ComplexNDArray complex_array_value (bool frc_str_conv = false) const
     { return rep->complex_array_value (frc_str_conv); }
 
-  virtual bool bool_value (void) const
+  bool bool_value (void) const
     { return rep->bool_value (); }
 
-  virtual boolMatrix bool_matrix_value (void) const
+  boolMatrix bool_matrix_value (void) const
     { return rep->bool_matrix_value (); }
 
-  virtual boolNDArray bool_array_value (void) const
+  boolNDArray bool_array_value (void) const
     { return rep->bool_array_value (); }
 
-  virtual charMatrix char_matrix_value (bool frc_str_conv = false) const
+  charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }
 
-  virtual charNDArray char_array_value (bool frc_str_conv = false) const
+  charNDArray char_array_value (bool frc_str_conv = false) const
     { return rep->char_array_value (frc_str_conv); }
 
-  virtual SparseMatrix sparse_matrix_value (bool frc_str_conv = false) const
-  { return rep->sparse_matrix_value (frc_str_conv); }
+  SparseMatrix sparse_matrix_value (bool frc_str_conv = false) const
+    { return rep->sparse_matrix_value (frc_str_conv); }
 
-  virtual SparseComplexMatrix sparse_complex_matrix_value (bool frc_str_conv = false) const
-  { return rep->sparse_complex_matrix_value (frc_str_conv); }
+  SparseComplexMatrix sparse_complex_matrix_value (bool frc_str_conv = false) const
+    { return rep->sparse_complex_matrix_value (frc_str_conv); }
 
-  virtual SparseBoolMatrix sparse_bool_matrix_value (bool frc_str_conv = false) const
-  { return rep->sparse_bool_matrix_value (frc_str_conv); }
+  SparseBoolMatrix sparse_bool_matrix_value (bool frc_str_conv = false) const
+    { return rep->sparse_bool_matrix_value (frc_str_conv); }
 
-  virtual octave_int8 int8_scalar_value (void) const
+  octave_int8 int8_scalar_value (void) const
     { return rep->int8_scalar_value (); }
 
-  virtual octave_int16 int16_scalar_value (void) const
+  octave_int16 int16_scalar_value (void) const
     { return rep->int16_scalar_value (); }
 
-  virtual octave_int32 int32_scalar_value (void) const
+  octave_int32 int32_scalar_value (void) const
     { return rep->int32_scalar_value (); }
 
-  virtual octave_int64 int64_scalar_value (void) const
+  octave_int64 int64_scalar_value (void) const
     { return rep->int64_scalar_value (); }
 
-  virtual octave_uint8 uint8_scalar_value (void) const
+  octave_uint8 uint8_scalar_value (void) const
     { return rep->uint8_scalar_value (); }
 
-  virtual octave_uint16 uint16_scalar_value (void) const
+  octave_uint16 uint16_scalar_value (void) const
     { return rep->uint16_scalar_value (); }
 
-  virtual octave_uint32 uint32_scalar_value (void) const
+  octave_uint32 uint32_scalar_value (void) const
     { return rep->uint32_scalar_value (); }
 
-  virtual octave_uint64 uint64_scalar_value (void) const
+  octave_uint64 uint64_scalar_value (void) const
     { return rep->uint64_scalar_value (); }
 
-  virtual int8NDArray int8_array_value (void) const
+  int8NDArray int8_array_value (void) const
     { return rep->int8_array_value (); }
 
-  virtual int16NDArray int16_array_value (void) const
+  int16NDArray int16_array_value (void) const
     { return rep->int16_array_value (); }
 
-  virtual int32NDArray int32_array_value (void) const
+  int32NDArray int32_array_value (void) const
     { return rep->int32_array_value (); }
 
-  virtual int64NDArray int64_array_value (void) const
+  int64NDArray int64_array_value (void) const
     { return rep->int64_array_value (); }
 
-  virtual uint8NDArray uint8_array_value (void) const
+  uint8NDArray uint8_array_value (void) const
     { return rep->uint8_array_value (); }
 
-  virtual uint16NDArray uint16_array_value (void) const
+  uint16NDArray uint16_array_value (void) const
     { return rep->uint16_array_value (); }
 
-  virtual uint32NDArray uint32_array_value (void) const
+  uint32NDArray uint32_array_value (void) const
     { return rep->uint32_array_value (); }
 
-  virtual uint64NDArray uint64_array_value (void) const
+  uint64NDArray uint64_array_value (void) const
     { return rep->uint64_array_value (); }
 
-  virtual string_vector all_strings (bool pad = false) const
+  string_vector all_strings (bool pad = false) const
     { return rep->all_strings (pad); }
 
-  virtual std::string string_value (bool force = false) const
+  std::string string_value (bool force = false) const
     { return rep->string_value (force); }
 
-  virtual Range range_value (void) const
+  Range range_value (void) const
     { return rep->range_value (); }
 
-  virtual Octave_map map_value (void) const;
+  Octave_map map_value (void) const;
 
-  virtual string_vector map_keys (void) const
+  string_vector map_keys (void) const
     { return rep->map_keys (); }
 
-  virtual std::streamoff streamoff_value (void) const;
+  std::streamoff streamoff_value (void) const;
 
-  virtual streamoff_array streamoff_array_value (void) const;
+  streamoff_array streamoff_array_value (void) const;
 
-  virtual octave_function *function_value (bool silent = false);
+  octave_function *function_value (bool silent = false);
 
-  virtual octave_user_function *user_function_value (bool silent = false);
+  octave_user_function *user_function_value (bool silent = false);
 
-  virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
+  octave_fcn_handle *fcn_handle_value (bool silent = false);
 
-  virtual octave_fcn_inline *fcn_inline_value (bool silent = false);
+  octave_fcn_inline *fcn_inline_value (bool silent = false);
 
-  virtual octave_value_list list_value (void) const;
+  octave_value_list list_value (void) const;
 
   ColumnVector column_vector_value (bool frc_str_conv = false,
 			     bool frc_vec_conv = false) const;
@@ -708,36 +678,38 @@ public:
   // it, and we should convert it if possible.
 
   octave_value convert_to_str (bool pad = false, bool force = false,
-			       char type = '"') const;
+			       char type = '"') const
+  { return rep->convert_to_str (pad, force, type); }
 
-  virtual octave_value
+  octave_value
   convert_to_str_internal (bool pad, bool force, char type) const
     { return rep->convert_to_str_internal (pad, force, type); }
 
-  virtual void convert_to_row_or_column_vector (void)
+  void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
 
-  virtual bool print_as_scalar (void) const
+  bool print_as_scalar (void) const
     { return rep->print_as_scalar (); }
 
-  virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const
     { rep->print (os, pr_as_read_syntax); }
 
-  virtual void print_raw (std::ostream& os,
+  void print_raw (std::ostream& os,
 			  bool pr_as_read_syntax = false) const
     { rep->print_raw (os, pr_as_read_syntax); }
 
-  virtual bool print_name_tag (std::ostream& os, const std::string& name) const
+  bool print_name_tag (std::ostream& os, const std::string& name) const
     { return rep->print_name_tag (os, name); }
 
   void print_with_name (std::ostream& os, const std::string& name,
-			bool print_padding = true) const;
+			bool print_padding = true) const
+    { rep->print_with_name (os, name, print_padding); }
 
-  virtual int type_id (void) const { return rep->type_id (); }
+  int type_id (void) const { return rep->type_id (); }
 
-  virtual std::string type_name (void) const { return rep->type_name (); }
+  std::string type_name (void) const { return rep->type_name (); }
 
-  virtual std::string class_name (void) const { return rep->class_name (); }
+  std::string class_name (void) const { return rep->class_name (); }
 
   // Unary and binary operations.
 
@@ -759,86 +731,52 @@ public:
 				 const octave_value& b,
 				 const Array<int>& ra_idx);
 
-  const octave_value& get_rep (void) const { return *rep; }
+  const octave_base_value& get_rep (void) const { return *rep; }
 
-  virtual void print_info (std::ostream& os,
+  void print_info (std::ostream& os,
 			   const std::string& prefix = std::string ()) const;
 
-  virtual bool save_ascii (std::ostream& os, bool& infnan_warned,
+  bool save_ascii (std::ostream& os, bool& infnan_warned,
 			   bool strip_nan_and_inf) 
     { return rep->save_ascii (os, infnan_warned, strip_nan_and_inf); }
 
-  virtual bool load_ascii (std::istream& is)
+  bool load_ascii (std::istream& is)
     { return rep->load_ascii (is); }
 
-  virtual bool save_binary (std::ostream& os, bool& save_as_floats)
+  bool save_binary (std::ostream& os, bool& save_as_floats)
     { return rep->save_binary (os, save_as_floats); }
 
-  virtual bool load_binary (std::istream& is, bool swap,
+  bool load_binary (std::istream& is, bool swap,
 			    oct_mach_info::float_format fmt)
     { return rep->load_binary (is, swap, fmt); }
 
 #if defined (HAVE_HDF5)
-  virtual bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     { return rep->save_hdf5 (loc_id, name, save_as_floats); }
 
-  virtual bool load_hdf5 (hid_t loc_id, const char *name,
+  bool load_hdf5 (hid_t loc_id, const char *name,
 			  bool have_h5giterate_bug)
     { return rep->load_hdf5 (loc_id, name, have_h5giterate_bug); }
 #endif
 
-  virtual int write (octave_stream& os, int block_size,
+  int write (octave_stream& os, int block_size,
 		     oct_data_conv::data_type output_type, int skip,
 		     oct_mach_info::float_format flt_fmt) const;
 
-  octave_value *internal_rep (void) const { return rep; }
+  octave_base_value *internal_rep (void) const { return rep; }
 
 protected:
 
-  octave_value (const octave_xvalue&) : rep (0) { }
-
-  // This should only be called for derived types.
-
-  octave_value numeric_assign (const std::string& type,
-			       const std::list<octave_value_list>& idx,
-			       const octave_value& rhs);
-
-  void reset_indent_level (void) const
-    { curr_print_indent_level = 0; }
-
-  void increment_indent_level (void) const
-    { curr_print_indent_level += 2; }
-
-  void decrement_indent_level (void) const
-    { curr_print_indent_level -= 2; }
-
-  int current_print_indent_level (void) const
-    { return curr_print_indent_level; }
-
-  void newline (std::ostream& os) const;
-
-  void indent (std::ostream& os) const;
-
-  void reset (void) const;
-
-  union
-    {
-      octave_value *rep;      // The real representation.
-      int count;              // A reference count.
-    };
+  // The real representation.
+  octave_base_value *rep;
 
 private:
-
-  static int curr_print_indent_level;
-  static bool beginning_of_line;
 
   assign_op unary_op_to_assign_op (unary_op op);
 
   binary_op op_eq_to_binary_op (assign_op op);
 
   DECLARE_OCTAVE_ALLOCATOR
-
-  octave_value *nil_rep (void) const;
 };
 
 // Publish externally used friend functions.
@@ -923,34 +861,6 @@ OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
 
-// T_ID is the type id of struct objects, set by register_type().
-// T_NAME is the type name of struct objects.
-#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA \
-  public: \
-    int type_id (void) const { return t_id; } \
-    std::string type_name (void) const { return t_name; } \
-    std::string class_name (void) const { return c_name; } \
-    static int static_type_id (void) { return t_id; } \
-    static std::string static_type_name (void) { return t_name; } \
-    static std::string static_class_name (void) { return c_name; } \
-    static void register_type (void); \
- \
-  private: \
-    static int t_id; \
-    static const std::string t_name; \
-    static const std::string c_name;
-
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c) \
-  int t::t_id (-1); \
-  const std::string t::t_name (n); \
-  const std::string t::c_name (c); \
-  void t::register_type (void) \
-    { \
-      t_id = octave_value_typeinfo::register_type (t::t_name, \
-						   t::c_name, \
-						   octave_value (new t ())); \
-    }
-
 // If TRUE, print a warning for assignments like
 //
 //   octave> A(1) = 3; A(2) = 5
@@ -958,31 +868,8 @@ OV_BINOP_FN (op_struct_ref)
 // for A already defined and a matrix type.
 extern bool Vwarn_fortran_indexing;
 
-// Should we print a warning when converting `[97, 98, 99, "123"]'
-// to a character string?
-extern bool Vwarn_num_to_str;
-
 // Should we warn about conversions from complex to real?
 extern int Vwarn_imag_to_real;
-
-// If TRUE, print the name along with the value.
-extern bool Vprint_answer_id_name;
-
-// If TRUE, print a warning when a matrix is resized by an indexed
-// assignment with indices outside the current bounds.
-extern bool Vwarn_resize_on_range_error;
-
-// Indentation level for structures.
-extern int struct_indent;
-
-extern void increment_struct_indent (void);
-extern void decrement_struct_indent (void);
-
-// Indentation level for lists.
-extern int list_indent;
-
-extern void increment_list_indent (void);
-extern void decrement_list_indent (void);
 
 extern void install_types (void);
 
@@ -1041,6 +928,12 @@ OCTAVE_ARRAY_TYPE_TRAIT (uint32NDArray, octave_uint32);
 OCTAVE_ARRAY_TYPE_TRAIT (int64NDArray, octave_int64);
 OCTAVE_ARRAY_TYPE_TRAIT (uint64NDArray, octave_uint64);
 OCTAVE_ARRAY_TYPE_TRAIT (NDArray, double);
+
+// This will eventually go away, but for now it can be used to
+// simplify the transition to the new octave_value class hierarchy,
+// which uses octave_base_value instead of octave_value for the type
+// of octave_value::rep.
+#define OV_REP_TYPE octave_base_value
 
 #endif
 

@@ -76,12 +76,12 @@ public:
 
   ~octave_range (void) { }
 
-  octave_value *clone (void) const { return new octave_range (*this); }
-  octave_value *empty_clone (void) const { return new octave_range (); }
+  octave_base_value *clone (void) const { return new octave_range (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_range (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value *try_narrowing_conversion (void);
+  octave_base_value *try_narrowing_conversion (void);
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);

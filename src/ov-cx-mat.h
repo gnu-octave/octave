@@ -77,10 +77,10 @@ public:
 
   ~octave_complex_matrix (void) { }
 
-  octave_value *clone (void) const { return new octave_complex_matrix (*this); }
-  octave_value *empty_clone (void) const { return new octave_complex_matrix (); }
+  octave_base_value *clone (void) const { return new octave_complex_matrix (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_complex_matrix (); }
 
-  octave_value *try_narrowing_conversion (void);
+  octave_base_value *try_narrowing_conversion (void);
 
   void assign (const octave_value_list& idx, const ComplexNDArray& rhs);
 

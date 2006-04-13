@@ -31,14 +31,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 DEFINE_OCTAVE_ALLOCATOR (octave_function);
 
-octave_value *
+octave_base_value *
 octave_function::clone (void) const
 {
   panic_impossible ();
   return 0;
 }
 
-octave_value *
+octave_base_value *
 octave_function::empty_clone (void) const
 {
   panic_impossible ();

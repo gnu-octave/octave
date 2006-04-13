@@ -29,10 +29,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 
+#include "Array-flags.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "so-array.h"
 
+#include "defun.h"
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -50,10 +52,27 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
 #include "ov-fcn-handle.h"
+#include "parse.h"
+#include "utils.h"
 #include "variables.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 				     "<unknown type>", "unknown");
+
+// If TRUE, print the name along with the value.
+static bool Vprint_answer_id_name;
+
+// If TRUE, turn off printing of results in functions (as if a
+// semicolon has been appended to each statement).
+static bool Vsilent_functions;
+
+// Should we print a warning when converting `[97, 98, 99, "123"]'
+// to a character string?
+bool Vwarn_num_to_str;
+
+// If TRUE, print a warning when a matrix is resized by an indexed
+// assignment with indices outside the current bounds.
+bool Vwarn_resize_on_range_error;
 
 octave_value
 octave_base_value::squeeze (void) const
@@ -89,6 +108,12 @@ octave_base_value::do_index_op (const octave_value_list&, int)
   return octave_value ();
 }
 
+octave_value
+octave_base_value::do_index_op (const octave_value_list& idx)
+{
+  return do_index_op (idx, 0);
+}
+
 octave_value_list
 octave_base_value::do_multi_index_op (int, const octave_value_list&)
 {
@@ -103,6 +128,31 @@ octave_base_value::index_vector (void) const
   std::string nm = type_name ();
   error ("%s type invalid as index value", nm.c_str ());
   return idx_vector ();
+}
+
+int
+octave_base_value::ndims (void) const
+{
+  dim_vector dv = dims ();
+
+  int n_dims = dv.length ();
+     
+   // Remove trailing singleton dimensions.
+
+   for (int i = n_dims; i > 2; i--)
+     {
+       if (dv(i-1) == 1)
+	 n_dims--;
+       else
+	 break;
+     }
+   
+   // The result is always >= 2.
+
+   if (n_dims < 2)
+     n_dims = 2;
+
+   return n_dims;
 }
 
 octave_value
@@ -209,6 +259,29 @@ octave_base_value::resize (const dim_vector&, bool) const
 }
 
 octave_value
+octave_base_value::all (int) const
+{
+  return 0.0;
+}
+
+octave_value
+octave_base_value::any (int) const
+{
+  return 0.0;
+}
+
+octave_value
+octave_base_value::convert_to_str (bool pad, bool force, char type) const
+{
+  octave_value retval = convert_to_str_internal (pad, force, type);
+
+  if (! force && is_numeric_type () && Vwarn_num_to_str)
+    gripe_implicit_conversion (type_name (), retval.type_name ());
+
+  return retval;
+}
+
+octave_value
 octave_base_value::convert_to_str_internal (bool, bool, char) const
 {
   gripe_wrong_type_arg ("octave_base_value::convert_to_str_internal ()",
@@ -254,6 +327,25 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
     }
 
   return retval;
+}
+
+void
+octave_base_value::print_with_name (std::ostream& output_buf,
+				    const std::string& name, 
+				    bool print_padding) const
+{
+  if (! (evaluating_function_body && Vsilent_functions))
+    {
+      bool pad_after = false;
+
+      if (Vprint_answer_id_name)
+	pad_after = print_name_tag (output_buf, name);
+
+      print (output_buf);
+
+      if (print_padding && pad_after)
+	newline (output_buf);
+    }
 }
 
 void
@@ -773,6 +865,193 @@ octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
   return false;
 }
 
+static void
+gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
+{
+  error ("assignment of `%s' to indexed `%s' not implemented",
+	 tn2.c_str (), tn1.c_str ());
+}
+
+static void
+gripe_assign_conversion_failed (const std::string& tn1,
+				const std::string& tn2)
+{
+  error ("type conversion for assignment of `%s' to indexed `%s' failed",
+	 tn2.c_str (), tn1.c_str ());
+}
+
+static void
+gripe_no_conversion (const std::string& on, const std::string& tn1,
+		     const std::string& tn2)
+{
+  error ("operator %s: no conversion for assignment of `%s' to indexed `%s'",
+	 on.c_str (), tn2.c_str (), tn1.c_str ());
+}
+
+octave_value
+octave_base_value::numeric_assign (const std::string& type,
+				   const std::list<octave_value_list>& idx,
+				   const octave_value& rhs)
+{
+  octave_value retval;
+
+  int t_lhs = type_id ();
+  int t_rhs = rhs.type_id ();
+
+  octave_value_typeinfo::assign_op_fcn f
+    = octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
+					       t_lhs, t_rhs);
+
+  bool done = false;
+
+  if (f)
+    {
+      f (*this, idx.front (), rhs.get_rep ());
+
+      done = (! error_state);
+    }
+
+  if (done)
+    {
+      count++;
+      retval = octave_value (this);
+    }
+  else
+    {
+      int t_result
+	= octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
+
+      if (t_result >= 0)
+	{
+	  octave_base_value::type_conv_fcn cf
+	    = octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
+
+	  if (cf)
+	    {
+	      octave_base_value *tmp (cf (*this));
+
+	      if (tmp)
+		{
+		  retval = tmp->subsasgn (type, idx, rhs);
+
+		  done = (! error_state);
+		}
+	      else
+		gripe_assign_conversion_failed (type_name (),
+						rhs.type_name ());
+	    }
+	  else
+	    gripe_indexed_assignment (type_name (), rhs.type_name ());
+	}
+
+      if (! (done || error_state))
+	{
+	  octave_value tmp_rhs;
+
+	  octave_base_value::type_conv_fcn cf_rhs
+	    = rhs.numeric_conversion_function ();
+
+	  if (cf_rhs)
+	    {
+	      octave_base_value *tmp = cf_rhs (rhs.get_rep ());
+
+	      if (tmp)
+		tmp_rhs = octave_value (tmp);
+	      else
+		{
+		  gripe_assign_conversion_failed (type_name (),
+						  rhs.type_name ());
+		  return octave_value ();
+		}
+	    }
+	  else
+	    tmp_rhs = rhs;
+
+	  octave_base_value::type_conv_fcn cf_this
+	    = numeric_conversion_function ();
+
+	  octave_base_value *tmp_lhs = this;
+
+	  if (cf_this)
+	    {
+	      octave_base_value *tmp = cf_this (*this);
+
+	      if (tmp)
+		tmp_lhs = tmp;
+	      else
+		{
+		  gripe_assign_conversion_failed (type_name (),
+						  rhs.type_name ());
+		  return octave_value ();
+		}
+	    }
+
+	  if (cf_this || cf_rhs)
+	    {
+	      retval = tmp_lhs->subsasgn (type, idx, tmp_rhs);
+
+	      done = (! error_state);
+	    }
+	  else
+	    gripe_no_conversion (octave_value::assign_op_as_string (octave_value::op_asn_eq),
+				 type_name (), rhs.type_name ());
+	}
+    }
+
+  // The assignment may have converted to a type that is wider than
+  // necessary.
+
+  retval.maybe_mutate ();
+
+  return retval;
+}
+
+// Current indentation.
+int octave_base_value::curr_print_indent_level = 0;
+
+// TRUE means we are at the beginning of a line.
+bool octave_base_value::beginning_of_line = true;
+
+// Each print() function should call this before printing anything.
+//
+// This doesn't need to be fast, but isn't there a better way?
+
+void
+octave_base_value::indent (std::ostream& os) const
+{
+  assert (curr_print_indent_level >= 0);
+ 
+  if (beginning_of_line)
+    {
+      // XXX FIXME XXX -- do we need this?
+      // os << prefix;
+
+      for (int i = 0; i < curr_print_indent_level; i++)
+	os << " ";
+
+      beginning_of_line = false;
+    }
+}
+
+// All print() functions should use this to print new lines.
+
+void
+octave_base_value::newline (std::ostream& os) const
+{
+  os << "\n";
+
+  beginning_of_line = true;
+}
+
+// For ressetting print state.
+
+void
+octave_base_value::reset (void) const
+{
+  beginning_of_line = true;
+  curr_print_indent_level = 0;
+}
+
 CONVDECLX (matrix_conv)
 {
   return new octave_matrix ();
@@ -808,6 +1087,100 @@ install_base_type_conversions (void)
   INSTALL_WIDENOP (octave_base_value, octave_complex_matrix, complex_matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
+}
+
+static int
+print_answer_id_name (void)
+{
+  Vprint_answer_id_name = check_preference ("print_answer_id_name");
+
+  return 0;
+}
+
+static int
+silent_functions (void)
+{
+  Vsilent_functions = check_preference ("silent_functions");
+
+  return 0;
+}
+
+static int
+warn_num_to_str (void)
+{
+  Vwarn_num_to_str = check_preference ("warn_num_to_str");
+
+  return 0;
+}
+
+static int
+warn_resize_on_range_error (void)
+{
+  Vwarn_resize_on_range_error
+    = check_preference ("warn_resize_on_range_error");
+
+  liboctave_wrore_flag = Vwarn_resize_on_range_error;
+
+  return 0;
+}
+
+void
+symbols_of_ov_base (void)
+{
+  DEFVAR (print_answer_id_name, true, print_answer_id_name,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} print_answer_id_name\n\
+If the value of @code{print_answer_id_name} is nonzero, variable\n\
+names are printed along with the result.  Otherwise, only the result\n\
+values are printed.  The default value is 1.\n\
+@end defvr");
+
+  DEFVAR (silent_functions, false, silent_functions,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} silent_functions\n\
+If the value of @code{silent_functions} is nonzero, internal output\n\
+from a function is suppressed.  Otherwise, the results of expressions\n\
+within a function body that are not terminated with a semicolon will\n\
+have their values printed.  The default value is 0.\n\
+\n\
+For example, if the function\n\
+\n\
+@example\n\
+function f ()\n\
+  2 + 2\n\
+endfunction\n\
+@end example\n\
+\n\
+@noindent\n\
+is executed, Octave will either print @samp{ans = 4} or nothing\n\
+depending on the value of @code{silent_functions}.\n\
+@end defvr");
+
+  DEFVAR (warn_num_to_str, true, warn_num_to_str,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_num_to_str\n\
+If the value of @code{warn_num_to_str} is nonzero, a warning is\n\
+printed for implicit conversions of numbers to their ASCII character\n\
+equivalents when strings are constructed using a mixture of strings and\n\
+numbers in matrix notation.  For example,\n\
+\n\
+@example\n\
+@group\n\
+[ \"f\", 111, 111 ]\n\
+     @result{} \"foo\"\n\
+@end group\n\
+@end example\n\
+elicits a warning if @code{warn_num_to_str} is nonzero.  The default\n\
+value is 1.\n\
+@end defvr");
+
+  DEFVAR (warn_resize_on_range_error, false, warn_resize_on_range_error,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_resize_on_range_error\n\
+If the value of @code{warn_resize_on_range_error} is nonzero, print a\n\
+warning when a matrix is resized by an indexed assignment with\n\
+indices outside the current bounds.  The default value is 0.\n\
+@end defvr");
 }
 
 /*

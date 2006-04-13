@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.505 $)
+AC_REVISION($Revision: 1.506 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1588,9 +1588,10 @@ if test -z "$EXTERN_CXXFLAGS"; then
   OCTAVE_CXX_FLAG(-Wshadow, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wshadow";
     AC_MSG_RESULT([adding -Wshadow to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-Wold-style-cast, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -Wold-style-cast";
+    AC_MSG_RESULT([adding -Wold-style-cast to WARN_CXXFLAGS])])
 fi
-
-### Someday, maybe include -ansi and even -pedantic in this list...
 
 GCC_PICKY_FLAGS="-Wcast-align -Wcast-qual -Wmissing-prototypes \
   -Wpointer-arith -Wstrict-prototypes -Wwrite-strings"

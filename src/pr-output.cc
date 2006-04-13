@@ -78,6 +78,9 @@ bool Vprint_empty_dimensions;
 // smaller slices that fit on the screen.
 static bool Vsplit_long_rows;
 
+// How many levels of structure elements should we print?
+int Vstruct_levels_to_print;
+
 // TRUE means don't do any fancy formatting.
 static bool free_format = false;
 
@@ -3019,6 +3022,24 @@ split_long_rows (void)
   return 0;
 }
 
+static int
+struct_levels_to_print (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival == val)
+	{
+	  Vstruct_levels_to_print = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("struct_levels_to_print");
+  return -1;
+}
+
 void
 symbols_of_pr_output (void)
 {
@@ -3118,6 +3139,13 @@ ans =\n\
 \n\
 @noindent\n\
 The default value of @code{split_long_rows} is nonzero.\n\
+@end defvr");
+
+  DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} struct_levels_to_print\n\
+You can tell Octave how many structure levels to display by setting the\n\
+built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
 @end defvr");
 }
 

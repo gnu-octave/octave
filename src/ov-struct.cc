@@ -44,13 +44,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ls-oct-binary.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
+#include "pr-output.h"
 
 DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
-
-// How many levels of structure elements should we print?
-static int Vstruct_levels_to_print;
 
 Cell
 octave_struct::dotref (const octave_value_list& idx)
@@ -304,7 +302,10 @@ octave_struct::subsasgn (const std::string& type,
 		    map.assign (idx.front (), key, t_rhs);
 
 		    if (! error_state)
-		      retval = octave_value (this, count + 1);
+		      {
+			count++;
+			retval = octave_value (this);
+		      }
 		    else
 		      gripe_failed_assignment ();
 		  }
@@ -322,7 +323,10 @@ octave_struct::subsasgn (const std::string& type,
 			map.assign (idx.front (), rhs_map);
 
 			if (! error_state)
-			  retval = octave_value (this, count + 1);
+			  {
+			    count++;
+			    retval = octave_value (this);
+			  }
 			else
 			  gripe_failed_assignment ();
 		      }
@@ -336,7 +340,10 @@ octave_struct::subsasgn (const std::string& type,
 			map.maybe_delete_elements (idx.front());
 
 			if (! error_state)
-			  retval = octave_value (this, count + 1);
+			  {
+			    count++;
+			    retval = octave_value (this);
+			  }
 			else
 			  gripe_failed_assignment ();
 		      }
@@ -358,7 +365,10 @@ octave_struct::subsasgn (const std::string& type,
 	    map.assign (key, t_rhs);
 
 	    if (! error_state)
-	      retval = octave_value (this, count + 1);
+	      {
+		count++;
+		retval = octave_value (this);
+	      }
 	    else
 	      gripe_failed_assignment ();
 	  }
@@ -1265,35 +1275,6 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
 }
 
 #endif
-
-static int
-struct_levels_to_print (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival == val)
-	{
-	  Vstruct_levels_to_print = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("struct_levels_to_print");
-  return -1;
-}
-
-void
-symbols_of_ov_struct (void)
-{
-  DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} struct_levels_to_print\n\
-You can tell Octave how many structure levels to display by setting the\n\
-built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
-@end defvr");
-}
 
 /*
 ;;; Local Variables: ***

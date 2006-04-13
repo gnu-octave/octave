@@ -60,8 +60,8 @@ public:
 
   ~octave_list (void) { }
 
-  octave_value *clone (void) const { return new octave_list (*this); }
-  octave_value *empty_clone (void) const { return new octave_list (); }
+  octave_base_value *clone (void) const { return new octave_list (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_list (); }
 
   octave_value subsref (const std::string&,
 			const std::list<octave_value_list>&)

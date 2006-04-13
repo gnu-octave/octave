@@ -52,10 +52,10 @@ public:
 
   ~OCTAVE_VALUE_INT_MATRIX_T (void) { }
 
-  octave_value *clone (void) const
+  octave_base_value *clone (void) const
     { return new OCTAVE_VALUE_INT_MATRIX_T (*this); }
 
-  octave_value *empty_clone (void) const
+  octave_base_value *empty_clone (void) const
     { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   int8NDArray
@@ -165,10 +165,10 @@ public:
 
   ~OCTAVE_VALUE_INT_SCALAR_T (void) { }
 
-  octave_value *clone (void) const
+  octave_base_value *clone (void) const
     { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }
 
-  octave_value *empty_clone (void) const
+  octave_base_value *empty_clone (void) const
     { return new OCTAVE_VALUE_INT_SCALAR_T (); }
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok)

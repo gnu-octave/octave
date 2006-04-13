@@ -80,8 +80,8 @@ public:
 
   ~octave_char_matrix_str (void) { }
 
-  octave_value *clone (void) const { return new octave_char_matrix_str (*this); }
-  octave_value *empty_clone (void) const { return new octave_char_matrix_str (); }
+  octave_base_value *clone (void) const { return new octave_char_matrix_str (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_char_matrix_str (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 
@@ -197,8 +197,8 @@ public:
 
   ~octave_char_matrix_sq_str (void) { }
 
-  octave_value *clone (void) const { return new octave_char_matrix_sq_str (*this); }
-  octave_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
+  octave_base_value *clone (void) const { return new octave_char_matrix_sq_str (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
 
   octave_value reshape (const dim_vector& new_dims) const
     { return octave_value (charNDArray (matrix.reshape (new_dims)), true, '\''); }

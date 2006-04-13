@@ -1,4 +1,20 @@
-2006-04-12  John W. Eaton  <jwe@octave.org>
+2006-04-13  John W. Eaton  <jwe@octave.org>
+
+	* ov.h (OV_REP_TYPE): New macro.
+
+	* DLD-FUNCTIONS/sparse.cc (MINMAX_BODY): No need to cast arg1 to
+	const octave_sparse_matrix&.
+
+	* ov-base.cc (print_answer_id_name, warn_resize_on_range_error,
+	warn_num_to_str, silent_functions): Move here, from ov.cc.
+	(Vwarn_resize_on_range_error, Vsilent_functions): Likewise.
+	(Vprint_answer_id_name): Likewise.  Now static.
+	(symbols_of_ov_base): New function.  Move DEFVARs for
+	print_answer_id_name, warn_resize_on_range_error, warn_num_to_str,
+	and silent_functions here from symbols_of_ov in ov.cc.
+	* ov.h (Vprint_answer_id_name): Delete decl.
+	* ov-base.h (Vwarn_resize_on_range_error, Vwarn_num_to_str):	
+	Move decls here from ov.h.
 
 	* ov-str-mat.cc (warn_str_to_num): Move here, from ov.cc.
 	(Vwarn_str_to_num): Likewise.  Now static.
@@ -13,12 +29,11 @@
 	* ov-list.cc (octave_list::do_index_op): Allow index to extract
 	multiple items.  Result is always a list.
 
-	* ov-struct.cc (struct_levels_to_print): Move here from ov.cc.
-	(Vstruct-levels_to_print): Likewise.  Now static.
-	(symbols_of_ov_struct): New function.  Move DEFVAR for
-	struct_levels_to_print here from symbols_of_ov in ov.cc.
-
-	* ov.h (Vstruct-levels_to_print): Delete decl.
+	* pr-output.cc (struct_levels_to_print): Move here from ov.cc.
+	(Vstruct-levels_to_print): Likewise.
+	(symbols_of_pr_output): Move DEFVAR for struct_levels_to_print here
+	from symbols_of_ov in ov.cc.
+	* pr-output.h (Vstruct_levels_to_print): Nove decl here from ov.h.
 
 	* gripes.cc (warn_divide_by_zero): Move here from ov.cc.
 	(Vwarn_divide_by_zero): Likewise.  Now static.
@@ -29,6 +44,58 @@
 	* load-save.cc (do_load): Declare count octave_idx_type, not int.
 	* ls-oct-ascii.cc, ls-oct-ascii.h (read_ascii_data): Likewise.
 
+	Rearrange octave_value class hierarchy so that rep is a pointer
+	an octave_base_value object and the octave_base_value class
+	stores the reference count.  Virtualness now goes with the
+	octave_base_value class, not the octave_value class.
+
+	* ops.h, ov-base-int.cc, ov-base-int.h, ov-base-mat.h,
+	ov-base-scalar.h, ov-base-sparse.h, ov-base.cc, ov-base.h,
+	ov-bool-mat.cc, ov-bool-mat.h, ov-bool-sparse.cc,
+	ov-bool-sparse.h, ov-bool.cc, ov-bool.h, ov-cell.cc, ov-cell.h,
+	ov-ch-mat.h, ov-colon.h, ov-complex.cc, ov-complex.h,
+	ov-cs-list.h, ov-cx-mat.cc, ov-cx-mat.h, ov-cx-sparse.cc,
+	ov-cx-sparse.h, ov-fcn-handle.h, ov-fcn-inline.h, ov-fcn.cc,
+	ov-fcn.h, ov-intx.h, ov-list.cc, ov-list.h, ov-range.cc,
+	ov-range.h, ov-re-mat.cc, ov-re-mat.h, ov-re-sparse.cc,
+	ov-re-sparse.h, ov-scalar.h, ov-str-mat.cc, ov-str-mat.h,
+	ov-streamoff.h, ov-struct.cc, ov-struct.h, ov-type-conv.h,
+	ov-typeinfo.cc, ov-typeinfo.h, ov-va-args.h, ov.cc, ov.h,
+	variables.cc, DLD-FUNCTIONS/matrix_type.cc, DLD-FUNCTIONS/splu.cc,
+	OPERATORS/op-chm.cc: Cope with octave_value hierarchy changes
+	(apologies for the lack of detail).
+
+	* ov.cc (octave_value::nil_rep): Delete.
+	* ov.h (octave_value::nil_rep): Delete decl.
+
+	* ov-base.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA,
+	DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA, 
+	DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2,
+	DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA):
+	Move macro definitions here from ov.h.
+	(struct_indent, increment_struct_indent, decrement_struct_indent,
+	list_indent, increment_list_indent, decrement_list_indent):
+	Delete decls.
+
+	* ov-base.cc. ov-base.h (do_index_op, ndims, all, any,
+	convert_to_str, print_with_name, numeric_assign,
+	reset_indent_level, increment_indent_level,
+	decrement_indent_level, current_print_indent_level, newline,
+	indent, reset): Move member functions here from octave_value class.
+	(count, curr_print_indent_level, beginning_of_line):
+	Move data members here from octave_value class.
+	(gripe_indexed_assignment, gripe_assign_conversion_failed,
+	gripe_no_conversion): Move here from ov.cc.
+
+	* ov.h (class octave_xvalue): Delete.
+	(octave_value::octave_value (const octave_xvalue&)): Delete.
+	(anonymous union): Delete.
+	(octave_value::rep): Now a pointer to octave_base_value instead of
+	octave_value.
+
+	(octave_value::internal_rep): Return pointer to octave_base_value,
+	not octave_value.
+	
 2006-04-11  John W. Eaton  <jwe@octave.org>
 
 	* pt-assign.cc (tree_simple_assignment::rvalue,

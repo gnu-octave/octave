@@ -54,10 +54,10 @@ public:
 
   ~octave_base_int_matrix (void) { }
 
-  octave_value *clone (void) const { return new octave_base_int_matrix (*this); }
-  octave_value *empty_clone (void) const { return new octave_base_int_matrix (); }
+  octave_base_value *clone (void) const { return new octave_base_int_matrix (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_base_int_matrix (); }
 
-  octave_value *try_narrowing_conversion (void);
+  octave_base_value *try_narrowing_conversion (void);
 
   bool is_real_type (void) const { return true; }
 
@@ -98,10 +98,10 @@ public:
 
   ~octave_base_int_scalar (void) { }
 
-  octave_value *clone (void) const { return new octave_base_int_scalar (*this); }
-  octave_value *empty_clone (void) const { return new octave_base_int_scalar (); }
+  octave_base_value *clone (void) const { return new octave_base_int_scalar (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_base_int_scalar (); }
 
-  octave_value *try_narrowing_conversion (void) { return 0; }
+  octave_base_value *try_narrowing_conversion (void) { return 0; }
 
   bool is_real_type (void) const { return true; }
 

@@ -56,8 +56,8 @@ public:
 
   ~octave_base_scalar (void) { }
 
-  octave_value *clone (void) const { return new octave_base_scalar (*this); }
-  octave_value *empty_clone (void) const { return new octave_base_scalar (); }
+  octave_base_value *clone (void) const { return new octave_base_scalar (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_base_scalar (); }
 
   octave_value squeeze (void) const { return scalar; }
 

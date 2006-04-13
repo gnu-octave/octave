@@ -213,7 +213,8 @@ octave_cell::subsasgn (const std::string& type,
 	      else
 		octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	    retval = octave_value (this, count + 1);
+	    count++;
+	    retval = octave_value (this);
 	  }
 	  break;
 
@@ -223,7 +224,8 @@ octave_cell::subsasgn (const std::string& type,
 
 	    octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	    retval = octave_value (this, count + 1);
+	    count++;
+	    retval = octave_value (this);
 	  }
 	  break;
 
@@ -514,7 +516,7 @@ octave_cell::load_ascii (std::istream& is)
 
 		  // recurse to read cell elements
 		  std::string nm = read_ascii_data (is, std::string (), 
-						    dummy, t2, count);
+						    dummy, t2, i);
 
 		  if (nm == CELL_ELT_TAG)
 		    {
@@ -563,7 +565,7 @@ octave_cell::load_ascii (std::istream& is)
 
 			  // recurse to read cell elements
 			  std::string nm = read_ascii_data (is, std::string (),
-							    dummy, t2, count);
+							    dummy, t2, i);
 
 			  if (nm == CELL_ELT_TAG)
 			    {

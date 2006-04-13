@@ -112,7 +112,7 @@ matrix type.\n\
 	  if (nargin == 1)
 	    {
 	      SparseType mattyp;
-	      const octave_value& rep = args(0).get_rep ();
+	      const octave_base_value& rep = args(0).get_rep ();
 
 	      if (args(0).type_name () == "sparse complex matrix" ) 
 		{

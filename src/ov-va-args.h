@@ -56,8 +56,8 @@ public:
 
   ~octave_all_va_args (void) { }
 
-  octave_value *clone (void) const { return new octave_all_va_args (*this); }
-  octave_value *empty_clone (void) const { return new octave_all_va_args (); }
+  octave_base_value *clone (void) const { return new octave_all_va_args (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_all_va_args (); }
 
   bool is_defined (void) const { return true; }
 

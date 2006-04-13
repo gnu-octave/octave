@@ -2554,10 +2554,10 @@ Print raw symbol table statistices.\n\
 	  if (fsr && fsr->is_user_function ())
 	    {
 	      octave_value tmp = fsr->def ();
-	      const octave_value& rep = tmp.get_rep ();
+	      const octave_base_value& rep = tmp.get_rep ();
 	      
 	      const octave_user_function& fcn
-		= static_cast<const octave_user_function&> (rep);
+		= dynamic_cast<const octave_user_function&> (rep);
 
 	      fcn.print_symtab_info (octave_stdout);
 	    }

@@ -46,24 +46,24 @@ DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
 
-static octave_value *
-default_numeric_conversion_function (const octave_value& a)
+static octave_base_value *
+default_numeric_conversion_function (const octave_base_value& a)
 {
   CAST_CONV_ARG (const octave_range&);
 
   return new octave_matrix (v.matrix_value ());
 }
 
-type_conv_fcn
+octave_base_value::type_conv_fcn
 octave_range::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;
 }
 
-octave_value *
+octave_base_value *
 octave_range::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  octave_base_value *retval = 0;
 
   switch (range.nelem ())
     {

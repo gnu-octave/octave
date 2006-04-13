@@ -77,8 +77,8 @@ public:
 
   ~octave_char_matrix (void) { }
 
-  octave_value *clone (void) const { return new octave_char_matrix (*this); }
-  octave_value *empty_clone (void) const { return new octave_char_matrix (); }
+  octave_base_value *clone (void) const { return new octave_char_matrix (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_char_matrix (); }
 
   idx_vector index_vector (void) const
     { return idx_vector (array_value (true)); }

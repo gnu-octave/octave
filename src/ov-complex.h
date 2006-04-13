@@ -64,16 +64,16 @@ public:
 
   ~octave_complex (void) { }
 
-  octave_value *clone (void) const { return new octave_complex (*this); }
+  octave_base_value *clone (void) const { return new octave_complex (*this); }
 
   // We return an octave_complex_matrix object here instead of an
   // octave_complex object so that in expressions like A(2,2,2) = 2
   // (for A previously undefined), A will be empty instead of a 1x1
   // object.
-  octave_value *empty_clone (void) const
+  octave_base_value *empty_clone (void) const
     { return new octave_complex_matrix (); }
 
-  octave_value *try_narrowing_conversion (void);
+  octave_base_value *try_narrowing_conversion (void);
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 

@@ -1,3 +1,8 @@
+2006-04-14  Bill Denney  <denney@seas.upenn.edu>
+
+ 	* strings/strcmpi.m: Return false instead of error if args are not
+	char or cellstr.
+
 2006-04-10  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/dir.m: Ensure that returned structure array is

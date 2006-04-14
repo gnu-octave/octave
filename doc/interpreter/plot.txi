@@ -319,6 +319,8 @@ time something as minor as an axis label changes.
 The command @code{shg} is equivalent to executing @code{replot}.
 @end deffn
 
+@DOCSTRING(automatic_replot)
+
 Note that NaN values in the plot data are automatically omitted, and
 Inf values are converted to a very large value before calling gnuplot.
 

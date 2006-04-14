@@ -283,7 +283,7 @@ Default value: @code{"> "}.
 Default value: @code{"+ "}.
 
 @item automatic_replot
-@xref{Two-Dimensional Plotting}.
+@xref{Low-Level plotting commands}.
 
 Default value: 0.
 

@@ -1,7 +1,7 @@
 2006-04-13  John W. Eaton  <jwe@octave.org>
 
-	* Makefile.in (lex.o parse.o pic/lex.o pic/parse.o): Omit
-	-Wold-style-cast from CXXFLAGS.
+	* Makefile.in (lex.o parse.o __gnuplot_raw__.o, pic/parse.o
+	pic/__gnuplot_raw__.o):	Omit -Wold-style-cast from CXXFLAGS.
 
 	* ls-mat5.cc (READ_INTEGER_DATA): Allocate local buffer to avoid
 	pointer tricks.

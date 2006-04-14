@@ -121,20 +121,20 @@ read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt,
   // being able to read another mopt value should not result in an
   // error.
 
-  is.read (X_CAST (char *, &mopt), 4);
+  is.read (reinterpret_cast<char *> (&mopt), 4);
   if (! is)
     return 1;
 
-  if (! is.read (X_CAST (char *, &nr), 4))
+  if (! is.read (reinterpret_cast<char *> (&nr), 4))
     goto data_read_error;
 
-  if (! is.read (X_CAST (char *, &nc), 4))
+  if (! is.read (reinterpret_cast<char *> (&nc), 4))
     goto data_read_error;
 
-  if (! is.read (X_CAST (char *, &imag), 4))
+  if (! is.read (reinterpret_cast<char *> (&imag), 4))
     goto data_read_error;
 
-  if (! is.read (X_CAST (char *, &len), 4))
+  if (! is.read (reinterpret_cast<char *> (&len), 4))
     goto data_read_error;
 
 // If mopt is nonzero and the byte order is swapped, mopt will be
@@ -323,7 +323,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   {
     OCTAVE_LOCAL_BUFFER (char, name, len+1);
     name[len] = '\0';
-    if (! is.read (X_CAST (char *, name), len))
+    if (! is.read (name, len))
       goto data_read_error;
     retval = name;
 
@@ -399,25 +399,25 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 
-  os.write (X_CAST (char *, &mopt), 4);
+  os.write (reinterpret_cast<char *> (&mopt), 4);
   
   FOUR_BYTE_INT nr = tc.rows ();
-  os.write (X_CAST (char *, &nr), 4);
+  os.write (reinterpret_cast<char *> (&nr), 4);
 
   FOUR_BYTE_INT nc = tc.columns ();
-  os.write (X_CAST (char *, &nc), 4);
+  os.write (reinterpret_cast<char *> (&nc), 4);
 
   octave_idx_type len = nr * nc;
 
   FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
-  os.write (X_CAST (char *, &imag), 4);
+  os.write (reinterpret_cast<char *> (&imag), 4);
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it.
 
   FOUR_BYTE_INT name_len = name.length () + 1;
 
-  os.write (X_CAST (char *, &name_len), 4);
+  os.write (reinterpret_cast<char *> (&name_len), 4);
   os << name << '\0';
 
   if (tc.is_string ())
@@ -439,7 +439,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 	  for (octave_idx_type j = 0; j < ncol; j++)
 	    buf[j*nrow+i] = static_cast<double> (*s++ & 0x00FF);
        	}
-      os.write ((char *)buf, nrow*ncol*sizeof(double));
+      os.write (reinterpret_cast<char *> (buf), nrow*ncol*sizeof(double));
       
       unwind_protect::run_frame ("save_mat_binary_data");
     }
@@ -452,31 +452,31 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       for (octave_idx_type i = 0; i < nel; i++)
 	{
 	  double x = base + i * inc;
-	  os.write (X_CAST (char *, &x), 8);
+	  os.write (reinterpret_cast<char *> (&x), 8);
 	}
     }
   else if (tc.is_real_scalar ())
     {
       double tmp = tc.double_value ();
-      os.write (X_CAST (char *, &tmp), 8);
+      os.write (reinterpret_cast<char *> (&tmp), 8);
     }
   else if (tc.is_real_matrix ())
     {
       Matrix m = tc.matrix_value ();
-      os.write (X_CAST (char *, m.data ()), 8 * len);
+      os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
     }
   else if (tc.is_complex_scalar ())
     {
       Complex tmp = tc.complex_value ();
-      os.write (X_CAST (char *, &tmp), 16);
+      os.write (reinterpret_cast<char *> (&tmp), 16);
     }
   else if (tc.is_complex_matrix ())
     {
       ComplexMatrix m_cmplx = tc.complex_matrix_value ();
       Matrix m = ::real (m_cmplx);
-      os.write (X_CAST (char *, m.data ()), 8 * len);
+      os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
       m = ::imag (m_cmplx);
-      os.write (X_CAST (char *, m.data ()), 8 * len);
+      os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
     }
   else
     gripe_wrong_type_arg ("save", tc, false);

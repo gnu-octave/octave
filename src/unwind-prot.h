@@ -122,7 +122,12 @@ public:
   unwind_protect::save_str (&(s), (s))
 
 #define unwind_protect_ptr(p) \
-  unwind_protect::save_ptr (X_CAST (void **, &(p)), X_CAST (void *, (p)))
+  unwind_protect::save_ptr (reinterpret_cast<void **> (&(p)), \
+                            reinterpret_cast<void *> (p))
+
+#define unwind_protect_const_ptr(p) \
+  unwind_protect::save_ptr (const_cast<void **> (reinterpret_cast<const void **> (&(p))), \
+                            const_cast<void *> (reinterpret_cast<const void *> (p)))
 
 #endif
 

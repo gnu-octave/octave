@@ -5862,7 +5862,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
 	    }
 	  else
 	    {
-	      cm->print = (int)spu + 2;
+	      cm->print = static_cast<int> (spu) + 2;
 	      cm->print_function =&SparseCholPrint;
 	    }
 
@@ -6093,7 +6093,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	    }
 	  else
 	    {
-	      cm->print = (int)spu + 2;
+	      cm->print = static_cast<int> (spu) + 2;
 	      cm->print_function =&SparseCholPrint;
 	    }
 
@@ -6372,7 +6372,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 	    }
 	  else
 	    {
-	      cm->print = (int)spu + 2;
+	      cm->print = static_cast<int> (spu) + 2;
 	      cm->print_function =&SparseCholPrint;
 	    }
 
@@ -6623,7 +6623,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	    }
 	  else
 	    {
-	      cm->print = (int)spu + 2;
+	      cm->print = static_cast<int> (spu) + 2;
 	      cm->print_function =&SparseCholPrint;
 	    }
 

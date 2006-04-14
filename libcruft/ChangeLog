@@ -1,3 +1,9 @@
+2006-04-13  John W. Eaton  <jwe@octave.org>
+
+	* misc/quit.h BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1,
+	END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE): Omit unnecessary casts.
+	* misc/f77-fcn.h (F77_XFCN, F77_CHAR_ARG_LEN): Likewise.
+
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* ranlib/wrap.f (dgenexp, dgengam, dignpoi): New functions.

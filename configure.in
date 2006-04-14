@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.506 $)
+AC_REVISION($Revision: 1.507 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1647,14 +1647,6 @@ AH_BOTTOM([
 #define GCC_ATTR_NORETURN
 #define GCC_ATTR_UNUSED
 #endif
-
-#define CONST_CAST(T, E) (T) (E)
-
-#define DYNAMIC_CAST(T, E) (T) (E)
-
-#define REINTERPRET_CAST(T, E) (T) (E)
-
-#define STATIC_CAST(T, E) (T) (E)
 
 #define X_CAST(T, E) (T) (E)
 

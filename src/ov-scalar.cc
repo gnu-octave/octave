@@ -206,10 +206,10 @@ octave_scalar::load_ascii (std::istream& is)
 bool 
 octave_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
-  char tmp = (char) LS_DOUBLE;
-  os.write (X_CAST (char *, &tmp), 1);
+  char tmp = LS_DOUBLE;
+  os.write (reinterpret_cast<char *> (&tmp), 1);
   double dtmp = double_value ();
-  os.write (X_CAST (char *, &dtmp), 8);
+  os.write (reinterpret_cast<char *> (&dtmp), 8);
 
   return true;
 }
@@ -219,11 +219,11 @@ octave_scalar::load_binary (std::istream& is, bool swap,
 			    oct_mach_info::float_format fmt)
 {
   char tmp;
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     return false;
 
   double dtmp;
-  read_doubles (is, &dtmp, X_CAST (save_type, tmp), 1, swap, fmt);
+  read_doubles (is, &dtmp, static_cast<save_type> (tmp), 1, swap, fmt);
   if (error_state || ! is)
     return false;
 

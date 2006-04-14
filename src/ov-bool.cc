@@ -162,7 +162,7 @@ bool
 octave_bool::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
   char tmp = (scalar ? 1 : 0);
-  os.write (X_CAST (char *, &tmp), 1);
+  os.write (reinterpret_cast<char *> (&tmp), 1);
 
   return true;
 }
@@ -172,7 +172,7 @@ octave_bool::load_binary (std::istream& is, bool /* swap */,
 			  oct_mach_info::float_format /* fmt */)
 {
   char tmp;
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     return false;
   scalar = (tmp ? 1 : 0);
   return true;

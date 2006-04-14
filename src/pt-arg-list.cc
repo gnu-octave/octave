@@ -171,7 +171,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
     {
       unwind_protect::begin_frame ("convert_to_const_vector");
 
-      unwind_protect_ptr (indexed_object);
+      unwind_protect_const_ptr (indexed_object);
 
       indexed_object = object;
     }

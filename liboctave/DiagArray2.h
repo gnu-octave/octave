@@ -94,7 +94,7 @@ private:
     // taking the address of a Proxy.  Maybe it should be implemented
     // by means of a companion function in the DiagArray2 class.
 
-    T *operator& () const { assert (0); return (T *) 0; }
+    T *operator& () const { assert (0); return 0; }
 
     octave_idx_type i;
     octave_idx_type j;

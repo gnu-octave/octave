@@ -288,7 +288,7 @@ expand_char_class (const std::string& s)
       unsigned char c = s[i++];
 
       if (c == '-' && i > 1 && i < len
-	  && (unsigned char) s[i-2] <= (unsigned char) s[i])
+	  && static_cast<unsigned char> (s[i-2]) <= static_cast<unsigned char> (s[i]))
 	{
 	  // Add all characters from the range except the first (we
 	  // already added it below).
@@ -990,14 +990,14 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 	  if (c == '\n')
 	    {
 	      if (! strip_newline)
-		buf << (char) c;
+		buf << static_cast<char> (c);
 	      else
 		newline_stripped = 1;
 
 	      break;
 	    }
 	  else
-	    buf << (char) c;
+	    buf << static_cast<char> (c);
 
 	  if (max_len > 0 && char_count == max_len)
 	    break;
@@ -1454,7 +1454,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
   int n = 0; \
  \
   while (is && n < width && (c = is.get ()) != EOF) \
-    tbuf[n++] = (char) c; \
+    tbuf[n++] = static_cast<char> (c);		    \
  \
   tbuf[n] = '\0'; \
  \
@@ -1548,13 +1548,13 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 	    { \
 	      while (is && (c = is.get ()) != EOF \
 		     && char_class.find (c) != NPOS) \
-		buf << (char) c; \
+		buf << static_cast<char> (c);	     \
 	    } \
 	  else \
 	    { \
 	      while (is && (c = is.get ()) != EOF \
 		     && char_class.find (c) == NPOS) \
-		buf << (char) c; \
+		buf << static_cast<char> (c);		     \
 	    } \
  \
 	  if (c != EOF) \

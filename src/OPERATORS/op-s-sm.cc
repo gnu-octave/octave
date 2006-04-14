@@ -44,7 +44,7 @@ DEFBINOP_OP (mul, scalar, sparse_matrix, *)
 
 DEFBINOP (div, scalar, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, octave_sparse_matrix&);
+  CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_matrix&);
 
   SparseType typ = v2.sparse_type ();
   Matrix m1 = Matrix (1, 1, v1.double_value ());

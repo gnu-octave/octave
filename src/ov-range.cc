@@ -326,15 +326,15 @@ octave_range::load_ascii (std::istream& is)
 bool 
 octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
-  char tmp = (char) LS_DOUBLE;
-  os.write (X_CAST (char *, &tmp), 1);
+  char tmp = LS_DOUBLE;
+  os.write (reinterpret_cast<char *> (&tmp), 1);
   Range r = range_value ();
   double bas = r.base ();
   double lim = r.limit ();
   double inc = r.inc ();
-  os.write (X_CAST (char *, &bas), 8);
-  os.write (X_CAST (char *, &lim), 8);
-  os.write (X_CAST (char *, &inc), 8);
+  os.write (reinterpret_cast<char *> (&bas), 8);
+  os.write (reinterpret_cast<char *> (&lim), 8);
+  os.write (reinterpret_cast<char *> (&inc), 8);
 
   return true;
 }
@@ -344,18 +344,18 @@ octave_range::load_binary (std::istream& is, bool swap,
 			   oct_mach_info::float_format /* fmt */)
 {
   char tmp;
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     return false;
   double bas, lim, inc;
-  if (! is.read (X_CAST (char *, &bas), 8))
+  if (! is.read (reinterpret_cast<char *> (&bas), 8))
     return false;
   if (swap)
     swap_bytes<8> (&bas);
-  if (! is.read (X_CAST (char *, &lim), 8))
+  if (! is.read (reinterpret_cast<char *> (&lim), 8))
     return false;
   if (swap)
     swap_bytes<8> (&lim);
-  if (! is.read (X_CAST (char *, &inc), 8))
+  if (! is.read (reinterpret_cast<char *> (&inc), 8))
     return false;
   if (swap)
     swap_bytes<8> (&inc);

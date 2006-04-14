@@ -92,14 +92,14 @@ int_array2_to_matrix (const Array2<octave_idx_type>& a)
       {
 	OCTAVE_QUIT;
 
-	retval(i,j) = (double) (a(i,j));
+	retval(i,j) = static_cast<double> (a(i,j));
       }
 
   return retval;
 }
 
 static inline NDArray
-int_arrayN_to_array (const ArrayN<int>& a)
+int_arrayN_to_array (const ArrayN<octave_idx_type>& a)
 {
   dim_vector dv = a.dims ();
   int nel = dv.numel ();
@@ -110,7 +110,7 @@ int_arrayN_to_array (const ArrayN<int>& a)
     {
       OCTAVE_QUIT;
       
-      retval(i) = (double) (a(i));
+      retval(i) = static_cast<double> (a(i));
     }
 
   return retval;
@@ -155,7 +155,7 @@ do_bessel (enum bessel_type type, const char *fn,
 		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 		      if (nargout > 1)
-			retval(1) = (double) ierr;
+			retval(1) = static_cast<double> (ierr);
 
 		      retval(0) = result;
 		    }
@@ -463,12 +463,10 @@ return @code{NaN}.\n\
 
       if (nargin > 1)
 	{
-	  double d_kind = args(0).double_value ();
+	  kind = args(0).int_value ();
 
 	  if (! error_state)
 	    {
-	      kind = (int) d_kind;
-
 	      if (kind < 0 || kind > 3)
 		error ("airy: expecting K = 0, 1, 2, or 3");
 	    }	      

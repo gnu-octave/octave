@@ -433,11 +433,11 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 
   // Use negative value for ndims to differentiate with old format!!
   FOUR_BYTE_INT tmp = - d.length();
-  os.write (X_CAST (char *, &tmp), 4);
+  os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < d.length (); i++)
     {
       tmp = d(i);
-      os.write (X_CAST (char *, &tmp), 4);
+      os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   NDArray m = array_value ();
@@ -471,7 +471,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 {
   char tmp;
   FOUR_BYTE_INT mdims;
-  if (! is.read (X_CAST (char *, &mdims), 4))
+  if (! is.read (reinterpret_cast<char *> (&mdims), 4))
     return false;
   if (swap)
     swap_bytes<4> (&mdims);
@@ -484,7 +484,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 
       for (int i = 0; i < mdims; i++)
 	{
-	  if (! is.read (X_CAST (char *, &di), 4))
+	  if (! is.read (reinterpret_cast<char *> (&di), 4))
 	    return false;
 	  if (swap)
 	    swap_bytes<4> (&di);
@@ -503,12 +503,12 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 	  dv(0) = 1;
 	}
 
-      if (! is.read (X_CAST (char *, &tmp), 1))
+      if (! is.read (reinterpret_cast<char *> (&tmp), 1))
 	return false;
 
       NDArray m(dv);
       double *re = m.fortran_vec ();
-      read_doubles (is, re, X_CAST (save_type, tmp), dv.numel (), swap, fmt);
+      read_doubles (is, re, static_cast<save_type> (tmp), dv.numel (), swap, fmt);
       if (error_state || ! is)
 	return false;
       matrix = m;
@@ -517,16 +517,16 @@ octave_matrix::load_binary (std::istream& is, bool swap,
     {
       FOUR_BYTE_INT nr, nc;
       nr = mdims;
-      if (! is.read (X_CAST (char *, &nc), 4))
+      if (! is.read (reinterpret_cast<char *> (&nc), 4))
 	return false;
       if (swap)
 	swap_bytes<4> (&nc);
-      if (! is.read (X_CAST (char *, &tmp), 1))
+      if (! is.read (reinterpret_cast<char *> (&tmp), 1))
 	return false;
       Matrix m (nr, nc);
       double *re = m.fortran_vec ();
       octave_idx_type len = nr * nc;
-      read_doubles (is, re, X_CAST (save_type, tmp), len, swap, fmt);
+      read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
       if (error_state || ! is)
 	return false;
       matrix = m;

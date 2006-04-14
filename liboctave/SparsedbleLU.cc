@@ -174,8 +174,8 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
 
 	      octave_idx_type do_recip;
 	      status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj, Ltx,
-					       Up, Uj, Ux, p, q, (double *) NULL,
-					       &do_recip, (double *) NULL, 
+					       Up, Uj, Ux, p, q, NULL,
+					       &do_recip, NULL, 
 					       Numeric) ;
 
 	      UMFPACK_DNAME (free_numeric) (&Numeric) ;
@@ -371,10 +371,8 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 		  octave_idx_type do_recip;
 		  status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj,
 						   Ltx, Up, Uj, Ux, p, q, 
-						   (double *) NULL,
-						   &do_recip, 
-						   (double *) NULL, 
-						   Numeric) ;
+						   NULL, &do_recip, 
+						   NULL, Numeric) ;
 
 		  UMFPACK_DNAME (free_numeric) (&Numeric) ;
 

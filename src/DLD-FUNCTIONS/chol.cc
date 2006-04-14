@@ -118,7 +118,7 @@ r' * r = a.\n\
   return retval;
 }
 
-DEFUN_DLD (cholinv, args, nargout,
+DEFUN_DLD (cholinv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cholinv (@var{a})\n\
 Use the Cholesky factorization to compute the inverse of the\n\
@@ -179,7 +179,7 @@ symmetric positive definite matrix @var{a}.\n\
   return retval;
 }
 
-DEFUN_DLD (chol2inv, args, nargout,
+DEFUN_DLD (chol2inv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} chol2inv (@var{u})\n\
 Invert a symmetric, positive definite square matrix from its Cholesky\n\

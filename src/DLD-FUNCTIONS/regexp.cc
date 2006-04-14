@@ -313,18 +313,10 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       if (err)
 	{
 	  int len = regerror(err, &compiled, NULL, 0);
-	  char *errmsg = (char *)malloc(len);
-	  if (errmsg)
-	    {
-	      regerror(err, &compiled, errmsg, len);
-	      error("%s: %s in pattern (%s)", nm.c_str(), errmsg, 
-		    pattern.c_str());
-	      free(errmsg);
-	    }
-	  else
-	    {
-	      error("out of memory");
-	    }
+	  OCTAVE_LOCAL_BUFFER (char, errmsg, len);
+	  regerror(err, &compiled, errmsg, len);
+	  error("%s: %s in pattern (%s)", nm.c_str(), errmsg, 
+		pattern.c_str());
 	  regfree(&compiled);
 	  return retval;
 	}

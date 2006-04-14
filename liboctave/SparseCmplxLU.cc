@@ -86,14 +86,16 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   const Complex *Ax = a.data ();
 
   UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai,
-			    X_CAST (const double *, Ax), NULL, 1, control);
+				 reinterpret_cast<const double *> (Ax),
+				 NULL, 1, control);
 
   void *Symbolic;
   Matrix Info (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
   int status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai, 
-				     X_CAST (const double *, Ax), NULL, NULL,
-				     &Symbolic, control, info);
+					  reinterpret_cast<const double *> (Ax),
+					  NULL, NULL,
+					  &Symbolic, control, info);
 
   if (status < 0)
     {
@@ -111,8 +113,9 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
       void *Numeric;
       status = UMFPACK_ZNAME (numeric) (Ap, Ai,
-				   X_CAST (const double *, Ax), NULL, 
-				   Symbolic, &Numeric, control, info) ;
+					reinterpret_cast<const double *> (Ax),
+					NULL, Symbolic, &Numeric, control,
+					info);
       UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
 
       cond = Info (UMFPACK_RCOND);
@@ -177,10 +180,11 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
 	      octave_idx_type do_recip;
 	      status = UMFPACK_ZNAME (get_numeric) (Ltp, Ltj,
-					       X_CAST (double *, Ltx), NULL, Up, Uj,
-					       X_CAST (double *, Ux), NULL, p, 
-					       q, NULL, NULL, &do_recip,
-					       NULL, Numeric) ;
+						    reinterpret_cast<double *> (Ltx),
+						    NULL, Up, Uj,
+						    reinterpret_cast <double *> (Ux),
+						    NULL, p, q, NULL, NULL,
+						    &do_recip, NULL, Numeric);
 
 	      UMFPACK_ZNAME (free_numeric) (&Numeric) ;
 
@@ -197,12 +201,12 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
 		  UMFPACK_ZNAME (report_matrix) (nr, n_inner,
 					    Lfact.cidx (), Lfact.ridx (), 
-					    X_CAST (double *, Lfact.data()), 
+					    reinterpret_cast<double *> (Lfact.data()), 
 					    NULL, 1, control);
 
 		  UMFPACK_ZNAME (report_matrix) (n_inner, nc,
 					    Ufact.cidx (), Ufact.ridx (), 
-					    X_CAST (double *, Ufact.data()), 
+					    reinterpret_cast<double *> (Ufact.data()), 
 					    NULL, 1, control);
 		  UMFPACK_ZNAME (report_perm) (nr, p, control);
 		  UMFPACK_ZNAME (report_perm) (nc, q, control);
@@ -278,7 +282,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
       const Complex *Ax = a.data ();
 
       UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai, 
-				X_CAST (const double *, Ax), NULL,
+				reinterpret_cast<const double *> (Ax), NULL,
 				1, control);
 
       void *Symbolic;
@@ -295,7 +299,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	  qinit [i] = static_cast<octave_idx_type> (Qinit (i));
 
 	status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai, 
-				       X_CAST (const double *, Ax),
+				       reinterpret_cast<const double *> (Ax),
 				       NULL, qinit, &Symbolic, control, 
 				       info);
       } while (0);
@@ -316,7 +320,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
 	  void *Numeric;
 	  status = UMFPACK_ZNAME (numeric) (Ap, Ai, 
-				       X_CAST (const double *, Ax), NULL,
+				       reinterpret_cast<const double *> (Ax), NULL,
 				       Symbolic, &Numeric, control, info) ;
 	  UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
 
@@ -383,9 +387,9 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 		  octave_idx_type do_recip;
 		  status = 
 		    UMFPACK_ZNAME (get_numeric) (Ltp, Ltj, 
-					    X_CAST (double *, Ltx),
+					    reinterpret_cast<double *> (Ltx),
 					    NULL, Up, Uj,
-					    X_CAST (double *, Ux), 
+					    reinterpret_cast<double *> (Ux), 
 					    NULL, p, q, NULL, NULL, 
 					    &do_recip, NULL, Numeric) ;
 
@@ -406,13 +410,13 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 		      UMFPACK_ZNAME (report_matrix) (nr, n_inner, 
 						Lfact.cidx (), 
 						Lfact.ridx (), 
-						X_CAST (double *, Lfact.data()), 
+						reinterpret_cast<double *> (Lfact.data()), 
 						NULL, 1, control);
 
 		      UMFPACK_ZNAME (report_matrix) (n_inner, nc, 
 						Ufact.cidx (), 
 						Ufact.ridx (), 
-						X_CAST (double *, Ufact.data()), 
+						reinterpret_cast<double *> (Ufact.data()), 
 						NULL, 1, control);
 		      UMFPACK_ZNAME (report_perm) (nr, p, control);
 		      UMFPACK_ZNAME (report_perm) (nc, q, control);

@@ -1210,8 +1210,8 @@ symbol_table::name_list (const string_vector& pats, bool sort,
 static int
 maybe_list_cmp_fcn (const void *a_arg, const void *b_arg)
 {
-  const symbol_record *a = *(X_CAST (const symbol_record **, a_arg));
-  const symbol_record *b = *(X_CAST (const symbol_record **, b_arg));
+  const symbol_record *a = static_cast<const symbol_record *> (a_arg);
+  const symbol_record *b = static_cast<const symbol_record *> (b_arg);
 
   std::string a_nm = a->name ();
   std::string b_nm = b->name ();

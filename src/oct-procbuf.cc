@@ -241,7 +241,7 @@ kluge_procbuf_delay (void)
       && ! xisnan (val))
     {
       int ival = NINT (val);
-      if (ival >= 0 && (double) ival == val)
+      if (ival >= 0 && static_cast<double> (ival) == val)
 	{
 	  Vkluge_procbuf_delay = ival;
 	  return 0;

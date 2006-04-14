@@ -1,5 +1,161 @@
 2006-04-13  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (lex.o parse.o pic/lex.o pic/parse.o): Omit
+	-Wold-style-cast from CXXFLAGS.
+
+	* ls-mat5.cc (READ_INTEGER_DATA): Allocate local buffer to avoid
+	pointer tricks.
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp): Use OCTAVE_LOCAL_BUFFER
+	instead of allocting memory with malloc.
+
+	* DLD-FUNCTIONS/sparse.cc (Fsparse): Use octave_value extractors
+	instead of using get_rep.
+
+	* DLD-FUNCTIONS/dispatch.cc (dispatch_record): Use dynamic_cast,
+	not reinterpret_cast.
+
+	* DLD-FUNCTIONS/besselj.cc (Fairy): Use int_value instead of
+	double_value and cast to extract kind arg.
+	(int_arrayN_to_array): Arg is ArrayN<octave_idx_type>, not ArrayN<int>.
+
+	* OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc,
+	OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc,
+	OPERATORS/op-m-scm.cc, OPERATORS/op-m-sm.cc,
+	OPERATORS/op-s-scm.cc, OPERATORS/op-s-sm.cc,
+	OPERATORS/op-scm-cm.cc, OPERATORS/op-scm-cs.cc,
+	OPERATORS/op-scm-m.cc, OPERATORS/op-scm-s.cc,
+	OPERATORS/op-scm-scm.cc, OPERATORS/op-scm-sm.cc,
+	OPERATORS/op-sm-cm.cc, OPERATORS/op-sm-cs.cc,
+	OPERATORS/op-sm-m.cc, OPERATORS/op-sm-s.cc,
+	OPERATORS/op-sm-scm.cc, OPERATORS/op-sm-sm.cc: No need to cast
+	away const just to cache sparse type.
+	* ov-base-sparse.h (octave_base_sparse::typ): Now mutable.
+	(octave_base_sparse::sparse_type): Now const.
+
+	* OPERATORS/op-cm-scm.cc (DEFBINOP(div)): Explicitly cast args
+	here instead of using CAST_BINOP_ARGS.
+
+	* OPERATORS/op-streamoff.cc (STREAMOFF_COMP_OP): Second arg to 
+	CAST_BINOP_ARGS is also const.
+
+	* DLD-FUNCTIONS/chol.cc (Fcholinv, Fchol2inv): Eliminate nargout
+	arg to avoid unused variable warnings.
+
+	* unwind-prot.h, unwind-prot.cc (unwind_protect::save_bool,
+	unwind_protect::save_int, unwind_protect::save_str,
+	unwind_protect::save_ptr, unwind_protect::save_var):
+	Pointer args now const.
+	(unwind_protect_const_ptr): New macro.
+
+	* symtab.cc (maybe_list_cmp_fcn): Use static_cast instead of X_CAST.
+	* variables.cc (symbol_record_name_compare): Likewise.
+	* ls-mat5.cc (MAT5_DO_WRITE, save_mat5_binary_element): Likewise.
+
+	* ov-fcn-handle.cc (octave_fcn_handle::save_hdf5,
+	octave_fcn_handle::load_hdf5): Eliminate unnecessary casts.
+	* ov-fcn-inline.cc (octave_fcn_inline::save_hdf5,
+	octave_fcn_inline::load_hdf5): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::save_hdf5,
+	octave_char_matrix_str::load_hdf5): Likewise.
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix::save_hdf5,
+	octave_sparse_bool_matrix::load_hdf5): Likewise.
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::save_hdf5,
+	octave_sparse_complex_matrix::load_hdf5): Likewise.
+	* ov-re-sparse.cc (octave_sparse_matrix::save_hdf5,
+	octave_sparse_matrix::load_hdf5): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::save_ascii,
+	octave_char_matrix_str::load_ascii): Likewise.
+	* mappers.cc (xtoascii): Likewise.
+	* load-save.cc (read_binary_file_header, write_header): Likewise.
+	* parse.y (get_help_from_file, parse_fcn_file): Likewise.
+	* DLD-FUNCTIONS/rand.cc (do_rand): Likewise.
+	* ls-hdf5.cc (read_hdf5_data, hdf5_add_attr, save_hdf5_empty,
+	load_hdf5_empty add_hdf5_data): Likewise.
+	* ls-mat4.cc (read_mat_binary_data): Likewise.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+
+	* oct-stream.cc (expand_char_class, octave_base_stream::do_gets):
+	Use static_cast instead of C-style cast.
+	* oct-procbuf.cc (kluge_procbuf_delay): Likewise.
+	* parse.y (gobble_leading_white_space,: Likewise.
+	* DLD-FUNCTIONS/besselj.cc (int_array2_to_matrix,
+	int_arrayN_to_array): Likewise.
+	* DLD-FUNCTIONS/colamd.cc (Fcolamd, Fsymamd): Likewise.
+	* DLD-FUNCTIONS/ccolamd.cc (Fcsymamd): Likewise.
+	* pt-pr-code.cc (tree_print_code::print_comment_elt): Likewise.
+	* DLD-FUNCTIONS/besselj.cc (do_bessel): Likewise.
+	* DLD-FUNCTIONS/spchol.cc (Fsymfact): Likewise.
+	* DLD-FUNCTIONS/sparse.cc (sparse_find): Likewise.
+	* DLD-FUNCTIONS/sort.cc (FloatFlip): Likewise.
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Likewise.
+	* ls-mat5.cc (read_mat5_binary_element, OCTAVE_MAT5_INTEGER_READ,
+	read_mat5_binary_element, save_mat5_binary_element): Likewise.
+
+	* DLD-FUNCTIONS/splu.cc (Fspinv): Use dynamic_cast instead of
+	C-style cast.
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Likewise.
+
+	* DLD-FUNCTIONS/sort.cc (mx_sort): Use reinterpret_cast instead of
+	C-style cast.
+	* ls-mat5.cc (write_mat5_tag): Likewise.
+
+	* ov-typeinfo.h (octave_value_typeinfo::octave_value_typeinfo):
+	Eliminate unnecessary casts in constructor initializers.
+
+	* ops.h (CAST_CONV_ARG, CAST_UNOP_ARG, CAST_BINOP_ARGS,
+	DEFASSIGNANYOP_FN): Use C++ dynamic_cast instead of DYNAMIC_CAST macro.
+
+	* unwind-prot.h (unwind_protect_ptr): Use combination of
+	reinterpret_cast and const_cast instead of X_CAST.
+
+	* dynamic-ld.cc (loader::do_load): Use reinterpret_cast instead of
+	X_CAST.
+	* ov-base-int.cc (octave_base_int_matrix<T>::save_binary,
+	octave_base_int_matrix<T>::load_binary,
+	octave_base_int_scalar<T>::save_binary,
+	octave_base_int_scalar<T>::load_binary): Likewise.
+	* ov-bool-mat.cc (octave_bool_matrix::save_binary,
+	octave_bool_matrix::load_binary): Likewise.
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix::save_binary,
+	octave_sparse_bool_matrix::load_binary): Likewise.
+	* ov-bool.cc (octave_bool::save_binary, octave_bool::load_binary):
+	Likewise.
+	* ov-cell.cc (octave_cell::save_binary, octave_cell::load_binary):
+	Likewise.
+	* ov-complex.cc (octave_complex::save_binary,
+	octave_complex::load_binary): Likewise.
+	* ov-cx-mat.cc (octave_matrix::save_binary,
+	octave_matrix::load_binary): Likewise.
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::save_binary,
+	octave_sparse_complex_matrix::load_binary): Likewise.
+	* ov-fcn-handle.cc (octave_fcn_handle::save_binary,
+	octave_fcn_handle::load_binary): Likewise.
+	* ov-fcn-inline.cc (octave_fcn_inline::save_binary,
+	octave_fcn_inline::load_binary): Likewise.
+	* ov-list.cc (octave_list::save_binary, octave_list::load_binary):
+	Likewise.
+	* ov-range.cc (octave_range::save_binary, octave_range::load_binary): 
+	Likewise.
+	* ov-re-mat.cc (octave_matrix::save_binary,
+	octave_matrix::load_binary): Likewise.
+	* ov-re-sparse.cc (octave_sparse_matrix::save_binary,
+	octave_sparse_matrix::load_binary): Likewise.
+	* ov-scalar.cc (octave_scalar::save_binary,
+	octave_scalar::load_binary): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::save_binary,
+	(octave_char_matrix_str::load_binary): Likewise.
+	* ov-struct.cc (octave_struct::save_binary,
+	octave_struct::load_binary): Likewise.
+	* ls-oct-binary.cc (save_binary_data, read_binary_data): Likewise.
+	* ls-mat4.cc (read_mat_file_header, save_mat_binary_data): Likewise.
+	* ls-mat5.cc (read_mat5_tag, read_mat5_binary_element,
+	read_mat5_binary_element, read_mat5_binary_file_header,
+	MAT5_DO_WRITE, write_mat5_array, write_mat5_integer_data,
+	save_mat5_binary_element, READ_INTEGER_DATA): Likewise.
+
+2006-04-12  John W. Eaton  <jwe@octave.org>
+
 	* ov.h (OV_REP_TYPE): New macro.
 
 	* DLD-FUNCTIONS/sparse.cc (MINMAX_BODY): No need to cast arg1 to

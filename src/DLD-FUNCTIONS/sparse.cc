@@ -149,23 +149,17 @@ which case they are expanded to all have the same length\n\
 	 {
 	   if (use_complex) 
 	     {
-	       SparseComplexMatrix sm (((const octave_sparse_complex_matrix&) arg
-					.get_rep ())
-				       .sparse_complex_matrix_value ());
+	       SparseComplexMatrix sm = arg.sparse_complex_matrix_value ();
 	       retval = new octave_sparse_complex_matrix (sm);
 	     }
 	   else if (use_bool) 
 	     {
-	       SparseBoolMatrix sm (((const octave_sparse_bool_matrix&) arg
-					.get_rep ())
-				       .sparse_bool_matrix_value ());
+	       SparseBoolMatrix sm = arg.sparse_bool_matrix_value ();
 	       retval = new octave_sparse_bool_matrix (sm);
 	     }
 	   else
 	     {
-	       SparseMatrix sm (((const octave_sparse_matrix&) arg
-				 .get_rep ())
-				.sparse_matrix_value ());
+	       SparseMatrix sm = arg.sparse_matrix_value ();
 	       retval = new octave_sparse_matrix (sm);
 	     }
 	 }
@@ -380,10 +374,11 @@ DEFUN_DLD (full, args, ,
 {
   octave_value retval;
 
-  if (args.length() < 1) {
-     print_usage ("full");
-     return retval;
-  }
+  if (args.length() < 1)
+    {
+      print_usage ("full");
+      return retval;
+    }
 
   if (args(0).is_sparse_type ())
     {
@@ -430,18 +425,19 @@ sparse_find (const SparseMatrix& v)
 
   if (dv(0) == 1)
     {
-      retval(0)= I.transpose ();
-      retval(1)= J.transpose ();
-      retval(2)= S.transpose ();
+      retval(0) = I.transpose ();
+      retval(1) = J.transpose ();
+      retval(2) = S.transpose ();
     }
   else
     {
-      retval(0)= I;
-      retval(1)= J;
-      retval(2)= S;
+      retval(0) = I;
+      retval(1) = J;
+      retval(2) = S;
     }
-  retval(3)= (double) nr;
-  retval(4)= (double) nc;
+  retval(3) = static_cast<double> (nr);
+  retval(4) = static_cast<double> (nc);
+
   return retval;
 }
 
@@ -471,18 +467,19 @@ sparse_find (const SparseComplexMatrix& v)
 
   if (dv(0) == 1)
     {
-      retval(0)= I.transpose ();
-      retval(1)= J.transpose ();
-      retval(2)= S.transpose ();
+      retval(0) = I.transpose ();
+      retval(1) = J.transpose ();
+      retval(2) = S.transpose ();
     }
   else
     {
-      retval(0)= I;
-      retval(1)= J;
-      retval(2)= S;
+      retval(0) = I;
+      retval(1) = J;
+      retval(2) = S;
     }
-  retval(3)= (double) nr;
-  retval(4)= (double) nc;
+  retval(3) = static_cast<double> (nr);
+  retval(4) = static_cast<double> (nc);
+
   return retval;
 }
 
@@ -512,18 +509,19 @@ sparse_find (const SparseBoolMatrix& v)
 
   if (dv(0) == 1)
     {
-      retval(0)= I.transpose ();
-      retval(1)= J.transpose ();
-      retval(2)= S.transpose ();
+      retval(0) = I.transpose ();
+      retval(1) = J.transpose ();
+      retval(2) = S.transpose ();
     }
   else
     {
-      retval(0)= I;
-      retval(1)= J;
-      retval(2)= S;
+      retval(0) = I;
+      retval(1) = J;
+      retval(2) = S;
     }
-  retval(3)= (double) nr;
-  retval(4)= (double) nc;
+  retval(3) = static_cast<double> (nr);
+  retval(4) = static_cast<double> (nc);
+
   return retval;
 }
 

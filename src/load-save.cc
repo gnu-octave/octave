@@ -286,7 +286,7 @@ read_binary_file_header (std::istream& is, bool& swap,
 {
   const int magic_len = 10;
   char magic[magic_len+1];
-  is.read (X_CAST (char *, magic), magic_len);
+  is.read (magic, magic_len);
   magic[magic_len] = '\0';
 
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
@@ -301,7 +301,7 @@ read_binary_file_header (std::istream& is, bool& swap,
     }
 	
   char tmp = 0;
-  is.read (X_CAST (char *, &tmp), 1);
+  is.read (&tmp, 1);
 
   flt_fmt = mopt_digit_to_float_format (tmp);
 
@@ -324,7 +324,7 @@ check_gzip_magic (const std::string& fname)
   std::ifstream file (fname.c_str ());
   OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
-  if (file.read (X_CAST (char *, magic), 2) && magic[0] == 0x1f && 
+  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f && 
       magic[1] == 0x8b)
     retval = true;
 
@@ -1212,9 +1212,9 @@ write_header (std::ostream& os, load_save_format format)
 	oct_mach_info::float_format flt_fmt =
 	  oct_mach_info::native_float_format ();
 
-	char tmp = (char) float_format_to_mopt_digit (flt_fmt);
+	char tmp = static_cast<char> (float_format_to_mopt_digit (flt_fmt));
 
-	os.write (X_CAST (char *, &tmp), 1);
+	os.write (&tmp, 1);
       }
       break;
 
@@ -1232,7 +1232,7 @@ write_header (std::ostream& os, load_save_format format)
 	memset (headertext, ' ', 124);
 	// ISO 8601 format date
 	strftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
-		 OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt);
+		  OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt);
 
 	// The first pair of bytes give the version of the MAT file
 	// format.  The second pair of bytes form a magic number which
@@ -1266,7 +1266,7 @@ write_header (std::ostream& os, load_save_format format)
 #ifdef HAVE_HDF5
 	    if (format == LS_HDF5)
 	      {
-		hdf5_ofstream& hs = (hdf5_ofstream&) os;
+		hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 		H5Gset_comment (hs.file_id, "/", comment_string.c_str ());
 	      }
 	    else

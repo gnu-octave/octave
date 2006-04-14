@@ -2492,33 +2492,32 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			    {
 			      octave_idx_type iii = 0;
 			      octave_idx_type ii = idx_i.elem (iii);
-			      for (octave_idx_type i = 0; i < new_nr; i++)
+			      octave_idx_type ppp = 0;
+			      octave_idx_type ppi = lhs.cidx(j+1) - 
+				lhs.cidx(j); 
+			      octave_idx_type pp = (ppp < ppi ? 
+						    lhs.ridx(lhs.cidx(j)+ppp) :
+						    new_nr);
+			      while (ppp < ppi || iii < n)
 				{
-				  OCTAVE_QUIT;
-
-				  if (iii < n && ii == i)
+				  if (iii < n && ii <= pp)
 				    {
 				      if (scalar != RT ())
 					{
 					  stmp.data(kk) = scalar;
-					  stmp.ridx(kk++) = i;
+					  stmp.ridx(kk++) = ii;
 					}
+				      if (ii == pp)
+					pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);					
 				      if (++iii < n)
 					ii = idx_i.elem(iii);
 				    }
-				  else if (j < lhs.cols()) 
+				  else
 				    {
-				      for (octave_idx_type k = lhs.cidx(j); 
-					   k < lhs.cidx(j+1); k++)
-					{
-					  if (lhs.ridx(k) == i)
-					    {
-					      stmp.data(kk) = lhs.data(k);
-					      stmp.ridx(kk++) = i;
-					    }
-					  if (lhs.ridx(k) >= i)
-					    break;
-					}
+				      stmp.data(kk) = 
+					lhs.data(lhs.cidx(j)+ppp);
+				      stmp.ridx(kk++) = pp;
+				      pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);
 				    }
 				}
 			      if (++jji < m)
@@ -2630,36 +2629,8 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			for (octave_idx_type i = 0; i < m; i++)
 			  rhs_idx_j[i] = i;
 
-		      // Count the number of non-zero terms
-		      octave_idx_type new_nzmx = lhs.nnz ();
-		      for (octave_idx_type j = 0; j < m; j++)
-			{
-			  octave_idx_type jj = idx_j.elem (j);
-			  for (octave_idx_type i = 0; i < n; i++)
-			    {
-			      OCTAVE_QUIT;
-
-			      if (jj < lhs_nc)
-				{
-				  octave_idx_type ii = idx_i.elem (i);
-			      
-				  if (ii < lhs_nr)
-				    {
-				      for (octave_idx_type k = lhs.cidx(jj); 
-					   k < lhs.cidx(jj+1); k++)
-					{
-					  if (lhs.ridx(k) == ii)
-					    new_nzmx--;
-					  if (lhs.ridx(k) >= ii)
-					    break;
-					}
-				    }
-				}
-			      
-			      if (rhs.elem(rhs_idx_i[i],rhs_idx_j[j]) != RT ())
-				new_nzmx++;
-			    }
-			}
+		      // Maximum number of non-zero elements
+		      octave_idx_type new_nzmx = lhs.nnz() + rhs.nnz();
 
 		      Sparse<LT> stmp (new_nr, new_nc, new_nzmx);
 
@@ -2673,35 +2644,34 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			    {
 			      octave_idx_type iii = 0;
 			      octave_idx_type ii = idx_i.elem (iii);
-			      for (octave_idx_type i = 0; i < new_nr; i++)
+			      octave_idx_type ppp = 0;
+			      octave_idx_type ppi = lhs.cidx(j+1) -
+				lhs.cidx(j);
+			      octave_idx_type pp = (ppp < ppi ? 
+						    lhs.ridx(lhs.cidx(j)+ppp) :
+						    new_nr);
+			      while (ppp < ppi || iii < n)
 				{
-				  OCTAVE_QUIT;
-
-				  if (iii < n && ii == i)
+				  if (iii < n && ii <= pp)
 				    {
 				      RT rtmp = rhs.elem (rhs_idx_i[iii], 
 							  rhs_idx_j[jji]);
 				      if (rtmp != RT ())
 					{
 					  stmp.data(kk) = rtmp;
-					  stmp.ridx(kk++) = i;
+					  stmp.ridx(kk++) = ii;
 					}
+				      if (ii == pp)
+					pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);					
 				      if (++iii < n)
 					ii = idx_i.elem(iii);
 				    }
-				  else if (j < lhs.cols()) 
+				  else
 				    {
-				      for (octave_idx_type k = lhs.cidx(j); 
-					   k < lhs.cidx(j+1); k++)
-					{
-					  if (lhs.ridx(k) == i)
-					    {
-					      stmp.data(kk) = lhs.data(k);
-					      stmp.ridx(kk++) = i;
-					    }
-					  if (lhs.ridx(k) >= i)
-					    break;
-					}
+				      stmp.data(kk) = 
+					lhs.data(lhs.cidx(j)+ppp);
+				      stmp.ridx(kk++) = pp;
+				      pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);
 				    }
 				}
 			      if (++jji < m)
@@ -2719,6 +2689,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			  stmp.cidx(j+1) = kk;
 			}
 
+		      stmp.maybe_compress();
 		      lhs = stmp;
 		    }
 		}
@@ -2788,7 +2759,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			}
 		    }
 
-		  if (! assign1 ((Sparse<LT>&) lhs, (Sparse<RT>&) rhs))
+		  if (! assign1 (lhs, rhs))
 		    retval = 0;
 		}
 	    }
@@ -2802,7 +2773,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
 		lhs.maybe_delete_elements (idx_i);
-	      else if (! assign1 ((Sparse<LT>&) lhs, (Sparse<RT>&) rhs))
+	      else if (! assign1 (lhs, rhs))
 		retval = 0;
 	    }
 	  // idx_vector::freeze() printed an error message for us.
@@ -2815,7 +2786,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
 		lhs.maybe_delete_elements (idx_i);
-	      else if (! assign1 ((Sparse<LT>&) lhs, (Sparse<RT>&) rhs))
+	      else if (! assign1 (lhs, rhs))
 		retval = 0;
 	    }
 	  // idx_vector::freeze() printed an error message for us.

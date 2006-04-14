@@ -33,8 +33,9 @@ int
 prog_args::getopt (void)
 {
   if (long_opts)
-    return ::octave_getopt_long (xargc, xargv, short_opts,
-				 X_CAST (const struct option *, long_opts), 0);
+    return ::octave_getopt_long
+      (xargc, xargv, short_opts,
+       reinterpret_cast<const struct option *> (long_opts), 0);
   else
     return ::octave_getopt (xargc, xargv, short_opts);
 }

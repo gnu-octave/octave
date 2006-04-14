@@ -60,7 +60,7 @@ DEFBINOPX (pow, sparse_matrix, matrix)
 
 DEFBINOP (ldiv, sparse_matrix, matrix)
 {
-  CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_matrix&);
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_matrix&);
   SparseType typ = v1.sparse_type ();
 
   Matrix ret = xleftdiv (v1.sparse_matrix_value (), 

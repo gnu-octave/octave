@@ -134,11 +134,11 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
     { \
       octave_jmp_buf saved_context; \
  \
-      octave_save_current_context ((char *) saved_context); \
+      octave_save_current_context (saved_context); \
  \
       if (octave_set_current_context) \
 	{ \
-	  octave_restore_current_context ((char *) saved_context)
+	  octave_restore_current_context (saved_context)
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2 \
 	} \
@@ -148,7 +148,7 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
 #define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
 	  octave_interrupt_immediately--; \
-          octave_restore_current_context ((char *) saved_context); \
+          octave_restore_current_context (saved_context); \
         } \
     } \
   while (0)

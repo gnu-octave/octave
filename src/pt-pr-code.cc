@@ -1188,7 +1188,7 @@ tree_print_code::print_comment_elt (const octave_comment_elt& elt)
 		os << " ";
 	    }
 
-	  os << (char) c;
+	  os << static_cast<char> (c);
 
 	  prev_char_was_newline = false;
 	}

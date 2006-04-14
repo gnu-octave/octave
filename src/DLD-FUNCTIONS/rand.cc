@@ -250,7 +250,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
 	    for (int i = 0; i < nargin; i++)
 	      {
-		dims(i) = (octave_idx_type)args(idx+i).int_value ();
+		dims(i) = args(idx+i).int_value ();
 
 		if (error_state)
 		  {

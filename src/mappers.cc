@@ -121,7 +121,7 @@ xisxdigit (int c)
 static int
 xtoascii (int c)
 {
-  return toascii ((int) ((unsigned char) c));
+  return toascii (c);
 }
 
 static int

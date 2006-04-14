@@ -55,11 +55,11 @@ extern "C" {
       octave_jmp_buf saved_context; \
       f77_exception_encountered = 0; \
       sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
-      octave_save_current_context ((char *) saved_context); \
+      octave_save_current_context (saved_context); \
       if (octave_set_current_context) \
 	{ \
 	  octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-          octave_restore_current_context ((char *) saved_context); \
+          octave_restore_current_context (saved_context); \
 	  if (f77_exception_encountered) \
 	    F77_XFCN_ERROR (f, F); \
           else if (octave_allocation_error) \
@@ -72,7 +72,7 @@ extern "C" {
 	  octave_interrupt_immediately++; \
 	  F77_FUNC (f, F) args; \
 	  octave_interrupt_immediately--; \
-          octave_restore_current_context ((char *) saved_context); \
+          octave_restore_current_context (saved_context); \
         } \
     } \
   while (0)
@@ -169,7 +169,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CHAR_ARG2(x, l) x
 #define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
 #define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
-#define F77_CHAR_ARG_LEN(l) , (long) l
+#define F77_CHAR_ARG_LEN(l) , l
 #define F77_CHAR_ARG_DECL char *
 #define F77_CONST_CHAR_ARG_DECL const char *
 #define F77_CHAR_ARG_LEN_DECL , long

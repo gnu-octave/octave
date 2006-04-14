@@ -269,7 +269,7 @@ octave_dynamic_loader::do_load (const std::string& fcn_name,
   if (function)
     {
       octave_dld_fcn_installer f
-	= X_CAST (octave_dld_fcn_installer, function);
+	= reinterpret_cast<octave_dld_fcn_installer> (function);
 
       retval = f (oct_file);
 

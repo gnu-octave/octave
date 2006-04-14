@@ -47,7 +47,8 @@ DEFBINOP_OP (mul, complex_matrix, sparse_complex_matrix, *)
 
 DEFBINOP (div, complex_matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex_matrix&, octave_sparse_complex_matrix&);
+  CAST_BINOP_ARGS (const octave_complex_matrix&,
+		   const octave_sparse_complex_matrix&);
   
   SparseType typ = v2.sparse_type ();
 

@@ -1,3 +1,8 @@
+2006-04-13  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (CONST_CAST, DYNAMIC_CAST, REINTERPRET_CAST,
+	STATIC_CAST): Delete.
+
 2006-04-12  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: If using g++, also add -Wold-style-cast to CXXFLAGS.

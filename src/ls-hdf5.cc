@@ -266,7 +266,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  H5Tset_size (st_id, slen);
 
 	  if (H5Dread (data_id, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-		       (void *) typ) < 0)
+		       typ) < 0)
 	    goto done;
 
 	  H5Tclose (st_id);
@@ -528,7 +528,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
   doc.resize (0);
 
-  hdf5_ifstream& hs = (hdf5_ifstream&) is;
+  hdf5_ifstream& hs = dynamic_cast<hdf5_ifstream&> (is);
   hdf5_callback_data d;
 
   // Versions of HDF5 prior to 1.2.2 had a bug in H5Giterate where it
@@ -602,7 +602,7 @@ hdf5_add_attr (hid_t loc_id, const char *attr_name)
 	{
 	  unsigned char attr_val = 1;
 
-	  retval = H5Awrite (a_id, H5T_NATIVE_UCHAR, (void*) &attr_val);
+	  retval = H5Awrite (a_id, H5T_NATIVE_UCHAR, &attr_val);
 
 	  H5Aclose (a_id);
 	}
@@ -639,7 +639,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
   if (!empty)
     return 0;
 
-  space_hid = H5Screate_simple (1, &sz, (hsize_t *) 0);
+  space_hid = H5Screate_simple (1, &sz, 0);
   if (space_hid < 0) return space_hid;
 
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid, 
@@ -651,7 +651,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
     }
   
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-		     H5P_DEFAULT, (void*) dims) >= 0;
+		     H5P_DEFAULT, dims) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -681,7 +681,7 @@ load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d)
   OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, hdims);
 
   retval = H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, 
-		    H5P_DEFAULT, (void *) dims);
+		    H5P_DEFAULT, dims);
   if (retval >= 0)
     {
       d.resize (hdims);
@@ -761,13 +761,13 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
     goto error_cleanup;
 
   dims[0] = 0;
-  space_id = H5Screate_simple (0 , dims, (hsize_t*) 0);
+  space_id = H5Screate_simple (0 , dims, 0);
   if (space_id < 0)
     goto error_cleanup;
 
   data_type_id = H5Dcreate (data_id, "type",  type_id, space_id, H5P_DEFAULT);
   if (data_type_id < 0 || H5Dwrite (data_type_id, type_id, H5S_ALL, H5S_ALL, 
-				    H5P_DEFAULT, (void*) t.c_str ()) < 0)
+				    H5P_DEFAULT, t.c_str ()) < 0)
     goto error_cleanup;
 
   // Now call the real function to save the variable
@@ -814,7 +814,7 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
 		const std::string& name, const std::string& doc,
 		bool mark_as_global, bool save_as_floats)
 {
-  hdf5_ofstream& hs = (hdf5_ofstream&) os;
+  hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 
   return add_hdf5_data (hs.file_id, tc, name, doc,
 			mark_as_global, save_as_floats);

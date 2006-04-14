@@ -1,3 +1,38 @@
+2006-04-13  David Bateman  <dbateman@free.fr>
+
+        * Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):
+	Optimize assignment.
+
+2006-04-13  John W. Eaton  <jwe@octave.org>
+
+        * Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):
+	Eliminate unnecessary casts.
+	* SparsedbleLU.cc (SparseLU::SparseLU): Likewise.
+
+	* kpse.cc (fopen): Use reinterpret_cast instead of C-style cast.
+	(log_search, dir_links): Use static_cast instead of C-style cast.
+
+	* prog-args.cc (args::getopt): Use reinterpret_cast instead of X_CAST.
+	* oct-alloc.cc (allocator::grow): Likewise.
+	* CSparse.cc (SparseComplexMatrix::determinant,
+	SparseComplexMatrix::factorize, SparseComplexMatrix::fsolve):
+	Likewise.
+	* SparseCmplxLU.cc (SparseComplexLU::SparseComplexLU): Likewise.
+
+	* oct-sort.cc (roundupsize, octave_sort<T>::merge_getmem):
+	Use static_cast instead of C-style cast.
+	* CSparse.cc (SparseComplexMatrix::fsolve): Likewise.
+	* dSparse.cc (SparseMatrix::fsolve): Likewise.
+
+	* data-conv.cc (LS_DO_WRITE): Use static_cast for value conversion.
+	Use OCTAVE_LOCAL_BUFFER instead of new/delete.
+	(LS_DO_READ): Allocate local buffer to avoid pointer tricks.
+	(write_doubles, read_doubles, LS_DO_WRITE, LS_DO_READ):
+	Use reinterpret_cast instead of X_CAST.
+
+	* DiagArray2.h (DiagArray2::Proxy::operator&): No need to cast
+	return value here.
+
 2006-04-12  Rafael Laboissiere  <rafael@debian.org>
 
 	* ArrayN.h (ArrayN::ArrayN): Qualify fill with Array<T> base class.

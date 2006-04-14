@@ -112,12 +112,13 @@ matrix type.\n\
 	  if (nargin == 1)
 	    {
 	      SparseType mattyp;
-	      const octave_base_value& rep = args(0).get_rep ();
 
 	      if (args(0).type_name () == "sparse complex matrix" ) 
 		{
-		  mattyp = 
-		    ((const octave_sparse_complex_matrix &)rep).sparse_type ();
+		  const octave_sparse_complex_matrix& rep
+		    = dynamic_cast<const octave_sparse_complex_matrix&> (args(0).get_rep ());
+
+		  mattyp = rep.sparse_type ();
 
 		  if (mattyp.is_unknown ())
 		    {
@@ -126,13 +127,16 @@ matrix type.\n\
 		      if (!error_state)
 			{
 			  mattyp = SparseType (m);
-			    ((octave_sparse_complex_matrix &)rep).sparse_type (mattyp);
+			  rep.sparse_type (mattyp);
 			}
 		    }
 		}
 	      else
 		{
-		  mattyp = ((const octave_sparse_matrix &)rep).sparse_type ();
+		  const octave_sparse_matrix& rep
+		    = dynamic_cast<const octave_sparse_matrix&> (args(0).get_rep ());
+
+		  mattyp = rep.sparse_type ();
 
 		  if (mattyp.is_unknown ())
 		    {
@@ -140,7 +144,7 @@ matrix type.\n\
 		      if (!error_state)
 			{
 			  mattyp = SparseType (m);
-			  ((octave_sparse_matrix &)rep).sparse_type (mattyp);
+			  rep.sparse_type (mattyp);
 			}
 		    }
 		}
@@ -267,7 +271,7 @@ matrix type.\n\
 				  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
 				  for (octave_idx_type i = 0; i < len; i++)
-				    p[i] = (octave_idx_type) (perm (i)) - 1; 
+				    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
 
 				  if (str_typ == "upper")
 				    mattyp.mark_as_permuted (len, p);

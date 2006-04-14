@@ -154,20 +154,15 @@ protected:
   octave_value_typeinfo (void)
     : num_types (0), types (init_tab_sz, std::string ()),
       vals (init_tab_sz),
-      unary_ops (octave_value::num_unary_ops, init_tab_sz,
-		 (unary_op_fcn) 0),
-      non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz,
-			   (non_const_unary_op_fcn) 0),
-      binary_ops (octave_value::num_binary_ops, init_tab_sz,
-		  init_tab_sz, (binary_op_fcn) 0),
-      cat_ops (init_tab_sz, init_tab_sz, (cat_op_fcn) 0),
-      assign_ops (octave_value::num_assign_ops, init_tab_sz,
-		  init_tab_sz, (assign_op_fcn) 0),
-      assignany_ops (octave_value::num_assign_ops, init_tab_sz,
-		     (assignany_op_fcn) 0),
+      unary_ops (octave_value::num_unary_ops, init_tab_sz, 0),
+      non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz, 0),
+      binary_ops (octave_value::num_binary_ops, init_tab_sz, init_tab_sz, 0),
+      cat_ops (init_tab_sz, init_tab_sz, 0),
+      assign_ops (octave_value::num_assign_ops, init_tab_sz, init_tab_sz, 0),
+      assignany_ops (octave_value::num_assign_ops, init_tab_sz, 0),
       pref_assign_conv (init_tab_sz, init_tab_sz, -1),
-      type_conv_ops (init_tab_sz, init_tab_sz, (octave_base_value::type_conv_fcn) 0),
-      widening_ops (init_tab_sz, init_tab_sz, (octave_base_value::type_conv_fcn) 0)  { }
+      type_conv_ops (init_tab_sz, init_tab_sz, 0),
+      widening_ops (init_tab_sz, init_tab_sz, 0)  { }
 
 private:
 

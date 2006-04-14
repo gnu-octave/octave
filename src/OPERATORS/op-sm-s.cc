@@ -74,7 +74,7 @@ DEFBINOP (pow, sparse_matrix, scalar)
 
 DEFBINOP (ldiv, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_scalar&);
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
 
   SparseType typ = v1.sparse_type ();
   SparseMatrix m1 = v1.sparse_matrix_value ();

@@ -437,7 +437,7 @@ static inline int
 roundupsize(int n)
 {
   unsigned int nbits = 3;
-  unsigned int n2 = (unsigned int)n >> 8;
+  unsigned int n2 = static_cast<unsigned int> (n) >> 8;
 
   /* Round up:
    * If n <       256, to a multiple of        8.
@@ -483,7 +483,7 @@ octave_sort<T>::merge_getmem(int need)
    * we don't care what's in the block.
    */
   merge_freemem( );
-  ms.a = (T *) malloc (need * sizeof (T));
+  ms.a = static_cast <T *> (malloc (need * sizeof (T)));
   if (ms.a) {
     ms.alloced = need;
     return 0;

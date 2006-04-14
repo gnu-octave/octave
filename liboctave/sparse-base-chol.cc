@@ -107,7 +107,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
     }
   else
     {
-      cm->print = (int)spu + 2;
+      cm->print = static_cast<int> (spu) + 2;
       cm->print_function =&SparseCholPrint;
     }
 

@@ -137,14 +137,14 @@ extern void install_ops (void);
   while (0)
 
 #define CAST_UNOP_ARG(t) \
-  t v = DYNAMIC_CAST (t, a)
+  t v = dynamic_cast<t> (a)
 
 #define CAST_BINOP_ARGS(t1, t2) \
-  t1 v1 = DYNAMIC_CAST (t1, a1); \
-  t2 v2 = DYNAMIC_CAST (t2, a2)
+  t1 v1 = dynamic_cast<t1> (a1);		\
+  t2 v2 = dynamic_cast<t2> (a2)
 
 #define CAST_CONV_ARG(t) \
-  t v = DYNAMIC_CAST (t, a)
+  t v = dynamic_cast<t> (a)
 
 #define ASSIGNOPDECL(name) \
   static octave_value \
@@ -182,7 +182,7 @@ extern void install_ops (void);
 #define DEFASSIGNANYOP_FN(name, t1, f) \
   ASSIGNANYOPDECL (name) \
   { \
-    octave_ ## t1& v1 = DYNAMIC_CAST (octave_ ## t1&, a1); \
+    octave_ ## t1& v1 = dynamic_cast<octave_ ## t1&> (a1); \
  \
     v1.f (idx, a2); \
     return octave_value (); \

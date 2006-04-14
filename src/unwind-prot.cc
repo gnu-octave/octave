@@ -79,7 +79,7 @@ private:
     {
       bool bool_value;
       int int_value;
-      const std::string *str_value;
+      std::string *str_value;
       void *gen_ptr_value;
     };
 

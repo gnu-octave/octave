@@ -421,7 +421,6 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
     }
 
   octave_value arg = args(0);
-  const octave_base_value& rep = arg.get_rep ();
 
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
@@ -446,11 +445,16 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
 
       if (! error_state)
 	{
+	  const octave_sparse_matrix& rep
+	    = dynamic_cast<const octave_sparse_matrix&> (arg.get_rep ());
+
+	  SparseType mattyp = rep.sparse_type ();
+
 	  octave_idx_type info;
 	  double rcond = 0.0;
-	  SparseType mattyp = ((octave_sparse_matrix &)rep).sparse_type ();
 	  SparseMatrix result = m.inverse (mattyp, info, rcond, 1);
-	  ((octave_sparse_matrix &)(arg.get_rep())).sparse_type (mattyp);
+
+	  rep.sparse_type (mattyp);
 
 	  if (nargout > 1)
 	    retval(1) = rcond;
@@ -470,13 +474,16 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
 
       if (! error_state)
 	{
+	  const octave_sparse_complex_matrix& rep
+	    = dynamic_cast<const octave_sparse_complex_matrix&> (arg.get_rep ());
+	  SparseType mattyp = rep.sparse_type ();
+
 	  octave_idx_type info;
 	  double rcond = 0.0;
 
-	  SparseType mattyp = 
-	    ((octave_sparse_complex_matrix &)rep).sparse_type ();
 	  SparseComplexMatrix result = m.inverse (mattyp, info, rcond, 1);
-	  ((octave_sparse_matrix &)rep).sparse_type (mattyp);
+
+	  rep.sparse_type (mattyp);
 
 	  if (nargout > 1)
 	    retval(1) = rcond;

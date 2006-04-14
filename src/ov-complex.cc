@@ -232,10 +232,10 @@ octave_complex::load_ascii (std::istream& is)
 bool 
 octave_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
-  char tmp = (char) LS_DOUBLE;
-  os.write (X_CAST (char *, &tmp), 1);
+  char tmp = static_cast<char> (LS_DOUBLE);
+  os.write (reinterpret_cast<char *> (&tmp), 1);
   Complex ctmp = complex_value ();
-  os.write (X_CAST (char *, &ctmp), 16);
+  os.write (reinterpret_cast<char *> (&ctmp), 16);
 
   return true;
 }
@@ -245,12 +245,12 @@ octave_complex::load_binary (std::istream& is, bool swap,
 			     oct_mach_info::float_format fmt)
 {
   char tmp;
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     return false;
 
   Complex ctmp;
-  read_doubles (is, X_CAST (double *, &ctmp), X_CAST (save_type, tmp), 2, 
-		swap, fmt);
+  read_doubles (is, reinterpret_cast<double *> (&ctmp),
+		static_cast<save_type> (tmp), 2, swap, fmt);
   if (error_state || ! is)
     return false;
 

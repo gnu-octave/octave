@@ -3113,7 +3113,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 	  if (! have_help_text)
 	    {
 	      first_comments_seen = true;
-	      help_txt += (char) c;
+	      help_txt += static_cast<char> (c);
 	    }
 
 	  if (c == '\n')
@@ -3213,7 +3213,7 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 
       if (fptr)
 	{
-	  unwind_protect::add (safe_fclose, (void *) fptr);
+	  unwind_protect::add (safe_fclose, fptr);
 
 	  retval = gobble_leading_white_space (fptr, true, true, false);
 
@@ -3330,8 +3330,8 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
 
-	  unwind_protect::add (restore_input_buffer, (void *) old_buf);
-	  unwind_protect::add (delete_input_buffer, (void *) new_buf);
+	  unwind_protect::add (restore_input_buffer, old_buf);
+	  unwind_protect::add (delete_input_buffer, new_buf);
 
 	  switch_to_buffer (new_buf);
 

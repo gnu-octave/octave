@@ -406,7 +406,7 @@ factorization as determined by @var{typ}.\n\
     }
   else
     {
-      cm->print = (int)spu + 2;
+      cm->print = static_cast<int> (spu) + 2;
       cm->print_function =&SparseCholPrint;
     }
 
@@ -652,7 +652,7 @@ factorization as determined by @var{typ}.\n\
 	  for (int i = 0 ; i < n ; i++)
 	    height = (height > Level[i] ? height : Level[i]);
 	  height++ ;
-	  retval(1) = (double)height;
+	  retval(1) = static_cast<double> (height);
 	}
 
       for (octave_idx_type i = 0; i < n; i++)

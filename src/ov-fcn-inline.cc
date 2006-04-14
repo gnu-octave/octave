@@ -157,18 +157,18 @@ bool
 octave_fcn_inline::save_binary (std::ostream& os, bool&)
 {
   FOUR_BYTE_INT tmp = ifargs.length ();
-  os.write (X_CAST (char *, &tmp), 4);
+  os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < ifargs.length (); i++)
     {
       tmp = ifargs(i).length ();
-      os.write (X_CAST (char *, &tmp), 4);
+      os.write (reinterpret_cast<char *> (&tmp), 4);
       os.write (ifargs(i).c_str (), ifargs(i).length ());
     }
   tmp = nm.length ();
-  os.write (X_CAST (char *, &tmp), 4);
+  os.write (reinterpret_cast<char *> (&tmp), 4);
   os.write (nm.c_str (), nm.length ());
   tmp = iftext.length ();
-  os.write (X_CAST (char *, &tmp), 4);
+  os.write (reinterpret_cast<char *> (&tmp), 4);
   os.write (iftext.c_str (), iftext.length ());
   return true;
 }
@@ -178,7 +178,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
 				oct_mach_info::float_format)
 {
   FOUR_BYTE_INT nargs;
-  if (! is.read (X_CAST (char *, &nargs), 4))
+  if (! is.read (reinterpret_cast<char *> (&nargs), 4))
     return false;
   if (swap)
     swap_bytes<4> (&nargs);
@@ -191,7 +191,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
       ifargs.resize (nargs);
       for (int i = 0; i < nargs; i++)
 	{
-	  if (! is.read (X_CAST (char *, &tmp), 4))
+	  if (! is.read (reinterpret_cast<char *> (&tmp), 4))
 	    return false;
 	  if (swap)
 	    swap_bytes<4> (&tmp);
@@ -204,7 +204,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
 	    return false;
 	}
 
-      if (! is.read (X_CAST (char *, &tmp), 4))
+      if (! is.read (reinterpret_cast<char *> (&tmp), 4))
 	return false;
       if (swap)
 	swap_bytes<4> (&tmp);
@@ -216,7 +216,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
       if (! is)
 	return false;
 
-      if (! is.read (X_CAST (char *, &tmp), 4))
+      if (! is.read (reinterpret_cast<char *> (&tmp), 4))
 	return false;
       if (swap)
 	swap_bytes<4> (&tmp);
@@ -309,7 +309,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
     }
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, (hsize_t*) 0);
+  space_hid = H5Screate_simple (0 , hdims, 0);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);
@@ -319,7 +319,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
 
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
   if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-				H5P_DEFAULT, (void*) nm.c_str ()) < 0)
+				H5P_DEFAULT, nm.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -339,7 +339,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
   data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid,
 			H5P_DEFAULT);
   if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-				H5P_DEFAULT, (void*) iftext.c_str ()) < 0)
+				H5P_DEFAULT, iftext.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -449,8 +449,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-	       X_CAST (void *, nm_tmp)) < 0)
+  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, nm_tmp) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -508,8 +507,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name,
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-	       X_CAST (void *, iftext_tmp)) < 0)
+  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, iftext_tmp) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);

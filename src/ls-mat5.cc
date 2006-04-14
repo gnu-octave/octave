@@ -179,14 +179,12 @@ read_mat5_integer_data (std::istream& is, T *m, int count, bool swap,
     { \
       if (len > 0) \
 	{ \
-	  volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
-	  stream.read (X_CAST (char *, ptr), size * len); \
+	  OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+	  stream.read (reinterpret_cast<char *> (ptr), size * len); \
 	  if (swap) \
 	    swap_bytes< size > (ptr, len); \
-	  TYPE tmp = ptr[0]; \
-	  for (int i = len - 1; i > 0; i--) \
+	  for (int i = 0; i < len; i++) \
 	    data[i] = ptr[i]; \
-	  data[0] = tmp; \
 	} \
     } \
   while (0)
@@ -289,7 +287,7 @@ template void read_mat5_integer_data (std::istream& is, int *m,
 	int n = re.length (); \
 	tmp_pos = is.tellg (); \
 	read_mat5_integer_data (is, re.fortran_vec (), n, swap,	\
-				(enum mat5_data_type) type); \
+				static_cast<enum mat5_data_type> (type)); \
   \
 	if (! is || error_state) \
 	  { \
@@ -313,7 +311,7 @@ template void read_mat5_integer_data (std::istream& is, int *m,
   \
 	    n = im.length (); \
 	    read_mat5_binary_data (is, im.fortran_vec (), n, swap, \
-				   (enum mat5_data_type) type, flt_fmt); \
+				   static_cast<enum mat5_data_type> (type), flt_fmt); \
   \
 	    if (! is || error_state) \
 	      { \
@@ -342,7 +340,7 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
   unsigned int upper;
   FOUR_BYTE_INT temp;
 
-  if (! is.read (X_CAST (char *, &temp), 4 ))
+  if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
     goto data_read_error;
 
   if (swap)
@@ -358,7 +356,7 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
     }
   else
     {
-      if (! is.read (X_CAST (char *, &temp), 4 ))
+      if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
 	goto data_read_error;
       if (swap)
 	swap_bytes<4> (&temp);
@@ -438,8 +436,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       // This will fail with an error Z_MEM_ERROR
       uLongf destLen = 8;
       OCTAVE_LOCAL_BUFFER (unsigned int, tmp, 2);
-      if (uncompress (X_CAST (Bytef *, tmp), &destLen, 
-		      X_CAST (Bytef *, inbuf), element_length) !=  Z_MEM_ERROR)
+      if (uncompress (reinterpret_cast<Bytef *> (tmp), &destLen, 
+		      reinterpret_cast<Bytef *> (inbuf), element_length)
+	  !=  Z_MEM_ERROR)
 	{
 	  // Why should I have to initialize outbuf as I'll just overwrite!!
 	  if (swap)
@@ -448,10 +447,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  destLen = tmp[1] + 8;
 	  std::string outbuf (destLen, ' '); 
 
-	  int err = uncompress (X_CAST (Bytef *, outbuf.c_str ()), &destLen, 
-			    X_CAST ( Bytef *, inbuf), element_length);
-	  //if (uncompress (X_CAST (Bytef *, outbuf.c_str ()), &destLen, 
-	  //		  X_CAST ( Bytef *, inbuf), element_length) != Z_OK)
+	  // XXX FIXME XXX -- find a way to avoid casting away const here!
+
+	  int err = uncompress (reinterpret_cast<Bytef *> (const_cast<char *> (outbuf.c_str ())), &destLen, 
+				reinterpret_cast<Bytef *> (inbuf), element_length);
 
 	  if (err != Z_OK)
 	    error ("load: error uncompressing data element");
@@ -494,7 +493,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   imag = (flags & 0x0800) != 0;	// has an imaginary part?
   global = (flags & 0x0400) != 0; // global variable?
   logicalvar = (flags & 0x0200) != 0; // boolean ?
-  arrayclass = (arrayclasstype)(flags & 0xff);
+  arrayclass = static_cast<arrayclasstype> (flags & 0xff);
   read_int (is, swap, nzmax);	// max number of non-zero in sparse
   
   // dimensions array subelement
@@ -535,7 +534,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     if (len)
       {
-	if (! is.read (X_CAST (char *, name), len ))
+	if (! is.read (name, len ))
 	  goto data_read_error;
 	
 	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
@@ -623,7 +622,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	tmp_pos = is.tellg ();
 
 	read_mat5_integer_data (is, ridx, nzmax, swap,
-				(enum mat5_data_type) type);
+				static_cast<enum mat5_data_type> (type));
 
 	if (! is || error_state)
 	  {
@@ -643,7 +642,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	tmp_pos = is.tellg ();
 
 	read_mat5_integer_data (is, cidx, nc + 1, swap,
-				(enum mat5_data_type) type);
+				static_cast<enum mat5_data_type> (type));
 
 	if (! is || error_state)
 	  {
@@ -670,7 +669,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	tmp_pos = is.tellg ();
 	read_mat5_binary_data (is, data, nnz, swap,
-			       (enum mat5_data_type) type, flt_fmt);
+			       static_cast<enum mat5_data_type> (type), flt_fmt);
 
 	if (! is || error_state)
 	  {
@@ -692,7 +691,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 
 	    read_mat5_binary_data (is, im.fortran_vec (), nnz, swap,
-				   (enum mat5_data_type) type, flt_fmt);
+				   static_cast<enum mat5_data_type> (type), flt_fmt);
 
 	    if (! is || error_state)
 	      {
@@ -734,7 +733,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	if (! is.read (X_CAST (char *, &field_name_length), fn_len ))
+	if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len ))
 	  goto data_read_error;
 
 	if (swap)
@@ -858,7 +857,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	int n = re.length ();
 	tmp_pos = is.tellg ();
 	read_mat5_binary_data (is, re.fortran_vec (), n, swap,
-			       (enum mat5_data_type) type, flt_fmt);
+			       static_cast<enum mat5_data_type> (type), flt_fmt);
 
 	if (! is || error_state)
 	  {
@@ -894,7 +893,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	    n = im.length ();
 	    read_mat5_binary_data (is, im.fortran_vec (), n, swap,
-				   (enum mat5_data_type) type, flt_fmt);
+				   static_cast<enum mat5_data_type> (type), flt_fmt);
 
 	    if (! is || error_state)
 	      {
@@ -977,8 +976,8 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet)
   TWO_BYTE_INT version=0, magic=0;
 
   is.seekg (124, std::ios::beg);
-  is.read (X_CAST (char *, &version), 2);
-  is.read (X_CAST (char *, &magic), 2);
+  is.read (reinterpret_cast<char *> (&version), 2);
+  is.read (reinterpret_cast<char *> (&magic), 2);
 
   if (magic == 0x4d49)
     swap = 0;
@@ -1011,12 +1010,12 @@ write_mat5_tag (std::ostream& is, int type, int bytes)
   else
     {
       temp = type;
-      if (! is.write ((char *)&temp, 4))
+      if (! is.write (reinterpret_cast<char *> (&temp), 4))
 	goto data_write_error;
       temp = bytes;
     }
 
-  if (! is.write ((char *)&temp, 4))
+  if (! is.write (reinterpret_cast<char *> (&temp), 4))
     goto data_write_error;
 
   return 0;
@@ -1041,14 +1040,14 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data().
 
-#define MAT5_DO_WRITE(TYPE, data, count, stream)			\
-  do									\
-    {									\
-      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count);                           \
-      for (int i = 0; i < count; i++)					\
-        ptr[i] = X_CAST (TYPE, data[i]);				\
-      stream.write (X_CAST (char *, ptr), count * sizeof (TYPE));	\
-    }									\
+#define MAT5_DO_WRITE(TYPE, data, count, stream) \
+  do \
+    { \
+      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count); \
+      for (int i = 0; i < count; i++) \
+        ptr[i] = static_cast<TYPE> (data[i]); \
+      stream.write (reinterpret_cast<char *> (ptr), count * sizeof (TYPE)); \
+    } \
   while (0)
 
   if (save_as_floats)
@@ -1127,7 +1126,7 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 	break;
 
       case LS_DOUBLE: // No conversion necessary.
-	os.write (X_CAST (char *, data), len);
+	os.write (reinterpret_cast<const char *> (data), len);
 	break;
 
       default:
@@ -1186,7 +1185,7 @@ write_mat5_integer_data (std::ostream& os, const T *m, int size, int nel)
   len = nel*size;
   write_mat5_tag (os, mst, len);
 
-  os.write (X_CAST(char *, m), len);
+  os.write (reinterpret_cast<const char *> (m), len);
 
   if (PAD (len) > len)
     {
@@ -1485,10 +1484,10 @@ save_mat5_binary_element (std::ostream& os,
 	  uLongf destLen = srcLen * 101 / 100 + 12; 
 	  OCTAVE_LOCAL_BUFFER (char, out_buf, destLen);
 
-	  if (compress (X_CAST (Bytef *, out_buf), &destLen, 
-			X_CAST (Bytef *, OSSTREAM_C_STR (buf)), srcLen) == Z_OK)
+	  if (compress (reinterpret_cast<Bytef *> (out_buf), &destLen, 
+			reinterpret_cast<const Bytef *> (OSSTREAM_C_STR (buf)), srcLen) == Z_OK)
 	    {
-	      write_mat5_tag (os, miCOMPRESSED, X_CAST(int, destLen)); 
+	      write_mat5_tag (os, miCOMPRESSED, static_cast<int> (destLen)); 
 	      os.write (out_buf, destLen);
 	    }
 	  else
@@ -1569,8 +1568,8 @@ save_mat5_binary_element (std::ostream& os,
       goto error_cleanup;
     }
 
-  os.write ((char *)&flags, 4);
-  os.write ((char *)&nnz, 4);
+  os.write (reinterpret_cast<char *> (&flags), 4);
+  os.write (reinterpret_cast<char *> (&nnz), 4);
 
   {
     dim_vector dv = tc.dims ();
@@ -1582,7 +1581,7 @@ save_mat5_binary_element (std::ostream& os,
     for (int i = 0; i < nd; i++)
       {
 	FOUR_BYTE_INT n = dv(i);
-	os.write ((char *)&n, 4);
+	os.write (reinterpret_cast<char *> (&n), 4);
       }
 
     if (PAD (dim_len) > dim_len)
@@ -1628,10 +1627,10 @@ save_mat5_binary_element (std::ostream& os,
 	  for (int j = 0; j < nc; j++)
 	    buf[j*nr+i] = *s++ & 0x00FF;
 	}
-      os.write ((char *)buf, nr*nc*2);
+      os.write (reinterpret_cast<char *> (buf), nr*nc*2);
       
       if (paddedlength > len)
-	os.write ((char *)buf, paddedlength - len);
+	os.write (reinterpret_cast<char *> (buf), paddedlength - len);
     }
   else if (cname == "sparse")
     {
@@ -1762,7 +1761,7 @@ save_mat5_binary_element (std::ostream& os,
 	  fieldcnt++;
 
 	write_mat5_tag (os, miINT32, 4);
-	os.write ((char *)&maxfieldnamelength, 4);
+	os.write (reinterpret_cast<char *> (&maxfieldnamelength), 4);
 	write_mat5_tag (os, miINT8, fieldcnt*maxfieldnamelength);
 
 	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)

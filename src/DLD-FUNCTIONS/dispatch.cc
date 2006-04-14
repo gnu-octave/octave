@@ -398,7 +398,7 @@ dispatch_record (const std::string &f, const std::string &n,
 
   // clear/replace/extend the map with the new type-function pair
   const octave_dispatch& rep
-    = reinterpret_cast<const octave_dispatch&> (sr->def().get_rep ());
+    = dynamic_cast<const octave_dispatch&> (sr->def().get_rep ());
 
   if (t.empty ())
     // XXX FIXME XXX should return the list if nargout > 1

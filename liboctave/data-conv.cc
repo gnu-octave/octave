@@ -28,6 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cctype>
 
 #include <iostream>
+#include <vector>
 
 #include "byte-swap.h"
 #include "data-conv.h"
@@ -469,14 +470,12 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
     { \
       if (len > 0) \
 	{ \
-	  volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
-	  stream.read (X_CAST (char *, ptr), size * len); \
+	  OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+	  stream.read (reinterpret_cast<char *>  (ptr), size * len); \
 	  if (swap) \
 	    swap_bytes< size > (ptr, len); \
-	  TYPE tmp = ptr[0]; \
-	  for (int i = len - 1; i > 0; i--) \
+	  for (int i = 0; i < len; i++) \
 	    data[i] = ptr[i]; \
-	  data[0] = tmp; \
 	} \
     } \
   while (0)
@@ -489,13 +488,12 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
     { \
       if (len > 0) \
 	{ \
-	  char tmp_type = static_cast<char> (type); \
+	  char tmp_type = type; \
 	  stream.write (&tmp_type, 1); \
-	  TYPE *ptr = new TYPE [len]; \
+	  OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
 	  for (int i = 0; i < len; i++) \
-	    ptr[i] = X_CAST (TYPE, data[i]); \
-	  stream.write (X_CAST (char *, ptr), size * len); \
-	  delete [] ptr ; \
+	    ptr[i] = static_cast <TYPE> (data[i]);	   \
+	  stream.write (reinterpret_cast<char *> (ptr), size * len); \
 	} \
     } \
   while (0)
@@ -1027,18 +1025,16 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
 
     case LS_FLOAT:
       {
-	volatile float *ptr = X_CAST (float *, data);
-	is.read (X_CAST (char *, data), 4 * len);
-	do_float_format_conversion (data, len, fmt);
-	float tmp = ptr[0];
-	for (int i = len - 1; i > 0; i--)
+	OCTAVE_LOCAL_BUFFER (float, ptr, len);
+	is.read (reinterpret_cast<char *> (ptr), 4 * len);
+	do_float_format_conversion (ptr, len, fmt);
+	for (int i = 0; i < len; i++)
 	  data[i] = ptr[i];
-	data[0] = tmp;
       }
       break;
 
     case LS_DOUBLE: // No conversion necessary.
-      is.read (X_CAST (char *, data), 8 * len);
+      is.read (reinterpret_cast<char *> (data), 8 * len);
       do_double_format_conversion (data, len, fmt);
       break;
 
@@ -1083,9 +1079,9 @@ write_doubles (std::ostream& os, const double *data, save_type type, int len)
 
     case LS_DOUBLE: // No conversion necessary.
       {
-	char tmp_type = X_CAST (char, type);
+	char tmp_type = static_cast<char> (type);
 	os.write (&tmp_type, 1);
-	os.write (X_CAST (char *, data), 8 * len);
+	os.write (reinterpret_cast <const char *> (data), 8 * len);
       }
       break;
 

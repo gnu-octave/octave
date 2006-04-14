@@ -623,11 +623,11 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
 
   // Use negative value for ndims
   FOUR_BYTE_INT di = - d.length();
-  os.write (X_CAST (char *, &di), 4);
+  os.write (reinterpret_cast<char *> (&di), 4);
   for (int i = 0; i < d.length (); i++)
     {
       di = d(i);
-      os.write (X_CAST (char *, &di), 4);
+      os.write (reinterpret_cast<char *> (&di), 4);
     }
   
   Cell tmp = cell_value ();
@@ -653,7 +653,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
 {
   bool success = true;
   FOUR_BYTE_INT mdims;
-  if (! is.read (X_CAST (char *, &mdims), 4))
+  if (! is.read (reinterpret_cast<char *> (&mdims), 4))
     return false;
   if (swap)
     swap_bytes<4> (&mdims);
@@ -667,7 +667,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
 
   for (int i = 0; i < mdims; i++)
     {
-      if (! is.read (X_CAST (char *, &di), 4))
+      if (! is.read (reinterpret_cast<char *> (&di), 4))
 	return false;
       if (swap)
 	swap_bytes<4> (&di);

@@ -70,7 +70,7 @@ DEFNDBINOP_OP (sub_s_so, scalar, streamoff, streamoff, streamoff_array, +)
 #define STREAMOFF_COMP_OP(FN, OP, T1, T2) \
   DEFBINOP (FN, T1, T2) \
   { \
-    CAST_BINOP_ARGS (const octave_ ## T1&, octave_ ## T2&); \
+    CAST_BINOP_ARGS (const octave_ ## T1&, const octave_ ## T2&); \
  \
     streamoff_array cm1 = v1.streamoff_array_value (); \
     streamoff_array cm2 = v2.streamoff_array_value (); \

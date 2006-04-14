@@ -266,6 +266,8 @@ all: octave$(EXEEXT) $(OCT_FILES) PKG_ADD DOCSTRINGS
 
 objects: $(OBJECTS)
 
+lex.o parse.o pic/lex.o pic/parse.o : ALL_CXXFLAGS := $(filter-out -Wold-style-cast, $(ALL_CXXFLAGS))
+
 XERBLA = ../libcruft/blas-xtra/xerbla.o
 ifdef FPICFLAG
   PIC_XERBLA = ../libcruft/blas-xtra/pic/xerbla.o

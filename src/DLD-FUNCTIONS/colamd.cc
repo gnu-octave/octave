@@ -292,7 +292,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	  if (nel_User_knobs > 1) 
 	    knobs [COLAMD_DENSE_COL] = User_knobs (1) ;
 	  if (nel_User_knobs > 2) 
-	    spumoni = (int) User_knobs (2);
+	    spumoni = static_cast<int> (User_knobs (2));
 
 	  // print knob settings if spumoni is set
 	  if (spumoni)
@@ -526,7 +526,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
 	  if (nel_User_knobs > 0) 
 	    knobs [COLAMD_DENSE_ROW] = User_knobs (COLAMD_DENSE_ROW);
 	  if (nel_User_knobs > 1) 
-	    spumoni = (int) User_knobs (1);
+	    spumoni = static_cast<int> (User_knobs (1));
 	}
 
       // print knob settings if spumoni is set

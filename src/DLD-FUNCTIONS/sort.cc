@@ -246,7 +246,7 @@ static inline unsigned EIGHT_BYTE_INT
 FloatFlip (unsigned EIGHT_BYTE_INT f)
 {
   unsigned EIGHT_BYTE_INT mask
-    = -(EIGHT_BYTE_INT)(f >> 63) | 0x8000000000000000ULL;
+    = -static_cast<EIGHT_BYTE_INT>(f >> 63) | 0x8000000000000000ULL;
 
   return f ^ mask;
 }
@@ -350,7 +350,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	    if (mode == UNDEFINED || mode == ASCENDING)
 	      {
 		octave_idx_type i = 0;
-		double *vtmp = (double *)p;
+		double *vtmp = reinterpret_cast<double *> (p);
 		while (xisnan (vtmp[i++]) && i < ns);
 		for (octave_idx_type l = 0; l < ns - i + 1; l++)
 		  vtmp[l] = vtmp[l+i-1];
@@ -360,7 +360,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	    else
 	      {
 		octave_idx_type i = ns;
-		double *vtmp = (double *)p;
+		double *vtmp = reinterpret_cast<double *> (p);
 		while (xisnan (vtmp[--i]) && i > 0);
 		for (octave_idx_type l = i; l >= 0; l--)
 		  vtmp[l-i+ns-1] = vtmp[l];

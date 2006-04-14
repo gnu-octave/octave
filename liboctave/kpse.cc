@@ -678,7 +678,8 @@ log_search (const string_vector& filenames)
 
 	  /* Only record absolute filenames, for privacy.  */
 	  if (log_file && kpse_absolute_p (filename.c_str (), false))
-	    fprintf (log_file, "%lu %s\n", (long unsigned) time (0),
+	    fprintf (log_file, "%lu %s\n",
+		     static_cast<unsigned long> (time (0)),
 		     filename.c_str ());
 
 	  /* And show them online, if debugging.  We've already started
@@ -2139,7 +2140,7 @@ dir_links (const std::string& fn)
       struct stat stats;
 
       ret = stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode)
-            ? stats.st_nlink : (unsigned) -1;
+	? stats.st_nlink : static_cast<unsigned> (-1);
 
       link_table[fn] = ret;
 
@@ -2418,7 +2419,8 @@ fopen (const char *filename, const char *mode)
   FILE *ret = fopen (filename, mode);
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
-    DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename, mode, (unsigned long) ret);
+    DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename, mode,
+	     reinterpret_cast<unsigned long> (ret));
 
   return ret;
 }

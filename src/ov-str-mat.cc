@@ -287,7 +287,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os,
       for (int i=0; i < d.length (); i++)
 	os << " " << d (i);
       os << "\n";
-      os.write (X_CAST (char *, tmp.fortran_vec ()), d.numel ());
+      os.write (tmp.fortran_vec (), d.numel ());
       os << "\n";
     }
   else
@@ -305,7 +305,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os,
 	  const char *tmp = tstr.data ();
 	  if (tstr.length () > len)
 	    panic_impossible ();
-	  os.write (X_CAST (char *, tmp), len);
+	  os.write (tmp, len);
 	  os << "\n";
 	}
     }
@@ -381,7 +381,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 		      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
 		  
 		      if (len > 0 && ! 
-			  is.read (X_CAST (char *, tmp), len))
+			  is.read (tmp, len))
 			{
 			  error ("load: failed to load string constant");
 			  success = false;
@@ -426,7 +426,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
 	      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
 
-	      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
+	      if (len > 0 && ! is.read (tmp, len))
 		{
 		  error ("load: failed to load string constant");
 		}
@@ -463,11 +463,11 @@ octave_char_matrix_str::save_binary (std::ostream& os,
 
   // Use negative value for ndims to differentiate with old format!!
   FOUR_BYTE_INT tmp = - d.length();
-  os.write (X_CAST (char *, &tmp), 4);
+  os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i=0; i < d.length (); i++)
     {
       tmp = d(i);
-      os.write (X_CAST (char *, &tmp), 4);
+      os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   charNDArray m = char_array_value ();
@@ -480,7 +480,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 				     oct_mach_info::float_format /* fmt */)
 {
   FOUR_BYTE_INT elements;
-  if (! is.read (X_CAST (char *, &elements), 4))
+  if (! is.read (reinterpret_cast<char *> (&elements), 4))
     return false;
   if (swap)
     swap_bytes<4> (&elements);
@@ -494,7 +494,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 
       for (int i = 0; i < mdims; i++)
 	{
-	  if (! is.read (X_CAST (char *, &di), 4))
+	  if (! is.read (reinterpret_cast<char *> (&di), 4))
 	    return false;
 	  if (swap)
 	    swap_bytes<4> (&di);
@@ -528,12 +528,12 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       for (int i = 0; i < elements; i++)
 	{
 	  FOUR_BYTE_INT len;
-	  if (! is.read (X_CAST (char *, &len), 4))
+	  if (! is.read (reinterpret_cast<char *> (&len), 4))
 	    return false;
 	  if (swap)
 	    swap_bytes<4> (&len);
 	  OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
-	  if (! is.read (X_CAST (char *, btmp), len))
+	  if (! is.read (reinterpret_cast<char *> (btmp), len))
 	    return false;
 	  if (len > max_len)
 	    {
@@ -680,8 +680,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 	      // to read into:
 	      hid_t st_id = H5Tcopy (H5T_C_S1);
 	      H5Tset_size (st_id, slen);
-	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, 
-			   H5P_DEFAULT, (void *) s) < 0)
+	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
 		{
 		  H5Tclose (st_id);
 		  H5Tclose (type_hid);
@@ -725,8 +724,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 	      hid_t st_id = H5Tcopy (H5T_C_S1);
 	      H5Tset_size (st_id, slen);
 
-	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, 
-			   H5P_DEFAULT, (void *) s) < 0)
+	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
 		{
 		  H5Tclose (st_id);
 		  H5Tclose (type_hid);

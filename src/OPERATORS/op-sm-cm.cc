@@ -61,7 +61,7 @@ DEFBINOPX (pow, sparse_matrix, complex_matrix)
 
 DEFBINOP (ldiv, sparse_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_complex_matrix&);
+  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex_matrix&);
   SparseType typ = v1.sparse_type ();
 
   ComplexMatrix ret = xleftdiv (v1.sparse_matrix_value (), 

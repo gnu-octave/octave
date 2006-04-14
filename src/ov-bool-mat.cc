@@ -287,11 +287,11 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
   // Use negative value for ndims to differentiate with old format!!
   FOUR_BYTE_INT tmp = - d.length();
-  os.write (X_CAST (char *, &tmp), 4);
+  os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < d.length (); i++)
     {
       tmp = d(i);
-      os.write (X_CAST (char *, &tmp), 4);
+      os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   boolNDArray m = bool_array_value ();
@@ -312,7 +312,7 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format /* fmt */)
 {
   FOUR_BYTE_INT mdims;
-  if (! is.read (X_CAST (char *, &mdims), 4))
+  if (! is.read (reinterpret_cast<char *> (&mdims), 4))
     return false;
   if (swap)
     swap_bytes<4> (&mdims);
@@ -329,7 +329,7 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
 
   for (int i = 0; i < mdims; i++)
     {
-      if (! is.read (X_CAST (char *, &di), 4))
+      if (! is.read (reinterpret_cast<char *> (&di), 4))
 	return false;
       if (swap)
 	swap_bytes<4> (&di);

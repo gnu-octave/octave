@@ -150,7 +150,7 @@ read_binary_data (std::istream& is, bool swap,
   // We expect to fail here, at the beginning of a record, so not
   // being able to read another name should not result in an error.
 
-  is.read (X_CAST (char *, &name_len), 4);
+  is.read (reinterpret_cast<char *> (&name_len), 4);
   if (! is)
     return retval;
   if (swap)
@@ -159,12 +159,12 @@ read_binary_data (std::istream& is, bool swap,
   {
     OCTAVE_LOCAL_BUFFER (char, name, name_len+1);
     name[name_len] = '\0';
-    if (! is.read (X_CAST (char *, name), name_len))
+    if (! is.read (reinterpret_cast<char *> (name), name_len))
       goto data_read_error;
     retval = name;
   }
 
-  is.read (X_CAST (char *, &doc_len), 4);
+  is.read (reinterpret_cast<char *> (&doc_len), 4);
   if (! is)
     goto data_read_error;
   if (swap)
@@ -173,17 +173,17 @@ read_binary_data (std::istream& is, bool swap,
   {
     OCTAVE_LOCAL_BUFFER (char, tdoc, doc_len+1);
     tdoc[doc_len] = '\0';
-    if (! is.read (X_CAST (char *, tdoc), doc_len))
+    if (! is.read (reinterpret_cast<char *> (tdoc), doc_len))
       goto data_read_error;
     doc = tdoc;
   }
 
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     goto data_read_error;
   global = tmp ? 1 : 0;
 
   tmp = 0;
-  if (! is.read (X_CAST (char *, &tmp), 1))
+  if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     goto data_read_error;
 
   // All cases except 255 kept for backwards compatibility
@@ -211,12 +211,12 @@ read_binary_data (std::istream& is, bool swap,
 	// This is cruft, since its for a save type that is old. Maybe
 	// this is taking backward compatability too far!!
 	FOUR_BYTE_INT len;
-	if (! is.read (X_CAST (char *, &len), 4))
+	if (! is.read (reinterpret_cast<char *> (&len), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_bytes<4> (&len);
 	OCTAVE_LOCAL_BUFFER (char, s, len+1);
-	if (! is.read (X_CAST (char *, s), len))
+	if (! is.read (reinterpret_cast<char *> (s), len))
 	  goto data_read_error;
 	s[len] = '\0';
 	tc = s;
@@ -238,12 +238,12 @@ read_binary_data (std::istream& is, bool swap,
       {
 	// Read the saved variable type
 	FOUR_BYTE_INT len;
-	if (! is.read (X_CAST (char *, &len), 4))
+	if (! is.read (reinterpret_cast<char *> (&len), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_bytes<4> (&len);
 	OCTAVE_LOCAL_BUFFER (char, s, len+1);
-	if (! is.read (X_CAST (char *, s), len))
+	if (! is.read (s, len))
 	  goto data_read_error;
 	s[len] = '\0';
 	std::string typ = s;
@@ -275,29 +275,29 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 {
   FOUR_BYTE_INT name_len = name.length ();
 
-  os.write (X_CAST (char *, &name_len), 4);
+  os.write (reinterpret_cast<char *> (&name_len), 4);
   os << name;
 
   FOUR_BYTE_INT doc_len = doc.length ();
 
-  os.write (X_CAST (char *, &doc_len), 4);
+  os.write (reinterpret_cast<char *> (&doc_len), 4);
   os << doc;
 
   unsigned char tmp;
 
   tmp = mark_as_global;
-  os.write (X_CAST (char *, &tmp), 1);
+  os.write (reinterpret_cast<char *> (&tmp), 1);
 
   // 255 flags the new binary format
   tmp = 255;
-  os.write (X_CAST (char *, &tmp), 1);
+  os.write (reinterpret_cast<char *> (&tmp), 1);
 
   // Write the string corresponding to the octave_value type
   std::string typ = tc.type_name ();
   FOUR_BYTE_INT len = typ.length ();
-  os.write (X_CAST (char *, &len), 4);
+  os.write (reinterpret_cast<char *> (&len), 4);
   const char *btmp = typ.data ();
-  os.write (X_CAST (char *, btmp), len);
+  os.write (btmp, len);
       
   // The octave_value of tc is const. Make a copy...
   octave_value val = tc;

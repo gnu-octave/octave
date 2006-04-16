@@ -359,7 +359,7 @@ struct hash_table_type
 };
 
 static unsigned
-hash (hash_table_type table, const std::string& key)
+kpse_hash (hash_table_type table, const std::string& key)
 {
   unsigned n = 0;
 
@@ -380,7 +380,7 @@ hash_lookup (hash_table_type table, const std::string& key)
 {
   hash_element_type *p;
   string_vector ret;
-  unsigned n = hash (table, key);
+  unsigned n = kpse_hash (table, key);
 
   /* Look at everything in this bucket.  */
   for (p = table.buckets[n]; p; p = p->next)

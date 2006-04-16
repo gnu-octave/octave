@@ -89,7 +89,7 @@ SparseType::SparseType (const SparseMatrix &a)
 	  
       if (tmp_typ == SparseType::Permuted_Diagonal)
 	{
-	  bool found [nrows];
+	  std::vector<bool> found (nrows);
 
 	  for (octave_idx_type j = 0; j < i; j++)
 	    found [j] = true;
@@ -414,7 +414,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	  
       if (tmp_typ == SparseType::Permuted_Diagonal)
 	{
-	  bool found [nrows];
+	  std::vector<bool> found (nrows);
 
 	  for (octave_idx_type j = 0; j < i; j++)
 	    found [j] = true;

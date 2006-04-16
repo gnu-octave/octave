@@ -1,3 +1,11 @@
+2006-04-16  John W. Eaton  <jwe@octave.org>
+
+	* kpse.cc (kpse_hash): Rename from hash.
+	(hash_lookup): Call kpse_hash instead of hash.
+
+	* SparseType.cc (SparseType::SparseType): Use std::vector<bool>
+	to avoid local array with variable dimension.
+
 2006-04-13  David Bateman  <dbateman@free.fr>
 
         * Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)):

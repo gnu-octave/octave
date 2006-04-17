@@ -30,11 +30,11 @@ class octave_value;
 class octave_value_list;
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "Array.h"
 #include "data-conv.h"
-#include "lo-sstream.h"
 #include "lo-utils.h"
 #include "mach-info.h"
 
@@ -160,7 +160,7 @@ private:
   Array<scanf_format_elt*> list;
 
   // Temporary buffer.
-  OSSTREAM *buf;
+  std::ostringstream *buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
 			int& num_elts,
@@ -292,7 +292,7 @@ private:
   Array<printf_format_elt*> list;
 
   // Temporary buffer.
-  OSSTREAM *buf;
+  std::ostringstream *buf;
 
   void add_elt_to_list (int args, const std::string& flags, int fw,
 			int prec, char type, char modifier,

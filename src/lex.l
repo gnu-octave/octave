@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cctype>
 #include <cstring>
 
+#include <sstream>
 #include <string>
 #include <stack>
 
@@ -50,7 +51,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "cmd-edit.h"
 #include "quit.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 
 // These would be alphabetical, but y.tab.h must be included before
 // oct-gperf.h and y.tab.h must be included after token.h and the tree
@@ -1783,7 +1783,7 @@ handle_number (void)
 static bool
 have_continuation (bool trailing_comments_ok)
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   std::string comment_buf;
 
@@ -1876,9 +1876,7 @@ have_continuation (bool trailing_comments_ok)
 
 cleanup:
 
-  buf << OSSTREAM_ENDS;
-  std::string s = OSSTREAM_STR (buf);
-  OSSTREAM_FREEZE (buf);
+  std::string s = buf.str ();
 
   int len = s.length ();
   while (len--)
@@ -1936,7 +1934,7 @@ eat_continuation (void)
 static int
 handle_string (char delim, int text_style)
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   int bos_line = input_line_number;
   int bos_col = current_input_column;
@@ -1994,12 +1992,11 @@ handle_string (char delim, int text_style)
 		{
 		  std::string s;  
 		  yyunput (c, yytext);
-		  buf << OSSTREAM_ENDS;
+
 		  if (lexer_flags.doing_rawcommand || delim == '\'')
-		    s = OSSTREAM_STR (buf);
+		    s = buf.str ();
 		  else
-		    s = do_string_escapes (OSSTREAM_STR(buf));
-		  OSSTREAM_FREEZE (buf);
+		    s = do_string_escapes (buf.str ());
 
 		  if (text_style && lexer_flags.doing_rawcommand)
 		    s = std::string (1, delim) + s + std::string (1, delim);

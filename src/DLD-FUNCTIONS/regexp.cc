@@ -27,6 +27,8 @@ Boston, MA 02110-1301, USA.
 #include <config.h>
 #endif
 
+#include <sstream>
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
@@ -127,7 +129,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       string_vector named;
       int nnames = 0;
       int inames = 0;
-      OSSTREAM buf;
+      std::ostringstream buf;
       Array<int> named_idx;
 
       while ((new_pos = pattern.find ("(?<",pos)) != NPOS)
@@ -170,7 +172,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	  pos = tmp_pos;
 	}
 
-      buf << pattern.substr(pos) << OSSTREAM_ENDS;
+      buf << pattern.substr(pos);
 
       if (error_state)
 	return retval;
@@ -179,10 +181,10 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       pcre *re;
       const char *err;
       int erroffset;
-      re = pcre_compile(OSSTREAM_C_STR(buf), 
-			(case_insensitive ? PCRE_CASELESS : 0),
-			&err, &erroffset, NULL);
-      OSSTREAM_FREEZE (buf);
+      std::string buf_str = buf.str ();
+      re = pcre_compile (buf_str.c_str (),
+			 (case_insensitive ? PCRE_CASELESS : 0),
+			 &err, &erroffset, NULL);
     
       if (re == NULL) {
 	error("%s: %s at position %d of expression", nm.c_str(), 

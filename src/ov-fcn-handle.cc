@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "defun.h"
@@ -164,7 +165,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
   if (nm == "@<anonymous>")
     {
       char c;
-      OSSTREAM buf;
+      std::ostringstream buf;
 
       // Skip preceeding newline(s).
       while (is.get (c) && c == '\n')
@@ -186,12 +187,9 @@ octave_fcn_handle::load_ascii (std::istream& is)
 	    }
 	}
 
-      buf << OSSTREAM_ENDS;
-
       int parse_status;
-      octave_value anon_fcn_handle = eval_string (OSSTREAM_STR (buf), 
-						  true, parse_status);
-      OSSTREAM_FREEZE (buf);
+      octave_value anon_fcn_handle = eval_string (buf.str (), true,
+						  parse_status);
 
       if (parse_status == 0)
 	{
@@ -222,10 +220,9 @@ octave_fcn_handle::save_binary (std::ostream& os, bool&)
   os.write (nm.c_str (), nm.length ());
   if (nm == "@<anonymous>")
     {
-      OSSTREAM buf;
+      std::ostringstream buf;
       print_raw (buf, true);
-      std::string stmp = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      std::string stmp = buf.str ();
       tmp = stmp.length ();
       os.write (reinterpret_cast<char *> (&tmp), 4);
       os.write (stmp.c_str (), stmp.length ());
@@ -328,10 +325,9 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 
   if (nm == "@<anonymous>")
     {
-      OSSTREAM buf;
+      std::ostringstream buf;
       print_raw (buf, true);
-      std::string stmp = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      std::string stmp = buf.str ();
 
       // attach the type of the variable
       H5Tset_size (type_hid, stmp.length () + 1);

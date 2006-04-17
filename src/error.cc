@@ -28,9 +28,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cstdarg>
 #include <cstring>
 
+#include <sstream>
 #include <string>
-
-#include "lo-sstream.h"
 
 #include "defun.h"
 #include "error.h"
@@ -118,7 +117,7 @@ bool discard_error_messages = false;
 bool discard_warning_messages = false;
 
 // The message buffer.
-static OSSTREAM *error_message_buffer = 0;
+static std::ostringstream *error_message_buffer = 0;
 
 void
 reset_error_handler (void)
@@ -148,22 +147,20 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   flush_octave_stdout ();
 
-  OSSTREAM output_buf;
+  std::ostringstream output_buf;
 
   if (name)
     output_buf << name << ": ";
 
   octave_vformat (output_buf, fmt, args);
 
-  output_buf << std::endl << OSSTREAM_ENDS;
+  output_buf << std::endl;
 
   // XXX FIXME XXX -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
-  std::string msg_string = OSSTREAM_STR (output_buf);
-
-  OSSTREAM_FREEZE (output_buf);
+  std::string msg_string = output_buf.str ();
 
   if (! warning_state)
     {
@@ -193,7 +190,7 @@ verror (bool save_last_error, std::ostream& os,
 
   bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
 
-  OSSTREAM output_buf;
+  std::ostringstream output_buf;
 
   if (to_beep_or_not_to_beep_p)
     output_buf << "\a";
@@ -203,15 +200,13 @@ verror (bool save_last_error, std::ostream& os,
 
   octave_vformat (output_buf, fmt, args);
 
-  output_buf << std::endl << OSSTREAM_ENDS;
+  output_buf << std::endl;
 
   // XXX FIXME XXX -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
-  std::string msg_string = OSSTREAM_STR (output_buf);
-
-  OSSTREAM_FREEZE (output_buf);
+  std::string msg_string = output_buf.str ();
 
   if (! error_state && save_last_error)
     {
@@ -227,7 +222,7 @@ verror (bool save_last_error, std::ostream& os,
 
       if (! error_message_buffer)
 	{
-	  error_message_buffer = new OSSTREAM;
+	  error_message_buffer = new std::ostringstream ();
 
 	  // XXX FIXME XXX -- this is ugly, but it prevents
 	  //
@@ -417,7 +412,7 @@ pr_where (const char *name, bool print_code = true)
 	  // one statement even if there were multiple statements on
 	  // the original source line.
 
-	  OSSTREAM output_buf;
+	  std::ostringstream output_buf;
 
 	  output_buf << std::endl;
 
@@ -425,11 +420,11 @@ pr_where (const char *name, bool print_code = true)
 
 	  curr_statement->accept (tpc);
 
-	  output_buf << std::endl << OSSTREAM_ENDS;
+	  output_buf << std::endl;
 
-	  pr_where_1 ("%s", OSSTREAM_C_STR (output_buf));
+	  std::string msg = output_buf.str ();
 
-	  OSSTREAM_FREEZE (output_buf);
+	  pr_where_1 ("%s", msg.c_str ());
 	}
     }
 }

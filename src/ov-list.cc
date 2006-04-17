@@ -26,8 +26,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <iostream>
+#include <sstream>
 
-#include "lo-sstream.h"
 #include "lo-utils.h"
 
 #include "Cell.h"
@@ -311,15 +311,13 @@ octave_list::print_raw (std::ostream& os, bool) const
 
       for (octave_idx_type i = 0; i < n; i++)
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 
-	  buf << "[" << i+1 << "]" << OSSTREAM_ENDS;
+	  buf << "[" << i+1 << "]";
 
 	  octave_value val = data(i);
 
-	  val.print_with_name (os, OSSTREAM_STR (buf));
-
-	  OSSTREAM_FREEZE (buf);
+	  val.print_with_name (os, buf.str ());
 	}
 
       decrement_indent_level ();
@@ -549,10 +547,9 @@ octave_list::save_ascii (std::ostream& os, bool& infnan_warned,
     {
       // should we use lst.name_tags () to label the elements?
 
-      OSSTREAM buf;
-      buf << "_" << i << OSSTREAM_ENDS;
-      std::string s = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      std::ostringstream buf;
+      buf << "_" << i;
+      std::string s = buf.str ();
 
       bool b = save_ascii_data (os, lst (i), s.c_str (), infnan_warned, 
 				strip_nan_and_inf, 0, 0);
@@ -624,10 +621,9 @@ octave_list::save_binary (std::ostream& os, bool& save_as_floats)
     {
       // should we use lst.name_tags () to label the elements?
 
-      OSSTREAM buf;
-      buf << "_" << i << OSSTREAM_ENDS;
-      std::string s = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      std::ostringstream buf;
+      buf << "_" << i;
+      std::string s = buf.str ();
 
       // Recurse to print sub-value.
       bool b = save_binary_data (os, lst(i), s.c_str (), "", 0,
@@ -704,10 +700,9 @@ octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     {
       // should we use lst.name_tags () to label the elements?
 
-      OSSTREAM buf;
-      buf << "_" << i << OSSTREAM_ENDS;
-      std::string s = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      std::ostringstream buf;
+      buf << "_" << i;
+      std::string s = buf.str ();
 
       bool retval2 = add_hdf5_data (data_hid, lst (i), s.c_str (), "",
 				    false, save_as_floats);

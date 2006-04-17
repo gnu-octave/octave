@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "byte-swap.h"
@@ -40,7 +41,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"
@@ -120,7 +120,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
     {
       if (c == '%' || c == '#')
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 	
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -131,14 +131,12 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << OSSTREAM_ENDS;
-	  std::string tmp = OSSTREAM_STR (buf);
+	  std::string tmp = buf.str ();
 	  bool match = (tmp.compare (0, strlen (keyword), keyword) == 0);
-	  OSSTREAM_FREEZE (buf);
 
 	  if (match)
 	    {
-	      OSSTREAM value;
+	      std::ostringstream value;
 	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
 		; // Skip whitespace and the colon.
 
@@ -148,9 +146,8 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 		  while (is.get (c) && c != '\n')
 		    value << c;
 		}
-	      value << OSSTREAM_ENDS;
-	      retval = OSSTREAM_STR (value);
-	      OSSTREAM_FREEZE (value);
+
+	      retval = value.str ();
 	      break;
 	    }
 	  else if (next_only)

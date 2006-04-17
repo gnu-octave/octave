@@ -28,10 +28,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cfloat>
 #include <cmath>
 
+#include <sstream>
+
 #include "LSODE.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-sstream.h"
 #include "quit.h"
 
 typedef octave_idx_type (*lsode_fcn_ptr) (const octave_idx_type&, const double&, double*,
@@ -318,10 +319,9 @@ LSODE::error_message (void) const
 {
   std::string retval;
 
-  OSSTREAM buf;
-  buf << t << OSSTREAM_ENDS;
-  std::string t_curr = OSSTREAM_STR (buf);
-  OSSTREAM_FREEZE (buf);
+  std::ostringstream buf;
+  buf << t;
+  std::string t_curr = buf.str ();
 
   switch (istate)
     {

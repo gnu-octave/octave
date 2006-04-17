@@ -46,7 +46,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"

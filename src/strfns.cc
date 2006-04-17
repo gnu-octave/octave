@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <cctype>
+#include <sstream>
 
 #include "dMatrix.h"
 
@@ -393,7 +394,7 @@ If @var{width} is not specified, the width of the terminal screen is used.\n\
 
       if (! error_state)
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 
 	  if (nargin == 1)
 	    // Let list_in_columns query terminal width.
@@ -408,11 +409,7 @@ If @var{width} is not specified, the width of the terminal screen is used.\n\
 		error ("list_in_columns: expecting width to be an integer");
 	    }
 
-	  buf << OSSTREAM_ENDS;
-
-	  retval = OSSTREAM_STR (buf);
-
-	  OSSTREAM_FREEZE (buf);
+	  retval = buf.str ();
 	}
       else
 	error ("list_in_columns: expecting cellstr or char array");

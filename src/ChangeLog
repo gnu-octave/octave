@@ -1,3 +1,58 @@
+2006-04-16  John W. Eaton  <jwe@octave.org>
+
+	* pager.h (octave_diary_buf, octave_pager_buf): Use std:stringbuf
+	directly.
+
+	* ls-mat-ascii.cc (read_mat_ascii_data): Use std::istringstream
+	directly.
+	* load-save.cc (parse_save_options): Likewise.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+	* oct-strstrm.h (octave_istrstream::is): Likewise.
+
+	* __gnuplot_raw__.l (printrange, handle_using, gnuplot::do_open,
+	gnuplot::do_set, gnuplot::do_show, gnuplot::makeplot,
+	gnuplot::handle_title): Use std::ostringstream directly.
+	* toplev.cc (run_command_and_return_output): Likewise.
+	* symtab.h (symbol_table::symbol_table): Likewise.
+	* strfns.cc (Flist_in_columns): Likewise.
+	* pt.cc (tree::str_print_code): Likewise.
+	* parse.y (yyerror, fold, finish_matrix): Likewise. 
+	* pr-output.cc (PRINT_ND_ARRAY, octave_print_internal, Fdisp):	
+	Likewise.
+	* symtab.cc (symbol_table::print_descriptor): Likewise.
+	* ov-list.cc (octave_list::print_raw, octave_list::save_ascii,
+	octave_list::save_binary, octave_list::save_hdf5): Likewise.
+	* ov-fcn-inline.cc (octave_fcn_inline::octave_fcn_inline,
+	octave_fcn_inline::load_ascii, octave_fcn_inline::print_raw,
+	Finline): Likewise.
+	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii,
+	octave_fcn_handle::save_binary, octave_fcn_handle::save_hdf5):
+	Likewise.
+	* ov-cs-list.cc (octave_cs_list::print_raw): Likewise.
+	* ov-cell.cc (octave_cell::print_raw, octave_cell::save_hdf5):
+	Likewise.
+	* oct-strstrm.h (octave_ostrstream::os, octave_ostrstream::str):
+	Likewise.
+	* oct-stream.h (scanf_format_list::buf, printf_format_list::buf):
+	Likewise.
+	* oct-stream.cc (scanf_format_list::scanf_format_list,
+	printf_format_list::printf_format_list,
+	octave_base_stream::do_gets, BEGIN_CHAR_CLASS_CONVERSION, 
+	octave_stream_list::do_list_open_files): Likewise.
+	* ls-oct-ascii.h (extract_keyword): Likewise.
+	* load-save.cc (do_load): Likewise.
+	* lex.l (have_continuation, handle_string): Likewise.
+	* input.cc (get_user_input): Likewise.
+	* dirfns.cc (Fls): Likewise.
+	* error.cc (error_message_buffer, vwarning, verror, pr_where):
+	Likewise.
+	* defun.cc (print_usage): Likewise.
+	* help.cc (display_help_text, Ftype, first_help_sentence):
+	Likewise.
+	* ls-mat5.cc (save_mat5_binary_element): Likewise.
+	* DLD-FUNCTIONS/regexp.cc (octregexp): Likewise.
+	* DLD-FUNCTIONS/fftw_wisdom.cc (Ffftw_wisdom): Likewise.
+
 2006-04-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (lex.o parse.o __gnuplot_raw__.o, pic/parse.o

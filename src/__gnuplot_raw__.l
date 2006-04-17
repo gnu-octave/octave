@@ -42,6 +42,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -528,7 +529,7 @@ printrange (std::string starts, std::string ends)
   octave_value startv, endv;
   int status;
   std::string s;
-  OSSTREAM range_buf;
+  std::ostringstream range_buf;
 
   range_buf << "[";
 
@@ -551,9 +552,8 @@ printrange (std::string starts, std::string ends)
       }
 
     range_buf << "]";
-    range_buf << OSSTREAM_ENDS;
 
-    s = OSSTREAM_STR (range_buf);
+    s = range_buf.str ();
 
     return s;
 }
@@ -581,10 +581,9 @@ handle_using (int& lasttok)
       if (status != 0 || ! tmp_data.is_real_scalar ())
 	throw gpt_parse_error ();
 
-      OSSTREAM tmp_buf;
+      std::ostringstream tmp_buf;
       tmp_data.print_raw (tmp_buf);
-      tmp_buf << OSSTREAM_ENDS;
-      retstr += OSSTREAM_STR (tmp_buf);
+      retstr += tmp_buf.str ();
 
       if (tok == COLON)
 	retstr += ":";
@@ -965,15 +964,11 @@ gnuplot::do_open (void)
 
       if (use_title_option)
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 
-	  buf << cmd
-	      << " -title \"Figure " << get_current_figure () << "\""
-	      << OSSTREAM_ENDS;
+	  buf << cmd << " -title \"Figure " << get_current_figure () << "\"";
 
-	  cmd = OSSTREAM_STR (buf);
-
-	  OSSTREAM_FREEZE (buf);
+	  cmd = buf.str ();
 	}
 
       plot_stream = new oprocstream (cmd.c_str ());
@@ -1119,7 +1114,7 @@ gnuplot::do_set (const string_vector& argv)
 {
   int argc = argv.length ();
 
-  OSSTREAM plot_buf;
+  std::ostringstream plot_buf;
 
   if (argc > 1)
     {
@@ -1130,15 +1125,14 @@ gnuplot::do_set (const string_vector& argv)
       else if (almost_match ("term", argv[1], 1))
 	{
 	  gnuplot_terminal_type = "";
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 	  int i;
 	  for (i = 2; i < argc-1; i++)
 	    buf << argv[i] << " ";
 	  if (i < argc)
 	    buf << argv[i];
-	  buf << Vgnuplot_command_end << OSSTREAM_ENDS;
-	  gnuplot_terminal_type = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
+	  buf << Vgnuplot_command_end;
+	  gnuplot_terminal_type = buf.str ();
 	}
     }
 
@@ -1149,11 +1143,9 @@ gnuplot::do_set (const string_vector& argv)
   if (i < argc)
     plot_buf << argv[i];
 
-  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
+  plot_buf << Vgnuplot_command_end;
 
-  do_send_raw (OSSTREAM_STR (plot_buf));
-
-  OSSTREAM_FREEZE (plot_buf);
+  do_send_raw (plot_buf.str ());
 }
 
 void
@@ -1161,7 +1153,7 @@ gnuplot::do_show (const string_vector& argv)
 {
   int argc = argv.length ();
 
-  OSSTREAM plot_buf;
+  std::ostringstream plot_buf;
 
   int i;
   for (i = 0; i < argc-1; i++)
@@ -1169,11 +1161,9 @@ gnuplot::do_show (const string_vector& argv)
   if (i < argc)
     plot_buf << argv[i];
 
-  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
+  plot_buf << Vgnuplot_command_end;
 
-  do_send (OSSTREAM_STR (plot_buf));
-
-  OSSTREAM_FREEZE (plot_buf);
+  do_send (plot_buf.str ());
 }
 
 void
@@ -1295,9 +1285,8 @@ gnuplot::makeplot (std::string caller, std::string args)
 	  if (status != 0 || ! tmp_data.is_defined ())
 	    throw gpt_parse_error ();
 
-	  OSSTREAM tmp_buf;
+	  std::ostringstream tmp_buf;
 	  tmp_data.print_raw (tmp_buf);
-	  tmp_buf << OSSTREAM_ENDS;
 
 	  if (tmp_data.is_string ())
 	    {
@@ -1385,10 +1374,10 @@ gnuplot::makeplot (std::string caller, std::string args)
 
         if (! title_set)
 	  {
-            OSSTREAM tmp_buf;
+            std::ostringstream tmp_buf;
             tmp_buf << Vgnuplot_command_title << " \"line "
-                    << plot_line_count << "\" " << OSSTREAM_ENDS;
-            title_str = OSSTREAM_STR (tmp_buf);
+                    << plot_line_count << "\" ";
+            title_str = tmp_buf.str ();
 	    title_set = true;
         }
 
@@ -1441,12 +1430,12 @@ gnuplot::handle_title (int& lasttok)
   if (status != 0 || ! tmp_data.is_defined ())
     throw gpt_parse_error ();
 
-  OSSTREAM tmp_buf;
+  std::ostringstream tmp_buf;
   if (tmp_data.is_string ())
     {
       tmp_buf << '"';
       tmp_data.print_raw (tmp_buf);
-      tmp_buf << '"' << OSSTREAM_ENDS;
+      tmp_buf << '"';
     }
   else
     {
@@ -1454,7 +1443,7 @@ gnuplot::handle_title (int& lasttok)
       tmp_buf << '"' << "line " << plot_line_count << '"';
     }
 
-  retstr += OSSTREAM_STR (tmp_buf);
+  retstr += tmp_buf.str ();
 
   lasttok = tok;
 

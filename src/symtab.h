@@ -28,8 +28,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <string>
 #include <stack>
+#include <sstream>
 
-#include "lo-sstream.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
 
@@ -531,10 +531,9 @@ public:
 
       if (table_name.empty ())
 	{
-	  OSSTREAM buf;
-	  buf << symtab_count++ << OSSTREAM_ENDS;
-	  table_name = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
+	  std::ostringstream buf;
+	  buf << symtab_count++;
+	  table_name = buf.str ();
 	}
     }
 

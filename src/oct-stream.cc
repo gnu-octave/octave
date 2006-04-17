@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 #include <Array.h>
@@ -41,7 +42,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "byte-swap.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "lo-utils.h"
 #include "str-vec.h"
 #include "quit.h"
@@ -176,7 +176,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
       have_more = true;
 
       if (! buf)
-	buf = new OSSTREAM ();
+	buf = new std::ostringstream ();
 
       if (s[i] == '%')
 	{
@@ -251,11 +251,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 {
   if (buf)
     {
-      *buf << OSSTREAM_ENDS;
-
-      std::string text = OSSTREAM_STR (*buf);
-
-      OSSTREAM_FREEZE (*buf);
+      std::string text = buf->str ();
 
       if (! text.empty ())
 	{
@@ -612,7 +608,7 @@ printf_format_list::printf_format_list (const std::string& s)
 
 	  if (! buf)
 	    {
-	      buf = new OSSTREAM ();
+	      buf = new std::ostringstream ();
 	      empty_buf = true;
 	    }
 
@@ -681,11 +677,7 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
 {
   if (buf)
     {
-      *buf << OSSTREAM_ENDS;
-
-      std::string text = OSSTREAM_STR (*buf);
-
-      OSSTREAM_FREEZE (*buf);
+      std::string text = buf->str ();
 
       if (! text.empty ())
 	{
@@ -977,7 +969,7 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
     {
       std::istream& is = *isp;
 
-      OSSTREAM buf;
+      std::ostringstream buf;
 
       int c = 0;
       int char_count = 0;
@@ -1004,11 +996,7 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 	}
 
       if (is.good () || (is.eof () && char_count > 0))
-	{
-	  buf << OSSTREAM_ENDS;
-	  retval = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
-	}
+	retval = buf.str ();
       else
 	{
 	  err = true;
@@ -1538,7 +1526,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 	} \
       else \
 	{ \
-	  OSSTREAM buf; \
+	  std::ostringstream buf; \
  \
 	  std::string char_class = elt->char_class; \
  \
@@ -1560,9 +1548,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 	  if (c != EOF) \
 	    is.putback (c); \
  \
-	  buf << OSSTREAM_ENDS; \
-	  tmp = OSSTREAM_STR (buf); \
-	  OSSTREAM_FREEZE (buf); \
+	  tmp = buf.str (); \
  \
 	  if (tmp.empty ()) \
 	    is.setstate (std::ios::failbit); \
@@ -4091,7 +4077,7 @@ octave_stream_list::do_list_open_files (void) const
 {
   std::string retval;
 
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << "\n"
       << "  number  mode  arch       name\n"
@@ -4114,11 +4100,9 @@ octave_stream_list::do_list_open_files (void) const
 	  << os.name () << "\n";
     }
 
-  buf << "\n" << OSSTREAM_ENDS;
+  buf << "\n";
 
-  retval = OSSTREAM_STR (buf);
-
-  OSSTREAM_FREEZE (buf);
+  retval = buf.str ();
 
   return retval;
 }

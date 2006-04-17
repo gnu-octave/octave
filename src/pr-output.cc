@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "Array-util.h"
@@ -40,7 +41,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "cmd-edit.h"
 #include "dMatrix.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
 #include "quit.h"
@@ -1546,7 +1546,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
                 { \
                   nm += "(:,:,"; \
  \
-                  OSSTREAM buf; \
+		  std::ostringstream buf; \
  \
                   for (int k = 2; k < ndims; k++) \
                     { \
@@ -1558,11 +1558,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
                         buf << ")"; \
                     } \
  \
-                  buf << OSSTREAM_ENDS; \
- \
-                  nm += OSSTREAM_STR (buf); \
- \
-                  OSSTREAM_FREEZE (buf); \
+                  nm += buf.str (); \
                 } \
  \
               Array<idx_vector> idx (ndims); \
@@ -2044,7 +2040,7 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 	    {
 	      nm += "(:,:,";
 
-	      OSSTREAM buf;
+	      std::ostringstream buf;
 
 	      for (int k = 2; k < ndims; k++)
 		{
@@ -2056,11 +2052,7 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 		    buf << ")";
 		}
 
-	      buf << OSSTREAM_ENDS;
-
-	      nm += OSSTREAM_STR (buf);
-
-	      OSSTREAM_FREEZE (buf);
+	      nm += buf.str ();
 	    }
 
 	  Array<idx_vector> idx (ndims);
@@ -2219,7 +2211,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	    {
 	      std::string nm = "ans(:,:,";
 
-	      OSSTREAM buf;
+	      std::ostringstream buf;
 
 	      for (int k = 2; k < ndims; k++)
 		{
@@ -2231,11 +2223,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 		    buf << ")";
 		}
 
-	      buf << OSSTREAM_ENDS;
-
-	      nm += OSSTREAM_STR (buf);
-
-	      OSSTREAM_FREEZE (buf);
+	      nm += buf.str ();
 
 	      os << nm << " =\n\n";
 	    }
@@ -2328,7 +2316,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	    {
 	      std::string nm = "ans(:,:,";
 
-	      OSSTREAM buf;
+	      std::ostringstream buf;
 
 	      for (int k = 2; k < ndims; k++)
 		{
@@ -2340,11 +2328,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 		    buf << ")";
 		}
 
-	      buf << OSSTREAM_ENDS;
-
-	      nm += OSSTREAM_STR (buf);
-
-	      OSSTREAM_FREEZE (buf);
+	      nm += buf.str ();
 
 	      os << nm << " =\n\n";
 	    }
@@ -2552,11 +2536,9 @@ returns the formatted output in a string.\n\
 	args(0).print (octave_stdout);
       else
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 	  args(0).print (buf);
-	  buf << OSSTREAM_ENDS;
-	  retval = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
+	  retval = buf.str ();
 	}
     }
   else

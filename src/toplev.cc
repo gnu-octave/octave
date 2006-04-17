@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -46,7 +47,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "oct-env.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -410,7 +410,7 @@ run_command_and_return_output (const std::string& cmd_str)
 
       if (*cmd)
 	{
-	  OSSTREAM output_buf;
+	  std::ostringstream output_buf;
 
 	  // XXX FIXME XXX -- Perhaps we should read more than one
 	  // character at a time and find a way to avoid the call to
@@ -446,12 +446,8 @@ run_command_and_return_output (const std::string& cmd_str)
 	  else
 	    cmd_status = 127;
 
-	  output_buf << OSSTREAM_ENDS;
-
 	  retval(0) = (double) cmd_status;
-	  retval(1) = OSSTREAM_STR (output_buf);
-
-	  OSSTREAM_FREEZE (output_buf);
+	  retval(1) = output_buf.str ();
 	}
 
       unwind_protect::run ();

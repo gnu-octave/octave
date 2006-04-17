@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "byte-swap.h"
@@ -39,7 +40,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"
@@ -251,11 +251,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 		{
 		  std::string buf = get_mat_data_input_line (is);
 
-#ifdef HAVE_SSTREAM
 		  std::istringstream tmp_stream (buf);
-#else
-		  std::istrstream tmp_stream (buf.c_str ());
-#endif
 
 		  for (octave_idx_type j = 0; j < nc; j++)
 		    {

@@ -89,7 +89,6 @@ extern "C" {
 #include "kpse-xfns.h"
 
 #include "lo-error.h"
-#include "lo-sstream.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
 #include "str-vec.h"

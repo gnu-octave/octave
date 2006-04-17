@@ -36,6 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #ifdef HAVE_HDF5
@@ -47,7 +48,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"
@@ -444,7 +444,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
   Octave_map retstruct;
 
-  OSSTREAM output_buf;
+  std::ostringstream output_buf;
 
   octave_idx_type count = 0;
 
@@ -560,9 +560,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
   if (list_only && count)
     {
-      output_buf << OSSTREAM_ENDS;
-      std::string msg = OSSTREAM_STR (output_buf);
-      OSSTREAM_FREEZE (output_buf);
+      std::string msg = output_buf.str ();
 
       if (nargout > 0)
 	retval = msg;
@@ -1183,12 +1181,12 @@ parse_save_options (const std::string &arg, load_save_format &format,
 		    bool &append, bool &save_as_floats, 
 		    bool &save_builtins, bool &use_zlib, int start_arg)
 {
-  ISSTREAM is (arg);
+  std::istringstream is (arg);
   std::string str;
   int argc = 0;
   string_vector argv;
   
-  while (!is.eof ())
+  while (! is.eof ())
     {
       is >> str;
       argv.append (str);

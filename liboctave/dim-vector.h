@@ -25,9 +25,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_dim_vector_h 1
 
 #include <cassert>
+#include <sstream>
 #include <string>
 
-#include "lo-sstream.h"
 #include "oct-types.h"
 
 class
@@ -211,7 +211,7 @@ public:
 
   std::string str (char sep = 'x') const
   {
-    OSSTREAM buf;
+    std::ostringstream buf;
 
     for (int i = 0; i < length (); i++)
       {
@@ -221,11 +221,7 @@ public:
 	  buf << sep;
       }
 
-    buf << OSSTREAM_ENDS;
-
-    std::string retval = OSSTREAM_STR (buf);
-
-    OSSTREAM_FREEZE (buf);
+    std::string retval = buf.str ();
 
     return retval;
   }

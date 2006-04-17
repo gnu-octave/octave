@@ -1,5 +1,16 @@
 2006-04-16  John W. Eaton  <jwe@octave.org>
 
+	* lo-sstream.h: Delete.
+	* Makefile.in (INCLUDES): Remove it from the list.
+
+	* dim-vector.h (dim_vector::str): Use std::ostringstream directly.
+	* Sparse.cc (Sparse::range_error): Likewise.
+	* DASSL.cc (DASSL::error_message): Likewise.
+	* LSODE.cc (LSODE::error_message): Likewise.
+	* DASRT.cc (DASRT::error_message): Likewise.
+	* DASPK.cc (DASPK::error_message): Likewise.
+	* Array.cc (Array::range_error): Likewise.
+
 	* kpse.cc (kpse_hash): Rename from hash.
 	(hash_lookup): Call kpse_hash instead of hash.
 

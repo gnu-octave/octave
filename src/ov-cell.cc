@@ -26,11 +26,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "Array-util.h"
 #include "byte-swap.h"
-#include "lo-sstream.h"
 #include "lo-utils.h"
 #include "quit.h"
 
@@ -386,14 +386,12 @@ octave_cell::print_raw (std::ostream& os, bool) const
 		{
 		  OCTAVE_QUIT;
 
-		  OSSTREAM buf;
-		  buf << "[" << i+1 << "," << j+1 << "]" << OSSTREAM_ENDS;
+		  std::ostringstream buf;
+		  buf << "[" << i+1 << "," << j+1 << "]";
 
 		  octave_value val = matrix(i,j);
 
-		  val.print_with_name (os, OSSTREAM_STR (buf));
-
-		  OSSTREAM_FREEZE (buf);
+		  val.print_with_name (os, buf.str ());
 		}
 	    }
 
@@ -785,10 +783,9 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   
   for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
-      OSSTREAM buf;
-      buf << "_" << i << OSSTREAM_ENDS;
-      std::string s = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      std::ostringstream buf;
+      buf << "_" << i;
+      std::string s = buf.str ();
 
       if (! add_hdf5_data(data_hid, tmp.elem (i), s.c_str (), "", false,
 			  save_as_floats))

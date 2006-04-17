@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -41,7 +42,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "cmd-edit.h"
 #include "file-ops.h"
-#include "lo-sstream.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -644,7 +644,7 @@ display_help_text (std::ostream& os, const std::string& msg)
       if (cols > 80)
 	cols = 72;
 
-      OSSTREAM buf;
+      std::ostringstream buf;
 
       buf << "sed -e 's/^[#%][#%]* *//' -e 's/^ *@/@/' | "
 	  << "\"" << Vmakeinfo_prog << "\""
@@ -656,12 +656,9 @@ display_help_text (std::ostream& os, const std::string& msg)
 	  << " --no-validate"
 	  << " --no-headers"
 	  << " --force"
-	  << " --output \"" << tmp_file_name << "\""
-	  << OSSTREAM_ENDS;
+	  << " --output \"" << tmp_file_name << "\"";
 
-      oprocstream filter (OSSTREAM_STR (buf));
-
-      OSSTREAM_FREEZE (buf);
+      oprocstream filter (buf.str ());
 
       if (filter && filter.is_open ())
 	{
@@ -999,7 +996,7 @@ representation.  This problem may be fixed in a future release.\n\
 
 	  if (idx < argc)
 	    {
-	      OSSTREAM output_buf;
+	      std::ostringstream output_buf;
 
 	      for (int i = idx; i < argc; i++)
 		{
@@ -1015,13 +1012,7 @@ representation.  This problem may be fixed in a future release.\n\
 		}
 
 	      if (nargout != 0)
-		{
-		  output_buf << OSSTREAM_ENDS;
-
-		  retval = OSSTREAM_STR (output_buf);
-
-		  OSSTREAM_FREEZE (output_buf);
-		}
+		retval = output_buf.str ();
 	    }
 	  else
 	    print_usage ("type");
@@ -1131,7 +1122,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
     { 
      // Get the parsed help string.
       pos = 0;
-      OSSTREAM os;
+      std::ostringstream os;
       display_help_text (os, h);
       std::string h2 = os.str ();
 

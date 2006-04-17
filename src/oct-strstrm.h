@@ -25,8 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_octave_strstream_h 1
 
 #include <string>
-
-#include "lo-sstream.h"
+#include <sstream>
 
 #include "oct-stream.h"
 
@@ -118,7 +117,7 @@ protected:
 
 private:
 
-  ISSTREAM is;
+  std::istringstream is;
 
   // No copying!
 
@@ -150,13 +149,7 @@ public:
 
   std::ostream *output_stream (void) { return &os; }
 
-  std::string str (void)
-    {
-      os << OSSTREAM_ENDS;
-      std::string retval = OSSTREAM_STR (os);
-      OSSTREAM_FREEZE (os);
-      return retval;
-    }
+  std::string str (void) { return os.str (); }
 
   std::streambuf *rdbuf (void) { return os ? os.rdbuf () : 0; }
 
@@ -170,7 +163,7 @@ protected:
 
 private:
 
-  OSSTREAM os;
+  std::ostringstream os;
 
   // No copying!
 

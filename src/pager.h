@@ -25,21 +25,19 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_pager_h 1
 
 #include <iostream>
+#include <sstream>
 #include <string>
-
-#include "lo-sstream.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
 class
-octave_pager_buf : public STRINGSTREAMBUF
+octave_pager_buf : public std::stringbuf
 {
 public:
 
-  octave_pager_buf (void)
-    : STRINGSTREAMBUF (), diary_skip (0) { }
+  octave_pager_buf (void) : std::stringbuf (), diary_skip (0) { }
 
   void flush_current_contents_to_diary (void);
 
@@ -85,11 +83,11 @@ private:
 };
 
 class
-octave_diary_buf : public STRINGSTREAMBUF
+octave_diary_buf : public std::stringbuf
 {
 public:
 
-  octave_diary_buf (void) : STRINGSTREAMBUF () { }
+  octave_diary_buf (void) : std::stringbuf () { }
 
 protected:
 

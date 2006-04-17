@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cassert>
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -562,7 +563,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	}
     }
 
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   if (! nm.empty ())
     {
@@ -571,12 +572,8 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
       if (line > 0)
 	buf << " at line " << line;
     }
-    
-  buf << OSSTREAM_ENDS;
 
-  std::string msg = OSSTREAM_STR (buf);
-
-  OSSTREAM_FREEZE (buf);
+  std::string msg = buf.str ();
 
   if (! msg.empty ())
     message ("keyboard", msg.c_str ());

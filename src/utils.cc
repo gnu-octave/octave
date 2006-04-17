@@ -46,7 +46,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "pathsearch.h"

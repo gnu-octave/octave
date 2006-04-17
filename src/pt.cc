@@ -26,9 +26,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <iostream>
+#include <sstream>
 #include <string>
-
-#include "lo-sstream.h"
 
 #include "ov-fcn.h"
 #include "pt.h"
@@ -52,17 +51,13 @@ const tree *tree::break_statement = 0;
 std::string
 tree::str_print_code (void)
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   tree_print_code tpc (buf);
 
   accept (tpc);
 
-  buf << OSSTREAM_ENDS;
-
-  std::string retval = OSSTREAM_STR (buf);
-
-  OSSTREAM_FREEZE (buf);
+  std::string retval = buf.str ();
 
   return retval;
 }

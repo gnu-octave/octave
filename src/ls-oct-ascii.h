@@ -26,9 +26,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <cfloat>
 
+#include <sstream>
 #include <string>
 
-#include "lo-sstream.h"
 #include "str-vec.h"
 
 // Flag for cell elements
@@ -78,7 +78,7 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
     {
       if (c == '%' || c == '#')
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -89,10 +89,8 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << OSSTREAM_ENDS;
-	  std::string tmp = OSSTREAM_STR (buf);
+	  std::string tmp = buf.str ();
 	  bool match = (tmp.compare (0, strlen (keyword), keyword) == 0);
-	  OSSTREAM_FREEZE (buf);
 
 	  if (match)
 	    {
@@ -137,7 +135,7 @@ extract_keyword (std::istream& is, const string_vector& keywords,
     {
       if (c == '%' || c == '#')
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -148,9 +146,7 @@ extract_keyword (std::istream& is, const string_vector& keywords,
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << OSSTREAM_ENDS;
-	  std::string tmp = OSSTREAM_STR (buf);
-	  OSSTREAM_FREEZE (buf);
+	  std::string tmp = buf.str ();
 
 	  for (int i = 0; i < keywords.length (); i++)
 	    {

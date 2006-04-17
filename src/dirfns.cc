@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cstdlib>
 #include <cstring>
 
+#include <sstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -43,7 +44,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
-#include "lo-sstream.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -176,17 +176,13 @@ from system to system.\n\
   if (error_state)
     return retval;
 
-  OSSTREAM ls_buf;
+  std::ostringstream ls_buf;
 
   ls_buf << "ls -C ";
   for (int i = 1; i < argc; i++)
     ls_buf << file_ops::tilde_expand (argv[i]) << " ";
 
-  ls_buf << OSSTREAM_ENDS;
-
-  iprocstream *cmd = new iprocstream (OSSTREAM_STR (ls_buf));
-
-  OSSTREAM_FREEZE (ls_buf);
+  iprocstream *cmd = new iprocstream (ls_buf.str ());
 
   unwind_protect::add (cleanup_iprocstream, cmd);
 
@@ -194,7 +190,7 @@ from system to system.\n\
     {
       char ch;
 
-      OSSTREAM output_buf;
+      std::ostringstream output_buf;
 
       for (;;)
 	{
@@ -204,16 +200,12 @@ from system to system.\n\
 	    break;
 	}
 
-      output_buf << OSSTREAM_ENDS;
-
-      std::string output = OSSTREAM_STR (output_buf);
+      std::string output = output_buf.str ();
 
       if (nargout > 0)
 	retval = output;
       else
 	octave_stdout << output;
-
-      OSSTREAM_FREEZE (output_buf);
     }
   else
     error ("couldn't start process for ls!");

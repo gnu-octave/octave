@@ -597,7 +597,7 @@ sub emit_print_function
   print "static void
 print_${class_name} (void)
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << \"\\n\"
       << \"Options for $CLASS include:\\n\\n\"
@@ -677,11 +677,7 @@ print_${class_name} (void)
       print "  }\n\n";
     }
 
-  print "  buf << OSSTREAM_ENDS;
-
-  print_usage (\"$opt_fcn_name\", true, OSSTREAM_STR (buf));
-
-  OSSTREAM_FREEZE (buf);
+  print "print_usage (\"$opt_fcn_name\", true, buf.str ());
 }\n\n";
 }
 

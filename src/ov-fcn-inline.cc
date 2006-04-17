@@ -29,6 +29,7 @@ Open Source Initiative (www.opensource.org)
 
 #include <istream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "defun.h"
@@ -59,7 +60,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 {
   // Form a string representing the function.
 
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << "@(";
 
@@ -71,13 +72,10 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
       buf << ifargs(i);
     }
 
-  buf << ") " << iftext << OSSTREAM_ENDS;
+  buf << ") " << iftext;
 
   int parse_status;
-  octave_value anon_fcn_handle = eval_string (OSSTREAM_STR (buf), true,
-					      parse_status);
-
-  OSSTREAM_FREEZE (buf);
+  octave_value anon_fcn_handle = eval_string (buf.str (), true, parse_status);
 
   if (parse_status == 0)
     {
@@ -120,7 +118,7 @@ octave_fcn_inline::load_ascii (std::istream& is)
 	nm = "";
 
       char c;
-      OSSTREAM buf;
+      std::ostringstream buf;
 
       // Skip preceeding newline(s)
       while (is.get (c) && c == '\n');
@@ -140,9 +138,7 @@ octave_fcn_inline::load_ascii (std::istream& is)
 	    }
 	}
 
-      buf << OSSTREAM_ENDS;
-      iftext = OSSTREAM_STR (buf);
-      OSSTREAM_FREEZE (buf);
+      iftext = buf.str ();
 
       octave_fcn_inline tmp (iftext, ifargs, nm);
       fcn = tmp.fcn;
@@ -535,7 +531,7 @@ octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax) const
 void
 octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   if (nm.empty ())
     buf << "f(";
@@ -550,11 +546,10 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
       buf << ifargs(i);
     }
 
-  buf << ") = " << iftext << OSSTREAM_ENDS;
+  buf << ") = " << iftext;
 
-  octave_print_internal (os, OSSTREAM_STR (buf), pr_as_read_syntax,
+  octave_print_internal (os, buf.str (), pr_as_read_syntax,
 			 current_print_indent_level ());
-  OSSTREAM_FREEZE (buf);
 }
 
 octave_value
@@ -682,10 +677,9 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
 		      for (int i = 1; i < n+1; i++)
 			{
-			  OSSTREAM buf;
-			  buf << "P" << i << OSSTREAM_ENDS;
-			  fargs(i) = OSSTREAM_STR (buf);
-			  OSSTREAM_FREEZE (buf);
+			  std::ostringstream buf;
+			  buf << "P" << i;
+			  fargs(i) = buf.str ();
 			}
 		    }
 		  else

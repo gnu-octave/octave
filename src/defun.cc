@@ -25,6 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include <sstream>
 #include <iostream>
 #include <string>
 
@@ -56,7 +57,7 @@ print_usage (const std::string& nm, bool just_usage,
 
       if (h.length () > 0)
 	{
-	  OSSTREAM buf;
+	  std::ostringstream buf;
 
 	  buf << "\nInvalid call to " << nm << ".  Correct usage is:\n\n";
 
@@ -69,11 +70,7 @@ print_usage (const std::string& nm, bool just_usage,
 	  if (! just_usage)
 	    additional_help_message (buf);
 
-	  buf << OSSTREAM_ENDS;
-
-	  defun_usage_message (OSSTREAM_STR (buf));
-
-	  OSSTREAM_FREEZE (buf);
+	  defun_usage_message (buf.str ());
 	}
     }
   else

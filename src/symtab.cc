@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 
 #include "glob-match.h"
 #include "str-vec.h"
@@ -1225,7 +1226,7 @@ symbol_table::print_descriptor (std::ostream& os,
 {
   // This method prints a line of information on a given symbol
   std::list<whos_parameter>::iterator i = params.begin ();
-  OSSTREAM param_buf;
+  std::ostringstream param_buf;
 
   while (i != params.end ())
     {
@@ -1302,9 +1303,7 @@ symbol_table::print_descriptor (std::ostream& os,
 	}
     }
 
-  param_buf << OSSTREAM_ENDS;
-  os << OSSTREAM_C_STR (param_buf);
-  OSSTREAM_FREEZE (param_buf);
+  os << param_buf.str ();
 }
 
 std::list<whos_parameter>

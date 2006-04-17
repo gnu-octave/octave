@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <climits>
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "Array.h"
@@ -38,7 +39,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
-#include "lo-sstream.h"
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -354,7 +354,7 @@ template <class T>
 T
 Array<T>::range_error (const char *fcn, const Array<int>& ra_idx) const
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << fcn << " (";
 
@@ -368,11 +368,9 @@ Array<T>::range_error (const char *fcn, const Array<int>& ra_idx) const
 
   buf << "): range error";
 
-  buf << OSSTREAM_ENDS;
+  std::string buf_str = buf.str ();
 
-  (*current_liboctave_error_handler) (OSSTREAM_C_STR (buf));
-
-  OSSTREAM_FREEZE (buf);
+  (*current_liboctave_error_handler) (buf_str.c_str ());
 
   return T ();
 }
@@ -381,7 +379,7 @@ template <class T>
 T&
 Array<T>::range_error (const char *fcn, const Array<int>& ra_idx)
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << fcn << " (";
 
@@ -395,11 +393,9 @@ Array<T>::range_error (const char *fcn, const Array<int>& ra_idx)
 
   buf << "): range error";
 
-  buf << OSSTREAM_ENDS;
+  std::string buf_str = buf.str ();
 
-  (*current_liboctave_error_handler) (OSSTREAM_C_STR (buf));
-
-  OSSTREAM_FREEZE (buf);
+  (*current_liboctave_error_handler) (buf_str.c_str ());
 
   static T foo;
   return foo;

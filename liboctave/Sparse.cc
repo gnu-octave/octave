@@ -29,6 +29,7 @@ Boston, MA 02110-1301, USA.
 #include <climits>
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "Array.h"
@@ -37,7 +38,6 @@ Boston, MA 02110-1301, USA.
 #include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
-#include "lo-sstream.h"
 #include "quit.h"
 
 #include "Sparse.h"
@@ -679,7 +679,7 @@ template <class T>
 T
 Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << fcn << " (";
 
@@ -692,12 +692,10 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) c
     buf << ", " << ra_idx(i);
 
   buf << "): range error";
+  
+  std::string buf_str = buf.str ();
 
-  buf << OSSTREAM_ENDS;
-
-  (*current_liboctave_error_handler) (OSSTREAM_C_STR (buf));
-
-  OSSTREAM_FREEZE (buf);
+  (*current_liboctave_error_handler) (buf_str.c_str ());
 
   return T ();
 }
@@ -706,7 +704,7 @@ template <class T>
 T&
 Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 {
-  OSSTREAM buf;
+  std::ostringstream buf;
 
   buf << fcn << " (";
 
@@ -720,11 +718,9 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 
   buf << "): range error";
 
-  buf << OSSTREAM_ENDS;
+  std::string buf_str = buf.str ();
 
-  (*current_liboctave_error_handler) (OSSTREAM_C_STR (buf));
-
-  OSSTREAM_FREEZE (buf);
+  (*current_liboctave_error_handler) (buf_str.c_str ());
 
   static T foo;
   return foo;

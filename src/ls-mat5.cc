@@ -34,6 +34,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -42,7 +43,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"
@@ -456,7 +456,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    error ("load: error uncompressing data element");
 	  else
 	    {
-	      ISSTREAM gz_is (outbuf);
+	      std::istringstream gz_is (outbuf);
 	      retval = read_mat5_binary_element (gz_is, filename, 
 						 swap, global, tc);
 	    }
@@ -1467,7 +1467,7 @@ save_mat5_binary_element (std::ostream& os,
     {
       bool ret = false;
 
-      OSSTREAM buf;
+      std::ostringstream buf;
 
       // The code seeks backwards in the stream to fix the header. Can't
       // do this with zlib, so use a stringstream.
@@ -1476,16 +1476,15 @@ save_mat5_binary_element (std::ostream& os,
 
       if (ret)
 	{
-	  OSSTREAM_FREEZE (buf);
-      
 	  // destLen must be at least 0.1% larger than source buffer 
 	  // + 12 bytes. Reality is it must be larger again than that.
-	  uLongf srcLen = OSSTREAM_STR (buf).length ();
+	  std::string buf_str = buf.str ();
+	  uLongf srcLen = buf_str.length ();
 	  uLongf destLen = srcLen * 101 / 100 + 12; 
 	  OCTAVE_LOCAL_BUFFER (char, out_buf, destLen);
 
 	  if (compress (reinterpret_cast<Bytef *> (out_buf), &destLen, 
-			reinterpret_cast<const Bytef *> (OSSTREAM_C_STR (buf)), srcLen) == Z_OK)
+			reinterpret_cast<const Bytef *> (buf_str.c_str ()), srcLen) == Z_OK)
 	    {
 	      write_mat5_tag (os, miCOMPRESSED, static_cast<int> (destLen)); 
 	      os.write (out_buf, destLen);

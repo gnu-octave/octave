@@ -29,13 +29,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <fftw3.h>
 #endif
 
+#include <sstream>
+
 #include "defaults.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "file-ops.h"
 #include "gripes.h"
 #include "lo-mappers.h"
-#include "lo-sstream.h"
 #include "oct-env.h"
 #include "oct-obj.h"
 #include "sighandlers.h"
@@ -158,7 +159,7 @@ Octave.\n\
 	  return retval;
 	}
 
-      OSSTREAM cmd_buf; 
+      std::ostringstream cmd_buf; 
       cmd_buf << Vfftw_wisdom_prog << " -n -o \"" << name << "\"";
 
       for (octave_idx_type k = 0; k < m.rows (); k++)
@@ -179,14 +180,12 @@ Octave.\n\
 	      }
 	} 
 
-      cmd_buf << OSSTREAM_ENDS;
-
       volatile octave_interrupt_handler old_interrupt_handler
 	= octave_ignore_interrupts ();
 
-      int status = system (OSSTREAM_C_STR (cmd_buf));
+      std::string cmd_buf_str = cmd_buf.str ();
 
-      OSSTREAM_FREEZE (cmd_buf);
+      int status = system (cmd_buf_str.c_str ());
 
       octave_set_interrupt_handler (old_interrupt_handler);
 

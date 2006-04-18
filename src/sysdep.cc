@@ -83,6 +83,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-obj.h"
 #include "ov.h"
 #include "pager.h"
+#include "sighandlers.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "utils.h"
@@ -417,10 +418,22 @@ octave_kbhit (bool wait)
 #else
   raw_mode (true, wait);
 
-  int c = std::cin.get ();
+  // Get current handler.
+  octave_interrupt_handler saved_interrupt_handler
+    = octave_ignore_interrupts ();
 
+  // Restore it, disabling system call restarts (if possible) so the
+  // read can be interrupted.
+
+  octave_set_interrupt_handler (saved_interrupt_handler, false);
+
+  int c = std::cin.get ();
+ 
   if (std::cin.fail () || std::cin.eof ())
     std::cin.clear ();
+
+  // Restore it, enabling system call restarts (if possible).
+  octave_set_interrupt_handler (saved_interrupt_handler, true);
 
   raw_mode (false, true);
 #endif

@@ -97,7 +97,8 @@ extern int pipe_handler_error_count;
 // TRUE means we can be interrupted.
 extern bool can_interrupt;
 
-extern sig_handler *octave_set_signal_handler (int, sig_handler *);
+extern sig_handler *octave_set_signal_handler (int, sig_handler *,
+					       bool restart_syscalls = true);
 
 extern void install_signal_handlers (void);
 
@@ -108,7 +109,8 @@ extern octave_interrupt_handler octave_catch_interrupts (void);
 extern octave_interrupt_handler octave_ignore_interrupts (void);
 
 extern octave_interrupt_handler
-octave_set_interrupt_handler (const volatile octave_interrupt_handler&);
+octave_set_interrupt_handler (const volatile octave_interrupt_handler&,
+			      bool restart_syscalls = true);
 
 // extern void ignore_sigchld (void);
 

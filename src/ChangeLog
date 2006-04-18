@@ -1,5 +1,11 @@
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
+	* sighandlers.cc (octave_set_signal_handler,
+	octave_set_interrupt_handler): New arg, restart_syscalls, with
+	default value true.
+	* sighandlers.h: Fix decls to match.
+	* sysdep.cc (octave_kbhit): Disable restarting of system calls.
+
 	* help.cc (Flookfor): Add std qualifier to transform function.
 	Include <algorithm>, for transform decl.
 

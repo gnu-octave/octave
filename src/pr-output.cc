@@ -1351,7 +1351,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
 }
 
 template <class T>
-inline void
+static inline void
 pr_plus_format (std::ostream& os, const T& val)
 {
   if (val > T (0))

@@ -185,7 +185,8 @@ my_friendly_exit (const char *sig_name, int sig_number,
 }
 
 sig_handler *
-octave_set_signal_handler (int sig, sig_handler *handler)
+octave_set_signal_handler (int sig, sig_handler *handler,
+			   bool restart_syscalls)
 {
 #if defined (HAVE_POSIX_SIGNALS)
   struct sigaction act, oact;
@@ -199,12 +200,11 @@ octave_set_signal_handler (int sig, sig_handler *handler)
       act.sa_flags |= SA_INTERRUPT;
 #endif
     }
-  else
-    {
 #if defined (SA_RESTART)
-      act.sa_flags |= SA_RESTART;
+  // XXX FIXME XXX -- Do we also need to explicitly disable SA_RESTART?
+  else if (restart_syscalls)
+    act.sa_flags |= SA_RESTART;
 #endif
-    }
 
   sigemptyset (&act.sa_mask);
   sigemptyset (&oact.sa_mask);
@@ -543,16 +543,19 @@ octave_ignore_interrupts (void)
 }
 
 octave_interrupt_handler
-octave_set_interrupt_handler (const volatile octave_interrupt_handler& h)
+octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
+			      bool restart_syscalls)
 {
   octave_interrupt_handler retval;
 
 #ifdef SIGINT
-  retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler);
+  retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler,
+						  restart_syscalls);
 #endif
 
 #ifdef SIGBREAK
-  retval.brk_handler = octave_set_signal_handler (SIGBREAK, h.brk_handler);
+  retval.brk_handler = octave_set_signal_handler (SIGBREAK, h.brk_handler,
+						  restart_syscalls);
 #endif
 
   return retval;

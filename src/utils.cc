@@ -1117,6 +1117,8 @@ octave_sleep (double seconds)
       unsigned int sec
 	= (t > UINT_MAX) ? UINT_MAX : static_cast<unsigned int> (t);
 
+      // Versions of these functions that accept unsigned int args are
+      // defined in cutils.c.
       octave_sleep (sec);
       octave_usleep (usec);
     }

@@ -1,6 +1,7 @@
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (Flookfor): Add std qualifier to transform function.
+	Include <algorithm>, for transform decl.
 
 2006-04-16  John W. Eaton  <jwe@octave.org>
 

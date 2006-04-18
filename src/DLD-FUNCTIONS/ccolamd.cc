@@ -134,8 +134,10 @@ colamd, symamd, and other related orderings.\n\
 @seealso{colamd, csymamd}\n\
 @end deftypefn")
 {
-#ifdef HAVE_CCOLAMD
   octave_value_list retval;
+
+#ifdef HAVE_CCOLAMD
+
   int nargin = args.length ();
   int spumoni = 0;
  
@@ -316,12 +318,13 @@ colamd, symamd, and other related orderings.\n\
 	}
     }
 
-  return retval;
 #else
 
   error ("ccolamd: not available in this version of Octave");
 
 #endif
+
+  return retval;
 }
 
 DEFUN_DLD (csymamd, args, nargout,
@@ -386,8 +389,10 @@ colamd, symamd, and other related orderings.\n\
 @seealso{symamd, ccolamd}\n\
 @end deftypefn")
 {
-#if HAVE_CCOLAMD
   octave_value_list retval;
+
+#if HAVE_CCOLAMD
+
   int nargin = args.length ();
   int spumoni = 0;
  
@@ -563,12 +568,13 @@ colamd, symamd, and other related orderings.\n\
 	}
     }
 
-  return retval;
 #else
 
   error ("csymamd: not available in this version of Octave");
 
 #endif
+
+  return retval;
 }
 
 /*

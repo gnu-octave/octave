@@ -1,5 +1,8 @@
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/ccolamd.cc (Fccolamd, Fcsymamd):	
+	Always return something.
+
 	* sighandlers.cc (octave_set_signal_handler,
 	octave_set_interrupt_handler): New arg, restart_syscalls, with
 	default value true.

@@ -1,3 +1,7 @@
+2006-04-18  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (Flookfor): Add std qualifier to transform function.
+
 2006-04-16  John W. Eaton  <jwe@octave.org>
 
 	* pager.h (octave_diary_buf, octave_pager_buf): Use std:stringbuf

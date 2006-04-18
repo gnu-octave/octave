@@ -1207,7 +1207,7 @@ first_help_sentence (const std::string& h, bool short_sentence = true)
 
 	  // Make a lower case copy to simplify some tests
 	  std::string lower = line;
-	  transform (lower.begin (), lower.end (), lower.begin (), tolower);
+	  std::transform (lower.begin (), lower.end (), lower.begin (), tolower);
 
 	  // Skip lines starting in "-" or "Usage"
 	  if (lower.find_first_of ('-') == 0
@@ -1546,7 +1546,7 @@ to find related functions that are not part of octave.\n\
   if (!error_state)
     {
       // All tests in lower case
-      transform (txt.begin (), txt.end (), txt.begin (), tolower);
+      std::transform (txt.begin (), txt.end (), txt.begin (), tolower);
 
       help_list *ptr = keyword_help ();
       while (ptr->name)
@@ -1573,7 +1573,7 @@ to find related functions that are not part of octave.\n\
 	      else
 		s = h;
 	      
-	      transform (s.begin (), s.end (), s.begin (), tolower);
+	      std::transform (s.begin (), s.end (), s.begin (), tolower);
 
 	      if (s.length () > 0 && s.find (txt) != NPOS)
 		{
@@ -1616,7 +1616,7 @@ to find related functions that are not part of octave.\n\
 	      else
 		s = h;
 	      
-	      transform (s.begin (), s.end (), s.begin (), tolower);
+	      std::transform (s.begin (), s.end (), s.begin (), tolower);
 
 	      if (s.length () > 0 && s.find (txt) != NPOS)
 		{
@@ -1670,7 +1670,7 @@ to find related functions that are not part of octave.\n\
 		  else
 		    s = h;
 	      
-		  transform (s.begin (), s.end (), s.begin (), tolower);
+		  std::transform (s.begin (), s.end (), s.begin (), tolower);
 
 		  if (s.length () > 0 && s.find (txt) != NPOS)
 		    {
@@ -1758,7 +1758,7 @@ to find related functions that are not part of octave.\n\
 			      else
 				s = h;
 
-			      transform (s.begin (), s.end (), s.begin (), tolower);
+			      std::transform (s.begin (), s.end (), s.begin (), tolower);
 
 			      if (s.length () > 0 && s.find (txt) != NPOS)
 				{
@@ -1814,7 +1814,7 @@ to find related functions that are not part of octave.\n\
 				  else
 				    s = h;
 
-				  transform (s.begin (), s.end (), s.begin (), 
+				  std::transform (s.begin (), s.end (), s.begin (), 
 					     tolower);
 
 				  if (s.length () > 0 && s.find (txt) != NPOS)

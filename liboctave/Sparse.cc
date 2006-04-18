@@ -1894,9 +1894,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		  retval = Sparse<T> (n, m, nnz ());
 		  octave_idx_type *ri = retval.xridx ();
 	      
-		  // Can't use OCTAVE_LOCAL_BUFFER with bool, and so 
-		  // can't with T either
-		  T X [n];
+		  std::vector<T> X (n);
 		  for (octave_idx_type i = 0; i < nr; i++)
 		    itmp [i] = -1;
 		  for (octave_idx_type i = 0; i < n; i++)

@@ -98,15 +98,15 @@
    void oct_init_by_entropy(void)             random initial state
    void oct_get_state(uint32_t save[MT_N+1])  saves state in array
    void oct_set_state(uint32_t save[MT_N+1])  restores state from array
-   static inline uint32_t randmt(void)           returns 32-bit unsigned int
+   static uint32_t randmt(void)               returns 32-bit unsigned int
 
    === inline generators ===
-   static inline uint32_t randi32(void)   returns 32-bit unsigned int
-   static inline uint64_t randi53(void)   returns 53-bit unsigned int
-   static inline uint64_t randi54(void)   returns 54-bit unsigned int
-   static inline uint64_t randi64(void)   returns 64-bit unsigned int
-   static inline double randu32(void)     returns 32-bit uniform in (0,1)
-   static inline double randu53(void)     returns 53-bit uniform in (0,1)
+   static uint32_t randi32(void)   returns 32-bit unsigned int
+   static uint64_t randi53(void)   returns 53-bit unsigned int
+   static uint64_t randi54(void)   returns 54-bit unsigned int
+   static uint64_t randi64(void)   returns 64-bit unsigned int
+   static double randu32(void)     returns 32-bit uniform in (0,1)
+   static double randu53(void)     returns 53-bit uniform in (0,1)
 
    double oct_randu(void)       returns M-bit uniform in (0,1)
    double oct_randn(void)       returns M-bit standard normal
@@ -303,7 +303,7 @@ next_state (void)
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
-static inline uint32_t
+static uint32_t
 randmt (void)
 {
   register uint32_t y;
@@ -324,7 +324,7 @@ randmt (void)
 /* Select which 32 bit generator to use */
 #define randi32 randmt
 
-static inline uint64_t 
+static uint64_t 
 randi53 (void)
 {
   const uint32_t lo = randi32();
@@ -340,7 +340,7 @@ randi53 (void)
 #endif
 }
 
-static inline uint64_t 
+static uint64_t 
 randi54 (void)
 {
   const uint32_t lo = randi32();
@@ -356,7 +356,7 @@ randi54 (void)
 #endif
 }
 
-static inline uint64_t 
+static uint64_t 
 randi64 (void)
 {
   const uint32_t lo = randi32();
@@ -373,7 +373,7 @@ randi64 (void)
 }
 
 /* generates a random number on (0,1)-real-interval */
-static inline double
+static double
 randu32 (void)
 {
   return ((double)randi32() + 0.5) * (1.0/4294967296.0); 
@@ -381,7 +381,7 @@ randu32 (void)
 }
 
 /* generates a random number on (0,1) with 53-bit resolution */
-static inline double
+static double
 randu53 (void) 
 { 
   const uint32_t a=randi32()>>5;

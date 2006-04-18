@@ -1,3 +1,11 @@
+2006-04-18  John W. Eaton  <jwe@octave.org>
+
+	* randmtzig.c (randmt, randi53, randi54, randi64, randu32, randu53):
+	Omit inline from decl.
+
+	* Sparse.cc (Sparse<T>::index): Use std::vector<bool> to avoid
+	local array with variable dimension.
+
 2006-04-16  John W. Eaton  <jwe@octave.org>
 
 	* lo-sstream.h: Delete.

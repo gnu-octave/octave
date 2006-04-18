@@ -1,3 +1,7 @@
+2006-04-18  John W. Eaton  <jwe@octave.org>
+
+	* misc/f77-fcn.h (F77_XFCN): Move decls to beginning of blocks for C.
+
 2006-04-13  John W. Eaton  <jwe@octave.org>
 
 	* misc/quit.h BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1,

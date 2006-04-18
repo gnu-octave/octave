@@ -1,12 +1,5 @@
-The following is my current best set of directions for installing
-Octave on a Windows system using either a binary package or by
-installing from sources using the Cygwin tools.  If you already have
-Cygwin installed, you may need to update your installation of tools to
-include those mentioned below.
-
-Following these steps should give you an Octave installation that
-includes all the necessary tools for building dynamically linked
-functions (.oct files).
+Octave is now part of the normal net distribution of Cygwin, available
+from http://www.cygwin.com.  To install the Cygwin package of Octave:
 
  1. Use your favorite browser to view the page http://www.cygwin.com
 
@@ -23,17 +16,8 @@ functions (.oct files).
  5. Choose "Install from Internet".
 
  6. Select a root install directory.  You may choose any directory, but
-    it needs to have about 600MB available to install all the
-    necessary Cygwin tools plus build and install Octave from sources.
-    That may seem like a large disk space requirement, but remember
-    that you are getting more than just Octave, you are installing a
-    Unix-like development environment including C, C++, and Fortran
-    compilers as well.  Once Octave is installed, you can delete the
-    sources and build directory, freeing up about 250MB.
-
-    You may choose to install for just you or all users (if you have
-    permission to do so).  I would select "Unix" as the default text
-    file type (this option should be the default).
+    it needs to have enough space for Octave and all the related
+    tools.  Sorry, I don't know how much space that is at present.
 
  7. Select a local package directory.  This is a directory that the
     setup program will use to temporarily store package files before
@@ -48,45 +32,8 @@ functions (.oct files).
  9. Choose a download site.  One that is "near" you on the net is
     probably best.
 
-    If you want to install a binary package of Octave, also add the
-    User URL
-
-	ftp://ftp.octave.org/pub/octave/cygwin
-
-    in the dialog (there is a textbox at the bottom with an Add
-    button to the right -- enter the URL in the textbox and click
-    the Add button).
-
-10. Select packages.
-
-    Binary and Source installations:
-
-      Select the gnuplot package from the Graphics category.  The
-      gnuplot package from ftp.octave.org will give you the Windows
-      binary repackaged for Cygwin.  If you select the gnuplot package
-      from one of the Cygwin mirrors, you will get a recent 3.8 beta
-      version (pre 4.0 release).
-
-    Additional packages for binary install:
-
-      Also select the Octave packages you want from the Math category.
-
-    Additional packages for source compile and install:
-
-    The defaults are not enough to build all of Octave from sources.
-    In addition to the default set of packages, you should select the
-    following packages from the following categories:
-
-      Archive: unzip
-      Devel:   autoconf, binutils, bison, cvs, dejagnu, flex, gcc,
-               g++, g77, gperf, make
-      Text:    less, tetex, tetex-base
-      Utils:   diff, patch
-
-    Once you have made these selections, click the Next button to
-    download and install all the selected packages.  The download and
-    install may take a while depending on the speed of your computer
-    and your connection to the net.
+10. Select packages.  Choose Octave from the Math category and gnuplot
+    from the graphics category.
 
 11. Once the download and file installation is done, click Finish.  I
     usually choose to create an icon on the desktop and put an icon in
@@ -94,134 +41,28 @@ functions (.oct files).
     run, displaying some output in a terminal window.  It will take a
     few minutes.
 
-    Skip to step 17 if you are installing the binary package.
+12. To run Octave, start Cygwin.  This will bring up a terminal
+    window.  In that window type
 
-12. Get the Octave sources, either from a current snapshot
-    distribution or from CVS.
+      startx
 
-    You should check the web page http://www.octave.org/download.html
-    or look for the file RECOMMENDED-IS-N.NN.NN in the ftp download
-    directory to see what version is currently recommended (N.NN.NN
-    will be an actual version number, like 2.1.50).  If more recent
-    versions may be available they should be considered experimental.
-
-    The CVS sources are only recommended for people who want be
-    involved in Octave's development process and who don't mind
-    running into the occasional show-stopping bug.
-
-    Snapshot:
-
-      a. Download a copy of the current version of Octave from
-         ftp://ftp.octave.org.  You may use the command line ftp
-         client in Cygwin or a web browser.  You are looking for the
-         most recent recommended version in the pub/octave/bleeding-edge
-         directory.  At the time of this writing, it was
-         octave-2.1.50.tar.gz.  Save this file to your Cygwin home
-         directory.  This directory will usually be called something
-         like c:\cygwin\home\jwe from Windows (the precise location
-         depends on where you chose to install Cygwin).
-
-         IMPORTANT: If you use the ftp client, be sure to set the
-         binary mode for downloads by typing
-
-           binary
-
-         at the ftp prompt.
-
-      b. Unpack the source files using the command:
-
-           tar zxf octave-2.1.50.tar.gz
-
-         in the Cygwin shell.  This command will create a subdirectory
-         called octave-2.1.50 in your home directory.
-
-      c. Change your current working directory to the top-level Octave
-         source directory:
-
-           cd octave-2.1.50
-
-         then continue with step 14 below.
-
-    CVS:
-
-      a. Check out a copy of the current sources from the public CVS
-         archive by running the following commands
-
-           cvs -d :pserver:anoncvs@www.octave.org:/cvs login
-           cvs -z 9 -d :pserver:anoncvs@www.octave.org:/cvs checkout octave
-         
-         in the Cygwin shell.  The first command will prompt you for a
-         password; reply with anoncvs.  The checkout command will
-         create a subdirectory called octave containing the current
-         CVS version of the Octave sources.
-
-      b. Change your current working directory to the top-level Octave
-         source directory:
-
-           cd octave
-
-      c. Build the configure scripts by running the command
-
-           ./autogen.sh
-
-
-13. Configure Octave by running the command
-
-      ./configure --enable-shared --disable-static
-
-    This command will take several minutes to run as the configure
-    script determines what features are available on your system.  You
-    need the --enable-shared option if you want to build dynamically
-    loaded functions (.oct files) later.  You may omit the
-    --disable-static option if you want to build static libraries (.a
-    files) in addition to shared libraries, but the build will take
-    about twice as long to complete.
-
-14. Build the Octave binary by running the command
-
-      make
-
-    You may see warnings from gcc saying that __cdecl is redefined or
-    that all code is position independent.  You may safely ignore
-    these warnings.
-
-15. (OPTIONAL) Run Octave's regression test suite by running the
-    command
-
-      make check
-
-    Running the tests may take a very long time, so if you are in a
-    hurry, you might want to skip this step.  At the time of this
-    writing, there are 4 "expected" failures related to the try-catch
-    and eval commands.  You may safely ignore those failures.
-
-16. Complete the installation by running the command
-
-      make install
-
-17. Try starting Octave by running the command
+    (a running X server is needed for plotting).  Running startx will
+    bring up a new window.  In that window, type
 
       octave
 
-    in the cygwin shell and then typing
+    That should present you with an Octave prompt.  Type
 
       sombrero (41)
 
-    at the Octave prompt to see if you can create a plot.
+    at this prompt and a new window with the sombrero plot should appear.
 
-18. Try to build a .oct file and run it:
-
-      cd examples
-      mkoctfile hello.cc
-      octave
-      ...
-      octave:1> hello
-      Hello, world!
-
-    If you are doing a binary package install, the examples should be
-    installed in the /usr/share/doc/octave/... XXX FIXME XXX
-
-
+13. To build .oct files (dynamically loaded functions) for Octave, you
+    will also need the octave-headers package.  Currently, due to some
+    bugs in the most recent version of the C++ compiler and libraries
+    for Cygwin, you will also need gcc and g++ 3.3 rather than 3.4.
+    You can use the setup.exe installer to select and install the
+    older version.
 
 
 John W. Eaton
@@ -229,4 +70,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Wed Jan 14 13:37:15 2004
+Tue Apr 18 15:22:59 2006

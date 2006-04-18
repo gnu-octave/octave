@@ -1,5 +1,7 @@
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/regexp.cc: Include <algorithm>, for transform decl.
+
 	* DLD-FUNCTIONS/ccolamd.cc (Fccolamd, Fcsymamd):	
 	Always return something.
 

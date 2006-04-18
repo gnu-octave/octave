@@ -27,6 +27,7 @@ Boston, MA 02110-1301, USA.
 #include <config.h>
 #endif
 
+#include <algorithm>
 #include <sstream>
 
 #include "defun-dld.h"

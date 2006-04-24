@@ -292,7 +292,7 @@ get_user_input (void)
 int
 octave_read (char *buf, unsigned max_size)
 {
-  // XXX FIXME XXX -- is this a safe way to buffer the input?
+  // FIXME -- is this a safe way to buffer the input?
 
   static const char * const eol = "\n";
   static std::string input_buf;
@@ -386,7 +386,7 @@ get_input_from_stdin (void)
   return command_editor::get_input_stream ();
 }
 
-// XXX FIXME XXX -- make this generate file names when appropriate.
+// FIXME -- make this generate file names when appropriate.
 
 static string_vector
 generate_possible_completions (const std::string& text, std::string& prefix,
@@ -468,7 +468,7 @@ generate_completion (const std::string& text, int state)
 	      else
 		retval = name;
 
-	      // XXX FIXME XXX -- looks_like_struct is broken for now,
+	      // FIXME -- looks_like_struct is broken for now,
 	      // so it always returns false.
 
  	      if (matches == 1 && looks_like_struct (retval))
@@ -498,7 +498,7 @@ initialize_command_input (void)
 
   command_editor::set_name ("Octave");
 
-  // XX FIXME XXX -- this needs to include a comma too, but that
+  // FIXME -- this needs to include a comma too, but that
   // causes trouble for the new struct element completion code.
 
   static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
@@ -652,7 +652,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
       if (read_as_string)
 	{
-	  // XXX FIXME XXX -- fix gnu_readline and octave_gets instead!
+	  // FIXME -- fix gnu_readline and octave_gets instead!
 	  if (input_buf.length () == 1 && input_buf[0] == '\n')
 	    retval(0) = "";
 	  else
@@ -809,7 +809,7 @@ do_keyboard (const octave_value_list& args)
 
   unwind_protect::begin_frame ("do_keyboard");
 
-  // XXX FIXME XXX -- we shouldn't need both the
+  // FIXME -- we shouldn't need both the
   // command_history object and the
   // Vsaving_history variable...
   command_history::ignore_entries (false);

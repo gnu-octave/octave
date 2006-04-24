@@ -26,7 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-stdstrm.h"
 
-// XXX FIXME XXX -- why don't these classes use iprocstream and
+// FIXME -- why don't these classes use iprocstream and
 // oprocstream, which in turn use the octave_procbuf class?
 
 class

@@ -113,7 +113,7 @@ w32_set_quiet_shutdown (void)
   // Let the user close the console window or shutdown without the
   // pesky dialog.
   //
-  // XXX FIXME XXX -- should this be user configurable?
+  // FIXME -- should this be user configurable?
   SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
 #endif
 }
@@ -517,7 +517,7 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- perhaps kbhit should also be able to print a prompt?
+// FIXME -- perhaps kbhit should also be able to print a prompt?
 
 DEFUN (kbhit, args, ,
   "-*- texinfo -*-\n\
@@ -544,7 +544,7 @@ returning the empty string if no key is available.\n\
 {
   octave_value retval;
 
-  // XXX FIXME XXX -- add timeout and default value args?
+  // FIXME -- add timeout and default value args?
 
   if (interactive || forced_interactive)
     {
@@ -676,7 +676,7 @@ of time less than one second, @code{usleep} will pause the execution for\n\
   return retval;
 }
 
-// XXX FIXME XXX -- maybe this should only return 1 if IEEE floating
+// FIXME -- maybe this should only return 1 if IEEE floating
 // point functions really work.
 
 DEFUN (isieee, , ,

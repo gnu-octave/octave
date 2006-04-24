@@ -376,7 +376,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   for (octave_idx_type i = 0; i < idx; i++)
     increment_index (retval, dims);
 
-  // XXX FIXME XXX -- the solution using increment_index is not
+  // FIXME -- the solution using increment_index is not
   // efficient.
 
 #if 0

@@ -15,7 +15,7 @@
 %! x = 1;
 %! assert(eval ("x;"),1);
 
-%% XXX FIXME XXX
+%% FIXME
 %% Disable this test as adding the ";" is redundant with eval-1 and
 %% in any case is a syntax error with assert
 %% test/octave.test/eval/eval-4.m

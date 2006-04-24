@@ -146,7 +146,7 @@ public:
   octave_value (long int i);
   octave_value (unsigned long int i);
 
-  // XXX FIXME XXX -- these are kluges.  They turn into doubles
+  // FIXME -- these are kluges.  They turn into doubles
   // internally, which will break for very large values.  We just use
   // them to store things like 64-bit ino_t, etc, and hope that those
   // values are never actually larger than can be represented exactly
@@ -873,7 +873,7 @@ extern int Vwarn_imag_to_real;
 
 extern void install_types (void);
 
-// XXX FIXME XXX -- these trait classes probably belong somehwere else...
+// FIXME -- these trait classes probably belong somehwere else...
 
 template <typename T>
 class

@@ -13,7 +13,7 @@
 %! eval ("clear a; a; x = 0;", "x = 1;");
 %! assert (x, 1);
 
-%% XXX FIXME XXX This is redundant with the changes to the above
+%% FIXME This is redundant with the changes to the above
 %% test/octave.test/eval-catch/eval-catch-4.m
 
 %% test/octave.test/eval-catch/eval-catch-5.m

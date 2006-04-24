@@ -173,7 +173,7 @@ do_unwind_protect_cleanup_code (void *ptr)
   // The unwind_protects are popped off the stack in the reverse of
   // the order they are pushed on.
 
-  // XXX FIXME XXX -- these statements say that if we see a break or
+  // FIXME -- these statements say that if we see a break or
   // return statement in the cleanup block, that we want to use the
   // new value of the breaking or returning flag instead of restoring
   // the previous value.  Is that the right thing to do?  I think so.

@@ -447,7 +447,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  destLen = tmp[1] + 8;
 	  std::string outbuf (destLen, ' '); 
 
-	  // XXX FIXME XXX -- find a way to avoid casting away const here!
+	  // FIXME -- find a way to avoid casting away const here!
 
 	  int err = uncompress (reinterpret_cast<Bytef *> (const_cast<char *> (outbuf.c_str ())), &destLen, 
 				reinterpret_cast<Bytef *> (inbuf), element_length);
@@ -1661,7 +1661,7 @@ save_mat5_binary_element (std::ostream& os,
 	  write_mat5_integer_data (os, m.ridx (), - sizeof(int), nnz);
 	  write_mat5_integer_data (os, m.cidx (), - sizeof(int), nc + 1);
 
-	  // XXX FIXME XXX
+	  // FIXME
 	  // Is there a way to easily do without this buffer
 	  NDArray buf (dim_vector (nnz, 1));
 

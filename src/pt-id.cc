@@ -159,7 +159,7 @@ tree_identifier::rvalue (int nargout)
     {
       if (val.is_defined ())
 	{
-	  // XXX GAGME XXX -- this would be cleaner if we required
+	  // GAGME -- this would be cleaner if we required
 	  // parens to indicate function calls.
 	  //
 	  // If this identifier refers to a function, we need to know

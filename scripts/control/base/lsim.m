@@ -76,7 +76,7 @@ function [y, x] = lsim (sys, u, t, x0)
   for ii = 1:(n-1)
 
     ## check if step size changed
-    ## XXX FIXME XXX -- this is probably not the best test, but it is
+    ## FIXME -- this is probably not the best test, but it is
     ## better than a test for exact equality.
     if (abs (t(ii+1) - t(ii) - Ts) > 10 * eps)
       Ts = t(ii+1) - t(ii);

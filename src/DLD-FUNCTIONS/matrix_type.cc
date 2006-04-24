@@ -191,7 +191,7 @@ matrix type.\n\
 	      // Ok, we're changing the matrix type
 	      std::string str_typ = args(1).string_value ();
 
-	      // XXX FIXME, why do I have to explicitly call the constructor?
+	      // FIXME -- why do I have to explicitly call the constructor?
 	      SparseType mattyp = SparseType ();
 
 	      octave_idx_type nl = 0;
@@ -308,7 +308,7 @@ matrix type.\n\
 
 /*
 
-## XXX FIXME XXX
+## FIXME
 ## Disable tests for lower under-determined and upper over-determined 
 ## matrices and this detection is disabled in SparseType due to issues
 ## of non minimum norm solution being found.

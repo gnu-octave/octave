@@ -777,7 +777,7 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 		    }
 #endif
 
-		  // XXX FIXME XXX -- probably should be using
+		  // FIXME -- probably should be using
 		  // fortran_vec instead of &aa(jj,jj) here.
 
 		  double scale1, scale2, wr1, wr2, wi;

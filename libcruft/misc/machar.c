@@ -374,7 +374,7 @@ F77_FUNC (machar, MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
 {
 #if defined (_CRAY)
 
-  // XXX FIXME XXX -- make machar work for the Cray too.
+  // FIXME -- make machar work for the Cray too.
 
   int ibeta = FLT_RADIX;
   *xmin = DBL_MIN;

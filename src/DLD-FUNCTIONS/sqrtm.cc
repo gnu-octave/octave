@@ -180,7 +180,7 @@ Manchester, England, January 1999.\n\
 	  if (error_state)
 	    return retval;
 
-	  // XXX FIXME XXX -- eventually, ComplexSCHUR will accept a
+	  // FIXME -- eventually, ComplexSCHUR will accept a
 	  // real matrix arg.
 
 	  ComplexMatrix Ac (A);
@@ -210,7 +210,7 @@ Manchester, England, January 1999.\n\
 	    retval(0) = X;
 
 	  // Compute error
-	  // XXX FIXME XXX can we estimate the error without doing the
+	  // FIXME can we estimate the error without doing the
 	  // matrix multiply?
 
 	  err = frobnorm (X*X - ComplexMatrix (A)) / frobnorm (A);

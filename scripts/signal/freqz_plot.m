@@ -78,7 +78,7 @@ function freqz_plot(w,h)
 
       ## Restore graph state.
 
-      ## XXX FIXME XXX -- if automatic_replot is non-zero, this will
+      ## FIXME -- if automatic_replot is non-zero, this will
       ## mess up the graph, however if we don't do it here then the user
       ## will have to do it themselves.
 

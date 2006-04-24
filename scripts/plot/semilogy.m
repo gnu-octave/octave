@@ -30,7 +30,7 @@
 
 function semilogy (varargin)
 
-  ## XXX FIXME XXX -- these plot states should really just be set
+  ## FIXME -- these plot states should really just be set
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 

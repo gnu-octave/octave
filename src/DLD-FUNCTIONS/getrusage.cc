@@ -137,7 +137,7 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   Octave_map m;
   Octave_map tv_tmp;
 
-  // XXX FIXME XX -- maybe encapsulate all of this in a liboctave class
+  // FIXME -- maybe encapsulate all of this in a liboctave class
 #if defined (HAVE_GETRUSAGE)
 
   struct rusage ru;

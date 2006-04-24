@@ -29,7 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "ArrayN.h"
 #include "Array-util.h"
-// XXX FIXME XXX -- we are including the MArray{,2,N}.h files just for
+// FIXME -- we are including the MArray{,2,N}.h files just for
 // their gripe_nonconformant function decls.
 #include "MArray.h"
 #include "MArray2.h"

@@ -38,7 +38,7 @@ function [R, G, B] = ind2rgb (X, map)
 
   [hi, wi] = size (X);
 
-  ## XXX FIXME XXX -- we should check size of X and map.
+  ## FIXME -- we should check size of X and map.
 
   R = reshape (map (X(:), 1), hi, wi);
   G = reshape (map (X(:), 2), hi, wi);

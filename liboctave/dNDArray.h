@@ -68,7 +68,7 @@ public:
   bool all_integers (double& max_val, double& min_val) const;
   bool too_large_for_float (void) const;
 
-  // XXX FIXME XXX -- this is not quite the right thing.
+  // FIXME -- this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;

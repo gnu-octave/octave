@@ -182,7 +182,7 @@ xpow (const Matrix& a, double b)
 	  else
 	    {
 	      // Too much copying?
-	      // XXX FIXME XXX -- we shouldn't do this if the exponent is
+	      // FIXME -- we shouldn't do this if the exponent is
 	      // large...
 
 	      Matrix atmp;
@@ -378,7 +378,7 @@ xpow (const ComplexMatrix& a, double b)
 	  else
 	    {
 	      // Too much copying?
-	      // XXX FIXME XXX -- we shouldn't do this if the exponent is
+	      // FIXME -- we shouldn't do this if the exponent is
 	      // large...
 
 	      ComplexMatrix atmp;
@@ -477,7 +477,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
 //
 //   * -> not needed.
 
-// XXX FIXME XXX -- these functions need to be fixed so that things
+// FIXME -- these functions need to be fixed so that things
 // like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
@@ -875,7 +875,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 //
 //   * -> not needed.
 
-// XXX FIXME XXX -- these functions need to be fixed so that things
+// FIXME -- these functions need to be fixed so that things
 // like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b

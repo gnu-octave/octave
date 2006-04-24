@@ -72,7 +72,7 @@ quad_user_function (double x)
 
       if (error_state)
 	{
-	  quad_integration_error = 1;  // XXX FIXME XXX
+	  quad_integration_error = 1;  // FIXME
 	  gripe_user_supplied_eval ("quad");
 	  return retval;
 	}
@@ -89,13 +89,13 @@ quad_user_function (double x)
 
 	  if (error_state)
 	    {
-	      quad_integration_error = 1;  // XXX FIXME XXX
+	      quad_integration_error = 1;  // FIXME
 	      gripe_user_supplied_eval ("quad");
 	    }
 	}
       else
 	{
-	  quad_integration_error = 1;  // XXX FIXME XXX
+	  quad_integration_error = 1;  // FIXME
 	  gripe_user_supplied_eval ("quad");
 	}
     }

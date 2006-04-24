@@ -304,7 +304,7 @@ function print (varargin)
     elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
       ## Portable network graphics, PBMplus
 
-      ## XXX FIXME XXX -- New PNG interface takes color as "xRRGGBB"
+      ## FIXME -- New PNG interface takes color as "xRRGGBB"
       ## where x is the literal character 'x' and 'RRGGBB' are the red,
       ## green and blue components in hex.  For now we just ignore it
       ## and use default.  The png terminal now is so rich with options,
@@ -348,7 +348,7 @@ function print (varargin)
     endif
   endif
 
-  ## XXX FIXME XXX -- This looks like a dirty, Unix-specific hack.
+  ## FIXME -- This looks like a dirty, Unix-specific hack.
   ## DAS
   if (doprint)
     system (sprintf ("lpr %s '%s'", printer, printname));

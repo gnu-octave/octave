@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 
-// XXX FIXME XXX -- this is not quite the right thing.
+// FIXME -- this is not quite the right thing.
 
 boolNDArray
 charNDArray::all (int dim) const
@@ -78,7 +78,7 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
 	  octave_idx_type ival = NINTbig (d);
 
 	  if (ival < 0 || ival > UCHAR_MAX)
-	    // XXX FIXME XXX -- is there something
+	    // FIXME -- is there something
 	    // better we could do? Should we warn the user?
 	    ival = 0;
 

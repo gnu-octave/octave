@@ -616,7 +616,7 @@ Boston, MA 02110-1301, USA.
     else \
       { \
  \
-        /* XXX FIXME XXX Kludge... Always double/Complex, so Complex () */ \
+        /* FIXME Kludge... Always double/Complex, so Complex () */ \
         r = R (m1_nr, m1_nc, (Complex () OP Complex ())); \
         \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
@@ -666,7 +666,7 @@ Boston, MA 02110-1301, USA.
 
 // Note that SM ./ SM needs to take into account the NaN and Inf values
 // implied by the division by zero.
-// XXX FIXME XXX Are the NaNs double(NaN) or Complex(NaN,Nan) in the complex
+// FIXME Are the NaNs double(NaN) or Complex(NaN,Nan) in the complex
 // case?
 #define SPARSE_SMSM_BIN_OPS(R1, R2, M1, M2)  \
   SPARSE_SMSM_BIN_OP_1 (R1, operator +,  +, M1, M2) \
@@ -893,7 +893,7 @@ Boston, MA 02110-1301, USA.
     return r; \
   }
 
-// XXX FIXME XXX Pass a specific ZERO value
+// FIXME Pass a specific ZERO value
 #define SPARSE_MSM_BIN_OPS(R1, R2, M1, M2) \
   SPARSE_MSM_BIN_OP_1 (R1, operator +,  +, M1, M2) \
   SPARSE_MSM_BIN_OP_1 (R1, operator -,  -, M1, M2) \
@@ -1119,7 +1119,7 @@ Boston, MA 02110-1301, USA.
     return r; \
   }
 
-// XXX FIXME XXX Pass a specific ZERO value
+// FIXME Pass a specific ZERO value
 #define SPARSE_SMM_BIN_OPS(R1, R2, M1, M2) \
   SPARSE_SMM_BIN_OP_1 (R1, operator +,  +, M1, M2) \
   SPARSE_SMM_BIN_OP_1 (R1, operator -,  -, M1, M2) \

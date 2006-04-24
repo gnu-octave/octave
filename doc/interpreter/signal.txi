@@ -37,7 +37,7 @@ please contact @email{bug@@octave.org}.
 
 @DOCSTRING(unwrap)
 
-@c XXX FIXME XXX -- someone needs to organize these...
+@c FIXME -- someone needs to organize these...
 
 @DOCSTRING(arch_fit)
 

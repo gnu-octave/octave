@@ -58,7 +58,7 @@ function multiplot (xn, yn)
 
     oneplot ();
 
-    ## XXX FIXME XXX -- do we really need to reset these here?
+    ## FIXME -- do we really need to reset these here?
 
     __multiplot_xsize__ = 1;
     __multiplot_ysize__ = 1;

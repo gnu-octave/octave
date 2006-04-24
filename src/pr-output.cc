@@ -286,7 +286,7 @@ pr_min_internal (const Matrix& m)
   return result;
 }
 
-// XXX FIXME XXX -- it would be nice to share more code among these
+// FIXME -- it would be nice to share more code among these
 // functions,..
 
 static void
@@ -1119,10 +1119,10 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 	  // Unless explicitly asked for, always print in big-endian
 	  // format.
 
-	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
+	  // FIXME -- is it correct to swap bytes for VAX
 	  // formats and not for Cray?
 
-	  // XXX FIXME XXX -- will bad things happen if we are
+	  // FIXME -- will bad things happen if we are
 	  // interrupted before resetting the format flags and fill
 	  // character?
 
@@ -1156,7 +1156,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 	  equiv tmp;
 	  tmp.d = d;
 
-	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
+	  // FIXME -- is it correct to swap bytes for VAX
 	  // formats and not for Cray?
 
 	  oct_mach_info::float_format flt_fmt =
@@ -1931,7 +1931,7 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
 void
 octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax,
-		       int /* extra_indent XXX FIXME XXX */,
+		       int /* extra_indent FIXME */,
 		       bool pr_as_string)
 {
   if (pr_as_string)
@@ -2007,7 +2007,7 @@ void
 octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 		       bool pr_as_read_syntax, int /* extra_indent */)
 {
-  // XXX FIXME XXX -- this mostly duplicates the code in the
+  // FIXME -- this mostly duplicates the code in the
   // PRINT_ND_ARRAY macro.
 
   if (nda.is_empty ())
@@ -2065,7 +2065,7 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
 
 	  Array2<std::string> page (nda.index (idx), nr, nc);
 
-	  // XXX FIXME XXX -- need to do some more work to put these
+	  // FIXME -- need to do some more work to put these
 	  // in neatly aligned columns...
 
 	  octave_idx_type n_rows = page.rows ();
@@ -2182,7 +2182,7 @@ void
 octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 		       bool pr_as_read_syntax, int extra_indent)
 {
-  // XXX FIXME XXX -- this mostly duplicates the code in the
+  // FIXME -- this mostly duplicates the code in the
   // PRINT_ND_ARRAY macro.
 
   if (nda.is_empty ())
@@ -2399,7 +2399,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
     }
 }
 
-// XXX FIXME XXX -- this is not the right spot for this...
+// FIXME -- this is not the right spot for this...
 
 template void
 pr_int (std::ostream&, const octave_int8&, int);
@@ -2474,7 +2474,7 @@ octave_print_internal (std::ostream& os, const octave_int<T>& val, bool)
     }
 }
 
-// XXX FIXME XXX -- this is not the right spot for this...
+// FIXME -- this is not the right spot for this...
 
 template void
 octave_print_internal (std::ostream&, const octave_int8&, bool);

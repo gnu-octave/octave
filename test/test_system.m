@@ -251,7 +251,7 @@
 %! assert(!rmdir ("foo", "s"));
 %! confirm_recursive_rmdir = crr;
 
-%% XXX FIXME XXX This test messes up the path it seems!! Why?
+%% FIXME This test messes up the path it seems!! Why?
 %% test/octave.test/system/umask-1.m
 %!#test
 %! umask (0);

@@ -30,7 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 
-// XXX FIXME XXX
+// FIXME
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -201,7 +201,7 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
-// XXX FIXME XXX -- could we use a templated mixed-type copy function
+// FIXME -- could we use a templated mixed-type copy function
 // here?
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
@@ -2067,7 +2067,7 @@ ComplexMatrix::expm (void) const
   Array<double> dpermute (nc);
   Array<double> dscale (nc);
 
-  // XXX FIXME XXX -- should pass job as a parameter in expm
+  // FIXME -- should pass job as a parameter in expm
 
   // Permute first
   char job = 'P';
@@ -2581,7 +2581,7 @@ ComplexMatrix::too_large_for_float (void) const
   return false;
 }
 
-// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// FIXME Do these really belong here?  Maybe they should be
 // in a base class?
 
 boolMatrix
@@ -3100,7 +3100,7 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 {
   ComplexMatrix retval;
 
-  // XXX FIXME XXX -- need to check that a, b, and c are all the same
+  // FIXME -- need to check that a, b, and c are all the same
   // size.
 
   // Compute Schur decompositions
@@ -3142,7 +3142,7 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
     (*current_liboctave_error_handler) ("unrecoverable error in ztrsyl");
   else
     {
-      // XXX FIXME XXX -- check info?
+      // FIXME -- check info?
 
       retval = -ua * cx * ub.hermitian ();
     }
@@ -3205,7 +3205,7 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
   return retval;
 }
 
-// XXX FIXME XXX -- it would be nice to share code among the min/max
+// FIXME -- it would be nice to share code among the min/max
 // functions below.
 
 #define EMPTY_RETURN_CHECK(T) \

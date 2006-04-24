@@ -93,7 +93,7 @@
 %! endif
 %! assert(prog_output_assert("ok"));
 
-%% XXX FIXME XXX
+%% FIXME
 %% Why do the next two tests fail?
 %% test/octave.test/string/string_fill_char-1.m
 %!#test

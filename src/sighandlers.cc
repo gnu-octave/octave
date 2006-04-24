@@ -201,7 +201,7 @@ octave_set_signal_handler (int sig, sig_handler *handler,
 #endif
     }
 #if defined (SA_RESTART)
-  // XXX FIXME XXX -- Do we also need to explicitly disable SA_RESTART?
+  // FIXME -- Do we also need to explicitly disable SA_RESTART?
   else if (restart_syscalls)
     act.sa_flags |= SA_RESTART;
 #endif
@@ -488,7 +488,7 @@ w32_sigint_handler (DWORD sig)
 
   // Return TRUE if the event was handled, or FALSE if another handler 
   // should be called.
-  // XXX FIXME XXX check that windows terminates the thread.
+  // FIXME check that windows terminates the thread.
   return TRUE;
 }
 #endif /* w32_sigint_handler */

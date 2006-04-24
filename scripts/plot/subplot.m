@@ -123,7 +123,7 @@ function subplot (rows, columns, index)
 
     oneplot ();
 
-    ## XXX FIXME XXX -- do we really need to reset these here?
+    ## FIXME -- do we really need to reset these here?
 
     __multiplot_xn__ = 1;
     __multiplot_yn__ = 1;

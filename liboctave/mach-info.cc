@@ -76,7 +76,7 @@ oct_mach_info::init_float_format (void) const
 {
 #if defined (CRAY)
 
-  // XXX FIXME XXX -- this should be determined automatically.
+  // FIXME -- this should be determined automatically.
 
   native_float_fmt = oct_mach_info::flt_fmt_cray;
 

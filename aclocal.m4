@@ -590,7 +590,7 @@ EOF
       cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
     fi
     AC_LANG_POP(C++)
-### XXX FIXME XXX -- Ignore test result on Windows.  Yes it prepends
+### FIXME -- Ignore test result on Windows.  Yes it prepends
 ### underscore, but LoadLibrary ignores it automatically.  The
 ### correct test is to build the shared library then try to grab the
 ### symbol from it with and without underscore.
@@ -598,7 +598,7 @@ EOF
       *-*-cygwin* | *-*-mingw*)
         octave_cv_cxx_prepends_underscore=no
       ;;
-### XXX FIXME XXX -- Ignore test result on OS X.  Yes it prepends
+### FIXME -- Ignore test result on OS X.  Yes it prepends
 ### underscore, but also messes with the name so test fails (incorrectly).
       *-*-darwin*)
         octave_cv_cxx_prepends_underscore=yes

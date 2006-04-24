@@ -22,9 +22,9 @@ included in this manual in @ref{Copying}.
 
 This document corresponds to Octave version @value{VERSION}.
 
-@c XXX FIXME XXX -- add explanation about how and why Octave was written.
+@c FIXME -- add explanation about how and why Octave was written.
 @c
-@c XXX FIXME XXX -- add a sentence or two explaining that we could
+@c FIXME -- add a sentence or two explaining that we could
 @c                  always use more funding.
 
 @menu

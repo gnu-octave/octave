@@ -722,14 +722,14 @@ octave_main (int argc, char **argv, int embedded)
     {
       command_editor::blink_matching_paren (false);
 
-      // XXX FIXME XXX -- is this the right thing to do?
+      // FIXME -- is this the right thing to do?
 
       bind_builtin_variable ("echo_executing_commands", ECHO_CMD_LINE);
     }
 
   if (embedded)
     {
-      // XXX FIXME XXX -- do we need to do any cleanup here before
+      // FIXME -- do we need to do any cleanup here before
       // returning?  If we don't, what will happen to Octave functions
       // that have been registered to execute with atexit, for example?
 

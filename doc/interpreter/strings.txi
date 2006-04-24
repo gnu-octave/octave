@@ -28,7 +28,7 @@ Since the single-quote mark is also used for the transpose operator
 (@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in
 Octave, it is best to use double-quote marks to denote strings.
 
-@c XXX FIXME XXX -- this is probably pretty confusing.
+@c FIXME -- this is probably pretty confusing.
 
 @cindex escape sequence notation
 Some characters cannot be included literally in a string constant.  You

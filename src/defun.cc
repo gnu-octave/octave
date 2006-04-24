@@ -42,7 +42,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "symtab.h"
 #include "variables.h"
 
-// XXX FIXME XXX -- this function could probably share some code with
+// FIXME -- this function could probably share some code with
 // the help functions.
 
 void

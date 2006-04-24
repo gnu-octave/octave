@@ -598,7 +598,7 @@ loadpath (void)
       // checks for out of date symbols even if the change to LOADPATH
       // and subsequent function calls happen between prompts.
 
-      // XXX FIXME XXX -- maybe we should rename
+      // FIXME -- maybe we should rename
       // Vlast_prompt_time_stamp since the new usage doesn't really
       // fit with the current name?
 

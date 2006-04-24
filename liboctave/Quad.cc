@@ -33,7 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 static integrand_fcn user_fcn;
 
-// XXX FIXME XXX -- would be nice to not have to have this global
+// FIXME -- would be nice to not have to have this global
 // variable.
 // Nonzero means an error occurred in the calculation of the integrand
 // function, and the user wants us to quit.

@@ -137,7 +137,7 @@ saved_variable::~saved_variable (void)
       break;
 
     case generic:
-      // XXX FIXME XXX
+      // FIXME
       // delete [] gen_ptr_value;
       break;
 

@@ -106,7 +106,7 @@ glob_match::glob (void)
 
 	      const char * const *matches = glob_info.gl_pathv;
 
-	      // XXX FIXME XXX -- we shouldn't have to check to see if
+	      // FIXME -- we shouldn't have to check to see if
 	      // a single match exists, but it seems that glob() won't
 	      // check for us unless the pattern contains globbing
 	      // characters.  Hmm.

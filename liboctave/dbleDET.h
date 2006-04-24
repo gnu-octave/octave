@@ -26,7 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 
-// XXX FIXME XXX -- we could use templates here; compare with CmplxDET.h
+// FIXME -- we could use templates here; compare with CmplxDET.h
 
 class
 DET

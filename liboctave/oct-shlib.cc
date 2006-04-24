@@ -616,7 +616,7 @@ octave_dyld_shlib::open (const std::string& f, bool warn_future)
 	  (*current_liboctave_error_handler)
 	    ("got NSObjectFileImageReturnCode %d", returnCode);
 
-	  // XXX FIXME XXX -- should use NSLinkEditError () to get
+	  // FIXME -- should use NSLinkEditError () to get
 	  // more info on what went wrong.
 	}
     }

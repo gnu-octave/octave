@@ -26,7 +26,7 @@
 
 function h = ylabel (varargin)
 
-  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
+  ## FIXME -- eventually, we will return a graphics handle.  For
   ## now, return something, so that calls that expect a handle won't
   ## fail (at least immediately).
 

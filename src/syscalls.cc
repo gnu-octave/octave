@@ -297,7 +297,7 @@ system-dependent error message.\n\
 
 	  if (! error_state)
 	    {
-	      // XXX FIXME XXX -- Need better checking here?
+	      // FIXME -- Need better checking here?
 	      if (fid < 0)
 		error ("fcntl: invalid file id");
 	      else

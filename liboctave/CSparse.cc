@@ -7555,7 +7555,7 @@ SparseComplexMatrix::too_large_for_float (void) const
   return false;
 }
 
-// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// FIXME Do these really belong here?  Maybe they should be
 // in a base class?
 
 SparseBoolMatrix
@@ -7840,7 +7840,7 @@ operator * (const SparseComplexMatrix& m, const ComplexMatrix& a)
   SPARSE_FULL_MUL (ComplexMatrix, Complex, Complex (0.,0.));
 }
 
-// XXX FIXME XXX -- it would be nice to share code among the min/max
+// FIXME -- it would be nice to share code among the min/max
 // functions below.
 
 #define EMPTY_RETURN_CHECK(T) \

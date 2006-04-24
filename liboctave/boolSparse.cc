@@ -116,7 +116,7 @@ SparseBoolMatrix::operator ! (void) const
 
 // other operations
 
-// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// FIXME Do these really belong here?  Maybe they should be
 // in a base class?
 
 SparseBoolMatrix

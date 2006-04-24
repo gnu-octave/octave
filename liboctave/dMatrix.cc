@@ -166,7 +166,7 @@ Matrix::Matrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
-// XXX FIXME XXX -- could we use a templated mixed-type copy function
+// FIXME -- could we use a templated mixed-type copy function
 // here?
 
 Matrix::Matrix (const boolMatrix& a)
@@ -2086,7 +2086,7 @@ Matrix::too_large_for_float (void) const
   return false;
 }
 
-// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// FIXME Do these really belong here?  Maybe they should be
 // in a base class?
 
 boolMatrix
@@ -2488,7 +2488,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 {
   Matrix retval;
 
-  // XXX FIXME XXX -- need to check that a, b, and c are all the same
+  // FIXME -- need to check that a, b, and c are all the same
   // size.
 
   // Compute Schur decompositions.
@@ -2531,7 +2531,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
     (*current_liboctave_error_handler) ("unrecoverable error in dtrsyl");
   else
     {
-      // XXX FIXME XXX -- check info?
+      // FIXME -- check info?
   
       retval = -ua*cx*ub.transpose ();
     }
@@ -2582,7 +2582,7 @@ operator * (const Matrix& m, const Matrix& a)
   return retval;
 }
 
-// XXX FIXME XXX -- it would be nice to share code among the min/max
+// FIXME -- it would be nice to share code among the min/max
 // functions below.
 
 #define EMPTY_RETURN_CHECK(T) \

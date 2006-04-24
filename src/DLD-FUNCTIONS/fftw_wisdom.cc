@@ -113,7 +113,7 @@ Octave.\n\
       std::string wisdom = octave_env::make_absolute
 	(Vload_path_dir_path.find_first_of (str), octave_env::getcwd ());
 
-      // XXX FIXME XXX -- should probably protect FILE* resources with
+      // FIXME -- should probably protect FILE* resources with
       // auto_ptr or similar...
 
       if (wisdom.empty () || overwrite)

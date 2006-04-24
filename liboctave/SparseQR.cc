@@ -68,7 +68,7 @@ SparseQR::SparseQR_rep::V (void) const
 {
 #ifdef HAVE_CXSPARSE
   // Drop zeros from V and sort
-  // XXX FIXME XXX Is the double transpose to sort necessary?
+  // FIXME Is the double transpose to sort necessary?
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_DNAME (_dropzeros) (N->L);
   CXSPARSE_DNAME () *D = CXSPARSE_DNAME (_transpose) (N->L, 1);
@@ -124,7 +124,7 @@ SparseQR::SparseQR_rep::R (const bool econ) const
 {
 #ifdef HAVE_CXSPARSE
   // Drop zeros from R and sort
-  // XXX FIXME XXX Is the double transpose to sort necessary?
+  // FIXME Is the double transpose to sort necessary?
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_DNAME (_dropzeros) (N->U);
   CXSPARSE_DNAME () *D = CXSPARSE_DNAME (_transpose) (N->U, 1);

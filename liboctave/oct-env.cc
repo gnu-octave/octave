@@ -173,7 +173,7 @@ octave_env::get_host_name (void)
     ? instance->do_get_host_name () : std::string ();
 }
 
-// XXX FIXME XXX -- this leaves no way to distinguish between a
+// FIXME -- this leaves no way to distinguish between a
 // variable that is not set and one that is set to the empty string.
 // Is this a problem?
 
@@ -304,7 +304,7 @@ octave_env::do_make_absolute (const std::string& s,
   if (! file_ops::is_dir_sep (current_dir[pos]))
     current_dir.append (file_ops::dir_sep_str);
 
-  // XXX FIXME XXX -- this is probably not correct for all systems.
+  // FIXME -- this is probably not correct for all systems.
 
   size_t i = 0;
   size_t slen = s.length ();
@@ -400,7 +400,7 @@ octave_env::do_get_home_directory (void) const
 std::string
 octave_env::do_get_user_name (void) const
 {
-  // XXX FIXME XXX -- is it possible for this to change while Octave
+  // FIXME -- is it possible for this to change while Octave
   // is running?
 
   if (user_name.empty ())
@@ -416,7 +416,7 @@ octave_env::do_get_user_name (void) const
 std::string
 octave_env::do_get_host_name (void) const
 {
-  // XXX FIXME XXX -- is it possible for this to change while Octave
+  // FIXME -- is it possible for this to change while Octave
   // is running?
 
   if (host_name.empty ())

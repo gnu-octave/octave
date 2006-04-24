@@ -1730,7 +1730,7 @@ finish_colon_expression (tree_colon_expression *e)
 	  e->preserve_base ();
 	  delete e;
 
-	  // XXX FIXME XXX -- need to attempt constant folding here
+	  // FIXME -- need to attempt constant folding here
 	  // too (we need a generic way to do that).
 	  retval = base;
 	}
@@ -1803,7 +1803,7 @@ make_fcn_handle (token *tok_val)
 static tree_constant *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
-  // XXX FIXME XXX -- need to get these from the location of the @ symbol.
+  // FIXME -- need to get these from the location of the @ symbol.
 
   int l = -1;
   int c = -1;
@@ -1824,7 +1824,7 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
       stmt->set_print_flag (false);
 
-      // XXX FIXME XXX -- would like to delete old_stmt here or
+      // FIXME -- would like to delete old_stmt here or
       // replace expression inside it with the new expression we just
       // created so we don't have to create a new statement at all.
 
@@ -2951,7 +2951,7 @@ parse_and_execute (FILE *f)
 static void
 safe_fclose (void *f)
 {
-  // XXX FIXME XXX -- comments at the end of an input file are
+  // FIXME -- comments at the end of an input file are
   // discarded (otherwise, they would be appended to the next
   // statement, possibly from the command line or another file, which
   // can be quite confusing).
@@ -3047,7 +3047,7 @@ text_getc (FILE *f)
 // comments that are recognized as a copyright notice are saved in the
 // comment buffer.
 
-// XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
+// FIXME -- grab_help_text() in lex.l duplicates some of this
 // code!
 
 static std::string
@@ -3292,7 +3292,7 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
       if (! force_script && is_function_file (ffile))
 	{
-	  // XXX FIXME XXX -- we shouldn't need both the
+	  // FIXME -- we shouldn't need both the
 	  // command_history object and the
 	  // Vsaving_history variable...
 	  command_history::ignore_entries ();
@@ -3330,7 +3330,7 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
 	  octave_comment_buffer::append (txt);
 
-	  // XXX FIXME XXX -- this should not be necessary.
+	  // FIXME -- this should not be necessary.
 	  gobble_leading_white_space (ffile, false, true, false);
 
 	  int status = yyparse ();
@@ -3348,7 +3348,7 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  // proper value when we unwind from this frame.
 	  reading_fcn_file = old_reading_fcn_file_state;
 
-	  // XXX FIXME XXX -- we shouldn't need both the
+	  // FIXME -- we shouldn't need both the
 	  // command_history object and the
 	  // Vsaving_history variable...
 	  command_history::ignore_entries ();

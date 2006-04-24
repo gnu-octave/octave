@@ -31,7 +31,7 @@ Boston, MA 02110-1301, USA.
 #include "CSparse.h"
 #include "oct-spparms.h"
 
-// XXX FIXME XXX There is a large code duplication here
+// FIXME There is a large code duplication here
 
 SparseType::SparseType (void) : typ (SparseType::Unknown), nperm (0)
 {
@@ -187,7 +187,7 @@ SparseType::SparseType (const SparseMatrix &a)
 	  // Search for a permuted triangular matrix, and test if
 	  // permutation is singular
 
-	  // XXX FIXME XXX
+	  // FIXME
 	  // Perhaps this should be based on a dmperm algorithm
 	  bool found = false;
 
@@ -291,7 +291,7 @@ SparseType::SparseType (const SparseMatrix &a)
 	    }
 	}
 
-      // XXX FIXME XXX
+      // FIXME
       // Disable lower under-determined and upper over-determined problems
       // as being detected, and force to treat as singular. As this seems
       // to cause issues
@@ -512,7 +512,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	  // Search for a permuted triangular matrix, and test if
 	  // permutation is singular
 
-	  // XXX FIXME XXX
+	  // FIXME
 	  // Perhaps this should be based on a dmperm algorithm
 	  bool found = false;
 
@@ -616,7 +616,7 @@ SparseType::SparseType (const SparseComplexMatrix &a)
 	    }
 	}
 
-      // XXX FIXME XXX
+      // FIXME
       // Disable lower under-determined and upper over-determined problems
       // as being detected, and force to treat as singular. As this seems
       // to cause issues

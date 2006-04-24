@@ -475,7 +475,7 @@ symbol_record::dimensions_string_req_first_space (int print_dims) const
 //   mat is a 12x3 matrix
 //            ^^^^ => 4 columns
 //
-// XXX FIXME XXX -- why not just use the dim_vector::str () method?
+// FIXME -- why not just use the dim_vector::str () method?
 
 int
 symbol_record::dimensions_string_req_total_space (int print_dims) const
@@ -492,7 +492,7 @@ symbol_record::dimensions_string_req_total_space (int print_dims) const
 // Make the dimensions-string.  For example: mat is a 2x3 matrix.
 //                                                    ^^^
 //
-// XXX FIXME XXX -- why not just use the dim_vector::str () method?
+// FIXME -- why not just use the dim_vector::str () method?
 
 std::string
 symbol_record::make_dimensions_string (int print_dims) const
@@ -797,7 +797,7 @@ symbol_table::rename (const std::string& old_name, const std::string& new_name)
 	 new_name.c_str ());
 }
 
-// XXX FIXME XXX -- it would be nice to eliminate a lot of the
+// FIXME -- it would be nice to eliminate a lot of the
 // following duplicate code.
 
 void
@@ -1404,7 +1404,7 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 
 	  idx += cmd.length ();
 
-	  // XXX FIXME XXX -- use iostream functions instead of sscanf!
+	  // FIXME -- use iostream functions instead of sscanf!
 
 	  if (cmd.find_first_of ("crl") != 1)
 	    items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d:%d;",
@@ -1539,7 +1539,7 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 
   if (show_verbose)
     {
-      // XXX FIXME XXX Should separate argv to lists with and without dots.
+      // FIXME Should separate argv to lists with and without dots.
       Array<symbol_record *> xsymbols = symbol_list (argv, type, scope);
       Array<symbol_record *> xsubsymbols = subsymbol_list (argv, type, scope);
 

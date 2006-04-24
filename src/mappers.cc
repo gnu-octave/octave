@@ -37,7 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-mapper.h"
 #include "variables.h"
 
-// XXX FIXME XXX -- perhaps this could be avoided by determining
+// FIXME -- perhaps this could be avoided by determining
 // whether the is* functions are actually functions or just macros.
 
 static int

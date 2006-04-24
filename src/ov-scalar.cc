@@ -62,13 +62,13 @@ octave_scalar::do_index_op (const octave_value_list& idx, int resize_ok)
     retval = scalar;
   else
     {
-      // XXX FIXME XXX -- this doesn't solve the problem of
+      // FIXME -- this doesn't solve the problem of
       //
       //   a = 1; a([1,1], [1,1], [1,1])
       //
       // and similar constructions.  Hmm...
 
-      // XXX FIXME XXX -- using this constructor avoids narrowing the
+      // FIXME -- using this constructor avoids narrowing the
       // 1x1 matrix back to a scalar value.  Need a better solution
       // to this problem.
 
@@ -142,7 +142,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 
       if (ival < 0 || ival > UCHAR_MAX)
 	{
-	  // XXX FIXME XXX -- is there something better we could do?
+	  // FIXME -- is there something better we could do?
 
 	  ival = 0;
 

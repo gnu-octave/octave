@@ -91,14 +91,14 @@ octave_fcn_handle::subsref (const std::string& type,
 
 	    if (ff_nm.empty ())
 	      {
-		// XXX FIXME XXX -- need to handle inline and
+		// FIXME -- need to handle inline and
 		// command-line functions here.
 	      }
 	    else
 	      {
 		if (fcn_out_of_date (f, ff_nm, tp))
 		  {
-		    // XXX FIXME XXX -- there is currently no way to
+		    // FIXME -- there is currently no way to
 		    // parse a .m file or reload a .oct file that
 		    // leaves the fbi symbol table untouched.  We need
 		    // a function that will parse the file and return
@@ -133,7 +133,7 @@ octave_fcn_handle::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // XXX FIXME XXX -- perhaps there should be an
+  // FIXME -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_builtin::subsref.
 

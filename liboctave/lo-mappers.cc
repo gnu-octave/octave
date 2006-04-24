@@ -134,7 +134,7 @@ octave_is_NaN_or_NA (double x)
 
 // (double, double) -> double mappers.
 
-// XXX FIXME XXX -- need to handle NA too?
+// FIXME -- need to handle NA too?
 
 double
 xmin (double x, double y)
@@ -286,7 +286,7 @@ octave_is_NaN_or_NA (const Complex& x)
 
 // (complex, complex) -> complex mappers.
 
-// XXX FIXME XXX -- need to handle NA too?
+// FIXME -- need to handle NA too?
 
 Complex
 xmin (const Complex& x, const Complex& y)

@@ -29,7 +29,7 @@ function opath = setpath (npath)
     if (nargout > 0)
       opath = LOADPATH;
     endif
-    ## XXX FIXME XXX -- perhaps validate elements of npath to make sure
+    ## FIXME -- perhaps validate elements of npath to make sure
     ## they are existing directories?
     if (ischar (npath))
       LOADPATH = npath;

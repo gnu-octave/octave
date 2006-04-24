@@ -67,7 +67,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // directory tree.
 static bool Vconfirm_recursive_rmdir = true;
 
-// XXX FIXME XXX -- changing the plotter directory should be handled
+// FIXME -- changing the plotter directory should be handled
 // by registering a function for octave_env::chdir to call so that
 // this function can be eliminated.
 
@@ -77,7 +77,7 @@ octave_change_to_directory (const std::string& newdir)
   int cd_ok = octave_env::chdir (newdir);
 
   if (cd_ok)
-    // XXX FIXME XXX -- this should be handled as a list of functions
+    // FIXME -- this should be handled as a list of functions
     // to call so users can add their own chdir handlers.
     /* do_external_plotter_cd (newdir) */;
   else
@@ -285,7 +285,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- should maybe also allow second arg to specify
+// FIXME -- should maybe also allow second arg to specify
 // mode?  OTOH, that might cause trouble with compatibility later...
 
 DEFCMD (mkdir, args, ,

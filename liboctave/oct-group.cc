@@ -191,7 +191,7 @@ octave_group::octave_group (void *p, std::string& msg)
 
       gr_gid = gr->gr_gid;
 
-      // XXX FIXME XXX -- maybe there should be a string_vector
+      // FIXME -- maybe there should be a string_vector
       // constructor that takes a NULL terminated list of C
       // strings.
 

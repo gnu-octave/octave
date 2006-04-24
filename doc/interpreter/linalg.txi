@@ -66,7 +66,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @DOCSTRING(svd)
 
-@c XXX FIXME XXX -- should there be a new section here?
+@c FIXME -- should there be a new section here?
 
 @DOCSTRING(housh)
 

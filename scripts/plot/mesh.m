@@ -32,7 +32,7 @@
 
 function mesh (x, y, z)
 
-  ## XXX FIXME XXX -- the plot states should really just be set
+  ## FIXME -- the plot states should really just be set
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 

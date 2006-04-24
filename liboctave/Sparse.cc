@@ -1997,7 +1997,7 @@ Sparse<T>::index (Array<idx_vector>& ra_idx, int resize_ok) const
   return index (ra_idx (0), ra_idx (1), resize_ok);
 }
 
-// XXX FIXME XXX
+// FIXME
 // Unfortunately numel can overflow for very large but very sparse matrices.
 // For now just flag an error when this happens.
 template <class LT, class RT>

@@ -127,7 +127,7 @@ supports the multiplot feature.
 @DOCSTRING(figure)
 
 @c @node Exporting Plots
-@c XXX FIXME XXX -- add info about getting paper copies of plots.
+@c FIXME -- add info about getting paper copies of plots.
 
 @node Low-Level plotting commands
 @section Low-Level plotting commands
@@ -324,7 +324,7 @@ The command @code{shg} is equivalent to executing @code{replot}.
 Note that NaN values in the plot data are automatically omitted, and
 Inf values are converted to a very large value before calling gnuplot.
 
-@c XXX FIXME XXX -- add info about what to do to get plots on remote X
+@c FIXME -- add info about what to do to get plots on remote X
 @c terminals.  People often forget how to properly set DISPLAY and run
 @c xhost.
 

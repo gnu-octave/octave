@@ -83,7 +83,7 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  // XXX FIXME XXX Adapt idx_vector to allow sparse logical indexing!!
+  // FIXME Adapt idx_vector to allow sparse logical indexing!!
   idx_vector index_vector (void) const 
     { return idx_vector (bool_array_value ()); }
 

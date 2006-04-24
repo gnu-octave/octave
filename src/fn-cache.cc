@@ -104,7 +104,7 @@ octave_fcn_file_name_cache::do_list (const std::string& path, bool no_suffix)
   // For now, always generate the list of function files on each
   // call.
 
-  // XXX FIXME XXX -- this could probably be improved by keeping lists
+  // FIXME -- this could probably be improved by keeping lists
   // of all the function files for the current load path and only
   // updating that when the load path changes.  Have to be careful to
   // return the right thing when we are only looking for a subset of

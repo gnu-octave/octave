@@ -42,7 +42,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 
-// XXX FIXME XXX -- could probably eliminate some code duplication by
+// FIXME -- could probably eliminate some code duplication by
 // clever use of templates.
 
 #define BITOPX(OP, FNAME, RET) \

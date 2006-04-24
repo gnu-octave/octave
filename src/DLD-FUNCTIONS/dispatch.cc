@@ -36,7 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "symtab.h"
 #include "variables.h"
 
-// XXX FIXME XXX should be using a map from type_id->name, rather
+// FIXME should be using a map from type_id->name, rather
 // than type_name->name
 
 template class std::map<std::string,std::string>;
@@ -48,7 +48,7 @@ octave_dispatch : public octave_function
 {
 public:
 
-  // XXX FIXME XXX need to handle doc strings of dispatched functions, for
+  // FIXME need to handle doc strings of dispatched functions, for
   // example, by appending "for <f>(<type>,...) see <name>" for each
   // time dispatch(f,type,name) is called.
   octave_dispatch (const std::string &nm)
@@ -56,7 +56,7 @@ public:
       has_alias (false)
   { }
 
-  // XXX FIXME XXX if we get deleted, we should restore the original
+  // FIXME if we get deleted, we should restore the original
   // symbol_record from base before dying.
   ~octave_dispatch (void) { }
 
@@ -204,7 +204,7 @@ builtin (const std::string& base)
 
       // check for updates to builtin function; ignore errors that
       // appear (they interfere with renaming), and remove the updated
-      // name from the current symbol table.  XXX FIXME XXX check that
+      // name from the current symbol table.  FIXME check that
       // updating a function updates it in all contexts --- it may be
       // that it is updated only in the current symbol table, and not
       // the caller.  I believe this won't be a problem because the
@@ -217,7 +217,7 @@ builtin (const std::string& base)
 
       // Move the builtin function out of the way and restore the
       // dispatch fuction.
-      // XXX FIXME XXX what if builtin wants to protect itself?
+      // FIXME what if builtin wants to protect itself?
       symbol_record *found = fbi_sym_tab->lookup (base, 0);
       bool readonly = found->is_read_only ();
       found->unprotect ();
@@ -391,7 +391,7 @@ dispatch_record (const std::string &f, const std::string &n,
       if (iscommand)
 	sr->mark_as_command();
       sr->document ("\n\n@noindent\nOverloaded function:\n");
-      sr->make_eternal (); // XXX FIXME XXX why??
+      sr->make_eternal (); // FIXME why??
       sr->mark_as_static ();
       sr->protect ();
     }
@@ -401,21 +401,21 @@ dispatch_record (const std::string &f, const std::string &n,
     = dynamic_cast<const octave_dispatch&> (sr->def().get_rep ());
 
   if (t.empty ())
-    // XXX FIXME XXX should return the list if nargout > 1
+    // FIXME should return the list if nargout > 1
     rep.print (octave_stdout);
   else if (n.empty ())
     {
-      // XXX FIXME XXX should we eliminate the dispatch function if
+      // FIXME should we eliminate the dispatch function if
       // there are no more elements?
-      // XXX FIXME XXX should clear the " $t:\w+" from the help string.
-      // XXX FIXME XXX -- seems bad to cast away const here...
+      // FIXME should clear the " $t:\w+" from the help string.
+      // FIXME -- seems bad to cast away const here...
       octave_dispatch& xrep = const_cast<octave_dispatch&> (rep);
 
       xrep.clear (t);
     }
   else
     {
-      // XXX FIXME XXX -- seems bad to cast away const here...
+      // FIXME -- seems bad to cast away const here...
       octave_dispatch& xrep = const_cast<octave_dispatch&> (rep);
 
       xrep.add (t, n);
@@ -529,7 +529,7 @@ for @var{f}.\n\
 %! evalin('base','assert(hanning(1),1)');
 %! dispatch('hanning','string');
 
-XXX FIXME XXX I would rather not create dispatch_x/dispatch_y
+FIXME I would rather not create dispatch_x/dispatch_y
 in the current directory!  I don't want them installed accidentally.
 
 %!test # replace base m-file
@@ -554,6 +554,6 @@ in the current directory!  I don't want them installed accidentally.
 %!test 
 %! system("rm dispatch_y.m");
 
-XXX FIXME XXX add tests for preservation of mark_as_command status.
+FIXME add tests for preservation of mark_as_command status.
 
 */

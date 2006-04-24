@@ -76,7 +76,7 @@ Free Software Foundation, Inc.
 
 typedef RETSIGTYPE sig_handler (int);
 
-// XXX FIXME XXX -- the data should probably be private...
+// FIXME -- the data should probably be private...
 
 struct
 octave_interrupt_handler

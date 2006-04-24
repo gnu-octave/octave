@@ -118,7 +118,7 @@ gripe_file_open (const std::string& fcn, const std::string& file)
     error ("%s: unable to open file `%s'", fcn.c_str (), file.c_str ());
 }
 
-// XXX FIXME XXX -- shouldn't this be implemented in terms of other
+// FIXME -- shouldn't this be implemented in terms of other
 // functions that are already available?
 
 // Install a variable with name NAME and the value specified TC in the
@@ -789,7 +789,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 #endif /* HAVE_HDF5 */
       if (format != LS_UNKNOWN)
 	{
-	  // XXX FIXME XXX -- if we have already seen EOF on a
+	  // FIXME -- if we have already seen EOF on a
 	  // previous call, how do we fix up the state of std::cin so
 	  // that we can get additional input?  I'm afraid that we
 	  // can't fix this using std::cin only.
@@ -1330,7 +1330,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 	    {
 	      double tc_size = tc.byte_size () / 1024;
 
-	      // XXX FIXME XXX -- maybe we should try to throw out the
+	      // FIXME -- maybe we should try to throw out the
 	      // largest first...
 
 	      if (Voctave_core_file_limit < 0
@@ -1361,7 +1361,7 @@ dump_octave_core (void)
 {
   if (Vcrash_dumps_octave_core)
     {
-      // XXX FIXME XXX -- should choose better file name?
+      // FIXME -- should choose better file name?
 
       const char *fname = Voctave_core_file_name.c_str ();
 
@@ -1638,7 +1638,7 @@ the file @file{data} in Octave's binary format.\n\
 	// don't insert any commands here!  the brace below must go
 	// with the "else" above!
 	{
-	  // XXX FIXME XXX -- should things intended for the screen end up
+	  // FIXME -- should things intended for the screen end up
 	  // in a octave_value (string)?
 	  
 	  save_vars (argv, i, argc, octave_stdout, save_builtins, format,

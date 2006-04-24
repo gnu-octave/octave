@@ -69,7 +69,7 @@ tree_simple_assignment::rvalue (int nargout)
   return retval;
 }
 
-// XXX FIXME XXX -- this works, but it would look a little better if
+// FIXME -- this works, but it would look a little better if
 // it were broken up into a couple of separate functions.
 
 octave_value
@@ -196,7 +196,7 @@ tree_multi_assignment::rvalue (void)
   return retval;
 }
 
-// XXX FIXME XXX -- this works, but it would look a little better if
+// FIXME -- this works, but it would look a little better if
 // it were broken up into a couple of separate functions.
 
 octave_value_list

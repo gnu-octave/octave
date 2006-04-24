@@ -42,7 +42,7 @@ function h = __axis_label__ (caller, text)
     usage ("%s (text)", caller);
   endif
 
-  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
+  ## FIXME -- eventually, we will return a graphics handle.  For
   ## now, return something, so that calls that expect a handle won't
   ## fail (at least immediately).
 

@@ -545,7 +545,7 @@ do_run_history (int argc, const string_vector& argv)
 
   // Delete the temporary file.
 
-  // XXX FIXME XXX -- should probably be done using an unwind_protect.
+  // FIXME -- should probably be done using an unwind_protect.
 
   unlink (name.c_str ());
 }

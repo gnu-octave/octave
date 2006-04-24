@@ -97,7 +97,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  // XXX FIXME XXX -- would be nice to avoid copying the data.
+  // FIXME -- would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);

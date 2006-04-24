@@ -108,7 +108,7 @@ close_files (void)
 
 // List of files to delete when we exit or crash.
 //
-// XXX FIXME XXX -- this should really be static, but that causes
+// FIXME -- this should really be static, but that causes
 // problems on some systems.
 std::stack <std::string> tmp_files;
 
@@ -251,7 +251,7 @@ stream before calling @code{input}.\n\
 
   if (nargin == 1)
     {
-      // XXX FIXME XXX -- any way to avoid special case for stdout?
+      // FIXME -- any way to avoid special case for stdout?
 
       int fid = octave_stream_list::get_file_number (args (0));
 
@@ -1136,7 +1136,7 @@ string is treated as an end-of-file condition.\n\
 
 		      octave_value tmp = os.scanf (args(1), size, count, who);
 
-		      // XXX FIXME XXX -- is this the right thing to do?
+		      // FIXME -- is this the right thing to do?
 		      // Extract error message first, because getting
 		      // position will clear it.
 		      std::string errmsg = os.error ();

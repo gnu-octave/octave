@@ -92,7 +92,7 @@ bool Vwarn_fortran_indexing;
 // Should we warn about conversions from complex to real?
 int Vwarn_imag_to_real;
 
-// XXX FIXME XXX
+// FIXME
 
 // Octave's value type.
 
@@ -829,7 +829,7 @@ octave_value::assign (assign_op op, const std::string& type,
 
   if (op != op_asn_eq)
     {
-      // XXX FIXME XXX -- only do the following stuff if we can't find
+      // FIXME -- only do the following stuff if we can't find
       // a specific function to call to handle the op= operation for
       // the types we have.
 
@@ -877,7 +877,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
     operator = (rhs);
   else
     {
-      // XXX FIXME XXX -- only do the following stuff if we can't find
+      // FIXME -- only do the following stuff if we can't find
       // a specific function to call to handle the op= operation for
       // the types we have.
 
@@ -1142,7 +1142,7 @@ octave_value::vector_value (bool force_string_conv,
     }
   else if (nr > 0 && nc > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (! force_vector_conversion && Vwarn_fortran_indexing)
 	gripe_implicit_conversion (type_name (), "real vector");
 
@@ -1217,7 +1217,7 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
     }
   else if (nr > 0 && nc > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (! force_vector_conversion && Vwarn_fortran_indexing)
 	gripe_implicit_conversion (type_name (), "real vector");
 
@@ -1284,7 +1284,7 @@ octave_value::complex_vector_value (bool force_string_conv,
     }
   else if (nr > 0 && nc > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (! force_vector_conversion && Vwarn_fortran_indexing)
 	gripe_implicit_conversion (type_name (), "complex vector");
 
@@ -1669,7 +1669,7 @@ octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
     }
   else
     {
-      // XXX FIXME XXX -- only do the following stuff if we can't find a
+      // FIXME -- only do the following stuff if we can't find a
       // specific function to call to handle the op= operation for the
       // types we have.
 

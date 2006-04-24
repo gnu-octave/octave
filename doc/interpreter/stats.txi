@@ -35,7 +35,7 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(skewness)
 
-@c XXX FIXME XXX -- these need to be organized.
+@c FIXME -- these need to be organized.
 
 @DOCSTRING(values)
 

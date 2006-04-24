@@ -178,7 +178,7 @@
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %! 
-%! [q, r, p] = qr (a);  # not giving right dimensions. XXX FIXME XXX
+%! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
 %! 
 %! [qe, re, pe] = qr (a, 0);
 %! 

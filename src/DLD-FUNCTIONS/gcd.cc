@@ -31,7 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "oct-obj.h"
 
-// XXX FIXME XXX -- should probably handle Inf, NaN.
+// FIXME -- should probably handle Inf, NaN.
 
 static inline bool
 is_integer_value (double x)

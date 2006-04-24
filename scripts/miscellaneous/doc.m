@@ -38,7 +38,7 @@ function retval = doc (fname)
   endif
 
   ## Get the directory where the function lives.
-  ## XXX FIXME XXX -- maybe we should have a better way of doing this.
+  ## FIXME -- maybe we should have a better way of doing this.
 
   x = exist (fname);
 

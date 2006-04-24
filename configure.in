@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.507 $)
+AC_REVISION($Revision: 1.508 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -665,7 +665,7 @@ EOF
 elif $have_f2c; then
   AC_DEFINE(HAVE_F2C, 1, [Define if we are using f2c.])
 
-### XXX FIMXE XXX -- these shouldn't be fixed names, eh?
+### FIXME -- these shouldn't be fixed names, eh?
 
   oct_conflib=libconflib.a
   oct_obj_ext=o

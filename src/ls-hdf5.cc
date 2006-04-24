@@ -335,7 +335,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  // What integer type do we really have..
 	  std::string int_typ;
 #ifdef HAVE_H5T_GET_NATIVE_TYPE
-	  // XXX FIXME XX test this code and activated with an autoconf 
+	  // FIXME test this code and activated with an autoconf 
 	  // test!! It is also incorrect for 64-bit indexing!!
 	  
 	  switch (H5Tget_native_type (type_id, H5T_DIR_ASCEND))
@@ -538,7 +538,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
   H5get_libversion (&vers_major, &vers_minor, &vers_release);
 
-  // XXX FIXME XXX -- this test looks wrong.
+  // FIXME -- this test looks wrong.
   have_h5giterate_bug
     = (vers_major < 1
        || (vers_major == 1 && (vers_minor < 2

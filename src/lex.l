@@ -168,7 +168,7 @@ lexical_feedback lexer_flags;
 // information.  This has to appear before lex.h is included, because
 // one of the macros defined there uses token_stack.
 //
-// XXX FIXME XXX -- this should really be static, but that causes
+// FIXME -- this should really be static, but that causes
 // problems on some systems.
 std::stack <token*> token_stack;
 
@@ -1235,7 +1235,7 @@ force_local_variable (const std::string& name)
 
 // Grab the help text from an function file.
 
-// XXX FIXME XXX -- gobble_leading_white_space() in parse.y
+// FIXME -- gobble_leading_white_space() in parse.y
 // duplicates some of this code!
 
 static std::string

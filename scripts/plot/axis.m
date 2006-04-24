@@ -149,7 +149,7 @@ function curr_axis = axis (ax, varargin)
       ## aspect ratio
     elseif (strcmp (ax, "image"))
       __gnuplot_raw__ ("set size ratio -1;\n"); 
-      __gnuplot_raw__ ("set autoscale;\n"); ## XXX FIXME XXX should be the same as "tight"
+      __gnuplot_raw__ ("set autoscale;\n"); ## FIXME should be the same as "tight"
     elseif (strcmp (ax, "equal"))
       __gnuplot_raw__ ("set size ratio -1;\n");
     elseif (strcmp (ax, "square"))
@@ -170,14 +170,14 @@ function curr_axis = axis (ax, varargin)
       __gnuplot_raw__ ("set xrange [] writeback;\n");
       __gnuplot_raw__ ("set yrange [] writeback;\n");
       __gnuplot_raw__ ("set zrange [] writeback;\n");
-      ## XXX FIXME XXX if writeback were set in plot, no need to replot here.
+      ## FIXME if writeback were set in plot, no need to replot here.
       ## No semicolon (see replot.m).
       replot ();
       __gnuplot_raw__ ("set noautoscale x;\n");
       __gnuplot_raw__ ("set noautoscale y;\n");
       __gnuplot_raw__ ("set noautoscale z;\n");
     elseif (strcmp (ax, "tight"))
-      ## XXX FIXME XXX if tight, plot must set ranges to limits of the
+      ## FIXME if tight, plot must set ranges to limits of the
       ## all the data on the current plot, even if from a previous call.
       ## Instead, just let gnuplot do as it likes.
       __gnuplot_raw__ ("set autoscale;\n");

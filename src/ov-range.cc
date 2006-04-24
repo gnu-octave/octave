@@ -112,13 +112,13 @@ octave_range::subsref (const std::string& type,
 octave_value
 octave_range::do_index_op (const octave_value_list& idx, int resize_ok)
 {
-  // XXX FIXME XXX -- this doesn't solve the problem of
+  // FIXME -- this doesn't solve the problem of
   //
   //   a = 1:5; a(1, 1, 1)
   //
   // and similar constructions.  Hmm...
 
-  // XXX FIXME XXX -- using this constructor avoids possibly narrowing
+  // FIXME -- using this constructor avoids possibly narrowing
   // the range to a scalar value.  Need a better solution to this
   // problem.
 
@@ -136,7 +136,7 @@ octave_range::double_value (bool) const
 
   if (nel > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("range", "real scalar");
 
@@ -151,7 +151,7 @@ octave_range::double_value (bool) const
 octave_value
 octave_range::all (int dim) const
 {
-  // XXX FIXME XXX -- this is a potential waste of memory.
+  // FIXME -- this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
@@ -161,7 +161,7 @@ octave_range::all (int dim) const
 octave_value
 octave_range::any (int dim) const
 {
-  // XXX FIXME XXX -- this is a potential waste of memory.
+  // FIXME -- this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
@@ -175,7 +175,7 @@ octave_range::is_true (void) const
 
   if (range.nelem () != 0)
     {
-      // XXX FIXME XXX -- this is a potential waste of memory.
+      // FIXME -- this is a potential waste of memory.
 
       Matrix m ((range.matrix_value () . all ()) . all ());
 
@@ -196,7 +196,7 @@ octave_range::complex_value (bool) const
 
   if (nel > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("range", "complex scalar");
 

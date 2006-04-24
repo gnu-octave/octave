@@ -89,7 +89,7 @@ octave_sparse_bool_matrix::try_narrowing_conversion (void)
 bool
 octave_sparse_bool_matrix::valid_as_scalar_index (void) const
 {
-  // XXX FIXME XXX
+  // FIXME
   return false;
 }
 
@@ -100,7 +100,7 @@ octave_sparse_bool_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("bool sparse matrix", "real scalar");
 
@@ -119,10 +119,10 @@ octave_sparse_bool_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("bool sparse matrix", "complex scalar");
 
@@ -142,7 +142,7 @@ octave_sparse_bool_matrix::convert_to_str_internal (bool pad, bool force,
   return tmp.convert_to_str (pad, force, type);
 }
 
-// XXX FIXME XXX These are inefficient ways of creating full matrices
+// FIXME These are inefficient ways of creating full matrices
 
 Matrix
 octave_sparse_bool_matrix::matrix_value (bool) const

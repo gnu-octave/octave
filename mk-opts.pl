@@ -592,7 +592,7 @@ sub emit_print_function
 {
   local ($i);
 
-  ## XXX FIXME XXX -- determine the width of the table automatically.
+  ## FIXME -- determine the width of the table automatically.
 
   print "static void
 print_${class_name} (void)

@@ -122,7 +122,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         nv = columns (V);
         if (jj != nv)
           [V(:,jj), V(:,nv)] = swap (V(:,jj), V(:,nv));
-	  ## XXX FIXME XXX -- H columns should be swapped too.  Not done
+	  ## FIXME -- H columns should be swapped too.  Not done
 	  ## since Block Hessenberg structure is lost anyway.
         endif
         V = V(:,1:(nv-1));
@@ -156,7 +156,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         # reduce V per the reflection
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
         if(iter > 1)
-	  ## XXX FIXME XXX -- not done correctly for block case
+	  ## FIXME -- not done correctly for block case
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif
 

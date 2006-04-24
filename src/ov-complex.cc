@@ -73,13 +73,13 @@ octave_complex::do_index_op (const octave_value_list& idx, int resize_ok)
     retval = scalar;
   else
     {
-      // XXX FIXME XXX -- this doesn't solve the problem of
+      // FIXME -- this doesn't solve the problem of
       //
       //   a = i; a([1,1], [1,1], [1,1])
       //
       // and similar constructions.  Hmm...
 
-      // XXX FIXME XXX -- using this constructor avoids narrowing the
+      // FIXME -- using this constructor avoids narrowing the
       // 1x1 matrix back to a scalar value.  Need a better solution
       // to this problem.
 

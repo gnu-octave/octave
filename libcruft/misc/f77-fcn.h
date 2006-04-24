@@ -101,7 +101,7 @@ extern int f77_exception_encountered;
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;
 
-/* XXX FIXME XXX -- these should work for SV1 or Y-MP systems but will
+/* FIXME -- these should work for SV1 or Y-MP systems but will
    need to be changed for others.  */
 
 typedef union

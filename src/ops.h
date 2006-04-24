@@ -251,7 +251,7 @@ extern void install_ops (void);
     return octave_value (op v.e ## _value ()); \
   }
 
-// XXX FIXME XXX -- in some cases, the constructor isn't necessary.
+// FIXME -- in some cases, the constructor isn't necessary.
 
 #define DEFUNOP_FN(name, t, f) \
   UNOPDECL (name, a) \
@@ -301,7 +301,7 @@ extern void install_ops (void);
       (v1.e1 ## _value () op v2.e2 ## _value ()); \
   }
 
-// XXX FIXME XXX -- in some cases, the constructor isn't necessary.
+// FIXME -- in some cases, the constructor isn't necessary.
 
 #define DEFBINOP_FN(name, t1, t2, f) \
   BINOPDECL (name, a1, a2) \
@@ -334,7 +334,7 @@ extern void install_ops (void);
 #define DEFCATOP(name, t1, t2)	\
   CATOPDECL (name, a1, a2)
 
-// XXX FIXME XXX -- in some cases, the constructor isn't necessary.
+// FIXME -- in some cases, the constructor isn't necessary.
 
 #define DEFCATOP_FN(name, t1, t2, f) \
   CATOPDECL (name, a1, a2) \

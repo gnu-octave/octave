@@ -459,7 +459,7 @@ extern int errno;
 
 #else
 
-  // XXX FIXME XXX -- provide replacement here...
+  // FIXME -- provide replacement here...
   retval = name;
 
 #endif

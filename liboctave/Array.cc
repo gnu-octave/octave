@@ -110,7 +110,7 @@ Array<T>::squeeze (void) const
 	    }
 	}
 
-      // XXX FIXME XXX -- it would be better if we did not have to do
+      // FIXME -- it would be better if we did not have to do
       // this, so we could share the data while still having different
       // dimension vectors.
 
@@ -129,7 +129,7 @@ template <class T>
 octave_idx_type
 Array<T>::get_size (octave_idx_type r, octave_idx_type c)
 {
-  // XXX KLUGE XXX
+  // KLUGE
 
   // If an allocation of an array with r * c elements of type T
   // would cause an overflow in the allocator when computing the
@@ -169,7 +169,7 @@ template <class T>
 octave_idx_type
 Array<T>::get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p)
 {
-  // XXX KLUGE XXX
+  // KLUGE
 
   // If an allocation of an array with r * c * p elements of type T
   // would cause an overflow in the allocator when computing the
@@ -215,7 +215,7 @@ template <class T>
 octave_idx_type
 Array<T>::get_size (const dim_vector& ra_idx)
 {
-  // XXX KLUGE XXX
+  // KLUGE
 
   // If an allocation of an array with r * c elements of type T
   // would cause an overflow in the allocator when computing the
@@ -491,7 +491,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
   int nd = dv.length ();
 
-  // XXX FIXME XXX -- it would be nice to have a sort method in the
+  // FIXME -- it would be nice to have a sort method in the
   // Array class that also returns the sort indices.
 
   if (inv)
@@ -918,7 +918,7 @@ Array<T>::resize_and_fill (octave_idx_type r, octave_idx_type c, octave_idx_type
 	    for (octave_idx_type i = 0; i < min_r; i++)
 	      xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
 
-      // XXX FIXME XXX -- if the copy constructor is expensive, this
+      // FIXME -- if the copy constructor is expensive, this
       // may win.  Otherwise, it may make more sense to just copy the
       // value everywhere when making the new ArrayRep.
 
@@ -2450,7 +2450,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
   return retval;
 }
 
-// XXX FIXME XXX -- this is a mess.
+// FIXME -- this is a mess.
 
 template <class LT, class RT>
 int
@@ -2613,7 +2613,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       switch (dv_tmp.length ())
 	{
 	case 1:
-	  // XXX FIXME XXX -- this case should be unnecessary, because
+	  // FIXME -- this case should be unnecessary, because
 	  // squeeze should always return an object with 2 dimensions.
 	  if (rhs_nr == 1)
 	    rhs_nc = dv_tmp.elem (0);

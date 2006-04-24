@@ -1023,7 +1023,7 @@ octave_base_value::indent (std::ostream& os) const
  
   if (beginning_of_line)
     {
-      // XXX FIXME XXX -- do we need this?
+      // FIXME -- do we need this?
       // os << prefix;
 
       for (int i = 0; i < curr_print_indent_level; i++)

@@ -33,7 +33,7 @@ class octave_value_list;
 #include "pt-idx.h"
 #include "symtab.h"
 
-// XXX FIXME XXX -- eliminate the following kluge?
+// FIXME -- eliminate the following kluge?
 
 // This variable is used when creating dummy octave_lvalue objects.
 static octave_value dummy_val;

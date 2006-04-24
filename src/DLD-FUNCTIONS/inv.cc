@@ -122,7 +122,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- this should really be done with an alias, but
+// FIXME -- this should really be done with an alias, but
 // alias_builtin() won't do the right thing if we are actually using
 // dynamic linking.
 

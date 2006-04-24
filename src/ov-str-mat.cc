@@ -146,7 +146,7 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
 {
   octave_idx_type len = idx.length ();
 
-  // XXX FIXME XXX
+  // FIXME
   charMatrix tmp = rhs;
   if (tmp.rows () == 1 && tmp.columns () == 0)
     tmp.resize (0, 0);    
@@ -259,7 +259,7 @@ octave_char_matrix_str::string_value (bool) const
     {
       charMatrix chm = matrix.matrix_value ();
 
-      retval = chm.row_as_string (0);  // XXX FIXME??? XXX
+      retval = chm.row_as_string (0);  // FIXME???
     }
   else
     error ("invalid conversion of charNDArray to string");
@@ -368,7 +368,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
 	  if (elements >= 0)
 	    {
-	      // XXX FIXME XXX -- need to be able to get max length
+	      // FIXME -- need to be able to get max length
 	      // before doing anything.
 
 	      charMatrix chm (elements, 0);

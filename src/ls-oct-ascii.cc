@@ -258,7 +258,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 //  # length: 5
 //  array
 //
-// XXX FIXME XXX -- this format is fairly rigid, and doesn't allow for
+// FIXME -- this format is fairly rigid, and doesn't allow for
 // arbitrary comments.  Someone should fix that. It does allow arbitrary
 // types however.
 
@@ -347,7 +347,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 //
 // Returns 1 for success and 0 for failure.
 
-// XXX FIXME XXX -- should probably write the help string here too.
+// FIXME -- should probably write the help string here too.
 
 bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,

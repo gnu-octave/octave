@@ -48,7 +48,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // this function.
 
 // Sometimes you need a large integer, but not always.
-// XXX FIXME-64 XXX -- INT_MAX and INT_MIN are probably not right here.
+// FIXME -- INT_MAX and INT_MIN are probably not right for 64-bits.
 
 octave_idx_type
 NINTbig (double x)
@@ -98,7 +98,7 @@ strsave (const char *s)
 // This function was adapted from xputenv from Karl Berry's kpathsearch
 // library.
 
-// XXX FIXME XXX -- make this do the right thing if we don't have a
+// FIXME -- make this do the right thing if we don't have a
 // SMART_PUTENV.
 
 void

@@ -104,12 +104,12 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 	{
 	  expr->set_print_flag (pf);
 
-	  // XXX FIXME XXX -- maybe all of this should be packaged in
+	  // FIXME -- maybe all of this should be packaged in
 	  // one virtual function that returns a flag saying whether
 	  // or not the expression will take care of binding ans and
 	  // printing the result.
 
-	  // XXX FIXME XXX -- it seems that we should just have to
+	  // FIXME -- it seems that we should just have to
 	  // call expr->rvalue () and that should take care of
 	  // everything, binding ans as necessary?
 

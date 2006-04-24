@@ -145,7 +145,6 @@ public:
 
   bool is_numeric_type (void) const { return true; }
 
-  // XXX DO ME XXX
   bool is_true (void) const;
 
   double double_value (bool = false) const;
@@ -197,7 +196,7 @@ public:
 	     oct_data_conv::data_type output_type, int skip,
 	     oct_mach_info::float_format flt_fmt) const
     {
-      // XXX FIXME XXX -- could be more memory efficient by having a
+      // FIXME -- could be more memory efficient by having a
       // special case of the octave_stream::write method for ranges.
 
       return os.write (matrix_value (), block_size, output_type, skip,

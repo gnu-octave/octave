@@ -122,7 +122,7 @@ tree_switch_case::~tree_switch_case (void)
 
 
 // Compare two octave values, returning true if equal, false if not
-// XXX FIXME XXX --- should be member or friend of octave_value class.
+// FIXME --- should be member or friend of octave_value class.
 
 static bool
 equal (const octave_value& val, const octave_value& test)

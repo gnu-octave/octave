@@ -226,7 +226,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
 	  octave_idx_type dimZ = n - rank;
 
-	  // XXX FIXME XXX -- still remain to handle the case of
+	  // FIXME -- still remain to handle the case of
 	  // non-full rank active set matrix.
 
 	  // Computing the Y matrix (orthogonal to Z)

@@ -153,7 +153,7 @@ do_sync (const char *msg, int len, bool bypass_pager)
 		}
 	      else
 		{
-		  // XXX FIXME XXX -- omething is not right with the
+		  // FIXME -- omething is not right with the
 		  // pager.  If it died then we should receive a
 		  // signal for that.  If there is some other problem,
 		  // then what?

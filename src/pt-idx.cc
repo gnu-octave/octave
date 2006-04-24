@@ -215,7 +215,7 @@ tree_index_expression::make_arg_struct (void) const
 {
   int n = args.size ();
 
-  // XXX FIXME XXX -- why not just make these Cell objects?
+  // FIXME -- why not just make these Cell objects?
   octave_value_list subs_list (n, octave_value ());
   octave_value_list type_list (n, octave_value ());
 

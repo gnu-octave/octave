@@ -189,7 +189,7 @@ charMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2,
   return result;
 }
 
-// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// FIXME Do these really belong here?  Maybe they should be
 // in a base class?
 
 boolMatrix

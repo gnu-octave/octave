@@ -214,7 +214,7 @@ xpow (const SparseComplexMatrix& a, double b)
 //
 //   * -> not needed.
 
-// XXX FIXME XXX -- these functions need to be fixed so that things
+// FIXME -- these functions need to be fixed so that things
 // like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
@@ -300,7 +300,7 @@ elem_xpow (double a, const SparseComplexMatrix& b)
 octave_value
 elem_xpow (const SparseMatrix& a, double b)
 {
-  // XXX FIXME XXX What should a .^ 0 give?? Matlab gives a 
+  // FIXME What should a .^ 0 give?? Matlab gives a 
   // sparse matrix with same structure as a, which is strictly
   // incorrect. Keep compatiability.
 
@@ -317,7 +317,7 @@ elem_xpow (const SparseMatrix& a, double b)
 	{
 	  ComplexMatrix result (nr, nc, Complex (pow (0.0, b)));
 
-	  // XXX FIXME XXX -- avoid apparent GNU libm bug by
+	  // FIXME -- avoid apparent GNU libm bug by
 	  // converting A and B to complex instead of just A.
 	  Complex btmp (b);
 
@@ -355,7 +355,7 @@ elem_xpow (const SparseMatrix& a, double b)
 	{
 	  OCTAVE_QUIT;
 
-	  // XXX FIXME XXX -- avoid apparent GNU libm bug by
+	  // FIXME -- avoid apparent GNU libm bug by
 	  // converting A and B to complex instead of just A.
 
 	  Complex atmp (a.data (i));

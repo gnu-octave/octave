@@ -46,7 +46,7 @@ function z = cross (x, y, dim)
   endif
 
   if (ndims (x) < 3 && ndims (y) < 3 && nargin < 3)
-    ## XXX COMPATIBILITY XXX opposite behaviour for cross(row,col)
+    ## COMPATIBILITY -- opposite behaviour for cross(row,col)
     ## Swap x and y in the assignments below to get the matlab behaviour.
     ## Better yet, fix the calling code so that it uses conformant vectors.
     if (columns (x) == 1 && rows (y) == 1)

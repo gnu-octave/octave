@@ -94,10 +94,10 @@ public:
 
   Cell column (octave_idx_type i) const;
 
-  // XXX FIXME XXX
+  // FIXME
   boolMatrix all (int /* dim */ = 0) const { return boolMatrix (); }
 
-  // XXX FIXME XXX
+  // FIXME
   boolMatrix any (int /* dim */ = 0) const { return boolMatrix (); }
 
   Cell concat (const Cell& rb, const Array<octave_idx_type>& ra_idx);
@@ -105,7 +105,7 @@ public:
   Cell& insert (const Cell& a, octave_idx_type r, octave_idx_type c);
   Cell& insert (const Cell& a, const Array<octave_idx_type>& ra_idx);
 
-  // XXX FIXME XXX
+  // FIXME
   bool is_true (void) const { return false; }
 
   static octave_value resize_fill_value (void) { return Matrix (); }

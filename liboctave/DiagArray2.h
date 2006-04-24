@@ -90,7 +90,7 @@ private:
 
   private:
 
-    // XXX FIXME XXX -- this is declared private to keep the user from
+    // FIXME -- this is declared private to keep the user from
     // taking the address of a Proxy.  Maybe it should be implemented
     // by means of a companion function in the DiagArray2 class.
 

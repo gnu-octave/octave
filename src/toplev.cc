@@ -412,7 +412,7 @@ run_command_and_return_output (const std::string& cmd_str)
 	{
 	  std::ostringstream output_buf;
 
-	  // XXX FIXME XXX -- Perhaps we should read more than one
+	  // FIXME -- Perhaps we should read more than one
 	  // character at a time and find a way to avoid the call to
 	  // octave_usleep as well?
 
@@ -549,7 +549,7 @@ variable @code{status} to the integer @samp{2}.\n\
 		error ("system: fork failed -- can't create child process");
 	      else if (pid == 0)
 		{
-		  // XXX FIXME XXX -- should probably replace this
+		  // FIXME -- should probably replace this
 		  // call with something portable.
 
 		  execl ("/bin/sh", "sh", "-c", cmd_str.c_str (),
@@ -591,7 +591,7 @@ variable @code{status} to the integer @samp{2}.\n\
 
 DEFALIAS (shell_cmd, system);
 
-// XXX FIXME XXX -- this should really be static, but that causes
+// FIXME -- this should really be static, but that causes
 // problems on some systems.
 std::stack<std::string> octave_atexit_functions;
 
@@ -619,7 +619,7 @@ do_octave_atexit (void)
 
       command_editor::restore_terminal_state ();
 
-      // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
+      // FIXME -- is this needed?  Can it cause any trouble?
       raw_mode (0);
 
       octave_history_write_timestamp ();

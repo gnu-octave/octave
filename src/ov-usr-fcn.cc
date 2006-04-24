@@ -124,7 +124,7 @@ octave_user_function::mark_as_system_fcn_file (void)
     {
       // We really should stash the whole path to the file we found,
       // when we looked it up, to avoid possible race conditions...
-      // XXX FIXME XXX
+      // FIXME
       //
       // We probably also don't need to get the library directory
       // every time, but since this function is only called when the
@@ -211,7 +211,7 @@ octave_user_function::varargout_to_vr_val (void)
 
       if (! error_state)
 	{
-	  // XXX FIXME XXX -- should varargout be required to be a
+	  // FIXME -- should varargout be required to be a
 	  // cell array with a single row or column?  If not, should
 	  // we have a cleaner way of doing this operation?
 
@@ -320,7 +320,7 @@ octave_user_function::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // XXX FIXME XXX -- perhaps there should be an
+  // FIXME -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_builtin::subsref.
 

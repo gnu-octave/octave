@@ -435,7 +435,7 @@ ignore the time stamps for all function files.  Setting it to
 @code{"system"} gives the default behavior.  If you set it to anything
 else, Octave will check the time stamps on all function files.
 
-@c XXX FIXME XXX -- note about time stamps on files in NFS environments?
+@c FIXME -- note about time stamps on files in NFS environments?
 
 @DOCSTRING(DEFAULT_LOADPATH)
 
@@ -739,7 +739,7 @@ the @file{.oct} file.
 
 @DOCSTRING(warn_reload_forces_clear)
 
-@c XXX FIXME XXX -- is there a better place for this?
+@c FIXME -- is there a better place for this?
 
 @DOCSTRING(variables_can_hide_functions)
 

@@ -156,7 +156,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   output_buf << std::endl;
 
-  // XXX FIXME XXX -- we really want to capture the message before it
+  // FIXME -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
@@ -202,7 +202,7 @@ verror (bool save_last_error, std::ostream& os,
 
   output_buf << std::endl;
 
-  // XXX FIXME XXX -- we really want to capture the message before it
+  // FIXME -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
@@ -224,7 +224,7 @@ verror (bool save_last_error, std::ostream& os,
 	{
 	  error_message_buffer = new std::ostringstream ();
 
-	  // XXX FIXME XXX -- this is ugly, but it prevents
+	  // FIXME -- this is ugly, but it prevents
 	  //
 	  //   eval ("error (\"msg\")", "error (lasterr ())");
 	  //
@@ -406,7 +406,7 @@ pr_where (const char *name, bool print_code = true)
 
       if (print_code)
 	{
-	  // XXX FIXME XXX -- Note that the column number is probably
+	  // FIXME -- Note that the column number is probably
 	  // not going to mean much here since the code is being
 	  // reproduced from the parse tree, and we are only showing
 	  // one statement even if there were multiple statements on
@@ -778,7 +778,7 @@ error: nargin != 1\n\
 @end example\n\
 @end deftypefn")
 {
-  // XXX FIXME XXX -- need to extract and pass message id to
+  // FIXME -- need to extract and pass message id to
   // handle_message.
 
   octave_value_list retval;
@@ -882,7 +882,7 @@ to go on.\n\
 			{
 			  if (ident(i).string_value () == arg2)
 			    {
-			      // XXX FIXME XXX -- if state for "all" is
+			      // FIXME -- if state for "all" is
 			      // same as arg1, we can simply remove the
 			      // item from the list.
 
@@ -895,7 +895,7 @@ to go on.\n\
 
 		      if (! found)
 			{
-			  // XXX FIXME XXX -- if state for "all" is
+			  // FIXME -- if state for "all" is
 			  // same as arg1, we don't need to do anything.
 
 			  ident.resize (dim_vector (1, nel+1));

@@ -45,7 +45,7 @@
 
 ## Author: jwe
 
-## XXX FIXME XXX -- this is quite slow for large directories, so perhaps
+## FIXME -- this is quite slow for large directories, so perhaps
 ## it should be converted to C++.
 
 function retval = dir (file)

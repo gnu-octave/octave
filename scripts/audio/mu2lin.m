@@ -33,7 +33,7 @@
 function y = mu2lin (x, bit)
 
   if (nargin == 1)
-    ## XXX COMPATIBILITY XXX: bps defaults to 8 for octave, 0 for Matlab
+    ## COMPATIBILITY -- bps defaults to 8 for octave, 0 for Matlab
     bit = 8;
   elseif (nargin == 2)
     if (bit != 0 && bit != 8 && bit != 16)

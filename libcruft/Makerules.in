@@ -2,7 +2,7 @@
 #
 # Common rules for octave's libcruft directories.
 #
-# XXX FIXME XXX -- assumes that the libcruft directory tree is only
+# FIXME -- assumes that the libcruft directory tree is only
 # one level deep.
 #
 # John W. Eaton

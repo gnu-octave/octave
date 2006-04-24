@@ -110,7 +110,7 @@ octave_sparse_complex_matrix::assign (const octave_value_list& idx,
 bool
 octave_sparse_complex_matrix::valid_as_scalar_index (void) const
 {
-  // XXX FIXME XXX
+  // FIXME
   return false;
 }
 
@@ -122,10 +122,10 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
   if (! force_conversion && Vwarn_imag_to_real)
     gripe_implicit_conversion ("complex sparse matrix", "real scalar");
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("complex sparse matrix", "real scalar");
 
@@ -157,10 +157,10 @@ octave_sparse_complex_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("complex sparse matrix", "real scalar");
 
@@ -238,7 +238,7 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
       else
 	st = LS_FLOAT;
     }
-  else if (matrix.nzmax () > 8192) // XXX FIXME XXX -- make this configurable.
+  else if (matrix.nzmax () > 8192) // FIXME -- make this configurable.
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))

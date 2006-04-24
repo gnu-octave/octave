@@ -24,7 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_byte_swap_h)
 #define octave_byte_swap_h 1
 
-// XXX FIXME XXX -- not sure these volatile qualifiers are really
+// FIXME -- not sure these volatile qualifiers are really
 // needed or appropriate here.
 
 static inline void

@@ -1036,7 +1036,7 @@ octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string&
 
 #define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
 
-// XXX FIXME XXX -- this needs to be fixed to handle formats which
+// FIXME -- this needs to be fixed to handle formats which
 // specify a maximum width.
 
 template <class T>
@@ -1927,7 +1927,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  if (is.rdstate () & std::ios::failbit)
 		    is.clear (is.rdstate () & (~std::ios::failbit));
 
-		  // XXX FIXME XXX -- is this the right thing to do?
+		  // FIXME -- is this the right thing to do?
 
 		  if (interactive && name () == "stdin")
 		    {
@@ -2135,7 +2135,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	{
 	  error ("%s: read error", who.c_str ());
 
-	  // XXX FIXME XXX -- is this the right thing to do?
+	  // FIXME -- is this the right thing to do?
 
 	  if (interactive && name () == "stdin")
 	    {
@@ -2683,7 +2683,7 @@ octave_base_stream::puts (const std::string& s, const std::string& who)
 
       if (os)
 	{
-	  // XXX FIXME XXX -- why does this seem to be necessary?
+	  // FIXME -- why does this seem to be necessary?
 	  // Without it, output from a loop like
 	  //
 	  //   for i = 1:100, fputs (stdout, "foo\n"); endfor
@@ -3042,7 +3042,7 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
       max_size = 32;
     }
 
-  // XXX FIXME XXX -- byte order for Cray?
+  // FIXME -- byte order for Cray?
 
   bool swap = false;
 
@@ -3069,7 +3069,7 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 
       for (;;)
 	{
-	  // XXX FIXME XXX -- maybe there should be a special case for
+	  // FIXME -- maybe there should be a special case for
 	  // skip == 0.
 
 	  if (is)
@@ -3166,7 +3166,7 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
   do_read<RET_T, READ_T> (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool, \
 			  oct_mach_info::float_format, octave_idx_type&)
 
-// XXX FIXME XXX -- should we only have float if it is a different
+// FIXME -- should we only have float if it is a different
 // size from double?
 
 #define INSTANTIATE_DO_READ(VAL_T) \
@@ -3254,9 +3254,9 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
   if (stream_ok ())
     {
-      // XXX FIXME XXX -- we may eventually want to make this extensible.
+      // FIXME -- we may eventually want to make this extensible.
 
-      // XXX FIXME XXX -- we need a better way to ensure that this
+      // FIXME -- we need a better way to ensure that this
       // numbering stays consistent with the order of the elements in the
       // data_type enum in the oct_data_conv class.
 
@@ -3289,7 +3289,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 		  retval = (*fcn) (*this, nr, nc, block_size, skip,
 				   do_float_fmt_conv, ffmt, char_count);
 
-		  // XXX FIXME XXX -- kluge!
+		  // FIXME -- kluge!
 
 		  if (! error_state
 		      && (output_type == oct_data_conv::dt_char
@@ -3468,7 +3468,7 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
 
   bool do_float_conversion = (flt_fmt != native_flt_fmt);
 
-  // XXX FIXME XXX -- byte order for Cray?
+  // FIXME -- byte order for Cray?
 
   bool swap = false;
 
@@ -3492,7 +3492,7 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
 
 	  if (skip != 0 && (i % block_size) == 0)
 	    {
-	      // XXX FIXME XXX -- probably should try to write larger
+	      // FIXME -- probably should try to write larger
 	      // blocks...
 
 	      unsigned char zero = 0;
@@ -3704,7 +3704,7 @@ octave_stream::puts (const std::string& s, const std::string& who)
   return retval;
 }
 
-// XXX FIXME XXX -- maybe this should work for string arrays too.
+// FIXME -- maybe this should work for string arrays too.
 
 int
 octave_stream::puts (const octave_value& tc_s, const std::string& who)

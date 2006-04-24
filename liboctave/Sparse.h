@@ -313,7 +313,7 @@ public:
   T xelem (const Array<octave_idx_type>& ra_idx) const
     { return xelem (compute_index (ra_idx)); }
 
-  // XXX FIXME XXX -- would be nice to fix this so that we don't
+  // FIXME -- would be nice to fix this so that we don't
   // unnecessarily force a copy, but that is not so easy, and I see no
   // clean way to do it.
 

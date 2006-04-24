@@ -46,7 +46,7 @@ octave_restore_current_context (void *save_buf)
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
-/* XXX FIXME XXX -- eventually remove the debugging */
+/* FIXME -- eventually remove the debugging */
 #if defined (DEBUG)
 
 #define PRINT_CURRENT_THREAD() printf ("%lx: ", GetCurrentThreadId ())

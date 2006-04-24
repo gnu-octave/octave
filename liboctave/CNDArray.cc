@@ -494,7 +494,7 @@ ComplexNDArray::operator ! (void) const
   return b;
 }
 
-// XXX FIXME XXX -- this is not quite the right thing.
+// FIXME -- this is not quite the right thing.
 
 bool
 ComplexNDArray::any_element_is_inf_or_nan (void) const
@@ -1026,7 +1026,7 @@ operator >> (std::istream& is, ComplexNDArray& a)
   return is;
 }
 
-// XXX FIXME XXX -- it would be nice to share code among the min/max
+// FIXME -- it would be nice to share code among the min/max
 // functions below.
 
 #define EMPTY_RETURN_CHECK(T) \

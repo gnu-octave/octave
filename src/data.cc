@@ -432,7 +432,7 @@ same orientation as @var{x}.\n\
   DATA_REDUCTION (cumsum);
 }
 
-// XXX FIXME XXX -- we could eliminate some duplicate code here with
+// FIXME -- we could eliminate some duplicate code here with
 // some template functions or macros.
 
 static octave_value
@@ -873,7 +873,7 @@ do_permute (const octave_value_list& args, bool inv, const std::string& fname)
     {
       Array<int> vec = args(1).int_vector_value ();
 
-      // XXX FIXME XXX -- maybe we should create an idx_vector object
+      // FIXME -- maybe we should create an idx_vector object
       // here and pass that to permute?
 
       int n = vec.length ();
@@ -1216,7 +1216,7 @@ Return true if @var{x} is a complex-valued numeric object.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- perhaps this should be implemented with an
+// FIXME -- perhaps this should be implemented with an
 // octave_value member function?
 
 DEFUN (complex, args, ,
@@ -1480,7 +1480,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
       check_dimensions (dims, fcn);
 
-      // XXX FIXME XXX -- perhaps this should be made extensible by
+      // FIXME -- perhaps this should be made extensible by
       // using the class name to lookup a function to call to create
       // the new value.
 
@@ -1523,7 +1523,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 	      retval = uint64NDArray (dims, val);
 	      break;
 
-	    case oct_data_conv::dt_single: // XXX FIXME XXX
+	    case oct_data_conv::dt_single: // FIXME
 	    case oct_data_conv::dt_double:
 	      retval = NDArray (dims, val);
 	      break;
@@ -1604,7 +1604,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 	{
 	  switch (dt)
 	    {
-	    case oct_data_conv::dt_single: // XXX FIXME XXX
+	    case oct_data_conv::dt_single: // FIXME
 	    case oct_data_conv::dt_double:
 	      retval = NDArray (dims, val);
 	      break;
@@ -1682,7 +1682,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 	{
 	  switch (dt)
 	    {
-	    case oct_data_conv::dt_single: // XXX FIXME XXX
+	    case oct_data_conv::dt_single: // FIXME
 	    case oct_data_conv::dt_double:
 	      retval = ComplexNDArray (dims, val);
 	      break;
@@ -2089,7 +2089,7 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 {
   octave_value retval;
 
-  // XXX FIXME XXX -- perhaps this should be made extensible by using
+  // FIXME -- perhaps this should be made extensible by using
   // the class name to lookup a function to call to create the new
   // value.
 
@@ -2129,7 +2129,7 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 	  retval = identity_matrix<uint64NDArray> (nr, nc);
 	  break;
 
-	case oct_data_conv::dt_single: // XXX FIXME XXX
+	case oct_data_conv::dt_single: // FIXME
 	case oct_data_conv::dt_double:
 	  retval = identity_matrix<NDArray> (nr, nc);
 	  break;
@@ -2312,7 +2312,7 @@ The @code{linspace} function always returns a row vector.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- should accept dimensions as separate args for N-d
+// FIXME -- should accept dimensions as separate args for N-d
 // arrays as well as 1-d and 2-d arrays.
 
 DEFUN (resize, args, ,
@@ -2366,7 +2366,7 @@ dimensions of the resized matrix.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- should use octave_idx_type for dimensions.
+// FIXME -- should use octave_idx_type for dimensions.
 
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\

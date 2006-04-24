@@ -36,7 +36,7 @@ typedef double (*integrand_fcn) (double x);
 
 #endif
 
-// XXX FIXME XXX -- would be nice to not have to have this global
+// FIXME -- would be nice to not have to have this global
 // variable.
 // Nonzero means an error occurred in the calculation of the integrand
 // function, and the user wants us to quit.

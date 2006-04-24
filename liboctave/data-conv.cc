@@ -519,9 +519,9 @@ gripe_data_conversion (const char *from, const char *to)
 // Currently, we only handle conversions for the IEEE types.  To fix
 // that, make more of the following routines work.
 
-// XXX FIXME XXX -- assumes sizeof (Complex) == 8
-// XXX FIXME XXX -- assumes sizeof (double) == 8
-// XXX FIXME XXX -- assumes sizeof (float) == 4
+// FIXME -- assumes sizeof (Complex) == 8
+// FIXME -- assumes sizeof (double) == 8
+// FIXME -- assumes sizeof (float) == 4
 
 static void
 IEEE_big_double_to_IEEE_little_double (void *d, int len)

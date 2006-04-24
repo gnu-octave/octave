@@ -124,7 +124,7 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  // XXX FIXME XXX -- would be nice to avoid copying the data.
+  // FIXME -- would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
@@ -149,7 +149,7 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 ColumnVector
 DASPK::do_integrate (double tout)
 {
-  // XXX FIXME XXX -- should handle all this option stuff just once
+  // FIXME -- should handle all this option stuff just once
   // for each new problem.
 
   ColumnVector retval;
@@ -348,7 +348,7 @@ DASPK::do_integrate (double tout)
 	{
 	  if (ccic == 1)
 	    {
-	      // XXX FIXME XXX -- this code is duplicated below.
+	      // FIXME -- this code is duplicated below.
 
 	      Array<octave_idx_type> av = algebraic_variables ();
 
@@ -388,7 +388,7 @@ DASPK::do_integrate (double tout)
 	{
 	  info(15) = 1;
 
-	  // XXX FIXME XXX -- this code is duplicated above.
+	  // FIXME -- this code is duplicated above.
 
 	  Array<octave_idx_type> av = algebraic_variables ();
 

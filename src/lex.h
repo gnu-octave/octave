@@ -24,7 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_lex_h)
 #define octave_lex_h 1
 
-// XXX FIXME XXX -- these input buffer things should be members of a
+// FIXME -- these input buffer things should be members of a
 // parser input stream class.
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;

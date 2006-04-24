@@ -152,7 +152,7 @@ gnu_readline::gnu_readline ()
   : command_editor (), previous_startup_hook (0),
     previous_event_hook (0), completion_function (0)
 {
-  // XXX FIXME XXX -- need interface to rl_add_defun, rl_initialize, and
+  // FIXME -- need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
 
   std::string term = octave_env::getenv ("TERM");
@@ -569,20 +569,20 @@ default_command_editor::do_get_output_stream (void)
 string_vector
 default_command_editor::do_generate_filename_completions (const std::string&)
 {
-  // XXX FIXME XXX
+  // FIXME
   return string_vector ();
 }
 
 void
 default_command_editor::do_insert_text (const std::string&)
 {
-  // XXX FIXME XXX
+  // FIXME
 }
 
 void
 default_command_editor::do_newline (void)
 {
-  // XXX FIXME XXX
+  // FIXME
 }
 
 bool

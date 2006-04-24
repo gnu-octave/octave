@@ -73,7 +73,7 @@ public:
 
   std::ostream *output_stream (void) { return (md & std::ios::out) ? s : 0; }
 
-  // XXX FIXME XXX -- should not have to cast away const here.
+  // FIXME -- should not have to cast away const here.
   BUF_T *rdbuf (void) const
     { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
 

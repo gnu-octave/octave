@@ -968,7 +968,7 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   return retval;
 }
 
-/* XXX FIXME XXX -- we really need a configure test for this.  */
+/* FIXME -- we really need a configure test for this.  */
 
 #if defined __GNUC__ && __GNUC__ >= 3
 #define HAVE_C99_VSNPRINTF 1

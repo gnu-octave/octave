@@ -61,7 +61,7 @@ public:
       return *this;
     }
 
-  // XXX FIXME XXX -- this is not quite the right thing.
+  // FIXME -- this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;

@@ -155,7 +155,7 @@ private:
     bool is_dld_function (void) const
       { return (symbol_type & symbol_record::DLD_FUNCTION); }
 
-    // XXX FIXME XXX
+    // FIXME
     bool is_map_element (const std::string& /* elts */) const
       { return false; }
 
@@ -275,7 +275,7 @@ public:
       visible (true), nm (), chg_fcn (0),
       definition (new symbol_def ()), next_elem (0) { }
 
-  // XXX FIXME XXX -- kluge alert!  We obviously need a better way of
+  // FIXME -- kluge alert!  We obviously need a better way of
   // handling allow_shadow!
 
   symbol_record (const std::string& n, symbol_record *nxt)

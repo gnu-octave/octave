@@ -188,7 +188,7 @@
 %! 
 %! assert(save_status && load_status);
 
-%% XXX FIXME XXX Disable this test as it writes to stdout and there is no easy
+%% FIXME Disable this test as it writes to stdout and there is no easy
 %% way to recover output. Need to spawn new octave process and pipe stdout
 %% somewhere to treat this case
 %% test/octave.test/io/puts-1.m
@@ -514,7 +514,7 @@
 %% test/octave.test/io/feof-3.m
 %!error feof ("foo");
 
-%% XXX FIXME XXX trimerr in test.m finds and strips ".*ferror:"!!
+%% FIXME trimerr in test.m finds and strips ".*ferror:"!!
 %% So use fail for the next two tests instead.
 %% test/octave.test/io/ferror-1.m
 %!test

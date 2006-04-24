@@ -31,7 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 class string_vector;
 
-// XXX FIXME XXX -- this should maybe be nested in the
+// FIXME -- this should maybe be nested in the
 // octave_fcn_file_name_cache class...
 
 class

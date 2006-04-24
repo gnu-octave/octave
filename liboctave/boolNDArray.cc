@@ -44,7 +44,7 @@ boolNDArray::operator ! (void) const
   return b;
 }
 
-// XXX FIXME XXX -- this is not quite the right thing.
+// FIXME -- this is not quite the right thing.
 
 boolNDArray
 boolNDArray::all (int dim) const

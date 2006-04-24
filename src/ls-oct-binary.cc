@@ -206,7 +206,7 @@ read_binary_data (std::istream& is, bool swap,
 
     case 5:
       {
-	// XXX FIXME XXXX
+	// FIXMEX
 	// This is cruft, since its for a save type that is old. Maybe
 	// this is taking backward compatability too far!!
 	FOUR_BYTE_INT len;

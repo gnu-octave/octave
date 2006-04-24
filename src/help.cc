@@ -84,7 +84,7 @@ static std::string Vmakeinfo_prog = "makeinfo";
 // functions.
 static bool Vsuppress_verbose_help_message;
 
-// XXX FIXME XXX -- maybe this should use string instead of char*.
+// FIXME -- maybe this should use string instead of char*.
 
 struct help_list
 {
@@ -387,7 +387,7 @@ keyword_help (void)
   return keywords;
 }
 
-// It's not likely that this does the right thing now.  XXX FIXME XXX
+// It's not likely that this does the right thing now.  FIXME
 
 string_vector
 make_name_list (void)
@@ -461,7 +461,7 @@ at http://www.octave.org and via the help@octave.org\n\
 mailing list.\n"; 
 }
 
-// XXX FIXME XXX -- this needs a major overhaul to cope with new
+// FIXME -- this needs a major overhaul to cope with new
 // symbol table stuff.
 
 static void
@@ -516,7 +516,7 @@ simple_help (void)
   display_names_from_help_list (octave_stdout, keyword_help (),
 				"reserved words");
 
-  // XXX FIXME XXX -- is this distinction needed?
+  // FIXME -- is this distinction needed?
 
   LIST_SYMBOLS (symbol_record::BUILTIN_CONSTANT, "built-in constants");
 
@@ -761,9 +761,9 @@ extract_help_from_dispatch (const std::string& nm)
 
 	  // Check for updates to builtin function; ignore errors
 	  // that appear (they interfere with renaming), and remove
-	  // the updated name from the current symbol table.  XXX
-	  // FIXME XXX check that updating a function updates it in
-	  // all contexts --- it may be that it is updated only in the
+	  // the updated name from the current symbol table.  FIXME --
+	  // check that updating a function updates it in all
+	  // contexts.  It may be that it is updated only in the 
 	  // current symbol table, and not the caller.  I believe this
 	  // won't be a problem because the caller will go through the
 	  // same logic and end up with the newer version.
@@ -776,7 +776,7 @@ extract_help_from_dispatch (const std::string& nm)
 	  curr_sym_tab->clear_function (nm);
 
 	  // Move the builtin function out of the way and restore the
-	  // dispatch fuction.  XXX FIXME XXX what if builtin wants to
+	  // dispatch fuction.  FIXME what if builtin wants to
 	  // protect itself?
 
 	  fbi_sym_tab->rename (nm, "builtin:" + nm);
@@ -978,7 +978,7 @@ representation.  This problem may be fixed in a future release.\n\
     {
       if (argc > 1)
 	{
-	  // XXX FIXME XXX -- we should really use getopt ()
+	  // FIXME -- we should really use getopt ()
 
 	  bool quiet = false;
 	  bool pr_orig_txt = true;
@@ -1106,7 +1106,7 @@ function file, the full name of the file is also displayed.\n\
   return retval;
 }
 
-// XXX FIXME XXX 
+// FIXME 
 // This function attempts to find the first sentence of a help string, though
 // given that the user can create the help in an arbitrary format, your
 // success might vary.. it works much better with help string formated in

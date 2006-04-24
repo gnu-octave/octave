@@ -43,7 +43,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // wsidom that is available, either in a FFTW3 system wide file or as
 // supplied by the user.
 
-// XXX FIXME XXX -- if we can ensure 16 byte alignment in Array<T>
+// FIXME -- if we can ensure 16 byte alignment in Array<T>
 // (<T> *data) the FFTW3 can use SIMD instructions for further
 // acceleration.
 
@@ -69,7 +69,7 @@ private:
 
   int plan_flags;
 
-  // XXX FIXME XXX -- perhaps this should be split into two classes?
+  // FIXME -- perhaps this should be split into two classes?
 
   // Plan for fft and ifft of complex values
   fftw_plan plan[2];

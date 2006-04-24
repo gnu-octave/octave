@@ -297,7 +297,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 	  if (is || is.eof ())
 	    {
-	      // XXX FIXME XXX -- not sure this is best, but it works.
+	      // FIXME -- not sure this is best, but it works.
 
 	      if (is.eof ())
 		is.clear ();

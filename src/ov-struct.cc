@@ -151,7 +151,7 @@ octave_struct::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // XXX FIXME XXX -- perhaps there should be an
+  // FIXME -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
 
@@ -416,7 +416,7 @@ octave_struct::print (std::ostream& os, bool) const
 void
 octave_struct::print_raw (std::ostream& os, bool) const
 {
-  // XXX FIXME XXX -- would be nice to print the output in some
+  // FIXME -- would be nice to print the output in some
   // standard order.  Maybe all substructures first, maybe
   // alphabetize entries, etc.
 
@@ -709,7 +709,7 @@ the second must be a string.\n\
     {
       retval = false;
 
-      // XXX FIXME XXX -- should this work for all types that can do
+      // FIXME -- should this work for all types that can do
       // structure reference operations?
 
       if (args(0).is_map () && args(1).is_string ())
@@ -821,7 +821,7 @@ A(1)\n\
 
 	  // Field is either cell or character matrix.
 
-	  // XXX FIXME XX -- this could be simplified if we had
+	  // FIXME -- this could be simplified if we had
 	  // cellstr and iscellstr functions available.
 
 	  bool field_is_cell = field.is_cell ();
@@ -838,7 +838,7 @@ A(1)\n\
 	    {
 	      // Retrieve the dimension value.
 
-	      // XXX FIX ME XXX --  int_value () should print out the
+	      // FIXME --  int_value () should print out the
 	      // conversions it does to be Matlab compatible.
 
 	      octave_idx_type dim = args(2).int_value () - 1;

@@ -86,7 +86,7 @@ tree_argument_list::nargout_count (void) const
     {
       tree_expression *elt = *p;
 
-      // XXX FIXME XXX -- need to be able to determine whether elt is
+      // FIXME -- need to be able to determine whether elt is
       // an expression that could evaluate to a cs-list object, and if
       // so, how many elements are in that list.  Ugly!
 
@@ -178,7 +178,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
   int len = length ();
 
-  // XXX FIXME XXX -- would be nice to know in advance how largs args
+  // FIXME -- would be nice to know in advance how largs args
   // needs to be even when we have a list containing an all_va_args
   // token.
 

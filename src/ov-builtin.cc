@@ -81,11 +81,11 @@ octave_builtin::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // XXX FIXME XXX -- perhaps there should be an
+  // FIXME -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
   //
-  // XXX FIXME XXX -- Note that if a function call returns multiple
+  // FIXME -- Note that if a function call returns multiple
   // values, and there is further indexing to perform, then we are
   // ignoring all but the first value.  Is this really what we want to
   // do?  If it is not, then what should happen for stat("file").size,

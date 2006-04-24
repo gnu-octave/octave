@@ -44,7 +44,7 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
   close ();
 }
 
-// XXX FIXME XXX -- I'm sure there is room for improvement here...
+// FIXME -- I'm sure there is room for improvement here...
 
 c_file_ptr_buf::int_type
 c_file_ptr_buf::overflow (int_type c)
@@ -129,7 +129,7 @@ std::streampos
 c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 			 std::ios::openmode)
 {
-  // XXX FIXME XXX
+  // FIXME
 #if 0
   if (f)
     {
@@ -146,7 +146,7 @@ c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 std::streampos
 c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
-  // XXX FIXME XXX
+  // FIXME
 #if 0  
   if (f)
     {
@@ -197,7 +197,7 @@ c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
   close ();
 }
 
-// XXX FIXME XXX -- I'm sure there is room for improvement here...
+// FIXME -- I'm sure there is room for improvement here...
 
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::overflow (int_type c)
@@ -273,7 +273,7 @@ std::streampos
 c_zfile_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 			 std::ios::openmode)
 {
-  // XXX FIXME XXX
+  // FIXME
 #if 0
   if (f)
     {
@@ -290,7 +290,7 @@ c_zfile_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 std::streampos
 c_zfile_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
-  // XXX FIXME XXX
+  // FIXME
 #if 0  
   if (f)
     {
@@ -315,7 +315,7 @@ c_zfile_ptr_buf::sync (void)
 int
 c_zfile_ptr_buf::flush (void)
 {
-  // XXX FIXME XXX -- do we need something more complex here, passing
+  // FIXME -- do we need something more complex here, passing
   // something other than 0 for the second argument to gzflush and
   // checking the return value, etc.?
 

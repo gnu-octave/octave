@@ -109,7 +109,7 @@ octave_cell::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // XXX FIXME XXX -- perhaps there should be an
+  // FIXME -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
 

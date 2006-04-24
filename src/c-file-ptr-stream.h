@@ -94,7 +94,7 @@ private:
   int_type underflow_common (bool);
 };
 
-// XXX FIXME XXX -- the following three classes could probably share
+// FIXME -- the following three classes could probably share
 // some code...
 
 template <typename STREAM_T, typename FILE_T, typename BUF_T>

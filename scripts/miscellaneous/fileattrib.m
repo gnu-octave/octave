@@ -101,7 +101,7 @@ function [status, msg, msgid] = fileattrib (file)
 	r_s{i} = NaN;
 	r_h{i} = NaN;
 	r_d{i} = S_ISDIR (info.mode);
-	## XXX FIXME XXX -- maybe we should have S_IRUSR etc. masks?
+	## FIXME -- maybe we should have S_IRUSR etc. masks?
 	modestr = info.modestr;
 	r_u_r{i} = modestr(2) == "r";
 	r_u_w{i} = modestr(3) == "w";

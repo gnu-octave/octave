@@ -95,7 +95,7 @@
 %! a(1) = 1; a(2) = 2;
 %! assert(all (a == [1,2]));
 
-%% XXX FIXME XXX How the hell do I test this one in test/assert 
+%% FIXME How the hell do I test this one in test/assert 
 %% test/octave.test/prefer/prefer-19.m
 %!#test
 %! pid = print_answer_id_name
@@ -103,7 +103,7 @@
 %! a = 1
 %! print_answer_id_name = pid;
 
-%% XXX FIXME XXX How the hell do I test this one in test/assert 
+%% FIXME How the hell do I test this one in test/assert 
 %% test/octave.test/prefer/prefer-20.m
 %!#test
 %! pid = print_answer_id_name
@@ -136,7 +136,7 @@
 %% test/octave.test/prefer/prefer-24.m
 %!assert(all (svd ([]) == zeros (0, 1)));
 
-%% XXX FIXME XXX return_last_computed_value no longer exists!!
+%% FIXME return_last_computed_value no longer exists!!
 %% Remove the next two tests
 %% test/octave.test/prefer/prefer-25.m
 %% test/octave.test/prefer/prefer-26.m
@@ -167,7 +167,7 @@
 %! assert(x,3.1416);
 %! save_precision = sp;
 
-%% XXX FIXME XXX Same problem as above!!!
+%% FIXME Same problem as above!!!
 %% test/octave.test/prefer/prefer-29.m
 %!function f ()
 %! 1
@@ -178,7 +178,7 @@
 %! assert(??);
 %! silent_functions = sf;
 
-%% XXX FIXME XXX Same problem as above!!!
+%% FIXME Same problem as above!!!
 %% test/octave.test/prefer/prefer-30.m
 %!function f ()
 %! 1

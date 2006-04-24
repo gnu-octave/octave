@@ -677,7 +677,7 @@ generate_struct_completions (const std::string& text,
   return names;
 }
 
-// XXX FIXME XXX -- this will have to be much smarter to work
+// FIXME -- this will have to be much smarter to work
 // "correctly".
 
 bool
@@ -1030,7 +1030,7 @@ symbol_out_of_date (symbol_record *sr)
 
 		  std::string nm = fcn->name ();
 
-		  // XXX FIXME XXX -- the following code is repeated
+		  // FIXME -- the following code is repeated
 		  // in load_fcn_from_file in parse.y.
 
 		  string_vector names (2);
@@ -1079,7 +1079,7 @@ symbol_out_of_date (symbol_record *sr)
 			    {
 			      // OK, swap the aliases around.
 
-			      // XXX FIXME XXX -- this is a bit
+			      // FIXME -- this is a bit
 			      // tricky, so maybe some refactoring is
 			      // in order here too...
 
@@ -1457,7 +1457,7 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- this function is duplicated in symtab.cc with the
+// FIXME -- this function is duplicated in symtab.cc with the
 // name maybe_list_cmp_fcn.
 
 static int
@@ -1533,7 +1533,7 @@ do_who (int argc, const string_vector& argv, int return_list)
 
   if (return_list)
     {
-      // XXX FIXME XXX -- maybe symbol_list should return a std::list
+      // FIXME -- maybe symbol_list should return a std::list
       // object instead of an Array.
 
       dim_vector dv (0, 0);
@@ -2164,7 +2164,7 @@ do_clear_variable_pattern (const std::string& pat)
 static inline bool
 do_clear_symbol_pattern (const std::string& pat)
 {
-  // XXX FIXME XXX -- if we have a variable v1 and a function v2 and
+  // FIXME -- if we have a variable v1 and a function v2 and
   // someone says clear v*, we will clear the variable but not the
   // function.  Is that really what should happen?  (I think it is
   // what Matlab does.)
@@ -2301,7 +2301,7 @@ do_clear_symbols (const string_vector& argv, int argc, int idx,
     {
       if (exclusive)
 	{
-	  // XXX FIXME XXX -- is this really what we want, or do we
+	  // FIXME -- is this really what we want, or do we
 	  // somehow want to only clear the functions that are not
 	  // shadowed by local variables?  It seems that would be a
 	  // bit harder to do.
@@ -2606,7 +2606,7 @@ Print symbol table information for the symbol @var{name}.\n\
   return retval;
 }
 
-// XXX FIXME XXX -- some of these should do their own checking to be
+// FIXME -- some of these should do their own checking to be
 // able to provide more meaningful warning or error messages.
 
 static int
@@ -2629,7 +2629,7 @@ ignore_function_time_stamp (void)
   return 0;
 }
 
-// XXX FIXME XXX -- there still may be better places for some of these
+// FIXME -- there still may be better places for some of these
 // to be defined.
 
 void

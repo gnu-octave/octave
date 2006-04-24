@@ -20,7 +20,7 @@
 %% test/octave.test/error/error-4.m
 %!error <foo> error ("foo\n");
 
-%% XXX FIXME XXX Why can't I use %!warning <foo> f;
+%% FIXME Why can't I use %!warning <foo> f;
 %% test/octave.test/error/warning-1.m
 %!function g ()
 %! warning ("foo");
@@ -41,7 +41,7 @@
 %! assert(warning ("query","backtrace"),st);
 %! warning (ws.state,"backtrace");
 
-%% XXX FIXME XXX This test no longer makes sense with new warning syntax
+%% FIXME This test no longer makes sense with new warning syntax
 %% test/octave.test/error/warning-3.m
 %!#warning <foo> warning ("foo", 1);
 

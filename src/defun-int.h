@@ -234,7 +234,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 // How mapper functions are actually installed.
 
-// XXX FIXME XXX -- Really want to avoid the following casts, since
+// FIXME -- Really want to avoid the following casts, since
 // (as always with casts) it may mask some real errors...
 
 #define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \

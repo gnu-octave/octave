@@ -28,7 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-cmplx.h"
 
-// XXX FIXME XXX -- we could use templates here; compare with dbleDET.h
+// FIXME -- we could use templates here; compare with dbleDET.h
 
 class
 ComplexDET

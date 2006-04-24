@@ -1234,7 +1234,7 @@ betainc (const NDArray& x, const NDArray& a, const NDArray& b)
   return retval;
 }
 
-// XXX FIXME XXX -- there is still room for improvement here...
+// FIXME -- there is still room for improvement here...
 
 double
 gammainc (double x, double a, bool& err)

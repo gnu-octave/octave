@@ -553,7 +553,7 @@ endfunction
 %!demo  toeplitz ([1,2,3,4],[1,5,6])
 
 ### example from kron
-%!#error kron  # XXX FIXME XXX suppress these until we can handle output
+%!#error kron  # FIXME suppress these until we can handle output
 %!#error kron(1,2,3)
 %!test assert (isempty (kron ([], rand(3, 4))))
 %!test assert (isempty (kron (rand (3, 4), [])))

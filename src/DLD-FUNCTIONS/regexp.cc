@@ -20,7 +20,7 @@ Boston, MA 02110-1301, USA.
 
 */
 
-// XXX FIXME XXX
+// FIXME
 // regexprep should be written as an m-file based on regexp
 
 #ifdef HAVE_CONFIG_H

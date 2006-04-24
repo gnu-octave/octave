@@ -45,7 +45,7 @@ FORMATTED = octave.dvi octave.ps octave.pdf \
 MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
-# XXX FIXME XXX -- need to include generated figures here...
+# FIXME -- need to include generated figures here...
 DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
   $(SOURCES) $(TEXINFO) $(FORMATTED)
 

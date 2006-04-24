@@ -375,7 +375,7 @@ plot_style_token (const std::string& s)
 {
   std::string retval;
 
-  // XXX FIXME XXX -- specify minimum match length for these.
+  // FIXME -- specify minimum match length for these.
   static const char *plot_styles[] =
     {
       "boxes",
@@ -617,7 +617,7 @@ handle_style (int& lasttok)
   else
     retstr += std::string (yytext);
 
-  // XXX FIXME XXX -- should evaluate the remaining tokens, but this
+  // FIXME -- should evaluate the remaining tokens, but this
   // needs changes in the parser.
   retstr += " " + read_until (plottok_or_end_p, lasttok);
 
@@ -755,7 +755,7 @@ public:
       instance->do_set_gnuplot_use_title_option (opt);
   }
 
-  // XXX FIXME XXX -- should only remove tmp files associated with
+  // FIXME -- should only remove tmp files associated with
   // gnuplot?
   static void cleanup_tmp_files (void) { ::cleanup_tmp_files (); }
 
@@ -949,7 +949,7 @@ gnuplot::do_open (void)
       else
         cmd = "\"" + gnuplot_exe + "\"";
 
-      // XXX FIXME XXX -- I'm not sure this is the right thing to do,
+      // FIXME -- I'm not sure this is the right thing to do,
       // but without it, C-c at the octave prompt will kill gnuplot...
 
 #if defined (HAVE_POSIX_SIGNALS)
@@ -1093,7 +1093,7 @@ gnuplot::do_clear (void)
 {
   do_send_raw ("clear\n");
 
-  // XXX FIXME XXX -- instead of just clearing these things, it would
+  // FIXME -- instead of just clearing these things, it would
   // be nice if we could reset things to a user-specified default
   // state.
 
@@ -1291,7 +1291,7 @@ gnuplot::makeplot (std::string caller, std::string args)
 	  if (tmp_data.is_string ())
 	    {
 	      file = file_ops::tilde_expand (tmp_data.string_value ());
-	      // XXX FIXME XXX -- perhaps should check if the file exists?
+	      // FIXME -- perhaps should check if the file exists?
 	      outstr += file + " ";
 	    }
 	  else

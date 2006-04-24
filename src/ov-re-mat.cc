@@ -81,7 +81,7 @@ octave_matrix::try_narrowing_conversion (void)
 bool
 octave_matrix::valid_as_scalar_index (void) const
 {
-  // XXX FIXME XXX
+  // FIXME
   return false;
 }
 
@@ -92,7 +92,7 @@ octave_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("real matrix", "real scalar");
 
@@ -104,7 +104,7 @@ octave_matrix::double_value (bool) const
   return retval;
 }
 
-// XXX FIXME XXX
+// FIXME
 
 Matrix
 octave_matrix::matrix_value (bool) const
@@ -119,10 +119,10 @@ octave_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("real matrix", "complex scalar");
 
@@ -134,7 +134,7 @@ octave_matrix::complex_value (bool) const
   return retval;
 }
 
-// XXX FIXME XXX
+// FIXME
 
 ComplexMatrix
 octave_matrix::complex_matrix_value (bool) const
@@ -170,7 +170,7 @@ octave_matrix::sparse_matrix_value (bool) const
 SparseComplexMatrix 
 octave_matrix::sparse_complex_matrix_value (bool) const
 {
-  // XXX FIXME XXX Need a SparseComplexMatrix (Matrix) constructor to make
+  // FIXME Need a SparseComplexMatrix (Matrix) constructor to make
   // this function more efficient. Then this should become
   // return SparseComplexMatrix (matrix.matrix_value ());
   return SparseComplexMatrix (sparse_matrix_value ());
@@ -234,7 +234,7 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
 
 	      if (ival < 0 || ival > UCHAR_MAX)
 		{
-		  // XXX FIXME XXX -- is there something
+		  // FIXME -- is there something
 		  // better we could do?
 
 		  ival = 0;
@@ -452,7 +452,7 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
       else
 	st = LS_FLOAT;
     }
-  else if (d.numel () > 8192) // XXX FIXME XXX -- make this configurable.
+  else if (d.numel () > 8192) // FIXME -- make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))

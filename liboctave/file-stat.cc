@@ -46,7 +46,7 @@ lstat (const char *name, struct stat *buf)
 }
 #endif
 
-// XXX FIXME XXX -- the is_* and mode_as_string functions are only valid
+// FIXME -- the is_* and mode_as_string functions are only valid
 // for initialized objects.  If called for an object that is not
 // initialized, they should throw an exception.
 

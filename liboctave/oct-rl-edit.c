@@ -76,7 +76,7 @@ octave_rl_enable_paren_matching (int val)
 
    Instead, temporarily redefine the redisplay function to do nothing.
 
-   XXX FIXME XXX -- It would be safer to do this when protected from
+   FIXME -- It would be safer to do this when protected from
    interrupts... */
 
 static void

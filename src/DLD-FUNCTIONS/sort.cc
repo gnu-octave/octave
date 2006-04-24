@@ -858,7 +858,7 @@ ordered lists.\n\
 		retval = mx_sort (chm, dim, smode);
 	    }
 
-	  // XXX FIXME XXX It would have been better to call 
+	  // FIXME It would have been better to call 
 	  // "octave_value(m, true)" but how can that be done 
 	  // within the template
 	  retval(0) = retval(0).convert_to_str (false, true);

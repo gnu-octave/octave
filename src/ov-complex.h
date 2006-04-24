@@ -88,7 +88,7 @@ public:
 
   bool is_complex_type (void) const { return true; }
 
-  // XXX FIXME XXX ???
+  // FIXME ???
   bool valid_as_scalar_index (void) const { return false; }
   bool valid_as_zero_index (void) const { return false; }
 

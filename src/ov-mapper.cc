@@ -214,7 +214,7 @@ octave_mapper::apply (const octave_value& arg) const
 {
   octave_value retval;
 
-  // XXX FIXME XXX -- is_real_type can return true.  Should it really
+  // FIXME -- is_real_type can return true.  Should it really
   // work that way?
 
   if (arg.is_real_type ()
@@ -348,7 +348,7 @@ octave_mapper::apply (const octave_value& arg) const
     }
   else if (ch_map_fcn)
     {
-      // XXX FIXME XXX -- this could be done in a better way...
+      // FIXME -- this could be done in a better way...
 
       octave_value tmp = arg.convert_to_str ();
 
@@ -415,7 +415,7 @@ octave_mapper::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // XXX FIXME XXX -- perhaps there should be an
+  // FIXME -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // and octave_builtin::subsref.
 

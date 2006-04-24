@@ -247,7 +247,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
   hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
   bool retval = true;
 
-  // XXX FIXME XXX Is there a better way of saving string vectors, than a
+  // FIXME Is there a better way of saving string vectors, than a
   // null padded matrix?
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);

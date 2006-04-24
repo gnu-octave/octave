@@ -379,7 +379,7 @@ tree_simple_for_command::eval (void)
 	if (error_state)
 	  goto cleanup;
 
-	// XXX FIXME XXX -- maybe we need a function for this?
+	// FIXME -- maybe we need a function for this?
 	int ndims = dv.length ();
 	for (int i = 2; i < ndims; i++)
 	  dv(1) *= dv(i);
@@ -431,7 +431,7 @@ tree_simple_for_command::eval (void)
 
 	dim_vector dv = c_tmp.dims ();
 
-	// XXX FIXME XXX -- maybe we need a function for this?
+	// FIXME -- maybe we need a function for this?
 	int ndims = dv.length ();
 	for (int i = 2; i < ndims; i++)
 	  dv(1) *= dv(i);

@@ -58,7 +58,7 @@ public:
 
   boolNDArray operator ! (void) const;
 
-  // XXX FIXME XXX -- this is not quite the right thing.
+  // FIXME -- this is not quite the right thing.
 
   bool any_element_is_inf_or_nan (void) const;
   bool all_elements_are_real (void) const;

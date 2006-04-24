@@ -35,7 +35,7 @@ function [count,mean,var] = spstats(S,j)
     mean = spsum(S) ./ count; 
   end
   if (nargout > 2) 
-    ## XXX FIXME XXX Variance with count = 0 or 1?
+    ## FIXME Variance with count = 0 or 1?
     diff = S - sparse (i, j, mean(j), n, m); 
     var = spsum (diff .* diff) ./ (count - 1);
   end

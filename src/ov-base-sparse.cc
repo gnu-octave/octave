@@ -258,7 +258,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
   octave_idx_type nc = matrix.cols ();
   octave_idx_type nz = nnz ();
 
-  // XXX FIXME XXX -- this should probably all be handled by a
+  // FIXME -- this should probably all be handled by a
   // separate octave_print_internal function that can handle format
   // compact, loose, etc.
 
@@ -275,7 +275,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
 	{
 	  OCTAVE_QUIT;
 
-	  // XXX FIXME XXX -- is there an easy way to get the max row
+	  // FIXME -- is there an easy way to get the max row
 	  // and column indices so we can set the width appropriately
 	  // and line up the columns here?  Similarly, we should look
 	  // at all the nonzero values and display them with the same

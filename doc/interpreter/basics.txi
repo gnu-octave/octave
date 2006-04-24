@@ -579,7 +579,7 @@ re-running chunks of commands from the history list.
 @node Customizing readline
 @subsection Customizing @code{readline}
 
-@c XXX FIXME XXX -- need a brief description of the ~/.inputrc file here.
+@c FIXME -- need a brief description of the ~/.inputrc file here.
 
 @DOCSTRING(read_readline_init_file)
 

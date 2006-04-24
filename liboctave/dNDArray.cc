@@ -597,7 +597,7 @@ NDArray::too_large_for_float (void) const
   return false;
 }
 
-// XXX FIXME XXX -- this is not quite the right thing.
+// FIXME -- this is not quite the right thing.
 
 boolNDArray
 NDArray::all (int dim) const
@@ -831,7 +831,7 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
 	  octave_idx_type ival = NINTbig (d);
 
 	  if (ival < 0 || ival > UCHAR_MAX)
-	    // XXX FIXME XXX -- is there something
+	    // FIXME -- is there something
 	    // better we could do? Should we warn the user?
 	    ival = 0;
 
@@ -974,7 +974,7 @@ operator >> (std::istream& is, NDArray& a)
   return is;
 }
 
-// XXX FIXME XXX -- it would be nice to share code among the min/max
+// FIXME -- it would be nice to share code among the min/max
 // functions below.
 
 #define EMPTY_RETURN_CHECK(T) \

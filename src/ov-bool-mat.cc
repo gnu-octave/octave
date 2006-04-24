@@ -90,7 +90,7 @@ octave_bool_matrix::try_narrowing_conversion (void)
 bool
 octave_bool_matrix::valid_as_scalar_index (void) const
 {
-  // XXX FIXME XXX
+  // FIXME
   return false;
 }
 
@@ -99,10 +99,10 @@ octave_bool_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("bool matrix", "real scalar");
 
@@ -121,10 +121,10 @@ octave_bool_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      // FIXME -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
 	gripe_implicit_conversion ("bool matrix", "complex scalar");
 

@@ -89,7 +89,7 @@ public:
 
       if (numel () > 0)
 	{
-	  // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+	  // FIXME -- is warn_fortran_indexing the right variable here?
 	  if (Vwarn_fortran_indexing)
 	    gripe_implicit_conversion (type_name (), "real scalar");
 
@@ -179,13 +179,13 @@ public:
 	retval = scalar;
       else
 	{
-	  // XXX FIXME XXX -- this doesn't solve the problem of
+	  // FIXME -- this doesn't solve the problem of
 	  //
 	  //   a = 1; a([1,1], [1,1], [1,1])
 	  //
 	  // and similar constructions.  Hmm...
 
-	  // XXX FIXME XXX -- using this constructor avoids narrowing the
+	  // FIXME -- using this constructor avoids narrowing the
 	  // 1x1 matrix back to a scalar value.  Need a better solution
 	  // to this problem.
 

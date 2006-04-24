@@ -428,7 +428,7 @@ oct_randp (double L)
     /* numerical recipes */
     poisson_rejection(L, &ret, 1);
   } else if (INFINITE(L)) {
-    /* XXX FIXME XXX R uses NaN, but the normal approx. suggests that as
+    /* FIXME R uses NaN, but the normal approx. suggests that as
      * limit should be inf. Which is correct? */
     ret = NAN;
   } else {

@@ -141,7 +141,7 @@ are the same as for @dfn{lu}.\n\
       else
 	droptol = args(1).double_value ();
 
-      // XXX FIXME XXX Add code for zero-level factorization
+      // FIXME Add code for zero-level factorization
       if (zero_level)
 	error ("luinc: zero-level factorization not implemented");
 

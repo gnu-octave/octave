@@ -200,11 +200,11 @@ Houston, TX 77030.
 
 @DOCSTRING(diag)
 
-@c XXX FIXME XXX -- is this really worth documenting?
+@c FIXME -- is this really worth documenting?
 @c
 @c DOCSTRING(warn_imag_to_real)
 @c 
-@c XXX FIXME XXX -- this is here because it is used by @code{ones},
+@c FIXME -- this is here because it is used by @code{ones},
 @c @code{zeros}, @code{rand}, etc.
 
 The functions @code{linspace} and @code{logspace} make it very easy to

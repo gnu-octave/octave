@@ -3586,7 +3586,7 @@ return the empty string.  Given the argument @code{\"fullpath\"},\n\
 include the directory part of the file name, but not the extension.\n\
 Given the argument @code{\"fullpathext\"}, include the directory part\n\
 of the file name and the extension.\n\
-@end deftypfn")
+@end deftypefn")
 {
   octave_value retval;
 

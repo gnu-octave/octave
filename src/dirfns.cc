@@ -45,6 +45,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-stat.h"
 #include "glob-match.h"
 #include "oct-env.h"
+#include "pathsearch.h"
 #include "str-vec.h"
 
 #include "Cell.h"
@@ -679,6 +680,41 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
   return retval;
 }
 
+DEFUN (filesep, args, ,
+    "-*- texinfo -*-\n\
+@detypefn {Built-in Function} {} filesep ()\n\
+Return the system-dependent character used to separate directory names.\n\
+@seealso{pathsep, dir, ls}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = file_ops::dir_sep_str;
+  else
+    print_usage ("filesep");
+
+  return retval;
+}
+
+DEFUN (pathsep, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} pathsep ()\n\
+Return the system-dependent character used to separate directories in\n\
+a path.\n\
+@seealso{filesep, dir, ls}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = dir_path::path_sep_str;
+  else
+    print_usage ("pathsep");
+
+  return retval;
+}
+
 static int
 confirm_recursive_rmdir (void)
 {
@@ -695,17 +731,8 @@ symbols_of_dirfns (void)
 @defvr {Built-in Variable} confirm_recursive_rmdir\n\
 If the value of @code{confirm_recursive_rmdir} is nonzero, Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
-The default value is 0.\n\
+The default value is 1.\n\
 @end defvr");
-
-  DEFCONST (filesep, file_ops::dir_sep_str,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} filesep\n\
-The character used to separate directory names.  The value\n\
-of this variable is system dependent.\n\
-@seealso{dir, ls}\n\
-@end defvr");
-
 }
 
 /*

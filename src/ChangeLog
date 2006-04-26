@@ -1,3 +1,15 @@
+2006-04-26  John W. Eaton  <jwe@octave.org>
+
+	* dirfns.cc (Ffilesep): New function to replace DEFCONST in
+	symbols_of_dirfns.
+	(Fpathsep): New function.
+
+	* defaults.cc (set_default_default_exec_path): Use
+	dir_path::path_sep_str instead of std::string (SEPCHAR_STR).
+	(set_default_exec_path): Likewise.
+	(set_default_path): Likewise.
+	(maybe_add_default_load_path): Likewise.  Use dir_path::is_path_sep.
+
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/regexp.cc: Include <algorithm>, for transform decl.

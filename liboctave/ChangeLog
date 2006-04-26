@@ -1,3 +1,10 @@
+2006-04-26  John W. Eaton  <jwe@octave.org>
+
+	* pathsearch.cc (dir_path::path_sep_char, dir_path::path_sep_str):
+	New static data.
+	* pathsearch.h: Provide decls.
+	(dir_path::is_path_sep): New function.
+
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
 	* randmtzig.c (randmt, randi53, randi54, randi64, randu32, randu53):

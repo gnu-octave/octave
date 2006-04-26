@@ -37,6 +37,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "kpse.cc"
 
+char dir_path::path_sep_char = SEPCHAR;
+
+std::string dir_path::path_sep_str (SEPCHAR_STR);
+
 static bool octave_kpathsea_initialized = false;
 
 string_vector

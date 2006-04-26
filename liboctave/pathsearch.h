@@ -82,6 +82,11 @@ public:
       init ();
     }
 
+  static bool is_path_sep (char c) { return c == path_sep_char; }
+
+  static char path_sep_char;
+  static std::string path_sep_str;
+
 private:
 
   // The colon separated list that we were given.

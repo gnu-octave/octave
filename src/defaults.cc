@@ -264,9 +264,9 @@ static void
 set_default_default_exec_path (void)
 {
   Vdefault_exec_path
-    = Vlocal_ver_arch_lib_dir + std::string (SEPCHAR_STR)
-    + Vlocal_arch_lib_dir + std::string (SEPCHAR_STR)
-    + Varch_lib_dir + std::string (SEPCHAR_STR)
+    = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str
+    + Vlocal_arch_lib_dir + dir_path::path_sep_str
+    + Varch_lib_dir + dir_path::path_sep_str
     + Vbin_dir;
 }
 
@@ -281,7 +281,7 @@ set_default_exec_path (void)
 
       if (! shell_path.empty ())
 	{
-	  Vexec_path = std::string (SEPCHAR_STR);
+	  Vexec_path = dir_path::path_sep_str;
 	  Vexec_path.append (shell_path);
 	}
     }
@@ -296,7 +296,7 @@ set_default_path (void)
 
   std::string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path.empty () ? std::string (SEPCHAR_STR) : oct_path;
+  Vload_path = oct_path.empty () ? dir_path::path_sep_str : oct_path;
 
   update_load_path_dir_path ();
 }
@@ -365,7 +365,7 @@ maybe_add_default_load_path (const std::string& pathstring)
 
   if (! pathstring.empty ())
     {
-      if (pathstring[0] == SEPCHAR)
+      if (dir_path::is_path_sep (pathstring[0]))
 	{
 	  retval = Vdefault_load_path;
 	  retval.append (pathstring);
@@ -373,14 +373,13 @@ maybe_add_default_load_path (const std::string& pathstring)
       else
 	retval = pathstring;
 
-      if (pathstring[pathstring.length () - 1] == SEPCHAR)
+      if (dir_path::is_path_sep (pathstring[pathstring.length () - 1]))
 	retval.append (Vdefault_load_path);
 
       size_t pos = 0;
       do
 	{
-	  pos = retval.find (std::string (SEPCHAR_STR) + 
-			     std::string (SEPCHAR_STR));
+	  pos = retval.find (dir_path::path_sep_str + dir_path::path_sep_str);
 
 	  if (pos != NPOS)
 	    retval.insert (pos+1, Vdefault_load_path);
@@ -588,8 +587,8 @@ loadpath (void)
       // I'm not sure whether this causes more problems that it
       // solves...
       //      if (! (s[0] == ':' || s[s.length () - 1] == ':'
-      //	     || s.find (std::string (SEPCHAR_STR) + 
-      //                        std::string (SEPCHAR_STR)) != NPOS))
+      //	     || s.find (dir_path::path_sep_str + 
+      //                        dir_path::path_sep_str) != NPOS))
       //	warning ("LOADPATH will ignore default load path");
 
       Vload_path = s;

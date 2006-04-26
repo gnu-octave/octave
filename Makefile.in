@@ -9,7 +9,8 @@
 TARGETS = octave-bug octave-config mkoctfile libcruft liboctave \
 	dlfcn readline src scripts doc check octave.info \
 	INSTALL.OCTAVE BUGS install install-strip uninstall \
-	tags TAGS dist conf-dist snapshot snapshot-version
+	tags TAGS dist conf-dist snapshot snapshot-version \
+	.gdbinit run-octave
 
 NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
 

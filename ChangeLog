@@ -1,3 +1,10 @@
+2006-04-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (TARGETS): Include run-octave and .gdbinit in the list.
+	* Makeconf.in (subst-script-vals): New macro.
+	* octMakefile.in (run-octave, .gdbinit): New rules.
+	(DISTFILES): Include run-octave.in and gdbinit.in in the list.
+
 2006-04-17  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl (emit_print_function): Emit code that uses

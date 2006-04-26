@@ -29,7 +29,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
 	octave-config.in mk-opts.pl mkinstalldirs \
-	mkoctfile.in ChangeLog ChangeLog.[0-9]
+	mkoctfile.in run-octave.in gdbinit.in ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = # plplot
@@ -80,6 +80,13 @@ octave-config: octave-config.in Makeconf octMakefile
 mkoctfile: mkoctfile.in Makeconf octMakefile
 	@$(do-subst-config-vals)
 	chmod a+rx $@
+
+run-octave: run-octave.in Makeconf octMakefile
+	@$(do-subst-script-vals)
+	chmod a+rx "$@"
+
+.gdbinit: gdbinit.in Makeconf octMakefile
+	$(do-subst-script-vals)
 
 check:
 	$(MAKE) -C test check

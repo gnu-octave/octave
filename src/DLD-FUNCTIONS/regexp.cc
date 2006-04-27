@@ -60,6 +60,9 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
   int nargin = args.length();
   int nopts = nargin - 2;
   bool once = false;
+  bool lineanchors = false;
+  bool dotexceptnewline = false;
+  bool freespacing = false;
 
   if (nargin < 2)
     {
@@ -95,13 +98,57 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	  once = true;
 	  nopts--;
 	}
-#ifdef HAVE_PCRE
+#if HAVE_PCRE
+      // Only accept these options with pcre
+      else if (str.find("dotall", 0) == 0)
+	{
+	  dotexceptnewline = false;
+	  nopts--;
+	}
+      else if (str.find("dotexceptnewline", 0) == 0)
+	{
+	  dotexceptnewline = true;
+	  nopts--;
+	}
+      else if (str.find("stringanchors", 0) == 0)
+	{
+	  lineanchors = false;
+	  nopts--;
+	}
+      else if (str.find("lineanchors", 0) == 0)
+	{
+	  lineanchors = true;
+	  nopts--;
+	}
+      else if (str.find("matchcase", 0) == 0)
+	{
+	  case_insensitive = false;
+	  nopts--;
+	}
+      else if (str.find("ignorecase", 0) == 0)
+	{
+	  case_insensitive = true;
+	  nopts--;
+	}
+      else if (str.find("freespacing", 0) == 0)
+	{
+	  freespacing = true;
+	  nopts--;
+	}
+      else if (str.find("literalspacing", 0) == 0)
+	{
+	  freespacing = false;
+	  nopts--;
+	}
       else if (str.find("start", 0) && str.find("end", 0) &&
 	       str.find("tokenextents", 0) && str.find("match", 0) &&
 	       str.find("tokens", 0) && str.find("names", 0))
 	error ("%s: unrecognized option", nm.c_str());
 #else
-      else if (str.find("names", 0) == 0)
+      else if (str.find("names", 0) == 0 ||
+	       str.find("dotexceptnewline", 0) == 0 ||
+	       str.find("lineanchors", 0) == 0 ||
+	       str.find("freespacing", 0) == 0)
 	error ("%s: named tokens not implemented in this version", nm.c_str());
       else if (str.find("start", 0) && str.find("end", 0) &&
 	       str.find("tokenextents", 0) && str.find("match", 0) &&
@@ -133,6 +180,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       std::ostringstream buf;
       Array<int> named_idx;
 
+      // Add mode flags
       while ((new_pos = pattern.find ("(?<",pos)) != NPOS)
 	{
 	  size_t tmp_pos = pattern.find_first_of ('>',new_pos);
@@ -184,7 +232,10 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       int erroffset;
       std::string buf_str = buf.str ();
       re = pcre_compile (buf_str.c_str (),
-			 (case_insensitive ? PCRE_CASELESS : 0),
+			 (case_insensitive ? PCRE_CASELESS : 0) |
+			 (dotexceptnewline ? 0 : PCRE_DOTALL) |
+			 (lineanchors ? PCRE_MULTILINE : 0) |
+			 (freespacing ? PCRE_EXTENDED : 0),
 			 &err, &erroffset, NULL);
     
       if (re == NULL) {
@@ -212,8 +263,8 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	{
 	  // Index of subpattern in first two bytes MSB first of name.
 	  // Extract index.
-	  nidx[i] = ((int)nametable[i*nameentrysize]) << 8 |
-	    (int)nametable[i*nameentrysize+1];
+	  nidx[i] = (static_cast<int>(nametable[i*nameentrysize])) << 8 |
+	    static_cast<int>(nametable[i*nameentrysize+1]);
 	}
 
       Cell named_tokens(dim_vector(nnames,1));
@@ -233,8 +284,13 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	    }
 	  else if (matches == PCRE_ERROR_NOMATCH)
 	    break;
+	  else if (ovector[1] <= ovector[0])
+	    break;
 	  else
 	    {
+	      // FIXME Should collect arguments in a linked structure and
+	      // resize and assign the return value a single time to make
+	      // this function O(n) rather than O(n^2) as it currently is.
 	      int pos_match = 0;
 	      s.resize (dim_vector(1, sz+1));
 	      s(sz) = double (ovector[0]+1);
@@ -400,7 +456,18 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 	      int k = 0;
 	      std::string str = args(i).string_value();
 	      std::transform (str.begin (), str.end (), str.begin (), tolower);
-	      if (str.find("once", 0) == 0)
+	      if (str.find("once", 0) == 0
+#if HAVE_PCRE
+		  || str.find("stringanchors", 0) == 0
+		  || str.find("lineanchors", 0) == 0
+		  || str.find("matchcase", 0) == 0
+		  || str.find("ignorecase", 0) == 0
+		  || str.find("dotall", 0) == 0
+		  || str.find("dotexceptnewline", 0) == 0
+		  || str.find("literalspacing", 0) == 0
+		  || str.find("freespacing", 0) == 0
+#endif
+	      )
 		continue;
 	      else if (str.find("start", 0) == 0)
 		k = 0;
@@ -437,7 +504,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
     }
 
 #else
-  error ("%s: not available in this version of Octave", nm);
+  error ("%s: not available in this version of Octave", nm.c_str());
 #endif
   return retval;
 }
@@ -551,7 +618,27 @@ are\n\
 @end multitable\n\
 \n\
 A further optional argument is 'once', that limits the number of returned\n\
-matches to the first match.\n\
+matches to the first match. Additional arguments are\n\
+\n\
+@table @asis\n\
+@item matchcase\n\
+Make the matching case sensitive.\n\
+@item ignorecase\n\
+Make the matching case insensitive.\n\
+@item stringanchors\n\
+Match the anchor characters at the beginning and end of the string.\n\
+@item lineanchors\n\
+Match the anchor characters at the beginning and end of the line.\n\
+@item dotall\n\
+The character @code{.} matches the newline character.\n\
+@item dotexceptnewline\n\
+The character @code{.} matches all but the newline character.\n\
+@item freespacing\n\
+The pattern can include arbitrary whitespace and comments starting with\n\
+@code{#}.\n\
+@item literalspacing\n\
+The pattern is taken literally.\n\
+@end table\n\
 @end deftypefn")
 {
   return octregexp (args, nargout, "regexp", false);
@@ -678,6 +765,42 @@ matches to the first match.\n\
 %!   assert (nm.last{2},'Rogers');
 %! endif
 
+%!assert(regexp("abc\nabc",'.'),[1:7])
+%!assert(regexp("abc\nabc",'.','dotall'),[1:7])
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert(regexp("abc\nabc",'(?s).'),[1:7])
+%!   assert(regexp("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
+%!   assert(regexp("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
+%! endif
+
+%!assert(regexp("caseCaSe",'case'),1)
+%!assert(regexp("caseCaSe",'case',"matchcase"),1)
+%!assert(regexp("caseCaSe",'case',"ignorecase"),[1,5])
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert(regexp("caseCaSe",'(?-i)case'),1)
+%!   assert(regexp("caseCaSe",'(?i)case'),[1,5])
+%! endif
+
+%!assert (regexp("abc\nabc",'c$'),7)
+%!assert (regexp("abc\nabc",'c$',"stringanchors"),7)
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert (regexp("abc\nabc",'(?-m)c$'),7)
+%!   assert (regexp("abc\nabc",'c$',"lineanchors"),[3,7])
+%!   assert (regexp("abc\nabc",'(?m)c$'),[3,7])
+%! endif
+
+%!assert (regexp("this word",'s w'),4)
+%!assert (regexp("this word",'s w','literalspacing'),4)
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert (regexp("this word",'(?-x)s w','literalspacing'),4)
+%!   assert (regexp("this word",'s w','freespacing'),[])
+%!   assert (regexp("this word",'(?x)s w'),[])
+%! endif
+
 %!error regexp('string', 'tri', 'BadArg');
 %!error regexp('string');
 
@@ -799,6 +922,42 @@ if there are none. See @code{regexp} for more details\n\
 %!   assert (sort(fieldnames(nm)),{'word1';'word2'})
 %!   assert (nm.word1,'ShoRt')
 %!   assert (nm.word2,'Test')
+%! endif
+
+%!assert(regexpi("abc\nabc",'.'),[1:7])
+%!assert(regexpi("abc\nabc",'.','dotall'),[1:7])
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert(regexpi("abc\nabc",'(?s).'),[1:7])
+%!   assert(regexpi("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
+%!   assert(regexpi("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
+%! endif
+
+%!assert(regexpi("caseCaSe",'case'),[1,5])
+%!assert(regexpi("caseCaSe",'case',"matchcase"),1)
+%!assert(regexpi("caseCaSe",'case',"ignorecase"),[1,5])
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert(regexpi("caseCaSe",'(?-i)case'),1)
+%!   assert(regexpi("caseCaSe",'(?i)case'),[1,5])
+%! endif
+
+%!assert (regexpi("abc\nabc",'c$'),7)
+%!assert (regexpi("abc\nabc",'c$',"stringanchors"),7)
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert (regexpi("abc\nabc",'(?-m)c$'),7)
+%!   assert (regexpi("abc\nabc",'c$',"lineanchors"),[3,7])
+%!   assert (regexpi("abc\nabc",'(?m)c$'),[3,7])
+%! endif
+
+%!assert (regexpi("this word",'s w'),4)
+%!assert (regexpi("this word",'s w','literalspacing'),4)
+%!test
+%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
+%!   assert (regexpi("this word",'(?-x)s w','literalspacing'),4)
+%!   assert (regexpi("this word",'s w','freespacing'),[])
+%!   assert (regexpi("this word",'(?x)s w'),[])
 %! endif
 
 %!error regexpi('string', 'tri', 'BadArg');

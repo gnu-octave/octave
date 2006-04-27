@@ -509,6 +509,7 @@ DEFUN (terminal_size, , ,
 @deftypefn {Built-in Function} {} terminal_size ()\n\
 Return a two-element row vector containing the current size of the\n\
 terminal window in characters (rows and columns).\n\
+@seealso{list_in_columns}\n\
 @end deftypefn")
 {
   RowVector size (2, 0.0);

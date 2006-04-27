@@ -1,3 +1,7 @@
+2006-04-26  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* configure.in: Fix apiversion vs. api_version typo.
+
 2006-04-25  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (TARGETS): Include run-octave and .gdbinit in the list.

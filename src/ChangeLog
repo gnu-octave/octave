@@ -1,3 +1,7 @@
+2006-04-26  Bill Denney  <denney@seas.upenn.edu>
+
+ 	* pager.cc (Fterminal_size): Add list_in_columns to @seealso.
+
 2006-04-26  John W. Eaton  <jwe@octave.org>
 
 	* dirfns.cc (Ffilesep): New function to replace DEFCONST in

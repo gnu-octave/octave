@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.508 $)
+AC_REVISION($Revision: 1.509 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -77,7 +77,7 @@ OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)')
 OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
 OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localapifcnfiledir,
-  '$(datadir)/octave/site/$(apiversion)/m')
+  '$(datadir)/octave/site/$(api_version)/m')
 OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
 OCTAVE_SET_DEFAULT(localfcnfilepath,
   '$(localverfcnfiledir)//$(sepchar)$(localapifcnfiledir)//$(sepchar)$(localfcnfiledir)//')
@@ -93,7 +93,7 @@ OCTAVE_SET_DEFAULT(octfiledir,
 OCTAVE_SET_DEFAULT(localoctfiledir,
   '$(libexecdir)/octave/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localapioctfiledir,
-  '$(libexecdir)/octave/site/oct/$(apiversion)/$(canonical_host_type)')
+  '$(libexecdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localveroctfiledir,
   '$(libexecdir)/octave/$(version)/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localoctfilepath,

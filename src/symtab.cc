@@ -82,8 +82,6 @@ SYMBOL_DEF::type_as_string (void) const
     retval = "built-in mapper function";
   else if (is_user_function ())
     retval = "user-defined function";
-  else if (is_builtin_constant ())
-    retval = "built-in constant";
   else if (is_builtin_variable ())
     retval = "built-in variable";
   else if (is_builtin_function ())
@@ -132,9 +130,7 @@ SYMBOL_DEF::type (std::ostream& os, const std::string& name, bool pr_type_info,
 	  defn->accept (tpc);
 	}
     }
-  else if (is_user_variable ()
-	   || is_builtin_variable ()
-	   || is_builtin_constant ())
+  else if (is_user_variable () || is_builtin_variable ())
     {
       if (pr_type_info && ! quiet)
 	os << name << " is a " << type_as_string () << "\n";
@@ -225,21 +221,6 @@ symbol_record::define_builtin_var (const octave_value& v)
 
   if (chg_fcn)
     chg_fcn ();
-}
-
-bool
-symbol_record::define_builtin_const (const octave_value& v)
-{
-  bool retval = false;
-
-  if (! read_only_error ("redefine"))
-    {
-      definition->define (v, symbol_record::BUILTIN_CONSTANT);
-
-      retval = true;
-    }
-
-  return retval;
 }
 
 bool
@@ -368,7 +349,7 @@ symbol_record::variable_reference (void)
 	}
     }
 
-  if (is_function () || is_constant ())
+  if (is_function ())
     clear ();
 
   if (! is_defined ())
@@ -680,7 +661,7 @@ symbol_record::read_only_error (const char *action)
 {
   if (is_read_only ())
     {
-      if (is_variable () || is_constant ())
+      if (is_variable ())
 	::error ("can't %s read-only constant `%s'", action, nm.c_str ());
       else if (is_function ())
 	::error ("can't %s read-only function `%s'", action, nm.c_str ());

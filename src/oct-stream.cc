@@ -3195,6 +3195,7 @@ INSTANTIATE_DO_READ (uint64NDArray);
 // INSTANTIATE_DO_READ (floatNDArray);
 INSTANTIATE_DO_READ (NDArray);
 INSTANTIATE_DO_READ (charNDArray);
+INSTANTIATE_DO_READ (boolNDArray);
 
 typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool,
 				   oct_mach_info::float_format ffmt, octave_idx_type&);

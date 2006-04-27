@@ -1,7 +1,61 @@
+2006-04-27  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (Fexist): Fix doc string.
+
+	* help.cc (simple_help): No need to handle built-in constants now.
+	* variables.cc (do_who): Likewise.
+	(symbol_exist): Likewise.
+	(link_to_builtin_or_function): Likewise.
+
+	* symtab.cc (SYMBOL_DEF::type_as_string): Likewise.
+	(record::read_only_error): Likewise.
+	(SYMBOL_DEF::type): Likewise.
+	(record::variable_reference): Likewise.
+	(symbol_record::define_builtin_const): Delete function.
+
+	* symtab.h (symbol_record::define_builtin_const): Delete decl.
+	(symbol_record::symbol_def::is_constant): Delete function.
+	(symbol_record::symbol_def::is_builtin_constant): Delete function.
+	(symbol_record::symbol_def::is_constant): Delete function.
+	(symbol_record::is_builtin_constant): Delete function.
+	(SYMTAB_ALL_TYPES): No need to handle builtin-constants now.
+	(symbol_record::TYPE): Remove BUILTIN_CONSTANT from enum.
+	(symbol_record): 
+
+	* defun.cc (install_builtin_constant): Delete function.
+	* defun-int.h (install_builtin_constant): Delete decl.
+
+	* variables.cc (bind_builtin_constant): Delete function.
+	* variables.h (bind_builtin_constant): Delete decl.
+
+	* defun-int.h (DEFCONST, DEFCONSTX, DEFCONST_INTERNAL,
+	DEFCONSTX_INTERNAL): Delete definitions.
+
+	* sighandlers.cc (FSIG): New function to replace DEFCONST in
+	symbols_of_sighandlers. 
+
+	* octave.cc (intern_argv): Set octave_argv instead of calling
+	bind_builtin_variable here.
+	(Fargv, Fprogram_invocation_name, Fprogram_name): New functions to
+	replace DEFCONSTs in symbols_of_toplvev in toplev.cc.
+	(octave_program_invocation_name, octave_program_name):	
+	New static variables.
+	(execute_command_line_file): Use unwind_protect_str to protect
+	octave_program_invocation_name, octave_program_name instead of
+	using a restore function.
+	(restore_program_name): Delete.
+
+	* defaults.cc (FOCTAVE_HOME): New function to replace DEFCONST in
+	symbols_of_defaults.
+
 2006-04-27  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp): Fix for infinite loop in
 	regexp. Include news regexp arguments, and associated tests.
+
+2006-04-26  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc: Also instantiate do_read functions for boolNDArray.
 
 2006-04-26  Bill Denney  <denney@seas.upenn.edu>
 

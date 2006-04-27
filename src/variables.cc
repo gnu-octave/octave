@@ -805,10 +805,6 @@ symbol_exist (const std::string& name, const std::string& type)
 	    {
 	      retval = 101;
 	    }
-	  else if (var_ok && sr->is_builtin_constant ())
-	    {
-	      retval = 102;
-	    }
 	}
 
       if (! retval
@@ -913,7 +909,7 @@ Return 1 if the name exists as a variable, 2 if the name (after\n\
 appending @samp{.m}) is a function file in Octave's LOADPATH, 3 if the\n\
 name is a @samp{.oct} file in Octave's LOADPATH, 5 if the name is a\n\
 built-in function, 7 if the name is a directory, 101 if the name is\n\
-a built-in variable, 102 if the name is a built-in constant, or 103\n\
+a built-in variable, or 103\n\
 if the name is a function not associated with a file (entered on\n\
 the command line).\n\
 \n\
@@ -1365,7 +1361,7 @@ link_to_global_variable (symbol_record *sr)
 // definition of the builtin variable of the same name.
 
 // Make the definition of the symbol record sr be the same as the
-// definition of the builtin variable, constant, or function, or user
+// definition of the builtin variable or function, or user
 // function of the same name, provided that the name has not been used
 // as a formal parameter.
 
@@ -1388,7 +1384,6 @@ link_to_builtin_or_function (symbol_record *sr)
 
   if (tmp_sym
       && (tmp_sym->is_builtin_variable ()
-	  || tmp_sym->is_builtin_constant ()
 	  || tmp_sym->is_function ())
       && ! tmp_sym->is_formal_parameter ())
     sr->alias (tmp_sym);
@@ -1538,7 +1533,6 @@ do_who (int argc, const string_vector& argv, int return_list)
 
       dim_vector dv (0, 0);
 
-      Array<symbol_record *> s1 (dv);
       Array<symbol_record *> s2 (dv);
       Array<symbol_record *> s3 (dv);
       Array<symbol_record *> s4 (dv);
@@ -1548,9 +1542,6 @@ do_who (int argc, const string_vector& argv, int return_list)
 
       if (show_builtins)
 	{
-	  s1 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_CONSTANT,
-					 SYMTAB_ALL_SCOPES);
-
 	  s2 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_VARIABLE,
 					 SYMTAB_ALL_SCOPES);
 
@@ -1576,7 +1567,6 @@ do_who (int argc, const string_vector& argv, int return_list)
 					  SYMTAB_GLOBAL_SCOPE);
 	}
 
-      octave_idx_type s1_len = s1.length ();
       octave_idx_type s2_len = s2.length ();
       octave_idx_type s3_len = s3.length ();
       octave_idx_type s4_len = s4.length ();
@@ -1585,14 +1575,12 @@ do_who (int argc, const string_vector& argv, int return_list)
       octave_idx_type s7_len = s7.length ();
 
       octave_idx_type symbols_len
-	= s1_len + s2_len + s3_len + s4_len + s5_len + s6_len + s7_len;
+	= s2_len + s3_len + s4_len + s5_len + s6_len + s7_len;
 
       Array<symbol_record *> symbols (dim_vector (symbols_len, 1));
 
       octave_idx_type k = 0;
 
-      symbols.insert (s1, k, 0);
-      k += s1_len;
       symbols.insert (s2, k, 0);
       k += s2_len;
       symbols.insert (s3, k, 0);
@@ -1677,10 +1665,6 @@ do_who (int argc, const string_vector& argv, int return_list)
 
       if (show_builtins)
 	{
-	  pad_after += fbi_sym_tab->maybe_list
-	    ("*** built-in constants:", pats, octave_stdout,
-	     show_verbose, symbol_record::BUILTIN_CONSTANT, SYMTAB_ALL_SCOPES);
-
 	  pad_after += fbi_sym_tab->maybe_list
 	    ("*** built-in variables:", pats, octave_stdout,
 	     show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
@@ -1827,32 +1811,6 @@ bind_ans (const octave_value& val, bool print)
       if (print)
 	val.print_with_name (octave_stdout, "ans");
     }
-}
-
-// Give a global constant a definition.  This will insert the symbol
-// in the global table if necessary.
-
-// How is this different than install_builtin_constant?  Are both
-// functions needed?
-
-void
-bind_builtin_constant (const std::string& name, const octave_value& val,
-		       bool protect, bool eternal, const std::string& help)
-{
-  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
-  sym_rec->unprotect ();
-
-  std::string tmp_help = help.empty () ? sym_rec->help () : help;
-
-  sym_rec->define_builtin_const (val);
-
-  sym_rec->document (tmp_help);
-
-  if (protect)
-    sym_rec->protect ();
-
-  if (eternal)
-    sym_rec->make_eternal ();
 }
 
 // Give a global variable a definition.  This will insert the symbol

@@ -518,8 +518,6 @@ simple_help (void)
 
   // FIXME -- is this distinction needed?
 
-  LIST_SYMBOLS (symbol_record::BUILTIN_CONSTANT, "built-in constants");
-
   LIST_SYMBOLS (symbol_record::BUILTIN_VARIABLE, "built-in variables");
 
   LIST_SYMBOLS (symbol_record::COMMAND, "commands");

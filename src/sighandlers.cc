@@ -971,6 +971,26 @@ OCL_REP::wait (void)
   return retval;
 }
 
+DEFUN (SIG, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} SIG ()\n\
+Return a structure containing Unix signal names and their defined values.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    {
+      static Octave_map m = make_sig_struct ();
+
+      retval = m;
+    }
+  else
+    print_usage ("SIG");
+
+  return retval;
+}
+
 static int
 debug_on_interrupt (void)
 {
@@ -1024,12 +1044,6 @@ If this variable is set to a nonzero value and\n\
 @code{crash_dumps_octave_core} is also nonzero, Octave tries to save all\n\
 current variables the the file \"octave-core\" if it receives a\n\
 terminate signal.  The default value is 1.\n\
-@end defvr");
-
-  DEFCONST (SIG, make_sig_struct (),
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} SIG\n\
-Structure of Unix signal names and their defined values.\n\
 @end defvr");
 }
 

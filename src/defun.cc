@@ -127,13 +127,6 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 }
 
 void
-install_builtin_constant (const std::string& name, const octave_value& val,
-			  bool protect, const std::string& help)
-{
-  bind_builtin_constant (name, val, protect, false, help);
-}
-
-void
 install_builtin_variable (const std::string& name, const octave_value& value,
 			  bool protect, bool eternal,
 			  symbol_record::change_function chg_fcn,

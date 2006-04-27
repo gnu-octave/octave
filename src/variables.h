@@ -119,11 +119,6 @@ extern void force_link_to_function (const std::string&);
 extern void bind_ans (const octave_value& val, bool print);
 
 extern void
-bind_builtin_constant (const std::string&, const octave_value&,
-		       bool protect = false, bool eternal = false,
-		       const std::string& help = std::string ());
-
-extern void
 bind_builtin_variable (const std::string&, const octave_value&,
 		       bool protect = false, bool eternal = false,
 		       symbol_record::change_function f = 0,

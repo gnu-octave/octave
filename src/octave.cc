@@ -88,6 +88,13 @@ extern "C" int on_exit ();
 // The command-line options.
 static string_vector octave_argv;
 
+// The name used to invoke Octave.
+static std::string
+octave_program_invocation_name;
+
+// The last component of octave_program_invocation_name.
+static std::string octave_program_name;
+
 // TRUE means we read ~/.octaverc and ./.octaverc.
 // (--norc; --no-init-file; -f)
 static bool read_init_files = true;
@@ -175,21 +182,15 @@ intern_argv (int argc, char **argv)
 
   nargin_sr->define (argc-1);
 
-  Cell args;
-
   if (argc > 1)
     {
-      Array<octave_value> tmp (argc-1);
+      octave_argv.resize (argc-1);
 
       // Skip program name in argv.
       int i = argc;
       while (--i > 0)
-	tmp(i-1) = octave_value (*(argv+i));
-
-      args = Cell (tmp, argc-1, 1);
+	octave_argv[i-1] = *(argv+i);
     }
-
-  bind_builtin_constant ("argv", args, true, true);
 }
 
 static void
@@ -354,15 +355,6 @@ execute_eval_option_code (const std::string& code)
 }
 
 static void
-restore_program_name (void *)
-{
-  bind_builtin_variable ("program_invocation_name",
-			 octave_env::get_program_invocation_name ());
-
-  bind_builtin_variable ("program_name", octave_env::get_program_name ());
-}
-
-static void
 execute_command_line_file (const std::string& fname)
 {
   unwind_protect::begin_frame ("execute_command_line_file");
@@ -374,7 +366,8 @@ execute_command_line_file (const std::string& fname)
   unwind_protect_str (curr_fcn_file_name);
   unwind_protect_str (curr_fcn_file_full_name);
 
-  unwind_protect::add (restore_program_name, 0);
+  unwind_protect_str (octave_program_invocation_name);
+  unwind_protect_str (octave_program_name);
 
   interactive = false;
   reading_script_file = true;
@@ -383,14 +376,14 @@ execute_command_line_file (const std::string& fname)
   curr_fcn_file_name = fname;
   curr_fcn_file_full_name = curr_fcn_file_name;
 
-  bind_builtin_variable ("program_invocation_name", curr_fcn_file_name);
+  octave_program_invocation_name = curr_fcn_file_name;
 
   size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars);
   
   std::string tmp = (pos != NPOS)
     ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
 
-  bind_builtin_variable ("program_name", tmp);
+  octave_program_name = tmp;
 
   parse_and_execute (fname, false, "octave");
  
@@ -489,6 +482,9 @@ int
 octave_main (int argc, char **argv, int embedded)
 {
   octave_env::set_program_name (argv[0]);
+
+  octave_program_invocation_name = octave_env::get_program_invocation_name ();
+  octave_program_name = octave_env::get_program_name ();
 
   // The order of these calls is important.  The call to
   // install_defaults must come before install_builtins because
@@ -744,6 +740,75 @@ octave_main (int argc, char **argv, int embedded)
   clean_up_and_exit (retval);
 
   return 0;
+}
+
+DEFUN (argv, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} argv ()\n\
+Return the command line arguments passed to Octave.  For example,\n\
+if you invoked Octave using the command\n\
+\n\
+@example\n\
+octave --no-line-editing --silent\n\
+@end example\n\
+\n\
+@noindent\n\
+@code{argv} would return a cell array of strings with the elements\n\
+@code{--no-line-editing} and @code{--silent}.\n\
+\n\
+If you write an executable Octave script, @code{argv} will return the\n\
+list of arguments passed to the script.  @xref{Executable Octave Programs},\n\
+for an example of how to create an executable Octave script.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = Cell (octave_argv);
+  else
+    print_usage ("argv");
+
+  return retval;
+}
+
+DEFUN (program_invocation_name, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} program_invocation_name ()\n\
+Return the name that was typed at the shell prompt to run Octave.\n\
+\n\
+If executing a script from the command line (e.g., @code{octave foo.m})\n\
+or using an executable Octave script, the program name is set to the\n\
+name of the script.  @xref{Executable Octave Programs}, for an example of\n\
+how to create an executable Octave script.\n\
+@seealso{program_name}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = octave_program_invocation_name;
+  else
+    print_usage ("program_invocation_name");
+
+  return retval;
+}
+
+DEFUN (program_name, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} program_name ()\n\
+Return the last component of of the value returned by\n\
+@code{program_invocation_name}.\n\
+@seealso{program_invocation_name}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = octave_program_name;
+  else
+    print_usage ("program_name");
+
+  return retval;
 }
 
 /*

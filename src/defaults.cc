@@ -734,13 +734,22 @@ variable @code{LOADPATH}.\n\
 A colon separated list of directories in which to search for image\n\
 files.\n\
 @end defvr");
+}
 
-  DEFCONST (OCTAVE_HOME, Voctave_home,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Constant} OCTAVE_HOME\n\
-The name of the top-level Octave installation directory.\n\
-@end defvr");
+DEFUN (OCTAVE_HOME, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
+Return the name of the top-level Octave installation directory.\n\
+@end deftypefn")
+{
+  octave_value retval;
 
+  if (args.length () == 0)
+    retval = Voctave_home;
+  else
+    print_usage ("OCTAVE_HOME");
+
+  return retval;
 }
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,

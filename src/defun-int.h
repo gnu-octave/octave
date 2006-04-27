@@ -54,10 +54,6 @@ install_builtin_variable (const std::string& n, const octave_value& v,
 			  const std::string& h);
 
 extern void
-install_builtin_constant (const std::string& n, const octave_value& v,
-			  bool p, const std::string& h);
-
-extern void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
 		      const std::string& doc, bool is_text_fcn = false);
@@ -116,20 +112,6 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 #define DEFVAR(name, defn, chg_fcn, doc) \
   DEFVAR_INTERNAL (#name, SBV_ ## name, defn, false, chg_fcn, doc)
 
-// Define a builtin constant `name' (which may be redefined, but will
-// retain its original value when cleared) and also an alias to it
-// called `__name__' (which may not be redefined).
-
-#define DEFCONST(name, defn, doc) \
-  DEFCONST_INTERNAL (name, defn, doc)
-
-// This one can be used when `name' cannot be used directly (if it is
-// already defined as a macro).  In that case, name is already a
-// quoted string, and the name of the structure must to be passed too.
-
-#define DEFCONSTX(name, sname, defn, doc) \
-  DEFCONSTX_INTERNAL (name, sname, defn, doc)
-
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.df files that are eventually used to
 // create the builtins.cc file.
@@ -177,16 +159,6 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
     XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
   END_INSTALL_BUILTIN
 
-#define DEFCONST_INTERNAL(name, defn, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFCONST_INTERNAL(name, defn, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFCONSTX_INTERNAL(name, sname, defn, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFCONST_INTERNAL(name, defn, doc) \
-  END_INSTALL_BUILTIN
-
 #define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
 			      d_c_map, c_c_map, lo, hi, \
 			      ch_map_flag, can_ret_cmplx_for_real, doc) \
@@ -225,12 +197,6 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 #define INSTALL_CONST(name, sname, defn, protect, doc) \
   install_builtin_constant (name, octave_value (defn), protect, doc)
-
-#define DEFCONST_INTERNAL(name, defn, doc) \
-  INSTALL_CONST (#name, SBV_ ## name, defn, false, doc);
-
-#define DEFCONSTX_INTERNAL(name, sname, defn, doc) \
-  INSTALL_CONST (name, sname, defn, false, doc);
 
 // How mapper functions are actually installed.
 

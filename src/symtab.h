@@ -75,8 +75,7 @@ public:
       COMMAND = 16,
       RAWCOMMAND = 32,
       MAPPER_FUNCTION = 64,
-      BUILTIN_VARIABLE = 128,
-      BUILTIN_CONSTANT = 256
+      BUILTIN_VARIABLE = 128
     };
 
 private:
@@ -93,9 +92,6 @@ private:
 	definition (val), count (1) { }
 
     ~symbol_def (void) { }
-
-    bool is_constant (void) const
-      { return (symbol_type & symbol_record::BUILTIN_CONSTANT); }
 
     bool is_variable (void) const
       {
@@ -142,9 +138,6 @@ private:
 
     bool is_user_function (void) const
       { return (symbol_type & symbol_record::USER_FUNCTION); }
-
-    bool is_builtin_constant (void) const
-      { return (symbol_type & symbol_record::BUILTIN_CONSTANT); }
 
     bool is_builtin_variable (void) const
       { return (symbol_type & symbol_record::BUILTIN_VARIABLE); }
@@ -331,12 +324,6 @@ public:
   bool is_dld_function (void) const
     { return definition->is_dld_function (); }
 
-  bool is_constant (void) const
-    { return definition->is_constant (); }
-
-  bool is_builtin_constant (void) const
-    { return definition->is_builtin_constant (); }
-
   bool is_variable (void) const
     { return definition->is_variable (); }
 
@@ -372,8 +359,6 @@ public:
   void define (const octave_value& v, unsigned int sym_type = USER_VARIABLE);
 
   void define_builtin_var (const octave_value& v);
-
-  bool define_builtin_const (const octave_value& v);
 
   bool define (octave_function *f, unsigned int sym_type);
 
@@ -511,8 +496,7 @@ private:
 			  | symbol_record::COMMAND \
   			  | symbol_record::RAWCOMMAND \
 			  | symbol_record::MAPPER_FUNCTION \
-			  | symbol_record::BUILTIN_VARIABLE \
-			  | symbol_record::BUILTIN_CONSTANT)
+			  | symbol_record::BUILTIN_VARIABLE)
 
 #define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE \
 			  | symbol_record::BUILTIN_VARIABLE)

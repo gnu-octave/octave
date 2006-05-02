@@ -140,30 +140,25 @@ Octave_map::numel (void) const
   return retval;
 }
 
-Octave_map 
-Octave_map::resize (const dim_vector& dv, bool fill) const
+void
+Octave_map::resize (const dim_vector& dv, bool fill)
 {
-  Octave_map retval;
-
   if (dv != dims ())
     {
       for (const_iterator p = begin (); p != end (); p++)
 	{
 	  Cell tmp = contents(p);
+
 	  if (fill)
 	    tmp.resize(dv, Cell::resize_fill_value ());
 	  else
 	    tmp.resize(dv);
-	  retval.assign (key(p), tmp);
+
+	  dimensions = dv;
+
+	  assign (key(p), tmp);
 	}
-      
-      retval.dimensions = dv;
     }
-  else
-    retval = *this;
-
-
-  return retval;
 }
 
 Octave_map

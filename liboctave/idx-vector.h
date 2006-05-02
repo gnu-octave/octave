@@ -148,7 +148,7 @@ private:
 
     void shorten (octave_idx_type n); // Unsafe.  Avoid at all cost.
 
-    octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok, bool warn_resize);
+    octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok);
 
     // i/o
 
@@ -269,9 +269,8 @@ public:
 
   // i/o
 
-  octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok = false,
-	      bool warn_resize = false)
-    { return rep->freeze (z_len, tag, resize_ok, warn_resize); }
+  octave_idx_type freeze (octave_idx_type z_len, const char *tag, bool resize_ok = false)
+    { return rep->freeze (z_len, tag, resize_ok); }
 
   std::ostream& print (std::ostream& os) const { return rep->print (os); }
 

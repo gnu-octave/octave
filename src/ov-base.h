@@ -91,14 +91,6 @@ class tree_walker;
 						   octave_value (new t ())); \
     }
 
-// Should we print a warning when converting `[97, 98, 99, "123"]'
-// to a character string?
-extern bool Vwarn_num_to_str;
-
-// If TRUE, print a warning when a matrix is resized by an indexed
-// assignment with indices outside the current bounds.
-extern bool Vwarn_resize_on_range_error;
-
 // A base value type, so that derived types only have to redefine what
 // they need (if they are derived from octave_base_value instead of
 // octave_value).

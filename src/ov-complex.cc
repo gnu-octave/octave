@@ -96,8 +96,9 @@ octave_complex::double_value (bool force_conversion) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (! force_conversion && Vwarn_imag_to_real)
-    gripe_implicit_conversion ("complex scalar", "real scalar");
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex scalar", "real scalar");
 
   retval = std::real (scalar);
 
@@ -109,8 +110,9 @@ octave_complex::matrix_value (bool force_conversion) const
 {
   Matrix retval;
 
-  if (! force_conversion && Vwarn_imag_to_real)
-    gripe_implicit_conversion ("complex scalar", "real matrix");
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex scalar", "real matrix");
 
   retval = Matrix (1, 1, std::real (scalar));
 
@@ -122,8 +124,9 @@ octave_complex::array_value (bool force_conversion) const
 {
   NDArray retval;
 
-  if (! force_conversion && Vwarn_imag_to_real)
-    gripe_implicit_conversion ("complex scalar", "real matrix");
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex scalar", "real matrix");
 
   retval = NDArray (dim_vector (1, 1), std::real (scalar));
 

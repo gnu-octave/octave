@@ -1,3 +1,12 @@
+2006-05-02  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: New contents for 3.0.
+	* NEWS.2: Move contents of NEWS here.
+
+2006-04-29  John W. Eaton  <jwe@octave.org>
+
+	* run-octave.in: Execute $builddir/src/octave, not src/octave.
+
 2006-04-26  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* configure.in: Fix apiversion vs. api_version typo.

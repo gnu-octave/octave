@@ -79,9 +79,6 @@ extern std::stack<symbol_table*> symtab_context;
 // contain nested functions.
 extern std::string parent_function_name;
 
-// TRUE means warn about function files that have time stamps in the future.
-extern bool Vwarn_future_time_stamp;
-
 // Keep a count of how many END tokens we expect.
 extern int end_tokens_expected;
 

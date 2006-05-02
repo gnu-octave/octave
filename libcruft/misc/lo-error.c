@@ -40,7 +40,11 @@ liboctave_error_handler current_liboctave_error_handler
 
 /* Pointer to the current warning handler. */
 liboctave_warning_handler current_liboctave_warning_handler
-  = liboctave_warning; 
+  = liboctave_warning;
+
+/* Pointer to the current warning_with_id handler. */
+liboctave_warning_with_id_handler current_liboctave_warning_with_id_handler
+  = liboctave_warning_with_id;
 
 static void
 verror (const char *name, const char *fmt, va_list args)
@@ -72,6 +76,15 @@ set_liboctave_warning_handler (liboctave_warning_handler f)
 }
 
 void
+set_liboctave_warning_with_id_handler (liboctave_warning_with_id_handler f)
+{
+  if (f)
+    current_liboctave_warning_with_id_handler = f;
+  else
+    current_liboctave_warning_with_id_handler = liboctave_warning_with_id;
+}
+
+void
 liboctave_fatal (const char *fmt, ...)
 {
   va_list args;
@@ -84,6 +97,15 @@ liboctave_fatal (const char *fmt, ...)
 
 void
 liboctave_warning (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror ("warning", fmt, args);
+  va_end (args);
+}
+
+void
+liboctave_warning_with_id (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);

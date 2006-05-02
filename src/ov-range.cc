@@ -136,9 +136,8 @@ octave_range::double_value (bool) const
 
   if (nel > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("range", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "range", "real scalar");
 
       retval = range.base ();
     }
@@ -196,9 +195,8 @@ octave_range::complex_value (bool) const
 
   if (nel > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("range", "complex scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "range", "complex scalar");
 
       retval = range.base ();
     }

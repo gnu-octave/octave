@@ -127,7 +127,7 @@ Octave_map
 
   Octave_map reshape (const dim_vector& new_dims) const;
 
-  Octave_map resize (const dim_vector& dv, bool fill = false) const;
+  void resize (const dim_vector& dv, bool fill = false);
 
   octave_idx_type numel (void) const;
 

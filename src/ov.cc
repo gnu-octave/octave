@@ -82,16 +82,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // make the grow_size large.
 DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
 
-// If TRUE, print a warning for assignments like
-//
-//   octave> A(1) = 3; A(2) = 5
-//
-// for A already defined and a matrix type.
-bool Vwarn_fortran_indexing;
-
-// Should we warn about conversions from complex to real?
-int Vwarn_imag_to_real;
-
 // FIXME
 
 // Octave's value type.
@@ -1142,9 +1132,9 @@ octave_value::vector_value (bool force_string_conv,
     }
   else if (nr > 0 && nc > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (! force_vector_conversion && Vwarn_fortran_indexing)
-	gripe_implicit_conversion (type_name (), "real vector");
+      if (! force_vector_conversion)
+	gripe_implicit_conversion ("Octave:array-as-vector",
+				   type_name (), "real vector");
 
       retval.resize (nr * nc);
       octave_idx_type k = 0;
@@ -1217,9 +1207,9 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
     }
   else if (nr > 0 && nc > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (! force_vector_conversion && Vwarn_fortran_indexing)
-	gripe_implicit_conversion (type_name (), "real vector");
+      if (! force_vector_conversion)
+	gripe_implicit_conversion ("Octave:array-as-vector",
+				   type_name (), "real vector");
 
       retval.resize (nr * nc);
       octave_idx_type k = 0;
@@ -1284,9 +1274,9 @@ octave_value::complex_vector_value (bool force_string_conv,
     }
   else if (nr > 0 && nc > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (! force_vector_conversion && Vwarn_fortran_indexing)
-	gripe_implicit_conversion (type_name (), "complex vector");
+      if (! force_vector_conversion)
+	gripe_implicit_conversion ("Octave:array-as-vector",
+				   type_name (), "complex vector");
 
       retval.resize (nr * nc);
       octave_idx_type k = 0;
@@ -1896,44 +1886,6 @@ Return the size of @var{val} in bytes\n\
     print_usage ("sizeof");
 
   return retval;
-}
-
-static int
-warn_fortran_indexing (void)
-{
-  Vwarn_fortran_indexing = check_preference ("warn_fortran_indexing");
-
-  liboctave_wfi_flag = Vwarn_fortran_indexing;
-
-  return 0;
-}
-
-static int
-warn_imag_to_real (void)
-{
-  Vwarn_imag_to_real = check_preference ("warn_imag_to_real");
-
-  return 0;
-}
-
-void
-symbols_of_ov (void)
-{
-  DEFVAR (warn_fortran_indexing, false, warn_fortran_indexing,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_fortran_indexing\n\
-If the value of @code{warn_fortran_indexing} is nonzero, a warning is\n\
-printed for expressions which select elements of a two-dimensional matrix\n\
-using a single index.  The default value is 0.\n\
-@end defvr");
-
-  DEFVAR (warn_imag_to_real, false, warn_imag_to_real,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_imag_to_real\n\
-If the value of @code{warn_imag_to_real} is nonzero, a warning is\n\
-printed for implicit conversions of complex numbers to real numbers.\n\
-The default value is 0.\n\
-@end defvr");
 }
 
 /*

@@ -74,7 +74,7 @@ public:
 
   ~octave_base_shlib (void) { }
 
-  void open (const std::string&, bool = false) { }
+  void open (const std::string&) { }
 
   void *search (const std::string&, name_mangler = 0) { return 0; }
 
@@ -100,7 +100,7 @@ protected:
 
   octave_time tm_loaded;
 
-  void stamp_time (bool warn_future = false);
+  void stamp_time (void);
 
   void add_to_fcn_names (const std::string& name);
 
@@ -150,18 +150,16 @@ octave_base_shlib::is_out_of_date (void) const
 }
 
 void
-octave_base_shlib::stamp_time (bool warn_future)
+octave_base_shlib::stamp_time (void)
 {
   tm_loaded.stamp ();
 
-  if (warn_future)
-    {
-      file_stat fs (file);
+  file_stat fs (file);
 
-      if (fs.is_newer (tm_loaded))
-	(*current_liboctave_warning_handler)
-	  ("timestamp on file %s is in the future", file.c_str ());
-    }
+  if (fs.is_newer (tm_loaded))
+    (*current_liboctave_warning_with_id_handler)
+      ("Octave:warn-future-time-stamp",
+       "timestamp on file %s is in the future", file.c_str ());
 }
 
 void
@@ -208,7 +206,7 @@ public:
 
   ~octave_dlopen_shlib (void);
 
-  void open (const std::string& f, bool warn_future = false);
+  void open (const std::string& f);
 
   void *search (const std::string& name, name_mangler mangler = 0);
 
@@ -238,7 +236,7 @@ octave_dlopen_shlib::~octave_dlopen_shlib (void)
 }
 
 void
-octave_dlopen_shlib::open (const std::string& f, bool warn_future)
+octave_dlopen_shlib::open (const std::string& f)
 {
   if (! is_open ())
     {
@@ -257,7 +255,7 @@ octave_dlopen_shlib::open (const std::string& f, bool warn_future)
       library = dlopen (file.c_str (), flags);
 
       if (library)
-	stamp_time (warn_future);
+	stamp_time ();
       else
 	{
 	  const char *msg = dlerror ();
@@ -322,7 +320,7 @@ public:
 
   ~octave_shl_load_shlib (void);
 
-  void open (const std::string& f, bool warn_future = false);
+  void open (const std::string& f);
 
   void *search (const std::string& name, name_mangler mangler = 0);
 
@@ -352,7 +350,7 @@ octave_shl_load_shlib::~octave_shl_load_shlib (void)
 }
 
 void
-octave_shl_load_shlib::open (const std::string& f, bool warn_future)
+octave_shl_load_shlib::open (const std::string& f)
 {
   if (! is_open ())
     {
@@ -361,7 +359,7 @@ octave_shl_load_shlib::open (const std::string& f, bool warn_future)
       library = shl_load (file.c_str (), BIND_DEFERRED, 0L);
 
       if (library)
-	stamp_time (warn_future);
+	stamp_time ();
       else
 	{
 	  using namespace std;
@@ -425,7 +423,7 @@ public:
 
   ~octave_w32_shlib (void);
 
-  void open (const std::string& f, bool warn_future = false);
+  void open (const std::string& f);
 
   void *search (const std::string& name, name_mangler mangler = 0);
 
@@ -455,7 +453,7 @@ octave_w32_shlib::~octave_w32_shlib (void)
 }
 
 void
-octave_w32_shlib::open (const std::string& f, bool warn_future)
+octave_w32_shlib::open (const std::string& f)
 {
   if (! is_open ())
     {
@@ -464,7 +462,7 @@ octave_w32_shlib::open (const std::string& f, bool warn_future)
       handle = LoadLibrary (file.c_str ());
 
       if (handle != NULL)
-	stamp_time (warn_future);
+	stamp_time ();
       else
 	{
 	  DWORD lastError = GetLastError ();
@@ -553,7 +551,7 @@ public:
 
   ~octave_dyld_shlib (void);
 
-  void open (const std::string& f, bool warn_future = false);
+  void open (const std::string& f);
 
   void *search (const std::string& name, name_mangler mangler = 0);
 
@@ -585,7 +583,7 @@ octave_dyld_shlib::~octave_dyld_shlib (void)
 }
 
 void
-octave_dyld_shlib::open (const std::string& f, bool warn_future)
+octave_dyld_shlib::open (const std::string& f)
 {
   int returnCode;
 
@@ -602,7 +600,7 @@ octave_dyld_shlib::open (const std::string& f, bool warn_future)
 				  | NSLINKMODULE_OPTION_PRIVATE));
 	  if (handle)
 	    {
-	      stamp_time (warn_future);
+	      stamp_time ();
 	      isOpen = true;
 	    }
 	  else

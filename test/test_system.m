@@ -424,10 +424,10 @@
 
 %% test/octave.test/system/getenv-4.m
 %!test
-%! wns = warn_num_to_str;
-%! warn_num_to_str = 1;
+%! wns = warning ("query", "Octave:num-to-str");
+%! warning ("on", "Octave:num-to-str");
 %! fail("getenv (1)","warning");
-%! warn_num_to_str = wns;
+%! warning (wns.state, "Octave:num-to-str");
 
 %% test/octave.test/system/putenv-1.m
 %!test
@@ -442,10 +442,10 @@
 
 %% test/octave.test/system/putenv-4.m
 %!test
-%! wns = warn_num_to_str;
-%! warn_num_to_str = 1;
+%! wns = warning ("query", "Octave:num-to-str");
+%! warning ("on", "Octave:num-to-str");
 %! fail("putenv (1, 2)","warning");
-%! warn_num_to_str = wns;
+%! warning (wns.state, "Octave:num-to-str");
 
 %% test/octave.test/system/cd-1.m
 %!test

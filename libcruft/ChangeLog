@@ -1,3 +1,12 @@
+2006-04-29  John W. Eaton  <jwe@octave.org>
+
+	* misc/lo-error.c (set_liboctave_warning_with_id_handler,
+	liboctave_warning_with_id): New functions.
+	(current_liboctave_warning_with_id_handler): New variable.
+	* misc/lo-error.h (liboctave_warning_with_id_handler): New typedef.
+	(current_liboctave_warning_with_id_handler, liboctave_warning_with_id
+	set_liboctave_warning_with_id_handler): Provide decls.
+
 2006-04-18  John W. Eaton  <jwe@octave.org>
 
 	* misc/f77-fcn.h (F77_XFCN): Move decls to beginning of blocks for C.

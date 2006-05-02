@@ -68,12 +68,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "variables.h"
 
-// If TRUE, print a warning for expressions like
-//
-//   ones (-1, 5)
-//
-static int Vwarn_neg_dim_as_zero;
-
 // Return TRUE if S is a valid identifier.
 
 bool
@@ -796,8 +790,8 @@ check_dimensions (octave_idx_type& nr, octave_idx_type& nc, const char *warnfor)
 {
   if (nr < 0 || nc < 0)
     {
-      if (Vwarn_neg_dim_as_zero)
-	warning ("%s: converting negative dimension to zero", warnfor);
+      warning_with_id ("Octave:neg-dim-as-zero",
+		       "%s: converting negative dimension to zero", warnfor);
 
       nr = (nr < 0) ? 0 : nr;
       nc = (nc < 0) ? 0 : nc;
@@ -818,8 +812,9 @@ check_dimensions (dim_vector& dim, const char *warnfor)
         }
     }
 
-  if (neg && Vwarn_neg_dim_as_zero)
-    warning ("%s: converting negative dimension to zero", warnfor);
+  if (neg)
+    warning_with_id ("Octave:neg-dim-as-zero",
+		     "%s: converting negative dimension to zero", warnfor);
 }
 
 
@@ -1122,32 +1117,6 @@ octave_sleep (double seconds)
       octave_sleep (sec);
       octave_usleep (usec);
     }
-}
-
-static int
-warn_neg_dim_as_zero (void)
-{
-  Vwarn_neg_dim_as_zero = check_preference ("warn_neg_dim_as_zero");
-
-  return 0;
-}
-
-void
-symbols_of_utils (void)
-{
-  DEFVAR (warn_neg_dim_as_zero, false, warn_neg_dim_as_zero,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_neg_dim_as_zero\n\
-If the value of @code{warn_neg_dim_as_zero} is nonzero, print a warning\n\
-for expressions like\n\
-\n\
-@example\n\
-eye (-1)\n\
-@end example\n\
-\n\
-@noindent\n\
-The default value is 0.\n\
-@end defvr");
 }
 
 /*

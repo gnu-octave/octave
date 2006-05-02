@@ -195,10 +195,10 @@ gen_specific_tests() {
 %!assert(nnz(sparse(eye(3))-sparse(eye(3))),0);
 
 %!test
-%! wdbz=warn_divide_by_zero;
-%! warn_divide_by_zero=0;
+%! wdbz = warning ("query", "Octave:divide-by-zero");
+%! warning ("off", "Octave:divide-by-zero");
 %! assert(sparse(eye(3))/0,sparse(eye(3)/0,1));
-%! warn_divide_by_zero=wdbz;
+%! warning (wdbz.state, "Octave:divide-by-zero");
 
 EOF
 }
@@ -411,12 +411,12 @@ echo "%!assert($1(as),sparse($1(af),1))" >>$TESTS
 print_real_mapper_test() {
     cat >>$TESTS <<EOF
 %!test
-%! wn2s = warn_num_to_str;
-%! warn_num_to_str = 0;
+%! wn2s = warning ("query", "Octave:num-to-str");
+%! warning ("off", "Octave:num-to-str");
 %! if isreal(af)
 %!    assert($1(as),sparse($1(af),1))
 %! endif
-%! warn_num_to_str = wn2s;
+%! warning (wn2s.state, "Octave:num-to-str");
 
 EOF
 }
@@ -488,14 +488,14 @@ print_real_mapper_test isxdigit
 
 %% These mapper functions always return a full matrix
 %!test
-%! wn2s = warn_num_to_str;
-%! warn_num_to_str = 0;
+%! wn2s = warning ("query", "Octave:num-to-str");
+%! warning ("off", "Octave:num-to-str");
 %! if isreal(af)
 %!    assert(toascii(as),toascii(af))
 %!    assert(tolower(as),tolower(af))
 %!    assert(toupper(as),toupper(af))
 %! endif
-%! warn_num_to_str = wn2s;
+%! warning (wn2s.state, "Octave:num-to-str");
 
 EOF
 }

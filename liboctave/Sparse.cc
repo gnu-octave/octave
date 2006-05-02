@@ -33,7 +33,6 @@ Boston, MA 02110-1301, USA.
 #include <vector>
 
 #include "Array.h"
-#include "Array-flags.h"
 #include "Array-util.h"
 #include "Range.h"
 #include "idx-vector.h"
@@ -1725,12 +1724,11 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
     }
   else
     {
-      if (liboctave_wfi_flag
-	  && ! (idx_arg.one_zero_only ()
-		&& idx_orig_rows == nr
-		&& idx_orig_columns == nc))
-	(*current_liboctave_warning_handler) 
-	  ("single index used for sparse matrix");
+      if (! (idx_arg.one_zero_only ()
+	     && idx_orig_rows == nr
+	     && idx_orig_columns == nc))
+	(*current_liboctave_warning_with_id_handler) 
+	  ("Octave:fortran-indexing", "single index used for sparse matrix");
 
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
@@ -2037,8 +2035,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
   octave_idx_type nc = lhs.cols ();
   octave_idx_type nz = lhs.nnz ();
 
-  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true, 
-				      liboctave_wrore_flag);
+  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true);
 
   if (n != 0)
     {
@@ -2401,10 +2398,8 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
   if (n_idx == 2)
     {
-      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true, 
-					liboctave_wrore_flag);
-      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true, 
-					liboctave_wrore_flag);
+      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true);
+      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -2721,8 +2716,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	{
 	  octave_idx_type lhs_len = lhs.length ();
 
-	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true, 
-					    liboctave_wrore_flag);
+	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true);
 
 	  if (idx_i)
 	    {
@@ -2733,24 +2727,23 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		}
 	      else
 		{
-		  if (liboctave_wfi_flag)
+		  if (lhs_is_empty
+		      && idx_i.is_colon ()
+		      && ! (rhs_nr == 1 || rhs_nc == 1))
 		    {
-		      if (lhs_is_empty
-			  && idx_i.is_colon ()
-			  && ! (rhs_nr == 1 || rhs_nc == 1))
-			{
-			  (*current_liboctave_warning_handler)
-			    ("A(:) = X: X is not a vector or scalar");
-			}
-		      else
-			{
-			  octave_idx_type idx_nr = idx_i.orig_rows ();
-			  octave_idx_type idx_nc = idx_i.orig_columns ();
+		      (*current_liboctave_warning_with_id_handler)
+			("Octave:fortran-indexing",
+			 "A(:) = X: X is not a vector or scalar");
+		    }
+		  else
+		    {
+		      octave_idx_type idx_nr = idx_i.orig_rows ();
+		      octave_idx_type idx_nc = idx_i.orig_columns ();
 
-			  if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
-			    (*current_liboctave_warning_handler)
-			      ("A(I) = X: X does not have same shape as I");
-			}
+		      if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
+			(*current_liboctave_warning_with_id_handler)
+			  ("Octave:fortran-indexing",
+			   "A(I) = X: X does not have same shape as I");
 		    }
 
 		  if (! assign1 (lhs, rhs))
@@ -2761,7 +2754,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	}
       else if (lhs_nr == 1)
 	{
-	  idx_i.freeze (lhs_nc, "vector", true, liboctave_wrore_flag);
+	  idx_i.freeze (lhs_nc, "vector", true);
 
 	  if (idx_i)
 	    {
@@ -2774,7 +2767,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	}
       else if (lhs_nc == 1)
 	{
-	  idx_i.freeze (lhs_nr, "vector", true, liboctave_wrore_flag);
+	  idx_i.freeze (lhs_nr, "vector", true);
 
 	  if (idx_i)
 	    {
@@ -2787,13 +2780,12 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	}
       else
 	{
-	  if (liboctave_wfi_flag
-	      && ! (idx_i.is_colon ()
-		    || (idx_i.one_zero_only ()
-			&& idx_i.orig_rows () == lhs_nr
-			&& idx_i.orig_columns () == lhs_nc)))
-	    (*current_liboctave_warning_handler)
-	      ("single index used for matrix");
+	  if (! (idx_i.is_colon ()
+		 || (idx_i.one_zero_only ()
+		     && idx_i.orig_rows () == lhs_nr
+		     && idx_i.orig_columns () == lhs_nc)))
+	    (*current_liboctave_warning_with_id_handler)
+	      ("Octave:fortran-indexing", "single index used for matrix");
 
 	  octave_idx_type lhs_len = lhs.length ();
 

@@ -32,6 +32,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 extern void reset_error_handler (void);
 
+extern int warning_enabled (const std::string& id);
+
 extern void message (const char *name, const char *fmt, ...);
 extern void usage (const char *fmt, ...);
 extern void warning (const char *fmt, ...);
@@ -74,10 +76,6 @@ extern bool discard_error_messages;
 
 // TRUE means warning messages are turned off.
 extern bool discard_warning_messages;
-
-// The current warning state.  Valid values are "on", "off",
-// "backtrace", or "debug".
-extern std::string Vwarning_option;
 
 #endif
 

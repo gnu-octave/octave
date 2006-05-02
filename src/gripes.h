@@ -94,10 +94,11 @@ extern void
 gripe_wrong_type_arg_for_binary_op (const octave_value& op);
 
 extern void
-gripe_implicit_conversion (const char *from, const char *to);
+gripe_implicit_conversion (const char *id, const char *from, const char *to);
 
 extern void
-gripe_implicit_conversion (const std::string& from, const std::string& to);
+gripe_implicit_conversion (const std::string& id, const std::string& from,
+			   const std::string& to);
 
 extern void
 gripe_divide_by_zero (void);

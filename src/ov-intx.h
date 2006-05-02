@@ -89,9 +89,8 @@ public:
 
       if (numel () > 0)
 	{
-	  // FIXME -- is warn_fortran_indexing the right variable here?
-	  if (Vwarn_fortran_indexing)
-	    gripe_implicit_conversion (type_name (), "real scalar");
+	  gripe_implicit_conversion ("Octave:array-as-scalar",
+				     type_name (), "real scalar");
 
 	  retval = double (matrix(0));
 	}

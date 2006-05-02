@@ -119,15 +119,15 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (! force_conversion && Vwarn_imag_to_real)
-    gripe_implicit_conversion ("complex sparse matrix", "real scalar");
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex sparse matrix", "real scalar");
 
   // FIXME -- maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("complex sparse matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "complex sparse matrix", "real scalar");
 
       retval = std::real (matrix (0, 0));
     }
@@ -142,8 +142,9 @@ octave_sparse_complex_matrix::matrix_value (bool force_conversion) const
 {
   Matrix retval;
 
-  if (! force_conversion && Vwarn_imag_to_real)
-    gripe_implicit_conversion ("complex sparse matrix", "real matrix");
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex sparse matrix", "real matrix");
 
   retval = ::real (matrix.matrix_value ());
 
@@ -160,9 +161,8 @@ octave_sparse_complex_matrix::complex_value (bool) const
   // FIXME -- maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("complex sparse matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "complex sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -189,8 +189,9 @@ octave_sparse_complex_matrix::sparse_matrix_value (bool force_conversion) const
 {
   SparseMatrix retval;
 
-  if (! force_conversion && Vwarn_imag_to_real)
-    gripe_implicit_conversion ("complex sparse matrix", 
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex sparse matrix", 
 			       "real sparse matrix");
 
   retval = ::real (matrix);

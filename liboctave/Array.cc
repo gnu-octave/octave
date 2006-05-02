@@ -34,7 +34,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <vector>
 
 #include "Array.h"
-#include "Array-flags.h"
 #include "Array-util.h"
 #include "Range.h"
 #include "idx-vector.h"
@@ -1792,9 +1791,10 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	    {
 	      // Collapse dimensions beyond last index.
 
-	      if (liboctave_wfi_flag && ! (ra_idx(n_idx-1).is_colon ()))
-		(*current_liboctave_warning_handler)
-		  ("fewer indices than dimensions for N-d array");
+	      if (! (ra_idx(n_idx-1).is_colon ()))
+		(*current_liboctave_warning_with_id_handler)
+		  ("Octave:fortran-indexing",
+		   "fewer indices than dimensions for N-d array");
 
 	      for (octave_idx_type i = n_idx; i < n_lhs_dims; i++)
 		lhs_dims(n_idx-1) *= lhs_dims(i);
@@ -1945,7 +1945,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 	  idx_vector idx_vec = ra_idx(0);
 
-	  idx_vec.freeze (lhs_numel, 0, true, liboctave_wrore_flag);
+	  idx_vec.freeze (lhs_numel, 0, true);
       
 	  idx_vec.sort (true);
 
@@ -2172,11 +2172,11 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
     }
   else
     {
-      if (liboctave_wfi_flag
-	  && ! (idx_arg.one_zero_only ()
-		&& idx_orig_rows == nr
-		&& idx_orig_columns == nc))
-	(*current_liboctave_warning_handler) ("single index used for matrix");
+      if (! (idx_arg.one_zero_only ()
+	     && idx_orig_rows == nr
+	     && idx_orig_columns == nc))
+	(*current_liboctave_warning_with_id_handler)
+	  ("Octave:fortran-indexing", "single index used for matrix");
 
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
@@ -2244,11 +2244,10 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
       bool vec_equiv = vector_equivalent (dv);
 
       if (! vec_equiv
-	  && liboctave_wfi_flag
 	  && ! (ra_idx.is_colon ()
 		|| (ra_idx.one_zero_only () && idx_orig_dims == dv)))
-	(*current_liboctave_warning_handler)
-	  ("single index used for N-d array");
+	(*current_liboctave_warning_with_id_handler)
+	  ("Octave:fortran-indexing", "single index used for N-d array");
 
       octave_idx_type frozen_len
 	= ra_idx.freeze (orig_len, "nd-array", resize_ok);
@@ -2512,7 +2511,7 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   octave_idx_type lhs_len = lhs.length ();
   octave_idx_type rhs_len = rhs.length ();
 
-  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true, liboctave_wrore_flag);
+  octave_idx_type n = lhs_idx.freeze (lhs_len, "vector", true);
 
   if (n != 0)
     {
@@ -2644,9 +2643,9 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   if (n_idx == 2)
     {
-      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true, liboctave_wrore_flag);
+      octave_idx_type n = idx_i.freeze (lhs_nr, "row", true);
 
-      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true, liboctave_wrore_flag);
+      octave_idx_type m = idx_j.freeze (lhs_nc, "column", true);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -2738,7 +2737,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  octave_idx_type lhs_len = lhs.length ();
 
-	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true, liboctave_wrore_flag);
+	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true);
 
 	  if (idx_i)
 	    {
@@ -2749,24 +2748,23 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		}
 	      else
 		{
-		  if (liboctave_wfi_flag)
+		  if (lhs_is_empty
+		      && idx_i.is_colon ()
+		      && ! (rhs_nr == 1 || rhs_nc == 1))
 		    {
-		      if (lhs_is_empty
-			  && idx_i.is_colon ()
-			  && ! (rhs_nr == 1 || rhs_nc == 1))
-			{
-			  (*current_liboctave_warning_handler)
-			    ("A(:) = X: X is not a vector or scalar");
-			}
-		      else
-			{
-			  octave_idx_type idx_nr = idx_i.orig_rows ();
-			  octave_idx_type idx_nc = idx_i.orig_columns ();
+		      (*current_liboctave_warning_with_id_handler)
+			("Octave:fortran-indexing",
+			 "A(:) = X: X is not a vector or scalar");
+		    }
+		  else
+		    {
+		      octave_idx_type idx_nr = idx_i.orig_rows ();
+		      octave_idx_type idx_nc = idx_i.orig_columns ();
 
-			  if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
-			    (*current_liboctave_warning_handler)
-			      ("A(I) = X: X does not have same shape as I");
-			}
+		      if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
+			(*current_liboctave_warning_with_id_handler)
+			  ("Octave:fortran-indexing",
+			   "A(I) = X: X does not have same shape as I");
 		    }
 
 		  if (assign1 (lhs, xrhs, rfv))
@@ -2792,7 +2790,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
       else if (lhs_nr == 1)
 	{
-	  idx_i.freeze (lhs_nc, "vector", true, liboctave_wrore_flag);
+	  idx_i.freeze (lhs_nc, "vector", true);
 
 	  if (idx_i)
 	    {
@@ -2810,7 +2808,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
       else if (lhs_nc == 1)
 	{
-	  idx_i.freeze (lhs_nr, "vector", true, liboctave_wrore_flag);
+	  idx_i.freeze (lhs_nr, "vector", true);
 
 	  if (idx_i)
 	    {
@@ -2828,13 +2826,12 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
       else
 	{
-	  if (liboctave_wfi_flag
-	      && ! (idx_i.is_colon ()
-		    || (idx_i.one_zero_only ()
-			&& idx_i.orig_rows () == lhs_nr
-			&& idx_i.orig_columns () == lhs_nc)))
-	    (*current_liboctave_warning_handler)
-	      ("single index used for matrix");
+	  if (! (idx_i.is_colon ()
+		 || (idx_i.one_zero_only ()
+		     && idx_i.orig_rows () == lhs_nr
+		     && idx_i.orig_columns () == lhs_nc)))
+	    (*current_liboctave_warning_with_id_handler)
+	      ("Octave:fortran-indexing", "single index used for matrix");
 
 	  octave_idx_type len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
 
@@ -2930,12 +2927,11 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       idx_vector iidx = idx(0);
 
-      if (liboctave_wfi_flag
-	  && ! (iidx.is_colon ()
-		|| (iidx.one_zero_only ()
-		    && iidx.orig_dimensions () == lhs.dims ())))
-	(*current_liboctave_warning_handler)
-	  ("single index used for N-d array");
+      if (! (iidx.is_colon ()
+	     || (iidx.one_zero_only ()
+		 && iidx.orig_dimensions () == lhs.dims ())))
+	(*current_liboctave_warning_with_id_handler)
+	  ("Octave:fortran-indexing", "single index used for N-d array");
 
       octave_idx_type lhs_len = lhs.length ();
 
@@ -3006,9 +3002,10 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  // delay resizing LHS until we know that the assignment will
 	  // succeed.
 
-	  if (liboctave_wfi_flag && ! (idx(n_idx-1).is_colon ()))
-	    (*current_liboctave_warning_handler)
-	      ("fewer indices than dimensions for N-d array");
+	  if (! (idx(n_idx-1).is_colon ()))
+	    (*current_liboctave_warning_with_id_handler)
+	      ("Octave:fortran-indexing",
+	       "fewer indices than dimensions for N-d array");
 
 	  for (int i = n_idx; i < lhs_dims_len; i++)
 	    lhs_dims(n_idx-1) *= lhs_dims(i);

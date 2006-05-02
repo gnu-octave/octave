@@ -247,8 +247,9 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
 
 	  if (i > 0)
 	    {
-	      if (Vwarn_resize_on_range_error && i > n)
-		warning ("list index = %d out of range", i);
+	      if (i > n)
+		warning_with_id ("Octave:resize-on-range-error",
+				 "list index = %d out of range", i);
 
 	      data(i-1) = rhs;
 	    }

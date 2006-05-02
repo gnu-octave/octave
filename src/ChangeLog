@@ -1,3 +1,130 @@
+2006-05-01  John W. Eaton  <jwe@octave.org>
+
+	* error.h (Vwarning_option): Delete.
+	* variables.cc (looks_like_struct): Remove use from commented code.
+
+	* gripes.cc, gripes.h (gripe_implicit_conversion): New arg, ID.
+	Change all uses.
+
+	* defaults.cc (set_local_site_defaults_file, set_site_defaults_file):
+	Allow filenames to be set from the environment.
+
+	* oct-map.cc (octave_map::resize): No longer const.
+	* ov-struct.h (octave_struct::resize): Deal with it.
+
+	* octave.cc (initialize_error_handlers): Also call
+	set_liboctave_warning_with_id_handler.
+	(execute_startup_files): Check that home_rc is not an empty string.
+	(F__version_info__): Resize vinfo before assigining elements.
+
+	* ov-base.cc (warn_num_to_str, warn_resize_on_range_error):
+	Delete functions.
+	(symbols_of_ov_base): Delete DEFVARS.
+	(Vwarn_num_to_str, Vwarn_resize_on_range_error): Delete variables.
+	(value::convert_to_str): Check state of warning ID
+	Octave:num-to-str instead of using Vwarn_num_to_str.
+	* OPERATORS/op-chm.cc: Likewise.
+	* ov-base.h (Vwarn_num_to_str, Vwarn_resize_on_range_error):
+	Delete decls.
+
+	* ov-list.cc (octave_list::assign): Call warning_with_id instead
+	of warning.
+
+	* parse.y (warn_assign_as_truth_value, warn_associativity_change,
+	warn_function_name_clash, warn_future_time_stamp,
+	warn_missing_semicolon, warn_precedence_change,
+	warn_variable_switch_label, symbols_of_parse):	
+	Delete DEFVARs and functions.
+	(Vwarn_assign_as_truth_value, Vwarn_associativity_change,
+	Vwarn_function_name_clash, Vwarn_future_time_stamp,
+	Vwarn_missing_semicolon, Vwarn_precedence_change,
+	Vwarn_variable_switch_label): Delete variables.
+	* parse.h (Vwarn_future_time_stamp): Delete decl.
+	* parse.y (fold): Check state of warning ID
+	Octave:associativity-change and Octave:precedence-change instead
+	of using Vwarn_associativity_change and Vwarn_precedence_change.
+	(maybe_warn_associativity_change, maybe_warn_missing_semi,
+	maybe_warn_assign_as_truth_value, make_binary_op, make_boolean_op,
+	frob_function): Call warning_with_id instead of warning.	
+	* dynamic-ld.cc (octave_dynamic_loader::do_load): Likewise.
+
+	* ov.cc (warn_fortran_indexing, warn_imag_to_real, symbols_of_ov):
+	Delete DEFVARs and functions.
+	(Vwarn_fortran_indexing, Vwarn_imag_to_real): Delete variables.
+
+	* ov.cc (octave_value::vector_value, octave_value::int_vector_value,
+	octave_value::complex_vector_value): Check state of warning ID
+	Octave:fortran-indexing instead of using Vwarn_fortran_indexing.
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::double_value,
+	octave_sparse_complex_matrix::complex_value): Likewise.
+	* ov-cx-mat.cc (octave_complex_matrix::matrix_value,
+	octave_complex_matrix::complex_value): Likewise.
+	* ov-re-mat.cc (octave_matrix::complex_value,
+	octave_matrix::double_value): Likewise.
+	* ov-streamoff.cc (octave_streamoff::streamoff_value): Likewise.
+	* ov-re-sparse.cc (octave_sparse_matrix::complex_value,
+	octave_sparse_matrix::double_value): Likewise.
+	* ov-range.cc (octave_range::complex_value,
+	octave_range::double_value): Likewise.
+	* ov-ch-mat.cc (octave_char_matrix::complex_value,
+	octave_char_matrix::double_value): Likewise.
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix::complex_value,
+	octave_sparse_bool_matrix::double_value): Likewise.
+	* ov-bool-mat.cc (octave_bool_matrix::complex_value,
+	octave_bool_matrix::double_value): Likewise.
+
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::double_value,
+	octave_sparse_complex_matrix::matrix_value,
+	octave_sparse_complex_matrix::sparse_matrix_value): Check state of
+	warning ID Octave:imag-to-real instead of using Vwarn_imag_to_real.
+	* ov-cx-mat.cc (octave_complex_matrix::double_value,
+	octave_complex_matrix::matrix_value,
+	octave_complex_matrix::complex_value,
+	octave_complex_matrix::sparse_matrix_value): Likewise.
+	* ov-complex.cc (octave_complex::double_value,
+	octave_complex::matrix_value, octave_complex::array_value): Likewise.
+
+	* ov.h (Vwarn_fortran_indexing, Vwarn_imag_to_real): Delete decls.
+
+	* pt-mat.cc (warn_empty_list_elements, warn_string_concat):	
+	Delete functions.
+	(symbols_of_pt_mat): Delete DEFVARs.
+	(Vwarn_empty_list_elements, Vwarn_string_concat): Delete variables.
+	(tm_row_const::tm_row_const_rep::eval_warning, tm_const::init,
+	maybe_warn_string_concat): Call warning_with_id instead of warning.
+
+	* ov-str-mat.cc (warn_str_to_num, symbols_of_ov_str_mat):
+	Delete DEFVAR and functions.
+	(Vwarn_str_to_num): Delete variable.
+	(CHAR_MATRIX_CONV): Call warning_with_id instead of warning.
+
+	* utils.cc (warn_neg_dim_as_zero, symbols_of_utils):
+	Delete DEFVAR and functions.
+	(Vwarn_neg_dim_as_zero): Delete variable.
+	(check_dimensions): Call warning_with_id instead of warning.
+
+	* pt-misc.cc (warn_undefined_return_values, symbols_of_pt_misc):
+	Delete DEFVAR and functions.
+	(Vwarn_undefined_return_values): Delete variable.
+	(tree_parameter_list::initialize_undefined_elements):
+	Call warning_with_id instead of warning.
+
+	* dynamic-ld.cc	(warn_reload_forces_clear, symbols_of_dynamic_ld):
+	Delete DEFVAR and functions.
+	(Vwarn_reload_forces_clear): Delete variable.
+	(do_clear_function, octave_dynamic_loader::do_load):	
+	Call warning_with_id instead of warning.
+	* error.cc (warning_enabled): Now extern.
+	(Fwarning): If specific id is not found, return state of "all".
+
+	* error.h: Provide decl.
+
+	* gripes.cc (warn_divide_by_zero, symbols_of_gripes):
+	Delete DEFVAR and functions.
+	(gripe_divide_by_zero): Check whether warning is enabled, then
+	call warning_with_id instead of warning.
+	(Vwarn_divide_by_zero): Delete variable.
+
 2006-04-27  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (Fexist): Fix doc string.

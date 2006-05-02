@@ -74,41 +74,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "variables.h"
 
-// If TRUE, generate a warning for the assignment in things like
-//
-//   octave> if (a = 2 < n)
-//
-// but not
-//
-//   octave> if ((a = 2) < n)
-//
-static bool Vwarn_assign_as_truth_value;
-
-// If TRUE, generate warning about the meaning of code changing due to
-// changes in associativity for various ops (typically for Matlab
-// compatibility).
-static bool Vwarn_associativity_change;
-
-// If TRUE, generate warning if declared function name disagrees with
-// the name of the file in which it is defined.
-static bool Vwarn_function_name_clash;
-
-// TRUE means warn about function files that have time stamps in the future.
-bool Vwarn_future_time_stamp;
-
-// If TRUE, generate warning if a statement in a function is not
-// terminated with a semicolon.  Useful for checking functions that
-// should only produce output using explicit printing statements.
-static bool Vwarn_missing_semicolon;
-
-// If TRUE, generate warning about the meaning of code changing due to
-// changes in precedence levels for various ops (typically for Matlab
-// compatibility).
-static bool Vwarn_precedence_change;
-
-// If TRUE, generate a warning for variable switch labels.
-static bool Vwarn_variable_switch_label;
-
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
 
@@ -1560,11 +1525,12 @@ end_token_ok (token *tok, token::end_tok_type expected)
 static void
 maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
-  if (Vwarn_assign_as_truth_value
-      && expr->is_assignment_expression ()
+  if (expr->is_assignment_expression ()
       && expr->paren_count () < 2)
     {
-      warning ("suggest parenthesis around assignment used as truth value");
+      warning_with_id
+        ("Octave:assign-as-truth-value",
+         "suggest parenthesis around assignment used as truth value");
     }
 }
 
@@ -1573,10 +1539,9 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
 static void
 maybe_warn_variable_switch_label (tree_expression *expr)
 {
-  if (Vwarn_variable_switch_label && ! expr->is_constant ())
-    {
-      warning ("variable switch label");
-    }
+  if (! expr->is_constant ())
+    warning_with_id ("Octave:warn-variable-switch-label",
+    		     "variable switch label");
 }
 
 static tree_expression *
@@ -1601,9 +1566,9 @@ fold (tree_binary_expression *e)
   octave_value::binary_op op_type = e->op_type ();
 
   if (op1->is_constant () && op2->is_constant ()
-      && (! ((Vwarn_associativity_change
+      && (! ((warning_enabled ("Octave:associativity-change")
 	      && (op_type == POW || op_type == EPOW))
-	     || (Vwarn_precedence_change
+	     || (warning_enabled ("Octave:precedence-change")
 		 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
     {
       octave_value tmp = e->rvalue ();
@@ -1856,8 +1821,7 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 static void
 maybe_warn_associativity_change (tree_expression *op)
 {
-  if (Vwarn_associativity_change
-      && op->paren_count () == 0 && op->is_binary_expression ())
+  if (op->paren_count () == 0 && op->is_binary_expression ())
     {
       tree_binary_expression *e
 	= dynamic_cast<tree_binary_expression *> (op);
@@ -1869,7 +1833,9 @@ maybe_warn_associativity_change (tree_expression *op)
 	{
 	  std::string op_str = octave_value::binary_op_as_string (op_type);
 
-	  warning ("meaning may have changed due to change in associativity for %s operator", op_str.c_str ());
+	  warning_with_id
+	    ("Octave:associativity-change",
+	     "meaning may have changed due to change in associativity for %s operator", op_str.c_str ());
         }
     }
 }
@@ -1964,14 +1930,15 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR:
       t = octave_value::op_el_or;
-      if (Vwarn_precedence_change
-          && op2->paren_count () == 0 && op2->is_binary_expression ())
+      if (op2->paren_count () == 0 && op2->is_binary_expression ())
         {
 	  tree_binary_expression *e
 	    = dynamic_cast<tree_binary_expression *> (op2);
 
 	  if (e->op_type () == octave_value::op_el_and)
-	    warning ("meaning may have changed due to change in precedence for & and | operators");
+	    warning_with_id
+	      ("Octave:precedence-change",
+	       "meaning may have changed due to change in precedence for & and | operators");
         }
       break;
 
@@ -2005,14 +1972,15 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR_OR:
       t = tree_boolean_expression::bool_or;
-      if (Vwarn_precedence_change
-          && op2->paren_count () == 0 && op2->is_boolean_expression ())
+      if (op2->paren_count () == 0 && op2->is_boolean_expression ())
         {
 	  tree_boolean_expression *e
 	    = dynamic_cast<tree_boolean_expression *> (op2);
 
 	  if (e->op_type () == tree_boolean_expression::bool_and)
-	    warning ("meaning may have changed due to change in precedence for && and || operators");
+	    warning_with_id
+	      ("Octave:precedence-change",
+	       "meaning may have changed due to change in precedence for && and || operators");
         }
       break;
 
@@ -2508,9 +2476,10 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       if (! (lexer_flags.parsing_nested_function || autoloading)
           && curr_fcn_file_name != id_name)
 	{
-	  if (Vwarn_function_name_clash)
-	    warning ("function name `%s' does not agree with function\
- file name `%s'", id_name.c_str (), curr_fcn_file_full_name.c_str ());
+	  warning_with_id
+	    ("Octave:function-name-clash",
+	     "function name `%s' does not agree with function file name `%s'",
+	     id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
 	  id_name = curr_fcn_file_name;
 	}
@@ -2521,15 +2490,13 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
 
-      if (Vwarn_future_time_stamp)
-	{
-	  std::string nm = fcn->fcn_file_name ();
+      std::string nm = fcn->fcn_file_name ();
 
-	  file_stat fs (nm);
+      file_stat fs (nm);
 
-	  if (fs && fs.is_newer (now))
-	    warning ("time stamp for `%s' is in the future", nm.c_str ());
-	}
+      if (fs && fs.is_newer (now))
+        warning_with_id ("Octave:future-time-stamp",
+			 "time stamp for `%s' is in the future", nm.c_str ());
     }
   else if (! (input_from_tmp_history_file || input_from_startup_file)
 	   && reading_script_file
@@ -2838,14 +2805,15 @@ finish_cell (tree_cell *c)
 static void
 maybe_warn_missing_semi (tree_statement_list *t)
 {
-  if (lexer_flags.defining_func && Vwarn_missing_semicolon)
+  if (lexer_flags.defining_func)
     {
       tree_statement *tmp = t->back();
 
       if (tmp->is_expression ())
-	warning ("missing semicolon near line %d, column %d in file `%s'",
-		 tmp->line (), tmp->column (),
-		 curr_fcn_file_full_name.c_str ());
+	warning_with_id
+	  ("Octave:missing-semicolon",
+	   "missing semicolon near line %d, column %d in file `%s'",
+	    tmp->line (), tmp->column (), curr_fcn_file_full_name.c_str ());
     }
 }
 
@@ -4095,183 +4063,6 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
     print_usage ("evalin");
 
   return retval;
-}
-
-static int
-warn_assign_as_truth_value (void)
-{
-  Vwarn_assign_as_truth_value
-    = check_preference ("warn_assign_as_truth_value");
-
-  return 0;
-}
-
-static int
-warn_associativity_change (void)
-{
-  Vwarn_associativity_change = check_preference ("warn_associativity_change");
-
-  return 0;
-}
-
-static int
-warn_function_name_clash (void)
-{
-  Vwarn_function_name_clash = check_preference ("warn_function_name_clash");
-
-  return 0;
-}
-
-static int
-warn_future_time_stamp (void)
-{
-  Vwarn_future_time_stamp = check_preference ("warn_future_time_stamp");
-
-  return 0;
-}
-
-static int
-warn_missing_semicolon (void)
-{
-  Vwarn_missing_semicolon = check_preference ("warn_missing_semicolon");
-
-  return 0;
-}
-
-static int
-warn_precedence_change (void)
-{
-  Vwarn_precedence_change = check_preference ("warn_precedence_change");
-
-  return 0;
-}
-
-static int
-warn_variable_switch_label (void)
-{
-  Vwarn_variable_switch_label
-    = check_preference ("warn_variable_switch_label");
-
-  return 0;
-}
-
-void
-symbols_of_parse (void)
-{
-  DEFVAR (warn_assign_as_truth_value, true, warn_assign_as_truth_value,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_assign_as_truth_value\n\
-If the value of @code{warn_assign_as_truth_value} is nonzero, a\n\
-warning is issued for statements like\n\
-\n\
-@example\n\
-if (s = t)\n\
-  ...\n\
-@end example\n\
-\n\
-@noindent\n\
-since such statements are not common, and it is likely that the intent\n\
-was to write\n\
-\n\
-@example\n\
-if (s == t)\n\
-  ...\n\
-@end example\n\
-\n\
-@noindent\n\
-instead.\n\
-\n\
-There are times when it is useful to write code that contains\n\
-assignments within the condition of a @code{while} or @code{if}\n\
-statement.  For example, statements like\n\
-\n\
-@example\n\
-while (c = getc())\n\
-  ...\n\
-@end example\n\
-\n\
-@noindent\n\
-are common in C programming.\n\
-\n\
-It is possible to avoid all warnings about such statements by setting\n\
-@code{warn_assign_as_truth_value} to 0, but that may also\n\
-let real errors like\n\
-\n\
-@example\n\
-if (x = 1)  # intended to test (x == 1)!\n\
-  ...\n\
-@end example\n\
-\n\
-@noindent\n\
-slip by.\n\
-\n\
-In such cases, it is possible suppress errors for specific statements by\n\
-writing them with an extra set of parentheses.  For example, writing the\n\
-previous example as\n\
-\n\
-@example\n\
-while ((c = getc()))\n\
-  ...\n\
-@end example\n\
-\n\
-@noindent\n\
-will prevent the warning from being printed for this statement, while\n\
-allowing Octave to warn about other assignments used in conditional\n\
-contexts.\n\
-\n\
-The default value of @code{warn_assign_as_truth_value} is 1.\n\
-@end defvr");
-
-  DEFVAR (warn_associativity_change, true, warn_associativity_change,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_associativity_change\n\
-If the value of this variable is nonzero, Octave will warn about\n\
-possible changes in the meaning of some code due to changes in\n\
-associativity for some operators.  Associativity changes have typically\n\
-been made for Matlab compatibility.  The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (warn_function_name_clash, true, warn_function_name_clash,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_function_name_clash\n\
-If the value of @code{warn_function_name_clash} is nonzero, a warning is\n\
-issued when Octave finds that the name of a function defined in a\n\
-function file differs from the name of the file.  (If the names\n\
-disagree, the name declared inside the file is ignored.)  If the value\n\
-is 0, the warning is omitted.  The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (warn_future_time_stamp, true, warn_future_time_stamp,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_future_time_stamp\n\
-If the value of this variable is nonzero, Octave will print a warning\n\
-if it finds a function file with a time stamp that is in the future.\n\
-@end defvr");
-
-  DEFVAR (warn_missing_semicolon, false, warn_missing_semicolon,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_missing_semicolon\n\
-If the value of this variable is nonzero, Octave will warn when\n\
-statements in function definitions don't end in semicolons.  The default\n\
-value is 0.\n\
-@end defvr");
-
-  DEFVAR (warn_precedence_change, true, warn_precedence_change,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_precedence_change\n\
-If the value of this variable is nonzero, Octave will warn about\n\
-possible changes in the meaning of some code due to changes in\n\
-precedence for some operators.  Precedence changes have typically\n\
-been made for Matlab compatibility.  The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (warn_variable_switch_label, false, warn_variable_switch_label,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_variable_switch_label\n\
-If the value of this variable is nonzero, Octave will print a warning if\n\
-a switch label is not a constant or constant expression\n\
-@end defvr");
-
 }
 
 /*

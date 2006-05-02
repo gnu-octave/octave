@@ -55,13 +55,6 @@ DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_sq_str);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string", "char");
 
-// If TRUE, warn for operations like
-//
-//   octave> 'abc' + 0
-//   97 98 99
-//
-static int Vwarn_str_to_num;
-
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
@@ -183,8 +176,9 @@ octave_char_matrix_str::valid_as_scalar_index (void) const
     gripe_invalid_conversion ("string", TNAME); \
   else \
     { \
-      if (Vwarn_str_to_num) \
-	gripe_implicit_conversion ("string", TNAME); \
+      warning_with_id ("Octave:warn-str-to-num", \
+		       "implicit conversion from %s to %s", \
+		       "string", TNAME); \
  \
       retval = octave_char_matrix::FCN (); \
     } \
@@ -761,34 +755,6 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 }
 
 #endif
-
-static int
-warn_str_to_num (void)
-{
-  Vwarn_str_to_num = check_preference ("warn_str_to_num");
-
-  return 0;
-}
-
-void
-symbols_of_ov_str_mat (void)
-{
-  DEFVAR (warn_str_to_num, false, warn_str_to_num,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_str_to_num\n\
-If the value of @code{warn_str_to_num} is nonzero, a warning is printed\n\
-for implicit conversions of strings to their numeric ASCII equivalents.\n\
-For example,\n\
-@example\n\
-@group\n\
-\"abc\" + 0\n\
-     @result{} 97 98 99\n\
-@end group\n\
-@end example\n\
-elicits a warning if @code{warn_str_to_num} is nonzero.  The default\n\
-value is 0.\n\
-@end defvr");
-}
 
 /*
 ;;; Local Variables: ***

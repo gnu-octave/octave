@@ -698,11 +698,9 @@ looks_like_struct (const std::string& text)
 
       unwind_protect::begin_frame ("looks_like_struct");
 
-      unwind_protect_str (Vwarning_option);
       unwind_protect_bool (discard_error_messages);
       unwind_protect_int (error_state);
 
-      Vwarning_option = "off";
       discard_error_messages = true;
 
       octave_value tmp = eval_string (text, true, parse_status);

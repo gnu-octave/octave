@@ -610,7 +610,7 @@ endfunction
 %!test
 %! lastwarn();            # clear last warning just in case
 
-%!warning <warning message> warning('warning message')
+%!warning <warning message> warning('warning message');
 
 %!## test of shared variables
 %!shared a                # create a shared variable

@@ -35,10 +35,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "pt-walk.h"
 #include "utils.h"
 
-// If TRUE, print a warning if a function does not define all the
-// values in the return list which are expected.
-static bool Vwarn_undefined_return_values;
-
 // Parameter lists.
 
 tree_parameter_list::~tree_parameter_list (void)
@@ -79,11 +75,14 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
 
       if (! elt->is_defined ())
 	{
-	  if (Vwarn_undefined_return_values && ! warned)
+	  if (! warned)
 	    {
 	      warned = true;
-	      warning ("%s: some elements in list of return values are undefined",
-		       warnfor.c_str ());
+
+	      warning_with_id
+		("Octave:undefined-return-values",
+		 "%s: some elements in list of return values are undefined",
+		 warnfor.c_str ());
 	    }
 
 	  octave_lvalue tmp = elt->lvalue ();
@@ -217,27 +216,6 @@ void
 tree_return_list::accept (tree_walker& tw)
 {
   tw.visit_return_list (*this);
-}
-
-static int
-warn_undefined_return_values (void)
-{
-  Vwarn_undefined_return_values
-    = check_preference ("warn_undefined_return_values");
-
-  return 0;
-}
-
-void
-symbols_of_pt_misc (void)
-{
-  DEFVAR (warn_undefined_return_values, true, warn_undefined_return_values,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_undefined_return_values\n\
-If the value of @code{warn_undefined_return_values} is nonzero,\n\
-print a warning if a function does not define all the values in\n\
-the return list which are expected.  The default value is 1.\n\
-@end defvr");
 }
 
 /*

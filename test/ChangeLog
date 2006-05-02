@@ -1,3 +1,12 @@
+2006-04-29  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (check): Use run-octave script.
+
+2006-04-28  John W. Eaton  <jwe@octave.org>
+
+	* test_prefer.m: Adjust tests for new way of handling warning state.
+	* build_sparse_tests.sh: Likewise.
+
 2006-04-11  John W. Eaton  <jwe@octave.org>
 
 	* test_system.m, test_struct.m, test_string.m, test_quad.m,

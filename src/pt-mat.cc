@@ -44,14 +44,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-// If TRUE, print a warning message for empty elements in a matrix list.
-static bool Vwarn_empty_list_elements;
-
 // The character to fill with when creating string arrays.
 char Vstring_fill_char = ' ';
-
-// Warn if concatenating double and single quoted strings.
-char Vwarn_string_concat = false;
 
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
@@ -322,7 +316,7 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
       dv.elem (1) = dv.elem (1) + this_elt_nc;
 
     }
-  else if (Vwarn_empty_list_elements)
+  else
     eval_warning ("empty matrix found in matrix list",
 		  elt->line (), elt->column ());
 
@@ -428,9 +422,10 @@ tm_row_const::tm_row_const_rep::eval_warning (const char *msg, int l,
 					      int c) const
 {
   if (l == -1 && c == -1)
-    ::warning ("%s", msg);
+    warning_with_id ("Octave:empty-list-elements", "%s", msg);
   else
-    ::warning ("%s near line %d, column %d", msg, l, c);
+    warning_with_id ("Octave:empty-list-elements",
+		     "%s near line %d, column %d", msg, l, c);
 }
 
 class
@@ -636,8 +631,9 @@ tm_const::init (const tree_matrix& tm)
 		}
 	      dv.elem (0) = dv.elem (0) + this_elt_nr;
 	    }
-	  else if (Vwarn_empty_list_elements)
-	    warning ("empty matrix found in matrix list");
+	  else
+	    warning_with_id ("Octave:empty-list-elements",
+			     "empty matrix found in matrix list");
 	}
     }
 
@@ -704,8 +700,9 @@ tree_matrix::rvalue (int nargout)
 static void
 maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 {
-  if (Vwarn_string_concat && ! (all_dq_strings_p || all_sq_strings_p))
-    ::warning ("concatenation of different character string types may have unintended consequences");
+  if (! (all_dq_strings_p || all_sq_strings_p))
+    warning_with_id ("Octave:string-concat",
+		     "concatenation of different character string types may have unintended consequences");
 }
 
 #define SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
@@ -943,22 +940,6 @@ tree_matrix::accept (tree_walker& tw)
 }
 
 static int
-warn_empty_list_elements (void)
-{
-  Vwarn_empty_list_elements = check_preference ("warn_empty_list_elements");
-
-  return 0;
-}
-
-static int
-warn_string_concat (void)
-{
-  Vwarn_string_concat = check_preference ("warn_string_concat");
-
-  return 0;
-}
-
-static int
 string_fill_char (void)
 {
   int status = 0;
@@ -1004,29 +985,6 @@ string_fill_char = \"X\";\n\
 @end group\n\
 @end example\n\
 @end defvr");
-
-  DEFVAR (warn_empty_list_elements, false, warn_empty_list_elements,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_empty_list_elements\n\
-If the value of @code{warn_empty_list_elements} is nonzero, print a\n\
-warning when an empty matrix is found in a matrix list.  For example,\n\
-\n\
-@example\n\
-a = [1, [], 3, [], 5]\n\
-@end example\n\
-\n\
-@noindent\n\
-The default value is 0.\n\
-@end defvr");
-
-  DEFVAR (warn_string_concat, false, warn_string_concat,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_string_concat\n\
-If the value of @code{warn_string_concat} is nonzero, print a\n\
-warning when concatenating a mixture of double and single quoted strings.\n\
-The default value is 1.\n\
-@end defvr");
-
 }
 
 /*

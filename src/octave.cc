@@ -224,12 +224,26 @@ DEFUN (__version_info__, args, ,
 
   if (nargin == 4)
     {
-      octave_value idx (vinfo.numel () + 1);
+      if (vinfo.empty ())
+	{
+	  vinfo.assign ("Name", args (0));
+	  vinfo.assign ("Version", args (1));
+	  vinfo.assign ("Release", args (2));
+	  vinfo.assign ("Date", args (3));
+	}
+      else
+	{
+	  octave_idx_type n = vinfo.numel () + 1;
 
-      vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
-      vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
-      vinfo.assign (idx, "Release", Cell (octave_value (args (2))));
-      vinfo.assign (idx, "Date", Cell (octave_value (args (3))));
+	  vinfo.resize (dim_vector (n, 1));
+
+	  octave_value idx (n);
+
+	  vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
+	  vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
+	  vinfo.assign (idx, "Release", Cell (octave_value (args (2))));
+	  vinfo.assign (idx, "Date", Cell (octave_value (args (3))));
+	}
     }
   else if (nargin == 0)
     retval = vinfo;
@@ -296,7 +310,7 @@ execute_startup_files (void)
 
       std::string local_rc;
 
-      if (! home_dir.empty ())
+      if (! home_rc.empty ())
 	{
 	  parse_and_execute (home_rc, verbose);
 
@@ -454,6 +468,7 @@ initialize_error_handlers ()
 {
   set_liboctave_error_handler (error);
   set_liboctave_warning_handler (warning);
+  set_liboctave_warning_with_id_handler (warning_with_id);
 }
 
 // What happens on --traditional.

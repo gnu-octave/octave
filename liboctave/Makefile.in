@@ -25,7 +25,7 @@ LINK_DEPS = \
   $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBGLOB) $(LIBS) $(FLIBS)
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
-	Array-flags.h Array-util.h ArrayN-idx.h MArray-defs.h \
+	Array-util.h ArrayN-idx.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h MArrayN.h \
 	base-lu.h dim-vector.h mx-base.h mx-op-defs.h mx-ops.h \
 	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
@@ -90,7 +90,7 @@ TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	MSparse-C.cc MSparse-d.cc Sparse-C.cc Sparse-b.cc Sparse-d.cc \
 	oct-inttypes.cc
 
-MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
+MATRIX_SRC := Array-util.cc CColVector.cc \
 	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc \
 	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \

@@ -54,40 +54,40 @@
 
 %% test/octave.test/prefer/prefer-12.m
 %!test
-%! wsn = warn_str_to_num;
-%! warn_str_to_num = 0;
+%! wsn = warning ("query", "Octave:str-to-num");
+%! warning ("off", "Octave:str-to-num");
 %! assert("d" + 0,100);
-%! warn_str_to_num = wsn;
+%! warning (wsn.state, "Octave:str-to-num");
 
 %% test/octave.test/prefer/prefer-13.m
 %!test
-%! wsn = warn_str_to_num;
-%! warn_str_to_num = 1;
+%! wsn = warning ("query", "Octave:str-to-num");
+%! warning ("on", "Octave:str-to-num");
 %! fail("'d' + 0","warning");
-%! warn_str_to_num = wsn;
+%! warning (wsn.state, "Octave:str-to-num");
 
 %% test/octave.test/prefer/prefer-14.m
 %!test
-%! wir = warn_imag_to_real;
-%! warn_imag_to_real = 0;
+%! wir = warning ("query", "Ocave:imag-to-real");
+%! warning ("off", "Ocave:imag-to-real");
 %! assert(eye (1+i),1);
-%! warn_imag_to_real = wir;
+%! warning (wir.state, "Ocave:imag-to-real");
 
 %% test/octave.test/prefer/prefer-15.m
 %!test
-%! wir = warn_imag_to_real;
-%! warn_imag_to_real = 1;
+%! wir = warning ("query", "Ocave:imag-to-real");
+%! warning ("on", "Ocave:imag-to-real");
 %! fail("eye (1+i)","warning");
-%! warn_imag_to_real = wir;
+%! warning (wir.state, "Ocave:imag-to-real");
 
 %% test/octave.test/prefer/prefer-17.m
 %!test
-%! wrre = warn_resize_on_range_error;
-%! warn_resize_on_range_error = 0;
+%! wrre = warning ("query", "Octave:resize-on-range-error");
+%! warning ("off", "Octave:resize-on-range-error");
 %! clear a; 
 %! a(2) = 1; a(3) = 2; 
 %! assert(all (a == [0,1,2]));
-%! warn_resize_on_range_error = wrre;
+%! warning (wrre.state, "Octave:resize-on-range-error");
 
 %% test/octave.test/prefer/prefer-18.m
 %!test
@@ -191,45 +191,45 @@
 
 %% test/octave.test/prefer/prefer-32.m
 %!test
-%! wndz = warn_neg_dim_as_zero;
-%! warn_neg_dim_as_zero = 1;
+%! wndz = warning ("query", "Octave:neg-dim-as-zero");
+%! warning ("on", "Octave:neg-dim-as-zero");
 %! fail("eye (-1) == []","warning");
-%! warn_neg_dim_as_zero = wndz;
+%! warning (wndz.state, "Octave:neg-dim-as-zero");
 
 %% test/octave.test/prefer/prefer-33.m
 %!test
-%! wndz = warn_neg_dim_as_zero;
-%! warn_neg_dim_as_zero = 0;
+%! wndz = warning ("query", "Octave:neg-dim-as-zero");
+%! warning ("off", "Octave:neg-dim-as-zero");
 %! assert(all (size (eye (-1)) == [0, 0]));
-%! warn_neg_dim_as_zero = wndz;
+%! warning (wndz.state, "Octave:neg-dim-as-zero");
 
 %% test/octave.test/prefer/prefer-34.m
 %!test
-%! watv = warn_assign_as_truth_value;
-%! warn_assign_as_truth_value = 0;
+%! watv = warning ("query", "Octave:assign-as-truth-value");
+%! warning ("off", "Octave:assign-as-truth-value");
 %! if (x = 1) 1; endif
-%! warn_assign_as_truth_value = watv;
+%! warning (watv.state, "Octave:assign-as-truth-value");
 
 %% test/octave.test/prefer/prefer-35.m
 %!test
-%! watv = warn_assign_as_truth_value;
-%! warn_assign_as_truth_value = 1;
+%! watv = warning ("query", "Octave:assign-as-truth-value");
+%! warning ("on", "Octave:assign-as-truth-value");
 %! fail("if (x = 1) 1; endif","warning");
-%! warn_assign_as_truth_value = watv;
+%! warning (watv.state, "Octave:assign-as-truth-value");
 
 %% test/octave.test/prefer/prefer-38.m
 %!test
-%! wdbz = warn_divide_by_zero;
-%! warn_divide_by_zero = 0;
+%! wdbz = warning ("query", "Octave:divide-by-zero");
+%! warning ("off", "Octave:divide-by-zero");
 %! assert(isinf (1/0));
-%! warn_divide_by_zero = wdbz;
+%! warning (wdbz.state, "Octave:divide-by-zero");
 
 %% test/octave.test/prefer/prefer-39.m
 %!test
-%! wdbz = warn_divide_by_zero;
-%! warn_divide_by_zero = 1;
+%! wdbz = warning ("query", "Octave:divide-by-zero");
+%! warning ("on", "Octave:divide-by-zero");
 %! a = 1;
 %! b = 0;
 %! fail("isinf (a/b);","warning")
-%! warn_divide_by_zero = wdbz;
+%! warning (wdbz.state, "Octave:divide-by-zero");
 

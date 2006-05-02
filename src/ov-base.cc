@@ -66,14 +66,6 @@ static bool Vprint_answer_id_name;
 // semicolon has been appended to each statement).
 static bool Vsilent_functions;
 
-// Should we print a warning when converting `[97, 98, 99, "123"]'
-// to a character string?
-bool Vwarn_num_to_str;
-
-// If TRUE, print a warning when a matrix is resized by an indexed
-// assignment with indices outside the current bounds.
-bool Vwarn_resize_on_range_error;
-
 octave_value
 octave_base_value::squeeze (void) const
 {
@@ -275,8 +267,9 @@ octave_base_value::convert_to_str (bool pad, bool force, char type) const
 {
   octave_value retval = convert_to_str_internal (pad, force, type);
 
-  if (! force && is_numeric_type () && Vwarn_num_to_str)
-    gripe_implicit_conversion (type_name (), retval.type_name ());
+  if (! force && is_numeric_type ())
+    gripe_implicit_conversion ("Octave:num-to-str",
+			       type_name (), retval.type_name ());
 
   return retval;
 }
@@ -1105,25 +1098,6 @@ silent_functions (void)
   return 0;
 }
 
-static int
-warn_num_to_str (void)
-{
-  Vwarn_num_to_str = check_preference ("warn_num_to_str");
-
-  return 0;
-}
-
-static int
-warn_resize_on_range_error (void)
-{
-  Vwarn_resize_on_range_error
-    = check_preference ("warn_resize_on_range_error");
-
-  liboctave_wrore_flag = Vwarn_resize_on_range_error;
-
-  return 0;
-}
-
 void
 symbols_of_ov_base (void)
 {
@@ -1154,32 +1128,6 @@ endfunction\n\
 @noindent\n\
 is executed, Octave will either print @samp{ans = 4} or nothing\n\
 depending on the value of @code{silent_functions}.\n\
-@end defvr");
-
-  DEFVAR (warn_num_to_str, true, warn_num_to_str,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_num_to_str\n\
-If the value of @code{warn_num_to_str} is nonzero, a warning is\n\
-printed for implicit conversions of numbers to their ASCII character\n\
-equivalents when strings are constructed using a mixture of strings and\n\
-numbers in matrix notation.  For example,\n\
-\n\
-@example\n\
-@group\n\
-[ \"f\", 111, 111 ]\n\
-     @result{} \"foo\"\n\
-@end group\n\
-@end example\n\
-elicits a warning if @code{warn_num_to_str} is nonzero.  The default\n\
-value is 1.\n\
-@end defvr");
-
-  DEFVAR (warn_resize_on_range_error, false, warn_resize_on_range_error,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_resize_on_range_error\n\
-If the value of @code{warn_resize_on_range_error} is nonzero, print a\n\
-warning when a matrix is resized by an indexed assignment with\n\
-indices outside the current bounds.  The default value is 0.\n\
 @end defvr");
 }
 

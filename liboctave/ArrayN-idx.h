@@ -22,7 +22,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 */
 
-#include "Array-flags.h"
 #include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"

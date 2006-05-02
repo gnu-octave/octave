@@ -347,15 +347,29 @@ set_default_editor (void)
 static void
 set_local_site_defaults_file (void)
 {
-  Vlocal_site_defaults_file = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
-  Vlocal_site_defaults_file.append ("/octaverc");
+  std::string lsf = octave_env::getenv ("OCTAVE_LOCAL_SITE_INITFILE");
+
+  if (lsf.empty ())
+    {
+      Vlocal_site_defaults_file = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+      Vlocal_site_defaults_file.append ("/octaverc");
+    }
+  else
+    Vlocal_site_defaults_file = lsf;
 }
 
 static void
 set_site_defaults_file (void)
 {
-  Vsite_defaults_file = subst_octave_home (OCTAVE_STARTUPFILEDIR);
-  Vsite_defaults_file.append ("/octaverc");
+  std::string sf = octave_env::getenv ("OCTAVE_SITE_INITFILE");
+
+  if (sf.empty ())
+    {
+      Vsite_defaults_file = subst_octave_home (OCTAVE_STARTUPFILEDIR);
+      Vsite_defaults_file.append ("/octaverc");
+    }
+  else
+    Vsite_defaults_file = sf;
 }
 
 std::string

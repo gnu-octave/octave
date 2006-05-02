@@ -52,8 +52,8 @@ DEFCATOP (chm_s, char_matrix, scalar)
 {
   CAST_BINOP_ARGS (octave_char_matrix&, const octave_scalar&);
 
-  if (Vwarn_num_to_str)
-    gripe_implicit_conversion (v2.type_name (), v1.type_name ());
+  gripe_implicit_conversion ("Octave:num-to-str",
+			     v2.type_name (), v1.type_name ());
 
   return octave_value (v1.char_array_value (). concat(v2.array_value (),
 			       ra_idx));
@@ -63,8 +63,8 @@ DEFCATOP (chm_m, char_matrix, matrix)
 {
   CAST_BINOP_ARGS (octave_char_matrix&, const octave_matrix&);
 
-  if (Vwarn_num_to_str)
-    gripe_implicit_conversion (v2.type_name (), v1.type_name ());
+  gripe_implicit_conversion ("Octave:num-to-str",
+			     v2.type_name (), v1.type_name ());
 
   return octave_value (v1.char_array_value (). concat (v2.array_value (),
 			       ra_idx));
@@ -74,8 +74,8 @@ DEFCATOP (s_chm, scalar, char_matrix)
 {
   CAST_BINOP_ARGS (octave_scalar&, const octave_char_matrix&);
 
-  if (Vwarn_num_to_str)
-    gripe_implicit_conversion (v1.type_name (), v2.type_name ());
+  gripe_implicit_conversion ("Octave:num-to-str",
+			     v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (),
 			       ra_idx));
@@ -85,8 +85,8 @@ DEFCATOP (m_chm, matrix, char_matrix)
 {
   CAST_BINOP_ARGS (octave_matrix&, const octave_char_matrix&);
 
-  if (Vwarn_num_to_str)
-    gripe_implicit_conversion (v1.type_name (), v2.type_name ());
+  gripe_implicit_conversion ("Octave:num-to-str",
+			     v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (),
 			       ra_idx));

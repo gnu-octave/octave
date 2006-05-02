@@ -57,12 +57,10 @@ octave_char_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("character matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "character matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -79,12 +77,10 @@ octave_char_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("character matrix", "complex scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "character matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }

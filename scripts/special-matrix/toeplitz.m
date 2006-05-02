@@ -51,7 +51,7 @@
 ## @end group
 ## @end example
 ## @end ifinfo
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhib}
+## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb}
 ## @end deftypefn
 
 ## Author: jwe

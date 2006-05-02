@@ -38,7 +38,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
-class Octave_map;
 class octave_value_list;
 
 class tree_walker;
@@ -92,7 +91,7 @@ public:
     { return map.reshape (new_dims); }
 
   octave_value resize (const dim_vector& dv) const
-    { return map.resize (dv); }
+    { Octave_map tmap = map; tmap.resize (dv); return tmap; }
 
   bool is_defined (void) const { return true; }
 

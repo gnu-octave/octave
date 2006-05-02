@@ -52,9 +52,8 @@ octave_streamoff::streamoff_value (void) const
 
   if (numel () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("streamoff array", "scalar streamoff");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "streamoff array", "scalar streamoff");
 
       retval = matrix (0, 0);
     }

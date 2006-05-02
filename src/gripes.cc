@@ -31,9 +31,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-obj.h"
 #include "utils.h"
 
-// Allow divide by zero errors to be suppressed.
-static bool Vwarn_divide_by_zero;
-
 void
 gripe_not_supported (const char *fcn)
 {
@@ -167,42 +164,24 @@ gripe_wrong_type_arg_for_binary_op (const octave_value& op)
 }
 
 void
-gripe_implicit_conversion (const char *from, const char *to)
+gripe_implicit_conversion (const char *id, const char *from, const char *to)
 {
-  warning ("implicit conversion from %s to %s", from, to);
+  warning_with_id (id, "implicit conversion from %s to %s", from, to);
 }
 
 void
-gripe_implicit_conversion (const std::string& from, const std::string& to)
+gripe_implicit_conversion (const std::string& id,
+			   const std::string& from, const std::string& to)
 {
-  warning ("implicit conversion from %s to %s", from.c_str (), to.c_str ());
+  warning_with_id (id.c_str (),
+		   "implicit conversion from %s to %s",
+		   from.c_str (), to.c_str ());
 }
 
 void
 gripe_divide_by_zero (void)
 {
-  if (Vwarn_divide_by_zero)
-    warning ("division by zero");
-}
-
-static int
-warn_divide_by_zero (void)
-{
-  Vwarn_divide_by_zero = check_preference ("warn_divide_by_zero");
-
-  return 0;
-}
-
-void
-symbols_of_gripes (void)
-{
-  DEFVAR (warn_divide_by_zero, true, warn_divide_by_zero,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_divide_by_zero\n\
-If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
-is issued when Octave encounters a division by zero.  If the value is\n\
-0, the warning is omitted.  The default value is 1.\n\
-@end defvr");
+  warning_with_id ("Octave:divide-by-zero", "division by zero");
 }
 
 /*

@@ -861,16 +861,6 @@ OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
 
-// If TRUE, print a warning for assignments like
-//
-//   octave> A(1) = 3; A(2) = 5
-//
-// for A already defined and a matrix type.
-extern bool Vwarn_fortran_indexing;
-
-// Should we warn about conversions from complex to real?
-extern int Vwarn_imag_to_real;
-
 extern void install_types (void);
 
 // FIXME -- these trait classes probably belong somehwere else...

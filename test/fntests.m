@@ -5,7 +5,7 @@ global topsrcdir;
 currdir = canonicalize_file_name (".");
 
 if (nargin == 1)
-  xdir = argv{1};
+  xdir = argv(){1};
 else
   xdir = ".";
 endif
@@ -60,7 +60,7 @@ function y = hastests (f)
 endfunction
 
 function [dp, dn] = runtestscript (fid, d);
-  global topsrcdir
+  global topsrcdir;
   lst = dir(d);
   dp = dn = 0;
   for i=1:length(lst)
@@ -149,4 +149,3 @@ catch
   warning(warn_state.state,"quiet");
   disp(lasterr());
 end_try_catch
-

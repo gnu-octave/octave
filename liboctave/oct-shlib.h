@@ -50,11 +50,7 @@ public:
 
   octave_shlib (void) : rep (make_shlib ()) { }
 
-  octave_shlib (const std::string& f, bool warn_future)
-    : rep (make_shlib ())
-  {
-    open (f, warn_future);
-  }
+  octave_shlib (const std::string& f) : rep (make_shlib ()) { open (f); }
 
   virtual ~octave_shlib (void)
     {
@@ -90,8 +86,7 @@ public:
 
   operator bool () const { return is_open (); }
 
-  virtual void open (const std::string& f, bool warn_future = false)
-    { rep->open (f, warn_future); }
+  virtual void open (const std::string& f) { rep->open (f); }
   
   virtual void *search (const std::string& nm, name_mangler mangler = 0)
     { return rep->search (nm, mangler); }

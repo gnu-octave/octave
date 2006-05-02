@@ -450,7 +450,7 @@ check_state (const std::string& state)
 // For given warning ID, return 0 if warnings are disabled, 1 if
 // enabled, and 2 if this ID should be an error instead of a warning.
 
-static int
+int
 warning_enabled (const std::string& id)
 {
   int retval = 0;
@@ -492,7 +492,6 @@ warning_enabled (const std::string& id)
 	  if (all_found && id_found)
 	    break;
 	}
-
     }
 
   if (all_state == -1)
@@ -725,11 +724,11 @@ handle_message (error_fun f, const char *id, const char *msg,
 DEFUN (error, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} error (@var{template}, @dots{})\n\
-The @code{error} function formats the optional arguments under the\n\
-control of the template string @var{template} using the same rules as\n\
-the @code{printf} family of functions (@pxref{Formatted Output}).\n\
-The resulting message is prefixed by the string @samp{error: } and\n\
-printed on the @code{stderr} stream.\n\
+Format the optional arguments under the control of the template string\n\
+@var{template} using the same rules as the @code{printf} family of\n\
+functions (@pxref{Formatted Output}) and print the resulting message\n\
+on the @code{stderr} stream.  The message is prefixed by the character\n\
+string @samp{error: }.\n\
 \n\
 Calling @code{error} also sets Octave's internal error state such that\n\
 control will return to the top level without evaluating any more\n\
@@ -788,12 +787,30 @@ error: nargin != 1\n\
 
 DEFCMD (warning, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} warning (@var{msg})\n\
-Print a warning message @var{msg} prefixed by the string @samp{warning: }.  \n\
-After printing the warning message, Octave will continue to execute\n\
-commands.  You should use this function when you want to notify the user\n\
+@deftypefn {Built-in Function} {} warning (@var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template})\n\
+Format the optional arguments under the control of the template string\n\
+@var{template} using the same rules as the @code{printf} family of\n\
+functions (@pxref{Formatted Output}) and print the resulting message\n\
+on the @code{stderr} stream.  The message is prefixed by the character\n\
+string @samp{warning: }.\n\
+You should use this function when you want to notify the user\n\
 of an unusual condition, but only when it makes sense for your program\n\
 to go on.\n\
+\n\
+The optional message identifier allows users to enable or disable\n\
+warnings tagged by @var{id}.  The special identifier @samp{\"all\"} may\n\
+be used to set the state of all warnings.\n\
+\n\
+@deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
+Set or query the the state of a particular warning using the identifier\n\
+@var{id}.  If the identifier is omitted, a value of @samp{\"all\"} is\n\
+assumed.  If you set the state of a warning to @samp{\"error\"}, the\n\
+warning named by @var{id} is handled as if it were an error instead.\n\
+@seealso{warning_ids}.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -961,6 +978,19 @@ to go on.\n\
 			}
 		    }
 
+		  if (! found)
+		    {
+		      for (octave_idx_type i = 0; i < nel; i++)
+			{
+			  if (ident(i).string_value () == "all")
+			    {
+			      val = state(i).string_value ();
+			      found = true;
+			      break;
+			    }
+			}
+		    }
+
 		  if (found)
 		    {
 		      Octave_map tmp;
@@ -971,7 +1001,7 @@ to go on.\n\
 		      retval = tmp;
 		    }
 		  else
-		    error ("warning: invalid warning tag `%s'", arg2.c_str ());
+		    error ("warning: unable to find default warning state!");
 		}
 
 	      done = true;

@@ -92,9 +92,8 @@ octave_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("real matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -119,12 +118,10 @@ octave_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("real matrix", "complex scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }

@@ -1,3 +1,30 @@
+2006-05-01  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.h (octave_shlib::octave_shlib, octave_shlib::open):
+	Delete WARN_FUTURE arg.  Change all uses.
+	* oct-shlib.cc (octave_base_shlib::stamp_time): Delete arg.
+	Change all uses.  Use current_liboctave_warning_with_id_handler.
+	(octave_base_shlib::open): Delete arg.  Change all derived classes
+	and uses.
+
+2006-04-29  John W. Eaton  <jwe@octave.org>
+
+	* Array-flags.cc, Array-flags.h: Delete.
+	* Makefile.in (MATRIX_SRC): Remove Array-flags.cc from the list.
+	(MATRIX_INC): Remove Array-flags.h from the list.
+
+	* idx-vector.cc (IDX_VEC_REP::freeze): Delete warn_resize arg.
+	Use current_liboctave_warning_with_id_handler
+	with warning ID Octave:resize-on-range-error.
+	* idx-vector.h: Fix decl.
+	* Array.cc, Sparse.cc: Change all callers.
+
+	* Array.cc (Array<T>::maybe_delete_elements, Array<T>::index2,
+	assign2, assignN): Use current_liboctave_warning_with_id_handler
+	with warning ID Octave:fortran-indexing instead of
+	liboctave_wfi_flag.
+	* Sparse.cc (assign, Sparse<T>::index): Likewise.
+
 2006-04-26  John W. Eaton  <jwe@octave.org>
 
 	* pathsearch.cc (dir_path::path_sep_char, dir_path::path_sep_str):

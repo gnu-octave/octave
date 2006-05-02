@@ -100,9 +100,8 @@ octave_sparse_bool_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("bool sparse matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "bool sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -119,12 +118,10 @@ octave_sparse_bool_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      // FIXME -- is warn_fortran_indexing the right variable here?
-      if (Vwarn_fortran_indexing)
-	gripe_implicit_conversion ("bool sparse matrix", "complex scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "bool sparse matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }

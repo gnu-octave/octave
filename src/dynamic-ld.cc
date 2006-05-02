@@ -39,10 +39,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "variables.h"
 
-// TRUE means we print a warning if reloading a .oct file forces other
-// functions to be cleared.
-static bool Vwarn_reload_forces_clear;
-
 class
 octave_shlib_list
 {
@@ -198,8 +194,7 @@ octave_dynamic_loader::instance_ok (void)
 static
 void do_clear_function (const std::string& fcn_name)
 {
-  if (Vwarn_reload_forces_clear)
-    warning ("  %s", fcn_name.c_str ());
+  warning_with_id ("Octave:reload-forces-clear", "  %s", fcn_name.c_str ());
 
   curr_sym_tab->clear (fcn_name);
 
@@ -232,9 +227,10 @@ octave_dynamic_loader::do_load (const std::string& fcn_name,
 	{
 	  int n = oct_file.number_of_functions_loaded ();
 
-	  if (n > 0 && Vwarn_reload_forces_clear)
-	    warning ("reloading %s clears the following functions:",
-		     oct_file.file_name().c_str ());
+	  if (n > 0)
+	    warning_with_id ("Octave:reload-forces-clear",
+			     "reloading %s clears the following functions:",
+			     oct_file.file_name().c_str ());
 
 	  oct_file.close (do_clear_function);
 
@@ -248,7 +244,7 @@ octave_dynamic_loader::do_load (const std::string& fcn_name,
 
 	  if (! oct_file_name.empty ())
 	    {
-	      oct_file.open (oct_file_name, Vwarn_future_time_stamp);
+	      oct_file.open (oct_file_name);
 
 	      if (! error_state)
 		{
@@ -329,27 +325,6 @@ octave_dynamic_loader::mangle_name (const std::string& name)
   retval.append ("_");
   retval.append (STRINGIFY (CXX_ABI));
   return retval;
-}
-
-static int
-warn_reload_forces_clear (void)
-{
-  Vwarn_reload_forces_clear = check_preference ("warn_reload_forces_clear");
-
-  return 0;
-}
-
-void
-symbols_of_dynamic_ld (void)
-{
-  DEFVAR (warn_reload_forces_clear, true, warn_reload_forces_clear,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_reload_forces_clear\n\
-If several functions have been loaded from the same file, Octave must\n\
-clear all the functions before any one of them can be reloaded.  If\n\
-@code{warn_reload_forces_clear}, Octave will warn you when this happens,\n\
-and print a list of the additional functions that it is forced to clear.\n\
-@end defvr");
 }
 
 /*

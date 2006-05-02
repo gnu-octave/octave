@@ -1,3 +1,7 @@
+2006-04-29  John W. Eaton  <jwe@octave.org>
+
+	* startup/main-rcfile: Disable some warnings.
+
 2006-04-14  Bill Denney  <denney@seas.upenn.edu>
 
  	* strings/strcmpi.m: Return false instead of error if args are not

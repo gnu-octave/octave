@@ -228,10 +228,15 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
 	    if (ts == "seed")
 	      {
-		double d = args(idx+1).double_value ();
+		if (args(idx+1).is_real_scalar ())
+		  {
+		    double d = args(idx+1).double_value ();
 
-		if (! error_state)
-		  octave_rand::seed (d);
+		    if (! error_state)
+		      octave_rand::seed (d);
+		  }
+		else
+		  error ("%s: seed must be a real scalar", fcn);
 	      }
 	    else if (ts == "state" || ts == "twister")
 	      {

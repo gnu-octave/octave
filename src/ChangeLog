@@ -1,3 +1,7 @@
+2006-05-02  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/rand.cc (do_rand): Require real scalar for seed.
+
 2006-05-01  John W. Eaton  <jwe@octave.org>
 
 	* error.h (Vwarning_option): Delete.

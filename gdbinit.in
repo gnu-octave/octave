@@ -1,0 +1,1 @@
+set args --path="%top_srcdir%/scripts//:%builddir%/src//:"

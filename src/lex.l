@@ -696,7 +696,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       BEGIN (INITIAL);
 
     if (nesting_level.none ())
-      COUNT_TOK_AND_RETURN ('\n');
+      {
+	lexer_flags.doing_rawcommand = false;
+	COUNT_TOK_AND_RETURN ('\n');
+      }
     else if (nesting_level.is_bracket_or_brace ())
       COUNT_TOK_AND_RETURN (';');
   }

@@ -40,7 +40,7 @@ Boston, MA 02110-1301, USA.
 #include "dSparse.h"
 #include "oct-spparms.h"
 #include "SparsedbleLU.h"
-#include "SparseType.h"
+#include "MatrixType.h"
 #include "oct-sparse.h"
 #include "sparse-util.h"
 #include "SparsedbleCHOL.h"
@@ -684,12 +684,12 @@ SparseMatrix::inverse (void) const
 {
   octave_idx_type info;
   double rcond;
-  SparseType mattype (*this);
+  MatrixType mattype (*this);
   return inverse (mattype, info, rcond, 0, 0);
 }
 
 SparseMatrix
-SparseMatrix::inverse (SparseType& mattype) const
+SparseMatrix::inverse (MatrixType& mattype) const
 {
   octave_idx_type info;
   double rcond;
@@ -697,14 +697,14 @@ SparseMatrix::inverse (SparseType& mattype) const
 }
 
 SparseMatrix
-SparseMatrix::inverse (SparseType& mattype, octave_idx_type& info) const
+SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   double rcond;
   return inverse (mattype, info, rcond, 0, 0);
 }
 
 SparseMatrix 
-SparseMatrix::dinverse (SparseType &mattyp, octave_idx_type& info, 
+SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info, 
 			double& rcond, const bool, 
 			const bool calccond) const
 {
@@ -722,10 +722,10 @@ SparseMatrix::dinverse (SparseType &mattyp, octave_idx_type& info,
       int typ = mattyp.type ();
       mattyp.info ();
 
-      if (typ == SparseType::Diagonal ||
-	  typ == SparseType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal ||
+	  typ == MatrixType::Permuted_Diagonal)
 	{
-	  if (typ == SparseType::Permuted_Diagonal)
+	  if (typ == MatrixType::Permuted_Diagonal)
 	    retval = transpose();
 	  else
 	    retval = *this;
@@ -758,7 +758,7 @@ SparseMatrix::dinverse (SparseType &mattyp, octave_idx_type& info,
 }
 
 SparseMatrix 
-SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info, 
+SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info, 
 			double& rcond, const bool, 
 			const bool calccond) const
 {
@@ -776,8 +776,8 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
       int typ = mattyp.type ();
       mattyp.info ();
 
-      if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper || 
-	  typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+      if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper || 
+	  typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -795,7 +795,7 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
 		}
 	    }
 
-	  if (typ == SparseType::Upper || typ == SparseType::Lower)
+	  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
 	    {
 	      octave_idx_type nz = nnz ();
 	      octave_idx_type cx = 0;
@@ -891,7 +891,7 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
 	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
 
 	      octave_idx_type *perm = mattyp.triangular_perm();
-	      if (typ == SparseType::Permuted_Upper)
+	      if (typ == MatrixType::Permuted_Upper)
 		{
 		  for (octave_idx_type i = 0; i < nr; i++)
 		    rperm[perm[i]] = i;
@@ -996,26 +996,26 @@ SparseMatrix::tinverse (SparseType &mattyp, octave_idx_type& info,
 }
 
 SparseMatrix
-SparseMatrix::inverse (SparseType &mattype, octave_idx_type& info, 
+SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info, 
 		       double& rcond, int, int calc_cond) const
 {
   int typ = mattype.type (false);
   SparseMatrix ret;
 
-  if (typ == SparseType::Unknown)
+  if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
+  if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
     ret = dinverse (mattype, info, rcond, true, calc_cond);
-  else if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+  else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
     ret = tinverse (mattype, info, rcond, true, calc_cond).transpose();
-  else if (typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+  else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     ret = transpose().tinverse (mattype, info, rcond, true, calc_cond);
-  else if (typ != SparseType::Rectangular)
+  else if (typ != MatrixType::Rectangular)
     {
       if (mattype.is_hermitian())
 	{
-	  SparseType tmp_typ (SparseType::Upper);
+	  MatrixType tmp_typ (MatrixType::Upper);
 	  SparseCHOL fact (*this, info, false);
 	  rcond = fact.rcond();
 	  if (info == 0)
@@ -1030,7 +1030,7 @@ SparseMatrix::inverse (SparseType &mattype, octave_idx_type& info,
 	    {
 	      // Matrix is either singular or not positive definite
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Full;
+	      typ = MatrixType::Full;
 	    }
 	}
 
@@ -1041,7 +1041,7 @@ SparseMatrix::inverse (SparseType &mattype, octave_idx_type& info,
 	  for (octave_idx_type i = 0; i < n; i++)
 	    Qinit(i) = i;
 
-	  SparseType tmp_typ (SparseType::Upper);
+	  MatrixType tmp_typ (MatrixType::Upper);
 	  SparseLU fact (*this, Qinit, -1.0, false);
 	  rcond = fact.rcond();
 	  double rcond2;
@@ -1194,7 +1194,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 }
 
 Matrix
-SparseMatrix::dsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err,
+SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& err,
 		      double& rcond, solve_singularity_handler, 
 		      bool calc_cond) const
 {
@@ -1214,11 +1214,11 @@ SparseMatrix::dsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Diagonal ||
-	  typ == SparseType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal ||
+	  typ == MatrixType::Permuted_Diagonal)
 	{
 	  retval.resize (nc, b.cols(), 0.);
-	  if (typ == SparseType::Diagonal)
+	  if (typ == MatrixType::Diagonal)
 	    for (octave_idx_type j = 0; j < b.cols(); j++)
 	      for (octave_idx_type i = 0; i < nm; i++)
 		retval(i,j) = b(i,j) / data (i);
@@ -1252,7 +1252,7 @@ SparseMatrix::dsolve (SparseType &mattype, const Matrix& b, octave_idx_type& err
 }
 
 SparseMatrix
-SparseMatrix::dsolve (SparseType &mattype, const SparseMatrix& b, 
+SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b, 
 		      octave_idx_type& err, double& rcond, 
 		      solve_singularity_handler, bool calc_cond) const
 {
@@ -1272,8 +1272,8 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Diagonal ||
-	  typ == SparseType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal ||
+	  typ == MatrixType::Permuted_Diagonal)
 	{
 	  octave_idx_type b_nc = b.cols ();
 	  octave_idx_type b_nz = b.nnz ();
@@ -1281,7 +1281,7 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseMatrix& b,
 
 	  retval.xcidx(0) = 0;
 	  octave_idx_type ii = 0;
-	  if (typ == SparseType::Diagonal)
+	  if (typ == MatrixType::Diagonal)
 	    for (octave_idx_type j = 0; j < b_nc; j++)
 	      {
 		for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
@@ -1340,7 +1340,7 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::dsolve (SparseType &mattype, const ComplexMatrix& b,
+SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
 		      octave_idx_type& err, double& rcond,
 		      solve_singularity_handler, bool calc_cond) const
 {
@@ -1360,11 +1360,11 @@ SparseMatrix::dsolve (SparseType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Diagonal ||
-	  typ == SparseType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal ||
+	  typ == MatrixType::Permuted_Diagonal)
 	{
 	  retval.resize (nc, b.cols(), 0);
-	  if (typ == SparseType::Diagonal)
+	  if (typ == MatrixType::Diagonal)
 	    for (octave_idx_type j = 0; j < b.cols(); j++)
 		for (octave_idx_type i = 0; i < nm; i++)
 		  retval(i,j) = b(i,j) / data (i);
@@ -1398,7 +1398,7 @@ SparseMatrix::dsolve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::dsolve (SparseType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 		     octave_idx_type& err, double& rcond, 
 		     solve_singularity_handler, bool calc_cond) const
 {
@@ -1418,8 +1418,8 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Diagonal ||
-	  typ == SparseType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal ||
+	  typ == MatrixType::Permuted_Diagonal)
 	{
 	  octave_idx_type b_nc = b.cols ();
 	  octave_idx_type b_nz = b.nnz ();
@@ -1427,7 +1427,7 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseComplexMatrix& b,
 
 	  retval.xcidx(0) = 0;
 	  octave_idx_type ii = 0;
-	  if (typ == SparseType::Diagonal)
+	  if (typ == MatrixType::Diagonal)
 	    for (octave_idx_type j = 0; j < b.cols(); j++)
 	      {
 		for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
@@ -1486,7 +1486,7 @@ SparseMatrix::dsolve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::utsolve (SparseType &mattype, const Matrix& b,
+SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
 		       octave_idx_type& err, double& rcond,
 		       solve_singularity_handler sing_handler, 
 		       bool calc_cond) const
@@ -1507,8 +1507,8 @@ SparseMatrix::utsolve (SparseType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Permuted_Upper ||
-	  typ == SparseType::Upper)
+      if (typ == MatrixType::Permuted_Upper ||
+	  typ == MatrixType::Upper)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -1528,7 +1528,7 @@ SparseMatrix::utsolve (SparseType &mattype, const Matrix& b,
 		}
 	    }
 
-	  if (typ == SparseType::Permuted_Upper)
+	  if (typ == MatrixType::Permuted_Upper)
 	    {
 	      retval.resize (nc, b_nc);
 	      octave_idx_type *perm = mattype.triangular_perm ();
@@ -1719,7 +1719,7 @@ SparseMatrix::utsolve (SparseType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
+SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
 		       octave_idx_type& err, double& rcond, 
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -1740,8 +1740,8 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Permuted_Upper ||
-	  typ == SparseType::Upper)
+      if (typ == MatrixType::Permuted_Upper ||
+	  typ == MatrixType::Upper)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -1767,7 +1767,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
 	  octave_idx_type ii = 0;
 	  octave_idx_type x_nz = b_nz;
 
-	  if (typ == SparseType::Permuted_Upper)
+	  if (typ == MatrixType::Permuted_Upper)
 	    {
 	      octave_idx_type *perm = mattype.triangular_perm ();
 	      OCTAVE_LOCAL_BUFFER (double, work, nm);
@@ -2004,7 +2004,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b, 
 		       octave_idx_type& err, double& rcond, 
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -2025,8 +2025,8 @@ SparseMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Permuted_Upper ||
-	  typ == SparseType::Upper)
+      if (typ == MatrixType::Permuted_Upper ||
+	  typ == MatrixType::Upper)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -2046,7 +2046,7 @@ SparseMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b,
 		}
 	    }
 
-	  if (typ == SparseType::Permuted_Upper)
+	  if (typ == MatrixType::Permuted_Upper)
 	    {
 	      retval.resize (nc, b_nc);
 	      octave_idx_type *perm = mattype.triangular_perm ();
@@ -2240,7 +2240,7 @@ SparseMatrix::utsolve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 		       octave_idx_type& err, double& rcond, 
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -2261,8 +2261,8 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Permuted_Upper ||
-	  typ == SparseType::Upper)
+      if (typ == MatrixType::Permuted_Upper ||
+	  typ == MatrixType::Upper)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -2288,7 +2288,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  octave_idx_type ii = 0;
 	  octave_idx_type x_nz = b_nz;
 
-	  if (typ == SparseType::Permuted_Upper)
+	  if (typ == MatrixType::Permuted_Upper)
 	    {
 	      octave_idx_type *perm = mattype.triangular_perm ();
 	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
@@ -2528,7 +2528,7 @@ SparseMatrix::utsolve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::ltsolve (SparseType &mattype, const Matrix& b,
+SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
 		       octave_idx_type& err, double& rcond,
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -2549,8 +2549,8 @@ SparseMatrix::ltsolve (SparseType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Permuted_Lower ||
-	  typ == SparseType::Lower)
+      if (typ == MatrixType::Permuted_Lower ||
+	  typ == MatrixType::Lower)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -2570,7 +2570,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const Matrix& b,
 		}
 	    }
 
-	  if (typ == SparseType::Permuted_Lower)
+	  if (typ == MatrixType::Permuted_Lower)
 	    {
 	      retval.resize (nc, b_nc);
 	      OCTAVE_LOCAL_BUFFER (double, work, nm);
@@ -2786,7 +2786,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b, 
+SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b, 
 		       octave_idx_type& err, double& rcond, 
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -2807,8 +2807,8 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Permuted_Lower ||
-	  typ == SparseType::Lower)
+      if (typ == MatrixType::Permuted_Lower ||
+	  typ == MatrixType::Lower)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -2834,7 +2834,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b,
 	  octave_idx_type ii = 0;
 	  octave_idx_type x_nz = b_nz;
 
-	  if (typ == SparseType::Permuted_Lower)
+	  if (typ == MatrixType::Permuted_Lower)
 	    {
 	      OCTAVE_LOCAL_BUFFER (double, work, nm);
 	      octave_idx_type *perm = mattype.triangular_perm ();
@@ -3091,7 +3091,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b, 
 		       octave_idx_type& err, double& rcond, 
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -3112,8 +3112,8 @@ SparseMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Permuted_Lower ||
-	  typ == SparseType::Lower)
+      if (typ == MatrixType::Permuted_Lower ||
+	  typ == MatrixType::Lower)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -3133,7 +3133,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b,
 		}
 	    }
 
-	  if (typ == SparseType::Permuted_Lower)
+	  if (typ == MatrixType::Permuted_Lower)
 	    {
 	      retval.resize (nc, b_nc);
 	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
@@ -3350,7 +3350,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 		       octave_idx_type& err, double& rcond, 
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
@@ -3371,8 +3371,8 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Permuted_Lower ||
-	  typ == SparseType::Lower)
+      if (typ == MatrixType::Permuted_Lower ||
+	  typ == MatrixType::Lower)
 	{
 	  double anorm = 0.;
 	  double ainvnorm = 0.;
@@ -3398,7 +3398,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  octave_idx_type ii = 0;
 	  octave_idx_type x_nz = b_nz;
 
-	  if (typ == SparseType::Permuted_Lower)
+	  if (typ == MatrixType::Permuted_Lower)
 	    {
 	      OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
 	      octave_idx_type *perm = mattype.triangular_perm ();
@@ -3657,7 +3657,7 @@ SparseMatrix::ltsolve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::trisolve (SparseType &mattype, const Matrix& b,
+SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 			octave_idx_type& err, double& rcond,
 			solve_singularity_handler sing_handler,
 			bool calc_cond) const
@@ -3680,7 +3680,7 @@ SparseMatrix::trisolve (SparseType &mattype, const Matrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Tridiagonal_Hermitian)
+      if (typ == MatrixType::Tridiagonal_Hermitian)
 	{
 	  OCTAVE_LOCAL_BUFFER (double, D, nr);
 	  OCTAVE_LOCAL_BUFFER (double, DL, nr - 1);
@@ -3730,13 +3730,13 @@ SparseMatrix::trisolve (SparseType &mattype, const Matrix& b,
 	    {
 	      err = 0;
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Tridiagonal;
+	      typ = MatrixType::Tridiagonal;
 	    }
 	  else 
 	    rcond = 1.;
 	}
 
-      if (typ == SparseType::Tridiagonal)
+      if (typ == MatrixType::Tridiagonal)
 	{
 	  OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
 	  OCTAVE_LOCAL_BUFFER (double, D, nr);
@@ -3804,7 +3804,7 @@ SparseMatrix::trisolve (SparseType &mattype, const Matrix& b,
 	  else 
 	    rcond = 1.;
 	}
-      else if (typ != SparseType::Tridiagonal_Hermitian)
+      else if (typ != MatrixType::Tridiagonal_Hermitian)
 	       (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -3812,7 +3812,7 @@ SparseMatrix::trisolve (SparseType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::trisolve (SparseType &mattype, const SparseMatrix& b, 
+SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b, 
 			octave_idx_type& err, double& rcond, 
 			solve_singularity_handler sing_handler,
 			bool calc_cond) const
@@ -3836,8 +3836,8 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseMatrix& b,
       mattype.info ();
       
       // Note can't treat symmetric case as there is no dpttrf function
-      if (typ == SparseType::Tridiagonal ||
-	  typ == SparseType::Tridiagonal_Hermitian)
+      if (typ == MatrixType::Tridiagonal ||
+	  typ == MatrixType::Tridiagonal_Hermitian)
 	{
 	  OCTAVE_LOCAL_BUFFER (double, DU2, nr - 2);
 	  OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
@@ -3962,7 +3962,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseMatrix& b,
 		}
 	    }
 	}
-      else if (typ != SparseType::Tridiagonal_Hermitian)
+      else if (typ != MatrixType::Tridiagonal_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -3970,7 +3970,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b, 
 			octave_idx_type& err, double& rcond, 
 			solve_singularity_handler sing_handler,
 			bool calc_cond) const
@@ -3993,7 +3993,7 @@ SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
       
-      if (typ == SparseType::Tridiagonal_Hermitian)
+      if (typ == MatrixType::Tridiagonal_Hermitian)
 	{
 	  OCTAVE_LOCAL_BUFFER (double, D, nr);
 	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
@@ -4049,11 +4049,11 @@ SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b,
 	    {
 	      err = 0;
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Tridiagonal;
+	      typ = MatrixType::Tridiagonal;
 	    }
 	}
 
-      if (typ == SparseType::Tridiagonal)
+      if (typ == MatrixType::Tridiagonal)
 	{
 	  OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
 	  OCTAVE_LOCAL_BUFFER (Complex, D, nr);
@@ -4124,7 +4124,7 @@ SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b,
 		  ("matrix singular to machine precision");
 	    }
 	}
-      else if (typ != SparseType::Tridiagonal_Hermitian)
+      else if (typ != MatrixType::Tridiagonal_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -4132,7 +4132,7 @@ SparseMatrix::trisolve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 			octave_idx_type& err, double& rcond, 
 			solve_singularity_handler sing_handler,
 			bool calc_cond) const
@@ -4156,8 +4156,8 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
       mattype.info ();
       
       // Note can't treat symmetric case as there is no dpttrf function
-      if (typ == SparseType::Tridiagonal ||
-	  typ == SparseType::Tridiagonal_Hermitian)
+      if (typ == MatrixType::Tridiagonal ||
+	  typ == MatrixType::Tridiagonal_Hermitian)
 	{
 	  OCTAVE_LOCAL_BUFFER (double, DU2, nr - 2);
 	  OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
@@ -4321,7 +4321,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
 		}
 	    }
 	}
-      else if (typ != SparseType::Tridiagonal_Hermitian)
+      else if (typ != MatrixType::Tridiagonal_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -4329,7 +4329,7 @@ SparseMatrix::trisolve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::bsolve (SparseType &mattype, const Matrix& b,
+SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 		      octave_idx_type& err, double& rcond,
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -4349,7 +4349,7 @@ SparseMatrix::bsolve (SparseType &mattype, const Matrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Banded_Hermitian)
+      if (typ == MatrixType::Banded_Hermitian)
 	{
 	  octave_idx_type n_lower = mattype.nlower ();
 	  octave_idx_type ldm = n_lower + 1;
@@ -4393,7 +4393,7 @@ SparseMatrix::bsolve (SparseType &mattype, const Matrix& b,
 		  // Matrix is not positive definite!! Fall through to
 		  // unsymmetric banded solver.
 		  mattype.mark_as_unsymmetric ();
-		  typ = SparseType::Banded;
+		  typ = MatrixType::Banded;
 		  rcond = 0.0;
 		  err = 0;
 		} 
@@ -4467,7 +4467,7 @@ SparseMatrix::bsolve (SparseType &mattype, const Matrix& b,
 	    }
 	}
 
-      if (typ == SparseType::Banded)
+      if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
 	  int n_upper = mattype.nupper ();
@@ -4596,7 +4596,7 @@ SparseMatrix::bsolve (SparseType &mattype, const Matrix& b,
 		}
 	    }
 	}
-      else if (typ != SparseType::Banded_Hermitian)
+      else if (typ != MatrixType::Banded_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -4604,7 +4604,7 @@ SparseMatrix::bsolve (SparseType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b,
+SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 		      octave_idx_type& err, double& rcond, 
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -4624,7 +4624,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Banded_Hermitian)
+      if (typ == MatrixType::Banded_Hermitian)
 	{
 	  int n_lower = mattype.nlower ();
 	  int ldm = n_lower + 1;
@@ -4667,7 +4667,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b,
 	      if (err != 0) 
 		{
 		  mattype.mark_as_unsymmetric ();
-		  typ = SparseType::Banded;
+		  typ = MatrixType::Banded;
 		  rcond = 0.0;
 		  err = 0;
 		} 
@@ -4780,7 +4780,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b,
 	    }
 	}
 
-      if (typ == SparseType::Banded)
+      if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
 	  octave_idx_type n_upper = mattype.nupper ();
@@ -4947,7 +4947,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b,
 		}
 	    }
 	}
-      else if (typ != SparseType::Banded_Hermitian)
+      else if (typ != MatrixType::Banded_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -4955,7 +4955,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::bsolve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b, 
 		      octave_idx_type& err, double& rcond, 
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -4975,7 +4975,7 @@ SparseMatrix::bsolve (SparseType &mattype, const ComplexMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Banded_Hermitian)
+      if (typ == MatrixType::Banded_Hermitian)
 	{
 	  octave_idx_type n_lower = mattype.nlower ();
 	  octave_idx_type ldm = n_lower + 1;
@@ -5020,7 +5020,7 @@ SparseMatrix::bsolve (SparseType &mattype, const ComplexMatrix& b,
 		  // Matrix is not positive definite!! Fall through to
 		  // unsymmetric banded solver.
 		  mattype.mark_as_unsymmetric ();
-		  typ = SparseType::Banded;
+		  typ = MatrixType::Banded;
 		  rcond = 0.0;
 		  err = 0;
 		} 
@@ -5137,7 +5137,7 @@ SparseMatrix::bsolve (SparseType &mattype, const ComplexMatrix& b,
 	    }
 	}
 
-      if (typ == SparseType::Banded)
+      if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
 	  int n_upper = mattype.nupper ();
@@ -5294,7 +5294,7 @@ SparseMatrix::bsolve (SparseType &mattype, const ComplexMatrix& b,
 		}
 	    }
 	}
-      else if (typ != SparseType::Banded_Hermitian)
+      else if (typ != MatrixType::Banded_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
@@ -5302,7 +5302,7 @@ SparseMatrix::bsolve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 		      octave_idx_type& err, double& rcond, 
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -5322,7 +5322,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Banded_Hermitian)
+      if (typ == MatrixType::Banded_Hermitian)
 	{
 	  int n_lower = mattype.nlower ();
 	  int ldm = n_lower + 1;
@@ -5367,7 +5367,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		  // Matrix is not positive definite!! Fall through to
 		  // unsymmetric banded solver.
 		  mattype.mark_as_unsymmetric ();
-		  typ = SparseType::Banded;
+		  typ = MatrixType::Banded;
 
 		  rcond = 0.0;
 		  err = 0;
@@ -5515,7 +5515,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	    }
 	}
 
-      if (typ == SparseType::Banded)
+      if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
 	  int n_upper = mattype.nupper ();
@@ -5704,7 +5704,7 @@ SparseMatrix::bsolve (SparseType &mattype, const SparseComplexMatrix& b,
 		}
 	    }
 	}
-      else if (typ != SparseType::Banded_Hermitian)
+      else if (typ != MatrixType::Banded_Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
@@ -5824,7 +5824,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
 }
 
 Matrix
-SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
+SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 		      octave_idx_type& err, double& rcond, 
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -5844,7 +5844,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Hermitian)
+      if (typ == MatrixType::Hermitian)
 	{
 #ifdef HAVE_CHOLMOD
 	  cholmod_common Common;
@@ -5945,7 +5945,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
 	    {
 	      // Either its indefinite or singular. Try UMFPACK
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Full;
+	      typ = MatrixType::Full;
 	    }
 	  else
 	    {
@@ -5993,11 +5993,11 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
 	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
-	  typ = SparseType::Full;
+	  typ = MatrixType::Full;
 #endif
 	}
 
-      if (typ == SparseType::Full)
+      if (typ == MatrixType::Full)
 	{
 #ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
@@ -6047,7 +6047,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
 	}
-      else if (typ != SparseType::Hermitian)
+      else if (typ != MatrixType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
@@ -6055,7 +6055,7 @@ SparseMatrix::fsolve (SparseType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
+SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 		      octave_idx_type& err, double& rcond,
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -6075,7 +6075,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Hermitian)
+      if (typ == MatrixType::Hermitian)
 	{
 #ifdef HAVE_CHOLMOD
 	  cholmod_common Common;
@@ -6187,7 +6187,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	    {
 	      // Either its indefinite or singular. Try UMFPACK
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Full;
+	      typ = MatrixType::Full;
 	    }
 	  else
 	    {
@@ -6240,11 +6240,11 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
-	  typ = SparseType::Full;
+	  typ = MatrixType::Full;
 #endif
 	}
 
-      if (typ == SparseType::Full)
+      if (typ == MatrixType::Full)
 	{
 #ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
@@ -6326,7 +6326,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
 	}
-      else if (typ != SparseType::Hermitian)
+      else if (typ != MatrixType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
@@ -6334,7 +6334,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b, 
 		      octave_idx_type& err, double& rcond,
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -6354,7 +6354,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Hermitian)
+      if (typ == MatrixType::Hermitian)
 	{
 #ifdef HAVE_CHOLMOD
 	  cholmod_common Common;
@@ -6456,7 +6456,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 	    {
 	      // Either its indefinite or singular. Try UMFPACK
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Full;
+	      typ = MatrixType::Full;
 	    }
 	  else
 	    {
@@ -6504,11 +6504,11 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
-	  typ = SparseType::Full;
+	  typ = MatrixType::Full;
 #endif
 	}
 
-      if (typ == SparseType::Full)
+      if (typ == MatrixType::Full)
 	{
 #ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
@@ -6577,7 +6577,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
 	}
-      else if (typ != SparseType::Hermitian)
+      else if (typ != MatrixType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
@@ -6585,7 +6585,7 @@ SparseMatrix::fsolve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b, 
+SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b, 
 		      octave_idx_type& err, double& rcond,
 		      solve_singularity_handler sing_handler,
 		      bool calc_cond) const
@@ -6605,7 +6605,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
       volatile int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == SparseType::Hermitian)
+      if (typ == MatrixType::Hermitian)
 	{
 #ifdef HAVE_CHOLMOD
 	  cholmod_common Common;
@@ -6717,7 +6717,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	    {
 	      // Either its indefinite or singular. Try UMFPACK
 	      mattype.mark_as_unsymmetric ();
-	      typ = SparseType::Full;
+	      typ = MatrixType::Full;
 	    }
 	  else
 	    {
@@ -6771,11 +6771,11 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	    ("CHOLMOD not installed");
 
 	  mattype.mark_as_unsymmetric ();
-	  typ = SparseType::Full;
+	  typ = MatrixType::Full;
 #endif
 	}
 
-      if (typ == SparseType::Full)
+      if (typ == MatrixType::Full)
 	{
 #ifdef HAVE_UMFPACK
 	  Matrix Control, Info;
@@ -6866,7 +6866,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 	  (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
 	}
-      else if (typ != SparseType::Hermitian)
+      else if (typ != MatrixType::Hermitian)
 	(*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
@@ -6874,7 +6874,7 @@ SparseMatrix::fsolve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::solve (SparseType &mattype, const Matrix& b) const
+SparseMatrix::solve (MatrixType &mattype, const Matrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6882,7 +6882,7 @@ SparseMatrix::solve (SparseType &mattype, const Matrix& b) const
 }
 
 Matrix
-SparseMatrix::solve (SparseType &mattype, const Matrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const Matrix& b, 
 		     octave_idx_type& info) const
 {
   double rcond;
@@ -6890,45 +6890,45 @@ SparseMatrix::solve (SparseType &mattype, const Matrix& b,
 }
 
 Matrix
-SparseMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_type& info, 
+SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info, 
 		     double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 Matrix
-SparseMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_type& err, 
+SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& err, 
 		     double& rcond, solve_singularity_handler sing_handler,
 		     bool singular_fallback) const
 {
   Matrix retval;
   int typ = mattype.type (false);
 
-  if (typ == SparseType::Unknown)
+  if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
   // Only calculate the condition number for CHOLMOD/UMFPACK
-  if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
+  if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
     retval = dsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+  else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
     retval = utsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+  else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Banded || typ == SparseType::Banded_Hermitian)
+  else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Tridiagonal || 
-	   typ == SparseType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal || 
+	   typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Full || typ == SparseType::Hermitian)
+  else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
-  else if (typ != SparseType::Rectangular)
+  else if (typ != MatrixType::Rectangular)
     {
       (*current_liboctave_error_handler) ("unknown matrix type");
       return Matrix ();
     }
 
   // Rectangular or one of the above solvers flags a singular matrix
-  if (singular_fallback && mattype.type (false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -6942,7 +6942,7 @@ SparseMatrix::solve (SparseType &mattype, const Matrix& b, octave_idx_type& err,
 }
 
 SparseMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b) const
+SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6950,7 +6950,7 @@ SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b) const
 }
 
 SparseMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b, 
 		     octave_idx_type& info) const
 {
   double rcond;
@@ -6958,14 +6958,14 @@ SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b,
 }
 
 SparseMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
 		     octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 SparseMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b, 
 		     octave_idx_type& err, double& rcond,
 		     solve_singularity_handler sing_handler,
 		     bool singular_fallback) const
@@ -6973,29 +6973,29 @@ SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b,
   SparseMatrix retval;
   int typ = mattype.type (false);
 
-  if (typ == SparseType::Unknown)
+  if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
+  if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
     retval = dsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+  else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
     retval = utsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+  else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Banded || typ == SparseType::Banded_Hermitian)
+  else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Tridiagonal || 
-	   typ == SparseType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal || 
+	   typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Full || typ == SparseType::Hermitian)
+  else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
-  else if (typ != SparseType::Rectangular)
+  else if (typ != MatrixType::Rectangular)
     {
       (*current_liboctave_error_handler) ("unknown matrix type");
       return SparseMatrix ();
     }
 
-  if (singular_fallback && mattype.type (false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -7010,7 +7010,7 @@ SparseMatrix::solve (SparseType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b) const
+SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -7018,7 +7018,7 @@ SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b) const
 }
 
 ComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
 			    octave_idx_type& info) const
 {
   double rcond;
@@ -7026,14 +7026,14 @@ SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
 		     octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
 		     octave_idx_type& err, double& rcond, 
 		     solve_singularity_handler sing_handler,
 		     bool singular_fallback) const
@@ -7041,29 +7041,29 @@ SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b,
   ComplexMatrix retval;
   int typ = mattype.type (false);
 
-  if (typ == SparseType::Unknown)
+  if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
+  if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
     retval = dsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+  else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
     retval = utsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+  else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Banded || typ == SparseType::Banded_Hermitian)
+  else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Tridiagonal || 
-	   typ == SparseType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal || 
+	   typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Full || typ == SparseType::Hermitian)
+  else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
-  else if (typ != SparseType::Rectangular)
+  else if (typ != MatrixType::Rectangular)
     {
       (*current_liboctave_error_handler) ("unknown matrix type");
       return ComplexMatrix ();
     }
 
-  if (singular_fallback && mattype.type(false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type(false) == MatrixType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -7078,7 +7078,7 @@ SparseMatrix::solve (SparseType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b) const
+SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -7086,7 +7086,7 @@ SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b) const
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b, 
 		     octave_idx_type& info) const
 {
   double rcond;
@@ -7094,14 +7094,14 @@ SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
 		     octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b, 
+SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b, 
 		     octave_idx_type& err, double& rcond,
 		     solve_singularity_handler sing_handler,
 		     bool singular_fallback) const
@@ -7109,29 +7109,29 @@ SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
   SparseComplexMatrix retval;
   int typ = mattype.type (false);
 
-  if (typ == SparseType::Unknown)
+  if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == SparseType::Diagonal || typ == SparseType::Permuted_Diagonal)
+  if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
     retval = dsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Upper || typ == SparseType::Permuted_Upper)
+  else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
     retval = utsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Lower || typ == SparseType::Permuted_Lower)
+  else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Banded || typ == SparseType::Banded_Hermitian)
+  else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Tridiagonal || 
-	   typ == SparseType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal || 
+	   typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == SparseType::Full || typ == SparseType::Hermitian)
+  else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
-  else if (typ != SparseType::Rectangular)
+  else if (typ != MatrixType::Rectangular)
     {
       (*current_liboctave_error_handler) ("unknown matrix type");
       return SparseComplexMatrix ();
     }
 
-  if (singular_fallback && mattype.type(false) == SparseType::Rectangular)
+  if (singular_fallback && mattype.type(false) == MatrixType::Rectangular)
     {
       rcond = 1.;
 #ifdef USE_QRSOLVE
@@ -7146,27 +7146,27 @@ SparseMatrix::solve (SparseType &mattype, const SparseComplexMatrix& b,
 }
 
 ColumnVector
-SparseMatrix::solve (SparseType &mattype, const ColumnVector& b) const
+SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b) const
 {
   octave_idx_type info; double rcond;
   return solve (mattype, b, info, rcond);
 }
 
 ColumnVector
-SparseMatrix::solve (SparseType &mattype, const ColumnVector& b, octave_idx_type& info) const
+SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b, octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond);
 }
 
 ColumnVector
-SparseMatrix::solve (SparseType &mattype, const ColumnVector& b, octave_idx_type& info, double& rcond) const
+SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b, octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ColumnVector
-SparseMatrix::solve (SparseType &mattype, const ColumnVector& b, octave_idx_type& info, double& rcond,
+SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
   Matrix tmp (b);
@@ -7174,7 +7174,7 @@ SparseMatrix::solve (SparseType &mattype, const ColumnVector& b, octave_idx_type
 }
 
 ComplexColumnVector
-SparseMatrix::solve (SparseType &mattype, const ComplexColumnVector& b) const
+SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -7182,21 +7182,21 @@ SparseMatrix::solve (SparseType &mattype, const ComplexColumnVector& b) const
 }
 
 ComplexColumnVector
-SparseMatrix::solve (SparseType &mattype, const ComplexColumnVector& b, octave_idx_type& info) const
+SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b, octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexColumnVector
-SparseMatrix::solve (SparseType &mattype, const ComplexColumnVector& b, octave_idx_type& info, 
+SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b, octave_idx_type& info, 
 		     double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexColumnVector
-SparseMatrix::solve (SparseType &mattype, const ComplexColumnVector& b, octave_idx_type& info, double& rcond,
+SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (b);
@@ -7230,7 +7230,7 @@ SparseMatrix::solve (const Matrix& b, octave_idx_type& err,
 		     double& rcond, 
 		     solve_singularity_handler sing_handler) const
 {
-  SparseType mattype (*this);
+  MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
 }
 
@@ -7262,7 +7262,7 @@ SparseMatrix::solve (const SparseMatrix& b,
 		     octave_idx_type& err, double& rcond,
 		     solve_singularity_handler sing_handler) const
 {
-  SparseType mattype (*this);
+  MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
 }
 
@@ -7286,7 +7286,7 @@ SparseMatrix::solve (const ComplexMatrix& b,
 		     octave_idx_type& err, double& rcond, 
 		     solve_singularity_handler sing_handler) const
 {
-  SparseType mattype (*this);
+  MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
 }
 
@@ -7318,7 +7318,7 @@ SparseMatrix::solve (const SparseComplexMatrix& b,
 		     octave_idx_type& err, double& rcond,
 		     solve_singularity_handler sing_handler) const
 {
-  SparseType mattype (*this);
+  MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
 }
 

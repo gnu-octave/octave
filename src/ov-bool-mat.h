@@ -38,6 +38,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
+#include "MatrixType.h"
+
 class Octave_map;
 class octave_value_list;
 
@@ -58,6 +60,9 @@ public:
 
   octave_bool_matrix (const boolMatrix& bm)
     : octave_base_matrix<boolNDArray> (bm) { }
+
+  octave_bool_matrix (const boolMatrix& bm, const MatrixType& t)
+    : octave_base_matrix<boolNDArray> (bm, t) { }
 
   octave_bool_matrix (const Array2<bool>& a)
     : octave_base_matrix<boolNDArray> (a) { }

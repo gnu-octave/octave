@@ -40,7 +40,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-alloc.h"
 #include "oct-time.h"
 #include "str-vec.h"
-#include "SparseType.h"
 
 class Cell;
 class streamoff_array;
@@ -163,21 +162,21 @@ public:
   octave_value (double d);
   octave_value (const ArrayN<octave_value>& a, bool is_cs_list = false);
   octave_value (const Cell& c, bool is_cs_list = false);
-  octave_value (const Matrix& m);
+  octave_value (const Matrix& m, const MatrixType& t = MatrixType());
   octave_value (const NDArray& nda);
   octave_value (const ArrayN<double>& m);
   octave_value (const DiagMatrix& d);
   octave_value (const RowVector& v);
   octave_value (const ColumnVector& v);
   octave_value (const Complex& C);
-  octave_value (const ComplexMatrix& m);
+  octave_value (const ComplexMatrix& m, const MatrixType& t = MatrixType());
   octave_value (const ComplexNDArray& cnda);
   octave_value (const ArrayN<Complex>& m);
   octave_value (const ComplexDiagMatrix& d);
   octave_value (const ComplexRowVector& v);
   octave_value (const ComplexColumnVector& v);
   octave_value (bool b);
-  octave_value (const boolMatrix& bm);
+  octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
   octave_value (const boolNDArray& bnda);
   octave_value (char c, char type = '"');
   octave_value (const char *s, char type = '"');
@@ -189,11 +188,11 @@ public:
 		char type = '"');
   octave_value (const ArrayN<char>& chnda, bool is_string = false,
 		char type = '"');
-  octave_value (const SparseMatrix& m, const SparseType& t = SparseType ());
+  octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m, 
-		const SparseType& t = SparseType ());
+		const MatrixType& t = MatrixType ());
   octave_value (const SparseBoolMatrix& bm, 
-		const SparseType& t = SparseType ());
+		const MatrixType& t = MatrixType ());
   octave_value (const octave_int8& i);
   octave_value (const octave_int16& i);
   octave_value (const octave_int32& i);
@@ -363,6 +362,12 @@ public:
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
     { return rep->resize (dv, fill);}
+
+  MatrixType matrix_type (void) const
+  { return rep->matrix_type (); }
+
+  MatrixType matrix_type (const MatrixType& typ) const
+  { return rep->matrix_type (typ); }
 
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of

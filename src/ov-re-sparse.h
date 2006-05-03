@@ -39,7 +39,7 @@ Boston, MA 02110-1301, USA.
 #include "ov-typeinfo.h"
 
 #include "dSparse.h"
-#include "SparseType.h"
+#include "MatrixType.h"
 #include "ov-base-sparse.h"
 #include "ov-bool-sparse.h"
 #include "ov-cx-sparse.h"
@@ -66,7 +66,7 @@ public:
   octave_sparse_matrix (const SparseMatrix& m)
     : octave_base_sparse<SparseMatrix> (m) { }
 
-  octave_sparse_matrix (const SparseMatrix& m, const SparseType& t)
+  octave_sparse_matrix (const SparseMatrix& m, const MatrixType& t)
     : octave_base_sparse<SparseMatrix> (m, t) { }
 
   octave_sparse_matrix (const MSparse<double>& m)

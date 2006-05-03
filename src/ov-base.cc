@@ -250,6 +250,20 @@ octave_base_value::resize (const dim_vector&, bool) const
   return octave_value ();
 }
 
+MatrixType 
+octave_base_value::matrix_type (void) const
+{
+  gripe_wrong_type_arg ("octave_base_value::matrix_type ()", type_name ());
+  return MatrixType ();
+}
+
+MatrixType 
+octave_base_value::matrix_type (const MatrixType&) const
+{
+  gripe_wrong_type_arg ("octave_base_value::matrix_type ()", type_name ());
+  return MatrixType ();
+}
+
 octave_value
 octave_base_value::all (int) const
 {

@@ -183,6 +183,10 @@ public:
 
   virtual octave_value resize (const dim_vector&, bool fill = false) const;
 
+  virtual MatrixType matrix_type (void) const;
+
+  virtual MatrixType matrix_type (const MatrixType& typ) const;
+
   virtual bool is_defined (void) const { return false; }
 
   bool is_empty (void) const { return numel () == 0; }

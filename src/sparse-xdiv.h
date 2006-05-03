@@ -24,27 +24,27 @@ Boston, MA 02110-1301, USA.
 #define octave_sparse_xdiv_h 1
 
 #include "oct-cmplx.h"
-#include "SparseType.h"
+#include "MatrixType.h"
 
 class SparseMatrix;
 class SparseComplexMatrix;
 
-extern Matrix xdiv (const Matrix& a, const SparseMatrix& b, SparseType &typ);
+extern Matrix xdiv (const Matrix& a, const SparseMatrix& b, MatrixType &typ);
 extern ComplexMatrix xdiv (const Matrix& a, const SparseComplexMatrix& b,
-			   SparseType &typ);
+			   MatrixType &typ);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const SparseMatrix& b,
-			   SparseType &typ);
+			   MatrixType &typ);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, 
-			   const SparseComplexMatrix& b, SparseType &typ);
+			   const SparseComplexMatrix& b, MatrixType &typ);
 
 extern SparseMatrix xdiv (const SparseMatrix& a, const SparseMatrix& b,
-			  SparseType &typ);
+			  MatrixType &typ);
 extern SparseComplexMatrix xdiv (const SparseMatrix& a, 
-				 const SparseComplexMatrix& b, SparseType &typ);
+				 const SparseComplexMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a, 
-				 const SparseMatrix& b, SparseType &typ);
+				 const SparseMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a, 
-				 const SparseComplexMatrix& b, SparseType &typ);
+				 const SparseComplexMatrix& b, MatrixType &typ);
 
 extern Matrix x_el_div (double a, const SparseMatrix& b);
 extern ComplexMatrix x_el_div (double a, const SparseComplexMatrix& b);
@@ -53,22 +53,22 @@ extern ComplexMatrix x_el_div (const Complex a,
 			       const SparseComplexMatrix& b);
 
 extern Matrix xleftdiv (const SparseMatrix& a, const Matrix& b, 
-			SparseType& typ);
+			MatrixType& typ);
 extern ComplexMatrix xleftdiv (const SparseMatrix& a, const ComplexMatrix& b,
-			       SparseType &typ);
+			       MatrixType &typ);
 extern ComplexMatrix xleftdiv (const SparseComplexMatrix& a, const Matrix& b,
-			       SparseType &typ);
+			       MatrixType &typ);
 extern ComplexMatrix xleftdiv (const SparseComplexMatrix& a, 
-			       const ComplexMatrix& b, SparseType &typ);
+			       const ComplexMatrix& b, MatrixType &typ);
 
 extern SparseMatrix xleftdiv (const SparseMatrix& a, const SparseMatrix& b,
-			      SparseType &typ);
+			      MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseMatrix& a, 
-				     const SparseComplexMatrix& b, SparseType &typ);
+				     const SparseComplexMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseComplexMatrix& a, 
-				     const SparseMatrix& b, SparseType &typ);
+				     const SparseMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseComplexMatrix& a, 
-				     const SparseComplexMatrix& b, SparseType &typ);
+				     const SparseComplexMatrix& b, MatrixType &typ);
 
 #endif
 

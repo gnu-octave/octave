@@ -61,8 +61,12 @@ DEFBINOP (ldiv, matrix, scalar)
 
   Matrix m1 = v1.matrix_value ();
   Matrix m2 = v2.matrix_value ();
+  MatrixType typ = v1.matrix_type ();
 
-  return octave_value (xleftdiv (m1, m2));
+  Matrix ret = xleftdiv (m1, m2, typ);
+
+  v1.matrix_type (typ);
+  return ret;
 }
 
 DEFNDBINOP_FN (lt, matrix, scalar, array, scalar, mx_el_lt)

@@ -30,7 +30,7 @@ Boston, MA 02110-1301, USA.
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "quit.h"
-#include "SparseType.h"
+#include "MatrixType.h"
 
 #ifdef HAVE_CHOLMOD
 // Can't use CHOLMOD_NAME(drop)(0.0, S, cm). It doesn't treat complex matrices
@@ -283,7 +283,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
   chol_type ret;
   double rcond2;
   octave_idx_type info;
-  SparseType mattype (SparseType::Upper);
+  MatrixType mattype (MatrixType::Upper);
   chol_type linv = L().transpose().inverse(mattype, info, rcond2, 1, 0);
 
   if (perms.length() == n)

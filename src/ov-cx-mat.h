@@ -39,6 +39,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
+#include "MatrixType.h"
+
 class Octave_map;
 class octave_value_list;
 
@@ -59,6 +61,9 @@ public:
 
   octave_complex_matrix (const ComplexMatrix& m)
     : octave_base_matrix<ComplexNDArray> (m) { }
+
+  octave_complex_matrix (const ComplexMatrix& m, const MatrixType& t)
+    : octave_base_matrix<ComplexNDArray> (m, t) { }
 
   octave_complex_matrix (const ArrayN<Complex>& m)
     : octave_base_matrix<ComplexNDArray> (ComplexNDArray (m)) { }

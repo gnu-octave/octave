@@ -108,6 +108,41 @@ extern "C"
 			     const octave_idx_type&, double*, double&, octave_idx_type&,
 			     double*, const octave_idx_type&, octave_idx_type&);
 
+  F77_RET_T
+  F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
+			     double *, const octave_idx_type&, 
+			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dpocon, DPOCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
+			     double*, const octave_idx_type&, const double&,
+			     double&, double*, octave_idx_type*,
+			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+  F77_RET_T
+  F77_FUNC (dpotrs, DPOTRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
+			     const octave_idx_type&, const double*, 
+			     const octave_idx_type&, double*, 
+			     const octave_idx_type&, octave_idx_type&
+			     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dtrcon, DTRCON) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
+			     F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
+			     const double*, const octave_idx_type&, double&,
+			     double*, octave_idx_type*, octave_idx_type& 
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
+  F77_RET_T
+  F77_FUNC (dtrtrs, DTRTRS) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
+			     F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
+			     const octave_idx_type&, const double*, 
+			     const octave_idx_type&, double*, 
+			     const octave_idx_type&, octave_idx_type&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
+
   // Note that the original complex fft routines were not written for
   // double complex arguments.  They have been modified by adding an
   // implicit double precision (a-h,o-z) statement at the beginning of
@@ -1154,6 +1189,569 @@ Matrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
 }
 
 Matrix
+Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+		double& rcond, solve_singularity_handler sing_handler,
+		bool calc_cond) const
+{
+  Matrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == 0 || nc == 0 || nr != b.rows ())
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch solution of linear equations");
+  else
+    {
+      volatile int typ = mattype.type ();
+
+      if (typ == MatrixType::Permuted_Upper ||
+	  typ == MatrixType::Upper)
+	{
+	  octave_idx_type b_nc = b.cols ();
+	  rcond = 1.;
+	  info = 0;
+
+	  if (typ == MatrixType::Permuted_Upper)
+	    {
+	      (*current_liboctave_error_handler)
+		("Permuted triangular matrix not implemented");
+	    }
+	  else
+	    {
+	      const double *tmp_data = fortran_vec ();
+
+	      if (calc_cond)
+		{
+		  char norm = '1';
+		  char uplo = 'U';
+		  char dia = 'N';
+
+		  Array<double> z (3 * nc);
+		  double *pz = z.fortran_vec ();
+		  Array<octave_idx_type> iz (nc);
+		  octave_idx_type *piz = iz.fortran_vec ();
+
+		  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
+					     F77_CONST_CHAR_ARG2 (&uplo, 1), 
+					     F77_CONST_CHAR_ARG2 (&dia, 1), 
+					     nr, tmp_data, nr, rcond,
+					     pz, piz, info
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler) 
+		      ("unrecoverable error in dtrcon");
+
+		  if (info != 0) 
+		    info = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		    {
+		      info = -2;
+
+		      if (sing_handler)
+			sing_handler (rcond);
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+
+	      if (info == 0)
+		{
+		  retval = b;
+		  double *result = retval.fortran_vec ();
+
+		  char uplo = 'U';
+		  char trans = 'N';
+		  char dia = 'N';
+
+		  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1), 
+					     F77_CONST_CHAR_ARG2 (&trans, 1), 
+					     F77_CONST_CHAR_ARG2 (&dia, 1), 
+					     nr, b_nc, tmp_data, nr,
+					     result, nr, info
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler) 
+		      ("unrecoverable error in dtrtrs");
+		}
+	    }
+	}
+      else
+	(*current_liboctave_error_handler) ("incorrect matrix type");
+    }
+
+  return retval;
+}
+
+Matrix
+Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+		double& rcond, solve_singularity_handler sing_handler,
+		bool calc_cond) const
+{
+  Matrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == 0 || nc == 0 || nr != b.rows ())
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch solution of linear equations");
+  else
+    {
+      volatile int typ = mattype.type ();
+
+      if (typ == MatrixType::Permuted_Lower ||
+	  typ == MatrixType::Lower)
+	{
+	  octave_idx_type b_nc = b.cols ();
+	  rcond = 1.;
+	  info = 0;
+
+	  if (typ == MatrixType::Permuted_Lower)
+	    {
+	      (*current_liboctave_error_handler)
+		("Permuted triangular matrix not implemented");
+	    }
+	  else
+	    {
+	      const double *tmp_data = fortran_vec ();
+
+	      if (calc_cond)
+		{
+		  char norm = '1';
+		  char uplo = 'L';
+		  char dia = 'N';
+
+		  Array<double> z (3 * nc);
+		  double *pz = z.fortran_vec ();
+		  Array<octave_idx_type> iz (nc);
+		  octave_idx_type *piz = iz.fortran_vec ();
+
+		  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
+					     F77_CONST_CHAR_ARG2 (&uplo, 1), 
+					     F77_CONST_CHAR_ARG2 (&dia, 1), 
+					     nr, tmp_data, nr, rcond,
+					     pz, piz, info
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler) 
+		      ("unrecoverable error in dtrcon");
+
+		  if (info != 0) 
+		    info = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		    {
+		      info = -2;
+
+		      if (sing_handler)
+			sing_handler (rcond);
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+
+	      if (info == 0)
+		{
+		  retval = b;
+		  double *result = retval.fortran_vec ();
+
+		  char uplo = 'L';
+		  char trans = 'N';
+		  char dia = 'N';
+
+		  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1), 
+					     F77_CONST_CHAR_ARG2 (&trans, 1), 
+					     F77_CONST_CHAR_ARG2 (&dia, 1), 
+					     nr, b_nc, tmp_data, nr,
+					     result, nr, info
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler) 
+		      ("unrecoverable error in dtrtrs");
+		}
+	    }
+	}
+      else
+	(*current_liboctave_error_handler) ("incorrect matrix type");
+    }
+
+  return retval;
+}
+
+Matrix
+Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+		double& rcond, solve_singularity_handler sing_handler,
+		bool calc_cond) const
+{
+  Matrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch solution of linear equations");
+  else
+    {
+      volatile int typ = mattype.type ();
+ 
+     // Calculate the norm of the matrix, for later use.
+      double anorm = -1.;
+
+      if (typ == MatrixType::Hermitian)
+	{
+	  info = 0;
+	  char job = 'L';
+	  Matrix atmp = *this;
+	  double *tmp_data = atmp.fortran_vec ();
+	  anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+
+	  F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr, 
+				     tmp_data, nr, info
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in dpotrf");
+	  else
+	    {
+	      // Throw-away extra info LAPACK gives so as to not change output.
+	      rcond = 0.0;
+	      if (info != 0) 
+		{
+		  info = -2;
+
+		  mattype.mark_as_unsymmetric ();
+		  typ = MatrixType::Full;
+		}
+	      else 
+		{
+		  if (calc_cond)
+		    {
+		      Array<double> z (3 * nc);
+		      double *pz = z.fortran_vec ();
+		      Array<octave_idx_type> iz (nc);
+		      octave_idx_type *piz = iz.fortran_vec ();
+
+		      F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+						 nr, tmp_data, nr, anorm,
+						 rcond, pz, piz, info
+						 F77_CHAR_ARG_LEN (1)));
+
+		      if (f77_exception_encountered)
+			(*current_liboctave_error_handler) 
+			  ("unrecoverable error in dpocon");
+	      
+		      if (info != 0) 
+			info = -2;
+
+		      volatile double rcond_plus_one = rcond + 1.0;
+
+		      if (rcond_plus_one == 1.0 || xisnan (rcond))
+			{
+			  info = -2;
+
+			  if (sing_handler)
+			    sing_handler (rcond);
+			  else
+			    (*current_liboctave_error_handler)
+			      ("matrix singular to machine precision, rcond = %g",
+			       rcond);
+			}
+		    }
+
+		  if (info == 0)
+		    {
+		      retval = b;
+		      double *result = retval.fortran_vec ();
+
+		      octave_idx_type b_nc = b.cols ();
+
+		      F77_XFCN (dpotrs, DPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+						 nr, b_nc, tmp_data, nr,
+						 result, b.rows(), info
+						 F77_CHAR_ARG_LEN (1)));
+		
+		      if (f77_exception_encountered)
+			(*current_liboctave_error_handler)
+			  ("unrecoverable error in dpotrs");
+		    }
+		  else
+		    {
+		      mattype.mark_as_unsymmetric ();
+		      typ = MatrixType::Full;
+		    }		    
+		}
+	    }
+	}
+
+      if (typ == MatrixType::Full)
+	{
+	  info = 0;
+
+	  Array<octave_idx_type> ipvt (nr);
+	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+
+	  Matrix atmp = *this;
+	  double *tmp_data = atmp.fortran_vec ();
+	  if(anorm < 0.)
+	    anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+
+	  Array<double> z (4 * nc);
+	  double *pz = z.fortran_vec ();
+	  Array<octave_idx_type> iz (nc);
+	  octave_idx_type *piz = iz.fortran_vec ();
+
+	  F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in dgetrf");
+	  else
+	    {
+	      // Throw-away extra info LAPACK gives so as to not change output.
+	      rcond = 0.0;
+	      if (info != 0) 
+		{
+		  info = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("matrix singular to machine precision");
+
+		  mattype.mark_as_rectangular ();
+		}
+	      else 
+		{
+		  if (calc_cond)
+		    {
+		      // Now calculate the condition number for 
+		      // non-singular matrix.
+		      char job = '1';
+		      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+						 nc, tmp_data, nr, anorm, 
+						 rcond, pz, piz, info
+						 F77_CHAR_ARG_LEN (1)));
+	      
+		      if (f77_exception_encountered)
+			(*current_liboctave_error_handler) 
+			  ("unrecoverable error in dgecon");
+	      
+		      if (info != 0) 
+			info = -2;
+
+		      volatile double rcond_plus_one = rcond + 1.0;
+
+		      if (rcond_plus_one == 1.0 || xisnan (rcond))
+			{
+			  info = -2;
+
+			  if (sing_handler)
+			    sing_handler (rcond);
+			  else
+			    (*current_liboctave_error_handler)
+			      ("matrix singular to machine precision, rcond = %g",
+			       rcond);
+			}
+		    }
+
+		  if (info == 0)
+		    {
+		      retval = b;
+		      double *result = retval.fortran_vec ();
+
+		      octave_idx_type b_nc = b.cols ();
+
+		      char job = 'N';
+		      F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+						 nr, b_nc, tmp_data, nr,
+						 pipvt, result, b.rows(), info
+						 F77_CHAR_ARG_LEN (1)));
+		
+		      if (f77_exception_encountered)
+			(*current_liboctave_error_handler)
+			  ("unrecoverable error in dgetrs");
+		    }
+		  else
+		    mattype.mark_as_rectangular ();
+		}
+	    }
+	}
+      else if (typ != MatrixType::Hermitian)
+	(*current_liboctave_error_handler) ("incorrect matrix type");
+    }
+
+  return retval;
+}
+
+Matrix
+Matrix::solve (MatrixType &typ, const Matrix& b) const
+{
+  octave_idx_type info;
+  double rcond;
+  return solve (typ, b, info, rcond, 0);
+}
+
+Matrix
+Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info, 
+	       double& rcond) const
+{
+  return solve (typ, b, info, rcond, 0);
+}
+
+Matrix
+Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+	       double& rcond, solve_singularity_handler sing_handler,
+	       bool singular_fallback) const
+{
+  Matrix retval;
+  int typ = mattype.type ();
+
+  if (typ == MatrixType::Unknown)
+    typ = mattype.type (*this);
+
+  // Only calculate the condition number for LU/Cholesky
+  if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
+    retval = utsolve (mattype, b, info, rcond, sing_handler, false);
+  else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
+    retval = ltsolve (mattype, b, info, rcond, sing_handler, false);
+  else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
+    retval = fsolve (mattype, b, info, rcond, sing_handler, true);
+  else if (typ != MatrixType::Rectangular)
+    {
+      (*current_liboctave_error_handler) ("unknown matrix type");
+      return Matrix ();
+    }
+
+  // Rectangular or one of the above solvers flags a singular matrix
+  if (singular_fallback && mattype.type () == MatrixType::Rectangular)
+    {
+      octave_idx_type rank;
+      retval = lssolve (b, info, rank);
+    }
+
+  return retval;
+}
+
+ComplexMatrix
+Matrix::solve (MatrixType &typ, const ComplexMatrix& b) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b);
+}
+
+ComplexMatrix
+Matrix::solve (MatrixType &typ, const ComplexMatrix& b, 
+  octave_idx_type& info) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b, info);
+}
+
+ComplexMatrix
+Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
+	       double& rcond) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b, info, rcond);
+}
+
+ComplexMatrix
+Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
+	       double& rcond, solve_singularity_handler sing_handler,
+	       bool singular_fallback) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b, info, rcond, sing_handler, singular_fallback);
+}
+
+ColumnVector
+Matrix::solve (MatrixType &typ, const ColumnVector& b) const
+{
+  octave_idx_type info; double rcond;
+  return solve (typ, b, info, rcond);
+}
+
+ColumnVector
+Matrix::solve (MatrixType &typ, const ColumnVector& b, 
+	       octave_idx_type& info) const
+{
+  double rcond;
+  return solve (typ, b, info, rcond);
+}
+
+ColumnVector
+Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
+	       double& rcond) const
+{
+  return solve (typ, b, info, rcond, 0);
+}
+
+ColumnVector
+Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
+	       double& rcond, solve_singularity_handler sing_handler) const
+{
+  Matrix tmp (b);
+  return solve (typ, tmp, info, rcond, sing_handler).column(static_cast<octave_idx_type> (0));
+}
+
+ComplexColumnVector
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b);
+}
+
+ComplexColumnVector
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
+	       octave_idx_type& info) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b, info);
+}
+
+ComplexColumnVector
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
+	       octave_idx_type& info, double& rcond) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (typ, b, info, rcond);
+}
+
+ComplexColumnVector
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
+	       octave_idx_type& info, double& rcond,
+	       solve_singularity_handler sing_handler) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve(typ, b, info, rcond, sing_handler);
+}
+
+Matrix
 Matrix::solve (const Matrix& b) const
 {
   octave_idx_type info;
@@ -1175,105 +1773,11 @@ Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcond) const
 }
 
 Matrix
-Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcond,
-	       solve_singularity_handler sing_handler) const
+Matrix::solve (const Matrix& b, octave_idx_type& info,
+	       double& rcond, solve_singularity_handler sing_handler) const
 {
-  Matrix retval;
-
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
-    (*current_liboctave_error_handler)
-      ("matrix dimension mismatch solution of linear equations");
-  else
-    {
-      info = 0;
-
-      Array<octave_idx_type> ipvt (nr);
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
-
-      Matrix atmp = *this;
-      double *tmp_data = atmp.fortran_vec ();
-
-      Array<double> z (4 * nc);
-      double *pz = z.fortran_vec ();
-      Array<octave_idx_type> iz (nc);
-      octave_idx_type *piz = iz.fortran_vec ();
-
-      // Calculate the norm of the matrix, for later use.
-      double anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
-
-      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
-      else
-	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
-	  if (info != 0) 
-	    {
-	      info = -2;
-
-	      if (sing_handler)
-		sing_handler (rcond);
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
-
-	    } 
-	  else 
-	    {
-	      // Now calculate the condition number for non-singular matrix.
-	      char job = '1';
-	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, info
-					 F77_CHAR_ARG_LEN (1)));
-	      
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler) 
-		  ("unrecoverable error in dgecon");
-	      
-	      if (info != 0) 
-		info = -2;
-
-	      volatile double rcond_plus_one = rcond + 1.0;
-
-	      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  info = -2;
-
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision, rcond = %g",
-		       rcond);
-		}
-	      else
-		{
-		  retval = b;
-		  double *result = retval.fortran_vec ();
-
-		  octave_idx_type b_nc = b.cols ();
-
-		  job = 'N';
-		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-					     nr, b_nc, tmp_data, nr,
-					     pipvt, result, b.rows(), info
-					     F77_CHAR_ARG_LEN (1)));
-		
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler)
-		      ("unrecoverable error in dgetrs");
-		}
-	    }
-	}
-    }
-
-  return retval;
+  MatrixType mattype (*this);
+  return solve (mattype, b, info, rcond, sing_handler);
 }
 
 ComplexMatrix
@@ -1329,100 +1833,8 @@ ColumnVector
 Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcond,
 	       solve_singularity_handler sing_handler) const
 {
-  ColumnVector retval;
-
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.length ())
-    (*current_liboctave_error_handler)
-      ("matrix dimension mismatch solution of linear equations");
-  else
-    {
-      info = 0;
-
-      Array<octave_idx_type> ipvt (nr);
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
-
-      Matrix atmp = *this;
-      double *tmp_data = atmp.fortran_vec ();
-
-      Array<double> z (4 * nc);
-      double *pz = z.fortran_vec ();
-      Array<octave_idx_type> iz (nc);
-      octave_idx_type *piz = iz.fortran_vec ();
-
-      // Calculate the norm of the matrix, for later use.
-      double anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
-
-      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
-      else
-	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
-	  if (info > 0) 
-	    {
-	      info = -2;
-
-	      if (sing_handler)
-		sing_handler (rcond);
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
-
-	    } 
-	  else 
-	    {
-	      // Now calculate the condition number for non-singular matrix.
-	      char job = '1';
-	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, info
-					 F77_CHAR_ARG_LEN (1)));
-	      
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler) 
-		  ("unrecoverable error in dgecon");
-
-	      if (info != 0) 
-		info = -2;
-
-	      volatile double rcond_plus_one = rcond + 1.0;
-
-	      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  info = -2;
-
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision, rcond = %g",
-		       rcond);
-		}
-	      else
-		{
-		  retval = b;
-		  double *result = retval.fortran_vec ();
-
-		  job = 'N';
-		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-					     nr, 1, tmp_data, nr, pipvt,
-					     result, b.length(), info
-					     F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler)
-		      ("unrecoverable error in dgetrs");
-		}
-	    }
-	}
-    }
-  
-  return retval;
+  MatrixType mattype (*this);
+  return solve (mattype, b, info, rcond, sing_handler);
 }
 
 ComplexColumnVector

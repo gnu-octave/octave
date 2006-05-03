@@ -48,11 +48,11 @@ DEFBINOP_OP (mul, matrix, sparse_matrix, *)
 DEFBINOP (div, matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_sparse_matrix&);
-  SparseType typ = v2.sparse_type ();
+  MatrixType typ = v2.matrix_type ();
 
   Matrix ret = xdiv (v1.matrix_value (), v2.sparse_matrix_value (), typ);
 
-  v2.sparse_type (typ);
+  v2.matrix_type (typ);
   return ret;
 }
 
@@ -65,8 +65,12 @@ DEFBINOPX (pow, matrix, sparse_matrix)
 DEFBINOP (ldiv, matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_sparse_matrix&);
+  MatrixType typ = v1.matrix_type ();
   
-  return xleftdiv (v1.matrix_value (), v2.matrix_value ());
+  Matrix ret = xleftdiv (v1.matrix_value (), v2.matrix_value (), typ);
+
+  v1.matrix_type (typ);
+  return ret;
 }
 
 DEFBINOP_FN (lt, matrix, sparse_matrix, mx_el_lt)

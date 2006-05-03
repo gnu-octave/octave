@@ -49,8 +49,13 @@ DEFBINOP (div, sparse_complex_matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, 
 		   const octave_complex_matrix&);
+  MatrixType typ = v2.matrix_type ();
   
-  return xdiv (v1.complex_matrix_value (), v2.complex_matrix_value ());
+  ComplexMatrix ret = xdiv (v1.complex_matrix_value (), 
+			    v2.complex_matrix_value (), typ);
+
+  v2.matrix_type (typ);
+  return ret;
 }
 
 DEFBINOPX (pow, sparse_complex_matrix, complex_matrix)
@@ -62,12 +67,12 @@ DEFBINOPX (pow, sparse_complex_matrix, complex_matrix)
 DEFBINOP (ldiv, sparse_complex_matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_matrix&);
-  SparseType typ = v1.sparse_type ();
+  MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.sparse_complex_matrix_value (), 
 				v2.complex_matrix_value (), typ);
 
-  v1.sparse_type (typ);
+  v1.matrix_type (typ);
   return ret;
 }
 

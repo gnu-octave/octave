@@ -30,7 +30,7 @@ Boston, MA 02110-1301, USA.
 #include "utils.h"
 #include "oct-map.h"
 
-#include "SparseType.h"
+#include "MatrixType.h"
 #include "SparseCmplxLU.h"
 #include "SparsedbleLU.h"
 #include "ov-re-sparse.h"
@@ -171,9 +171,9 @@ are the same as for @dfn{lu}.\n\
 			SparseMatrix P = fact.Pr ();
 			SparseMatrix L = P.transpose () * fact.L ();
 			retval(1) = octave_value (fact.U (),
-				  SparseType (SparseType::Upper));
-			retval(0) = octave_value (L, SparseType 
-						  (SparseType::Permuted_Lower, 
+				  MatrixType (MatrixType::Upper));
+			retval(0) = octave_value (L, MatrixType 
+						  (MatrixType::Permuted_Lower, 
 						   sm_nr, fact.row_perm ()));
 		      }
 		      break;
@@ -185,9 +185,9 @@ are the same as for @dfn{lu}.\n\
 
 			retval(2) = fact.Pr ();
 			retval(1) = octave_value (fact.U (),
-				  SparseType (SparseType::Upper));
+				  MatrixType (MatrixType::Upper));
 			retval(0) = octave_value (fact.L (),
-				  SparseType (SparseType::Lower));
+				  MatrixType (MatrixType::Lower));
 		      }
 		      break;
 
@@ -200,9 +200,9 @@ are the same as for @dfn{lu}.\n\
 			retval(3) = fact.Pc ();
 			retval(2) = fact.Pr ();
 			retval(1) = octave_value (fact.U (),
-				  SparseType (SparseType::Upper));
+				  MatrixType (MatrixType::Upper));
 			retval(0) = octave_value (fact.L (),
-				  SparseType (SparseType::Lower));
+				  MatrixType (MatrixType::Lower));
 		      }
 		      break;
 		    }
@@ -233,9 +233,9 @@ are the same as for @dfn{lu}.\n\
 			SparseMatrix P = fact.Pr ();
 			SparseComplexMatrix L = P.transpose () * fact.L ();
 			retval(1) = octave_value (fact.U (),
-				  SparseType (SparseType::Upper));
-			retval(0) = octave_value (L, SparseType 
-						  (SparseType::Permuted_Lower, 
+				  MatrixType (MatrixType::Upper));
+			retval(0) = octave_value (L, MatrixType 
+						  (MatrixType::Permuted_Lower, 
 						   sm_nr, fact.row_perm ()));
 		      }
 		      break;
@@ -247,9 +247,9 @@ are the same as for @dfn{lu}.\n\
 
 			retval(2) = fact.Pr ();
 			retval(1) = octave_value (fact.U (),
-				  SparseType (SparseType::Upper));
+				  MatrixType (MatrixType::Upper));
 			retval(0) = octave_value (fact.L (),
-				  SparseType (SparseType::Lower));
+				  MatrixType (MatrixType::Lower));
 		      }
 		      break;
 
@@ -262,9 +262,9 @@ are the same as for @dfn{lu}.\n\
 			retval(3) = fact.Pc ();
 			retval(2) = fact.Pr ();
 			retval(1) = octave_value (fact.U (),
-				  SparseType (SparseType::Upper));
+				  MatrixType (MatrixType::Upper));
 			retval(0) = octave_value (fact.L (),
-				  SparseType (SparseType::Lower));
+				  MatrixType (MatrixType::Lower));
 		      }
 		      break;
 		    }

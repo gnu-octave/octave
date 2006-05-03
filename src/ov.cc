@@ -373,8 +373,8 @@ octave_value::octave_value (const ArrayN<octave_value>& a, bool is_csl)
 {
 }
 
-octave_value::octave_value (const Matrix& m)
-  : rep (new octave_matrix (m))
+octave_value::octave_value (const Matrix& m, const MatrixType& t)
+  : rep (new octave_matrix (m, t))
 {
   maybe_mutate ();
 }
@@ -415,8 +415,8 @@ octave_value::octave_value (const Complex& C)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ComplexMatrix& m)
-  : rep (new octave_complex_matrix (m))
+octave_value::octave_value (const ComplexMatrix& m, const MatrixType& t)
+  : rep (new octave_complex_matrix (m, t))
 {
   maybe_mutate ();
 }
@@ -456,8 +456,8 @@ octave_value::octave_value (bool b)
 {
 }
 
-octave_value::octave_value (const boolMatrix& bm)
-  : rep (new octave_bool_matrix (bm))
+octave_value::octave_value (const boolMatrix& bm, const MatrixType& t)
+  : rep (new octave_bool_matrix (bm, t))
 {
   maybe_mutate ();
 }
@@ -530,19 +530,19 @@ octave_value::octave_value (const ArrayN<char>& chm, bool is_str, char type)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const SparseMatrix& m, const SparseType &t)
+octave_value::octave_value (const SparseMatrix& m, const MatrixType &t)
   : rep (new octave_sparse_matrix (m, t))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const SparseComplexMatrix& m, const SparseType &t)
+octave_value::octave_value (const SparseComplexMatrix& m, const MatrixType &t)
   : rep (new octave_sparse_complex_matrix (m, t))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const SparseBoolMatrix& bm, const SparseType &t)
+octave_value::octave_value (const SparseBoolMatrix& bm, const MatrixType &t)
   : rep (new octave_sparse_bool_matrix (bm, t))
 {
   maybe_mutate ();

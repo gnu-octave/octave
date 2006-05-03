@@ -75,7 +75,18 @@ DEFNDBINOP_OP (add, complex_matrix, complex_matrix, complex_array, complex_array
 DEFNDBINOP_OP (sub, complex_matrix, complex_matrix, complex_array, complex_array, -)
 
 DEFBINOP_OP (mul, complex_matrix, complex_matrix, *)
-DEFBINOP_FN (div, complex_matrix, complex_matrix, xdiv)
+
+DEFBINOP (div, complex_matrix, complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
+  MatrixType typ = v2.matrix_type ();
+  
+  ComplexMatrix ret = xdiv (v1.complex_matrix_value (), 
+			    v2.complex_matrix_value (), typ);
+
+  v2.matrix_type (typ);
+  return ret;
+}
 
 DEFBINOPX (pow, complex_matrix, complex_matrix)
 {
@@ -83,7 +94,17 @@ DEFBINOPX (pow, complex_matrix, complex_matrix)
   return octave_value ();
 }
 
-DEFBINOP_FN (ldiv, complex_matrix, complex_matrix, xleftdiv)
+DEFBINOP (ldiv, complex_matrix, complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_complex_matrix&);
+  MatrixType typ = v1.matrix_type ();
+  
+  ComplexMatrix ret = xleftdiv (v1.complex_matrix_value (), 
+				v2.complex_matrix_value (), typ);
+
+  v1.matrix_type (typ);
+  return ret;
+}
 
 DEFNDBINOP_FN (lt, complex_matrix, complex_matrix, complex_array, complex_array, mx_el_lt)
 DEFNDBINOP_FN (le, complex_matrix, complex_matrix, complex_array, complex_array, mx_el_le)

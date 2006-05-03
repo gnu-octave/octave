@@ -37,6 +37,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
+#include "MatrixType.h"
+
 class Octave_map;
 
 class tree_walker;
@@ -50,17 +52,24 @@ octave_base_matrix : public octave_base_value
 public:
 
   octave_base_matrix (void)
-    : octave_base_value () { }
+    : octave_base_value (), typ (MatrixType ()) { }
 
   octave_base_matrix (const MT& m)
-    : octave_base_value (), matrix (m)
+    : octave_base_value (), matrix (m), typ (MatrixType ())
+  {
+    if (matrix.ndims () == 0)
+      matrix.resize (dim_vector (0, 0));
+  }
+
+  octave_base_matrix (const MT& m, const MatrixType& t)
+    : octave_base_value (), matrix (m), typ (t)
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
   octave_base_matrix (const octave_base_matrix& m)
-    : octave_base_value (), matrix (m.matrix) { }
+    : octave_base_value (), matrix (m.matrix), typ (m.typ) { }
 
   ~octave_base_matrix (void) { }
 
@@ -107,6 +116,10 @@ public:
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
+  MatrixType matrix_type (void) const { return typ; }
+  MatrixType matrix_type (const MatrixType& _typ) const
+    { MatrixType ret = typ; typ = _typ; return ret; }
+
   bool is_matrix_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }
@@ -126,6 +139,8 @@ public:
 protected:
 
   MT matrix;
+
+  mutable MatrixType typ;
 };
 
 #endif

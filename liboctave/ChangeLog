@@ -1,3 +1,41 @@
+2006-05-03  David Bateman  <dbateman@free.fr>
+
+	* CMatrix.cc (zpotrf, zpocon, zpotrs, ztrcon, ztrtrs):
+	External declaration of lapack triangular and Cholesky codes.
+	(ComplexMatrix::utsolve, ComplexMatrix::ltsolve, 
+	ComplexMatrix::fsolve): New private solver codes for
+        upper, lower and LU/Cholesky solvers.
+	(ComplexMatrix::solve): New versions for cached matrix
+	type. Adapt old versions to call new versions
+	* CMatrix.h (utsolve, ltsolve, fsolve): Declaration of
+	new solvers.
+	(solve): New versions for cached matrix type.
+	* dMatrix.cc (dpotrf, dpocon, dpotrs, dtrcon, dtrtrs):
+	External declaration of lapack triangular and Cholesky codes.
+	(Matrix::utsolve, Matrix::ltsolve, 
+	Matrix::fsolve): New private solver codes for
+        upper, lower and LU/Cholesky solvers.
+	(Matrix::solve): New versions for cached matrix
+	type. Adapt old versions to call new versions
+	* dMatrix.h (utsolve, ltsolve, fsolve): Declaration of
+	new solvers.
+	(solve): New versions for cached matrix type.
+	* CSparse.cc: Replace all uses of SparseType with MatrixType.
+	* CSparse.h: ditto.
+	* dSparse.cc: ditto.
+	* dSparse.h: ditto.
+	* SparseCmplxCHOL.cc: ditto.
+	* SparsedbleCHOL.cc: ditto.
+	* sparse-dmsolve.cc: ditto.
+	* SparseType.cc, SparseType.h: delete.
+	* MatrixType.cc: New file for class to cache matrix type, based on
+	old SparseType class but caching matrix and sparse types.
+	* MatrixType.h: ditto.
+	* Makefile.in (MATRIX_INC, MATRIX_SRC): Add MatrixType.h and
+	MatrixType.cc respectively. Delete SparseType.h and SparseType.cc
+	respectively.
+	* mx-base.h: Include MatrixTye.h as header file.
+	
 2006-05-01  John W. Eaton  <jwe@octave.org>
 
 	* oct-shlib.h (octave_shlib::octave_shlib, octave_shlib::open):

@@ -25,6 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_xdiv_h 1
 
 #include "oct-cmplx.h"
+#include "MatrixType.h"
 
 class Matrix;
 class ComplexMatrix;
@@ -32,10 +33,13 @@ class ComplexMatrix;
 class NDArray;
 class ComplexNDArray;
 
-extern Matrix xdiv (const Matrix& a, const Matrix& b);
-extern ComplexMatrix xdiv (const Matrix& a, const ComplexMatrix& b);
-extern ComplexMatrix xdiv (const ComplexMatrix& a, const Matrix& b);
-extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexMatrix& b);
+extern Matrix xdiv (const Matrix& a, const Matrix& b, MatrixType &typ);
+extern ComplexMatrix xdiv (const Matrix& a, const ComplexMatrix& b,
+			   MatrixType &typ);
+extern ComplexMatrix xdiv (const ComplexMatrix& a, const Matrix& b,
+			   MatrixType &typ);
+extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexMatrix& b,
+			   MatrixType &typ);
 
 extern Matrix x_el_div (double a, const Matrix& b);
 extern ComplexMatrix x_el_div (double a, const ComplexMatrix& b);
@@ -47,10 +51,13 @@ extern ComplexNDArray x_el_div (double a, const ComplexNDArray& b);
 extern ComplexNDArray x_el_div (const Complex a, const NDArray& b);
 extern ComplexNDArray x_el_div (const Complex a, const ComplexNDArray& b);
 
-extern Matrix xleftdiv (const Matrix& a, const Matrix& b);
-extern ComplexMatrix xleftdiv (const Matrix& a, const ComplexMatrix& b);
-extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const Matrix& b);
-extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b);
+extern Matrix xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ);
+extern ComplexMatrix xleftdiv (const Matrix& a, const ComplexMatrix& b,
+			       MatrixType &typ);
+extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const Matrix& b,
+			       MatrixType &typ);
+extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b,
+			       MatrixType &typ);
 
 #endif
 

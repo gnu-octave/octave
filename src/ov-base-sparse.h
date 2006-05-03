@@ -36,7 +36,7 @@ Boston, MA 02110-1301, USA.
 #include "ov-typeinfo.h"
 
 #include "boolSparse.h"
-#include "SparseType.h"
+#include "MatrixType.h"
 
 class Octave_map;
 
@@ -50,16 +50,16 @@ octave_base_sparse : public octave_base_value
 {
  public:
  
-  octave_base_sparse (void) : octave_base_value (), typ (SparseType ()) { }
+  octave_base_sparse (void) : octave_base_value (), typ (MatrixType ()) { }
 
   octave_base_sparse (const T& a) : octave_base_value (), matrix (a),
-				    typ (SparseType ())
+				    typ (MatrixType ())
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
-  octave_base_sparse (const T& a, const SparseType& t) : octave_base_value (), 
+  octave_base_sparse (const T& a, const MatrixType& t) : octave_base_value (), 
 				matrix (a), typ (t)
   {
     if (matrix.ndims () == 0)
@@ -117,9 +117,9 @@ octave_base_sparse : public octave_base_value
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
-  SparseType sparse_type (void) const { return typ; }
-  SparseType sparse_type (const SparseType& _typ) const
-    { SparseType ret = typ; typ = _typ; return ret; }
+  MatrixType matrix_type (void) const { return typ; }
+  MatrixType matrix_type (const MatrixType& _typ) const
+    { MatrixType ret = typ; typ = _typ; return ret; }
 
   bool is_matrix_type (void) const { return true; }
 
@@ -152,7 +152,7 @@ protected:
 
   T matrix;
 
-  mutable SparseType typ;
+  mutable MatrixType typ;
 };
 
 #endif

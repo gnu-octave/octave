@@ -240,13 +240,13 @@ be square.\n\
 		SparseMatrix L = P.transpose () * fact.L ();
 		if (have_Qinit)
 		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
-		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
+		    MatrixType (MatrixType::Permuted_Upper, nc, fact.col_perm ()));
 		else
 		  retval(1) = octave_value (fact.U (), 
-					    SparseType (SparseType::Upper));
+					    MatrixType (MatrixType::Upper));
 
 		retval(0) = octave_value (L,
-		  SparseType (SparseType::Permuted_Lower, nr, fact.row_perm ()));
+		  MatrixType (MatrixType::Permuted_Lower, nr, fact.row_perm ()));
 	      }
 	      break;
 
@@ -257,13 +257,13 @@ be square.\n\
 		retval(2) = fact.Pr ();
 		if (have_Qinit)
 		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
-		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
+		    MatrixType (MatrixType::Permuted_Upper, nc, fact.col_perm ()));
 		else
 		  retval(1) = octave_value (fact.U (), 
-					    SparseType (SparseType::Upper));
+					    MatrixType (MatrixType::Upper));
 
 		retval(0) = octave_value (fact.L (), 
-					  SparseType (SparseType::Lower));
+					  MatrixType (MatrixType::Lower));
 	      }
 	      break;
 
@@ -277,9 +277,9 @@ be square.\n\
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
 		    retval(1) = octave_value (fact.U (), 
-					      SparseType (SparseType::Upper));
+					      MatrixType (MatrixType::Upper));
 		    retval(0) = octave_value (fact.L (), 
-					      SparseType (SparseType::Lower));
+					      MatrixType (MatrixType::Lower));
 		  }
 		else
 		  {
@@ -288,9 +288,9 @@ be square.\n\
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
 		    retval(1) = octave_value (fact.U (), 
-					      SparseType (SparseType::Upper));
+					      MatrixType (MatrixType::Upper));
 		    retval(0) = octave_value (fact.L (), 
-					      SparseType (SparseType::Lower));
+					      MatrixType (MatrixType::Lower));
 		  }
 	      }
 	      break;
@@ -324,13 +324,13 @@ be square.\n\
 
 		if (have_Qinit)
 		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
-		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
+		    MatrixType (MatrixType::Permuted_Upper, nc, fact.col_perm ()));
 		else
 		  retval(1) = octave_value (fact.U (), 
-					    SparseType (SparseType::Upper));
+					    MatrixType (MatrixType::Upper));
 
 		retval(0) = octave_value (L,
-		  SparseType (SparseType::Permuted_Lower, nr, fact.row_perm ()));
+		  MatrixType (MatrixType::Permuted_Lower, nr, fact.row_perm ()));
 	      }
 	      break;
 
@@ -341,13 +341,13 @@ be square.\n\
 		retval(2) = fact.Pr ();
 		if (have_Qinit)
 		  retval(1) = octave_value (fact.U () * fact.Pc ().transpose (),
-		    SparseType (SparseType::Permuted_Upper, nc, fact.col_perm ()));
+		    MatrixType (MatrixType::Permuted_Upper, nc, fact.col_perm ()));
 		else
 		  retval(1) = octave_value (fact.U (), 
-					    SparseType (SparseType::Upper));
+					    MatrixType (MatrixType::Upper));
 
 		retval(0) = octave_value (fact.L (), 
-					  SparseType (SparseType::Lower));
+					  MatrixType (MatrixType::Lower));
 	      }
 	      break;
 
@@ -361,9 +361,9 @@ be square.\n\
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
 		    retval(1) = octave_value (fact.U (), 
-					      SparseType (SparseType::Upper));
+					      MatrixType (MatrixType::Upper));
 		    retval(0) = octave_value (fact.L (), 
-					      SparseType (SparseType::Lower));
+					      MatrixType (MatrixType::Lower));
 		  }
 		else
 		  {
@@ -372,9 +372,9 @@ be square.\n\
 		    retval(3) = fact.Pc ();
 		    retval(2) = fact.Pr ();
 		    retval(1) = octave_value (fact.U (), 
-					      SparseType (SparseType::Upper));
+					      MatrixType (MatrixType::Upper));
 		    retval(0) = octave_value (fact.L (), 
-					      SparseType (SparseType::Lower));
+					      MatrixType (MatrixType::Lower));
 		  }
 	      }
 	      break;
@@ -445,16 +445,13 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
 
       if (! error_state)
 	{
-	  const octave_sparse_matrix& rep
-	    = dynamic_cast<const octave_sparse_matrix&> (arg.get_rep ());
-
-	  SparseType mattyp = rep.sparse_type ();
+	  MatrixType mattyp = args(0).matrix_type ();
 
 	  octave_idx_type info;
 	  double rcond = 0.0;
 	  SparseMatrix result = m.inverse (mattyp, info, rcond, 1);
 
-	  rep.sparse_type (mattyp);
+	  args(0).matrix_type (mattyp);
 
 	  if (nargout > 1)
 	    retval(1) = rcond;
@@ -474,16 +471,14 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
 
       if (! error_state)
 	{
-	  const octave_sparse_complex_matrix& rep
-	    = dynamic_cast<const octave_sparse_complex_matrix&> (arg.get_rep ());
-	  SparseType mattyp = rep.sparse_type ();
+	  MatrixType mattyp = args(0).matrix_type ();
 
 	  octave_idx_type info;
 	  double rcond = 0.0;
 
 	  SparseComplexMatrix result = m.inverse (mattyp, info, rcond, 1);
 
-	  rep.sparse_type (mattyp);
+	  args(0).matrix_type (mattyp);
 
 	  if (nargout > 1)
 	    retval(1) = rcond;

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2004 David Bateman
-Copyright (C) 1998-2004 Andy Adler
+Copyright (C) 2006 David Bateman
+Copyright (C) 2006 Andy Adler
 
 Octave is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
@@ -20,14 +20,16 @@ Boston, MA 02110-1301, USA.
 
 */
 
-#if !defined (octave_SparseType_h)
-#define octave_SparseType_h
+#if !defined (octave_MatrixType_h)
+#define octave_MatrixType_h
 
+class Matrix;
+class ComplexMatrix;
 class SparseMatrix;
 class SparseComplexMatrix;
 
 class
-SparseType
+MatrixType
 {
 public:
   enum matrix_type {
@@ -47,27 +49,35 @@ public:
     Rectangular
   };
 
-  SparseType (void);
+  MatrixType (void);
     
-  SparseType (const SparseType &a);
+  MatrixType (const MatrixType &a);
 
-  SparseType (const SparseMatrix &a);
+  MatrixType (const Matrix &a);
 
-  SparseType (const SparseComplexMatrix &a);
+  MatrixType (const ComplexMatrix &a);
 
-  SparseType (const matrix_type t);
+  MatrixType (const SparseMatrix &a);
 
-  SparseType (const matrix_type t, const octave_idx_type np,
-	      const octave_idx_type *p);
+  MatrixType (const SparseComplexMatrix &a);
 
-  SparseType (const matrix_type t, const octave_idx_type ku, 
-	      const octave_idx_type kl);
+  MatrixType (const matrix_type t, bool _full = false);
 
-  ~SparseType (void);
+  MatrixType (const matrix_type t, const octave_idx_type np,
+	      const octave_idx_type *p, bool _full = false);
 
-  SparseType& operator = (const SparseType& a);
+  MatrixType (const matrix_type t, const octave_idx_type ku, 
+	      const octave_idx_type kl, bool _full = false);
+
+  ~MatrixType (void);
+
+  MatrixType& operator = (const MatrixType& a);
 
   int type (bool quiet = true);
+
+  int type (const Matrix &a);
+
+  int type (const ComplexMatrix &a);
 
   int type (const SparseMatrix &a);
 
@@ -90,7 +100,7 @@ public:
   bool is_lower_triangular (void) const 
     { return (typ == Lower || typ == Permuted_Lower); }
 
-  bool is_banded (void)
+   bool is_banded (void)
     { return (typ == Banded || typ == Banded_Hermitian); }
   
   bool is_tridiagonal (void) const
@@ -141,7 +151,7 @@ public:
 
   void mark_as_unpermuted (void);
 
-  SparseType transpose (void) const;
+  MatrixType transpose (void) const;
 
 private:
   void type (int new_typ) { typ = static_cast<matrix_type>(new_typ); }
@@ -152,6 +162,7 @@ private:
   octave_idx_type upper_band;
   octave_idx_type lower_band;
   bool dense;
+  bool full;
   octave_idx_type nperm;
   octave_idx_type *perm;
 };

@@ -62,7 +62,17 @@ DEFNDBINOP_OP (add, matrix, matrix, array, array, +)
 DEFNDBINOP_OP (sub, matrix, matrix, array, array, -)
 
 DEFBINOP_OP (mul, matrix, matrix, *)
-DEFBINOP_FN (div, matrix, matrix, xdiv)
+
+DEFBINOP (div, matrix, matrix)
+{
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+  MatrixType typ = v2.matrix_type ();
+  
+  Matrix ret = xdiv (v1.matrix_value (), v2.matrix_value (), typ);
+
+  v2.matrix_type (typ);
+  return ret;
+}
 
 DEFBINOPX (pow, matrix, matrix)
 {
@@ -70,7 +80,16 @@ DEFBINOPX (pow, matrix, matrix)
   return octave_value ();
 }
 
-DEFBINOP_FN (ldiv, matrix, matrix, xleftdiv)
+DEFBINOP (ldiv, matrix, matrix)
+{
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+  MatrixType typ = v1.matrix_type ();
+  
+  Matrix ret = xleftdiv (v1.matrix_value (), v2.matrix_value (), typ);
+
+  v1.matrix_type (typ);
+  return ret;
+}
 
 DEFNDBINOP_FN (lt, matrix, matrix, array, array, mx_el_lt)
 DEFNDBINOP_FN (le, matrix, matrix, array, array, mx_el_le)

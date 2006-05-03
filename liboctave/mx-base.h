@@ -24,6 +24,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_mx_base_h)
 #define octave_mx_base_h 1
 
+// Matrix Type class
+
+#include "MatrixType.h"
+
 // Matrix classes.
 
 #include "boolMatrix.h"

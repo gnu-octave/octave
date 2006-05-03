@@ -66,7 +66,7 @@ public:
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
   octave_sparse_complex_matrix (const SparseComplexMatrix& m, 
-				const SparseType &t)
+				const MatrixType &t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
   octave_sparse_complex_matrix (const MSparse<Complex>& m)

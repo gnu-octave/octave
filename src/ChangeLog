@@ -1,7 +1,57 @@
 2006-05-03  David Bateman  <dbateman@free.fr>
 
+	* ov-base-mat.h: Add caching of matrix type, and code to supply
+	and copy matrix type.
+	* ov-bool-mat.h: Add caching to constructor.
+	* ov-re-mat.h: ditto.
+	* ov-cx-mat.h: ditto.
+	* ov.cc: Add to the BoolMatrix, Matrix and the ComplexMatrix
+	octave_value constructors, the ability to specify the matrix type.
+	* ov.h: Adapt declaration of above constructors.
+	(MatrixType matrix_type(void) const, MatrixType matrix_type (const
+	MatrixType&)): New functions for probing and setting matrix type.
+	* ov-base.cc (virtual MatrixType matrix_type(void) const, virtual
+	MatrixType matrix_type (const MatrixType&)): New default functions
+	for probing and setting matrix type.
+	* ov-base.h  (virtual MatrixType matrix_type(void) const, virtual
+	MatrixType matrix_type (const MatrixType&)): Declarations.
+	* ov-base-sparse.h: Replace all uses of SparseType with
+	MatrixType. Replace sparse_type function with matrix_type function.
+	* ov-bool-sparse.h: Replace all uses of SparseType with MatrixType.
+	* ov-cx-sparse.h: ditto.
+	* ov-re-sparse.h: ditto.
+	* sparse-xdiv.cc: ditto.
+	* sparse-xdiv.h: ditto.
+	* sparse-xpow.cc: ditto.
+	* DLD-FUNCTIONS/luinc.cc: ditto.
+	* DLD-FUNCTIONS/splu.cc: ditto.
+	* xdiv.cc (xdiv, xleftdiv): Pass the matrix type, simplfy since
+	the matrix solve function now calls lssolve if singular.
+	* xdiv.h (xdvi, xleftdiv): Update the declarations
+	* OPERATORS/op-cm-cm.cc, OPERATORS/op-cm-cs.cc,
+	OPERATORS/op-cm-m.cc, OPERATORS/op-cm-s.cc,
+	OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc, 
+	OPERATORS/op-cs-cm.cc, OPERATORS/op-cs-m.cc,
+	OPERATORS/op-m-cm.cc, OPERATORS/op-m-cs.cc, 
+	OPERATORS/op-m-m.cc, OPERATORS/op-m-s.cc, 
+	OPERATORS/op-m-scm.cc, OPERATORS/op-m-sm.cc, 
+	OPERATORS/op-s-cm.cc, OPERATORS/op-s-m.cc, 
+	OPERATORS/op-scm-cm.cc, OPERATORS/op-scm-m.cc, 
+	OPERATORS/op-sm-cm.cc, OPERATORS/op-sm-m.cc: Update use of
+	xdiv and xleftdiv functions to allow matrix type caching.
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Update to allow typing
+	 of Matrix, and ComplexMatrix types. Add new test code for this.
+
 	* DLD-FUNCTIONS/cellfun.cc (Fmat2cell): new function.
 
+	* DLD-FUNCTIONS/regexp.cc (class regexp_elem): New class to store
+	matched element in a std::list.
+	(octregexp_list): Take algorithm from octregexp and construct a 
+	list of matches.
+	(octregexp): Rewrite to use linked list of matches.
+	(Fregexprep): New function, working directly in linked list of
+	matches.
+	
 2006-05-02  John W. Eaton  <jwe@octave.org>
 
 	* lex.l ({CCHAR}): Exit rawcommand mode if returning '\n' token.

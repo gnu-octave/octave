@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "MArray2.h"
 #include "MDiagArray2.h"
+#include "MatrixType.h"
 
 #include "mx-defs.h"
 #include "mx-op-defs.h"
@@ -122,6 +123,62 @@ public:
   DET determinant (octave_idx_type& info) const;
   DET determinant (octave_idx_type& info, double& rcond, int calc_cond = 1) const;
 
+private:
+  // Upper triangular matrix solvers
+  Matrix utsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
+		  double& rcond, solve_singularity_handler sing_handler,
+		  bool calc_cond = false) const;
+
+  // Lower triangular matrix solvers
+  Matrix ltsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
+		  double& rcond, solve_singularity_handler sing_handler,
+		  bool calc_cond = false) const;
+
+  // Full matrix solvers (lu/cholesky)
+  Matrix fsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
+		 double& rcond, solve_singularity_handler sing_handler,
+		 bool calc_cond = false) const;
+
+public:
+  // Generic interface to solver with no probing of type
+  Matrix solve (MatrixType &typ, const Matrix& b) const;
+  Matrix solve (MatrixType &typ, const Matrix& b, octave_idx_type& info) const;
+  Matrix solve (MatrixType &typ, const Matrix& b, octave_idx_type& info, 
+		double& rcond) const;
+  Matrix solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
+		double& rcond, solve_singularity_handler sing_handler,
+		bool singular_fallback = true) const;
+
+  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b) const;
+  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b, 
+		       octave_idx_type& info) const;
+  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b, 
+		       octave_idx_type& info, double& rcond) const;
+  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b, 
+		       octave_idx_type& info, double& rcond,
+		       solve_singularity_handler sing_handler,
+		       bool singular_fallback = true) const;
+
+  ColumnVector solve (MatrixType &typ, const ColumnVector& b) const;
+  ColumnVector solve (MatrixType &typ, const ColumnVector& b, 
+		      octave_idx_type& info) const;
+  ColumnVector solve (MatrixType &typ, const ColumnVector& b, 
+		      octave_idx_type& info, double& rcond) const;
+  ColumnVector solve (MatrixType &typ, const ColumnVector& b, 
+		      octave_idx_type& info, double& rcond,
+		      solve_singularity_handler sing_handler) const;
+
+  ComplexColumnVector solve (MatrixType &typ, 
+			     const ComplexColumnVector& b) const;
+  ComplexColumnVector solve (MatrixType &typ, const ComplexColumnVector& b, 
+			     octave_idx_type& info) const;
+  ComplexColumnVector solve (MatrixType &typ, const ComplexColumnVector& b, 
+			     octave_idx_type& info, double& rcond) const;
+  ComplexColumnVector solve (MatrixType &typ, const ComplexColumnVector& b, 
+			     octave_idx_type& info, double& rcond,
+			     solve_singularity_handler sing_handler) const;
+
+  // Generic interface to solver with probing of type
   Matrix solve (const Matrix& b) const;
   Matrix solve (const Matrix& b, octave_idx_type& info) const;
   Matrix solve (const Matrix& b, octave_idx_type& info, double& rcond) const;
@@ -148,6 +205,7 @@ public:
 			     double& rcond,
 			     solve_singularity_handler sing_handler) const;
 
+  // Singular solvers
   Matrix lssolve (const Matrix& b) const;
   Matrix lssolve (const Matrix& b, octave_idx_type& info) const;
   Matrix lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) const;

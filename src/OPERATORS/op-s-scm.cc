@@ -50,11 +50,11 @@ DEFBINOP (div, scalar, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_complex_matrix&);
 
-  SparseType typ = v2.sparse_type ();
+  MatrixType typ = v2.matrix_type ();
   Matrix m1 = Matrix (1, 1, v1.scalar_value ());
   SparseComplexMatrix m2 = v2.sparse_complex_matrix_value ();
   ComplexMatrix ret = xdiv (m1, m2, typ);
-  v2.sparse_type (typ);
+  v2.matrix_type (typ);
 
   return ret;
 }

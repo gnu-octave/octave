@@ -47,8 +47,12 @@ DEFBINOP (div, complex, complex_matrix)
 
   ComplexMatrix m1 = v1.complex_matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
+  MatrixType typ = v2.matrix_type ();
 
-  return octave_value (xdiv (m1, m2));
+  ComplexMatrix ret = xdiv (m1, m2, typ);
+
+  v2.matrix_type (typ);
+  return ret;
 }
 
 DEFBINOP_FN (pow, complex, complex_matrix, xpow)

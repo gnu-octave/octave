@@ -90,7 +90,7 @@ xpow (const SparseMatrix& a, double b)
 
 		  octave_idx_type info;
 		  double rcond = 0.0;
-		  SparseType mattyp (a);
+		  MatrixType mattyp (a);
 
 		  atmp = a.inverse (mattyp, info, rcond, 1);
 
@@ -163,7 +163,7 @@ xpow (const SparseComplexMatrix& a, double b)
 
 		  octave_idx_type info;
 		  double rcond = 0.0;
-		  SparseType mattyp (a);
+		  MatrixType mattyp (a);
 
 		  atmp = a.inverse (mattyp, info, rcond, 1);
 

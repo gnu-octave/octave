@@ -42,18 +42,18 @@ chol2inv (const SparseMatrix& r)
 
   if (r_nr == r_nc)
     {
-      SparseType mattype (r);
+      MatrixType mattype (r);
       int typ = mattype.type (false);
       double rcond;
       octave_idx_type info;
       SparseMatrix rinv;
 
-      if (typ == SparseType::Upper)
+      if (typ == MatrixType::Upper)
 	{
 	  rinv = r.inverse(mattype, info, rcond, true, false);
 	  retval = rinv.transpose() * rinv;
 	}
-      else if (typ == SparseType::Lower)
+      else if (typ == MatrixType::Lower)
 	{
 	  rinv = r.transpose().inverse(mattype, info, rcond, true, false);
 	  retval = rinv.transpose() * rinv;

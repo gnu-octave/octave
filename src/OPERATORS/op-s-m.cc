@@ -47,8 +47,12 @@ DEFBINOP (div, scalar, matrix)
 
   Matrix m1 = v1.matrix_value ();
   Matrix m2 = v2.matrix_value ();
+  MatrixType typ = v2.matrix_type ();
 
-  return octave_value (xdiv (m1, m2));
+  Matrix ret = xdiv (m1, m2, typ);
+
+  v2.matrix_type (typ);
+  return ret;
 }
 
 DEFBINOP_FN (pow, scalar, matrix, xpow)

@@ -76,11 +76,11 @@ DEFBINOP (ldiv, sparse_matrix, scalar)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
 
-  SparseType typ = v1.sparse_type ();
+  MatrixType typ = v1.matrix_type ();
   SparseMatrix m1 = v1.sparse_matrix_value ();
   Matrix m2 = Matrix (1, 1, v2.scalar_value ());
   Matrix ret = xleftdiv (m1, m2, typ);
-  v1.sparse_type (typ);
+  v1.matrix_type (typ);
 
   return ret;
 }

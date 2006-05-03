@@ -39,7 +39,7 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Sparse.h sparse-base-lu.h SparseCmplxLU.h SparsedbleLU.h \
 	sparse-base-chol.h sparse-dmsolve.cc SparseCmplxCHOL.h \
 	SparsedbleCHOL.h SparseCmplxQR.h SparseQR.h Sparse-op-defs.h \
-	SparseType.h \
+	MatrixType.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
 	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \
 	intNDArray.h
@@ -101,7 +101,7 @@ MATRIX_SRC := Array-util.cc CColVector.cc \
 	dbleSCHUR.cc dbleSVD.cc boolSparse.cc CSparse.cc dSparse.cc \
 	MSparse.cc Sparse.cc SparseCmplxLU.cc SparsedbleLU.cc \
 	SparseCmplxCHOL.cc SparsedbleCHOL.cc \
-	SparseCmplxQR.cc SparseQR.cc SparseType.cc \
+	SparseCmplxQR.cc SparseQR.cc MatrixType.cc \
 	int8NDArray.cc uint8NDArray.cc int16NDArray.cc uint16NDArray.cc \
 	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc 
 

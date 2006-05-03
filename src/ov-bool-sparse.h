@@ -59,7 +59,7 @@ public:
     : octave_base_sparse<SparseBoolMatrix> (bnda) { }
 
   octave_sparse_bool_matrix (const SparseBoolMatrix& bnda,
-			     const SparseType& t)
+			     const MatrixType& t)
     : octave_base_sparse<SparseBoolMatrix> (bnda, t) { }
 
   octave_sparse_bool_matrix (const boolNDArray& m)

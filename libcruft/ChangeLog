@@ -1,3 +1,9 @@
+2006-05-03  David Bateman  <dbateman@free.fr>
+
+	* lapack/dpocon.f, lapack/zpocon.f, lapack/dpotrs.f, 
+	lapack/zpotrs.f, lapack/dtrcon.f, lapack/ztrcon.f,
+	lapack/dtrtrs.f, lapack/ztrtrs.f: New files.
+
 2006-04-29  John W. Eaton  <jwe@octave.org>
 
 	* misc/lo-error.c (set_liboctave_warning_with_id_handler,

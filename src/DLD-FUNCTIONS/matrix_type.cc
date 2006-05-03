@@ -30,9 +30,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "ov-re-mat.h"
+#include "ov-cx-mat.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
-#include "SparseType.h"
+#include "MatrixType.h"
 
 DEFUN_DLD (matrix_type, args, ,
   "-*- texinfo -*-\n\
@@ -111,14 +113,11 @@ matrix type.\n\
 	{
 	  if (nargin == 1)
 	    {
-	      SparseType mattyp;
+	      MatrixType mattyp;
 
 	      if (args(0).type_name () == "sparse complex matrix" ) 
 		{
-		  const octave_sparse_complex_matrix& rep
-		    = dynamic_cast<const octave_sparse_complex_matrix&> (args(0).get_rep ());
-
-		  mattyp = rep.sparse_type ();
+		  mattyp = args(0).matrix_type ();
 
 		  if (mattyp.is_unknown ())
 		    {
@@ -126,61 +125,58 @@ matrix type.\n\
 			args(0).sparse_complex_matrix_value ();
 		      if (!error_state)
 			{
-			  mattyp = SparseType (m);
-			  rep.sparse_type (mattyp);
+			  mattyp = MatrixType (m);
+			  args(0).matrix_type (mattyp);
 			}
 		    }
 		}
 	      else
 		{
-		  const octave_sparse_matrix& rep
-		    = dynamic_cast<const octave_sparse_matrix&> (args(0).get_rep ());
-
-		  mattyp = rep.sparse_type ();
+		  mattyp = args(0).matrix_type ();
 
 		  if (mattyp.is_unknown ())
 		    {
 		      SparseMatrix m = args(0).sparse_matrix_value ();
 		      if (!error_state)
 			{
-			  mattyp = SparseType (m);
-			  rep.sparse_type (mattyp);
+			  mattyp = MatrixType (m);
+			  args(0).matrix_type (mattyp);
 			}
 		    }
 		}
 
 	      int typ = mattyp.type ();
 
-	      if (typ == SparseType::Diagonal)
+	      if (typ == MatrixType::Diagonal)
 		retval = octave_value ("Diagonal");
-	      else if (typ == SparseType::Permuted_Diagonal)
+	      else if (typ == MatrixType::Permuted_Diagonal)
 		retval = octave_value ("Permuted Diagonal");
-	      else if (typ == SparseType::Upper)
+	      else if (typ == MatrixType::Upper)
 		retval = octave_value ("Upper");
-	      else if (typ == SparseType::Permuted_Upper)
+	      else if (typ == MatrixType::Permuted_Upper)
 		retval = octave_value ("Permuted Upper");
-	      else if (typ == SparseType::Lower)
+	      else if (typ == MatrixType::Lower)
 		retval = octave_value ("Lower");
-	      else if (typ == SparseType::Permuted_Lower)
+	      else if (typ == MatrixType::Permuted_Lower)
 		retval = octave_value ("Permuted Lower");
-	      else if (typ == SparseType::Banded)
+	      else if (typ == MatrixType::Banded)
 		retval = octave_value ("Banded");
-	      else if (typ == SparseType::Banded_Hermitian)
+	      else if (typ == MatrixType::Banded_Hermitian)
 		retval = octave_value ("Banded Positive Definite");
-	      else if (typ == SparseType::Tridiagonal)
+	      else if (typ == MatrixType::Tridiagonal)
 		retval = octave_value ("Tridiagonal");
-	      else if (typ == SparseType::Tridiagonal_Hermitian)
+	      else if (typ == MatrixType::Tridiagonal_Hermitian)
 		retval = octave_value ("Tridiagonal Positive Definite");
-	      else if (typ == SparseType::Hermitian)
+	      else if (typ == MatrixType::Hermitian)
 		retval = octave_value ("Positive Definite");
-	      else if (typ == SparseType::Rectangular)
+	      else if (typ == MatrixType::Rectangular)
 		{
 		  if (args(0).rows() == args(0).columns())
 		    retval = octave_value ("Singular");
 		  else
 		    retval = octave_value ("Rectangular");
 		}
-	      else if (typ == SparseType::Full)
+	      else if (typ == MatrixType::Full)
 		retval = octave_value ("Full");
 	      else
 		// This should never happen!!!
@@ -192,7 +188,7 @@ matrix type.\n\
 	      std::string str_typ = args(1).string_value ();
 
 	      // FIXME -- why do I have to explicitly call the constructor?
-	      SparseType mattyp = SparseType ();
+	      MatrixType mattyp = MatrixType ();
 
 	      octave_idx_type nl = 0;
 	      octave_idx_type nu = 0;
@@ -300,7 +296,148 @@ matrix type.\n\
 	    }
 	}
       else
-	error ("matrix_type: Only sparse matrices treated at the moment");
+	{
+	  if (nargin == 1)
+	    {
+	      MatrixType mattyp;
+
+	      if (args(0).type_name () == "complex matrix" ) 
+		{
+		  mattyp = args(0).matrix_type ();
+
+		  if (mattyp.is_unknown ())
+		    {
+		      ComplexMatrix m = args(0).complex_matrix_value ();
+		      if (!error_state)
+			{
+			  mattyp = MatrixType (m);
+			  args(0).matrix_type (mattyp);
+			}
+		    }
+		}
+	      else
+		{
+		  mattyp = args(0).matrix_type ();
+
+		  if (mattyp.is_unknown ())
+		    {
+		      Matrix m = args(0).matrix_value ();
+		      if (!error_state)
+			{
+			  mattyp = MatrixType (m);
+			  args(0).matrix_type (mattyp);
+			}
+		    }
+		}
+
+	      int typ = mattyp.type ();
+
+	      if (typ == MatrixType::Upper)
+		retval = octave_value ("Upper");
+	      else if (typ == MatrixType::Permuted_Upper)
+		retval = octave_value ("Permuted Upper");
+	      else if (typ == MatrixType::Lower)
+		retval = octave_value ("Lower");
+	      else if (typ == MatrixType::Permuted_Lower)
+		retval = octave_value ("Permuted Lower");
+	      else if (typ == MatrixType::Hermitian)
+		retval = octave_value ("Positive Definite");
+	      else if (typ == MatrixType::Rectangular)
+		{
+		  if (args(0).rows() == args(0).columns())
+		    retval = octave_value ("Singular");
+		  else
+		    retval = octave_value ("Rectangular");
+		}
+	      else if (typ == MatrixType::Full)
+		retval = octave_value ("Full");
+	      else
+		// This should never happen!!!
+		retval = octave_value ("Unknown");
+	    }
+	  else
+	    {
+	      // Ok, we're changing the matrix type
+	      std::string str_typ = args(1).string_value ();
+
+	      // FIXME -- why do I have to explicitly call the constructor?
+	      MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
+
+	      if (error_state)
+		error ("Matrix type must be a string");
+	      else
+		{
+		  // Use STL function to convert to lower case
+		  std::transform (str_typ.begin (), str_typ.end (),
+				  str_typ.begin (), tolower);
+
+		  if (str_typ == "upper")
+		    mattyp.mark_as_upper_triangular ();
+		  else if (str_typ == "lower")
+		    mattyp.mark_as_lower_triangular ();
+		  else if (str_typ == "positive definite")
+		    {
+		      mattyp.mark_as_full ();
+		      mattyp.mark_as_symmetric ();
+		    }
+		  else if (str_typ == "singular")
+		    mattyp.mark_as_rectangular ();
+		  else if (str_typ == "full")
+		    mattyp.mark_as_full ();
+		  else if (str_typ == "unknown")
+		    mattyp.invalidate_type ();
+		  else
+		    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
+
+		  if (! error_state)
+		    {
+		      if (nargin == 3 && (str_typ == "upper" 
+					  || str_typ == "lower"))
+			{
+			  const ColumnVector perm = 
+			    ColumnVector (args (2).vector_value ());
+
+			  if (error_state)
+			    error ("matrix_type: Invalid permutation vector");
+			  else
+			    {
+			      octave_idx_type len = perm.length ();
+			      dim_vector dv = args(0).dims ();
+			      
+			      if (len != dv(0))
+				error ("matrix_type: Invalid permutation vector");
+			      else
+				{
+				  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+
+				  for (octave_idx_type i = 0; i < len; i++)
+				    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
+
+				  if (str_typ == "upper")
+				    mattyp.mark_as_permuted (len, p);
+				  else
+				    mattyp.mark_as_permuted (len, p);
+				}
+			    }
+			}
+		      else if (nargin != 2)
+			error ("matrix_type: Invalid number of arguments");
+
+		      if (! error_state)
+			{
+			  // Set the matrix type
+			  if (args(0).type_name () == "complex matrix" ) 
+			    retval = 
+			      octave_value (args(0).complex_matrix_value (), 
+					    mattyp);
+			  else
+			    retval = octave_value (args(0).matrix_value (), 
+						   mattyp);
+			}
+		    }
+		}
+	    }
+	}
     }
 
   return retval;
@@ -310,7 +447,7 @@ matrix type.\n\
 
 ## FIXME
 ## Disable tests for lower under-determined and upper over-determined 
-## matrices and this detection is disabled in SparseType due to issues
+## matrices and this detection is disabled in MatrixType due to issues
 ## of non minimum norm solution being found.
  
 %!assert(matrix_type(speye(10,10)),"Diagonal");
@@ -391,6 +528,26 @@ matrix type.\n\
 
 %!test
 %! a = matrix_type(spdiags(randn(10,3),[-1,0,1],10,10),"Singular");
+%! assert(matrix_type(a),"Singular");
+
+%!assert(matrix_type(triu(ones(10,10))),"Upper");
+%!assert(matrix_type(triu(ones(10,10),-1)),"Full");
+%!assert(matrix_type(tril(ones(10,10))),"Lower");
+%!assert(matrix_type(tril(ones(10,10),1)),"Full");
+%!assert(matrix_type(10*eye(10,10) + ones(10,10)), "Positive Definite"); 
+%!assert(matrix_type(ones(11,10)),"Rectangular")
+%!test
+%! a = matrix_type(ones(10,10),"Singular");
+%! assert(matrix_type(a),"Singular");
+
+%!assert(matrix_type(triu(1i*ones(10,10))),"Upper");
+%!assert(matrix_type(triu(1i*ones(10,10),-1)),"Full");
+%!assert(matrix_type(tril(1i*ones(10,10))),"Lower");
+%!assert(matrix_type(tril(1i*ones(10,10),1)),"Full");
+%!assert(matrix_type(10*eye(10,10) + 1i*triu(ones(10,10),1) -1i*tril(ones(10,10),-1)), "Positive Definite"); 
+%!assert(matrix_type(ones(11,10)),"Rectangular")
+%!test
+%! a = matrix_type(ones(10,10),"Singular");
 %! assert(matrix_type(a),"Singular");
 
 */

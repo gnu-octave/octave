@@ -1,0 +1,22 @@
+#! /bin/sh
+top_srcdir=%top_srcdir%
+builddir=%builddir%
+LOADPATH="$top_srcdir/test//:$top_srcdir/scripts//:$builddir/scripts//:$builddir/src//:";
+args="--path=$LOADPATH"
+if [ $# -gt 0 ]; then
+  if [ "x$1" = "x-g" ]; then
+    driver="gdb"
+    args=""
+    shift
+  elif [ "x$1" = "x-valgrind" ]; then
+    driver="valgrind --tool=memcheck"
+    shift
+  elif [ "x$1" = "x-strace" ]; then
+    driver="strace -o octave.trace"
+    shift
+  fi
+fi
+OCTAVE_SITE_INITFILE=$top_srcdir/scripts/startup/main-rcfile \
+LD_LIBRARY_PATH="$builddir/src:$builddir/liboctave:$builddir/libcruft" \
+  exec $driver $builddir/src/octave $args "$@"
+

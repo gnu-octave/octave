@@ -1,3 +1,7 @@
+2006-05-03  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fmat2cell): new function.
+
 2006-05-02  John W. Eaton  <jwe@octave.org>
 
 	* lex.l ({CCHAR}): Exit rawcommand mode if returning '\n' token.

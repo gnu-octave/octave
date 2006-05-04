@@ -28,32 +28,35 @@
 ## current value of @code{LOADPATH}.
 ##
 ## If @var{nargin} is greater than zero, concatenate the arguments,
-## separating them with @code{":"}.  Set @code{LOADPATH} to the result
+## separating them with @code{pathsep()}.  Set @code{LOADPATH} to the result
 ## and also return it.
 ##
 ## No checks are made for duplicate elements.
+## @seealso{pathsep}
 ## @end deftypefn
 
 ## Author: jwe
 
 function retval = path (varargin)
 
+  psep = pathsep ();
+
   if (nargin > 0)
     p = varargin{1};
     for i = 2:nargin
-      p = sprintf ("%s:%s", p, varargin{i});
+      p = sprintf ("%s%s%s", p, psep, varargin{i});
     endfor
     LOADPATH = p;
   endif
 
-  if (LOADPATH(1) == ":")
+  if (LOADPATH(1) == psep)
     p = strcat (DEFAULT_LOADPATH, LOADPATH);
   else
-    t = findstr (LOADPATH, "::");
+    t = findstr (LOADPATH, [psep,psep]);
     if (any (t))
       loc = t(1);
       p = strcat (LOADPATH(1:loc), DEFAULT_LOADPATH, LOADPATH(loc+1:end));
-    elseif (LOADPATH(end) == ":")
+    elseif (LOADPATH(end) == psep)
       p = strcat (LOADPATH, DEFAULT_LOADPATH);
     else
       p = LOADPATH;
@@ -62,7 +65,7 @@ function retval = path (varargin)
 
   if (nargin == 0 && nargout == 0)
     puts ("\nOctave's search path contains the following directories:\n\n  ");
-    puts (strrep (p, ":", "\n  "));
+    puts (strrep (p, psep, "\n  "));
     puts ("\n\n");
   else
     retval = p;

@@ -61,6 +61,8 @@ function ret = addpath (varargin)
       append = 1;
     endswitch
 
+    psep = pathsep();
+
     ## Avoid duplicates by stripping pre-existing entries
     path = rmpath (path, varargin{:});
 
@@ -82,7 +84,7 @@ function ret = addpath (varargin)
           continue;
         endif
       endif
-      dir = sprintf ("%s:%s", dir, p);
+      dir = sprintf ("%s%s%s", dir, psep, p);
     endfor
       
     ## Add the directories to the current path
@@ -91,11 +93,11 @@ function ret = addpath (varargin)
       if (isempty (path) && ! isempty (dir))
         path = dir;
       else
-        if strcmp (path, ":"), path = ""; end
+        if strcmp (path, psep), path = ""; end
           if append
-            path = sprintf ("%s:%s", path, dir);
+            path = sprintf ("%s%s%s", path, psep, dir);
           else
-            path = sprintf ("%s:%s", dir, path);
+            path = sprintf ("%s%s%s", dir, psep, path);
           endif
       endif
     endif
@@ -110,18 +112,18 @@ function ret = addpath (varargin)
 endfunction
 
 %!assert(addpath('','hello'),'hello');
-%!assert(addpath('','hello','world'),'hello:world')
-%!assert(addpath(':','hello'),'hello:');
-%!assert(addpath(':','hello','-end'),':hello');
+%!assert(addpath('','hello','world'),['hello',pathsep(),'world'])
+%!assert(addpath(pathsep(),'hello'),['hello',pathsep()]);
+%!assert(addpath(pathsep(),'hello','-end'),[pathsep(),'hello']);
 %!assert(addpath('hello','hello'),'hello');
-%!assert(addpath('hello','world'),'world:hello')
-%!assert(addpath('hello','world','-end'),'hello:world')
-%!assert(addpath('hello:','world','-end'),'hello::world')
-%!assert(addpath('hello:','hello','world','-end'),':hello:world')
+%!assert(addpath('hello','world'),['world',pathsep(),'hello'])
+%!assert(addpath('hello','world','-end'),['hello',pathsep(),'world'])
+%!assert(addpath(['hello',pathsep()],'world','-end'),['hello',pathsep(),pathsep(),'world'])
+%!assert(addpath(['hello',pathsep()],'hello','world','-end'),[pathsep(),'hello',pathsep(),'world'])
 
-%!assert(addpath('',''),':')
-%!assert(addpath(':',''),':')
-%!assert(addpath('hello',''),':hello')
-%!assert(addpath('hello:world',''),':hello:world')
-%!assert(addpath('hello:world:',''),':hello:world')
-%!assert(addpath('hello::world',''),':hello:world')
+%!assert(addpath('',''),pathsep())
+%!assert(addpath(pathsep(),''),pathsep())
+%!assert(addpath('hello',''),[pathsep(),'hello'])
+%!assert(addpath(['hello',pathsep(),'world'],''),[pathsep(),'hello',pathsep(),'world'])
+%!assert(addpath(['hello',pathsep(),'world',pathsep()],''),[pathsep(),'hello',pathsep(),'world'])
+%!assert(addpath(['hello',pathsep(),pathsep(),'world'],''),[pathsep(),'hello',pathsep(),'world'])

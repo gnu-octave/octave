@@ -59,9 +59,9 @@ Boston, MA 02110-1301, USA.
 class regexp_elem
 {
 public:
-  regexp_elem (const string_vector _named_token, const Cell _t, 
-	       const std::string _m, const Matrix _te, const double _s, 
-	       const double _e) :
+  regexp_elem (const string_vector& _named_token, const Cell& _t, 
+	       const std::string& _m, const Matrix& _te, double _s, 
+	       double _e) :
     named_token (_named_token), t (_t), m (_m), te (_te), s (_s), e (_e) { }
 
   regexp_elem (const regexp_elem &a) : named_token (a.named_token), t (a.t), 
@@ -426,7 +426,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
 	      idx += match[0].rm_eo;
 
-	      regexp_elem new_elem (Octave_map(), t, m, te, s, e);
+	      regexp_elem new_elem (string_vector (), t, m, te, s, e);
 	      lst.push_back (new_elem);
 	      sz++;
 

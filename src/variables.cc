@@ -1256,6 +1256,52 @@ set_global_value (const std::string& nm, const octave_value& val)
 
 // Variable values.
 
+octave_value
+set_internal_variable (bool& var, const octave_value_list& args,
+		       const char *nm)
+{
+  octave_value retval = var;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      bool bval = args(0).bool_value ();
+
+      if (! error_state)
+	var = bval;
+      else
+	error ("%s: expecting arg to be a logical value", nm);
+    }
+  else if (nargin > 1)
+    print_usage ("automatic_replot");
+
+  return retval;
+}
+
+octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+		       const char *nm)
+{
+  octave_value retval = var;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).string_value ();
+
+      if (! error_state)
+	var = sval;
+      else
+	error ("%s: expecting arg to be a character string", nm);
+    }
+  else if (nargin > 1)
+    print_usage ("automatic_replot");
+
+  return retval;
+}
+
 // Look for the given name in the global symbol table.  If it refers
 // to a string, return a new copy.  If not, return 0;
 

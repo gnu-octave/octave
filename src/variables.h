@@ -107,6 +107,16 @@ get_global_value (const std::string& nm, bool silent = false);
 
 extern void set_global_value (const std::string& nm, const octave_value& val);
 
+extern octave_value
+set_internal_variable (bool& var, const octave_value_list& args,
+		       const char *nm);
+
+extern octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+		       const char *nm);
+
+#define SET_INTERNAL_VARIABLE(NM) set_internal_variable (V ## NM, args, #NM)
+
 extern std::string builtin_string_variable (const std::string&);
 extern int builtin_real_scalar_variable (const std::string&, double&);
 extern octave_value builtin_any_variable (const std::string&);

@@ -1,5 +1,16 @@
 2006-05-04  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (set_internal_variable): Move here from
+	DLD-FUNCTIONS/__gnuplot_raw__.l.
+	* variables.h (SET_INTERNAL_VARIABLE): Likewise.
+	(set_internal_variable): Provide decls.
+
+	* DLD-FUNCTIONS/__gnuplot_raw__.l: Convert all DEFVARs to DEFUN_DLDs.
+	(gnuplot::init): Delete.
+	(gnuplot::gnuplot): Don't call init here.
+	(set_internal_variable): New functions.
+	(SET_INTERNAL_VARIABLE): New macro.
+
 	* Makefile.in: Undo changes of 2006-03-16.
 	* DLD-FUNCTINS/__gnuplot_raw__.l: Move here from __gnuplot_raw__.l.
 	Undo changes of 2006-03-16.

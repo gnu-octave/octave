@@ -1460,54 +1460,6 @@ public:
 
 static gnuplot_X X;
 
-static octave_value
-set_internal_variable (bool& var, const octave_value_list& args,
-		       const char *nm)
-{
-  octave_value retval = var;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      bool bval = args(0).bool_value ();
-
-      if (! error_state)
-	var = bval;
-      else
-	error ("%s: expecting arg to be a logical value", nm);
-    }
-  else if (nargin > 1)
-    print_usage ("automatic_replot");
-
-  return retval;
-}
-
-static octave_value
-set_internal_variable (std::string& var, const octave_value_list& args,
-		       const char *nm)
-{
-  octave_value retval = var;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
-	var = sval;
-      else
-	error ("%s: expecting arg to be a character string", nm);
-    }
-  else if (nargin > 1)
-    print_usage ("automatic_replot");
-
-  return retval;
-}
-
-#define SET_INTERNAL_VARIABLE(NM) set_internal_variable (V ## NM, args, #NM)
-
 // -----------------------
 // User-callable functions
 // -----------------------

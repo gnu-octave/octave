@@ -75,9 +75,9 @@ private:
 
 public:  
   SparseComplexQR (void) : 
-    rep (new SparseComplexQR_rep (SparseComplexMatrix(), -1)) { }
+    rep (new SparseComplexQR_rep (SparseComplexMatrix(), 0)) { }
 
-  SparseComplexQR (const SparseComplexMatrix& a, int order = -1) : 
+  SparseComplexQR (const SparseComplexMatrix& a, int order = 0) : 
     rep (new SparseComplexQR_rep (a, order)) { }
 
   SparseComplexQR (const SparseComplexQR& a) : rep (a.rep) { rep->count++; }

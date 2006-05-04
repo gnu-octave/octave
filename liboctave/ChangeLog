@@ -1,3 +1,9 @@
+2006-05-04  David Bateman  <dbateman@free.fr>
+
+	* SparseQR.cc, SparseQR.h, SparseCmplxQR.cc, SparseCmplxQR.h,
+	sparse-dmsolve.cc : Allow compilation with versions v2.0.0 of
+	CXSparse or later
+
 2006-05-03  David Bateman  <dbateman@free.fr>
 
 	* CMatrix.cc (zpotrf, zpocon, zpotrs, ztrcon, ztrtrs):

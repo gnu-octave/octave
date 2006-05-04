@@ -74,9 +74,9 @@ private:
   SparseQR_rep *rep;
 
 public:  
-  SparseQR (void) : rep (new SparseQR_rep (SparseMatrix(), -1)) { }
+  SparseQR (void) : rep (new SparseQR_rep (SparseMatrix(), 0)) { }
 
-  SparseQR (const SparseMatrix& a, int order = -1) : 
+  SparseQR (const SparseMatrix& a, int order = 0) : 
     rep (new SparseQR_rep (a, order)) { }
 
   SparseQR (const SparseQR& a) : rep (a.rep) { rep->count++; }

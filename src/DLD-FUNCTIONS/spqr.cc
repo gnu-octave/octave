@@ -292,19 +292,34 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
     {
       if (nargout <= 1)
 	{
+#if defined(CS_VER) && (CS_VER >= 2)
+	  octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
+#else
 	  octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm);
+#endif
 	  retval(0) = put_int (jmatch + nr, nc);
 	  CXSPARSE_NAME (_free) (jmatch);
 	}
       else
 	{
+#if defined(CS_VER) && (CS_VER >= 2)
+	  CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm, 0);
+#else
 	  CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm);
+#endif
 	  //retval(5) = put_int (dm->rr, 5);
 	  //retval(4) = put_int (dm->cc, 5);
+#if defined(CS_VER) && (CS_VER >= 2)
+	  retval(3) = put_int (dm->s, dm->nb+1);
+	  retval(2) = put_int (dm->r, dm->nb+1);
+	  retval(1) = put_int (dm->q, nc);
+	  retval(0) = put_int (dm->p, nr);
+#else
 	  retval(3) = put_int (dm->S, dm->nb+1);
 	  retval(2) = put_int (dm->R, dm->nb+1);
 	  retval(1) = put_int (dm->Q, nc);
 	  retval(0) = put_int (dm->P, nr);
+#endif
 	  CXSPARSE_NAME (_dfree) (dm);
 	}
     }

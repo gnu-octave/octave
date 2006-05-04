@@ -1,3 +1,8 @@
+2006-05-04  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sqqr (Fdmperm): Allow compilation with versions
+	v2.0.0 of CXSparse or later.
+
 2006-05-04  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (set_internal_variable): Move here from

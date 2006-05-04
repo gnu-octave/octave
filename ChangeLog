@@ -1,3 +1,7 @@
+2006-05-04  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (SHELL_SCRIPTS): Include run-octave in the list.
+
 2006-05-02  John W. Eaton  <jwe@octave.org>
 
 	* NEWS: New contents for 3.0.

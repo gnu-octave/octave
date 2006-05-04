@@ -56,7 +56,7 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(shell echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}') \
   $(shell echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}')
 
-SHELL_SCRIPTS = octave-bug octave-config mkoctfile
+SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
 
 all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS))
 .PHONY: all

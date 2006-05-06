@@ -1,5 +1,5 @@
 #! /bin/sh
-top_srcdir=%top_srcdir%
+top_srcdir=%abs_top_srcdir%
 builddir=%builddir%
 LOADPATH="$top_srcdir/test//:$top_srcdir/scripts//:$builddir/scripts//:$builddir/src//:";
 args="--path=$LOADPATH"

@@ -1,3 +1,9 @@
+2006-05-05  David Bateman  <dbateman@free.fr>
+
+	    * Makeconf.in (do-subst-scripts-vals): Also replace 
+	    abs_top_srcdir.
+	    * run-octave.in: Define top_srcdir as an absolute path.
+
 2006-05-04  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (SHELL_SCRIPTS): Include run-octave in the list.

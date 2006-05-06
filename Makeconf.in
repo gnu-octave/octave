@@ -562,6 +562,7 @@ echo "making $@ from $<"
 $(SED) < $< \
   -e "s|%srcdir%|${srcdir}|" \
   -e "s|%top_srcdir%|${top_srcdir}|" \
+  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|$(shell pwd)|" > $@-t
 $(top_srcdir)/move-if-change $@-t $@
 endef

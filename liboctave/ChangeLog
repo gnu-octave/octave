@@ -1,3 +1,9 @@
+2006-05-08  David Bateman  <dbateman@free.fr>
+
+	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Set column pointers in
+	first pass and use to determine which algorithm to use on a
+	column-by-column basis.
+
 2006-05-04  David Bateman  <dbateman@free.fr>
 
 	* SparseQR.cc, SparseQR.h, SparseCmplxQR.cc, SparseCmplxQR.h,

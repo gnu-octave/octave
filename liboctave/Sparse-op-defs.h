@@ -1548,8 +1548,10 @@ Boston, MA 02110-1301, USA.
   else \
     { \
       OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr); \
+      RET_TYPE retval (nr, a_nc, 0); \
       for (octave_idx_type i = 0; i < nr; i++) \
 	w[i] = 0; \
+      retval.xcidx(0) = 0; \
       \
       octave_idx_type nel = 0; \
       \
@@ -1568,6 +1570,7 @@ Boston, MA 02110-1301, USA.
 	          OCTAVE_QUIT; \
 		} \
 	    } \
+          retval.xcidx(i+1) = nel; \
 	} \
       \
       if (nel == 0) \
@@ -1579,8 +1582,7 @@ Boston, MA 02110-1301, USA.
 	  \
           OCTAVE_LOCAL_BUFFER (RET_EL_TYPE, Xcol, nr); \
           \
-	  RET_TYPE retval (nr, a_nc, nel); \
-	  octave_idx_type ii = 0; \
+	  retval.change_capacity (nel); \
 	  /* The optimal break-point as estimated from simulations */ \
 	  /* Note that Mergesort is O(nz log(nz)) while searching all */ \
 	  /* values is O(nr), where nz here is non-zero per row of */ \
@@ -1592,44 +1594,15 @@ Boston, MA 02110-1301, USA.
 	  /*   nz:   6    25    97   585  2202 */ \
 	  /* The below is a simplication of the 'polyfit'-ed parameters */ \
 	  /* to these breakpoints */ \
-	  if (nr > 43000 || ((nr * nr) * double(a_nc)) / 43000 > nel) \
+          octave_idx_type n_per_col = (a_nc > 43000 ? 43000 : \
+					(a_nc * a_nc) / 43000); \
+	  octave_idx_type ii = 0; \
+	  octave_idx_type *ri = retval.xridx(); \
+	  octave_sort<octave_idx_type> sort; \
+	  \
+	  for (octave_idx_type i = 0; i < a_nc ; i++) \
 	    { \
-	      octave_idx_type *ri = retval.xridx(); \
-	      octave_sort<octave_idx_type> sort; \
-	      \
-	      retval.xcidx(0) = 0; \
-	      for (octave_idx_type i = 0; i < a_nc ; i++) \
-		{ \
-		  for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
-		    { \
-		      octave_idx_type col = a.ridx(j); \
-		      EL_TYPE tmpval = a.data(j); \
-		      for (octave_idx_type k = m.cidx(col) ; \
-			   k < m.cidx(col+1); k++) \
-			{ \
-			  OCTAVE_QUIT; \
-			  octave_idx_type row = m.ridx(k); \
-			  if (w[row] < i + 1) \
-			    { \
-			      w[row] = i + 1; \
-			      retval.xridx(ii++) = row;\
-			      Xcol[row] = tmpval * m.data(k); \
-			    } \
-			  else \
-			    Xcol[row] += tmpval * m.data(k); \
-			} \
-		    } \
-	          sort.sort (ri + retval.xcidx(i), ii - retval.xcidx(i)); \
-	          for (octave_idx_type k = retval.xcidx(i); k < ii; k++) \
-		    retval.xdata(k) = Xcol[retval.xridx(k)]; \
-		  retval.xcidx(i+1) = ii; \
-		}  \
-	      retval.maybe_compress (true);\
-	    }				   \
-	  else \
-	    { \
-	      retval.xcidx(0) = 0; \
-	      for (octave_idx_type i = 0; i < a_nc ; i++) \
+	      if (retval.xcidx(i+1) - retval.xcidx(i) > n_per_col) \
 		{ \
 		  for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
 		    { \
@@ -1655,10 +1628,34 @@ Boston, MA 02110-1301, USA.
 		        retval.xdata(ii) = Xcol[k]; \
 		        retval.xridx(ii++) = k; \
 		      } \
-		  retval.xcidx(i+1) = ii; \
+		} \
+	      else \
+		{ \
+		  for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+		    { \
+		      octave_idx_type col = a.ridx(j); \
+		      EL_TYPE tmpval = a.data(j); \
+		      for (octave_idx_type k = m.cidx(col) ; \
+			  k < m.cidx(col+1); k++) \
+			{ \
+			  OCTAVE_QUIT; \
+			  octave_idx_type row = m.ridx(k); \
+			  if (w[row] < i + 1) \
+			    { \
+			      w[row] = i + 1; \
+			      retval.xridx(ii++) = row;\
+			      Xcol[row] = tmpval * m.data(k); \
+			    } \
+			  else \
+			    Xcol[row] += tmpval * m.data(k); \
+			} \
+		    } \
+		  sort.sort (ri + retval.xcidx(i), ii - retval.xcidx(i)); \
+	          for (octave_idx_type k = retval.xcidx(i); k < ii; k++) \
+		    retval.xdata(k) = Xcol[retval.xridx(k)]; \
 		}  \
-	      retval.maybe_compress ();\
 	    } \
+	  retval.maybe_compress ();\
 	  return retval; \
 	} \
     }

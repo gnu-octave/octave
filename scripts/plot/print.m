@@ -71,6 +71,8 @@
 ##     Portable network graphics
 ##   @item pbm
 ##     PBMplus
+##   @item emf
+##     Microsoft Enhanced Metafile
 ##   @end table
 ##
 ##   Other devices are supported by "convert" from ImageMagick.  Type

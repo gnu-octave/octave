@@ -232,12 +232,6 @@ const int bracket_brace_paren_nesting_level::PAREN = 3;
 
 static bracket_brace_paren_nesting_level nesting_level;
 
-static bool Vwarn_matlab_incompatible = false;
-
-static bool Vwarn_separator_insert = false;
-
-static bool Vwarn_single_quote_string = false;
-
 static unsigned int Vtoken_count = 0;
 
 // Forward declarations for functions defined at the bottom of this
@@ -2481,15 +2475,14 @@ maybe_warn_separator_insert (char sep)
 {
   std::string nm = curr_fcn_file_full_name;
 
-  if (Vwarn_separator_insert)
-    {
-      if (nm.empty ())
-	warning ("potential auto-insertion of `%c' near line %d",
-		 sep, input_line_number);
-      else
-	warning ("potential auto-insertion of `%c' near line %d of file %s",
-		 sep, input_line_number, nm.c_str ());
-    }
+  if (nm.empty ())
+    warning_with_id ("Octave:separator-insert",
+		     "potential auto-insertion of `%c' near line %d",
+		     sep, input_line_number);
+  else
+    warning_with_id ("Octave:separator-insert",
+		     "potential auto-insertion of `%c' near line %d of file %s",
+		     sep, input_line_number, nm.c_str ());
 }
 
 static void
@@ -2497,22 +2490,22 @@ gripe_single_quote_string (void)
 {
   std::string nm = curr_fcn_file_full_name;
 
-  if (Vwarn_single_quote_string)
-    {
-      if (nm.empty ())
-	warning ("single quote delimited string near line %d",
-		 input_line_number);
-      else
-	warning ("single quote delimited string near line %d of file %s",
-		 input_line_number, nm.c_str ());
-    }
+  if (nm.empty ())
+    warning_with_id ("Octave:single-quote-string",
+		     "single quote delimited string near line %d",
+		     input_line_number);
+  else
+    warning_with_id ("Octave:single-quote-string",
+		     "single quote delimited string near line %d of file %s",
+		     input_line_number, nm.c_str ());
 }
 
 static void
 gripe_matlab_incompatible (const std::string& msg)
 {
-  if (Vwarn_matlab_incompatible)
-    warning ("potential Matlab compatibility problem: %s", msg.c_str ());
+  warning_with_id ("Octave:matlab-incompatible",
+		   "potential Matlab compatibility problem: %s",
+		   msg.c_str ());
 }
 
 static void
@@ -2545,55 +2538,6 @@ Number of language tokens processed since Octave startup.\n\
 @end deftypefn")
 {
   return octave_value (Vtoken_count);
-}
-
-static int
-warn_matlab_incompatible (void)
-{
-  Vwarn_matlab_incompatible = check_preference ("warn_matlab_incompatible");
-
-  return 0;
-}
-
-static int
-warn_separator_insert (void)
-{
-  Vwarn_separator_insert = check_preference ("warn_separator_insert");
-
-  return 0;
-}
-
-static int
-warn_single_quote_string (void)
-{
-  Vwarn_single_quote_string = check_preference ("warn_single_quote_string");
-
-  return 0;
-}
-
-void
-symbols_of_lex (void)
-{
-  DEFVAR (warn_matlab_incompatible, false, warn_matlab_incompatible,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_matlab_incompatible\n\
-Print warnings for Octave language features that may cause\n\
-compatibility problems with Matlab.\n\
-@end defvr");
-
-  DEFVAR (warn_separator_insert, false, warn_separator_insert,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_separator_insert\n\
-Print warning if commas or semicolons might be inserted\n\
-automatically in literal matrices.\n\
-@end defvr");
-
-  DEFVAR (warn_single_quote_string, false, warn_single_quote_string,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} warn_single_quote_string\n\
-Print warning if a signle quote character is used to introduce a\n\
-string constant.\n\
-@end defvr");
 }
 
 /*

@@ -92,7 +92,7 @@ private:
   // True if we should not delete the lhs.
   bool preserve;
 
-  // True if this is an assignment to the built-in variable ans.
+  // True if this is an assignment to the automatic variable ans.
   bool ans_ass;
 
   // The type of the expression.

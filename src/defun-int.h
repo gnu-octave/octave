@@ -48,12 +48,6 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 			  bool can_hide_function = true);
 
 extern void
-install_builtin_variable (const std::string& n, const octave_value& v,
-			  bool p, bool e,
-			  symbol_record::change_function chg_fcn,
-			  const std::string& h);
-
-extern void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
 		      const std::string& doc, bool is_text_fcn = false);
@@ -89,28 +83,6 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
     install_dld_function (F ## name, #name, shl, doc); \
     return error_state ? false : true; \
   }
-
-// Define a builtin variable.
-//
-//   name is the name of the variable, unquoted.
-//
-//   defn is the initial value for the variable.
-//
-//   protect is a flag that says whether it should be possible to give
-//     the variable a new value.
-//
-//   eternal is a flag that says whether it should be possible to
-//     clear the variable.  Most builtin variables are eternal, and
-//     cannot be cleared.
-//
-//   chg_fcn is a pointer to a function that should be called whenever
-//     this variable is given a new value.  It can be 0 if there is no
-//     function to call.  See also the code in user-prefs.cc.
-//
-//   doc is the simple help text for this variable.
-
-#define DEFVAR(name, defn, chg_fcn, doc) \
-  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, false, chg_fcn, doc)
 
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.df files that are eventually used to
@@ -154,11 +126,6 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
     XDEFALIAS_INTERNAL(alias, name) \
   END_INSTALL_BUILTIN
 
-#define DEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
-  END_INSTALL_BUILTIN
-
 #define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
 			      d_c_map, c_c_map, lo, hi, \
 			      ch_map_flag, can_ret_cmplx_for_real, doc) \
@@ -186,17 +153,6 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 // No definition is required for an alias.
 
 #define DEFALIAS_INTERNAL(alias, name)
-
-// How builtin variables are actually installed.
-
-#define DEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
-  install_builtin_variable (name, octave_value (defn), protect, \
-			    (chg_fcn != 0), chg_fcn, doc)
-
-// How builtin variables are actually installed.
-
-#define INSTALL_CONST(name, sname, defn, protect, doc) \
-  install_builtin_constant (name, octave_value (defn), protect, doc)
 
 // How mapper functions are actually installed.
 

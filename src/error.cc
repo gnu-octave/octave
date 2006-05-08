@@ -48,16 +48,16 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // TRUE means that Octave will try to beep obnoxiously before printing
 // error messages.
-static bool Vbeep_on_error;
+static bool Vbeep_on_error = false;
 
 // TRUE means that Octave will try to enter the debugger when an error
 // is encountered.  This will also inhibit printing of the normal
 // traceback message (you will only see the top-level error message).
-static bool Vdebug_on_error;
+static bool Vdebug_on_error = false;
 
 // TRUE means that Octave will try to enter the debugger when a warning
 // is encountered.
-static bool Vdebug_on_warning;
+static bool Vdebug_on_warning = false;
 
 // TRUE means that Octave will try to display a stack trace when a
 // warning is encountered.
@@ -129,7 +129,7 @@ reset_error_handler (void)
 }
 
 static void
-init_warning_options (const std::string& state = "on")
+initialize_warning_options (const std::string& state)
 {
   warning_options.clear ();
 
@@ -859,7 +859,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 		{
 		  if (arg1 != "error")
 		    {
-		      bind_builtin_variable ("debug_on_warning", arg1 == "on");
+		      Vdebug_on_warning = (arg1 == "on");
 		      done = true;
 		    }
 		}
@@ -885,7 +885,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 		    arg2 = Vlast_warning_id;
 
 		  if (arg2 == "all")
-		    init_warning_options (arg1);
+		    initialize_warning_options (arg1);
 		  else
 		    {
 		      Cell ident = warning_options.contents ("identifier");
@@ -1076,6 +1076,40 @@ warning named by @var{id} is handled as if it were an error instead.\n\
   return retval;
 }
 
+static void
+disable_warning (const std::string& id)
+{
+  octave_value_list args;
+
+  args(1) = id;
+  args(0) = "off";
+
+  Fwarning (args, 0);
+}
+
+void
+initialize_default_warning_state (void)
+{
+  initialize_warning_options ("on");
+
+  // Most people will want to have the following disabled.
+
+  disable_warning ("Octave:array-to-scalar");
+  disable_warning ("Octave:array-to-vector");
+  disable_warning ("Octave:empty-list-elements");
+  disable_warning ("Octave:fortran-indexing");
+  disable_warning ("Octave:imag-to-real");
+  disable_warning ("Octave:matlab-incompatible");
+  disable_warning ("Octave:missing-semicolon");
+  disable_warning ("Octave:neg-dim-as-zero");
+  disable_warning ("Octave:resize-on-range-error");
+  disable_warning ("Octave:separator-insert");
+  disable_warning ("Octave:single-quote-string");
+  disable_warning ("Octave:str-to-num");
+  disable_warning ("Octave:string-concat");
+  disable_warning ("Octave:variable-switch-label");
+}
+
 DEFUN (lasterr, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lasterr (@var{msg}, @var{msgid})\n\
@@ -1199,59 +1233,39 @@ to check for the proper number of arguments.\n\
   return retval;
 }
 
-static int
-beep_on_error (void)
+DEFUN (beep_on_error, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} beep_on_error ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will try\n\
+to ring the terminal bell before printing an error message.\n\
+@end deftypefn")
 {
-  Vbeep_on_error = check_preference ("beep_on_error");
-
-  return 0;
+  return SET_INTERNAL_VARIABLE (beep_on_error);
 }
 
-static int
-debug_on_error (void)
-{
-  Vdebug_on_error = check_preference ("debug_on_error");
-
-  return 0;
-}
-
-static int
-debug_on_warning (void)
-{
-  Vdebug_on_warning = check_preference ("debug_on_warning");
-
-  return 0;
-}
-
-void
-symbols_of_error (void)
-{
-  init_warning_options ();
-
-  DEFVAR (beep_on_error, false, beep_on_error,
+DEFUN (debug_on_error, args, nargout,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} beep_on_error\n\
-If the value of @code{beep_on_error} is nonzero, Octave will try\n\
-to ring your terminal's bell before printing an error message.  The\n\
-default value is 0.\n\
-@end defvr");
-
-  DEFVAR (debug_on_error, false, debug_on_error,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} debug_on_error\n\
-If the value of @code{debug_on_error} is nonzero, Octave will try\n\
+@deftypefn {Built-in Function} {@var{val} =} debug_on_error ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when an error is encountered.  This will also\n\
 inhibit printing of the normal traceback message (you will only see\n\
-the top-level error message).  The default value is 0.\n\
-@end defvr");
+the top-level error message).\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (debug_on_error);
+}
 
-  DEFVAR (debug_on_warning, false, debug_on_warning,
+DEFUN (debug_on_warning, args, nargout,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} debug_on_warning\n\
-If the value of @code{debug_on_warning} is nonzero, Octave will try\n\
-to enter the debugger when a warning is encountered.  The default\n\
-value is 0.\n\
-@end defvr");
+@deftypefn {Built-in Function} {@var{val} =} debug_on_warning ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will try\n\
+to enter the debugger when a warning is encountered.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (debug_on_warning);
 }
 
 /*

@@ -122,6 +122,10 @@
 ## printed for implicit conversions of complex numbers to real numbers.
 ## By default, the @code{Octave:imag-to-real} warning is disabled.
 ## 
+## @item Octave:matlab-incompatible
+## Print warnings for Octave language features that may cause
+## compatibility problems with Matlab.
+## 
 ## @item Octave:missing-semicolon
 ## If the @code{Octave:missing-semicolon} warning is enabled, Octave
 ## will warn when statements in function definitions don't end in
@@ -174,6 +178,14 @@
 ## warning when a matrix is resized by an indexed assignment with
 ## indices outside the current bounds.  By default, the
 ## @code{Octave:resize-on-range-error} warning is disabled.
+## 
+## @item Octave:separator-insert
+## Print warning if commas or semicolons might be inserted
+## automatically in literal matrices.
+## 
+## @item Octave:single-quote-string
+## Print warning if a signle quote character is used to introduce a
+## string constant.
 ## 
 ## @item Octave:str-to-num
 ## If the @code{Octave:str-to-num} warning is enabled, a warning is printed

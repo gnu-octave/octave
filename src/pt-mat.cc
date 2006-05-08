@@ -939,52 +939,26 @@ tree_matrix::accept (tree_walker& tw)
   tw.visit_matrix (*this);
 }
 
-static int
-string_fill_char (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("string_fill_char");
-
-  switch (s.length ())
-    {
-    case 1:
-      Vstring_fill_char = s[0];
-      break;
-
-    case 0:
-      Vstring_fill_char = '\0';
-      break;
-
-    default:
-      warning ("string_fill_char must be a single character");
-      status = -1;
-      break;
-    }
-
-  return status;
-}
-
-void
-symbols_of_pt_mat (void)
-{
-  DEFVAR (string_fill_char, " ", string_fill_char,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} string_fill_char\n\
-The value of this variable is used to pad all strings in a string matrix\n\
-to the same length.  It should be a single character.  The default value\n\
-is @code{\" \"} (a single space).  For example,\n\
+DEFUN (string_fill_char, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} string_fill_char ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} string_fill_char (@var{new_val})\n\
+Query or set the internal variable used to pad all rows of a character\n\
+matrix to the same length.  It must be a single character.  The default\n\
+value is @code{\" \"} (a single space).  For example,\n\
 \n\
 @example\n\
 @group\n\
-string_fill_char = \"X\";\n\
+string_fill_char (\"X\");\n\
 [ \"these\"; \"are\"; \"strings\" ]\n\
      @result{} \"theseXX\"\n\
         \"areXXXX\"\n\
         \"strings\"\n\
 @end group\n\
 @end example\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (string_fill_char);
 }
 
 /*

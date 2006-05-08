@@ -60,11 +60,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 				     "<unknown type>", "unknown");
 
 // If TRUE, print the name along with the value.
-static bool Vprint_answer_id_name;
+static bool Vprint_answer_id_name = true;
 
 // If TRUE, turn off printing of results in functions (as if a
 // semicolon has been appended to each statement).
-static bool Vsilent_functions;
+static bool Vsilent_functions = false;
 
 octave_value
 octave_base_value::squeeze (void) const
@@ -1096,53 +1096,28 @@ install_base_type_conversions (void)
   INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
 }
 
-static int
-print_answer_id_name (void)
+DEFUN (print_answer_id_name, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} print_answer_id_name ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} print_answer_id_name (@var{new_val})\n\
+Query or set the internal variable that controls whether variable\n\
+names are printed along with results produced by evaluating an expression.\n\
+@end deftypefn")
 {
-  Vprint_answer_id_name = check_preference ("print_answer_id_name");
-
-  return 0;
+  return SET_INTERNAL_VARIABLE (print_answer_id_name);
 }
 
-static int
-silent_functions (void)
+DEFUN (silent_functions, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} silent_functions ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
+Query or set the internal variable that controls whether internal\n\
+output from a function is suppressed.  If this option is disabled,\n\
+Octave will display the results produced by evaluating expressions\n\
+within a function body that are not terminated with a semicolon.\n\
+@end deftypefn")
 {
-  Vsilent_functions = check_preference ("silent_functions");
-
-  return 0;
-}
-
-void
-symbols_of_ov_base (void)
-{
-  DEFVAR (print_answer_id_name, true, print_answer_id_name,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} print_answer_id_name\n\
-If the value of @code{print_answer_id_name} is nonzero, variable\n\
-names are printed along with the result.  Otherwise, only the result\n\
-values are printed.  The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (silent_functions, false, silent_functions,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} silent_functions\n\
-If the value of @code{silent_functions} is nonzero, internal output\n\
-from a function is suppressed.  Otherwise, the results of expressions\n\
-within a function body that are not terminated with a semicolon will\n\
-have their values printed.  The default value is 0.\n\
-\n\
-For example, if the function\n\
-\n\
-@example\n\
-function f ()\n\
-  2 + 2\n\
-endfunction\n\
-@end example\n\
-\n\
-@noindent\n\
-is executed, Octave will either print @samp{ans = 4} or nothing\n\
-depending on the value of @code{silent_functions}.\n\
-@end defvr");
+  return SET_INTERNAL_VARIABLE (silent_functions);
 }
 
 /*

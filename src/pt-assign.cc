@@ -39,10 +39,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "pt-assign.h"
 #include "pt-walk.h"
 #include "utils.h"
+#include "variables.h"
 
 // TRUE means print the right hand side of an assignment instead of
 // the left.
-static bool Vprint_rhs_assign_val;
+static bool Vprint_rhs_assign_val = false;
 
 // Simple assignment expressions.
 
@@ -342,26 +343,18 @@ tree_multi_assignment::accept (tree_walker& tw)
   tw.visit_multi_assignment (*this);
 }
 
-static int
-print_rhs_assign_val (void)
+DEFUN (print_rhs_assign_val, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} print_rhs_assign_val ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} print_rhs_assign_val (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will\n\
+print the value of the right hand side of assignment expressions\n\
+instead of the value of the left hand side (after the assignment).\n\
+@end deftypefn")
 {
-  Vprint_rhs_assign_val = check_preference ("print_rhs_assign_val");
-
-  return 0;
+  return SET_INTERNAL_VARIABLE (print_rhs_assign_val);
 }
 
-void
-symbols_of_pt_assign (void)
-{
-  DEFVAR (print_rhs_assign_val, false, print_rhs_assign_val,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} print_rhs_assign_val\n\
-If the value of this variable is non-zero, Octave will print the value\n\
-of the right hand side of assignment expressions instead of the value\n\
-of the left hand side (after the assignment).\n\
-@end defvr");
-
-}
 
 /*
 ;;; Local Variables: ***

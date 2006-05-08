@@ -478,17 +478,17 @@ maximum_braindamage (void)
 {
   persist = true;
 
-  bind_builtin_variable ("PS1", ">> ");
-  bind_builtin_variable ("PS2", "");
-  bind_builtin_variable ("beep_on_error", true);
-  bind_builtin_variable ("crash_dumps_octave_core", false);
-  bind_builtin_variable ("default_save_options", "-mat-binary");
-  bind_builtin_variable ("fixed_point_format", true);
-  bind_builtin_variable ("history_timestamp_format_string",
+  bind_internal_variable ("PS1", ">> ");
+  bind_internal_variable ("PS2", "");
+  bind_internal_variable ("beep_on_error", true);
+  bind_internal_variable ("crash_dumps_octave_core", false);
+  bind_internal_variable ("default_save_options", "-mat-binary");
+  bind_internal_variable ("fixed_point_format", true);
+  bind_internal_variable ("history_timestamp_format_string",
 			 "%%-- %D %I:%M %p --%%");
-  bind_builtin_variable ("page_screen_output", false);
-  bind_builtin_variable ("print_empty_dimensions", false);
-  bind_builtin_variable ("warn_function_name_clash", false);
+  bind_internal_variable ("page_screen_output", false);
+  bind_internal_variable ("print_empty_dimensions", false);
+  bind_internal_variable ("warn_function_name_clash", false);
 }
 
 // You guessed it.
@@ -506,7 +506,7 @@ octave_main (int argc, char **argv, int embedded)
   // default variable values must be available for the variables to be
   // installed, and the call to install_builtins must come before the
   // options are processed because some command line options override
-  // defaults by calling bind_builtin_variable.
+  // defaults by calling bind_internal_variable.
 
   sysdep_init ();
 
@@ -519,6 +519,8 @@ octave_main (int argc, char **argv, int embedded)
     F77_FUNC (xerbla, XERBLA) ("octave", 13, 6L);
 
   initialize_error_handlers ();
+
+  initialize_default_warning_state ();
 
   install_defaults ();
 
@@ -545,7 +547,7 @@ octave_main (int argc, char **argv, int embedded)
       switch (optc)
 	{
 	case 'H':
-	  bind_builtin_variable ("saving_history", false);
+	  bind_internal_variable ("saving_history", false);
 	  break;
 
 	case 'V':
@@ -573,7 +575,7 @@ octave_main (int argc, char **argv, int embedded)
 
 	case 'p':
 	  if (args.optarg ())
-	    bind_builtin_variable ("LOADPATH", args.optarg ());
+	    bind_internal_variable ("LOADPATH", args.optarg ());
 	  break;
 
 	case 'q':
@@ -583,7 +585,7 @@ octave_main (int argc, char **argv, int embedded)
 	case 'x':
 	  {
 	    double tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
-	    bind_builtin_variable ("echo_executing_commands", tmp);
+	    bind_internal_variable ("echo_executing_commands", tmp);
 	  }
 	  break;
 
@@ -603,17 +605,17 @@ octave_main (int argc, char **argv, int embedded)
 
 	case EXEC_PATH_OPTION:
 	  if (args.optarg ())
-	    bind_builtin_variable ("EXEC_PATH", args.optarg ());
+	    bind_internal_variable ("exec_path", args.optarg ());
 	  break;
 
 	case INFO_FILE_OPTION:
 	  if (args.optarg ())
-	    bind_builtin_variable ("INFO_FILE", args.optarg ());
+	    bind_internal_variable ("info_file", args.optarg ());
 	  break;
 
 	case INFO_PROG_OPTION:
 	  if (args.optarg ())
-	    bind_builtin_variable ("INFO_PROGRAM", args.optarg ());
+	    bind_internal_variable ("info_program", args.optarg ());
 	  break;
 
 	case NO_INIT_FILE_OPTION:
@@ -669,7 +671,7 @@ octave_main (int argc, char **argv, int embedded)
 
   execute_startup_files ();
 
-  command_history::read (false);
+  initialize_history ();
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;
@@ -735,7 +737,7 @@ octave_main (int argc, char **argv, int embedded)
 
       // FIXME -- is this the right thing to do?
 
-      bind_builtin_variable ("echo_executing_commands", ECHO_CMD_LINE);
+      bind_internal_variable ("echo_executing_commands", ECHO_CMD_LINE);
     }
 
   if (embedded)

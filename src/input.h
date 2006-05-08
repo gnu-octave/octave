@@ -92,7 +92,7 @@ extern bool octave_yes_or_no (const std::string& prompt);
 
 extern octave_value do_keyboard (const octave_value_list& args = octave_value_list ());
 
-extern std::string Vps4;
+extern std::string VPS4;
 
 enum echo_state
 {

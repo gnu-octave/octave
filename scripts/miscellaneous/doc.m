@@ -59,19 +59,19 @@ function retval = doc (fname)
   ## Determine if a file called doc.info exist in the same 
   ## directory as the function.
 
-  info_file = fullfile (info_dir, "doc.info");
+  info_file_name = fullfile (info_dir, "doc.info");
 
-  if (! isstruct (stat (info_file)))
-    info_file = INFO_FILE;
+  if (! isstruct (stat (info_file_name)))
+    info_file_name = info_file ();
   endif
 
   cmd = sprintf ("\"%s\" --directory \"%s\" --file \"%s\" --index-search %s",
-		 INFO_PROGRAM, info_dir, info_file, fname);
+		 info_program (), info_dir, info_file_name, fname);
 
   status = system (cmd);
 
   if (status == 127)
-    warning ("unable to find info program `%s'", INFO_PROGRAM);
+    warning ("unable to find info program `%s'", info_program ());
   endif
 
   if (nargout > 0)

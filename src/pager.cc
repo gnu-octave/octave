@@ -57,17 +57,42 @@ static std::string diary_file;
 // The diary file.
 static std::ofstream external_diary_file;
 
+static std::string
+default_pager (void)
+{
+  std::string pager_binary = octave_env::getenv ("PAGER");
+
+#ifdef OCTAVE_DEFAULT_PAGER
+  if (pager_binary.empty ())
+    {
+      pager_binary = std::string (OCTAVE_DEFAULT_PAGER);
+
+      if (pager_binary == "less")
+	{
+	  pager_binary.append (" -e");
+
+	  std::string lessflags = octave_env::getenv ("LESS");
+	  if (lessflags.empty ())
+	    pager_binary.append
+	      (" -X -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
+	}
+    }
+#endif
+
+  return pager_binary;
+}
+
 // The shell command to run as the pager.
-static std::string Vpager_binary;
+static std::string VPAGER = default_pager ();
 
 // TRUE means that if output is going to the pager, it is sent as soon
 // as it is available.  Otherwise, it is buffered and only sent to the
 // pager when it is time to print another prompt.
-static bool Vpage_output_immediately;
+static bool Vpage_output_immediately = false;
 
 // TRUE means all output intended for the screen should be passed
 // through the pager.
-static bool Vpage_screen_output;
+static bool Vpage_screen_output = true;
 
 static bool really_flush_to_pager = false;
 
@@ -126,7 +151,7 @@ do_sync (const char *msg, int len, bool bypass_pager)
 	{
 	  if (! external_pager)
 	    {
-	      std::string pgr = Vpager_binary;
+	      std::string pgr = VPAGER;
 
 	      if (! pgr.empty ())
 		{
@@ -485,19 +510,14 @@ toggles the current state.\n\
       std::string arg = argv[1];
 
       if (arg == "on")
-	bind_builtin_variable ("page_screen_output", true);
+	Vpage_screen_output = true;
       else if (arg == "off")
-	bind_builtin_variable ("page_screen_output", false);
+	Vpage_screen_output = false;
       else
 	error ("more: unrecognized argument `%s'", arg.c_str ());
     }
   else if (argc == 1)
-    {
-      octave_value tmp = builtin_any_variable ("page_screen_output");
-
-      if (! error_state)
-	bind_builtin_variable ("page_screen_output", ! tmp.is_true ());
-    }
+    Vpage_screen_output = ! Vpage_screen_output;
   else
     print_usage ("more");
 
@@ -520,98 +540,46 @@ terminal window in characters (rows and columns).\n\
   return octave_value (size);
 }
 
-static std::string
-default_pager (void)
-{
-  std::string pager_binary = octave_env::getenv ("PAGER");
-
-#ifdef OCTAVE_DEFAULT_PAGER
-  if (pager_binary.empty ())
-    {
-      pager_binary = std::string (OCTAVE_DEFAULT_PAGER);
-
-      if (pager_binary == "less")
-	{
-	  pager_binary.append (" -e");
-
-	  std::string lessflags = octave_env::getenv ("LESS");
-	  if (lessflags.empty ())
-	    pager_binary.append
-	      (" -X -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
-	}
-    }
-#endif
-
-  return pager_binary;
-}
-
-static int
-pager_binary (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("PAGER");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("PAGER");
-      status = -1;
-    }
-  else
-    Vpager_binary = s;
-
-  return status;
-}
-
-static int
-page_output_immediately (void)
-{
-  Vpage_output_immediately = check_preference ("page_output_immediately");
-
-  return 0;
-}
-
-static int
-page_screen_output (void)
-{
-  Vpage_screen_output = check_preference ("page_screen_output");
-
-  return 0;
-}
-
-void
-symbols_of_pager (void)
-{
-  DEFVAR (PAGER, default_pager (), pager_binary,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} PAGER\n\
-The default value is normally @code{\"less\"}, @code{\"more\"}, or\n\
-@code{\"pg\"}, depending on what programs are installed on your system.\n\
-@xref{Installation}.\n\
-\n\
-When running interactively, Octave sends any output intended for your\n\
-terminal that is more than one screen long to the program named by the\n\
-value of the variable @code{PAGER}.\n\
-@end defvr");
-
-  DEFVAR (page_output_immediately, false, page_output_immediately,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} page_output_immediately\n\
-If the value of @code{page_output_immediately} is nonzero, Octave sends\n\
+DEFUN (page_output_immediately, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} page_output_immediately ()\n\
+@deftypefnx {Built-in Function} {@var{val} =} page_output_immediately (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave sends\n\
 output to the pager as soon as it is available.  Otherwise, Octave\n\
 buffers its output and waits until just before the prompt is printed to\n\
-flush it to the pager.  The default value is 0.\n\
-@end defvr");
+flush it to the pager.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (page_output_immediately);
+}
 
-  DEFVAR (page_screen_output, true, page_screen_output,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} page_screen_output\n\
-If the value of @code{page_screen_output} is nonzero, all output\n\
-intended for the screen that is longer than one page is sent through a\n\
+DEFUN (page_screen_output, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} page_screen_output ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} page_screen_output (@var{new_val})\n\
+Query or set the internal variable that controls whether output intended\n\
+for the terminal window that is longer than one page is sent through a\n\
 pager.  This allows you to view one screenful at a time.  Some pagers\n\
 (such as @code{less}---see @ref{Installation}) are also capable of moving\n\
-backward on the output.  The default value is 1.\n\
-@end defvr");
+backward on the output.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (page_screen_output);
+}
+
+DEFUN (PAGER, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} PAGER ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} PAGER (@var{new_val})\n\
+Query or set the internal variable that specifies the program to use\n\
+to display terminal output on your system.  The default value is\n\
+normally @code{\"less\"}, @code{\"more\"}, or\n\
+@code{\"pg\"}, depending on what programs are installed on your system.\n\
+@xref{Installation}.\n\
+@seealso{page_screen_output, page_output_immediately}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER);
 }
 
 /*

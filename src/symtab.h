@@ -74,8 +74,7 @@ public:
       BUILTIN_FUNCTION = 8,
       COMMAND = 16,
       RAWCOMMAND = 32,
-      MAPPER_FUNCTION = 64,
-      BUILTIN_VARIABLE = 128
+      MAPPER_FUNCTION = 64
     };
 
 private:
@@ -94,10 +93,7 @@ private:
     ~symbol_def (void) { }
 
     bool is_variable (void) const
-      {
-	return (symbol_type & symbol_record::USER_VARIABLE
-		|| symbol_type & symbol_record::BUILTIN_VARIABLE);
-      }
+      { return (symbol_type & symbol_record::USER_VARIABLE); }
 
     // It's not necessary to check for COMMAND and MAPPER_FUNCTION
     // here.  Those tags are just used as additional qualifiers for
@@ -138,9 +134,6 @@ private:
 
     bool is_user_function (void) const
       { return (symbol_type & symbol_record::USER_FUNCTION); }
-
-    bool is_builtin_variable (void) const
-      { return (symbol_type & symbol_record::BUILTIN_VARIABLE); }
 
     bool is_builtin_function (void) const
       { return (symbol_type & symbol_record::BUILTIN_FUNCTION); }
@@ -330,9 +323,6 @@ public:
   bool is_user_variable (void) const
     { return definition->is_user_variable (); }
 
-  bool is_builtin_variable (void) const
-    { return definition->is_builtin_variable (); }
-
   bool is_map_element (const std::string& elts) const
     { return definition->is_map_element (elts); }
 
@@ -357,8 +347,6 @@ public:
   void set_change_function (change_function f) { chg_fcn = f; }
 
   void define (const octave_value& v, unsigned int sym_type = USER_VARIABLE);
-
-  void define_builtin_var (const octave_value& v);
 
   bool define (octave_function *f, unsigned int sym_type);
 
@@ -467,8 +455,6 @@ private:
 
   bool read_only_error (const char *action);
 
-  void link_to_builtin_variable (void);
-
   void maybe_delete_def (void)
     {
       if (--definition->count <= 0)
@@ -495,11 +481,9 @@ private:
 			  | symbol_record::BUILTIN_FUNCTION \
 			  | symbol_record::COMMAND \
   			  | symbol_record::RAWCOMMAND \
-			  | symbol_record::MAPPER_FUNCTION \
-			  | symbol_record::BUILTIN_VARIABLE)
+			  | symbol_record::MAPPER_FUNCTION)
 
-#define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE \
-			  | symbol_record::BUILTIN_VARIABLE)
+#define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE)
 
 class
 symbol_table

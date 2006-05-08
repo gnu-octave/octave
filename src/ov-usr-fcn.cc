@@ -49,7 +49,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "variables.h"
 
 // Maximum nesting level for functions called recursively.
-static int Vmax_recursion_depth;
+static int Vmax_recursion_depth = 256;
 
 // User defined functions.
 
@@ -545,7 +545,7 @@ octave_user_function::print_symtab_info (std::ostream& os) const
 void
 octave_user_function::print_code_function_header (void)
 {
-  tree_print_code tpc (octave_stdout, Vps4);
+  tree_print_code tpc (octave_stdout, VPS4);
 
   tpc.visit_octave_user_function_header (*this);
 }
@@ -553,7 +553,7 @@ octave_user_function::print_code_function_header (void)
 void
 octave_user_function::print_code_function_trailer (void)
 {
-  tree_print_code tpc (octave_stdout, Vps4);
+  tree_print_code tpc (octave_stdout, VPS4);
 
   tpc.visit_octave_user_function_trailer (*this);
 }
@@ -865,26 +865,16 @@ been declared to return an unspecified number of output arguments.\n\
   return retval;
 }
 
-static int
-max_recursion_depth (void)
+DEFUN (max_recursion_depth, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
+Query or set the internal limit on the number of times a function may\n\
+be called recursively.  If the limit is exceeded, an error message is\n\
+printed and control returns to the top level.\n\
+@end deftypefn")
 {
-  Vmax_recursion_depth = check_preference ("max_recursion_depth");
-
-  return 0;
-}
-
-void
-symbols_of_ov_usr_fcn (void)
-{
-  DEFVAR (max_recursion_depth, 256.0, max_recursion_depth,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} max_recursion_depth\n\
-Limit the number of times a function may be called recursively.\n\
-If the limit is exceeded, an error message is printed and control\n\
-returns to the top level.\n\
-\n\
-The default value is 256.\n\
-@end defvr");
+  return SET_INTERNAL_VARIABLE (max_recursion_depth);
 }
 
 /*

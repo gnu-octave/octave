@@ -160,7 +160,7 @@ Octave.\n\
 	}
 
       std::ostringstream cmd_buf; 
-      cmd_buf << Vfftw_wisdom_prog << " -n -o \"" << name << "\"";
+      cmd_buf << Vfftw_wisdom_program << " -n -o \"" << name << "\"";
 
       for (octave_idx_type k = 0; k < m.rows (); k++)
 	{
@@ -197,8 +197,7 @@ Octave.\n\
 	  fclose (ifile);
 	}
       else
-	error ("fftw_wisdom: error running %s", Vfftw_wisdom_prog.c_str ());
-
+	error ("fftw_wisdom: error running %s", Vfftw_wisdom_program.c_str ());
     }
 
 #else

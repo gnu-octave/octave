@@ -56,13 +56,14 @@ unsigned long int symbol_table::symtab_count = 0;
 // Should variables be allowed to hide functions of the same name?  A
 // positive value means yes.  A negative value means yes, but print a
 // warning message.  Zero means it should be considered an error.
-static int Vvariables_can_hide_functions;
+static int Vvariables_can_hide_functions = 1;
 
 // Nonzero means we print debugging info about symbol table lookups.
-static int Vdebug_symtab_lookups;
+static bool Vdebug_symtab_lookups = false;
 
 // Defines layout for the whos/who -long command
-std::string Vwhos_line_format;
+std::string Vwhos_line_format
+  = "  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\n";
 
 octave_allocator
 symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
@@ -82,8 +83,6 @@ SYMBOL_DEF::type_as_string (void) const
     retval = "built-in mapper function";
   else if (is_user_function ())
     retval = "user-defined function";
-  else if (is_builtin_variable ())
-    retval = "built-in variable";
   else if (is_builtin_function ())
     retval = "built-in function";
   else if (is_dld_function ())
@@ -130,7 +129,7 @@ SYMBOL_DEF::type (std::ostream& os, const std::string& name, bool pr_type_info,
 	  defn->accept (tpc);
 	}
     }
-  else if (is_user_variable () || is_builtin_variable ())
+  else if (is_user_variable ())
     {
       if (pr_type_info && ! quiet)
 	os << name << " is a " << type_as_string () << "\n";
@@ -206,21 +205,7 @@ void
 symbol_record::define (const octave_value& v, unsigned int sym_type)
 {
   if (! (is_variable () && read_only_error ("redefine")))
-    {
-      if (definition->type () == symbol_record::BUILTIN_VARIABLE)
-	sym_type = symbol_record::BUILTIN_VARIABLE;
-
-      definition->define (v, sym_type);
-    }
-}
-
-void
-symbol_record::define_builtin_var (const octave_value& v)
-{
-  define (v, symbol_record::BUILTIN_VARIABLE);
-
-  if (chg_fcn)
-    chg_fcn ();
+    definition->define (v, sym_type);
 }
 
 bool
@@ -324,15 +309,6 @@ symbol_record::variable_value (void)
   return is_variable () ? def () : foo;
 }
 
-inline void
-symbol_record::link_to_builtin_variable (void)
-{
-  symbol_record *tmp_sym = fbi_sym_tab->lookup (name ());
-
-  if (tmp_sym && tmp_sym->is_builtin_variable ())
-    alias (tmp_sym);
-}
-
 octave_lvalue
 symbol_record::variable_reference (void)
 {
@@ -354,14 +330,8 @@ symbol_record::variable_reference (void)
 
   if (! is_defined ())
     {
-      if (! (is_formal_parameter () || is_linked_to_global ()))
-	link_to_builtin_variable ();
-
-      if (! is_defined ())
-	{
-	  octave_value tmp;
-	  define (tmp);
-	}
+      octave_value tmp;
+      define (tmp);
     }
 
   return octave_lvalue (&(def ()), chg_fcn);
@@ -1725,55 +1695,24 @@ symbol_table::hash (const std::string& str)
   return h & (table_size - 1);
 }
 
-
-static int
-variables_can_hide_functions (void)
+DEFUN (debug_symtab_lookups, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} debug_symtab_lookups ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_symtab_lookups (@var{new_val})\n\
+Query or set the internal variable that controls whether debugging\n\
+information is printed when searching for symbols in the symbol tables.\n\
+@end deftypefn")
 {
-  Vvariables_can_hide_functions
-    = check_preference ("variables_can_hide_functions");
-
-  return 0;
+  return SET_INTERNAL_VARIABLE (debug_symtab_lookups);
 }
 
-static int
-debug_symtab_lookups (void)
-{
-  Vdebug_symtab_lookups = check_preference ("debug_symtab_lookups");
-
-  return 0;
-}
-
-static int
-whos_line_format (void)
-{
-  Vwhos_line_format = builtin_string_variable ("whos_line_format");
-
-  return 0;
-}
-
-void
-symbols_of_symtab (void)
-{
-  DEFVAR (variables_can_hide_functions, true, variables_can_hide_functions,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} variables_can_hide_functions\n\
-If the value of this variable is nonzero, assignments to variables may\n\
-hide previously defined functions of the same name.  A negative value\n\
-will cause Octave to print a warning, but allow the operation.\n\
-@end defvr");
-
-  DEFVAR (debug_symtab_lookups, false, debug_symtab_lookups,
-    "-*- texinfo -*-\n\
-@defvr debug_symtab_lookups\n\
-If the value of this variable is nonzero, print debugging info when\n\
-searching for symbols in the symbol tables.\n\
-@end defvr");
-
-  DEFVAR (whos_line_format, "  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\n", whos_line_format,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} whos_line_format\n\
-This string decides in what order attributtes of variables are to be printed.\n\
-The following commands are used:\n\
+DEFUN (whos_line_format, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} whos_line_format ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
+Query or set the format string used by the @code{whos}.\n\
+\n\
+The following escape sequences may be used in the format:\n\
 @table @code\n\
 @item %b\n\
 Prints number of bytes occupied by variables.\n\
@@ -1812,8 +1751,24 @@ center-specific and print_dims may only be applied to command\n\
 dimensions whatsoever.\n\
 balance specifies the offset for printing of the dimensions string.\n\
 \n\
-Default format is \"  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\\n\".\n\
-@end defvr");
+The default format is \"  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\\n\".\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (whos_line_format);
+}
+
+DEFUN (variables_can_hide_functions, args, nargout,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} variables_can_hide_functions ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} variables_can_hide_functions (@var{new_val})\n\
+Query or set the internal variable that controls whether assignments\n\
+to variables may hide previously defined functions of the same name.\n\
+If set to a nonzero value allows hiding, zero causes Octave to\n\
+generate an error, and a negative value cause Octave to print a\n\
+warning, but allow the operation.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (variables_can_hide_functions);
 }
 
 /*

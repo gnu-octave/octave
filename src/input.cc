@@ -72,13 +72,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "variables.h"
 
 // Primary prompt string.
-static std::string Vps1;
+static std::string VPS1 = "\\s:\\#> ";
 
 // Secondary prompt string.
-static std::string Vps2;
+static std::string VPS2 = "> ";
 
 // String printed before echoed input (enabled by --echo-input).
-std::string Vps4;
+std::string VPS4 = "+ ";
 
 // Echo commands as they are executed?
 //
@@ -87,13 +87,13 @@ std::string Vps4;
 //   4  ==>  echo commands read from command line
 //
 // more than one state can be active at once.
-int Vecho_executing_commands;
+int Vecho_executing_commands = ECHO_OFF;
 
 // The time we last printed a prompt.
 octave_time Vlast_prompt_time;
 
 // Character to append after successful command-line completion attempts.
-static char Vcompletion_append_char;
+static char Vcompletion_append_char = ' ';
 
 // Global pointer for eval().
 std::string current_eval_string;
@@ -151,12 +151,12 @@ do_input_echo (const std::string& input_string)
       if (forced_interactive)
 	{
 	  if (promptflag > 0)
-	    octave_stdout << command_editor::decode_prompt_string (Vps1);
+	    octave_stdout << command_editor::decode_prompt_string (VPS1);
 	  else
-	    octave_stdout << command_editor::decode_prompt_string (Vps2);
+	    octave_stdout << command_editor::decode_prompt_string (VPS2);
 	}
       else
-	octave_stdout << command_editor::decode_prompt_string (Vps4);
+	octave_stdout << command_editor::decode_prompt_string (VPS4);
 
       if (! input_string.empty ())
 	{
@@ -217,7 +217,7 @@ octave_gets (void)
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file || reading_script_file)))
     {
-      std::string ps = (promptflag > 0) ? Vps1 : Vps2;
+      std::string ps = (promptflag > 0) ? VPS1 : VPS2;
 
       std::string prompt = command_editor::decode_prompt_string (ps);
 
@@ -898,9 +898,9 @@ state.\n\
       {
 	if ((Vecho_executing_commands & ECHO_SCRIPTS)
 	    || (Vecho_executing_commands & ECHO_FUNCTIONS))
-	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	  Vecho_executing_commands = ECHO_OFF;
 	else
-	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
+	  Vecho_executing_commands = ECHO_SCRIPTS;
       }
       break;
 
@@ -909,9 +909,9 @@ state.\n\
 	std::string arg = argv[1];
 
 	if (arg == "on")
-	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
+	  Vecho_executing_commands = ECHO_SCRIPTS;
 	else if (arg == "off")
-	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	  Vecho_executing_commands = ECHO_OFF;
 	else
 	  print_usage ("echo");
       }
@@ -924,10 +924,10 @@ state.\n\
 	if (arg == "on" && argv[2] == "all")
 	  {
 	    int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
-	    bind_builtin_variable ("echo_executing_commands", tmp);
+	    Vecho_executing_commands = tmp;
 	  }
 	else if (arg == "off" && argv[2] == "all")
-	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	  Vecho_executing_commands = ECHO_OFF;
 	else
 	  print_usage ("echo");
       }
@@ -1125,82 +1125,15 @@ and the user data are returned.\n\
   return retval;
 }
 
-static int
-ps1 (void)
-{
-  int status = 0;
-
-  Vps1 = builtin_string_variable ("PS1");
-
-  return status;
-}
-
-static int
-ps2 (void)
-{
-  int status = 0;
-
-  Vps2 = builtin_string_variable ("PS2");
-
-  return status;
-}
-
-static int
-ps4 (void)
-{
-  int status = 0;
-
-  Vps4 = builtin_string_variable ("PS4");
-
-  return status;
-}
-
-static int
-completion_append_char (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("completion_append_char");
-
-  switch (s.length ())
-    {
-    case 1:
-      Vcompletion_append_char = s[0];
-      break;
-
-    case 0:
-      Vcompletion_append_char = '\0';
-      break;
-
-    default:
-      warning ("completion_append_char must be a single character");
-      status = -1;
-      break;
-    }
-
-  return status;
-}
-
-static int
-echo_executing_commands (void)
-{
-  Vecho_executing_commands = check_preference ("echo_executing_commands"); 
-
-  return 0;
-}
-
-void
-symbols_of_input (void)
-{
-  DEFVAR (PS1, "\\s:\\#> ", ps1,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} PS1\n\
-The primary prompt string.  When executing interactively, Octave\n\
-displays the primary prompt @code{PS1} when it is ready to read a\n\
-command.\n\
+DEFUN (PS1, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} PS1 ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
+Query or set the primary prompt string.  When executing interactively,\n\
+Octave displays the primary prompt when it is ready to read a command.\n\
 \n\
-The default value of @code{PS1} is @code{\"\\s:\\#> \"}.  To change it, use a\n\
-command like\n\
+The default value of the primary prompt string is @code{\"\\s:\\#> \"}.\n\
+To change it, use a command like\n\
 \n\
 @example\n\
 octave:13> PS1 = \"\\\\u@@\\\\H> \"\n\
@@ -1209,42 +1142,63 @@ octave:13> PS1 = \"\\\\u@@\\\\H> \"\n\
 @noindent\n\
 which will result in the prompt @samp{boris@@kremvax> } for the user\n\
 @samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two\n\
-backslashes are required to enter a backslash into a string.\n\
+backslashes are required to enter a backslash into a double-quoted\n\
+character string.\n\
 @xref{Strings}.\n\
-@end defvr");
+@seealso{PS1, PS2}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (PS1);
+}
 
-  DEFVAR (PS2, "> ", ps2,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} PS2\n\
-The secondary prompt string, which is printed when Octave is\n\
-expecting additional input to complete a command.  For example, when\n\
-defining a function over several lines, Octave will print the value of\n\
-@code{PS1} at the beginning of each line after the first.  The default\n\
-value of @code{PS2} is @code{\"> \"}.\n\
-@end defvr");
+DEFUN (PS2, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} PS2 ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
+Query or set the secondary prompt string.  The secondary prompt is\n\
+printed when Octave is expecting additional input to complete a\n\
+command.  For example, if you are typing a for loop that spans several\n\
+lines, Octave will print the secondary prompt at the beginning of\n\
+each line after the first.  The default value of the secondary prompt\n\
+string is @code{\"> \"}.\n\
+@seealso{PS1, PS4}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (PS2);
+}
 
-  DEFVAR (PS4, "+ ", ps4,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} PS4\n\
-If Octave is invoked with the @code{--echo-commands} option, the value of\n\
-@code{PS4} is printed before each line of input that is echoed.  The\n\
-default value of @code{PS4} is @code{\"+ \"}.  @xref{Invoking Octave}, for\n\
+DEFUN (PS4, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} PS4 ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
+Query or set the character string used to prefix output produced\n\
+when echoing commands when @code{echo_executing_commands} is enabled.\n\
+The default value is @code{\"+ \"}.  @xref{Invoking Octave}, for\n\
 a description of @code{--echo-commands}.\n\
-@end defvr");
+@seealso{echo_executing_commands, PS1, PS2}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (PS4);
+}
 
-  DEFVAR (completion_append_char, " ", completion_append_char,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} completion_append_char\n\
-The value of @code{completion_append_char} is used as the character to\n\
-append to successful command-line completion attempts.  The default\n\
+DEFUN (completion_append_char, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} completion_append_char ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
+Query or set the internal character variable that is appended to\n\
+successful command-line completion attempts.  The default\n\
 value is @code{\" \"} (a single space).\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (completion_append_char);
+}
 
-  DEFVAR (echo_executing_commands, ECHO_OFF, echo_executing_commands,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} echo_executing_commands\n\
-This variable may also be used to control the echo state.  It may be\n\
-the sum of the following values:\n\
+DEFUN (echo_executing_commands, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
+Query or set the internal variable that controls the echo state.\n\
+It may be the sum of the following values:\n\
 \n\
 @table @asis\n\
 @item 1\n\
@@ -1262,7 +1216,9 @@ equivalent to the command @kbd{echo on all}.\n\
 \n\
 The value of @code{echo_executing_commands} is set by the @kbd{echo}\n\
 command and the command line option @code{--echo-input}.\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (echo_executing_commands);
 }
 
 /*

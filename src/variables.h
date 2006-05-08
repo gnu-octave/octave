@@ -36,6 +36,9 @@ class octave_builtin;
 class octave_mapper;
 class string_vector;
 
+#include <climits>
+#include <cfloat>
+
 #include <string>
 
 #include "ov.h"
@@ -46,7 +49,6 @@ extern bool at_top_level (void);
 
 extern void initialize_symbol_tables (void);
 
-extern bool is_builtin_variable (const std::string&);
 extern bool is_command_name (const std::string&);
 
 // The next three are here temporarily...
@@ -109,13 +111,34 @@ extern void set_global_value (const std::string& nm, const octave_value& val);
 
 extern octave_value
 set_internal_variable (bool& var, const octave_value_list& args,
-		       const char *nm);
+		       int nargout, const char *nm);
+
+extern octave_value
+set_internal_variable (char& var, const octave_value_list& args,
+		       int nargout, const char *nm);
+
+extern octave_value
+set_internal_variable (int& var, const octave_value_list& args,
+		       int nargout, const char *nm,
+		       int minval = INT_MIN, int maxval = INT_MAX);
+
+extern octave_value
+set_internal_variable (double& var, const octave_value_list& args,
+		       int nargout, const char *nm,
+		       double minval = DBL_MIN, double maxval = DBL_MAX);
 
 extern octave_value
 set_internal_variable (std::string& var, const octave_value_list& args,
-		       const char *nm);
+		       int nargout, const char *nm, bool empty_ok = true);
 
-#define SET_INTERNAL_VARIABLE(NM) set_internal_variable (V ## NM, args, #NM)
+#define SET_INTERNAL_VARIABLE(NM) \
+  set_internal_variable (V ## NM, args, nargout, #NM)
+
+#define SET_NONEMPTY_INTERNAL_STRING_VARIABLE(NM) \
+  set_internal_variable (V ## NM, args, nargout, #NM, false)
+
+#define SET_INTERNAL_VARIABLE_WITH_LIMITS(NM, MINVAL, MAXVAL) \
+  set_internal_variable (V ## NM, args, nargout, #NM, MINVAL, MAXVAL)
 
 extern std::string builtin_string_variable (const std::string&);
 extern int builtin_real_scalar_variable (const std::string&, double&);
@@ -129,10 +152,7 @@ extern void force_link_to_function (const std::string&);
 extern void bind_ans (const octave_value& val, bool print);
 
 extern void
-bind_builtin_variable (const std::string&, const octave_value&,
-		       bool protect = false, bool eternal = false,
-		       symbol_record::change_function f = 0,
-		       const std::string& help = std::string ());
+bind_internal_variable (const std::string& fname, const octave_value& val);
 
 extern void mlock (const std::string&);
 extern void munlock (const std::string&);

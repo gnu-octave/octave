@@ -75,14 +75,14 @@ std::string Vinfo_file;
 
 // Name of the info reader we'd like to use.
 // (--info-program program)
-std::string Vinfo_prog;
+std::string Vinfo_program;
 
 // Name of the makeinfo program to run.
-static std::string Vmakeinfo_prog = "makeinfo";
+static std::string Vmakeinfo_program = "makeinfo";
 
 // If TRUE, don't print additional help message in help and usage
 // functions.
-static bool Vsuppress_verbose_help_message;
+static bool Vsuppress_verbose_help_message = false;
 
 // FIXME -- maybe this should use string instead of char*.
 
@@ -452,8 +452,8 @@ additional_help_message (std::ostream& os)
 {
   if (! Vsuppress_verbose_help_message)
     os << "\
-Additional help for built-in functions, operators, and variables\n\
-is available in the on-line version of the manual.  Use the command\n\
+Additional help for built-in functions and operators is\n\
+available in the on-line version of the manual.  Use the command\n\
 `doc <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\
@@ -517,8 +517,6 @@ simple_help (void)
 				"reserved words");
 
   // FIXME -- is this distinction needed?
-
-  LIST_SYMBOLS (symbol_record::BUILTIN_VARIABLE, "built-in variables");
 
   LIST_SYMBOLS (symbol_record::COMMAND, "commands");
 
@@ -646,7 +644,7 @@ display_help_text (std::ostream& os, const std::string& msg)
       std::ostringstream buf;
 
       buf << "sed -e 's/^[#%][#%]* *//' -e 's/^ *@/@/' | "
-	  << "\"" << Vmakeinfo_prog << "\""
+	  << "\"" << Vmakeinfo_program << "\""
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
 	  << " -D \"TARGETHOSTTYPE " << OCTAVE_CANONICAL_HOST_TYPE << "\""
@@ -878,10 +876,10 @@ DEFCMD (help, args, ,
 Octave's @code{help} command can be used to print brief usage-style\n\
 messages, or to display information directly from an on-line version of\n\
 the printed manual, using the GNU Info browser.  If invoked without any\n\
-arguments, @code{help} prints a list of all the available operators,\n\
-functions, and built-in variables.  If the first argument is @code{-i},\n\
-the @code{help} command searches the index of the on-line version of\n\
-this manual for the given topics.\n\
+arguments, @code{help} prints a list of all the available operators\n\
+and functions.  If the first argument is @code{-i}, the @code{help}\n\
+command searches the index of the on-line version of this manual for\n\
+the given topics.\n\
 \n\
 For example, the command @kbd{help help} prints a short message\n\
 describing the @code{help} command, and @kbd{help -i help} starts the\n\
@@ -1848,110 +1846,62 @@ to find related functions that are not part of octave.\n\
   return retval;
 }
 
-static int
-info_file (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("INFO_FILE");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("INFO_FILE");
-      status = -1;
-    }
-  else
-    Vinfo_file = s;
-
-  return status;
-}
-
-static int
-info_prog (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("INFO_PROGRAM");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("INFO_PROGRAM");
-      status = -1;
-    }
-  else
-    Vinfo_prog = s;
-
-  return status;
-}
-
-static int
-makeinfo_prog (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("MAKEINFO_PROGRAM");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("MAKEINFO_PROGRAM");
-      status = -1;
-    }
-  else
-    Vmakeinfo_prog = s;
-
-  return status;
-}
-
-static int
-suppress_verbose_help_message (void)
-{
-  Vsuppress_verbose_help_message
-    = check_preference ("suppress_verbose_help_message");
-
-  return 0;
-}
-
-void
-symbols_of_help (void)
-{
-  DEFVAR (INFO_FILE, Vinfo_file, info_file,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} INFO_FILE\n\
-The variable @code{INFO_FILE} names the location of the Octave info file.\n\
-The default value is @code{\"@var{octave-home}/info/octave.info\"}, in\n\
+DEFUN (info_file, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} info_file ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
+Query or set the internal variable that specifies the name of the\n\
+Octave info file.  The default value is\n\
+@code{\"@var{octave-home}/info/octave.info\"}, in\n\
 which @var{octave-home} is the directory where all of Octave is installed.\n\
-@end defvr");
+@seealso{info_program, doc, help, makeinfo_program}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (info_file);
+}
 
-  DEFVAR (INFO_PROGRAM, Vinfo_prog, info_prog,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} INFO_PROGRAM\n\
-The variable @code{INFO_PROGRAM} names the info program to run.  Its\n\
-default initial value is\n\
+DEFUN (info_program, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} info_program ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
+Query or set the internal variable that specifies the name of the\n\
+info program to run.  The default initial value is\n\
 @code{\"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info\"}\n\
 in which @var{octave-home} is the directory where all of Octave is\n\
 installed, @var{version} is the Octave version number, and @var{arch}\n\
 is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
 default initial value may be overridden by the environment variable\n\
 @code{OCTAVE_INFO_PROGRAM}, or the command line argument\n\
-@code{--info-program NAME}, or by setting the value of\n\
-@code{INFO_PROGRAM} in a startup script\n\
-@end defvr");
+@code{--info-program NAME}.\n\
+@seealso{info_file, doc, help, makeinfo_program}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (info_program);
+}
 
-  DEFVAR (MAKEINFO_PROGRAM, Vmakeinfo_prog, makeinfo_prog,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} MAKEINFO_PROGRAM\n\
-The variable @code{MAKEINFO_PROGRAM} names the makeinfo program that\n\
-Octave runs to format help text that contains Texinfo markup commands.\n\
-Its default initial value is @code{\"makeinfo\"}.\n\
-@end defvr");
+DEFUN (makeinfo_program, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} makeinfo_program ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
+Query or set the internal variable that specifies the name of the\n\
+makeinfo program that Octave runs to format help text containing\n\
+Texinfo markup commands.  The default initial value is @code{\"makeinfo\"}.\n\
+@seealso{info_file, info_program, doc, help}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (makeinfo_program);
+}
 
-  DEFVAR (suppress_verbose_help_message, false, suppress_verbose_help_message,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} suppress_verbose_help_message\n\
-If the value of @code{suppress_verbose_help_message} is nonzero, Octave\n\
-will not add additional help information to the end of the output from\n\
+DEFUN (suppress_verbose_help_message, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
+Query or set the internal vaiable that controls whether Octave\n\
+will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);
 }
 
 /*

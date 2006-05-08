@@ -42,8 +42,6 @@ function dump_prefs (file)
 	      "EDITOR";
               "EXEC_PATH";
               "IMAGEPATH";
-              "INFO_FILE";
-              "INFO_PROGRAM";
               "LOADPATH";
               "PAGER";
               "PS1";
@@ -68,6 +66,9 @@ function dump_prefs (file)
               "history_file";
               "history_size";
               "ignore_function_time_stamp";
+              "info_file";
+              "info_program";
+              "makeinfo_program";
               "max_recursion_depth";
               "output_max_field_width";
               "output_precision";

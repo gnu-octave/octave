@@ -48,7 +48,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the internal name of the function must be passed
-// too (the convetion is to use a prefix of "F", so "foo" becomes "Ffoo").
+// too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
 
 #define DEFUNX(name, fname, args_name, nargout_name, doc) \
   DEFUNX_INTERNAL (name, fname, args_name, nargout_name, false, doc)

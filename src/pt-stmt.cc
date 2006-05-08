@@ -78,7 +78,7 @@ tree_statement::maybe_echo_code (bool in_function_body)
   if (in_function_body
       && (Vecho_executing_commands & ECHO_FUNCTIONS))
     {
-      tree_print_code tpc (octave_stdout, Vps4);
+      tree_print_code tpc (octave_stdout, VPS4);
 
       accept (tpc);
     }

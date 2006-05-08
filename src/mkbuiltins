@@ -1,22 +1,16 @@
 #!/bin/sh
 
-if test $# -ne 2; then
-  echo "usage: mkbuiltins f1 f2" 1>&2
+if test $# -ne 1; then
+  echo "usage: mkbuiltins f1" 1>&2
   exit 1
 fi
 
 SED=${SED:-'sed'}
 
 DEF_FILES=`cat $1`
-VAR_FILES=`cat $2`
 
 if test -z "$DEF_FILES"; then
   echo "mkbuiltins: DEF_FILES is empty!" 1>&2
-  exit 1
-fi
-
-if test -z "$VAR_FILES"; then
-  echo "mkbuiltins: VAR_FILES is empty!" 1>&2
   exit 1
 fi
 
@@ -59,8 +53,6 @@ cat << \EOF
 #define XDEFALIAS_INTERNAL(alias, name) \
   alias_builtin (#alias, #name);
 
-#define XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc)
-
 #define XDEFCONST_INTERNAL(name, defn, doc)
 
 #define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
@@ -79,25 +71,7 @@ for file in $DEF_FILES; do
   echo ""
 done
 
-for file in $VAR_FILES; do
-  f=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
-  echo "extern void symbols_of_${f} (void);"
-done
-
 cat << \EOF
-
-static void
-install_builtin_variables (void)
-{
-EOF
-
-for file in $VAR_FILES; do
-  f=`echo $file | $SED 's,^\./,,; s/\.df//; s/-/_/g'`
-  echo "  symbols_of_${f} ();"
-done
-
-cat << \EOF
-}
 
 static void
 install_builtin_functions (void)
@@ -117,7 +91,6 @@ extern void install_mapper_functions (void);
 void
 install_builtins (void)
 {
-  install_builtin_variables ();
   install_mapper_functions ();
   install_builtin_functions ();
 }

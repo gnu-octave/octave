@@ -52,6 +52,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "syswait.h"
 #include "toplev.h"
 #include "utils.h"
+#include "variables.h"
 
 // Nonzero means we have already printed a message for this series of
 // SIGPIPES.  We assume that the writer will eventually give up.
@@ -66,10 +67,10 @@ static bool Vdebug_on_interrupt = false;
 // Allow users to avoid writing octave-core for SIGHUP (sent by
 // closing gnome-terminal, for example).  Note that this variable has
 // no effect if Vcrash_dumps_octave_core is FALSE.
-static bool Vsighup_dumps_octave_core;
+static bool Vsighup_dumps_octave_core = true;
 
 // Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
-static bool Vsigterm_dumps_octave_core;
+static bool Vsigterm_dumps_octave_core = true;
 
 #if RETSIGTYPE == void
 #define SIGHANDLER_RETURN(status) return
@@ -991,60 +992,41 @@ Return a structure containing Unix signal names and their defined values.\n\
   return retval;
 }
 
-static int
-debug_on_interrupt (void)
-{
-  Vdebug_on_interrupt = check_preference ("debug_on_interrupt");
-
-  return 0;
-}
-
-static int
-sighup_dumps_octave_core (void)
-{
-  Vsighup_dumps_octave_core = check_preference ("sighup_dumps_octave_core");
-
-  return 0;
-}
-
-static int
-sigterm_dumps_octave_core (void)
-{
-  Vsigterm_dumps_octave_core = check_preference ("sigterm_dumps_octave_core");
-
-  return 0;
-}
-
-void
-symbols_of_sighandlers (void)
-{
-  DEFVAR (debug_on_interrupt, false, debug_on_interrupt,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} debug_on_interrupt\n\
-If @code{debug_on_interrupt} is nonzero, Octave will try to enter\n\
-debugging mode when it receives an interrupt signal (typically\n\
+DEFUN (debug_on_interrupt, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will try\n\
+to enter debugging mode when it receives an interrupt signal (typically\n\
 generated with @kbd{C-c}).  If a second interrupt signal is received\n\
 before reaching the debugging mode, a normal interrupt will occur.\n\
-The default value is 0.\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (debug_on_interrupt);
+}
 
-  DEFVAR (sighup_dumps_octave_core, true, sighup_dumps_octave_core,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} sighup_dumps_octave_core\n\
-If this variable is set to a nonzero value and\n\
-@code{crash_dumps_octave_core} is also nonzero, Octave tries to save all\n\
-current variables the the file \"octave-core\" if it receives a\n\
-hangup signal.  The default value is 1.\n\
-@end defvr");
+DEFUN (sighup_dumps_octave_core, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave tries\n\
+to save all current variables the the file \"octave-core\" if it receives\n\
+a hangup signal.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (sighup_dumps_octave_core);
+}
 
-  DEFVAR (sigterm_dumps_octave_core, true, sigterm_dumps_octave_core,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} sigterm_dumps_octave_core\n\
-If this variable is set to a nonzero value and\n\
-@code{crash_dumps_octave_core} is also nonzero, Octave tries to save all\n\
-current variables the the file \"octave-core\" if it receives a\n\
-terminate signal.  The default value is 1.\n\
-@end defvr");
+DEFUN (sigterm_dumps_octave_core, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave tries\n\
+to save all current variables the the file \"octave-core\" if it receives\n\
+a terminate signal.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (sigterm_dumps_octave_core);
 }
 
 /*

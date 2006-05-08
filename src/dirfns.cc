@@ -715,24 +715,15 @@ a path.\n\
   return retval;
 }
 
-static int
-confirm_recursive_rmdir (void)
-{
-  Vconfirm_recursive_rmdir = check_preference ("confirm_recursive_rmdir");
-
-  return 0;
-}
-
-void
-symbols_of_dirfns (void)
-{
-  DEFVAR (confirm_recursive_rmdir, true, confirm_recursive_rmdir,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} confirm_recursive_rmdir\n\
-If the value of @code{confirm_recursive_rmdir} is nonzero, Octave\n\
+DEFUN (confirm_recursive_rmdir, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
-The default value is 1.\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);
 }
 
 /*

@@ -4,8 +4,9 @@ Summary of changes for version 3.0:
   * Previous versions of Octave had a number of built-in variables to
     control warnings (for example, warn_divide_by_zero).  These
     variables have been replaced by warning identifiers that are used
-    with the warning function to control the state of warnings.  Now,
-    instead of writing
+    with the warning function to control the state of warnings.
+
+    For example, instead of writing
 
       warn_divide_by_zero = false;
 
@@ -42,6 +43,22 @@ Summary of changes for version 3.0:
     using
 
       help warning_ids
+
+
+  * All built-in variables have been converted to functions.  This
+    change simplifies the interpreter and allows a consistent
+    interface to internal variables for user-defined packages and the
+    core functions distributed with Octave.  In most cases, code that
+    simply accesses internal variables does not need to change.  Code
+    that sets internal variables will change.  For example, instead of
+    writing
+
+      PS1 = ">> ";
+
+    you will need to write
+
+      PS1 (">> ");
+
 
 
 See NEWS.2 for old news.

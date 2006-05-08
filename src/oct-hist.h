@@ -28,6 +28,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "cmd-hist.h"
 
+extern void initialize_history (void);
+
 // Write timestamp to history file.
 extern void octave_history_write_timestamp (void);
 

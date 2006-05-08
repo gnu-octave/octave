@@ -98,37 +98,37 @@
 %% FIXME How the hell do I test this one in test/assert 
 %% test/octave.test/prefer/prefer-19.m
 %!#test
-%! pid = print_answer_id_name
-%! print_answer_id_name = 0;
+%! pid = print_answer_id_name ();
+%! print_answer_id_name (0);
 %! a = 1
-%! print_answer_id_name = pid;
+%! print_answer_id_name (pid);
 
 %% FIXME How the hell do I test this one in test/assert 
 %% test/octave.test/prefer/prefer-20.m
 %!#test
-%! pid = print_answer_id_name
-%! print_answer_id_name = 1;
+%! pid = print_answer_id_name ();
+%! print_answer_id_name (1);
 %! a = 1
-%! print_answer_id_name = pid;
+%! print_answer_id_name (pid);
 
 %% test/octave.test/prefer/prefer-21.m
 %!test
-%! ped = print_empty_dimensions;
-%! print_empty_dimensions = 0;
+%! ped = print_empty_dimensions ();
+%! print_empty_dimensions (0);
 %! a = cell (1, 1);
 %! b = type -q a;
 %! assert(!isempty(findstr(b,"[]")));
 %! assert(isempty(findstr(b,"[](0x0)")));
-%! print_empty_dimensions = ped;
+%! print_empty_dimensions (ped);
 
 %% test/octave.test/prefer/prefer-22.m
 %!test
-%! ped = print_empty_dimensions;
-%! print_empty_dimensions = 1;
+%! ped = print_empty_dimensions ();
+%! print_empty_dimensions (1);
 %! a = cell (1, 1);
 %! b = type -q a;
 %! assert(!isempty(findstr(b,"[](0x0)")));
-%! print_empty_dimensions = ped;
+%! print_empty_dimensions (ped);
 
 %% test/octave.test/prefer/prefer-23.m
 %!assert(all (size (inv ([])) == [0, 0]));
@@ -143,8 +143,8 @@
 
 %% test/octave.test/prefer/prefer-27.m
 %!test
-%! sp = save_precision;
-%! save_precision = 1;
+%! sp = save_precision ();
+%! save_precision (1);
 %! x = pi;
 %! nm = tmpnam();
 %! save("-text",nm,"x");
@@ -152,12 +152,12 @@
 %! load(nm);
 %! unlink(nm);
 %! assert(x,3);
-%! save_precision = sp;
+%! save_precision (sp);
 
 %% test/octave.test/prefer/prefer-28.m
 %!test
-%! sp = save_precision;
-%! save_precision = 5;
+%! sp = save_precision ();
+%! save_precision (5);
 %! x = pi;
 %! nm = tmpnam();
 %! save("-text",nm,"x");
@@ -165,29 +165,29 @@
 %! load(nm);
 %! unlink(nm);
 %! assert(x,3.1416);
-%! save_precision = sp;
+%! save_precision (sp);
 
 %% FIXME Same problem as above!!!
 %% test/octave.test/prefer/prefer-29.m
 %!function f ()
 %! 1
 %!#test
-%! sf = silent_functions;
-%! silent_functions = 0;
+%! sf = silent_functions ();
+%! silent_functions (0);
 %! f
 %! assert(??);
-%! silent_functions = sf;
+%! silent_functions (sf);
 
 %% FIXME Same problem as above!!!
 %% test/octave.test/prefer/prefer-30.m
 %!function f ()
 %! 1
 %!#test
-%! sf = silent_functions;
-%! silent_functions = 1;
+%! sf = silent_functions ();
+%! silent_functions (1);
 %! f
 %! assert(??);
-%! silent_functions = sf;
+%! silent_functions (sf);
 
 %% test/octave.test/prefer/prefer-32.m
 %!test

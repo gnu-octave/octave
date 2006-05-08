@@ -1464,25 +1464,24 @@ static gnuplot_X X;
 // User-callable functions
 // -----------------------
 
-DEFUN_DLD (automatic_replot, args, ,
+DEFUN_DLD (automatic_replot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} automatic_replot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} automatic_replot (@var{new_val})\n\
 Query or set the current automatic replot state.  Although it is fairly\n\
 inefficient, especially for large plots, automatic replotting is enabled\n\
 by default for compatibility with Matlab.\n\
-\n\
-When setting the state, @var{new_val}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (automatic_replot);
 }
 
-DEFUN_DLD (gnuplot_binary, args, ,
+DEFUN_DLD (gnuplot_binary, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} gnuplot_binary\n\
-The name of the program invoked by the plot command.  The default value\n\
-is @code{\"gnuplot\"}.  @xref{Installation}.\n\
+@deftypefn {Loadable Function} {@var{val} =} gnuplot_binary ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_binary (@var{new_val})\n\
+Query or set the name of the program invoked by the plot command.\n\
+The default value @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @end deftypefn")
 {
   octave_value retval = SET_INTERNAL_VARIABLE (gnuplot_binary);
@@ -1493,7 +1492,7 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
   return retval;
 }
 
-DEFUN_DLD (gnuplot_command_plot, args, ,
+DEFUN_DLD (gnuplot_command_plot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} = } gnuplot_command_plot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} = } gnuplot_command_plot (@var{new_val})\n\
@@ -1502,7 +1501,7 @@ DEFUN_DLD (gnuplot_command_plot, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_plot);
 }
 
-DEFUN_DLD (gnuplot_command_replot, args, ,
+DEFUN_DLD (gnuplot_command_replot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_replot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_replot (@var{new_val})\n\
@@ -1511,7 +1510,7 @@ DEFUN_DLD (gnuplot_command_replot, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_replot);
 }
 
-DEFUN_DLD (gnuplot_command_splot, args, ,
+DEFUN_DLD (gnuplot_command_splot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_splot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_splot (@var{new_val})\n\
@@ -1520,7 +1519,7 @@ DEFUN_DLD (gnuplot_command_splot, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_splot);
 }
 
-DEFUN_DLD (gnuplot_command_using, args, ,
+DEFUN_DLD (gnuplot_command_using, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_using ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_using (@var{new_val})\n\
@@ -1529,7 +1528,7 @@ DEFUN_DLD (gnuplot_command_using, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_using);
 }
 
-DEFUN_DLD (gnuplot_command_with, args, ,
+DEFUN_DLD (gnuplot_command_with, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_with ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_with (@var{new_val})\n\
@@ -1538,7 +1537,7 @@ DEFUN_DLD (gnuplot_command_with, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_with);
 }
 
-DEFUN_DLD (gnuplot_command_axes, args, ,
+DEFUN_DLD (gnuplot_command_axes, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_axes ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_axes (@var{new_val})\n\
@@ -1547,7 +1546,7 @@ DEFUN_DLD (gnuplot_command_axes, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_axes);
 }
 
-DEFUN_DLD (gnuplot_command_title, args, ,
+DEFUN_DLD (gnuplot_command_title, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_title ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_title (@var{new_val})\n\
@@ -1556,7 +1555,7 @@ DEFUN_DLD (gnuplot_command_title, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_title);
 }
 
-DEFUN_DLD (gnuplot_command_end, args, ,
+DEFUN_DLD (gnuplot_command_end, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_end ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_end (@var{new_val})\n\
@@ -1565,7 +1564,7 @@ DEFUN_DLD (gnuplot_command_end, args, ,
   return SET_INTERNAL_VARIABLE (gnuplot_command_end);
 }
 
-DEFUN_DLD (gnuplot_use_title_option, args, ,
+DEFUN_DLD (gnuplot_use_title_option, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_use_title_option ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_use_title_option (@var{new_val})\n\

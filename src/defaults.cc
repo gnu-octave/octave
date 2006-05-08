@@ -71,32 +71,32 @@ std::string Voct_file_dir;
 
 // The default path that will be searched for programs that we
 // execute (in addition to the user-specified --exec-path).
-static std::string Vdefault_exec_path;
+static std::string VDEFAULT_EXEC_PATH;
 
 // The path that will be searched for programs that we execute.
 // (--exec-path path)
-std::string Vexec_path;
+static std::string VEXEC_PATH;
 
 // Load path specified on command line.
 // (--path path; -p path)
-static std::string Vload_path;
+static std::string VLOADPATH;
 
 // The default load path with OCTAVE_HOME appropriately substituted.
-static std::string Vdefault_load_path;
+static std::string VDEFAULT_LOADPATH;
 
 // And the cached directory path corresponding to Vload_path.
 dir_path Vload_path_dir_path;
 
 // Name of the editor to be invoked by the edit_history command.
-std::string Veditor;
+std::string VEDITOR;
 
-std::string Vimagepath;
+static std::string VIMAGEPATH;
 
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
 
 // Name of the FFTW wisdom program.
-std::string Vfftw_wisdom_prog;
+std::string Vfftw_wisdom_program;
 
 // Each element of A and B should be directory names.  For each
 // element of A not in the list B, execute SCRIPT_FILE in that
@@ -156,7 +156,7 @@ update_load_path_dir_path (void)
 {
   string_vector old_dirs = Vload_path_dir_path.all_directories ();
 
-  Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
+  Vload_path_dir_path = dir_path (VLOADPATH, VDEFAULT_LOADPATH);
 
   string_vector new_dirs = Vload_path_dir_path.all_directories ();
 
@@ -263,7 +263,7 @@ set_default_bin_dir (void)
 static void
 set_default_default_exec_path (void)
 {
-  Vdefault_exec_path
+  VDEFAULT_EXEC_PATH
     = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str
     + Vlocal_arch_lib_dir + dir_path::path_sep_str
     + Varch_lib_dir + dir_path::path_sep_str
@@ -281,22 +281,22 @@ set_default_exec_path (void)
 
       if (! shell_path.empty ())
 	{
-	  Vexec_path = dir_path::path_sep_str;
-	  Vexec_path.append (shell_path);
+	  VEXEC_PATH = dir_path::path_sep_str;
+	  VEXEC_PATH.append (shell_path);
 	}
     }
   else
-    Vexec_path = std::string (octave_exec_path);
+    VEXEC_PATH = std::string (octave_exec_path);
 }
 
 static void
 set_default_path (void)
 {
-  Vdefault_load_path = subst_octave_home (OCTAVE_FCNFILEPATH);
+  VDEFAULT_LOADPATH = subst_octave_home (OCTAVE_FCNFILEPATH);
 
   std::string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path.empty () ? dir_path::path_sep_str : oct_path;
+  VLOADPATH = oct_path.empty () ? dir_path::path_sep_str : oct_path;
 
   update_load_path_dir_path ();
 }
@@ -317,9 +317,9 @@ set_default_info_prog (void)
   std::string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
 
   if (oct_info_prog.empty ())
-    Vinfo_prog = "info";
+    Vinfo_program = "info";
   else
-    Vinfo_prog = std::string (oct_info_prog);
+    Vinfo_program = std::string (oct_info_prog);
 }
 
 static void
@@ -328,20 +328,20 @@ set_default_fftw_wisdom_prog (void)
   std::string oct_wisdom_prog = octave_env::getenv ("OCTAVE_FFTW_WISDOM_PROGRAM");
 
   if (oct_wisdom_prog.empty ())
-    Vfftw_wisdom_prog = "fftw-wisdom";
+    Vfftw_wisdom_program = "fftw-wisdom";
   else
-    Vfftw_wisdom_prog = std::string (oct_wisdom_prog);
+    Vfftw_wisdom_program = std::string (oct_wisdom_prog);
 }
 
 static void
 set_default_editor (void)
 {
-  Veditor = "emacs";
+  VEDITOR = "emacs";
 
   std::string env_editor = octave_env::getenv ("EDITOR");
 
   if (! env_editor.empty ())
-    Veditor = env_editor;
+    VEDITOR = env_editor;
 }
 
 static void
@@ -381,14 +381,14 @@ maybe_add_default_load_path (const std::string& pathstring)
     {
       if (dir_path::is_path_sep (pathstring[0]))
 	{
-	  retval = Vdefault_load_path;
+	  retval = VDEFAULT_LOADPATH;
 	  retval.append (pathstring);
 	}
       else
 	retval = pathstring;
 
       if (dir_path::is_path_sep (pathstring[pathstring.length () - 1]))
-	retval.append (Vdefault_load_path);
+	retval.append (VDEFAULT_LOADPATH);
 
       size_t pos = 0;
       do
@@ -396,7 +396,7 @@ maybe_add_default_load_path (const std::string& pathstring)
 	  pos = retval.find (dir_path::path_sep_str + dir_path::path_sep_str);
 
 	  if (pos != NPOS)
-	    retval.insert (pos+1, Vdefault_load_path);
+	    retval.insert (pos+1, VDEFAULT_LOADPATH);
 	}
       while (pos != NPOS);
     }
@@ -461,256 +461,134 @@ Reinitialize Octave's @code{LOADPATH} directory cache.\n\
   return retval;
 }
 
-static int
-editor (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("EDITOR");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("EDITOR");
-      status = -1;
-    }
-  else
-    Veditor = s;
-
-  return status;
-}
-
-static int
-exec_path (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("EXEC_PATH");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("EXEC_PATH");
-      status = -1;
-    }
-  else
-    {
-      Vexec_path = s;
-
-      std::string path;
-
-      int eplen = Vexec_path.length ();
-
-      if (eplen > 0)
-	{
-	  bool prepend = (Vexec_path[0] == ':');
-	  bool append = (eplen > 1 && Vexec_path[eplen-1] == ':');
-
-	  if (prepend)
-	    {
-	      path = Vdefault_exec_path + Vexec_path;
-	    }
-	  else
-	    {
-	      path = Vexec_path;
-
-	      if (append)
-		path.append (Vdefault_exec_path);
-	    }
-	}
-      else
-	path = Vdefault_exec_path;
-
-      octave_env::putenv ("PATH", path);
-    }
-
-  return status;
-}
-
-static int
-fftw_wisdom_prog (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("FFTW_WISDOM_PROGRAM");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("FFTW_WISDOM_PROGRAM");
-      status = -1;
-    }
-  else
-    Vfftw_wisdom_prog = s;
-
-  return status;
-}
-
-static int
-default_exec_path (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("DEFAULT_EXEC_PATH");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("DEFAULT_EXEC_PATH");
-      status = -1;
-    }
-  else
-    {
-      Vdefault_exec_path = s;
-
-      // Now also update PATH in environment.
-      exec_path ();
-    }
-
-  return status;
-}
-
-static int
-imagepath (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("IMAGEPATH");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("IMAGEPATH");
-      status = -1;
-    }
-  else
-    Vimagepath = s;
-
-  return status;
-}
-
-static int
-loadpath (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("LOADPATH");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("LOADPATH");
-      status = -1;
-    }
-  else if (Vload_path != s)
-    {
-      // I'm not sure whether this causes more problems that it
-      // solves...
-      //      if (! (s[0] == ':' || s[s.length () - 1] == ':'
-      //	     || s.find (dir_path::path_sep_str + 
-      //                        dir_path::path_sep_str) != NPOS))
-      //	warning ("LOADPATH will ignore default load path");
-
-      Vload_path = s;
-
-      // By resetting the last prompt time variable, we will force
-      // checks for out of date symbols even if the change to LOADPATH
-      // and subsequent function calls happen between prompts.
-
-      // FIXME -- maybe we should rename
-      // Vlast_prompt_time_stamp since the new usage doesn't really
-      // fit with the current name?
-
-      Vlast_prompt_time.stamp ();
-
-      update_load_path_dir_path ();
-    }
-
-  return status;
-}
-
-static int
-default_load_path (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("DEFAULT_LOADPATH");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("DEFAULT_LOADPATH");
-      status = -1;
-    }
-  else
-    {
-      Vdefault_load_path = s;
-
-      update_load_path_dir_path ();
-    }
-
-  return status;
-}
-
-void
-symbols_of_defaults (void)
-{
-  DEFVAR (EDITOR, Veditor, editor,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} EDITOR\n\
-A string naming the editor to use with the @code{edit_history} command.\n\
-If the environment variable @code{EDITOR} is set when Octave starts, its\n\
+DEFUN (EDITOR, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} EDITOR ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
+Query or set the internal variable that specifies the editor to\n\
+use with the @code{edit_history} command.  If the environment\n\
+variable @code{EDITOR} is set when Octave starts, its\n\
 value is used as the default.  Otherwise, @code{EDITOR} is set to\n\
 @code{\"emacs\"}.\n\
-@end defvr");
+@seealso{edit_history}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
+}
 
-  DEFVAR (FFTW_WISDOM_PROGRAM, Vfftw_wisdom_prog, fftw_wisdom_prog,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} FFTW_WISDOM_PROGRAM\n\
-A string naming the FFTW wisdom program to use to create wisdom data\n\
-to accelerate Fourier transforms. If the environment variable\n\
-@code{OCTAVE_WISDOM_PROGRAM} is set when Octave starts, its value is used\n\
-as the default. Otherwise, @code{WISDOM_PROGRAM} is set to\n\
-@code{\"fftw-wisdom\"}.\n\
-@end defvr");
-  
-  DEFVAR (EXEC_PATH, Vexec_path, exec_path,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} EXEC_PATH\n\
-The variable @code{EXEC_PATH} is a colon separated list of directories\n\
-to search when executing external programs.  Its initial value is taken from\n\
-the environment variable @code{OCTAVE_EXEC_PATH} (if it exists) or\n\
-@code{PATH}, but that value can be overridden by the command line\n\
-argument @code{--exec-path PATH}, or by setting the value of\n\
-@code{EXEC_PATH} in a startup script.  If the value of @code{EXEC_PATH}\n\
-begins (ends) with a colon, the directories\n\
-\n\
-@example\n\
-@group\n\
-@var{octave-home}/libexec/octave/site/exec/@var{arch}\n\
-@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-are prepended (appended) to @code{EXEC_PATH}, where @var{octave-home}\n\
-is the top-level directory where all of Octave is installed\n\
-(the default value is @file{@value{OCTAVEHOME}}).  If you don't specify\n\
-a value for @code{EXEC_PATH} explicitly, these special directories are\n\
-prepended to your shell path.\n\
-@end defvr");
+static void
+update_exec_path (void)
+{
+  std::string path;
 
-  DEFVAR (DEFAULT_EXEC_PATH, Vdefault_exec_path, default_exec_path,
+  int eplen = VEXEC_PATH.length ();
+
+  if (eplen > 0)
+    {
+      bool prepend = (VEXEC_PATH[0] == ':');
+      bool append = (eplen > 1 && VEXEC_PATH[eplen-1] == ':');
+
+      if (prepend)
+	{
+	  path = VDEFAULT_EXEC_PATH + VEXEC_PATH;
+	}
+      else
+	{
+	  path = VEXEC_PATH;
+
+	  if (append)
+	    path.append (VDEFAULT_EXEC_PATH);
+	}
+    }
+  else
+    path = VDEFAULT_EXEC_PATH;
+
+  octave_env::putenv ("PATH", path);
+}
+
+DEFUN (EXEC_PATH, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
+Query or set the internal variable that specifies a colon separated\n\
+list of directories to search when executing external programs.\n\
+Its initial value is taken from the environment variable\n\
+@code{OCTAVE_EXEC_PATH} (if it exists) or @code{PATH}, but that\n\
+value can be overridden by the command line argument\n\
+@code{--exec-path PATH}.  Any leading, trailing, or doubled colon in\n\
+the value of @code{EXEC_PATH} are replaced by by the value of\n\
+@code{DEFAULT_EXEC_PATH}.\n\
+@seealso{DEFAULT_EXEC_PATH}\n\
+@end deftypefn")
+{
+  std::string saved_exec_path = VEXEC_PATH;
+
+  octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
+
+  if (VEXEC_PATH != saved_exec_path)
+    update_exec_path ();
+
+  return retval;
+}
+
+DEFUN (fftw_wisdom_program, args, nargout,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} DEFAULT_EXEC_PATH\n\
-A colon separated list of directories in which to search when executing\n\
+@deftypefn {Built-in Function} {@var{val} =} FFTW_WISDOM_PROGRAM ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} FFTW_WISDOM_PROGRAM (@var{new_val})\n\
+Query or set the internal variable that specifies the FFTW wisdom\n\
+program to use to create wisdom data to accelerate Fourier transforms.\n\
+If the environment variable @code{OCTAVE_WISDOM_PROGRAM} is set when\n\
+Octave starts, its value is used as the default. Otherwise,\n\
+@code{WISDOM_PROGRAM} is set to @code{\"fftw-wisdom\"}.\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (fftw_wisdom_program);
+}
+
+DEFUN (DEFAULT_EXEC_PATH, args, nargout,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} DEFAULT_EXEC_PATH ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} DEFAULT_EXEC_PATH (@var{new_val})\n\
+Query or set the internal variable that specifies a colon separated\n\
+list of directories in which to search when executing\n\
 external programs.  The value of this variable is automatically\n\
 substituted for leading, trailing, or doubled colons that appear in the\n\
 built-in variable @code{EXEC_PATH}.\n\
-@end defvr");
+@seealso{EXEC_PATH}\n\
+@end deftypefn")
+{
+  std::string saved_default_exec_path = VDEFAULT_EXEC_PATH;
 
-  DEFVAR (LOADPATH, Vload_path, loadpath,
+  octave_value retval
+    = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (DEFAULT_EXEC_PATH);
+
+  if (VDEFAULT_EXEC_PATH != saved_default_exec_path)
+    update_exec_path ();
+
+  return retval;
+}
+
+DEFUN (IMAGEPATH, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} IMAGEPATH ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} IMAGEPATH (@var{new_val})\n\
+Query or set the internal variable that specifies a colon separated\n\
+list of directories in which to search for image files.\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGEPATH);
+}
+
+DEFUN (LOADPATH, args, nargout,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} LOADPATH\n\
-A colon separated list of directories in which to search for function\n\
+@deftypefn {Built-in Function} {@var{val} =} LOADPATH ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} LOADPATH (@var{new_val})\n\
+Query or set the internal variable that specifies a colon separated\n\
+list of directories in which to search for function\n\
 files.  @xref{Functions and Scripts}.  The value of @code{LOADPATH}\n\
 overrides the environment variable @code{OCTAVE_PATH}.  @xref{Installation}.\n\
 \n\
-@code{LOADPATH} is now handled in the same way as @TeX{} handles\n\
-@code{TEXINPUTS}.  Leading, trailing, or doubled colons that appear in\n\
+Leading, trailing, or doubled colons that appear in\n\
 @code{LOADPATH} are replaced by the value of @code{DEFAULT_LOADPATH}.\n\
 The default value of @code{LOADPATH} is @code{\"\n"
 SEPCHAR_STR
@@ -731,25 +609,53 @@ not a mixture of both.\n\
 \n\
 @xref{Organization of Functions}, for a description of the function file\n\
 directories that are distributed with Octave.\n\
-@end defvr");
+@seealso{DEFAULT_LOADPATH}\n\
+@end deftypefn")
+{
+  std::string saved_loadpath = VLOADPATH;
 
-  DEFVAR (DEFAULT_LOADPATH, Vdefault_load_path, default_load_path,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} DEFAULT_LOADPATH\n\
-A colon separated list of directories in which to search for function\n\
-files.  The value of this variable is automatically substituted for\n\
-leading, trailing, or doubled colons that appear in the built-in\n\
-variable @code{LOADPATH}.\n\
-@end defvr");
-  
-  DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, imagepath,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} IMAGEPATH\n\
-A colon separated list of directories in which to search for image\n\
-files.\n\
-@end defvr");
+  octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (LOADPATH);
+
+  if (VLOADPATH != saved_loadpath)
+    {
+      // By resetting the last prompt time variable, we will force
+      // checks for out of date symbols even if the change to LOADPATH
+      // and subsequent function calls happen between prompts.
+
+      // FIXME -- maybe we should rename
+      // Vlast_prompt_time_stamp since the new usage doesn't really
+      // fit with the current name?
+
+      Vlast_prompt_time.stamp ();
+
+      update_load_path_dir_path ();
+    }
+
+  return retval;
 }
 
+DEFUN (DEFAULT_LOADPATH, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} DEFAULT_LOADPATH ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} DEFAULT_LOADPATH (@var{new_val})\n\
+Query or set the internal variable that specifies the colon separated\n\
+list of directories in which to search for function files.  The value\n\
+of this variable is automatically substituted for leading, trailing,\n\
+or doubled colons that appear in the internal @code{loadpath} variable.\n\
+@seealso{LOADPATH}\n\
+@end deftypefn")
+{
+  std::string saved_default_loadpath = VDEFAULT_LOADPATH;
+
+  octave_value retval
+    = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (DEFAULT_LOADPATH);
+
+  if (VDEFAULT_LOADPATH != saved_default_loadpath)
+    update_load_path_dir_path ();
+
+  return retval;
+}
+  
 DEFUN (OCTAVE_HOME, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\

@@ -46,9 +46,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "utils.h"
 
-// Number of microseconds to delay in the parent after forking.
-static int Vkluge_procbuf_delay = 0;
-
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
 
@@ -141,9 +138,6 @@ octave_procbuf::open (const char *command, int mode)
       exit (127);
     }
 
-  if (Vkluge_procbuf_delay > 0)
-    octave_usleep (Vkluge_procbuf_delay);
-
   ::close (child_end);
 
   if (proc_pid < 0)
@@ -231,35 +225,6 @@ octave_procbuf::close (void)
   return 0;
 
 #endif
-}
-
-static int
-kluge_procbuf_delay (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("__kluge_procbuf_delay__", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival >= 0 && static_cast<double> (ival) == val)
-	{
-	  Vkluge_procbuf_delay = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("__kluge_procbuf_delay__");
-  return -1;
-}
-
-void
-symbols_of_oct_procbuf (void)
-{
-  DEFVAR (__kluge_procbuf_delay__, Vkluge_procbuf_delay, kluge_procbuf_delay,
-    "-*- texinfo -*-\n\
-@defvr __kluge_procbuf_delay__\n\
-Number of microseconds to delay in the parent after forking.\n\
-@end defvr");
-
 }
 
 /*

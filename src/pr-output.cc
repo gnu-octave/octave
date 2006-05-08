@@ -60,26 +60,26 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // TRUE means use a scaled fixed point format for `format long' and
 // `format short'.
-static bool Vfixed_point_format;
+static bool Vfixed_point_format = false;
 
 // The maximum field width for a number printed by the default output
 // routines.
-static int Voutput_max_field_width;
+static int Voutput_max_field_width = 10;
 
 // The precision of the numbers printed by the default output
 // routines.
-static int Voutput_precision;
+static int Voutput_precision = 5;
 
 // TRUE means that the dimensions of empty objects should be printed
 // like this: x = [](2x0).
-bool Vprint_empty_dimensions;
+bool Vprint_empty_dimensions = true;
 
 // TRUE means that the rows of big matrices should be split into
 // smaller slices that fit on the screen.
-static bool Vsplit_long_rows;
+static bool Vsplit_long_rows = true;
 
 // How many levels of structure elements should we print?
-int Vstruct_levels_to_print;
+int Vstruct_levels_to_print = 2;
 
 // TRUE means don't do any fancy formatting.
 static bool free_format = false;
@@ -2607,8 +2607,8 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  bind_builtin_variable ("output_precision", prec);
-  bind_builtin_variable ("output_max_field_width", fw);
+  Voutput_precision =  prec;
+  Voutput_max_field_width = fw;
 }
 
 static void
@@ -2944,93 +2944,14 @@ state is restored.\n\
   return retval;
 }
 
-static int
-fixed_point_format (void)
-{
-  Vfixed_point_format = check_preference ("fixed_point_format");
-
-  return 0;
-}
-
-static int
-output_max_field_width (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("output_max_field_width", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival > 0 && ival == val)
-	{
-	  Voutput_max_field_width = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("output_max_field_width");
-  return -1;
-}
-
-static int
-output_precision (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("output_precision", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival >= 0 && ival == val)
-	{
-	  Voutput_precision = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("output_precision");
-  return -1;
-}
-
-static int
-print_empty_dimensions (void)
-{
-  Vprint_empty_dimensions = check_preference ("print_empty_dimensions");
-
-  return 0;
-}
-
-static int
-split_long_rows (void)
-{
-  Vsplit_long_rows = check_preference ("split_long_rows");
-
-  return 0;
-}
-
-static int
-struct_levels_to_print (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival == val)
-	{
-	  Vstruct_levels_to_print = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("struct_levels_to_print");
-  return -1;
-}
-
-void
-symbols_of_pr_output (void)
-{
-  DEFVAR (fixed_point_format, false, fixed_point_format,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} fixed_point_format\n\
-If the value of this variable is nonzero, Octave will scale all values\n\
-in a matrix so that the largest may be written with one leading digit.\n\
-The scaling factor is printed on the first line of output.  For example,\n\
+DEFUN (fixed_point_format, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} fixed_point_format ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will\n\
+use a scaled format to print matrix values such that the largest\n\
+element may be written with a single leading digit with the scaling\n\
+factor is printed on the first line of output.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -3051,28 +2972,16 @@ ans =\n\
 Notice that first value appears to be zero when it is actually 1.  For\n\
 this reason, you should be careful when setting\n\
 @code{fixed_point_format} to a nonzero value.\n\
-\n\
-The default value of @code{fixed_point_format} is 0.\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (fixed_point_format);
+}
 
-  DEFVAR (output_max_field_width, 10.0, output_max_field_width,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} output_max_field_width\n\
-This variable specifies the maximum width of a numeric output field.\n\
-The default value is 10.\n\
-@end defvr");
-
-  DEFVAR (output_precision, 5.0, output_precision,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} output_precision\n\
-This variable specifies the minimum number of significant figures to\n\
-display for numeric output.  The default value is 5.\n\
-@end defvr");
-
-  DEFVAR (print_empty_dimensions, true, print_empty_dimensions,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} print_empty_dimensions\n\
-If the value of @code{print_empty_dimensions} is nonzero, the\n\
+DEFUN (print_empty_dimensions, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
+Query or set the internal varaible that controls whether the\n\
 dimensions of empty matrices are printed along with the empty matrix\n\
 symbol, @samp{[]}.  For example, the expression\n\
 \n\
@@ -3086,21 +2995,21 @@ will print\n\
 @example\n\
 ans = [](3x0)\n\
 @end example\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (print_empty_dimensions);
+}
 
-  DEFVAR (split_long_rows, true, split_long_rows,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} split_long_rows\n\
-For large matrices, Octave may not be able to display all the columns of\n\
-a given row on one line of your screen.  This can result in missing\n\
-information or output that is nearly impossible to decipher, depending\n\
-on whether your terminal truncates or wraps long lines.\n\
-\n\
-If the value of @code{split_long_rows} is nonzero, Octave will display\n\
-the matrix in a series of smaller pieces, each of which can fit within\n\
-the limits of your terminal width.  Each set of rows is labeled so that\n\
-you can easily see which columns are currently being displayed.\n\
-For example:\n\
+DEFUN (split_long_rows, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} split_long_rows ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
+Query or set the internal variable that controls whether rows of a matrix\n\
+may be split when displayed to a terminal window.  If the rows are split,\n\
+Octave will display the matrix in a series of smaller pieces, each of\n\
+which can fit within the limits of your terminal width and each set of\n\
+rows is labeled so that you can easily see which columns are currently\n\
+being displayed.  For example:\n\
 \n\
 @smallexample\n\
 @group\n\
@@ -3118,17 +3027,45 @@ ans =\n\
   0.44672  0.94303  0.56564  0.82150\n\
 @end group\n\
 @end smallexample\n\
-\n\
-@noindent\n\
-The default value of @code{split_long_rows} is nonzero.\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (split_long_rows);
+}
 
-  DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} struct_levels_to_print\n\
-You can tell Octave how many structure levels to display by setting the\n\
-built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
-@end defvr");
+DEFUN (output_max_field_width, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} output_max_field_width ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
+Query or set the internal variable that specifies the maximum width\n\
+of a numeric output field.\n\
+@seealso{format, output_precision}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, 0, INT_MAX);
+}
+
+DEFUN (output_precision, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} output_precision ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
+Query or set the internal variable that specifies the minimum number of\n\
+significant figures to display for numeric output.\n\
+@seealso{format, output_max_field_width}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1, INT_MAX);
+}
+
+DEFUN (struct_levels_to_print, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
+Query or set the internal variable that specifies the number of\n\
+structure levels to display.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
+					    -1, INT_MAX);
 }
 
 /*

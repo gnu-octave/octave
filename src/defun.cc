@@ -127,15 +127,6 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 }
 
 void
-install_builtin_variable (const std::string& name, const octave_value& value,
-			  bool protect, bool eternal,
-			  symbol_record::change_function chg_fcn,
-			  const std::string& doc)
-{
-  bind_builtin_variable (name, value, protect, eternal, chg_fcn, doc);
-}
-
-void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
 		      const std::string& doc, bool is_text_fcn)

@@ -24,9 +24,10 @@ Boston, MA 02110-1301, USA.
 #endif
 
 
-
+// FIXME -- liboctave should not be including files from the src directory.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
+
 #include "MArray2.h"
 #include "MSparse.h"
 #include "SparseQR.h"

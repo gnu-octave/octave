@@ -328,9 +328,8 @@ DEFUN (file_in_path, args, ,
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name of @var{file} if it can be found in\n\
 @var{path}.  The value of @var{path} should be a colon-separated list of\n\
-directories in the format described for the built-in variable\n\
-@code{LOADPATH}.  If no file is found, return an empty matrix.\n\
-For example,\n\
+directories in the format described for @code{LOADPATH}.  If no file\n\
+is found, return an empty matrix.  For example,\n\
 \n\
 @example\n\
 file_in_path (EXEC_PATH, \"sh\")\n\
@@ -738,51 +737,6 @@ Return a structure containing the system-dependent errno values.\n\
     print_usage ("errno_list");
 
   return retval;
-}
-
-static void
-warn_old_style_preference (bool val, const std::string& sval)
-{
-  warning
-    ("preference of \"%s\" is obsolete -- use numeric value of %d instead",
-     sval.c_str (), (val ? 1 : 0));
-}
-
-// Check the value of a string variable to see if it it's ok to do
-// something.
-//
-//   return of  1 => always ok.
-//   return of  0 => never ok.
-//   return of -1 => ok, but give me warning (default).
-
-int
-check_preference (const std::string& var)
-{
-  int pref = -1;
-
-  std::string val = builtin_string_variable (var);
-
-  if (val.empty ())
-    {
-      double dval = 0;
-      if (builtin_real_scalar_variable (var, dval))
-	pref = NINT (dval);
-    }
-  else
-    {
-      if (val == "yes" || val == "true")
-	{
-	  warn_old_style_preference (true, val);
-	  pref = 1;
-	}
-      else if (val == "never" || val == "no" || val == "false")
-	{
-	  warn_old_style_preference (false, val);
-	  pref = 0;
-	}
-    }
-
-  return pref;
 }
 
 static void

@@ -3212,12 +3212,6 @@ restore_input_stream (void *f)
   command_editor::set_input_stream (static_cast<FILE *> (f));
 }
 
-static void
-clear_current_script_file_name (void *)
-{
-  bind_builtin_variable ("current_script_file_name", octave_value ());
-}
-
 static bool
 parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = false)
 {
@@ -3328,10 +3322,6 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
 	  Vsaving_history = false;
 	  reading_script_file = true;
-
-	  unwind_protect::add (clear_current_script_file_name, 0);
-
-	  bind_builtin_variable ("current_script_file_name", ff);
 
 	  octave_user_script *script = new octave_user_script (ff, ff, "");
 	  octave_call_stack::push (script);

@@ -43,7 +43,7 @@ extern std::string Vinfo_file;
 
 // Name of the info reader we'd like to use.
 // (--info-program program)
-extern std::string Vinfo_prog;
+extern std::string Vinfo_program;
 
 #endif
 

@@ -60,7 +60,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
-static int Vignore_function_time_stamp;
+static int Vignore_function_time_stamp = 1;
 
 // Symbol table for symbols at the top level.
 symbol_table *top_level_sym_tab = 0;
@@ -104,15 +104,6 @@ initialize_symbol_tables (void)
 }
 
 // Attributes of variables and functions.
-
-// Is this variable a builtin?
-
-bool
-is_builtin_variable (const std::string& name)
-{
-  symbol_record *sr = fbi_sym_tab->lookup (name);
-  return (sr && sr->is_builtin_variable ());
-}
 
 // Is this a command-style function?
 
@@ -799,10 +790,6 @@ symbol_exist (const std::string& name, const std::string& type)
 	    {
 	      retval = 5;
 	    }
-	  else if (var_ok && sr->is_builtin_variable ())
-	    {
-	      retval = 101;
-	    }
 	}
 
       if (! retval
@@ -906,8 +893,7 @@ DEFUN (exist, args, ,
 Return 1 if the name exists as a variable, 2 if the name (after\n\
 appending @samp{.m}) is a function file in Octave's LOADPATH, 3 if the\n\
 name is a @samp{.oct} file in Octave's LOADPATH, 5 if the name is a\n\
-built-in function, 7 if the name is a directory, 101 if the name is\n\
-a built-in variable, or 103\n\
+built-in function, 7 if the name is a directory, or 103\n\
 if the name is a function not associated with a file (entered on\n\
 the command line).\n\
 \n\
@@ -1258,9 +1244,12 @@ set_global_value (const std::string& nm, const octave_value& val)
 
 octave_value
 set_internal_variable (bool& var, const octave_value_list& args,
-		       const char *nm)
+		       int nargout, const char *nm)
 {
-  octave_value retval = var;
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = var;
 
   int nargin = args.length ();
 
@@ -1274,16 +1263,19 @@ set_internal_variable (bool& var, const octave_value_list& args,
 	error ("%s: expecting arg to be a logical value", nm);
     }
   else if (nargin > 1)
-    print_usage ("automatic_replot");
+    print_usage (nm);
 
   return retval;
 }
 
 octave_value
-set_internal_variable (std::string& var, const octave_value_list& args,
-		       const char *nm)
+set_internal_variable (char& var, const octave_value_list& args,
+		       int nargout, const char *nm)
 {
-  octave_value retval = var;
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = var;
 
   int nargin = args.length ();
 
@@ -1292,84 +1284,128 @@ set_internal_variable (std::string& var, const octave_value_list& args,
       std::string sval = args(0).string_value ();
 
       if (! error_state)
-	var = sval;
+	{
+	  switch (sval.length ())
+	    {
+	    case 1:
+	      var = sval[0];
+	      break;
+
+	    case 0:
+	      var = '\0';
+	      break;
+
+	    default:
+	      error ("%s: argument must be a single character", nm);
+	      break;
+	    }
+	}
+      else
+	error ("%s: argument must be a single character", nm);
+    }
+  else if (nargin > 1)
+    print_usage (nm);
+
+  return retval;
+}
+
+octave_value
+set_internal_variable (int& var, const octave_value_list& args,
+		       int nargout, const char *nm,
+		       int minval, int maxval)
+{
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = var;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      int ival = args(0).int_value ();
+
+      if (! error_state)
+	{
+	  if (ival < minval)
+	    error ("%s: expecting arg to be greater than %d", minval);
+	  else if (ival > maxval)
+	    error ("%s: expecting arg to be less than or equal to %d", maxval);
+	  else
+	    var = ival;
+	}
+      else
+	error ("%s: expecting arg to be an integer value", nm);
+    }
+  else if (nargin > 1)
+    print_usage (nm);
+
+  return retval;
+}
+
+octave_value
+set_internal_variable (double& var, const octave_value_list& args,
+		       int nargout, const char *nm,
+		       double minval, double maxval)
+{
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = var;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      double dval = args(0).scalar_value ();
+
+      if (! error_state)
+	{
+	  if (dval < minval)
+	    error ("%s: expecting arg to be greater than %g", minval);
+	  else if (dval > maxval)
+	    error ("%s: expecting arg to be less than or equal to %g", maxval);
+	  else
+	    var = dval;
+	}
+      else
+	error ("%s: expecting arg to be a scalar value", nm);
+    }
+  else if (nargin > 1)
+    print_usage (nm);
+
+  return retval;
+}
+
+octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+		       int nargout, const char *nm, bool empty_ok)
+{
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = var;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  if (empty_ok || ! sval.empty ())
+	    var = sval;
+	  else
+	    error ("%s: value must not be empty", nm);
+	}
       else
 	error ("%s: expecting arg to be a character string", nm);
     }
   else if (nargin > 1)
-    print_usage ("automatic_replot");
+    print_usage (nm);
 
   return retval;
-}
-
-// Look for the given name in the global symbol table.  If it refers
-// to a string, return a new copy.  If not, return 0;
-
-std::string
-builtin_string_variable (const std::string& name)
-{
-  symbol_record *sr = fbi_sym_tab->lookup (name);
-
-  // It is a programming error to look for builtins that aren't.
-
-  // Use != here to avoid possible conversion to int of smaller type
-  // than the sr pointer.
-
-  assert (sr != 0);
-
-  std::string retval;
-
-  octave_value val = sr->def ();
-
-  if (! error_state && val.is_string ())
-    retval = val.string_value ();
-
-  return retval;
-}
-
-// Look for the given name in the global symbol table.  If it refers
-// to a real scalar, place the value in d and return 1.  Otherwise,
-// return 0.
-
-int
-builtin_real_scalar_variable (const std::string& name, double& d)
-{
-  int status = 0;
-  symbol_record *sr = fbi_sym_tab->lookup (name);
-
-  // It is a programming error to look for builtins that aren't.
-
-  // Use != here to avoid possible conversion to int of smaller type
-  // than the sr pointer.
-
-  assert (sr != 0);
-
-  octave_value val = sr->def ();
-
-  if (! error_state && val.is_scalar_type ())
-    {
-      d = val.double_value ();
-      status = 1;
-    }
-
-  return status;
-}
-
-// Look for the given name in the global symbol table.
-
-octave_value
-builtin_any_variable (const std::string& name)
-{
-  symbol_record *sr = fbi_sym_tab->lookup (name);
-
-  // It is a programming error to look for builtins that aren't.
-
-  // Use != here to avoid possible conversion to int of smaller type
-  // than the sr pointer.
-
-  assert (sr != 0);
-
-  return sr->def ();
 }
 
 // Global stuff and links to builtin variables and functions.
@@ -1405,9 +1441,8 @@ link_to_global_variable (symbol_record *sr)
 // definition of the builtin variable of the same name.
 
 // Make the definition of the symbol record sr be the same as the
-// definition of the builtin variable or function, or user
-// function of the same name, provided that the name has not been used
-// as a formal parameter.
+// definition of the builtin function, or user function of the same
+// name, provided that the name has not been used as a formal parameter.
 
 void
 link_to_builtin_or_function (symbol_record *sr)
@@ -1427,8 +1462,7 @@ link_to_builtin_or_function (symbol_record *sr)
     tmp_sym = fbi_sym_tab->lookup (nm);
 
   if (tmp_sym
-      && (tmp_sym->is_builtin_variable ()
-	  || tmp_sym->is_function ())
+      && tmp_sym->is_function ()
       && ! tmp_sym->is_formal_parameter ())
     sr->alias (tmp_sym);
 }
@@ -1473,11 +1507,10 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
 
 	  if (! error_state)
 	    {
-	      if (is_builtin_variable (name)
-		  || is_command_name (name)
+	      if (is_command_name (name)
 		  || is_mapper_function_name (name)
 		  || is_builtin_function_name (name))
-		error ("document: can't redefine help for built-in variables and functions");
+		error ("document: can't redefine help for built-in functions");
 	      else
 		{
 		  symbol_record *sym_rec = curr_sym_tab->lookup (name);
@@ -1577,7 +1610,6 @@ do_who (int argc, const string_vector& argv, int return_list)
 
       dim_vector dv (0, 0);
 
-      Array<symbol_record *> s2 (dv);
       Array<symbol_record *> s3 (dv);
       Array<symbol_record *> s4 (dv);
       Array<symbol_record *> s5 (dv);
@@ -1586,9 +1618,6 @@ do_who (int argc, const string_vector& argv, int return_list)
 
       if (show_builtins)
 	{
-	  s2 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_VARIABLE,
-					 SYMTAB_ALL_SCOPES);
-
 	  s3 = fbi_sym_tab->symbol_list (pats, symbol_record::BUILTIN_FUNCTION,
 					 SYMTAB_ALL_SCOPES);
 	}
@@ -1611,22 +1640,18 @@ do_who (int argc, const string_vector& argv, int return_list)
 					  SYMTAB_GLOBAL_SCOPE);
 	}
 
-      octave_idx_type s2_len = s2.length ();
       octave_idx_type s3_len = s3.length ();
       octave_idx_type s4_len = s4.length ();
       octave_idx_type s5_len = s5.length ();
       octave_idx_type s6_len = s6.length ();
       octave_idx_type s7_len = s7.length ();
 
-      octave_idx_type symbols_len
-	= s2_len + s3_len + s4_len + s5_len + s6_len + s7_len;
+      octave_idx_type symbols_len = s3_len + s4_len + s5_len + s6_len + s7_len;
 
       Array<symbol_record *> symbols (dim_vector (symbols_len, 1));
 
       octave_idx_type k = 0;
 
-      symbols.insert (s2, k, 0);
-      k += s2_len;
       symbols.insert (s3, k, 0);
       k += s3_len;
       symbols.insert (s4, k, 0);
@@ -1710,10 +1735,6 @@ do_who (int argc, const string_vector& argv, int return_list)
       if (show_builtins)
 	{
 	  pad_after += fbi_sym_tab->maybe_list
-	    ("*** built-in variables:", pats, octave_stdout,
-	     show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
-
-	  pad_after += fbi_sym_tab->maybe_list
 	    ("*** built-in functions:", pats, octave_stdout,
 	     show_verbose, symbol_record::BUILTIN_FUNCTION, SYMTAB_ALL_SCOPES);
 	}
@@ -1763,7 +1784,7 @@ may not be combined.\n\
 List all currently defined symbols.\n\
 \n\
 @item -builtins\n\
-List built-in variables and functions.  This includes all currently\n\
+List built-in functions.  This includes all currently\n\
 compiled function files, but does not include all function files that\n\
 are in the @code{LOADPATH}.\n\
 \n\
@@ -1846,7 +1867,7 @@ See who.\n\
 void
 bind_ans (const octave_value& val, bool print)
 {
-  static symbol_record *sr = fbi_sym_tab->lookup ("ans", true);
+  symbol_record *sr = curr_sym_tab->lookup ("ans", true);
 
   if (val.is_defined ())
     {
@@ -1857,46 +1878,14 @@ bind_ans (const octave_value& val, bool print)
     }
 }
 
-// Give a global variable a definition.  This will insert the symbol
-// in the global table if necessary.
-
-// How is this different than install_builtin_variable?  Are both
-// functions needed?
-
 void
-bind_builtin_variable (const std::string& varname, const octave_value& val,
-		       bool protect, bool eternal,
-		       symbol_record::change_function chg_fcn,
-		       const std::string& help)
+bind_internal_variable (const std::string& fname, const octave_value& val)
 {
-  symbol_record *sr = fbi_sym_tab->lookup (varname, true);
+  octave_value_list args;
 
-  // It is a programming error for a builtin symbol to be missing.
-  // Besides, we just inserted it, so it must be there.
+  args(0) = val;
 
-  // Use != here to avoid possible conversion to int of smaller type
-  // than the sr pointer.
-
-  assert (sr != 0);
-
-  sr->unprotect ();
-
-  // Must do this before define, since define will call the special
-  // variable function only if it knows about it, and it needs to, so
-  // that user prefs can be properly initialized.
-
-  if (chg_fcn)
-    sr->set_change_function (chg_fcn);
-
-  sr->define_builtin_var (val);
-
-  if (protect)
-    sr->protect ();
-
-  if (eternal)
-    sr->make_eternal ();
-
-  sr->document (help);
+  feval (fname, args, 0);
 }
 
 void 
@@ -2608,65 +2597,67 @@ Print symbol table information for the symbol @var{name}.\n\
   return retval;
 }
 
-// FIXME -- some of these should do their own checking to be
-// able to provide more meaningful warning or error messages.
-
-static int
-ignore_function_time_stamp (void)
-{
-  int pref = 0;
-
-  std::string val = builtin_string_variable ("ignore_function_time_stamp");
-
-  if (! val.empty ())
-    {
-      if (val == "all")
-	pref = 2;
-      else if (val == "system")
-	pref = 1;
-    }
-
-  Vignore_function_time_stamp = pref;
-
-  return 0;
-}
-
-// FIXME -- there still may be better places for some of these
-// to be defined.
-
-void
-symbols_of_variables (void)
-{
-  DEFVAR (ans, , 0,
+DEFUN (ignore_function_time_stamp, args, nargout,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} ans\n\
-This variable holds the most recently computed result that was not\n\
-explicitly assigned to a variable.  For example, after the expression\n\
-\n\
-@example\n\
-3^2 + 4^2\n\
-@end example\n\
-\n\
-@noindent\n\
-is evaluated, the value of @code{ans} is 25.\n\
-@end defvr");
-
-  DEFVAR (ignore_function_time_stamp, "system", ignore_function_time_stamp,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} ignore_function_time_stamp\n\
-This variable can be used to prevent Octave from making the system call\n\
-@code{stat} each time it looks up functions defined in function files.\n\
-If @code{ignore_function_time_stamp} to @code{\"system\"}, Octave will not\n\
-automatically recompile function files in subdirectories of\n\
+@deftypefn {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave checks\n\
+the time stamp on files each time it looks up functions defined in\n\
+function files.  If the internal variable is set to @code{\"system\"},\n\
+Octave will not automatically recompile function files in subdirectories of\n\
 @file{@var{octave-home}/lib/@var{version}} if they have changed since\n\
 they were last compiled, but will recompile other function files in the\n\
 @code{LOADPATH} if they change.  If set to @code{\"all\"}, Octave will not\n\
 recompile any function files unless their definitions are removed with\n\
-@code{clear}.  For any other value of @code{ignore_function_time_stamp},\n\
-Octave will always check to see if functions defined in function files\n\
-need to recompiled.  The default value of @code{ignore_function_time_stamp} is\n\
-@code{\"system\"}.\n\
-@end defvr");
+@code{clear}.  If set to \"none\", Octave will always check time stamps\n\
+on files to determine whether functions defined in function files\n\
+need to recompiled.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (nargout > 0)
+    {
+      switch (Vignore_function_time_stamp)
+	{
+	case 1:
+	  retval = "system";
+	  break;
+
+	case 2:
+	  retval = "all";
+	  break;
+
+	default:
+	  retval = "none";
+	  break;
+	}
+    }
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  if (sval == "all")
+	    Vignore_function_time_stamp = 2;
+	  else if (sval == "system")
+	    Vignore_function_time_stamp = 1;
+	  else if (sval == "none")
+	    Vignore_function_time_stamp = 0;
+	  else
+	    error ("ignore_function_time_stamp: expecting argument to be \"all\", \"system\", or \"none\"");
+	}
+      else
+	error ("ignore_function_time_stamp: expecting argument to be character string");
+    }
+  else if (nargin > 1)
+    print_usage ("ignore_function_time_stamp");
+
+  return retval;
 }
 
 /*

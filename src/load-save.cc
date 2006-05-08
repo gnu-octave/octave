@@ -86,26 +86,38 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 // Write octave-core file if Octave crashes or is killed by a signal.
-static bool Vcrash_dumps_octave_core;
+static bool Vcrash_dumps_octave_core = true;
 
 // The maximum amount of memory (in kilobytes) that we will attempt to
 // write to the Octave core file.
-static double Voctave_core_file_limit;
+static double Voctave_core_file_limit = -1.0;
 
 // The name of the Octave core file.
-static std::string Voctave_core_file_name;
+static std::string Voctave_core_file_name = "octave-core";
 
 // The default output format.  May be one of "binary", "text",
 // "mat-binary", or "hdf5".
-static std::string Vdefault_save_options;
+static std::string Vdefault_save_options = "-text";
 
 // The output format for Octave core files.
-static std::string Voctave_core_file_options;
+static std::string Voctave_core_file_options = "-binary";
+
+static std::string
+default_save_header_format (void)
+{
+  return
+    std::string ("# Created by Octave " OCTAVE_VERSION
+		 ", %a %b %d %H:%M:%S %Y %Z <")
+    + octave_env::get_user_name ()
+    + std::string ("@")
+    + octave_env::get_host_name ()
+    + std::string (">");
+}
 
 // The format string for the comment line at the top of text-format
 // save files.  Passed to strftime.  Should begin with `#' and contain
 // no newline characters.
-static std::string Vsave_header_format_string;
+static std::string Vsave_header_format_string = default_save_header_format ();
 
 static void
 gripe_file_open (const std::string& fcn, const std::string& file)
@@ -1046,11 +1058,10 @@ do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
 }
 
 // Save variables with names matching PATTERN on stream OS in the
-// format specified by FMT.  If SAVE_BUILTINS is TRUE, also save
-// builtin variables with names that match PATTERN.
+// format specified by FMT.
 
 static int
-save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
+save_vars (std::ostream& os, const std::string& pattern,
 	   load_save_format fmt, bool save_as_floats)
 {
   Array<symbol_record *> vars = curr_sym_tab->glob
@@ -1068,32 +1079,13 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 	break;
     }
 
-  if (! error_state && save_builtins)
-    {
-      vars = fbi_sym_tab->glob
-	(pattern, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
-
-      int count = vars.length ();
-
-      saved += count;
-
-      for (int i = 0; i < count; i++)
-	{
-	  do_save (os, vars(i), fmt, save_as_floats, infnan_warned);
-
-	  if (error_state)
-	    break;
-	}
-    }
-
   return saved;
 }
 
 static int
 parse_save_options (const string_vector &argv, int argc, 
 		    load_save_format &format, bool &append,
-		    bool &save_as_floats, bool &save_builtins,
-		    bool &use_zlib, int start_arg)
+		    bool &save_as_floats, bool &use_zlib, int start_arg)
 {
   int i;
   for (i = start_arg; i < argc; i++)
@@ -1159,10 +1151,6 @@ parse_save_options (const string_vector &argv, int argc,
 	  error ("save: octave executable was not linked with HDF5 library");
 #endif /* ! HAVE_HDF5 */
 	}
-      else if (argv[i] == "-save-builtins")
-	{
-	  save_builtins = true;
-	}
 #ifdef HAVE_ZLIB
       else if (argv[i] == "-zip" || argv[i] == "-z")
 	{
@@ -1179,7 +1167,7 @@ parse_save_options (const string_vector &argv, int argc,
 static int
 parse_save_options (const std::string &arg, load_save_format &format, 
 		    bool &append, bool &save_as_floats, 
-		    bool &save_builtins, bool &use_zlib, int start_arg)
+		    bool &use_zlib, int start_arg)
 {
   std::istringstream is (arg);
   std::string str;
@@ -1194,7 +1182,7 @@ parse_save_options (const std::string &arg, load_save_format &format,
     }
 
   return parse_save_options (argv, argc, format, append, save_as_floats, 
-			     save_builtins, use_zlib, start_arg);
+			     use_zlib, start_arg);
 }
 
 void
@@ -1281,7 +1269,7 @@ write_header (std::ostream& os, load_save_format format)
 
 static void
 save_vars (const string_vector& argv, int argv_idx, int argc,
-	   std::ostream& os, bool save_builtins, load_save_format fmt,
+	   std::ostream& os, load_save_format fmt,
 	   bool save_as_floats, bool write_header_info)
 {
   if (write_header_info)
@@ -1289,13 +1277,13 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
   if (argv_idx == argc)
     {
-      save_vars (os, "*", save_builtins, fmt, save_as_floats);
+      save_vars (os, "*", fmt, save_as_floats);
     }
   else
     {
       for (int i = argv_idx; i < argc; i++)
 	{
-	  if (! save_vars (os, argv[i], save_builtins, fmt, save_as_floats))
+	  if (! save_vars (os, argv[i], fmt, save_as_floats))
 	    {
 	      warning ("save: no such variable `%s'", argv[i].c_str ());
 	    }
@@ -1369,17 +1357,14 @@ dump_octave_core (void)
 
       load_save_format format = LS_BINARY;
 
-      bool save_builtins = false;
-
       bool save_as_floats = false;
 
       bool append = false;
 
       bool use_zlib = false;
 
-      // Note save_builtins is ignored
       parse_save_options (Voctave_core_file_options, format, append, 
-			  save_as_floats, save_builtins, use_zlib, 0);
+			  save_as_floats, use_zlib, 0);
   
       std::ios::openmode mode = std::ios::out;
 
@@ -1461,8 +1446,8 @@ Save the named variables @var{v1}, @var{v2}, @dots{} in the file\n\
 output to your terminal.  If no variable names are listed, Octave saves\n\
 all the variables in the current scope.  Valid options for the\n\
 @code{save} command are listed in the following table.  Options that\n\
-modify the output format override the format specified by the built-in\n\
-variable @code{default_save_options}.\n\
+modify the output format override the format specified by\n\
+@code{default_save_options}.\n\
 \n\
 If save is invoked using the functional form\n\
 \n\
@@ -1526,10 +1511,6 @@ Save the data in HDF5 format but only using single precision.\n\
 You should use this format only if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
-@item -save-builtins\n\
-Force Octave to save the values of built-in variables too.  By default,\n\
-Octave does not save built-in variables.\n\
-\n\
 @item -zip\n\
 @itemx -z\n\
 Use the gzip algorithm to compress the file. This works equally on files that\n\
@@ -1587,8 +1568,6 @@ the file @file{data} in Octave's binary format.\n\
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
 
-  bool save_builtins = false;
-
   bool save_as_floats = false;
 
   load_save_format format = LS_ASCII;
@@ -1602,14 +1581,14 @@ the file @file{data} in Octave's binary format.\n\
 
   // Get user file format
   parse_save_options (argv, argc, user_file_format, dummy, 
-		      dummy, dummy, dummy, 1);
+		      dummy, dummy, 1);
 
   if (user_file_format == LS_UNKNOWN)
     parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
-			save_builtins, use_zlib, 0);
+			use_zlib, 0);
 
   int i = parse_save_options (argv, argc, format, append, save_as_floats, 
-			  save_builtins, use_zlib, 1);
+			      use_zlib, 1);
 
   if (error_state)
     return retval;
@@ -1641,7 +1620,7 @@ the file @file{data} in Octave's binary format.\n\
 	  // FIXME -- should things intended for the screen end up
 	  // in a octave_value (string)?
 	  
-	  save_vars (argv, i, argc, octave_stdout, save_builtins, format,
+	  save_vars (argv, i, argc, octave_stdout, format,
 		     save_as_floats, true);
 	}
     }
@@ -1679,7 +1658,7 @@ the file @file{data} in Octave's binary format.\n\
 
 	  if (hdf5_file.file_id >= 0)
 	    {
-	      save_vars (argv, i, argc, hdf5_file, save_builtins, format,
+	      save_vars (argv, i, argc, hdf5_file, format,
 			 save_as_floats, true);
 
 	      hdf5_file.close ();
@@ -1706,7 +1685,7 @@ the file @file{data} in Octave's binary format.\n\
 		    = ((file.rdbuf ())->pubseekoff (0, std::ios::cur)
 		       == static_cast<std::streampos> (0));
 	      
-		  save_vars (argv, i, argc, file, save_builtins, format,
+		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
 
 		  file.close ();
@@ -1728,7 +1707,7 @@ the file @file{data} in Octave's binary format.\n\
 		    = ((file.rdbuf ())->pubseekoff (0, std::ios::cur)
 		       == static_cast<std::streampos> (0));
 	      
-		  save_vars (argv, i, argc, file, save_builtins, format,
+		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
 
 		  file.close ();
@@ -1745,177 +1724,89 @@ the file @file{data} in Octave's binary format.\n\
   return retval;
 }
 
-static int
-crash_dumps_octave_core (void)
-{
-  Vcrash_dumps_octave_core = check_preference ("crash_dumps_octave_core");
-
-  return 0;
-}
-
-static int
-default_save_options (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("default_save_options");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("default_save_options");
-      status = -1;
-    }
-  else
-    Vdefault_save_options = s;
-
-  return status;
-}
-
-static int
-octave_core_file_limit (void)
-{
-  double val;
-
-  if (builtin_real_scalar_variable ("octave_core_file_limit", val))
-    {
-      Voctave_core_file_limit = val;
-      return 0;
-    }
-  else
-    gripe_invalid_value_specified ("octave_core_file_limit");
-
-  return -1;
-}
-
-static int
-octave_core_file_name (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("octave_core_file_name");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("octave_core_file_name");
-      status = -1;
-    }
-  else
-    Voctave_core_file_name = s;
-
-  return status;
-}
-
-static int
-octave_core_file_options (void)
-{
-  int status = 0;
-
-  std::string s = builtin_string_variable ("octave_core_file_options");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("octave_core_file_options");
-      status = -1;
-    }
-  else
-    Voctave_core_file_options = s;
-
-  return status;
-}
-
-static std::string
-default_save_header_format (void)
-{
-  return
-    std::string ("# Created by Octave " OCTAVE_VERSION
-		 ", %a %b %d %H:%M:%S %Y %Z <")
-    + octave_env::get_user_name ()
-    + std::string ("@")
-    + octave_env::get_host_name ()
-    + std::string (">");
-}
-
-static int
-save_header_format_string (void)
-{
-  int status = 0;
-
-  octave_value v = builtin_any_variable ("save_header_format_string");
-
-  if (v.is_string ())
-    Vsave_header_format_string = v.string_value ();
-  else
-    {
-      gripe_invalid_value_specified ("save_header_format_string");
-      status = -1;
-    }
-
-  return status;
-}
-
-void
-symbols_of_load_save (void)
-{
-  DEFVAR (crash_dumps_octave_core, true, crash_dumps_octave_core,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} crash_dumps_octave_core\n\
-If this variable is set to a nonzero value, Octave tries to save all\n\
-current variables the the file \"octave-core\" if it crashes or receives a\n\
-hangup, terminate or similar signal.  The default value is 1.\n\
+DEFUN (crash_dumps_octave_core, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave tries\n\
+to save all current variables the the file \"octave-core\" if it\n\
+crashes or receives a hangup, terminate or similar signal.\n\
 @seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (crash_dumps_octave_core);
+}
 
-  DEFVAR (default_save_options, "-text", default_save_options,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} default_save_options\n\
-This variable specifies the default options for the @code{save} command,\n\
-and is used to define the default format. Typical values include,\n\
-@code{\"-ascii\"}, @code{\"-ascii -zip\"}. For other possible options\n\
-see the @code{save} command. The initial value of this variable is\n\
-@code{-ascii}.\n\
-@end defvr");
+DEFUN (default_save_options, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} default_save_options ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} default_save_options (@var{new_val})\n\
+Query or set the internal variable that specifies the default options\n\
+for the @code{save} command, and defines the default format.\n\
+Typical values include @code{\"-ascii\"}, @code{\"-ascii -zip\"}.\n\
+The default value is @code{-ascii}.\n\
+@seealso{save}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (default_save_options);
+}
 
-  DEFVAR (octave_core_file_limit, -1.0, octave_core_file_limit,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} octave_core_file_limit\n\
-The maximum amount of memory (in kilobytes) of the top-level workspace\n\
-that Octave will attempt to write when saving data to the\n\
-@var{octave_core_file_name}.  If @var{octave_core_file_options} flags a\n\
-binary format, then @var{octave_core_file_limit} will be approximately\n\
-the maximum size of the file.  If a text file format is used, then the\n\
-file could be much larger than the limit.\n\
-The default value is -1 (unlimited)\n\
+DEFUN (octave_core_file_limit, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
+Query or set the internal variable that specifies the maximum amount\n\
+of memory (in kilobytes) of the top-level workspace that Octave will\n\
+attempt to save when writing data to the crash dump file (the name of\n\
+the file is specified by @var{octave_core_file_name}).  If\n\
+@var{octave_core_file_options} flags specifies a binary format,\n\
+then @var{octave_core_file_limit} will be approximately the maximum\n\
+size of the file.  If a text file format is used, then the file could\n\
+be much larger than the limit.  The default value is -1 (unlimited)\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (octave_core_file_limit);
+}
 
-  DEFVAR (octave_core_file_name, "octave-core", octave_core_file_name,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} octave_core_file_name\n\
-The name of the file used for saving data from the top-level workspace\n\
-when Octave aborts.  The default value is @code{\"octave-core\"}\n\
+DEFUN (octave_core_file_name, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
+Query or set the internal variable that specifies the name of the file\n\
+used for saving data from the top-level workspace if Octave aborts.\n\
+The default value is @code{\"octave-core\"}\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (octave_core_file_name);
+}
 
-  DEFVAR (octave_core_file_options, "-binary", octave_core_file_options,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} octave_core_file_options\n\
-If Octave aborts, it attempts to save the contents of the top-level\n\
-workspace in a file using this variable to define the format. The value of\n\
-@code{octave_core_file_options} should follow the same format as the options\n\
-that may be used with @code{save}. The default value is Octave's binary\n\
+DEFUN (octave_core_file_options, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
+Query or set the internal variable that specifies the options used for\n\
+saving the workspace data if Octave aborts.  The value of\n\
+@code{octave_core_file_options} should follow the same format as the\n\
+options for the @code{save} function. The default value is Octave's binary\n\
 format.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (octave_core_file_options);
+}
 
-  DEFVAR (save_header_format_string, default_save_header_format (),
-	  save_header_format_string,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} save_header_format_string\n\
-This variable specifies the the format string for the comment line\n\
-that is written at the beginning of text-format data files saved by\n\
-Octave.  The format string is passed to @code{strftime} and should\n\
-begin with the character @samp{#} and contain no newline characters.\n\
-If the value of @code{save_header_format_string} is the empty string,\n\
+DEFUN (save_header_format_string, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} save_header_format_string ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
+Query or set the internal variable that specifies the format\n\
+string used for the comment line written at the beginning of\n\
+text-format data files saved by Octave.  The format string is\n\
+passed to @code{strftime} and should begin with the character\n\
+@samp{#} and contain no newline characters.  If the value of\n\
+@code{save_header_format_string} is the empty string,\n\
 the header comment is omitted from text-format data files.  The\n\
 default value is\n\
 \n\
@@ -1923,7 +1814,9 @@ default value is\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
 @seealso{strftime}\n\
-@end defvr");
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (save_header_format_string);
 }
 
 /*

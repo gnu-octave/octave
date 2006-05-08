@@ -1,3 +1,199 @@
+2006-05-08  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc: No need to handle built-in variables.
+	* help.cc (simple_help): No need to handle built-in variables.
+
+	* variables.cc (is_builtin_variable, builtin_string_variable,
+	builtin_real_scalar_variable, builtin_any_variable):
+	Delete functions.
+	(Fexist, Fdocument, do_who, Fwho, link_to_builtin_or_function): 
+	No need to handle built-in variables.
+	* variables.h (is_builtin_variable, builtin_string_variable,
+	builtin_real_scalar_variable, builtin_any_variable): Delete decls.
+
+	* symtab.h (symbol_record::symbol_def::is_builtin_variable,
+	symbol_record::is_builtin_variable): Delete.
+	(symbol_record::TYPE): Remove BUILTIN_VARIABLE from enum.
+	(symbol_record::symbol_def::is_variable, SYMTAB_ALL_TYPES,
+	SYMTAB_VARIABLES): No need to handle built-in variables now.
+	(symbol_record::define_builtin_variable,
+	symbol_record::link_to_builtin_variable): Delete decls.
+	* symtab.cc (record::define, SYMBOL_DEF::type,
+	SYMBOL_DEF::type_as_string): No need to handle built-in variables.
+	(symbol_record::define_builtin_variable): Delete.
+	(symbol_record::variable_reference): No need to attemp to link to
+	built-in variable.
+
+	* utils.cc (check_preference, warn_old_style_preference): Delete.
+	* utils.h (check_preference): Delete decl.
+
+	* defun-int.h: Delete all DEFVAR macros.
+
+	* Makefile.in, mkbuiltins: No need for VAR_FILES.
+
+	* parse.y (current_script_file_name): Delete all uses.
+	(clear_current_script_file_name): Delete function.
+
+	* variables.cc (symbols_of_variables): Delete DEFVAR and function.
+	(bind_ans): Lookup ans in curr_sym_tab, not fbi_sym_tab.
+	SR is no longer static, so we insert value in local scope.
+
+	* defun.cc (bind_builtin_variable): Delete function.
+	* defun-int.h: Delete decl.
+
+	* defaults.cc (fftw_wisdom_program): Rename from fftw_wisdom_prog.
+	Change all uses.
+	(VDEFAULT_LOADPATH): Rename from Vdefault_load_path.  Change all uses.
+	(VLOADPATH): Rename from Vload_path.  Change all uses.
+	(VDEFAULT_EXECPATH): Rename from Vdefault_exec_path.  Change all uses.
+	(VEXECPATH): Rename from Vexec_path.  Change all uses.
+	(VEDITOR): Rename from Veditor.  Change all uses.
+	(Ffftw_wisdom_program, FDEFAULT_LOADPATH, FLOADPATH,
+	FDEFAULT_EXEC_PATH, FEXEC_PATH, FEDITOR, FIMAGEPATH): New functions.
+	(fftw_wisdom_program, default_load_path, loadpath,
+	default_exec_path, exec_path, editor, image_path): Delete functions.
+	(symbols_of_defaults): Delete DEFVARs and function.
+
+	* pr-output.cc (set_output_prec_and_fw): Set Voutput_precision and
+	Voutput_max_field_width directly instad of calling
+	bind_builtin_variable.
+
+	* octave.cc (octave_main, maximum_braindamage):
+	Call bind_internal_variable instead of bind_builtin_variable.
+
+	* pager.cc (Fmore): Set Vpage_screen_output directly instead of
+	calling bind_builtin_variable.
+
+	* error.cc (Fwarning): Set Vdebug_on_warning directly instead of
+	calling bind_builtin_variable.
+
+	* error.cc (initialize_warning_options): Now static.
+	(disable_warning, initialize_default_warning_state): New functions.
+
+	* error.h (initialize_warning_options): Delete decl.
+	(initialize_default_warning_state): Provide decl.
+	* octave.cc (octave_main): Call initialize_default_warning_state
+	instead initialize_warning_options.
+
+	* lex.l (warn_matlab_incompatible, warn_separator_insert,
+	warn_single_quote_string): Delete functions.
+	(symbols_of_lex): Delete DEFVARS.
+	(Vwarn_matlab_incompatible, Vwarn_separator_insert,
+	Vwarn_single_quote_string): Delete variables.
+	(maybe_warn_separator_insert, gripe_single_quote_string,
+	gripe_matlab_incompatible): Call warning_with_id instead of warning.
+
+	* variables.h (SET_NONEMPTY_INTERNAL_STRING_VARIABLE,
+	SET_INTERNAL_VARIABLE_WITH_LIMITS): New macros.
+
+	* ls-oct-ascii.cc (Fsave_precision): New function.
+	(save_precision): Delete function.
+	(symbols_of_ls_oct_ascii): Delete DEFVAR and function.
+
+	* oct-hist.cc (initialize_history): New function.
+	* oct-hist.h: Provide decl.
+	* octave.cc (octave_main): Call initialize_history instead of
+	command_history::read.
+
+	* oct-hist.cc (Fhistory_size, Fhistory_file,
+	Fhistory_timestamp_format_string, Fsaving_history): New functions.
+	(history_size, history_file, history_timestamp_format_string,
+	saving_history): Delete functions.
+	(symbols_of_oct_hist): Delete DEFVARs and function.
+
+	* pt-mat.cc (Fstring_fill_char): New function.
+	(string_fill_char): Delete function.
+	(symbols_of_pt_mat): Delete DEFVAR and function.
+
+	* variables.cc (Fignore_function_time_stamp, ans): New functions.
+	(ignore_function_time_stamp): Delete function.
+	(symbols_of_variables): Delete DEFVARs and function.
+
+	* oct-procbuf.cc: (Vkluge_procbuf_delay): Delete variable.
+	(octave_procbuf::open): Never delay after fork.
+	(kluge_procbuf_delay): Delete function.
+	(symbols_of_oct_procbuf): Delete DEFVAR and function.
+
+	* dirfns.cc (Fconfirm_recursive_rmdir): New function.
+	(confirm_recursive_rmdir): Delete function.
+	(symbols_of_dirfns): Delete DEFVAR and function.
+
+	* error.cc (initialize_warning_options): Now extern.
+	Rename from init_warning_options. 
+	* error.h: Provide decl.
+	* octave.cc (octave_main): Call it here.
+
+	* error.cc (Fbeep_on_error, Fdebug_on_error, Fdebug_on_warning):
+	New functions.
+	(beep_on_error, debug_on_error, debug_on_warning): Delete Functions.
+	(symbols_of_error): Delete DEFVARs and function.
+
+	* help.cc (Finfo_file, Finfo_program, Fmakeinfo_program,
+	Fsuppress_verbose_help_message): New function.
+	(info_file, info_program, makeinfo_program,
+	suppress_verbose_help_message): Delete function.
+	(symbols_of_help): Delete DEFVARs and function.
+	(Vinfo_program): Rename from Vinfo_prog.  Change all uses.
+
+	* input.cc (FPS1, FPS2, FPS4, Fcompletion_append_char,
+	Fecho_executing_commands): New functions.
+	(ps1, ps2, ps4, completion_append_char, echo_executing_commands):
+	Delete functions.
+	(symbols_of_input): Delete DEFVARs and function.
+	(VPS1, VPS2, VPS4): Rename from Vps1, Vps2, Vps4.  Change all uses.
+	(Fecho): Set Vecho_executing_commands directly.
+
+	* load-save.cc (crash_dumps_octave_core, Fdefault_save_options,
+	Foctave_core_file_limit, Foctave_core_file_name,
+	Foctave_core_file_options, Fsave_header_format_string):	
+	New functions.
+	(crash_dumps_octave_core, default_save_options,
+	octave_core_file_limit, octave_core_file_name,
+	octave_core_file_options, save_header_format_string):	
+	Delete functions. 
+	(symbols_of_load_save): Delete DEFVARs and function.
+
+	* ov-base.cc (Fprint_answer_id_name, Fsilent_functions): New functions.
+	(print_answer_id_name, silent_functions): Delete functions.
+	(symbols_of_ov_base): Delete DEFVARs and function.
+
+	* ov-usr-fcn.cc (Fmax_recursion_depth): New function.
+	(max_recursion_depth): Delete function.
+	(symbols_of_ov_usr_fcn): Delete DEFVAR for max_recursion_depth.
+	Delete function.
+
+	* pager.cc (Fpage_output_immediately, Fpage_screen_output, FPAGER):
+	New functions.
+	(page_output_immediately, page_screen_output, pager_binary):
+	Delete functions.
+	(symbols_of_pager): Delete DEFVARs and function.
+	(VPAGER): Rename from Vpager_binary.  Change all uses.
+
+	* pr-output.cc (Ffixed_point_format, Fprint_empty_dimensions,
+	Fsplit_long_rows, Foutput_max_field_width, Foutput_precision,
+	Fstruct_levels_to_print): New functions.
+	(fixed_point_format, print_empty_dimensions, split_long_rows,
+	output_max_field_width, output_precision, struct_levels_to_print):
+	Delete functions.
+	(symbols_of_pr_output): Delete DEFVARs and function.
+
+	* pt-assign.cc (Fprint_rhs_assign_val): New function.
+	(print_rhs_assign_val): Delete function.
+	(symbols_of_pt_assign): Delete DEFVAR.  Delete function.
+
+	* sighandlers.cc (Fdebug_on_interrupt, Fsighup_dumps_octave_core,
+	Fsigterm_dumps_octave_core): New functions.
+	(debug_on_interrupt, sighup_dumps_octave_core,
+	sigterm_dumps_octave_core): Delete functions.
+	(symbols_of_sighanlders): Delete DEFVARs.  Delete function.
+
+	* symtab.cc (Vdebug_symtab_lookups): Now bool.
+	(Fdebug_symtab_lookups, Fwhos_line_format,
+	Fvariables_can_hide_functions): New functions.
+	(debug_symtab_lookups, whos_line_format,
+	variables_can_hide_functions): Delete functions.
+	(symbols_of_symtab): Delete DEFVARs and function.
+
 2006-05-04  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sqqr (Fdmperm): Allow compilation with versions
@@ -217,7 +413,6 @@
 	* variables.cc (do_who): Likewise.
 	(symbol_exist): Likewise.
 	(link_to_builtin_or_function): Likewise.
-
 	* symtab.cc (SYMBOL_DEF::type_as_string): Likewise.
 	(record::read_only_error): Likewise.
 	(SYMBOL_DEF::type): Likewise.
@@ -231,7 +426,6 @@
 	(symbol_record::is_builtin_constant): Delete function.
 	(SYMTAB_ALL_TYPES): No need to handle builtin-constants now.
 	(symbol_record::TYPE): Remove BUILTIN_CONSTANT from enum.
-	(symbol_record): 
 
 	* defun.cc (install_builtin_constant): Delete function.
 	* defun-int.h (install_builtin_constant): Delete decl.

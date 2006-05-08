@@ -68,7 +68,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ls-oct-ascii.h"
 
 // The number of decimal digits to use when writing ascii data.
-static int Vsave_precision;
+static int Vsave_precision = 15;
 
 // Functions for reading ascii data.
 
@@ -448,33 +448,15 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
   return (os && ! fail);
 }
 
-static int
-save_precision (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("save_precision", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival >= 0 && ival == val)
-	{
-	  Vsave_precision = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("save_precision");
-  return -1;
-}
-
-void
-symbols_of_ls_oct_ascii (void)
-{
-  DEFVAR (save_precision, 15.0, save_precision,
+DEFUN (save_precision, args, nargout,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} save_precision\n\
-This variable specifies the number of digits to keep when saving data in\n\
-text format.  The default value is 17.\n\
-@end defvr");
+@deftypefn {Built-in Function} {@var{val} =} save_precision ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} save_precision (@var{new_val})\n\
+Query or set the internal variable that specifies the number of\n\
+digits to keep when saving data in text format.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1, INT_MAX);
 }
 
 /*

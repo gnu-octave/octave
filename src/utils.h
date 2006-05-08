@@ -65,8 +65,6 @@ extern const char *undo_string_escape (char c);
 
 extern std::string undo_string_escapes (const std::string& s);
 
-extern int check_preference (const std::string& var);
-
 extern void
 check_dimensions (dim_vector& dim, const char *warnfor);
 

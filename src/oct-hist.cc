@@ -76,22 +76,6 @@ Software Foundation, Inc.
 // TRUE means input is coming from temporary history file.
 bool input_from_tmp_history_file = false;
 
-// Where history is saved.
-static std::string Vhistory_file;
-
-// The number of lines to keep in the history file.
-static int Vhistory_size;
-
-// The format of the timestamp marker written to the history file when
-// Octave exits.
-static std::string Vhistory_timestamp_format_string;
-
-// TRUE if we are saving history.
-bool Vsaving_history = true;
-
-// Get some default values, possibly reading them from the
-// environment.
-
 static std::string
 default_history_file (void)
 {
@@ -126,6 +110,9 @@ default_history_file (void)
   return file;
 }
 
+// Where history is saved.
+static std::string Vhistory_file = default_history_file ();
+
 static int
 default_history_size (void)
 {
@@ -144,6 +131,9 @@ default_history_size (void)
   return size;
 }
 
+// The number of lines to keep in the history file.
+static int Vhistory_size = default_history_size ();
+
 static std::string
 default_history_timestamp_format (void)
 {
@@ -154,6 +144,14 @@ default_history_timestamp_format (void)
     + octave_env::get_host_name ()
     + std::string (">");
 }
+
+// The format of the timestamp marker written to the history file when
+// Octave exits.
+static std::string Vhistory_timestamp_format_string
+  = default_history_timestamp_format ();
+
+// TRUE if we are saving history.
+bool Vsaving_history = true;
 
 // Display, save, or load history.  Stolen and modified from bash.
 //
@@ -456,7 +454,7 @@ do_edit_history (int argc, const string_vector& argv)
 
   // Call up our favorite editor on the file of commands.
 
-  std::string cmd = Veditor;
+  std::string cmd = VEDITOR;
   cmd.append (" \"");
   cmd.append (name);
   cmd.append ("\"");
@@ -548,6 +546,14 @@ do_run_history (int argc, const string_vector& argv)
   // FIXME -- should probably be done using an unwind_protect.
 
   unlink (name.c_str ());
+}
+
+void
+initialize_history (void)
+{
+  command_history::set_file (file_ops::tilde_expand (Vhistory_file));
+  
+  command_history::read (false);
 }
 
 void
@@ -675,117 +681,72 @@ and the commands are simply executed as they appear in the history list.\n\
   return retval;
 }
 
-static int
-history_size (void)
+DEFUN (history_size, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} history_size ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
+Query or set the internal variable that specifies how many entries\n\
+to store in the history file.  The default value is @code{1024},\n\
+but may be overridden by the environment variable @code{OCTAVE_HISTSIZE}.\n\
+@seealso{history_file, history_timestamp_format, saving_history}\n\
+@end deftypefn")
 {
-  double val;
-  if (builtin_real_scalar_variable ("history_size", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival >= 0 && ival == val)
-	{
-	  Vhistory_size = ival;
-	  command_history::set_size (ival);
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("history_size");
-  return -1;
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (history_size, -1, INT_MAX);
 }
 
-static int
-history_file (void)
+DEFUN (history_file, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} history_file ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} history_file (@var{new_val})\n\
+Query or set the internal variable that specifies the name of the\n\
+file used to store command history.  The default value is\n\
+@code{\"~/.octave_hist\"}, but may be overridden by the environment\n\
+variable @code{OCTAVE_HISTFILE}.\n\
+@seealso{history_size, saving_history, history_timestamp_format_string}\n\
+@end deftypefn")
 {
-  int status = 0;
+  std::string saved_history_file = Vhistory_file;
 
-  std::string s = builtin_string_variable ("history_file");
+  octave_value retval = SET_INTERNAL_VARIABLE (history_file);
 
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("history_file");
-      status = -1;
-    }
-  else
-    {
-      Vhistory_file = s;
-      command_history::set_file (file_ops::tilde_expand (s));
-    }
+  if (Vhistory_file != saved_history_file)
+    command_history::set_file (file_ops::tilde_expand (Vhistory_file));
 
-  return status;
+  return retval;;
 }
 
-static int
-history_timestamp_format_string (void)
-{
-  int status = 0;
-
-  octave_value v = builtin_any_variable ("history_timestamp_format_string");
-
-  if (v.is_string ())
-    Vhistory_timestamp_format_string = v.string_value ();
-  else
-    {
-      gripe_invalid_value_specified ("history_timestamp_format_string");
-      status = -1;
-    }
-
-  return status;
-}
-
-static int
-saving_history (void)
-{
-  Vsaving_history = check_preference ("saving_history");
-
-  command_history::ignore_entries (! Vsaving_history);
-
-  return 0;
-}
-
-void
-symbols_of_oct_hist (void)
-{
-  DEFVAR (history_file, default_history_file (), history_file,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} history_file\n\
-This variable specifies the name of the file used to store command\n\
-history.  The default value is @code{\"~/.octave_hist\"}, but may be\n\
-overridden by the environment variable @code{OCTAVE_HISTFILE}.\n\
-@end defvr");
-
-  double tmp_hist_size = default_history_size ();
-
-  DEFVAR (history_size, tmp_hist_size, history_size,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} history_size\n\
-This variable specifies how many entries to store in the history file.\n\
-The default value is @code{1024}, but may be overridden by the\n\
-environment variable @code{OCTAVE_HISTSIZE}.\n\
-@end defvr");
-
-  DEFVAR (history_timestamp_format_string,
-	  default_history_timestamp_format (),
-	  history_timestamp_format_string,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} history_timestamp_format_string\n\
-This variable specifies the the format string for the comment line\n\
-that is written to the history file when Octave exits.  The format\n\
-string is passed to @code{strftime}.  The default value is\n\
+DEFUN (history_timestamp_format_string, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
+Query or set the internal variable that specifies the the format string\n\
+for the comment line that is written to the history file when Octave\n\
+exits.  The format string is passed to @code{strftime}.  The default\n\
+value is\n\
 \n\
 @example\n\
 \"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
-@seealso{strftime}\n\
-@end defvr");
+@seealso{strftime, history_file, history_size, saving_history}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (history_timestamp_format_string);
+}
 
-  DEFVAR (saving_history, true, saving_history,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} saving_history\n\
-If the value of @code{saving_history} is nonzero, command entered\n\
-on the command line are saved in the file specified by the variable\n\
-@code{history_file}.\n\
-@end defvr");
+DEFUN (saving_history, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} saving_history ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})\n\
+Query or set the internal variable that controls whether commands entered\n\
+on the command line are saved in the history file.\n\
+@seealso{history_file, history_size, history_timestamp_format}.\n\
+@end deftypefn")
+{
+  octave_value retval = SET_INTERNAL_VARIABLE (saving_history);
+
+  command_history::ignore_entries (! Vsaving_history);
+
+  return retval;
 }
 
 /*

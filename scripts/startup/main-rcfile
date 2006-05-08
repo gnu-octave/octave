@@ -3,21 +3,6 @@
 ## This file should contain any commands that should be executed each
 ## time Octave starts for every user at this site.
 
-## Default state for warnings is "on", but most people will want to
-## have these disabled.
-
-warning ("off", "Octave:array-to-scalar");
-warning ("off", "Octave:array-to-vector");
-warning ("off", "Octave:empty-list-elements");
-warning ("off", "Octave:fortran-indexing");
-warning ("off", "Octave:imag-to-real");
-warning ("off", "Octave:missing-semicolon");
-warning ("off", "Octave:neg-dim-as-zero");
-warning ("off", "Octave:resize-on-range-error");
-warning ("off", "Octave:str-to-num");
-warning ("off", "Octave:string-concat");
-warning ("off", "Octave:variable-switch-label");
-
 ## Configure readline using the file inputrc in the Octave startup
 ## directory.
 

@@ -223,13 +223,13 @@ SparseComplexQR::SparseComplexQR_rep::C (const ComplexMatrix &b) const
 ComplexMatrix
 qrsolve(const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
   octave_idx_type b_nc = b.cols();
   octave_idx_type b_nr = b.rows();
   ComplexMatrix x;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -238,10 +238,7 @@ qrsolve(const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
     {
       SparseComplexQR q (a, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return ComplexMatrix();
-	}
+	return ComplexMatrix();
       x.resize(nc, b_nc);
       double _Complex *vec = reinterpret_cast<double _Complex *>
 	(x.fortran_vec());
@@ -279,16 +276,14 @@ qrsolve(const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
 #endif
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
+      info = 0;
     }
   else
     {
       SparseComplexMatrix at = a.hermitian();
       SparseComplexQR q (at, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return ComplexMatrix();
-	}
+	return ComplexMatrix();
       x.resize(nc, b_nc);
       double _Complex *vec = reinterpret_cast<double _Complex *>
 	(x.fortran_vec());
@@ -332,6 +327,7 @@ qrsolve(const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
 #endif
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
+      info = 0;
     }
 
   return x;
@@ -343,6 +339,7 @@ qrsolve(const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
 SparseComplexMatrix
 qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
@@ -350,7 +347,6 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
   octave_idx_type b_nr = b.rows();
   SparseComplexMatrix x;
   volatile octave_idx_type ii, x_nz;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -359,10 +355,7 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
     {
       SparseComplexQR q (a, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return SparseComplexMatrix();
-	}
+	return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -422,16 +415,14 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
   else
     {
       SparseComplexMatrix at = a.hermitian();
       SparseComplexQR q (at, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return SparseComplexMatrix();
-	}
+	return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -496,6 +487,7 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
 
   x.maybe_compress ();
@@ -508,6 +500,7 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
 ComplexMatrix
 qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
@@ -516,7 +509,6 @@ qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &in
   const double _Complex *bvec = 
     reinterpret_cast<const double _Complex *>(b.fortran_vec());
   ComplexMatrix x;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -525,10 +517,7 @@ qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &in
     {
       SparseComplexQR q (a, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return ComplexMatrix();
-	}
+	return ComplexMatrix();
       x.resize(nc, b_nc);
       double _Complex *vec = reinterpret_cast<double _Complex *>
 	(x.fortran_vec());
@@ -562,16 +551,14 @@ qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &in
 #endif
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
+      info = 0;
     }
   else
     {
       SparseComplexMatrix at = a.hermitian();
       SparseComplexQR q (at, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return ComplexMatrix();
-	}
+	return ComplexMatrix();
       x.resize(nc, b_nc);
       double _Complex *vec = reinterpret_cast<double _Complex *>
 	(x.fortran_vec());
@@ -610,6 +597,7 @@ qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &in
 #endif
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
+      info = 0;
     }
 
   return x;
@@ -621,6 +609,7 @@ qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &in
 SparseComplexMatrix
 qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
@@ -628,7 +617,6 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
   octave_idx_type b_nr = b.rows();
   SparseComplexMatrix x;
   volatile octave_idx_type ii, x_nz;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -637,10 +625,7 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
     {
       SparseComplexQR q (a, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return SparseComplexMatrix();
-	}
+	return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -700,16 +685,14 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
   else
     {
       SparseComplexMatrix at = a.hermitian();
       SparseComplexQR q (at, 2);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return SparseComplexMatrix();
-	}
+	return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -774,6 +757,7 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
 
   x.maybe_compress ();

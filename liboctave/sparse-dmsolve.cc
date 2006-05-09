@@ -23,10 +23,7 @@ Boston, MA 02110-1301, USA.
 #include <config.h>
 #endif
 
-
-// FIXME -- liboctave should not be including files from the src directory.
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
+#include <vector>
 
 #include "MArray2.h"
 #include "MSparse.h"
@@ -415,7 +412,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 	    qrsolve (m, dmsolve_extract (btmp, NULL, NULL, dm->rr[2], b_nr, 0,
 					 b_nc), info);
 	  dmsolve_insert (retval, mtmp, q, dm->cc [3], 0);
-	  if (dm->rr [2] > 0 && !info && !error_state)
+	  if (dm->rr [2] > 0 && !info)
 	    {
 	      m = dmsolve_extract (a, pinv, q, 0, dm->rr [2], 
 				   dm->cc [3], nc, nnz_remaining, true);
@@ -428,8 +425,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       
       // Structurally non-singular blocks
       // FIXME Should use fine Dulmange-Mendelsohn decomposition here.
-      if (dm->rr [1] < dm->rr [2] && dm->cc [2] < dm->cc [3] && 
-	  !info && !error_state)
+      if (dm->rr [1] < dm->rr [2] && dm->cc [2] < dm->cc [3] && !info)
 	{
 	  ST m = dmsolve_extract (a, pinv, q, dm->rr [1], dm->rr [2], 
 				  dm->cc [2], dm->cc [3], nnz_remaining, false);
@@ -447,7 +443,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 	    }
 
 	  dmsolve_insert (retval, mtmp, q, dm->cc [2], 0);
-	  if (dm->rr [1] > 0 && !info && !error_state)
+	  if (dm->rr [1] > 0 && !info)
 	    {
 	      m = dmsolve_extract (a, pinv, q, 0, dm->rr [1], dm->cc [2],
 				   dm->cc [3], nnz_remaining, true);
@@ -459,7 +455,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 	}
 
       // Trailing under-determined block
-      if (dm->rr [1] > 0 && dm->cc [2] > 0 && !info && !error_state)
+      if (dm->rr [1] > 0 && dm->cc [2] > 0 && !info)
 	{
 	  ST m = dmsolve_extract (a, pinv, q, 0, dm->rr [1], 0, 
 				  dm->cc [2], nnz_remaining, true);

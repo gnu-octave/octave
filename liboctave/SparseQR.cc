@@ -214,6 +214,7 @@ SparseQR::SparseQR_rep::C (const Matrix &b) const
 Matrix
 qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
@@ -221,7 +222,6 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
   octave_idx_type b_nr = b.rows();
   const double *bvec = b.fortran_vec();
   Matrix x;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -230,10 +230,7 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
     {
       SparseQR q (a, 3);
       if (! q.ok ()) 
-	{
-	  info = -1;
-	  return Matrix();
-	}
+	return Matrix();
       x.resize(nc, b_nc);
       double *vec = x.fortran_vec();
       OCTAVE_LOCAL_BUFFER (double, buf, q.S()->m2);
@@ -266,16 +263,14 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
 #endif
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
+      info = 0;
     }
   else
     {
       SparseMatrix at = a.hermitian();
       SparseQR q (at, 3);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return Matrix();
-	}
+	return Matrix();
       x.resize(nc, b_nc);
       double *vec = x.fortran_vec();
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
@@ -309,6 +304,7 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
 #endif
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
+      info = 0;
     }
 
   return x;
@@ -320,6 +316,7 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
 SparseMatrix
 qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
@@ -327,7 +324,6 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
   octave_idx_type b_nc = b.cols();
   SparseMatrix x;
   volatile octave_idx_type ii, x_nz;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -336,10 +332,7 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
     {
       SparseQR q (a, 3);
       if (! q.ok ()) 
-	{
-	  info = -1;
-	  return SparseMatrix();
-	}
+	return SparseMatrix();
       x = SparseMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -395,16 +388,14 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
   else
     {
       SparseMatrix at = a.hermitian();
       SparseQR q (at, 3);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return SparseMatrix();
-	}
+	return SparseMatrix();
       x = SparseMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -461,6 +452,7 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
 
   x.maybe_compress ();
@@ -473,13 +465,13 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
 ComplexMatrix
 qrsolve(const SparseMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
   octave_idx_type b_nc = b.cols();
   octave_idx_type b_nr = b.rows();
   ComplexMatrix x;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -488,10 +480,7 @@ qrsolve(const SparseMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
     {
       SparseQR q (a, 3);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return ComplexMatrix();
-	}
+	return ComplexMatrix();
       x.resize(nc, b_nc);
       Complex *vec = x.fortran_vec();
       OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
@@ -555,16 +544,14 @@ qrsolve(const SparseMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    vec[j+idx] = Complex (Xx[j], Xz[j]);
 	}
+      info = 0;
     }
   else
     {
       SparseMatrix at = a.hermitian();
       SparseQR q (at, 3);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return ComplexMatrix();
-	}
+	return ComplexMatrix();
       x.resize(nc, b_nc);
       Complex *vec = x.fortran_vec();
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
@@ -631,6 +618,7 @@ qrsolve(const SparseMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
 	  for (octave_idx_type j = 0; j < nc; j++)
 	    vec[j+idx] = Complex (Xx[j], Xz[j]);
 	}
+      info = 0;
     }
 
   return x;
@@ -642,6 +630,7 @@ qrsolve(const SparseMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
 SparseComplexMatrix
 qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &info)
 {
+  info = -1;
 #ifdef HAVE_CXSPARSE
   octave_idx_type nr = a.rows();
   octave_idx_type nc = a.cols();
@@ -649,7 +638,6 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
   octave_idx_type b_nc = b.cols();
   SparseComplexMatrix x;
   volatile octave_idx_type ii, x_nz;
-  info = 0;
 
   if (nr < 1 || nc < 1 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -658,10 +646,7 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
     {
       SparseQR q (a, 3);
       if (! q.ok ()) 
-	{
-	  info = -1;
-	  return SparseComplexMatrix();
-	}
+	return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -746,16 +731,14 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
   else
     {
       SparseMatrix at = a.hermitian();
       SparseQR q (at, 3);
       if (! q.ok ())
-	{
-	  info = -1;
-	  return SparseComplexMatrix();
-	}
+	return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nzmax());
       x.xcidx(0) = 0;
       x_nz = b.nzmax();
@@ -841,6 +824,7 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
 	    }
 	  x.xcidx(i+1) = ii;
 	}
+      info = 0;
     }
 
   x.maybe_compress ();

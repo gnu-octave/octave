@@ -1,3 +1,9 @@
+2006-05-09  David Bateman  <dbateman@free.fr>
+
+	* sparse-dmsolve.cc: Remove reference to ov-re-sparse.h,
+	ov-cx-sparse. and error_state.
+	* SparseQR.cc, SparseCmplxQR.cc (qrsolve): Return info = -1 on error.
+	
 2006-05-08  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Set column pointers in

@@ -51,7 +51,7 @@
 ## The plot index runs row-wise.  First all the columns in a row are filled
 ## and then the next row is filled.
 ##
-## For example, a plot with 4 by 2 grid will have plot indices running as
+## For example, a plot with 2 by 3 grid will have plot indices running as
 ## follows:
 ## @iftex
 ## @tex
@@ -75,6 +75,7 @@
 ## @end group
 ## @end display
 ## @end ifinfo
+## @seealso{plot}
 ## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>

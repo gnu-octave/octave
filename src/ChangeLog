@@ -1,3 +1,11 @@
+2006-05-09  Keith Goodman  <kwgoodman@gmail.com>
+
+	* DLD-FUNCTIONS/rand.cc: Doc string fix.
+
+2006-05-09  Jorge Barros de Abreu  <ficmatin01@solar.com.br>
+
+	* data.cc (FInf, FNaN): Fix typo in doc string.
+
 2006-05-08  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (DEFUN_PATTERN): Match DEFUNX_DLD.

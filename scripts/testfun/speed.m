@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2001 Paul Kienzle
+## Copyright (C) 2000-2006 Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,22 +16,23 @@
 ## 02110-1301  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} speed (@var{f}, @var{init}, @var{max_n}, @var{f2}, @var{tol}, @var{err})
-## @deftypefnx {Function File} {@var{r} =} speed (@dots{})
+## @deftypefn {Function File} {} speed (@var{f}, @var{init}, @var{max_n}, @var{f2}, @var{tol})
+## @deftypefnx {Function File} {[@var{order}, @var{n}, @var{T_f}, @var{T_f2}] =} speed (@dots{})
 ##
 ## Determine the execution time of an expression for various @var{n}.
 ## The @var{n} are log-spaced from 1 to @var{max_n}.  For each @var{n},
 ## an initialization expression is computed to create whatever data
-## are needed for the test. Called without output arguments the data
-## is presented graphically. Called with an output argument @var{r},
-## the speedup ratio is returned instead of displaying it graphically.
+## are needed for the test.  If a second expression is given, the
+## execution times of the two expressions will be compared.  Called 
+## without output arguments the results are presented graphically.
 ##
 ## @table @code
 ## @item @var{f}
 ## The expression to evaluate.
 ##
 ## @item @var{max_n}
-## The maximum test length to run. Default value is 100.
+## The maximum test length to run. Default value is 100.  Alternatively,
+## use @code{[min_n,max_n]} or for complete control, @code{[n1,n2,@dots{},nk]}.
 ##
 ## @item @var{init}
 ## Initialization expression for function argument values.  Use @var{k} 
@@ -50,35 +51,70 @@
 ## results of expression @var{f} and expression @var{f2}.  Otherwise,
 ## expression @var{f} should produce a value @var{v} and expression @var{f2} 
 ## should produce a value @var{v2}, and these shall be compared using 
-## @code{assert(@var{v},@var{v2},@var{tol},@var{err})}. The default is
+## @code{assert(@var{v},@var{v2},@var{tol})}. The default is
 ## @code{eps}.
+##
+## @item @var{order}
+## The time complexity of the expression @code{O(a n^p)}.  This
+## is a structure with fields @code{a} and @code{p}.
+##
+## @item @var{n}
+## The values @var{n} for which the expression was calculated and the
+## the execution time was greater than zero.
+##
+## @item @var{T_f}
+## The nonzero execution times recorded for the expression @var{f} in seconds.
+##
+## @item @var{T_f2}
+## The nonzero execution times recorded for the expression @var{f2} in seconds.
+## If it is needed, the mean time ratio is just @code{mean(T_f./T_f2)}.
+##
 ## @end table
 ##
-## Some global variables are also referenced. Choose values suitable to
-## your machine and your work style.
-##
-## @table @code
-## @item speed_test_plot
-## If true, plot a nice speed comparison graph. Default is true.
-##
-## @item speed_test_numtests
-## Number of vector lengths to test. The default is 25.
-## @end table
-##
-## Some comments on the graphs.  The line on the speedup ratio graph 
-## should be larger than 1 if your function is faster.  The slope on
-## the runtime graph shows you the O(f) speed characteristics.  Where it
-## is flat, execution time is O(1).  Where it is sloping, execution time
-## is O(n^m), with steeper slopes for larger @var{n}.  Generally vectorizing
-## a function will not change the slope of the run-time graph, but it
-## will shift it relative to the original.
-##
-## A simple example is
+## The slope of the execution time graph shows the approximate
+## power of the asymptotic running time @code{O(n^p)}.  This
+## power is plotted for the region over which it is approximated
+## (the latter half of the graph).  The estimated power is not
+## very accurate, but should be sufficient to determine the
+## general order of your algorithm.  It should indicate if for 
+## example your implementation is unexpectedly @code{O(n^2)} 
+## rather than @code{O(n)} because it extends a vector each 
+## time through the loop rather than preallocating one which is 
+## big enough.  For example, in the current version of Octave,
+## the following is not the expected @code{O(n)}:
 ##
 ## @example
-##   speed("strrep(s,x,y)", "s=blanks(n);x=' ';y='b';", 100)
+##   speed("for i=1:n,y@{i@}=x(i); end", "", [1000,10000])
 ## @end example
 ##
+## but it is if you preallocate the cell array @code{y}:
+##
+## @example
+##   speed("for i=1:n,y@{i@}=x(i);end", ...
+##         "x=rand(n,1);y=cell(size(x));", [1000,10000])
+## @end example
+##
+## An attempt is made to approximate the cost of the individual 
+## operations, but it is wildly inaccurate.  You can improve the
+## stability somewhat by doing more work for each @code{n}.  For
+## example:
+##
+## @example
+##   speed("airy(x)", "x=rand(n,10)", [10000,100000])
+## @end example
+##
+## When comparing a new and original expression, the line on the
+## speedup ratio graph should be larger than 1 if the new expression
+## is faster.  Better algorithms have a shallow slope.  Generally, 
+## vectorizing an algorithm will not change the slope of the execution 
+## time graph, but it will shift it relative to the original.  For
+## example:
+##
+## @example
+##   speed("v=sum(x)", "", [10000,100000], ...
+##         "v=0;for i=1:length(x),v+=x(i);end")
+## @end example
+## 
 ## A more complex example, if you had an original version of @code{xcorr}
 ## using for loops and another version using an FFT, you could compare the
 ## run speed for various lags as follows, or for a fixed lag with varying
@@ -105,9 +141,10 @@
 ## @end deftypefn
 
 ## TODO: consider two dimensional speedup surfaces for functions like kron.
-function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)
+function [__order, __test_n, __tnew, __torig] ...
+	= speed (__f1, __init, __max_n, __f2, __tol)
   if nargin < 1 || nargin > 6, 
-    usage("speed_test(f, init, max_n, f2, tol, err)");
+    usage("speed_test(f, init, max_n, f2, tol)");
   endif
   if nargin < 2 || isempty(__init), 
     __init = "x = randn(n, 1);";
@@ -115,18 +152,31 @@ function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)
   if nargin < 3 || isempty(__max_n), __max_n = 100; endif
   if nargin < 4, __f2 = []; endif
   if nargin < 5 || isempty(__tol), __tol = eps; endif
-  if nargin < 6 || isempty(__err), __err = []; endif
 
-  global speed_test_plot = 1;
-  global speed_test_numtests = 25;
+  __numtests = 15;
 
-  __test_n = uniq(round(logspace(0,log10(__max_n),speed_test_numtests)));
+  ## Let user specify range of n
+  if isscalar(__max_n)
+    __min_n = 1;
+    assert(__max_n > __min_n);
+    __test_n = logspace(0,log10(__max_n),__numtests);
+  elseif length(__max_n) == 2
+    __min_n = __max_n(1);
+    __max_n = __max_n(2);
+    assert(__min_n >= 1);
+    __test_n = logspace(log10(__min_n),log10(__max_n),__numtests);
+  else
+    __test_n = __max_n;
+  endif
+  __test_n = unique(round(__test_n)); # Force n to be an integer
+  assert(__test_n >= 1);
+
   __torig = __tnew = zeros (size(__test_n)) ;
 
-  disp (["testing..........", __f1, "\ninit: ", __init]);
+  disp (["testing ", __f1, "\ninit: ", __init]);
 
   ## make sure the functions are freshly loaded by evaluating them at
-  ## test_n(1); firt have to initialize the args though.
+  ## test_n(1); first have to initialize the args though.
   n=1; k=0;
   eval ([__init, ";"]);
   if !isempty(__f2), eval ([__f2, ";"]); endif
@@ -134,13 +184,10 @@ function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)
 
   ## run the tests
   for k=1:length(__test_n)
-    if (k > 1)
-      n=__test_n(k);
-      eval ([__init, ";"]);
-    endif
+    n=__test_n(k);
+    eval ([__init, ";"]);
     
     printf ("n%i=%i  ",k, n) ; fflush(1);
-
     eval (["__t=time();", __f1, "; __v1=ans; __t = time()-__t;"]);
     if (__t < 0.25)
       eval (["__t2=time();", __f1, "; __t2 = time()-__t2;"]);
@@ -157,59 +204,93 @@ function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)
       endif
       __torig(k) = __t;
       if !isinf(__tol)
-      	assert(__v1,__v2,__tol,__err);
+      	assert(__v1,__v2,__tol);
       endif
     endif
     
-  end
+  endfor
   
-  if !isempty(__f2),
-				# Don't keep zero times
-    idx = find ( __tnew>sqrt(eps) &  __torig>sqrt(eps) ) ;
-    ratio = mean (__torig(idx) ./ __tnew(idx));
-    if (nargout == 1)
-      __ratio_r = ratio;
-    else
-      printf ("\nmean runtime ratio of %s / %s : %g\n", __f2, __f1, ratio);
-    endif
+  ## Drop times of zero
+  if !isempty(__f2)
+    zidx = ( __tnew < 100*eps |  __torig < 100*eps ) ;
+    __test_n(zidx) = [];
+    __tnew(zidx) = [];
+    __torig(zidx) = [];
   else
-    if (nargout == 1)
-      _ratio_r = mean(__tnew);
-    else
-      printf ("\nmean runtime: %g\n", mean(__tnew));
-    endif
+    zidx = ( __tnew < 100*eps ) ;
+    __test_n(zidx) = [];
+    __tnew(zidx) = [];
   endif
+   
+  ## Approximate time complexity and return it if requested
+  tailidx = [ceil(length(__test_n)/2):length(__test_n)];
+  p = polyfit(log(__test_n(tailidx)),log(__tnew(tailidx)), 1);
+  if nargout > 0, 
+    __order.p = p(1);
+    __order.a = exp(p(2));
+  endif
+  
 
-  if (speed_test_plot && nargout == 0 && !isempty(__f2))
+  ## Plot the data if no output is requested.
+  doplot = (nargout == 0);
+
+  if doplot && !isempty(__f2)
+
 
     subplot(121);
     xlabel("test length");
     title (__f1);
     ylabel("speedup ratio");
-    semilogx ( __test_n(idx), __torig(idx)./__tnew(idx) , 
+    semilogx ( __test_n, __torig./__tnew, 
 	      ["-*r;", strrep(__f1,";","."), "/", strrep(__f2,";","."), ";"],
-	       __test_n(idx), __tnew(idx)./__torig(idx) ,
+	       __test_n, __tnew./__torig,
 	      ["-*g;", strrep(__f2,";","."), "/", strrep(__f1,";","."), ";"]);
     subplot (122);
 
-    ## convert best execution time to milliseconds.
-    __torig = 1000*__torig;
-    __tnew = 1000*__tnew;
-
     ylabel ("best execution time (ms)");
     title (["init: ", __init]);
-    loglog ( __test_n (idx), __tnew (idx), ["*-g;", strrep(__f1,";","."), ";" ], 
-	    __test_n (idx), __torig (idx), ["*-r;", strrep(__f2,";","."), ";"])
-    title (""); xlabel (""); ylabel (""); oneplot();
-  elseif (speed_test_plot && nargout == 0)
-    __tnew = 1000*__tnew;
+    loglog ( __test_n, __tnew*1000, ["*-g;", strrep(__f1,";","."), ";" ], 
+	     __test_n, __torig*1000, ["*-r;", strrep(__f2,";","."), ";"])
+  
+    ratio = mean (__torig ./ __tnew);
+    printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n", ...
+            ratio, __f2, __f1);
+
+  elseif doplot
+
+    subplot(111);
     xlabel("test length");
     ylabel ("best execution time (ms)");
     title ([__f1, "  init: ", __init]);
-    loglog ( __test_n, __tnew, "*-g;;");
-    title (""); xlabel (""); ylabel (""); oneplot();
+    loglog ( __test_n, __tnew*1000, "*-g;execution time;");
+
   endif
-  
+
+  if doplot
+
+    ## Plot time complexity approximation (using milliseconds).
+    order = sprintf("O(n^%g)",round(10*p(1))/10);
+    v = polyval(p,log(__test_n(tailidx)));
+    hold on; 
+    loglog(__test_n(tailidx), exp(v)*1000, sprintf("b;%s;",order)); 
+    hold off;
+
+    ## Get base time to 1 digit of accuracy
+    dt = exp(p(2));
+    dt = floor(dt/10^floor(log10(dt)))*10^floor(log10(dt));
+    if log10(dt) >= -0.5, time = sprintf("%g s", dt);
+    elseif log10(dt) >= -3.5, time = sprintf("%g ms", dt*1e3);
+    elseif log10(dt) >= -6.5, time = sprintf("%g us", dt*1e6);
+    else time = sprintf("%g ns", dt*1e9);
+    endif
+
+    ## Display nicely formatted complexity.
+    printf ("\nFor %s:\n",__f1);
+    printf ("  asymptotic power: %s\n", order);
+    printf ("  approximate time per operation: %s\n", time); 
+
+  endif
+
 endfunction
 
 %!demo if 1

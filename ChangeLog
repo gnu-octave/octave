@@ -1,3 +1,7 @@
+2006-05-09  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (abs_top_srcdir): Substitute value here.
+
 2006-05-05  David Bateman  <dbateman@free.fr>
 
 	    * Makeconf.in (do-subst-scripts-vals): Also replace 

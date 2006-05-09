@@ -31,6 +31,9 @@
 ## @var{x} coordinates are taken to be the indices of the elements,
 ## starting with 1.
 ##
+## To save a plot, in one of several image formats such as PostScript
+## or PNG, use the @code{print} command.
+##
 ## If more than one argument is given, they are interpreted as
 ##
 ## @example
@@ -163,7 +166,7 @@
 ## This will plot the cosine and sine functions and label them accordingly
 ## in the key.
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, replot, xlabel, ylabel, title}
+## bar, stairs, errorbar, replot, xlabel, ylabel, title, print}
 ## @end deftypefn
 
 ## Author: jwe

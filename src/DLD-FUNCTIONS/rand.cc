@@ -329,7 +329,7 @@ rand (\"state\", v)\n\
 @noindent\n\
 You may also initialize the state vector from an arbitrary vector of\n\
 length <= 625 for @var{v}.  This new state will be a hash based on the\n\
-the value of @var{v}, not @var{v} itself.\n\
+value of @var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
 available, otherwise from cpu time, wall clock time and the current\n\
@@ -345,10 +345,10 @@ values together, otherwise the generator state can be learned after\n\
 reading 624 consecutive values.\n\
 \n\
 @code{rand} includes a second random number generator, that was the\n\
-previous generator used in octave. The new generator is used by default\n\
+previous generator used in Octave. The new generator is used by default\n\
 as it is significantly faster than the old generator, and produces\n\
-random numebrs with a significantly longer cycle time. However, in\n\
-some circumstances it might be desireable to obtain the same random\n\
+random numbers with a significantly longer cycle time. However, in\n\
+some circumstances it might be desirable to obtain the same random\n\
 sequences as used by the old generators. To do this the keyword\n\
 \"seed\" is used to specify that the old generators should be use,\n\
 as in\n\
@@ -368,7 +368,7 @@ However, it should be noted that querying the seed will not cause\n\
 @code{rand} to use the old generators, only setting the seed will.\n\
 To cause @code{rand} to once again use the new generators, the\n\
 keyword \"state\" should be used to reset the state of the @code{rand}.\n\
-@seealso{randn,rande,randg,randp}\n\
+@seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
   octave_value retval;

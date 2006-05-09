@@ -1805,7 +1805,7 @@ DEFUN (Inf, args, ,
 Return a matrix or N-dimensional array whose elements are all Infinity.\n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
 The optional argument @var{class} may be either @samp{\"single\"} or\n\
-@samp{\"double\"}  The default is @samp{\"double\"}.\n\
+@samp{\"double\"}.  The default is @samp{\"double\"}.\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_inf_value (), "Inf");
@@ -1837,7 +1837,7 @@ find NaN values, you must use the @code{isnan} function.\n\
 \n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
 The optional argument @var{class} may be either @samp{\"single\"} or\n\
-@samp{\"double\"}  The default is @samp{\"double\"}.\n\
+@samp{\"double\"}.  The default is @samp{\"double\"}.\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_nan_value (), "NaN");

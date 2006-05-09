@@ -406,6 +406,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     ## evaluate code for test, shared, and assert.
     if (!isempty(__code))
       try
+	fprintf (stderr, "%s\n", __code);
       	eval(sprintf("function %s__test__(%s)\n%s\nendfunction", ...
 	      __shared_r,__shared, __code));
 	eval(sprintf("%s__test__(%s);", __shared_r, __shared));

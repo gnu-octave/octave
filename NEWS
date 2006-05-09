@@ -59,6 +59,16 @@ Summary of changes for version 3.0:
 
       PS1 (">> ");
 
+    If you need write code that will run in both old and new versions
+    of Octave, you can use something like
+
+      if (exist ("OCTAVE_VERSION") == 5)
+        ## New:
+        PS1 (">> ");
+      else
+        ## Old:
+        PS1 = ">> ";
+      endif
 
 
 See NEWS.2 for old news.

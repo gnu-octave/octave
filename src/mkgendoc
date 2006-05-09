@@ -27,6 +27,10 @@ cat << \EOF
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   print_doc_string (#name, doc);
 
+#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, \
+                             is_text_fcn, doc) \
+  print_doc_string (name, doc);
+
 #define XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   print_doc_string (#name, doc);
 

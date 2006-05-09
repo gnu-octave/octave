@@ -30,10 +30,21 @@ cat << \EOF
 #endif
 
 #if defined (ENABLE_DYNAMIC_LINKING)
+
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc)
+
+#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, \
+                             is_text_fcn, doc)
+
 #else
+
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc)
+
+#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, \
+                             is_text_fcn, doc) \
+  XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, is_text_fcn, doc)
+
 #endif
 
 #define XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \

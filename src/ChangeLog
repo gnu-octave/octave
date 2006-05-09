@@ -1,5 +1,18 @@
 2006-05-08  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (DEFUN_PATTERN): Match DEFUNX_DLD.
+	* mkbuiltins: Handle XDEFUNX_DLD_INTERNAL.
+	* mkgendoc: Likewise.
+	* mk-pkg-add: Likewise.  Do all the matching with sed.
+	* defun-int.h 	(DEFINE_FUNX_INSTALLER_FUN, DEFINE_FUNX_INSTALLER_FUN2,
+	DEFINE_FUNX_INSTALLER_FUN3): New macros.
+	(DEFINE_FUN_INSTALLER_FUN3): Define using DEFINE_FUNX_INSTALLER_FUN3.
+	(DEFUNX_DLD_INTERNAL): New macro.
+	* defun-dld.h (DEFUNX_DLD): New macro.
+
+	* DLD-FUNCTIONS/__gnuplot_raw__.l: Mark __gnuplot_set__ as a
+	command, not a rawcommand.
+
 	* load-save.cc: No need to handle built-in variables.
 	* help.cc (simple_help): No need to handle built-in variables.
 

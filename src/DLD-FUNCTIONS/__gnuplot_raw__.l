@@ -26,10 +26,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 %{
 // PKG_ADD: mark_as_rawcommand ("__gnuplot_plot__");
-// PKG_ADD: mark_as_rawcommand ("__gnuplot_set__");
 // PKG_ADD: mark_as_rawcommand ("__gnuplot_splot__");
 // PKG_ADD: mark_as_rawcommand ("__gnuplot_replot__");
 
+// PKG_ADD: mark_as_command ("__gnuplot_set__");
 // PKG_ADD: mark_as_command ("__gnuplot_show__");
 
 // PKG_ADD: atexit ("closeplot");

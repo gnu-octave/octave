@@ -75,12 +75,21 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
   DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi)
 
 #define DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi) \
+  DEFINE_FUNX_INSTALLER_FUN3(#name, F ## name, FS ## name, doc, cxx_abi)
+
+#define DEFINE_FUNX_INSTALLER_FUN(name, fname, fsname, doc) \
+  DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, doc, CXX_ABI)
+
+#define DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, doc, cxx_abi) \
+  DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, doc, cxx_abi)
+
+#define DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, doc, cxx_abi) \
   extern "C" \
   bool \
-  FS ## name ## _ ## cxx_abi (const octave_shlib& shl) \
+  fsname ## _ ## cxx_abi (const octave_shlib& shl) \
   { \
-    check_version (OCTAVE_API_VERSION, #name); \
-    install_dld_function (F ## name, #name, shl, doc); \
+    check_version (OCTAVE_API_VERSION, name); \
+    install_dld_function (fname, name, shl, doc); \
     return error_state ? false : true; \
   }
 
@@ -117,6 +126,12 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 #define DEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
     XDEFUN_DLD_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+  END_INSTALL_BUILTIN
+
+#define DEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, \
+			    is_text_fcn, doc) \
+  BEGIN_INSTALL_BUILTIN \
+    XDEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, is_text_fcn, doc) \
   END_INSTALL_BUILTIN
 
 // Generate code for making another name for an existing function.

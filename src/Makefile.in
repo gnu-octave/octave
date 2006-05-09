@@ -212,7 +212,7 @@ MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 # so we have to repeat ourselves because some stupid egreps don't like
 # empty elements in alternation patterns.
 
-DEFUN_PATTERN = "^[ \t]*DEF(CONSTFUN|CMD|UN|UN_DLD|UN_TEXT|UN_MAPPER)[ \t]*\\("
+DEFUN_PATTERN = "^[ \t]*DEF(CONSTFUN|CMD|UN|UN_DLD|UNX_DLD|UN_TEXT|UN_MAPPER)[ \t]*\\("
 
 DLD_DEF_FILES_1 := $(patsubst %.l, %.df, $(DLD_XSRC))
 DLD_DEF_FILES := $(patsubst %.cc, %.df, $(DLD_DEF_FILES_1))

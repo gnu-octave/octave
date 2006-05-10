@@ -1,3 +1,7 @@
+2006-05-10  John W. Eaton  <jwe@octave.org>
+
+	* pkg/pkg.m: New file.
+
 2006-05-09  Keith Goodman  <kwgoodman@gmail.com>
 
 	* plot/plot.m: Doc string fix.

@@ -1,0 +1,953 @@
+## Copyright (C) 2005 Søren Hauberg
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+## -*- texinfo -*-
+## @deftypefn {Command} pkg list
+## @deftypefnx{Command} @var{installed_packages} = pkg list
+## @deftypefnx{Command} [@var{user_packages}, @var{system_packages}] = pkg list
+## @deftypefnx{Command} pkg install @var{pkg-name} ...
+## @deftypefnx{Command} pkg install -nodeps @var{pkg-name} ...
+## @deftypefnx{Command} pkg uninstall @var{pkg-name} ...
+## @deftypefnx{Command} pkg uninstall -nodeps @var{pkg-name} ...
+## @deftypefnx{Command} pkg load all
+## @deftypefnx{Command} pkg load @var{pkg-name} ...
+## @deftypefnx{Command} pkg load -nodeps @var{pkg-name} ...
+## XXX: Where's the docs?
+## @end deftypefn
+function [local_packages, global_packages] = pkg(varargin)
+    ## Handle input
+    if (length(varargin) == 0 || !iscellstr(varargin))
+        print_usage("pkg");
+    endif
+    files = {};
+    deps = true;
+    action = "none";
+    for i = 1:length(varargin)
+        switch (varargin{i})
+            case "-nodeps"
+                deps = false;
+            case {"list", "install", "uninstall", "load"}
+                action = varargin{i};
+            otherwise
+                files{end+1} = varargin{i};
+        endswitch
+    endfor
+    
+    ## Take action
+    switch (action)
+        case "list"
+            if (nargout == 0)
+                installed_packages();
+            elseif (nargout == 1)
+                local_packages = installed_packages();
+            elseif (nargout == 2)
+                [local_packages, global_packages] = installed_packages();
+            else
+                error("Too many output arguments requested.\n");
+            endif
+        case "install"
+            if (length(files) == 0)
+                error("You must specify at least one filename when calling 'pkg install'\n");
+            endif
+            install(files, deps);
+        case "uninstall"
+            if (length(files) == 0)
+                error("You must specify at least one package when calling 'pkg uninstall'\n");
+            endif
+            uninstall(files, deps);
+        case "load"
+            if (length(files) == 0)
+                error("You must specify at least one package or 'all' when calling 'pkg load'\n");
+            endif
+            load_packages(files, deps);
+        otherwise
+            error("You must specify a valid action for 'pkg'. See 'help pkg' for details\n");
+    endswitch
+endfunction
+
+function install(files, handle_deps)
+%disp("function: install")
+    ## Set parameters depending on wether or not the installation
+    ## is system-wide (global) or local.
+    local_list = tilde_expand("~/.octave_packages");
+    global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    global OCTAVE_PACKAGE_PREFIX;
+    prefix_exist = (length(OCTAVE_PACKAGE_PREFIX) != 0 && ischar(OCTAVE_PACKAGE_PREFIX));
+
+    if (issuperuser())
+        global_install = true;
+        if (!prefix_exist)
+            OCTAVE_PACKAGE_PREFIX = [OCTAVE_HOME "share/octave/packages/"];
+        endif
+    else
+        global_install = false;
+        if (!prefix_exist)
+            OCTAVE_PACKAGE_PREFIX = "~/octave/";
+        endif
+    endif
+    prefix = tilde_expand(OCTAVE_PACKAGE_PREFIX);
+    if (!prefix_exist)
+        warning(["You have not defined an installation prefix, " ...
+                 "so the following will be used: %s"], prefix);
+    endif
+ 
+    # Check that the directory in prefix exist. If it doesn't: create it!
+    if (!exist(prefix, "dir"))
+        warning("Creating installation directory %s", prefix);
+        [status, msg] = mkdir(prefix);
+        if (status != 1)
+            error("Could not create installation directory: %s\n", msg);
+        endif
+    endif
+
+    ## Get the list of installed packages
+    [local_packages, global_packages] = installed_packages();
+    installed_packages = {local_packages{:} global_packages{:}};        
+    
+    if (global_install)
+        packages = global_packages;
+    else
+        packages = local_packages;
+    endif
+   
+    ## Uncompress the packages and read the DESCRIPTION files
+    tmpdirs = cell(1, length(files));
+    packdirs = cell(1, length(files));
+    descriptions = cell(1, length(files));
+    try
+        ## Unpack the package files and read the DESCRIPTION files
+        packages_to_uninstall = [];
+        for i = 1:length(files)
+            tgz = files{i};
+            
+            ## Create a temporary directory 
+            tmpdir = tmpnam();
+            tmpdirs{i} = tmpdir;
+            [status, msg] = mkdir(tmpdir);
+            if (status != 1)
+                error("Couldn't create temporary directory: %s\n", msg);
+            endif
+
+            ## Uncompress the package
+            untar(tgz, tmpdir);
+  
+            ## Get the name of the directory produced by tar
+            [dirlist, err, msg] = readdir(tmpdir);
+            if (err)
+                error("Couldn't read directory produced by tar: %s\n", msg);
+            endif
+            packdir = [tmpdir "/" dirlist{end} "/"];
+            packdirs{i} = packdir;
+
+            ## Make sure the package contains necessary files
+            verify_directory(packdir);
+    
+            ## Read the DESCRIPTION file
+            filename = [packdir "DESCRIPTION"];
+            desc = get_description(filename);
+            
+            ## Set default installation directory
+            desc.dir = [prefix "/" desc.name "-" desc.version];
+            
+            ## Save desc
+            descriptions{i} = desc;
+
+            ## Are any of the new packages already installed?
+            ## If so we'll remove the old version.
+            for j = 1:length(packages)
+                if (strcmp(packages{j}.name, desc.name))
+                    packages_to_uninstall(end+1) = j;
+                endif
+            endfor
+            
+        endfor
+    catch
+        ## Something went wrong, delete tmpdirs
+        for i = 1:length(tmpdirs)
+            tmpdirs{i}
+            rmdir(tmpdirs{i}, "s");
+        endfor
+        error(lasterr()(8:end));
+    end_try_catch
+
+    ## Check dependencies
+    if (handle_deps)
+        ok = true;
+        error_text = "";
+        for i = 1:length(descriptions)
+            desc = descriptions{i};
+            idx1 = complement(packages_to_uninstall, 1:length(installed_packages));
+            idx2 = complement(i, 1:length(descriptions));
+            pseudo_installed_packages = {installed_packages{idx1} descriptions{idx2}};
+            bad_deps = get_unsatisfied_deps(desc, pseudo_installed_packages);
+            ## Are there any unsatisfied dependencies?
+            if (!isempty(bad_deps))
+                ok = false;
+                for i = 1:length(bad_deps)
+                    dep = bad_deps{i};
+                    error_text = [error_text "  " desc.name " needs " ...
+                                  dep.package  " " dep.operator " " ...
+                                  dep.version  "\n"];
+                endfor
+            endif
+        endfor
+        
+        ## Did we find any unsatisfied dependencies?
+        if (!ok)
+            error("The following dependencies where unsatisfied:\n  %s", error_text);
+        endif
+    endif
+
+    ## Prepare each package for installation
+    try
+        for i = 1:length(descriptions)
+            desc = descriptions{i};
+            pdir = packdirs{i};
+            prepare_installation (desc, pdir);
+            configure_make (desc, pdir);
+        endfor
+    catch
+        ## Something went wrong, delete tmpdirs
+        for i = 1:length(tmpdirs)
+            rmdir(tmpdirs{i}, "s");
+        endfor
+        error(lasterr()(8:end));
+    end_try_catch
+
+    ## Uninstall the packages that will be replaced
+    try
+        for i = packages_to_uninstall
+            uninstall({installed_packages{i}.name}, false);
+        endfor
+    catch
+        ## Something went wrong, delete tmpdirs
+        for i = 1:length(tmpdirs)
+            rmdir(tmpdirs{i}, "s");
+        endfor
+        error(lasterr()(8:end));
+    end_try_catch
+
+    ## Install each package
+    try
+        for i = 1:length(descriptions)
+            desc = descriptions{i};
+            pdir = packdirs{i};
+            copy_files(desc, pdir);
+            finish_installation (desc, pdir)
+        endfor
+    catch
+        ## Something went wrong, delete tmpdirs
+        for i = 1:length(tmpdirs)
+            rmdir(tmpdirs{i}, "s");
+        endfor
+        error(lasterr()(8:end));
+    end_try_catch
+
+	## Add the packages to the package list
+    try
+	    if (global_install)
+            idx = complement(packages_to_uninstall, 1:length(global_packages));
+	        global_packages = {global_packages{idx} descriptions{:}};
+            save(global_list, "global_packages");
+        else
+            idx = complement(packages_to_uninstall, 1:length(local_packages));
+	        local_packages = {local_packages{idx} descriptions{:}};
+            save(local_list, "local_packages");
+        endif
+    catch
+        ## Something went wrong, delete tmpdirs
+        for i = 1:length(tmpdirs)
+            rmdir(tmpdirs{i}, "s");
+        endfor
+        for i = 1:length(descriptions)
+            rmdir(descriptions{i}.dir, "s");
+        endfor
+        if (global_install)
+            error("Couldn't append to %s: %s\n", global_list, lasterr()(8:end));
+        else
+            error("Couldn't append to %s: %s\n", local_list, lasterr()(8:end));
+        endif
+    end_try_catch
+
+    ## All is well, let's clean up
+    for i = 1:length(tmpdirs)
+        [status, msg] = rmdir(tmpdirs{i}, "s");
+        if (status != 1)
+            warning("Couldn't clean up after my self: %s\n", msg);
+        endif
+    endfor
+
+    ## Add the newly installed packages to the path, so the user
+    ## can begin the using.
+    dirs = cell(1, length(descriptions));
+    for i = 1:length(descriptions)
+        dirs{i} = descriptions{i}.dir;
+    endfor
+    # XXX: I guess it would be better to use addpath
+    # (assuming it gets included in Octave)
+    path(LOADPATH, dirs{:});
+endfunction
+
+function uninstall(pkgnames, handle_deps)
+%disp("function: uninstall")
+    local_list = tilde_expand("~/.octave_packages");
+    global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    ## Get the list of installed packages
+    [local_packages, global_packages] = installed_packages();
+    if (issuperuser())
+        installed_packages = global_packages;
+    else
+        installed_packages = local_packages;
+    endif
+    
+    num_packages = length(installed_packages);
+    delete_idx = [];
+    for i = 1:num_packages
+        cur_name = installed_packages{i}.name;
+        if (any(strcmp(cur_name, pkgnames)))
+            delete_idx(end+1) = i;
+        endif
+    endfor
+    
+    ## Are all the packages that should be uninstalled already installed?
+    if (length(delete_idx) != length(pkgnames))
+        # XXX: We should have a better error message
+        error("Some of the packages you want to uninstall are not installed.\n");
+    endif
+
+    ## Compute the packages that will remain installed
+    idx = complement(delete_idx, 1:num_packages);
+    remaining_packages = {installed_packages{idx}};
+    
+    ## Check dependencies
+    if (handle_deps)
+        ok = true;
+        error_text = "";
+        for i = 1:length(remaining_packages)
+            desc = remaining_packages{i};
+            bad_deps = get_unsatisfied_deps(desc, remaining_packages);
+            
+            ## Will the uninstallation break any dependencies?
+            if (!isempty(bad_deps))
+                ok = false;
+                for i = 1:length(bad_deps)
+                    dep = bad_deps{i};
+                    error_text = [error_text "  " desc.name " needs " ...
+                                  dep.package  " " dep.operator " " ...
+                                  dep.version  "\n"];
+                endfor
+            endif
+        endfor
+
+        if (!ok)
+            error("The following dependencies where unsatisfied:\n  %s", error_text);
+        endif
+    endif
+
+    ## Delete the directories containing the packages
+    for i = delete_idx
+        desc = installed_packages{i};
+        ## If an 'on_uninstall.m' exist, call it!
+        if (exist([desc.dir "/packinfo/on_uninstall.m"], "file"))
+            try
+                wd = pwd();
+                cd([desc.dir "/packinfo"]);
+                on_uninstall(desc);
+                cd(wd);
+            catch
+                # XXX: Should this rather be an error?
+                warning("The 'on_uninstall' script returned the following error: %s", lasterr);
+                cd(wd);
+            end_try_catch
+        endif
+        ## Do the actual deletion
+        [status, msg] = rmdir(desc.dir, "s");
+        if (status != 1)
+            error("Couldn't delete directory %s: %s\n", desc.dir, msg);
+        endif
+    endfor
+
+    ## Write a new ~/.octave_packages
+    if (issuperuser())
+        if (length(remaining_packages) == 0)
+            unlink(global_list);
+        else
+            global_packages = remaining_packages;
+            save(global_list, "global_packages");
+        endif
+    else
+        if (length(remaining_packages) == 0)
+            unlink(local_list);
+        else
+            local_packages = remaining_packages;
+            save(local_list, "local_packages");
+        endif
+    endif
+    
+endfunction
+
+##########################################################
+##         A U X I L A R Y    F U N C T I O N S         ##
+##########################################################
+
+function prepare_installation(desc, packdir)
+%disp("function: function: prepare_installation")
+    ## Is there a pre_install to call?
+    if (exist([packdir "pre_install.m"], "file"))
+        wd = pwd();
+        try
+            cd(packdir);
+            pre_install(desc); 
+            cd(wd);
+        catch
+            cd(wd);
+            error("The pre-install function returned the following error: %s\n", lasterr);
+        end_try_catch
+    endif
+
+    ## Create the installation directory
+    [status, msg] = mkdir(desc.dir);
+    if (status != 1)
+        error("Couldn't create installation directory: %s\n", msg);
+    endif
+
+	## If the directory "inst" doesn't exist, we create it
+	if (!exist([packdir "inst"], "dir"))
+        [status, msg] = mkdir([packdir "inst"]);
+        if (status != 1)
+            rmdir(desc.dir, "s");
+            error("The 'inst' directory did not exist and could not be created: %s\n", msg);
+        endif
+    endif
+endfunction
+
+function configure_make (desc, packdir)   
+%disp("function: function: configure_make")
+	## Perform ./configure, make, make install in "src"
+    if (exist([packdir "src"], "dir"))
+        src = [packdir "src/"];
+        ## configure
+        if (exist([src "configure"], "file"))
+            [output, status] = system(["cd " src " ;./configure --prefix=" desc.dir]);
+            if (status != 0)
+                rmdir(desc.dir, "s");
+                error("The configure script returned the following error: %s\n", output);
+            endif
+        endif
+
+        ## make
+        if (exist([src "Makefile"], "file"))
+            [output, status] = system(["export INSTALLDIR=" desc.dir "; make -C " src]);
+            if (status != 0)
+                rmdir(desc.dir, "s");
+                error("'make' returned the following error: %s\n", output);
+            endif
+            %# make install
+            %[output, status] = system(["export INSTALLDIR=" desc.dir "; make install -C " src]);
+            %if (status != 0)
+            %    rmdir(desc.dir, "s");
+            %    error("'make install' returned the following error: %s\n", output);
+            %endif
+        endif
+
+        ## Copy files to "inst" (this is instead of 'make install')
+        files = [src "FILES"];
+        if (exist(files, "file"))
+            [fid, msg] = fopen(files, "r");
+            if (fid < 0)
+                error("Couldn't open %s: %s\n", files, msg);
+            endif
+            filenames = char(fread(fid));
+            filenames = strrep(filenames, "\n", " ");
+            [output, status] = system(["cd " src "; cp " filenames " " packdir "inst/"]);
+            fclose(fid);
+        else
+            m = dir([src "*.m"]);
+            oct = dir([src "*.oct"]);
+            f = "";
+            if (length(m) > 0)
+                f = sprintf("%s ", m.name);
+            endif
+            if (length(oct) > 0)
+                f = [f " " sprintf("%s ", oct.name)];
+            endif
+            [output, status] = system(["cp " f " " packdir "inst/"]);
+        endif
+        if (status != 0)
+            rmdir(desc.dir, "s");
+            error("Couldn't copy files from 'src' to 'inst': %s\n", output);
+        endif
+    endif
+endfunction
+
+function copy_files	(desc, packdir)
+%disp("function: function: copy_files")
+    ## Copy the files from "inst" to installdir
+    [output, status] = system(["cp -R " packdir "inst/* " desc.dir]);
+    if (status != 0)
+        rmdir(desc.dir, "s");
+        error("Couldn't copy files to the installation directory\n");
+    endif
+
+    ## Create the "packinfo" directory
+    packinfo = [desc.dir "/packinfo/"];
+    [status, msg] = mkdir (packinfo);
+    if (status != 1)
+        rmdir(desc.dir, "s");
+        error("Couldn't create packinfo directory: %s\n", msg);
+    endif
+
+    ## Copy DESCRIPTION
+    [output, status] = system(["cp " packdir "DESCRIPTION " packinfo]);
+    if (status != 0)
+       rmdir(desc.dir, "s");
+       error("Couldn't copy DESCRIPTION: %s\n", output);
+    endif
+
+    ## Is there an INDEX file to copy or should we generate one?
+    if (exist([packdir "INDEX"], "file"))
+        [output, status] = system(["cp " packdir "INDEX " packinfo]);
+        if (status != 0)
+            rmdir(desc.dir, "s");
+            error("Couldn't copy INDEX file: %s\n", output);
+        endif
+    else
+        try
+            write_INDEX(desc, [packdir "inst"], [packinfo "INDEX"]);
+        catch
+            rmdir(desc.dir, "s");
+            error(lasterr);
+        end_try_catch
+    endif
+    
+    ## Is there an 'on_uninstall.m' to install?
+    if (exist([packdir "on_uninstall.m"], "file"))
+        [output, status] = system(["cp " packdir "on_uninstall.m " packinfo]);
+        if (status != 0)
+            rmdir(desc.dir, "s");
+            error("Couldn't copy on_uninstall.m: %s\n", output);
+        endif
+    endif
+endfunction
+
+function finish_installation (desc, packdir)
+%disp("function: finish_installation")
+    ## Is there a post-install to call?
+    if (exist([packdir "post_install.m"], "file"))
+        wd = pwd();
+        try
+            cd(packdir);
+            post_install(desc);
+            cd(wd);
+        catch
+            cd(wd);
+            rmdir(desc.dir, "s");
+            error("The post_install function returned the following error: %s\n", lasterr);
+        end_try_catch
+    endif
+endfunction
+
+function out = issuperuser()
+%disp("function: issuperuser")
+    out = strcmp(getenv("USER"), "root");
+endfunction
+
+## This function makes sure the package contains the
+## essential files.
+function verify_directory(dir)
+%disp("function: verify_directory")
+    needed_files = {"COPYING", "DESCRIPTION"};
+    for f = needed_files
+        if (!exist([dir "/" f{1}], "file"))
+            error("Package is missing file: %s", f{1});
+        endif
+    endfor
+endfunction
+
+## This function parses the DESCRIPTION file
+function desc = get_description(filename)
+%disp("function: get_description")
+    fid = fopen(filename, "r");
+    if (fid == -1)
+        error("The DESCRIPTION file %s could not be read\n", filename);
+    endif
+
+    desc = struct();
+    
+    line = fgetl(fid);
+    while (line != -1)
+        ## Comments
+        if (line(1) == "#")
+            # Do nothing
+        ## Continuation lines
+        elseif (isspace(line(1)))
+            if (exist("keyword", "var") && isfield(desc, keyword))
+                desc.(keyword) = [desc.(keyword) " " rstrip(line)];
+            endif
+        ## Keyword/value pair
+        else
+            colon = find(line == ":");
+            if (length(colon) == 0)
+                disp("Skipping line.");
+            else
+                colon = colon(1);
+                keyword = tolower(strip(line(1:colon-1)));
+                value   = strip(line(colon+1:end));
+                if (length(value) == 0)
+                    fclose(fid);
+                    error("The keyword %s have empty value\n", desc.keywords{end});
+                endif
+                desc.(keyword) = value;
+            endif
+        endif
+        line = fgetl(fid);
+    endwhile    
+    fclose(fid);
+    
+    ## Make sure all is okay
+    needed_fields = {"name", "version", "date", "title", ...
+                     "author", "maintainer", "description"};
+    for f = needed_fields
+        if (!isfield(desc, f{1}))
+            error("Description is missing needed field %s\n", f{1});
+        endif
+    endfor
+    desc.version = fix_version(desc.version);
+    if (isfield(desc, "depends"))
+        desc.depends = fix_depends(desc.depends);
+    else
+        desc.depends = "";
+    endif
+    desc.name = tolower(desc.name);
+endfunction
+
+## Makes sure the version string v is a valid x.y.z version string
+## Examples: "0.1" => "0.1.0", "monkey" => error(...)
+function out = fix_version(v)
+%disp("function: fix_version")
+    dots = find(v == ".");
+    if (length(dots) == 1)
+        major = str2num(v(1:dots-1));
+        minor = str2num(v(dots+1:end));
+        if (length(major) != 0 && length(minor) != 0)
+            out = sprintf("%d.%d.0", major, minor);
+            return
+        endif
+    elseif (length(dots) == 2)
+        major = str2num(v(1:dots(1)-1));
+        minor = str2num(v(dots(1)+1:dots(2)-1));
+        rev   = str2num(v(dots(2)+1:end));
+        if (length(major) != 0 && length(minor) != 0 && length(rev) != 0)
+            out = sprintf("%d.%d.%d", major, minor, rev);
+            return
+        endif
+    endif
+    error("Bad version string: %s\n", v);
+endfunction
+
+## Makes sure the depends field is of the right format.
+## This function returns a cell of structures with the following fields:
+##   package, version, operator
+function deps_cell = fix_depends(depends)
+%disp("function: fix_depends")
+    deps = split_by(tolower(depends), ",");
+    deps_cell = cell(1, length(deps));
+    
+    ## For each dependency
+    for i = 1:length(deps)
+        dep = deps{i};
+        lpar = find(dep == "(");
+        rpar = find(dep == ")");
+        ## Does the dependency specify a version
+        ## Example: package(>= version)
+        if (length(lpar) == 1 && length(rpar) == 1)
+            package = tolower(strip(dep(1:lpar-1)));
+            sub = dep( lpar(1)+1:rpar(1)-1 );
+            parts = split_by(sub, " ");
+            idx = [];
+            for r = 1:size(parts,1)
+                if (length(parts{r}) > 0)
+                    idx(end+1) = r;
+                endif
+            endfor
+             
+            if (length(idx) != 2)
+                error(["There's something wrong with the DESCRIPTION file. " ...
+                       "The dependency %s has the wrong syntax.\n"], dep);
+            endif
+            operator = parts{idx(1)};
+            if (!any(strcmp(operator, {">=", "<=", "=="}))) ## XXX: I belive we also support ">" and "<" 
+                error("Unsupported operator: %s\n", operator);
+            endif
+            version  = fix_version(parts{idx(2)});
+             
+        ## If no version is specified for the dependency
+        ## we say that the version should be greater than 
+        ## or equal to 0.0.0
+        else
+            package = tolower(strip(dep));
+            operator = ">=";
+            version  = "0.0.0";
+        endif
+        deps_cell{i} = struct("package", package, "operator", operator, "version", version);
+    endfor
+endfunction
+
+## Strips the text of spaces from the right
+## Example: "  hello world  " => "  hello world" (XXX: is this the same as deblank?)
+function text = rstrip(text)
+%disp("function: rstrip")
+    chars = find(!isspace(text));
+    if (length(chars) > 0)
+        text = text(chars(1):end); # XXX: shouldn't it be text = text(1:chars(end));
+    else
+        text = "";
+    endif
+endfunction
+
+## Strips the text of spaces from the left and the right
+## Example: "  hello world  " => "hello world"
+function text = strip(text)
+%disp("function: strip")
+    chars = find(!isspace(text));
+    if (length(chars) > 0)
+        text = text(chars(1):chars(end));
+    else
+        text = "";
+    endif
+endfunction
+
+## Splits the text into a cell array of strings by sep
+## Example: "A, B" => {"A", "B"} (with sep = ",")
+function out = split_by(text, sep)
+%disp("function: split_by")
+    text_matrix = split(text, sep);
+    num_words = size(text_matrix,1);
+    out = cell(num_words, 1);
+    for i = 1:num_words
+        out{i} = strip(text_matrix(i, :));
+    endfor
+endfunction
+
+## Creates an INDEX file for a package that doesn't provide one.
+##   'desc'  describes the package.
+##   'dir'   is the 'inst' direcotyr in temporary directory.
+##   'INDEX' is the name (including path) of resulting INDEX file.
+function write_INDEX(desc, dir, INDEX)
+%disp("function: write_index")
+    ## Get names of functions in dir
+    [files, err, msg] = readdir(dir);
+    if (err)
+        error("Couldn't read directory %s: %s\n", dir, msg);
+    endif
+    
+    functions = {};
+    for i = 1:length(files)
+        file = files{i};
+        lf = length(file);
+        if (lf > 2 && strcmp( file(end-1:end), ".m" ))
+            functions{end+1} = file(1:end-2);
+        elseif (lf > 4 && strcmp( file(end-3:end), ".oct" ))
+            functions{end+1} = file(1:end-4);
+        endif
+    endfor
+    
+    ## Does desc have a categories field?
+    if (!isfield(desc, "categories"))
+        error("The DESCRIPTION file must have a Categories field, when no INDEX file is given.\n");
+    endif
+    categories = split_by(desc.categories, ",");
+    if (length(categories) < 1)
+        error("The Category field is empty.\n");
+    endif
+    
+    ## Write INDEX
+    fid = fopen(INDEX, "w");
+    if (fid == -1)
+        error("Couldn't open %s for writing.\n", INDEX);
+    endif
+    fprintf(fid, "%s >> %s\n", desc.name, desc.title);
+    fprintf(fid, "%s\n", categories{1});
+    fprintf(fid, "  %s\n", functions{:});
+    fclose(fid);
+endfunction
+
+function bad_deps = get_unsatisfied_deps(desc, installed_packages)
+%disp("function: get_unsatisfied_deps")
+    bad_deps = {};
+
+    ## For each dependency
+    for i = 1:length(desc.depends)
+        dep = desc.depends{i};
+
+        ## Is the current dependency Octave?
+        if (strcmp(dep.package, "octave"))
+            if (!compare_versions(OCTAVE_VERSION, dep.version, dep.operator))
+                bad_deps{end+1} = dep;
+            endif
+        ## Is the current dependency not Octave?
+        else
+            ok = false;
+            for i = 1:length(installed_packages)
+                cur_name = installed_packages{i}.name;
+                cur_version = installed_packages{i}.version;
+                if (strcmp(dep.package, cur_name) && compare_versions(cur_version, dep.version, dep.operator))
+                    ok = true;
+                    break;
+                endif
+            endfor
+            if (!ok)
+                bad_deps{end+1} = dep;
+            endif
+        endif
+    endfor
+endfunction
+
+## Compares to version string using the given operator
+## Example: v1="0.1.0", v2="0.0.9", operator=">=" => true
+## TODO: This function is very long and complex! Can't it be simplified?
+function out = compare_versions(v1, v2, operator)
+%disp("function: compare_versions")
+    dot1 = find(v1 == ".");
+    dot2 = find(v2 == ".");
+    if (length(dot1) != 2 || length(dot2) != 2)
+        error("Given version strings are not valid: %s %s", v1, v2);
+    endif
+    
+    major1 = str2num( v1( 1:dot1(1)-1 ) );
+    minor1 = str2num( v1( dot1(1)+1:dot1(2)-1 ) );
+    rev1   = str2num( v1( dot1(2)+1:end ) );
+    major2 = str2num( v2( 1:dot2(1)-1 ) );
+    minor2 = str2num( v2( dot2(1)+1:dot2(2)-1 ) );
+    rev2   = str2num( v2( dot2(2)+1:end) );
+    mmr = [sign(major1-major2), sign(minor1-minor2), sign(rev1-rev2)];
+    
+    if (length(operator) > 1 && operator(2) == "=" && !any(mmr))
+        out = 1;
+        return;
+    elseif (operator(1) == "<")
+        mmr = -mmr;
+    endif
+    
+    ## Now we ony need to decide if v1 > v2
+    if (mmr(1) == 1)
+        out = 1;
+    elseif (mmr(1) == -1)
+        out = 0;
+    elseif (mmr(2) == 1)
+        out = 1;
+    elseif (mmr(2) == -1)
+        out = 0;
+    elseif (mmr(3) == 1)
+        out = 1;
+    else
+        out = 0;
+    endif
+endfunction
+
+function [out1, out2] = installed_packages()
+%disp("function: installed_packages")
+
+    local_list = tilde_expand("~/.octave_packages");
+    global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    ## Get the list of installed packages
+    try
+        local_packages = load(local_list).local_packages;
+    catch
+        local_packages = {};
+    end_try_catch
+    try
+        global_packages = load(global_list).global_packages;
+    catch
+        global_packages = {};
+    end_try_catch
+    installed_packages = {local_packages{:} global_packages{:}};        
+    
+    ## Should we return something?
+    if (nargout == 2)
+        out1 = local_packages;
+        out2 = global_packages;
+        return;
+    elseif (nargout == 1)
+        out1 = installed_packages;
+        return;
+    endif
+    
+    ## We shouldn't return something, so we'll print something
+    num_packages = length(installed_packages);
+    if (num_packages == 0)
+        printf("No packages installed.\n");
+        return;
+    endif
+    
+    ## Print a header
+    h1 = "Package Name";
+    h2 = "Version";
+    h3 = "Installation directory";
+    header = sprintf("%s | %s | %s\n", h1, h2, h3);
+    printf(header);
+    tmp = sprintf(repmat("-", 1, length(header)-1));
+    tmp(length(h1)+2) = "+"; tmp(length(h1)+length(h2)+5) = "+";
+    printf("%s\n", tmp);
+    
+    ## Compute the maximal lengths of name, version, and dir
+    max_name_length = length(h1); 
+    max_version_length = length(h2);
+    for i = 1:num_packages
+        max_name_length    = max(max_name_length, 
+                                 length(installed_packages{i}.name));
+        max_version_length = max(max_version_length,
+                                 length(installed_packages{i}.version));
+    endfor
+    
+    ## Print the packages
+    format = sprintf("%%%ds | %%%ds | %%s\n", max_name_length, max_version_length);
+    for i = 1:num_packages
+        cur_name    = installed_packages{i}.name;
+        cur_version = installed_packages{i}.version;
+        cur_dir     = installed_packages{i}.dir;
+        printf(format, cur_name, cur_version, cur_dir);
+    endfor
+endfunction
+
+function load_packages(files, handle_deps)
+%disp("function: load_packages")
+    installed_packages = installed_packages();
+    num_packages = length(installed_packages);
+    
+    if (length(files) == 1 && strcmp(files{1}, "all"))
+        dirs = cell(1, num_packages);
+        for i = 1:num_packages
+            dirs{i} = installed_packages{i}.dir;
+        endfor
+    elseif (handle_deps)
+        # XXX: implement this
+        error("Currently you need to call load_packages with 'all' or '-nodeps'. This is a bug!\n");
+    else
+        dirs = cell(1, length(files));
+        for j = 1:length(files)
+            for i = 1:num_packages
+                if (strcmp(installed_packages{i}.name, files{j}))
+                    dirs{j} = installed_packages{i}.dir;
+                endif
+            endfor
+            error("Package %s is not installed\n", files{j});
+        endfor
+    endif
+    # XXX: I guess it would be better to use addpath
+    # (assuming it gets included in Octave)
+    path(LOADPATH, dirs{:});
+endfunction

@@ -63,7 +63,7 @@ print_usage (const std::string& nm, bool just_usage,
 
 	  h = extract_help_from_dispatch (nm) + h;
 
-	  display_help_text (buf, h);
+	  display_usage_text (buf, h);
 
 	  buf << extra_msg << "\n";
 
@@ -75,6 +75,32 @@ print_usage (const std::string& nm, bool just_usage,
     }
   else
     warning ("no usage message found for `%s'", nm.c_str ());
+}
+
+DEFUN (print_usage, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} print_usage (@var{fname})\n\
+Print the usage message for the function named @var{fname}.  The\n\
+@code{print_usage} function is only intended to work inside the\n\
+named function.\n\
+@seealso{help}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string fname = args(0).string_value ();
+
+      if (! error_state)
+	print_usage (fname);
+      else
+	error ("print_usage: expecting character string");
+    }
+  else
+    print_usage ("print_usage");
+
+  return retval;
 }
 
 void

@@ -695,6 +695,49 @@ display_help_text (std::ostream& os, const std::string& msg)
     os << msg;
 }
 
+void
+display_usage_text (std::ostream& os, const std::string& msg)
+{
+  std::string filtered_msg = msg;
+
+  size_t pos;
+
+  if (looks_like_texinfo (msg, pos))
+    {
+      std::ostringstream buf;
+
+      buf << "-*- texinfo -*-\n";
+
+      bool found_def = false;
+
+      size_t msg_len = msg.length ();
+
+      while (pos < msg_len)
+	{
+	  size_t new_pos = msg.find_first_of ('\n', pos);
+
+	  if (new_pos == NPOS)
+	    new_pos = msg_len-1;
+
+	  std::string line = msg.substr (pos, new_pos-pos+1);
+
+	  if (line.substr (0, 4) == "@def"
+	      || line.substr (0, 8) == "@end def")
+	    {
+	      found_def = true;
+	      buf << line;
+	    }
+
+	  pos = new_pos + 1;
+	}
+
+      if (found_def)
+	filtered_msg = buf.str ();
+    }
+
+  display_help_text (os, filtered_msg);
+}
+
 static bool
 help_from_list (std::ostream& os, const help_list *list,
 		const std::string& nm, int usage, bool& symbol_found)

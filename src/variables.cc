@@ -1248,10 +1248,10 @@ set_internal_variable (bool& var, const octave_value_list& args,
 {
   octave_value retval;
 
-  if (nargout > 0)
-    retval = var;
-
   int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
 
   if (nargin == 1)
     {
@@ -1274,10 +1274,10 @@ set_internal_variable (char& var, const octave_value_list& args,
 {
   octave_value retval;
 
-  if (nargout > 0)
-    retval = var;
-
   int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
 
   if (nargin == 1)
     {
@@ -1316,10 +1316,10 @@ set_internal_variable (int& var, const octave_value_list& args,
 {
   octave_value retval;
 
-  if (nargout > 0)
-    retval = var;
-
   int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
 
   if (nargin == 1)
     {
@@ -1350,10 +1350,10 @@ set_internal_variable (double& var, const octave_value_list& args,
 {
   octave_value retval;
 
-  if (nargout > 0)
-    retval = var;
-
   int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
 
   if (nargin == 1)
     {
@@ -1383,10 +1383,10 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 {
   octave_value retval;
 
-  if (nargout > 0)
-    retval = var;
-
   int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
 
   if (nargin == 1)
     {

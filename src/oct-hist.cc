@@ -552,7 +552,8 @@ void
 initialize_history (void)
 {
   command_history::set_file (file_ops::tilde_expand (Vhistory_file));
-  
+  command_history::set_size (Vhistory_size);
+
   command_history::read (false);
 }
 
@@ -691,7 +692,15 @@ but may be overridden by the environment variable @code{OCTAVE_HISTSIZE}.\n\
 @seealso{history_file, history_timestamp_format, saving_history}\n\
 @end deftypefn")
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (history_size, -1, INT_MAX);
+  int saved_history_size = Vhistory_size;
+
+  octave_value retval
+    = SET_INTERNAL_VARIABLE_WITH_LIMITS (history_size, -1, INT_MAX);
+
+  if (Vhistory_size != saved_history_size)
+    command_history::set_size (Vhistory_size);
+
+  return retval;
 }
 
 DEFUN (history_file, args, nargout,
@@ -712,7 +721,7 @@ variable @code{OCTAVE_HISTFILE}.\n\
   if (Vhistory_file != saved_history_file)
     command_history::set_file (file_ops::tilde_expand (Vhistory_file));
 
-  return retval;;
+  return retval;
 }
 
 DEFUN (history_timestamp_format_string, args, nargout,

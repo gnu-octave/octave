@@ -1,3 +1,11 @@
+2006-05-10  John W. Eaton  <jwe@octave.org>
+
+	* oct-hist.cc (initialize_history, Fhistory_size):
+	Also call command_history::set_size here.
+
+	* defun.cc (Fprint_usage): New function.
+	* help.cc (display_usage_text): New function.
+
 2006-05-09  Keith Goodman  <kwgoodman@gmail.com>
 
 	* DLD-FUNCTIONS/rand.cc: Doc string fix.

@@ -57,12 +57,12 @@ from http://www.cygwin.com.  To install the Cygwin package of Octave:
 
     at this prompt and a new window with the sombrero plot should appear.
 
-13. To build .oct files (dynamically loaded functions) for Octave, you
-    will also need the octave-headers package.  Currently, due to some
-    bugs in the most recent version of the C++ compiler and libraries
-    for Cygwin, you will also need gcc and g++ 3.3 rather than 3.4.
-    You can use the setup.exe installer to select and install the
-    older version.
+13. IMPORTANT: to build .oct files (dynamically loaded functions) for
+    Octave, you will also need the octave-headers package.  Currently,
+    due to some bugs in the most recent version of the C++ compiler
+    and libraries for Cygwin, you will also need gcc and g++ 3.3
+    rather than 3.4.  You can use the setup.exe installer to select
+    and install the older version.
 
 
 John W. Eaton

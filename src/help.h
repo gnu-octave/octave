@@ -35,6 +35,8 @@ extern std::string extract_help_from_dispatch (const std::string&);
 
 extern void display_help_text (std::ostream&, const std::string&);
 
+extern void display_usage_text (std::ostream&, const std::string&);
+
 extern void additional_help_message (std::ostream&);
 
 // Name of the info file specified on command line.

@@ -24,7 +24,7 @@ function bury_output ()
   __gnuplot_set__ term dumb
   [status, dummy] = fileattrib("/dev/null");
   if (status)
-    __gnuplot_set__ output '/dev/null'
+    __gnuplot_raw__ ("set output \"/dev/null\"\n");
   endif
 endfunction
 

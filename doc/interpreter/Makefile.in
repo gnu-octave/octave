@@ -53,6 +53,8 @@ DISTDIRS = HTML
 
 DISTSUBDIRS = $(IMAGEDIR)
 
+SUBDIRS := $(IMAGEDIR)
+
 # Look for version.h to get version information.
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
 
@@ -90,7 +92,7 @@ scripts-DOCSTRINGS:
 
 stamp-images:
 	$(MAKE) -C images
-	touch $@
+.PHONY: stamp-images
 
 octave.info: stamp-images $(TEXINFO)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. -I$(IMAGEDIR) $(MAIN_TEXINFO)
@@ -131,7 +133,12 @@ html-dir:
 check: all
 .PHONY: check
 
-install install-strip: all
+install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+	@$(subdir-for-command)
+.PHONY: install install-strip uninstall
+.PHONY: clean mostlyclean distclean maintainer-clean
+
+install install-strip:: all
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir)
 	@if test -d $(DESTDIR)$(man1dir); then \
 	  for f in $(MAN_BASE); do \
@@ -170,12 +177,10 @@ install install-strip: all
 	    $(INSTALL_DATA) $(srcdir)/dir $(DESTDIR)$(infodir)/dir; \
 	  fi; \
 	fi
-.PHONY: install install-strip
 
-uninstall:
+uninstall::
 	rm -f $(infodir)/octave.info*
 	for f in $(MAN_BASE); do rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); done
-.PHONY: uninstall
 
 tags: $(SOURCES)
 	ctags $(SOURCES)
@@ -193,16 +198,13 @@ mostlyclean clean::
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
 	munge-texi$(BUILD_EXEEXT) munge-texi.o \
-.PHONY: mostlyclean clean
 
 distclean:: clean
 	rm -f Makefile 
-.PHONY: distclean
 
-maintainer-clean:: distclean clean-texi
-	rm -f tags TAGS $(FORMATTED)
+maintainer-clean:: clean-texi
+	rm -f Makefile tags TAGS $(FORMATTED)
 	rm -rf HTML
-.PHONY: maintainer-clean
 
 clean-texi:
 	rm -f $(SUB_TEXINFO)

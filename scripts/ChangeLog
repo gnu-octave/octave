@@ -1,5 +1,8 @@
 2006-05-10  John W. Eaton  <jwe@octave.org>
 
+	* path/addpath.m, path/rmpath.m: Improve compatibility.
+	* path/setpath.m: Delete.
+
 	* pkg/pkg.m: New file.
 
 2006-05-09  Keith Goodman  <kwgoodman@gmail.com>

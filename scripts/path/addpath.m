@@ -18,22 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} addpath (@var{dir1}, @dots{})
-## Prepend @var{dir1}, @dots{} to the current @code{LOADPATH}.
-## If the directory is already in the path, it is moved to the specified
-## location, prepending by default.
-## 
-## @example
-## addpath (dir1, "-end", dir2, "-begin", dir3, "-END", dir4, "-BEGIN", dir5)
-## @result{} Prepend dir1, dir3 and dir5 and append dir2 and dir4. 
-## @end example
-##
-## An error will be returned if the string is not a directory, the
-## directory doesn't exist or you don't have read access to it.
-##
-## BUG: This function can't add directories called @samp{-end} or
-## @samp{-begin} (case insensitively).
-##
-## @seealso{LOADPATH, rmpath, savepath, setpath}
+## @deftypefnx {Function File} {} addpath (@var{dir1}, @dots{}, @var{option})
+## Add @var{dir1}, @dots{} to the current @code{LOADPATH}.  If
+## @var{option} is @samp{"-begin"} or 0 (the default), prepend the
+## directory name to the current path.  If @var{option} is @samp{"-end"}
+## or 1, append the directory name to the current path.
+## Directories added to the path must exist.
+## @seealso{path, rmpath, savepath, pathsep}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
@@ -44,86 +35,78 @@
 function ret = addpath (varargin)
 
   if (nargout > 0)
-    path = varargin{1};
-    varargin = varargin(2:end);
-  else
-    path = LOADPATH;
+    ret = path ();
   endif
 
-  dir = "";
-  if (length (varargin) > 0)
-    append = 0;
-    switch varargin{end}
-    case { 0, "0", "-begin", "-BEGIN" }
-      varargin = varargin(1:end-1);
-    case { 1, "1", "-end", "-END" }
-      varargin = varargin(1:end-1);
-      append = 1;
-    endswitch
+  nargs = nargin ();
 
-    psep = pathsep();
+  if (nargs > 0)
 
-    ## Avoid duplicates by stripping pre-existing entries
-    path = rmpath (path, varargin{:});
+    append = false;
+    option = varargin{end};
+    if (ischar (option))
+      if (strcmpi (option, "-end"))
+	append = true;
+	nargs--;
+      elseif (strcmpi (option, "-begin"))
+	nargs--;
+      endif
+    elseif (option == 1)
+      append = true;
+    endif
 
-    ## Check if the directories are valid
-    for arg = 1:length (varargin)
-      p = varargin{arg};
-      if (nargout == 0 && ! isempty (p))
-        [s, err, m] = stat (p);
-        if (err != 0)
-          warning ("addpath %s : %s\n", p, m);
+    psep = pathsep ();
+
+    xpath = cellstr (split (path (), psep));
+    n_path_elts = length (xpath);
+    for i = 1:n_path_elts
+      tmp = xpath{i};
+      tmp = regexprep (tmp, "//+", "/");
+      tmp = regexprep (tmp, "/$", "");
+      xpath{i,1} = xpath{i};
+      xpath{i,2} = tmp;
+    endfor
+
+    for i = 1:nargs
+      dir_elts = cellstr (split (varargin{i}, psep));
+      n_dir_elts = length (dir_elts);
+      for j = 1:n_dir_elts
+	dir = regexprep (dir_elts{j}, "//+", "/");
+	dir = regexprep (dir, "/$", "");
+        [s, status, msg] = stat (dir);
+        if (status != 0)
+          warning ("addpath: %s: %s", dir, msg);
           continue;
-        elseif (index (s.modestr, "d") != 1)
-          warning ("addpath %s : not a directory (mode=%s)\n", p, s.modestr);
-          continue;
-        elseif (! (s.modestr(8) == "r"
-		   || (getgid == s.gid && s.modestr(5) == "r")
-		   || (getuid == s.uid && s.modestr(2) == "r")))
-          warning ("addpath %s : not readable (mode=%s)\n", p, s.modestr);
+        elseif (! S_ISDIR (s.mode))
+          warning ("addpath: %s: not a directory", dir);
           continue;
         endif
-      endif
-      dir = sprintf ("%s%s%s", dir, psep, p);
+	elt_found = false;
+	for k = n_path_elts:-1:1
+	  if (strcmp (dir, xpath{k,2}))
+	    xpath(k,:) = [];
+	    n_path_elts--;
+	    elt_found = true;
+	  endif
+	endfor
+	if (append)
+	  xpath = [xpath; {dir_elts{j}, dir}];
+	else
+	  xpath = [{dir_elts{j}, dir}; xpath];
+	endif
+      endfor
     endfor
-      
-    ## Add the directories to the current path
-    if (! isempty (dir))
-      dir = dir(2:end);
-      if (isempty (path) && ! isempty (dir))
-        path = dir;
-      else
-        if strcmp (path, psep), path = ""; end
-          if append
-            path = sprintf ("%s%s%s", path, psep, dir);
-          else
-            path = sprintf ("%s%s%s", dir, psep, path);
-          endif
-      endif
-    endif
-  endif
 
-  if nargout 
-    ret = path; 
-  else
-    LOADPATH = path; 
-  endif
+    xpath{:,2} = psep;
+    xpath = xpath';
 
+    tmp = strcat (xpath{:});
+    tmp(end) = "";
+
+    tmp = strrep (tmp, DEFAULT_LOADPATH (), "");
+
+    path (tmp);
+
+  endif
+  
 endfunction
-
-%!assert(addpath('','hello'),'hello');
-%!assert(addpath('','hello','world'),['hello',pathsep(),'world'])
-%!assert(addpath(pathsep(),'hello'),['hello',pathsep()]);
-%!assert(addpath(pathsep(),'hello','-end'),[pathsep(),'hello']);
-%!assert(addpath('hello','hello'),'hello');
-%!assert(addpath('hello','world'),['world',pathsep(),'hello'])
-%!assert(addpath('hello','world','-end'),['hello',pathsep(),'world'])
-%!assert(addpath(['hello',pathsep()],'world','-end'),['hello',pathsep(),pathsep(),'world'])
-%!assert(addpath(['hello',pathsep()],'hello','world','-end'),[pathsep(),'hello',pathsep(),'world'])
-
-%!assert(addpath('',''),pathsep())
-%!assert(addpath(pathsep(),''),pathsep())
-%!assert(addpath('hello',''),[pathsep(),'hello'])
-%!assert(addpath(['hello',pathsep(),'world'],''),[pathsep(),'hello',pathsep(),'world'])
-%!assert(addpath(['hello',pathsep(),'world',pathsep()],''),[pathsep(),'hello',pathsep(),'world'])
-%!assert(addpath(['hello',pathsep(),pathsep(),'world'],''),[pathsep(),'hello',pathsep(),'world'])

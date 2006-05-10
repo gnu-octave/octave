@@ -32,7 +32,7 @@
 ## and also return it.
 ##
 ## No checks are made for duplicate elements.
-## @seealso{pathsep}
+## @seealso{addpath, rmpath, savepath, pathsep}
 ## @end deftypefn
 
 ## Author: jwe

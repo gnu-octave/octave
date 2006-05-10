@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} {} rmpath (@var{dir1}, @dots{})
 ## Remove @var{dir1}, @dots{} from the current @code{LOADPATH}.
 ##
-## @seealso{LOADPATH, addpath, savepath, setpath}
+## @seealso{path, addpath, savepath, pathsep}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
@@ -27,97 +27,50 @@
 
 function ret = rmpath (varargin)
 
-  if (nargout == 0)
-    path = LOADPATH;
-  else
-    path = varargin{1};
+  if (nargout > 0)
+    ret = path ();
   endif
 
-  psep = pathsep();
+  psep = pathsep ();
 
-  strip_system_path = 0;
-  for arg = nargout + 1:length (varargin)
-    p = varargin{arg};
-    lp = length (p);
-
-    ## "" is the system path
-    if (lp == 0)
-      strip_system_path = 1;
-    endif
-
-    ## strip "...:p:..." -> "...:..."
-    lo = 0 ;
-    while (lo != length (path))	# Loop while I can substitute
-      lo = length (path);
-      path = strrep (path, sprintf("%s%s%s", psep, p, psep), psep);
-    endwhile
-
-    ## strip "p:..." and "...:p" -> "..."
-    if (length (path) > lp+1 && 
-	strcmp (path(1:lp+1), sprintf ("%s%s", p, psep)))
-      path = path(lp+2:end);
-    endif
-    if (length (path) > lp+1 && 
-	strcmp (path(end-lp:end), sprintf ("%s%s", psep, p)))
-      path = path(1:end-lp-1);
-    endif
-
-    ## strip "p:" and ":p" -> ":"
-    if (length (path) == lp+1
-	&& (strcmp (path, sprintf ("%s%s", p, psep))
-	    || strcmp (path, sprintf ("%s%s", psep, p))))
-      path = psep;
-    endif
-
-    ## strip "p" -> ""
-    if (length (path) == lp && strcmp (path, p))
-      path = "";
-    endif
-
+  xpath = cellstr (split (path (), psep));
+  n_path_elts = length (xpath);
+  for i = 1:n_path_elts
+    tmp = xpath{i};
+    tmp = regexprep (tmp, "//+", "/");
+    tmp = regexprep (tmp, "/$", "");
+    xpath{i,1} = xpath{i};
+    xpath{i,2} = tmp;
   endfor
 
-  if (strip_system_path && strcmp (path, psep))
-    path = "";
-  endif
+  for i = 1:nargin
+    dir_elts = cellstr (split (varargin{i}, psep));
+    n_dir_elts = length (dir_elts);
+    for j = 1:n_dir_elts
+      dir = regexprep (dir_elts{j}, "//+", "/");
+      dir = regexprep (dir, "/$", "");
+      elt_found = false;
+      for k = n_path_elts:-1:1
+	if (strcmp (dir, xpath{k,2}))
+	  xpath(k,:) = [];
+	  n_path_elts--;
+	  elt_found = true;
+	endif
+      endfor
+      if (! elt_found)
+	warning ("rmpath: %s: not found", dir);
+      endif
+    endfor
+  endfor
 
-  if (nargout > 0)
-    ret = path;
-  elseif (! strcmp (LOADPATH, path))
-    LOADPATH = path;
-  endif
+  xpath{:,2} = psep;
+  xpath = xpath';
+
+  tmp = strcat (xpath{:});
+  tmp(end) = "";
+
+  tmp = strrep (tmp, DEFAULT_LOADPATH (), "");
+
+  path (tmp);
   
 endfunction  
-
-%!assert(rmpath(pathsep(),''),'');
-%!assert(rmpath(['hello',pathsep()],''),'hello');
-%!assert(rmpath(['hello',pathsep(),'world'],''),['hello',pathsep(),'world']);
-%!assert(rmpath([pathsep(),'hello',pathsep(),'world'],''),['hello',pathsep(),'world']);
-%!assert(rmpath([pathsep(),'hello',pathsep(),'world',pathsep()],''),['hello',pathsep(),'world']);
-%!assert(rmpath([pathsep(),'hello',pathsep(),pathsep(),'world',pathsep()],''),['hello',pathsep(),'world']);
-
-%!assert(rmpath('hello','hello'),'');
-%!assert(rmpath([pathsep,'hello'],'hello'),pathsep());
-%!assert(rmpath(['hello',pathsep()],'hello'),pathsep());
-%!assert(rmpath(['hello',pathsep(),'hello'],'hello'),'');
-%!assert(rmpath(['hello',pathsep(),'hello',pathsep(),'hello'],'hello'),'');
-%!assert(rmpath(['hello',pathsep(),'hello',pathsep(),'hello',pathsep(),'hello'],'hello'),'');
-%!assert(rmpath([pathsep(),'hello',pathsep(),'hello'],'hello'),pathsep());
-%!assert(rmpath(['hello',pathsep(),'hello',pathsep()],'hello'),pathsep());
-%!assert(rmpath('hello','world'),'hello');
-%!assert(rmpath([pathsep(),'hello'],'','hello'),'');
-%!assert(rmpath([pathsep(),'hello'],'hello',''),'');
-
-%!assert(rmpath(['hello',pathsep(),'world'],'hello','world'),'');
-%!assert(rmpath(['hello',pathsep(),'world',pathsep()],'hello','world'),pathsep());
-%!assert(rmpath([pathsep(),'hello',pathsep(),'world',pathsep()],'hello','world'),pathsep());
-
-%!assert(rmpath(['hello',pathsep(),'world'],'','hello','world'),'');
-%!assert(rmpath(['hello',pathsep(),'world',pathsep()],'','hello','world'),'');
-%!assert(rmpath([pathsep(),'hello',pathsep(),'world',pathsep()],'','hello','world'),'');
-
-%!assert(rmpath(['hello',pathsep(),'world'],'hello'),'world');
-%!assert(rmpath(['hello',pathsep(),'world'],'world'),'hello');
-%!assert(rmpath(['hello',pathsep(),'world',pathsep()],'hello'),['world',pathsep()]);
-%!assert(rmpath(['hello',pathsep(),'world',pathsep()],'world'),['hello',pathsep()]);
-%!assert(rmpath([pathsep(),'hello',pathsep(),'world',pathsep()],'hello'),[pathsep(),'world',pathsep()]);
-%!assert(rmpath([pathsep(),'hello',pathsep(),'world',pathsep()],'world'),[pathsep(),'hello',pathsep()]);

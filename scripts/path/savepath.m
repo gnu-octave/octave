@@ -19,13 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} savepath (@var{file})
-## This function saves the current @code{LOADPATH} to your personal
-## default initilization file or optionally the @var{file} that you
-## specify.
-##
-## It will return 0 if it was successful.
-##
-## @seealso{LOADPATH, addpath, rmpath, setpath}
+## Save the current function search path to @var{file}.  If @var{file}
+## is omitted, @file{~/.octaverc} is used.  If successful,
+## @code{savepath} returns 0.
+## @seealso{path, addpath, rmpath, pathsep}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@givebillmoney.com>
@@ -111,8 +108,8 @@ function varargout = savepath (savefile)
     fprintf (fid, "%s\n", pre{i})
   endfor
 
-  fprintf (fid, "%s\n  setpath (\"%s\");\n%s\n",
-	   beginstring, LOADPATH, endstring);
+  fprintf (fid, "%s\n  path (\"%s\");\n%s\n",
+	   beginstring, path (), endstring);
 
   for i = 1:length (post)
     fprintf (fid, "%s\n", post{i});

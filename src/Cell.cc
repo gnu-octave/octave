@@ -31,7 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "gripes.h"
 
-Cell::Cell (const string_vector& sv)
+Cell::Cell (const string_vector& sv, bool trim)
   : ArrayN<octave_value> ()
 {
   octave_idx_type n = sv.length ();
@@ -41,7 +41,18 @@ Cell::Cell (const string_vector& sv)
       resize (dim_vector (n, 1));
 
       for (octave_idx_type i = 0; i < n; i++)
-	elem(i,0) = sv[i];
+	{
+	  std::string s = sv[i];
+
+	  if (trim)
+	    {
+	      size_t n = s.find_last_not_of (' ');
+
+	      s = (n == NPOS) ? "" : s.substr (0, n+1);
+	    }
+
+	  elem(i,0) = s;
+	}
     }
 }
 

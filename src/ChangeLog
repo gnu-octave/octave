@@ -1,5 +1,8 @@
 2006-05-10  John W. Eaton  <jwe@octave.org>
 
+	* ov-cell.cc (Fcellstr): Trim trailing blanks.
+	* Cell.h (Cell::Cell (const string_vector&)): New arg, TRIM.
+
 	* oct-hist.cc (initialize_history, Fhistory_size):
 	Also call command_history::set_size here.
 

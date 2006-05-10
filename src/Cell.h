@@ -65,7 +65,7 @@ public:
   Cell (const Array<octave_value>& c, octave_idx_type nr, octave_idx_type nc)
     : ArrayN<octave_value> (c, dim_vector (nr, nc)) { }
 
-  Cell (const string_vector& sv);
+  Cell (const string_vector& sv, bool trim = false);
 
   Cell (const Cell& c)
     : ArrayN<octave_value> (c) { }

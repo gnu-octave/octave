@@ -1,0 +1,67 @@
+#
+# Makefile for octave's scripts/pkg directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ../..
+
+script_sub_dir = plot
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+SOURCES = *.m
+
+DISTFILES = Makefile.in $(SOURCES)
+
+FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
+
+all: PKG_ADD
+.PHONY: all
+
+install install-strip:
+	$(do-script-install)
+.PHONY: install install-strip
+
+uninstall:
+	$(do-script-uninstall)
+.PHONY: uninstall
+
+clean:
+.PHONY: clean
+
+PKG_ADD: $(FCN_FILES)
+	@echo "making PKG_ADD"
+	@$(do-mkpkgadd)
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+mostlyclean: clean
+.PHONY: mostlyclean
+
+distclean: clean
+	rm -f Makefile
+.PHONY: distclean
+
+maintainer-clean: distclean
+	rm -f tags TAGS
+.PHONY: maintainer-clean
+
+dist:
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/pkg
+.PHONY: dist

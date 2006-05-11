@@ -15,45 +15,45 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} unzip (@var{filename})
-## @deftypefnx {Function File} unzip (@var{filename}, @var{outputdir})
-## Unpacks the archive @var{filename} using the unzip program.
-## The resulting files are placed in the directory @var{outputdir},
-## which defaults to the current directory.
+## @deftypefn {Function File} unzip (@var{zipfile}, @var{dir})
+## Unpack the ZIP archive @var{zipfile} to the directory @var{dir}.
+## If @var{dir} is not specified, it defaults to the current directory.
+## @seealso{tar, untar, gzip, gunzip, zip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg at gmail dot com>
+## Author: Søren Hauberg <hauberg@gmail.com>
+## Adapted-By: jwe
 
-function files = unzip(filename, outputdir)
-    if (nargin == 0)
-        print_usage("unzip");
-    elseif (nargin == 1)
-        outputdir = ".";
-    endif
-    
-    ## Make sure filename and outputdir are strings
-    if (!ischar(filename) || !ischar(outputdir))
-        error("All arguments must be strings.\n");
-    endif
-    
-    ## Should we append ".zip" to filename?
-    if (length(filename) <= 4 || !strcmp(filename(end-3:end), ".zip"))
-        filename = sprintf("%s.zip", filename);
+function files = unzip (zipfile, dir)
+
+  if (nargin == 1 || nargin == 2)
+
+    if (nargin == 1)
+      dir = ".";
     endif
 
-    ## Call unzip
-    [output, status] = system(["unzip -o " filename " -d " outputdir]);
-    if (status != 0)
-        error("unzip returned the following error: %s\n", output);
+    if (ischar (zipfile) && ischar (dir))
+
+      [status, output] = system (sprintf ("unzip %s -d %s", zipfile, dir));
+
+      if (status == 0)
+	if (nargout > 0)
+	  ## Create list of extracted files.  It blows that there seems
+	  ## to be no way to get unzip to print a simple list of file
+	  ## names.
+	  files = strrep (output, "  inflating: ", "");
+	  files = cellstr (split (files, "\n"));
+	  files = files(2:end-1,:);
+	  files = files';
+	endif
+      else
+	error ("unzip: unzip exited with status = %d", status);
+      endif
     endif
-    
-    ## Create list of extracted files. This might depend on which version
-    ## unzip that it used, although I do not know this for sure.
-    if (nargout)
-        files = strrep(output, "  inflating: ", "");
-        files = split(files, "\n");
-        # remove first and last line from the output
-        files = files(2:end-1, :);
-    endif
+
+  else
+    print_usage ("unzip");
+  endif
+
 endfunction
 

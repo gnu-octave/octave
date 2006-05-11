@@ -1,5 +1,7 @@
 2006-05-11  John W. Eaton  <jwe@octave.org>
 
+	* path/path.m: Delete (now a built-in function).
+
 	* pkg/Makefile.in: New file.
 	* configure.in (AC_CONFIG_FILES): Add pkg/Makefile to the list.
 	* Makefile.in (SUBDIRS): Add pkg to the list.

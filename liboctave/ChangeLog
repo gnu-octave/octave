@@ -1,3 +1,8 @@
+2006-05-08  David Bateman  <dbateman@free.fr>
+
+	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): fix bug in previous
+	modification.
+
 2006-05-09  David Bateman  <dbateman@free.fr>
 
 	* sparse-dmsolve.cc: Remove reference to ov-re-sparse.h,

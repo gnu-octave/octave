@@ -1623,7 +1623,7 @@ Boston, MA 02110-1301, USA.
 			} \
 		    } \
 		  for (octave_idx_type k = 0; k < nr; k++) \
-		    if (w[k] == i + 1 && Xcol[k] != 0.) \
+		    if (w[k] == i + 1) \
 		      { \
 		        retval.xdata(ii) = Xcol[k]; \
 		        retval.xridx(ii++) = k; \
@@ -1655,7 +1655,7 @@ Boston, MA 02110-1301, USA.
 		    retval.xdata(k) = Xcol[retval.xridx(k)]; \
 		}  \
 	    } \
-	  retval.maybe_compress ();\
+	  retval.maybe_compress (true);\
 	  return retval; \
 	} \
     }

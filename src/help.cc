@@ -1521,10 +1521,10 @@ DEFCMD (lookfor, args, nargout,
 @deffnx {Command} lookfor -all @var{str}\n\
 @deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor (@var{str})\n\
 @deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor ('-all', @var{str})\n\
-Search for the string @var{str} in all of the functions found in\n\
-@var{LOADPATH}. By default @code{lookfor} searchs for @var{str} in the\n\
-first sentence of the help string of each function found. The entire\n\
-help string of each function found of @var{LOADPATH} can be search if\n\
+Search for the string @var{str} in all of the functions found in the\n\
+function search path.  By default @code{lookfor} searchs for @var{str}\n\
+in the first sentence of the help string of each function found. The entire\n\
+help string of each function found in the path can be search if\n\
 the '-all' argument is supplied. All searches are case insensitive.\n\
 \n\
 Called with no output arguments, @code{lookfor} prints the list of matching\n\

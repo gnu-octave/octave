@@ -1,3 +1,15 @@
+2006-05-11  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (localfcnfilepath, localoctfilepath, fcnfilepath,
+	imagepath): Delete variables.
+	* Makeconf.in (localfcnfilepath, localoctfilepath, fcnfilepath,
+	imagepath): Likewise.
+	(do-subst-default-vals): Don't substitute them.
+
+	* run-octave.in: Pass --image-path to octave.
+	Use find to recursively add directories to loadpath.
+	Fixup set args command in .gdbinit here.
+
 2006-05-09  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (abs_top_srcdir): Substitute value here.

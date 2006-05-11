@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.509 $)
+AC_REVISION($Revision: 1.510 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -79,8 +79,6 @@ OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localapifcnfiledir,
   '$(datadir)/octave/site/$(api_version)/m')
 OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
-OCTAVE_SET_DEFAULT(localfcnfilepath,
-  '$(localverfcnfiledir)//$(sepchar)$(localapifcnfiledir)//$(sepchar)$(localfcnfiledir)//')
 OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
 OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
@@ -96,12 +94,7 @@ OCTAVE_SET_DEFAULT(localapioctfiledir,
   '$(libexecdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localveroctfiledir,
   '$(libexecdir)/octave/$(version)/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localoctfilepath,
-  '$(localveroctfiledir)//$(sepchar)$(localapioctfiledir)//$(sepchar)$(localoctfiledir)//')
-OCTAVE_SET_DEFAULT(fcnfilepath,
-  '.$(sepchar)$(localoctfilepath)$(sepchar)$(localfcnfilepath)$(sepchar)$(octfiledir)//$(sepchar)$(fcnfiledir)//')
 OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
-OCTAVE_SET_DEFAULT(imagepath, '.$(sepchar)$(imagedir)//')
 
 ### Make configure args available for other uses.
 

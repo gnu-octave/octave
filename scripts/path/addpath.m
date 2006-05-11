@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} addpath (@var{dir1}, @dots{})
 ## @deftypefnx {Function File} {} addpath (@var{dir1}, @dots{}, @var{option})
-## Add @var{dir1}, @dots{} to the current @code{LOADPATH}.  If
+## Add @var{dir1}, @dots{} to the current function search path.  If
 ## @var{option} is @samp{"-begin"} or 0 (the default), prepend the
 ## directory name to the current path.  If @var{option} is @samp{"-end"}
 ## or 1, append the directory name to the current path.
 ## Directories added to the path must exist.
-## @seealso{path, rmpath, savepath, pathsep}
+## @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
@@ -59,12 +59,13 @@ function ret = addpath (varargin)
 
     xpath = cellstr (split (path (), psep));
     n_path_elts = length (xpath);
-    for i = 1:n_path_elts
-      tmp = xpath{i};
-      tmp = regexprep (tmp, "//+", "/");
-      tmp = regexprep (tmp, "/$", "");
-      xpath{i,1} = xpath{i};
-      xpath{i,2} = tmp;
+
+    ## Strip "." for now.  Calling path to set the path will restore it.
+    for k = n_path_elts:-1:1
+      if (strcmp (".", xpath{k}))
+	xpath(k) = [];
+	n_path_elts--;
+      endif
     endfor
 
     for i = 1:nargs
@@ -73,6 +74,9 @@ function ret = addpath (varargin)
       for j = 1:n_dir_elts
 	dir = regexprep (dir_elts{j}, "//+", "/");
 	dir = regexprep (dir, "/$", "");
+	if (strcmp (dir, ".") && append)
+	  warning ("addpath: \".\" is always first in the path");
+	endif
         [s, status, msg] = stat (dir);
         if (status != 0)
           warning ("addpath: %s: %s", dir, msg);
@@ -81,29 +85,27 @@ function ret = addpath (varargin)
           warning ("addpath: %s: not a directory", dir);
           continue;
         endif
-	elt_found = false;
 	for k = n_path_elts:-1:1
-	  if (strcmp (dir, xpath{k,2}))
-	    xpath(k,:) = [];
+	  if (strcmp (dir, xpath{k}))
+	    xpath(k) = [];
 	    n_path_elts--;
-	    elt_found = true;
 	  endif
 	endfor
 	if (append)
-	  xpath = [xpath; {dir_elts{j}, dir}];
+	  xpath = [xpath; {dir}];
 	else
-	  xpath = [{dir_elts{j}, dir}; xpath];
+	  xpath = [{dir}; xpath];
 	endif
       endfor
     endfor
 
-    xpath{:,2} = psep;
-    xpath{end,2} = "";
-    xpath = xpath';
+    ## Ensure a 1xN cell array.
+    xpath = xpath(:)';
+
+    xpath{2,:} = psep;
+    xpath{2,end} = "";
 
     tmp = strcat (xpath{:});
-
-    tmp = strrep (tmp, DEFAULT_LOADPATH (), "");
 
     path (tmp);
 

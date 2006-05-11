@@ -16,9 +16,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rmpath (@var{dir1}, @dots{})
-## Remove @var{dir1}, @dots{} from the current @code{LOADPATH}.
+## Remove @var{dir1}, @dots{} from the current function search path.
 ##
-## @seealso{path, addpath, savepath, pathsep}
+## @seealso{path, addpath, genpath, pathdef, savepath, pathsep}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>
@@ -35,13 +35,6 @@ function ret = rmpath (varargin)
 
   xpath = cellstr (split (path (), psep));
   n_path_elts = length (xpath);
-  for i = 1:n_path_elts
-    tmp = xpath{i};
-    tmp = regexprep (tmp, "//+", "/");
-    tmp = regexprep (tmp, "/$", "");
-    xpath{i,1} = xpath{i};
-    xpath{i,2} = tmp;
-  endfor
 
   for i = 1:nargin
     dir_elts = cellstr (split (varargin{i}, psep));
@@ -51,8 +44,10 @@ function ret = rmpath (varargin)
       dir = regexprep (dir, "/$", "");
       elt_found = false;
       for k = n_path_elts:-1:1
-	if (strcmp (dir, xpath{k,2}))
-	  xpath(k,:) = [];
+	if (strcmp (dir, "."))
+	  warning ("rmpath: can't remove \".\" from path");
+	elseif (strcmp (dir, xpath{k}))
+	  xpath(k) = [];
 	  n_path_elts--;
 	  elt_found = true;
 	endif
@@ -63,13 +58,13 @@ function ret = rmpath (varargin)
     endfor
   endfor
 
-  xpath{:,2} = psep;
-  xpath{end,2} = "";
-  xpath = xpath';
+  ## Ensure a 1xN cell array.
+  xpath = xpath(:)';
+
+  xpath{2,:} = psep;
+  xpath{2,end} = "";
 
   tmp = strcat (xpath{:});
-
-  tmp = strrep (tmp, DEFAULT_LOADPATH (), "");
 
   path (tmp);
   

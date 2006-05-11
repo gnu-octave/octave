@@ -57,16 +57,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_FCNFILEDIR %OCTAVE_FCNFILEDIR%
 #endif
 
-#ifndef OCTAVE_FCNFILEPATH
-#define OCTAVE_FCNFILEPATH %OCTAVE_FCNFILEPATH%
-#endif
-
 #ifndef OCTAVE_IMAGEDIR
 #define OCTAVE_IMAGEDIR %OCTAVE_IMAGEDIR%
-#endif
-
-#ifndef OCTAVE_IMAGEPATH
-#define OCTAVE_IMAGEPATH %OCTAVE_IMAGEPATH%
 #endif
 
 #ifndef OCTAVE_INCLUDEDIR
@@ -109,16 +101,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_LOCALFCNFILEDIR %OCTAVE_LOCALFCNFILEDIR%
 #endif
 
-#ifndef OCTAVE_LOCALFCNFILEPATH
-#define OCTAVE_LOCALFCNFILEPATH %OCTAVE_LOCALFCNFILEPATH%
-#endif
-
 #ifndef OCTAVE_LOCALOCTFILEDIR
 #define OCTAVE_LOCALOCTFILEDIR %OCTAVE_LOCALOCTFILEDIR%
-#endif
-
-#ifndef OCTAVE_LOCALOCTFILEPATH
-#define OCTAVE_LOCALOCTFILEPATH %OCTAVE_LOCALOCTFILEPATH%
 #endif
 
 #ifndef OCTAVE_LOCALSTARTUPFILEDIR
@@ -182,8 +166,19 @@ extern std::string Vlibexec_dir;
 extern std::string Varch_lib_dir;
 extern std::string Vlocal_arch_lib_dir;
 extern std::string Vlocal_ver_arch_lib_dir;
-extern std::string Vfcn_file_dir;
+
+extern std::string Vlocal_ver_oct_file_dir;
+extern std::string Vlocal_api_oct_file_dir;
+extern std::string Vlocal_oct_file_dir;
+
+extern std::string Vlocal_ver_fcn_file_dir;
+extern std::string Vlocal_api_fcn_file_dir;
+extern std::string Vlocal_fcn_file_dir;
+
 extern std::string Voct_file_dir;
+extern std::string Vfcn_file_dir;
+
+extern std::string Vimage_dir;
 
 // And the cached directory path corresponding to Vload_path.
 extern dir_path Vload_path_dir_path;
@@ -202,6 +197,10 @@ extern void execute_default_pkg_add_files (void);
 extern std::string maybe_add_default_load_path (const std::string& pathstring);
 
 extern void install_defaults (void);
+
+extern void set_exec_path (const std::string& path = std::string ());
+extern void set_load_path (const std::string& path = std::string ());
+extern void set_image_path (const std::string& path = std::string ());
 
 #endif
 

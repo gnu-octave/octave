@@ -287,7 +287,6 @@ fcnfiledir = @fcnfiledir@
 localfcnfiledir = @localfcnfiledir@
 localapifcnfiledir = @localapifcnfiledir@
 localverfcnfiledir = @localverfcnfiledir@
-localfcnfilepath = @localfcnfilepath@
 
 # Where to put executables to be run by Octave rather than
 # the user.  This path usually includes the Octave version
@@ -313,17 +312,9 @@ octfiledir = @octfiledir@
 localoctfiledir = @localoctfiledir@
 localapioctfiledir = @localapioctfiledir@
 localveroctfiledir = @localveroctfiledir@
-localoctfilepath = @localoctfilepath@
 
-# Where Octave will search to find its function files.  Before
-# changing this, check to see if your purpose wouldn't
-# better be served by changing localfcnfilepath.  This
-# should be a colon-separated list of directories.
-fcnfilepath = @fcnfilepath@
-
-# Where Octave will search to find image files.es.
+# Where Octave will search to find image files.
 imagedir = @imagedir@
-imagepath = @imagepath@
 
 # The type of computer we are running on.
 canonical_host_type = @canonical_host_type@
@@ -511,9 +502,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
   -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_FCNFILEDIR%|\"${fcnfiledir}\"|" \
-  -e "s|%OCTAVE_FCNFILEPATH%|\"${fcnfilepath}\"|" \
   -e "s|%OCTAVE_IMAGEDIR%|\"${imagedir}\"|" \
-  -e "s|%OCTAVE_IMAGEPATH%|\"${imagepath}\"|" \
   -e "s|%OCTAVE_INCLUDEDIR%|\"${includedir}\"|" \
   -e "s|%OCTAVE_INFODIR%|\"${infodir}\"|" \
   -e "s|%OCTAVE_INFOFILE%|\"${infofile}\"|" \
@@ -523,9 +512,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_LOCALAPIOCTFILEDIR%|\"${localapioctfiledir}\"|" \
   -e "s|%OCTAVE_LOCALARCHLIBDIR%|\"${localarchlibdir}\"|" \
   -e "s|%OCTAVE_LOCALFCNFILEDIR%|\"${localfcnfiledir}\"|" \
-  -e "s|%OCTAVE_LOCALFCNFILEPATH%|\"${localfcnfilepath}\"|" \
   -e "s|%OCTAVE_LOCALOCTFILEDIR%|\"${localoctfiledir}\"|" \
-  -e "s|%OCTAVE_LOCALOCTFILEPATH%|\"${localoctfilepath}\"|" \
   -e "s|%OCTAVE_LOCALSTARTUPFILEDIR%|\"${localstartupfiledir}\"|" \
   -e "s|%OCTAVE_LOCALVERARCHLIBDIR%|\"${localverarchlibdir}\"|" \
   -e "s|%OCTAVE_LOCALVERFCNFILEDIR%|\"${localverfcnfiledir}\"|" \

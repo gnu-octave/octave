@@ -891,8 +891,8 @@ DEFUN (exist, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
 Return 1 if the name exists as a variable, 2 if the name (after\n\
-appending @samp{.m}) is a function file in Octave's LOADPATH, 3 if the\n\
-name is a @samp{.oct} file in Octave's LOADPATH, 5 if the name is a\n\
+appending @samp{.m}) is a function file in Octave's @code{path}, 3 if the\n\
+name is a @samp{.oct} file in Octave's @code{path}, 5 if the name is a\n\
 built-in function, 7 if the name is a directory, or 103\n\
 if the name is a function not associated with a file (entered on\n\
 the command line).\n\
@@ -900,7 +900,7 @@ the command line).\n\
 Otherwise, return 0.\n\
 \n\
 This function also returns 2 if a regular file called @var{name}\n\
-exists in Octave's @code{LOADPATH}.  If you want information about\n\
+exists in Octave's search path.  If you want information about\n\
 other types of files, you should use some combination of the functions\n\
 @code{file_in_path} and @code{stat} instead.\n\
 \n\
@@ -1786,7 +1786,7 @@ List all currently defined symbols.\n\
 @item -builtins\n\
 List built-in functions.  This includes all currently\n\
 compiled function files, but does not include all function files that\n\
-are in the @code{LOADPATH}.\n\
+are in the search path.\n\
 \n\
 @item -functions\n\
 List user-defined functions.\n\
@@ -2607,7 +2607,7 @@ function files.  If the internal variable is set to @code{\"system\"},\n\
 Octave will not automatically recompile function files in subdirectories of\n\
 @file{@var{octave-home}/lib/@var{version}} if they have changed since\n\
 they were last compiled, but will recompile other function files in the\n\
-@code{LOADPATH} if they change.  If set to @code{\"all\"}, Octave will not\n\
+search path if they change.  If set to @code{\"all\"}, Octave will not\n\
 recompile any function files unless their definitions are removed with\n\
 @code{clear}.  If set to \"none\", Octave will always check time stamps\n\
 on files to determine whether functions defined in function files\n\

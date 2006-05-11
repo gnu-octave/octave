@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#include "dir-ops.h"
 #include "oct-env.h"
 #include "file-stat.h"
 #include "pathsearch.h"
@@ -66,12 +67,19 @@ std::string Vlibexec_dir;
 std::string Varch_lib_dir;
 std::string Vlocal_arch_lib_dir;
 std::string Vlocal_ver_arch_lib_dir;
-std::string Vfcn_file_dir;
-std::string Voct_file_dir;
 
-// The default path that will be searched for programs that we
-// execute (in addition to the user-specified --exec-path).
-static std::string VDEFAULT_EXEC_PATH;
+std::string Vlocal_ver_oct_file_dir;
+std::string Vlocal_api_oct_file_dir;
+std::string Vlocal_oct_file_dir;
+
+std::string Vlocal_ver_fcn_file_dir;
+std::string Vlocal_api_fcn_file_dir;
+std::string Vlocal_fcn_file_dir;
+
+std::string Voct_file_dir;
+std::string Vfcn_file_dir;
+
+std::string Vimage_dir;
 
 // The path that will be searched for programs that we execute.
 // (--exec-path path)
@@ -90,7 +98,7 @@ dir_path Vload_path_dir_path;
 // Name of the editor to be invoked by the edit_history command.
 std::string VEDITOR;
 
-static std::string VIMAGEPATH;
+static std::string VIMAGE_PATH;
 
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
@@ -156,7 +164,7 @@ update_load_path_dir_path (void)
 {
   string_vector old_dirs = Vload_path_dir_path.all_directories ();
 
-  Vload_path_dir_path = dir_path (VLOADPATH, VDEFAULT_LOADPATH);
+  Vload_path_dir_path = dir_path (VLOADPATH, "");
 
   string_vector new_dirs = Vload_path_dir_path.all_directories ();
 
@@ -243,9 +251,51 @@ set_default_local_ver_arch_lib_dir (void)
 }
 
 static void
+set_default_local_ver_oct_file_dir (void)
+{
+  Vlocal_ver_oct_file_dir = subst_octave_home (OCTAVE_LOCALVEROCTFILEDIR);
+}
+
+static void
+set_default_local_api_oct_file_dir (void)
+{
+  Vlocal_api_oct_file_dir = subst_octave_home (OCTAVE_LOCALAPIOCTFILEDIR);
+}
+
+static void
+set_default_local_oct_file_dir (void)
+{
+  Vlocal_oct_file_dir = subst_octave_home (OCTAVE_LOCALOCTFILEDIR);
+}
+
+static void
+set_default_local_ver_fcn_file_dir (void)
+{
+  Vlocal_ver_fcn_file_dir = subst_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
+}
+
+static void
+set_default_local_api_fcn_file_dir (void)
+{
+  Vlocal_api_fcn_file_dir = subst_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
+}
+
+static void
+set_default_local_fcn_file_dir (void)
+{
+  Vlocal_fcn_file_dir = subst_octave_home (OCTAVE_LOCALFCNFILEDIR);
+}
+
+static void
 set_default_fcn_file_dir (void)
 {
   Vfcn_file_dir = subst_octave_home (OCTAVE_FCNFILEDIR);
+}
+
+static void
+set_default_image_dir (void)
+{
+  Vimage_dir = subst_octave_home (OCTAVE_IMAGEDIR);
 }
 
 static void
@@ -260,45 +310,122 @@ set_default_bin_dir (void)
   Vbin_dir = subst_octave_home (OCTAVE_BINDIR);
 }
 
-static void
-set_default_default_exec_path (void)
+void
+set_exec_path (const std::string& path)
 {
-  VDEFAULT_EXEC_PATH
-    = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str
+  VEXEC_PATH = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str
     + Vlocal_arch_lib_dir + dir_path::path_sep_str
     + Varch_lib_dir + dir_path::path_sep_str
     + Vbin_dir;
+  
+  // This is static so that even if set_exec_path is called more than
+  // once, shell_path is the original PATH from the environment,
+  // before we start modifying it.
+  static std::string shell_path = octave_env::getenv ("PATH");
+
+  if (! shell_path.empty ())
+    VEXEC_PATH += dir_path::path_sep_str + shell_path;
+
+  std::string tpath = path;
+
+  if (tpath.empty ())
+    tpath = octave_env::getenv ("OCTAVE_EXEC_PATH");
+
+  if (! tpath.empty ())
+    VEXEC_PATH = tpath + dir_path::path_sep_str + VEXEC_PATH;
+
+  octave_env::putenv ("PATH", VEXEC_PATH);
 }
 
-static void
-set_default_exec_path (void)
+static std::string
+genpath (const std::string& dirname)
 {
-  std::string octave_exec_path = octave_env::getenv ("OCTAVE_EXEC_PATH");
+  std::string retval;
 
-  if (octave_exec_path.empty ())
+  std::string full_dirname = file_ops::tilde_expand (dirname);
+
+  dir_entry dir (full_dirname);
+
+  if (dir)
     {
-      std::string shell_path = octave_env::getenv ("PATH");
+      retval = dirname;
 
-      if (! shell_path.empty ())
+      string_vector dirlist = dir.read ();
+      
+      octave_idx_type len = dirlist.length ();
+
+      for (octave_idx_type i = 0; i < len; i++)
 	{
-	  VEXEC_PATH = dir_path::path_sep_str;
-	  VEXEC_PATH.append (shell_path);
+	  std::string elt = dirlist[i];
+
+	  if (elt != "." && elt != ".." && elt != "private")
+	    {
+	      std::string nm = full_dirname + file_ops::dir_sep_str + elt;
+
+	      file_stat fs (nm);
+
+	      if (fs && fs.is_dir ())
+		retval += dir_path::path_sep_str + genpath (nm);
+	    }
 	}
     }
-  else
-    VEXEC_PATH = std::string (octave_exec_path);
+
+  return retval;
 }
 
 static void
-set_default_path (void)
+maybe_add_path_elts (std::string& pathvar, const std::string& dir)
 {
-  VDEFAULT_LOADPATH = subst_octave_home (OCTAVE_FCNFILEPATH);
+  std::string tpath = genpath (dir);
 
-  std::string oct_path = octave_env::getenv ("OCTAVE_PATH");
+  if (! tpath.empty ())
+    pathvar += dir_path::path_sep_str + tpath;
+}
 
-  VLOADPATH = oct_path.empty () ? dir_path::path_sep_str : oct_path;
+void
+set_load_path (const std::string& path)
+{
+  VDEFAULT_LOADPATH = ":";
+
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_ver_oct_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_api_oct_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_oct_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_ver_fcn_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_api_fcn_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_fcn_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Voct_file_dir);
+  maybe_add_path_elts (VDEFAULT_LOADPATH, Vfcn_file_dir);
+
+  std::string tpath = path;
+
+  if (tpath.empty ())
+    tpath = octave_env::getenv ("OCTAVE_LOADPATH");
+
+  VLOADPATH = ".";
+
+  if (! tpath.empty ())
+    VLOADPATH += dir_path::path_sep_str + tpath;
+
+  if (VDEFAULT_LOADPATH != ":")
+    VLOADPATH += VDEFAULT_LOADPATH;
 
   update_load_path_dir_path ();
+}
+
+void
+set_image_path (const std::string& path)
+{
+  VIMAGE_PATH = ".";
+
+  std::string tpath = path;
+
+  if (tpath.empty ())
+    tpath = octave_env::getenv ("OCTAVE_IMAGE_PATH");
+
+  if (! tpath.empty ())
+    VIMAGE_PATH += dir_path::path_sep_str + tpath;
+
+  maybe_add_path_elts (VIMAGE_PATH, Vimage_dir);
 }
 
 static void
@@ -372,38 +499,6 @@ set_site_defaults_file (void)
     Vsite_defaults_file = sf;
 }
 
-std::string
-maybe_add_default_load_path (const std::string& pathstring)
-{
-  std::string retval;
-
-  if (! pathstring.empty ())
-    {
-      if (dir_path::is_path_sep (pathstring[0]))
-	{
-	  retval = VDEFAULT_LOADPATH;
-	  retval.append (pathstring);
-	}
-      else
-	retval = pathstring;
-
-      if (dir_path::is_path_sep (pathstring[pathstring.length () - 1]))
-	retval.append (VDEFAULT_LOADPATH);
-
-      size_t pos = 0;
-      do
-	{
-	  pos = retval.find (dir_path::path_sep_str + dir_path::path_sep_str);
-
-	  if (pos != NPOS)
-	    retval.insert (pos+1, VDEFAULT_LOADPATH);
-	}
-      while (pos != NPOS);
-    }
-
-  return retval;
-}
-
 void
 install_defaults (void)
 {
@@ -423,17 +518,26 @@ install_defaults (void)
 
   set_default_local_ver_arch_lib_dir ();
 
-  set_default_fcn_file_dir ();
+  set_default_local_ver_oct_file_dir ();
+  set_default_local_api_oct_file_dir ();
+  set_default_local_oct_file_dir ();
 
+  set_default_local_ver_fcn_file_dir ();
+  set_default_local_api_fcn_file_dir ();
+  set_default_local_fcn_file_dir ();
+
+  set_default_fcn_file_dir ();
   set_default_oct_file_dir ();
+
+  set_default_image_dir ();
 
   set_default_bin_dir ();
 
-  set_default_default_exec_path ();
+  set_exec_path ();
 
-  set_default_exec_path ();
+  set_load_path ();
 
-  set_default_path ();
+  set_image_path ();
 
   set_default_info_file ();
 
@@ -446,6 +550,29 @@ install_defaults (void)
   set_local_site_defaults_file ();
 
   set_site_defaults_file ();
+}
+
+DEFUN (genpath, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} genpath (@var{dir})\n\
+Return a path constructed from @var{dir} and all its subdiretories.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string dirname = args(0).string_value ();
+
+      if (! error_state)
+	retval = genpath (dirname);
+      else
+	error ("genpath: expecting argument to be a character string");
+    }
+  else
+    print_usage ("genpath");
+
+  return retval;
 }
 
 DEFUN (rehash, , ,
@@ -476,36 +603,6 @@ value is used as the default.  Otherwise, @code{EDITOR} is set to\n\
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
 }
 
-static void
-update_exec_path (void)
-{
-  std::string path;
-
-  int eplen = VEXEC_PATH.length ();
-
-  if (eplen > 0)
-    {
-      bool prepend = (VEXEC_PATH[0] == ':');
-      bool append = (eplen > 1 && VEXEC_PATH[eplen-1] == ':');
-
-      if (prepend)
-	{
-	  path = VDEFAULT_EXEC_PATH + VEXEC_PATH;
-	}
-      else
-	{
-	  path = VEXEC_PATH;
-
-	  if (append)
-	    path.append (VDEFAULT_EXEC_PATH);
-	}
-    }
-  else
-    path = VDEFAULT_EXEC_PATH;
-
-  octave_env::putenv ("PATH", path);
-}
-
 DEFUN (EXEC_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
@@ -515,10 +612,11 @@ list of directories to search when executing external programs.\n\
 Its initial value is taken from the environment variable\n\
 @code{OCTAVE_EXEC_PATH} (if it exists) or @code{PATH}, but that\n\
 value can be overridden by the command line argument\n\
-@code{--exec-path PATH}.  Any leading, trailing, or doubled colon in\n\
-the value of @code{EXEC_PATH} are replaced by by the value of\n\
-@code{DEFAULT_EXEC_PATH}.\n\
-@seealso{DEFAULT_EXEC_PATH}\n\
+@code{--exec-path PATH}.  At startup, an additional set of\n\
+directories (including the shell PATH) is appended to the path\n\
+specified in the environment or on the command line.  If you use\n\
+the @code{EXEC_PATH} function to modify the path, you should take\n\
+care to preserve these additional directories.\n\
 @end deftypefn")
 {
   std::string saved_exec_path = VEXEC_PATH;
@@ -526,7 +624,7 @@ the value of @code{EXEC_PATH} are replaced by by the value of\n\
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
 
   if (VEXEC_PATH != saved_exec_path)
-    update_exec_path ();
+    octave_env::putenv ("PATH", VEXEC_PATH);
 
   return retval;
 }
@@ -545,115 +643,100 @@ Octave starts, its value is used as the default. Otherwise,\n\
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (fftw_wisdom_program);
 }
 
-DEFUN (DEFAULT_EXEC_PATH, args, nargout,
-    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} DEFAULT_EXEC_PATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} DEFAULT_EXEC_PATH (@var{new_val})\n\
-Query or set the internal variable that specifies a colon separated\n\
-list of directories in which to search when executing\n\
-external programs.  The value of this variable is automatically\n\
-substituted for leading, trailing, or doubled colons that appear in the\n\
-built-in variable @code{EXEC_PATH}.\n\
-@seealso{EXEC_PATH}\n\
-@end deftypefn")
-{
-  std::string saved_default_exec_path = VDEFAULT_EXEC_PATH;
-
-  octave_value retval
-    = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (DEFAULT_EXEC_PATH);
-
-  if (VDEFAULT_EXEC_PATH != saved_default_exec_path)
-    update_exec_path ();
-
-  return retval;
-}
-
-DEFUN (IMAGEPATH, args, nargout,
+DEFUN (IMAGE_PATH, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} IMAGEPATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} IMAGEPATH (@var{new_val})\n\
+@deftypefn {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\
 @end deftypefn")
 {
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGEPATH);
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
 }
 
-DEFUN (LOADPATH, args, nargout,
+DEFUN (path, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} LOADPATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} LOADPATH (@var{new_val})\n\
-Query or set the internal variable that specifies a colon separated\n\
-list of directories in which to search for function\n\
-files.  @xref{Functions and Scripts}.  The value of @code{LOADPATH}\n\
-overrides the environment variable @code{OCTAVE_PATH}.  @xref{Installation}.\n\
+@deftypefn {Function File} {} path (@dots{})\n\
+Modify or display Octave's @code{LOADPATH}.\n\
 \n\
-Leading, trailing, or doubled colons that appear in\n\
-@code{LOADPATH} are replaced by the value of @code{DEFAULT_LOADPATH}.\n\
-The default value of @code{LOADPATH} is @code{\"\n"
-SEPCHAR_STR
-"\"}, which tells Octave to search in the directories specified by\n\
-@code{DEFAULT_LOADPATH}.\n\
+If @var{nargin} and @var{nargout} are zero, display the elements of\n\
+Octave's @code{LOADPATH} in an easy to read format.\n\
 \n\
-In addition, if any path element ends in @samp{//}, that directory and\n\
-all subdirectories it contains are searched recursively for function\n\
-files.  This can result in a slight delay as Octave caches the lists of\n\
-files found in the @code{LOADPATH} the first time Octave searches for a\n\
-function.  After that, searching is usually much faster because Octave\n\
-normally only needs to search its internal cache for files.\n\
+If @var{nargin} is zero and nargout is greater than zero, return the\n\
+current value of @code{LOADPATH}.\n\
 \n\
-To improve performance of recursive directory searching, it is best for\n\
-each directory that is to be searched recursively to contain\n\
-@emph{either} additional subdirectories @emph{or} function files, but\n\
-not a mixture of both.\n\
+If @var{nargin} is greater than zero, concatenate the arguments,\n\
+separating them with @code{pathsep()}.  Set the internal search path\n\
+to the result and return it.\n\
 \n\
-@xref{Organization of Functions}, for a description of the function file\n\
-directories that are distributed with Octave.\n\
-@seealso{DEFAULT_LOADPATH}\n\
+No checks are made for duplicate elements.\n\
+@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
-  std::string saved_loadpath = VLOADPATH;
+  octave_value retval;
 
-  octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (LOADPATH);
+  int argc = args.length () + 1;
 
-  if (VLOADPATH != saved_loadpath)
+  string_vector argv = args.make_argv ("path");
+
+  if (! error_state)
     {
-      // By resetting the last prompt time variable, we will force
-      // checks for out of date symbols even if the change to LOADPATH
-      // and subsequent function calls happen between prompts.
+      if (argc > 1)
+	{
+	  std::string path = argv[1];
 
-      // FIXME -- maybe we should rename
-      // Vlast_prompt_time_stamp since the new usage doesn't really
-      // fit with the current name?
+	  for (int i = 2; i < argc; i++)
+	    path += dir_path::path_sep_str;
 
-      Vlast_prompt_time.stamp ();
+	  size_t plen = path.length ();
 
-      update_load_path_dir_path ();
+	  if (! ((plen == 1 && path[0] == ':')
+		 || (plen > 1
+		     && path.substr (0, 2) == ("." + dir_path::path_sep_str))))
+	    path = "." + dir_path::path_sep_str + path;
+
+	  VLOADPATH = path;
+
+	  // By resetting the last prompt time variable, we will force
+	  // checks for out of date symbols even if the change to
+	  // LOADPATH and subsequent function calls happen between
+	  // prompts.
+
+	  // FIXME -- maybe we should rename
+	  // Vlast_prompt_time_stamp since the new usage doesn't really
+	  // fit with the current name?
+
+	  Vlast_prompt_time.stamp ();
+
+	  update_load_path_dir_path ();
+	}
+
+      if (nargout > 0)
+	retval = VLOADPATH;
+      else if (argc == 1 && nargout == 0)
+	{
+	  octave_stdout << "\nOctave's search path contains the following directories:\n\n";
+
+	  string_vector sv = Vload_path_dir_path.all_directories ();
+
+	  sv.list_in_columns (octave_stdout);
+
+	  octave_stdout << "\n";
+	}
     }
 
   return retval;
 }
 
-DEFUN (DEFAULT_LOADPATH, args, nargout,
+DEFUN (pathdef, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} DEFAULT_LOADPATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} DEFAULT_LOADPATH (@var{new_val})\n\
-Query or set the internal variable that specifies the colon separated\n\
-list of directories in which to search for function files.  The value\n\
-of this variable is automatically substituted for leading, trailing,\n\
-or doubled colons that appear in the internal @code{loadpath} variable.\n\
+Return the default list of directories in which to search for function\n\
+files.\n\
 @seealso{LOADPATH}\n\
 @end deftypefn")
 {
-  std::string saved_default_loadpath = VDEFAULT_LOADPATH;
-
-  octave_value retval
-    = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (DEFAULT_LOADPATH);
-
-  if (VDEFAULT_LOADPATH != saved_default_loadpath)
-    update_load_path_dir_path ();
-
-  return retval;
+  return octave_value (VDEFAULT_LOADPATH);
 }
   
 DEFUN (OCTAVE_HOME, args, ,

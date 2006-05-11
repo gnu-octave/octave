@@ -169,7 +169,7 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
   sym_rec->document (doc);
 
   // Also insert the full name in the symbol table.  This way, we can
-  // properly cope with changes to LOADPATH.
+  // properly cope with changes to LOAD_PATH.
 
   symbol_record *full_sr = fbi_sym_tab->lookup (shl.file_name (), true);
 

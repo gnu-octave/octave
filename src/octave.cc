@@ -118,10 +118,10 @@ static bool verbose_flag = false;
 // Usage message
 static const char *usage_string = 
   "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
-       [--exec-path path] [--help] [--info-file file] [--info-program prog]\n\
-       [--interactive] [--no-history] [--no-init-file] [--no-line-editing]\n\
-       [--no-site-file] [-p path] [--path path] [--silent] [--traditional]\n\
-       [--verbose] [--version] [file]";
+       [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
+       [--info-program prog] [--interactive] [--no-history] [--no-init-file]\n\
+       [--no-line-editing] [--no-site-file] [-p path] [--path path]\n\
+       [--silent] [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -138,13 +138,14 @@ static bool persist = false;
 // fields in this structure.
 #define EVAL_OPTION 1
 #define EXEC_PATH_OPTION 2
-#define INFO_FILE_OPTION 3
-#define INFO_PROG_OPTION 4
-#define NO_INIT_FILE_OPTION 5
-#define NO_LINE_EDITING_OPTION 6
-#define NO_SITE_FILE_OPTION 7
-#define PERSIST_OPTION 8
-#define TRADITIONAL_OPTION 9
+#define IMAGE_PATH_OPTION 3
+#define INFO_FILE_OPTION 4
+#define INFO_PROG_OPTION 5
+#define NO_INIT_FILE_OPTION 6
+#define NO_LINE_EDITING_OPTION 7
+#define NO_SITE_FILE_OPTION 8
+#define PERSIST_OPTION 9
+#define TRADITIONAL_OPTION 10
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
@@ -153,6 +154,7 @@ long_options long_opts[] =
     { "eval",             prog_args::required_arg, 0, EVAL_OPTION },
     { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
     { "help",             prog_args::no_arg,       0, 'h' },
+    { "image-path",       prog_args::required_arg, 0, IMAGE_PATH_OPTION },
     { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
     { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
     { "interactive",      prog_args::no_arg,       0, 'i' },
@@ -420,6 +422,7 @@ Options:\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
   --help, -h, -?          Print short help message and exit.\n\
+  --image-path PATH       Set initial IMAGEPATH to PATH.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
@@ -428,7 +431,7 @@ Options:\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
   --norc, -f              Don't read any initialization files.\n\
-  --path PATH, -p PATH    Set initial LOADPATH to PATH.\n\
+  --path PATH, -p PATH    Set initial function search path to PATH.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --silent, -q            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\
@@ -575,7 +578,7 @@ octave_main (int argc, char **argv, int embedded)
 
 	case 'p':
 	  if (args.optarg ())
-	    bind_internal_variable ("LOADPATH", args.optarg ());
+	    set_load_path (args.optarg ());
 	  break;
 
 	case 'q':
@@ -605,7 +608,12 @@ octave_main (int argc, char **argv, int embedded)
 
 	case EXEC_PATH_OPTION:
 	  if (args.optarg ())
-	    bind_internal_variable ("exec_path", args.optarg ());
+	    set_exec_path (args.optarg ());
+	  break;
+
+	case IMAGE_PATH_OPTION:
+	  if (args.optarg ())
+	    set_image_path (args.optarg ());
 	  break;
 
 	case INFO_FILE_OPTION:

@@ -1,3 +1,52 @@
+2006-05-11  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (IMAGE_PATH_OPTION): New macro.
+	(usage_string, verbose_usage): Include --image-path option.
+	(long_opts): Include --image-path.
+	(octave_main): Handle IMAGE_PATH_OPTION.
+
+	* toplev.cc (Foctave_config_info): Delete fcnfilepath, imagepath,
+	localfcnfilepath, and localoctfilepath from the struct.
+	* defaults.h.in (OCTAVE_FCNFILEPATH, OCTAVE_IMAGEPATH,
+	OCTAVE_LOCALFCNFILEPATH, OCTAVE_LOCALOCTFILEPATH): Delete variables.
+
+	* octave.cc (octave_main): Call set_exec_path and set_load_path
+	instead of bind_internal_variable.
+
+	* defaults.cc (Fpathsep): Rename from FDEFAULT_LOADPATH.
+	Don't allow path to be set.
+	(Fpath): Rename from FLOADPATH.  Make Matlab-compatible.
+	(update_load_path_dir_path): No need to pass VDEFAULT_LOADPATH to
+	dir_path constructor now.
+	(update_exec_path, FDEFAULT_EXEC_PATH,
+	set_default_default_exec_path, set_default_exec_path,
+	maybe_add_default_load_path): Delete functions.
+	(VDEFAULT_EXEC_PATH): Delete variable.
+	(FEXEC_PATH): Leading and trailing colons no longer special.
+	(set_exec_path, set_load_path, set_image_path,
+	maybe_add_path_elts): New functions.
+	(install_defaults): Call set_exec_path and set_load_path instead
+	of set_default_exec_path and set_default_path.  Don't call
+	set_default_default_exec_path.  Do call set_image_path.
+	* defaults.cc (genpath, Fgenpath): New functions.
+	(Vlocal_ver_oct_file_dir, Vlocal_api_oct_file_dir,
+	Vlocal_oct_file_dir, Vlocal_ver_fcn_file_dir,
+	Vlocal_api_fcn_file_dir, Vlocal_fcn_file_dir, Vimage_dir):
+	New variables.
+	(set_default_local_ver_oct_file_dir,
+	set_default_local_api_oct_file_dir,
+	set_default_local_oct_file_dir,
+	set_default_local_ver_fcn_file_dir,
+	set_default_local_api_fcn_file_dir,
+	set_default_local_fcn_file_dir, set_default_image_dir):
+	New functions.
+	(install_defaults): Call them.
+	* defaults.h.in (set_exec_path, set_load_path, set_image_path,
+	Vlocal_ver_oct_file_dir, Vlocal_api_oct_file_dir,
+	Vlocal_oct_file_dir, Vlocal_ver_fcn_file_dir,
+	Vlocal_api_fcn_file_dir, Vlocal_fcn_file_dir,
+	Vlocal_fcn_file_dir, Vimage_dir): Provide decls.
+
 2006-05-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.cc (Fcellstr): Trim trailing blanks.

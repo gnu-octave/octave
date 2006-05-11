@@ -1,8 +1,19 @@
 #! /bin/sh
 top_srcdir=%abs_top_srcdir%
 builddir=%builddir%
-LOADPATH="$top_srcdir/test//:$top_srcdir/scripts//:$builddir/scripts//:$builddir/src//:";
-args="--path=$LOADPATH"
+## FIXME -- this will fail for filenames with embedded spaces...
+dirs="$top_srcdir/test $top_srcdir/scripts $builddir/scripts $builddir/src"
+dirs=$(find $dirs -type d -a ! \( \( -name CVS -o -name private \) -a -prune \))
+for d in $dirs; do
+  LOADPATH=$LOADPATH:$d
+done
+LOADPATH=$(echo $LOADPATH | sed 's|^:||')
+IMAGEPATH="$top_srcdir/scripts/image"
+args="--path=$LOADPATH --image-path=$IMAGEPATH"
+if [ $(pwd) = "$builddir" ]; then
+  sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
+  mv .gdbinit-tmp .gdbinit
+fi
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb"

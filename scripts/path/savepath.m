@@ -22,7 +22,7 @@
 ## Save the current function search path to @var{file}.  If @var{file}
 ## is omitted, @file{~/.octaverc} is used.  If successful,
 ## @code{savepath} returns 0.
-## @seealso{path, addpath, rmpath, pathsep}
+## @seealso{path, addpath, rmpath, genpath, pathdef, pathsep}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@givebillmoney.com>

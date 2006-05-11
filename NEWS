@@ -1,7 +1,28 @@
 Summary of changes for version 3.0:
 ----------------------------------
 
-  * Previous versions of Octave had a number of built-in variables to
+ ** The way Octave handles search paths has changed.  Instead of
+    setting the built-in variable LOADPATH, you must use addpath,
+    rmpath, or path to manipulate the function search path.  These
+    functions will maintain "." at the head of the path, for
+    compatibility with Matlab.
+
+    Leading, trailing or doubled colons are no longer special.
+    Now, all elements of the search path are explicitly included in
+    the path when Octave starts.  To display the path, use the path
+    function.
+
+    Path elements that end in // are no longer searched recursively.
+    Instead, you may use addpath and the genpath function to add an
+    entire directory tree to the path.  For example,
+
+      addpath (genpath ("~/octave"));
+
+    will add ~/octave and all directories below it to the head of the
+    path.
+
+
+ ** Previous versions of Octave had a number of built-in variables to
     control warnings (for example, warn_divide_by_zero).  These
     variables have been replaced by warning identifiers that are used
     with the warning function to control the state of warnings.
@@ -45,7 +66,7 @@ Summary of changes for version 3.0:
       help warning_ids
 
 
-  * All built-in variables have been converted to functions.  This
+ ** All built-in variables have been converted to functions.  This
     change simplifies the interpreter and allows a consistent
     interface to internal variables for user-defined packages and the
     core functions distributed with Octave.  In most cases, code that

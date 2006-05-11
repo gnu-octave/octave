@@ -46,9 +46,9 @@ Cell::Cell (const string_vector& sv, bool trim)
 
 	  if (trim)
 	    {
-	      size_t n = s.find_last_not_of (' ');
+	      size_t pos = s.find_last_not_of (' ');
 
-	      s = (n == NPOS) ? "" : s.substr (0, n+1);
+	      s = (pos == NPOS) ? "" : s.substr (0, pos+1);
 	    }
 
 	  elem(i,0) = s;

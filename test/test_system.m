@@ -347,7 +347,7 @@
 %!error <Invalid call to fnmatch.*> fnmatch ("foo", "bar", 3);
 
 %% test/octave.test/system/file_in_path-1.m
-%!assert(isstr (file_in_path (LOADPATH, "date.m")));
+%!assert(isstr (file_in_path (path (), "date.m")));
 
 %% test/octave.test/system/file_in_path-2.m
 %!error <invalid option> file_in_path ("foo", "bar", 1);

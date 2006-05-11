@@ -269,7 +269,7 @@ DEFUN (file_in_loadpath, args, ,
 @deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
 Return the absolute name of @var{file} if it can be found in\n\
-the list of directories specified by @code{LOADPATH}.\n\
+the list of directories specified by @code{path}.\n\
 If no file is found, return an empty matrix.\n\
 \n\
 If the first argument is a cell array of strings, search each\n\
@@ -279,7 +279,7 @@ the first that matches.\n\
 If the second optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_path, LOADPATH}\n\
+@seealso{file_in_path, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -328,7 +328,7 @@ DEFUN (file_in_path, args, ,
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name of @var{file} if it can be found in\n\
 @var{path}.  The value of @var{path} should be a colon-separated list of\n\
-directories in the format described for @code{LOADPATH}.  If no file\n\
+directories in the format described for @code{path}.  If no file\n\
 is found, return an empty matrix.  For example,\n\
 \n\
 @example\n\
@@ -343,11 +343,6 @@ the first that matches.\n\
 If the third optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-\n\
-Note that @code{file_in_path} does not expand leading, trailing,\n\
-or doubled colons the way that @code{file_in_loadpath} does.  See\n\
-also @xref{Function Files}, for an explanation of\n\
-how colon expansion is applied to @code{LOADPATH}.\n\
 @seealso{file_in_loadpath}\n\
 @end deftypefn")
 {

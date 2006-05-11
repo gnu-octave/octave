@@ -2,8 +2,7 @@
 
 	* pkg/Makefile.in: New file.
 	* configure.in (AC_CONFIG_FILES): Add pkg/Makefile to the list.
-
-	* path/genpath.m: New file.
+	* Makefile.in (SUBDIRS): Add pkg to the list.
 
 2006-05-10  John W. Eaton  <jwe@octave.org>
 

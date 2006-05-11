@@ -1,3 +1,7 @@
+2006-05-10  Soren Hauberg  <hauberg@gmail.com>
+
+	* tar.m, untar.m, unzip.m: New files.
+
 2006-05-10  John W. Eaton  <jwe@octave.org>
 
 	* path/addpath.m, path/rmpath.m: Improve compatibility.

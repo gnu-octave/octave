@@ -1,3 +1,7 @@
+2006-05-11  John W. Eaton  <jwe@octave.org>
+
+	* path/genpath.m: New file.
+
 2006-05-10  John W. Eaton  <jwe@octave.org>
 
 	* tar.m, untar.m, unzip.m: Adapt to Octave coding style.

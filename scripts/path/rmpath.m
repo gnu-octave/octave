@@ -64,10 +64,10 @@ function ret = rmpath (varargin)
   endfor
 
   xpath{:,2} = psep;
+  xpath{end,2} = "";
   xpath = xpath';
 
   tmp = strcat (xpath{:});
-  tmp(end) = "";
 
   tmp = strrep (tmp, DEFAULT_LOADPATH (), "");
 

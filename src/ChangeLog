@@ -13,8 +13,8 @@
 	* octave.cc (octave_main): Call set_exec_path and set_load_path
 	instead of bind_internal_variable.
 
-	* defaults.cc (Fpathsep): Rename from FDEFAULT_LOADPATH.
-	Don't allow path to be set.
+	* defaults.cc (Fpathdef): Rename from FDEFAULT_LOADPATH.
+	Don't allow default path to be set.
 	(Fpath): Rename from FLOADPATH.  Make Matlab-compatible.
 	(update_load_path_dir_path): No need to pass VDEFAULT_LOADPATH to
 	dir_path constructor now.

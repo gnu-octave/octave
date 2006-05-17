@@ -1,3 +1,7 @@
+2006-05-17  Bill Denney  <bill@givebillmoney.com>
+
+	* help.cc (keywords): Improve and Texinfoize.
+
 2006-05-17  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (Vwhos_line_format): Show class instead of type.

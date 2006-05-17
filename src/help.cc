@@ -227,65 +227,148 @@ transpose, *not* the complex conjugate transpose.  See also `''.", },
 
 static help_list keywords[] =
 {
-  { "all_va_args",
-    "Pass all unnamed arguments to another function call.", },
-
   { "break",
-    "Exit the innermost enclosing do, while or for loop.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword break\n\
+Exit the innermost enclosing do, while or for loop.\n\
+@seealso{do, while, for, continue}\n\
+@end deffn", },
 
   { "case",
-    "A case statement in an switch. Octave cases are exclusive and do not\n\
+    "-*- texinfo -*-\n\
+@deffn Keyword case @{@var{value}@}\n\
+A case statement in an switch. Octave cases are exclusive and do not\n\
 fall-through as do C-language cases. A switch statement must have at least\n\
-one case.",},
+one case.  See @code{switch} for an example.\n\
+@seealso{switch}\n\
+@end deffn", },
 
   { "catch",
-    "begin the cleanup part of a try-catch block", },
+    "-*- texinfo -*-\n\
+@deffn Keyword catch\n\
+Begin the cleanup part of a try-catch block.\n\
+@seealso{try}\n\
+@end deffn", },
 
   { "continue",
-    "Jump to the end of the innermost enclosing do, while or for loop.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword continue\n\
+Jump to the end of the innermost enclosing do, while or for loop.\n\
+@seealso{do, while, for, break}\n\
+@end deffn", },
 
   { "do",
-    "Begin a do-until loop. This differs from a do-while loop in that the\n\
-body of the loop is executed at least once.",},
+    "-*- texinfo -*-\n\
+@deffn Keyword do\n\
+Begin a do-until loop. This differs from a do-while loop in that the\n\
+body of the loop is executed at least once.\n\
+@seealso{while}\n\
+@end deffn", },
 
   { "else",
-    "Alternate action for an if block.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword else\n\
+Alternate action for an if block.  See @code{if} for an example.\n\
+@seealso{if}\n\
+@end deffn", },
 
   { "elseif",
-    "Alternate conditional test for an if block.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword elseif (@var{condition})\n\
+Alternate conditional test for an if block.  See @code{if} for an example.\n\
+@seealso{if}\n\
+@end deffn", },
 
   { "end",
-    "Mark the end of any for, if, do, while, or function block.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword end\n\
+Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or @code{function} block.\n\
+@seealso{for, if, do, while, function}\n\
+@end deffn", },
 
   { "end_try_catch",
-    "Mark the end of an try-catch block.", }, 
+    "-*- texinfo -*-\n\
+@deffn Keyword end_try_catch\n\
+Mark the end of an @code{try-catch} block.\n\
+@seealso{try, catch}\n\
+@end deffn", }, 
 
   { "end_unwind_protect",
-    "Mark the end of an unwind_protect block.", }, 
+    "-*- texinfo -*-\n\
+@deffn Keyword end_unwind_protect\n\
+Mark the end of an unwind_protect block.\n\
+@seealso{unwind_protect}\n\
+@end deffn", }, 
 
   { "endfor",
-    "Mark the end of a for loop.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword endfor\n\
+Mark the end of a for loop.  See @code{for} for an example.\n\
+@seealso{for}\n\
+@end deffn", },
 
   { "endfunction",
-    "Mark the end of a function.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword endfunction\n\
+Mark the end of a function.\n\
+@seealso{function}\n\
+@end deffn", },
 
   { "endif",
-    "Mark the end of an if block.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword endif\n\
+Mark the end of an if block.  See @code{if} for an example.\n\
+@seealso{if}\n\
+@end deffn", },
 
   { "endswitch",
-    "Mark the end of a switch block.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword endswitch\n\
+Mark the end of a switch block.  See @code{switch} for an example.\n\
+@seealso{switch}\n\
+@end deffn", },
 
   { "endwhile",
-    "Mark the end of a while loop.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword endwhile\n\
+Mark the end of a while loop.  See @code{while} for an example.\n\
+@seealso{do, while}\n\
+@end deffn", },
 
   { "for",
-    "Begin a for loop.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword for @var{i} = @var{range}\n\
+Begin a for loop.\n\
+@example\n\
+for i = 1:10\n\
+  i\n\
+endfor\n\
+@end example\n\
+@seealso{do, while}\n\
+@end deffn", },
 
   { "function",
-    "Begin a function body.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword function @var{outputs} = function (@var{input}, ...)\n\
+@deffnx Keyword function {} function (@var{input}, ...)\n\
+@deffnx Keyword function @var{outputs} = function\n\
+Begin a function body with @var{outputs} as results and @var{inputs} as\n\
+parameters.\n\
+@seealso{return}\n\
+@end deffn", },
 
   { "global",
-    "Declare variables to have global scope.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword global\n\
+Declare variables to have global scope.\n\
+@example\n\
+global @var{x};\n\
+if isempty (@var{x})\n\
+  x = 1;\n\
+endif\n\
+@end example\n\
+@seealso{persistent}\n\
+@end deffn", },
 
   { "if",
     "-*- texinfo -*-\n\
@@ -294,53 +377,125 @@ body of the loop is executed at least once.",},
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
 Begin an if block.\n\
+@example\n\
+x = 1;\n\
+if (x == 1)\n\
+  disp (\"one\");\n\
+elseif (x == 2)\n\
+  disp (\"two\");\n\
+else\n\
+  disp (\"not one or two\");\n\
+endif\n\
+@end example\n\
 @seealso{switch}\n\
 @end deffn", },
 
   { "otherwise",
-    "The default statement in a switch block.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword otherwise\n\
+The default statement in a switch block (similar to else in an if block).\n\
+@seealso{switch}\n\
+@end deffn", },
 
   { "persistent",
-    "Declare variables as persistent.  A variable that has been declared\n\
+    "-*- texinfo -*-\n\
+@deffn Keyword persistent @var{var}\n\
+Declare variables as persistent.  A variable that has been declared\n\
 persistent within a function will retain its contents in memory between\n\
 subsequent calls to the same function.  The difference between persistent\n\
-variables and global variables is that persistent variables are local in scope\n\
-to a particular function and are not visible elsewhere.", },
+variables and global variables is that persistent variables are local in \n\
+scope to a particular function and are not visible elsewhere.\n\
+@seealso{global}\n\
+@end deffn", },
 
   { "replot",
-    "Replot a graphic.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword replot\n\
+Replot a graphic.\n\
+@seealso{plot}\n\
+@end deffn", },
 
   { "return",
-    "Return from a function.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword return\n\
+Return from a function.\n\
+@seealso{function}\n\
+@end deffn", },
 
   { "static",
-    "Declare variables as persistent.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword static\n\
+This function has been deprecated in favor of persistent.\n\
+@seealso{persistent}\n\
+@end deffn", },
 
   { "switch",
-    "Begin a switch statement.",},
+    "-*- texinfo -*-\n\
+@deffn Keyword switch @var{statement}\n\
+Begin a switch block.\n\
+@example\n\
+yesno = \"yes\"\n\
+\n\
+switch yesno\n\
+  case {\"Yes\" \"yes\" \"YES\" \"y\" \"Y\"}\n\
+    value = 1;\n\
+  case {\"No\" \"no\" \"NO\" \"n\" \"N\"}\n\
+    value = 0;\n\
+  otherwise\n\
+    error (\"invalid value\");\n\
+endswitch\n\
+@end example\n\
+@seealso{if, case, otherwise}\n\
+@end deffn", },
 
   { "try",
-    "Begin a try-catch block.", }, 
+    "-*- texinfo -*-\n\
+@deffn Keyword try\n\
+Begin a try-catch block.\n\
+@seealso{catch}\n\
+@end deffn", }, 
 
   { "until",
-    "End a do-until loop.",},
+    "-*- texinfo -*-\n\
+@deffn Keyword until\n\
+End a do-until loop.\n\
+@seealso{do}\n\
+@end deffn", },
 
   { "unwind_protect",
-    "Begin an unwind_protect block.", }, 
+    "-*- texinfo -*-\n\
+@deffn Keyword unwind_protect\n\
+Begin an unwind_protect block.\n\
+@seealso{unwind_protect_cleanup}\n\
+@end deffn", }, 
 
   { "unwind_protect_cleanup",
-    "Begin the cleanup section of an unwind_protect block.", }, 
+    "-*- texinfo -*-\n\
+@deffn Keyword unwind_protect_cleanup\n\
+Begin the cleanup section of an unwind_protect block.\n\
+@seealso{unwind_protect}\n\
+@end deffn", }, 
 
   { "varargin",
-    "Pass an arbitrary number of arguments into a function.  See also\n\
-varargout, nargin, and nargout.",},
+    "-*- texinfo -*-\n\
+@deffn Keyword varargin\n\
+Pass an arbitrary number of arguments into a function.\n\
+@seealso{varargout, nargin, nargout}\n\
+@end deffn", },
 
   { "varargout",
-    "Pass an arbitrary number of arguments out of a function.  See also\n\
-varargin, nargin, and nargout.",},
+    "-*- texinfo -*-\n\
+@deffn Keyword varargout\n\
+Pass an arbitrary number of arguments out of a function.\n\
+@seealso{varargin, nargin, nargout}\n\
+@end deffn", },
 
   { "while",
-    "Begin a while loop.", },
+    "-*- texinfo -*-\n\
+@deffn Keyword while\n\
+Begin a while loop.\n\
+@seealso{do}\n\
+@end deffn", },
 
   { 0, 0, },
 };

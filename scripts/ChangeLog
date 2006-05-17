@@ -1,3 +1,12 @@
+2006-05-17  David Bateman  <dbateman@free.fr>
+
+	* general/cplxpair.m, general/trapz.m, general/cumtrapz.m,
+	general/isdir.m, miscellaneous/dos.m, miscellaneous/getfield.m,
+	miscellaneous/setfield.m, plot/fplot.m, set/intersect.m,
+	signal/ifftshift.m, signal/filter2.m, specfun/betaln.m,
+	specfun/factorial.m, strings/strvcat.m: New files from Octave
+	Forge.
+
 2006-05-11  John W. Eaton  <jwe@octave.org>
 
 	* path/path.m: Delete (now a built-in function).
@@ -354,7 +363,7 @@
         * general/triu.m: Minimum change to allow sparse matrix. More needed
         for arbitrary user type.
         * general/tril.m: ditto.
-        * sparse/sprand.m : Doc fix.
+        * sparse/sprand.m: Doc fix.
         * sparse/sprandn.m: Ditto.
         * sparse/sprandsym.m: New function.
         * audio/setaudio.m, general/cart2pol.m, general/cart2sph.m,

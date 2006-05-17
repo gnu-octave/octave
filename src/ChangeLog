@@ -1,6 +1,6 @@
 2006-05-04  David Bateman  <dbateman@free.fr>
 
-	* DLD-FUNCTIONS/conv2.cc: New file.
+	* DLD-FUNCTIONS/conv2.cc: New file from Octave Forge.
 	* Makefile.in (DLD_XSRC): Add it to the list
 
 2006-05-17  Bill Denney  <bill@givebillmoney.com>

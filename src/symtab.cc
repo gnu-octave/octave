@@ -63,7 +63,7 @@ static bool Vdebug_symtab_lookups = false;
 
 // Defines layout for the whos/who -long command
 std::string Vwhos_line_format
-  = "  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\n";
+  = "  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\n";
 
 octave_allocator
 symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
@@ -563,6 +563,10 @@ symbol_record::print_symbol_info_line (std::ostream& os,
 	    {
 	    case 'b':
 	      os << byte_size ();
+	      break;
+
+	    case 'c':
+	      os << class_name ();
 	      break;
 
 	    case 'e':
@@ -1162,8 +1166,8 @@ symbol_table::name_list (const string_vector& pats, bool sort,
 static int
 maybe_list_cmp_fcn (const void *a_arg, const void *b_arg)
 {
-  const symbol_record *a = static_cast<const symbol_record *> (a_arg);
-  const symbol_record *b = static_cast<const symbol_record *> (b_arg);
+  const symbol_record *a = *(static_cast<symbol_record *const*> (a_arg));
+  const symbol_record *b = *(static_cast<symbol_record *const*> (b_arg));
 
   std::string a_nm = a->name ();
   std::string b_nm = b->name ();
@@ -1271,33 +1275,35 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
   size_t bytes1;
   int elements1;
 
-  int len = symbols.length (), i;
+  int len = symbols.length ();
 
-  std::string param_string = "benpst";
+  std::string param_string = "bcenpst";
   Array<int> param_length (dim_vector (param_string.length (), 1));
   Array<std::string> param_names (dim_vector (param_string.length (), 1));
-  size_t pos_b, pos_t, pos_e, pos_n, pos_p, pos_s;
+  size_t pos_b, pos_c, pos_e, pos_n, pos_p, pos_s, pos_t;
 
   pos_b = param_string.find ('b'); // Bytes
-  pos_t = param_string.find ('t'); // (Type aka) Class
+  pos_c = param_string.find ('c'); // Class
   pos_e = param_string.find ('e'); // Elements
   pos_n = param_string.find ('n'); // Name
   pos_p = param_string.find ('p'); // Protected
   pos_s = param_string.find ('s'); // Size
+  pos_t = param_string.find ('t'); // Type
 
   param_names(pos_b) = "Bytes";
-  param_names(pos_t) = "Class";
+  param_names(pos_c) = "Class";
   param_names(pos_e) = "Elements";
   param_names(pos_n) = "Name";
   param_names(pos_p) = "Prot";
   param_names(pos_s) = "Size";
+  param_names(pos_t) = "Type";
 
-  for (i = 0; i < 6; i++)
+  for (size_t i = 0; i < param_string.length (); i++)
     param_length(i) = param_names(i) . length ();
 
   // Calculating necessary spacing for name column,
   // bytes column, elements column and class column
-  for (i = 0; i < static_cast<int> (len); i++)
+  for (int i = 0; i < static_cast<int> (len); i++)
     {
       std::stringstream ss1, ss2;
       std::string str;
@@ -1716,6 +1722,8 @@ The following escape sequences may be used in the format:\n\
 @table @code\n\
 @item %b\n\
 Prints number of bytes occupied by variables.\n\
+@item %c\n\
+Prints class names of variables.\n\
 @item %e\n\
 Prints elements held by variables.\n\
 @item %n\n\
@@ -1751,7 +1759,7 @@ center-specific and print_dims may only be applied to command\n\
 dimensions whatsoever.\n\
 balance specifies the offset for printing of the dimensions string.\n\
 \n\
-The default format is \"  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lt:-1;\\n\".\n\
+The default format is \"  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\\n\".\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);

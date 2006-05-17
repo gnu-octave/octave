@@ -1,3 +1,11 @@
+2006-05-17  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (Vwhos_line_format): Show class instead of type.
+	(symbol_table::parse_whos_line_format):
+	Use 't' for "Type" and 'c' for "Class".
+	(symbol_record::print_symbol_info_line): Likewise.
+	(maybe_list_cmp_fcn): Fix casts.
+
 2006-05-11  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (IMAGE_PATH_OPTION): New macro.

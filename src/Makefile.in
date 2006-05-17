@@ -43,15 +43,16 @@ endif
 OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc Quad-opts.cc
 
-DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc ccolamd.cc \
-	colamd.cc colloc.cc daspk.cc dasrt.cc dassl.cc det.cc dispatch.cc \
-	eig.cc expm.cc fft.cc fft2.cc fftn.cc fftw_wisdom.cc \
-	filter.cc find.cc fsolve.cc gammainc.cc gcd.cc getgrent.cc \
-	getpwent.cc getrusage.cc givens.cc hess.cc inv.cc kron.cc \
-	lpsolve.cc lsode.cc lu.cc luinc.cc matrix_type.cc minmax.cc \
-	pinv.cc qr.cc quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc \
-	sparse.cc spchol.cc spdet.cc spkron.cc splu.cc spparms.cc \
-	spqr.cc sqrtm.cc svd.cc syl.cc time.cc \
+DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
+	ccolamd.cc colamd.cc colloc.cc conv2.cc daspk.cc dasrt.cc \
+	dassl.cc det.cc dispatch.cc eig.cc expm.cc fft.cc fft2.cc \
+	fftn.cc fftw_wisdom.cc filter.cc find.cc fsolve.cc \
+	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
+	givens.cc hess.cc inv.cc kron.cc lpsolve.cc lsode.cc \
+	lu.cc luinc.cc matrix_type.cc minmax.cc pinv.cc qr.cc \
+	quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc sparse.cc \
+	spchol.cc spdet.cc spkron.cc splu.cc spparms.cc spqr.cc \
+	sqrtm.cc svd.cc syl.cc time.cc \
 	__gnuplot_raw__.l __glpk__.cc __qp__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))

@@ -19,52 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} intersection (@var{x}, @var{y})
-## Return the set of elements that are in both sets @var{x} and @var{y}.
-## For example,
-##
-## @example
-## @group
-## intersection ([ 1, 2, 3 ], [ 2, 3, 5 ])
-##      @result{} [ 2, 3 ]
-## @end group
-## @end example
-## @seealso{create_set, union, complement}
+## This function has been deprecated.  Use intersect instead.
 ## @end deftypefn
 
 ## Author: jwe
 
-function y = intersection(a,b)
+function y = intersection (varargin)
 
-  if (nargin != 2)
-    usage ("intersection(a,b)");
-  endif
-
-  if(isempty(a) || isempty(b))
-    y = [];
-    return;
-  endif
-
-  a = create_set(a);
-  b = create_set(b);
-
-  if(length(a) < length(b))
-    yindex = 1;
-    y = zeros(1,length(a));
-    for index = 1:length(a)
-      if(any(b == a(index)))
-        y(yindex++) = a(index);
-      endif
-    endfor
-  else
-    yindex = 1;
-    y = zeros(1,length(b));
-    for index = 1:length(b)
-      if(any(a == b(index)))
-        y(yindex++) = b(index);
-      endif
-    endfor
-  endif
-
-  y = y(1:(yindex-1));
+  y = intersect (varargin{:});
 
 endfunction

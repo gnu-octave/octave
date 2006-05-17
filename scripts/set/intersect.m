@@ -43,17 +43,17 @@ function [c, ia, ib] = intersect (a, b)
     [a, ja] = unique (a);
     [b, jb] = unique (b);
 
-    c = [ a(:); b(:) ];
-    [c, ic] = sort( c );              ## [a(:);b(:)](ic) == c
+    c = [a(:); b(:)];
+    [c, ic] = sort (c);               ## [a(:);b(:)](ic) == c
 
     ii = find( c(1:end-1) == c(2:end) );  
 
     c  = c(ii);                       ## The answer
     ia = ja(ic(ii));                  ## a(ia) == c
-    ib = jb(ic(ii+1) - length(a));    ## b(ib) == c
+    ib = jb(ic(ii+1) - length (a));   ## b(ib) == c
 
 
-    if ( size (b, 1) == 1 || size (a, 1) == 1 )
+    if (size (b, 1) == 1 || size (a, 1) == 1)
       c = c.';
     endif
   endif

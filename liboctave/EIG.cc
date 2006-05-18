@@ -70,6 +70,13 @@ extern "C"
 octave_idx_type
 EIG::init (const Matrix& a, bool calc_ev)
 {
+  if (a.any_element_is_inf_or_nan ())
+    {
+      (*current_liboctave_error_handler)
+	("EIG: matrix contains Inf or NaN values");
+      return -1;
+    }
+
   if (a.is_symmetric ())
     return symmetric_init (a, calc_ev);
 
@@ -237,6 +244,13 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
 octave_idx_type
 EIG::init (const ComplexMatrix& a, bool calc_ev)
 {
+  if (a.any_element_is_inf_or_nan ())
+    {
+      (*current_liboctave_error_handler)
+	("EIG: matrix contains Inf or NaN values");
+      return -1;
+    }
+
   if (a.is_hermitian ())
     return hermitian_init (a, calc_ev);
 

@@ -269,7 +269,7 @@ in the column direction and by vector @var{v2} in the row direction\n\
     }
   else if (nargin == 3)
     {
-      if  args(2).is_string ())
+      if (args(2).is_string ())
         shape = args(2).string_value ();
       else
         separable = true;
@@ -288,7 +288,7 @@ in the column direction and by vector @var{v2} in the row direction\n\
     ishape = SHAPE_VALID;
   else
     {
-      error("Shape type not valid");
+      error ("conv2: shape type not valid");
       print_usage ("conv2");
       return retval;
     }

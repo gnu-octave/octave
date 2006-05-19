@@ -1210,10 +1210,10 @@ representation.  This problem may be fixed in a future release.\n\
 		retval = output_buf.str ();
 	    }
 	  else
-	    print_usage ("type");
+	    print_usage ();
 	}
       else
-	print_usage ("type");
+	print_usage ();
     }
 
  abort:
@@ -1294,7 +1294,7 @@ function file, the full name of the file is also displayed.\n\
 	    }
 	}
       else
-	print_usage (argv[0]);
+	print_usage ();
     }
 
   return retval;

@@ -292,7 +292,7 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 
   if (nargin < 2 || nargin > 3 || nargout > 7)
     {
-      print_usage ("qz");
+      print_usage ();
       return retval;
     }
   else if (nargin == 3 && (nargout < 3 || nargout > 4))

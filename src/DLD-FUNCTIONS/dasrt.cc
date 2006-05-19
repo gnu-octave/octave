@@ -363,7 +363,7 @@ parameters for @code{dasrt}.\n\
 
   if (nargin < 4 || nargin > 6)
     {
-      print_usage ("dasrt");
+      print_usage ();
       unwind_protect::run_frame ("Fdasrt");
       return retval;
     }

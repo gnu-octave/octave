@@ -202,7 +202,7 @@ otherwise, it returns -1.\n\
   if (nargin == 1)
     retval = octave_stream_list::remove (args(0), "fclose");
   else
-    print_usage ("fclose");
+    print_usage ();
 
   return retval;
 }
@@ -227,7 +227,7 @@ Clear the stream state for the specified file.\n\
 	os.clearerr ();
     }
   else
-    print_usage ("fclear");
+    print_usage ();
 
   return retval;
 }
@@ -270,7 +270,7 @@ stream before calling @code{input}.\n\
 	}
     }
   else
-    print_usage ("fflush");
+    print_usage ();
 
   return retval;
 }
@@ -319,7 +319,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 	}
     }
   else
-    print_usage (who);
+    print_usage ();
 
   return retval;
 }
@@ -368,7 +368,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 	}
     }
   else
-    print_usage (who);
+    print_usage ();
 
   return retval;
 }
@@ -622,7 +622,7 @@ however, conversions are currently only supported for @samp{native}\n\
 	}
     }
   else
-    print_usage ("fopen");
+    print_usage ();
 
   return retval;
 }
@@ -681,7 +681,7 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
 	result = os.rewind ();
     }
   else
-    print_usage ("frewind");
+    print_usage ();
 
   if (nargout > 0)
     retval = result;
@@ -722,7 +722,7 @@ Return 0 on success and -1 on error.\n\
 	}
     }
   else
-    print_usage ("fseek");
+    print_usage ();
 
   return retval;
 }
@@ -747,7 +747,7 @@ from the beginning of the file @var{fid}.\n\
 	retval = os.tell ();
     }
   else
-    print_usage ("ftell");
+    print_usage ();
 
   return retval;
 }
@@ -804,7 +804,7 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 	}
     }
   else
-    print_usage (who);
+    print_usage ();
 
   if (nargout > 0)
     retval = result;
@@ -854,7 +854,7 @@ complete description of the syntax of the template string.\n\
 	::error ("%s: format must be a string", who.c_str ());
     }
   else
-    print_usage (who);
+    print_usage ();
 
   if (nargout > 0)
     retval = result;
@@ -884,7 +884,7 @@ Return a non-negative number on success and EOF on error.\n\
 	retval = os.puts (args(1), who);
     }
   else
-    print_usage (who);
+    print_usage ();
 
   return retval;
 }
@@ -904,7 +904,7 @@ Return a non-negative number on success and EOF on error.\n\
   if (args.length () == 1)
     retval = stdout_stream.puts (args(0), who);
   else
-    print_usage (who);
+    print_usage ();
 
   return retval;
 }
@@ -961,7 +961,7 @@ converted.\n\
 	::error ("%s: unable to create output buffer", who.c_str ());
     }
   else
-    print_usage (who);
+    print_usage ();
 
   return retval;
 }
@@ -1065,7 +1065,7 @@ complete description of the syntax of the template string.\n\
 	    }
 	}
       else
-	print_usage (who);
+	print_usage ();
     }
 
   return retval;
@@ -1157,7 +1157,7 @@ string is treated as an end-of-file condition.\n\
 	    ::error ("%s: first argument must be a string", who.c_str ());
 	}
       else
-	print_usage (who);
+	print_usage ();
     }
 
   return retval;
@@ -1459,7 +1459,7 @@ values read is returned in @code{count}\n\
 	}
     }
   else
-    print_usage ("fread");
+    print_usage ();
 
   return retval;
 }
@@ -1557,7 +1557,7 @@ are too large to fit in the specified precision.\n\
 	}
     }
   else
-    print_usage ("fwrite");
+    print_usage ();
 
   return retval;
 }
@@ -1584,7 +1584,7 @@ result in an end-of-file condition.\n\
 	retval = os.eof () ? 1.0 : 0.0;
     }
   else
-    print_usage ("feof");
+    print_usage ();
 
   return retval;
 }
@@ -1629,7 +1629,7 @@ error condition.\n\
 	}
     }
   else
-    print_usage ("ferror");
+    print_usage ();
 
   return retval;
 }
@@ -1703,7 +1703,7 @@ endwhile\n\
 	::error ("popen: name must be a string");
     }
   else
-    print_usage ("popen");
+    print_usage ();
 
   return retval;
 }
@@ -1722,7 +1722,7 @@ use @code{fclose} for the same purpose.\n\
   if (nargin == 1)
     retval = octave_stream_list::remove (args(0), "pclose");
   else
-    print_usage ("pclose");
+    print_usage ();
 
   return retval;
 }
@@ -1763,7 +1763,7 @@ that it will not be available by the time your program attempts to open it.\n\
 	::error ("expecting first argument to be a string");
     }
   else
-    print_usage ("tmpnam");
+    print_usage ();
 
   return retval;
 }
@@ -1817,7 +1817,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("tmpfile");
+    print_usage ();
 
   return retval;
 }
@@ -1908,7 +1908,7 @@ error message.\n\
 	error ("mkstemp: expecting string as first argument");
     }
   else
-    print_usage ("mkstemp");
+    print_usage ();
 
 #else
   retval(2) = "mkstemp: not supported on this sytem";
@@ -1985,7 +1985,7 @@ interpreted as an octal number); otherwise an error message is printed.\n\
 	}
     }
   else
-    print_usage ("umask");
+    print_usage ();
 
   if (status >= 0)
     retval(0) = status;
@@ -2003,7 +2003,7 @@ const_value (const char *nm, const octave_value_list& args, int val)
   if (nargin == 0)
     retval = val;
   else
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }
@@ -2026,7 +2026,7 @@ this system.  The name of this directory is system dependent.\n\
   if (nargin == 0)
     retval = P_tmpdir;
   else
-    print_usage ("P_tmpdir");
+    print_usage ();
 
   return retval;
 }
@@ -2085,7 +2085,7 @@ const_value (const char *nm, const octave_value_list& args,
   if (nargin == 0)
     retval = val;
   else
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }

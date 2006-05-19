@@ -155,7 +155,7 @@ factorization allows the construction of an orthogonal basis of\n\
 
   if (nargin != 1 && nargin != 2 || nargout > 3)
     {
-      print_usage ("qr");
+      print_usage ();
       return retval;
     }
 

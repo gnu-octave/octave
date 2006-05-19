@@ -780,7 +780,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 
   if (i == argc)
     {
-      print_usage ("load");
+      print_usage ();
       return retval;
     }
 
@@ -1595,7 +1595,7 @@ the file @file{data} in Octave's binary format.\n\
 
   if (i == argc)
     {
-      print_usage ("save");
+      print_usage ();
       return retval;
     }
 
@@ -1629,7 +1629,7 @@ the file @file{data} in Octave's binary format.\n\
 
   else if (i == argc - 1 && glob_pattern_p (argv[i]))
     {
-      print_usage ("save");
+      print_usage ();
       return retval;
     }
   else

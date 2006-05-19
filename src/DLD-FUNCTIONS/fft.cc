@@ -49,7 +49,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
   if (nargin < 1 || nargin > 3)
     {
-      print_usage (fcn);
+      print_usage ();
       return retval;
     }
 

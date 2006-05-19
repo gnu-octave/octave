@@ -250,7 +250,7 @@ DEFUN (__version_info__, args, ,
   else if (nargin == 0)
     retval = vinfo;
   else
-    print_usage ("__version_info__");
+    print_usage ();
 
   return retval;
 }
@@ -791,7 +791,7 @@ for an example of how to create an executable Octave script.\n\
   if (args.length () == 0)
     retval = Cell (octave_argv);
   else
-    print_usage ("argv");
+    print_usage ();
 
   return retval;
 }
@@ -813,7 +813,7 @@ how to create an executable Octave script.\n\
   if (args.length () == 0)
     retval = octave_program_invocation_name;
   else
-    print_usage ("program_invocation_name");
+    print_usage ();
 
   return retval;
 }
@@ -831,7 +831,7 @@ Return the last component of of the value returned by\n\
   if (args.length () == 0)
     retval = octave_program_name;
   else
-    print_usage ("program_name");
+    print_usage ();
 
   return retval;
 }

@@ -77,7 +77,7 @@ be square.\n\
 
   if (nargin < 1 || nargin > 3 || nargout > 4)
     {
-      print_usage ("splu");
+      print_usage ();
       return retval;
     }
 
@@ -416,7 +416,7 @@ than @code{@var{y} = spinv (@var{a}) * @var{b}}.\n\
 
   if (nargin != 1)
     {
-      print_usage ("inv");
+      print_usage ();
       return retval;
     }
 

@@ -309,7 +309,7 @@ parameters for @code{quad}.\n\
 	clear_function (fcn_name);
     }
   else
-    print_usage ("quad");
+    print_usage ();
 
   unwind_protect::run_frame ("Fquad");
 

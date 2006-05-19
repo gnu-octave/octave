@@ -89,7 +89,7 @@ false.\n\
   if (args.length () == 1)
     retval = args(0).is_streamoff ();
   else
-    print_usage ("isstreamoff");
+    print_usage ();
 
   return retval;
 }

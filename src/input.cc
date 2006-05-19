@@ -732,7 +732,7 @@ the screen before your prompt.  @xref{Input and Output}.\n\
   if (nargin == 1 || nargin == 2)
     retval = get_user_input (args, false, nargout);
   else
-    print_usage ("input");
+    print_usage ();
 
   return retval;
 }
@@ -787,7 +787,7 @@ RET and can edit it until it has been confirmed.\n\
       retval = octave_yes_or_no (prompt);
     }
   else
-    print_usage ("yes_or_no");
+    print_usage ();
 
   return retval;
 }
@@ -851,7 +851,7 @@ If @code{keyboard} is invoked without any arguments, a default prompt of\n\
   if (nargin == 0 || nargin == 1)
     do_keyboard (args);
   else
-    print_usage ("keyboard");
+    print_usage ();
 
   return retval;
 }
@@ -913,7 +913,7 @@ state.\n\
 	else if (arg == "off")
 	  Vecho_executing_commands = ECHO_OFF;
 	else
-	  print_usage ("echo");
+	  print_usage ();
       }
       break;
 
@@ -929,12 +929,12 @@ state.\n\
 	else if (arg == "off" && argv[2] == "all")
 	  Vecho_executing_commands = ECHO_OFF;
 	else
-	  print_usage ("echo");
+	  print_usage ();
       }
       break;
 
     default:
-      print_usage ("echo");
+      print_usage ();
       break;
     }
 
@@ -1012,7 +1012,7 @@ a feature, not a bug.\n\
 	}
     }
   else
-    print_usage ("completion_matches");
+    print_usage ();
 
   return retval;
 }
@@ -1039,7 +1039,7 @@ Read the readline library initialiazation file @var{file}.  If\n\
 	command_editor::read_init_file (file);
     }
   else
-    print_usage ("read_readline_init_file");
+    print_usage ();
 
   return retval;
 }
@@ -1089,7 +1089,7 @@ and the user data are returned.\n\
   int nargin = args.length ();
 
   if (nargin > 2)
-    print_usage ("input_event_hook");
+    print_usage ();
   else
     {
       octave_value tmp_user_data;

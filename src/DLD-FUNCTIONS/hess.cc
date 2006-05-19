@@ -67,7 +67,7 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
 
   if (nargin != 1 || nargout > 2)
     {
-      print_usage ("hess");
+      print_usage ();
       return retval;
     }
 

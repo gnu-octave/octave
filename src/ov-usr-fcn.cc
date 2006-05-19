@@ -646,7 +646,7 @@ function accepts a variable number of arguments.\n\
       retval = sr ? sr->def () : 0;
     }
   else
-    print_usage ("nargin");
+    print_usage ();
 
   return retval;
 }
@@ -724,7 +724,7 @@ At the top level, @code{nargout} is undefined.\n\
 	error ("nargout: invalid call at top level");
     }
   else
-    print_usage ("nargout");
+    print_usage ();
 
   return retval;
 }
@@ -768,7 +768,7 @@ has not been declared to take a variable number of parameters.\n\
 	::error ("va_arg only valid within function body");
     }
   else
-    print_usage ("va_arg");
+    print_usage ();
 
   return retval;
 }
@@ -812,7 +812,7 @@ that has not been declared to take a variable number of parameters.\n\
 	::error ("va_start only valid within function body");
     }
   else
-    print_usage ("va_start");
+    print_usage ();
 
   return retval;
 }
@@ -860,7 +860,7 @@ been declared to return an unspecified number of output arguments.\n\
 	::error ("vr_val only valid within function body");
     }
   else
-    print_usage ("vr_val");
+    print_usage ();
 
   return retval;
 }

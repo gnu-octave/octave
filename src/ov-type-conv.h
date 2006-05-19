@@ -68,7 +68,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 	} \
     } \
   else \
-    print_usage (#NAME); \
+    print_usage (); \
  \
   return retval
 

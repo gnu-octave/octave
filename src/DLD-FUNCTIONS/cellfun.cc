@@ -91,7 +91,7 @@ cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@})\n\
   if (nargin < 2)
     {
       error ("cellfun: you must supply at least 2 arguments");
-      print_usage ("cellfun");
+      print_usage ();
       return retval;
     }
 
@@ -258,7 +258,7 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
   octave_value retval;
 
   if (nargin < 1 || nargin > 2)
-    print_usage ("num2cell");
+    print_usage ();
   else
     {
       dim_vector dv = args(0).dims ();

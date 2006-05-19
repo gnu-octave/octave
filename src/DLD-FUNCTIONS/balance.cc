@@ -120,7 +120,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
   if (nargin < 1 || nargin > 3 || nargout < 0 || nargout > 4)
     {
-      print_usage ("balance");
+      print_usage ();
       return retval;
     }
 

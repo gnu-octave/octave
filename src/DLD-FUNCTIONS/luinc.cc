@@ -96,7 +96,7 @@ are the same as for @dfn{lu}.\n\
   octave_value_list retval;
 
   if (nargin == 0)
-    print_usage ("luinc");
+    print_usage ();
   else if (nargin != 2)
     error ("luinc: incorrect number of arguments");
   else

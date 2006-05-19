@@ -170,7 +170,7 @@ compatible dimensions.\n\
 	}
     }
   else
-    print_usage ("betainc");
+    print_usage ();
 
   return retval;
 }

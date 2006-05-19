@@ -122,7 +122,7 @@ of the string array have the same length.\n\
       retval = octave_value (result, '\'');
     }
   else
-    print_usage ("char");
+    print_usage ();
 
   return retval;
 }
@@ -140,7 +140,7 @@ Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
   if (nargin == 1 && args(0).is_defined ())
     retval = args(0).is_string ();
   else
-    print_usage ("ischar");
+    print_usage ();
 
   return retval;
 }
@@ -369,7 +369,7 @@ This is just the opposite of the corresponding C library function.\n\
 	retval = false;
     }
   else
-    print_usage ("strcmp");
+    print_usage ();
 
   return retval;
 }
@@ -415,7 +415,7 @@ If @var{width} is not specified, the width of the terminal screen is used.\n\
 	error ("list_in_columns: expecting cellstr or char array");
     }
   else
-    print_usage ("list_in_columns");
+    print_usage ();
 
   return retval;
 }

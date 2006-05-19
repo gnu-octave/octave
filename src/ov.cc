@@ -1866,7 +1866,7 @@ Convert @var{val} to the new data type @var{type}.\n\
   if (args.length () == 2)
     error ("cast: not implemented");
   else
-    print_usage ("cast");
+    print_usage ();
 
   return retval;
 }
@@ -1883,7 +1883,7 @@ Return the size of @var{val} in bytes\n\
   if (args.length () == 1)
     retval = args(0).byte_size ();
   else
-    print_usage ("sizeof");
+    print_usage ();
 
   return retval;
 }

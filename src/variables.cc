@@ -158,7 +158,7 @@ Enter @var{name} into the list of commands.\n\
 	    }
 	}
       else
-	print_usage ("mark_as_command");
+	print_usage ();
     }
   else
     warning ("mark_as_command: invalid use inside function body");
@@ -192,7 +192,7 @@ Remove @var{name} from the list of commands.\n\
 	    }
 	}
       else
-	print_usage ("unmark_command");
+	print_usage ();
     }
   else
     warning ("mark_as_command: invalid use inside function body");
@@ -258,7 +258,7 @@ mark_as_command.\n\
 	}
     }
   else
-    print_usage ("iscommand");
+    print_usage ();
 
   return retval;
 }
@@ -324,7 +324,7 @@ a continuation token ('\\' or '...').\n\
 	    }
 	}
       else
-	print_usage ("mark_as_rawcommand");
+	print_usage ();
     }
   else
     warning ("mark_as_rawcommand: invalid use inside function body");
@@ -360,7 +360,7 @@ functions.\n\
 	    }
 	}
       else
-	print_usage ("unmark_rawcommand");
+	print_usage ();
     }
   else
     warning ("unmark_rawcommand: invalid use inside function body");
@@ -427,7 +427,7 @@ raw input commands with mark_as_rawcommand.\n\
 	}
     }
   else
-    print_usage ("israwcommand");
+    print_usage ();
 
   return retval;
 }
@@ -726,7 +726,7 @@ isglobal (\"x\")\n\
 
   if (nargin != 1)
     {
-      print_usage ("isglobal");
+      print_usage ();
       return retval;
     }
 
@@ -941,7 +941,7 @@ Check only for directories.\n\
 	error ("exist: expecting first argument to be a string");
     }
   else
-    print_usage ("exist");
+    print_usage ();
 
   return retval;
 }
@@ -1263,7 +1263,7 @@ set_internal_variable (bool& var, const octave_value_list& args,
 	error ("%s: expecting arg to be a logical value", nm);
     }
   else if (nargin > 1)
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }
@@ -1304,7 +1304,7 @@ set_internal_variable (char& var, const octave_value_list& args,
 	error ("%s: argument must be a single character", nm);
     }
   else if (nargin > 1)
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }
@@ -1338,7 +1338,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 	error ("%s: expecting arg to be an integer value", nm);
     }
   else if (nargin > 1)
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }
@@ -1372,7 +1372,7 @@ set_internal_variable (double& var, const octave_value_list& args,
 	error ("%s: expecting arg to be a scalar value", nm);
     }
   else if (nargin > 1)
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }
@@ -1403,7 +1403,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 	error ("%s: expecting arg to be a character string", nm);
     }
   else if (nargin > 1)
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }
@@ -1524,7 +1524,7 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
 	}
     }
   else
-    print_usage ("document");
+    print_usage ();
 
   return retval;
 }
@@ -1823,7 +1823,7 @@ The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
       retval = do_who (argc, argv, nargout == 1);
     }
   else
-    print_usage ("who");
+    print_usage ();
 
   return retval;
 }
@@ -1857,7 +1857,7 @@ See who.\n\
       retval = do_who (argc, argv, nargout == 1);
     }
   else
-    print_usage ("whos");
+    print_usage ();
 
   return retval;
 }
@@ -1945,7 +1945,7 @@ then lock in the current function.\n\
         error ("mlock: invalid use outside a function");
     }
   else
-    print_usage ("mlock");
+    print_usage ();
 
   return retval;
 }
@@ -1979,7 +1979,7 @@ then unlock the current function.\n\
         error ("munlock: invalid use outside a function");
     }
   else
-    print_usage ("munlock");
+    print_usage ();
 
   return retval;
 }
@@ -2014,7 +2014,7 @@ then return true if the current function is locked.\n\
         error ("mislocked: invalid use outside a function");
     }
   else
-    print_usage ("mislocked");
+    print_usage ();
 
   return retval;
 }
@@ -2343,7 +2343,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     { \
       if (cond) \
         { \
-          print_usage ("clear"); \
+          print_usage (); \
           return retval; \
         } \
     } \
@@ -2559,7 +2559,7 @@ Print raw symbol table statistices.\n\
   else if (nargin == 0)
     curr_sym_tab->print_info (octave_stdout);
   else
-    print_usage ("__print_symtab_info__");
+    print_usage ();
 
   return retval;
 }
@@ -2589,10 +2589,10 @@ Print symbol table information for the symbol @var{name}.\n\
 		   symbol_name.c_str ());
 	}
       else
-	print_usage ("__print_symbol_info__");
+	print_usage ();
     }
   else
-    print_usage ("__print_symbol_info__");
+    print_usage ();
 
   return retval;
 }
@@ -2655,7 +2655,7 @@ need to recompiled.\n\
 	error ("ignore_function_time_stamp: expecting argument to be character string");
     }
   else if (nargin > 1)
-    print_usage ("ignore_function_time_stamp");
+    print_usage ();
 
   return retval;
 }

@@ -137,7 +137,7 @@ system-dependent error message.\n\
 	error ("dup2: invalid stream");
     }
   else
-    print_usage ("dup2");
+    print_usage ();
 
   return retval;
 }
@@ -215,7 +215,7 @@ error message.\n\
 	error ("exec: first argument must be a string");
     }
   else
-    print_usage ("exec");
+    print_usage ();
 
   return retval;
 }
@@ -315,7 +315,7 @@ system-dependent error message.\n\
 	error ("fcntl: file id, request, and argument must be integers");
     }
   else
-    print_usage ("fcntl");
+    print_usage ();
 
   return retval;
 }
@@ -360,7 +360,7 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("fork");
+    print_usage ();
 
   return retval;
 }
@@ -386,7 +386,7 @@ Return the process group id of the current process.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("getpgrp");
+    print_usage ();
 
   return retval;
 }
@@ -404,7 +404,7 @@ Return the process id of the current process.\n\
   if (nargin == 0)
     retval = octave_syscalls::getpid ();
   else
-    print_usage ("getpid");
+    print_usage ();
 
   return retval;
 }
@@ -422,7 +422,7 @@ Return the process id of the parent process.\n\
   if (nargin == 0)
     retval = octave_syscalls::getppid ();
   else
-    print_usage ("getppid");
+    print_usage ();
 
   return retval;
 }
@@ -440,7 +440,7 @@ Return the effective group id of the current process.\n\
   if (nargin == 0)
     retval = octave_syscalls::getegid ();
   else
-    print_usage ("getegid");
+    print_usage ();
 
   return retval;
 }
@@ -458,7 +458,7 @@ Return the real group id of the current process.\n\
   if (nargin == 0)
     retval = octave_syscalls::getgid ();
   else
-    print_usage ("getgid");
+    print_usage ();
 
   return retval;
 }
@@ -476,7 +476,7 @@ Return the effective user id of the current process.\n\
   if (nargin == 0)
     retval = octave_syscalls::geteuid ();
   else
-    print_usage ("geteuid");
+    print_usage ();
 
   return retval;
 }
@@ -494,7 +494,7 @@ Return the real user id of the current process.\n\
   if (nargin == 0)
     retval = octave_syscalls::getuid ();
   else
-    print_usage ("getuid");
+    print_usage ();
 
   return retval;
 }
@@ -546,7 +546,7 @@ Return 0 if sucessful, otherwise return -1.\n\
 	}
     }
   else
-    print_usage ("kill");
+    print_usage ();
 
   return retval;
 }
@@ -582,7 +582,7 @@ See stat.\n\
 	}
     }
   else
-    print_usage ("lstat");
+    print_usage ();
 
   return retval;
 }
@@ -637,7 +637,7 @@ system-dependent error message.\n\
 	error ("mkfifo: file name must be a string");
     }
   else
-    print_usage ("mkfifo");
+    print_usage ();
 
   return retval;
 }
@@ -694,7 +694,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("pipe");
+    print_usage ();
 
   return retval;
 }
@@ -819,7 +819,7 @@ For example,\n\
 	}
     }
   else
-    print_usage ("stat");
+    print_usage ();
 
   return retval;
 }
@@ -844,7 +844,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 	error ("S_ISREG: invalid mode value");
     }
   else
-    print_usage ("S_ISREG");
+    print_usage ();
 
   return retval;
 }
@@ -869,7 +869,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 	error ("S_ISDIR: invalid mode value");
     }
   else
-    print_usage ("S_ISDIR");
+    print_usage ();
 
   return retval;
 }
@@ -894,7 +894,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 	error ("S_ISCHR: invalid mode value");
     }
   else
-    print_usage ("S_ISCHR");
+    print_usage ();
 
   return retval;
 }
@@ -919,7 +919,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 	error ("S_ISBLK: invalid mode value");
     }
   else
-    print_usage ("S_ISBLK");
+    print_usage ();
 
   return retval;
 }
@@ -944,7 +944,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 	error ("S_ISFIFO: invalid mode value");
     }
   else
-    print_usage ("S_ISFIFO");
+    print_usage ();
 
   return retval;
 }
@@ -969,7 +969,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 	error ("S_ISLNK: invalid mode value");
     }
   else
-    print_usage ("S_ISLNK");
+    print_usage ();
 
   return retval;
 }
@@ -992,7 +992,7 @@ DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
 	error ("S_ISSOCK: invalid mode value");
     }
   else
-    print_usage ("S_ISSOCK");
+    print_usage ();
 
   return retval;
 }
@@ -1039,7 +1039,7 @@ system-dependent error message.\n\
       retval(0) = m;
     }
   else
-    print_usage ("uname");
+    print_usage ();
 
   return retval;
 }
@@ -1078,7 +1078,7 @@ system-dependent error message.\n\
 	error ("unlink: file name must be a string");
     }
   else
-    print_usage ("unlink");
+    print_usage ();
 
   return retval;
 }
@@ -1166,7 +1166,7 @@ information about the subprocess that exited.\n\
 	error ("waitpid: PID must be an integer value");
     }
   else
-    print_usage ("waitpid");
+    print_usage ();
 
   return retval;
 }
@@ -1421,7 +1421,7 @@ Return the canonical name of file @var{name}.\n\
 	error ("canonicalize_file_name: argument must be a character string");
     }
   else
-    print_usage ("canonicalize_file_name");
+    print_usage ();
 
   return retval;
 }
@@ -1436,7 +1436,7 @@ const_value (const char *nm, const octave_value_list& args, int val)
   if (nargin == 0)
     retval = val;
   else
-    print_usage (nm);
+    print_usage ();
 
   return retval;
 }

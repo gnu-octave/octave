@@ -480,7 +480,7 @@ parameters for @code{dassl}.\n\
 	}
     }
   else
-    print_usage ("dassl");
+    print_usage ();
 
   unwind_protect::run_frame ("Fdassl");
 

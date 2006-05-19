@@ -1,3 +1,8 @@
+2006-05-19  John W. Eaton  <jwe@octave.org>
+
+	* mk-opts.pl (emit_print_function, emit_options_function):
+	Generate print_usage calls with no args.
+
 2006-05-11  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (localfcnfilepath, localoctfilepath, fcnfilepath,

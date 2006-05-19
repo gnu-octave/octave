@@ -50,7 +50,7 @@ Polynomial Approximation}.\n\
 
   if (nargin < 1 || nargin > 3)
     {
-      print_usage ("colloc");
+      print_usage ();
       return retval;
     }
 

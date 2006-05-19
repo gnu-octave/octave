@@ -104,7 +104,7 @@ matrix type.\n\
   octave_value retval;
 
   if (nargin == 0)
-    print_usage ("matrix_type");
+    print_usage ();
   else if (nargin > 4)
     error ("matrix_type: incorrect number of arguments");
   else

@@ -92,7 +92,7 @@ Octave.\n\
 
   if (nargin < 1 || nargin > 2)
     {
-      print_usage ("fftw_wisdom");
+      print_usage ();
       return retval;
     }
 

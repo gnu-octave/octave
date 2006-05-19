@@ -474,7 +474,7 @@ parameters for @code{daspk}.\n\
 	}
     }
   else
-    print_usage ("daspk");
+    print_usage ();
 
   unwind_protect::run_frame ("Fdaspk");
 

@@ -185,6 +185,21 @@ SYMBOL_DEF::which (std::ostream& os, const std::string& name)
 }
 
 void
+SYMBOL_DEF::document (const std::string& h)
+{
+  help_string = h;
+
+  if (is_function ())
+    {
+      octave_function *defn = definition.function_value ();
+
+      if (defn)
+	defn->document (h);
+    }
+}
+
+
+void
 SYMBOL_DEF::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "symbol_def::count: " << count << "\n";

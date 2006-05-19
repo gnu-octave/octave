@@ -52,7 +52,7 @@ an estimate of the reciprocal condition number if requested.\n\
 
   if (nargin != 1)
     {
-      print_usage ("spdet");
+      print_usage ();
       return retval;
     }
 

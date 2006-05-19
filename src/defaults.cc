@@ -570,7 +570,7 @@ Return a path constructed from @var{dir} and all its subdiretories.\n\
 	error ("genpath: expecting argument to be a character string");
     }
   else
-    print_usage ("genpath");
+    print_usage ();
 
   return retval;
 }
@@ -750,7 +750,7 @@ Return the name of the top-level Octave installation directory.\n\
   if (args.length () == 0)
     retval = Voctave_home;
   else
-    print_usage ("OCTAVE_HOME");
+    print_usage ();
 
   return retval;
 }
@@ -768,7 +768,7 @@ Return the version number of Octave, as a string.\n\
   if (nargin == 0)
     retval = OCTAVE_VERSION;
   else
-    print_usage ("OCTAVE_VERSION");
+    print_usage ();
 
   return retval;
 }

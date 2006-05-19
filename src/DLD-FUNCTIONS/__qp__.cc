@@ -512,7 +512,7 @@ DEFUN_DLD (__qp__, args, ,
 	error ("__qp__: invalid arguments");
     }
   else
-    print_usage ("__qp__");
+    print_usage ();
 
   return retval;
 }

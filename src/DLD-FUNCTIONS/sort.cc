@@ -735,7 +735,7 @@ ordered lists.\n\
 
   if (nargin < 1 || nargin > 3)
     {
-      print_usage ("sort");
+      print_usage ();
       return retval;
     }
 
@@ -767,7 +767,7 @@ ordered lists.\n\
     {
       if (args(1).is_string ())
 	{
-	  print_usage ("sort");
+	  print_usage ();
 	  return retval;
 	}
 

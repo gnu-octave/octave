@@ -46,7 +46,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
   if (nargin != 1)
     {
-      print_usage ("inv");
+      print_usage ();
       return retval;
     }
 

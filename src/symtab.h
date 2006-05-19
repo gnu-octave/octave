@@ -211,7 +211,7 @@ private:
 
     std::string help (void) const { return help_string; }
 
-    void document (const std::string& h) { help_string = h; }
+    void document (const std::string& h);
 
     unsigned int type (void) { return symbol_type; }
 

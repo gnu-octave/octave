@@ -121,7 +121,7 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 	}
     }
   else
-    print_usage ("gammainc");
+    print_usage ();
 
   return retval;
 }

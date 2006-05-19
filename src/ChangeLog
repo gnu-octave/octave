@@ -1,3 +1,16 @@
+2006-05-19  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (SYMBOL_DEF::document): If definition is a function,
+	also pass doc string to function object.
+	* ov-fcn.h (octave_function::document): New function.
+	* defun.cc (print_usage (octave_function *)): New function.
+	(print_usage (void)): New function.
+	(print_usage (const std::string&)): Provide for backward
+	compatibility.  Ignore arg.
+	(Fprint_usage): Don't accept arg.
+	* defun-int.h (print_usage (void)): Provide decl.
+	(print_usage (const std::string&)): Tag with GCC_ATTR_DEPRECATED.
+
 2006-05-04  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/conv2.cc: New file from Octave Forge.

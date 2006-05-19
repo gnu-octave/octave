@@ -677,7 +677,7 @@ print_${class_name} (void)
       print "  }\n\n";
     }
 
-  print "print_usage (\"$opt_fcn_name\", true, buf.str ());
+  print "print_usage ();
 }\n\n";
 }
 
@@ -874,7 +874,7 @@ Options include\\n\\
         error (\"$opt_fcn_name: expecting keyword as first argument\");
     }
   else
-    print_usage (\"$opt_fcn_name\");
+    print_usage ();
 
   return retval;
 }\n";  

@@ -46,7 +46,7 @@ sparse_chol (const octave_value_list& args, const int nargout,
 
   if (nargin != 1 || nargout > 3)
     {
-      print_usage (name);
+      print_usage ();
       return retval;
     }
 
@@ -273,7 +273,7 @@ sparse symmetric positive definite matrix @var{a}.\n\
 	}
     }
   else
-    print_usage ("spcholinv");
+    print_usage ();
 
   return retval;
 }
@@ -326,7 +326,7 @@ it is much faster than using @code{inv}.\n\
 	}
     }
   else
-    print_usage ("spchol2inv");
+    print_usage ();
 
   return retval;
 }
@@ -388,7 +388,7 @@ factorization as determined by @var{typ}.\n\
 
   if (nargin < 1  || nargin > 3 || nargout > 5)
     {
-      print_usage ("symbfact");
+      print_usage ();
       return retval;
     }
 

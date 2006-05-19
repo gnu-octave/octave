@@ -80,7 +80,7 @@ as\n\
   bool have_b = false;
 
   if (nargin < 1 || nargin > 3)
-    print_usage ("spqr");
+    print_usage ();
   else
     {
       if (args(0).is_complex_type ())
@@ -258,7 +258,7 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 #if HAVE_CXSPARSE
   if (nargin != 1)
     {
-      print_usage ("dmperm");
+      print_usage ();
       return retval;
     }
 

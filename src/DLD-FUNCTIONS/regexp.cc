@@ -95,7 +95,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
   if (nargin < 2)
     {
-      print_usage(nm);
+      print_usage ();
       return 0;
     }
 
@@ -1086,7 +1086,7 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
 
   if (nargin < 3)
     {
-      print_usage("regexprep");
+      print_usage ();
       return retval;
     }
 

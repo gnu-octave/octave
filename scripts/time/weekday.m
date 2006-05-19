@@ -38,7 +38,7 @@
 function [n, s] = weekday (d, form)
 
   if (nargin < 1 || nargin > 2)
-    usage("[n, s] = weekday (d, [form])");
+    print_usage ();
   endif
 
   if (nargin < 2)

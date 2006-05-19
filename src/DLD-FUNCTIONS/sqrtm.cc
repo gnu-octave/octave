@@ -124,7 +124,7 @@ Manchester, England, January 1999.\n\
 
   if (nargin != 1)
     {
-      print_usage ("sqrtm");
+      print_usage ();
       return retval;
     }
 

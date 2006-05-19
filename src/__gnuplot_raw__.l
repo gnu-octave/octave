@@ -1747,7 +1747,7 @@ Send @var{string} directly to gnuplot subprocess.\n\
       gnuplot::send_raw (cmd);
     }
   else
-    print_usage ("__gnuplot_raw__");
+    print_usage ();
 
   return octave_value_list ();
 }

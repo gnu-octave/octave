@@ -410,7 +410,7 @@ parameters for @code{fsolve}.\n\
 	}
     }
   else
-    print_usage ("fsolve");
+    print_usage ();
 
   unwind_protect::run_frame ("Ffsolve");
 

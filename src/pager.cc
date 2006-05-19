@@ -480,7 +480,7 @@ Without any arguments, @code{diary} toggles the current diary state.\n\
       break;
 
     default:
-      print_usage ("diary");
+      print_usage ();
       break;
     }
 
@@ -519,7 +519,7 @@ toggles the current state.\n\
   else if (argc == 1)
     Vpage_screen_output = ! Vpage_screen_output;
   else
-    print_usage ("more");
+    print_usage ();
 
   return retval;
 }

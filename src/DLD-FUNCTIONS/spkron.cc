@@ -109,7 +109,7 @@ kron (1:4, ones (3, 1))\n\
 
   if (nargin != 2 || nargout > 1)
     {
-      print_usage ("kron");
+      print_usage ();
     }
   else if (args(0).is_complex_type () || args(1).is_complex_type ())
     {

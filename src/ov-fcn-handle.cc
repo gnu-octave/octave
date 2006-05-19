@@ -666,7 +666,7 @@ Return a struct containing information about the function handle\n\
 	error ("functions: argument must be a function handle object");
     }
   else
-    print_usage ("functions");
+    print_usage ();
 
   return retval;
 }
@@ -693,7 +693,7 @@ the function handle @var{fcn_handle}.\n\
 	error ("func2str: expecting valid function handle as first argument");
     }
   else
-    print_usage ("func2str");
+    print_usage ();
 
   return retval;
 }
@@ -716,7 +716,7 @@ Return a function handle constructed from the string @var{fcn_name}.\n\
 	error ("str2func: expecting string as first argument");
     }
   else
-    print_usage ("str2func");
+    print_usage ();
 
   return retval;
 }

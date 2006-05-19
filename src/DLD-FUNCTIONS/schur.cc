@@ -250,7 +250,7 @@ $S$.\n\
 
   if (nargin < 1 || nargin > 2 || nargout > 2)
     {
-      print_usage ("schur");
+      print_usage ();
       return retval;
     }
 

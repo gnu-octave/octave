@@ -251,7 +251,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 	error ("%s: must have matching operand types", FNAME); \
     } \
   else \
-    print_usage (FNAME); \
+    print_usage (); \
  \
   return retval
 
@@ -470,7 +470,7 @@ bitshift ([1, 10], 2, [3,4])\n\
 	error ("bitshift: not defined for %s objects", cname.c_str ());
     }
   else
-    print_usage ("bitshift");
+    print_usage ();
 
   return retval;
 }
@@ -484,7 +484,7 @@ value.  On IEEE-754 compatiable systems, @code{bitmax} is @code{2^53 - 1}.\n\
 {
   octave_value retval;
   if (args.length () != 0)
-    print_usage ("bitmax");
+    print_usage ();
   else
     retval = (static_cast<double> (0x1FFFFFFFFFFFFFLL));
   return retval;
@@ -527,7 +527,7 @@ The default for @var{type} is @code{uint32}.\n\
     cname = args(0).string_value ();
   else if (nargin != 0)
     {
-      print_usage ("intmax");
+      print_usage ();
       return retval;
     }
 
@@ -590,7 +590,7 @@ The default for @var{type} is @code{uint32}.\n\
     cname = args(0).string_value ();
   else if (nargin != 0)
     {
-      print_usage ("intmin");
+      print_usage ();
       return retval;
     }
 

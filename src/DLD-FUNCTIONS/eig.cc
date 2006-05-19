@@ -50,7 +50,7 @@ Schur decomposition.\n\
 
   if (nargin != 1 || nargout > 2)
     {
-      print_usage ("eig");
+      print_usage ();
       return retval;
     }
 

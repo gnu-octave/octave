@@ -71,7 +71,7 @@ givens (1, 1)\n\
 
   if (nargin != 2 || nargout > 2)
     {
-      print_usage ("givens");
+      print_usage ();
       return retval;
     }
   else

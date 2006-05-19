@@ -68,7 +68,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
         error (#FCN ": expecting dimension argument to be an integer"); \
     } \
   else \
-    print_usage (#FCN); \
+    print_usage (); \
  \
   return retval
 
@@ -262,7 +262,7 @@ and @var{x}.  The result is in range -pi to pi.\n\
 	error ("atan2: nonconformant matrices");
     }
   else
-    print_usage ("atan2");
+    print_usage ();
 
   return retval;
 }
@@ -353,7 +353,7 @@ sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
 	error ("fmod: nonconformant matrices");
     }
   else
-    print_usage ("fmod");
+    print_usage ();
 
   return retval;
 }
@@ -399,7 +399,7 @@ sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
 	} \
     } \
   else \
-    print_usage (#FCN); \
+    print_usage (); \
  \
   return retval
 
@@ -664,7 +664,7 @@ diag ([1, 2, 3], 1)\n\
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     retval = make_diag (args(0), args(1));
   else
-    print_usage ("diag");
+    print_usage ();
 
   return retval;
 }
@@ -770,7 +770,7 @@ do_cat (const octave_value_list& args, std::string fname)
 	error ("%s: invalid dimension argument", fname.c_str ());
     }
   else
-    print_usage (fname);
+    print_usage ();
  
   return retval;
 }
@@ -887,7 +887,7 @@ do_permute (const octave_value_list& args, bool inv, const std::string& fname)
 	retval = ret;
     }
   else
-    print_usage (fname);
+    print_usage ();
 
   return retval;
 }
@@ -937,7 +937,7 @@ odd definition is used for compatibility with Matlab).\n\
 	retval = len;
     }
   else
-    print_usage ("length");
+    print_usage ();
 
   return retval;
 }
@@ -960,7 +960,7 @@ Trailing singleton dimensions are not counted.\n\
 	retval = n_dims;
     }
   else
-    print_usage ("ndims");
+    print_usage ();
 
   return retval;
 }
@@ -987,7 +987,7 @@ Returns the number of elements in the object @var{a}.\n\
 	}
     }
   else
-    print_usage ("numel");
+    print_usage ();
 
   return retval;
 }
@@ -1073,7 +1073,7 @@ returns the number of columns in the given matrix.\n\
 	}
     }
   else
-    print_usage ("size");
+    print_usage ();
 
   return retval;
 }
@@ -1090,7 +1090,7 @@ returns number of non zero elements in @var{a}.\n\
   if (args.length () == 1)
     retval = args(0).nnz ();
   else
-    print_usage ("nnz");
+    print_usage ();
 
   return retval;
 }
@@ -1111,7 +1111,7 @@ but in general they will give the same result.\n\
   if (args.length() == 1)
     retval = args(0).nzmax ();
   else
-    print_usage ("nzmax");
+    print_usage ();
 
   return retval;
 }
@@ -1128,7 +1128,7 @@ Return the number of rows of @var{a}.\n\
   if (args.length () == 1)
     retval = args(0).rows ();
   else
-    print_usage ("rows");
+    print_usage ();
 
   return retval;
 }
@@ -1145,7 +1145,7 @@ Return the number of columns of @var{a}.\n\
   if (args.length () == 1)
     retval = args(0).columns ();
   else
-    print_usage ("columns");
+    print_usage ();
 
   return retval;
 }
@@ -1193,7 +1193,7 @@ Return true if @var{x} is a boolean object.\n\
   if (args.length () == 1)
     retval = args(0).is_bool_type ();
   else
-    print_usage ("isbool");
+    print_usage ();
 
   return retval;
 }
@@ -1211,7 +1211,7 @@ Return true if @var{x} is a complex-valued numeric object.\n\
   if (args.length () == 1)
     retval = args(0).is_complex_type ();
   else
-    print_usage ("iscomplex");
+    print_usage ();
 
   return retval;
 }
@@ -1331,7 +1331,7 @@ Convert @var{x} to a complex value.\n\
 	error ("complex: invalid conversion");
     }
   else
-    print_usage ("complex");
+    print_usage ();
 
   return retval;
 }
@@ -1348,7 +1348,7 @@ Return true if @var{x} is a real-valued numeric object.\n\
   if (args.length () == 1)
     retval = args(0).is_real_type ();
   else
-    print_usage ("isreal");
+    print_usage ();
 
   return retval;
 }
@@ -1365,7 +1365,7 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
   if (args.length () == 1)
     retval = args(0).is_empty ();
   else
-    print_usage ("isempty");
+    print_usage ();
 
   return retval;
 }
@@ -1381,7 +1381,7 @@ Return nonzero if @var{x} is a numeric object.\n\
   if (args.length () == 1)
     retval = args(0).is_numeric_type ();
   else
-    print_usage ("isnumeric");
+    print_usage ();
 
   return retval;
 }
@@ -1397,7 +1397,7 @@ Return nonzero if @var{x} is a list.\n\
   if (args.length () == 1)
     retval = args(0).is_list ();
   else
-    print_usage ("islist");
+    print_usage ();
 
   return retval;
 }
@@ -1420,7 +1420,7 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 	retval = (arg.rows () >= 1 && arg.columns () >= 1);
     }
   else
-    print_usage ("ismatrix");
+    print_usage ();
 
   return retval;
 }
@@ -2239,7 +2239,7 @@ is equivalent to calling it with an argument of 1.\n\
       break;
 
     default:
-      print_usage ("eye");
+      print_usage ();
       break;
     }
 
@@ -2267,7 +2267,7 @@ The @code{linspace} function always returns a row vector.\n\
 
   if (nargin != 2 && nargin != 3)
     {
-      print_usage ("linspace");
+      print_usage ();
       return retval;
     }
 
@@ -2362,7 +2362,7 @@ dimensions of the resized matrix.\n\
 	}
     }
   else
-    print_usage ("resize");
+    print_usage ();
   return retval;
 }
 
@@ -2450,7 +2450,7 @@ by an empty argument.\n\
     }
   else
     {
-      print_usage ("reshape");
+      print_usage ();
       return retval;
     }
 
@@ -2509,7 +2509,7 @@ Remove singleton dimensions from @var{x} and return the result.\n\
   if (args.length () == 1)
     retval = args(0).squeeze ();
   else
-    print_usage ("squeeze");    
+    print_usage ();    
 
   return retval;
 }

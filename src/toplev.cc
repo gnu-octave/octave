@@ -315,7 +315,7 @@ Provided for compatibility with Matlab, but does nothing.\n\
   else if (argc > 1 && argv[1] == "on")
     ; // ok.
   else
-    print_usage ("casesen");
+    print_usage ();
 
   return retval;
 }
@@ -582,7 +582,7 @@ variable @code{status} to the integer @samp{2}.\n\
 	}
     }
   else
-    print_usage ("system");
+    print_usage ();
 
   unwind_protect::run_frame ("Fsystem");
 
@@ -681,7 +681,7 @@ will print a message when Octave exits.\n\
 #endif
     }
   else
-    print_usage ("atexit");
+    print_usage ();
 
   return retval;
 }
@@ -878,7 +878,7 @@ specified option.\n\
   else if (nargin == 0)
     retval = m;
   else
-    print_usage ("octave_config_info");
+    print_usage ();
 
   return retval;
 }

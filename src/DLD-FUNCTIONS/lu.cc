@@ -76,7 +76,7 @@ The matrix is not required to be square.\n\
 
   if (nargin != 1 || nargout > 3)
     {
-      print_usage ("lu");
+      print_usage ();
       return retval;
     }
 

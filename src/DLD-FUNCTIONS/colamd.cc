@@ -274,7 +274,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
   int spumoni = 0;
  
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
-    print_usage ("colamd");
+    print_usage ();
   else
     {
       // Get knobs
@@ -510,7 +510,7 @@ Ng, Oak Ridge National Laboratory. (see\n\
   int spumoni = 0;
  
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
-    print_usage ("symamd");
+    print_usage ();
   else
     {
       // Get knobs
@@ -655,7 +655,7 @@ permutations on the tree.\n\
   int nargin = args.length ();
 
   if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
-    print_usage ("etree");
+    print_usage ();
   else
     {
       octave_idx_type n_row, n_col, nnz;

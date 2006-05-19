@@ -2542,7 +2542,7 @@ returns the formatted output in a string.\n\
 	}
     }
   else
-    print_usage ("disp");
+    print_usage ();
 
   return retval;
 }
@@ -2585,7 +2585,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 	}
     }
   else
-    print_usage ("fdisp");
+    print_usage ();
 
   return retval;
 }

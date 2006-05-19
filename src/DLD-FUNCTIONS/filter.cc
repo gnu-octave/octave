@@ -367,7 +367,7 @@ $$\n\
 
   if (nargin < 3 || nargin > 5)
     {
-      print_usage ("filter");
+      print_usage ();
       return retval;
     }
 

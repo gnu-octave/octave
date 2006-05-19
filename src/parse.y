@@ -3507,7 +3507,7 @@ currently autoloaded functions.\n\
 	autoload_map[argv[1]] = argv[2];
     }
   else
-    print_usage ("autoload");
+    print_usage ();
 
   return retval;
 }
@@ -3552,7 +3552,7 @@ of the file name and the extension.\n\
 
   if (nargin > 1)
     {
-      print_usage ("mfilename");
+      print_usage ();
       return retval;
     }
 
@@ -3625,7 +3625,7 @@ be named @file{@var{file}.m}.\n\
 	error ("source: expecting file name as argument");
     }
   else
-    print_usage ("source");
+    print_usage ();
 
   return retval;
 }
@@ -3765,7 +3765,7 @@ by name, and use @code{feval} to call them.\n\
   if (nargin > 0)
     retval = feval (args, nargout);
   else
-    print_usage ("feval");
+    print_usage ();
 
   return retval;
 }
@@ -3913,7 +3913,7 @@ so any results remain available after @code{eval} returns.\n\
       unwind_protect::run_frame ("Feval");
     }
   else
-    print_usage ("eval");
+    print_usage ();
 
   return retval;
 }
@@ -3979,7 +3979,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
         error ("assignin: expecting string as first argument");
     }
   else
-    print_usage ("assignin");
+    print_usage ();
 
   return retval;
 }
@@ -4050,7 +4050,7 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
         error ("evalin: expecting string as first argument");
     }
   else
-    print_usage ("evalin");
+    print_usage ();
 
   return retval;
 }

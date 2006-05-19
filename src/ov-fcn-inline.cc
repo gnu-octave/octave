@@ -718,7 +718,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
 	error ("inline: first argument must be a string");
     }
   else
-    print_usage ("inline");
+    print_usage ();
 
   return retval;
 }
@@ -746,7 +746,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 	error ("formula: must be an inline function");
     }
   else
-    print_usage ("formula");
+    print_usage ();
 
   return retval;
 }
@@ -782,7 +782,7 @@ the arguments of the inline function @var{fun}.\n\
 	error ("argnames: argument must be an inline function");
     }
   else
-    print_usage ("argnames");
+    print_usage ();
 
   return retval;
 }
@@ -852,7 +852,7 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 	}
     }
   else
-    print_usage ("vectorize");
+    print_usage ();
 
   return retval;
 }

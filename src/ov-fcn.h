@@ -91,6 +91,8 @@ public:
 
   std::string name (void) const { return my_name; }
 
+  void document (const std::string& ds) { doc = ds; }
+
   std::string doc_string (void) const { return doc; }
 
   virtual void unload (void) { }

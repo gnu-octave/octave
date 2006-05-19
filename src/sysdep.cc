@@ -480,7 +480,7 @@ returns a string containing the value of your path.\n\
 	retval = octave_env::getenv (name);
     }
   else
-    print_usage ("getenv");
+    print_usage ();
 
   return retval;
 }
@@ -512,7 +512,7 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 	error ("putenv: first argument should be a string");
     }
   else
-    print_usage ("putenv");
+    print_usage ();
 
   return retval;
 }
@@ -586,7 +586,7 @@ clc;\n\
 
   if (! (nargin == 0 || nargin == 1))
     {
-      print_usage ("pause");
+      print_usage ();
       return retval;
     }
 
@@ -637,7 +637,7 @@ Suspend the execution of the program for the given number of seconds.\n\
 	}
     }
   else
-    print_usage ("sleep");
+    print_usage ();
 
   return retval;
 }
@@ -671,7 +671,7 @@ of time less than one second, @code{usleep} will pause the execution for\n\
 	}
     }
   else
-    print_usage ("usleep");
+    print_usage ();
 
   return retval;
 }
@@ -731,7 +731,7 @@ tilde_expand (\"~/bin\")\n\
   if (nargin == 1)
     retval = file_ops::tilde_expand (args(0).all_strings ());
   else
-    print_usage ("tilde_expand");
+    print_usage ();
 
   return retval;
 }

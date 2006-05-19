@@ -325,7 +325,7 @@ some other function for the given type signature.\n\
 	error ("builtin: lookup for symbol `%s' failed", name.c_str ());
     }
   else
-    print_usage ("builtin");
+    print_usage ();
 
   return retval;
 }
@@ -447,7 +447,7 @@ for @var{f}.\n\
 
   if (nargin < 1 || nargin > 3)
     {
-      print_usage ("dispatch");
+      print_usage ();
       return retval;
     }
 

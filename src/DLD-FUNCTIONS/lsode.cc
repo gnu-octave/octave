@@ -467,7 +467,7 @@ parameters for @code{lsode}.\n\
 	}
     }
   else
-    print_usage ("lsode");
+    print_usage ();
 
   unwind_protect::run_frame ("Flsode");
 

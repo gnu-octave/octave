@@ -47,7 +47,7 @@ of the reciprocal condition number if requested.\n\
 
   if (nargin != 1)
     {
-      print_usage ("det");
+      print_usage ();
       return retval;
     }
 

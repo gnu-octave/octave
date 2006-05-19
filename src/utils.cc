@@ -107,7 +107,7 @@ Return true if @var{name} is a valid variable name\n\
   if (argc == 2)
     retval = valid_identifier (argv[1]);
   else
-    print_usage ("isvarname");
+    print_usage ();
 
   return retval;
 }
@@ -317,7 +317,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	error ("file_in_loadpath: expecting string as first argument");
     }
   else
-    print_usage ("file_in_loadpath");
+    print_usage ();
 
   return retval;
 }
@@ -386,7 +386,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	error ("file_in_path: expecting string as first argument");
     }
   else
-    print_usage ("file_in_path");
+    print_usage ();
 
   return retval;
 }
@@ -548,7 +548,7 @@ Convert special characters in @var{string} to their escaped forms.\n\
 	error ("do_string_escapes: argument must be a string");
     }
   else
-    print_usage ("do_string_escapes");
+    print_usage ();
 
   return retval;
 }
@@ -652,7 +652,7 @@ representation.\n\
 	error ("undo_string_escapes: argument must be a string");
     }
   else
-    print_usage ("undo_string_escapes");
+    print_usage ();
 
   return retval;
 }
@@ -669,7 +669,7 @@ DEFUN (find_first_of_in_loadpath, args, , "")
 	retval = Vload_path_dir_path.find_all_first_of (names);
     }
   else
-    print_usage ("find_first_of_in_loadpath");
+    print_usage ();
 
   return retval;
 }
@@ -713,7 +713,7 @@ if @var{name} is not found.\n\
   else if (nargin == 0)
     retval = octave_errno::get ();
   else
-    print_usage ("errno");
+    print_usage ();
 
   return retval;
 }
@@ -729,7 +729,7 @@ Return a structure containing the system-dependent errno values.\n\
   if (args.length () == 0)
     retval = octave_errno::list ();
   else
-    print_usage ("errno_list");
+    print_usage ();
 
   return retval;
 }

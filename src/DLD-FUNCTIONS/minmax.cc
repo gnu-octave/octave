@@ -48,7 +48,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  \
   if (nargin < 1 || nargin > 3 || nargout > 2) \
     { \
-      print_usage (#FCN); \
+      print_usage (); \
       return retval; \
     } \
  \

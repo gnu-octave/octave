@@ -491,7 +491,7 @@ currently installed data types.\n\
   else if (nargin == 1)
     retval = args(0).type_name ();
   else
-    print_usage ("typeinfo");
+    print_usage ();
 
   return retval;
 }
@@ -510,7 +510,7 @@ Return the class of the expression @var{expr}, as a string.\n\
   if (nargin == 1)
     retval = args(0).class_name ();
   else
-    print_usage ("class");
+    print_usage ();
 
   return retval;
 }

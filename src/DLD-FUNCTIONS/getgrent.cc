@@ -87,7 +87,7 @@ Once the end of the data has been reached, @code{getgrent} returns 0.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("getgrent");
+    print_usage ();
 
   return retval;
 }
@@ -127,7 +127,7 @@ Return the first entry from the group database with the group ID\n\
 	}
     }
   else
-    print_usage ("getgrgid");
+    print_usage ();
 
   return retval;
 }
@@ -160,7 +160,7 @@ Return the first entry from the group database with the group name\n\
 	}
     }
   else
-    print_usage ("getgrnam");
+    print_usage ();
 
   return retval;
 }
@@ -186,7 +186,7 @@ Return the internal pointer to the beginning of the group database.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("setgrent");
+    print_usage ();
 
   return retval;
 }
@@ -212,7 +212,7 @@ Close the group database.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("endgrent");
+    print_usage ();
 
   return retval;
 }

@@ -281,7 +281,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("readdir");
+    print_usage ();
 
   return retval;
 }
@@ -330,7 +330,7 @@ message identifier.\n\
 	}
     }
   else
-    print_usage ("mkdir");
+    print_usage ();
 
   return retval;
 }
@@ -404,7 +404,7 @@ subdirectories as well.\n\
 	}
     }
   else
-    print_usage ("rmdir");
+    print_usage ();
 
   return retval;
 }
@@ -451,7 +451,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("link");
+    print_usage ();
 
   return retval;
 }
@@ -498,7 +498,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("symlink");
+    print_usage ();
 
   return retval;
 }
@@ -543,7 +543,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("readlink");
+    print_usage ();
 
   return retval;
 }
@@ -590,7 +590,7 @@ system-dependent error message.\n\
 	}
     }
   else
-    print_usage ("rename");
+    print_usage ();
 
   return retval;
 }
@@ -629,7 +629,7 @@ glob (\"/vm*\")\n\
 	}
     }
   else
-    print_usage ("glob");
+    print_usage ();
 
   return retval;
 }
@@ -675,7 +675,7 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
 	}
     }
   else
-    print_usage ("fnmatch");
+    print_usage ();
 
   return retval;
 }
@@ -692,7 +692,7 @@ Return the system-dependent character used to separate directory names.\n\
   if (args.length () == 0)
     retval = file_ops::dir_sep_str;
   else
-    print_usage ("filesep");
+    print_usage ();
 
   return retval;
 }
@@ -710,7 +710,7 @@ a path.\n\
   if (args.length () == 0)
     retval = dir_path::path_sep_str;
   else
-    print_usage ("pathsep");
+    print_usage ();
 
   return retval;
 }

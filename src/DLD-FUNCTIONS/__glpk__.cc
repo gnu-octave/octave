@@ -425,7 +425,7 @@ You should be using using the @code{glpk} function instead.\n\
 
   if (nrhs != 9)
     {
-      print_usage ("__glpk__");
+      print_usage ();
       return retval;
     }
 

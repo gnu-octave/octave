@@ -93,7 +93,7 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
 
   if (nargin == 0)
     {
-      print_usage ("gcd");
+      print_usage ();
       return retval;
     }
 

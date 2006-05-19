@@ -396,7 +396,7 @@ Return the @var{n}-th element of @var{list}.\n\
 	error ("nth: first argument must be a list");
     }
   else
-    print_usage ("nth");
+    print_usage ();
 
   return retval;
 }
@@ -443,7 +443,7 @@ a list containing the three elements @samp{(1 2 (3 4))}.\n\
 	}
     }
   else
-    print_usage ("append");
+    print_usage ();
 
   return retval;
 }
@@ -466,7 +466,7 @@ Return a new list created by reversing the elements of @var{list}.\n\
 	  retval = octave_value (tmp.reverse ());
     }
   else
-    print_usage ("reverse");
+    print_usage ();
 
   return retval;
 }
@@ -532,7 +532,7 @@ is equivalent to @code{append (@var{list_1}, @var{list_2})}.\n\
 	error ("splice: first argument must be a list");      
     }
   else
-    print_usage ("splice");
+    print_usage ();
 
   return retval;
 }

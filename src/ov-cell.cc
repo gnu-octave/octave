@@ -916,7 +916,7 @@ false.\n\
   if (args.length () == 1)
     retval = args(0).is_cell ();
   else
-    print_usage ("iscell");
+    print_usage ();
 
   return retval;
 }
@@ -1028,7 +1028,7 @@ character string\n\
 	retval = false;
     }
   else
-    print_usage ("iscellstr");
+    print_usage ();
 
   return retval;
 }
@@ -1064,7 +1064,7 @@ array @var{string}.\n\
 	}
     }
   else
-    print_usage ("cellstr");
+    print_usage ();
 
   return retval;
 }
@@ -1147,7 +1147,7 @@ cell array will have a dimension vector corresponding to\n\
 	error ("struct2cell: expecting argument to be a cell array");
     }
   else
-    print_usage ("struct2cell");
+    print_usage ();
 
   return retval;
 }

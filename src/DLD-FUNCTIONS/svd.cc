@@ -123,7 +123,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
   if (nargin < 1 || nargin > 2 || nargout == 2 || nargout > 3)
     {
-      print_usage ("svd");
+      print_usage ();
       return retval;
     }
 

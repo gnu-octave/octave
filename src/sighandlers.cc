@@ -987,7 +987,7 @@ Return a structure containing Unix signal names and their defined values.\n\
       retval = m;
     }
   else
-    print_usage ("SIG");
+    print_usage ();
 
   return retval;
 }

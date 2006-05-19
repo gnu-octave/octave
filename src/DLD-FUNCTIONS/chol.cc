@@ -60,7 +60,7 @@ r' * r = a.\n\
 
   if (nargin != 1 || nargout > 2)
     {
-      print_usage ("chol");
+      print_usage ();
       return retval;
     }
 
@@ -174,7 +174,7 @@ symmetric positive definite matrix @var{a}.\n\
 	}
     }
   else
-    print_usage ("chol");
+    print_usage ();
 
   return retval;
 }
@@ -224,7 +224,7 @@ using @code{inv}.\n\
 	}
     }
   else
-    print_usage ("chol2inv");
+    print_usage ();
 
   return retval;
 }

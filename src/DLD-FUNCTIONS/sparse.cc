@@ -52,7 +52,7 @@ Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
 {
    if (args.length() != 1) 
      {
-       print_usage("issparse");
+       print_usage ();
        return octave_value ();
      }
    else 
@@ -120,7 +120,7 @@ which case they are expanded to all have the same length\n\
    int nargin= args.length();
    if (nargin < 1 || (nargin == 4 && !args(3).is_string ()) || nargin > 6) 
      {
-       print_usage ("sparse");
+       print_usage ();
        return retval;
      }
 
@@ -376,7 +376,7 @@ DEFUN_DLD (full, args, ,
 
   if (args.length() < 1)
     {
-      print_usage ("full");
+      print_usage ();
       return retval;
     }
 
@@ -554,7 +554,7 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 
    if (nargin != 1) 
      {
-       print_usage ("spfind");
+       print_usage ();
        return retval;
      }
       
@@ -590,7 +590,7 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
     int nargin = args.length(); \
     octave_value retval; \
     if ((nargin != 1 ) && (nargin != 2)) \
-      print_usage (#NAME); \
+      print_usage (); \
     else { \
       int dim = (nargin == 1 ? -1 : args(1).int_value(true) - 1); \
       if (error_state) return retval; \
@@ -606,7 +606,7 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 		 octave_sparse_complex_matrix::static_type_id ()) { \
 	  retval = args(0).sparse_complex_matrix_value () .FUNC (dim); \
       } else \
-	  print_usage (#NAME); \
+	  print_usage (); \
     } \
     return retval
 
@@ -694,7 +694,7 @@ real.\n\
  \
   if (nargin < 1 || nargin > 3 || nargout > 2) \
     { \
-      print_usage (#FCN); \
+      print_usage (); \
       return retval; \
     } \
  \
@@ -1036,7 +1036,7 @@ The result is in range -pi to pi.\n\
       retval = atan2 (a, b);
 
   } else
-    print_usage("spatan2");
+    print_usage ();
 
   return retval;
 }
@@ -1250,7 +1250,7 @@ Compressed Column Sparse (rows=4, cols=4, nnz=3)\n\
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     retval = make_spdiag (args(0), args(1));
   else
-    print_usage ("spdiag");
+    print_usage ();
 
   return retval;
 }

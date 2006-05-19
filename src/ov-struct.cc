@@ -656,7 +656,7 @@ Return 1 if the value of the expression @var{expr} is a structure.\n\
   if (args.length () == 1)
     retval = args(0).is_map ();
   else
-    print_usage ("isstruct");
+    print_usage ();
 
   return retval;
 }
@@ -688,7 +688,7 @@ argument that is not a structure.\n\
 	gripe_wrong_type_arg ("fieldnames", args(0));
     }
   else
-    print_usage ("fieldnames");
+    print_usage ();
 
   return retval;
 }
@@ -722,7 +722,7 @@ the second must be a string.\n\
 	}
     }
   else
-    print_usage ("isfield");
+    print_usage ();
 
   return retval;
 }
@@ -960,7 +960,7 @@ A(1)\n\
 	error ("cell2struct: expecting first argument to be a cell array");
     }
   else
-    print_usage ("cell2struct");
+    print_usage ();
 
   return retval;
 }
@@ -1011,7 +1011,7 @@ named fields.\n\
 	}
     }
   else
-    print_usage ("rmfield");
+    print_usage ();
 
   return retval;
 }

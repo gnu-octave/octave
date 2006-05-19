@@ -1147,7 +1147,7 @@ also set the last message identifier.\n\
 	error ("lasterr: expecting arguments to be character strings");
     }
   else
-    print_usage ("lasterr");
+    print_usage ();
 
   return retval;  
 }
@@ -1194,7 +1194,7 @@ also set the last message identifier.\n\
 	error ("lastwarn: expecting arguments to be character strings");
     }
   else
-    print_usage ("lastwarn");
+    print_usage ();
 
   return retval;  
 }

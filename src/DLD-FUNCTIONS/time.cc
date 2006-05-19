@@ -91,7 +91,7 @@ value returned by @code{time} was 856163706.\n\
   if (args.length () == 0)
     retval = static_cast<double> (octave_time ());
   else
-    print_usage ("time");
+    print_usage ();
 
   return retval;
 }
@@ -133,7 +133,7 @@ gmtime (time ())\n\
 	retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
     }
   else
-    print_usage ("gmtime");
+    print_usage ();
 
   return retval;
 }
@@ -175,7 +175,7 @@ localtime (time ())\n\
 	retval = octave_value (mk_tm_map (octave_localtime (tmp)));
     }
   else
-    print_usage ("localtime");
+    print_usage ();
 
   return retval;
 }
@@ -214,7 +214,7 @@ mktime (localtime (time ())\n\
 	error ("mktime: expecting structure argument");
     }
   else
-    print_usage ("mktime");
+    print_usage ();
 
   return retval;
 }
@@ -398,7 +398,7 @@ Year (1970-).\n\
 	error ("strftime: expecting format string as first argument");
     }
   else
-    print_usage ("strftime");
+    print_usage ();
 
   return retval;
 }
@@ -439,7 +439,7 @@ you're absolutely sure the date string will be parsed correctly.\n\
 	error ("strptime: expecting string as first argument");
     }
   else
-    print_usage ("strptime");
+    print_usage ();
 
   return retval;
 }

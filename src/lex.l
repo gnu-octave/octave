@@ -2464,7 +2464,7 @@ is omitted, return a list of keywords.\n\
       retval = is_keyword (argv[1]);
     }
   else
-    print_usage ("iskeyword");
+    print_usage ();
 
   return retval;
 }

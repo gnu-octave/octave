@@ -194,7 +194,7 @@ containing the nonzero values.  For example,\n\
 
   if (nargin != 1 || nargout > 3)
     {
-      print_usage ("find");
+      print_usage ();
       return retval;
     }
 

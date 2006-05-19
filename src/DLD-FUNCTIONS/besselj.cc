@@ -271,7 +271,7 @@ do_bessel (enum bessel_type type, const char *fn,
 	}
     }
   else
-    print_usage (fn);
+    print_usage ();
 
   return retval;
 }
@@ -403,7 +403,7 @@ See besselj.\n\
 	error ("besselh: invalid value of K");
     }
   else
-    print_usage ("besselh");
+    print_usage ();
 
   return retval;
 }
@@ -498,7 +498,7 @@ return @code{NaN}.\n\
 	}
     }
   else
-    print_usage ("airy");
+    print_usage ();
 
   return retval;
 }

@@ -91,7 +91,7 @@ opening it if necessary. Once the end of the data has been reached,\n\
       retval(1) = msg;
     }
   else
-    print_usage ("getpwent");
+    print_usage ();
 
   return retval;
 }
@@ -131,7 +131,7 @@ database, @code{getpwuid} returns 0.\n\
 	}
     }
   else
-    print_usage ("getpwuid");
+    print_usage ();
 
   return retval;
 }
@@ -164,7 +164,7 @@ database, @code{getpwname} returns 0.\n\
 	}
     }
   else
-    print_usage ("getpwnam");
+    print_usage ();
 
   return retval;
 }
@@ -190,7 +190,7 @@ Return the internal pointer to the beginning of the password database.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("setpwent");
+    print_usage ();
 
   return retval;
 }
@@ -216,7 +216,7 @@ Close the password database.\n\
       retval(1) = msg;
     }
   else
-    print_usage ("endpwent");
+    print_usage ();
 
   return retval;
 }

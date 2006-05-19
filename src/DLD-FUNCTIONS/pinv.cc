@@ -53,7 +53,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
   if (nargin < 1 || nargin > 2)
     {
-      print_usage ("pinv");
+      print_usage ();
       return retval;
     }
 

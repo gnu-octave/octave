@@ -36,69 +36,78 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov.h"
 #include "ov-builtin.h"
 #include "ov-dld-fcn.h"
+#include "ov-fcn.h"
 #include "ov-mapper.h"
+#include "ov-usr-fcn.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "symtab.h"
+#include "toplev.h"
 #include "variables.h"
 
-// FIXME -- this function could probably share some code with
-// the help functions.
+// Print the usage part of the doc string of FCN (user-defined or DEFUN).
 
-void
-print_usage (const std::string& nm, bool just_usage,
-	     const std::string& extra_msg)
+static void
+print_usage (octave_function *fcn)
 {
-  symbol_record *sym_rec = fbi_sym_tab->lookup (nm);
-
-  if (sym_rec)
+  if (fcn)
     {
-      std::string h = sym_rec->help ();
+      std::string nm = fcn->name ();
 
-      if (h.length () > 0)
+      std::string doc = fcn->doc_string ();
+
+      if (doc.length () > 0)
 	{
 	  std::ostringstream buf;
 
 	  buf << "\nInvalid call to " << nm << ".  Correct usage is:\n\n";
 
-	  h = extract_help_from_dispatch (nm) + h;
+	  display_usage_text (buf, doc);
 
-	  display_usage_text (buf, h);
+	  buf << "\n";
 
-	  buf << extra_msg << "\n";
-
-	  if (! just_usage)
-	    additional_help_message (buf);
+	  additional_help_message (buf);
 
 	  defun_usage_message (buf.str ());
 	}
+      else
+	error ("no usage message found for `%s'", nm.c_str ());
     }
   else
-    warning ("no usage message found for `%s'", nm.c_str ());
+    error ("print_usage: invalid function");
+}
+
+// Print the usage part of the doc string of the current function
+// (user-defined or DEFUN).
+
+void
+print_usage (void)
+{
+  print_usage (octave_call_stack::current ());
+}
+
+// Deprecated.
+void
+print_usage (const std::string&)
+{
+  print_usage ();
 }
 
 DEFUN (print_usage, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} print_usage (@var{fname})\n\
-Print the usage message for the function named @var{fname}.  The\n\
-@code{print_usage} function is only intended to work inside the\n\
-named function.\n\
+@deftypefn {Loadable Function} {} print_usage ()\n\
+Print the usage message for the currently executing function.  The\n\
+@code{print_usage} function is only intended to work inside a\n\
+user-defined function.\n\
 @seealso{help}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string fname = args(0).string_value ();
-
-      if (! error_state)
-	print_usage (fname);
-      else
-	error ("print_usage: expecting character string");
-    }
+  if (args.length () == 0)
+    print_usage (octave_call_stack::caller_user_function ());
   else
-    print_usage ("print_usage");
+    print_usage ();
 
   return retval;
 }
@@ -229,7 +238,7 @@ DEFUN (alias, args, ,
 	}
     }
   else
-    print_usage ("alias");
+    print_usage ();
 
   return retval;
 }

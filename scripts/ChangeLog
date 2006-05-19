@@ -1,7 +1,7 @@
 2006-05-19  David Bateman  <dbateman@free.fr>
 
 	* polynomial/unmkpp.m, polynomial/mkpp.m, polynomial/spline.m,
-	polynomial/ppval.m: New files from Octave Forge.
+	polynomial/ppval.m, set/setxor.m: New files from Octave Forge.
 
 2006-05-17  John W. Eaton  <jwe@octave.org>
 

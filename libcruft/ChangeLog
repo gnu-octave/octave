@@ -1,3 +1,7 @@
+2006-05-22  John W. Eaton  <jwe@octave.org>
+
+	* lapack/dlantr.f, lapack/zlantr.f: New files.
+
 2006-05-03  David Bateman  <dbateman@free.fr>
 
 	* lapack/dpocon.f, lapack/zpocon.f, lapack/dpotrs.f, 

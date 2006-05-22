@@ -1,3 +1,19 @@
+2006-05-22  John W. Eaton  <jwe@octave.org>
+
+	* scripts/general/lookup.m: New file from Octave Forge.
+
+2006-05-22  David Bateman  <dbateman@free.fr>
+
+	* scripts/general/nthroot.m, scripts/linear-algebra/rref.m,
+	scripts/specfun/isprime.m, scripts/specfun/primes.m,
+	scripts/specfun/factor.m, scripts/specfun/nchoosek.m,
+	scripts/specfun/legendre.m, scripts/specfun/perms.m,
+	scripts/special-matrix/rosser.m,
+	scripts/special-matrix/wilkinson.m,
+	scripts/special-matrix/pascal.m, scripts/special-matrix/magic.m,
+	scripts/special-matrix/hadamard.m, scripts/strings/strtok.m:
+	New files from Octave Forge.
+
 2006-05-19  David Bateman  <dbateman@free.fr>
 
 	* polynomial/unmkpp.m, polynomial/mkpp.m, polynomial/spline.m,

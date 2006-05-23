@@ -1681,9 +1681,7 @@ the file @file{data} in Octave's binary format.\n\
 
 	      if (file)
 		{
-		  bool write_header_info
-		    = ((file.rdbuf ())->pubseekoff (0, std::ios::cur)
-		       == static_cast<std::streampos> (0));
+		  bool write_header_info = ! file.tellp ();
 	      
 		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
@@ -1703,9 +1701,7 @@ the file @file{data} in Octave's binary format.\n\
 	  
 	      if (file)
 		{
-		  bool write_header_info
-		    = ((file.rdbuf ())->pubseekoff (0, std::ios::cur)
-		       == static_cast<std::streampos> (0));
+		  bool write_header_info = ! file.tellp ();
 	      
 		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);

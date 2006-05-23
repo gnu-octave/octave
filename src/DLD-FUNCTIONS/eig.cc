@@ -42,6 +42,8 @@ step process which begins with a Hessenberg decomposition, followed by a\n\
 Schur decomposition, from which the eigenvalues are apparent.  The\n\
 eigenvectors, when desired, are computed by further manipulations of the\n\
 Schur decomposition.\n\
+\n\
+The eigenvalues returned by @code{eig} are not ordered.\n\
 @end deftypefn")
 {
   octave_value_list retval;

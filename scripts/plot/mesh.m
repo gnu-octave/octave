@@ -74,9 +74,8 @@ function mesh (x, y, z)
         __gnuplot_raw__ ("set nologscale;\n");
         __gnuplot_set__ parametric;
         __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-        __gnuplot_set__ palette defined ( 0 "dark-blue", 1 "blue", ...
-                  2 "cyan", 3 "yellow", 4 "red" , 5 "dark-red" )
-        __gnuplot_set__ nocolorbox
+        __gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+        __gnuplot_raw__ ("set nocolorbox;\n");
         __gnuplot_splot__ zz with line palette;
         __gnuplot_set__ noparametric;
       else

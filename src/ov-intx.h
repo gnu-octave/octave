@@ -136,6 +136,10 @@ public:
     return retval;
   }
 
+  void increment (void) { matrix += 1; }
+
+  void decrement (void) { matrix -= 1; }
+
   idx_vector index_vector (void) const { return idx_vector (matrix); }
 
   int write (octave_stream& os, int block_size,
@@ -299,6 +303,10 @@ public:
     retval(0) = static_cast<char>(scalar);
     return retval;
   }
+
+  void increment (void) { scalar += 1; }
+
+  void decrement (void) { scalar -= 1; }
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

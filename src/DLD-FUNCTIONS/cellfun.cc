@@ -373,7 +373,7 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 @}\n\
 @end group\n\
 @end example\n\
-@seealso{num2cell,cell2mat\n\
+@seealso{num2cell, cell2mat}\n\
 @end deftypefn")
 {
   int nargin = args.length();

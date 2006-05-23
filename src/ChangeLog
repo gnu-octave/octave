@@ -1,3 +1,16 @@
+2006-05-23  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc (Fsave): Use tellp instead of pubseekoff to
+	determine whether we are at beginning of file.
+
+	* ov-intx.h (OCTAVE_VALUE_INT_SCALAR_T::increment, 
+	OCTAVE_VALUE_INT_SCALAR_T::decrement,
+	OCTAVE_VALUE_INT_MATRIX_T::increment,
+	OCTAVE_VALUE_INT_MATRIX_T::decrement): New functions.
+	* OPERATORS/op-int.h (OCTAVE_INSTALL_M_INT_UNOPS,
+	OCTAVE_INSTALL_S_INT_UNOPS, OCTAVE_M_INT_UNOPS,
+	OCTAVE_S_INT_UNOPS): Uncomment increment and decrement ops.
+
 2006-05-19  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (SYMBOL_DEF::document): If definition is a function,

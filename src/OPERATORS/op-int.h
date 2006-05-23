@@ -103,8 +103,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   DEFUNOP_OP (s_transpose, TYPE ## _scalar, /* no-op */) \
   DEFUNOP_OP (s_hermitian, TYPE ## _scalar, /* no-op */) \
  \
-  /* DEFNCUNOP_METHOD (s_incr, TYPE ## _scalar, increment) */ \
-  /* DEFNCUNOP_METHOD (s_decr, TYPE ## _scalar, decrement) */
+  DEFNCUNOP_METHOD (s_incr, TYPE ## _scalar, increment) \
+  DEFNCUNOP_METHOD (s_decr, TYPE ## _scalar, decrement)
 
 #define OCTAVE_SS_INT_ARITH_OPS(PFX, T1, T2) \
   /* scalar by scalar ops. */ \
@@ -413,8 +413,8 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
       return octave_value (v.TYPE ## _array_value().transpose ()); \
   } \
  \
-  /* DEFNCUNOP_METHOD (m_incr, TYPE ## _matrix, increment) */ \
-  /* DEFNCUNOP_METHOD (m_decr, TYPE ## _matrix, decrement) */
+  DEFNCUNOP_METHOD (m_incr, TYPE ## _matrix, increment) \
+  DEFNCUNOP_METHOD (m_decr, TYPE ## _matrix, decrement)
 
 #define OCTAVE_MM_INT_ARITH_OPS(T1, T2) \
   /* matrix by matrix ops. */ \
@@ -527,8 +527,8 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   INSTALL_UNOP (op_transpose, octave_ ## TYPE ## _scalar, s_transpose); \
   INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _scalar, s_hermitian); \
  \
-  /* INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _scalar, s_incr); */ \
-  /* INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _scalar, s_decr); */
+  INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _scalar, s_incr); \
+  INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _scalar, s_decr);
 
 #define OCTAVE_INSTALL_SS_INT_ARITH_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _add); \
@@ -656,8 +656,8 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   INSTALL_UNOP (op_transpose, octave_ ## TYPE ## _matrix, m_transpose); \
   INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _matrix, m_transpose); \
  \
-  /* INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _matrix, m_incr); */ \
-  /* INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _matrix, m_decr); */
+  INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _matrix, m_incr); \
+  INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _matrix, m_decr);
 
 #define OCTAVE_INSTALL_MM_INT_ARITH_OPS(T1, T2) \
   INSTALL_BINOP (op_add, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_add); \

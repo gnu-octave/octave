@@ -240,60 +240,60 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 // casting doubles as unsigned eight byte integers, and with a little
 // bit of magic we can automatically sort the NaN's correctly.
 
-#if defined (HAVE_IEEE754_DATA_FORMAT) && defined (EIGHT_BYTE_INT)
+#if defined (HAVE_IEEE754_DATA_FORMAT)
 
-static inline unsigned EIGHT_BYTE_INT
-FloatFlip (unsigned EIGHT_BYTE_INT f)
+static inline uint64_t
+FloatFlip (uint64_t f)
 {
-  unsigned EIGHT_BYTE_INT mask
-    = -static_cast<EIGHT_BYTE_INT>(f >> 63) | 0x8000000000000000ULL;
+  uint64_t mask
+    = -static_cast<int64_t>(f >> 63) | 0x8000000000000000ULL;
 
   return f ^ mask;
 }
 
-static inline unsigned EIGHT_BYTE_INT
-IFloatFlip (unsigned EIGHT_BYTE_INT f)
+static inline uint64_t
+IFloatFlip (uint64_t f)
 {
-  unsigned EIGHT_BYTE_INT mask = ((f >> 63) - 1) | 0x8000000000000000ULL;
+  uint64_t mask = ((f >> 63) - 1) | 0x8000000000000000ULL;
 
   return f ^ mask;
 }
 
 template <>
 bool
-ascending_compare (unsigned EIGHT_BYTE_INT a, 
-		   unsigned EIGHT_BYTE_INT b)
+ascending_compare (uint64_t a, 
+		   uint64_t b)
 {
   return (a < b);
 }
 
 template <>
 bool
-ascending_compare (vec_index<unsigned EIGHT_BYTE_INT> *a, 
-		   vec_index<unsigned EIGHT_BYTE_INT> *b)
+ascending_compare (vec_index<uint64_t> *a, 
+		   vec_index<uint64_t> *b)
 {
   return (a->vec < b->vec);
 }
 
 template <>
 bool
-descending_compare (unsigned EIGHT_BYTE_INT a, 
-		    unsigned EIGHT_BYTE_INT b)
+descending_compare (uint64_t a, 
+		    uint64_t b)
 {
   return (a > b);
 }
 
 template <>
 bool
-descending_compare (vec_index<unsigned EIGHT_BYTE_INT> *a, 
-		    vec_index<unsigned EIGHT_BYTE_INT> *b)
+descending_compare (vec_index<uint64_t> *a, 
+		    vec_index<uint64_t> *b)
 {
   return (a->vec > b->vec);
 }
 
-template class octave_sort<unsigned EIGHT_BYTE_INT>;
-template class vec_index<unsigned EIGHT_BYTE_INT>;
-template class octave_sort<vec_index<unsigned EIGHT_BYTE_INT> *>;
+template class octave_sort<uint64_t>;
+template class vec_index<uint64_t>;
+template class octave_sort<vec_index<uint64_t> *>;
 
 template <>
 octave_value
@@ -314,9 +314,9 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 
   double *v = m.fortran_vec ();
 
-  unsigned EIGHT_BYTE_INT *p = reinterpret_cast<unsigned EIGHT_BYTE_INT *> (v);
+  uint64_t *p = reinterpret_cast<uint64_t *> (v);
 
-  octave_sort<unsigned EIGHT_BYTE_INT> sort;
+  octave_sort<uint64_t> sort;
 
   if (mode == ASCENDING)
     sort.set_compare (ascending_compare);
@@ -373,7 +373,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
     }
   else
     {
-      OCTAVE_LOCAL_BUFFER (unsigned EIGHT_BYTE_INT, vi, ns);
+      OCTAVE_LOCAL_BUFFER (uint64_t, vi, ns);
 
       for (octave_idx_type j = 0; j < iter; j++)
 	{
@@ -456,17 +456,17 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 
   double *v = m.fortran_vec ();
 
-  unsigned EIGHT_BYTE_INT *p = reinterpret_cast<unsigned EIGHT_BYTE_INT *> (v);
+  uint64_t *p = reinterpret_cast<uint64_t *> (v);
 
-  octave_sort<vec_index<unsigned EIGHT_BYTE_INT> *> indexed_sort;
+  octave_sort<vec_index<uint64_t> *> indexed_sort;
 
   if (mode == ASCENDING)
     indexed_sort.set_compare (ascending_compare);
   else if (mode == DESCENDING)
     indexed_sort.set_compare (descending_compare);
 
-  OCTAVE_LOCAL_BUFFER (vec_index<unsigned EIGHT_BYTE_INT> *, vi, ns);
-  OCTAVE_LOCAL_BUFFER (vec_index<unsigned EIGHT_BYTE_INT>, vix, ns);
+  OCTAVE_LOCAL_BUFFER (vec_index<uint64_t> *, vi, ns);
+  OCTAVE_LOCAL_BUFFER (vec_index<uint64_t>, vix, ns);
   
   for (octave_idx_type i = 0; i < ns; i++)
     vi[i] = &vix[i];

@@ -201,12 +201,12 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   FILETIME ftCreation, ftExit, ftUser, ftKernel;
   GetProcessTimes (hProcess, &ftCreation, &ftExit, &ftKernel, &ftUser);
 
-  EIGHT_BYTE_INT itmp = *(reinterpret_cast<EIGHT_BYTE_INT *> (&ftUser));
+  int64_t itmp = *(reinterpret_cast<int64_t *> (&ftUser));
   tv_tmp.assign ("sec", static_cast<double> (itmp / 10000000U));
   tv_tmp.assign ("usec", static_cast<double> (itmp % 10000000U) / 10.);
   m.assign ("utime", octave_value (tv_tmp));
 
-  itmp = *(reinterpret_cast<EIGHT_BYTE_INT *> (&ftKernel));
+  itmp = *(reinterpret_cast<int64_t *> (&ftKernel));
   tv_tmp.assign ("sec", static_cast<double> (itmp / 10000000U));
   tv_tmp.assign ("usec", static_cast<double> (itmp % 10000000U) / 10.);
   m.assign ("stime", octave_value (tv_tmp));

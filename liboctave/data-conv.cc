@@ -1000,27 +1000,27 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
   switch (type)
     {
     case LS_U_CHAR:
-      LS_DO_READ (unsigned char, swap, data, 1, len, is);
+      LS_DO_READ (uint8_t, swap, data, 1, len, is);
       break;
 
     case LS_U_SHORT:
-      LS_DO_READ (unsigned TWO_BYTE_INT, swap, data, 2, len, is);
+      LS_DO_READ (uint16_t, swap, data, 2, len, is);
       break;
 
     case LS_U_INT:
-      LS_DO_READ (unsigned FOUR_BYTE_INT, swap, data, 4, len, is);
+      LS_DO_READ (uint32_t, swap, data, 4, len, is);
       break;
 
     case LS_CHAR:
-      LS_DO_READ (signed char, swap, data, 1, len, is);
+      LS_DO_READ (int8_t, swap, data, 1, len, is);
       break;
 
     case LS_SHORT:
-      LS_DO_READ (TWO_BYTE_INT, swap, data, 2, len, is);
+      LS_DO_READ (int16_t, swap, data, 2, len, is);
       break;
 
     case LS_INT:
-      LS_DO_READ (FOUR_BYTE_INT, swap, data, 4, len, is);
+      LS_DO_READ (int32_t, swap, data, 4, len, is);
       break;
 
     case LS_FLOAT:
@@ -1050,27 +1050,27 @@ write_doubles (std::ostream& os, const double *data, save_type type, int len)
   switch (type)
     {
     case LS_U_CHAR:
-      LS_DO_WRITE (unsigned char, data, 1, len, os);
+      LS_DO_WRITE (uint8_t, data, 1, len, os);
       break;
 
     case LS_U_SHORT:
-      LS_DO_WRITE (unsigned TWO_BYTE_INT, data, 2, len, os);
+      LS_DO_WRITE (uint16_t, data, 2, len, os);
       break;
 
     case LS_U_INT:
-      LS_DO_WRITE (unsigned FOUR_BYTE_INT, data, 4, len, os);
+      LS_DO_WRITE (uint32_t, data, 4, len, os);
       break;
 
     case LS_CHAR:
-      LS_DO_WRITE (signed char, data, 1, len, os);
+      LS_DO_WRITE (int8_t, data, 1, len, os);
       break;
 
     case LS_SHORT:
-      LS_DO_WRITE (TWO_BYTE_INT, data, 2, len, os);
+      LS_DO_WRITE (int16_t, data, 2, len, os);
       break;
 
     case LS_INT:
-      LS_DO_WRITE (FOUR_BYTE_INT, data, 4, len, os);
+      LS_DO_WRITE (int32_t, data, 4, len, os);
       break;
 
     case LS_FLOAT:

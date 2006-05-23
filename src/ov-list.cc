@@ -615,7 +615,7 @@ octave_list::save_binary (std::ostream& os, bool& save_as_floats)
 {
   octave_value_list lst = list_value ();
 
-  FOUR_BYTE_INT len = lst.length();
+  int32_t len = lst.length();
   os.write (reinterpret_cast<char *> (&len), 4);
   
   for (int i = 0; i < lst.length (); i++)
@@ -641,7 +641,7 @@ bool
 octave_list::load_binary (std::istream& is, bool swap,
 			  oct_mach_info::float_format fmt)
 {
-  FOUR_BYTE_INT len;
+  int32_t len;
   if (! is.read (reinterpret_cast<char *> (&len), 4))
     return false;
   if (swap)

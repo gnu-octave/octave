@@ -1107,7 +1107,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
 {
   Octave_map m = map_value ();
 
-  FOUR_BYTE_INT len = m.length();
+  int32_t len = m.length();
   os.write (reinterpret_cast<char *> (&len), 4);
   
   Octave_map::iterator i = m.begin ();
@@ -1131,7 +1131,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
 			    oct_mach_info::float_format fmt)
 {
   bool success = true;
-  FOUR_BYTE_INT len;
+  int32_t len;
   if (! is.read (reinterpret_cast<char *> (&len), 4))
     return false;
   if (swap)

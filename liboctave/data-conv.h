@@ -28,38 +28,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "mach-info.h"
 
-// Not all of the following are currently used.
-
-#if CHAR_BIT != 8
-#error "CHAR_BIT is not 8!"
-#endif
-
-#if SIZEOF_SHORT == 2
-#define TWO_BYTE_INT short
-#elif SIZEOF_INT == 2
-#define TWO_BYTE_INT int
-#else
-#error "No 2 byte integer type found!"
-#endif
-
-#if SIZEOF_INT == 4
-#define FOUR_BYTE_INT int
-#elif SIZEOF_LONG == 4
-#define FOUR_BYTE_INT long
-#else
-#error "No 4 byte integer type found!"
-#endif
-
-#if SIZEOF_LONG == 8
-#define EIGHT_BYTE_INT long
-#else
-#if SIZEOF_LONG_LONG == 8
-// if `long long' is not implemented, then SIZEOF_LONG_LONG will be 0
-#define EIGHT_BYTE_INT long long
-// if no 8 byte integer type is found, then EIGHT_BYTE_INT is not defined
-#endif
-#endif
-
 class
 oct_data_conv
 {

@@ -177,7 +177,7 @@ octave_rand::state (void)
       new_initialized = true;
     }
 
-  OCTAVE_LOCAL_BUFFER (unsigned FOUR_BYTE_INT, tmp, MT_N + 1);
+  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
   oct_get_state (tmp);
   for (octave_idx_type i = 0; i <= MT_N; i++)
     s.elem (i) = static_cast<double>(tmp [i]);
@@ -192,9 +192,9 @@ octave_rand::state (const ColumnVector &s)
 
   octave_idx_type len = s.length();
   octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
-  OCTAVE_LOCAL_BUFFER (unsigned FOUR_BYTE_INT, tmp, MT_N + 1);
+  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
   for (octave_idx_type i = 0; i < n; i++)
-    tmp[i] = static_cast<unsigned FOUR_BYTE_INT> (s.elem(i));
+    tmp[i] = static_cast<uint32_t> (s.elem(i));
 
   if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
     oct_set_state (tmp);

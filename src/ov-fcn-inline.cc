@@ -152,7 +152,7 @@ octave_fcn_inline::load_ascii (std::istream& is)
 bool
 octave_fcn_inline::save_binary (std::ostream& os, bool&)
 {
-  FOUR_BYTE_INT tmp = ifargs.length ();
+  int32_t tmp = ifargs.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < ifargs.length (); i++)
     {
@@ -173,7 +173,7 @@ bool
 octave_fcn_inline::load_binary (std::istream& is, bool swap,
 				oct_mach_info::float_format)
 {
-  FOUR_BYTE_INT nargs;
+  int32_t nargs;
   if (! is.read (reinterpret_cast<char *> (&nargs), 4))
     return false;
   if (swap)
@@ -183,7 +183,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
     return false;
   else
     {
-      FOUR_BYTE_INT tmp;
+      int32_t tmp;
       ifargs.resize (nargs);
       for (int i = 0; i < nargs; i++)
 	{

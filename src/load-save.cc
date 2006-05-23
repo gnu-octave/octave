@@ -360,7 +360,7 @@ get_file_format (std::istream& file)
     {
       file.seekg (0, std::ios::beg);
 
-      FOUR_BYTE_INT mopt, nr, nc, imag, len;
+      int32_t mopt, nr, nc, imag, len;
 
       int err = read_mat_file_header (file, swap, mopt, nr, nc, imag, len, 1);
 
@@ -1208,7 +1208,7 @@ write_header (std::ostream& os, load_save_format format)
     case LS_MAT7_BINARY:
       {
 	char const * versionmagic;
-	TWO_BYTE_INT number = *(TWO_BYTE_INT *)"\x00\x01";
+	int16_t number = *(int16_t *)"\x00\x01";
 	struct tm bdt;
 	time_t now;
 	char headertext[128];

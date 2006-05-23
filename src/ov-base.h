@@ -35,6 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include "Range.h"
+#include "data-conv.h"
 #include "mx-base.h"
 #include "str-vec.h"
 

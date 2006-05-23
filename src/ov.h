@@ -35,7 +35,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include "Range.h"
+#include "data-conv.h"
 #include "idx-vector.h"
+#include "mach-info.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
 #include "oct-time.h"

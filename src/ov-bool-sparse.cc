@@ -204,7 +204,7 @@ octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
   int nc = d(1);
   int nz = nzmax ();
 
-  FOUR_BYTE_INT itmp;
+  int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
   itmp= -2;        
   os.write (reinterpret_cast<char *> (&itmp), 4);
@@ -248,7 +248,7 @@ bool
 octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
 					oct_mach_info::float_format /* fmt */)
 {
-  FOUR_BYTE_INT nz, nc, nr, tmp;
+  int32_t nz, nc, nr, tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 4))
     return false;
 

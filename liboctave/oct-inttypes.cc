@@ -91,15 +91,15 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTANTIATE_DOUBLE_INT_CMP_OPS (T); \
   INSTANTIATE_INT_BITCMP_OPS (T)
 
-INSTANTIATE_INTTYPE (octave_int8_t);
-INSTANTIATE_INTTYPE (octave_int16_t);
-INSTANTIATE_INTTYPE (octave_int32_t);
-INSTANTIATE_INTTYPE (octave_int64_t);
+INSTANTIATE_INTTYPE (int8_t);
+INSTANTIATE_INTTYPE (int16_t);
+INSTANTIATE_INTTYPE (int32_t);
+INSTANTIATE_INTTYPE (int64_t);
 
-INSTANTIATE_INTTYPE (octave_uint8_t);
-INSTANTIATE_INTTYPE (octave_uint16_t);
-INSTANTIATE_INTTYPE (octave_uint32_t);
-INSTANTIATE_INTTYPE (octave_uint64_t);
+INSTANTIATE_INTTYPE (uint8_t);
+INSTANTIATE_INTTYPE (uint16_t);
+INSTANTIATE_INTTYPE (uint32_t);
+INSTANTIATE_INTTYPE (uint64_t);
 
 #define INSTANTIATE_INTTYPE_BIN_OP(T1, T2, OP) \
   template octave_int<octave_int_binop_traits<T1, T2>::TR> \
@@ -111,77 +111,77 @@ INSTANTIATE_INTTYPE (octave_uint64_t);
   INSTANTIATE_INTTYPE_BIN_OP (T1, T2, *); \
   INSTANTIATE_INTTYPE_BIN_OP (T1, T2, /)
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int8_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int8_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int16_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int16_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int32_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int32_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_int64_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (int64_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint8_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint8_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint16_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint16_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint32_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint32_t, uint64_t);
 
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_int8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_int16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_int32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_int64_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_uint8_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_uint16_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_uint32_t);
-INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_uint64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, int8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, int16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, int32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, int64_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, uint8_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, uint16_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, uint32_t);
+INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, uint64_t);
 
 #define INSTANTIATE_INTTYPE_SHIFT_OP(T, OP) \
   template octave_int<T> operator OP (const octave_int<T>&, const int&)
@@ -190,14 +190,14 @@ INSTANTIATE_INTTYPE_BIN_OPS (octave_uint64_t, octave_uint64_t);
   INSTANTIATE_INTTYPE_SHIFT_OP (T, <<); \
   INSTANTIATE_INTTYPE_SHIFT_OP (T, >>)
 
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_int8_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_int16_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_int32_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_int64_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_uint8_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_uint16_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_uint32_t);
-INSTANTIATE_INTTYPE_SHIFT_OPS (octave_uint64_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (int8_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (int16_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (int32_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (int64_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (uint8_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (uint16_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (uint32_t);
+INSTANTIATE_INTTYPE_SHIFT_OPS (uint64_t);
 
 #define INSTANTIATE_OCTAVE_INT_CMP_OP(OP, T1, T2) \
   template bool operator OP (const octave_int<T1>&, const octave_int<T2>&)
@@ -210,77 +210,77 @@ INSTANTIATE_INTTYPE_SHIFT_OPS (octave_uint64_t);
   INSTANTIATE_OCTAVE_INT_CMP_OP (==, T1, T2); \
   INSTANTIATE_OCTAVE_INT_CMP_OP (!=, T1, T2)
 
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_int8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_int16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_int32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_uint16_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_uint32_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int8_t, octave_uint64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, int8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, int16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, int32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, uint16_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, uint32_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int8_t, uint64_t);
 
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_int8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_int16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_int32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_uint16_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_uint32_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int16_t, octave_uint64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, int8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, int16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, int32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, uint16_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, uint32_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int16_t, uint64_t);
 
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_int8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_int16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_int32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_uint16_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_uint32_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int32_t, octave_uint64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, int8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, int16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, int32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, uint16_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, uint32_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int32_t, uint64_t);
 
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_int8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_int16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_int32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_uint16_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_uint32_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_int64_t, octave_uint64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, int8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, int16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, int32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, uint16_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, uint32_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (int64_t, uint64_t);
 
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_int8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_int16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_int32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_uint16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_uint32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint8_t, octave_uint64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, int8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, int16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, int32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, uint16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, uint32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint8_t, uint64_t);
 
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_int8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_int16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_int32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_uint16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_uint32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint16_t, octave_uint64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, int8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, int16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, int32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, uint16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, uint32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint16_t, uint64_t);
 
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_int8_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_int16_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_int32_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_uint16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_uint32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint32_t, octave_uint64_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, int8_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, int16_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, int32_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, uint16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, uint32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint32_t, uint64_t);
 
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_int8_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_int16_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_int32_t);
-// INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_int64_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_uint8_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_uint16_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_uint32_t);
-INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_uint64_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, int8_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, int16_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, int32_t);
+// INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, int64_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, uint8_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, uint16_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, uint32_t);
+INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, uint64_t);
 
 // The following apply if the unsigned type is at least as wide as the
 // signed type (then we can cast postive signed values to the unsigned
@@ -322,14 +322,14 @@ INSTANTIATE_OCTAVE_INT_CMP_OPS (octave_uint64_t, octave_uint64_t);
   OCTAVE_US_TYPE1_CMP_OPS (UT, ST) \
   OCTAVE_SU_TYPE1_CMP_OPS (ST, UT)
 
-OCTAVE_TYPE1_CMP_OPS (octave_uint32_t, octave_int8_t)
-OCTAVE_TYPE1_CMP_OPS (octave_uint32_t, octave_int16_t)
-OCTAVE_TYPE1_CMP_OPS (octave_uint32_t, octave_int32_t)
+OCTAVE_TYPE1_CMP_OPS (uint32_t, int8_t)
+OCTAVE_TYPE1_CMP_OPS (uint32_t, int16_t)
+OCTAVE_TYPE1_CMP_OPS (uint32_t, int32_t)
 
-OCTAVE_TYPE1_CMP_OPS (octave_uint64_t, octave_int8_t)
-OCTAVE_TYPE1_CMP_OPS (octave_uint64_t, octave_int16_t)
-OCTAVE_TYPE1_CMP_OPS (octave_uint64_t, octave_int32_t)
-OCTAVE_TYPE1_CMP_OPS (octave_uint64_t, octave_int64_t)
+OCTAVE_TYPE1_CMP_OPS (uint64_t, int8_t)
+OCTAVE_TYPE1_CMP_OPS (uint64_t, int16_t)
+OCTAVE_TYPE1_CMP_OPS (uint64_t, int32_t)
+OCTAVE_TYPE1_CMP_OPS (uint64_t, int64_t)
 
 // The following apply if the signed type is wider than the unsigned
 // type (then we can cast unsigned values to the signed type and
@@ -371,7 +371,7 @@ OCTAVE_TYPE1_CMP_OPS (octave_uint64_t, octave_int64_t)
   OCTAVE_US_TYPE2_CMP_OPS (UT, ST) \
   OCTAVE_SU_TYPE2_CMP_OPS (ST, UT)
 
-OCTAVE_TYPE2_CMP_OPS (octave_uint32_t, octave_int64_t)
+OCTAVE_TYPE2_CMP_OPS (uint32_t, int64_t)
 
 
 

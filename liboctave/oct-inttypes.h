@@ -27,19 +27,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <limits>
 #include <iostream>
 
-#include "data-conv.h"
+#include "oct-types.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-
-typedef signed char octave_int8_t;
-typedef TWO_BYTE_INT octave_int16_t;
-typedef FOUR_BYTE_INT octave_int32_t;
-typedef EIGHT_BYTE_INT octave_int64_t;
-
-typedef unsigned char octave_uint8_t;
-typedef unsigned TWO_BYTE_INT octave_uint16_t;
-typedef unsigned FOUR_BYTE_INT octave_uint32_t;
-typedef unsigned EIGHT_BYTE_INT octave_uint64_t;
 
 template <class T1, class T2>
 class
@@ -58,77 +48,77 @@ public:
     typedef T3 TR; \
   }
 
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_int8_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_int16_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_int32_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_int64_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_uint8_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_uint16_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_uint32_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int8_t, octave_uint64_t, octave_int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, int8_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, int16_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, int32_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, int64_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, uint8_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, uint16_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, uint32_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (int8_t, uint64_t, int8_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_int8_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_int16_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_int32_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_int64_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_uint8_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_uint16_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_uint32_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int16_t, octave_uint64_t, octave_int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, int8_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, int16_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, int32_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, int64_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, uint8_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, uint16_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, uint32_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (int16_t, uint64_t, int16_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_int8_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_int16_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_int32_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_int64_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_uint8_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_uint16_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_uint32_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int32_t, octave_uint64_t, octave_int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, int8_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, int16_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, int32_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, int64_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, uint8_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, uint16_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, uint32_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (int32_t, uint64_t, int32_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_int8_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_int16_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_int32_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_int64_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_uint8_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_uint16_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_uint32_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_int64_t, octave_uint64_t, octave_int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, int8_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, int16_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, int32_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, int64_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, uint8_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, uint16_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, uint32_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (int64_t, uint64_t, int64_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_int8_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_int16_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_int32_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_int64_t, octave_int8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_uint8_t, octave_uint8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_uint16_t, octave_uint8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_uint32_t, octave_uint8_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint8_t, octave_uint64_t, octave_uint8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, int8_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, int16_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, int32_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, int64_t, int8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, uint8_t, uint8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, uint16_t, uint8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, uint32_t, uint8_t);
+OCTAVE_INT_BINOP_TRAIT (uint8_t, uint64_t, uint8_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_int8_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_int16_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_int32_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_int64_t, octave_int16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_uint8_t, octave_uint16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_uint16_t, octave_uint16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_uint32_t, octave_uint16_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint16_t, octave_uint64_t, octave_uint16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, int8_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, int16_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, int32_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, int64_t, int16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, uint8_t, uint16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, uint16_t, uint16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, uint32_t, uint16_t);
+OCTAVE_INT_BINOP_TRAIT (uint16_t, uint64_t, uint16_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_int8_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_int16_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_int32_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_int64_t, octave_int32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_uint8_t, octave_uint32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_uint16_t, octave_uint32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_uint32_t, octave_uint32_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint32_t, octave_uint64_t, octave_uint32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, int8_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, int16_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, int32_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, int64_t, int32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, uint8_t, uint32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, uint16_t, uint32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, uint32_t, uint32_t);
+OCTAVE_INT_BINOP_TRAIT (uint32_t, uint64_t, uint32_t);
 
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_int8_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_int16_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_int32_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_int64_t, octave_int64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_uint8_t, octave_uint64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_uint16_t, octave_uint64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_uint32_t, octave_uint64_t);
-OCTAVE_INT_BINOP_TRAIT (octave_uint64_t, octave_uint64_t, octave_uint64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, int8_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, int16_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, int32_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, int64_t, int64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, uint8_t, uint64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, uint16_t, uint64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, uint32_t, uint64_t);
+OCTAVE_INT_BINOP_TRAIT (uint64_t, uint64_t, uint64_t);
 
 template <class T1, class T2>
 inline T2
@@ -397,15 +387,15 @@ operator >> (std::istream& is, octave_int<T>& ival)
   return is;
 }
 
-typedef octave_int<octave_int8_t> octave_int8;
-typedef octave_int<octave_int16_t> octave_int16;
-typedef octave_int<octave_int32_t> octave_int32;
-typedef octave_int<octave_int64_t> octave_int64;
+typedef octave_int<int8_t> octave_int8;
+typedef octave_int<int16_t> octave_int16;
+typedef octave_int<int32_t> octave_int32;
+typedef octave_int<int64_t> octave_int64;
 
-typedef octave_int<octave_uint8_t> octave_uint8;
-typedef octave_int<octave_uint16_t> octave_uint16;
-typedef octave_int<octave_uint32_t> octave_uint32;
-typedef octave_int<octave_uint64_t> octave_uint64;
+typedef octave_int<uint8_t> octave_uint8;
+typedef octave_int<uint16_t> octave_uint16;
+typedef octave_int<uint32_t> octave_uint32;
+typedef octave_int<uint64_t> octave_uint64;
 
 #define OCTAVE_INT_BIN_OP(OP) \
   template <class T1, class T2> \
@@ -582,14 +572,14 @@ OCTAVE_INT_CMP_OP (!=)
   OCTAVE_US_TYPE1_CMP_OP_DECLS (UT, ST) \
   OCTAVE_SU_TYPE1_CMP_OP_DECLS (ST, UT)
 
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint32_t, octave_int8_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint32_t, octave_int16_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint32_t, octave_int32_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint32_t, int8_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint32_t, int16_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint32_t, int32_t)
 
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int8_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int16_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int32_t)
-OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int64_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int8_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int16_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int32_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int64_t)
 
 // The following apply if the signed type is wider than the unsigned
 // type (then we can cast unsigned values to the signed type and
@@ -621,7 +611,7 @@ OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int64_t)
   OCTAVE_US_TYPE2_CMP_OP_DECLS (UT, ST) \
   OCTAVE_SU_TYPE2_CMP_OP_DECLS (ST, UT)
 
-OCTAVE_TYPE2_CMP_OP_DECLS (octave_uint32_t, octave_int64_t)
+OCTAVE_TYPE2_CMP_OP_DECLS (uint32_t, int64_t)
 
 #undef OCTAVE_INT_BINOP_TRAIT
 #undef OCTAVE_US_S_FTR

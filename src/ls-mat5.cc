@@ -151,13 +151,13 @@ read_mat5_binary_data (std::istream& is, double *data,
       break;
 
     case miINT64:
-#ifdef EIGHT_BYTE_INT
+#ifdef int64_t
       read_doubles (is, data, LS_LONG, count, swap, flt_fmt);
 #endif
       break;
 
     case miUINT64:
-#ifdef EIGHT_BYTE_INT
+#ifdef int64_t
       read_doubles (is, data, LS_U_LONG, count, swap, flt_fmt);
 #endif
       break;
@@ -192,27 +192,27 @@ read_mat5_integer_data (std::istream& is, T *m, int count, bool swap,
   switch (type)
     {
     case miINT8:
-      READ_INTEGER_DATA (signed char, swap, m, 1, count, is);
+      READ_INTEGER_DATA (int8_t, swap, m, 1, count, is);
       break;
 
     case miUINT8:
-      READ_INTEGER_DATA (unsigned char, swap, m, 1, count, is);
+      READ_INTEGER_DATA (uint8_t, swap, m, 1, count, is);
       break;
 
     case miINT16:
-      READ_INTEGER_DATA (signed TWO_BYTE_INT, swap, m, 2, count, is);
+      READ_INTEGER_DATA (int16_t, swap, m, 2, count, is);
       break;
 
     case miUINT16:
-      READ_INTEGER_DATA (unsigned TWO_BYTE_INT, swap, m, 2, count, is);
+      READ_INTEGER_DATA (uint16_t, swap, m, 2, count, is);
       break;
 
     case miINT32:
-      READ_INTEGER_DATA (signed FOUR_BYTE_INT, swap, m, 4, count, is);
+      READ_INTEGER_DATA (int32_t, swap, m, 4, count, is);
       break;
 
     case miUINT32:
-      READ_INTEGER_DATA (unsigned FOUR_BYTE_INT, swap, m, 4, count, is);
+      READ_INTEGER_DATA (uint32_t, swap, m, 4, count, is);
       break;
 
     case miSINGLE:
@@ -223,14 +223,14 @@ read_mat5_integer_data (std::istream& is, T *m, int count, bool swap,
       break;
 
     case miINT64:
-#ifdef EIGHT_BYTE_INT
-      READ_INTEGER_DATA (signed EIGHT_BYTE_INT, swap, m, 8, count, is);
+#ifdef int64_t
+      READ_INTEGER_DATA (int64_t, swap, m, 8, count, is);
 #endif
       break;
 
     case miUINT64:
-#ifdef EIGHT_BYTE_INT
-      READ_INTEGER_DATA (unsigned EIGHT_BYTE_INT, swap, m, 8, count, is);
+#ifdef int64_t
+      READ_INTEGER_DATA (uint64_t, swap, m, 8, count, is);
 #endif
       break;
 
@@ -338,7 +338,7 @@ static int
 read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
 {
   unsigned int upper;
-  FOUR_BYTE_INT temp;
+  int32_t temp;
 
   if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
     goto data_read_error;
@@ -370,7 +370,7 @@ read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
 }
 
 static void
-read_int (std::istream& is, bool swap, FOUR_BYTE_INT& val)
+read_int (std::istream& is, bool swap, int32_t& val)
 {
   is.read (reinterpret_cast<char *> (&val), 4);
 
@@ -401,14 +401,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   bool imag;
   bool logicalvar;
   enum arrayclasstype arrayclass;
-  FOUR_BYTE_INT nzmax;
-  FOUR_BYTE_INT flags;
+  int32_t nzmax;
+  int32_t flags;
   dim_vector dims;
   int len;
   int element_length;
   std::streampos pos;
-  TWO_BYTE_INT number;
-  number = *(TWO_BYTE_INT *)"\x00\x01";
+  int16_t number;
+  number = *(int16_t *)"\x00\x01";
 
   global = false;
 
@@ -498,7 +498,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   
   // dimensions array subelement
   {
-    FOUR_BYTE_INT dim_len;
+    int32_t dim_len;
 
     if (read_mat5_tag (is, swap, type, dim_len) || type != miINT32)
       {
@@ -510,7 +510,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     dims.resize (ndims);
     for (int i = 0; i < ndims; i++)
       {
-	FOUR_BYTE_INT n;
+	int32_t n;
 	read_int (is, swap, n);
 	dims(i) = n;
       }
@@ -659,7 +659,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	FOUR_BYTE_INT nnz = cidx[nc];
+	int32_t nnz = cidx[nc];
 	NDArray re;
 	if (imag)
 	  {
@@ -718,9 +718,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     case mxSTRUCT_CLASS:
       {
 	Octave_map m;
-	FOUR_BYTE_INT fn_type;
-	FOUR_BYTE_INT fn_len;
-	FOUR_BYTE_INT field_name_length;
+	int32_t fn_type;
+	int32_t fn_len;
+	int32_t field_name_length;
 
 	// field name length subelement -- actually the maximum length
 	// of a field name.  The Matlab docs promise this will always
@@ -973,7 +973,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 int
 read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet)
 {
-  TWO_BYTE_INT version=0, magic=0;
+  int16_t version=0, magic=0;
 
   is.seekg (124, std::ios::beg);
   is.read (reinterpret_cast<char *> (&version), 2);
@@ -1003,7 +1003,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet)
 static int 
 write_mat5_tag (std::ostream& is, int type, int bytes)
 {
-  FOUR_BYTE_INT temp;
+  int32_t temp;
 
   if (bytes <= 4)
     temp = (bytes << 16) + type;
@@ -1084,40 +1084,40 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
     switch (st)
       {
       case LS_U_CHAR:
-	MAT5_DO_WRITE (unsigned char, data, nel, os);
+	MAT5_DO_WRITE (uint8_t, data, nel, os);
 	break;
 	
       case LS_U_SHORT:
-	MAT5_DO_WRITE (unsigned TWO_BYTE_INT, data, nel, os);
+	MAT5_DO_WRITE (uint16_t, data, nel, os);
 	break;
 	
       case LS_U_INT:
-	MAT5_DO_WRITE (unsigned FOUR_BYTE_INT, data, nel, os);
+	MAT5_DO_WRITE (uint32_t, data, nel, os);
 	break;
 	
 	// provide for 64 bit ints, even though get_save_type does
 	// not yet implement them
-#ifdef EIGHT_BYTE_INT
+#ifdef int64_t
       case LS_U_LONG:
-	MAT5_DO_WRITE (unsigned EIGHT_BYTE_INT, data, nel, os);
+	MAT5_DO_WRITE (uint64_t, data, nel, os);
 	break;
 #endif
 
       case LS_CHAR:
-	MAT5_DO_WRITE (signed char, data, nel, os);
+	MAT5_DO_WRITE (int8_t, data, nel, os);
 	break;
 	
       case LS_SHORT:
-	MAT5_DO_WRITE (TWO_BYTE_INT, data, nel, os);
+	MAT5_DO_WRITE (int16_t, data, nel, os);
 	break;
 
       case LS_INT:
-	MAT5_DO_WRITE (FOUR_BYTE_INT, data, nel, os);
+	MAT5_DO_WRITE (int32_t, data, nel, os);
 	break;
 
-#ifdef EIGHT_BYTE_INT
+#ifdef int64_t
       case LS_LONG:
-	MAT5_DO_WRITE (EIGHT_BYTE_INT, data, nel, os);
+	MAT5_DO_WRITE (int64_t, data, nel, os);
 	break;
 #endif
 
@@ -1456,8 +1456,8 @@ save_mat5_binary_element (std::ostream& os,
 			  bool mark_as_global, bool mat7_format,
 			  bool save_as_floats, bool compressing) 
 {
-  FOUR_BYTE_INT flags=0;
-  FOUR_BYTE_INT nnz=0;
+  int32_t flags=0;
+  int32_t nnz=0;
   std::streampos fixup, contin;
   std::string cname = tc.class_name ();
   int max_namelen = (mat7_format ? 63 : 31);
@@ -1579,7 +1579,7 @@ save_mat5_binary_element (std::ostream& os,
 
     for (int i = 0; i < nd; i++)
       {
-	FOUR_BYTE_INT n = dv(i);
+	int32_t n = dv(i);
 	os.write (reinterpret_cast<char *> (&n), 4);
       }
 
@@ -1615,7 +1615,7 @@ save_mat5_binary_element (std::ostream& os,
       int len = nr*nc*2;
       int paddedlength = PAD (nr*nc*2);
 
-      OCTAVE_LOCAL_BUFFER (TWO_BYTE_INT, buf, nc*nr+3);
+      OCTAVE_LOCAL_BUFFER (int16_t, buf, nc*nr+3);
       write_mat5_tag (os, miUINT16, len);
 
       for (int i = 0; i < nr; i++)
@@ -1753,7 +1753,7 @@ save_mat5_binary_element (std::ostream& os,
 
       {
 	char buf[64];
-	FOUR_BYTE_INT maxfieldnamelength = max_namelen + 1;
+	int32_t maxfieldnamelength = max_namelen + 1;
 	int fieldcnt = 0;
 
 	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)

@@ -620,7 +620,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
     return false;
 
   // Use negative value for ndims
-  FOUR_BYTE_INT di = - d.length();
+  int32_t di = - d.length();
   os.write (reinterpret_cast<char *> (&di), 4);
   for (int i = 0; i < d.length (); i++)
     {
@@ -650,7 +650,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)
 {
   bool success = true;
-  FOUR_BYTE_INT mdims;
+  int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
     return false;
   if (swap)
@@ -659,7 +659,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
     return false;
 
   mdims = -mdims;
-  FOUR_BYTE_INT di;
+  int32_t di;
   dim_vector dv;
   dv.resize (mdims);
 

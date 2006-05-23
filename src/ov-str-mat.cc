@@ -456,7 +456,7 @@ octave_char_matrix_str::save_binary (std::ostream& os,
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  FOUR_BYTE_INT tmp = - d.length();
+  int32_t tmp = - d.length();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i=0; i < d.length (); i++)
     {
@@ -473,7 +473,7 @@ bool
 octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 				     oct_mach_info::float_format /* fmt */)
 {
-  FOUR_BYTE_INT elements;
+  int32_t elements;
   if (! is.read (reinterpret_cast<char *> (&elements), 4))
     return false;
   if (swap)
@@ -481,8 +481,8 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 
   if (elements < 0)
     {
-      FOUR_BYTE_INT mdims = - elements;
-      FOUR_BYTE_INT di;
+      int32_t mdims = - elements;
+      int32_t di;
       dim_vector dv;
       dv.resize (mdims);
 
@@ -521,7 +521,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       int max_len = 0;
       for (int i = 0; i < elements; i++)
 	{
-	  FOUR_BYTE_INT len;
+	  int32_t len;
 	  if (! is.read (reinterpret_cast<char *> (&len), 4))
 	    return false;
 	  if (swap)

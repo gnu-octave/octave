@@ -215,7 +215,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 bool
 octave_fcn_handle::save_binary (std::ostream& os, bool&)
 {
-  FOUR_BYTE_INT tmp = nm.length ();
+  int32_t tmp = nm.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   os.write (nm.c_str (), nm.length ());
   if (nm == "@<anonymous>")
@@ -234,7 +234,7 @@ bool
 octave_fcn_handle::load_binary (std::istream& is, bool swap,
 				oct_mach_info::float_format)
 {
-  FOUR_BYTE_INT tmp;
+  int32_t tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 4))
     return false;
   if (swap)

@@ -54,26 +54,6 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#else
-#if SIZEOF_INT == 4
-typedef unsigned int uint32_t;
-#elif SIZEOF_LONG == 4
-typedef unsigned long uint32_t;
-#else
-#error "No 4 byte integer type found!"
-#endif
-
-#if SIZEOF_LONG == 8
-typedef unsigned long uint64_t;
-#else
-#if SIZEOF_LONG_LONG == 8
-typedef unsigned long long uint64_t;
-#endif
-#endif
-#endif
-
 /* === Mersenne Twister === */
 extern void oct_init_by_int (uint32_t s);
 extern void oct_init_by_array (uint32_t init_key[], int key_length);

@@ -1,3 +1,7 @@
+2006-05-23  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for inttypes.h and stdint.h.
+
 2006-05-19  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl (emit_print_function, emit_options_function):

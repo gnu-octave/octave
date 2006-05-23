@@ -31,10 +31,9 @@ extern int
 float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt);
 
 extern int
-read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt, 
-		      FOUR_BYTE_INT& nr, FOUR_BYTE_INT& nc,
-		      FOUR_BYTE_INT& imag, FOUR_BYTE_INT& len,
-		      int quiet = 0);
+read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt, 
+		      int32_t& nr, int32_t& nc, int32_t& imag,
+		      int32_t& len, int quiet = 0);
 
 extern std::string
 read_mat_binary_data (std::istream& is, const std::string& filename,

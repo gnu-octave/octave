@@ -1,3 +1,16 @@
+2006-05-23  John W. Eaton  <jwe@octave.org>
+
+	* oct-types.h.in: Include stdint.h or inttypes.h for integer
+	typedefs, or define them if those files are not available.
+	* oct-inttypes.h (octave_int8_t, octave_int16_t, octave_int32_t,
+	octave_int64_t, octave_uint8_t, octave_uint16_t, octave_uint32_t,
+	octave_uint64_t): Delete typedefs.  Replace all uses of these
+	types with int8_t, int16_t, etc.
+	* data-conv.h (TWO_BYTE_INT, FOUR_BYTE_INT, EIGHT_BYTE_INT):
+	Delete definitions.  Replace all uses of these macros with int8_t,
+	int16_t, etc.
+	* randmtzig.h: Delete integer typedefs.
+
 2006-05-18  John W. Eaton  <jwe@octave.org>
 
 	* EIG.cc (EIG::init): Trap Inf and NaN values here.

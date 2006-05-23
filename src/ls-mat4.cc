@@ -109,9 +109,9 @@ read_mat_binary_data (std::istream& is, double *data, int precision,
 }
 
 int
-read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt, 
-		      FOUR_BYTE_INT& nr, FOUR_BYTE_INT& nc,
-		      FOUR_BYTE_INT& imag, FOUR_BYTE_INT& len,
+read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt, 
+		      int32_t& nr, int32_t& nc,
+		      int32_t& imag, int32_t& len,
 		      int quiet)
 {
   swap = false;
@@ -276,7 +276,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   int mach = 0;
   int dlen = 0;
 
-  FOUR_BYTE_INT mopt, nr, nc, imag, len;
+  int32_t mopt, nr, nc, imag, len;
 
   int err = read_mat_file_header (is, swap, mopt, nr, nc, imag, len);
   if (err)
@@ -389,7 +389,7 @@ bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
 		      const std::string& name) 
 {
-  FOUR_BYTE_INT mopt = 0;
+  int32_t mopt = 0;
 
   mopt += tc.is_string () ? 1 : 0;
 
@@ -400,21 +400,21 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   os.write (reinterpret_cast<char *> (&mopt), 4);
   
-  FOUR_BYTE_INT nr = tc.rows ();
+  int32_t nr = tc.rows ();
   os.write (reinterpret_cast<char *> (&nr), 4);
 
-  FOUR_BYTE_INT nc = tc.columns ();
+  int32_t nc = tc.columns ();
   os.write (reinterpret_cast<char *> (&nc), 4);
 
   octave_idx_type len = nr * nc;
 
-  FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
+  int32_t imag = tc.is_complex_type () ? 1 : 0;
   os.write (reinterpret_cast<char *> (&imag), 4);
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it.
 
-  FOUR_BYTE_INT name_len = name.length () + 1;
+  int32_t name_len = name.length () + 1;
 
   os.write (reinterpret_cast<char *> (&name_len), 4);
   os << name << '\0';

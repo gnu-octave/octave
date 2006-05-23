@@ -141,8 +141,8 @@ read_binary_data (std::istream& is, bool swap,
 
   char tmp = 0;
 
-  FOUR_BYTE_INT name_len = 0;
-  FOUR_BYTE_INT doc_len = 0;
+  int32_t name_len = 0;
+  int32_t doc_len = 0;
 
   doc.resize (0);
 
@@ -209,7 +209,7 @@ read_binary_data (std::istream& is, bool swap,
 	// FIXMEX
 	// This is cruft, since its for a save type that is old. Maybe
 	// this is taking backward compatability too far!!
-	FOUR_BYTE_INT len;
+	int32_t len;
 	if (! is.read (reinterpret_cast<char *> (&len), 4))
 	  goto data_read_error;
 	if (swap)
@@ -236,7 +236,7 @@ read_binary_data (std::istream& is, bool swap,
     case 255:
       {
 	// Read the saved variable type
-	FOUR_BYTE_INT len;
+	int32_t len;
 	if (! is.read (reinterpret_cast<char *> (&len), 4))
 	  goto data_read_error;
 	if (swap)
@@ -272,12 +272,12 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 		  const std::string& name, const std::string& doc,
 		  bool mark_as_global, bool save_as_floats) 
 {
-  FOUR_BYTE_INT name_len = name.length ();
+  int32_t name_len = name.length ();
 
   os.write (reinterpret_cast<char *> (&name_len), 4);
   os << name;
 
-  FOUR_BYTE_INT doc_len = doc.length ();
+  int32_t doc_len = doc.length ();
 
   os.write (reinterpret_cast<char *> (&doc_len), 4);
   os << doc;
@@ -293,7 +293,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 
   // Write the string corresponding to the octave_value type
   std::string typ = tc.type_name ();
-  FOUR_BYTE_INT len = typ.length ();
+  int32_t len = typ.length ();
   os.write (reinterpret_cast<char *> (&len), 4);
   const char *btmp = typ.data ();
   os.write (btmp, len);

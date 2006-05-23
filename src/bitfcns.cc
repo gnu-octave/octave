@@ -288,15 +288,15 @@ Return the bitwise XOR of nonnegative integers.\n\
   BITOP (^, "bitxor");
 }
 
-static EIGHT_BYTE_INT
-bitshift (double a, int n, EIGHT_BYTE_INT mask)
+static int64_t
+bitshift (double a, int n, int64_t mask)
 {
   if (n > 0)
-    return (static_cast<EIGHT_BYTE_INT> (a) << n) & mask;
+    return (static_cast<int64_t> (a) << n) & mask;
   else if (n < 0)
-    return (static_cast<EIGHT_BYTE_INT> (a) >> -n) & mask;
+    return (static_cast<int64_t> (a) >> -n) & mask;
   else
-    return static_cast<EIGHT_BYTE_INT> (a) & mask;
+    return static_cast<int64_t> (a) & mask;
 }
 
 // Note that the bitshift operators are undefined if shifted by more
@@ -457,7 +457,7 @@ bitshift ([1, 10], 2, [3,4])\n\
       else if (cname == "double")
 	{
 	  nbits = (nbits < 53 ? nbits : 53);
-	  EIGHT_BYTE_INT mask = 0x1FFFFFFFFFFFFFLL;
+	  int64_t mask = 0x1FFFFFFFFFFFFFLL;
 	  if (nbits < 53)
 	    mask = mask >> (53 - nbits);
 	  else if (nbits < 1)
@@ -532,21 +532,21 @@ The default for @var{type} is @code{uint32}.\n\
     }
 
   if (cname == "uint8")
-    retval = octave_uint8 (std::numeric_limits<octave_uint8_t>::max ());
+    retval = octave_uint8 (std::numeric_limits<uint8_t>::max ());
   else if (cname == "uint16")
-    retval = octave_uint16 (std::numeric_limits<octave_uint16_t>::max ());
+    retval = octave_uint16 (std::numeric_limits<uint16_t>::max ());
   else if (cname == "uint32")
-    retval = octave_uint32 (std::numeric_limits<octave_uint32_t>::max ());
+    retval = octave_uint32 (std::numeric_limits<uint32_t>::max ());
   else if (cname == "uint64")
-    retval = octave_uint64 (std::numeric_limits<octave_uint64_t>::max ());
+    retval = octave_uint64 (std::numeric_limits<uint64_t>::max ());
   else if (cname == "int8")
-    retval = octave_int8 (std::numeric_limits<octave_int8_t>::max ());
+    retval = octave_int8 (std::numeric_limits<int8_t>::max ());
   else if (cname == "int16")
-    retval = octave_int16 (std::numeric_limits<octave_int16_t>::max ());
+    retval = octave_int16 (std::numeric_limits<int16_t>::max ());
   else if (cname == "int32")
-    retval = octave_int32 (std::numeric_limits<octave_int32_t>::max ());
+    retval = octave_int32 (std::numeric_limits<int32_t>::max ());
   else if (cname == "int64")
-    retval = octave_int64 (std::numeric_limits<octave_int64_t>::max ());
+    retval = octave_int64 (std::numeric_limits<int64_t>::max ());
   else
     error ("intmax: not defined for '%s' objects", cname.c_str ());
 
@@ -595,21 +595,21 @@ The default for @var{type} is @code{uint32}.\n\
     }
 
   if (cname == "uint8")
-    retval = octave_uint8 (std::numeric_limits<octave_uint8_t>::min ());
+    retval = octave_uint8 (std::numeric_limits<uint8_t>::min ());
   else if (cname == "uint16")
-    retval = octave_uint16 (std::numeric_limits<octave_uint16_t>::min());
+    retval = octave_uint16 (std::numeric_limits<uint16_t>::min());
   else if (cname == "uint32")
-    retval = octave_uint32 (std::numeric_limits<octave_uint32_t>::min ());
+    retval = octave_uint32 (std::numeric_limits<uint32_t>::min ());
   else if (cname == "uint64")
-    retval = octave_uint64 (std::numeric_limits<octave_uint64_t>::min ());
+    retval = octave_uint64 (std::numeric_limits<uint64_t>::min ());
   else if (cname == "int8")
-    retval = octave_int8 (std::numeric_limits<octave_int8_t>::min ());
+    retval = octave_int8 (std::numeric_limits<int8_t>::min ());
   else if (cname == "int16")
-    retval = octave_int16 (std::numeric_limits<octave_int16_t>::min ());
+    retval = octave_int16 (std::numeric_limits<int16_t>::min ());
   else if (cname == "int32")
-    retval = octave_int32 (std::numeric_limits<octave_int32_t>::min ());
+    retval = octave_int32 (std::numeric_limits<int32_t>::min ());
   else if (cname == "int64")
-    retval = octave_int64 (std::numeric_limits<octave_int64_t>::min ());
+    retval = octave_int64 (std::numeric_limits<int64_t>::min ());
   else
     error ("intmin: not defined for '%s' objects", cname.c_str ());
 

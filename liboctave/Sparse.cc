@@ -2011,16 +2011,16 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
   octave_idx_type lhs_len = lhs.numel ();
   octave_idx_type rhs_len = rhs.numel ();
 
-  unsigned EIGHT_BYTE_INT long_lhs_len = 
-    static_cast<unsigned EIGHT_BYTE_INT> (lhs.rows ()) *
-    static_cast<unsigned EIGHT_BYTE_INT> (lhs.cols ());
+  uint64_t long_lhs_len = 
+    static_cast<uint64_t> (lhs.rows ()) *
+    static_cast<uint64_t> (lhs.cols ());
 
-  unsigned EIGHT_BYTE_INT long_rhs_len = 
-    static_cast<unsigned EIGHT_BYTE_INT> (rhs.rows ()) *
-    static_cast<unsigned EIGHT_BYTE_INT> (rhs.cols ());
+  uint64_t long_rhs_len = 
+    static_cast<uint64_t> (rhs.rows ()) *
+    static_cast<uint64_t> (rhs.cols ());
 
-  if (long_rhs_len != static_cast<unsigned EIGHT_BYTE_INT>(rhs_len) ||
-      long_lhs_len != static_cast<unsigned EIGHT_BYTE_INT>(lhs_len))
+  if (long_rhs_len != static_cast<uint64_t>(rhs_len) ||
+      long_lhs_len != static_cast<uint64_t>(lhs_len))
     {
       (*current_liboctave_error_handler)
 	("A(I) = X: Matrix dimensions too large to ensure correct\n",

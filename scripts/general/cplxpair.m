@@ -23,8 +23,8 @@
 ## increasing real part.  With identical real parts, order by increasing
 ## imaginary magnitude. Place the negative imaginary complex number
 ## first within each pair. Place all the real numbers after all the 
-## complex pairs (those with @code {abs ( imag (@var{z}) / @var{z}) < 
-## @var{tol}}), where the default value of @var{tol} is @code{100 * 
+## complex pairs (those with @code{abs (imag (@var{z}) / @var{z}) < 
+## @var{tol})}, where the default value of @var{tol} is @code{100 * 
 ## @var{eps}}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
@@ -37,7 +37,7 @@
 ## pairs with identical real parts but differing imaginary parts.
 ##
 ## @example
-##     cplxpair (exp(2i*pi*[0:4]'/5)) == exp(2i*pi*[3; 2; 4; 1; 0]/5)
+## cplxpair (exp(2i*pi*[0:4]'/5)) == exp(2i*pi*[3; 2; 4; 1; 0]/5)
 ## @end example
 ## @end deftypefn
 

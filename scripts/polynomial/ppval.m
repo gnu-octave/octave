@@ -18,13 +18,11 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp, @var{xi})
-##
+## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
 ## Evaluate piece-wise polynomial @var{pp} at the points @var{xi}.  
 ## If @code{@var{pp}.d} is a scalar greater than 1, or an array,
 ## then the returned value @var{yi} will be an array that is 
 ## @code{d1, d1, @dots{}, dk, length (@var{xi})]}.
-##
 ## @seealso{mkpp, unmkpp, spline}
 ## @end deftypefn 
 

@@ -1647,7 +1647,7 @@ Send @var{string} directly to gnuplot subprocess.\n\
 
 DEFUN_DLD (__gnuplot_set__, args, ,
   "-*- texinfo -*-\n\
-@deffn {{Loadable Function} __gnuplot_set__ options\n\
+@deffn {Loadable Function} __gnuplot_set__ options\n\
 Set plotting options for gnuplot\n\
 @end deffn")
 {
@@ -1661,7 +1661,7 @@ Set plotting options for gnuplot\n\
 
 DEFUN_DLD (__gnuplot_show__, args, ,
   "-*- texinfo -*-\n\
-@deffn {{Loadable Function} __gnuplot_show__ options\n\
+@deffn {Loadable Function} __gnuplot_show__ options\n\
 Show plotting options.\n\
 @end deffn")
 {

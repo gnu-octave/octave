@@ -54,6 +54,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
+#include "load-path.h"
 #include "oct-map.h"
 #include "oct-hist.h"
 #include "toplev.h"
@@ -90,7 +91,7 @@ std::string VPS4 = "+ ";
 int Vecho_executing_commands = ECHO_OFF;
 
 // The time we last printed a prompt.
-octave_time Vlast_prompt_time;
+octave_time Vlast_prompt_time = 0.0;
 
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
@@ -212,10 +213,11 @@ octave_gets (void)
 
   std::string retval;
 
-  Vlast_prompt_time.stamp ();
-
   if ((interactive || forced_interactive)
-      && (! (reading_fcn_file || reading_script_file)))
+      && (! (reading_fcn_file
+	     || reading_script_file
+	     || input_from_startup_file
+	     || input_from_command_line_file)))
     {
       std::string ps = (promptflag > 0) ? VPS1 : VPS2;
 
@@ -227,7 +229,14 @@ octave_gets (void)
 
       octave_diary << prompt;
 
+      Vlast_prompt_time.stamp ();
+
       retval = gnu_readline (prompt);
+
+      // There is no need to update the load_path cache if there is no
+      // user input.
+      if (! retval.empty ())
+	load_path::update ();
     }
   else
     retval = gnu_readline ("");

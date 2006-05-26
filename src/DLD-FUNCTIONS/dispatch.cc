@@ -537,22 +537,24 @@ in the current directory!  I don't want them installed accidentally.
 %! dispatch('dispatch_x','length','string')
 %! assert(dispatch_x(3),3)
 %! assert(dispatch_x("a"),1)
-%! pause(1);
+%! sleep (2);
 %! system("echo 'function a=dispatch_x(a),++a;'>dispatch_x.m");
+%! rehash();
 %! assert(dispatch_x(3),4)
 %! assert(dispatch_x("a"),1)
 %!test 
-%! system("rm dispatch_x.m");
+%! unlink("dispatch_x.m");
 
 %!test # replace dispatch m-file
 %! system("echo 'function a=dispatch_y(a)'>dispatch_y.m");
 %! dispatch('hello','dispatch_y','complex scalar')
 %! assert(hello(3i),3i)
-%! pause(1);
+%! sleep (2);
 %! system("echo 'function a=dispatch_y(a),++a;'>dispatch_y.m");
+%! rehash();
 %! assert(hello(3i),1+3i)
 %!test 
-%! system("rm dispatch_y.m");
+%! unlink("dispatch_y.m");
 
 FIXME add tests for preservation of mark_as_command status.
 

@@ -60,6 +60,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "input.h"
 #include "lex.h"
+#include "load-path.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
@@ -3350,7 +3351,7 @@ lookup_autoload (const std::string& nm)
   am_iter p = autoload_map.find (nm);
 
   if (p != autoload_map.end ())
-    retval = octave_env::make_absolute (Vload_path_dir_path.find (p->second),
+    retval = octave_env::make_absolute (load_path::find_file (p->second),
 					octave_env::getcwd ());
 
   return retval;
@@ -3413,13 +3414,8 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
 	  exec_script = true;
 	}
       else
-	{
-	  names[0] = nm + ".oct";
-	  names[1] = nm + ".m";
-
-	  file = octave_env::make_absolute (Vload_path_dir_path.find_first_of (names),
-					    octave_env::getcwd ());
-	}
+	file = octave_env::make_absolute
+	  (load_path::find_fcn (nm), octave_env::getcwd ());
     }
 
   int len = file.length ();

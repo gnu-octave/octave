@@ -50,6 +50,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
+#include "load-path.h"
 #include "oct-obj.h"
 #include "ov.h"
 #include "parse.h"
@@ -85,16 +86,6 @@ std::string Vimage_dir;
 // (--exec-path path)
 static std::string VEXEC_PATH;
 
-// Load path specified on command line.
-// (--path path; -p path)
-static std::string VLOADPATH;
-
-// The default load path with OCTAVE_HOME appropriately substituted.
-static std::string VDEFAULT_LOADPATH;
-
-// And the cached directory path corresponding to Vload_path.
-dir_path Vload_path_dir_path;
-
 // Name of the editor to be invoked by the edit_history command.
 std::string VEDITOR;
 
@@ -105,83 +96,6 @@ std::string Vsite_defaults_file;
 
 // Name of the FFTW wisdom program.
 std::string Vfftw_wisdom_program;
-
-// Each element of A and B should be directory names.  For each
-// element of A not in the list B, execute SCRIPT_FILE in that
-// directory if it exists.
-
-static void
-maybe_add_or_del_packages (const string_vector& a,
-			   const string_vector& b,
-			   const std::string& script_file)
-{
-  if (! octave_interpreter_ready)
-    return;
-
-  unwind_protect::begin_frame ("maybe_add_or_del_packages");
-
-  unwind_protect_bool (input_from_startup_file);
-
-  input_from_startup_file = true;
-
-  octave_idx_type a_len = a.length ();
-  octave_idx_type b_len = b.length ();
-
-  for (octave_idx_type i = 0; i < a_len; i++)
-    {
-      std::string a_dir = a[i];
-
-      bool found = false;
-
-      for (octave_idx_type j = 0; j < b_len; j++)
-	{
-	  if (b[j] == a_dir)
-	    {
-	      found = true;
-	      break;
-	    }
-	}
-
-      if (! found)
-	{
-	  std::string file = a_dir + file_ops::dir_sep_str + script_file;
-
-	  file_stat fs = file_stat (file);
-
-	  if (fs.exists ())
-	    source_file (file);
-
-	  if (error_state)
-	    return;
-	}
-    }
-
-  unwind_protect::run_frame ("maybe_add_or_del_packages");
-}
-
-static void
-update_load_path_dir_path (void)
-{
-  string_vector old_dirs = Vload_path_dir_path.all_directories ();
-
-  Vload_path_dir_path = dir_path (VLOADPATH, "");
-
-  string_vector new_dirs = Vload_path_dir_path.all_directories ();
-
-  maybe_add_or_del_packages (old_dirs, new_dirs, "PKG_DEL");
-
-  if (! error_state)
-    maybe_add_or_del_packages (new_dirs, old_dirs, "PKG_ADD");
-}
-
-void
-execute_default_pkg_add_files (void)
-{
-  string_vector old_dirs;
-  string_vector new_dirs = Vload_path_dir_path.all_directories ();
-  
-  maybe_add_or_del_packages (new_dirs, old_dirs, "PKG_ADD");
-}
 
 static std::string
 subst_octave_home (const std::string& s)
@@ -337,81 +251,6 @@ set_exec_path (const std::string& path)
   octave_env::putenv ("PATH", VEXEC_PATH);
 }
 
-static std::string
-genpath (const std::string& dirname)
-{
-  std::string retval;
-
-  std::string full_dirname = file_ops::tilde_expand (dirname);
-
-  dir_entry dir (full_dirname);
-
-  if (dir)
-    {
-      retval = dirname;
-
-      string_vector dirlist = dir.read ();
-      
-      octave_idx_type len = dirlist.length ();
-
-      for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string elt = dirlist[i];
-
-	  if (elt != "." && elt != ".." && elt != "private")
-	    {
-	      std::string nm = full_dirname + file_ops::dir_sep_str + elt;
-
-	      file_stat fs (nm);
-
-	      if (fs && fs.is_dir ())
-		retval += dir_path::path_sep_str + genpath (nm);
-	    }
-	}
-    }
-
-  return retval;
-}
-
-static void
-maybe_add_path_elts (std::string& pathvar, const std::string& dir)
-{
-  std::string tpath = genpath (dir);
-
-  if (! tpath.empty ())
-    pathvar += dir_path::path_sep_str + tpath;
-}
-
-void
-set_load_path (const std::string& path)
-{
-  VDEFAULT_LOADPATH = ":";
-
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_ver_oct_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_api_oct_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_oct_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_ver_fcn_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_api_fcn_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vlocal_fcn_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Voct_file_dir);
-  maybe_add_path_elts (VDEFAULT_LOADPATH, Vfcn_file_dir);
-
-  std::string tpath = path;
-
-  if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_LOADPATH");
-
-  VLOADPATH = ".";
-
-  if (! tpath.empty ())
-    VLOADPATH += dir_path::path_sep_str + tpath;
-
-  if (VDEFAULT_LOADPATH != ":")
-    VLOADPATH += VDEFAULT_LOADPATH;
-
-  update_load_path_dir_path ();
-}
-
 void
 set_image_path (const std::string& path)
 {
@@ -425,7 +264,10 @@ set_image_path (const std::string& path)
   if (! tpath.empty ())
     VIMAGE_PATH += dir_path::path_sep_str + tpath;
 
-  maybe_add_path_elts (VIMAGE_PATH, Vimage_dir);
+  tpath = genpath (Vimage_dir, "");
+
+  if (! tpath.empty ())
+    VIMAGE_PATH += dir_path::path_sep_str + tpath;
 }
 
 static void
@@ -535,8 +377,6 @@ install_defaults (void)
 
   set_exec_path ();
 
-  set_load_path ();
-
   set_image_path ();
 
   set_default_info_file ();
@@ -550,42 +390,6 @@ install_defaults (void)
   set_local_site_defaults_file ();
 
   set_site_defaults_file ();
-}
-
-DEFUN (genpath, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} genpath (@var{dir})\n\
-Return a path constructed from @var{dir} and all its subdiretories.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      std::string dirname = args(0).string_value ();
-
-      if (! error_state)
-	retval = genpath (dirname);
-      else
-	error ("genpath: expecting argument to be a character string");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (rehash, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rehash ()\n\
-Reinitialize Octave's @code{LOADPATH} directory cache.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  Vload_path_dir_path.rehash ();
-
-  return retval;
 }
 
 DEFUN (EDITOR, args, nargout,
@@ -654,91 +458,6 @@ list of directories in which to search for image files.\n\
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
 }
 
-DEFUN (path, args, nargout,
-    "-*- texinfo -*-\n\
-@deftypefn {Function File} {} path (@dots{})\n\
-Modify or display Octave's @code{LOADPATH}.\n\
-\n\
-If @var{nargin} and @var{nargout} are zero, display the elements of\n\
-Octave's @code{LOADPATH} in an easy to read format.\n\
-\n\
-If @var{nargin} is zero and nargout is greater than zero, return the\n\
-current value of @code{LOADPATH}.\n\
-\n\
-If @var{nargin} is greater than zero, concatenate the arguments,\n\
-separating them with @code{pathsep()}.  Set the internal search path\n\
-to the result and return it.\n\
-\n\
-No checks are made for duplicate elements.\n\
-@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("path");
-
-  if (! error_state)
-    {
-      if (argc > 1)
-	{
-	  std::string path = argv[1];
-
-	  for (int i = 2; i < argc; i++)
-	    path += dir_path::path_sep_str;
-
-	  size_t plen = path.length ();
-
-	  if (! ((plen == 1 && path[0] == ':')
-		 || (plen > 1
-		     && path.substr (0, 2) == ("." + dir_path::path_sep_str))))
-	    path = "." + dir_path::path_sep_str + path;
-
-	  VLOADPATH = path;
-
-	  // By resetting the last prompt time variable, we will force
-	  // checks for out of date symbols even if the change to
-	  // LOADPATH and subsequent function calls happen between
-	  // prompts.
-
-	  // FIXME -- maybe we should rename
-	  // Vlast_prompt_time_stamp since the new usage doesn't really
-	  // fit with the current name?
-
-	  Vlast_prompt_time.stamp ();
-
-	  update_load_path_dir_path ();
-	}
-
-      if (nargout > 0)
-	retval = VLOADPATH;
-      else if (argc == 1 && nargout == 0)
-	{
-	  octave_stdout << "\nOctave's search path contains the following directories:\n\n";
-
-	  string_vector sv = Vload_path_dir_path.all_directories ();
-
-	  sv.list_in_columns (octave_stdout);
-
-	  octave_stdout << "\n";
-	}
-    }
-
-  return retval;
-}
-
-DEFUN (pathdef, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} DEFAULT_LOADPATH ()\n\
-Return the default list of directories in which to search for function\n\
-files.\n\
-@seealso{LOADPATH}\n\
-@end deftypefn")
-{
-  return octave_value (VDEFAULT_LOADPATH);
-}
-  
 DEFUN (OCTAVE_HOME, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\

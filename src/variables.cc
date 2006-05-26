@@ -46,6 +46,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "help.h"
 #include "input.h"
 #include "lex.h"
+#include "load-path.h"
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -812,22 +813,15 @@ symbol_exist (const std::string& name, const std::string& type)
 	  std::string file_name = lookup_autoload (name);
 
 	  if (file_name.empty ())
-	    {
-	      string_vector names (2);
-
-	      names(0) = name + ".oct";
-	      names(1) = name + ".m";
-
-	      file_name = Vload_path_dir_path.find_first_of (names);
-	    }
+	    file_name = load_path::find_fcn (name);
 
 	  size_t len = file_name.length ();
 
-	  if (! file_name.empty ())
+	  if (len > 0)
 	    {
 	      if (type == "any" || type == "file")
 		{
-		  if (file_name.substr (len-4) == ".oct")
+		  if (len > 4 && file_name.substr (len-4) == ".oct")
 		    retval = 3;
 		  else
 		    retval = 2;
@@ -1031,12 +1025,8 @@ symbol_out_of_date (symbol_record *sr)
 
 		      if (file.empty ())
 			{
-			  names[0] = nm + ".oct";
-			  names[1] = nm + ".m";
-
 			  file = octave_env::make_absolute
-			    (Vload_path_dir_path.find_first_of (names),
-			     octave_env::getcwd ());
+			    (load_path::find_fcn (nm), octave_env::getcwd ());
 			}
 		    }
 

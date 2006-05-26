@@ -58,6 +58,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-io.h"
 #include "input.h"
 #include "lex.h"
+#include "load-path.h"
 #include "octave.h"
 #include "oct-hist.h"
 #include "oct-map.h"
@@ -578,7 +579,7 @@ octave_main (int argc, char **argv, int embedded)
 
 	case 'p':
 	  if (args.optarg ())
-	    set_load_path (args.optarg ());
+	    load_path::set_command_line_path (args.optarg ());
 	  break;
 
 	case 'q':
@@ -675,7 +676,7 @@ octave_main (int argc, char **argv, int embedded)
 
   initialize_version_info ();
 
-  execute_default_pkg_add_files ();
+  load_path::initialize ();
 
   execute_startup_files ();
 

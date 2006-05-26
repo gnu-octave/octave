@@ -180,9 +180,6 @@ extern std::string Vfcn_file_dir;
 
 extern std::string Vimage_dir;
 
-// And the cached directory path corresponding to Vload_path.
-extern dir_path Vload_path_dir_path;
-
 // Name of the editor to be invoked by the edit_history command.
 extern std::string VEDITOR;
 
@@ -192,14 +189,9 @@ extern std::string Vsite_defaults_file;
 // Name of the FFTW wisdom program.
 extern std::string Vfftw_wisdom_program;
 
-extern void execute_default_pkg_add_files (void);
-
-extern std::string maybe_add_default_load_path (const std::string& pathstring);
-
 extern void install_defaults (void);
 
 extern void set_exec_path (const std::string& path = std::string ());
-extern void set_load_path (const std::string& path = std::string ());
 extern void set_image_path (const std::string& path = std::string ());
 
 #endif

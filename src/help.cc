@@ -54,6 +54,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
+#include "load-path.h"
 #include "oct-obj.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -437,9 +438,9 @@ Begin a switch block.\n\
 yesno = \"yes\"\n\
 \n\
 switch yesno\n\
-  case {\"Yes\" \"yes\" \"YES\" \"y\" \"Y\"}\n\
+  case @{\"Yes\" \"yes\" \"YES\" \"y\" \"Y\"@}\n\
     value = 1;\n\
-  case {\"No\" \"no\" \"NO\" \"n\" \"N\"}\n\
+  case @{\"No\" \"no\" \"NO\" \"n\" \"N\"@}\n\
     value = 0;\n\
   otherwise\n\
     error (\"invalid value\");\n\
@@ -564,7 +565,7 @@ make_name_list (void)
     lcl = curr_sym_tab->name_list ();
   int lcl_len = lcl.length ();
 
-  string_vector ffl = octave_fcn_file_name_cache::list_no_suffix ();
+  string_vector ffl = load_path::fcn_names ();
   int ffl_len = ffl.length ();
 
   string_vector afl = autoloaded_functions ();
@@ -684,26 +685,7 @@ simple_help (void)
 
   // Also need to search octave_path for script files.
 
-  string_vector dirs = Vload_path_dir_path.all_directories ();
-
-  int len = dirs.length ();
-
-  for (int i = 0; i < len; i++)
-    {
-      string_vector names = octave_fcn_file_name_cache::list (dirs[i]);
-
-      if (! names.empty ())
-	{
-	  std::string dir
-	    = octave_env::make_absolute (dirs[i], octave_env::getcwd ());
-
-	  octave_stdout << "\n*** function files in " << dir << ":\n\n";
-
-	  names.qsort ();
-
-	  names.list_in_columns (octave_stdout);
-	}
-    }
+  load_path::display (octave_stdout);
 
   string_vector autoloaded = autoloaded_functions ();
 
@@ -1881,13 +1863,13 @@ to find related functions that are not part of octave.\n\
 	    }
 	}
 
-      string_vector dirs = Vload_path_dir_path.all_directories ();
+      string_vector dirs = load_path::dirs ();
 
       int len = dirs.length ();
 
       for (int i = 0; i < len; i++)
 	{
-	  names = octave_fcn_file_name_cache::list (dirs[i]);
+	  names = load_path::files (dirs[i]);
 
 	  if (! names.empty ())
 	    {
@@ -1912,19 +1894,18 @@ to find related functions that are not part of octave.\n\
 		  if (!sr)
 		    {
 		      // Check if this version is first in the path
-		      string_vector tmp (2);
-		      tmp(0) = name + ".oct";
-		      tmp(1) = name + ".m";
-		      std::string file_name = 
-			Vload_path_dir_path.find_first_of (tmp);
 
-		      if (file_name == dirs[i] + tmp(0)
-			  || file_name == dirs[i] + tmp(1))
+		      std::string file_name = load_path::find_fcn (name);
+		      
+		      std::string dir = dirs[i] + file_ops::dir_sep_str;
+
+		      if (file_name == dir + name + ".oct"
+			  || file_name == dir + name + ".m")
 			{
 			  bool symbol_found;
 
 			  std::string h;
-			  if (file_name == dirs[i] + tmp(0))
+			  if (file_name == dir + name + ".oct")
 			    {
 			      // oct-file. Must load to get help
 			      sr = lookup_by_name (name, false);
@@ -1970,7 +1951,8 @@ to find related functions that are not part of octave.\n\
 		    }
 
 		  // Check if this function has autoloaded functions attached to it
-		  std::string file_name = Vload_path_dir_path.find_first_of (names(j));
+		  std::string file_name = load_path::find_fcn (name);
+
 		  string_vector autoload_fcns = reverse_lookup_autoload (file_name);
 
 		  if (! autoload_fcns.empty ())

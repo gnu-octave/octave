@@ -95,8 +95,8 @@ PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
 
 INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	defun-dld.h defun-int.h defun.h dirfns.h dynamic-ld.h \
-	error.h file-io.h fn-cache.h gripes.h help.h input.h \
-	lex.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
+	error.h file-io.h gripes.h help.h input.h \
+	lex.h load-path.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
 	oct-errno.h oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h zfstream.h \
@@ -163,8 +163,8 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
-	dynamic-ld.cc error.cc file-io.cc fn-cache.cc gripes.cc \
-	help.cc input.cc lex.l load-save.cc ls-hdf5.cc \
+	dynamic-ld.cc error.cc file-io.cc gripes.cc \
+	help.cc input.cc lex.l load-path.cc load-save.cc ls-hdf5.cc \
 	ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
 	oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \

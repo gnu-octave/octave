@@ -1,3 +1,38 @@
+2006-05-26  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (genpath, maybe_add_path_elts, Fgenpath, Frehash,
+	Fpath, Fpathdef): Move here from defaults.cc.
+	* load-path.cc, load-path.h: New files.
+	* Makefile.in (INCLUDES, DIST_SRC): Add them to the lists.
+	* help.cc (make_name_list, simple_help): Use load_path instead of
+	octave_fcn_file_name_cache.
+	(Flookfor): Use load_path instead of Vload_path_dir_path.
+	* octave.cc (octave_main):  Likewise.
+	* parse.y (load_fcn_from_file): Likewise.
+	* utils.cc (Ffile_in_loadpath, file_in_path, fcn_file_in_path,
+	oct_file_in_path): Likewise.
+	* variables.cc (symbol_exist, symbol_out_of_date): Likewise.
+	* DLD-FUNCTIONS/fftw_wisdom.cc (Ffftw_wisdom): Likewise.
+	* utils.cc (Ffind_first_of_in_loadpath): Delete.
+	* input.cc (octave_gets): Call load_path::update here.
+	* dirfns.cc (octave_change_to_directory): Likewise.
+	* defaults.cc (VLOADPATH, VDEFAULT_LOADPATH, Vload_path_dir_path,
+	maybe_add_or_del_packages, update_load_path_dir_path,
+	execute_default_pkg_add_files, set_load_path): Delete.
+	* defaults.h.in (Vload_path_dir_path,
+	execute_default_pkg_add_files, maybe_add_default_load_path,
+	set_load_path): Delete decls.
+
+	* fn-cache.h, fn-cache.cc: Delete.
+	* Makefile.in (INCLUDES, DIST_SRC): Remove them from the lists.
+
+	* input.cc (octave_gets): Only update Vlast_prompt_time if we are
+	interactive and actually printing a prompt.  Don't print prompt if
+	reading startup files or command line files.  Initialize
+	Vlast_prompt_time to 0.
+
+	* pr-output.cc (set_format): Always include space for sign.
+	
 2006-05-23  John W. Eaton  <jwe@octave.org>
 
 	* load-save.cc (Fsave): Use tellp instead of pubseekoff to
@@ -179,7 +214,7 @@
 	(symbols_of_defaults): Delete DEFVARs and function.
 
 	* pr-output.cc (set_output_prec_and_fw): Set Voutput_precision and
-	Voutput_max_field_width directly instad of calling
+	Voutput_max_field_width directly instead of calling
 	bind_builtin_variable.
 
 	* octave.cc (octave_main, maximum_braindamage):

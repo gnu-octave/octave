@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "gripes.h"
 #include "lo-mappers.h"
+#include "load-path.h"
 #include "oct-env.h"
 #include "oct-obj.h"
 #include "sighandlers.h"
@@ -111,7 +112,7 @@ Octave.\n\
 
       std::string str = args(0).string_value ();
       std::string wisdom = octave_env::make_absolute
-	(Vload_path_dir_path.find_first_of (str), octave_env::getcwd ());
+	(load_path::find_file (str), octave_env::getcwd ());
 
       // FIXME -- should probably protect FILE* resources with
       // auto_ptr or similar...

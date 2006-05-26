@@ -58,6 +58,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
+#include "load-path.h"
 #include "oct-errno.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
@@ -295,8 +296,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	  if (nargin == 1)
 	    {
 	      std::string fname = octave_env::make_absolute
-		(Vload_path_dir_path.find_first_of (names),
-		 octave_env::getcwd ());
+		(load_path::find_first_of (names), octave_env::getcwd ());
 
 	      if (fname.empty ())
 		retval = Matrix ();
@@ -308,7 +308,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	      std::string opt = args(1).string_value ();
 
 	      if (! error_state && opt == "all")
-		retval = Cell (make_absolute (Vload_path_dir_path.find_all_first_of (names)));
+		retval = Cell (make_absolute (load_path::find_all_first_of (names)));
 	      else
 		error ("file_in_loadpath: invalid option");
 	    }
@@ -399,8 +399,10 @@ file_in_path (const std::string& name, const std::string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return octave_env::make_absolute (Vload_path_dir_path.find (nm),
-				    octave_env::getcwd ());
+  return std::string ();
+
+  return octave_env::make_absolute
+    (load_path::find_file (nm), octave_env::getcwd ());
 }
 
 // See if there is an function file in the path.  If so, return the
@@ -415,10 +417,17 @@ fcn_file_in_path (const std::string& name)
   
   if (len > 0)
     {
-      if (len > 2 && name [len - 2] == '.' && name [len - 1] == 'm')
-	retval = file_in_path (name, "");
+      if (octave_env::absolute_pathname (name))
+	{
+	  file_stat fs (name);
+
+	  if (fs.exists ())
+	    retval = name;
+	}
+      else if (len > 2 && name [len - 2] == '.' && name [len - 1] == 'm')
+	retval = load_path::find_fcn_file (name.substr (0, len-2));
       else
-	retval = file_in_path (name, ".m");
+	retval = load_path::find_fcn_file (name);
     }
 
   return retval;
@@ -436,11 +445,18 @@ oct_file_in_path (const std::string& name)
   
   if (len > 0)
     {
-      if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'o'
-	  && name [len - 2] == 'c' && name [len - 1] == 't')
-	retval = file_in_path (name, "");
+      if (octave_env::absolute_pathname (name))
+	{
+	  file_stat fs (name);
+
+	  if (fs.exists ())
+	    retval = name;
+	}
+      else if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'o'
+	       && name [len - 2] == 'c' && name [len - 1] == 't')
+	retval = load_path::find_oct_file (name.substr (0, len-4));
       else
-	retval = file_in_path (name, ".oct");
+	retval = load_path::find_oct_file (name);
     }
 
   return retval;
@@ -650,23 +666,6 @@ representation.\n\
 	retval = undo_string_escapes (args(0).string_value ());
       else
 	error ("undo_string_escapes: argument must be a string");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (find_first_of_in_loadpath, args, , "")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      string_vector names = args(0).all_strings ();
-
-      if (! error_state)
-	retval = Vload_path_dir_path.find_all_first_of (names);
     }
   else
     print_usage ();

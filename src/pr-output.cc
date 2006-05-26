@@ -318,7 +318,7 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
     }
   else if (inf_or_nan || int_only)
     {
-      fw = digits;
+      fw = 1 + digits;
       if (inf_or_nan && fw < 4)
 	fw = 4;
       rd = fw;
@@ -338,7 +338,7 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
 	  digits = -digits + 1;
 	}
 
-      fw = ld + 1 + rd;
+      fw = 1 + ld + 1 + rd;
       if (inf_or_nan && fw < 4)
 	fw = 4;
     }
@@ -478,7 +478,7 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       ld = ld_max > ld_min ? ld_max : ld_min;
       rd = rd_max > rd_min ? rd_max : rd_min;
 
-      fw = ld + 1 + rd;
+      fw = 1 + ld + 1 + rd;
       if (inf_or_nan && fw < 4)
 	fw = 4;
     }
@@ -626,7 +626,7 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
       ld = ld_max > ld_min ? ld_max : ld_min;
       rd = rd_max > rd_min ? rd_max : rd_min;
 
-      i_fw = r_fw = ld + 1 + rd;
+      i_fw = r_fw = 1 + ld + 1 + rd;
       if (inf_or_nan && i_fw < 4)
 	i_fw = r_fw = 4;
     }
@@ -806,7 +806,7 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       ld = ld_max > ld_min ? ld_max : ld_min;
       rd = rd_max > rd_min ? rd_max : rd_min;
 
-      i_fw = r_fw = ld + 1 + rd;
+      i_fw = r_fw = 1 + ld + 1 + rd;
       if (inf_or_nan && i_fw < 4)
 	i_fw = r_fw = 4;
     }
@@ -981,7 +981,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       ld = ld_max > ld_min ? ld_max : ld_min;
       rd = rd_max > rd_min ? rd_max : rd_min;
 
-      fw = sign + ld + 1 + rd;
+      fw = sign + 1 + ld + 1 + rd;
     }
 
   if (! (bank_format || hex_format || bit_format)

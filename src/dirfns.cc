@@ -55,6 +55,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
+#include "load-path.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "procstream.h"
@@ -68,19 +69,18 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // directory tree.
 static bool Vconfirm_recursive_rmdir = true;
 
-// FIXME -- changing the plotter directory should be handled
-// by registering a function for octave_env::chdir to call so that
-// this function can be eliminated.
-
 static int
 octave_change_to_directory (const std::string& newdir)
 {
   int cd_ok = octave_env::chdir (newdir);
 
   if (cd_ok)
-    // FIXME -- this should be handled as a list of functions
-    // to call so users can add their own chdir handlers.
-    /* do_external_plotter_cd (newdir) */;
+    {
+      // FIXME -- should this be handled as a list of functions
+      // to call so users can add their own chdir handlers?
+
+      load_path::update ();
+    }
   else
     {
       using namespace std;
@@ -681,8 +681,8 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
 }
 
 DEFUN (filesep, args, ,
-    "-*- texinfo -*-\n\
-@detypefn {Built-in Function} {} filesep ()\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} filesep ()\n\
 Return the system-dependent character used to separate directory names.\n\
 @seealso{pathsep, dir, ls}\n\
 @end deftypefn")

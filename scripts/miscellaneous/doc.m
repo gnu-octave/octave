@@ -33,49 +33,65 @@
 
 function retval = doc (fname)
 
-  if (nargin != 1 || ! ischar (fname))
-    usage ("doc function_name")
-  endif
+  if (nargin == 0 || nargin == 1)
 
-  ## Get the directory where the function lives.
-  ## FIXME -- maybe we should have a better way of doing this.
+    ftype = 0;
 
-  x = exist (fname);
+    if (nargin == 1)
+      ## Get the directory where the function lives.
+      ## FIXME -- maybe we should have a better way of doing this.
 
-  if (x == 2)
-    ffile = file_in_loadpath (strcat (fname, "."));
-  elseif (x == 3)
-    ffile = file_in_loadpath (strcat (fname, "."));
+      if (ischar (fname))
+	ftype = exist (fname);
+      else
+	error ("doc: expecting argument to be a character string");
+      endif
+    else
+      fname = "";
+    endif
+
+    if (ftype == 2 || ftype == 3)
+      ffile = file_in_loadpath (strcat (fname, "."));
+    else
+      ffile = "";
+    endif
+
+    if (isempty (ffile))
+      info_dir = octave_config_info ("infodir");
+    else
+      info_dir = fileparts (ffile);
+    endif
+
+    ## Determine if a file called doc.info exist in the same 
+    ## directory as the function.
+
+    info_file_name = fullfile (info_dir, "doc.info");
+
+    [stat_info, err] = stat (info_file_name);
+
+    if (err < 0)
+      info_file_name = info_file ();
+    endif
+
+    cmd = sprintf ("\"%s\" --directory \"%s\" --file \"%s\"",
+		   info_program (), info_dir, info_file_name);
+
+    if (! isempty (fname))
+      cmd = sprintf ("%s --index-search %s", cmd, fname);
+    endif
+
+    status = system (cmd);
+
+    if (status == 127)
+      warning ("unable to find info program `%s'", info_program ());
+    endif
+
+    if (nargout > 0)
+      retval = status;
+    endif
+
   else
-    ffile = "";
-  endif
-
-  if (! isempty (ffile))
-    info_dir = fileparts (ffile);
-  else
-    info_dir = octave_config_info ("infodir");
-  endif
-
-  ## Determine if a file called doc.info exist in the same 
-  ## directory as the function.
-
-  info_file_name = fullfile (info_dir, "doc.info");
-
-  if (! isstruct (stat (info_file_name)))
-    info_file_name = info_file ();
-  endif
-
-  cmd = sprintf ("\"%s\" --directory \"%s\" --file \"%s\" --index-search %s",
-		 info_program (), info_dir, info_file_name, fname);
-
-  status = system (cmd);
-
-  if (status == 127)
-    warning ("unable to find info program `%s'", info_program ());
-  endif
-
-  if (nargout > 0)
-    retval = status;
+    print_usage ();
   endif
 
 endfunction

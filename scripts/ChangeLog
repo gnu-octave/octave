@@ -1,3 +1,7 @@
+2006-05-26  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/doc.m: Also handle nargin == 0.
+
 2006-05-23  John W. Eaton  <jwe@octave.org>
 
 	* plot/mesh.m: Use __gnupot_raw__ except where __gnuplot_set__ is

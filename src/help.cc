@@ -50,7 +50,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
-#include "fn-cache.h"
 #include "gripes.h"
 #include "help.h"
 #include "input.h"

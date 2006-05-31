@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {[@var{dir}, @var{name}, @var{ext}, @var{ver}] =} fileparts (@var{filename})
 ## Return the directory, name, extension, and version components of
 ## @var{filename}.
+## @seealso{fullfile}
 ## @end deftypefn
 
 function [directory, name, extension, version] = fileparts (filename)

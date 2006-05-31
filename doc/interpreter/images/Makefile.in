@@ -17,25 +17,11 @@ IMAGES += $(SPARSEIMAGES) $(addsuffix .pdf, $(SPARSEIMAGES_1))
 
 DISTFILES = Makefile.in $(SOURCES) $(IMAGES)
 
-OCTAVE_BINARY = $(TOPDIR)/src/octave
-
-OCTAVE_SCRIPT_PATH = .//:$(srcdir)//:$(TOPDIR)/src//:$(top_srcdir)/scripts//
-
-ifeq ($(SHARED_LIBS), true)
-  OCTAVE_LD_LIBRARY_PATH = $(TOPDIR)/src:$(TOPDIR)/liboctave:$(TOPDIR)/libcruft
-  ifeq ($(@library_path_var@),)
-    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH)
-  else
-    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH):$(@library_path_var@)
-  endif
-  SET_LD_LIBRARY_PATH = @library_path_var@="$(XLD_LIBRARY_PATH)"
-endif
-
 all: $(IMAGES)
 .PHONY: all
 
 define run-octave
-  $(SET_LD_LIBRARY_PATH) $(OCTAVE_BINARY) -f -q -H -p $(OCTAVE_SCRIPT_PATH) \
+  $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
     --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))')"
 endef
 

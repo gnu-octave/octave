@@ -1,3 +1,8 @@
+2006-05-31  Bill Denney  <bill@givebillmoney.com>
+
+ 	* miscellaneous/fileparts.m, miscellaneous/fullfile.m: Add seealso.
+ 	* miscellaneous/texas_lotto.m: Fix warning message.
+
 2006-05-26  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/doc.m: Also handle nargin == 0.

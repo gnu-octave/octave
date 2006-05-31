@@ -29,7 +29,7 @@
 function picks = texas_lotto ()
 
   if (nargin != 0)
-    warning ("win_texas_lotto: ignoring extra arguments");
+    warning ("texas_lotto: ignoring extra arguments");
   endif
 
   picks = zeros (1,6);

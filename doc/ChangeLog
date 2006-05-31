@@ -1,3 +1,10 @@
+2006-05-31  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/images/Makefile.in (run-octave):
+	Use $(TOPDIR)/run-octave script to execute Octave.
+	(OCTAVE_BINARY, OCTAVE_SCRIPT_PATH, OCTAVE_LD_LIBRARY_PATH,
+	XLD_LIBRARY_PATH, SET_LD_LIBRARY_PATH): Delete variables.
+
 2006-04-06  Keith Goodman  <kwgoodman@gmail.com>
 
 	* interpreter/mkoctfile.1: Doc string fix.

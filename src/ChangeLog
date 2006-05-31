@@ -1,3 +1,8 @@
+2006-05-31  John W. Eaton  <jwe@octave.org>
+
+	* load-path.h (load_path::set_command_line_path): Make it
+	additive.
+
 2006-05-26  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (genpath, maybe_add_path_elts, Fgenpath, Frehash,

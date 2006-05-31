@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
 ## Return a complete filename constructed from the given components.
+## @seealso{fileparts}
 ## @end deftypefn
 
 function filename = fullfile (varargin)

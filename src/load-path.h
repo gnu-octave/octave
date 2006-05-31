@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <map>
 #include <string>
 
+#include "pathsearch.h"
 #include "str-vec.h"
 
 class
@@ -159,7 +160,10 @@ public:
 
   static void set_command_line_path (const std::string& p)
   {
-    command_line_path = p;
+    if (command_line_path.empty ())
+      command_line_path = p;
+    else
+      command_line_path += dir_path::path_sep_str + p;
   }
 
 private:

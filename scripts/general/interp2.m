@@ -82,109 +82,109 @@
 ##     * Modified demo and test for new gnuplot interface
 ## 2005-09-07 Hoxide <hoxide_dirac@yahoo.com.cn>
 ##     * Add bicubic interpolation method
-##     * Fix the eat line bug when the last element of XI or YI is negative or zero.
+##     * Fix the eat line bug when the last element of XI or YI is
+##       negative or zero.
 ## 2005-11-26 Pierre Baldensperger <balden@libertysurf.fr>
 ##     * Rather big modification (XI,YI no longer need to be
 ##       "meshgridded") to be consistent with the help message
 ##       above and for compatibility.
 
-
 function ZI = interp2 (varargin)
-  Z = X = Y = XI = YI = [];
-  n = [];
+  Z = X = Y = XI = YI = n = [];
   method = "linear";
   extrapval = NaN;
 
-  switch nargin
-  case 1
-    Z = varargin{1};
-  case 2
-    if (ischar(varargin{2}))
-      [Z,method] = deal(varargin{:});
-    else
-      [Z,n] = deal(varargin{:});
-    endif
-  case 3
-    if (ischar(varargin{3}))
-      [Z,n,method] = deal(varargin{:});
-    else
-      [Z,XI,YI] = deal(varargin{:});
-    endif
-  case 4
-    if (ischar(varargin{4}))
-      [Z,XI,YI,method] = deal(varargin{:});
-    else
-      [Z,n,method,extrapval] = deal(varargin{:});
-    endif
-  case 5
-    if (ischar(varargin{4}))
-      [Z,XI,YI,method, extrapval] = deal(varargin{:});
-    else
-      [X,Y,Z,XI,YI] = deal(varargin{:});
-    endif
-  case 6 
-      [X,Y,Z,XI,YI,method] = deal(varargin{:});
-  case 7
-      [X,Y,Z,XI,YI,method,extrapval] = deal(varargin{:});
-  otherwise
-    print_usage ();
+  switch (nargin)
+    case 1
+      Z = varargin{1};
+    case 2
+      if (ischar (varargin{2}))
+	[Z, method] = deal (varargin{:});
+      else
+	[Z, n] = deal (varargin{:});
+      endif
+    case 3
+      if (ischar (varargin{3}))
+	[Z, n, method] = deal (varargin{:});
+      else
+	[Z, XI, YI] = deal (varargin{:});
+      endif
+    case 4
+      if (ischar (varargin{4}))
+	[Z, XI, YI, method] = deal (varargin{:});
+      else
+	[Z, n, method, extrapval] = deal (varargin{:});
+      endif
+    case 5
+      if (ischar (varargin{4}))
+	[Z, XI, YI, method, extrapval] = deal (varargin{:});
+      else
+	[X, Y, Z, XI, YI] = deal (varargin{:});
+      endif
+    case 6 
+	[X, Y, Z, XI, YI, method] = deal (varargin{:});
+    case 7
+	[X, Y, Z, XI, YI, method, extrapval] = deal (varargin{:});
+    otherwise
+      print_usage ();
   endswitch
 
   ## Type checking.
-  if (!ismatrix(Z))
-    error("interp2 expected matrix Z"); 
+  if (!ismatrix (Z))
+    error ("interp2 expected matrix Z"); 
   endif
-  if (!isempty(n) && !isscalar(n))
-    error("interp2 expected scalar n"); 
+  if (!isempty (n) && !isscalar (n))
+    error ("interp2 expected scalar n"); 
   endif
-  if (!ischar(method))
-    error("interp2 expected string 'method'"); 
+  if (!ischar (method))
+    error ("interp2 expected string 'method'"); 
   endif
-  if (!isscalar(extrapval))
-    error("interp2 expected n extrapval");
+  if (!isscalar (extrapval))
+    error ("interp2 expected n extrapval");
   endif
 
-  ## Define X,Y,XI,YI if needed
+  ## Define X, Y, XI, YI if needed
   [zr, zc] = size (Z);
-  if (isempty(X))
-    X=[1:zc]; 
-    Y=[1:zr]; 
+  if (isempty (X))
+    X = 1:zc; 
+    Y = 1:zr;
   endif
-  if (!isnumeric(X) || !isnumeric(Y))
-    error("interp2 expected numeric X,Y"); 
+  if (! isnumeric (X) || ! isnumeric (Y))
+    error ("interp2 expected numeric X, Y"); 
   endif
-  if (!isempty(n))
-    p=2^n; 
-    XI=[p:p*zc]/p; 
-    YI=[p:p*zr]'/p; 
+  if (! isempty (n))
+    p = 2^n; 
+    XI = (p:p*zc)/p; 
+    YI = (p:p*zr)'/p; 
   endif
-  if (!isnumeric(XI) || !isnumeric(YI))
-    error("interp2 expected numeric XI,YI"); 
+  if (! isnumeric (XI) || ! isnumeric (YI))
+    error ("interp2 expected numeric XI, YI"); 
   endif
 
   ## If X and Y vectors produce a grid from them
   if (isvector (X) && isvector (Y))
     [X, Y] = meshgrid (X, Y);
-  elseif (! all(size (X) == size (Y)))
+  elseif (! all (size (X) == size (Y)))
     error ("X and Y must be matrices of same size");
   endif
-  if (any(size (X) != size (Z)))
+  if (any (size (X) != size (Z)))
     error ("X and Y size must match Z dimensions");
   endif
 
   ## If Xi and Yi are vectors of different orientation build a grid
-  if ((rows(XI)==1 && columns(YI)==1) || (columns(XI)==1 && rows(YI)==1))
+  if ((rows (XI) == 1 && columns (YI) == 1)
+      || (columns (XI) == 1 && rows (YI) == 1))
     [XI, YI] = meshgrid (XI, YI);
-  elseif (any(size(XI) != size(YI)))
+  elseif (any (size (XI) != size (YI)))
     error ("XI and YI must be matrices of same size");
   endif
 
-  shape = size(XI);
-  XI = reshape(XI, 1, prod(shape));
-  YI = reshape(YI, 1, prod(shape));
+  shape = size (XI);
+  XI = reshape (XI, 1, prod (shape));
+  YI = reshape (YI, 1, prod (shape));
 
-  xidx = lookup(X(1, 2:end-1), XI) + 1;
-  yidx = lookup(Y(2:end-1, 1), YI) + 1;
+  xidx = lookup (X(1, 2:end-1), XI) + 1;
+  yidx = lookup (Y(2:end-1, 1), YI) + 1;
 
   if (strcmp (method, "linear"))
     ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy
@@ -197,9 +197,9 @@ function ZI = interp2 (varargin)
     c = Z(2:zr, 1:(zc - 1)) - a;
     d = Z(2:zr, 2:zc) - a - b - c;
 
-    idx = sub2ind(size(a),yidx,xidx);
+    idx = sub2ind (size (a), yidx, xidx);
 
-    ## scale XI,YI values to a 1-spaced grid
+    ## scale XI, YI values to a 1-spaced grid
     Xsc = (XI - X(1, xidx)) ./ (X(1, xidx + 1) - X(1, xidx));
     Ysc = (YI - Y(yidx, 1)') ./ (Y(yidx + 1, 1) - Y(yidx, 1))';
 
@@ -211,12 +211,12 @@ function ZI = interp2 (varargin)
     ytable = Y(:, 1)';
     ii = (XI - xtable(xidx) > xtable(xidx + 1) - XI);
     jj = (YI - ytable(yidx) > ytable(yidx + 1) - YI);
-    idx = sub2ind(size(Z),yidx+jj,xidx+ii);
+    idx = sub2ind (size (Z), yidx+jj, xidx+ii);
     ZI = Z(idx);
 
   elseif (strcmp (method, "cubic"))
     ## FIXME bicubic doesn't handle arbitrary XI, YI
-    ZI = bicubic(X, Y, Z, XI(1,:), YI(:,1));
+    ZI = bicubic (X, Y, Z, XI(1,:), YI(:,1));
 
   elseif (strcmp (method, "spline"))
     ## FIXME Implement 2-D (or in fact ND) spline interpolation
@@ -227,8 +227,8 @@ function ZI = interp2 (varargin)
   endif
 
   ## set points outside the table to NaN
-  ZI( XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1) ) = extrapval;
-  ZI = reshape(ZI,shape);
+  ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = extrapval;
+  ZI = reshape (ZI, shape);
 
 endfunction
 

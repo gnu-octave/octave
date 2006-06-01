@@ -20,49 +20,50 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
 ##
-## Bicubic interpolation method. Returns a matrix @var{zi}, corresponding the
-## the bicubic interpolations at @var{xi} and @var{yi} of the data supplied
+## Return a matrix @var{zi} corresponding to the the bicubic
+## interpolations at @var{xi} and @var{yi} of the data supplied
 ## as @var{x}, @var{y} and @var{z}. 
 ##
 ## For further information please see bicubic.pdf available at
 ## @url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}
-## @end deftypefn
 ## @seealso{interp2}
+## @end deftypefn
 
 ## Bicubic interpolation method.
 ## Author: Hoxide Ma <hoxide_dirac@yahoo.com.cn>
 
-function F = bicubic(X, Y, Z, XI, YI, spline_alpha)
+function F = bicubic (X, Y, Z, XI, YI, spline_alpha)
 
   if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
 
-  if (nargin == 6 && prod(size(spline_alpha))==1)
+  if (nargin == 6 && prod (size (spline_alpha)) == 1)
     a = spline_alpha
   else
     a = 0.5;
   endif
 
-  if (nargin <=2) # bicubic(Z) or bicubic(Z, 2)
+  if (nargin <= 2)
+    ## bicubic (Z) or bicubic (Z, 2)
     if (nargin == 1) 
       n = 1;
     else
       n = Y;
     endif
-    Z= X;
+    Z = X;
     X = [];
-    [rz,cz] = size(Z);
-    s = linspace(1, cz, (cz-1)*pow2(n)+1);
-    t = linspace(1, rz, (rz-1)*pow2(n)+1);
+    [rz, cz] = size (Z);
+    s = linspace (1, cz, (cz-1)*pow2(n)+1);
+    t = linspace (1, rz, (rz-1)*pow2(n)+1);
   elseif (nargin == 3)
-    if (!isvector (X) || !isvector (Y))
+    if (! isvector (X) || ! isvector (Y))
       error ("XI and YI must be vector");
     endif
     s = Y;
     t = Z;
     Z = X;
-    [rz, cz] = size(Z);
+    [rz, cz] = size (Z);
   elseif (nargin == 5 || nargin == 6)
     [rz, cz] = size (Z) ; 
     if (isvector (X) && isvector (Y))
@@ -88,24 +89,24 @@ function F = bicubic(X, Y, Z, XI, YI, spline_alpha)
     YI(ylast_ind) = Y(rz);
 
 
-    X = reshape(X, 1, cz);
-    X(cz) *= (1+(sign(X(cz)))*eps);
+    X = reshape (X, 1, cz);
+    X(cz) *= 1 + sign (X(cz))*eps;
     if (X(cz) == 0) 
       X(cz) = eps;
     endif; 
-    XI = reshape(XI,1,length(XI));
-    [m, i] = sort([X, XI]);
-    o = cumsum ( i<= cz);
-    xidx = o([find( i> cz)]);
+    XI = reshape (XI, 1, length (XI));
+    [m, i] = sort ([X, XI]);
+    o = cumsum (i <= cz);
+    xidx = o(find (i > cz));
     
-    Y = reshape(Y, rz, 1);
-    Y(rz) *= (1+(sign(Y(rz)))*eps);
+    Y = reshape (Y, rz, 1);
+    Y(rz) *= 1 + sign (Y(rz))*eps;
     if (Y(rz) == 0) 
       Y(rz) = eps;
     endif; 
-    YI = reshape(YI,length(YI),1);
-    [m, i] = sort([Y; YI]);
-    o = cumsum ( i<= rz);
+    YI = reshape (YI, length (YI), 1);
+    [m, i] = sort ([Y; YI]);
+    o = cumsum (i <= rz);
     yidx = o([find( i> rz)]);
     
     ## set s and t used follow codes
@@ -119,21 +120,21 @@ function F = bicubic(X, Y, Z, XI, YI, spline_alpha)
     error ("Z at least a 3 by 3 matrices");
   endif
 
-  inds = floor(s);
-  d = find(s==cz);
-  s = s - floor(s);
+  inds = floor (s);
+  d = find (s == cz);
+  s = s - floor (s);
   inds(d) = cz-1;
   s(d) = 1.0;
   
   d = [];
-  indt = floor(t);
-  d = find(t==rz);
-  t = t - floor(t);
+  indt = floor (t);
+  d = find (t == rz);
+  t = t - floor (t);
   indt(d) = rz-1;
   t(d) = 1.0;
   d = [];
 
-  p = zeros(size(Z)+2);
+  p = zeros (size (Z) + 2);
   p(2:rz+1,2:cz+1) = Z;
   p(1,:)      =    (6*(1-a))*p(2,:)    -3*p(3,:)   + (6*a-2)*p(4,:);
   p(rz+2,:)   =    (6*(1-a))*p(rz+1,:) -3*p(rz,:)  + (6*a-2)*p(rz-1,:);
@@ -164,16 +165,16 @@ function F = bicubic(X, Y, Z, XI, YI, spline_alpha)
   cs2 = cs2([1,1,1,1],:);
   cs3 = cs3([1,1,1,1],:);
 
-  lent = length(ct0);
-  lens = length(cs0);
-  F = zeros(lent,lens);
+  lent = length (ct0);
+  lens = length (cs0);
+  F = zeros (lent, lens);
   
   for i = 1:lent
     it = indt(i);
     int = [it, it+1, it+2, it+3];
     F(i,:) = [ct0(i),ct1(i),ct2(i),ct3(i)] * ...
-	(p(int,inds) .* cs0 + p(int, inds+1) .* cs1 + ...
-	 p(int, inds+2) .* cs2 + p(int, inds+3) .* cs3);
+	(p(int,inds) .* cs0 + p(int,inds+1) .* cs1 + ...
+	 p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3);
   endfor
 
   ## set points outside the table to NaN

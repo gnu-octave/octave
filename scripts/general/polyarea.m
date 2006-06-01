@@ -40,7 +40,7 @@
 ##        (Is simple closed curve the technical definition of this?). 
 
 ## Author: David M. Doolin <doolin@ce.berkeley.edu>
-## Date: 1999/04/14 15:52:20 $
+## Date: 1999-04-14
 ## Modified-by: 
 ##    2000-01-15 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    * use matlab compatible interface
@@ -51,14 +51,14 @@
 function a = polyarea (x, y, dim)
   if (nargin != 2 && nargin != 3)
     print_usage ();
-  elseif any (size(x) != size(y))
-    error ("polyarea: x and y must have the same shape");
-  else
+  elseif (ndims (x) == ndims (y) && size (x) == size (y))
     if (nargin == 2)
       a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
     else
       a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
     endif
+  else
+    error ("polyarea: x and y must have the same shape");
   endif
 endfunction
 

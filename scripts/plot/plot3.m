@@ -137,7 +137,7 @@
 ## Author: Paul Kienzle
 ##         (modified from __plt__.m)
 
-function plot3(varargin)
+function plot3 (varargin)
 
   hold_state = ishold ();
   
@@ -148,7 +148,7 @@ function plot3(varargin)
     z_set = 0;
     
     ## Gather arguments, decode format, and plot lines.
-    for arg = 1:length(varargin)
+    for arg = 1:nargin
       new = varargin{arg};
       
       if (ischar (new))
@@ -161,13 +161,13 @@ function plot3(varargin)
 	x_set = 0;
 	y_set = 0;
 	z_set = 0;
-      elseif (!x_set)
+      elseif (! x_set)
 	x = new;
 	x_set = 1;
-      elseif (!y_set)
+      elseif (! y_set)
 	y = new;
 	y_set = 1;
-      elseif (!z_set)
+      elseif (! z_set)
 	z = new;
 	z_set = 1;
       else

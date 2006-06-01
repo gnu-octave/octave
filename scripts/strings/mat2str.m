@@ -49,62 +49,67 @@
 ## @seealso{sprintf, int2str}
 ## @end deftypefn
 
-function s = mat2str(x,n,cls)
+function s = mat2str (x, n, cls)
 
-  if (nargin < 2 || isempty(n))
-    n = 17;		   # default precision
+  if (nargin < 2 || isempty (n))
+    ## Default precision
+    n = 17;
   endif
 
   if (nargin < 3)
-    if (ischar(n))
+    if (ischar (n))
       cls = n;
       n = 17;
     else
-      cls = '';
+      cls = "";
     endif
   endif
 
-  if (nargin < 1 || nargin > 3 || ischar(x) || isstruct(x) ||
-     ischar(n) || isstruct(n) || isstruct(cls))
-    usage ("mat2str");
+  if (nargin < 1 || nargin > 3 || ! isnumeric (x))
+    print_usage ();
   endif
   
   if (ndims (x) > 2)
-    error ("mat2str: x must be two dimensional");
+    error ("mat2str: X must be two dimensional");
   endif
 
-  if (!(COMPLEX = is_complex(x)))
-    FMT = sprintf("%%.%dg", n(1));
+  x_is_complex = is_complex (x);
+
+  if (! x_is_complex)
+    fmt = sprintf ("%%.%dg", n(1));
   else
-    if (length(n) == 1 )
+    if (length (n) == 1 )
       n = [n, n];
     endif
-    FMT = sprintf("%%.%dg%%+.%dgi", n(1), n(2));
+    fmt = sprintf ("%%.%dg%%+.%dgi", n(1), n(2));
   endif
 
-  [nr, nc] = size(x);
+  nel = numel (x);
 
-  if (nr*nc == 0)         # empty .. only print brackets
+  if (nel == 0)
+    ## Empty, only print brackets
     s = "[]";
-  elseif (nr*nc == 1)	# scalar x .. don't print brackets
-    if (!COMPLEX)
-      s = sprintf( FMT, x );
+  elseif (nel == 1)
+    ## Scalar X, don't print brackets
+    if (! x_is_complex)
+      s = sprintf (fmt, x);
     else
-      s = sprintf( FMT, real(x), imag(x) );
+      s = sprintf (fmt, real (x), imag (x));
     endif
-  else			# non-scalar x .. print brackets
-    FMT = [FMT, ','];
-    if (!COMPLEX)
-      s = sprintf( FMT, x.' );
+  else
+    ## Non-scalar X, print brackets
+    fmt = [fmt, ","];
+    if (! x_is_complex)
+      s = sprintf (fmt, x.');
     else
       x = x.';
-      s = sprintf( FMT, [ real(x(:))'; imag(x(:))' ] );
+      s = sprintf (fmt, [real(x(:))'; imag(x(:))']);
     endif
 
     s = ["[", s];
-    s (length(s)) = "]";
-    IND = find(s == ",");
-    s (IND(nc:nc:length(IND)) ) = ";";
+    s(end) = "]";
+    ind = find (s == ",");
+    s(ind(nc:nc:end)) = ";";
   endif
 
   if (strcmp ("class", cls))

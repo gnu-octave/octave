@@ -32,61 +32,60 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "f77-fcn.h"
 
-extern "C" {
+extern "C"
+{
   extern int F77_FUNC (dpchim, DPCHIM)
-    (const int &n, double *x, double *f, 
-	  double *d, const int &incfd, int *ierr);
+    (const int &n, double *x, double *f, double *d, const int &incfd,
+     int *ierr);
 }
 
 DEFUN_DLD(__pchip_deriv__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __pchip_deriv__ (@var{x}, @var{y})\n\
 Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates for\n\
-piecewise polynomials. You should be using @code{pchip} function instead.\n\
+piecewise polynomials.  You should be using @code{pchip} function instead.\n\
 @end deftypefn")
 {
   octave_value retval;
-  const int nargin = args.length();
+  const int nargin = args.length ();
 
   if (nargin == 2)
     {
-      ColumnVector xvec(args(0).vector_value());
-      Matrix ymat(args(1).matrix_value());
-      int nx = xvec.length();
-      int nyr = ymat.rows();
-      int nyc = ymat.columns();
+      ColumnVector xvec (args(0).vector_value ());
+      Matrix ymat (args(1).matrix_value ());
+
+      int nx = xvec.length ();
+      int nyr = ymat.rows ();
+      int nyc = ymat.columns ();
 
       if (nx != nyr)
         {
-          error("number of rows for x and y must match");
+          error ("number of rows for x and y must match");
           return retval;
         }
 
-      ColumnVector dvec(nx),yvec(nx);
-      Matrix dmat(nyr,nyc);
+      ColumnVector dvec (nx), yvec (nx);
+      Matrix dmat (nyr, nyc);
 
       int ierr;
       const int incfd = 1;
       for (int c = 0; c < nyc; c++)
         {
-          for (int r=0; r<nx; r++)
-            {
-              yvec(r) = ymat(r,c);
-            }
+          for (int r = 0; r < nx; r++)
+	    yvec(r) = ymat(r,c);
 
-          F77_FUNC (dpchim, DPCHIM) (nx, xvec.fortran_vec(), 
-				     yvec.fortran_vec(), 
-				     dvec.fortran_vec(), incfd, &ierr);
+          F77_FUNC (dpchim, DPCHIM) (nx, xvec.fortran_vec (), 
+				     yvec.fortran_vec (), 
+				     dvec.fortran_vec (), incfd, &ierr);
 
 	  if (ierr < 0)
             {
-	      error ("DPCHIM error: %i\n",ierr);
+	      error ("DPCHIM error: %i\n", ierr);
               return retval;
             }
+
           for (int r=0; r<nx; r++)
-            {
-              dmat(r,c) = dvec(r);
-            }
+	    dmat(r,c) = dvec(r);
         }
 
       retval = dmat;

@@ -32,43 +32,40 @@
 
 ## Author: Alexander Barth <abarth@marine.usf.edu>
 
-function varargout = ndgrid(varargin)
+function varargout = ndgrid (varargin)
 
   if (nargin == 1)
-    n = max([nargout 2]);  
+    n = max ([nargout, 2]);  
     ## If only one input argument is given, repeat it n-times
     varargin{1:n} = varargin{1};
   elseif (nargin >= nargout)
-    n = max([nargin 2]);  
+    n = max ([nargin, 2]);  
   else
     error ("ndgrid: wrong number of input arguments");
   endif
 
-
   ## Determine the size of the output arguments
   
-  shape = zeros(1,n);
+  shape = zeros (1, n);
 
-  for i=1:n
-    if (~isvector(varargin{i}))
+  for i = 1:n
+    if (! isvector (varargin{i}))
       error ("ndgrid: arguments must be vectors");
     endif
 
-    shape(i) = length(varargin{i});
+    shape(i) = length (varargin{i});
   endfor
 
-  for i=1:n
+  for i = 1:n
     ## size for reshape
-    r = ones(1,n);
+    r = ones (1, n);
     r(i) = shape(i);
 
     ## size for repmat
     s = shape;
     s(i) = 1;
 
-    varargout{i} = repmat(reshape(varargin{i},r) ,s);
+    varargout{i} = repmat (reshape (varargin{i}, r), s);
   endfor
-
-
 
 endfunction

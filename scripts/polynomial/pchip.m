@@ -91,16 +91,16 @@ function ret = pchip (x, y, xi)
     y = reshape (y, [prod(szy(1:end-1)), szy(end)])';
   endif
 
-  h = diff(x);
-  if all(h<0)
-    x = flipud(x);
-    h = diff(x);
-    y = flipud(y);
-  elseif (any(h <= 0))
+  h = diff (x);
+  if (all (h < 0))
+    x = flipud (x);
+    h = diff (x);
+    y = flipud (y);
+  elseif (any (h <= 0))
     error("pchip: x must be strictly monotonic")
   endif
 
-  if (rows(y) != n)
+  if (rows (y) != n)
     error("pchip: size of x and y must match");
   endif
 
@@ -112,7 +112,7 @@ function ret = pchip (x, y, xi)
   dy = diff (y) ./ h;
 
   a = y;
-  b = __pchip_deriv__(x,y);
+  b = __pchip_deriv__ (x, y);
   c = - (b(2:n, :) + 2 * b(1:n - 1, :)) ./ h + 3 * diff (a) ./ h .^ 2;
   d = (b(1:n - 1, :) + b(2:n, :)) ./ h.^2 - 2 * diff (a) ./ h.^3;
 

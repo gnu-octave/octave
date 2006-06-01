@@ -78,7 +78,8 @@
 ## @seealso{interpft}
 ## @end deftypefn
 
-## 2000-03-25 Paul Kienzle
+## Author: Paul Kienzle
+## Date: 2000-03-25
 ##    added 'nearest' as suggested by Kai Habel
 ## 2000-07-17 Paul Kienzle
 ##    added '*' methods and matrix y
@@ -86,9 +87,9 @@
 ## 2002-01-23 Paul Kienzle
 ##    fixed extrapolation
 
-function yi = interp1(x, y, varargin)
+function yi = interp1 (x, y, varargin)
 
-  if ( nargin < 3 || nargin > 6)
+  if (nargin < 3 || nargin > 6)
     print_usage ();
   endif
 
@@ -99,13 +100,13 @@ function yi = interp1(x, y, varargin)
   firstnumeric = true;
 
   if (nargin > 2)
-    for i = 1:length(varargin)
+    for i = 1:length (varargin)
       arg = varargin{i};
-      if (ischar(arg))
+      if (ischar (arg))
 	arg = tolower (arg);
-	if (strcmp("extrap",arg))
+	if (strcmp ("extrap", arg))
 	  extrap = "extrap";
-	elseif (strcmp("pp",arg))
+	elseif (strcmp ("pp", arg))
 	  pp = true;
 	else
 	  method = arg;
@@ -123,21 +124,21 @@ function yi = interp1(x, y, varargin)
 
   ## reshape matrices for convenience
   x = x(:);
-  nx = size(x,1);
+  nx = size (x, 1);
   if (isvector(y) && size (y, 1) == 1)
-    y = y (:);
+    y = y(:);
   endif
   ndy = ndims (y);
-  szy = size(y);
+  szy = size (y);
   ny = szy(1);
   nc = prod (szy(2:end));
   y = reshape (y, ny, nc);
-  szx = size(xi);
+  szx = size (xi);
   xi = xi(:);
 
   ## determine sizes
   if (nx < 2 || ny < 2)
-     error ("interp1: table too short");
+    error ("interp1: table too short");
   endif
 
   ## determine which values are out of range and set them to extrap,
@@ -150,15 +151,17 @@ function yi = interp1(x, y, varargin)
   else
      maxx = x(nx);
   endif
-  if (!pp)
-    if ischar(extrap) && strcmp(extrap,"extrap")
-      range=1:size(xi,1);
-      yi = zeros(size(xi,1), size(y,2));
+
+  if (! pp)
+    if (ischar (extrap) && strcmp (extrap, "extrap"))
+      range = 1:size (xi, 1);
+      yi = zeros (size (xi, 1), size (y, 2));
     else
-      range = find(xi >= minx & xi <= maxx);
-      yi = extrap*ones(size(xi,1), size(y,2));
-      if isempty(range), 
-	if (!isvector(y) && length(szx) == 2 && (szx(1) == 1 || szx(2) == 1))
+      range = find (xi >= minx & xi <= maxx);
+      yi = extrap * ones (size (xi, 1), size (y, 2));
+      if (isempty (range))
+	if (! isvector (y) && length (szx) == 2
+	    && (szx(1) == 1 || szx(2) == 1))
 	  if (szx(1) == 1)
 	    yi = reshape (yi, [szx(2), szy(2:end)]);
 	  else
@@ -173,38 +176,38 @@ function yi = interp1(x, y, varargin)
     endif
   endif
 
-  if strcmp(method, "nearest")
+  if (strcmp (method, "nearest"))
     if (pp)
-      yi = mkpp ([x(1);(x(1:end-1)+x(2:end))/2;x(end)],y,szy(2:end));
+      yi = mkpp ([x(1); (x(1:end-1)+x(2:end))/2; x(end)], y, szy(2:end));
     else
-      idx = lookup(0.5*(x(1:nx-1)+x(2:nx)), xi)+1;
+      idx = lookup (0.5*(x(1:nx-1)+x(2:nx)), xi) + 1;
       yi(range,:) = y(idx,:);
     endif
-  elseif strcmp(method, "*nearest")
+  elseif (strcmp (method, "*nearest"))
     if (pp)
-      yi = mkpp ([minx; minx + [0.5:(ny-1)]'*dx; maxx],y,szy(2:end));
+      yi = mkpp ([minx; minx+[0.5:(ny-1)]'*dx; maxx], y, szy(2:end));
     else
-      idx = max(1,min(ny,floor((xi-minx)/dx+1.5)));
+      idx = max (1, min (ny, floor((xi-minx)/dx+1.5)));
       yi(range,:) = y(idx,:);
     endif
-  elseif strcmp(method, "linear")
+  elseif (strcmp (method, "linear"))
     dy = y(2:ny,:) - y(1:ny-1,:);
     dx = x(2:nx) - x(1:nx-1);
     if (pp)
-      yi = mkpp(x, [dy./dx, y(1:end-1)],szy(2:end));
+      yi = mkpp (x, [dy./dx, y(1:end-1)], szy(2:end));
     else
       ## find the interval containing the test point
-      idx = lookup (x(2:nx-1), xi)+1; 
+      idx = lookup (x(2:nx-1), xi)+1;
 				# 2:n-1 so that anything beyond the ends
 				# gets dumped into an interval
       ## use the endpoints of the interval to define a line
       s = (xi - x(idx))./dx(idx);
       yi(range,:) = s(:,ones(1,nc)).*dy(idx,:) + y(idx,:);
     endif
-  elseif strcmp(method, "*linear")
+  elseif (strcmp (method, "*linear"))
     if (pp)
       dy = [y(2:ny,:) - y(1:ny-1,:)];
-      yi = mkpp (minx + [0:ny-1]*dx, [dy ./ dx, y(1:end-1)], szy(2:end));
+      yi = mkpp (minx + [0:ny-1]*dx, [dy./dx, y(1:end-1)], szy(2:end));
     else
       ## find the interval containing the test point
       t = (xi - minx)/dx + 1;
@@ -215,43 +218,43 @@ function yi = interp1(x, y, varargin)
       s = t - idx;
       yi(range,:) = s(:,ones(1,nc)).*dy(idx,:) + y(idx,:); 
     endif
-  elseif strcmp(method, "pchip") || strcmp(method, "*pchip")
+  elseif (strcmp (method, "pchip") || strcmp (method, "*pchip"))
     if (nx == 2 || method(1) == "*") 
-      x = linspace(minx, maxx, ny); 
+      x = linspace (minx, maxx, ny);
     endif
     ## Note that pchip's arguments are transposed relative to interp1
     if (pp)
-      yi = pchip(x.', y.');
+      yi = pchip (x.', y.');
       yi.d = szy(2:end);
     else
-      yi(range,:) = pchip(x.', y.', xi.').';
+      yi(range,:) = pchip (x.', y.', xi.').';
     endif
 
-  elseif strcmp(method, "cubic") || (strcmp(method, "*cubic") && pp)
+  elseif (strcmp (method, "cubic") || (strcmp (method, "*cubic") && pp))
     ## FIXME Is there a better way to treat pp return return and *cubic
-    if (method(1) == "*") 
-      x = linspace(minx, maxx, ny).'; 
+    if (method(1) == "*")
+      x = linspace (minx, maxx, ny).'; 
       nx = ny;
     endif
 
     if (nx < 4 || ny < 4)
       error ("interp1: table too short");
     endif
-    idx = lookup(x(3:nx-2), xi) + 1;
+    idx = lookup (x(3:nx-2), xi) + 1;
 
     ## Construct cubic equations for each interval using divided
     ## differences (computation of c and d don't use divided differences
     ## but instead solve 2 equations for 2 unknowns). Perhaps
     ## reformulating this as a lagrange polynomial would be more efficient.
-    i=1:nx-3;
-    J = ones(1,nc);
-    dx = diff(x);
+    i = 1:nx-3;
+    J = ones (1, nc);
+    dx = diff (x);
     dx2 = x(i+1).^2 - x(i).^2;
     dx3 = x(i+1).^3 - x(i).^3;
-    a=diff(y,3)./dx(i,J).^3/6;
-    b=(diff(y(1:nx-1,:),2)./dx(i,J).^2 - 6*a.*x(i+1,J))/2;
-    c=(diff(y(1:nx-2,:),1) - a.*dx3(:,J) - b.*dx2(:,J))./dx(i,J);
-    d=y(i,:) - ((a.*x(i,J) + b).*x(i,J) + c).*x(i,J);
+    a = diff (y, 3)./dx(i,J).^3/6;
+    b = (diff (y(1:nx-1,:), 2)./dx(i,J).^2 - 6*a.*x(i+1,J))/2;
+    c = (diff (y(1:nx-2,:), 1) - a.*dx3(:,J) - b.*dx2(:,J))./dx(i,J);
+    d = y(i,:) - ((a.*x(i,J) + b).*x(i,J) + c).*x(i,J);
 
     if (pp)
       xs = [x(1);x(3:nx-2)];
@@ -264,7 +267,7 @@ function yi = interp1(x, y, varargin)
       yi(range,:) = ((a(idx,:).*xi(:,J) + b(idx,:)).*xi(:,J) ...
 		     + c(idx,:)).*xi(:,J) + d(idx,:);
     endif
-  elseif strcmp(method, "*cubic")
+  elseif (strcmp (method, "*cubic"))
     if (nx < 4 || ny < 4)
       error ("interp1: table too short");
     endif
@@ -272,7 +275,7 @@ function yi = interp1(x, y, varargin)
     ## From: Miloje Makivic 
     ## http://www.npac.syr.edu/projects/nasa/MILOJE/final/node36.html
     t = (xi - minx)/dx + 1;
-    idx = max(min(floor(t), ny-2), 2);
+    idx = max (min (floor (t), ny-2), 2);
     t = t - idx;
     t2 = t.*t;
     tp = 1 - 0.5*t;
@@ -280,28 +283,28 @@ function yi = interp1(x, y, varargin)
     b = (t2 + t).*tp;
     c = (t2 - t).*tp/3;
     d = (t2 - 1).*t/6;
-    J = ones(1,nc);
+    J = ones (1, nc);
 
     yi(range,:) = a(:,J) .* y(idx,:) + b(:,J) .* y(idx+1,:) ...
 		  + c(:,J) .* y(idx-1,:) + d(:,J) .* y(idx+2,:);
 
-  elseif strcmp(method, "spline") || strcmp(method, "*spline")
+  elseif (strcmp (method, "spline") || strcmp (method, "*spline"))
     if (nx == 2 || method(1) == "*") 
       x = linspace(minx, maxx, ny); 
     endif
     ## Note that spline's arguments are transposed relative to interp1
     if (pp)
-      yi = spline(x.', y.');
+      yi = spline (x.', y.');
       yi.d = szy(2:end);
     else
-      yi(range,:) = spline(x.', y.', xi.').';
+      yi(range,:) = spline (x.', y.', xi.').';
     endif
   else
-    error(["interp1 doesn't understand method '", method, "'"]);
+    error ("interp1: invalid method '%s'", method);
   endif
 
-  if (!pp)
-    if (!isvector(y) && length(szx) == 2 && (szx(1) == 1 || szx(2) == 1))
+  if (! pp)
+    if (! isvector (y) && length (szx) == 2 && (szx(1) == 1 || szx(2) == 1))
       if (szx(1) == 1)
 	yi = reshape (yi, [szx(2), szy(2:end)]);
       else

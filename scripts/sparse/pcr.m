@@ -18,20 +18,20 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{M}, @var{x0}, @dots{})
+## @deftypefn {Function File} {@var{x} =} pcr (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ## 
-## Solves the linear system of equations @code{@var{A} * @var{x} =
+## Solves the linear system of equations @code{@var{a} * @var{x} =
 ## @var{b}} by means of the  Preconditioned Conjugate Residuals iterative
 ## method. The input arguments are
 ##
 ## @itemize
 ## @item
-## @var{A} can be either a square (preferably sparse) matrix or a
+## @var{a} can be either a square (preferably sparse) matrix or a
 ## function handle, inline function or string containing the name
-## of a function which computes @code{@var{A} * @var{x}}. In principle
-## @var{A} should be symmetric and non-singular; if @code{pcr}
-## finds @var{A} to be numerically singular, you will get a warning
+## of a function which computes @code{@var{a} * @var{x}}. In principle
+## @var{a} should be symmetric and non-singular; if @code{pcr}
+## finds @var{a} to be numerically singular, you will get a warning
 ## message and the @var{flag} output parameter will be set.
 ## 
 ## @item
@@ -39,8 +39,8 @@
 ## 
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
-## @code{@var{b} - @var{A} * @var{x}}. The iteration stops if @code{norm
-## (@var{b} - @var{A} * @var{x}) <= @var{tol} * norm (@var{b} - @var{A} *
+## @code{@var{b} - @var{a} * @var{x}}. The iteration stops if @code{norm
+## (@var{b} - @var{a} * @var{x}) <= @var{tol} * norm (@var{b} - @var{a} *
 ## @var{x0})}. If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
 ## 
@@ -50,15 +50,15 @@
 ## arguments, a default value equal to 20 is used.
 ##
 ## @item
-## @var{M} is the (left) preconditioning matrix, so that the iteration is
+## @var{m} is the (left) preconditioning matrix, so that the iteration is
 ## (theoretically) equivalent to solving by @code{pcr} @code{@var{P} *
-## @var{x} = @var{M} \ @var{b}}, with @code{@var{P} = @var{M} \ @var{A}}.
+## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
 ## Note that a proper choice of the preconditioner may dramatically
 ## improve the overall performance of the method. Instead of matrix
-## @var{M}, the user may pass a function which returns the results of 
-## applying the inverse of @var{M} to a vector (usually this is the
+## @var{m}, the user may pass a function which returns the results of 
+## applying the inverse of @var{m} to a vector (usually this is the
 ## preferred way of using the preconditioner). If @code{[]} is supplied
-## for @var{M}, or @var{M} is omitted, no preconditioning is applied.
+## for @var{m}, or @var{m} is omitted, no preconditioning is applied.
 ## 
 ## @item
 ## @var{x0} is the initial guess. If @var{x0} is empty or omitted, the 
@@ -66,14 +66,14 @@
 ## @end itemize
 ## 
 ## The arguments which follow @var{x0} are treated as parameters, and
-## passed in a proper way to any of the functions (@var{A} or @var{M})
+## passed in a proper way to any of the functions (@var{a} or @var{m})
 ## which are passed to @code{pcr}. See the examples below for further
 ## details. The output arguments are
 ##
 ## @itemize
 ## @item
 ## @var{x} is the computed approximation to the solution of
-## @code{@var{A} * @var{x} = @var{b}}.
+## @code{@var{a} * @var{x} = @var{b}}.
 ## 
 ## @item
 ## @var{flag} reports on the convergence. @code{@var{flag} = 0} means
@@ -93,7 +93,7 @@
 ## @var{resvec} describes the convergence history of the method,
 ## so that @code{@var{resvec} (i)} contains the Euclidean norms of the 
 ## residualafter the (@var{i}-1)-th iteration, @code{@var{i} =
-## 1,2,...@var{iter}+1}.
+## 1,2, @dots{}, @var{iter}+1}.
 ## @end itemize
 ## 
 ## Let us consider a trivial problem with a diagonal matrix (we exploit the
@@ -114,7 +114,7 @@
 ## @end example
 ## 
 ## @sc{Example 2:} @code{pcr} with a function which computes
-## @code{@var{A} * @var{x}}.
+## @code{@var{a} * @var{x}}.
 ##
 ## @example
 ## @group
@@ -128,7 +128,7 @@
 ## 
 ## @sc{Example 3:}  Preconditioned iteration, with full diagnostics. The
 ## preconditioner (quite strange, because even the original matrix
-## @var{A} is trivial) is defined as a function
+## @var{a} is trivial) is defined as a function
 ## 
 ## @example
 ## @group
@@ -165,22 +165,14 @@
 ## @seealso{sparse, pcg}
 ## @end deftypefn
 
-## REVISION HISTORY
-##
-## 2004-08-14, Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
-## 
-## 	Added 4 demos and 4 tests
-##  
-## 2004-08-01, Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
-## 
-## 	First version of pcr code
+## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
 
-function [x, flag, relres, iter, resvec] = pcr(A,b,tol,maxit,M,x0,varargin)
+function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargin)
 
   breakdown = false;
 
-  if ((nargin < 6) || isempty(x0))
-    x = zeros(size(b));
+  if (nargin < 6 || isempty (x0))
+    x = zeros (size (b));
   else
     x = x0;
   endif
@@ -189,84 +181,86 @@ function [x, flag, relres, iter, resvec] = pcr(A,b,tol,maxit,M,x0,varargin)
     M = [];
   endif
 
-  if ((nargin < 4) || isempty(maxit))
+  if (nargin < 4 || isempty (maxit))
     maxit = 20;
   endif
 
-  maxit = maxit + 2;
+  maxit += 2;
 
-  if ((nargin < 3) || isempty(tol))
+  if (nargin < 3 || isempty (tol))
     tol = 1e-6;
   endif
 
   if (nargin < 2)
-    print_usage();
+    print_usage ();
   endif
 
   ##  init
-  if (isnumeric(A))		# is A a matrix?
-    r = b-A*x;
+  if (isnumeric (A))		# is A a matrix?
+    r = b - A*x;
   else				# then A should be a function!
-    r = b-feval(A,x,varargin{:});
+    r = b - feval (A, x, varargin{:});
   endif
 
-  if (isnumeric(M))		# is M a matrix?
-    if isempty(M)		# if M is empty, use no precond
+  if (isnumeric (M))		# is M a matrix?
+    if (isempty (M))		# if M is empty, use no precond
       p = r;
     else			# otherwise, apply the precond
-      p = M\r;
+      p = M \ r;
     endif
   else				# then M should be a function!
-    p = feval(M,r,varargin{:});
+    p = feval (M, r, varargin{:});
   endif
 
   iter = 2;
 
   b_bot_old = 1;
-  q_old = p_old = s_old = zeros(size(x));
+  q_old = p_old = s_old = zeros (size (x));
 
-  if (isnumeric(A))		# is A a matrix?
-    q = A*p;
+  if (isnumeric (A))		# is A a matrix?
+    q = A * p;
   else				# then A should be a function!
-    q = feval(A,p,varargin{:});
+    q = feval (A, p, varargin{:});
   endif
 	
-  resvec(1) = abs(norm(r)); 
+  resvec(1) = abs (norm (r)); 
 
   ## iteration
-  while ((resvec(iter-1) > tol*resvec(1)) && (iter < maxit))
-	
-    if (isnumeric(M))		# is M a matrix?
-      if isempty(M)		# if M is empty, use no precond
+  while (resvec(iter-1) > tol*resvec(1) && iter < maxit)
+
+    if (isnumeric (M))		# is M a matrix?
+      if (isempty (M))		# if M is empty, use no precond
 	s = q;
       else			# otherwise, apply the precond
-	s = M\q;
+	s = M \ q;
       endif
     else			# then M should be a function!
-      s = feval(M,q,varargin{:});
+      s = feval (M, q, varargin{:});
     endif
-    b_top = r'*s;
-    b_bot = q'*s;
+    b_top = r' * s;
+    b_bot = q' * s;
 	
     if (b_bot == 0.0)
       breakdown = true;
       break;
     endif
-    lambda = b_top/b_bot;
+    lambda = b_top / b_bot;
 	
-    x = x + lambda*p;
-    r = r - lambda*q;
+    x += lambda*p;
+    r -= lambda*q;
 	
     if (isnumeric(A))		# is A a matrix?
       t = A*s;
     else			# then A should be a function!
-      t = feval(A,s,varargin{:});
+      t = feval (A, s, varargin{:});
     endif
 	
-    alpha0 = (t'*s)/b_bot;
-    alpha1 = (t'*s_old)/b_bot_old;
+    alpha0 = (t'*s) / b_bot;
+    alpha1 = (t'*s_old) / b_bot_old;
 	
-    p_temp = p; q_temp = q;
+    p_temp = p;
+    q_temp = q;
+
     p = s - alpha0*p - alpha1*p_old;
     q = t - alpha0*q - alpha1*q_old;
 	
@@ -275,32 +269,30 @@ function [x, flag, relres, iter, resvec] = pcr(A,b,tol,maxit,M,x0,varargin)
     q_old = q_temp;
     b_bot_old = b_bot;
 	
-	
-    resvec(iter) = abs(norm(r));
-    iter = iter + 1;
+    resvec(iter) = abs (norm (r));
+    iter++;
   endwhile
 
   flag = 0;
-  relres = resvec(iter-1)./resvec(1);
-  iter = iter - 2;
-  if (iter >= (maxit-2))
+  relres = resvec(iter-1) ./ resvec(1);
+  iter -= 2;
+  if (iter >= maxit-2)
     flag = 1;
     if (nargout < 2)
-      warning("PCR: maximum number of iterations (%d) reached\n", iter);
-      warning("The initial residual norm was reduced %g times.\n", 1.0/relres);
+      warning ("PCR: maximum number of iterations (%d) reached\n", iter);
+      warning ("The initial residual norm was reduced %g times.\n", 1.0/relres);
     endif
-  else
-    if ((nargout < 2) && (~breakdown))
-      fprintf(stderr, "PCR: converged in %d iterations. \n", iter);
-      fprintf(stderr, "The initial residual norm was reduced %g times.\n",...
-	      1.0/relres);
-    endif
+  elseif (nargout < 2 && ! breakdown)
+    fprintf (stderr, "PCR: converged in %d iterations. \n", iter);
+    fprintf (stderr, "The initial residual norm was reduced %g times.\n",
+	     1.0/relres);
   endif
+
   if (breakdown)
     flag = 3;
     if (nargout < 2)
-      warning("PCR: breakdown occured.\n");
-      warning("System matrix singular or preconditioner indefinite?\n");
+      warning ("PCR: breakdown occured.\n");
+      warning ("System matrix singular or preconditioner indefinite?\n");
     endif
   endif
 

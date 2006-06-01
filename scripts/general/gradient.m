@@ -54,14 +54,14 @@
 
 function [varargout] = gradient (M, varargin)
   
-  if ((nargin < 1))
+  if (nargin < 1)
     print_usage ()
   endif
 
   transposed = false;
   if (isvector (M))
     ## make a column vector
-    transposed = (size(M,2) == 1);
+    transposed = (size (M, 2) == 1);
     M = M(:)';
   endif
 
@@ -71,25 +71,25 @@ function [varargout] = gradient (M, varargin)
     print_usage ()
   endif
     
-  d = cell(1,nd);
+  d = cell (1, nd);
   if (nargin == 1)
     for i=1:nd
-      d{i} = ones(sz(i), 1);
+      d{i} = ones (sz(i), 1);
     endfor
   elseif (nargin == 2)
     if (isscalar (varargin{1}))
-      for i=1:nd
-	d{i} = varargin{1} * ones(sz(i), 1);
+      for i = 1:nd
+	d{i} = varargin{1} * ones (sz(i), 1);
       endfor
     else
-      for i=1:nd
+      for i = 1:nd
 	d{i} = varargin{1};
       endfor
     endif
   else
     for i=1:nd
       if (isscalar (varargin{1}))
-	d{i} = varargin{i} * ones(sz(i), 1);
+	d{i} = varargin{i} * ones (sz(i), 1);
       else
 	d{i} = varargin{i};
       endif
@@ -101,21 +101,21 @@ function [varargout] = gradient (M, varargin)
     d{2} = tmp;
   endif
 
-  for i = 1:max(2,min(nd,nargout))
+  for i = 1:max (2, min (nd, nargout))
     mr = sz(i);
-    mc = prod([sz(1:i-1),sz(i+1:nd)]);
-    Y = zeros (size(M), class(M));
+    mc = prod ([sz(1:i-1), sz(i+1:nd)]);
+    Y = zeros (size (M), class (M));
 
     if (mr > 1)
       ## top and bottom boundary
-      Y(1, :) = diff (M(1:2, :)) / d{i}(1);
-      Y(mr, :) = diff (M(mr - 1:mr, :)) / d{i}(mr - 1);
+      Y(1,:) = diff (M(1:2,:)) / d{i}(1);
+      Y(mr,:) = diff (M(mr-1:mr,:)) / d{i}(mr-1);
     endif
 
     if (mr > 2)
       ## interior points
-      Y(2:mr-1, :) = (M(3:mr, :) .- M(1:mr - 2, :)) ./ ...
-          kron (d{i}(1:mr - 2) .+ d{i}(2:mr - 1), ones(1, mc));
+      Y(2:mr-1,:) = (M(3:mr,:) .- M(1:mr-2,:)) ...
+	  ./ kron (d{i}(1:mr-2) .+ d{i}(2:mr-1), ones (1, mc));
     endif
     varargout{i} = ipermute (Y, [i:nd,1:i-1]);
     M = permute (M, [2:nd,1]);

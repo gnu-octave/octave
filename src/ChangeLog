@@ -1,3 +1,7 @@
+2006-06-01  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (DLD_XSRC): Add __pchip_deriv__.cc to the list.
+
 2006-06-01  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/__pchip_deriv__.cc: New file.

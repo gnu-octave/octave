@@ -35,30 +35,31 @@
 
 function __plt3__ (x, y, z, fmt)
 
-  if (isvector(x) && isvector(y))
-    if (isvector(z))
-      x = x(:); y=y(:); z=z(:);
-    elseif (length(x) == rows(z) && length(y) == columns(z))
-      error("plot3: [length(x), length(y)] must match size(z)");
+  if (isvector (x) && isvector (y))
+    if (isvector (z))
+      x = x(:);
+      y = y(:);
+      z = z(:);
+    elseif (length (x) == rows (z) && length (y) == columns (z))
+      error ("plot3: [length(x), length(y)] must match size(z)");
     else
-      [x,y] = meshgrid(x,y);
+      [x, y] = meshgrid (x, y);
     endif
   endif
 
-  if (any(size(x) != size(y)) || any(size(x) != size(z)))
-    error("plot3: x, y, and z must have the same shape");
+  if (any (size (x) != size (y)) || any (size (x) != size (z)))
+    error ("plot3: x, y, and z must have the same shape");
   endif
 
   unwind_protect
-    __gnuplot_set__  parametric;
+    __gnuplot_set__ parametric;
     __gnuplot_raw__ ("set nohidden3d;\n");
 
     tmp = [([x; NaN*ones(1,size(x,2))])(:), ...
 	   ([y; NaN*ones(1,size(y,2))])(:), ...
 	   ([z; NaN*ones(1,size(z,2))])(:)];
 
-    cmd =  ["__gnuplot_splot__ tmp ", fmt, ";\n"];
-    eval (cmd);
+    eval (sprintf ("__gnuplot_splot__ tmp %s\n", fmt));
   unwind_protect_cleanup
     __gnuplot_set__ noparametric; 
   end_unwind_protect

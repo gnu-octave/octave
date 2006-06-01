@@ -6,13 +6,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} inputname (@var{n})
-## 
-##    Return the text defining n-th input to the function.
-##
+## Return the text defining @var{n}-th input to the function.
 ## @end deftypefn
 
 function s = inputname (n)
-  s = evalin ('caller', sprintf('deblank(argn(%d,:));', n));
+  s = evalin ("caller", sprintf ("deblank (argn(%d,:));", n));
 endfunction
 
 ## Warning: heap big magic in the following tests!!!

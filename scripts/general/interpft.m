@@ -48,48 +48,48 @@ function z = interpft (x, n, dim)
   endif
 
   if (nargin == 2)
-    if (isvector(x) && size(x,1) == 1)
+    if (isvector (x) && size (x, 1) == 1)
       dim = 2;
     else
       dim = 1;
     endif
   endif
 
-  if (!isscalar (n))
+  if (! isscalar (n))
     error ("interpft: n must be an integer scalar");
   endif
 
-  nd = ndims(x);
+  nd = ndims (x);
 
   if (dim < 1 || dim > nd)
     error ("interpft: integrating over invalid dimension");
   endif
 
-  perm = [dim:nd,1:(dim-1)];
-  x = permute(x, perm);
+  perm = [dim:nd, 1:(dim-1)];
+  x = permute (x, perm);
   m = size (x, 1);
 
   inc = 1;
-  while (inc * n < m)
+  while (inc*n < m)
     inc++;
   endwhile
   y = fft (x) / m;
   k = floor (m / 2);
-  sz = size(x);
+  sz = size (x);
   sz(1) = n * inc - m;
-  idx = cell(nd,1);
+  idx = cell (nd, 1);
   for i = 2:nd
     idx{i} = 1:sz(i);
   endfor
   idx{1} = 1:k;
-  z = cat (1, y(idx{:}), zeros(sz));
+  z = cat (1, y(idx{:}), zeros (sz));
   idx{1} = k+1:m;
   z = cat (1, z, y(idx{:}));
   z = n * ifft (z);
 
   if (inc != 1)
     sz(1) = n;
-    z = inc * reshape(z(1:inc:end),sz);
+    z = inc * reshape (z(1:inc:end), sz);
   endif
 
   z = ipermute (z, perm);

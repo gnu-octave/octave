@@ -1,3 +1,7 @@
+2006-05-31  David Bateman  <dbateman@free.fr>
+
+	* Array.cc (assignN): Maybe reshape LHS before doing assignment.
+
 2006-05-23  John W. Eaton  <jwe@octave.org>
 
 	* oct-types.h.in: Include stdint.h or inttypes.h for integer

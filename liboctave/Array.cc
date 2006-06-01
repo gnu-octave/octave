@@ -3104,14 +3104,15 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      else
 		final_lhs_dims = new_dims;
 
-	      lhs_dims = new_dims;
+	      lhs_dims_len = new_dims.length ();
 
-	      lhs_dims_len = lhs_dims.length ();
-
-	      frozen_len = freeze (idx, lhs_dims, true);
+	      frozen_len = freeze (idx, new_dims, true);
 
 	      if (rhs_is_scalar)
 		{
+		  if (n_idx < orig_lhs_dims_len)
+		    lhs = lhs.reshape (lhs_dims);
+
 		  lhs.resize_and_fill (new_dims, rfv);
 
 		  if  (! final_lhs_dims.any_zero ())
@@ -3147,6 +3148,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		    }
 		  else
 		    {
+		      if (n_idx < orig_lhs_dims_len)
+			lhs = lhs.reshape (lhs_dims);
+
 		      lhs.resize_and_fill (new_dims, rfv);
 
 		      if  (! final_lhs_dims.any_zero ())

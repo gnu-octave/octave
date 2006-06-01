@@ -23,12 +23,12 @@
 ## @deftypefnx {Function File} {@var{yi} = } spline (@var{x}, @var{y}, @var{xi})
 ##
 ## Returns the cubic spline interpolation of @var{y} at the point
-## @var{x}. Called with two arguments the piece-wse polynomial @var{pp}
+## @var{x}. Called with two arguments the piece-wise polynomial @var{pp}
 ## that may later be used with @code{ppval} to evaluate the polynomial
 ## at specific points.
 ##
 ## The variable @var{x} must be a vector of length @var{n}, and @var{y}
-## can be either a vector of array. In the case where @var{y} is a
+## can be either a vector or array. In the case where @var{y} is a
 ## vector, it can have a length of either @var{n} or @code{@var{n} + 2}.
 ## If the length of @var{y} is @var{n}, then the 'not-a-knot' end
 ## condition is used. If the length of @var{y} is @code{@var{n} + 2},

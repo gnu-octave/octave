@@ -1,3 +1,7 @@
+2006-06-01  David Bateman  <dbateman@free.fr>
+
+	* slatec-fn/dpchim.f, slatec-fn/dpchst.f: New files.
+
 2006-05-22  John W. Eaton  <jwe@octave.org>
 
 	* lapack/dlantr.f, lapack/zlantr.f: New files.

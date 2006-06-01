@@ -1,3 +1,11 @@
+2006-06-01  David Bateman  <dbateman@free.fr>
+
+	* general/interpft.m, general/quadl.m, general/polyarea.m,
+	general/interp1.m, general/gradient.m, general/interp2.m,
+	general/bicubic.m, miscellaneous/inputname.m, plot/__plt3__.m,
+	plot/ndgrid.m, plot/plot3.m, polynomial/pchip.m, sparse/pcg.m,
+	sparse/pcr.m, strings/mat2str.m: New files from Octave Forge.
+
 2006-05-31  Bill Denney  <bill@givebillmoney.com>
 
  	* miscellaneous/fileparts.m, miscellaneous/fullfile.m: Add seealso.

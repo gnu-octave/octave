@@ -1,3 +1,7 @@
+2006-06-01  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/__pchip_deriv__.cc: New file.
+
 2006-05-31  John W. Eaton  <jwe@octave.org>
 
 	* load-path.h (load_path::set_command_line_path): Make it

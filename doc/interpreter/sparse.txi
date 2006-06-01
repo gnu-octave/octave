@@ -427,8 +427,8 @@ the specific sparse versions of the functions are used.
   sprank, svds, spaugment)
 
 @item Iterative techniques:
-  @dfn{luinc}, (bicg, bicgstab, cholinc, cgs, gmres, lsqr, minres, 
-  pcg, pcr, qmr, symmlq)
+  @dfn{luinc}, @dfn{pcg}, @dfn{pcr}, (bicg, bicgstab, cholinc, cgs, 
+  gmres, lsqr, minres, qmr, symmlq)
 
 @item Miscellaneous:
   @dfn{spparms}, @dfn{symbfact}, @dfn{spstats}, 
@@ -744,7 +744,10 @@ used with care.
 @node Iterative Techniques, Real Life Example, Sparse Linear Algebra, Sparse Matrices
 @section Iterative Techniques applied to sparse matrices
 
-WRITE ME OR DELETE ME IF THERE ARE NO ITERATIVE SOLVERS IN OCTAVE 3.0
+There are three functions currently to document here, these being
+@dfn{luinc}, @dfn{pcg} and @dfn{pcr}.
+
+WRITE ME.
 
 @node Real Life Example, Oct-Files, Iterative Techniques, Sparse Matrices
 @section Real Life Example of the use of Sparse Matrices
@@ -1478,9 +1481,13 @@ Produce the incomplete LU factorization of the sparse matrix A.
 @item minres
 @emph{Not implemented}
 @item pcg
-@emph{Not implemented}
+Solves the linear system of equations @code{@var{A} * @var{x} =
+@var{b}} by means of the  Preconditioned Conjugate Gradient iterative
+method.
 @item pcr
-@emph{Not implemented}
+Solves the linear system of equations @code{@var{A} * @var{x} =
+@var{b}} by means of the  Preconditioned Conjugate Residual iterative
+method.
 @item qmr
 @emph{Not implemented}
 @item symmlq
@@ -1548,6 +1555,10 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 		matrix S
 * nzmax::	Returns the amount of storage allocated to the sparse
 		matrix SM.
+* pcg::		Solves linear system of equations by means of the 
+		Preconditioned Conjugate Gradient iterative method.
+* pcr::		Solves linear system of equations by means of the 
+		Preconditioned Conjugate Residual iterative method.
 * spalloc::	Returns an empty sparse matrix of size R-by-C.
 * sparse::	SPARSE: create a sparse matrix
 * spatan2::	Compute atan (Y / X) for corresponding sparse matrix
@@ -1672,12 +1683,22 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 
 @DOCSTRING(nonzeros)
 
-@node nzmax, spalloc, nonzeros, Function Reference
+@node nzmax, pcg, nonzeros, Function Reference
 @subsubsection nzmax
 
 @DOCSTRING(nzmax)
 
-@node spalloc, sparse, nzmax, Function Reference
+@node pcg, pcr, nzmax, Function Reference
+@subsubsection pcg
+
+@DOCSTRING(pcg)
+
+@node pcr, spalloc, pcg, Function Reference
+@subsubsection pcr
+
+@DOCSTRING(pcr)
+
+@node spalloc, sparse, pcr, Function Reference
 @subsubsection spalloc
 
 @DOCSTRING(spalloc)

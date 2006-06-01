@@ -1,5 +1,6 @@
 clear all;
 
+global files_with_no_tests = {};
 global topsrcdir;
 
 currdir = canonicalize_file_name (".");
@@ -35,41 +36,42 @@ function print_pass_fail (n, p)
     if (nfail > 0)
       printf (" FAIL %d", nfail);
     endif
-  else
-    printf (" no tests");
   endif
   printf ("\n");
 endfunction
 
+function y = hastests (f)
+  fid = fopen (f);
+  str = fscanf (fid, "%s");
+  fclose (fid);
+  y = (findstr (str, "%!test") || findstr (str, "%!assert")
+       || findstr (str, "%!error") || findstr (str, "%!warning"));
+endfunction
+
 function [dp, dn] = run_test_dir (fid, d);
+  global files_with_no_tests;
   lst = dir (d);
   dp = dn = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
     if (length (nm) > 5 && strcmp (nm(1:5), "test_")
 	&& strcmp (nm((end-1):end), ".m"))
-      print_test_file_name (nm);
-      [p, n] = test (nm(1:(end-2)), "quiet", fid);
-      print_pass_fail (n, p);
+      p = n = 0;
+      if (hastests (fullfile (d, nm)))
+	print_test_file_name (nm);
+	[p, n] = test (nm(1:(end-2)), "quiet", fid);
+	print_pass_fail (n, p);
+      else
+	files_with_no_tests(end+1) = fullfile (d, nm);
+      endif
       dp += p;
       dn += n;
     endif
   endfor
 endfunction
 
-function y = hastests (f)
-  fid = fopen (f);
-  str = fscanf (fid, "%s");
-  if (findstr (str, "%!test") || findstr (str, "%!assert")
-      || findstr (str, "%!error") || findstr (str, "%!warning"))
-    y = 1;
-  else
-    y = 0;
-  endif
-  fclose (fid);
-endfunction
-
 function [dp, dn] = run_test_script (fid, d);
+  global files_with_no_tests;
   global topsrcdir;
   lst = dir (d);
   dp = dn = 0;
@@ -87,15 +89,17 @@ function [dp, dn] = run_test_script (fid, d);
     if ((length (nm) > 3 && strcmp (nm((end-2):end), ".cc"))
 	|| (length (nm) > 2 && strcmp (nm((end-1):end), ".m")))
       f = fullfile (d, nm);
-      print_test_file_name (strrep (f, [topsrcdir, "/"], ""));
       p = n = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (hastests (f))
+	print_test_file_name (strrep (f, [topsrcdir, "/"], ""));
 	[p, n] = test (f, "quiet", fid);
+	print_pass_fail (n, p);
 	dp += p;
 	dn += n;
+      else
+	files_with_no_tests(end+1) = f;
       endif
-      print_pass_fail (n, p);
     endif
   endfor 
   ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
@@ -144,7 +148,9 @@ try
   printf ("\nSummary:\n\n  PASS %6d\n", dp);
   nfail = dn - dp;
   printf ("  FAIL %6d\n", nfail);
-  printf ("\nSee fntests.log for details.\n");
+  printf ("\n%d files have no tests\n", length (files_with_no_tests));
+  fprintf (fid, "\nFiles with no tests:\n\n%s",
+	  list_in_columns (files_with_no_tests, 80));
   fclose (fid);
   page_screen_output (pso);
   warning (warn_state.state, "quiet");

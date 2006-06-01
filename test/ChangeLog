@@ -1,10 +1,11 @@
 2006-06-01  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m (print_test_file_name, print_pass_fail): New functions.
-	(runtestdir, runtestscript): Use them.  Print info for each file.
+	(runtestdir, runtestscript): Use them.  Print info for each file
+	with tests.  Print info about files without tests to log file.
 	(run_test_dir): Rename from runtestdir.  Change all uses.
 	(run_test_script): Rename from runtestscript.  Change all uses.
-	Handle page_screen_output as a fucntion instead of a built-in
+	Handle page_screen_output as a function instead of a built-in
 	variable.
 
 2006-05-04  John W. Eaton  <jwe@octave.org>

@@ -90,7 +90,7 @@ run-octave: run-octave.in Makeconf octMakefile
 	$(do-subst-script-vals)
 
 check:
-	$(MAKE) -C test check
+	$(MAKE) -C test $@
 .PHONY: check
 
 octave.info:

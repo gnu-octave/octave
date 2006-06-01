@@ -123,11 +123,13 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   
   ## determine sample data type
   if (format_tag == FORMAT_PCM)
-    switch bits_per_sample
+    switch (bits_per_sample)
       case 8
         format = "uint8";
       case 16 
         format = "int16";
+      case 24
+	format = "uint8";
       case 32 
         format = "int32";
       otherwise
@@ -155,10 +157,10 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       length = param * channels;
     elseif (size (param, 2) == 2)
       ## sample range is given
-      if (fseek (fid, param(1) * channels * (bits_per_sample/8), SEEK_CUR) < 0)
+      if (fseek (fid, (param(1)-1) * channels * (bits_per_sample/8), SEEK_CUR) < 0)
         warning ("wavread: seeking failed");
       endif
-      length = (param(2)-param(1)) * channels;
+      length = (param(2)-param(1)+1) * channels;
     elseif (size (param, 2) == 4 && char (param) == "size")
       ## size of the file is requested
       fclose (fid);
@@ -169,20 +171,30 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       error ("wavread: invalid argument 2");
     endif
   endif
-  
+
   ## read samples and close file
+  if (bits_per_sample == 24)
+    length *= 3;
+  endif
   [yi, n] = fread (fid, length, format, 0, BYTEORDER);
   fclose (fid);
-  
+
+  if (bits_per_sample == 24)
+    yi = reshape (yi, 3, rows(yi)/3)';
+    yi(yi(:,3) >= 128, 3) -= 256;
+    yi = yi * [1; 256; 65536];
+  end
   if (format_tag == FORMAT_PCM)
     ## normalize samples
     switch (bits_per_sample)
       case 8
         yi = (yi - 127.5)/127.5;
       case 16
-        yi = yi/32768;
+        yi /= 32768;
+      case 24
+	yi /= 8388608;
       case 32
-        yi = yi/2147483648;
+        yi /= 2147483648;
     endswitch
   endif
   

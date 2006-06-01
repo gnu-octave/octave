@@ -1,3 +1,8 @@
+2006-06-01  Quentin H. Spencer <qspencer@ieee.org>
+
+	* audio/wavread.m: Fix file range error and add read support for
+	24-bit WAV files.
+
 2006-06-01  David Bateman  <dbateman@free.fr>
 
 	* general/interpft.m, general/quadl.m, general/polyarea.m,

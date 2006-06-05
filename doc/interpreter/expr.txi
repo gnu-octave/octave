@@ -907,8 +907,6 @@ and then test whether @code{x} equals 1.  But this style tends to make
 programs hard to read.  Except in a one-shot program, you should rewrite
 it to get rid of such nesting of assignments.  This is never very hard.
 
-@DOCSTRING(print_rhs_assign_val)
-
 @cindex increment operator
 @cindex decrement operator
 @cindex operators, increment

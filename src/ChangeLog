@@ -1,3 +1,19 @@
+2006-06-05  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (Vprint_rhs_assign_val): Delete variable.
+	(Fprint_rhs_assign_val): Delete function.
+	tree_simple_assignment::rvalue, tree_multi_assignment::rvalue):
+	No special case for Vprint_rhs_assign_val.
+
+2006-06-02  John W. Eaton  <jwe@octave.org>
+
+	* pt-arg-list.h (tree_argument_list::mark_as_simple_assign_lhs,
+	tree_argument_list::is_simple_assign_lhs): New functions.
+	(tree_argument_list::simple_assign_lhs): New data member.
+	* parse.y (assign_lhs): Classify LHS here.
+	(make_assign_op): Create simple or multi assign op based on
+	classification of LHS, not its length.
+
 2006-06-01  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (DLD_XSRC): Add __pchip_deriv__.cc to the list.

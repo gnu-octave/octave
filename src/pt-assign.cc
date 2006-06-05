@@ -41,10 +41,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "variables.h"
 
-// TRUE means print the right hand side of an assignment instead of
-// the left.
-static bool Vprint_rhs_assign_val = false;
-
 // Simple assignment expressions.
 
 tree_simple_assignment::~tree_simple_assignment (void)
@@ -118,25 +114,19 @@ tree_simple_assignment::rvalue (void)
 
 		      if (print_result ())
 			{
-			  if (Vprint_rhs_assign_val)
-			    retval.print_with_name (octave_stdout,
-						    lhs->str_print_code ());
-			  else
-			    {
-			      // We clear any index here so that we can
-			      // get the new value of the referenced
-			      // object below, instead of the indexed
-			      // value (which should be the same as the
-			      // right hand side value).
+			  // We clear any index here so that we can
+			  // get the new value of the referenced
+			  // object below, instead of the indexed
+			  // value (which should be the same as the
+			  // right hand side value).
 
-			      ult.clear_index ();
+			  ult.clear_index ();
 
-			      octave_value lhs_val = ult.value ();
+			  octave_value lhs_val = ult.value ();
 
-			      if (! error_state)
-				lhs_val.print_with_name (octave_stdout,
-							 lhs->name ());
-			    }
+			  if (! error_state)
+			    lhs_val.print_with_name (octave_stdout,
+						     lhs->name ());
 			}
 		    }
 		  else
@@ -283,25 +273,18 @@ tree_multi_assignment::rvalue (int)
 		    }
 		  else if (print_result ())
 		    {
-		      if (Vprint_rhs_assign_val)
-			retval(k).print_with_name
-			  (octave_stdout, lhs_elt->str_print_code ());
-		      else
-			{
-			  // We clear any index here so that we can
-			  // get the new value of the referenced
-			  // object below, instead of the indexed
-			  // value (which should be the same as the
-			  // right hand side value).
+		      // We clear any index here so that we can get
+		      // the new value of the referenced object below,
+		      // instead of the indexed value (which should be
+		      // the same as the right hand side value).
 
-			  ult.clear_index ();
+		      ult.clear_index ();
 
-			  octave_value lhs_val = ult.value ();
+		      octave_value lhs_val = ult.value ();
 
-			  if (! error_state)
-			    lhs_val.print_with_name (octave_stdout,
-						     lhs_elt->name ());
-			}
+		      if (! error_state)
+			lhs_val.print_with_name (octave_stdout,
+						 lhs_elt->name ());
 		    }
 		}
 	      else
@@ -342,19 +325,6 @@ tree_multi_assignment::accept (tree_walker& tw)
 {
   tw.visit_multi_assignment (*this);
 }
-
-DEFUN (print_rhs_assign_val, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} print_rhs_assign_val ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} print_rhs_assign_val (@var{new_val})\n\
-Query or set the internal variable that controls whether Octave will\n\
-print the value of the right hand side of assignment expressions\n\
-instead of the value of the left hand side (after the assignment).\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (print_rhs_assign_val);
-}
-
 
 /*
 ;;; Local Variables: ***

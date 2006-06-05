@@ -832,7 +832,10 @@ simple_expr	: colon_expr
 // one token for an assignment op.
 
 assign_lhs	: simple_expr
-		  { $$ = new tree_argument_list ($1); }
+		  {
+		    $$ = new tree_argument_list ($1);
+		    $$->mark_as_simple_assign_lhs ();
+		  }
 		| '[' arg_list CLOSE_BRACE
 		  {
 		    $$ = $2;
@@ -2424,7 +2427,7 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
   int l = eq_tok->line ();
   int c = eq_tok->column ();
 
-  if (lhs->length () == 1)
+  if (lhs->is_simple_assign_lhs ())
     {
       tree_expression *tmp = lhs->remove_front ();
 

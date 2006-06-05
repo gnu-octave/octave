@@ -45,10 +45,11 @@ public:
   typedef tree_expression* element_type;
 
   tree_argument_list (void)
-    : list_includes_magic_end (false) { }
+    : list_includes_magic_end (false), simple_assign_lhs (false) { }
 
   tree_argument_list (tree_expression *t)
-    : list_includes_magic_end (false) { append (t); }
+    : list_includes_magic_end (false), simple_assign_lhs (false)
+  { append (t); }
 
   ~tree_argument_list (void);
 
@@ -66,6 +67,10 @@ public:
 
   int nargout_count (void) const;
 
+  void mark_as_simple_assign_lhs (void) { simple_assign_lhs = true; }
+
+  bool is_simple_assign_lhs (void) { return simple_assign_lhs; }
+
   bool all_elements_are_constant (void) const;
 
   octave_value_list convert_to_const_vector (const octave_value *object = 0);
@@ -77,6 +82,8 @@ public:
 private:
 
   bool list_includes_magic_end;
+
+  bool simple_assign_lhs;
 
   // No copying!
 

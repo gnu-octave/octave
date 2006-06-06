@@ -1,3 +1,9 @@
+2006-06-06  John W. Eaton  <jwe@octave.org>
+
+	* configure.in, aclocal.m4:
+	Use AS_HELP_STRING instead of AC_HELP_STRING.
+	Use AC_LINK_IFELSE+AC_LANG_PROGRAM instead of AC_TRY_LINK
+
 2006-05-23  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for inttypes.h and stdint.h.

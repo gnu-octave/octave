@@ -193,37 +193,36 @@ AC_DEFUN(OCTAVE_SIGNAL_CHECK,
 AC_MSG_CHECKING(for type of signal functions)
 AC_CACHE_VAL(octave_cv_signal_vintage,
 [
-  AC_TRY_LINK([#include <signal.h>],[
-    sigset_t ss;
-    struct sigaction sa;
-    sigemptyset(&ss); sigsuspend(&ss);
-    sigaction(SIGINT, &sa, (struct sigaction *) 0);
-    sigprocmask(SIG_BLOCK, &ss, (sigset_t *) 0);
-  ], octave_cv_signal_vintage=posix,
-  [
-    AC_TRY_LINK([#include <signal.h>], [
-	int mask = sigmask(SIGINT);
-	sigsetmask(mask); sigblock(mask); sigpause(mask);
-    ], octave_cv_signal_vintage=4.2bsd,
-    [
-      AC_TRY_LINK([
-	#include <signal.h>
-	RETSIGTYPE foo() { }], [
-		int mask = sigmask(SIGINT);
-		sigset(SIGINT, foo); sigrelse(SIGINT);
-		sighold(SIGINT); sigpause(SIGINT);
-        ], octave_cv_signal_vintage=svr3, octave_cv_signal_vintage=v7
-    )]
-  )]
-)
-])
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
+    [[sigset_t ss;
+      struct sigaction sa;
+      sigemptyset (&ss);
+      sigsuspend (&ss);
+      sigaction (SIGINT, &sa, (struct sigaction *) 0);
+      sigprocmask (SIG_BLOCK, &ss, (sigset_t *) 0);]])],
+    [octave_cv_signal_vintage=posix],
+    [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
+       [[int mask = sigmask (SIGINT);
+	 sigsetmask (mask);
+         sigblock (mask);
+         sigpause (mask);]])],
+       [octave_cv_signal_vintage=4.2bsd],
+       [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>
+          RETSIGTYPE foo() { }]])],
+          [[int mask = sigmask (SIGINT);
+	    sigset (SIGINT, foo);
+            sigrelse (SIGINT);
+	    sighold (SIGINT);
+            sigpause (SIGINT);]],
+          [octave_cv_signal_vintage=svr3],
+          [octave_cv_signal_vintage=v7])])])])
 AC_MSG_RESULT($octave_cv_signal_vintage)
 if test "$octave_cv_signal_vintage" = posix; then
-AC_DEFINE(HAVE_POSIX_SIGNALS,1,[Define if you have POSIX style signals.])
+AC_DEFINE(HAVE_POSIX_SIGNALS, 1, [Define if you have POSIX style signals.])
 elif test "$octave_cv_signal_vintage" = "4.2bsd"; then
-AC_DEFINE(HAVE_BSD_SIGNALS,1,[Define if you have BSD style signals.])
+AC_DEFINE(HAVE_BSD_SIGNALS, 1, [Define if you have BSD style signals.])
 elif test "$octave_cv_signal_vintage" = svr3; then
-AC_DEFINE(HAVE_USG_SIGHOLD,1,[Define if you have System V Release 3 signals.])
+AC_DEFINE(HAVE_USG_SIGHOLD, 1, [Define if you have System V Release 3 signals.])
 fi
 ])
 dnl
@@ -308,13 +307,11 @@ AC_DEFUN(OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL, [
 	 return 0;
        }
 EOB
-    AC_TRY_LINK([#include "conftest.h"], [
-        A a (1);
-        return a == A(1);
-      ], 
-      octave_cv_cxx_new_friend_template_decl=no,
-      octave_cv_cxx_new_friend_template_decl=yes
-    )
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include "conftest.h"]],
+      [[A a (1);
+        return a == A(1);]])],
+      [octave_cv_cxx_new_friend_template_decl=no],
+      [octave_cv_cxx_new_friend_template_decl=yes])
     AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_new_friend_template_decl)
@@ -632,15 +629,13 @@ AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
 	utility valarray vector; do
       echo "#include <$inc>" >> conftest.h
     done
-    AC_TRY_LINK([#include "conftest.h"], [
-        std::bitset<50> flags;
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include "conftest.h"]],
+      [[std::bitset<50> flags;
         flags.set();
         int digits = std::numeric_limits<unsigned long>::digits;
-        digits = 0;
-      ],
-      octave_cv_cxx_iso_compliant_library=yes,
-      octave_cv_cxx_iso_compliant_library=no
-    )
+        digits = 0;]])],
+      [octave_cv_cxx_iso_compliant_library=yes],
+      [octave_cv_cxx_iso_compliant_library=no])
     AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.511 $)
+AC_REVISION($Revision: 1.512 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -47,7 +47,7 @@ AC_ISC_POSIX
 ### Path separator.
 sepchar=:
 AC_ARG_WITH(sepchar,
-  [AC_HELP_STRING([--with-sepchar=<char>],
+  [AS_HELP_STRING([--with-sepchar=<char>],
 	[use <char> as the path separation character])])
 case $with_sepchar in
   yes | "")
@@ -1368,7 +1368,7 @@ AC_TRY_COMPILE([#ifdef TIME_WITH_SYS_TIME
 
 if test "x$HAVE_TIMEVAL" = xyes; then
 AC_MSG_CHECKING(whether gettimeofday can't accept two arguments)
-AC_TRY_LINK([#ifdef TIME_WITH_SYS_TIME
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#ifdef TIME_WITH_SYS_TIME
 #include <sys/time.h>
 #include <time.h>
 #else
@@ -1377,10 +1377,13 @@ AC_TRY_LINK([#ifdef TIME_WITH_SYS_TIME
 #else
 #include <time.h>
 #endif
-#endif],[struct timeval time; struct timezone dummy;
-  gettimeofday (&time, &dummy);], [AC_MSG_RESULT(no)],
+#endif]], [[struct timeval time;
+  struct timezone dummy;
+  gettimeofday (&time, &dummy);]])],
+  [AC_MSG_RESULT(no)],
   [AC_MSG_RESULT(yes)
-   AC_DEFINE(GETTIMEOFDAY_NO_TZ, 1, [Define if your system has a single-arg prototype for gettimeofday.])])
+   AC_DEFINE(GETTIMEOFDAY_NO_TZ, 1,
+     [Define if your system has a single-arg prototype for gettimeofday.])])
 fi
 
 dnl Would like to get rid of this cruft, and just have
@@ -1454,11 +1457,12 @@ fi
 OCTAVE_ENABLE_READLINE
 
 AC_MSG_CHECKING([for struct exception in math.h])
-AC_TRY_LINK([#include <math.h>],
-  [struct exception *x; x->type; x->name;],
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(EXCEPTION_IN_MATH, 1, [Define if your math.h declares struct exception for matherr().]),
-  AC_MSG_RESULT(no))
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
+  [[struct exception *x; x->type; x->name;]])],
+  [AC_MSG_RESULT(yes)
+   AC_DEFINE(EXCEPTION_IN_MATH, 1,
+     [Define if your math.h declares struct exception for matherr().])],
+  [AC_MSG_RESULT(no)])
 
 ### Signal stuff.
 
@@ -1467,11 +1471,12 @@ AC_CHECK_DECL([sys_siglist],
   [AC_DEFINE(SYS_SIGLIST_DECLARED, 1, [Define if your system has a declaration of sys_siglist.])],
   [AC_CHECK_DECLS([sys_siglist])], [#include <signal.h>])
 AC_MSG_CHECKING([for sys_siglist variable])
-AC_TRY_LINK([#include <stdio.h>],
-  [extern char *sys_siglist[]; printf ("%s\n", sys_siglist[1]);],
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_SYS_SIGLIST, 1, [Define if your system has a sys_siglist variable.]),
-  AC_MSG_RESULT(no))
+AC_LINK_IFELSE([[#include <stdio.h>]],
+  [[extern char *sys_siglist[]; printf ("%s\n", sys_siglist[1]);]])],
+  [AC_MSG_RESULT(yes)
+   AC_DEFINE(HAVE_SYS_SIGLIST, 1,
+     [Define if your system has a sys_siglist variable.])],
+  [AC_MSG_RESULT(no)])
 OCTAVE_SIGNAL_CHECK
 OCTAVE_REINSTALL_SIGHANDLERS
 
